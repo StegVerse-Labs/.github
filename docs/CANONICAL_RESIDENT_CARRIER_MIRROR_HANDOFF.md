@@ -3,7 +3,8 @@
 Repository: `StegVerse-Labs/.github`  
 Issue: `#974`  
 Goal: `CANONICAL-RESIDENT-CARRIER-974`  
-State: SOURCE_INTEGRATION_ACTIVE / RUNTIME_EVIDENCE_REMAINS_TASK_SPECIFIC  
+State: `SOURCE_COMPLETE_MERGED_VALIDATED / RUNTIME_EVIDENCE_REMAINS_TASK_SPECIFIC`  
+Source merge: `b1f2bb3e33a1f93850811f0a751b2055519ab4dd`  
 Credential authority: `TV/TVC`  
 GitHub token runtime authority: `NONE`
 
@@ -37,6 +38,17 @@ SV-011 predecessor -> sv011_phase5_source_materialization
 SV-011 -> sv011_phase5
 ```
 
+## Source completion evidence
+
+PR `#975` merged as `b1f2bb3e33a1f93850811f0a751b2055519ab4dd` after both canonical validation lanes passed:
+
+- organization control plane: SUCCESS;
+- Heartbeat Worker Project: SUCCESS, including the complete deterministic repository suite.
+
+The merge also repaired pre-existing denominator drift for `LEGACY-CONTINUITY-VALIDATION-WORKER-001` by installing its AE retrospective classification and canonical COSV task vector while preserving zero active unvectorized worker gaps.
+
+Repository validation proves source/control consistency only. It is not resident execution evidence.
+
 ## Authority split
 
 - HeartBeat: deterministic reference/timing/continuity only; `OSCILLATOR_ONLY` progression.
@@ -49,7 +61,7 @@ SV-011 -> sv011_phase5
 
 ## Runtime evidence posture
 
-Shared-substrate membership is source-verifiable. Product/task completion remains runtime-specific and must not be inferred from this merge.
+Shared-substrate membership is now merged and source-verifiable. Product/task completion remains runtime-specific and must not be inferred from the merge.
 
 ### StegVerse-001
 
@@ -57,9 +69,14 @@ Authentic current-iPhone terminal evidence already exists. The canonical lineage
 
 ### StegVerse-002
 
-Continue through the existing `sv002_org_runtime_activation` consumer. Terminal evidence requires `terminal_round_trip_observed=true` from the existing HeartBeat-separated native WorkerCoordinator execution path, plus downstream governed-inference/reconstruction evidence where required by the active product goal.
+The canonical request remains `REQUESTED` at `control/resident-execution-request.d/sv002-org-runtime-activation-001.json`. Continue through the existing `sv002_org_runtime_activation` consumer. Terminal evidence requires `terminal_round_trip_observed=true` from the existing HeartBeat-separated native WorkerCoordinator execution path, plus downstream governed-inference/reconstruction evidence where required by the active product goal.
 
 ### SV-011
+
+Both canonical requests remain `REQUESTED`:
+
+- `control/resident-execution-request.d/sv011-phase5-source-materialization-001.json`;
+- `control/resident-execution-request.d/sv011-phase5-boundary-001.json`.
 
 Continue source materialization first, then the existing `sv011_phase5` consumer. Phase 5 closes only when one WorkerCoordinator execution produces the required ALLOW five-receipt chain and DENY `consumed=false` / `consequence_reachable=false` evidence.
 
@@ -69,9 +86,9 @@ Any future project handoff that describes a separate SV001, SV002, or SV-011 hea
 
 ## Remaining machine work
 
-1. Merge the source contract/validator for this convergence goal.
-2. Allow the existing resident WorkerCoordinator to consume pending SV002 and SV-011 requests through the canonical dispatcher.
-3. Preserve task-specific authentic receipts and downstream reconstruction/disposition.
-4. Propagate capability-state changes to Site, Publisher, admissibility-wiki, and stegguardian-wiki only when their individual release gates are satisfied.
+1. Existing resident WorkerCoordinator consumes the pending SV002 request through the canonical dispatcher and persists task-specific terminal evidence.
+2. Existing resident WorkerCoordinator consumes SV-011 source materialization, then Phase-5 boundary execution, and persists the first-success evidence capsule when predicates are satisfied.
+3. Preserve task-specific downstream reconstruction/disposition without rerunning terminal SV001.
+4. Verify architecture/source propagation to Site, Publisher, admissibility-wiki, and stegguardian-wiki using `docs/CANONICAL_RESIDENT_CARRIER_POSTMERGE_PROPAGATION.md`; propagate runtime status only when each consumer's authentic evidence gate is satisfied.
 
-No manual/current-iPhone state mutation is authorized by this handoff.
+No manual/current-iPhone state mutation is authorized or required by this handoff.
