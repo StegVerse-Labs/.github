@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/task-master-records-reconciliation.schema.json",
+  "title": "Task Registry to Master Records Reconciliation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "reconciliation_id",
+    "task_id",
+    "correlation_id",
+    "state",
+    "task_claims",
+    "master_records_refs",
+    "predicate_results",
+    "closure_admissible",
+    "proposed_followup",
+    "authority_model"
+  ],
+  "properties": {
+    "schema": {"const": "stegverse.task-master-records-reconciliation/v1"},
+    "reconciliation_id": {"type": "string", "minLength": 1},
+    "task_id": {"type": "string", "minLength": 1},
+    "correlation_id": {"type": "string", "minLength": 1},
+    "state": {
+      "enum": [
+        "CONSISTENT",
+        "TASK_AHEAD_OF_EVIDENCE",
+        "REALITY_AHEAD_OF_TASK",
+        "CONFLICT",
+        "UNKNOWN",
+        "ORPHANED_EVENT"
+      ]
+    },
+    "task_claims": {"type": "array", "items": {"type": "string"}},
+    "master_records_refs": {"type": "array", "items": {"type": "string"}},
+    "predicate_results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["predicate", "result", "evidence_refs"],
+        "properties": {
+          "predicate": {"type": "string"},
+          "result": {"enum": ["PASS", "FAIL", "UNKNOWN", "NOT_APPLICABLE"]},
+          "evidence_refs": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "closure_admissible": {"type": "boolean"},
+    "proposed_followup": {
+      "enum": [
+        "NONE",
+        "WAIT_FOR_EVIDENCE",
+        "REQUEST_RECONCILIATION",
+        "PROPOSE_TASK_INGRESS",
+        "REOPEN_TASK",
+        "REVOKE_COMPLETION",
+        "PROMOTE_SYSTEMIC_INCIDENT",
+        "REEVALUATE_DEPENDENTS"
+      ]
+    },
+    "notes": {"type": "array", "items": {"type": "string"}},
+    "authority_model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reconciliation_mints_execution_authority", "historical_event_mints_task_authority", "master_records_is_reality_authority"],
+      "properties": {
+        "reconciliation_mints_execution_authority": {"const": false},
+        "historical_event_mints_task_authority": {"const": false},
+        "master_records_is_reality_authority": {"const": true}
+      }
+    }
+  }
+}
