@@ -52,15 +52,21 @@ class HILResidentActivationAcceptanceTests(unittest.TestCase):
                     "materialization_id": "INTR-MAT-" + "b" * 24,
                     "state": "MATERIALIZATION_EXECUTION_ATTEMPTED",
                     "esrl_lease_state": "LEASE_OPEN",
-                    "public_gateway_readiness_verified": True,
-                    "public_gateway_origin": "https://stegverse.org",
+                    "same_device_execution_required": True,
+                    "requires_other_machine": False,
+                    "public_observation_is_downstream_optional": True,
+                    "public_gateway_readiness_verified": False,
+                    "public_gateway_origin": None,
                 },
             ]
         }
         selected = mod.select_materialization_result(batch, "INTR-MAT-" + "b" * 24)
         self.assertEqual(selected["esrl_lease_state"], "LEASE_OPEN")
-        self.assertTrue(selected["public_gateway_readiness_verified"])
-        self.assertEqual(selected["public_gateway_origin"], "https://stegverse.org")
+        self.assertTrue(selected["same_device_execution_required"])
+        self.assertFalse(selected["requires_other_machine"])
+        self.assertTrue(selected["public_observation_is_downstream_optional"])
+        self.assertFalse(selected["public_gateway_readiness_verified"])
+        self.assertIsNone(selected["public_gateway_origin"])
         self.assertEqual(mod.select_materialization_result(batch, "INTR-MAT-" + "c" * 24), {})
 
     def test_hosted_markers_are_detectable(self) -> None:
