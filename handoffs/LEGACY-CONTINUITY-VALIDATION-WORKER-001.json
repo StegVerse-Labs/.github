@@ -5,8 +5,8 @@
   "worker_id": "legacy-continuity-validation-worker",
   "state": "HANDOFF_READY",
   "source_repository": "StegVerse-Labs/Continuity",
-  "source_commit": "0b814c0d0028e98a67c751ef2aa1768b17da743f",
-  "source_handoff_ref": "StegVerse-Labs/Continuity:docs/LEGACY_TRIGGER_PARTICIPATION_MIRROR_HANDOFF.md",
+  "source_commit": "5118c7f9f841a43ef8729c7c8dd20e01d3696713",
+  "source_handoff_ref": "StegVerse-Labs/Continuity:docs/LEGACY_CONTINUITY_MIRROR_HANDOFF.md",
   "control_handoff_ref": "docs/LEGACY_CONTINUITY_VALIDATION_MIRROR_HANDOFF.md",
   "worker_ref": "workers/legacy_continuity_validation_worker.py",
   "executor_binding": "AUTHORIZED_LOCAL_SOURCE_ONLY",
@@ -17,13 +17,20 @@
   "capsule_arming_authority": false,
   "recipient_notification_authority": false,
   "economic_transfer_authority": false,
+  "authentic_tvc_authorization_authority": false,
+  "required_tests": [
+    "tests/test_legacy_trigger.py",
+    "tests/test_legacy_participation.py",
+    "tests/test_legacy_release_coordination.py",
+    "tests/test_legacy_frozen_simulation.py"
+  ],
   "blockers": [
     "AUTHORIZED_LOCAL_CONTINUITY_SOURCE_PATH_NOT_YET_OBSERVED"
   ],
   "completion_requires": [
     "exact source commit present locally",
     "clean worktree",
-    "focused legacy tests PASS",
+    "all four focused legacy tests PASS",
     "deterministic worker receipt retained"
   ],
   "authority_effect": "NONE"
