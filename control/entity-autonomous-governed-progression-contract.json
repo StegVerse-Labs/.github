@@ -1,0 +1,75 @@
+{
+  "schema": "stegverse.entity-autonomous-governed-progression-contract/v1",
+  "updated_at": "2026-09-04T15:56:00-05:00",
+  "owner_repository": "StegVerse-Labs/.github",
+  "handoff": "docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_MIRROR_HANDOFF.md",
+  "authority_effect": "NONE_POLICY_ONLY",
+  "credential_authority": "TV/TVC",
+  "heartbeat_authority_effect": "NONE_REFERENCE_CARRIER_ONLY",
+  "transition_rule": {
+    "authority_is_inferred": false,
+    "authority_is_reused": false,
+    "every_state_change_requires_current_governance": true,
+    "prior_receipt_can_authorize_next_transition": false,
+    "human_approval_default": false
+  },
+  "machine_transition_loop": [
+    "OBSERVE_CURRENT_CANONICAL_STATE",
+    "SELECT_HIGHEST_PRIORITY_UNBLOCKED_NONDUPLICATE_GOAL",
+    "PROPOSE_EXACT_NEXT_TRANSITION",
+    "EVALUATE_CURRENT_INTERLOCK_GOVERNANCE",
+    "CONSULT_TV_TVC_IF_CREDENTIAL_AUTHORITY_REQUIRED",
+    "RETAIN_ALLOW_OR_DENY_RECEIPT",
+    "IF_ALLOW_CARRY_VIA_INTR_TO_CURRENT_RECEIVER",
+    "CONSUME_AND_EXECUTE",
+    "RETAIN_EXECUTION_STATE_RECEIPT",
+    "RECONSTRUCT_CURRENT_STATE",
+    "CONTINUE_WITHOUT_HUMAN_APPROVAL_IF_NEXT_TRANSITION_IS_MACHINE_OWNED"
+  ],
+  "human_authority_classes": [
+    "HUMAN_ONLY",
+    "USER_ONLY",
+    "LEGAL_PERSON_SIGNATURE",
+    "OWNER_EXPLICIT_CONSENT"
+  ],
+  "human_interaction_queue_scope": "TRUE_HUMAN_DEVICE_MUTATIONS_ONLY",
+  "human_interaction_queue_must_not_schedule_machine_runtime": true,
+  "stop_conditions": [
+    "DENY_WITH_NO_ADMISSIBLE_REPAIR_OR_ALTERNATE",
+    "EXACT_NEXT_TRANSITION_REQUIRES_HUMAN_AUTHORITY_CLASS",
+    "REQUIRED_RECEIVER_GENUINELY_UNAVAILABLE_WITH_NO_ADMITTED_LOCAL_MATERIALIZATION",
+    "CURRENT_STATE_INVARIANT_UNRECONSTRUCTABLE",
+    "TERMINAL_GOVERNED_GOAL_STATE_REACHED"
+  ],
+  "invalid_stop_conditions": [
+    "ASK_USER_TO_APPROVE_NEXT_MACHINE_TRANSITIONS",
+    "WAIT_FOR_RECEIPTS_WITHOUT_EXECUTABLE_WORK",
+    "HUMAN_UI_CONTROL_EXISTS_SO_HUMAN_MUST_EXECUTE"
+  ],
+  "canonical_substrate": {
+    "hb": "REFERENCE_FRESHNESS_CORRELATION_CARRIAGE_ONLY",
+    "transition_governor": "INTERLOCK_INTR",
+    "task_control": "WorkerCoordinator where required",
+    "credential_authority": "TV/TVC",
+    "execution": "CURRENT_ADMITTED_RESIDENT_OR_DEVICE_RUNTIME",
+    "custody_reconstruction": "Master Records"
+  },
+  "initial_consumers": [
+    {
+      "entity_id": "StegVerse-001",
+      "selector": "stegverse001_bounded_autonomy",
+      "default_progression": "MACHINE_GOVERNED_AUTONOMOUS"
+    },
+    {
+      "entity_id": "StegVerse-002",
+      "selector": "sv002_org_runtime_activation",
+      "default_progression": "MACHINE_GOVERNED_AUTONOMOUS"
+    },
+    {
+      "entity_id": "SV-011",
+      "selector": "sv011_phase5",
+      "default_progression": "MACHINE_GOVERNED_AUTONOMOUS"
+    }
+  ],
+  "runtime_claimed": false
+}
