@@ -110,3 +110,18 @@ This regression guard proves only source/control wiring. It does not prove resid
 
 The exact authentic review receipt remains the sole substantive completion gate for this reviewer lane:
 `receipts/erl-ai-economic-transparency-review/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json`
+
+
+## 2026-09-04 functional exact-dispatch verification
+
+The portable selector is now also covered by a behavioral exact-consumer test:
+`tests/test_erl_ai_economic_transparency_portable_exact_dispatch.py`
+
+PR #978 / merge `c8f7861dfac86979fe6ed540f3ca903a9a73b7d2` verifies that the portable refresh+dispatch bridge passes `--only-consumer erl_ai_economic_transparency_review`, observes exact selector isolation, dispatches no unrelated consumer, forwards no GitHub credential, performs no network source fetch, and mints no claim/fence or runtime authority.
+
+The rootless source-refresh watcher independently invokes the generic resident dispatcher after refresh, and WorkerCoordinator discovers `control/worker-registry.d/*.json` task fragments at runtime. The ERL review task therefore remains addressable through both the normal generic resident request visit and the bounded portable exact-consumer path without mutation of the monolithic runtime registry.
+
+This is deterministic source/control verification only. It is not authentic resident review execution and does not satisfy independent review, activation, or publication.
+
+Current blocker remains `RESIDENT_EXECUTION_RECEIPT_PENDING`; the required authentic receipt is:
+`receipts/erl-ai-economic-transparency-review/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json`
