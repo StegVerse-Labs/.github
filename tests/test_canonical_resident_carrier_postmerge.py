@@ -1,0 +1,32 @@
+from __future__ import annotations
+
+import json
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+class CanonicalResidentCarrierPostMergeTests(unittest.TestCase):
+    def test_contract_and_propagation_task_preserve_single_substrate(self):
+        contract = json.loads((ROOT / "control/canonical-resident-carrier-contract.json").read_text())
+        task = json.loads((ROOT / "tasks/CANONICAL-RESIDENT-CARRIER-PROPAGATION-VERIFY-001.json").read_text())
+        self.assertEqual(contract["heartbeat"]["progression_dependency"], "OSCILLATOR_ONLY")
+        self.assertFalse(contract["heartbeat"]["grants_execution_authority"])
+        self.assertEqual(contract["worker_runtime"]["class"], "WorkerCoordinator")
+        self.assertFalse(contract["worker_runtime"]["second_worker_runtime_allowed"])
+        self.assertEqual(contract["credential_authority"], "TV/TVC")
+        self.assertEqual(task["source_merge"], "b1f2bb3e33a1f93850811f0a751b2055519ab4dd")
+        self.assertEqual(task["state"], "HANDOFF_READY")
+        self.assertFalse(task["user_action_required"])
+        self.assertEqual(task["runtime_status_propagation_gate"], "CONSUMER_SPECIFIC_AUTHENTIC_RESIDENT_EVIDENCE_ONLY")
+        self.assertEqual(set(task["destinations"]), {
+            "StegVerse-Labs/Site",
+            "GCAT-BCAT-Engine/Publisher",
+            "StegVerse-Labs/admissibility-wiki",
+            "StegVerse-002/stegguardian-wiki",
+        })
+
+
+if __name__ == "__main__":
+    unittest.main()
