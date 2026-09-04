@@ -1,0 +1,80 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "LEGACY-CONTINUITY-VALIDATION-WORKER-001",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": [
+        "AUTHORIZED_LOCAL_CONTINUITY_SOURCE_PATH_NOT_YET_OBSERVED"
+      ],
+      "authorized_policy_version": "legacy-continuity-validation-v1",
+      "block_ref": "docs/LEGACY_CONTINUITY_VALIDATION_MIRROR_HANDOFF.md",
+      "claim_id": null,
+      "evidence_refs": [
+        "handoffs/LEGACY-CONTINUITY-VALIDATION-WORKER-001.json",
+        "docs/LEGACY_CONTINUITY_VALIDATION_MIRROR_HANDOFF.md",
+        "workers/legacy_continuity_validation_worker.py",
+        "StegVerse-Labs/Continuity:docs/LEGACY_TRIGGER_PARTICIPATION_MIRROR_HANDOFF.md"
+      ],
+      "executor_binding": "AUTHORIZED_LOCAL_SOURCE_ONLY",
+      "external_entity_job_ref": null,
+      "goal_id": "SV-CONTINUITY-LEGACY-BEQUEST-001",
+      "handoff_ref": "handoffs/LEGACY-CONTINUITY-VALIDATION-WORKER-001.json",
+      "last_checkpoint_ref": null,
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "LEGACY-CONTINUITY-VALIDATION-WORKER-001",
+      "worker_id": "legacy-continuity-validation-worker",
+      "admissible_existence": {
+        "capability_id": "stegverse:capability:private-source-focused-validation:v1",
+        "capability_version": "1.0.0",
+        "phase": "ADMISSIBLE",
+        "standing_evidence_refs": [
+          "StegVerse-Labs/Continuity:docs/LEGACY_TRIGGER_PARTICIPATION_MIRROR_HANDOFF.md"
+        ],
+        "admissibility_evidence_refs": [
+          "docs/LEGACY_CONTINUITY_VALIDATION_MIRROR_HANDOFF.md"
+        ],
+        "integration_evidence_refs": [
+          "workers/legacy_continuity_validation_worker.py"
+        ],
+        "activation_proof_ref": null,
+        "blockers": [
+          "AUTHORIZED_LOCAL_CONTINUITY_SOURCE_PATH_NOT_YET_OBSERVED"
+        ],
+        "continuation_owner": "legacy-continuity-validation-worker on eligible StegVerse sovereign/local source surface",
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": false,
+        "temporal_class": "current",
+        "task_relationship": "validates_capability",
+        "target_phase": "ACTIVATED"
+      }
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:legacy-continuity-validation-v1",
+      "authority_source": "handoffs/LEGACY-CONTINUITY-VALIDATION-WORKER-001.json",
+      "capabilities": [
+        "local_private_source_validation",
+        "exact_git_head_binding",
+        "credential_stripped_test_execution",
+        "validation_receipt_generation"
+      ],
+      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "legacy-continuity-validation-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "github_token_required": false,
+  "credential_authority": "TV/TVC",
+  "provider_capability_authority": "NONE",
+  "dependencies": [
+    "authorized_local_continuity_source"
+  ],
+  "preferred_carrier_required": true,
+  "priority": "high"
+}
