@@ -1,0 +1,49 @@
+{
+  "schema": "stegverse.developer-capability-packages/v1",
+  "packages": {
+    "DEVELOPER_PACKAGE_STANDARD": {
+      "environment": "DEVELOPMENT",
+      "purpose": "BASELINE_DEVELOPER_STATE_TRANSITION_CAPABILITIES",
+      "allowed_transition_capabilities": [
+        "COMMUNICATE_WITH_DESIGNATED_STEGVERSE_DEVELOPER_AI",
+        "READ_ELIGIBLE_DEVELOPMENT_SURFACES",
+        "CREATE_OR_MODIFY_SOURCE_WITHIN_ADMITTED_DEVELOPMENT_SCOPE",
+        "RUN_TESTS_OR_VALIDATION_WITHIN_ADMITTED_DEVELOPMENT_SCOPE",
+        "GENERATE_DEVELOPMENT_EVIDENCE",
+        "GENERATE_PROPOSED_CHANGES"
+      ],
+      "explicitly_absent": [
+        "PRODUCTION_MUTATION",
+        "PRODUCTION_ACTIVATION",
+        "CREDENTIAL_EXTRACTION",
+        "GOVERNANCE_MUTATION",
+        "AUTOMATIC_RELEASE_AUTHORITY",
+        "AUTOMATIC_DEPLOYMENT_AUTHORITY"
+      ],
+      "implicit_promotion_to_production": false,
+      "extension_required_for_any_unlisted_capability": true
+    }
+  },
+  "capability_extension_application": {
+    "schema": "stegverse.developer-capability-extension-application/v1",
+    "required_fields": [
+      "application_id",
+      "relationship_id",
+      "requested_extensions",
+      "target_environment",
+      "target_scope",
+      "purpose",
+      "requested_lifecycle",
+      "authority_or_approval_refs",
+      "constraint_declarations"
+    ],
+    "admission_effect": "AMEND_OR_REPLACE_SKAP_RELATIONSHIP_PACKAGE_ONLY_AFTER_APPROVAL",
+    "rejection_effect": "PRIOR_RELATIONSHIP_PACKAGE_UNCHANGED"
+  },
+  "invariants": [
+    "DEVELOPER_STATUS_IS_NOT_OPEN_ENDED_AUTHORITY",
+    "UNLISTED_CAPABILITIES_REQUIRE_EXPLICIT_APPLICATION_AND_ADMISSION",
+    "DEVELOPMENT_CAPABILITY_DOES_NOT_PROMOTE_TO_PRODUCTION_BY_MERGE_DEPLOYMENT_COPY_OR_REUSE",
+    "PRODUCTION_CAPABILITY_REQUIRES_INDEPENDENT_PRODUCTION_TRANSITION"
+  ]
+}
