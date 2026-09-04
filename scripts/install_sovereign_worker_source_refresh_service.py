@@ -88,6 +88,7 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path, source_
         f"ExecStartPost={_quote(python)} {_quote(request_dispatcher)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
         f"ExecStartPost={_quote(python)} {_quote(hil_materialization_consumer)} --source-root {_quote(source)} --runtime-root {_quote(runtime)}",
         f"ExecStartPost=/usr/bin/systemctl --user try-restart {WORKER_SERVICE}",
+        f"ExecStartPost=/usr/bin/systemctl --user start {WORKER_SERVICE}",
         "NoNewPrivileges=true",
         "PrivateTmp=true",
         "",
@@ -122,6 +123,8 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path, source_
     path_unit = "\n".join([
         "[Unit]",
         "Description=Watch canonical local StegVerse worker source",
+        f"Wants={WORKER_SERVICE}",
+        f"After={WORKER_SERVICE}",
         "",
         "[Path]",
         *(f"PathChanged={path}" for path in watched_paths),
