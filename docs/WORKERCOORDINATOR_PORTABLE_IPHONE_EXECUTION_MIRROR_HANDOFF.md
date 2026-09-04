@@ -1,6 +1,6 @@
 # Portable WorkerCoordinator iPhone Execution Mirror Handoff
 
-Updated: 2026-09-02
+Updated: 2026-09-04
 Repository: `StegVerse-Labs/.github`
 Issue: #862
 Goal: `WORKERCOORDINATOR-PORTABLE-IPHONE-EXECUTION-001`
@@ -106,7 +106,6 @@ Runtime completion:
 
 Source/merge/CI never substitute for runtime completion.
 
-
 ## Duplicate-terminal prevention — 2026-09-03
 
 Fresh current-iPhone evidence exposed a missing serial-terminal guard: after the valid
@@ -176,3 +175,16 @@ This is terminal-state propagation, not a second runtime authority. WorkerCoordi
 remains the claim/fence authority, TV/TVC remains credential authority, HB grants no
 authority, and downstream Master Records/SV002 retry remains allowed without SV001
 re-execution.
+
+## Validation-base reconciliation — 2026-09-04
+
+The first #977 merge-ref validation ran against an older base and failed on two
+pre-existing denominator projections unrelated to this terminal package:
+`LEGACY-CONTINUITY-VALIDATION-WORKER-001` was already installed but omitted from the
+AE retrospective denominator, and COSV coverage still reported 82 worker task IDs.
+
+Current main has independently reconciled that drift. The live COSV coverage now
+reports 83 unique worker task IDs, 76 canonically indexed worker task IDs, and includes
+`LEGACY-CONTINUITY-VALIDATION-WORKER-001`. No duplicate denominator repair is owned by
+this lane. This branch was advanced only to force a fresh merge-ref validation against
+the reconciled current base.
