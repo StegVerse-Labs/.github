@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import hashlib
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 OBSERVATION_ONLY_MODE = "CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION"
+DEFAULT_WORKER_FRESHNESS_WINDOW_SECONDS = 60.0
 
 
 def _load(path: Path) -> dict[str, Any] | None:
@@ -34,7 +36,25 @@ def _summary(path: Path) -> dict[str, Any]:
     }
 
 
-def project(runtime_root: Path, evidence_refs: dict[str, str] | None = None) -> dict[str, Any]:
+def _parse_timestamp(value: Any) -> datetime | None:
+    if not isinstance(value, str) or not value.strip():
+        return None
+    try:
+        parsed = datetime.fromisoformat(value.strip().replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
+def project(
+    runtime_root: Path,
+    evidence_refs: dict[str, str] | None = None,
+    *,
+    observed_at: datetime | None = None,
+    worker_freshness_window_seconds: float = DEFAULT_WORKER_FRESHNESS_WINDOW_SECONDS,
+) -> dict[str, Any]:
     root = runtime_root.expanduser().resolve()
     carrier_path = root / "control/heartbeat-carrier-runtime-state.json"
     worker_path = root / "control/worker-runtime-state.json"
@@ -57,6 +77,22 @@ def project(runtime_root: Path, evidence_refs: dict[str, str] | None = None) -> 
         and worker.get("observation_mode") != OBSERVATION_ONLY_MODE
         and isinstance(worker.get("runtime_tick"), int)
     )
+
+    now = observed_at or datetime.now(timezone.utc)
+    if now.tzinfo is None:
+        now = now.replace(tzinfo=timezone.utc)
+    else:
+        now = now.astimezone(timezone.utc)
+    last_cycle_at = _parse_timestamp(worker.get("last_cycle_at"))
+    worker_cycle_age_seconds = (
+        (now - last_cycle_at).total_seconds() if last_cycle_at is not None else None
+    )
+    worker_cycle_fresh = (
+        isinstance(worker_cycle_age_seconds, float)
+        and worker_cycle_age_seconds >= 0.0
+        and worker_cycle_age_seconds <= float(worker_freshness_window_seconds)
+    )
+    present_worker_runtime = runtime_alive and task_capable and worker_cycle_fresh
 
     carrier_epoch = carrier.get("epoch")
     worker_epoch = worker.get("last_observed_carrier_epoch")
@@ -82,8 +118,14 @@ def project(runtime_root: Path, evidence_refs: dict[str, str] | None = None) -> 
             "node_id": activation.get("node_id") or activation.get("sovereign_node") or None,
             "runtime_alive_observed": runtime_alive,
             "task_capable_worker_observed": task_capable,
+            "present_worker_runtime_observed": present_worker_runtime,
             "worker_runtime_tick": worker.get("runtime_tick"),
             "worker_observation_mode": worker.get("observation_mode"),
+            "worker_last_cycle_at": worker.get("last_cycle_at"),
+            "worker_cycle_age_seconds": worker_cycle_age_seconds,
+            "worker_cycle_fresh": worker_cycle_fresh,
+            "worker_freshness_window_seconds": float(worker_freshness_window_seconds),
+            "presence_requires_fresh_worker_cycle": True,
         },
         "heartbeat_reference": {
             "carrier_state_observed": bool(carrier),
