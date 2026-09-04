@@ -23,6 +23,15 @@ from typing import Any, Mapping
 
 ROOT = Path(__file__).resolve().parents[1]
 RECEIPT_REL = Path("receipts/sovereign-host/resident-request-dispatch.latest.json")
+AWARENESS_AGGREGATE_REL = Path("receipts/sovereign-host/astra-class-resilience-awareness.latest.json")
+AWARENESS_STATE_DIR = Path("runtime-state/entity-awareness")
+AWARENESS_PROTECTED = {
+    "stegverse001_bounded_autonomy",
+    "sv002_org_runtime_activation",
+    "sv011_phase5_source_materialization",
+    "sv011_phase5",
+}
+AWARENESS_STATE_FILES = ("stegverse-001.json", "stegverse-002.json", "sv-011.json")
 HOSTED_ENV = (
     "GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "VERCEL_ENV",
     "CF_PAGES", "CLOUDFLARE_WORKERS",
@@ -79,6 +88,7 @@ CONSUMERS = (
     ("bootstrap_v1_intr_bundle_delivery", "scripts/consume_bootstrap_v1_intr_bundle_delivery_request.py"),
     ("tvc_broker_validation", "scripts/consume_tvc_broker_validation_request.py"),
     ("sv002_self_characterization", "scripts/consume_sv002_self_characterization_request.py"),
+    ("astra_class_resilience_awareness", "scripts/consume_astra_class_resilience_awareness_request.py"),
     ("sv002_org_runtime_activation", "scripts/consume_sv002_org_runtime_activation_request.py"),
     ("healer_sovereign_scheduler", "scripts/consume_healer_sovereign_scheduler_request.py"),
     ("universal_governance_enforced_reference", "scripts/consume_universal_governance_enforced_reference_request.py"),
@@ -87,7 +97,6 @@ CONSUMERS = (
     ("one_shot_resident_stack_activation", "scripts/consume_one_shot_resident_stack_activation_request.py"),
     ("sv011_phase5_source_materialization", "scripts/consume_sv011_phase5_source_materialization_request.py"),
     ("sv011_phase5", "scripts/consume_sv011_phase5_resident_execution_request.py"),
-    ("astra_class_resilience_awareness", "scripts/consume_astra_class_resilience_awareness_request.py"),
     ("glm53_sovereign_lane", "scripts/consume_glm53_sovereign_lane_request.py"),
     ("erl_ai_economic_transparency_review", "scripts/consume_erl_ai_economic_transparency_review_request.py"),
     ("org_claim_allocator", "scripts/consume_org_claim_allocator_request.py"),
@@ -120,6 +129,52 @@ def parse_last_json(stdout: str) -> dict[str, Any] | None:
     return None
 
 
+def load_json(path: Path) -> dict[str, Any] | None:
+    if not path.is_file():
+        return None
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+    return value if isinstance(value, dict) else None
+
+
+def standing_awareness_ready(runtime: Path) -> bool:
+    aggregate = load_json(runtime / AWARENESS_AGGREGATE_REL)
+    if not aggregate:
+        return False
+    if aggregate.get("state") != "COMPLETED":
+        return False
+    if aggregate.get("runtime_awareness_materialized") is not True:
+        return False
+    if aggregate.get("standing_directive_active") is not True:
+        return False
+    if aggregate.get("entity_count") != 3:
+        return False
+    contract_sha = aggregate.get("contract_sha256")
+    if not isinstance(contract_sha, str) or not contract_sha:
+        return False
+    for filename in AWARENESS_STATE_FILES:
+        state = load_json(runtime / AWARENESS_STATE_DIR / filename)
+        if not state:
+            return False
+        if state.get("state") != "ACTIVE" or state.get("standing_directive_active") is not True:
+            return False
+        if state.get("contract_sha256") != contract_sha:
+            return False
+        if state.get("credential_authority") != "TV/TVC":
+            return False
+        if state.get("capability_confers_authority") is not False:
+            return False
+        if state.get("heartbeat_grants_execution_authority") is not False:
+            return False
+        if state.get("intr_interlock_remains_transition_boundary") is not True:
+            return False
+        if state.get("second_machine_required") is not False:
+            return False
+    return True
+
+
 def select_consumers(only_consumers: tuple[str, ...] | None) -> tuple[tuple[str, str], ...]:
     if not only_consumers:
         return CONSUMERS
@@ -146,6 +201,17 @@ def dispatch(
     outcomes: list[dict[str, Any]] = []
 
     for name, rel in selected:
+        if name in AWARENESS_PROTECTED and not standing_awareness_ready(runtime):
+            outcomes.append({
+                "consumer": name,
+                "consumer_ref": rel,
+                "state": "STANDING_AWARENESS_REQUIRED",
+                "returncode": None,
+                "result": None,
+                "attempted": False,
+                "authority_effect": "NONE_FAIL_CLOSED",
+            })
+            continue
         consumer = runtime / rel
         if not consumer.is_file():
             outcomes.append({"consumer": name, "consumer_ref": rel, "state": "CONSUMER_NOT_MATERIALIZED", "returncode": None, "result": None, "attempted": False})
@@ -171,6 +237,7 @@ def dispatch(
         "consumers_visited": len(outcomes), "missing_consumers": missing,
         "dispatch_exceptions": exceptions, "request_failures": request_failures,
         "outcomes": outcomes, "request_failure_blocks_later_requests": False,
+        "astra_class_standing_awareness_ready": standing_awareness_ready(runtime),
         "network_source_fetch_performed": False, "credential_authority": "TV/TVC",
         "github_token_required": False, "github_token_runtime_authority": "NONE",
         "heartbeat_grants_execution_authority": False, "request_dispatch_grants_authority": False,
