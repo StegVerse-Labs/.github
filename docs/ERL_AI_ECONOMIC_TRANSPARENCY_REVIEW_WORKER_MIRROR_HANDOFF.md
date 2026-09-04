@@ -149,3 +149,18 @@ as the earliest unproven runtime boundary.
 This does not claim that the worker is absent; it records only that present runtime presence is unproven. Source, merge, CI, heartbeat/carrier reference progression, and historical worker state remain insufficient substitutes.
 
 No new scheduler, heartbeat, worker registry, claim/fence path, credential path, second machine, activation authority, publication authority, or repository-writeback authority is introduced. No user action is currently required.
+
+
+## 2026-09-04 fail-closed worker-presence freshness
+
+Live inspection of `heartbeat_runtime/runtime_presence_projection.py` found that `task_capable_worker_observed` was structural only: it accepted any non-observation-only worker state with an integer runtime tick and did not evaluate whether `last_cycle_at` was fresh. A stale historical worker state could therefore be structurally task-capable without proving present WorkerCoordinator runtime presence.
+
+PR #992 / merge `da51e1f7bcdaa993e627b1af2739195c24bf95ae` hardens the canonical projector while preserving backward compatibility:
+
+- `task_capable_worker_observed` remains the existing structural predicate;
+- new `present_worker_runtime_observed` requires direct native-service/continuous-runtime activation predicates, structural task capability, and a parseable `last_cycle_at` within a declared freshness window;
+- stale, missing, future-dated, or malformed cycle timestamps fail closed for present-runtime observation;
+- the projection exposes `worker_last_cycle_at`, `worker_cycle_age_seconds`, `worker_cycle_fresh`, and `worker_freshness_window_seconds` so the freshness basis is inspectable;
+- tests cover both fresh and stale WorkerCoordinator state.
+
+This improves runtime observability only. It does not create runtime presence, execute the ERL reviewer, mint authority, or satisfy the independent-review receipt gate. Present resident WorkerCoordinator runtime presence remains unobserved until fresh runtime-local state and direct activation predicates are authentically present.
