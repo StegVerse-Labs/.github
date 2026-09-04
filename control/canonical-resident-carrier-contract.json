@@ -27,6 +27,17 @@
     "second_worker_runtime_allowed": false,
     "request_dispatch_grants_authority": false
   },
+  "entity_progression": {
+    "contract_ref": "control/entity-autonomous-governed-progression-contract.json",
+    "handoff_ref": "docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_MIRROR_HANDOFF.md",
+    "default_for_machine_owned_transitions": "MACHINE_GOVERNED_AUTONOMOUS",
+    "human_approval_default": false,
+    "every_state_change_requires_current_governance": true,
+    "authority_is_inferred": false,
+    "authority_is_reused": false,
+    "prior_receipt_authorizes_next_transition": false,
+    "human_interaction_queue_scope": "TRUE_HUMAN_DEVICE_MUTATIONS_ONLY"
+  },
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": "NONE",
   "second_user_operated_machine_required": false,
@@ -35,6 +46,7 @@
       "entity_id": "StegVerse-001",
       "selector": "stegverse001_bounded_autonomy",
       "consumer_ref": "scripts/consume_stegverse001_bounded_autonomy_request.py",
+      "progression_mode": "MACHINE_GOVERNED_AUTONOMOUS",
       "terminal_transition": "SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED",
       "post_terminal": ["Master Records reconstruction PASS", "SV002 adversarial disposition"],
       "terminal_reexecution_allowed": false
@@ -43,6 +55,7 @@
       "entity_id": "StegVerse-002",
       "selector": "sv002_org_runtime_activation",
       "consumer_ref": "scripts/consume_sv002_org_runtime_activation_request.py",
+      "progression_mode": "MACHINE_GOVERNED_AUTONOMOUS",
       "terminal_predicate": "terminal_round_trip_observed=true",
       "post_terminal": ["governed inference proof where required", "same-execution reconstruction where required"]
     },
@@ -51,6 +64,7 @@
       "selector": "sv011_phase5",
       "predecessor_selector": "sv011_phase5_source_materialization",
       "consumer_ref": "scripts/consume_sv011_phase5_resident_execution_request.py",
+      "progression_mode": "MACHINE_GOVERNED_AUTONOMOUS",
       "terminal_predicates": [
         "SV011-PHASE5-ALLOW-001 ALLOW with five ordered receipts",
         "SV011-PHASE5-DENY-001 DENY with consumed=false and consequence_reachable=false",
@@ -62,6 +76,9 @@
     "No consumer may create or own a second heartbeat, oscillator, scheduler, WorkerCoordinator, credential path, claim/fence path, or resident runtime.",
     "HB and HB-derived InTr carriage provide reference/transport observability only and never authorize execution or admission.",
     "InTr governs admissible transition boundaries; task-specific consumers retain their own fail-closed validation.",
+    "Every entity state change is governed contemporaneously; authority is never inferred or reused from a prior transition.",
+    "Machine-owned entity transitions continue without per-transition human approval unless the exact transition declares a HUMAN_ONLY or USER_ONLY authority class.",
+    "The current-user iOS interaction queue serializes true human/device mutations only and must not become a scheduler or approval queue for resident machine transitions.",
     "Repository merge or CI success never substitutes for authentic resident execution evidence.",
     "A terminal task is never rerun merely to prove shared-substrate membership."
   ]
