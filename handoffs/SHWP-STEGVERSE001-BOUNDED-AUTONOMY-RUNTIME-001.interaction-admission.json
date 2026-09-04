@@ -1,0 +1,62 @@
+{
+  "schema": "stegverse.interaction-admission-override/v1",
+  "task_id": "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
+  "queue_ref": "control/current-user-ios-interaction-queue.json",
+  "queue_issue": "StegVerse-Labs/.github#922",
+  "admission_issue": "StegVerse-Labs/.github#954",
+  "admission_merge": "a0896e654ab5fd924f6f223af5b5be022497da05",
+  "state": "ADMITTED_FOR_USER_EXECUTION",
+  "active_action_id": "IPHONE-MR-SV001-CUSTODY-001",
+  "execution_surface": "CURRENT_USER_IPHONE",
+  "exactly_one_user_mutation": true,
+  "competing_user_mutation_allowed": false,
+  "canonical_sv001_execution": {
+    "claim_id": "SHWP-SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001-G23",
+    "fencing_token": 23,
+    "cycle_receipt_sha256": "sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35",
+    "custody_eligible": true
+  },
+  "duplicate_sv001_execution": {
+    "claim_id": "SHWP-SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001-G24",
+    "fencing_token": 24,
+    "cycle_receipt_sha256": "sha256:6bcc1976793657ea849a3678fa324c69134d2b59481e0bc9994c6baa6c4aff79",
+    "custody_eligible": false,
+    "retained": true,
+    "disposition": "DUPLICATE_TERMINAL_EXECUTION_NON_CUSTODIAL"
+  },
+  "predecessor_journal": {
+    "state": "PASS",
+    "entries": 69,
+    "tail_sha256": "897b9c70e704243939659009ef8d2e9d5ba984d1c4d0edd835afdaf26c5f4b69"
+  },
+  "guard_observation": {
+    "public_package_observed": true,
+    "public_checkout_module_observed": true,
+    "single_checkout_per_task_package": true,
+    "terminal_reexecution_allowed": false,
+    "repeat_checkout_fail_closed_present": true
+  },
+  "permitted_user_action": {
+    "surface": "https://stegverse.org/stegos-bootstrap/",
+    "section": "Master Records — completed SV001 custody",
+    "input": "complete already-authentic stegos.workercoordinator_tvc_portable_sv001_execution_proof/v1 for canonical G23",
+    "control": "Commit Master Records Custody",
+    "tap_count": 1
+  },
+  "prohibited_user_actions": [
+    "Run Governed SV001 Cycle",
+    "any second or competing StegOS state mutation before custody result is exported",
+    "manual extraction or substitution of G24 as custody source"
+  ],
+  "expected_result": {
+    "state": "PASS",
+    "reconstruction_state": "PASS",
+    "canonical_source_receipt_sha256": "sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35"
+  },
+  "after_execution": "Immediately export/paste the custody result; no next phone mutation is admitted until the organization queue is reconciled against the new journal tail.",
+  "authority_effect": "NONE_HUMAN_DEVICE_INSTRUCTION_SERIALIZATION_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_authority": false,
+  "second_user_operated_machine_required": false
+}
