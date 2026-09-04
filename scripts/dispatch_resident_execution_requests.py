@@ -87,6 +87,7 @@ CONSUMERS = (
     ("one_shot_resident_stack_activation", "scripts/consume_one_shot_resident_stack_activation_request.py"),
     ("sv011_phase5_source_materialization", "scripts/consume_sv011_phase5_source_materialization_request.py"),
     ("sv011_phase5", "scripts/consume_sv011_phase5_resident_execution_request.py"),
+    ("astra_class_resilience_awareness", "scripts/consume_astra_class_resilience_awareness_request.py"),
     ("glm53_sovereign_lane", "scripts/consume_glm53_sovereign_lane_request.py"),
     ("erl_ai_economic_transparency_review", "scripts/consume_erl_ai_economic_transparency_review_request.py"),
     ("org_claim_allocator", "scripts/consume_org_claim_allocator_request.py"),
