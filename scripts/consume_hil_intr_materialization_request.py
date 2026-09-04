@@ -183,8 +183,10 @@ def _attempt(*, source: Path, runtime: Path, request: dict[str, Any], runner: Ru
         raise HILInTrMaterializationError("esrl_lease_not_open")
     if evidence.get("runtime_instantiated") is not True or evidence.get("local_identity_verified") is not True:
         raise HILInTrMaterializationError("esrl_runtime_not_verified")
-    if evidence.get("hil_public_https_rendezvous_observed") is not True or evidence.get("public_gateway_readiness_verified") is not True:
-        raise HILInTrMaterializationError("esrl_public_gateway_not_verified")
+    if evidence.get("same_device_execution_required") is not True or evidence.get("requires_other_machine") is not False:
+        raise HILInTrMaterializationError("esrl_same_device_invariant_not_proven")
+    if evidence.get("hil_public_https_rendezvous_observed") is not False or evidence.get("public_gateway_readiness_verified") is not False:
+        raise HILInTrMaterializationError("esrl_public_gateway_must_not_be_activation_prerequisite")
 
     entrypoint = execution_runtime / TARGET_ENTRYPOINT
     if not entrypoint.is_file():
@@ -200,9 +202,12 @@ def _attempt(*, source: Path, runtime: Path, request: dict[str, Any], runner: Ru
         "downstream_owner_ref": request["downstream_owner_ref"], "source_ingress_receipt_id": evidence.get("source_receipt_id"),
         "esrl_lease_id": evidence.get("lease_id"), "esrl_lease_state": evidence.get("lease_state"), "esrl_runtime_root": str(execution_runtime),
         "esrl_runtime_instantiated": True, "esrl_local_identity_verified": True,
-        "hil_public_https_rendezvous_observed": True,
-        "public_gateway_readiness_verified": True,
+        "hil_public_https_rendezvous_observed": evidence.get("hil_public_https_rendezvous_observed") is True,
+        "public_gateway_readiness_verified": evidence.get("public_gateway_readiness_verified") is True,
         "public_gateway_origin": evidence.get("public_gateway_origin"),
+        "public_observation_is_downstream_optional": evidence.get("public_observation_is_downstream_optional") is True,
+        "same_device_execution_required": evidence.get("same_device_execution_required") is True,
+        "requires_other_machine": evidence.get("requires_other_machine") is True,
         "target_task_id": TARGET_TASK, "targeted_executor": TARGET_ENTRYPOINT, "targeted_executor_returncode": completed.returncode,
         "runtime_execution_attempted": True, "successful_attempt_is_not_blindly_retried": True, "blocked_attempt_remains_nonterminal": completed.returncode != 0,
         "request_grants_authority": False, "claim_or_fence_minted_by_consumer": False, "heartbeat_grants_execution_authority": False,
