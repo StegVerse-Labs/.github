@@ -126,3 +126,53 @@ was the first terminal execution and the handoff already required
 `terminal_autonomy_reexecution_allowed=false`.
 
 Downstream retry remains permitted; terminal task re-execution does not.
+
+## Reset-lineage terminal propagation — 2026-09-04
+
+Fresh authentic CURRENT_USER_IPHONE evidence exposed the remaining hole in #944: the
+single-checkout counter is local to one portable state lineage. A newly established
+StegOS web node can begin from the still-published G22 predecessor floor when the
+canonical task package itself remains `HANDOFF_READY`.
+
+Observed duplicate execution:
+
+```text
+node: stegnode-web-2d6daa94e496d451d16bd5619bd30a25
+claim/fence: G23 / 23
+checkout receipt: sha256:8ef913db2cc4b79fb8b4d78deef9160efd98eacac0a8f2ba8d1fd58433c2223d
+TVC lease: SV001-LEASE-d63af357d4b7245e39a284ae
+cycle receipt: sha256:7b66f6cf260a46fcb8555d207cd868eaf2d31aa67372f0701841f91c648d00d4
+transition: SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED
+same-execution reconstruction: PASS
+TVC lease consumption: CONSUMED
+```
+
+This is authentic execution evidence, but it is duplicate/non-custodial because the
+first terminal G23 already closed the task contract.
+
+Canonical custody remains:
+
+`sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35`.
+
+Issue #976 therefore moves terminality into the canonical portable package itself.
+After the first authentic terminal execution, the package is no longer a preclaim
+input:
+
+```text
+task.state = COMPLETED
+claim_state = TERMINAL_NO_FURTHER_CLAIM
+fresh_fence_required = false
+execution_authorized = false
+authority_effect = CANONICAL_WORKERCOORDINATOR_PORTABLE_TERMINAL_PACKAGE
+```
+
+The package binds the canonical first-terminal G23 receipt and retains both known
+duplicate terminal receipts as non-custodial evidence. Because the generic checkout
+validator already requires a clean `HANDOFF_READY` task before it reads/initializes
+portable state, any fresh node receiving this terminal package fails closed before a
+new G23 can be minted.
+
+This is terminal-state propagation, not a second runtime authority. WorkerCoordinator
+remains the claim/fence authority, TV/TVC remains credential authority, HB grants no
+authority, and downstream Master Records/SV002 retry remains allowed without SV001
+re-execution.
