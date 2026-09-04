@@ -5,7 +5,7 @@ Repository: `StegVerse-Labs/.github`
 Goal: `LEGACY-CONTINUITY-VALIDATION-WORKER-001`
 Source repository: `StegVerse-Labs/Continuity`
 Exact source commit: `5118c7f9f841a43ef8729c7c8dd20e01d3696713`
-State: `HANDOFF_READY_SOURCE_INSTALLATION`
+State: `PUBLIC_WORKER_SOURCE_VALIDATED_PRIVATE_SOURCE_PENDING`
 Credential authority: `TV/TVC`
 GitHub token runtime authority: `NONE`
 Authority effect: `NONE`
@@ -36,11 +36,31 @@ The worker never clones, fetches, pulls, pushes, signs, publishes, releases, con
 
 The frozen simulation may contain `simulation_armed_only=true` solely to exercise source composition. That does not constitute authentic arming or activation.
 
+## Public worker-source validation — PASS
+
+Public control-plane regression coverage was added and merged by PR `StegVerse-Labs/.github#982`.
+
+```text
+PR head: 55f760fb30cfd2608087f81c8b531e5a076d8d7a
+merge: 505e52966453f1028b0cb426e0a62951846c3006
+Heartbeat Worker Project validation run: 33913742874 SUCCESS
+Organization control-plane validation run: 33913742819 SUCCESS
+GitHub token runtime authority: NONE
+```
+
+The public regression test proves worker fail-closed behavior for missing source, source-head mismatch, dirty worktree, focused-test failure, credential stripping, four-test coverage, and non-authority receipt fields.
+
+This hosted PASS validates only the public `.github` worker/control-plane source. It does NOT prove that private `StegVerse-Labs/Continuity` source was locally materialized or tested and does NOT prove a live legacy execution.
+
+Original PR #981 also passed both validation-only workflows but was closed unmerged after concurrent main advancement made it non-mergeable; current-main PR #982 supersedes it.
+
 ## Installed surfaces
 
 - `workers/legacy_continuity_validation_worker.py`
+- `tests/test_legacy_continuity_validation_worker.py`
 - `control/worker-registry.d/legacy-continuity-validation-001.json`
 - `handoffs/LEGACY-CONTINUITY-VALIDATION-WORKER-001.json`
+- `docs/LEGACY_CONTINUITY_VALIDATION_SOURCE_TEST_NOTE.md`
 - this handoff
 
 ## Current blocker
@@ -51,12 +71,13 @@ Do not substitute GitHub-token private-source checkout, a second user-operated m
 
 ## Completion boundary
 
-Source installation and registry readiness are not validation completion. Completion requires an eligible authorized local Continuity source path at the exact bound commit and a retained worker receipt with `state=PASS` proving all four focused tests executed with credentials stripped.
+Public worker-source validation is complete. Private Continuity source validation remains incomplete. Goal completion requires an eligible authorized local Continuity source path at the exact bound commit and a retained worker receipt with `state=PASS` proving all four focused private-source tests executed with credentials stripped.
 
 Until then:
 
 ```text
-SOURCE_VALIDATION=NOT_OBSERVED
+PUBLIC_WORKER_SOURCE_VALIDATION=PASS
+PRIVATE_CONTINUITY_SOURCE_VALIDATION=NOT_OBSERVED
 RUNTIME_ACTIVATION=false
 AUTHENTIC_CAPSULES_ARMED=0
 RECIPIENT_NOTIFICATIONS=0
