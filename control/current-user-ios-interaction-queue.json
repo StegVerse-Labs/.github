@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.current-user-ios-interaction-queue/v1",
   "issue": "StegVerse-Labs/.github#922",
-  "state": "HOLD_PENDING_FIXED_SITE_MODULE_PROPAGATION",
+  "state": "ADMITTED_SINGLE_ACTION",
   "device_scope": "CURRENT_USER_STEGVERSE_IOS_NODE",
   "physical_device_count_required": 1,
   "second_user_operated_machine_required": false,
@@ -17,7 +17,7 @@
     "last_known_entries": 59,
     "last_known_tail_sha256": "0725a8208f709b19027b9434cd089cdff0efc01b2ed5f2571036ae6ad8695d0c",
     "fresh_for_new_mutation_admission": false,
-    "reason": "Multiple concurrent sessions may have advanced the device journal after this observation."
+    "reason": "Historical provenance only; superseded for admission by the fresh 69-entry current-device head."
   },
   "read_only_actions_permitted": [
     "inspect_current_page_state",
@@ -26,7 +26,7 @@
     "copy_existing_receipt_or_proof_without_mutation",
     "inspect_public_static_guard_assets"
   ],
-  "state_mutating_actions_permitted": false,
+  "state_mutating_actions_permitted": true,
   "admission_rule": {
     "max_admitted_user_mutations": 1,
     "required_before_admission": [
@@ -51,9 +51,11 @@
       "prerequisites": [
         "fresh journal replay PASS",
         "current page contains released Site custody surface",
-        "immutable SV001 execution proof available"
+        "immutable canonical G23 SV001 execution proof available",
+        "public guarded SV001 package observed",
+        "public guarded portable checkout module observed"
       ],
-      "queue_state": "WAITING_FOR_FIXED_SITE_MODULE_PROPAGATION",
+      "queue_state": "ADMITTED_FOR_USER_EXECUTION",
       "ordering_constraints": {
         "must_follow": [
           "SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED",
@@ -93,17 +95,33 @@
           "github_token_runtime_authority": "NONE",
           "external_non_stegverse_machine_required": false
         },
-        "remaining_before_admission": [
-          "public stegverse.org propagation/runtime presence of the guarded workercoordinator-portable-checkout.js enforcement module",
-          "no additional current-device mutation before admission",
-          "queue transition of IPHONE-MR-SV001-CUSTODY-001 to sole ADMITTED_FOR_USER_EXECUTION"
-        ]
+        "public_guard_module_observed": true,
+        "public_guard_module_observation": {
+          "surface": "https://stegverse.org/stegos-bootstrap/workercoordinator-portable-checkout.js",
+          "observed_from_current_user_iphone": true,
+          "requires_single_checkout_package": true,
+          "initial_checkout_count_zero": true,
+          "legacy_checkout_count_inference_present": true,
+          "repeat_checkout_fail_closed_present": true,
+          "repeat_checkout_failure_text": "task package already checked out; terminal/downstream continuation must not mint another claim",
+          "checkout_count_increment_persisted": true
+        },
+        "remaining_before_admission": [],
+        "admission_binding": {
+          "issue": "StegVerse-Labs/.github#954",
+          "canonical_cycle_receipt_sha256": "sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35",
+          "expected_predecessor_journal_tail_sha256": "897b9c70e704243939659009ef8d2e9d5ba984d1c4d0edd835afdaf26c5f4b69",
+          "expected_predecessor_entries": 69,
+          "exactly_one_user_mutation": true,
+          "sv001_reexecution_allowed": false,
+          "competing_user_mutation_allowed": false
+        }
       }
     }
   ],
-  "active_action_id": null,
-  "next_required_observation": "PUBLIC_SITE_SINGLE_CHECKOUT_GUARD_MODULE_PROPAGATED",
-  "mutation_freeze_reason": "Concurrent sessions issued different page-manipulation sequences without a shared device-interaction fence.",
+  "active_action_id": "IPHONE-MR-SV001-CUSTODY-001",
+  "next_required_observation": "MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION_RESULT",
+  "mutation_freeze_reason": null,
   "observed_descendant_anchors": [
     {
       "observed_at": "2026-09-03T15:49:00Z",
@@ -112,8 +130,8 @@
       "replay_relation": "VALID_APPEND_ONLY_DESCENDANT",
       "reconstruction_state": "PASS",
       "same_execution": true,
-      "fresh_for_new_mutation_admission": false,
-      "reason": "Verified later than the original 59-entry anchor, but not guaranteed to be the present device head after concurrent-session activity."
+      "fresh_for_new_mutation_admission": true,
+      "reason": "Reconfirmed by the user's fresh 69-entry evidence export; only read-only public guard inspection occurred afterward."
     }
   ],
   "resolved_non_mutation_intents": [
@@ -141,7 +159,7 @@
       "DE006-PARENT-CONTINUATION",
       "SHWP-HIL-SOVEREIGN-RECEIVER-001"
     ],
-    "completeness_note": "This inventory covers canonical .github handoffs and currently known Site/current-iPhone continuations."
+    "completeness_note": "Exactly one current-iPhone state mutation is admitted; all other sessions must remain read-only with respect to the current StegOS node."
   },
   "fresh_head": {
     "observed": true,
@@ -150,8 +168,8 @@
     "entries": 69,
     "tail_sha256": "897b9c70e704243939659009ef8d2e9d5ba984d1c4d0edd835afdaf26c5f4b69",
     "observed_node_id": "stegnode-web-f24e3bfb7f5343cb37323187a88e51f3",
-    "eligible_as_current_head_for_admission": false,
-    "reason": "Lineage is resolved, but guarded checkout enforcement module public propagation/runtime presence remains unobserved."
+    "eligible_as_current_head_for_admission": true,
+    "reason": "Lineage resolved and both public guarded package and guarded checkout module observed read-only from the same current iPhone; no state mutation occurred afterward."
   },
   "terminal_lineage_conflict": {
     "state": "RESOLVED_CANONICAL_G23_DUPLICATE_G24",
@@ -184,8 +202,8 @@
       "disposition": "DUPLICATE_TERMINAL_EXECUTION_NON_CUSTODIAL",
       "reason": "Occurred after canonical terminal G23 despite terminal_autonomy_reexecution_allowed=false."
     },
-    "master_records_custody_admission_prohibited": true,
-    "master_records_custody_admission_prohibited_reason": "Guarded package is publicly observed, but public runtime presence of the fixed checkout enforcement module is not yet observed."
+    "master_records_custody_admission_prohibited": false,
+    "master_records_custody_admission_prohibited_reason": null
   },
   "single_checkout_guard": {
     "canonical_source_merge": "StegVerse-Labs/.github#946@3448807c50a4f9d3bd07ce83c0d4c2c315617b6f",
@@ -196,8 +214,10 @@
     "site_source_projected": true,
     "public_package_observed": true,
     "public_package_contract_matches": true,
-    "public_module_observed": false,
-    "public_propagation_observed": false,
-    "device_runtime_guard_observed": false
+    "public_module_observed": true,
+    "public_module_guard_matches": true,
+    "public_propagation_observed": true,
+    "device_runtime_guard_observed": false,
+    "device_runtime_guard_observation_note": "Static/runtime module bytes are observed on the current iPhone; the repeated-checkout guard has not been deliberately triggered because SV001 reexecution is prohibited."
   }
 }
