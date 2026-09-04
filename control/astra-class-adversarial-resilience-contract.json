@@ -1,0 +1,123 @@
+{
+  "schema": "stegverse.astra-class-adversarial-resilience-contract/v1",
+  "goal_id": "ASTRA-CLASS-RESILIENCE-001",
+  "state": "SOURCE_DIRECTIVE_PROPOSED",
+  "observed_at": "2026-09-04",
+  "threat_class": "FRONTIER_AI_CRITICAL_CYBER_CAPABILITY",
+  "threat_assumptions": [
+    "UNKNOWN_VULNERABILITY_DISCOVERY",
+    "NOVEL_EXPLOIT_CHAIN_CONSTRUCTION",
+    "ADAPTIVE_ATTACK_AFTER_PARTIAL_FAILURE",
+    "BROWSER_AND_COMPUTER_USE",
+    "PROMPT_INJECTION_AND_TOOL_MEDIATION_ATTACKS",
+    "SUPPLY_CHAIN_AND_CONFIGURATION_DRIFT_EXPLOITATION",
+    "MONITORING_EVASION_ATTEMPTS",
+    "MACHINE_SPEED_MULTI_STEP_OPERATION"
+  ],
+  "sources": [
+    {
+      "publisher": "OpenAI",
+      "title": "Path to Astra: critical capabilities and frontier safeguards",
+      "url": "https://openai.com/index/path-to-astra/"
+    },
+    {
+      "publisher": "OpenAI",
+      "title": "Safety overview: GPT-6 Astra",
+      "url": "https://openai.com/index/safety-overview-gpt-6-astra/"
+    },
+    {
+      "publisher": "OpenAI Deployment Safety Hub",
+      "title": "GPT-6 Astra System Card",
+      "url": "https://deploymentsafety.openai.com/gpt-6-astra"
+    }
+  ],
+  "authority_invariants": {
+    "capability_confers_authority": false,
+    "heartbeat_authority": "REFERENCE_OBSERVABILITY_ONLY",
+    "intr_interlock_role": "ADMISSIBLE_TRANSITION_BOUNDARY",
+    "worker_runtime": "EXISTING_WORKERCOORDINATOR_ONLY",
+    "credential_authority": "TV/TVC_ONLY",
+    "github_token_runtime_authority": "NONE",
+    "second_user_operated_machine_required": false,
+    "fail_closed_on_missing_or_contradictory_authority_evidence": true
+  },
+  "entities": [
+    {
+      "entity_id": "StegVerse-001",
+      "selector": "stegverse001_bounded_autonomy",
+      "resilience_role": "CONTINUITY_REPLAY_DRIFT",
+      "required_responsibilities": [
+        "PRESERVE_APPEND_ONLY_SECURITY_LINEAGE",
+        "EXPOSE_UNEXPLAINED_STATE_DIVERGENCE",
+        "RECONSTRUCT_AUTHORITY_CONFIGURATION_TASK_RECEIPT_TRANSITIONS",
+        "NEVER_SILENTLY_REWRITE_HISTORY",
+        "PROPOSE_HARDENING_FROM_REPLAY_OR_DRIFT_FINDINGS"
+      ]
+    },
+    {
+      "entity_id": "StegVerse-002",
+      "selector": "sv002_org_runtime_activation",
+      "resilience_role": "CANONICAL_THREAT_AND_ADMISSIBILITY_MODEL",
+      "required_responsibilities": [
+        "INGEST_PROVENANCE_BEARING_FRONTIER_CAPABILITY_EVIDENCE",
+        "PRESERVE_UNKNOWN_UNVERIFIED_CONTRADICTORY_STATES",
+        "PROPOSE_ADMISSIBILITY_REVOCATION_ISOLATION_OR_REVIEW_CHANGES",
+        "PREVENT_STALE_SECURITY_ASSUMPTIONS_FROM_REMAINING_SILENTLY_AUTHORITATIVE",
+        "KEEP_RISK_EVIDENCE_SEPARATE_FROM_TRANSITION_AUTHORITY"
+      ]
+    },
+    {
+      "entity_id": "SV-011",
+      "selectors": [
+        "sv011_phase5_source_materialization",
+        "sv011_phase5"
+      ],
+      "resilience_role": "GOVERNED_AUTONOMOUS_HARDENING_REBUILD",
+      "required_responsibilities": [
+        "MINIMIZE_REPLACE_ISOLATE_OR_REASSEMBLE_ATTACK_SURFACE",
+        "PREFER_EPHEMERAL_RECONSTRUCTIBLE_COMPONENTS_WHERE_APPROPRIATE",
+        "GENERATE_BOUNDED_HARDENING_CANDIDATES_AND_ADVERSARIAL_TESTS",
+        "PROVE_DENIED_CONSEQUENCE_UNREACHABLE_WHERE_CONTRACT_SUPPORTS_IT",
+        "NEVER_SELF_GRANT_AUTHORITY",
+        "NEVER_WEAKEN_CONTROL_TO_COMPLETE_OWN_TASK"
+      ]
+    }
+  ],
+  "required_security_properties": [
+    "AUTHORITY_EXTERNALIZATION",
+    "LEAST_CONSEQUENCE",
+    "COMPARTMENTALIZATION",
+    "FRESH_ADMISSIBILITY",
+    "REVOCABILITY",
+    "REPLAYABILITY",
+    "TAMPER_EVIDENCE",
+    "UNKNOWN_STATE_PRESERVATION",
+    "DEPENDENCY_MINIMIZATION",
+    "DENIED_CONSEQUENCE_PROOF",
+    "ADVERSARIAL_UPDATEABILITY",
+    "NO_SELF_EXEMPTION"
+  ],
+  "shared_loop": [
+    "VERIFIED_FRONTIER_CAPABILITY_EVIDENCE",
+    "STEGVERSE_002_THREAT_CLASSIFICATION",
+    "CANDIDATE_CONTROL_OR_ADMISSIBILITY_CHANGE",
+    "SV_011_BOUNDED_HARDENING_EXPERIMENT",
+    "ADMITTED_IMPLEMENTATION_CANDIDATE",
+    "STEGVERSE_001_CONTINUITY_REPLAY_DRIFT_VERIFICATION",
+    "DURABLE_RECEIPTS_AND_RESIDUAL_RISK",
+    "NEXT_EVIDENCE_CYCLE"
+  ],
+  "completion_requires": [
+    "DURABLE_SOURCE_DIRECTIVE",
+    "DETERMINISTIC_CONTRACT_VALIDATION",
+    "ALL_THREE_ENTITY_INTEGRATIONS",
+    "EXECUTABLE_ADVERSARIAL_TEST_CATALOG",
+    "AUTHENTIC_RUNTIME_RECEIPTS_FOR_RUNTIME_CLAIMS",
+    "CONTINUITY_REPLAY_EVIDENCE_FOR_RELEVANT_TESTS",
+    "RESIDUAL_RISK_STATEMENT_WITHOUT_ABSOLUTE_SECURITY_CLAIM",
+    "DOWNSTREAM_PROPAGATION_VERIFICATION_WHERE_APPLICABLE"
+  ],
+  "runtime_claim": false,
+  "deployment_claim": false,
+  "absolute_security_claim": false
+}
