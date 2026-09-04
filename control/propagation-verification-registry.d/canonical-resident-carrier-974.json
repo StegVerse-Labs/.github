@@ -5,6 +5,8 @@
   "handoff_ref": "docs/CANONICAL_RESIDENT_CARRIER_MIRROR_HANDOFF.md",
   "checklist_ref": "docs/CANONICAL_RESIDENT_CARRIER_POSTMERGE_PROPAGATION.md",
   "source_merge": "b1f2bb3e33a1f93850811f0a751b2055519ab4dd",
-  "state": "REGISTERED_HANDOFF_READY",
+  "state": "COMPLETED",
+  "completion_receipt_ref": "receipts/canonical-resident-carrier/propagation-verification-001.json",
+  "runtime_status_propagation_gate": "CONSUMER_SPECIFIC_AUTHENTIC_RESIDENT_EVIDENCE_ONLY",
   "authority_effect": "NONE"
 }

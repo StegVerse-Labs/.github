@@ -1,0 +1,34 @@
+{
+  "schema": "stegverse.canonical-resident-carrier-propagation-verification-receipt/v1",
+  "task_id": "CANONICAL-RESIDENT-CARRIER-PROPAGATION-VERIFY-001",
+  "state": "COMPLETED",
+  "source_merge": "b1f2bb3e33a1f93850811f0a751b2055519ab4dd",
+  "verified_destinations": 4,
+  "results": {
+    "StegVerse-Labs/Site": {
+      "state": "NO_CHANGE_REQUIRED",
+      "architecture_already_conformant": true
+    },
+    "GCAT-BCAT-Engine/Publisher": {
+      "state": "MERGED_VALIDATED",
+      "pr": 53,
+      "merge": "a22891bd7a30d6e410c42189361b77a0456b7558"
+    },
+    "StegVerse-Labs/admissibility-wiki": {
+      "state": "MERGED_VALIDATED",
+      "pr": 127,
+      "merge": "fe5a48728466af13ae368b52109a795e509d0cb5"
+    },
+    "StegVerse-002/stegguardian-wiki": {
+      "state": "MERGED_VALIDATED",
+      "pr": 36,
+      "merge": "9732c439b7a4a67c9430b7fc1194126b8ea3fd78"
+    }
+  },
+  "source_architecture_propagation_complete": true,
+  "runtime_status_propagation_complete": false,
+  "runtime_status_blocker": "SV002_AND_SV011_AUTHENTIC_RESIDENT_EVIDENCE_NOT_YET_ESTABLISHED",
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "authority_effect": "NONE_EVIDENCE_ONLY"
+}
