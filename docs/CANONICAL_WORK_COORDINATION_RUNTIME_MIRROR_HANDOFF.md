@@ -4,7 +4,7 @@ Updated: 2026-09-04
 Organization: `StegVerse-Labs`
 Repository: `StegVerse-Labs/.github`
 Goal: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`
-Status: `RUNTIME_SOURCE_INGRESS_CONSUMPTION_ADAPTERS_INSTALLED_ROUTER_BINDING_PENDING`
+Status: `RUNTIME_SOURCE_COORDINATION_ADAPTERS_INSTALLED_ROUTER_AND_AUTHENTIC_LIFECYCLE_PENDING`
 
 ## Parent authority
 
@@ -27,9 +27,12 @@ The task coordination runtime consumes that substrate; it does not own or advanc
 - `scripts/validate_canonical_work_runtime_profile.py`
 - `scripts/consume_canonical_work_intr_materialization_request.py`
 - `workers/canonical_work_intr_ingress.py`
-- generation 2 of `data/canonical-task-registry.json`
+- `scripts/project_master_records_work_events.py`
+- `scripts/reevaluate_canonical_task_dependencies.py`
+- `scripts/normalize_github_failure_email_events.py`
+- generation 3 of `data/canonical-task-registry.json`
 
-`build_canonical_work_intr_request.py` now emits the existing `stegverse.universal-intr-materialization-request/v1` shape rather than creating a parallel transport protocol. It writes the exact canonical task-transition payload separately, hashes it, and may bind the packet to the canonical HB-derived carrier profile. The result remains source material until authentic Interlock/InTr ingress admits it.
+`build_canonical_work_intr_request.py` emits the existing `stegverse.universal-intr-materialization-request/v1` shape rather than creating a parallel transport protocol. It writes the exact canonical task-transition payload separately, hashes it, and may bind the packet to the canonical HB-derived carrier profile. The result remains source material until authentic Interlock/InTr ingress admits it.
 
 `workers/canonical_work_intr_ingress.py` is a reusable admission adapter for the existing Universal InTr listener. It intentionally starts no server. It validates the CanonicalWork destination, writes a write-once `INGRESS_ADMITTED` receipt, preserves the non-authorizing HB carrier boundary, and dispatches only the canonical-work coordination consumer.
 
@@ -37,11 +40,17 @@ The task coordination runtime consumes that substrate; it does not own or advanc
 
 `project_canonical_work_runtime.py` projects canonical task state against the existing `control/worker-registry.json` and a current HB32 oscillator reference. It never mints WorkerCoordinator claim/fence state and never treats the heartbeat reference as authority.
 
+`project_master_records_work_events.py` now provides the missing source-side Master Records adapter. It consumes explicit Master Records records supplied by the authority surface and normalizes only records carrying a task/correlation identity. It cannot infer events absent from those inputs and cannot mint task or execution authority.
+
+`reevaluate_canonical_task_dependencies.py` implements deterministic dependency fanout at source level. A dependency state change identifies every dependent task, removes/adds corresponding blocker projections, and exposes next transition candidates only when prerequisites are resolved. Its output is a proposal and never admits a task transition or WorkerCoordinator claim/fence.
+
+`normalize_github_failure_email_events.py` implements deterministic failure-email clustering by normalized repository/workflow/error signature. Email observations become incident proposals only; message count is not failure count, email state is not runtime proof, and every proposed incident still requires canonical task ingress before work.
+
 `validate_canonical_work_runtime_profile.py` statically checks the runtime profile against `control/canonical-resident-carrier-contract.json`, the task coordination policy, canonical registry, and existing WorkerCoordinator registry.
 
 ## Registry state
 
-`STEGVERSE-CANONICAL-WORK-COORDINATION-001` remains `PROPOSED` because no authentic Interlock/InTr task ingress receipt has yet been observed. The source adapter installation is recorded as source evidence only.
+`STEGVERSE-CANONICAL-WORK-COORDINATION-001` remains `PROPOSED` because no authentic Interlock/InTr task ingress receipt has yet been observed. Generation 3 records the installed source adapters without promoting runtime state.
 
 The next admissible governed transition remains `INGRESS_ADMITTED`.
 
@@ -56,31 +65,31 @@ canonical task proposal
 -> ingress receipt / materialization
 -> canonical task state transition to INGRESS_ADMITTED
 -> canonical-work consumer verifies exact payload + identity
--> Master Records pre-execution reconciliation
+-> Master Records pre-execution work-event projection + reconciliation
 -> WorkerCoordinator duplicate/adjacency/blocker review
 -> WorkerCoordinator claim/fence if execution is admitted
 -> governed work
 -> Master Records evidence custody
--> post-execution reconciliation
+-> post-execution projection + reconciliation
 -> Interlock/InTr egress / transfer / closure
--> dependent-task reevaluation
+-> dependency fanout reevaluates all affected tasks
 ```
 
 No step may infer authority from the preceding receipt. Every state change requires current applicable governance.
 
 ## Execution attempt note
 
-A local source-validation attempt from this ChatGPT execution environment could not clone GitHub because that container has no external DNS/network access. That failure is not a StegVerse runtime failure and is not evidence about resident execution. Repository source writes were completed through the connected GitHub authority surface. Static validator execution remains pending in an admitted execution environment.
+A prior local source-validation attempt from the ChatGPT execution environment could not clone GitHub because that container had no external DNS/network access. That failure is not a StegVerse runtime failure and is not evidence about resident execution. Repository source writes were completed through the connected GitHub authority surface. Static validator execution remains pending in an admitted execution environment.
 
 ## Remaining machine work
 
 1. Bind `workers/canonical_work_intr_ingress.py` into the existing `workers/universal_intr_profiled_ingress.py` routing table without creating a second ingress server.
 2. Persist authentic ingress receipt/materialization references into the canonical task projection after the router admits a real request.
 3. Project live WorkerCoordinator claim/fence state after admission and after every ownership transition.
-4. Consume a defined Master Records work-event projection for pre/post-execution reconciliation.
-5. Implement dependency-resolution fanout so a resolved blocker reevaluates all dependent tasks.
-6. Normalize GitHub failure emails into symptom/incident ingress records.
-7. Prove one authentic end-to-end lifecycle through ingress, claim/fence, evidence, reconciliation, egress, and closure.
+4. Connect the installed Master Records work-event projector to the actual Master Records authority feed/materialization path and run pre/post-execution reconciliation.
+5. Connect dependency fanout to admitted dependency-resolution events so affected tasks are reevaluated automatically rather than by manual invocation.
+6. Feed explicit email-monitor observations to the installed GitHub failure-email normalizer and admit normalized incident proposals through canonical task ingress rather than treating emails as execution evidence.
+7. Prove one authentic end-to-end lifecycle through ingress, claim/fence, evidence, reconciliation, egress, closure, and dependent-task reevaluation.
 
 ## Human action
 
