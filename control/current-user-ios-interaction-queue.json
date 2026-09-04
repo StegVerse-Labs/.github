@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.current-user-ios-interaction-queue/v1",
   "issue": "StegVerse-Labs/.github#922",
-  "state": "ADMITTED_SINGLE_ACTION",
+  "state": "HOLD_UI_ORCHESTRATION_CONFLICT",
   "device_scope": "CURRENT_USER_STEGVERSE_IOS_NODE",
   "physical_device_count_required": 1,
   "second_user_operated_machine_required": false,
@@ -13,31 +13,16 @@
   "grants_execution_authority": false,
   "grants_credential_authority": false,
   "github_token_runtime_authority": "NONE",
-  "stale_anchor": {
-    "last_known_entries": 59,
-    "last_known_tail_sha256": "0725a8208f709b19027b9434cd089cdff0efc01b2ed5f2571036ae6ad8695d0c",
-    "fresh_for_new_mutation_admission": false,
-    "reason": "Historical provenance only; superseded for admission by the fresh 69-entry current-device head."
-  },
   "read_only_actions_permitted": [
     "inspect_current_page_state",
     "replay_local_journal",
     "show_or_export_evidence_bundle",
-    "copy_existing_receipt_or_proof_without_mutation",
-    "inspect_public_static_guard_assets"
+    "copy_existing_receipt_or_proof_without_mutation"
   ],
-  "state_mutating_actions_permitted": true,
+  "state_mutating_actions_permitted": false,
   "admission_rule": {
     "max_admitted_user_mutations": 1,
-    "required_before_admission": [
-      "fresh_current_device_journal_replay_pass",
-      "fresh_current_device_tail_sha256_observed",
-      "candidate_action_registered",
-      "candidate_prerequisites_reconciled_against_fresh_tail",
-      "no_terminal_transition_reexecution",
-      "no_competing_admitted_user_mutation"
-    ],
-    "session_instruction_rule": "A session MUST NOT instruct a state-mutating page action unless that exact action_id is ADMITTED_FOR_USER_EXECUTION in this queue."
+    "session_instruction_rule": "No session may instruct a state-mutating page action while state is HOLD_UI_ORCHESTRATION_CONFLICT. Site UI must consume the shared interaction manifest and expose at most one enabled mutation control."
   },
   "candidate_actions": [
     {
@@ -47,147 +32,29 @@
       "mutation_class": "APPEND_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION",
       "terminal_source_transition": "SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED",
       "rerun_terminal_source": false,
-      "idempotence": "IDEMPOTENT_ONLY_IF_COMPLETE_CUSTODY_PAIR_ALREADY_EXISTS",
-      "prerequisites": [
-        "fresh journal replay PASS",
-        "current page contains released Site custody surface",
-        "immutable canonical G23 SV001 execution proof available",
-        "public guarded SV001 package observed",
-        "public guarded portable checkout module observed"
-      ],
-      "queue_state": "ADMITTED_FOR_USER_EXECUTION",
-      "ordering_constraints": {
-        "must_follow": [
-          "SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED",
-          "TVC lease consumption CONSUMED"
-        ],
-        "must_not_follow_by_reexecution": [
-          "Run Governed SV001 Cycle"
-        ],
-        "may_precede": [
-          "SV002 adversarial observation/disposition"
-        ],
-        "predecessor_tail_must_be_fresh": true
-      },
-      "prerequisite_reconciliation": {
-        "released_site_custody_surface_observed": true,
-        "released_site_custody_projection": "StegVerse-Labs/Site#956@0b4cd7dc13cb43ffa9feec3c4badc21524efccd2",
-        "released_full_proof_import": "StegVerse-Labs/Site#959@11ffa8fc712569a07edb45397baf2e3427947294",
-        "immutable_sv001_execution_proof_available": true,
-        "terminal_cycle_receipt_sha256": "sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35",
-        "fresh_current_device_journal_head_observed": true,
-        "fresh_current_device_journal_head": {
-          "entries": 69,
-          "tail_sha256": "897b9c70e704243939659009ef8d2e9d5ba984d1c4d0edd835afdaf26c5f4b69",
-          "replay_state": "PASS"
-        },
-        "duplicate_terminal_execution_disposition": "G24 retained non-custodial; G23 canonical custody source",
-        "public_guard_package_observed": true,
-        "public_guard_package_observation": {
-          "surface": "https://stegverse.org/stegos-bootstrap/workercoordinator-portable-sv001.json",
-          "observed_from_current_user_iphone": true,
-          "schema": "stegverse.workercoordinator-portable-checkout-package/v1",
-          "portable_authority_epoch": "WC-PORTABLE-IPHONE-20260902",
-          "single_checkout_per_task_package": true,
-          "terminal_reexecution_allowed": false,
-          "downstream_retry_after_terminal": true,
-          "credential_authority": "TV/TVC",
-          "github_token_runtime_authority": "NONE",
-          "external_non_stegverse_machine_required": false
-        },
-        "public_guard_module_observed": true,
-        "public_guard_module_observation": {
-          "surface": "https://stegverse.org/stegos-bootstrap/workercoordinator-portable-checkout.js",
-          "observed_from_current_user_iphone": true,
-          "requires_single_checkout_package": true,
-          "initial_checkout_count_zero": true,
-          "legacy_checkout_count_inference_present": true,
-          "repeat_checkout_fail_closed_present": true,
-          "repeat_checkout_failure_text": "task package already checked out; terminal/downstream continuation must not mint another claim",
-          "checkout_count_increment_persisted": true
-        },
-        "remaining_before_admission": [],
-        "admission_binding": {
-          "issue": "StegVerse-Labs/.github#954",
-          "canonical_cycle_receipt_sha256": "sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35",
-          "expected_predecessor_journal_tail_sha256": "897b9c70e704243939659009ef8d2e9d5ba984d1c4d0edd835afdaf26c5f4b69",
-          "expected_predecessor_entries": 69,
-          "exactly_one_user_mutation": true,
-          "sv001_reexecution_allowed": false,
-          "competing_user_mutation_allowed": false
-        }
-      }
+      "queue_state": "REVOKED_PENDING_UI_SINGLE_ACTION_GUARD",
+      "canonical_cycle_receipt_sha256": "sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35",
+      "expected_predecessor_journal_tail_sha256": "897b9c70e704243939659009ef8d2e9d5ba984d1c4d0edd835afdaf26c5f4b69"
     }
   ],
-  "active_action_id": "IPHONE-MR-SV001-CUSTODY-001",
-  "next_required_observation": "MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION_RESULT",
-  "mutation_freeze_reason": null,
-  "observed_descendant_anchors": [
-    {
-      "observed_at": "2026-09-03T15:49:00Z",
-      "source": "StegVerse-Labs/.github#921 exact exported CURRENT_USER_IPHONE evidence bundle",
-      "journal_tail_sha256": "897b9c70e704243939659009ef8d2e9d5ba984d1c4d0edd835afdaf26c5f4b69",
-      "replay_relation": "VALID_APPEND_ONLY_DESCENDANT",
-      "reconstruction_state": "PASS",
-      "same_execution": true,
-      "fresh_for_new_mutation_admission": true,
-      "reason": "Reconfirmed by the user's fresh 69-entry evidence export; only read-only public guard inspection occurred afterward."
-    }
-  ],
-  "resolved_non_mutation_intents": [
-    {
-      "intent_id": "DE006-PARENT-CONTINUATION",
-      "source": "StegVerse-Labs/.github#921@bc871ebca8a04646f043e467a170c068f9eef140",
-      "device_local_candidate_verified": true,
-      "device_journal_tail_sha256": "897b9c70e704243939659009ef8d2e9d5ba984d1c4d0edd835afdaf26c5f4b69",
-      "current_next_step": "resident request RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-002 consumption + fresh parent fence >22",
-      "human_device_mutation_required": false,
-      "removed_from_interaction_queue": true
-    }
-  ],
-  "global_inventory": {
-    "canonical_handoffs_scanned_at": "2026-09-03T16:34:00Z",
-    "explicit_human_device_mutation_candidates": 1,
-    "explicit_candidate_ids": [
-      "IPHONE-MR-SV001-CUSTODY-001"
-    ],
-    "historical_terminal_no_rerun": [
-      "SHWP-IPHONE-HB30-INLINE-CAPSULE-002",
-      "SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED"
-    ],
-    "machine_or_implementation_lanes_not_device_mutations": [
-      "DE006-PARENT-CONTINUATION",
-      "SHWP-HIL-SOVEREIGN-RECEIVER-001"
-    ],
-    "completeness_note": "Exactly one current-iPhone state mutation is admitted; all other sessions must remain read-only with respect to the current StegOS node."
-  },
+  "active_action_id": null,
+  "next_required_observation": "SITE_UI_SINGLE_ACTION_GUARD_RELEASED_AND_PUBLICLY_OBSERVED",
+  "mutation_freeze_reason": "User-visible cross-session interference: multiple mutation controls remained exposed and non-JSON checkout-module text was present in the Master Records input while the page displayed FAIL_CLOSED / Invalid JSON.",
   "fresh_head": {
     "observed": true,
-    "source": "user-exported CURRENT_USER_IPHONE StegOS evidence bundle",
     "replay_state": "PASS",
     "entries": 69,
     "tail_sha256": "897b9c70e704243939659009ef8d2e9d5ba984d1c4d0edd835afdaf26c5f4b69",
-    "observed_node_id": "stegnode-web-f24e3bfb7f5343cb37323187a88e51f3",
-    "eligible_as_current_head_for_admission": true,
-    "reason": "Lineage resolved and both public guarded package and guarded checkout module observed read-only from the same current iPhone; no state mutation occurred afterward."
+    "eligible_as_current_head_for_admission": false,
+    "reason": "Admission revoked due to UI orchestration conflict; no new journal mutation is inferred from an input parse failure."
   },
   "terminal_lineage_conflict": {
     "state": "RESOLVED_CANONICAL_G23_DUPLICATE_G24",
-    "task_id": "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
-    "transition_id": "SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED",
-    "journal_integrity": "PASS",
-    "silent_latest_wins_prohibited": true,
-    "silent_first_wins_prohibited": true,
-    "further_sv001_reexecution_prohibited": true,
-    "required_resolution": "RESOLVED",
-    "authority_effect": "NONE_CONFLICT_CLASSIFICATION_ONLY",
     "canonical_execution": {
       "claim_id": "SHWP-SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001-G23",
       "fencing_token": 23,
       "cycle_receipt_sha256": "sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35",
-      "custody_eligible": true,
-      "tvc_consumption_observed": true,
-      "disposition_basis": "First terminal execution; canonical task contract already set terminal_autonomy_reexecution_allowed=false and downstream_retry_after_terminal=true."
+      "custody_eligible": true
     },
     "duplicate_execution": {
       "claim_id": "SHWP-SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001-G24",
@@ -195,29 +62,15 @@
       "cycle_receipt_sha256": "sha256:6bcc1976793657ea849a3678fa324c69134d2b59481e0bc9994c6baa6c4aff79",
       "custody_eligible": false,
       "retained": true,
-      "tvc_consumption_observed": true,
-      "journal_terminal_sequence": 67,
-      "journal_reconstruction_sequence": 68,
-      "journal_consumption_sequence": 69,
-      "disposition": "DUPLICATE_TERMINAL_EXECUTION_NON_CUSTODIAL",
-      "reason": "Occurred after canonical terminal G23 despite terminal_autonomy_reexecution_allowed=false."
-    },
-    "master_records_custody_admission_prohibited": false,
-    "master_records_custody_admission_prohibited_reason": null
+      "disposition": "DUPLICATE_TERMINAL_EXECUTION_NON_CUSTODIAL"
+    }
   },
-  "single_checkout_guard": {
-    "canonical_source_merge": "StegVerse-Labs/.github#946@3448807c50a4f9d3bd07ce83c0d4c2c315617b6f",
-    "site_projection_merge": "StegVerse-Labs/Site#963@cfd0f02cfca5034e57be23083ece6fcb70bf1e70",
-    "module_blob": "266f01e5793829286872237d1c76d14d570bcb28",
-    "package_blob": "0e3eaaec3fb20b759b79f2ab9070f002b73be741",
-    "source_fixed": true,
-    "site_source_projected": true,
-    "public_package_observed": true,
-    "public_package_contract_matches": true,
-    "public_module_observed": true,
-    "public_module_guard_matches": true,
-    "public_propagation_observed": true,
-    "device_runtime_guard_observed": false,
-    "device_runtime_guard_observation_note": "Static/runtime module bytes are observed on the current iPhone; the repeated-checkout guard has not been deliberately triggered because SV001 reexecution is prohibited."
+  "ui_guard_requirement": {
+    "site_manifest_required": true,
+    "all_mutation_controls_default_disabled": true,
+    "at_most_one_mutation_control_enabled": true,
+    "read_only_controls_always_separate": true,
+    "parse_or_binding_failure_revokes_action_locally": true,
+    "stale_session_instructions_must_not_override_manifest": true
   }
 }
