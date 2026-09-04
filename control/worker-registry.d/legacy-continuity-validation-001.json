@@ -7,14 +7,17 @@
       "archive_reason_codes": [
         "AUTHORIZED_LOCAL_CONTINUITY_SOURCE_PATH_NOT_YET_OBSERVED"
       ],
-      "authorized_policy_version": "legacy-continuity-validation-v1",
+      "authorized_policy_version": "legacy-continuity-validation-v2",
       "block_ref": "docs/LEGACY_CONTINUITY_VALIDATION_MIRROR_HANDOFF.md",
       "claim_id": null,
       "evidence_refs": [
         "handoffs/LEGACY-CONTINUITY-VALIDATION-WORKER-001.json",
         "docs/LEGACY_CONTINUITY_VALIDATION_MIRROR_HANDOFF.md",
         "workers/legacy_continuity_validation_worker.py",
-        "StegVerse-Labs/Continuity:docs/LEGACY_TRIGGER_PARTICIPATION_MIRROR_HANDOFF.md"
+        "StegVerse-Labs/Continuity:docs/LEGACY_CONTINUITY_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/Continuity:examples/legacy-frozen-simulation-v1.json",
+        "StegVerse-Labs/Continuity:scripts/verify_legacy_frozen_simulation.py",
+        "StegVerse-Labs/Continuity:tests/test_legacy_frozen_simulation.py"
       ],
       "executor_binding": "AUTHORIZED_LOCAL_SOURCE_ONLY",
       "external_entity_job_ref": null,
@@ -23,6 +26,13 @@
       "last_checkpoint_ref": null,
       "lease": null,
       "state": "HANDOFF_READY",
+      "source_commit": "5118c7f9f841a43ef8729c7c8dd20e01d3696713",
+      "required_tests": [
+        "tests/test_legacy_trigger.py",
+        "tests/test_legacy_participation.py",
+        "tests/test_legacy_release_coordination.py",
+        "tests/test_legacy_frozen_simulation.py"
+      ],
       "source_state_vector_ref": "control/task-vectors/LEGACY-CONTINUITY-VALIDATION-WORKER-001.json",
       "task_id": "LEGACY-CONTINUITY-VALIDATION-WORKER-001",
       "worker_id": "legacy-continuity-validation-worker",
@@ -31,7 +41,7 @@
         "capability_version": "1.0.0",
         "phase": "ADMISSIBLE",
         "standing_evidence_refs": [
-          "StegVerse-Labs/Continuity:docs/LEGACY_TRIGGER_PARTICIPATION_MIRROR_HANDOFF.md"
+          "StegVerse-Labs/Continuity:docs/LEGACY_CONTINUITY_MIRROR_HANDOFF.md"
         ],
         "admissibility_evidence_refs": [
           "docs/LEGACY_CONTINUITY_VALIDATION_MIRROR_HANDOFF.md"
@@ -60,6 +70,7 @@
         "local_private_source_validation",
         "exact_git_head_binding",
         "credential_stripped_test_execution",
+        "frozen_simulation_validation",
         "validation_receipt_generation"
       ],
       "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
