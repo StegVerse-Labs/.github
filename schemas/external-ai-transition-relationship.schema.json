@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/external-ai-transition-relationship.schema.json",
+  "title": "StegVerse External AI Transition Relationship",
+  "type": "object",
+  "required": [
+    "schema",
+    "relationship_id",
+    "owner_scope",
+    "external_ai",
+    "environment",
+    "recipient_entities",
+    "allowed_interaction_classes",
+    "allowed_transition_capabilities",
+    "directionality",
+    "skap_binding",
+    "authority_model"
+  ],
+  "properties": {
+    "schema": {
+      "const": "stegverse.external-ai-transition-relationship/v1"
+    },
+    "relationship_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "owner_scope": {
+      "enum": ["USER", "ORGANIZATION"]
+    },
+    "external_ai": {
+      "type": "object",
+      "required": ["provider", "account_binding"],
+      "properties": {
+        "provider": {"type": "string", "minLength": 1},
+        "model_or_service": {"type": ["string", "null"]},
+        "account_binding": {"type": "string", "minLength": 1},
+        "endpoint_profile": {"type": ["string", "null"]}
+      },
+      "additionalProperties": false
+    },
+    "environment": {
+      "enum": ["PRODUCTION", "DEVELOPMENT"]
+    },
+    "recipient_entities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^STEGVERSE_(ASSISTANT|AI_ENTITY):.+$"
+      },
+      "uniqueItems": true
+    },
+    "allowed_interaction_classes": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "OBSERVATION",
+          "REQUEST",
+          "RECOMMENDATION",
+          "EVIDENCE",
+          "ARTIFACT",
+          "DEVELOPER_CHANGE_PROPOSAL"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "allowed_transition_capabilities": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "directionality": {
+      "enum": ["INGRESS_ONLY", "BIDIRECTIONAL"]
+    },
+    "developer_package": {
+      "type": ["string", "null"]
+    },
+    "capability_extensions": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true,
+      "default": []
+    },
+    "disclosure_scope_refs": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true,
+      "default": []
+    },
+    "tvc_lease_refs": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true,
+      "default": []
+    },
+    "skap_binding": {
+      "type": "object",
+      "required": ["relationship_entry_ref", "required"],
+      "properties": {
+        "relationship_entry_ref": {"type": "string", "minLength": 1},
+        "required": {"const": true}
+      },
+      "additionalProperties": false
+    },
+    "lifecycle": {
+      "type": "object",
+      "properties": {
+        "state": {"enum": ["ACTIVE", "SUSPENDED", "REVOKED", "EXPIRED", "PENDING"]},
+        "expires_at": {"type": ["string", "null"], "format": "date-time"}
+      },
+      "additionalProperties": false
+    },
+    "authority_model": {
+      "type": "object",
+      "required": [
+        "api_access_is_authority",
+        "endpoint_possession_is_authority",
+        "successful_ingress_scope",
+        "post_ingress_capability_source",
+        "production_external_ai_execution_principal"
+      ],
+      "properties": {
+        "api_access_is_authority": {"const": false},
+        "endpoint_possession_is_authority": {"const": false},
+        "successful_ingress_scope": {"const": "ADMITTED_INGRESS_TRANSITION_ONLY"},
+        "post_ingress_capability_source": {"const": "SKAP_VAULT_RELATIONSHIP_PACKAGE"},
+        "production_external_ai_execution_principal": {"const": false}
+      },
+      "additionalProperties": false
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"environment": {"const": "PRODUCTION"}},
+        "required": ["environment"]
+      },
+      "then": {
+        "properties": {
+          "developer_package": {"type": "null"},
+          "capability_extensions": {"maxItems": 0}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"environment": {"const": "DEVELOPMENT"}},
+        "required": ["environment"]
+      },
+      "then": {
+        "required": ["developer_package"],
+        "properties": {
+          "developer_package": {"const": "DEVELOPER_PACKAGE_STANDARD"}
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}
