@@ -15,6 +15,13 @@ SPEC=importlib.util.spec_from_file_location(
 mod=importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(mod)
 
+PORTABLE_SPEC=importlib.util.spec_from_file_location(
+    "erl_review_portable_dispatch",
+    ROOT/"scripts/refresh_and_dispatch_resident_requests.py",
+)
+portable=importlib.util.module_from_spec(PORTABLE_SPEC)
+PORTABLE_SPEC.loader.exec_module(portable)
+
 
 class ERLAIEconomicTransparencyResidentBridgeTests(unittest.TestCase):
     def request(self):
@@ -104,6 +111,7 @@ class ERLAIEconomicTransparencyResidentBridgeTests(unittest.TestCase):
         refresh_base=(ROOT/"scripts/refresh_sovereign_worker_runtime_source_base.py").read_text()
         install=(ROOT/"scripts/install_sovereign_worker_source_refresh_service.py").read_text()
         self.assertIn('("erl_ai_economic_transparency_review", "scripts/consume_erl_ai_economic_transparency_review_request.py")',dispatcher)
+        self.assertIn("erl_ai_economic_transparency_review",portable.ALLOWED_TARGET_CONSUMERS)
         self.assertIn('Path("scripts/consume_erl_ai_economic_transparency_review_request.py")',refresh)
         self.assertIn('Path("scripts/consume_erl_ai_economic_transparency_review_request.py")',refresh_base)
         self.assertIn('Path("review-packages")',refresh)
