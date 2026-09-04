@@ -1,0 +1,54 @@
+{
+  "schema": "stegverse.canonical-work-runtime-profile/v1",
+  "goal_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "canonical_task_registry": "data/canonical-task-registry.json",
+  "worker_registry": "control/worker-registry.json",
+  "master_records_authority": "MASTER_RECORDS",
+  "ingress_egress_authority": "INTERLOCK_INTR",
+  "heartbeat": {
+    "protocol_anchor": "HB32",
+    "mechanism": "INDEPENDENT_PHASE_OSCILLATOR",
+    "reference_frequency_hz": 100,
+    "reference_increment_interval_ms": 10,
+    "progression_dependency": "OSCILLATOR_ONLY",
+    "carrier_profile": "stegverse.intr.hb-derived-carrier-profile/v1",
+    "carrier_grants_admission_authority": false,
+    "carrier_grants_execution_authority": false,
+    "carrier_grants_claim_or_fence_authority": false,
+    "carrier_grants_transition_authority": false
+  },
+  "worker_runtime": {
+    "implementation": "heartbeat_runtime.worker_runtime.WorkerCoordinator",
+    "single_scheduler_required": true,
+    "second_scheduler_allowed": false,
+    "second_worker_runtime_allowed": false,
+    "claim_fence_projection_only_in_task_registry": true
+  },
+  "runtime_flow": [
+    "AUTHENTIC_INTERLOCK_INTR_INGRESS",
+    "HB32_OSCILLATOR_REFERENCE_BINDING_OPTIONAL_NON_AUTHORIZING",
+    "CANONICAL_TASK_IDENTITY_RESOLUTION",
+    "MASTER_RECORDS_AND_REGISTRY_PRE_EXECUTION_RECONCILIATION",
+    "WORKERCOORDINATOR_CLAIM_FENCE_RESOLUTION",
+    "NON_COLLIDING_EXECUTION_IF_ADMITTED",
+    "MASTER_RECORDS_EVIDENCE_CUSTODY",
+    "POST_EXECUTION_RECONCILIATION",
+    "AUTHENTIC_INTERLOCK_INTR_EGRESS_OR_TRANSFER",
+    "DEPENDENT_TASK_REEVALUATION"
+  ],
+  "invariants": [
+    "HB_IS_REFERENCE_AND_CARRIER_ONLY",
+    "OSCILLATOR_ONLY_PROGRESSSION_DOES_NOT_AUTHORIZE_TASK_TRANSITIONS",
+    "NO_SECOND_HEARTBEAT_OSCILLATOR_SCHEDULER_OR_WORKERCOORDINATOR",
+    "TASK_REGISTRY_NEVER_MINTS_CLAIM_OR_FENCE",
+    "MASTER_RECORDS_EVIDENCE_NEVER_MINTS_EXECUTION_AUTHORITY",
+    "INTERLOCK_INTR_ADMISSION_IS_REQUIRED_FOR_GOVERNED_INGRESS_EGRESS",
+    "EVERY_STATE_CHANGE_REQUIRES_CURRENT_APPLICABLE_GOVERNANCE"
+  ],
+  "nonclaims": [
+    "SOURCE_PROFILE_DOES_NOT_PROVE_RESIDENT_RUNTIME_EXECUTION",
+    "SOURCE_PROFILE_DOES_NOT_PROVE_INTERLOCK_INTR_ADMISSION",
+    "SOURCE_PROFILE_DOES_NOT_PROVE_WORKERCOORDINATOR_CLAIM",
+    "SOURCE_PROFILE_DOES_NOT_PROVE_MASTER_RECORDS_RECONCILIATION"
+  ]
+}
