@@ -11,11 +11,12 @@ from typing import Any
 
 WORKER_ID = "legacy-continuity-validation-worker"
 TASK_ID = "LEGACY-CONTINUITY-VALIDATION-WORKER-001"
-EXPECTED_HEAD = "0b814c0d0028e98a67c751ef2aa1768b17da743f"
+EXPECTED_HEAD = "5118c7f9f841a43ef8729c7c8dd20e01d3696713"
 FOCUSED_TESTS = (
     "tests/test_legacy_trigger.py",
     "tests/test_legacy_participation.py",
     "tests/test_legacy_release_coordination.py",
+    "tests/test_legacy_frozen_simulation.py",
 )
 CREDENTIAL_MARKERS = (
     "TOKEN",
@@ -63,6 +64,7 @@ def validate(repo: Path, python_executable: str = sys.executable) -> dict[str, A
         "worker_id": WORKER_ID,
         "repo_path": str(repo),
         "expected_head": EXPECTED_HEAD,
+        "focused_tests": list(FOCUSED_TESTS),
         "network_fetch_used": False,
         "github_token_runtime_authority": False,
         "credential_authority": "TV/TVC",
@@ -70,6 +72,8 @@ def validate(repo: Path, python_executable: str = sys.executable) -> dict[str, A
         "recipient_notification_performed": False,
         "capsule_arming_performed": False,
         "economic_transfer_performed": False,
+        "authentic_tvc_authorization_created": False,
+        "authority_effect": "NONE",
     }
 
     if not repo.is_dir():
@@ -117,7 +121,7 @@ def validate(repo: Path, python_executable: str = sys.executable) -> dict[str, A
         stderr_tail=result.stderr[-4000:],
     )
     if result.returncode == 0:
-        receipt.update(state="PASS", reason="EXACT_BOUND_LEGACY_TESTS_PASS")
+        receipt.update(state="PASS", reason="EXACT_BOUND_LEGACY_AND_FROZEN_SIMULATION_TESTS_PASS")
     else:
         receipt.update(state="FAIL_CLOSED", reason="FOCUSED_TESTS_FAILED")
     return receipt
@@ -147,6 +151,7 @@ def main() -> int:
             "network_fetch_used": False,
             "github_token_runtime_authority": False,
             "credential_authority": "TV/TVC",
+            "authority_effect": "NONE",
         }
     else:
         receipt = validate(args.repo_path)
