@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/cross-task-coordination.schema.json",
+  "title": "StegVerse Cross-Task Coordination Ledger",
+  "type": "object",
+  "required": ["schema", "authority", "goals", "tasks", "predicates", "evidence", "claims"],
+  "properties": {
+    "schema": {"const": "stegverse.cross-task-coordination-ledger/v1"},
+    "authority": {
+      "type": "object",
+      "required": ["coordination_authority", "runtime_truth_authority_effect", "credential_authority", "github_token_runtime_authority"],
+      "properties": {
+        "coordination_authority": {"type": "string", "minLength": 1},
+        "runtime_truth_authority_effect": {"const": "NONE"},
+        "credential_authority": {"const": "TV/TVC"},
+        "github_token_runtime_authority": {"const": "NONE"}
+      },
+      "additionalProperties": true
+    },
+    "goals": {"type": "array", "items": {"$ref": "#/$defs/goal"}},
+    "tasks": {"type": "array", "items": {"$ref": "#/$defs/task"}},
+    "predicates": {"type": "array", "items": {"$ref": "#/$defs/predicate"}},
+    "evidence": {"type": "array", "items": {"$ref": "#/$defs/evidence"}},
+    "claims": {"type": "array", "items": {"$ref": "#/$defs/claim"}},
+    "gaps": {"type": "array", "items": {"$ref": "#/$defs/gap"}}
+  },
+  "$defs": {
+    "goal": {
+      "type": "object",
+      "required": ["goal_id"],
+      "properties": {"goal_id": {"type": "string", "minLength": 1}},
+      "additionalProperties": true
+    },
+    "scope": {
+      "type": "object",
+      "properties": {
+        "repositories": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "paths": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "modules": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "runtime_surfaces": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "evidence_responsibilities": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      },
+      "additionalProperties": false
+    },
+    "task": {
+      "type": "object",
+      "required": ["task_id", "goal_id"],
+      "properties": {
+        "task_id": {"type": "string", "minLength": 1},
+        "goal_id": {"type": "string", "minLength": 1},
+        "autonomous_augmentation": {"type": "boolean"},
+        "required_predicates": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "mutation_scope": {"$ref": "#/$defs/scope"},
+        "expected_blast_radius": {"$ref": "#/$defs/scope"}
+      },
+      "additionalProperties": true
+    },
+    "predicate": {
+      "type": "object",
+      "required": ["predicate_id", "state", "authoritative_producer"],
+      "properties": {
+        "predicate_id": {"type": "string", "minLength": 1},
+        "state": {"enum": ["SATISFIED", "UNSATISFIED", "IN_PROGRESS", "UNKNOWN", "CONFLICTED"]},
+        "authoritative_producer": {"type": "string", "minLength": 1},
+        "required_schema": {"type": ["string", "null"]},
+        "required_scope": {"type": ["string", "null"]},
+        "required_execution_instance": {"type": ["string", "null"]},
+        "max_age_seconds": {"type": ["integer", "null"], "minimum": 0},
+        "required_fields": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "expected_output_ref": {"type": ["string", "null"]}
+      },
+      "additionalProperties": true
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["evidence_id", "predicate_id", "producer", "ref", "authority_effect"],
+      "properties": {
+        "evidence_id": {"type": "string", "minLength": 1},
+        "predicate_id": {"type": "string", "minLength": 1},
+        "producer": {"type": "string", "minLength": 1},
+        "ref": {"type": "string", "minLength": 1},
+        "schema": {"type": ["string", "null"]},
+        "scope": {"type": ["string", "null"]},
+        "execution_instance": {"type": ["string", "null"]},
+        "observed_at": {"type": ["string", "null"]},
+        "fields": {"type": "object"},
+        "authority_effect": {"enum": ["NONE", "EVIDENCE_ONLY"]}
+      },
+      "additionalProperties": true
+    },
+    "claim": {
+      "type": "object",
+      "required": ["claim_id", "task_id", "state", "scope"],
+      "properties": {
+        "claim_id": {"type": "string", "minLength": 1},
+        "task_id": {"type": "string", "minLength": 1},
+        "state": {"enum": ["ACTIVE", "RELEASED", "SUPERSEDED", "EXPIRED"]},
+        "scope": {"$ref": "#/$defs/scope"}
+      },
+      "additionalProperties": true
+    },
+    "gap": {
+      "type": "object",
+      "required": ["predicate_id", "rejected_because", "required_producer", "action_without_collision"],
+      "properties": {
+        "predicate_id": {"type": "string"},
+        "existing_evidence_refs": {"type": "array", "items": {"type": "string"}},
+        "rejected_because": {"type": "array", "items": {"type": "string"}},
+        "missing_observation": {"type": ["string", "null"]},
+        "required_producer": {"type": "string"},
+        "required_output_ref": {"type": ["string", "null"]},
+        "required_schema": {"type": ["string", "null"]},
+        "required_fields": {"type": "array", "items": {"type": "string"}},
+        "required_freshness": {"type": ["integer", "null"]},
+        "collision_refs": {"type": "array", "items": {"type": "string"}},
+        "action_without_collision": {"type": "string"}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
