@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -14,12 +15,23 @@ SPEC.loader.exec_module(DISPATCHER)
 
 
 class AstraClassResilienceDispatchBindingTests(unittest.TestCase):
-    def test_awareness_consumer_is_registered(self) -> None:
+    def test_awareness_consumer_is_registered_before_protected_entities(self) -> None:
         by_name = dict(DISPATCHER.CONSUMERS)
         self.assertEqual(
             by_name["astra_class_resilience_awareness"],
             "scripts/consume_astra_class_resilience_awareness_request.py",
         )
+        order = [name for name, _ in DISPATCHER.CONSUMERS]
+        awareness_index = order.index("astra_class_resilience_awareness")
+        for protected in DISPATCHER.AWARENESS_PROTECTED:
+            self.assertLess(awareness_index, order.index(protected))
+
+    def test_protected_entity_dispatch_fails_closed_without_awareness(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            runtime = Path(tmp)
+            self.assertFalse(DISPATCHER.standing_awareness_ready(runtime))
+            selected = DISPATCHER.select_consumers(("stegverse001_bounded_autonomy",))
+            self.assertEqual(selected[0][0], "stegverse001_bounded_autonomy")
 
     def test_all_three_requests_preserve_non_authority(self) -> None:
         specs = {
