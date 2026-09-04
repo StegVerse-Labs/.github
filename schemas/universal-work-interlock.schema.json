@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/universal-work-interlock.schema.json",
+  "title": "StegVerse Universal Work Interlock Record",
+  "type": "object",
+  "required": [
+    "schema",
+    "work_id",
+    "correlation_id",
+    "direction",
+    "state",
+    "source",
+    "goal",
+    "authority",
+    "recorded_at"
+  ],
+  "properties": {
+    "schema": {
+      "const": "stegverse.universal-work-interlock/v1"
+    },
+    "work_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "direction": {
+      "enum": ["INGRESS", "EGRESS"]
+    },
+    "state": {
+      "enum": [
+        "RECEIVED",
+        "ADMITTED",
+        "NON_EXECUTION_CLASSIFIED",
+        "BLOCKED",
+        "FAILED",
+        "COMPLETED",
+        "SUPERSEDED",
+        "DEFERRED",
+        "TRANSFERRED"
+      ]
+    },
+    "source": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "enum": [
+            "SESSION",
+            "REPOSITORY_TASK",
+            "GITHUB_FAILURE_EMAIL",
+            "RUNTIME_EVENT",
+            "HANDOFF",
+            "USER_ACTION",
+            "CUSTODY",
+            "PUBLICATION",
+            "RELEASE",
+            "OTHER"
+          ]
+        },
+        "identity": {"type": ["string", "null"]},
+        "evidence_refs": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      },
+      "additionalProperties": true
+    },
+    "goal": {
+      "type": "string",
+      "minLength": 1
+    },
+    "organization": {"type": ["string", "null"]},
+    "repository": {"type": ["string", "null"]},
+    "component": {"type": ["string", "null"]},
+    "dependencies": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "blockers": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "convergence_refs": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "result_refs": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "next_owner": {"type": ["string", "null"]},
+    "human_action_required": {"type": "boolean"},
+    "authority": {
+      "type": "object",
+      "required": [
+        "credential_authority",
+        "github_token_runtime_authority",
+        "heartbeat_granted_authority",
+        "authority_effect"
+      ],
+      "properties": {
+        "credential_authority": {"const": "TV/TVC"},
+        "github_token_runtime_authority": {"const": "NONE"},
+        "heartbeat_granted_authority": {"const": false},
+        "authority_effect": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "recorded_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"direction": {"const": "INGRESS"}}
+      },
+      "then": {
+        "properties": {
+          "state": {
+            "enum": ["RECEIVED", "ADMITTED", "NON_EXECUTION_CLASSIFIED", "BLOCKED"]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"direction": {"const": "EGRESS"}}
+      },
+      "then": {
+        "properties": {
+          "state": {
+            "enum": ["BLOCKED", "FAILED", "COMPLETED", "SUPERSEDED", "DEFERRED", "TRANSFERRED"]
+          }
+        }
+      }
+    }
+  ],
+  "additionalProperties": true
+}
