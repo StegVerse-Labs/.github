@@ -94,6 +94,7 @@ CONSUMERS = (
     ("runtime_profile_map", "control/resident-execution-request.d/consume-runtime-profile-map-build.py"),
     ("runtime_profile_map_custody", "control/resident-execution-request.d/consume-runtime-profile-map-custody.py"),
     ("runtime_profile_map_reconciliation", "control/resident-execution-request.d/consume-runtime-profile-map-reconciliation.py"),
+    ("runtime_profile_map_transition_readiness", "control/resident-execution-request.d/consume-runtime-profile-map-transition-readiness.py"),
 )
 
 
@@ -165,9 +166,9 @@ def dispatch(
     exceptions = [row["consumer"] for row in outcomes if row["state"] == "DISPATCH_EXCEPTION"]
     accepted_wait_states = {
         "NO_REQUEST", "ALREADY_CONSUMED", "WAITING_FOR_CUSTODY_PACKAGE",
-        "WAITING_FOR_MASTER_RECORDS_CUSTODY", "MASTER_RECORDS_LOCAL_ROOT_NOT_MATERIALIZED",
-        "MASTER_RECORDS_CUSTODY_CONSUMER_NOT_MATERIALIZED", "MASTER_RECORDS_PROJECTOR_NOT_MATERIALIZED",
-        "ATTEMPT_RECORDED", "COMPLETED",
+        "WAITING_FOR_MASTER_RECORDS_CUSTODY", "WAITING_FOR_RECONCILIATION",
+        "MASTER_RECORDS_LOCAL_ROOT_NOT_MATERIALIZED", "MASTER_RECORDS_CUSTODY_CONSUMER_NOT_MATERIALIZED",
+        "MASTER_RECORDS_PROJECTOR_NOT_MATERIALIZED", "ATTEMPT_RECORDED", "COMPLETED",
     }
     request_failures = [row["consumer"] for row in outcomes if row["state"] not in accepted_wait_states]
     receipt = {
