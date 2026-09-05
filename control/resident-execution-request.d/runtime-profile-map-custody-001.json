@@ -1,0 +1,21 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RUNTIME-PROFILE-MAP-MASTER-RECORDS-CUSTODY-001",
+  "state": "REQUESTED",
+  "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+  "mode": "RUNTIME_PROFILE_MAP_MASTER_RECORDS_CUSTODY",
+  "entrypoint": "control/resident-execution-request.d/consume-runtime-profile-map-custody.py",
+  "depends_on": [
+    "receipts/runtime-profile-map/custody/runtime-profile-map-custody-package.latest.json"
+  ],
+  "master_records_consumer": "scripts/ingest_runtime_profile_map_custody.py",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "oscillator_grants_execution_authority": false,
+  "second_machine_required": false,
+  "network_source_fetch_allowed": false,
+  "request_granted_authority": false,
+  "authority_effect": "NONE_REQUEST_ONLY"
+}
