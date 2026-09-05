@@ -17,6 +17,20 @@
     "workercoordinator_admission_still_required": true,
     "interlock_intr_transition_admission_still_required": true
   },
+  "runtime_profile_discovery": {
+    "canonical_map": "control/runtime-profile-map.json",
+    "source_catalog": "control/runtime-profile-sources.json",
+    "task_requirements_field": "runtime_requirements",
+    "task_resolution_field": "runtime_resolution",
+    "resolver": "scripts/resolve_task_runtime_candidates.py",
+    "projection_applier": "scripts/apply_all_task_runtime_resolutions.py",
+    "routing_readiness_evaluator": "scripts/evaluate_task_runtime_routing_readiness.py",
+    "match_grants_authority": false,
+    "projection_grants_authority": false,
+    "generic_runtime_missing_claim_allowed_before_resolution": false,
+    "workercoordinator_admission_still_required": true,
+    "interlock_intr_transition_admission_still_required": true
+  },
   "invariants": [
     "ONE_CANONICAL_WORK_TRUTH_MANY_PROJECTIONS",
     "TASK_IDENTITY_STABLE_ACROSS_SESSIONS_REPOSITORIES_WORKERS_AND_TRANSFERS",
@@ -25,6 +39,7 @@
     "MASTER_RECORDS_OWNS_OBSERVED_REALITY_AND_RECONSTRUCTION",
     "RUNTIME_PROFILE_MAP_IS_DISCOVERY_AND_COMPATIBILITY_PROJECTION_ONLY",
     "RUNTIME_PROFILE_MATCH_DOES_NOT_GRANT_TASK_ADMISSION_OR_EXECUTION_AUTHORITY",
+    "RUNTIME_MISSING_MUST_RESOLVE_AGAINST_CANONICAL_RUNTIME_PROFILE_MAP_BEFORE_ESCALATION",
     "COMPLETION_CLAIM_REQUIRES_RECONCILIATION_BEFORE_CLOSURE",
     "MISSING_EVIDENCE_IS_NOT_PROOF_OF_NON_OCCURRENCE",
     "DUPLICATE_AND_ADJACENT_WORK_RESOLUTION_PRECEDES_EXECUTION_ADMISSION",
@@ -47,7 +62,8 @@
     "ADJACENT_WORK_PRODUCING_REQUIRED_EVIDENCE",
     "SHARED_DEPENDENCY_OR_SYSTEMIC_INCIDENT_BLOCKS_TRANSITION",
     "NARROWER_NON_COLLIDING_WORK_AVAILABLE",
-    "RUNTIME_PROFILE_COMPATIBILITY_RESOLVED_WITHOUT_AUTHORITY_INFERENCE"
+    "RUNTIME_PROFILE_COMPATIBILITY_RESOLVED_WITHOUT_AUTHORITY_INFERENCE",
+    "TASK_RUNTIME_ROUTING_READINESS_EVALUATED_BEFORE_WORKERCOORDINATOR_ADMISSION_REVIEW"
   ],
   "session_close_contract": {
     "required": true,
@@ -62,7 +78,9 @@
       "EXISTING_EVIDENCE",
       "EVIDENCE_GAPS",
       "NON_COLLISION_BOUNDARIES",
-      "NEXT_ADMISSIBLE_WORK"
+      "NEXT_ADMISSIBLE_WORK",
+      "RUNTIME_REQUIREMENTS",
+      "RUNTIME_PROFILE_CANDIDATES"
     ]
   },
   "new_session_entry_contract": {
@@ -75,6 +93,7 @@
       "REUSE_ADMISSIBLE_EXISTING_EVIDENCE",
       "SELECT_HIGHEST_PRIORITY_UNBLOCKED_NON_DUPLICATE_NON_COLLIDING_TASK",
       "RESOLVE_COMPATIBLE_RUNTIME_PROFILE_CANDIDATES",
+      "EVALUATE_TASK_RUNTIME_ROUTING_READINESS",
       "REQUEST_OR_ACQUIRE_APPLICABLE_CLAIM_FENCE_BEFORE_EXECUTION"
     ]
   },
@@ -83,6 +102,7 @@
     "SOURCE_POLICY_DOES_NOT_PROVE_WORKERCOORDINATOR_CLAIM",
     "SOURCE_POLICY_DOES_NOT_PROVE_MASTER_RECORDS_RECONCILIATION",
     "SOURCE_POLICY_DOES_NOT_PROVE_INTERLOCK_INTR_EGRESS_OR_CLOSURE",
-    "RUNTIME_PROFILE_MATCH_DOES_NOT_PROVE_RUNTIME_EXECUTION"
+    "RUNTIME_PROFILE_MATCH_DOES_NOT_PROVE_RUNTIME_EXECUTION",
+    "ROUTING_READINESS_DOES_NOT_GRANT_EXECUTION_AUTHORITY"
   ]
 }
