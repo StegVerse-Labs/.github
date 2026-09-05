@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 3,
+  "generation": 4,
   "status": "SOURCE_RUNTIME_ADAPTERS_INSTALLED_AUTHENTIC_INGRESS_PENDING",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -31,7 +31,9 @@
         "workers/canonical_work_intr_ingress.py",
         "scripts/project_master_records_work_events.py",
         "scripts/reevaluate_canonical_task_dependencies.py",
-        "scripts/normalize_github_failure_email_events.py"
+        "scripts/normalize_github_failure_email_events.py",
+        "scripts/reconcile_admitted_canonical_work.py",
+        "scripts/consume_admitted_dependency_resolution.py"
       ],
       "targets": {
         "organizations": ["StegVerse-Labs"],
@@ -46,7 +48,9 @@
           "hb32-runtime-reference-projection",
           "master-records-work-event-projection",
           "dependency-resolution-fanout",
-          "github-failure-incident-normalization"
+          "github-failure-incident-normalization",
+          "admitted-work-reconciliation",
+          "admitted-dependency-event-consumption"
         ]
       },
       "dependencies": [
@@ -81,7 +85,9 @@
         "workers/canonical_work_intr_ingress.py",
         "scripts/project_master_records_work_events.py",
         "scripts/reevaluate_canonical_task_dependencies.py",
-        "scripts/normalize_github_failure_email_events.py"
+        "scripts/normalize_github_failure_email_events.py",
+        "scripts/reconcile_admitted_canonical_work.py",
+        "scripts/consume_admitted_dependency_resolution.py"
       ],
       "expected_evidence_predicates": [
         "SOURCE_SCHEMA_VALID",
@@ -132,6 +138,8 @@
     "HB32_OSCILLATOR_REFERENCE_DOES_NOT_GRANT_TASK_AUTHORITY",
     "MASTER_RECORDS_PROJECTION_ADAPTER_DOES_NOT_PROVE_RUNTIME_RECONCILIATION",
     "DEPENDENCY_FANOUT_SOURCE_DOES_NOT_ADMIT_TRANSITIONS",
+    "ADMITTED_RECONCILIATION_SOURCE_DOES_NOT_MINT_EXECUTION_AUTHORITY",
+    "ADMITTED_DEPENDENCY_EVENT_CONSUMPTION_DOES_NOT_MUTATE_WORKERCOORDINATOR",
     "GITHUB_FAILURE_EMAIL_NORMALIZATION_DOES_NOT_PROVE_RUNTIME_FAILURE",
     "NO_AUTHENTIC_INTERLOCK_INTR_TASK_INGRESS_IS_CLAIMED",
     "NO_WORKERCOORDINATOR_CLAIM_IS_MINTED_BY_THIS_REGISTRY",
