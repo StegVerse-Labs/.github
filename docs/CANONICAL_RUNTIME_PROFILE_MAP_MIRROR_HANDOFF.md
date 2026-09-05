@@ -3,7 +3,7 @@
 Updated: 2026-09-04
 Repository: `StegVerse-Labs/.github`
 Goal: `STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001`
-Status: `SOURCE_IMPLEMENTED_GOVERNANCE_REVIEW_PACKAGE_BOUND_AUTHENTIC_RESIDENT_EVIDENCE_PENDING`
+Status: `SOURCE_IMPLEMENTED_AUTHORITY_REVIEW_ROUTING_BOUND_AUTHENTIC_RESIDENT_EVIDENCE_PENDING`
 
 ## Authority boundary
 
@@ -15,7 +15,7 @@ It MUST NOT create a second heartbeat, oscillator, scheduler, WorkerCoordinator,
 
 Provide one canonical machine-readable discovery/reconciliation projection answering which runtime substrates exist, what declared capabilities and transition surfaces they expose, what explicit observations/freshness exist, which canonical tasks can consider them compatible candidates, what routing and transition-readiness state exists, and which current authority class must review the next transition.
 
-No map/profile/observation/match/readiness/custody/reconciliation/review package grants authority.
+No map/profile/observation/match/readiness/custody/reconciliation/review/routing artifact grants authority.
 
 ## Canonical invariants
 
@@ -24,11 +24,12 @@ No map/profile/observation/match/readiness/custody/reconciliation/review package
 3. Source/merge/CI/deployment/HB progression never becomes inferred runtime completion.
 4. Runtime selection is deterministic from explicit task requirements and remains downstream of task/Master Records/dependency reconciliation.
 5. Generic `runtime missing` is inadmissible until current-map resolution identifies the exact failed predicate.
-6. Runtime candidate selection, routing readiness, reconciliation, transition readiness, and governance-review packaging are all non-authorizing projections.
+6. Runtime candidate selection, routing readiness, reconciliation, transition readiness, governance-review packaging, and authority-review routing are all non-authorizing projections.
 7. WorkerCoordinator remains claim/fence authority. Interlock/InTr remains governed transition authority. TV/TVC remains credential authority. Master Records remains observed-reality/custody authority.
 8. Existing WorkerCoordinator ownership is reused/waited/transferred under WorkerCoordinator authority rather than duplicated.
 9. Every transition still requires current governance; no prior receipt authorizes a later transition.
-10. Exact evidence references and SHA-256 values are carried forward into custody and governance-review packages.
+10. Exact evidence references and SHA-256 values are carried forward into custody, governance-review, and authority-review routing artifacts.
+11. Routing a review package to an authority inbox does not invoke that authority and does not imply acceptance, rejection, admission, execution, or transition.
 
 ## Source surfaces
 
@@ -49,9 +50,11 @@ No map/profile/observation/match/readiness/custody/reconciliation/review package
 - `scripts/reconcile_task_registry_master_records.py`
 - `scripts/evaluate_runtime_profile_map_transition_readiness.py`
 - `scripts/build_runtime_profile_map_governance_review.py`
+- `scripts/route_runtime_profile_map_governance_review.py`
 - `scripts/build_runtime_profile_map_custody_package.py`
 - `scripts/finalize_runtime_profile_map_cycle.py`
 - `scripts/emit_runtime_profile_map_receipt.py`
+- `tests/test_runtime_profile_map_authority_routing.py`
 
 Resident continuation surfaces:
 
@@ -85,16 +88,26 @@ build current runtime-profile map
 -> reconcile every runtime-bound canonical task
 -> emit transition-readiness receipts
 -> build exact-evidence governance-review packages
+-> route each package to the matching local authority-review inbox
 -> current named authority independently accepts/rejects/performs the next governed transition
 ```
 
-## Governance-review package
+## Governance-review and authority-routing path
 
-`scripts/build_runtime_profile_map_governance_review.py` binds the current canonical task, WorkerCoordinator projection, routing-readiness receipt, Master Records reconciliation, and transition-readiness receipt using exact file hashes. It maps `next_governance_review` to a review authority class such as `WORKERCOORDINATOR`, `INTERLOCK_INTR`, `MASTER_RECORDS_RECONCILIATION`, or `CANONICAL_COORDINATION`.
+`scripts/build_runtime_profile_map_governance_review.py` binds the current canonical task, WorkerCoordinator projection, routing-readiness receipt, Master Records reconciliation, and transition-readiness receipt using exact file hashes. It maps `next_governance_review` to `WORKERCOORDINATOR`, `INTERLOCK_INTR`, `MASTER_RECORDS_RECONCILIATION`, or `CANONICAL_COORDINATION`.
 
-`consume-runtime-profile-map-governance-review.py` waits for authentic transition-readiness consumption, materializes the exact local builder, emits one governance-review package per runtime-bound canonical task, and records an aggregate consumption receipt. It strips hosted/credential environment paths and performs no network fetch, task mutation, claim/fence minting, HB/oscillator progression, Interlock/InTr admission, or execution.
+`scripts/route_runtime_profile_map_governance_review.py` validates that the review artifact grants no authority, verifies the authority class against a closed allowlist, retains the exact review-package hash, and emits `stegverse.runtime-profile-map-authority-review-envelope/v1` under the matching local authority-review inbox:
 
-This is the final non-authorizing packaging stage before the currently responsible authority reviews the proposed next transition. It intentionally does not automate authority itself.
+- `receipts/runtime-profile-map/authority-review/workercoordinator/`
+- `receipts/runtime-profile-map/authority-review/interlock-intr/`
+- `receipts/runtime-profile-map/authority-review/master-records-reconciliation/`
+- `receipts/runtime-profile-map/authority-review/canonical-coordination/`
+
+The routing envelope explicitly records `authority_invoked=false`, `task_state_changed=false`, `claim_or_fence_minted=false`, `execution_authority_granted=false`, `interlock_intr_admission_granted=false`, and `authority_effect=NONE_AUTHORITY_REVIEW_ROUTING_ONLY`.
+
+`consume-runtime-profile-map-governance-review.py` now materializes both the governance-review builder and authority router from already-local canonical source, builds each review package, routes it to the matching inbox, and requires both exact review output and routing-envelope output before the aggregate consumption is `COMPLETED`.
+
+This removes a machine handoff gap without automating authority itself.
 
 ## Completion predicates
 
@@ -107,9 +120,10 @@ This is the final non-authorizing packaging stage before the currently responsib
 7. Post-reconciliation transition-readiness classification. **SOURCE COMPLETE**
 8. Resident dispatcher registration for reconciliation and transition readiness. **SOURCE COMPLETE**
 9. Exact-evidence governance-review builder/request/consumer/dispatcher selector. **SOURCE COMPLETE**
-10. One authentic resident cycle emits all build through governance-review evidence. **RUNTIME PENDING**
-11. Current WorkerCoordinator/Interlock-InTr/Master Records/coordination authority consumes the applicable review package and performs or rejects the next transition under current governance. **RUNTIME PENDING**
-12. Any resulting execution/closure is retained in Master Records and reconciled back into canonical task state. **RUNTIME PENDING**
+10. Closed-allowlist non-authorizing routing of governance-review packages to authority-specific local inboxes. **SOURCE COMPLETE**
+11. One authentic resident cycle emits all build through authority-review routing evidence. **RUNTIME PENDING**
+12. Current WorkerCoordinator/Interlock-InTr/Master Records/coordination authority consumes the applicable review envelope and performs or rejects the next transition under current governance. **RUNTIME PENDING**
+13. Any resulting execution/closure is retained in Master Records and reconciled back into canonical task state. **RUNTIME PENDING**
 
 ## Expected authentic evidence
 
@@ -125,6 +139,7 @@ This is the final non-authorizing packaging stage before the currently responsib
 - `receipts/runtime-profile-map/transition-readiness/*.json`
 - `receipts/sovereign-host/runtime-profile-map-transition-readiness-request-consumption.latest.json`
 - `receipts/runtime-profile-map/governance-review/*.json`
+- `receipts/runtime-profile-map/authority-review/*/*.json`
 - `receipts/sovereign-host/runtime-profile-map-governance-review-request-consumption.latest.json`
 - generated `control/runtime-profile-map.json` with non-null `generated_at`
 - resident `data/canonical-task-registry.json` with current-map runtime-resolution projections
@@ -132,12 +147,14 @@ This is the final non-authorizing packaging stage before the currently responsib
 
 ## Current boundary
 
-No runtime-complete claim is made. Source implementation now reaches an exact-evidence governance-review package for the correct next authority. The unresolved boundary is authentic resident consumption through the existing HB32/oscillator + WorkerCoordinator architecture and the resulting current-governance transition decisions.
+No runtime-complete claim is made. Source implementation now reaches an exact-evidence, authority-specific local review envelope without invoking the authority. The unresolved boundary is authentic resident consumption through the existing HB32/oscillator + WorkerCoordinator architecture and the resulting current-authority transition decisions.
+
+The checked-in canonical task registry remains generation 12 and correctly remains `PROPOSED`; this continuation did not promote source routing artifacts into runtime evidence or change coordination state.
 
 ## Human action
 
-None currently required. Remaining work is machine-owned authentic resident execution and current-authority handling of generated review packages.
+None currently required. Remaining work is machine-owned authentic resident execution and current-authority handling of generated review envelopes.
 
 ## Archive readiness
 
-All unique continuation state is preserved here and in the canonical task system. The workstream remains runtime-open until authentic evidence and subsequent current-governance transitions are observed.
+All unique continuation state is preserved here. The workstream remains runtime-open until authentic evidence and subsequent current-governance transitions are observed.
