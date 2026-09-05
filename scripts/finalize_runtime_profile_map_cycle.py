@@ -2,15 +2,16 @@
 """Finalize one resident runtime-profile-map cycle after map/resolution generation.
 
 Applies all runtime-resolution projections atomically, validates the canonical work
-coordination source/runtime projection contract, emits one non-authorizing routing-
-readiness receipt per canonical task, then builds one exact-hash custody input package.
-The package is not Master Records custody and grants no authority.
+coordination projection contract, emits non-authorizing routing-readiness receipts,
+builds one exact-hash custody input package, and when an already-local Master Records
+root is available invokes only its bounded custody consumer. No authority is created.
 """
 from __future__ import annotations
 
 import argparse
 import hashlib
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -41,6 +42,56 @@ def atomic_text(path: Path, text: str) -> None:
     tmp.replace(path)
 
 
+def parse_last_json(stdout: str) -> dict[str, Any] | None:
+    for line in reversed([line.strip() for line in stdout.splitlines() if line.strip()]):
+        try:
+            value = json.loads(line)
+        except Exception:
+            continue
+        if isinstance(value, dict):
+            return value
+    return None
+
+
+def maybe_custody(root: Path, custody_package: Path) -> dict[str, Any]:
+    mr_root_value = os.environ.get("STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT")
+    if not mr_root_value:
+        return {
+            "state": "MASTER_RECORDS_LOCAL_ROOT_NOT_DECLARED",
+            "attempted": False,
+            "custody_performed": False,
+            "authority_effect": "NONE_OBSERVATION_ONLY",
+        }
+    mr_root = Path(mr_root_value).expanduser().resolve()
+    consumer = mr_root / "scripts/ingest_runtime_profile_map_custody.py"
+    if not consumer.is_file():
+        return {
+            "state": "MASTER_RECORDS_CUSTODY_CONSUMER_NOT_MATERIALIZED",
+            "attempted": False,
+            "custody_performed": False,
+            "master_records_root": str(mr_root),
+            "authority_effect": "NONE_OBSERVATION_ONLY",
+        }
+    completed = run([
+        sys.executable, str(consumer),
+        "--package", str(custody_package),
+        "--artifact-root", str(root),
+        "--custody-root", str(mr_root / "custody/runtime-profile-map"),
+    ], mr_root)
+    parsed = parse_last_json(completed.stdout)
+    accepted = completed.returncode == 0 and isinstance(parsed, dict) and parsed.get("state") == "CUSTODY_ACCEPTED"
+    return {
+        "state": "CUSTODY_ACCEPTED" if accepted else "CUSTODY_ATTEMPT_RECORDED",
+        "attempted": True,
+        "custody_performed": accepted,
+        "returncode": completed.returncode,
+        "result": parsed,
+        "stdout_tail": completed.stdout[-4000:],
+        "stderr_tail": completed.stderr[-4000:],
+        "authority_effect": "NONE_MASTER_RECORDS_CUSTODY_ONLY",
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=ROOT)
@@ -52,12 +103,11 @@ def main() -> int:
     readiness_dir = root / "receipts/runtime-profile-map/routing-readiness"
     custody_package = root / "receipts/runtime-profile-map/custody/runtime-profile-map-custody-package.latest.json"
 
-    apply_cmd = [
+    applied = run([
         sys.executable, str(root / "scripts/apply_all_task_runtime_resolutions.py"),
         "--registry", str(registry), "--map", str(runtime_map),
         "--resolution-dir", str(resolution_dir), "--apply",
-    ]
-    applied = run(apply_cmd, root)
+    ], root)
     if applied.returncode != 0:
         raise SystemExit("FAIL_CLOSED: runtime-resolution batch persistence failed\n" + applied.stderr[-4000:])
 
@@ -96,6 +146,8 @@ def main() -> int:
     if custody.returncode != 0 or not custody_package.is_file():
         raise SystemExit("FAIL_CLOSED: runtime-profile-map custody package generation failed\n" + custody.stderr[-4000:] + custody.stdout[-4000:])
 
+    custody_result = maybe_custody(root, custody_package)
+
     result = {
         "schema": "stegverse.runtime-profile-map-cycle-finalization/v1",
         "state": "FINALIZED_NON_AUTHORIZING",
@@ -106,13 +158,13 @@ def main() -> int:
         "canonical_coordination_validation_passed": True,
         "custody_package_ref": str(custody_package),
         "custody_package_sha256": sha256(custody_package),
-        "custody_performed": False,
+        "master_records_custody": custody_result,
         "coordination_state_changed": False,
         "claim_or_fence_minted": False,
         "execution_authority_granted": False,
         "workercoordinator_admission_still_required": True,
         "interlock_intr_transition_admission_still_required": True,
-        "master_records_custody_still_required": True,
+        "master_records_custody_still_required": not bool(custody_result.get("custody_performed")),
         "authority_effect": "NONE_COORDINATION_PROJECTION_FINALIZATION_ONLY",
     }
     print(json.dumps(result, sort_keys=True))
