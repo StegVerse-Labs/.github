@@ -9,6 +9,15 @@
     "generation": {"type": "integer", "minimum": 1},
     "status": {"type": "string"},
     "generated_at": {"type": ["string", "null"]},
+    "freshness_policy": {
+      "type": "object",
+      "properties": {
+        "observation_max_age_seconds": {"type": "integer", "minimum": 1},
+        "stale_is_unavailable": {"const": false},
+        "unknown_is_false": {"const": false}
+      },
+      "additionalProperties": true
+    },
     "authority": {
       "type": "object",
       "required": ["map_grants_execution_authority", "capability_match_grants_authority", "worker_claim_authority", "credential_authority", "ingress_egress_authority"],
@@ -67,6 +76,7 @@
           "type": "object",
           "properties": {
             "state": {"enum": ["UNKNOWN", "DECLARED_ONLY", "OBSERVED", "STALE", "UNAVAILABLE", "CONFLICT"]},
+            "freshness_state": {"enum": ["CURRENT", "STALE", "UNKNOWN", "CONFLICT"]},
             "observed_at": {"type": ["string", "null"]},
             "predicate_map": {"type": "object"},
             "evidence_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
