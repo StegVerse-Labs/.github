@@ -2,12 +2,14 @@
 """Finalize one resident runtime-profile-map cycle after map/resolution generation.
 
 Applies all runtime-resolution projections atomically, validates the canonical work
-coordination source/runtime projection contract, then emits one non-authorizing
-routing-readiness receipt per canonical task with runtime requirements.
+coordination source/runtime projection contract, emits one non-authorizing routing-
+readiness receipt per canonical task, then builds one exact-hash custody input package.
+The package is not Master Records custody and grants no authority.
 """
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import subprocess
 import sys
@@ -22,6 +24,10 @@ def load(path: Path) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise RuntimeError(f"object required:{path}")
     return value
+
+
+def sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def run(command: list[str], cwd: Path) -> subprocess.CompletedProcess[str]:
@@ -44,6 +50,7 @@ def main() -> int:
     runtime_map = root / "control/runtime-profile-map.json"
     resolution_dir = root / "receipts/runtime-profile-map/task-resolutions"
     readiness_dir = root / "receipts/runtime-profile-map/routing-readiness"
+    custody_package = root / "receipts/runtime-profile-map/custody/runtime-profile-map-custody-package.latest.json"
 
     apply_cmd = [
         sys.executable, str(root / "scripts/apply_all_task_runtime_resolutions.py"),
@@ -76,10 +83,18 @@ def main() -> int:
         readiness_rows.append({
             "task_id": task_id,
             "receipt_ref": str(out),
+            "receipt_sha256": sha256(out),
             "disposition": value.get("disposition"),
             "routing_ready_for_workercoordinator_review": value.get("routing_ready_for_workercoordinator_review"),
             "execution_authority_granted": False,
         })
+
+    custody = run([
+        sys.executable, str(root / "scripts/build_runtime_profile_map_custody_package.py"),
+        "--root", str(root), "--output", str(custody_package),
+    ], root)
+    if custody.returncode != 0 or not custody_package.is_file():
+        raise SystemExit("FAIL_CLOSED: runtime-profile-map custody package generation failed\n" + custody.stderr[-4000:] + custody.stdout[-4000:])
 
     result = {
         "schema": "stegverse.runtime-profile-map-cycle-finalization/v1",
@@ -89,11 +104,15 @@ def main() -> int:
         "routing_readiness": readiness_rows,
         "routing_readiness_count": len(readiness_rows),
         "canonical_coordination_validation_passed": True,
+        "custody_package_ref": str(custody_package),
+        "custody_package_sha256": sha256(custody_package),
+        "custody_performed": False,
         "coordination_state_changed": False,
         "claim_or_fence_minted": False,
         "execution_authority_granted": False,
         "workercoordinator_admission_still_required": True,
         "interlock_intr_transition_admission_still_required": True,
+        "master_records_custody_still_required": True,
         "authority_effect": "NONE_COORDINATION_PROJECTION_FINALIZATION_ONLY",
     }
     print(json.dumps(result, sort_keys=True))
