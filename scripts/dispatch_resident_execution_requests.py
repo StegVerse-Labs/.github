@@ -93,6 +93,7 @@ CONSUMERS = (
     ("canonical_work_coordination", "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py"),
     ("runtime_profile_map", "control/resident-execution-request.d/consume-runtime-profile-map-build.py"),
     ("runtime_profile_map_custody", "control/resident-execution-request.d/consume-runtime-profile-map-custody.py"),
+    ("runtime_profile_map_reconciliation", "control/resident-execution-request.d/consume-runtime-profile-map-reconciliation.py"),
 )
 
 
@@ -162,7 +163,13 @@ def dispatch(
 
     missing = [row["consumer"] for row in outcomes if row["state"] == "CONSUMER_NOT_MATERIALIZED"]
     exceptions = [row["consumer"] for row in outcomes if row["state"] == "DISPATCH_EXCEPTION"]
-    request_failures = [row["consumer"] for row in outcomes if row["state"] not in {"NO_REQUEST", "ALREADY_CONSUMED", "WAITING_FOR_CUSTODY_PACKAGE", "MASTER_RECORDS_LOCAL_ROOT_NOT_MATERIALIZED", "MASTER_RECORDS_CUSTODY_CONSUMER_NOT_MATERIALIZED", "ATTEMPT_RECORDED", "COMPLETED"}]
+    accepted_wait_states = {
+        "NO_REQUEST", "ALREADY_CONSUMED", "WAITING_FOR_CUSTODY_PACKAGE",
+        "WAITING_FOR_MASTER_RECORDS_CUSTODY", "MASTER_RECORDS_LOCAL_ROOT_NOT_MATERIALIZED",
+        "MASTER_RECORDS_CUSTODY_CONSUMER_NOT_MATERIALIZED", "MASTER_RECORDS_PROJECTOR_NOT_MATERIALIZED",
+        "ATTEMPT_RECORDED", "COMPLETED",
+    }
+    request_failures = [row["consumer"] for row in outcomes if row["state"] not in accepted_wait_states]
     receipt = {
         "schema": "stegverse.resident-request-dispatch/v1",
         "state": "DISPATCH_COMPLETE" if not missing and not exceptions else "DISPATCH_INCOMPLETE",
