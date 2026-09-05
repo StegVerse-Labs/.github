@@ -26,13 +26,6 @@
         "modules": ["cross-task-coordination", "worker-task-admission"],
         "runtime_surfaces": [],
         "evidence_responsibilities": ["coordination-preflight"]
-      },
-      "expected_blast_radius": {
-        "repositories": ["StegVerse-Labs/.github"],
-        "paths": ["heartbeat_runtime", "control", "schemas", "tests", "docs"],
-        "modules": ["cross-task-coordination", "worker-task-admission"],
-        "runtime_surfaces": [],
-        "evidence_responsibilities": ["coordination-preflight"]
       }
     },
     {
@@ -52,9 +45,9 @@
     {
       "task_id": "CROSS-TASK-HANDOFF-PROJECTION-001",
       "goal_id": "CROSS-TASK-COORDINATION-001",
-      "state": "IMPLEMENTATION_ACTIVE",
+      "state": "SOURCE_VALIDATED",
       "autonomous_augmentation": false,
-      "required_predicates": ["PRED-CROSS-TASK-CORE-VALIDATED", "PRED-STEGINDEX-COORDINATION-PROJECTION-VALIDATED"],
+      "required_predicates": ["PRED-CROSS-TASK-CORE-VALIDATED", "PRED-STEGINDEX-COORDINATION-PROJECTION-VALIDATED", "PRED-HANDOFF-COORDINATION-PROJECTION-VALIDATED"],
       "mutation_scope": {
         "repositories": ["StegVerse-Labs/.github"],
         "paths": ["scripts/render_cross_task_coordination_handoff.py", "tests/test_cross_task_coordination_handoff_projection.py", ".github/workflows/cross-task-coordination-validation.yml"],
@@ -89,14 +82,14 @@
     },
     {
       "predicate_id": "PRED-HANDOFF-COORDINATION-PROJECTION-VALIDATED",
-      "state": "IN_PROGRESS",
+      "state": "SATISFIED",
       "authoritative_producer": "StegVerse-Labs/.github cross-task coordination validation",
       "required_schema": null,
       "required_scope": "deterministic handoff projection source",
-      "required_execution_instance": null,
+      "required_execution_instance": "33944001324",
       "max_age_seconds": null,
       "required_fields": ["validation_result"],
-      "expected_output_ref": ".github/workflows/cross-task-coordination-validation.yml"
+      "expected_output_ref": "GitHub Actions run 33944001324"
     }
   ],
   "evidence": [
@@ -123,6 +116,18 @@
       "observed_at": "2026-09-04",
       "fields": {"validation_result": "SUCCESS", "commit": "758316ea043a56fe523c222a923f726d2a0805c2"},
       "authority_effect": "EVIDENCE_ONLY"
+    },
+    {
+      "evidence_id": "EVID-HANDOFF-PROJECTION-VALIDATION-33944001324",
+      "predicate_id": "PRED-HANDOFF-COORDINATION-PROJECTION-VALIDATED",
+      "producer": "StegVerse-Labs/.github cross-task coordination validation",
+      "ref": "GitHub Actions run 33944001324",
+      "schema": null,
+      "scope": "deterministic handoff projection source",
+      "execution_instance": "33944001324",
+      "observed_at": "2026-09-04",
+      "fields": {"validation_result": "SUCCESS", "exact_head": "e6d4fb406c860b496542e5a6112128b1295d31ab"},
+      "authority_effect": "EVIDENCE_ONLY"
     }
   ],
   "claims": [
@@ -142,7 +147,7 @@
     {
       "claim_id": "CLAIM-CROSS-TASK-HANDOFF-PROJECTION-001",
       "task_id": "CROSS-TASK-HANDOFF-PROJECTION-001",
-      "state": "ACTIVE",
+      "state": "RELEASED",
       "scope": {
         "repositories": ["StegVerse-Labs/.github"],
         "paths": ["scripts/render_cross_task_coordination_handoff.py", "tests/test_cross_task_coordination_handoff_projection.py", ".github/workflows/cross-task-coordination-validation.yml"],
@@ -153,19 +158,5 @@
       "authority_effect": "COORDINATION_ONLY"
     }
   ],
-  "gaps": [
-    {
-      "predicate_id": "PRED-HANDOFF-COORDINATION-PROJECTION-VALIDATED",
-      "existing_evidence_refs": ["scripts/render_cross_task_coordination_handoff.py", "tests/test_cross_task_coordination_handoff_projection.py"],
-      "rejected_because": ["source exists but dedicated exact-head validation receipt not yet observed"],
-      "missing_observation": "dedicated validation workflow SUCCESS for the handoff projection source",
-      "required_producer": "StegVerse-Labs/.github cross-task coordination validation",
-      "required_output_ref": ".github/workflows/cross-task-coordination-validation.yml",
-      "required_schema": null,
-      "required_fields": ["validation_result"],
-      "required_freshness": null,
-      "collision_refs": [],
-      "action_without_collision": "consume the dedicated validation result; do not reopen WorkerCoordinator or StegIndex implementation"
-    }
-  ]
+  "gaps": []
 }
