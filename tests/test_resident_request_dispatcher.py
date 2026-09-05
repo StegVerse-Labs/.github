@@ -16,6 +16,13 @@ assert SPEC and SPEC.loader
 mod = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(mod)
 
+PROTECTED_AWARENESS_CONSUMERS = {
+    "stegverse001_bounded_autonomy",
+    "sv002_org_runtime_activation",
+    "sv011_phase5_source_materialization",
+    "sv011_phase5",
+}
+
 
 class ResidentRequestDispatcherTests(unittest.TestCase):
     def test_failed_request_does_not_starve_later_consumers(self) -> None:
@@ -63,12 +70,31 @@ class ResidentRequestDispatcherTests(unittest.TestCase):
             self.assertEqual(receipt["state"], "DISPATCH_COMPLETE")
             self.assertEqual(receipt["selection_scope"], "ALL_REGISTERED")
             self.assertEqual(receipt["consumer_count"], len(mod.CONSUMERS))
-            self.assertEqual(len(calls), len(mod.CONSUMERS))
+            self.assertEqual(receipt["consumers_visited"], len(mod.CONSUMERS))
+            # These four entity consumers are deliberately fail-closed until the
+            # Astra-class standing awareness has been materialized. They are still
+            # visited by the dispatcher, but the subprocess runner must not execute
+            # them without the prerequisite awareness receipt/state.
+            self.assertEqual(
+                len(calls),
+                len(mod.CONSUMERS) - len(PROTECTED_AWARENESS_CONSUMERS),
+            )
             self.assertIn("g18", receipt["request_failures"])
             self.assertFalse(receipt["request_failure_blocks_later_requests"])
             self.assertFalse(receipt["request_dispatch_grants_authority"])
             self.assertFalse(receipt["github_token_required"])
             self.assertFalse(receipt["second_machine_required"])
+
+            outcomes = {row["consumer"]: row for row in receipt["outcomes"]}
+            for consumer in PROTECTED_AWARENESS_CONSUMERS:
+                self.assertIn(consumer, outcomes)
+                self.assertFalse(outcomes[consumer]["attempted"])
+            # A consumer after the protected block must still be invoked, preserving
+            # the original non-starvation invariant for eligible independent work.
+            later = "glm53_sovereign_lane"
+            self.assertIn(later, outcomes)
+            self.assertTrue(outcomes[later]["attempted"])
+
             for _command, kwargs in calls:
                 self.assertEqual(kwargs["env"].get("STEGVERSE_STEGINDEX_SOURCE_ROOT"), "/srv/stegverse/StegIndex")
                 self.assertNotIn("GITHUB_TOKEN", kwargs["env"])
@@ -93,7 +119,16 @@ class ResidentRequestDispatcherTests(unittest.TestCase):
             receipt = mod.dispatch(source, runtime, runner=runner, env={"PATH": "/bin"})
             self.assertEqual(receipt["state"], "DISPATCH_INCOMPLETE")
             self.assertEqual(receipt["missing_consumers"], ["ecosystem_chat"])
-            self.assertEqual(len(calls), len(mod.CONSUMERS) - 1)
+            self.assertEqual(receipt["consumers_visited"], len(mod.CONSUMERS))
+            self.assertEqual(
+                len(calls),
+                len(mod.CONSUMERS) - 1 - len(PROTECTED_AWARENESS_CONSUMERS),
+            )
+            outcomes = {row["consumer"]: row for row in receipt["outcomes"]}
+            for consumer in PROTECTED_AWARENESS_CONSUMERS:
+                self.assertIn(consumer, outcomes)
+                self.assertFalse(outcomes[consumer]["attempted"])
+            self.assertTrue(outcomes["glm53_sovereign_lane"]["attempted"])
             self.assertTrue((runtime / mod.RECEIPT_REL).is_file())
 
     def test_exact_selector_visits_only_requested_consumer(self) -> None:
