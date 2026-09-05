@@ -31,6 +31,10 @@
       "properties": {"goal_id": {"type": "string", "minLength": 1}},
       "additionalProperties": true
     },
+    "binding": {
+      "type": "object",
+      "additionalProperties": {"type": ["string", "number", "integer", "boolean"]}
+    },
     "scope": {
       "type": "object",
       "properties": {
@@ -60,6 +64,8 @@
       "required": ["predicate_id", "state", "authoritative_producer"],
       "properties": {
         "predicate_id": {"type": "string", "minLength": 1},
+        "semantic_predicate_id": {"type": ["string", "null"]},
+        "subject_binding": {"$ref": "#/$defs/binding"},
         "state": {"enum": ["SATISFIED", "UNSATISFIED", "IN_PROGRESS", "UNKNOWN", "CONFLICTED"]},
         "authoritative_producer": {"type": "string", "minLength": 1},
         "required_schema": {"type": ["string", "null"]},
@@ -77,6 +83,7 @@
       "properties": {
         "evidence_id": {"type": "string", "minLength": 1},
         "predicate_id": {"type": "string", "minLength": 1},
+        "subject_binding": {"$ref": "#/$defs/binding"},
         "producer": {"type": "string", "minLength": 1},
         "ref": {"type": "string", "minLength": 1},
         "schema": {"type": ["string", "null"]},
@@ -104,6 +111,8 @@
       "required": ["predicate_id", "rejected_because", "required_producer", "action_without_collision"],
       "properties": {
         "predicate_id": {"type": "string"},
+        "semantic_predicate_id": {"type": ["string", "null"]},
+        "subject_binding": {"$ref": "#/$defs/binding"},
         "existing_evidence_refs": {"type": "array", "items": {"type": "string"}},
         "rejected_because": {"type": "array", "items": {"type": "string"}},
         "missing_observation": {"type": ["string", "null"]},
