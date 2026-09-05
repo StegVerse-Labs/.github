@@ -47,6 +47,27 @@
       "resident_materialization": "EXACT_LOCAL_SOURCE_COPY_ALLOWED_OBSERVATION_FRESHNESS_REEVALUATED"
     }
   ],
+  "worker_profile_normalization": {
+    "default_directions": ["INTERNAL"],
+    "default_environment_classes": [],
+    "overrides": {
+      "sovereign-runtime-worker-v1": {
+        "environment_classes": ["SOVEREIGN_RESIDENT"],
+        "directions": ["INTERNAL"],
+        "reason": "This profile is explicitly defined for admitted sovereign-runtime execution under the existing resident WorkerCoordinator substrate."
+      },
+      "governance-sovereign-observer-v1": {
+        "environment_classes": ["SOVEREIGN_RESIDENT"],
+        "directions": ["OBSERVATION", "INTERNAL"],
+        "reason": "This profile is explicitly limited to already-materialized sovereign observation."
+      },
+      "sovereign-resolution-worker-v1": {
+        "environment_classes": ["SOVEREIGN_RESIDENT"],
+        "directions": ["INTERNAL"],
+        "reason": "This profile exists only for sovereign goal-preserving resolution work."
+      }
+    }
+  },
   "projection_rules": {
     "missing_optional_source": "OMIT_WITH_DIAGNOSTIC",
     "missing_required_source": "FAIL_CLOSED",
@@ -61,7 +82,8 @@
     "secret_paths_allowed": false,
     "mutable_worker_registry_overwrite_allowed": false,
     "resident_router_overwrite_for_projection_allowed": false,
-    "existing_generated_projection_reset_allowed": false
+    "existing_generated_projection_reset_allowed": false,
+    "environment_normalization_must_be_explicit": true
   },
   "authority": {
     "map_grants_execution_authority": false,
