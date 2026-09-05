@@ -3,8 +3,9 @@
 
 Uses only already-local source. It materializes immutable profile-map source/control
 surfaces into the existing resident checkout, preserves mutable resident state,
-builds/validates the projection, and emits an integrity receipt. No network fetch,
-credential use, HB/oscillator advance, claim/fence minting, or second runtime is permitted.
+builds/validates the projection, emits an integrity receipt, and resolves declared
+canonical-task runtime requirements against that map. No network fetch, credential
+use, HB/oscillator advance, claim/fence minting, or second runtime is permitted.
 """
 from __future__ import annotations
 
@@ -24,17 +25,23 @@ TARGET_TASK = "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"
 TARGET_MODE = "CANONICAL_RUNTIME_PROFILE_MAP_BUILD"
 TARGET_ENTRYPOINT = Path("control/resident-execution-request.d/consume-runtime-profile-map-build.py")
 BOOTSTRAP_MAP_REL = Path("control/runtime-profile-map.json")
+CANONICAL_REGISTRY_REL = Path("data/canonical-task-registry.json")
+TASK_RESOLUTION_DIR_REL = Path("receipts/runtime-profile-map/task-resolutions")
 
 IMMUTABLE_FILES = (
     Path("schemas/runtime-profile-map.schema.json"),
+    Path("schemas/canonical-task-record.schema.json"),
     Path("control/runtime-profile-sources.json"),
     Path("control/canonical-resident-carrier-contract.json"),
     Path("control/worker-capability-profiles.json"),
     Path("control/canonical-work-runtime-profile.json"),
+    CANONICAL_REGISTRY_REL,
     Path("scripts/build_runtime_profile_map.py"),
     Path("scripts/validate_runtime_profile_map.py"),
     Path("scripts/query_runtime_profile_map.py"),
     Path("scripts/match_runtime_profile.py"),
+    Path("scripts/resolve_task_runtime_candidates.py"),
+    Path("scripts/apply_task_runtime_resolution_projection.py"),
     Path("scripts/emit_runtime_profile_map_receipt.py"),
 )
 OBSERVABILITY_DIR = Path("control/runtime-observability-consumers")
@@ -147,6 +154,36 @@ def run(command: list[str], *, cwd: Path, env: Mapping[str, str]) -> dict[str, A
     return {"command": command, "returncode": completed.returncode, "stdout_tail": completed.stdout[-4000:], "stderr_tail": completed.stderr[-4000:]}
 
 
+def resolve_tasks(runtime: Path, safe_env: Mapping[str, str]) -> list[dict[str, Any]]:
+    registry = load_json(runtime / CANONICAL_REGISTRY_REL)
+    rows: list[dict[str, Any]] = []
+    output_dir = runtime / TASK_RESOLUTION_DIR_REL
+    output_dir.mkdir(parents=True, exist_ok=True)
+    for task in registry.get("tasks", []):
+        task_id = task.get("task_id")
+        if not isinstance(task_id, str) or not isinstance(task.get("runtime_requirements"), dict):
+            continue
+        output = output_dir / f"{task_id}.json"
+        result = run([
+            sys.executable,
+            str(runtime / "scripts/resolve_task_runtime_candidates.py"),
+            task_id,
+            "--registry", str(runtime / CANONICAL_REGISTRY_REL),
+            "--map", str(runtime / BOOTSTRAP_MAP_REL),
+            "--output", str(output),
+        ], cwd=runtime, env=safe_env)
+        rows.append({
+            "task_id": task_id,
+            "returncode": result["returncode"],
+            "resolution_ref": str(output),
+            "resolution_sha256": sha256(output) if output.is_file() else None,
+            "projection_only": True,
+            "selection_grants_authority": False,
+            "command_result": result,
+        })
+    return rows
+
+
 def consume(source_root: Path, runtime_root: Path, env: Mapping[str, str] | None = None) -> dict[str, Any]:
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
@@ -163,7 +200,9 @@ def consume(source_root: Path, runtime_root: Path, env: Mapping[str, str] | None
     validate = run([sys.executable, str(runtime / "scripts/validate_runtime_profile_map.py"), "--map", str(map_path)], cwd=runtime, env=safe_env)
     receipt_path = runtime / "receipts/runtime-profile-map/runtime-profile-map.latest.json"
     evidence = run([sys.executable, str(runtime / "scripts/emit_runtime_profile_map_receipt.py"), "--map", str(map_path), "--output", str(receipt_path)], cwd=runtime, env=safe_env)
-    success = build["returncode"] == validate["returncode"] == evidence["returncode"] == 0 and receipt_path.is_file()
+    task_resolutions = resolve_tasks(runtime, safe_env) if build["returncode"] == validate["returncode"] == evidence["returncode"] == 0 else []
+    resolutions_ok = bool(task_resolutions) and all(row.get("returncode") == 0 and row.get("resolution_sha256") for row in task_resolutions)
+    success = build["returncode"] == validate["returncode"] == evidence["returncode"] == 0 and receipt_path.is_file() and resolutions_ok
     receipt = {
         "schema": "stegverse.runtime-profile-map-build-consumption/v1",
         "state": "COMPLETED" if success else "ATTEMPT_RECORDED",
@@ -179,6 +218,9 @@ def consume(source_root: Path, runtime_root: Path, env: Mapping[str, str] | None
         "validation": validate,
         "projection_receipt": evidence,
         "projection_receipt_ref": str(receipt_path),
+        "task_runtime_resolutions": task_resolutions,
+        "task_runtime_resolution_count": len(task_resolutions),
+        "task_runtime_resolution_selection_grants_authority": False,
         "network_source_fetch_performed": False,
         "credential_material_present": False,
         "credential_authority": "TV/TVC",
