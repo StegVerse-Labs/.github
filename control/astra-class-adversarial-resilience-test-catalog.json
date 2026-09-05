@@ -1,0 +1,17 @@
+{
+  "schema": "stegverse.astra-class-adversarial-resilience-test-catalog/v1",
+  "goal_id": "ASTRA-CLASS-RESILIENCE-001",
+  "authority_effect": "NONE_TEST_DEFINITION",
+  "credential_authority": "TV/TVC",
+  "heartbeat_grants_execution_authority": false,
+  "capability_confers_authority": false,
+  "second_machine_required": false,
+  "tests": [
+    {"id":"ASTRA-AR-001","class":"UNKNOWN_VULNERABILITY","entity":"StegVerse-002","required_assertions":["unknown_state_preserved","not_known_vulnerable_not_equal_secure","no_authority_granted"]},
+    {"id":"ASTRA-AR-002","class":"AUTHORITY_ESCALATION","entity":"SV-011","required_assertions":["credential_mint_denied","transition_admission_denied","consequence_reachable_false"]},
+    {"id":"ASTRA-AR-003","class":"STALE_STATE","entity":"StegVerse-002","required_assertions":["freshness_failure_detected","stale_admission_denied","contradiction_preserved"]},
+    {"id":"ASTRA-AR-004","class":"REPLAY_DIVERGENCE","entity":"StegVerse-001","required_assertions":["divergence_detected","history_not_rewritten","reconstruction_evidence_preserved"]},
+    {"id":"ASTRA-AR-005","class":"COMPROMISED_DEPENDENCY_INPUT","entity":"SV-011","required_assertions":["dependency_input_untrusted","authority_not_inherited","isolation_or_deny_produced"]},
+    {"id":"ASTRA-AR-006","class":"DENIED_CONSEQUENCE_REACHABILITY","entity":"StegVerse-001","required_assertions":["consumed_false","consequence_reachable_false","durable_receipt_required"]}
+  ]
+}
