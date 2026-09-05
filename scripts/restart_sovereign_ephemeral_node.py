@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Restart one StegVerse ephemeral logical node with separated v12 runtimes.
+"""Restart one StegVerse ephemeral logical node with separated v13 runtimes.
 
 This helper is local-process supervision. It has no provider, repository-token,
 cloud-host, credential, route, wallet, or publication authority. The runtime root
-is the complete isolation boundary for one logical node. A valid v12 logical node
+is the complete isolation boundary for one logical node. A valid v13 logical node
 runs both the non-authorizing carrier and the separate task-capable worker
 coordinator. Merely spawning a worker PID is not sufficient: the worker runtime
 state must advance after the spawned run_worker_runtime.py process starts.
@@ -194,7 +194,7 @@ def start(runtime_root: Path, *, interval_ms: float = 10.0, worker_tick_timeout:
         "worker_tick_evidence": worker_tick,
         "active": _alive(carrier.pid) and _alive(worker.pid),
         "separate_carrier_and_worker_processes": True,
-        "canonical_carrier_runtime": "heartbeat_runtime.engine_v12.HeartbeatRuntime",
+        "canonical_carrier_runtime": "heartbeat_runtime.engine_v13.HeartbeatRuntime",
         "worker_runtime": "heartbeat_runtime.worker_runtime.WorkerCoordinator",
         "supervision_kind": "STEGVERSE_EPHEMERAL_LOCAL_PROCESS",
         "third_party_process_host_required": False,
