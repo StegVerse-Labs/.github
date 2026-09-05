@@ -103,11 +103,20 @@ def resident_profile(contract: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def worker_profiles(data: dict[str, Any], substrate: dict[str, Any]) -> list[dict[str, Any]]:
+def worker_profiles(data: dict[str, Any], substrate: dict[str, Any], normalization: dict[str, Any]) -> list[dict[str, Any]]:
     rows = []
+    default_envs = normalization.get("default_environment_classes", [])
+    default_directions = normalization.get("default_directions", ["INTERNAL"])
+    overrides = normalization.get("overrides", {}) if isinstance(normalization.get("overrides"), dict) else {}
     for p in data.get("profiles", []):
+        profile_id = str(p.get("profile_id"))
+        override = overrides.get(profile_id, {}) if isinstance(overrides.get(profile_id), dict) else {}
+        environments = override.get("environment_classes", p.get("environment_classes", default_envs))
+        directions = override.get("directions", p.get("directions", default_directions))
+        require(isinstance(environments, list), f"worker profile environment normalization invalid:{profile_id}")
+        require(isinstance(directions, list), f"worker profile direction normalization invalid:{profile_id}")
         rows.append({
-            "profile_id": str(p.get("profile_id")),
+            "profile_id": profile_id,
             "profile_class": "WORKER_CAPABILITY",
             "component": str(p.get("executor_type") or p.get("profile_id")),
             "repository": "StegVerse-Labs/.github",
@@ -116,15 +125,18 @@ def worker_profiles(data: dict[str, Any], substrate: dict[str, Any]) -> list[dic
                 "effect_class": p.get("effect_class"),
                 "mutation_allowed": bool(p.get("mutation_allowed", False)),
                 "deployment_allowed": bool(p.get("deployment_allowed", False)),
-                "environment_classes": [],
-                "directions": ["INTERNAL"],
+                "environment_classes": sorted(set(str(value) for value in environments)),
+                "directions": sorted(set(str(value) for value in directions)),
             },
             "substrate": substrate,
             "required_predicates": [],
             "observed": declared_only_observation(),
             "task_selectors": [],
             "authority": base_authority(),
-            "provenance": {"source_refs": ["control/worker-capability-profiles.json"], "projection_method": "WORKER_CAPABILITY_JSON"},
+            "provenance": {
+                "source_refs": ["control/worker-capability-profiles.json", "control/runtime-profile-sources.json"],
+                "projection_method": "WORKER_CAPABILITY_JSON_WITH_EXPLICIT_ENVIRONMENT_NORMALIZATION",
+            },
         })
     return rows
 
@@ -269,7 +281,11 @@ def build(root: Path, *, now: datetime | None = None, freshness_seconds: int = D
     contract = load(root / "control/canonical-resident-carrier-contract.json")
     substrate = carrier_substrate(contract)
     profiles = [resident_profile(contract)]
-    profiles.extend(worker_profiles(load(root / "control/worker-capability-profiles.json"), substrate))
+    profiles.extend(worker_profiles(
+        load(root / "control/worker-capability-profiles.json"),
+        substrate,
+        catalog.get("worker_profile_normalization", {}),
+    ))
     profiles.extend(intr_profiles((root / "workers/universal_intr_profiled_ingress.py").read_text(encoding="utf-8"), substrate))
     profiles.append(coordination_profile(load(root / "control/canonical-work-runtime-profile.json"), substrate))
     profiles.extend(observability_profiles(root / "control/runtime-observability-consumers", substrate, now, freshness_seconds))
