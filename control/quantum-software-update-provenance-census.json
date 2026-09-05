@@ -1,0 +1,64 @@
+{
+  "schema": "stegverse.quantum-software-update-provenance-census/v1",
+  "goal_id": "QUANTUM-RESILIENCE-001",
+  "issue": "StegVerse-Labs/.github#1019",
+  "state": "PARTIAL_EXPLICIT",
+  "authority_effect": "NONE_CENSUS_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "rules": {
+    "sha256_is_integrity_not_authenticity": true,
+    "manifest_is_integrity_not_signer_identity": true,
+    "github_release_presence_is_not_cryptographic_provenance": true,
+    "ci_success_is_not_cryptographic_provenance": true,
+    "source_merge_is_not_runtime_or_release_authority": true,
+    "pqc_claim_requires_real_crypto_evidence": true
+  },
+  "surfaces": [
+    {
+      "id": "CVK-RELEASE-V0.1.9",
+      "repository": "StegVerse-Labs/continuity-vault-kit",
+      "paths": [
+        "docs/CONTINUITY_VAULT_KIT_MIRROR_HANDOFF.md",
+        "tools/build_release.py",
+        "tools/verify_release.py",
+        ".github/workflows/release-integrity.yml"
+      ],
+      "purpose": "Continuity Vault Kit release archive integrity and installation verification",
+      "observed_integrity_mechanisms": ["SHA-256 archive checksum", "per-file manifest hashes/sizes", "release evidence receipts"],
+      "observed_authenticated_signing": "NOT_FOUND_IN_SCOPED_SOURCE_SEARCH",
+      "authenticity_state": "HASH_MANIFEST_ONLY_AUTHENTICITY_UNPROVEN",
+      "quantum_state": "QUANTUM_SAFETY_UNKNOWN",
+      "authenticity_lifetime": "LONG_LIVED_RELEASE_AND_INSTALLATION",
+      "rollback_relevance": true,
+      "migration_priority": "HIGH",
+      "required_disposition": "ADD_VERSIONED_AUTHENTICATED_PROVENANCE_WITH_CRYPTO_AGILITY; preserve historical hash verification"
+    },
+    {
+      "id": "STEGCORE-PORTABLE-RELEASE",
+      "repository": "StegVerse-Labs/StegCore",
+      "paths": ["tools/prepare_portable_release.py", "sdk/portable_release_manifest.v1.json"],
+      "purpose": "Portable ecosystem package release candidate integrity and source/version binding",
+      "observed_integrity_mechanisms": ["SHA-256 archives", "SHA256SUMS", "source commit binding", "versioned component fingerprint"],
+      "observed_authenticated_signing": "NOT_FOUND_IN_SCOPED_SOURCE_SEARCH",
+      "authenticity_state": "HASH_MANIFEST_ONLY_AUTHENTICITY_UNPROVEN",
+      "quantum_state": "QUANTUM_SAFETY_UNKNOWN",
+      "authenticity_lifetime": "LONG_LIVED_SOFTWARE_DISTRIBUTION",
+      "rollback_relevance": true,
+      "migration_priority": "CRITICAL",
+      "required_disposition": "ADD_VERSIONED_AUTHENTICATED_PROVENANCE_WITH_CRYPTO_AGILITY; keep TV/TVC publication authority separate from signature validity"
+    }
+  ],
+  "unresolved_scope": [
+    "GitHub tag/commit signing and organization release-signing policy",
+    "container/package registry provenance",
+    "mobile/web asset update authenticity",
+    "firmware/node/StegOS update authenticity",
+    "third-party dependency/package provenance",
+    "release re-attestation across algorithm deprecation"
+  ],
+  "pqc_validated_surface_count": 0,
+  "runtime_claim": false,
+  "deployment_claim": false,
+  "completion_rule": "No consequence-bearing software/update path may be treated as quantum-ready until authenticated provenance, signer/key custody, verification semantics, rollback behavior, and algorithm agility are explicitly evidenced."
+}
