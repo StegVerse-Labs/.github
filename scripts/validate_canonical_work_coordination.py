@@ -3,7 +3,7 @@
 
 This validates source contracts only. It does not claim live Interlock/InTr task
 admission, WorkerCoordinator execution ownership, Master Records reconciliation,
-or runtime closure.
+runtime-profile observation, or runtime closure.
 """
 
 from __future__ import annotations
@@ -18,6 +18,7 @@ REGISTRY = ROOT / "data" / "canonical-task-registry.json"
 POLICY = ROOT / "data" / "task-coordination-policy.json"
 HANDOFF = ROOT / "docs" / "CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md"
 WORKER_REGISTRY = ROOT / "control" / "worker-registry.json"
+RUNTIME_MAP = ROOT / "control" / "runtime-profile-map.json"
 
 
 def load_json(path: Path) -> dict:
@@ -36,6 +37,7 @@ def main() -> int:
     registry = load_json(REGISTRY)
     policy = load_json(POLICY)
     worker_registry = load_json(WORKER_REGISTRY)
+    runtime_map = load_json(RUNTIME_MAP)
     handoff = HANDOFF.read_text(encoding="utf-8")
 
     require(registry.get("schema") == "stegverse.canonical-task-registry/v1", "canonical registry schema missing")
@@ -48,6 +50,10 @@ def main() -> int:
     require(authority_props.get("task_registry_mints_execution_authority", {}).get("const") is False, "task schema must deny registry execution authority")
     require(authority_props.get("worker_claim_authority", {}).get("const") == "WORKERCOORDINATOR", "task schema must bind WorkerCoordinator claim authority")
     require(authority_props.get("master_records_reality_authority", {}).get("const") is True, "task schema must bind Master Records reality authority")
+
+    runtime_resolution_props = task_props.get("runtime_resolution", {}).get("properties", {})
+    require(runtime_resolution_props.get("projection_only", {}).get("const") is True, "runtime resolution must be projection-only")
+    require(runtime_resolution_props.get("selection_grants_authority", {}).get("const") is False, "runtime resolution must deny selection authority")
 
     recon_states = set(recon_schema.get("properties", {}).get("state", {}).get("enum", []))
     expected_states = {"CONSISTENT", "TASK_AHEAD_OF_EVIDENCE", "REALITY_AHEAD_OF_TASK", "CONFLICT", "UNKNOWN", "ORPHANED_EVENT"}
@@ -65,8 +71,15 @@ def main() -> int:
     }:
         require(invariant in invariants, f"missing coordination invariant: {invariant}")
 
+    runtime_discovery = policy.get("runtime_profile_discovery", {})
+    require(runtime_discovery.get("canonical_map") == "control/runtime-profile-map.json", "canonical runtime map policy binding missing")
+    require(runtime_discovery.get("match_grants_authority") is False, "runtime profile match must not grant authority")
+
     require(isinstance(worker_registry.get("tasks"), list), "existing WorkerCoordinator registry tasks missing")
     require(worker_registry.get("schema") == "stegverse.heartbeat-worker-registry/v0.1", "unexpected WorkerCoordinator registry schema")
+    require(runtime_map.get("schema") == "stegverse.runtime-profile-map/v1", "runtime profile map schema missing")
+    require(runtime_map.get("authority", {}).get("map_grants_execution_authority") is False, "runtime map cannot grant execution authority")
+    require(runtime_map.get("authority", {}).get("capability_match_grants_authority") is False, "runtime map match cannot grant authority")
 
     task_ids: set[str] = set()
     correlation_ids: set[str] = set()
@@ -82,6 +95,20 @@ def main() -> int:
         claim = task.get("worker_claim", {})
         require(claim.get("authority") == "WORKERCOORDINATOR", f"{task_id}: claim authority drift")
         require(claim.get("projection_only") is True, f"{task_id}: registry claim must be projection-only")
+
+        requirements = task.get("runtime_requirements")
+        require(isinstance(requirements, dict), f"{task_id}: runtime requirements missing")
+        require(isinstance(requirements.get("capabilities"), list), f"{task_id}: runtime capabilities missing")
+        for flag in ("mutation_required", "deployment_required", "current_observation_required"):
+            require(isinstance(requirements.get(flag), bool), f"{task_id}: runtime requirement {flag} must be boolean")
+
+        resolution = task.get("runtime_resolution")
+        if resolution is not None:
+            require(resolution.get("projection_only") is True, f"{task_id}: runtime resolution not projection-only")
+            require(resolution.get("selection_grants_authority") is False, f"{task_id}: runtime resolution grants authority")
+            require(resolution.get("map_generation") == runtime_map.get("generation"), f"{task_id}: stale runtime-map generation projection")
+            known_profiles = {p.get("profile_id") for p in runtime_map.get("profiles", [])}
+            require(set(resolution.get("candidate_profile_ids", [])).issubset(known_profiles), f"{task_id}: runtime resolution references unknown profile")
 
         completion = task.get("completion", {})
         state = task.get("coordination_state")
@@ -108,7 +135,8 @@ def main() -> int:
     print("PASS: canonical work coordination source contract is internally consistent")
     print(f"INFO: canonical task records={len(task_ids)} correlations={len(correlation_ids)}")
     print(f"INFO: existing WorkerCoordinator task records={len(worker_registry.get('tasks', []))}")
-    print("NONCLAIM: live Interlock/InTr, WorkerCoordinator, Master Records reconciliation, and closure are not proven")
+    print(f"INFO: runtime profile map profiles={len(runtime_map.get('profiles', []))} generation={runtime_map.get('generation')}")
+    print("NONCLAIM: live Interlock/InTr, WorkerCoordinator, runtime-profile observation, Master Records reconciliation, and closure are not proven")
     return 0
 
 
