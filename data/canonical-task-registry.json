@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 5,
-  "status": "SOURCE_RUNTIME_ADAPTERS_INSTALLED_AUTHENTIC_INGRESS_PENDING",
+  "generation": 6,
+  "status": "SOURCE_RUNTIME_BOOTSTRAP_INSTALLED_AUTHENTIC_INGRESS_PENDING",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -35,7 +35,9 @@
         "scripts/reconcile_admitted_canonical_work.py",
         "scripts/consume_admitted_dependency_resolution.py",
         "scripts/apply_admitted_canonical_work_projection.py",
-        "scripts/project_worker_claim_into_canonical_task.py"
+        "scripts/project_worker_claim_into_canonical_task.py",
+        "scripts/run_canonical_work_event_bootstrap.py",
+        "scripts/install_and_run_canonical_work_event_bootstrap.py"
       ],
       "targets": {
         "organizations": ["StegVerse-Labs"],
@@ -54,7 +56,9 @@
           "admitted-work-reconciliation",
           "admitted-dependency-event-consumption",
           "authentic-ingress-registry-projection",
-          "workercoordinator-claim-fence-projection"
+          "workercoordinator-claim-fence-projection",
+          "event-triggered-canonical-work-bootstrap",
+          "route-install-and-bootstrap-wrapper"
         ]
       },
       "dependencies": [
@@ -91,7 +95,9 @@
         "scripts/reconcile_admitted_canonical_work.py",
         "scripts/consume_admitted_dependency_resolution.py",
         "scripts/apply_admitted_canonical_work_projection.py",
-        "scripts/project_worker_claim_into_canonical_task.py"
+        "scripts/project_worker_claim_into_canonical_task.py",
+        "scripts/run_canonical_work_event_bootstrap.py",
+        "scripts/install_and_run_canonical_work_event_bootstrap.py"
       ],
       "expected_evidence_predicates": [
         "SOURCE_SCHEMA_VALID",
@@ -144,6 +150,8 @@
     "ADMITTED_DEPENDENCY_EVENT_CONSUMPTION_DOES_NOT_MUTATE_WORKERCOORDINATOR",
     "AUTHENTIC_INGRESS_PROJECTION_REQUIRES_EXISTING_ADMITTED_RECEIPT",
     "WORKERCOORDINATOR_PROJECTION_DOES_NOT_MINT_CLAIM_OR_FENCE",
+    "EVENT_BOOTSTRAP_USES_EXISTING_SHARED_INTR_SERVER_ONLY",
+    "ROUTE_INSTALL_AND_BOOTSTRAP_SOURCE_DOES_NOT_PROVE_RUNTIME_EXECUTION",
     "GITHUB_FAILURE_EMAIL_NORMALIZATION_DOES_NOT_PROVE_RUNTIME_FAILURE",
     "NO_AUTHENTIC_INTERLOCK_INTR_TASK_INGRESS_IS_CLAIMED",
     "NO_WORKERCOORDINATOR_CLAIM_IS_MINTED_BY_THIS_REGISTRY",
