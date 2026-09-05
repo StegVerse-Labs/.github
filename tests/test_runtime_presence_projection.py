@@ -27,6 +27,21 @@ class RuntimePresenceProjectionTests(unittest.TestCase):
             "registration_kind": "systemd-user-separated",
         }
 
+    def self_heal_receipt(self) -> dict:
+        return {
+            "schema": "stegverse.ephemeral-sovereign-process/v3",
+            "active": True,
+            "carrier_active": True,
+            "worker_active": True,
+            "worker_task_capable_cycle_observed": True,
+            "separate_carrier_and_worker_processes": True,
+            "canonical_carrier_runtime": "heartbeat_runtime.engine_v13.HeartbeatRuntime",
+            "worker_runtime": "heartbeat_runtime.worker_runtime.WorkerCoordinator",
+            "third_party_process_host_required": False,
+            "heartbeat_grants_execution_authority": False,
+            "authority_effect": "NONE_SUPERVISION_ONLY",
+        }
+
     def test_missing_runtime_evidence_remains_unobserved(self):
         with tempfile.TemporaryDirectory() as tmp:
             result = project(Path(tmp), {"request": "receipts/request.json"})
@@ -59,7 +74,7 @@ class RuntimePresenceProjectionTests(unittest.TestCase):
             self.assertTrue(result["resident"]["present_worker_runtime_observed"])
             self.assertTrue(result["resident"]["worker_cycle_fresh"])
             self.assertTrue(result["heartbeat_reference"]["freshness_correlated"])
-            self.assertEqual(result["resident"]["activation_evidence_kind"], "CANONICAL_SERVICE_RECEIPT")
+            self.assertEqual(result["resident"]["runtime_evidence_kind"], "CANONICAL_SERVICE_RECEIPT")
 
     def test_predicate_activation_proof_remains_compatible(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -80,8 +95,36 @@ class RuntimePresenceProjectionTests(unittest.TestCase):
                 observed_at=datetime(2026, 9, 4, 12, 0, 10, tzinfo=timezone.utc),
             )
             self.assertTrue(result["resident"]["runtime_alive_observed"])
-            self.assertEqual(result["resident"]["activation_evidence_kind"], "PREDICATE_PROOF_COMPATIBILITY")
+            self.assertEqual(result["resident"]["runtime_evidence_kind"], "PREDICATE_PROOF_COMPATIBILITY")
             self.assertEqual(result["resident"]["node_id"], "node-7")
+
+    def test_self_heal_supervision_can_prove_runtime_alive_with_fresh_worker_cycle(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.write(root, "control/worker-runtime-state.json", {
+                "schema": "stegverse.worker-runtime-state/v1",
+                "runtime_tick": 12,
+                "last_cycle_at": "2026-09-04T12:00:00Z",
+                "observation_mode": "TASK_CAPABLE_WORKER_COORDINATOR",
+            })
+            self.write(root, "receipts/sovereign-host/ephemeral-process.latest.json", self.self_heal_receipt())
+            result = project(
+                root,
+                observed_at=datetime(2026, 9, 4, 12, 0, 10, tzinfo=timezone.utc),
+            )
+            self.assertTrue(result["resident"]["runtime_alive_observed"])
+            self.assertTrue(result["resident"]["present_worker_runtime_observed"])
+            self.assertEqual(result["resident"]["runtime_evidence_kind"], "CARRIER_SELF_HEAL_SUPERVISION_RECEIPT")
+            self.assertTrue(result["resident"]["self_heal_supervision_evidence_observed"])
+
+    def test_self_heal_receipt_with_legacy_carrier_binding_fails_closed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            receipt = self.self_heal_receipt()
+            receipt["canonical_carrier_runtime"] = "heartbeat_runtime.engine_v12.HeartbeatRuntime"
+            self.write(root, "receipts/sovereign-host/ephemeral-process.latest.json", receipt)
+            result = project(root)
+            self.assertFalse(result["resident"]["runtime_alive_observed"])
 
     def test_stale_worker_state_cannot_prove_present_runtime(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -113,7 +156,7 @@ class RuntimePresenceProjectionTests(unittest.TestCase):
             self.write(root, "receipts/sovereign-host/activation.latest.json", receipt)
             result = project(root)
             self.assertFalse(result["resident"]["runtime_alive_observed"])
-            self.assertEqual(result["resident"]["activation_evidence_kind"], "CANONICAL_SERVICE_RECEIPT")
+            self.assertEqual(result["resident"]["runtime_evidence_kind"], "CANONICAL_SERVICE_RECEIPT")
 
     def test_receipt_presence_is_not_collapsed(self):
         with tempfile.TemporaryDirectory() as tmp:

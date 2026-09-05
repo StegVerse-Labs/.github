@@ -79,6 +79,30 @@ def _activation_runtime_alive(activation: dict[str, Any]) -> tuple[bool, str]:
     return alive, "CANONICAL_SERVICE_RECEIPT"
 
 
+def _self_heal_runtime_alive(receipt: dict[str, Any]) -> tuple[bool, str]:
+    """Recognize the existing carrier-owned WorkerCoordinator self-heal receipt.
+
+    This evidence is process supervision only. It never grants task authority and is
+    accepted only when it describes the canonical v13 carrier + WorkerCoordinator,
+    both processes are explicitly active, and no third-party process host is required.
+    """
+    if not receipt:
+        return False, "UNOBSERVED"
+    alive = (
+        receipt.get("active") is True
+        and receipt.get("carrier_active") is True
+        and receipt.get("worker_active") is True
+        and receipt.get("worker_task_capable_cycle_observed") is True
+        and receipt.get("separate_carrier_and_worker_processes") is True
+        and receipt.get("canonical_carrier_runtime") == "heartbeat_runtime.engine_v13.HeartbeatRuntime"
+        and receipt.get("worker_runtime") == "heartbeat_runtime.worker_runtime.WorkerCoordinator"
+        and receipt.get("third_party_process_host_required") is False
+        and receipt.get("heartbeat_grants_execution_authority") is False
+        and receipt.get("authority_effect") == "NONE_SUPERVISION_ONLY"
+    )
+    return alive, "CARRIER_SELF_HEAL_SUPERVISION_RECEIPT"
+
+
 def project(
     runtime_root: Path,
     evidence_refs: dict[str, str] | None = None,
@@ -91,13 +115,31 @@ def project(
     worker_path = root / "control/worker-runtime-state.json"
     control_path = root / "control/worker-control-plane-coordination.json"
     activation_path = root / "receipts/sovereign-host/activation.latest.json"
+    self_heal_path = root / "receipts/sovereign-host/ephemeral-process.latest.json"
 
     carrier = _load(carrier_path) or {}
     worker = _load(worker_path) or {}
     activation = _load(activation_path) or {}
+    self_heal = _load(self_heal_path) or {}
 
-    activation_observed = bool(activation)
-    runtime_alive, activation_evidence_kind = _activation_runtime_alive(activation)
+    activation_runtime_alive, activation_evidence_kind = _activation_runtime_alive(activation)
+    self_heal_runtime_alive, self_heal_evidence_kind = _self_heal_runtime_alive(self_heal)
+    if activation_runtime_alive:
+        runtime_alive = True
+        runtime_evidence_kind = activation_evidence_kind
+        runtime_evidence_path = activation_path
+        runtime_evidence = activation
+    elif self_heal_runtime_alive:
+        runtime_alive = True
+        runtime_evidence_kind = self_heal_evidence_kind
+        runtime_evidence_path = self_heal_path
+        runtime_evidence = self_heal
+    else:
+        runtime_alive = False
+        runtime_evidence_kind = activation_evidence_kind if activation else self_heal_evidence_kind
+        runtime_evidence_path = activation_path if activation else self_heal_path
+        runtime_evidence = activation if activation else self_heal
+
     task_capable = (
         worker.get("schema") == "stegverse.worker-runtime-state/v1"
         and worker.get("observation_mode") != OBSERVATION_ONLY_MODE
@@ -141,10 +183,12 @@ def project(
         "schema": "stegverse.hb-runtime-presence-resident-observability/v1",
         "runtime_root": str(root),
         "resident": {
-            "node_id": activation.get("node_id") or activation.get("sovereign_node") or None,
+            "node_id": runtime_evidence.get("node_id") or runtime_evidence.get("sovereign_node") or None,
             "runtime_alive_observed": runtime_alive,
-            "activation_evidence_observed": activation_observed,
-            "activation_evidence_kind": activation_evidence_kind,
+            "activation_evidence_observed": bool(activation),
+            "self_heal_supervision_evidence_observed": bool(self_heal),
+            "runtime_evidence_kind": runtime_evidence_kind,
+            "runtime_evidence_ref": str(runtime_evidence_path),
             "task_capable_worker_observed": task_capable,
             "present_worker_runtime_observed": present_worker_runtime,
             "worker_runtime_tick": worker.get("runtime_tick"),
@@ -173,6 +217,7 @@ def project(
         "evidence": evidence,
         "control_plane": _summary(control_path),
         "activation": _summary(activation_path),
+        "self_heal_supervision": _summary(self_heal_path),
         "authority": {
             "credential_authority": "TV/TVC",
             "hb_authority_effect": "NONE_REFERENCE_ONLY",
