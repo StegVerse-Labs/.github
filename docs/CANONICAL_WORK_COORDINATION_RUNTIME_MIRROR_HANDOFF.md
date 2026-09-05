@@ -4,7 +4,7 @@ Updated: 2026-09-04
 Organization: `StegVerse-Labs`
 Repository: `StegVerse-Labs/.github`
 Goal: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`
-Status: `RUNTIME_BOOTSTRAP_SOURCE_INSTALLED_AUTHENTIC_LIFECYCLE_PENDING`
+Status: `RESIDENT_REQUEST_DISPATCH_SOURCE_INSTALLED_AUTHENTIC_LIFECYCLE_PENDING`
 
 ## Parent authority
 
@@ -37,7 +37,10 @@ The task coordination runtime consumes that substrate; it does not own or advanc
 - `scripts/project_worker_claim_into_canonical_task.py`
 - `scripts/run_canonical_work_event_bootstrap.py`
 - `scripts/install_and_run_canonical_work_event_bootstrap.py`
-- generation 6 of `data/canonical-task-registry.json`
+- `control/resident-execution-request.d/canonical-work-coordination-bootstrap-001.json`
+- `control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py`
+- `scripts/dispatch_resident_execution_requests.py`
+- generation 7 of `data/canonical-task-registry.json`
 
 Master Records corresponding bounded feed contract:
 
@@ -54,15 +57,19 @@ Master Records corresponding bounded feed contract:
 
 `scripts/install_canonical_work_universal_intr_route.py` is an idempotent fail-closed transformer for the existing `workers/universal_intr_profiled_ingress.py`. It adds the CanonicalWork adapter import, profile advertisement, and route only when expected router anchors match. Source installation cannot itself prove authentic ingress.
 
-`scripts/run_canonical_work_event_bootstrap.py` now provides a bounded executable ingress cycle using the existing shared `workers.universal_intr_profiled_ingress.Server` implementation. It refuses to run unless `CanonicalWork:Coordination` is actually installed in that shared router, builds the request through the canonical builder, uses a loopback event-triggered one-request listener instance, posts exact bytes with InTr headers, waits for the write-once CanonicalWork consumption receipt, and generates a proposed post-ingress registry projection. It does not create another listener implementation and explicitly records that it does not advance the HB oscillator or prove WorkerCoordinator claim/fence, Master Records reconciliation, governed work, egress, or closure.
+`scripts/run_canonical_work_event_bootstrap.py` provides a bounded executable ingress cycle using the existing shared `workers.universal_intr_profiled_ingress.Server` implementation. It refuses to run unless `CanonicalWork:Coordination` is actually installed in that shared router, builds the request through the canonical builder, uses a loopback event-triggered one-request listener instance, posts exact bytes with InTr headers, waits for the write-once CanonicalWork consumption receipt, and generates a proposed post-ingress registry projection. It does not create another listener implementation and explicitly records that it does not advance the HB oscillator or prove WorkerCoordinator claim/fence, Master Records reconciliation, governed work, egress, or closure.
 
-`scripts/install_and_run_canonical_work_event_bootstrap.py` now joins the previously separate machine steps for an admitted resident checkout: apply the fail-closed shared-router source transformation, verify it, then launch the bounded bootstrap in a fresh Python process so the transformed router is imported. This removes the need for a human to manually edit or sequence the route installation and first ingress test. Its output is still only authentic evidence when the resident process actually executes and emits the bounded receipts.
+`scripts/install_and_run_canonical_work_event_bootstrap.py` joins the route install/check and bounded bootstrap in one resident-machine sequence. It runs the bootstrap in a fresh Python process so the transformed shared router is imported after the route edit.
+
+The canonical work request is now staged at `control/resident-execution-request.d/canonical-work-coordination-bootstrap-001.json`. The existing resident dispatcher registers selector `canonical_work_coordination` and points it to `control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py`.
+
+That consumer deliberately resides inside `control/resident-execution-request.d`, which the existing sovereign source refresh already materializes wholesale. It therefore avoids widening the resident static-file manifest. On resident consumption it copies only an explicit Canonical Work file manifest from the already-local canonical source root to the runtime checkout, verifies exact SHA-256 byte equality for every copy, then invokes the install-and-run wrapper. No network source fetch or credential use is allowed.
 
 `scripts/consume_canonical_work_intr_materialization_request.py` requires the authentic ingress receipt, verifies payload hash and stable task/correlation identity, reads existing WorkerCoordinator state as projection only, and emits a non-authorizing coordination receipt.
 
-`scripts/apply_admitted_canonical_work_projection.py` provides the guarded registry transition projection after authentic ingress. It refuses to advance a task unless the write-once CanonicalWork ingress receipt is `INGRESS_ADMITTED`, has the expected authority boundary, and is exactly bound to the canonical-work consumption receipt. It can then project `INGRESS_ADMITTED` plus receipt references into the registry without minting execution or claim/fence authority.
+`scripts/apply_admitted_canonical_work_projection.py` provides the guarded registry transition projection after authentic ingress. It refuses to advance a task unless the write-once CanonicalWork ingress receipt is `INGRESS_ADMITTED`, has the expected authority boundary, and is exactly bound to the canonical-work consumption receipt.
 
-`scripts/project_worker_claim_into_canonical_task.py` provides guarded WorkerCoordinator ownership projection after admission. It resolves at most one existing WorkerCoordinator task identity, copies existing claim/fence/worker references into the canonical task, and never creates or modifies WorkerCoordinator ownership.
+`scripts/project_worker_claim_into_canonical_task.py` provides guarded WorkerCoordinator ownership projection after admission. It resolves at most one existing WorkerCoordinator task identity and never creates or modifies WorkerCoordinator ownership.
 
 `scripts/reconcile_admitted_canonical_work.py` binds authentic task ingress to explicit Master Records projection and existing WorkerCoordinator projection, returning only a non-authorizing disposition: reconciliation conflict, dependency blocked, existing-claim reuse/wait, or eligible for WorkerCoordinator admission review.
 
@@ -74,13 +81,16 @@ The Master Records authority-side projector scans configured retained custody ro
 
 ## Registry state
 
-`STEGVERSE-CANONICAL-WORK-COORDINATION-001` remains `PROPOSED` because no authentic Interlock/InTr task ingress receipt has yet been observed. Generation 6 records installed source/runtime-bootstrap machinery only. The next admissible governed transition remains `INGRESS_ADMITTED`.
+`STEGVERSE-CANONICAL-WORK-COORDINATION-001` remains `PROPOSED` because no authentic Interlock/InTr task ingress receipt has yet been observed. Generation 7 records the resident request/dispatch/materialization path without promoting runtime state. The next admissible governed transition remains `INGRESS_ADMITTED`.
 
 ## Required authentic runtime sequence
 
 ```text
-canonical task proposal
--> admitted resident checkout invokes install_and_run_canonical_work_event_bootstrap.py
+resident HB32/oscillator runtime dispatch cycle
+-> dispatch_resident_execution_requests.py visits canonical_work_coordination
+-> materialized control-directory consumer validates exact REQUESTED object
+-> consumer copies/verifies explicit Canonical Work source manifest from already-local source root
+-> install_and_run_canonical_work_event_bootstrap.py
 -> fail-closed route transformer applies/checks CanonicalWork binding in existing shared router
 -> canonical builder creates exact Universal InTr request
 -> HB32-derived carrier binding (reference only)
@@ -108,15 +118,15 @@ No step may infer authority from a preceding receipt. Every state change require
 
 ## Current boundary
 
-The connected GitHub surface permits repository source writes but does not execute repository-local Python. The current committed shared router source was re-read before this update and still lacked the CanonicalWork route/profile binding. That no longer requires a human edit: the new install-and-run wrapper performs the fail-closed source transformation and immediately runs the bounded ingress bootstrap in a fresh process when executed by the admitted resident runtime.
+The previous need for a person or a separate machine to manually sequence route installation and bootstrap has been removed at source level. The resident request is staged, the existing dispatcher has a canonical selector, and the consumer self-materializes only the bounded Canonical Work files from the already-local source root before invoking the wrapper.
 
-Therefore the highest-priority unresolved boundary is now actual resident execution of that wrapper in the canonical HB32/oscillator environment. Until its authentic ingress and consumption receipts exist, the registry MUST remain `PROPOSED` and no WorkerCoordinator claim/fence or runtime completion may be inferred.
+The unresolved boundary is now strictly authentic resident consumption by the already-existing HB32/oscillator WorkerCoordinator runtime. Until `receipts/sovereign-host/canonical-work-coordination-bootstrap-request-consumption.latest.json` and the nested Canonical Work ingress/consumption receipts are observed, the registry MUST remain `PROPOSED` and no runtime completion may be inferred.
 
 ## Remaining machine work
 
-1. Execute `scripts/install_and_run_canonical_work_event_bootstrap.py` in the admitted resident checkout under the existing HB32/oscillator runtime and retain its authentic ingress/consumption/bootstrap receipts.
-2. Apply the resulting authentic ingress projection to the canonical task state through governed registry persistence.
-3. Run Master Records pre-execution projection/reconciliation and WorkerCoordinator admission review; project any authentic claim/fence through `project_worker_claim_into_canonical_task.py`.
+1. Existing resident dispatcher consumes selector `canonical_work_coordination` and emits the request-consumption plus Canonical Work ingress/consumption/bootstrap receipts.
+2. Apply the resulting authentic ingress projection to canonical task state through governed registry persistence.
+3. Run Master Records pre-execution projection/reconciliation and WorkerCoordinator admission review; project any authentic claim/fence.
 4. Run governed work only under the existing WorkerCoordinator/HB32 architecture.
 5. Run post-execution Master Records reconciliation and governed egress/closure.
 6. Invoke dependency fanout from authentic admitted dependency-resolution events.
@@ -125,7 +135,7 @@ Therefore the highest-priority unresolved boundary is now actual resident execut
 
 ## Human action
 
-None currently required. All presently identified next steps are machine-owned resident/runtime integration work.
+None currently required. All presently identified next steps are machine-owned resident/runtime work.
 
 ## Archive readiness
 
