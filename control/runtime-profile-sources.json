@@ -1,0 +1,63 @@
+{
+  "schema": "stegverse.runtime-profile-sources/v1",
+  "goal_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+  "map_ref": "control/runtime-profile-map.json",
+  "schema_ref": "schemas/runtime-profile-map.schema.json",
+  "sources": [
+    {
+      "source_id": "canonical-resident-carrier",
+      "kind": "RESIDENT_SUBSTRATE",
+      "ref": "control/canonical-resident-carrier-contract.json",
+      "required": true
+    },
+    {
+      "source_id": "worker-capability-profiles",
+      "kind": "WORKER_CAPABILITY_SET",
+      "ref": "control/worker-capability-profiles.json",
+      "required": true
+    },
+    {
+      "source_id": "worker-registry",
+      "kind": "WORKER_RUNTIME_STATE",
+      "ref": "control/worker-registry.json",
+      "required": true
+    },
+    {
+      "source_id": "universal-intr-profiled-ingress",
+      "kind": "INGRESS_EGRESS_SOURCE",
+      "ref": "workers/universal_intr_profiled_ingress.py",
+      "required": true
+    },
+    {
+      "source_id": "canonical-work-runtime",
+      "kind": "COORDINATION_RUNTIME",
+      "ref": "control/canonical-work-runtime-profile.json",
+      "required": true
+    },
+    {
+      "source_id": "runtime-observability-consumers",
+      "kind": "OBSERVABILITY_DIRECTORY",
+      "ref": "control/runtime-observability-consumers",
+      "required": true
+    }
+  ],
+  "projection_rules": {
+    "missing_optional_source": "OMIT_WITH_DIAGNOSTIC",
+    "missing_required_source": "FAIL_CLOSED",
+    "missing_runtime_observation": "DECLARED_ONLY_OR_UNKNOWN",
+    "stale_runtime_observation": "STALE_NOT_UNAVAILABLE",
+    "conflicting_observations": "CONFLICT",
+    "source_presence_proves_runtime": false,
+    "profile_match_grants_authority": false,
+    "availability_grants_authority": false,
+    "credentials_allowed": false,
+    "secret_paths_allowed": false
+  },
+  "authority": {
+    "map_grants_execution_authority": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "credential_authority": "TV/TVC",
+    "ingress_egress_authority": "INTERLOCK_INTR",
+    "observed_reality_authority": "MASTER_RECORDS"
+  }
+}
