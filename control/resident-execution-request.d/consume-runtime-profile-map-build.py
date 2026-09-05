@@ -35,7 +35,6 @@ IMMUTABLE_FILES = (
     Path("control/canonical-resident-carrier-contract.json"),
     Path("control/worker-capability-profiles.json"),
     Path("control/canonical-work-runtime-profile.json"),
-    CANONICAL_REGISTRY_REL,
     Path("scripts/build_runtime_profile_map.py"),
     Path("scripts/validate_runtime_profile_map.py"),
     Path("scripts/query_runtime_profile_map.py"),
@@ -48,6 +47,10 @@ OBSERVABILITY_DIR = Path("control/runtime-observability-consumers")
 PRESERVED_RUNTIME_REQUIRED = (
     Path("control/worker-registry.json"),
     Path("workers/universal_intr_profiled_ingress.py"),
+)
+BOOTSTRAP_IF_MISSING_PRESERVE_IF_PRESENT = (
+    CANONICAL_REGISTRY_REL,
+    BOOTSTRAP_MAP_REL,
 )
 HOSTED = ("GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "CF_PAGES", "CLOUDFLARE_WORKERS")
 FORBIDDEN = ("GITHUB_TOKEN", "GH_TOKEN", "GITHUB_PAT", "GITHUB_PERSONAL_ACCESS_TOKEN", "ACTIONS_RUNTIME_TOKEN", "ACTIONS_ID_TOKEN_REQUEST_TOKEN", "OPENAI_API_KEY", "ANTHROPIC_API_KEY", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "OAUTH_TOKEN")
@@ -141,11 +144,12 @@ def materialize(source: Path, runtime: Path) -> list[dict[str, Any]]:
         require(current.is_file(), f"required existing resident state/source missing:{rel}")
         rows.append({"path": str(current), "sha256": sha256(current), "exact_copy": False, "preserved_existing_runtime_file": True, "mutable_runtime_state_overwritten": False})
 
-    map_path = runtime / BOOTSTRAP_MAP_REL
-    if not map_path.is_file():
-        rows.append(copy_exact(source / BOOTSTRAP_MAP_REL, map_path))
-    else:
-        rows.append({"path": str(map_path), "sha256": sha256(map_path), "exact_copy": False, "preserved_existing_projection_generation": True, "mutable_runtime_state_overwritten": False})
+    for rel in BOOTSTRAP_IF_MISSING_PRESERVE_IF_PRESENT:
+        current = runtime / rel
+        if not current.is_file():
+            rows.append(copy_exact(source / rel, current))
+        else:
+            rows.append({"path": str(current), "sha256": sha256(current), "exact_copy": False, "preserved_existing_runtime_projection": True, "mutable_runtime_state_overwritten": False})
     return rows
 
 
@@ -213,6 +217,7 @@ def consume(source_root: Path, runtime_root: Path, env: Mapping[str, str] | None
         "source_materialization_count": len(materialized),
         "existing_worker_registry_preserved": True,
         "existing_shared_intr_router_preserved": True,
+        "existing_canonical_task_registry_preserved_if_present": True,
         "previous_projection_generation_preserved_until_builder_write": True,
         "build": build,
         "validation": validate,
