@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "stegverse.runtime-profile-map/v1",
+  "title": "StegVerse Canonical Runtime Profile Map",
+  "type": "object",
+  "required": ["schema", "generation", "status", "authority", "profiles", "nonclaims"],
+  "properties": {
+    "schema": {"const": "stegverse.runtime-profile-map/v1"},
+    "generation": {"type": "integer", "minimum": 1},
+    "status": {"type": "string"},
+    "generated_at": {"type": ["string", "null"]},
+    "authority": {
+      "type": "object",
+      "required": ["map_grants_execution_authority", "capability_match_grants_authority", "worker_claim_authority", "credential_authority", "ingress_egress_authority"],
+      "properties": {
+        "map_grants_execution_authority": {"const": false},
+        "capability_match_grants_authority": {"const": false},
+        "worker_claim_authority": {"const": "WORKERCOORDINATOR"},
+        "credential_authority": {"const": "TV/TVC"},
+        "ingress_egress_authority": {"const": "INTERLOCK_INTR"},
+        "observed_reality_authority": {"const": "MASTER_RECORDS"}
+      },
+      "additionalProperties": true
+    },
+    "profiles": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/profile"}
+    },
+    "nonclaims": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+  },
+  "$defs": {
+    "profile": {
+      "type": "object",
+      "required": ["profile_id", "profile_class", "component", "declared", "substrate", "authority", "provenance"],
+      "properties": {
+        "profile_id": {"type": "string", "minLength": 1},
+        "profile_class": {"enum": ["RESIDENT_SUBSTRATE", "WORKER_CAPABILITY", "INGRESS_EGRESS", "COORDINATION_RUNTIME", "OBSERVABILITY_CONSUMER", "PRODUCT_RUNTIME", "EXTERNAL_RUNTIME"]},
+        "component": {"type": "string", "minLength": 1},
+        "repository": {"type": ["string", "null"]},
+        "declared": {
+          "type": "object",
+          "required": ["capabilities", "mutation_allowed", "deployment_allowed"],
+          "properties": {
+            "capabilities": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+            "effect_class": {"type": ["string", "null"]},
+            "mutation_allowed": {"type": "boolean"},
+            "deployment_allowed": {"type": "boolean"},
+            "environment_classes": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+            "directions": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+          },
+          "additionalProperties": true
+        },
+        "substrate": {
+          "type": "object",
+          "required": ["hb_protocol", "oscillator", "worker_runtime", "intr"],
+          "properties": {
+            "hb_protocol": {"type": ["string", "null"]},
+            "oscillator": {"type": ["object", "null"]},
+            "worker_runtime": {"type": ["object", "null"]},
+            "intr": {"type": ["object", "null"]},
+            "runtime_root": {"type": ["string", "null"]}
+          },
+          "additionalProperties": true
+        },
+        "required_predicates": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "observed": {
+          "type": "object",
+          "properties": {
+            "state": {"enum": ["UNKNOWN", "DECLARED_ONLY", "OBSERVED", "STALE", "UNAVAILABLE", "CONFLICT"]},
+            "observed_at": {"type": ["string", "null"]},
+            "predicate_map": {"type": "object"},
+            "evidence_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+          },
+          "additionalProperties": true
+        },
+        "task_selectors": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "authority": {
+          "type": "object",
+          "required": ["availability_grants_authority", "match_grants_authority", "claim_fence_authority", "credential_authority"],
+          "properties": {
+            "availability_grants_authority": {"const": false},
+            "match_grants_authority": {"const": false},
+            "claim_fence_authority": {"const": "WORKERCOORDINATOR"},
+            "credential_authority": {"const": "TV/TVC"},
+            "hb_grants_authority": {"const": false}
+          },
+          "additionalProperties": true
+        },
+        "provenance": {
+          "type": "object",
+          "required": ["source_refs"],
+          "properties": {
+            "source_refs": {"type": "array", "minItems": 1, "items": {"type": "string"}, "uniqueItems": true},
+            "projection_method": {"type": "string"}
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
