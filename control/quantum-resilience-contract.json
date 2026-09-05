@@ -1,0 +1,83 @@
+{
+  "schema": "stegverse.quantum-resilience-contract/v1",
+  "goal_id": "QUANTUM-RESILIENCE-001",
+  "authority": {
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "intr_interlock_transition_boundary": true,
+    "quantum_capability_confers_authority": false,
+    "pqc_validity_confers_transition_authority": false,
+    "second_machine_required": false
+  },
+  "standards_baseline": {
+    "key_establishment": ["FIPS-203:ML-KEM"],
+    "digital_signatures": ["FIPS-204:ML-DSA", "FIPS-205:SLH-DSA"],
+    "crypto_agility_required": true,
+    "single_algorithm_permanent_freeze_allowed": false
+  },
+  "required_states": [
+    "UNINVENTORIED",
+    "CLASSICAL_ONLY",
+    "HYBRID_MIGRATION_REQUIRED",
+    "HYBRID_ACTIVE",
+    "PQC_VALIDATED",
+    "DEPRECATED_CRYPTO_PRESENT",
+    "QUANTUM_SAFETY_UNKNOWN"
+  ],
+  "required_properties": [
+    "CRYPTO_AGILITY",
+    "HARVEST_NOW_DECRYPT_LATER_AWARENESS",
+    "DOWNGRADE_RESISTANCE",
+    "ALGORITHM_EXPLICITNESS",
+    "HISTORICAL_VERIFIABILITY",
+    "KEY_AND_ALGORITHM_REVOCABILITY",
+    "HYBRID_MIGRATION_SUPPORT",
+    "UNKNOWN_STATE_PRESERVATION",
+    "AUTHORITY_SEPARATION",
+    "NO_SELF_EXEMPTION"
+  ],
+  "entity_roles": [
+    {
+      "entity_id": "StegVerse-001",
+      "role": "CRYPTO_LINEAGE_REPLAY_CONTINUITY"
+    },
+    {
+      "entity_id": "StegVerse-002",
+      "role": "CRYPTO_CENSUS_STATUS_ADMISSIBILITY_PROPOSALS"
+    },
+    {
+      "entity_id": "SV-011",
+      "role": "HYBRID_PQC_HARDENING_EXPERIMENTS"
+    }
+  ],
+  "initial_known_exposures": [
+    {
+      "repository": "StegVerse-Labs/StegID",
+      "surface": "continuity receipts",
+      "primitive": "Ed25519",
+      "state": "CLASSICAL_ONLY",
+      "evidence": [
+        "GOVERNANCE.md frozen invariant: Ed25519-only signatures for receipts",
+        "docs/CONTINUITY_RECEIPTS.md signature_alg v1: ed25519"
+      ],
+      "required_disposition": "HYBRID_MIGRATION_REQUIRED"
+    },
+    {
+      "repository": "StegVerse-Labs/TVC",
+      "surface": "signed policy material",
+      "primitive": "Ed25519",
+      "state": "CLASSICAL_ONLY",
+      "evidence": [
+        "policy.rego requires w.signature.alg == ed25519"
+      ],
+      "required_disposition": "HYBRID_MIGRATION_REQUIRED"
+    }
+  ],
+  "claims": {
+    "runtime_claim": false,
+    "deployment_claim": false,
+    "pqc_implementation_claim": false,
+    "complete_crypto_inventory_claim": false,
+    "absolute_quantum_security_claim": false
+  }
+}
