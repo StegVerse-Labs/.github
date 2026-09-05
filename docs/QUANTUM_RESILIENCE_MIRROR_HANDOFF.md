@@ -2,7 +2,7 @@
 
 Repository: `StegVerse-Labs/.github`  
 Goal: `QUANTUM-RESILIENCE-001`  
-State: `SOURCE_POLICY_AWARENESS_AND_PARTIAL_CENSUS_MERGED / CRYPTO_BACKENDS_BROADER_CENSUS_RESIDENT_CONSUMPTION_REQUIRED`  
+State: `SOURCE_POLICY_AWARENESS_AND_EXPANDING_CENSUS_MERGED / CRYPTO_BACKENDS_BROADER_CENSUS_RESIDENT_CONSUMPTION_REQUIRED`  
 Credential authority: `TV/TVC`  
 GitHub token runtime authority: `NONE`
 
@@ -14,7 +14,7 @@ Make StegVerse cryptographically resilient to future cryptographically relevant 
 
 The initial standards baseline is NIST FIPS 203 (ML-KEM), FIPS 204 (ML-DSA), and FIPS 205 (SLH-DSA). StegVerse MUST remain crypto-agile rather than freezing one post-quantum algorithm forever.
 
-## Current evidence and merged migration slices
+## Current evidence and merged migration/census slices
 
 Concrete source-evidenced exposures now represented include:
 
@@ -23,24 +23,22 @@ Concrete source-evidenced exposures now represented include:
 - `StegVerse-Labs/TVC/policy.rego`: Ed25519-only warrant signature assumptions, with hybrid migration policy built but no validated PQ backend/Rego binding;
 - `StegVerse-Labs/continuity-vault-kit` SKAP browser ingress: ephemeral P-256 ECDH + HKDF-SHA256 + AES-256-GCM;
 - `StegVerse-Labs/TVC` SKAP resident/browser recipient paths: P-256 recipient/resident keys and sealed-object handling;
-- `StegVerse-Labs/StegTalk` ST-034 public TLS client: verified TLS with minimum TLSv1.2, but negotiated certificate/key-exchange algorithms remain unproven and therefore `QUANTUM_SAFETY_UNKNOWN`;
-- `StegVerse-Labs/TVC` Service Gateway TLS-material adoption: source-side certificate/key validation exists, while authentic runtime certificate algorithm and negotiated key exchange remain unknown;
+- `StegVerse-Labs/StegTalk` ST-034 public TLS client and TVC Service Gateway TLS-material adoption: scoped TLS surfaces represented, but negotiated certificate/key-exchange algorithms remain unproven and therefore `QUANTUM_SAFETY_UNKNOWN`;
 - `StegVerse-Labs/stegfin-governance` active wallet handoff: explicit USER_ONLY signing/broadcast through an external injected EIP-1193 wallet provider; StegVerse source does not establish the actual signer algorithm;
-- `StegVerse-Labs/StegID` device-wallet capability: eligibility/capability decision only; it does not itself sign or broadcast.
+- Continuity Vault Kit v0.1.9 release and StegCore portable-release tooling: SHA-256/manifests/source binding are present, while authenticated artifact signer identity is not established by scoped source search; software provenance therefore remains `QUANTUM_SAFETY_UNKNOWN`.
 
-Broader TLS/WebPKI, other device/node identity, active wallet-provider algorithms/chain constraints, software/update provenance, and long-lived stored confidentiality remain incompletely inventoried.
+The canonical crypto census has been reconciled so TLS/WebPKI, wallet signatures and software/update provenance are no longer falsely marked wholly `UNINVENTORIED`; each is now `PARTIAL_EXPLICIT / QUANTUM_SAFETY_UNKNOWN` with scoped evidence and durable issue ownership. `OTHER-DEVICE-NODE-IDENTITY` and `LONG-LIVED-STORED-CONFIDENTIALITY` remain critical `UNINVENTORIED` surfaces.
 
 The SKAP P-256 key-establishment surfaces are explicitly harvest-now/decrypt-later relevant because recorded ciphertext may outlive the classical asymmetric assumption. This does not imply AES-256-GCM or HKDF-SHA256 are themselves deprecated; the migration target is the asymmetric key-establishment leg.
 
 Current census source state:
 
 ```text
-known CLASSICAL_ONLY surfaces in canonical crypto census: 3
-known HYBRID_MIGRATION_REQUIRED surfaces in canonical crypto census: 2
+known CLASSICAL_ONLY surfaces: 3
+known HYBRID_MIGRATION_REQUIRED surfaces: 2
+scoped PARTIAL_EXPLICIT / QUANTUM_SAFETY_UNKNOWN areas: TLS/WebPKI, wallet signatures, software/update provenance
+critical UNINVENTORIED areas: OTHER-DEVICE-NODE-IDENTITY, LONG-LIVED-STORED-CONFIDENTIALITY
 PQC_VALIDATED surfaces: 0
-TLS/confidentiality scoped census: PARTIAL_EXPLICIT
-wallet/signature scoped census: PARTIAL_EXPLICIT
-critical unresolved scope: remains present
 ```
 
 Merged source progress:
@@ -70,12 +68,18 @@ Organization control-plane run 33999764084: SUCCESS
 
 .github PR #1018
 merge: 328e1846ba50b62ee5251bcac316f9c2efd0e847
-result: wallet/transaction-signature census preserving USER_ONLY sign/broadcast authority and explicitly refusing to infer the active signer algorithm from unrelated secp256k1 references
+result: wallet/transaction-signature census preserving USER_ONLY sign/broadcast authority and refusing to infer active signer algorithm from unrelated secp256k1 references
 Heartbeat run 33999840503: SUCCESS
 Organization control-plane run 33999840550: SUCCESS
+
+.github PR #1020
+merge: ef6ade876f5d1ec5e0de5dc8d555b73ed2013c57
+result: software/update provenance census; Continuity Vault Kit v0.1.9 and StegCore portable releases are represented as hash/manifest integrity paths with authenticated signing unproven
+Heartbeat run 34000017886: SUCCESS
+Organization control-plane run 34000018423: SUCCESS
 ```
 
-The runtime-awareness source binds the canonical contract and census into three entity-specific standing states through the existing WorkerCoordinator/dispatcher substrate. Protected SV001/SV002/SV011 execution now requires both Astra-class standing awareness and quantum-resilience standing awareness. Missing quantum awareness fails closed as `QUANTUM_STANDING_AWARENESS_REQUIRED`.
+The runtime-awareness source binds the canonical contract and census into three entity-specific standing states through the existing WorkerCoordinator/dispatcher substrate. Protected SV001/SV002/SV011 execution requires both Astra-class and quantum-resilience standing awareness. Missing quantum awareness fails closed as `QUANTUM_STANDING_AWARENESS_REQUIRED`.
 
 These are source/control/census results only. They do not prove deployed PQ protection or authentic resident quantum awareness.
 
@@ -100,6 +104,10 @@ StegVerse-Labs/.github#1014
 purpose: TLS/WebPKI and long-lived confidentiality census
 handoff: docs/QUANTUM_TLS_CONFIDENTIALITY_CENSUS_MIRROR_HANDOFF.md
 
+StegVerse-Labs/.github#1019
+purpose: software/update provenance census and authenticated-provenance migration
+handoff: docs/QUANTUM_SOFTWARE_UPDATE_PROVENANCE_CENSUS_MIRROR_HANDOFF.md
+
 StegVerse-Labs/Site#1027
 purpose: determine which Site P-256 browser surfaces are active vs historical/example-only
 ```
@@ -112,11 +120,12 @@ purpose: determine which Site P-256 browser surfaces are active vs historical/ex
 4. InTr/Interlock remains the transition boundary.
 5. Cryptographic algorithms MUST be explicit, versioned and replaceable.
 6. Long-lived confidentiality MUST account for harvest-now/decrypt-later exposure.
-7. Historical receipts MUST remain verifiable across algorithm deprecation without silently rewriting history.
+7. Historical receipts and release evidence MUST remain verifiable across algorithm deprecation without silently rewriting history.
 8. Migration SHOULD be hybrid when practical for consequence-bearing paths: classical + standardized PQ protection until the migration gate is explicitly retired.
 9. New PQ algorithms are not automatically admitted merely because they are post-quantum; implementation quality, side channels, parameter sets, provenance and validation remain required.
 10. No second user-operated machine is required by this program.
 11. Wallet migration MUST preserve explicit USER_ONLY signing and broadcast authority.
+12. Hash/checksum/manifests are integrity evidence and MUST NOT be treated as authenticated signer identity or cryptographic provenance.
 
 ## Canonical states
 
@@ -128,12 +137,12 @@ purpose: determine which Site P-256 browser surfaces are active vs historical/ex
 - `DEPRECATED_CRYPTO_PRESENT`
 - `QUANTUM_SAFETY_UNKNOWN`
 
-A surface MUST NOT transition to `HYBRID_ACTIVE` or `PQC_VALIDATED` from documentation, suite naming, policy assertions, source merge or CI alone. Real cryptographic implementation and validation evidence are required.
+A surface MUST NOT transition to `HYBRID_ACTIVE` or `PQC_VALIDATED` from documentation, suite naming, policy assertions, source merge, checksum/manifests or CI alone. Real cryptographic implementation and validation evidence are required.
 
 ## Three-entity responsibilities
 
 ### StegVerse-001
-Preserve cryptographic lineage, key/algorithm transition history, receipt replay and historical-verification continuity. Detect replay divergence caused by migration and preserve pre-migration evidence without rewriting it.
+Preserve cryptographic lineage, key/algorithm transition history, receipt/release replay and historical-verification continuity. Detect replay divergence caused by migration and preserve pre-migration evidence without rewriting it.
 
 ### StegVerse-002
 Own the canonical represented crypto census and algorithm-status knowledge: primitive, purpose, key lifetime, data lifetime, quantum exposure, migration state, evidence freshness and unresolved unknowns. It may propose policy changes but does not authorize them.
@@ -144,16 +153,17 @@ Construct and test bounded hybrid/PQC migration candidates, including compatibil
 ## Remaining machine tasks
 
 1. materialize the merged quantum-awareness source into the sovereign resident source tree and obtain the seven authentic artifacts defined by `docs/QUANTUM_RUNTIME_AWARENESS_MIRROR_HANDOFF.md`;
-2. continue the crypto census until no CRITICAL surface is `UNINVENTORIED` or unbounded;
-3. integrate a real validated ML-DSA backend into StegID receipt mint/verify paths;
-4. integrate a real validated ML-DSA verifier into TVC and bind the active warrant gate to versioned suites;
-5. design the P-256 current-phone device-possession migration around actual platform capability, with explicit compensating controls if native PQ device credentials are unavailable;
-6. design and validate hybrid P-256 + ML-KEM key establishment for the SKAP browser/resident paths represented by continuity-vault-kit#187 and TVC#322;
-7. extend the TLS/WebPKI census beyond the current StegTalk/TVC slices and introduce ML-KEM/hybrid dispositions where long-lived confidentiality creates harvest-now/decrypt-later risk;
-8. extend the wallet census to actual admitted wallet-provider algorithms, chain constraints and repository-controlled verification/projection cryptography without changing USER_ONLY signing/broadcast authority;
-9. inventory software/update provenance and long-lived stored confidentiality;
-10. produce executable downgrade, stale-key, revoked-key, unknown-suite, hybrid verification, rollback and historical-verification tests;
-11. propagate release-ready semantics to Site, Publisher, admissibility-wiki and stegguardian-wiki only after their handoffs permit it.
+2. inventory `OTHER-DEVICE-NODE-IDENTITY` until no critical device/node identity surface is unbounded;
+3. inventory `LONG-LIVED-STORED-CONFIDENTIALITY`, including encrypted archives/backups and asymmetric wrapping dependencies;
+4. integrate a real validated ML-DSA backend into StegID receipt mint/verify paths;
+5. integrate a real validated ML-DSA verifier into TVC and bind the active warrant gate to versioned suites;
+6. design the P-256 current-phone device-possession migration around actual platform capability, with explicit compensating controls if native PQ device credentials are unavailable;
+7. design and validate hybrid P-256 + ML-KEM key establishment for the SKAP browser/resident paths represented by continuity-vault-kit#187 and TVC#322;
+8. extend TLS/WebPKI census to real negotiated algorithms and give long-lived-sensitive paths an ML-KEM/hybrid disposition;
+9. extend wallet census to actual admitted wallet-provider algorithms, chain constraints and repository-controlled verification/projection cryptography while preserving USER_ONLY authority;
+10. extend software/update provenance census to org tag/commit signing, registries, Site/web/mobile/StegOS updates and dependency provenance, then implement a versioned authenticated provenance envelope;
+11. produce executable downgrade, stale-key, revoked-key, unknown-suite, hybrid verification, rollback and historical-verification tests;
+12. propagate release-ready semantics to Site, Publisher, admissibility-wiki and stegguardian-wiki only after their handoffs permit it.
 
 ## Runtime-awareness evidence gate
 
@@ -177,8 +187,9 @@ The aggregate must be `COMPLETED`, have `entity_count=3`, exact contract/census 
 - no critical surface remains `UNINVENTORIED` or unbounded;
 - classical-only asymmetric dependencies have an admitted migration disposition;
 - designated high-value paths have hybrid/PQC implementation and executable validation evidence;
+- authenticated software provenance is separated from checksum/manifest integrity and has crypto-agile signer/custody semantics;
 - downgrade, rollback, stale-key and deprecated-algorithm paths fail closed;
-- historical receipt verification survives algorithm migration;
+- historical receipt/release verification survives algorithm migration;
 - harvest-now/decrypt-later exposure has been classified and mitigated where required;
 - all three AI entities authentically consume the standing quantum-resilience state in their assigned roles;
 - wallet authority remains USER_ONLY for signing/broadcast;
@@ -197,4 +208,4 @@ The aggregate must be `COMPLETED`, have `entity_count=3`, exact contract/census 
 
 ## Archive posture
 
-This handoff is the canonical continuation point for the quantum-resilience program. Source/CI evidence must never be represented as deployed PQ protection or authentic resident execution evidence.
+This handoff is the canonical continuation point for the quantum-resilience program. Source/CI/checksum/manifests must never be represented as deployed PQ protection, authenticated release provenance, or authentic resident execution evidence.
