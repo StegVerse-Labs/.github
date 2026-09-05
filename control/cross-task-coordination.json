@@ -112,6 +112,29 @@
         "docs/ECOSYSTEM_CHAT_ORPHAN_RECOVERY_MIRROR_HANDOFF.md",
         "control/runtime-observability-consumers/ecosystem-chat-sovereign-inference-001.json"
       ]
+    },
+    {
+      "predicate_id": "PRED-RESIDENT-REQUEST-CONSUMED-STEGINDEX-ONE-SHOT-001",
+      "semantic_predicate_id": "resident_request_consumed",
+      "subject_binding": {
+        "request_id": "RESIDENT-EXEC-ONE-SHOT-STACK-ACTIVATION-001",
+        "consumer_task_id": "SHWP-ONE-SHOT-RESIDENT-STACK-ACTIVATION-001"
+      },
+      "state": "UNKNOWN",
+      "description": "The exact one-shot resident stack activation request required by StegIndex #4 reached terminal authentic consumption; qualifying receipt state is COMPLETED or ALREADY_CONSUMED with activation_complete=true.",
+      "authoritative_producer": "existing resident one-shot stack activation consumer",
+      "required_schema": "stegverse.resident-execution-request-consumption/v1",
+      "required_scope": "StegIndex #4 one-shot resident stack activation request consumption and source-root observation",
+      "required_execution_instance": "RESIDENT-EXEC-ONE-SHOT-STACK-ACTIVATION-001",
+      "max_age_seconds": null,
+      "required_fields": ["request_id", "task_id", "state", "activation_complete", "stegindex_source_root_resolved"],
+      "expected_output_ref": "receipts/sovereign-host/one-shot-resident-stack-activation-request-consumption.latest.json",
+      "consumers": ["StegVerse-Labs/StegIndex#4"],
+      "canonical_source_refs": [
+        "StegVerse-Labs/StegIndex/docs/STEGINDEX_RESIDENT_PROOF_CONTINUATION_20260903.md",
+        "control/resident-execution-request.d/one-shot-resident-stack-activation-001.json",
+        "scripts/consume_one_shot_resident_stack_activation_request.py"
+      ]
     }
   ],
   "evidence": [
@@ -198,6 +221,24 @@
       "required_freshness": null,
       "collision_refs": [],
       "action_without_collision": "Consume the existing resident request bridge result when emitted; do not create a parallel resident transport or replay completed orphan recovery."
+    },
+    {
+      "predicate_id": "PRED-RESIDENT-REQUEST-CONSUMED-STEGINDEX-ONE-SHOT-001",
+      "semantic_predicate_id": "resident_request_consumed",
+      "subject_binding": {
+        "request_id": "RESIDENT-EXEC-ONE-SHOT-STACK-ACTIVATION-001",
+        "consumer_task_id": "SHWP-ONE-SHOT-RESIDENT-STACK-ACTIVATION-001"
+      },
+      "existing_evidence_refs": [],
+      "rejected_because": ["NO_QUALIFYING_EVIDENCE_OBSERVED"],
+      "missing_observation": "terminal authentic one-shot resident stack activation consumption receipt for request RESIDENT-EXEC-ONE-SHOT-STACK-ACTIVATION-001 with activation_complete=true and StegIndex source-root resolution recorded",
+      "required_producer": "existing resident one-shot stack activation consumer",
+      "required_output_ref": "receipts/sovereign-host/one-shot-resident-stack-activation-request-consumption.latest.json",
+      "required_schema": "stegverse.resident-execution-request-consumption/v1",
+      "required_fields": ["request_id", "task_id", "state", "activation_complete", "stegindex_source_root_resolved"],
+      "required_freshness": null,
+      "collision_refs": [],
+      "action_without_collision": "Allow the existing WorkerCoordinator/resident dispatcher to consume the already-REQUESTED one-shot activation request; do not create a duplicate request, scheduler, resident transport, or proof-specific executor."
     }
   ]
 }
