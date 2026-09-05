@@ -3,6 +3,7 @@
 
 Uses only already-local source. It materializes immutable profile-map/coordination
 surfaces into the existing resident checkout, preserves mutable resident state,
+validates the complete resident chain in the materialized runtime before building,
 builds/validates the profile map, emits integrity evidence, resolves canonical-task
 runtime requirements, persists those projections, validates coordination consistency,
 and emits per-task routing-readiness plus custody-input evidence. No network fetch,
@@ -23,6 +24,7 @@ from typing import Any, Mapping
 
 REQUEST_REL = Path("control/resident-execution-request.d/runtime-profile-map-build-001.json")
 CONSUMPTION_REL = Path("receipts/sovereign-host/runtime-profile-map-build-request-consumption.latest.json")
+CHAIN_VALIDATION_REL = Path("receipts/runtime-profile-map/source-chain-validation.latest.json")
 TARGET_TASK = "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"
 TARGET_MODE = "CANONICAL_RUNTIME_PROFILE_MAP_BUILD"
 TARGET_ENTRYPOINT = Path("control/resident-execution-request.d/consume-runtime-profile-map-build.py")
@@ -43,6 +45,7 @@ IMMUTABLE_FILES = (
     Path("docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md"),
     Path("scripts/build_runtime_profile_map.py"),
     Path("scripts/validate_runtime_profile_map.py"),
+    Path("scripts/validate_runtime_profile_map_resident_chain.py"),
     Path("scripts/query_runtime_profile_map.py"),
     Path("scripts/match_runtime_profile.py"),
     Path("scripts/resolve_task_runtime_candidates.py"),
@@ -58,6 +61,7 @@ OBSERVABILITY_DIR = Path("control/runtime-observability-consumers")
 PRESERVED_RUNTIME_REQUIRED = (
     Path("control/worker-registry.json"),
     Path("workers/universal_intr_profiled_ingress.py"),
+    Path("scripts/dispatch_resident_execution_requests.py"),
 )
 BOOTSTRAP_IF_MISSING_PRESERVE_IF_PRESENT = (
     CANONICAL_REGISTRY_REL,
@@ -169,6 +173,23 @@ def run(command: list[str], *, cwd: Path, env: Mapping[str, str]) -> dict[str, A
     return {"command": command, "returncode": completed.returncode, "stdout_tail": completed.stdout[-4000:], "stderr_tail": completed.stderr[-4000:]}
 
 
+def validate_materialized_chain(runtime: Path, safe_env: Mapping[str, str]) -> dict[str, Any]:
+    output = runtime / CHAIN_VALIDATION_REL
+    result = run([
+        sys.executable,
+        str(runtime / "scripts/validate_runtime_profile_map_resident_chain.py"),
+        "--root", str(runtime),
+        "--output", str(output),
+    ], cwd=runtime, env=safe_env)
+    value = load_json(output) if result["returncode"] == 0 and output.is_file() else None
+    result["validation_ref"] = str(output)
+    result["validation_sha256"] = sha256(output) if output.is_file() else None
+    result["state"] = value.get("state") if isinstance(value, dict) else None
+    result["runtime_execution_observed"] = value.get("runtime_execution_observed") if isinstance(value, dict) else False
+    result["authority_effect"] = "NONE_SOURCE_CHAIN_PREFLIGHT_ONLY"
+    return result
+
+
 def resolve_tasks(runtime: Path, safe_env: Mapping[str, str]) -> list[dict[str, Any]]:
     registry = load_json(runtime / CANONICAL_REGISTRY_REL)
     rows: list[dict[str, Any]] = []
@@ -228,16 +249,18 @@ def consume(source_root: Path, runtime_root: Path, env: Mapping[str, str] | None
     request_hash = stable_hash(request)
     materialized = materialize(source, runtime)
     safe_env = clean_env(env)
+    chain_preflight = validate_materialized_chain(runtime, safe_env)
+    chain_ok = chain_preflight.get("returncode") == 0 and chain_preflight.get("state") == "SOURCE_CHAIN_VALID" and bool(chain_preflight.get("validation_sha256"))
     map_path = runtime / BOOTSTRAP_MAP_REL
-    build = run([sys.executable, str(runtime / "scripts/build_runtime_profile_map.py"), "--root", str(runtime)], cwd=runtime, env=safe_env)
-    validate = run([sys.executable, str(runtime / "scripts/validate_runtime_profile_map.py"), "--map", str(map_path)], cwd=runtime, env=safe_env)
+    build = run([sys.executable, str(runtime / "scripts/build_runtime_profile_map.py"), "--root", str(runtime)], cwd=runtime, env=safe_env) if chain_ok else {"returncode": None, "state": "NOT_ATTEMPTED_CHAIN_PREFLIGHT_FAILED"}
+    validate = run([sys.executable, str(runtime / "scripts/validate_runtime_profile_map.py"), "--map", str(map_path)], cwd=runtime, env=safe_env) if build.get("returncode") == 0 else {"returncode": None, "state": "NOT_ATTEMPTED"}
     receipt_path = runtime / "receipts/runtime-profile-map/runtime-profile-map.latest.json"
-    evidence = run([sys.executable, str(runtime / "scripts/emit_runtime_profile_map_receipt.py"), "--map", str(map_path), "--output", str(receipt_path)], cwd=runtime, env=safe_env)
-    task_resolutions = resolve_tasks(runtime, safe_env) if build["returncode"] == validate["returncode"] == evidence["returncode"] == 0 else []
+    evidence = run([sys.executable, str(runtime / "scripts/emit_runtime_profile_map_receipt.py"), "--map", str(map_path), "--output", str(receipt_path)], cwd=runtime, env=safe_env) if validate.get("returncode") == 0 else {"returncode": None, "state": "NOT_ATTEMPTED"}
+    task_resolutions = resolve_tasks(runtime, safe_env) if build.get("returncode") == validate.get("returncode") == evidence.get("returncode") == 0 else []
     resolutions_ok = bool(task_resolutions) and all(row.get("returncode") == 0 and row.get("resolution_sha256") for row in task_resolutions)
     finalization = finalize_cycle(runtime, safe_env) if resolutions_ok else {"returncode": None, "state": "NOT_ATTEMPTED"}
     finalization_ok = finalization.get("returncode") == 0 and bool(finalization.get("registry_sha256")) and bool(finalization.get("custody_package_sha256"))
-    success = build["returncode"] == validate["returncode"] == evidence["returncode"] == 0 and receipt_path.is_file() and resolutions_ok and finalization_ok
+    success = chain_ok and build.get("returncode") == validate.get("returncode") == evidence.get("returncode") == 0 and receipt_path.is_file() and resolutions_ok and finalization_ok
     receipt = {
         "schema": "stegverse.runtime-profile-map-build-consumption/v1",
         "state": "COMPLETED" if success else "ATTEMPT_RECORDED",
@@ -246,8 +269,11 @@ def consume(source_root: Path, runtime_root: Path, env: Mapping[str, str] | None
         "task_id": TARGET_TASK,
         "source_materialization": materialized,
         "source_materialization_count": len(materialized),
+        "resident_chain_preflight": chain_preflight,
+        "resident_chain_preflight_required": True,
         "existing_worker_registry_preserved": True,
         "existing_shared_intr_router_preserved": True,
+        "existing_resident_dispatcher_preserved": True,
         "existing_canonical_task_registry_preserved_before_projection": True,
         "previous_projection_generation_preserved_until_builder_write": True,
         "build": build,
@@ -268,7 +294,7 @@ def consume(source_root: Path, runtime_root: Path, env: Mapping[str, str] | None
         "heartbeat_grants_execution_authority": False,
         "oscillator_grants_execution_authority": False,
         "claim_or_fence_minted": False,
-        "authority_effect": "NONE_PROJECTION_BUILD_PERSISTENCE_READINESS_AND_CUSTODY_INPUT_ONLY"
+        "authority_effect": "NONE_CHAIN_PREFLIGHT_PROJECTION_BUILD_PERSISTENCE_READINESS_AND_CUSTODY_INPUT_ONLY"
     }
     atomic_json(runtime / CONSUMPTION_REL, receipt)
     return receipt
