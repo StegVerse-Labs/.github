@@ -2,7 +2,7 @@
 
 Updated: 2026-09-04
 Repository: `StegVerse-Labs/.github`
-Status: IMPLEMENTATION_ACTIVE
+Status: SOURCE_VALIDATED
 
 ## Authority boundary
 
@@ -71,11 +71,24 @@ control/cross-task-coordination.json
 tests/test_coordination_graph.py
 heartbeat_runtime/worker_task_admission.py
 heartbeat_runtime/admitted_worker_runtime.py
+scripts/render_cross_task_coordination_handoff.py
+tests/test_cross_task_coordination_handoff_projection.py
+.github/workflows/cross-task-coordination-validation.yml
+```
+
+StegIndex read-only consumer:
+
+```text
+StegVerse-Labs/StegIndex/scripts/resolve_cross_task_coordination.py
+StegVerse-Labs/StegIndex/tests/test_cross_task_coordination.py
+StegVerse-Labs/StegIndex/docs/CROSS_TASK_COORDINATION_INDEX_MIRROR_HANDOFF.md
 ```
 
 ## Handoff projection rule
 
 `*_MIRROR_HANDOFF.md` files are portable projections, not the master coordination database. Repository-local handoffs remain authoritative for repository-local implementation evidence. The canonical coordination ledger references those records and may be regenerated without replacing their authority.
+
+The deterministic renderer now emits task predicate state, active claims, exact evidence gaps, and the mandatory adjacency-before-blocker instruction from the canonical ledger.
 
 ## Collision rules
 
@@ -133,20 +146,41 @@ Before declaring a task blocked, the resolver MUST inspect whether another task:
 
 Newly satisfied predicates MUST also resolve downstream consumers that have become unblocked.
 
-## Existing work that must not be duplicated
+## Validated source evidence
 
-The organization handoff currently assigns runtime activation, WorkerCoordinator execution, sovereign inference, and credential/route work to existing canonical workers/authorities. This coordination implementation does not restart or compete with those tasks.
+```text
+core + WorkerCoordinator integration:
+  run: 33923391425
+  result: SUCCESS
 
-## Remaining implementation
+StegIndex read-only projection:
+  commit: 758316ea043a56fe523c222a923f726d2a0805c2
+  run: 33943933317
+  result: SUCCESS
 
-- canonical JSON schema;
-- resolver and fail-closed preflight;
-- initial ledger;
-- WorkerCoordinator admission binding for autonomous augmentation;
-- deterministic unit tests;
-- later propagation adapters for StegIndex and repository-local handoff generators.
+handoff projection + dedicated non-authorizing validator:
+  exact-head validation source: e6d4fb406c860b496542e5a6112128b1295d31ab
+  run: 33944001324
+  result: SUCCESS
+```
 
-## Release candidate propagation
+These are source/validation facts only and are not runtime-event or product-activation evidence.
+
+## Current coordination state
+
+Canonical machine ledger: `control/cross-task-coordination.json`.
+
+The initial implementation claim and handoff-projection claim are RELEASED. The ledger currently records no unresolved evidence gap for this source-integration scope.
+
+Existing runtime activation, WorkerCoordinator execution, sovereign inference, HIL, credential/route, and other already-owned workstreams remain outside this source claim and must not be restarted merely because they consume coordination predicates.
+
+## Next integration goal candidate
+
+Register shared predicates for convergent existing lanes from their canonical handoffs/evidence and bind the portable projection into session/build handoff generation/consumption entrypoints. Predicate equivalence must be established from canonical producer/evidence semantics, never from similar task names.
+
+Candidate consumers include G18/HIL/SV001/SV002/SV-011 and other lanes that repeatedly converge on the same underlying checks. Their existing task/worker claims remain authoritative and must be inspected before any migration write.
+
+## Remaining consumer propagation
 
 When this capability reaches a tagged/released state, verify whether its coordination/evidence semantics require updates in:
 
@@ -156,3 +190,7 @@ When this capability reaches a tagged/released state, verify whether its coordin
 - `stegguardian-wiki`
 
 Do not claim propagation before each consumer's own release gate is satisfied.
+
+## Archive posture
+
+This implementation session has no remaining active coordination claim. Source work completed here is preserved in the canonical ledger and scoped handoffs. Future work should resume from those records rather than chat history.
