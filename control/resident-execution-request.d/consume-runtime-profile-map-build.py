@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Consume the bounded resident request for canonical runtime-profile map generation.
 
-Uses only already-local source. It materializes the exact profile-map source/control
-surfaces into the existing resident checkout, builds/validates the projection, and
-emits an integrity receipt. No network fetch, credential use, HB/oscillator advance,
-claim/fence minting, or second runtime is permitted.
+Uses only already-local source. It materializes immutable profile-map source/control
+surfaces into the existing resident checkout, preserves mutable resident state,
+builds/validates the projection, and emits an integrity receipt. No network fetch,
+credential use, HB/oscillator advance, claim/fence minting, or second runtime is permitted.
 """
 from __future__ import annotations
 
@@ -23,16 +23,14 @@ CONSUMPTION_REL = Path("receipts/sovereign-host/runtime-profile-map-build-reques
 TARGET_TASK = "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"
 TARGET_MODE = "CANONICAL_RUNTIME_PROFILE_MAP_BUILD"
 TARGET_ENTRYPOINT = Path("control/resident-execution-request.d/consume-runtime-profile-map-build.py")
+BOOTSTRAP_MAP_REL = Path("control/runtime-profile-map.json")
 
-FILES = (
+IMMUTABLE_FILES = (
     Path("schemas/runtime-profile-map.schema.json"),
     Path("control/runtime-profile-sources.json"),
-    Path("control/runtime-profile-map.json"),
     Path("control/canonical-resident-carrier-contract.json"),
     Path("control/worker-capability-profiles.json"),
-    Path("control/worker-registry.json"),
     Path("control/canonical-work-runtime-profile.json"),
-    Path("workers/universal_intr_profiled_ingress.py"),
     Path("scripts/build_runtime_profile_map.py"),
     Path("scripts/validate_runtime_profile_map.py"),
     Path("scripts/query_runtime_profile_map.py"),
@@ -40,6 +38,10 @@ FILES = (
     Path("scripts/emit_runtime_profile_map_receipt.py"),
 )
 OBSERVABILITY_DIR = Path("control/runtime-observability-consumers")
+PRESERVED_RUNTIME_REQUIRED = (
+    Path("control/worker-registry.json"),
+    Path("workers/universal_intr_profiled_ingress.py"),
+)
 HOSTED = ("GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "CF_PAGES", "CLOUDFLARE_WORKERS")
 FORBIDDEN = ("GITHUB_TOKEN", "GH_TOKEN", "GITHUB_PAT", "GITHUB_PERSONAL_ACCESS_TOKEN", "ACTIONS_RUNTIME_TOKEN", "ACTIONS_ID_TOKEN_REQUEST_TOKEN", "OPENAI_API_KEY", "ANTHROPIC_API_KEY", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "OAUTH_TOKEN")
 NONSECRET = ("PATH", "HOME", "LANG", "LC_ALL", "SSL_CERT_FILE", "SSL_CERT_DIR", "XDG_STATE_HOME", "XDG_CONFIG_HOME", "STEGVERSE_HEARTBEAT_ROOT", "STEGVERSE_HEARTBEAT_SOURCE_ROOT", "STEGVERSE_SOVEREIGN_NODE")
@@ -116,16 +118,27 @@ def copy_exact(src: Path, dst: Path) -> dict[str, Any]:
     if not dst.is_file() or sha256(dst) != digest:
         shutil.copy2(src, dst)
     require(dst.is_file() and sha256(dst) == digest, f"copy mismatch:{dst}")
-    return {"path": str(dst), "sha256": digest, "exact_copy": True}
+    return {"path": str(dst), "sha256": digest, "exact_copy": True, "mutable_runtime_state_overwritten": False}
 
 
 def materialize(source: Path, runtime: Path) -> list[dict[str, Any]]:
-    rows = [copy_exact(source / rel, runtime / rel) for rel in FILES]
+    rows = [copy_exact(source / rel, runtime / rel) for rel in IMMUTABLE_FILES]
     obs = source / OBSERVABILITY_DIR
     require(obs.is_dir(), "runtime observability directory missing")
     for src in sorted(obs.glob("*.json")):
         rel = src.relative_to(source)
         rows.append(copy_exact(src, runtime / rel))
+
+    for rel in PRESERVED_RUNTIME_REQUIRED:
+        current = runtime / rel
+        require(current.is_file(), f"required existing resident state/source missing:{rel}")
+        rows.append({"path": str(current), "sha256": sha256(current), "exact_copy": False, "preserved_existing_runtime_file": True, "mutable_runtime_state_overwritten": False})
+
+    map_path = runtime / BOOTSTRAP_MAP_REL
+    if not map_path.is_file():
+        rows.append(copy_exact(source / BOOTSTRAP_MAP_REL, map_path))
+    else:
+        rows.append({"path": str(map_path), "sha256": sha256(map_path), "exact_copy": False, "preserved_existing_projection_generation": True, "mutable_runtime_state_overwritten": False})
     return rows
 
 
@@ -145,7 +158,7 @@ def consume(source_root: Path, runtime_root: Path, env: Mapping[str, str] | None
     request_hash = stable_hash(request)
     materialized = materialize(source, runtime)
     safe_env = clean_env(env)
-    map_path = runtime / "control/runtime-profile-map.json"
+    map_path = runtime / BOOTSTRAP_MAP_REL
     build = run([sys.executable, str(runtime / "scripts/build_runtime_profile_map.py"), "--root", str(runtime)], cwd=runtime, env=safe_env)
     validate = run([sys.executable, str(runtime / "scripts/validate_runtime_profile_map.py"), "--map", str(map_path)], cwd=runtime, env=safe_env)
     receipt_path = runtime / "receipts/runtime-profile-map/runtime-profile-map.latest.json"
@@ -159,6 +172,9 @@ def consume(source_root: Path, runtime_root: Path, env: Mapping[str, str] | None
         "task_id": TARGET_TASK,
         "source_materialization": materialized,
         "source_materialization_count": len(materialized),
+        "existing_worker_registry_preserved": True,
+        "existing_shared_intr_router_preserved": True,
+        "previous_projection_generation_preserved_until_builder_write": True,
         "build": build,
         "validation": validate,
         "projection_receipt": evidence,
