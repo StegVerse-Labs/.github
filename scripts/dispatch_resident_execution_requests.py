@@ -32,6 +32,10 @@ AWARENESS_PROTECTED = {
     "sv011_phase5",
 }
 AWARENESS_STATE_FILES = ("stegverse-001.json", "stegverse-002.json", "sv-011.json")
+QUANTUM_AWARENESS_AGGREGATE_REL = Path("receipts/sovereign-host/quantum-resilience-awareness.latest.json")
+QUANTUM_AWARENESS_STATE_DIR = Path("runtime-state/entity-quantum-awareness")
+QUANTUM_AWARENESS_PROTECTED = set(AWARENESS_PROTECTED)
+QUANTUM_AWARENESS_STATE_FILES = AWARENESS_STATE_FILES
 HOSTED_ENV = (
     "GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "VERCEL_ENV",
     "CF_PAGES", "CLOUDFLARE_WORKERS",
@@ -89,6 +93,7 @@ CONSUMERS = (
     ("tvc_broker_validation", "scripts/consume_tvc_broker_validation_request.py"),
     ("sv002_self_characterization", "scripts/consume_sv002_self_characterization_request.py"),
     ("astra_class_resilience_awareness", "scripts/consume_astra_class_resilience_awareness_request.py"),
+    ("quantum_resilience_awareness", "scripts/consume_quantum_resilience_awareness_request.py"),
     ("sv002_org_runtime_activation", "scripts/consume_sv002_org_runtime_activation_request.py"),
     ("healer_sovereign_scheduler", "scripts/consume_healer_sovereign_scheduler_request.py"),
     ("universal_governance_enforced_reference", "scripts/consume_universal_governance_enforced_reference_request.py"),
@@ -149,34 +154,42 @@ def standing_awareness_ready(runtime: Path) -> bool:
     aggregate = load_json(runtime / AWARENESS_AGGREGATE_REL)
     if not aggregate:
         return False
-    if aggregate.get("state") != "COMPLETED":
-        return False
-    if aggregate.get("runtime_awareness_materialized") is not True:
-        return False
-    if aggregate.get("standing_directive_active") is not True:
-        return False
-    if aggregate.get("entity_count") != 3:
+    if aggregate.get("state") != "COMPLETED" or aggregate.get("runtime_awareness_materialized") is not True or aggregate.get("standing_directive_active") is not True or aggregate.get("entity_count") != 3:
         return False
     contract_sha = aggregate.get("contract_sha256")
     if not isinstance(contract_sha, str) or not contract_sha:
         return False
     for filename in AWARENESS_STATE_FILES:
         state = load_json(runtime / AWARENESS_STATE_DIR / filename)
-        if not state:
+        if not state or state.get("state") != "ACTIVE" or state.get("standing_directive_active") is not True:
             return False
-        if state.get("state") != "ACTIVE" or state.get("standing_directive_active") is not True:
+        if state.get("contract_sha256") != contract_sha or state.get("credential_authority") != "TV/TVC":
             return False
-        if state.get("contract_sha256") != contract_sha:
+        if state.get("capability_confers_authority") is not False or state.get("heartbeat_grants_execution_authority") is not False:
             return False
-        if state.get("credential_authority") != "TV/TVC":
+        if state.get("intr_interlock_remains_transition_boundary") is not True or state.get("second_machine_required") is not False:
             return False
-        if state.get("capability_confers_authority") is not False:
+    return True
+
+
+def quantum_awareness_ready(runtime: Path) -> bool:
+    aggregate = load_json(runtime / QUANTUM_AWARENESS_AGGREGATE_REL)
+    if not aggregate or aggregate.get("state") != "COMPLETED" or aggregate.get("runtime_awareness_materialized") is not True or aggregate.get("standing_directive_active") is not True or aggregate.get("entity_count") != 3:
+        return False
+    contract_sha, census_sha = aggregate.get("contract_sha256"), aggregate.get("census_sha256")
+    if not isinstance(contract_sha, str) or not contract_sha or not isinstance(census_sha, str) or not census_sha:
+        return False
+    for filename in QUANTUM_AWARENESS_STATE_FILES:
+        state = load_json(runtime / QUANTUM_AWARENESS_STATE_DIR / filename)
+        if not state or state.get("state") != "ACTIVE" or state.get("standing_directive_active") is not True:
             return False
-        if state.get("heartbeat_grants_execution_authority") is not False:
+        if state.get("contract_sha256") != contract_sha or state.get("census_sha256") != census_sha:
             return False
-        if state.get("intr_interlock_remains_transition_boundary") is not True:
+        if state.get("credential_authority") != "TV/TVC" or state.get("quantum_capability_confers_authority") is not False:
             return False
-        if state.get("second_machine_required") is not False:
+        if state.get("pqc_validity_confers_transition_authority") is not False or state.get("heartbeat_grants_execution_authority") is not False:
+            return False
+        if state.get("intr_interlock_remains_transition_boundary") is not True or state.get("second_machine_required") is not False:
             return False
     return True
 
@@ -192,14 +205,7 @@ def select_consumers(only_consumers: tuple[str, ...] | None) -> tuple[tuple[str,
     return tuple((name, rel) for name, rel in CONSUMERS if name in requested)
 
 
-def dispatch(
-    source_root: Path,
-    runtime_root: Path,
-    *,
-    runner=subprocess.run,
-    env: Mapping[str, str] | None = None,
-    only_consumers: tuple[str, ...] | None = None,
-) -> dict[str, Any]:
+def dispatch(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env: Mapping[str, str] | None = None, only_consumers: tuple[str, ...] | None = None) -> dict[str, Any]:
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
     safe_env = clean_exec_env(env)
@@ -208,15 +214,10 @@ def dispatch(
 
     for name, rel in selected:
         if name in AWARENESS_PROTECTED and not standing_awareness_ready(runtime):
-            outcomes.append({
-                "consumer": name,
-                "consumer_ref": rel,
-                "state": "STANDING_AWARENESS_REQUIRED",
-                "returncode": None,
-                "result": None,
-                "attempted": False,
-                "authority_effect": "NONE_FAIL_CLOSED",
-            })
+            outcomes.append({"consumer": name, "consumer_ref": rel, "state": "STANDING_AWARENESS_REQUIRED", "returncode": None, "result": None, "attempted": False, "authority_effect": "NONE_FAIL_CLOSED"})
+            continue
+        if name in QUANTUM_AWARENESS_PROTECTED and not quantum_awareness_ready(runtime):
+            outcomes.append({"consumer": name, "consumer_ref": rel, "state": "QUANTUM_STANDING_AWARENESS_REQUIRED", "returncode": None, "result": None, "attempted": False, "authority_effect": "NONE_FAIL_CLOSED"})
             continue
         consumer = runtime / rel
         if not consumer.is_file():
@@ -233,27 +234,19 @@ def dispatch(
     missing = [row["consumer"] for row in outcomes if row["state"] == "CONSUMER_NOT_MATERIALIZED"]
     exceptions = [row["consumer"] for row in outcomes if row["state"] == "DISPATCH_EXCEPTION"]
     accepted_wait_states = {
-        "NO_REQUEST", "ALREADY_CONSUMED", "WAITING_FOR_CUSTODY_PACKAGE",
-        "WAITING_FOR_MASTER_RECORDS_CUSTODY", "WAITING_FOR_RECONCILIATION", "WAITING_FOR_TRANSITION_READINESS",
-        "MASTER_RECORDS_LOCAL_ROOT_NOT_MATERIALIZED", "MASTER_RECORDS_CUSTODY_CONSUMER_NOT_MATERIALIZED",
-        "MASTER_RECORDS_PROJECTOR_NOT_MATERIALIZED", "ATTEMPT_RECORDED", "COMPLETED",
+        "NO_REQUEST", "ALREADY_CONSUMED", "WAITING_FOR_CUSTODY_PACKAGE", "WAITING_FOR_MASTER_RECORDS_CUSTODY", "WAITING_FOR_RECONCILIATION", "WAITING_FOR_TRANSITION_READINESS",
+        "MASTER_RECORDS_LOCAL_ROOT_NOT_MATERIALIZED", "MASTER_RECORDS_CUSTODY_CONSUMER_NOT_MATERIALIZED", "MASTER_RECORDS_PROJECTOR_NOT_MATERIALIZED", "ATTEMPT_RECORDED", "COMPLETED",
     }
     request_failures = [row["consumer"] for row in outcomes if row["state"] not in accepted_wait_states]
     receipt = {
-        "schema": "stegverse.resident-request-dispatch/v1",
-        "state": "DISPATCH_COMPLETE" if not missing and not exceptions else "DISPATCH_INCOMPLETE",
-        "source_root": str(source), "runtime_root": str(runtime),
-        "registered_consumer_count": len(CONSUMERS), "consumer_count": len(selected),
-        "selected_consumers": [name for name, _ in selected],
-        "selection_scope": "ALL_REGISTERED" if only_consumers is None else "EXACT_SELECTOR",
-        "consumers_visited": len(outcomes), "missing_consumers": missing,
-        "dispatch_exceptions": exceptions, "request_failures": request_failures,
-        "outcomes": outcomes, "request_failure_blocks_later_requests": False,
-        "astra_class_standing_awareness_ready": standing_awareness_ready(runtime),
-        "network_source_fetch_performed": False, "credential_authority": "TV/TVC",
-        "github_token_required": False, "github_token_runtime_authority": "NONE",
-        "heartbeat_grants_execution_authority": False, "request_dispatch_grants_authority": False,
-        "second_machine_required": False, "authority_effect": "NONE_DISPATCH_ONLY",
+        "schema": "stegverse.resident-request-dispatch/v1", "state": "DISPATCH_COMPLETE" if not missing and not exceptions else "DISPATCH_INCOMPLETE",
+        "source_root": str(source), "runtime_root": str(runtime), "registered_consumer_count": len(CONSUMERS), "consumer_count": len(selected),
+        "selected_consumers": [name for name, _ in selected], "selection_scope": "ALL_REGISTERED" if only_consumers is None else "EXACT_SELECTOR",
+        "consumers_visited": len(outcomes), "missing_consumers": missing, "dispatch_exceptions": exceptions, "request_failures": request_failures,
+        "outcomes": outcomes, "request_failure_blocks_later_requests": False, "astra_class_standing_awareness_ready": standing_awareness_ready(runtime),
+        "quantum_resilience_standing_awareness_ready": quantum_awareness_ready(runtime),
+        "network_source_fetch_performed": False, "credential_authority": "TV/TVC", "github_token_required": False, "github_token_runtime_authority": "NONE",
+        "heartbeat_grants_execution_authority": False, "request_dispatch_grants_authority": False, "second_machine_required": False, "authority_effect": "NONE_DISPATCH_ONLY",
     }
     path = runtime / RECEIPT_REL
     path.parent.mkdir(parents=True, exist_ok=True)

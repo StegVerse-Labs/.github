@@ -30,12 +30,16 @@ REQUIRED_PROPERTIES = {
     "NO_SELF_EXEMPTION",
 }
 REQUIRED_ENTITIES = {"StegVerse-001", "StegVerse-002", "SV-011"}
-CRITICAL_IDS = {
+REQUIRED_SURFACE_IDS = {
     "STEGID-CONTINUITY-RECEIPT-SIGNATURE",
+    "STEGID-CURRENT-PHONE-DEVICE-POSSESSION",
     "TVC-SIGNED-POLICY-ED25519",
+    "SKAP-BROWSER-INGRESS-P256-ECDH",
+    "TVC-SKAP-RESIDENT-BROWSER-P256",
     "TLS-WEBPKI-ECOSYSTEM",
-    "DEVICE-NODE-IDENTITY",
+    "OTHER-DEVICE-NODE-IDENTITY",
     "WALLET-SIGNATURES",
+    "SOFTWARE-UPDATE-PROVENANCE",
     "LONG-LIVED-STORED-CONFIDENTIALITY",
 }
 
@@ -91,23 +95,45 @@ def validate() -> dict:
 
     surfaces = census["surfaces"]
     by_id = {row["id"]: row for row in surfaces}
-    assert CRITICAL_IDS <= set(by_id)
+    assert REQUIRED_SURFACE_IDS <= set(by_id)
+
+    # Known classical dependencies remain explicit even after a migration policy is built.
     assert by_id["STEGID-CONTINUITY-RECEIPT-SIGNATURE"]["primitive"] == "Ed25519"
-    assert by_id["STEGID-CONTINUITY-RECEIPT-SIGNATURE"]["quantum_state"] == "CLASSICAL_ONLY"
+    assert by_id["STEGID-CONTINUITY-RECEIPT-SIGNATURE"]["quantum_state"] == "HYBRID_MIGRATION_REQUIRED"
+    assert by_id["STEGID-CONTINUITY-RECEIPT-SIGNATURE"]["pqc_backend_validated"] is False
     assert by_id["TVC-SIGNED-POLICY-ED25519"]["primitive"] == "Ed25519"
-    assert by_id["TVC-SIGNED-POLICY-ED25519"]["quantum_state"] == "CLASSICAL_ONLY"
+    assert by_id["TVC-SIGNED-POLICY-ED25519"]["quantum_state"] == "HYBRID_MIGRATION_REQUIRED"
+    assert by_id["TVC-SIGNED-POLICY-ED25519"]["pqc_backend_validated"] is False
+
+    # Newly observed P-256 surfaces must remain classical-only until real hybrid/PQ evidence exists.
+    for surface_id in (
+        "STEGID-CURRENT-PHONE-DEVICE-POSSESSION",
+        "SKAP-BROWSER-INGRESS-P256-ECDH",
+        "TVC-SKAP-RESIDENT-BROWSER-P256",
+    ):
+        row = by_id[surface_id]
+        assert row["quantum_state"] == "CLASSICAL_ONLY"
+        assert row["migration_target"] == "HYBRID_MIGRATION_REQUIRED"
+
+    for surface_id in ("SKAP-BROWSER-INGRESS-P256-ECDH", "TVC-SKAP-RESIDENT-BROWSER-P256"):
+        assert by_id[surface_id]["harvest_now_decrypt_later_relevant"] is True
+        assert by_id[surface_id]["pqc_backend_validated"] is False
 
     unresolved_critical = sorted(
         row["id"] for row in surfaces
         if row["migration_priority"] == "CRITICAL" and row["quantum_state"] == "UNINVENTORIED"
     )
-    assert unresolved_critical, "initial census must preserve unresolved critical unknowns"
+    assert unresolved_critical, "census must preserve unresolved critical unknowns until inventoried"
 
+    classical_only = sorted(row["id"] for row in surfaces if row["quantum_state"] == "CLASSICAL_ONLY")
+    hybrid_required = sorted(row["id"] for row in surfaces if row["quantum_state"] == "HYBRID_MIGRATION_REQUIRED")
     return {
         "status": "PASS_QUANTUM_RESILIENCE_SOURCE_CONTRACT",
         "goal_id": contract["goal_id"],
         "surface_count": len(surfaces),
-        "known_classical_only_count": sum(row["quantum_state"] == "CLASSICAL_ONLY" for row in surfaces),
+        "known_classical_only_count": len(classical_only),
+        "hybrid_migration_required_count": len(hybrid_required),
+        "known_quantum_exposure_count": len(classical_only) + len(hybrid_required),
         "unresolved_critical": unresolved_critical,
         "pqc_validated_surface_count": census["pqc_validated_surface_count"],
         "credential_authority": authority["credential_authority"],

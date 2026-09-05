@@ -1,0 +1,21 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "state": "REQUESTED",
+  "task_id": "SHWP-QUANTUM-RESILIENCE-SV002-AWARENESS-001",
+  "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
+  "entrypoint": "scripts/consume_quantum_resilience_awareness_request.py",
+  "entity_id": "StegVerse-002",
+  "entity_selectors": ["sv002_org_runtime_activation"],
+  "quantum_role": "CRYPTO_CENSUS_STATUS_ADMISSIBILITY_PROPOSALS",
+  "contract_ref": "control/quantum-resilience-contract.json",
+  "census_ref": "control/quantum-crypto-census.json",
+  "standing_directive": true,
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "second_machine_required": false,
+  "network_source_fetch_allowed": false,
+  "request_granted_authority": false,
+  "authority_effect": "NONE_REQUEST_ONLY"
+}
