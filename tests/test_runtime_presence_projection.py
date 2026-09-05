@@ -27,6 +27,21 @@ class RuntimePresenceProjectionTests(unittest.TestCase):
             "registration_kind": "systemd-user-separated",
         }
 
+    def ephemeral_service_receipt(self) -> dict:
+        return {
+            "schema": "stegverse.sovereign-heartbeat-service/v3",
+            "registration_kind": "stegverse-ephemeral-console",
+            "active": True,
+            "carrier_active": True,
+            "worker_active": True,
+            "separate_carrier_and_worker_processes": True,
+            "stegverse_process_supervision": True,
+            "canonical_carrier_runtime": "heartbeat_runtime.engine_v13.HeartbeatRuntime",
+            "worker_runtime": "heartbeat_runtime.worker_runtime.WorkerCoordinator",
+            "third_party_process_host_required": False,
+            "heartbeat_grants_execution_authority": False,
+        }
+
     def self_heal_receipt(self) -> dict:
         return {
             "schema": "stegverse.ephemeral-sovereign-process/v3",
@@ -40,6 +55,15 @@ class RuntimePresenceProjectionTests(unittest.TestCase):
             "third_party_process_host_required": False,
             "heartbeat_grants_execution_authority": False,
             "authority_effect": "NONE_SUPERVISION_ONLY",
+        }
+
+    def fresh_worker(self) -> dict:
+        return {
+            "schema": "stegverse.worker-runtime-state/v1",
+            "runtime_tick": 9,
+            "last_cycle_at": "2026-09-04T12:00:00Z",
+            "last_observed_carrier_epoch": 42,
+            "observation_mode": "TASK_CAPABLE_WORKER_COORDINATOR",
         }
 
     def test_missing_runtime_evidence_remains_unobserved(self):
@@ -57,18 +81,9 @@ class RuntimePresenceProjectionTests(unittest.TestCase):
             self.write(root, "control/heartbeat-carrier-runtime-state.json", {
                 "schema": "stegverse.heartbeat-carrier-runtime-state/v1", "epoch": 42, "generation": 42
             })
-            self.write(root, "control/worker-runtime-state.json", {
-                "schema": "stegverse.worker-runtime-state/v1",
-                "runtime_tick": 9,
-                "last_cycle_at": "2026-09-04T12:00:00Z",
-                "last_observed_carrier_epoch": 42,
-                "observation_mode": "TASK_CAPABLE_WORKER_COORDINATOR",
-            })
+            self.write(root, "control/worker-runtime-state.json", self.fresh_worker())
             self.write(root, "receipts/sovereign-host/activation.latest.json", self.canonical_service_receipt())
-            result = project(
-                root,
-                observed_at=datetime(2026, 9, 4, 12, 0, 10, tzinfo=timezone.utc),
-            )
+            result = project(root, observed_at=datetime(2026, 9, 4, 12, 0, 10, tzinfo=timezone.utc))
             self.assertTrue(result["resident"]["runtime_alive_observed"])
             self.assertTrue(result["resident"]["task_capable_worker_observed"])
             self.assertTrue(result["resident"]["present_worker_runtime_observed"])
@@ -76,24 +91,38 @@ class RuntimePresenceProjectionTests(unittest.TestCase):
             self.assertTrue(result["heartbeat_reference"]["freshness_correlated"])
             self.assertEqual(result["resident"]["runtime_evidence_kind"], "CANONICAL_SERVICE_RECEIPT")
 
+    def test_ephemeral_v13_service_receipt_can_prove_runtime_alive(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.write(root, "control/worker-runtime-state.json", self.fresh_worker())
+            self.write(root, "receipts/sovereign-host/activation.latest.json", self.ephemeral_service_receipt())
+            result = project(root, observed_at=datetime(2026, 9, 4, 12, 0, 10, tzinfo=timezone.utc))
+            self.assertTrue(result["resident"]["runtime_alive_observed"])
+            self.assertTrue(result["resident"]["present_worker_runtime_observed"])
+            self.assertEqual(result["resident"]["runtime_evidence_kind"], "EPHEMERAL_CONSOLE_SERVICE_RECEIPT")
+
+    def test_ephemeral_v12_service_receipt_fails_closed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            receipt = self.ephemeral_service_receipt()
+            receipt["canonical_carrier_runtime"] = "heartbeat_runtime.engine_v12.HeartbeatRuntime"
+            self.write(root, "control/worker-runtime-state.json", self.fresh_worker())
+            self.write(root, "receipts/sovereign-host/activation.latest.json", receipt)
+            result = project(root, observed_at=datetime(2026, 9, 4, 12, 0, 10, tzinfo=timezone.utc))
+            self.assertFalse(result["resident"]["runtime_alive_observed"])
+            self.assertFalse(result["resident"]["present_worker_runtime_observed"])
+            self.assertEqual(result["resident"]["runtime_evidence_kind"], "EPHEMERAL_CONSOLE_SERVICE_RECEIPT")
+
     def test_predicate_activation_proof_remains_compatible(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            self.write(root, "control/worker-runtime-state.json", {
-                "schema": "stegverse.worker-runtime-state/v1",
-                "runtime_tick": 9,
-                "last_cycle_at": "2026-09-04T12:00:00Z",
-                "observation_mode": "TASK_CAPABLE_WORKER_COORDINATOR",
-            })
+            self.write(root, "control/worker-runtime-state.json", self.fresh_worker())
             self.write(root, "receipts/sovereign-host/activation.latest.json", {
                 "schema": "stegverse.sovereign-runtime-activation/v1",
                 "predicates": {"native_service_active": True, "continuous_runtime_live": True},
                 "node_id": "node-7",
             })
-            result = project(
-                root,
-                observed_at=datetime(2026, 9, 4, 12, 0, 10, tzinfo=timezone.utc),
-            )
+            result = project(root, observed_at=datetime(2026, 9, 4, 12, 0, 10, tzinfo=timezone.utc))
             self.assertTrue(result["resident"]["runtime_alive_observed"])
             self.assertEqual(result["resident"]["runtime_evidence_kind"], "PREDICATE_PROOF_COMPATIBILITY")
             self.assertEqual(result["resident"]["node_id"], "node-7")
@@ -101,17 +130,11 @@ class RuntimePresenceProjectionTests(unittest.TestCase):
     def test_self_heal_supervision_can_prove_runtime_alive_with_fresh_worker_cycle(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            self.write(root, "control/worker-runtime-state.json", {
-                "schema": "stegverse.worker-runtime-state/v1",
-                "runtime_tick": 12,
-                "last_cycle_at": "2026-09-04T12:00:00Z",
-                "observation_mode": "TASK_CAPABLE_WORKER_COORDINATOR",
-            })
+            worker = self.fresh_worker()
+            worker["runtime_tick"] = 12
+            self.write(root, "control/worker-runtime-state.json", worker)
             self.write(root, "receipts/sovereign-host/ephemeral-process.latest.json", self.self_heal_receipt())
-            result = project(
-                root,
-                observed_at=datetime(2026, 9, 4, 12, 0, 10, tzinfo=timezone.utc),
-            )
+            result = project(root, observed_at=datetime(2026, 9, 4, 12, 0, 10, tzinfo=timezone.utc))
             self.assertTrue(result["resident"]["runtime_alive_observed"])
             self.assertTrue(result["resident"]["present_worker_runtime_observed"])
             self.assertEqual(result["resident"]["runtime_evidence_kind"], "CARRIER_SELF_HEAL_SUPERVISION_RECEIPT")
@@ -129,13 +152,9 @@ class RuntimePresenceProjectionTests(unittest.TestCase):
     def test_stale_worker_state_cannot_prove_present_runtime(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            self.write(root, "control/worker-runtime-state.json", {
-                "schema": "stegverse.worker-runtime-state/v1",
-                "runtime_tick": 9,
-                "last_cycle_at": "2026-09-04T11:58:00Z",
-                "last_observed_carrier_epoch": 42,
-                "observation_mode": "TASK_CAPABLE_WORKER_COORDINATOR",
-            })
+            worker = self.fresh_worker()
+            worker["last_cycle_at"] = "2026-09-04T11:58:00Z"
+            self.write(root, "control/worker-runtime-state.json", worker)
             self.write(root, "receipts/sovereign-host/activation.latest.json", self.canonical_service_receipt())
             result = project(
                 root,
