@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.cross-task-coordination-ledger/v1",
-  "updated_at": "2026-09-04T23:11:00-05:00",
+  "updated_at": "2026-09-05T18:16:00-05:00",
   "authority": {
     "coordination_authority": "StegVerse-Labs/.github",
     "runtime_truth_authority_effect": "NONE",
@@ -90,6 +90,28 @@
       "max_age_seconds": null,
       "required_fields": ["validation_result"],
       "expected_output_ref": "GitHub Actions run 33944001324"
+    },
+    {
+      "predicate_id": "PRED-RESIDENT-REQUEST-CONSUMED-ECOSYSTEM-CHAT-PARENT-002",
+      "semantic_predicate_id": "resident_request_consumed",
+      "subject_binding": {
+        "request_id": "RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-002",
+        "consumer_task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"
+      },
+      "state": "UNKNOWN",
+      "description": "The exact Ecosystem Chat parent resident execution request was consumed by the sovereign resident source-refresh path.",
+      "authoritative_producer": "sovereign resident source-refresh path",
+      "required_schema": null,
+      "required_scope": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001 resident request consumption",
+      "required_execution_instance": "RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-002",
+      "max_age_seconds": null,
+      "required_fields": ["request_id", "consumed"],
+      "expected_output_ref": "receipts/sovereign-host/resident-execution-request-consumption.latest.json",
+      "consumers": ["SHWP-ECOSYSTEM-CHAT-INFERENCE-001"],
+      "canonical_source_refs": [
+        "docs/ECOSYSTEM_CHAT_ORPHAN_RECOVERY_MIRROR_HANDOFF.md",
+        "control/runtime-observability-consumers/ecosystem-chat-sovereign-inference-001.json"
+      ]
     }
   ],
   "evidence": [
@@ -158,5 +180,24 @@
       "authority_effect": "COORDINATION_ONLY"
     }
   ],
-  "gaps": []
+  "gaps": [
+    {
+      "predicate_id": "PRED-RESIDENT-REQUEST-CONSUMED-ECOSYSTEM-CHAT-PARENT-002",
+      "semantic_predicate_id": "resident_request_consumed",
+      "subject_binding": {
+        "request_id": "RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-002",
+        "consumer_task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"
+      },
+      "existing_evidence_refs": [],
+      "rejected_because": ["NO_QUALIFYING_EVIDENCE_OBSERVED"],
+      "missing_observation": "resident consumption receipt for the exact request RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-002",
+      "required_producer": "sovereign resident source-refresh path",
+      "required_output_ref": "receipts/sovereign-host/resident-execution-request-consumption.latest.json",
+      "required_schema": null,
+      "required_fields": ["request_id", "consumed"],
+      "required_freshness": null,
+      "collision_refs": [],
+      "action_without_collision": "Consume the existing resident request bridge result when emitted; do not create a parallel resident transport or replay completed orphan recovery."
+    }
+  ]
 }
