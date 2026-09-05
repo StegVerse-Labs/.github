@@ -55,13 +55,15 @@ class EphemeralSeparatedRuntimeSupervisionTests(unittest.TestCase):
             self.assertEqual(len(spawned), 2)
             self.assertIn("run_heartbeat_runtime.py", spawned[0][0][1])
             self.assertIn("run_worker_runtime.py", spawned[1][0][1])
+            self.assertIn("--continuous", spawned[0][0])
+            self.assertIn("--continuous", spawned[1][0])
             self.assertNotEqual(result["carrier_pid"], result["worker_pid"])
             self.assertTrue(result["carrier_active"])
             self.assertTrue(result["worker_active"])
             self.assertTrue(result["worker_task_capable_cycle_observed"])
             self.assertEqual(result["worker_tick_evidence"]["observed_tick"], 3)
             self.assertTrue(result["separate_carrier_and_worker_processes"])
-            self.assertEqual(result["canonical_carrier_runtime"], "heartbeat_runtime.engine_v12.HeartbeatRuntime")
+            self.assertEqual(result["canonical_carrier_runtime"], "heartbeat_runtime.engine_v13.HeartbeatRuntime")
             self.assertEqual(result["worker_runtime"], "heartbeat_runtime.worker_runtime.WorkerCoordinator")
             self.assertFalse(result["non_tv_tvc_secret_or_token_used"])
             wait_tick.assert_called_once()
@@ -142,7 +144,7 @@ class EphemeralSeparatedRuntimeSupervisionTests(unittest.TestCase):
                 result = supervisor.restart(root)
             self.assertFalse(result["restart_observed"])
 
-    def test_ephemeral_service_receipt_requires_both_v12_processes(self):
+    def test_ephemeral_service_receipt_requires_both_v13_processes(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             process = {
@@ -155,8 +157,10 @@ class EphemeralSeparatedRuntimeSupervisionTests(unittest.TestCase):
             receipt = _service_receipt(root, root / "runtime", process, 10.0)
             self.assertTrue(receipt["active"])
             self.assertTrue(receipt["separate_carrier_and_worker_processes"])
-            self.assertEqual(receipt["canonical_carrier_runtime"], "heartbeat_runtime.engine_v12.HeartbeatRuntime")
+            self.assertEqual(receipt["canonical_runtime"], "heartbeat_runtime.engine_v13.HeartbeatRuntime")
+            self.assertEqual(receipt["canonical_carrier_runtime"], "heartbeat_runtime.engine_v13.HeartbeatRuntime")
             self.assertEqual(receipt["worker_runtime"], "heartbeat_runtime.worker_runtime.WorkerCoordinator")
+            self.assertFalse(receipt["heartbeat_grants_execution_authority"])
 
             missing_worker = dict(process)
             missing_worker["worker_pid"] = None
