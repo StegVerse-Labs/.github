@@ -1,0 +1,227 @@
+#!/usr/bin/env python3
+"""Resident Canonical Work bootstrap consumer carried by the already-copied control request directory.
+
+This consumer exists in `control/resident-execution-request.d`, which is already
+materialized wholesale by the sovereign worker source refresh. It therefore does
+not require expanding the resident static-script manifest merely to make this new
+bounded work lane discoverable.
+
+On an admitted native resident host it copies only the explicitly enumerated
+Canonical Work source files from the already-local canonical source root into the
+resident checkout, verifies byte equality, then invokes the registered bounded
+bootstrap wrapper. No network source fetch, credential use, HB/oscillator advance,
+claim/fence minting, or second runtime implementation is permitted here.
+"""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+import shutil
+import subprocess
+import sys
+from pathlib import Path
+from typing import Any, Mapping
+
+REQUEST_REL = Path("control/resident-execution-request.d/canonical-work-coordination-bootstrap-001.json")
+CONSUMPTION_REL = Path("receipts/sovereign-host/canonical-work-coordination-bootstrap-request-consumption.latest.json")
+BOOTSTRAP_RUNTIME_REL = Path("runtime/canonical-work-coordination")
+TARGET_TASK = "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+TARGET_MODE = "CANONICAL_WORK_EVENT_BOOTSTRAP"
+TARGET_ENTRYPOINT = Path("scripts/install_and_run_canonical_work_event_bootstrap.py")
+
+MATERIALIZE = (
+    Path("scripts/install_and_run_canonical_work_event_bootstrap.py"),
+    Path("scripts/run_canonical_work_event_bootstrap.py"),
+    Path("scripts/install_canonical_work_universal_intr_route.py"),
+    Path("scripts/build_canonical_work_intr_request.py"),
+    Path("scripts/apply_admitted_canonical_work_projection.py"),
+    Path("scripts/consume_canonical_work_intr_materialization_request.py"),
+    Path("scripts/project_worker_claim_into_canonical_task.py"),
+    Path("scripts/reconcile_admitted_canonical_work.py"),
+    Path("scripts/reevaluate_canonical_task_dependencies.py"),
+    Path("scripts/consume_admitted_dependency_resolution.py"),
+    Path("workers/canonical_work_intr_ingress.py"),
+    Path("data/canonical-task-registry.json"),
+    Path("control/canonical-work-runtime-profile.json"),
+)
+
+HOSTED = ("GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "CF_PAGES", "CLOUDFLARE_WORKERS")
+FORBIDDEN = (
+    "GITHUB_TOKEN", "GH_TOKEN", "GITHUB_PAT", "GITHUB_PERSONAL_ACCESS_TOKEN",
+    "ACTIONS_RUNTIME_TOKEN", "ACTIONS_ID_TOKEN_REQUEST_TOKEN", "OPENAI_API_KEY",
+    "ANTHROPIC_API_KEY", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "OAUTH_TOKEN",
+)
+NONSECRET = (
+    "PATH", "HOME", "LANG", "LC_ALL", "SSL_CERT_FILE", "SSL_CERT_DIR",
+    "XDG_STATE_HOME", "XDG_CONFIG_HOME", "STEGVERSE_HEARTBEAT_ROOT",
+    "STEGVERSE_HEARTBEAT_SOURCE_ROOT", "STEGVERSE_SOVEREIGN_NODE",
+)
+
+
+def truthy(value: str | None) -> bool:
+    return str(value or "").strip().lower() not in {"", "0", "false", "no"}
+
+
+def require(ok: bool, reason: str) -> None:
+    if not ok:
+        raise RuntimeError(reason)
+
+
+def load_json(path: Path) -> dict[str, Any]:
+    value = json.loads(path.read_text(encoding="utf-8"))
+    require(isinstance(value, dict), f"expected JSON object: {path}")
+    return value
+
+
+def sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def stable_hash(value: Any) -> str:
+    raw = json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+    return hashlib.sha256(raw).hexdigest()
+
+
+def validate_request(request: Mapping[str, Any]) -> None:
+    expected = {
+        "schema": "stegverse.resident-execution-request/v1",
+        "state": "REQUESTED",
+        "task_id": TARGET_TASK,
+        "mode": TARGET_MODE,
+        "entrypoint": str(TARGET_ENTRYPOINT),
+        "credential_authority": "TV/TVC",
+        "github_token_required": False,
+        "github_token_runtime_authority": "NONE",
+        "heartbeat_grants_execution_authority": False,
+        "oscillator_grants_execution_authority": False,
+        "second_machine_required": False,
+        "network_source_fetch_allowed": False,
+        "request_granted_authority": False,
+        "authority_effect": "NONE_REQUEST_ONLY",
+    }
+    for key, wanted in expected.items():
+        require(request.get(key) == wanted, f"canonical work bootstrap resident request {key} mismatch")
+
+
+def clean_env(source: Mapping[str, str] | None = None) -> dict[str, str]:
+    values = dict(os.environ if source is None else source)
+    hosted = [name for name in HOSTED if truthy(values.get(name))]
+    require(not hosted, "hosted environment may not consume canonical work bootstrap request: " + ",".join(sorted(hosted)))
+    env = {name: values[name] for name in NONSECRET if values.get(name)}
+    for name in FORBIDDEN:
+        env.pop(name, None)
+    env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"] = "TV/TVC"
+    env["STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY"] = "NONE"
+    return env
+
+
+def parse_json_object(stdout: str) -> dict[str, Any] | None:
+    decoder = json.JSONDecoder()
+    for index, char in enumerate(stdout):
+        if char != "{":
+            continue
+        try:
+            value, _ = decoder.raw_decode(stdout[index:])
+        except Exception:
+            continue
+        if isinstance(value, dict) and value.get("schema") == "stegverse.canonical-work-event-bootstrap-receipt/v1":
+            return value
+    return None
+
+
+def atomic_json(path: Path, value: Mapping[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name("." + path.name + ".tmp")
+    tmp.write_text(json.dumps(dict(value), indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    tmp.replace(path)
+
+
+def materialize(source: Path, runtime: Path) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for rel in MATERIALIZE:
+        src = source / rel
+        dst = runtime / rel
+        require(src.is_file(), f"canonical source file missing:{rel}")
+        src_hash = sha256(src)
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        if not dst.is_file() or sha256(dst) != src_hash:
+            shutil.copy2(src, dst)
+        require(dst.is_file() and sha256(dst) == src_hash, f"materialized byte mismatch:{rel}")
+        rows.append({"path": rel.as_posix(), "sha256": src_hash, "exact_copy": True})
+    return rows
+
+
+def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
+    source = source_root.expanduser().resolve()
+    runtime = runtime_root.expanduser().resolve()
+    request_path = runtime / REQUEST_REL
+    if not request_path.is_file():
+        return {"schema": "stegverse.canonical-work-bootstrap-request-consumption/v1", "state": "NO_REQUEST", "authority_effect": "NONE"}
+
+    request = load_json(request_path)
+    validate_request(request)
+    request_hash = stable_hash(request)
+    consumption_path = runtime / CONSUMPTION_REL
+    if consumption_path.is_file():
+        previous = load_json(consumption_path)
+        if previous.get("request_sha256") == request_hash and previous.get("state") == "COMPLETED":
+            bootstrap_ref = previous.get("bootstrap_receipt_ref")
+            if isinstance(bootstrap_ref, str) and Path(bootstrap_ref).is_file():
+                return {**previous, "state": "ALREADY_CONSUMED"}
+
+    materialized = materialize(source, runtime)
+    entrypoint = runtime / TARGET_ENTRYPOINT
+    safe_env = clean_env(env)
+    bootstrap_runtime = runtime / BOOTSTRAP_RUNTIME_REL
+    command = [sys.executable, str(entrypoint), "--runtime-root", str(bootstrap_runtime), "--registry", str(runtime / "data/canonical-task-registry.json")]
+    completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=safe_env, timeout=1200)
+    result = parse_json_object(completed.stdout)
+    bootstrap_receipt = bootstrap_runtime / "receipts/sovereign-host/canonical-work-event-bootstrap.latest.json"
+    completed_ok = bool(
+        completed.returncode == 0
+        and isinstance(result, dict)
+        and result.get("state") == "INGRESS_CONSUMPTION_AND_PROJECTION_OBSERVED"
+        and bootstrap_receipt.is_file()
+    )
+    receipt = {
+        "schema": "stegverse.canonical-work-bootstrap-request-consumption/v1",
+        "state": "COMPLETED" if completed_ok else "ATTEMPT_RECORDED",
+        "request_id": request.get("request_id"),
+        "request_sha256": request_hash,
+        "task_id": TARGET_TASK,
+        "entrypoint": str(TARGET_ENTRYPOINT),
+        "source_materialization": materialized,
+        "source_materialization_count": len(materialized),
+        "command": command,
+        "returncode": completed.returncode,
+        "result": result,
+        "bootstrap_receipt_ref": str(bootstrap_receipt),
+        "network_source_fetch_performed": False,
+        "credential_material_present": False,
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": "NONE",
+        "heartbeat_grants_execution_authority": False,
+        "oscillator_grants_execution_authority": False,
+        "request_grants_execution_authority": False,
+        "claim_or_fence_minted": False,
+        "second_machine_required": False,
+        "authority_effect": "NONE_CONSUMPTION_EVIDENCE_ONLY",
+    }
+    atomic_json(consumption_path, receipt)
+    return receipt
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--source-root", type=Path, required=True)
+    parser.add_argument("--runtime-root", type=Path, required=True)
+    args = parser.parse_args()
+    receipt = consume(args.source_root, args.runtime_root)
+    print(json.dumps(receipt, sort_keys=True))
+    return 0 if receipt.get("state") in {"NO_REQUEST", "ALREADY_CONSUMED", "COMPLETED", "ATTEMPT_RECORDED"} else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
