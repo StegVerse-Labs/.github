@@ -1,0 +1,88 @@
+{
+  "schema": "stegverse.quantum-tls-confidentiality-census/v1",
+  "goal_id": "QUANTUM-RESILIENCE-001",
+  "issue": "StegVerse-Labs/.github#1014",
+  "inventory_status": "PARTIAL_EXPLICIT",
+  "authority_effect": "NONE_CENSUS_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "pqc_deployment_claim": false,
+  "quantum_safe_claim": false,
+  "surfaces": [
+    {
+      "id": "STEGTALK-ST034-PUBLIC-TLS-CLIENT",
+      "repository": "StegVerse-Labs/StegTalk",
+      "paths": [
+        "STEGTALK_MIRROR_HANDOFF.md",
+        "src/stegtalk/public_tls_edge.py",
+        "runtime/public-tls-edge.v1.json"
+      ],
+      "role": "public-network StegTalk client transport for an already-admitted ST-031/ST-032 edge",
+      "source_status": "IMPLEMENTED_VALIDATED_MERGED",
+      "production_activation": false,
+      "tls_minimum": "TLSv1.2",
+      "library": "Python ssl using platform trust store or explicit non-secret CA file",
+      "certificate_chain_verification_required": true,
+      "hostname_verification_required": true,
+      "insecure_mode_available": false,
+      "certificate_algorithm": "NEGOTIATED_NOT_PINNED_IN_SOURCE",
+      "key_exchange_algorithm": "NEGOTIATED_NOT_PINNED_IN_SOURCE",
+      "forward_secrecy": "UNKNOWN_UNTIL_REAL_NEGOTIATION_EVIDENCE",
+      "primitive": "TLS>=1.2 / negotiated asymmetric authentication and key establishment unknown",
+      "quantum_state": "QUANTUM_SAFETY_UNKNOWN",
+      "confidentiality_lifetime": "MESSAGE_PAYLOAD_LIFETIME_NOT_CANONICALLY_BOUNDED",
+      "harvest_now_decrypt_later_relevant": true,
+      "migration_priority": "CRITICAL",
+      "migration_target": "HYBRID_MIGRATION_REQUIRED_IF_CLASSICAL_ONLY_NEGOTIATION_IS_CONFIRMED",
+      "runtime_evidence_required": [
+        "real admitted public endpoint",
+        "negotiated protocol and cipher suite",
+        "peer certificate public-key algorithm",
+        "key-exchange group",
+        "durable sender and receiver receipts"
+      ],
+      "notes": "TLS version alone is not evidence of post-quantum protection. Source verification policy is strong but does not establish the negotiated asymmetric algorithms."
+    },
+    {
+      "id": "TVC-SERVICE-GATEWAY-TLS-MATERIAL",
+      "repository": "StegVerse-Labs/TVC",
+      "paths": [
+        "docs/SERVICE_GATEWAY_TLS_MATERIAL_ADOPTION_MIRROR_HANDOFF.md",
+        "scripts/adopt_service_gateway_tls_material.py"
+      ],
+      "role": "TV/TVC-owned adoption of already-materialized Service Gateway TLS certificate/private-key material",
+      "source_status": "IMPLEMENTED_TARGET_UNPROVEN_RUNTIME",
+      "production_activation": false,
+      "tls_minimum": "NOT_ESTABLISHED_BY_ADOPTION_SOURCE",
+      "library": "Python TLS/certificate validation path; exact runtime gateway negotiator not proven by this source lane",
+      "certificate_chain_verification_required": true,
+      "hostname_verification_required": true,
+      "insecure_mode_available": false,
+      "certificate_algorithm": "UNKNOWN_UNTIL_AUTHENTIC_CERTIFICATE_METADATA_RECEIPT",
+      "key_exchange_algorithm": "UNKNOWN_UNTIL_GATEWAY_RUNTIME_NEGOTIATION_EVIDENCE",
+      "forward_secrecy": "UNKNOWN",
+      "primitive": "certificate/private-key pair adopted under TV/TVC; algorithm not evidenced in current runtime",
+      "quantum_state": "QUANTUM_SAFETY_UNKNOWN",
+      "confidentiality_lifetime": "SERVICE_GATEWAY_TRAFFIC_LIFETIME_UNKNOWN",
+      "harvest_now_decrypt_later_relevant": true,
+      "migration_priority": "CRITICAL",
+      "migration_target": "HYBRID_MIGRATION_REQUIRED_IF_CLASSICAL_ONLY_NEGOTIATION_IS_CONFIRMED",
+      "runtime_evidence_required": [
+        "authentic TV/TVC TLS-material adoption receipt",
+        "certificate public-key algorithm",
+        "gateway negotiated protocol and cipher suite",
+        "key-exchange group",
+        "public HTTPS observation when activation lane permits"
+      ],
+      "notes": "TLS-material adoption does not equal Gateway runtime execution or public HTTPS readiness."
+    }
+  ],
+  "residual_unresolved_scope": [
+    "other StegVerse TLS/WebPKI clients and servers",
+    "service-to-service TLS negotiation outside the two evidenced surfaces",
+    "certificate issuance and renewal paths",
+    "stored ciphertext and archive encryption whose confidentiality must survive future quantum capability",
+    "provider-managed edge TLS where the negotiated asymmetric properties are not represented in repository evidence"
+  ],
+  "completion_rule": "Issue #1014 remains open until consequence-bearing TLS/WebPKI and long-lived confidentiality surfaces have bounded inventory entries with runtime negotiation or cryptographic-storage evidence where required."
+}
