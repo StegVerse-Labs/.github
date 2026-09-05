@@ -90,7 +90,7 @@ CONSUMERS = (
     ("glm53_sovereign_lane", "scripts/consume_glm53_sovereign_lane_request.py"),
     ("erl_ai_economic_transparency_review", "scripts/consume_erl_ai_economic_transparency_review_request.py"),
     ("org_claim_allocator", "scripts/consume_org_claim_allocator_request.py"),
-    ("canonical_work_coordination", "scripts/consume_canonical_work_coordination_bootstrap_request.py"),
+    ("canonical_work_coordination", "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py"),
 )
 
 
