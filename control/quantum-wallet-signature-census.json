@@ -1,0 +1,78 @@
+{
+  "schema": "stegverse.quantum-wallet-signature-census/v1",
+  "goal_id": "QUANTUM-RESILIENCE-001",
+  "issue": "StegVerse-Labs/.github#1013",
+  "inventory_status": "PARTIAL_EXPLICIT",
+  "authority_effect": "NONE_CENSUS_ONLY",
+  "credential_authority": "TV/TVC",
+  "wallet_signing_authority": "USER_ONLY",
+  "wallet_broadcast_authority": "USER_ONLY",
+  "wallet_key_export_authority": "NONE",
+  "pqc_deployment_claim": false,
+  "quantum_safe_claim": false,
+  "surfaces": [
+    {
+      "id": "STEGFIN-EIP1193-USER-WALLET-HANDOFF",
+      "repository": "StegVerse-Labs/stegfin-governance",
+      "paths": [
+        "docs/STEGFIN_USER_ONLY_WALLET_HANDOFF_MIRROR_HANDOFF.md",
+        "ui/wallet-user-handoff.js",
+        "ui/wallet-user-handoff-ui.js"
+      ],
+      "purpose": "explicit USER_ONLY wallet review/sign/broadcast handoff for governed transaction candidates",
+      "signer_execution_location": "EXTERNAL_INJECTED_EIP1193_WALLET_PROVIDER",
+      "stegverse_signs": false,
+      "stegverse_broadcasts_automatically": false,
+      "private_key_exported_to_stegverse": false,
+      "seed_exported_to_stegverse": false,
+      "signature_algorithm": "NOT_ESTABLISHED_BY_STEGVERSE_SOURCE",
+      "chain_constraint": "Base 0x2105 in current handoff; final signature semantics are wallet/chain constrained",
+      "quantum_state": "QUANTUM_SAFETY_UNKNOWN",
+      "migration_priority": "CRITICAL",
+      "migration_target": "CHAIN_AND_WALLET_CONSTRAINT_ANALYSIS_REQUIRED",
+      "notes": "Repository references to secp256k1 elsewhere are not evidence that this active USER_ONLY wallet handoff uses a repository-controlled secp256k1 signer."
+    },
+    {
+      "id": "STEGID-DEVICE-WALLET-CAPABILITY",
+      "repository": "StegVerse-Labs/StegID",
+      "paths": [
+        "docs/DEVICE_WALLET_CAPABILITY_MIRROR_HANDOFF.md",
+        "src/stegid/device_wallet_capability.py"
+      ],
+      "purpose": "device-specific authorization to request bounded wallet capabilities",
+      "signer_execution_location": "NO_SIGNING_PERFORMED_BY_CAPABILITY_DECISION",
+      "stegverse_signs": false,
+      "stegverse_broadcasts_automatically": false,
+      "private_key_exported_to_stegverse": false,
+      "seed_exported_to_stegverse": false,
+      "signature_algorithm": "N/A_CAPABILITY_DECISION",
+      "decision_commitment": "SHA-256 commitment per handoff",
+      "quantum_state": "QUANTUM_SAFETY_UNKNOWN",
+      "migration_priority": "HIGH",
+      "migration_target": "PRESERVE_USER_ONLY_AUTHORITY_AND_INVENTORY_ANY_SIGNATURES_USED_BY_DECISION_RECEIPTS",
+      "notes": "Identity continuity and device admission do not themselves grant wallet signing authority."
+    }
+  ],
+  "observed_non_authoritative_references": [
+    {
+      "repository": "StegVerse-Labs/core-master",
+      "path": "src/receipt-chain.yml",
+      "reference": "ecdsa_secp256k1",
+      "classification": "SEPARATE_RECEIPT_SIGNATURE_REFERENCE_NOT_PROOF_OF_ACTIVE_USER_WALLET_SIGNER"
+    },
+    {
+      "repository": "StegVerse-Labs/stegseed",
+      "path": "schemas/witness-bundle.schema.json",
+      "reference": "ecdsa-secp256k1 example",
+      "classification": "SCHEMA_EXAMPLE_NOT_RUNTIME_PROOF"
+    }
+  ],
+  "residual_unresolved_scope": [
+    "actual signature algorithm and key type used by each admitted external wallet provider",
+    "chain-level account/signature constraints for all supported networks",
+    "wallet verification/projection cryptography controlled by StegVerse repositories",
+    "transaction-signature historical verification and algorithm migration semantics",
+    "non-wallet receipt-signature surfaces that may reuse blockchain-style curves"
+  ],
+  "completion_rule": "Issue #1013 remains open until active wallet/transaction signature primitives and custody semantics are bounded without transferring USER_ONLY signing/broadcast authority to StegVerse."
+}
