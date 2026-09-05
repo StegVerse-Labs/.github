@@ -2,7 +2,7 @@
 
 Repository: `StegVerse-Labs/.github`  
 Goal: `QUANTUM-RESILIENCE-001`  
-State: `SOURCE_PROGRAM_INITIALIZED / CRYPTO_CENSUS_AND_MIGRATION_REQUIRED`  
+State: `SOURCE_POLICY_SLICES_MERGED / CRYPTO_BACKENDS_CENSUS_RUNTIME_REQUIRED`  
 Credential authority: `TV/TVC`  
 GitHub token runtime authority: `NONE`
 
@@ -12,16 +12,30 @@ Make StegVerse cryptographically resilient to future cryptographically relevant 
 
 ## Canonical public standards baseline
 
-The initial standards baseline is NIST FIPS 203 (ML-KEM), FIPS 204 (ML-DSA), and FIPS 205 (SLH-DSA). NIST states that these standards are ready for implementation now. NIST continues standardization work on additional algorithms, so StegVerse MUST remain crypto-agile rather than freezing one post-quantum algorithm forever.
+The initial standards baseline is NIST FIPS 203 (ML-KEM), FIPS 204 (ML-DSA), and FIPS 205 (SLH-DSA). StegVerse MUST remain crypto-agile rather than freezing one post-quantum algorithm forever.
 
-## Current evidence
+## Current evidence and merged migration slices
 
-Repository search has already established two concrete classical-only risks that require migration planning:
+Concrete classical-only exposures now represented in the census include:
 
-- `StegVerse-Labs/StegID` v1 continuity receipts are explicitly Ed25519-only, including frozen invariants and keyring/signature contracts.
-- `StegVerse-Labs/TVC/policy.rego` presently requires `w.signature.alg == "ed25519"` for relevant signed material.
+- `StegVerse-Labs/StegID` v1 continuity receipts: Ed25519;
+- `StegVerse-Labs/StegID` current-phone DEVICE_POSSESSION: non-exportable browser P-256 key;
+- `StegVerse-Labs/TVC/policy.rego`: Ed25519-only warrant signature assumptions;
+- TLS/WebPKI, other device/node identity, wallet signatures, software/update provenance, and long-lived stored confidentiality remain explicitly uninventoried.
 
-These facts are evidence of quantum-vulnerable asymmetric dependencies, not evidence that every StegVerse cryptographic surface has been inventoried.
+Merged source progress:
+
+```text
+StegID PR #10
+merge: 8ed1bd6f2ec35447bc1f3fd1ac922a717ce1b060
+result: fail-closed hybrid Ed25519 + ML-DSA-65 receipt policy; real ML-DSA backend still required
+
+TVC PR #321
+merge: c743cebae4452fcbad7abcc7b40448953a9c5422
+result: versioned legacy/hybrid signature-profile policy; missing PQ evidence and caller assertions fail closed; real ML-DSA verifier and Rego binding still required
+```
+
+These are migration-policy source results only. Neither merge proves deployed PQ protection.
 
 ## Quantum security invariants
 
@@ -46,7 +60,7 @@ These facts are evidence of quantum-vulnerable asymmetric dependencies, not evid
 - `DEPRECATED_CRYPTO_PRESENT`
 - `QUANTUM_SAFETY_UNKNOWN`
 
-A surface MUST NOT transition to `PQC_VALIDATED` from documentation or algorithm name alone. Implementation and validation evidence are required.
+A surface MUST NOT transition to `HYBRID_ACTIVE` or `PQC_VALIDATED` from documentation, suite naming, policy assertions, or CI alone. Real cryptographic implementation and validation evidence are required.
 
 ## Three-entity responsibilities
 
@@ -59,16 +73,17 @@ Own the canonical represented crypto census and algorithm-status knowledge: prim
 ### SV-011
 Construct and test bounded hybrid/PQC migration candidates, including compatibility, downgrade resistance, denied-consequence proofs, algorithm rollback and replacement paths. It may not self-grant authority or weaken existing controls to make migration pass.
 
-## Initial machine tasks
+## Remaining machine tasks
 
-1. Create a canonical cryptographic census with evidence-backed entries and explicit unknowns.
-2. Add a quantum-resilience contract and deterministic validator.
-3. Establish mandatory crypto-agility requirements for new consequence-bearing protocols.
-4. Create migration tasks for the first observed classical-only roots: StegID Ed25519 continuity receipts and TVC Ed25519 policy.
-5. Extend the census across TLS/WebPKI, device/node identity, wallet signatures, software/update provenance, receipt signing, key exchange, storage encryption and long-lived encrypted data.
-6. Build hybrid migration tests using standardized PQ primitives while preserving authority separation.
-7. Add harvest-now/decrypt-later classification for data with confidentiality lifetime beyond the migration horizon.
-8. Make StegVerse-001, StegVerse-002 and SV-011 runtime-aware of this program through the existing resident substrate; do not create a parallel scheduler or WorkerCoordinator.
+1. continue the crypto census until no CRITICAL surface is `UNINVENTORIED`;
+2. integrate a real validated ML-DSA backend into StegID receipt mint/verify paths;
+3. integrate a real validated ML-DSA verifier into TVC and bind the active warrant gate to versioned suites;
+4. design the P-256 current-phone device-possession migration around actual platform capability, with explicit compensating controls if native PQ device credentials are unavailable;
+5. inventory TLS/WebPKI and introduce ML-KEM/hybrid key establishment where long-lived confidentiality creates harvest-now/decrypt-later risk;
+6. inventory wallet signing and software/update provenance without changing USER_ONLY signing/broadcast authority;
+7. add runtime standing quantum-resilience awareness for StegVerse-001, StegVerse-002 and SV-011 through the existing WorkerCoordinator/dispatcher substrate;
+8. produce executable downgrade, stale-key, revoked-key, unknown-suite, hybrid verification, rollback and historical-verification tests;
+9. propagate release-ready semantics to Site, Publisher, admissibility-wiki and stegguardian-wiki only after their handoffs permit it.
 
 ## Completion gates
 
