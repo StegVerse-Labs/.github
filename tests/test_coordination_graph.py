@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 import unittest
 
-from heartbeat_runtime.coordination_graph import review_coordination_preflight, scopes_collide
+from heartbeat_runtime.coordination_graph import predicate_equivalence_key, review_coordination_preflight, scopes_collide
 
 
 NOW = datetime(2026, 9, 4, 21, 50, tzinfo=timezone.utc)
@@ -40,6 +40,8 @@ class CoordinationGraphTests(unittest.TestCase):
             "predicates": [
                 {
                     "predicate_id": "P",
+                    "semantic_predicate_id": "resident_request_consumed",
+                    "subject_binding": {"request_id": "REQ-1", "target": "worker-a"},
                     "state": "SATISFIED",
                     "authoritative_producer": "receiver",
                     "required_schema": "receipt/v1",
@@ -54,6 +56,7 @@ class CoordinationGraphTests(unittest.TestCase):
                 {
                     "evidence_id": "E",
                     "predicate_id": "P",
+                    "subject_binding": {"target": "worker-a", "request_id": "REQ-1"},
                     "producer": "receiver",
                     "ref": "receipts/p.json",
                     "schema": "receipt/v1",
@@ -73,6 +76,8 @@ class CoordinationGraphTests(unittest.TestCase):
         self.assertEqual(result["verdict"], "ADMIT_COORDINATION")
         self.assertTrue(result["resolved_predicates"][0]["satisfied"])
         self.assertEqual(result["resolved_predicates"][0]["qualifying_evidence_refs"], ["receipts/p.json"])
+        self.assertEqual(result["resolved_predicates"][0]["semantic_predicate_id"], "resident_request_consumed")
+        self.assertEqual(result["resolved_predicates"][0]["subject_binding"]["request_id"], "REQ-1")
         self.assertEqual(result["newly_unblocked_tasks"], ["DOWNSTREAM"])
         self.assertEqual(result["authority_effect"], "NONE")
 
@@ -82,6 +87,20 @@ class CoordinationGraphTests(unittest.TestCase):
         result = review_coordination_preflight(ledger=ledger, task={"task_id": "T"}, now=NOW)
         self.assertEqual(result["verdict"], "BLOCK_COORDINATION")
         self.assertIn("AUTHORITATIVE_PRODUCER_MISMATCH", result["gaps"][0]["rejected_because"])
+
+    def test_subject_binding_mismatch_does_not_cross_satisfy(self):
+        ledger = self.ledger()
+        ledger["evidence"][0]["subject_binding"]["request_id"] = "REQ-OTHER"
+        result = review_coordination_preflight(ledger=ledger, task={"task_id": "T"}, now=NOW)
+        self.assertEqual(result["verdict"], "BLOCK_COORDINATION")
+        self.assertIn("SUBJECT_BINDING_MISMATCH", result["gaps"][0]["rejected_because"])
+
+    def test_equivalence_requires_same_semantic_id_and_subject(self):
+        a = {"predicate_id": "P1", "semantic_predicate_id": "resident_request_consumed", "subject_binding": {"request_id": "R1"}}
+        b = {"predicate_id": "P2", "semantic_predicate_id": "resident_request_consumed", "subject_binding": {"request_id": "R1"}}
+        c = {"predicate_id": "P3", "semantic_predicate_id": "resident_request_consumed", "subject_binding": {"request_id": "R2"}}
+        self.assertEqual(predicate_equivalence_key(a), predicate_equivalence_key(b))
+        self.assertNotEqual(predicate_equivalence_key(a), predicate_equivalence_key(c))
 
     def test_stale_evidence_is_rejected(self):
         ledger = self.ledger()
