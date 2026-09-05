@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 8,
-  "status": "CANONICAL_RUNTIME_PROFILE_MAP_SOURCE_REGISTERED_AUTHENTIC_RUNTIME_PENDING",
+  "generation": 9,
+  "status": "RUNTIME_PROFILE_REQUIREMENTS_BOUND_AUTHENTIC_RUNTIME_PENDING",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -27,6 +27,7 @@
         "control/canonical-work-runtime-profile.json",
         "control/runtime-profile-map.json",
         "data/task-coordination-policy.json",
+        "scripts/resolve_task_runtime_candidates.py",
         "scripts/build_canonical_work_intr_request.py",
         "scripts/project_canonical_work_runtime.py",
         "scripts/validate_canonical_work_runtime_profile.py",
@@ -59,6 +60,15 @@
       "adjacent_task_refs": ["CANONICAL-RESIDENT-CARRIER-974", "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"],
       "existing_evidence_refs": ["control/worker-registry.json", "docs/UNIVERSAL_WORK_INTERLOCK_MIRROR_HANDOFF.md", "control/canonical-resident-carrier-contract.json", "heartbeat_runtime/intr_carrier_profile.py", "control/canonical-work-runtime-profile.json", "control/runtime-profile-map.json", "data/task-coordination-policy.json"],
       "expected_evidence_predicates": ["SOURCE_SCHEMA_VALID", "TASK_REGISTRY_WORKERCOORDINATOR_AUTHORITY_SEPARATION_VALID", "TASK_MASTER_RECORDS_RECONCILIATION_SOURCE_VALID", "HB32_OSCILLATOR_RUNTIME_PROFILE_VALID", "AUTHENTIC_TASK_INGRESS_OBSERVED", "AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED", "AUTHENTIC_MASTER_RECORDS_RECONCILIATION_OBSERVED", "AUTHENTIC_TASK_EGRESS_OR_CLOSURE_OBSERVED"],
+      "runtime_requirements": {
+        "capabilities": ["task_registry_reconciliation", "master_records_reconciliation", "worker_claim_projection", "dependency_reevaluation", "intr_task_admission"],
+        "environment": "SOVEREIGN_RESIDENT",
+        "direction": "INTERNAL",
+        "mutation_required": true,
+        "deployment_required": false,
+        "current_observation_required": false
+      },
+      "runtime_resolution": null,
       "worker_claim": {"authority": "WORKERCOORDINATOR", "claim_ref": null, "fence_ref": null, "projection_only": true},
       "human_action_ref": null,
       "completion": {"claimed": false, "validated": false, "reconciliation_ref": null},
@@ -74,7 +84,7 @@
       "parent_task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
       "goal": "Provide one canonical non-authorizing map of runtime substrates, declared capabilities, current observations/freshness, transition surfaces, provenance, and deterministic task-to-runtime compatibility for the StegVerse ecosystem.",
       "coordination_state": "PROPOSED",
-      "source_refs": ["docs/CANONICAL_RUNTIME_PROFILE_MAP_MIRROR_HANDOFF.md", "schemas/runtime-profile-map.schema.json", "control/runtime-profile-sources.json", "control/runtime-profile-map.json", "scripts/build_runtime_profile_map.py", "scripts/validate_runtime_profile_map.py", "scripts/query_runtime_profile_map.py", "scripts/match_runtime_profile.py", "scripts/emit_runtime_profile_map_receipt.py", "tests/test_runtime_profile_map.py", "data/task-coordination-policy.json"],
+      "source_refs": ["docs/CANONICAL_RUNTIME_PROFILE_MAP_MIRROR_HANDOFF.md", "schemas/runtime-profile-map.schema.json", "control/runtime-profile-sources.json", "control/runtime-profile-map.json", "scripts/build_runtime_profile_map.py", "scripts/validate_runtime_profile_map.py", "scripts/query_runtime_profile_map.py", "scripts/match_runtime_profile.py", "scripts/resolve_task_runtime_candidates.py", "scripts/emit_runtime_profile_map_receipt.py", "tests/test_runtime_profile_map.py", "data/task-coordination-policy.json"],
       "targets": {"organizations": ["StegVerse-Labs"], "repositories": ["StegVerse-Labs/.github"], "components": ["runtime-profile-map", "runtime-profile-source-catalog", "runtime-profile-builder", "runtime-profile-validator", "runtime-profile-query", "runtime-profile-matcher", "runtime-profile-projection-receipt", "task-coordination-runtime-routing"]},
       "dependencies": [{"dependency_id": "DEP-CANONICAL-RUNTIME-PROFILE-MAP-AUTHENTIC-BUILD", "kind": "RUNTIME_PREDICATE", "state": "UNRESOLVED", "ref": "scripts/build_runtime_profile_map.py"}],
       "blockers": [],
@@ -82,6 +92,15 @@
       "adjacent_task_refs": ["STEGVERSE-CANONICAL-WORK-COORDINATION-001", "CANONICAL-RESIDENT-CARRIER-974"],
       "existing_evidence_refs": ["control/canonical-resident-carrier-contract.json", "control/worker-capability-profiles.json", "workers/universal_intr_profiled_ingress.py", "control/runtime-observability-consumers", "control/canonical-work-runtime-profile.json"],
       "expected_evidence_predicates": ["SOURCE_SCHEMA_VALID", "SOURCE_CATALOG_VALID", "HB32_OSCILLATOR_AUTHORITY_BOUNDARY_VALID", "WORKER_CAPABILITY_PROJECTION_VALID", "OBSERVATION_FRESHNESS_SEMANTICS_VALID", "DETERMINISTIC_MATCH_REJECTION_VALID", "AUTHENTIC_RUNTIME_PROFILE_MAP_BUILD_OBSERVED", "AUTHENTIC_RUNTIME_PROFILE_MAP_RECEIPT_OBSERVED"],
+      "runtime_requirements": {
+        "capabilities": ["bounded_process_execution", "canonical_artifact_validation"],
+        "environment": "SOVEREIGN_RESIDENT",
+        "direction": "INTERNAL",
+        "mutation_required": false,
+        "deployment_required": false,
+        "current_observation_required": false
+      },
+      "runtime_resolution": null,
       "worker_claim": {"authority": "WORKERCOORDINATOR", "claim_ref": null, "fence_ref": null, "projection_only": true},
       "human_action_ref": null,
       "completion": {"claimed": false, "validated": false, "reconciliation_ref": null},
@@ -93,5 +112,5 @@
   "human_actions": [],
   "systemic_incidents": [],
   "projections": {"handoffs": [], "status_surfaces": []},
-  "nonclaims": ["REGISTRY_BOOTSTRAP_AND_RUNTIME_ADAPTERS_ARE_SOURCE_STATE_ONLY", "HB32_OSCILLATOR_REFERENCE_DOES_NOT_GRANT_TASK_AUTHORITY", "MASTER_RECORDS_PROJECTION_ADAPTER_DOES_NOT_PROVE_RUNTIME_RECONCILIATION", "DEPENDENCY_FANOUT_SOURCE_DOES_NOT_ADMIT_TRANSITIONS", "ADMITTED_RECONCILIATION_SOURCE_DOES_NOT_MINT_EXECUTION_AUTHORITY", "ADMITTED_DEPENDENCY_EVENT_CONSUMPTION_DOES_NOT_MUTATE_WORKERCOORDINATOR", "AUTHENTIC_INGRESS_PROJECTION_REQUIRES_EXISTING_ADMITTED_RECEIPT", "WORKERCOORDINATOR_PROJECTION_DOES_NOT_MINT_CLAIM_OR_FENCE", "EVENT_BOOTSTRAP_USES_EXISTING_SHARED_INTR_SERVER_ONLY", "ROUTE_INSTALL_AND_BOOTSTRAP_SOURCE_DOES_NOT_PROVE_RUNTIME_EXECUTION", "RESIDENT_REQUEST_DISPATCH_DOES_NOT_GRANT_EXECUTION_AUTHORITY", "RESIDENT_SELF_MATERIALIZATION_IS_LOCAL_SOURCE_COPY_ONLY", "RUNTIME_PROFILE_MAP_MATCH_DOES_NOT_GRANT_AUTHORITY", "GITHUB_FAILURE_EMAIL_NORMALIZATION_DOES_NOT_PROVE_RUNTIME_FAILURE", "NO_AUTHENTIC_INTERLOCK_INTR_TASK_INGRESS_IS_CLAIMED", "NO_WORKERCOORDINATOR_CLAIM_IS_MINTED_BY_THIS_REGISTRY", "NO_MASTER_RECORDS_RUNTIME_RECONCILIATION_IS_CLAIMED"]
+  "nonclaims": ["REGISTRY_BOOTSTRAP_AND_RUNTIME_ADAPTERS_ARE_SOURCE_STATE_ONLY", "HB32_OSCILLATOR_REFERENCE_DOES_NOT_GRANT_TASK_AUTHORITY", "MASTER_RECORDS_PROJECTION_ADAPTER_DOES_NOT_PROVE_RUNTIME_RECONCILIATION", "DEPENDENCY_FANOUT_SOURCE_DOES_NOT_ADMIT_TRANSITIONS", "ADMITTED_RECONCILIATION_SOURCE_DOES_NOT_MINT_EXECUTION_AUTHORITY", "ADMITTED_DEPENDENCY_EVENT_CONSUMPTION_DOES_NOT_MUTATE_WORKERCOORDINATOR", "AUTHENTIC_INGRESS_PROJECTION_REQUIRES_EXISTING_ADMITTED_RECEIPT", "WORKERCOORDINATOR_PROJECTION_DOES_NOT_MINT_CLAIM_OR_FENCE", "EVENT_BOOTSTRAP_USES_EXISTING_SHARED_INTR_SERVER_ONLY", "ROUTE_INSTALL_AND_BOOTSTRAP_SOURCE_DOES_NOT_PROVE_RUNTIME_EXECUTION", "RESIDENT_REQUEST_DISPATCH_DOES_NOT_GRANT_EXECUTION_AUTHORITY", "RESIDENT_SELF_MATERIALIZATION_IS_LOCAL_SOURCE_COPY_ONLY", "RUNTIME_PROFILE_MAP_MATCH_DOES_NOT_GRANT_AUTHORITY", "RUNTIME_PROFILE_RESOLUTION_IS_PROJECTION_ONLY", "GITHUB_FAILURE_EMAIL_NORMALIZATION_DOES_NOT_PROVE_RUNTIME_FAILURE", "NO_AUTHENTIC_INTERLOCK_INTR_TASK_INGRESS_IS_CLAIMED", "NO_WORKERCOORDINATOR_CLAIM_IS_MINTED_BY_THIS_REGISTRY", "NO_MASTER_RECORDS_RUNTIME_RECONCILIATION_IS_CLAIMED"]
 }
