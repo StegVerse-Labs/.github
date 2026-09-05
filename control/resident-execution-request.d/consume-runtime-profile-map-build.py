@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """Consume the bounded resident request for canonical runtime-profile map generation.
 
-Uses only already-local source. It materializes immutable profile-map source/control
+Uses only already-local source. It materializes immutable profile-map/coordination
 surfaces into the existing resident checkout, preserves mutable resident state,
-builds/validates the projection, emits an integrity receipt, resolves declared
-canonical-task runtime requirements against that map, and atomically persists those
-resolution projections into the resident canonical task registry. No network fetch,
-credential use, HB/oscillator advance, claim/fence minting, task-state transition, or
-second runtime is permitted.
+builds/validates the profile map, emits integrity evidence, resolves canonical-task
+runtime requirements, persists those projections, validates coordination consistency,
+and emits per-task routing-readiness receipts. No network fetch, credential use,
+HB/oscillator advance, claim/fence minting, task-state transition, or second runtime
+is permitted.
 """
 from __future__ import annotations
 
@@ -33,10 +33,13 @@ TASK_RESOLUTION_DIR_REL = Path("receipts/runtime-profile-map/task-resolutions")
 IMMUTABLE_FILES = (
     Path("schemas/runtime-profile-map.schema.json"),
     Path("schemas/canonical-task-record.schema.json"),
+    Path("schemas/task-master-records-reconciliation.schema.json"),
     Path("control/runtime-profile-sources.json"),
     Path("control/canonical-resident-carrier-contract.json"),
     Path("control/worker-capability-profiles.json"),
     Path("control/canonical-work-runtime-profile.json"),
+    Path("data/task-coordination-policy.json"),
+    Path("docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md"),
     Path("scripts/build_runtime_profile_map.py"),
     Path("scripts/validate_runtime_profile_map.py"),
     Path("scripts/query_runtime_profile_map.py"),
@@ -44,6 +47,9 @@ IMMUTABLE_FILES = (
     Path("scripts/resolve_task_runtime_candidates.py"),
     Path("scripts/apply_task_runtime_resolution_projection.py"),
     Path("scripts/apply_all_task_runtime_resolutions.py"),
+    Path("scripts/evaluate_task_runtime_routing_readiness.py"),
+    Path("scripts/finalize_runtime_profile_map_cycle.py"),
+    Path("scripts/validate_canonical_work_coordination.py"),
     Path("scripts/emit_runtime_profile_map_receipt.py"),
 )
 OBSERVABILITY_DIR = Path("control/runtime-observability-consumers")
@@ -191,18 +197,14 @@ def resolve_tasks(runtime: Path, safe_env: Mapping[str, str]) -> list[dict[str, 
     return rows
 
 
-def apply_resolutions(runtime: Path, safe_env: Mapping[str, str]) -> dict[str, Any]:
-    registry = runtime / CANONICAL_REGISTRY_REL
+def finalize_cycle(runtime: Path, safe_env: Mapping[str, str]) -> dict[str, Any]:
     result = run([
         sys.executable,
-        str(runtime / "scripts/apply_all_task_runtime_resolutions.py"),
-        "--registry", str(registry),
-        "--map", str(runtime / BOOTSTRAP_MAP_REL),
-        "--resolution-dir", str(runtime / TASK_RESOLUTION_DIR_REL),
-        "--apply",
+        str(runtime / "scripts/finalize_runtime_profile_map_cycle.py"),
+        "--root", str(runtime),
     ], cwd=runtime, env=safe_env)
-    result["registry_ref"] = str(registry)
-    result["registry_sha256"] = sha256(registry) if registry.is_file() else None
+    result["registry_ref"] = str(runtime / CANONICAL_REGISTRY_REL)
+    result["registry_sha256"] = sha256(runtime / CANONICAL_REGISTRY_REL) if (runtime / CANONICAL_REGISTRY_REL).is_file() else None
     result["coordination_state_changed"] = False
     result["claim_or_fence_minted"] = False
     result["execution_authority_granted"] = False
@@ -227,9 +229,9 @@ def consume(source_root: Path, runtime_root: Path, env: Mapping[str, str] | None
     evidence = run([sys.executable, str(runtime / "scripts/emit_runtime_profile_map_receipt.py"), "--map", str(map_path), "--output", str(receipt_path)], cwd=runtime, env=safe_env)
     task_resolutions = resolve_tasks(runtime, safe_env) if build["returncode"] == validate["returncode"] == evidence["returncode"] == 0 else []
     resolutions_ok = bool(task_resolutions) and all(row.get("returncode") == 0 and row.get("resolution_sha256") for row in task_resolutions)
-    resolution_projection = apply_resolutions(runtime, safe_env) if resolutions_ok else {"returncode": None, "state": "NOT_ATTEMPTED"}
-    projection_ok = resolution_projection.get("returncode") == 0 and bool(resolution_projection.get("registry_sha256"))
-    success = build["returncode"] == validate["returncode"] == evidence["returncode"] == 0 and receipt_path.is_file() and resolutions_ok and projection_ok
+    finalization = finalize_cycle(runtime, safe_env) if resolutions_ok else {"returncode": None, "state": "NOT_ATTEMPTED"}
+    finalization_ok = finalization.get("returncode") == 0 and bool(finalization.get("registry_sha256"))
+    success = build["returncode"] == validate["returncode"] == evidence["returncode"] == 0 and receipt_path.is_file() and resolutions_ok and finalization_ok
     receipt = {
         "schema": "stegverse.runtime-profile-map-build-consumption/v1",
         "state": "COMPLETED" if success else "ATTEMPT_RECORDED",
@@ -248,7 +250,7 @@ def consume(source_root: Path, runtime_root: Path, env: Mapping[str, str] | None
         "projection_receipt_ref": str(receipt_path),
         "task_runtime_resolutions": task_resolutions,
         "task_runtime_resolution_count": len(task_resolutions),
-        "task_runtime_resolution_projection": resolution_projection,
+        "cycle_finalization": finalization,
         "task_runtime_resolution_selection_grants_authority": False,
         "task_coordination_state_changed_by_runtime_resolution": False,
         "network_source_fetch_performed": False,
@@ -258,7 +260,7 @@ def consume(source_root: Path, runtime_root: Path, env: Mapping[str, str] | None
         "heartbeat_grants_execution_authority": False,
         "oscillator_grants_execution_authority": False,
         "claim_or_fence_minted": False,
-        "authority_effect": "NONE_PROJECTION_BUILD_AND_PERSISTENCE_ONLY"
+        "authority_effect": "NONE_PROJECTION_BUILD_PERSISTENCE_AND_READINESS_ONLY"
     }
     atomic_json(runtime / CONSUMPTION_REL, receipt)
     return receipt
