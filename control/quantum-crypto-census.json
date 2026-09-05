@@ -92,18 +92,20 @@
     {
       "id": "TLS-WEBPKI-ECOSYSTEM",
       "repository": "MULTI_REPOSITORY",
-      "paths": [],
+      "paths": ["control/quantum-tls-confidentiality-census.json", "docs/QUANTUM_TLS_CONFIDENTIALITY_CENSUS_MIRROR_HANDOFF.md"],
       "purpose": "TLS/WebPKI transport authentication and key establishment",
-      "primitive": "UNKNOWN",
+      "primitive": "SCOPED SURFACES OBSERVED; NEGOTIATED CERTIFICATE/KEX ALGORITHMS UNPROVEN",
       "asymmetric": true,
-      "quantum_state": "UNINVENTORIED",
-      "confidentiality_lifetime": "UNKNOWN",
-      "authenticity_lifetime": "UNKNOWN",
+      "quantum_state": "QUANTUM_SAFETY_UNKNOWN",
+      "inventory_status": "PARTIAL_EXPLICIT",
+      "confidentiality_lifetime": "MIXED_UNKNOWN",
+      "authenticity_lifetime": "MIXED_UNKNOWN",
       "harvest_now_decrypt_later_relevant": true,
       "migration_priority": "CRITICAL",
-      "migration_target": "QUANTUM_SAFETY_UNKNOWN",
+      "migration_target": "HYBRID_MIGRATION_REQUIRED_WHERE_LONG_LIVED_SENSITIVE",
       "inventory_issue": "StegVerse-Labs/.github#1014",
-      "required_properties": ["HARVEST_NOW_DECRYPT_LATER_AWARENESS", "HYBRID_MIGRATION_SUPPORT"]
+      "pqc_backend_validated": false,
+      "required_properties": ["HARVEST_NOW_DECRYPT_LATER_AWARENESS", "HYBRID_MIGRATION_SUPPORT", "NEGOTIATED_ALGORITHM_EVIDENCE"]
     },
     {
       "id": "OTHER-DEVICE-NODE-IDENTITY",
@@ -123,33 +125,38 @@
     {
       "id": "WALLET-SIGNATURES",
       "repository": "MULTI_REPOSITORY",
-      "paths": [],
+      "paths": ["control/quantum-wallet-signature-census.json", "docs/QUANTUM_WALLET_SIGNATURE_CENSUS_MIRROR_HANDOFF.md"],
       "purpose": "wallet and transaction signatures",
-      "primitive": "UNKNOWN",
+      "primitive": "ACTIVE USER_ONLY EXTERNAL SIGNER ALGORITHM NOT ESTABLISHED BY STEGVERSE SOURCE",
       "asymmetric": true,
-      "quantum_state": "UNINVENTORIED",
+      "quantum_state": "QUANTUM_SAFETY_UNKNOWN",
+      "inventory_status": "PARTIAL_EXPLICIT",
       "confidentiality_lifetime": "N/A_SIGNATURE",
       "authenticity_lifetime": "LONG_LIVED_VALUE_TRANSFER",
       "harvest_now_decrypt_later_relevant": false,
       "migration_priority": "CRITICAL",
-      "migration_target": "QUANTUM_SAFETY_UNKNOWN",
+      "migration_target": "CHAIN_AND_PROVIDER_CONSTRAINTS_REQUIRE_EXPLICIT_DISPOSITION",
       "inventory_issue": "StegVerse-Labs/.github#1013",
-      "required_properties": ["AUTHORITY_SEPARATION", "DOWNGRADE_RESISTANCE"]
+      "pqc_backend_validated": false,
+      "required_properties": ["AUTHORITY_SEPARATION", "DOWNGRADE_RESISTANCE", "USER_ONLY_SIGN_AND_BROADCAST"]
     },
     {
       "id": "SOFTWARE-UPDATE-PROVENANCE",
       "repository": "MULTI_REPOSITORY",
-      "paths": [],
+      "paths": ["control/quantum-software-update-provenance-census.json", "docs/QUANTUM_SOFTWARE_UPDATE_PROVENANCE_CENSUS_MIRROR_HANDOFF.md"],
       "purpose": "software, release, package and update authenticity",
-      "primitive": "UNKNOWN",
-      "asymmetric": true,
-      "quantum_state": "UNINVENTORIED",
+      "primitive": "SCOPED HASH/MANIFEST INTEGRITY; AUTHENTICATED SIGNING UNPROVEN",
+      "asymmetric": null,
+      "quantum_state": "QUANTUM_SAFETY_UNKNOWN",
+      "inventory_status": "PARTIAL_EXPLICIT",
       "confidentiality_lifetime": "N/A_SIGNATURE",
       "authenticity_lifetime": "LONG_LIVED_SUPPLY_CHAIN",
       "harvest_now_decrypt_later_relevant": false,
       "migration_priority": "HIGH",
-      "migration_target": "QUANTUM_SAFETY_UNKNOWN",
-      "required_properties": ["HISTORICAL_VERIFIABILITY", "DOWNGRADE_RESISTANCE"]
+      "migration_target": "VERSIONED_AUTHENTICATED_PROVENANCE_WITH_CRYPTO_AGILITY",
+      "inventory_issue": "StegVerse-Labs/.github#1019",
+      "pqc_backend_validated": false,
+      "required_properties": ["HISTORICAL_VERIFIABILITY", "DOWNGRADE_RESISTANCE", "SIGNER_CUSTODY_EXPLICITNESS"]
     },
     {
       "id": "LONG-LIVED-STORED-CONFIDENTIALITY",
@@ -168,7 +175,7 @@
       "required_properties": ["HARVEST_NOW_DECRYPT_LATER_AWARENESS", "ALGORITHM_EXPLICITNESS"]
     }
   ],
-  "completion_rule": "no CRITICAL surface may remain UNINVENTORIED before quantum-readiness can be claimed",
+  "completion_rule": "no CRITICAL surface may remain UNINVENTORIED or unbounded before quantum-readiness can be claimed",
   "pqc_validated_surface_count": 0,
   "runtime_claim": false,
   "deployment_claim": false
