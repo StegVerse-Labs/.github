@@ -8,37 +8,43 @@
       "source_id": "canonical-resident-carrier",
       "kind": "RESIDENT_SUBSTRATE",
       "ref": "control/canonical-resident-carrier-contract.json",
-      "required": true
+      "required": true,
+      "resident_materialization": "EXACT_LOCAL_SOURCE_COPY_ALLOWED"
     },
     {
       "source_id": "worker-capability-profiles",
       "kind": "WORKER_CAPABILITY_SET",
       "ref": "control/worker-capability-profiles.json",
-      "required": true
+      "required": true,
+      "resident_materialization": "EXACT_LOCAL_SOURCE_COPY_ALLOWED"
     },
     {
       "source_id": "worker-registry",
       "kind": "WORKER_RUNTIME_STATE",
       "ref": "control/worker-registry.json",
-      "required": true
+      "required": true,
+      "resident_materialization": "PRESERVE_EXISTING_RUNTIME_STATE_NEVER_OVERWRITE_FROM_SOURCE"
     },
     {
       "source_id": "universal-intr-profiled-ingress",
       "kind": "INGRESS_EGRESS_SOURCE",
       "ref": "workers/universal_intr_profiled_ingress.py",
-      "required": true
+      "required": true,
+      "resident_materialization": "PRESERVE_EXISTING_RESIDENT_ROUTER_NEVER_OVERWRITE_FOR_MAP_BUILD"
     },
     {
       "source_id": "canonical-work-runtime",
       "kind": "COORDINATION_RUNTIME",
       "ref": "control/canonical-work-runtime-profile.json",
-      "required": true
+      "required": true,
+      "resident_materialization": "EXACT_LOCAL_SOURCE_COPY_ALLOWED"
     },
     {
       "source_id": "runtime-observability-consumers",
       "kind": "OBSERVABILITY_DIRECTORY",
       "ref": "control/runtime-observability-consumers",
-      "required": true
+      "required": true,
+      "resident_materialization": "EXACT_LOCAL_SOURCE_COPY_ALLOWED_OBSERVATION_FRESHNESS_REEVALUATED"
     }
   ],
   "projection_rules": {
@@ -46,12 +52,16 @@
     "missing_required_source": "FAIL_CLOSED",
     "missing_runtime_observation": "DECLARED_ONLY_OR_UNKNOWN",
     "stale_runtime_observation": "STALE_NOT_UNAVAILABLE",
+    "unknown_runtime_observation": "UNKNOWN_NOT_FALSE",
     "conflicting_observations": "CONFLICT",
     "source_presence_proves_runtime": false,
     "profile_match_grants_authority": false,
     "availability_grants_authority": false,
     "credentials_allowed": false,
-    "secret_paths_allowed": false
+    "secret_paths_allowed": false,
+    "mutable_worker_registry_overwrite_allowed": false,
+    "resident_router_overwrite_for_projection_allowed": false,
+    "existing_generated_projection_reset_allowed": false
   },
   "authority": {
     "map_grants_execution_authority": false,
