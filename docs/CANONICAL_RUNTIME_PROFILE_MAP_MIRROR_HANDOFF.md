@@ -3,7 +3,7 @@
 Updated: 2026-09-04
 Repository: `StegVerse-Labs/.github`
 Goal: `STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001`
-Status: `SOURCE_IMPLEMENTED_CUSTODY_TO_RECONCILIATION_CHAIN_BOUND_AUTHENTIC_RESIDENT_EVIDENCE_PENDING`
+Status: `SOURCE_IMPLEMENTED_POST_RECONCILIATION_TRANSITION_READINESS_BOUND_AUTHENTIC_RESIDENT_EVIDENCE_PENDING`
 
 ## Authority boundary
 
@@ -13,9 +13,9 @@ It MUST NOT create a second heartbeat, oscillator, scheduler, WorkerCoordinator,
 
 ## Purpose
 
-Provide one canonical machine-readable discovery/reconciliation projection answering which runtime substrates exist, what declared capabilities and transition surfaces they expose, what explicit runtime observations/freshness are available, and which canonical tasks can consider them compatible candidates.
+Provide one canonical machine-readable discovery/reconciliation projection answering which runtime substrates exist, what declared capabilities and transition surfaces they expose, what explicit runtime observations/freshness are available, which canonical tasks can consider them compatible candidates, and what governance review class is appropriate after Master Records reconciliation.
 
-A profile declaration, runtime observation, capability match, routing-readiness result, source presence, service presence, heartbeat progression, custody record, or prior receipt never grants execution authority.
+A profile declaration, runtime observation, capability match, routing-readiness result, custody record, reconciliation result, transition-readiness result, source presence, service presence, heartbeat progression, or prior receipt never grants execution authority.
 
 ## Best-practice invariants
 
@@ -35,6 +35,8 @@ A profile declaration, runtime observation, capability match, routing-readiness 
 14. Exact map/routing evidence is packaged for Master Records custody without custody itself granting authority.
 15. Master Records custody is followed by explicit task reconciliation; custody acceptance does not itself satisfy task completion predicates.
 16. Reconciliation emits evidence/disposition only and cannot silently advance task coordination state, close work, or mint claim/fence authority.
+17. Post-reconciliation transition readiness is a separate non-authorizing projection; it identifies the next governance review class but does not perform that transition.
+18. Existing WorkerCoordinator ownership is reused/waited/transferred under WorkerCoordinator authority rather than duplicated.
 
 ## Canonical source surfaces
 
@@ -52,6 +54,7 @@ A profile declaration, runtime observation, capability match, routing-readiness 
 - `scripts/apply_task_runtime_resolution_projection.py`
 - `scripts/apply_all_task_runtime_resolutions.py`
 - `scripts/evaluate_task_runtime_routing_readiness.py`
+- `scripts/evaluate_runtime_profile_map_transition_readiness.py`
 - `scripts/build_runtime_profile_map_custody_package.py`
 - `scripts/finalize_runtime_profile_map_cycle.py`
 - `scripts/reconcile_task_registry_master_records.py`
@@ -59,6 +62,7 @@ A profile declaration, runtime observation, capability match, routing-readiness 
 - `tests/test_runtime_profile_map.py`
 - `tests/test_task_runtime_resolution.py`
 - `tests/test_runtime_profile_map_reconciliation.py`
+- `tests/test_runtime_profile_map_transition_readiness.py`
 
 Resident continuation surfaces:
 
@@ -67,72 +71,68 @@ Resident continuation surfaces:
 - dispatcher selector `runtime_profile_map`
 - `control/resident-execution-request.d/runtime-profile-map-custody-001.json`
 - `control/resident-execution-request.d/consume-runtime-profile-map-custody.py`
+- dispatcher selector `runtime_profile_map_custody`
 - `control/resident-execution-request.d/runtime-profile-map-reconciliation-001.json`
 - `control/resident-execution-request.d/consume-runtime-profile-map-reconciliation.py`
+- dispatcher selector `runtime_profile_map_reconciliation`
+- `control/resident-execution-request.d/runtime-profile-map-transition-readiness-001.json`
+- `control/resident-execution-request.d/consume-runtime-profile-map-transition-readiness.py`
+- dispatcher selector `runtime_profile_map_transition_readiness`
 
-Master Records counterparts:
+## Important correction made in this continuation
 
-- `master-records/orchestration/RUNTIME_PROFILE_MAP_CUSTODY_MIRROR_HANDOFF.md`
-- `master-records/orchestration/CANONICAL_WORK_COORDINATION_CUSTODY_MIRROR_HANDOFF.md`
-- `master-records/orchestration/schemas/runtime_profile_map_custody.schema.json`
-- `master-records/orchestration/scripts/ingest_runtime_profile_map_custody.py`
-- `master-records/orchestration/scripts/project_canonical_work_events.py`
+The reconciliation consumer existed in source but was not actually registered in `scripts/dispatch_resident_execution_requests.py`. That omission is now corrected. The dispatcher also recognizes reconciliation and transition-readiness wait states as non-failure states. No runtime receipt is claimed merely because the selector now exists.
 
-## Canonical task binding
-
-Canonical task records carry explicit `runtime_requirements` and projection-only `runtime_resolution`. Candidate resolution may be projected back only when task identity, correlation identity, requirements, map generation, and candidate identities match. That projection never changes coordination state or WorkerCoordinator ownership.
-
-Routing readiness separately evaluates current-map resolution, compatible candidates, dependencies, blockers, and projected WorkerCoordinator ownership. Its dispositions distinguish unresolved runtime-profile resolution, no compatible candidate, dependency/blocker prevention, existing ownership requiring reuse/wait/transfer, and eligibility for WorkerCoordinator admission review. Even admission-review eligibility grants no execution authority.
-
-## Resident build + custody + reconciliation sequence
-
-One admitted resident sequence now has source plumbing for:
+## Resident build + custody + reconciliation + transition-readiness sequence
 
 ```text
 build current runtime-profile map
 -> validate map
 -> emit exact-byte map integrity receipt
 -> resolve every canonical task with runtime_requirements
--> require complete resolution set
 -> atomically persist runtime_resolution projections
--> validate Canonical Work coordination consistency
 -> emit per-task routing-readiness receipts
 -> build exact-hash custody package
 -> Master Records exact-hash custody ingestion
--> project current retained Master Records work events
+-> project retained Master Records work events
 -> reconcile every canonical task carrying runtime_requirements
 -> emit per-task reconciliation receipts
+-> combine task state + routing readiness + reconciliation + current WorkerCoordinator projection
+-> emit post-reconciliation transition-readiness receipt
+-> current authority performs or rejects any subsequent transition independently
 ```
 
-The custody consumer now chains to the reconciliation consumer after authentic custody success when the canonical source root and local Master Records root are available. If reconciliation is unavailable, custody remains valid and the reconciliation request remains independently staged/retryable; no authority or task state is inferred.
+`scripts/evaluate_runtime_profile_map_transition_readiness.py` produces explicit dispositions including:
 
-The reconciliation consumer waits for `runtime-profile-map-custody-request-consumption.latest.json:COMPLETED`, requires the already-local `master-records/orchestration` projector, materializes only the exact local reconciliation script/schema it needs, projects retained Master Records events, and emits one deterministic reconciliation for each canonical task with runtime requirements.
+- `BLOCK_FOR_RECONCILIATION_CONFLICT`
+- `WAIT_FOR_REQUIRED_EVIDENCE`
+- `RECONCILE_TASK_STATE_WITH_OBSERVED_REALITY`
+- `WAIT_OR_REQUEST_EVIDENCE_RECONCILIATION`
+- `DEPENDENCY_OR_BLOCKER_PREVENTS_TRANSITION`
+- `EXISTING_WORKERCOORDINATOR_OWNERSHIP_REUSE_WAIT_OR_TRANSFER`
+- `ELIGIBLE_FOR_WORKERCOORDINATOR_ADMISSION_REVIEW`
+- `NO_CURRENT_TRANSITION_CANDIDATE`
 
-It explicitly performs no network source fetch, HB/oscillator progression, runtime selection, task-state mutation, closure, claim/fence creation, or credential use.
-
-## Master Records integration
-
-`master-records/orchestration` validates exact hashes and writes append-only Runtime Profile Map custody under `custody/runtime-profile-map/`. Its canonical work-event projector includes that custody root by default. The resident reconciliation consumer then compares those retained events with the canonical Task Registry using `scripts/reconcile_task_registry_master_records.py`.
-
-Possible reconciliation states remain `CONSISTENT`, `TASK_AHEAD_OF_EVIDENCE`, `REALITY_AHEAD_OF_TASK`, `CONFLICT`, `UNKNOWN`, and `ORPHANED_EVENT` at the system contract level. The task-specific reconciler never treats absence of evidence as proof that work did not occur.
+Even `ELIGIBLE_FOR_WORKERCOORDINATOR_ADMISSION_REVIEW` grants no execution authority. WorkerCoordinator admission/current claim-fence and current Interlock/InTr transition governance remain mandatory.
 
 ## Completion predicates
 
 1. Map schema/catalog/builder/validator/query/matcher/receipt emitter exist. **SOURCE COMPLETE**
 2. HB32/oscillator authority boundary is correct. **SOURCE COMPLETE**
 3. Worker capability/environment normalization avoids false runtime-missing conclusions. **SOURCE COMPLETE**
-4. Universal InTr and Canonical Work relationships are represented. **SOURCE COMPLETE**
-5. Runtime observations preserve freshness/unknown semantics. **SOURCE COMPLETE**
-6. Deterministic matching rejects incompatible profiles. **SOURCE COMPLETE**
-7. Canonical task records carry explicit runtime requirements. **SOURCE COMPLETE**
-8. Candidate results project atomically without changing task/claim authority. **SOURCE COMPLETE**
-9. Routing readiness produces exact non-authorizing dispositions. **SOURCE COMPLETE**
-10. Resident build path builds, validates, receipts, resolves, persists, validates, and packages custody input. **SOURCE COMPLETE**
-11. Master Records exact-hash custody and canonical work-event projection support the package. **SOURCE COMPLETE**
-12. Custody completion chains to deterministic per-task Master Records reconciliation without changing task state or authority. **SOURCE COMPLETE**
-13. One authentic resident execution emits map-build, integrity, task-resolution, routing-readiness, registry-projection, custody-package, custody-consumption, and reconciliation evidence. **RUNTIME PENDING**
-14. Authentic reconciliation results are evaluated under current governance for any subsequent task transition. **RUNTIME PENDING**
-15. WorkerCoordinator/Interlock-InTr execute only work independently admitted under current governance. **RUNTIME PENDING**
+4. Runtime observations preserve freshness/unknown semantics. **SOURCE COMPLETE**
+5. Deterministic matching rejects incompatible profiles. **SOURCE COMPLETE**
+6. Canonical task records carry explicit runtime requirements. **SOURCE COMPLETE**
+7. Candidate results project atomically without changing task/claim authority. **SOURCE COMPLETE**
+8. Routing readiness produces exact non-authorizing dispositions. **SOURCE COMPLETE**
+9. Resident build path builds, validates, receipts, resolves, persists, and packages custody input. **SOURCE COMPLETE**
+10. Master Records exact-hash custody and canonical work-event projection support the package. **SOURCE COMPLETE**
+11. Custody completion chains to deterministic per-task Master Records reconciliation without changing task state or authority. **SOURCE COMPLETE**
+12. Reconciliation resident selector is actually registered in the resident dispatcher. **SOURCE COMPLETE**
+13. Post-reconciliation transition-readiness evaluator/request/consumer/dispatcher path exists and remains non-authorizing. **SOURCE COMPLETE**
+14. One authentic resident execution emits map-build, integrity, task-resolution, routing-readiness, registry-projection, custody-package, custody-consumption, reconciliation, and transition-readiness evidence. **RUNTIME PENDING**
+15. Authentic transition-readiness is evaluated by WorkerCoordinator/Interlock-InTr under current governance before any transition. **RUNTIME PENDING**
+16. Any execution/closure is evidenced in Master Records and reconciled back to the task registry. **RUNTIME PENDING**
 
 ## Expected authentic evidence
 
@@ -145,18 +145,20 @@ Possible reconciliation states remain `CONSISTENT`, `TASK_AHEAD_OF_EVIDENCE`, `R
 - `receipts/runtime-profile-map/reconciliation/master-records-work-events.latest.json`
 - `receipts/runtime-profile-map/reconciliation/tasks/*.json`
 - `receipts/sovereign-host/runtime-profile-map-reconciliation-request-consumption.latest.json`
+- `receipts/runtime-profile-map/transition-readiness/*.json`
+- `receipts/sovereign-host/runtime-profile-map-transition-readiness-request-consumption.latest.json`
 - generated `control/runtime-profile-map.json` with non-null `generated_at`
 - resident `data/canonical-task-registry.json` with current-map runtime-resolution projections
 - `master-records/orchestration/custody/runtime-profile-map/RUNTIME-PROFILE-MAP-G<generation>-<hash-prefix>.json`
 
 ## Current boundary
 
-No runtime-complete claim is made. Source implementation now covers discovery, matching, routing readiness, exact-hash custody packaging, Master Records custody validation, retained-event projection, and deterministic Task Registry ↔ Master Records reconciliation. The unresolved boundary is authentic resident consumption through the existing HB32/oscillator + WorkerCoordinator architecture and subsequent current-governance transitions.
+No runtime-complete claim is made. Source implementation now covers discovery, deterministic matching, routing readiness, exact-hash custody packaging, Master Records custody validation, retained-event projection, Task Registry ↔ Master Records reconciliation, and post-reconciliation transition-readiness classification. The unresolved boundary is authentic resident consumption through the existing HB32/oscillator + WorkerCoordinator architecture and current-governance transitions.
 
 ## Human action
 
-None currently required. Remaining work is machine-owned authentic resident execution and evaluation of resulting reconciliation evidence under current governance.
+None currently required. Remaining work is machine-owned authentic resident execution and current-governance handling of resulting transition-readiness evidence.
 
 ## Archive readiness
 
-All unique continuation state is preserved here and in the canonical task system. This workstream remains runtime-open until completion predicates 13-15 are evidenced.
+All unique continuation state is preserved here and in the canonical task registry. This workstream remains runtime-open until completion predicates 14-16 are evidenced.
