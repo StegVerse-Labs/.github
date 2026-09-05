@@ -21,6 +21,20 @@ Executive_Rhetoric_Ledger PR #124 / merge `1fb04d7e00c57504b5237cd9f2aee88a2a3de
 
 This source repair does not prove that a resident WorkerCoordinator is currently alive. It only ensures that the existing carrier supervision path can now produce one durable canonical observation when authentic fresh presence exists.
 
+## 2026-09-05 ephemeral resident v13 identity alignment
+
+Follow-up inspection confirmed that the single-host ephemeral resident mode launches both `run_heartbeat_runtime.py --continuous` and `run_worker_runtime.py --continuous`, so it traverses the same existing carrier supervision path that can emit the canonical runtime-presence receipt. The remaining defect was stale identity metadata: both its process receipt and its activation/service receipt still declared `heartbeat_runtime.engine_v12.HeartbeatRuntime`.
+
+StegVerse-Labs/.github PR #1005 / merge `f564aeec9eb8a5bf195a59f2f00a458c3a50fa23` removes that stale binding:
+
+- `scripts/restart_sovereign_ephemeral_node.py` now emits canonical v13 carrier identity while preserving the separate WorkerCoordinator process and task-capable tick requirement;
+- `scripts/run_sovereign_ephemeral_console.py` now emits v13 `canonical_runtime` and `canonical_carrier_runtime`, and explicitly states that HB grants no execution authority;
+- `heartbeat_runtime/runtime_presence_projection.py` accepts an ephemeral-console activation receipt only when carrier and worker are both active, processes are separated under StegVerse supervision, canonical v13/WorkerCoordinator identities match, no third-party process host is required, and HB authority is explicitly false;
+- stale v12 ephemeral-console receipts now fail closed rather than being eligible runtime-liveness evidence;
+- tests verify continuous carrier/worker reachability, v13 identity, and stale-v12 rejection.
+
+This repair changes source identity and observability validity only. It does not prove that an ephemeral or native resident runtime is presently alive and does not advance ERL review state.
+
 The current evidence order remains:
 
 `runtime-presence.latest.json` with `present_worker_runtime_observed=true`
@@ -31,4 +45,4 @@ The current evidence order remains:
 → ERL activation group 9 reconciliation
 → separately governed activation group 10 evaluation.
 
-No review completion, activation, publication, credential, claim/fence, heartbeat authority, second-machine dependency, or repository-writeback authority is created by this repair.
+No review completion, activation, publication, credential, claim/fence, heartbeat authority, second-machine dependency, or repository-writeback authority is created by these repairs.
