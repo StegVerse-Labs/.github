@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import importlib.util
+import tempfile
+import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -11,14 +13,19 @@ DISPATCHER = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(DISPATCHER)
 
 
-def test_quantum_awareness_registered_before_protected_consumers() -> None:
-    by_name = dict(DISPATCHER.CONSUMERS)
-    assert by_name["quantum_resilience_awareness"] == "scripts/consume_quantum_resilience_awareness_request.py"
-    order = [name for name, _ in DISPATCHER.CONSUMERS]
-    q = order.index("quantum_resilience_awareness")
-    for protected in DISPATCHER.QUANTUM_AWARENESS_PROTECTED:
-        assert q < order.index(protected)
+class QuantumResilienceDispatchBindingTests(unittest.TestCase):
+    def test_quantum_awareness_registered_before_protected_consumers(self) -> None:
+        by_name = dict(DISPATCHER.CONSUMERS)
+        self.assertEqual(by_name["quantum_resilience_awareness"], "scripts/consume_quantum_resilience_awareness_request.py")
+        order = [name for name, _ in DISPATCHER.CONSUMERS]
+        q = order.index("quantum_resilience_awareness")
+        for protected in DISPATCHER.QUANTUM_AWARENESS_PROTECTED:
+            self.assertLess(q, order.index(protected))
+
+    def test_quantum_awareness_missing_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            self.assertFalse(DISPATCHER.quantum_awareness_ready(Path(td)))
 
 
-def test_quantum_awareness_missing_fails_closed(tmp_path: Path) -> None:
-    assert DISPATCHER.quantum_awareness_ready(tmp_path) is False
+if __name__ == "__main__":
+    unittest.main()
