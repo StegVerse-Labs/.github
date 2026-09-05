@@ -1,0 +1,190 @@
+#!/usr/bin/env python3
+"""Consume the bounded resident request for canonical runtime-profile map generation.
+
+Uses only already-local source. It materializes the exact profile-map source/control
+surfaces into the existing resident checkout, builds/validates the projection, and
+emits an integrity receipt. No network fetch, credential use, HB/oscillator advance,
+claim/fence minting, or second runtime is permitted.
+"""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+import shutil
+import subprocess
+import sys
+from pathlib import Path
+from typing import Any, Mapping
+
+REQUEST_REL = Path("control/resident-execution-request.d/runtime-profile-map-build-001.json")
+CONSUMPTION_REL = Path("receipts/sovereign-host/runtime-profile-map-build-request-consumption.latest.json")
+TARGET_TASK = "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"
+TARGET_MODE = "CANONICAL_RUNTIME_PROFILE_MAP_BUILD"
+TARGET_ENTRYPOINT = Path("control/resident-execution-request.d/consume-runtime-profile-map-build.py")
+
+FILES = (
+    Path("schemas/runtime-profile-map.schema.json"),
+    Path("control/runtime-profile-sources.json"),
+    Path("control/runtime-profile-map.json"),
+    Path("control/canonical-resident-carrier-contract.json"),
+    Path("control/worker-capability-profiles.json"),
+    Path("control/worker-registry.json"),
+    Path("control/canonical-work-runtime-profile.json"),
+    Path("workers/universal_intr_profiled_ingress.py"),
+    Path("scripts/build_runtime_profile_map.py"),
+    Path("scripts/validate_runtime_profile_map.py"),
+    Path("scripts/query_runtime_profile_map.py"),
+    Path("scripts/match_runtime_profile.py"),
+    Path("scripts/emit_runtime_profile_map_receipt.py"),
+)
+OBSERVABILITY_DIR = Path("control/runtime-observability-consumers")
+HOSTED = ("GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "CF_PAGES", "CLOUDFLARE_WORKERS")
+FORBIDDEN = ("GITHUB_TOKEN", "GH_TOKEN", "GITHUB_PAT", "GITHUB_PERSONAL_ACCESS_TOKEN", "ACTIONS_RUNTIME_TOKEN", "ACTIONS_ID_TOKEN_REQUEST_TOKEN", "OPENAI_API_KEY", "ANTHROPIC_API_KEY", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "OAUTH_TOKEN")
+NONSECRET = ("PATH", "HOME", "LANG", "LC_ALL", "SSL_CERT_FILE", "SSL_CERT_DIR", "XDG_STATE_HOME", "XDG_CONFIG_HOME", "STEGVERSE_HEARTBEAT_ROOT", "STEGVERSE_HEARTBEAT_SOURCE_ROOT", "STEGVERSE_SOVEREIGN_NODE")
+
+
+def require(ok: bool, reason: str) -> None:
+    if not ok:
+        raise RuntimeError(reason)
+
+
+def truthy(value: str | None) -> bool:
+    return str(value or "").strip().lower() not in {"", "0", "false", "no"}
+
+
+def load_json(path: Path) -> dict[str, Any]:
+    value = json.loads(path.read_text(encoding="utf-8"))
+    require(isinstance(value, dict), f"object required:{path}")
+    return value
+
+
+def stable_hash(value: Any) -> str:
+    raw = json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+    return hashlib.sha256(raw).hexdigest()
+
+
+def sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def validate_request(request: Mapping[str, Any]) -> None:
+    expected = {
+        "schema": "stegverse.resident-execution-request/v1",
+        "state": "REQUESTED",
+        "task_id": TARGET_TASK,
+        "mode": TARGET_MODE,
+        "entrypoint": str(TARGET_ENTRYPOINT),
+        "credential_authority": "TV/TVC",
+        "github_token_required": False,
+        "github_token_runtime_authority": "NONE",
+        "heartbeat_grants_execution_authority": False,
+        "oscillator_grants_execution_authority": False,
+        "second_machine_required": False,
+        "network_source_fetch_allowed": False,
+        "request_granted_authority": False,
+        "authority_effect": "NONE_REQUEST_ONLY",
+    }
+    for key, wanted in expected.items():
+        require(request.get(key) == wanted, f"runtime profile map request {key} mismatch")
+
+
+def clean_env(source: Mapping[str, str] | None = None) -> dict[str, str]:
+    values = dict(os.environ if source is None else source)
+    hosted = [name for name in HOSTED if truthy(values.get(name))]
+    require(not hosted, "hosted environment may not consume runtime profile map request:" + ",".join(sorted(hosted)))
+    env = {name: values[name] for name in NONSECRET if values.get(name)}
+    for name in FORBIDDEN:
+        env.pop(name, None)
+    env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"] = "TV/TVC"
+    env["STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY"] = "NONE"
+    return env
+
+
+def atomic_json(path: Path, value: Mapping[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name("." + path.name + ".tmp")
+    tmp.write_text(json.dumps(dict(value), indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    tmp.replace(path)
+
+
+def copy_exact(src: Path, dst: Path) -> dict[str, Any]:
+    require(src.is_file(), f"source missing:{src}")
+    digest = sha256(src)
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    if not dst.is_file() or sha256(dst) != digest:
+        shutil.copy2(src, dst)
+    require(dst.is_file() and sha256(dst) == digest, f"copy mismatch:{dst}")
+    return {"path": str(dst), "sha256": digest, "exact_copy": True}
+
+
+def materialize(source: Path, runtime: Path) -> list[dict[str, Any]]:
+    rows = [copy_exact(source / rel, runtime / rel) for rel in FILES]
+    obs = source / OBSERVABILITY_DIR
+    require(obs.is_dir(), "runtime observability directory missing")
+    for src in sorted(obs.glob("*.json")):
+        rel = src.relative_to(source)
+        rows.append(copy_exact(src, runtime / rel))
+    return rows
+
+
+def run(command: list[str], *, cwd: Path, env: Mapping[str, str]) -> dict[str, Any]:
+    completed = subprocess.run(command, cwd=cwd, capture_output=True, text=True, check=False, timeout=1200, env=dict(env))
+    return {"command": command, "returncode": completed.returncode, "stdout_tail": completed.stdout[-4000:], "stderr_tail": completed.stderr[-4000:]}
+
+
+def consume(source_root: Path, runtime_root: Path, env: Mapping[str, str] | None = None) -> dict[str, Any]:
+    source = source_root.expanduser().resolve()
+    runtime = runtime_root.expanduser().resolve()
+    request_path = runtime / REQUEST_REL
+    if not request_path.is_file():
+        return {"schema": "stegverse.runtime-profile-map-build-consumption/v1", "state": "NO_REQUEST", "authority_effect": "NONE"}
+    request = load_json(request_path)
+    validate_request(request)
+    request_hash = stable_hash(request)
+    materialized = materialize(source, runtime)
+    safe_env = clean_env(env)
+    map_path = runtime / "control/runtime-profile-map.json"
+    build = run([sys.executable, str(runtime / "scripts/build_runtime_profile_map.py"), "--root", str(runtime)], cwd=runtime, env=safe_env)
+    validate = run([sys.executable, str(runtime / "scripts/validate_runtime_profile_map.py"), "--map", str(map_path)], cwd=runtime, env=safe_env)
+    receipt_path = runtime / "receipts/runtime-profile-map/runtime-profile-map.latest.json"
+    evidence = run([sys.executable, str(runtime / "scripts/emit_runtime_profile_map_receipt.py"), "--map", str(map_path), "--output", str(receipt_path)], cwd=runtime, env=safe_env)
+    success = build["returncode"] == validate["returncode"] == evidence["returncode"] == 0 and receipt_path.is_file()
+    receipt = {
+        "schema": "stegverse.runtime-profile-map-build-consumption/v1",
+        "state": "COMPLETED" if success else "ATTEMPT_RECORDED",
+        "request_id": request.get("request_id"),
+        "request_sha256": request_hash,
+        "task_id": TARGET_TASK,
+        "source_materialization": materialized,
+        "source_materialization_count": len(materialized),
+        "build": build,
+        "validation": validate,
+        "projection_receipt": evidence,
+        "projection_receipt_ref": str(receipt_path),
+        "network_source_fetch_performed": False,
+        "credential_material_present": False,
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": "NONE",
+        "heartbeat_grants_execution_authority": False,
+        "oscillator_grants_execution_authority": False,
+        "claim_or_fence_minted": False,
+        "authority_effect": "NONE_PROJECTION_BUILD_ONLY"
+    }
+    atomic_json(runtime / CONSUMPTION_REL, receipt)
+    return receipt
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--source-root", type=Path, required=True)
+    parser.add_argument("--runtime-root", type=Path, required=True)
+    args = parser.parse_args()
+    receipt = consume(args.source_root, args.runtime_root)
+    print(json.dumps(receipt, sort_keys=True))
+    return 0 if receipt.get("state") in {"NO_REQUEST", "COMPLETED", "ATTEMPT_RECORDED"} else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
