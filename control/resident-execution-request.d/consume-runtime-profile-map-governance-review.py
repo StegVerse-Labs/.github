@@ -2,9 +2,10 @@
 """Consume the bounded post-transition-readiness governance-review request.
 
 This consumer packages exact local evidence for the authority class that must review
-the next transition. It performs no network fetch, credential use, HB/oscillator
-progression, task-state transition, claim/fence minting, Interlock/InTr admission,
-or execution.
+the next transition, then routes that immutable package to the matching local authority
+review inbox. Routing does not invoke authority. The consumer performs no network
+fetch, credential use, HB/oscillator progression, task-state transition, claim/fence
+minting, Interlock/InTr admission, or execution.
 """
 from __future__ import annotations
 
@@ -28,6 +29,7 @@ TRANSITION_DIR = Path("receipts/runtime-profile-map/transition-readiness")
 OUTPUT_DIR = Path("receipts/runtime-profile-map/governance-review")
 CONSUMPTION_REL = Path("receipts/sovereign-host/runtime-profile-map-governance-review-request-consumption.latest.json")
 BUILDER_REL = Path("scripts/build_runtime_profile_map_governance_review.py")
+ROUTER_REL = Path("scripts/route_runtime_profile_map_governance_review.py")
 TARGET_TASK = "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"
 TARGET_MODE = "RUNTIME_PROFILE_MAP_GOVERNANCE_REVIEW_PACKAGE"
 TARGET_ENTRYPOINT = "control/resident-execution-request.d/consume-runtime-profile-map-governance-review.py"
@@ -100,6 +102,28 @@ def validate_request(request: Mapping[str, Any]) -> None:
         require(request.get(key) == wanted, f"governance review request {key} mismatch")
 
 
+def materialize_exact(source: Path, runtime: Path, rel: Path) -> dict[str, Any]:
+    source_path = source / rel
+    runtime_path = runtime / rel
+    require(source_path.is_file(), f"source missing:{rel}")
+    runtime_path.parent.mkdir(parents=True, exist_ok=True)
+    if not runtime_path.is_file() or sha256(runtime_path) != sha256(source_path):
+        shutil.copy2(source_path, runtime_path)
+    require(sha256(runtime_path) == sha256(source_path), f"materialization mismatch:{rel}")
+    return {"ref": str(runtime_path), "sha256": sha256(runtime_path), "exact_copy": True}
+
+
+def parse_last_json(stdout: str) -> dict[str, Any] | None:
+    for line in reversed([line.strip() for line in stdout.splitlines() if line.strip()]):
+        try:
+            value = json.loads(line)
+        except Exception:
+            continue
+        if isinstance(value, dict):
+            return value
+    return None
+
+
 def consume(source_root: Path, runtime_root: Path, env: Mapping[str, str] | None = None) -> dict[str, Any]:
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
@@ -114,13 +138,10 @@ def consume(source_root: Path, runtime_root: Path, env: Mapping[str, str] | None
         return {"schema": "stegverse.runtime-profile-map-governance-review-consumption/v1", "state": "WAITING_FOR_TRANSITION_READINESS", "task_id": TARGET_TASK, "authority_effect": "NONE_WAIT_ONLY"}
 
     safe_env = clean_env(env)
-    source_builder = source / BUILDER_REL
+    builder_materialization = materialize_exact(source, runtime, BUILDER_REL)
+    router_materialization = materialize_exact(source, runtime, ROUTER_REL)
     runtime_builder = runtime / BUILDER_REL
-    require(source_builder.is_file(), "governance review builder source missing")
-    runtime_builder.parent.mkdir(parents=True, exist_ok=True)
-    if not runtime_builder.is_file() or sha256(runtime_builder) != sha256(source_builder):
-        shutil.copy2(source_builder, runtime_builder)
-    require(sha256(runtime_builder) == sha256(source_builder), "governance review builder materialization mismatch")
+    runtime_router = runtime / ROUTER_REL
 
     registry_path = runtime / REGISTRY_REL
     worker_path = runtime / WORKER_REL
@@ -149,6 +170,18 @@ def consume(source_root: Path, runtime_root: Path, env: Mapping[str, str] | None
             "--output", str(output),
         ], cwd=runtime, capture_output=True, text=True, check=False, timeout=1200, env=safe_env)
         value = load(output) if completed.returncode == 0 and output.is_file() else None
+
+        routed = None
+        route_returncode = None
+        if isinstance(value, dict):
+            route_completed = subprocess.run([
+                sys.executable, str(runtime_router),
+                "--review", str(output),
+                "--runtime-root", str(runtime),
+            ], cwd=runtime, capture_output=True, text=True, check=False, timeout=1200, env=safe_env)
+            route_returncode = route_completed.returncode
+            routed = parse_last_json(route_completed.stdout)
+
         rows.append({
             "task_id": task_id,
             "returncode": completed.returncode,
@@ -157,9 +190,19 @@ def consume(source_root: Path, runtime_root: Path, env: Mapping[str, str] | None
             "review_authority_class": value.get("review_authority_class") if isinstance(value, dict) else None,
             "next_governance_review": value.get("next_governance_review") if isinstance(value, dict) else None,
             "disposition": value.get("transition_readiness_disposition") if isinstance(value, dict) else None,
+            "authority_route_returncode": route_returncode,
+            "authority_review_envelope_ref": routed.get("envelope_ref") if isinstance(routed, dict) else None,
+            "authority_review_envelope_sha256": routed.get("envelope_sha256") if isinstance(routed, dict) else None,
+            "authority_invoked": False,
         })
 
-    complete = bool(rows) and all(row.get("returncode") == 0 and row.get("governance_review_sha256") for row in rows)
+    complete = bool(rows) and all(
+        row.get("returncode") == 0
+        and row.get("governance_review_sha256")
+        and row.get("authority_route_returncode") == 0
+        and row.get("authority_review_envelope_sha256")
+        for row in rows
+    )
     receipt = {
         "schema": "stegverse.runtime-profile-map-governance-review-consumption/v1",
         "state": "COMPLETED" if complete else "ATTEMPT_RECORDED",
@@ -168,10 +211,11 @@ def consume(source_root: Path, runtime_root: Path, env: Mapping[str, str] | None
         "request_sha256": stable_hash(request),
         "transition_readiness_consumption_ref": str(upstream_path),
         "transition_readiness_consumption_sha256": sha256(upstream_path),
-        "source_builder_ref": str(source_builder),
-        "source_builder_sha256": sha256(source_builder),
+        "source_materialization": [builder_materialization, router_materialization],
         "task_governance_reviews": rows,
         "task_governance_review_count": len(rows),
+        "authority_review_envelopes_routed": complete,
+        "authority_invoked": False,
         "task_state_changed": False,
         "claim_or_fence_minted": False,
         "execution_authority_granted": False,
@@ -181,7 +225,7 @@ def consume(source_root: Path, runtime_root: Path, env: Mapping[str, str] | None
         "credential_material_present": False,
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": "NONE",
-        "authority_effect": "NONE_GOVERNANCE_REVIEW_PACKAGING_ONLY",
+        "authority_effect": "NONE_GOVERNANCE_REVIEW_PACKAGING_AND_ROUTING_ONLY",
     }
     atomic_json(runtime / CONSUMPTION_REL, receipt)
     return receipt
