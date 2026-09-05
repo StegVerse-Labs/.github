@@ -186,6 +186,11 @@ subject-bound predicate equivalence guard:
   source commits: 23c65ae1ce853f8c0239a1b9604abbecd9b277b8 / 0b282337f38139f5753595c9c69165504ddd922e / cf86d4697a26eac0307389ebaaaf0ccdc2110803
   dedicated coordination validation run: 33998265474
   result: SUCCESS
+
+StegIndex #4 bound one-shot resident-consumption migration:
+  ledger commit: 0ee9233197276575d5c41c9a4116581b07c2dbaf
+  dedicated coordination validation run: 33998547902
+  result: SUCCESS
 ```
 
 These are source/validation facts only and are not runtime-event or product-activation evidence.
@@ -209,6 +214,32 @@ Canonical sources:
 - `control/runtime-observability-consumers/ecosystem-chat-sovereign-inference-001.json`
 
 The gap explicitly instructs consumers to wait for/consume the existing resident bridge result and not create a parallel resident transport or replay terminal orphan recovery.
+
+## StegIndex #4 migrated bound runtime predicate
+
+The canonical coordination ledger now also registers the exact one-shot resident-stack activation consumption required downstream by `StegVerse-Labs/StegIndex#4`:
+
+```text
+predicate_id: PRED-RESIDENT-REQUEST-CONSUMED-STEGINDEX-ONE-SHOT-001
+semantic_predicate_id: resident_request_consumed
+subject_binding.request_id: RESIDENT-EXEC-ONE-SHOT-STACK-ACTIVATION-001
+subject_binding.consumer_task_id: SHWP-ONE-SHOT-RESIDENT-STACK-ACTIVATION-001
+state: UNKNOWN
+expected evidence: receipts/sovereign-host/one-shot-resident-stack-activation-request-consumption.latest.json
+required schema: stegverse.resident-execution-request-consumption/v1
+```
+
+Qualifying terminal evidence must retain the exact request/task binding and record terminal consumption with `activation_complete=true`; the one-shot consumer defines terminal states `COMPLETED` and `ALREADY_CONSUMED`. StegIndex source-root resolution is retained in the same receipt and remains separately relevant to #4 materialization proof.
+
+Canonical sources:
+
+- `StegVerse-Labs/StegIndex/docs/STEGINDEX_RESIDENT_PROOF_CONTINUATION_20260903.md`
+- `control/resident-execution-request.d/one-shot-resident-stack-activation-001.json`
+- `scripts/consume_one_shot_resident_stack_activation_request.py`
+
+Current qualifying evidence: NONE OBSERVED.
+
+The coordination gap explicitly requires reuse of the already-REQUESTED request through the existing WorkerCoordinator/resident dispatcher. It prohibits creating a duplicate request, scheduler, resident transport, or proof-specific executor. This migration does not replace the earlier first unresolved StegIndex boundary requiring fresh authentic WorkerCoordinator runtime presence; it prevents downstream consumption checks from being duplicated across sessions once that boundary advances.
 
 ## Current coordination state
 
