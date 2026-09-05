@@ -65,15 +65,19 @@ def main() -> int:
         "TASK_REGISTRY_DOES_NOT_MINT_EXECUTION_AUTHORITY",
         "WORKERCOORDINATOR_OWNS_EXECUTION_CLAIM_AND_FENCE",
         "MASTER_RECORDS_OWNS_OBSERVED_REALITY_AND_RECONSTRUCTION",
+        "RUNTIME_PROFILE_MAP_IS_DISCOVERY_AND_COMPATIBILITY_PROJECTION_ONLY",
+        "RUNTIME_PROFILE_MATCH_DOES_NOT_GRANT_TASK_ADMISSION_OR_EXECUTION_AUTHORITY",
         "COMPLETION_CLAIM_REQUIRES_RECONCILIATION_BEFORE_CLOSURE",
         "MISSING_EVIDENCE_IS_NOT_PROOF_OF_NON_OCCURRENCE",
         "HANDOFFS_ARE_PROJECTIONS_NOT_INDEPENDENT_TRUTH",
     }:
         require(invariant in invariants, f"missing coordination invariant: {invariant}")
 
-    runtime_discovery = policy.get("runtime_profile_discovery", {})
-    require(runtime_discovery.get("canonical_map") == "control/runtime-profile-map.json", "canonical runtime map policy binding missing")
-    require(runtime_discovery.get("match_grants_authority") is False, "runtime profile match must not grant authority")
+    runtime_discovery = policy.get("runtime_profile_map", {})
+    require(runtime_discovery.get("ref") == "control/runtime-profile-map.json", "canonical runtime map policy binding missing")
+    require(runtime_discovery.get("capability_match_grants_authority") is False, "runtime profile match must not grant authority")
+    require(runtime_discovery.get("workercoordinator_admission_still_required") is True, "WorkerCoordinator admission must remain required")
+    require(runtime_discovery.get("interlock_intr_transition_admission_still_required") is True, "Interlock/InTr transition admission must remain required")
 
     require(isinstance(worker_registry.get("tasks"), list), "existing WorkerCoordinator registry tasks missing")
     require(worker_registry.get("schema") == "stegverse.heartbeat-worker-registry/v0.1", "unexpected WorkerCoordinator registry schema")
