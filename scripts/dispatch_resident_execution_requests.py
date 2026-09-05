@@ -91,6 +91,7 @@ CONSUMERS = (
     ("erl_ai_economic_transparency_review", "scripts/consume_erl_ai_economic_transparency_review_request.py"),
     ("org_claim_allocator", "scripts/consume_org_claim_allocator_request.py"),
     ("canonical_work_coordination", "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py"),
+    ("runtime_profile_map", "control/resident-execution-request.d/consume-runtime-profile-map-build.py"),
 )
 
 
