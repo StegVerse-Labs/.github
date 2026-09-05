@@ -1,0 +1,22 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "state": "REQUESTED",
+  "request_id": "RUNTIME-PROFILE-MAP-RECONCILIATION-001",
+  "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+  "mode": "RUNTIME_PROFILE_MAP_MASTER_RECORDS_RECONCILIATION",
+  "entrypoint": "control/resident-execution-request.d/consume-runtime-profile-map-reconciliation.py",
+  "prerequisites": [
+    "receipts/sovereign-host/runtime-profile-map-custody-request-consumption.latest.json:COMPLETED",
+    "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT",
+    "data/canonical-task-registry.json"
+  ],
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "oscillator_grants_execution_authority": false,
+  "second_machine_required": false,
+  "network_source_fetch_allowed": false,
+  "request_granted_authority": false,
+  "authority_effect": "NONE_REQUEST_ONLY"
+}
