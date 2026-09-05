@@ -8,6 +8,8 @@ from typing import Any
 
 OBSERVATION_ONLY_MODE = "CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION"
 DEFAULT_WORKER_FRESHNESS_WINDOW_SECONDS = 60.0
+CANONICAL_CARRIER_RUNTIME = "heartbeat_runtime.engine_v13.HeartbeatRuntime"
+CANONICAL_WORKER_RUNTIME = "heartbeat_runtime.worker_runtime.WorkerCoordinator"
 
 
 def _load(path: Path) -> dict[str, Any] | None:
@@ -63,8 +65,14 @@ def _activation_runtime_alive(activation: dict[str, Any]) -> tuple[bool, str]:
     if activation.get("registration_kind") == "stegverse-ephemeral-console":
         alive = (
             activation.get("active") is True
+            and activation.get("carrier_active") is True
+            and activation.get("worker_active") is True
+            and activation.get("separate_carrier_and_worker_processes") is True
             and activation.get("stegverse_process_supervision") is True
+            and activation.get("canonical_carrier_runtime") == CANONICAL_CARRIER_RUNTIME
+            and activation.get("worker_runtime") == CANONICAL_WORKER_RUNTIME
             and activation.get("third_party_process_host_required") is False
+            and activation.get("heartbeat_grants_execution_authority") is False
         )
         return alive, "EPHEMERAL_CONSOLE_SERVICE_RECEIPT"
 
@@ -94,8 +102,8 @@ def _self_heal_runtime_alive(receipt: dict[str, Any]) -> tuple[bool, str]:
         and receipt.get("worker_active") is True
         and receipt.get("worker_task_capable_cycle_observed") is True
         and receipt.get("separate_carrier_and_worker_processes") is True
-        and receipt.get("canonical_carrier_runtime") == "heartbeat_runtime.engine_v13.HeartbeatRuntime"
-        and receipt.get("worker_runtime") == "heartbeat_runtime.worker_runtime.WorkerCoordinator"
+        and receipt.get("canonical_carrier_runtime") == CANONICAL_CARRIER_RUNTIME
+        and receipt.get("worker_runtime") == CANONICAL_WORKER_RUNTIME
         and receipt.get("third_party_process_host_required") is False
         and receipt.get("heartbeat_grants_execution_authority") is False
         and receipt.get("authority_effect") == "NONE_SUPERVISION_ONLY"

@@ -103,8 +103,8 @@ def _service_receipt(source_root: Path, runtime_root: Path, process: dict[str, A
         "platform": "logical-node",
         "registration_kind": "stegverse-ephemeral-console",
         "runtime_root": str(runtime_root),
-        "canonical_runtime": "heartbeat_runtime.engine_v12.HeartbeatRuntime",
-        "canonical_carrier_runtime": "heartbeat_runtime.engine_v12.HeartbeatRuntime",
+        "canonical_runtime": "heartbeat_runtime.engine_v13.HeartbeatRuntime",
+        "canonical_carrier_runtime": "heartbeat_runtime.engine_v13.HeartbeatRuntime",
         "worker_runtime": "heartbeat_runtime.worker_runtime.WorkerCoordinator",
         "heartbeat_interval_ms": interval_ms,
         "worker_interval_ms": interval_ms,
@@ -132,6 +132,7 @@ def _service_receipt(source_root: Path, runtime_root: Path, process: dict[str, A
         "credential_authority": "TV/TVC",
         "github_token_required": False,
         "non_tv_tvc_secret_or_token_used": False,
+        "heartbeat_grants_execution_authority": False,
         "authority_effect": "LOGICAL_NODE_PROCESS_SUPERVISION_ONLY",
     }
 
