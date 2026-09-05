@@ -180,3 +180,51 @@ PR #999 / merge `4dea86ded26d86c776e294c1c921930b46584318` aligns the projector 
 - tests cover canonical service receipts, compatibility proof, stale worker state, and fail-closed third-party-host receipts.
 
 This repair removes a dead observability dependency but does not create a live WorkerCoordinator or advance the ERL review. The earliest unproven runtime boundary remains `RESIDENT_WORKER_RUNTIME_PRESENCE` until authentic runtime-local activation evidence and a fresh worker cycle are observed together.
+
+
+## 2026-09-04 carrier-owned durable presence emission
+
+A further source inspection established that the canonical runtime-presence projector and carrier-owned WorkerCoordinator supervision existed, but the supervision path did not durably emit the canonical presence projection. That meant authentic fresh resident presence could exist without producing the evidence artifact required to move the ERL lane beyond `RESIDENT_WORKER_RUNTIME_PRESENCE`.
+
+PR #1001 / merge `5187346ce0c1c8da144c1a3743ff063c09501af4` closes that observability gap without creating another scheduler or authority plane:
+
+- `scripts/repair_resident_worker_presence.py` persists `receipts/sovereign-host/runtime-presence.latest.json` through `heartbeat_runtime/runtime_presence_projection.py` after reusing or repairing WorkerCoordinator presence;
+- the carrier-owned self-heal supervision receipt identifies canonical `heartbeat_runtime.engine_v13.HeartbeatRuntime` plus `heartbeat_runtime.worker_runtime.WorkerCoordinator`;
+- the projection remains observation-only and requires a fresh task-capable worker cycle before `present_worker_runtime_observed=true`;
+- source refresh, service registration, and runtime presence evidence remain distinct from task execution evidence;
+- HB grants no execution, admission, credential, claim, fence, activation, publication, or repository-writeback authority.
+
+Executive_Rhetoric_Ledger PR #124 / merge `1fb04d7e00c57504b5237cd9f2aee88a2a3de4be` binds the ERL runtime-evidence record to that canonical presence receipt.
+
+This source repair does not prove a resident WorkerCoordinator is presently alive. It only makes authentic fresh presence durably observable when it occurs.
+
+
+## 2026-09-05 single-host ephemeral v13 presence alignment
+
+Post-repair inspection of the single-host ephemeral logical-node path found stale runtime identity metadata. The ephemeral node did launch both the heartbeat carrier and WorkerCoordinator continuously, so it could reach the same carrier-owned presence emitter, but its process and service receipts still identified the carrier as `heartbeat_runtime.engine_v12.HeartbeatRuntime`.
+
+PR #1005 / merge `f564aeec9eb8a5bf195a59f2f00a458c3a50fa23` aligns the ephemeral path with canonical v13 and hardens fail-closed recognition:
+
+- `scripts/restart_sovereign_ephemeral_node.py` emits `heartbeat_runtime.engine_v13.HeartbeatRuntime`;
+- `scripts/run_sovereign_ephemeral_console.py` emits v13 for both canonical runtime fields;
+- the projector accepts ephemeral-console liveness only when carrier and worker are active, separate StegVerse supervision is asserted, canonical v13/WorkerCoordinator identities match, no third-party process host is required, and HB grants no execution authority;
+- stale v12 ephemeral activation receipts fail closed;
+- tests protect continuous carrier/worker reachability and the v13 identity contract.
+
+PR #1006 / merge `ddf8e8602078a6a7818535ca9078fcd305313c0e` durably recorded this alignment in `docs/ERL_AI_ECONOMIC_TRANSPARENCY_REVIEW_RUNTIME_PRESENCE_EVIDENCE.md`.
+
+Current authentic evidence order is now explicitly:
+
+`receipts/sovereign-host/runtime-presence.latest.json` with `present_worker_runtime_observed=true`
+→ `receipts/sovereign-host/resident-request-dispatch.latest.json`
+→ `receipts/sovereign-host/erl-ai-economic-transparency-review-resident-execution-request-consumption.latest.json`
+→ `receipts/sovereign-host/resident-targeted-execution.latest.json`
+→ `receipts/erl-ai-economic-transparency-review/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json`
+→ ERL group 9 reconciliation
+→ separately governed group 10 activation evaluation.
+
+Post-merge inspection on 2026-09-05 found none of those runtime receipts present in repository evidence. Therefore no runtime presence, dispatch, consumption, independent-review completion, activation, or publication is claimed.
+
+The continuous native worker path performs local source refresh and resident-request dispatch at logical iteration zero and every 100 WorkerCoordinator ticks thereafter. Targeted task execution remains isolated from unrelated task execution. No additional scheduler or duplicate resident executor is warranted from current source inspection.
+
+Current blocker remains authentic resident runtime evidence, beginning with `RESIDENT_WORKER_RUNTIME_PRESENCE`. No user action is currently required.
