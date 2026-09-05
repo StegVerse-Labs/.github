@@ -3,6 +3,7 @@ from __future__ import annotations
 import importlib.util
 import json
 import unittest
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -18,6 +19,7 @@ def load_module(name: str, rel: str):
 
 resolve_mod = load_module("resolve_task_runtime_candidates", "scripts/resolve_task_runtime_candidates.py")
 apply_mod = load_module("apply_task_runtime_resolution_projection", "scripts/apply_task_runtime_resolution_projection.py")
+build_mod = load_module("build_runtime_profile_map", "scripts/build_runtime_profile_map.py")
 
 
 class RuntimeResolutionTests(unittest.TestCase):
@@ -37,6 +39,15 @@ class RuntimeResolutionTests(unittest.TestCase):
     def test_profile_map_build_has_sovereign_candidate_in_bootstrap_map(self):
         task = resolve_mod.find_task(self.registry, "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001")
         result = resolve_mod.resolve(task, self.runtime_map, "control/runtime-profile-map.json")
+        self.assertIn("sovereign-runtime-worker-v1", result["candidate_profile_ids"])
+        self.assertFalse(result["selection_grants_authority"])
+
+    def test_generated_map_preserves_sovereign_environment_candidate(self):
+        generated = build_mod.build(ROOT, now=datetime(2026, 9, 4, 20, 0, tzinfo=timezone.utc))
+        sovereign = next(p for p in generated["profiles"] if p["profile_id"] == "sovereign-runtime-worker-v1")
+        self.assertIn("SOVEREIGN_RESIDENT", sovereign["declared"]["environment_classes"])
+        task = resolve_mod.find_task(self.registry, "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001")
+        result = resolve_mod.resolve(task, generated, "control/runtime-profile-map.json")
         self.assertIn("sovereign-runtime-worker-v1", result["candidate_profile_ids"])
         self.assertFalse(result["selection_grants_authority"])
 
