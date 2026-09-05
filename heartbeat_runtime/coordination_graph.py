@@ -38,10 +38,27 @@ def _field_present(fields: dict[str, Any], dotted: str) -> bool:
     return cursor is not None
 
 
+def _normalize_binding(value: Any) -> tuple[tuple[str, str], ...]:
+    """Return a deterministic semantic subject binding for predicate equivalence."""
+    if not isinstance(value, dict):
+        return ()
+    return tuple(sorted((str(key), str(item)) for key, item in value.items() if item not in (None, "")))
+
+
+def predicate_equivalence_key(predicate: dict[str, Any]) -> tuple[str, tuple[tuple[str, str], ...]]:
+    """Predicates are equivalent only when both semantic name and bound subject match."""
+    semantic_id = str(predicate.get("semantic_predicate_id") or predicate.get("predicate_id") or "")
+    return semantic_id, _normalize_binding(predicate.get("subject_binding"))
+
+
 def _evidence_rejection_reasons(predicate: dict[str, Any], evidence: dict[str, Any], now: datetime) -> list[str]:
     reasons: list[str] = []
     if evidence.get("predicate_id") != predicate.get("predicate_id"):
         reasons.append("PREDICATE_ID_MISMATCH")
+    required_binding = _normalize_binding(predicate.get("subject_binding"))
+    evidence_binding = _normalize_binding(evidence.get("subject_binding"))
+    if required_binding and evidence_binding != required_binding:
+        reasons.append("SUBJECT_BINDING_MISMATCH")
     if evidence.get("producer") != predicate.get("authoritative_producer"):
         reasons.append("AUTHORITATIVE_PRODUCER_MISMATCH")
     required_schema = predicate.get("required_schema")
@@ -122,6 +139,8 @@ def _gap_for(
         action = "Request only the declared missing observation from the authoritative producer; do not infer it from adjacent artifacts."
     return {
         "predicate_id": predicate.get("predicate_id"),
+        "semantic_predicate_id": predicate.get("semantic_predicate_id") or predicate.get("predicate_id"),
+        "subject_binding": predicate.get("subject_binding") or {},
         "existing_evidence_refs": [str(item.get("ref")) for item in candidate_evidence if item.get("ref")],
         "rejected_because": sorted(set(reasons)),
         "missing_observation": predicate.get("description") or predicate.get("predicate_id"),
@@ -216,8 +235,11 @@ def review_coordination_preflight(
             else:
                 qualifying.append(row)
         satisfied = predicate.get("state") == "SATISFIED" and bool(qualifying)
+        semantic_id, binding = predicate_equivalence_key(predicate)
         resolved.append({
             "predicate_id": predicate_id,
+            "semantic_predicate_id": semantic_id,
+            "subject_binding": dict(binding),
             "declared_state": predicate.get("state"),
             "satisfied": satisfied,
             "qualifying_evidence_refs": [row.get("ref") for row in qualifying],
@@ -261,6 +283,7 @@ __all__ = [
     "LEDGER_SCHEMA",
     "PREFLIGHT_SCHEMA",
     "PREDICATE_STATES",
+    "predicate_equivalence_key",
     "review_coordination_preflight",
     "scopes_collide",
 ]
