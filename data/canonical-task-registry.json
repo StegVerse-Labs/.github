@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 6,
-  "status": "SOURCE_RUNTIME_BOOTSTRAP_INSTALLED_AUTHENTIC_INGRESS_PENDING",
+  "generation": 7,
+  "status": "RESIDENT_REQUEST_DISPATCH_SOURCE_INSTALLED_AUTHENTIC_INGRESS_PENDING",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -37,7 +37,10 @@
         "scripts/apply_admitted_canonical_work_projection.py",
         "scripts/project_worker_claim_into_canonical_task.py",
         "scripts/run_canonical_work_event_bootstrap.py",
-        "scripts/install_and_run_canonical_work_event_bootstrap.py"
+        "scripts/install_and_run_canonical_work_event_bootstrap.py",
+        "control/resident-execution-request.d/canonical-work-coordination-bootstrap-001.json",
+        "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py",
+        "scripts/dispatch_resident_execution_requests.py"
       ],
       "targets": {
         "organizations": ["StegVerse-Labs"],
@@ -58,7 +61,9 @@
           "authentic-ingress-registry-projection",
           "workercoordinator-claim-fence-projection",
           "event-triggered-canonical-work-bootstrap",
-          "route-install-and-bootstrap-wrapper"
+          "route-install-and-bootstrap-wrapper",
+          "resident-request-dispatch",
+          "resident-self-materialization"
         ]
       },
       "dependencies": [
@@ -97,7 +102,10 @@
         "scripts/apply_admitted_canonical_work_projection.py",
         "scripts/project_worker_claim_into_canonical_task.py",
         "scripts/run_canonical_work_event_bootstrap.py",
-        "scripts/install_and_run_canonical_work_event_bootstrap.py"
+        "scripts/install_and_run_canonical_work_event_bootstrap.py",
+        "control/resident-execution-request.d/canonical-work-coordination-bootstrap-001.json",
+        "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py",
+        "scripts/dispatch_resident_execution_requests.py"
       ],
       "expected_evidence_predicates": [
         "SOURCE_SCHEMA_VALID",
@@ -152,6 +160,8 @@
     "WORKERCOORDINATOR_PROJECTION_DOES_NOT_MINT_CLAIM_OR_FENCE",
     "EVENT_BOOTSTRAP_USES_EXISTING_SHARED_INTR_SERVER_ONLY",
     "ROUTE_INSTALL_AND_BOOTSTRAP_SOURCE_DOES_NOT_PROVE_RUNTIME_EXECUTION",
+    "RESIDENT_REQUEST_DISPATCH_DOES_NOT_GRANT_EXECUTION_AUTHORITY",
+    "RESIDENT_SELF_MATERIALIZATION_IS_LOCAL_SOURCE_COPY_ONLY",
     "GITHUB_FAILURE_EMAIL_NORMALIZATION_DOES_NOT_PROVE_RUNTIME_FAILURE",
     "NO_AUTHENTIC_INTERLOCK_INTR_TASK_INGRESS_IS_CLAIMED",
     "NO_WORKERCOORDINATOR_CLAIM_IS_MINTED_BY_THIS_REGISTRY",
