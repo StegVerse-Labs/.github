@@ -2,7 +2,7 @@
 
 Repository: `StegVerse-Labs/.github`
 Parent: `docs/CANONICAL_RESIDENT_CARRIER_MIRROR_HANDOFF.md`
-State: `SOURCE_IMPLEMENTED / VALIDATION_PENDING`
+State: `SOURCE_MERGED_VALIDATED / AUTHENTIC_RUNTIME_PRESENCE_NOT_YET_OBSERVED`
 Credential authority: `TV/TVC`
 GitHub token runtime authority: `NONE`
 
@@ -39,6 +39,26 @@ The carrier does **not** grant execution authority. It supplies node-presence ev
 - a repaired worker is not considered present until a fresh task-capable worker tick is observed;
 - pending resident requests are drained only by the restored WorkerCoordinator under their existing fail-closed consumers.
 
+## Validated presence-projection closure — 2026-09-04
+
+PR #1001 merged as `5187346ce0c1c8da144c1a3743ff063c09501af4`.
+Exact validated PR head: `d086a47e98e394a678ba0458d9ad41fe349ae7be`.
+
+Successful validation lanes:
+- Heartbeat Worker Project - Validation Only / No GitHub Token Authority: run `33943972408` SUCCESS;
+- Validate organization control plane - No GitHub Token Authority: run `33943972425` SUCCESS.
+
+PR #1001 closes the retained presence-projection gap by:
+1. preserving canonical engine_v13 / WorkerCoordinator binding;
+2. persisting `receipts/sovereign-host/runtime-presence.latest.json` through the canonical projector after authentic worker presence is proven or reused;
+3. registering that evidence slot in the shared HB/runtime observability contract;
+4. rejecting stale or obsolete worker evidence and avoiding duplicate WorkerCoordinator processes.
+
+This validation is source/deterministic proof only. It does not establish that the sovereign resident carrier has actually performed the supervision visit, that a WorkerCoordinator is currently alive, or that any resident request has been dispatched or consumed.
+
+Current authentic runtime-presence evidence on repository-tracked `main`:
+- `receipts/sovereign-host/runtime-presence.latest.json`: NOT PRESENT at the latest reconciliation.
+
 ## Runtime consequence
 
-A live canonical carrier plus a dead/missing WorkerCoordinator is now a self-healing runtime state rather than a passive `REQUESTED` backlog state. Authentic task completion still requires each task-specific receipt; this repair does not fabricate those receipts.
+A live canonical carrier plus a dead/missing WorkerCoordinator is now a validated self-healing runtime state rather than a passive `REQUESTED` backlog state. Authentic runtime presence still requires the canonical presence receipt from a real resident carrier-supervision visit, and authentic task completion still requires each task-specific receipt; this repair does not fabricate those receipts.
