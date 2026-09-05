@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 4,
+  "generation": 5,
   "status": "SOURCE_RUNTIME_ADAPTERS_INSTALLED_AUTHENTIC_INGRESS_PENDING",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -33,7 +33,9 @@
         "scripts/reevaluate_canonical_task_dependencies.py",
         "scripts/normalize_github_failure_email_events.py",
         "scripts/reconcile_admitted_canonical_work.py",
-        "scripts/consume_admitted_dependency_resolution.py"
+        "scripts/consume_admitted_dependency_resolution.py",
+        "scripts/apply_admitted_canonical_work_projection.py",
+        "scripts/project_worker_claim_into_canonical_task.py"
       ],
       "targets": {
         "organizations": ["StegVerse-Labs"],
@@ -50,7 +52,9 @@
           "dependency-resolution-fanout",
           "github-failure-incident-normalization",
           "admitted-work-reconciliation",
-          "admitted-dependency-event-consumption"
+          "admitted-dependency-event-consumption",
+          "authentic-ingress-registry-projection",
+          "workercoordinator-claim-fence-projection"
         ]
       },
       "dependencies": [
@@ -69,9 +73,7 @@
       ],
       "blockers": [],
       "systemic_incident_ref": null,
-      "adjacent_task_refs": [
-        "CANONICAL-RESIDENT-CARRIER-974"
-      ],
+      "adjacent_task_refs": ["CANONICAL-RESIDENT-CARRIER-974"],
       "existing_evidence_refs": [
         "control/worker-registry.json",
         "docs/UNIVERSAL_WORK_INTERLOCK_MIRROR_HANDOFF.md",
@@ -87,7 +89,9 @@
         "scripts/reevaluate_canonical_task_dependencies.py",
         "scripts/normalize_github_failure_email_events.py",
         "scripts/reconcile_admitted_canonical_work.py",
-        "scripts/consume_admitted_dependency_resolution.py"
+        "scripts/consume_admitted_dependency_resolution.py",
+        "scripts/apply_admitted_canonical_work_projection.py",
+        "scripts/project_worker_claim_into_canonical_task.py"
       ],
       "expected_evidence_predicates": [
         "SOURCE_SCHEMA_VALID",
@@ -111,9 +115,7 @@
         "validated": false,
         "reconciliation_ref": null
       },
-      "allowed_next_transitions": [
-        "INGRESS_ADMITTED"
-      ],
+      "allowed_next_transitions": ["INGRESS_ADMITTED"],
       "handoff_projection_refs": [
         "docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md",
         "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md"
@@ -140,6 +142,8 @@
     "DEPENDENCY_FANOUT_SOURCE_DOES_NOT_ADMIT_TRANSITIONS",
     "ADMITTED_RECONCILIATION_SOURCE_DOES_NOT_MINT_EXECUTION_AUTHORITY",
     "ADMITTED_DEPENDENCY_EVENT_CONSUMPTION_DOES_NOT_MUTATE_WORKERCOORDINATOR",
+    "AUTHENTIC_INGRESS_PROJECTION_REQUIRES_EXISTING_ADMITTED_RECEIPT",
+    "WORKERCOORDINATOR_PROJECTION_DOES_NOT_MINT_CLAIM_OR_FENCE",
     "GITHUB_FAILURE_EMAIL_NORMALIZATION_DOES_NOT_PROVE_RUNTIME_FAILURE",
     "NO_AUTHENTIC_INTERLOCK_INTR_TASK_INGRESS_IS_CLAIMED",
     "NO_WORKERCOORDINATOR_CLAIM_IS_MINTED_BY_THIS_REGISTRY",
