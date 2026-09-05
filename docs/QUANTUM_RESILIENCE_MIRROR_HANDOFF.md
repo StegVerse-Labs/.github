@@ -21,7 +21,11 @@ Concrete classical-only exposures now represented in the census include:
 - `StegVerse-Labs/StegID` v1 continuity receipts: Ed25519;
 - `StegVerse-Labs/StegID` current-phone DEVICE_POSSESSION: non-exportable browser P-256 key;
 - `StegVerse-Labs/TVC/policy.rego`: Ed25519-only warrant signature assumptions;
+- `StegVerse-Labs/continuity-vault-kit` SKAP browser ingress: ephemeral P-256 ECDH + HKDF-SHA256 + AES-256-GCM;
+- `StegVerse-Labs/TVC` SKAP resident/browser recipient paths: P-256 recipient/resident keys and sealed-object handling;
 - TLS/WebPKI, other device/node identity, wallet signatures, software/update provenance, and long-lived stored confidentiality remain explicitly uninventoried.
+
+The SKAP P-256 key-establishment surfaces are now explicitly harvest-now/decrypt-later relevant because recorded ciphertext may outlive the classical asymmetric assumption. This does not imply AES-256-GCM or HKDF-SHA256 are themselves deprecated; the migration target is the asymmetric key-establishment leg.
 
 Merged source progress:
 
@@ -35,7 +39,29 @@ merge: c743cebae4452fcbad7abcc7b40448953a9c5422
 result: versioned legacy/hybrid signature-profile policy; missing PQ evidence and caller assertions fail closed; real ML-DSA verifier and Rego binding still required
 ```
 
-These are migration-policy source results only. Neither merge proves deployed PQ protection.
+New durable migration/census tasks:
+
+```text
+StegVerse-Labs/continuity-vault-kit#187
+purpose: hybrid P-256 + ML-KEM migration for SKAP browser key establishment
+
+StegVerse-Labs/TVC#322
+purpose: hybrid/PQ migration for TVC SKAP resident/browser P-256 surfaces
+
+StegVerse-Labs/.github#1011
+purpose: standing quantum-resilience runtime awareness for SV001/SV002/SV011
+
+StegVerse-Labs/.github#1013
+purpose: wallet and transaction-signature census while preserving USER_ONLY sign/broadcast authority
+
+StegVerse-Labs/.github#1014
+purpose: TLS/WebPKI and long-lived confidentiality census
+
+StegVerse-Labs/Site#1027
+purpose: determine which Site P-256 browser surfaces are active vs historical/example-only
+```
+
+These are migration-policy/census results only. They do not prove deployed PQ protection.
 
 ## Quantum security invariants
 
@@ -79,11 +105,12 @@ Construct and test bounded hybrid/PQC migration candidates, including compatibil
 2. integrate a real validated ML-DSA backend into StegID receipt mint/verify paths;
 3. integrate a real validated ML-DSA verifier into TVC and bind the active warrant gate to versioned suites;
 4. design the P-256 current-phone device-possession migration around actual platform capability, with explicit compensating controls if native PQ device credentials are unavailable;
-5. inventory TLS/WebPKI and introduce ML-KEM/hybrid key establishment where long-lived confidentiality creates harvest-now/decrypt-later risk;
-6. inventory wallet signing and software/update provenance without changing USER_ONLY signing/broadcast authority;
-7. add runtime standing quantum-resilience awareness for StegVerse-001, StegVerse-002 and SV-011 through the existing WorkerCoordinator/dispatcher substrate;
-8. produce executable downgrade, stale-key, revoked-key, unknown-suite, hybrid verification, rollback and historical-verification tests;
-9. propagate release-ready semantics to Site, Publisher, admissibility-wiki and stegguardian-wiki only after their handoffs permit it.
+5. design and validate hybrid P-256 + ML-KEM key establishment for the SKAP browser/resident paths represented by continuity-vault-kit#187 and TVC#322;
+6. inventory TLS/WebPKI and introduce ML-KEM/hybrid key establishment where long-lived confidentiality creates harvest-now/decrypt-later risk;
+7. inventory wallet signing and software/update provenance without changing USER_ONLY signing/broadcast authority;
+8. implement standing quantum-resilience awareness for StegVerse-001, StegVerse-002 and SV-011 through the existing WorkerCoordinator/dispatcher substrate tracked by #1011;
+9. produce executable downgrade, stale-key, revoked-key, unknown-suite, hybrid verification, rollback and historical-verification tests;
+10. propagate release-ready semantics to Site, Publisher, admissibility-wiki and stegguardian-wiki only after their handoffs permit it.
 
 ## Completion gates
 
@@ -103,6 +130,7 @@ Construct and test bounded hybrid/PQC migration candidates, including compatibil
 
 - `StegVerse-Labs/StegID`
 - `StegVerse-Labs/TVC`
+- `StegVerse-Labs/continuity-vault-kit`
 - `StegVerse-Labs/StegOS`
 - `StegVerse-Labs/Site`
 - `GCAT-BCAT-Engine/Publisher`

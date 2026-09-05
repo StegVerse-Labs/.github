@@ -56,6 +56,40 @@
       "required_properties": ["AUTHORITY_SEPARATION", "DOWNGRADE_RESISTANCE", "KEY_AND_ALGORITHM_REVOCABILITY"]
     },
     {
+      "id": "SKAP-BROWSER-INGRESS-P256-ECDH",
+      "repository": "StegVerse-Labs/continuity-vault-kit",
+      "paths": ["skap/browser_ingress.py", "skap/browser_admission.py"],
+      "purpose": "browser-to-SKAP credential sealing key establishment",
+      "primitive": "P-256 ECDH + HKDF-SHA256 + AES-256-GCM",
+      "asymmetric": true,
+      "quantum_state": "CLASSICAL_ONLY",
+      "confidentiality_lifetime": "CREDENTIAL_AND_SESSION_MATERIAL_UNKNOWN",
+      "authenticity_lifetime": "N/A_OR_BOUND_TO_RECIPIENT",
+      "harvest_now_decrypt_later_relevant": true,
+      "migration_priority": "CRITICAL",
+      "migration_target": "HYBRID_MIGRATION_REQUIRED",
+      "migration_issue": "StegVerse-Labs/continuity-vault-kit#187",
+      "pqc_backend_validated": false,
+      "required_properties": ["HARVEST_NOW_DECRYPT_LATER_AWARENESS", "HYBRID_MIGRATION_SUPPORT", "DOWNGRADE_RESISTANCE", "ALGORITHM_EXPLICITNESS"]
+    },
+    {
+      "id": "TVC-SKAP-RESIDENT-BROWSER-P256",
+      "repository": "StegVerse-Labs/TVC",
+      "paths": ["scripts/resolve_skap_browser_ingress.py", "tools/skap_resident_sealed_object.py", "scripts/activate_skap_browser_recipient_key.py", "docs/SKAP_RESIDENT_SEAL_SUBSTRATE_MIRROR_HANDOFF.md"],
+      "purpose": "TVC resident/browser recipient key establishment and sealed-object confidentiality",
+      "primitive": "P-256",
+      "asymmetric": true,
+      "quantum_state": "CLASSICAL_ONLY",
+      "confidentiality_lifetime": "CREDENTIAL_AND_SEALED_OBJECT_UNKNOWN",
+      "authenticity_lifetime": "N/A_OR_BOUND_TO_RECIPIENT",
+      "harvest_now_decrypt_later_relevant": true,
+      "migration_priority": "CRITICAL",
+      "migration_target": "HYBRID_MIGRATION_REQUIRED",
+      "migration_issue": "StegVerse-Labs/TVC#322",
+      "pqc_backend_validated": false,
+      "required_properties": ["HARVEST_NOW_DECRYPT_LATER_AWARENESS", "HYBRID_MIGRATION_SUPPORT", "DOWNGRADE_RESISTANCE", "AUTHORITY_SEPARATION"]
+    },
+    {
       "id": "TLS-WEBPKI-ECOSYSTEM",
       "repository": "MULTI_REPOSITORY",
       "paths": [],
@@ -68,6 +102,7 @@
       "harvest_now_decrypt_later_relevant": true,
       "migration_priority": "CRITICAL",
       "migration_target": "QUANTUM_SAFETY_UNKNOWN",
+      "inventory_issue": "StegVerse-Labs/.github#1014",
       "required_properties": ["HARVEST_NOW_DECRYPT_LATER_AWARENESS", "HYBRID_MIGRATION_SUPPORT"]
     },
     {
@@ -98,6 +133,7 @@
       "harvest_now_decrypt_later_relevant": false,
       "migration_priority": "CRITICAL",
       "migration_target": "QUANTUM_SAFETY_UNKNOWN",
+      "inventory_issue": "StegVerse-Labs/.github#1013",
       "required_properties": ["AUTHORITY_SEPARATION", "DOWNGRADE_RESISTANCE"]
     },
     {
@@ -128,6 +164,7 @@
       "harvest_now_decrypt_later_relevant": true,
       "migration_priority": "CRITICAL",
       "migration_target": "QUANTUM_SAFETY_UNKNOWN",
+      "inventory_issue": "StegVerse-Labs/.github#1014",
       "required_properties": ["HARVEST_NOW_DECRYPT_LATER_AWARENESS", "ALGORITHM_EXPLICITNESS"]
     }
   ],
