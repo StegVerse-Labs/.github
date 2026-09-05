@@ -5,21 +5,10 @@
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "schema",
-    "task_id",
-    "correlation_id",
-    "goal",
-    "coordination_state",
-    "source_refs",
-    "targets",
-    "dependencies",
-    "blockers",
-    "adjacent_task_refs",
-    "expected_evidence_predicates",
-    "worker_claim",
-    "completion",
-    "allowed_next_transitions",
-    "authority_model"
+    "schema", "task_id", "correlation_id", "goal", "coordination_state",
+    "source_refs", "targets", "dependencies", "blockers", "adjacent_task_refs",
+    "expected_evidence_predicates", "worker_claim", "completion",
+    "allowed_next_transitions", "authority_model"
   ],
   "properties": {
     "schema": {"const": "stegverse.canonical-task-record/v1"},
@@ -28,23 +17,7 @@
     "root_correlation_id": {"type": ["string", "null"]},
     "parent_task_id": {"type": ["string", "null"]},
     "goal": {"type": "string", "minLength": 1},
-    "coordination_state": {
-      "enum": [
-        "PROPOSED",
-        "INGRESS_ADMITTED",
-        "CLAIMABLE",
-        "CLAIMED",
-        "IN_PROGRESS",
-        "BLOCKED",
-        "COMPLETION_CLAIMED",
-        "CLOSED",
-        "TRANSFERRED",
-        "SUPERSEDED",
-        "DEFERRED",
-        "REOPENED_DUE_TO_NEW_EVIDENCE",
-        "COMPLETION_REVOKED"
-      ]
-    },
+    "coordination_state": {"enum": ["PROPOSED", "INGRESS_ADMITTED", "CLAIMABLE", "CLAIMED", "IN_PROGRESS", "BLOCKED", "COMPLETION_CLAIMED", "CLOSED", "TRANSFERRED", "SUPERSEDED", "DEFERRED", "REOPENED_DUE_TO_NEW_EVIDENCE", "COMPLETION_REVOKED"]},
     "source_refs": {"type": "array", "items": {"type": "string"}},
     "targets": {
       "type": "object",
@@ -87,6 +60,31 @@
     "adjacent_task_refs": {"type": "array", "items": {"type": "string"}},
     "existing_evidence_refs": {"type": "array", "items": {"type": "string"}},
     "expected_evidence_predicates": {"type": "array", "items": {"type": "string"}},
+    "runtime_requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["capabilities", "mutation_required", "deployment_required", "current_observation_required"],
+      "properties": {
+        "capabilities": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "environment": {"type": ["string", "null"]},
+        "direction": {"type": ["string", "null"]},
+        "mutation_required": {"type": "boolean"},
+        "deployment_required": {"type": "boolean"},
+        "current_observation_required": {"type": "boolean"}
+      }
+    },
+    "runtime_resolution": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "map_ref": {"type": "string"},
+        "map_generation": {"type": "integer", "minimum": 1},
+        "candidate_profile_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "resolved_at": {"type": ["string", "null"]},
+        "projection_only": {"const": true},
+        "selection_grants_authority": {"const": false}
+      }
+    },
     "worker_claim": {
       "type": "object",
       "additionalProperties": false,
