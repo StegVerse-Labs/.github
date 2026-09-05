@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/runtime-profile-map-custody-package.schema.json",
+  "title": "StegVerse Runtime Profile Map Custody Package",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema", "task_id", "map_ref", "map_generation", "map_sha256",
+    "map_receipt_ref", "map_receipt_sha256", "task_resolution_receipts",
+    "routing_readiness_receipts", "registry_ref", "registry_sha256",
+    "authority_effect", "nonclaims"
+  ],
+  "properties": {
+    "schema": {"const": "stegverse.runtime-profile-map-custody-package/v1"},
+    "task_id": {"const": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"},
+    "map_ref": {"type": "string"},
+    "map_generation": {"type": "integer", "minimum": 1},
+    "map_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "map_receipt_ref": {"type": "string"},
+    "map_receipt_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "task_resolution_receipts": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/artifact"},
+      "minItems": 1
+    },
+    "routing_readiness_receipts": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/artifact"},
+      "minItems": 1
+    },
+    "registry_ref": {"type": "string"},
+    "registry_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "generated_at": {"type": ["string", "null"]},
+    "heartbeat_authority_effect": {"const": "NONE_REFERENCE_ONLY"},
+    "worker_claim_authority": {"const": "WORKERCOORDINATOR"},
+    "credential_authority": {"const": "TV/TVC"},
+    "ingress_egress_authority": {"const": "INTERLOCK_INTR"},
+    "observed_reality_authority": {"const": "MASTER_RECORDS"},
+    "authority_effect": {"const": "NONE_CUSTODY_INPUT_ONLY"},
+    "nonclaims": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+  },
+  "$defs": {
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task_id", "ref", "sha256"],
+      "properties": {
+        "task_id": {"type": "string", "minLength": 1},
+        "ref": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    }
+  }
+}
