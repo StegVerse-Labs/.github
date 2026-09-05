@@ -5,9 +5,9 @@ Uses only already-local source. It materializes immutable profile-map/coordinati
 surfaces into the existing resident checkout, preserves mutable resident state,
 builds/validates the profile map, emits integrity evidence, resolves canonical-task
 runtime requirements, persists those projections, validates coordination consistency,
-and emits per-task routing-readiness receipts. No network fetch, credential use,
-HB/oscillator advance, claim/fence minting, task-state transition, or second runtime
-is permitted.
+and emits per-task routing-readiness plus custody-input evidence. No network fetch,
+credential use, HB/oscillator advance, claim/fence minting, task-state transition,
+Master Records custody, or second runtime is permitted.
 """
 from __future__ import annotations
 
@@ -32,6 +32,7 @@ TASK_RESOLUTION_DIR_REL = Path("receipts/runtime-profile-map/task-resolutions")
 
 IMMUTABLE_FILES = (
     Path("schemas/runtime-profile-map.schema.json"),
+    Path("schemas/runtime-profile-map-custody-package.schema.json"),
     Path("schemas/canonical-task-record.schema.json"),
     Path("schemas/task-master-records-reconciliation.schema.json"),
     Path("control/runtime-profile-sources.json"),
@@ -49,6 +50,7 @@ IMMUTABLE_FILES = (
     Path("scripts/apply_all_task_runtime_resolutions.py"),
     Path("scripts/evaluate_task_runtime_routing_readiness.py"),
     Path("scripts/finalize_runtime_profile_map_cycle.py"),
+    Path("scripts/build_runtime_profile_map_custody_package.py"),
     Path("scripts/validate_canonical_work_coordination.py"),
     Path("scripts/emit_runtime_profile_map_receipt.py"),
 )
@@ -205,6 +207,10 @@ def finalize_cycle(runtime: Path, safe_env: Mapping[str, str]) -> dict[str, Any]
     ], cwd=runtime, env=safe_env)
     result["registry_ref"] = str(runtime / CANONICAL_REGISTRY_REL)
     result["registry_sha256"] = sha256(runtime / CANONICAL_REGISTRY_REL) if (runtime / CANONICAL_REGISTRY_REL).is_file() else None
+    custody_package = runtime / "receipts/runtime-profile-map/custody/runtime-profile-map-custody-package.latest.json"
+    result["custody_package_ref"] = str(custody_package)
+    result["custody_package_sha256"] = sha256(custody_package) if custody_package.is_file() else None
+    result["custody_performed"] = False
     result["coordination_state_changed"] = False
     result["claim_or_fence_minted"] = False
     result["execution_authority_granted"] = False
@@ -230,7 +236,7 @@ def consume(source_root: Path, runtime_root: Path, env: Mapping[str, str] | None
     task_resolutions = resolve_tasks(runtime, safe_env) if build["returncode"] == validate["returncode"] == evidence["returncode"] == 0 else []
     resolutions_ok = bool(task_resolutions) and all(row.get("returncode") == 0 and row.get("resolution_sha256") for row in task_resolutions)
     finalization = finalize_cycle(runtime, safe_env) if resolutions_ok else {"returncode": None, "state": "NOT_ATTEMPTED"}
-    finalization_ok = finalization.get("returncode") == 0 and bool(finalization.get("registry_sha256"))
+    finalization_ok = finalization.get("returncode") == 0 and bool(finalization.get("registry_sha256")) and bool(finalization.get("custody_package_sha256"))
     success = build["returncode"] == validate["returncode"] == evidence["returncode"] == 0 and receipt_path.is_file() and resolutions_ok and finalization_ok
     receipt = {
         "schema": "stegverse.runtime-profile-map-build-consumption/v1",
@@ -251,6 +257,8 @@ def consume(source_root: Path, runtime_root: Path, env: Mapping[str, str] | None
         "task_runtime_resolutions": task_resolutions,
         "task_runtime_resolution_count": len(task_resolutions),
         "cycle_finalization": finalization,
+        "custody_input_package_generated": bool(finalization.get("custody_package_sha256")),
+        "master_records_custody_performed": False,
         "task_runtime_resolution_selection_grants_authority": False,
         "task_coordination_state_changed_by_runtime_resolution": False,
         "network_source_fetch_performed": False,
@@ -260,7 +268,7 @@ def consume(source_root: Path, runtime_root: Path, env: Mapping[str, str] | None
         "heartbeat_grants_execution_authority": False,
         "oscillator_grants_execution_authority": False,
         "claim_or_fence_minted": False,
-        "authority_effect": "NONE_PROJECTION_BUILD_PERSISTENCE_AND_READINESS_ONLY"
+        "authority_effect": "NONE_PROJECTION_BUILD_PERSISTENCE_READINESS_AND_CUSTODY_INPUT_ONLY"
     }
     atomic_json(runtime / CONSUMPTION_REL, receipt)
     return receipt
