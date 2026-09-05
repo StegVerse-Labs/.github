@@ -18,7 +18,10 @@ import time
 from pathlib import Path
 from typing import Any
 
+from heartbeat_runtime.runtime_presence_projection import project
+
 PROCESS_RECEIPT = Path("receipts/sovereign-host/ephemeral-process.latest.json")
+PRESENCE_RECEIPT = Path("receipts/sovereign-host/runtime-presence.latest.json")
 WORKER_STATE = Path("control/worker-runtime-state.json")
 WORKER_RUNNER = Path("scripts/run_worker_runtime.py")
 HOSTED_ENV = ("GITHUB_ACTIONS", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "CF_PAGES", "CLOUDFLARE_WORKERS")
@@ -80,6 +83,50 @@ def _wait_for_tick(runtime_root: Path, baseline: int, pid: int, timeout: float) 
     return {"observed": False, "reason": "TASK_CAPABLE_WORKER_RUNTIME_TICK_TIMEOUT", "baseline_tick": baseline, "observed_tick": _runtime_tick(runtime_root)}
 
 
+def _supervision_receipt(
+    prior: dict[str, Any],
+    runtime_root: Path,
+    *,
+    carrier_pid: int,
+    worker_pid: int,
+    worker_tick_observed: bool,
+    tick_evidence: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    receipt = dict(prior)
+    receipt.update({
+        "schema": receipt.get("schema") or "stegverse.ephemeral-sovereign-process/v3",
+        "runtime_root": str(runtime_root),
+        "carrier_pid": carrier_pid,
+        "worker_pid": worker_pid,
+        "carrier_active": True,
+        "worker_active": True,
+        "worker_task_capable_cycle_observed": bool(worker_tick_observed),
+        "active": True,
+        "separate_carrier_and_worker_processes": True,
+        "canonical_carrier_runtime": "heartbeat_runtime.engine_v13.HeartbeatRuntime",
+        "worker_runtime": "heartbeat_runtime.worker_runtime.WorkerCoordinator",
+        "supervision_kind": "STEGVERSE_CARRIER_OBSERVED_SELF_HEAL",
+        "third_party_process_host_required": False,
+        "third_party_scheduler_required": False,
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": "NONE",
+        "heartbeat_grants_execution_authority": False,
+        "worker_coordinator_retains_admission_authority": True,
+        "authority_effect": "NONE_SUPERVISION_ONLY",
+    })
+    if tick_evidence is not None:
+        receipt["worker_tick_evidence"] = tick_evidence
+    return receipt
+
+
+def _persist_presence_projection(runtime_root: Path) -> dict[str, Any]:
+    projection = project(runtime_root)
+    path = runtime_root / PRESENCE_RECEIPT
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(projection, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return projection
+
+
 def ensure_worker_presence(runtime_root: Path, *, carrier_pid: int, interval_ms: float = 10.0, timeout: float = 3.0) -> dict[str, Any]:
     runtime_root = runtime_root.expanduser().resolve()
     if any(os.environ.get(name) for name in HOSTED_ENV):
@@ -94,11 +141,29 @@ def ensure_worker_presence(runtime_root: Path, *, carrier_pid: int, interval_ms:
     receipt = _load(receipt_path)
     existing_worker_pid = receipt.get("worker_pid")
     if _alive(existing_worker_pid):
+        worker_state = _load(runtime_root / WORKER_STATE)
+        structural_task_capable = (
+            worker_state.get("schema") == "stegverse.worker-runtime-state/v1"
+            and worker_state.get("observation_mode") != "CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION"
+            and isinstance(worker_state.get("runtime_tick"), int)
+        )
+        receipt = _supervision_receipt(
+            receipt,
+            runtime_root,
+            carrier_pid=carrier_pid,
+            worker_pid=existing_worker_pid,
+            worker_tick_observed=structural_task_capable,
+        )
+        receipt_path.parent.mkdir(parents=True, exist_ok=True)
+        receipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        presence = _persist_presence_projection(runtime_root)
         return {
             "state": "WORKER_ALREADY_PRESENT",
             "worker_repair_attempted": False,
             "carrier_pid": carrier_pid,
             "worker_pid": existing_worker_pid,
+            "present_worker_runtime_observed": presence.get("resident", {}).get("present_worker_runtime_observed") is True,
+            "presence_receipt_ref": str(PRESENCE_RECEIPT),
             "heartbeat_grants_execution_authority": False,
             "worker_coordinator_retains_admission_authority": True,
             "authority_effect": "NONE_SUPERVISION_ONLY",
@@ -131,36 +196,25 @@ def ensure_worker_presence(runtime_root: Path, *, carrier_pid: int, interval_ms:
             "authority_effect": "NONE_SUPERVISION_ONLY",
         }
 
-    receipt.update({
-        "schema": receipt.get("schema") or "stegverse.ephemeral-sovereign-process/v3",
-        "runtime_root": str(runtime_root),
-        "carrier_pid": carrier_pid,
-        "worker_pid": worker.pid,
-        "carrier_active": True,
-        "worker_active": True,
-        "worker_task_capable_cycle_observed": True,
-        "worker_tick_evidence": tick,
-        "active": True,
-        "separate_carrier_and_worker_processes": True,
-        "canonical_carrier_runtime": "heartbeat_runtime.engine_v12.HeartbeatRuntime",
-        "worker_runtime": "heartbeat_runtime.worker_runtime.WorkerCoordinator",
-        "supervision_kind": "STEGVERSE_CARRIER_OBSERVED_SELF_HEAL",
-        "third_party_process_host_required": False,
-        "third_party_scheduler_required": False,
-        "credential_authority": "TV/TVC",
-        "github_token_runtime_authority": "NONE",
-        "heartbeat_grants_execution_authority": False,
-        "worker_coordinator_retains_admission_authority": True,
-        "authority_effect": "NONE_SUPERVISION_ONLY",
-    })
+    receipt = _supervision_receipt(
+        receipt,
+        runtime_root,
+        carrier_pid=carrier_pid,
+        worker_pid=worker.pid,
+        worker_tick_observed=True,
+        tick_evidence=tick,
+    )
     receipt_path.parent.mkdir(parents=True, exist_ok=True)
     receipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    presence = _persist_presence_projection(runtime_root)
     return {
         "state": "WORKER_REPAIRED",
         "worker_repair_attempted": True,
         "carrier_pid": carrier_pid,
         "worker_pid": worker.pid,
         "worker_tick_evidence": tick,
+        "present_worker_runtime_observed": presence.get("resident", {}).get("present_worker_runtime_observed") is True,
+        "presence_receipt_ref": str(PRESENCE_RECEIPT),
         "request_drain_expected_on_worker_start": True,
         "heartbeat_grants_execution_authority": False,
         "worker_coordinator_retains_admission_authority": True,
