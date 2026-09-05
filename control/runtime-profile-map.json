@@ -1,0 +1,111 @@
+{
+  "schema": "stegverse.runtime-profile-map/v1",
+  "generation": 1,
+  "status": "BOOTSTRAP_SOURCE_PROJECTION_RUNTIME_BUILD_PENDING",
+  "generated_at": null,
+  "authority": {
+    "map_grants_execution_authority": false,
+    "capability_match_grants_authority": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "credential_authority": "TV/TVC",
+    "ingress_egress_authority": "INTERLOCK_INTR",
+    "observed_reality_authority": "MASTER_RECORDS"
+  },
+  "profiles": [
+    {
+      "profile_id": "canonical-resident-substrate-v1",
+      "profile_class": "RESIDENT_SUBSTRATE",
+      "component": "Canonical Resident Runtime",
+      "repository": "StegVerse-Labs/.github",
+      "declared": {
+        "capabilities": ["hb_reference", "independent_phase_oscillator_reference", "intr_carrier_reference", "workercoordinator_runtime", "resident_request_dispatch"],
+        "effect_class": "resident_runtime_substrate",
+        "mutation_allowed": false,
+        "deployment_allowed": false,
+        "environment_classes": ["SOVEREIGN_RESIDENT"],
+        "directions": ["INTERNAL"]
+      },
+      "substrate": {
+        "hb_protocol": "HB32",
+        "oscillator": {"mechanism": "INDEPENDENT_PHASE_OSCILLATOR", "reference_frequency_hz": 100, "reference_increment_interval_ms": 10, "progression_dependency": "OSCILLATOR_ONLY", "grants_authority": false},
+        "worker_runtime": {"class": "WorkerCoordinator", "implementation_ref": "heartbeat_runtime/worker_runtime.py", "dispatcher_ref": "scripts/dispatch_resident_execution_requests.py", "single_scheduler_required": true},
+        "intr": {"profile_ref": "heartbeat_runtime/intr_carrier_profile.py", "exact_byte_runtime_ref": "heartbeat_runtime/intr_subsignal_runtime.py", "authority_effect": "NONE_CARRIER_ONLY"},
+        "runtime_root": "SYMBOLIC_RESIDENT_RUNTIME_ROOT"
+      },
+      "required_predicates": ["resident_process_alive_supervised"],
+      "observed": {"state": "DECLARED_ONLY", "observed_at": null, "predicate_map": {}, "evidence_refs": []},
+      "task_selectors": ["stegverse001_bounded_autonomy", "sv002_org_runtime_activation", "sv011_phase5"],
+      "authority": {"availability_grants_authority": false, "match_grants_authority": false, "claim_fence_authority": "WORKERCOORDINATOR", "credential_authority": "TV/TVC", "hb_grants_authority": false},
+      "provenance": {"source_refs": ["control/canonical-resident-carrier-contract.json"], "projection_method": "CANONICAL_JSON_BOOTSTRAP"}
+    },
+    {
+      "profile_id": "sovereign-runtime-worker-v1",
+      "profile_class": "WORKER_CAPABILITY",
+      "component": "repository_worker",
+      "repository": "StegVerse-Labs/.github",
+      "declared": {
+        "capabilities": ["runtime_observation", "continuous_process_execution", "bounded_process_execution", "durable_state_reconstruction", "bounded_repository_mutation", "canonical_artifact_validation", "master_records_replay_reconstruction_validation", "sovereign_relay_materialization", "sovereign_runtime_self_bootstrap"],
+        "effect_class": "sovereign_runtime_activation",
+        "mutation_allowed": true,
+        "deployment_allowed": true,
+        "environment_classes": ["SOVEREIGN_RESIDENT"],
+        "directions": ["INTERNAL"]
+      },
+      "substrate": {"hb_protocol": "HB32", "oscillator": {"mechanism": "INDEPENDENT_PHASE_OSCILLATOR", "reference_frequency_hz": 100, "reference_increment_interval_ms": 10, "progression_dependency": "OSCILLATOR_ONLY", "grants_authority": false}, "worker_runtime": {"class": "WorkerCoordinator"}, "intr": {"authority_effect": "NONE_CARRIER_ONLY"}, "runtime_root": "SYMBOLIC_RESIDENT_RUNTIME_ROOT"},
+      "required_predicates": [],
+      "observed": {"state": "DECLARED_ONLY", "observed_at": null, "predicate_map": {}, "evidence_refs": []},
+      "task_selectors": [],
+      "authority": {"availability_grants_authority": false, "match_grants_authority": false, "claim_fence_authority": "WORKERCOORDINATOR", "credential_authority": "TV/TVC", "hb_grants_authority": false},
+      "provenance": {"source_refs": ["control/worker-capability-profiles.json"], "projection_method": "WORKER_CAPABILITY_BOOTSTRAP"}
+    },
+    {
+      "profile_id": "universal-intr-profiled-ingress-v1",
+      "profile_class": "INGRESS_EGRESS",
+      "component": "Universal InTr Profiled Ingress",
+      "repository": "StegVerse-Labs/.github",
+      "declared": {
+        "capabilities": ["intr_ingress", "event_triggered_materialization", "intr_profile:HIL:Ingress", "intr_profile:SV002:PublicObservation", "intr_profile:KV:KnowledgeVaultInterlock", "intr_profile:KV:SKAPCiphertextCustody", "intr_profile:Publisher:ArtifactTransfer", "intr_profile:KV:PublisherArtifactImport"],
+        "effect_class": "ingress_materialization",
+        "mutation_allowed": true,
+        "deployment_allowed": false,
+        "environment_classes": ["SOVEREIGN_RESIDENT"],
+        "directions": ["INGRESS"]
+      },
+      "substrate": {"hb_protocol": "HB32", "oscillator": {"mechanism": "INDEPENDENT_PHASE_OSCILLATOR", "reference_frequency_hz": 100, "reference_increment_interval_ms": 10, "progression_dependency": "OSCILLATOR_ONLY", "grants_authority": false}, "worker_runtime": {"class": "WorkerCoordinator"}, "intr": {"profile_ref": "heartbeat_runtime/intr_carrier_profile.py", "authority_effect": "NONE_INGRESS_ONLY"}, "runtime_root": "SYMBOLIC_RESIDENT_RUNTIME_ROOT"},
+      "required_predicates": ["shared_intr_listener_available"],
+      "observed": {"state": "DECLARED_ONLY", "observed_at": null, "predicate_map": {}, "evidence_refs": []},
+      "task_selectors": [],
+      "authority": {"availability_grants_authority": false, "match_grants_authority": false, "claim_fence_authority": "WORKERCOORDINATOR", "credential_authority": "TV/TVC", "hb_grants_authority": false},
+      "provenance": {"source_refs": ["workers/universal_intr_profiled_ingress.py"], "projection_method": "STATIC_PROFILE_BOOTSTRAP"}
+    },
+    {
+      "profile_id": "canonical-work-coordination-runtime-v1",
+      "profile_class": "COORDINATION_RUNTIME",
+      "component": "Canonical Work Coordination",
+      "repository": "StegVerse-Labs/.github",
+      "declared": {
+        "capabilities": ["task_registry_reconciliation", "master_records_reconciliation", "worker_claim_projection", "dependency_reevaluation", "intr_task_admission", "runtime_profile_discovery"],
+        "effect_class": "coordination_runtime",
+        "mutation_allowed": true,
+        "deployment_allowed": false,
+        "environment_classes": ["SOVEREIGN_RESIDENT"],
+        "directions": ["INGRESS", "INTERNAL", "EGRESS"]
+      },
+      "substrate": {"hb_protocol": "HB32", "oscillator": {"mechanism": "INDEPENDENT_PHASE_OSCILLATOR", "reference_frequency_hz": 100, "reference_increment_interval_ms": 10, "progression_dependency": "OSCILLATOR_ONLY", "grants_authority": false}, "worker_runtime": {"class": "WorkerCoordinator"}, "intr": {"authority_effect": "INTERLOCK_INTR_REQUIRED"}, "runtime_root": "SYMBOLIC_RESIDENT_RUNTIME_ROOT"},
+      "required_predicates": ["authentic_intr_ingress", "master_records_projection_available", "workercoordinator_state_available"],
+      "observed": {"state": "DECLARED_ONLY", "observed_at": null, "predicate_map": {}, "evidence_refs": []},
+      "task_selectors": ["canonical_work_coordination"],
+      "authority": {"availability_grants_authority": false, "match_grants_authority": false, "claim_fence_authority": "WORKERCOORDINATOR", "credential_authority": "TV/TVC", "hb_grants_authority": false},
+      "provenance": {"source_refs": ["control/canonical-work-runtime-profile.json", "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md"], "projection_method": "CANONICAL_WORK_BOOTSTRAP"}
+    }
+  ],
+  "nonclaims": [
+    "BOOTSTRAP_MAP_IS_NOT_COMPLETE_GENERATED_RUNTIME_PROJECTION",
+    "PROFILE_DECLARATION_DOES_NOT_PROVE_RUNTIME_EXECUTION",
+    "RUNTIME_OBSERVATION_DOES_NOT_GRANT_EXECUTION_AUTHORITY",
+    "CAPABILITY_MATCH_DOES_NOT_GRANT_TASK_ADMISSION",
+    "HB32_OSCILLATOR_REFERENCE_DOES_NOT_GRANT_AUTHORITY",
+    "MAP_DOES_NOT_MINT_WORKERCOORDINATOR_CLAIM_OR_FENCE",
+    "MAP_DOES_NOT_GRANT_CREDENTIAL_OR_DEPLOYMENT_AUTHORITY"
+  ]
+}
