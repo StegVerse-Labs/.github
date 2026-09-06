@@ -1,0 +1,66 @@
+{
+  "schema": "stegverse.workercoordinator-portable-checkout-package/v1",
+  "portable_authority_epoch": "WC-PORTABLE-IPHONE-20260902",
+  "canonical_authority_owner": "StegVerse-Labs/.github WorkerCoordinator",
+  "authority_domain": "INDEPENDENT_TASK_CONTROL",
+  "execution_surface": "CURRENT_USER_IPHONE",
+  "predecessor_generation_floor": 24,
+  "predecessor_registry_git_blob_sha": "d860e4c09aaeffaf896a3a95b440334984547dce",
+  "task": {
+    "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+    "state": "HANDOFF_READY",
+    "claim_id": null,
+    "worker_id": null,
+    "admission": {
+      "authority_domain": "INDEPENDENT_TASK_CONTROL",
+      "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+      "fresh_fence_required": true,
+      "heartbeat_grants_execution_authority": false
+    }
+  },
+  "worker": {
+    "worker_id": "ecosystem-chat-sovereign-inference-worker",
+    "status": "AVAILABLE",
+    "capabilities": [
+      "runtime_observation",
+      "durable_state_reconstruction",
+      "bounded_repository_mutation"
+    ]
+  },
+  "required_capabilities": [
+    "runtime_observation",
+    "durable_state_reconstruction",
+    "bounded_repository_mutation"
+  ],
+  "handoff_authority": {
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "github_token_runtime_authority": "NONE",
+    "heartbeat_grants_execution_authority": false
+  },
+  "source_binding": {
+    "task_fragment_git_blob_sha": "c1de4794ddee78d2542a3547326b8610f23ee614",
+    "handoff_git_blob_sha": "1c21e466a36ffe18382a4efdc739d411c10da67f",
+    "state_vector_git_blob_sha": "a78a92c633e3ab3662629fd3b31524d7ccd6c0c3",
+    "portable_checkout_git_blob_sha": "558ca71f6cdaf461deb65ff96f077a7c2df78493"
+  },
+  "dependencies_complete": true,
+  "execution_authorized": true,
+  "semantic_state_current": true,
+  "worker_resolved": true,
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "parallel_workercoordinator_claim_issuance_allowed": false,
+  "governed_transfer_required_before_other_surface_claims": true,
+  "external_non_stegverse_machine_required": false,
+  "heartbeat_reference": null,
+  "minimum_fencing_token_exclusive": 24,
+  "authority_effect": "CANONICAL_WORKERCOORDINATOR_PORTABLE_PACKAGE",
+  "single_checkout_per_task_package": true,
+  "terminal_reexecution_allowed": false,
+  "downstream_retry_after_terminal": true,
+  "bootstrap_floor_reason": "G23 canonical SV001 and G24 authentic duplicate portable fences have already been observed; a reset portable state must advance beyond every observed fence rather than reuse G23 or G24.",
+  "runtime_execution_observed": false,
+  "activation_effect": false
+}

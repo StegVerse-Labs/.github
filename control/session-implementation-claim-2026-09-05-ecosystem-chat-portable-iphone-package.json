@@ -1,0 +1,40 @@
+{
+  "schema": "stegverse.session-implementation-claim/v1",
+  "claim_id": "ECOSYSTEM-CHAT-PORTABLE-IPHONE-PACKAGE-20260905",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "feat/ecosystem-chat-portable-iphone-package",
+  "issue": 201,
+  "role": "ACTIVE_IMPLEMENTATION",
+  "state": "CLAIMED_FOR_IMPLEMENTATION",
+  "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+  "goal": "Package the already-admitted Ecosystem Chat parent for the existing canonical CURRENT_USER_IPHONE portable WorkerCoordinator without creating or exercising a second authority plane.",
+  "claimed_paths": [
+    "control/portable-workercoordinator-packages/ecosystem-chat-sovereign-inference.json",
+    "tests/test_ecosystem_chat_portable_workercoordinator_package.py",
+    "docs/ECOSYSTEM_CHAT_PORTABLE_IPHONE_PACKAGE_MIRROR_HANDOFF.md",
+    "control/session-implementation-claim-2026-09-05-ecosystem-chat-portable-iphone-package.json"
+  ],
+  "collision_boundaries": [
+    "Do not replay terminal G22 orphan recovery",
+    "Do not mint a live WorkerCoordinator claim/fence from repository source",
+    "Do not mutate TV/TVC credential or route authority",
+    "Do not modify LLM-adapter or Master Records runtime evidence",
+    "Do not claim CURRENT_USER_IPHONE execution from source/CI",
+    "Do not create a second WorkerCoordinator, scheduler, heartbeat, or credential path"
+  ],
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "authority_effect": "NONE_SOURCE_CLAIM_ONLY",
+  "activation_effect": false,
+  "readme_impact": {
+    "required": false,
+    "reason": "Static package-only binding uses the already-documented generic sequential portable WorkerCoordinator interface and changes no checkout algorithm, runtime behavior, authority semantics, failure behavior, or user-visible execution surface.",
+    "evidence_refs": [
+      "README.md#portable-workercoordinator-sequential-task-lineage",
+      "docs/WORKERCOORDINATOR_PORTABLE_IPHONE_EXECUTION_MIRROR_HANDOFF.md",
+      "docs/ECOSYSTEM_CHAT_PORTABLE_IPHONE_PACKAGE_MIRROR_HANDOFF.md"
+    ]
+  },
+  "release_condition": "Exact package tests and organization/WorkerCoordinator validation pass, package merges, and this claim is terminalized without claiming runtime execution."
+}
