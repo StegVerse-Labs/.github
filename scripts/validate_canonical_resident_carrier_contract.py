@@ -85,7 +85,7 @@ def validate(root: Path = ROOT) -> dict:
     assert task_policy["canonical_truth"]["execution_claim_and_fence"] == "WORKERCOORDINATOR"
     assert task_policy["canonical_truth"]["observed_reality_and_reconstruction"] == "MASTER_RECORDS"
     assert task_policy["canonical_truth"]["governed_ingress_egress"] == "INTERLOCK_INTR"
-    assert "SELECT_HIGHEST_PRIORITY_UNBLOCKED_NON_DUPLICATE_NON_COLLIDING_TASK" in task_policy["new_session_entry_contract"]["sequence"]
+    assert "SELECT_HIGHEST_PRIORITY_ADMISSIBLE_NON_DUPLICATE_NON_COLLIDING_TASK" in task_policy["new_session_entry_contract"]["sequence"]
 
     assert "## Autonomous Governed Entity Progression" in readme
     assert "without inserting a human approval checkpoint between ordinary machine-owned cycles" in readme
