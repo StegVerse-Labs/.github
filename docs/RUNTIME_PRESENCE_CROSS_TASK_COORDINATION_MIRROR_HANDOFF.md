@@ -3,78 +3,83 @@
 Repository: `StegVerse-Labs/.github`  
 Parent: `docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md`  
 Canonical work parent: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`  
-State: `SOURCE_IMPLEMENTED / AUTHENTIC_RUNTIME_PRESENCE_PENDING`  
-Authority effect: `NONE_COORDINATION_ONLY`
+State: `DEFERRED_SUBJECT_BINDING_REQUIRED / AUTHENTIC_RUNTIME_IDENTITY_PENDING`  
+Authority effect: `NONE_COORDINATION_STAGING_ONLY`
 
-## Purpose
+## Canonical disposition
 
-Bind the already-existing canonical resident runtime-presence producer to one subject-bound cross-task predicate so resident tasks reuse the same fresh evidence instead of creating independent liveness probes.
+The parent coordination handoff controls this scope. Runtime-presence evidence MUST NOT be registered as one reusable canonical predicate until authentic evidence establishes the exact resident subject identity required to prevent cross-node/runtime substitution.
 
-## Preflight
+The canonical staging record is:
 
-Machine preflight: `receipts/preflight/CROSS-TASK-RUNTIME-PRESENCE-PREDICATE-001.json`.
+`control/cross-task-coordination-candidates/resident-process-alive-supervised.json`
 
-The preflight passed before functional mutation and established:
-
-- no equivalent canonical coordination predicate was already present;
-- no active evidence-production claim or mutation collision was observed;
-- the authoritative producer already exists at `heartbeat_runtime/runtime_presence_projection.py`;
-- Master Records has no authentic matching current event yet;
-- no new heartbeat, WorkerCoordinator, scheduler, or runtime probe is required;
-- the change is materially functional because it changes coordination/evidence-reuse semantics, so `README.md` is updated in the same change set.
-
-## Canonical predicate
-
-Fragment: `control/cross-task-coordination.d/runtime-presence-predicates.json`
+Required subject identity before admission:
 
 ```text
-semantic_predicate_id = resident_worker_runtime_present
-subject.runtime_profile_id = canonical-resident-substrate-v1
-subject.worker_runtime = heartbeat_runtime.worker_runtime.WorkerCoordinator
+runtime_root identity
++ resident.node_id when available from authentic runtime evidence
++ canonical WorkerCoordinator identity
+```
+
+A runtime profile plus WorkerCoordinator class is not sufficient by itself.
+
+## Correction of over-broad registration
+
+PR #1032 / merge `80ea85ef3ed9b00b913f2c5555a3aa7afd8b0598` installed `control/cross-task-coordination.d/runtime-presence-predicates.json` using only:
+
+```text
+runtime_profile_id = canonical-resident-substrate-v1
+worker_runtime = heartbeat_runtime.worker_runtime.WorkerCoordinator
+```
+
+That binding was narrower than a global Boolean but still broader than the parent handoff's required authentic runtime-root/node identity. The canonical parent and pre-existing deferred candidate therefore supersede that registration.
+
+Corrective preflight:
+
+`receipts/preflight/RUNTIME-PRESENCE-SUBJECT-BINDING-CORRECTION-001.json`
+
+Disposition:
+
+- remove the over-broad canonical fragment;
+- retain the existing canonical producer;
+- retain the existing deferred migration candidate;
+- do not create a second presence projector;
+- do not group consumers until authentic evidence proves they target the same runtime-root/node subject.
+
+## Existing producer retained
+
+No runtime implementation is removed or duplicated.
+
+```text
 producer = heartbeat_runtime/runtime_presence_projection.py
 output = receipts/sovereign-host/runtime-presence.latest.json
 schema = stegverse.hb-runtime-presence-resident-observability/v1
 freshness = worker_cycle_age_seconds <= 60
 ```
 
-The predicate is shared only when semantic identity **and** subject binding match.
-
-## Consumers
-
-- `SHWP-SV002-ORG-RUNTIME-ACTIVATION-001`
-- `SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001`
-- `SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001`
-- `SHWP-SV011-PHASE5-BOUNDARY-001`
+The producer remains the canonical observation source. HeartBeat remains non-authorizing. WorkerCoordinator remains task-control runtime. TV/TVC remains sole credential authority.
 
 ## Evidence semantics
 
-A qualifying presence receipt must establish:
+Qualifying evidence may establish that one concrete resident runtime is presently observed, including fresh WorkerCoordinator activity. It does not establish that every consumer referring to a canonical resident substrate targets that same runtime instance.
 
-- `resident.present_worker_runtime_observed=true`;
-- `resident.worker_cycle_fresh=true`;
-- carrier/worker freshness correlation;
-- canonical WorkerCoordinator identity;
-- observation-only/non-authorizing projection semantics.
-
-Presence is **not** request consumption, task execution, claim/fence proof, transition approval, or task completion. Request-specific `resident_request_consumed` predicates remain distinct and subject-bound.
+Presence is not request consumption, task execution, claim/fence proof, transition approval, or completion.
 
 ## Master Records
 
-Master Records remains authoritative for observed reality and reconstructable retained events. No matching authentic current runtime-presence event was observed during preflight, so this predicate remains `UNKNOWN` until the canonical resident producer emits fresh evidence and any applicable custody/reconciliation path retains it.
-
-## Collision rule
-
-Do not create a second runtime-presence probe for these consumers. Reuse the canonical producer/output. If a different runtime/node identity is required, create a differently subject-bound predicate rather than broadening this one.
+Master Records remains authority for authentic retained observed reality. No current authentic runtime-presence event was available during the original or corrective preflight that established a stable shared `runtime_root`/`resident.node_id` binding across the proposed consumers.
 
 ## README completeness
 
-`README.md` now documents cross-task runtime-presence evidence reuse and explicitly preserves the distinction between runtime presence and execution/completion proof.
+The corrective change is material because it narrows evidence-reuse semantics. `README.md` is updated in the same change set to state explicitly that runtime-presence sharing is currently staged/deferred until exact runtime-root/node identity is proven.
 
 ## Remaining machine work
 
-1. validate this fragment under canonical composed-ledger validation;
-2. allow the existing resident runtime to produce fresh `runtime-presence.latest.json` evidence;
-3. when qualifying evidence exists, reevaluate all bound consumers before creating another presence check;
-4. continue request-specific execution only through their existing WorkerCoordinator/InTr/TV-TVC paths.
+1. reuse the existing runtime-presence producer; do not create another probe;
+2. when authentic `runtime-presence.latest.json` evidence exists, extract stable `runtime_root` and `resident.node_id` identity;
+3. prove which consumers target that exact same subject;
+4. only then promote a subject-bound predicate into the canonical composed coordination ledger;
+5. continue request-specific execution/consumption predicates independently.
 
 No user action is required.
