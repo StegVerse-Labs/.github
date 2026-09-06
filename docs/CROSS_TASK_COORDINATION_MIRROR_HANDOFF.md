@@ -100,7 +100,7 @@ This replaces repeated whole-ledger rewrites as the normal migration path and re
 
 ### WorkerCoordinator claim-coverage parity
 
-The composed ledger now has a fail-closed source gate against `control/worker-registry.json` whenever that sibling registry is present.
+The composed ledger has a fail-closed source gate against `control/worker-registry.json` whenever that sibling registry is present.
 
 `control/worker-registry.json` remains authoritative for WorkerCoordinator claim/fence ownership. Coordination claims remain projections only.
 
@@ -118,8 +118,20 @@ The inverse is also checked for worker-bound coordination rows: an `ACTIVE` coor
 
 This check grants no claim/fence/execution authority and infers no current runtime execution. It exists solely to prevent coordination consumers from silently operating on stale or incomplete machine-ownership projections.
 
-Source implementation: IMPLEMENTED / VALIDATION PENDING.
-README impact: MATERIAL; `README.md` updated in the same change set.
+Validated implementation:
+
+```text
+PR: 1048
+validated head: 67e968486dd642237963c30030ae747031c2cefb
+merge: b693d9029197de61f1aee66d2211647eb42ff32d
+cross-task coordination run: 34004857922 SUCCESS
+heartbeat worker run: 34004857932 SUCCESS
+organization control-plane run: 34004857950 SUCCESS
+```
+
+The Heartbeat validation includes the repository-real composed-ledger/worker-registry parity test; current G13/G17/G18 mirrors passed that exact check. These are source/validation facts only and do not prove current runtime execution.
+
+README impact for PR #1048: MATERIAL; `README.md` was updated in the same change set.
 
 ## Required autonomous-augmentation invariant
 
@@ -138,7 +150,7 @@ The preflight itself has `authority_effect: NONE`.
 
 The organization README defines a standing rule: any change that materially changes repository function must update that repository's README in the same functional change.
 
-Machine enforcement now exists at two canonical boundaries, without creating a parallel scheduler or authority path:
+Machine enforcement exists at two canonical boundaries, without creating a parallel scheduler or authority path:
 
 1. **session/build pre-work** — `scripts/session_build_preflight.py` can require README-impact completeness before new functional work/task creation may be considered;
 2. **WorkerCoordinator admission** — `heartbeat_runtime/worker_task_admission.py` requires README-impact completeness before an admitted worker can proceed toward existing assignment/claim/fence mechanics.
@@ -249,6 +261,14 @@ StegGate stable-rendezvous active claim projection:
   fragment commit: 1a4f61beaebf2d08d34a39c24117bb3b138403d2
   README completion commit: 01b3b0196ef25f934754f89730054742f4b893c9
   cross-task coordination run: 34004652942 SUCCESS
+
+WorkerCoordinator claim-coverage parity:
+  PR: 1048
+  validated head: 67e968486dd642237963c30030ae747031c2cefb
+  merge: b693d9029197de61f1aee66d2211647eb42ff32d
+  cross-task coordination run: 34004857922 SUCCESS
+  heartbeat worker run: 34004857932 SUCCESS
+  organization control-plane run: 34004857950 SUCCESS
 ```
 
 These are source/validation facts only and are not runtime-event or product-activation evidence.
@@ -261,13 +281,15 @@ The StegVerse-001 bounded-autonomy predicate records its dependency on the alrea
 
 ## Active claim projection state
 
-The composed ledger now mirrors the currently resolved control-plane active claims for collision detection:
+The composed ledger mirrors the currently resolved control-plane active claims for collision detection:
 
 1. `SHWP-SHWP-ALL-ORG-FEDERATION-001-G17` / fence 17;
 2. `SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18` / fence 18;
 3. `SHWP-STEGGATE-STABLE-RENDEZVOUS-WORKER-001-G13` / fence 13.
 
 These projections preserve existing ownership only. They do not mint, renew, transfer, or prove execution authority. A `BLOCKED` or otherwise nonterminal task state does not release the underlying claim.
+
+Claim-coverage parity now makes this set fail closed against current WorkerCoordinator registry truth rather than relying on static-fragment completeness by convention.
 
 ## Resident-presence migration boundary
 
@@ -283,9 +305,9 @@ The shared runtime-presence projector proves a concrete runtime root/node instan
 
 Core source implementation: VALIDATED.
 Composed canonical ledger: VALIDATED.
-WorkerCoordinator claim-coverage parity: SOURCE IMPLEMENTED / VALIDATION PENDING.
+WorkerCoordinator claim-coverage parity: MERGED / VALIDATED.
 Subject-bound resident-request migration: PARTIAL / ACTIVE.
-Active control-plane claim projection: CURRENTLY RESOLVED G13/G17/G18 REPRESENTED.
+Active control-plane claim projection: CURRENTLY RESOLVED G13/G17/G18 REPRESENTED AND PARITY-VALIDATED.
 StegIndex composed discovery: VALIDATED.
 README impact WorkerCoordinator enforcement: MERGED / VALIDATED.
 README impact session/build pre-work enforcement: MERGED / VALIDATED.
@@ -297,15 +319,14 @@ Existing runtime activation, WorkerCoordinator execution, sovereign inference, H
 
 ## Remaining machine work
 
-1. validate WorkerCoordinator claim-coverage parity against fixtures and the repository's current composed ledger/worker registry; if current mirrors are incomplete, reconcile the missing/stale mirrors rather than weakening the parity rule;
-2. inspect remaining canonical handoffs for genuinely shared predicates beyond `resident_request_consumed`;
-3. establish exact subject identity before any shared registration, especially runtime-presence predicates;
-4. register only genuinely reusable producer/evidence relationships and exact gaps;
-5. bind any additional session/build consumers that still read an incomplete coordination slice;
-6. re-resolve the active control-plane claim set before each new claim migration so released/new claims are not inferred from stale snapshots;
-7. validate each migration deterministically;
-8. evaluate tag/release only after ecosystem-adoption criteria are actually satisfied;
-9. after actual release/tag, verify governed propagation requirements for `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `admissibility-wiki`, and `stegguardian-wiki`.
+1. inspect remaining canonical handoffs for genuinely shared predicates beyond `resident_request_consumed`;
+2. establish exact subject identity before any shared registration, especially runtime-presence predicates;
+3. register only genuinely reusable producer/evidence relationships and exact gaps;
+4. bind any additional session/build consumers that still read an incomplete coordination slice;
+5. re-resolve the active control-plane claim set before each new claim migration; claim-coverage parity must fail closed if projections drift;
+6. validate each migration deterministically;
+7. evaluate tag/release only after ecosystem-adoption criteria are actually satisfied;
+8. after actual release/tag, verify governed propagation requirements for `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `admissibility-wiki`, and `stegguardian-wiki`.
 
 ## Completion and archive rule
 
@@ -322,4 +343,4 @@ Current goal completion: FALSE.
 Current ecosystem-adoption work remaining: TRUE.
 Thread archive-ready: FALSE.
 
-README impact for this functional change: MATERIAL. `README.md` is updated in the same change set together with `heartbeat_runtime/coordination_ledger.py`, deterministic tests, and this canonical handoff. The preceding G13 reconciliation remains preserved and validated independently.
+README impact for this reconciliation commit: NON-MATERIAL. Reason: documentation-only reconciliation of already-merged, already-validated PR #1048 behavior and exact run evidence; repository function is unchanged. Evidence: PR #1048, merge `b693d9029197de61f1aee66d2211647eb42ff32d`, runs `34004857922`, `34004857932`, and `34004857950`.
