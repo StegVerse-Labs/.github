@@ -1,0 +1,42 @@
+{
+  "schema": "stegverse.cross-task-coordination-fragment/v1",
+  "fragment_id": "ALL-ORG-FEDERATION-ACTIVE-CLAIM-001",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "claims": [
+    {
+      "claim_id": "SHWP-SHWP-ALL-ORG-FEDERATION-001-G17",
+      "task_id": "SHWP-ALL-ORG-FEDERATION-001",
+      "state": "ACTIVE",
+      "scope": {
+        "repositories": ["StegVerse-Labs/.github"],
+        "paths": [
+          "control/organization-federation.json",
+          "control/organization-task-registry.json",
+          "control/heartbeat-subsignals.json",
+          "control/worker-registry.json",
+          "control/worker-status.json",
+          "control/heartbeat-master-records-projection.json",
+          "receipts/organization-federation/SHWP-ALL-ORG-FEDERATION-001.json",
+          "checkpoints/workers/SHWP-ALL-ORG-FEDERATION-001"
+        ],
+        "modules": ["organization-federation-readiness"],
+        "runtime_surfaces": ["SHWP-ALL-ORG-FEDERATION-001:fence17"],
+        "evidence_responsibilities": [
+          "organization-federation-readiness",
+          "organization-federation-recheck",
+          "organization-federation-receipts"
+        ]
+      },
+      "fencing_token": 17,
+      "worker_id": "organization-federation-readiness-worker",
+      "worker_instance_id": "organization-federation-readiness-worker-HB11-G17",
+      "task_state": "BLOCKED",
+      "canonical_owner_ref": "docs/ALL_ORGS_HEARTBEAT_FEDERATION_MIRROR_HANDOFF.md",
+      "control_plane_ref": "control/worker-control-plane-coordination.json",
+      "master_records_projection_ref": "control/heartbeat-master-records-projection.json",
+      "manual_execution_allowed": false,
+      "authority_effect": "COORDINATION_ONLY",
+      "note": "Preserve the existing machine-owned federation claim/fence for collision detection. BLOCKED describes unresolved federation conditions and does not release worker ownership. This coordination record grants no execution authority and does not prove a current runtime cycle."
+    }
+  ]
+}

@@ -115,6 +115,12 @@ Legacy/nonfunctional tasks are not retroactively stranded solely because they pr
 
 This README preflight is evidence-only. It grants no execution, claim, fence, lease, credential, routing, transition, publication, custody, or other authority.
 
+### Cross-task active-claim projection
+
+The canonical cross-task coordination ledger may mirror an already-existing WorkerCoordinator claim/fence as **coordination-only ownership evidence** when its task, claim, fence, worker identity, and mutation/evidence scope are supported by canonical handoff and control-plane records. These projections are used to prevent another session or autonomous entity from competing with machine-owned work merely because the underlying task is reported as `BLOCKED`.
+
+A projected active claim does **not** mint or transfer authority, prove current runtime execution, renew a lease, or make heartbeat state authoritative. Release of the projected ownership must follow the canonical worker lifecycle; task state alone does not release the claim.
+
 This invariant exists so the README remains the human-facing projection of what the repository actually does, while canonical machine-readable records and receipts remain authoritative for exact state and evidence.
 
 ---
