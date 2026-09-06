@@ -39,6 +39,8 @@
   ],
   "active_action_id": null,
   "next_required_observation": "SITE_UI_SINGLE_ACTION_GUARD_RELEASED_AND_PUBLICLY_OBSERVED",
+  "next_implementation_tracking_issue": "StegVerse-Labs/.github#989",
+  "site_repository_orchestration_admission_required": true,
   "mutation_freeze_reason": "User-visible cross-session interference: multiple mutation controls remained exposed and non-JSON checkout-module text was present in the Master Records input while the page displayed FAIL_CLOSED / Invalid JSON.",
   "fresh_head": {
     "observed": true,
