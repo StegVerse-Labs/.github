@@ -12,12 +12,72 @@ from __future__ import annotations
 import argparse
 import json
 import subprocess
+import sys
+import time
 from pathlib import Path
+from typing import Callable
+
+# Canonical handoffs invoke this file directly from the repository root.
+# Direct execution places scripts/ rather than the repository root on sys.path,
+# so make the existing package import resolvable without caller configuration.
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from scripts import install_sovereign_heartbeat_service as base
 
 
-def install_carrier(source_root: Path, target_root: Path, runner=subprocess.run, *, system=None, env=None):
+def _observe_carrier_progress(target_root: Path, *, timeout_seconds: float = 5.0) -> dict:
+    """Require two oscillator-backed carrier observations with increasing epochs."""
+    path = target_root / "control" / "heartbeat-carrier-runtime-state.json"
+    deadline = time.monotonic() + timeout_seconds
+    first_epoch = None
+    last_error = "carrier state not observed"
+    while time.monotonic() < deadline:
+        try:
+            state = json.loads(path.read_text(encoding="utf-8"))
+            oscillator = state.get("oscillator") or {}
+            epoch = state.get("epoch")
+            valid = (
+                isinstance(epoch, int)
+                and state.get("frequency_rule") == "INDEPENDENT_OSCILLATOR_10MS_PHASE_TRAVEL"
+                and oscillator.get("progression_dependency") == "OSCILLATOR_ONLY"
+                and oscillator.get("phase_travel_time_ms") == 10
+                and oscillator.get("reference_frequency_hz") == 100
+                and oscillator.get("snapshot_is_observation_only") is True
+                and oscillator.get("observation_is_causal") is False
+            )
+            if valid:
+                if first_epoch is not None and epoch > first_epoch:
+                    return {
+                        "observed": True,
+                        "first_epoch": first_epoch,
+                        "last_epoch": epoch,
+                        "state_ref": "control/heartbeat-carrier-runtime-state.json",
+                    }
+                first_epoch = epoch
+            else:
+                last_error = "carrier state did not satisfy oscillator invariants"
+        except (OSError, ValueError, TypeError) as exc:
+            last_error = str(exc)
+        time.sleep(0.05)
+    return {
+        "observed": False,
+        "first_epoch": first_epoch,
+        "last_epoch": first_epoch,
+        "state_ref": "control/heartbeat-carrier-runtime-state.json",
+        "failure": last_error,
+    }
+
+
+def install_carrier(
+    source_root: Path,
+    target_root: Path,
+    runner=subprocess.run,
+    *,
+    system=None,
+    env=None,
+    carrier_observer: Callable[[Path], dict] = _observe_carrier_progress,
+):
     materialization = base.materialize(source_root, target_root)
     service = base.materialize_service(target_root, system=system, env=env)
 
@@ -28,7 +88,7 @@ def install_carrier(source_root: Path, target_root: Path, runner=subprocess.run,
         completed = runner(command, check=False, capture_output=True, text=True)
         results.append({"command": command, "returncode": completed.returncode})
 
-    carrier_active = (
+    carrier_start_reported = (
         len(results) > carrier_success_index
         and results[carrier_success_index]["returncode"] == 0
     )
@@ -41,7 +101,14 @@ def install_carrier(source_root: Path, target_root: Path, runner=subprocess.run,
         run_command = ["schtasks", "/Run", "/TN", "StegVerse Heartbeat"]
         completed = runner(run_command, check=False, capture_output=True, text=True)
         results.append({"command": run_command, "returncode": completed.returncode})
-        carrier_active = carrier_active and completed.returncode == 0
+        carrier_start_reported = carrier_start_reported and completed.returncode == 0
+
+    carrier_observation = carrier_observer(target_root) if carrier_start_reported else {
+        "observed": False,
+        "failure": "native carrier start command failed",
+        "state_ref": "control/heartbeat-carrier-runtime-state.json",
+    }
+    carrier_active = carrier_start_reported and carrier_observation.get("observed") is True
 
     receipt = {
         **materialization,
@@ -51,6 +118,8 @@ def install_carrier(source_root: Path, target_root: Path, runner=subprocess.run,
         "carrier_command": service["carrier_command"],
         "carrier_activation_commands": [item["command"] for item in results],
         "carrier_activation_results": results,
+        "carrier_start_reported": carrier_start_reported,
+        "carrier_progression_observation": carrier_observation,
         "carrier_active": carrier_active,
         "worker_start_attempted": False,
         "worker_active": False,
