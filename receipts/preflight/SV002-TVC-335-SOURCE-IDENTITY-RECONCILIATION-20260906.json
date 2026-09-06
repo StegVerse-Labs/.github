@@ -1,0 +1,27 @@
+{
+  "schema": "stegverse.session-build-preflight/v1",
+  "evaluated_at": "2026-09-06T08:20:00-05:00",
+  "goal": "Reconcile the existing SV002 HB-awareness handoff with the already-merged TVC #335 immutable-source binding without changing runtime behavior or authority.",
+  "canonical_handoff": "docs/SV002_HB_AWARENESS_RUNTIME_REPAIR_MIRROR_HANDOFF.md",
+  "task_registry_ref": "data/canonical-task-registry.json",
+  "master_records_authority": "master-records/orchestration",
+  "cross_task_coordination_ref": "control/cross-task-coordination.d/sv002-resident-request-predicates.json",
+  "existing_implementation_refs": [
+    "StegVerse-Labs/.github@11cad666ff4a0ffeca39a725272f1ab905d9257d",
+    "StegVerse-Labs/TVC@a7e3ed7611c9abead988ec85b493cc396ac54b94",
+    "StegVerse-Labs/TVC#335"
+  ],
+  "duplicate_implementation_required": false,
+  "material_function_change": false,
+  "readme_impact_required": false,
+  "readme_updated_in_change_set": false,
+  "no_readme_update_reason": "This change only corrects stale immutable commit references in an existing handoff after TVC #335 merged. It does not change repository behavior, runtime semantics, interfaces, governance or authority boundaries, evidence semantics, prerequisites, dependencies, failure behavior, or capability meaning.",
+  "readme_evidence_refs": [
+    "README.md#resident-workercoordinator-self-heal-binding-parity",
+    "docs/SV002_HB_AWARENESS_RUNTIME_REPAIR_MIRROR_HANDOFF.md#evidence-boundary",
+    "StegVerse-Labs/TVC#335"
+  ],
+  "authority_effect": "NONE_COORDINATION_RECONCILIATION_ONLY",
+  "runtime_execution_claimed": false,
+  "state": "PASS"
+}
