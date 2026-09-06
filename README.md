@@ -173,7 +173,9 @@ This sequential-lineage behavior allows downstream same-device consumers to reus
 
 ### Cross-task active-claim projection
 
-The canonical cross-task coordination ledger may mirror an already-existing WorkerCoordinator claim/fence as **coordination-only ownership evidence** when its task, claim, fence, worker identity, and mutation/evidence scope are supported by canonical handoff and control-plane records. These projections are used to prevent another session or autonomous entity from competing with machine-owned work merely because the underlying task is reported as `BLOCKED`.
+The canonical cross-task coordination ledger may mirror an already-existing WorkerCoordinator claim/fence as **coordination-only ownership evidence** when its task, claim, fence, worker identity, and mutation/evidence scope are supported by canonical handoff and control-plane records. These projections are used to prevent another session or autonomous entity from competing with machine-owned work merely because the underlying task is reported as `BLOCKED` or otherwise nonterminal.
+
+Current projections include the all-organization federation G17 claim, durable-runtime G18 claim, and stable StegGate rendezvous G13 claim. Each remains owned by its original canonical worker/task lifecycle; the cross-task ledger only exposes that ownership to collision and adjacency resolution.
 
 A projected active claim does **not** mint or transfer authority, prove current runtime execution, renew a lease, or make heartbeat state authoritative. Release of the projected ownership must follow the canonical worker lifecycle; task state alone does not release the claim.
 
