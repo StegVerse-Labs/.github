@@ -7,6 +7,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
+from scripts import install_sovereign_heartbeat_service as service
 from scripts import repair_resident_worker_presence as repair
 from scripts import run_heartbeat_runtime as carrier
 
@@ -18,6 +19,26 @@ class ResidentWorkerPresenceSelfHealTests(unittest.TestCase):
         self.assertIn("ensure_worker_presence", source)
         self.assertIn("resident_worker_presence", source)
         self.assertIn("The pulse already exists before this check", source)
+
+    def test_self_healed_worker_preserves_canonical_local_bindings(self):
+        self.assertTrue(set(service.WORKER_SAFE_LOCAL_BINDINGS).issubset(repair.SAFE_ENV))
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            values = {
+                "STEGVERSE_TVC_ROOT": "/srv/stegverse/TVC",
+                "STEGVERSE_TV_ROOT": "/srv/stegverse/TV",
+                "STEGVERSE_STEGINDEX_SOURCE_ROOT": "/srv/stegverse/StegIndex",
+                "STEGVERSE_MASTER_RECORDS_ROOT": "/srv/stegverse/master-records",
+                "GITHUB_TOKEN": "must-not-propagate",
+            }
+            with mock.patch.dict(os.environ, values, clear=True):
+                env = repair._clean_env(root)
+            self.assertEqual(env["STEGVERSE_TVC_ROOT"], values["STEGVERSE_TVC_ROOT"])
+            self.assertEqual(env["STEGVERSE_TV_ROOT"], values["STEGVERSE_TV_ROOT"])
+            self.assertEqual(env["STEGVERSE_STEGINDEX_SOURCE_ROOT"], values["STEGVERSE_STEGINDEX_SOURCE_ROOT"])
+            self.assertEqual(env["STEGVERSE_MASTER_RECORDS_ROOT"], values["STEGVERSE_MASTER_RECORDS_ROOT"])
+            self.assertNotIn("GITHUB_TOKEN", env)
+            self.assertEqual(env["STEGVERSE_HEARTBEAT_ROOT"], str(root.resolve()))
 
     def test_existing_worker_is_reused_without_second_process_and_presence_is_projected(self):
         with tempfile.TemporaryDirectory() as td:

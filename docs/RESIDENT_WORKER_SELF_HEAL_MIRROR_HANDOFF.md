@@ -59,6 +59,23 @@ This validation is source/deterministic proof only. It does not establish that t
 Current authentic runtime-presence evidence on repository-tracked `main`:
 - `receipts/sovereign-host/runtime-presence.latest.json`: NOT PRESENT at the latest reconciliation.
 
+## Self-heal local-binding parity repair — 2026-09-05
+
+Canonical preflight identified a second bounded failure mode in the existing self-heal path: the self-healed WorkerCoordinator was spawned with a narrower non-secret environment allowlist than the canonical worker service. That could restore process liveness while dropping already-local repository/runtime roots needed by request consumers, leaving an apparently alive worker unable to coordinate work that the canonical service could consume.
+
+The repair extends only the existing self-heal process environment and preserves the canonical worker service's approved local bindings, including StegIndex, TV/TVC, Master Records, StegCore, StegOS, KV, Site, TT/RTG/GTG/AE, resident source manifests, and other already-declared local roots. Secret/token/password/API-key/private-key/credential variables remain excluded by the existing sanitizer.
+
+Authority invariants are unchanged:
+- same WorkerCoordinator process model;
+- no second scheduler or runtime;
+- no new claim/fence or InTr authority;
+- TV/TVC remains credential authority;
+- GitHub token runtime authority remains `NONE`;
+- no network source fetch;
+- source/validation does not establish authentic runtime presence or request consumption.
+
+README impact: MATERIAL. `README.md` is updated in the same change set because this changes resident failure-recovery behavior and runtime dependency propagation.
+
 ## Runtime consequence
 
 A live canonical carrier plus a dead/missing WorkerCoordinator is now a validated self-healing runtime state rather than a passive `REQUESTED` backlog state. Authentic runtime presence still requires the canonical presence receipt from a real resident carrier-supervision visit, and authentic task completion still requires each task-specific receipt; this repair does not fabricate those receipts.
