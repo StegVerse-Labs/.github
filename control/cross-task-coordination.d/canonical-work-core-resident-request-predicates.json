@@ -1,0 +1,227 @@
+{
+  "schema": "stegverse.cross-task-coordination-fragment/v1",
+  "fragment_id": "CANONICAL-WORK-CORE-RESIDENT-REQUEST-PREDICATES-001",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "predicates": [
+    {
+      "predicate_id": "PRED-CANONICAL-WORK-COORDINATION-REQUEST-STAGED-001",
+      "semantic_predicate_id": "canonical_work_request_staged",
+      "subject_binding": {
+        "task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+        "request_id": "RESIDENT-EXEC-CANONICAL-WORK-COORDINATION-BOOTSTRAP-001"
+      },
+      "state": "SATISFIED",
+      "description": "The existing canonical resident request for the Canonical Work Coordination parent task is staged through the existing canonical_work_coordination dispatcher/consumer path.",
+      "authoritative_producer": "StegVerse-Labs/.github source/control plane",
+      "required_schema": "stegverse.resident-execution-request/v1",
+      "required_scope": "registered canonical task resident request staging",
+      "required_execution_instance": "RESIDENT-EXEC-CANONICAL-WORK-COORDINATION-BOOTSTRAP-001",
+      "max_age_seconds": null,
+      "required_fields": ["task_id", "request_id", "state", "authority_effect"],
+      "required_field_values": {
+        "task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+        "request_id": "RESIDENT-EXEC-CANONICAL-WORK-COORDINATION-BOOTSTRAP-001",
+        "state": "REQUESTED",
+        "authority_effect": "NONE_REQUEST_ONLY"
+      },
+      "expected_output_ref": "control/resident-execution-request.d/canonical-work-coordination-bootstrap-001.json",
+      "consumers": ["STEGVERSE-CANONICAL-WORK-COORDINATION-001"],
+      "canonical_source_refs": [
+        "docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md",
+        "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md",
+        "control/resident-execution-request.d/canonical-work-coordination-bootstrap-001.json",
+        "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py"
+      ]
+    },
+    {
+      "predicate_id": "PRED-CANONICAL-WORK-COORDINATION-REQUEST-CONSUMED-001",
+      "semantic_predicate_id": "resident_request_consumed",
+      "subject_binding": {
+        "task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+        "request_id": "RESIDENT-EXEC-CANONICAL-WORK-COORDINATION-BOOTSTRAP-001"
+      },
+      "state": "UNKNOWN",
+      "description": "The exact Canonical Work Coordination parent resident request was authentically consumed and its existing Canonical Work bootstrap path completed for this exact task.",
+      "authoritative_producer": "existing sovereign resident Canonical Work consumer + Universal Interlock/InTr",
+      "required_schema": "stegverse.canonical-work-bootstrap-request-consumption/v1",
+      "required_scope": "authentic STEGVERSE-CANONICAL-WORK-COORDINATION-001 resident ingress",
+      "required_execution_instance": "RESIDENT-EXEC-CANONICAL-WORK-COORDINATION-BOOTSTRAP-001",
+      "max_age_seconds": null,
+      "required_fields": ["state", "task_id", "request_sha256", "bootstrap_receipt_ref"],
+      "required_field_values": {
+        "state": "COMPLETED",
+        "task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+      },
+      "expected_output_ref": "receipts/sovereign-host/canonical-work-coordination-bootstrap-request-consumption.latest.json",
+      "consumers": ["STEGVERSE-CANONICAL-WORK-COORDINATION-001"],
+      "canonical_source_refs": [
+        "docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md",
+        "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md",
+        "control/resident-execution-request.d/canonical-work-coordination-bootstrap-001.json",
+        "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py"
+      ]
+    },
+    {
+      "predicate_id": "PRED-CANONICAL-RUNTIME-PROFILE-MAP-REQUEST-STAGED-001",
+      "semantic_predicate_id": "canonical_work_request_staged",
+      "subject_binding": {
+        "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+        "request_id": "RESIDENT-EXEC-CANONICAL-WORK-RUNTIME-PROFILE-MAP-001"
+      },
+      "state": "SATISFIED",
+      "description": "The existing Canonical Work resident request for the Runtime Profile Map task is staged through the existing canonical_work_coordination dispatcher/consumer path.",
+      "authoritative_producer": "StegVerse-Labs/.github source/control plane",
+      "required_schema": "stegverse.resident-execution-request/v1",
+      "required_scope": "registered canonical task resident request staging",
+      "required_execution_instance": "RESIDENT-EXEC-CANONICAL-WORK-RUNTIME-PROFILE-MAP-001",
+      "max_age_seconds": null,
+      "required_fields": ["task_id", "request_id", "state", "authority_effect"],
+      "required_field_values": {
+        "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+        "request_id": "RESIDENT-EXEC-CANONICAL-WORK-RUNTIME-PROFILE-MAP-001",
+        "state": "REQUESTED",
+        "authority_effect": "NONE_REQUEST_ONLY"
+      },
+      "expected_output_ref": "control/resident-execution-request.d/canonical-work-runtime-profile-map-001.json",
+      "consumers": ["STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"],
+      "canonical_source_refs": [
+        "docs/CANONICAL_RUNTIME_PROFILE_MAP_MIRROR_HANDOFF.md",
+        "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md",
+        "control/resident-execution-request.d/canonical-work-runtime-profile-map-001.json",
+        "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py"
+      ]
+    },
+    {
+      "predicate_id": "PRED-CANONICAL-RUNTIME-PROFILE-MAP-REQUEST-CONSUMED-001",
+      "semantic_predicate_id": "resident_request_consumed",
+      "subject_binding": {
+        "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+        "request_id": "RESIDENT-EXEC-CANONICAL-WORK-RUNTIME-PROFILE-MAP-001"
+      },
+      "state": "UNKNOWN",
+      "description": "The exact Runtime Profile Map Canonical Work resident request was authentically consumed and its existing Canonical Work bootstrap path completed for this exact task.",
+      "authoritative_producer": "existing sovereign resident Canonical Work consumer + Universal Interlock/InTr",
+      "required_schema": "stegverse.canonical-work-bootstrap-request-consumption/v1",
+      "required_scope": "authentic STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001 resident ingress",
+      "required_execution_instance": "RESIDENT-EXEC-CANONICAL-WORK-RUNTIME-PROFILE-MAP-001",
+      "max_age_seconds": null,
+      "required_fields": ["state", "task_id", "request_sha256", "bootstrap_receipt_ref"],
+      "required_field_values": {
+        "state": "COMPLETED",
+        "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"
+      },
+      "expected_output_ref": "receipts/sovereign-host/canonical-work-runtime-profile-map-request-consumption.latest.json",
+      "consumers": ["STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"],
+      "canonical_source_refs": [
+        "docs/CANONICAL_RUNTIME_PROFILE_MAP_MIRROR_HANDOFF.md",
+        "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md",
+        "control/resident-execution-request.d/canonical-work-runtime-profile-map-001.json",
+        "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "evidence_id": "EVID-CANONICAL-WORK-COORDINATION-REQUEST-STAGED-001",
+      "predicate_id": "PRED-CANONICAL-WORK-COORDINATION-REQUEST-STAGED-001",
+      "subject_binding": {
+        "task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+        "request_id": "RESIDENT-EXEC-CANONICAL-WORK-COORDINATION-BOOTSTRAP-001"
+      },
+      "producer": "StegVerse-Labs/.github",
+      "ref": "control/resident-execution-request.d/canonical-work-coordination-bootstrap-001.json",
+      "schema": "stegverse.resident-execution-request/v1",
+      "scope": "registered canonical task resident request staging",
+      "execution_instance": "SOURCE_REQUEST_STAGING_ONLY",
+      "observed_at": "2026-09-06",
+      "fields": {
+        "task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+        "request_id": "RESIDENT-EXEC-CANONICAL-WORK-COORDINATION-BOOTSTRAP-001",
+        "state": "REQUESTED",
+        "authority_effect": "NONE_REQUEST_ONLY"
+      },
+      "authority_effect": "EVIDENCE_ONLY"
+    },
+    {
+      "evidence_id": "EVID-CANONICAL-RUNTIME-PROFILE-MAP-REQUEST-STAGED-001",
+      "predicate_id": "PRED-CANONICAL-RUNTIME-PROFILE-MAP-REQUEST-STAGED-001",
+      "subject_binding": {
+        "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+        "request_id": "RESIDENT-EXEC-CANONICAL-WORK-RUNTIME-PROFILE-MAP-001"
+      },
+      "producer": "StegVerse-Labs/.github",
+      "ref": "control/resident-execution-request.d/canonical-work-runtime-profile-map-001.json",
+      "schema": "stegverse.resident-execution-request/v1",
+      "scope": "registered canonical task resident request staging",
+      "execution_instance": "SOURCE_REQUEST_STAGING_ONLY",
+      "observed_at": "2026-09-06",
+      "fields": {
+        "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+        "request_id": "RESIDENT-EXEC-CANONICAL-WORK-RUNTIME-PROFILE-MAP-001",
+        "state": "REQUESTED",
+        "authority_effect": "NONE_REQUEST_ONLY"
+      },
+      "authority_effect": "EVIDENCE_ONLY"
+    }
+  ],
+  "gaps": [
+    {
+      "predicate_id": "PRED-CANONICAL-WORK-COORDINATION-REQUEST-CONSUMED-001",
+      "subject_binding": {
+        "task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+        "request_id": "RESIDENT-EXEC-CANONICAL-WORK-COORDINATION-BOOTSTRAP-001"
+      },
+      "existing_evidence_refs": [
+        "control/resident-execution-request.d/canonical-work-coordination-bootstrap-001.json",
+        "docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md",
+        "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md"
+      ],
+      "rejected_because": [
+        "SOURCE_REQUEST_STAGING_IS_NOT_RUNTIME_CONSUMPTION",
+        "NO_QUALIFYING_AUTHENTIC_REQUEST_CONSUMPTION_RECEIPT_OBSERVED",
+        "NO_AUTHENTIC_INTR_ADMISSION_MAY_BE_INFERRED_FROM_SOURCE_MERGE_CI_OR_HEARTBEAT"
+      ],
+      "missing_observation": "Authentic resident consumption plus task-specific Canonical Work ingress/consumption/bootstrap evidence for STEGVERSE-CANONICAL-WORK-COORDINATION-001.",
+      "required_producer": "existing sovereign resident Canonical Work consumer + Universal Interlock/InTr",
+      "required_output_ref": "receipts/sovereign-host/canonical-work-coordination-bootstrap-request-consumption.latest.json",
+      "required_schema": "stegverse.canonical-work-bootstrap-request-consumption/v1",
+      "required_fields": ["state", "task_id", "request_sha256", "bootstrap_receipt_ref"],
+      "required_field_values": {
+        "state": "COMPLETED",
+        "task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+      },
+      "required_freshness": null,
+      "collision_refs": [],
+      "action_without_collision": "Allow the existing resident dispatcher/Canonical Work consumer to visit the staged parent request. Do not create a second runtime, scheduler, WorkerCoordinator, request, ingress path, credential path, or fabricated receipt."
+    },
+    {
+      "predicate_id": "PRED-CANONICAL-RUNTIME-PROFILE-MAP-REQUEST-CONSUMED-001",
+      "subject_binding": {
+        "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+        "request_id": "RESIDENT-EXEC-CANONICAL-WORK-RUNTIME-PROFILE-MAP-001"
+      },
+      "existing_evidence_refs": [
+        "control/resident-execution-request.d/canonical-work-runtime-profile-map-001.json",
+        "docs/CANONICAL_RUNTIME_PROFILE_MAP_MIRROR_HANDOFF.md",
+        "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md"
+      ],
+      "rejected_because": [
+        "SOURCE_REQUEST_STAGING_IS_NOT_RUNTIME_CONSUMPTION",
+        "NO_QUALIFYING_AUTHENTIC_REQUEST_CONSUMPTION_RECEIPT_OBSERVED",
+        "NO_AUTHENTIC_INTR_ADMISSION_MAY_BE_INFERRED_FROM_SOURCE_MERGE_CI_OR_HEARTBEAT"
+      ],
+      "missing_observation": "Authentic resident consumption plus task-specific Canonical Work ingress/consumption/bootstrap evidence for STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001.",
+      "required_producer": "existing sovereign resident Canonical Work consumer + Universal Interlock/InTr",
+      "required_output_ref": "receipts/sovereign-host/canonical-work-runtime-profile-map-request-consumption.latest.json",
+      "required_schema": "stegverse.canonical-work-bootstrap-request-consumption/v1",
+      "required_fields": ["state", "task_id", "request_sha256", "bootstrap_receipt_ref"],
+      "required_field_values": {
+        "state": "COMPLETED",
+        "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"
+      },
+      "required_freshness": null,
+      "collision_refs": [],
+      "action_without_collision": "Allow the existing resident dispatcher/Canonical Work consumer to visit the staged Runtime Profile Map request. Do not create a second runtime, scheduler, WorkerCoordinator, request, ingress path, credential path, or fabricated receipt."
+    }
+  ]
+}
