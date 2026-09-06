@@ -177,9 +177,11 @@ The Canonical Work resident bootstrap is a **shared governed ingress mechanism f
 
 The bootstrap reuses the existing Universal InTr listener and Canonical Work ingress adapter. It does not create task identity, a second listener, another scheduler, another WorkerCoordinator, or another authority plane. The resident Canonical Work consumer may carry multiple explicit task request specifications and visits them independently so one task-local failure does not prevent another registered request from being attempted.
 
+The resident consumer treats `data/canonical-task-registry.json` as mutable resident coordination state once it exists. Local source materialization may seed that registry only when the resident copy is absent; it must not overwrite an existing resident registry with a static source copy. This preserves later authentic ingress projections, runtime-resolution projections, and other governed task-state evolution while still allowing a fresh runtime to bootstrap from canonical source. Preserving the registry does not grant task authority or validate any existing projection; downstream Canonical Work, WorkerCoordinator, Master Records, and Interlock/InTr checks remain required.
+
 A successful bootstrap receipt proves only the exact bounded `TASK_INGRESS` request, `INGRESS_ADMITTED` receipt, Canonical Work consumption receipt, and proposed registry projection that it actually observed. It does **not** prove WorkerCoordinator claim/fence, governed task execution, Master Records reconciliation, egress, closure, deployment, or product activation. Source presence, request staging, merge, CI, heartbeat progression, or dispatcher visitation likewise do not substitute for those runtime predicates.
 
-`QUANTUM-RESILIENCE-001` is the first additional task staged through this reusable path. Its request remains non-authorizing and requires the same resident Interlock/InTr transition boundary, TV/TVC credential authority, no GitHub-token runtime authority, and no second user-operated machine.
+`QUANTUM-RESILIENCE-001` is the first additional task staged through this reusable path. Additional registered tasks may use the same path only through explicit fixed request specifications and the same fail-closed identity/authority checks; staging a request remains non-authorizing and requires the same resident Interlock/InTr transition boundary, TV/TVC credential authority, no GitHub-token runtime authority, and no second user-operated machine.
 
 ### Cross-task active-claim projection
 
