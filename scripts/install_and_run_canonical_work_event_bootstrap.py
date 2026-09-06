@@ -9,7 +9,12 @@ It performs only two repository-local machine steps in sequence:
 2. launch the bounded event bootstrap in a fresh Python process so the newly
    installed router is imported from the transformed source.
 
-It does not define or start a second heartbeat, oscillator, scheduler,
+The selected ``--task-id`` is passed to the existing CanonicalWork bootstrap. The
+bootstrap itself resolves that identity exactly once in the canonical task
+registry, requires PROPOSED state and an allowed INGRESS_ADMITTED transition, and
+preserves WorkerCoordinator / Master Records / Interlock-InTr authority separation.
+
+This wrapper does not define or start a second heartbeat, oscillator, scheduler,
 WorkerCoordinator implementation, or ingress implementation. The bootstrap uses
 the existing shared Universal InTr Server for exactly one event-triggered request.
 Source installation is not itself runtime evidence; only receipts emitted by the
@@ -23,6 +28,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_TASK_ID = "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
 
 
 def run(command: list[str]) -> None:
@@ -31,6 +37,7 @@ def run(command: list[str]) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--task-id", default=DEFAULT_TASK_ID)
     parser.add_argument("--runtime-root", required=True)
     parser.add_argument("--registry", default=str(ROOT / "data" / "canonical-task-registry.json"))
     parser.add_argument("--consumer-timeout-seconds", type=float, default=5.0)
@@ -46,6 +53,8 @@ def main() -> int:
     command = [
         sys.executable,
         bootstrap,
+        "--task-id",
+        args.task_id,
         "--runtime-root",
         str(Path(args.runtime_root).expanduser().resolve()),
         "--registry",
@@ -57,7 +66,7 @@ def main() -> int:
         command.append("--without-carrier-binding")
     run(command)
 
-    print("PASS: route installation/check completed and bounded CanonicalWork bootstrap returned success")
+    print(f"PASS: route installation/check completed and bounded CanonicalWork bootstrap returned success for task {args.task_id}")
     print("NONCLAIM: this wrapper does not itself prove WorkerCoordinator claim/fence, governed work, Master Records reconciliation, egress, or closure")
     return 0
 
