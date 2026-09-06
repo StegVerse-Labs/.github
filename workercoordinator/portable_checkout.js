@@ -77,12 +77,18 @@
       predecessor_registry_git_blob_sha: pkg.predecessor_registry_git_blob_sha,
       generation: pkg.predecessor_generation_floor,
       checkout_count: 0,
+      checked_out_task_ids: [],
       checkout_tail_sha256: null,
       parallel_workercoordinator_claim_issuance_allowed: false,
       governed_transfer_required_before_other_surface_claims: true,
       credential_authority: "TV/TVC",
       authority_effect: "CANONICAL_WORKERCOORDINATOR_STATE"
     };
+  }
+  function checkedOutTaskIds(state, checkoutCount) {
+    var ids = Array.isArray(state.checked_out_task_ids) ? state.checked_out_task_ids.slice() : [];
+    if (ids.length === 0 && checkoutCount > 0 && state.last_task_id) { ids.push(state.last_task_id); }
+    return ids;
   }
   function checkout(pkg, store) {
     validatePackage(pkg);
@@ -94,7 +100,8 @@
       if (state.parallel_workercoordinator_claim_issuance_allowed !== false) { fail("parallel issuance state invalid"); }
       var generation = asPositiveInt(state.generation, "state generation");
       var inferredCheckoutCount = Number.isInteger(state.checkout_count) ? state.checkout_count : Math.max(0, generation - pkg.predecessor_generation_floor);
-      if (inferredCheckoutCount >= 1) { fail("task package already checked out; terminal/downstream continuation must not mint another claim"); }
+      var priorTaskIds = checkedOutTaskIds(state, inferredCheckoutCount);
+      if (priorTaskIds.indexOf(pkg.task.task_id) !== -1) { fail("task package already checked out; terminal/downstream continuation must not mint another claim for the same task"); }
       if (generation < pkg.predecessor_generation_floor) { fail("portable generation regressed below predecessor floor"); }
       var minimum = pkg.minimum_fencing_token_exclusive;
       if (Number.isInteger(minimum) && generation <= minimum) { generation = minimum; }
@@ -140,6 +147,7 @@
             predecessor_registry_git_blob_sha: pkg.predecessor_registry_git_blob_sha,
             generation: nextGeneration,
             checkout_count: inferredCheckoutCount + 1,
+            checked_out_task_ids: priorTaskIds.concat([pkg.task.task_id]),
             checkout_tail_sha256: receiptBody.receipt_sha256,
             last_checkout_receipt: receiptBody,
             last_claim_id: claimId,

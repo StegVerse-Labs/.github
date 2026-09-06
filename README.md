@@ -161,6 +161,16 @@ Fresh native runtime materialization also copies and explicitly requires the sel
 
 This parity requirement is a runtime continuity and failure-behavior guarantee. It does not imply that source, validation, heartbeat progression, or process restoration proves any task was dispatched, consumed, or completed.
 
+### Portable WorkerCoordinator sequential task lineage
+
+The `CURRENT_USER_IPHONE` portable WorkerCoordinator remains one expression of the canonical `StegVerse-Labs/.github` WorkerCoordinator authority, not a second WorkerCoordinator or a StegOS-owned claim/fence plane. Its persisted portable generation is monotonic across admitted tasks and remains distinct from StegOS device-local task generations.
+
+Portable checkout is **single-use per distinct task package**, not single-use for the entire authority lineage. The v1 portable state tracks `checked_out_task_ids`; a task ID already present in that history fails closed, while a different clean `HANDOFF_READY` task may receive the next WorkerCoordinator generation/fencing token through the same atomic compare-and-set state. Legacy v1 state without that list is interpreted from its retained `last_task_id` without resetting generation.
+
+Terminal packages remain non-checkoutable because portable admission still requires clean `HANDOFF_READY` state. Parallel WorkerCoordinator claim issuance remains prohibited, governed transfer remains required before another execution surface may issue claims, TV/TVC remains credential authority, HeartBeat grants no execution authority, and GitHub retains no runtime authority.
+
+This sequential-lineage behavior allows downstream same-device consumers to reuse the existing portable WorkerCoordinator instead of requiring another machine or creating another runtime authority plane. It does not by itself package, admit, dispatch, execute, or complete any downstream task, and it does not establish current iPhone runtime presence or authentic resident execution evidence.
+
 ### Cross-task active-claim projection
 
 The canonical cross-task coordination ledger may mirror an already-existing WorkerCoordinator claim/fence as **coordination-only ownership evidence** when its task, claim, fence, worker identity, and mutation/evidence scope are supported by canonical handoff and control-plane records. These projections are used to prevent another session or autonomous entity from competing with machine-owned work merely because the underlying task is reported as `BLOCKED`.

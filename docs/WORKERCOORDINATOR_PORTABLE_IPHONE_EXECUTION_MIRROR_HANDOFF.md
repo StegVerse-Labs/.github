@@ -1,6 +1,6 @@
 # Portable WorkerCoordinator iPhone Execution Mirror Handoff
 
-Updated: 2026-09-04
+Updated: 2026-09-05
 Repository: `StegVerse-Labs/.github`
 Issue: #862
 Goal: `WORKERCOORDINATOR-PORTABLE-IPHONE-EXECUTION-001`
@@ -93,7 +93,7 @@ execution_authorized = false
 authority_effect = CANONICAL_WORKERCOORDINATOR_PORTABLE_TERMINAL_PACKAGE
 ```
 
-Because `portable_checkout.js` already rejects any task that is not clean `HANDOFF_READY` before local state initialization, a fresh node receiving this terminal package cannot recreate G23 from the G22 predecessor floor.
+Because `portable_checkout.js` rejects any task that is not clean `HANDOFF_READY` before local state initialization, a fresh node receiving this terminal package cannot recreate G23 from the G22 predecessor floor.
 
 The package retains canonical first-terminal G23 plus both known duplicate terminal receipts (G24 and reset-lineage G23), with only the first G23 custody-eligible. Master Records custody and SV002 disposition remain PENDING and must continue from the first canonical G23 without another SV001 execution.
 
@@ -102,3 +102,23 @@ This is terminal-state propagation, not a second runtime authority. WorkerCoordi
 ## Current-base validation reconciliation — 2026-09-04
 
 The first #977 merge-ref was based before an independent AE/COSV denominator reconciliation and therefore failed on the already-installed `LEGACY-CONTINUITY-VALIDATION-WORKER-001`. Current main now reports 83 unique worker task IDs, 76 canonically indexed worker task IDs, and includes that worker. The terminal-package repair is migrated unchanged onto this fresh current-main branch rather than duplicating the denominator repair.
+
+## Sequential downstream task lineage — 2026-09-05
+
+Post-self-heal runtime preflight found that the portable authority state still treated `checkout_count >= 1` as a global stop condition. That was correct for preventing a second SV001 checkout, but incorrect for the canonical WorkerCoordinator lineage as a whole: after terminal SV001, a different admitted downstream task such as `SHWP-SV002-ORG-RUNTIME-ACTIVATION-001` must be able to advance the same WorkerCoordinator generation without creating a new authority epoch or parallel WorkerCoordinator.
+
+The existing v1 portable state is therefore extended compatibly with `checked_out_task_ids`:
+
+```text
+one portable authority epoch
++ one monotonically increasing WorkerCoordinator generation
++ one atomic checkout per distinct task package
++ no second checkout for the same task id
++ no parallel WorkerCoordinator issuance
+```
+
+Legacy v1 state that has `checkout_count` and `last_task_id` but no `checked_out_task_ids` is migrated in memory by treating `last_task_id` as already checked out. Generation is never reset. The historical terminal SV001 package remains globally non-checkoutable because it is not `HANDOFF_READY`, while a different clean `HANDOFF_READY` task can lawfully receive the next fencing token on the same portable authority lineage.
+
+This change does not itself package, admit, or execute SV002. It only removes the erroneous global one-task lifetime limit from the existing portable WorkerCoordinator so downstream same-device integration can reuse the canonical authority path. Authentic SV002 execution remains separately gated by its existing request, task admission, InTr/Interlock transition semantics, TV/TVC requirements, subordinate StegOS execution, and task-specific receipt.
+
+README impact: MATERIAL. The repository README is updated in the same change set because supported portable WorkerCoordinator lifecycle/failure behavior changes from one checkout total to one checkout per distinct admitted task while preserving sequential generation and duplicate-task rejection.
