@@ -218,6 +218,14 @@ StegIndex composed-fragment discovery:
   commit: 051bece05afda4fd0bef85af46ce7ab68c60d56c
   run: 34000847936
   result: SUCCESS
+
+README impact worker-admission preflight:
+  PR: 1023
+  validated head: e9eb525621e545588b704a5db06223c61662e31d
+  merge: f62bf7094ef8028e425394397bd52522a17934cb
+  organization control-plane run: 34001225776 SUCCESS
+  cross-task coordination run: 34001225834 SUCCESS
+  heartbeat worker run: 34001225851 SUCCESS
 ```
 
 These are source/validation facts only and are not runtime-event or product-activation evidence.
@@ -252,7 +260,7 @@ Core source implementation: VALIDATED.
 Composed canonical ledger: VALIDATED.
 Subject-bound resident-request migration: PARTIAL / ACTIVE.
 StegIndex composed discovery: VALIDATED.
-README impact machine-preflight enforcement: SOURCE IMPLEMENTED / VALIDATION PENDING.
+README impact machine-preflight enforcement: MERGED / VALIDATED.
 Ecosystem adoption: NOT COMPLETE.
 Runtime activation claims created by this coordination work: NONE.
 
@@ -260,15 +268,14 @@ Existing runtime activation, WorkerCoordinator execution, sovereign inference, H
 
 ## Remaining machine work
 
-1. validate and merge README impact machine-preflight enforcement, then replace `VALIDATION PENDING` above with exact evidence;
-2. inspect remaining canonical handoffs for shared predicates beyond `resident_request_consumed`, beginning with resident-presence/runtime-observation and common claim/fence/evidence predicates;
-3. establish subject identity before any shared registration;
-4. register only genuinely reusable producer/evidence relationships and exact gaps;
-5. bind additional session/build consumers that still read an incomplete coordination slice;
-6. register active claims/producers where canonical ownership records exist;
-7. validate each migration deterministically;
-8. evaluate tag/release only after ecosystem-adoption criteria are actually satisfied;
-9. after actual release/tag, verify governed propagation requirements for `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `admissibility-wiki`, and `stegguardian-wiki`.
+1. inspect remaining canonical handoffs for shared predicates beyond `resident_request_consumed`, beginning with resident-presence/runtime-observation and common claim/fence/evidence predicates;
+2. establish subject identity before any shared registration;
+3. register only genuinely reusable producer/evidence relationships and exact gaps;
+4. bind additional session/build consumers that still read an incomplete coordination slice;
+5. register active claims/producers where canonical ownership records exist;
+6. validate each migration deterministically;
+7. evaluate tag/release only after ecosystem-adoption criteria are actually satisfied;
+8. after actual release/tag, verify governed propagation requirements for `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `admissibility-wiki`, and `stegguardian-wiki`.
 
 ## Completion and archive rule
 
