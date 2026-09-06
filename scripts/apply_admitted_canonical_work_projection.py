@@ -79,7 +79,7 @@ def project(registry: dict[str, Any], ingress: dict[str, Any], consumption: dict
     for ref in (ingress_ref, consumption_ref):
         if ref not in evidence:
             evidence.append(ref)
-    task["allowed_next_transitions"] = ["CLAIMABLE", "BLOCKED", "RECONCILIATION_REQUIRED"]
+    task["allowed_next_transitions"] = ["CLAIMABLE", "RECONCILIATION_REQUIRED"]
 
     proposed["generation"] = int(registry.get("generation", 0)) + 1
     proposed["status"] = "AUTHENTIC_INGRESS_PROJECTED_PRE_EXECUTION_RECONCILIATION_PENDING"
