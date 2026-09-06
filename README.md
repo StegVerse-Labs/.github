@@ -165,8 +165,6 @@ Cross-task evidence predicates may require not only that a receipt field exists,
 
 This distinction is required for evidence such as `terminal=true`, exact WorkerCoordinator claim identity, exact fencing token, or other values where field presence alone is not proof of the predicate. A receipt containing `terminal=false` therefore cannot satisfy a predicate merely because `terminal` exists. Dotted nested paths such as `claim.fence` are resolved deterministically. Exact-value qualification remains evidence-only and grants no execution, admission, claim, fence, transition, credential, custody, publication, runtime truth, or other authority.
 
-### Resident WorkerCoordinator self-heal binding parity
-
 ### Native heartbeat carrier CLI entrypoint
 
 The optional resident sampler/persistence observer is installed through the
@@ -188,7 +186,11 @@ oscillator observations with an increasing epoch and the canonical 10 ms /
 100 Hz, observation-only, `OSCILLATOR_ONLY` invariants. Registration without
 observed progression fails closed and cannot be reported as live runtime.
 
+### Resident WorkerCoordinator self-heal binding parity
+
 The canonical HeartBeat carrier may supervise the **existing** resident WorkerCoordinator process when that process disappears, but this supervision does not create a second worker or grant task authority. A self-healed WorkerCoordinator must receive the same approved, non-secret local repository/runtime bindings as the canonical worker service so restored process presence does not silently degrade into a worker that is alive but unable to resolve already-local StegVerse dependencies.
+
+A live PID is not sufficient evidence that the WorkerCoordinator is healthy. On each existing HB-scale supervision visit, the self-heal path reuses the canonical runtime-presence freshness predicate. If an existing WorkerCoordinator PID is alive but its task-capable cycle is stale or no longer task-capable, the carrier-side supervision reuses the established controlled process-termination helper, recycles only that WorkerCoordinator process, and requires a new task-capable worker tick before reporting repaired presence. The HB32 oscillator and carrier remain running and non-authorizing throughout; this recovery does not create a second worker, scheduler, runtime, claim/fence path, or transition authority.
 
 Self-heal propagation therefore preserves the canonical worker service's local bindings for StegIndex, TV/TVC, Master Records, StegCore, StegOS, KV, Site, TT/RTG/GTG/AE, resident source manifests, and other explicitly allowlisted local roots. Hosted runtime variables and token/secret/password/API-key/private-key/credential variables remain excluded. TV/TVC remains the credential authority; the carrier remains non-authorizing; WorkerCoordinator and InTr continue to perform their existing independent admission and transition checks.
 
