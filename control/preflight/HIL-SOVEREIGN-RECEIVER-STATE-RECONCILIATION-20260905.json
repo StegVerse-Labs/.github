@@ -1,0 +1,90 @@
+{
+  "schema": "stegverse.machine-preflight/v1",
+  "preflight_id": "HIL-SOVEREIGN-RECEIVER-STATE-RECONCILIATION-20260905",
+  "task_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "reconcile/hil-same-device-runtime-state-20260905",
+  "canonical_handoff": "docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_MIRROR_HANDOFF.md",
+  "executable_handoff": "handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json",
+  "task_registry_refs": [
+    "control/worker-registry.d/hil-sovereign-receiver-001.json",
+    "control/task-vectors/SHWP-HIL-SOVEREIGN-RECEIVER-001.json"
+  ],
+  "master_records_refs": [
+    "StegVerse-Labs/Site/docs/HIL_FIRST_MASTER_RECORD_RELEASE_PREPARATION.md",
+    "StegVerse-Labs/Site/docs/HIL_MASTER_RECORD_RELEASE_CONTRACT.md"
+  ],
+  "cross_task_coordination_ref": "control/cross-task-coordination.json",
+  "resolved_state": {
+    "canonical_runtime_predicate": "PRED-RESIDENT-REQUEST-CONSUMED-HIL-SOVEREIGN-RECEIVER-002",
+    "canonical_runtime_predicate_state": "UNKNOWN",
+    "worker_registry_state": "HANDOFF_READY",
+    "worker_archive_eligible": false,
+    "master_record_release_ready": false,
+    "authentic_runtime_execution_observed": false,
+    "concurrent_canonical_handoff_reconciliation": "StegVerse-Labs/.github@2485667fb8c3c79c2e802beeb1640c32bf5d8a0c",
+    "concurrent_handoff_state": "SAME_DEVICE_SOURCE_INTEGRATION_VALIDATION_PENDING"
+  },
+  "reused_evidence": [
+    "StegVerse-Labs/StegOS#179 closed completed: same-device LEASE_OPEN, public observation downstream",
+    "StegVerse-Labs/StegOS@95cb63a823ca86d6a04c44ef5140961ba9161d6a same-device HIL LEASE_OPEN source",
+    "StegVerse-Labs/StegOS/docs/HIL_ESRL_INTAKE_MATERIALIZATION_MIRROR_HANDOFF.md positive same-device LEASE_OPEN implementation",
+    "StegVerse-Labs/.github#889 closed completed",
+    "StegVerse-Labs/.github#889 comment 5546490563: same-device HIL LEASE_OPEN and consumer/acceptance integration ported to main",
+    "StegVerse-Labs/.github@2485667fb8c3c79c2e802beeb1640c32bf5d8a0c canonical handoff reconciliation",
+    "workers/hil_esrl_runtime_bridge.py existing same-device runtime implementation",
+    "control/worker-registry.d/hil-sovereign-receiver-001.json existing HANDOFF_READY registration"
+  ],
+  "collision_resolution": {
+    "concurrent_handoff_mutation_detected": true,
+    "concurrent_handoff_mutation_reused": true,
+    "local_duplicate_handoff_mutation_dropped": true,
+    "remaining_change_scope": [
+      "tests/test_hil_sovereign_receiver_worker_registration.py",
+      "tests/test_targeted_execution_entrypoint_bindings.py",
+      "control/preflight/HIL-SOVEREIGN-RECEIVER-STATE-RECONCILIATION-20260905.json"
+    ]
+  },
+  "proposed_mutation": {
+    "kind": "VALIDATION_AND_EVIDENCE_RECONCILIATION_ONLY",
+    "paths": [
+      "tests/test_hil_sovereign_receiver_worker_registration.py",
+      "tests/test_targeted_execution_entrypoint_bindings.py"
+    ],
+    "runtime_code_change": false,
+    "authority_change": false,
+    "credential_change": false,
+    "interface_change": false,
+    "dependency_change": false,
+    "failure_behavior_change": false,
+    "new_capability": false
+  },
+  "readme_impact": {
+    "readme_impact_required": true,
+    "material_function_change": false,
+    "readme_updated_in_change_set": false,
+    "readme_path": "README.md",
+    "no_readme_update_reason": "The remaining mutation updates deterministic assertions to the already-merged canonical same-device HIL handoff. It does not alter runtime behavior, interfaces, authority, evidence production, prerequisites, dependencies, failure behavior, or capability meaning. The actual behavior and canonical handoff were changed independently before this validation reconciliation; this change only prevents tests from enforcing superseded state.",
+    "evidence_refs": [
+      "README.md#Functional Change / README Invariant",
+      "StegVerse-Labs/StegOS#179",
+      "StegVerse-Labs/.github#889",
+      "StegVerse-Labs/.github@2485667fb8c3c79c2e802beeb1640c32bf5d8a0c",
+      "workers/hil_esrl_runtime_bridge.py",
+      "control/worker-registry.d/hil-sovereign-receiver-001.json"
+    ],
+    "readme_impact_complete": true
+  },
+  "collision_check": {
+    "duplicate_runtime_implementation": false,
+    "duplicate_handoff_mutation": false,
+    "new_predicate_required": false,
+    "new_worker_required": false,
+    "new_receiver_required": false,
+    "new_gateway_required": false,
+    "new_master_records_authority_required": false,
+    "new_tvc_authority_required": false
+  },
+  "verdict": "PASS",
+  "authority_effect": "NONE_PREFLIGHT_ONLY"
+}
