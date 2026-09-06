@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0.0",
+  "registry_fragment_type": "stegverse_session_work_claim_registry_fragment",
+  "repository": "StegVerse-Labs/.github",
+  "claims": [
+    {
+      "claim_id": "HB32-SELF-HEAL-STARTUP-GRACE-002",
+      "session_worker_id": "chatgpt:hb32-self-heal-startup-grace-002",
+      "task_id": "HB32-SELF-HEAL-STARTUP-GRACE-002",
+      "originating_goal": "Repair the existing HB32 carrier-owned WorkerCoordinator self-heal startup race without creating a new heartbeat, oscillator, scheduler, runtime, worker, claim/fence mechanism, or credential path.",
+      "repository": "StegVerse-Labs/.github",
+      "branch": "fix/hb32-self-heal-startup-grace",
+      "role": "IMPLEMENTATION",
+      "state": "CLAIMED_FOR_IMPLEMENTATION",
+      "normalized_work_key": "hb32-self-heal-startup-grace-002",
+      "dependency_surface_keys": [
+        "heartbeat:hb32:carrier-self-heal",
+        "workercoordinator:resident:start-first-tick"
+      ],
+      "governing_dependency_keys": [
+        "docs/RESIDENT_WORKER_SELF_HEAL_MIRROR_HANDOFF.md",
+        "receipts/preflight/HB32-SELF-HEAL-STARTUP-GRACE-002.json"
+      ],
+      "incidental_dependency_keys": [
+        "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+        "RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002"
+      ],
+      "claimed_paths": [
+        "scripts/repair_resident_worker_presence.py",
+        "tests/test_hb32_self_heal_startup_grace.py",
+        "README.md",
+        "docs/HB32_SELF_HEAL_STARTUP_GRACE_MIRROR_HANDOFF.md",
+        "receipts/preflight/HB32-SELF-HEAL-STARTUP-GRACE-002.json"
+      ],
+      "handoff": "docs/HB32_SELF_HEAL_STARTUP_GRACE_MIRROR_HANDOFF.md",
+      "claim_created_at": "2026-09-06T07:48:00-05:00",
+      "claim_expires_when": "Release after exact-head validation and merge; source/CI must not be promoted to authentic resident runtime evidence.",
+      "expected_evidence": [
+        "machine preflight PASS with README impact complete",
+        "newly spawned live WorkerCoordinator is retained across first-tick timeout",
+        "same pending PID is rechecked without duplicate spawn",
+        "tick advancement plus freshness is required before presence",
+        "previously proven stale WorkerCoordinator still recycles through PR #1084 semantics",
+        "Heartbeat Worker Project exact-head PASS",
+        "organization control-plane exact-head PASS"
+      ],
+      "collision_boundaries": [
+        "Reuse HB32 independent oscillator and existing HeartbeatRuntime",
+        "Reuse existing WorkerCoordinator and carrier self-heal",
+        "Do not create another scheduler/runtime/worker",
+        "Do not mint or steal claim/fence authority",
+        "Do not infer HIL request consumption or receiver readiness from source/CI",
+        "TV/TVC remains credential authority",
+        "GitHub token runtime authority remains NONE"
+      ],
+      "canonical_task_marks_render_critical": false,
+      "distinct_support_role": false,
+      "credential_authority": "TV/TVC",
+      "credential_requirement": "NONE",
+      "github_token_runtime_authority": "NONE",
+      "non_tv_tvc_secret_or_token_used": false,
+      "authority_effect": false,
+      "activation_effect": false,
+      "archive_eligible": false
+    }
+  ]
+}
