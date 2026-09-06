@@ -105,6 +105,7 @@ CONSUMERS = (
     ("glm53_sovereign_lane", "scripts/consume_glm53_sovereign_lane_request.py"),
     ("erl_ai_economic_transparency_review", "scripts/consume_erl_ai_economic_transparency_review_request.py"),
     ("org_claim_allocator", "scripts/consume_org_claim_allocator_request.py"),
+    ("native_email_action_monitor", "scripts/consume_native_email_action_monitor_request.py"),
     ("canonical_work_coordination", "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py"),
     ("runtime_profile_map", "control/resident-execution-request.d/consume-runtime-profile-map-build.py"),
     ("runtime_profile_map_custody", "control/resident-execution-request.d/consume-runtime-profile-map-custody.py"),
@@ -235,7 +236,7 @@ def dispatch(source_root: Path, runtime_root: Path, *, runner=subprocess.run, en
     exceptions = [row["consumer"] for row in outcomes if row["state"] == "DISPATCH_EXCEPTION"]
     accepted_wait_states = {
         "NO_REQUEST", "ALREADY_CONSUMED", "WAITING_FOR_CUSTODY_PACKAGE", "WAITING_FOR_MASTER_RECORDS_CUSTODY", "WAITING_FOR_RECONCILIATION", "WAITING_FOR_TRANSITION_READINESS",
-        "MASTER_RECORDS_LOCAL_ROOT_NOT_MATERIALIZED", "MASTER_RECORDS_CUSTODY_CONSUMER_NOT_MATERIALIZED", "MASTER_RECORDS_PROJECTOR_NOT_MATERIALIZED", "ATTEMPT_RECORDED", "COMPLETED",
+        "MASTER_RECORDS_LOCAL_ROOT_NOT_MATERALIZED", "MASTER_RECORDS_CUSTODY_CONSUMER_NOT_MATERIALIZED", "MASTER_RECORDS_PROJECTOR_NOT_MATERIALIZED", "ATTEMPT_RECORDED", "COMPLETED",
     }
     request_failures = [row["consumer"] for row in outcomes if row["state"] not in accepted_wait_states]
     receipt = {
