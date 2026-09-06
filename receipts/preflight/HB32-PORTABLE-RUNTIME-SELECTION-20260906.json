@@ -4,6 +4,7 @@
   "goal_id": "SOVEREIGN-RUNTIME-SAME-DEVICE-CONTINUATION",
   "state": "PASS",
   "evaluated_at": "2026-09-06T07:24:00-05:00",
+  "reconciled_at": "2026-09-06T07:42:00-05:00",
   "scope": {
     "repository": "StegVerse-Labs/.github",
     "mutation_paths": [
@@ -16,7 +17,8 @@
     ]
   },
   "canonical_state_resolution": {
-    "main_sha": "08e0ce7c0a131620481019054e6163afac742cee",
+    "initial_main_sha": "08e0ce7c0a131620481019054e6163afac742cee",
+    "reconciled_main_sha": "ec02bdb9cec6221fb54fffc184a1cf21fa43f551",
     "heartbeat_semantics": "docs/SOVEREIGN_HEARTBEAT_DEPLOYMENT_MIRROR_HANDOFF.md",
     "heartbeat_runtime_separation": "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md",
     "resident_carrier": "docs/CANONICAL_RESIDENT_CARRIER_MIRROR_HANDOFF.md",
@@ -49,7 +51,7 @@
   "defect": {
     "code": "NATIVE_PROCESS_PRESENCE_USED_AS_UNIVERSAL_RUNTIME_AVAILABILITY",
     "evidence": [
-      "heartbeat_runtime/runtime_presence_projection.py currently recognizes runtime_alive only from continuously active/supervised native carrier+worker process evidence",
+      "heartbeat_runtime/runtime_presence_projection.py recognized runtime_alive only from continuously active/supervised native carrier+worker process evidence",
       "docs/SOVEREIGN_HEARTBEAT_DEPLOYMENT_MIRROR_HANDOFF.md explicitly makes continuous process and resident sampler unnecessary for HB32 progression",
       "docs/WORKERCOORDINATOR_PORTABLE_IPHONE_EXECUTION_MIRROR_HANDOFF.md defines CURRENT_USER_IPHONE portable WorkerCoordinator execution without an always-on external host",
       "docs/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_MIRROR_HANDOFF.md already records authentic iOS device-local execution and says the remaining blocker is not generic runtime absence"
@@ -67,7 +69,11 @@
   "collision_review": {
     "matching_open_pr_observed": false,
     "duplicate_runtime_implementation_required": false,
-    "existing_sv002_portable_preflight_reused": "receipts/preflight/sv002-current-iphone-portable-consumer-20260905.json"
+    "existing_sv002_portable_preflight_reused": "receipts/preflight/sv002-current-iphone-portable-consumer-20260905.json",
+    "concurrent_main_advance_observed": true,
+    "concurrent_main_overlap": ["README.md"],
+    "overlap_reconciled_without_overwriting_newer_runtime_work": true,
+    "concurrent_self_heal_and_native_email_changes_preserved": true
   },
   "readme_impact": {
     "required": true,
