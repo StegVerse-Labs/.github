@@ -22,8 +22,10 @@ from heartbeat_runtime.runtime_presence_projection import project
 
 PROCESS_RECEIPT = Path("receipts/sovereign-host/ephemeral-process.latest.json")
 PRESENCE_RECEIPT = Path("receipts/sovereign-host/runtime-presence.latest.json")
+PRESENCE_MR_INTAKE_RECEIPT = Path("receipts/sovereign-host/runtime-presence-master-records-intake.latest.json")
 WORKER_STATE = Path("control/worker-runtime-state.json")
 WORKER_RUNNER = Path("scripts/run_worker_runtime.py")
+MR_IMPORTER = Path("scripts/intake_resident_runtime_presence.py")
 HOSTED_ENV = ("GITHUB_ACTIONS", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "CF_PAGES", "CLOUDFLARE_WORKERS")
 FORBIDDEN_NAME_PARTS = ("TOKEN", "SECRET", "PASSWORD", "PASSWD", "API_KEY", "PRIVATE_KEY", "CREDENTIAL")
 SAFE_ENV = {
@@ -71,6 +73,20 @@ def _clean_env(runtime_root: Path) -> dict[str, str]:
         if any(part in upper for part in FORBIDDEN_NAME_PARTS):
             env.pop(name, None)
     return env
+
+
+def _intake_env() -> dict[str, str]:
+    allowed = ("HOME", "PATH", "PYTHONPATH", "LANG", "LC_ALL", "TMPDIR", "XDG_CONFIG_HOME", "XDG_STATE_HOME")
+    env = {name: os.environ[name] for name in allowed if os.environ.get(name)}
+    for name in list(env):
+        if any(part in name.upper() for part in FORBIDDEN_NAME_PARTS):
+            env.pop(name, None)
+    return env
+
+
+def _write_json(path: Path, value: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
 def _runtime_tick(runtime_root: Path) -> int:
@@ -130,9 +146,78 @@ def _supervision_receipt(
 def _persist_presence_projection(runtime_root: Path) -> dict[str, Any]:
     projection = project(runtime_root)
     path = runtime_root / PRESENCE_RECEIPT
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(projection, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    _write_json(path, projection)
     return projection
+
+
+def _persist_presence_master_records_intake(runtime_root: Path) -> dict[str, Any]:
+    """Attempt local Master Records custody without making custody a presence prerequisite."""
+    presence_path = runtime_root / PRESENCE_RECEIPT
+    output_path = runtime_root / PRESENCE_MR_INTAKE_RECEIPT
+    mr_root_raw = os.environ.get("STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT", "").strip()
+    base = {
+        "schema": "stegverse.runtime-presence-master-records-intake/v1",
+        "presence_receipt_ref": str(PRESENCE_RECEIPT),
+        "master_records_root": mr_root_raw or None,
+        "network_fetch_performed": False,
+        "repository_writeback_performed": False,
+        "cross_task_reuse_authorized": False,
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": "NONE",
+        "heartbeat_grants_execution_authority": False,
+        "authority_effect": "NONE_CUSTODY_HANDOFF_ONLY",
+    }
+    if not presence_path.is_file():
+        result = {**base, "state": "PRESENCE_RECEIPT_NOT_MATERIALIZED"}
+        _write_json(output_path, result)
+        return result
+    if not mr_root_raw:
+        result = {**base, "state": "MASTER_RECORDS_ROOT_NOT_DECLARED"}
+        _write_json(output_path, result)
+        return result
+    mr_root = Path(mr_root_raw).expanduser().resolve()
+    importer = mr_root / MR_IMPORTER
+    if not importer.is_file():
+        result = {**base, "state": "MASTER_RECORDS_IMPORTER_NOT_MATERIALIZED", "master_records_root": str(mr_root)}
+        _write_json(output_path, result)
+        return result
+    try:
+        completed = subprocess.run(
+            [sys.executable, str(importer), "--repo-root", str(mr_root), "--source", str(presence_path)],
+            cwd=str(mr_root),
+            env=_intake_env(),
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=30,
+        )
+        parsed = json.loads(completed.stdout.strip()) if completed.stdout.strip() else {}
+        valid = (
+            completed.returncode == 0
+            and isinstance(parsed, dict)
+            and parsed.get("state") == "COMPLETED"
+            and parsed.get("cross_task_reuse_authorized") is False
+            and parsed.get("credential_authority") == "TV/TVC"
+            and parsed.get("github_token_runtime_authority") == "NONE"
+            and parsed.get("authority_effect") == "NONE_INTAKE_RECEIPT_ONLY"
+        )
+        result = {
+            **base,
+            "state": "COMPLETED" if valid else "FAIL_CLOSED_INVALID_MASTER_RECORDS_INTAKE",
+            "master_records_root": str(mr_root),
+            "importer_ref": str(MR_IMPORTER),
+            "returncode": completed.returncode,
+            "custody_id": parsed.get("custody_id") if valid else None,
+            "custody_ref": parsed.get("custody_ref") if valid else None,
+            "runtime_root": parsed.get("runtime_root") if valid else None,
+            "resident_node_id": parsed.get("resident_node_id") if valid else None,
+            "present_worker_runtime_observed": parsed.get("present_worker_runtime_observed") if valid else None,
+            "stderr_tail": completed.stderr[-1000:],
+        }
+    except Exception as exc:
+        result = {**base, "state": "FAIL_CLOSED_MASTER_RECORDS_INTAKE_EXCEPTION", "master_records_root": str(mr_root), "error": type(exc).__name__}
+    _write_json(output_path, result)
+    return result
 
 
 def ensure_worker_presence(runtime_root: Path, *, carrier_pid: int, interval_ms: float = 10.0, timeout: float = 3.0) -> dict[str, Any]:
@@ -165,6 +250,7 @@ def ensure_worker_presence(runtime_root: Path, *, carrier_pid: int, interval_ms:
         receipt_path.parent.mkdir(parents=True, exist_ok=True)
         receipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         presence = _persist_presence_projection(runtime_root)
+        intake = _persist_presence_master_records_intake(runtime_root)
         return {
             "state": "WORKER_ALREADY_PRESENT",
             "worker_repair_attempted": False,
@@ -172,6 +258,8 @@ def ensure_worker_presence(runtime_root: Path, *, carrier_pid: int, interval_ms:
             "worker_pid": existing_worker_pid,
             "present_worker_runtime_observed": presence.get("resident", {}).get("present_worker_runtime_observed") is True,
             "presence_receipt_ref": str(PRESENCE_RECEIPT),
+            "master_records_intake_state": intake.get("state"),
+            "master_records_intake_receipt_ref": str(PRESENCE_MR_INTAKE_RECEIPT),
             "heartbeat_grants_execution_authority": False,
             "worker_coordinator_retains_admission_authority": True,
             "authority_effect": "NONE_SUPERVISION_ONLY",
@@ -215,6 +303,7 @@ def ensure_worker_presence(runtime_root: Path, *, carrier_pid: int, interval_ms:
     receipt_path.parent.mkdir(parents=True, exist_ok=True)
     receipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     presence = _persist_presence_projection(runtime_root)
+    intake = _persist_presence_master_records_intake(runtime_root)
     return {
         "state": "WORKER_REPAIRED",
         "worker_repair_attempted": True,
@@ -223,6 +312,8 @@ def ensure_worker_presence(runtime_root: Path, *, carrier_pid: int, interval_ms:
         "worker_tick_evidence": tick,
         "present_worker_runtime_observed": presence.get("resident", {}).get("present_worker_runtime_observed") is True,
         "presence_receipt_ref": str(PRESENCE_RECEIPT),
+        "master_records_intake_state": intake.get("state"),
+        "master_records_intake_receipt_ref": str(PRESENCE_MR_INTAKE_RECEIPT),
         "request_drain_expected_on_worker_start": True,
         "heartbeat_grants_execution_authority": False,
         "worker_coordinator_retains_admission_authority": True,
