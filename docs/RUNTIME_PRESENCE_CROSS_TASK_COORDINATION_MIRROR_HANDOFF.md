@@ -70,16 +70,32 @@ Presence is not request consumption, task execution, claim/fence proof, transiti
 
 Master Records remains authority for authentic retained observed reality. No current authentic runtime-presence event was available during the original or corrective preflight that established a stable shared `runtime_root`/`resident.node_id` binding across the proposed consumers.
 
+A bounded local custody path now reuses the existing presence producer and an already-local `master-records/orchestration` checkout. After the carrier-owned supervision path emits `runtime-presence.latest.json`, `scripts/repair_resident_worker_presence.py` may invoke `master-records/orchestration/scripts/intake_resident_runtime_presence.py` only when `STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT` is already declared and the importer exists locally.
+
+The custody handoff:
+
+- performs no network fetch or repository writeback;
+- propagates no GitHub token, API key, password, private key, or credential value;
+- preserves TV/TVC as credential authority;
+- records its local result at `receipts/sovereign-host/runtime-presence-master-records-intake.latest.json`;
+- retains the exact source observation, `runtime_root`, and `resident.node_id` when present;
+- explicitly sets `cross_task_reuse_authorized=false`;
+- creates no task/correlation identity or task effect;
+- does not make custody a prerequisite for emitting or retaining the original presence receipt.
+
+This local custody path supplies reconstructable subject-identity evidence for later review. It does not itself satisfy the deferred cross-task binding requirement. Remote repository visibility is also a separate persistence concern; local custody is not repository writeback.
+
 ## README completeness
 
-The corrective change is material because it narrows evidence-reuse semantics. `README.md` is updated in the same change set to state explicitly that runtime-presence sharing is currently staged/deferred until exact runtime-root/node identity is proven.
+The original corrective change was material because it narrowed evidence-reuse semantics. The local Master Records custody addition is also material because it adds an evidence-retention integration boundary. `README.md` is updated in the same change set and continues to state that custody does not authorize shared reuse.
 
 ## Remaining machine work
 
 1. reuse the existing runtime-presence producer; do not create another probe;
-2. when authentic `runtime-presence.latest.json` evidence exists, extract stable `runtime_root` and `resident.node_id` identity;
-3. prove which consumers target that exact same subject;
-4. only then promote a subject-bound predicate into the canonical composed coordination ledger;
-5. continue request-specific execution/consumption predicates independently.
+2. observe an authentic `runtime-presence.latest.json` and, when the already-local Master Records root is available, retain it through the bounded custody importer;
+3. extract stable `runtime_root` and `resident.node_id` identity from authentic retained evidence;
+4. prove which consumers target that exact same subject;
+5. only then promote a subject-bound predicate into the canonical composed coordination ledger;
+6. continue request-specific execution/consumption predicates independently.
 
 No user action is required.
