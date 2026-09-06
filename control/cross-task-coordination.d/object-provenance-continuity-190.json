@@ -11,7 +11,8 @@
       "required_predicates": [
         "PRED-OBJECT-PROVENANCE-SOURCE-MERGED-190",
         "PRED-OBJECT-PROVENANCE-DISPLAYED-SURFACE-INGRESS-MERGED-190",
-        "PRED-OBJECT-PROVENANCE-MASTER-RECORDS-CUSTODY-MERGED-190"
+        "PRED-OBJECT-PROVENANCE-MASTER-RECORDS-CUSTODY-MERGED-190",
+        "PRED-OBJECT-PROVENANCE-CANONICAL-WORK-REQUEST-STAGED-190"
       ],
       "mutation_scope": {
         "repositories": ["StegVerse-Labs/StegOS"],
@@ -26,17 +27,19 @@
         "material_function_change": false,
         "readme_updated_in_change_set": false,
         "readme_path": "StegVerse-Labs/StegOS/README.md",
-        "no_readme_update_reason": "The displayed-surface ingress binding was already merged in StegOS PR #193 after an evidence-supported README completeness determination. The next admissible step is authentic execution of that already-merged behavior, not a new repository behavior, interface, governance, authority, evidence, prerequisite, dependency, failure, or capability change.",
+        "no_readme_update_reason": "This reconciliation records already-merged CanonicalWork resident-request staging from StegVerse-Labs/.github PR #1051 and does not change StegOS behavior. The next admissible step remains authentic execution of already-merged behavior, not a new repository behavior, interface, governance, authority, evidence, prerequisite, dependency, failure, or capability change.",
         "evidence_refs": [
           "StegVerse-Labs/StegOS/docs/OBJECT_PROVENANCE_CONTINUITY_MIRROR_HANDOFF.md#readme-completeness-preflight",
           "StegVerse-Labs/StegOS#193@c3df97861d281dceae06fb1cf5d2de9f669289f7",
-          "StegVerse-Labs/.github/README.md#functional-change--readme-invariant"
+          "StegVerse-Labs/.github#1051",
+          "StegVerse-Labs/.github/README.md#canonical-work-task-ingress"
         ],
-        "disposition": "NONMATERIAL_RUNTIME_EXECUTION_OF_ALREADY_MERGED_BEHAVIOR"
+        "disposition": "NONMATERIAL_COORDINATION_RECONCILIATION"
       },
       "canonical_owner_refs": [
         "StegVerse-Labs/StegOS#190",
-        "StegVerse-Labs/StegOS/docs/OBJECT_PROVENANCE_CONTINUITY_MIRROR_HANDOFF.md"
+        "StegVerse-Labs/StegOS/docs/OBJECT_PROVENANCE_CONTINUITY_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/.github#1026"
       ]
     }
   ],
@@ -107,6 +110,52 @@
       "consumers": ["STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190"],
       "canonical_source_refs": [
         "master-records/orchestration/docs/OBJECT_PROVENANCE_CUSTODY_MIRROR_HANDOFF.md"
+      ]
+    },
+    {
+      "predicate_id": "PRED-OBJECT-PROVENANCE-CANONICAL-WORK-REQUEST-STAGED-190",
+      "semantic_predicate_id": "object_provenance_canonical_work_request_staged",
+      "subject_binding": {
+        "repository": "StegVerse-Labs/.github",
+        "task_id": "STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190",
+        "request_id": "RESIDENT-EXEC-CANONICAL-WORK-OBJECT-PROVENANCE-CONTINUITY-190"
+      },
+      "state": "SATISFIED",
+      "description": "The existing registered-task CanonicalWork ingress path has a non-authorizing resident request staged for the object-provenance task and the existing resident consumer includes its fixed request specification.",
+      "authoritative_producer": "StegVerse-Labs/.github",
+      "required_schema": "stegverse.resident-execution-request/v1",
+      "required_scope": "registered canonical task resident request staging",
+      "required_execution_instance": "StegVerse-Labs/.github#1051",
+      "max_age_seconds": null,
+      "required_fields": ["task_id", "request_id", "request_state", "consumer_binding", "authority_effect"],
+      "expected_output_ref": "StegVerse-Labs/.github/control/resident-execution-request.d/canonical-work-object-provenance-continuity-190.json",
+      "consumers": ["STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190"],
+      "canonical_source_refs": [
+        "StegVerse-Labs/.github/docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/.github/control/resident-execution-request.d/canonical-work-object-provenance-continuity-190.json",
+        "StegVerse-Labs/.github/control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py"
+      ]
+    },
+    {
+      "predicate_id": "PRED-OBJECT-PROVENANCE-CANONICAL-WORK-INGRESS-190",
+      "semantic_predicate_id": "object_provenance_canonical_work_ingress_observed",
+      "subject_binding": {
+        "task_id": "STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190",
+        "request_id": "RESIDENT-EXEC-CANONICAL-WORK-OBJECT-PROVENANCE-CONTINUITY-190"
+      },
+      "state": "UNKNOWN",
+      "description": "The staged resident request was authentically consumed and the existing Universal Interlock/InTr CanonicalWork path emitted task-specific ingress, consumption, and bootstrap receipts for this exact task.",
+      "authoritative_producer": "StegVerse-Labs/.github sovereign resident runtime + Universal Interlock/InTr",
+      "required_schema": "stegverse.canonical-work-bootstrap-request-consumption/v1",
+      "required_scope": "authentic task-specific CanonicalWork resident ingress",
+      "required_execution_instance": null,
+      "max_age_seconds": null,
+      "required_fields": ["state", "task_id", "request_sha256", "bootstrap_receipt_ref"],
+      "expected_output_ref": "receipts/sovereign-host/canonical-work-object-provenance-continuity-190-request-consumption.latest.json",
+      "consumers": ["STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190"],
+      "canonical_source_refs": [
+        "StegVerse-Labs/.github#1026",
+        "StegVerse-Labs/.github/docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md"
       ]
     },
     {
@@ -196,16 +245,60 @@
         "repository_validation": "PASS"
       },
       "authority_effect": "EVIDENCE_ONLY"
+    },
+    {
+      "evidence_id": "EVID-OBJECT-PROVENANCE-CANONICAL-WORK-REQUEST-STAGED-190",
+      "predicate_id": "PRED-OBJECT-PROVENANCE-CANONICAL-WORK-REQUEST-STAGED-190",
+      "subject_binding": {
+        "repository": "StegVerse-Labs/.github",
+        "task_id": "STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190",
+        "request_id": "RESIDENT-EXEC-CANONICAL-WORK-OBJECT-PROVENANCE-CONTINUITY-190"
+      },
+      "producer": "StegVerse-Labs/.github",
+      "ref": "StegVerse-Labs/.github#1051",
+      "schema": "stegverse.resident-execution-request/v1",
+      "scope": "registered canonical task resident request staging",
+      "execution_instance": "StegVerse-Labs/.github#1051",
+      "observed_at": "2026-09-05",
+      "fields": {
+        "task_id": "STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190",
+        "request_id": "RESIDENT-EXEC-CANONICAL-WORK-OBJECT-PROVENANCE-CONTINUITY-190",
+        "request_state": "REQUESTED",
+        "consumer_binding": "OBJECT_PROVENANCE_SPEC / canonical_work_coordination",
+        "authority_effect": "NONE_REQUEST_ONLY"
+      },
+      "authority_effect": "EVIDENCE_ONLY"
     }
   ],
   "gaps": [
+    {
+      "predicate_id": "PRED-OBJECT-PROVENANCE-CANONICAL-WORK-INGRESS-190",
+      "subject_binding": {
+        "task_id": "STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190",
+        "request_id": "RESIDENT-EXEC-CANONICAL-WORK-OBJECT-PROVENANCE-CONTINUITY-190"
+      },
+      "existing_evidence_refs": ["EVID-OBJECT-PROVENANCE-CANONICAL-WORK-REQUEST-STAGED-190"],
+      "rejected_because": ["REQUEST_STAGING_IS_NOT_RUNTIME_CONSUMPTION", "NO_AUTHENTIC_TASK_SPECIFIC_INGRESS_RECEIPT_OBSERVED"],
+      "missing_observation": "The existing sovereign resident dispatcher must consume the staged object-provenance CanonicalWork request and retain the task-specific request-consumption plus nested ingress/consumption/bootstrap receipts.",
+      "required_producer": "StegVerse-Labs/.github sovereign resident runtime + Universal Interlock/InTr",
+      "required_output_ref": "receipts/sovereign-host/canonical-work-object-provenance-continuity-190-request-consumption.latest.json",
+      "required_schema": "stegverse.canonical-work-bootstrap-request-consumption/v1",
+      "required_fields": ["state", "task_id", "request_sha256", "bootstrap_receipt_ref"],
+      "required_freshness": null,
+      "collision_refs": [],
+      "action_without_collision": "Use the already-staged request and existing canonical_work_coordination resident consumer; do not create another dispatcher, listener, scheduler, WorkerCoordinator, or task identity."
+    },
     {
       "predicate_id": "PRED-OBJECT-PROVENANCE-AUTHENTIC-INGRESS-190",
       "subject_binding": {
         "task_id": "STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190",
         "source_schema": "stegos.object_provenance_lineage.v1"
       },
-      "existing_evidence_refs": [],
+      "existing_evidence_refs": [
+        "EVID-OBJECT-PROVENANCE-SOURCE-MERGE-190",
+        "EVID-OBJECT-PROVENANCE-DISPLAYED-SURFACE-INGRESS-MERGE-190",
+        "EVID-OBJECT-PROVENANCE-MR-CUSTODY-MERGE-190"
+      ],
       "rejected_because": ["NO_QUALIFYING_AUTHENTIC_RUNTIME_EVIDENCE_OBSERVED"],
       "missing_observation": "A real displayed-surface source object must enter through the already-merged governed ingress adapter with real provider/conversation-event identity and a real ingress transition receipt.",
       "required_producer": "StegVerse-Labs/StegOS governed Interlock/InTr ingress",
@@ -214,7 +307,7 @@
       "required_fields": ["lineage_id", "root_object_ids", "objects", "edges"],
       "required_freshness": null,
       "collision_refs": [],
-      "action_without_collision": "Execute the already-merged displayed-surface provenance ingress on one real capture with authentic conversation/provider event identity and a real ingress transition receipt; do not add another ingress adapter, transport, provenance authority, or README-only gate."
+      "action_without_collision": "After authentic CanonicalWork task ingress and WorkerCoordinator/Master Records pre-execution review, execute the already-merged displayed-surface provenance ingress on one real capture with authentic conversation/provider event identity and a real ingress transition receipt; do not add another ingress adapter, transport, provenance authority, or README-only gate."
     }
   ]
 }
