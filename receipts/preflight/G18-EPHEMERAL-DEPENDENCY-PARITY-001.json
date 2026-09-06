@@ -1,0 +1,96 @@
+{
+  "schema": "stegverse.session-build-preflight-receipt/v1",
+  "preflight_id": "G18-EPHEMERAL-DEPENDENCY-PARITY-001",
+  "goal": "Close the existing G18 same-host ephemeral fallback dependency parity gap so bootstrap eligibility, fresh native materialization, and local-only worker source refresh cannot report completeness while omitting scripts/run_sovereign_ephemeral_console.py.",
+  "state": "PASS_FUNCTIONAL_MUTATION_ADMISSIBLE",
+  "repository": "StegVerse-Labs/.github",
+  "base_commit": "7146b112e37781517e37f9815d5bb05a213b0677",
+  "resolved_sources": {
+    "cross_task_handoff": "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
+    "g18_handoff": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+    "oscillator_handoff": "docs/HEARTBEAT_OSCILLATOR_PRODUCER_MIRROR_HANDOFF.md",
+    "self_heal_handoff": "docs/RESIDENT_WORKER_SELF_HEAL_MIRROR_HANDOFF.md",
+    "g18_worker": "workers/sovereign_runtime_activation_worker.py",
+    "existing_ephemeral_fallback": "scripts/run_sovereign_ephemeral_console.py",
+    "bootstrap_eligibility": "scripts/bootstrap_sovereign_runtime.py::REQUIRED_SOURCE_FILES",
+    "fresh_materialization": "scripts/install_sovereign_heartbeat_service.py::COPY_FILES + post-materialization required set",
+    "local_source_refresh": "scripts/refresh_sovereign_worker_runtime_source.py::STATIC_FILES",
+    "master_records_runtime_presence": "master-records/orchestration:RUNTIME_PRESENCE_CUSTODY_MIRROR_HANDOFF.md",
+    "g18_cross_task_predicate": "control/cross-task-coordination.json resident_request_consumed / RESIDENT-EXEC-G18-RESUME-FENCE18-001",
+    "current_readme": "README.md"
+  },
+  "resolved_state": {
+    "heartbeat_progression": "OSCILLATOR_ONLY_10MS_100HZ",
+    "g18_claim_preserved": "SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18",
+    "g18_fencing_token_preserved": 18,
+    "g18_downstream_gate": false,
+    "g18_fallback_is_existing_canonical_solution": true,
+    "master_records_authority": "CUSTODY_AND_RECONSTRUCTION_ONLY",
+    "master_records_runtime_presence_cross_task_reuse_authorized": false,
+    "new_runtime_solution_required": false,
+    "new_heartbeat_required": false,
+    "new_oscillator_required": false,
+    "new_workercoordinator_required": false,
+    "new_scheduler_required": false,
+    "new_claim_or_fence_required": false,
+    "new_credential_path_required": false,
+    "second_user_operated_machine_required": false
+  },
+  "exact_gap": {
+    "state": "EXISTING_G18_EPHEMERAL_FALLBACK_NOT_GUARANTEED_BY_RESIDENT_SOURCE_COMPLETENESS_OR_PROPAGATION",
+    "evidence": [
+      "workers/sovereign_runtime_activation_worker.py resolves scripts/run_sovereign_ephemeral_console.py and automatically uses it after incomplete native activation proof.",
+      "scripts/bootstrap_sovereign_runtime.py::REQUIRED_SOURCE_FILES does not include scripts/run_sovereign_ephemeral_console.py.",
+      "scripts/install_sovereign_heartbeat_service.py::COPY_FILES and its post-materialization required set do not include scripts/run_sovereign_ephemeral_console.py.",
+      "scripts/refresh_sovereign_worker_runtime_source.py::STATIC_FILES does not include scripts/run_sovereign_ephemeral_console.py.",
+      "Therefore an otherwise accepted or refreshed resident runtime can contain the repaired G18 worker while lacking the already-canonical fallback dependency it is required to invoke."
+    ]
+  },
+  "collision_review": {
+    "open_pr_with_same_exact_dependency_repair": false,
+    "reuse_existing_runtime_solutions_first": true,
+    "g18_ownership_mutation_allowed": false,
+    "master_records_mutation_required": false,
+    "cross_task_new_predicate_required": false,
+    "runtime_truth_claimed_by_source_change": false
+  },
+  "admissible_machine_step": {
+    "action": "ADD_EXISTING_EPHEMERAL_FALLBACK_TO_BOOTSTRAP_ELIGIBILITY_FRESH_MATERIALIZATION_AND_LOCAL_SOURCE_REFRESH_COMPLETENESS_WITH_REGRESSION_TESTS",
+    "machine_executable_now": true,
+    "runtime_execution_claimed": false,
+    "activation_claimed": false
+  },
+  "readme_impact": {
+    "predicate": "README_IMPACT_RESOLVED",
+    "state": "README_UPDATE_REQUIRED_IN_CHANGE_SET",
+    "material_function_change": true,
+    "readme_update_required": true,
+    "readme_path": "README.md",
+    "readme_updated_in_change_set": false,
+    "determination": "MATERIAL_RUNTIME_DEPENDENCY_AND_FAILURE_BEHAVIOR_CHANGE",
+    "reason": "The repair changes what source completeness, fresh resident materialization, and local refresh guarantee about G18 runtime recovery availability. Operators and future autonomous sessions must be able to rely on the README to know that the existing same-host fallback is a required resident dependency rather than an optional repository-only script.",
+    "evidence_refs": [
+      "README.md#G18-same-host-sovereign-runtime-recovery",
+      "docs/SOVEREIGN_EPHEMERAL_CONSOLE_MIRROR_HANDOFF.md",
+      "workers/sovereign_runtime_activation_worker.py",
+      "scripts/bootstrap_sovereign_runtime.py",
+      "scripts/install_sovereign_heartbeat_service.py",
+      "scripts/refresh_sovereign_worker_runtime_source.py",
+      "72e80ce645858c02877277845ffe624cd71ec1e6",
+      "7146b112e37781517e37f9815d5bb05a213b0677"
+    ],
+    "readme_impact_complete": true
+  },
+  "authority": {
+    "heartbeat_grants_execution_authority": false,
+    "oscillator_grants_execution_authority": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "transition_authority": "INTERLOCK_INTR",
+    "credential_authority": "TV/TVC",
+    "master_records_authority": "OBSERVED_REALITY_CUSTODY_RECONSTRUCTION_ONLY",
+    "github_token_runtime_authority": "NONE",
+    "authority_effect": "NONE_PREFLIGHT_ONLY"
+  },
+  "runtime_execution_performed_by_preflight": false,
+  "network_fetch_performed_by_preflight": false
+}
