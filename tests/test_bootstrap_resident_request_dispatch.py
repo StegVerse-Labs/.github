@@ -27,6 +27,30 @@ install = importlib.util.module_from_spec(INSTALL_SPEC)
 INSTALL_SPEC.loader.exec_module(install)
 
 
+def write_carrier_receipt(runtime: Path) -> None:
+    path = runtime / "receipts/sovereign-host/carrier-activation.latest.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps({
+        "schema": "stegverse.sovereign-heartbeat-carrier-activation/v1",
+        "activation_scope": "CARRIER_ONLY",
+        "carrier_active": True,
+        "worker_start_attempted": False,
+        "worker_runtime_dependency_for_carrier_start": False,
+        "network_fetch_required": False,
+        "third_party_process_host_required": False,
+        "third_party_scheduler_required": False,
+        "github_runtime_dependency": False,
+        "credential_authority": "TV/TVC",
+        "credential_requirement": "NONE",
+        "heartbeat_progression_dependency": "OSCILLATOR_ONLY",
+        "heartbeat_period_ms": 10.0,
+        "heartbeat_reference_frequency_hz": 100.0,
+        "heartbeat_production_mode": "OSCILLATOR_PHASE_DRIVEN",
+        "canonical_runtime": "heartbeat_runtime.engine_v13.HeartbeatRuntime",
+        "carrier_progression_observation": {"observed": True, "first_epoch": 32, "last_epoch": 33},
+    }) + "\n", encoding="utf-8")
+
+
 class BootstrapResidentDispatchTests(unittest.TestCase):
     def test_bootstrap_source_contract_requires_dispatcher_and_consumers(self) -> None:
         required = {path.as_posix() for path in boot.REQUIRED_SOURCE_FILES}
@@ -48,7 +72,7 @@ class BootstrapResidentDispatchTests(unittest.TestCase):
             "scripts/consume_stegverse001_bounded_autonomy_request.py",
             "scripts/consume_one_shot_resident_stack_activation_request.py",
             "scripts/activate_resident_stack.py",
-    "scripts/continue_stegverse001_evidence_chain.py",
+            "scripts/continue_stegverse001_evidence_chain.py",
             "scripts/consume_healer_sovereign_scheduler_request.py",
             "scripts/consume_universal_governance_enforced_reference_request.py",
             "scripts/install_sovereign_worker_source_refresh_service.py",
@@ -56,6 +80,7 @@ class BootstrapResidentDispatchTests(unittest.TestCase):
             "scripts/run_stegverse001_activation_progression.py",
         ):
             self.assertIn(rel, required)
+        self.assertIn("scripts/install_sovereign_heartbeat_carrier.py", required)
 
     def test_native_materialization_copies_dispatcher_execution_dependencies(self) -> None:
         copied = set(install.COPY_FILES)
@@ -77,7 +102,7 @@ class BootstrapResidentDispatchTests(unittest.TestCase):
             "scripts/consume_stegverse001_bounded_autonomy_request.py",
             "scripts/consume_one_shot_resident_stack_activation_request.py",
             "scripts/activate_resident_stack.py",
-    "scripts/continue_stegverse001_evidence_chain.py",
+            "scripts/continue_stegverse001_evidence_chain.py",
             "scripts/consume_healer_sovereign_scheduler_request.py",
             "scripts/refresh_and_dispatch_resident_requests.py",
         ):
@@ -198,6 +223,9 @@ class BootstrapResidentDispatchTests(unittest.TestCase):
             def runner(command, **_kwargs):
                 name = Path(command[1]).name
                 call_order.append(name)
+                if name == "install_sovereign_heartbeat_carrier.py":
+                    write_carrier_receipt(runtime)
+                    return SimpleNamespace(returncode=0, stdout="", stderr="")
                 if name == "install_sovereign_worker_source_refresh_service.py":
                     path = runtime / "receipts/sovereign-host/worker-source-refresh-installation.latest.json"
                     path.parent.mkdir(parents=True, exist_ok=True)
@@ -209,7 +237,7 @@ class BootstrapResidentDispatchTests(unittest.TestCase):
                         "worker_service": "stegverse-worker-runtime.service",
                     }) + "\n", encoding="utf-8")
                     return SimpleNamespace(returncode=0, stdout="", stderr="")
-                return SimpleNamespace(returncode=0 if name == "install_sovereign_heartbeat_service.py" else 1, stdout="", stderr="")
+                return SimpleNamespace(returncode=1, stdout="", stderr="")
 
             def prime(*_args, **_kwargs):
                 call_order.append("run_worker_runtime.py")
@@ -253,7 +281,7 @@ class BootstrapResidentDispatchTests(unittest.TestCase):
             self.assertEqual(
                 call_order[:5],
                 [
-                    "install_sovereign_heartbeat_service.py",
+                    "install_sovereign_heartbeat_carrier.py",
                     "install_sovereign_worker_source_refresh_service.py",
                     "run_worker_runtime.py",
                     "dispatch_resident_execution_requests.py",
@@ -284,6 +312,8 @@ class BootstrapResidentDispatchTests(unittest.TestCase):
             def runner(command, **_kwargs):
                 name = Path(command[1]).name
                 order.append(name)
+                if name == "install_sovereign_heartbeat_carrier.py":
+                    write_carrier_receipt(runtime)
                 if name == "install_sovereign_worker_source_refresh_service.py":
                     path = runtime / "receipts/sovereign-host/worker-source-refresh-installation.latest.json"
                     path.parent.mkdir(parents=True, exist_ok=True)
