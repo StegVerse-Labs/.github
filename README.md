@@ -99,6 +99,22 @@ A functional change is not documentation-complete merely because implementation,
 1. be updated to describe the material functional effect; or
 2. explicitly remain unchanged only when the change is determined not to alter material repository function.
 
+### Machine preflight enforcement
+
+Functional mutation entering the StegVerse worker-task admission path must declare `readme_impact_required=true` in the task or handoff. The admission packet then evaluates a non-authorizing `readme_impact_complete` predicate before the existing WorkerCoordinator may continue toward assignment/claim/fence creation.
+
+When `material_function_change=true`, the preflight requires all of the following in the structured `readme_impact` record:
+
+- `readme_updated_in_change_set=true`;
+- the affected `readme_path`;
+- evidence references tying the README update to the functional change.
+
+When a proposed change is explicitly determined **not** to be material, the no-update path requires both `no_readme_update_reason` and evidence references supporting that determination. Missing materiality, missing required README evidence, or a material change without a README update causes the admission verdict to fail closed.
+
+Legacy/nonfunctional tasks are not retroactively stranded solely because they predate this field. The session-entry/preflight contract is responsible for marking new functional mutations as README-impact-required.
+
+This README preflight is evidence-only. It grants no execution, claim, fence, lease, credential, routing, transition, publication, custody, or other authority.
+
 This invariant exists so the README remains the human-facing projection of what the repository actually does, while canonical machine-readable records and receipts remain authoritative for exact state and evidence.
 
 ---
