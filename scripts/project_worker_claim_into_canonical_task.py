@@ -79,11 +79,11 @@ def project(registry: dict[str, Any], worker_registry: dict[str, Any], task_id: 
     }
 
     if projection["matched"] and projection.get("claim_ref") is not None and projection.get("fence_ref") is not None:
-        if task.get("coordination_state") in {"INGRESS_ADMITTED", "CLAIMABLE", "CLAIMED", "IN_PROGRESS", "BLOCKED"}:
+        if task.get("coordination_state") in {"INGRESS_ADMITTED", "CLAIMABLE", "CLAIMED", "IN_PROGRESS"}:
             task["coordination_state"] = "CLAIMED" if projection.get("state") not in {"IN_PROGRESS", "RUNNING"} else "IN_PROGRESS"
-        task["allowed_next_transitions"] = ["IN_PROGRESS", "BLOCKED", "COMPLETION_CLAIMED", "TRANSFERRED"]
+        task["allowed_next_transitions"] = ["IN_PROGRESS", "COMPLETION_CLAIMED", "TRANSFERRED"]
     elif task.get("coordination_state") == "INGRESS_ADMITTED":
-        task["allowed_next_transitions"] = ["CLAIMABLE", "BLOCKED", "RECONCILIATION_REQUIRED"]
+        task["allowed_next_transitions"] = ["CLAIMABLE", "RECONCILIATION_REQUIRED"]
 
     proposed["generation"] = int(registry.get("generation", 0)) + 1
     proposed["status"] = "WORKERCOORDINATOR_OWNERSHIP_PROJECTED" if projection["matched"] else "WORKERCOORDINATOR_NO_MATCH_PROJECTED"
