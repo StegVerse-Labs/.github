@@ -146,13 +146,7 @@ def pending(runtime: Path, request: Mapping[str, Any], request_hash: str, reason
     })
 
 
-def consume(
-    source_root: Path,
-    runtime_root: Path,
-    *,
-    runner=subprocess.run,
-    env: Mapping[str, str] | None = None,
-) -> dict[str, Any]:
+def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
     values = dict(os.environ if env is None else env)
@@ -160,13 +154,7 @@ def consume(
     if not request_path.is_file():
         request_path = source / REQUEST_REL
     if not request_path.is_file():
-        return {
-            "schema": "stegverse.native-email-action-monitor-request-consumption/v1",
-            "state": "NO_REQUEST",
-            "runtime_execution_attempted": False,
-            "authority_effect": "NONE",
-        }
-
+        return {"schema": "stegverse.native-email-action-monitor-request-consumption/v1", "state": "NO_REQUEST", "runtime_execution_attempted": False, "authority_effect": "NONE"}
     request = load_json(request_path)
     validate_request(request)
     request_hash = stable_hash(request)
@@ -192,36 +180,16 @@ def consume(
         return pending(runtime, request, request_hash, "TVC_MAIL_PROVIDER_OPERATION_NOT_MATERIALIZED", tvc_root=str(tvc))
 
     monitor_receipt = runtime / MONITOR_RECEIPT_REL
+    broker_command = [sys.executable, str(broker), "--tvc-provider-command", sys.executable, str(provider)]
     command = [
-        sys.executable,
-        str(monitor),
-        "--output",
-        str(monitor_receipt),
-        "--batch-limit",
-        "100",
-        "--broker",
-        sys.executable,
-        str(broker),
-        "--tvc-provider-command",
-        sys.executable,
-        str(provider),
+        sys.executable, str(monitor),
+        "--output", str(monitor_receipt),
+        "--batch-limit", "100",
+        "--broker-json", json.dumps(broker_command, separators=(",", ":")),
     ]
-    completed = runner(
-        command,
-        cwd=runtime,
-        capture_output=True,
-        text=True,
-        check=False,
-        env=dict(values),
-        timeout=900,
-    )
+    completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=dict(values), timeout=900)
     monitor_result = load_json(monitor_receipt) if monitor_receipt.is_file() else parse_last_json(completed.stdout)
-    success = bool(
-        completed.returncode == 0
-        and isinstance(monitor_result, dict)
-        and monitor_result.get("schema") == "stegverse.native-email-action-monitor-receipt/v1"
-        and monitor_result.get("state") == "PASS"
-    )
+    success = bool(completed.returncode == 0 and isinstance(monitor_result, dict) and monitor_result.get("schema") == "stegverse.native-email-action-monitor-receipt/v1" and monitor_result.get("state") == "PASS")
     return write_receipt(runtime, {
         "schema": "stegverse.native-email-action-monitor-request-consumption/v1",
         "state": "COMPLETED" if success else "ATTEMPT_RECORDED",
