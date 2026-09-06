@@ -119,6 +119,26 @@ Legacy/nonfunctional tasks are not retroactively stranded solely because they pr
 
 README completeness is evidence-only. It grants no execution, claim, fence, lease, credential, routing, transition, publication, custody, runtime truth, or other authority.
 
+### Current-iOS interaction authority classification
+
+The current-user iOS interaction queue serializes **true human-authority mutations only**. Execution on `CURRENT_USER_IPHONE`, the presence of a visible button, or the consequential nature of a transition does not by itself make that transition human-owned.
+
+Machine-owned resident/service-worker/entity transitions use the canonical entity governance loop instead:
+
+```text
+exact transition proposed
+-> contemporaneous Interlock/InTr governance
+-> TV/TVC consulted where credential authority is required
+-> admitted resident/service-worker execution
+-> receipt retained and state reconstructed
+```
+
+Only transitions whose exact authority class is genuinely human/user-only — for example `HUMAN_ONLY`, `USER_ONLY`, `LEGAL_PERSON_SIGNATURE`, or `OWNER_EXPLICIT_CONSENT` — belong in the current-iOS interaction queue. A machine-owned transition must not be promoted to manual approval merely because the current session lacks a direct runtime call.
+
+SV001 Master Records custody/reconstruction is the first explicit reconciliation of this rule. Its current-iPhone portable Master Records transition is `MACHINE_GOVERNED`, remains owned by the canonical Master Records/runtime governance path, and does not require a human interaction slot. The former `IPHONE-MR-SV001-CUSTODY-001` user-action admission is historical provenance only and is superseded. This classification does not itself authorize custody: the exact custody/reconstruction transition still requires current Interlock/InTr governance, and prior SV001 receipts remain evidence rather than authority.
+
+The UI interaction guard may remain fail-closed for true human-authority actions without becoming a scheduler, admission mechanism, or blocker for machine-owned resident/service-worker progression.
+
 ### Resident WorkerCoordinator self-heal binding parity
 
 The canonical HeartBeat carrier may supervise the **existing** resident WorkerCoordinator process when that process disappears, but this supervision does not create a second worker or grant task authority. A self-healed WorkerCoordinator must receive the same approved, non-secret local repository/runtime bindings as the canonical worker service so restored process presence does not silently degrade into a worker that is alive but unable to resolve already-local StegVerse dependencies.
