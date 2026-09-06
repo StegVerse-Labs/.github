@@ -230,7 +230,11 @@ def main() -> int:
     }
     out = runtime / "receipts" / "sovereign-host" / f"canonical-work-event-bootstrap.{args.task_id}.latest.json"
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    raw = json.dumps(receipt, indent=2, sort_keys=True) + "\n"
+    out.write_text(raw, encoding="utf-8")
+    if args.task_id == DEFAULT_TASK_ID:
+        legacy = runtime / "receipts" / "sovereign-host" / "canonical-work-event-bootstrap.latest.json"
+        legacy.write_text(raw, encoding="utf-8")
     print(json.dumps(receipt, indent=2, sort_keys=True))
     return 0
 
