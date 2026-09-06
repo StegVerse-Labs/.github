@@ -2,7 +2,7 @@
 
 Repository: `StegVerse-Labs/.github`
 Parent: `docs/CANONICAL_RESIDENT_CARRIER_MIRROR_HANDOFF.md`
-State: `SOURCE_MERGED_VALIDATED / AUTHENTIC_RUNTIME_PRESENCE_NOT_YET_OBSERVED`
+State: `STALE_PID_RECOVERY_IMPLEMENTED_PENDING_EXACT_HEAD_VALIDATION / AUTHENTIC_RUNTIME_PRESENCE_NOT_YET_OBSERVED`
 Credential authority: `TV/TVC`
 GitHub token runtime authority: `NONE`
 
@@ -20,7 +20,7 @@ A canonical 100 Hz HeartBeat carrier could remain live while the resident Worker
 
 The oscillator-produced carrier remains non-authorizing. After each 100 observed references (approximately one second), and strictly after those references already exist, the carrier process asks the local supervision layer to verify resident WorkerCoordinator presence.
 
-If the existing worker process is alive, nothing is changed.
+If the existing worker process is alive and produces a fresh task-capable logical tick during the bounded supervision window, it is reused without starting another process.
 
 If the carrier is alive and the worker is absent, local supervision starts the existing `scripts/run_worker_runtime.py --continuous` process, requires a fresh task-capable worker tick, and persists repaired process-presence evidence. The WorkerCoordinator then visits `scripts/dispatch_resident_execution_requests.py` on its own first logical tick and independently performs all task admission/claim/fence/InTr/TV-TVC checks.
 
@@ -36,6 +36,7 @@ The carrier does **not** grant execution authority. It supplies node-presence ev
 - no hosted runtime repair;
 - no non-TV/TVC credential propagation;
 - a pulse must exist before worker-presence repair is evaluated;
+- a worker PID is not sufficient presence evidence without a fresh task-capable logical tick;
 - a repaired worker is not considered present until a fresh task-capable worker tick is observed;
 - pending resident requests are drained only by the restored WorkerCoordinator under their existing fail-closed consumers.
 
@@ -116,6 +117,41 @@ README impact: MATERIAL. `README.md` records that bootstrap source eligibility a
 
 This is still source/eligibility correctness only. Passing bootstrap eligibility, validation, merge, source refresh, or native materialization does not prove current carrier presence, current WorkerCoordinator presence, a supervision visit, request dispatch or consumption, claim/fence creation, an InTr transition, resident StegIndex materialization, blocker-derived preflight, StegIndex operational proof, or task completion.
 
+## Stale-but-alive WorkerCoordinator recovery — 2026-09-06
+
+Issue #1078 closes a remaining failure mode inside the **existing** HB/oscillator self-heal implementation. The prior code treated `os.kill(pid, 0)` success as sufficient reason to reuse a WorkerCoordinator. A process could therefore remain PID-alive while its logical runtime stopped advancing; the 100-reference carrier supervision visit would see the PID and decline to repair it, leaving already-local resident requests stalled.
+
+The bounded repair changes no scheduler or authority plane:
+
+1. For an existing live worker PID, capture the current `runtime_tick` and require a newer tick from a task-capable `stegverse.worker-runtime-state/v1` within the existing bounded supervision timeout.
+2. If that fresh tick arrives, reuse the existing worker exactly as before.
+3. If the PID remains alive but the tick does not advance, classify that process as stale and terminate it before any replacement starts.
+4. Restart only the existing canonical `scripts/run_worker_runtime.py --continuous` runner with the already-approved sanitized local bindings.
+5. Accept the replacement only after a fresh task-capable tick is observed.
+6. If the stale process cannot be stopped, return `STALE_WORKER_REPAIR_BLOCKED` and **do not** create a parallel WorkerCoordinator.
+7. Persist stale-process/tick/stop evidence into the same supervision receipt path.
+
+This uses the oscillator-owned 100-reference supervision cadence already installed in `heartbeat_runtime.engine_v13.HeartbeatRuntime`. HeartBeat remains oscillator-only timing/reference; the supervision visit remains non-authorizing. WorkerCoordinator keeps claim/fence/admission authority, InTr/Interlock keeps transition authority, and TV/TVC remains credential authority.
+
+Preflight:
+
+```text
+receipts/preflight/RESIDENT-WORKER-STALE-PID-SELF-HEAL-1078.json
+result: PASS_FOR_BOUNDED_FUNCTIONAL_MUTATION
+README impact: MATERIAL / updated in same change set
+open overlapping PR for repair_resident_worker_presence.py: NONE OBSERVED
+```
+
+Implementation/test commits on the repair branch before exact-head validation:
+
+```text
+2ea9b490fbdff292d62345963591a2039947f2c9  runtime stale-PID recovery
+764a417813848ae8b7a9192e9c8f8f82161c2d7f  focused regression tests
+06603b0fe6cf8ac933e2f1b923a29ec3d08ed813  README failure-behavior update
+```
+
+Until exact-head hosted validation and merge are observed, this section is source implementation evidence only. It does not assert that a deployment-local carrier has loaded the repair or that authentic runtime presence/request consumption has occurred.
+
 ## Runtime consequence
 
-A live canonical carrier plus a dead/missing WorkerCoordinator is now a validated self-healing runtime state rather than a passive `REQUESTED` backlog state. Authentic runtime presence still requires the canonical presence receipt from a real resident carrier-supervision visit, and authentic task completion still requires each task-specific receipt; this repair does not fabricate those receipts.
+A live canonical carrier plus a dead, missing, **or non-advancing stale** WorkerCoordinator is now represented by one existing self-heal design rather than a passive `REQUESTED` backlog state. Authentic runtime presence still requires the canonical presence receipt from a real resident carrier-supervision visit, and authentic task completion still requires each task-specific receipt; source repair and validation do not fabricate those receipts.
