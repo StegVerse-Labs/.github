@@ -19,13 +19,30 @@
       "goal_id": "CROSS-TASK-COORDINATION-001",
       "state": "SOURCE_VALIDATED",
       "autonomous_augmentation": false,
-      "required_predicates": ["PRED-CROSS-TASK-CORE-VALIDATED"],
+      "required_predicates": [
+        "PRED-CROSS-TASK-CORE-VALIDATED"
+      ],
       "mutation_scope": {
-        "repositories": ["StegVerse-Labs/.github"],
-        "paths": ["schemas/cross-task-coordination.schema.json", "control/cross-task-coordination.json", "heartbeat_runtime/coordination_graph.py", "heartbeat_runtime/worker_task_admission.py", "heartbeat_runtime/admitted_worker_runtime.py", "tests/test_coordination_graph.py", "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md"],
-        "modules": ["cross-task-coordination", "worker-task-admission"],
+        "repositories": [
+          "StegVerse-Labs/.github"
+        ],
+        "paths": [
+          "schemas/cross-task-coordination.schema.json",
+          "control/cross-task-coordination.json",
+          "heartbeat_runtime/coordination_graph.py",
+          "heartbeat_runtime/worker_task_admission.py",
+          "heartbeat_runtime/admitted_worker_runtime.py",
+          "tests/test_coordination_graph.py",
+          "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md"
+        ],
+        "modules": [
+          "cross-task-coordination",
+          "worker-task-admission"
+        ],
         "runtime_surfaces": [],
-        "evidence_responsibilities": ["coordination-preflight"]
+        "evidence_responsibilities": [
+          "coordination-preflight"
+        ]
       }
     },
     {
@@ -33,13 +50,26 @@
       "goal_id": "CROSS-TASK-COORDINATION-001",
       "state": "SOURCE_VALIDATED",
       "autonomous_augmentation": false,
-      "required_predicates": ["PRED-CROSS-TASK-CORE-VALIDATED", "PRED-STEGINDEX-COORDINATION-PROJECTION-VALIDATED"],
+      "required_predicates": [
+        "PRED-CROSS-TASK-CORE-VALIDATED",
+        "PRED-STEGINDEX-COORDINATION-PROJECTION-VALIDATED"
+      ],
       "mutation_scope": {
-        "repositories": ["StegVerse-Labs/StegIndex"],
-        "paths": ["scripts/resolve_cross_task_coordination.py", "tests/test_cross_task_coordination.py", "docs/CROSS_TASK_COORDINATION_INDEX_MIRROR_HANDOFF.md"],
-        "modules": ["stegindex-coordination-projection"],
+        "repositories": [
+          "StegVerse-Labs/StegIndex"
+        ],
+        "paths": [
+          "scripts/resolve_cross_task_coordination.py",
+          "tests/test_cross_task_coordination.py",
+          "docs/CROSS_TASK_COORDINATION_INDEX_MIRROR_HANDOFF.md"
+        ],
+        "modules": [
+          "stegindex-coordination-projection"
+        ],
         "runtime_surfaces": [],
-        "evidence_responsibilities": ["coordination-index-projection"]
+        "evidence_responsibilities": [
+          "coordination-index-projection"
+        ]
       }
     },
     {
@@ -47,13 +77,27 @@
       "goal_id": "CROSS-TASK-COORDINATION-001",
       "state": "SOURCE_VALIDATED",
       "autonomous_augmentation": false,
-      "required_predicates": ["PRED-CROSS-TASK-CORE-VALIDATED", "PRED-STEGINDEX-COORDINATION-PROJECTION-VALIDATED", "PRED-HANDOFF-COORDINATION-PROJECTION-VALIDATED"],
+      "required_predicates": [
+        "PRED-CROSS-TASK-CORE-VALIDATED",
+        "PRED-STEGINDEX-COORDINATION-PROJECTION-VALIDATED",
+        "PRED-HANDOFF-COORDINATION-PROJECTION-VALIDATED"
+      ],
       "mutation_scope": {
-        "repositories": ["StegVerse-Labs/.github"],
-        "paths": ["scripts/render_cross_task_coordination_handoff.py", "tests/test_cross_task_coordination_handoff_projection.py", ".github/workflows/cross-task-coordination-validation.yml"],
-        "modules": ["coordination-handoff-projection"],
+        "repositories": [
+          "StegVerse-Labs/.github"
+        ],
+        "paths": [
+          "scripts/render_cross_task_coordination_handoff.py",
+          "tests/test_cross_task_coordination_handoff_projection.py",
+          ".github/workflows/cross-task-coordination-validation.yml"
+        ],
+        "modules": [
+          "coordination-handoff-projection"
+        ],
         "runtime_surfaces": [],
-        "evidence_responsibilities": ["coordination-handoff-projection"]
+        "evidence_responsibilities": [
+          "coordination-handoff-projection"
+        ]
       }
     }
   ],
@@ -66,7 +110,9 @@
       "required_scope": "coordination source + WorkerCoordinator preflight binding",
       "required_execution_instance": "33923391425",
       "max_age_seconds": null,
-      "required_fields": ["validation_result"],
+      "required_fields": [
+        "validation_result"
+      ],
       "expected_output_ref": "GitHub Actions run 33923391425"
     },
     {
@@ -77,7 +123,9 @@
       "required_scope": "read-only cross-task coordination projection",
       "required_execution_instance": "33943933317",
       "max_age_seconds": null,
-      "required_fields": ["validation_result"],
+      "required_fields": [
+        "validation_result"
+      ],
       "expected_output_ref": "GitHub Actions run 33943933317"
     },
     {
@@ -88,7 +136,9 @@
       "required_scope": "deterministic handoff projection source",
       "required_execution_instance": "33944001324",
       "max_age_seconds": null,
-      "required_fields": ["validation_result"],
+      "required_fields": [
+        "validation_result"
+      ],
       "expected_output_ref": "GitHub Actions run 33944001324"
     },
     {
@@ -105,9 +155,14 @@
       "required_scope": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001 resident request consumption",
       "required_execution_instance": "RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-002",
       "max_age_seconds": null,
-      "required_fields": ["request_id", "consumed"],
+      "required_fields": [
+        "request_id",
+        "consumed"
+      ],
       "expected_output_ref": "receipts/sovereign-host/resident-execution-request-consumption.latest.json",
-      "consumers": ["SHWP-ECOSYSTEM-CHAT-INFERENCE-001"],
+      "consumers": [
+        "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"
+      ],
       "canonical_source_refs": [
         "docs/ECOSYSTEM_CHAT_ORPHAN_RECOVERY_MIRROR_HANDOFF.md",
         "control/runtime-observability-consumers/ecosystem-chat-sovereign-inference-001.json"
@@ -127,13 +182,89 @@
       "required_scope": "StegIndex #4 one-shot resident stack activation request consumption and source-root observation",
       "required_execution_instance": "RESIDENT-EXEC-ONE-SHOT-STACK-ACTIVATION-001",
       "max_age_seconds": null,
-      "required_fields": ["request_id", "task_id", "state", "activation_complete", "stegindex_source_root_resolved"],
+      "required_fields": [
+        "request_id",
+        "task_id",
+        "state",
+        "activation_complete",
+        "stegindex_source_root_resolved"
+      ],
       "expected_output_ref": "receipts/sovereign-host/one-shot-resident-stack-activation-request-consumption.latest.json",
-      "consumers": ["StegVerse-Labs/StegIndex#4"],
+      "consumers": [
+        "StegVerse-Labs/StegIndex#4"
+      ],
       "canonical_source_refs": [
         "StegVerse-Labs/StegIndex/docs/STEGINDEX_RESIDENT_PROOF_CONTINUATION_20260903.md",
         "control/resident-execution-request.d/one-shot-resident-stack-activation-001.json",
         "scripts/consume_one_shot_resident_stack_activation_request.py"
+      ]
+    },
+    {
+      "predicate_id": "PRED-RESIDENT-REQUEST-CONSUMED-HIL-SOVEREIGN-RECEIVER-002",
+      "semantic_predicate_id": "resident_request_consumed",
+      "subject_binding": {
+        "request_id": "RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002",
+        "consumer_task_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001"
+      },
+      "state": "UNKNOWN",
+      "description": "The exact HIL sovereign receiver resident execution request reached terminal HIL consumption on the existing resident path.",
+      "authoritative_producer": "existing HIL resident execution request consumer",
+      "required_schema": "stegverse.hil-resident-execution-request-consumption/v1",
+      "required_scope": "SHWP-HIL-SOVEREIGN-RECEIVER-001 resident request consumption",
+      "required_execution_instance": "RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002",
+      "max_age_seconds": null,
+      "required_fields": [
+        "request_id",
+        "task_id",
+        "state",
+        "terminal_hil_transition_observed"
+      ],
+      "expected_output_ref": "receipts/sovereign-host/hil-resident-execution-request-consumption.latest.json",
+      "consumers": [
+        "SHWP-HIL-SOVEREIGN-RECEIVER-001"
+      ],
+      "canonical_source_refs": [
+        "handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json",
+        "control/resident-execution-request.d/hil-sovereign-receiver-001.json",
+        "scripts/consume_hil_resident_execution_request.py",
+        "StegVerse-Labs/Site/docs/HIL_MIRROR_HANDOFF.md"
+      ]
+    },
+    {
+      "predicate_id": "PRED-RESIDENT-REQUEST-CONSUMED-G18-RESUME-FENCE18-001",
+      "semantic_predicate_id": "resident_request_consumed",
+      "subject_binding": {
+        "request_id": "RESIDENT-EXEC-G18-RESUME-FENCE18-001",
+        "consumer_task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+        "claim_id": "SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18",
+        "fencing_token": 18
+      },
+      "state": "UNKNOWN",
+      "description": "The exact G18 resident resume request attempted execution only against the persisted G18 claim/fence18 without minting replacement authority.",
+      "authoritative_producer": "existing G18 resident execution request consumer",
+      "required_schema": "stegverse.g18-resident-execution-request-consumption/v1",
+      "required_scope": "SHWP-DURABLE-RUNTIME-ACTIVATION existing-claim resume consumption",
+      "required_execution_instance": "RESIDENT-EXEC-G18-RESUME-FENCE18-001",
+      "max_age_seconds": null,
+      "required_fields": [
+        "request_id",
+        "task_id",
+        "state",
+        "expected_claim_id",
+        "expected_fencing_token",
+        "exact_existing_claim_observed",
+        "bridge_mode_valid",
+        "runtime_execution_attempted"
+      ],
+      "expected_output_ref": "receipts/sovereign-host/g18-resident-execution-request-consumption.latest.json",
+      "consumers": [
+        "SHWP-DURABLE-RUNTIME-ACTIVATION"
+      ],
+      "canonical_source_refs": [
+        "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+        "control/resident-execution-request.d/g18-sovereign-runtime-resume.json",
+        "scripts/consume_g18_resident_execution_request.py",
+        "docs/ORG_MIRROR_HANDOFF.md"
       ]
     }
   ],
@@ -147,7 +278,9 @@
       "scope": "coordination source + WorkerCoordinator preflight binding",
       "execution_instance": "33923391425",
       "observed_at": "2026-09-04",
-      "fields": {"validation_result": "SUCCESS"},
+      "fields": {
+        "validation_result": "SUCCESS"
+      },
       "authority_effect": "EVIDENCE_ONLY"
     },
     {
@@ -159,7 +292,10 @@
       "scope": "read-only cross-task coordination projection",
       "execution_instance": "33943933317",
       "observed_at": "2026-09-04",
-      "fields": {"validation_result": "SUCCESS", "commit": "758316ea043a56fe523c222a923f726d2a0805c2"},
+      "fields": {
+        "validation_result": "SUCCESS",
+        "commit": "758316ea043a56fe523c222a923f726d2a0805c2"
+      },
       "authority_effect": "EVIDENCE_ONLY"
     },
     {
@@ -171,7 +307,10 @@
       "scope": "deterministic handoff projection source",
       "execution_instance": "33944001324",
       "observed_at": "2026-09-04",
-      "fields": {"validation_result": "SUCCESS", "exact_head": "e6d4fb406c860b496542e5a6112128b1295d31ab"},
+      "fields": {
+        "validation_result": "SUCCESS",
+        "exact_head": "e6d4fb406c860b496542e5a6112128b1295d31ab"
+      },
       "authority_effect": "EVIDENCE_ONLY"
     }
   ],
@@ -181,11 +320,26 @@
       "task_id": "CROSS-TASK-COORDINATION-IMPLEMENTATION-001",
       "state": "RELEASED",
       "scope": {
-        "repositories": ["StegVerse-Labs/.github"],
-        "paths": ["schemas/cross-task-coordination.schema.json", "control/cross-task-coordination.json", "heartbeat_runtime/coordination_graph.py", "heartbeat_runtime/worker_task_admission.py", "heartbeat_runtime/admitted_worker_runtime.py", "tests/test_coordination_graph.py", "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md"],
-        "modules": ["cross-task-coordination", "worker-task-admission"],
+        "repositories": [
+          "StegVerse-Labs/.github"
+        ],
+        "paths": [
+          "schemas/cross-task-coordination.schema.json",
+          "control/cross-task-coordination.json",
+          "heartbeat_runtime/coordination_graph.py",
+          "heartbeat_runtime/worker_task_admission.py",
+          "heartbeat_runtime/admitted_worker_runtime.py",
+          "tests/test_coordination_graph.py",
+          "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md"
+        ],
+        "modules": [
+          "cross-task-coordination",
+          "worker-task-admission"
+        ],
         "runtime_surfaces": [],
-        "evidence_responsibilities": ["coordination-preflight"]
+        "evidence_responsibilities": [
+          "coordination-preflight"
+        ]
       },
       "authority_effect": "COORDINATION_ONLY"
     },
@@ -194,11 +348,21 @@
       "task_id": "CROSS-TASK-HANDOFF-PROJECTION-001",
       "state": "RELEASED",
       "scope": {
-        "repositories": ["StegVerse-Labs/.github"],
-        "paths": ["scripts/render_cross_task_coordination_handoff.py", "tests/test_cross_task_coordination_handoff_projection.py", ".github/workflows/cross-task-coordination-validation.yml"],
-        "modules": ["coordination-handoff-projection"],
+        "repositories": [
+          "StegVerse-Labs/.github"
+        ],
+        "paths": [
+          "scripts/render_cross_task_coordination_handoff.py",
+          "tests/test_cross_task_coordination_handoff_projection.py",
+          ".github/workflows/cross-task-coordination-validation.yml"
+        ],
+        "modules": [
+          "coordination-handoff-projection"
+        ],
         "runtime_surfaces": [],
-        "evidence_responsibilities": ["coordination-handoff-projection"]
+        "evidence_responsibilities": [
+          "coordination-handoff-projection"
+        ]
       },
       "authority_effect": "COORDINATION_ONLY"
     }
@@ -212,12 +376,17 @@
         "consumer_task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"
       },
       "existing_evidence_refs": [],
-      "rejected_because": ["NO_QUALIFYING_EVIDENCE_OBSERVED"],
+      "rejected_because": [
+        "NO_QUALIFYING_EVIDENCE_OBSERVED"
+      ],
       "missing_observation": "resident consumption receipt for the exact request RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-002",
       "required_producer": "sovereign resident source-refresh path",
       "required_output_ref": "receipts/sovereign-host/resident-execution-request-consumption.latest.json",
       "required_schema": null,
-      "required_fields": ["request_id", "consumed"],
+      "required_fields": [
+        "request_id",
+        "consumed"
+      ],
       "required_freshness": null,
       "collision_refs": [],
       "action_without_collision": "Consume the existing resident request bridge result when emitted; do not create a parallel resident transport or replay completed orphan recovery."
@@ -230,15 +399,79 @@
         "consumer_task_id": "SHWP-ONE-SHOT-RESIDENT-STACK-ACTIVATION-001"
       },
       "existing_evidence_refs": [],
-      "rejected_because": ["NO_QUALIFYING_EVIDENCE_OBSERVED"],
+      "rejected_because": [
+        "NO_QUALIFYING_EVIDENCE_OBSERVED"
+      ],
       "missing_observation": "terminal authentic one-shot resident stack activation consumption receipt for request RESIDENT-EXEC-ONE-SHOT-STACK-ACTIVATION-001 with activation_complete=true and StegIndex source-root resolution recorded",
       "required_producer": "existing resident one-shot stack activation consumer",
       "required_output_ref": "receipts/sovereign-host/one-shot-resident-stack-activation-request-consumption.latest.json",
       "required_schema": "stegverse.resident-execution-request-consumption/v1",
-      "required_fields": ["request_id", "task_id", "state", "activation_complete", "stegindex_source_root_resolved"],
+      "required_fields": [
+        "request_id",
+        "task_id",
+        "state",
+        "activation_complete",
+        "stegindex_source_root_resolved"
+      ],
       "required_freshness": null,
       "collision_refs": [],
       "action_without_collision": "Allow the existing WorkerCoordinator/resident dispatcher to consume the already-REQUESTED one-shot activation request; do not create a duplicate request, scheduler, resident transport, or proof-specific executor."
+    },
+    {
+      "predicate_id": "PRED-RESIDENT-REQUEST-CONSUMED-HIL-SOVEREIGN-RECEIVER-002",
+      "semantic_predicate_id": "resident_request_consumed",
+      "subject_binding": {
+        "request_id": "RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002",
+        "consumer_task_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001"
+      },
+      "existing_evidence_refs": [],
+      "rejected_because": [
+        "NO_QUALIFYING_EVIDENCE_OBSERVED"
+      ],
+      "missing_observation": "terminal HIL resident consumption receipt for request RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002",
+      "required_producer": "existing HIL resident execution request consumer",
+      "required_output_ref": "receipts/sovereign-host/hil-resident-execution-request-consumption.latest.json",
+      "required_schema": "stegverse.hil-resident-execution-request-consumption/v1",
+      "required_fields": [
+        "request_id",
+        "task_id",
+        "state",
+        "terminal_hil_transition_observed"
+      ],
+      "required_freshness": null,
+      "collision_refs": [],
+      "action_without_collision": "Consume the existing HIL request path and retry only under its existing semantics; do not create another HIL scheduler, transport, claim/fence plane, or receiver implementation."
+    },
+    {
+      "predicate_id": "PRED-RESIDENT-REQUEST-CONSUMED-G18-RESUME-FENCE18-001",
+      "semantic_predicate_id": "resident_request_consumed",
+      "subject_binding": {
+        "request_id": "RESIDENT-EXEC-G18-RESUME-FENCE18-001",
+        "consumer_task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+        "claim_id": "SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18",
+        "fencing_token": 18
+      },
+      "existing_evidence_refs": [],
+      "rejected_because": [
+        "NO_QUALIFYING_EVIDENCE_OBSERVED"
+      ],
+      "missing_observation": "G18 resident request consumption receipt proving the exact existing G18 claim/fence18 was observed and resume mode preserved it",
+      "required_producer": "existing G18 resident execution request consumer",
+      "required_output_ref": "receipts/sovereign-host/g18-resident-execution-request-consumption.latest.json",
+      "required_schema": "stegverse.g18-resident-execution-request-consumption/v1",
+      "required_fields": [
+        "request_id",
+        "task_id",
+        "state",
+        "expected_claim_id",
+        "expected_fencing_token",
+        "exact_existing_claim_observed",
+        "bridge_mode_valid",
+        "runtime_execution_attempted"
+      ],
+      "required_freshness": null,
+      "collision_refs": [],
+      "action_without_collision": "Consume only through the existing G18 resume consumer; do not mint a new claim, replace fence18, create a parallel resident transport, or treat HB as authority."
     }
   ]
 }
