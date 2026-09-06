@@ -53,9 +53,19 @@
     {
       "problem_class": "DURABLE_RUNTIME_NATIVE_BOOTSTRAP_INCOMPLETE",
       "reuse": "existing same-host sovereign ephemeral fallback",
-      "support": ["G18 current HB runtime stack"],
-      "canonical_fix_refs": ["72e80ce645858c02877277845ffe624cd71ec1e6"],
-      "do_not_create": ["second-user-machine", "hosted-runtime-authority", "new-workercoordinator-plane"]
+      "support": [
+        "G18 current HB runtime stack",
+        "scripts/run_sovereign_ephemeral_console.py",
+        "scripts/bootstrap_sovereign_runtime.py source eligibility",
+        "scripts/install_sovereign_heartbeat_service.py materialization parity",
+        "scripts/refresh_sovereign_worker_runtime_source.py local refresh parity"
+      ],
+      "canonical_fix_refs": [
+        "72e80ce645858c02877277845ffe624cd71ec1e6",
+        "9910cf76e0bd171d0166d14d4b1f765bba887667"
+      ],
+      "resolution": "attempt the existing same-host ephemeral fallback after incomplete native proof; resident source eligibility, fresh materialization, and local source refresh must all guarantee the fallback script before reporting the recovery surface complete",
+      "do_not_create": ["second-user-machine", "hosted-runtime-authority", "new-workercoordinator-plane", "duplicate-runtime-recovery-path"]
     },
     {
       "problem_class": "TASK_REQUEST_NOT_CONSUMED_WHILE_RUNTIME_PATH_EXISTS",
