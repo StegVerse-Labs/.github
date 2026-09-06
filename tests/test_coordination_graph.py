@@ -79,6 +79,7 @@ class CoordinationGraphTests(unittest.TestCase):
         self.assertEqual(result["resolved_predicates"][0]["semantic_predicate_id"], "resident_request_consumed")
         self.assertEqual(result["resolved_predicates"][0]["subject_binding"]["request_id"], "REQ-1")
         self.assertEqual(result["newly_unblocked_tasks"], ["DOWNSTREAM"])
+        self.assertFalse(result["candidate_consumers_are_full_task_admission"])
         self.assertEqual(result["authority_effect"], "NONE")
 
     def test_wrong_producer_does_not_satisfy_predicate(self):
@@ -144,6 +145,64 @@ class CoordinationGraphTests(unittest.TestCase):
         ledger["evidence"] = []
         result = review_coordination_preflight(ledger=ledger, task={"task_id": "T"}, now=NOW)
         self.assertIn("active producer task result", result["gaps"][0]["action_without_collision"])
+
+    def test_dependency_ready_predicate_surfaces_consumer_without_full_admission_claim(self):
+        ledger = self.ledger()
+        ledger["predicates"].append({
+            "predicate_id": "P-NEXT",
+            "semantic_predicate_id": "bounded_autonomy_request_consumed",
+            "subject_binding": {"request_id": "REQ-NEXT"},
+            "state": "UNKNOWN",
+            "authoritative_producer": "next-consumer",
+            "depends_on_predicates": ["P"],
+            "consumers": ["SHWP-NEXT"],
+        })
+        result = review_coordination_preflight(ledger=ledger, task={"task_id": "T"}, now=NOW)
+        ready = {row["predicate_id"]: row for row in result["dependency_ready_predicates"]}
+        self.assertTrue(ready["P-NEXT"]["dependency_ready"])
+        self.assertEqual(result["candidate_downstream_consumers"], [{
+            "consumer": "SHWP-NEXT",
+            "predicate_id": "P-NEXT",
+            "disposition": "DEPENDENCY_READY_NOT_FULL_TASK_ADMISSION",
+            "authority_effect": "NONE",
+        }])
+        self.assertFalse(result["candidate_consumers_are_full_task_admission"])
+
+    def test_dependency_not_ready_does_not_surface_consumer(self):
+        ledger = self.ledger()
+        ledger["predicates"][0]["state"] = "UNKNOWN"
+        ledger["evidence"] = []
+        ledger["predicates"].append({
+            "predicate_id": "P-NEXT",
+            "state": "UNKNOWN",
+            "authoritative_producer": "next-consumer",
+            "depends_on_predicates": ["P"],
+            "consumers": ["SHWP-NEXT"],
+        })
+        result = review_coordination_preflight(ledger=ledger, task={"task_id": "T"}, now=NOW)
+        ready = {row["predicate_id"]: row for row in result["dependency_ready_predicates"]}
+        self.assertFalse(ready["P-NEXT"]["dependency_ready"])
+        self.assertEqual(ready["P-NEXT"]["unsatisfied_dependency_predicates"], ["P"])
+        self.assertEqual(result["candidate_downstream_consumers"], [])
+
+    def test_newly_unblocked_tasks_use_global_qualifying_state_not_only_current_task_predicates(self):
+        ledger = self.ledger()
+        ledger["predicates"].append({
+            "predicate_id": "P2",
+            "state": "SATISFIED",
+            "authoritative_producer": "receiver-2",
+        })
+        ledger["evidence"].append({
+            "evidence_id": "E2",
+            "predicate_id": "P2",
+            "producer": "receiver-2",
+            "ref": "receipts/p2.json",
+            "fields": {},
+            "authority_effect": "EVIDENCE_ONLY",
+        })
+        ledger["tasks"].append({"task_id": "GLOBAL-DOWNSTREAM", "goal_id": "G", "required_predicates": ["P", "P2"]})
+        result = review_coordination_preflight(ledger=ledger, task={"task_id": "T"}, now=NOW)
+        self.assertIn("GLOBAL-DOWNSTREAM", result["newly_unblocked_tasks"])
 
     def test_scope_collision_helpers(self):
         self.assertTrue(scopes_collide(
