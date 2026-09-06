@@ -42,18 +42,23 @@ class TargetedExecutionEntrypointBindingTests(unittest.TestCase):
                 self.assertEqual(target["credential_authority"], "TV/TVC")
                 self.assertEqual(target["github_token_runtime_authority"], "NONE")
 
-    def test_hil_current_solution_is_same_device_implementation_not_runtime_command(self):
+    def test_hil_current_solution_is_existing_same_device_runtime_observation(self):
         handoff = self.load("handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json")
-        self.assertEqual(handoff["state"], "INCOMPLETE_REQUIRES_CONTINUED_BUILD")
+        self.assertEqual(handoff["state"], "HANDOFF_READY")
         self.assertIsNone(handoff["block"]["solution_command"])
         self.assertEqual(
             handoff["block"]["dependency"],
-            "same-device HIL rendezvous/transport implementation with no required other-machine runtime",
+            "authentic HIL resident/runtime evidence from the existing same-device execution path",
         )
         self.assertEqual(
             handoff["block"]["observer"],
-            "source/control invariant validation until same-device implementation exists",
+            "resident WorkerCoordinator + existing HIL resident/materialization consumers",
         )
+        esrl = handoff["activation"]["esrl_shared_gateway_runtime"]
+        self.assertTrue(esrl["local_ready_sufficient_for_targeted_execution"])
+        self.assertFalse(esrl["public_gateway_required_for_lease_open"])
+        self.assertFalse(esrl["other_machine_dependency"])
+        self.assertTrue(esrl["public_observation_is_downstream_optional"])
         self.assertEqual(
             handoff["activation"]["targeted_execution"]["argv"],
             ["python", "scripts/run_worker_runtime.py", "--task-id", "SHWP-HIL-SOVEREIGN-RECEIVER-001"],
@@ -76,7 +81,6 @@ class TargetedExecutionEntrypointBindingTests(unittest.TestCase):
         self.assertFalse(target["g22_recovery_authority_reuse_allowed"])
         self.assertEqual(target["credential_authority"], "TV/TVC")
         self.assertEqual(target["github_token_runtime_authority"], "NONE")
-
 
     def test_portable_refresh_then_execute_bindings_require_no_systemd_or_second_machine(self):
         for rel, task_id in GENERIC.items():
