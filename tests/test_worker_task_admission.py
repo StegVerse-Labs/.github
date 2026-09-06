@@ -59,6 +59,8 @@ class WorkerTaskAdmissionTests(unittest.TestCase):
         self.assertFalse(packet["authority"]["lease_authority"])
         self.assertEqual(len(packet["digests"]["task_sha256"]), 64)
         self.assertEqual(len(packet["packet_sha256"]), 64)
+        self.assertTrue(packet["review"]["predicates"]["readme_impact_complete"])
+        self.assertFalse(packet["readme_impact"]["required"])
 
     def test_dependency_failure_blocks(self):
         packet = self.review(dependencies_complete=False)
@@ -99,6 +101,63 @@ class WorkerTaskAdmissionTests(unittest.TestCase):
         self.assertEqual(packet["review"]["verdict"], "BLOCK")
         self.assertIn("github_token_runtime_authority_none", packet["review"]["reasons"])
 
+    def test_readme_required_but_undeclared_blocks(self):
+        packet = self.review(task={"readme_impact_required": True})
+        self.assertEqual(packet["review"]["verdict"], "BLOCK")
+        self.assertIn("readme_impact_complete", packet["review"]["reasons"])
+        self.assertEqual(packet["readme_impact"]["disposition"], "README_IMPACT_UNDECLARED")
+
+    def test_material_function_change_requires_readme_update(self):
+        packet = self.review(task={
+            "readme_impact_required": True,
+            "readme_impact": {
+                "material_function_change": True,
+                "readme_path": "README.md",
+                "readme_updated_in_change_set": False,
+                "evidence_refs": ["diff:heartbeat_runtime/worker_task_admission.py"],
+            },
+        })
+        self.assertEqual(packet["review"]["verdict"], "BLOCK")
+        self.assertIn("readme_impact_complete", packet["review"]["reasons"])
+        self.assertEqual(packet["readme_impact"]["disposition"], "MATERIAL_FUNCTION_CHANGE_REQUIRES_README_UPDATE")
+
+    def test_material_function_change_with_readme_update_admits(self):
+        packet = self.review(task={
+            "readme_impact_required": True,
+            "readme_impact": {
+                "material_function_change": True,
+                "readme_path": "README.md",
+                "readme_updated_in_change_set": True,
+                "evidence_refs": ["README.md#functional-change-readme-invariant", "diff:heartbeat_runtime/worker_task_admission.py"],
+            },
+        })
+        self.assertEqual(packet["review"]["verdict"], "ADMIT")
+        self.assertTrue(packet["review"]["predicates"]["readme_impact_complete"])
+        self.assertEqual(packet["readme_impact"]["disposition"], "README_UPDATED_FOR_MATERIAL_FUNCTION_CHANGE")
+
+    def test_nonmaterial_determination_requires_reason_and_evidence(self):
+        packet = self.review(task={
+            "readme_impact_required": True,
+            "readme_impact": {
+                "material_function_change": False,
+                "no_readme_update_reason": "Test-only refactor with no behavior change.",
+                "evidence_refs": ["tests/test_worker_task_admission.py"],
+            },
+        })
+        self.assertEqual(packet["review"]["verdict"], "ADMIT")
+        self.assertEqual(packet["readme_impact"]["disposition"], "NONMATERIAL_CHANGE_EVIDENCE_SUPPORTED")
+
+    def test_nonmaterial_determination_without_evidence_blocks(self):
+        packet = self.review(task={
+            "readme_impact_required": True,
+            "readme_impact": {
+                "material_function_change": False,
+                "no_readme_update_reason": "No behavior change.",
+                "evidence_refs": [],
+            },
+        })
+        self.assertEqual(packet["review"]["verdict"], "BLOCK")
+        self.assertIn("readme_impact_complete", packet["review"]["reasons"])
 
     def test_declared_cosv_vector_is_embedded_in_admission_packet(self):
         packet = self.review(task={
