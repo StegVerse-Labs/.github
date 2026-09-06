@@ -1,0 +1,49 @@
+{
+  "schema": "stegverse.session-build-preflight/v1",
+  "goal": "Repair the ERL independent reviewer runtime reachability by reusing the existing HB/oscillator no-carrier-event WorkerCoordinator admission path.",
+  "observed_source_head": "08e0ce7c0a131620481019054e6163afac742cee",
+  "canonical_handoffs": [
+    "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md",
+    "docs/HEARTBEAT_OSCILLATOR_PRODUCER_MIRROR_HANDOFF.md",
+    "docs/ERL_AI_ECONOMIC_TRANSPARENCY_REVIEW_WORKER_MIRROR_HANDOFF.md",
+    "handoffs/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json"
+  ],
+  "task_registry_resolved": true,
+  "master_records_role_resolved": "OBSERVED_REALITY_AND_CUSTODY_ONLY",
+  "cross_task_coordination_resolved": true,
+  "active_claim_collision_discovered": false,
+  "existing_runtime_solution_reused": {
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+    "fresh_fence_required": true,
+    "carrier_trigger_required": false,
+    "heartbeat_grants_execution_authority": false
+  },
+  "defect": "ERL worker-registry fragment lacked the admission object required by the already-installed independent no-carrier-event WorkerCoordinator path, while its handoff retained superseded each-admitted-heartbeat recheck semantics.",
+  "mutation_scope": [
+    "control/worker-registry.d/erl-ai-economic-transparency-review-001.json",
+    "handoffs/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json",
+    "tests/test_erl_independent_task_control_admission.py"
+  ],
+  "readme_impact": {
+    "required": true,
+    "material_function_change": false,
+    "readme_updated_in_change_set": false,
+    "readme_path": "README.md",
+    "no_readme_update_reason": "This repair does not change repository runtime semantics, interfaces, authority boundaries, evidence semantics, prerequisites, dependencies, failure behavior, or capability meaning. It binds one existing ERL task to the already-implemented and already-documented independent no-carrier-event WorkerCoordinator admission contract.",
+    "evidence_refs": [
+      "docs/HEARTBEAT_OSCILLATOR_PRODUCER_MIRROR_HANDOFF.md#Worker-control-divergence-repair",
+      "README.md#Resident-WorkerCoordinator-self-heal-binding-parity",
+      "README.md#Portable-WorkerCoordinator-sequential-task-lineage",
+      "control/worker-registry.d/sv002-public-observation-runtime-001.json"
+    ]
+  },
+  "new_scheduler_required": false,
+  "new_heartbeat_required": false,
+  "new_workercoordinator_required": false,
+  "new_runtime_authority_required": false,
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "authority_effect": "NONE_PREFLIGHT_ONLY",
+  "disposition": "ADMIT_COORDINATION"
+}
