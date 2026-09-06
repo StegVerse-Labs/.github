@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 14,
+  "generation": 15,
   "status": "RUNTIME_PROFILE_GOVERNANCE_REVIEW_SOURCE_BOUND_AUTHENTIC_RUNTIME_PENDING",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -274,10 +274,80 @@
         "StegVerse-Labs/Executive_Rhetoric_Ledger:docs/AI_ECONOMIC_TRANSPARENCY_MIRROR_HANDOFF.md"
       ],
       "authority_model": {"task_registry_mints_execution_authority": false, "source_state_proves_execution": false, "worker_claim_authority": "WORKERCOORDINATOR", "master_records_reality_authority": true, "interlock_intr_required_for_governed_ingress_egress": true}
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190",
+      "correlation_id": "STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190",
+      "root_correlation_id": "STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190",
+      "parent_task_id": null,
+      "goal": "Complete canonical source-object provenance continuity by executing the already-merged governed displayed-surface ingress with authentic event/receipt identity, binding real downstream derivation edges, retaining and reconstructing the exact lineage in Master Records, and exposing projection-only forward/backward navigation without creating competing provenance authority.",
+      "coordination_state": "PROPOSED",
+      "source_refs": [
+        "control/cross-task-coordination.d/object-provenance-continuity-190.json",
+        "StegVerse-Labs/StegOS#190",
+        "StegVerse-Labs/StegOS:docs/OBJECT_PROVENANCE_CONTINUITY_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegOS@b76b912cf48ad381a0c705cc62aef015fd8f0351",
+        "StegVerse-Labs/StegOS@c3df97861d281dceae06fb1cf5d2de9f669289f7",
+        "master-records/orchestration#74",
+        "master-records/orchestration:docs/OBJECT_PROVENANCE_CUSTODY_MIRROR_HANDOFF.md",
+        "master-records/orchestration@9fd33842d2efca505c01c29c69c65256f03a8dca",
+        "StegVerse-Labs/.github#1026"
+      ],
+      "targets": {
+        "organizations": ["StegVerse-Labs", "master-records"],
+        "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegOS", "master-records/orchestration"],
+        "components": ["canonical-task-coordination", "object-provenance-continuity", "displayed-surface-provenance-ingress", "universal-interlock-intr", "master-records-custody-reconstruction", "workspace-projection"]
+      },
+      "dependencies": [
+        {"dependency_id": "DEP-OBJECT-PROVENANCE-SOURCE-MERGED", "kind": "CAPABILITY", "state": "RESOLVED", "ref": "StegVerse-Labs/StegOS@b76b912cf48ad381a0c705cc62aef015fd8f0351"},
+        {"dependency_id": "DEP-OBJECT-PROVENANCE-DISPLAYED-SURFACE-INGRESS-MERGED", "kind": "CAPABILITY", "state": "RESOLVED", "ref": "StegVerse-Labs/StegOS@c3df97861d281dceae06fb1cf5d2de9f669289f7"},
+        {"dependency_id": "DEP-OBJECT-PROVENANCE-MASTER-RECORDS-CUSTODY-SOURCE", "kind": "CAPABILITY", "state": "RESOLVED", "ref": "master-records/orchestration@9fd33842d2efca505c01c29c69c65256f03a8dca"}
+      ],
+      "blockers": [],
+      "systemic_incident_ref": null,
+      "adjacent_task_refs": ["STEGVERSE-CANONICAL-WORK-COORDINATION-001", "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"],
+      "existing_evidence_refs": [
+        "control/cross-task-coordination.d/object-provenance-continuity-190.json",
+        "StegVerse-Labs/StegOS@b76b912cf48ad381a0c705cc62aef015fd8f0351",
+        "StegVerse-Labs/StegOS@c3df97861d281dceae06fb1cf5d2de9f669289f7",
+        "master-records/orchestration@9fd33842d2efca505c01c29c69c65256f03a8dca"
+      ],
+      "expected_evidence_predicates": [
+        "OBJECT_PROVENANCE_SOURCE_MERGED",
+        "OBJECT_PROVENANCE_DISPLAYED_SURFACE_INGRESS_MERGED",
+        "OBJECT_PROVENANCE_MASTER_RECORDS_CUSTODY_SOURCE_MERGED",
+        "AUTHENTIC_TASK_INGRESS_OBSERVED",
+        "AUTHENTIC_OBJECT_PROVENANCE_INGRESS_OBSERVED",
+        "AUTHENTIC_RECEIPT_BOUND_DERIVATION_OBSERVED",
+        "AUTHENTIC_MASTER_RECORDS_OBJECT_PROVENANCE_CUSTODY_OBSERVED",
+        "AUTHENTIC_MASTER_RECORDS_OBJECT_PROVENANCE_RECONSTRUCTION_OBSERVED",
+        "AUTHENTIC_REVERSE_SOURCE_RESOLUTION_OBSERVED",
+        "WORKSPACE_PROJECTION_ONLY_NAVIGATION_OBSERVED",
+        "AUTHENTIC_TASK_EGRESS_OR_CLOSURE_OBSERVED"
+      ],
+      "runtime_requirements": {
+        "capabilities": ["intr_task_admission", "bounded_process_execution", "canonical_artifact_validation", "master_records_reconciliation"],
+        "environment": "USER_DEVICE_AND_SOVEREIGN_RESIDENT",
+        "direction": "INGRESS_AND_INTERNAL",
+        "mutation_required": true,
+        "deployment_required": false,
+        "current_observation_required": true
+      },
+      "runtime_resolution": null,
+      "worker_claim": {"authority": "WORKERCOORDINATOR", "claim_ref": null, "fence_ref": null, "projection_only": true},
+      "human_action_ref": null,
+      "completion": {"claimed": false, "validated": false, "reconciliation_ref": null},
+      "allowed_next_transitions": ["INGRESS_ADMITTED"],
+      "handoff_projection_refs": [
+        "StegVerse-Labs/StegOS:docs/OBJECT_PROVENANCE_CONTINUITY_MIRROR_HANDOFF.md",
+        "master-records/orchestration:docs/OBJECT_PROVENANCE_CUSTODY_MIRROR_HANDOFF.md"
+      ],
+      "authority_model": {"task_registry_mints_execution_authority": false, "source_state_proves_execution": false, "worker_claim_authority": "WORKERCOORDINATOR", "master_records_reality_authority": true, "interlock_intr_required_for_governed_ingress_egress": true}
     }
   ],
   "human_actions": [],
   "systemic_incidents": [],
   "projections": {"handoffs": [], "status_surfaces": []},
-  "nonclaims": ["REGISTRY_BOOTSTRAP_AND_RUNTIME_ADAPTERS_ARE_SOURCE_STATE_ONLY", "HB32_OSCILLATOR_REFERENCE_DOES_NOT_GRANT_TASK_AUTHORITY", "MASTER_RECORDS_PROJECTION_ADAPTER_DOES_NOT_PROVE_RUNTIME_RECONCILIATION", "DEPENDENCY_FANOUT_SOURCE_DOES_NOT_ADMIT_TRANSITIONS", "ADMITTED_RECONCILIATION_SOURCE_DOES_NOT_MINT_EXECUTION_AUTHORITY", "ADMITTED_DEPENDENCY_EVENT_CONSUMPTION_DOES_NOT_MUTATE_WORKERCOORDINATOR", "AUTHENTIC_INGRESS_PROJECTION_REQUIRES_EXISTING_ADMITTED_RECEIPT", "WORKERCOORDINATOR_PROJECTION_DOES_NOT_MINT_CLAIM_OR_FENCE", "EVENT_BOOTSTRAP_USES_EXISTING_SHARED_INTR_SERVER_ONLY", "ROUTE_INSTALL_AND_BOOTSTRAP_SOURCE_DOES_NOT_PROVE_RUNTIME_EXECUTION", "RESIDENT_REQUEST_DISPATCH_DOES_NOT_GRANT_EXECUTION_AUTHORITY", "RESIDENT_SELF_MATERIALIZATION_IS_LOCAL_SOURCE_COPY_ONLY", "RUNTIME_PROFILE_MAP_MATCH_DOES_NOT_GRANT_AUTHORITY", "RUNTIME_PROFILE_RESOLUTION_IS_PROJECTION_ONLY", "RUNTIME_ROUTING_READINESS_DOES_NOT_GRANT_AUTHORITY", "RUNTIME_TRANSITION_READINESS_DOES_NOT_GRANT_AUTHORITY", "RUNTIME_GOVERNANCE_REVIEW_PACKAGE_DOES_NOT_GRANT_AUTHORITY", "MASTER_RECORDS_CUSTODY_DOES_NOT_GRANT_TASK_AUTHORITY", "POST_CUSTODY_RECONCILIATION_DOES_NOT_CHANGE_TASK_STATE", "GENERIC_RUNTIME_MISSING_REQUIRES_CANONICAL_MAP_RESOLUTION", "GITHUB_FAILURE_EMAIL_NORMALIZATION_DOES_NOT_PROVE_RUNTIME_FAILURE", "NO_AUTHENTIC_INTERLOCK_INTR_TASK_INGRESS_IS_CLAIMED", "NO_WORKERCOORDINATOR_CLAIM_IS_MINTED_BY_THIS_REGISTRY", "NO_MASTER_RECORDS_RUNTIME_RECONCILIATION_IS_CLAIMED", "QUANTUM_TASK_REGISTRATION_IS_PROPOSED_SOURCE_STATE_ONLY", "QUANTUM_SOURCE_AND_CENSUS_EVIDENCE_DO_NOT_PROVE_PQ_DEPLOYMENT_OR_RUNTIME_AWARENESS", "ERL_REVIEW_TASK_REGISTRATION_IS_PROPOSED_SOURCE_STATE_ONLY"]
+  "nonclaims": ["REGISTRY_BOOTSTRAP_AND_RUNTIME_ADAPTERS_ARE_SOURCE_STATE_ONLY", "HB32_OSCILLATOR_REFERENCE_DOES_NOT_GRANT_TASK_AUTHORITY", "MASTER_RECORDS_PROJECTION_ADAPTER_DOES_NOT_PROVE_RUNTIME_RECONCILIATION", "DEPENDENCY_FANOUT_SOURCE_DOES_NOT_ADMIT_TRANSITIONS", "ADMITTED_RECONCILIATION_SOURCE_DOES_NOT_MINT_EXECUTION_AUTHORITY", "ADMITTED_DEPENDENCY_EVENT_CONSUMPTION_DOES_NOT_MUTATE_WORKERCOORDINATOR", "AUTHENTIC_INGRESS_PROJECTION_REQUIRES_EXISTING_ADMITTED_RECEIPT", "WORKERCOORDINATOR_PROJECTION_DOES_NOT_MINT_CLAIM_OR_FENCE", "EVENT_BOOTSTRAP_USES_EXISTING_SHARED_INTR_SERVER_ONLY", "ROUTE_INSTALL_AND_BOOTSTRAP_SOURCE_DOES_NOT_PROVE_RUNTIME_EXECUTION", "RESIDENT_REQUEST_DISPATCH_DOES_NOT_GRANT_EXECUTION_AUTHORITY", "RESIDENT_SELF_MATERIALIZATION_IS_LOCAL_SOURCE_COPY_ONLY", "RUNTIME_PROFILE_MAP_MATCH_DOES_NOT_GRANT_AUTHORITY", "RUNTIME_PROFILE_RESOLUTION_IS_PROJECTION_ONLY", "RUNTIME_ROUTING_READINESS_DOES_NOT_GRANT_AUTHORITY", "RUNTIME_TRANSITION_READINESS_DOES_NOT_GRANT_AUTHORITY", "RUNTIME_GOVERNANCE_REVIEW_PACKAGE_DOES_NOT_GRANT_AUTHORITY", "MASTER_RECORDS_CUSTODY_DOES_NOT_GRANT_TASK_AUTHORITY", "POST_CUSTODY_RECONCILIATION_DOES_NOT_CHANGE_TASK_STATE", "GENERIC_RUNTIME_MISSING_REQUIRES_CANONICAL_MAP_RESOLUTION", "GITHUB_FAILURE_EMAIL_NORMALIZATION_DOES_NOT_PROVE_RUNTIME_FAILURE", "NO_AUTHENTIC_INTERLOCK_INTR_TASK_INGRESS_IS_CLAIMED", "NO_WORKERCOORDINATOR_CLAIM_IS_MINTED_BY_THIS_REGISTRY", "NO_MASTER_RECORDS_RUNTIME_RECONCILIATION_IS_CLAIMED", "QUANTUM_TASK_REGISTRATION_IS_PROPOSED_SOURCE_STATE_ONLY", "QUANTUM_SOURCE_AND_CENSUS_EVIDENCE_DO_NOT_PROVE_PQ_DEPLOYMENT_OR_RUNTIME_AWARENESS", "ERL_REVIEW_TASK_REGISTRATION_IS_PROPOSED_SOURCE_STATE_ONLY", "OBJECT_PROVENANCE_TASK_REGISTRATION_IS_PROPOSED_SOURCE_STATE_ONLY", "OBJECT_PROVENANCE_SOURCE_AND_CUSTODY_MERGES_DO_NOT_PROVE_AUTHENTIC_RUNTIME_LINEAGE"]
 }
