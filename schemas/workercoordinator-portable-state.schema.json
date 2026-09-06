@@ -9,6 +9,9 @@
     "canonical_authority_owner":{"const":"StegVerse-Labs/.github WorkerCoordinator"},
     "execution_surface":{"const":"CURRENT_USER_IPHONE"},
     "generation":{"type":"integer","minimum":0},
+    "checkout_count":{"type":"integer","minimum":0},
+    "checked_out_task_ids":{"type":"array","items":{"type":"string","minLength":1},"uniqueItems":true},
+    "last_task_id":{"type":["string","null"]},
     "parallel_workercoordinator_claim_issuance_allowed":{"const":false},
     "governed_transfer_required_before_other_surface_claims":{"const":true},
     "credential_authority":{"const":"TV/TVC"}
