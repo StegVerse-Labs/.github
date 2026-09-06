@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Produce sovereign activation proof for separated oscillator carrier/runtime.
+"""Verify sovereign runtime activation for carrier-first oscillator runtime.
 
-Carrier continuity alone is not runtime activation. The proof requires the
-oscillator-produced v13 carrier, the independently executing WorkerCoordinator,
-and observable task-capable worker progress. Worker progress is downstream
-runtime evidence and never heartbeat timing authority.
+The canonical activation order is carrier-only native supervision first, then
+independent WorkerCoordinator presence through the existing carrier-side
+self-heal path. HeartBeat remains non-authorizing and WorkerCoordinator remains
+independent admission/claim/fence authority.
 """
 from __future__ import annotations
 
@@ -40,6 +40,14 @@ THIRD_PARTY_ENV_VARS = (
 
 def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _load_optional(path: Path) -> dict:
+    try:
+        value = load_json(path)
+        return value if isinstance(value, dict) else {}
+    except Exception:
+        return {}
 
 
 def proof_path(env: dict[str, str] | None = None) -> Path:
@@ -95,6 +103,47 @@ def _oscillator_carrier(state: dict) -> bool:
     )
 
 
+def _carrier_activation_active(receipt: dict) -> bool:
+    return (
+        receipt.get("schema") == "stegverse.sovereign-heartbeat-carrier-activation/v1"
+        and receipt.get("activation_scope") == "CARRIER_ONLY"
+        and receipt.get("carrier_active") is True
+        and receipt.get("worker_start_attempted") is False
+        and receipt.get("worker_runtime_dependency_for_carrier_start") is False
+        and receipt.get("network_fetch_required") is False
+        and receipt.get("third_party_process_host_required") is False
+        and receipt.get("third_party_scheduler_required") is False
+        and receipt.get("github_runtime_dependency") is False
+        and receipt.get("credential_authority") == "TV/TVC"
+        and receipt.get("credential_requirement") == "NONE"
+        and receipt.get("heartbeat_progression_dependency") == "OSCILLATOR_ONLY"
+        and float(receipt.get("heartbeat_period_ms", -1)) == 10.0
+        and float(receipt.get("heartbeat_reference_frequency_hz", -1)) == 100.0
+        and receipt.get("heartbeat_production_mode") == "OSCILLATOR_PHASE_DRIVEN"
+        and receipt.get("canonical_runtime") == CANONICAL_CARRIER_RUNTIME
+    )
+
+
+def _worker_presence_observed(presence: dict, self_heal: dict, worker: dict) -> bool:
+    projected = (
+        (presence.get("resident") or {}).get("present_worker_runtime_observed") is True
+        and (presence.get("authority") or {}).get("github_token_runtime_authority") == "NONE"
+    )
+    healed = (
+        self_heal.get("active") is True
+        and self_heal.get("carrier_active") is True
+        and self_heal.get("worker_active") is True
+        and self_heal.get("worker_task_capable_cycle_observed") is True
+        and self_heal.get("separate_carrier_and_worker_processes") is True
+        and self_heal.get("canonical_carrier_runtime") == CANONICAL_CARRIER_RUNTIME
+        and self_heal.get("worker_runtime") == CANONICAL_WORKER_RUNTIME
+        and self_heal.get("third_party_process_host_required") is False
+        and self_heal.get("heartbeat_grants_execution_authority") is False
+        and self_heal.get("authority_effect") == "NONE_SUPERVISION_ONLY"
+    )
+    return _worker_task_capable(worker) and (projected or healed)
+
+
 def _active_leases(control_plane: dict) -> list[dict]:
     return list((((control_plane.get("worker_coordination") or {}).get("active_leases")) or []))
 
@@ -119,46 +168,24 @@ def worker_coordination_observed(control_plane: dict, runtime_root: Path) -> boo
 
 
 def restart_commands(*, service_receipt: dict | None = None, system: str | None = None, env: dict[str, str] | None = None) -> list[list[str]]:
+    """Restart the carrier only; WorkerCoordinator recovery is downstream."""
     service = service_receipt or {}
     if service.get("registration_kind") == "stegverse-ephemeral-console":
-        command = service.get("restart_command")
+        command = service.get("carrier_restart_command") or service.get("restart_command")
         if isinstance(command, list) and command and all(isinstance(item, str) and item for item in command):
             return [list(command)]
-        raise RuntimeError("ephemeral console service receipt missing restart_command")
+        raise RuntimeError("ephemeral carrier receipt missing restart command")
 
     name = (system or platform.system()).lower()
     values = dict(os.environ if env is None else env)
     if name == "linux":
-        return [
-            ["systemctl", "--user", "restart", "stegverse-heartbeat.service"],
-            ["systemctl", "--user", "restart", "stegverse-worker-runtime.service"],
-        ]
+        return [["systemctl", "--user", "restart", "stegverse-heartbeat.service"]]
     if name == "darwin":
         uid = getattr(os, "getuid", lambda: int(values.get("UID", "0")))()
-        domain = f"gui/{uid}"
-        return [
-            ["launchctl", "kickstart", "-k", f"{domain}/org.stegverse.heartbeat"],
-            ["launchctl", "kickstart", "-k", f"{domain}/org.stegverse.worker-runtime"],
-        ]
+        return [["launchctl", "kickstart", "-k", f"gui/{uid}/org.stegverse.heartbeat"]]
     if name == "windows":
-        return [
-            ["schtasks", "/Run", "/TN", "StegVerse Heartbeat"],
-            ["schtasks", "/Run", "/TN", "StegVerse Worker Runtime"],
-        ]
+        return [["schtasks", "/Run", "/TN", "StegVerse Heartbeat"]]
     raise RuntimeError(f"unsupported sovereign host platform: {name}")
-
-
-def _local_supervision_active(service: dict) -> bool:
-    if service.get("active") is not True or service.get("third_party_process_host_required") is not False:
-        return False
-    if service.get("registration_kind") == "stegverse-ephemeral-console":
-        return service.get("stegverse_process_supervision") is True
-    return (
-        service.get("native_process_supervision_only") is True
-        and service.get("separate_carrier_and_worker_processes") is True
-        and service.get("carrier_active") is True
-        and service.get("worker_active") is True
-    )
 
 
 def evaluate_runtime(
@@ -166,8 +193,8 @@ def evaluate_runtime(
     *,
     runner: Runner = subprocess.run,
     sleeper: Callable[[float], None] = time.sleep,
-    observe_seconds: float = 0.15,
-    restart_seconds: float = 0.25,
+    observe_seconds: float = 0.20,
+    restart_seconds: float = 1.25,
     system: str | None = None,
     env: dict[str, str] | None = None,
 ) -> dict:
@@ -181,7 +208,9 @@ def evaluate_runtime(
     worker_state_path = root / "control" / "worker-runtime-state.json"
     registry_path = root / "control" / "worker-registry.json"
     materialization_path = root / "receipts" / "sovereign-host" / "materialization.latest.json"
-    service_path = root / "receipts" / "sovereign-host" / "activation.latest.json"
+    carrier_activation_path = root / "receipts" / "sovereign-host" / "carrier-activation.latest.json"
+    presence_path = root / "receipts" / "sovereign-host" / "runtime-presence.latest.json"
+    self_heal_path = root / "receipts" / "sovereign-host" / "ephemeral-process.latest.json"
 
     predicates = {name: False for name in REQUIRED_PREDICATES}
     detail: dict[str, Any] = {
@@ -193,10 +222,13 @@ def evaluate_runtime(
         "credential_requirement": "NONE",
         "non_tv_tvc_secret_or_token_used": False,
         "carrier_state_ref": "control/heartbeat-carrier-runtime-state.json",
+        "carrier_activation_ref": "receipts/sovereign-host/carrier-activation.latest.json",
+        "worker_presence_ref": "receipts/sovereign-host/runtime-presence.latest.json",
         "worker_control_plane_ref": "control/worker-control-plane-coordination.json",
         "worker_state_ref": "control/worker-runtime-state.json",
         "heartbeat_progression_dependency": "OSCILLATOR_ONLY",
         "worker_controls_heartbeat_progression": False,
+        "carrier_restart_restarts_worker_directly": False,
     }
     if hosted or not declared:
         detail["ineligible_reason"] = "THIRD_PARTY_HOSTED_ENVIRONMENT" if hosted else "SOVEREIGN_NODE_DECLARATION_ABSENT"
@@ -208,6 +240,7 @@ def evaluate_runtime(
         root / "heartbeat_runtime" / "oscillator_producer.py",
         root / "heartbeat_runtime" / "worker_runtime.py",
         root / "scripts" / "run_heartbeat_runtime.py",
+        root / "scripts" / "repair_resident_worker_presence.py",
         root / "scripts" / "run_worker_runtime.py",
         carrier_path,
         legacy_path,
@@ -215,7 +248,7 @@ def evaluate_runtime(
         registry_path,
         worker_state_path,
         materialization_path,
-        service_path,
+        carrier_activation_path,
     )
     predicates["runtime_materialized"] = all(path.is_file() for path in required_files)
     if not predicates["runtime_materialized"]:
@@ -224,7 +257,7 @@ def evaluate_runtime(
         return {"predicates": predicates, "detail": detail}
 
     materialization = load_json(materialization_path)
-    service = load_json(service_path)
+    carrier_activation = load_json(carrier_activation_path)
     if materialization.get("canonical_carrier_runtime") != CANONICAL_CARRIER_RUNTIME:
         detail["ineligible_reason"] = "CARRIER_RUNTIME_BINDING_MISMATCH"
         return {"predicates": predicates, "detail": detail}
@@ -237,7 +270,9 @@ def evaluate_runtime(
     if materialization.get("heartbeat_interval_argument_controls_progression") is not False:
         detail["ineligible_reason"] = "INTERVAL_ARGUMENT_REGAINED_HEARTBEAT_AUTHORITY"
         return {"predicates": predicates, "detail": detail}
-    predicates["native_service_active"] = _local_supervision_active(service)
+    if not _carrier_activation_active(carrier_activation):
+        detail["ineligible_reason"] = "CARRIER_ONLY_ACTIVATION_NOT_PROVEN"
+        return {"predicates": predicates, "detail": detail}
 
     legacy_before = legacy_path.read_bytes()
     before = load_json(carrier_path)
@@ -249,12 +284,17 @@ def evaluate_runtime(
 
     sleeper(observe_seconds)
     observed = load_json(carrier_path)
-    worker_observed_state = load_json(worker_state_path)
+    worker_observed = load_json(worker_state_path)
     control_observed = load_json(control_plane_path)
+    presence_observed = _load_optional(presence_path)
+    self_heal_observed = _load_optional(self_heal_path)
     e1, g1 = _epoch_generation(observed)
-    wt1 = _runtime_tick(worker_observed_state)
+    wt1 = _runtime_tick(worker_observed)
+
+    independent_worker_present = _worker_presence_observed(presence_observed, self_heal_observed, worker_observed)
+    predicates["native_service_active"] = _carrier_activation_active(carrier_activation) and independent_worker_present
     predicates["heartbeat_epoch_advanced"] = e1 > e0 and _oscillator_carrier(observed)
-    predicates["worker_task_capable_cycle_observed"] = _worker_task_capable(worker_observed_state) and wt1 > wt0
+    predicates["worker_task_capable_cycle_observed"] = independent_worker_present and wt1 > wt0
     predicates["continuous_runtime_live"] = (
         predicates["native_service_active"]
         and predicates["heartbeat_epoch_advanced"]
@@ -262,7 +302,7 @@ def evaluate_runtime(
     )
     predicates["worker_coordination_checkpoint_observed"] = worker_coordination_observed(control_observed, root)
 
-    commands = restart_commands(service_receipt=service, system=system, env=values)
+    commands = restart_commands(service_receipt=carrier_activation, system=system, env=values)
     results = []
     for command in commands:
         completed = runner(command, check=False, capture_output=True, text=True)
@@ -275,14 +315,18 @@ def evaluate_runtime(
     worker_after = load_json(worker_state_path)
     control_after = load_json(control_plane_path)
     registry_after = load_json(registry_path)
+    presence_after = _load_optional(presence_path)
+    self_heal_after = _load_optional(self_heal_path)
     e2, g2 = _epoch_generation(after)
     wt2 = _runtime_tick(worker_after)
+    worker_present_after = _worker_presence_observed(presence_after, self_heal_after, worker_after)
+
     predicates["epoch_and_generation_non_regressing"] = e2 >= e1 and g2 >= g1 and e1 >= e0 and g1 >= g0
     predicates["no_duplicate_claim_or_fence"] = no_duplicate_claim_or_fence(control_after)
     before_tasks = {row.get("task_id") for row in registry_before.get("tasks", []) if row.get("task_id")}
     after_tasks = {row.get("task_id") for row in registry_after.get("tasks", []) if row.get("task_id")}
     legacy_unchanged = legacy_path.read_bytes() == legacy_before
-    worker_progress_after_restart = _worker_task_capable(worker_after) and wt2 > wt1
+    worker_progress_after_restart = worker_present_after and wt2 > wt1
     predicates["state_reconstruction_pass"] = (
         predicates["controlled_restart_observed"]
         and predicates["epoch_and_generation_non_regressing"]
@@ -294,9 +338,11 @@ def evaluate_runtime(
         and int(load_json(legacy_path).get("epoch", -1)) == 29
     )
     detail.update({
-        "registration_kind": service.get("registration_kind"),
-        "carrier_active": service.get("carrier_active"),
-        "worker_active": service.get("worker_active"),
+        "activation_scope": carrier_activation.get("activation_scope"),
+        "carrier_active": carrier_activation.get("carrier_active"),
+        "worker_start_attempted_by_carrier_installer": carrier_activation.get("worker_start_attempted"),
+        "independent_worker_presence_observed": independent_worker_present,
+        "independent_worker_presence_after_restart": worker_present_after,
         "epoch_before": e0,
         "epoch_observed": e1,
         "epoch_after_restart": e2,
@@ -306,7 +352,7 @@ def evaluate_runtime(
         "worker_runtime_tick_before": wt0,
         "worker_runtime_tick_observed": wt1,
         "worker_runtime_tick_after_restart": wt2,
-        "worker_observation_mode": worker_observed_state.get("observation_mode"),
+        "worker_observation_mode": worker_observed.get("observation_mode"),
         "worker_progress_after_restart": worker_progress_after_restart,
         "legacy_hb29_unchanged": legacy_unchanged,
         "oscillator_carrier_observed": _oscillator_carrier(observed),
@@ -323,32 +369,30 @@ def verify(runtime_root: Path, **kwargs: Any) -> dict:
         "schema": "stegverse.sovereign-runtime-activation-proof/v4",
         **predicates,
         "all_predicates_pass": all(predicates.values()),
-        "heartbeat_progression_dependency": "OSCILLATOR_ONLY",
-        "third_party_runtime_required": False,
-        "physical_additional_machine_required": False,
-        "credential_authority": "TV/TVC",
-        "credential_requirement": "NONE",
-        "non_tv_tvc_secret_or_token_used": False,
-        "github_token_runtime_authority": "NONE",
-        "render_production_runtime_used": False,
+        "predicates": predicates,
         "detail": evaluated["detail"],
+        "canonical_carrier_runtime": CANONICAL_CARRIER_RUNTIME,
+        "worker_runtime": CANONICAL_WORKER_RUNTIME,
+        "activation_order": "CARRIER_ONLY_THEN_INDEPENDENT_WORKER_SELF_HEAL",
+        "heartbeat_grants_execution_authority": False,
+        "worker_coordinator_retains_admission_authority": True,
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": "NONE",
+        "authority_effect": "NONE_RUNTIME_OBSERVATION_ONLY",
     }
     path = proof_path(kwargs.get("env"))
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(body, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    body["proof_path"] = str(path)
     return body
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--runtime-root", type=Path, required=True)
-    parser.add_argument("--observe-seconds", type=float, default=0.15)
-    parser.add_argument("--restart-seconds", type=float, default=0.25)
     args = parser.parse_args()
-    result = verify(args.runtime_root, observe_seconds=args.observe_seconds, restart_seconds=args.restart_seconds)
+    result = verify(args.runtime_root)
     print(json.dumps(result, indent=2, sort_keys=True))
-    return 0 if result["all_predicates_pass"] else 1
+    return 0 if result.get("all_predicates_pass") is True else 1
 
 
 if __name__ == "__main__":
