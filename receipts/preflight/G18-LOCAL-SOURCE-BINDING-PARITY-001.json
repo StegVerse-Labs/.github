@@ -2,10 +2,20 @@
   "schema": "stegverse.session-build-preflight-receipt/v1",
   "preflight_id": "G18-LOCAL-SOURCE-BINDING-PARITY-001",
   "goal": "Preserve the already-local canonical source binding through resident G18 execution so the existing native bootstrap and same-host ephemeral recovery run from canonical source while targeting the resident runtime, rather than treating the resident mutable runtime root as its own source tree.",
-  "state": "PASS_FUNCTIONAL_MUTATION_ADMISSIBLE",
+  "state": "STOP_AT_README_IMPACT_DEPENDENCY",
   "repository": "StegVerse-Labs/.github",
   "base_commit": "f83480b8592b970b0f7b43acd80fa466f932b34c",
+  "task_registry_identifiers": {
+    "primary": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+    "related_combinable": [
+      "RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001"
+    ],
+    "combination_reason": "Both tasks traverse the same already-local canonical-source -> resident-refresh -> existing G18 fence18 execution path. Source-binding parity can be repaired once without creating another claim, request, scheduler, heartbeat, WorkerCoordinator, or runtime solution."
+  },
   "resolved_sources": {
+    "canonical_task_registry": "data/canonical-task-registry.json@generation-15",
+    "worker_registry": "control/worker-registry.json@generation-22",
+    "cross_task_coordination": "control/cross-task-coordination.json#PRED-RESIDENT-REQUEST-CONSUMED-G18-RESUME-FENCE18-001",
     "g18_parent_handoff": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
     "g18_request_resolution_handoff": "handoffs/RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001.json",
     "runtime_solution_registry": "data/runtime-solution-registry.d/hb32-existing-runtime-solutions.json",
@@ -27,7 +37,9 @@
     "canonical_local_source_required": true,
     "network_source_fetch_allowed": false,
     "second_user_operated_machine_required": false,
-    "master_records_authority": "CUSTODY_AND_RECONSTRUCTION_ONLY"
+    "master_records_authority": "CUSTODY_AND_RECONSTRUCTION_ONLY",
+    "cross_task_predicate": "PRED-RESIDENT-REQUEST-CONSUMED-G18-RESUME-FENCE18-001",
+    "cross_task_predicate_state": "UNKNOWN_UNTIL_AUTHENTIC_RESIDENT_CONSUMPTION"
   },
   "exact_gap": {
     "state": "G18_RESIDENT_EXECUTION_LOSES_CANONICAL_LOCAL_SOURCE_BINDING_AT_WORKER_BOUNDARY",
@@ -61,13 +73,14 @@
   },
   "admissible_machine_step": {
     "action": "MAKE_G18_WORKER_RESOLVE_BOOTSTRAP_AND_EPHEMERAL_RECOVERY_FROM_THE_ALREADY_LOCAL_CANONICAL_SOURCE_BINDING_WHILE_KEEPING_RUNTIME_STATE_AND_PROOF_TARGETED_TO_THE_RESIDENT_RUNTIME",
-    "machine_executable_now": true,
+    "machine_executable_now": false,
+    "blocked_only_by": "README_IMPACT_COMPLETENESS",
     "runtime_execution_claimed": false,
     "activation_claimed": false
   },
   "readme_impact": {
     "predicate": "README_IMPACT_RESOLVED",
-    "state": "README_UPDATE_REQUIRED_IN_CHANGE_SET",
+    "state": "INCOMPLETE",
     "material_function_change": true,
     "readme_update_required": true,
     "readme_path": "README.md",
@@ -82,7 +95,7 @@
       "workers/sovereign_runtime_activation_worker.py",
       "9910cf76e0bd171d0166d14d4b1f765bba887667"
     ],
-    "readme_impact_complete": true
+    "readme_impact_complete": false
   },
   "authority": {
     "heartbeat_grants_execution_authority": false,
