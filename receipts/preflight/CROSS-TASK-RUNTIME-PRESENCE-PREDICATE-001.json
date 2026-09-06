@@ -1,0 +1,69 @@
+{
+  "schema": "stegverse.session-machine-preflight/v1",
+  "task_id": "CROSS-TASK-RUNTIME-PRESENCE-PREDICATE-001",
+  "goal_id": "CROSS-TASK-COORDINATION-EVIDENCE-RESOLUTION",
+  "state": "PASS",
+  "evaluated_at": "2026-09-05T19:31:00-05:00",
+  "scope": {
+    "repository": "StegVerse-Labs/.github",
+    "mutation_paths": [
+      "control/cross-task-coordination.d/runtime-presence-predicates.json",
+      "data/canonical-task-registry.json",
+      "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
+      "README.md",
+      "tests/test_runtime_presence_cross_task_coordination.py"
+    ]
+  },
+  "canonical_state_resolution": {
+    "handoff_refs": [
+      "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
+      "docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md",
+      "docs/CANONICAL_RESIDENT_CARRIER_MIRROR_HANDOFF.md",
+      "docs/RESIDENT_WORKER_SELF_HEAL_MIRROR_HANDOFF.md"
+    ],
+    "task_registry_ref": "data/canonical-task-registry.json",
+    "task_registry_generation_observed": 13,
+    "master_records_ref": "master-records/orchestration:CANONICAL_WORK_COORDINATION_CUSTODY_MIRROR_HANDOFF.md",
+    "cross_task_coordination_ref": "control/cross-task-coordination.json + control/cross-task-coordination.d/*.json"
+  },
+  "reuse_resolution": {
+    "authoritative_producer": "heartbeat_runtime/runtime_presence_projection.py",
+    "existing_output_ref": "receipts/sovereign-host/runtime-presence.latest.json",
+    "required_schema": "stegverse.hb-runtime-presence-resident-observability/v1",
+    "required_field": "resident.present_worker_runtime_observed",
+    "freshness_field": "resident.worker_cycle_age_seconds",
+    "freshness_window_seconds": 60.0,
+    "existing_equivalent_coordination_predicate_observed": false,
+    "existing_active_production_claim_observed": false,
+    "master_records_matching_authentic_event_observed": false,
+    "duplicate_runtime_implementation_required": false
+  },
+  "collision_review": {
+    "mutation_scope_collision_observed": false,
+    "duplicate_evidence_producer_collision_observed": false,
+    "workercoordinator_claim_collision_observed": false,
+    "disposition": "ADMIT_COORDINATION_MIGRATION_ONLY"
+  },
+  "readme_impact_required": true,
+  "readme_impact": {
+    "material_function_change": true,
+    "readme_updated_in_change_set": true,
+    "readme_path": "README.md",
+    "evidence_refs": [
+      "README.md#Functional-Change--README-Invariant",
+      "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md#Functional-change-README-completeness-invariant",
+      "heartbeat_runtime/runtime_presence_projection.py",
+      "docs/RESIDENT_WORKER_SELF_HEAL_MIRROR_HANDOFF.md"
+    ],
+    "reason": "Registering canonical reusable resident-presence evidence changes WorkerCoordinator coordination/admission evidence semantics and must be human-visible in README.md."
+  },
+  "authority": {
+    "authority_effect": "NONE_PREFLIGHT_ONLY",
+    "execution_authority_granted": false,
+    "claim_or_fence_granted": false,
+    "heartbeat_grants_execution_authority": false,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE"
+  },
+  "verdict": "PASS"
+}
