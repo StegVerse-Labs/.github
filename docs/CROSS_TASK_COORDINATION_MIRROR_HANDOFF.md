@@ -221,6 +221,11 @@ README impact session/build pre-work preflight:
   organization control-plane run: 34001532346 SUCCESS
   cross-task coordination run: 34001532400 SUCCESS
   heartbeat worker run: 34001532342 SUCCESS
+
+StegGate stable-rendezvous active claim projection:
+  fragment commit: 1a4f61beaebf2d08d34a39c24117bb3b138403d2
+  README completion commit: 01b3b0196ef25f934754f89730054742f4b893c9
+  cross-task coordination run: 34004652942 SUCCESS
 ```
 
 These are source/validation facts only and are not runtime-event or product-activation evidence.
@@ -230,6 +235,16 @@ These are source/validation facts only and are not runtime-event or product-acti
 Canonical composition carries distinct subject-bound records for resident request consumers including Ecosystem Chat, StegIndex one-shot activation, HIL sovereign receiver, G18 existing-claim resume, SV002 organization/public runtime boundaries, SV-011 phase5 boundaries, and StegVerse-001 bounded autonomy. Each remains subject-bound; similarly named predicates are not globally interchangeable.
 
 The StegVerse-001 bounded-autonomy predicate records its dependency on the already-existing one-shot resident-stack activation predicate; it does not create a second activation mechanism or bypass TVC lease issuance.
+
+## Active claim projection state
+
+The composed ledger now mirrors the currently resolved control-plane active claims for collision detection:
+
+1. `SHWP-SHWP-ALL-ORG-FEDERATION-001-G17` / fence 17;
+2. `SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18` / fence 18;
+3. `SHWP-STEGGATE-STABLE-RENDEZVOUS-WORKER-001-G13` / fence 13.
+
+These projections preserve existing ownership only. They do not mint, renew, transfer, or prove execution authority. A `BLOCKED` or otherwise nonterminal task state does not release the underlying claim.
 
 ## Resident-presence migration boundary
 
@@ -246,6 +261,7 @@ The shared runtime-presence projector proves a concrete runtime root/node instan
 Core source implementation: VALIDATED.
 Composed canonical ledger: VALIDATED.
 Subject-bound resident-request migration: PARTIAL / ACTIVE.
+Active control-plane claim projection: CURRENTLY RESOLVED G13/G17/G18 REPRESENTED.
 StegIndex composed discovery: VALIDATED.
 README impact WorkerCoordinator enforcement: MERGED / VALIDATED.
 README impact session/build pre-work enforcement: MERGED / VALIDATED.
@@ -261,7 +277,7 @@ Existing runtime activation, WorkerCoordinator execution, sovereign inference, H
 2. establish exact subject identity before any shared registration, especially runtime-presence predicates;
 3. register only genuinely reusable producer/evidence relationships and exact gaps;
 4. bind any additional session/build consumers that still read an incomplete coordination slice;
-5. register active claims/producers only where canonical ownership records already exist;
+5. re-resolve the active control-plane claim set before each new claim migration so released/new claims are not inferred from stale snapshots;
 6. validate each migration deterministically;
 7. evaluate tag/release only after ecosystem-adoption criteria are actually satisfied;
 8. after actual release/tag, verify governed propagation requirements for `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `admissibility-wiki`, and `stegguardian-wiki`.
@@ -281,4 +297,4 @@ Current goal completion: FALSE.
 Current ecosystem-adoption work remaining: TRUE.
 Thread archive-ready: FALSE.
 
-README impact for this reconciliation commit: NON-MATERIAL. Reason: documentation-only reconciliation of already-merged validated preflight behavior; repository function is unchanged. Evidence: PR #1027 and runs `34001532342`, `34001532346`, `34001532400`.
+README impact for this reconciliation commit: NON-MATERIAL. Reason: this handoff update records the already-installed G13 coordination projection, its README completion, and successful validation; it does not change repository behavior beyond those preceding functional/doc changes. Evidence: `control/cross-task-coordination.d/steggate-stable-rendezvous-active-claim.json`, README.md, commits `1a4f61beaebf2d08d34a39c24117bb3b138403d2` and `01b3b0196ef25f934754f89730054742f4b893c9`, run `34004652942`.
