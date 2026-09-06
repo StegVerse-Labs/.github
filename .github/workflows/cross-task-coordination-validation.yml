@@ -18,6 +18,7 @@ on:
       - 'control/cross-task-coordination-candidates/**'
       - 'receipts/preflight/*.supersession.json'
       - 'tests/test_coordination_graph.py'
+      - 'tests/test_coordination_required_field_values.py'
       - 'tests/test_coordination_ledger.py'
       - 'tests/test_cross_task_coordination_handoff_projection.py'
       - 'tests/test_session_build_preflight.py'
@@ -40,6 +41,7 @@ on:
       - 'control/cross-task-coordination-candidates/**'
       - 'receipts/preflight/*.supersession.json'
       - 'tests/test_coordination_graph.py'
+      - 'tests/test_coordination_required_field_values.py'
       - 'tests/test_coordination_ledger.py'
       - 'tests/test_cross_task_coordination_handoff_projection.py'
       - 'tests/test_session_build_preflight.py'
@@ -71,7 +73,7 @@ jobs:
       - name: Validate coordination source
         run: |
           python -m py_compile heartbeat_runtime/coordination_graph.py heartbeat_runtime/coordination_ledger.py scripts/render_cross_task_coordination_handoff.py scripts/session_build_preflight.py scripts/resolve_machine_preflight_receipt.py
-          python -m unittest -v tests.test_coordination_graph tests.test_coordination_ledger tests.test_cross_task_coordination_handoff_projection tests.test_session_build_preflight tests.test_preflight_supersession
+          python -m unittest -v tests.test_coordination_graph tests.test_coordination_required_field_values tests.test_coordination_ledger tests.test_cross_task_coordination_handoff_projection tests.test_session_build_preflight tests.test_preflight_supersession
           python - <<'PY'
           import json
           from pathlib import Path
