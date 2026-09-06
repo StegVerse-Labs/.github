@@ -288,15 +288,29 @@ A successful bootstrap receipt proves only the exact bounded `TASK_INGRESS` requ
 
 ### Native email action monitor
 
-StegVerse includes a native bounded mailbox-maintenance handler at `scripts/run_native_email_action_monitor.py`. It is intended to replace an assistant-mediated mailbox loop with the same deterministic StegVerse-side sequence: inspect the newest bounded inbox batch, resolve the exact message-ID batch before mutation, cluster GitHub/task-update signals, archive the exact reviewed batch, measure actionable backlog depth, read inbox totals, and emit a durable monitor receipt.
+StegVerse includes a native bounded mailbox-maintenance handler at `scripts/run_native_email_action_monitor.py`. It is intended to replace an assistant-mediated mailbox loop using the **existing** HB/oscillator resident continuation path rather than a ChatGPT automation or second scheduler.
 
-Provider credentials are not accepted by this handler. Provider access must arrive through an already-local mail broker whose response explicitly retains `TV/TVC` as credential authority, exports no credential material, and transfers no provider-operation authority. The handler fails closed if those invariants are not present. This prevents the mail handler from becoming a second credential authority or embedding Google/OAuth secrets in `.github`, StegOS, Site, or a task receipt.
+The resident path is:
 
-The handler reuses `scripts/normalize_github_failure_email_events.py` signature/incident semantics. Email and GitHub notifications are attention/observation signals only: they do not prove source completion, CI truth, deployment, resident execution, runtime failure, governed activation, or task completion. Incident clusters remain `INCIDENT_PROPOSED_NOT_ADMITTED` and require canonical task ingress before any technical work is authorized.
+```text
+HB32 / canonical 100 Hz oscillator reference
+-> existing HB machine-continuation / resident WorkerCoordinator cycle
+-> scripts/dispatch_resident_execution_requests.py
+-> standing native-email resident request
+-> scripts/consume_native_email_action_monitor_request.py
+-> scripts/run_native_email_action_monitor.py
+-> local StegOps TVC broker
+-> exact TVC Gmail provider operation
+-> stegverse.native-email-action-monitor-receipt/v1
+```
 
-Archival is also bounded and evidence-preserving. `SEARCH_MESSAGES` is used for inspection, but the handler must perform a separate exact `SEARCH_IDS` query for the same bounded inbox slice before `ARCHIVE_IDS`; it never assumes that a provider's visible message payload contains every ID in the bounded result. A partial archive produces `PARTIAL_ARCHIVE_FAILURE` and retains the failed message IDs. When the actionable search returns a continuation token, the receipt reports a lower bound rather than inventing a complete backlog total.
+The mailbox pass is restricted to GitHub operational notification senders (`notifications@github.com`, `noreply@github.com`) and `[Task Update]` mail. It resolves the exact bounded message-ID batch before mutation, clusters those operational signals, archives only those exact reviewed operational IDs, measures actionable backlog depth, reads inbox totals, and emits a durable receipt. Unrelated inbox mail is not selected for archive.
 
-The handler emits `stegverse.native-email-action-monitor-receipt/v1` and grants no execution, task-admission, claim/fence, credential, routing, transition, custody, publication, or runtime authority. HeartBeat remains non-authorizing and GitHub token runtime authority remains `NONE`.
+Provider credentials are not accepted by this handler. Provider access must arrive through the existing StegOps broker and exact TV/TVC Gmail provider route; responses must retain `TV/TVC` as credential authority, export no credential material, and transfer no provider-operation authority. The handler fails closed if those invariants are absent. No Google/OAuth credential belongs in `.github`, resident receipts, GitHub Actions, or the assistant-mediated path.
+
+The handler reuses `scripts/normalize_github_failure_email_events.py` signature/incident semantics. Email and GitHub notifications are attention/observation signals only: they do not prove source completion, CI truth, deployment, resident execution, runtime failure, governed activation, or task completion. Incident clusters remain `INCIDENT_PROPOSED_NOT_ADMITTED` and require canonical task ingress before technical work is authorized.
+
+The standing request is retryable. A temporary absence of the exact TV/TVC Gmail owner session records an attempted/pending resident outcome rather than silently terminating the capability. HB/oscillator progression remains `OSCILLATOR_ONLY` and grants no execution, task-admission, claim/fence, credential, routing, transition, custody, publication, mailbox, or provider authority. Source, merge, CI, dispatcher registration, or heartbeat progression do not prove live Gmail execution; authentic operation requires the retained native monitor receipt from the resident path.
 
 ### Cross-task active-claim projection
 
