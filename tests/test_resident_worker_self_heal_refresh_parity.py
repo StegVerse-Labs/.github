@@ -48,6 +48,10 @@ class ResidentWorkerSelfHealRefreshParityTests(unittest.TestCase):
                 "control/resident-execution-request.d",
             ):
                 (source / rel).mkdir(parents=True, exist_ok=True)
+            # A resident runtime already has its canonical control parent before
+            # local source refresh begins; refresh must preserve mutable state in
+            # that tree rather than inventing a second runtime layout.
+            (runtime / "control").mkdir(parents=True, exist_ok=True)
             (source / "heartbeat_runtime/worker_runtime.py").write_text("# worker\n", encoding="utf-8")
             (source / "heartbeat_runtime/intr_derived_carrier.py").write_text("# carrier\n", encoding="utf-8")
             (source / "scripts/run_worker_runtime.py").write_text("# runner\n", encoding="utf-8")
