@@ -57,6 +57,31 @@ class RuntimePresenceProjectionTests(unittest.TestCase):
             "authority_effect": "NONE_SUPERVISION_ONLY",
         }
 
+    def portable_checkout_receipt(self) -> dict:
+        return {
+            "schema": "stegverse.workercoordinator-portable-checkout-receipt/v1",
+            "portable_authority_epoch": "WC-PORTABLE-IPHONE-20260902",
+            "canonical_authority_owner": "StegVerse-Labs/.github WorkerCoordinator",
+            "authority_domain": "INDEPENDENT_TASK_CONTROL",
+            "task_id": "SHWP-SV002-ORG-RUNTIME-ACTIVATION-001",
+            "worker_id": "sv002-org-runtime-activation-worker",
+            "claim_id": "SHWP-SHWP-SV002-ORG-RUNTIME-ACTIVATION-001-G25",
+            "fencing_token": 25,
+            "predecessor_generation": 24,
+            "execution_surface": "CURRENT_USER_IPHONE",
+            "heartbeat_reference": 123,
+            "heartbeat_granted_authority": False,
+            "credential_authority": "TV/TVC",
+            "github_token_runtime_authority": "NONE",
+            "global_workercoordinator_authority": True,
+            "stegos_device_task_authority": False,
+            "external_non_stegverse_machine_required": False,
+            "parallel_workercoordinator_claim_issuance_allowed": False,
+            "governed_transfer_required_before_other_surface_claims": True,
+            "authority_effect": "CANONICAL_WORKERCOORDINATOR_CLAIM_FENCE",
+            "receipt_sha256": "sha256:" + ("a" * 64),
+        }
+
     def fresh_worker(self) -> dict:
         return {
             "schema": "stegverse.worker-runtime-state/v1",
@@ -71,6 +96,8 @@ class RuntimePresenceProjectionTests(unittest.TestCase):
             result = project(Path(tmp), {"request": "receipts/request.json"})
             self.assertFalse(result["resident"]["runtime_alive_observed"])
             self.assertFalse(result["resident"]["present_worker_runtime_observed"])
+            self.assertFalse(result["resident"]["task_control_runtime_observed"])
+            self.assertFalse(result["portable_workercoordinator"]["observed"])
             self.assertFalse(result["governed_progress"]["request_observed"])
             self.assertFalse(result["heartbeat_reference"]["freshness_correlated"])
             self.assertFalse(result["governed_progress"]["runtime_signal_is_execution_receipt"])
@@ -87,9 +114,51 @@ class RuntimePresenceProjectionTests(unittest.TestCase):
             self.assertTrue(result["resident"]["runtime_alive_observed"])
             self.assertTrue(result["resident"]["task_capable_worker_observed"])
             self.assertTrue(result["resident"]["present_worker_runtime_observed"])
+            self.assertTrue(result["resident"]["task_control_runtime_observed"])
             self.assertTrue(result["resident"]["worker_cycle_fresh"])
             self.assertTrue(result["heartbeat_reference"]["freshness_correlated"])
             self.assertEqual(result["resident"]["runtime_evidence_kind"], "CANONICAL_SERVICE_RECEIPT")
+
+    def test_portable_checkout_proves_task_control_surface_without_native_process_presence(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            rel = "receipts/device/sv002-portable-checkout.json"
+            self.write(root, rel, self.portable_checkout_receipt())
+            result = project(root, {"portable_checkout": rel})
+            self.assertFalse(result["resident"]["runtime_alive_observed"])
+            self.assertFalse(result["resident"]["present_worker_runtime_observed"])
+            self.assertTrue(result["resident"]["task_control_runtime_observed"])
+            self.assertFalse(result["resident"]["native_process_presence_is_universal_runtime_requirement"])
+            self.assertTrue(result["portable_workercoordinator"]["observed"])
+            self.assertEqual(result["portable_workercoordinator"]["task_id"], "SHWP-SV002-ORG-RUNTIME-ACTIVATION-001")
+            self.assertEqual(result["portable_workercoordinator"]["fencing_token"], 25)
+            self.assertFalse(result["portable_workercoordinator"]["proves_task_execution"])
+            self.assertFalse(result["governed_progress"]["portable_checkout_is_execution_receipt"])
+            self.assertFalse(result["heartbeat_reference"]["continuous_process_required_for_progression"])
+            self.assertEqual(result["heartbeat_reference"]["progression_dependency"], "OSCILLATOR_ONLY")
+
+    def test_invalid_portable_checkout_cannot_prove_task_control_surface(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            rel = "receipts/device/sv002-portable-checkout.json"
+            receipt = self.portable_checkout_receipt()
+            receipt["global_workercoordinator_authority"] = False
+            self.write(root, rel, receipt)
+            result = project(root, {"portable_checkout": rel})
+            self.assertFalse(result["portable_workercoordinator"]["observed"])
+            self.assertFalse(result["resident"]["task_control_runtime_observed"])
+
+    def test_static_portable_package_is_not_portable_runtime_evidence(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            rel = "control/portable-workercoordinator-packages/example.json"
+            self.write(root, rel, {
+                "schema": "stegverse.workercoordinator-portable-checkout-package/v1",
+                "execution_surface": "CURRENT_USER_IPHONE",
+            })
+            result = project(root, {"portable_checkout": rel})
+            self.assertFalse(result["portable_workercoordinator"]["observed"])
+            self.assertFalse(result["resident"]["task_control_runtime_observed"])
 
     def test_ephemeral_v13_service_receipt_can_prove_runtime_alive(self):
         with tempfile.TemporaryDirectory() as tmp:
