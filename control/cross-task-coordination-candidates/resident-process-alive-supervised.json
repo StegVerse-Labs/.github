@@ -11,11 +11,13 @@
     "SV002-PUBLIC-OBSERVATION-RUNTIME-001",
     "DEVICE-KV-INTR-OBSERVATION-001",
     "ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001",
-    "DATA-CONTINUATION-STEGCLAW-P4"
+    "DATA-CONTINUATION-STEGCLAW-P4",
+    "ERL-AI-ECON-TRANSPARENCY-001"
   ],
   "deferred_because": [
     "The canonical runtime-presence projector proves liveness for a concrete runtime_root and exposes resident.node_id from authentic activation/self-heal evidence.",
     "Static consumer files share the semantic predicate name but do not by themselves prove that every consumer refers to the same runtime_root/node instance.",
+    "The ERL AI economic-transparency review task explicitly depends on the same canonical runtime-presence receipt, but its retained task state does not establish that its target resident runtime is the same runtime_root/node instance as the other staged consumers.",
     "Registering one global Boolean would permit presence evidence from one node/runtime instance to satisfy a different node/runtime consumer."
   ],
   "required_subject_binding_before_admission": [
@@ -28,7 +30,8 @@
     "heartbeat_runtime/runtime_presence_projection.py",
     "control/runtime-observability-consumers/ecosystem-chat-sovereign-inference-001.json",
     "control/runtime-observability-consumers/stegverse001-bounded-autonomy-runtime-001.json",
-    "control/runtime-observability-consumers/sv002-public-observation-runtime-001.json"
+    "control/runtime-observability-consumers/sv002-public-observation-runtime-001.json",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger/task-state/ERL-AI-ECON-TRANSPARENCY-001.json"
   ],
   "safe_next_action": "When authentic runtime-presence evidence exists, bind the predicate to that exact runtime_root/node identity and only then group consumers proven to target the same subject. Do not create another runtime-presence projector or infer liveness from heartbeat progression."
 }
