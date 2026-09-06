@@ -9,12 +9,70 @@
   "shared_owner_issue": "StegVerse-Labs/.github#814",
   "shared_contract": "management/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_CONTRACT.json",
   "canonical_projector": "scripts/project_hb_runtime_presence.py",
-  "observed_repository_state_at": "2026-09-03T15:49:00Z",
+  "observed_repository_state_at": "2026-09-06T07:30:00-05:00",
   "first_unresolved_shared_runtime_predicate": "resident_process_alive_supervised",
+  "first_unresolved_predicate_is_passive_blocker": false,
+  "existing_runtime_solution_chain": {
+    "state": "SELECT_EXISTING_SOLUTION_BEFORE_NEW_IMPLEMENTATION",
+    "heartbeat_reference_solution": {
+      "handoff_ref": "docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md",
+      "runtime_separation_ref": "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md",
+      "rule": "HeartBeat references are daemon-free protocol derivations from the HB32 100 Hz oscillator anchor; process absence cannot be treated as heartbeat absence or progression failure."
+    },
+    "worker_presence_solution": {
+      "handoff_ref": "docs/RESIDENT_WORKER_SELF_HEAL_MIRROR_HANDOFF.md",
+      "carrier_entrypoint": "scripts/run_heartbeat_runtime.py",
+      "repair_entrypoint": "scripts/repair_resident_worker_presence.py",
+      "rule": "When a canonical carrier is live and WorkerCoordinator is absent, the existing carrier-owned supervision visit restores the existing WorkerCoordinator, requires a fresh task-capable tick, persists runtime-presence evidence, and lets WorkerCoordinator drain resident requests under its own authority."
+    },
+    "stale_runtime_source_solution": {
+      "source_refresh_entrypoint": "scripts/refresh_sovereign_worker_runtime_source.py",
+      "worker_entrypoint": "scripts/run_worker_runtime.py",
+      "rule": "The existing native WorkerCoordinator refreshes already-local canonical source before the resident request sweep; refresh includes the self-heal module and preserves mutable runtime state."
+    },
+    "incomplete_resident_stack_solution": {
+      "handoff_ref": "docs/ONE_SHOT_RESIDENT_STACK_ACTIVATION_MIRROR_HANDOFF.md",
+      "request_ref": "control/resident-execution-request.d/one-shot-resident-stack-activation-001.json",
+      "consumer_ref": "scripts/consume_one_shot_resident_stack_activation_request.py",
+      "activator_ref": "scripts/activate_resident_stack.py",
+      "rule": "If local runtime/source materialization is incomplete, reuse the existing one-shot resident stack activation path to package the sovereign control bundle, run local StegDeploy, bootstrap the resident stack, and return to existing WorkerCoordinator dispatch."
+    },
+    "ecosystem_chat_request": {
+      "request_id": "RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-002",
+      "request_ref": "control/resident-execution-request.d/ecosystem-chat-parent-001.json",
+      "consumer_ref": "scripts/consume_resident_execution_request.py",
+      "dedicated_executor_ref": "scripts/run_independent_ecosystem_chat_parent.py",
+      "duplicate_request_allowed": false
+    },
+    "selection_order": [
+      "derive current HeartBeat reference from the existing oscillator protocol anchor without waiting for a heartbeat process",
+      "reuse existing carrier WorkerCoordinator self-heal when carrier presence exists and worker presence is missing",
+      "reuse existing local-only source refresh so the resident runtime carries the current repair/consumer code",
+      "reuse existing one-shot resident stack activation when resident materialization/source roots are incomplete",
+      "consume the existing Ecosystem Chat resident request and let the dedicated parent executor acquire its own fresh fence >22",
+      "continue through TVC, LLM-adapter, and existing Master Records reconstruction"
+    ],
+    "forbidden_reactions": [
+      "create another heartbeat or oscillator",
+      "create another WorkerCoordinator or scheduler",
+      "create another resident runtime",
+      "create a duplicate Ecosystem Chat resident request",
+      "mint a manual parent claim or fence",
+      "treat GitHub or hosted validation as runtime repair authority",
+      "wait passively on an unchanged resident-process absence without selecting the existing remediation chain"
+    ]
+  },
   "predicate_map": {
     "resident_process_alive_supervised": {
       "source_class": "direct sovereign runtime activation/presence receipt",
-      "observed": false
+      "observed": false,
+      "resolution_state": "EXISTING_SELF_HEAL_AND_STACK_ACTIVATION_PATH_AVAILABLE",
+      "resolution_refs": [
+        "docs/RESIDENT_WORKER_SELF_HEAL_MIRROR_HANDOFF.md",
+        "docs/ONE_SHOT_RESIDENT_STACK_ACTIVATION_MIRROR_HANDOFF.md",
+        "scripts/repair_resident_worker_presence.py",
+        "scripts/activate_resident_stack.py"
+      ]
     },
     "node_runtime_fresh": {
       "source_class": "HB reference plus direct current resident/worker observation correlation",
@@ -56,6 +114,9 @@
   "no_new_runtime_implementation_required_for": [
     "HB reference derivation",
     "runtime presence projection",
+    "resident WorkerCoordinator self-heal",
+    "resident local-only source refresh",
+    "one-shot resident stack activation",
     "resident request bridge",
     "fresh-fence parent executor",
     "StegVerse local-model runtime",
@@ -71,7 +132,7 @@
   "credential_authority": "TV/TVC",
   "credential_requirement": "NONE",
   "github_token_runtime_authority": "NONE",
-  "authority_effect": "NONE_OBSERVATION_ONLY",
+  "authority_effect": "NONE_OBSERVATION_AND_SOLUTION_SELECTION_ONLY",
   "pre_admission_evidence": {
     "state": "PARENT_EVIDENCE_CANDIDATE_VERIFIED",
     "source": "exact exported CURRENT_USER_IPHONE StegOS evidence bundle",
@@ -87,5 +148,17 @@
     "parent_execution_proven": false,
     "parent_fence_promoted": false,
     "authority_effect": "NONE_OBSERVATION_ADMISSION_CANDIDATE_ONLY"
+  },
+  "preflight": {
+    "issue": "StegVerse-Labs/.github#1079",
+    "result": "PASS",
+    "canonical_handoff_resolved": true,
+    "task_registry_resolved": true,
+    "master_records_state_resolved": true,
+    "cross_task_coordination_resolved": true,
+    "existing_runtime_solutions_reused": true,
+    "duplicate_runtime_or_request_created": false,
+    "readme_impact": "NO_CHANGE_REQUIRED",
+    "readme_reason": "This bounded change corrects stale coordination/evidence routing only. Runtime behavior, failure semantics, interfaces, authority boundaries, dependencies, and capability meaning were already changed and documented by the merged HB/runtime-separation, resident self-heal, local-source-refresh, native-materialization, bootstrap-eligibility, and one-shot resident-stack repairs."
   }
 }
