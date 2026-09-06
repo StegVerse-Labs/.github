@@ -242,6 +242,14 @@ Terminal packages remain non-checkoutable because portable admission still requi
 
 This sequential-lineage behavior allows downstream same-device consumers to reuse the existing portable WorkerCoordinator instead of requiring another machine or creating another runtime authority plane. It does not by itself package, admit, dispatch, execute, or complete any downstream task, and it does not establish current iPhone runtime presence or authentic resident execution evidence.
 
+### Portable organization allocator successor-task continuity
+
+The `CURRENT_USER_IPHONE` organization allocator uses one persistent `stegverse.org-allocator-portable-state/v1` lineage and one canonical organization-allocator authority epoch. A completed or historically retained claim is never reactivated merely because downstream source changes later. Instead, genuinely new non-overlapping work is represented by a distinct queued task with its own exact path/dependency scope and may receive the next monotonic claim-registry generation/fencing token through the existing atomic CAS allocator.
+
+The HB31 Ecosystem Chat Site source successor is represented by `TASK-2026-0009`. It owns only the exact `stegos-bootstrap/device-local-autostart.js` successor projection plus its Site validation/README/handoff/task metadata, on dependency surface `site:hb31-ecosystem-chat-runtime-opportunity-successor`. TASK-2026-0008/G4 remains predecessor provenance and is not requeued or reused. The portable package retains the same authority epoch and predecessor seed state, while the existing persisted current-iPhone state can preserve prior G3/G4 claims and treat the newly cataloged TASK-0009 as queued when no persisted status exists for that new identity.
+
+No catalog entry, source merge, package update, HB progression, or task presence grants the TASK-0009 claim. Only the existing canonical organization allocator may atomically select it and issue the next fence. The new task must remain non-overlapping with active claims; a path or dependency-surface collision still fails closed. TV/TVC remains credential authority, GitHub runtime authority remains `NONE`, no second machine is required, and this catalog extension creates no new allocator, scheduler, WorkerCoordinator, heartbeat, or Site mutation authority.
+
 ### Ecosystem Chat same-device terminal execution surface
 
 The canonical Ecosystem Chat parent may satisfy its sovereign runtime-surface predicate through either the existing native/private-process path or the exact `CURRENT_USER_IPHONE` service-worker path. The service-worker path is accepted only when the runtime proof binds `SERVICE_WORKER_LOCAL_INTERCEPT`, the canonical `https://stegverse.org/stegos-bootstrap/local-model` endpoint and StegOS service-worker scope, observed device-local interception, observed real inference, and `network_egress_required=false`.
