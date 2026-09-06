@@ -1,0 +1,29 @@
+{
+  "schema": "stegverse.cross-task-coordination-fragment/v1",
+  "fragment_id": "G18-ACTIVE-CLAIM-001",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "claims": [
+    {
+      "claim_id": "SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18",
+      "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+      "state": "ACTIVE",
+      "scope": {
+        "repositories": ["StegVerse-Labs/.github"],
+        "paths": [
+          "receipts/sovereign-host/g18-resident-execution-request-consumption.latest.json",
+          "receipts/sovereign-runtime-activation/SHWP-DURABLE-RUNTIME-ACTIVATION.json"
+        ],
+        "modules": ["sovereign-runtime-activation"],
+        "runtime_surfaces": ["SHWP-DURABLE-RUNTIME-ACTIVATION:fence18"],
+        "evidence_responsibilities": ["g18-resident-request-consumption", "g18-sovereign-runtime-activation"]
+      },
+      "fencing_token": 18,
+      "worker_id": "sovereign-runtime-activation-worker",
+      "worker_instance_id": "sovereign-runtime-activation-worker-HB15-G18",
+      "task_state": "BLOCKED",
+      "canonical_owner_ref": "control/worker-control-plane-coordination.json",
+      "authority_effect": "COORDINATION_ONLY",
+      "note": "Active claim/lease ownership is preserved for collision detection. BLOCKED task state does not release or transfer the claim. This record does not prove execution or activation."
+    }
+  ]
+}
