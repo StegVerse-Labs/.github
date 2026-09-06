@@ -18,6 +18,13 @@
       "required_execution_instance": "RESIDENT-EXEC-SV002-ORG-RUNTIME-ACTIVATION-001",
       "max_age_seconds": null,
       "required_fields": ["task_id", "state", "terminal_round_trip_observed", "runtime_execution_attempted", "cross_org_principal_execution"],
+      "required_field_values": {
+        "task_id": "SHWP-SV002-ORG-RUNTIME-ACTIVATION-001",
+        "state": "COMPLETED",
+        "terminal_round_trip_observed": true,
+        "runtime_execution_attempted": true,
+        "cross_org_principal_execution": false
+      },
       "expected_output_ref": "receipts/sovereign-host/sv002-org-runtime-activation.latest.json",
       "consumers": ["SHWP-SV002-ORG-RUNTIME-ACTIVATION-001"],
       "canonical_source_refs": [
@@ -40,7 +47,14 @@
       "required_scope": "SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001 resident request consumption",
       "required_execution_instance": "RESIDENT-EXEC-SV002-PUBLIC-OBSERVATION-RUNTIME-001",
       "max_age_seconds": null,
-      "required_fields": ["request_id", "task_id", "state", "terminal_round_trip_observed"],
+      "required_fields": ["request_id", "task_id", "state", "terminal_round_trip_observed", "runtime_execution_attempted"],
+      "required_field_values": {
+        "request_id": "RESIDENT-EXEC-SV002-PUBLIC-OBSERVATION-RUNTIME-001",
+        "task_id": "SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001",
+        "state": "COMPLETED",
+        "terminal_round_trip_observed": true,
+        "runtime_execution_attempted": true
+      },
       "expected_output_ref": "receipts/sovereign-host/sv002-public-observation-request-consumption.latest.json",
       "consumers": ["SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001"],
       "canonical_source_refs": [
@@ -61,6 +75,7 @@
       "required_output_ref": "receipts/sovereign-host/sv002-org-runtime-activation.latest.json",
       "required_schema": "stegverse.sv002-org-runtime-activation-consumption/v1",
       "required_fields": ["task_id", "state", "terminal_round_trip_observed", "runtime_execution_attempted", "cross_org_principal_execution"],
+      "required_field_values": {"task_id": "SHWP-SV002-ORG-RUNTIME-ACTIVATION-001", "state": "COMPLETED", "terminal_round_trip_observed": true, "runtime_execution_attempted": true, "cross_org_principal_execution": false},
       "required_freshness": null,
       "collision_refs": [],
       "action_without_collision": "Consume the existing organization-runtime activation path; do not execute the StegVerse-002 principal from StegVerse-Labs and do not create a second resident executor."
@@ -74,7 +89,8 @@
       "required_producer": "existing SV002 public observation request consumer",
       "required_output_ref": "receipts/sovereign-host/sv002-public-observation-request-consumption.latest.json",
       "required_schema": "stegverse.sv002-public-observation-request-consumption/v1",
-      "required_fields": ["request_id", "task_id", "state", "terminal_round_trip_observed"],
+      "required_fields": ["request_id", "task_id", "state", "terminal_round_trip_observed", "runtime_execution_attempted"],
+      "required_field_values": {"request_id": "RESIDENT-EXEC-SV002-PUBLIC-OBSERVATION-RUNTIME-001", "task_id": "SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001", "state": "COMPLETED", "terminal_round_trip_observed": true, "runtime_execution_attempted": true},
       "required_freshness": null,
       "collision_refs": [],
       "action_without_collision": "Consume the existing node-bound public-observation request path; do not create a duplicate route, runtime, or hosted authority plane."
