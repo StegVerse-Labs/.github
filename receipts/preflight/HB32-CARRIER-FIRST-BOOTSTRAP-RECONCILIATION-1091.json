@@ -16,6 +16,7 @@
     "master_records_runtime_presence": "master-records/orchestration:RUNTIME_PRESENCE_CUSTODY_MIRROR_HANDOFF.md",
     "current_bootstrap": "scripts/bootstrap_sovereign_runtime.py",
     "current_verifier": "scripts/verify_sovereign_runtime_activation.py",
+    "current_readme": "README.md",
     "superseded_candidate_pr": 1098
   },
   "resolved_state": {
@@ -61,17 +62,25 @@
   },
   "readme_impact": {
     "predicate": "README_IMPACT_RESOLVED",
-    "state": "SATISFIED_BY_REQUIRED_UPDATE_IN_CHANGE_SET",
+    "state": "SATISFIED_NO_ADDITIONAL_README_MUTATION_REQUIRED",
     "material_function_change": true,
-    "readme_update_required": true,
+    "readme_update_required": false,
     "readme_path": "README.md",
-    "readme_updated_in_change_set_required": true,
-    "determination": "README_UPDATE_REQUIRED_IN_SAME_CHANGE_SET",
-    "evidence_basis": [
-      "The successor changes effective sovereign bootstrap ordering from combined carrier+worker installation to carrier-only startup followed by independent worker-presence/self-heal evidence.",
-      "The successor changes controlled restart semantics so HeartBeat restart no longer directly restarts WorkerCoordinator as a prerequisite.",
-      "Current README documents carrier-only installation, self-heal, and G18 fallback separately but does not yet state this durable-bootstrap ordering/restart relationship."
-    ]
+    "readme_updated_in_change_set": false,
+    "determination": "NO_ADDITIONAL_README_CHANGE_REQUIRED_CURRENT_README_ALREADY_DESCRIBES_EFFECTIVE_SEMANTICS",
+    "no_readme_update_reason": "Current README already documents the direct carrier-only resident entrypoint with fail-closed oscillator progression proof, the downstream stale/missing WorkerCoordinator self-heal and first-cycle ordering, and the G18 native-then-same-host fallback. This successor does not introduce a new runtime behavior or authority model; it repairs stale bootstrap/verifier implementation so those existing documented semantics are actually used by the durable activation path.",
+    "evidence_refs": [
+      "README.md#Native-heartbeat-carrier-CLI-entrypoint",
+      "README.md#Resident-WorkerCoordinator-self-heal-binding-parity",
+      "README.md#G18-same-host-sovereign-runtime-recovery",
+      "handoffs/HEARTBEAT-OSCILLATOR-RESIDENT-START-012.json",
+      "data/runtime-solution-registry.d/hb32-existing-runtime-solutions.json",
+      "ec92570ccfa4ef9b87bef77c4596f0f341ff33b7",
+      "511b82e26dcfce0d799f861df23b605fb837ac56",
+      "55c03313d72dde2f067434c87cd3691ec0682c14",
+      "72e80ce645858c02877277845ffe624cd71ec1e6"
+    ],
+    "readme_impact_complete": true
   },
   "authority": {
     "heartbeat_grants_execution_authority": false,
