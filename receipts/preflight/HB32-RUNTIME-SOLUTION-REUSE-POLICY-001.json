@@ -1,0 +1,76 @@
+{
+  "schema": "stegverse.machine-preflight/v1",
+  "preflight_id": "HB32-RUNTIME-SOLUTION-REUSE-POLICY-001",
+  "state": "PASS",
+  "verdict": "PASS",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "coord/hb32-runtime-solution-reuse",
+  "resolved_state": {
+    "heartbeat_handoff": "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md",
+    "oscillator_handoff": "docs/HEARTBEAT_OSCILLATOR_PRODUCER_MIRROR_HANDOFF.md",
+    "self_heal_handoff": "docs/RESIDENT_WORKER_SELF_HEAL_MIRROR_HANDOFF.md",
+    "canonical_task_registry": "data/canonical-task-registry.json@generation-15",
+    "worker_registry": "control/worker-registry.json@generation-22",
+    "master_records_authority": "observed reality/reconstruction remains external to this discovery index",
+    "cross_task_coordination": "control/cross-task-coordination.json + fragments/candidates",
+    "root_cause_runtime_fix": "55c03313d72dde2f067434c87cd3691ec0682c14",
+    "current_main_at_preflight": "72e80ce645858c02877277845ffe624cd71ec1e6",
+    "superseded_parallel_pr": 1099
+  },
+  "reuse_inventory": [
+    "heartbeat_runtime.independent_oscillator",
+    "heartbeat_runtime.engine_v13.HeartbeatRuntime",
+    "scripts/install_sovereign_heartbeat_carrier.py",
+    "scripts/repair_resident_worker_presence.py",
+    "heartbeat_runtime.runtime_presence_projection.py",
+    "scripts/restart_sovereign_ephemeral_node.py::_terminate",
+    "scripts/refresh_sovereign_worker_runtime_source.py",
+    "scripts/run_worker_runtime.py",
+    "scripts/dispatch_resident_execution_requests.py",
+    "task-specific resident request consumers"
+  ],
+  "proposed_mutation": {
+    "kind": "DISCOVERY_INDEX_AND_CONTINUATION_GUIDANCE_ONLY",
+    "new_runtime": false,
+    "new_heartbeat": false,
+    "new_oscillator": false,
+    "new_scheduler": false,
+    "new_workercoordinator": false,
+    "new_claim_fence_plane": false,
+    "new_credential_path": false,
+    "runtime_behavior_change": false,
+    "authority_change": false,
+    "interface_change": false,
+    "runtime_failure_recovery_implementation_change": false,
+    "machine_admission_or_execution_enforcement_change": false
+  },
+  "collision_review": {
+    "functional_runtime_repair_already_exists": true,
+    "existing_fix_ref": "55c03313d72dde2f067434c87cd3691ec0682c14",
+    "pr_1099_closed_unmerged_as_superseded": true,
+    "duplicate_runtime_implementation_required": false,
+    "disposition": "INDEX_EXISTING_REMEDIES_AND_REQUIRE_FUTURE_PREFLIGHT_TO_RESOLVE_THEM_BEFORE_SUCCESSOR_IMPLEMENTATION"
+  },
+  "readme_impact": {
+    "readme_impact_required": true,
+    "material_function_change": false,
+    "readme_updated_in_change_set": false,
+    "no_readme_update_reason": "This change only adds discovery/index and continuation guidance for runtime remedies that already exist on main. It changes no runtime behavior, execution/admission semantics, authority, interface, prerequisite, dependency, failure behavior, or capability meaning. The material runtime behavior changes are already documented in README.md by commits 55c03313d72dde2f067434c87cd3691ec0682c14 and 72e80ce645858c02877277845ffe624cd71ec1e6. Future functional runtime changes must still run their own README-impact preflight.",
+    "evidence_refs": [
+      "README.md#Native-heartbeat-carrier-CLI-entrypoint",
+      "README.md#Resident-WorkerCoordinator-self-heal-binding-parity",
+      "README.md#G18-same-host-sovereign-runtime-recovery",
+      "55c03313d72dde2f067434c87cd3691ec0682c14",
+      "72e80ce645858c02877277845ffe624cd71ec1e6"
+    ],
+    "readme_impact_complete": true
+  },
+  "authority": {
+    "heartbeat_grants_execution_authority": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "transition_authority": "INTERLOCK_INTR",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE"
+  },
+  "authority_effect": "NONE_PREFLIGHT_ONLY"
+}
