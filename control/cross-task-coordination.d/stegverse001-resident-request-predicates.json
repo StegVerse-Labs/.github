@@ -17,7 +17,16 @@
       "required_scope": "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001 resident request consumption",
       "required_execution_instance": "RESIDENT-EXEC-STEGVERSE001-BOUNDED-AUTONOMY-001",
       "max_age_seconds": null,
-      "required_fields": ["request_id", "task_id", "state", "terminal_execution_observed", "runtime_execution_attempted"],
+      "required_fields": ["request_id", "task_id", "state", "terminal_execution_observed", "runtime_execution_attempted", "request_granted_authority", "network_source_fetch_performed"],
+      "required_field_values": {
+        "request_id": "RESIDENT-EXEC-STEGVERSE001-BOUNDED-AUTONOMY-001",
+        "task_id": "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
+        "state": "COMPLETED",
+        "terminal_execution_observed": true,
+        "runtime_execution_attempted": true,
+        "request_granted_authority": false,
+        "network_source_fetch_performed": false
+      },
       "expected_output_ref": "receipts/sovereign-host/stegverse001-bounded-autonomy-request-consumption.latest.json",
       "consumers": ["SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001"],
       "depends_on_predicates": ["PRED-RESIDENT-REQUEST-CONSUMED-STEGINDEX-ONE-SHOT-001"],
@@ -35,14 +44,15 @@
       "subject_binding": {"request_id": "RESIDENT-EXEC-STEGVERSE001-BOUNDED-AUTONOMY-001", "consumer_task_id": "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001"},
       "existing_evidence_refs": [],
       "rejected_because": ["NO_QUALIFYING_EVIDENCE_OBSERVED"],
-      "missing_observation": "terminal authentic bounded-autonomy request consumption for the exact StegVerse-001 request",
+      "missing_observation": "terminal authentic bounded-autonomy request consumption for the exact StegVerse-001 request after the existing one-shot stack activation dependency is ready",
       "required_producer": "existing StegVerse-001 bounded autonomy resident request consumer",
       "required_output_ref": "receipts/sovereign-host/stegverse001-bounded-autonomy-request-consumption.latest.json",
       "required_schema": "stegverse.resident-execution-request-consumption/v1",
-      "required_fields": ["request_id", "task_id", "state", "terminal_execution_observed", "runtime_execution_attempted"],
+      "required_fields": ["request_id", "task_id", "state", "terminal_execution_observed", "runtime_execution_attempted", "request_granted_authority", "network_source_fetch_performed"],
+      "required_field_values": {"request_id": "RESIDENT-EXEC-STEGVERSE001-BOUNDED-AUTONOMY-001", "task_id": "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001", "state": "COMPLETED", "terminal_execution_observed": true, "runtime_execution_attempted": true, "request_granted_authority": false, "network_source_fetch_performed": false},
       "required_freshness": null,
       "collision_refs": [],
-      "action_without_collision": "Satisfy the existing one-shot stack activation dependency if still pending, then consume the existing StegVerse-001 bounded-autonomy request path; do not create a second resident executor or bypass TVC lease issuance."
+      "action_without_collision": "Satisfy the existing one-shot stack activation dependency if still pending, then consume the existing StegVerse-001 bounded-autonomy request path; do not create a second resident executor, bypass TVC lease issuance, or infer terminal execution from replay/source state."
     }
   ]
 }
