@@ -8,6 +8,10 @@ builder (including the HB-derived carrier binding by default), waits for the
 non-authorizing CanonicalWork consumer receipt, and writes a proposed post-ingress
 registry projection into the supplied runtime root.
 
+The selected task MUST already exist exactly once in the canonical Task Registry,
+MUST still be PROPOSED, and MUST explicitly allow INGRESS_ADMITTED as its next
+transition. This bootstrap never creates task identity or claim/fence authority.
+
 It fails closed unless CanonicalWork routing is already installed in the shared
 router. Successful execution proves only the bounded ingress/consumption cycle it
 actually observes; it does not prove WorkerCoordinator claim/fence, governed work,
@@ -34,7 +38,7 @@ if str(ROOT / "scripts") not in sys.path:
 
 from workers import universal_intr_profiled_ingress as shared_ingress  # noqa: E402
 
-TASK_ID = "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+DEFAULT_TASK_ID = "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
 INGRESS_SCHEMA = "stegverse.canonical-work-intr-materialization-ingress/v1"
 CONSUMPTION_SCHEMA = "stegverse.canonical-work-intr-materialization-consumption/v1"
 
@@ -48,6 +52,24 @@ def load(path: Path) -> dict[str, Any]:
     value = json.loads(path.read_text(encoding="utf-8"))
     require(isinstance(value, dict), f"object_required:{path}")
     return value
+
+
+def validate_target_task(*, registry: Path, task_id: str) -> dict[str, Any]:
+    document = load(registry)
+    matches = [task for task in document.get("tasks", []) if task.get("task_id") == task_id]
+    require(len(matches) == 1, "canonical_task_identity_must_resolve_exactly_once")
+    task = matches[0]
+    require(task.get("correlation_id") == task_id or isinstance(task.get("correlation_id"), str), "canonical_task_correlation_missing")
+    require(task.get("coordination_state") == "PROPOSED", "canonical_task_not_proposed_for_ingress")
+    require("INGRESS_ADMITTED" in task.get("allowed_next_transitions", []), "canonical_task_ingress_not_allowed")
+    claim = task.get("worker_claim", {})
+    require(claim.get("authority") == "WORKERCOORDINATOR", "canonical_task_workercoordinator_authority_missing")
+    require(claim.get("projection_only") is True, "canonical_task_claim_projection_boundary_invalid")
+    require(claim.get("claim_ref") is None and claim.get("fence_ref") is None, "canonical_task_already_has_claim_or_fence_projection")
+    authority = task.get("authority_model", {})
+    require(authority.get("task_registry_mints_execution_authority") is False, "canonical_task_registry_authority_drift")
+    require(authority.get("interlock_intr_required_for_governed_ingress_egress") is True, "canonical_task_intr_boundary_missing")
+    return task
 
 
 def require_shared_route() -> None:
@@ -128,7 +150,7 @@ def wait_for_consumption(*, runtime: Path, materialization_id: str, timeout_seco
     raise SystemExit("FAIL_CLOSED: canonical_work_consumption_receipt_timeout")
 
 
-def project_registry(*, registry: Path, ingress_path: Path, consumption_path: Path, runtime: Path) -> Path:
+def project_registry(*, task_id: str, registry: Path, ingress_path: Path, consumption_path: Path, runtime: Path) -> Path:
     output = runtime / "projections" / "canonical-task-registry.after-ingress.json"
     output.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run(
@@ -148,25 +170,25 @@ def project_registry(*, registry: Path, ingress_path: Path, consumption_path: Pa
         check=True,
     )
     projected = load(output)
-    tasks = [task for task in projected.get("tasks", []) if task.get("task_id") == TASK_ID]
+    tasks = [task for task in projected.get("tasks", []) if task.get("task_id") == task_id]
     require(len(tasks) == 1 and tasks[0].get("coordination_state") == "INGRESS_ADMITTED", "post_ingress_registry_projection_invalid")
     return output
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--task-id", default=TASK_ID)
+    parser.add_argument("--task-id", default=DEFAULT_TASK_ID)
     parser.add_argument("--registry", default=str(ROOT / "data" / "canonical-task-registry.json"))
     parser.add_argument("--runtime-root", required=True)
     parser.add_argument("--consumer-timeout-seconds", type=float, default=5.0)
     parser.add_argument("--without-carrier-binding", action="store_true")
     args = parser.parse_args()
 
-    require(args.task_id == TASK_ID, "bootstrap_is_bounded_to_canonical_work_coordination_task")
     require_shared_route()
     runtime = Path(args.runtime_root).expanduser().resolve()
     runtime.mkdir(parents=True, exist_ok=True)
     registry = Path(args.registry).expanduser().resolve()
+    validate_target_task(registry=registry, task_id=args.task_id)
 
     request_path = run_builder(task_id=args.task_id, runtime=runtime, registry=registry, without_carrier_binding=args.without_carrier_binding)
     request = load(request_path)
@@ -175,7 +197,7 @@ def main() -> int:
     ingress_path = runtime / "receipts" / "sovereign-network" / "canonical-work-intr-ingress" / f"{materialization_id}.json"
     require(ingress_path.is_file(), "write_once_ingress_receipt_missing")
     consumption_path = wait_for_consumption(runtime=runtime, materialization_id=materialization_id, timeout_seconds=args.consumer_timeout_seconds)
-    projection_path = project_registry(registry=registry, ingress_path=ingress_path, consumption_path=consumption_path, runtime=runtime)
+    projection_path = project_registry(task_id=args.task_id, registry=registry, ingress_path=ingress_path, consumption_path=consumption_path, runtime=runtime)
 
     receipt = {
         "schema": "stegverse.canonical-work-event-bootstrap-receipt/v1",
