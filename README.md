@@ -183,7 +183,13 @@ A successful bootstrap receipt proves only the exact bounded `TASK_INGRESS` requ
 
 ### Cross-task active-claim projection
 
-The canonical cross-task coordination ledger may mirror an already-existing WorkerCoordinator claim/fence as **coordination-only ownership evidence** when its task, claim, fence, worker identity, and mutation/evidence scope are supported by canonical handoff and control-plane records. These projections are used to prevent another session or autonomous entity from competing with machine-owned work merely because the underlying task is reported as `BLOCKED`.
+The canonical cross-task coordination ledger may mirror an already-existing WorkerCoordinator claim/fence as **coordination-only ownership evidence** when its task, claim, fence, worker identity, and mutation/evidence scope are supported by canonical handoff and control-plane records. These projections are used to prevent another session or autonomous entity from competing with machine-owned work merely because the underlying task is reported as `BLOCKED` or otherwise nonterminal.
+
+Current projections include the all-organization federation G17 claim, durable-runtime G18 claim, and stable StegGate rendezvous G13 claim. Each remains owned by its original canonical worker/task lifecycle; the cross-task ledger only exposes that ownership to collision and adjacency resolution.
+
+Composed-ledger loading now validates **claim coverage parity** against the sibling canonical `control/worker-registry.json` when that registry is present. Every unreleased task with `executor_binding=BOUND` and a claim ID must have an `ACTIVE` coordination mirror with matching task ID, fencing token, worker ID, and worker-instance ID. Conversely, an `ACTIVE` coordination claim carrying WorkerCoordinator identity cannot remain after that claim is released or becomes terminal in the worker registry. Missing mirrors, stale mirrors, identity drift, duplicate bound claims, or an incompatible worker-registry schema fail closed before coordination consumers receive the ledger.
+
+This parity check does not copy claim authority into the coordination ledger and does not infer current execution. `control/worker-registry.json` remains authoritative for WorkerCoordinator claim/fence ownership; the coordination record remains a non-authorizing collision/adjacency projection. The check exists so static projection drift cannot silently cause two sessions to compete for machine-owned work or preserve ownership after canonical release.
 
 A projected active claim does **not** mint or transfer authority, prove current runtime execution, renew a lease, or make heartbeat state authoritative. Release of the projected ownership must follow the canonical worker lifecycle; task state alone does not release the claim.
 
