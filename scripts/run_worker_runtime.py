@@ -444,7 +444,6 @@ def poll_resident_rendezvous(
 
 
 
-
 def refresh_local_worker_source(
     root: Path,
     *,
@@ -519,7 +518,6 @@ def refresh_local_worker_source(
     }
 
 
-
 def dispatch_local_resident_requests(
     root: Path,
     *,
@@ -577,7 +575,6 @@ def dispatch_local_resident_requests(
         "github_token_runtime_authority": "NONE",
         "authority_effect": "NONE_NATIVE_REQUEST_VISIT_ONLY",
     }
-
 
 
 def maybe_dispatch_machine_continuation(
@@ -694,6 +691,11 @@ def main() -> int:
     index = 0
     next_rendezvous_poll = 0.0
     while running and (args.continuous or index < args.cycles):
+        # Persist the task-capable WorkerCoordinator tick before any potentially
+        # long resident maintenance. Local supervision proves repaired presence
+        # from this state transition; HB remains a non-authorizing reference.
+        result = runtime.cycle(write=not args.dry_run, target_task_id=args.task_id)
+
         rendezvous_result = None
         local_request_dispatch = None
         local_source_refresh = None
@@ -704,7 +706,6 @@ def main() -> int:
             local_source_refresh = refresh_local_worker_source(root)
         if not args.task_id and not args.dry_run and index % LOCAL_REQUEST_DISPATCH_INTERVAL_TICKS == 0:
             local_request_dispatch = dispatch_local_resident_requests(root)
-        result = runtime.cycle(write=not args.dry_run, target_task_id=args.task_id)
         if not args.task_id and not args.dry_run:
             result["hb_machine_continuation"] = maybe_dispatch_machine_continuation(root, env=os.environ)
         if rendezvous_result is not None:
