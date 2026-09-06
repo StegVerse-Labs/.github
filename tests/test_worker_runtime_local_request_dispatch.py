@@ -65,7 +65,6 @@ class NativeResidentRequestDispatchTests(unittest.TestCase):
         self.assertEqual(command[command.index("--runtime-root") + 1], str(root))
         self.assertEqual(kwargs["cwd"], root)
 
-
     def test_local_source_refresh_uses_only_already_local_canonical_checkout(self):
         with tempfile.TemporaryDirectory() as td:
             base = Path(td)
@@ -129,6 +128,21 @@ class NativeResidentRequestDispatchTests(unittest.TestCase):
         self.assertIn("index % LOCAL_SOURCE_REFRESH_INTERVAL_TICKS == 0", source)
         self.assertIn("heartbeat_grants_execution_authority\": False", source)
         self.assertNotIn("LOCAL_REQUEST_DISPATCH_INTERVAL_SECONDS", source)
+
+    def test_worker_cycle_precedes_potentially_long_initial_maintenance(self):
+        source = MODULE_PATH.read_text(encoding="utf-8")
+        loop_start = source.index("while running and (args.continuous or index < args.cycles):")
+        loop = source[loop_start:]
+        cycle = loop.index("result = runtime.cycle(write=not args.dry_run, target_task_id=args.task_id)")
+        rendezvous = loop.index("rendezvous_result = poll_resident_rendezvous(root)")
+        refresh = loop.index("local_source_refresh = refresh_local_worker_source(root)")
+        dispatch = loop.index("local_request_dispatch = dispatch_local_resident_requests(root)")
+        continuation = loop.index("result[\"hb_machine_continuation\"] = maybe_dispatch_machine_continuation")
+        self.assertLess(cycle, rendezvous)
+        self.assertLess(cycle, refresh)
+        self.assertLess(cycle, dispatch)
+        self.assertLess(cycle, continuation)
+        self.assertIn("Persist the task-capable WorkerCoordinator tick before any potentially", loop)
 
 
 if __name__ == "__main__":
