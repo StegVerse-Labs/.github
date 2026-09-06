@@ -151,6 +151,14 @@
       "required_execution_instance": null,
       "max_age_seconds": null,
       "required_fields": ["state", "task_id", "request_sha256", "bootstrap_receipt_ref"],
+      "required_field_values": {
+        "state": "COMPLETED",
+        "task_id": "STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190",
+        "request_id": "RESIDENT-EXEC-CANONICAL-WORK-OBJECT-PROVENANCE-CONTINUITY-190",
+        "authority_effect": "NONE_CONSUMPTION_EVIDENCE_ONLY",
+        "result.state": "INGRESS_CONSUMPTION_AND_PROJECTION_OBSERVED",
+        "result.task_id": "STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190"
+      },
       "expected_output_ref": "receipts/sovereign-host/canonical-work-object-provenance-continuity-190-request-consumption.latest.json",
       "consumers": ["STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190"],
       "canonical_source_refs": [
