@@ -4,7 +4,7 @@ Updated: 2026-09-06
 Repository: `StegVerse-Labs/.github`
 Parent: `docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md`
 Task: `QUANTUM-RESILIENCE-001`
-State: `EXACT_VALUE_QUALIFICATION_SOURCE_PROPOSED / AUTHENTIC_RUNTIME_INGRESS_PENDING`
+State: `EXACT_VALUE_QUALIFICATION_SOURCE_MERGED_VALIDATED / AUTHENTIC_RUNTIME_INGRESS_PENDING`
 Authority effect: `NONE_COORDINATION_EVIDENCE_ONLY`
 
 ## Purpose
@@ -20,9 +20,17 @@ Apply the already-merged cross-task `required_field_values` mechanism to the exi
 - `control/resident-execution-request.d/canonical-work-quantum-resilience-001.json`
 - `control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py`
 
+## Merge and validation evidence
+
+PR `#1068`, **Qualify quantum Canonical Work evidence by exact values**, merged as:
+
+`047ec4d34327df2930b2e48cc505fd11e9b34073`
+
+The resulting canonical fragment remains non-authorizing. Its staged-request predicate is `SATISFIED`; its authentic-ingress predicate remains `UNKNOWN`. The merge proves source/control qualification only and does not prove resident request consumption, Interlock/InTr admission, WorkerCoordinator claim/fence, Master Records reconciliation, governed quantum execution, or task completion.
+
 ## Exact qualification
 
-The source-staging predicate now requires the observed evidence values to equal:
+The source-staging predicate requires the observed evidence values to equal:
 
 ```text
 task_id = QUANTUM-RESILIENCE-001
@@ -31,7 +39,7 @@ state = REQUESTED
 authority_effect = NONE_REQUEST_ONLY
 ```
 
-The authentic resident-ingress predicate now requires:
+The authentic resident-ingress predicate requires:
 
 ```text
 state = COMPLETED
@@ -50,18 +58,42 @@ Task Registry remains work-intent authority. WorkerCoordinator remains execution
 
 ## README completeness
 
-The preflight records `material_function_change=true` because an existing predicate is being tightened from field-presence qualification to exact-value qualification. No additional README edit is required because `README.md#Exact-cross-task-evidence-field-values`, merged in PR #1065, already documents this exact mechanism, failure behavior, and authority boundary. This change only instantiates that documented rule for the existing Quantum Canonical Work predicate pair.
+The original preflight records `material_function_change=true` because the predicate was tightened from field-presence qualification to exact-value qualification. No additional README edit was required because `README.md#Exact-cross-task-evidence-field-values`, merged before PR #1068, already documents this exact mechanism, failure behavior, and authority boundary.
+
+This handoff reconciliation itself is non-functional. Preflight `receipts/preflight/QUANTUM-EXACT-VALUE-HANDOFF-RECONCILIATION-001.json` records `NO_README_CHANGE_REQUIRED` because only already-merged state/evidence is synchronized here; repository behavior, runtime semantics, interfaces, governance/authority boundaries, evidence semantics, prerequisites, dependencies, failure behavior, and capability meaning are unchanged.
 
 ## Runtime status
 
-No authentic Quantum Canonical Work request-consumption receipt is inferred from this source change. The required runtime output remains:
+No authentic Quantum Canonical Work request-consumption receipt is inferred from source or validation. The required runtime output remains:
 
 `receipts/sovereign-host/canonical-work-quantum-resilience-request-consumption.latest.json`
 
 and must be produced by the existing sovereign resident Canonical Work consumer + Universal Interlock/InTr path.
 
+The current canonical coordination state is therefore:
+
+```text
+PRED-QUANTUM-CANONICAL-WORK-REQUEST-STAGED-001 = SATISFIED
+PRED-QUANTUM-CANONICAL-WORK-INGRESS-OBSERVED-001 = UNKNOWN
+Task Registry QUANTUM-RESILIENCE-001 = PROPOSED
+WorkerCoordinator quantum claim/fence = NONE OBSERVED
+```
+
 ## Next machine boundary
 
-After deterministic validation and merge of this source qualification, continue through the existing resident dispatcher/Canonical Work consumer. Do not create another resident request, runtime, scheduler, WorkerCoordinator, presence predicate, or ingress path. Authentic downstream progression remains Master Records reconciliation -> WorkerCoordinator review/claim-fence if independently admitted -> governed quantum work -> reconstruction -> governed egress/closure.
+Continue through the existing resident dispatcher/Canonical Work consumer. Do not create another resident request, runtime, scheduler, WorkerCoordinator, presence predicate, ingress path, or substitute evidence path.
+
+Authentic downstream progression remains:
+
+```text
+resident request consumption
+-> exact-value-qualified Canonical Work ingress evidence
+-> governed Task Registry projection
+-> Master Records reconciliation
+-> WorkerCoordinator admission review / claim-fence if independently admitted
+-> governed quantum work
+-> reconstruction
+-> governed egress / closure
+```
 
 No user action is required.
