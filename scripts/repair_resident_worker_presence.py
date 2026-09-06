@@ -235,10 +235,19 @@ def ensure_worker_presence(runtime_root: Path, *, carrier_pid: int, interval_ms:
     existing_worker_pid = receipt.get("worker_pid")
     if _alive(existing_worker_pid):
         worker_state = _load(runtime_root / WORKER_STATE)
+        current_tick = worker_state.get("runtime_tick")
+        prior_tick_evidence = receipt.get("worker_tick_evidence") if isinstance(receipt.get("worker_tick_evidence"), dict) else {}
+        pending_baseline = prior_tick_evidence.get("baseline_tick") if receipt.get("worker_task_capable_cycle_observed") is False else None
         structural_task_capable = (
             worker_state.get("schema") == "stegverse.worker-runtime-state/v1"
             and worker_state.get("observation_mode") != "CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION"
-            and isinstance(worker_state.get("runtime_tick"), int)
+            and isinstance(current_tick, int)
+            and not isinstance(current_tick, bool)
+            and (
+                not isinstance(pending_baseline, int)
+                or isinstance(pending_baseline, bool)
+                or current_tick > pending_baseline
+            )
         )
         receipt = _supervision_receipt(
             receipt,
@@ -246,16 +255,27 @@ def ensure_worker_presence(runtime_root: Path, *, carrier_pid: int, interval_ms:
             carrier_pid=carrier_pid,
             worker_pid=existing_worker_pid,
             worker_tick_observed=structural_task_capable,
+            tick_evidence=(
+                {
+                    "observed": True,
+                    "reason": "TASK_CAPABLE_WORKER_RUNTIME_TICK_OBSERVED_AFTER_PENDING_STARTUP",
+                    "baseline_tick": pending_baseline,
+                    "observed_tick": current_tick,
+                }
+                if structural_task_capable and isinstance(pending_baseline, int) and not isinstance(pending_baseline, bool)
+                else prior_tick_evidence or None
+            ),
         )
         receipt_path.parent.mkdir(parents=True, exist_ok=True)
         receipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         presence = _persist_presence_projection(runtime_root)
         intake = _persist_presence_master_records_intake(runtime_root)
         return {
-            "state": "WORKER_ALREADY_PRESENT",
+            "state": "WORKER_ALREADY_PRESENT" if structural_task_capable else "WORKER_PRESENT_AWAITING_TASK_CAPABLE_TICK",
             "worker_repair_attempted": False,
             "carrier_pid": carrier_pid,
             "worker_pid": existing_worker_pid,
+            "worker_tick_evidence": receipt.get("worker_tick_evidence"),
             "present_worker_runtime_observed": presence.get("resident", {}).get("present_worker_runtime_observed") is True,
             "presence_receipt_ref": str(PRESENCE_RECEIPT),
             "master_records_intake_state": intake.get("state"),
@@ -277,6 +297,34 @@ def ensure_worker_presence(runtime_root: Path, *, carrier_pid: int, interval_ms:
     )
     tick = _wait_for_tick(runtime_root, baseline, worker.pid, timeout)
     if not tick.get("observed"):
+        if tick.get("reason") == "TASK_CAPABLE_WORKER_RUNTIME_TICK_TIMEOUT" and _alive(worker.pid):
+            receipt = _supervision_receipt(
+                receipt,
+                runtime_root,
+                carrier_pid=carrier_pid,
+                worker_pid=worker.pid,
+                worker_tick_observed=False,
+                tick_evidence=tick,
+            )
+            receipt_path.parent.mkdir(parents=True, exist_ok=True)
+            receipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+            presence = _persist_presence_projection(runtime_root)
+            return {
+                "state": "WORKER_REPAIR_PENDING_TASK_CAPABLE_TICK",
+                "worker_repair_attempted": True,
+                "carrier_pid": carrier_pid,
+                "worker_pid": worker.pid,
+                "worker_tick_evidence": tick,
+                "present_worker_runtime_observed": presence.get("resident", {}).get("present_worker_runtime_observed") is True,
+                "presence_receipt_ref": str(PRESENCE_RECEIPT),
+                "process_retained_for_next_supervision_check": True,
+                "request_drain_expected_on_worker_start": True,
+                "heartbeat_grants_execution_authority": False,
+                "worker_coordinator_retains_admission_authority": True,
+                "credential_authority": "TV/TVC",
+                "github_token_runtime_authority": "NONE",
+                "authority_effect": "NONE_SUPERVISION_ONLY",
+            }
         try:
             os.kill(worker.pid, signal.SIGTERM)
         except OSError:
