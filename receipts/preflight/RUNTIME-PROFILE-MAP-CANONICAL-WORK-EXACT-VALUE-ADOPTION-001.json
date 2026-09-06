@@ -1,0 +1,56 @@
+{
+  "schema": "stegverse.session-build-preflight-receipt/v1",
+  "goal": "Tighten Runtime Profile Map Canonical Work cross-task evidence qualification to exact field values using the already-merged required_field_values mechanism",
+  "state": "PASS_COORDINATION_EVIDENCE_SEMANTICS_REPAIR_ADMISSIBLE",
+  "resolved_sources": {
+    "canonical_cross_task_handoff": "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
+    "scoped_runtime_profile_handoff": "docs/RUNTIME_PROFILE_MAP_CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
+    "coordination_fragment": "control/cross-task-coordination.d/runtime-profile-map-canonical-work-ingress.json",
+    "exact_value_implementation": "heartbeat_runtime/coordination_graph.py",
+    "exact_value_schema": "schemas/cross-task-coordination.schema.json",
+    "exact_value_tests": "tests/test_coordination_required_field_values.py",
+    "readme": "README.md#Exact-cross-task-evidence-field-values",
+    "analogous_active_migration": "PR #1068 qualifies the distinct QUANTUM-RESILIENCE-001 subject and does not own this Runtime Profile Map fragment"
+  },
+  "resolution": {
+    "predicate_subject": {
+      "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+      "request_id": "RESIDENT-EXEC-CANONICAL-WORK-RUNTIME-PROFILE-MAP-001"
+    },
+    "existing_generic_exact_value_mechanism_reused": true,
+    "duplicate_predicate_created": false,
+    "new_runtime_required": false,
+    "new_producer_required": false,
+    "runtime_execution_claimed": false
+  },
+  "admissible_machine_step": {
+    "action": "ADD_EXACT_REQUIRED_FIELD_VALUES_TO_EXISTING_RUNTIME_PROFILE_MAP_CANONICAL_WORK_PREDICATES",
+    "machine_executable_now": true,
+    "authority_effect": "NONE_COORDINATION_EVIDENCE_ONLY"
+  },
+  "readme_impact": {
+    "predicate": "README_IMPACT_RESOLVED",
+    "state": "SATISFIED",
+    "material_function_change": true,
+    "readme_update_required": false,
+    "determination": "NO_ADDITIONAL_README_CHANGE_REQUIRED_EXISTING_README_ALREADY_COVERS_RESULTING_BEHAVIOR",
+    "no_readme_update_reason": "This task-specific tightening materially changes which evidence can qualify for these predicates, but README.md already documents the exact required_field_values mechanism and its fail-closed REQUIRED_FIELD_VALUE_MISMATCH behavior. The change applies that already-documented behavior to one additional existing subject without changing the generic mechanism, interface, authority boundary, runtime path, producer contract, or failure semantics beyond what the README already states.",
+    "evidence_basis": [
+      "README.md#Exact-cross-task-evidence-field-values",
+      "heartbeat_runtime/coordination_graph.py required_field_values handling",
+      "schemas/cross-task-coordination.schema.json required_field_values definition",
+      "tests/test_coordination_required_field_values.py",
+      "receipts/preflight/CROSS-TASK-REQUIRED-FIELD-VALUES-001.json",
+      "receipts/preflight/CROSS-TASK-TERMINAL-FIELD-VALUE-MIGRATION-001.json"
+    ]
+  },
+  "authority": {
+    "work_intent_and_coordination": "CANONICAL_TASK_REGISTRY",
+    "execution_claim_and_fence": "WORKERCOORDINATOR",
+    "observed_reality_and_reconstruction": "MASTER_RECORDS",
+    "governed_ingress_egress": "INTERLOCK_INTR",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "authority_effect": "NONE_PREFLIGHT_ONLY"
+  }
+}
