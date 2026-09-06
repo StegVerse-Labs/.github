@@ -13,10 +13,13 @@
     "receipt_file_present": "receipt_verified",
     "source_installed": "runtime_observed",
     "merge": "execution",
-    "workflow_pass": "runtime"
+    "workflow_pass": "runtime",
+    "master_records_intake_available": "runtime_presence_observed",
+    "master_records_custody": "cross_task_reuse_authorized"
   },
   "canonical_evidence_slots": {
     "resident_runtime_presence": "receipts/sovereign-host/runtime-presence.latest.json",
+    "resident_runtime_presence_master_records_intake": "receipts/sovereign-host/runtime-presence-master-records-intake.latest.json",
     "resident_request_dispatch": "receipts/sovereign-host/resident-request-dispatch.latest.json",
     "resident_request_consumption": "receipts/sovereign-host/resident-execution-request-consumption.latest.json",
     "resident_targeted_execution": "receipts/sovereign-host/resident-targeted-execution.latest.json",
@@ -30,9 +33,26 @@
     "heartbeat_grants_execution_authority": false,
     "projection_grants_execution_authority": false
   },
-  "consumer_rule": "Lane-specific direct machine evidence remains distinct. Canonical heartbeat_runtime/runtime_presence_projection.py reports resident/HB/evidence slots without inferring execution from HB or source. Consumer-specific verifiers decide semantic validity of request consumption, receiver readiness, transition execution, and reconstruction.",
+  "master_records_custody": {
+    "owner": "master-records/orchestration",
+    "trigger": "existing carrier-owned presence emission visit",
+    "source": "receipts/sovereign-host/runtime-presence.latest.json",
+    "local_root_env": "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT",
+    "importer": "scripts/intake_resident_runtime_presence.py",
+    "intake_receipt": "receipts/sovereign-host/runtime-presence-master-records-intake.latest.json",
+    "already_local_root_required": true,
+    "network_fetch_allowed": false,
+    "repository_writeback_performed": false,
+    "cross_task_reuse_authorized": false,
+    "missing_root_or_importer_blocks_presence_emission": false,
+    "heartbeat_grants_execution_authority": false,
+    "github_token_runtime_authority": "NONE",
+    "credential_authority": "TV/TVC",
+    "authority_effect": "NONE_CUSTODY_HANDOFF_ONLY"
+  },
+  "consumer_rule": "Lane-specific direct machine evidence remains distinct. Canonical heartbeat_runtime/runtime_presence_projection.py reports resident/HB/evidence slots without inferring execution from HB or source. Consumer-specific verifiers decide semantic validity of request consumption, receiver readiness, transition execution, and reconstruction. Master Records may retain exact runtime-presence observations for custody/reconstruction, but custody does not authorize cross-task evidence reuse or task execution.",
   "canonical_projector": "scripts/project_hb_runtime_presence.py",
-  "canonical_validation": "tests/test_runtime_presence_projection.py",
+  "canonical_validation": "tests/test_runtime_presence_projection.py + tests/test_runtime_presence_master_records_intake.py",
   "canonical_merge": "6358375c81fedb579cb6fcac59946268ea485ebb",
   "superseded_local_experiment": [
     "org-kernel/runtime_observability.py",
