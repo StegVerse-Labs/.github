@@ -5,8 +5,10 @@ This is a portable, transport-free execution bridge for an already-existing sove
 resident. It composes the existing local source refresh and generic resident-request
 dispatcher, but selects exactly one explicitly admitted consumer. The historical default
 remains the cross-framework current-basis v0.4 consumer; HIL and SV-DN-1 may be selected
-explicitly without visiting unrelated work. Explicit SV002 self-characterization and public-observation selectors are also admitted without changing the historical default. It creates no scheduler, heartbeat, claim,
-fence, credential path, or runtime authority.
+explicitly without visiting unrelated work. Explicit SV002 self-characterization,
+public-observation, standing-awareness, and organization-runtime selectors are also
+admitted without changing the historical default. It creates no scheduler, heartbeat,
+claim, fence, credential path, or runtime authority.
 """
 from __future__ import annotations
 
@@ -30,7 +32,24 @@ DISPATCH_RECEIPT_REL = Path("receipts/sovereign-host/resident-request-dispatch.l
 RECEIPT_REL = Path("receipts/sovereign-host/resident-refresh-dispatch.latest.json")
 SV_DN1_BROWSER_LOCATOR_REL = Path("control/sv-dn1-browser-observation-locator.json")
 TARGET_CONSUMER = "cross_framework_current_basis_v04"
-ALLOWED_TARGET_CONSUMERS = (TARGET_CONSUMER, "hil", "sv_dn1", "sv_dn1_publication", "stegos_kv_intr_chain", "sv002_self_characterization", "sv002_public_observation", "sv002_org_runtime_activation", "healer_sovereign_scheduler", "universal_governance_enforced_reference", "one_shot_resident_stack_activation", "stegverse001_bounded_autonomy", "erl_ai_economic_transparency_review", "org_claim_allocator")
+ALLOWED_TARGET_CONSUMERS = (
+    TARGET_CONSUMER,
+    "hil",
+    "sv_dn1",
+    "sv_dn1_publication",
+    "stegos_kv_intr_chain",
+    "sv002_self_characterization",
+    "sv002_public_observation",
+    "astra_class_resilience_awareness",
+    "quantum_resilience_awareness",
+    "sv002_org_runtime_activation",
+    "healer_sovereign_scheduler",
+    "universal_governance_enforced_reference",
+    "one_shot_resident_stack_activation",
+    "stegverse001_bounded_autonomy",
+    "erl_ai_economic_transparency_review",
+    "org_claim_allocator",
+)
 HOSTED_ENV = (
     "GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID",
     "VERCEL", "VERCEL_ENV", "CF_PAGES", "CLOUDFLARE_WORKERS",
