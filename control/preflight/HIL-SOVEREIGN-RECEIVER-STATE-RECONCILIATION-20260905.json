@@ -1,0 +1,75 @@
+{
+  "schema": "stegverse.machine-preflight/v1",
+  "preflight_id": "HIL-SOVEREIGN-RECEIVER-STATE-RECONCILIATION-20260905",
+  "task_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "reconcile/hil-same-device-runtime-state-20260905",
+  "canonical_handoff": "docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_MIRROR_HANDOFF.md",
+  "executable_handoff": "handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json",
+  "task_registry_refs": [
+    "control/worker-registry.d/hil-sovereign-receiver-001.json",
+    "control/task-vectors/SHWP-HIL-SOVEREIGN-RECEIVER-001.json"
+  ],
+  "master_records_refs": [
+    "StegVerse-Labs/Site/docs/HIL_FIRST_MASTER_RECORD_RELEASE_PREPARATION.md",
+    "StegVerse-Labs/Site/docs/HIL_MASTER_RECORD_RELEASE_CONTRACT.md"
+  ],
+  "cross_task_coordination_ref": "control/cross-task-coordination.json",
+  "resolved_state": {
+    "canonical_runtime_predicate": "PRED-RESIDENT-REQUEST-CONSUMED-HIL-SOVEREIGN-RECEIVER-002",
+    "canonical_runtime_predicate_state": "UNKNOWN",
+    "worker_registry_state": "HANDOFF_READY",
+    "worker_archive_eligible": false,
+    "master_record_release_ready": false,
+    "authentic_runtime_execution_observed": false
+  },
+  "reused_evidence": [
+    "StegVerse-Labs/StegOS#179 closed completed: same-device LEASE_OPEN, public observation downstream",
+    "StegVerse-Labs/StegOS/docs/HIL_ESRL_INTAKE_MATERIALIZATION_MIRROR_HANDOFF.md positive same-device LEASE_OPEN implementation",
+    "StegVerse-Labs/.github#889 closed completed",
+    "StegVerse-Labs/.github#889 comment 5546490563: same-device HIL LEASE_OPEN and consumer/acceptance integration ported to main",
+    "workers/hil_esrl_runtime_bridge.py existing same-device runtime implementation",
+    "control/worker-registry.d/hil-sovereign-receiver-001.json existing HANDOFF_READY registration"
+  ],
+  "proposed_mutation": {
+    "kind": "STATE_AND_EVIDENCE_RECONCILIATION_ONLY",
+    "paths": [
+      "handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json",
+      "control/task-vectors/SHWP-HIL-SOVEREIGN-RECEIVER-001.json",
+      "docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_MIRROR_HANDOFF.md"
+    ],
+    "runtime_code_change": false,
+    "authority_change": false,
+    "credential_change": false,
+    "interface_change": false,
+    "dependency_change": false,
+    "failure_behavior_change": false,
+    "new_capability": false
+  },
+  "readme_impact": {
+    "readme_impact_required": true,
+    "material_function_change": false,
+    "readme_updated_in_change_set": false,
+    "readme_path": "README.md",
+    "no_readme_update_reason": "The proposed change does not implement or alter runtime behavior. It reconciles stale machine-readable HIL state to already-merged same-device behavior from StegOS #179 and .github #889. The repository README already defines the README-impact invariant and operational-observer distinction; no externally meaningful repository behavior, interface, authority boundary, prerequisite, dependency, failure behavior, or capability meaning is being introduced by this reconciliation.",
+    "evidence_refs": [
+      "README.md#Functional Change / README Invariant",
+      "StegVerse-Labs/StegOS#179",
+      "StegVerse-Labs/.github#889",
+      "StegVerse-Labs/.github#889 comment 5546490563",
+      "control/worker-registry.d/hil-sovereign-receiver-001.json"
+    ],
+    "readme_impact_complete": true
+  },
+  "collision_check": {
+    "duplicate_runtime_implementation": false,
+    "new_predicate_required": false,
+    "new_worker_required": false,
+    "new_receiver_required": false,
+    "new_gateway_required": false,
+    "new_master_records_authority_required": false,
+    "new_tvc_authority_required": false
+  },
+  "verdict": "PASS",
+  "authority_effect": "NONE_PREFLIGHT_ONLY"
+}
