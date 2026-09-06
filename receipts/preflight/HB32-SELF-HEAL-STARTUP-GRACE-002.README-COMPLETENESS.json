@@ -1,0 +1,15 @@
+{
+  "schema": "stegverse.readme-completeness/v1",
+  "task_id": "HB32-SELF-HEAL-STARTUP-GRACE-002",
+  "material_function_change": true,
+  "readme_updated_in_change_set": true,
+  "readme_path": "README.md",
+  "effect": "A newly spawned WorkerCoordinator that is alive but has not yet completed its first task-capable tick is retained across HB-scale supervision visits instead of being killed solely because pre-cycle resident work exceeds the initial proof window. Previously proven stale workers continue to recycle under PR #1084 semantics.",
+  "evidence_refs": [
+    "README.md#Resident-WorkerCoordinator-self-heal-binding-parity",
+    "scripts/repair_resident_worker_presence.py",
+    "tests/test_hb32_self_heal_startup_grace.py",
+    "docs/HB32_SELF_HEAL_STARTUP_GRACE_MIRROR_HANDOFF.md"
+  ],
+  "authority_effect": "NONE_COMPLETENESS_EVIDENCE_ONLY"
+}
