@@ -8,6 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 ENTRY = ROOT / "scripts" / "session_build_preflight.py"
 
+
 class SessionBuildPreflightTests(unittest.TestCase):
     def fake_root(self, decision, *, include_coordination=True, **extra):
         tmp = tempfile.TemporaryDirectory()
@@ -46,13 +47,7 @@ class SessionBuildPreflightTests(unittest.TestCase):
 
     def run_entry(self, root, goal="test goal", *extra_args):
         return subprocess.run(
-            [
-                sys.executable,
-                str(ENTRY),
-                "--goal", goal,
-                "--stegindex-root", root,
-                *extra_args,
-            ],
+            [sys.executable, str(ENTRY), "--goal", goal, "--stegindex-root", root, *extra_args],
             cwd=ROOT,
             text=True,
             capture_output=True,
@@ -66,6 +61,7 @@ class SessionBuildPreflightTests(unittest.TestCase):
         self.assertEqual(result["disposition"], "REUSE_EXISTING_CAPABILITY")
         self.assertFalse(result["task_creation_permitted"])
         self.assertTrue(result["cross_task_coordination"]["coordination_consulted"])
+        self.assertTrue(result["readme_impact_complete"])
 
     def test_machine_continuation_prevents_new_task_creation(self):
         with self.fake_root("CONTINUE_MACHINE_EXECUTION") as tmp:
@@ -76,11 +72,7 @@ class SessionBuildPreflightTests(unittest.TestCase):
         self.assertFalse(result["task_creation_permitted"])
 
     def test_exact_dependency_prevents_new_task_creation(self):
-        with self.fake_root(
-            "EXACT_BLOCKER_ONLY",
-            exact_dependency="indexed_truth_reconciled",
-            indexed_truth_usable=False,
-        ) as tmp:
+        with self.fake_root("EXACT_BLOCKER_ONLY", exact_dependency="indexed_truth_reconciled", indexed_truth_usable=False) as tmp:
             proc = self.run_entry(tmp)
         self.assertEqual(proc.returncode, 2, proc.stderr)
         result = json.loads(proc.stdout)
@@ -110,12 +102,7 @@ class SessionBuildPreflightTests(unittest.TestCase):
 
     def test_coordination_filters_are_forwarded_without_granting_admission(self):
         with self.fake_root("REUSE_OR_EXTEND_EXISTING") as tmp:
-            proc = self.run_entry(
-                tmp,
-                "test goal",
-                "--coordination-task-id", "SHWP-X",
-                "--coordination-predicate-id", "P-X",
-            )
+            proc = self.run_entry(tmp, "test goal", "--coordination-task-id", "SHWP-X", "--coordination-predicate-id", "P-X")
         self.assertEqual(proc.returncode, 0, proc.stderr)
         result = json.loads(proc.stdout)
         coordination = result["cross_task_coordination"]
@@ -149,6 +136,71 @@ class SessionBuildPreflightTests(unittest.TestCase):
         self.assertEqual(result["disposition"], "STOP_AT_EXACT_DEPENDENCY")
         self.assertFalse(result["task_creation_permitted"])
         self.assertEqual(result["preflight"]["exact_dependency"], "source_discovery_complete")
+
+    def test_material_function_change_without_readme_update_fails_closed(self):
+        with self.fake_root("NO_EXISTING_CAPABILITY_MATCH") as tmp:
+            proc = self.run_entry(
+                tmp,
+                "functional change",
+                "--readme-impact-required",
+                "--material-function-change", "true",
+                "--readme-evidence-ref", "scripts/new_behavior.py",
+            )
+        self.assertEqual(proc.returncode, 2, proc.stderr)
+        result = json.loads(proc.stdout)
+        self.assertEqual(result["disposition"], "STOP_AT_README_IMPACT_DEPENDENCY")
+        self.assertFalse(result["task_creation_permitted"])
+        self.assertFalse(result["readme_impact_complete"])
+        self.assertEqual(result["readme_impact"]["disposition"], "MATERIAL_FUNCTION_CHANGE_REQUIRES_README_UPDATE")
+
+    def test_material_function_change_with_readme_update_passes_readme_gate(self):
+        with self.fake_root("NO_EXISTING_CAPABILITY_MATCH") as tmp:
+            proc = self.run_entry(
+                tmp,
+                "functional change",
+                "--readme-impact-required",
+                "--material-function-change", "true",
+                "--readme-updated-in-change-set",
+                "--readme-path", "README.md",
+                "--readme-evidence-ref", "README.md",
+                "--readme-evidence-ref", "scripts/new_behavior.py",
+            )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        result = json.loads(proc.stdout)
+        self.assertEqual(result["disposition"], "NEW_WORK_MAY_BE_CONSIDERED")
+        self.assertTrue(result["task_creation_permitted"])
+        self.assertTrue(result["readme_impact_complete"])
+        self.assertEqual(result["readme_impact"]["disposition"], "README_UPDATED_FOR_MATERIAL_FUNCTION_CHANGE")
+
+    def test_nonmaterial_determination_requires_reason_and_evidence(self):
+        with self.fake_root("REUSE_OR_EXTEND_EXISTING") as tmp:
+            proc = self.run_entry(
+                tmp,
+                "nonmaterial change",
+                "--readme-impact-required",
+                "--material-function-change", "false",
+            )
+        self.assertEqual(proc.returncode, 2, proc.stderr)
+        result = json.loads(proc.stdout)
+        self.assertEqual(result["disposition"], "STOP_AT_README_IMPACT_DEPENDENCY")
+        self.assertFalse(result["readme_impact_complete"])
+
+    def test_evidence_supported_nonmaterial_determination_passes(self):
+        with self.fake_root("REUSE_OR_EXTEND_EXISTING") as tmp:
+            proc = self.run_entry(
+                tmp,
+                "nonmaterial change",
+                "--readme-impact-required",
+                "--material-function-change", "false",
+                "--no-readme-update-reason", "Only internal test fixtures changed; repository behavior is unchanged.",
+                "--readme-evidence-ref", "tests/test_fixture.py",
+            )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        result = json.loads(proc.stdout)
+        self.assertEqual(result["disposition"], "REUSE_EXISTING_CAPABILITY")
+        self.assertTrue(result["readme_impact_complete"])
+        self.assertEqual(result["readme_impact"]["disposition"], "NONMATERIAL_CHANGE_EVIDENCE_SUPPORTED")
+
 
 if __name__ == "__main__":
     unittest.main()
