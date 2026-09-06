@@ -2,7 +2,7 @@
   "schema": "stegverse.session-build-preflight-receipt/v1",
   "preflight_id": "G18-LOCAL-SOURCE-BINDING-PARITY-001",
   "goal": "Preserve the already-local canonical source binding through resident G18 execution so the existing native bootstrap and same-host ephemeral recovery run from canonical source while targeting the resident runtime, rather than treating the resident mutable runtime root as its own source tree.",
-  "state": "STOP_AT_README_IMPACT_DEPENDENCY",
+  "state": "PASS_FUNCTIONAL_MUTATION_ADMISSIBLE",
   "repository": "StegVerse-Labs/.github",
   "base_commit": "f83480b8592b970b0f7b43acd80fa466f932b34c",
   "task_registry_identifiers": {
@@ -73,29 +73,30 @@
   },
   "admissible_machine_step": {
     "action": "MAKE_G18_WORKER_RESOLVE_BOOTSTRAP_AND_EPHEMERAL_RECOVERY_FROM_THE_ALREADY_LOCAL_CANONICAL_SOURCE_BINDING_WHILE_KEEPING_RUNTIME_STATE_AND_PROOF_TARGETED_TO_THE_RESIDENT_RUNTIME",
-    "machine_executable_now": false,
-    "blocked_only_by": "README_IMPACT_COMPLETENESS",
+    "machine_executable_now": true,
     "runtime_execution_claimed": false,
     "activation_claimed": false
   },
   "readme_impact": {
     "predicate": "README_IMPACT_RESOLVED",
-    "state": "INCOMPLETE",
+    "state": "COMPLETE",
     "material_function_change": true,
     "readme_update_required": true,
     "readme_path": "README.md",
-    "readme_updated_in_change_set": false,
+    "readme_updated_in_change_set": true,
+    "readme_commit": "f06a36aa4b262072a86633f9fcd9aec33c4d01d3",
     "determination": "MATERIAL_RUNTIME_SOURCE_BINDING_AND_FAILURE_BEHAVIOR_CHANGE",
-    "reason": "The repair changes which local tree is authoritative for G18 bootstrap/recovery execution and prevents a refreshed resident runtime from being misclassified as canonical source. This affects runtime prerequisites, dependency resolution, and failure behavior and must be documented in README.md.",
+    "reason": "README.md now documents the canonical-local-source versus resident-runtime separation, fail-closed source-binding behavior, and shared application to the G18 parent and request-consumption resolution tasks.",
     "evidence_refs": [
       "README.md#G18-same-host-sovereign-runtime-recovery",
       "handoffs/RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001.json",
       "scripts/consume_g18_resident_execution_request.py",
       "scripts/refresh_and_execute_resident_task.py",
       "workers/sovereign_runtime_activation_worker.py",
-      "9910cf76e0bd171d0166d14d4b1f765bba887667"
+      "9910cf76e0bd171d0166d14d4b1f765bba887667",
+      "f06a36aa4b262072a86633f9fcd9aec33c4d01d3"
     ],
-    "readme_impact_complete": false
+    "readme_impact_complete": true
   },
   "authority": {
     "heartbeat_grants_execution_authority": false,
