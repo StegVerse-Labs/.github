@@ -1,0 +1,41 @@
+{
+  "schema": "stegverse.session-implementation-claim/v1",
+  "claim_id": "ECOSYSTEM-CHAT-SAME-DEVICE-TERMINAL-PREDICATES-20260905",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "fix/ecosystem-chat-same-device-terminal-predicates",
+  "issue": 201,
+  "role": "ACTIVE_IMPLEMENTATION",
+  "state": "CLAIMED_FOR_IMPLEMENTATION",
+  "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+  "goal": "Allow the canonical Ecosystem Chat parent terminalizer to recognize the already-supported current-iPhone service-worker sovereign runtime without falsifying process/private predicates.",
+  "claimed_paths": [
+    "scripts/run_independent_ecosystem_chat_parent.py",
+    "tests/test_ecosystem_chat_same_device_terminal_predicates.py",
+    "docs/ECOSYSTEM_CHAT_SAME_DEVICE_TERMINAL_PREDICATES_MIRROR_HANDOFF.md",
+    "README.md",
+    "control/session-implementation-claim-2026-09-05-ecosystem-chat-same-device-terminal-predicates.json"
+  ],
+  "collision_boundaries": [
+    "Do not mint runtime evidence from source or CI",
+    "Do not replay terminal G22 orphan recovery",
+    "Do not modify TV/TVC route authority",
+    "Do not weaken measured-usage or Master Records reconstruction predicates",
+    "Do not create a second WorkerCoordinator, heartbeat, scheduler, model authority, or credential path"
+  ],
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "authority_effect": "NONE_SOURCE_CLAIM_ONLY",
+  "activation_effect": false,
+  "readme_impact": {
+    "required": true,
+    "reason": "Canonical runtime prerequisite/failure semantics change from process-only to process-or-exact-current-iPhone-service-worker sovereign execution surfaces.",
+    "readme_updated_in_change_set": true,
+    "readme_path": "README.md",
+    "evidence_refs": [
+      "scripts/run_independent_ecosystem_chat_parent.py",
+      "docs/ECOSYSTEM_CHAT_SAME_DEVICE_TERMINAL_PREDICATES_MIRROR_HANDOFF.md"
+    ]
+  },
+  "release_condition": "Exact tests and organization/heartbeat validation pass, repair merges, and claim is terminalized without inferring runtime activation."
+}

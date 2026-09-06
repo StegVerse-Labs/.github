@@ -39,6 +39,8 @@ LLM_EXECUTION_RECEIPT = RECEIPT_ROOT / "llm_adapter_sovereign_execution.json"
 MR_RECEIPT = RECEIPT_ROOT / "master_records_same_execution_reconstruction.json"
 ACTIVATION_RECEIPT = RECEIPT_ROOT / "independent_parent_activation.latest.json"
 MINIMUM_FENCE_EXCLUSIVE = 22
+DEVICE_LOCAL_MODEL_ENDPOINT = "https://stegverse.org/stegos-bootstrap/local-model"
+DEVICE_SERVICE_WORKER_SCOPE = "https://stegverse.org/stegos-bootstrap/"
 NONSECRET_LOCATORS = (
     "STEGVERSE_MICRO_NODE_RUNTIME_ROOT",
     "STEGVERSE_TVC_ROOT",
@@ -397,6 +399,42 @@ def load_terminal_chain(root: Path) -> tuple[dict[str, Any], dict[str, Any], dic
     return base, proof, route, execution
 
 
+def classify_sovereign_runtime_surface(proof: dict[str, Any]) -> dict[str, Any]:
+    predicates = proof.get("predicates") or {}
+    process_observed = predicates.get("real_model_process_observed") is True
+    private_only = predicates.get("private_endpoint_only") is True
+    browser_observed = predicates.get("browser_service_worker_runtime_observed") is True
+    device_intercepted = predicates.get("device_local_intercepted_endpoint") is True
+    no_network_egress = predicates.get("network_egress_required") is False
+    inference_observed = predicates.get("real_inference_response_observed") is True
+    process_path = process_observed and private_only
+    device_path = (
+        browser_observed
+        and device_intercepted
+        and no_network_egress
+        and inference_observed
+        and proof.get("endpoint_transport") == "SERVICE_WORKER_LOCAL_INTERCEPT"
+        and str(proof.get("endpoint") or "").rstrip("/") == DEVICE_LOCAL_MODEL_ENDPOINT
+        and str(proof.get("service_worker_scope") or "") == DEVICE_SERVICE_WORKER_SCOPE
+    )
+    if process_path:
+        runtime_surface = "PRIVATE_PROCESS"
+    elif device_path:
+        runtime_surface = "CURRENT_USER_IPHONE_SERVICE_WORKER"
+    else:
+        runtime_surface = "UNVERIFIED"
+    return {
+        "sovereign_runtime_execution_surface_observed": process_path or device_path,
+        "runtime_execution_surface": runtime_surface,
+        "real_model_process_observed": process_observed,
+        "private_endpoint_only": private_only,
+        "browser_service_worker_runtime_observed": browser_observed,
+        "device_local_intercepted_endpoint": device_intercepted,
+        "network_egress_required": predicates.get("network_egress_required"),
+        "device_local_runtime_observed": device_path,
+    }
+
+
 def finalize_same_execution(root: Path, task: dict[str, Any], epoch: int) -> tuple[bool, dict[str, Any]]:
     base, proof, route, execution = load_terminal_chain(root)
     mr_root = find_master_records_root(root)
@@ -425,7 +463,7 @@ def finalize_same_execution(root: Path, task: dict[str, Any], epoch: int) -> tup
             "reconstruction_result": reconstruction_result,
         }
 
-    proof_predicates = proof.get("predicates") or {}
+    runtime_surface = classify_sovereign_runtime_surface(proof)
     activation = {
         "schema": "stegverse.ecosystem-chat-independent-parent-activation/v1",
         "task_id": TASK_ID,
@@ -435,8 +473,7 @@ def finalize_same_execution(root: Path, task: dict[str, Any], epoch: int) -> tup
         "heartbeat_reference_is_causal": False,
         "state": "PASS",
         "transition_id": "MASTER_RECORDS_SAME_EXECUTION_RECONSTRUCTED",
-        "real_model_process_observed": proof_predicates.get("real_model_process_observed") is True,
-        "private_endpoint_only": proof_predicates.get("private_endpoint_only") is True,
+        **runtime_surface,
         "ephemeral_e1_e2_execution_observed": execution.get("state") == "EXECUTED",
         "measured_usage_persisted": isinstance(execution.get("measured_usage"), dict),
         "provider_usage_reconstruction_pass": reconstruction.get("provider_usage_reconstruction_pass") is True,
@@ -455,8 +492,7 @@ def finalize_same_execution(root: Path, task: dict[str, Any], epoch: int) -> tup
         "authority_effect": "NONE_BEYOND_ADMITTED_PARENT_TASK_CONTROL",
     }
     required_true = (
-        "real_model_process_observed",
-        "private_endpoint_only",
+        "sovereign_runtime_execution_surface_observed",
         "ephemeral_e1_e2_execution_observed",
         "measured_usage_persisted",
         "provider_usage_reconstruction_pass",
@@ -471,11 +507,10 @@ def finalize_same_execution(root: Path, task: dict[str, Any], epoch: int) -> tup
 
     base.update(
         {
-            "schema": "stegverse.ecosystem-chat-sovereign-inference-worker-receipt/v0.8",
+            "schema": "stegverse.ecosystem-chat-sovereign-inference-worker-receipt/v0.9",
             "transition_id": "MASTER_RECORDS_SAME_EXECUTION_RECONSTRUCTED",
             "completed": True,
-            "real_model_process_observed": True,
-            "private_endpoint_only": True,
+            **runtime_surface,
             "ephemeral_e1_e2_execution_observed": True,
             "measured_usage_persisted": True,
             "provider_usage_reconstruction_pass": True,

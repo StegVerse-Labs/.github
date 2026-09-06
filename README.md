@@ -171,6 +171,14 @@ Terminal packages remain non-checkoutable because portable admission still requi
 
 This sequential-lineage behavior allows downstream same-device consumers to reuse the existing portable WorkerCoordinator instead of requiring another machine or creating another runtime authority plane. It does not by itself package, admit, dispatch, execute, or complete any downstream task, and it does not establish current iPhone runtime presence or authentic resident execution evidence.
 
+### Ecosystem Chat same-device terminal execution surface
+
+The canonical Ecosystem Chat parent may satisfy its sovereign runtime-surface predicate through either the existing native/private-process path or the exact `CURRENT_USER_IPHONE` service-worker path. The service-worker path is accepted only when the runtime proof binds `SERVICE_WORKER_LOCAL_INTERCEPT`, the canonical `https://stegverse.org/stegos-bootstrap/local-model` endpoint and StegOS service-worker scope, observed device-local interception, observed real inference, and `network_egress_required=false`.
+
+This does **not** rewrite browser execution as a native process. A current-iPhone service-worker receipt continues to report `real_model_process_observed=false` and `private_endpoint_only=false`; the parent instead records `device_local_runtime_observed=true`, `runtime_execution_surface=CURRENT_USER_IPHONE_SERVICE_WORKER`, and the aggregate `sovereign_runtime_execution_surface_observed=true` only when the exact device predicates pass.
+
+All other terminal predicates remain fail-closed: fresh WorkerCoordinator claim/fence, exact TVC route, exact LLM-adapter execution, measured usage, Master Records provider-usage and transition reconstruction, same-execution identity, persistent conversational runtime readiness, TV/TVC credential authority with credential requirement `NONE`, no GitHub runtime authority, and no hosted/third-party production dependency. Source, merge, CI, package presence, or browser capability alone does not prove current-iPhone execution or product activation.
+
 ### Canonical Work task ingress
 
 The Canonical Work resident bootstrap is a **shared governed ingress mechanism for tasks that already exist in the canonical Task Registry**. It is no longer limited to the coordination bootstrap task itself. A caller must provide an explicit `task_id`; the bootstrap fails closed unless that identity resolves exactly once, remains `PROPOSED`, explicitly allows `INGRESS_ADMITTED`, has no projected WorkerCoordinator claim/fence, and preserves the canonical authority model.
