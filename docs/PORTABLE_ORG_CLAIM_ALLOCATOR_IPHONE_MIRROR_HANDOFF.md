@@ -1,6 +1,6 @@
 # Portable Organization Claim Allocator iPhone Mirror Handoff
 
-Updated: 2026-09-02
+Updated: 2026-09-06
 Repository: `StegVerse-Labs/.github`
 Issue: #884
 Parent allocator: #842
@@ -26,15 +26,16 @@ This is the same allocator semantics as `scripts/allocate_claims.py`, not a seco
 
 ## Current source floor
 
-The first portable package is anchored to:
+The portable package is anchored to:
 - `tasks/TASK-2026-0007.json`
 - `tasks/TASK-2026-0008.json`
+- `tasks/TASK-2026-0009.json`
 - `control/claims-active.json`
 - `control/queue.json`
 
 TASK-0006 remains superseded/proposed and is not eligible. Existing durable task history remains source provenance.
 
-TASK-0007 is older release-priority work and may be selected first. Its dependency surface does not overlap TASK-0008, so repeatable allocator execution must be able to grant TASK-0008 afterward.
+TASK-0007 and TASK-0008 are retained predecessor catalog identities. TASK-0009 is the exact non-overlapping HB31 Ecosystem Chat current-iPhone Site successor projection. A catalog extension does not reactivate or reset any prior task or fence.
 
 ## Portable state
 
@@ -66,18 +67,17 @@ Preserve:
 9. queue ordering/generation advances;
 10. no selection means no claim authority effect.
 
+The allocation/CAS/lease/fence logic remains unchanged for TASK-0009. Only the exact package catalog validator now accepts either the historical two-task predecessor package or the exact three-task successor package.
+
 ## Runtime evidence
 
 Source/merge/CI prove only implementation.
 
-Authentic completion requires the physical current iPhone to atomically advance the portable allocator state and retain an exact TASK claim observation.
+Authentic claim completion requires the physical current iPhone to atomically advance the portable allocator state and retain an exact TASK claim observation.
 
 ## Bootstrap circularity
 
-Current public Site does not yet contain this allocator, while publication of the full current iPhone surface is itself gated on TASK-0008.
-
-This lane must not solve that by bypassing the claim gate. A separate bootstrap resolution must provide the canonical allocator to the already-established iPhone without granting product publication or task claim authority.
-
+The allocator bootstrap is intentionally separate from TASK-owned `stegos-bootstrap/*` product paths. This lane must not solve publication by bypassing a task claim gate. The already-established Site `stegos-node/` bootstrap remains the same-device delivery surface for the canonical allocator package and grants no product mutation authority.
 
 ## Implemented source — 2026-09-02
 
@@ -87,28 +87,13 @@ Installed:
 - `schemas/org-allocator-portable-state.schema.json`;
 - `tests/test_portable_org_claim_allocator_iphone.py`.
 
-The current package is bound to:
-```text
-scripts/allocate_claims.py blob 7c0105c8529b682c24a94b39ba31a8ca574c3717
-TASK-2026-0007 blob       a5fd4662b2a370e8a86099c943b8d1ec18b93e19
-TASK-2026-0008 blob       f534167633c867bbee6b397ae345b10ed502aa2b
-claims predecessor blob   9e7eaf9cb1319dd570714a0c1806d7173a7ba7ff
-queue predecessor blob    6cab961c8750495dab36d1a523980516b1ac3a5e
-claim generation floor    2
-```
+The original package was bound to TASK-0007/TASK-0008 with claim generation floor 2. The module validates exact task identity/request-time/repository/dependency-surface floors before allocating.
 
-The module validates exact task identity/request-time/repository/dependency-surface floors before allocating.
-
-Expected repeatable sequence on an uncontended current package:
+Expected original repeatable sequence on an uncontended initial package:
 ```text
 first allocation -> TASK-2026-0007 / claim generation 3
 later allocation -> TASK-2026-0008 / claim generation 4
 ```
-
-The second transition is permitted because the two dependency surfaces are disjoint. This is a semantic expectation from the packaged current state, not a runtime claim.
-
-Physical iPhone allocation remains NOT OBSERVED.
-
 
 ## Authentic current-iPhone execution — 2026-09-03
 
@@ -136,15 +121,7 @@ allocator receipt sha256: sha256:b7ae12318e6f9619ca87351fea27dc72fd4e4687c478827
 claim snapshot sha256: 09f4a79bc073d07f322db6a15b8958baa6fb1618c96e36132b2cf937be74f054
 ```
 
-Independent deterministic verification of the complete export confirmed:
-- all 53 journal entries form one valid hash chain;
-- projected journal tail equals the recomputed tail;
-- allocator receipt self-hash matches;
-- claim snapshot hash matches;
-- TASK-2026-0008 is the selected task;
-- generation and fencing token are both 4;
-- the exact required dependency surface is present;
-- `task_0008_granted=true`.
+Independent deterministic verification confirmed the 53-entry journal chain, G4/fence 4 identity, exact TASK-0008 dependency surface, and `task_0008_granted=true`.
 
 Authority remains unchanged: the canonical organization allocator is the claim authority; the observation itself grants no authority; Site, StegOS, HB, browser shell, transport, GitHub, and source publication do not mint this claim.
 
@@ -152,5 +129,42 @@ The native repository file `control/claims-active.json` remains the native files
 
 Downstream result:
 - Site #932 was authentically admitted under this claim;
-- Site PR #952 merged and deployed the exact current-iPhone StegOS projection;
-- physical SV001 execution remains a separate subsequent predicate.
+- Site PR #952 merged and deployed the predecessor current-iPhone StegOS projection;
+- later runtime/source successors require their own fresh exact task/fence.
+
+## TASK-0009 successor catalog — 2026-09-06
+
+StegOS PR #218 repaired the existing HB31 Ecosystem Chat current-iPhone autostart runtime-opportunity seam. The released successor package was merged by StegOS #220 as `4265ca06c8b6cd49c5ffcab8de265140ef1f24f9`; its package claim was released as `7f6e473c6c28d53ac5b6d81788227a4a17e90d93`.
+
+Site still projects predecessor autostart blob:
+
+```text
+3927e2aa650f3267c53af73f3ef8bea2379805b9
+```
+
+while the released StegOS source is:
+
+```text
+7d8d02cfee688a58cbb813cf04c1fada8801b2a6
+```
+
+TASK-0008/G4 must not be reactivated. Its exact Site path set never included `stegos-bootstrap/device-local-autostart.js`. TASK-2026-0009 therefore represents genuinely new, non-overlapping work with dependency surface:
+
+```text
+site:hb31-ecosystem-chat-runtime-opportunity-successor
+```
+
+The updated portable package retains the same `ORG-ALLOCATOR-PORTABLE-IPHONE-20260902` authority epoch and predecessor seed state. An already-persisted G3/G4 portable state remains valid. Because `effectiveTasks()` falls back to the package's queued status for a newly cataloged task when no persisted status exists, TASK-0009 may be considered without resetting old state. Existing G3/G4 claims remain in the collision set and are preserved.
+
+Regression validation explicitly constructs retained G3/G4 state, keeps TASK-0007/TASK-0008 active, and requires the unchanged allocator selection/CAS logic to select TASK-0009 at generation/fence 5 only because its exact dependency/path scope is non-overlapping.
+
+This is source capability, not runtime proof:
+
+```text
+TASK-0009 physical allocator claim: NOT OBSERVED
+G5 or later successor fence: NOT OBSERVED
+Site successor projection: NOT OBSERVED
+HB31 current-iPhone Ecosystem Chat execution from successor Site source: NOT OBSERVED
+```
+
+No source/package/CI/README/handoff change grants a claim. HeartBeat remains non-authorizing; TV/TVC remains credential authority; GitHub runtime authority remains NONE; no second machine, scheduler, allocator, or WorkerCoordinator is introduced.
