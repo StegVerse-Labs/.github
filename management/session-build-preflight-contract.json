@@ -1,6 +1,6 @@
 {
   "artifact_type": "stegverse.session_build_preflight_contract",
-  "schema_version": "1.1.0",
+  "schema_version": "1.2.0",
   "status": "ACTIVE_SOURCE_CONTRACT",
   "entrypoint": "scripts/session_build_preflight.py",
   "stegindex_gate": "scripts/stegindex_preflight_gate.py",
@@ -12,6 +12,23 @@
     "runtime_truth_inferred": false,
     "execution_admission_inferred": false,
     "authority_effect": "NONE_INDEX_PROJECTION_ONLY"
+  },
+  "readme_impact": {
+    "required_before_functional_mutation": true,
+    "material_change_requires_readme_update": true,
+    "material_change_required_fields": [
+      "material_function_change=true",
+      "readme_updated_in_change_set=true",
+      "readme_path",
+      "evidence_refs"
+    ],
+    "nonmaterial_no_update_required_fields": [
+      "material_function_change=false",
+      "no_readme_update_reason",
+      "evidence_refs"
+    ],
+    "failure_disposition": "STOP_AT_README_IMPACT_DEPENDENCY",
+    "authority_effect": "NONE_PREWORK_COMPLETENESS_ONLY"
   },
   "decisions": {
     "CONTINUE_MACHINE_EXECUTION": {
@@ -38,6 +55,11 @@
       "disposition": "STOP_AT_EXACT_DEPENDENCY",
       "task_creation_permitted": false,
       "exit_code": 2
+    },
+    "README_IMPACT_INCOMPLETE": {
+      "disposition": "STOP_AT_README_IMPACT_DEPENDENCY",
+      "task_creation_permitted": false,
+      "exit_code": 2
     }
   },
   "invariants": [
@@ -45,9 +67,13 @@
     "new task creation is prohibited when machine continuation is already available",
     "new task creation is prohibited while indexed truth requires reconciliation",
     "new task creation is prohibited until cross-task coordination adjacency/claim/gap discovery has been consulted",
+    "functional mutation is prohibited until README impact completeness has been evaluated",
+    "material repository behavior changes require the affected repository README in the same change set",
+    "a no-README-update determination requires explicit nonmaterial rationale and supporting evidence",
     "cross-task coordination projection does not itself prove runtime truth or execution readiness",
+    "README completeness does not grant execution authority or prove runtime truth",
     "generic runtime-evidence blockers are not terminal preflight outcomes",
-    "StegIndex, cross-task coordination, and this entrypoint grant no execution authority"
+    "StegIndex, cross-task coordination, README completeness review, and this entrypoint grant no execution authority"
   ],
   "authority_effect": "NONE_PREWORK_DECISION_ONLY",
   "network_fetch_performed": false,
