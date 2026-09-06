@@ -73,6 +73,8 @@ STATIC_FILES = (
     Path("scripts/consume_tvc_broker_validation_request.py"),
     Path("scripts/bootstrap_tvc_pr92_validation_source.py"),
     Path("scripts/consume_sv002_self_characterization_request.py"),
+    Path("scripts/consume_astra_class_resilience_awareness_request.py"),
+    Path("scripts/consume_quantum_resilience_awareness_request.py"),
     Path("scripts/consume_sv002_org_runtime_activation_request.py"),
     Path("scripts/consume_healer_sovereign_scheduler_request.py"),
     Path("scripts/consume_universal_governance_enforced_reference_request.py"),
@@ -115,6 +117,9 @@ CONTROL_FILES = (
     Path("control/stegindex-preflight-policy.json"),
     Path("control/task-vector-index.json"),
     Path("control/resident-execution-request.json"),
+    Path("control/astra-class-adversarial-resilience-contract.json"),
+    Path("control/quantum-resilience-contract.json"),
+    Path("control/quantum-crypto-census.json"),
 )
 MUTABLE_FORBIDDEN_PREFIXES = (
     "receipts/",
