@@ -68,7 +68,7 @@ class HILSovereignReceiverWorkerRegistrationTests(unittest.TestCase):
             (ROOT / "handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json").read_text(encoding="utf-8")
         )
         self.assertEqual(handoff["schema"], "stegverse.executable-handoff/v0.1")
-        self.assertEqual(handoff["state"], "INCOMPLETE_REQUIRES_CONTINUED_BUILD")
+        self.assertEqual(handoff["state"], "HANDOFF_READY")
         authority = handoff["authority"]
         self.assertEqual(authority["credential_authority"], "TV/TVC")
         self.assertFalse(authority["github_token_required"])
@@ -84,9 +84,14 @@ class HILSovereignReceiverWorkerRegistrationTests(unittest.TestCase):
         self.assertFalse(authority["requires_other_machine"])
         self.assertFalse(authority["other_machine_may_be_required"])
         self.assertTrue(authority["active_established_device_required"])
-        self.assertEqual(handoff["activation"]["esrl_shared_gateway_runtime"]["state"], "INCOMPLETE_OTHER_MACHINE_REQUIRED")
-        self.assertTrue(handoff["activation"]["esrl_shared_gateway_runtime"]["other_machine_dependency"])
-        self.assertFalse(handoff["activation"]["esrl_shared_gateway_runtime"]["public_gateway_same_device_observed"])
+        esrl = handoff["activation"]["esrl_shared_gateway_runtime"]
+        self.assertEqual(esrl["state"], "SOURCE_COMPLETE_SAME_DEVICE_LEASE_OPEN_RUNTIME_NOT_OBSERVED")
+        self.assertTrue(esrl["local_ready_sufficient_for_targeted_execution"])
+        self.assertFalse(esrl["public_gateway_required_for_lease_open"])
+        self.assertFalse(esrl["other_machine_dependency"])
+        self.assertTrue(esrl["public_observation_is_downstream_optional"])
+        self.assertFalse(esrl["public_gateway_same_device_observed"])
+        self.assertFalse(esrl["runtime_observed"])
         execution = handoff["execution"]
         self.assertIn("sovereign_hil_receiver_activation", execution["required_capabilities"])
         self.assertEqual(execution["allowed_paths"], ["receipts/hil-sovereign-receiver/**"])
