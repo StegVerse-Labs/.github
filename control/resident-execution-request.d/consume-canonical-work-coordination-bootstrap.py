@@ -8,11 +8,12 @@ Canonical Work task ingress discoverable.
 
 On an admitted native resident host it copies only the explicitly enumerated
 Canonical Work source files from the already-local canonical source root into the
-resident checkout, verifies byte equality, then invokes the registered bounded
-bootstrap wrapper for explicit task specifications. Request specifications are
-visited independently so one task-local failure does not prevent a later task from
-being attempted. No network source fetch, credential use, HB/oscillator advance,
-claim/fence minting, or second runtime implementation is permitted here.
+resident checkout, verifies byte equality, preserves an already-existing resident
+canonical task registry, then invokes the registered bounded bootstrap wrapper for
+explicit task specifications. Request specifications are visited independently so
+one task-local failure does not prevent a later task from being attempted. No
+network source fetch, credential use, HB/oscillator advance, claim/fence minting,
+or second runtime implementation is permitted here.
 """
 from __future__ import annotations
 
@@ -66,8 +67,10 @@ MATERIALIZE = (
     Path("scripts/reevaluate_canonical_task_dependencies.py"),
     Path("scripts/consume_admitted_dependency_resolution.py"),
     Path("workers/canonical_work_intr_ingress.py"),
-    Path("data/canonical-task-registry.json"),
     Path("control/canonical-work-runtime-profile.json"),
+)
+PRESERVE_IF_PRESENT = (
+    Path("data/canonical-task-registry.json"),
 )
 
 HOSTED = ("GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "CF_PAGES", "CLOUDFLARE_WORKERS")
@@ -171,18 +174,44 @@ def atomic_json(path: Path, value: Mapping[str, Any]) -> None:
     tmp.replace(path)
 
 
+def copy_exact(source: Path, destination: Path) -> dict[str, Any]:
+    require(source.is_file(), f"canonical source file missing:{source}")
+    source_hash = sha256(source)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    if not destination.is_file() or sha256(destination) != source_hash:
+        shutil.copy2(source, destination)
+    require(destination.is_file() and sha256(destination) == source_hash, f"materialized byte mismatch:{destination}")
+    return {
+        "path": str(destination),
+        "sha256": source_hash,
+        "exact_copy": True,
+        "preserved_existing_runtime_projection": False,
+    }
+
+
 def materialize(source: Path, runtime: Path) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     for rel in MATERIALIZE:
+        copied = copy_exact(source / rel, runtime / rel)
+        copied["path"] = rel.as_posix()
+        rows.append(copied)
+
+    for rel in PRESERVE_IF_PRESENT:
         src = source / rel
         dst = runtime / rel
         require(src.is_file(), f"canonical source file missing:{rel}")
-        src_hash = sha256(src)
-        dst.parent.mkdir(parents=True, exist_ok=True)
-        if not dst.is_file() or sha256(dst) != src_hash:
-            shutil.copy2(src, dst)
-        require(dst.is_file() and sha256(dst) == src_hash, f"materialized byte mismatch:{rel}")
-        rows.append({"path": rel.as_posix(), "sha256": src_hash, "exact_copy": True})
+        if dst.is_file():
+            rows.append({
+                "path": rel.as_posix(),
+                "sha256": sha256(dst),
+                "exact_copy": False,
+                "preserved_existing_runtime_projection": True,
+                "source_sha256": sha256(src),
+            })
+        else:
+            copied = copy_exact(src, dst)
+            copied["path"] = rel.as_posix()
+            rows.append(copied)
     return rows
 
 
@@ -250,6 +279,10 @@ def consume_for_spec(
         "entrypoint": str(TARGET_ENTRYPOINT),
         "source_materialization": materialized,
         "source_materialization_count": len(materialized),
+        "existing_canonical_task_registry_preserved": any(
+            row.get("path") == "data/canonical-task-registry.json" and row.get("preserved_existing_runtime_projection") is True
+            for row in materialized
+        ),
         "command": command,
         "returncode": completed.returncode,
         "result": result,
