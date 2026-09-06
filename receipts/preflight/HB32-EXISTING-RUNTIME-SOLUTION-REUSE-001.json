@@ -1,0 +1,29 @@
+{
+  "schema": "stegverse.machine-preflight/v1",
+  "preflight_id": "HB32-EXISTING-RUNTIME-SOLUTION-REUSE-001",
+  "state": "PASS",
+  "verdict": "PASS",
+  "scope": "runtime-solution discovery/index only",
+  "reused": [
+    "heartbeat_runtime.independent_oscillator",
+    "heartbeat_runtime.engine_v13.HeartbeatRuntime",
+    "scripts/repair_resident_worker_presence.py",
+    "heartbeat_runtime.runtime_presence_projection.py",
+    "scripts/restart_sovereign_ephemeral_node.py::_terminate",
+    "scripts/refresh_sovereign_worker_runtime_source.py",
+    "scripts/run_worker_runtime.py",
+    "scripts/dispatch_resident_execution_requests.py"
+  ],
+  "duplicate_runtime_created": false,
+  "readme_impact": {
+    "material_function_change": false,
+    "readme_update_required": false,
+    "no_readme_update_reason": "The solution index/registry only makes already-existing runtime remedies discoverable. It adds no runtime behavior, authority, prerequisite, dependency, failure behavior, interface, or capability. The material pending-first-tick runtime change is separately covered by HB32-SELF-HEAL-STARTUP-GRACE-002 and its README update in the same branch.",
+    "evidence_refs": [
+      "docs/HB32_RUNTIME_SOLUTION_INDEX_20260906.md",
+      "data/runtime-solution-registry.d/hb32-existing-runtime-solutions.json",
+      "README.md#Resident-WorkerCoordinator-self-heal-binding-parity"
+    ]
+  },
+  "authority_effect": "NONE_PREFLIGHT_ONLY"
+}
