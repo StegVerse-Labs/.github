@@ -1,0 +1,78 @@
+{
+  "schema": "stegverse.runtime-solution-registry-fragment/v1",
+  "fragment_id": "HB32-EXISTING-RUNTIME-SOLUTIONS-20260906",
+  "authority_effect": "NONE_DISCOVERY_ONLY",
+  "solutions": [
+    {
+      "problem_class": "CARRIER_START_REPORTED_WITHOUT_OSCILLATOR_PROGRESS",
+      "reuse": "scripts/install_sovereign_heartbeat_carrier.py",
+      "support": [
+        "heartbeat_runtime.independent_oscillator",
+        "control/heartbeat-carrier-runtime-state.json"
+      ],
+      "canonical_fix_refs": ["ec92570ccfa4ef9b87bef77c4596f0f341ff33b7"],
+      "do_not_create": ["second-oscillator", "start-command-as-runtime-proof"]
+    },
+    {
+      "problem_class": "RESIDENT_WORKER_MISSING",
+      "reuse": "scripts/repair_resident_worker_presence.py",
+      "support": [
+        "heartbeat_runtime.engine_v13.HeartbeatRuntime",
+        "scripts/run_worker_runtime.py"
+      ],
+      "do_not_create": ["heartbeat", "oscillator", "scheduler", "WorkerCoordinator"]
+    },
+    {
+      "problem_class": "RESIDENT_WORKER_PREVIOUSLY_PROVEN_BUT_STALE",
+      "reuse": "scripts/repair_resident_worker_presence.py",
+      "support": [
+        "heartbeat_runtime.runtime_presence_projection.py",
+        "scripts/restart_sovereign_ephemeral_node.py"
+      ],
+      "canonical_fix_refs": ["511b82e26dcfce0d799f861df23b605fb837ac56"],
+      "do_not_create": ["worker-runtime", "claim-fence-plane"]
+    },
+    {
+      "problem_class": "SELF_HEALED_WORKER_FIRST_CYCLE_STARVED_BY_LONG_MAINTENANCE",
+      "reuse": "scripts/run_worker_runtime.py",
+      "support": [
+        "scripts/repair_resident_worker_presence.py",
+        "scripts/dispatch_resident_execution_requests.py"
+      ],
+      "canonical_fix_refs": ["55c03313d72dde2f067434c87cd3691ec0682c14"],
+      "resolution": "persist WorkerCoordinator runtime.cycle before tick-zero rendezvous/source-refresh/resident-request maintenance",
+      "do_not_create": ["second-worker", "parallel-self-heal-runtime"]
+    },
+    {
+      "problem_class": "RESIDENT_SOURCE_STALE_OR_INCOMPLETE",
+      "reuse": "scripts/refresh_sovereign_worker_runtime_source.py",
+      "support": ["already-local canonical source checkout"],
+      "canonical_fix_refs": ["543fb39498cdba042796a09d70292c2bd7396e1a"],
+      "do_not_create": ["network-source-fetch", "hosted-runtime"]
+    },
+    {
+      "problem_class": "DURABLE_RUNTIME_NATIVE_BOOTSTRAP_INCOMPLETE",
+      "reuse": "existing same-host sovereign ephemeral fallback",
+      "support": ["G18 current HB runtime stack"],
+      "canonical_fix_refs": ["72e80ce645858c02877277845ffe624cd71ec1e6"],
+      "do_not_create": ["second-user-machine", "hosted-runtime-authority", "new-workercoordinator-plane"]
+    },
+    {
+      "problem_class": "TASK_REQUEST_NOT_CONSUMED_WHILE_RUNTIME_PATH_EXISTS",
+      "reuse": "scripts/dispatch_resident_execution_requests.py",
+      "support": [
+        "scripts/run_worker_runtime.py",
+        "task-specific resident request consumer"
+      ],
+      "do_not_create": ["duplicate-request", "manual-claim-fence", "task-specific-heartbeat"]
+    }
+  ],
+  "authority": {
+    "heartbeat_grants_execution_authority": false,
+    "oscillator_grants_execution_authority": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "transition_authority": "INTERLOCK_INTR",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE"
+  }
+}
