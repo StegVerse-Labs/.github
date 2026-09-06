@@ -115,36 +115,23 @@ The preflight itself has `authority_effect: NONE`.
 
 The organization README defines a standing rule: any change that materially changes repository function must update that repository's README in the same functional change.
 
-Machine enforcement is bound into the existing worker-task admission review rather than a parallel scheduler or authority path. New functional mutations entering through the StegVerse session-entry contract must set:
+Machine enforcement now exists at two canonical boundaries, without creating a parallel scheduler or authority path:
 
-```text
-readme_impact_required = true
-```
+1. **session/build pre-work** — `scripts/session_build_preflight.py` can require README-impact completeness before new functional work/task creation may be considered;
+2. **WorkerCoordinator admission** — `heartbeat_runtime/worker_task_admission.py` requires README-impact completeness before an admitted worker can proceed toward existing assignment/claim/fence mechanics.
 
-The task or handoff must then provide a structured `readme_impact` determination.
+For a material functional change, both gates require an affected README path, an in-change-set README update, and evidence tying that update to the functional change. For an explicit non-material determination, both require rationale plus supporting evidence. Missing materiality or incomplete evidence fails closed.
 
-For `material_function_change = true`, admission requires:
+The session/build gate emits `STOP_AT_README_IMPACT_DEPENDENCY` and prohibits task creation when its README-impact declaration is incomplete. Worker admission exposes the corresponding `readme_impact_complete` predicate and blocks admission when false.
 
-```text
-readme_updated_in_change_set = true
-readme_path = <affected repository README>
-evidence_refs = <README + functional-change evidence>
-```
-
-For `material_function_change = false`, a no-update determination is admissible only when it carries:
-
-```text
-no_readme_update_reason = <explicit rationale>
-evidence_refs = <supporting evidence>
-```
-
-Missing materiality, missing required evidence, or a material functional change without a README update makes `readme_impact_complete = false` and causes the existing worker-task admission review to fail closed.
-
-Legacy/nonfunctional tasks that predate this contract are not retroactively blocked solely because they lack the field. The session-entry/preflight contract is responsible for marking new functional mutations as README-impact-required.
+Legacy/nonfunctional invocations that do not enter the new gate are not retroactively stranded solely because the field did not exist previously. New StegVerse functional mutations are expected to enter through the session-entry/preflight contract with README impact declared.
 
 Implementation locations:
 
 ```text
+scripts/session_build_preflight.py
+management/session-build-preflight-contract.json
+tests/test_session_build_preflight.py
 heartbeat_runtime/worker_task_admission.py
 tests/test_worker_task_admission.py
 README.md
@@ -226,33 +213,33 @@ README impact worker-admission preflight:
   organization control-plane run: 34001225776 SUCCESS
   cross-task coordination run: 34001225834 SUCCESS
   heartbeat worker run: 34001225851 SUCCESS
+
+README impact session/build pre-work preflight:
+  PR: 1027
+  validated head: 45631a2c718fa8d982a771cdb55b301db595a81a
+  merge: 5626bfc8d1cb76bb1d1eda6ef3d0c0be7429e17a
+  organization control-plane run: 34001532346 SUCCESS
+  cross-task coordination run: 34001532400 SUCCESS
+  heartbeat worker run: 34001532342 SUCCESS
 ```
 
 These are source/validation facts only and are not runtime-event or product-activation evidence.
 
 ## Migrated bound `resident_request_consumed` instances
 
-Canonical composition now carries distinct subject-bound records for:
-
-1. Ecosystem Chat parent — `RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-002`;
-2. StegIndex one-shot resident stack activation — `RESIDENT-EXEC-ONE-SHOT-STACK-ACTIVATION-001`;
-3. HIL sovereign receiver — `RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002`;
-4. G18 existing-claim resume — `RESIDENT-EXEC-G18-RESUME-FENCE18-001`, additionally bound to claim/fence18;
-5. SV002 organization-runtime activation — `RESIDENT-EXEC-SV002-ORG-RUNTIME-ACTIVATION-001`;
-6. SV002 public observation — `RESIDENT-EXEC-SV002-PUBLIC-OBSERVATION-RUNTIME-001`;
-7. SV-011 phase5 boundary — `RESIDENT-EXEC-SV011-PHASE5-BOUNDARY-001`;
-8. SV-011 phase5 source materialization — `RESIDENT-EXEC-SV011-PHASE5-SOURCE-MATERIALIZATION-001`;
-9. StegVerse-001 bounded autonomy — `RESIDENT-EXEC-STEGVERSE001-BOUNDED-AUTONOMY-001`.
-
-SV002 and SV-011 staging records are marked `ADMITTED_CANONICAL_FRAGMENT` and point to their canonical fragments so later sessions must not repeat migration.
+Canonical composition carries distinct subject-bound records for resident request consumers including Ecosystem Chat, StegIndex one-shot activation, HIL sovereign receiver, G18 existing-claim resume, SV002 organization/public runtime boundaries, SV-011 phase5 boundaries, and StegVerse-001 bounded autonomy. Each remains subject-bound; similarly named predicates are not globally interchangeable.
 
 The StegVerse-001 bounded-autonomy predicate records its dependency on the already-existing one-shot resident-stack activation predicate; it does not create a second activation mechanism or bypass TVC lease issuance.
 
+## Resident-presence migration boundary
+
+`control/cross-task-coordination-candidates/resident-process-alive-supervised.json` remains intentionally `DEFERRED_SUBJECT_BINDING_REQUIRED`.
+
+The shared runtime-presence projector proves a concrete runtime root/node instance. Static consumer files do not yet prove that all consumers refer to the same runtime-root/node subject. Therefore a global resident-presence Boolean MUST NOT be registered until authentic runtime evidence supplies stable subject identity. No second presence projector should be created to bypass that requirement.
+
 ## StegIndex consistency
 
-`StegVerse-Labs/StegIndex/scripts/resolve_cross_task_coordination.py` now composes the same base + fragment model in read-only form and fails closed on duplicate/drifted fragments. Its complete validation suite passed run `34000847936`.
-
-WorkerCoordinator, handoff projection, and StegIndex therefore now share one logical coordination composition model rather than reading different subsets of canonical state.
+`StegVerse-Labs/StegIndex/scripts/resolve_cross_task_coordination.py` composes the same base + fragment model in read-only form and fails closed on duplicate/drifted fragments. WorkerCoordinator, handoff projection, StegIndex, and session/build pre-work therefore consume the same logical coordination composition model rather than independently interpreting partial state.
 
 ## Current coordination state
 
@@ -260,7 +247,9 @@ Core source implementation: VALIDATED.
 Composed canonical ledger: VALIDATED.
 Subject-bound resident-request migration: PARTIAL / ACTIVE.
 StegIndex composed discovery: VALIDATED.
-README impact machine-preflight enforcement: MERGED / VALIDATED.
+README impact WorkerCoordinator enforcement: MERGED / VALIDATED.
+README impact session/build pre-work enforcement: MERGED / VALIDATED.
+Resident-presence shared predicate: DEFERRED / AUTHENTIC SUBJECT BINDING REQUIRED.
 Ecosystem adoption: NOT COMPLETE.
 Runtime activation claims created by this coordination work: NONE.
 
@@ -268,11 +257,11 @@ Existing runtime activation, WorkerCoordinator execution, sovereign inference, H
 
 ## Remaining machine work
 
-1. inspect remaining canonical handoffs for shared predicates beyond `resident_request_consumed`, beginning with resident-presence/runtime-observation and common claim/fence/evidence predicates;
-2. establish subject identity before any shared registration;
+1. inspect remaining canonical handoffs for genuinely shared predicates beyond `resident_request_consumed`;
+2. establish exact subject identity before any shared registration, especially runtime-presence predicates;
 3. register only genuinely reusable producer/evidence relationships and exact gaps;
-4. bind additional session/build consumers that still read an incomplete coordination slice;
-5. register active claims/producers where canonical ownership records exist;
+4. bind any additional session/build consumers that still read an incomplete coordination slice;
+5. register active claims/producers only where canonical ownership records already exist;
 6. validate each migration deterministically;
 7. evaluate tag/release only after ecosystem-adoption criteria are actually satisfied;
 8. after actual release/tag, verify governed propagation requirements for `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `admissibility-wiki`, and `stegguardian-wiki`.
@@ -291,3 +280,5 @@ A handoff by itself is continuity evidence, not task completion and not proof th
 Current goal completion: FALSE.
 Current ecosystem-adoption work remaining: TRUE.
 Thread archive-ready: FALSE.
+
+README impact for this reconciliation commit: NON-MATERIAL. Reason: documentation-only reconciliation of already-merged validated preflight behavior; repository function is unchanged. Evidence: PR #1027 and runs `34001532342`, `34001532346`, `34001532400`.
