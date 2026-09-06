@@ -54,7 +54,18 @@ The three consumers are existing registered consumers of the same dispatcher. Th
 
 ## TVC continuation
 
-TVC's existing resident self-heal was originally pinned to an obsolete `.github` control-plane SHA and dispatched only the final SV002 selector. The merged TVC repair at `85a6885d9f942c84cc5740f1e1f26bae2e2de03f` re-resolved the admitted source to exact `.github` commit `543fb39498cdba042796a09d70292c2bd7396e1a`, refreshes the resident runtime from that exact source, and invokes the existing `scripts/dispatch_resident_execution_requests.py` directly with the exact selector set `astra_class_resilience_awareness`, `quantum_resilience_awareness`, and `sv002_org_runtime_activation` in canonical order.
+TVC's existing resident self-heal was originally pinned to an obsolete `.github` control-plane SHA and dispatched only the final SV002 selector. The original merged repair at `StegVerse-Labs/TVC@85a6885d9f942c84cc5740f1e1f26bae2e2de03f` re-resolved the admitted source to exact `.github` commit `543fb39498cdba042796a09d70292c2bd7396e1a`, refreshed the resident runtime from that exact source, and invoked the existing `scripts/dispatch_resident_execution_requests.py` directly with the exact selector set `astra_class_resilience_awareness`, `quantum_resilience_awareness`, and `sv002_org_runtime_activation` in canonical order.
+
+That original repair remains historical lineage. The later validated TVC exact-source rebind supersedes its source coordinate for current execution:
+
+```text
+current exact runtime source: StegVerse-Labs/.github@11cad666ff4a0ffeca39a725272f1ab905d9257d
+TVC exact-source rebind merge: StegVerse-Labs/TVC@a7e3ed7611c9abead988ec85b493cc396ac54b94
+TVC task: TVC-RESIDENT-SERVICE-SELF-HEAL-001
+consumer task: SHWP-SV002-ORG-RUNTIME-ACTIVATION-001
+```
+
+The TVC task record reports that exact source as source-validated and keeps authentic host execution unobserved. The later rebind does not change the direct-dispatch mechanism, selector ordering, HB/oscillator role, WorkerCoordinator authority, InTr transition authority, or TV/TVC credential boundary.
 
 Moving `main` is not a runtime source identity. The TVC request remains exact-SHA/immutable-commit bound, secret-free, and TV/TVC credential-governed. A later `.github` source change is not automatically a prerequisite for that bounded TVC repair unless the exact runtime behavior it needs is absent from the pinned source.
 
@@ -65,6 +76,8 @@ Moving `main` is not a runtime source identity. The TVC request remains exact-SH
 Determination: `NO_README_CHANGE_REQUIRED` for the original `.github` source-refresh dependency repair.
 
 Evidence-supported reason: the README already defines the externally meaningful resident self-heal/source-refresh contract: local-only refresh of canonical WorkerCoordinator dependencies, no network fetch or credential acquisition, no second carrier/worker/scheduler, preservation of mutable runtime state, and no inference of runtime execution from refresh. The repair restored omitted static files inside that already-documented parity contract and did not change its authority model.
+
+For the 2026-09-06 TVC exact-source handoff reconciliation, `receipts/preflight/SV002-TVC-EXACT-SOURCE-HANDOFF-RECONCILIATION-20260906.json` records a separate `NO_README_CHANGE_REQUIRED` determination because the change corrects provenance only and changes no behavior, runtime semantics, interface, authority boundary, evidence semantics, prerequisite, dependency, failure behavior, or capability meaning.
 
 Focused test: `tests/test_resident_refresh_awareness_dependencies.py`.
 
@@ -97,6 +110,6 @@ sv002_org_runtime_activation
 
 Portable one-selector callers may therefore invoke those existing consumers in prerequisite order and must stop before SV002 activation if an awareness dispatch fails.
 
-This portable-bridge correction is **not** the dispatch mechanism used by the merged TVC resident self-heal at `85a6885d9f942c84cc5740f1e1f26bae2e2de03f`. That TVC implementation refreshes source and invokes `scripts/dispatch_resident_execution_requests.py` directly with all three exact selectors in one dispatcher visit. The portable correction remains valid for portable callers, but it must not be represented as a missing prerequisite or failure cause for the merged TVC direct-dispatch path.
+This portable-bridge correction is **not** the dispatch mechanism used by the current TVC resident self-heal lineage. That TVC implementation refreshes source and invokes `scripts/dispatch_resident_execution_requests.py` directly with all three exact selectors in one dispatcher visit. The portable correction remains valid for portable callers, but it must not be represented as a missing prerequisite or failure cause for the merged TVC direct-dispatch path.
 
 This is source/interface clarification only. Authentic standing-awareness receipts and the terminal SV002 round trip remain unobserved.
