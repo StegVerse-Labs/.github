@@ -35,9 +35,30 @@ StegVerse-Labs/.github PR #1005 / merge `f564aeec9eb8a5bf195a59f2f00a458c3a50fa2
 
 This repair changes source identity and observability validity only. It does not prove that an ephemeral or native resident runtime is presently alive and does not advance ERL review state.
 
+## 2026-09-05 local Master Records custody return path
+
+A later source audit identified a distinct observability gap after presence emission: `runtime-presence.latest.json` was written only into the resident runtime root, while source refresh intentionally excludes mutable `receipts/` and Master Records had no intake contract for this exact projection. Therefore absence from repository-visible evidence could not distinguish `not emitted` from `emitted locally but not retained by Master Records`.
+
+The bounded repair reuses both existing authorities rather than creating another observer:
+
+- producer remains `heartbeat_runtime/runtime_presence_projection.py`;
+- trigger remains the existing carrier-owned WorkerCoordinator supervision visit in `scripts/repair_resident_worker_presence.py`;
+- when `STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT` identifies an already-local Master Records checkout and its canonical importer is present, the just-emitted presence receipt is submitted locally for custody/reconstruction;
+- no network fetch, GitHub token, repository writeback, scheduler, heartbeat, WorkerCoordinator, or credential path is introduced;
+- missing Master Records root/importer produces an observable non-authorizing skip and does not invalidate or delete the authentic presence receipt;
+- invalid importer authority semantics fail closed in the custody handoff while leaving presence emission intact;
+- the local handoff result is recorded at `receipts/sovereign-host/runtime-presence-master-records-intake.latest.json`;
+- Master Records preserves exact source bytes, complete structured content, `runtime_root`, and `resident.node_id` when present;
+- Master Records intake sets `cross_task_reuse_authorized=false` and carries no task/correlation identity, so custody cannot satisfy ERL or another task merely by existing.
+
+This closes the local custody/reconstruction intake gap only. It does not prove that a presence receipt has actually been emitted, that the local Master Records importer has executed, or that the resulting custody record has been persisted to a remote repository. Those remain separate authentic evidence observations.
+
+The newer cross-task subject-binding rule remains controlling: exact `runtime_root`, node identity when available, and canonical WorkerCoordinator identity must be established before a retained presence observation can be promoted for shared task reuse.
+
 The current evidence order remains:
 
 `runtime-presence.latest.json` with `present_worker_runtime_observed=true`
+→ optional local Master Records custody of that exact observation
 → `resident-request-dispatch.latest.json`
 → ERL request-consumption receipt
 → `resident-targeted-execution.latest.json`
@@ -45,4 +66,4 @@ The current evidence order remains:
 → ERL activation group 9 reconciliation
 → separately governed activation group 10 evaluation.
 
-No review completion, activation, publication, credential, claim/fence, heartbeat authority, second-machine dependency, or repository-writeback authority is created by these repairs.
+No review completion, activation, publication, credential, claim/fence, heartbeat authority, second-machine dependency, cross-task evidence substitution, or repository-writeback authority is created by these repairs.
