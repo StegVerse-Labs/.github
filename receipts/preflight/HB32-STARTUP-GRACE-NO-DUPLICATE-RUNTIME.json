@@ -1,0 +1,10 @@
+{
+  "schema": "stegverse.no-duplicate-runtime/v1",
+  "task_id": "HB32-SELF-HEAL-STARTUP-GRACE-002",
+  "heartbeat_reused": true,
+  "oscillator_reused": true,
+  "workercoordinator_reused": true,
+  "resident_dispatcher_reused": true,
+  "new_runtime_created": false,
+  "authority_effect": "NONE_EVIDENCE_ONLY"
+}
