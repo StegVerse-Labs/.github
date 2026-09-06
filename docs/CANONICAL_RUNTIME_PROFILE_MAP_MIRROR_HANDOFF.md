@@ -3,7 +3,7 @@
 Updated: 2026-09-05
 Repository: `StegVerse-Labs/.github`
 Goal: `STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001`
-Status: `SOURCE_IMPLEMENTED_CANONICAL_TASK_INGRESS_AND_RUNTIME_CHAIN_PREFLIGHT_BOUND_AUTHENTIC_RESIDENT_EVIDENCE_PENDING`
+Status: `SOURCE_IMPLEMENTED_CANONICAL_TASK_INGRESS_REGISTRY_PRESERVATION_AND_RUNTIME_CHAIN_PREFLIGHT_BOUND_AUTHENTIC_RESIDENT_EVIDENCE_PENDING`
 
 ## Authority boundary
 
@@ -33,6 +33,7 @@ No task request, map/profile/observation/match/readiness/custody/reconciliation/
 12. Every staged resident request must have the exact request/consumer/dispatcher-selector binding before the build may proceed.
 13. The exact chain validation must run against the **materialized resident runtime**, not only the canonical source checkout, before runtime-profile-map generation proceeds.
 14. The Runtime Profile Map task lifecycle itself must enter through the reusable Canonical Work registered-task ingress before any governed task-state promotion; the map-build resident lane is not a substitute for task ingress.
+15. An existing resident `data/canonical-task-registry.json` is mutable coordination state and MUST NOT be replaced by static source materialization; source may seed it only when absent.
 
 ## Canonical source surfaces
 
@@ -61,24 +62,29 @@ No task request, map/profile/observation/match/readiness/custody/reconciliation/
 - `control/resident-execution-request.d/canonical-work-runtime-profile-map-001.json`
 - `control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py`
 - `tests/test_runtime_profile_map_canonical_work_resident_request.py`
+- `tests/test_canonical_work_resident_registry_preservation.py`
 - `tests/test_runtime_profile_map_authority_routing.py`
 - `tests/test_runtime_profile_map_resident_chain.py`
 
 ## Governed task ingress staging
 
-`STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001` already exists exactly once in the canonical Task Registry, remains `PROPOSED`, allows `INGRESS_ADMITTED`, and has no projected WorkerCoordinator claim/fence in checked-in state. A new non-authorizing resident request is staged at:
+`STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001` already exists exactly once in the canonical Task Registry, remains `PROPOSED`, allows `INGRESS_ADMITTED`, and has no projected WorkerCoordinator claim/fence in checked-in state. Its non-authorizing Canonical Work resident request is staged at `control/resident-execution-request.d/canonical-work-runtime-profile-map-001.json`.
 
-`control/resident-execution-request.d/canonical-work-runtime-profile-map-001.json`
+It reuses the generalized Canonical Work ingress consumer and the single existing dispatcher selector `canonical_work_coordination`. The consumer carries `RUNTIME_PROFILE_MAP_SPEC` alongside the coordination, quantum-resilience, and object-provenance request specs. No new dispatcher selector, listener, scheduler, WorkerCoordinator, task identity, or authority path is introduced.
 
-It reuses the generalized Canonical Work ingress consumer and the single existing dispatcher selector `canonical_work_coordination`. The existing consumer now carries `RUNTIME_PROFILE_MAP_SPEC` alongside the coordination, quantum-resilience, and object-provenance request specs. No new dispatcher selector, listener, scheduler, WorkerCoordinator, task identity, or authority path is introduced.
+Expected authentic request-consumption evidence is `receipts/sovereign-host/canonical-work-runtime-profile-map-request-consumption.latest.json`. That receipt plus nested Canonical Work ingress/consumption/bootstrap evidence is required before any claim that the task reached authentic `INGRESS_ADMITTED` state.
 
-Expected authentic request-consumption evidence is:
+## Canonical registry preservation
 
-`receipts/sovereign-host/canonical-work-runtime-profile-map-request-consumption.latest.json`
+The Canonical Work ingress consumer previously treated `data/canonical-task-registry.json` like an immutable source artifact and could exact-copy the checked-in registry over an existing resident copy. That was unsafe for this workstream because Runtime Profile Map and other governed flows may have already projected newer authentic ingress/runtime-resolution/task state into the resident registry.
 
-That receipt plus nested Canonical Work ingress/consumption/bootstrap evidence is required before any claim that the task reached authentic `INGRESS_ADMITTED` state.
+The consumer now uses `PRESERVE_IF_PRESENT` semantics for the canonical registry. When a resident registry exists, it is preserved byte-for-byte and both its resident SHA-256 and the canonical source SHA-256 are recorded in materialization evidence. When absent, it is seeded from canonical source. The request-consumption receipt reports whether an existing resident registry was preserved.
 
-README impact for this addition is explicitly `material_function_change=false`: it is a configuration-only addition of one already-registered task to the existing generalized Canonical Work request set. The current `README.md` section **Canonical Work task ingress** already documents the reusable registered-task semantics, multiple explicit request specifications, fail-closed validation, shared InTr listener, and non-authorizing boundaries. Evidence: current `README.md`, `docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md`, `control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py`, and `tests/test_runtime_profile_map_canonical_work_resident_request.py`. No README change is required unless those generic semantics change.
+This is preservation only. It does not validate the resident registry or make it authoritative beyond its existing Task Registry role; all registered-task identity/state checks, current Interlock/InTr admission, WorkerCoordinator claim/fence rules, and Master Records reconciliation remain mandatory.
+
+`tests/test_canonical_work_resident_registry_preservation.py` verifies both preservation of existing state and source seeding when absent.
+
+README impact for this preservation change is `material_function_change=true` because resident runtime/failure semantics changed. `README.md` was updated in the same logical change set under **Canonical Work task ingress** to document preserve-if-present behavior. The earlier addition of the Runtime Profile Map request itself remained a configuration-only non-material addition already covered by the generic README semantics.
 
 ## Resident Runtime Profile Map stages
 
@@ -94,6 +100,7 @@ All five selectors are registered in the existing `scripts/dispatch_resident_exe
 
 ```text
 canonical_work_coordination visits Runtime Profile Map registered-task request
+-> preserve existing resident canonical task registry (seed only if absent)
 -> exact task identity/state/authority checks
 -> existing shared Universal Interlock/InTr task ingress
 -> authentic task-specific INGRESS_ADMITTED evidence
@@ -150,10 +157,11 @@ The corresponding Master Records handoff is `master-records/orchestration/RUNTIM
 9. Static fail-closed source-chain validation for all five request/consumer/selector bindings. **SOURCE COMPLETE**
 10. Resident build requires the same fail-closed chain validation against the materialized runtime before map generation. **SOURCE COMPLETE**
 11. Canonical Work registered-task ingress request for `STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001` is staged through the existing generalized path. **SOURCE COMPLETE**
-12. Authentic Runtime Profile Map task ingress is observed and governed into canonical task state. **RUNTIME PENDING**
-13. One authentic resident cycle emits chain-preflight through authority-review-routing evidence. **RUNTIME PENDING**
-14. Current WorkerCoordinator/Interlock-InTr/Master Records/Canonical Coordination authority consumes the applicable review envelope and independently performs/rejects/waits/transfers under current governance. **RUNTIME PENDING**
-15. Any resulting execution/closure is retained in Master Records and reconciled back into canonical task state. **RUNTIME PENDING**
+12. Canonical Work source materialization preserves an existing resident Task Registry instead of rolling it back. **SOURCE COMPLETE**
+13. Authentic Runtime Profile Map task ingress is observed and governed into canonical task state. **RUNTIME PENDING**
+14. One authentic resident cycle emits chain-preflight through authority-review-routing evidence. **RUNTIME PENDING**
+15. Current WorkerCoordinator/Interlock-InTr/Master Records/Canonical Coordination authority consumes the applicable review envelope and independently performs/rejects/waits/transfers under current governance. **RUNTIME PENDING**
+16. Any resulting execution/closure is retained in Master Records and reconciled back into canonical task state. **RUNTIME PENDING**
 
 ## Expected authentic evidence
 
@@ -180,9 +188,9 @@ The corresponding Master Records handoff is `master-records/orchestration/RUNTIM
 
 ## Current boundary
 
-No runtime-complete or ingress-complete claim is made. The task lifecycle now has explicit source staging through Canonical Work, and the map build retains its fail-closed resident-chain preflight. The unresolved boundary is authentic resident task ingress plus authentic Runtime Profile Map lifecycle consumption through the existing HB32/oscillator + WorkerCoordinator architecture and resulting current-authority decisions.
+No runtime-complete or ingress-complete claim is made. The task lifecycle now has explicit source staging through Canonical Work, the Canonical Work materializer preserves later resident Task Registry state, and the map build retains its fail-closed resident-chain preflight. The unresolved boundary is authentic resident task ingress plus authentic Runtime Profile Map lifecycle consumption through the existing HB32/oscillator + WorkerCoordinator architecture and resulting current-authority decisions.
 
-The checked-in canonical task registry is currently generation 15; `STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001` remains `PROPOSED`. This source staging does not qualify as authentic task ingress, runtime completion, WorkerCoordinator claim/fence, Master Records reconciliation completion, or governed closure.
+The checked-in canonical task registry is currently generation 15; `STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001` remains `PROPOSED`. These source changes do not qualify as authentic task ingress, runtime completion, WorkerCoordinator claim/fence, Master Records reconciliation completion, or governed closure.
 
 ## Human action
 
