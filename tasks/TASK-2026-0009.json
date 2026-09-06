@@ -1,0 +1,85 @@
+{
+  "schema": "stegverse.org-task/v0.2",
+  "task_id": "TASK-2026-0009",
+  "organization": "StegVerse-Labs",
+  "goal": "Project the exact released HB31 Ecosystem Chat current-iPhone autostart successor from StegVerse-Labs/StegOS into StegVerse-Labs/Site under a fresh canonical allocator fence, without reactivating TASK-2026-0008/G4 or widening heartbeat, WorkerCoordinator, credential, runtime, publication, or custody authority.",
+  "status": "queued",
+  "requested_at": "2026-09-06T13:25:00Z",
+  "priority_class": "release",
+  "rank_reason": [
+    "StegOS PR #218 repaired the existing current-iPhone HB31 runtime-opportunity seam and merged as b776dc2393aa28b2f68ee34158fc938e1f032696",
+    "StegOS successor package PR #220 merged as 4265ca06c8b6cd49c5ffcab8de265140ef1f24f9 and its package claim was released as 7f6e473c6c28d53ac5b6d81788227a4a17e90d93",
+    "Site still projects predecessor device-local-autostart blob 3927e2aa650f3267c53af73f3ef8bea2379805b9 while released StegOS source is 7d8d02cfee688a58cbb813cf04c1fada8801b2a6",
+    "TASK-2026-0008/G4 is terminal provenance and its scope never included stegos-bootstrap/device-local-autostart.js",
+    "A distinct successor task permits a fresh monotonic canonical allocator fence without resetting portable state or reusing prior authority"
+  ],
+  "requirements": {
+    "mandatory": [
+      {
+        "repository": {
+          "host": "github.com",
+          "owner": "StegVerse-Labs",
+          "name": "Site",
+          "full_name": "StegVerse-Labs/Site",
+          "default_branch": "main"
+        },
+        "mode": "scoped_exclusive",
+        "preemptible": true,
+        "scope": {
+          "paths": [
+            "stegos-bootstrap/device-local-autostart.js",
+            "scripts/check_stegos_ipod_bootstrap_projection.py",
+            "README.md",
+            "docs/HB31_ECOSYSTEM_CHAT_RUNTIME_OPPORTUNITY_SITE_PROJECTION_MIRROR_HANDOFF.md",
+            "data/tasks/SITE-HB31-ECOSYSTEM-CHAT-RUNTIME-OPPORTUNITY-SUCCESSOR.json",
+            "data/session-work-claims.d/site-hb31-ecosystem-chat-runtime-opportunity-successor.json"
+          ],
+          "contracts": [
+            "stegos.current-iphone-site-projection-successor.v1"
+          ],
+          "release_surfaces": [
+            "site:hb31-ecosystem-chat-runtime-opportunity-successor"
+          ],
+          "capabilities": [
+            "current-iphone-hb31-ecosystem-chat-runtime-opportunity-successor-projection"
+          ],
+          "workflows": [],
+          "dependency_surfaces": [
+            "site:hb31-ecosystem-chat-runtime-opportunity-successor"
+          ]
+        }
+      }
+    ],
+    "optional": []
+  },
+  "dependencies": [],
+  "workspace": {
+    "branch": "claim/site-hb31-ecosystem-chat-runtime-opportunity-successor-r1",
+    "merge_target": "main",
+    "direct_push_allowed": false,
+    "pull_request_required": true
+  },
+  "supersedes": null,
+  "predecessor_provenance": {
+    "allocator_task": "TASK-2026-0008",
+    "allocator_fence": 4,
+    "site_projection_pr": 952,
+    "site_projection_merge": "6a08d993af9814cc6d20723f8a1e16957d3fe8d4",
+    "reactivation_allowed": false
+  },
+  "source_successor": {
+    "repository": "StegVerse-Labs/StegOS",
+    "package": "release/current-iphone-site-projection/successors/hb31-ecosystem-chat-runtime-opportunity.json",
+    "package_merge": "4265ca06c8b6cd49c5ffcab8de265140ef1f24f9",
+    "source_blob": "7d8d02cfee688a58cbb813cf04c1fada8801b2a6",
+    "expected_site_predecessor_blob": "3927e2aa650f3267c53af73f3ef8bea2379805b9"
+  },
+  "authority": {
+    "heartbeat_grants_claim_authority": false,
+    "workercoordinator_authority_owner": "StegVerse-Labs/.github WorkerCoordinator",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "site_mutation_authority_before_fresh_claim": false,
+    "runtime_execution_inferred": false
+  }
+}
