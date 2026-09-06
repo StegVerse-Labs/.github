@@ -102,6 +102,20 @@ This remains dependency/source completeness only. It creates no new carrier, wor
 
 README impact: MATERIAL. `README.md` records the fresh-install dependency/failure behavior in the same change set.
 
+## Bootstrap source-eligibility parity repair — 2026-09-05
+
+Final continuation of the same self-heal capability found a remaining source-completeness inconsistency at sovereign bootstrap eligibility. `install_sovereign_heartbeat_service.py` already required the self-heal module for fresh native materialization, but `bootstrap_sovereign_runtime.py::REQUIRED_SOURCE_FILES` did not. Bootstrap eligibility could therefore report `canonical_source_complete=true` even when the downstream installer would necessarily reject the same source tree because `scripts/repair_resident_worker_presence.py` was absent.
+
+The bounded repair:
+- adds `scripts/repair_resident_worker_presence.py` to `bootstrap_sovereign_runtime.py::REQUIRED_SOURCE_FILES`;
+- adds a negative-control regression proving that omission of that exact dependency forces `canonical_source_complete=false` and `eligible=false`;
+- preserves the existing `RUNTIME_ELIGIBILITY_ONLY_NO_CREDENTIAL_OR_ROUTE_AUTHORITY` authority effect;
+- changes no WorkerCoordinator claim/fence, InTr transition, TV/TVC credential, scheduler, carrier, route, runtime-presence, or request-consumption semantics.
+
+README impact: MATERIAL. `README.md` records that bootstrap source eligibility and downstream native materialization now apply the same self-heal dependency completeness requirement.
+
+This is still source/eligibility correctness only. Passing bootstrap eligibility, validation, merge, source refresh, or native materialization does not prove current carrier presence, current WorkerCoordinator presence, a supervision visit, request dispatch or consumption, claim/fence creation, an InTr transition, resident StegIndex materialization, blocker-derived preflight, StegIndex operational proof, or task completion.
+
 ## Runtime consequence
 
 A live canonical carrier plus a dead/missing WorkerCoordinator is now a validated self-healing runtime state rather than a passive `REQUESTED` backlog state. Authentic runtime presence still requires the canonical presence receipt from a real resident carrier-supervision visit, and authentic task completion still requires each task-specific receipt; this repair does not fabricate those receipts.
