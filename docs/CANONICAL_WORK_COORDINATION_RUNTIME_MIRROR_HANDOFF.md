@@ -4,7 +4,7 @@ Updated: 2026-09-05
 Organization: `StegVerse-Labs`
 Repository: `StegVerse-Labs/.github`
 Goal: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`
-Status: `REGISTERED_TASK_INGRESS_SOURCE_GENERALIZED_AUTHENTIC_LIFECYCLE_PENDING`
+Status: `REGISTERED_TASK_INGRESS_SOURCE_GENERALIZED_OBJECT_PROVENANCE_REQUEST_STAGED_AUTHENTIC_LIFECYCLE_PENDING`
 
 ## Parent authority
 
@@ -39,9 +39,11 @@ The task coordination runtime consumes that substrate; it does not own or advanc
 - `scripts/install_and_run_canonical_work_event_bootstrap.py`
 - `control/resident-execution-request.d/canonical-work-coordination-bootstrap-001.json`
 - `control/resident-execution-request.d/canonical-work-quantum-resilience-001.json`
+- `control/resident-execution-request.d/canonical-work-object-provenance-continuity-190.json`
 - `control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py`
 - `scripts/dispatch_resident_execution_requests.py`
 - `tests/test_canonical_work_registered_task_ingress.py`
+- `tests/test_object_provenance_canonical_work_resident_request.py`
 - `data/canonical-task-registry.json`
 
 Master Records corresponding bounded feed contract:
@@ -63,9 +65,11 @@ Master Records corresponding bounded feed contract:
 
 `scripts/install_and_run_canonical_work_event_bootstrap.py` joins the route install/check and bounded bootstrap in one resident-machine sequence and forwards the explicit registered task identity to the bootstrap. It runs the bootstrap in a fresh Python process so the transformed shared router is imported after the route edit.
 
-The original coordination request remains staged at `control/resident-execution-request.d/canonical-work-coordination-bootstrap-001.json`. `QUANTUM-RESILIENCE-001` is additionally staged at `control/resident-execution-request.d/canonical-work-quantum-resilience-001.json`. Both use the same existing resident dispatcher selector `canonical_work_coordination` and the same `control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py`; no second dispatch plane or ingress implementation is introduced.
+The original coordination request remains staged at `control/resident-execution-request.d/canonical-work-coordination-bootstrap-001.json`. `QUANTUM-RESILIENCE-001` is staged at `control/resident-execution-request.d/canonical-work-quantum-resilience-001.json`. `STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190` is staged at `control/resident-execution-request.d/canonical-work-object-provenance-continuity-190.json`. All three use the same existing resident dispatcher selector `canonical_work_coordination` and the same `control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py`; no second dispatch plane or ingress implementation is introduced.
 
 That consumer deliberately resides inside `control/resident-execution-request.d`, which the existing sovereign source refresh already materializes wholesale. It copies only an explicit Canonical Work file manifest from the already-local canonical source root to the runtime checkout, verifies exact SHA-256 byte equality for every copy, and invokes the install-and-run wrapper with the exact task ID from its fixed request specification. Multiple explicit Canonical Work request specifications are visited independently so one task-local failure does not prevent a later request from being attempted. No network source fetch or credential use is allowed.
+
+The object-provenance request is non-authorizing configuration of this already-generalized registered-task path. It does not create a new runtime behavior class or interface: the same request schema, consumer, selector, source materialization list, bootstrap wrapper, shared InTr listener, Task Registry, WorkerCoordinator authority, Master Records boundary, TV/TVC credential authority, and no-GitHub-token runtime boundary are reused unchanged. README impact for this configuration-only addition is therefore `material_function_change=false`; the existing `README.md` section **Canonical Work task ingress** already documents the exact generic behavior and authority/nonclaim semantics. Evidence for the no-update determination is merged PR #1049 (`aea6deb01c353f8cc2c48c09c06e8810ff3ff2af`), current `README.md`, and this handoff. If any later change alters those generic semantics or failure/authority behavior, README must change in that same change set.
 
 `scripts/consume_canonical_work_intr_materialization_request.py` requires the authentic ingress receipt, verifies payload hash and stable task/correlation identity, reads existing WorkerCoordinator state as projection only, and emits a non-authorizing coordination receipt.
 
@@ -83,7 +87,9 @@ The Master Records authority-side projector scans configured retained custody ro
 
 ## Registry state
 
-`STEGVERSE-CANONICAL-WORK-COORDINATION-001` and `QUANTUM-RESILIENCE-001` remain `PROPOSED` unless and until authentic task-specific Interlock/InTr ingress receipts are observed and the resulting projections are governed into canonical task state. Source staging does not promote either task. Their next admissible governed transition remains `INGRESS_ADMITTED`.
+`STEGVERSE-CANONICAL-WORK-COORDINATION-001`, `QUANTUM-RESILIENCE-001`, and `STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190` remain `PROPOSED` unless and until authentic task-specific Interlock/InTr ingress receipts are observed and the resulting projections are governed into canonical task state. Source/request staging does not promote any task. Their next admissible governed transition remains `INGRESS_ADMITTED`.
+
+For object provenance specifically, the already-merged StegOS source primitive, displayed-surface ingress adapter, and Master Records custody source are prerequisites/evidence only. They do not satisfy `AUTHENTIC_OBJECT_PROVENANCE_INGRESS_OBSERVED`, authentic Master Records custody/reconstruction, reverse-source resolution, Workspace projection, or task closure.
 
 ## Required authentic runtime sequence
 
@@ -120,25 +126,28 @@ No step may infer authority from a preceding receipt. Every state change require
 
 ## Current boundary
 
-The previous source-level restriction that allowed only `STEGVERSE-CANONICAL-WORK-COORDINATION-001` to use the bounded Canonical Work bootstrap has been removed. The reusable path now accepts only an explicitly registered, transition-eligible canonical task and still fails closed on identity, state, claim/fence, or authority drift.
+The reusable path accepts only an explicitly registered, transition-eligible canonical task and fails closed on identity, state, claim/fence, or authority drift.
 
-`QUANTUM-RESILIENCE-001` now has a non-authorizing resident request staged through that path. This is source/request readiness only. No authentic quantum task ingress is claimed until `receipts/sovereign-host/canonical-work-quantum-resilience-request-consumption.latest.json` and its nested Canonical Work ingress/consumption/bootstrap receipts are observed from the resident runtime.
+`QUANTUM-RESILIENCE-001` and `STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190` now each have a non-authorizing resident request staged through that same path. This is source/request readiness only. No authentic task ingress is claimed until the task-specific resident request-consumption receipt and its nested Canonical Work ingress/consumption/bootstrap receipts are observed from the resident runtime.
+
+For object provenance, the expected request-consumption output is `receipts/sovereign-host/canonical-work-object-provenance-continuity-190-request-consumption.latest.json`. Its absence remains an explicit runtime evidence gap, not evidence that execution did or did not occur.
 
 ## Remaining machine work
 
-1. Existing resident dispatcher visits selector `canonical_work_coordination` and the resident consumer visits both explicit Canonical Work request specs independently.
+1. Existing resident dispatcher visits selector `canonical_work_coordination` and the resident consumer visits all explicit Canonical Work request specs independently.
 2. Observe authentic task-specific request-consumption plus Canonical Work ingress/consumption/bootstrap receipts; do not infer them from source or merge.
 3. Apply each resulting authentic ingress projection to canonical task state through governed registry persistence.
-4. Run Master Records pre-execution projection/reconciliation and WorkerCoordinator admission review; project any authentic claim/fence.
-5. Run governed work only under the existing WorkerCoordinator/HB32 architecture.
-6. Run post-execution Master Records reconciliation and governed egress/closure.
-7. Invoke dependency fanout from authentic admitted dependency-resolution events.
-8. Prove at least one complete authentic lifecycle through ingress, claim/fence, evidence, reconciliation, egress/closure, and dependent reevaluation.
+4. For `STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190`, run Master Records pre-execution projection/reconciliation and WorkerCoordinator admission review; project any authentic claim/fence.
+5. Execute the already-merged StegOS displayed-surface provenance ingress only under governed task authority and require authentic conversation/provider event identity plus real ingress transition receipt.
+6. Retain/reconstruct the resulting lineage in Master Records and prove reverse-source resolution before any Workspace projection claim.
+7. Run post-execution Master Records reconciliation and governed egress/closure.
+8. Invoke dependency fanout from authentic admitted dependency-resolution events.
+9. Prove at least one complete authentic lifecycle through ingress, claim/fence, evidence, reconciliation, egress/closure, and dependent reevaluation.
 
 ## Human action
 
-None currently required. All presently identified next steps are machine-owned resident/runtime work.
+None currently required for CanonicalWork source/request staging. A later authentic user-device displayed-surface capture is a runtime evidence event under the StegOS #190 handoff; source or CI cannot substitute for it.
 
 ## Archive readiness
 
-This runtime workstream is not complete until an authentic end-to-end lifecycle is proven. All unique continuation state is preserved here; the chat session may be archived without losing continuation context.
+This runtime workstream is not complete until an authentic end-to-end lifecycle is proven. All unique continuation state is preserved here, but the current object-provenance goal still has machine/runtime work remaining and is not archive-complete.

@@ -48,7 +48,9 @@ class CanonicalWorkRegisteredTaskIngressTests(unittest.TestCase):
     def test_existing_resident_consumer_visits_quantum_spec_without_new_dispatch_plane(self):
         consumer = CONSUMER.read_text(encoding="utf-8")
         self.assertIn("QUANTUM_SPEC", consumer)
-        self.assertIn("REQUEST_SPECS = (DEFAULT_SPEC, QUANTUM_SPEC)", consumer)
+        self.assertIn("REQUEST_SPECS", consumer)
+        self.assertIn("DEFAULT_SPEC", consumer)
+        self.assertIn("QUANTUM_SPEC", consumer)
         self.assertIn('"task_id": "QUANTUM-RESILIENCE-001"', consumer)
         self.assertIn("later_request_attempts_blocked_by_earlier_failure", consumer)
 

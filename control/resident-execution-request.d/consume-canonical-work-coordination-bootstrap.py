@@ -40,7 +40,13 @@ QUANTUM_SPEC = {
     "bootstrap_runtime_rel": Path("runtime/canonical-work-quantum-resilience"),
     "task_id": "QUANTUM-RESILIENCE-001",
 }
-REQUEST_SPECS = (DEFAULT_SPEC, QUANTUM_SPEC)
+OBJECT_PROVENANCE_SPEC = {
+    "request_rel": Path("control/resident-execution-request.d/canonical-work-object-provenance-continuity-190.json"),
+    "consumption_rel": Path("receipts/sovereign-host/canonical-work-object-provenance-continuity-190-request-consumption.latest.json"),
+    "bootstrap_runtime_rel": Path("runtime/canonical-work-object-provenance-continuity-190"),
+    "task_id": "STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190",
+}
+REQUEST_SPECS = (DEFAULT_SPEC, QUANTUM_SPEC, OBJECT_PROVENANCE_SPEC)
 
 MATERIALIZE = (
     Path("scripts/install_and_run_canonical_work_event_bootstrap.py"),
