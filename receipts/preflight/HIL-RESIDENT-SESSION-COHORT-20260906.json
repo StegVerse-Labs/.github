@@ -1,0 +1,85 @@
+{
+  "schema": "stegverse.machine-preflight/v1",
+  "preflight_id": "HIL-RESIDENT-SESSION-COHORT-20260906",
+  "task_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "docs/hil-resident-session-cohort-20260906",
+  "state": "PASS",
+  "verdict": "PASS",
+  "authority_effect": "NONE_PREFLIGHT_ONLY",
+  "resolved_state": {
+    "canonical_handoff": "docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_MIRROR_HANDOFF.md",
+    "executable_handoff": "handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json",
+    "worker_registry": "control/worker-registry.d/hil-sovereign-receiver-001.json",
+    "task_vector": "control/task-vectors/SHWP-HIL-SOVEREIGN-RECEIVER-001.json",
+    "task_vector_index": "control/task-vector-index.json",
+    "cross_task_coordination": "control/cross-task-coordination.json",
+    "cross_task_predicate": "PRED-RESIDENT-REQUEST-CONSUMED-HIL-SOVEREIGN-RECEIVER-002",
+    "cross_task_predicate_state": "UNKNOWN",
+    "master_records_preparation": "StegVerse-Labs/Site/docs/HIL_FIRST_MASTER_RECORD_RELEASE_PREPARATION.md",
+    "master_record_release_ready": false,
+    "resident_request": "RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002",
+    "resident_request_state": "REQUESTED",
+    "worker_state": "HANDOFF_READY",
+    "authentic_runtime_execution_observed": false,
+    "current_main": "f83480b8592b970b0f7b43acd80fa466f932b34c"
+  },
+  "reuse": {
+    "canonical_targetable_cohort_source": "docs/COSV_SESSION_CONSOLIDATION_MIRROR_HANDOFF.md#Current targetable machine tasks",
+    "existing_dispatcher": "scripts/dispatch_resident_execution_requests.py",
+    "existing_hil_consumer": "scripts/consume_hil_resident_execution_request.py",
+    "existing_targeted_executor": "scripts/refresh_and_execute_resident_task.py",
+    "existing_hil_acceptance_harness": "scripts/run_hil_resident_activation_test.py",
+    "existing_cross_task_predicate_reused": true,
+    "new_runtime": false,
+    "new_heartbeat": false,
+    "new_oscillator": false,
+    "new_workercoordinator": false,
+    "new_claim_fence_plane": false,
+    "new_task_identifier": false
+  },
+  "collision_review": {
+    "open_hil_pull_request_found": false,
+    "duplicate_runtime_work": false,
+    "duplicate_task_identifier": false,
+    "disposition": "DOCUMENT_EXISTING_SESSION_COHORT_ONLY"
+  },
+  "planned_change": {
+    "kind": "DOCUMENTATION_AND_COORDINATION_RECONCILIATION_ONLY",
+    "paths": [
+      "docs/HIL_RESIDENT_SESSION_COHORT_MIRROR_HANDOFF.md"
+    ],
+    "runtime_code_change": false,
+    "authority_change": false,
+    "credential_change": false,
+    "interface_change": false,
+    "dependency_change": false,
+    "failure_behavior_change": false,
+    "evidence_semantics_change": false,
+    "new_capability": false
+  },
+  "readme_impact": {
+    "readme_impact_required": true,
+    "material_function_change": false,
+    "readme_updated_in_change_set": false,
+    "readme_path": "README.md",
+    "no_readme_update_reason": "This change only records already-existing task identities, session-combinable resident execution relationships, current canonical predicate states, and the post-PR-1112 evidence boundary. It does not change repository behavior, runtime semantics, interfaces, governance/authority boundaries, evidence semantics, prerequisites, dependencies, failure behavior, or capability meaning. README already documents the resident HIL activation acceptance evidence contract merged in PR #1112.",
+    "evidence_refs": [
+      "README.md#Resident HIL activation acceptance evidence",
+      "docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_MIRROR_HANDOFF.md",
+      "docs/COSV_SESSION_CONSOLIDATION_MIRROR_HANDOFF.md#Current targetable machine tasks",
+      "control/cross-task-coordination.json",
+      "StegVerse-Labs/.github#246",
+      "StegVerse-Labs/.github#1112"
+    ],
+    "readme_impact_complete": true
+  },
+  "authority": {
+    "heartbeat_grants_execution_authority": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "transition_authority": "INTERLOCK_INTR",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "session_grouping_grants_authority": false
+  }
+}
