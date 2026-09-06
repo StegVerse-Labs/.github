@@ -1,0 +1,81 @@
+{
+  "schema": "stegverse.cross-task-coordination-fragment/v1",
+  "fragment_id": "SV011-RESIDENT-REQUEST-PREDICATES-001",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "predicates": [
+    {
+      "predicate_id": "PRED-RESIDENT-REQUEST-CONSUMED-SV011-PHASE5-BOUNDARY-001",
+      "semantic_predicate_id": "resident_request_consumed",
+      "subject_binding": {
+        "request_id": "RESIDENT-EXEC-SV011-PHASE5-BOUNDARY-001",
+        "consumer_task_id": "SHWP-SV011-PHASE5-BOUNDARY-001"
+      },
+      "state": "UNKNOWN",
+      "description": "The exact SV-011 phase5 boundary request was consumed by the existing sovereign resident bridge under the admitted task authority.",
+      "authoritative_producer": "existing SV-011 phase5 resident execution request consumer",
+      "required_schema": "stegverse.sv011-resident-execution-request-consumption/v1",
+      "required_scope": "SHWP-SV011-PHASE5-BOUNDARY-001 resident request consumption",
+      "required_execution_instance": "RESIDENT-EXEC-SV011-PHASE5-BOUNDARY-001",
+      "max_age_seconds": null,
+      "required_fields": ["request_id", "task_id", "state", "bridge_contract_valid", "runtime_execution_attempted"],
+      "expected_output_ref": "receipts/sovereign-host/sv011-phase5-resident-execution-request-consumption.latest.json",
+      "consumers": ["SHWP-SV011-PHASE5-BOUNDARY-001"],
+      "canonical_source_refs": [
+        "control/resident-execution-request.d/sv011-phase5-boundary-001.json",
+        "scripts/consume_sv011_phase5_resident_execution_request.py"
+      ]
+    },
+    {
+      "predicate_id": "PRED-RESIDENT-REQUEST-CONSUMED-SV011-PHASE5-SOURCE-MATERIALIZATION-001",
+      "semantic_predicate_id": "resident_request_consumed",
+      "subject_binding": {
+        "request_id": "RESIDENT-EXEC-SV011-PHASE5-SOURCE-MATERIALIZATION-001",
+        "consumer_task_id": "SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001"
+      },
+      "state": "UNKNOWN",
+      "description": "The exact SV-011 phase5 source-materialization request was consumed by the existing bounded sovereign resident bridge.",
+      "authoritative_producer": "existing SV-011 phase5 source-materialization resident consumer",
+      "required_schema": "stegverse.sv011-source-materialization-request-consumption/v1",
+      "required_scope": "SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001 resident request consumption",
+      "required_execution_instance": "RESIDENT-EXEC-SV011-PHASE5-SOURCE-MATERIALIZATION-001",
+      "max_age_seconds": null,
+      "required_fields": ["request_id", "task_id", "state", "bridge_contract_valid", "runtime_execution_attempted"],
+      "expected_output_ref": "receipts/sovereign-host/sv011-phase5-source-materialization-request-consumption.latest.json",
+      "consumers": ["SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001"],
+      "canonical_source_refs": [
+        "control/resident-execution-request.d/sv011-phase5-source-materialization-001.json",
+        "scripts/consume_sv011_phase5_source_materialization_request.py"
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "predicate_id": "PRED-RESIDENT-REQUEST-CONSUMED-SV011-PHASE5-BOUNDARY-001",
+      "subject_binding": {"request_id": "RESIDENT-EXEC-SV011-PHASE5-BOUNDARY-001", "consumer_task_id": "SHWP-SV011-PHASE5-BOUNDARY-001"},
+      "existing_evidence_refs": [],
+      "rejected_because": ["NO_QUALIFYING_EVIDENCE_OBSERVED"],
+      "missing_observation": "authentic SV-011 phase5 boundary request consumption for the exact request",
+      "required_producer": "existing SV-011 phase5 resident execution request consumer",
+      "required_output_ref": "receipts/sovereign-host/sv011-phase5-resident-execution-request-consumption.latest.json",
+      "required_schema": "stegverse.sv011-resident-execution-request-consumption/v1",
+      "required_fields": ["request_id", "task_id", "state", "bridge_contract_valid", "runtime_execution_attempted"],
+      "required_freshness": null,
+      "collision_refs": [],
+      "action_without_collision": "Consume the existing admitted SV-011 phase5 boundary path; do not create a hosted consumer, second resident executor, provider-credential path, or replacement claim plane."
+    },
+    {
+      "predicate_id": "PRED-RESIDENT-REQUEST-CONSUMED-SV011-PHASE5-SOURCE-MATERIALIZATION-001",
+      "subject_binding": {"request_id": "RESIDENT-EXEC-SV011-PHASE5-SOURCE-MATERIALIZATION-001", "consumer_task_id": "SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001"},
+      "existing_evidence_refs": [],
+      "rejected_because": ["NO_QUALIFYING_EVIDENCE_OBSERVED"],
+      "missing_observation": "authentic SV-011 phase5 source-materialization request consumption for the exact request",
+      "required_producer": "existing SV-011 phase5 source-materialization resident consumer",
+      "required_output_ref": "receipts/sovereign-host/sv011-phase5-source-materialization-request-consumption.latest.json",
+      "required_schema": "stegverse.sv011-source-materialization-request-consumption/v1",
+      "required_fields": ["request_id", "task_id", "state", "bridge_contract_valid", "runtime_execution_attempted"],
+      "required_freshness": null,
+      "collision_refs": [],
+      "action_without_collision": "Consume the existing SV-011 source-materialization request through the bounded resident bridge; do not introduce network fetch, hosted execution authority, or a duplicate materialization executor."
+    }
+  ]
+}
