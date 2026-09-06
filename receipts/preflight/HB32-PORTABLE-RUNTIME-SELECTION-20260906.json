@@ -1,0 +1,82 @@
+{
+  "schema": "stegverse.session-machine-preflight/v1",
+  "task_id": "HB32-PORTABLE-RUNTIME-SELECTION-20260906",
+  "goal_id": "SOVEREIGN-RUNTIME-SAME-DEVICE-CONTINUATION",
+  "state": "PASS",
+  "evaluated_at": "2026-09-06T07:24:00-05:00",
+  "reconciled_at": "2026-09-06T07:43:00-05:00",
+  "scope": {
+    "repository": "StegVerse-Labs/.github",
+    "mutation_paths": ["heartbeat_runtime/runtime_presence_projection.py","management/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_CONTRACT.json","control/canonical-resident-carrier-contract.json","docs/CANONICAL_RESIDENT_CARRIER_MIRROR_HANDOFF.md","tests/test_runtime_presence_projection.py","README.md"]
+  },
+  "canonical_state_resolution": {
+    "initial_main_sha": "08e0ce7c0a131620481019054e6163afac742cee",
+    "reconciled_main_sha": "ec92570ccfa4ef9b87bef77c4596f0f341ff33b7",
+    "heartbeat_semantics": "docs/SOVEREIGN_HEARTBEAT_DEPLOYMENT_MIRROR_HANDOFF.md",
+    "heartbeat_runtime_separation": "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md",
+    "resident_carrier": "docs/CANONICAL_RESIDENT_CARRIER_MIRROR_HANDOFF.md",
+    "portable_workercoordinator": "docs/WORKERCOORDINATOR_PORTABLE_IPHONE_EXECUTION_MIRROR_HANDOFF.md",
+    "runtime_observability": "docs/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_MIRROR_HANDOFF.md",
+    "task_registry": "data/canonical-task-registry.json#generation-15",
+    "master_records": "master-records/orchestration",
+    "cross_task_coordination": "control/cross-task-coordination.json + control/cross-task-coordination.d/*.json"
+  },
+  "runtime_solution_reuse": {
+    "hb32_protocol_anchor_active": true,
+    "oscillator": "INDEPENDENT_PHASE_OSCILLATOR",
+    "period_ms": 10,
+    "frequency_hz": 100,
+    "progression_dependency": "OSCILLATOR_ONLY",
+    "continuous_process_required_for_heartbeat": false,
+    "resident_sampler_required_for_heartbeat_progression": false,
+    "carrier_cli_activation_repair_merge": "ec92570ccfa4ef9b87bef77c4596f0f341ff33b7",
+    "carrier_activation_requires_observed_increasing_oscillator_epochs": true,
+    "portable_workercoordinator_execution_surface": "CURRENT_USER_IPHONE",
+    "portable_workercoordinator_exists": true,
+    "portable_checkout_receipt_schema": "stegverse.workercoordinator-portable-checkout-receipt/v1",
+    "existing_authentic_ios_device_local_runtime_evidence_exists": true,
+    "new_heartbeat_required": false,
+    "new_oscillator_required": false,
+    "new_scheduler_required": false,
+    "new_workercoordinator_required": false,
+    "new_resident_executor_required": false,
+    "new_claim_or_fence_authority_required": false,
+    "new_credential_path_required": false
+  },
+  "defect": {
+    "code": "NATIVE_PROCESS_PRESENCE_USED_AS_UNIVERSAL_RUNTIME_AVAILABILITY",
+    "effect": "Portable same-device task execution can be misclassified as generic runtime absence merely because the native process-supervision predicate is false."
+  },
+  "admitted_repair": {
+    "strategy": "Preserve native process-presence semantics, add a separate fail-closed task-scoped portable WorkerCoordinator observation path from authentic portable checkout evidence, and expose task-control runtime observation without equating HB progression with execution.",
+    "portable_evidence_must_be_subject_bound": true,
+    "source_package_presence_is_runtime_evidence": false,
+    "hb_progression_is_runtime_execution": false,
+    "portable_checkout_is_task_completion": false,
+    "authority_effect": "NONE_OBSERVATION_ONLY"
+  },
+  "collision_review": {
+    "matching_open_pr_observed": false,
+    "duplicate_runtime_implementation_required": false,
+    "existing_sv002_portable_preflight_reused": "receipts/preflight/sv002-current-iphone-portable-consumer-20260905.json",
+    "concurrent_main_advance_observed": true,
+    "concurrent_hb_carrier_fix_reused_not_overwritten": true,
+    "concurrent_readme_self_heal_native_email_and_carrier_cli_changes_preserved": true
+  },
+  "readme_impact": {
+    "required": true,
+    "material_function_change": true,
+    "reason": "The repair changes runtime availability/failure semantics by distinguishing native process presence from authentic task-scoped portable WorkerCoordinator execution on CURRENT_USER_IPHONE.",
+    "readme_path": "README.md",
+    "readme_updated_in_change_set": true
+  },
+  "authority": {
+    "heartbeat_grants_execution_authority": false,
+    "portable_observation_grants_execution_authority": false,
+    "workercoordinator_remains_claim_fence_authority": true,
+    "intr_remains_transition_authority": true,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE"
+  },
+  "verdict": "PASS"
+}

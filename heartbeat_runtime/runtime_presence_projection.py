@@ -10,6 +10,10 @@ OBSERVATION_ONLY_MODE = "CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION"
 DEFAULT_WORKER_FRESHNESS_WINDOW_SECONDS = 60.0
 CANONICAL_CARRIER_RUNTIME = "heartbeat_runtime.engine_v13.HeartbeatRuntime"
 CANONICAL_WORKER_RUNTIME = "heartbeat_runtime.worker_runtime.WorkerCoordinator"
+PORTABLE_CHECKOUT_SCHEMA = "stegverse.workercoordinator-portable-checkout-receipt/v1"
+PORTABLE_AUTHORITY_OWNER = "StegVerse-Labs/.github WorkerCoordinator"
+PORTABLE_AUTHORITY_DOMAIN = "INDEPENDENT_TASK_CONTROL"
+PORTABLE_EXECUTION_SURFACE = "CURRENT_USER_IPHONE"
 
 
 def _load(path: Path) -> dict[str, Any] | None:
@@ -111,6 +115,41 @@ def _self_heal_runtime_alive(receipt: dict[str, Any]) -> tuple[bool, str]:
     return alive, "CARRIER_SELF_HEAL_SUPERVISION_RECEIPT"
 
 
+def _portable_checkout_observed(receipt: dict[str, Any]) -> tuple[bool, str]:
+    """Recognize an authentic task-scoped portable WorkerCoordinator checkout.
+
+    A portable checkout proves that the canonical WorkerCoordinator claim/fence
+    transaction actually ran on CURRENT_USER_IPHONE for the exact receipt subject.
+    It is not native process-presence evidence, heartbeat authority, request
+    consumption, task execution, or task completion.
+    """
+    if not receipt:
+        return False, "UNOBSERVED"
+    valid = (
+        receipt.get("schema") == PORTABLE_CHECKOUT_SCHEMA
+        and receipt.get("canonical_authority_owner") == PORTABLE_AUTHORITY_OWNER
+        and receipt.get("authority_domain") == PORTABLE_AUTHORITY_DOMAIN
+        and receipt.get("execution_surface") == PORTABLE_EXECUTION_SURFACE
+        and isinstance(receipt.get("task_id"), str)
+        and bool(receipt.get("task_id"))
+        and isinstance(receipt.get("worker_id"), str)
+        and bool(receipt.get("worker_id"))
+        and isinstance(receipt.get("claim_id"), str)
+        and bool(receipt.get("claim_id"))
+        and isinstance(receipt.get("fencing_token"), int)
+        and receipt.get("fencing_token") > 0
+        and receipt.get("heartbeat_granted_authority") is False
+        and receipt.get("credential_authority") == "TV/TVC"
+        and receipt.get("github_token_runtime_authority") == "NONE"
+        and receipt.get("global_workercoordinator_authority") is True
+        and receipt.get("stegos_device_task_authority") is False
+        and receipt.get("external_non_stegverse_machine_required") is False
+        and receipt.get("parallel_workercoordinator_claim_issuance_allowed") is False
+        and receipt.get("authority_effect") == "CANONICAL_WORKERCOORDINATOR_CLAIM_FENCE"
+    )
+    return valid, "PORTABLE_WORKERCOORDINATOR_CHECKOUT_RECEIPT"
+
+
 def project(
     runtime_root: Path,
     evidence_refs: dict[str, str] | None = None,
@@ -179,13 +218,24 @@ def project(
     )
 
     evidence = {}
-    for name, rel in sorted((evidence_refs or {}).items()):
+    refs = evidence_refs or {}
+    for name, rel in sorted(refs.items()):
         evidence[name] = _summary(root / rel)
+
+    portable_checkout_path = root / refs["portable_checkout"] if isinstance(refs.get("portable_checkout"), str) else None
+    portable_checkout = _load(portable_checkout_path) if portable_checkout_path is not None else None
+    portable_checkout_valid, portable_evidence_kind = _portable_checkout_observed(portable_checkout or {})
 
     request_observed = evidence.get("request", {}).get("observed", False)
     consumption_observed = evidence.get("consumption", {}).get("observed", False)
     execution_observed = evidence.get("execution", {}).get("observed", False)
     reconstruction_observed = evidence.get("reconstruction", {}).get("observed", False)
+
+    # This aggregate answers whether one of the already-canonical WorkerCoordinator
+    # execution surfaces has been directly observed. It deliberately does not turn
+    # HB progression, static portable package presence, or a checkout into task
+    # execution/completion evidence.
+    task_control_runtime_observed = present_worker_runtime or portable_checkout_valid
 
     return {
         "schema": "stegverse.hb-runtime-presence-resident-observability/v1",
@@ -199,6 +249,7 @@ def project(
             "runtime_evidence_ref": str(runtime_evidence_path),
             "task_capable_worker_observed": task_capable,
             "present_worker_runtime_observed": present_worker_runtime,
+            "task_control_runtime_observed": task_control_runtime_observed,
             "worker_runtime_tick": worker.get("runtime_tick"),
             "worker_observation_mode": worker.get("observation_mode"),
             "worker_last_cycle_at": worker.get("last_cycle_at"),
@@ -206,6 +257,21 @@ def project(
             "worker_cycle_fresh": worker_cycle_fresh,
             "worker_freshness_window_seconds": float(worker_freshness_window_seconds),
             "presence_requires_fresh_worker_cycle": True,
+            "native_process_presence_is_universal_runtime_requirement": False,
+        },
+        "portable_workercoordinator": {
+            "observed": portable_checkout_valid,
+            "evidence_kind": portable_evidence_kind,
+            "evidence_ref": str(portable_checkout_path) if portable_checkout_path is not None else None,
+            "task_id": (portable_checkout or {}).get("task_id") if portable_checkout_valid else None,
+            "worker_id": (portable_checkout or {}).get("worker_id") if portable_checkout_valid else None,
+            "claim_id": (portable_checkout or {}).get("claim_id") if portable_checkout_valid else None,
+            "fencing_token": (portable_checkout or {}).get("fencing_token") if portable_checkout_valid else None,
+            "execution_surface": (portable_checkout or {}).get("execution_surface") if portable_checkout_valid else None,
+            "proves_task_execution": False,
+            "proves_task_completion": False,
+            "heartbeat_grants_authority": False,
+            "authority_effect": "NONE_OBSERVATION_ONLY",
         },
         "heartbeat_reference": {
             "carrier_state_observed": bool(carrier),
@@ -214,6 +280,8 @@ def project(
             "worker_last_observed_carrier_epoch": worker_epoch,
             "freshness_correlated": freshness_correlated,
             "heartbeat_grants_authority": False,
+            "continuous_process_required_for_progression": False,
+            "progression_dependency": "OSCILLATOR_ONLY",
         },
         "governed_progress": {
             "request_observed": request_observed,
@@ -221,6 +289,7 @@ def project(
             "execution_observed": execution_observed,
             "reconstruction_observed": reconstruction_observed,
             "runtime_signal_is_execution_receipt": False,
+            "portable_checkout_is_execution_receipt": False,
         },
         "evidence": evidence,
         "control_plane": _summary(control_path),
