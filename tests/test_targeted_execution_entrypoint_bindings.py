@@ -44,15 +44,18 @@ class TargetedExecutionEntrypointBindingTests(unittest.TestCase):
 
     def test_hil_current_solution_is_existing_same_device_runtime_observation(self):
         handoff = self.load("handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json")
-        self.assertEqual(handoff["state"], "HANDOFF_READY")
-        self.assertIsNone(handoff["block"]["solution_command"])
+        self.assertEqual(handoff["state"], "SAME_DEVICE_SOURCE_INTEGRATION_VALIDATION_PENDING")
         self.assertEqual(
             handoff["block"]["dependency"],
-            "authentic HIL resident/runtime evidence from the existing same-device execution path",
+            "authentic same-device HIL runtime execution and retained receipts",
         )
         self.assertEqual(
             handoff["block"]["observer"],
-            "resident WorkerCoordinator + existing HIL resident/materialization consumers",
+            "authentic same-device runtime receipts retained by the established device",
+        )
+        self.assertEqual(
+            handoff["block"]["solution_command"],
+            "python scripts/run_worker_runtime.py --task-id SHWP-HIL-SOVEREIGN-RECEIVER-001",
         )
         esrl = handoff["activation"]["esrl_shared_gateway_runtime"]
         self.assertTrue(esrl["local_ready_sufficient_for_targeted_execution"])
