@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from .coordination_graph import review_coordination_preflight
+from .coordination_ledger import load_composed_coordination_ledger
 from .worker_runtime_legacy import WorkerCoordinator as LegacySeparatedWorkerCoordinator, ProcessWorkerAdapter
 from .worker_task_admission import persist_admission_receipt, review_worker_task_admission
 
@@ -30,7 +31,7 @@ class WorkerCoordinator(LegacySeparatedWorkerCoordinator):
         ledger: dict[str, Any] | None = None
         if ledger_path.exists():
             try:
-                ledger = json.loads(ledger_path.read_text(encoding="utf-8"))
+                ledger = load_composed_coordination_ledger(ledger_path)
             except Exception as exc:
                 self._event(
                     events,
