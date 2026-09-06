@@ -167,7 +167,11 @@ This distinction is required for evidence such as `terminal=true`, exact WorkerC
 
 ### Resident WorkerCoordinator self-heal binding parity
 
-The canonical HeartBeat carrier may supervise the **existing** resident WorkerCoordinator process when that process disappears, but this supervision does not create a second worker or grant task authority. A self-healed WorkerCoordinator must receive the same approved, non-secret local repository/runtime bindings as the canonical worker service so restored process presence does not silently degrade into a worker that is alive but unable to resolve already-local StegVerse dependencies.
+The canonical HeartBeat carrier may supervise the **existing** resident WorkerCoordinator when that process disappears **or remains PID-alive but stops producing fresh task-capable runtime ticks**. PID liveness alone is not sufficient runtime-presence evidence. Before an existing worker is reused, the supervision path requires a bounded fresh logical tick from the task-capable WorkerCoordinator state.
+
+If an existing worker PID remains alive but fails that bounded freshness check, the same self-heal lane treats it as stale: it terminates that stale process before starting the existing canonical `scripts/run_worker_runtime.py --continuous` runner, and it accepts the replacement only after a fresh task-capable tick is observed. If the stale process cannot be stopped, repair fails closed and a parallel WorkerCoordinator is not started. This expands the existing disappearance recovery into stalled-process recovery; it does not create another heartbeat, worker, scheduler, runtime, or authority plane.
+
+A self-healed WorkerCoordinator must receive the same approved, non-secret local repository/runtime bindings as the canonical worker service so restored process presence does not silently degrade into a worker that is alive but unable to resolve already-local StegVerse dependencies.
 
 Self-heal propagation therefore preserves the canonical worker service's local bindings for StegIndex, TV/TVC, Master Records, StegCore, StegOS, KV, Site, TT/RTG/GTG/AE, resident source manifests, and other explicitly allowlisted local roots. Hosted runtime variables and token/secret/password/API-key/private-key/credential variables remain excluded. TV/TVC remains the credential authority; the carrier remains non-authorizing; WorkerCoordinator and InTr continue to perform their existing independent admission and transition checks.
 
