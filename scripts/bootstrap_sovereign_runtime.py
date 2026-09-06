@@ -37,6 +37,7 @@ REQUIRED_SOURCE_FILES = (
     Path("scripts/verify_sovereign_runtime_activation.py"),
     Path("scripts/verify_stegindex_resident_operational_proof.py"),
     Path("scripts/run_heartbeat_runtime.py"),
+    Path("scripts/repair_resident_worker_presence.py"),
     Path("scripts/run_worker_runtime.py"),
     Path("scripts/project_hb_runtime_presence.py"),
     Path("scripts/project_de006_runtime_observability.py"),
@@ -360,7 +361,6 @@ def _attempt_post_bootstrap_activation(source_root: Path, *, proof_path: Path, r
     }
 
 
-
 def _install_source_refresh_watcher(source_root: Path, runtime_root: Path, *, proof_path: Path, env: dict[str, str] | None, runner: Runner) -> dict[str, Any]:
     if platform.system().lower() != "linux":
         return {
@@ -414,6 +414,7 @@ def _install_source_refresh_watcher(source_root: Path, runtime_root: Path, *, pr
         "credential_authority": "TV/TVC",
         "authority_effect": "NONE_LOCAL_SOURCE_REFRESH_INSTALLATION",
     }
+
 
 def _prime_resident_worker_runtime(source_root: Path, runtime_root: Path, *, proof_path: Path, env: dict[str, str] | None, runner: Runner) -> dict[str, Any]:
     """Force one bounded native WorkerCoordinator cycle before request dispatch.
@@ -539,7 +540,6 @@ def _dispatch_resident_requests(source_root: Path, runtime_root: Path, *, proof_
         "request_dispatch_grants_authority": receipt.get("request_dispatch_grants_authority", False),
         "authority_effect": "NONE",
     }
-
 
 
 def _advance_tvc_skap_successor(source_root: Path, runtime_root: Path, *, proof_path: Path, env: dict[str, str] | None, runner: Runner) -> dict[str, Any]:
