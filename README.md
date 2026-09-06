@@ -186,6 +186,16 @@ oscillator observations with an increasing epoch and the canonical 10 ms /
 100 Hz, observation-only, `OSCILLATOR_ONLY` invariants. Registration without
 observed progression fails closed and cannot be reported as live runtime.
 
+### SV002 standing-awareness resident dispatch
+
+The existing portable refresh-and-dispatch bridge admits the existing
+`astra_class_resilience_awareness` and `quantum_resilience_awareness`
+selectors as well as `sv002_org_runtime_activation`. A bounded resident repair
+must invoke the same bridge once per selector in that prerequisite order; it
+must stop before SV002 activation if either standing-awareness dispatch fails.
+This extends no heartbeat, oscillator, scheduler, dispatcher, WorkerCoordinator,
+claim, fence, credential, or transition authority.
+
 ### Resident WorkerCoordinator self-heal binding parity
 
 The canonical HeartBeat carrier may supervise the **existing** resident WorkerCoordinator process when that process disappears, but this supervision does not create a second worker or grant task authority. A self-healed WorkerCoordinator must receive the same approved, non-secret local repository/runtime bindings as the canonical worker service so restored process presence does not silently degrade into a worker that is alive but unable to resolve already-local StegVerse dependencies.

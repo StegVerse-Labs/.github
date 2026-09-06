@@ -82,3 +82,25 @@ HB progression, source presence, source refresh, CI, merge, or TVC materializati
 ## User work
 
 NONE. Do not rerun HB30/HB31, do not provision another machine, and do not create or restore a hosted runtime.
+
+
+## Portable bridge selector admission correction — 2026-09-06
+
+Post-merge execution preflight found that the canonical dispatcher registered
+the two standing-awareness consumers and local source refresh materialized their
+dependencies, but `scripts/refresh_and_dispatch_resident_requests.py` did not
+admit either selector name. The TVC exact-source repair would therefore have
+failed before reaching the existing consumers.
+
+The existing bridge now admits, without changing its one-selector-per-invocation
+contract:
+
+```text
+astra_class_resilience_awareness
+quantum_resilience_awareness
+sv002_org_runtime_activation
+```
+
+Callers must invoke them in that order and fail closed before activation if an
+awareness dispatch fails. This is source/interface correction only. Authentic
+standing-awareness receipts and the terminal SV002 round trip remain unobserved.
