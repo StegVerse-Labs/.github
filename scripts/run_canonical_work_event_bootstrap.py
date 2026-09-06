@@ -59,7 +59,8 @@ def validate_target_task(*, registry: Path, task_id: str) -> dict[str, Any]:
     matches = [task for task in document.get("tasks", []) if task.get("task_id") == task_id]
     require(len(matches) == 1, "canonical_task_identity_must_resolve_exactly_once")
     task = matches[0]
-    require(task.get("correlation_id") == task_id or isinstance(task.get("correlation_id"), str), "canonical_task_correlation_missing")
+    correlation_id = task.get("correlation_id")
+    require(isinstance(correlation_id, str) and bool(correlation_id), "canonical_task_correlation_missing")
     require(task.get("coordination_state") == "PROPOSED", "canonical_task_not_proposed_for_ingress")
     require("INGRESS_ADMITTED" in task.get("allowed_next_transitions", []), "canonical_task_ingress_not_allowed")
     claim = task.get("worker_claim", {})
