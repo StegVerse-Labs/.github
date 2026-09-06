@@ -107,6 +107,35 @@ The focused producer tests were green. The full-suite failures exposed architect
 7. Existing canonical carrier remains `heartbeat_runtime.engine_v13.HeartbeatRuntime`; v13 fragment observation does not grant task authority.
 8. Live oscillator activation requires resident oscillator-produced carrier evidence and independent worker observation; source completion and hosted CI are insufficient.
 
+## 2026-09-06 carrier CLI and activation-truth repair
+
+Direct execution of the canonical resident-start command exposed two source
+failures that import-based tests did not exercise:
+
+```text
+python scripts/install_sovereign_heartbeat_carrier.py
+-> ModuleNotFoundError: No module named 'scripts'
+```
+
+After restoring repository-root package resolution, an execution host whose
+`systemctl` compatibility wrapper returned zero without running systemd exposed
+that supervisor command success alone could falsely produce
+`carrier_active=true`.
+
+The repaired installer now requires two valid persisted carrier observations
+with increasing oscillator epochs before it emits `carrier_active=true`. Both
+observations must retain the canonical 10 ms / 100 Hz, observation-only,
+`OSCILLATOR_ONLY` invariants. Registration without progression fails closed.
+
+Focused source validation after the repair: 35/35 PASS. The diagnostic host
+correctly returned `carrier_start_reported=true`, `carrier_active=false` when
+no oscillator state appeared. This is source/failure-semantics validation only;
+it is not canonical resident activation evidence.
+
+The runtime task remains `HEARTBEAT-OSCILLATOR-RESIDENT-START-012` and no new
+heartbeat, oscillator, scheduler, WorkerCoordinator, claim/fence, credential
+path, or runtime owner is introduced.
+
 ## Remaining work
 
 ```text
