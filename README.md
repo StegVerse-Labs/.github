@@ -81,6 +81,28 @@ This standard keeps operational completion distinct from installed workflow capa
 
 ---
 
+## Functional Change / README Invariant
+
+Any change that **materially changes repository function** must be reflected in that repository's `README.md` as part of the same functional change.
+
+Material functional change includes changes to externally meaningful behavior such as:
+
+- user-visible capability or workflow;
+- runtime behavior or execution semantics;
+- interfaces, inputs, outputs, or integration boundaries;
+- authority, governance, admission, credential, routing, transition, claim/fence, custody, or evidence semantics;
+- operational prerequisites, dependencies, supported environments, or failure behavior;
+- capability lifecycle meaning or other behavior a user, operator, integrator, or future autonomous session would reasonably need to understand.
+
+A functional change is not documentation-complete merely because implementation, tests, handoffs, schemas, or receipts were updated. The repository README must either:
+
+1. be updated to describe the material functional effect; or
+2. explicitly remain unchanged only when the change is determined not to alter material repository function.
+
+This invariant exists so the README remains the human-facing projection of what the repository actually does, while canonical machine-readable records and receipts remain authoritative for exact state and evidence.
+
+---
+
 ## About Permanence
 
 StegVerse is intentionally **not designed to last forever**.
