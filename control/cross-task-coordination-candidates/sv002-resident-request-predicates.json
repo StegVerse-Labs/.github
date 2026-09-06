@@ -1,59 +1,22 @@
 {
   "schema": "stegverse.cross-task-coordination-migration-candidates/v1",
-  "state": "REVIEWED_READY_FOR_LEDGER_ADMISSION",
+  "state": "ADMITTED_CANONICAL_FRAGMENT",
   "authority_effect": "NONE_COORDINATION_STAGING_ONLY",
   "canonical_ledger": "control/cross-task-coordination.json",
+  "canonical_fragment": "control/cross-task-coordination.d/sv002-resident-request-predicates.json",
+  "validated_composed_ledger_run": 34000794804,
   "candidates": [
     {
       "predicate_id": "PRED-RESIDENT-REQUEST-CONSUMED-SV002-ORG-RUNTIME-ACTIVATION-001",
       "semantic_predicate_id": "resident_request_consumed",
-      "subject_binding": {
-        "request_id": "RESIDENT-EXEC-SV002-ORG-RUNTIME-ACTIVATION-001",
-        "consumer_task_id": "SHWP-SV002-ORG-RUNTIME-ACTIVATION-001"
-      },
-      "state": "UNKNOWN",
-      "authoritative_producer": "existing SV002 organization-runtime activation consumer",
-      "required_schema": "stegverse.sv002-org-runtime-activation-consumption/v1",
-      "required_execution_instance": "RESIDENT-EXEC-SV002-ORG-RUNTIME-ACTIVATION-001",
-      "required_fields": [
-        "task_id",
-        "state",
-        "terminal_round_trip_observed",
-        "runtime_execution_attempted",
-        "cross_org_principal_execution"
-      ],
-      "expected_output_ref": "receipts/sovereign-host/sv002-org-runtime-activation.latest.json",
-      "canonical_source_refs": [
-        "control/resident-execution-request.d/sv002-org-runtime-activation-001.json",
-        "scripts/consume_sv002_org_runtime_activation_request.py",
-        "docs/CANONICAL_RESIDENT_CARRIER_MIRROR_HANDOFF.md"
-      ],
-      "collision_safe_action": "Consume the existing organization-runtime activation path; do not execute the StegVerse-002 principal from StegVerse-Labs and do not create a second resident executor."
+      "subject_binding": {"request_id": "RESIDENT-EXEC-SV002-ORG-RUNTIME-ACTIVATION-001", "consumer_task_id": "SHWP-SV002-ORG-RUNTIME-ACTIVATION-001"},
+      "admission_state": "ADMITTED"
     },
     {
       "predicate_id": "PRED-RESIDENT-REQUEST-CONSUMED-SV002-PUBLIC-OBSERVATION-001",
       "semantic_predicate_id": "resident_request_consumed",
-      "subject_binding": {
-        "request_id": "RESIDENT-EXEC-SV002-PUBLIC-OBSERVATION-RUNTIME-001",
-        "consumer_task_id": "SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001"
-      },
-      "state": "UNKNOWN",
-      "authoritative_producer": "existing SV002 public observation request consumer",
-      "required_schema": "stegverse.sv002-public-observation-request-consumption/v1",
-      "required_execution_instance": "RESIDENT-EXEC-SV002-PUBLIC-OBSERVATION-RUNTIME-001",
-      "required_fields": [
-        "request_id",
-        "task_id",
-        "state",
-        "terminal_round_trip_observed"
-      ],
-      "expected_output_ref": "receipts/sovereign-host/sv002-public-observation-request-consumption.latest.json",
-      "canonical_source_refs": [
-        "control/resident-execution-request.d/sv002-public-observation-runtime-001.json",
-        "scripts/consume_sv002_public_observation_request.py",
-        "docs/SV002_PUBLIC_OBSERVATION_RUNTIME_MIRROR_HANDOFF.md"
-      ],
-      "collision_safe_action": "Consume the existing node-bound public-observation request path; do not create a duplicate route, runtime, or hosted authority plane."
+      "subject_binding": {"request_id": "RESIDENT-EXEC-SV002-PUBLIC-OBSERVATION-RUNTIME-001", "consumer_task_id": "SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001"},
+      "admission_state": "ADMITTED"
     }
   ]
 }
