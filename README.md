@@ -205,6 +205,12 @@ Once exact subject identity is established, qualifying evidence must remain with
 
 Runtime-presence evidence proves only that a fresh task-capable resident WorkerCoordinator is presently observed for that exact bound subject. It does **not** prove that a specific request was consumed, that a task executed, that a claim/fence exists, or that any completion predicate passed. HeartBeat remains non-authorizing, and the presence projection grants no execution, admission, transition, credential, custody, publication, or runtime-event authority.
 
+The existing carrier-owned supervision visit may now submit the just-emitted `receipts/sovereign-host/runtime-presence.latest.json` to an **already-local** `master-records/orchestration` checkout when `STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT` is declared and that checkout exposes its canonical runtime-presence importer. This is a custody/reconstruction handoff only: it performs no network fetch or repository writeback, propagates no GitHub token or secret/credential value, and records the local attempt at `receipts/sovereign-host/runtime-presence-master-records-intake.latest.json`.
+
+Master Records retains the exact source observation and its concrete `runtime_root` / node identity when available, but intake explicitly sets `cross_task_reuse_authorized=false` and creates no task/correlation identity. Missing Master Records root/importer does not block or delete the original presence receipt; invalid intake authority semantics fail closed only for the custody handoff. Local custody therefore closes the reconstructability gap between “not emitted” and “emitted locally but not retained,” while still requiring a separate governed subject-binding decision before any task may reuse that evidence.
+
+Source merge, validation, importer availability, or a local intake-capability receipt does not prove that authentic runtime presence was observed or custodied, and local custody is not proof of remote repository persistence.
+
 This invariant exists so the README remains the human-facing projection of what the repository actually does, while canonical machine-readable records and receipts remain authoritative for exact state and evidence.
 
 ---
