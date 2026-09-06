@@ -57,6 +57,68 @@ def _sha(value: Any) -> str:
     return hashlib.sha256(_canonical(value)).hexdigest()
 
 
+def _readme_impact(task: dict[str, Any], handoff: dict[str, Any]) -> tuple[dict[str, Any], bool]:
+    """Evaluate the functional-change README completeness contract.
+
+    Existing tasks remain compatible until they explicitly enter this gate. Any
+    functional mutation initiated under the StegVerse session-entry contract must
+    set ``readme_impact_required=true`` in the task or handoff. Once required, the
+    review fails closed unless either the material functional effect is reflected
+    in README.md or a non-material determination carries evidence and rationale.
+    """
+    required = bool(task.get("readme_impact_required") or handoff.get("readme_impact_required"))
+    raw = task.get("readme_impact")
+    if not isinstance(raw, dict):
+        raw = handoff.get("readme_impact")
+    impact = dict(raw) if isinstance(raw, dict) else {}
+
+    if not required:
+        return {
+            "required": False,
+            "declared": bool(impact),
+            "material_function_change": impact.get("material_function_change"),
+            "disposition": "LEGACY_OR_NONFUNCTIONAL_GATE_NOT_REQUIRED",
+            "authority_effect": "NONE",
+        }, True
+
+    if not impact:
+        return {
+            "required": True,
+            "declared": False,
+            "material_function_change": None,
+            "disposition": "README_IMPACT_UNDECLARED",
+            "authority_effect": "NONE",
+        }, False
+
+    material = impact.get("material_function_change")
+    evidence_refs = [str(item) for item in impact.get("evidence_refs", []) if str(item).strip()]
+    readme_path = str(impact.get("readme_path") or "").strip()
+    readme_updated = impact.get("readme_updated_in_change_set") is True
+    no_update_reason = str(impact.get("no_readme_update_reason") or "").strip()
+
+    if material is True:
+        complete = bool(readme_updated and readme_path and evidence_refs)
+        disposition = "README_UPDATED_FOR_MATERIAL_FUNCTION_CHANGE" if complete else "MATERIAL_FUNCTION_CHANGE_REQUIRES_README_UPDATE"
+    elif material is False:
+        complete = bool(no_update_reason and evidence_refs)
+        disposition = "NONMATERIAL_CHANGE_EVIDENCE_SUPPORTED" if complete else "NONMATERIAL_DETERMINATION_REQUIRES_REASON_AND_EVIDENCE"
+    else:
+        complete = False
+        disposition = "MATERIALITY_UNDECLARED"
+
+    return {
+        "required": True,
+        "declared": True,
+        "material_function_change": material,
+        "readme_path": readme_path or None,
+        "readme_updated_in_change_set": bool(readme_updated),
+        "no_readme_update_reason": no_update_reason or None,
+        "evidence_refs": evidence_refs,
+        "disposition": disposition,
+        "authority_effect": "NONE",
+    }, complete
+
+
 def review_worker_task_admission(
     *,
     root: Path,
@@ -82,6 +144,7 @@ def review_worker_task_admission(
     handoff_task_id = ((handoff.get("task") or {}).get("task_id") or handoff.get("task_id"))
     handoff_matches = handoff_task_id in (None, task.get("task_id"))
     task_cosv, task_cosv_valid = _task_cosv(task)
+    readme_impact, readme_impact_complete = _readme_impact(task, handoff)
     predicates = {
         "task_handoff_ready": state == "HANDOFF_READY",
         "task_not_terminal": not terminal,
@@ -95,6 +158,7 @@ def review_worker_task_admission(
         "github_token_runtime_authority_none": bool(github_token_ok),
         "handoff_task_identity_matches": bool(handoff_matches),
         "source_state_vector_valid": bool(task_cosv_valid),
+        "readme_impact_complete": bool(readme_impact_complete),
     }
     if terminal:
         verdict = "RETIRE"
@@ -121,6 +185,7 @@ def review_worker_task_admission(
         "carrier_epoch": int(carrier_epoch),
         "trigger_source": str(trigger_source),
         "review": {"verdict": verdict, "reasons": sorted(reasons), "predicates": predicates},
+        "readme_impact": readme_impact,
         "source_refs": {
             "handoff_ref": task.get("handoff_ref"),
             "cost_basis_ref": task.get("cost_basis_ref"),
