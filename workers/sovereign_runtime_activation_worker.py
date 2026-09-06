@@ -11,6 +11,11 @@ from pathlib import Path
 ROOT = Path.cwd().resolve()
 EXPECTED_TASK = "SHWP-DURABLE-RUNTIME-ACTIVATION"
 RECEIPT_ROOT = (ROOT / "receipts" / "sovereign-runtime-activation").resolve()
+# Compatibility exports retained for direct canonical-source callers/tests.
+# Resident refresh execution resolves the equivalent entrypoints from the
+# validated canonical source binding instead of mutable resident state.
+BOOTSTRAP = (ROOT / "scripts" / "bootstrap_sovereign_runtime.py").resolve()
+EPHEMERAL_CONSOLE = (ROOT / "scripts" / "run_sovereign_ephemeral_console.py").resolve()
 SOURCE_REFRESH_RECEIPT = ROOT / "receipts" / "sovereign-host" / "worker-source-refresh.latest.json"
 REQUIRED_SOURCE_ENTRYPOINTS = (
     Path("scripts/bootstrap_sovereign_runtime.py"),
@@ -164,7 +169,9 @@ def execute_same_host_ephemeral_fallback(
 ) -> dict:
     console_root = default_ephemeral_console_root(runtime_root)
     receipt_path = console_root / "ephemeral-console.latest.json"
-    ephemeral_console = (source_root / "scripts" / "run_sovereign_ephemeral_console.py").resolve()
+    ephemeral_console = EPHEMERAL_CONSOLE if source_root == ROOT else (
+        source_root / "scripts" / "run_sovereign_ephemeral_console.py"
+    ).resolve()
     result = {
         "attempted": False,
         "entrypoint": "scripts/run_sovereign_ephemeral_console.py",
@@ -280,7 +287,9 @@ def execute_v13_self_bootstrap() -> dict:
         result["reason"] = f"CANONICAL_LOCAL_SOURCE_BINDING_INVALID:{source_binding_error or 'UNKNOWN'}"
         result["same_host_ephemeral_fallback"]["reason"] = "CANONICAL_LOCAL_SOURCE_REQUIRED_FIRST"
         return result
-    bootstrap = (source_root / "scripts" / "bootstrap_sovereign_runtime.py").resolve()
+    bootstrap = BOOTSTRAP if source_root == ROOT else (
+        source_root / "scripts" / "bootstrap_sovereign_runtime.py"
+    ).resolve()
     if not bootstrap.is_file():
         result["reason"] = "CANONICAL_V13_BOOTSTRAP_MISSING"
         result["same_host_ephemeral_fallback"]["reason"] = "CANONICAL_BOOTSTRAP_SOURCE_REQUIRED_FIRST"
