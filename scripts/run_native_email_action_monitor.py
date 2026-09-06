@@ -2,10 +2,10 @@
 """Run the bounded StegVerse email-action monitor through a local TV/TVC-governed broker.
 
 The handler mirrors the established monitor semantics:
-1. inspect the newest bounded INBOX batch;
+1. inspect the newest bounded GitHub/task-update operational INBOX batch;
 2. resolve exact message IDs before mutation;
 3. cluster GitHub/task-update failure signals as non-authorizing incident proposals;
-4. archive the exact reviewed batch;
+4. archive only that exact reviewed operational batch;
 5. measure actionable backlog depth and inbox totals;
 6. emit one durable monitor receipt.
 
@@ -26,9 +26,12 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 from normalize_github_failure_email_events import incident_id, signature  # noqa: E402
 
-INBOX_QUERY = "-in:spam -in:trash"
+INBOX_QUERY = (
+    '-in:spam -in:trash (from:notifications@github.com OR from:noreply@github.com '
+    'OR subject:"[Task Update]")'
+)
 ACTIONABLE_QUERY = (
-    '-in:spam -in:trash (subject:"[Task Update]" OR from:notifications@github.com) '
+    '-in:spam -in:trash (subject:"[Task Update]" OR from:notifications@github.com OR from:noreply@github.com) '
     '(failed OR failure OR "requires handoff" OR "requires reconciliation" OR '
     '"not evidence promotable" OR "needs attention" OR blocker OR blocked)'
 )
@@ -166,6 +169,7 @@ def run(broker: Broker, batch_limit: int = BATCH_LIMIT) -> dict[str, Any]:
         "state": "PASS" if not failed else "PARTIAL_ARCHIVE_FAILURE",
         "provider": inspected.get("provider"),
         "bounded_batch_limit": batch_limit,
+        "operational_query": INBOX_QUERY,
         "inspected_visible_count": len(messages),
         "processed_exact_count": len(ids),
         "archived_count": len(archived),
@@ -184,6 +188,7 @@ def run(broker: Broker, batch_limit: int = BATCH_LIMIT) -> dict[str, Any]:
         "email_observation_is_runtime_evidence": False,
         "archive_success_is_runtime_evidence": False,
         "incident_proposals_require_canonical_task_ingress": True,
+        "unrelated_inbox_mail_selected_for_archive": False,
         "authority_effect": "NONE_MAILBOX_MAINTENANCE_AND_INCIDENT_PROPOSAL_ONLY",
     }
 
