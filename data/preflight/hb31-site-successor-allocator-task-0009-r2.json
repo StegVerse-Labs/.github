@@ -1,0 +1,89 @@
+{
+  "schema": "stegverse.machine-preflight/v1",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "fix/hb31-site-successor-allocator-task-0009-r2",
+  "task_id": "TASK-2026-0009-PREPARATION-R2",
+  "parent_runtime_task": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+  "state": "PASS",
+  "observed_main": "f83480b8592b970b0f7b43acd80fa466f932b34c",
+  "goal": "Extend the existing canonical organization allocator current-iPhone catalog with one non-overlapping successor Site projection task for the released HB31 Ecosystem Chat autostart source while preserving prior G3/G4 portable state and requiring a fresh next-generation claim.",
+  "canonical_state_resolved": {
+    "canonical_task_registry": "data/canonical-task-registry.json generation 15",
+    "canonical_task_registry_authority": "work intent and coordination only",
+    "parent_handoff": "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+    "parent_state": "HANDOFF_READY",
+    "parent_fresh_fence_required": true,
+    "parent_minimum_fencing_token_exclusive": 22,
+    "worker_registry": "control/worker-registry.json generation 22",
+    "native_org_claim_registry": "control/claims-active.json generation 2; claims=[]",
+    "master_records_handoff": "master-records/orchestration:MASTER_RECORDS_ORCHESTRATION_MIRROR_HANDOFF.md",
+    "master_records_active_implementation_claim": "none",
+    "master_records_active_validation_claim": "MACHINE_OWNED",
+    "master_records_manual_satisfaction_allowed": false,
+    "portable_allocator_handoff": "docs/PORTABLE_ORG_CLAIM_ALLOCATOR_IPHONE_MIRROR_HANDOFF.md",
+    "source_successor": "StegVerse-Labs/StegOS PR #220 merge 4265ca06c8b6cd49c5ffcab8de265140ef1f24f9; claim release 7f6e473c6c28d53ac5b6d81788227a4a17e90d93",
+    "prior_site_projection": "StegVerse-Labs/Site#952 / TASK-2026-0008 / authentic allocator fence 4"
+  },
+  "collision_preflight": {
+    "open_dotgithub_task_0009_pr_collision": false,
+    "existing_task_0009_on_main": false,
+    "native_org_claims": 0,
+    "prior_task_0008_reactivation_allowed": false,
+    "prior_task_0008_scope_contains_device_local_autostart": false,
+    "successor_dependency_surface": "site:hb31-ecosystem-chat-runtime-opportunity-successor",
+    "successor_site_runtime_path": "stegos-bootstrap/device-local-autostart.js",
+    "successor_scope_overlaps_task_0008": false
+  },
+  "existing_solution_reuse": {
+    "canonical_allocator": "scripts/allocate_claims.py",
+    "portable_allocator": "org_allocator/portable_allocator.js",
+    "portable_state_schema": "stegverse.org-allocator-portable-state/v1",
+    "portable_authority_epoch": "ORG-ALLOCATOR-PORTABLE-IPHONE-20260902",
+    "portable_cas_reused": true,
+    "new_allocator_created": false,
+    "new_scheduler_created": false,
+    "new_workercoordinator_created": false,
+    "state_reset_allowed": false,
+    "prior_fence_reuse_allowed": false,
+    "heartbeat_grants_claim_authority": false,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "other_machine_required": false
+  },
+  "admission_design": {
+    "successor_task_id": "TASK-2026-0009",
+    "task_status": "queued",
+    "priority_class": "release",
+    "repository": "StegVerse-Labs/Site",
+    "scope_strategy": "new exact non-overlapping Site paths and distinct successor dependency surface",
+    "expected_portable_behavior": "existing persisted G3/G4 state remains valid; missing persisted TASK-2026-0009 status defaults to queued from the updated source package; existing allocator may grant only the next monotonic generation if retained active claims do not collide",
+    "source_does_not_claim_next_fence": true
+  },
+  "readme_completeness": {
+    "impact": "REQUIRED",
+    "material_function_change": true,
+    "reason": "The current-iPhone organization allocator admissible task catalog and successor-projection capability changes from the frozen TASK-0007/TASK-0008 package to an exact catalog that also admits a distinct successor task while preserving existing state/fence lineage.",
+    "readme_path": "README.md",
+    "readme_updated_in_change_set": true,
+    "readme_section": "Portable organization allocator successor-task continuity",
+    "concurrent_hb32_g18_readme_material_preserved": true
+  },
+  "admissible_mutation_scope": [
+    "tasks/TASK-2026-0009.json",
+    "control/portable-org-allocator/current-iphone-package.json",
+    "org_allocator/portable_allocator.js",
+    "tests/test_portable_org_claim_allocator_iphone.py",
+    "docs/PORTABLE_ORG_CLAIM_ALLOCATOR_IPHONE_MIRROR_HANDOFF.md",
+    "README.md",
+    "data/preflight/hb31-site-successor-allocator-task-0009-r2.json"
+  ],
+  "runtime_truth": {
+    "task_0009_claim_granted": false,
+    "next_fence_observed": false,
+    "site_projection_observed": false,
+    "physical_current_iphone_execution_observed": false,
+    "master_records_same_execution_pass_observed": false,
+    "parent_terminalization_observed": false
+  },
+  "authority_effect": "NONE_PREFLIGHT_ONLY"
+}
