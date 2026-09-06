@@ -1,0 +1,54 @@
+{
+  "schema": "stegverse.machine-preflight/v1",
+  "preflight_id": "CANONICAL-WORK-REQUEST-SPECS-TEST-RECONCILIATION-001",
+  "state": "PASS",
+  "verdict": "PASS",
+  "repository": "StegVerse-Labs/.github",
+  "scope": {
+    "mutation_paths": [
+      "tests/test_object_provenance_canonical_work_resident_request.py",
+      "receipts/preflight/CANONICAL-WORK-REQUEST-SPECS-TEST-RECONCILIATION-001.json"
+    ]
+  },
+  "canonical_state": {
+    "task_registry_generation": 15,
+    "runtime_profile_map_handoff": "docs/CANONICAL_RUNTIME_PROFILE_MAP_MIRROR_HANDOFF.md",
+    "runtime_profile_map_handoff_state": "SOURCE_IMPLEMENTED_CANONICAL_TASK_INGRESS_AND_RUNTIME_CHAIN_PREFLIGHT_BOUND_AUTHENTIC_RESIDENT_EVIDENCE_PENDING",
+    "canonical_consumer": "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py",
+    "canonical_request_specs": [
+      "DEFAULT_SPEC",
+      "QUANTUM_SPEC",
+      "OBJECT_PROVENANCE_SPEC",
+      "RUNTIME_PROFILE_MAP_SPEC"
+    ],
+    "runtime_profile_map_task": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"
+  },
+  "collision_review": {
+    "open_pr_collision_observed": false,
+    "consumer_behavior_mutation_required": false,
+    "new_dispatch_plane_required": false,
+    "new_task_required": false,
+    "new_runtime_required": false
+  },
+  "validation_failure": {
+    "workflow_run": 34010287301,
+    "failing_test": "test_existing_consumer_visits_object_provenance_without_new_dispatch_plane",
+    "stale_expectation": "REQUEST_SPECS = (DEFAULT_SPEC, QUANTUM_SPEC, OBJECT_PROVENANCE_SPEC)",
+    "canonical_current_value": "REQUEST_SPECS = (DEFAULT_SPEC, QUANTUM_SPEC, OBJECT_PROVENANCE_SPEC, RUNTIME_PROFILE_MAP_SPEC)",
+    "disposition": "SYNC_TEST_TO_ALREADY_MERGED_CANONICAL_SOURCE"
+  },
+  "readme_impact_required": false,
+  "readme_impact": {
+    "material_function_change": false,
+    "readme_updated_in_change_set": false,
+    "no_readme_update_reason": "Test-only reconciliation to already-merged canonical request-set behavior. The Runtime Profile Map handoff explicitly records RUNTIME_PROFILE_MAP_SPEC as an existing configuration-only addition and determines no README change is required unless generic Canonical Work semantics change. This change alters no runtime behavior, interface, authority boundary, evidence semantics, prerequisite, dependency, failure behavior, or capability meaning.",
+    "evidence_refs": [
+      "docs/CANONICAL_RUNTIME_PROFILE_MAP_MIRROR_HANDOFF.md",
+      "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py",
+      "tests/test_runtime_profile_map_canonical_work_resident_request.py",
+      "README.md#Canonical-Work-task-ingress",
+      "workflow-run:34010287301"
+    ]
+  },
+  "authority_effect": "NONE_PREFLIGHT_ONLY"
+}
