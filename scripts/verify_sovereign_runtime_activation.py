@@ -225,7 +225,6 @@ def evaluate_runtime(
         root / "heartbeat_runtime" / "oscillator_producer.py",
         root / "heartbeat_runtime" / "worker_runtime.py",
         root / "scripts" / "run_heartbeat_runtime.py",
-        root / "scripts" / "repair_resident_worker_presence.py",
         root / "scripts" / "run_worker_runtime.py",
         carrier_path,
         legacy_path,
