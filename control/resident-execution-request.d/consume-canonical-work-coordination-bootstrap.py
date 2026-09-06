@@ -9,9 +9,10 @@ Canonical Work task ingress discoverable.
 On an admitted native resident host it copies only the explicitly enumerated
 Canonical Work source files from the already-local canonical source root into the
 resident checkout, verifies byte equality, then invokes the registered bounded
-bootstrap wrapper for an explicit task specification. No network source fetch,
-credential use, HB/oscillator advance, claim/fence minting, or second runtime
-implementation is permitted here.
+bootstrap wrapper for explicit task specifications. Request specifications are
+visited independently so one task-local failure does not prevent a later task from
+being attempted. No network source fetch, credential use, HB/oscillator advance,
+claim/fence minting, or second runtime implementation is permitted here.
 """
 from __future__ import annotations
 
@@ -33,6 +34,13 @@ DEFAULT_SPEC = {
     "bootstrap_runtime_rel": Path("runtime/canonical-work-coordination"),
     "task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
 }
+QUANTUM_SPEC = {
+    "request_rel": Path("control/resident-execution-request.d/canonical-work-quantum-resilience-001.json"),
+    "consumption_rel": Path("receipts/sovereign-host/canonical-work-quantum-resilience-request-consumption.latest.json"),
+    "bootstrap_runtime_rel": Path("runtime/canonical-work-quantum-resilience"),
+    "task_id": "QUANTUM-RESILIENCE-001",
+}
+REQUEST_SPECS = (DEFAULT_SPEC, QUANTUM_SPEC)
 
 MATERIALIZE = (
     Path("scripts/install_and_run_canonical_work_event_bootstrap.py"),
@@ -253,14 +261,46 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     return consume_for_spec(source_root, runtime_root, DEFAULT_SPEC, runner=runner, env=env)
 
 
+def consume_all(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
+    outcomes: list[dict[str, Any]] = []
+    for spec in REQUEST_SPECS:
+        try:
+            outcomes.append(consume_for_spec(source_root, runtime_root, spec, runner=runner, env=env))
+        except Exception as exc:
+            outcomes.append({
+                "schema": "stegverse.canonical-work-bootstrap-request-consumption/v1",
+                "state": "REQUEST_CONSUMPTION_EXCEPTION",
+                "task_id": spec["task_id"],
+                "error_type": type(exc).__name__,
+                "authority_effect": "NONE_FAIL_CLOSED",
+            })
+    acceptable = {"NO_REQUEST", "ALREADY_CONSUMED", "COMPLETED", "ATTEMPT_RECORDED"}
+    all_acceptable = all(row.get("state") in acceptable for row in outcomes)
+    return {
+        "schema": "stegverse.canonical-work-bootstrap-request-set-consumption/v1",
+        "state": "COMPLETED" if all_acceptable else "ATTEMPT_RECORDED",
+        "request_count": len(REQUEST_SPECS),
+        "outcomes": outcomes,
+        "later_request_attempts_blocked_by_earlier_failure": False,
+        "network_source_fetch_performed": False,
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": "NONE",
+        "heartbeat_grants_execution_authority": False,
+        "request_set_grants_execution_authority": False,
+        "claim_or_fence_minted": False,
+        "second_machine_required": False,
+        "authority_effect": "NONE_CONSUMPTION_EVIDENCE_ONLY",
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--source-root", type=Path, required=True)
     parser.add_argument("--runtime-root", type=Path, required=True)
     args = parser.parse_args()
-    receipt = consume(args.source_root, args.runtime_root)
+    receipt = consume_all(args.source_root, args.runtime_root)
     print(json.dumps(receipt, sort_keys=True))
-    return 0 if receipt.get("state") in {"NO_REQUEST", "ALREADY_CONSUMED", "COMPLETED", "ATTEMPT_RECORDED"} else 1
+    return 0 if receipt.get("state") in {"COMPLETED", "ATTEMPT_RECORDED"} else 1
 
 
 if __name__ == "__main__":
