@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
-  "state": "RUNTIME_G23_CANONICAL_G24_DUPLICATE_SITE_GUARD_PROPAGATION_PENDING",
+  "state": "RUNTIME_G23_CANONICAL_MASTER_RECORDS_MACHINE_GOVERNANCE_PENDING",
   "goal": {
     "goal_id": "STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
     "objective": "Execute the first self-directed Beta_Orionis continuity-audit cycle under an externally issued bounded autonomy lease on the sovereign WorkerCoordinator runtime.",
@@ -120,7 +120,7 @@
     "current_progression_entrypoint": "scripts/run_stegverse001_activation_progression.py",
     "external_sovereign_process_required": false,
     "current_chat_github_session_can_execute_sovereign_process": false,
-    "operator_action_condition": "CURRENT_USER_IPHONE_RUNTIME_CONSUMPTION_ONLY_AFTER_MACHINE_PRECONDITIONS",
+    "operator_action_condition": "NONE_MACHINE_GOVERNED_CUSTODY_RECLASSIFIED",
     "operator_action_is_part_of_autonomy_cycle": false,
     "requires_other_machine": false,
     "activation_execution_scope": "SAME_DEVICE",
@@ -165,7 +165,7 @@
     "terminal_autonomy_reexecution_allowed": false
   },
   "completion": {
-    "next_authorized_action": "On CURRENT_USER_IPHONE, open the released StegOS bootstrap Master Records section and paste the complete already-authentic `stegos.workercoordinator_tvc_portable_sv001_execution_proof/v1` JSON (the UI extracts only subordinate_execution_proof.cycle_receipt unchanged), then commit Master Records custody. Do not execute SV001 again. After reconstruction PASS, continue SV002.",
+    "next_authorized_action": "CONTEMPORANEOUS_INTERLOCK_INTR_GOVERNANCE_FOR_SV001_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION, then machine-governed Master Records custody/reconstruction of canonical G23; after reconstruction PASS, continue SV002. No human custody commit and no SV001 reexecution.",
     "terminal_when": [
       "SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED"
     ]
@@ -207,39 +207,42 @@
     "duplicate_cycle_retained": true
   },
   "block": {
-    "dependency_class": "SITE_SINGLE_CHECKOUT_GUARD_PUBLIC_PROPAGATION",
-    "problem_statement": "Canonical lineage is resolved: G23/81a078... is the custody-eligible SV001 terminal execution; G24/6bcc1976... is retained duplicate non-custodial evidence because terminal reexecution was prohibited. Canonical checkout guard is merged and Site-projected; only public propagation/runtime presence of the fixed bytes remains before custody action can be admitted.",
+    "dependency_class": "CONTEMPORANEOUS_INTERLOCK_INTR_GOVERNANCE",
+    "problem_statement": "Canonical lineage is resolved: G23/81a078... is the custody-eligible terminal execution and G24/6bcc1976... is retained duplicate non-custodial evidence. Site propagation is not an admission gate for this machine-owned transition. The remaining predicate is contemporaneous Interlock/InTr governance followed by canonical Master Records custody/reconstruction of G23.",
     "solution_required": false,
     "may_remain_blocked": false,
     "human_action_required": false,
     "second_machine_required": false,
     "github_token_required": false,
-    "next_solution_action": "OBSERVE_PUBLIC_SITE_SINGLE_CHECKOUT_GUARD_PROPAGATION",
-    "executable_entrypoint": "https://stegverse.org/stegos-bootstrap/ -> Master Records — completed SV001 custody",
+    "next_solution_action": "CONTEMPORANEOUS_INTERLOCK_INTR_GOVERNANCE_FOR_SV001_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION",
+    "executable_entrypoint": "ENTITY_MACHINE_GOVERNANCE_LOOP -> Master Records custody/reconstruction",
     "machine_transition_sequence": [
       "portable_workercoordinator_checkout_current_iphone_COMPLETED",
       "tvc_portable_sv001_single_cycle_lease_issue_COMPLETED",
       "sv001_external_resident_task_execution_current_iphone_COMPLETED",
+      "contemporaneous_interlock_intr_governance_for_sv001_master_records_custody_and_reconstruction",
       "master_records_current_iphone_custody_and_reconstruction",
       "sv002_adversarial_observation_and_disposition"
     ],
-    "machine_observable_release_condition": "Authentic current-iPhone checkout receipt -> valid TVC lease issuance -> SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED -> same-execution reconstruction PASS -> SV002 disposition.",
-    "human_action_note": "Do not perform any state-mutating StegOS action. Fresh journal head has been observed, but it exposed a duplicate terminal SV001 lineage conflict that must be resolved in canonical machine state before custody can be admitted.",
-    "current_session_execution_boundary": "GITHUB_SESSION_CANNOT_EMIT_DEVICE_LOCAL_INDEXEDDB_MASTER_RECORDS_CUSTODY",
-    "executable_command": "CURRENT_USER_IPHONE secure-browser import of exact immutable completed SV001 cycle_receipt into released Master Records custody surface",
+    "machine_observable_release_condition": "Canonical G23 retained -> current InTr governance ALLOW -> Master Records reconstruction PASS -> SV002 disposition.",
+    "human_action_note": "No user custody mutation is authorized or required. The former IPHONE-MR-SV001-CUSTODY-001 admission is superseded by the machine-owned transition classification.",
+    "current_session_execution_boundary": "GITHUB_SESSION_CANNOT_PERFORM_CURRENT_IPHONE_MACHINE_GOVERNANCE_OR_DEVICE_LOCAL_MASTER_RECORDS_EXECUTION",
+    "executable_command": "ENTITY_MACHINE_GOVERNANCE_LOOP for SV001_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION",
     "not_work": [
       "watch for receipt",
       "wait for evidence",
       "poll GitHub",
-      "treat CI/merge as runtime"
+      "treat CI/merge as runtime",
+      "route custody through human interaction queue",
+      "rerun terminal SV001"
     ],
     "expected_execution_results": [
-      "Stage 1 executes or returns a concrete stack-activation repair transition",
-      "Stage 2 executes or returns a concrete TVC/SV001 repair transition",
-      "terminal SV001 execution automatically continues into Master Records and SV002"
+      "current Interlock/InTr governance ALLOW or DENY is retained",
+      "ALLOW permits canonical Master Records custody/reconstruction of G23",
+      "reconstruction PASS permits independent SV002 continuation"
     ],
     "other_machine_required": false,
-    "human_action_deferred_by_interaction_queue": true
+    "human_action_deferred_by_interaction_queue": false
   },
   "observability_binding": {
     "contract_ref": "management/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_CONTRACT.json",
@@ -286,7 +289,7 @@
         "observed": true
       },
       "master_records_current_iphone_custody_reconstruction": {
-        "source": "CURRENT_USER_IPHONE Site#956 projection of master-records/orchestration#73 portable custody module; authentic PASS proof retained in StegOS journal",
+        "source": "CURRENT_USER_IPHONE machine-governed Master Records custody/reconstruction of canonical G23 under contemporaneous Interlock/InTr governance",
         "observed": false
       }
     },
@@ -311,12 +314,16 @@
   },
   "interaction_serialization": {
     "queue_ref": "control/current-user-ios-interaction-queue.json",
-    "action_id": "IPHONE-MR-SV001-CUSTODY-001",
+    "action_id": null,
+    "former_action_id": "IPHONE-MR-SV001-CUSTODY-001",
+    "state": "SUPERSEDED_MACHINE_OWNED_TRANSITION",
     "direct_human_instruction_allowed": false,
-    "required_queue_state": "ADMITTED_FOR_USER_EXECUTION",
-    "current_queue_state": "WAITING_FOR_FIXED_SITE_PROPAGATION",
-    "fresh_journal_head_required": true,
+    "required_queue_state": null,
+    "current_queue_state": "NOT_APPLICABLE_TO_MACHINE_OWNED_TRANSITION",
+    "fresh_journal_head_required": false,
     "terminal_source_reexecution_allowed": false,
-    "rule": "The completion.next_authorized_action text describes the task-specific action only; it MUST NOT be issued to the user while the organization interaction queue is HOLD or this action is not the sole admitted action."
+    "interaction_queue_blocks_transition": false,
+    "machine_transition_ref": "handoffs/SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001.interaction-admission.json",
+    "rule": "The current-user iOS interaction queue serializes true human/device mutations only and does not approve, schedule, or block this MACHINE_GOVERNED custody/reconstruction transition."
   }
 }
