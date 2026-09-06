@@ -175,6 +175,10 @@ The self-heal module is also part of the existing **local-only WorkerCoordinator
 
 Fresh native runtime materialization also copies and explicitly requires the self-heal module alongside `run_heartbeat_runtime.py`. A new resident runtime therefore cannot successfully materialize a carrier entrypoint whose local supervision dependency is absent. The sovereign bootstrap eligibility precheck requires the same module, so `canonical_source_complete` cannot become true before installer execution when that dependency is missing. This is dependency completeness only; successful eligibility/materialization still does not prove carrier/worker presence, request dispatch, consumption, or task completion.
 
+The sovereign bootstrap now follows the same **carrier-first** runtime contract as the existing resident-start handoff. It starts `scripts/install_sovereign_heartbeat_carrier.py` first, requires the exact `CARRIER_ONLY` activation receipt with no WorkerCoordinator startup dependency, and only then accepts independently observed WorkerCoordinator presence from the existing carrier-side self-heal/runtime-presence path. A missing or stale worker therefore remains a downstream process-supervision problem; it is not allowed to become a prerequisite for oscillator startup.
+
+Controlled activation reconstruction follows the same separation. The activation verifier restarts only the native HeartBeat carrier entry and then requires oscillator continuity plus fresh, independent task-capable WorkerCoordinator progress afterward. It does not directly restart WorkerCoordinator as part of HeartBeat restart and does not infer worker authority from carrier liveness. WorkerCoordinator still performs its own admission/claim/fence lifecycle, Interlock/InTr still governs transitions, and TV/TVC remains sole credential authority.
+
 This parity requirement is a runtime continuity and failure-behavior guarantee. It does not imply that source, validation, heartbeat progression, or process restoration proves any task was dispatched, consumed, or completed.
 
 ### Portable WorkerCoordinator sequential task lineage
