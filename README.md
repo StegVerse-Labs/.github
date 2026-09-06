@@ -167,9 +167,28 @@ This distinction is required for evidence such as `terminal=true`, exact WorkerC
 
 ### Resident WorkerCoordinator self-heal binding parity
 
-The canonical HeartBeat carrier may supervise the **existing** resident WorkerCoordinator process when that process disappears, but this supervision does not create a second worker or grant task authority. A self-healed WorkerCoordinator must receive the same approved, non-secret local repository/runtime bindings as the canonical worker service so restored process presence does not silently degrade into a worker that is alive but unable to resolve already-local StegVerse dependencies.
+### Native heartbeat carrier CLI entrypoint
 
-A live PID is not sufficient evidence that the WorkerCoordinator is healthy. On each existing HB-scale supervision visit, the self-heal path reuses the canonical runtime-presence freshness predicate. If an existing WorkerCoordinator PID is alive but its task-capable cycle is stale or no longer task-capable, the carrier-side supervision reuses the established controlled process-termination helper, recycles only that WorkerCoordinator process, and requires a new task-capable worker tick before reporting repaired presence. The HB32 oscillator and carrier remain running and non-authorizing throughout; this recovery does not create a second worker, scheduler, runtime, claim/fence path, or transition authority.
+The optional resident sampler/persistence observer is installed through the
+repository-root command documented by the canonical resident-start handoff:
+
+```bash
+python scripts/install_sovereign_heartbeat_carrier.py
+```
+
+The entrypoint resolves its repository-local `scripts` package without requiring
+`PYTHONPATH`, a module-form substitute, a network fetch, or a credential. This
+is execution compatibility for the existing carrier-only installer; it does not
+make the sampler causal to HeartBeat progression, start WorkerCoordinator, grant
+task authority, or change the HB32 `OSCILLATOR_ONLY` protocol semantics.
+
+A successful native-supervisor command is not sufficient for
+`carrier_active=true`. The activation receipt requires two valid persisted
+oscillator observations with an increasing epoch and the canonical 10 ms /
+100 Hz, observation-only, `OSCILLATOR_ONLY` invariants. Registration without
+observed progression fails closed and cannot be reported as live runtime.
+
+The canonical HeartBeat carrier may supervise the **existing** resident WorkerCoordinator process when that process disappears, but this supervision does not create a second worker or grant task authority. A self-healed WorkerCoordinator must receive the same approved, non-secret local repository/runtime bindings as the canonical worker service so restored process presence does not silently degrade into a worker that is alive but unable to resolve already-local StegVerse dependencies.
 
 Self-heal propagation therefore preserves the canonical worker service's local bindings for StegIndex, TV/TVC, Master Records, StegCore, StegOS, KV, Site, TT/RTG/GTG/AE, resident source manifests, and other explicitly allowlisted local roots. Hosted runtime variables and token/secret/password/API-key/private-key/credential variables remain excluded. TV/TVC remains the credential authority; the carrier remains non-authorizing; WorkerCoordinator and InTr continue to perform their existing independent admission and transition checks.
 
