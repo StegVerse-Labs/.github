@@ -7,8 +7,16 @@ bootstrap, sends one deterministic controlled Node->InTr materialization event
 through the actual local HTTP ingress listener, invokes the existing HIL
 materialization consumer, requires component-produced same-device ESRL LEASE_OPEN
 evidence, and then requires the real HIL receipts from the materialized ESRL
-runtime root. Public Gateway observation is optional downstream evidence and is
-not an activation prerequisite.
+runtime root.
+
+PASS also requires the canonical resident dispatcher to have visited the HIL
+consumer and the exact RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002 consumption
+receipt to prove a terminal HIL transition. Merely observing a receiver receipt
+or materialization receipt cannot substitute for the cross-task resident-request
+consumption predicate.
+
+Public Gateway observation is optional downstream evidence and is not an
+activation prerequisite.
 
 A PASS is authentic only when this script is executed on an eligible
 StegVerse-owned/federated resident runtime with the current local HIL backend.
@@ -37,6 +45,10 @@ HOSTED_ENV = (
     "CF_PAGES", "CLOUDFLARE_WORKERS",
 )
 CONTROLLED_PDF = b"%PDF-1.4\n% StegVerse HIL controlled resident activation test\n1 0 obj<</Type/Catalog>>endobj\ntrailer<</Root 1 0 R>>\n%%EOF\n"
+RESIDENT_REQUEST_ID = "RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002"
+TARGET_TASK = "SHWP-HIL-SOVEREIGN-RECEIVER-001"
+RESIDENT_DISPATCH_REL = Path("receipts/sovereign-host/resident-request-dispatch.latest.json")
+HIL_RESIDENT_CONSUMPTION_REL = Path("receipts/sovereign-host/hil-resident-execution-request-consumption.latest.json")
 
 
 def truthy(value: str | None) -> bool:
@@ -64,6 +76,49 @@ def select_materialization_result(batch: dict, materialization_id: str) -> dict:
         if isinstance(row, dict) and row.get("materialization_id") == materialization_id:
             return row
     return {}
+
+
+def select_hil_dispatch_outcome(receipt: dict) -> dict:
+    outcomes = receipt.get("outcomes")
+    if not isinstance(outcomes, list):
+        return {}
+    for row in outcomes:
+        if isinstance(row, dict) and row.get("consumer") == "hil":
+            return row
+    return {}
+
+
+def validate_hil_dispatch_outcome(receipt: dict) -> bool:
+    if receipt.get("schema") != "stegverse.resident-request-dispatch/v1":
+        return False
+    outcome = select_hil_dispatch_outcome(receipt)
+    result = outcome.get("result") if isinstance(outcome.get("result"), dict) else {}
+    return (
+        outcome.get("attempted") is True
+        and outcome.get("consumer_ref") == "scripts/consume_hil_resident_execution_request.py"
+        and result.get("schema") == "stegverse.hil-resident-execution-request-consumption/v1"
+        and result.get("request_id") == RESIDENT_REQUEST_ID
+        and result.get("task_id") == TARGET_TASK
+        and result.get("terminal_hil_transition_observed") is True
+    )
+
+
+def validate_hil_resident_consumption(receipt: dict) -> bool:
+    return (
+        receipt.get("schema") == "stegverse.hil-resident-execution-request-consumption/v1"
+        and receipt.get("state") == "COMPLETED"
+        and receipt.get("request_id") == RESIDENT_REQUEST_ID
+        and receipt.get("task_id") == TARGET_TASK
+        and receipt.get("mode") == "TARGETED_INDEPENDENT_TASK_CONTROL"
+        and receipt.get("runtime_execution_attempted") is True
+        and receipt.get("terminal_hil_transition_observed") is True
+        and isinstance(receipt.get("terminal_hil_transition"), str)
+        and bool(receipt.get("terminal_hil_transition"))
+        and receipt.get("credential_authority") == "TV/TVC"
+        and receipt.get("github_token_runtime_authority") == "NONE"
+        and receipt.get("heartbeat_grants_execution_authority") is False
+        and receipt.get("second_machine_required") is False
+    )
 
 
 def controlled_request(runtime_root: Path) -> tuple[dict, Path]:
@@ -234,6 +289,8 @@ def main() -> int:
     execution_runtime_valid = execution_runtime is not None and execution_runtime.is_dir()
 
     evidence = {
+        "resident_request_dispatch": runtime / RESIDENT_DISPATCH_REL,
+        "hil_resident_request_consumption": runtime / HIL_RESIDENT_CONSUMPTION_REL,
         "hil_intr_ingress": runtime / "receipts/sovereign-network/hil-intr-ingress.latest.json",
         "hil_materialization_consumption": materialization_latest,
         "resident_targeted_execution": (
@@ -246,6 +303,10 @@ def main() -> int:
         ),
     }
     observed = {name: path.is_file() for name, path in evidence.items()}
+    dispatch_receipt = load(evidence["resident_request_dispatch"]) if observed["resident_request_dispatch"] else {}
+    consumption_receipt = load(evidence["hil_resident_request_consumption"]) if observed["hil_resident_request_consumption"] else {}
+    dispatch_ok = validate_hil_dispatch_outcome(dispatch_receipt)
+    consumption_ok = validate_hil_resident_consumption(consumption_receipt)
     receiver = load(evidence["hil_receiver"]) if observed["hil_receiver"] else {}
     claim_ok = (
         isinstance(receiver.get("claim_id"), str)
@@ -256,6 +317,8 @@ def main() -> int:
     ready = receiver.get("receiver_ready") is True
     passed = (
         all(observed.values())
+        and dispatch_ok
+        and consumption_ok
         and esrl_lease_open
         and execution_runtime_valid
         and claim_ok
@@ -274,7 +337,10 @@ def main() -> int:
         "controlled_pdf_ref": str(pdf_path),
         "controlled_pdf_sha256": digest_uri(CONTROLLED_PDF),
         "controlled_materialization_id": request["materialization_id"],
+        "canonical_resident_request_id": RESIDENT_REQUEST_ID,
         "ingress_state": ingress_receipt.get("state"),
+        "resident_dispatch_hil_terminal_consumption_observed": dispatch_ok,
+        "hil_resident_request_consumption_observed": consumption_ok,
         "esrl_lease_open_observed": esrl_lease_open,
         "same_device_execution_required": materialization_result.get("same_device_execution_required") is True,
         "requires_other_machine": materialization_result.get("requires_other_machine") is True,
