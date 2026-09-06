@@ -266,6 +266,12 @@ class PortableResidentDispatchTests(unittest.TestCase):
     def test_refresh_then_dispatch_targets_only_sv002_public_observation(self):
         self._assert_sv002_exact_target("sv002_public_observation")
 
+    def test_refresh_then_dispatch_targets_only_astra_class_resilience_awareness(self):
+        self._assert_sv002_exact_target("astra_class_resilience_awareness")
+
+    def test_refresh_then_dispatch_targets_only_quantum_resilience_awareness(self):
+        self._assert_sv002_exact_target("quantum_resilience_awareness")
+
     def test_refresh_then_dispatch_targets_only_sv002_org_runtime_activation(self):
         self._assert_sv002_exact_target("sv002_org_runtime_activation")
         env = MOD.clean_exec_env({
