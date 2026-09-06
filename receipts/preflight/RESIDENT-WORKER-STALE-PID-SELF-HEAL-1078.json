@@ -1,0 +1,44 @@
+{
+  "schema": "stegverse.machine-preflight/v1",
+  "task_id": "RESIDENT-WORKER-STALE-PID-SELF-HEAL-1078",
+  "issue": 1078,
+  "repository": "StegVerse-Labs/.github",
+  "branch": "fix/stale-worker-self-heal-1078",
+  "canonical_inputs": [
+    "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md",
+    "docs/RESIDENT_WORKER_SELF_HEAL_MIRROR_HANDOFF.md",
+    "docs/ORG_MIRROR_HANDOFF.md",
+    "data/canonical-task-registry.json@generation-15"
+  ],
+  "existing_runtime_reused": [
+    "heartbeat_runtime.engine_v13.HeartbeatRuntime",
+    "heartbeat_runtime.worker_runtime.WorkerCoordinator",
+    "scripts/repair_resident_worker_presence.py",
+    "scripts/run_worker_runtime.py",
+    "100-reference carrier supervision cadence",
+    "runtime-presence projection"
+  ],
+  "observed_defect": "A live worker PID is accepted as reusable without proving a fresh task-capable runtime tick. A stalled WorkerCoordinator can therefore remain PID-alive while requests stop progressing and the existing self-heal path declines to repair it.",
+  "collision_check": {
+    "open_pr_touching_repair_resident_worker_presence": false,
+    "second_heartbeat_created": false,
+    "second_workercoordinator_created": false,
+    "second_scheduler_created": false
+  },
+  "proposed_repair": "For an existing live worker PID, require a bounded fresh tick. If it advances, reuse it. If it remains alive but does not advance, terminate the stale process, wait for exit, and restart the existing canonical worker runner; accept repair only after a fresh tick.",
+  "readme_impact": {
+    "required": true,
+    "determination": "MATERIAL",
+    "reason": "This changes resident failure-recovery semantics: self-heal will recover a stalled PID-alive WorkerCoordinator rather than only a missing/dead process. README must document the expanded failure behavior in the same change set."
+  },
+  "authority_invariants": {
+    "heartbeat_progression": "OSCILLATOR_ONLY",
+    "heartbeat_grants_execution_authority": false,
+    "workercoordinator_retains_admission_authority": true,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "hosted_runtime_repair": false,
+    "non_tv_tvc_secret_or_token_required": false
+  },
+  "result": "PASS_FOR_BOUNDED_FUNCTIONAL_MUTATION"
+}
