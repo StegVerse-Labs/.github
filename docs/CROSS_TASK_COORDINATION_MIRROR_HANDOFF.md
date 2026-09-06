@@ -27,6 +27,7 @@ goal
 -> adjacency discovery
 -> mutation-scope collision check
 -> precise evidence-gap derivation
+-> README impact completeness when functional mutation is declared
 -> ADMIT_COORDINATION | BLOCK_COORDINATION | UPDATE_COORDINATION
 ```
 
@@ -109,6 +110,47 @@ No task declaring `autonomous_augmentation: true` may pass WorkerCoordinator pre
 - expected blast radius declared.
 
 The preflight itself has `authority_effect: NONE`.
+
+## Functional-change README completeness invariant
+
+The organization README defines a standing rule: any change that materially changes repository function must update that repository's README in the same functional change.
+
+Machine enforcement is bound into the existing worker-task admission review rather than a parallel scheduler or authority path. New functional mutations entering through the StegVerse session-entry contract must set:
+
+```text
+readme_impact_required = true
+```
+
+The task or handoff must then provide a structured `readme_impact` determination.
+
+For `material_function_change = true`, admission requires:
+
+```text
+readme_updated_in_change_set = true
+readme_path = <affected repository README>
+evidence_refs = <README + functional-change evidence>
+```
+
+For `material_function_change = false`, a no-update determination is admissible only when it carries:
+
+```text
+no_readme_update_reason = <explicit rationale>
+evidence_refs = <supporting evidence>
+```
+
+Missing materiality, missing required evidence, or a material functional change without a README update makes `readme_impact_complete = false` and causes the existing worker-task admission review to fail closed.
+
+Legacy/nonfunctional tasks that predate this contract are not retroactively blocked solely because they lack the field. The session-entry/preflight contract is responsible for marking new functional mutations as README-impact-required.
+
+Implementation locations:
+
+```text
+heartbeat_runtime/worker_task_admission.py
+tests/test_worker_task_admission.py
+README.md
+```
+
+Authority effect remains `NONE`. README completeness does not grant execution, admission authority, claim, fence, lease, credential, routing, transition, publication, custody, or runtime truth.
 
 ## Evidence qualification
 
@@ -210,6 +252,7 @@ Core source implementation: VALIDATED.
 Composed canonical ledger: VALIDATED.
 Subject-bound resident-request migration: PARTIAL / ACTIVE.
 StegIndex composed discovery: VALIDATED.
+README impact machine-preflight enforcement: SOURCE IMPLEMENTED / VALIDATION PENDING.
 Ecosystem adoption: NOT COMPLETE.
 Runtime activation claims created by this coordination work: NONE.
 
@@ -217,14 +260,15 @@ Existing runtime activation, WorkerCoordinator execution, sovereign inference, H
 
 ## Remaining machine work
 
-1. inspect remaining canonical handoffs for shared predicates beyond `resident_request_consumed`, beginning with resident-presence/runtime-observation and common claim/fence/evidence predicates;
-2. establish subject identity before any shared registration;
-3. register only genuinely reusable producer/evidence relationships and exact gaps;
-4. bind additional session/build consumers that still read an incomplete coordination slice;
-5. register active claims/producers where canonical ownership records exist;
-6. validate each migration deterministically;
-7. evaluate tag/release only after ecosystem-adoption criteria are actually satisfied;
-8. after actual release/tag, verify governed propagation requirements for `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `admissibility-wiki`, and `stegguardian-wiki`.
+1. validate and merge README impact machine-preflight enforcement, then replace `VALIDATION PENDING` above with exact evidence;
+2. inspect remaining canonical handoffs for shared predicates beyond `resident_request_consumed`, beginning with resident-presence/runtime-observation and common claim/fence/evidence predicates;
+3. establish subject identity before any shared registration;
+4. register only genuinely reusable producer/evidence relationships and exact gaps;
+5. bind additional session/build consumers that still read an incomplete coordination slice;
+6. register active claims/producers where canonical ownership records exist;
+7. validate each migration deterministically;
+8. evaluate tag/release only after ecosystem-adoption criteria are actually satisfied;
+9. after actual release/tag, verify governed propagation requirements for `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `admissibility-wiki`, and `stegguardian-wiki`.
 
 ## Completion and archive rule
 
