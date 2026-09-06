@@ -149,10 +149,8 @@ class SovereignRuntimeActivationVerifierTests(unittest.TestCase):
 
             def runner(command, **_kwargs):
                 calls["restart"] += 1
-                self.assertTrue(
-                    "stegverse-heartbeat.service" in command or "stegverse-worker-runtime.service" in command,
-                    command,
-                )
+                self.assertIn("stegverse-heartbeat.service", command, command)
+                self.assertNotIn("stegverse-worker-runtime.service", command, command)
                 return SimpleNamespace(returncode=0, stdout="", stderr="")
 
             proof = mod.verify(
@@ -169,7 +167,7 @@ class SovereignRuntimeActivationVerifierTests(unittest.TestCase):
             )
             self.assertTrue(proof["all_predicates_pass"], proof)
             self.assertEqual(calls["sleep"], 2)
-            self.assertEqual(calls["restart"], 2)
+            self.assertEqual(calls["restart"], 1)
             for name in mod.REQUIRED_PREDICATES:
                 self.assertTrue(proof[name], name)
             persisted = json.loads((base / "activation.latest.json").read_text())
