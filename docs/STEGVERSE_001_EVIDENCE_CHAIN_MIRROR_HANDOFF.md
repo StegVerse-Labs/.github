@@ -1,6 +1,6 @@
 # StegVerse-001 Evidence Chain Continuation Mirror Handoff
 
-Updated: 2026-09-02
+Updated: 2026-09-05
 Repository: StegVerse-Labs/.github
 Issue: #761
 Goal: STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001
@@ -58,7 +58,7 @@ SV001 source/control: COMPLETE
 Master Records automatic intake source: MERGED
 SV002 deterministic evaluator source: MERGED
 downstream resident continuation: SOURCE_MERGED_VALIDATED
-authentic SV001 receipt: NOT OBSERVED
+authentic SV001 receipt: OBSERVED / canonical G23
 Master Records reconstruction PASS: NOT OBSERVED
 SV002 authentic disposition: NOT OBSERVED
 ```
@@ -177,7 +177,7 @@ Current-iPhone Site projection:
 
 The Site service worker now exposes a same-origin local custody intake that invokes the exact Master Records portable module, validates the immutable completed cycle receipt, appends the resulting custody and reconstruction objects to the existing StegOS journal, replays that journal, and emits a PASS proof. The endpoint is idempotent for an already-complete custody pair and fails closed on partial custody state.
 
-Source/merge does not establish authentic custody. The next exact runtime predicate is a current-iPhone custody commit for:
+Source/merge does not establish authentic custody. The exact runtime predicate remains custody/reconstruction for:
 `sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35`.
 
 SV001 is terminal and MUST NOT be rerun. After Master Records reconstruction PASS is observed, the existing SV002 continuation becomes the next machine-owned step.
@@ -188,12 +188,52 @@ SV001 is terminal and MUST NOT be rerun. After Master Records reconstruction PAS
 Site #958 / PR #959 merged as `11ffa8fc712569a07edb45397baf2e3427947294`,
 with its claim released by PR #960 / `3f39c48aabae51c46c0afa069aa5364dbef429d1`.
 
-The current-iPhone Master Records UI now accepts the complete authentic
+The current-iPhone Master Records UI accepts the complete authentic
 `stegos.workercoordinator_tvc_portable_sv001_execution_proof/v1` object and extracts
 only `subordinate_execution_proof.cycle_receipt` unchanged. Direct cycle-receipt
 input remains supported. No receipt synthesis, SV001 re-execution, or authority
 widening is introduced.
 
-Therefore the operator does not need to manually isolate the nested cycle receipt.
-Public propagation remains separate from source merge; authentic custody still
-requires a current-iPhone PASS proof.
+This UI capability is a carrier surface only. Its existence does not make the custody transition human-owned and does not grant custody authority.
+
+## Machine-owned custody reclassification — 2026-09-05
+
+Canonical cross-session reconciliation established that the downstream custody/reconstruction transition is not a HUMAN_ONLY or USER_ONLY action merely because its executable surface is the current iPhone.
+
+Canonical records:
+
+- `control/entity-transition-ownership-evaluations/sv001-master-records-custody.json`;
+- `handoffs/SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001.interaction-admission.json`;
+- `control/current-user-ios-interaction-queue.json`;
+- preflight `receipts/preflight/sv001-evidence-chain-machine-governed-custody-reconciliation-20260905.json`.
+
+Current classification:
+
+```text
+transition_id = SV001_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION
+authority_class = MACHINE_GOVERNED
+execution_surface = CURRENT_USER_IPHONE
+human_interaction_required = false
+route = ENTITY_MACHINE_GOVERNANCE_LOOP
+current_governance_required = true
+prior_receipt_authorizes_transition = false
+```
+
+The former `IPHONE-MR-SV001-CUSTODY-001` human-action admission is superseded. The current-user iOS interaction queue does not block this machine-owned transition and must not be used as an approval queue for it.
+
+The retained G23 cycle receipt is evidence input only. It does not authorize custody. The exact custody/reconstruction state change still requires contemporaneous applicable Interlock/InTr governance and Master Records custody execution. G24 remains retained duplicate non-custodial evidence and MUST NOT be substituted for G23.
+
+### Current next machine predicate
+
+```text
+CONTEMPORANEOUS_INTERLOCK_INTR_GOVERNANCE_FOR_SV001_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION
+-> Master Records custody/reconstruction of canonical G23
+-> reconstruction PASS
+-> independently retryable SV002 adversarial observation/disposition
+```
+
+No human approval, manual JSON extraction, manual custody commit, SV001 rerun, or second user-operated machine is required by this handoff.
+
+### README impact determination
+
+This 2026-09-05 update is non-material documentation reconciliation only. Runtime behavior and authority semantics were already installed and documented in `README.md`; this change removes stale operator-oriented handoff wording and does not alter interfaces, runtime behavior, governance authority, evidence schema, prerequisites, dependencies, or failure behavior.
