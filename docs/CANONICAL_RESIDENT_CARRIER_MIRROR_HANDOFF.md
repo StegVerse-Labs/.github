@@ -17,11 +17,14 @@ This file is the scoped continuation record for convergence of StegVerse-001, St
 ```text
 HB32 independent 10 ms / 100 Hz oscillator reference
 -> HB-derived exact-byte Universal InTr carrier (non-authorizing)
--> one heartbeat_runtime.worker_runtime.WorkerCoordinator
--> one scripts/dispatch_resident_execution_requests.py dispatcher
+-> one canonical StegVerse-Labs/.github WorkerCoordinator authority
+   -> native resident process surface where applicable
+   -> CURRENT_USER_IPHONE portable checkout surface where applicable
 -> task-specific fail-closed consumer
 -> task-specific durable receipt/reconstruction/disposition
 ```
+
+HB32 progression is `OSCILLATOR_ONLY`: the protocol reference does not require a continuously running carrier sampler or native WorkerCoordinator process. The native and portable WorkerCoordinator surfaces are two execution expressions of the same canonical authority, not two WorkerCoordinators.
 
 This convergence creates no new heartbeat, oscillator, scheduler, WorkerCoordinator, runtime owner, credential lane, claim/fence authority, route authority, transition authority, publication authority, custody authority, or second user-operated machine requirement.
 
@@ -37,6 +40,39 @@ StegVerse-002 -> sv002_org_runtime_activation
 SV-011 predecessor -> sv011_phase5_source_materialization
 SV-011 -> sv011_phase5
 ```
+
+## HB32 portable runtime-selection repair — 2026-09-06
+
+A runtime review found a classification defect rather than a missing heartbeat/runtime implementation. The canonical HB32 deployment already defines daemon-free independent oscillator progression, and the canonical WorkerCoordinator already has a `CURRENT_USER_IPHONE` portable checkout implementation. Authentic StegOS iOS device-local execution has also already been observed in the runtime-observability record. Therefore failure to observe a continuously supervised native WorkerCoordinator process must not be reported as **generic runtime absence** for a task whose applicable canonical surface is portable current-iPhone execution.
+
+The runtime-presence projector now preserves the old native process predicate unchanged while adding a distinct fail-closed task-control observation:
+
+```text
+resident.present_worker_runtime_observed
+  = fresh task-capable native WorkerCoordinator process presence only
+
+portable_workercoordinator.observed
+  = exact subject-bound stegverse.workercoordinator-portable-checkout-receipt/v1
+    from CURRENT_USER_IPHONE only
+
+resident.task_control_runtime_observed
+  = native present-worker predicate OR valid task-scoped portable checkout observation
+```
+
+The portable receipt must bind the canonical `.github` WorkerCoordinator authority owner, independent-task-control domain, exact task/worker/claim/fence, TV/TVC boundary, no GitHub runtime authority, no external non-StegVerse machine, and no parallel WorkerCoordinator issuance. Static package/source presence does not qualify. Portable checkout proves the claim/fence transaction happened on the bound current-iPhone surface; it does **not** prove request consumption, task execution, transition completion, custody, reconstruction, or product activation.
+
+This repair reuses:
+
+- `docs/SOVEREIGN_HEARTBEAT_DEPLOYMENT_MIRROR_HANDOFF.md` and its HB32 daemon-free oscillator semantics;
+- `docs/WORKERCOORDINATOR_PORTABLE_IPHONE_EXECUTION_MIRROR_HANDOFF.md`;
+- `workercoordinator/portable_checkout.js`;
+- `docs/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_MIRROR_HANDOFF.md`;
+- `receipts/preflight/sv002-current-iphone-portable-consumer-20260905.json`;
+- the existing StegOS same-device native SV002 chain.
+
+Preflight: `receipts/preflight/HB32-PORTABLE-RUNTIME-SELECTION-20260906.json`.
+
+README impact is material and is satisfied in the same change set because this repair changes runtime availability/failure semantics and the supported execution-prerequisite interpretation.
 
 ## Autonomous governed progression adoption — 2026-09-04
 
@@ -92,9 +128,9 @@ Architecture/source propagation is complete. Runtime-status propagation remains 
 
 ## Authority split
 
-- HeartBeat: deterministic reference/timing/continuity only; `OSCILLATOR_ONLY` progression.
+- HeartBeat: deterministic reference/timing/continuity only; `OSCILLATOR_ONLY` progression; no continuously running sampler required for progression.
 - HB-derived InTr carrier: exact-byte carrier coordinate and reconstruction only; no admission/execution authority.
-- WorkerCoordinator: sole resident task-control runtime; independent claim/fence/admission under existing contracts.
+- WorkerCoordinator: sole task-control claim/fence authority, expressed through the canonical native process surface or canonical portable current-iPhone checkout surface as applicable.
 - InTr/Interlock: governs admissible transition boundaries.
 - TV/TVC: sole credential authority.
 - Master Records: custody/reconstruction where required.
@@ -110,7 +146,13 @@ Authentic current-iPhone terminal evidence already exists. The canonical lineage
 
 ### StegVerse-002
 
-The canonical request remains `REQUESTED` at `control/resident-execution-request.d/sv002-org-runtime-activation-001.json`. The expected authentic terminal receipt `receipts/sovereign-host/sv002-org-runtime-activation.latest.json` is not currently present on canonical `main`. Continue through the existing `sv002_org_runtime_activation` consumer under the autonomous governed progression contract. Terminal evidence requires `terminal_round_trip_observed=true` from the existing HeartBeat-separated native WorkerCoordinator execution path, plus downstream governed-inference/reconstruction evidence where required by the active product goal.
+The canonical request remains `REQUESTED` at `control/resident-execution-request.d/sv002-org-runtime-activation-001.json`. The expected authentic terminal receipt `receipts/sovereign-host/sv002-org-runtime-activation.latest.json` is not currently present on canonical `main`.
+
+The previously identified runtime gap must be interpreted through the already-created HB/oscillator and portable runtime solutions, not as a demand for another resident daemon or another machine. `receipts/preflight/sv002-current-iphone-portable-consumer-20260905.json` already resolved the admissible continuation as reuse/extension of the canonical `CURRENT_USER_IPHONE` portable WorkerCoordinator. The StegOS same-device non-reference native chain is source-complete and released; its remaining physical predicate is exact bundle/package materialization and target-organization execution on the current iPhone.
+
+Continue through the existing `sv002_org_runtime_activation` identity and autonomous governed progression path while consuming the portable current-iPhone WorkerCoordinator surface where that is the applicable execution substrate. Do not reintroduce the Python/local-repository second-machine path merely because native-process presence is absent.
+
+Terminal evidence still requires the exact task-specific request-consumption/principal/output/transition/reconstruction chain. A portable checkout is claim/fence evidence only and cannot satisfy terminal round-trip or Master Records predicates by itself.
 
 ### SV-011
 
@@ -127,11 +169,14 @@ Continue source materialization first, then the existing `sv011_phase5` consumer
 
 Any future project handoff that describes a separate SV001, SV002, or SV-011 heartbeat/runtime/scheduler path is stale unless it explicitly proves the canonical substrate is technically incapable of satisfying that lane. The default repair is consumer integration into this substrate, not creation of another runtime.
 
+A handoff or diagnostic that equates absent continuously supervised native WorkerCoordinator process presence with universal runtime absence is also stale when the task is eligible for the canonical portable current-iPhone execution surface. The correct repair is to resolve the applicable execution surface and require its direct task-scoped evidence.
+
 ## Remaining machine work
 
-1. Existing resident WorkerCoordinator consumes the pending SV002 request through the canonical dispatcher and autonomously continues each machine-owned governed transition until terminal or an actual machine blocker/human-only boundary is reached.
-2. Existing resident WorkerCoordinator consumes SV-011 source materialization, then Phase-5 boundary execution, and autonomously continues governed machine transitions until the first-success evidence capsule is produced or an actual governed DENY/blocker is reached.
-3. Preserve task-specific downstream reconstruction/disposition without rerunning terminal SV001; machine-owned Master Records/SV002 continuation must execute without routing through the human interaction queue.
-4. Runtime consumers must adopt the exact ownership classifier so `CURRENT_USER_IPHONE` execution is not mistaken for `USER_ONLY` authority.
+1. For each pending task, resolve whether its canonical execution surface is native resident process, portable `CURRENT_USER_IPHONE`, or another already-authorized StegVerse surface before declaring runtime absence.
+2. Existing WorkerCoordinator authority consumes the pending SV002 request through the already-admitted same-device path; current-iPhone portable checkout may provide the claim/fence transaction without requiring native daemon presence, but exact target execution and reconstruction remain independently required.
+3. Existing WorkerCoordinator consumes SV-011 source materialization, then Phase-5 boundary execution, and autonomously continues governed machine transitions until the first-success evidence capsule is produced or an actual governed DENY/blocker is reached.
+4. Preserve task-specific downstream reconstruction/disposition without rerunning terminal SV001; machine-owned Master Records/SV002 continuation must execute without routing through the human interaction queue.
+5. Runtime consumers must adopt the exact ownership classifier so `CURRENT_USER_IPHONE` execution is not mistaken for `USER_ONLY` authority and native-process absence is not mistaken for absence of every canonical runtime surface.
 
 No manual/current-iPhone transition approval is authorized or required by this handoff unless an exact next transition explicitly declares a human/user-only authority class.
