@@ -195,6 +195,12 @@ This does **not** rewrite browser execution as a native process. A current-iPhon
 
 All other terminal predicates remain fail-closed: fresh WorkerCoordinator claim/fence, exact TVC route, exact LLM-adapter execution, measured usage, Master Records provider-usage and transition reconstruction, same-execution identity, persistent conversational runtime readiness, TV/TVC credential authority with credential requirement `NONE`, no GitHub runtime authority, and no hosted/third-party production dependency. Source, merge, CI, package presence, or browser capability alone does not prove current-iPhone execution or product activation.
 
+#### Ecosystem Chat resident-request consumption evidence
+
+The Ecosystem Chat parent resident-request **consumption** predicate is intentionally narrower than parent activation. The canonical consumer `scripts/consume_resident_execution_request.py` does not emit a generic `consumed` boolean. Its durable consumption evidence is the exact `stegverse.resident-execution-request-consumption/v1` receipt for request `RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-002`, task `SHWP-ECOSYSTEM-CHAT-INFERENCE-001`, mode `DEDICATED_ECOSYSTEM_CHAT_PARENT`, state `ATTEMPT_RECORDED`, with `runtime_execution_attempted=true`.
+
+That receipt proves only that the exact bounded request reached its existing dedicated consumer and was attempted under the consumer's exactly-once request-id/content-hash semantics. It does **not** prove that the parent reached terminal `PASS`, that a fresh WorkerCoordinator fence was obtained, that model inference occurred, that TVC route admission passed, that usage or Master Records persistence completed, or that conversational runtime readiness is true. Those remain separate downstream predicates. An `ALREADY_CONSUMED` return on a later invocation is replay protection, not a substitute for the original persisted attempted-execution receipt and grants no authority.
+
 ### Canonical Work task ingress
 
 The Canonical Work resident bootstrap is a **shared governed ingress mechanism for tasks that already exist in the canonical Task Registry**. It is no longer limited to the coordination bootstrap task itself. A caller must provide an explicit `task_id`; the bootstrap fails closed unless that identity resolves exactly once, remains `PROPOSED`, explicitly allows `INGRESS_ADMITTED`, has no projected WorkerCoordinator claim/fence, and preserves the canonical authority model.
