@@ -8,47 +8,39 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class RuntimePresenceCrossTaskCoordinationTests(unittest.TestCase):
-    def test_preflight_passed_before_coordination_mutation(self):
-        receipt = json.loads((ROOT / "receipts/preflight/CROSS-TASK-RUNTIME-PRESENCE-PREDICATE-001.json").read_text())
+    def test_corrective_preflight_passed_before_subject_binding_mutation(self):
+        receipt = json.loads((ROOT / "receipts/preflight/RUNTIME-PRESENCE-SUBJECT-BINDING-CORRECTION-001.json").read_text())
         self.assertEqual(receipt["state"], "PASS")
         self.assertEqual(receipt["verdict"], "PASS")
         self.assertTrue(receipt["readme_impact_required"])
         self.assertTrue(receipt["readme_impact"]["material_function_change"])
         self.assertTrue(receipt["readme_impact"]["readme_updated_in_change_set"])
         self.assertEqual(receipt["readme_impact"]["readme_path"], "README.md")
-        self.assertFalse(receipt["collision_review"]["mutation_scope_collision_observed"])
-        self.assertFalse(receipt["reuse_resolution"]["duplicate_runtime_implementation_required"])
+        self.assertTrue(receipt["collision_review"]["semantic_conflict_observed"])
 
-    def test_runtime_presence_predicate_is_subject_bound_and_non_authorizing(self):
-        fragment = json.loads((ROOT / "control/cross-task-coordination.d/runtime-presence-predicates.json").read_text())
-        self.assertEqual(fragment["authority_effect"], "NONE_COORDINATION_ONLY")
-        self.assertEqual(len(fragment["predicates"]), 1)
-        predicate = fragment["predicates"][0]
-        self.assertEqual(predicate["semantic_predicate_id"], "resident_worker_runtime_present")
-        self.assertEqual(predicate["subject_binding"]["runtime_profile_id"], "canonical-resident-substrate-v1")
-        self.assertEqual(predicate["subject_binding"]["worker_runtime"], "heartbeat_runtime.worker_runtime.WorkerCoordinator")
-        self.assertEqual(predicate["authoritative_producer"], "heartbeat_runtime/runtime_presence_projection.py")
-        self.assertEqual(predicate["required_schema"], "stegverse.hb-runtime-presence-resident-observability/v1")
-        self.assertEqual(predicate["expected_output_ref"], "receipts/sovereign-host/runtime-presence.latest.json")
-        self.assertEqual(predicate["max_age_seconds"], 60)
-        self.assertEqual(predicate["state"], "UNKNOWN")
+    def test_overbroad_runtime_presence_fragment_is_not_canonical(self):
+        self.assertFalse((ROOT / "control/cross-task-coordination.d/runtime-presence-predicates.json").exists())
 
-    def test_bound_consumers_reuse_existing_presence_producer(self):
-        fragment = json.loads((ROOT / "control/cross-task-coordination.d/runtime-presence-predicates.json").read_text())
-        predicate = fragment["predicates"][0]
-        self.assertEqual(set(predicate["consumers"]), {
-            "SHWP-SV002-ORG-RUNTIME-ACTIVATION-001",
-            "SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001",
-            "SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001",
-            "SHWP-SV011-PHASE5-BOUNDARY-001",
-        })
-        gap = fragment["gaps"][0]
-        self.assertIn("Do not create another heartbeat", gap["action_without_collision"])
-        self.assertIn("WorkerCoordinator", gap["action_without_collision"])
+    def test_existing_candidate_remains_deferred_until_authentic_subject_identity(self):
+        candidate = json.loads(
+            (ROOT / "control/cross-task-coordination-candidates/resident-process-alive-supervised.json").read_text()
+        )
+        self.assertEqual(candidate["state"], "DEFERRED_SUBJECT_BINDING_REQUIRED")
+        self.assertEqual(candidate["authority_effect"], "NONE_COORDINATION_STAGING_ONLY")
+        self.assertEqual(candidate["semantic_predicate_id"], "resident_process_alive_supervised")
+        required = set(candidate["required_subject_binding_before_admission"])
+        self.assertIn("runtime_root identity", required)
+        self.assertIn("resident.node_id when available from authentic runtime evidence", required)
+        self.assertIn("canonical worker runtime identity", required)
+        self.assertEqual(candidate["canonical_evidence_ref"], "receipts/sovereign-host/runtime-presence.latest.json")
+        self.assertIn("Do not create another runtime-presence projector", candidate["safe_next_action"])
 
-    def test_readme_documents_presence_vs_execution_distinction(self):
+    def test_readme_documents_deferred_subject_binding_and_evidence_limits(self):
         readme = (ROOT / "README.md").read_text()
         self.assertIn("### Cross-task runtime-presence evidence", readme)
+        self.assertIn("shared cross-task reuse is currently deferred", readme)
+        self.assertIn("runtime_root", readme)
+        self.assertIn("resident.node_id", readme)
         self.assertIn("does **not** prove that a specific request was consumed", readme)
         self.assertIn("HeartBeat remains non-authorizing", readme)
 
