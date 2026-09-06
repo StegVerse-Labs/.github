@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.cross-task-coordination-ledger/v1",
-  "updated_at": "2026-09-06T01:39:00-05:00",
+  "updated_at": "2026-09-06T01:48:00-05:00",
   "authority": {
     "coordination_authority": "StegVerse-Labs/.github",
     "runtime_truth_authority_effect": "NONE",
@@ -64,6 +64,7 @@
       "required_execution_instance": "33923391425",
       "max_age_seconds": null,
       "required_fields": ["validation_result"],
+      "required_field_values": {"validation_result": "SUCCESS"},
       "expected_output_ref": "GitHub Actions run 33923391425"
     },
     {
@@ -75,6 +76,7 @@
       "required_execution_instance": "33943933317",
       "max_age_seconds": null,
       "required_fields": ["validation_result"],
+      "required_field_values": {"validation_result": "SUCCESS"},
       "expected_output_ref": "GitHub Actions run 33943933317"
     },
     {
@@ -86,6 +88,7 @@
       "required_execution_instance": "33944001324",
       "max_age_seconds": null,
       "required_fields": ["validation_result"],
+      "required_field_values": {"validation_result": "SUCCESS"},
       "expected_output_ref": "GitHub Actions run 33944001324"
     },
     {
