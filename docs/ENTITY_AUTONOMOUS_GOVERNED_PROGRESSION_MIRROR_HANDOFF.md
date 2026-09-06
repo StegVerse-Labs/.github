@@ -1,8 +1,8 @@
 # Entity Autonomous Governed Progression Mirror Handoff
 
-Updated: 2026-09-04
+Updated: 2026-09-05
 Repository: `StegVerse-Labs/.github`
-State: SOURCE_IMPLEMENTED / RUNTIME ADOPTION REQUIRED
+State: SOURCE_IMPLEMENTED / README_COMPLETE / RUNTIME ADOPTION COORDINATED / AUTHENTIC RUNTIME ADOPTION REQUIRED
 Authority effect: NONE
 
 ## Problem being corrected
@@ -110,6 +110,48 @@ The contract applies immediately as a source/governance rule to:
 - future organizational AI entities deployed through `<ORG>/.github`.
 
 Runtime adoption for each consumer requires its existing resident execution loop to call governance for each next transition rather than projecting a human approval step.
+
+## 2026-09-05 canonical preflight and coordination registration
+
+Before additional functional mutation, the current canonical state was reconciled against:
+
+- this handoff and `docs/CANONICAL_RESIDENT_CARRIER_MIRROR_HANDOFF.md`;
+- `data/task-coordination-policy.json` and `docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md`;
+- `docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md` plus the composed coordination ledger;
+- `master-records/orchestration/MASTER_RECORDS_ORCHESTRATION_MIRROR_HANDOFF.md`;
+- the current-user iOS interaction queue.
+
+The result was reuse/extension of the existing canonical machinery, not creation of a new runtime. No matching duplicate progression implementation or active mutation claim was observed for this scope. Master Records remains custody/reconstruction only.
+
+README impact was material because the progression rule changes repository runtime/governance semantics. The organization README was therefore updated first at commit `8232f9858eca38150d0f040302306d5e9e5e4273`, before additional functional runtime-adoption work was admitted.
+
+Machine-readable preflight receipt:
+
+`receipts/preflight/entity-autonomous-governed-progression-runtime-adoption-20260905.json`
+
+The runtime-adoption task/gap is now registered in the composed coordination ledger at:
+
+`control/cross-task-coordination.d/entity-autonomous-governed-progression-runtime-adoption.json`
+
+Canonical task identity:
+
+`ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001`
+
+This coordination record does not create a WorkerCoordinator claim/fence or runtime authority. It prevents future sessions from rebuilding the same progression layer and states the exact remaining runtime predicate.
+
+## Exact remaining runtime predicate
+
+Source binding and README completeness are satisfied. Authentic runtime adoption remains unproven until an existing entity consumer performs a complete machine-owned cycle that proves all of the following for one exact current transition:
+
+```text
+machine_owned_transition_selected=true
+current_governance_decision_observed=true
+human_approval_checkpoint_inserted=false
+execution_or_denial_receipt_retained=true
+next_state_reconstructed=true
+```
+
+The authoritative producer is the existing heartbeat-separated native WorkerCoordinator plus the existing task-specific consumer and Interlock/InTr governance path. Existing StegVerse-001 terminal work must not be rerun merely to satisfy this predicate; StegVerse-002 or SV-011 pending machine-owned work is the preferred nonduplicate proving lane when its prerequisites admit execution.
 
 ## Non-claims
 

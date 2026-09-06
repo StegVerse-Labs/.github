@@ -30,13 +30,19 @@
   "entity_progression": {
     "contract_ref": "control/entity-autonomous-governed-progression-contract.json",
     "handoff_ref": "docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_MIRROR_HANDOFF.md",
+    "coordination_task_id": "ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001",
+    "coordination_fragment_ref": "control/cross-task-coordination.d/entity-autonomous-governed-progression-runtime-adoption.json",
+    "runtime_adoption_predicate_id": "PRED-ENTITY-AUTONOMOUS-PROGRESSION-RUNTIME-ADOPTED",
+    "canonical_work_policy_ref": "data/task-coordination-policy.json",
+    "canonical_work_handoff_ref": "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md",
     "default_for_machine_owned_transitions": "MACHINE_GOVERNED_AUTONOMOUS",
     "human_approval_default": false,
     "every_state_change_requires_current_governance": true,
     "authority_is_inferred": false,
     "authority_is_reused": false,
     "prior_receipt_authorizes_next_transition": false,
-    "human_interaction_queue_scope": "TRUE_HUMAN_DEVICE_MUTATIONS_ONLY"
+    "human_interaction_queue_scope": "TRUE_HUMAN_DEVICE_MUTATIONS_ONLY",
+    "runtime_adoption_claimed": false
   },
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": "NONE",
@@ -79,6 +85,7 @@
     "Every entity state change is governed contemporaneously; authority is never inferred or reused from a prior transition.",
     "Machine-owned entity transitions continue without per-transition human approval unless the exact transition declares a HUMAN_ONLY or USER_ONLY authority class.",
     "The current-user iOS interaction queue serializes true human/device mutations only and must not become a scheduler or approval queue for resident machine transitions.",
+    "Entity progression runtime adoption is tracked through canonical cross-task coordination and canonical work coordination; those records grant no authority and cannot substitute for authentic resident execution.",
     "Repository merge or CI success never substitutes for authentic resident execution evidence.",
     "A terminal task is never rerun merely to prove shared-substrate membership."
   ]
