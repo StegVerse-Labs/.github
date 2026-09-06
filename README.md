@@ -165,6 +165,27 @@ Cross-task evidence predicates may require not only that a receipt field exists,
 
 This distinction is required for evidence such as `terminal=true`, exact WorkerCoordinator claim identity, exact fencing token, or other values where field presence alone is not proof of the predicate. A receipt containing `terminal=false` therefore cannot satisfy a predicate merely because `terminal` exists. Dotted nested paths such as `claim.fence` are resolved deterministically. Exact-value qualification remains evidence-only and grants no execution, admission, claim, fence, transition, credential, custody, publication, runtime truth, or other authority.
 
+### Native heartbeat carrier CLI entrypoint
+
+The optional resident sampler/persistence observer is installed through the
+repository-root command documented by the canonical resident-start handoff:
+
+```bash
+python scripts/install_sovereign_heartbeat_carrier.py
+```
+
+The entrypoint resolves its repository-local `scripts` package without requiring
+`PYTHONPATH`, a module-form substitute, a network fetch, or a credential. This
+is execution compatibility for the existing carrier-only installer; it does not
+make the sampler causal to HeartBeat progression, start WorkerCoordinator, grant
+task authority, or change the HB32 `OSCILLATOR_ONLY` protocol semantics.
+
+A successful native-supervisor command is not sufficient for
+`carrier_active=true`. The activation receipt requires two valid persisted
+oscillator observations with an increasing epoch and the canonical 10 ms /
+100 Hz, observation-only, `OSCILLATOR_ONLY` invariants. Registration without
+observed progression fails closed and cannot be reported as live runtime.
+
 ### Resident WorkerCoordinator self-heal binding parity
 
 The canonical HeartBeat carrier may supervise the **existing** resident WorkerCoordinator process when that process disappears, but this supervision does not create a second worker or grant task authority. A self-healed WorkerCoordinator must receive the same approved, non-secret local repository/runtime bindings as the canonical worker service so restored process presence does not silently degrade into a worker that is alive but unable to resolve already-local StegVerse dependencies.
