@@ -1,10 +1,10 @@
 # Canonical Work Coordination Runtime Mirror Handoff
 
-Updated: 2026-09-04
+Updated: 2026-09-05
 Organization: `StegVerse-Labs`
 Repository: `StegVerse-Labs/.github`
 Goal: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`
-Status: `RESIDENT_REQUEST_DISPATCH_SOURCE_INSTALLED_AUTHENTIC_LIFECYCLE_PENDING`
+Status: `TASK_TARGETED_BOOTSTRAP_SOURCE_IMPLEMENTED_VALIDATION_PENDING`
 
 ## Parent authority
 
@@ -37,10 +37,11 @@ The task coordination runtime consumes that substrate; it does not own or advanc
 - `scripts/project_worker_claim_into_canonical_task.py`
 - `scripts/run_canonical_work_event_bootstrap.py`
 - `scripts/install_and_run_canonical_work_event_bootstrap.py`
+- `tests/test_task_targeted_canonical_work_bootstrap.py`
 - `control/resident-execution-request.d/canonical-work-coordination-bootstrap-001.json`
 - `control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py`
 - `scripts/dispatch_resident_execution_requests.py`
-- generation 7 of `data/canonical-task-registry.json`
+- generation 15 of `data/canonical-task-registry.json`
 
 Master Records corresponding bounded feed contract:
 
@@ -59,11 +60,15 @@ Master Records corresponding bounded feed contract:
 
 `scripts/run_canonical_work_event_bootstrap.py` provides a bounded executable ingress cycle using the existing shared `workers.universal_intr_profiled_ingress.Server` implementation. It refuses to run unless `CanonicalWork:Coordination` is actually installed in that shared router, builds the request through the canonical builder, uses a loopback event-triggered one-request listener instance, posts exact bytes with InTr headers, waits for the write-once CanonicalWork consumption receipt, and generates a proposed post-ingress registry projection. It does not create another listener implementation and explicitly records that it does not advance the HB oscillator or prove WorkerCoordinator claim/fence, Master Records reconciliation, governed work, egress, or closure.
 
-`scripts/install_and_run_canonical_work_event_bootstrap.py` joins the route install/check and bounded bootstrap in one resident-machine sequence. It runs the bootstrap in a fresh Python process so the transformed shared router is imported after the route edit.
+The bootstrap now accepts an exact `--task-id` and resolves that task exactly once in the supplied canonical registry. It fails closed unless the selected task is `PROPOSED`, explicitly allows `INGRESS_ADMITTED`, preserves Task Registry / WorkerCoordinator / Master Records / Interlock-InTr authority separation, and has no pre-existing projected claim/fence that would require reconciliation first. Projection validation is bound to the selected task rather than the coordination-parent constant. The default remains `STEGVERSE-CANONICAL-WORK-COORDINATION-001`, and the historical parent receipt path is preserved for compatibility.
 
-The canonical work request is now staged at `control/resident-execution-request.d/canonical-work-coordination-bootstrap-001.json`. The existing resident dispatcher registers selector `canonical_work_coordination` and points it to `control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py`.
+`scripts/install_and_run_canonical_work_event_bootstrap.py` forwards `--task-id` to the bounded bootstrap after applying/checking the existing shared route. This changes source capability from parent-task-only bootstrap to task-targeted CanonicalWork ingress without creating another listener, task registry, WorkerCoordinator, or transition authority.
 
-That consumer deliberately resides inside `control/resident-execution-request.d`, which the existing sovereign source refresh already materializes wholesale. It therefore avoids widening the resident static-file manifest. On resident consumption it copies only an explicit Canonical Work file manifest from the already-local canonical source root to the runtime checkout, verifies exact SHA-256 byte equality for every copy, then invokes the install-and-run wrapper. No network source fetch or credential use is allowed.
+`tests/test_task_targeted_canonical_work_bootstrap.py` verifies exact task resolution and fail-closed rejection for unknown/duplicate identity, non-PROPOSED state, disallowed ingress, pre-existing claim/fence, authority-model drift, wrapper task forwarding, and task-specific projection/receipt naming.
+
+The canonical work parent request remains staged at `control/resident-execution-request.d/canonical-work-coordination-bootstrap-001.json`. The existing resident dispatcher registers selector `canonical_work_coordination` and points it to `control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py`.
+
+That existing parent consumer remains deliberately bounded to the coordination parent request. The new task-targeted bootstrap source does **not** by itself prove that a resident request for any newly registered task has been staged or consumed. A resident-targeting layer must reuse this generalized bootstrap rather than introducing another transport/listener/WorkerCoordinator.
 
 `scripts/consume_canonical_work_intr_materialization_request.py` requires the authentic ingress receipt, verifies payload hash and stable task/correlation identity, reads existing WorkerCoordinator state as projection only, and emits a non-authorizing coordination receipt.
 
@@ -79,27 +84,36 @@ The Master Records authority-side projector scans configured retained custody ro
 
 `normalize_github_failure_email_events.py` clusters explicit email observations into incident proposals; email count is not failure count and email state is not runtime proof.
 
+## README completeness preflight for task-targeted bootstrap
+
+The change from a bootstrap hard-coded to the coordination parent task to a bootstrap that can target any exactly resolved eligible canonical task materially changes `.github` runtime/capability semantics. README impact is therefore **material**.
+
+This change set updates `README.md` in the same branch with the task-targeted CanonicalWork ingress contract and authority boundaries. Evidence references are this handoff, the changed bootstrap/wrapper source, and the focused deterministic tests. README completeness is a preflight predicate only and grants no admission or execution authority.
+
 ## Registry state
 
-`STEGVERSE-CANONICAL-WORK-COORDINATION-001` remains `PROPOSED` because no authentic Interlock/InTr task ingress receipt has yet been observed. Generation 7 records the resident request/dispatch/materialization path without promoting runtime state. The next admissible governed transition remains `INGRESS_ADMITTED`.
+`STEGVERSE-CANONICAL-WORK-COORDINATION-001` remains `PROPOSED` because no authentic Interlock/InTr task ingress receipt has yet been observed for it.
+
+`STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190` is registered at generation 15 as `PROPOSED`. Its source dependencies for the canonical provenance primitive, displayed-surface ingress adapter, and Master Records custody support are resolved. No authentic CanonicalWork task ingress, WorkerCoordinator claim/fence, object-provenance runtime lineage, Master Records runtime custody/reconstruction, or Workspace projection is claimed.
+
+The next admissible governed transition for either eligible PROPOSED task remains `INGRESS_ADMITTED` through the existing shared Interlock/InTr route.
 
 ## Required authentic runtime sequence
 
 ```text
 resident HB32/oscillator runtime dispatch cycle
--> dispatch_resident_execution_requests.py visits canonical_work_coordination
--> materialized control-directory consumer validates exact REQUESTED object
--> consumer copies/verifies explicit Canonical Work source manifest from already-local source root
--> install_and_run_canonical_work_event_bootstrap.py
+-> task-targeted CanonicalWork request is present under an existing resident consumer path
+-> resident consumer validates exact target task/request
+-> generalized install_and_run_canonical_work_event_bootstrap.py --task-id <exact task>
 -> fail-closed route transformer applies/checks CanonicalWork binding in existing shared router
--> canonical builder creates exact Universal InTr request
+-> task-targeted canonical builder creates exact Universal InTr request
 -> HB32-derived carrier binding (reference only)
 -> existing shared Universal Interlock/InTr Server handles one event-triggered request
 -> canonical_work_intr_ingress.admit(...)
 -> authentic INGRESS_ADMITTED receipt
 -> canonical-work consumer exact identity/payload verification
 -> bounded bootstrap observes consumption receipt
--> apply_admitted_canonical_work_projection.py produces post-ingress task projection
+-> apply_admitted_canonical_work_projection.py produces selected-task post-ingress projection
 -> Master Records authority-side work-event projection
 -> reconcile_admitted_canonical_work.py pre-execution reconciliation
 -> WorkerCoordinator duplicate/adjacency/blocker review
@@ -118,25 +132,28 @@ No step may infer authority from a preceding receipt. Every state change require
 
 ## Current boundary
 
-The previous need for a person or a separate machine to manually sequence route installation and bootstrap has been removed at source level. The resident request is staged, the existing dispatcher has a canonical selector, and the consumer self-materializes only the bounded Canonical Work files from the already-local source root before invoking the wrapper.
+The source bootstrap itself is no longer structurally limited to one canonical task identity. It can target an exactly resolved eligible canonical task while preserving the shared router and authority boundaries.
 
-The unresolved boundary is now strictly authentic resident consumption by the already-existing HB32/oscillator WorkerCoordinator runtime. Until `receipts/sovereign-host/canonical-work-coordination-bootstrap-request-consumption.latest.json` and the nested Canonical Work ingress/consumption receipts are observed, the registry MUST remain `PROPOSED` and no runtime completion may be inferred.
+The next source/runtime boundary is resident request targeting: the currently staged resident CanonicalWork request/consumer is still parent-task-specific. For `STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190`, a bounded resident request must invoke the generalized bootstrap with that exact task ID through the existing dispatcher/materialization architecture. That addition must not create another listener, scheduler, WorkerCoordinator, task registry, or provenance authority.
+
+Even after that request source exists, runtime completion remains strictly dependent on authentic resident consumption and write-once CanonicalWork ingress/consumption receipts. Source or CI validation must not change the registry from `PROPOSED`.
 
 ## Remaining machine work
 
-1. Existing resident dispatcher consumes selector `canonical_work_coordination` and emits the request-consumption plus Canonical Work ingress/consumption/bootstrap receipts.
-2. Apply the resulting authentic ingress projection to canonical task state through governed registry persistence.
-3. Run Master Records pre-execution projection/reconciliation and WorkerCoordinator admission review; project any authentic claim/fence.
-4. Run governed work only under the existing WorkerCoordinator/HB32 architecture.
-5. Run post-execution Master Records reconciliation and governed egress/closure.
-6. Invoke dependency fanout from authentic admitted dependency-resolution events.
-7. Feed explicit email-monitor observations into failure clustering and admit resulting incident proposals through canonical task ingress.
-8. Prove one complete authentic lifecycle through ingress, claim/fence, evidence, reconciliation, egress/closure, and dependent reevaluation.
+1. Validate and merge the task-targeted bootstrap/wrapper/README/tests in this change set.
+2. Reuse the existing resident request/materialization architecture to stage `STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190` as an exact target for the generalized bootstrap, without duplicating transport or worker authority.
+3. Existing resident dispatcher consumes that exact request and emits request-consumption plus CanonicalWork ingress/consumption/bootstrap receipts.
+4. Apply the resulting authentic ingress projection to canonical task state through governed registry persistence.
+5. Run Master Records pre-execution projection/reconciliation and WorkerCoordinator admission review; project any authentic claim/fence.
+6. Run governed object-provenance work only under the existing WorkerCoordinator/HB32 architecture.
+7. Run post-execution Master Records reconciliation and governed egress/closure.
+8. Invoke dependency fanout from authentic admitted dependency-resolution events.
+9. Prove one complete authentic lifecycle through ingress, claim/fence, evidence, reconciliation, egress/closure, and dependent reevaluation.
 
 ## Human action
 
-None currently required. All presently identified next steps are machine-owned resident/runtime work.
+None currently required for this source lane. Authentic user-device object capture is a later runtime evidence event under the StegOS #190 handoff; it is not evidence that may be fabricated from source or CI.
 
 ## Archive readiness
 
-This runtime workstream is not complete until an authentic end-to-end lifecycle is proven. All unique continuation state is preserved here; the chat session may be archived without losing continuation context.
+This runtime workstream is not complete until an authentic end-to-end lifecycle is proven. The task-targeted bootstrap source does not make the thread archive-ready by itself.
