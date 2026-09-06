@@ -1,58 +1,22 @@
 {
   "schema": "stegverse.cross-task-coordination-migration-candidates/v1",
-  "state": "REVIEWED_READY_FOR_LEDGER_ADMISSION",
+  "state": "ADMITTED_CANONICAL_FRAGMENT",
   "authority_effect": "NONE_COORDINATION_STAGING_ONLY",
   "canonical_ledger": "control/cross-task-coordination.json",
+  "canonical_fragment": "control/cross-task-coordination.d/sv011-resident-request-predicates.json",
+  "validated_composed_ledger_run": 34000794804,
   "candidates": [
     {
       "predicate_id": "PRED-RESIDENT-REQUEST-CONSUMED-SV011-PHASE5-BOUNDARY-001",
       "semantic_predicate_id": "resident_request_consumed",
-      "subject_binding": {
-        "request_id": "RESIDENT-EXEC-SV011-PHASE5-BOUNDARY-001",
-        "consumer_task_id": "SHWP-SV011-PHASE5-BOUNDARY-001"
-      },
-      "state": "UNKNOWN",
-      "authoritative_producer": "existing SV-011 phase5 resident execution request consumer",
-      "required_schema": "stegverse.sv011-resident-execution-request-consumption/v1",
-      "required_execution_instance": "RESIDENT-EXEC-SV011-PHASE5-BOUNDARY-001",
-      "required_fields": [
-        "request_id",
-        "task_id",
-        "state",
-        "bridge_contract_valid",
-        "runtime_execution_attempted"
-      ],
-      "expected_output_ref": "receipts/sovereign-host/sv011-phase5-resident-execution-request-consumption.latest.json",
-      "canonical_source_refs": [
-        "control/resident-execution-request.d/sv011-phase5-boundary-001.json",
-        "scripts/consume_sv011_phase5_resident_execution_request.py"
-      ],
-      "collision_safe_action": "Consume the existing admitted SV-011 phase5 boundary path; do not create a hosted consumer, second resident executor, provider-credential path, or replacement claim plane."
+      "subject_binding": {"request_id": "RESIDENT-EXEC-SV011-PHASE5-BOUNDARY-001", "consumer_task_id": "SHWP-SV011-PHASE5-BOUNDARY-001"},
+      "admission_state": "ADMITTED"
     },
     {
       "predicate_id": "PRED-RESIDENT-REQUEST-CONSUMED-SV011-PHASE5-SOURCE-MATERIALIZATION-001",
       "semantic_predicate_id": "resident_request_consumed",
-      "subject_binding": {
-        "request_id": "RESIDENT-EXEC-SV011-PHASE5-SOURCE-MATERIALIZATION-001",
-        "consumer_task_id": "SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001"
-      },
-      "state": "UNKNOWN",
-      "authoritative_producer": "existing SV-011 phase5 source-materialization resident consumer",
-      "required_schema": "stegverse.sv011-source-materialization-request-consumption/v1",
-      "required_execution_instance": "RESIDENT-EXEC-SV011-PHASE5-SOURCE-MATERIALIZATION-001",
-      "required_fields": [
-        "request_id",
-        "task_id",
-        "state",
-        "bridge_contract_valid",
-        "runtime_execution_attempted"
-      ],
-      "expected_output_ref": "receipts/sovereign-host/sv011-phase5-source-materialization-request-consumption.latest.json",
-      "canonical_source_refs": [
-        "control/resident-execution-request.d/sv011-phase5-source-materialization-001.json",
-        "scripts/consume_sv011_phase5_source_materialization_request.py"
-      ],
-      "collision_safe_action": "Consume the existing SV-011 source-materialization request through the bounded resident bridge; do not introduce network fetch, hosted execution authority, or a duplicate materialization executor."
+      "subject_binding": {"request_id": "RESIDENT-EXEC-SV011-PHASE5-SOURCE-MATERIALIZATION-001", "consumer_task_id": "SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001"},
+      "admission_state": "ADMITTED"
     }
   ]
 }
