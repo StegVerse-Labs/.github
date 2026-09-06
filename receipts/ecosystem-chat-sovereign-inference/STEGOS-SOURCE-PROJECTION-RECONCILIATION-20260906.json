@@ -1,0 +1,51 @@
+{
+  "schema": "stegverse.ecosystem-chat-source-projection-reconciliation/v1",
+  "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+  "source_repository": "StegVerse-Labs/StegOS",
+  "source_issue": 213,
+  "source_projection": {
+    "pin_pr": 214,
+    "adapter_pr": 215,
+    "wiring_pr": 216,
+    "validated_source_head": "1c56b0475e00c5be9b9e3e8a500c12c70a954eef",
+    "validation_run_id": 34021150351,
+    "validation_conclusion": "SUCCESS",
+    "merge_commit": "4ef5e1e3e06969ed538cf0538d5657652abb26e1",
+    "claim_release_pr": 217,
+    "claim_release_commit": "7a34d282b0eba3ff7d51ed6fb316b4332eb09a51"
+  },
+  "parent_package": {
+    "state": "HANDOFF_READY",
+    "claim_id": null,
+    "worker_id": null,
+    "minimum_fencing_token_exclusive": 24,
+    "first_reset_safe_fence": 25,
+    "runtime_execution_observed": false,
+    "activation_effect": false
+  },
+  "historical_carrier_receipt_preserved": "receipts/ecosystem-chat-sovereign-inference/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+  "historical_carrier_claim": "SHWP-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-G20",
+  "historical_carrier_completed": false,
+  "runtime_predicates": {
+    "fresh_g25_or_greater_checkout_observed": false,
+    "current_iphone_local_inference_observed": false,
+    "measured_usage_observed": false,
+    "provider_usage_reconstruction_pass": false,
+    "transition_reconstruction_pass": false,
+    "same_execution": false,
+    "parent_terminal": false,
+    "site_hil_activated": false
+  },
+  "authority": {
+    "workercoordinator": "StegVerse-Labs/.github WorkerCoordinator",
+    "credential_and_route": "TV/TVC",
+    "model_runtime": "StegVerse-002/micro-node-runtime",
+    "llm_transport": "StegVerse-org/LLM-adapter",
+    "custody_reconstruction": "master-records/orchestration",
+    "physical_source_consumer": "StegVerse-Labs/StegOS",
+    "github_token_runtime_authority": "NONE",
+    "heartbeat_grants_execution_authority": false,
+    "authority_effect": "NONE_RECONCILIATION_ONLY"
+  },
+  "next_transition": "AUTHENTIC_CURRENT_USER_IPHONE_CONSUMPTION_OF_RELEASED_STEGOS_INTERFACE"
+}
