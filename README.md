@@ -213,6 +213,18 @@ A successful bootstrap receipt proves only the exact bounded `TASK_INGRESS` requ
 
 `QUANTUM-RESILIENCE-001` is the first additional task staged through this reusable path. Additional registered tasks may use the same path only through explicit fixed request specifications and the same fail-closed identity/authority checks; staging a request remains non-authorizing and requires the same resident Interlock/InTr transition boundary, TV/TVC credential authority, no GitHub-token runtime authority, and no second user-operated machine.
 
+### Native email action monitor
+
+StegVerse includes a native bounded mailbox-maintenance handler at `scripts/run_native_email_action_monitor.py`. It is intended to replace an assistant-mediated mailbox loop with the same deterministic StegVerse-side sequence: inspect the newest bounded inbox batch, resolve the exact message-ID batch before mutation, cluster GitHub/task-update signals, archive the exact reviewed batch, measure actionable backlog depth, read inbox totals, and emit a durable monitor receipt.
+
+Provider credentials are not accepted by this handler. Provider access must arrive through an already-local mail broker whose response explicitly retains `TV/TVC` as credential authority, exports no credential material, and transfers no provider-operation authority. The handler fails closed if those invariants are not present. This prevents the mail handler from becoming a second credential authority or embedding Google/OAuth secrets in `.github`, StegOS, Site, or a task receipt.
+
+The handler reuses `scripts/normalize_github_failure_email_events.py` signature/incident semantics. Email and GitHub notifications are attention/observation signals only: they do not prove source completion, CI truth, deployment, resident execution, runtime failure, governed activation, or task completion. Incident clusters remain `INCIDENT_PROPOSED_NOT_ADMITTED` and require canonical task ingress before any technical work is authorized.
+
+Archival is also bounded and evidence-preserving. `SEARCH_MESSAGES` is used for inspection, but the handler must perform a separate exact `SEARCH_IDS` query for the same bounded inbox slice before `ARCHIVE_IDS`; it never assumes that a provider's visible message payload contains every ID in the bounded result. A partial archive produces `PARTIAL_ARCHIVE_FAILURE` and retains the failed message IDs. When the actionable search returns a continuation token, the receipt reports a lower bound rather than inventing a complete backlog total.
+
+The handler emits `stegverse.native-email-action-monitor-receipt/v1` and grants no execution, task-admission, claim/fence, credential, routing, transition, custody, publication, or runtime authority. HeartBeat remains non-authorizing and GitHub token runtime authority remains `NONE`.
+
 ### Cross-task active-claim projection
 
 The canonical cross-task coordination ledger may mirror an already-existing WorkerCoordinator claim/fence as **coordination-only ownership evidence** when its task, claim, fence, worker identity, and mutation/evidence scope are supported by canonical handoff and control-plane records. These projections are used to prevent another session or autonomous entity from competing with machine-owned work merely because the underlying task has unresolved problem/constraint metadata or is otherwise nonterminal.
