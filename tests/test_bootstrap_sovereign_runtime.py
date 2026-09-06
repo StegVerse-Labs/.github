@@ -28,6 +28,7 @@ class FakeRunner:
         post_bootstrap_returncode: int = 0,
         write_proof: bool = True,
         executor_service_active: bool = True,
+        valid_carrier_receipt: bool = True,
     ):
         self.proof_path = proof_path
         self.integration_receipt = integration_receipt
@@ -36,13 +37,42 @@ class FakeRunner:
         self.post_bootstrap_returncode = post_bootstrap_returncode
         self.write_proof = write_proof
         self.executor_service_active = executor_service_active
+        self.valid_carrier_receipt = valid_carrier_receipt
         self.calls: list[tuple[list[str], dict[str, str]]] = []
 
     def __call__(self, command, **kwargs):
         env = dict(kwargs.get("env") or {})
         self.calls.append((list(command), env))
-        if "install_sovereign_heartbeat_service.py" in str(command[1]):
+        if "install_sovereign_heartbeat_carrier.py" in str(command[1]):
+            runtime_root = Path(command[command.index("--runtime-root") + 1])
+            path = runtime_root / "receipts/sovereign-host/carrier-activation.latest.json"
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps({
+                "schema": "stegverse.sovereign-heartbeat-carrier-activation/v1",
+                "activation_scope": "CARRIER_ONLY",
+                "carrier_active": self.install_returncode == 0 and self.valid_carrier_receipt,
+                "worker_start_attempted": False,
+                "worker_runtime_dependency_for_carrier_start": False,
+                "network_fetch_required": False,
+                "third_party_process_host_required": False,
+                "third_party_scheduler_required": False,
+                "github_runtime_dependency": False,
+                "credential_authority": "TV/TVC",
+                "credential_requirement": "NONE",
+                "heartbeat_progression_dependency": "OSCILLATOR_ONLY",
+                "heartbeat_period_ms": 10.0,
+                "heartbeat_reference_frequency_hz": 100.0,
+                "heartbeat_production_mode": "OSCILLATOR_PHASE_DRIVEN",
+                "canonical_runtime": "heartbeat_runtime.engine_v13.HeartbeatRuntime",
+                "carrier_progression_observation": {
+                    "observed": self.valid_carrier_receipt,
+                    "first_epoch": 32,
+                    "last_epoch": 33,
+                },
+            }) + "\n", encoding="utf-8")
             return subprocess.CompletedProcess(command, self.install_returncode, stdout="", stderr="")
+        if "install_sovereign_heartbeat_service.py" in str(command[1]):
+            raise AssertionError("combined heartbeat+worker installer must not be a carrier startup prerequisite")
         if "install_sovereign_worker_source_refresh_service.py" in str(command[1]):
             runtime_root = Path(command[command.index("--runtime-root") + 1])
             path = runtime_root / "receipts/sovereign-host/worker-source-refresh-installation.latest.json"
@@ -59,7 +89,7 @@ class FakeRunner:
             if self.write_proof:
                 proof = {name: True for name in bootstrap_module.REQUIRED_PREDICATES}
                 proof.update({
-                    "schema": "stegverse.sovereign-runtime-activation-proof/v1",
+                    "schema": "stegverse.sovereign-runtime-activation-proof/v4",
                     "all_predicates_pass": True,
                     "detail": {"runtime_root": str(self.proof_path.parent / "runtime-placeholder")},
                 })
@@ -164,7 +194,6 @@ class SovereignRuntimeSelfBootstrapTests(unittest.TestCase):
             self.assertFalse(body["github_token_required"])
             self.assertEqual(body["authority_effect"], "RUNTIME_ELIGIBILITY_ONLY_NO_CREDENTIAL_OR_ROUTE_AUTHORITY")
 
-
     def test_publish_runtime_locator_is_nonsecret_and_uid_bound(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -210,6 +239,7 @@ class SovereignRuntimeSelfBootstrapTests(unittest.TestCase):
                     runner=runner,
                 )
             self.assertEqual(result["state"], "COMPLETE")
+            self.assertTrue(result["carrier_activation_valid"])
             self.assertTrue(result["runtime_locator"]["published"])
             self.assertEqual(result["runtime_locator"]["authority_effect"], "NONE_LOCATOR_ONLY")
             locator = json.loads((xdg / "stegverse" / "sovereign-runtime.json").read_text(encoding="utf-8"))
@@ -234,8 +264,10 @@ class SovereignRuntimeSelfBootstrapTests(unittest.TestCase):
             )
             self.assertEqual(result["state"], "COMPLETE")
             self.assertEqual(result["reason"], "SOVEREIGN_RUNTIME_SELF_BOOTSTRAP_VERIFIED")
-            self.assertEqual(len(runner.calls), 4)
-            self.assertIn("activate_stegfin_after_sovereign_bootstrap.py", runner.calls[3][0][1])
+            executables = [Path(call[0][1]).name for call in runner.calls]
+            self.assertEqual(executables[0], "install_sovereign_heartbeat_carrier.py")
+            self.assertNotIn("install_sovereign_heartbeat_service.py", executables)
+            self.assertIn("activate_stegfin_after_sovereign_bootstrap.py", executables)
             for _command, child_env in runner.calls:
                 for name in bootstrap_module.CREDENTIAL_ENV_VARS:
                     self.assertEqual(child_env[name], "")
@@ -249,7 +281,7 @@ class SovereignRuntimeSelfBootstrapTests(unittest.TestCase):
             persisted = json.loads(receipt.read_text(encoding="utf-8"))
             self.assertEqual(persisted["state"], "COMPLETE")
             self.assertTrue(persisted["activation_all_predicates_pass"])
-            self.assertTrue(persisted["post_bootstrap_stegfin"]["executor_service_active"])
+            self.assertTrue(persisted["carrier_activation_valid"])
 
     def test_post_bootstrap_failure_does_not_forge_or_erase_sovereign_completion(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -277,8 +309,20 @@ class SovereignRuntimeSelfBootstrapTests(unittest.TestCase):
             self.assertEqual(result["state"], "REVIEW_REQUIRED")
             self.assertFalse(result["activation_all_predicates_pass"])
             self.assertEqual(set(result["missing_predicates"]), set(bootstrap_module.REQUIRED_PREDICATES))
-            self.assertEqual(len(runner.calls), 3)
             self.assertFalse(result["post_bootstrap_stegfin"]["attempted"])
+
+    def test_invalid_carrier_activation_receipt_stops_before_worker_path(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = self.make_source(root)
+            runtime, marker, proof, receipt, post_receipt = self.paths(root)
+            runner = FakeRunner(proof, post_receipt, valid_carrier_receipt=False)
+            result = bootstrap_module.bootstrap(source, runtime, node_marker=marker, proof_path=proof, receipt_path=receipt, env={}, runner=runner)
+            self.assertEqual(result["state"], "RETRY")
+            self.assertEqual(result["reason"], "CARRIER_ONLY_ACTIVATION_PROOF_RETRY_REQUIRED")
+            self.assertFalse(result["carrier_activation_valid"])
+            executables = [Path(call[0][1]).name for call in runner.calls]
+            self.assertEqual(executables, ["install_sovereign_heartbeat_carrier.py"])
 
     def test_explicit_skip_preserves_heartbeat_only_bootstrap(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -292,10 +336,8 @@ class SovereignRuntimeSelfBootstrapTests(unittest.TestCase):
                 env={}, runner=runner, activate_downstream=False,
             )
             self.assertEqual(result["state"], "COMPLETE")
-            self.assertEqual(len(runner.calls), 3)
             self.assertFalse(result["post_bootstrap_stegfin"]["attempted"])
             self.assertEqual(result["post_bootstrap_stegfin"]["state"], "NOT_ELIGIBLE")
-
 
     def test_tvc_skap_successor_is_independent_of_g18_terminalization(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -315,9 +357,7 @@ class SovereignRuntimeSelfBootstrapTests(unittest.TestCase):
                     "task_id": "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001",
                     "claim_state": "CLAIMED",
                 }
-                return subprocess.CompletedProcess(
-                    command, 0, stdout=json.dumps(result) + "\n", stderr=""
-                )
+                return subprocess.CompletedProcess(command, 0, stdout=json.dumps(result) + "\n", stderr="")
 
             result = bootstrap_module._advance_tvc_skap_successor(
                 source, runtime, proof_path=proof, env={"GITHUB_TOKEN": "must-be-scrubbed"}, runner=runner
@@ -335,15 +375,12 @@ class SovereignRuntimeSelfBootstrapTests(unittest.TestCase):
             self.assertIn("TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001", command)
             self.assertEqual(child_env["GITHUB_TOKEN"], "")
 
-
     def test_source_dispatches_tvc_skap_before_g18_verification_gate(self) -> None:
         source = SCRIPT.read_text(encoding="utf-8")
         dispatch_pos = source.index('body["post_bootstrap_tvc_skap_successor"] = _advance_tvc_skap_successor(')
         verify_pos = source.index('verify = runner([sys.executable, str(source_root / "scripts" / "verify_sovereign_runtime_activation.py")')
         self.assertLess(dispatch_pos, verify_pos)
         self.assertNotIn('"reason": "G18_NOT_TERMINAL"', source)
-
-
 
 
 if __name__ == "__main__":
