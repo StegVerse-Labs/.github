@@ -1,0 +1,58 @@
+{
+  "schema": "stegverse.session-build-preflight-receipt/v1",
+  "preflight_id": "HB32-RUNTIME-SOLUTION-REUSE-G18-PARITY-001",
+  "goal": "Reconcile the existing HB32 runtime-solution discovery index so the canonical G18 native-bootstrap-incomplete remedy points to both the existing same-host fallback wiring fix and the merged fallback dependency-parity fix.",
+  "state": "PASS_NONFUNCTIONAL_DISCOVERY_RECONCILIATION_ADMISSIBLE",
+  "repository": "StegVerse-Labs/.github",
+  "resolved_sources": {
+    "runtime_solution_registry": "data/runtime-solution-registry.d/hb32-existing-runtime-solutions.json",
+    "runtime_solution_handoff": "docs/HB32_RUNTIME_SOLUTION_REUSE_MIRROR_HANDOFF.md",
+    "g18_handoff": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+    "ephemeral_handoff": "docs/SOVEREIGN_EPHEMERAL_CONSOLE_MIRROR_HANDOFF.md",
+    "fallback_wiring_merge": "72e80ce645858c02877277845ffe624cd71ec1e6",
+    "fallback_dependency_parity_merge": "9910cf76e0bd171d0166d14d4b1f765bba887667",
+    "runtime_presence_receipt": "NOT_PRESENT_ON_CANONICAL_REPOSITORY_STATE",
+    "g18_request_consumption_receipt": "NOT_PRESENT_ON_CANONICAL_REPOSITORY_STATE"
+  },
+  "reuse": {
+    "problem_class": "DURABLE_RUNTIME_NATIVE_BOOTSTRAP_INCOMPLETE",
+    "existing_solution_reused": true,
+    "new_runtime_solution": false,
+    "new_heartbeat": false,
+    "new_oscillator": false,
+    "new_workercoordinator": false,
+    "new_scheduler": false,
+    "new_request": false,
+    "new_claim_or_fence": false
+  },
+  "collision_review": {
+    "mutation_scope": [
+      "data/runtime-solution-registry.d/hb32-existing-runtime-solutions.json",
+      "docs/HB32_RUNTIME_SOLUTION_REUSE_MIRROR_HANDOFF.md"
+    ],
+    "runtime_behavior_mutated": false,
+    "runtime_truth_claimed": false,
+    "g18_claim_or_fence_mutated": false
+  },
+  "readme_impact": {
+    "predicate": "README_IMPACT_RESOLVED",
+    "material_function_change": false,
+    "readme_update_required": false,
+    "readme_updated_in_change_set": false,
+    "no_readme_update_reason": "This change only reconciles the existing non-authorizing discovery index and handoff to point at a newly merged fix for behavior already implemented and documented in README.md. It does not alter runtime semantics, interfaces, prerequisites, failure behavior, authority boundaries, evidence semantics, or capability behavior.",
+    "evidence_refs": [
+      "docs/HB32_RUNTIME_SOLUTION_REUSE_MIRROR_HANDOFF.md#README-completeness",
+      "README.md#G18-same-host-sovereign-runtime-recovery",
+      "9910cf76e0bd171d0166d14d4b1f765bba887667"
+    ],
+    "readme_impact_complete": true
+  },
+  "authority": {
+    "authority_effect": "NONE_DISCOVERY_ONLY",
+    "heartbeat_grants_execution_authority": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "transition_authority": "INTERLOCK_INTR",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE"
+  }
+}
