@@ -1,1 +1,60 @@
-placeholder
+{
+  "schema": "stegverse.machine-preflight/v1",
+  "preflight_id": "HB-WORKER-STARTUP-TICK-BEFORE-DISPATCH-001",
+  "state": "PASS",
+  "verdict": "PASS",
+  "authority_effect": "NONE_PREFLIGHT_ONLY",
+  "resolved": {
+    "heartbeat_handoff": "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md",
+    "self_heal_handoff": "docs/RESIDENT_WORKER_SELF_HEAL_MIRROR_HANDOFF.md",
+    "task_registry": "data/canonical-task-registry.json@generation-15",
+    "worker_registry": "control/worker-registry.json@generation-22",
+    "master_records": "master-records/orchestration/CANONICAL_WORK_COORDINATION_CUSTODY_MIRROR_HANDOFF.md",
+    "cross_task_coordination": "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md"
+  },
+  "reuse": {
+    "oscillator": "heartbeat_runtime.independent_oscillator",
+    "carrier": "heartbeat_runtime.engine_v13.HeartbeatRuntime",
+    "worker_runtime": "heartbeat_runtime.worker_runtime.WorkerCoordinator",
+    "self_heal": "scripts/repair_resident_worker_presence.py",
+    "resident_dispatcher": "scripts/dispatch_resident_execution_requests.py",
+    "worker_runner": "scripts/run_worker_runtime.py",
+    "new_runtime_created": false,
+    "new_scheduler_created": false,
+    "new_workercoordinator_created": false,
+    "new_heartbeat_created": false
+  },
+  "gap": {
+    "id": "SELF_HEAL_STARTUP_TICK_STARVED_BY_PRE_CYCLE_DISPATCH",
+    "evidence": [
+      "scripts/repair_resident_worker_presence.py:_wait_for_tick timeout=3s",
+      "scripts/run_worker_runtime.py:maintenance/dispatch occurs before runtime.cycle on index 0",
+      "scripts/run_worker_runtime.py:dispatch_local_resident_requests timeout=7200s"
+    ],
+    "failure_mode": "A newly self-healed WorkerCoordinator can be terminated as WORKER_REPAIR_FAILED before its first task-capable cycle because synchronous resident dispatch begins first and may outlive the 3-second supervision proof window."
+  },
+  "collision": {
+    "open_matching_pr": false,
+    "duplicate_runtime_implementation": false,
+    "mutation_scope": [
+      "scripts/run_worker_runtime.py",
+      "tests/test_worker_runtime_local_request_dispatch.py",
+      "tests/test_resident_worker_presence_self_heal.py",
+      "README.md",
+      "docs/RESIDENT_WORKER_SELF_HEAL_MIRROR_HANDOFF.md"
+    ]
+  },
+  "readme_impact": {
+    "material_function_change": true,
+    "reason": "Changes resident startup/failure-recovery ordering so a self-healed WorkerCoordinator proves one task-capable cycle before potentially long resident maintenance/dispatch. This materially changes runtime recovery and failure behavior.",
+    "readme_update_required": true,
+    "readme_path": "README.md"
+  },
+  "authority": {
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "heartbeat_grants_execution_authority": false,
+    "workercoordinator_remains_claim_fence_authority": true,
+    "intr_remains_transition_authority": true
+  }
+}
