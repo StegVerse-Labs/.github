@@ -1,0 +1,59 @@
+{
+  "schema": "stegverse.session-machine-preflight/v1",
+  "task_id": "PREFLIGHT-SUPERSESSION-RESOLUTION-001",
+  "goal_id": "CROSS-TASK-COORDINATION-EVIDENCE-RESOLUTION",
+  "state": "PASS",
+  "evaluated_at": "2026-09-06T01:12:00-05:00",
+  "scope": {
+    "repository": "StegVerse-Labs/.github",
+    "mutation_paths": [
+      "scripts/resolve_machine_preflight_receipt.py",
+      "tests/test_preflight_supersession.py",
+      ".github/workflows/cross-task-coordination-validation.yml",
+      "README.md",
+      "receipts/preflight/PREFLIGHT-SUPERSESSION-RESOLUTION-001.json"
+    ]
+  },
+  "canonical_state_resolution": {
+    "handoff_ref": "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
+    "task_registry_ref": "data/canonical-task-registry.json",
+    "worker_registry_ref": "control/worker-registry.json",
+    "master_records_ref": "master-records/core-lite:MASTER_RECORDS_MIRROR_HANDOFF.md",
+    "cross_task_coordination_ref": "control/cross-task-coordination.json + control/cross-task-coordination.d/*.json",
+    "stale_receipt_ref": "receipts/preflight/CROSS-TASK-RUNTIME-PRESENCE-PREDICATE-001.json",
+    "supersession_ref": "receipts/preflight/CROSS-TASK-RUNTIME-PRESENCE-PREDICATE-001.supersession.json"
+  },
+  "reuse_resolution": {
+    "historical_receipts_preserved": true,
+    "existing_supersession_contract_reused": "stegverse.preflight-supersession/v1",
+    "new_runtime_evidence_producer_required": false,
+    "new_worker_or_scheduler_required": false
+  },
+  "collision_review": {
+    "open_pr_owning_exact_resolver_observed": false,
+    "workercoordinator_claim_collision_observed": false,
+    "runtime_mutation_requested": false,
+    "disposition": "ADMIT_PREFLIGHT_RESOLUTION_SOURCE_ONLY"
+  },
+  "readme_impact_required": true,
+  "readme_impact": {
+    "material_function_change": true,
+    "readme_updated_in_change_set": true,
+    "readme_path": "README.md",
+    "evidence_refs": [
+      "README.md#Machine-preflight-enforcement",
+      "receipts/preflight/CROSS-TASK-RUNTIME-PRESENCE-PREDICATE-001.supersession.json",
+      "commit:a3cde34c0ddc1312236eac6f0220b0f9f2a54ff2"
+    ],
+    "reason": "A generic resolver changes how future machine consumers determine current admissibility from retained historical PASS receipts, so the fail-closed supersession semantics must be documented in README.md in the same source change."
+  },
+  "authority": {
+    "authority_effect": "NONE_PREFLIGHT_ONLY",
+    "execution_authority_granted": false,
+    "claim_or_fence_granted": false,
+    "heartbeat_grants_execution_authority": false,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE"
+  },
+  "verdict": "PASS"
+}

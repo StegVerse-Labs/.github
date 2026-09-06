@@ -153,6 +153,12 @@ Legacy/nonfunctional tasks are not retroactively stranded solely because they pr
 
 README completeness is evidence-only. It grants no execution, claim, fence, lease, credential, routing, transition, publication, custody, runtime truth, or other authority.
 
+#### Historical machine-preflight supersession
+
+Machine-preflight receipts are retained as historical evidence even when a later canonical correction changes whether their result is currently admissible. Consumers that need **current** preflight meaning must resolve the receipt through `scripts/resolve_machine_preflight_receipt.py` rather than reading a retained `state=PASS` in isolation.
+
+A sibling `<receipt>.supersession.json` is accepted only when it targets that exact receipt, uses `stegverse.preflight-supersession/v1`, retains a `NONE*` authority effect, and explicitly forbids runtime-truth and execution-admission inference. A valid supersession preserves the historical result but makes `current_admissible=false` with the successor disposition. Malformed, mismatched, or authority-escalating supersession state fails closed. Supersession resolution grants no execution, claim, fence, transition, credential, routing, custody, publication, or runtime authority.
+
 ### Resident WorkerCoordinator self-heal binding parity
 
 The canonical HeartBeat carrier may supervise the **existing** resident WorkerCoordinator process when that process disappears, but this supervision does not create a second worker or grant task authority. A self-healed WorkerCoordinator must receive the same approved, non-secret local repository/runtime bindings as the canonical worker service so restored process presence does not silently degrade into a worker that is alive but unable to resolve already-local StegVerse dependencies.

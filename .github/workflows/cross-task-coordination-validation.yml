@@ -10,15 +10,18 @@ on:
       - 'heartbeat_runtime/admitted_worker_runtime.py'
       - 'scripts/render_cross_task_coordination_handoff.py'
       - 'scripts/session_build_preflight.py'
+      - 'scripts/resolve_machine_preflight_receipt.py'
       - 'management/session-build-preflight-contract.json'
       - 'schemas/cross-task-coordination.schema.json'
       - 'control/cross-task-coordination.json'
       - 'control/cross-task-coordination.d/**'
       - 'control/cross-task-coordination-candidates/**'
+      - 'receipts/preflight/*.supersession.json'
       - 'tests/test_coordination_graph.py'
       - 'tests/test_coordination_ledger.py'
       - 'tests/test_cross_task_coordination_handoff_projection.py'
       - 'tests/test_session_build_preflight.py'
+      - 'tests/test_preflight_supersession.py'
       - 'docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md'
       - '.github/workflows/cross-task-coordination-validation.yml'
   pull_request:
@@ -29,15 +32,18 @@ on:
       - 'heartbeat_runtime/admitted_worker_runtime.py'
       - 'scripts/render_cross_task_coordination_handoff.py'
       - 'scripts/session_build_preflight.py'
+      - 'scripts/resolve_machine_preflight_receipt.py'
       - 'management/session-build-preflight-contract.json'
       - 'schemas/cross-task-coordination.schema.json'
       - 'control/cross-task-coordination.json'
       - 'control/cross-task-coordination.d/**'
       - 'control/cross-task-coordination-candidates/**'
+      - 'receipts/preflight/*.supersession.json'
       - 'tests/test_coordination_graph.py'
       - 'tests/test_coordination_ledger.py'
       - 'tests/test_cross_task_coordination_handoff_projection.py'
       - 'tests/test_session_build_preflight.py'
+      - 'tests/test_preflight_supersession.py'
       - 'docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md'
       - '.github/workflows/cross-task-coordination-validation.yml'
 
@@ -64,12 +70,13 @@ jobs:
           git checkout --detach FETCH_HEAD
       - name: Validate coordination source
         run: |
-          python -m py_compile heartbeat_runtime/coordination_graph.py heartbeat_runtime/coordination_ledger.py scripts/render_cross_task_coordination_handoff.py scripts/session_build_preflight.py
-          python -m unittest -v tests.test_coordination_graph tests.test_coordination_ledger tests.test_cross_task_coordination_handoff_projection tests.test_session_build_preflight
+          python -m py_compile heartbeat_runtime/coordination_graph.py heartbeat_runtime/coordination_ledger.py scripts/render_cross_task_coordination_handoff.py scripts/session_build_preflight.py scripts/resolve_machine_preflight_receipt.py
+          python -m unittest -v tests.test_coordination_graph tests.test_coordination_ledger tests.test_cross_task_coordination_handoff_projection tests.test_session_build_preflight tests.test_preflight_supersession
           python - <<'PY'
           import json
           from pathlib import Path
           from heartbeat_runtime.coordination_ledger import load_composed_coordination_ledger
+          from scripts.resolve_machine_preflight_receipt import resolve_current_preflight
           schema=json.loads(Path('schemas/cross-task-coordination.schema.json').read_text())
           base=json.loads(Path('control/cross-task-coordination.json').read_text())
           contract=json.loads(Path('management/session-build-preflight-contract.json').read_text())
@@ -97,5 +104,9 @@ jobs:
               assert required in predicate_ids
           active_claims={c.get('claim_id') for c in ledger.get('claims',[]) if c.get('state')=='ACTIVE'}
           assert 'SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18' in active_claims
+          presence_preflight=resolve_current_preflight(Path('.'), 'receipts/preflight/CROSS-TASK-RUNTIME-PRESENCE-PREDICATE-001.json')
+          assert presence_preflight['historical_state']=='PASS'
+          assert presence_preflight['current_admissible'] is False
+          assert presence_preflight['current_disposition']=='NOT_ADMISSIBLE_UNTIL_EXACT_RUNTIME_SUBJECT_BINDING_EXISTS'
           print('CROSS_TASK_COORDINATION_COMPOSED_NON_AUTHORITY_PASS')
           PY
