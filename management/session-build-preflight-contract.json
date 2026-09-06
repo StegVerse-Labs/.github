@@ -1,9 +1,18 @@
 {
   "artifact_type": "stegverse.session_build_preflight_contract",
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "status": "ACTIVE_SOURCE_CONTRACT",
   "entrypoint": "scripts/session_build_preflight.py",
   "stegindex_gate": "scripts/stegindex_preflight_gate.py",
+  "cross_task_coordination": {
+    "resolver": "StegVerse-Labs/StegIndex/scripts/resolve_cross_task_coordination.py",
+    "base_ledger": "control/cross-task-coordination.json",
+    "fragments": "control/cross-task-coordination.d/*.json",
+    "required_before_new_work": true,
+    "runtime_truth_inferred": false,
+    "execution_admission_inferred": false,
+    "authority_effect": "NONE_INDEX_PROJECTION_ONLY"
+  },
   "decisions": {
     "CONTINUE_MACHINE_EXECUTION": {
       "disposition": "CONTINUE_THROUGH_CANONICAL_OWNER",
@@ -15,10 +24,15 @@
       "task_creation_permitted": false,
       "exit_code": 0
     },
-    "NO_EXISTING_CAPABILITY_MATCH": {
+    "NO_EXISTING_CAPABILITY_MATCH_WITH_COORDINATION": {
       "disposition": "NEW_WORK_MAY_BE_CONSIDERED",
       "task_creation_permitted": true,
       "exit_code": 0
+    },
+    "NO_EXISTING_CAPABILITY_MATCH_WITHOUT_COORDINATION": {
+      "disposition": "STOP_AT_COORDINATION_DEPENDENCY",
+      "task_creation_permitted": false,
+      "exit_code": 2
     },
     "EXACT_BLOCKER_ONLY": {
       "disposition": "STOP_AT_EXACT_DEPENDENCY",
@@ -30,8 +44,10 @@
     "new task creation is prohibited when an existing capability should be reused",
     "new task creation is prohibited when machine continuation is already available",
     "new task creation is prohibited while indexed truth requires reconciliation",
+    "new task creation is prohibited until cross-task coordination adjacency/claim/gap discovery has been consulted",
+    "cross-task coordination projection does not itself prove runtime truth or execution readiness",
     "generic runtime-evidence blockers are not terminal preflight outcomes",
-    "StegIndex and this entrypoint grant no execution authority"
+    "StegIndex, cross-task coordination, and this entrypoint grant no execution authority"
   ],
   "authority_effect": "NONE_PREWORK_DECISION_ONLY",
   "network_fetch_performed": false,
