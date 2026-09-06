@@ -1,6 +1,6 @@
 # Cross-Task Coordination / Evidence Resolution Mirror Handoff
 
-Updated: 2026-09-05
+Updated: 2026-09-06
 Repository: `StegVerse-Labs/.github`
 Status: SOURCE_VALIDATED / ECOSYSTEM_ADOPTION_ACTIVE
 
@@ -269,6 +269,28 @@ WorkerCoordinator claim-coverage parity:
   cross-task coordination run: 34004857922 SUCCESS
   heartbeat worker run: 34004857932 SUCCESS
   organization control-plane run: 34004857950 SUCCESS
+
+StegIndex claim-parity projection:
+  StegIndex PR: 36
+  merge: 1a3c8d19178775565ac60455a3f9b88c419b1698
+  validation run: 34009943494 SUCCESS
+
+StegIndex canonical handoff reconciliation:
+  StegIndex PR: 37
+  merge: 90ae301e7486b1c7d780c4bca5f3608eb1f953eb
+
+StegIndex scoped parity validation reconciliation:
+  StegIndex PR: 38
+  merge: 0e2861c4ae948e075297784509cef05a105b4072
+  validation run: 34016702530 SUCCESS
+
+.github downstream parity/test reconciliation:
+  PR: 1052
+  merge: 0f90f843c9f3b67c22438931dda5f0b975ffbd9b
+
+.github canonical downstream reconciliation:
+  PR: 1064
+  merge: 08226559a7a39a20186bd44baa2bdbf5a1209f7a
 ```
 
 These are source/validation facts only and are not runtime-event or product-activation evidence.
@@ -299,7 +321,11 @@ The shared runtime-presence projector proves a concrete runtime root/node instan
 
 ## StegIndex consistency
 
-`StegVerse-Labs/StegIndex/scripts/resolve_cross_task_coordination.py` composes the same base + fragment model in read-only form and fails closed on duplicate/drifted fragments. WorkerCoordinator, handoff projection, StegIndex, and session/build pre-work therefore consume the same logical coordination composition model rather than independently interpreting partial state.
+`StegVerse-Labs/StegIndex/scripts/resolve_cross_task_coordination.py` composes the same base + fragment model in read-only form and fails closed on duplicate/drifted fragments **and on WorkerCoordinator claim-projection parity drift whenever sibling `control/worker-registry.json` is present**.
+
+`StegVerse-Labs/.github/scripts/session_build_preflight.py` explicitly invokes that resolver with the canonical base ledger plus `control/cross-task-coordination.d`, so session/build pre-work receives the same fail-closed parity semantics without a second `.github` claim validator or claim/fence authority path.
+
+Validated downstream continuation state is recorded by StegIndex PRs #36/#37/#38 and `.github` PRs #1052/#1064. WorkerCoordinator, handoff projection, StegIndex, and session/build pre-work therefore consume one logical coordination composition/parity model rather than independently interpreting partial state.
 
 ## Current coordination state
 
@@ -309,6 +335,8 @@ WorkerCoordinator claim-coverage parity: MERGED / VALIDATED.
 Subject-bound resident-request migration: PARTIAL / ACTIVE.
 Active control-plane claim projection: CURRENTLY RESOLVED G13/G17/G18 REPRESENTED AND PARITY-VALIDATED.
 StegIndex composed discovery: VALIDATED.
+StegIndex WorkerCoordinator claim parity: MERGED / VALIDATED / CANONICALLY RECONCILED.
+Session/build composed-ledger + claim-parity consumer: VALIDATED / RECONCILED.
 README impact WorkerCoordinator enforcement: MERGED / VALIDATED.
 README impact session/build pre-work enforcement: MERGED / VALIDATED.
 Resident-presence shared predicate: DEFERRED / AUTHENTIC SUBJECT BINDING REQUIRED.
@@ -322,7 +350,7 @@ Existing runtime activation, WorkerCoordinator execution, sovereign inference, H
 1. inspect remaining canonical handoffs for genuinely shared predicates beyond `resident_request_consumed`;
 2. establish exact subject identity before any shared registration, especially runtime-presence predicates;
 3. register only genuinely reusable producer/evidence relationships and exact gaps;
-4. bind any additional session/build consumers that still read an incomplete coordination slice;
+4. inspect additional consumers for incomplete coordination slices, but do not rework session/build preflight solely for claim parity because that consumer is now validated and reconciled;
 5. re-resolve the active control-plane claim set before each new claim migration; claim-coverage parity must fail closed if projections drift;
 6. validate each migration deterministically;
 7. evaluate tag/release only after ecosystem-adoption criteria are actually satisfied;
@@ -343,4 +371,4 @@ Current goal completion: FALSE.
 Current ecosystem-adoption work remaining: TRUE.
 Thread archive-ready: FALSE.
 
-README impact for this reconciliation commit: NON-MATERIAL. Reason: documentation-only reconciliation of already-merged, already-validated PR #1048 behavior and exact run evidence; repository function is unchanged. Evidence: PR #1048, merge `b693d9029197de61f1aee66d2211647eb42ff32d`, runs `34004857922`, `34004857932`, and `34004857950`.
+README impact for this reconciliation commit: NON-MATERIAL. Reason: documentation-only reconciliation of already-merged, already-validated StegIndex claim-parity and session/build consumer behavior; repository function is unchanged. Evidence: `receipts/preflight/PARENT-STEGINDEX-CLAIM-PARITY-RECONCILIATION-001.json`, StegIndex PRs #36/#37/#38, and `.github` PRs #1052/#1064.
