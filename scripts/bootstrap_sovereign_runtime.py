@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Bootstrap optional resident supervision for the oscillator-produced carrier.
 
-The bootstrap installs a local v13 oscillator carrier and separate
-WorkerCoordinator. It never becomes the heartbeat clock: progression remains
-OSCILLATOR_ONLY at 10 ms / 100 Hz and hosted environments are validation-only.
+The bootstrap starts the canonical v13 oscillator carrier first through the
+existing carrier-only installer, then advances the existing independent
+WorkerCoordinator/runtime path. It never becomes the heartbeat clock:
+progression remains OSCILLATOR_ONLY at 10 ms / 100 Hz and hosted environments
+are validation-only.
 """
 from __future__ import annotations
 
@@ -24,6 +26,7 @@ THIRD_PARTY_ENV_VARS = (
     "GITHUB_ACTIONS", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "CF_PAGES", "CLOUDFLARE_WORKERS",
 )
 CREDENTIAL_ENV_VARS = ("GITHUB_TOKEN", "GH_TOKEN", "STEGVERSE_GITHUB_TOKEN", "TVC_TOKEN")
+CARRIER_ACTIVATION_REL = Path("receipts/sovereign-host/carrier-activation.latest.json")
 REQUIRED_SOURCE_FILES = (
     Path("heartbeat_runtime/engine_v13.py"),
     Path("heartbeat_runtime/independent_oscillator.py"),
@@ -33,6 +36,7 @@ REQUIRED_SOURCE_FILES = (
     Path("heartbeat_runtime/worker_runtime.py"),
     Path("heartbeat_runtime/assignment_timer.py"),
     Path("scripts/install_sovereign_heartbeat_service.py"),
+    Path("scripts/install_sovereign_heartbeat_carrier.py"),
     Path("scripts/install_sovereign_worker_source_refresh_service.py"),
     Path("scripts/verify_sovereign_runtime_activation.py"),
     Path("scripts/verify_stegindex_resident_operational_proof.py"),
@@ -339,6 +343,29 @@ def all_predicates_pass(proof: dict[str, Any] | None) -> bool:
     return bool(proof and proof.get("all_predicates_pass") is True and all(proof.get(name) is True for name in REQUIRED_PREDICATES))
 
 
+def _carrier_activation_valid(receipt: dict[str, Any] | None) -> bool:
+    return bool(
+        receipt
+        and receipt.get("schema") == "stegverse.sovereign-heartbeat-carrier-activation/v1"
+        and receipt.get("activation_scope") == "CARRIER_ONLY"
+        and receipt.get("carrier_active") is True
+        and receipt.get("worker_start_attempted") is False
+        and receipt.get("worker_runtime_dependency_for_carrier_start") is False
+        and receipt.get("network_fetch_required") is False
+        and receipt.get("third_party_process_host_required") is False
+        and receipt.get("third_party_scheduler_required") is False
+        and receipt.get("github_runtime_dependency") is False
+        and receipt.get("credential_authority") == "TV/TVC"
+        and receipt.get("credential_requirement") == "NONE"
+        and receipt.get("heartbeat_progression_dependency") == "OSCILLATOR_ONLY"
+        and float(receipt.get("heartbeat_period_ms", -1)) == 10.0
+        and float(receipt.get("heartbeat_reference_frequency_hz", -1)) == 100.0
+        and receipt.get("heartbeat_production_mode") == "OSCILLATOR_PHASE_DRIVEN"
+        and receipt.get("canonical_runtime") == "heartbeat_runtime.engine_v13.HeartbeatRuntime"
+        and (receipt.get("carrier_progression_observation") or {}).get("observed") is True
+    )
+
+
 def _attempt_post_bootstrap_activation(source_root: Path, *, proof_path: Path, receipt_path: Path, node_marker: Path, env: dict[str, str] | None, runner: Runner) -> dict[str, Any]:
     bridge = source_root / "scripts" / "activate_stegfin_after_sovereign_bootstrap.py"
     integration_receipt = default_post_bootstrap_receipt()
@@ -642,11 +669,13 @@ def bootstrap(source_root: Path, runtime_root: Path, *, node_marker: Path, proof
         "third_party_runtime_required": False,
         "authority_effect": "OPTIONAL_RESIDENT_BOOTSTRAP_ONLY_NO_CREDENTIAL_ROUTE_OR_HEARTBEAT_AUTHORITY",
         "installer_returncode": None,
+        "carrier_activation_receipt_ref": str(CARRIER_ACTIVATION_REL),
+        "carrier_activation_valid": False,
         "verifier_returncode": None,
         "proof_path": str(proof_path),
         "runtime_locator": {"state": "NOT_ELIGIBLE", "published": False, "authority_effect": "NONE"},
         "post_install_source_refresh_watcher": {"attempted": False, "state": "NOT_ELIGIBLE", "activated": False, "authority_effect": "NONE"},
-        "post_install_worker_prime": {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "NATIVE_INSTALLATION_NOT_COMPLETE", "returncode": None, "task_capable_cycle_observed": False, "authority_effect": "NONE"},
+        "post_install_worker_prime": {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "CARRIER_ONLY_INSTALLATION_NOT_COMPLETE", "returncode": None, "task_capable_cycle_observed": False, "authority_effect": "NONE"},
         "post_bootstrap_resident_request_dispatch": {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "SOVEREIGN_BOOTSTRAP_NOT_COMPLETE", "returncode": None, "authority_effect": "NONE"},
         "post_bootstrap_tvc_skap_successor": {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "RESIDENT_RUNTIME_NOT_MATERIALIZED", "returncode": None, "task_id": "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001", "authority_effect": "NONE"},
         "post_bootstrap_stegfin": {"attempted": False, "state": "NOT_ELIGIBLE", "reason": "SOVEREIGN_BOOTSTRAP_NOT_COMPLETE", "returncode": None, "executor_service_active": False, "wallet_handoff_ready_claimed": False},
@@ -663,11 +692,18 @@ def bootstrap(source_root: Path, runtime_root: Path, *, node_marker: Path, proof
         return body
     body["runtime_locator"] = publish_runtime_locator(source_root, runtime_root, env=env)
     child_env = scrubbed_child_env(env, source_root=source_root, runtime_root=runtime_root, proof_path=proof_path)
-    install = runner([sys.executable, str(source_root / "scripts" / "install_sovereign_heartbeat_service.py"), "--source-root", str(source_root), "--runtime-root", str(runtime_root)], check=False, capture_output=True, text=True, timeout=180, env=child_env)
+    install = runner([sys.executable, str(source_root / "scripts" / "install_sovereign_heartbeat_carrier.py"), "--source-root", str(source_root), "--runtime-root", str(runtime_root)], check=False, capture_output=True, text=True, timeout=180, env=child_env)
     body["installer_returncode"] = install.returncode
     if install.returncode != 0:
         body["state"] = "RETRY"
-        body["reason"] = "NATIVE_INSTALLATION_RETRY_REQUIRED"
+        body["reason"] = "CARRIER_ONLY_NATIVE_INSTALLATION_RETRY_REQUIRED"
+        atomic_write(receipt_path, body)
+        return body
+    carrier_activation = load_json(runtime_root / CARRIER_ACTIVATION_REL)
+    body["carrier_activation_valid"] = _carrier_activation_valid(carrier_activation)
+    if body["carrier_activation_valid"] is not True:
+        body["state"] = "RETRY"
+        body["reason"] = "CARRIER_ONLY_ACTIVATION_PROOF_RETRY_REQUIRED"
         atomic_write(receipt_path, body)
         return body
     body["post_install_source_refresh_watcher"] = _install_source_refresh_watcher(
@@ -683,10 +719,11 @@ def bootstrap(source_root: Path, runtime_root: Path, *, node_marker: Path, proof
         atomic_write(receipt_path, body)
         return body
 
-    # Native process registration is asynchronous. Prime exactly one local
-    # WorkerCoordinator cycle before dispatch so the carrier reference and
-    # task-capable execution surface exist now rather than waiting for a later
-    # service wakeup or unrelated source-refresh event.
+    # The carrier is already active and oscillator progression has been proven.
+    # Prime exactly one independent WorkerCoordinator cycle before dispatch so
+    # the task-capable execution surface exists without making worker startup a
+    # HeartBeat startup prerequisite. This preserves the existing first-cycle
+    # ordering and self-heal/runtime solution.
     body["post_install_worker_prime"] = _prime_resident_worker_runtime(
         source_root,
         runtime_root,

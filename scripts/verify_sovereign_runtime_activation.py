@@ -95,6 +95,27 @@ def _oscillator_carrier(state: dict) -> bool:
     )
 
 
+def _carrier_activation_active(service: dict) -> bool:
+    progression = service.get("carrier_progression_observation") or {}
+    return (
+        service.get("schema") == "stegverse.sovereign-heartbeat-carrier-activation/v1"
+        and service.get("activation_scope") == "CARRIER_ONLY"
+        and service.get("carrier_active") is True
+        and service.get("worker_start_attempted") is False
+        and service.get("worker_runtime_dependency_for_carrier_start") is False
+        and service.get("network_fetch_required") is False
+        and service.get("third_party_process_host_required") is False
+        and service.get("third_party_scheduler_required") is False
+        and service.get("github_runtime_dependency") is False
+        and service.get("credential_authority") == "TV/TVC"
+        and service.get("credential_requirement") == "NONE"
+        and service.get("heartbeat_progression_dependency") == "OSCILLATOR_ONLY"
+        and service.get("heartbeat_production_mode") == "OSCILLATOR_PHASE_DRIVEN"
+        and service.get("canonical_runtime") == CANONICAL_CARRIER_RUNTIME
+        and progression.get("observed") is True
+    )
+
+
 def _active_leases(control_plane: dict) -> list[dict]:
     return list((((control_plane.get("worker_coordination") or {}).get("active_leases")) or []))
 
@@ -129,26 +150,18 @@ def restart_commands(*, service_receipt: dict | None = None, system: str | None 
     name = (system or platform.system()).lower()
     values = dict(os.environ if env is None else env)
     if name == "linux":
-        return [
-            ["systemctl", "--user", "restart", "stegverse-heartbeat.service"],
-            ["systemctl", "--user", "restart", "stegverse-worker-runtime.service"],
-        ]
+        return [["systemctl", "--user", "restart", "stegverse-heartbeat.service"]]
     if name == "darwin":
         uid = getattr(os, "getuid", lambda: int(values.get("UID", "0")))()
-        domain = f"gui/{uid}"
-        return [
-            ["launchctl", "kickstart", "-k", f"{domain}/org.stegverse.heartbeat"],
-            ["launchctl", "kickstart", "-k", f"{domain}/org.stegverse.worker-runtime"],
-        ]
+        return [["launchctl", "kickstart", "-k", f"gui/{uid}/org.stegverse.heartbeat"]]
     if name == "windows":
-        return [
-            ["schtasks", "/Run", "/TN", "StegVerse Heartbeat"],
-            ["schtasks", "/Run", "/TN", "StegVerse Worker Runtime"],
-        ]
+        return [["schtasks", "/Run", "/TN", "StegVerse Heartbeat"]]
     raise RuntimeError(f"unsupported sovereign host platform: {name}")
 
 
 def _local_supervision_active(service: dict) -> bool:
+    if service.get("schema") == "stegverse.sovereign-heartbeat-carrier-activation/v1":
+        return _carrier_activation_active(service)
     if service.get("active") is not True or service.get("third_party_process_host_required") is not False:
         return False
     if service.get("registration_kind") == "stegverse-ephemeral-console":
@@ -181,7 +194,9 @@ def evaluate_runtime(
     worker_state_path = root / "control" / "worker-runtime-state.json"
     registry_path = root / "control" / "worker-registry.json"
     materialization_path = root / "receipts" / "sovereign-host" / "materialization.latest.json"
-    service_path = root / "receipts" / "sovereign-host" / "activation.latest.json"
+    carrier_activation_path = root / "receipts" / "sovereign-host" / "carrier-activation.latest.json"
+    combined_service_path = root / "receipts" / "sovereign-host" / "activation.latest.json"
+    service_path = carrier_activation_path if carrier_activation_path.is_file() else combined_service_path
 
     predicates = {name: False for name in REQUIRED_PREDICATES}
     detail: dict[str, Any] = {
@@ -193,10 +208,12 @@ def evaluate_runtime(
         "credential_requirement": "NONE",
         "non_tv_tvc_secret_or_token_used": False,
         "carrier_state_ref": "control/heartbeat-carrier-runtime-state.json",
+        "service_evidence_ref": str(service_path.relative_to(root)),
         "worker_control_plane_ref": "control/worker-control-plane-coordination.json",
         "worker_state_ref": "control/worker-runtime-state.json",
         "heartbeat_progression_dependency": "OSCILLATOR_ONLY",
         "worker_controls_heartbeat_progression": False,
+        "native_carrier_restart_restarts_worker_directly": False,
     }
     if hosted or not declared:
         detail["ineligible_reason"] = "THIRD_PARTY_HOSTED_ENVIRONMENT" if hosted else "SOVEREIGN_NODE_DECLARATION_ABSENT"
@@ -295,8 +312,10 @@ def evaluate_runtime(
     )
     detail.update({
         "registration_kind": service.get("registration_kind"),
+        "activation_scope": service.get("activation_scope"),
         "carrier_active": service.get("carrier_active"),
-        "worker_active": service.get("worker_active"),
+        "worker_active": service.get("worker_active") if "worker_active" in service else _worker_task_capable(worker_observed_state),
+        "worker_start_attempted_by_carrier_installer": service.get("worker_start_attempted"),
         "epoch_before": e0,
         "epoch_observed": e1,
         "epoch_after_restart": e2,
