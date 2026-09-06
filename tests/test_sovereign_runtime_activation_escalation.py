@@ -66,13 +66,18 @@ class SovereignRuntimeActivationEscalationTests(unittest.TestCase):
             self.assertEqual(response["transition_id"], "SOVEREIGN_RUNTIME_ELIGIBLE_SURFACE_REQUIRED")
             self.assertEqual(
                 response["expected_next_transition"],
-                "EXECUTE_CANONICAL_V13_SOVEREIGN_RUNTIME_SELF_BOOTSTRAP",
+                "RETRY_EXISTING_G18_NATIVE_THEN_SAME_HOST_EPHEMERAL_RECOVERY",
             )
             blocker = response["blocker"]
             self.assertEqual(blocker["dependency_class"], "PHYSICAL_RESOURCE_SOVEREIGN_NODE_ELIGIBILITY")
             self.assertFalse(blocker["physical_additional_machine_required"])
             self.assertFalse(blocker["always_on_external_host_required"])
             self.assertFalse(blocker["heartbeat_activation_blocked"])
+            self.assertFalse(blocker["same_host_ephemeral_fallback_attempted"])
+            self.assertEqual(
+                blocker["same_host_ephemeral_fallback_reason"],
+                "CANONICAL_BOOTSTRAP_SOURCE_REQUIRED_FIRST",
+            )
             self.assertNotIn("GITHUB_TOKEN", completed.stdout)
 
     def test_hosted_environment_is_not_used_as_sovereign_runtime_evidence(self) -> None:
@@ -104,6 +109,7 @@ class SovereignRuntimeActivationEscalationTests(unittest.TestCase):
                 receipt["bootstrap_attempt"]["reason"],
                 "THIRD_PARTY_HOST_IS_NOT_SOVEREIGN_RUNTIME_EVIDENCE",
             )
+            self.assertFalse(receipt["bootstrap_attempt"]["same_host_ephemeral_fallback"]["attempted"])
             self.assertEqual(receipt["canonical_carrier_runtime"], "heartbeat_runtime.engine_v13.HeartbeatRuntime")
             self.assertFalse(receipt["heartbeat_dependency"])
             self.assertFalse(receipt["third_party_runtime_required"])
