@@ -1,9 +1,9 @@
 # Canonical Runtime Profile Map Mirror Handoff
 
-Updated: 2026-09-04
+Updated: 2026-09-05
 Repository: `StegVerse-Labs/.github`
 Goal: `STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001`
-Status: `SOURCE_IMPLEMENTED_RUNTIME_CHAIN_PREFLIGHT_BOUND_AUTHENTIC_RESIDENT_EVIDENCE_PENDING`
+Status: `SOURCE_IMPLEMENTED_CANONICAL_TASK_INGRESS_AND_RUNTIME_CHAIN_PREFLIGHT_BOUND_AUTHENTIC_RESIDENT_EVIDENCE_PENDING`
 
 ## Authority boundary
 
@@ -15,7 +15,7 @@ It MUST NOT create a second heartbeat, oscillator, scheduler, WorkerCoordinator,
 
 Provide one canonical machine-readable discovery/reconciliation projection answering which runtime substrates exist, what declared capabilities and transition surfaces they expose, what explicit observations/freshness exist, which canonical tasks can consider them compatible candidates, what routing and transition-readiness state exists, and which current authority class must review the next transition.
 
-No map/profile/observation/match/readiness/custody/reconciliation/review/routing/source-validation artifact grants authority.
+No task request, map/profile/observation/match/readiness/custody/reconciliation/review/routing/source-validation artifact grants authority.
 
 ## Canonical invariants
 
@@ -32,6 +32,7 @@ No map/profile/observation/match/readiness/custody/reconciliation/review/routing
 11. Routing to an authority inbox does not invoke that authority.
 12. Every staged resident request must have the exact request/consumer/dispatcher-selector binding before the build may proceed.
 13. The exact chain validation must run against the **materialized resident runtime**, not only the canonical source checkout, before runtime-profile-map generation proceeds.
+14. The Runtime Profile Map task lifecycle itself must enter through the reusable Canonical Work registered-task ingress before any governed task-state promotion; the map-build resident lane is not a substitute for task ingress.
 
 ## Canonical source surfaces
 
@@ -57,10 +58,29 @@ No map/profile/observation/match/readiness/custody/reconciliation/review/routing
 - `scripts/build_runtime_profile_map_custody_package.py`
 - `scripts/finalize_runtime_profile_map_cycle.py`
 - `scripts/emit_runtime_profile_map_receipt.py`
+- `control/resident-execution-request.d/canonical-work-runtime-profile-map-001.json`
+- `control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py`
+- `tests/test_runtime_profile_map_canonical_work_resident_request.py`
 - `tests/test_runtime_profile_map_authority_routing.py`
 - `tests/test_runtime_profile_map_resident_chain.py`
 
-## Resident stages
+## Governed task ingress staging
+
+`STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001` already exists exactly once in the canonical Task Registry, remains `PROPOSED`, allows `INGRESS_ADMITTED`, and has no projected WorkerCoordinator claim/fence in checked-in state. A new non-authorizing resident request is staged at:
+
+`control/resident-execution-request.d/canonical-work-runtime-profile-map-001.json`
+
+It reuses the generalized Canonical Work ingress consumer and the single existing dispatcher selector `canonical_work_coordination`. The existing consumer now carries `RUNTIME_PROFILE_MAP_SPEC` alongside the coordination, quantum-resilience, and object-provenance request specs. No new dispatcher selector, listener, scheduler, WorkerCoordinator, task identity, or authority path is introduced.
+
+Expected authentic request-consumption evidence is:
+
+`receipts/sovereign-host/canonical-work-runtime-profile-map-request-consumption.latest.json`
+
+That receipt plus nested Canonical Work ingress/consumption/bootstrap evidence is required before any claim that the task reached authentic `INGRESS_ADMITTED` state.
+
+README impact for this addition is explicitly `material_function_change=false`: it is a configuration-only addition of one already-registered task to the existing generalized Canonical Work request set. The current `README.md` section **Canonical Work task ingress** already documents the reusable registered-task semantics, multiple explicit request specifications, fail-closed validation, shared InTr listener, and non-authorizing boundaries. Evidence: current `README.md`, `docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md`, `control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py`, and `tests/test_runtime_profile_map_canonical_work_resident_request.py`. No README change is required unless those generic semantics change.
+
+## Resident Runtime Profile Map stages
 
 - `runtime_profile_map` -> `control/resident-execution-request.d/consume-runtime-profile-map-build.py`
 - `runtime_profile_map_custody` -> `control/resident-execution-request.d/consume-runtime-profile-map-custody.py`
@@ -73,9 +93,14 @@ All five selectors are registered in the existing `scripts/dispatch_resident_exe
 ## Current resident sequence
 
 ```text
-materialize current canonical source into existing resident runtime
+canonical_work_coordination visits Runtime Profile Map registered-task request
+-> exact task identity/state/authority checks
+-> existing shared Universal Interlock/InTr task ingress
+-> authentic task-specific INGRESS_ADMITTED evidence
+-> governed canonical task-state projection
+-> materialize current canonical Runtime Profile Map source into existing resident runtime
 -> preserve resident WorkerCoordinator registry/shared InTr router/current task registry/current dispatcher
--> run exact request/consumer/selector chain preflight against the materialized resident runtime
+-> run exact request/consumer/selector chain preflight against materialized resident runtime
 -> require SOURCE_CHAIN_VALID
 -> build current runtime-profile map
 -> validate + exact-byte map receipt
@@ -92,17 +117,15 @@ materialize current canonical source into existing resident runtime
 -> current named authority independently accepts/rejects/performs the next governed transition
 ```
 
-## New resident materialization preflight
+Task ingress and Runtime Profile Map build may occur during adjacent resident dispatch activity, but neither is allowed to infer the other's authority or evidence. Exact receipts govern ordering/promotion.
 
-`control/resident-execution-request.d/consume-runtime-profile-map-build.py` now materializes `scripts/validate_runtime_profile_map_resident_chain.py` into the already-existing resident runtime and preserves the existing resident dispatcher as required runtime state.
+## Resident materialization preflight
 
-Before map generation, the consumer executes the chain validator against the **runtime root**, writing:
+`control/resident-execution-request.d/consume-runtime-profile-map-build.py` materializes `scripts/validate_runtime_profile_map_resident_chain.py` into the already-existing resident runtime and preserves the existing resident dispatcher as required runtime state.
 
-`receipts/runtime-profile-map/source-chain-validation.latest.json`
+Before map generation, the consumer executes the chain validator against the **runtime root**, writing `receipts/runtime-profile-map/source-chain-validation.latest.json`.
 
-The build proceeds only when the validator returns `SOURCE_CHAIN_VALID` with a retained SHA-256. If the resident runtime is missing any staged request, consumer, dispatcher selector, or non-authorizing request invariant, map generation is not attempted. The build-consumption receipt carries the exact preflight result and records `resident_chain_preflight_required=true`.
-
-The preflight still records `runtime_execution_observed=false`; validating resident materialization integrity is not evidence that the map lifecycle completed.
+The build proceeds only when the validator returns `SOURCE_CHAIN_VALID` with a retained SHA-256. If the resident runtime is missing any staged request, consumer, dispatcher selector, or non-authorizing request invariant, map generation is not attempted. The preflight still records `runtime_execution_observed=false`; validating resident materialization integrity is not evidence that the map lifecycle completed.
 
 ## Authority-review routing
 
@@ -110,9 +133,9 @@ The preflight still records `runtime_execution_observed=false`; validating resid
 
 `scripts/route_runtime_profile_map_governance_review.py` accepts only `WORKERCOORDINATOR`, `INTERLOCK_INTR`, `MASTER_RECORDS_RECONCILIATION`, or `CANONICAL_COORDINATION`, and emits an exact review envelope under the matching local authority inbox. Every envelope records `authority_invoked=false` and grants no task transition, claim/fence, execution, InTr admission, HB/oscillator progression, or credential authority.
 
-## Materialization verification
+## Master Records boundary
 
-The sovereign runtime installer materializes the complete `control/` tree into the existing resident runtime while preserving mutable runtime control files. The Runtime Profile Map build consumer then self-materializes its immutable helper scripts from already-local canonical source. The new runtime-root preflight therefore checks the actual resident request/consumer/dispatcher composition that will execute, rather than relying solely on source-tree structure.
+The corresponding Master Records handoff is `master-records/orchestration/RUNTIME_PROFILE_MAP_CUSTODY_MIRROR_HANDOFF.md`. Master Records validates exact-hash custody input and remains reality/custody authority only. Custody acceptance or reconstruction does not grant runtime selection, WorkerCoordinator ownership, InTr admission, execution, or task completion.
 
 ## Completion predicates
 
@@ -126,12 +149,16 @@ The sovereign runtime installer materializes the complete `control/` tree into t
 8. Exact-evidence governance-review packaging and closed-allowlist authority routing. **SOURCE COMPLETE**
 9. Static fail-closed source-chain validation for all five request/consumer/selector bindings. **SOURCE COMPLETE**
 10. Resident build requires the same fail-closed chain validation against the materialized runtime before map generation. **SOURCE COMPLETE**
-11. One authentic resident cycle emits chain-preflight through authority-review-routing evidence. **RUNTIME PENDING**
-12. Current WorkerCoordinator/Interlock-InTr/Master Records/Canonical Coordination authority consumes the applicable review envelope and independently performs/rejects/waits/transfers under current governance. **RUNTIME PENDING**
-13. Any resulting execution/closure is retained in Master Records and reconciled back into canonical task state. **RUNTIME PENDING**
+11. Canonical Work registered-task ingress request for `STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001` is staged through the existing generalized path. **SOURCE COMPLETE**
+12. Authentic Runtime Profile Map task ingress is observed and governed into canonical task state. **RUNTIME PENDING**
+13. One authentic resident cycle emits chain-preflight through authority-review-routing evidence. **RUNTIME PENDING**
+14. Current WorkerCoordinator/Interlock-InTr/Master Records/Canonical Coordination authority consumes the applicable review envelope and independently performs/rejects/waits/transfers under current governance. **RUNTIME PENDING**
+15. Any resulting execution/closure is retained in Master Records and reconciled back into canonical task state. **RUNTIME PENDING**
 
 ## Expected authentic evidence
 
+- `receipts/sovereign-host/canonical-work-runtime-profile-map-request-consumption.latest.json`
+- nested Canonical Work Runtime Profile Map ingress/consumption/bootstrap receipts under `runtime/canonical-work-runtime-profile-map/`
 - `receipts/runtime-profile-map/source-chain-validation.latest.json`
 - `receipts/sovereign-host/runtime-profile-map-build-request-consumption.latest.json`
 - `receipts/runtime-profile-map/runtime-profile-map.latest.json`
@@ -153,13 +180,13 @@ The sovereign runtime installer materializes the complete `control/` tree into t
 
 ## Current boundary
 
-No runtime-complete claim is made. Source implementation now requires a successful fail-closed chain-integrity check against the actual materialized resident runtime before runtime-profile-map generation can begin. The unresolved boundary is authentic resident consumption through the existing HB32/oscillator + WorkerCoordinator architecture and resulting current-authority decisions.
+No runtime-complete or ingress-complete claim is made. The task lifecycle now has explicit source staging through Canonical Work, and the map build retains its fail-closed resident-chain preflight. The unresolved boundary is authentic resident task ingress plus authentic Runtime Profile Map lifecycle consumption through the existing HB32/oscillator + WorkerCoordinator architecture and resulting current-authority decisions.
 
-The checked-in canonical task registry remains generation 12 and `PROPOSED`; this source hardening does not qualify as authentic task ingress, runtime completion, WorkerCoordinator claim/fence, Master Records reconciliation completion, or governed closure.
+The checked-in canonical task registry is currently generation 15; `STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001` remains `PROPOSED`. This source staging does not qualify as authentic task ingress, runtime completion, WorkerCoordinator claim/fence, Master Records reconciliation completion, or governed closure.
 
 ## Human action
 
-None currently required. Remaining work is machine-owned authentic resident execution and current-authority handling of generated review envelopes.
+None currently required. Remaining work is machine-owned authentic resident execution and current-authority handling of resulting evidence.
 
 ## Archive readiness
 
