@@ -159,6 +159,12 @@ Machine-preflight receipts are retained as historical evidence even when a later
 
 A sibling `<receipt>.supersession.json` is accepted only when it targets that exact receipt, uses `stegverse.preflight-supersession/v1`, retains a `NONE*` authority effect, and explicitly forbids runtime-truth and execution-admission inference. A valid supersession preserves the historical result but makes `current_admissible=false` with the successor disposition. Malformed, mismatched, or authority-escalating supersession state fails closed. Supersession resolution grants no execution, claim, fence, transition, credential, routing, custody, publication, or runtime authority.
 
+#### Exact cross-task evidence field values
+
+Cross-task evidence predicates may require not only that a receipt field exists, but that the field has an exact terminal value. `required_field_values` maps dotted paths inside `evidence.fields` to the exact JSON values that qualify the evidence. Missing paths and unequal values fail closed with `REQUIRED_FIELD_VALUE_MISMATCH:<path>`.
+
+This distinction is required for evidence such as `terminal=true`, exact WorkerCoordinator claim identity, exact fencing token, or other values where field presence alone is not proof of the predicate. A receipt containing `terminal=false` therefore cannot satisfy a predicate merely because `terminal` exists. Dotted nested paths such as `claim.fence` are resolved deterministically. Exact-value qualification remains evidence-only and grants no execution, admission, claim, fence, transition, credential, custody, publication, runtime truth, or other authority.
+
 ### Resident WorkerCoordinator self-heal binding parity
 
 The canonical HeartBeat carrier may supervise the **existing** resident WorkerCoordinator process when that process disappears, but this supervision does not create a second worker or grant task authority. A self-healed WorkerCoordinator must receive the same approved, non-secret local repository/runtime bindings as the canonical worker service so restored process presence does not silently degrade into a worker that is alive but unable to resolve already-local StegVerse dependencies.
