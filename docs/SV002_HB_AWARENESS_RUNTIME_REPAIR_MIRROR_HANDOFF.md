@@ -54,23 +54,23 @@ The three consumers are existing registered consumers of the same dispatcher. Th
 
 ## TVC continuation
 
-TVC's existing resident self-heal currently pins an obsolete `.github` control-plane SHA and dispatches only the final SV002 selector. After this `.github` repair merges, TVC must re-resolve this admitted consumer against the exact merged repair SHA, as required by `docs/PRIVATE_SOURCE_READ_MIRROR_HANDOFF.md`, and dispatch the three existing selectors through the same current dispatcher.
+TVC's existing resident self-heal was originally pinned to an obsolete `.github` control-plane SHA and dispatched only the final SV002 selector. The merged TVC repair at `85a6885d9f942c84cc5740f1e1f26bae2e2de03f` re-resolved the admitted source to exact `.github` commit `543fb39498cdba042796a09d70292c2bd7396e1a`, refreshes the resident runtime from that exact source, and invokes the existing `scripts/dispatch_resident_execution_requests.py` directly with the exact selector set `astra_class_resilience_awareness`, `quantum_resilience_awareness`, and `sv002_org_runtime_activation` in canonical order.
 
-Moving `main` is not a runtime source identity. The TVC request must remain exact-SHA/immutable-commit bound, secret-free, and TV/TVC credential-governed.
+Moving `main` is not a runtime source identity. The TVC request remains exact-SHA/immutable-commit bound, secret-free, and TV/TVC credential-governed. A later `.github` source change is not automatically a prerequisite for that bounded TVC repair unless the exact runtime behavior it needs is absent from the pinned source.
 
 ## README completeness predicate
 
 `README.md` inspected before mutation.
 
-Determination: `NO_README_CHANGE_REQUIRED` for this `.github` change.
+Determination: `NO_README_CHANGE_REQUIRED` for the original `.github` source-refresh dependency repair.
 
-Evidence-supported reason: the README already defines the externally meaningful resident self-heal/source-refresh contract: local-only refresh of canonical WorkerCoordinator dependencies, no network fetch or credential acquisition, no second carrier/worker/scheduler, preservation of mutable runtime state, and no inference of runtime execution from refresh. This repair restores omitted static files inside that already-documented parity contract and does not change its interface, authority model, supported runtime substrate, or lifecycle meaning.
+Evidence-supported reason: the README already defines the externally meaningful resident self-heal/source-refresh contract: local-only refresh of canonical WorkerCoordinator dependencies, no network fetch or credential acquisition, no second carrier/worker/scheduler, preservation of mutable runtime state, and no inference of runtime execution from refresh. The repair restored omitted static files inside that already-documented parity contract and did not change its authority model.
 
 Focused test: `tests/test_resident_refresh_awareness_dependencies.py`.
 
 ## Evidence boundary
 
-Source merge or CI success will prove only source/control completeness. Authentic runtime closure still requires the existing resident path to produce:
+Source merge or CI success proves only source/control completeness. Authentic runtime closure still requires the existing resident path to produce:
 
 - `receipts/sovereign-host/astra-class-resilience-awareness.latest.json` with completed standing awareness;
 - `receipts/sovereign-host/quantum-resilience-awareness.latest.json` with completed standing awareness;
@@ -83,17 +83,11 @@ HB progression, source presence, source refresh, CI, merge, or TVC materializati
 
 NONE. Do not rerun HB30/HB31, do not provision another machine, and do not create or restore a hosted runtime.
 
-
 ## Portable bridge selector admission correction — 2026-09-06
 
-Post-merge execution preflight found that the canonical dispatcher registered
-the two standing-awareness consumers and local source refresh materialized their
-dependencies, but `scripts/refresh_and_dispatch_resident_requests.py` did not
-admit either selector name. The TVC exact-source repair would therefore have
-failed before reaching the existing consumers.
+A separate post-merge inspection found a real seam in the canonical one-selector portable bridge: `scripts/refresh_and_dispatch_resident_requests.py` did not admit either standing-awareness selector even though the canonical dispatcher registered both consumers and local source refresh materialized their dependencies.
 
-The existing bridge now admits, without changing its one-selector-per-invocation
-contract:
+The existing portable bridge now admits, without changing its one-selector-per-invocation contract:
 
 ```text
 astra_class_resilience_awareness
@@ -101,6 +95,8 @@ quantum_resilience_awareness
 sv002_org_runtime_activation
 ```
 
-Callers must invoke them in that order and fail closed before activation if an
-awareness dispatch fails. This is source/interface correction only. Authentic
-standing-awareness receipts and the terminal SV002 round trip remain unobserved.
+Portable one-selector callers may therefore invoke those existing consumers in prerequisite order and must stop before SV002 activation if an awareness dispatch fails.
+
+This portable-bridge correction is **not** the dispatch mechanism used by the merged TVC resident self-heal at `85a6885d9f942c84cc5740f1e1f26bae2e2de03f`. That TVC implementation refreshes source and invokes `scripts/dispatch_resident_execution_requests.py` directly with all three exact selectors in one dispatcher visit. The portable correction remains valid for portable callers, but it must not be represented as a missing prerequisite or failure cause for the merged TVC direct-dispatch path.
+
+This is source/interface clarification only. Authentic standing-awareness receipts and the terminal SV002 round trip remain unobserved.
