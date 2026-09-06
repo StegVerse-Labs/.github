@@ -1,0 +1,78 @@
+{
+  "schema": "stegverse.cross-task-coordination-fragment/v1",
+  "fragment_id": "RUNTIME-PRESENCE-PREDICATES-001",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "predicates": [
+    {
+      "predicate_id": "PRED-CANONICAL-RESIDENT-WORKER-RUNTIME-PRESENT-001",
+      "semantic_predicate_id": "resident_worker_runtime_present",
+      "subject_binding": {
+        "runtime_profile_id": "canonical-resident-substrate-v1",
+        "worker_runtime": "heartbeat_runtime.worker_runtime.WorkerCoordinator"
+      },
+      "state": "UNKNOWN",
+      "description": "A fresh task-capable canonical WorkerCoordinator is presently observed on the canonical resident substrate.",
+      "authoritative_producer": "heartbeat_runtime/runtime_presence_projection.py",
+      "required_schema": "stegverse.hb-runtime-presence-resident-observability/v1",
+      "required_scope": "canonical resident substrate runtime presence",
+      "required_execution_instance": null,
+      "max_age_seconds": 60,
+      "required_fields": [
+        "resident.present_worker_runtime_observed",
+        "resident.worker_cycle_age_seconds",
+        "resident.worker_freshness_window_seconds",
+        "heartbeat_reference.freshness_correlated",
+        "authority.projection_authority_effect"
+      ],
+      "expected_output_ref": "receipts/sovereign-host/runtime-presence.latest.json",
+      "consumers": [
+        "SHWP-SV002-ORG-RUNTIME-ACTIVATION-001",
+        "SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001",
+        "SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001",
+        "SHWP-SV011-PHASE5-BOUNDARY-001"
+      ],
+      "canonical_source_refs": [
+        "heartbeat_runtime/runtime_presence_projection.py",
+        "scripts/repair_resident_worker_presence.py",
+        "docs/RESIDENT_WORKER_SELF_HEAL_MIRROR_HANDOFF.md",
+        "control/runtime-profile-map.json#canonical-resident-substrate-v1"
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "predicate_id": "PRED-CANONICAL-RESIDENT-WORKER-RUNTIME-PRESENT-001",
+      "subject_binding": {
+        "runtime_profile_id": "canonical-resident-substrate-v1",
+        "worker_runtime": "heartbeat_runtime.worker_runtime.WorkerCoordinator"
+      },
+      "existing_evidence_refs": [],
+      "rejected_because": ["NO_FRESH_AUTHENTIC_RUNTIME_PRESENCE_EVIDENCE_OBSERVED"],
+      "missing_observation": "fresh canonical resident WorkerCoordinator presence with present_worker_runtime_observed=true",
+      "required_producer": "heartbeat_runtime/runtime_presence_projection.py via the existing carrier/self-heal supervision path",
+      "required_output_ref": "receipts/sovereign-host/runtime-presence.latest.json",
+      "required_schema": "stegverse.hb-runtime-presence-resident-observability/v1",
+      "required_fields": [
+        "resident.present_worker_runtime_observed=true",
+        "resident.worker_cycle_fresh=true",
+        "heartbeat_reference.freshness_correlated=true",
+        "authority.projection_authority_effect=NONE_OBSERVATION_ONLY"
+      ],
+      "required_freshness": "worker_cycle_age_seconds <= 60",
+      "collision_refs": [],
+      "action_without_collision": "Reuse the existing carrier-supervision/runtime-presence producer. Do not create another heartbeat, WorkerCoordinator, scheduler, runtime-presence probe, or hosted observer."
+    }
+  ],
+  "readme_impact_required": true,
+  "readme_impact": {
+    "material_function_change": true,
+    "readme_updated_in_change_set": true,
+    "readme_path": "README.md",
+    "evidence_refs": [
+      "README.md#Cross-task-runtime-presence-evidence",
+      "heartbeat_runtime/runtime_presence_projection.py",
+      "docs/RESIDENT_WORKER_SELF_HEAL_MIRROR_HANDOFF.md",
+      "receipts/preflight/CROSS-TASK-RUNTIME-PRESENCE-PREDICATE-001.json"
+    ]
+  }
+}
