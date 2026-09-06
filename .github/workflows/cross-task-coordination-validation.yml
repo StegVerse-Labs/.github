@@ -9,6 +9,8 @@ on:
       - 'heartbeat_runtime/worker_task_admission.py'
       - 'heartbeat_runtime/admitted_worker_runtime.py'
       - 'scripts/render_cross_task_coordination_handoff.py'
+      - 'scripts/session_build_preflight.py'
+      - 'management/session-build-preflight-contract.json'
       - 'schemas/cross-task-coordination.schema.json'
       - 'control/cross-task-coordination.json'
       - 'control/cross-task-coordination.d/**'
@@ -16,6 +18,7 @@ on:
       - 'tests/test_coordination_graph.py'
       - 'tests/test_coordination_ledger.py'
       - 'tests/test_cross_task_coordination_handoff_projection.py'
+      - 'tests/test_session_build_preflight.py'
       - 'docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md'
       - '.github/workflows/cross-task-coordination-validation.yml'
   pull_request:
@@ -25,6 +28,8 @@ on:
       - 'heartbeat_runtime/worker_task_admission.py'
       - 'heartbeat_runtime/admitted_worker_runtime.py'
       - 'scripts/render_cross_task_coordination_handoff.py'
+      - 'scripts/session_build_preflight.py'
+      - 'management/session-build-preflight-contract.json'
       - 'schemas/cross-task-coordination.schema.json'
       - 'control/cross-task-coordination.json'
       - 'control/cross-task-coordination.d/**'
@@ -32,6 +37,7 @@ on:
       - 'tests/test_coordination_graph.py'
       - 'tests/test_coordination_ledger.py'
       - 'tests/test_cross_task_coordination_handoff_projection.py'
+      - 'tests/test_session_build_preflight.py'
       - 'docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md'
       - '.github/workflows/cross-task-coordination-validation.yml'
 
@@ -58,29 +64,38 @@ jobs:
           git checkout --detach FETCH_HEAD
       - name: Validate coordination source
         run: |
-          python -m py_compile heartbeat_runtime/coordination_graph.py heartbeat_runtime/coordination_ledger.py scripts/render_cross_task_coordination_handoff.py
-          python -m unittest -v tests.test_coordination_graph tests.test_coordination_ledger tests.test_cross_task_coordination_handoff_projection
+          python -m py_compile heartbeat_runtime/coordination_graph.py heartbeat_runtime/coordination_ledger.py scripts/render_cross_task_coordination_handoff.py scripts/session_build_preflight.py
+          python -m unittest -v tests.test_coordination_graph tests.test_coordination_ledger tests.test_cross_task_coordination_handoff_projection tests.test_session_build_preflight
           python - <<'PY'
           import json
           from pathlib import Path
           from heartbeat_runtime.coordination_ledger import load_composed_coordination_ledger
           schema=json.loads(Path('schemas/cross-task-coordination.schema.json').read_text())
           base=json.loads(Path('control/cross-task-coordination.json').read_text())
+          contract=json.loads(Path('management/session-build-preflight-contract.json').read_text())
           ledger=load_composed_coordination_ledger(Path('control/cross-task-coordination.json'))
           assert schema['properties']['schema']['const']==base['schema']==ledger['schema']
           assert ledger['authority']['runtime_truth_authority_effect']=='NONE'
           assert ledger['authority']['credential_authority']=='TV/TVC'
           assert ledger['authority']['github_token_runtime_authority']=='NONE'
+          assert contract['cross_task_coordination']['required_before_new_work'] is True
+          assert contract['cross_task_coordination']['runtime_truth_inferred'] is False
+          assert contract['cross_task_coordination']['execution_admission_inferred'] is False
           fragment_ids=set(ledger.get('composition',{}).get('fragment_ids',[]))
           assert 'SV002-RESIDENT-REQUEST-PREDICATES-001' in fragment_ids
           assert 'SV011-RESIDENT-REQUEST-PREDICATES-001' in fragment_ids
+          assert 'STEGVERSE001-RESIDENT-REQUEST-PREDICATES-001' in fragment_ids
+          assert 'G18-ACTIVE-CLAIM-001' in fragment_ids
           predicate_ids={p.get('predicate_id') for p in ledger.get('predicates',[])}
           for required in (
               'PRED-RESIDENT-REQUEST-CONSUMED-SV002-ORG-RUNTIME-ACTIVATION-001',
               'PRED-RESIDENT-REQUEST-CONSUMED-SV002-PUBLIC-OBSERVATION-001',
               'PRED-RESIDENT-REQUEST-CONSUMED-SV011-PHASE5-BOUNDARY-001',
               'PRED-RESIDENT-REQUEST-CONSUMED-SV011-PHASE5-SOURCE-MATERIALIZATION-001',
+              'PRED-RESIDENT-REQUEST-CONSUMED-STEGVERSE001-BOUNDED-AUTONOMY-001',
           ):
               assert required in predicate_ids
+          active_claims={c.get('claim_id') for c in ledger.get('claims',[]) if c.get('state')=='ACTIVE'}
+          assert 'SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18' in active_claims
           print('CROSS_TASK_COORDINATION_COMPOSED_NON_AUTHORITY_PASS')
           PY
