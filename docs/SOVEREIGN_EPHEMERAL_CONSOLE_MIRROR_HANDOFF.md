@@ -1,6 +1,6 @@
 # Sovereign Ephemeral Console Mirror Handoff
 
-Updated: 2026-09-06T07:26:00-05:00
+Updated: 2026-09-06T13:20:00-05:00
 
 ## Source of truth
 
@@ -67,11 +67,16 @@ No additional physical computer, hosted provider or third-party machine/service 
 scripts/run_sovereign_ephemeral_console.py
 scripts/restart_sovereign_ephemeral_node.py
 scripts/verify_sovereign_runtime_activation.py
+scripts/bootstrap_sovereign_runtime.py
+scripts/install_sovereign_heartbeat_service.py
+scripts/refresh_sovereign_worker_runtime_source.py
 workers/sovereign_runtime_activation_worker.py
 tests/test_sovereign_ephemeral_console.py
 tests/test_g18_self_bootstrap_worker.py
+tests/test_g18_ephemeral_dependency_parity.py
 .github/workflows/sovereign-ephemeral-console.yml
 control/session-implementation-claim-2026-08-15-sovereign-ephemeral-console.json
+receipts/preflight/G18-EPHEMERAL-DEPENDENCY-PARITY-001.json
 ```
 
 The historical verifier correction moved the materialization path forward from obsolete heartbeat runtimes. Current G18 activation and same-host fallback are bound to `heartbeat_runtime.engine_v13.HeartbeatRuntime` and the separate `heartbeat_runtime.worker_runtime.WorkerCoordinator` process.
@@ -112,9 +117,32 @@ README impact for this repair is material because runtime failure/recovery behav
 
 Source/merge/CI validation of this wiring is not authentic resident runtime execution. Current activation still requires deployment-local receipts from the existing G18 lifecycle.
 
+## 2026-09-06 fallback dependency-parity repair
+
+The G18 worker's recovered ordering exposed a remaining propagation defect: the worker could be refreshed/materialized while the existing fallback script itself was absent. That made the recovery path source-correct but not resident-dependency-complete.
+
+The bounded parity repair reuses the existing fallback and adds no runtime mechanism:
+
+```text
+scripts/bootstrap_sovereign_runtime.py::REQUIRED_SOURCE_FILES
+  -> requires scripts/run_sovereign_ephemeral_console.py
+scripts/install_sovereign_heartbeat_service.py::COPY_FILES
+  -> copies scripts/run_sovereign_ephemeral_console.py
+fresh materialization post-check
+  -> requires the copied fallback to exist
+scripts/refresh_sovereign_worker_runtime_source.py::_validate_roots
+  -> rejects canonical source missing the fallback
+scripts/refresh_sovereign_worker_runtime_source.py::STATIC_FILES
+  -> refreshes the fallback into an existing resident runtime
+```
+
+Therefore bootstrap source eligibility, fresh native materialization, and local-only source refresh can no longer report a complete G18 recovery surface while omitting the already-canonical fallback dependency. The repair does not change G18 claim/fence ownership, create a scheduler/worker/runtime, require another physical machine, alter HB oscillator semantics, or expand Master Records beyond custody/reconstruction. README impact is material and is documented in the same change set.
+
+`tests/test_g18_ephemeral_dependency_parity.py` provides negative controls for omitted fallback source and asserts parity across all three propagation/completeness surfaces.
+
 ## Released validation evidence
 
-Canonical source validation recorded by the parent blocker:
+Canonical historical source validation recorded by the parent blocker:
 
 ```text
 workflow: .github/workflows/sovereign-ephemeral-console.yml
@@ -129,14 +157,15 @@ The workflow itself was later found omitted from `control/workflow-surface-regis
 
 ## Current live boundary
 
-Repository-local source is complete. Live execution remains a parent G18 responsibility and is not implied by workflow PASS.
+Repository-local fallback behavior is implemented. Dependency-parity repair is source-complete pending exact-head validation/merge. Live execution remains a parent G18 responsibility and is not implied by workflow PASS.
 
 ```text
 canonical protocol progression: OSCILLATOR_ONLY / 10 ms / 100 Hz
 parent live state: MACHINE_OWNED_BOUND_G18
 current constraint: SOVEREIGN_LOCAL_RUNTIME_LIVE_PROOF_NOT_YET_OBSERVED
 runtime recovery implementation missing: false
-same-host fallback wiring regression: REPAIRED_PENDING_VALIDATION_AND_MERGE
+same-host fallback wiring regression: REPAIRED_MERGED
+same-host fallback dependency parity: REPAIRED_PENDING_VALIDATION_AND_MERGE
 human_action_required: false
 ```
 
@@ -223,10 +252,10 @@ Canonical live continuation remains:
 ## Completion accounting
 
 ```text
-source implementation: COMPLETE_VALIDATED_RELEASED + G18 FALLBACK WIRING REGRESSION REPAIR PENDING VALIDATION/MERGE
+source implementation: COMPLETE_VALIDATED_RELEASED + G18 FALLBACK WIRING REPAIR MERGED + DEPENDENCY PARITY REPAIR PENDING VALIDATION/MERGE
 primary implemented runtime solution: EXISTING / REUSED
 scaffolding/stubs: 0
-missing source files: 0
+missing source files: 0 after dependency parity repair
 additional physical machine requirement: FALSE
 third-party production runtime requirement: FALSE
 live G18 activation: PENDING_MACHINE_OWNED_AUTHENTIC_RUNTIME_EVIDENCE
