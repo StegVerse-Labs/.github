@@ -252,6 +252,14 @@ Terminal packages remain non-checkoutable because portable admission still requi
 
 This sequential-lineage behavior allows downstream same-device consumers to reuse the existing portable WorkerCoordinator instead of requiring another machine or creating another runtime authority plane. It does not by itself package, admit, dispatch, execute, or complete any downstream task, and it does not establish current iPhone runtime presence or authentic resident execution evidence.
 
+### Portable organization allocator successor-task continuity
+
+The `CURRENT_USER_IPHONE` portable organization allocator may extend its exact source catalog with a new distinct queued task while preserving the same `ORG-ALLOCATOR-PORTABLE-IPHONE-20260902` authority epoch and the already-persisted claim/fence lineage. A completed predecessor task is never reactivated merely because source later changes.
+
+For the HB31 Ecosystem Chat autostart projection, `TASK-2026-0008` / fence 4 remains historical provenance. The corrected autostart source is represented by distinct `TASK-2026-0009`, with a non-overlapping Site path and dependency surface. The existing atomic allocator CAS may grant only the next monotonic generation/fence when that successor is actually selected; package/catalog presence, source merge, CI, heartbeat progression, or the predecessor receipt does not grant the successor claim.
+
+The portable state is not reset and prior claims are not deleted to make successor work eligible. Existing collision checks remain fail-closed, TV/TVC remains credential authority, HeartBeat grants no claim authority, GitHub has no runtime authority, and no second allocator, scheduler, WorkerCoordinator, or user-operated machine is introduced.
+
 ### Ecosystem Chat same-device terminal execution surface
 
 The canonical Ecosystem Chat parent may satisfy its sovereign runtime-surface predicate through either the existing native/private-process path or the exact `CURRENT_USER_IPHONE` service-worker path. The service-worker path is accepted only when the runtime proof binds `SERVICE_WORKER_LOCAL_INTERCEPT`, the canonical `https://stegverse.org/stegos-bootstrap/local-model` endpoint and StegOS service-worker scope, observed device-local interception, observed real inference, and `network_egress_required=false`.
