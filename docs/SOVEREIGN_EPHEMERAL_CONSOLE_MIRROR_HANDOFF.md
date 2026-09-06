@@ -1,6 +1,6 @@
 # Sovereign Ephemeral Console Mirror Handoff
 
-Updated: 2026-08-16T02:13:00-05:00
+Updated: 2026-09-06T07:26:00-05:00
 
 ## Source of truth
 
@@ -69,17 +69,48 @@ scripts/restart_sovereign_ephemeral_node.py
 scripts/verify_sovereign_runtime_activation.py
 workers/sovereign_runtime_activation_worker.py
 tests/test_sovereign_ephemeral_console.py
+tests/test_g18_self_bootstrap_worker.py
 .github/workflows/sovereign-ephemeral-console.yml
 control/session-implementation-claim-2026-08-15-sovereign-ephemeral-console.json
 ```
 
-The verifier now binds the canonical `heartbeat_runtime.engine_v11.HeartbeatRuntime` materialization path rather than the obsolete engine-v9 requirement.
+The historical verifier correction moved the materialization path forward from obsolete heartbeat runtimes. Current G18 activation and same-host fallback are bound to `heartbeat_runtime.engine_v13.HeartbeatRuntime` and the separate `heartbeat_runtime.worker_runtime.WorkerCoordinator` process.
 
 ## Logical-node proof invariants
 
 Each validation node has an independent node identity, runtime root, heartbeat-state tree, worker-registry copy, checkpoint tree, receipt tree, process PID and restart lifecycle. The console proves distinct roots/PIDs, sentinel write isolation, controlled restart, state reconstruction, non-regression and claim/fence isolation. Validation identities grant no Node Sovereign membership or route/credential authority.
 
 The canonical predicate name `native_service_active` remains for schema compatibility. The verifier may satisfy it through a supported deployment-local native or bounded same-host supervision mode only when the canonical proof contract is met. Hosted Actions execution is validation-only and cannot count as production activation.
+
+## 2026-09-06 G18 runtime-recovery regression repair
+
+The already-released G18 topology requires the existing same-host ephemeral console to be attempted when canonical native v13 bootstrap completes without a qualifying activation proof. A later `workers/sovereign_runtime_activation_worker.py` revision retained the native bootstrap call but no longer invoked `scripts/run_sovereign_ephemeral_console.py`, causing the previously solved runtime-recovery condition to reappear as a generic sovereign-runtime constraint.
+
+The repaired G18 worker restores the existing ordering without creating a new runtime path:
+
+```text
+G18 existing claim/fence
+-> scripts/bootstrap_sovereign_runtime.py
+-> if canonical activation proof is COMPLETE: stop; fallback not required
+-> otherwise, on the same eligible non-hosted sovereign host:
+   scripts/run_sovereign_ephemeral_console.py
+-> require COMPLETE console proof
+-> require all logical nodes pass
+-> require all isolation predicates pass
+-> require primary local carrier + WorkerCoordinator retained
+-> require canonical activation proof promoted and every G18 activation predicate true
+-> only then classify G18 activation complete
+```
+
+The fallback uses the same physical host and the existing source implementation. It may not execute on a hosted validation runner as production evidence. It forwards no GitHub/TVC token or other secret material, requires no second user-operated machine, creates no second WorkerCoordinator authority plane, and does not make HeartBeat or the oscillator an execution authority. HeartBeat remains the 10 ms / 100 Hz reference/carrier substrate with `OSCILLATOR_ONLY` progression semantics; WorkerCoordinator retains claim/fence authority and TV/TVC remains credential authority.
+
+If both native bootstrap and same-host ephemeral recovery remain incomplete, G18 fails closed with the exact fallback outcome recorded. It must not jump directly back to the old generic runtime blocker without first evaluating the existing same-host recovery implementation.
+
+Regression coverage is in `tests/test_g18_self_bootstrap_worker.py`: native success skips fallback; incomplete native proof invokes fallback automatically; hosted execution invokes neither; an incomplete fallback remains fail-closed; and secret/token values are not propagated.
+
+README impact for this repair is material because runtime failure/recovery behavior changes back to the canonical topology. `README.md` is updated in the same change set.
+
+Source/merge/CI validation of this wiring is not authentic resident runtime execution. Current activation still requires deployment-local receipts from the existing G18 lifecycle.
 
 ## Released validation evidence
 
@@ -101,15 +132,15 @@ The workflow itself was later found omitted from `control/workflow-surface-regis
 Repository-local source is complete. Live execution remains a parent G18 responsibility and is not implied by workflow PASS.
 
 ```text
-canonical heartbeat last directly observed: HB29
+canonical protocol progression: OSCILLATOR_ONLY / 10 ms / 100 Hz
 parent live state: MACHINE_OWNED_BOUND_G18
 current constraint: SOVEREIGN_LOCAL_RUNTIME_LIVE_PROOF_NOT_YET_OBSERVED
-remaining control boundary: DEPLOYMENT_HOST_CONTROL_PLANE_REACHABILITY
-missing_implementation: false
+runtime recovery implementation missing: false
+same-host fallback wiring regression: REPAIRED_PENDING_VALIDATION_AND_MERGE
 human_action_required: false
 ```
 
-Machine completion requires `~/.stegverse/heartbeat/activation.latest.json` to report all nine canonical predicates true. If the console fallback is used, `ephemeral-console.latest.json` must additionally prove all nodes and all isolation predicates pass with no additional physical machine required.
+Machine completion requires `~/.stegverse/heartbeat/activation.latest.json` to report all canonical activation predicates true. If the console fallback is used, `ephemeral-console.latest.json` must additionally prove all nodes and all isolation predicates pass with no additional physical machine required, and the retained primary must include both carrier and WorkerCoordinator process evidence.
 
 ## Execution ownership and collision partition
 
@@ -135,19 +166,19 @@ Machine completion requires `~/.stegverse/heartbeat/activation.latest.json` to r
   worker_registry_ref: control/worker-registry.json#SHWP-DURABLE-RUNTIME-ACTIVATION
   manual_execution_allowed: false
   collision_scope: native bootstrap, same-host ephemeral-console launch when required, heartbeat state, claim/fence, canonical activation receipts and restart/reconstruction proof
-  release_condition: node-local nine-predicate activation PASS or canonical fail-closed resolution/escalation releases/supersedes G18
-  next_executable_action: G18 executes the released single-host bootstrap and same-host logical-node fallback on the deployment-local sovereign host
+  release_condition: node-local activation PASS or canonical fail-closed resolution/escalation releases/supersedes G18
+  next_executable_action: G18 executes the released single-host bootstrap and automatically evaluates the same-host logical-node fallback when native proof is incomplete
 ```
 
 ### ESCALATED / AUTHORITY-OWNED
 
 ```yaml
 - task_id: SHWP-DURABLE-RUNTIME-ACTIVATION-CONSTRAINT-RESOLUTION
-  execution_owner: heartbeat_runtime.engine_v11 authority chain and applicable repository/component authority
+  execution_owner: current canonical heartbeat/runtime authority chain and applicable repository/component authority
   claim_state: ESCALATED_IF_G18_CANNOT_RESOLVE
   worker_registry_ref: docs/FAIL_CLOSED_RESOLUTION_ESCALATION_MIRROR_HANDOFF.md + control/worker-registry.json
   manual_execution_allowed: false
-  collision_scope: any canonical-source, writable-state, local-process, service-activation or authority condition beyond G18's ceiling
+  collision_scope: any canonical-source, writable-state, local-process, service-activation or authority condition beyond G18's ceiling after existing native and same-host recovery paths are evaluated
   release_condition: the authority chain resolves the exact condition or explicitly assigns a bounded human-authority action
   next_executable_action: derive/register the next bounded RESOLVE/ESCALATE task rather than inventing another machine or hosted provider
 - task_id: TV-TVC-CREDENTIAL-AND-ROUTE-AUTHORITY
@@ -187,22 +218,21 @@ The console produces local runtime evidence only. It does not itself authorize T
 
 Canonical live continuation remains:
 
-`handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json` -> deployment-local G18 execution -> nine-predicate proof -> existing downstream worker/authority chain.
+`handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json` -> deployment-local G18 native bootstrap -> existing same-host fallback when needed -> activation proof -> existing downstream worker/authority chain.
 
 ## Completion accounting
 
 ```text
-source implementation: COMPLETE_VALIDATED_RELEASED
-primary implemented surfaces: 7/7
+source implementation: COMPLETE_VALIDATED_RELEASED + G18 FALLBACK WIRING REGRESSION REPAIR PENDING VALIDATION/MERGE
+primary implemented runtime solution: EXISTING / REUSED
 scaffolding/stubs: 0
 missing source files: 0
-validation-only workflow source: COMPLETE
-workflow registry metadata: REPAIRED_PENDING_SUCCESSOR_VALIDATION
-execution ownership metadata: REPAIRED_PENDING_SUCCESSOR_VALIDATION
-live G18 activation: PENDING_MACHINE_OWNED
+additional physical machine requirement: FALSE
+third-party production runtime requirement: FALSE
+live G18 activation: PENDING_MACHINE_OWNED_AUTHENTIC_RUNTIME_EVIDENCE
 product activation: NOT CLAIMED
 ```
 
 ## Archive condition
 
-This source handoff does not require a chat for product execution. The temporary 2026-08-16 validation-repair session remains only until the two repository metadata validators pass and that bounded claim is released. Live G18 activation remains machine-owned regardless of chat archival.
+This handoff is not archive-ready while the parent G18 runtime objective remains open. The source repair does not itself prove authentic activation; live G18 execution must consume the merged recovery wiring and emit qualifying deployment-local evidence.
