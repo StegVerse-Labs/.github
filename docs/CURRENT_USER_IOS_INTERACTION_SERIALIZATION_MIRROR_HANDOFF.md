@@ -1,6 +1,6 @@
 # Current User iOS Interaction Serialization Mirror Handoff
 
-Updated: 2026-09-04
+Updated: 2026-09-05
 Repository: StegVerse-Labs/.github
 Issue: #922
 
@@ -83,7 +83,34 @@ Terminal or exactly-once transitions must never be rerun merely to restore an ex
 
 The prior queue history, including SV001 G23/G24 lineage reconciliation, remains provenance. G23 is canonical custody-eligible and G24 remains retained non-custodial duplicate evidence. Further SV001 terminal execution remains prohibited.
 
-The former `IPHONE-MR-SV001-CUSTODY-001` UI candidate must be reclassified according to actual authority semantics before any future user instruction. If Master Records custody can be performed by a governed resident/service-worker transition, it is machine-owned and must leave this queue. Only a custody operation that truly requires human authority may remain here.
+## SV001 Master Records custody reclassification — 2026-09-05
+
+Issue `#1036` resolved the formerly admitted `IPHONE-MR-SV001-CUSTODY-001` action against the canonical ownership classifier and the already-existing Master Records/Site implementation.
+
+The exact transition is:
+
+```text
+transition_id = SV001_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION
+authority_class = MACHINE_GOVERNED
+execution_surface = CURRENT_USER_IPHONE
+human_interaction_required = false
+route = ENTITY_MACHINE_GOVERNANCE_LOOP
+```
+
+Evidence:
+
+- `control/entity-transition-ownership-evaluations/sv001-master-records-custody.json`
+- `scripts/evaluate_entity_transition_ownership.py`
+- `master-records/orchestration:portable/stegverse001-autonomy-custody-package.json`
+- `StegVerse-Labs/Site:docs/MR_SV001_CURRENT_IPHONE_CUSTODY_MIRROR_HANDOFF.md`
+
+The portable Master Records module already owns custody authority and can be invoked through the existing current-iPhone service-worker carrier. The Site role remains exact source materialization/persistence carrier only; the existence of the visible `Commit Master Records Custody` control does not create a human authority class.
+
+Therefore the former SV001 custody action is removed from the human interaction queue. Its earlier `ADMITTED_FOR_USER_EXECUTION` record is historical provenance only and is explicitly superseded. No session may instruct the user to perform that custody transition as a human-authority action.
+
+This reclassification does **not** authorize custody. The next transition still requires contemporaneous Interlock/InTr governance for the exact custody/reconstruction transition, and TV/TVC remains the credential authority where applicable. The retained G23 receipt is input evidence; it does not authorize the next transition.
+
+The current queue may remain fail-closed for true human-authority mutations while machine-owned entity progression continues independently.
 
 ## Authority
 
