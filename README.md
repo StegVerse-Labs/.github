@@ -125,6 +125,14 @@ The canonical cross-task coordination ledger may mirror an already-existing Work
 
 A projected active claim does **not** mint or transfer authority, prove current runtime execution, renew a lease, or make heartbeat state authoritative. Release of the projected ownership must follow the canonical worker lifecycle; task state alone does not release the claim.
 
+### Cross-task runtime-presence evidence
+
+The canonical cross-task coordination ledger may reuse **fresh resident-runtime presence evidence** for tasks that depend on the same canonical resident substrate. The authoritative producer is the existing runtime-presence projection. Qualifying evidence must identify the canonical `WorkerCoordinator`, remain within its declared freshness window, correlate to the current carrier reference, and retain `NONE_OBSERVATION_ONLY` authority effect.
+
+This prevents separate tasks or sessions from repeatedly inventing their own “is the resident worker alive?” checks. A shared presence predicate is bound to the canonical resident runtime profile and exact worker-runtime identity; it cannot satisfy a differently bound node/runtime subject.
+
+Runtime-presence evidence proves only that a fresh task-capable resident WorkerCoordinator is presently observed. It does **not** prove that a specific request was consumed, that a task executed, that a claim/fence exists, or that any completion predicate passed. HeartBeat remains non-authorizing, and the presence projection grants no execution, admission, transition, credential, custody, publication, or runtime-event authority.
+
 This invariant exists so the README remains the human-facing projection of what the repository actually does, while canonical machine-readable records and receipts remain authoritative for exact state and evidence.
 
 ---
