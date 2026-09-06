@@ -18,6 +18,12 @@
       "required_execution_instance": "RESIDENT-EXEC-CANONICAL-WORK-QUANTUM-RESILIENCE-001",
       "max_age_seconds": null,
       "required_fields": ["task_id", "request_id", "state", "authority_effect"],
+      "required_field_values": {
+        "task_id": "QUANTUM-RESILIENCE-001",
+        "request_id": "RESIDENT-EXEC-CANONICAL-WORK-QUANTUM-RESILIENCE-001",
+        "state": "REQUESTED",
+        "authority_effect": "NONE_REQUEST_ONLY"
+      },
       "expected_output_ref": "control/resident-execution-request.d/canonical-work-quantum-resilience-001.json",
       "consumers": ["QUANTUM-RESILIENCE-001"],
       "canonical_source_refs": [
@@ -42,6 +48,10 @@
       "required_execution_instance": "RESIDENT-EXEC-CANONICAL-WORK-QUANTUM-RESILIENCE-001",
       "max_age_seconds": null,
       "required_fields": ["state", "task_id", "request_sha256", "bootstrap_receipt_ref"],
+      "required_field_values": {
+        "state": "COMPLETED",
+        "task_id": "QUANTUM-RESILIENCE-001"
+      },
       "expected_output_ref": "receipts/sovereign-host/canonical-work-quantum-resilience-request-consumption.latest.json",
       "consumers": ["QUANTUM-RESILIENCE-001"],
       "canonical_source_refs": [
@@ -96,6 +106,10 @@
       "required_output_ref": "receipts/sovereign-host/canonical-work-quantum-resilience-request-consumption.latest.json",
       "required_schema": "stegverse.canonical-work-bootstrap-request-consumption/v1",
       "required_fields": ["state", "task_id", "request_sha256", "bootstrap_receipt_ref"],
+      "required_field_values": {
+        "state": "COMPLETED",
+        "task_id": "QUANTUM-RESILIENCE-001"
+      },
       "required_freshness": null,
       "collision_refs": [],
       "action_without_collision": "Allow the existing resident dispatcher/Canonical Work consumer to visit the staged request. Do not create a second runtime, scheduler, WorkerCoordinator, ingress path, credential path, or fabricated receipt. After authentic ingress, continue through Master Records reconciliation and WorkerCoordinator admission review before functional quantum execution."
