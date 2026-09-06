@@ -39,6 +39,7 @@ REQUIRED_SOURCE_FILES = (
     Path("scripts/run_heartbeat_runtime.py"),
     Path("scripts/repair_resident_worker_presence.py"),
     Path("scripts/run_worker_runtime.py"),
+    Path("scripts/run_sovereign_ephemeral_console.py"),
     Path("scripts/project_hb_runtime_presence.py"),
     Path("scripts/project_de006_runtime_observability.py"),
     Path("scripts/verify_stegos_parent_evidence_candidate.py"),
