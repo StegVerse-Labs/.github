@@ -61,9 +61,41 @@ semantic_predicate_id
 subject_binding
 ```
 
-Examples of subject binding include request id, node id, target task, execution instance, receiver, or other canonical identity needed to prove that two consumers are asking about the same underlying fact.
+Examples of subject binding include request id, node id, target task, execution instance, receiver, claim/fence identity, or another canonical identity needed to prove that two consumers are asking about the same underlying fact.
 
 Therefore `resident_request_consumed` for request A MUST NOT satisfy `resident_request_consumed` for request B. Evidence whose bound subject differs is rejected with `SUBJECT_BINDING_MISMATCH`.
+
+## Canonical ledger composition
+
+The canonical logical coordination ledger is now composed deterministically from:
+
+```text
+control/cross-task-coordination.json
++
+lexicographically sorted control/cross-task-coordination.d/*.json
+```
+
+Implementation:
+
+```text
+heartbeat_runtime/coordination_ledger.py
+heartbeat_runtime/admitted_worker_runtime.py
+scripts/render_cross_task_coordination_handoff.py
+tests/test_coordination_ledger.py
+.github/workflows/cross-task-coordination-validation.yml
+```
+
+Rules:
+
+1. base ledger remains the stable coordination root;
+2. canonical extension fragments are append-only coordination records;
+3. duplicate fragment ids or duplicate stable record ids fail closed;
+4. fragment authority effect must remain `NONE` / `NONE_COORDINATION_ONLY`;
+5. WorkerCoordinator autonomous preflight consumes the composed ledger;
+6. portable handoff projection consumes the same composed ledger;
+7. fragments do not alter runtime truth authority.
+
+This replaces repeated whole-ledger rewrites as the normal migration path and reduces cross-session write collision risk.
 
 ## Required autonomous-augmentation invariant
 
@@ -77,45 +109,6 @@ No task declaring `autonomous_augmentation: true` may pass WorkerCoordinator pre
 - expected blast radius declared.
 
 The preflight itself has `authority_effect: NONE`.
-
-## Canonical implementation locations
-
-```text
-schemas/cross-task-coordination.schema.json
-heartbeat_runtime/coordination_graph.py
-control/cross-task-coordination.json
-tests/test_coordination_graph.py
-heartbeat_runtime/worker_task_admission.py
-heartbeat_runtime/admitted_worker_runtime.py
-scripts/render_cross_task_coordination_handoff.py
-tests/test_cross_task_coordination_handoff_projection.py
-.github/workflows/cross-task-coordination-validation.yml
-```
-
-StegIndex read-only consumer:
-
-```text
-StegVerse-Labs/StegIndex/scripts/resolve_cross_task_coordination.py
-StegVerse-Labs/StegIndex/tests/test_cross_task_coordination.py
-StegVerse-Labs/StegIndex/docs/CROSS_TASK_COORDINATION_INDEX_MIRROR_HANDOFF.md
-```
-
-## Handoff projection rule
-
-`*_MIRROR_HANDOFF.md` files are portable projections, not the master coordination database. Repository-local handoffs remain authoritative for repository-local implementation evidence. The canonical coordination ledger references those records and may be regenerated without replacing their authority.
-
-The deterministic renderer emits task predicate state, active claims, exact evidence gaps, and the mandatory adjacency-before-blocker instruction from the canonical ledger.
-
-## Collision rules
-
-Claims are scope-specific rather than task-wide. Collision resolution compares:
-
-- repository/path/module mutation scopes;
-- runtime surfaces;
-- evidence-production responsibility;
-- declared expected blast radius.
-
-Read-only validation may coexist with a mutation claim when it does not mutate, claim, fence, lease, route, receive, publish, or alter the same evidence-production responsibility.
 
 ## Evidence qualification
 
@@ -132,29 +125,7 @@ Evidence is reusable only when all declared requirements match:
 
 Existence of a nearby file, merge, deployment, heartbeat, CI result, issue, handoff, or similarly named receipt does not satisfy a runtime predicate by inference.
 
-## Evidence-gap contract
-
-When existing evidence is insufficient, produce a gap containing:
-
-```text
-predicate_id
-semantic_predicate_id
-subject_binding
-existing_evidence_refs
-rejected_because
-missing_observation
-required_producer
-required_output_ref
-required_schema
-required_fields
-required_freshness
-collision_refs
-action_without_collision
-```
-
-A generic `runtime evidence required` response is insufficient when the missing delta can be expressed more precisely.
-
-## Adjacency rule
+## Adjacency / blocker rule
 
 Before declaring a task blocked, the resolver MUST inspect whether another task:
 
@@ -165,102 +136,95 @@ Before declaring a task blocked, the resolver MUST inspect whether another task:
 
 Newly satisfied predicates MUST also resolve downstream consumers that have become unblocked.
 
-## Validated source evidence
+A generic `runtime evidence required` response is insufficient when the missing producer/output/schema/field/freshness delta can be expressed precisely.
+
+## Validated implementation evidence
 
 ```text
 core + WorkerCoordinator integration:
   run: 33923391425
   result: SUCCESS
 
-StegIndex read-only projection:
-  commit: 758316ea043a56fe523c222a923f726d2a0805c2
+initial StegIndex read-only projection:
   run: 33943933317
   result: SUCCESS
 
-handoff projection + dedicated non-authorizing validator:
-  exact-head validation source: e6d4fb406c860b496542e5a6112128b1295d31ab
+handoff projection:
   run: 33944001324
   result: SUCCESS
 
-subject-bound predicate equivalence guard:
-  source commits: 23c65ae1ce853f8c0239a1b9604abbecd9b277b8 / 0b282337f38139f5753595c9c69165504ddd922e / cf86d4697a26eac0307389ebaaaf0ccdc2110803
-  dedicated coordination validation run: 33998265474
+subject-binding equivalence guard:
+  run: 33998265474
   result: SUCCESS
 
-StegIndex #4 bound one-shot resident-consumption migration:
-  ledger commit: 0ee9233197276575d5c41c9a4116581b07c2dbaf
-  dedicated coordination validation run: 33998547902
+HIL + G18 bound predicate migration:
+  commit: 20f1b495a38961e40069f28fb4c55ca85c9fd9c2
+  run: 34000603720
+  result: SUCCESS
+
+append-only composed-ledger integration + SV002/SV-011 canonical fragments:
+  commit: 6a9907f8157d32396e23d38b5bf9a156d35dda7c
+  run: 34000794804
+  result: SUCCESS
+
+StegVerse-001 bound predicate fragment:
+  commit: fd881e81cf60bb10e8f29f3cb109c02a52cef72e
+  run: 34000820166
+  result: SUCCESS
+
+StegIndex composed-fragment discovery:
+  commit: 051bece05afda4fd0bef85af46ce7ab68c60d56c
+  run: 34000847936
   result: SUCCESS
 ```
 
 These are source/validation facts only and are not runtime-event or product-activation evidence.
 
-## First migrated bound runtime predicate
+## Migrated bound `resident_request_consumed` instances
 
-The canonical coordination ledger now registers the concrete Ecosystem Chat resident-consumption predicate:
+Canonical composition now carries distinct subject-bound records for:
 
-```text
-predicate_id: PRED-RESIDENT-REQUEST-CONSUMED-ECOSYSTEM-CHAT-PARENT-002
-semantic_predicate_id: resident_request_consumed
-subject_binding.request_id: RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-002
-subject_binding.consumer_task_id: SHWP-ECOSYSTEM-CHAT-INFERENCE-001
-state: UNKNOWN
-expected evidence: receipts/sovereign-host/resident-execution-request-consumption.latest.json
-```
+1. Ecosystem Chat parent — `RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-002`;
+2. StegIndex one-shot resident stack activation — `RESIDENT-EXEC-ONE-SHOT-STACK-ACTIVATION-001`;
+3. HIL sovereign receiver — `RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002`;
+4. G18 existing-claim resume — `RESIDENT-EXEC-G18-RESUME-FENCE18-001`, additionally bound to claim/fence18;
+5. SV002 organization-runtime activation — `RESIDENT-EXEC-SV002-ORG-RUNTIME-ACTIVATION-001`;
+6. SV002 public observation — `RESIDENT-EXEC-SV002-PUBLIC-OBSERVATION-RUNTIME-001`;
+7. SV-011 phase5 boundary — `RESIDENT-EXEC-SV011-PHASE5-BOUNDARY-001`;
+8. SV-011 phase5 source materialization — `RESIDENT-EXEC-SV011-PHASE5-SOURCE-MATERIALIZATION-001`;
+9. StegVerse-001 bounded autonomy — `RESIDENT-EXEC-STEGVERSE001-BOUNDED-AUTONOMY-001`.
 
-Canonical sources:
+SV002 and SV-011 staging records are marked `ADMITTED_CANONICAL_FRAGMENT` and point to their canonical fragments so later sessions must not repeat migration.
 
-- `docs/ECOSYSTEM_CHAT_ORPHAN_RECOVERY_MIRROR_HANDOFF.md`
-- `control/runtime-observability-consumers/ecosystem-chat-sovereign-inference-001.json`
+The StegVerse-001 bounded-autonomy predicate records its dependency on the already-existing one-shot resident-stack activation predicate; it does not create a second activation mechanism or bypass TVC lease issuance.
 
-The gap explicitly instructs consumers to wait for/consume the existing resident bridge result and not create a parallel resident transport or replay terminal orphan recovery.
+## StegIndex consistency
 
-## StegIndex #4 migrated bound runtime predicate
+`StegVerse-Labs/StegIndex/scripts/resolve_cross_task_coordination.py` now composes the same base + fragment model in read-only form and fails closed on duplicate/drifted fragments. Its complete validation suite passed run `34000847936`.
 
-The canonical coordination ledger now also registers the exact one-shot resident-stack activation consumption required downstream by `StegVerse-Labs/StegIndex#4`:
-
-```text
-predicate_id: PRED-RESIDENT-REQUEST-CONSUMED-STEGINDEX-ONE-SHOT-001
-semantic_predicate_id: resident_request_consumed
-subject_binding.request_id: RESIDENT-EXEC-ONE-SHOT-STACK-ACTIVATION-001
-subject_binding.consumer_task_id: SHWP-ONE-SHOT-RESIDENT-STACK-ACTIVATION-001
-state: UNKNOWN
-expected evidence: receipts/sovereign-host/one-shot-resident-stack-activation-request-consumption.latest.json
-required schema: stegverse.resident-execution-request-consumption/v1
-```
-
-Qualifying terminal evidence must retain the exact request/task binding and record terminal consumption with `activation_complete=true`; the one-shot consumer defines terminal states `COMPLETED` and `ALREADY_CONSUMED`. StegIndex source-root resolution is retained in the same receipt and remains separately relevant to #4 materialization proof.
-
-Canonical sources:
-
-- `StegVerse-Labs/StegIndex/docs/STEGINDEX_RESIDENT_PROOF_CONTINUATION_20260903.md`
-- `control/resident-execution-request.d/one-shot-resident-stack-activation-001.json`
-- `scripts/consume_one_shot_resident_stack_activation_request.py`
-
-Current qualifying evidence: NONE OBSERVED.
-
-The coordination gap explicitly requires reuse of the already-REQUESTED request through the existing WorkerCoordinator/resident dispatcher. It prohibits creating a duplicate request, scheduler, resident transport, or proof-specific executor. This migration does not replace the earlier first unresolved StegIndex boundary requiring fresh authentic WorkerCoordinator runtime presence; it prevents downstream consumption checks from being duplicated across sessions once that boundary advances.
+WorkerCoordinator, handoff projection, and StegIndex therefore now share one logical coordination composition model rather than reading different subsets of canonical state.
 
 ## Current coordination state
 
-Canonical machine ledger: `control/cross-task-coordination.json`.
-
-The core source implementation is validated. Ecosystem adoption is NOT complete. Shared-predicate migration across convergent lanes remains active work.
+Core source implementation: VALIDATED.
+Composed canonical ledger: VALIDATED.
+Subject-bound resident-request migration: PARTIAL / ACTIVE.
+StegIndex composed discovery: VALIDATED.
+Ecosystem adoption: NOT COMPLETE.
+Runtime activation claims created by this coordination work: NONE.
 
 Existing runtime activation, WorkerCoordinator execution, sovereign inference, HIL, credential/route, and other already-owned workstreams remain outside the coordination source claim and must not be restarted merely because they consume coordination predicates.
 
 ## Remaining machine work
 
-1. inspect canonical handoffs for G18, HIL, SV001, SV002, SV-011, and other convergent lanes;
-2. identify only predicates whose semantic subject identity can be proven equivalent;
-3. register those bound predicates, producers, evidence locations, consumers, and active claims in the canonical ledger;
-4. connect StegIndex/session-build handoff consumers to these migrated records;
-5. validate each migration deterministically;
-6. when the capability reaches an actual release/tag boundary, perform the release and then verify governed propagation requirements for:
-   - `StegVerse-Labs/Site`
-   - `GCAT-BCAT-Engine/Publisher`
-   - `admissibility-wiki`
-   - `stegguardian-wiki`.
+1. inspect remaining canonical handoffs for shared predicates beyond `resident_request_consumed`, beginning with resident-presence/runtime-observation and common claim/fence/evidence predicates;
+2. establish subject identity before any shared registration;
+3. register only genuinely reusable producer/evidence relationships and exact gaps;
+4. bind additional session/build consumers that still read an incomplete coordination slice;
+5. register active claims/producers where canonical ownership records exist;
+6. validate each migration deterministically;
+7. evaluate tag/release only after ecosystem-adoption criteria are actually satisfied;
+8. after actual release/tag, verify governed propagation requirements for `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `admissibility-wiki`, and `stegguardian-wiki`.
 
 ## Completion and archive rule
 
