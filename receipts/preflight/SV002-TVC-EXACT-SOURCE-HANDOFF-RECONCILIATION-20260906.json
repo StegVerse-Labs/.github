@@ -1,0 +1,63 @@
+{
+  "schema": "stegverse.session-machine-preflight/v1",
+  "task_id": "SV002-TVC-EXACT-SOURCE-HANDOFF-RECONCILIATION-20260906",
+  "goal_id": "SHWP-SV002-ORG-RUNTIME-ACTIVATION-001",
+  "state": "PASS",
+  "evaluated_at": "2026-09-06T12:47:00-05:00",
+  "scope": {
+    "repository": "StegVerse-Labs/.github",
+    "base_commit": "f83480b8592b970b0f7b43acd80fa466f932b34c",
+    "mutation_paths": [
+      "docs/SV002_HB_AWARENESS_RUNTIME_REPAIR_MIRROR_HANDOFF.md"
+    ]
+  },
+  "canonical_state_resolution": {
+    "canonical_task_registry": "data/canonical-task-registry.json#generation-15",
+    "master_records": "master-records/orchestration/RUNTIME_PRESENCE_CUSTODY_MIRROR_HANDOFF.md",
+    "cross_task_coordination": "docs/RUNTIME_PRESENCE_CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
+    "tvc_delivery_task": "TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006",
+    "tvc_resident_self_heal_task": "TVC-RESIDENT-SERVICE-SELF-HEAL-001",
+    "tvc_runtime_observer_task": "TVC-CAPABILITY-RUNTIME-002",
+    "sv002_consumer_task": "SHWP-SV002-ORG-RUNTIME-ACTIVATION-001",
+    "current_tvc_exact_runtime_source": "StegVerse-Labs/.github@11cad666ff4a0ffeca39a725272f1ab905d9257d",
+    "tvc_exact_source_rebind_merge": "StegVerse-Labs/TVC@a7e3ed7611c9abead988ec85b493cc396ac54b94"
+  },
+  "collision_review": {
+    "matching_open_pr_observed": false,
+    "duplicate_runtime_implementation_required": false,
+    "runtime_presence_cross_task_reuse_authorized": false
+  },
+  "problem": {
+    "code": "SV002_TVC_EXACT_SOURCE_HANDOFF_DRIFT",
+    "evidence": [
+      "The canonical TVC resident self-heal task binds the validated runtime source to StegVerse-Labs/.github@11cad666ff4a0ffeca39a725272f1ab905d9257d after TVC PR #335.",
+      "The current .github SV002 runtime-repair handoff still describes StegVerse-Labs/.github@543fb39498cdba042796a09d70292c2bd7396e1a and TVC merge 85a6885d9f942c84cc5740f1e1f26bae2e2de03f as the current TVC continuation.",
+      "This is documentation/evidence drift only; the runtime implementation, exact-source request, predicates, dispatcher, HB/oscillator, WorkerCoordinator, InTr and credential authority are unchanged."
+    ]
+  },
+  "admitted_repair": {
+    "strategy": "Reconcile only the canonical SV002 handoff to record the later exact-source rebind while preserving the prior 543fb394/85a6885d repair as historical lineage.",
+    "functional_mutation": false,
+    "authority_effect": "NONE_DOCUMENTATION_RECONCILIATION_ONLY"
+  },
+  "readme_impact": {
+    "required": false,
+    "material_function_change": false,
+    "readme_updated_in_change_set": false,
+    "no_readme_update_reason": "The change only corrects canonical handoff provenance to match already-merged TVC exact-source state. It changes no repository behavior, runtime semantics, interfaces, governance or authority boundaries, evidence semantics, prerequisites, dependencies, failure behavior, or capability meaning."
+  },
+  "runtime_evidence": {
+    "root_primary_runtime_restart_observed": false,
+    "resident_runtime_presence_observed": false,
+    "sv002_terminal_round_trip_observed": false,
+    "source_or_documentation_may_substitute": false
+  },
+  "authority": {
+    "heartbeat_grants_execution_authority": false,
+    "workercoordinator_remains_claim_fence_authority": true,
+    "intr_remains_transition_authority": true,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE"
+  },
+  "verdict": "PASS"
+}
