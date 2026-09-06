@@ -29,13 +29,18 @@ def _now(value: datetime | None) -> datetime:
     return current
 
 
-def _field_present(fields: dict[str, Any], dotted: str) -> bool:
+def _field_value(fields: dict[str, Any], dotted: str) -> tuple[bool, Any]:
     cursor: Any = fields
     for part in dotted.split("."):
         if not isinstance(cursor, dict) or part not in cursor:
-            return False
+            return False, None
         cursor = cursor[part]
-    return cursor is not None
+    return True, cursor
+
+
+def _field_present(fields: dict[str, Any], dotted: str) -> bool:
+    present, value = _field_value(fields, dotted)
+    return present and value is not None
 
 
 def _normalize_binding(value: Any) -> tuple[tuple[str, str], ...]:
@@ -77,6 +82,14 @@ def _evidence_rejection_reasons(predicate: dict[str, Any], evidence: dict[str, A
     for field in predicate.get("required_fields") or []:
         if not _field_present(fields, str(field)):
             reasons.append(f"REQUIRED_FIELD_MISSING:{field}")
+    required_values = predicate.get("required_field_values")
+    if required_values is not None and not isinstance(required_values, dict):
+        reasons.append("REQUIRED_FIELD_VALUES_INVALID")
+    elif isinstance(required_values, dict):
+        for field, expected in required_values.items():
+            present, actual = _field_value(fields, str(field))
+            if not present or actual != expected:
+                reasons.append(f"REQUIRED_FIELD_VALUE_MISMATCH:{field}")
     max_age = predicate.get("max_age_seconds")
     if max_age is not None:
         observed = _parse_time(evidence.get("observed_at"))
@@ -165,6 +178,7 @@ def _gap_for(
         "required_output_ref": predicate.get("expected_output_ref"),
         "required_schema": predicate.get("required_schema"),
         "required_fields": list(predicate.get("required_fields") or []),
+        "required_field_values": dict(predicate.get("required_field_values") or {}),
         "required_freshness": predicate.get("max_age_seconds"),
         "collision_refs": collision_refs,
         "action_without_collision": action,
@@ -275,6 +289,7 @@ def review_coordination_preflight(
                 "required_output_ref": None,
                 "required_schema": None,
                 "required_fields": [],
+                "required_field_values": {},
                 "required_freshness": None,
                 "collision_refs": [str(item.get("claim_id")) for item in collisions if item.get("claim_id")],
                 "action_without_collision": "Register the predicate and authoritative producer before performing a new check.",
