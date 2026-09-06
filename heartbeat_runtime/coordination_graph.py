@@ -89,6 +89,23 @@ def _evidence_rejection_reasons(predicate: dict[str, Any], evidence: dict[str, A
     return sorted(set(reasons))
 
 
+def _predicate_satisfied(
+    predicate: dict[str, Any],
+    evidence_rows: list[dict[str, Any]],
+    now: datetime,
+) -> bool:
+    """Return true only for declared SATISFIED state backed by qualifying evidence."""
+    if predicate.get("state") != "SATISFIED":
+        return False
+    predicate_id = predicate.get("predicate_id")
+    for row in evidence_rows:
+        if row.get("predicate_id") != predicate_id:
+            continue
+        if not _evidence_rejection_reasons(predicate, row, now):
+            return True
+    return False
+
+
 def _normalize_scope(scope: dict[str, Any] | None) -> dict[str, set[str]]:
     source = scope if isinstance(scope, dict) else {}
     return {
@@ -154,6 +171,44 @@ def _gap_for(
     }
 
 
+def _dependency_projection(
+    predicates: dict[str, dict[str, Any]],
+    evidence_rows: list[dict[str, Any]],
+    now: datetime,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Project dependency-ready predicates/consumers without claiming full task admission."""
+    satisfied_ids = {
+        predicate_id
+        for predicate_id, predicate in predicates.items()
+        if _predicate_satisfied(predicate, evidence_rows, now)
+    }
+    ready_predicates: list[dict[str, Any]] = []
+    consumer_candidates: list[dict[str, Any]] = []
+    for predicate_id, predicate in predicates.items():
+        dependencies = [str(value) for value in predicate.get("depends_on_predicates") or [] if value]
+        if not dependencies:
+            continue
+        missing = sorted(set(dependencies) - satisfied_ids)
+        ready = not missing
+        ready_predicates.append({
+            "predicate_id": predicate_id,
+            "depends_on_predicates": dependencies,
+            "dependency_ready": ready,
+            "unsatisfied_dependency_predicates": missing,
+        })
+        if ready:
+            for consumer in predicate.get("consumers") or []:
+                consumer_candidates.append({
+                    "consumer": str(consumer),
+                    "predicate_id": predicate_id,
+                    "disposition": "DEPENDENCY_READY_NOT_FULL_TASK_ADMISSION",
+                    "authority_effect": "NONE",
+                })
+    return sorted(ready_predicates, key=lambda row: row["predicate_id"]), sorted(
+        consumer_candidates, key=lambda row: (row["consumer"], row["predicate_id"])
+    )
+
+
 def review_coordination_preflight(
     *,
     ledger: dict[str, Any],
@@ -174,6 +229,8 @@ def review_coordination_preflight(
             "gaps": [],
             "collisions": [],
             "newly_unblocked_tasks": [],
+            "dependency_ready_predicates": [],
+            "candidate_downstream_consumers": [],
         }
 
     task_id = str(task.get("task_id") or "")
@@ -250,14 +307,20 @@ def review_coordination_preflight(
             reasons.append(f"PREDICATE_NOT_SATISFIED:{predicate_id}")
             gaps.append(_gap_for(predicate, candidates, rejection_map, collisions))
 
+    globally_satisfied_ids = {
+        predicate_id
+        for predicate_id, predicate in predicates.items()
+        if _predicate_satisfied(predicate, evidence_rows, current)
+    }
     newly_unblocked: list[str] = []
-    satisfied_ids = {item["predicate_id"] for item in resolved if item["satisfied"]}
     for other_id, other in ledger_tasks.items():
         if other_id == task_id:
             continue
         required = set(other.get("required_predicates") or [])
-        if required and required.issubset(satisfied_ids):
+        if required and required.issubset(globally_satisfied_ids):
             newly_unblocked.append(other_id)
+
+    dependency_ready, candidate_consumers = _dependency_projection(predicates, evidence_rows, current)
 
     verdict = "ADMIT_COORDINATION" if not reasons else "BLOCK_COORDINATION"
     if reasons and all(reason.startswith("TASK_NOT_REGISTERED") for reason in reasons):
@@ -276,6 +339,9 @@ def review_coordination_preflight(
             for item in collisions
         ],
         "newly_unblocked_tasks": sorted(set(newly_unblocked)),
+        "dependency_ready_predicates": dependency_ready,
+        "candidate_downstream_consumers": candidate_consumers,
+        "candidate_consumers_are_full_task_admission": False,
     }
 
 
