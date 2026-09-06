@@ -111,7 +111,7 @@ For `material_function_change=true`, both gates require:
 
 - `readme_updated_in_change_set=true`;
 - the affected `readme_path`;
-- evidence references tying the README update to the functional change.
+- evidence references tying that update to the functional change.
 
 For an explicit **non-material** determination, the no-update path requires both `no_readme_update_reason` and evidence references supporting that determination. Missing materiality, missing required README evidence, or a material change without a README update causes the applicable preflight/admission gate to fail closed.
 
@@ -135,11 +135,15 @@ A projected active claim does **not** mint or transfer authority, prove current 
 
 ### Cross-task runtime-presence evidence
 
-The canonical cross-task coordination ledger may reuse **fresh resident-runtime presence evidence** for tasks that depend on the same canonical resident substrate. The authoritative producer is the existing runtime-presence projection. Qualifying evidence must identify the canonical `WorkerCoordinator`, remain within its declared freshness window, correlate to the current carrier reference, and retain `NONE_OBSERVATION_ONLY` authority effect.
+StegVerse has one existing resident runtime-presence projector, but **shared cross-task reuse is currently deferred until exact resident subject identity is proven from authentic runtime evidence**.
 
-This prevents separate tasks or sessions from repeatedly inventing their own “is the resident worker alive?” checks. A shared presence predicate is bound to the canonical resident runtime profile and exact worker-runtime identity; it cannot satisfy a differently bound node/runtime subject.
+The canonical producer remains the existing runtime-presence projection. A reusable presence predicate must bind at least the concrete `runtime_root`, `resident.node_id` when available from authentic evidence, and canonical `WorkerCoordinator` identity. A runtime profile name plus worker class is not sufficient to let evidence from one resident instance satisfy another node/runtime consumer.
 
-Runtime-presence evidence proves only that a fresh task-capable resident WorkerCoordinator is presently observed. It does **not** prove that a specific request was consumed, that a task executed, that a claim/fence exists, or that any completion predicate passed. HeartBeat remains non-authorizing, and the presence projection grants no execution, admission, transition, credential, custody, publication, or runtime-event authority.
+Until that binding exists, runtime-presence relationships remain staged in `control/cross-task-coordination-candidates/resident-process-alive-supervised.json`; they are not a global Boolean in the canonical composed coordination ledger. No second heartbeat, WorkerCoordinator, scheduler, hosted observer, or runtime-presence probe should be created to bypass this subject-binding requirement.
+
+Once exact subject identity is established, qualifying evidence must remain within its declared freshness window, correlate to the current carrier reference, and retain `NONE_OBSERVATION_ONLY` authority effect.
+
+Runtime-presence evidence proves only that a fresh task-capable resident WorkerCoordinator is presently observed for that exact bound subject. It does **not** prove that a specific request was consumed, that a task executed, that a claim/fence exists, or that any completion predicate passed. HeartBeat remains non-authorizing, and the presence projection grants no execution, admission, transition, credential, custody, publication, or runtime-event authority.
 
 This invariant exists so the README remains the human-facing projection of what the repository actually does, while canonical machine-readable records and receipts remain authoritative for exact state and evidence.
 

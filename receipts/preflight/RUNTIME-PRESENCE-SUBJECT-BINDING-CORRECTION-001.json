@@ -1,0 +1,58 @@
+{
+  "schema": "stegverse.session-machine-preflight/v1",
+  "task_id": "RUNTIME-PRESENCE-SUBJECT-BINDING-CORRECTION-001",
+  "state": "PASS",
+  "evaluated_at": "2026-09-05T19:31:00-05:00",
+  "scope": {
+    "repository": "StegVerse-Labs/.github",
+    "mutation_paths": [
+      "control/cross-task-coordination.d/runtime-presence-predicates.json",
+      "docs/RUNTIME_PRESENCE_CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
+      "README.md",
+      "tests/test_runtime_presence_cross_task_coordination.py"
+    ]
+  },
+  "canonical_state_resolution": {
+    "parent_handoff_ref": "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
+    "parent_rule": "resident-presence shared predicate remains DEFERRED until authentic runtime_root and resident.node_id subject identity exists",
+    "candidate_ref": "control/cross-task-coordination-candidates/resident-process-alive-supervised.json",
+    "candidate_state": "DEFERRED_SUBJECT_BINDING_REQUIRED",
+    "overbroad_fragment_ref": "control/cross-task-coordination.d/runtime-presence-predicates.json",
+    "overbroad_merge": "80ea85ef3ed9b00b913f2c5555a3aa7afd8b0598"
+  },
+  "reuse_resolution": {
+    "authoritative_producer": "heartbeat_runtime/runtime_presence_projection.py",
+    "canonical_output_ref": "receipts/sovereign-host/runtime-presence.latest.json",
+    "existing_candidate_reused": true,
+    "new_runtime_probe_required": false,
+    "new_worker_runtime_required": false,
+    "new_scheduler_required": false
+  },
+  "collision_review": {
+    "semantic_conflict_observed": true,
+    "conflict": "The installed fragment binds only runtime profile + WorkerCoordinator class, while the canonical parent requires concrete runtime_root and resident.node_id before evidence may be shared across consumers.",
+    "disposition": "REMOVE_OVERBROAD_CANONICAL_FRAGMENT_AND_RESTORE_DEFERRED_CANDIDATE_STATE"
+  },
+  "readme_impact_required": true,
+  "readme_impact": {
+    "material_function_change": true,
+    "readme_updated_in_change_set": true,
+    "readme_path": "README.md",
+    "reason": "This correction narrows cross-task evidence-reuse semantics so runtime presence from one resident instance cannot satisfy another runtime/node subject.",
+    "evidence_refs": [
+      "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md#Resident-presence-migration-boundary",
+      "control/cross-task-coordination-candidates/resident-process-alive-supervised.json",
+      "control/cross-task-coordination.d/runtime-presence-predicates.json",
+      "README.md#Cross-task-runtime-presence-evidence"
+    ]
+  },
+  "authority": {
+    "authority_effect": "NONE_PREFLIGHT_ONLY",
+    "execution_authority_granted": false,
+    "claim_or_fence_granted": false,
+    "heartbeat_grants_execution_authority": false,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE"
+  },
+  "verdict": "PASS"
+}
