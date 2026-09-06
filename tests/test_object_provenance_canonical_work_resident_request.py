@@ -45,7 +45,9 @@ class ObjectProvenanceCanonicalWorkResidentRequestTests(unittest.TestCase):
     def test_readme_already_documents_generic_registered_task_semantics(self):
         readme = README.read_text(encoding="utf-8")
         self.assertIn("Canonical Work task ingress", readme)
-        self.assertIn("registered canonical task", readme)
+        self.assertIn("tasks that already exist in the canonical Task Registry", readme)
+        self.assertIn("multiple explicit task request specifications", readme)
+        self.assertIn("does not create task identity", readme)
 
 
 if __name__ == "__main__":
