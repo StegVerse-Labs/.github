@@ -64,13 +64,20 @@
   "readme_impact": {
     "required": true,
     "material_function_change": true,
-    "reason": "Binding SV002 to the current-iPhone portable WorkerCoordinator changes supported execution surface, runtime prerequisites, and failure behavior for an existing requested task.",
+    "reason": "The prerequisite repair changes portable WorkerCoordinator lifecycle/failure behavior from one checkout for the entire authority lineage to one checkout per distinct admitted task while preserving sequential generation and same-task duplicate rejection.",
     "readme_path": "README.md",
-    "readme_updated_in_change_set": false,
+    "readme_updated_in_change_set": true,
+    "evidence_refs": [
+      "README.md#portable-workercoordinator-sequential-task-lineage",
+      "docs/WORKERCOORDINATOR_PORTABLE_IPHONE_EXECUTION_MIRROR_HANDOFF.md#sequential-downstream-task-lineage---2026-09-05",
+      "workercoordinator/portable_checkout.js",
+      "tests/test_portable_workercoordinator_iphone.py"
+    ],
     "must_be_completed_before_functional_merge": true
   },
   "highest_priority_admissible_machine_work": {
     "action": "Extend the existing portable WorkerCoordinator/StegOS execution path for the existing SV002 request using the existing task identity and authority boundaries; reuse target-owned self-characterization semantics and emit the existing sv002-org-runtime-activation consumption schema. Do not create a second runtime or request.",
+    "first_bounded_repair": "Remove the erroneous one-checkout-for-entire-portable-lineage limit while preserving one checkout per task, monotonic WorkerCoordinator generation, atomic CAS, and no parallel claim issuance.",
     "human_action_required": false
   },
   "nonclaims": [
