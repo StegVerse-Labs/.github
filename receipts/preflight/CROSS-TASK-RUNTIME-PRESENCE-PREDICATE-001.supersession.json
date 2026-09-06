@@ -1,0 +1,26 @@
+{
+  "schema": "stegverse.preflight-supersession/v1",
+  "supersession_id": "CROSS-TASK-RUNTIME-PRESENCE-PREDICATE-001-SUPERSESSION-001",
+  "supersedes": "receipts/preflight/CROSS-TASK-RUNTIME-PRESENCE-PREDICATE-001.json",
+  "superseded_preflight_state": "PASS",
+  "current_disposition": "NOT_ADMISSIBLE_UNTIL_EXACT_RUNTIME_SUBJECT_BINDING_EXISTS",
+  "reason": "The superseded preflight admitted a runtime-presence coordination predicate bound only to runtime profile plus WorkerCoordinator class. Commit a3cde34c0ddc1312236eac6f0220b0f9f2a54ff2 removed that over-broad predicate and restored deferral because cross-task reuse requires authentic runtime_root and resident.node_id subject identity. The historical PASS remains preserved as evidence of the prior evaluation but is not current admissibility authority.",
+  "required_before_re_admission": [
+    "authentic runtime-presence evidence exists at receipts/sovereign-host/runtime-presence.latest.json",
+    "subject binding includes concrete runtime_root identity",
+    "subject binding includes resident.node_id when available from authentic evidence",
+    "subject binding includes canonical WorkerCoordinator identity",
+    "consumer grouping is limited to tasks proven to target the same bound subject",
+    "freshness and NONE_OBSERVATION_ONLY authority constraints still qualify"
+  ],
+  "canonical_refs": [
+    "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md#Resident-presence-migration-boundary",
+    "README.md#Cross-task-runtime-presence-evidence",
+    "control/cross-task-coordination-candidates/resident-process-alive-supervised.json",
+    "heartbeat_runtime/runtime_presence_projection.py",
+    "commit:a3cde34c0ddc1312236eac6f0220b0f9f2a54ff2"
+  ],
+  "runtime_truth_inferred": false,
+  "execution_admission_inferred": false,
+  "authority_effect": "NONE_EVIDENCE_RECONCILIATION_ONLY"
+}

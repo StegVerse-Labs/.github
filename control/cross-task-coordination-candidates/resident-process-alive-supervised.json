@@ -33,5 +33,9 @@
     "control/runtime-observability-consumers/sv002-public-observation-runtime-001.json",
     "StegVerse-Labs/Executive_Rhetoric_Ledger/task-state/ERL-AI-ECON-TRANSPARENCY-001.json"
   ],
+  "historical_preflight_ref": "receipts/preflight/CROSS-TASK-RUNTIME-PRESENCE-PREDICATE-001.json",
+  "historical_preflight_current_status": "SUPERSEDED_NOT_CURRENT_ADMISSIBILITY",
+  "preflight_supersession_ref": "receipts/preflight/CROSS-TASK-RUNTIME-PRESENCE-PREDICATE-001.supersession.json",
+  "current_preflight_disposition": "NOT_ADMISSIBLE_UNTIL_EXACT_RUNTIME_SUBJECT_BINDING_EXISTS",
   "safe_next_action": "When authentic runtime-presence evidence exists, bind the predicate to that exact runtime_root/node identity and only then group consumers proven to target the same subject. Do not create another runtime-presence projector or infer liveness from heartbeat progression."
 }

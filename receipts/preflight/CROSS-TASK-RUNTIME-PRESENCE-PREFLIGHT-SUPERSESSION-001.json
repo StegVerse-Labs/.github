@@ -1,0 +1,49 @@
+{
+  "schema": "stegverse.session-machine-preflight/v1",
+  "task_id": "CROSS-TASK-RUNTIME-PRESENCE-PREFLIGHT-SUPERSESSION-001",
+  "goal_id": "CROSS-TASK-COORDINATION-EVIDENCE-RESOLUTION",
+  "state": "PASS",
+  "evaluated_at": "2026-09-06T01:12:00-05:00",
+  "scope": {
+    "repository": "StegVerse-Labs/.github",
+    "mutation_paths": [
+      "receipts/preflight/CROSS-TASK-RUNTIME-PRESENCE-PREDICATE-001.supersession.json",
+      "control/cross-task-coordination-candidates/resident-process-alive-supervised.json"
+    ]
+  },
+  "canonical_state_resolution": {
+    "handoff_ref": "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
+    "task_registry_ref": "control/worker-registry.json",
+    "master_records_ref": "master-records/core-lite:MASTER_RECORDS_MIRROR_HANDOFF.md",
+    "cross_task_coordination_ref": "control/cross-task-coordination.json + control/cross-task-coordination.d/*.json",
+    "subject_binding_repair_commit": "a3cde34c0ddc1312236eac6f0220b0f9f2a54ff2"
+  },
+  "collision_review": {
+    "open_pr_owning_exact_supersession_observed": false,
+    "active_worker_claim_collision_observed": false,
+    "runtime_mutation_requested": false,
+    "disposition": "ADMIT_EVIDENCE_RECONCILIATION_ONLY"
+  },
+  "readme_impact_required": true,
+  "readme_impact": {
+    "material_function_change": false,
+    "readme_updated_in_change_set": false,
+    "readme_path": "README.md",
+    "no_readme_update_reason": "This change reconciles stale historical preflight evidence with behavior already established by commit a3cde34c0ddc1312236eac6f0220b0f9f2a54ff2 and already documented in README.md; it does not change repository behavior, runtime semantics, interfaces, authority boundaries, prerequisites, dependencies, failure behavior, or capability meaning.",
+    "evidence_refs": [
+      "README.md#Cross-task-runtime-presence-evidence",
+      "control/cross-task-coordination-candidates/resident-process-alive-supervised.json",
+      "receipts/preflight/CROSS-TASK-RUNTIME-PRESENCE-PREDICATE-001.json",
+      "commit:a3cde34c0ddc1312236eac6f0220b0f9f2a54ff2"
+    ]
+  },
+  "authority": {
+    "authority_effect": "NONE_PREFLIGHT_ONLY",
+    "execution_authority_granted": false,
+    "claim_or_fence_granted": false,
+    "heartbeat_grants_execution_authority": false,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE"
+  },
+  "verdict": "PASS"
+}
