@@ -149,6 +149,16 @@ Legacy/nonfunctional tasks are not retroactively stranded solely because they pr
 
 README completeness is evidence-only. It grants no execution, claim, fence, lease, credential, routing, transition, publication, custody, runtime truth, or other authority.
 
+### Task-targeted CanonicalWork ingress
+
+The canonical CanonicalWork event bootstrap can target an exactly identified task in `data/canonical-task-registry.json`; it is no longer limited to the coordination parent task. A selected task must resolve exactly once, remain in `PROPOSED`, explicitly allow `INGRESS_ADMITTED`, preserve the canonical authority model, and have no pre-existing projected WorkerCoordinator claim/fence before the bounded ingress bootstrap proceeds.
+
+Task selection is not admission and does not grant authority. The bootstrap still reuses the existing `workers.universal_intr_profiled_ingress.Server`, the existing CanonicalWork route, and `build_canonical_work_intr_request.py`. Interlock/InTr remains the only governed ingress/egress transition authority, WorkerCoordinator remains the only claim/fence authority, Master Records remains observed-reality/reconstruction authority, TV/TVC remains credential authority, and GitHub tokens retain no runtime authority.
+
+The wrapper `scripts/install_and_run_canonical_work_event_bootstrap.py` forwards `--task-id` to the bounded bootstrap. Successful source execution may establish only the exact ingress/consumption/projection receipts it actually observes. It does not prove worker claim/fence, governed task execution, Master Records reconciliation, egress, closure, or downstream product/runtime activation.
+
+This capability exists so already-registered canonical tasks can reuse one CanonicalWork ingress mechanism rather than creating task-specific listeners, schedulers, WorkerCoordinators, or competing task-transition paths.
+
 ### Resident WorkerCoordinator self-heal binding parity
 
 The canonical HeartBeat carrier may supervise the **existing** resident WorkerCoordinator process when that process disappears, but this supervision does not create a second worker or grant task authority. A self-healed WorkerCoordinator must receive the same approved, non-secret local repository/runtime bindings as the canonical worker service so restored process presence does not silently degrade into a worker that is alive but unable to resolve already-local StegVerse dependencies.
