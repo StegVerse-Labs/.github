@@ -89,6 +89,7 @@ class NativeRuntimeMaterializationBoundaryTests(unittest.TestCase):
             self.assertTrue((runtime / "control/worker-registry.json").is_file())
             self.assertTrue((runtime / "heartbeat_runtime/engine_v13.py").is_file())
             self.assertTrue((runtime / "scripts/dispatch_resident_execution_requests.py").is_file())
+            self.assertTrue((runtime / "scripts/repair_resident_worker_presence.py").is_file())
             self.assertTrue((runtime / "state_language/reconcile.py").is_file())
             self.assertTrue((runtime / "management/COSV_HEARTBEAT_STATE_PACKET_CONTRACT.json").is_file())
             self.assertTrue((runtime / "scripts/materialize_live_cosv_packet.py").is_file())
@@ -97,6 +98,16 @@ class NativeRuntimeMaterializationBoundaryTests(unittest.TestCase):
             self.assertTrue((runtime / "scripts/project_worker_control_plane_from_carrier.py").is_file())
             self.assertTrue((runtime / "scripts/verify_iphone_heartbeat_transition_receipt.py").is_file())
 
+    def test_self_heal_dependency_is_copied_and_required_with_carrier_runner(self) -> None:
+        self.assertIn("scripts/run_heartbeat_runtime.py", mod.COPY_FILES)
+        self.assertIn("scripts/repair_resident_worker_presence.py", mod.COPY_FILES)
+        with tempfile.TemporaryDirectory() as td:
+            runtime = Path(td) / "runtime"
+            mod.materialize(ROOT, runtime)
+            self.assertEqual(
+                (runtime / "scripts/repair_resident_worker_presence.py").read_bytes(),
+                (ROOT / "scripts/repair_resident_worker_presence.py").read_bytes(),
+            )
 
     def test_native_materialization_covers_worker_source_refresh_static_dependencies(self) -> None:
         refresh_text = (ROOT / "scripts/refresh_sovereign_worker_runtime_source.py").read_text(encoding="utf-8")
@@ -104,6 +115,7 @@ class NativeRuntimeMaterializationBoundaryTests(unittest.TestCase):
             self.assertIn(f'Path("{rel}")', refresh_text)
             self.assertIn(rel, mod.COPY_DIRS)
         for rel in (
+            "scripts/repair_resident_worker_presence.py",
             "scripts/materialize_live_cosv_packet.py",
             "scripts/cosv.py",
             "scripts/cosv_state_packet.py",
