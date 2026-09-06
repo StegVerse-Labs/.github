@@ -2,10 +2,10 @@
 """Run the bounded StegVerse email-action monitor through a local TV/TVC-governed broker.
 
 The handler mirrors the established monitor semantics:
-1. inspect the newest bounded INBOX batch;
+1. inspect the newest bounded GitHub/task-update operational INBOX batch;
 2. resolve exact message IDs before mutation;
 3. cluster GitHub/task-update failure signals as non-authorizing incident proposals;
-4. archive the exact reviewed batch;
+4. archive only that exact reviewed operational batch;
 5. measure actionable backlog depth and inbox totals;
 6. emit one durable monitor receipt.
 
@@ -26,9 +26,12 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 from normalize_github_failure_email_events import incident_id, signature  # noqa: E402
 
-INBOX_QUERY = "-in:spam -in:trash"
+INBOX_QUERY = (
+    '-in:spam -in:trash (from:notifications@github.com OR from:noreply@github.com '
+    'OR subject:"[Task Update]")'
+)
 ACTIONABLE_QUERY = (
-    '-in:spam -in:trash (subject:"[Task Update]" OR from:notifications@github.com) '
+    '-in:spam -in:trash (subject:"[Task Update]" OR from:notifications@github.com OR from:noreply@github.com) '
     '(failed OR failure OR "requires handoff" OR "requires reconciliation" OR '
     '"not evidence promotable" OR "needs attention" OR blocker OR blocked)'
 )
@@ -50,6 +53,7 @@ def stable_rows(value: Any, key: str) -> list[dict[str, Any]]:
 class Broker:
     def __init__(self, command: Sequence[str]):
         require(bool(command), "broker command required")
+        require(all(isinstance(item, str) and item for item in command), "broker command items invalid")
         self.command = list(command)
 
     def call(self, operation: str, **payload: Any) -> dict[str, Any]:
@@ -117,27 +121,13 @@ def cluster_incidents(messages: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 def run(broker: Broker, batch_limit: int = BATCH_LIMIT) -> dict[str, Any]:
     require(1 <= batch_limit <= 100, "batch limit must be 1..100")
-
-    inspected = broker.call(
-        "SEARCH_MESSAGES",
-        query=INBOX_QUERY,
-        label_ids=["INBOX"],
-        max_results=batch_limit,
-    )
+    inspected = broker.call("SEARCH_MESSAGES", query=INBOX_QUERY, label_ids=["INBOX"], max_results=batch_limit)
     messages = stable_rows(inspected, "messages")
-
-    exact = broker.call(
-        "SEARCH_IDS",
-        query=INBOX_QUERY,
-        label_ids=["INBOX"],
-        max_results=batch_limit,
-    )
+    exact = broker.call("SEARCH_IDS", query=INBOX_QUERY, label_ids=["INBOX"], max_results=batch_limit)
     ids = exact.get("message_ids")
     require(isinstance(ids, list) and all(isinstance(v, str) and v for v in ids), "broker message_ids invalid")
     require(len(ids) <= batch_limit, "broker exceeded bounded batch")
-
     incidents = cluster_incidents(messages)
-
     archive = broker.call("ARCHIVE_IDS", message_ids=ids)
     archived = archive.get("archived_ids")
     failed = archive.get("failed_ids", [])
@@ -145,27 +135,20 @@ def run(broker: Broker, batch_limit: int = BATCH_LIMIT) -> dict[str, Any]:
     require(isinstance(failed, list), "broker failed_ids invalid")
     require(set(archived).isdisjoint(set(failed)), "archive result overlap")
     require(set(archived) | set(failed) == set(ids), "archive result does not cover exact bounded batch")
-
-    actionable = broker.call(
-        "SEARCH_IDS",
-        query=ACTIONABLE_QUERY,
-        label_ids=["INBOX"],
-        max_results=BATCH_LIMIT,
-    )
+    actionable = broker.call("SEARCH_IDS", query=ACTIONABLE_QUERY, label_ids=["INBOX"], max_results=BATCH_LIMIT)
     actionable_ids = actionable.get("message_ids")
     require(isinstance(actionable_ids, list), "actionable message_ids invalid")
     actionable_more = bool(actionable.get("next_page_token"))
-
     counts = broker.call("GET_LABEL_COUNTS", label_names=["INBOX"])
     labels = counts.get("labels")
     require(isinstance(labels, dict) and isinstance(labels.get("INBOX"), dict), "INBOX counts missing")
     inbox = labels["INBOX"]
-
     return {
         "schema": "stegverse.native-email-action-monitor-receipt/v1",
         "state": "PASS" if not failed else "PARTIAL_ARCHIVE_FAILURE",
         "provider": inspected.get("provider"),
         "bounded_batch_limit": batch_limit,
+        "operational_query": INBOX_QUERY,
         "inspected_visible_count": len(messages),
         "processed_exact_count": len(ids),
         "archived_count": len(archived),
@@ -184,17 +167,33 @@ def run(broker: Broker, batch_limit: int = BATCH_LIMIT) -> dict[str, Any]:
         "email_observation_is_runtime_evidence": False,
         "archive_success_is_runtime_evidence": False,
         "incident_proposals_require_canonical_task_ingress": True,
+        "unrelated_inbox_mail_selected_for_archive": False,
         "authority_effect": "NONE_MAILBOX_MAINTENANCE_AND_INCIDENT_PROPOSAL_ONLY",
     }
 
 
+def parse_broker_command(args: argparse.Namespace) -> list[str]:
+    if args.broker_json:
+        try:
+            value = json.loads(args.broker_json)
+        except Exception as exc:
+            raise RuntimeError("broker JSON invalid") from exc
+        require(isinstance(value, list) and value, "broker JSON must be non-empty list")
+        require(all(isinstance(item, str) and item for item in value), "broker JSON command items invalid")
+        return list(value)
+    require(bool(args.broker), "broker command required")
+    return list(args.broker)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--broker", nargs="+", required=True, help="Already-local TV/TVC-governed broker command")
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument("--broker", nargs="+", help="Legacy already-local broker command")
+    group.add_argument("--broker-json", help="Exact JSON array for nested broker command and options")
     parser.add_argument("--output", type=Path)
     parser.add_argument("--batch-limit", type=int, default=BATCH_LIMIT)
     args = parser.parse_args()
-    receipt = run(Broker(args.broker), args.batch_limit)
+    receipt = run(Broker(parse_broker_command(args)), args.batch_limit)
     text = json.dumps(receipt, indent=2, sort_keys=True) + "\n"
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
