@@ -1,0 +1,104 @@
+{
+  "schema": "stegverse.cross-task-coordination-fragment/v1",
+  "fragment_id": "RUNTIME-PROFILE-MAP-CANONICAL-WORK-INGRESS-001",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "predicates": [
+    {
+      "predicate_id": "PRED-RUNTIME-PROFILE-MAP-CANONICAL-WORK-REQUEST-STAGED-001",
+      "semantic_predicate_id": "canonical_work_request_staged",
+      "subject_binding": {
+        "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+        "request_id": "RESIDENT-EXEC-CANONICAL-WORK-RUNTIME-PROFILE-MAP-001"
+      },
+      "state": "SATISFIED",
+      "description": "The generalized registered-task Canonical Work ingress path contains the exact non-authorizing resident request for STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001 and the existing resident consumer includes its fixed request specification.",
+      "authoritative_producer": "StegVerse-Labs/.github source/control plane",
+      "required_schema": "stegverse.resident-execution-request/v1",
+      "required_scope": "registered canonical task resident request staging",
+      "required_execution_instance": "RESIDENT-EXEC-CANONICAL-WORK-RUNTIME-PROFILE-MAP-001",
+      "max_age_seconds": null,
+      "required_fields": ["task_id", "request_id", "state", "authority_effect"],
+      "expected_output_ref": "control/resident-execution-request.d/canonical-work-runtime-profile-map-001.json",
+      "consumers": ["STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"],
+      "canonical_source_refs": [
+        "docs/CANONICAL_RUNTIME_PROFILE_MAP_MIRROR_HANDOFF.md",
+        "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md",
+        "control/resident-execution-request.d/canonical-work-runtime-profile-map-001.json",
+        "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py"
+      ]
+    },
+    {
+      "predicate_id": "PRED-RUNTIME-PROFILE-MAP-CANONICAL-WORK-INGRESS-OBSERVED-001",
+      "semantic_predicate_id": "resident_request_consumed",
+      "subject_binding": {
+        "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+        "request_id": "RESIDENT-EXEC-CANONICAL-WORK-RUNTIME-PROFILE-MAP-001"
+      },
+      "state": "UNKNOWN",
+      "description": "The exact Runtime Profile Map resident request was authentically consumed and the existing Universal Interlock/InTr Canonical Work path emitted task-specific ingress, consumption and bootstrap evidence for this task.",
+      "authoritative_producer": "existing sovereign resident Canonical Work consumer + Universal Interlock/InTr",
+      "required_schema": "stegverse.canonical-work-bootstrap-request-consumption/v1",
+      "required_scope": "authentic Runtime Profile Map Canonical Work resident ingress",
+      "required_execution_instance": "RESIDENT-EXEC-CANONICAL-WORK-RUNTIME-PROFILE-MAP-001",
+      "max_age_seconds": null,
+      "required_fields": ["state", "task_id", "request_sha256", "bootstrap_receipt_ref"],
+      "expected_output_ref": "receipts/sovereign-host/canonical-work-runtime-profile-map-request-consumption.latest.json",
+      "consumers": ["STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"],
+      "canonical_source_refs": [
+        "docs/CANONICAL_RUNTIME_PROFILE_MAP_MIRROR_HANDOFF.md",
+        "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md",
+        "control/resident-execution-request.d/canonical-work-runtime-profile-map-001.json"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "evidence_id": "EVID-RUNTIME-PROFILE-MAP-CANONICAL-WORK-REQUEST-STAGED-001",
+      "predicate_id": "PRED-RUNTIME-PROFILE-MAP-CANONICAL-WORK-REQUEST-STAGED-001",
+      "subject_binding": {
+        "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+        "request_id": "RESIDENT-EXEC-CANONICAL-WORK-RUNTIME-PROFILE-MAP-001"
+      },
+      "producer": "StegVerse-Labs/.github",
+      "ref": "control/resident-execution-request.d/canonical-work-runtime-profile-map-001.json",
+      "schema": "stegverse.resident-execution-request/v1",
+      "scope": "registered canonical task resident request staging",
+      "execution_instance": "SOURCE_REQUEST_STAGING_ONLY",
+      "observed_at": "2026-09-06",
+      "fields": {
+        "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+        "request_id": "RESIDENT-EXEC-CANONICAL-WORK-RUNTIME-PROFILE-MAP-001",
+        "state": "REQUESTED",
+        "authority_effect": "NONE_REQUEST_ONLY"
+      },
+      "authority_effect": "EVIDENCE_ONLY"
+    }
+  ],
+  "gaps": [
+    {
+      "predicate_id": "PRED-RUNTIME-PROFILE-MAP-CANONICAL-WORK-INGRESS-OBSERVED-001",
+      "subject_binding": {
+        "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+        "request_id": "RESIDENT-EXEC-CANONICAL-WORK-RUNTIME-PROFILE-MAP-001"
+      },
+      "existing_evidence_refs": [
+        "control/resident-execution-request.d/canonical-work-runtime-profile-map-001.json",
+        "docs/CANONICAL_RUNTIME_PROFILE_MAP_MIRROR_HANDOFF.md",
+        "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md"
+      ],
+      "rejected_because": [
+        "SOURCE_REQUEST_STAGING_IS_NOT_RUNTIME_CONSUMPTION",
+        "NO_QUALIFYING_AUTHENTIC_REQUEST_CONSUMPTION_RECEIPT_OBSERVED",
+        "NO_AUTHENTIC_INTR_ADMISSION_MAY_BE_INFERRED_FROM_SOURCE_MERGE_CI_OR_HEARTBEAT"
+      ],
+      "missing_observation": "Authentic resident consumption plus task-specific Canonical Work ingress/consumption/bootstrap evidence for STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001.",
+      "required_producer": "existing sovereign resident Canonical Work consumer + Universal Interlock/InTr",
+      "required_output_ref": "receipts/sovereign-host/canonical-work-runtime-profile-map-request-consumption.latest.json",
+      "required_schema": "stegverse.canonical-work-bootstrap-request-consumption/v1",
+      "required_fields": ["state", "task_id", "request_sha256", "bootstrap_receipt_ref"],
+      "required_freshness": null,
+      "collision_refs": [],
+      "action_without_collision": "Allow the existing resident dispatcher/Canonical Work consumer to visit the staged Runtime Profile Map request. Do not create a second runtime, scheduler, WorkerCoordinator, ingress path, credential path, or fabricated receipt. After authentic ingress, continue through the existing Runtime Profile Map resident chain, Master Records reconciliation, and current-authority review."
+    }
+  ]
+}
