@@ -171,6 +171,16 @@ Terminal packages remain non-checkoutable because portable admission still requi
 
 This sequential-lineage behavior allows downstream same-device consumers to reuse the existing portable WorkerCoordinator instead of requiring another machine or creating another runtime authority plane. It does not by itself package, admit, dispatch, execute, or complete any downstream task, and it does not establish current iPhone runtime presence or authentic resident execution evidence.
 
+### Canonical Work task ingress
+
+The Canonical Work resident bootstrap is a **shared governed ingress mechanism for tasks that already exist in the canonical Task Registry**. It is no longer limited to the coordination bootstrap task itself. A caller must provide an explicit `task_id`; the bootstrap fails closed unless that identity resolves exactly once, remains `PROPOSED`, explicitly allows `INGRESS_ADMITTED`, has no projected WorkerCoordinator claim/fence, and preserves the canonical authority model.
+
+The bootstrap reuses the existing Universal InTr listener and Canonical Work ingress adapter. It does not create task identity, a second listener, another scheduler, another WorkerCoordinator, or another authority plane. The resident Canonical Work consumer may carry multiple explicit task request specifications and visits them independently so one task-local failure does not prevent another registered request from being attempted.
+
+A successful bootstrap receipt proves only the exact bounded `TASK_INGRESS` request, `INGRESS_ADMITTED` receipt, Canonical Work consumption receipt, and proposed registry projection that it actually observed. It does **not** prove WorkerCoordinator claim/fence, governed task execution, Master Records reconciliation, egress, closure, deployment, or product activation. Source presence, request staging, merge, CI, heartbeat progression, or dispatcher visitation likewise do not substitute for those runtime predicates.
+
+`QUANTUM-RESILIENCE-001` is the first additional task staged through this reusable path. Its request remains non-authorizing and requires the same resident Interlock/InTr transition boundary, TV/TVC credential authority, no GitHub-token runtime authority, and no second user-operated machine.
+
 ### Cross-task active-claim projection
 
 The canonical cross-task coordination ledger may mirror an already-existing WorkerCoordinator claim/fence as **coordination-only ownership evidence** when its task, claim, fence, worker identity, and mutation/evidence scope are supported by canonical handoff and control-plane records. These projections are used to prevent another session or autonomous entity from competing with machine-owned work merely because the underlying task is reported as `BLOCKED` or otherwise nonterminal.

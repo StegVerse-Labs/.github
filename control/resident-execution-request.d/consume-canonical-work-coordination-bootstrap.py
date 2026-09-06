@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
-"""Resident Canonical Work bootstrap consumer carried by the already-copied control request directory.
+"""Resident Canonical Work bootstrap consumer carried by the copied control request directory.
 
 This consumer exists in `control/resident-execution-request.d`, which is already
 materialized wholesale by the sovereign worker source refresh. It therefore does
-not require expanding the resident static-script manifest merely to make this new
-bounded work lane discoverable.
+not require expanding the resident static-script manifest merely to make bounded
+Canonical Work task ingress discoverable.
 
 On an admitted native resident host it copies only the explicitly enumerated
 Canonical Work source files from the already-local canonical source root into the
 resident checkout, verifies byte equality, then invokes the registered bounded
-bootstrap wrapper. No network source fetch, credential use, HB/oscillator advance,
+bootstrap wrapper for explicit task specifications. Request specifications are
+visited independently so one task-local failure does not prevent a later task from
+being attempted. No network source fetch, credential use, HB/oscillator advance,
 claim/fence minting, or second runtime implementation is permitted here.
 """
 from __future__ import annotations
@@ -24,12 +26,21 @@ import sys
 from pathlib import Path
 from typing import Any, Mapping
 
-REQUEST_REL = Path("control/resident-execution-request.d/canonical-work-coordination-bootstrap-001.json")
-CONSUMPTION_REL = Path("receipts/sovereign-host/canonical-work-coordination-bootstrap-request-consumption.latest.json")
-BOOTSTRAP_RUNTIME_REL = Path("runtime/canonical-work-coordination")
-TARGET_TASK = "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
 TARGET_MODE = "CANONICAL_WORK_EVENT_BOOTSTRAP"
 TARGET_ENTRYPOINT = Path("scripts/install_and_run_canonical_work_event_bootstrap.py")
+DEFAULT_SPEC = {
+    "request_rel": Path("control/resident-execution-request.d/canonical-work-coordination-bootstrap-001.json"),
+    "consumption_rel": Path("receipts/sovereign-host/canonical-work-coordination-bootstrap-request-consumption.latest.json"),
+    "bootstrap_runtime_rel": Path("runtime/canonical-work-coordination"),
+    "task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+}
+QUANTUM_SPEC = {
+    "request_rel": Path("control/resident-execution-request.d/canonical-work-quantum-resilience-001.json"),
+    "consumption_rel": Path("receipts/sovereign-host/canonical-work-quantum-resilience-request-consumption.latest.json"),
+    "bootstrap_runtime_rel": Path("runtime/canonical-work-quantum-resilience"),
+    "task_id": "QUANTUM-RESILIENCE-001",
+}
+REQUEST_SPECS = (DEFAULT_SPEC, QUANTUM_SPEC)
 
 MATERIALIZE = (
     Path("scripts/install_and_run_canonical_work_event_bootstrap.py"),
@@ -84,11 +95,21 @@ def stable_hash(value: Any) -> str:
     return hashlib.sha256(raw).hexdigest()
 
 
-def validate_request(request: Mapping[str, Any]) -> None:
+def validate_spec(spec: Mapping[str, Any]) -> None:
+    for key in ("request_rel", "consumption_rel", "bootstrap_runtime_rel", "task_id"):
+        require(key in spec, f"canonical work consumer spec missing {key}")
+    require(isinstance(spec["request_rel"], Path), "request_rel must be Path")
+    require(isinstance(spec["consumption_rel"], Path), "consumption_rel must be Path")
+    require(isinstance(spec["bootstrap_runtime_rel"], Path), "bootstrap_runtime_rel must be Path")
+    require(isinstance(spec["task_id"], str) and bool(spec["task_id"]), "task_id required")
+
+
+def validate_request(request: Mapping[str, Any], spec: Mapping[str, Any] = DEFAULT_SPEC) -> None:
+    validate_spec(spec)
     expected = {
         "schema": "stegverse.resident-execution-request/v1",
         "state": "REQUESTED",
-        "task_id": TARGET_TASK,
+        "task_id": spec["task_id"],
         "mode": TARGET_MODE,
         "entrypoint": str(TARGET_ENTRYPOINT),
         "credential_authority": "TV/TVC",
@@ -153,17 +174,30 @@ def materialize(source: Path, runtime: Path) -> list[dict[str, Any]]:
     return rows
 
 
-def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
+def consume_for_spec(
+    source_root: Path,
+    runtime_root: Path,
+    spec: Mapping[str, Any],
+    *,
+    runner=subprocess.run,
+    env: Mapping[str, str] | None = None,
+) -> dict[str, Any]:
+    validate_spec(spec)
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
-    request_path = runtime / REQUEST_REL
+    request_path = runtime / spec["request_rel"]
     if not request_path.is_file():
-        return {"schema": "stegverse.canonical-work-bootstrap-request-consumption/v1", "state": "NO_REQUEST", "authority_effect": "NONE"}
+        return {
+            "schema": "stegverse.canonical-work-bootstrap-request-consumption/v1",
+            "state": "NO_REQUEST",
+            "task_id": spec["task_id"],
+            "authority_effect": "NONE",
+        }
 
     request = load_json(request_path)
-    validate_request(request)
+    validate_request(request, spec)
     request_hash = stable_hash(request)
-    consumption_path = runtime / CONSUMPTION_REL
+    consumption_path = runtime / spec["consumption_rel"]
     if consumption_path.is_file():
         previous = load_json(consumption_path)
         if previous.get("request_sha256") == request_hash and previous.get("state") == "COMPLETED":
@@ -174,8 +208,17 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     materialized = materialize(source, runtime)
     entrypoint = runtime / TARGET_ENTRYPOINT
     safe_env = clean_env(env)
-    bootstrap_runtime = runtime / BOOTSTRAP_RUNTIME_REL
-    command = [sys.executable, str(entrypoint), "--runtime-root", str(bootstrap_runtime), "--registry", str(runtime / "data/canonical-task-registry.json")]
+    bootstrap_runtime = runtime / spec["bootstrap_runtime_rel"]
+    command = [
+        sys.executable,
+        str(entrypoint),
+        "--task-id",
+        spec["task_id"],
+        "--runtime-root",
+        str(bootstrap_runtime),
+        "--registry",
+        str(runtime / "data/canonical-task-registry.json"),
+    ]
     completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=safe_env, timeout=1200)
     result = parse_json_object(completed.stdout)
     bootstrap_receipt = bootstrap_runtime / "receipts/sovereign-host/canonical-work-event-bootstrap.latest.json"
@@ -183,6 +226,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         completed.returncode == 0
         and isinstance(result, dict)
         and result.get("state") == "INGRESS_CONSUMPTION_AND_PROJECTION_OBSERVED"
+        and result.get("task_id") == spec["task_id"]
         and bootstrap_receipt.is_file()
     )
     receipt = {
@@ -190,7 +234,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         "state": "COMPLETED" if completed_ok else "ATTEMPT_RECORDED",
         "request_id": request.get("request_id"),
         "request_sha256": request_hash,
-        "task_id": TARGET_TASK,
+        "task_id": spec["task_id"],
         "entrypoint": str(TARGET_ENTRYPOINT),
         "source_materialization": materialized,
         "source_materialization_count": len(materialized),
@@ -213,14 +257,50 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     return receipt
 
 
+def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
+    return consume_for_spec(source_root, runtime_root, DEFAULT_SPEC, runner=runner, env=env)
+
+
+def consume_all(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
+    outcomes: list[dict[str, Any]] = []
+    for spec in REQUEST_SPECS:
+        try:
+            outcomes.append(consume_for_spec(source_root, runtime_root, spec, runner=runner, env=env))
+        except Exception as exc:
+            outcomes.append({
+                "schema": "stegverse.canonical-work-bootstrap-request-consumption/v1",
+                "state": "REQUEST_CONSUMPTION_EXCEPTION",
+                "task_id": spec["task_id"],
+                "error_type": type(exc).__name__,
+                "authority_effect": "NONE_FAIL_CLOSED",
+            })
+    acceptable = {"NO_REQUEST", "ALREADY_CONSUMED", "COMPLETED", "ATTEMPT_RECORDED"}
+    all_acceptable = all(row.get("state") in acceptable for row in outcomes)
+    return {
+        "schema": "stegverse.canonical-work-bootstrap-request-set-consumption/v1",
+        "state": "COMPLETED" if all_acceptable else "ATTEMPT_RECORDED",
+        "request_count": len(REQUEST_SPECS),
+        "outcomes": outcomes,
+        "later_request_attempts_blocked_by_earlier_failure": False,
+        "network_source_fetch_performed": False,
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": "NONE",
+        "heartbeat_grants_execution_authority": False,
+        "request_set_grants_execution_authority": False,
+        "claim_or_fence_minted": False,
+        "second_machine_required": False,
+        "authority_effect": "NONE_CONSUMPTION_EVIDENCE_ONLY",
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--source-root", type=Path, required=True)
     parser.add_argument("--runtime-root", type=Path, required=True)
     args = parser.parse_args()
-    receipt = consume(args.source_root, args.runtime_root)
+    receipt = consume_all(args.source_root, args.runtime_root)
     print(json.dumps(receipt, sort_keys=True))
-    return 0 if receipt.get("state") in {"NO_REQUEST", "ALREADY_CONSUMED", "COMPLETED", "ATTEMPT_RECORDED"} else 1
+    return 0 if receipt.get("state") in {"COMPLETED", "ATTEMPT_RECORDED"} else 1
 
 
 if __name__ == "__main__":

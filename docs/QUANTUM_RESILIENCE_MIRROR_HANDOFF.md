@@ -2,7 +2,7 @@
 
 Repository: `StegVerse-Labs/.github`  
 Goal: `QUANTUM-RESILIENCE-001`  
-State: `SOURCE_POLICY_AWARENESS_AND_EXPANDING_CENSUS_MERGED / CRYPTO_BACKENDS_BROADER_CENSUS_RESIDENT_CONSUMPTION_REQUIRED`  
+State: `SOURCE_POLICY_AWARENESS_CENSUS_AND_CANONICAL_INGRESS_REQUEST_MERGED_PENDING / CRYPTO_BACKENDS_BROADER_CENSUS_RESIDENT_CONSUMPTION_REQUIRED`  
 Credential authority: `TV/TVC`  
 GitHub token runtime authority: `NONE`
 
@@ -83,11 +83,34 @@ merge: 525227de4164bc4cc55ee99b6ec2677cd8bf1889
 result: canonical crypto-census reconciliation after TLS, wallet and software-provenance scoped passes
 Heartbeat run 34000085959: SUCCESS
 Organization control-plane run 34000086032: SUCCESS
+
+.github PR #1024
+merge: 32749c463cf02cce08c16e87778c01e8e9c2b3e1
+result: QUANTUM-RESILIENCE-001 registered as PROPOSED in the canonical Task Registry with no WorkerCoordinator claim/fence or runtime-completion claim
 ```
 
 The runtime-awareness source binds the canonical contract and census into three entity-specific standing states through the existing WorkerCoordinator/dispatcher substrate. Protected SV001/SV002/SV011 execution requires both Astra-class and quantum-resilience standing awareness. Missing quantum awareness fails closed as `QUANTUM_STANDING_AWARENESS_REQUIRED`.
 
 These are source/control/census results only. They do not prove deployed PQ protection or authentic resident quantum awareness.
+
+## Canonical task ingress path
+
+`QUANTUM-RESILIENCE-001` is now represented in `data/canonical-task-registry.json` as `PROPOSED`, with `INGRESS_ADMITTED` as its next allowed governed transition. The existing Canonical Work bootstrap has been generalized from one hard-coded task to an explicit **registered canonical task** boundary. It rejects unregistered, duplicate, non-PROPOSED, already-claimed, or transition-ineligible task identities and continues to reuse the existing Universal InTr listener, Canonical Work ingress adapter, and WorkerCoordinator authority model.
+
+The non-authorizing resident request is staged at:
+
+`control/resident-execution-request.d/canonical-work-quantum-resilience-001.json`
+
+The existing resident selector/consumer `canonical_work_coordination` visits this request through the same control-directory consumer used for the original coordination task. No second dispatcher, listener, scheduler, WorkerCoordinator, credential path, or task authority is created.
+
+Source/request staging does **not** establish `INGRESS_ADMITTED`. Authentic task ingress requires resident evidence including:
+
+- `receipts/sovereign-host/canonical-work-quantum-resilience-request-consumption.latest.json`;
+- the nested task-specific Canonical Work ingress receipt;
+- the nested Canonical Work consumption receipt;
+- the bounded bootstrap receipt and proposed registry projection.
+
+Only after those authentic receipts exist may governed registry persistence advance the task, followed by Master Records reconciliation and WorkerCoordinator admission review. Source, merge, CI, request presence, or dispatcher visitation are not substitutes.
 
 ## Durable migration/census/runtime tasks
 
@@ -161,18 +184,19 @@ Construct and test bounded hybrid/PQC migration candidates, including compatibil
 
 ## Remaining machine tasks
 
-1. materialize the merged quantum-awareness source into the sovereign resident source tree and obtain the seven authentic artifacts defined by `docs/QUANTUM_RUNTIME_AWARENESS_MIRROR_HANDOFF.md`;
-2. execute `.github#1022` to inventory `OTHER-DEVICE-NODE-IDENTITY` until no critical device/node identity surface is unbounded;
-3. continue `.github#1014` for `LONG-LIVED-STORED-CONFIDENTIALITY`, including encrypted archives/backups and asymmetric wrapping dependencies;
-4. integrate a real validated ML-DSA backend into StegID receipt mint/verify paths;
-5. integrate a real validated ML-DSA verifier into TVC and bind the active warrant gate to versioned suites;
-6. design the P-256 current-phone device-possession migration around actual platform capability, with explicit compensating controls if native PQ device credentials are unavailable;
-7. design and validate hybrid P-256 + ML-KEM key establishment for the SKAP browser/resident paths represented by continuity-vault-kit#187 and TVC#322;
-8. extend TLS/WebPKI census to real negotiated algorithms and give long-lived-sensitive paths an ML-KEM/hybrid disposition;
-9. extend wallet census to actual admitted wallet-provider algorithms, chain constraints and repository-controlled verification/projection cryptography while preserving USER_ONLY authority;
-10. extend software/update provenance census to org tag/commit signing, registries, Site/web/mobile/StegOS updates and dependency provenance, then implement a versioned authenticated provenance envelope;
-11. produce executable downgrade, stale-key, revoked-key, unknown-suite, hybrid verification, rollback and historical-verification tests;
-12. propagate release-ready semantics to Site, Publisher, admissibility-wiki and stegguardian-wiki only after their handoffs permit it.
+1. obtain authentic Canonical Work `INGRESS_ADMITTED` evidence for `QUANTUM-RESILIENCE-001` through the staged resident request, then perform Master Records reconciliation and WorkerCoordinator admission review;
+2. materialize the merged quantum-awareness source into the sovereign resident source tree and obtain the seven authentic artifacts defined by `docs/QUANTUM_RUNTIME_AWARENESS_MIRROR_HANDOFF.md`;
+3. execute `.github#1022` to inventory `OTHER-DEVICE-NODE-IDENTITY` until no critical device/node identity surface is unbounded;
+4. continue `.github#1014` for `LONG-LIVED-STORED-CONFIDENTIALITY`, including encrypted archives/backups and asymmetric wrapping dependencies;
+5. integrate a real validated ML-DSA backend into StegID receipt mint/verify paths;
+6. integrate a real validated ML-DSA verifier into TVC and bind the active warrant gate to versioned suites;
+7. design the P-256 current-phone device-possession migration around actual platform capability, with explicit compensating controls if native PQ device credentials are unavailable;
+8. design and validate hybrid P-256 + ML-KEM key establishment for the SKAP browser/resident paths represented by continuity-vault-kit#187 and TVC#322;
+9. extend TLS/WebPKI census to real negotiated algorithms and give long-lived-sensitive paths an ML-KEM/hybrid disposition;
+10. extend wallet census to actual admitted wallet-provider algorithms, chain constraints and repository-controlled verification/projection cryptography while preserving USER_ONLY authority;
+11. extend software/update provenance census to org tag/commit signing, registries, Site/web/mobile/StegOS updates and dependency provenance, then implement a versioned authenticated provenance envelope;
+12. produce executable downgrade, stale-key, revoked-key, unknown-suite, hybrid verification, rollback and historical-verification tests;
+13. propagate release-ready semantics to Site, Publisher, admissibility-wiki and stegguardian-wiki only after their handoffs permit it.
 
 ## Runtime-awareness evidence gate
 
@@ -217,4 +241,4 @@ The aggregate must be `COMPLETED`, have `entity_count=3`, exact contract/census 
 
 ## Archive posture
 
-This handoff is the canonical continuation point for the quantum-resilience program. Source/CI/checksum/manifests must never be represented as deployed PQ protection, authenticated release provenance, or authentic resident execution evidence.
+This handoff is the canonical continuation point for the quantum-resilience program. Source/CI/checksum/manifests/request staging must never be represented as deployed PQ protection, authenticated release provenance, authentic resident execution evidence, or authentic task admission.
