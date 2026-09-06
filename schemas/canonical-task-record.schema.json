@@ -17,7 +17,7 @@
     "root_correlation_id": {"type": ["string", "null"]},
     "parent_task_id": {"type": ["string", "null"]},
     "goal": {"type": "string", "minLength": 1},
-    "coordination_state": {"enum": ["PROPOSED", "INGRESS_ADMITTED", "CLAIMABLE", "CLAIMED", "IN_PROGRESS", "BLOCKED", "COMPLETION_CLAIMED", "CLOSED", "TRANSFERRED", "SUPERSEDED", "DEFERRED", "REOPENED_DUE_TO_NEW_EVIDENCE", "COMPLETION_REVOKED"]},
+    "coordination_state": {"enum": ["PROPOSED", "INGRESS_ADMITTED", "CLAIMABLE", "CLAIMED", "IN_PROGRESS", "COMPLETION_CLAIMED", "CLOSED", "TRANSFERRED", "SUPERSEDED", "DEFERRED", "REOPENED_DUE_TO_NEW_EVIDENCE", "COMPLETION_REVOKED"]},
     "source_refs": {"type": "array", "items": {"type": "string"}},
     "targets": {
       "type": "object",
