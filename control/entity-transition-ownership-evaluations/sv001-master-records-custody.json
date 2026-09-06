@@ -1,0 +1,31 @@
+{
+  "schema": "stegverse.entity-transition-ownership-evaluation/v1",
+  "issue": "StegVerse-Labs/.github#1036",
+  "transition_id": "SV001_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION",
+  "canonical_task": "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
+  "authority_class": "MACHINE_GOVERNED",
+  "execution_surface": "CURRENT_USER_IPHONE",
+  "human_interaction_required": false,
+  "human_approval_required": false,
+  "route": "ENTITY_MACHINE_GOVERNANCE_LOOP",
+  "current_governance_required": true,
+  "authority_inferred": false,
+  "authority_reused": false,
+  "prior_receipt_authorizes_transition": false,
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_authority": false,
+  "second_user_operated_machine_required": false,
+  "canonical_source_evidence": {
+    "master_records_package": "master-records/orchestration:portable/stegverse001-autonomy-custody-package.json",
+    "master_records_package_task": "MR-STEGVERSE001-BOUNDED-AUTONOMY-001",
+    "master_records_custody_authority": true,
+    "master_records_execution_authority": false,
+    "site_projection_handoff": "StegVerse-Labs/Site:docs/MR_SV001_CURRENT_IPHONE_CUSTODY_MIRROR_HANDOFF.md",
+    "site_role": "EXACT_SOURCE_MATERIALIZATION_AND_SAME_DEVICE_PERSISTENCE_CARRIER_ONLY",
+    "canonical_cycle_receipt_sha256": "sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35"
+  },
+  "classifier": "scripts/evaluate_entity_transition_ownership.py",
+  "classifier_semantics": "Existing MACHINE_GOVERNED current-iPhone transitions route to ENTITY_MACHINE_GOVERNANCE_LOOP and may not be promoted to manual approval.",
+  "authority_effect": "NONE_CLASSIFICATION_ONLY"
+}
