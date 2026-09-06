@@ -1,0 +1,45 @@
+{
+  "schema": "stegverse.machine-preflight/v1",
+  "task_id": "STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190",
+  "repository": "StegVerse-Labs/.github",
+  "observed_at": "2026-09-06T01:35:00-05:00",
+  "authority_effect": "NONE_PREFLIGHT_ONLY",
+  "canonical_handoffs": [
+    "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegOS/docs/OBJECT_PROVENANCE_CONTINUITY_MIRROR_HANDOFF.md",
+    "master-records/orchestration/docs/OBJECT_PROVENANCE_CUSTODY_MIRROR_HANDOFF.md"
+  ],
+  "task_registry": {
+    "task_id": "STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190",
+    "coordination_state": "PROPOSED",
+    "next_transition": "INGRESS_ADMITTED",
+    "authority": "TASK_REGISTRY_COORDINATION_ONLY"
+  },
+  "collision_review": {
+    "open_pr_owning_exact_mutation_observed": false,
+    "canonical_owner_issue": "StegVerse-Labs/.github#1026",
+    "source_owner_issue": "StegVerse-Labs/StegOS#190",
+    "master_records_owner_issue": "master-records/orchestration#74",
+    "duplicate_runtime_or_authority_creation_allowed": false
+  },
+  "proposed_mutation": {
+    "path": "control/cross-task-coordination.d/object-provenance-continuity-190.json",
+    "purpose": "Bind the authentic CanonicalWork ingress predicate to exact successful terminal receipt values so ATTEMPT_RECORDED or wrong-task evidence cannot satisfy it by field presence alone.",
+    "runtime_mutation_requested": false,
+    "authority_change_requested": false
+  },
+  "readme_impact": {
+    "material_function_change": false,
+    "readme_updated_in_change_set": false,
+    "readme_path": "README.md",
+    "no_readme_update_reason": "The repository README already defines required_field_values exact terminal-value semantics for cross-task evidence predicates. This change applies that documented generic fail-closed evidence qualification to one existing object-provenance predicate without changing runtime behavior, interfaces, authority, prerequisites, dependencies, or capability meaning.",
+    "evidence_refs": [
+      "README.md#exact-cross-task-evidence-field-values",
+      "receipts/preflight/CROSS-TASK-REQUIRED-FIELD-VALUES-001.json",
+      "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py"
+    ],
+    "disposition": "NO_README_CHANGE_REQUIRED_EXISTING_GENERIC_SEMANTICS"
+  },
+  "result": "PASS",
+  "next_action": "Apply exact required_field_values to PRED-OBJECT-PROVENANCE-CANONICAL-WORK-INGRESS-190 only; retain UNKNOWN until authentic qualifying evidence exists."
+}
