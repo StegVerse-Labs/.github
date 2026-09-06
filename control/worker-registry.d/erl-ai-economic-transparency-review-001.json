@@ -25,6 +25,15 @@
       "task_id": "SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001",
       "worker_id": null,
       "worker_instance_id": null,
+      "admission": {
+        "authority_source": "handoffs/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json#authority",
+        "authority_domain": "INDEPENDENT_TASK_CONTROL",
+        "heartbeat_reference_only": true,
+        "heartbeat_grants_execution_authority": false,
+        "carrier_trigger_required": false,
+        "fresh_fence_required": true,
+        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+      },
       "source_state_vector_ref": "control/task-vectors/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json",
       "admissible_existence": {
         "capability_id": "stegverse:capability:erl-ai-economic-transparency-independent-review:v1",
@@ -45,10 +54,8 @@
           "review-packages/erl-ai-economic-transparency-001/manifest.json"
         ],
         "activation_proof_ref": null,
-        "blockers": [
-          "RESIDENT_EXECUTION_RECEIPT_PENDING"
-        ],
-        "continuation_owner": "resident sovereign heartbeat + erl-ai-economic-transparency-review-worker + StegVerse-Labs/Executive_Rhetoric_Ledger#104",
+        "blockers": ["RESIDENT_EXECUTION_RECEIPT_PENDING"],
+        "continuation_owner": "resident sovereign WorkerCoordinator + erl-ai-economic-transparency-review-worker + StegVerse-Labs/Executive_Rhetoric_Ledger#104",
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": false,
         "temporal_class": "current",
@@ -61,11 +68,7 @@
     {
       "adapter_ref": "process:erl-ai-economic-transparency-review-v1",
       "authority_source": "handoffs/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json#authority",
-      "capabilities": [
-        "runtime_observation",
-        "bounded_process_execution",
-        "evidence_class_preservation"
-      ],
+      "capabilities": ["runtime_observation", "bounded_process_execution", "evidence_class_preservation"],
       "capability_profile_ref": "control/worker-capability-profiles.json#public-research-worker-v1",
       "executor_type": "repository_worker",
       "last_seen_at": null,
