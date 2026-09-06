@@ -1,0 +1,83 @@
+{
+  "schema": "stegverse.session-build-preflight/v1",
+  "evaluated_at": "2026-09-05T20:03:00-05:00",
+  "goal": "Allow the already-requested SHWP-SV002-ORG-RUNTIME-ACTIVATION-001 task to execute on CURRENT_USER_IPHONE through the existing canonical portable WorkerCoordinator/StegOS execution surface without requiring another machine or creating another runtime authority plane.",
+  "task_id": "SHWP-SV002-ORG-RUNTIME-ACTIVATION-001",
+  "request_id": "RESIDENT-EXEC-SV002-ORG-RUNTIME-ACTIVATION-001",
+  "disposition": "CONTINUE_BOUNDED_REUSE",
+  "task_creation_permitted": false,
+  "canonical_owner": "StegVerse-Labs/.github",
+  "canonical_sources": {
+    "resident_carrier_handoff": "docs/CANONICAL_RESIDENT_CARRIER_MIRROR_HANDOFF.md",
+    "portable_workercoordinator_handoff": "docs/WORKERCOORDINATOR_PORTABLE_IPHONE_EXECUTION_MIRROR_HANDOFF.md",
+    "ios_interaction_handoff": "docs/CURRENT_USER_IOS_INTERACTION_SERIALIZATION_MIRROR_HANDOFF.md",
+    "task_registry": "data/canonical-task-registry.json",
+    "coordination_fragment": "control/cross-task-coordination.d/sv002-resident-request-predicates.json",
+    "request": "control/resident-execution-request.d/sv002-org-runtime-activation-001.json",
+    "native_consumer": "scripts/consume_sv002_org_runtime_activation_request.py",
+    "portable_authority_contract": "management/WORKERCOORDINATOR_PORTABLE_IPHONE_AUTHORITY_CONTRACT.json",
+    "portable_checkout": "workercoordinator/portable_checkout.js"
+  },
+  "preflight": {
+    "decision": "REUSE_OR_EXTEND_EXISTING",
+    "duplicate_runtime_or_scheduler_allowed": false,
+    "new_workercoordinator_allowed": false,
+    "new_claim_or_fence_authority_allowed": false,
+    "new_runtime_presence_predicate_allowed": false,
+    "new_resident_request_allowed": false,
+    "new_credential_path_allowed": false,
+    "runtime_truth_inferred": false,
+    "authority_effect": "NONE_PREWORK_DECISION_ONLY"
+  },
+  "observed_source_gap": {
+    "portable_execution_surface_exists": true,
+    "portable_execution_surface": "CURRENT_USER_IPHONE",
+    "second_user_operated_device_required_by_portable_contract": false,
+    "portable_checkout_is_task_generic": true,
+    "existing_packaged_consumer": "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
+    "existing_packaged_consumer_state": "COMPLETED_TERMINAL_NO_FURTHER_CLAIM",
+    "sv002_request_state": "REQUESTED",
+    "sv002_native_consumer_runtime": "PYTHON_NATIVE_WORKERCOORDINATOR",
+    "sv002_portable_package_observed": false,
+    "sv002_current_iphone_execution_binding_observed": false,
+    "gap": "The canonical current-iPhone WorkerCoordinator surface is not yet bound to the pending SV002 organization-runtime activation consumer. The only observed portable package is terminal SV001, while the SV002 consumer remains a native Python/local-filesystem subprocess path.",
+    "blocker_code_if_no_portable_binding": "OTHER_MACHINE_REQUIRED",
+    "lifecycle_state_if_no_portable_binding": "INCOMPLETE_REQUIRES_CONTINUED_BUILD",
+    "continuation_required": true
+  },
+  "master_records": {
+    "consulted": true,
+    "canonical_handoff": "master-records/orchestration/MASTER_RECORDS_ORCHESTRATION_MIRROR_HANDOFF.md",
+    "role": "OBSERVED_REALITY_AND_RECONSTRUCTION_ONLY",
+    "execution_authority_inferred": false
+  },
+  "cross_task_coordination": {
+    "consulted": true,
+    "canonical_handoff": "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
+    "matching_sv002_predicate": "PRED-RESIDENT-REQUEST-CONSUMED-SV002-ORG-RUNTIME-ACTIVATION-001",
+    "matching_collision_refs": [],
+    "matching_open_pr_observed": false,
+    "resident_presence_reuse": "DEFERRED_SUBJECT_BINDING_REQUIRED",
+    "runtime_truth_inferred": false,
+    "authority_effect": "NONE_COORDINATION_ONLY"
+  },
+  "readme_impact": {
+    "required": true,
+    "material_function_change": true,
+    "reason": "Binding SV002 to the current-iPhone portable WorkerCoordinator changes supported execution surface, runtime prerequisites, and failure behavior for an existing requested task.",
+    "readme_path": "README.md",
+    "readme_updated_in_change_set": false,
+    "must_be_completed_before_functional_merge": true
+  },
+  "highest_priority_admissible_machine_work": {
+    "action": "Extend the existing portable WorkerCoordinator/StegOS execution path for the existing SV002 request using the existing task identity and authority boundaries; reuse target-owned self-characterization semantics and emit the existing sv002-org-runtime-activation consumption schema. Do not create a second runtime or request.",
+    "human_action_required": false
+  },
+  "nonclaims": [
+    "PREFLIGHT_DOES_NOT_PROVE_CURRENT_IPHONE_RUNTIME_PRESENCE",
+    "PREFLIGHT_DOES_NOT_PROVE_WORKERCOORDINATOR_PRESENCE",
+    "PREFLIGHT_DOES_NOT_PROVE_REQUEST_DISPATCH_OR_CONSUMPTION",
+    "PREFLIGHT_DOES_NOT_PROVE_INTR_TRANSITION",
+    "PREFLIGHT_DOES_NOT_PROVE_SV002_TERMINAL_ROUND_TRIP"
+  ]
+}
