@@ -76,6 +76,19 @@ Authority invariants are unchanged:
 
 README impact: MATERIAL. `README.md` is updated in the same change set because this changes resident failure-recovery behavior and runtime dependency propagation.
 
+## Local source-refresh propagation repair — 2026-09-05
+
+Post-merge continuation found that `scripts/repair_resident_worker_presence.py` was not in the canonical `refresh_sovereign_worker_runtime_source.py::STATIC_FILES` set. An already-materialized resident runtime could therefore refresh its WorkerCoordinator source and continue carrying an older or absent self-heal module even after the canonical source was corrected.
+
+The existing local-only refresh lane now materializes the self-heal module alongside the WorkerCoordinator runtime source. This is source propagation only:
+- no network fetch or source transport is introduced;
+- mutable runtime state remains preserved;
+- no carrier, WorkerCoordinator, scheduler, claim/fence, credential, route, or transition authority is created;
+- refresh does not restart the HeartBeat carrier or prove that a running carrier has loaded the new Python module;
+- authentic runtime presence, request dispatch, consumption, and StegIndex operational proof remain separate evidence requirements.
+
+README impact: MATERIAL. `README.md` records this local refresh/failure-recovery behavior in the same change set.
+
 ## Runtime consequence
 
 A live canonical carrier plus a dead/missing WorkerCoordinator is now a validated self-healing runtime state rather than a passive `REQUESTED` backlog state. Authentic runtime presence still requires the canonical presence receipt from a real resident carrier-supervision visit, and authentic task completion still requires each task-specific receipt; this repair does not fabricate those receipts.
