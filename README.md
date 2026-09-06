@@ -101,19 +101,23 @@ A functional change is not documentation-complete merely because implementation,
 
 ### Machine preflight enforcement
 
-Functional mutation entering the StegVerse worker-task admission path must declare `readme_impact_required=true` in the task or handoff. The admission packet then evaluates a non-authorizing `readme_impact_complete` predicate before the existing WorkerCoordinator may continue toward assignment/claim/fence creation.
+README impact is evaluated at **both** canonical pre-work and worker-admission boundaries.
 
-When `material_function_change=true`, the preflight requires all of the following in the structured `readme_impact` record:
+The session/build pre-work entrypoint `scripts/session_build_preflight.py` accepts an explicit README-impact declaration before new functional work may be considered. When `--readme-impact-required` is set, the preflight fails closed with `STOP_AT_README_IMPACT_DEPENDENCY` unless the structured declaration proves either a complete README update for a material change or an evidence-supported non-material determination. This prevents a functional mutation from reaching task creation merely because StegIndex and cross-task coordination otherwise permit new work.
+
+Functional mutation entering the StegVerse worker-task admission path must also declare `readme_impact_required=true` in the task or handoff. The admission packet evaluates a non-authorizing `readme_impact_complete` predicate before the existing WorkerCoordinator may continue toward assignment/claim/fence creation.
+
+For `material_function_change=true`, both gates require:
 
 - `readme_updated_in_change_set=true`;
 - the affected `readme_path`;
 - evidence references tying the README update to the functional change.
 
-When a proposed change is explicitly determined **not** to be material, the no-update path requires both `no_readme_update_reason` and evidence references supporting that determination. Missing materiality, missing required README evidence, or a material change without a README update causes the admission verdict to fail closed.
+For an explicit **non-material** determination, the no-update path requires both `no_readme_update_reason` and evidence references supporting that determination. Missing materiality, missing required README evidence, or a material change without a README update causes the applicable preflight/admission gate to fail closed.
 
-Legacy/nonfunctional tasks are not retroactively stranded solely because they predate this field. The session-entry/preflight contract is responsible for marking new functional mutations as README-impact-required.
+Legacy/nonfunctional tasks are not retroactively stranded solely because they predate this field. New StegVerse functional mutations are expected to enter through the session-entry/preflight contract with README impact declared, and the worker-admission gate independently preserves the same completeness rule at execution admission.
 
-This README preflight is evidence-only. It grants no execution, claim, fence, lease, credential, routing, transition, publication, custody, or other authority.
+README completeness is evidence-only. It grants no execution, claim, fence, lease, credential, routing, transition, publication, custody, runtime truth, or other authority.
 
 ### Cross-task active-claim projection
 
