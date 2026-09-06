@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 ENTRY = ROOT / "scripts" / "session_build_preflight.py"
 
 class SessionBuildPreflightTests(unittest.TestCase):
-    def fake_root(self, decision, **extra):
+    def fake_root(self, decision, *, include_coordination=True, **extra):
         tmp = tempfile.TemporaryDirectory()
         scripts = Path(tmp.name) / "scripts"
         scripts.mkdir(parents=True, exist_ok=True)
@@ -28,15 +28,30 @@ class SessionBuildPreflightTests(unittest.TestCase):
             "import json\nprint(json.dumps(" + repr(payload) + "))\n",
             encoding="utf-8",
         )
+        if include_coordination:
+            projection = {
+                "authority_effect": "NONE_INDEX_PROJECTION_ONLY",
+                "source_fragment_ids": ["F1"],
+                "related_active_claims": [],
+                "foreign_active_claims": [],
+                "gaps": [],
+                "predicate_dependency_relationships": [],
+                "runtime_truth_inferred": False,
+            }
+            (scripts / "resolve_cross_task_coordination.py").write_text(
+                "import json\nprint(json.dumps(" + repr(projection) + "))\n",
+                encoding="utf-8",
+            )
         return tmp
 
-    def run_entry(self, root, goal="test goal"):
+    def run_entry(self, root, goal="test goal", *extra_args):
         return subprocess.run(
             [
                 sys.executable,
                 str(ENTRY),
                 "--goal", goal,
                 "--stegindex-root", root,
+                *extra_args,
             ],
             cwd=ROOT,
             text=True,
@@ -50,6 +65,7 @@ class SessionBuildPreflightTests(unittest.TestCase):
         result = json.loads(proc.stdout)
         self.assertEqual(result["disposition"], "REUSE_EXISTING_CAPABILITY")
         self.assertFalse(result["task_creation_permitted"])
+        self.assertTrue(result["cross_task_coordination"]["coordination_consulted"])
 
     def test_machine_continuation_prevents_new_task_creation(self):
         with self.fake_root("CONTINUE_MACHINE_EXECUTION") as tmp:
@@ -71,13 +87,41 @@ class SessionBuildPreflightTests(unittest.TestCase):
         self.assertEqual(result["disposition"], "STOP_AT_EXACT_DEPENDENCY")
         self.assertFalse(result["task_creation_permitted"])
 
-    def test_no_match_is_only_state_that_permits_new_work(self):
+    def test_no_match_permits_new_work_only_after_coordination_consulted(self):
         with self.fake_root("NO_EXISTING_CAPABILITY_MATCH") as tmp:
             proc = self.run_entry(tmp)
         self.assertEqual(proc.returncode, 0, proc.stderr)
         result = json.loads(proc.stdout)
         self.assertEqual(result["disposition"], "NEW_WORK_MAY_BE_CONSIDERED")
         self.assertTrue(result["task_creation_permitted"])
+        self.assertTrue(result["coordination_required_before_new_work"])
+        self.assertTrue(result["cross_task_coordination"]["coordination_consulted"])
+        self.assertFalse(result["cross_task_coordination"]["runtime_truth_inferred"])
+
+    def test_no_match_fails_closed_when_coordination_resolver_unavailable(self):
+        with self.fake_root("NO_EXISTING_CAPABILITY_MATCH", include_coordination=False) as tmp:
+            proc = self.run_entry(tmp)
+        self.assertEqual(proc.returncode, 2, proc.stderr)
+        result = json.loads(proc.stdout)
+        self.assertEqual(result["disposition"], "STOP_AT_COORDINATION_DEPENDENCY")
+        self.assertFalse(result["task_creation_permitted"])
+        self.assertFalse(result["cross_task_coordination"]["coordination_consulted"])
+        self.assertEqual(result["cross_task_coordination"]["state"], "COORDINATION_RESOLVER_UNAVAILABLE")
+
+    def test_coordination_filters_are_forwarded_without_granting_admission(self):
+        with self.fake_root("REUSE_OR_EXTEND_EXISTING") as tmp:
+            proc = self.run_entry(
+                tmp,
+                "test goal",
+                "--coordination-task-id", "SHWP-X",
+                "--coordination-predicate-id", "P-X",
+            )
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        result = json.loads(proc.stdout)
+        coordination = result["cross_task_coordination"]
+        self.assertEqual(coordination["task_filter"], "SHWP-X")
+        self.assertEqual(coordination["predicate_filter"], "P-X")
+        self.assertFalse(coordination["candidate_consumer_execution_admission_inferred"])
 
     def test_discovered_candidate_prevents_new_task_creation(self):
         with self.fake_root(
