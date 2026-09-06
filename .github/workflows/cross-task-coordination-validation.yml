@@ -5,24 +5,32 @@ on:
     branches: [main]
     paths:
       - 'heartbeat_runtime/coordination_graph.py'
+      - 'heartbeat_runtime/coordination_ledger.py'
       - 'heartbeat_runtime/worker_task_admission.py'
       - 'heartbeat_runtime/admitted_worker_runtime.py'
       - 'scripts/render_cross_task_coordination_handoff.py'
       - 'schemas/cross-task-coordination.schema.json'
       - 'control/cross-task-coordination.json'
+      - 'control/cross-task-coordination.d/**'
+      - 'control/cross-task-coordination-candidates/**'
       - 'tests/test_coordination_graph.py'
+      - 'tests/test_coordination_ledger.py'
       - 'tests/test_cross_task_coordination_handoff_projection.py'
       - 'docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md'
       - '.github/workflows/cross-task-coordination-validation.yml'
   pull_request:
     paths:
       - 'heartbeat_runtime/coordination_graph.py'
+      - 'heartbeat_runtime/coordination_ledger.py'
       - 'heartbeat_runtime/worker_task_admission.py'
       - 'heartbeat_runtime/admitted_worker_runtime.py'
       - 'scripts/render_cross_task_coordination_handoff.py'
       - 'schemas/cross-task-coordination.schema.json'
       - 'control/cross-task-coordination.json'
+      - 'control/cross-task-coordination.d/**'
+      - 'control/cross-task-coordination-candidates/**'
       - 'tests/test_coordination_graph.py'
+      - 'tests/test_coordination_ledger.py'
       - 'tests/test_cross_task_coordination_handoff_projection.py'
       - 'docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md'
       - '.github/workflows/cross-task-coordination-validation.yml'
@@ -50,16 +58,29 @@ jobs:
           git checkout --detach FETCH_HEAD
       - name: Validate coordination source
         run: |
-          python -m py_compile heartbeat_runtime/coordination_graph.py scripts/render_cross_task_coordination_handoff.py
-          python -m unittest -v tests.test_coordination_graph tests.test_cross_task_coordination_handoff_projection
+          python -m py_compile heartbeat_runtime/coordination_graph.py heartbeat_runtime/coordination_ledger.py scripts/render_cross_task_coordination_handoff.py
+          python -m unittest -v tests.test_coordination_graph tests.test_coordination_ledger tests.test_cross_task_coordination_handoff_projection
           python - <<'PY'
           import json
           from pathlib import Path
+          from heartbeat_runtime.coordination_ledger import load_composed_coordination_ledger
           schema=json.loads(Path('schemas/cross-task-coordination.schema.json').read_text())
-          ledger=json.loads(Path('control/cross-task-coordination.json').read_text())
-          assert schema['properties']['schema']['const']==ledger['schema']
+          base=json.loads(Path('control/cross-task-coordination.json').read_text())
+          ledger=load_composed_coordination_ledger(Path('control/cross-task-coordination.json'))
+          assert schema['properties']['schema']['const']==base['schema']==ledger['schema']
           assert ledger['authority']['runtime_truth_authority_effect']=='NONE'
           assert ledger['authority']['credential_authority']=='TV/TVC'
           assert ledger['authority']['github_token_runtime_authority']=='NONE'
-          print('CROSS_TASK_COORDINATION_NON_AUTHORITY_PASS')
+          fragment_ids=set(ledger.get('composition',{}).get('fragment_ids',[]))
+          assert 'SV002-RESIDENT-REQUEST-PREDICATES-001' in fragment_ids
+          assert 'SV011-RESIDENT-REQUEST-PREDICATES-001' in fragment_ids
+          predicate_ids={p.get('predicate_id') for p in ledger.get('predicates',[])}
+          for required in (
+              'PRED-RESIDENT-REQUEST-CONSUMED-SV002-ORG-RUNTIME-ACTIVATION-001',
+              'PRED-RESIDENT-REQUEST-CONSUMED-SV002-PUBLIC-OBSERVATION-001',
+              'PRED-RESIDENT-REQUEST-CONSUMED-SV011-PHASE5-BOUNDARY-001',
+              'PRED-RESIDENT-REQUEST-CONSUMED-SV011-PHASE5-SOURCE-MATERIALIZATION-001',
+          ):
+              assert required in predicate_ids
+          print('CROSS_TASK_COORDINATION_COMPOSED_NON_AUTHORITY_PASS')
           PY
