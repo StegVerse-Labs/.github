@@ -58,9 +58,9 @@ Actual execution remains owned by the canonical satisfier/worker/runtime identif
 source_adapter: IMPLEMENTED
 StegIndex purpose-aware resolver: MERGED
 organization preflight consumption: SOURCE_BOUND
-README impact pre-work completeness: SOURCE_IMPLEMENTED / VALIDATION_PENDING
+README impact pre-work completeness: MERGED / VALIDATED
 runtime execution claim: NONE
-next_action: validate the README-impact extension and preserve it through concrete session/worker entry paths
+next_action: preserve README-impact completeness through concrete session/worker entry paths and continue canonical coordination adoption without duplicate implementations
 manual_execution_allowed: true
 user_action_required: false
 thread_archive_ready: false
@@ -170,9 +170,9 @@ Session/build pre-work remains non-authorizing:
 
 ## README-impact pre-work completeness — 2026-09-05
 
-The organization session/build preflight now carries the same functional-change completeness invariant already enforced at WorkerCoordinator admission.
+The organization session/build preflight carries the same functional-change completeness invariant already enforced at WorkerCoordinator admission.
 
-New CLI declaration:
+CLI declaration:
 - `--readme-impact-required`
 - `--material-function-change true|false`
 - `--readme-updated-in-change-set`
@@ -189,4 +189,16 @@ Fail-closed rules:
 
 This extension creates no new scheduler, execution path, claim/fence authority, credential authority, route authority, transition authority, or runtime-truth claim. It is a pre-work completeness predicate only.
 
-README impact for this change itself: MATERIAL. `README.md` is included in the same change set.
+README impact for the functional change itself: MATERIAL. `README.md` was included in the same change set.
+
+Validated implementation evidence:
+- PR #1027
+- exact validated head: `45631a2c718fa8d982a771cdb55b301db595a81a`
+- merge: `5626bfc8d1cb76bb1d1eda6ef3d0c0be7429e17a`
+- Heartbeat Worker Project run `34001532342`: SUCCESS
+- organization control-plane run `34001532346`: SUCCESS
+- cross-task coordination run `34001532400`: SUCCESS
+
+These are source/validation facts only. They do not prove resident runtime execution or grant authority.
+
+README impact for this reconciliation commit: NON-MATERIAL. Reason: only the canonical handoff status/evidence record is being reconciled to the already-merged validated implementation; repository behavior is unchanged. Evidence: PR #1027 and runs `34001532342`, `34001532346`, `34001532400`.
