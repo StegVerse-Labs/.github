@@ -1,0 +1,71 @@
+{
+  "schema": "stegverse.machine-preflight/v1",
+  "task_id": "HB32-SELF-HEAL-STARTUP-GRACE-002",
+  "state": "PASS",
+  "verdict": "PASS",
+  "repository": "StegVerse-Labs/.github",
+  "authority_effect": "NONE_PREFLIGHT_ONLY",
+  "canonical_handoff_refs": [
+    "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md",
+    "docs/RESIDENT_WORKER_SELF_HEAL_MIRROR_HANDOFF.md",
+    "docs/CANONICAL_RESIDENT_CARRIER_MIRROR_HANDOFF.md"
+  ],
+  "resolved_state": {
+    "task_registry_generation": 15,
+    "worker_registry_generation": 22,
+    "master_records_authority": "OBSERVED_REALITY_RECONSTRUCTION_ONLY",
+    "cross_task_coordination_resolved": true,
+    "prior_runtime_repair": "PR-1084 / merge 511b82e26dcfce0d799f861df23b605fb837ac56",
+    "prior_parallel_pr_1085": "CLOSED_SUPERSEDED"
+  },
+  "reuse": {
+    "heartbeat": "HB32_INDEPENDENT_PHASE_OSCILLATOR",
+    "carrier": "heartbeat_runtime.engine_v13.HeartbeatRuntime",
+    "worker": "heartbeat_runtime.worker_runtime.WorkerCoordinator",
+    "presence_freshness": "heartbeat_runtime.runtime_presence_projection.project",
+    "controlled_termination": "scripts.restart_sovereign_ephemeral_node._terminate",
+    "self_heal": "scripts/repair_resident_worker_presence.py",
+    "resident_dispatch": "scripts/dispatch_resident_execution_requests.py",
+    "new_runtime": false,
+    "new_scheduler": false,
+    "new_workercoordinator": false,
+    "new_oscillator": false
+  },
+  "problem": {
+    "id": "PR1084_STARTUP_FALSE_STALE_RECYCLE",
+    "description": "PR #1084 correctly recycles previously task-capable workers whose completed cycle is stale, but a newly spawned self-heal worker may still be alive inside synchronous pre-cycle local source refresh/rendezvous/resident-request dispatch. Because the first task-capable tick is required within 3 seconds while resident dispatch may run much longer, treating that live startup PID as stale can terminate healthy in-progress recovery before the first WorkerCoordinator cycle.",
+    "evidence": [
+      "scripts/repair_resident_worker_presence.py:_wait_for_tick default timeout=3.0",
+      "scripts/run_worker_runtime.py:index-0 maintenance and resident dispatch occur before runtime.cycle",
+      "scripts/run_worker_runtime.py:resident dispatch timeout=7200",
+      "PR #1084 merged stale-worker freshness recycling"
+    ]
+  },
+  "planned_change": [
+    "preserve PR #1084 recycling for a previously proven worker that later becomes stale/non-task-capable",
+    "mark a newly spawned alive worker whose first tick times out as pending-first-tick instead of terminating it",
+    "persist the startup baseline tick and exact PID",
+    "on later supervision, retain the same pending PID until its tick advances beyond baseline; then require normal freshness before reporting presence",
+    "never promote PID existence to runtime presence and never spawn a duplicate WorkerCoordinator"
+  ],
+  "collision_review": {
+    "open_matching_pr": false,
+    "active_claim_collision": false,
+    "parallel_implementation_closed": "PR-1085"
+  },
+  "readme_impact": {
+    "required": true,
+    "material_function_change": true,
+    "reason": "Changes resident self-heal startup and failure-recovery semantics by distinguishing an in-progress first-cycle worker from a previously healthy stale worker.",
+    "readme_path": "README.md",
+    "readme_update_required_in_change_set": true
+  },
+  "authority": {
+    "heartbeat_grants_execution_authority": false,
+    "oscillator_grants_execution_authority": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "transition_authority": "INTERLOCK_INTR",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE"
+  }
+}
