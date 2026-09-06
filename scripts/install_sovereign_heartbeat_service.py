@@ -40,6 +40,7 @@ COPY_DIRS = (
 )
 COPY_FILES = (
     "scripts/run_heartbeat_runtime.py",
+    "scripts/repair_resident_worker_presence.py",
     "scripts/run_worker_runtime.py",
     "scripts/project_hb_runtime_presence.py",
     "scripts/project_de006_runtime_observability.py",
@@ -186,6 +187,7 @@ def materialize(source_root: Path, target_root: Path, *, interval_ms: float = DE
         target_root / "control" / "heartbeat-state.json",
         target_root / "control" / "worker-registry.json",
         target_root / "scripts" / "run_heartbeat_runtime.py",
+        target_root / "scripts" / "repair_resident_worker_presence.py",
         target_root / "scripts" / "run_worker_runtime.py",
         target_root / "scripts" / "dispatch_resident_execution_requests.py",
         target_root / "scripts" / "consume_resident_execution_request.py",

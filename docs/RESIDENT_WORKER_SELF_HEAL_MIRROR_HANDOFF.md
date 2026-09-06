@@ -89,6 +89,19 @@ The existing local-only refresh lane now materializes the self-heal module along
 
 README impact: MATERIAL. `README.md` records this local refresh/failure-recovery behavior in the same change set.
 
+## Fresh native materialization parity repair — 2026-09-05
+
+Continuation after local-refresh closure found the same dependency gap on fresh native runtime materialization: `scripts/run_heartbeat_runtime.py` imports the existing self-heal module, but `install_sovereign_heartbeat_service.py::COPY_FILES` did not copy that module and its post-materialization required-file check did not require it. A new resident runtime could therefore materialize the carrier entrypoint without its local supervision dependency and fail before canonical self-heal coordination could operate.
+
+The native installer now:
+- copies `scripts/repair_resident_worker_presence.py` with the carrier runner;
+- requires the module in the post-materialization completeness predicate;
+- validates exact-byte materialization through the existing native runtime materialization test boundary.
+
+This remains dependency/source completeness only. It creates no new carrier, worker, scheduler, claim/fence, credential, route, transition, or network dependency and does not establish authentic resident presence or request execution.
+
+README impact: MATERIAL. `README.md` records the fresh-install dependency/failure behavior in the same change set.
+
 ## Runtime consequence
 
 A live canonical carrier plus a dead/missing WorkerCoordinator is now a validated self-healing runtime state rather than a passive `REQUESTED` backlog state. Authentic runtime presence still requires the canonical presence receipt from a real resident carrier-supervision visit, and authentic task completion still requires each task-specific receipt; this repair does not fabricate those receipts.
