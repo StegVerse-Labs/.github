@@ -1,0 +1,54 @@
+{
+  "schema": "stegverse.session-machine-preflight/v1",
+  "task_id": "HIL-VALIDATION-EXPECTATION-RECONCILIATION-001",
+  "state": "PASS",
+  "evaluated_at": "2026-09-05T19:31:00-05:00",
+  "scope": {
+    "repository": "StegVerse-Labs/.github",
+    "mutation_paths": [
+      "tests/test_hil_sovereign_receiver_worker_registration.py",
+      "tests/test_targeted_execution_entrypoint_bindings.py"
+    ]
+  },
+  "canonical_state_resolution": {
+    "canonical_handoff_ref": "handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json",
+    "canonical_handoff_state": "SAME_DEVICE_SOURCE_INTEGRATION_VALIDATION_PENDING",
+    "canonical_owner_ref": "docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_MIRROR_HANDOFF.md",
+    "failed_validation_run": 34001721383,
+    "failed_assertions": 2,
+    "all_other_hil_invariants_in_failed_tests_passed": true
+  },
+  "reuse_resolution": {
+    "new_runtime_implementation_required": false,
+    "new_hil_predicate_required": false,
+    "new_claim_or_fence_required": false,
+    "test_expectation_only": true
+  },
+  "collision_review": {
+    "functional_mutation_observed": false,
+    "runtime_semantics_changed": false,
+    "authority_boundary_changed": false,
+    "evidence_semantics_changed": false,
+    "disposition": "RECONCILE_STALE_TEST_EXPECTATION_ONLY"
+  },
+  "readme_impact_required": true,
+  "readme_impact": {
+    "material_function_change": false,
+    "readme_updated_in_change_set": false,
+    "no_readme_update_reason": "The change only updates two deterministic test assertions to the already-canonical HIL executable-handoff state on main. It changes no repository behavior, runtime semantics, interface, governance/authority boundary, evidence semantics, prerequisite, dependency, failure behavior, or capability meaning.",
+    "evidence_refs": [
+      "handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json#state=SAME_DEVICE_SOURCE_INTEGRATION_VALIDATION_PENDING",
+      "tests/test_hil_sovereign_receiver_worker_registration.py#test_executable_handoff_preserves_authority_boundaries",
+      "tests/test_targeted_execution_entrypoint_bindings.py#test_hil_current_solution_is_same_device_implementation_not_runtime_command",
+      "Heartbeat Worker Project run 34001721383"
+    ]
+  },
+  "authority": {
+    "authority_effect": "NONE_PREFLIGHT_ONLY",
+    "execution_authority_granted": false,
+    "claim_or_fence_granted": false,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE"
+  },
+  "verdict": "PASS"
+}
