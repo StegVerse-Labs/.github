@@ -2,7 +2,7 @@
 
 Repository: `StegVerse-Labs/.github`
 Parent: `docs/CANONICAL_RESIDENT_CARRIER_MIRROR_HANDOFF.md`
-State: `SOURCE_MERGED_VALIDATED / AUTHENTIC_RUNTIME_PRESENCE_NOT_YET_OBSERVED`
+State: `SOURCE_REPAIR_ACTIVE / AUTHENTIC_RUNTIME_PRESENCE_NOT_YET_OBSERVED`
 Credential authority: `TV/TVC`
 GitHub token runtime authority: `NONE`
 
@@ -20,9 +20,9 @@ A canonical 100 Hz HeartBeat carrier could remain live while the resident Worker
 
 The oscillator-produced carrier remains non-authorizing. After each 100 observed references (approximately one second), and strictly after those references already exist, the carrier process asks the local supervision layer to verify resident WorkerCoordinator presence.
 
-If the existing worker process is alive, nothing is changed.
+If an existing worker process is alive and has already proven a task-capable cycle, the same process is retained. If a just-started worker is alive but still awaiting its first task-capable cycle, the same process is retained in a pending supervision state rather than being killed or duplicated.
 
-If the carrier is alive and the worker is absent, local supervision starts the existing `scripts/run_worker_runtime.py --continuous` process, requires a fresh task-capable worker tick, and persists repaired process-presence evidence. The WorkerCoordinator then visits `scripts/dispatch_resident_execution_requests.py` on its own first logical tick and independently performs all task admission/claim/fence/InTr/TV-TVC checks.
+If the carrier is alive and the worker is absent, local supervision starts the existing `scripts/run_worker_runtime.py --continuous` process, requires a fresh task-capable worker tick before presence can become true, and persists repaired process-presence evidence. The WorkerCoordinator continues to use the existing resident request dispatcher and independently performs all task admission/claim/fence/InTr/TV-TVC checks.
 
 The carrier does **not** grant execution authority. It supplies node-presence evidence used by local supervision. WorkerCoordinator remains the execution/admission runtime; InTr/Interlock remains transition governance; TV/TVC remains credential authority.
 
@@ -37,6 +37,8 @@ The carrier does **not** grant execution authority. It supplies node-presence ev
 - no non-TV/TVC credential propagation;
 - a pulse must exist before worker-presence repair is evaluated;
 - a repaired worker is not considered present until a fresh task-capable worker tick is observed;
+- a live just-started worker awaiting that tick must not be killed solely because bounded resident maintenance/dispatch outlives the short proof window;
+- a pending worker PID must be retained and rechecked instead of spawning a duplicate process;
 - pending resident requests are drained only by the restored WorkerCoordinator under their existing fail-closed consumers.
 
 ## Validated presence-projection closure — 2026-09-04
@@ -116,6 +118,37 @@ README impact: MATERIAL. `README.md` records that bootstrap source eligibility a
 
 This is still source/eligibility correctness only. Passing bootstrap eligibility, validation, merge, source refresh, or native materialization does not prove current carrier presence, current WorkerCoordinator presence, a supervision visit, request dispatch or consumption, claim/fence creation, an InTr transition, resident StegIndex materialization, blocker-derived preflight, StegIndex operational proof, or task completion.
 
+## Startup task-capable tick starvation repair — 2026-09-06
+
+Re-review of the existing HB/oscillator runtime solutions exposed a failure in the interaction between the already-created self-heal supervisor and the already-created native resident request dispatcher.
+
+`repair_resident_worker_presence.py` starts `run_worker_runtime.py --continuous` and requires a fresh task-capable runtime tick within a short supervision window. The worker runtime may synchronously perform local source refresh, rendezvous handling, or resident-request dispatch before the first `WorkerCoordinator.cycle()`. The resident dispatcher has a bounded timeout far longer than the initial presence proof window. A healthy newly started WorkerCoordinator could therefore remain alive and actively draining an already-local request while supervision concluded `WORKER_REPAIR_FAILED`, sent SIGTERM, and attempted a later restart.
+
+That behavior is corrected inside the existing self-heal path:
+
+```text
+carrier supervision observes worker absent
+-> start existing WorkerCoordinator process
+-> wait briefly for first task-capable tick
+-> tick observed: prove repaired presence normally
+-> tick not yet observed + PID still alive:
+     retain the exact PID
+     persist worker_task_capable_cycle_observed=false
+     persist startup baseline tick
+     do NOT SIGTERM
+     do NOT spawn a duplicate WorkerCoordinator
+-> next carrier supervision visit rechecks the retained PID
+-> only a runtime tick greater than the recorded baseline may upgrade the worker to task-capable presence
+```
+
+A worker that exits before proving the tick still follows the existing failure path. A live pending worker is not promoted to runtime presence and grants no authority merely because its PID exists.
+
+This repair reuses the already-created HB32 oscillator, carrier supervision, WorkerCoordinator, self-heal module, local source refresh, and resident request dispatcher. It creates no second runtime or scheduler and does not change HeartBeat authority semantics.
+
+README impact: MATERIAL. `README.md` is updated in the same change set because this changes resident startup/failure-recovery behavior.
+
+Preflight: `receipts/preflight/HB-WORKER-STARTUP-TICK-BEFORE-DISPATCH-001.json`.
+
 ## Runtime consequence
 
-A live canonical carrier plus a dead/missing WorkerCoordinator is now a validated self-healing runtime state rather than a passive `REQUESTED` backlog state. Authentic runtime presence still requires the canonical presence receipt from a real resident carrier-supervision visit, and authentic task completion still requires each task-specific receipt; this repair does not fabricate those receipts.
+A live canonical carrier plus a dead/missing WorkerCoordinator is a self-healing runtime state. A live newly started WorkerCoordinator that is still inside bounded pre-cycle maintenance is now a **pending supervision state**, not an automatic repair failure. Authentic runtime presence still requires the canonical presence receipt from a real resident carrier-supervision visit and a fresh task-capable tick; authentic task completion still requires task-specific execution evidence.
