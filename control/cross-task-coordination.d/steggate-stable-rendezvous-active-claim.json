@@ -1,0 +1,32 @@
+{
+  "schema": "stegverse.cross-task-coordination-fragment/v1",
+  "fragment_id": "STEGGATE-STABLE-RENDEZVOUS-ACTIVE-CLAIM-001",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "claims": [
+    {
+      "claim_id": "SHWP-STEGGATE-STABLE-RENDEZVOUS-WORKER-001-G13",
+      "task_id": "STEGGATE-STABLE-RENDEZVOUS-WORKER-001",
+      "state": "ACTIVE",
+      "scope": {
+        "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/Site"],
+        "paths": [
+          "receipts/steggate-rendezvous-worker/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json",
+          "handoffs/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json",
+          "workers/steggate_rendezvous_deployment_worker.py",
+          "StegVerse-Labs/Site/src/steggate-rendezvous-worker.js",
+          "StegVerse-Labs/Site/data/steggate-rendezvous-activation.json"
+        ],
+        "modules": ["steggate-stable-rendezvous-hardening"],
+        "runtime_surfaces": ["STEGGATE-STABLE-RENDEZVOUS-WORKER-001:fence13", "stegverse.org/api/steggate/*"],
+        "evidence_responsibilities": ["steggate-stable-rendezvous-readiness", "steggate-health-self-test-live-acceptance", "steggate-rendezvous-worker-receipt"]
+      },
+      "fencing_token": 13,
+      "worker_id": "steggate-rendezvous-deployment-worker",
+      "worker_instance_id": "steggate-rendezvous-deployment-worker-HB7-G13",
+      "task_state": "ACTIVE",
+      "canonical_owner_ref": "control/worker-control-plane-coordination.json + handoffs/STEGGATE-STABLE-RENDEZVOUS-WORKER-001.json + StegVerse-Labs/Site#24",
+      "authority_effect": "COORDINATION_ONLY",
+      "note": "Existing machine-owned stable-rendezvous claim/fence is mirrored for collision detection only. This record does not prove live acceptance, mint or renew authority, authorize a provider, persist credentials, or make HeartBeat causal. Release follows the canonical worker lifecycle."
+    }
+  ]
+}
