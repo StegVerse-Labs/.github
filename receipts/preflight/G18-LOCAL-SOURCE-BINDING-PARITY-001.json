@@ -1,0 +1,97 @@
+{
+  "schema": "stegverse.session-build-preflight-receipt/v1",
+  "preflight_id": "G18-LOCAL-SOURCE-BINDING-PARITY-001",
+  "goal": "Preserve the already-local canonical source binding through resident G18 execution so the existing native bootstrap and same-host ephemeral recovery run from canonical source while targeting the resident runtime, rather than treating the resident mutable runtime root as its own source tree.",
+  "state": "PASS_FUNCTIONAL_MUTATION_ADMISSIBLE",
+  "repository": "StegVerse-Labs/.github",
+  "base_commit": "f83480b8592b970b0f7b43acd80fa466f932b34c",
+  "resolved_sources": {
+    "g18_parent_handoff": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+    "g18_request_resolution_handoff": "handoffs/RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001.json",
+    "runtime_solution_registry": "data/runtime-solution-registry.d/hb32-existing-runtime-solutions.json",
+    "runtime_solution_handoff": "docs/HB32_RUNTIME_SOLUTION_REUSE_MIRROR_HANDOFF.md",
+    "resident_request_consumer": "scripts/consume_g18_resident_execution_request.py",
+    "refresh_execute_bridge": "scripts/refresh_and_execute_resident_task.py",
+    "g18_worker": "workers/sovereign_runtime_activation_worker.py",
+    "g18_entrypoint": "workers/sovereign_runtime_activation_entrypoint.py",
+    "process_adapter": "control/process-worker-adapters.json#process:sovereign-runtime-activation-v1",
+    "master_records_runtime_presence": "master-records/orchestration:RUNTIME_PRESENCE_CUSTODY_MIRROR_HANDOFF.md",
+    "previous_fallback_wiring_fix": "72e80ce645858c02877277845ffe624cd71ec1e6",
+    "previous_fallback_dependency_parity_fix": "9910cf76e0bd171d0166d14d4b1f765bba887667"
+  },
+  "resolved_state": {
+    "g18_existing_claim_id": "SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18",
+    "g18_existing_fencing_token": 18,
+    "g18_new_claim_allowed": false,
+    "heartbeat_progression": "OSCILLATOR_ONLY_10MS_100HZ",
+    "canonical_local_source_required": true,
+    "network_source_fetch_allowed": false,
+    "second_user_operated_machine_required": false,
+    "master_records_authority": "CUSTODY_AND_RECONSTRUCTION_ONLY"
+  },
+  "exact_gap": {
+    "state": "G18_RESIDENT_EXECUTION_LOSES_CANONICAL_LOCAL_SOURCE_BINDING_AT_WORKER_BOUNDARY",
+    "evidence": [
+      "scripts/consume_g18_resident_execution_request.py invokes scripts/refresh_and_execute_resident_task.py with distinct --source-root and --runtime-root and forwards STEGVERSE_HEARTBEAT_SOURCE_ROOT as a non-secret binding.",
+      "scripts/refresh_and_execute_resident_task.py refreshes canonical source into the resident runtime, then executes scripts/run_worker_runtime.py from the resident runtime.",
+      "workers/sovereign_runtime_activation_entrypoint.py resolves the G18 worker from Path.cwd(), which is the resident runtime root.",
+      "workers/sovereign_runtime_activation_worker.py hard-binds ROOT, BOOTSTRAP and EPHEMERAL_CONSOLE to Path.cwd() and passes ROOT as --source-root, even though its safe child environment already recognizes STEGVERSE_HEARTBEAT_SOURCE_ROOT.",
+      "The G18 request-resolution handoff explicitly requires canonical v13 bootstrap from already-local source; it does not authorize using the mutable resident runtime root as its own canonical source tree."
+    ]
+  },
+  "reuse": {
+    "existing_runtime_solution_reused": true,
+    "existing_local_source_refresh_reused": true,
+    "existing_native_bootstrap_reused": true,
+    "existing_same_host_ephemeral_fallback_reused": true,
+    "new_runtime_solution": false,
+    "new_heartbeat": false,
+    "new_oscillator": false,
+    "new_workercoordinator": false,
+    "new_scheduler": false,
+    "new_request": false,
+    "new_claim_or_fence": false
+  },
+  "collision_review": {
+    "open_pr_with_same_exact_source_binding_repair": false,
+    "g18_claim_or_fence_mutation_allowed": false,
+    "master_records_mutation_required": false,
+    "cross_task_new_predicate_required": false,
+    "runtime_truth_claimed_by_source_change": false
+  },
+  "admissible_machine_step": {
+    "action": "MAKE_G18_WORKER_RESOLVE_BOOTSTRAP_AND_EPHEMERAL_RECOVERY_FROM_THE_ALREADY_LOCAL_CANONICAL_SOURCE_BINDING_WHILE_KEEPING_RUNTIME_STATE_AND_PROOF_TARGETED_TO_THE_RESIDENT_RUNTIME",
+    "machine_executable_now": true,
+    "runtime_execution_claimed": false,
+    "activation_claimed": false
+  },
+  "readme_impact": {
+    "predicate": "README_IMPACT_RESOLVED",
+    "state": "README_UPDATE_REQUIRED_IN_CHANGE_SET",
+    "material_function_change": true,
+    "readme_update_required": true,
+    "readme_path": "README.md",
+    "readme_updated_in_change_set": false,
+    "determination": "MATERIAL_RUNTIME_SOURCE_BINDING_AND_FAILURE_BEHAVIOR_CHANGE",
+    "reason": "The repair changes which local tree is authoritative for G18 bootstrap/recovery execution and prevents a refreshed resident runtime from being misclassified as canonical source. This affects runtime prerequisites, dependency resolution, and failure behavior and must be documented in README.md.",
+    "evidence_refs": [
+      "README.md#G18-same-host-sovereign-runtime-recovery",
+      "handoffs/RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001.json",
+      "scripts/consume_g18_resident_execution_request.py",
+      "scripts/refresh_and_execute_resident_task.py",
+      "workers/sovereign_runtime_activation_worker.py",
+      "9910cf76e0bd171d0166d14d4b1f765bba887667"
+    ],
+    "readme_impact_complete": true
+  },
+  "authority": {
+    "heartbeat_grants_execution_authority": false,
+    "oscillator_grants_execution_authority": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "transition_authority": "INTERLOCK_INTR",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "authority_effect": "NONE_PREFLIGHT_ONLY"
+  },
+  "runtime_execution_performed_by_preflight": false
+}
