@@ -7,6 +7,7 @@ ROOT=Path(__file__).resolve().parents[1]
 MODULE=ROOT/"workercoordinator/portable_checkout.js"
 PACKAGE=ROOT/"control/portable-workercoordinator-packages/sv001-bounded-autonomy.json"
 HANDOFF=ROOT/"docs/WORKERCOORDINATOR_PORTABLE_IPHONE_EXECUTION_MIRROR_HANDOFF.md"
+SCHEMA=ROOT/"schemas/workercoordinator-portable-state.schema.json"
 
 def test_sv001_portable_package_preserves_canonical_authority():
     pkg=json.loads(PACKAGE.read_text(encoding="utf-8"))
@@ -78,12 +79,29 @@ def test_sv001_portable_package_is_single_checkout_terminal_safe():
     assert pkg["terminal_reexecution_allowed"] is False
     assert pkg["downstream_retry_after_terminal"] is True
 
-def test_portable_checkout_fails_closed_after_first_local_checkout_too():
+def test_portable_checkout_is_single_per_task_not_single_for_entire_lineage():
     text=MODULE.read_text(encoding="utf-8")
     assert "checkout_count: 0" in text
-    assert "inferredCheckoutCount >= 1" in text
-    assert "task package already checked out; terminal/downstream continuation must not mint another claim" in text
+    assert "checked_out_task_ids: []" in text
+    assert "checkedOutTaskIds(state, inferredCheckoutCount)" in text
+    assert "priorTaskIds.indexOf(pkg.task.task_id) !== -1" in text
+    assert "same task" in text
+    assert "inferredCheckoutCount >= 1" not in text
     assert "checkout_count: inferredCheckoutCount + 1" in text
+    assert "checked_out_task_ids: priorTaskIds.concat([pkg.task.task_id])" in text
+
+def test_portable_state_schema_allows_durable_per_task_checkout_history():
+    schema=json.loads(SCHEMA.read_text(encoding="utf-8"))
+    props=schema["properties"]
+    assert props["checkout_count"]["minimum"]==0
+    assert props["checked_out_task_ids"]["uniqueItems"] is True
+    assert props["checked_out_task_ids"]["items"]["minLength"]==1
+
+def test_legacy_single_checkout_state_migrates_from_last_task_id_without_resetting_generation():
+    text=MODULE.read_text(encoding="utf-8")
+    assert "ids.length === 0 && checkoutCount > 0 && state.last_task_id" in text
+    assert "ids.push(state.last_task_id)" in text
+    assert "var generation = asPositiveInt(state.generation" in text
 
 def test_handoff_records_reset_lineage_without_authority_widening():
     text=HANDOFF.read_text(encoding="utf-8")
