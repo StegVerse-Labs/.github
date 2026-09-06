@@ -1,0 +1,10 @@
+{
+  "schema": "stegverse.collision-resolution/v1",
+  "task_id": "HB32-SELF-HEAL-STARTUP-GRACE-002",
+  "prior_parallel_pr": 1085,
+  "prior_parallel_state": "CLOSED_SUPERSEDED",
+  "successor_branch": "fix/hb32-self-heal-startup-grace",
+  "preserved_prior_runtime_fix": "PR #1084 / 511b82e26dcfce0d799f861df23b605fb837ac56",
+  "duplicate_runtime_implementation": false,
+  "authority_effect": "NONE_COORDINATION_ONLY"
+}
