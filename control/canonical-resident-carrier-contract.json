@@ -8,6 +8,8 @@
     "reference_frequency_hz": 100,
     "reference_increment_interval_ms": 10,
     "progression_dependency": "OSCILLATOR_ONLY",
+    "continuous_process_required_for_progression": false,
+    "resident_sampler_required_for_progression": false,
     "grants_execution_authority": false,
     "grants_admission_authority": false,
     "grants_claim_or_fence_authority": false
@@ -19,13 +21,32 @@
     "authority_effect": "NONE_CARRIER_ONLY"
   },
   "worker_runtime": {
-    "implementation_ref": "heartbeat_runtime/worker_runtime.py",
-    "class": "WorkerCoordinator",
-    "dispatcher_ref": "scripts/dispatch_resident_execution_requests.py",
+    "canonical_authority_owner": "StegVerse-Labs/.github WorkerCoordinator",
+    "native_implementation_ref": "heartbeat_runtime/worker_runtime.py",
+    "native_class": "WorkerCoordinator",
+    "native_dispatcher_ref": "scripts/dispatch_resident_execution_requests.py",
+    "portable_implementation_ref": "workercoordinator/portable_checkout.js",
+    "portable_handoff_ref": "docs/WORKERCOORDINATOR_PORTABLE_IPHONE_EXECUTION_MIRROR_HANDOFF.md",
+    "portable_execution_surface": "CURRENT_USER_IPHONE",
+    "portable_checkout_receipt_schema": "stegverse.workercoordinator-portable-checkout-receipt/v1",
+    "portable_checkout_is_task_scoped": true,
+    "native_process_presence_required_for_portable_checkout": false,
+    "always_on_external_host_required_for_portable_checkout": false,
     "single_scheduler_required": true,
     "second_scheduler_allowed": false,
     "second_worker_runtime_allowed": false,
-    "request_dispatch_grants_authority": false
+    "request_dispatch_grants_authority": false,
+    "portable_checkout_grants_only_existing_claim_fence_authority": true
+  },
+  "runtime_observability": {
+    "projector_ref": "heartbeat_runtime/runtime_presence_projection.py",
+    "native_process_presence_field": "resident.present_worker_runtime_observed",
+    "task_control_runtime_field": "resident.task_control_runtime_observed",
+    "portable_checkout_field": "portable_workercoordinator.observed",
+    "native_process_presence_is_universal_runtime_requirement": false,
+    "hb_progression_is_runtime_execution": false,
+    "static_portable_package_is_runtime_evidence": false,
+    "portable_checkout_is_task_execution": false
   },
   "entity_progression": {
     "contract_ref": "control/entity-autonomous-governed-progression-contract.json",
@@ -61,6 +82,8 @@
       "entity_id": "StegVerse-002",
       "selector": "sv002_org_runtime_activation",
       "consumer_ref": "scripts/consume_sv002_org_runtime_activation_request.py",
+      "portable_same_device_preflight_ref": "receipts/preflight/sv002-current-iphone-portable-consumer-20260905.json",
+      "same_device_native_runtime_handoff_ref": "StegVerse-Labs/StegOS:docs/SAME_DEVICE_NONREFERENCE_MODEL_RUNTIME_MIRROR_HANDOFF.md",
       "progression_mode": "MACHINE_GOVERNED_AUTONOMOUS",
       "terminal_predicate": "terminal_round_trip_observed=true",
       "post_terminal": ["governed inference proof where required", "same-execution reconstruction where required"]
@@ -80,7 +103,10 @@
   ],
   "invariants": [
     "No consumer may create or own a second heartbeat, oscillator, scheduler, WorkerCoordinator, credential path, claim/fence path, or resident runtime.",
+    "HB32 progression is oscillator-only and does not require a continuously running resident sampler or native WorkerCoordinator process.",
     "HB and HB-derived InTr carriage provide reference/transport observability only and never authorize execution or admission.",
+    "Native process presence is one WorkerCoordinator execution-surface observation, not a universal prerequisite for the existing CURRENT_USER_IPHONE portable WorkerCoordinator path.",
+    "Portable task-control observation requires an authentic task-scoped portable checkout receipt; source/package presence is not runtime evidence and checkout is not task execution or completion.",
     "InTr governs admissible transition boundaries; task-specific consumers retain their own fail-closed validation.",
     "Every entity state change is governed contemporaneously; authority is never inferred or reused from a prior transition.",
     "Machine-owned entity transitions continue without per-transition human approval unless the exact transition declares a HUMAN_ONLY or USER_ONLY authority class.",

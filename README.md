@@ -189,6 +189,14 @@ Terminal packages remain non-checkoutable because portable admission still requi
 
 This sequential-lineage behavior allows downstream same-device consumers to reuse the existing portable WorkerCoordinator instead of requiring another machine or creating another runtime authority plane. It does not by itself package, admit, dispatch, execute, or complete any downstream task, and it does not establish current iPhone runtime presence or authentic resident execution evidence.
 
+#### HB32 runtime-surface selection
+
+HB32 progression is derived from the independent 10 ms / 100 Hz phase oscillator with `OSCILLATOR_ONLY` progression. A continuously running resident sampler, carrier process, or native WorkerCoordinator process is **not** a prerequisite for HeartBeat progression and must not be used as a universal prerequisite for task execution on every supported surface.
+
+The runtime-presence projector therefore keeps native process presence and portable task-control observation distinct. `resident.present_worker_runtime_observed` remains the fail-closed native process/supervision predicate. `resident.task_control_runtime_observed` may also become true from an exact **task-scoped** `stegverse.workercoordinator-portable-checkout-receipt/v1` produced by the already-existing portable WorkerCoordinator on `CURRENT_USER_IPHONE`. The portable receipt must bind the canonical `.github` WorkerCoordinator authority owner, independent-task-control domain, exact task/worker/claim/fence, TV/TVC credential boundary, no GitHub runtime authority, no external non-StegVerse machine, and no parallel WorkerCoordinator issuance.
+
+This correction does not turn HeartBeat progression, a static portable package, source materialization, merge, CI, or browser availability into runtime evidence. A portable checkout proves only that the canonical WorkerCoordinator claim/fence transaction actually ran on the bound current-iPhone surface; it does **not** prove request consumption, task execution, transition completion, custody, reconstruction, or product activation. Native process presence remains valid evidence for the native surface, but absence of that process may no longer be reported as generic runtime absence when a separately authenticated portable task-control surface is the applicable canonical path.
+
 ### Ecosystem Chat same-device terminal execution surface
 
 The canonical Ecosystem Chat parent may satisfy its sovereign runtime-surface predicate through either the existing native/private-process path or the exact `CURRENT_USER_IPHONE` service-worker path. The service-worker path is accepted only when the runtime proof binds `SERVICE_WORKER_LOCAL_INTERCEPT`, the canonical `https://stegverse.org/stegos-bootstrap/local-model` endpoint and StegOS service-worker scope, observed device-local interception, observed real inference, and `network_egress_required=false`.

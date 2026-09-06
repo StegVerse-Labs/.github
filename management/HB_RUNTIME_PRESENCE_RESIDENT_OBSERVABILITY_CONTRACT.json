@@ -12,10 +12,34 @@
     "request_file_present": "request_consumed",
     "receipt_file_present": "receipt_verified",
     "source_installed": "runtime_observed",
+    "portable_package_present": "portable_runtime_observed",
+    "portable_checkout_observed": "task_execution_or_completion",
+    "native_process_presence_missing": "portable_task_control_unavailable",
     "merge": "execution",
     "workflow_pass": "runtime",
     "master_records_intake_available": "runtime_presence_observed",
     "master_records_custody": "cross_task_reuse_authorized"
+  },
+  "heartbeat_runtime_semantics": {
+    "protocol_anchor": "HB32",
+    "mechanism": "INDEPENDENT_PHASE_OSCILLATOR",
+    "reference_frequency_hz": 100,
+    "reference_increment_interval_ms": 10,
+    "progression_dependency": "OSCILLATOR_ONLY",
+    "continuous_process_required_for_progression": false,
+    "resident_sampler_required_for_progression": false,
+    "heartbeat_grants_execution_authority": false
+  },
+  "runtime_surface_semantics": {
+    "native_process_presence_field": "resident.present_worker_runtime_observed",
+    "task_control_runtime_field": "resident.task_control_runtime_observed",
+    "portable_checkout_field": "portable_workercoordinator.observed",
+    "portable_execution_surface": "CURRENT_USER_IPHONE",
+    "portable_checkout_schema": "stegverse.workercoordinator-portable-checkout-receipt/v1",
+    "portable_checkout_is_subject_bound": true,
+    "portable_checkout_is_task_execution": false,
+    "portable_checkout_is_task_completion": false,
+    "native_process_presence_is_universal_runtime_requirement": false
   },
   "canonical_evidence_slots": {
     "resident_runtime_presence": "receipts/sovereign-host/runtime-presence.latest.json",
@@ -23,7 +47,8 @@
     "resident_request_dispatch": "receipts/sovereign-host/resident-request-dispatch.latest.json",
     "resident_request_consumption": "receipts/sovereign-host/resident-execution-request-consumption.latest.json",
     "resident_targeted_execution": "receipts/sovereign-host/resident-targeted-execution.latest.json",
-    "organization_claim_grant": "receipts/sovereign-host/org-claim-allocator-grants/<TASK>.latest.json"
+    "organization_claim_grant": "receipts/sovereign-host/org-claim-allocator-grants/<TASK>.latest.json",
+    "portable_workercoordinator_checkout": "consumer-supplied exact task-scoped receipt via evidence_refs.portable_checkout"
   },
   "runtime_presence_emission": {
     "owner": "existing carrier-owned WorkerCoordinator supervision path",
@@ -32,6 +57,19 @@
     "new_scheduler_created": false,
     "heartbeat_grants_execution_authority": false,
     "projection_grants_execution_authority": false
+  },
+  "portable_runtime_observation": {
+    "owner": "existing canonical portable WorkerCoordinator checkout path",
+    "producer": "workercoordinator/portable_checkout.js",
+    "input_mode": "consumer-supplied exact task-scoped receipt reference",
+    "static_package_is_runtime_evidence": false,
+    "checkout_proves_claim_fence_transaction_on_current_iphone": true,
+    "checkout_proves_task_execution": false,
+    "checkout_proves_task_completion": false,
+    "new_runtime_created": false,
+    "new_workercoordinator_created": false,
+    "heartbeat_grants_execution_authority": false,
+    "authority_effect": "NONE_OBSERVATION_ONLY"
   },
   "master_records_custody": {
     "owner": "master-records/orchestration",
@@ -50,7 +88,7 @@
     "credential_authority": "TV/TVC",
     "authority_effect": "NONE_CUSTODY_HANDOFF_ONLY"
   },
-  "consumer_rule": "Lane-specific direct machine evidence remains distinct. Canonical heartbeat_runtime/runtime_presence_projection.py reports resident/HB/evidence slots without inferring execution from HB or source. Consumer-specific verifiers decide semantic validity of request consumption, receiver readiness, transition execution, and reconstruction. Master Records may retain exact runtime-presence observations for custody/reconstruction, but custody does not authorize cross-task evidence reuse or task execution.",
+  "consumer_rule": "Lane-specific direct machine evidence remains distinct. Canonical heartbeat_runtime/runtime_presence_projection.py reports native resident/HB/evidence slots and, only when an exact task-scoped portable checkout receipt is supplied, a separate CURRENT_USER_IPHONE portable WorkerCoordinator observation. Native process presence is not a universal prerequisite for portable task-control availability. Neither HB progression nor portable package/source presence proves runtime; a portable checkout proves only the exact canonical claim/fence transaction for its bound task and does not prove request consumption, task execution, or completion. Consumer-specific verifiers decide semantic validity of request consumption, receiver readiness, transition execution, and reconstruction. Master Records may retain exact observations for custody/reconstruction, but custody does not authorize cross-task evidence reuse or task execution.",
   "canonical_projector": "scripts/project_hb_runtime_presence.py",
   "canonical_validation": "tests/test_runtime_presence_projection.py + tests/test_runtime_presence_master_records_intake.py",
   "canonical_merge": "6358375c81fedb579cb6fcac59946268ea485ebb",
