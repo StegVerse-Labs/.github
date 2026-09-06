@@ -202,6 +202,18 @@ A self-healed or stale-worker-recycled WorkerCoordinator now persists its task-c
 
 This parity requirement is a runtime continuity and failure-behavior guarantee. It does not imply that source, validation, heartbeat progression, or process restoration proves any task was dispatched, consumed, or completed.
 
+### G18 same-host sovereign runtime recovery
+
+The durable-runtime G18 worker must reuse the existing runtime recovery stack before surfacing a sovereign-runtime constraint. It first attempts the canonical native v13 bootstrap. If that bootstrap does not produce a complete deployment-local activation proof on an eligible non-hosted StegVerse host, G18 automatically invokes the already-existing `scripts/run_sovereign_ephemeral_console.py` fallback on the **same physical host**.
+
+The fallback creates isolated logical runtime roots and separate local HeartBeat-carrier and WorkerCoordinator processes, verifies the existing activation and isolation predicates, and retains the primary local runtime only when the console proof is `COMPLETE`, all logical nodes and isolation predicates pass, the canonical activation proof is promoted, and every G18 activation predicate—including a task-capable WorkerCoordinator cycle—is true. A successful native bootstrap skips the fallback entirely.
+
+This recovery path does not require a second user-operated machine, a hosted process provider, a third-party scheduler, GitHub runtime authority, or a new WorkerCoordinator authority plane. TV/TVC remains credential authority. HeartBeat remains a 10 ms / 100 Hz timing/reference/carriage substrate with `OSCILLATOR_ONLY` progression and grants no execution, admission, claim/fence, credential, routing, transition, custody, publication, or consequence authority.
+
+If both native bootstrap and the existing same-host fallback remain incomplete, G18 fails closed with both outcomes recorded. A generic runtime blocker must not be emitted merely because native service proof is incomplete without first evaluating this already-built recovery path.
+
+Source, merge, CI, or the presence of the fallback code is not authentic runtime evidence. Activation still requires deployment-local G18 receipts and the canonical activation proof.
+
 ### Portable WorkerCoordinator sequential task lineage
 
 The `CURRENT_USER_IPHONE` portable WorkerCoordinator remains one expression of the canonical `StegVerse-Labs/.github` WorkerCoordinator authority, not a second WorkerCoordinator or a StegOS-owned claim/fence plane. Its persisted portable generation is monotonic across admitted tasks and remains distinct from StegOS device-local task generations.

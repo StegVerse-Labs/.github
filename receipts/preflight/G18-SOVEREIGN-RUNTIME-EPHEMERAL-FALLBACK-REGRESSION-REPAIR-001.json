@@ -1,0 +1,77 @@
+{
+  "schema": "stegverse.session-build-preflight-receipt/v1",
+  "goal": "Restore the already-created G18 same-host sovereign ephemeral runtime fallback after an incomplete native v13 bootstrap, without creating another heartbeat, oscillator, WorkerCoordinator, scheduler, runtime authority plane, credential path, or physical-machine dependency.",
+  "state": "PASS_FUNCTIONAL_MUTATION_ADMISSIBLE",
+  "resolved_sources": {
+    "heartbeat_runtime_handoff": "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md",
+    "oscillator_handoff": "docs/HEARTBEAT_OSCILLATOR_PRODUCER_MIRROR_HANDOFF.md",
+    "resident_worker_self_heal": "docs/RESIDENT_WORKER_SELF_HEAL_MIRROR_HANDOFF.md",
+    "g18_handoff": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+    "ephemeral_console_handoff": "docs/SOVEREIGN_EPHEMERAL_CONSOLE_MIRROR_HANDOFF.md",
+    "platform_policy": "control/sovereign-runtime-platform-policy.json",
+    "current_worker": "workers/sovereign_runtime_activation_worker.py",
+    "existing_fallback": "scripts/run_sovereign_ephemeral_console.py",
+    "worker_tests": "tests/test_g18_self_bootstrap_worker.py",
+    "readme": "README.md"
+  },
+  "resolution": {
+    "heartbeat_protocol_progression": "OSCILLATOR_ONLY_10MS_100HZ",
+    "heartbeat_requires_continuous_sampler": false,
+    "resident_execution_presence_is_distinct_from_heartbeat_progression": true,
+    "worker_self_heal_already_exists": true,
+    "same_host_ephemeral_fallback_already_exists": true,
+    "historical_g18_auto_fallback_contract_exists": true,
+    "current_g18_worker_invokes_native_bootstrap": true,
+    "current_g18_worker_invokes_existing_ephemeral_fallback_after_incomplete_bootstrap": false,
+    "regression_observed": true,
+    "new_runtime_required": false,
+    "new_scheduler_required": false,
+    "new_workercoordinator_required": false,
+    "additional_physical_machine_required": false,
+    "third_party_runtime_required": false,
+    "open_pull_request_owning_exact_worker_fallback_scope_observed": false
+  },
+  "exact_gap": {
+    "state": "EXISTING_RUNTIME_RECOVERY_PATH_DISCONNECTED_FROM_CURRENT_G18_WORKER",
+    "evidence": [
+      "docs/SOVEREIGN_EPHEMERAL_CONSOLE_MIRROR_HANDOFF.md defines G18 native self-bootstrap followed by scripts/run_sovereign_ephemeral_console.py when native service proof is incomplete",
+      "control/session-goal-inventory-2026-08-15-kimi-nine-lane-v13.json records that G18 automatically invokes the console after incomplete native bootstrap on an eligible non-hosted surface",
+      "scripts/run_sovereign_ephemeral_console.py launches separated run_heartbeat_runtime.py and run_worker_runtime.py processes on one sovereign host and can retain the primary node",
+      "workers/sovereign_runtime_activation_worker.py currently invokes only scripts/bootstrap_sovereign_runtime.py and returns a runtime constraint when its proof is incomplete"
+    ],
+    "effect": "A previously solved same-host runtime recovery condition is repeatedly surfaced as a generic runtime blocker instead of being exercised by the existing G18 owner."
+  },
+  "admissible_machine_step": {
+    "action": "RESTORE_EXISTING_G18_NATIVE_THEN_SAME_HOST_EPHEMERAL_FALLBACK_WIRING_AND_REGRESSION_TESTS",
+    "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+    "machine_executable_now": true,
+    "reuse_existing_runtime_solution": true,
+    "runtime_execution_claimed": false,
+    "heartbeat_authority_claimed": false,
+    "worker_claim_or_fence_minted": false,
+    "master_records_reconciliation_claimed": false
+  },
+  "readme_impact": {
+    "predicate": "README_IMPACT_RESOLVED",
+    "state": "SATISFIED",
+    "material_function_change": true,
+    "readme_update_required": true,
+    "readme_path": "README.md",
+    "readme_updated_in_change_set": true,
+    "determination": "README_UPDATE_REQUIRED_IN_SAME_CHANGE_SET",
+    "evidence_basis": [
+      "The repair changes G18 runtime failure/recovery behavior from native-bootstrap-only to the previously specified native-then-same-host-ephemeral recovery sequence.",
+      "The README must state that runtime recovery behavior, its single-host boundary, and its non-authority semantics in the same change set."
+    ]
+  },
+  "authority": {
+    "execution_claim_and_fence": "WORKERCOORDINATOR_G18_EXISTING_CLAIM_ONLY",
+    "heartbeat_and_oscillator": "REFERENCE_CARRIER_ONLY_NO_EXECUTION_AUTHORITY",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "interlock_intr_authority_unchanged": true,
+    "authority_effect": "NONE_PREFLIGHT_ONLY"
+  },
+  "runtime_execution_performed_by_preflight": false,
+  "network_fetch_performed_by_preflight": false
+}
