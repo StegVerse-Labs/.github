@@ -1,0 +1,170 @@
+{
+  "schema": "stegverse.cross-task-coordination-fragment/v1",
+  "fragment_id": "OBJECT-PROVENANCE-CONTINUITY-190-001",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "tasks": [
+    {
+      "task_id": "STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190",
+      "goal_id": "STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190",
+      "state": "HANDOFF_READY",
+      "autonomous_augmentation": true,
+      "required_predicates": [
+        "PRED-OBJECT-PROVENANCE-SOURCE-MERGED-190",
+        "PRED-OBJECT-PROVENANCE-MASTER-RECORDS-CUSTODY-MERGED-190"
+      ],
+      "mutation_scope": {
+        "repositories": ["StegVerse-Labs/StegOS"],
+        "paths": [],
+        "modules": ["object-provenance-continuity", "universal-interlock-ingress-binding"],
+        "runtime_surfaces": ["governed-object-ingress"],
+        "evidence_responsibilities": ["authentic-object-lineage", "reverse-source-resolution"]
+      },
+      "expected_blast_radius": "Canonical StegOS ingress/provenance integration only; Master Records remains custody/reconstruction only and Workspace/ERL/Site remain downstream projection/reference consumers.",
+      "readme_impact_required": true,
+      "readme_impact": {
+        "material_function_change": true,
+        "readme_updated_in_change_set": false,
+        "readme_path": "StegVerse-Labs/StegOS/README.md",
+        "evidence_refs": [
+          "StegVerse-Labs/StegOS/docs/OBJECT_PROVENANCE_CONTINUITY_MIRROR_HANDOFF.md",
+          "StegVerse-Labs/.github/README.md#functional-change--readme-invariant"
+        ],
+        "disposition": "REQUIRED_BEFORE_FUNCTIONAL_MUTATION"
+      },
+      "canonical_owner_refs": [
+        "StegVerse-Labs/StegOS#190",
+        "StegVerse-Labs/StegOS/docs/OBJECT_PROVENANCE_CONTINUITY_MIRROR_HANDOFF.md"
+      ]
+    }
+  ],
+  "predicates": [
+    {
+      "predicate_id": "PRED-OBJECT-PROVENANCE-SOURCE-MERGED-190",
+      "semantic_predicate_id": "object_provenance_source_merged",
+      "subject_binding": {
+        "repository": "StegVerse-Labs/StegOS",
+        "issue": "190",
+        "schema": "stegos.object_provenance_lineage.v1"
+      },
+      "state": "SATISFIED",
+      "description": "Canonical object-provenance identity, conversation-event ingress primitive, derivation edges, and reverse traversal are merged and source-validated in StegOS.",
+      "authoritative_producer": "StegVerse-Labs/StegOS",
+      "required_schema": null,
+      "required_scope": "StegOS object provenance source implementation",
+      "required_execution_instance": "b76b912cf48ad381a0c705cc62aef015fd8f0351",
+      "max_age_seconds": null,
+      "required_fields": ["merge_commit", "schema_blob", "source_validation"],
+      "expected_output_ref": "StegVerse-Labs/StegOS@b76b912cf48ad381a0c705cc62aef015fd8f0351",
+      "consumers": ["STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190"],
+      "canonical_source_refs": [
+        "StegVerse-Labs/StegOS/docs/OBJECT_PROVENANCE_CONTINUITY_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegOS/schemas/object_provenance_lineage.schema.json"
+      ]
+    },
+    {
+      "predicate_id": "PRED-OBJECT-PROVENANCE-MASTER-RECORDS-CUSTODY-MERGED-190",
+      "semantic_predicate_id": "object_provenance_master_records_custody_merged",
+      "subject_binding": {
+        "repository": "master-records/orchestration",
+        "source_schema": "stegos.object_provenance_lineage.v1"
+      },
+      "state": "SATISFIED",
+      "description": "Existing Universal Interlock Master Records custody/reconstruction path accepts the exact merged StegOS object-provenance schema and is merged/validated.",
+      "authoritative_producer": "master-records/orchestration",
+      "required_schema": null,
+      "required_scope": "object provenance Universal Interlock custody support",
+      "required_execution_instance": "9fd33842d2efca505c01c29c69c65256f03a8dca",
+      "max_age_seconds": null,
+      "required_fields": ["merge_commit", "source_schema_pin", "repository_validation"],
+      "expected_output_ref": "master-records/orchestration@9fd33842d2efca505c01c29c69c65256f03a8dca",
+      "consumers": ["STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190"],
+      "canonical_source_refs": [
+        "master-records/orchestration/docs/OBJECT_PROVENANCE_CUSTODY_MIRROR_HANDOFF.md"
+      ]
+    },
+    {
+      "predicate_id": "PRED-OBJECT-PROVENANCE-AUTHENTIC-INGRESS-190",
+      "semantic_predicate_id": "authentic_object_provenance_ingress_observed",
+      "subject_binding": {
+        "task_id": "STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190",
+        "source_schema": "stegos.object_provenance_lineage.v1"
+      },
+      "state": "UNKNOWN",
+      "description": "A real user/source object traversed governed Interlock/InTr ingress with stable object identity, real conversation/provider event binding, and retained transition receipt.",
+      "authoritative_producer": "StegVerse-Labs/StegOS governed Interlock/InTr ingress",
+      "required_schema": "stegos.object_provenance_lineage.v1",
+      "required_scope": "authentic governed source-object ingress",
+      "required_execution_instance": null,
+      "max_age_seconds": null,
+      "required_fields": ["lineage_id", "root_object_ids", "objects", "edges"],
+      "expected_output_ref": "authentic runtime object-provenance lineage receipt",
+      "consumers": ["master-records/orchestration#74", "User WorkSpace provenance projection"],
+      "canonical_source_refs": [
+        "StegVerse-Labs/StegOS#190",
+        "StegVerse-Labs/StegOS/docs/OBJECT_PROVENANCE_CONTINUITY_MIRROR_HANDOFF.md"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "evidence_id": "EVID-OBJECT-PROVENANCE-SOURCE-MERGE-190",
+      "predicate_id": "PRED-OBJECT-PROVENANCE-SOURCE-MERGED-190",
+      "subject_binding": {
+        "repository": "StegVerse-Labs/StegOS",
+        "issue": "190",
+        "schema": "stegos.object_provenance_lineage.v1"
+      },
+      "producer": "StegVerse-Labs/StegOS",
+      "ref": "StegVerse-Labs/StegOS@b76b912cf48ad381a0c705cc62aef015fd8f0351",
+      "schema": null,
+      "scope": "StegOS object provenance source implementation",
+      "execution_instance": "b76b912cf48ad381a0c705cc62aef015fd8f0351",
+      "observed_at": "2026-09-05",
+      "fields": {
+        "merge_commit": "b76b912cf48ad381a0c705cc62aef015fd8f0351",
+        "schema_blob": "251a4dca3e02d05f911c47627de2ce7d88a96908",
+        "source_validation": "PASS"
+      },
+      "authority_effect": "EVIDENCE_ONLY"
+    },
+    {
+      "evidence_id": "EVID-OBJECT-PROVENANCE-MR-CUSTODY-MERGE-190",
+      "predicate_id": "PRED-OBJECT-PROVENANCE-MASTER-RECORDS-CUSTODY-MERGED-190",
+      "subject_binding": {
+        "repository": "master-records/orchestration",
+        "source_schema": "stegos.object_provenance_lineage.v1"
+      },
+      "producer": "master-records/orchestration",
+      "ref": "master-records/orchestration@9fd33842d2efca505c01c29c69c65256f03a8dca",
+      "schema": null,
+      "scope": "object provenance Universal Interlock custody support",
+      "execution_instance": "9fd33842d2efca505c01c29c69c65256f03a8dca",
+      "observed_at": "2026-09-05",
+      "fields": {
+        "merge_commit": "9fd33842d2efca505c01c29c69c65256f03a8dca",
+        "source_schema_pin": "b76b912cf48ad381a0c705cc62aef015fd8f0351:251a4dca3e02d05f911c47627de2ce7d88a96908",
+        "repository_validation": "PASS"
+      },
+      "authority_effect": "EVIDENCE_ONLY"
+    }
+  ],
+  "gaps": [
+    {
+      "predicate_id": "PRED-OBJECT-PROVENANCE-AUTHENTIC-INGRESS-190",
+      "subject_binding": {
+        "task_id": "STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190",
+        "source_schema": "stegos.object_provenance_lineage.v1"
+      },
+      "existing_evidence_refs": [],
+      "rejected_because": ["NO_QUALIFYING_AUTHENTIC_RUNTIME_EVIDENCE_OBSERVED"],
+      "missing_observation": "A real source object must enter through an existing governed Interlock/InTr ingress surface and emit canonical receipt-bound object lineage.",
+      "required_producer": "StegVerse-Labs/StegOS governed Interlock/InTr ingress",
+      "required_output_ref": "authentic runtime object-provenance lineage receipt",
+      "required_schema": "stegos.object_provenance_lineage.v1",
+      "required_fields": ["lineage_id", "root_object_ids", "objects", "edges"],
+      "required_freshness": null,
+      "collision_refs": [],
+      "action_without_collision": "Select and bind an existing canonical ingress adapter to build_ingress_pair(); update StegOS README in the same material functional change; do not create a new transport or provenance authority."
+    }
+  ]
+}

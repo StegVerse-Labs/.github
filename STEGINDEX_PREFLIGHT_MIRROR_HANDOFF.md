@@ -1,7 +1,7 @@
 # STEGINDEX_PREFLIGHT_MIRROR_HANDOFF.md
 
 Status: ACTIVE
-Updated: 2026-09-02
+Updated: 2026-09-05
 Organization: StegVerse-Labs
 Repository: StegVerse-Labs/.github
 Goal: STEGINDEX-MANDATORY-PREFLIGHT-CONSUMER
@@ -58,8 +58,9 @@ Actual execution remains owned by the canonical satisfier/worker/runtime identif
 source_adapter: IMPLEMENTED
 StegIndex purpose-aware resolver: MERGED
 organization preflight consumption: SOURCE_BOUND
+README impact pre-work completeness: MERGED / VALIDATED
 runtime execution claim: NONE
-next_action: validate adapter behavior and integrate the adapter into concrete session/worker entry paths as they are materially touched
+next_action: preserve README-impact completeness through concrete session/worker entry paths and continue canonical coordination adoption without duplicate implementations
 manual_execution_allowed: true
 user_action_required: false
 thread_archive_ready: false
@@ -122,7 +123,6 @@ New work is now permitted by this boundary only when StegIndex reports `NO_EXIST
 
 Remaining integration is worker-entry-specific; the sovereign resident executor itself is not made dependent on StegIndex materialization.
 
-
 ## Capability-risk organization consumer binding — 2026-09-03
 
 StegIndex unified preflight source:
@@ -141,13 +141,8 @@ Preserved invariants:
 
 The session/build pre-work entrypoint already nests the organization gate result, so this bounded metadata becomes visible there without adding another execution plane.
 
-Next action after merge:
-- consume `capability_risk.transition_surfaces` and `required_governance` where concrete governed task-admission surfaces already evaluate StegIndex output;
-- preserve local handoff/source truth and existing authority ownership.
-
 Runtime activation claim: NONE.
 Authority effect: NONE.
-
 
 ## Continuous-discovery organization gate — 2026-09-03
 
@@ -172,3 +167,38 @@ Session/build pre-work remains non-authorizing:
 - incomplete source discovery requires source materialization/observation first;
 - capability-risk metadata remains advisory/index-only;
 - authority effect remains NONE.
+
+## README-impact pre-work completeness — 2026-09-05
+
+The organization session/build preflight carries the same functional-change completeness invariant already enforced at WorkerCoordinator admission.
+
+CLI declaration:
+- `--readme-impact-required`
+- `--material-function-change true|false`
+- `--readme-updated-in-change-set`
+- `--readme-path <path>`
+- `--no-readme-update-reason <reason>`
+- repeatable `--readme-evidence-ref <ref>`
+
+Fail-closed rules:
+1. if README impact is required but materiality is undeclared, stop at `STOP_AT_README_IMPACT_DEPENDENCY`;
+2. if `material_function_change=true`, a README update, README path, and evidence refs are mandatory;
+3. if `material_function_change=false`, an explicit no-update reason and evidence refs are mandatory;
+4. an incomplete README-impact determination overrides any otherwise permissive StegIndex/coordination result and prohibits task creation;
+5. legacy/nonfunctional invocations that do not enter the README-impact gate retain prior behavior.
+
+This extension creates no new scheduler, execution path, claim/fence authority, credential authority, route authority, transition authority, or runtime-truth claim. It is a pre-work completeness predicate only.
+
+README impact for the functional change itself: MATERIAL. `README.md` was included in the same change set.
+
+Validated implementation evidence:
+- PR #1027
+- exact validated head: `45631a2c718fa8d982a771cdb55b301db595a81a`
+- merge: `5626bfc8d1cb76bb1d1eda6ef3d0c0be7429e17a`
+- Heartbeat Worker Project run `34001532342`: SUCCESS
+- organization control-plane run `34001532346`: SUCCESS
+- cross-task coordination run `34001532400`: SUCCESS
+
+These are source/validation facts only. They do not prove resident runtime execution or grant authority.
+
+README impact for this reconciliation commit: NON-MATERIAL. Reason: only the canonical handoff status/evidence record is being reconciled to the already-merged validated implementation; repository behavior is unchanged. Evidence: PR #1027 and runs `34001532342`, `34001532346`, `34001532400`.
