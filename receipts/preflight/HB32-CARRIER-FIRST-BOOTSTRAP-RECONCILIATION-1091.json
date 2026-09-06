@@ -1,0 +1,88 @@
+{
+  "schema": "stegverse.session-build-preflight-receipt/v1",
+  "preflight_id": "HB32-CARRIER-FIRST-BOOTSTRAP-RECONCILIATION-1091",
+  "goal": "Reconcile the durable sovereign bootstrap and activation verifier to the already-created HB32 carrier-only oscillator start plus downstream WorkerCoordinator self-heal path, preserving all current-main runtime remedies and authority boundaries.",
+  "state": "PASS_FUNCTIONAL_MUTATION_ADMISSIBLE",
+  "repository": "StegVerse-Labs/.github",
+  "base_commit": "11cad666ff4a0ffeca39a725272f1ab905d9257d",
+  "resolved_sources": {
+    "resident_start_handoff": "handoffs/HEARTBEAT-OSCILLATOR-RESIDENT-START-012.json",
+    "resident_start_registry": "control/worker-registry.d/heartbeat-oscillator-resident-start-012.json",
+    "runtime_solution_registry": "data/runtime-solution-registry.d/hb32-existing-runtime-solutions.json",
+    "runtime_solution_handoff": "docs/HB32_RUNTIME_SOLUTION_REUSE_MIRROR_HANDOFF.md",
+    "self_heal_handoff": "docs/RESIDENT_WORKER_SELF_HEAL_MIRROR_HANDOFF.md",
+    "g18_handoff": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
+    "g18_cross_task_claim": "control/cross-task-coordination.d/g18-active-claim.json",
+    "master_records_runtime_presence": "master-records/orchestration:RUNTIME_PRESENCE_CUSTODY_MIRROR_HANDOFF.md",
+    "current_bootstrap": "scripts/bootstrap_sovereign_runtime.py",
+    "current_verifier": "scripts/verify_sovereign_runtime_activation.py",
+    "superseded_candidate_pr": 1098
+  },
+  "resolved_state": {
+    "resident_start_state": "HANDOFF_READY",
+    "resident_start_claim_id": null,
+    "direct_carrier_installer_authorized": true,
+    "workercoordinator_required_for_carrier_start": false,
+    "heartbeat_progression": "OSCILLATOR_ONLY_10MS_100HZ",
+    "g18_claim_preserved": "SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18",
+    "g18_fencing_token_preserved": 18,
+    "master_records_authority": "CUSTODY_AND_RECONSTRUCTION_ONLY",
+    "master_records_authentic_local_input_state": "PENDING",
+    "existing_carrier_progression_fix": "ec92570ccfa4ef9b87bef77c4596f0f341ff33b7",
+    "existing_stale_worker_self_heal_fix": "511b82e26dcfce0d799f861df23b605fb837ac56",
+    "existing_worker_first_cycle_fix": "55c03313d72dde2f067434c87cd3691ec0682c14",
+    "existing_g18_same_host_fallback_fix": "72e80ce645858c02877277845ffe624cd71ec1e6"
+  },
+  "exact_gap": {
+    "state": "DURABLE_BOOTSTRAP_STILL_ENTERS_COMBINED_CARRIER_AND_WORKER_INSTALLER",
+    "evidence": [
+      "Current main scripts/bootstrap_sovereign_runtime.py invokes scripts/install_sovereign_heartbeat_service.py before downstream worker handling.",
+      "Canonical resident-start handoff requires scripts/install_sovereign_heartbeat_carrier.py directly and explicitly sets workercoordinator_required_for_carrier_start=false.",
+      "Current verifier still restarts both heartbeat and WorkerCoordinator directly for controlled restart proof."
+    ]
+  },
+  "collision_review": {
+    "reuse_existing_runtime_solutions_first": true,
+    "new_heartbeat_required": false,
+    "new_oscillator_required": false,
+    "new_scheduler_required": false,
+    "new_workercoordinator_required": false,
+    "new_claim_fence_plane_required": false,
+    "new_credential_path_required": false,
+    "g18_ownership_mutation_allowed": false,
+    "master_records_mutation_required": false,
+    "old_pr_1098_may_not_merge_without_current_main_reconstruction": true
+  },
+  "admissible_machine_step": {
+    "action": "REBUILD_PR1098_FUNCTIONAL_DELTA_ON_CURRENT_MAIN_USING_EXISTING_CARRIER_ONLY_INSTALLER_SELF_HEAL_AND_G18_FALLBACK",
+    "machine_executable_now": true,
+    "runtime_execution_claimed": false,
+    "activation_claimed": false
+  },
+  "readme_impact": {
+    "predicate": "README_IMPACT_RESOLVED",
+    "state": "SATISFIED_BY_REQUIRED_UPDATE_IN_CHANGE_SET",
+    "material_function_change": true,
+    "readme_update_required": true,
+    "readme_path": "README.md",
+    "readme_updated_in_change_set_required": true,
+    "determination": "README_UPDATE_REQUIRED_IN_SAME_CHANGE_SET",
+    "evidence_basis": [
+      "The successor changes effective sovereign bootstrap ordering from combined carrier+worker installation to carrier-only startup followed by independent worker-presence/self-heal evidence.",
+      "The successor changes controlled restart semantics so HeartBeat restart no longer directly restarts WorkerCoordinator as a prerequisite.",
+      "Current README documents carrier-only installation, self-heal, and G18 fallback separately but does not yet state this durable-bootstrap ordering/restart relationship."
+    ]
+  },
+  "authority": {
+    "heartbeat_grants_execution_authority": false,
+    "oscillator_grants_execution_authority": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "transition_authority": "INTERLOCK_INTR",
+    "credential_authority": "TV/TVC",
+    "master_records_authority": "OBSERVED_REALITY_CUSTODY_RECONSTRUCTION_ONLY",
+    "github_token_runtime_authority": "NONE",
+    "authority_effect": "NONE_PREFLIGHT_ONLY"
+  },
+  "runtime_execution_performed_by_preflight": false,
+  "network_fetch_performed_by_preflight": false
+}
