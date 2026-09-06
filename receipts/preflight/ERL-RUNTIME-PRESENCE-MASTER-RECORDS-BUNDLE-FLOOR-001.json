@@ -1,0 +1,54 @@
+{
+  "schema": "stegverse.session-build-preflight/v1",
+  "goal": "Ensure the existing sovereign control-plane bundle cannot validate a Master Records vendor source that predates the canonical resident runtime-presence custody importer.",
+  "observed_source_head": "8781b17fd493368917487b2a697f004d37c5f8a1",
+  "canonical_context": {
+    "erl_handoff": "StegVerse-Labs/Executive_Rhetoric_Ledger:docs/AI_ECONOMIC_TRANSPARENCY_MIRROR_HANDOFF.md",
+    "task_registry": "StegVerse-Labs/.github:data/canonical-task-registry.json#generation=15",
+    "master_records_handoff": "master-records/orchestration:MASTER_RECORDS_ORCHESTRATION_MIRROR_HANDOFF.md",
+    "cross_task_handoff": "StegVerse-Labs/.github:docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
+    "worker_registry": "control/worker-registry.d/erl-ai-economic-transparency-review-001.json"
+  },
+  "reuse": {
+    "existing_bundle_producer": "scripts/package_sovereign_control_plane_bundle.py",
+    "existing_master_records_source_proof": "master_records_source_proof",
+    "existing_presence_importer": "master-records/orchestration:scripts/intake_resident_runtime_presence.py",
+    "existing_presence_importer_merge": "8e33b3e95d3d9e34387fe393031f44bebcdb5d57",
+    "new_scheduler_created": false,
+    "new_workercoordinator_created": false,
+    "new_heartbeat_created": false,
+    "new_credential_path_created": false,
+    "new_runtime_probe_created": false
+  },
+  "collision_check": {
+    "open_pr_query": "repo:StegVerse-Labs/.github is:pr is:open package_sovereign_control_plane_bundle",
+    "matching_open_pr_count": 0,
+    "active_claim_collision_discovered": false
+  },
+  "defect": {
+    "state": "CONFIRMED_SOURCE_PREREQUISITE_GAP",
+    "prior_master_records_floor": "d593c920c1630aa5da20cc2622196f8676a74afd",
+    "prior_protected_paths": [
+      "scripts/watch_stegverse001_autonomy_receipt.py",
+      "scripts/import_stegverse001_autonomy_receipt.py"
+    ],
+    "failure_mode": "A clean Master Records checkout descended from the old SV001 floor but predating PR #80 could satisfy bundle source proof while omitting scripts/intake_resident_runtime_presence.py, leaving the already-installed presence-to-Master-Records custody handoff unreachable after materialization."
+  },
+  "readme_impact": {
+    "required": true,
+    "material_function_change": true,
+    "reason": "The change tightens sovereign bundle prerequisites and failure behavior for the Master Records vendor source.",
+    "readme_path": "README.md",
+    "readme_updated_in_change_set": true,
+    "evidence_refs": [
+      "scripts/package_sovereign_control_plane_bundle.py",
+      "tests/test_runtime_presence_master_records_bundle_floor.py",
+      "README.md"
+    ]
+  },
+  "admission": "ADMIT_COORDINATION",
+  "authority_effect": "NONE_PREFLIGHT_ONLY",
+  "runtime_truth_claimed": false,
+  "resident_execution_claimed": false,
+  "erl_review_completion_claimed": false
+}

@@ -22,10 +22,12 @@ MANIFEST_NAME = "stegverse-control-plane-manifest.json"
 TVC_HIL_SOURCE_FLOOR = "2787eece099604a4d2aad93c575167dc73e54037"
 TV_RESIDENT_PROOF_SHA = "e0d102a8c187c059754eced9ac017fdb056a0222"
 TVC_RESIDENT_PROOF_MIN_SHA = "e4bef703b4d6ccad858459ec502637c598948c42"
-MASTER_RECORDS_SV001_SOURCE_FLOOR = "d593c920c1630aa5da20cc2622196f8676a74afd"
+MASTER_RECORDS_SV001_SOURCE_FLOOR = "8e33b3e95d3d9e34387fe393031f44bebcdb5d57"
 MASTER_RECORDS_SV001_PROTECTED_PATHS = (
     "scripts/watch_stegverse001_autonomy_receipt.py",
     "scripts/import_stegverse001_autonomy_receipt.py",
+    "scripts/intake_resident_runtime_presence.py",
+    "schemas/resident_runtime_presence_custody.schema.json",
 )
 SV002_MICRO_NODE_COMMIT = "410c4267b4145ed1c1f5f2d954f3926429a43c01"
 SV002_MICRO_NODE_REQUIRED_PATHS = (
