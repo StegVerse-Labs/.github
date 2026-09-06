@@ -17,11 +17,19 @@ SV002_REQUIRED_FILES=(
   "scripts/evaluate_sv002_adversarial_observation.py",
   "fixtures/sv002-adversarial-observation/cases.v1.json",
 )
+CANONICAL_CURRENT_IPHONE_AUTHORIZATION_SOURCE="EXTERNAL_WORKERCOORDINATOR_TVC_BOUND_ENVELOPE"
 
 def load(p:Path)->dict[str,Any]:
     v=json.loads(p.read_text(encoding="utf-8"))
     if not isinstance(v,dict): raise RuntimeError("expected JSON object")
     return v
+
+def authorized_execution_state(source:dict[str,Any])->bool|str:
+    legacy=source.get("authorized_execution","NOT_ESTABLISHED")
+    if legacy is True: return True
+    if legacy is False: return False
+    if source.get("authorized_execution_source")==CANONICAL_CURRENT_IPHONE_AUTHORIZATION_SOURCE: return True
+    return "NOT_ESTABLISHED"
 
 def _git(root:Path,*args:str)->subprocess.CompletedProcess[str]:
     return subprocess.run(["git","-C",str(root),*args],capture_output=True,text=True,check=False,timeout=20)
@@ -84,6 +92,7 @@ def continue_chain(source_root:Path, source_receipt:Path=DEFAULT_SOURCE_RECEIPT,
     if not source_receipt.is_file():
         return {"schema":"stegverse.sv001-evidence-chain-continuation/v1","state":"SV001_RECEIPT_NOT_OBSERVED","retry_allowed":True,"authority_effect":"NONE"}
     source=load(source_receipt)
+    authorized_execution=authorized_execution_state(source)
     mr_root,mr_seen=locate_master_records()
     if mr_root is None:
         return {"schema":"stegverse.sv001-evidence-chain-continuation/v1","state":"MASTER_RECORDS_SOURCE_NOT_MATERIALIZED","retry_allowed":True,"master_records_candidates":mr_seen,"authority_effect":"NONE"}
