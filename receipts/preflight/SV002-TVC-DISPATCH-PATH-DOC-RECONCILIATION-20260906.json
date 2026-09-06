@@ -1,0 +1,56 @@
+{
+  "schema": "stegverse.session-machine-preflight/v1",
+  "task_id": "SV002-TVC-DISPATCH-PATH-DOC-RECONCILIATION-20260906",
+  "goal_id": "SHWP-SV002-ORG-RUNTIME-ACTIVATION-001",
+  "state": "PASS",
+  "evaluated_at": "2026-09-06T13:00:00Z",
+  "scope": {
+    "repository": "StegVerse-Labs/.github",
+    "mutation_paths": [
+      "docs/SV002_HB_AWARENESS_RUNTIME_REPAIR_MIRROR_HANDOFF.md"
+    ]
+  },
+  "canonical_state_resolution": {
+    "main_sha": "11cad666ff4a0ffeca39a725272f1ab905d9257d",
+    "canonical_handoff": "docs/SV002_HB_AWARENESS_RUNTIME_REPAIR_MIRROR_HANDOFF.md",
+    "task_registry": "data/canonical-task-registry.json#generation-15",
+    "master_records": "master-records/orchestration/RUNTIME_PRESENCE_CUSTODY_MIRROR_HANDOFF.md",
+    "cross_task_coordination": "docs/RUNTIME_PRESENCE_CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
+    "tvc_runtime_implementation": "StegVerse-Labs/TVC@85a6885d9f942c84cc5740f1e1f26bae2e2de03f:scripts/tvc_resident_service_self_heal.py"
+  },
+  "collision_review": {
+    "matching_open_pr_observed": false,
+    "duplicate_runtime_implementation_required": false
+  },
+  "problem": {
+    "code": "CANONICAL_HANDOFF_TVC_DISPATCH_PATH_DRIFT",
+    "evidence": [
+      "Current .github handoff says the TVC exact-source repair would fail because the portable one-selector bridge lacked the awareness selectors.",
+      "Current merged TVC runtime implementation does not use that bridge for the SV002 self-heal; after local source refresh it invokes scripts/dispatch_resident_execution_requests.py directly with the existing Astra, quantum, and SV002 selectors in one exact-selector dispatch.",
+      "The portable bridge selector admission correction remains valid for portable one-selector callers but is not the mechanism used by the merged TVC resident self-heal."
+    ]
+  },
+  "admitted_repair": {
+    "strategy": "Correct the canonical handoff to distinguish the portable bridge seam from the merged TVC direct-dispatch path. Do not change runtime code, predicates, authority, request identity, or execution semantics.",
+    "functional_mutation": false,
+    "authority_effect": "NONE_DOCUMENTATION_RECONCILIATION_ONLY"
+  },
+  "readme_impact": {
+    "required": false,
+    "material_function_change": false,
+    "readme_updated_in_change_set": false,
+    "no_readme_update_reason": "The proposed change only reconciles handoff prose with already-merged runtime behavior. It changes no repository behavior, runtime semantics, interface, governance/authority boundary, evidence semantics, prerequisite, dependency, failure behavior, or capability meaning.",
+    "evidence_refs": [
+      "StegVerse-Labs/.github@11cad666ff4a0ffeca39a725272f1ab905d9257d",
+      "StegVerse-Labs/TVC@85a6885d9f942c84cc5740f1e1f26bae2e2de03f:scripts/tvc_resident_service_self_heal.py"
+    ]
+  },
+  "authority": {
+    "heartbeat_grants_execution_authority": false,
+    "workercoordinator_remains_claim_fence_authority": true,
+    "intr_remains_transition_authority": true,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE"
+  },
+  "verdict": "PASS"
+}
