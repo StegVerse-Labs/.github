@@ -33,6 +33,7 @@ STATIC_DIRS = (
 )
 STATIC_FILES = (
     Path("scripts/run_worker_runtime.py"),
+    Path("scripts/run_sovereign_ephemeral_console.py"),
     Path("scripts/repair_resident_worker_presence.py"),
     Path("scripts/project_hb_runtime_presence.py"),
     Path("scripts/project_de006_runtime_observability.py"),
@@ -163,6 +164,7 @@ def _validate_roots(source_root: Path, runtime_root: Path) -> tuple[Path, Path]:
         source / "heartbeat_runtime/worker_runtime.py",
         source / "heartbeat_runtime/intr_derived_carrier.py",
         source / "scripts/run_worker_runtime.py",
+        source / "scripts/run_sovereign_ephemeral_console.py",
         source / "control/worker-registry.json",
         source / "control/process-worker-adapters.json",
     )
