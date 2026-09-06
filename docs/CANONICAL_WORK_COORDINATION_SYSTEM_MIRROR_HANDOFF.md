@@ -1,184 +1,185 @@
 # Canonical Work Coordination System Mirror Handoff
 
-Updated: 2026-09-04
+Updated: 2026-09-06
 Organization: `StegVerse-Labs`
 Repository: `StegVerse-Labs/.github`
 Goal: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`
-Status: `SOURCE_IMPLEMENTED_RUNTIME_ENFORCEMENT_PENDING`
+Status: `SOURCE_STACK_IMPLEMENTED / AUTHENTIC_END_TO_END_LIFECYCLE_PENDING`
 
 ## Source of truth
 
 This file is the bounded continuation record for the StegVerse Canonical Work Coordination System. It inherits and does not replace:
 
+- `docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md`
+- `docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md`
 - `docs/UNIVERSAL_WORK_INTERLOCK_MIRROR_HANDOFF.md`
+- `docs/CANONICAL_RUNTIME_PROFILE_MAP_MIRROR_HANDOFF.md`
 - `ORG_RESIDENT_RUNTIME_INTR_BOUNDARY_MIRROR_HANDOFF.md`
 - `org-runtime/interlock-intr.json`
-- `control/worker-registry.json` as the existing WorkerCoordinator task/claim runtime registry
-- existing Master Records reconstruction invariants and custody records
+- `data/canonical-task-registry.json`
+- `control/worker-registry.json`
+- `master-records/orchestration:CANONICAL_WORK_COORDINATION_CUSTODY_MIRROR_HANDOFF.md`
 
-The purpose of this workstream is to provide one canonical coordination substrate for multiple StegVerse AI entities, sessions, workers, repository tasks, failure-email incidents, and human-action dependencies.
+Current Task Registry generation observed by the reconciliation preflight: `15`.
+Current WorkerCoordinator registry generation observed by the reconciliation preflight: `22`.
 
-## Core invariant
+## Authority model
 
-There is one canonical work truth and many projections.
-
-The canonical work system is authoritative for work intent, obligation, dependency, ownership references, adjacency, blocking state, and admissible next work. Master Records remains authoritative for observed events, evidence, state-transition history, custody, and reconstructable reality. Neither silently substitutes for the other.
-
-WorkerCoordinator remains authoritative for executable claim/fence ownership. The canonical task registry references WorkerCoordinator claim/fence state rather than independently minting execution ownership.
-
-Interlock/InTr governs ingress and egress state transitions for task admission, transfer, closure, and other governed work-state transitions. Source files and GitHub state do not prove those runtime transitions occurred.
-
-## Coordination topology
+There is one canonical work truth with separated authorities and many non-authorizing projections.
 
 ```text
-source stimulus / proposal / session / GitHub failure / runtime event
-  -> Interlock ingress
-  -> InTr materialization
-  -> canonical task identity
-  -> registry + dependency/incident graph
-  -> Task Registry <-> Master Records reconciliation
-  -> duplicate / convergence / blocker / evidence resolution
-  -> WorkerCoordinator claim/fence when executable
-  -> governed execution
-  -> evidence / receipts / Master Records custody
-  -> reconciliation
-  -> completion claim validation or unresolved state
-  -> Interlock egress / transfer / closure
-  -> dependent-work reevaluation
+Task Registry
+  = work intent, obligation, dependency, adjacency, coordination state
+
+WorkerCoordinator / control/worker-registry.json
+  = executable assignment, claim, fence, lease ownership
+
+Master Records
+  = observed events, custody, reconstruction, retained evidence
+
+Interlock/InTr
+  = governed task ingress/egress and transition admission
 ```
 
-## Canonical task identity
+None of these layers silently substitutes for another.
 
-A task receives one stable `task_id` and `correlation_id` from admission through closure. Session changes, repository changes, worker changes, handoffs, retries, and transfers MUST NOT create a new identity merely because execution context changed.
+Source, merge, CI, deployment, heartbeat progression, handoff prose, request-file presence, custody acceptance, runtime-profile compatibility, or coordination projection do not by themselves prove authentic task execution or completion.
 
-Derived subtasks may have their own task IDs but MUST retain explicit parent/root correlation lineage.
+## Canonical topology
 
-## Task Registry responsibility
+```text
+source stimulus / proposal / session / runtime event
+  -> Interlock ingress
+  -> InTr materialization
+  -> stable canonical task identity
+  -> Task Registry + dependency/incident graph
+  -> cross-task predicate/evidence/claim resolution
+  -> WorkerCoordinator claim/fence when executable
+  -> governed execution
+  -> retained evidence / Master Records custody
+  -> Task Registry <-> Master Records reconciliation
+  -> completion claim validation
+  -> Interlock/InTr egress / transfer / closure
+  -> dependent-task reevaluation
+```
 
-The Task Registry records factual work coordination state, including stable identity, normalized goal, source/proposal references, current coordination state, targets, dependencies, blockers, parent systemic incident, adjacent tasks/evidence, WorkerCoordinator claim/fence references, expected evidence predicates, completion claim state, human-action references, admissible next transitions, and projection references.
+## Implemented source stack
 
-The registry MUST NOT infer that work occurred from source, merge, CI, deployment, heartbeat progression, handoff prose, or issue state.
+The early bootstrap implementation described by older revisions of this handoff has been superseded by the current source stack. Source now includes, among other canonical surfaces:
 
-## WorkerCoordinator responsibility
+- stable canonical task/correlation schemas and Task Registry;
+- deterministic Task Registry ↔ Master Records reconciliation;
+- Universal Work Interlock/InTr request materialization and ingress workers;
+- WorkerCoordinator claim/fence projection into canonical tasks without duplicating claim authority;
+- dependency reevaluation and admitted dependency-resolution consumption;
+- GitHub failure-event normalization and systemic-incident convergence surfaces;
+- event-triggered canonical-work bootstrap and local route/install wrapper;
+- canonical resident request dispatch and existing resident self-materialization path;
+- runtime-profile discovery, deterministic runtime matching, batch resolution persistence, routing-readiness evaluation, custody packaging, post-custody reconciliation, transition-readiness projection, and governance-review packaging;
+- cross-task coordination base+fragment composition;
+- exact `semantic_predicate_id + subject_binding` equivalence rules;
+- WorkerCoordinator claim-coverage parity against the authoritative worker registry;
+- StegIndex read-only composed-ledger discovery and claim-parity projection;
+- session/build pre-work reuse of the same composed/parity-validated coordination model;
+- README-impact completeness gates at session/build pre-work and WorkerCoordinator task admission.
 
-WorkerCoordinator owns executable work assignment and claim/fence authority. The Task Registry MUST NOT create a competing ownership truth.
+These are source/validation capabilities only. They do not convert missing runtime evidence into execution truth.
 
-Before new execution is admitted, coordination must determine whether equivalent work is already complete, equivalent work is actively claimed, adjacent work is producing the required evidence, a shared dependency/systemic incident blocks the transition, or a narrower non-colliding task remains admissible.
+## Master Records reconciliation state
 
-## Handoff model
+Master Records now provides the canonical-work event projection and adjacent runtime-profile/runtime-presence custody source paths.
 
-Handoffs become projections of canonical coordination state, not independent truth stores.
+Current canonical custody handoff state:
 
-A handoff projection exposes what work exists, what is complete and evidenced, what is unresolved, blockers/dependencies, active claim references, adjacent work/evidence, the exact evidence gap, and non-colliding next transition candidates.
+`SOURCE_FEED_RUNTIME_PROFILE_AND_PRESENCE_CUSTODY_PATH_IMPLEMENTED_AUTHENTIC_INPUT_PENDING`
 
-A session may be safely terminated once all unique task state has been materialized into canonical work records/projections and the session is no longer the sole continuity carrier.
+Relevant invariants:
 
-## Master Records reconciliation
+- custody != execution authority;
+- runtime-profile compatibility != execution authority;
+- runtime-presence custody != request consumption or task execution;
+- runtime-presence custody is not reusable cross-task evidence until exact subject/task binding is separately admitted;
+- reconciliation result != automatic task transition;
+- absence of evidence != proof of non-occurrence.
 
-Task Registry and Master Records are intentionally comparable but not interchangeable.
+The remaining Master Records denominator for this workstream is authentic local evidence ingestion/custody/reconciliation, not a missing projection/feed implementation.
 
-Task Registry answers: what should or may happen?
-Master Records answers: what actually happened?
+## Cross-task coordination state
 
-Every reconciliation produces one explicit state:
+Canonical cross-task coordination is source-validated and ecosystem adoption remains active.
 
-- `CONSISTENT`
-- `TASK_AHEAD_OF_EVIDENCE`
-- `REALITY_AHEAD_OF_TASK`
-- `CONFLICT`
-- `UNKNOWN`
-- `ORPHANED_EVENT`
+Current important boundaries:
 
-`COMPLETED` is not accepted merely because the Task Registry claims completion. A task first enters `COMPLETION_CLAIMED`; closure is admissible only when required evidence predicates validate the claim.
+- composed canonical ledger: validated;
+- WorkerCoordinator claim-coverage parity: merged/validated;
+- StegIndex composed discovery + claim parity: merged/validated/canonically reconciled;
+- session/build composed-ledger + claim-parity consumer: validated/reconciled;
+- subject-bound `resident_request_consumed` migration: partial/active;
+- resident-process presence sharing: deferred pending authentic exact subject binding;
+- coordination truth remains non-authorizing and is not runtime truth.
 
-Absence of evidence MUST NOT be interpreted as proof that work did not occur. Missing/unavailable evidence remains explicit as `UNKNOWN` or `TASK_AHEAD_OF_EVIDENCE` depending on known state.
-
-If Master Records contains a work-relevant event with no corresponding task identity, reconciliation may propose a new task/incident ingress, but the historical event itself does not gain task-execution authority.
-
-## Dependency, blocker, and convergence model
-
-A dependency is a prerequisite relationship. A blocker is a dependency currently preventing a task transition.
-
-Repeated symptoms are normalized before systemic-defect promotion. Multiple sessions, GitHub failure emails, runtime failures, or human requests may bind to one systemic incident rather than becoming duplicate repair tasks.
-
-When one shared dependency is resolved, every dependent task MUST be reevaluated before another duplicate implementation or human request is created.
-
-## Human-action canonicalization
-
-A human action is represented once as a canonical dependency object and may have many dependent tasks. Multiple tasks MUST NOT independently request the same human action when one unresolved canonical human-action dependency already exists.
-
-## Closure and historical integrity
-
-Task history is append-only in meaning. A closed task is not silently rewritten to appear never completed. If later evidence invalidates prior closure, a new governed transition such as `COMPLETION_REVOKED` or `REOPENED_DUE_TO_NEW_EVIDENCE` must be recorded.
-
-## Projections
-
-Session handoffs, GitHub issues, status dashboards, weekly accomplishment logs, developer views, repository-local task projections, and public progress surfaces may be generated from canonical coordination state and MUST NOT become competing sources of truth.
-
-## Installed machine surfaces
-
-Source implementation now exists in `StegVerse-Labs/.github`:
-
-- `schemas/canonical-task-record.schema.json`
-- `schemas/task-master-records-reconciliation.schema.json`
-- `data/canonical-task-registry.json`
-- `data/task-coordination-policy.json`
-- `scripts/validate_canonical_work_coordination.py`
-- `scripts/reconcile_task_registry_master_records.py`
-- `scripts/query_canonical_tasks.py`
-- `scripts/render_task_handoff_projection.py`
-
-Existing surfaces consumed by reference:
-
-- `control/worker-registry.json`
-- Master Records custody/reconstruction records
-- Universal Work Interlock/InTr records
-
-The bootstrap registry contains `STEGVERSE-CANONICAL-WORK-COORDINATION-001` in `PROPOSED` source state only. It deliberately does not fabricate Interlock/InTr admission or WorkerCoordinator claim/fence authority.
-
-## Source behavior now implemented
-
-- fail-closed task schema with stable correlation identity;
-- explicit separation of Task Registry, WorkerCoordinator, Master Records, and Interlock/InTr authority;
-- completion-claim versus validated-closure distinction;
-- explicit dependency/blocker/adjacency/evidence fields;
-- explicit shared human-action and systemic-incident surfaces;
-- deterministic Task Registry vs supplied Master Records projection reconciliation;
-- query utility for topic-based task discovery in new sessions;
-- handoff projection renderer so session continuity can be materialized outside the chat context;
-- validator that checks authority separation, closure requirements, blocker/dependency integrity, reconciliation states, and existing WorkerCoordinator-registry presence.
+Do not create a second runtime-presence projector, WorkerCoordinator, scheduler, request dispatcher, claim/fence path, or credential path to advance this workstream.
 
 ## Completion predicates
 
-1. A canonical task record schema exists with stable identity, dependency, blocker, adjacency, evidence, and claim-reference semantics. **SOURCE COMPLETE**
-2. The registry does not duplicate WorkerCoordinator claim/fence authority. **SOURCE COMPLETE**
-3. A reconciliation schema exists for Task Registry vs Master Records comparison. **SOURCE COMPLETE**
+1. Stable canonical task identity, dependency, blocker, adjacency, evidence, and claim-reference semantics exist. **SOURCE COMPLETE**
+2. Task Registry does not duplicate WorkerCoordinator claim/fence authority. **SOURCE COMPLETE**
+3. Master Records projection/feed and deterministic reconciliation source exist. **SOURCE COMPLETE**
 4. Completion claims require evidence validation before closure. **SOURCE COMPLETE**
-5. Missing evidence is represented explicitly rather than inferred as non-occurrence. **SOURCE COMPLETE**
-6. Handoffs are projections of canonical task state. **SOURCE COMPLETE**
-7. Duplicate/adjacent work resolution occurs before execution admission. **POLICY/SOURCE COMPLETE; RUNTIME ENFORCEMENT PENDING**
-8. Shared human actions can be represented once with multiple dependents. **SOURCE COMPLETE; RUNTIME POPULATION PENDING**
-9. Systemic incidents can bind many symptoms/tasks without duplicating repair ownership. **SOURCE COMPLETE; RUNTIME POPULATION PENDING**
-10. Source validators can fail closed on malformed or authority-conflicting records. **SOURCE IMPLEMENTED; EXECUTION PROOF PENDING**
-11. An authentic task ingress, claim/fence, evidence, reconciliation, and egress/closure cycle is demonstrated through runtime Interlock/InTr and Master Records. **PENDING**
+5. Missing evidence remains explicit rather than inferred as non-occurrence. **SOURCE COMPLETE**
+6. Handoffs are projections of canonical state rather than independent truth stores. **SOURCE COMPLETE**
+7. Duplicate/adjacent work and active-claim collision resolution occur in source before autonomous admission. **SOURCE COMPLETE / VALIDATED**
+8. Shared human-action and systemic-incident representations exist. **SOURCE COMPLETE; RUNTIME POPULATION IS EVENT-DEPENDENT**
+9. Canonical task ingress/egress source is connected to the existing Universal Work Interlock/InTr path. **SOURCE COMPLETE; AUTHENTIC EXECUTION EVIDENCE PENDING**
+10. WorkerCoordinator claim/fence projection source exists and remains non-authorizing outside WorkerCoordinator. **SOURCE COMPLETE / VALIDATED**
+11. Master Records runtime-profile custody/reconciliation source exists. **SOURCE COMPLETE; AUTHENTIC INPUT PENDING**
+12. Runtime-presence custody source exists with fail-closed non-reuse semantics until exact subject binding. **SOURCE COMPLETE; AUTHENTIC INPUT / SUBJECT BINDING PENDING**
+13. Runtime-profile discovery/routing-readiness/governance-review source stack exists. **SOURCE COMPLETE; AUTHENTIC RESIDENT CYCLE PENDING**
+14. One authentic end-to-end canonical task lifecycle demonstrates ingress -> WorkerCoordinator claim/fence -> governed execution -> evidence custody -> reconciliation -> egress/closure. **PENDING**
 
-## Remaining machine work
+## Exact remaining machine work
 
-- execute `scripts/validate_canonical_work_coordination.py` in an admitted validation environment;
-- connect task ingress/egress to the Universal Work Interlock/InTr runtime;
-- populate canonical task records from existing session/handoff/project state without duplicating WorkerCoordinator ownership;
-- bind live WorkerCoordinator claim/fence projection into canonical task records;
-- define/consume the Master Records projection/feed used for runtime reconciliation;
-- canonicalize repeated GitHub failure emails and shared human-action dependencies into incidents/tasks;
-- trigger dependent-task reevaluation when blockers resolve;
-- prove one authentic end-to-end task lifecycle from ingress through closure.
+The remaining work is no longer the early source-installation list from the 2026-09-04 handoff revision.
 
-## Runtime status
+Current machine work is:
 
-`SOURCE_IMPLEMENTED_RUNTIME_ENFORCEMENT_PENDING`
+1. consume authentic resident execution evidence through the already-existing WorkerCoordinator/InTr path;
+2. retain authentic evidence in the declared Master Records custody surfaces;
+3. reconcile current canonical tasks against that retained evidence without authority inference;
+4. preserve exact request/task/runtime subject binding for every runtime predicate;
+5. promote shared runtime-presence evidence only after authentic `runtime_root` / `resident.node_id` / canonical WorkerCoordinator identity proves the exact shared subject;
+6. continue runtime-profile custody -> reconciliation -> transition-readiness -> governance-review only when the required authentic upstream receipts exist;
+7. prove one authentic canonical task end-to-end lifecycle through governed closure;
+8. evaluate release/tag only after the canonical completion predicates are actually satisfied.
 
-Source installation does not prove canonical runtime coordination, Interlock/InTr materialization, WorkerCoordinator execution, Master Records reconciliation, or task closure occurred.
+Do not recreate completed source paths merely because authentic runtime evidence is still absent.
+
+## Current authentic evidence boundary
+
+Repository/source state does not currently establish the missing authentic lifecycle predicates. In particular, absence of the expected resident receipts must remain absence/unknown rather than being replaced by source, CI, heartbeat, custody, or handoff evidence.
+
+The runtime-presence shared predicate remains deferred until authentic evidence establishes stable resident subject identity.
+
+## README completeness
+
+This reconciliation is **NON-MATERIAL**. It updates an outdated continuation record to already-merged and already-validated behavior and does not change repository function, runtime semantics, interfaces, governance/authority boundaries, evidence semantics, prerequisites, dependencies, failure behavior, or capability meaning.
+
+No README update is required for this reconciliation.
+
+Preflight:
+
+`receipts/preflight/CANONICAL-WORK-COORDINATION-SYSTEM-HANDOFF-RECONCILIATION-001.json`
 
 ## Archive readiness
 
-The workstream is not runtime-complete until predicate 11 is proven. This conversation may be archived once no unique coordination state remains only in chat context; all current design/source state is preserved here.
+The source stack is substantially implemented, but the workstream is not complete because the authentic end-to-end lifecycle predicate remains unsatisfied.
+
+A handoff is continuity evidence only. It is not proof that remaining machine work has executed automatically.
+
+Current goal completion: `FALSE`.
+Authentic end-to-end lifecycle complete: `FALSE`.
+Thread archive-ready from this handoff alone: `FALSE`.
+
+## Human action
+
+None currently required.
