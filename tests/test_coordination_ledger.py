@@ -9,7 +9,10 @@ from heartbeat_runtime.coordination_ledger import (
     CoordinationLedgerError,
     compose_coordination_ledger,
     load_composed_coordination_ledger,
+    validate_worker_claim_coverage,
 )
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 class CoordinationLedgerCompositionTests(unittest.TestCase):
@@ -50,6 +53,45 @@ class CoordinationLedgerCompositionTests(unittest.TestCase):
             ],
         }
 
+    def worker_task(self, claim_id="CLAIM-1", **overrides):
+        task = {
+            "task_id": "TASK-1",
+            "goal_id": "GOAL-1",
+            "state": "BLOCKED",
+            "handoff_ref": "handoffs/TASK-1.json",
+            "executor_binding": "BOUND",
+            "worker_id": "worker-1",
+            "worker_instance_id": "worker-1-HB7-G9",
+            "claim_id": claim_id,
+            "heartbeat_timing": {"fencing_token": 9},
+            "archive_eligible": False,
+        }
+        task.update(overrides)
+        return task
+
+    def worker_registry(self, *tasks):
+        return {
+            "schema": "stegverse.heartbeat-worker-registry/v0.1",
+            "generation": 9,
+            "updated_at": "2026-09-05T00:00:00Z",
+            "workers": [],
+            "tasks": list(tasks),
+        }
+
+    def claim_row(self, claim_id="CLAIM-1", **overrides):
+        row = {
+            "claim_id": claim_id,
+            "task_id": "TASK-1",
+            "state": "ACTIVE",
+            "scope": {"repositories": ["StegVerse-Labs/.github"], "paths": ["control/x.json"]},
+            "fencing_token": 9,
+            "worker_id": "worker-1",
+            "worker_instance_id": "worker-1-HB7-G9",
+            "authority_effect": "COORDINATION_ONLY",
+        }
+        row.update(overrides)
+        return row
+
     def test_composes_fragment_without_mutating_base(self):
         base = self.base()
         result = compose_coordination_ledger(base, [self.fragment()])
@@ -84,6 +126,49 @@ class CoordinationLedgerCompositionTests(unittest.TestCase):
             result = load_composed_coordination_ledger(control / "cross-task-coordination.json")
             self.assertEqual(result["composition"]["fragment_ids"], ["F-A", "F-B"])
             self.assertEqual([p["predicate_id"] for p in result["predicates"]], ["P0", "P-A", "P-B"])
+
+    def test_worker_claim_coverage_accepts_exact_unreleased_bound_mirror(self):
+        ledger = self.base()
+        ledger["claims"] = [self.claim_row()]
+        result = validate_worker_claim_coverage(ledger, self.worker_registry(self.worker_task()))
+        self.assertEqual(result["validated_claim_ids"], ["CLAIM-1"])
+        self.assertEqual(result["authority_effect"], "NONE")
+        self.assertFalse(result["runtime_execution_inferred"])
+
+    def test_worker_claim_coverage_rejects_missing_coordination_mirror(self):
+        with self.assertRaisesRegex(CoordinationLedgerError, "unmirrored active WorkerCoordinator claim"):
+            validate_worker_claim_coverage(self.base(), self.worker_registry(self.worker_task()))
+
+    def test_worker_claim_coverage_rejects_identity_drift(self):
+        ledger = self.base()
+        ledger["claims"] = [self.claim_row(fencing_token=10)]
+        with self.assertRaisesRegex(CoordinationLedgerError, "identity mismatch"):
+            validate_worker_claim_coverage(ledger, self.worker_registry(self.worker_task()))
+
+    def test_worker_claim_coverage_rejects_stale_worker_bound_active_mirror(self):
+        ledger = self.base()
+        ledger["claims"] = [self.claim_row()]
+        registry = self.worker_registry(self.worker_task(state="COMPLETED", archive_eligible=True))
+        with self.assertRaisesRegex(CoordinationLedgerError, "stale active WorkerCoordinator coordination claim"):
+            validate_worker_claim_coverage(ledger, registry)
+
+    def test_non_worker_coordination_claim_is_not_forced_into_worker_registry(self):
+        ledger = self.base()
+        ledger["claims"] = [{
+            "claim_id": "COORD-ONLY",
+            "task_id": "TASK-X",
+            "state": "ACTIVE",
+            "scope": {"repositories": ["StegVerse-Labs/.github"], "paths": ["docs/x.md"]},
+            "authority_effect": "COORDINATION_ONLY",
+        }]
+        result = validate_worker_claim_coverage(ledger, self.worker_registry())
+        self.assertEqual(result["validated_claim_ids"], [])
+
+    def test_repository_composed_ledger_covers_current_worker_claims(self):
+        result = load_composed_coordination_ledger(ROOT / "control" / "cross-task-coordination.json")
+        coverage = result["composition"].get("worker_claim_coverage")
+        self.assertIsInstance(coverage, dict)
+        self.assertEqual(coverage["authority_effect"], "NONE")
 
 
 if __name__ == "__main__":
