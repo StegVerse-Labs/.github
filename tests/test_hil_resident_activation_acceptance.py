@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import importlib.util
-import os
 from pathlib import Path
 import tempfile
 import unittest
@@ -69,6 +68,42 @@ class HILResidentActivationAcceptanceTests(unittest.TestCase):
         self.assertIsNone(selected["public_gateway_origin"])
         self.assertEqual(mod.select_materialization_result(batch, "INTR-MAT-" + "c" * 24), {})
 
+    def test_hil_dispatch_requires_exact_terminal_consumption_result(self) -> None:
+        consumption = self._valid_consumption()
+        receipt = {
+            "schema": "stegverse.resident-request-dispatch/v1",
+            "state": "DISPATCH_INCOMPLETE",
+            "outcomes": [
+                {"consumer": "g18", "attempted": False, "state": "PREDICATE_PENDING", "result": None},
+                {
+                    "consumer": "hil",
+                    "consumer_ref": "scripts/consume_hil_resident_execution_request.py",
+                    "attempted": True,
+                    "state": "COMPLETED",
+                    "result": consumption,
+                },
+            ],
+        }
+        self.assertTrue(mod.validate_hil_dispatch_outcome(receipt))
+        receipt["outcomes"][1]["result"] = {**consumption, "terminal_hil_transition_observed": False}
+        self.assertFalse(mod.validate_hil_dispatch_outcome(receipt))
+
+    def test_hil_consumption_requires_exact_request_task_and_terminal_transition(self) -> None:
+        receipt = self._valid_consumption()
+        self.assertTrue(mod.validate_hil_resident_consumption(receipt))
+        for key, value in (
+            ("request_id", "RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-001"),
+            ("task_id", "OTHER"),
+            ("state", "ATTEMPT_RECORDED"),
+            ("runtime_execution_attempted", False),
+            ("terminal_hil_transition_observed", False),
+            ("github_token_runtime_authority", "GITHUB"),
+            ("second_machine_required", True),
+        ):
+            mutated = dict(receipt)
+            mutated[key] = value
+            self.assertFalse(mod.validate_hil_resident_consumption(mutated), key)
+
     def test_hosted_markers_are_detectable(self) -> None:
         self.assertTrue(mod.truthy("1"))
         self.assertTrue(mod.truthy("true"))
@@ -78,6 +113,27 @@ class HILResidentActivationAcceptanceTests(unittest.TestCase):
     def test_test_receipt_never_grants_authority(self) -> None:
         self.assertEqual(mod.materialization.TARGET_TASK, "SHWP-HIL-SOVEREIGN-RECEIVER-001")
         self.assertEqual(mod.materialization.DESTINATION["subsystem"], "HIL:Ingress")
+        self.assertEqual(mod.RESIDENT_REQUEST_ID, "RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002")
+        self.assertEqual(mod.TARGET_TASK, "SHWP-HIL-SOVEREIGN-RECEIVER-001")
+
+    @staticmethod
+    def _valid_consumption() -> dict:
+        return {
+            "schema": "stegverse.hil-resident-execution-request-consumption/v1",
+            "state": "COMPLETED",
+            "request_id": "RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002",
+            "request_sha256": "a" * 64,
+            "task_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+            "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
+            "runtime_execution_attempted": True,
+            "terminal_hil_transition": "HIL_RECEIVER_RECEIPT_OBSERVED",
+            "terminal_hil_transition_observed": True,
+            "credential_authority": "TV/TVC",
+            "github_token_runtime_authority": "NONE",
+            "heartbeat_grants_execution_authority": False,
+            "second_machine_required": False,
+            "authority_effect": "NONE_REQUEST_ONLY",
+        }
 
 
 if __name__ == "__main__":
