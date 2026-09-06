@@ -10,6 +10,7 @@
       "autonomous_augmentation": true,
       "required_predicates": [
         "PRED-OBJECT-PROVENANCE-SOURCE-MERGED-190",
+        "PRED-OBJECT-PROVENANCE-DISPLAYED-SURFACE-INGRESS-MERGED-190",
         "PRED-OBJECT-PROVENANCE-MASTER-RECORDS-CUSTODY-MERGED-190"
       ],
       "mutation_scope": {
@@ -19,17 +20,19 @@
         "runtime_surfaces": ["governed-object-ingress"],
         "evidence_responsibilities": ["authentic-object-lineage", "reverse-source-resolution"]
       },
-      "expected_blast_radius": "Canonical StegOS ingress/provenance integration only; Master Records remains custody/reconstruction only and Workspace/ERL/Site remain downstream projection/reference consumers.",
+      "expected_blast_radius": "Canonical StegOS ingress/provenance execution and evidence only; Master Records remains custody/reconstruction only and Workspace/ERL/Site remain downstream projection/reference consumers.",
       "readme_impact_required": true,
       "readme_impact": {
-        "material_function_change": true,
+        "material_function_change": false,
         "readme_updated_in_change_set": false,
         "readme_path": "StegVerse-Labs/StegOS/README.md",
+        "no_readme_update_reason": "The displayed-surface ingress binding was already merged in StegOS PR #193 after an evidence-supported README completeness determination. The next admissible step is authentic execution of that already-merged behavior, not a new repository behavior, interface, governance, authority, evidence, prerequisite, dependency, failure, or capability change.",
         "evidence_refs": [
-          "StegVerse-Labs/StegOS/docs/OBJECT_PROVENANCE_CONTINUITY_MIRROR_HANDOFF.md",
+          "StegVerse-Labs/StegOS/docs/OBJECT_PROVENANCE_CONTINUITY_MIRROR_HANDOFF.md#readme-completeness-preflight",
+          "StegVerse-Labs/StegOS#193@c3df97861d281dceae06fb1cf5d2de9f669289f7",
           "StegVerse-Labs/.github/README.md#functional-change--readme-invariant"
         ],
-        "disposition": "REQUIRED_BEFORE_FUNCTIONAL_MUTATION"
+        "disposition": "NONMATERIAL_RUNTIME_EXECUTION_OF_ALREADY_MERGED_BEHAVIOR"
       },
       "canonical_owner_refs": [
         "StegVerse-Labs/StegOS#190",
@@ -62,6 +65,30 @@
       ]
     },
     {
+      "predicate_id": "PRED-OBJECT-PROVENANCE-DISPLAYED-SURFACE-INGRESS-MERGED-190",
+      "semantic_predicate_id": "object_provenance_displayed_surface_ingress_merged",
+      "subject_binding": {
+        "repository": "StegVerse-Labs/StegOS",
+        "issue": "190",
+        "ingress": "displayed-surface-capture",
+        "schema": "stegos.object_provenance_lineage.v1"
+      },
+      "state": "SATISFIED",
+      "description": "The existing ReplayKit displayed-surface capture lane is source-bound to the canonical object-provenance primitive with exact per-frame SHA-256 and fail-closed requirements for authentic conversation-event and ingress-receipt identity.",
+      "authoritative_producer": "StegVerse-Labs/StegOS",
+      "required_schema": null,
+      "required_scope": "StegOS displayed-surface provenance ingress source adapter",
+      "required_execution_instance": "c3df97861d281dceae06fb1cf5d2de9f669289f7",
+      "max_age_seconds": null,
+      "required_fields": ["merge_commit", "linux_validation", "apple_toolchain_validation", "readme_impact_disposition"],
+      "expected_output_ref": "StegVerse-Labs/StegOS@c3df97861d281dceae06fb1cf5d2de9f669289f7",
+      "consumers": ["STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190"],
+      "canonical_source_refs": [
+        "StegVerse-Labs/StegOS/docs/OBJECT_PROVENANCE_CONTINUITY_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegOS/stegos/displayed_surface_provenance_ingress.py"
+      ]
+    },
+    {
       "predicate_id": "PRED-OBJECT-PROVENANCE-MASTER-RECORDS-CUSTODY-MERGED-190",
       "semantic_predicate_id": "object_provenance_master_records_custody_merged",
       "subject_binding": {
@@ -90,7 +117,7 @@
         "source_schema": "stegos.object_provenance_lineage.v1"
       },
       "state": "UNKNOWN",
-      "description": "A real user/source object traversed governed Interlock/InTr ingress with stable object identity, real conversation/provider event binding, and retained transition receipt.",
+      "description": "A real user/source object traversed the already-merged governed displayed-surface ingress with stable object identity, real conversation/provider event binding, and retained transition receipt.",
       "authoritative_producer": "StegVerse-Labs/StegOS governed Interlock/InTr ingress",
       "required_schema": "stegos.object_provenance_lineage.v1",
       "required_scope": "authentic governed source-object ingress",
@@ -128,6 +155,29 @@
       "authority_effect": "EVIDENCE_ONLY"
     },
     {
+      "evidence_id": "EVID-OBJECT-PROVENANCE-DISPLAYED-SURFACE-INGRESS-MERGE-190",
+      "predicate_id": "PRED-OBJECT-PROVENANCE-DISPLAYED-SURFACE-INGRESS-MERGED-190",
+      "subject_binding": {
+        "repository": "StegVerse-Labs/StegOS",
+        "issue": "190",
+        "ingress": "displayed-surface-capture",
+        "schema": "stegos.object_provenance_lineage.v1"
+      },
+      "producer": "StegVerse-Labs/StegOS",
+      "ref": "StegVerse-Labs/StegOS@c3df97861d281dceae06fb1cf5d2de9f669289f7",
+      "schema": null,
+      "scope": "StegOS displayed-surface provenance ingress source adapter",
+      "execution_instance": "c3df97861d281dceae06fb1cf5d2de9f669289f7",
+      "observed_at": "2026-09-05",
+      "fields": {
+        "merge_commit": "c3df97861d281dceae06fb1cf5d2de9f669289f7",
+        "linux_validation": "StegOS CI run 34002228740 SUCCESS / 1024 tests",
+        "apple_toolchain_validation": "iOS Apple Toolchain Validation run 34002228747 SUCCESS",
+        "readme_impact_disposition": "NO_ADDITIONAL_README_UPDATE_REQUIRED_EVIDENCE_SUPPORTED"
+      },
+      "authority_effect": "EVIDENCE_ONLY"
+    },
+    {
       "evidence_id": "EVID-OBJECT-PROVENANCE-MR-CUSTODY-MERGE-190",
       "predicate_id": "PRED-OBJECT-PROVENANCE-MASTER-RECORDS-CUSTODY-MERGED-190",
       "subject_binding": {
@@ -157,14 +207,14 @@
       },
       "existing_evidence_refs": [],
       "rejected_because": ["NO_QUALIFYING_AUTHENTIC_RUNTIME_EVIDENCE_OBSERVED"],
-      "missing_observation": "A real source object must enter through an existing governed Interlock/InTr ingress surface and emit canonical receipt-bound object lineage.",
+      "missing_observation": "A real displayed-surface source object must enter through the already-merged governed ingress adapter with real provider/conversation-event identity and a real ingress transition receipt.",
       "required_producer": "StegVerse-Labs/StegOS governed Interlock/InTr ingress",
       "required_output_ref": "authentic runtime object-provenance lineage receipt",
       "required_schema": "stegos.object_provenance_lineage.v1",
       "required_fields": ["lineage_id", "root_object_ids", "objects", "edges"],
       "required_freshness": null,
       "collision_refs": [],
-      "action_without_collision": "Select and bind an existing canonical ingress adapter to build_ingress_pair(); update StegOS README in the same material functional change; do not create a new transport or provenance authority."
+      "action_without_collision": "Execute the already-merged displayed-surface provenance ingress on one real capture with authentic conversation/provider event identity and a real ingress transition receipt; do not add another ingress adapter, transport, provenance authority, or README-only gate."
     }
   ]
 }
