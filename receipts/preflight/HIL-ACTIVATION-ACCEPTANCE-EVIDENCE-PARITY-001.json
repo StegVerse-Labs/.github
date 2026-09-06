@@ -1,0 +1,84 @@
+{
+  "schema": "stegverse.machine-preflight/v1",
+  "preflight_id": "HIL-ACTIVATION-ACCEPTANCE-EVIDENCE-PARITY-001",
+  "task_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "fix/hil-activation-acceptance-required-receipts",
+  "state": "PASS",
+  "verdict": "PASS",
+  "authority_effect": "NONE_PREFLIGHT_ONLY",
+  "resolved_state": {
+    "canonical_handoff": "docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_MIRROR_HANDOFF.md",
+    "canonical_issue": "StegVerse-Labs/.github#246",
+    "executable_handoff": "handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json",
+    "worker_registry": "control/worker-registry.d/hil-sovereign-receiver-001.json",
+    "task_vector": "control/task-vectors/SHWP-HIL-SOVEREIGN-RECEIVER-001.json",
+    "resident_request": "control/resident-execution-request.d/hil-sovereign-receiver-001.json#RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002",
+    "cross_task_predicate": "PRED-RESIDENT-REQUEST-CONSUMED-HIL-SOVEREIGN-RECEIVER-002",
+    "cross_task_predicate_state": "UNKNOWN",
+    "master_records_preparation": "StegVerse-Labs/Site/docs/HIL_FIRST_MASTER_RECORD_RELEASE_PREPARATION.md",
+    "master_record_release_ready": false,
+    "runtime_presence_receipt_on_main": false,
+    "hil_resident_consumption_receipt_on_main": false,
+    "current_main": "11cad666ff4a0ffeca39a725272f1ab905d9257d"
+  },
+  "reuse": {
+    "runtime_solution_registry": "data/runtime-solution-registry.d/hb32-existing-runtime-solutions.json",
+    "resident_dispatch_receipt": "receipts/sovereign-host/resident-request-dispatch.latest.json",
+    "hil_consumption_receipt": "receipts/sovereign-host/hil-resident-execution-request-consumption.latest.json",
+    "targeted_execution_receipt": "receipts/sovereign-host/resident-targeted-execution.latest.json",
+    "hil_ingress_receipt": "receipts/sovereign-network/hil-intr-ingress.latest.json",
+    "hil_materialization_receipt": "receipts/sovereign-host/hil-intr-materialization-consumption.latest.json",
+    "hil_receiver_receipt": "receipts/hil-sovereign-receiver/SHWP-HIL-SOVEREIGN-RECEIVER-001.json",
+    "new_runtime": false,
+    "new_heartbeat": false,
+    "new_oscillator": false,
+    "new_workercoordinator": false,
+    "new_claim_fence_plane": false
+  },
+  "problem": {
+    "id": "HIL_ACCEPTANCE_HARNESS_EVIDENCE_UNDERCHECK",
+    "description": "scripts/run_hil_resident_activation_test.py currently allows PASS without requiring the canonical resident-request-dispatch and HIL resident-consumption receipts even though #246 and the cross-task predicate require authentic request consumption before HIL activation evidence may advance. The harness also does not require the materialization receipt from the execution runtime when evaluating the first activation segment.",
+    "evidence_refs": [
+      "scripts/run_hil_resident_activation_test.py",
+      "StegVerse-Labs/.github#246 acceptance proof item 1",
+      "control/cross-task-coordination.json#PRED-RESIDENT-REQUEST-CONSUMED-HIL-SOVEREIGN-RECEIVER-002",
+      "scripts/consume_hil_resident_execution_request.py"
+    ]
+  },
+  "collision_review": {
+    "open_matching_pr": false,
+    "existing_acceptance_harness_reused": true,
+    "duplicate_runtime_implementation_required": false,
+    "disposition": "TIGHTEN_EXISTING_ACCEPTANCE_EVIDENCE_ONLY"
+  },
+  "planned_change": [
+    "require the existing resident-request-dispatch receipt in the HIL acceptance harness",
+    "require the existing HIL resident-consumption receipt and exact request/task identity",
+    "require the existing targeted-execution, ingress, materialization-consumption, and receiver receipts",
+    "fail closed unless canonical consumption fields prove terminal HIL transition observation for RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002",
+    "add deterministic tests for the complete evidence denominator",
+    "update README and canonical HIL handoff because acceptance/evidence semantics materially change"
+  ],
+  "readme_impact": {
+    "readme_impact_required": true,
+    "material_function_change": true,
+    "reason": "The acceptance harness determines whether HIL's first resident activation segment may report PASS. Requiring previously omitted canonical receipts changes evidence semantics and failure behavior and must be human-visible.",
+    "readme_path": "README.md",
+    "readme_updated_in_change_set": true,
+    "evidence_refs": [
+      "README.md#Resident HIL activation acceptance evidence",
+      "docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_MIRROR_HANDOFF.md",
+      "scripts/run_hil_resident_activation_test.py"
+    ],
+    "readme_impact_complete": true
+  },
+  "authority": {
+    "heartbeat_grants_execution_authority": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "transition_authority": "INTERLOCK_INTR",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "acceptance_receipts_grant_authority": false
+  }
+}
