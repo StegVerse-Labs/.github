@@ -40,7 +40,7 @@ class ResidentWorkerPresenceSelfHealTests(unittest.TestCase):
             self.assertNotIn("GITHUB_TOKEN", env)
             self.assertEqual(env["STEGVERSE_HEARTBEAT_ROOT"], str(root.resolve()))
 
-    def test_existing_worker_is_reused_without_second_process_and_presence_is_projected(self):
+    def test_existing_worker_requires_fresh_tick_before_reuse(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
             (root / "scripts").mkdir(parents=True)
@@ -56,21 +56,79 @@ class ResidentWorkerPresenceSelfHealTests(unittest.TestCase):
             receipt.parent.mkdir(parents=True)
             receipt.write_text(json.dumps({"carrier_pid": 111, "worker_pid": 222}) + "\n", encoding="utf-8")
             projected = {"resident": {"present_worker_runtime_observed": True}}
+            tick = {"observed": True, "reason": "TASK_CAPABLE_WORKER_RUNTIME_TICK_OBSERVED", "baseline_tick": 5, "observed_tick": 6}
             with mock.patch.dict(os.environ, {}, clear=True), \
                  mock.patch.object(repair, "_alive", side_effect=lambda pid: pid in {111, 222}), \
+                 mock.patch.object(repair, "_wait_for_tick", return_value=tick) as wait_tick, \
                  mock.patch.object(repair, "_persist_presence_projection", return_value=projected) as persist, \
                  mock.patch.object(repair.subprocess, "Popen") as popen:
                 result = repair.ensure_worker_presence(root, carrier_pid=111)
             self.assertEqual(result["state"], "WORKER_ALREADY_PRESENT")
             self.assertFalse(result["worker_repair_attempted"])
             self.assertTrue(result["present_worker_runtime_observed"])
-            self.assertEqual(result["presence_receipt_ref"], str(repair.PRESENCE_RECEIPT))
-            self.assertFalse(result["heartbeat_grants_execution_authority"])
-            self.assertTrue(result["worker_coordinator_retains_admission_authority"])
-            retained = json.loads(receipt.read_text(encoding="utf-8"))
-            self.assertEqual(retained["canonical_carrier_runtime"], "heartbeat_runtime.engine_v13.HeartbeatRuntime")
-            self.assertEqual(retained["authority_effect"], "NONE_SUPERVISION_ONLY")
+            self.assertEqual(result["worker_tick_evidence"], tick)
+            wait_tick.assert_called_once_with(root.resolve(), 5, 222, 3.0)
             persist.assert_called_once_with(root.resolve())
+            popen.assert_not_called()
+
+    def test_stale_alive_worker_is_stopped_and_restarted_through_same_runner(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            (root / "scripts").mkdir(parents=True)
+            (root / "scripts" / "run_worker_runtime.py").write_text("# present\n", encoding="utf-8")
+            state = root / repair.WORKER_STATE
+            state.parent.mkdir(parents=True, exist_ok=True)
+            state.write_text(json.dumps({
+                "schema": "stegverse.worker-runtime-state/v1",
+                "runtime_tick": 9,
+                "observation_mode": "TASK_CAPABLE_WORKER_COORDINATOR",
+            }) + "\n", encoding="utf-8")
+            receipt = root / repair.PROCESS_RECEIPT
+            receipt.parent.mkdir(parents=True)
+            receipt.write_text(json.dumps({"carrier_pid": 111, "worker_pid": 222}) + "\n", encoding="utf-8")
+            proc = mock.Mock(pid=333)
+            stale_tick = {"observed": False, "reason": "TASK_CAPABLE_WORKER_RUNTIME_TICK_TIMEOUT", "baseline_tick": 9, "observed_tick": 9}
+            repaired_tick = {"observed": True, "reason": "TASK_CAPABLE_WORKER_RUNTIME_TICK_OBSERVED", "baseline_tick": 9, "observed_tick": 10}
+            projected = {"resident": {"present_worker_runtime_observed": True}}
+            with mock.patch.dict(os.environ, {}, clear=True), \
+                 mock.patch.object(repair, "_alive", side_effect=lambda pid: pid in {111, 222, 333}), \
+                 mock.patch.object(repair, "_runtime_tick", return_value=9), \
+                 mock.patch.object(repair, "_wait_for_tick", side_effect=[stale_tick, repaired_tick]) as wait_tick, \
+                 mock.patch.object(repair, "_stop_stale_worker", return_value={"stopped": True, "signal": "SIGTERM", "reason": "STALE_WORKER_TERMINATED"}) as stop, \
+                 mock.patch.object(repair.subprocess, "Popen", return_value=proc) as popen, \
+                 mock.patch.object(repair, "_persist_presence_projection", return_value=projected):
+                result = repair.ensure_worker_presence(root, carrier_pid=111)
+            self.assertEqual(result["state"], "WORKER_REPAIRED_STALE_PROCESS")
+            self.assertTrue(result["worker_repair_attempted"])
+            self.assertEqual(result["worker_pid"], 333)
+            self.assertEqual(result["stale_worker_evidence"]["worker_pid"], 222)
+            self.assertTrue(result["request_drain_expected_on_worker_start"])
+            stop.assert_called_once_with(222, timeout=1.0)
+            self.assertEqual(wait_tick.call_count, 2)
+            popen.assert_called_once()
+            retained = json.loads(receipt.read_text(encoding="utf-8"))
+            self.assertEqual(retained["worker_pid"], 333)
+            self.assertEqual(retained["stale_worker_replaced"]["worker_pid"], 222)
+            self.assertTrue(retained["worker_task_capable_cycle_observed"])
+
+    def test_stale_worker_that_cannot_be_stopped_fails_closed(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            (root / "scripts").mkdir(parents=True)
+            (root / "scripts" / "run_worker_runtime.py").write_text("# present\n", encoding="utf-8")
+            receipt = root / repair.PROCESS_RECEIPT
+            receipt.parent.mkdir(parents=True)
+            receipt.write_text(json.dumps({"carrier_pid": 111, "worker_pid": 222}) + "\n", encoding="utf-8")
+            stale_tick = {"observed": False, "reason": "TASK_CAPABLE_WORKER_RUNTIME_TICK_TIMEOUT", "baseline_tick": 4, "observed_tick": 4}
+            with mock.patch.dict(os.environ, {}, clear=True), \
+                 mock.patch.object(repair, "_alive", side_effect=lambda pid: pid in {111, 222}), \
+                 mock.patch.object(repair, "_runtime_tick", return_value=4), \
+                 mock.patch.object(repair, "_wait_for_tick", return_value=stale_tick), \
+                 mock.patch.object(repair, "_stop_stale_worker", return_value={"stopped": False, "signal": "SIGKILL", "reason": "STALE_WORKER_STOP_TIMEOUT"}), \
+                 mock.patch.object(repair.subprocess, "Popen") as popen:
+                result = repair.ensure_worker_presence(root, carrier_pid=111)
+            self.assertEqual(result["state"], "STALE_WORKER_REPAIR_BLOCKED")
+            self.assertTrue(result["worker_repair_attempted"])
             popen.assert_not_called()
 
     def test_missing_worker_is_repaired_tick_proven_and_presence_projected(self):
