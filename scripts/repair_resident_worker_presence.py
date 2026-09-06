@@ -238,11 +238,76 @@ def ensure_worker_presence(runtime_root: Path, *, carrier_pid: int, interval_ms:
     stale_worker_reason = None
     if _alive(existing_worker_pid):
         worker_state = _load(runtime_root / WORKER_STATE)
+        current_tick = worker_state.get("runtime_tick")
+        prior_tick_evidence = receipt.get("worker_tick_evidence") if isinstance(receipt.get("worker_tick_evidence"), dict) else {}
+        pending_baseline = prior_tick_evidence.get("baseline_tick") if receipt.get("worker_task_capable_cycle_observed") is False else None
         structural_task_capable = (
             worker_state.get("schema") == "stegverse.worker-runtime-state/v1"
             and worker_state.get("observation_mode") != "CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION"
-            and isinstance(worker_state.get("runtime_tick"), int)
+            and isinstance(current_tick, int)
+            and not isinstance(current_tick, bool)
         )
+
+        if isinstance(pending_baseline, int) and not isinstance(pending_baseline, bool):
+            if structural_task_capable and current_tick > pending_baseline:
+                tick_evidence = {
+                    "observed": True,
+                    "reason": "TASK_CAPABLE_WORKER_RUNTIME_TICK_OBSERVED_AFTER_PENDING_STARTUP",
+                    "baseline_tick": pending_baseline,
+                    "observed_tick": current_tick,
+                }
+                receipt = _supervision_receipt(
+                    receipt,
+                    runtime_root,
+                    carrier_pid=carrier_pid,
+                    worker_pid=existing_worker_pid,
+                    worker_tick_observed=True,
+                    tick_evidence=tick_evidence,
+                )
+                receipt_path.parent.mkdir(parents=True, exist_ok=True)
+                receipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+                presence = _persist_presence_projection(runtime_root)
+                intake = _persist_presence_master_records_intake(runtime_root)
+                return {
+                    "state": "WORKER_ALREADY_PRESENT",
+                    "worker_repair_attempted": False,
+                    "carrier_pid": carrier_pid,
+                    "worker_pid": existing_worker_pid,
+                    "worker_tick_evidence": tick_evidence,
+                    "present_worker_runtime_observed": presence.get("resident", {}).get("present_worker_runtime_observed") is True,
+                    "presence_receipt_ref": str(PRESENCE_RECEIPT),
+                    "master_records_intake_state": intake.get("state"),
+                    "master_records_intake_receipt_ref": str(PRESENCE_MR_INTAKE_RECEIPT),
+                    "heartbeat_grants_execution_authority": False,
+                    "worker_coordinator_retains_admission_authority": True,
+                    "authority_effect": "NONE_SUPERVISION_ONLY",
+                }
+
+            receipt = _supervision_receipt(
+                receipt,
+                runtime_root,
+                carrier_pid=carrier_pid,
+                worker_pid=existing_worker_pid,
+                worker_tick_observed=False,
+                tick_evidence=prior_tick_evidence,
+            )
+            receipt_path.parent.mkdir(parents=True, exist_ok=True)
+            receipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+            presence = _persist_presence_projection(runtime_root)
+            return {
+                "state": "WORKER_PRESENT_AWAITING_TASK_CAPABLE_TICK",
+                "worker_repair_attempted": False,
+                "carrier_pid": carrier_pid,
+                "worker_pid": existing_worker_pid,
+                "worker_tick_evidence": prior_tick_evidence,
+                "process_retained_for_next_supervision_check": True,
+                "present_worker_runtime_observed": presence.get("resident", {}).get("present_worker_runtime_observed") is True,
+                "presence_receipt_ref": str(PRESENCE_RECEIPT),
+                "heartbeat_grants_execution_authority": False,
+                "worker_coordinator_retains_admission_authority": True,
+                "authority_effect": "NONE_SUPERVISION_ONLY",
+            }
+
         presence_probe = project(runtime_root)
         resident_probe = presence_probe.get("resident", {})
         worker_cycle_fresh = resident_probe.get("worker_cycle_fresh") is True
@@ -274,9 +339,7 @@ def ensure_worker_presence(runtime_root: Path, *, carrier_pid: int, interval_ms:
             }
 
         stale_worker_pid = existing_worker_pid
-        stale_worker_reason = (
-            "WORKER_CYCLE_STALE" if structural_task_capable else "WORKER_NOT_TASK_CAPABLE"
-        )
+        stale_worker_reason = "WORKER_CYCLE_STALE" if structural_task_capable else "WORKER_NOT_TASK_CAPABLE"
         if not _terminate_process(existing_worker_pid):
             return {
                 "state": "STALE_WORKER_RECYCLE_FAILED",
@@ -302,6 +365,40 @@ def ensure_worker_presence(runtime_root: Path, *, carrier_pid: int, interval_ms:
     )
     tick = _wait_for_tick(runtime_root, baseline, worker.pid, timeout)
     if not tick.get("observed"):
+        if tick.get("reason") == "TASK_CAPABLE_WORKER_RUNTIME_TICK_TIMEOUT" and _alive(worker.pid):
+            receipt = _supervision_receipt(
+                receipt,
+                runtime_root,
+                carrier_pid=carrier_pid,
+                worker_pid=worker.pid,
+                worker_tick_observed=False,
+                tick_evidence=tick,
+            )
+            if stale_worker_pid is not None:
+                receipt["stale_worker_recycled"] = True
+                receipt["previous_worker_pid"] = stale_worker_pid
+                receipt["stale_worker_reason"] = stale_worker_reason
+            receipt_path.parent.mkdir(parents=True, exist_ok=True)
+            receipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+            presence = _persist_presence_projection(runtime_root)
+            return {
+                "state": "WORKER_REPAIR_PENDING_TASK_CAPABLE_TICK",
+                "worker_repair_attempted": True,
+                "carrier_pid": carrier_pid,
+                "worker_pid": worker.pid,
+                "stale_worker_pid": stale_worker_pid,
+                "stale_worker_reason": stale_worker_reason,
+                "worker_tick_evidence": tick,
+                "present_worker_runtime_observed": presence.get("resident", {}).get("present_worker_runtime_observed") is True,
+                "presence_receipt_ref": str(PRESENCE_RECEIPT),
+                "process_retained_for_next_supervision_check": True,
+                "request_drain_expected_on_worker_start": True,
+                "heartbeat_grants_execution_authority": False,
+                "worker_coordinator_retains_admission_authority": True,
+                "credential_authority": "TV/TVC",
+                "github_token_runtime_authority": "NONE",
+                "authority_effect": "NONE_SUPERVISION_ONLY",
+            }
         _terminate_process(worker.pid)
         return {
             "state": "WORKER_REPAIR_FAILED",
