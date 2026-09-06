@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 12,
+  "generation": 13,
   "status": "RUNTIME_PROFILE_GOVERNANCE_REVIEW_SOURCE_BOUND_AUTHENTIC_RUNTIME_PENDING",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -121,10 +121,94 @@
       "allowed_next_transitions": ["INGRESS_ADMITTED"],
       "handoff_projection_refs": ["docs/CANONICAL_RUNTIME_PROFILE_MAP_MIRROR_HANDOFF.md"],
       "authority_model": {"task_registry_mints_execution_authority": false, "source_state_proves_execution": false, "worker_claim_authority": "WORKERCOORDINATOR", "master_records_reality_authority": true, "interlock_intr_required_for_governed_ingress_egress": true}
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "QUANTUM-RESILIENCE-001",
+      "correlation_id": "QUANTUM-RESILIENCE-001",
+      "root_correlation_id": "QUANTUM-RESILIENCE-001",
+      "parent_task_id": null,
+      "goal": "Make StegVerse cryptographically resilient to future cryptographically relevant quantum computers through an evidence-grounded crypto census, crypto agility, hybrid migration, validated post-quantum cryptographic backends, downgrade resistance, historical verification continuity, and standing three-entity awareness without changing the existing authority model.",
+      "coordination_state": "PROPOSED",
+      "source_refs": [
+        "docs/QUANTUM_RESILIENCE_MIRROR_HANDOFF.md",
+        "control/quantum-resilience-contract.json",
+        "control/quantum-crypto-census.json",
+        "docs/QUANTUM_RUNTIME_AWARENESS_MIRROR_HANDOFF.md",
+        "docs/QUANTUM_TLS_CONFIDENTIALITY_CENSUS_MIRROR_HANDOFF.md",
+        "docs/QUANTUM_WALLET_SIGNATURE_CENSUS_MIRROR_HANDOFF.md",
+        "docs/QUANTUM_SOFTWARE_UPDATE_PROVENANCE_CENSUS_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/.github#1008",
+        "StegVerse-Labs/.github#1011",
+        "StegVerse-Labs/.github#1013",
+        "StegVerse-Labs/.github#1014",
+        "StegVerse-Labs/.github#1019",
+        "StegVerse-Labs/.github#1022",
+        "StegVerse-Labs/StegID#9",
+        "StegVerse-Labs/TVC#320",
+        "StegVerse-Labs/TVC#322",
+        "StegVerse-Labs/continuity-vault-kit#187",
+        "StegVerse-Labs/Site#1027"
+      ],
+      "targets": {
+        "organizations": ["StegVerse-Labs"],
+        "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegID", "StegVerse-Labs/TVC", "StegVerse-Labs/continuity-vault-kit", "StegVerse-Labs/Site"],
+        "components": ["quantum-crypto-census", "quantum-runtime-awareness", "continuity-receipt-signatures", "device-node-identity", "skap-key-establishment", "tls-webpki", "wallet-signatures", "software-update-provenance", "long-lived-confidentiality", "adversarial-crypto-migration-tests"]
+      },
+      "dependencies": [
+        {"dependency_id": "DEP-QUANTUM-RESIDENT-AWARENESS", "kind": "RUNTIME_PREDICATE", "state": "UNRESOLVED", "ref": "docs/QUANTUM_RUNTIME_AWARENESS_MIRROR_HANDOFF.md"},
+        {"dependency_id": "DEP-QUANTUM-DEVICE-NODE-CENSUS", "kind": "TASK", "state": "UNRESOLVED", "ref": "StegVerse-Labs/.github#1022"},
+        {"dependency_id": "DEP-QUANTUM-LONG-LIVED-CONFIDENTIALITY-CENSUS", "kind": "TASK", "state": "UNRESOLVED", "ref": "StegVerse-Labs/.github#1014"},
+        {"dependency_id": "DEP-QUANTUM-STEGID-MLDSA", "kind": "TASK", "state": "UNRESOLVED", "ref": "StegVerse-Labs/StegID#9"},
+        {"dependency_id": "DEP-QUANTUM-TVC-MLDSA", "kind": "TASK", "state": "UNRESOLVED", "ref": "StegVerse-Labs/TVC#320"},
+        {"dependency_id": "DEP-QUANTUM-SKAP-MLKEM", "kind": "TASK", "state": "UNRESOLVED", "ref": "StegVerse-Labs/continuity-vault-kit#187;StegVerse-Labs/TVC#322"}
+      ],
+      "blockers": [],
+      "systemic_incident_ref": null,
+      "adjacent_task_refs": ["STEGVERSE-CANONICAL-WORK-COORDINATION-001", "CANONICAL-RESIDENT-CARRIER-974", "ASTRA-CLASS-RESILIENCE-001"],
+      "existing_evidence_refs": [
+        "docs/QUANTUM_RESILIENCE_MIRROR_HANDOFF.md",
+        "control/quantum-resilience-contract.json",
+        "control/quantum-crypto-census.json",
+        "StegVerse-Labs/StegID#10@8ed1bd6f2ec35447bc1f3fd1ac922a717ce1b060",
+        "StegVerse-Labs/TVC#321@c743cebae4452fcbad7abcc7b40448953a9c5422",
+        "StegVerse-Labs/.github#1016@ed936a020f540b8ba0b66e0156e608a9711235fe",
+        "StegVerse-Labs/.github#1017@ef1a26a3e5aa42a518c08f93fd62ff621c9efd2e",
+        "StegVerse-Labs/.github#1018@328e1846ba50b62ee5251bcac316f9c2efd0e847",
+        "StegVerse-Labs/.github#1020@ef6ade876f5d1ec5e0de5dc8d555b73ed2013c57",
+        "StegVerse-Labs/.github#1021@525227de4164bc4cc55ee99b6ec2677cd8bf1889"
+      ],
+      "expected_evidence_predicates": [
+        "QUANTUM_CONTRACT_SOURCE_VALID",
+        "CRYPTO_CENSUS_NO_CRITICAL_UNBOUNDED_SURFACE",
+        "VALIDATED_ML_DSA_BACKEND_EVIDENCE",
+        "VALIDATED_ML_KEM_OR_HYBRID_KEY_ESTABLISHMENT_EVIDENCE",
+        "DOWNGRADE_ROLLBACK_STALE_KEY_DEPRECATED_ALGORITHM_FAIL_CLOSED",
+        "HISTORICAL_RECEIPT_RELEASE_VERIFICATION_CONTINUITY",
+        "HARVEST_NOW_DECRYPT_LATER_DISPOSITION_COMPLETE",
+        "AUTHENTIC_QUANTUM_STANDING_AWARENESS_OBSERVED",
+        "AUTHENTIC_MASTER_RECORDS_RECONCILIATION_OBSERVED",
+        "AUTHENTIC_TASK_EGRESS_OR_CLOSURE_OBSERVED"
+      ],
+      "runtime_requirements": {
+        "capabilities": ["canonical_artifact_validation", "bounded_process_execution", "task_registry_reconciliation", "master_records_reconciliation"],
+        "environment": "SOVEREIGN_RESIDENT_AND_SOURCE_VALIDATION",
+        "direction": "INTERNAL",
+        "mutation_required": true,
+        "deployment_required": false,
+        "current_observation_required": true
+      },
+      "runtime_resolution": null,
+      "worker_claim": {"authority": "WORKERCOORDINATOR", "claim_ref": null, "fence_ref": null, "projection_only": true},
+      "human_action_ref": null,
+      "completion": {"claimed": false, "validated": false, "reconciliation_ref": null},
+      "allowed_next_transitions": ["INGRESS_ADMITTED"],
+      "handoff_projection_refs": ["docs/QUANTUM_RESILIENCE_MIRROR_HANDOFF.md"],
+      "authority_model": {"task_registry_mints_execution_authority": false, "source_state_proves_execution": false, "worker_claim_authority": "WORKERCOORDINATOR", "master_records_reality_authority": true, "interlock_intr_required_for_governed_ingress_egress": true}
     }
   ],
   "human_actions": [],
   "systemic_incidents": [],
   "projections": {"handoffs": [], "status_surfaces": []},
-  "nonclaims": ["REGISTRY_BOOTSTRAP_AND_RUNTIME_ADAPTERS_ARE_SOURCE_STATE_ONLY", "HB32_OSCILLATOR_REFERENCE_DOES_NOT_GRANT_TASK_AUTHORITY", "MASTER_RECORDS_PROJECTION_ADAPTER_DOES_NOT_PROVE_RUNTIME_RECONCILIATION", "DEPENDENCY_FANOUT_SOURCE_DOES_NOT_ADMIT_TRANSITIONS", "ADMITTED_RECONCILIATION_SOURCE_DOES_NOT_MINT_EXECUTION_AUTHORITY", "ADMITTED_DEPENDENCY_EVENT_CONSUMPTION_DOES_NOT_MUTATE_WORKERCOORDINATOR", "AUTHENTIC_INGRESS_PROJECTION_REQUIRES_EXISTING_ADMITTED_RECEIPT", "WORKERCOORDINATOR_PROJECTION_DOES_NOT_MINT_CLAIM_OR_FENCE", "EVENT_BOOTSTRAP_USES_EXISTING_SHARED_INTR_SERVER_ONLY", "ROUTE_INSTALL_AND_BOOTSTRAP_SOURCE_DOES_NOT_PROVE_RUNTIME_EXECUTION", "RESIDENT_REQUEST_DISPATCH_DOES_NOT_GRANT_EXECUTION_AUTHORITY", "RESIDENT_SELF_MATERIALIZATION_IS_LOCAL_SOURCE_COPY_ONLY", "RUNTIME_PROFILE_MAP_MATCH_DOES_NOT_GRANT_AUTHORITY", "RUNTIME_PROFILE_RESOLUTION_IS_PROJECTION_ONLY", "RUNTIME_ROUTING_READINESS_DOES_NOT_GRANT_AUTHORITY", "RUNTIME_TRANSITION_READINESS_DOES_NOT_GRANT_AUTHORITY", "RUNTIME_GOVERNANCE_REVIEW_PACKAGE_DOES_NOT_GRANT_AUTHORITY", "MASTER_RECORDS_CUSTODY_DOES_NOT_GRANT_TASK_AUTHORITY", "POST_CUSTODY_RECONCILIATION_DOES_NOT_CHANGE_TASK_STATE", "GENERIC_RUNTIME_MISSING_REQUIRES_CANONICAL_MAP_RESOLUTION", "GITHUB_FAILURE_EMAIL_NORMALIZATION_DOES_NOT_PROVE_RUNTIME_FAILURE", "NO_AUTHENTIC_INTERLOCK_INTR_TASK_INGRESS_IS_CLAIMED", "NO_WORKERCOORDINATOR_CLAIM_IS_MINTED_BY_THIS_REGISTRY", "NO_MASTER_RECORDS_RUNTIME_RECONCILIATION_IS_CLAIMED"]
+  "nonclaims": ["REGISTRY_BOOTSTRAP_AND_RUNTIME_ADAPTERS_ARE_SOURCE_STATE_ONLY", "HB32_OSCILLATOR_REFERENCE_DOES_NOT_GRANT_TASK_AUTHORITY", "MASTER_RECORDS_PROJECTION_ADAPTER_DOES_NOT_PROVE_RUNTIME_RECONCILIATION", "DEPENDENCY_FANOUT_SOURCE_DOES_NOT_ADMIT_TRANSITIONS", "ADMITTED_RECONCILIATION_SOURCE_DOES_NOT_MINT_EXECUTION_AUTHORITY", "ADMITTED_DEPENDENCY_EVENT_CONSUMPTION_DOES_NOT_MUTATE_WORKERCOORDINATOR", "AUTHENTIC_INGRESS_PROJECTION_REQUIRES_EXISTING_ADMITTED_RECEIPT", "WORKERCOORDINATOR_PROJECTION_DOES_NOT_MINT_CLAIM_OR_FENCE", "EVENT_BOOTSTRAP_USES_EXISTING_SHARED_INTR_SERVER_ONLY", "ROUTE_INSTALL_AND_BOOTSTRAP_SOURCE_DOES_NOT_PROVE_RUNTIME_EXECUTION", "RESIDENT_REQUEST_DISPATCH_DOES_NOT_GRANT_EXECUTION_AUTHORITY", "RESIDENT_SELF_MATERIALIZATION_IS_LOCAL_SOURCE_COPY_ONLY", "RUNTIME_PROFILE_MAP_MATCH_DOES_NOT_GRANT_AUTHORITY", "RUNTIME_PROFILE_RESOLUTION_IS_PROJECTION_ONLY", "RUNTIME_ROUTING_READINESS_DOES_NOT_GRANT_AUTHORITY", "RUNTIME_TRANSITION_READINESS_DOES_NOT_GRANT_AUTHORITY", "RUNTIME_GOVERNANCE_REVIEW_PACKAGE_DOES_NOT_GRANT_AUTHORITY", "MASTER_RECORDS_CUSTODY_DOES_NOT_GRANT_TASK_AUTHORITY", "POST_CUSTODY_RECONCILIATION_DOES_NOT_CHANGE_TASK_STATE", "GENERIC_RUNTIME_MISSING_REQUIRES_CANONICAL_MAP_RESOLUTION", "GITHUB_FAILURE_EMAIL_NORMALIZATION_DOES_NOT_PROVE_RUNTIME_FAILURE", "NO_AUTHENTIC_INTERLOCK_INTR_TASK_INGRESS_IS_CLAIMED", "NO_WORKERCOORDINATOR_CLAIM_IS_MINTED_BY_THIS_REGISTRY", "NO_MASTER_RECORDS_RUNTIME_RECONCILIATION_IS_CLAIMED", "QUANTUM_TASK_REGISTRATION_IS_PROPOSED_SOURCE_STATE_ONLY", "QUANTUM_SOURCE_AND_CENSUS_EVIDENCE_DO_NOT_PROVE_PQ_DEPLOYMENT_OR_RUNTIME_AWARENESS"]
 }
