@@ -1,0 +1,49 @@
+{
+  "schema": "stegverse.machine-preflight/v1",
+  "task_id": "HB32-STALE-WORKER-SELF-HEAL-001",
+  "repository": "StegVerse-Labs/.github",
+  "canonical_handoff_refs": [
+    "docs/CANONICAL_RESIDENT_CARRIER_MIRROR_HANDOFF.md",
+    "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md",
+    "docs/HEARTBEAT_OSCILLATOR_PRODUCER_MIRROR_HANDOFF.md",
+    "docs/RESIDENT_WORKER_SELF_HEAL_MIRROR_HANDOFF.md"
+  ],
+  "registry_ref": "data/canonical-task-registry.json",
+  "master_records_ref": "master-records/orchestration",
+  "cross_task_coordination_ref": "control/cross-task-coordination.json",
+  "collision_review": {
+    "open_pr_owning_exact_mutation_observed": false,
+    "active_worker_claim_collision_observed": false,
+    "reused_existing_runtime_solution_refs": [
+      "heartbeat_runtime/engine_v13.py",
+      "heartbeat_runtime/independent_oscillator.py",
+      "heartbeat_runtime/oscillator_producer.py",
+      "scripts/repair_resident_worker_presence.py",
+      "scripts/restart_sovereign_ephemeral_node.py",
+      "heartbeat_runtime/runtime_presence_projection.py"
+    ]
+  },
+  "problem": "The HB32 carrier self-heal repairs an absent WorkerCoordinator but treats any live worker PID as reusable even when its task-capable cycle is stale. A wedged live PID can therefore leave resident requests REQUESTED indefinitely despite the existing oscillator carrier and controlled restart machinery.",
+  "planned_mutation": [
+    "reuse the existing runtime-presence freshness predicate before accepting an alive WorkerCoordinator",
+    "reuse the existing controlled process termination helper when an alive worker is stale/non-task-capable",
+    "restart only the existing WorkerCoordinator runner and require a fresh task-capable tick",
+    "preserve HB32 oscillator-only cadence and all authority boundaries"
+  ],
+  "readme_impact": {
+    "required": true,
+    "material_function_change": true,
+    "reason": "This changes resident failure-recovery behavior: an alive-but-stale WorkerCoordinator will be recycled rather than treated as healthy.",
+    "readme_path": "README.md",
+    "readme_updated_in_change_set": true
+  },
+  "authority": {
+    "heartbeat_grants_execution_authority": false,
+    "oscillator_grants_execution_authority": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "transition_authority": "INTERLOCK_INTR",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE"
+  },
+  "disposition": "PASS_ADMIT_REUSE_EXISTING_RUNTIME_RECOVERY"
+}
