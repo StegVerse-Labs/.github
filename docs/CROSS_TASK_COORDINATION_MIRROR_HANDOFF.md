@@ -98,6 +98,29 @@ Rules:
 
 This replaces repeated whole-ledger rewrites as the normal migration path and reduces cross-session write collision risk.
 
+### WorkerCoordinator claim-coverage parity
+
+The composed ledger now has a fail-closed source gate against `control/worker-registry.json` whenever that sibling registry is available.
+
+`control/worker-registry.json` remains authoritative for WorkerCoordinator claim/fence ownership. Coordination claims remain projections only.
+
+For every unreleased task with `executor_binding=BOUND` and a non-empty claim id, composed coordination must contain an `ACTIVE` claim row with matching:
+
+```text
+claim_id
+task_id
+fencing_token
+worker_id
+worker_instance_id
+```
+
+The inverse is also checked for worker-bound coordination rows: an `ACTIVE` coordination claim carrying WorkerCoordinator identity cannot survive after the matching registry claim is terminal/released. Duplicate bound claim ids, missing mirrors, stale mirrors, identity drift, or an incompatible worker-registry schema fail closed before consumers receive the composed ledger.
+
+This check grants no claim/fence/execution authority and infers no current runtime execution. It exists solely to prevent coordination consumers from silently operating on stale or incomplete machine-ownership projections.
+
+Source implementation: IMPLEMENTED / VALIDATION PENDING.
+README impact: MATERIAL; `README.md` updated in the same change set.
+
 ## Required autonomous-augmentation invariant
 
 No task declaring `autonomous_augmentation: true` may pass WorkerCoordinator pre-initiation review unless a fresh coordination preflight reports:
@@ -245,6 +268,7 @@ The shared runtime-presence projector proves a concrete runtime root/node instan
 
 Core source implementation: VALIDATED.
 Composed canonical ledger: VALIDATED.
+WorkerCoordinator claim-coverage parity: SOURCE IMPLEMENTED / VALIDATION PENDING.
 Subject-bound resident-request migration: PARTIAL / ACTIVE.
 StegIndex composed discovery: VALIDATED.
 README impact WorkerCoordinator enforcement: MERGED / VALIDATED.
@@ -257,14 +281,15 @@ Existing runtime activation, WorkerCoordinator execution, sovereign inference, H
 
 ## Remaining machine work
 
-1. inspect remaining canonical handoffs for genuinely shared predicates beyond `resident_request_consumed`;
-2. establish exact subject identity before any shared registration, especially runtime-presence predicates;
-3. register only genuinely reusable producer/evidence relationships and exact gaps;
-4. bind any additional session/build consumers that still read an incomplete coordination slice;
-5. register active claims/producers only where canonical ownership records already exist;
-6. validate each migration deterministically;
-7. evaluate tag/release only after ecosystem-adoption criteria are actually satisfied;
-8. after actual release/tag, verify governed propagation requirements for `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `admissibility-wiki`, and `stegguardian-wiki`.
+1. validate WorkerCoordinator claim-coverage parity against both fixtures and the repository's current composed ledger/worker registry; if current mirrors are incomplete, reconcile the missing/stale mirrors rather than weakening the parity rule;
+2. inspect remaining canonical handoffs for genuinely shared predicates beyond `resident_request_consumed`;
+3. establish exact subject identity before any shared registration, especially runtime-presence predicates;
+4. register only genuinely reusable producer/evidence relationships and exact gaps;
+5. bind any additional session/build consumers that still read an incomplete coordination slice;
+6. register active claims/producers only where canonical ownership records already exist;
+7. validate each migration deterministically;
+8. evaluate tag/release only after ecosystem-adoption criteria are actually satisfied;
+9. after actual release/tag, verify governed propagation requirements for `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `admissibility-wiki`, and `stegguardian-wiki`.
 
 ## Completion and archive rule
 
@@ -281,4 +306,4 @@ Current goal completion: FALSE.
 Current ecosystem-adoption work remaining: TRUE.
 Thread archive-ready: FALSE.
 
-README impact for this reconciliation commit: NON-MATERIAL. Reason: documentation-only reconciliation of already-merged validated preflight behavior; repository function is unchanged. Evidence: PR #1027 and runs `34001532342`, `34001532346`, `34001532400`.
+README impact for this functional change: MATERIAL. `README.md` is updated in the same change set together with `heartbeat_runtime/coordination_ledger.py`, deterministic tests, and this canonical handoff.
