@@ -125,6 +125,8 @@ The canonical HeartBeat carrier may supervise the **existing** resident WorkerCo
 
 Self-heal propagation therefore preserves the canonical worker service's local bindings for StegIndex, TV/TVC, Master Records, StegCore, StegOS, KV, Site, TT/RTG/GTG/AE, resident source manifests, and other explicitly allowlisted local roots. Hosted runtime variables and token/secret/password/API-key/private-key/credential variables remain excluded. TV/TVC remains the credential authority; the carrier remains non-authorizing; WorkerCoordinator and InTr continue to perform their existing independent admission and transition checks.
 
+The self-heal module is also part of the existing **local-only WorkerCoordinator source-refresh set**. An already-materialized resident runtime can therefore receive the corrected supervision implementation from an already-local canonical checkout without network fetch, credential acquisition, mutable-state replacement, or creation of another carrier/worker/scheduler. Refreshing source does not itself prove the long-running carrier has loaded new code or that any task was executed; those remain authentic runtime observations.
+
 This parity requirement is a runtime continuity and failure-behavior guarantee. It does not imply that source, validation, heartbeat progression, or process restoration proves any task was dispatched, consumed, or completed.
 
 ### Cross-task active-claim projection
