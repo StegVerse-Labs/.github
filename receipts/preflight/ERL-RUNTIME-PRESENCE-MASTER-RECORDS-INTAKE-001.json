@@ -1,0 +1,53 @@
+{
+  "schema": "stegverse.session-build-preflight/v1",
+  "goal": "Reuse the existing runtime-presence producer and Master Records custody/reconstruction authority to retain authentic runtime-presence receipts without creating another probe, scheduler, WorkerCoordinator, heartbeat, credential path, or runtime authority plane.",
+  "observed_source_head": "35bcf3e51f0ef1ed4138e948b46f67d48b9882a8",
+  "disposition": "REUSE_EXISTING_CAPABILITY",
+  "task_creation_permitted": false,
+  "canonical_state_resolution": {
+    "erl_handoff_resolved": true,
+    "canonical_task_registry_generation": 15,
+    "master_records_handoff_resolved": true,
+    "cross_task_coordination_resolved": true,
+    "runtime_presence_cross_task_handoff_resolved": true,
+    "existing_runtime_presence_producer_reused": "heartbeat_runtime/runtime_presence_projection.py",
+    "existing_runtime_presence_output_reused": "receipts/sovereign-host/runtime-presence.latest.json",
+    "existing_master_records_authority_reused": "master-records/orchestration",
+    "active_claim_collision_discovered": false,
+    "new_runtime_probe_required": false
+  },
+  "preflight": {
+    "decision": "REUSE_OR_EXTEND_EXISTING",
+    "new_worker_or_executor_created": false,
+    "workercoordinator_claim_or_fence_minted": false,
+    "heartbeat_or_scheduler_created": false,
+    "credential_path_created": false,
+    "github_runtime_authority_created": false,
+    "runtime_execution_inferred": false,
+    "master_records_reality_invented": false
+  },
+  "readme_impact": {
+    "required": true,
+    "declared": true,
+    "material_function_change": true,
+    "readme_path": "README.md",
+    "readme_updated_in_change_set": true,
+    "evidence_refs": [
+      "README.md#Functional Change / README Invariant",
+      "README.md#Cross-task runtime-presence evidence",
+      "docs/RUNTIME_PRESENCE_CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
+      "management/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_CONTRACT.json",
+      "heartbeat_runtime/runtime_presence_projection.py",
+      "master-records/orchestration:MASTER_RECORDS_ORCHESTRATION_MIRROR_HANDOFF.md"
+    ],
+    "disposition": "README_UPDATE_REQUIRED_IN_CHANGE_SET",
+    "authority_effect": "NONE"
+  },
+  "readme_impact_complete": true,
+  "coordination_required_before_new_work": true,
+  "network_fetch_performed": false,
+  "runtime_execution_performed": false,
+  "github_token_runtime_authority": "NONE",
+  "credential_authority": "TV/TVC",
+  "authority_effect": "NONE_PREWORK_DECISION_ONLY"
+}
