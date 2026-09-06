@@ -27,7 +27,7 @@ Concrete source-evidenced exposures now represented include:
 - `StegVerse-Labs/stegfin-governance` active wallet handoff: explicit USER_ONLY signing/broadcast through an external injected EIP-1193 wallet provider; StegVerse source does not establish the actual signer algorithm;
 - Continuity Vault Kit v0.1.9 release and StegCore portable-release tooling: SHA-256/manifests/source binding are present, while authenticated artifact signer identity is not established by scoped source search; software provenance therefore remains `QUANTUM_SAFETY_UNKNOWN`.
 
-The canonical crypto census has been reconciled so TLS/WebPKI, wallet signatures and software/update provenance are no longer falsely marked wholly `UNINVENTORIED`; each is now `PARTIAL_EXPLICIT / QUANTUM_SAFETY_UNKNOWN` with scoped evidence and durable issue ownership. `OTHER-DEVICE-NODE-IDENTITY` and `LONG-LIVED-STORED-CONFIDENTIALITY` remain critical `UNINVENTORIED` surfaces.
+The canonical crypto census has been reconciled so TLS/WebPKI, wallet signatures and software/update provenance are no longer falsely marked wholly `UNINVENTORIED`; each is now `PARTIAL_EXPLICIT / QUANTUM_SAFETY_UNKNOWN` with scoped evidence and durable issue ownership. `OTHER-DEVICE-NODE-IDENTITY` and `LONG-LIVED-STORED-CONFIDENTIALITY` remain critical `UNINVENTORIED` surfaces. The former is now durably owned by `.github#1022`; the latter remains under the broader confidentiality census `.github#1014` until a separate split is warranted.
 
 The SKAP P-256 key-establishment surfaces are explicitly harvest-now/decrypt-later relevant because recorded ciphertext may outlive the classical asymmetric assumption. This does not imply AES-256-GCM or HKDF-SHA256 are themselves deprecated; the migration target is the asymmetric key-establishment leg.
 
@@ -37,7 +37,7 @@ Current census source state:
 known CLASSICAL_ONLY surfaces: 3
 known HYBRID_MIGRATION_REQUIRED surfaces: 2
 scoped PARTIAL_EXPLICIT / QUANTUM_SAFETY_UNKNOWN areas: TLS/WebPKI, wallet signatures, software/update provenance
-critical UNINVENTORIED areas: OTHER-DEVICE-NODE-IDENTITY, LONG-LIVED-STORED-CONFIDENTIALITY
+critical UNINVENTORIED areas: OTHER-DEVICE-NODE-IDENTITY (#1022), LONG-LIVED-STORED-CONFIDENTIALITY (#1014)
 PQC_VALIDATED surfaces: 0
 ```
 
@@ -77,6 +77,12 @@ merge: ef6ade876f5d1ec5e0de5dc8d555b73ed2013c57
 result: software/update provenance census; Continuity Vault Kit v0.1.9 and StegCore portable releases are represented as hash/manifest integrity paths with authenticated signing unproven
 Heartbeat run 34000017886: SUCCESS
 Organization control-plane run 34000018423: SUCCESS
+
+.github PR #1021
+merge: 525227de4164bc4cc55ee99b6ec2677cd8bf1889
+result: canonical crypto-census reconciliation after TLS, wallet and software-provenance scoped passes
+Heartbeat run 34000085959: SUCCESS
+Organization control-plane run 34000086032: SUCCESS
 ```
 
 The runtime-awareness source binds the canonical contract and census into three entity-specific standing states through the existing WorkerCoordinator/dispatcher substrate. Protected SV001/SV002/SV011 execution requires both Astra-class and quantum-resilience standing awareness. Missing quantum awareness fails closed as `QUANTUM_STANDING_AWARENESS_REQUIRED`.
@@ -107,6 +113,9 @@ handoff: docs/QUANTUM_TLS_CONFIDENTIALITY_CENSUS_MIRROR_HANDOFF.md
 StegVerse-Labs/.github#1019
 purpose: software/update provenance census and authenticated-provenance migration
 handoff: docs/QUANTUM_SOFTWARE_UPDATE_PROVENANCE_CENSUS_MIRROR_HANDOFF.md
+
+StegVerse-Labs/.github#1022
+purpose: device/node identity, possession, attestation, registration and membership cryptographic census beyond the already-observed current-phone P-256 surface
 
 StegVerse-Labs/Site#1027
 purpose: determine which Site P-256 browser surfaces are active vs historical/example-only
@@ -153,8 +162,8 @@ Construct and test bounded hybrid/PQC migration candidates, including compatibil
 ## Remaining machine tasks
 
 1. materialize the merged quantum-awareness source into the sovereign resident source tree and obtain the seven authentic artifacts defined by `docs/QUANTUM_RUNTIME_AWARENESS_MIRROR_HANDOFF.md`;
-2. inventory `OTHER-DEVICE-NODE-IDENTITY` until no critical device/node identity surface is unbounded;
-3. inventory `LONG-LIVED-STORED-CONFIDENTIALITY`, including encrypted archives/backups and asymmetric wrapping dependencies;
+2. execute `.github#1022` to inventory `OTHER-DEVICE-NODE-IDENTITY` until no critical device/node identity surface is unbounded;
+3. continue `.github#1014` for `LONG-LIVED-STORED-CONFIDENTIALITY`, including encrypted archives/backups and asymmetric wrapping dependencies;
 4. integrate a real validated ML-DSA backend into StegID receipt mint/verify paths;
 5. integrate a real validated ML-DSA verifier into TVC and bind the active warrant gate to versioned suites;
 6. design the P-256 current-phone device-possession migration around actual platform capability, with explicit compensating controls if native PQ device credentials are unavailable;
