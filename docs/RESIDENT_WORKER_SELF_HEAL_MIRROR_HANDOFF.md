@@ -139,6 +139,27 @@ Merge commit: `511b82e26dcfce0d799f861df23b605fb837ac56`.
 
 README impact: MATERIAL. `README.md` was updated in PR #1084 in the same functional change set to document alive-but-stale worker recycling and preservation of the HB32 oscillator/carrier authority boundary.
 
+## Startup tick ordering repair — 2026-09-06
+
+Machine preflight `HB-WORKER-STARTUP-TICK-BEFORE-DISPATCH-001` identified a second runtime race in the same existing HB32 self-heal chain. `scripts/repair_resident_worker_presence.py` gives a newly spawned or recycled WorkerCoordinator three seconds to prove a fresh task-capable runtime tick. Before this repair, `scripts/run_worker_runtime.py` could enter synchronous rendezvous/source-refresh/resident-request dispatch on logical tick zero before calling `runtime.cycle()`. Because resident dispatch may legitimately remain active far longer than three seconds, supervision could terminate a healthy repaired or recycled worker as `WORKER_REPAIR_FAILED` before the worker had any opportunity to persist the tick used to prove presence.
+
+The bounded repair reorders only the existing worker loop:
+
+```text
+WorkerCoordinator runtime.cycle() -> persisted task-capable tick
+-> existing rendezvous/source-refresh/resident-request maintenance
+-> existing HB-derived machine continuation visit
+-> existing transition-release refresh
+```
+
+All maintenance cadences remain unchanged. Resident request dispatch and local source refresh are still visited on logical tick zero and every 100 ticks; the difference is that the WorkerCoordinator's own cycle is persisted first. The alive-but-stale recycle repair remains intact: a stale worker is recycled through the same runner, and the restarted runner can now satisfy the existing three-second fresh-tick proof before long maintenance begins.
+
+No heartbeat, oscillator, scheduler, WorkerCoordinator, dispatcher, claim/fence path, credential path, or runtime authority is added. HB remains a non-authorizing reference; WorkerCoordinator retains claim/fence/admission authority; InTr/Interlock retains transition authority; TV/TVC remains credential authority.
+
+README impact: MATERIAL. `README.md` records the changed startup/failure-recovery ordering in the same change set.
+
+Source validation or merge of this repair does not prove that a resident carrier is currently alive, that a repaired WorkerCoordinator has actually produced a tick, that the pending SV002 request was consumed, or that terminal runtime evidence exists. Those remain authentic runtime predicates.
+
 ## Runtime consequence
 
-A live canonical carrier plus either a dead/missing WorkerCoordinator **or an alive-but-stale/non-task-capable WorkerCoordinator** is now a validated self-healing runtime state rather than a passive `REQUESTED` backlog state. Authentic runtime presence still requires the canonical presence receipt from a real resident carrier-supervision visit, and authentic task completion still requires each task-specific receipt; this repair does not fabricate those receipts.
+A live canonical carrier plus either a dead/missing WorkerCoordinator **or an alive-but-stale/non-task-capable WorkerCoordinator** is now a validated self-healing runtime state rather than a passive `REQUESTED` backlog state. The first cycle of any restarted WorkerCoordinator is ordered before long resident maintenance so the existing fresh-tick supervision predicate can be satisfied without a false timeout. Authentic runtime presence still requires the canonical presence receipt from a real resident carrier-supervision visit, and authentic task completion still requires each task-specific receipt; these repairs do not fabricate those receipts.
