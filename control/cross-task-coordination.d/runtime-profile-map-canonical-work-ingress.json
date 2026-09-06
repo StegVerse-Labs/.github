@@ -18,6 +18,12 @@
       "required_execution_instance": "RESIDENT-EXEC-CANONICAL-WORK-RUNTIME-PROFILE-MAP-001",
       "max_age_seconds": null,
       "required_fields": ["task_id", "request_id", "state", "authority_effect"],
+      "required_field_values": {
+        "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+        "request_id": "RESIDENT-EXEC-CANONICAL-WORK-RUNTIME-PROFILE-MAP-001",
+        "state": "REQUESTED",
+        "authority_effect": "NONE_REQUEST_ONLY"
+      },
       "expected_output_ref": "control/resident-execution-request.d/canonical-work-runtime-profile-map-001.json",
       "consumers": ["STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"],
       "canonical_source_refs": [
@@ -42,6 +48,10 @@
       "required_execution_instance": "RESIDENT-EXEC-CANONICAL-WORK-RUNTIME-PROFILE-MAP-001",
       "max_age_seconds": null,
       "required_fields": ["state", "task_id", "request_sha256", "bootstrap_receipt_ref"],
+      "required_field_values": {
+        "state": "COMPLETED",
+        "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"
+      },
       "expected_output_ref": "receipts/sovereign-host/canonical-work-runtime-profile-map-request-consumption.latest.json",
       "consumers": ["STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"],
       "canonical_source_refs": [
@@ -96,6 +106,10 @@
       "required_output_ref": "receipts/sovereign-host/canonical-work-runtime-profile-map-request-consumption.latest.json",
       "required_schema": "stegverse.canonical-work-bootstrap-request-consumption/v1",
       "required_fields": ["state", "task_id", "request_sha256", "bootstrap_receipt_ref"],
+      "required_field_values": {
+        "state": "COMPLETED",
+        "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"
+      },
       "required_freshness": null,
       "collision_refs": [],
       "action_without_collision": "Allow the existing resident dispatcher/Canonical Work consumer to visit the staged Runtime Profile Map request. Do not create a second runtime, scheduler, WorkerCoordinator, ingress path, credential path, or fabricated receipt. After authentic ingress, continue through the existing Runtime Profile Map resident chain, Master Records reconciliation, and current-authority review."
