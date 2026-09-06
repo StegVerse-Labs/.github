@@ -1,0 +1,44 @@
+{
+  "schema": "stegverse.runtime-solution-registry-fragment/v1",
+  "fragment_id": "HB32-EXISTING-RUNTIME-SOLUTIONS-20260906",
+  "authority_effect": "NONE_DISCOVERY_ONLY",
+  "solutions": [
+    {
+      "problem_class": "RESIDENT_WORKER_MISSING",
+      "reuse": "scripts/repair_resident_worker_presence.py",
+      "support": ["heartbeat_runtime.independent_oscillator", "heartbeat_runtime.engine_v13.HeartbeatRuntime"],
+      "do_not_create": ["heartbeat", "oscillator", "scheduler", "WorkerCoordinator"]
+    },
+    {
+      "problem_class": "RESIDENT_WORKER_PREVIOUSLY_PROVEN_BUT_STALE",
+      "reuse": "scripts/repair_resident_worker_presence.py#stale-worker-recycle",
+      "support": ["heartbeat_runtime.runtime_presence_projection.py", "scripts/restart_sovereign_ephemeral_node.py::_terminate"],
+      "do_not_create": ["worker-runtime", "claim-fence-plane"]
+    },
+    {
+      "problem_class": "RESIDENT_WORKER_NEW_START_FIRST_TICK_DELAYED",
+      "reuse": "scripts/repair_resident_worker_presence.py#pending-first-tick",
+      "support": ["scripts/run_worker_runtime.py", "scripts/dispatch_resident_execution_requests.py"],
+      "do_not_create": ["worker-runtime", "second-worker"]
+    },
+    {
+      "problem_class": "RESIDENT_SOURCE_STALE_OR_INCOMPLETE",
+      "reuse": "scripts/refresh_sovereign_worker_runtime_source.py",
+      "support": ["existing local canonical source"],
+      "do_not_create": ["network-source-fetch", "hosted-runtime"]
+    },
+    {
+      "problem_class": "CARRIER_START_REPORTED_WITHOUT_OSCILLATOR_PROGRESS",
+      "reuse": "scripts/install_sovereign_heartbeat_carrier.py",
+      "support": ["control/heartbeat-carrier-runtime-state.json", "HB32 OSCILLATOR_ONLY progression"],
+      "do_not_create": ["second-oscillator", "start-command-as-runtime-proof"]
+    }
+  ],
+  "authority": {
+    "heartbeat_grants_execution_authority": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "transition_authority": "INTERLOCK_INTR",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE"
+  }
+}
