@@ -1,0 +1,8 @@
+{
+  "schema": "stegverse.scope/v1",
+  "task_id": "HB32-SELF-HEAL-STARTUP-GRACE-002",
+  "functional_paths": ["scripts/repair_resident_worker_presence.py"],
+  "test_paths": ["tests/test_hb32_self_heal_startup_grace.py"],
+  "documentation_paths": ["README.md", "docs/HB32_SELF_HEAL_STARTUP_GRACE_MIRROR_HANDOFF.md"],
+  "authority_effect": "NONE_SCOPE_ONLY"
+}
