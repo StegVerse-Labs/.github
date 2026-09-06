@@ -20,9 +20,11 @@ A canonical 100 Hz HeartBeat carrier could remain live while the resident Worker
 
 The oscillator-produced carrier remains non-authorizing. After each 100 observed references (approximately one second), and strictly after those references already exist, the carrier process asks the local supervision layer to verify resident WorkerCoordinator presence.
 
-If the existing worker process is alive, nothing is changed.
+If the existing worker process is alive, fresh, and task-capable, it is retained.
 
 If the carrier is alive and the worker is absent, local supervision starts the existing `scripts/run_worker_runtime.py --continuous` process, requires a fresh task-capable worker tick, and persists repaired process-presence evidence. The WorkerCoordinator then visits `scripts/dispatch_resident_execution_requests.py` on its own first logical tick and independently performs all task admission/claim/fence/InTr/TV-TVC checks.
+
+If the WorkerCoordinator PID is alive but its canonical runtime-presence freshness predicate says the task-capable cycle is stale, or the worker is structurally no longer task-capable, the carrier-side self-heal now reuses the existing controlled process-termination helper from `scripts/restart_sovereign_ephemeral_node.py`, recycles only that WorkerCoordinator process, starts the same canonical `run_worker_runtime.py --continuous` runner, and requires a new task-capable worker tick before repaired presence is reported. The HB32 carrier and oscillator continue independently and are not restarted by this worker-only recycle.
 
 The carrier does **not** grant execution authority. It supplies node-presence evidence used by local supervision. WorkerCoordinator remains the execution/admission runtime; InTr/Interlock remains transition governance; TV/TVC remains credential authority.
 
@@ -36,7 +38,8 @@ The carrier does **not** grant execution authority. It supplies node-presence ev
 - no hosted runtime repair;
 - no non-TV/TVC credential propagation;
 - a pulse must exist before worker-presence repair is evaluated;
-- a repaired worker is not considered present until a fresh task-capable worker tick is observed;
+- a live PID is insufficient without a fresh task-capable worker cycle;
+- a repaired or recycled worker is not considered present until a fresh task-capable worker tick is observed;
 - pending resident requests are drained only by the restored WorkerCoordinator under their existing fail-closed consumers.
 
 ## Validated presence-projection closure — 2026-09-04
@@ -116,6 +119,26 @@ README impact: MATERIAL. `README.md` records that bootstrap source eligibility a
 
 This is still source/eligibility correctness only. Passing bootstrap eligibility, validation, merge, source refresh, or native materialization does not prove current carrier presence, current WorkerCoordinator presence, a supervision visit, request dispatch or consumption, claim/fence creation, an InTr transition, resident StegIndex materialization, blocker-derived preflight, StegIndex operational proof, or task completion.
 
+## Alive-but-stale WorkerCoordinator recycle repair — 2026-09-06
+
+A further HB/runtime review found that the self-heal path correctly repaired a missing WorkerCoordinator but accepted an alive PID without first applying the canonical worker-cycle freshness result. This left a failure mode where a wedged WorkerCoordinator could remain alive while `runtime_tick`/`last_cycle_at` stopped advancing; resident requests could then remain pending because missing-process self-heal never fired.
+
+PR #1084 fixes that gap by reusing existing runtime machinery rather than creating another execution path:
+- canonical freshness comes from `heartbeat_runtime/runtime_presence_projection.py`;
+- controlled process termination is reused from `scripts/restart_sovereign_ephemeral_node.py`;
+- the same canonical `scripts/run_worker_runtime.py --continuous` WorkerCoordinator is restarted;
+- a fresh task-capable worker tick remains mandatory before presence can be reported;
+- the HB32 `INDEPENDENT_PHASE_OSCILLATOR` carrier continues independently and remains non-authorizing.
+
+Preflight: `receipts/preflight/HB32-STALE-WORKER-SELF-HEAL-001.json`.
+Validated PR head: `c545610cdab1a866ca298b46dac23b375bcd4fd7`.
+Validation:
+- Heartbeat Worker Project run `34033510178`: SUCCESS;
+- organization control-plane run `34033510188`: SUCCESS.
+Merge commit: `511b82e26dcfce0d799f861df23b605fb837ac56`.
+
+README impact: MATERIAL. `README.md` was updated in PR #1084 in the same functional change set to document alive-but-stale worker recycling and preservation of the HB32 oscillator/carrier authority boundary.
+
 ## Runtime consequence
 
-A live canonical carrier plus a dead/missing WorkerCoordinator is now a validated self-healing runtime state rather than a passive `REQUESTED` backlog state. Authentic runtime presence still requires the canonical presence receipt from a real resident carrier-supervision visit, and authentic task completion still requires each task-specific receipt; this repair does not fabricate those receipts.
+A live canonical carrier plus either a dead/missing WorkerCoordinator **or an alive-but-stale/non-task-capable WorkerCoordinator** is now a validated self-healing runtime state rather than a passive `REQUESTED` backlog state. Authentic runtime presence still requires the canonical presence receipt from a real resident carrier-supervision visit, and authentic task completion still requires each task-specific receipt; this repair does not fabricate those receipts.
