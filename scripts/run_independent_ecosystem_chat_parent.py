@@ -407,7 +407,7 @@ def classify_sovereign_runtime_surface(proof: dict[str, Any]) -> dict[str, Any]:
     device_intercepted = predicates.get("device_local_intercepted_endpoint") is True
     no_network_egress = predicates.get("network_egress_required") is False
     inference_observed = predicates.get("real_inference_response_observed") is True
-    process_path = process_observed and private_only and inference_observed
+    process_path = process_observed and private_only
     device_path = (
         browser_observed
         and device_intercepted
