@@ -1,0 +1,130 @@
+name: validate-deepseek-resident
+
+on:
+  pull_request:
+    paths:
+      - 'README.md'
+      - 'workers/deepseek_intr_runtime_worker.py'
+      - 'handoffs/SHWP-DEEPSEEK-INTR-RUNTIME-001.json'
+      - 'control/worker-registry.d/deepseek-intr-runtime-001.json'
+      - 'control/process-worker-adapters.d/deepseek-intr-runtime-001.json'
+      - 'control/resident-execution-request.d/deepseek-intr-runtime-001.json'
+      - 'control/resident-execution-request.d/consume-deepseek-intr-runtime.py'
+      - 'scripts/dispatch_resident_execution_requests.py'
+      - 'source-bundles/stegindex/**'
+      - 'tests/test_deepseek_intr_resident_bridge.py'
+      - '.github/workflows/validate-deepseek-resident.yml'
+
+permissions: {}
+
+jobs:
+  validate-deepseek-resident:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Fetch branch source anonymously
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init source
+          git -C source remote add origin https://github.com/StegVerse-Labs/.github.git
+          git -C source -c http.extraheader= fetch --depth 1 origin feat/deepseek-intr-resident-dispatch-1122
+          git -C source checkout --detach FETCH_HEAD
+
+      - name: Validate pinned StegIndex reuse input
+        shell: bash
+        working-directory: source
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          matches=list(Path('source-bundles/stegindex').glob('deepseek-intr-v1.*.json'))
+          assert len(matches)==1
+          snapshot=json.loads(matches[0].read_text())
+          assert snapshot['source_repository']=='StegVerse-Labs/StegIndex'
+          assert len(snapshot['source_commit'])==40
+          assert len(snapshot['source_git_blob_sha'])==40
+          assert snapshot['network_fetch_required_at_validation'] is False
+          assert snapshot['authority_effect']=='NONE_VALIDATION_SNAPSHOT_ONLY'
+          cap=snapshot['capability_fragment']['entries'][0]
+          assert cap['capability_id']=='stegverse.intr.deepseek.transport.v1'
+          assert cap['lifecycle_state']=='RELEASED'
+          assert cap['owner_repo']=='StegVerse-org/LLM-adapter'
+          assert cap['authority_effect']=='NONE'
+          assert cap['credential_authority']=='TV/TVC'
+          assert cap['another_physical_machine_required'] is False
+          assert cap['user_action_required'] is False
+          assert cap['live_runtime'] is False
+          assert cap['activation_evidence'] is False
+          assert cap['requires_interlock_ingress'] is True
+          assert cap['requires_interlock_egress'] is True
+          assert cap['master_records_custody']=='required_for_provider_usage_evidence'
+          assert cap['reuse_instructions'].startswith('Reuse the released LLM-adapter DeepSeek InTr transport.')
+          print('StegIndex DeepSeek reuse input: PASS')
+          PY
+
+      - name: Run README impact predicate
+        shell: bash
+        working-directory: source
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import importlib.util
+          from pathlib import Path
+          spec=importlib.util.spec_from_file_location('session_preflight', Path('scripts/session_build_preflight.py'))
+          mod=importlib.util.module_from_spec(spec); spec.loader.exec_module(mod)
+          result, complete=mod.evaluate_readme_impact(
+              required=True,
+              material='true',
+              readme_updated=True,
+              readme_path='README.md',
+              no_update_reason=None,
+              evidence_refs=['README.md#resident-deepseek-intr-governed-runtime','handoffs/SHWP-DEEPSEEK-INTR-RUNTIME-001.json'],
+          )
+          assert complete is True
+          assert result['disposition']=='README_UPDATED_FOR_MATERIAL_FUNCTION_CHANGE'
+          assert result['authority_effect']=='NONE'
+          print('README impact predicate: PASS')
+          PY
+
+      - name: Test DeepSeek resident bridge
+        shell: bash
+        working-directory: source
+        run: |
+          set -euo pipefail
+          python3 -m pip install --user pytest
+          python3 -m pytest -q tests/test_deepseek_intr_resident_bridge.py
+
+      - name: Validate exact control bindings
+        shell: bash
+        working-directory: source
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          handoff=json.loads(Path('handoffs/SHWP-DEEPSEEK-INTR-RUNTIME-001.json').read_text())
+          request=json.loads(Path('control/resident-execution-request.d/deepseek-intr-runtime-001.json').read_text())
+          registry=json.loads(Path('control/worker-registry.d/deepseek-intr-runtime-001.json').read_text())
+          adapter=json.loads(Path('control/process-worker-adapters.d/deepseek-intr-runtime-001.json').read_text())
+          readme=Path('README.md').read_text()
+          dispatcher=Path('scripts/dispatch_resident_execution_requests.py').read_text()
+          assert handoff['readme_impact']['required'] is True
+          assert handoff['readme_impact']['material_function_change'] is True
+          assert handoff['readme_impact']['readme_updated_in_change_set'] is True
+          assert '### Resident DeepSeek InTr governed runtime' in readme
+          assert handoff['execution']['llm_adapter_custody_client_ref']=='StegVerse-org/LLM-adapter#310/#312'
+          assert handoff['execution']['master_records_bearer_export_allowed'] is False
+          assert handoff['execution']['master_records_reconstruction_required']=='PASS'
+          assert request['second_machine_required'] is False
+          assert request['provider_credential_material_allowed'] is False
+          assert request['master_records_custody_required_for_egress'] is True
+          assert request['same_execution_required'] is True
+          assert registry['tasks'][0]['admission']['fresh_fence_required'] is True
+          assert adapter['adapters'][0]['command']==['python','workers/deepseek_intr_runtime_worker.py']
+          allowed=set(adapter['adapters'][0]['env_allowlist'])
+          assert all('KEY' not in item.upper() and 'TOKEN' not in item.upper() and 'SECRET' not in item.upper() for item in allowed)
+          assert '("deepseek_intr_runtime", "control/resident-execution-request.d/consume-deepseek-intr-runtime.py")' in dispatcher
+          assert 'scripts/consume_deepseek_intr_runtime_request.py' not in dispatcher
+          print('DeepSeek resident control binding: PASS')
+          PY

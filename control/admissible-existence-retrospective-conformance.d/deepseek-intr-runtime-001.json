@@ -1,0 +1,17 @@
+{
+  "schema": "stegverse.admissible-existence-retrospective-conformance-fragment/v1",
+  "fragment_id": "DEEPSEEK-INTR-RUNTIME-001",
+  "entries": [
+    {
+      "task_id": "SHWP-DEEPSEEK-INTR-RUNTIME-001",
+      "temporal_class": "current",
+      "ae_impact": "CAPABILITY",
+      "capability_id": "stegverse:capability:deepseek-intr-runtime-cycle:v1",
+      "phase": "ADMISSIBLE",
+      "task_relationship": "integrates_capability",
+      "result": "PASS",
+      "continuation_owner": "deepseek-intr-runtime-worker + existing sovereign WorkerCoordinator",
+      "rationale": "The released DeepSeek InTr transport, exact TVC lease/provider bridge, local Master Records custody path, resident WorkerCoordinator registration, and ingress/egress decision boundaries are installed. Authentic same-execution DeepSeek runtime evidence is still absent, so the capability is ADMISSIBLE and not ACTIVATED."
+    }
+  ]
+}

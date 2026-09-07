@@ -48,8 +48,8 @@ NONSECRET_ENV = (
     "STEGVERSE_STEGOPS_ORCHESTRATOR_ROOT",
     "STEGVERSE_LLM_ADAPTER_ROOT", "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT",
     "STEGVERSE_HIL_STATE_ROOT", "STEGVERSE_HIL_RECEIVER_PORT",
-    "STEGVERSE_VAULT_AGENT_SOCKET", "STEGVERSE_ARA_MAIL_RECIPIENT",
-    "STEGVERSE_ARA_MAIL_SENDER", "STEGVERSE_SV_DN1_SOURCE_ROOT",
+    "STEGVERSE_VAULT_AGENT_SOCKET", "STEGTV_PROVIDER_OPERATION_VAULT_BROKER_SOCKET",
+    "STEGVERSE_ARA_MAIL_RECIPIENT", "STEGVERSE_ARA_MAIL_SENDER", "STEGVERSE_SV_DN1_SOURCE_ROOT",
     "STEGVERSE_SOURCE_MATERIALIZATION_ROOT", "STEGVERSE_SOURCE_PACKAGE_ROOT",
     "STEGVERSE_SV_DN1_MATERIALIZED_SOURCE_ROOT", "STEGVERSE_SV_DN1_RESIDENT_STATE_ROOT",
     "STEGVERSE_SV_DN1_INTR_STATE_ROOT", "STEGVERSE_SDK_SOURCE_ROOT",
@@ -104,6 +104,7 @@ CONSUMERS = (
     ("sv011_phase5_source_materialization", "scripts/consume_sv011_phase5_source_materialization_request.py"),
     ("sv011_phase5", "scripts/consume_sv011_phase5_resident_execution_request.py"),
     ("glm53_sovereign_lane", "scripts/consume_glm53_sovereign_lane_request.py"),
+    ("deepseek_intr_runtime", "control/resident-execution-request.d/consume-deepseek-intr-runtime.py"),
     ("erl_ai_economic_transparency_review", "scripts/consume_erl_ai_economic_transparency_review_request.py"),
     ("org_claim_allocator", "scripts/consume_org_claim_allocator_request.py"),
     ("native_email_action_monitor", "scripts/consume_native_email_action_monitor_request.py"),
@@ -236,7 +237,7 @@ def dispatch(source_root: Path, runtime_root: Path, *, runner=subprocess.run, en
     missing = [row["consumer"] for row in outcomes if row["state"] == "CONSUMER_NOT_MATERIALIZED"]
     exceptions = [row["consumer"] for row in outcomes if row["state"] == "DISPATCH_EXCEPTION"]
     accepted_wait_states = {
-        "NO_REQUEST", "ALREADY_CONSUMED", "WAITING_FOR_CUSTODY_PACKAGE", "WAITING_FOR_MASTER_RECORDS_CUSTODY", "WAITING_FOR_RECONCILIATION", "WAITING_FOR_TRANSITION_READINESS",
+        "NO_REQUEST", "ALREADY_CONSUMED", "ALREADY_TERMINAL", "WAITING_FOR_CUSTODY_PACKAGE", "WAITING_FOR_MASTER_RECORDS_CUSTODY", "WAITING_FOR_RECONCILIATION", "WAITING_FOR_TRANSITION_READINESS",
         "MASTER_RECORDS_LOCAL_ROOT_NOT_MATERIALIZED", "MASTER_RECORDS_CUSTODY_CONSUMER_NOT_MATERIALIZED", "MASTER_RECORDS_PROJECTOR_NOT_MATERIALIZED", "ATTEMPT_RECORDED", "COMPLETED",
     }
     request_failures = [row["consumer"] for row in outcomes if row["state"] not in accepted_wait_states]

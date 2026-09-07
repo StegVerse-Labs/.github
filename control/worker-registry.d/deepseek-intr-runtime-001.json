@@ -1,0 +1,81 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "SHWP-DEEPSEEK-INTR-RUNTIME-001",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": ["DEEPSEEK_INTR_SAME_EXECUTION_RECEIPT_NOT_YET_OBSERVED"],
+      "authorized_policy_version": "shwp-deepseek-intr-runtime-v0.1",
+      "block_ref": null,
+      "claim_id": null,
+      "cost_basis_ref": null,
+      "evidence_refs": [
+        "handoffs/SHWP-DEEPSEEK-INTR-RUNTIME-001.json",
+        "StegVerse-Labs/TVC#343",
+        "StegVerse-org/LLM-adapter#290",
+        "StegVerse-org/LLM-adapter#300",
+        "StegVerse-org/LLM-adapter#304"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": "StegVerse-Labs/.github#1122",
+      "goal_id": "DEEPSEEK-INTR-END-TO-END-CONNECTION",
+      "handoff_ref": "handoffs/SHWP-DEEPSEEK-INTR-RUNTIME-001.json",
+      "heartbeat_timing": null,
+      "heartbeat_dependency": false,
+      "last_checkpoint_ref": "handoffs/SHWP-DEEPSEEK-INTR-RUNTIME-001.json",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "SHWP-DEEPSEEK-INTR-RUNTIME-001",
+      "worker_id": null,
+      "worker_instance_id": null,
+      "admission": {
+        "authority_source": "StegVerse-Labs/.github#1122 + canonical StegGate + TVC bounded provider-operation authority",
+        "authority_domain": "INDEPENDENT_TASK_CONTROL",
+        "heartbeat_reference_only": true,
+        "heartbeat_grants_execution_authority": false,
+        "carrier_trigger_required": false,
+        "fresh_fence_required": true,
+        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+      },
+      "admissible_existence": {
+        "capability_id": "stegverse:capability:deepseek-intr-runtime-cycle:v1",
+        "capability_version": "1.0.0",
+        "phase": "ADMISSIBLE",
+        "standing_evidence_refs": [
+          "StegVerse-org/LLM-adapter#290",
+          "StegVerse-Labs/TVC#343",
+          "handoffs/SHWP-DEEPSEEK-INTR-RUNTIME-001.json"
+        ],
+        "admissibility_evidence_refs": [
+          "workers/deepseek_intr_runtime_worker.py",
+          "control/process-worker-adapters.d/deepseek-intr-runtime-001.json",
+          "control/resident-execution-request.d/deepseek-intr-runtime-001.json"
+        ],
+        "integration_evidence_refs": [],
+        "activation_proof_ref": null,
+        "blockers": ["DEEPSEEK_INTR_SAME_EXECUTION_RECEIPT_NOT_YET_OBSERVED"],
+        "continuation_owner": "deepseek-intr-runtime-worker + existing sovereign WorkerCoordinator",
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": false,
+        "temporal_class": "current",
+        "task_relationship": "integrates_capability",
+        "target_phase": "ACTIVATED"
+      }
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:deepseek-intr-runtime-v1",
+      "authority_source": "handoffs/SHWP-DEEPSEEK-INTR-RUNTIME-001.json#authority",
+      "capabilities": ["deepseek_intr_runtime_cycle"],
+      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "deepseek-intr-runtime-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false
+}

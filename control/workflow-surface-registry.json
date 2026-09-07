@@ -43,6 +43,12 @@
       "classification": "KEEP_STANDALONE_EXCEPTION",
       "owner": "CROSS_TASK_COORDINATION / EVIDENCE_RESOLUTION",
       "reason": "dedicated non-authorizing source validator for the released cross-task coordination handoff projection; coordination truth is not runtime truth and this registration grants no execution, transition, credential, claim/fence, custody, receiving, or publication authority"
+    },
+    {
+      "path": ".github/workflows/validate-deepseek-resident.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "SHWP-DEEPSEEK-INTR-RUNTIME-001 / .github#1122",
+      "reason": "validation-only source/preflight check for the bounded DeepSeek resident request, WorkerCoordinator registration, README completeness, and pinned StegIndex reuse evidence; authentic provider/runtime execution is prohibited on GitHub Actions"
     }
   ],
   "removed_in_hygiene_batch_1": [
@@ -84,12 +90,12 @@
   "invariant": "Every repository-authored workflow file must be explicitly registered before merge/push. Unregistered workflow proliferation fails closed; registration is classification evidence, not approval to retain the workflow permanently.",
   "completion_condition": "Every registered surface is KEEP_STABLE_DISPATCHER, KEEP_STANDALONE_EXCEPTION with evidence, CONSOLIDATE_INTO_STABLE_DISPATCHER, TRANSFER_TO_STEGVERSE_WORKER, ELIMINATE, or terminally removed; REVIEW_REQUIRED/BLOCKED states are zero unless supported by active ownership.",
   "completion_evidence": {
-    "live_workflow_count": 6,
+    "live_workflow_count": 7,
     "stable_dispatchers": [
       ".github/workflows/org-control-plane-validate.yml",
       ".github/workflows/heartbeat-worker-project.yml"
     ],
-    "non_dispatcher_count": 4,
+    "non_dispatcher_count": 5,
     "preferred_target_satisfied": false,
     "runtime_authority_effect": "NONE",
     "credential_authority": "TV/TVC"

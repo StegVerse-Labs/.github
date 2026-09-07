@@ -1,0 +1,40 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "DEEPSEEK-INTR-RUNTIME-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:deepseek-intr-runtime-v1",
+      "authority_ref": "handoffs/SHWP-DEEPSEEK-INTR-RUNTIME-001.json#authority",
+      "capabilities": ["deepseek_intr_runtime_cycle"],
+      "command": ["python", "workers/deepseek_intr_runtime_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_LLM_ADAPTER_ROOT",
+        "STEGVERSE_TVC_ROOT",
+        "STEGVERSE_STEGCORE_SOURCE_ROOT",
+        "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT",
+        "STEGTV_PROVIDER_OPERATION_VAULT_BROKER_SOCKET",
+        "HOME",
+        "USER",
+        "LOGNAME",
+        "SHELL",
+        "PATH",
+        "PYTHONPATH",
+        "LANG",
+        "LC_ALL",
+        "TMPDIR",
+        "XDG_CONFIG_HOME",
+        "XDG_STATE_HOME"
+      ],
+      "notes": [
+        "Uses only already-local LLM-adapter, TVC, StegCore, and Master Records source roots.",
+        "Canonical StegGate evaluates ingress and egress; worker/request cannot synthesize ALLOW.",
+        "TVC broker receives no credential material from this worker.",
+        "No hosted runtime, network source fetch, GitHub token, or second machine is permitted."
+      ],
+      "timeout_seconds": 300,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
