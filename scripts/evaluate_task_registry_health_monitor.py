@@ -12,7 +12,17 @@ MONOLITHIC_REGISTRY = ROOT / "data" / "canonical-task-registry.json"
 SHARDED_RECORDS = ROOT / "data" / "canonical-task-records"
 CONTRACT = ROOT / "data" / "task-registry-health-monitor-contract.json"
 
-TERMINAL = {"RETIRED", "SUPERSEDED", "INVALID"}
+OPEN_LIFECYCLES = {"ACTIVE", "COMPLETED"}
+RELATION_FIELDS = (
+    "parent_task_id",
+    "dependency_refs",
+    "dependencies",
+    "adjacent_task_refs",
+    "adjacent_tasks",
+    "integration_candidates",
+    "successor_task_id",
+    "superseded_by_task_id",
+)
 
 
 def _load(path: Path) -> dict[str, Any]:
@@ -81,8 +91,50 @@ def _path_return_present(ref: Any) -> bool:
     if not isinstance(ref, str) or not ref.strip():
         return False
     ref = ref.split("#", 1)[0]
-    path = ROOT / ref
-    return path.exists()
+    return (ROOT / ref).exists()
+
+
+def _task_ref(value: Any) -> str | None:
+    if isinstance(value, str) and value.strip():
+        return value.strip()
+    if isinstance(value, dict):
+        for key in ("task_id", "ref", "id"):
+            candidate = value.get(key)
+            if isinstance(candidate, str) and candidate.strip():
+                return candidate.strip()
+    return None
+
+
+def _relation_ids(record: dict[str, Any]) -> set[str]:
+    refs: set[str] = set()
+    for field in RELATION_FIELDS:
+        value = record.get(field)
+        if isinstance(value, list):
+            for item in value:
+                ref = _task_ref(item)
+                if ref:
+                    refs.add(ref)
+        else:
+            ref = _task_ref(value)
+            if ref:
+                refs.add(ref)
+    refs.discard(str(record.get("task_id") or ""))
+    return refs
+
+
+def _one_hop_open_related(record: dict[str, Any], by_id: dict[str, dict[str, Any]]) -> list[str]:
+    task_id = str(record.get("task_id") or "")
+    related = set(_relation_ids(record))
+    # Treat relationships as observable graph edges in either direction.
+    for other_id, other in by_id.items():
+        if other_id == task_id:
+            continue
+        if task_id in _relation_ids(other):
+            related.add(other_id)
+    return sorted(
+        ref for ref in related
+        if ref in by_id and _lifecycle(by_id[ref]) in OPEN_LIFECYCLES
+    )
 
 
 def _worker_return_observation(record: dict[str, Any], now: datetime) -> dict[str, Any]:
@@ -157,42 +209,79 @@ def _recovery_task_id(source_task_id: str) -> str:
     return f"STEGHEALTH-RECOVER-{safe}-001"
 
 
-def _existing_task_ids(records: list[dict[str, Any]]) -> set[str]:
-    return {str(row.get("task_id")) for row in records if row.get("task_id")}
+def _recovery_cosv() -> str:
+    return "20010000100000"
+
+
+def _task_creation_event(source: dict[str, Any], recovery_task_id: str, symptom: str, now: datetime) -> dict[str, Any]:
+    event_id = f"STEGHEALTH-TASK-CREATION:{recovery_task_id}"
+    return {
+        "schema": "stegverse.recordable-action-event/v1",
+        "event_id": event_id,
+        "actor": "StegHealth",
+        "action": "CREATE_RECOVERY_TASK",
+        "source_task_id": source.get("task_id"),
+        "created_task_id": recovery_task_id,
+        "created_task_cosv": _recovery_cosv(),
+        "symptom": symptom,
+        "observed_at": now.isoformat().replace("+00:00", "Z"),
+        "task_registry_registration_required": True,
+        "master_records_recording_required": True,
+        "authority_effect": "NONE_OBSERVATION_AND_TASK_CREATION_EVENT",
+    }
 
 
 def evaluate(now: datetime | None = None) -> dict[str, Any]:
     _ = _load(CONTRACT)
     now = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
     records = _all_records()
+    by_id = {str(row.get("task_id")): row for row in records if row.get("task_id")}
     counts = {key: 0 for key in ["ACTIVE", "INACTIVE", "COMPLETED", "RETIRED", "SUPERSEDED", "INVALID"]}
     checked_out: list[dict[str, Any]] = []
-    existing_ids = _existing_task_ids(records)
+    retirement_blocks: list[dict[str, Any]] = []
     recovery_specs: list[dict[str, Any]] = []
+    action_events: list[dict[str, Any]] = []
 
     for record in records:
         posture = _posture(record)
         counts[posture] = counts.get(posture, 0) + 1
+
+        if _lifecycle(record) == "COMPLETED":
+            open_related = _one_hop_open_related(record, by_id)
+            if open_related:
+                retirement_blocks.append({
+                    "task_id": record.get("task_id"),
+                    "retirement_ready": False,
+                    "open_one_hop_related_task_ids": open_related,
+                })
+
         if not _checked_out(record):
             continue
         obs = _worker_return_observation(record, now)
         checked_out.append(obs)
         if not obs.get("recovery_required"):
             continue
+
         source_task_id = str(record.get("task_id"))
         candidate = _recovery_task_id(source_task_id)
-        if candidate in existing_ids:
+        if candidate in by_id:
             recovery_specs.append({
                 "source_task_id": source_task_id,
                 "recovery_task_id": candidate,
-                "action": "REUSE_EXISTING_RECOVERY_TASK",
+                "recovery_task_cosv": by_id[candidate].get("cosv_task_vector"),
+                "action": "REUSE_REGISTERED_RECOVERY_TASK",
+                "task_registry_registered": True,
                 "symptom": obs.get("posture"),
             })
             continue
-        recovery_specs.append({
+
+        spec = {
             "schema": "stegverse.steghealth-recovery-task-spec/v1",
             "task_id": candidate,
+            "cosv_task_vector": _recovery_cosv(),
             "owner": "StegVerse-Labs/StegHealth",
+            "coordination_state": "ACTIVE",
+            "checkout_state": "NOT_CHECKED_OUT",
             "source_task_id": source_task_id,
             "source_cosv_task_vector": record.get("cosv_task_vector"),
             "root_correlation_id": record.get("root_correlation_id") or record.get("correlation_id") or source_task_id,
@@ -200,9 +289,13 @@ def evaluate(now: datetime | None = None) -> dict[str, Any]:
             "worker_return_obligation_ref": obs.get("worker_return_obligation_ref"),
             "claim_or_execution_ref": obs.get("claim_or_execution_ref"),
             "master_records_subject_binding": obs.get("master_records_subject_binding"),
-            "action": "CREATE_THROUGH_CANONICAL_TASK_INGRESS",
+            "action": "CREATE_AND_REGISTER_THROUGH_CANONICAL_TASK_INGRESS",
+            "task_registry_registration_required": True,
+            "master_records_recording_required": True,
             "execution_authority_effect": "NONE",
-        })
+        }
+        recovery_specs.append(spec)
+        action_events.append(_task_creation_event(record, candidate, str(obs.get("posture")), now))
 
     symptom_counts: dict[str, int] = {}
     for obs in checked_out:
@@ -212,7 +305,9 @@ def evaluate(now: datetime | None = None) -> dict[str, Any]:
     counts["CHECKED_OUT"] = len(checked_out)
     counts["CHECKED_OUT_WITH_RETURN_OVERDUE"] = symptom_counts.get("RETURN_OVERDUE", 0)
     counts["CHECKED_OUT_WITH_WORKER_NONREPORT"] = symptom_counts.get("WORKER_NONREPORT", 0)
-    counts["RECOVERY_TASKS_DERIVED"] = len(recovery_specs)
+    counts["COMPLETED_BLOCKED_FROM_RETIREMENT_BY_OPEN_ONE_HOP_RELATED_TASKS"] = len(retirement_blocks)
+    counts["RECOVERY_TASKS_DERIVED"] = sum(1 for row in recovery_specs if row.get("action") == "CREATE_AND_REGISTER_THROUGH_CANONICAL_TASK_INGRESS")
+    counts["RECOVERY_TASKS_ALREADY_REGISTERED"] = sum(1 for row in recovery_specs if row.get("task_registry_registered") is True)
 
     return {
         "schema": "stegverse.task-registry-health-monitor-report/v1",
@@ -222,9 +317,14 @@ def evaluate(now: datetime | None = None) -> dict[str, Any]:
         "observed_at": now.isoformat().replace("+00:00", "Z"),
         "counts": counts,
         "checked_out_findings": checked_out,
+        "completed_retirement_blocks": retirement_blocks,
         "steghealth_recovery_tasks": recovery_specs,
+        "recordable_action_events": action_events,
         "inactive_is_reporting_posture_not_lifecycle": True,
-        "retired_is_terminal": True,
+        "retired_is_terminal_for_execution": True,
+        "retired_history_review_only_revive": True,
+        "all_created_tasks_require_registry_registration": True,
+        "all_actions_are_recordable_events": True,
         "percent_complete_inferred": False,
     }
 
