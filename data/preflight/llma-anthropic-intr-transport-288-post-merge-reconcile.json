@@ -4,7 +4,7 @@
   "branch": "feat/anthropic-canonical-current-main-1123",
   "task_id": "LLMA-ANTHROPIC-INTR-TRANSPORT-288",
   "state": "PASS",
-  "goal": "Continue the existing Anthropic #288 canonical work chain after adapter source merge cde350e41d16a9932932b96d77c0dbd37b950284 by reconciling source dependency and handoff state, validating the existing Canonical Work resident request/consumer binding, and stopping at authentic resident execution evidence.",
+  "goal": "Continue the existing Anthropic #288 canonical work chain after adapter source merge cde350e41d16a9932932b96d77c0dbd37b950284 by reconciling source dependency and handoff state, validating the existing Canonical Work resident request/consumer and append-only cross-task predicate binding, and stopping at authentic resident execution evidence.",
   "canonical_state_resolved": {
     "canonical_task_registry": "data/canonical-task-registry.json generation 16 on current main",
     "canonical_task_registry_authority": "work intent and coordination only",
@@ -18,7 +18,9 @@
     "master_records_provider_usage_path": "existing generic provider-usage custody/reconstruction",
     "master_records_new_anthropic_implementation_required": false,
     "resident_request": "control/resident-execution-request.d/canonical-work-anthropic-intr-transport-288.json",
-    "resident_consumer": "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py"
+    "resident_consumer": "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py",
+    "cross_task_projection": "control/cross-task-coordination.d/anthropic-intr-transport-288-canonical-work-ingress.json",
+    "cross_task_projection_model": "existing append-only subject-bound coordination fragment"
   },
   "collision_preflight": {
     "new_task_required": false,
@@ -26,8 +28,10 @@
     "new_workercoordinator_required": false,
     "new_scheduler_required": false,
     "new_dispatcher_required": false,
+    "new_cross_task_ledger_required": false,
     "new_master_records_provider_usage_path_required": false,
     "reuse_existing_canonical_work_consumer": true,
+    "reuse_existing_cross_task_fragment_convention": true,
     "reuse_existing_master_records_provider_usage_custody": true,
     "current_main_newer_specs_preserved": ["ERL_REVIEW_SPEC", "CRYPTO_LIVE_AUTO_SPEC"]
   },
@@ -36,11 +40,13 @@
     "material_function_change": false,
     "readme_path": "README.md",
     "readme_updated_in_change_set": false,
-    "reason": "The admissible mutation extends the already-documented generic Canonical Work registered-task request list with another explicit registered task and reconciles post-merge evidence. It does not alter the generic runtime, interface, authority, governance, custody, evidence, prerequisite, environment, or failure semantics already documented in README.md.",
+    "reason": "The admissible mutation extends the already-documented generic Canonical Work registered-task request list and existing append-only subject-bound cross-task evidence convention with another explicit registered task, then reconciles post-merge evidence. It does not alter the generic runtime, interface, authority, governance, custody, evidence, prerequisite, environment, or failure semantics already documented in README.md.",
     "evidence_refs": [
       "README.md#Functional-Change--README-Invariant",
       "README.md#Active-task-problemsolution-semantics",
       "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md",
+      "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
+      "control/cross-task-coordination.d/crypto-live-auto-001-canonical-work-ingress.json",
       "master-records/orchestration:PROVIDER_USAGE_CUSTODY_MIRROR_HANDOFF.md",
       "StegVerse-org/LLM-adapter@cde350e41d16a9932932b96d77c0dbd37b950284"
     ]
@@ -49,6 +55,7 @@
     "data/canonical-task-registry.json",
     "control/resident-execution-request.d/canonical-work-anthropic-intr-transport-288.json",
     "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py",
+    "control/cross-task-coordination.d/anthropic-intr-transport-288-canonical-work-ingress.json",
     "docs/HOSTED_PROVIDER_INTR_RUNTIME_PROFILE_MIRROR_HANDOFF.md",
     "tests/test_anthropic_canonical_work_resident_request.py",
     "data/preflight/llma-anthropic-intr-transport-288-post-merge-reconcile.json"
