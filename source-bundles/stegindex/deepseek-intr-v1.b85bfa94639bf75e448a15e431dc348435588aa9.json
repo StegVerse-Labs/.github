@@ -1,0 +1,50 @@
+{
+  "snapshot_schema": "stegverse.stegindex-preflight-input-snapshot/v1",
+  "source_repository": "StegVerse-Labs/StegIndex",
+  "source_commit": "b85bfa94639bf75e448a15e431dc348435588aa9",
+  "source_path": "registry/capability-fragments/deepseek-intr-v1.json",
+  "source_git_blob_sha": "61347307e7ccda2b87bae8e2d22afb3bb5522443",
+  "network_fetch_required_at_validation": false,
+  "authority_effect": "NONE_VALIDATION_SNAPSHOT_ONLY",
+  "capability_fragment": {
+    "artifact_type": "stegindex.capability_fragment",
+    "schema_version": "0.1.0",
+    "entries": [
+      {
+        "capability_id": "stegverse.intr.deepseek.transport.v1",
+        "aliases": [
+          "DeepSeek InTr",
+          "DeepSeek governed transport",
+          "DeepSeek optional provider lane",
+          "stegverse.intr.deepseek.transport.v1"
+        ],
+        "purpose": "Optional governed DeepSeek hosted-provider interoperability transport with exact Interlock/InTr ingress and egress binding, execution-time TV/TVC credential resolution, provider-usage evidence, and Master Records custody/reconstruction dependency.",
+        "owner_repo": "StegVerse-org/LLM-adapter",
+        "lifecycle_state": "RELEASED",
+        "authority_effect": "NONE",
+        "credential_authority": "TV/TVC",
+        "current_evidence_state": "COMPLETE_RELEASED_SOURCE_LIVE_RUNTIME_NOT_OBSERVED_ACTIVATION_NOT_OBSERVED",
+        "missing_predicates": [
+          "deepseek_live_runtime_observed",
+          "deepseek_provider_usage_reconstruction_pass",
+          "deepseek_egress_allow_observed",
+          "deepseek_activation_evidence_present"
+        ],
+        "reuse_instructions": "Reuse the released LLM-adapter DeepSeek InTr transport. Do not create a parallel DeepSeek adapter, infer provider authority, reuse ingress ALLOW as egress authority, persist credentials, or treat source release as Ecosystem Chat activation.",
+        "invocation_surface": "llm_adapter.deepseek_intr_executor.execute_governed_deepseek",
+        "another_physical_machine_required": false,
+        "user_action_required": false,
+        "blocking_owner": "Interlock/InTr -> TV/TVC -> StegVerse-org/LLM-adapter -> master-records/orchestration -> Interlock/InTr",
+        "source_phase": "COMPLETE_RELEASED_SOURCE",
+        "provider": "deepseek",
+        "hosted_provider_optional": true,
+        "requires_interlock_ingress": true,
+        "requires_interlock_egress": true,
+        "master_records_custody": "required_for_provider_usage_evidence",
+        "live_runtime": false,
+        "activation_evidence": false,
+        "ecosystem_chat_activation": false
+      }
+    ]
+  }
+}
