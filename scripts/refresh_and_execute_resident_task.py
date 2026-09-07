@@ -13,6 +13,12 @@ Supported modes:
 - the dedicated Ecosystem Chat parent executor, which retains its stronger recovery
   and fence semantics.
 
+For compact canonical continuation, targeted/resume modes may additionally provide
+--cosv-task-vector. After source refresh and before execution, the task ID/vector pair
+is resolved exactly once against control/task-vector-index.json and fails closed on
+missing, duplicate, malformed, or mismatched state. Pointer validation grants no
+execution, claim, fence, credential, transition, or custody authority.
+
 Running this script on a sovereign resident surface may produce real runtime evidence.
 Merely merging or validating this source does not.
 """
@@ -33,6 +39,7 @@ GENERIC_RUNNER = Path("scripts/run_worker_runtime.py")
 ECOSYSTEM_CHAT_PARENT_RUNNER = Path("scripts/run_independent_ecosystem_chat_parent.py")
 CARRIER_REF = Path("control/heartbeat-carrier-runtime-state.json")
 REGISTRY_REF = Path("control/worker-registry.json")
+COSV_INDEX_REF = Path("control/task-vector-index.json")
 RECEIPT_REL = Path("receipts/sovereign-host/resident-targeted-execution.latest.json")
 
 GITHUB_AUTH_ENV = {
@@ -149,6 +156,45 @@ def _load_registry(runtime_root: Path) -> dict[str, Any]:
     return value
 
 
+def validate_cosv_task_pointer(runtime_root: Path, task_id: str, vector: str) -> dict[str, Any]:
+    """Verify a compact task.v1 pointer against the refreshed canonical index.
+
+    This is resolution only. A successful result is evidence that the caller supplied
+    the currently indexed pointer; it is never execution or transition authority.
+    """
+    if not isinstance(vector, str) or len(vector) != 14 or not vector.isdigit():
+        raise RuntimeError("COSV task vector must be a 14-digit task.v1 vector")
+    path = runtime_root / COSV_INDEX_REF
+    if not path.is_file():
+        raise RuntimeError("canonical COSV task-vector index is not materialized")
+    try:
+        index = json.loads(path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        raise RuntimeError("canonical COSV task-vector index is unreadable") from exc
+    rows = index.get("tasks") if isinstance(index, dict) else None
+    if not isinstance(rows, list):
+        raise RuntimeError("canonical COSV task-vector index shape is invalid")
+    matches = [row for row in rows if isinstance(row, dict) and row.get("task_id") == task_id]
+    if len(matches) != 1:
+        raise RuntimeError("canonical COSV task pointer must resolve exactly once")
+    row = matches[0]
+    if row.get("vector") != vector:
+        raise RuntimeError("task_id/COSV vector binding mismatch")
+    source_ref = row.get("source_state_vector_ref")
+    if not isinstance(source_ref, str) or not source_ref:
+        raise RuntimeError("canonical COSV task pointer lacks source state-vector provenance")
+    return {
+        "profile": "task.v1",
+        "task_id": task_id,
+        "vector": vector,
+        "source_state_vector_ref": source_ref,
+        "registry_ref": row.get("registry_ref"),
+        "validated_against": str(COSV_INDEX_REF),
+        "binding_verified": True,
+        "authority_effect": "NONE",
+    }
+
+
 def claimed_task_snapshot(runtime_root: Path, task_id: str) -> dict[str, Any]:
     registry = _load_registry(runtime_root)
     task = next(
@@ -219,6 +265,7 @@ def refresh_and_execute(
     task_id: str | None = None,
     resume_claimed_task_id: str | None = None,
     ecosystem_chat_parent: bool = False,
+    cosv_task_vector: str | None = None,
     runner: Runner = subprocess.run,
     env: dict[str, str] | None = None,
 ) -> dict[str, Any]:
@@ -226,8 +273,16 @@ def refresh_and_execute(
     runtime = runtime_root.expanduser().resolve()
     if resume_claimed_task_id is not None and (task_id is not None or ecosystem_chat_parent):
         raise ValueError("resume_claimed_task_id is mutually exclusive with other execution modes")
+    if ecosystem_chat_parent and cosv_task_vector is not None:
+        raise ValueError("cosv_task_vector applies only to explicit task modes")
 
     refresh_receipt = refresh(source, runtime)
+    selected_pointer_task_id = resume_claimed_task_id or task_id
+    pointer_receipt = (
+        validate_cosv_task_pointer(runtime, str(selected_pointer_task_id), cosv_task_vector)
+        if cosv_task_vector is not None and selected_pointer_task_id is not None
+        else None
+    )
     claim_before = (
         claimed_task_snapshot(runtime, resume_claimed_task_id)
         if resume_claimed_task_id is not None
@@ -262,8 +317,6 @@ def refresh_and_execute(
         try:
             claim_after = claimed_task_snapshot(runtime, resume_claimed_task_id)
         except RuntimeError:
-            # Lawful completion/expiry may release the claim. Preserve the preflight
-            # identity and report that the bound claim is no longer active.
             claim_after = None
 
     mode = (
@@ -281,11 +334,13 @@ def refresh_and_execute(
         else (resume_claimed_task_id or task_id)
     )
     receipt = {
-        "schema": "stegverse.resident-refresh-targeted-execution/v2",
+        "schema": "stegverse.resident-refresh-targeted-execution/v3",
         "source_root": str(source),
         "runtime_root": str(runtime),
         "mode": mode,
         "task_id": selected_task_id,
+        "cosv_task_pointer": pointer_receipt,
+        "cosv_pointer_required_by_this_invocation": cosv_task_vector is not None,
         "command": command,
         "refresh_receipt": refresh_receipt,
         "existing_claim_preflight": claim_before,
@@ -323,6 +378,7 @@ def main() -> int:
     mode.add_argument("--task-id")
     mode.add_argument("--resume-claimed-task-id")
     mode.add_argument("--ecosystem-chat-parent", action="store_true")
+    parser.add_argument("--cosv-task-vector")
     args = parser.parse_args()
 
     receipt = refresh_and_execute(
@@ -331,6 +387,7 @@ def main() -> int:
         task_id=args.task_id,
         resume_claimed_task_id=args.resume_claimed_task_id,
         ecosystem_chat_parent=args.ecosystem_chat_parent,
+        cosv_task_vector=args.cosv_task_vector,
     )
     print(json.dumps(receipt, sort_keys=True))
     return 0 if receipt["execution_returncode"] == 0 and receipt["execution_result_observed"] else 1
