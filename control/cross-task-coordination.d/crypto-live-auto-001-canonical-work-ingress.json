@@ -1,0 +1,123 @@
+{
+  "schema": "stegverse.cross-task-coordination-fragment/v1",
+  "fragment_id": "CRYPTO-LIVE-AUTO-001-CANONICAL-WORK-INGRESS-001",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "predicates": [
+    {
+      "predicate_id": "PRED-CRYPTO-LIVE-AUTO-CANONICAL-WORK-REQUEST-STAGED-001",
+      "semantic_predicate_id": "canonical_work_request_staged",
+      "subject_binding": {
+        "task_id": "CRYPTO-LIVE-AUTO-001",
+        "request_id": "RESIDENT-EXEC-CANONICAL-WORK-CRYPTO-LIVE-AUTO-001"
+      },
+      "state": "SATISFIED",
+      "description": "The existing registered-task Canonical Work ingress path contains the exact non-authorizing resident request for the already-existing CRYPTO-LIVE-AUTO-001 machine-owned trading task.",
+      "authoritative_producer": "StegVerse-Labs/.github source/control plane",
+      "required_schema": "stegverse.resident-execution-request/v1",
+      "required_scope": "registered canonical task resident request staging",
+      "required_execution_instance": "RESIDENT-EXEC-CANONICAL-WORK-CRYPTO-LIVE-AUTO-001",
+      "max_age_seconds": null,
+      "required_fields": ["task_id", "request_id", "state", "authority_effect"],
+      "required_field_values": {
+        "task_id": "CRYPTO-LIVE-AUTO-001",
+        "request_id": "RESIDENT-EXEC-CANONICAL-WORK-CRYPTO-LIVE-AUTO-001",
+        "state": "REQUESTED",
+        "authority_effect": "NONE_REQUEST_ONLY"
+      },
+      "expected_output_ref": "control/resident-execution-request.d/canonical-work-crypto-live-auto-001.json",
+      "consumers": ["CRYPTO-LIVE-AUTO-001"],
+      "canonical_source_refs": [
+        "StegVerse-Labs/crypto-bot/claims/CRYPTO-LIVE-AUTO-001.claim.json",
+        "StegVerse-Labs/crypto-bot/docs/HB_INTR_RUNTIME_CONSUMPTION_MIRROR_HANDOFF.md",
+        "docs/CRYPTO_LIVE_AUTO_CANONICAL_WORK_MIRROR_HANDOFF.md",
+        "control/resident-execution-request.d/canonical-work-crypto-live-auto-001.json",
+        "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py"
+      ]
+    },
+    {
+      "predicate_id": "PRED-CRYPTO-LIVE-AUTO-CANONICAL-WORK-INGRESS-OBSERVED-001",
+      "semantic_predicate_id": "resident_request_consumed",
+      "subject_binding": {
+        "task_id": "CRYPTO-LIVE-AUTO-001",
+        "request_id": "RESIDENT-EXEC-CANONICAL-WORK-CRYPTO-LIVE-AUTO-001"
+      },
+      "state": "UNKNOWN",
+      "description": "The exact CRYPTO-LIVE-AUTO-001 resident request was authentically consumed and the existing Universal Interlock/InTr Canonical Work path emitted task-specific ingress, consumption and bootstrap evidence.",
+      "authoritative_producer": "existing sovereign resident Canonical Work consumer + Universal Interlock/InTr",
+      "required_schema": "stegverse.canonical-work-bootstrap-request-consumption/v1",
+      "required_scope": "authentic CRYPTO-LIVE-AUTO-001 Canonical Work resident ingress",
+      "required_execution_instance": "RESIDENT-EXEC-CANONICAL-WORK-CRYPTO-LIVE-AUTO-001",
+      "max_age_seconds": null,
+      "required_fields": ["state", "task_id", "request_sha256", "bootstrap_receipt_ref"],
+      "required_field_values": {
+        "state": "COMPLETED",
+        "task_id": "CRYPTO-LIVE-AUTO-001"
+      },
+      "expected_output_ref": "receipts/sovereign-host/canonical-work-crypto-live-auto-request-consumption.latest.json",
+      "consumers": ["CRYPTO-LIVE-AUTO-001"],
+      "canonical_source_refs": [
+        "StegVerse-Labs/crypto-bot/claims/CRYPTO-LIVE-AUTO-001.claim.json",
+        "docs/CRYPTO_LIVE_AUTO_CANONICAL_WORK_MIRROR_HANDOFF.md",
+        "control/resident-execution-request.d/canonical-work-crypto-live-auto-001.json"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "evidence_id": "EVID-CRYPTO-LIVE-AUTO-CANONICAL-WORK-REQUEST-STAGED-001",
+      "predicate_id": "PRED-CRYPTO-LIVE-AUTO-CANONICAL-WORK-REQUEST-STAGED-001",
+      "subject_binding": {
+        "task_id": "CRYPTO-LIVE-AUTO-001",
+        "request_id": "RESIDENT-EXEC-CANONICAL-WORK-CRYPTO-LIVE-AUTO-001"
+      },
+      "producer": "StegVerse-Labs/.github",
+      "ref": "control/resident-execution-request.d/canonical-work-crypto-live-auto-001.json",
+      "schema": "stegverse.resident-execution-request/v1",
+      "scope": "registered canonical task resident request staging",
+      "execution_instance": "SOURCE_REQUEST_STAGING_ONLY",
+      "observed_at": "2026-09-06",
+      "fields": {
+        "task_id": "CRYPTO-LIVE-AUTO-001",
+        "request_id": "RESIDENT-EXEC-CANONICAL-WORK-CRYPTO-LIVE-AUTO-001",
+        "state": "REQUESTED",
+        "authority_effect": "NONE_REQUEST_ONLY"
+      },
+      "authority_effect": "EVIDENCE_ONLY"
+    }
+  ],
+  "gaps": [
+    {
+      "predicate_id": "PRED-CRYPTO-LIVE-AUTO-CANONICAL-WORK-INGRESS-OBSERVED-001",
+      "subject_binding": {
+        "task_id": "CRYPTO-LIVE-AUTO-001",
+        "request_id": "RESIDENT-EXEC-CANONICAL-WORK-CRYPTO-LIVE-AUTO-001"
+      },
+      "existing_evidence_refs": [
+        "control/resident-execution-request.d/canonical-work-crypto-live-auto-001.json",
+        "StegVerse-Labs/crypto-bot/claims/CRYPTO-LIVE-AUTO-001.claim.json",
+        "StegVerse-Labs/crypto-bot/docs/HB_INTR_RUNTIME_CONSUMPTION_MIRROR_HANDOFF.md"
+      ],
+      "rejected_because": [
+        "SOURCE_REQUEST_STAGING_IS_NOT_RUNTIME_CONSUMPTION",
+        "NO_QUALIFYING_AUTHENTIC_REQUEST_CONSUMPTION_RECEIPT_OBSERVED",
+        "NO_AUTHENTIC_INTR_ADMISSION_MAY_BE_INFERRED_FROM_SOURCE_MERGE_CI_OR_HEARTBEAT"
+      ],
+      "missing_observation": "Authentic resident consumption plus task-specific Canonical Work ingress/consumption/bootstrap evidence for CRYPTO-LIVE-AUTO-001.",
+      "required_producer": "existing sovereign resident Canonical Work consumer + Universal Interlock/InTr",
+      "required_output_ref": "receipts/sovereign-host/canonical-work-crypto-live-auto-request-consumption.latest.json",
+      "required_schema": "stegverse.canonical-work-bootstrap-request-consumption/v1",
+      "required_fields": ["state", "task_id", "request_sha256", "bootstrap_receipt_ref"],
+      "required_field_values": {
+        "state": "COMPLETED",
+        "task_id": "CRYPTO-LIVE-AUTO-001"
+      },
+      "required_freshness": null,
+      "collision_refs": [
+        "StegVerse-Labs/TVC#119",
+        "StegVerse-Labs/stegfin-governance#84",
+        "StegVerse-Labs/crypto-bot/claims/CRYPTO-LIVE-AUTO-001.claim.json"
+      ],
+      "action_without_collision": "Allow the existing resident dispatcher/Canonical Work consumer to visit the staged request. Do not create a second runtime, scheduler, WorkerCoordinator, credential path, Coinbase provider path, or fabricated receipt. After authentic ingress, use Master Records reconciliation and WorkerCoordinator admission review, then continue the already-owned TVC #119 and StegFin #84 evidence gates."
+    }
+  ]
+}

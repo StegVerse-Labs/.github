@@ -38,10 +38,8 @@ class ObjectProvenanceCanonicalWorkResidentRequestTests(unittest.TestCase):
         consumer = CONSUMER.read_text(encoding="utf-8")
         self.assertIn("OBJECT_PROVENANCE_SPEC", consumer)
         self.assertIn("RUNTIME_PROFILE_MAP_SPEC", consumer)
-        self.assertIn(
-            "REQUEST_SPECS = (DEFAULT_SPEC, QUANTUM_SPEC, OBJECT_PROVENANCE_SPEC, RUNTIME_PROFILE_MAP_SPEC)",
-            consumer,
-        )
+        self.assertIn("ERL_REVIEW_SPEC", consumer)
+        self.assertIn("CRYPTO_LIVE_AUTO_SPEC", consumer)
         self.assertIn('"task_id": "STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190"', consumer)
         self.assertIn('"--task-id"', consumer)
         self.assertIn("later_request_attempts_blocked_by_earlier_failure", consumer)

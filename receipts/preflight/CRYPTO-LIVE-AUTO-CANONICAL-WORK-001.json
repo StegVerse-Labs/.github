@@ -1,0 +1,66 @@
+{
+  "schema": "stegverse.session-build-preflight-receipt/v1",
+  "preflight_id": "CRYPTO-LIVE-AUTO-CANONICAL-WORK-001",
+  "task_id": "CRYPTO-LIVE-AUTO-001",
+  "result": "ADMIT_COORDINATION",
+  "observed_at": "2026-09-06T20:29:00-05:00",
+  "canonical_handoff_refs": [
+    "StegVerse-Labs/crypto-bot/claims/CRYPTO-LIVE-AUTO-001.claim.json",
+    "StegVerse-Labs/crypto-bot/docs/HB_INTR_RUNTIME_CONSUMPTION_MIRROR_HANDOFF.md",
+    "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md",
+    "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md"
+  ],
+  "task_registry": {
+    "ref": "data/canonical-task-registry.json",
+    "preflight_generation": 15,
+    "task_present_before_mutation": false,
+    "registration_action": "REGISTER_EXISTING_MACHINE_OWNED_TASK_AS_PROPOSED"
+  },
+  "master_records": {
+    "ref": "master-records/orchestration/CANONICAL_WORK_COORDINATION_CUSTODY_MIRROR_HANDOFF.md",
+    "canonical_projection_available": true,
+    "crypto_task_runtime_event_observed": false,
+    "runtime_truth_inferred": false
+  },
+  "cross_task_coordination": {
+    "canonical_ref": "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
+    "active_worker_claims_resolved": [
+      "SHWP-SHWP-ALL-ORG-FEDERATION-001-G17",
+      "SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18",
+      "SHWP-STEGGATE-STABLE-RENDEZVOUS-WORKER-001-G13"
+    ],
+    "crypto_workercoordinator_claim_observed": false,
+    "mutation_scope_collision": false,
+    "repo_local_machine_claim_reused": "StegVerse-Labs/crypto-bot/claims/CRYPTO-LIVE-AUTO-001.claim.json"
+  },
+  "reuse": {
+    "runtime_profile": "stegverse:runtime-profile:hb-intr-resident:v1",
+    "canonical_work_ingress": "scripts/install_and_run_canonical_work_event_bootstrap.py",
+    "resident_consumer": "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py",
+    "resident_dispatcher": "scripts/dispatch_resident_execution_requests.py",
+    "master_records_projection": "master-records.canonical-work-event-projection/v1",
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "credential_authority": "TV/TVC"
+  },
+  "readme_impact": {
+    "required": false,
+    "material_function_change": false,
+    "readme_updated_in_change_set": false,
+    "no_readme_update_reason": "Registering one already-existing task and adding one explicit request specification reuses the already-generalized Canonical Work registered-task ingress with unchanged runtime semantics, interfaces, authority boundaries, evidence semantics, prerequisites, dependencies, failure behavior, and capability meaning. README.md already documents multiple explicit registered-task specifications and non-authorizing source staging.",
+    "evidence_refs": [
+      "README.md",
+      "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md",
+      "tests/test_runtime_profile_map_canonical_work_resident_request.py"
+    ]
+  },
+  "authority_invariants": {
+    "heartbeat_grants_execution_authority": false,
+    "oscillator_grants_execution_authority": false,
+    "intr_transport_grants_execution_authority": false,
+    "task_registry_mints_execution_authority": false,
+    "github_token_runtime_authority": "NONE",
+    "coinbase_provider_authority": "TV/TVC",
+    "stegfin_gate_owner": "StegVerse-Labs/stegfin-governance#84"
+  },
+  "authority_effect": "NONE_PREFLIGHT_AND_COORDINATION_ONLY"
+}

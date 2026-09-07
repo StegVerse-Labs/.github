@@ -59,7 +59,20 @@ ERL_REVIEW_SPEC = {
     "bootstrap_runtime_rel": Path("runtime/canonical-work-erl-ai-economic-transparency-review"),
     "task_id": "SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001",
 }
-REQUEST_SPECS = (DEFAULT_SPEC, QUANTUM_SPEC, OBJECT_PROVENANCE_SPEC, RUNTIME_PROFILE_MAP_SPEC, ERL_REVIEW_SPEC)
+CRYPTO_LIVE_AUTO_SPEC = {
+    "request_rel": Path("control/resident-execution-request.d/canonical-work-crypto-live-auto-001.json"),
+    "consumption_rel": Path("receipts/sovereign-host/canonical-work-crypto-live-auto-request-consumption.latest.json"),
+    "bootstrap_runtime_rel": Path("runtime/canonical-work-crypto-live-auto"),
+    "task_id": "CRYPTO-LIVE-AUTO-001",
+}
+REQUEST_SPECS = (
+    DEFAULT_SPEC,
+    QUANTUM_SPEC,
+    OBJECT_PROVENANCE_SPEC,
+    RUNTIME_PROFILE_MAP_SPEC,
+    ERL_REVIEW_SPEC,
+    CRYPTO_LIVE_AUTO_SPEC,
+)
 
 MATERIALIZE = (
     Path("scripts/install_and_run_canonical_work_event_bootstrap.py"),
