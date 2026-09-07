@@ -1,0 +1,315 @@
+{
+  "schema": "stegverse.cross-task-coordination-fragment/v1",
+  "fragment_id": "RUNTIME-PROFILE-MAP-LIFECYCLE-PREDICATES-001",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "predicates": [
+    {
+      "predicate_id": "PRED-RUNTIME-PROFILE-MAP-BUILD-COMPLETED-001",
+      "semantic_predicate_id": "runtime_profile_map_build_completed",
+      "subject_binding": {
+        "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+        "request_id": "RESIDENT-EXEC-RUNTIME-PROFILE-MAP-001"
+      },
+      "state": "UNKNOWN",
+      "description": "The existing sovereign resident Runtime Profile Map build consumer completed the exact task-specific build cycle after authentic Canonical Work ingress and resident-chain validation.",
+      "authoritative_producer": "existing Runtime Profile Map resident build consumer",
+      "required_schema": "stegverse.runtime-profile-map-build-consumption/v1",
+      "required_scope": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001 resident build cycle",
+      "required_execution_instance": "RESIDENT-EXEC-RUNTIME-PROFILE-MAP-001",
+      "max_age_seconds": null,
+      "required_fields": [
+        "state",
+        "task_id",
+        "request_id",
+        "resident_chain_preflight.state",
+        "custody_input_package_generated",
+        "master_records_custody_performed",
+        "existing_worker_registry_preserved",
+        "existing_shared_intr_router_preserved",
+        "existing_resident_dispatcher_preserved"
+      ],
+      "required_field_values": {
+        "state": "COMPLETED",
+        "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+        "request_id": "RESIDENT-EXEC-RUNTIME-PROFILE-MAP-001",
+        "resident_chain_preflight.state": "SOURCE_CHAIN_VALID",
+        "custody_input_package_generated": true,
+        "master_records_custody_performed": false,
+        "existing_worker_registry_preserved": true,
+        "existing_shared_intr_router_preserved": true,
+        "existing_resident_dispatcher_preserved": true
+      },
+      "expected_output_ref": "receipts/sovereign-host/runtime-profile-map-build-request-consumption.latest.json",
+      "consumers": ["STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"],
+      "depends_on_predicates": ["PRED-RUNTIME-PROFILE-MAP-CANONICAL-WORK-INGRESS-OBSERVED-001"],
+      "canonical_source_refs": [
+        "docs/CANONICAL_RUNTIME_PROFILE_MAP_MIRROR_HANDOFF.md",
+        "control/resident-execution-request.d/runtime-profile-map-build-001.json",
+        "control/resident-execution-request.d/consume-runtime-profile-map-build.py"
+      ]
+    },
+    {
+      "predicate_id": "PRED-RUNTIME-PROFILE-MAP-MASTER-RECORDS-CUSTODY-001",
+      "semantic_predicate_id": "master_records_custody_observed",
+      "subject_binding": {
+        "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+        "request_id": "RUNTIME-PROFILE-MAP-MASTER-RECORDS-CUSTODY-001"
+      },
+      "state": "UNKNOWN",
+      "description": "The existing Runtime Profile Map custody consumer completed exact-hash Master Records custody for the generated cycle package.",
+      "authoritative_producer": "existing Runtime Profile Map custody consumer + master-records/orchestration custody consumer",
+      "required_schema": "stegverse.runtime-profile-map-custody-consumption/v1",
+      "required_scope": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001 exact-hash Master Records custody",
+      "required_execution_instance": "RUNTIME-PROFILE-MAP-MASTER-RECORDS-CUSTODY-001",
+      "max_age_seconds": null,
+      "required_fields": [
+        "state",
+        "task_id",
+        "request_id",
+        "package_sha256",
+        "result.state",
+        "network_source_fetch_performed",
+        "claim_or_fence_minted",
+        "task_coordination_state_changed"
+      ],
+      "required_field_values": {
+        "state": "COMPLETED",
+        "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+        "request_id": "RUNTIME-PROFILE-MAP-MASTER-RECORDS-CUSTODY-001",
+        "result.state": "CUSTODY_ACCEPTED",
+        "network_source_fetch_performed": false,
+        "claim_or_fence_minted": false,
+        "task_coordination_state_changed": false
+      },
+      "expected_output_ref": "receipts/sovereign-host/runtime-profile-map-custody-request-consumption.latest.json",
+      "consumers": ["STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001", "MASTER-RECORDS-RUNTIME-PROFILE-MAP-CUSTODY-001"],
+      "depends_on_predicates": ["PRED-RUNTIME-PROFILE-MAP-BUILD-COMPLETED-001"],
+      "canonical_source_refs": [
+        "docs/CANONICAL_RUNTIME_PROFILE_MAP_MIRROR_HANDOFF.md",
+        "master-records/orchestration/RUNTIME_PROFILE_MAP_CUSTODY_MIRROR_HANDOFF.md",
+        "control/resident-execution-request.d/runtime-profile-map-custody-001.json",
+        "control/resident-execution-request.d/consume-runtime-profile-map-custody.py"
+      ]
+    },
+    {
+      "predicate_id": "PRED-RUNTIME-PROFILE-MAP-MASTER-RECORDS-RECONCILED-001",
+      "semantic_predicate_id": "master_records_reconciliation_observed",
+      "subject_binding": {
+        "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+        "request_id": "RUNTIME-PROFILE-MAP-RECONCILIATION-001"
+      },
+      "state": "UNKNOWN",
+      "description": "The existing Runtime Profile Map reconciliation consumer projected retained Master Records work events and emitted reconciliation receipts for runtime-bound canonical tasks.",
+      "authoritative_producer": "existing Runtime Profile Map Master Records reconciliation consumer",
+      "required_schema": "stegverse.runtime-profile-map-reconciliation-consumption/v1",
+      "required_scope": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001 post-custody Master Records reconciliation",
+      "required_execution_instance": "RUNTIME-PROFILE-MAP-RECONCILIATION-001",
+      "max_age_seconds": null,
+      "required_fields": [
+        "state",
+        "task_id",
+        "request_id",
+        "master_records_projection_sha256",
+        "task_reconciliation_count",
+        "network_source_fetch_performed",
+        "claim_or_fence_minted",
+        "task_coordination_state_changed",
+        "closure_performed"
+      ],
+      "required_field_values": {
+        "state": "COMPLETED",
+        "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+        "request_id": "RUNTIME-PROFILE-MAP-RECONCILIATION-001",
+        "network_source_fetch_performed": false,
+        "claim_or_fence_minted": false,
+        "task_coordination_state_changed": false,
+        "closure_performed": false
+      },
+      "expected_output_ref": "receipts/sovereign-host/runtime-profile-map-reconciliation-request-consumption.latest.json",
+      "consumers": ["STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001", "STEGVERSE-CANONICAL-WORK-COORDINATION-001"],
+      "depends_on_predicates": ["PRED-RUNTIME-PROFILE-MAP-MASTER-RECORDS-CUSTODY-001"],
+      "canonical_source_refs": [
+        "docs/CANONICAL_RUNTIME_PROFILE_MAP_MIRROR_HANDOFF.md",
+        "control/resident-execution-request.d/runtime-profile-map-reconciliation-001.json",
+        "control/resident-execution-request.d/consume-runtime-profile-map-reconciliation.py"
+      ]
+    },
+    {
+      "predicate_id": "PRED-RUNTIME-PROFILE-MAP-TRANSITION-READINESS-OBSERVED-001",
+      "semantic_predicate_id": "runtime_profile_map_transition_readiness_observed",
+      "subject_binding": {
+        "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+        "request_id": "RESIDENT-EXEC-RUNTIME-PROFILE-MAP-TRANSITION-READINESS-001"
+      },
+      "state": "UNKNOWN",
+      "description": "The existing post-reconciliation transition-readiness consumer completed non-authorizing readiness classification for runtime-bound canonical tasks.",
+      "authoritative_producer": "existing Runtime Profile Map transition-readiness consumer",
+      "required_schema": "stegverse.runtime-profile-map-transition-readiness-consumption/v1",
+      "required_scope": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001 post-reconciliation transition readiness",
+      "required_execution_instance": "RESIDENT-EXEC-RUNTIME-PROFILE-MAP-TRANSITION-READINESS-001",
+      "max_age_seconds": null,
+      "required_fields": [
+        "state",
+        "task_id",
+        "request_id",
+        "task_transition_readiness_count",
+        "task_state_changed",
+        "claim_or_fence_minted",
+        "execution_authority_granted",
+        "interlock_intr_admission_granted",
+        "heartbeat_or_oscillator_advanced"
+      ],
+      "required_field_values": {
+        "state": "COMPLETED",
+        "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+        "request_id": "RESIDENT-EXEC-RUNTIME-PROFILE-MAP-TRANSITION-READINESS-001",
+        "task_state_changed": false,
+        "claim_or_fence_minted": false,
+        "execution_authority_granted": false,
+        "interlock_intr_admission_granted": false,
+        "heartbeat_or_oscillator_advanced": false
+      },
+      "expected_output_ref": "receipts/sovereign-host/runtime-profile-map-transition-readiness-request-consumption.latest.json",
+      "consumers": ["STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001", "STEGVERSE-CANONICAL-WORK-COORDINATION-001"],
+      "depends_on_predicates": ["PRED-RUNTIME-PROFILE-MAP-MASTER-RECORDS-RECONCILED-001"],
+      "canonical_source_refs": [
+        "docs/CANONICAL_RUNTIME_PROFILE_MAP_MIRROR_HANDOFF.md",
+        "control/resident-execution-request.d/runtime-profile-map-transition-readiness-001.json",
+        "control/resident-execution-request.d/consume-runtime-profile-map-transition-readiness.py"
+      ]
+    },
+    {
+      "predicate_id": "PRED-RUNTIME-PROFILE-MAP-GOVERNANCE-REVIEW-ROUTED-001",
+      "semantic_predicate_id": "governance_review_evidence_routed",
+      "subject_binding": {
+        "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+        "request_id": "RESIDENT-EXEC-RUNTIME-PROFILE-MAP-GOVERNANCE-REVIEW-001"
+      },
+      "state": "UNKNOWN",
+      "description": "The existing governance-review consumer completed exact-evidence packaging and routed immutable authority-review envelopes without invoking any authority.",
+      "authoritative_producer": "existing Runtime Profile Map governance-review packaging and routing consumer",
+      "required_schema": "stegverse.runtime-profile-map-governance-review-consumption/v1",
+      "required_scope": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001 governance-review evidence packaging and local authority routing",
+      "required_execution_instance": "RESIDENT-EXEC-RUNTIME-PROFILE-MAP-GOVERNANCE-REVIEW-001",
+      "max_age_seconds": null,
+      "required_fields": [
+        "state",
+        "task_id",
+        "request_id",
+        "task_governance_review_count",
+        "authority_review_envelopes_routed",
+        "authority_invoked",
+        "task_state_changed",
+        "claim_or_fence_minted",
+        "execution_authority_granted",
+        "interlock_intr_admission_granted",
+        "heartbeat_or_oscillator_advanced",
+        "network_source_fetch_performed",
+        "credential_material_present",
+        "credential_authority",
+        "github_token_runtime_authority"
+      ],
+      "required_field_values": {
+        "state": "COMPLETED",
+        "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+        "request_id": "RESIDENT-EXEC-RUNTIME-PROFILE-MAP-GOVERNANCE-REVIEW-001",
+        "authority_review_envelopes_routed": true,
+        "authority_invoked": false,
+        "task_state_changed": false,
+        "claim_or_fence_minted": false,
+        "execution_authority_granted": false,
+        "interlock_intr_admission_granted": false,
+        "heartbeat_or_oscillator_advanced": false,
+        "network_source_fetch_performed": false,
+        "credential_material_present": false,
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": "NONE"
+      },
+      "expected_output_ref": "receipts/sovereign-host/runtime-profile-map-governance-review-request-consumption.latest.json",
+      "consumers": ["STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001", "STEGVERSE-CANONICAL-WORK-COORDINATION-001"],
+      "depends_on_predicates": ["PRED-RUNTIME-PROFILE-MAP-TRANSITION-READINESS-OBSERVED-001"],
+      "canonical_source_refs": [
+        "docs/CANONICAL_RUNTIME_PROFILE_MAP_MIRROR_HANDOFF.md",
+        "control/resident-execution-request.d/runtime-profile-map-governance-review-001.json",
+        "control/resident-execution-request.d/consume-runtime-profile-map-governance-review.py"
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "predicate_id": "PRED-RUNTIME-PROFILE-MAP-BUILD-COMPLETED-001",
+      "subject_binding": {"task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001", "request_id": "RESIDENT-EXEC-RUNTIME-PROFILE-MAP-001"},
+      "existing_evidence_refs": ["control/resident-execution-request.d/runtime-profile-map-build-001.json", "docs/CANONICAL_RUNTIME_PROFILE_MAP_MIRROR_HANDOFF.md"],
+      "rejected_because": ["NO_QUALIFYING_AUTHENTIC_BUILD_CONSUMPTION_RECEIPT_OBSERVED"],
+      "missing_observation": "Authentic resident Runtime Profile Map build consumption with SOURCE_CHAIN_VALID and custody package generation.",
+      "required_producer": "existing Runtime Profile Map resident build consumer",
+      "required_output_ref": "receipts/sovereign-host/runtime-profile-map-build-request-consumption.latest.json",
+      "required_schema": "stegverse.runtime-profile-map-build-consumption/v1",
+      "required_fields": ["state", "task_id", "request_id", "resident_chain_preflight.state", "custody_input_package_generated"],
+      "required_field_values": {"state": "COMPLETED", "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001", "request_id": "RESIDENT-EXEC-RUNTIME-PROFILE-MAP-001", "resident_chain_preflight.state": "SOURCE_CHAIN_VALID", "custody_input_package_generated": true},
+      "required_freshness": null,
+      "collision_refs": [],
+      "action_without_collision": "After authentic Canonical Work ingress, allow the existing runtime_profile_map resident selector to consume the staged build request. Do not create a second builder, dispatcher, runtime, scheduler, or claim plane."
+    },
+    {
+      "predicate_id": "PRED-RUNTIME-PROFILE-MAP-MASTER-RECORDS-CUSTODY-001",
+      "subject_binding": {"task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001", "request_id": "RUNTIME-PROFILE-MAP-MASTER-RECORDS-CUSTODY-001"},
+      "existing_evidence_refs": ["master-records/orchestration/RUNTIME_PROFILE_MAP_CUSTODY_MIRROR_HANDOFF.md"],
+      "rejected_because": ["AUTHENTIC_CUSTODY_INPUT_AND_CUSTODY_ACCEPTANCE_NOT_OBSERVED"],
+      "missing_observation": "Exact Runtime Profile Map custody package accepted by the existing Master Records custody consumer.",
+      "required_producer": "existing Runtime Profile Map custody consumer + master-records/orchestration custody consumer",
+      "required_output_ref": "receipts/sovereign-host/runtime-profile-map-custody-request-consumption.latest.json",
+      "required_schema": "stegverse.runtime-profile-map-custody-consumption/v1",
+      "required_fields": ["state", "task_id", "request_id", "package_sha256", "result.state"],
+      "required_field_values": {"state": "COMPLETED", "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001", "request_id": "RUNTIME-PROFILE-MAP-MASTER-RECORDS-CUSTODY-001", "result.state": "CUSTODY_ACCEPTED"},
+      "required_freshness": null,
+      "collision_refs": [],
+      "action_without_collision": "Use the existing runtime_profile_map_custody selector and Master Records custody consumer only; do not create a second custody authority or infer custody from package generation."
+    },
+    {
+      "predicate_id": "PRED-RUNTIME-PROFILE-MAP-MASTER-RECORDS-RECONCILED-001",
+      "subject_binding": {"task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001", "request_id": "RUNTIME-PROFILE-MAP-RECONCILIATION-001"},
+      "existing_evidence_refs": [],
+      "rejected_because": ["AUTHENTIC_POST_CUSTODY_RECONCILIATION_NOT_OBSERVED"],
+      "missing_observation": "Retained Master Records work-event projection and per-task reconciliation receipts from the existing reconciliation consumer.",
+      "required_producer": "existing Runtime Profile Map Master Records reconciliation consumer",
+      "required_output_ref": "receipts/sovereign-host/runtime-profile-map-reconciliation-request-consumption.latest.json",
+      "required_schema": "stegverse.runtime-profile-map-reconciliation-consumption/v1",
+      "required_fields": ["state", "task_id", "request_id", "master_records_projection_sha256", "task_reconciliation_count"],
+      "required_field_values": {"state": "COMPLETED", "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001", "request_id": "RUNTIME-PROFILE-MAP-RECONCILIATION-001"},
+      "required_freshness": null,
+      "collision_refs": [],
+      "action_without_collision": "Use the existing runtime_profile_map_reconciliation selector after authentic custody; do not synthesize retained events or perform task closure from reconciliation projection."
+    },
+    {
+      "predicate_id": "PRED-RUNTIME-PROFILE-MAP-TRANSITION-READINESS-OBSERVED-001",
+      "subject_binding": {"task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001", "request_id": "RESIDENT-EXEC-RUNTIME-PROFILE-MAP-TRANSITION-READINESS-001"},
+      "existing_evidence_refs": [],
+      "rejected_because": ["AUTHENTIC_POST_RECONCILIATION_TRANSITION_READINESS_NOT_OBSERVED"],
+      "missing_observation": "Per-task transition-readiness receipts generated by the existing non-authorizing readiness consumer.",
+      "required_producer": "existing Runtime Profile Map transition-readiness consumer",
+      "required_output_ref": "receipts/sovereign-host/runtime-profile-map-transition-readiness-request-consumption.latest.json",
+      "required_schema": "stegverse.runtime-profile-map-transition-readiness-consumption/v1",
+      "required_fields": ["state", "task_id", "request_id", "task_transition_readiness_count"],
+      "required_field_values": {"state": "COMPLETED", "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001", "request_id": "RESIDENT-EXEC-RUNTIME-PROFILE-MAP-TRANSITION-READINESS-001"},
+      "required_freshness": null,
+      "collision_refs": [],
+      "action_without_collision": "Use the existing runtime_profile_map_transition_readiness selector after reconciliation; readiness remains projection and grants no transition authority."
+    },
+    {
+      "predicate_id": "PRED-RUNTIME-PROFILE-MAP-GOVERNANCE-REVIEW-ROUTED-001",
+      "subject_binding": {"task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001", "request_id": "RESIDENT-EXEC-RUNTIME-PROFILE-MAP-GOVERNANCE-REVIEW-001"},
+      "existing_evidence_refs": [],
+      "rejected_because": ["AUTHENTIC_GOVERNANCE_REVIEW_PACKAGING_AND_ROUTING_NOT_OBSERVED"],
+      "missing_observation": "Exact-evidence governance-review packages and immutable local authority-review envelopes routed by the existing consumer, without authority invocation.",
+      "required_producer": "existing Runtime Profile Map governance-review packaging and routing consumer",
+      "required_output_ref": "receipts/sovereign-host/runtime-profile-map-governance-review-request-consumption.latest.json",
+      "required_schema": "stegverse.runtime-profile-map-governance-review-consumption/v1",
+      "required_fields": ["state", "task_id", "request_id", "authority_review_envelopes_routed", "authority_invoked"],
+      "required_field_values": {"state": "COMPLETED", "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001", "request_id": "RESIDENT-EXEC-RUNTIME-PROFILE-MAP-GOVERNANCE-REVIEW-001", "authority_review_envelopes_routed": true, "authority_invoked": false},
+      "required_freshness": null,
+      "collision_refs": [],
+      "action_without_collision": "Use the existing runtime_profile_map_governance_review selector. Routing a review envelope does not invoke WorkerCoordinator, Interlock/InTr, Master Records, or Canonical Coordination authority."
+    }
+  ]
+}
