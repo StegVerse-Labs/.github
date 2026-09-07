@@ -1,0 +1,69 @@
+{
+  "schema": "stegverse.session-machine-preflight/v1",
+  "task_id": "ECOSYSTEM-CHAT-G25-HANDOFF-FENCE-PARITY-20260906",
+  "parent_task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+  "state": "PASS_FUNCTIONAL_GOVERNANCE_PARITY_REPAIR_ADMISSIBLE",
+  "evaluated_at": "2026-09-06T20:44:00-05:00",
+  "repository": "StegVerse-Labs/.github",
+  "base_commit": "0220b9c6f59094bdc6c02d66eb19370a3deaeabb",
+  "canonical_state_resolution": {
+    "handoff": "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+    "authorization": "authorizations/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json",
+    "worker_registry_fragment": "control/worker-registry.d/ecosystem-chat-sovereign-inference-parent-001.json",
+    "task_registry": "data/canonical-task-registry.json#generation-15",
+    "master_records": "master-records/orchestration/RUNTIME_PRESENCE_CUSTODY_MIRROR_HANDOFF.md",
+    "cross_task_coordination": "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
+    "validation_failure_run": 34073891643,
+    "validation_failure_job": 101596212732
+  },
+  "collision_review": {
+    "matching_open_pr_observed": false,
+    "new_claim_or_fence_authority_required": false,
+    "existing_authorization_reused": true,
+    "existing_worker_registry_fragment_reused": true
+  },
+  "problem": {
+    "code": "EXECUTABLE_HANDOFF_FENCE_FLOOR_STALE_AFTER_G25_PARITY",
+    "evidence": [
+      "Current independent-parent authorization requires minimum_fencing_token_exclusive=24.",
+      "Current WorkerCoordinator registry fragment requires minimum_fencing_token_exclusive=24 and minimum_parent_fencing_token_exclusive=24.",
+      "Current executable handoff still states 22 at activation, targeted execution, resident request, completion, blocker, and terminal proof descriptions.",
+      "Heartbeat validation run 34073891643 fails because the authoritative authorization is 24 while the executable handoff is 22."
+    ]
+  },
+  "admitted_repair": {
+    "strategy": "Reconcile only the existing executable handoff fence floor from >22 to >24 / minimum exclusive 24, preserving the already-effective G25+ authorization and WorkerCoordinator registry semantics. Do not mint a claim, fence, worker, runtime, or authority surface.",
+    "runtime_execution_mutation": false,
+    "authority_effect": "NONE_GOVERNANCE_PARITY_RECONCILIATION"
+  },
+  "readme_impact": {
+    "required": true,
+    "complete": true,
+    "material_function_change": true,
+    "readme_update_required": false,
+    "readme_updated_in_change_set": false,
+    "determination": "NO_ADDITIONAL_README_CHANGE_REQUIRED_EFFECTIVE_G25_SEMANTICS_ALREADY_DOCUMENTED",
+    "no_readme_update_reason": "The effective G25+ fence floor is already enforced by the current authorization and WorkerCoordinator registry fragment and is already documented by the current Ecosystem Chat portable/current-iPhone handoffs. This mutation corrects a stale executable handoff so all authority surfaces agree; it does not introduce a new runtime behavior, authority boundary, interface, evidence semantic, prerequisite class, dependency, failure mode, or capability meaning.",
+    "evidence_refs": [
+      "authorizations/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json#minimum_fencing_token_exclusive=24",
+      "control/worker-registry.d/ecosystem-chat-sovereign-inference-parent-001.json#minimum_fencing_token_exclusive=24",
+      "docs/ECOSYSTEM_CHAT_PORTABLE_IPHONE_PACKAGE_MIRROR_HANDOFF.md#G25+",
+      "docs/ECOSYSTEM_CHAT_SAME_DEVICE_TERMINAL_PREDICATES_MIRROR_HANDOFF.md#G25+",
+      "run:34073891643/job:101596212732"
+    ]
+  },
+  "authority": {
+    "claim_fence_authority": "WORKERCOORDINATOR",
+    "transition_authority": "INTERLOCK_INTR",
+    "credential_authority": "TV/TVC",
+    "master_records_authority": "OBSERVED_REALITY_CUSTODY_RECONSTRUCTION_ONLY",
+    "heartbeat_grants_execution_authority": false,
+    "github_token_runtime_authority": "NONE"
+  },
+  "runtime_truth": {
+    "fresh_g25_or_later_fence_observed": false,
+    "ecosystem_chat_execution_observed": false,
+    "master_records_reconstruction_observed": false,
+    "source_validation_is_runtime_execution": false
+  }
+}
