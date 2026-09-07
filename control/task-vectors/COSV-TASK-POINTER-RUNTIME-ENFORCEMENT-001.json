@@ -1,0 +1,32 @@
+{
+  "identity": "StegVerse-Labs/.github:task:COSV-TASK-POINTER-RUNTIME-ENFORCEMENT-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "10100000100000",
+  "evidence_refs": [
+    "docs/COSV_TASK_POINTER_RUNTIME_ENFORCEMENT_MIRROR_HANDOFF.md",
+    "docs/COSV_TASK_POINTER_COORDINATION_MIRROR_HANDOFF.md",
+    "data/task-coordination-policy.json",
+    "management/COSV_PROFILE_V1.json",
+    "receipts/preflight/COSV-TASK-POINTER-ADJACENT-DERIVATION-001.json",
+    "README.md"
+  ],
+  "observed_at": "2026-09-06T21:50:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "UNCLAIMED",
+    "archive_ready": false,
+    "unassigned_work": 1,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  }
+}
