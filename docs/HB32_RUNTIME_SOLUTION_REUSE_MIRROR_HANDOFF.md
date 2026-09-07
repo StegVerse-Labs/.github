@@ -1,8 +1,9 @@
 # HB32 Runtime Solution Reuse Mirror Handoff
 
 Repository: `StegVerse-Labs/.github`  
-State: `DISCOVERY_INDEX_RECONCILED / VALIDATION_PENDING`  
+State: `DISCOVERY_INDEX_RECONCILED_VALIDATED / AUTHENTIC_RUNTIME_EVIDENCE_PENDING`  
 Preflight: `receipts/preflight/HB32-RUNTIME-SOLUTION-REUSE-G18-PARITY-001.json`  
+Validation reconciliation: `receipts/preflight/HB32-RUNTIME-SOLUTION-REUSE-VALIDATION-RECONCILIATION-20260906.json`  
 Authority effect: `NONE_DISCOVERY_ONLY`
 
 ## Purpose
@@ -38,11 +39,24 @@ For a runtime symptom:
 
 The index itself does not alter runtime behavior or authority. It is a durable discovery/continuation aid. The functional fixes listed above remain authoritative from their own commits, handoffs, tests, and runtime evidence boundaries.
 
+## Validation state
+
+PR `#1114`, head `65311d37ef987728b29364dd8825063d1e697cc7`, merged as `f83480b8592b970b0f7b43acd80fa466f932b34c`.
+
+The applicable exact-head source/control validations completed successfully:
+
+- run `34036347740` — `Validate organization control plane - No GitHub Token Authority` — `SUCCESS`;
+- run `34036347714` — `Heartbeat Worker Project - Validation Only / No GitHub Token Authority` — `SUCCESS`.
+
+Those runs validate only the non-authorizing discovery/index reconciliation. They do not prove runtime presence, source refresh on a resident, G18 request consumption, SV002 execution, claim/fence lifecycle, Master Records custody, or activation.
+
 ## Current runtime-evidence boundary
 
-At this reconciliation, canonical repository state still does not contain a current `receipts/sovereign-host/runtime-presence.latest.json` or the exact G18 resident-request-consumption receipt. The retained G18 activation receipt is historical blocker evidence and must not be upgraded into current runtime truth merely because source fixes are merged.
+Canonical repository state still does not establish a current deployment-local `receipts/sovereign-host/runtime-presence.latest.json`, exact G18 resident-request-consumption proof, or SV002 terminal round-trip proof. The retained G18 activation receipt is historical blocker evidence and must not be upgraded into current runtime truth merely because source fixes or validation are merged.
 
-Therefore the discovery index may direct reuse of the corrected recovery stack, but it cannot claim the resident has refreshed that source, invoked the fallback, consumed the G18 request, or produced activation proof.
+Therefore the discovery index may direct reuse of the corrected recovery stack, but it cannot claim the resident has refreshed that source, invoked the fallback, consumed the G18 request, consumed the SV002 request, or produced activation proof.
+
+The current `SHWP-DURABLE-RUNTIME-ACTIVATION` handoff identifies the next authorized runtime progression as observation of the existing HeartBeat-separated WorkerCoordinator consuming `SHWP-SV002-ORG-RUNTIME-ACTIVATION-001`. Do not create another scheduler or resident executor. Required runtime evidence remains `resident-request-dispatch.latest.json` followed by `sv002-org-runtime-activation.latest.json` with `terminal_round_trip_observed=true`.
 
 ## HIL continuation
 
@@ -52,8 +66,10 @@ The current source fixes do not themselves prove authentic HIL request consumpti
 
 ## README completeness
 
-This index is nonfunctional discovery guidance. The material runtime fixes are already described in `README.md`. The current preflight contains an evidence-supported determination that reconciling the discovery index and this handoff to reference merge `9910cf76e0bd171d0166d14d4b1f765bba887667` does not require another README mutation because no runtime behavior, dependency, interface, evidence, authority, or failure semantics change here.
+This index is nonfunctional discovery guidance. The material runtime fixes are already described in `README.md`. The original preflight contains an evidence-supported determination that reconciling the discovery index and this handoff to reference merge `9910cf76e0bd171d0166d14d4b1f765bba887667` does not require another README mutation because no runtime behavior, dependency, interface, evidence, authority, or failure semantics change there.
+
+The present validation-state reconciliation is also documentation-only. `receipts/preflight/HB32-RUNTIME-SOLUTION-REUSE-VALIDATION-RECONCILIATION-20260906.json` explicitly records `NO_README_CHANGE_REQUIRED`: it changes only stale validation/status facts and changes no repository behavior, runtime semantics, interface, governance/authority boundary, evidence semantics, prerequisite, dependency, failure behavior, or capability meaning.
 
 ## Archive condition
 
-The discovery-index reconciliation may complete independently, but the resident runtime objective is not archive-ready merely because this handoff and registry are current. Authentic deployment-local runtime presence/request-consumption/activation evidence remains a separate parent-runtime predicate.
+The discovery-index reconciliation and its source validation are complete, but the resident runtime objective is not archive-ready merely because this handoff and registry are current. Authentic deployment-local runtime presence/request-consumption/activation evidence remains a separate parent-runtime predicate.
