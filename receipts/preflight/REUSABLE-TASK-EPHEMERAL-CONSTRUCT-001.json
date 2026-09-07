@@ -1,0 +1,63 @@
+{
+  "schema": "stegverse.session-machine-preflight/v1",
+  "task_id": "REUSABLE-TASK-EPHEMERAL-CONSTRUCT-001",
+  "goal_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "state": "PASS",
+  "evaluated_at": "2026-09-06T22:20:00-05:00",
+  "scope": {
+    "repository": "StegVerse-Labs/.github",
+    "mutation_paths": [
+      "data/reusable-task-registry.json",
+      "data/reusable-task-ephemeral-construct-contract.json",
+      "schemas/reusable-task-invocation-manifest.schema.json",
+      "scripts/materialize_reusable_task_construct.py",
+      "docs/REUSABLE_TASK_EPHEMERAL_CONSTRUCT_MIRROR_HANDOFF.md",
+      "data/task-coordination-policy.json",
+      "data/canonical-task-registry.json",
+      "control/task-vectors/REUSABLE-TASK-EPHEMERAL-CONSTRUCT-001.json",
+      "control/task-vector-index.json",
+      "README.md"
+    ]
+  },
+  "canonical_state_resolution": {
+    "canonical_task_registry": "data/canonical-task-registry.json#generation-17",
+    "reusable_task_registry": "data/reusable-task-registry.json#generation-1",
+    "cosv_profile": "management/COSV_PROFILE_V1.json#task.v1",
+    "cosv_task_index": "control/task-vector-index.json",
+    "cross_task_coordination": "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
+    "master_records": "master-records/orchestration/CANONICAL_WORK_COORDINATION_CUSTODY_MIRROR_HANDOFF.md",
+    "rtg_gtg_tt_contract": "StegVerse-Labs/StegScholar:papers/rtg-gtg-tt/cross-layer-contract.md",
+    "coordination_policy": "data/task-coordination-policy.json"
+  },
+  "collision_review": {
+    "duplicate_reusable_task_runtime_required": false,
+    "duplicate_tt_rtg_gtg_definition_required": false,
+    "duplicate_worker_or_scheduler_required": false,
+    "existing_workercoordinator_reused": true,
+    "existing_intr_boundary_reused": true,
+    "existing_master_records_authority_reused": true
+  },
+  "admitted_change": {
+    "strategy": "Define reusable tasks as durable identities parameterized per invocation; derive invocation-specific RTG/GTG/TT construct envelopes from canonical definitions; bind a manifest; materialize ephemeral runners only where needed; retain chained receipts and a non-executing residual recording construct after runner expiry; displace that residual only after required recording and Master Records custody/reconstruction, designated entropy recovery.",
+    "functional_mutation": true,
+    "authority_effect": "NONE_CONSTRUCT_AND_RECORDING_LIFECYCLE_ONLY"
+  },
+  "readme_impact": {
+    "required": true,
+    "material_function_change": true,
+    "readme_updated_in_change_set": true,
+    "readme_path": "README.md",
+    "reason": "The change materially defines reusable-task invocation, derived TT/RTG/GTG construction, ephemeral runner expiry, residual recording behavior, Master Records displacement, and entropy-recovery semantics."
+  },
+  "authority": {
+    "reusable_identity_grants_execution_authority": false,
+    "derived_construct_grants_execution_authority": false,
+    "manifest_binding_grants_execution_authority": false,
+    "workercoordinator_remains_claim_fence_authority": true,
+    "master_records_remains_observed_reality_authority": true,
+    "intr_remains_transition_authority": true,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE"
+  },
+  "verdict": "PASS"
+}
