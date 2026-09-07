@@ -1,0 +1,39 @@
+{
+  "schema": "stegverse.machine-preflight/v1",
+  "task_id": "COSV-TASK-POINTER-RUNTIME-ENFORCEMENT-001",
+  "repository": "StegVerse-Labs/.github",
+  "goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "observed_pointer": {
+    "profile": "task.v1",
+    "vector": "10100000100000",
+    "lifecycle": "UNCLAIMED"
+  },
+  "canonical_handoff": "docs/COSV_TASK_POINTER_RUNTIME_ENFORCEMENT_MIRROR_HANDOFF.md",
+  "existing_runtime_entrypoint": "scripts/refresh_and_execute_resident_task.py",
+  "existing_constructor": "scripts/materialize_reusable_task_construct.py",
+  "collision_review": {
+    "duplicate_workercoordinator_required": false,
+    "duplicate_scheduler_required": false,
+    "duplicate_runtime_plane_required": false,
+    "duplicate_cosv_profile_required": false,
+    "duplicate_task_registry_required": false,
+    "reuse_existing_targeted_worker_cycle": true
+  },
+  "authority_boundaries": {
+    "claim_and_fence": "WORKERCOORDINATOR",
+    "governed_transition": "INTERLOCK_INTR",
+    "credentials": "TV/TVC",
+    "observed_reality": "MASTER_RECORDS",
+    "github_runtime_authority": "NONE"
+  },
+  "admitted_change": {
+    "strategy": "Extend the existing resident targeted execution bridge so task_id plus canonical COSV task.v1 vector is validated against the refreshed canonical task-vector index before execution and is recorded in the runtime attempt receipt.",
+    "new_execution_authority": false,
+    "new_claim_path": false,
+    "new_fence_path": false,
+    "fail_closed_on_pointer_mismatch": true
+  },
+  "readme_impact_required": true,
+  "readme_impact_reason": "The resident execution interface gains compact task pointer validation and new fail-closed semantics.",
+  "preflight_passed": true
+}
