@@ -1,0 +1,32 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SITE-CFP-LIVE-2026-REVIVAL-1060",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "20010000110000",
+  "evidence_refs": [
+    "management/COSV_PROFILE_V1.json",
+    "docs/COSV_TASK_POINTER_COORDINATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site:docs/CFP_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site:data/session-work-claims.d/site-cfp-live-2026-revival-20260906.json",
+    "StegVerse-Labs/Site:data/preflight/cfp-live-2026-revival-20260906.json",
+    "StegVerse-Labs/Site#1060"
+  ],
+  "observed_at": "2026-09-07T09:24:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "CLAIMED_IMPLEMENTATION",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 1,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": true,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  }
+}
