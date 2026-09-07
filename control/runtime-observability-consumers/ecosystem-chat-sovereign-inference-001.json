@@ -2,15 +2,15 @@
   "schema": "stegverse.hb-runtime-resident-observability.consumer/v1",
   "consumer_id": "ECOSYSTEM-CHAT-SOVEREIGN-INFERENCE-001",
   "consumer_repository": "StegVerse-Labs/.github",
-  "consumer_handoff": "docs/ECOSYSTEM_CHAT_ORPHAN_RECOVERY_MIRROR_HANDOFF.md",
+  "consumer_handoff": "docs/ECOSYSTEM_CHAT_SAME_DEVICE_TERMINAL_PREDICATES_MIRROR_HANDOFF.md",
   "consumer_state_ref": "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
   "consumer_issue": "StegVerse-Labs/.github#60",
   "registration_issue": "StegVerse-Labs/.github#853",
   "shared_owner_issue": "StegVerse-Labs/.github#814",
   "shared_contract": "management/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_CONTRACT.json",
   "canonical_projector": "scripts/project_hb_runtime_presence.py",
-  "observed_repository_state_at": "2026-09-06T07:30:00-05:00",
-  "first_unresolved_shared_runtime_predicate": "resident_process_alive_supervised",
+  "observed_repository_state_at": "2026-09-06T20:38:00-05:00",
+  "first_unresolved_shared_runtime_predicate": "current_iPhone_checkout_observed",
   "first_unresolved_predicate_is_passive_blocker": false,
   "existing_runtime_solution_chain": {
     "state": "SELECT_EXISTING_SOLUTION_BEFORE_NEW_IMPLEMENTATION",
@@ -42,6 +42,8 @@
       "request_ref": "control/resident-execution-request.d/ecosystem-chat-parent-001.json",
       "consumer_ref": "scripts/consume_resident_execution_request.py",
       "dedicated_executor_ref": "scripts/run_independent_ecosystem_chat_parent.py",
+      "portable_package_ref": "control/portable-workercoordinator-packages/ecosystem-chat-sovereign-inference.json",
+      "same_device_interface": "POST /stegos-bootstrap/portable-workercoordinator/ecosystem-chat",
       "duplicate_request_allowed": false
     },
     "selection_order": [
@@ -49,8 +51,8 @@
       "reuse existing carrier WorkerCoordinator self-heal when carrier presence exists and worker presence is missing",
       "reuse existing local-only source refresh so the resident runtime carries the current repair/consumer code",
       "reuse existing one-shot resident stack activation when resident materialization/source roots are incomplete",
-      "consume the existing Ecosystem Chat resident request and let the dedicated parent executor acquire its own fresh fence >22",
-      "continue through TVC, LLM-adapter, and existing Master Records reconstruction"
+      "on CURRENT_USER_IPHONE consume the released StegOS Ecosystem Chat interface and let the canonical portable WorkerCoordinator acquire a fresh parent fence >24 (G25 or greater)",
+      "continue through the existing local service-worker inference surface, exact TVC route, exact LLM-adapter measured execution, and existing Master Records same-execution reconstruction"
     ],
     "forbidden_reactions": [
       "create another heartbeat or oscillator",
@@ -58,36 +60,26 @@
       "create another resident runtime",
       "create a duplicate Ecosystem Chat resident request",
       "mint a manual parent claim or fence",
+      "reuse G23 or G24 for a fresh/reset portable Ecosystem Chat parent checkout",
       "treat GitHub or hosted validation as runtime repair authority",
       "wait passively on an unchanged resident-process absence without selecting the existing remediation chain"
     ]
   },
   "predicate_map": {
-    "resident_process_alive_supervised": {
-      "source_class": "direct sovereign runtime activation/presence receipt",
-      "observed": false,
-      "resolution_state": "EXISTING_SELF_HEAL_AND_STACK_ACTIVATION_PATH_AVAILABLE",
-      "resolution_refs": [
-        "docs/RESIDENT_WORKER_SELF_HEAL_MIRROR_HANDOFF.md",
-        "docs/ONE_SHOT_RESIDENT_STACK_ACTIVATION_MIRROR_HANDOFF.md",
-        "scripts/repair_resident_worker_presence.py",
-        "scripts/activate_resident_stack.py"
-      ]
-    },
-    "node_runtime_fresh": {
-      "source_class": "HB reference plus direct current resident/worker observation correlation",
-      "observed": false
-    },
-    "resident_request_consumed": {
-      "source_class": "resident-execution-request-consumption receipt for RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-002",
+    "current_iPhone_checkout_observed": {
+      "source_class": "authentic CURRENT_USER_IPHONE portable WorkerCoordinator checkout evidence",
       "observed": false
     },
     "fresh_parent_fence": {
-      "source_class": "independent task-control claim/fence token >22",
+      "source_class": "independent task-control claim/fence token >24 (G25 or greater)",
+      "observed": false
+    },
+    "sovereign_runtime_execution_surface_observed": {
+      "source_class": "PRIVATE_PROCESS or CURRENT_USER_IPHONE_SERVICE_WORKER terminalizer evidence",
       "observed": false
     },
     "private_model_execution": {
-      "source_class": "real StegVerse-local/private model process execution evidence",
+      "source_class": "real StegVerse-local/private model execution evidence; current-iPhone service-worker local intercept is admissible when exact same-device predicates pass",
       "observed": false
     },
     "tvc_route_admitted": {
@@ -106,6 +98,10 @@
       "source_class": "provider-usage + transition reconstruction PASS with same_execution=true",
       "observed": false
     },
+    "device_journal_replay": {
+      "source_class": "hash-linked CURRENT_USER_IPHONE device journal replay PASS bound to the same execution",
+      "observed": false
+    },
     "conversational_runtime_ready": {
       "source_class": "persistent_conversational_runtime_ready=true after reconstruction",
       "observed": false
@@ -118,6 +114,8 @@
     "resident local-only source refresh",
     "one-shot resident stack activation",
     "resident request bridge",
+    "portable WorkerCoordinator checkout",
+    "CURRENT_USER_IPHONE StegOS Ecosystem Chat interface",
     "fresh-fence parent executor",
     "StegVerse local-model runtime",
     "TVC route integration",
@@ -150,8 +148,8 @@
     "authority_effect": "NONE_OBSERVATION_ADMISSION_CANDIDATE_ONLY"
   },
   "preflight": {
-    "issue": "StegVerse-Labs/.github#1079",
-    "result": "PASS",
+    "receipt_ref": "receipts/ecosystem-chat-sovereign-inference/preflight-20260906-fence-floor-reconciliation.json",
+    "result": "PASS_WITH_SOURCE_RECONCILIATION_REQUIRED",
     "canonical_handoff_resolved": true,
     "task_registry_resolved": true,
     "master_records_state_resolved": true,
@@ -159,6 +157,6 @@
     "existing_runtime_solutions_reused": true,
     "duplicate_runtime_or_request_created": false,
     "readme_impact": "NO_CHANGE_REQUIRED",
-    "readme_reason": "This bounded change corrects stale coordination/evidence routing only. Runtime behavior, failure semantics, interfaces, authority boundaries, dependencies, and capability meaning were already changed and documented by the merged HB/runtime-separation, resident self-heal, local-source-refresh, native-materialization, bootstrap-eligibility, and one-shot resident-stack repairs."
+    "readme_reason": "README.md already defines portable WorkerCoordinator task lineage as monotonic and fail-closed. This change reconciles active task projections to already-observed G23/G24 lineage and the released G25+ package floor; it does not change the checkout algorithm, interface, authority boundary, dependency, failure model, or capability meaning."
   }
 }

@@ -33,7 +33,7 @@
         "authority_source": "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json#authority",
         "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
         "fresh_fence_required": true,
-        "minimum_fencing_token_exclusive": 22,
+        "minimum_fencing_token_exclusive": 24,
         "recovery_terminal_evidence_ref": "receipts/ecosystem-chat-sovereign-inference/orphan-recovery-HB28.json",
         "heartbeat_reference_only": true,
         "heartbeat_grants_execution_authority": false,
@@ -68,7 +68,7 @@
   "third_party_runtime_role": "FALLBACK_ONLY",
   "stegverse_primary": true,
   "parent_fresh_fence_required": true,
-  "minimum_parent_fencing_token_exclusive": 22,
+  "minimum_parent_fencing_token_exclusive": 24,
   "vector_projection_owner": "control/worker-registry.json",
   "vector_duplicate_source_allowed": false
 }

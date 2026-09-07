@@ -1,0 +1,54 @@
+{
+  "schema": "stegverse.machine-preflight/v1",
+  "evaluated_at": "2026-09-06T20:38:00-05:00",
+  "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+  "goal_id": "ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION",
+  "result": "PASS_WITH_SOURCE_RECONCILIATION_REQUIRED",
+  "canonical_inputs": {
+    "org_handoff": "docs/ORG_MIRROR_HANDOFF.md",
+    "task_handoff": "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+    "portable_handoff": "docs/ECOSYSTEM_CHAT_PORTABLE_IPHONE_PACKAGE_MIRROR_HANDOFF.md",
+    "same_device_terminal_handoff": "docs/ECOSYSTEM_CHAT_SAME_DEVICE_TERMINAL_PREDICATES_MIRROR_HANDOFF.md",
+    "task_registry": "data/canonical-task-registry.json@generation=15",
+    "worker_registry": "control/worker-registry.json@generation=22",
+    "master_records_task": "master-records/orchestration:MR-ECOSYSTEM-CHAT-SOVEREIGN-RECONSTRUCTION-024",
+    "runtime_profile_task": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"
+  },
+  "resolved_existing_implementations": [
+    "StegVerse-002/micro-node-runtime:SOVEREIGN-LOCAL-MODEL-001",
+    "StegVerse-Labs/TVC:TVC-SOVEREIGN-LOCAL-MODEL-ROUTE-002",
+    "StegVerse-org/LLM-adapter:LLMA-SOVEREIGN-CARRIER-EXECUTION-020",
+    "master-records/orchestration:MR-ECOSYSTEM-CHAT-SOVEREIGN-RECONSTRUCTION-024",
+    "workercoordinator/portable_checkout.js",
+    "control/portable-workercoordinator-packages/ecosystem-chat-sovereign-inference.json"
+  ],
+  "finding": {
+    "class": "STALE_EXECUTABLE_FENCE_FLOOR",
+    "historical_floor_exclusive": 22,
+    "current_portable_lineage_floor_exclusive": 24,
+    "first_safe_fresh_fence": 25,
+    "basis": "Authentic portable lineage already contains canonical G23 and duplicate/non-custodial G24; fresh/reset portable state must not reuse G23/G24.",
+    "runtime_execution_observed": false,
+    "activation_effect": false
+  },
+  "functional_mutation_preflight": {
+    "admissible": true,
+    "scope": "reconcile stale active Ecosystem Chat execution/admission projections to minimum_fencing_token_exclusive=24 without changing authority ownership or creating a new runtime",
+    "reuse_only": true,
+    "duplicate_workercoordinator": false,
+    "duplicate_runtime": false,
+    "duplicate_local_model": false,
+    "duplicate_route": false,
+    "duplicate_adapter": false,
+    "duplicate_master_records_reconstruction": false,
+    "credential_authority": "TV/TVC",
+    "github_runtime_authority": "NONE"
+  },
+  "readme_impact": {
+    "material_function_change": false,
+    "readme_change_required": false,
+    "reason": "This reconciliation does not change the portable checkout algorithm, runtime interface, authority boundaries, dependencies, failure model, or capability meaning. README.md already defines CURRENT_USER_IPHONE portable WorkerCoordinator generation as monotonic across admitted tasks and portable checkout as fail-closed for previously checked-out task identities. The current G25 floor is lineage data already established by the released package and same-device handoffs, not a new capability or interface."
+  },
+  "next_transition_after_reconciliation": "CURRENT_USER_IPHONE consumes the released StegOS Ecosystem Chat interface; canonical portable WorkerCoordinator atomically issues G25+; local service-worker inference -> exact TVC admission -> exact LLM-adapter measured execution -> same-execution Master Records reconstruction -> terminalizer.",
+  "authority_effect": "NONE_PREFLIGHT_ONLY"
+}

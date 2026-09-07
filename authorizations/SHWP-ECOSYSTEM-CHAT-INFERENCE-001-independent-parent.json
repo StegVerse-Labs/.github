@@ -7,7 +7,7 @@
   "authority_source": "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json#authority",
   "state": "AUTHORIZED",
   "fresh_fence_required": true,
-  "minimum_fencing_token_exclusive": 22,
+  "minimum_fencing_token_exclusive": 24,
   "checkout_policy": "fenced_atomic_checkout",
   "allowed_executor": "scripts/run_independent_ecosystem_chat_parent.py",
   "allowed_worker": "workers/ecosystem_chat_sovereign_route_worker.py",
