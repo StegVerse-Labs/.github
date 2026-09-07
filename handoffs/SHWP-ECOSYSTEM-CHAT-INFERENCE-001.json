@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
   "created_at": "2026-08-09T19:59:00Z",
-  "updated_at": "2026-08-28T07:04:00-05:00",
+  "updated_at": "2026-09-06T20:44:00-05:00",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION",
@@ -125,7 +125,7 @@
     "recovery_terminal_evidence_ref": "receipts/ecosystem-chat-sovereign-inference/orphan-recovery-HB28.json",
     "recovery_reacquisition_allowed": false,
     "fresh_fence_required": true,
-    "minimum_fencing_token_exclusive": 22,
+    "minimum_fencing_token_exclusive": 24,
     "checkout_policy": "fenced_atomic_checkout",
     "attempt_claim_release_required": true,
     "recheck_trigger": "each admitted StegVerse task-control execution opportunity while HANDOFF_READY",
@@ -137,8 +137,8 @@
         "scripts/run_independent_ecosystem_chat_parent.py"
       ],
       "generic_worker_runtime_task_id_mode_allowed": false,
-      "generic_mode_exclusion_reason": "Historical same-ID G20 parent row requires dedicated released-authority replacement and fresh parent fence >22.",
-      "fresh_fence_minimum_exclusive": 22,
+      "generic_mode_exclusion_reason": "Historical same-ID G20 parent row requires dedicated released-authority replacement and fresh parent fence >24.",
+      "fresh_fence_minimum_exclusive": 24,
       "heartbeat_reference_only": true,
       "heartbeat_grants_execution_authority": false,
       "g18_authority_used": false,
@@ -174,7 +174,7 @@
       "exactly_once_per_request_hash": true,
       "request_grants_authority": false,
       "dedicated_parent_executor_retains_claim_and_fence_authority": true,
-      "fresh_fence_minimum_exclusive": 22,
+      "fresh_fence_minimum_exclusive": 24,
       "heartbeat_grants_execution_authority": false,
       "network_source_fetch_allowed": false,
       "second_machine_required": false,
@@ -269,7 +269,7 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "On the existing sovereign resident surface, consume the already-local current source. The portable direct command remains `python scripts/refresh_and_execute_resident_task.py --ecosystem-chat-parent`. When the local source-refresh service is already installed and active, `control/resident-execution-request.d/ecosystem-chat-parent-001.json` may cause one exactly-once attempt through `scripts/consume_resident_execution_request.py`; the singleton `control/resident-execution-request.json` is compatibility-only. The request grants no authority and the dedicated parent executor must still atomically acquire a fresh fence >22, execute the StegVerse-local model -> TVC -> exact LLM-adapter chain, perform same-execution Master Records reconstruction, verify persistent conversational runtime readiness, and release the bounded parent claim truthfully. Hosted CI cannot satisfy this transition.",
+    "next_authorized_action": "On the existing sovereign resident surface, consume the already-local current source. The portable direct command remains `python scripts/refresh_and_execute_resident_task.py --ecosystem-chat-parent`. When the local source-refresh service is already installed and active, `control/resident-execution-request.d/ecosystem-chat-parent-001.json` may cause one exactly-once attempt through `scripts/consume_resident_execution_request.py`; the singleton `control/resident-execution-request.json` is compatibility-only. The request grants no authority and the dedicated parent executor must still atomically acquire a fresh fence >24, execute the StegVerse-local model -> TVC -> exact LLM-adapter chain, perform same-execution Master Records reconstruction, verify persistent conversational runtime readiness, and release the bounded parent claim truthfully. Hosted CI cannot satisfy this transition.",
     "terminal_when": [
       "real_model_process_observed=true",
       "private_endpoint_only=true",
@@ -290,7 +290,7 @@
     "state": "SOURCE_EXECUTOR_INSTALLED_LIVE_EXECUTION_PENDING",
     "class": "EXECUTION_PENDING",
     "owner": "independent admitted StegVerse task-control executor -> TVC -> LLM-adapter -> Master Records",
-    "problem_statement": "Resident source refresh/request consumption, fresh parent fence >22, terminal same-execution activation receipt, TVC persistence packet, and Site-local runtime import remain unobserved. Downstream source is now merged through Site local import; hosted GitHub writeback persistence has been retired.",
+    "problem_statement": "Resident source refresh/request consumption, fresh parent fence >24, terminal same-execution activation receipt, TVC persistence packet, and Site-local runtime import remain unobserved. Downstream source is now merged through Site local import; hosted GitHub writeback persistence has been retired.",
     "solution_required": true,
     "dependency": null,
     "observer": "independent StegVerse task-control",
@@ -301,7 +301,7 @@
       "Move execution to another StegVerse-owned/federated node if the current sovereign surface lacks the materialized workload roots"
     ],
     "next_solution_action": "OBSERVE_OR_TRIGGER_EXISTING_SOVEREIGN_RESIDENT_SOURCE_CONSUMPTION_WITHOUT_HOSTED_RUNTIME_AUTHORITY",
-    "machine_observable_release_condition": "receipts/ecosystem-chat-sovereign-inference/independent_parent_activation.latest.json state PASS with fresh parent fence >22, same_execution=true, persistent_conversational_runtime_ready=true, provider_usage_reconstruction_pass=true, transition_reconstruction_pass=true, credential_authority=TV/TVC, github_token_required=false and exact proof/route/usage/reconstruction hash bindings",
+    "machine_observable_release_condition": "receipts/ecosystem-chat-sovereign-inference/independent_parent_activation.latest.json state PASS with fresh parent fence >24, same_execution=true, persistent_conversational_runtime_ready=true, provider_usage_reconstruction_pass=true, transition_reconstruction_pass=true, credential_authority=TV/TVC, github_token_required=false and exact proof/route/usage/reconstruction hash bindings",
     "third_party_blocker": false,
     "human_action_required": false
   }
