@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 """Run the bounded StegVerse email-action monitor through a local TV/TVC-governed broker.
 
-The handler mirrors the established monitor semantics:
-1. inspect the newest bounded GitHub/task-update operational INBOX batch;
-2. resolve exact message IDs before mutation;
-3. cluster GitHub/task-update failure signals as non-authorizing incident proposals;
-4. archive only that exact reviewed operational batch;
-5. measure actionable backlog depth and inbox totals;
-6. emit one durable monitor receipt.
+Resident behavior has two ordered phases:
+1. replay monitor-era archived GitHub/[Task Update] failure mail one bounded page at
+   a time without restoring, deleting, or re-archiving it; each page must be
+   acknowledged after StegHealth failure-task reconciliation before pagination advances;
+2. after archived replay completes, inspect/archive only the bounded operational
+   GitHub/[Task Update] INBOX slice and continue until that inbox slice is empty.
 
 The handler never receives provider credentials and never treats email, GitHub, CI,
-archive success, or incident clustering as runtime/execution evidence.
+archive success, incident clustering, or replay acknowledgement as execution authority.
 """
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import subprocess
 import sys
@@ -35,7 +35,15 @@ ACTIONABLE_QUERY = (
     '(failed OR failure OR "requires handoff" OR "requires reconciliation" OR '
     '"not evidence promotable" OR "needs attention" OR blocker OR blocked)'
 )
+ARCHIVED_REPLAY_QUERY = (
+    'after:2026/09/01 -in:inbox -in:spam -in:trash '
+    '(subject:"[Task Update]" OR from:notifications@github.com OR from:noreply@github.com) '
+    '(failed OR failure OR "requires handoff" OR "requires reconciliation" OR '
+    '"not evidence promotable" OR "needs attention" OR blocker OR blocked)'
+)
 BATCH_LIMIT = 100
+REPLAY_CHECKPOINT_SCHEMA = "stegverse.native-email-archived-failure-replay-checkpoint/v1"
+REPLAY_ACK_SCHEMA = "stegverse.native-email-archived-failure-replay-ack/v1"
 
 
 def require(ok: bool, reason: str) -> None:
@@ -48,6 +56,21 @@ def stable_rows(value: Any, key: str) -> list[dict[str, Any]]:
     require(isinstance(rows, list), f"broker response missing {key}")
     require(all(isinstance(row, dict) for row in rows), f"broker {key} rows must be objects")
     return rows
+
+
+def write_json(path: Path, value: Mapping[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name("." + path.name + ".tmp")
+    tmp.write_text(json.dumps(dict(value), indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    tmp.replace(path)
+
+
+def load_json(path: Path) -> dict[str, Any] | None:
+    if not path.is_file():
+        return None
+    value = json.loads(path.read_text(encoding="utf-8"))
+    require(isinstance(value, dict), f"expected object:{path}")
+    return value
 
 
 class Broker:
@@ -119,8 +142,139 @@ def cluster_incidents(messages: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return incidents
 
 
-def run(broker: Broker, batch_limit: int = BATCH_LIMIT) -> dict[str, Any]:
-    require(1 <= batch_limit <= 100, "batch limit must be 1..100")
+def replay_checkpoint(path: Path) -> dict[str, Any]:
+    value = load_json(path)
+    if value is None:
+        return {
+            "schema": REPLAY_CHECKPOINT_SCHEMA,
+            "state": "PENDING",
+            "query": ARCHIVED_REPLAY_QUERY,
+            "current_page_token": None,
+            "next_page_token": None,
+            "awaiting_ack": False,
+            "pending_batch_hash": None,
+            "page_index": 0,
+            "acknowledged_pages": 0,
+            "acknowledged_messages": 0,
+            "complete": False,
+        }
+    require(value.get("schema") == REPLAY_CHECKPOINT_SCHEMA, "archived replay checkpoint schema mismatch")
+    require(value.get("query") == ARCHIVED_REPLAY_QUERY, "archived replay query changed under checkpoint")
+    return value
+
+
+def batch_hash(page_token: str | None, messages: list[dict[str, Any]]) -> str:
+    ids = sorted(message_id(row) for row in messages)
+    raw = json.dumps({"page_token": page_token, "message_ids": ids}, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(raw).hexdigest()
+
+
+def archived_replay_page(broker: Broker, checkpoint_path: Path) -> dict[str, Any]:
+    checkpoint = replay_checkpoint(checkpoint_path)
+    if checkpoint.get("complete") is True:
+        return {"state": "COMPLETE", "complete": True, "incidents": [], "checkpoint_ref": str(checkpoint_path)}
+
+    ack_path = checkpoint_path.with_name("native-email-archived-failure-replay.ack.json")
+    if checkpoint.get("awaiting_ack") is True:
+        ack = load_json(ack_path)
+        expected_hash = checkpoint.get("pending_batch_hash")
+        if ack and ack.get("schema") == REPLAY_ACK_SCHEMA and ack.get("state") == "STEGHEALTH_FAILURE_PAGE_ACCEPTED" and ack.get("batch_hash") == expected_hash:
+            checkpoint["awaiting_ack"] = False
+            checkpoint["acknowledged_pages"] = int(checkpoint.get("acknowledged_pages") or 0) + 1
+            checkpoint["acknowledged_messages"] = int(checkpoint.get("acknowledged_messages") or 0) + int(checkpoint.get("pending_message_count") or 0)
+            checkpoint["current_page_token"] = checkpoint.get("next_page_token")
+            checkpoint["page_index"] = int(checkpoint.get("page_index") or 0) + 1
+            checkpoint["pending_batch_hash"] = None
+            checkpoint["pending_message_count"] = 0
+            try:
+                ack_path.unlink()
+            except FileNotFoundError:
+                pass
+            if checkpoint.get("current_page_token") is None:
+                checkpoint["state"] = "COMPLETE"
+                checkpoint["complete"] = True
+                write_json(checkpoint_path, checkpoint)
+                return {
+                    "state": "COMPLETE",
+                    "complete": True,
+                    "incidents": [],
+                    "checkpoint_ref": str(checkpoint_path),
+                    "acknowledged_pages": checkpoint["acknowledged_pages"],
+                    "acknowledged_messages": checkpoint["acknowledged_messages"],
+                }
+            write_json(checkpoint_path, checkpoint)
+
+    token = checkpoint.get("current_page_token")
+    payload: dict[str, Any] = {
+        "query": ARCHIVED_REPLAY_QUERY,
+        "label_ids": [],
+        "max_results": BATCH_LIMIT,
+    }
+    if isinstance(token, str) and token:
+        payload["next_page_token"] = token
+    inspected = broker.call("SEARCH_MESSAGES", **payload)
+    messages = stable_rows(inspected, "messages")
+    next_token = inspected.get("next_page_token")
+    require(next_token is None or isinstance(next_token, str), "archived replay next_page_token invalid")
+    incidents = cluster_incidents(messages)
+
+    if not messages:
+        checkpoint["state"] = "COMPLETE"
+        checkpoint["complete"] = True
+        checkpoint["current_page_token"] = None
+        checkpoint["next_page_token"] = None
+        checkpoint["awaiting_ack"] = False
+        write_json(checkpoint_path, checkpoint)
+        return {
+            "state": "COMPLETE",
+            "complete": True,
+            "incidents": [],
+            "checkpoint_ref": str(checkpoint_path),
+            "acknowledged_pages": checkpoint.get("acknowledged_pages", 0),
+            "acknowledged_messages": checkpoint.get("acknowledged_messages", 0),
+        }
+
+    digest = batch_hash(token if isinstance(token, str) else None, messages)
+    if incidents:
+        checkpoint.update({
+            "state": "AWAITING_STEGHEALTH_ACK",
+            "complete": False,
+            "awaiting_ack": True,
+            "pending_batch_hash": digest,
+            "pending_message_count": len(messages),
+            "next_page_token": next_token,
+        })
+        write_json(checkpoint_path, checkpoint)
+    else:
+        checkpoint["acknowledged_pages"] = int(checkpoint.get("acknowledged_pages") or 0) + 1
+        checkpoint["acknowledged_messages"] = int(checkpoint.get("acknowledged_messages") or 0) + len(messages)
+        checkpoint["current_page_token"] = next_token
+        checkpoint["page_index"] = int(checkpoint.get("page_index") or 0) + 1
+        if next_token is None:
+            checkpoint["state"] = "COMPLETE"
+            checkpoint["complete"] = True
+        write_json(checkpoint_path, checkpoint)
+
+    return {
+        "state": "PENDING" if checkpoint.get("complete") is not True else "COMPLETE",
+        "complete": checkpoint.get("complete") is True,
+        "query": ARCHIVED_REPLAY_QUERY,
+        "page_index": checkpoint.get("page_index", 0),
+        "page_token_present": bool(token),
+        "next_page_token_present": bool(next_token),
+        "message_count": len(messages),
+        "incident_count": len(incidents),
+        "incidents": incidents,
+        "batch_hash": digest,
+        "ack_required": bool(incidents),
+        "ack_ref": str(ack_path) if incidents else None,
+        "checkpoint_ref": str(checkpoint_path),
+        "mailbox_mutation_performed": False,
+        "archive_operation_performed": False,
+    }
+
+
+def live_inbox_run(broker: Broker, batch_limit: int) -> dict[str, Any]:
     inspected = broker.call("SEARCH_MESSAGES", query=INBOX_QUERY, label_ids=["INBOX"], max_results=batch_limit)
     messages = stable_rows(inspected, "messages")
     exact = broker.call("SEARCH_IDS", query=INBOX_QUERY, label_ids=["INBOX"], max_results=batch_limit)
@@ -142,9 +296,7 @@ def run(broker: Broker, batch_limit: int = BATCH_LIMIT) -> dict[str, Any]:
     counts = broker.call("GET_LABEL_COUNTS", label_names=["INBOX"])
     labels = counts.get("labels")
     require(isinstance(labels, dict) and isinstance(labels.get("INBOX"), dict), "INBOX counts missing")
-    inbox = labels["INBOX"]
     return {
-        "schema": "stegverse.native-email-action-monitor-receipt/v1",
         "state": "PASS" if not failed else "PARTIAL_ARCHIVE_FAILURE",
         "provider": inspected.get("provider"),
         "bounded_batch_limit": batch_limit,
@@ -154,12 +306,71 @@ def run(broker: Broker, batch_limit: int = BATCH_LIMIT) -> dict[str, Any]:
         "archived_count": len(archived),
         "archive_failed_count": len(failed),
         "archive_failed_ids": failed,
-        "incident_count": len(incidents),
         "incidents": incidents,
         "actionable_returned_count": len(actionable_ids),
         "actionable_more_than_returned": actionable_more,
         "actionable_minimum": len(actionable_ids) + (1 if actionable_more else 0),
-        "inbox": inbox,
+        "inbox": labels["INBOX"],
+    }
+
+
+def run(broker: Broker, batch_limit: int = BATCH_LIMIT, replay_checkpoint_path: Path | None = None) -> dict[str, Any]:
+    require(1 <= batch_limit <= 100, "batch limit must be 1..100")
+
+    archived_replay = None
+    if replay_checkpoint_path is not None:
+        archived_replay = archived_replay_page(broker, replay_checkpoint_path)
+        if archived_replay.get("complete") is not True:
+            incidents = list(archived_replay.get("incidents") or [])
+            return {
+                "schema": "stegverse.native-email-action-monitor-receipt/v1",
+                "state": "ARCHIVED_REPLAY_PENDING",
+                "provider": "GMAIL",
+                "bounded_batch_limit": batch_limit,
+                "operational_query": INBOX_QUERY,
+                "processed_exact_count": 0,
+                "archived_count": 0,
+                "archive_failed_count": 0,
+                "archive_failed_ids": [],
+                "incident_count": len(incidents),
+                "incidents": incidents,
+                "archived_replay": archived_replay,
+                "credential_authority": "TV/TVC",
+                "credential_material_exported": False,
+                "github_token_runtime_authority": "NONE",
+                "heartbeat_grants_execution_authority": False,
+                "email_observation_is_runtime_evidence": False,
+                "archive_success_is_runtime_evidence": False,
+                "incident_proposals_require_canonical_task_ingress": True,
+                "unrelated_inbox_mail_selected_for_archive": False,
+                "authority_effect": "NONE_ARCHIVED_FAILURE_REPLAY_AND_INCIDENT_PROPOSAL_ONLY",
+            }
+        if archived_replay.get("state") == "COMPLETE" and archived_replay.get("just_completed") is True:
+            return {
+                "schema": "stegverse.native-email-action-monitor-receipt/v1",
+                "state": "ARCHIVED_REPLAY_COMPLETE",
+                "provider": "GMAIL",
+                "processed_exact_count": 0,
+                "archived_count": 0,
+                "archive_failed_count": 0,
+                "archive_failed_ids": [],
+                "incident_count": 0,
+                "incidents": [],
+                "archived_replay": archived_replay,
+                "credential_authority": "TV/TVC",
+                "credential_material_exported": False,
+                "github_token_runtime_authority": "NONE",
+                "authority_effect": "NONE_ARCHIVED_FAILURE_REPLAY_ONLY",
+            }
+
+    live = live_inbox_run(broker, batch_limit)
+    incidents = list(live.pop("incidents"))
+    return {
+        "schema": "stegverse.native-email-action-monitor-receipt/v1",
+        **live,
+        "incident_count": len(incidents),
+        "incidents": incidents,
+        "archived_replay": archived_replay or {"state": "NOT_REQUESTED", "complete": True},
         "credential_authority": "TV/TVC",
         "credential_material_exported": False,
         "github_token_runtime_authority": "NONE",
@@ -193,14 +404,18 @@ def main() -> int:
     parser.add_argument("--output", type=Path)
     parser.add_argument("--batch-limit", type=int, default=BATCH_LIMIT)
     args = parser.parse_args()
-    receipt = run(Broker(parse_broker_command(args)), args.batch_limit)
+
+    replay_checkpoint_path = None
+    if args.output and args.output.name == "native-email-action-monitor.latest.json":
+        replay_checkpoint_path = args.output.with_name("native-email-archived-failure-replay.checkpoint.json")
+    receipt = run(Broker(parse_broker_command(args)), args.batch_limit, replay_checkpoint_path)
     text = json.dumps(receipt, indent=2, sort_keys=True) + "\n"
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(text, encoding="utf-8")
     else:
         print(text, end="")
-    return 0 if receipt["state"] == "PASS" else 2
+    return 0 if receipt["state"] in {"PASS", "ARCHIVED_REPLAY_PENDING", "ARCHIVED_REPLAY_COMPLETE"} else 2
 
 
 if __name__ == "__main__":
