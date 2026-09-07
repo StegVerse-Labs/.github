@@ -6,7 +6,7 @@
     "cosv_id": "10100000100000",
     "cosv_registration_state": "REGISTERED_EMITTED_UNCLAIMED",
     "objective": "Prove governed multi-lane manifold functionality through authentic subject-bound execution receipts and deterministic reconciliation under existing StegVerse authority partitions.",
-    "state": "CANONICAL_TASK_REGISTERED_COSV_EMITTED_WORKERCOORDINATOR_CLAIM_PENDING_ACTIVATION_EVIDENCE_PENDING"
+    "state": "RESIDENT_ACTIVATION_REQUESTED_WORKERCOORDINATOR_CLAIM_PENDING_ACTIVATION_EVIDENCE_PENDING"
   },
   "authority": {
     "coordination": "StegVerse-Labs/.github",
@@ -21,6 +21,7 @@
     "data/canonical-task-records/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json",
     "control/task-vectors/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json",
     "control/task-vector-index.d/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json",
+    "control/resident-execution-request.d/governed-multilane-manifold-activation-001.json",
     "docs/GOVERNED_MULTILANE_MANIFOLD_ACTIVATION_MIRROR_HANDOFF.md",
     "FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md",
     "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
@@ -49,23 +50,26 @@
     "source_implementation": "INHERITED_COMPLETE_REQUIRES_CURRENT_REVALIDATION",
     "canonical_task_registration": "COMPLETE",
     "cosv_registration": "COMPLETE_VECTOR_EMITTED",
-    "workercoordinator_claim": "UNCLAIMED",
-    "lane_execution_receipts": "UNKNOWN_CURRENT_STATE",
-    "reconciliation": "UNKNOWN_CURRENT_STATE",
+    "resident_activation_request": "REQUESTED",
+    "resident_activation_request_ref": "control/resident-execution-request.d/governed-multilane-manifold-activation-001.json",
+    "workercoordinator_claim": "UNCLAIMED_PENDING_RESIDENT_CONSUMPTION",
+    "lane_execution_receipts": "UNKNOWN_CURRENT_STATE_PENDING_RESIDENT_REFRESH",
+    "reconciliation": "UNKNOWN_CURRENT_STATE_PENDING_RESIDENT_REFRESH",
     "activation": "NOT_PROVEN"
   },
   "archive_gate": {
     "archive_ready": false,
-    "blocking_reason": "WORKERCOORDINATOR_EXECUTION_OWNERSHIP_AND_DURABLE_CONTINUATION_NOT_YET_RESOLVED",
+    "blocking_reason": "RESIDENT_ACTIVATION_REQUEST_NOT_YET_CONSUMED_AND_AUTHENTIC_ACTIVATION_EVIDENCE_NOT_YET_PRODUCED",
     "required_before_archive": [
-      "resolve canonical WorkerCoordinator claim/fence or prove all remaining executable work is already durably owned by the existing five lane tasks",
+      "resident consumes the activation request and resolves canonical WorkerCoordinator claim/fence ownership for genuinely missing lane work",
       "verify session-unique state is durably transferred under the registered task/COSV identity"
     ]
   },
   "next_actions": [
+    "resident dispatcher consumes control/resident-execution-request.d/governed-multilane-manifold-activation-001.json",
+    "refresh current qualifying receipts for the initial five-lane cohort",
     "resolve current WorkerCoordinator claims/fences and cross-task coordination",
     "prefer existing five formalism/manifold workers as execution owners rather than creating a duplicate umbrella worker",
-    "discover current qualifying receipts for the initial five-lane cohort",
     "execute only genuinely missing lanes through existing canonical workers",
     "run reconciliation after qualifying prerequisite receipts exist",
     "persist reconciliation provenance and unresolved divergence",
