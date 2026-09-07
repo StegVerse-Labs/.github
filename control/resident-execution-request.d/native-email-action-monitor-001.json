@@ -3,6 +3,9 @@
   "request_id": "RESIDENT-EXEC-NATIVE-EMAIL-ACTION-MONITOR-001",
   "state": "REQUESTED",
   "task_id": "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001",
+  "cosv_profile": "task.v1",
+  "cosv_task_vector": "10100000100000",
+  "cosv_source_ref": "control/task-vectors/STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001.json",
   "mode": "NATIVE_EMAIL_ACTION_MONITOR",
   "entrypoint": "scripts/consume_native_email_action_monitor_request.py",
   "credential_authority": "TV/TVC",
@@ -15,6 +18,6 @@
   "request_granted_authority": false,
   "standing_request": true,
   "authority_effect": "NONE_REQUEST_ONLY",
-  "note": "Standing non-authorizing request for the existing HB/oscillator-driven resident request dispatcher to revisit the native bounded GitHub/task-update email monitor. HB supplies synchronization/continuation only; provider authorization remains TV/TVC and mailbox observations do not admit technical work.",
+  "note": "Standing non-authorizing request for the existing HB/oscillator-driven resident request dispatcher to revisit the native bounded GitHub/task-update email monitor. Exact COSV task.v1 pointer is required before WorkerCoordinator claim/fence or resident execution. HB supplies synchronization/continuation only; provider authorization remains TV/TVC and mailbox observations do not admit technical work.",
   "requested_at": "2026-09-06T13:30:00-05:00"
 }
