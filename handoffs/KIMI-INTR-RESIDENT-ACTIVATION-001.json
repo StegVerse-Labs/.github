@@ -8,7 +8,7 @@
     "objective": "Execute one authentic governed Kimi/Moonshot round trip through canonical Universal InTr, StegCore Governance, TVC non-exportable provider operation, Master Records custody/reconstruction, and Universal InTr egress on the existing sovereign WorkerCoordinator.",
     "success_predicates": [
       "current fenced WorkerCoordinator claim observed",
-      "exact Kimi wire bytes reach Universal InTr TRANSPORT_COMPLETE",
+      "exact TVC/Moonshot provider bytes reach Universal InTr TRANSPORT_COMPLETE",
       "StegCore hosted-LLM Governance decision is ALLOW",
       "valid short-lived TVC SV-RECON-001 Kimi lease issued",
       "TVC vault broker returns authentic kimi-k3 result without secret export",
@@ -18,14 +18,16 @@
     ],
     "failure_predicates": [
       "hosted runtime marker active",
-      "provider or GitHub secret supplied through worker environment",
+      "provider, Master Records, or GitHub secret supplied through worker environment",
       "required canonical source root/profile absent",
       "TVC vault broker socket unavailable",
       "Master Records local custody broker socket unavailable",
+      "Universal InTr request payload hash differs from exact TVC/Moonshot provider payload hash",
       "Universal InTr transport incomplete",
       "Governance decision other than ALLOW",
-      "TVC lease refused or provider operation denied",
+      "TVC lease refused or provider operation differs from admitted exact provider tuple",
       "Master Records custody or reconstruction not PASS",
+      "egress payload hash differs from exact canonical response bytes",
       "egress transport incomplete"
     ],
     "authority_ceiling": [
@@ -42,15 +44,16 @@
     "task_id": "KIMI-INTR-RESIDENT-ACTIVATION-001",
     "repository": "StegVerse-Labs/.github",
     "source_refs": [
-      "StegVerse-org/LLM-adapter@4dff7620660d5577d6b63da6c477dcd88ed893ac",
+      "StegVerse-org/LLM-adapter@5aad95bd202809d82d4d19a7cbcf1224eeb81724",
       "StegVerse-Labs/StegOS@809ef737119c28f9ee86f2eb50199fc05aeca36a",
       "StegVerse-Labs/Governance@c2f89024451dcb9e13ece47ecad1d8ee05af53fd",
+      "master-records/orchestration@0f374e7a198c02ac45235580e9446df965ff7f9f",
       "StegVerse-Labs/.github#1120",
       "docs/KIMI_INTR_RESIDENT_ACTIVATION_MIRROR_HANDOFF.md"
     ],
     "dependencies": [],
     "parent_task_id": null,
-    "derivation_reason": "Canonical Kimi source integration was complete but lacked an authentic resident composition binding non-authorizing transport, Governance ALLOW, TVC execution, Master Records custody, and return transport in one execution.",
+    "derivation_reason": "Canonical Kimi source integration was complete but lacked an authentic resident composition binding exact non-authorizing transport, Governance ALLOW, TVC execution, Master Records custody, and return transport in one execution.",
     "canonical_owner_ref": "StegVerse-Labs/.github#1120",
     "canonical_lineage_key": "llm-adapter:kimi:intr:resident-activation",
     "derivation_depth": 0,
@@ -91,7 +94,7 @@
   },
   "completion": {
     "next_authorized_action": "Execute on the existing sovereign resident WorkerCoordinator. Persist exact blockers until all local source and broker/custody sockets are present; never substitute hosted CI or a second machine.",
-    "terminal_when": ["one COMPLETED worker receipt proves the full InTr -> Governance -> TVC/Kimi -> Master Records -> InTr chain with no credential export"]
+    "terminal_when": ["one COMPLETED worker receipt proves the exact-byte InTr -> Governance -> TVC/Kimi -> Master Records -> exact-byte InTr chain with no credential export"]
   },
   "block": null,
   "admissible_existence": {
@@ -101,15 +104,17 @@
     "standing_evidence_refs": ["docs/KIMI_INTR_RESIDENT_ACTIVATION_MIRROR_HANDOFF.md"],
     "admissibility_evidence_refs": [
       "handoffs/KIMI-INTR-RESIDENT-ACTIVATION-001.json",
-      "workers/kimi_intr_resident_activation_worker.py",
+      "workers/kimi_intr_resident_activation_worker_v2.py",
       "control/worker-registry.d/kimi-intr-resident-activation-001.json",
       "control/process-worker-adapters.d/kimi-intr-resident-activation-001.json",
-      "control/resident-execution-request.d/kimi-intr-resident-activation-001.json"
+      "control/resident-execution-request.d/kimi-intr-resident-activation-001.json",
+      "control/admissible-existence-retrospective-conformance.d/kimi-intr-resident-activation-001.json",
+      "tests/test_kimi_intr_resident_activation.py"
     ],
     "integration_evidence_refs": [],
     "activation_proof_ref": null,
     "blockers": ["AUTHENTIC_KIMI_INTR_RESIDENT_ROUND_TRIP_NOT_YET_OBSERVED"],
-    "continuation_owner": "kimi-intr-resident-activation-worker + existing sovereign WorkerCoordinator",
+    "continuation_owner": "kimi-intr-resident-activation-worker-v2 + existing sovereign WorkerCoordinator",
     "credential_authority": "TV/TVC",
     "github_token_runtime_authority": false,
     "temporal_class": "current",
