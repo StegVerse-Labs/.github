@@ -1,0 +1,91 @@
+{
+  "schema": "stegverse.machine-preflight/v1",
+  "preflight_id": "HIL-CANONICAL-SAME-DEVICE-RECONCILIATION-20260906",
+  "task_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "main",
+  "state": "PASS",
+  "verdict": "PASS",
+  "authority_effect": "NONE_PREFLIGHT_ONLY",
+  "resolved_state": {
+    "canonical_handoff": "docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_MIRROR_HANDOFF.md",
+    "executable_handoff": "handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json",
+    "worker_registry": "control/worker-registry.d/hil-sovereign-receiver-001.json",
+    "cross_task_coordination": "control/cross-task-coordination.json",
+    "cross_task_predicate": "PRED-RESIDENT-REQUEST-CONSUMED-HIL-SOVEREIGN-RECEIVER-002",
+    "cross_task_predicate_state": "UNKNOWN",
+    "site_handoff": "StegVerse-Labs/Site/docs/HIL_MIRROR_HANDOFF.md",
+    "master_records_handoff": "master-records/orchestration/HIL_MASTER_RECORD_MIRROR_HANDOFF.md",
+    "master_record_task": "HIL-MASTER-RECORD-001",
+    "master_record_release_ready": false,
+    "worker_state": "HANDOFF_READY",
+    "claim_id": null,
+    "same_device_execution_required": true,
+    "requires_other_machine": false,
+    "public_gateway_required_for_lease_open": false,
+    "authentic_runtime_execution_observed": false,
+    "current_main": "a5d69cdd0c0c039a6ec48c5c7fda800384089a16"
+  },
+  "reuse": {
+    "existing_task_reused": true,
+    "existing_cross_task_predicate_reused": true,
+    "existing_workercoordinator_reused": true,
+    "existing_hil_consumer_reused": true,
+    "existing_targeted_executor_reused": true,
+    "existing_hil_acceptance_harness_reused": true,
+    "new_task_identifier": false,
+    "new_runtime": false,
+    "new_heartbeat": false,
+    "new_oscillator": false,
+    "new_workercoordinator": false,
+    "new_claim_fence_plane": false
+  },
+  "collision_review": {
+    "duplicate_hil_runtime_work": false,
+    "duplicate_task_identifier": false,
+    "master_records_collision": false,
+    "disposition": "RECONCILE_CANONICAL_DOCUMENTATION_TO_ALREADY_MERGED_EXECUTABLE_STATE"
+  },
+  "planned_change": {
+    "kind": "DOCUMENTATION_AND_CANONICAL_STATE_RECONCILIATION_ONLY",
+    "paths": [
+      "docs/HIL_SAME_DEVICE_RUNTIME_SUPERSESSION_20260906.md",
+      "StegVerse-Labs/.github#246"
+    ],
+    "runtime_code_change": false,
+    "authority_change": false,
+    "credential_change": false,
+    "interface_change": false,
+    "dependency_change": false,
+    "failure_behavior_change": false,
+    "evidence_semantics_change": false,
+    "new_capability": false
+  },
+  "readme_impact": {
+    "readme_impact_required": true,
+    "material_function_change": false,
+    "readme_updated_in_change_set": false,
+    "readme_path": "README.md",
+    "no_readme_update_reason": "The change only supersedes historical canonical-handoff prose that still described a remote/public Gateway as required before HIL LEASE_OPEN. Current executable handoff, Site handoff, issue state, and merged same-device source already establish requires_other_machine=false and public_gateway_required_for_lease_open=false. No repository behavior, runtime semantics, interface, governance/authority boundary, evidence semantics, prerequisite, dependency, failure behavior, or capability meaning changes in this reconciliation. README already documents the resident HIL activation acceptance-evidence contract.",
+    "evidence_refs": [
+      "handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json",
+      "control/worker-registry.d/hil-sovereign-receiver-001.json",
+      "control/cross-task-coordination.json#PRED-RESIDENT-REQUEST-CONSUMED-HIL-SOVEREIGN-RECEIVER-002",
+      "StegVerse-Labs/Site/docs/HIL_MIRROR_HANDOFF.md#Same-device-ESRL-LEASE_OPEN-reconciliation",
+      "StegVerse-Labs/.github#246",
+      "README.md#Resident-HIL-activation-acceptance-evidence",
+      "StegVerse-Labs/StegOS@95cb63a823ca86d6a04c44ef5140961ba9161d6a",
+      "StegVerse-Labs/.github@2d7d7851a2144dacb2874268a8e16545f9f20d38",
+      "StegVerse-Labs/.github@c2ceb4c92909ae5a0ff3a094467aebdce42599bf"
+    ],
+    "readme_impact_complete": true
+  },
+  "authority": {
+    "heartbeat_grants_execution_authority": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "transition_authority": "INTERLOCK_INTR",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "documentation_reconciliation_grants_runtime_truth": false
+  }
+}
