@@ -10,10 +10,10 @@
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": "NONE",
   "worker_registry_summary": {
-    "unique_task_ids_global_plus_fragments": 83,
+    "unique_task_ids_global_plus_fragments": 84,
     "canonically_indexed_task_ids": 76,
     "completed_only_historical_unvectorized_task_ids": 6,
-    "active_unvectorized_unique_task_ids": 0,
+    "active_unvectorized_unique_task_ids": 1,
     "superseded_historical_unvectorized_task_ids": 1
   },
   "organization_registry_summary": {
@@ -21,8 +21,8 @@
     "canonically_vectorized_task_ids": 14,
     "active_unvectorized_task_ids": 0
   },
-  "total_active_unvectorized_unique_task_ids": 0,
-  "active_worker_task_ids_missing_canonical_cosv": [],
+  "total_active_unvectorized_unique_task_ids": 1,
+  "active_worker_task_ids_missing_canonical_cosv": ["KIMI-INTR-RESIDENT-ACTIVATION-001"],
   "active_organization_task_ids_missing_canonical_cosv": [],
   "indexed_vectors": [
     {"task_id":"SHWP-ECOSYSTEM-CHAT-INFERENCE-001","vector":"50000000100000"},
@@ -131,13 +131,13 @@
   ],
   "live_denominator_reconciliation": {
     "observed_main": "cc5b49c0e48f7511d3eff5419310219237996d7b",
-    "prior_unique_worker_task_ids": 69,
+    "prior_unique_worker_task_ids": 83,
     "newly_added_worker_task_ids": 1,
-    "current_unique_worker_task_ids": 70,
-    "new_task_ids": ["SV-DN1-REPOSITORY-PERSISTENCE-PACKAGE-001"],
+    "current_unique_worker_task_ids": 84,
+    "new_task_ids": ["KIMI-INTR-RESIDENT-ACTIVATION-001"],
     "aggregate_worker_registry_changed": false,
     "organization_task_count": 14,
-    "note": "Historical 2026-08-30 reconciliation retained as provenance."
+    "note": "Kimi resident activation task is intentionally active-unvectorized until authentic runtime evidence exists; no COSV digits are inferred from source-only state."
   },
   "g18_dispatcher_reconciliation": {
     "vector_unchanged":"50000000101000","blocker_unchanged":"G18_RESIDENT_REQUEST_CONSUMPTION_NOT_YET_OBSERVED","dispatcher_pr":373,"dispatcher_merge":"cb6c5a4ee3a809936e34afc67ef98bf204287b1e","vector_pr":374,"vector_merge":"4d993befa31441f8d173d5836e5c341da08d589c","dispatch_source_state":"IMPLEMENTED_MERGED_RUNTIME_NOT_OBSERVED","resident_dispatch_receipt_observed":false,"g18_consumption_receipt_observed":false,"authority_effect":"NONE"
@@ -160,8 +160,8 @@
   "sovereign_runtime_cosv_cohort": {"task_count":4,"indexed_after_projection":50,"active_worker_unvectorized_after_projection":14,"total_active_unvectorized_after_projection":28,"runtime_activation_claimed":false,"authority_effect":"NONE"},
   "cohort_projection_20260830": {"task_count":4,"indexed_after_projection":54,"active_worker_unvectorized_after_projection":10,"total_active_unvectorized_after_projection":24,"runtime_activation_claimed":false,"authority_effect":"NONE"},
   "final_structured_worker_cosv_cohort": {"task_count":7,"indexed_after_projection":61,"active_worker_unvectorized_after_projection":3,"total_active_unvectorized_after_projection":17,"runtime_activation_claimed":false,"authority_effect":"NONE"},
-  "worker_denominator_closure": {"active_worker_tasks_vectorized":76,"active_worker_tasks_unvectorized":0,"completed_historical_unvectorized":6,"superseded_historical_unvectorized":1,"total_unique_worker_task_ids":83,"authority_effect":"NONE","runtime_activation_claimed":false},
-  "active_task_vector_coverage_closure": {"active_worker_tasks_vectorized":75,"active_organization_tasks_vectorized":14,"total_active_tasks_vectorized":89,"active_tasks_unvectorized":0,"source_projection_complete":true,"runtime_activation_claimed":false,"authority_effect":"NONE"},
+  "worker_denominator_closure": {"active_worker_tasks_vectorized":76,"active_worker_tasks_unvectorized":1,"completed_historical_unvectorized":6,"superseded_historical_unvectorized":1,"total_unique_worker_task_ids":84,"authority_effect":"NONE","runtime_activation_claimed":false},
+  "active_task_vector_coverage_closure": {"active_worker_tasks_vectorized":75,"active_organization_tasks_vectorized":14,"total_active_tasks_vectorized":89,"active_tasks_unvectorized":1,"source_projection_complete":false,"runtime_activation_claimed":false,"authority_effect":"NONE"},
   "publication_observer_projection_20260831": {"task_id":"SV-DN1-PUBLICATION-OBSERVER-001","vector":"50000000101000","registry_ref":"control/worker-registry.d/sv-dn1-publication-observer-001.json","source_state_vector_ref":"control/task-vectors/SV-DN1-PUBLICATION-OBSERVER-001.json","product_observer_merge":"StegVerse-org/stegverse-demo-suite@653474a78c912eceebf97b5db51bec9a8737ddec","blocker":"SV_DN1_AUTHENTIC_RESULT_REPOSITORY_PERSISTENCE_AND_PUBLIC_DEPLOYMENT_NOT_YET_OBSERVED","activation_proof_observed":false,"evidence_complete":false,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","repository_writeback_authority":false,"deployment_authority":false,"authority_effect":"NONE"},
   "sv_dn1_repository_persistence_dispatch_projection_20260831": {"task_id":"SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001","vector":"50000000101000","registry_ref":"control/worker-registry.d/sv-dn1-repository-persistence-dispatch-001.json","source_state_vector_ref":"control/task-vectors/SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001.json","blocker":"TVC_SV_DN1_REPOSITORY_MUTATION_ADMISSION_NOT_YET_OBSERVED_TVC_264","activation_proof_observed":false,"evidence_complete":false,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","repository_writeback_authority":false,"merge_authority":false,"deployment_authority":false,"authority_effect":"NONE"},
   "sv_dn1_repository_merge_dispatch_projection_20260831": {"task_id":"SV-DN1-REPOSITORY-MERGE-DISPATCH-001","vector":"50000000101000","registry_ref":"control/worker-registry.d/sv-dn1-repository-merge-dispatch-001.json","source_state_vector_ref":"control/task-vectors/SV-DN1-REPOSITORY-MERGE-DISPATCH-001.json","blocker":"AUTHENTIC_SV_DN1_PRODUCT_PR_AND_TVC_MERGE_NOT_YET_OBSERVED","activation_proof_observed":false,"evidence_complete":false,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","repository_writeback_authority":false,"merge_authority":false,"deployment_authority":false,"authority_effect":"NONE"},
@@ -172,5 +172,6 @@
   "sv011_phase5_source_materialization_projection": {"task_id":"SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001","vector":"50000000101000","registry_ref":"control/worker-registry.d/sv011-phase5-source-materialization-001.json","source_state_vector_ref":"control/task-vectors/SHWP-SV011-PHASE5-SOURCE-MATERIALIZATION-001.json","canonical_owner_ref":"StegVerse-Labs/.github#806","source_basis_commit":"cf2777d9d21a97289f4ec7b0d9b0b21597047666","verified_bundle_files":7,"network_source_fetch_allowed":false,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","materialization_receipt_observed":false,"evidence_complete":false,"authority_effect":"NONE"},
   "glm53_sovereign_lane_reconciliation": {"task_id":"SHWP-GLM53-SOVEREIGN-LANE-001","vector":"50000000101000","registry_ref":"control/worker-registry.d/glm53-sovereign-lane-001.json","source_state_vector_ref":"control/task-vectors/SHWP-GLM53-SOVEREIGN-LANE-001.json","source_merge":"StegVerse-002/micro-node-runtime@07e4388eda92d99a8feb220f28265b147551242d","blocker":"GLM53_SOVEREIGN_RUNTIME_EVIDENCE_NOT_YET_OBSERVED","runtime_receipt_observed":false,"credential_authority":"TV/TVC","authority_effect":"NONE"},
   "erl_ai_economic_transparency_review_projection": {"task_id":"SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001","vector":"50000000101000","registry_ref":"control/worker-registry.d/erl-ai-economic-transparency-review-001.json","source_state_vector_ref":"control/task-vectors/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json","canonical_owner_ref":"StegVerse-Labs/Executive_Rhetoric_Ledger#104","blocker":"RESIDENT_EXECUTION_RECEIPT_PENDING","runtime_receipt_observed":false,"independent_review_complete":false,"research_promotion_authority":false,"activation_authority":false,"publication_authority":false,"repository_writeback_authority":false,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","authority_effect":"NONE","review_input_bundle":"review-packages/erl-ai-economic-transparency-001/manifest.json","review_input_bundle_hash_bound":true,"local_cross_repository_materialization_required":false},
-  "legacy_continuity_validation_projection": {"task_id":"LEGACY-CONTINUITY-VALIDATION-WORKER-001","vector":"50000000101000","registry_ref":"control/worker-registry.d/legacy-continuity-validation-001.json","source_state_vector_ref":"control/task-vectors/LEGACY-CONTINUITY-VALIDATION-WORKER-001.json","canonical_owner_ref":"docs/LEGACY_CONTINUITY_VALIDATION_MIRROR_HANDOFF.md","blocker":"AUTHORIZED_LOCAL_CONTINUITY_SOURCE_PATH_NOT_YET_OBSERVED","activation_proof_observed":false,"evidence_complete":false,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","authority_effect":"NONE"}
+  "legacy_continuity_validation_projection": {"task_id":"LEGACY-CONTINUITY-VALIDATION-WORKER-001","vector":"50000000101000","registry_ref":"control/worker-registry.d/legacy-continuity-validation-001.json","source_state_vector_ref":"control/task-vectors/LEGACY-CONTINUITY-VALIDATION-WORKER-001.json","canonical_owner_ref":"docs/LEGACY_CONTINUITY_VALIDATION_MIRROR_HANDOFF.md","blocker":"AUTHORIZED_LOCAL_CONTINUITY_SOURCE_PATH_NOT_YET_OBSERVED","activation_proof_observed":false,"evidence_complete":false,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","authority_effect":"NONE"},
+  "kimi_intr_resident_activation_reconciliation": {"task_id":"KIMI-INTR-RESIDENT-ACTIVATION-001","registry_ref":"control/worker-registry.d/kimi-intr-resident-activation-001.json","canonical_owner_ref":"docs/KIMI_INTR_RESIDENT_ACTIVATION_MIRROR_HANDOFF.md","phase":"ADMISSIBLE","target_phase":"ACTIVATED","canonical_vector_emitted":false,"blocker":"AUTHENTIC_KIMI_INTR_RESIDENT_ROUND_TRIP_NOT_YET_OBSERVED","runtime_receipt_observed":false,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","transport_grants_execution_authority":false,"governance_grants_execution_authority":false,"authority_effect":"NONE"}
 }
