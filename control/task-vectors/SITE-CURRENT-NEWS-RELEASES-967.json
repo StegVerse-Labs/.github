@@ -1,0 +1,47 @@
+{
+  "identity": "StegVerse-Labs/Site:task:SITE-CURRENT-NEWS-RELEASES-967",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "40000100112000",
+  "evidence_refs": [
+    "StegVerse-Labs/Site:data/tasks/SITE-CURRENT-NEWS-RELEASES-967.json",
+    "StegVerse-Labs/Site:data/session-work-claims.d/site-current-news-releases-967-20260903.json",
+    "StegVerse-Labs/Site:docs/CURRENT_NEWS_RELEASES_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site#967",
+    "management/COSV_PROFILE_V1.json",
+    "docs/COSV_TASK_POINTER_COORDINATION_MIRROR_HANDOFF.md"
+  ],
+  "observed_at": "2026-09-07T09:21:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "CLAIMED_INTEGRATION",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 1,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": true,
+    "blocker_count": 2,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "Site claim SITE-CURRENT-NEWS-RELEASES-967-20260903 states role ACTIVE_INTEGRATION and state CLAIMED_FOR_INTEGRATION.",
+    "archive_ready": "Site task publication_verified is false and the claim remains active until source-complete, validated, deployed, and freshly observed.",
+    "unassigned_work": "The existing Site claim owns the bounded Current News Releases / Entity Economy / Coherent Life publication paths; no unassigned work item is asserted by the current claim.",
+    "chat_owned_integration": "Exactly one active Site session claim is recorded for this task.",
+    "canonical_owner_installed": "The canonical Site task record, bounded handoff, and active claim are installed.",
+    "thread_required": "The current task remains an active session-owned integration continuation and has not terminalized.",
+    "blocker_count": "Fresh deployed browser observation reports two unresolved exact-artifact mismatches: revised Volume I public PDF identity and Coherent Life 36-page reconstructed artifact identity.",
+    "evidence_complete": "Overall publication_verified remains false.",
+    "activated": "Site task and claim explicitly state activation_effect false.",
+    "propagated": "Overall publication task is not terminally propagated/verified; publication_verified remains false."
+  },
+  "authority_effect": "NONE",
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE"
+}
