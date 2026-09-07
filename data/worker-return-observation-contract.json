@@ -1,0 +1,81 @@
+{
+  "schema": "stegverse.worker-return-observation-contract/v1",
+  "status": "CANONICAL_ACTIVE",
+  "purpose": "Define resilient worker retry behavior and post-expiry detection when expected work history fails to return to Master Records.",
+  "normal_loop": [
+    "TASK_RESOLVED_AND_CLAIMED",
+    "WORKER_EXECUTES",
+    "WORKER_MAY_RETRY_WITHIN_BOUNDED_RESILIENCE_POLICY",
+    "WORKER_EMITS_OR_RETURNS_WORK_HISTORY_AND_EVIDENCE",
+    "WORKER_EXPIRES",
+    "MASTER_RECORDS_INGESTS_AND_RECORDS_RETURNED_HISTORY",
+    "TASK_CONTINUATION_OR_CLOSURE_RECONSTRUCTS_FROM_CANONICAL_RECORD"
+  ],
+  "retry_resilience": {
+    "enabled": true,
+    "retry_counter_is_local_resilience_signal": true,
+    "retry_counter_is_canonical_stall_proof": false,
+    "retry_counter_may_drive": [
+      "BOUNDED_RETRY",
+      "BACKOFF",
+      "ALTERNATE_ADMISSIBLE_PATH",
+      "RECOVERY_ATTEMPT",
+      "EARLY_DIAGNOSTIC_SIGNAL"
+    ],
+    "retry_counter_may_not_by_itself_assert": [
+      "WORKER_NEVER_REPORTED",
+      "MASTER_RECORDS_RETURN_MISSING",
+      "TASK_TERMINAL",
+      "TASK_RETIRED"
+    ]
+  },
+  "worker_return_obligation": {
+    "created_when_worker_accepts_or_begins_task_work": true,
+    "must_bind": [
+      "task_id",
+      "cosv_task_vector",
+      "worker_identity_or_ephemeral_instance_ref",
+      "claim_or_execution_ref",
+      "expected_history_return_ref_or_subject",
+      "expiry_or_return_expectation",
+      "master_records_subject_binding"
+    ],
+    "fulfilled_by": "MATCHING_MASTER_RECORDS_RECORDED_WORK_HISTORY_OR_EVIDENCE_RETURN"
+  },
+  "missing_return_detection": {
+    "source_of_truth": "MASTER_RECORDS_OBSERVED_REALITY_AND_RECONSTRUCTION",
+    "detectors": [
+      "StegIndex",
+      "StegDB",
+      "StegHealth"
+    ],
+    "condition": "EXPECTED_WORKER_RETURN_OBLIGATION_EXISTS_AND_MATCHING_MASTER_RECORDS_RETURN_IS_ABSENT_AFTER_GOVERNED_EXPECTATION",
+    "worker_self_report_not_required_to_detect_missing_report": true,
+    "absence_requires_expected_return_obligation": true,
+    "silence_without_a_bound_expectation_is_not_failure_proof": true
+  },
+  "derived_postures": {
+    "HEALTHY": "Expected worker return is present and canonically recorded.",
+    "RETRYING": "Worker remains within bounded resilience attempts before expiry/return expectation is violated.",
+    "RETURN_PENDING": "Worker work has not yet reached the governed expiry/return expectation point.",
+    "RETURN_OVERDUE": "Expected return is past due and no matching Master Records record exists.",
+    "WORKER_NONREPORT": "Independent observation confirms the worker return obligation was not fulfilled.",
+    "RECONCILIATION_REQUIRED": "Conflicting or partial evidence prevents a safe determination.",
+    "UNKNOWN": "No sufficient bound expectation/evidence exists to classify."
+  },
+  "observer_roles": {
+    "StegIndex": "Resolve expected worker/task/history relationships and identify unmatched expected-return identities.",
+    "StegDB": "Compare durable monitoring/index records and Master Records intake/recording state for missing or stale returns.",
+    "StegHealth": "Classify ecosystem/task health consequences of overdue or missing worker returns and surface repair/escalation needs."
+  },
+  "invariants": [
+    "WORKERS_ARE_EPHEMERAL_WHERE_DESIGNED",
+    "WORK_HISTORY_AND_EVIDENCE_OUTLIVE_WORKER_EXPIRY",
+    "MASTER_RECORDS_RECORDS_OBSERVED_RETURNED_HISTORY",
+    "RETRY_COUNTERS_ADD_RESILIENCE_BUT_DO_NOT_CREATE_CANONICAL_REALITY",
+    "MISSING_WORKER_REPORT_IS_DERIVED_FROM_EXPECTED_RETURN_VERSUS_MASTER_RECORDS_OBSERVATION",
+    "NO_EXPECTED_RETURN_OBLIGATION_MEANS_NO_NONREPORT_CLAIM",
+    "STEGINDEX_STEGDB_AND_STEGHEALTH_MAY_DETECT_NONREPORT_WITHOUT_WORKER_COOPERATION",
+    "RETIRED_REMAINS_TERMINAL_AND_IS_NOT_REOPENED_BY_MONITORING"
+  ]
+}
