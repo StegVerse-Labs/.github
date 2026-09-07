@@ -1,0 +1,54 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SHWP-DEEPSEEK-INTR-RUNTIME-001",
+  "task_id": "SHWP-DEEPSEEK-INTR-RUNTIME-001",
+  "goal_id": "DEEPSEEK-INTR-END-TO-END-CONNECTION",
+  "repository": "StegVerse-Labs/.github",
+  "state": "HANDOFF_READY",
+  "authority": {
+    "authority_source": "StegVerse-Labs/.github#1122 + canonical StegGate + StegVerse-Labs/TVC#343 + StegVerse-org/LLM-adapter#290/#300/#304",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL_WITH_INTERLOCK_AND_TVC_BOUNDARIES",
+    "credential_authority": "TV/TVC",
+    "transition_authority": "StegVerse-Labs/StegCore canonical StegGate / Interlock",
+    "heartbeat_grants_execution_authority": false,
+    "request_grants_execution_authority": false,
+    "github_token_runtime_authority": "NONE",
+    "provider_output_grants_authority": false,
+    "another_physical_machine_required": false
+  },
+  "execution": {
+    "worker_id": "deepseek-intr-runtime-worker",
+    "adapter_ref": "process:deepseek-intr-runtime-v1",
+    "required_capabilities": ["deepseek_intr_runtime_cycle"],
+    "runtime_profile_id": "stegverse:runtime-profile:llm-adapter-deepseek:v1",
+    "base_runtime_profile_id": "stegverse:runtime-profile:hb-intr-resident:v1",
+    "protocol": "stegverse.intr.deepseek.transport.v1",
+    "provider": "deepseek",
+    "operation": "chat_completion_with_usage",
+    "model": "deepseek-v4-flash",
+    "source_fetch_allowed": false,
+    "hosted_runtime_allowed": false,
+    "credential_material_allowed": false,
+    "second_machine_required": false
+  },
+  "completion": {
+    "required_state": "COMPLETED",
+    "required_evidence": [
+      "canonical StegGate ingress ALLOW receipt",
+      "exact-bound TVC DeepSeek lease",
+      "TVC single-use provider use receipt",
+      "DeepSeek response hash",
+      "Master Records custody/reconstruction PASS",
+      "canonical StegGate egress ALLOW receipt",
+      "LLM-adapter exact-response egress admission"
+    ],
+    "same_execution_required": true,
+    "source_merge_is_completion": false
+  },
+  "continuity": {
+    "checkpoint_ref": "receipts/deepseek-intr-runtime/SHWP-DEEPSEEK-INTR-RUNTIME-001.json",
+    "handoff_destination": "control/worker-registry.json",
+    "status_projection": "control/worker-status.json"
+  },
+  "authority_effect": "NONE_HANDOFF_ONLY"
+}
