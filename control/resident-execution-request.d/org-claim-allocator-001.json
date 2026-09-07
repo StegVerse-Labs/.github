@@ -17,12 +17,12 @@
   "allocator_remains_claim_authority": true,
   "authority_effect": "NONE_REQUEST_ONLY",
   "source_catalog_floor": {
-    "task_id": "TASK-2026-0008",
-    "requested_at": "2026-09-03T00:28:00Z",
+    "task_id": "TASK-2026-0009",
+    "requested_at": "2026-09-06T13:25:00Z",
     "repository_full_name": "StegVerse-Labs/Site",
-    "required_dependency_surface": "site:stegos-de006-bound-inference-publication",
+    "required_dependency_surface": "site:hb31-ecosystem-chat-runtime-opportunity-successor",
     "purpose": "MINIMUM_SOURCE_CATALOG_FRESHNESS_ONLY",
     "task_eligibility_effect": "NONE",
-    "scope_sha256": "98096b5825e85dd558f9cb5a4e882002543d4c703cfa7981cd2d826c80c1a05b"
+    "scope_sha256": "121d9e79d98d582642e032a607ef9cacc5965acfba6fdc371bbbc9ccf8716ce1"
   }
 }
