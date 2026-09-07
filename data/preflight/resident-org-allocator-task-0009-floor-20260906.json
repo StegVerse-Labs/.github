@@ -64,7 +64,15 @@
     "material_function_change": true,
     "reason": "The resident allocator minimum source-catalog prerequisite and fail-closed stale-catalog boundary advance to TASK-2026-0009, changing runtime prerequisite/failure semantics for already-local resident allocation.",
     "readme_path": "README.md",
-    "readme_updated_in_change_set_required": true
+    "readme_updated_in_change_set_required": true,
+    "readme_updated_in_change_set": true,
+    "readme_section": "Portable organization allocator successor-task continuity",
+    "evidence_refs": [
+      "README.md#Portable organization allocator successor-task continuity",
+      "control/resident-execution-request.d/org-claim-allocator-001.json",
+      "tests/test_resident_org_claim_allocator.py",
+      "docs/RESIDENT_ORG_CLAIM_ALLOCATOR_MIRROR_HANDOFF.md"
+    ]
   },
   "admissible_mutation_scope": [
     "control/resident-execution-request.d/org-claim-allocator-001.json",
