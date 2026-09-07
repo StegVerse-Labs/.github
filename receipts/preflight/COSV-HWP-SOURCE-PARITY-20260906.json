@@ -7,6 +7,12 @@
   "state": "PASS",
   "canonical_handoff": "docs/COSV_TASK_POINTER_RUNTIME_ENFORCEMENT_MIRROR_HANDOFF.md",
   "observed_base": "29b22c7814b65319ec3922bb1b5ce427caad5de8",
+  "validation_stack": {
+    "base_pr": 1148,
+    "base_branch": "fix/ecosystem-chat-fence-authority-parity",
+    "base_head": "ea5ccaf46c95bf2e3c5c22a57729c3f4f226beea",
+    "reason": "Full HWP source-parity validation must include the already-repaired Ecosystem Chat fence projection so the remaining global COSV and runtime-profile baseline defects are reachable without folding them into PR #1148."
+  },
   "problem": {
     "code": "POST_REGISTRATION_CHECKED_PROJECTION_DRIFT",
     "hwp_failure_count": 10,
