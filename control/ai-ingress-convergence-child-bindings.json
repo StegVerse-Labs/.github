@@ -1,0 +1,44 @@
+{
+  "schema": "stegverse.ai-ingress-convergence-bindings/v0.1",
+  "parent_task_id": "STEGVERSE-AI-INGRESS-CONVERGENCE-001",
+  "parent_cosv": "50010000110000",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "completion_policy": "ALL_CHILD_SOURCE_BINDINGS_PRESENT_AND_RUNTIME_CONVERGENCE_PROVEN",
+  "children": [
+    {
+      "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+      "cosv": "50000000100000",
+      "repository": "StegVerse-Labs/.github",
+      "handoff_ref": "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+      "task_vector_ref": "control/task-vectors/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+      "authority_semantics": "INDEPENDENT_PARENT_PRESERVED",
+      "parent_authority_inherited": false
+    },
+    {
+      "task_id": "LLMA-EXTERNAL-LLM-CONVERGENCE-306",
+      "cosv": "50000000100000",
+      "repository": "StegVerse-org/LLM-adapter",
+      "handoff_ref": "docs/EXTERNAL_LLM_CONNECTION_CONVERGENCE_MIRROR_HANDOFF.md",
+      "authority_semantics": "CHILD_CANONICAL_AUTHORITY_PRESERVED",
+      "parent_authority_inherited": false
+    },
+    {
+      "task_id": "LLMA-UNIVERSAL-AI-INGRESS-324",
+      "cosv": "20010000110000",
+      "repository": "StegVerse-org/LLM-adapter",
+      "handoff_ref": "docs/UNIVERSAL_AI_INGRESS_MIRROR_HANDOFF.md",
+      "authority_semantics": "CHILD_CANONICAL_AUTHORITY_PRESERVED",
+      "parent_authority_inherited": false
+    }
+  ],
+  "runtime_activation": {
+    "status": "NOT_PROVEN",
+    "required_evidence": [
+      "ecosystem chat request accepted through governed ingress",
+      "external LLM convergence path observed",
+      "universal AI ingress path observed",
+      "single convergence receipt correlating the three paths without transferring child authority"
+    ],
+    "receipt_refs": []
+  }
+}
