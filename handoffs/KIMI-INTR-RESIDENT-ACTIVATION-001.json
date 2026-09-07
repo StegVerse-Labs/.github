@@ -1,0 +1,127 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-KIMI-INTR-RESIDENT-ACTIVATION-001",
+  "created_at": "2026-09-07T12:25:00-05:00",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "KIMI-INTR-RESIDENT-END-TO-END-CONNECTION",
+    "objective": "Execute one bounded Kimi InTr cycle through the existing sovereign resident WorkerCoordinator using canonical StegGate ingress/egress decisions, exact-bound TVC non-exportable provider use, and Master Records custody/reconstruction.",
+    "success_predicates": [
+      "fresh WorkerCoordinator claim and fence observed",
+      "canonical StegGate ingress ALLOW retained",
+      "exact-bound TVC Kimi lease retained",
+      "TVC non-exportable Kimi provider operation succeeds",
+      "Master Records custody_recorded=true and reconstructability=PASS",
+      "canonical StegGate egress ALLOW retained for exact response hash",
+      "LLM-adapter exact-response egress admission succeeds",
+      "same-execution resident receipt retained"
+    ],
+    "failure_predicates": [
+      "hosted runtime marker active",
+      "required already-local source root missing",
+      "fresh WorkerCoordinator claim/fence absent",
+      "ingress or egress StegGate disposition not ALLOW",
+      "TVC lease or provider operation refused",
+      "Master Records custody or reconstruction incomplete",
+      "credential material exposed or another physical machine required"
+    ],
+    "authority_ceiling": [
+      "bounded Kimi provider inference through existing TVC non-exportable operation",
+      "local Master Records provider-usage custody",
+      "secret-free receipt persistence under receipts/kimi-intr-runtime/**",
+      "no scheduler, heartbeat authority, credential export, publication, or product-activation authority"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "KIMI-INTR-RESIDENT-ACTIVATION-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "docs/KIMI_INTR_RESIDENT_ACTIVATION_MIRROR_HANDOFF.md",
+      "StegVerse-org/LLM-adapter/docs/KIMI_INTR_TRANSPORT_MIRROR_HANDOFF.md",
+      "StegVerse-org/LLM-adapter/tasks/LLMA-KIMI-INTR-RUNTIME-292.json",
+      "StegVerse-Labs/TVC/scripts/tvc_issue_external_llm_intr_lease.py",
+      "StegVerse-Labs/TVC/config/provider_operation_profiles.json"
+    ],
+    "dependencies": [],
+    "parent_task_id": null,
+    "canonical_lineage_key": "kimi:intr:resident-runtime-cycle",
+    "derivation_depth": 0,
+    "priority": "release"
+  },
+  "authority": {
+    "authority_domain": "INDEPENDENT_TASK_CONTROL_WITH_INTERLOCK_TVC_AND_MASTER_RECORDS_BOUNDARIES",
+    "credential_authority": "TV/TVC",
+    "transition_authority": "StegVerse-Labs/StegCore canonical StegGate / Interlock",
+    "custody_authority": "master-records/orchestration canonical provider-usage custody service",
+    "heartbeat_grants_execution_authority": false,
+    "heartbeat_dependency": false,
+    "request_grants_execution_authority": false,
+    "github_token_runtime_authority": "NONE",
+    "provider_output_grants_authority": false,
+    "custody_grants_execution_authority": false,
+    "another_physical_machine_required": false,
+    "policy_version": "kimi-intr-resident-runtime-v0.1"
+  },
+  "execution": {
+    "worker_id": "kimi-intr-runtime-worker",
+    "adapter_ref": "process:kimi-intr-runtime-v1",
+    "required_capabilities": ["kimi_intr_runtime_cycle"],
+    "allowed_paths": ["receipts/kimi-intr-runtime/**"],
+    "allowed_services": [],
+    "max_actions": 4,
+    "max_retries": 64,
+    "external_cost_ceiling_usd": 1,
+    "runtime_window_beats": 4096,
+    "rate_class": "kimi_intr_runtime_cycle",
+    "runtime_profile_id": "stegverse:runtime-profile:llm-adapter-kimi:v1",
+    "base_runtime_profile_id": "stegverse:runtime-profile:hb-intr-resident:v1",
+    "protocol": "stegverse.intr.kimi.transport.v1",
+    "provider": "kimi",
+    "operation": "chat_completion_with_usage",
+    "model": "kimi-k3",
+    "source_fetch_allowed": false,
+    "hosted_runtime_allowed": false,
+    "credential_material_allowed": false,
+    "second_machine_required": false
+  },
+  "activation": {
+    "carrier": "separate_worker_runtime",
+    "heartbeat_dependency": false,
+    "carrier_trigger_required": false,
+    "executor_binding": "AUTHORIZED",
+    "checkout_policy": "separate_fenced_independent_task_control"
+  },
+  "completion": {
+    "next_authorized_action": "Consume the standing Kimi request through the existing dispatcher and WorkerCoordinator after the task-specific worker and adapter binding are materialized. Fail closed at the first unsatisfied ingress, TVC, provider, custody, or egress predicate.",
+    "terminal_when": [
+      "one COMPLETED worker receipt binds canonical ingress ALLOW, exact-bound TVC Kimi use, provider response, Master Records reconstruction PASS, canonical egress ALLOW, and exact-response egress admission in the same execution"
+    ],
+    "same_execution_required": true,
+    "source_merge_is_completion": false
+  },
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:kimi-intr-runtime-cycle:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "StegVerse-org/LLM-adapter/docs/KIMI_INTR_TRANSPORT_MIRROR_HANDOFF.md",
+      "StegVerse-Labs/TVC/scripts/tvc_issue_external_llm_intr_lease.py"
+    ],
+    "admissibility_evidence_refs": [
+      "docs/KIMI_INTR_RESIDENT_ACTIVATION_MIRROR_HANDOFF.md",
+      "control/resident-execution-request.d/kimi-intr-runtime-001.json"
+    ],
+    "integration_evidence_refs": [],
+    "activation_proof_ref": null,
+    "blockers": ["KIMI_INTR_RESIDENT_BINDING_NOT_YET_COMPLETE", "KIMI_INTR_SAME_EXECUTION_RECEIPT_NOT_YET_OBSERVED"],
+    "continuation_owner": "kimi-intr-runtime-worker + existing sovereign WorkerCoordinator",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "integrates_capability",
+    "target_phase": "ACTIVATED"
+  },
+  "authority_effect": "NONE_HANDOFF_ONLY"
+}
