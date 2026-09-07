@@ -53,7 +53,13 @@ RUNTIME_PROFILE_MAP_SPEC = {
     "bootstrap_runtime_rel": Path("runtime/canonical-work-runtime-profile-map"),
     "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
 }
-REQUEST_SPECS = (DEFAULT_SPEC, QUANTUM_SPEC, OBJECT_PROVENANCE_SPEC, RUNTIME_PROFILE_MAP_SPEC)
+ERL_REVIEW_SPEC = {
+    "request_rel": Path("control/resident-execution-request.d/canonical-work-erl-ai-economic-transparency-review-001.json"),
+    "consumption_rel": Path("receipts/sovereign-host/canonical-work-erl-ai-economic-transparency-review-request-consumption.latest.json"),
+    "bootstrap_runtime_rel": Path("runtime/canonical-work-erl-ai-economic-transparency-review"),
+    "task_id": "SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001",
+}
+REQUEST_SPECS = (DEFAULT_SPEC, QUANTUM_SPEC, OBJECT_PROVENANCE_SPEC, RUNTIME_PROFILE_MAP_SPEC, ERL_REVIEW_SPEC)
 
 MATERIALIZE = (
     Path("scripts/install_and_run_canonical_work_event_bootstrap.py"),
