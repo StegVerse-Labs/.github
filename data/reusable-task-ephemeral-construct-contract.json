@@ -1,0 +1,140 @@
+{
+  "schema": "stegverse.reusable-task-ephemeral-construct/v1",
+  "status": "SOURCE_CONTRACT_ACTIVE_RUNTIME_EVIDENCE_PENDING",
+  "purpose": "Define the canonical lifecycle for reusable task identities that derive invocation-specific TT/RTG/GTG constructs, ephemeral runners, durable evidence, residual recording constructs, and entropy recovery after Master Records custody/reconstruction.",
+  "durability_model": {
+    "reusable_identity": "DURABLE",
+    "parameters": "INVOCATION_SPECIFIC",
+    "tt_rtg_gtg_construct": "DERIVED",
+    "runner": "EPHEMERAL_WHERE_POSSIBLE",
+    "evidence": "DURABLE",
+    "canonical_task_cosv_identity": "DURABLE_WHEN_TRACKING_REQUIRED",
+    "manifest": "BOUND",
+    "receipts": "CHAINED",
+    "recording": "AT_NECESSARY_LEVELS",
+    "post_expiry_recording_construct": "TEMPORARY_NON_EXECUTING",
+    "master_records": "TERMINAL_DURABLE_CUSTODY_AND_RECONSTRUCTION",
+    "final_disposition": "ENTROPY_RECOVERY"
+  },
+  "canonical_cross_layer_contract": {
+    "ref": "StegVerse-Labs/StegScholar:papers/rtg-gtg-tt/cross-layer-contract.md",
+    "sequence": ["RTG", "GTG", "TT"],
+    "rtg_role": "DESCRIBE_REALIZED_OR_CANDIDATE_RELATIONAL_TRANSITION_GEOMETRY",
+    "gtg_role": "EVALUATE_WHETHER_CANDIDATE_REALIZATION_MAY_COMMIT",
+    "tt_role": "RECORD_DECISION_COMMIT_EXECUTION_OBSERVATION_AND_CONTINUATION",
+    "authority_inheritance_between_layers": false,
+    "this_contract_redefines_layer_mathematics": false
+  },
+  "invocation": {
+    "required_inputs": ["reusable_task_id", "parameters"],
+    "tracking_pointer_when_required": ["task_id", "cosv_task_vector"],
+    "must_resolve_definition_before_construct": true,
+    "must_reconcile_equivalent_or_adjacent_work_before_materialization": true,
+    "parameterization_determines_exact_construct": true,
+    "parameters_must_be_manifest_bound": true
+  },
+  "manifest_binding": {
+    "required": true,
+    "hash_algorithm": "sha256",
+    "binds": [
+      "reusable_task_id",
+      "invocation_parameters",
+      "canonical_task_pointer_when_present",
+      "rtg_construct",
+      "gtg_construct",
+      "tt_construct",
+      "runner_plan",
+      "authority_ceiling",
+      "adapter_and_runtime_dependencies",
+      "expected_evidence",
+      "recording_levels",
+      "expiry_conditions",
+      "entropy_recovery_conditions"
+    ],
+    "construct_or_runner_drift_from_manifest_allowed": false
+  },
+  "runner_lifecycle": {
+    "materialize_only_after_applicable_admission": true,
+    "ephemeral_where_possible": true,
+    "runner_expiry_precedes_recording_continuity_expiry": true,
+    "runner_expiry_revokes_original_execution_purpose": true,
+    "runner_expiry_does_not_delete_required_evidence": true
+  },
+  "receipt_chain": {
+    "required": true,
+    "chain_order": [
+      "REUSABLE_IDENTITY",
+      "INVOCATION_MANIFEST",
+      "DERIVED_RTG",
+      "GTG_DETERMINATION",
+      "TT_DECISION_COMMIT_EXECUTION_OBSERVATION",
+      "RUNNER_EXPIRY",
+      "RESIDUAL_RECORDING",
+      "MASTER_RECORDS_CUSTODY_RECONSTRUCTION",
+      "ENTROPY_RECOVERY"
+    ],
+    "missing_link_may_be_inferred": false,
+    "source_or_documentation_may_substitute_for_runtime_receipt": false
+  },
+  "recording_levels": {
+    "available": ["operation", "task", "goal", "component", "subsystem", "system", "ecosystem", "master_records"],
+    "record_every_level_unconditionally": false,
+    "selection_rule": "DERIVED_CONSTRUCT_DECLARATION_AND_APPLICABLE_RECORDING_POLICY",
+    "master_records_required_before_entropy_recovery": true
+  },
+  "residual_recording_construct": {
+    "created_at": "RUNNER_EXPIRY_WHEN_REQUIRED_RECORDING_REMAINS",
+    "execution_authority": false,
+    "credential_acquisition_authority": false,
+    "claim_or_fence_minting_authority": false,
+    "provider_operation_authority": false,
+    "self_extension_authority": false,
+    "allowed_functions": [
+      "PRESERVE_INVOCATION_IDENTITY",
+      "PRESERVE_MANIFEST_BINDING",
+      "CARRY_CHAINED_RECEIPTS",
+      "PROJECT_REQUIRED_COSV_TASK_STATE",
+      "PERFORM_REQUIRED_SCOPED_RECORDING",
+      "SUBMIT_OR_CARRY_EVIDENCE_TO_MASTER_RECORDS",
+      "SUPPORT_RECONSTRUCTION_VERIFICATION"
+    ]
+  },
+  "entropy_recovery": {
+    "definition": "FINAL_DISPLACEMENT_OF_THE_NON_EXECUTING_RESIDUAL_TT_RTG_GTG_RECORDING_CONSTRUCT_AFTER_ITS_INFORMATION_BEARING_PURPOSE_HAS_BEEN_SATISFIED_BY_REQUIRED_RECORDING_AND_MASTER_RECORDS_CUSTODY_RECONSTRUCTION",
+    "requires": [
+      "RUNNER_EXPIRED",
+      "REQUIRED_RECORDING_LEVELS_COMPLETE",
+      "REQUIRED_RECEIPT_CHAIN_COMPLETE",
+      "MASTER_RECORDS_CUSTODY_ACCEPTED",
+      "MASTER_RECORDS_RECONSTRUCTION_CONFIRMED",
+      "NO_UNRECORDED_SUCCESSOR_OR_CORRECTION_DEPENDENCY_REQUIRES_RESIDUAL_CONSTRUCT"
+    ],
+    "deletes_master_records_or_required_evidence": false,
+    "reactivates_original_runner": false,
+    "grants_new_authority": false
+  },
+  "adjacent_task_derivation": {
+    "enabled": true,
+    "new_distinct_same_goal_work_must_be_reconciled_for_existing_equivalent_first": true,
+    "new_task_when_needed": true,
+    "new_task_receives_own_task_id_and_cosv_vector": true,
+    "new_task_derivation_may_reference_reusable_identity": true,
+    "derivation_grants_execution_authority": false
+  },
+  "authority": {
+    "definition_and_discovery": "REUSABLE_TASK_REGISTRY",
+    "work_intent_and_coordination": "CANONICAL_TASK_REGISTRY",
+    "execution_claim_and_fence": "WORKERCOORDINATOR",
+    "governed_transition": "INTERLOCK_INTR",
+    "credential_authority": "TV/TVC",
+    "observed_reality_and_reconstruction": "MASTER_RECORDS",
+    "github_token_runtime_authority": "NONE"
+  },
+  "invariants": [
+    "EXECUTION_EXPIRES_FIRST_RECORDING_CONTINUITY_EXPIRES_LAST",
+    "MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION_PRECEDES_ENTROPY_RECOVERY",
+    "EPHEMERAL_CAPABILITY_DOES_NOT_MEAN_EPHEMERAL_ACCOUNTABILITY",
+    "PERSIST_IDENTITY_SEMANTICS_GOVERNANCE_CONSTRUCTION_RULES_AND_EVIDENCE_NOT_UNNECESSARY_RUNNER_INFRASTRUCTURE",
+    "NO_DUPLICATE_RUNTIME_SCHEDULER_WORKER_CREDENTIAL_ROUTE_OR_ADAPTER_AUTHORITY"
+  ]
+}
