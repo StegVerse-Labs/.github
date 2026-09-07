@@ -6,14 +6,16 @@
   "repository": "StegVerse-Labs/.github",
   "state": "HANDOFF_READY",
   "authority": {
-    "authority_source": "StegVerse-Labs/.github#1122 + canonical StegGate + StegVerse-Labs/TVC#343 + StegVerse-org/LLM-adapter#290/#300/#304",
-    "authority_domain": "INDEPENDENT_TASK_CONTROL_WITH_INTERLOCK_AND_TVC_BOUNDARIES",
+    "authority_source": "StegVerse-Labs/.github#1122 + canonical StegGate + StegVerse-Labs/TVC#343 + StegVerse-org/LLM-adapter#290/#300/#304/#310 + master-records/orchestration#82",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL_WITH_INTERLOCK_TVC_AND_MASTER_RECORDS_BOUNDARIES",
     "credential_authority": "TV/TVC",
     "transition_authority": "StegVerse-Labs/StegCore canonical StegGate / Interlock",
+    "custody_authority": "master-records/orchestration canonical provider-usage custody service",
     "heartbeat_grants_execution_authority": false,
     "request_grants_execution_authority": false,
     "github_token_runtime_authority": "NONE",
     "provider_output_grants_authority": false,
+    "custody_grants_execution_authority": false,
     "another_physical_machine_required": false
   },
   "execution": {
@@ -26,10 +28,25 @@
     "provider": "deepseek",
     "operation": "chat_completion_with_usage",
     "model": "deepseek-v4-flash",
+    "llm_adapter_custody_client_merge": "852718d0a1287953ea408511c47b3764e3410b77",
+    "master_records_local_broker": "/run/stegverse/master-records-provider-usage.sock",
+    "master_records_bearer_export_allowed": false,
+    "master_records_reconstruction_required": "PASS",
     "source_fetch_allowed": false,
     "hosted_runtime_allowed": false,
     "credential_material_allowed": false,
     "second_machine_required": false
+  },
+  "readme_impact": {
+    "required": true,
+    "material_function_change": true,
+    "readme_path": "README.md",
+    "readme_updated_in_change_set": true,
+    "evidence_refs": [
+      "README.md#resident-deepseek-intr-governed-runtime",
+      "StegVerse-Labs/.github#1122"
+    ],
+    "authority_effect": "NONE_COMPLETENESS_ONLY"
   },
   "completion": {
     "required_state": "COMPLETED",
@@ -38,7 +55,7 @@
       "exact-bound TVC DeepSeek lease",
       "TVC single-use provider use receipt",
       "DeepSeek response hash",
-      "Master Records custody/reconstruction PASS",
+      "Master Records custody/reconstruction PASS via local non-exportable broker",
       "canonical StegGate egress ALLOW receipt",
       "LLM-adapter exact-response egress admission"
     ],
