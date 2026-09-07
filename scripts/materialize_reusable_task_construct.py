@@ -102,6 +102,7 @@ def build_manifest(args: argparse.Namespace) -> dict[str, Any]:
         "runner_expiry_conditions",
         ["INVOCATION_TERMINAL_BOUNDARY_REACHED", "OR_EXECUTION_AUTHORITY_EXPIRES"],
     )
+    automation_contract = contract["automation"]
 
     body = {
         "schema": "stegverse.reusable-task-invocation-manifest/v1",
@@ -111,6 +112,21 @@ def build_manifest(args: argparse.Namespace) -> dict[str, Any]:
         "cosv_task_vector": args.cosv_task_vector,
         "parameters": parameters,
         "construct": construct,
+        "automation_plan": {
+            "mode": automation_contract["mode"],
+            "trigger_driver": automation_contract["trigger_driver"],
+            "single_trigger": True,
+            "manual_coordination_between_machine_admissible_internal_steps_required": False,
+            "declared_runner_refs": runner_templates,
+            "stop_boundaries": automation_contract["stop_boundaries"],
+            "boundary_receipt_required": True,
+            "independent_work_may_continue_at_boundary": automation_contract[
+                "independent_downstream_or_parallel_work_may_continue_while_reusable_task_is_at_boundary"
+            ],
+            "dependent_work_waits_for_required_completion_evidence": automation_contract[
+                "dependent_work_must_wait_for_required_completion_evidence"
+            ],
+        },
         "runner_plan": {
             "ephemeral_where_possible": True,
             "materialization_refs": runner_templates,
@@ -128,11 +144,13 @@ def build_manifest(args: argparse.Namespace) -> dict[str, Any]:
             "governed_transition": "INTERLOCK_INTR",
             "credential_authority": "TV/TVC",
             "observed_reality_and_reconstruction": "MASTER_RECORDS",
+            "automation_trigger": "NON_AUTHORIZING_ORCHESTRATION_ONLY",
             "github_token_runtime_authority": "NONE",
         },
         "source_refs": [
             "data/reusable-task-registry.json",
             "data/reusable-task-ephemeral-construct-contract.json",
+            "scripts/trigger_reusable_task.py",
             "management/COSV_PROFILE_V1.json",
             "StegVerse-Labs/StegScholar:papers/rtg-gtg-tt/cross-layer-contract.md",
         ],
