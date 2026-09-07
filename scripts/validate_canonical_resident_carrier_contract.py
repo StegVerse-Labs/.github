@@ -56,6 +56,7 @@ def validate(root: Path = ROOT) -> dict:
     assert progression["coordination_fragment_ref"] == "control/cross-task-coordination.d/entity-autonomous-governed-progression-runtime-adoption.json"
     assert progression["runtime_adoption_predicate_id"] == "PRED-ENTITY-AUTONOMOUS-PROGRESSION-RUNTIME-ADOPTED"
     assert progression["canonical_work_policy_ref"] == "data/task-coordination-policy.json"
+    assert progression["goal_continuation_evaluator_ref"] == "scripts/evaluate_goal_resolution_continuation.py"
     assert progression["default_for_machine_owned_transitions"] == "MACHINE_GOVERNED_AUTONOMOUS"
     assert progression["human_approval_default"] is False
     assert progression["every_state_change_requires_current_governance"] is True
@@ -63,6 +64,10 @@ def validate(root: Path = ROOT) -> dict:
     assert progression["authority_is_reused"] is False
     assert progression["prior_receipt_authorizes_next_transition"] is False
     assert progression["human_interaction_queue_scope"] == "TRUE_HUMAN_DEVICE_MUTATIONS_ONLY"
+    assert progression["human_reentry_for_intermediate_task_cosv_handoff_state"] is False
+    assert progression["automatic_reingestion_required"] is True
+    assert progression["default_report_interval_iterations"] == 5
+    assert progression["periodic_report_stops_machine_work"] is False
     assert progression["runtime_adoption_claimed"] is False
 
     assert progression_contract["transition_rule"]["every_state_change_requires_current_governance"] is True
