@@ -9,10 +9,10 @@ REQUEST_REL=Path("control/resident-execution-request.d/kimi-intr-resident-activa
 CONSUMPTION_REL=Path("receipts/sovereign-host/kimi-intr-resident-activation-request-consumption.latest.json")
 TARGET_TASK="KIMI-INTR-RESIDENT-ACTIVATION-001"
 TARGET_MODE="TARGETED_INDEPENDENT_TASK_CONTROL"
-TARGET_ENTRYPOINT="scripts/refresh_and_execute_resident_task.py"
+TARGET_ENTRYPOINT="scripts/refresh_and_execute_kimi_intr_resident_task.py"
 HOSTED_ENV=("GITHUB_ACTIONS","CI","RENDER","RENDER_SERVICE_ID","VERCEL","VERCEL_ENV","CF_PAGES","CLOUDFLARE_WORKERS")
 FORBIDDEN=("GITHUB_TOKEN","GH_TOKEN","GITHUB_PAT","ACTIONS_RUNTIME_TOKEN","OPENAI_API_KEY","ANTHROPIC_API_KEY","DEEPSEEK_API_KEY","MOONSHOT_API_KEY","KIMI_API_KEY","MASTER_RECORDS_AUTH_TOKEN","MASTER_RECORDS_RECEIPT_KEY","STEGVERSE_MASTER_RECORDS_TOKEN","PRIVATE_KEY","SEED","MNEMONIC")
-FORWARD=("PATH","HOME","LANG","LC_ALL","XDG_STATE_HOME","XDG_CONFIG_HOME","LOCALAPPDATA","STEGVERSE_SOVEREIGN_NODE","STEGVERSE_HEARTBEAT_ROOT","STEGVERSE_HEARTBEAT_SOURCE_ROOT","STEGVERSE_LLM_ADAPTER_ROOT","STEGVERSE_TVC_ROOT","STEGVERSE_STEGOS_ROOT","STEGVERSE_GOVERNANCE_ROOT","STEGVERSE_STEGCORE_SOURCE_ROOT","STEGVERSE_TEST_LANES_ROOT","STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT","STEGVERSE_VAULT_BROKER_SOCKET","STEGVERSE_MASTER_RECORDS_PROVIDER_USAGE_SOCKET")
+FORWARD=("PATH","HOME","LANG","LC_ALL","XDG_STATE_HOME","XDG_CONFIG_HOME","LOCALAPPDATA","STEGVERSE_SOVEREIGN_NODE","STEGVERSE_HEARTBEAT_ROOT","STEGVERSE_HEARTBEAT_SOURCE_ROOT","STEGVERSE_LLM_ADAPTER_ROOT","STEGVERSE_TVC_ROOT","STEGVERSE_STEGOS_ROOT","STEGVERSE_GOVERNANCE_ROOT","STEGVERSE_STEGCORE_SOURCE_ROOT","STEGVERSE_TEST_LANES_ROOT","STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT","STEGVERSE_REPO_ROOTS_JSON","STEGVERSE_VAULT_BROKER_SOCKET","STEGVERSE_MASTER_RECORDS_PROVIDER_USAGE_SOCKET")
 
 def truthy(v): return str(v or "").strip().lower() not in {"","0","false","no"}
 def load(p):
@@ -54,7 +54,7 @@ def consume(source_root,runtime_root,*,runner=subprocess.run,env=None):
     if consumed(runtime,r,h): return {"schema":"stegverse.kimi-intr-resident-request-consumption/v1","state":"ALREADY_CONSUMED","request_id":r["request_id"],"request_sha256":h,"runtime_execution_attempted":False,"authority_effect":"NONE"}
     entry=runtime/TARGET_ENTRYPOINT
     if not entry.is_file(): raise RuntimeError("Kimi resident execution entrypoint missing")
-    command=[sys.executable,str(entry),"--source-root",str(source),"--runtime-root",str(runtime),"--task-id",TARGET_TASK]
+    command=[sys.executable,str(entry),"--source-root",str(source),"--runtime-root",str(runtime)]
     done=runner(command,cwd=runtime,capture_output=True,text=True,check=False,env=clean_env(env),timeout=1800)
     result=last_json(done.stdout)
     valid=bool(isinstance(result,dict) and result.get("mode")==TARGET_MODE and result.get("task_id")==TARGET_TASK and result.get("runtime_execution_attempted") is True and result.get("network_fetch_performed") is False and result.get("github_token_runtime_authority")=="NONE" and result.get("credential_authority")=="TV/TVC" and result.get("authority_effect")=="EXISTING_ADMITTED_TASK_AUTHORITY_ONLY")
