@@ -6,10 +6,10 @@ transport, review, publication, or Master Records authority. The consumer may
 invoke only the already-installed portable targeted execution bridge for
 SHWP-HIL-SOVEREIGN-RECEIVER-001.
 
-Before targeted execution, the consumer materializes the non-secret HIL
-loopback/shared-Service-Gateway route config. Missing runtime/node route
-predicates are retryable and MUST NOT burn the request. Only a terminal HIL
-runtime observation consumes the request permanently.
+Routine same-device HIL execution does not require a public/shared Service
+Gateway before targeted execution. Public/provider-access routing remains a
+downstream concern when a separately admitted participant path requires it.
+Only a terminal HIL runtime observation consumes the request permanently.
 """
 from __future__ import annotations
 
@@ -28,7 +28,6 @@ CONSUMPTION_REL = Path("receipts/sovereign-host/hil-resident-execution-request-c
 TARGET_TASK = "SHWP-HIL-SOVEREIGN-RECEIVER-001"
 TARGET_MODE = "TARGETED_INDEPENDENT_TASK_CONTROL"
 TARGET_ENTRYPOINT = "scripts/refresh_and_execute_resident_task.py"
-ROUTE_MATERIALIZER = "scripts/materialize_hil_gateway_route_config.py"
 TERMINAL_TRANSITIONS = {
     "HIL_PUBLIC_HTTPS_RENDEZVOUS",
     "HIL_RECEIVER_RECEIPT_OBSERVED",
@@ -180,54 +179,14 @@ def consume(
         }
 
     safe_env = clean_exec_env(env)
-    materializer = runtime / ROUTE_MATERIALIZER
-    if not materializer.is_file():
-        materializer = source / ROUTE_MATERIALIZER
-    if not materializer.is_file():
-        raise RuntimeError(f"HIL Gateway route materializer missing: {materializer}")
-
-    route_completed = runner(
-        [sys.executable, str(materializer)],
-        cwd=runtime,
-        capture_output=True,
-        text=True,
-        check=False,
-        env=safe_env,
-        timeout=30,
-    )
-    route_result = parse_last_json(route_completed.stdout)
-    if not isinstance(route_result, dict):
-        raise RuntimeError("HIL Gateway route materializer returned no machine result")
-    if route_result.get("state") == "PREDICATE_PENDING":
-        return write_receipt(runtime, {
-            "schema": "stegverse.hil-resident-execution-request-consumption/v1",
-            "state": "PREDICATE_PENDING",
-            "request_id": request["request_id"],
-            "request_sha256": request_hash,
-            "task_id": TARGET_TASK,
-            "route_materialization": route_result,
-            "runtime_execution_attempted": False,
-            "terminal_hil_transition_observed": False,
-            "retry_allowed": True,
-            "request_granted_authority": False,
-            "heartbeat_grants_execution_authority": False,
-            "github_token_required": False,
-            "github_token_runtime_authority": "NONE",
-            "credential_authority": "TV/TVC",
-            "second_machine_required": False,
-            "authority_effect": "NONE_REQUEST_ONLY",
-        })
-
-    route_config = route_result.get("config") or {}
-    route_path = route_result.get("path")
-    if route_config.get("public_tls_terminated_by") != "STEGVERSE_SHARED_SERVICE_GATEWAY":
-        raise RuntimeError("HIL route must terminate public TLS at shared Service Gateway")
-    if route_config.get("credential_authority") != "TV/TVC":
-        raise RuntimeError("HIL route credential authority drift")
-    if route_config.get("g18_completion_required") is not False:
-        raise RuntimeError("HIL route cannot depend on G18 completion")
-    if isinstance(route_path, str) and route_path:
-        safe_env["STEGVERSE_HIL_INTR_ROUTE_CONFIG"] = route_path
+    route_materialization = {
+        "schema": "stegverse.hil-intr-route-config-materialization/v1",
+        "state": "NOT_REQUIRED_SAME_DEVICE",
+        "reason": "routine same-device HIL execution does not require public/shared Gateway readiness",
+        "public_gateway_required_for_lease_open": False,
+        "credential_authority": "TV/TVC",
+        "authority_effect": "NONE",
+    }
 
     entrypoint = runtime / TARGET_ENTRYPOINT
     if not entrypoint.is_file():
@@ -263,7 +222,7 @@ def consume(
         "request_sha256": request_hash,
         "task_id": TARGET_TASK,
         "mode": TARGET_MODE,
-        "route_materialization": route_result,
+        "route_materialization": route_materialization,
         "command": command,
         "execution_returncode": completed.returncode,
         "execution_result_observed": isinstance(result, dict),
@@ -279,6 +238,7 @@ def consume(
         "credential_authority": "TV/TVC",
         "credential_requirement": "NONE_FOR_PARTICIPANT_INTAKE",
         "second_machine_required": False,
+        "public_gateway_required_for_lease_open": False,
         "g18_completion_required": False,
         "network_source_fetch_performed": False,
         "authority_effect": "NONE_REQUEST_ONLY",
@@ -293,7 +253,7 @@ def main() -> int:
     args = parser.parse_args()
     receipt = consume(args.source_root, args.runtime_root)
     print(json.dumps(receipt, sort_keys=True))
-    if receipt["state"] in {"NO_REQUEST", "ALREADY_CONSUMED", "PREDICATE_PENDING", "ATTEMPT_RECORDED", "COMPLETED"}:
+    if receipt["state"] in {"NO_REQUEST", "ALREADY_CONSUMED", "ATTEMPT_RECORDED", "COMPLETED"}:
         return 0
     return 1
 

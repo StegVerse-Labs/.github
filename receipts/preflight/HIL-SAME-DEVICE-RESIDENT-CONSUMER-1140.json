@@ -1,0 +1,67 @@
+{
+  "schema": "stegverse.session-build-preflight/v1",
+  "preflight_id": "HIL-SAME-DEVICE-RESIDENT-CONSUMER-1140",
+  "goal": "Reconcile the existing HIL resident request consumer with the already-canonical same-device LEASE_OPEN path by removing the stale shared-Gateway precondition while preserving all existing runtime, authority, evidence, and request-consumption boundaries.",
+  "state": "PASS_FUNCTIONAL_MUTATION_ADMISSIBLE",
+  "observed_source_head": "23d77c96cdaf817ff30be586e8c1c7a5feb46c46",
+  "canonical_context": {
+    "task_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+    "canonical_issue": "StegVerse-Labs/.github#246",
+    "source_reconciliation_issue": "StegVerse-Labs/.github#1140",
+    "handoff": "handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json",
+    "worker_registry": "control/worker-registry.d/hil-sovereign-receiver-001.json",
+    "resident_request": "control/resident-execution-request.d/hil-sovereign-receiver-001.json#RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002",
+    "same_device_supersession": "docs/HIL_SAME_DEVICE_RUNTIME_SUPERSESSION_20260906.md",
+    "runtime_solution_registry": "data/runtime-solution-registry.d/hb32-existing-runtime-solutions.json#HB32-EXISTING-RUNTIME-SOLUTIONS-20260906",
+    "master_records_boundary": "management/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_CONTRACT.json + docs/RUNTIME_PRESENCE_CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md"
+  },
+  "observed_problem": {
+    "consumer": "scripts/consume_hil_resident_execution_request.py",
+    "stale_behavior": "Resident request consumption unconditionally materializes HIL Gateway route config and requires public_tls_terminated_by=STEGVERSE_SHARED_SERVICE_GATEWAY before targeted execution.",
+    "canonical_behavior": "Routine same-device HIL LEASE_OPEN does not require public/shared Gateway readiness; public/provider-access transport is downstream or separately required only for public participant/provider-access paths.",
+    "dispatcher_already_wired": true,
+    "duplicate_request_required": false,
+    "new_worker_required": false,
+    "new_heartbeat_or_oscillator_required": false
+  },
+  "reuse": {
+    "dispatcher": "scripts/dispatch_resident_execution_requests.py",
+    "consumer": "scripts/consume_hil_resident_execution_request.py",
+    "targeted_execution": "scripts/refresh_and_execute_resident_task.py",
+    "receiver_worker": "workers/hil_sovereign_receiver_worker.py",
+    "lease_authority": "TVC POST /v1/hil/lease/open",
+    "claim_fence_authority": "WorkerCoordinator",
+    "transition_authority": "Interlock/InTr",
+    "credential_authority": "TV/TVC",
+    "heartbeat_role": "NON_AUTHORIZING_REFERENCE_AND_CARRIER"
+  },
+  "collision_check": {
+    "existing_hil_claim_observed": false,
+    "g18_claim_fence_mutation_allowed": false,
+    "master_records_authority_change_allowed": false,
+    "duplicate_request_allowed": false,
+    "duplicate_worker_or_runtime_allowed": false
+  },
+  "readme_completeness": {
+    "material_behavior_change": false,
+    "readme_change_required": false,
+    "determination": "NO_README_CHANGE_REQUIRED_SOURCE_RECONCILIATION_TO_ALREADY_DOCUMENTED_CONTRACT",
+    "evidence": [
+      "docs/HIL_SAME_DEVICE_RUNTIME_SUPERSESSION_20260906.md already supersedes public/shared Gateway as a routine LEASE_OPEN prerequisite",
+      "handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json already records same-device execution independent of public Gateway readiness",
+      "control/worker-registry.d/hil-sovereign-receiver-001.json already records public_shared_gateway_required_for_lease_open=false",
+      "README already documents the resident HIL activation acceptance-evidence contract; this patch restores implementation to that existing contract"
+    ]
+  },
+  "allowed_mutation": [
+    "scripts/consume_hil_resident_execution_request.py",
+    "tests/test_hil_resident_execution_request.py"
+  ],
+  "nonclaims": [
+    "No resident request consumption is inferred from source or CI.",
+    "No WorkerCoordinator claim or fence is inferred or minted.",
+    "No HIL receiver READY state is inferred.",
+    "No TVC lifecycle receipt or Master Records custody is inferred.",
+    "No activation is inferred."
+  ]
+}
