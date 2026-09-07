@@ -1,0 +1,71 @@
+{
+  "schema": "stegverse.machine-preflight/v1",
+  "preflight_id": "ECOSYSTEM-CHAT-G25-EXECUTOR-PARITY-20260906",
+  "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+  "state": "PASS",
+  "verdict": "PASS_FUNCTIONAL_GOVERNANCE_PARITY_REPAIR_ADMISSIBLE",
+  "authority_effect": "NONE_PREFLIGHT_ONLY",
+  "resolved_state": {
+    "current_main": "c4f903f572d943f7d523c8a86b016d6a9f154ba4",
+    "canonical_task_registry_generation": 15,
+    "handoff": "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+    "authorization": "authorizations/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json",
+    "worker_registry_fragment": "control/worker-registry.d/ecosystem-chat-sovereign-inference-parent-001.json",
+    "executor": "scripts/run_independent_ecosystem_chat_parent.py",
+    "authorization_minimum_fencing_token_exclusive": 24,
+    "handoff_minimum_fencing_token_exclusive": 22,
+    "executor_constant_minimum_fence_exclusive": 22,
+    "failed_partial_repairs": ["PR-1146", "PR-1147"],
+    "failure_evidence": "run:34074092325/job:101596760164"
+  },
+  "problem": {
+    "state": "G25_AUTHORITY_FLOOR_PARTIALLY_RECONCILED_BUT_EXECUTOR_VALIDATOR_STILL_G22_BOUND",
+    "evidence": [
+      "Authorization requires minimum_fencing_token_exclusive=24.",
+      "WorkerCoordinator registry fragment requires the current G25+ floor.",
+      "Executable handoff on main still carries historical 22 values.",
+      "run_independent_ecosystem_chat_parent.py still declares MINIMUM_FENCE_EXCLUSIVE=22.",
+      "PR #1147 proves handoff-only alignment passes the first parity assertion but then fails validate_registered_executor because the executor still binds the historical G22 floor."
+    ]
+  },
+  "collision_review": {
+    "open_partial_prs": [1146, 1147],
+    "disposition": "SUPERSEDE_PARTIAL_DUPLICATE_REPAIRS_WITH_ONE_CURRENT_MAIN_CONSOLIDATED_PARITY_REPAIR",
+    "new_claim_or_fence": false,
+    "new_runtime": false,
+    "new_workercoordinator": false,
+    "new_scheduler": false,
+    "new_heartbeat_or_oscillator": false,
+    "new_credential_path": false
+  },
+  "planned_change": {
+    "handoff_floor": 24,
+    "executor_constant_floor": 24,
+    "preserve_existing_authorization": true,
+    "preserve_existing_worker_registry": true,
+    "mint_claim_or_fence": false,
+    "runtime_execution_claimed": false
+  },
+  "readme_impact": {
+    "readme_impact_required": true,
+    "material_function_change": false,
+    "readme_update_required": false,
+    "determination": "NO_README_CHANGE_REQUIRED_STALE_PARITY_ONLY",
+    "no_readme_update_reason": "The G25+ fence floor is already the effective authorization/WorkerCoordinator requirement and is already documented by the current Ecosystem Chat portable/current-iPhone and same-device terminal-predicate handoffs. This change only makes the stale executable handoff and validator agree with those already-effective semantics; it adds no new runtime behavior, authority boundary, interface, evidence semantic, dependency, failure mode, or capability meaning.",
+    "evidence_refs": [
+      "authorizations/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json#minimum_fencing_token_exclusive=24",
+      "control/worker-registry.d/ecosystem-chat-sovereign-inference-parent-001.json",
+      "docs/ECOSYSTEM_CHAT_PORTABLE_IPHONE_PACKAGE_MIRROR_HANDOFF.md#G25+",
+      "docs/ECOSYSTEM_CHAT_SAME_DEVICE_TERMINAL_PREDICATES_MIRROR_HANDOFF.md#G25+",
+      "receipts/ecosystem-chat-sovereign-inference/preflight-20260906-fence-floor-reconciliation.json",
+      "run:34074092325/job:101596760164"
+    ]
+  },
+  "authority": {
+    "claim_fence_authority": "WORKERCOORDINATOR",
+    "transition_authority": "INTERLOCK_INTR",
+    "credential_authority": "TV/TVC",
+    "heartbeat_grants_execution_authority": false,
+    "github_token_runtime_authority": "NONE"
+  }
+}
