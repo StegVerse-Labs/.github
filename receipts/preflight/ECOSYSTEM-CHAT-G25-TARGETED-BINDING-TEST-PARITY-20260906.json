@@ -1,0 +1,56 @@
+{
+  "schema": "stegverse.session-machine-preflight/v1",
+  "task_id": "ECOSYSTEM-CHAT-G25-TARGETED-BINDING-TEST-PARITY-20260906",
+  "parent_task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "fix/ecosystem-chat-g25-handoff-1141",
+  "state": "PASS_VALIDATION_PARITY_REPAIR_ADMISSIBLE",
+  "verdict": "PASS",
+  "resolved_state": {
+    "canonical_handoff": "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+    "authorization": "authorizations/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json",
+    "worker_registry_fragment": "control/worker-registry.d/ecosystem-chat-sovereign-inference-parent-001.json",
+    "cross_task_predicate": "PRED-RESIDENT-REQUEST-CONSUMED-ECOSYSTEM-CHAT-PARENT-002",
+    "authoritative_floor_exclusive": 24,
+    "first_safe_fresh_fence": 25,
+    "failing_test": "tests/test_targeted_execution_entrypoint_bindings.py::test_ecosystem_chat_keeps_dedicated_historical_parent_executor",
+    "observed_stale_value": 22,
+    "required_value": 24
+  },
+  "reuse": {
+    "existing_test_surface": "tests/test_targeted_execution_entrypoint_bindings.py",
+    "existing_dedicated_parent_executor": "scripts/run_independent_ecosystem_chat_parent.py",
+    "new_runtime": false,
+    "new_workercoordinator": false,
+    "new_claim_fence_plane": false,
+    "new_task_identifier": false
+  },
+  "collision_review": {
+    "canonical_active_repair_pr": 1147,
+    "duplicate_repair_pr": 1146,
+    "disposition": "UPDATE_ONLY_STALE_ASSERTION_IN_CANONICAL_PR_1147"
+  },
+  "planned_change": {
+    "paths": ["tests/test_targeted_execution_entrypoint_bindings.py"],
+    "change": "replace only the current dedicated-parent fresh_fence_minimum_exclusive assertion 22 with 24; historical terminal G22 recovery references remain unchanged",
+    "runtime_code_change": false,
+    "authority_change": false,
+    "evidence_semantics_change": false,
+    "dependency_change": false,
+    "failure_behavior_change": false
+  },
+  "readme_impact": {
+    "required": true,
+    "complete": true,
+    "material_function_change": false,
+    "readme_update_required": false,
+    "determination": "NO_README_CHANGE_REQUIRED_TEST_ASSERTION_PARITY_ONLY",
+    "no_readme_update_reason": "This changes one deterministic validation assertion to match the already-effective G25+ authorization, worker-registry fragment, executable handoff and dedicated executor guard. It changes no repository behavior, runtime semantics, interfaces, authority boundaries, evidence semantics, prerequisites, dependencies, failure behavior, or capability meaning."
+  },
+  "authority": {
+    "claim_fence_authority": "WORKERCOORDINATOR",
+    "credential_authority": "TV/TVC",
+    "heartbeat_grants_execution_authority": false,
+    "github_token_runtime_authority": "NONE"
+  }
+}
