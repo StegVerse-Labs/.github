@@ -7,17 +7,18 @@ Goal: `GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001`
 Task ID: `GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001`
 COSV ID: `10100000100000`
 COSV registration: `REGISTERED_EMITTED_UNCLAIMED`
-Status: `RESIDENT ACTIVATION REQUESTED / WORKERCOORDINATOR CLAIM PENDING / AUTHENTIC MULTILANE ACTIVATION EVIDENCE PENDING`
+Status: `RESIDENT ACTIVATION REQUESTED / COMPLETE MANIFOLD LINEAGE REGISTERED / WORKERCOORDINATOR CLAIM PENDING / AUTHENTIC ACTIVATION EVIDENCE PENDING`
 
 ## Source of truth
 
 This is the canonical continuation record for `GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001`.
 
-Canonical task/COSV records:
+Canonical task/COSV/lineage records:
 - `data/canonical-task-records/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json`
 - `control/task-vectors/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json`
 - `control/task-vector-index.d/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json`
 - `handoffs/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json`
+- `control/manifold-lineage.d/governed-multilane-manifold-activation-001.json`
 - `control/resident-execution-request.d/governed-multilane-manifold-activation-001.json`
 
 Inherited coordination authority:
@@ -25,6 +26,7 @@ Inherited coordination authority:
 
 Inherited manifold orchestration source:
 - `FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md`
+- `data/formalism-manifold-orchestration/task-state.json`
 
 Inherited StegCore manifold authority:
 - `StegVerse-Labs/StegCore/MANIFOLD_GOVERNANCE_MIRROR_HANDOFF.md`
@@ -33,91 +35,111 @@ Formal/mathematical authority remains repository-local to the applicable `Admiss
 
 ## Goal
 
-Activate governed multi-lane manifold functionality: multiple independently governed lanes may execute, preserve distinct subject-bound state and authority, emit qualifying receipts, interact through explicit constraints and dependencies, and reconcile without flattening lane distinctions or creating a second governance/execution authority path.
+Activate the governed manifold represented by the canonical lineage: execute every incomplete subordinate task owned by the canonical runtime, reuse valid completed predecessor evidence rather than rerunning it, observe authority-owned prerequisites without competing for their claims, reconcile all required lane outputs, and preserve distinct subject-bound state, provenance, divergence, uncertainty, and authority separation.
 
-This goal does not authorize a second heartbeat, worker registry, StegGate evaluator, credential system, claim/fence path, scheduler, or runtime-truth source.
+A subordinate task that is declared part of the manifold may not be silently omitted. Missing lineage registration is a defect to correct, not an exclusion rule.
 
-## Activation request — 2026-09-07
+This goal does not authorize a second heartbeat, worker registry, StegGate evaluator, credential system, claim/fence path, scheduler, runtime-truth source, or non-user wallet signing/broadcast.
 
-A standing resident execution request is now durably installed at:
+## Corrected manifold lineage — 2026-09-07
 
-`control/resident-execution-request.d/governed-multilane-manifold-activation-001.json`
+The original activation registration incorrectly represented only the five formalism lanes. The predecessor inventory proves a broader converged workstream. Canonical lineage is now registered at:
 
-The request is deliberately non-authorizing (`authority_effect: NONE_REQUEST_ONLY`). It binds this umbrella task/COSV to the existing canonical WorkerCoordinator, the existing formalism/manifold worker registry, existing process adapters, and `scripts/run_worker_runtime.py` as the resident execution surface. GitHub runtime authority remains `NONE`; heartbeat/oscillator signals grant no execution authority; TV/TVC remains credential authority.
+`control/manifold-lineage.d/governed-multilane-manifold-activation-001.json`
 
-Resident activation sequence:
-1. refresh current qualifying receipts before claiming new work;
-2. run canonical cross-task coordination/collision preflight;
-3. acquire fresh WorkerCoordinator claim/fence only for genuinely missing `HANDOFF_READY` lane work;
-4. execute the four prerequisite evidence lanes through their existing registered workers;
-5. require authentic subject-bound completed receipts;
-6. execute `SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001` only after prerequisites qualify;
-7. persist deterministic reconciliation preserving provenance, disagreement, divergence, uncertainty, and unresolved branches;
-8. verify StegCore consumption under existing authority;
-9. update this umbrella task to `ACTIVATED` only from durable qualifying machine evidence.
+The parent now carries these dispositions:
 
-The activation request itself is not activation evidence.
-
-## Activation criteria
-
-Activation requires all of the following:
-
-1. at least two distinct governed lanes execute through the canonical admitted worker/runtime path;
-2. each participating lane emits an authentic subject-bound receipt from its declared authoritative producer;
-3. receipts preserve lane identity, execution/subject binding, scope, and freshness required by the consuming predicate;
-4. concurrent or overlapping lane work passes canonical collision/claim/fence checks;
-5. no lane gains authority merely by producing evidence for another lane;
-6. reconciliation consumes the qualifying lane receipts and produces a deterministic reconciliation result;
-7. reconciliation preserves material disagreement, divergence, uncertainty, and unresolved branches rather than coercing them into one synthetic state;
-8. downstream consumers can identify which lane/evidence/authority produced each reconciled fact;
-9. no duplicate runtime, heartbeat, evaluator, credential, or wallet-signing authority is introduced;
-10. activation is evidenced by durable machine-readable receipts/state, not by chat summaries or source existence alone.
-
-## Initial activation cohort
-
+### EXECUTE / canonical machine-owned subordinate work
 - `SHWP-FORMALISM-INVENTORY-001`
 - `SHWP-FORMALISM-HANDOFF-NORMALIZATION-001`
 - `SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001`
 - `SHWP-MANIFOLD-GOVERNANCE-MAPPING-001`
 - `SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001`
+- `STEGFIN-CONTINUITY-CARRIER-007` after its TVC runtime prerequisite qualifies
 
-Source repositories include `Admissible-Existence/AE`, `RTG`, `GTG`, `TT`, `STCM`, and `StegVerse-Labs/StegCore` as already defined by the parent orchestration handoff.
+### REUSE COMPLETE / do not duplicate execution
+- `FORMALISM-MANIFOLD-ORCHESTRATION-001` implementation state; execute its incomplete children instead
+- `SOVEREIGN-LOCAL-MODEL-001` (`COMPLETE_RELEASED`)
+
+### AUTHORITY-OWNED PREREQUISITES / observe existing owner, do not compete
+- `TVC-PROVIDER-OPERATION-BROKER-003`
+- `TVC-CAPABILITY-RUNTIME-002`
+
+### EXCLUDED FROM AUTOMATIC SUBORDINATE EXECUTION BY AUTHORITY BOUNDARY
+- wallet signing/broadcast: `USER_ONLY`
+- `SHWP-DURABLE-RUNTIME-ACTIVATION`: shared runtime infrastructure dependency, not a child of this manifold
+
+`STEGFIN-CONTINUITY-CARRIER-007` is already registered with the canonical WorkerCoordinator and retains its existing machine worker and collision/fence rules. The parent may cause it to be revisited through that existing path only after TVC evidence qualifies; it may not manually execute or bypass its authority boundary.
+
+## Activation request
+
+Standing resident request:
+
+`control/resident-execution-request.d/governed-multilane-manifold-activation-001.json`
+
+The request is deliberately non-authorizing (`authority_effect: NONE_REQUEST_ONLY`). It now binds the umbrella task/COSV to the complete manifold lineage rather than only the initial five lanes.
+
+Required resident behavior:
+1. load and validate the full manifold lineage;
+2. refresh qualifying evidence for every node;
+3. reuse completed predecessor evidence without duplicate execution;
+4. run canonical cross-task coordination/collision preflight;
+5. claim/fence and execute only incomplete WorkerCoordinator-owned subordinate work;
+6. execute the four prerequisite formalism lanes and require authentic subject-bound receipts;
+7. execute formalism reconciliation only after prerequisite receipts qualify;
+8. observe TVC broker/runtime prerequisites under their existing TV/TVC-owned observer without competing claims;
+9. execute `STEGFIN-CONTINUITY-CARRIER-007` only after its TVC prerequisite qualifies;
+10. preserve provenance, disagreement, divergence, uncertainty, and unresolved branches;
+11. verify StegCore consumption under existing governance authority;
+12. declare the umbrella task `ACTIVATED` only after every lineage node has a qualifying execute/reuse/external-owner disposition and all activation predicates are durably machine-evidenced.
+
+The activation request and lineage records themselves are not runtime activation evidence.
+
+## Activation criteria
+
+Activation requires all of the following:
+1. the full declared manifold lineage is traversed;
+2. completed predecessor work is reused without unnecessary re-execution;
+3. incomplete canonical subordinate tasks execute or fail closed through their existing owners;
+4. external authority-owned prerequisites are observed without competing claims;
+5. at least two distinct governed lanes execute through the canonical admitted worker/runtime path;
+6. each participating lane emits an authentic subject-bound receipt from its declared authoritative producer;
+7. receipts preserve lane identity, execution/subject binding, scope, and freshness required by the consuming predicate;
+8. concurrent or overlapping lane work passes canonical collision/claim/fence checks;
+9. no lane gains authority merely by producing evidence for another lane;
+10. reconciliation consumes qualifying lane receipts and produces a deterministic result;
+11. reconciliation preserves material disagreement, divergence, uncertainty, and unresolved branches;
+12. downstream consumers can identify which lane/evidence/authority produced each reconciled fact;
+13. no duplicate runtime, heartbeat, evaluator, credential, or wallet-signing authority is introduced;
+14. activation is evidenced by durable machine-readable receipts/state, not chat summaries, request creation, lineage creation, or source existence.
 
 ## Current standing
 
-Current task/COSV standing:
 - canonical task registration: COMPLETE;
 - COSV ID: `10100000100000`;
 - COSV vector emission: COMPLETE;
-- resident activation request: REQUESTED;
+- complete manifold lineage registration: COMPLETE;
+- resident activation request: REQUESTED and lineage-corrected;
 - COSV lifecycle: `UNCLAIMED` pending resident consumption;
 - canonical owner installed: YES;
 - activation evidence complete: NO;
 - activation: NOT PROVEN.
 
-Current initial-cohort execution-owner standing from the canonical worker registry:
-- five existing repository workers are registered and `AVAILABLE`;
-- all five lane tasks remain `HANDOFF_READY` in the last checked registry state;
-- all five had `claim_id: null`, `worker_id: null`, `worker_instance_id: null`, and no active lease;
-- no replacement umbrella worker is authorized or required;
-- the existing five workers remain the execution owners after canonical WorkerCoordinator claim/fence resolution.
-
-Known inherited source state:
-- initial five-lane source implementation: COMPLETE;
-- process adapter bindings: 5/5;
-- executable handoffs: 5/5;
+Known source/control-plane state:
+- formalism five-lane source implementation: COMPLETE;
+- formalism process adapter bindings: 5/5;
+- formalism executable handoffs: 5/5;
 - repository/control-plane validation: PASS;
-- resident execution of the five lanes: previously NOT OBSERVED;
-- lane receipts: previously 0/5 observed;
-- reconciliation: previously NOT COMPLETE.
-
-Those runtime claims must be refreshed from authoritative current evidence before activation is declared. Source existence, registration, request creation, worker availability, or COSV emission do not establish execution.
+- `SOVEREIGN-LOCAL-MODEL-001`: COMPLETE_RELEASED and reusable;
+- `STEGFIN-CONTINUITY-CARRIER-007`: machine-owned continuation registered; TVC primary runtime prerequisite pending in predecessor inventory;
+- `TVC-PROVIDER-OPERATION-BROKER-003` / `TVC-CAPABILITY-RUNTIME-002`: existing TV/TVC-owned runtime observation path; do not compete;
+- resident execution receipts/reconciliation for this activation: not yet proven current.
 
 ## Completion boundary
 
-`GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001` reaches activation only when qualifying evidence demonstrates governed multi-lane execution plus reconciliation under the existing authority partition.
+`GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001` reaches activation only when the complete declared lineage has a qualifying terminal/reuse/external-owner disposition and governed multi-lane execution plus reconciliation are evidenced under the existing authority partition.
 
-A future tag/release may be evaluated only after activation and release criteria of the owning repositories are satisfied. After an actual release/tag, create/execute propagation verification for:
+A future tag/release may be evaluated only after activation and owning-repository release criteria are satisfied. After an actual release/tag, create/execute propagation verification for:
 - `StegVerse-Labs/Site`
 - `GCAT-BCAT-Engine/Publisher`
 - `admissibility-wiki`
@@ -126,21 +148,22 @@ A future tag/release may be evaluated only after activation and release criteria
 ## Remaining files/modules or evidence
 
 Destination `StegVerse-Labs/.github`:
-- resident consumption receipt for the new activation request;
-- current qualifying lane execution receipts;
+- resident consumption/traversal evidence for the corrected activation request;
+- current qualifying formalism lane execution receipts;
 - current reconciliation receipt/state;
-- WorkerCoordinator claim/fence evidence for the initial activation cohort;
+- WorkerCoordinator claim/fence evidence for machine-owned subordinate tasks;
+- qualifying `STEGFIN-CONTINUITY-CARRIER-007` state after TVC predicate;
 - current canonical coordination projection after claim resolution.
+
+Destination `StegVerse-Labs/TVC`:
+- authoritative current evidence for `TVC-PROVIDER-OPERATION-BROKER-003` / `TVC-CAPABILITY-RUNTIME-002`; no new credential path.
 
 Destination `StegVerse-Labs/StegCore`:
 - current runtime/manifold consumption evidence consistent with `MANIFOLD_GOVERNANCE_MIRROR_HANDOFF.md`.
 
 Destination applicable `Admissible-Existence/*` repositories:
-- no new mathematical authority files required unless a genuine source-formalism delta is discovered.
-
-Destination `StegVerse-Labs/TVC`:
-- only predicates/receipts required by existing credential/runtime boundaries; no new credential path is authorized.
+- no new mathematical authority files unless a genuine source-formalism delta is discovered.
 
 ## Archive rule
 
-The task identity and activation request are durably represented. This thread is not archive-ready until resident execution ownership/claim-fence resolution and session-unique continuation are durably transferred and evidenced. The goal itself is not complete until authentic multi-lane activation and reconciliation evidence exists.
+The task identity, complete lineage, and corrected activation request are durably represented. This thread is not archive-ready until resident traversal/ownership and session-unique continuation are durably evidenced. The goal itself is not complete until authentic full-manifold activation and reconciliation evidence exists.
