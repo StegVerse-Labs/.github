@@ -3,7 +3,7 @@
   "task_id": "REUSABLE-TASK-EPHEMERAL-CONSTRUCT-001",
   "goal_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
   "state": "PASS",
-  "evaluated_at": "2026-09-06T22:20:00-05:00",
+  "evaluated_at": "2026-09-07T09:12:00-05:00",
   "scope": {
     "repository": "StegVerse-Labs/.github",
     "mutation_paths": [
@@ -11,6 +11,8 @@
       "data/reusable-task-ephemeral-construct-contract.json",
       "schemas/reusable-task-invocation-manifest.schema.json",
       "scripts/materialize_reusable_task_construct.py",
+      "scripts/trigger_reusable_task.py",
+      "scripts/refresh_sovereign_worker_runtime_source.py",
       "docs/REUSABLE_TASK_EPHEMERAL_CONSTRUCT_MIRROR_HANDOFF.md",
       "data/task-coordination-policy.json",
       "data/canonical-task-registry.json",
@@ -21,7 +23,7 @@
   },
   "canonical_state_resolution": {
     "canonical_task_registry": "data/canonical-task-registry.json#generation-17",
-    "reusable_task_registry": "data/reusable-task-registry.json#generation-1",
+    "reusable_task_registry": "data/reusable-task-registry.json#generation-2",
     "cosv_profile": "management/COSV_PROFILE_V1.json#task.v1",
     "cosv_task_index": "control/task-vector-index.json",
     "cross_task_coordination": "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
@@ -35,24 +37,27 @@
     "duplicate_worker_or_scheduler_required": false,
     "existing_workercoordinator_reused": true,
     "existing_intr_boundary_reused": true,
-    "existing_master_records_authority_reused": true
+    "existing_master_records_authority_reused": true,
+    "existing_resident_source_refresh_reused": true
   },
   "admitted_change": {
-    "strategy": "Define reusable tasks as durable identities parameterized per invocation; derive invocation-specific RTG/GTG/TT construct envelopes from canonical definitions; bind a manifest; materialize ephemeral runners only where needed; retain chained receipts and a non-executing residual recording construct after runner expiry; displace that residual only after required recording and Master Records custody/reconstruction, designated entropy recovery.",
+    "strategy": "Extend the existing reusable-task construct so a valid trigger automatically advances every declared deterministic machine-admissible step until completion or the first authority, evidence, external-resource, human-decision, or unresolved-state boundary. The trigger driver may invoke only declared runner templates and existing resident execution surfaces; it may not create a scheduler, mint claim/fence authority, bypass Interlock/InTr, acquire credentials outside TV/TVC, infer execution evidence, or manufacture Master Records state.",
     "functional_mutation": true,
-    "authority_effect": "NONE_CONSTRUCT_AND_RECORDING_LIFECYCLE_ONLY"
+    "authority_effect": "NONE_BOUNDED_AUTOMATION_ORCHESTRATION_ONLY"
   },
   "readme_impact": {
     "required": true,
     "material_function_change": true,
     "readme_updated_in_change_set": true,
     "readme_path": "README.md",
-    "reason": "The change materially defines reusable-task invocation, derived TT/RTG/GTG construction, ephemeral runner expiry, residual recording behavior, Master Records displacement, and entropy-recovery semantics."
+    "reason": "Reusable tasks change from lifecycle-only constructs to trigger-once bounded automation that advances machine-admissible work until a genuine governance or evidence boundary."
   },
   "authority": {
+    "trigger_grants_execution_authority": false,
     "reusable_identity_grants_execution_authority": false,
     "derived_construct_grants_execution_authority": false,
     "manifest_binding_grants_execution_authority": false,
+    "automation_may_bypass_boundary": false,
     "workercoordinator_remains_claim_fence_authority": true,
     "master_records_remains_observed_reality_authority": true,
     "intr_remains_transition_authority": true,
