@@ -114,6 +114,10 @@ When work on an existing task or goal exposes a distinct necessary piece of work
 
 The canonical contract is `data/task-coordination-policy.json`, with scoped continuation documentation at `docs/COSV_TASK_POINTER_COORDINATION_MIRROR_HANDOFF.md`. No unique continuation state should remain only in chat prose at session close.
 
+For resident targeted execution, `scripts/refresh_and_execute_resident_task.py` accepts `--cosv-task-vector` alongside an explicit task ID. After the already-local source refresh and before the existing WorkerCoordinator execution command is invoked, the bridge resolves the task ID/vector pair exactly once against the refreshed `control/task-vector-index.json`. Malformed vectors, missing or duplicate task identities, missing provenance, and vector mismatches fail closed before targeted execution. Successful validation is written into `receipts/sovereign-host/resident-targeted-execution.latest.json` as non-authorizing pointer evidence.
+
+The canonical request `control/resident-execution-request.d/cosv-task-pointer-runtime-enforcement-001.json` passes both values through the registered `cosv_task_pointer_runtime_enforcement` resident dispatcher consumer. The local-only WorkerCoordinator source refresh propagates that consumer together with the existing dispatcher and execution bridge. Pointer validation and request consumption grant no execution, claim/fence, credential, Interlock/InTr transition, or Master Records authority; authentic task completion still requires the ordinary downstream runtime evidence.
+
 ### Reusable task ephemeral constructs and entropy recovery
 
 Reusable tasks are durable identities, not permanently running task implementations. Each invocation binds invocation-specific parameters and derives the exact RTG -> GTG -> TT construct needed for that invocation from the canonical cross-layer definitions. The resulting manifest binds the reusable identity, parameters, optional tracked task ID + COSV vector, derived construct, runner plan, authority ceiling, dependencies, expected evidence, recording levels, expiry conditions, and entropy-recovery conditions.
