@@ -1,0 +1,69 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001",
+  "correlation_id": "GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001",
+  "root_correlation_id": "GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001",
+  "parent_task_id": null,
+  "goal": "Activate governed multi-lane manifold functionality by obtaining authentic subject-bound execution receipts from multiple existing governed lanes and deterministically reconciling them while preserving lane provenance, divergence, uncertainty, and authority separation.",
+  "coordination_state": "PROPOSED",
+  "checkout_state": "UNCLAIMED",
+  "cosv_task_vector": "10100000100000",
+  "source_refs": [
+    "docs/GOVERNED_MULTILANE_MANIFOLD_ACTIVATION_MIRROR_HANDOFF.md",
+    "handoffs/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json",
+    "FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md",
+    "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
+    "control/task-vectors/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs", "Admissible-Existence"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegCore", "Admissible-Existence/AE", "Admissible-Existence/RTG", "Admissible-Existence/GTG", "Admissible-Existence/TT", "Admissible-Existence/STCM"],
+    "components": ["governed-multilane-execution", "subject-bound-lane-receipts", "manifold-reconciliation", "lane-provenance", "authority-partition-preservation"]
+  },
+  "dependencies": [
+    {"dependency_id":"DEP-FORMALISM-INVENTORY-RECEIPT","kind":"TASK_EVIDENCE","state":"UNRESOLVED","ref":"SHWP-FORMALISM-INVENTORY-001"},
+    {"dependency_id":"DEP-FORMALISM-HANDOFF-NORMALIZATION-RECEIPT","kind":"TASK_EVIDENCE","state":"UNRESOLVED","ref":"SHWP-FORMALISM-HANDOFF-NORMALIZATION-001"},
+    {"dependency_id":"DEP-FORMALISM-MATHEMATICAL-CROSSWALK-RECEIPT","kind":"TASK_EVIDENCE","state":"UNRESOLVED","ref":"SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001"},
+    {"dependency_id":"DEP-MANIFOLD-GOVERNANCE-MAPPING-RECEIPT","kind":"TASK_EVIDENCE","state":"UNRESOLVED","ref":"SHWP-MANIFOLD-GOVERNANCE-MAPPING-001"},
+    {"dependency_id":"DEP-FORMALISM-MANIFOLD-RECONCILIATION","kind":"TASK_EVIDENCE","state":"UNRESOLVED","ref":"SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001"}
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+    "SHWP-FORMALISM-INVENTORY-001",
+    "SHWP-FORMALISM-HANDOFF-NORMALIZATION-001",
+    "SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001",
+    "SHWP-MANIFOLD-GOVERNANCE-MAPPING-001",
+    "SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001"
+  ],
+  "existing_evidence_refs": [
+    "FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegCore/MANIFOLD_GOVERNANCE_MIRROR_HANDOFF.md"
+  ],
+  "expected_evidence_predicates": [
+    "TWO_OR_MORE_DISTINCT_GOVERNED_LANES_EXECUTED",
+    "QUALIFYING_SUBJECT_BOUND_RECEIPT_PER_PARTICIPATING_LANE",
+    "CANONICAL_CLAIM_AND_COLLISION_CHECKS_PASS",
+    "LANE_AUTHORITY_PARTITION_PRESERVED",
+    "DETERMINISTIC_RECONCILIATION_COMPLETED",
+    "MATERIAL_DIVERGENCE_AND_UNCERTAINTY_PRESERVED",
+    "RECONCILED_PROVENANCE_TRACEABLE_TO_LANE_AND_AUTHORITY",
+    "NO_PARALLEL_HEARTBEAT_EVALUATOR_CREDENTIAL_OR_SIGNING_AUTHORITY",
+    "DURABLE_MACHINE_READABLE_ACTIVATION_EVIDENCE_PERSISTED"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["formalism_inventory_reconciliation", "formalism_handoff_normalization_analysis", "formalism_mathematical_crosswalk", "manifold_governance_mapping", "formalism_manifold_reconciliation"],
+    "environment": "SOVEREIGN_RESIDENT",
+    "direction": "INTERNAL",
+    "mutation_required": false,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "runtime_resolution": null,
+  "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
+  "human_action_ref": null,
+  "completion": {"claimed":false,"validated":false,"reconciliation_ref":null},
+  "allowed_next_transitions": ["INGRESS_ADMITTED"],
+  "handoff_projection_refs": ["docs/GOVERNED_MULTILANE_MANIFOLD_ACTIVATION_MIRROR_HANDOFF.md"],
+  "authority_model": {"task_registry_mints_execution_authority":false,"source_state_proves_execution":false,"worker_claim_authority":"WORKERCOORDINATOR","master_records_reality_authority":true,"interlock_intr_required_for_governed_ingress_egress":true}
+}
