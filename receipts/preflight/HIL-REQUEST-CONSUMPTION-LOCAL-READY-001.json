@@ -1,0 +1,74 @@
+{
+  "schema": "stegverse.machine-preflight/v1",
+  "preflight_id": "HIL-REQUEST-CONSUMPTION-LOCAL-READY-001",
+  "task_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+  "state": "PASS",
+  "verdict": "PASS_FUNCTIONAL_MUTATION_ADMISSIBLE",
+  "authority_effect": "NONE_PREFLIGHT_ONLY",
+  "resolved_state": {
+    "canonical_task_registry_generation": 15,
+    "canonical_task_registry_status": "RUNTIME_PROFILE_GOVERNANCE_REVIEW_SOURCE_BOUND_AUTHENTIC_RUNTIME_PENDING",
+    "canonical_handoff": "docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_MIRROR_HANDOFF.md",
+    "same_device_supersession": "docs/HIL_SAME_DEVICE_RUNTIME_SUPERSESSION_20260906.md",
+    "acceptance_parity_handoff": "docs/HIL_ACTIVATION_ACCEPTANCE_EVIDENCE_PARITY_MIRROR_HANDOFF.md",
+    "resident_request": "control/resident-execution-request.d/hil-sovereign-receiver-001.json#RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002",
+    "resident_consumer": "scripts/consume_hil_resident_execution_request.py",
+    "cross_task_predicate": "PRED-RESIDENT-REQUEST-CONSUMED-HIL-SOVEREIGN-RECEIVER-002",
+    "cross_task_semantic_predicate": "resident_request_consumed",
+    "cross_task_predicate_state": "UNKNOWN",
+    "worker_transition_after_successful_local_ready": "HIL_RECEIVER_LOCAL_READY_PUBLIC_RENDEZVOUS_REQUIRED",
+    "master_records_task": "HIL-MASTER-RECORD-001",
+    "master_records_authority_effect": "SEPARATE_CUSTODY_RECONSTRUCTION_ONLY",
+    "authentic_runtime_execution_observed": false,
+    "current_main": "c33fa4be9f3b22e446d08291722870586b025446"
+  },
+  "gap": {
+    "state": "REQUEST_CONSUMPTION_SEMANTICS_STILL_COUPLED_TO_DOWNSTREAM_PUBLIC_LIFECYCLE",
+    "evidence": [
+      "scripts/consume_hil_resident_execution_request.py treats HIL_RECEIVER_LOCAL_READY_PUBLIC_RENDEZVOUS_REQUIRED as retryable/non-consumed",
+      "tests/test_hil_resident_execution_request.py explicitly expects repeated execution after successful local READY",
+      "control/cross-task-coordination.json names the predicate resident_request_consumed",
+      "docs/HIL_SAME_DEVICE_RUNTIME_SUPERSESSION_20260906.md makes public observation downstream/optional for routine local LEASE_OPEN and requires no other machine"
+    ],
+    "effect": "A successful same-device HIL receiver execution can be reissued solely because later public/TVC lifecycle transitions are incomplete, conflating completion of this resident request with completion of the broader HIL lifecycle."
+  },
+  "planned_change": {
+    "reuse_existing_request": true,
+    "reuse_existing_consumer": true,
+    "reuse_existing_workercoordinator": true,
+    "reuse_existing_hil_worker": true,
+    "new_runtime": false,
+    "new_heartbeat": false,
+    "new_oscillator": false,
+    "new_scheduler": false,
+    "new_workercoordinator": false,
+    "new_claim_fence_plane": false,
+    "new_credential_path": false,
+    "action": "SEPARATE_RESIDENT_REQUEST_CONSUMPTION_TERMINALITY_FROM_BROADER_HIL_LIFECYCLE_TERMINALITY",
+    "request_consumption_success_boundary": "HIL_RECEIVER_LOCAL_READY_PUBLIC_RENDEZVOUS_REQUIRED_OR_LATER_EXISTING_HIL_TRANSITION",
+    "broader_hil_task_remains_active": true,
+    "public_tvc_master_records_predicates_remain_separate": true
+  },
+  "collision_review": {
+    "open_pr_owning_exact_request_consumption_scope": false,
+    "duplicate_hil_runtime_work": false,
+    "worker_claim_or_fence_minted": false,
+    "master_records_collision": false
+  },
+  "readme_impact": {
+    "readme_impact_required": true,
+    "material_function_change": true,
+    "readme_update_required": true,
+    "readme_path": "README.md",
+    "determination": "README_UPDATE_REQUIRED_IN_SAME_CHANGE_SET",
+    "reason": "The repair changes resident-request retry/terminal behavior and the evidence semantics used by the canonical resident_request_consumed predicate while preserving the broader HIL lifecycle as active."
+  },
+  "authority": {
+    "heartbeat_grants_execution_authority": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "transition_authority": "INTERLOCK_INTR",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "request_consumption_grants_lifecycle_completion": false
+  }
+}
