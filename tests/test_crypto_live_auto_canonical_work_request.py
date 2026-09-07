@@ -6,17 +6,21 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "data" / "canonical-task-registry.json"
 REQUEST = ROOT / "control" / "resident-execution-request.d" / "canonical-work-crypto-live-auto-001.json"
+VECTOR = ROOT / "control" / "task-vectors" / "CRYPTO-LIVE-AUTO-001.json"
 CONSUMER = ROOT / "control" / "resident-execution-request.d" / "consume-canonical-work-coordination-bootstrap.py"
 COORDINATION = ROOT / "control" / "cross-task-coordination.d" / "crypto-live-auto-001-canonical-work-ingress.json"
 PREFLIGHT = ROOT / "receipts" / "preflight" / "CRYPTO-LIVE-AUTO-CANONICAL-WORK-001.json"
 README = ROOT / "README.md"
+
+TASK_ID = "CRYPTO-LIVE-AUTO-001"
+COSV = "50000000106000"
 
 
 class CryptoLiveAutoCanonicalWorkRequestTests(unittest.TestCase):
     def test_task_registered_as_proposed_without_worker_claim(self):
         registry = json.loads(REGISTRY.read_text(encoding="utf-8"))
         self.assertEqual(registry.get("generation"), 16)
-        matches = [row for row in registry.get("tasks", []) if row.get("task_id") == "CRYPTO-LIVE-AUTO-001"]
+        matches = [row for row in registry.get("tasks", []) if row.get("task_id") == TASK_ID]
         self.assertEqual(len(matches), 1)
         task = matches[0]
         self.assertEqual(task.get("coordination_state"), "PROPOSED")
@@ -26,10 +30,28 @@ class CryptoLiveAutoCanonicalWorkRequestTests(unittest.TestCase):
         self.assertFalse(task.get("authority_model", {}).get("task_registry_mints_execution_authority"))
         self.assertFalse(task.get("authority_model", {}).get("source_state_proves_execution"))
 
-    def test_request_is_exact_and_non_authorizing(self):
+    def test_cosv_vector_is_evidence_backed_machine_owned_projection(self):
+        vector = json.loads(VECTOR.read_text(encoding="utf-8"))
+        self.assertEqual(vector["identity"], f"StegVerse-Labs/.github:task:{TASK_ID}")
+        self.assertEqual(vector["profile"], "task.v1")
+        self.assertEqual(vector["vector"], COSV)
+        metrics = vector["exact_metrics"]
+        self.assertEqual(metrics["symbol_order"], "LRUIVGOCMTBEAP")
+        self.assertEqual(metrics["lifecycle"], "MACHINE_OWNED")
+        self.assertEqual(metrics["blocker_count"], 6)
+        self.assertTrue(metrics["canonical_owner_installed"])
+        self.assertFalse(metrics["evidence_complete"])
+        self.assertFalse(metrics["activated"])
+        self.assertFalse(metrics["propagated"])
+
+    def test_request_is_exact_cosv_bound_and_non_authorizing(self):
         request = json.loads(REQUEST.read_text(encoding="utf-8"))
         self.assertEqual(request["request_id"], "RESIDENT-EXEC-CANONICAL-WORK-CRYPTO-LIVE-AUTO-001")
-        self.assertEqual(request["task_id"], "CRYPTO-LIVE-AUTO-001")
+        self.assertEqual(request["task_id"], TASK_ID)
+        self.assertEqual(request["cosv_profile"], "task.v1")
+        self.assertEqual(request["cosv_task_vector"], COSV)
+        self.assertEqual(request["pointer_source"], "control/task-vectors/CRYPTO-LIVE-AUTO-001.json")
+        self.assertTrue(request["cosv_binding_required_before_execution"])
         self.assertEqual(request["state"], "REQUESTED")
         self.assertEqual(request["mode"], "CANONICAL_WORK_EVENT_BOOTSTRAP")
         self.assertEqual(request["credential_authority"], "TV/TVC")
@@ -54,7 +76,7 @@ class CryptoLiveAutoCanonicalWorkRequestTests(unittest.TestCase):
         staged = predicates["canonical_work_request_staged"]
         consumed = predicates["resident_request_consumed"]
         expected_binding = {
-            "task_id": "CRYPTO-LIVE-AUTO-001",
+            "task_id": TASK_ID,
             "request_id": "RESIDENT-EXEC-CANONICAL-WORK-CRYPTO-LIVE-AUTO-001",
         }
         self.assertEqual(staged["subject_binding"], expected_binding)
@@ -69,7 +91,7 @@ class CryptoLiveAutoCanonicalWorkRequestTests(unittest.TestCase):
         self.assertFalse(preflight["readme_impact"]["material_function_change"])
         readme = README.read_text(encoding="utf-8")
         self.assertIn("Canonical Work task ingress", readme)
-        self.assertIn("multiple explicit task request specifications", readme)
+        self.assertIn("task_id + task.v1 vector", readme)
 
 
 if __name__ == "__main__":

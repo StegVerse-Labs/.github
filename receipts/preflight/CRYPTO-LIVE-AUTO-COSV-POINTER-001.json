@@ -1,0 +1,51 @@
+{
+  "schema": "stegverse.session-machine-preflight/v1",
+  "task_id": "CRYPTO-LIVE-AUTO-001",
+  "cosv_profile": "task.v1",
+  "cosv_task_vector": "50000000106000",
+  "state": "PASS",
+  "evaluated_at": "2026-09-07T09:21:00-05:00",
+  "canonical_inputs": [
+    "StegVerse-Labs/crypto-bot/claims/CRYPTO-LIVE-AUTO-001.claim.json",
+    "management/COSV_PROFILE_V1.json",
+    "data/task-coordination-policy.json",
+    "docs/COSV_TASK_POINTER_RUNTIME_ENFORCEMENT_MIRROR_HANDOFF.md",
+    "docs/CRYPTO_LIVE_AUTO_CANONICAL_WORK_MIRROR_HANDOFF.md"
+  ],
+  "projection": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 6,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "readme_impact": {
+    "required": true,
+    "material_function_change": false,
+    "readme_updated_in_change_set": false,
+    "no_readme_update_reason": "README already documents task_id + task.v1 COSV pointer semantics and fail-closed pointer validation; this change assigns one existing task to that existing contract without changing repository behavior, runtime authority, interfaces, failure behavior, or capability meaning.",
+    "evidence_refs": [
+      "README.md",
+      "data/task-coordination-policy.json",
+      "docs/COSV_TASK_POINTER_RUNTIME_ENFORCEMENT_MIRROR_HANDOFF.md"
+    ]
+  },
+  "authority": {
+    "cosv_pointer_grants_execution_authority": false,
+    "workercoordinator_claim_fence_still_required": true,
+    "interlock_intr_transition_still_required": true,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE"
+  },
+  "verdict": "PASS"
+}

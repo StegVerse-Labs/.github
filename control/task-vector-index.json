@@ -861,6 +861,16 @@
       "canonical_owner_ref": "docs/LEGACY_CONTINUITY_VALIDATION_MIRROR_HANDOFF.md"
     },
     {
+      "task_id": "CRYPTO-LIVE-AUTO-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "data/canonical-task-registry.json",
+      "source_state_vector_ref": "control/task-vectors/CRYPTO-LIVE-AUTO-001.json",
+      "vector": "50000000106000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "StegVerse-Labs/crypto-bot/claims/CRYPTO-LIVE-AUTO-001.claim.json"
+    },
+    {
       "task_id": "COSV-TASK-POINTER-RUNTIME-ENFORCEMENT-001",
       "repository": "StegVerse-Labs/.github",
       "registry_ref": "data/canonical-task-registry.json",
@@ -872,8 +882,8 @@
     }
   ],
   "coverage": {
-    "indexed_vectorized_tasks": 91,
-    "local_cosv_record_tasks": 91,
+    "indexed_vectorized_tasks": 92,
+    "local_cosv_record_tasks": 92,
     "external_owner_projection_tasks": 0
   },
   "authority_effect": "NONE"
