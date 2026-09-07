@@ -21,7 +21,9 @@
           "control/canonical-resident-carrier-contract.json",
           "data/task-coordination-policy.json",
           "scripts/evaluate_entity_transition_ownership.py",
+          "scripts/evaluate_goal_resolution_continuation.py",
           "scripts/dispatch_resident_execution_requests.py",
+          "tests/test_goal_resolution_continuation.py",
           "docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_MIRROR_HANDOFF.md",
           "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md",
           "README.md"
@@ -29,6 +31,7 @@
         "modules": [
           "entity-autonomous-governed-progression",
           "canonical-work-coordination",
+          "goal-resolution-continuation",
           "resident-request-dispatch"
         ],
         "runtime_surfaces": [
@@ -38,10 +41,13 @@
         "evidence_responsibilities": [
           "per-transition current governance",
           "machine-owned continuation without human orchestration",
+          "automatic task/COSV/handoff re-ingestion",
+          "five-iteration bounded report cadence",
+          "human-review-only stop boundary",
           "runtime adoption receipt"
         ]
       },
-      "expected_blast_radius": "Existing StegVerse-001, StegVerse-002, and SV-011 resident consumers only. No new heartbeat, scheduler, WorkerCoordinator, credential authority, resident runtime, or human interaction authority is introduced.",
+      "expected_blast_radius": "Existing canonical work coordination and resident/entity consumers only. Human-originated ideas/queries/goals may continue through repeated machine-owned task/COSV/handoff cycles until governed completion or a true human-review boundary. No new heartbeat, scheduler, WorkerCoordinator, credential authority, resident runtime, or human interaction authority is introduced.",
       "readme_impact_required": true,
       "readme_impact": {
         "material_function_change": true,
@@ -49,8 +55,11 @@
         "readme_path": "StegVerse-Labs/.github/README.md",
         "evidence_refs": [
           "StegVerse-Labs/.github@8232f9858eca38150d0f040302306d5e9e5e4273",
+          "receipts/preflight/entity-autonomous-goal-resolution-continuation-20260907.json",
           "docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_MIRROR_HANDOFF.md",
-          "receipts/preflight/entity-autonomous-governed-progression-runtime-adoption-20260905.json"
+          "control/entity-autonomous-governed-progression-contract.json",
+          "scripts/evaluate_goal_resolution_continuation.py",
+          "README.md"
         ],
         "disposition": "README_UPDATED_FOR_MATERIAL_FUNCTION_CHANGE"
       },
@@ -70,23 +79,27 @@
         "contract_schema": "stegverse.entity-autonomous-governed-progression-contract/v1"
       },
       "state": "SATISFIED",
-      "description": "The source/governance rule, transition-ownership classifier, canonical resident-carrier consumer bindings, and iOS human-only queue correction are installed.",
+      "description": "The source/governance rule, transition-ownership classifier, bounded goal-resolution continuation evaluator, canonical resident-carrier consumer bindings, and iOS human-only queue correction are installed.",
       "authoritative_producer": "StegVerse-Labs/.github",
       "required_schema": "stegverse.entity-autonomous-governed-progression-contract/v1",
       "required_scope": "entity autonomous governed progression source/control",
-      "required_execution_instance": "404f9fb1434bc4273df5c15fa3d774785f0dc394",
+      "required_execution_instance": "SOURCE_GENERATION_20260907_GOAL_CONTINUATION",
       "max_age_seconds": null,
       "required_fields": [
         "every_state_change_requires_current_governance",
         "human_approval_default",
-        "human_interaction_queue_must_not_schedule_machine_runtime"
+        "human_interaction_queue_must_not_schedule_machine_runtime",
+        "automatic_reingestion=true",
+        "default_report_interval_iterations=5",
+        "human_reentry_for_intermediate_ids=false"
       ],
       "expected_output_ref": "control/entity-autonomous-governed-progression-contract.json",
       "consumers": ["ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001"],
       "canonical_source_refs": [
         "docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_MIRROR_HANDOFF.md",
         "control/entity-autonomous-governed-progression-contract.json",
-        "control/canonical-resident-carrier-contract.json",
+        "data/task-coordination-policy.json",
+        "scripts/evaluate_goal_resolution_continuation.py",
         "docs/CURRENT_USER_IOS_INTERACTION_SERIALIZATION_MIRROR_HANDOFF.md"
       ]
     },
@@ -98,18 +111,18 @@
         "functional_change": "entity-autonomous-governed-progression"
       },
       "state": "SATISFIED",
-      "description": "The organization README now explains contemporaneous per-transition governance, autonomous machine-owned continuation, and the true human-authority boundary.",
+      "description": "The organization README explains contemporaneous per-transition governance, automatic machine-owned goal continuation, bounded five-iteration reporting, and the true human-authority boundary.",
       "authoritative_producer": "StegVerse-Labs/.github",
       "required_schema": null,
       "required_scope": "README completeness for entity progression runtime semantics",
-      "required_execution_instance": "8232f9858eca38150d0f040302306d5e9e5e4273",
+      "required_execution_instance": "README_CHANGESET_20260907_GOAL_CONTINUATION",
       "max_age_seconds": null,
       "required_fields": ["readme_updated_in_change_set"],
       "expected_output_ref": "README.md#autonomous-governed-entity-progression",
       "consumers": ["ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001"],
       "canonical_source_refs": [
         "README.md",
-        "receipts/preflight/entity-autonomous-governed-progression-runtime-adoption-20260905.json"
+        "receipts/preflight/entity-autonomous-goal-resolution-continuation-20260907.json"
       ]
     },
     {
@@ -120,13 +133,13 @@
         "repository": "StegVerse-Labs/.github"
       },
       "state": "SATISFIED",
-      "description": "The canonical work coordination runtime source, resident request, dispatcher selector, Universal InTr ingress, Master Records projection, dependency fanout, and task-registry projection are installed.",
+      "description": "The canonical work coordination runtime source, resident request, dispatcher selector, Universal InTr ingress, Master Records projection, dependency fanout, task-registry projection, and continuation policy are installed.",
       "authoritative_producer": "StegVerse-Labs/.github",
       "required_schema": null,
       "required_scope": "canonical work coordination runtime source",
       "required_execution_instance": null,
       "max_age_seconds": null,
-      "required_fields": ["resident request staged", "dispatcher selector installed", "Master Records projection source installed"],
+      "required_fields": ["resident request staged", "dispatcher selector installed", "Master Records projection source installed", "goal continuation policy installed"],
       "expected_output_ref": "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md",
       "consumers": ["ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001"],
       "canonical_source_refs": [
@@ -143,7 +156,7 @@
         "transition_boundary": "Interlock/InTr"
       },
       "state": "UNSATISFIED",
-      "description": "The existing resident/runtime path must demonstrate that machine-owned entity work selects/continues through canonical work coordination and contemporaneous per-transition governance without inserting a human approval checkpoint.",
+      "description": "The existing resident/runtime path must demonstrate that machine-owned entity work selects/continues through canonical work coordination and contemporaneous per-transition governance without inserting a human approval checkpoint, including re-ingestion of returned Task/COSV/handoff state across successive cycles.",
       "authoritative_producer": "existing heartbeat-separated native WorkerCoordinator + task-specific consumers",
       "required_schema": null,
       "required_scope": "runtime adoption of entity autonomous governed progression",
@@ -154,7 +167,9 @@
         "current_governance_decision_observed",
         "human_approval_checkpoint_inserted=false",
         "execution_or_denial_receipt_retained",
-        "next_state_reconstructed"
+        "next_state_reconstructed",
+        "returned_task_cosv_handoff_state_reingested",
+        "human_reentry_for_intermediate_ids=false"
       ],
       "expected_output_ref": "task-specific resident execution + governance receipts bound to canonical task identity",
       "consumers": [
@@ -166,7 +181,8 @@
       "canonical_source_refs": [
         "docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_MIRROR_HANDOFF.md",
         "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md",
-        "control/canonical-resident-carrier-contract.json"
+        "control/canonical-resident-carrier-contract.json",
+        "scripts/evaluate_goal_resolution_continuation.py"
       ]
     }
   ],
@@ -180,13 +196,15 @@
       },
       "existing_evidence_refs": [
         "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md",
-        "docs/CANONICAL_RESIDENT_CARRIER_MIRROR_HANDOFF.md"
+        "docs/CANONICAL_RESIDENT_CARRIER_MIRROR_HANDOFF.md",
+        "control/entity-autonomous-governed-progression-contract.json",
+        "scripts/evaluate_goal_resolution_continuation.py"
       ],
       "rejected_because": [
         "SOURCE_BINDING_IS_NOT_RUNTIME_ADOPTION",
         "NO_AUTHENTIC_END_TO_END_ENTITY_PROGRESS_RECONSTRUCTION_OBSERVED"
       ],
-      "missing_observation": "An existing entity consumer must take a machine-owned next task/transition from canonical coordinated state, obtain current governance for that exact transition, execute or retain DENY, reconstruct state, and continue without a human approval checkpoint.",
+      "missing_observation": "An existing entity consumer must take machine-owned next work from canonical coordinated state, obtain current governance for each exact transition, execute or retain DENY, reconstruct state, automatically re-ingest returned Task/COSV/handoff state, and continue without requiring the human to re-present those identifiers. A fifth-iteration report may be surfaced without terminating admitted machine-owned work.",
       "required_producer": "existing heartbeat-separated native WorkerCoordinator + task-specific consumer + Interlock/InTr governance",
       "required_output_ref": "task-specific governance/execution receipt chain and Master Records reconstruction where required",
       "required_schema": null,
@@ -195,11 +213,13 @@
         "current_governance_decision_observed",
         "human_approval_checkpoint_inserted=false",
         "execution_or_denial_receipt_retained",
-        "next_state_reconstructed"
+        "next_state_reconstructed",
+        "returned_task_cosv_handoff_state_reingested",
+        "human_reentry_for_intermediate_ids=false"
       ],
       "required_freshness": "current execution",
       "collision_refs": [],
-      "action_without_collision": "Continue through the existing canonical work coordination, WorkerCoordinator, Interlock/InTr, TV/TVC, and Master Records paths. Do not create a second scheduler/runtime and do not route machine-owned transitions into the current-user iOS interaction queue."
+      "action_without_collision": "Continue through the existing canonical work coordination, WorkerCoordinator, Interlock/InTr, TV/TVC, and Master Records paths. Re-ingest intermediate Task/COSV/handoff state automatically; do not create a second scheduler/runtime and do not route machine-owned transitions into the current-user iOS interaction queue."
     }
   ]
 }
