@@ -56,30 +56,39 @@ The three consumers are existing registered consumers of the same dispatcher. Th
 
 TVC's existing resident self-heal was originally pinned to an obsolete `.github` control-plane SHA and dispatched only the final SV002 selector. The original merged repair at `StegVerse-Labs/TVC@85a6885d9f942c84cc5740f1e1f26bae2e2de03f` re-resolved the admitted source to exact `.github` commit `543fb39498cdba042796a09d70292c2bd7396e1a`, refreshed the resident runtime from that exact source, and invoked the existing `scripts/dispatch_resident_execution_requests.py` directly with the exact selector set `astra_class_resilience_awareness`, `quantum_resilience_awareness`, and `sv002_org_runtime_activation` in canonical order.
 
-That original repair remains historical lineage. The later validated TVC exact-source rebind supersedes its source coordinate for current execution:
+That original repair remains historical lineage. A later TVC exact-source rebind advanced the current source to `11cad666ff4a0ffeca39a725272f1ab905d9257d` through TVC merge `a7e3ed7611c9abead988ec85b493cc396ac54b94`. That lineage also remains historical.
+
+The current validated TVC exact-source binding now supersedes both earlier coordinates:
 
 ```text
-current exact runtime source: StegVerse-Labs/.github@11cad666ff4a0ffeca39a725272f1ab905d9257d
-TVC exact-source rebind merge: StegVerse-Labs/TVC@a7e3ed7611c9abead988ec85b493cc396ac54b94
+current exact runtime source: StegVerse-Labs/.github@a5d69cdd0c0c039a6ec48c5c7fda800384089a16
+native email integration source: StegVerse-Labs/.github#1119
+TVC exact-source rebind PR: StegVerse-Labs/TVC#342
+TVC exact-source rebind merge: StegVerse-Labs/TVC@e51ca9b5d39d891c8df087b0fa430eea98cdfadc
+TVC validation reconciliation merge: StegVerse-Labs/TVC@fafe0c79c9a9b7782f25fccc20d6b18fd02aeee9
+private-source-read-validation: run 34055625562 / SUCCESS
+TVC Credential Model Consistency Validation: run 34055625565 / SUCCESS
 TVC task: TVC-RESIDENT-SERVICE-SELF-HEAL-001
 consumer task: SHWP-SV002-ORG-RUNTIME-ACTIVATION-001
 ```
 
-The TVC task record reports that exact source as source-validated and keeps authentic host execution unobserved. The later rebind does not change the direct-dispatch mechanism, selector ordering, HB/oscillator role, WorkerCoordinator authority, InTr transition authority, or TV/TVC credential boundary.
+The current TVC task record reports that exact source as source-rebind-validated and keeps authentic host execution unobserved. The native-email integration extends the refreshed resident source with the existing standing native-email task, consumer, monitor, normalizer, and dispatcher registration. It does not change the SV002 direct-dispatch mechanism, its Astra/quantum prerequisite ordering, the HB/oscillator role, WorkerCoordinator claim/fence authority, InTr transition authority, or TV/TVC credential boundary.
 
 Moving `main` is not a runtime source identity. The TVC request remains exact-SHA/immutable-commit bound, secret-free, and TV/TVC credential-governed. A later `.github` source change is not automatically a prerequisite for that bounded TVC repair unless the exact runtime behavior it needs is absent from the pinned source.
 
 ## README completeness predicate
 
-`README.md` inspected before mutation.
+`README.md` inspected before the original source-refresh mutation.
 
 Determination: `NO_README_CHANGE_REQUIRED` for the original `.github` source-refresh dependency repair.
 
 Evidence-supported reason: the README already defines the externally meaningful resident self-heal/source-refresh contract: local-only refresh of canonical WorkerCoordinator dependencies, no network fetch or credential acquisition, no second carrier/worker/scheduler, preservation of mutable runtime state, and no inference of runtime execution from refresh. The repair restored omitted static files inside that already-documented parity contract and did not change its authority model.
 
-For the 2026-09-06 TVC exact-source handoff reconciliation, `receipts/preflight/SV002-TVC-EXACT-SOURCE-HANDOFF-RECONCILIATION-20260906.json` records a separate `NO_README_CHANGE_REQUIRED` determination because the change corrects provenance only and changes no behavior, runtime semantics, interface, authority boundary, evidence semantics, prerequisite, dependency, failure behavior, or capability meaning.
+For the earlier TVC exact-source handoff reconciliation, `receipts/preflight/SV002-TVC-EXACT-SOURCE-HANDOFF-RECONCILIATION-20260906.json` records a separate `NO_README_CHANGE_REQUIRED` determination.
 
-Focused test: `tests/test_resident_refresh_awareness_dependencies.py`.
+For the current native-email rebind handoff reconciliation, `receipts/preflight/SV002-TVC-NATIVE-EMAIL-REBIND-HANDOFF-RECONCILIATION-20260906.json` records another `NO_README_CHANGE_REQUIRED` determination because this change only updates provenance to already-merged and already-validated TVC state and changes no repository behavior, runtime semantics, interface, authority boundary, evidence semantics, prerequisite, dependency, failure behavior, or capability meaning.
+
+Focused test for the original refresh repair: `tests/test_resident_refresh_awareness_dependencies.py`.
 
 ## Evidence boundary
 
@@ -90,11 +99,18 @@ Source merge or CI success proves only source/control completeness. Authentic ru
 - `receipts/sovereign-host/resident-request-dispatch.latest.json` for the exact selector set;
 - `receipts/sovereign-host/sv002-org-runtime-activation.latest.json` with `terminal_round_trip_observed=true`.
 
-HB progression, source presence, source refresh, CI, merge, or TVC materialization alone does not satisfy those runtime predicates.
+The native-email extension separately requires authentic resident receipts:
+
+- `receipts/sovereign-host/native-email-action-monitor-request-consumption.latest.json`;
+- `receipts/sovereign-host/native-email-action-monitor.latest.json`.
+
+HB progression, source presence, source refresh, CI, merge, TVC materialization, or native-email source eligibility alone does not satisfy those runtime predicates.
 
 ## User work
 
-NONE. Do not rerun HB30/HB31, do not provision another machine, and do not create or restore a hosted runtime.
+NONE. Do not rerun HB30/HB31, do not provision another machine, do not create or restore a hosted runtime, and do not create another monitor or dispatcher.
+
+If the exact Gmail owner session is absent or requires renewed Google consent, that provider-native owner-presence boundary remains separately receipt-bound and must not be replaced with a second credential path.
 
 ## Portable bridge selector admission correction — 2026-09-06
 
@@ -112,4 +128,4 @@ Portable one-selector callers may therefore invoke those existing consumers in p
 
 This portable-bridge correction is **not** the dispatch mechanism used by the current TVC resident self-heal lineage. That TVC implementation refreshes source and invokes `scripts/dispatch_resident_execution_requests.py` directly with all three exact selectors in one dispatcher visit. The portable correction remains valid for portable callers, but it must not be represented as a missing prerequisite or failure cause for the merged TVC direct-dispatch path.
 
-This is source/interface clarification only. Authentic standing-awareness receipts and the terminal SV002 round trip remain unobserved.
+This is source/interface clarification only. Authentic standing-awareness receipts, native-email receipts, and the terminal SV002 round trip remain unobserved.
