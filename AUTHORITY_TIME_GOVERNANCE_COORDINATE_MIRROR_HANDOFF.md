@@ -5,6 +5,9 @@
 ```text
 organization: StegVerse-Labs / Admissible-Existence
 primary_task_registry_identifier: AUTHORITY-TIME-GOVERNANCE-COORDINATE-001
+cosv_profile: task.v1
+cosv_identifier: 50000000101000
+cosv_state_vector_ref: control/task-vectors/AUTHORITY-TIME-GOVERNANCE-COORDINATE-001.json
 coordinator_issue: StegVerse-Labs/.github#1154
 coordination_pr: StegVerse-Labs/.github#1155
 state: SOURCE_CORRECTION_AND_VALIDATION_IN_PROGRESS
@@ -84,6 +87,12 @@ Admissible-Existence/ET#8 / PR #9
   direct correction:
     docs/ET_GOVERNED_STATE_RECONCILIATION.md
 
+Admissible-Existence/TT#12 / PR #13
+  branch: fix/authority-time-governance-coordinate
+  direct corrections:
+    RELATIONAL_GOVERNANCE_ALIGNMENT.md
+    TT_MIRROR_HANDOFF.md
+
 StegVerse-Labs/ara-admissibility-interop#137 / PR #138
   branch: fix/authority-time-governance-coordinate
   anchor: docs/AUTHORITY_TIME_GOVERNANCE_COORDINATE.md
@@ -93,30 +102,46 @@ StegVerse-Labs/ara-admissibility-interop#137 / PR #138
 StegVerse-Labs/admissibility-wiki#134 / PR #135
   branch: fix/authority-time-governance-coordinate
   public anchor: docs/governance/authority-time-governance-coordinate.md
-  remaining: direct cross-links/wording reconciliation
 
 StegVerse-Labs/StegCore#188 / PR #189
   branch: fix/authority-time-governance-coordinate
   runtime anchor: docs/AUTHORITY_TIME_GOVERNANCE_COORDINATE.md
-  remaining: direct manifold/runtime wording reconciliation and tests where applicable
 ```
 
 ## README completeness predicate
 
 README impact is REQUIRED where a repository README defines governance primitives or presents state/time/authority relationships to consumers. Where README is only navigational and does not state those semantics, an explicit no-change determination must be recorded in the repository PR.
 
-Current state:
+## COSV task binding
+
+Canonical task vector:
 
 ```text
-AE: README UPDATED
-RTG: README REVIEW REQUIRED
-STCM: README REVIEW REQUIRED
-GTG: README REVIEW REQUIRED
-ET: README REVIEW REQUIRED
-ARA: README REVIEW REQUIRED
-admissibility-wiki: README REVIEW / PUBLIC NAVIGATION LINK REQUIRED
-StegCore: README REVIEW REQUIRED
+profile: task.v1
+notation: L R U I V G O C M T B E A P
+vector: 50000000101000
 ```
+
+Decoded current state:
+
+```text
+lifecycle: MACHINE_OWNED
+archive_ready: false
+unassigned_work: 0
+chat_owned_implementation: 0
+chat_owned_validation: 0
+chat_owned_integration: 0
+chat_owned_observation: 0
+chat_owned_credentials: 0
+canonical_owner_installed: true
+thread_required: false
+blocker_count: 1
+evidence_complete: false
+activated: false
+propagated: false
+```
+
+`50000000101000` is the canonical COSV identifier for `AUTHORITY-TIME-GOVERNANCE-COORDINATE-001` on this correction branch. It must be propagated into the canonical task-vector index and canonical task registry during registry reconciliation; no alternate vector may be invented for this task without an evidence-backed COSV transition record.
 
 ## Required propagation
 
@@ -133,29 +158,14 @@ Master Records / canonical task registry
 
 Post-merge propagation verification issue: `StegVerse-Labs/.github#1156`.
 
-## Completed in current correction branch set
-
-1. AE state-manifold primitive no longer demotes Time or Authority.
-2. AE GTG protocol now separates governance coordinate from evaluation inputs.
-3. RTG machine binding no longer contains `time_is_evidence_unless_explicitly_governing`.
-4. ARA state-relative document now treats State as evaluated context at `(Authority, Time)`.
-5. STCM machine binding now preserves Authority × Time and receipt evidence-only semantics.
-6. GTG prose, formal JSON, executable reference code, manifest, and tests now require an explicit Authority × Time coordinate instead of state-only governance inference.
-7. ET governed-state reconciliation now preserves Authority × Time while retaining evidence reconstruction and temporal non-causality.
-8. Public admissibility-wiki and StegCore anchor documents are present on draft branches.
-
 ## Remaining machine work
 
-1. reconcile StegCore manifold/runtime source wording directly;
-2. update admissibility-wiki cross-links/glossary and any conflicting public pages;
-3. review/update remaining affected READMEs and task-specific mirror handoffs;
-4. inspect GTG/ET/STCM dependent fixtures/validators for stale exact-string/schema assumptions;
-5. run repository CI/validation on exact PR heads and repair failures;
-6. register/refresh the canonical task-registry entry and indexes;
-7. merge/release only after validation passes and review gates permit;
-8. verify downstream Site/Publisher/admissibility-wiki/stegguardian-wiki/StegIndex propagation;
-9. run the established manual email monitor during final completion routine if still applicable.
+1. close exact-current-head validation across the coordinated PR set;
+2. finish any README completeness items still proven necessary by repository entrypoints;
+3. propagate `AUTHORITY-TIME-GOVERNANCE-COORDINATE-001 -> COSV 50000000101000` into `control/task-vector-index.json` and `data/canonical-task-registry.json`;
+4. merge/release only after validation passes and review gates permit;
+5. verify downstream Site/Publisher/admissibility-wiki/stegguardian-wiki/StegIndex/Master Records propagation.
 
 ## Archive rule
 
-This handoff is the continuation source of truth for this semantic correction. Sessions must read it before creating additional Authority/Time governance work and must reuse the active branches/issues above rather than duplicate them. Once all remaining items are transferred to durable task/PR/issue ownership, the originating chat thread is not required for continuation.
+This handoff is the continuation source of truth for this semantic correction. Sessions must read it before creating additional Authority/Time governance work and must reuse the active branches/issues above rather than duplicate them. The COSV binding is now durable in `control/task-vectors/AUTHORITY-TIME-GOVERNANCE-COORDINATE-001.json`; this chat thread is not required to recover the task identity or current COSV state.
