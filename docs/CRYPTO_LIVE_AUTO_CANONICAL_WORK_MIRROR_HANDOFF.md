@@ -1,8 +1,9 @@
 # Crypto Live Auto Canonical Work Mirror Handoff
 
-Updated: 2026-09-06
+Updated: 2026-09-07
 Repository: `StegVerse-Labs/.github`
 Task Registry ID: `CRYPTO-LIVE-AUTO-001`
+COSV task vector: `50000000106000`
 Source task owner: `StegVerse-Labs/crypto-bot`
 Related goals: `CRYPTO-MONEY-MANAGER-001`, `CRYPTO-LIVE-AUTO-001`
 Adjacent governed owners: `StegVerse-Labs/TVC#119`, `StegVerse-Labs/stegfin-governance#84`
@@ -71,6 +72,8 @@ Identity:
 
 - request id: `RESIDENT-EXEC-CANONICAL-WORK-CRYPTO-LIVE-AUTO-001`
 - task id: `CRYPTO-LIVE-AUTO-001`
+- COSV profile: `task.v1`
+- COSV vector: `50000000106000`
 - mode: `CANONICAL_WORK_EVENT_BOOTSTRAP`
 - authority effect: `NONE_REQUEST_ONLY`
 - credential authority: `TV/TVC`
@@ -81,7 +84,7 @@ Expected authentic consumption evidence:
 
 `receipts/sovereign-host/canonical-work-crypto-live-auto-request-consumption.latest.json`
 
-No source merge, CI run, heartbeat reference, task registration, or staged request may be substituted for this authentic consumption receipt.
+No source merge, CI run, heartbeat reference, task registration, staged request, or COSV pointer may be substituted for this authentic consumption receipt.
 
 ## Cross-task predicate boundary
 
@@ -96,8 +99,39 @@ The subject is the pair:
 
 No other resident request may satisfy it.
 
+## 2026-09-07 COSV pointer refresh
+
+The canonical task pointer now resolves as:
+
+```text
+task_id: CRYPTO-LIVE-AUTO-001
+profile: task.v1
+vector: 50000000106000
+lifecycle: MACHINE_OWNED
+canonical_owner_installed: true
+thread_required: false
+blocker_count: 6
+evidence_complete: false
+activated: false
+propagated: false
+```
+
+Preflight receipt:
+
+`receipts/preflight/CRYPTO-LIVE-AUTO-COSV-POINTER-001.json`
+
+Current preflight verdict: `PASS` at `2026-09-07T09:21:00-05:00`.
+
+This PASS proves the task/COSV pointer and coordination contract are structurally admissible. It does not prove authentic resident consumption, WorkerCoordinator admission, current P-256 liveness, iPhone ingress, SKAP custody, current grant state, Coinbase provider state, StegFin approval, order execution, settlement, or repeat-loop activation.
+
+### Exact next evidence action
+
+Consume the already-staged request through the existing sovereign resident Canonical Work path and produce exactly:
+
+`receipts/sovereign-host/canonical-work-crypto-live-auto-request-consumption.latest.json`
+
+Only after that receipt exists may downstream Master Records reconciliation and WorkerCoordinator admission review advance. Provider interaction remains downstream under TVC #119 and StegFin #84.
+
 ## Current completion boundary
 
-Source registration/request staging completes when registry validation, cross-task coordination validation, and the focused task-ingress test pass on the merged head.
-
-Live trading activation is not completed by this source work. The next evidence-producing action is authentic resident consumption through the existing dispatcher and Canonical Work consumer, followed by Master Records reconciliation and WorkerCoordinator admission review. Coinbase provider interaction remains downstream and subject to TVC #119 plus StegFin #84.
+Source registration, COSV pointer binding, request staging, and preflight validation are complete on source. Live trading activation is not complete. The next evidence-producing action is authentic resident consumption through the existing dispatcher and Canonical Work consumer, followed by Master Records reconciliation and WorkerCoordinator admission review. Coinbase provider interaction remains downstream and subject to TVC #119 plus StegFin #84.
