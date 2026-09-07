@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.reusable-task-ephemeral-construct/v1",
   "status": "SOURCE_CONTRACT_ACTIVE_RUNTIME_EVIDENCE_PENDING",
-  "purpose": "Define the canonical lifecycle for reusable task identities that derive invocation-specific TT/RTG/GTG constructs, ephemeral runners, durable evidence, residual recording constructs, and entropy recovery after Master Records custody/reconstruction.",
+  "purpose": "Define the canonical lifecycle for reusable task identities that derive invocation-specific TT/RTG/GTG constructs, automatically advance machine-admissible work after one valid trigger, use ephemeral runners, preserve durable evidence and residual recording constructs, and recover entropy only after Master Records custody/reconstruction.",
   "durability_model": {
     "reusable_identity": "DURABLE",
     "parameters": "INVOCATION_SPECIFIC",
@@ -31,7 +31,34 @@
     "must_resolve_definition_before_construct": true,
     "must_reconcile_equivalent_or_adjacent_work_before_materialization": true,
     "parameterization_determines_exact_construct": true,
-    "parameters_must_be_manifest_bound": true
+    "parameters_must_be_manifest_bound": true,
+    "single_valid_trigger_starts_bounded_automation": true,
+    "manual_coordination_between_machine_admissible_internal_steps_required": false
+  },
+  "automation": {
+    "mode": "TRIGGER_ONCE_ADVANCE_UNTIL_COMPLETION_OR_REAL_BOUNDARY",
+    "trigger_driver": "scripts/trigger_reusable_task.py",
+    "automatic_advancement_required": true,
+    "automatic_step_source": "DECLARED_EXISTING_RUNNER_TEMPLATES_AND_EXISTING_RESIDENT_EXECUTION_SURFACES_ONLY",
+    "may_create_duplicate_scheduler_worker_or_runtime_plane": false,
+    "may_mint_claim_or_fence": false,
+    "may_bypass_interlock_intr": false,
+    "may_acquire_credentials_outside_tv_tvc": false,
+    "may_infer_runtime_evidence_from_source_or_exit_zero": false,
+    "may_manufacture_master_records_state": false,
+    "stop_boundaries": [
+      "AUTHORITY_REQUIRED_AND_NOT_HELD",
+      "EVIDENCE_REQUIRED_AND_NOT_OBSERVED",
+      "EXTERNAL_RESOURCE_REQUIRED_AND_NOT_AVAILABLE",
+      "HUMAN_DECISION_REQUIRED",
+      "UNRESOLVED_STATE_OR_CONTRADICTION",
+      "DECLARED_RUNNER_NOT_MATERIALIZED",
+      "NO_EXECUTABLE_RUNNER_DECLARED",
+      "COMPLETION_REACHED"
+    ],
+    "boundary_receipt_required": true,
+    "independent_downstream_or_parallel_work_may_continue_while_reusable_task_is_at_boundary": true,
+    "dependent_work_must_wait_for_required_completion_evidence": true
   },
   "manifest_binding": {
     "required": true,
@@ -44,6 +71,7 @@
       "gtg_construct",
       "tt_construct",
       "runner_plan",
+      "automation_plan",
       "authority_ceiling",
       "adapter_and_runtime_dependencies",
       "expected_evidence",
@@ -65,9 +93,11 @@
     "chain_order": [
       "REUSABLE_IDENTITY",
       "INVOCATION_MANIFEST",
+      "AUTOMATION_TRIGGER",
       "DERIVED_RTG",
       "GTG_DETERMINATION",
       "TT_DECISION_COMMIT_EXECUTION_OBSERVATION",
+      "AUTOMATION_BOUNDARY_OR_COMPLETION",
       "RUNNER_EXPIRY",
       "RESIDUAL_RECORDING",
       "MASTER_RECORDS_CUSTODY_RECONSTRUCTION",
@@ -128,9 +158,14 @@
     "governed_transition": "INTERLOCK_INTR",
     "credential_authority": "TV/TVC",
     "observed_reality_and_reconstruction": "MASTER_RECORDS",
+    "automation_trigger_and_dependency_orchestration": "TRIGGER_DRIVER_NON_AUTHORIZING",
     "github_token_runtime_authority": "NONE"
   },
   "invariants": [
+    "ONE_VALID_TRIGGER_ADVANCES_ALL_DECLARED_MACHINE_ADMISSIBLE_INTERNAL_STEPS",
+    "MANUAL_COORDINATION_IS_NOT_AN_INTERNAL_TRANSITION_PREREQUISITE",
+    "AUTOMATION_STOPS_AT_REAL_AUTHORITY_EVIDENCE_EXTERNAL_HUMAN_OR_UNRESOLVED_BOUNDARY",
+    "INDEPENDENT_WORK_MAY_CONTINUE_WHILE_DEPENDENT_WORK_WAITS_FOR_REQUIRED_COMPLETION_EVIDENCE",
     "EXECUTION_EXPIRES_FIRST_RECORDING_CONTINUITY_EXPIRES_LAST",
     "MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION_PRECEDES_ENTROPY_RECOVERY",
     "EPHEMERAL_CAPABILITY_DOES_NOT_MEAN_EPHEMERAL_ACCOUNTABILITY",
