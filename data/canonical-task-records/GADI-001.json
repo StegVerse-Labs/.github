@@ -1,0 +1,123 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "GADI-001",
+  "correlation_id": "GADI-001",
+  "root_correlation_id": "GADI-001",
+  "parent_task_id": null,
+  "goal": "Implement an end-to-end Governed Autonomous Defensive Intervention capability so a manifested, receipted, reconstructable StegVerse AI can detect and confront an external non-governed autonomous system whose actions create a credible imminent threat to human life, execute the least-destructive effective pre-authorized defensive intervention at machine speed while remaining governed, reassess adaptively, terminate when the threat ends, and preserve exact reconstruction of the confrontation.",
+  "coordination_state": "PROPOSED",
+  "checkout_state": "UNCLAIMED",
+  "cosv_task_vector": "10100000100000",
+  "source_refs": [
+    "docs/GADI_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github#1170",
+    "docs/COSV_TASK_POINTER_COORDINATION_MIRROR_HANDOFF.md",
+    "docs/SV_DN1_INTR_RUNTIME_MIRROR_HANDOFF.md",
+    "data/external-ai-transition-policy.json",
+    "control/task-vectors/GADI-001.json"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs", "StegVerse-002"],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/StegCore",
+      "StegVerse-Labs/StegOS",
+      "StegVerse-Labs/Continuity",
+      "StegVerse-Labs/TV",
+      "StegVerse-Labs/TVC",
+      "StegVerse-002/micro-node-runtime",
+      "StegVerse-Labs/Site"
+    ],
+    "components": [
+      "autonomous-threat-observation",
+      "threat-state-correlation",
+      "defensive-intervention-planning",
+      "intr-defensive-transition-admission",
+      "governed-intervention-capability-registry",
+      "defensive-capability-custody",
+      "resident-defensive-execution",
+      "closed-loop-threat-reassessment",
+      "intervention-stop-condition",
+      "intervention-receipts",
+      "exact-confrontation-reconstruction",
+      "gadi-simulation-harness",
+      "hil-intervention-readiness"
+    ]
+  },
+  "dependencies": [
+    {"dependency_id":"DEP-GADI-INTR-RUNTIME","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"docs/SV_DN1_INTR_RUNTIME_MIRROR_HANDOFF.md","disposition":"REUSE_EXISTING_INTR_RUNTIME_AND_PROVE_REQUIRED_ROUTE"},
+    {"dependency_id":"DEP-GADI-EXTERNAL-AI-TRANSITION-POLICY","kind":"SOURCE_POLICY","state":"AVAILABLE","ref":"data/external-ai-transition-policy.json","disposition":"REUSE_AND_EXTEND_ONLY_IF_REQUIRED"},
+    {"dependency_id":"DEP-GADI-DEFENSIVE-CAPABILITY-REGISTRY","kind":"IMPLEMENTATION","state":"UNRESOLVED","ref":"docs/GADI_MIRROR_HANDOFF.md","disposition":"IMPLEMENT_THROUGH_CANONICAL_OWNER"},
+    {"dependency_id":"DEP-GADI-SIMULATION-HARNESS","kind":"IMPLEMENTATION","state":"UNRESOLVED","ref":"docs/GADI_MIRROR_HANDOFF.md","disposition":"BUILD_NON_LETHAL_CONTROLLED_TEST_SURFACE"},
+    {"dependency_id":"DEP-GADI-RECONSTRUCTION-PROOF","kind":"EVIDENCE","state":"UNRESOLVED","ref":"StegVerse-Labs/Continuity","disposition":"REQUIRE_EXACT_ACTION_AND_STATE_RECONSTRUCTION"}
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+    "SV-DN1-INTR-RUNTIME-001",
+    "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+    "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"
+  ],
+  "existing_evidence_refs": [
+    "docs/GADI_MIRROR_HANDOFF.md",
+    "docs/SV_DN1_INTR_RUNTIME_MIRROR_HANDOFF.md",
+    "data/external-ai-transition-policy.json",
+    "StegVerse-Labs/StegOS/stegos/intr_backbone.py",
+    "StegVerse-Labs/Continuity",
+    "StegVerse-Labs/Site/stegos-node/hil-intr-sync.js",
+    "StegVerse-Labs/.github#1170"
+  ],
+  "expected_evidence_predicates": [
+    "AUTONOMOUS_THREAT_OBSERVATION_SCHEMA_VALID",
+    "DEFENSIVE_INTERVENTION_REQUEST_SCHEMA_VALID",
+    "GOVERNED_INTERVENTION_CAPABILITY_REGISTRY_VALID",
+    "THREAT_STATE_MACHINE_VALID",
+    "MANIFESTED_GOVERNED_DEFENDER_IDENTITY_OBSERVED",
+    "AUTHENTIC_INTR_DEFENSIVE_ADMISSION_OBSERVED",
+    "PREAUTHORIZED_DEFENSIVE_CAPABILITY_BINDING_OBSERVED",
+    "AUTHENTIC_RESIDENT_DEFENSIVE_ACTION_OBSERVED",
+    "EXTERNAL_SAFE_STATE_EFFECT_OBSERVED",
+    "ADAPTIVE_REASSESSMENT_AFTER_ADVERSARY_STRATEGY_CHANGE_OBSERVED",
+    "INTERVENTION_TERMINATION_AFTER_THREAT_END_OBSERVED",
+    "NO_UNAUTHORIZED_THIRD_PARTY_COMPROMISE_REQUIRED",
+    "FULL_INTERVENTION_RECEIPT_CHAIN_VALID",
+    "EXACT_CONFRONTATION_RECONSTRUCTION_VALID",
+    "AUTHENTIC_MASTER_RECORDS_RECONCILIATION_OBSERVED",
+    "GADI_001_ACTIVATION_PROOF_COMPLETE"
+  ],
+  "runtime_requirements": {
+    "capabilities": [
+      "intr_task_admission",
+      "threat_state_correlation",
+      "defensive_intervention_planning",
+      "capability_registry_discovery",
+      "preauthorized_external_safe_state_execution",
+      "closed_loop_observation_and_reassessment",
+      "receipt_emission",
+      "exact_reconstruction",
+      "canonical_artifact_validation"
+    ],
+    "environment": "SOVEREIGN_RESIDENT_WITH_CONTROLLED_EXTERNAL_TEST_SURFACE",
+    "direction": "INTERNAL_AND_PREAUTHORIZED_EXTERNAL_DEFENSIVE",
+    "mutation_required": true,
+    "deployment_required": true,
+    "current_observation_required": true
+  },
+  "runtime_resolution": null,
+  "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
+  "human_action_ref": null,
+  "completion": {"claimed":false,"validated":false,"reconciliation_ref":null,"activation_proof_complete":false},
+  "allowed_next_transitions": ["INGRESS_ADMITTED"],
+  "handoff_projection_refs": ["docs/GADI_MIRROR_HANDOFF.md"],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "master_records_reality_authority": true,
+    "interlock_intr_required_for_governed_ingress_egress": true,
+    "credential_authority": "TV_TVC",
+    "external_intervention_requires_preauthorized_capability": true,
+    "unauthorized_third_party_compromise_authorized": false,
+    "all_consequential_actions_must_be_receipted_and_reconstructable": true
+  }
+}
