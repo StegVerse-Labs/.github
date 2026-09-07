@@ -13,7 +13,9 @@
     "python",
     "scripts/refresh_and_execute_resident_task.py",
     "--task-id",
-    "COSV-TASK-POINTER-RUNTIME-ENFORCEMENT-001"
+    "COSV-TASK-POINTER-RUNTIME-ENFORCEMENT-001",
+    "--cosv-task-vector",
+    "10100000100000"
   ],
   "preconditions": [
     "TASK_ID_VECTOR_BINDING_RESOLVES_EXACTLY_ONCE",
@@ -36,5 +38,5 @@
   "second_machine_required": false,
   "network_source_fetch_allowed": false,
   "authority_effect": "NONE_REQUEST_ONLY",
-  "note": "Materialize exactly one resident targeted execution attempt for the canonical task pointer. The request binds the supplied task_id and COSV vector as coordination identity but does not itself mint a claim, fence, admission, credential, transition, or runtime-truth assertion. Authentic consumption must occur through the existing WorkerCoordinator and Interlock/InTr path."
+  "note": "Materialize exactly one resident targeted execution attempt for the canonical task pointer. The request passes both task_id and COSV vector to the existing resident execution bridge, which must fail closed on pointer mismatch before targeted execution. The request does not itself mint a claim, fence, admission, credential, transition, or runtime-truth assertion. Authentic consumption must occur through the existing WorkerCoordinator and Interlock/InTr path."
 }
