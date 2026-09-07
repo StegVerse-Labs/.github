@@ -42,15 +42,18 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
         self.assertFalse(value["second_machine_required"])
         self.assertEqual(value["authority_effect"], "NONE_REQUEST_ONLY")
         floor = value["source_catalog_floor"]
-        self.assertEqual(floor["task_id"], "TASK-2026-0008")
-        self.assertEqual(floor["requested_at"], "2026-09-03T00:28:00Z")
+        self.assertEqual(floor["task_id"], "TASK-2026-0009")
+        self.assertEqual(floor["requested_at"], "2026-09-06T13:25:00Z")
         self.assertEqual(floor["repository_full_name"], "StegVerse-Labs/Site")
-        self.assertEqual(floor["required_dependency_surface"], "site:stegos-de006-bound-inference-publication")
+        self.assertEqual(
+            floor["required_dependency_surface"],
+            "site:hb31-ecosystem-chat-runtime-opportunity-successor",
+        )
         self.assertEqual(floor["purpose"], "MINIMUM_SOURCE_CATALOG_FRESHNESS_ONLY")
         self.assertEqual(floor["task_eligibility_effect"], "NONE")
         self.assertEqual(
             floor["scope_sha256"],
-            "98096b5825e85dd558f9cb5a4e882002543d4c703cfa7981cd2d826c80c1a05b",
+            "121d9e79d98d582642e032a607ef9cacc5965acfba6fdc371bbbc9ccf8716ce1",
         )
 
     def test_allocator_lock_blocks_live_concurrent_owner_without_granting_authority(self):
@@ -70,11 +73,12 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
 
     def _write_minimal_source(self, source: Path) -> None:
         (source / "tasks").mkdir(parents=True, exist_ok=True)
-        canonical = json.loads((ROOT / "tasks/TASK-2026-0008.json").read_text(encoding="utf-8"))
-        (source / "tasks/TASK-2026-0008.json").write_text(
-            json.dumps(canonical),
-            encoding="utf-8",
-        )
+        for task_id in ("TASK-2026-0008", "TASK-2026-0009"):
+            canonical = json.loads((ROOT / f"tasks/{task_id}.json").read_text(encoding="utf-8"))
+            (source / f"tasks/{task_id}.json").write_text(
+                json.dumps(canonical),
+                encoding="utf-8",
+            )
         (source / "control").mkdir(parents=True, exist_ok=True)
         (source / "control/claims-active.json").write_text(
             json.dumps({"schema": "stegverse.org-claims/v1", "generation": 0, "claims": []}),
@@ -141,15 +145,16 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
             result = consumer.consume(source, runtime, runner=runner, env={"PATH": "/bin", "HOME": td})
             self.assertEqual(result["state"], "ATTEMPT_RECORDED")
             self.assertEqual(result["source_catalog_floor"]["state"], "SOURCE_CATALOG_FLOOR_SATISFIED")
-            self.assertEqual(result["source_catalog_floor"]["task_id"], "TASK-2026-0008")
+            self.assertEqual(result["source_catalog_floor"]["task_id"], "TASK-2026-0009")
             self.assertEqual(result["source_catalog_floor"]["task_eligibility_effect"], "NONE")
             self.assertEqual(
                 result["source_catalog_floor"]["scope_sha256"],
-                "98096b5825e85dd558f9cb5a4e882002543d4c703cfa7981cd2d826c80c1a05b",
+                "121d9e79d98d582642e032a607ef9cacc5965acfba6fdc371bbbc9ccf8716ce1",
             )
             self.assertEqual(result["control_inputs"]["state"], "CONTROL_INPUTS_READY")
             self.assertFalse(result["control_inputs"]["runtime_task_state_overwritten"])
             self.assertIn("TASK-2026-0008.json", result["control_inputs"]["imported_task_files"])
+            self.assertIn("TASK-2026-0009.json", result["control_inputs"]["imported_task_files"])
             self.assertEqual(result["selected_task_id"], "TASK-2026-0008")
             self.assertTrue(result["claim_grant_occurred"])
             evidence = result["claim_grant_evidence"]
@@ -172,7 +177,6 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
             self.assertFalse(result["network_source_fetch_performed"])
             self.assertFalse(result["second_machine_required"])
             self.assertEqual(len(calls), 1)
-
 
     def test_selected_task_without_post_allocation_claim_fails_closed(self):
         with tempfile.TemporaryDirectory() as td:
@@ -226,8 +230,7 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
                 )
             self.assertEqual(calls, [])
 
-
-    def test_stale_source_catalog_missing_task8_fails_before_allocator_or_runtime_materialization(self):
+    def test_stale_source_catalog_missing_task9_fails_before_allocator_or_runtime_materialization(self):
         with tempfile.TemporaryDirectory() as td:
             base = Path(td)
             runtime = base / "runtime"
@@ -236,6 +239,8 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
             request_path.parent.mkdir(parents=True, exist_ok=True)
             request_path.write_text(json.dumps(self.request()), encoding="utf-8")
             (source / "tasks").mkdir(parents=True, exist_ok=True)
+            canonical8 = json.loads((ROOT / "tasks/TASK-2026-0008.json").read_text(encoding="utf-8"))
+            (source / "tasks/TASK-2026-0008.json").write_text(json.dumps(canonical8), encoding="utf-8")
             (source / "control").mkdir(parents=True, exist_ok=True)
             (source / "control/claims-active.json").write_text(
                 json.dumps({"schema": "stegverse.org-claims/v1", "generation": 0, "claims": []}),
@@ -262,12 +267,11 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
             self.assertFalse((runtime / "tasks").exists())
             self.assertFalse((runtime / "control/claims-active.json").exists())
 
-
-    def test_catalog_floor_does_not_require_task8_to_remain_queued(self):
+    def test_catalog_floor_does_not_require_task9_to_remain_queued(self):
         with tempfile.TemporaryDirectory() as td:
             source = Path(td) / "source"
             self._write_minimal_source(source)
-            task_path = source / "tasks/TASK-2026-0008.json"
+            task_path = source / "tasks/TASK-2026-0009.json"
             value = json.loads(task_path.read_text(encoding="utf-8"))
             value["status"] = "completed"
             task_path.write_text(json.dumps(value), encoding="utf-8")
@@ -276,23 +280,16 @@ class ResidentOrgClaimAllocatorTests(unittest.TestCase):
             self.assertEqual(result["task_status_observed"], "completed")
             self.assertEqual(result["task_eligibility_effect"], "NONE")
 
-
-    def test_old_task8_scope_digest_fails_before_allocator(self):
+    def test_old_task9_scope_digest_fails_before_allocator(self):
         with tempfile.TemporaryDirectory() as td:
             base = Path(td)
             source = base / "source"
             runtime = base / "runtime"
             self._write_minimal_source(source)
-            task_path = source / "tasks/TASK-2026-0008.json"
+            task_path = source / "tasks/TASK-2026-0009.json"
             value = json.loads(task_path.read_text(encoding="utf-8"))
             scope = value["requirements"]["mandatory"][0]["scope"]
-            scope["paths"] = [
-                "stegos-bootstrap/index.html",
-                "stegos-bootstrap/admitted-inference.js",
-                "stegos-bootstrap/command-ingress.js",
-                "stegos-bootstrap/command.html",
-                "stegos-bootstrap/service-worker.js",
-            ]
+            scope["paths"] = ["stegos-bootstrap/device-local-autostart.js"]
             task_path.write_text(json.dumps(value), encoding="utf-8")
             request_path = runtime / consumer.REQUEST_REL
             request_path.parent.mkdir(parents=True, exist_ok=True)
