@@ -1,10 +1,10 @@
 # Canonical Work Parent Cross-Task Coordination Mirror Handoff
 
-Updated: 2026-09-06  
+Updated: 2026-09-07  
 Repository: `StegVerse-Labs/.github`  
 Parent: `docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md`  
 Task: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`  
-State: `SOURCE_REQUEST_STAGED / AUTHENTIC_CANONICAL_WORK_INGRESS_UNKNOWN`  
+State: `SOURCE_REQUEST_STAGED / COSV_POINTER_SOURCE_INSTALLED / AUTHENTIC_CANONICAL_WORK_INGRESS_UNKNOWN`  
 Authority effect: `NONE_COORDINATION_ONLY`
 
 ## Exact subject
@@ -17,12 +17,36 @@ resident consumer: control/resident-execution-request.d/consume-canonical-work-c
 expected authentic consumption: receipts/sovereign-host/canonical-work-coordination-bootstrap-request-consumption.latest.json
 ```
 
+## COSV continuation pointer
+
+The canonical parent now has a task-local `task.v1` source vector so the established two-line continuation contract can bind this exact task without relying on chat prose:
+
+```text
+STEGVERSE-CANONICAL-WORK-COORDINATION-001
+10100000100000
+```
+
+Source vector:
+
+```text
+control/task-vectors/STEGVERSE-CANONICAL-WORK-COORDINATION-001.json
+```
+
+Machine preflight:
+
+```text
+receipts/preflight/STEGVERSE-CANONICAL-WORK-COORDINATION-COSV-POINTER-001.json
+```
+
+This pointer is non-authorizing. It does not create a WorkerCoordinator claim/fence, Interlock/InTr admission, runtime execution receipt, credential authority, Master Records observation, activation proof, or completion proof. Runtime pointer enforcement remains owned by the existing `COSV-TASK-POINTER-RUNTIME-ENFORCEMENT-001` path.
+
 ## Predicates
 
 - `PRED-CANONICAL-WORK-PARENT-REQUEST-STAGED-001` — `SATISFIED` from exact source/control request evidence.
+- `PRED-CANONICAL-WORK-PARENT-COSV-POINTER-SOURCE-INSTALLED-001` — `SATISFIED` from the exact task-local `task.v1` source vector and canonical registry identity.
 - `PRED-CANONICAL-WORK-PARENT-INGRESS-OBSERVED-001` — `UNKNOWN` until exact authentic resident consumption evidence exists.
 
-Both predicates use the existing subject-binding and `required_field_values` mechanisms. The staged request must match the exact task/request identity, `REQUESTED`, and `NONE_REQUEST_ONLY`. Authentic consumption must report `COMPLETED` for the exact canonical coordination task while retaining execution-specific request hash and bootstrap receipt fields.
+The ingress predicates use the existing subject-binding and `required_field_values` mechanisms. The staged request must match the exact task/request identity, `REQUESTED`, and `NONE_REQUEST_ONLY`. Authentic consumption must report `COMPLETED` for the exact canonical coordination task while retaining execution-specific request hash and bootstrap receipt fields.
 
 Canonical fragment:
 
@@ -32,26 +56,30 @@ control/cross-task-coordination.d/canonical-work-parent-ingress.json
 
 ## Non-inference
 
-Request staging, source presence, merge, CI, heartbeat progression, dispatcher wiring, handoff text, or Canonical Work implementation does not prove authentic ingress. The existing sovereign resident Canonical Work consumer and Universal Interlock/InTr remain the authoritative producer.
+Request staging, COSV pointer installation, source presence, merge, CI, heartbeat progression, dispatcher wiring, handoff text, or Canonical Work implementation does not prove authentic ingress. The existing sovereign resident Canonical Work consumer and Universal Interlock/InTr remain the authoritative producer.
 
-No second runtime, scheduler, WorkerCoordinator, ingress path, credential path, claim/fence plane, or evidence producer is created or permitted by this coordination projection.
+No second runtime, scheduler, WorkerCoordinator, ingress path, credential path, claim/fence plane, COSV profile, task registry, or evidence producer is created or permitted by this coordination projection.
 
 ## README impact
 
 `NO_README_CHANGE_REQUIRED`.
 
-This is a task-specific projection using already-documented composed-ledger, subject-binding, `resident_request_consumed`, and exact-value qualification semantics. No repository behavior, runtime semantics, interface, authority boundary, evidence meaning, dependency mechanism, prerequisite, failure behavior, or capability meaning changes.
+The COSV pointer addition instantiates the already-documented `task.v1` continuation interface for an existing task and changes no repository behavior, runtime semantics, interface definition, governance or authority boundary, evidence meaning, dependency mechanism, prerequisite, failure behavior, or capability meaning. The prior cross-task projection likewise remains non-material.
 
-Preflight:
+Preflights:
 
 ```text
 receipts/preflight/CANONICAL-WORK-PARENT-CROSS-TASK-INGRESS-001.json
+receipts/preflight/STEGVERSE-CANONICAL-WORK-COORDINATION-COSV-POINTER-001.json
 ```
 
 ## Continuation
 
-After authentic ingress, continue only through the already-existing canonical work lifecycle: governed task-state projection, Master Records reconciliation, WorkerCoordinator admission/claim-fence handling where applicable, current authority review, and retained closure evidence.
+The next admissible machine work is to propagate the task-vector source through the already-existing task-vector-index/source-refresh path and then continue authentic resident execution only through the established Canonical Work lifecycle: governed task-state projection, WorkerCoordinator admission/claim-fence handling where applicable, retained runtime evidence, Master Records reconciliation, current authority review, and retained closure evidence.
+
+Do not recreate completed source paths merely because authentic runtime evidence is absent.
 
 Authentic ingress: `UNKNOWN`.  
 Runtime execution: `NOT CLAIMED`.  
+COSV pointer source: `INSTALLED`.  
 User action required: `false`.
