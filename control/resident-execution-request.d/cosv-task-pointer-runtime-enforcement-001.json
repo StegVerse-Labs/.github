@@ -1,0 +1,40 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-EXEC-COSV-TASK-POINTER-RUNTIME-ENFORCEMENT-001",
+  "state": "REQUESTED",
+  "task_id": "COSV-TASK-POINTER-RUNTIME-ENFORCEMENT-001",
+  "cosv_profile": "task.v1",
+  "cosv_task_vector": "10100000100000",
+  "pointer_source": "control/task-vectors/COSV-TASK-POINTER-RUNTIME-ENFORCEMENT-001.json",
+  "pointer_policy": "data/task-coordination-policy.json",
+  "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
+  "entrypoint": "scripts/refresh_and_execute_resident_task.py",
+  "argv": [
+    "python",
+    "scripts/refresh_and_execute_resident_task.py",
+    "--task-id",
+    "COSV-TASK-POINTER-RUNTIME-ENFORCEMENT-001"
+  ],
+  "preconditions": [
+    "TASK_ID_VECTOR_BINDING_RESOLVES_EXACTLY_ONCE",
+    "RESIDENT_CANONICAL_SOURCE_REFRESHED_LOCALLY",
+    "SEPARATED_CARRIER_REFERENCE_PRESENT",
+    "WORKERCOORDINATOR_OWNS_CLAIM_AND_FENCE",
+    "INTERLOCK_INTR_OWNS_GOVERNED_TRANSITION"
+  ],
+  "expected_runtime_evidence": [
+    "receipts/sovereign-host/resident-targeted-execution.latest.json",
+    "control/worker-registry.json",
+    "MASTER_RECORDS_RECONSTRUCTION"
+  ],
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "request_granted_authority": false,
+  "new_runtime_plane_created": false,
+  "second_machine_required": false,
+  "network_source_fetch_allowed": false,
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "note": "Materialize exactly one resident targeted execution attempt for the canonical task pointer. The request binds the supplied task_id and COSV vector as coordination identity but does not itself mint a claim, fence, admission, credential, transition, or runtime-truth assertion. Authentic consumption must occur through the existing WorkerCoordinator and Interlock/InTr path."
+}
