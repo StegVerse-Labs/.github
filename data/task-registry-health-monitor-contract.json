@@ -1,0 +1,94 @@
+{
+  "schema": "stegverse.task-registry-health-monitor-contract/v1",
+  "status": "CANONICAL_ACTIVE",
+  "purpose": "Continuously reconcile canonical task lifecycle, checkout state, worker-return obligations, Master Records returns, and StegHealth recovery derivation without creating a second scheduler or task authority.",
+  "reporting_postures": {
+    "ACTIVE": "Nonterminal task with checked-out/current execution or an admitted continuation path.",
+    "INACTIVE": "Nonterminal task not currently checked out and with no current worker execution. This is a monitor posture, not a lifecycle state.",
+    "COMPLETED": "Primary task work is canonically complete but the task has not yet been retired.",
+    "RETIRED": "Canonical RETIRED task. Terminal and provenance-only.",
+    "SUPERSEDED": "Canonical SUPERSEDED task. Redirect-only terminal identity.",
+    "INVALID": "Canonical INVALID task. Fail-closed terminal identity."
+  },
+  "required_counts": [
+    "ACTIVE",
+    "INACTIVE",
+    "COMPLETED",
+    "RETIRED",
+    "SUPERSEDED",
+    "INVALID",
+    "CHECKED_OUT",
+    "CHECKED_OUT_WITH_RETURN_OVERDUE",
+    "CHECKED_OUT_WITH_WORKER_NONREPORT",
+    "RECOVERY_TASKS_DERIVED"
+  ],
+  "checked_out_review": {
+    "required": true,
+    "source": "CANONICAL_TASK_REGISTRY_PLUS_WORKER_RETURN_OBLIGATIONS_PLUS_MASTER_RECORDS",
+    "signals": [
+      "BOUND_WORKER_RETURN_OBLIGATION",
+      "EXPECTED_EXPIRY_OR_RETURN_EXPECTATION",
+      "MATCHING_MASTER_RECORDS_RETURN",
+      "WORKER_RETRY_COUNTER",
+      "CLAIM_OR_EXECUTION_REF",
+      "CHECKOUT_STATE",
+      "CURRENT_CANONICAL_LIFECYCLE"
+    ],
+    "symptoms": {
+      "RETURN_PENDING": "Worker return expectation has not yet elapsed.",
+      "RETRYING": "Worker remains within bounded retry resilience.",
+      "RETURN_OVERDUE": "Expected return window elapsed and matching Master Records return is absent.",
+      "WORKER_NONREPORT": "Independent evidence confirms the expected worker return never reached Master Records.",
+      "RECONCILIATION_REQUIRED": "Partial/conflicting evidence prevents safe classification.",
+      "HEALTHY": "Expected worker return/history is present and reconciled."
+    }
+  },
+  "recovery_derivation": {
+    "owner": "StegHealth",
+    "create_only_when": [
+      "RETURN_OVERDUE_WITH_RECOVERY_REQUIRED",
+      "WORKER_NONREPORT",
+      "RECONCILIATION_REQUIRED_WITH_TASK_AT_RISK"
+    ],
+    "must_deduplicate_against_existing_recovery_tasks": true,
+    "must_preserve": [
+      "source_task_id",
+      "source_cosv_task_vector",
+      "worker_return_obligation_ref",
+      "claim_or_execution_ref",
+      "master_records_subject_binding",
+      "failure_observation_refs",
+      "root_correlation_id"
+    ],
+    "new_recovery_task_requires_unique_task_id": true,
+    "recovery_task_creation_does_not_reopen_retired_task": true,
+    "recovery_task_creation_does_not_mint_execution_authority": true
+  },
+  "monitor_output": {
+    "must_receive_new_task_id_and_cosv": true,
+    "must_report_status": true,
+    "must_report_counts": true,
+    "must_report_checked_out_findings": true,
+    "must_report_derived_steghealth_recovery_tasks": true,
+    "must_not_invent_percent_complete": true
+  },
+  "invariants": [
+    "MONITOR_IS_OBSERVER_AND_RECONCILER_NOT_SECOND_SCHEDULER",
+    "INACTIVE_IS_REPORTING_POSTURE_NOT_CANONICAL_LIFECYCLE",
+    "RETIRED_REMAINS_TERMINAL",
+    "COMPLETED_REMAINS_CLOSURE_ONLY_UNTIL_RETIRED",
+    "WORKER_RETRY_COUNTERS_ADD_RESILIENCE_BUT_DO_NOT_PROVE_NONREPORT",
+    "WORKER_NONREPORT_REQUIRES_BOUND_EXPECTED_RETURN_AND_ABSENT_MASTER_RECORDS_RETURN",
+    "RECOVERY_TASKS_ARE_CREATED_ONLY_FROM_EVIDENCE_AND_ARE_DEDUPLICATED",
+    "MONITOR_REPORTS_COUNTS_WITHOUT_INVENTED_PROGRESS_PERCENTAGES"
+  ],
+  "refs": {
+    "lifecycle_contract": "data/task-lifecycle-status-contract.json",
+    "worker_return_contract": "data/worker-return-observation-contract.json",
+    "canonical_registry": "data/canonical-task-registry.json",
+    "sharded_task_records": "data/canonical-task-records/",
+    "worker_registry": "control/worker-registry.json",
+    "master_records_role": "MASTER_RECORDS",
+    "steghealth_recovery_owner": "StegVerse-Labs/StegHealth"
+  }
+}
