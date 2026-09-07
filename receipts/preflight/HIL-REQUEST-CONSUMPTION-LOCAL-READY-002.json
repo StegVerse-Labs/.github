@@ -1,0 +1,76 @@
+{
+  "schema": "stegverse.machine-preflight/v1",
+  "preflight_id": "HIL-REQUEST-CONSUMPTION-LOCAL-READY-002",
+  "supersedes_preflight": "receipts/preflight/HIL-REQUEST-CONSUMPTION-LOCAL-READY-001.json",
+  "task_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+  "state": "PASS",
+  "verdict": "PASS_FUNCTIONAL_MUTATION_ADMISSIBLE",
+  "authority_effect": "NONE_PREFLIGHT_ONLY",
+  "resolved_state": {
+    "canonical_task_registry_generation": 15,
+    "canonical_task_registry_status": "RUNTIME_PROFILE_GOVERNANCE_REVIEW_SOURCE_BOUND_AUTHENTIC_RUNTIME_PENDING",
+    "canonical_handoff": "docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_MIRROR_HANDOFF.md",
+    "same_device_supersession": "docs/HIL_SAME_DEVICE_RUNTIME_SUPERSESSION_20260906.md",
+    "resident_request": "control/resident-execution-request.d/hil-sovereign-receiver-001.json#RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002",
+    "resident_consumer": "scripts/consume_hil_resident_execution_request.py",
+    "cross_task_predicate": "PRED-RESIDENT-REQUEST-CONSUMED-HIL-SOVEREIGN-RECEIVER-002",
+    "cross_task_semantic_predicate": "resident_request_consumed",
+    "worker_local_ready_transition": "HIL_RECEIVER_LOCAL_READY_PUBLIC_RENDEZVOUS_REQUIRED",
+    "master_records_task": "HIL-MASTER-RECORD-001",
+    "authentic_runtime_execution_observed": false,
+    "current_main": "0220b9c6f59094bdc6c02d66eb19370a3deaeabb"
+  },
+  "reuse": {
+    "existing_request": true,
+    "existing_consumer": true,
+    "existing_targeted_executor": true,
+    "existing_workercoordinator": true,
+    "existing_hil_worker": true,
+    "new_runtime": false,
+    "new_heartbeat": false,
+    "new_oscillator": false,
+    "new_scheduler": false,
+    "new_workercoordinator": false,
+    "new_request": false,
+    "new_claim_fence_plane": false,
+    "new_credential_path": false
+  },
+  "gap": {
+    "state": "REQUEST_CONSUMPTION_SEMANTICS_STILL_COUPLED_TO_DOWNSTREAM_PUBLIC_LIFECYCLE",
+    "evidence": [
+      "Current main scripts/consume_hil_resident_execution_request.py still omits HIL_RECEIVER_LOCAL_READY_PUBLIC_RENDEZVOUS_REQUIRED from TERMINAL_TRANSITIONS.",
+      "Current tests still treat successful local READY as ATTEMPT_RECORDED and retryable.",
+      "The canonical cross-task predicate is semantic_predicate_id=resident_request_consumed.",
+      "The current same-device HIL supersession states that public observation is downstream/optional for routine local LEASE_OPEN and requires_other_machine=false."
+    ]
+  },
+  "collision_review": {
+    "open_pr_owning_exact_scope": false,
+    "old_branch_diverged_from_main": true,
+    "old_branch_disposition": "SUPERSEDED_BY_CURRENT_MAIN_REMATERIALIZATION",
+    "master_records_collision": false,
+    "active_worker_claim_minted": false
+  },
+  "planned_change": {
+    "action": "SEPARATE_RESIDENT_REQUEST_CONSUMPTION_TERMINALITY_FROM_BROADER_HIL_LIFECYCLE_TERMINALITY",
+    "request_consumption_success_boundary": "HIL_RECEIVER_LOCAL_READY_PUBLIC_RENDEZVOUS_REQUIRED_OR_LATER_EXISTING_HIL_TRANSITION",
+    "broader_hil_lifecycle_remains_active": true,
+    "public_tvc_reconstruction_publication_master_records_predicates_remain_separate": true
+  },
+  "readme_impact": {
+    "readme_impact_required": true,
+    "material_function_change": true,
+    "readme_update_required": true,
+    "readme_path": "README.md",
+    "determination": "README_UPDATE_REQUIRED_IN_SAME_CHANGE_SET",
+    "reason": "The repair changes the resident request retry/terminal boundary and evidence semantics used by the canonical resident_request_consumed predicate."
+  },
+  "authority": {
+    "heartbeat_grants_execution_authority": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "transition_authority": "INTERLOCK_INTR",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "request_consumption_grants_hil_lifecycle_completion": false
+  }
+}
