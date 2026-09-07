@@ -1,0 +1,115 @@
+{
+  "schema": "stegverse.reusable-task-registry/v1",
+  "generation": 1,
+  "status": "ACTIVE_SOURCE_DEFINED",
+  "purpose": "Provide stable, reusable task definitions that sessions and canonical work may reference without creating duplicate one-off task specifications or granting execution authority.",
+  "authority": {
+    "definition_and_discovery": "THIS_REGISTRY",
+    "work_intent_and_coordination": "data/canonical-task-registry.json",
+    "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
+    "observed_reality_and_reconstruction": "MASTER_RECORDS",
+    "governed_ingress_egress": "INTERLOCK_INTR",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE"
+  },
+  "reuse_rules": {
+    "definitions_are_non_authorizing": true,
+    "invocation_requires_current_context_binding": true,
+    "do_not_create_duplicate_implementation_when_existing_surface_exists": true,
+    "materially_affected_scope_only": true,
+    "may_be_composed_into_session_closeout": true
+  },
+  "tasks": [
+    {
+      "reusable_task_id": "RT-README-VALIDATION-001",
+      "name": "README Validation",
+      "purpose": "Evaluate every materially changed repository and keep its README accurate for behavior, runtime semantics, interfaces, governance and authority boundaries, evidence semantics, prerequisites, dependencies, failure behavior, and capability meaning.",
+      "trigger": "repository materially changed in current work",
+      "scope": "materially affected repositories only",
+      "completion_predicates": [
+        "README_UPDATED_IN_SAME_CHANGE_SET_IF_REQUIRED",
+        "OR_EVIDENCE_SUPPORTED_NO_README_CHANGE_REQUIRED_RECORDED"
+      ],
+      "authority_effect": "NONE",
+      "reuse_instructions": "Run as a completeness predicate. Do not rewrite unaffected documentation and do not treat README prose as execution evidence."
+    },
+    {
+      "reusable_task_id": "RT-MIRROR-HANDOFF-VALIDATION-001",
+      "name": "Mirror Handoff Validation",
+      "purpose": "Resolve and validate applicable *_MIRROR_HANDOFF.md files for repositories touched by current work and update stale task state, next transition, blockers, dependencies, authority boundaries, terminal evidence, and reusable implementation references.",
+      "trigger": "repository or task state materially changed in current work",
+      "scope": "applicable handoffs for materially affected repositories/tasks",
+      "completion_predicates": [
+        "APPLICABLE_HANDOFFS_RESOLVED",
+        "HANDOFF_STATE_MATCHES_CURRENT_CANONICAL_EVIDENCE",
+        "STALE_SUPERSEDED_EXECUTION_STATE_NOT_PROJECTED_AS_CURRENT"
+      ],
+      "authority_effect": "NONE",
+      "reuse_instructions": "Treat repository-local handoffs as continuation records, not execution authority. Preserve provenance while correcting current-state projections."
+    },
+    {
+      "reusable_task_id": "RT-STEGINDEX-VALIDATION-001",
+      "name": "StegIndex Validation",
+      "purpose": "Verify that capabilities, repositories, releases, runtime states, interfaces, and governed functions materially changed by current work remain accurately represented in StegIndex and related index projections.",
+      "trigger": "indexed capability or indexed source materially changed",
+      "scope": "materially affected indexed entries only",
+      "completion_predicates": [
+        "INDEXED_ENTRY_DISCOVERABLE",
+        "INDEX_PROJECTION_MATCHES_CURRENT_SOURCE_AND_EVIDENCE",
+        "STALE_OR_OVERCLAIMED_CAPABILITY_NOT_ADVERTISED"
+      ],
+      "authority_effect": "NONE_DISCOVERY_ONLY",
+      "reuse_instructions": "Use StegIndex as read/discovery projection. Do not convert index presence into runtime, governance, credential, publication, or execution authority."
+    },
+    {
+      "reusable_task_id": "RT-NATIVE-EMAIL-ACTION-MONITOR-001",
+      "name": "Native Email Action Monitor Trigger",
+      "purpose": "Trigger the existing STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001 through its eligible resident execution path and surface newly actionable items according to its existing authority boundaries.",
+      "trigger": "session closeout or explicit reusable-task invocation",
+      "scope": "existing native email action monitor only",
+      "existing_task_ref": "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001",
+      "existing_request_ref": "RESIDENT-EXEC-NATIVE-EMAIL-ACTION-MONITOR-001",
+      "completion_predicates": [
+        "EXISTING_MONITOR_TRIGGER_ATTEMPTED_THROUGH_ELIGIBLE_RESIDENT_PATH",
+        "RESULT_OR_CURRENT_BOUNDARY_RECORDED"
+      ],
+      "authority_effect": "NONE_BEYOND_EXISTING_MONITOR_AUTHORITY",
+      "reuse_instructions": "Reuse the existing monitor and resident dispatcher. Do not create another scheduler, monitor, polling mechanism, heartbeat, worker, or credential route."
+    },
+    {
+      "reusable_task_id": "RT-CANONICAL-STATE-RECONCILIATION-001",
+      "name": "Canonical State Reconciliation",
+      "purpose": "Reconcile Task Registry intent, WorkerCoordinator claim/fence projections, Master Records observed reality, applicable receipts, mirror handoffs, README completeness determinations, and StegIndex/index state before handoff.",
+      "trigger": "session closeout after material work",
+      "scope": "current task chain and materially affected artifacts",
+      "completion_predicates": [
+        "CANONICAL_SURFACES_RECONCILED",
+        "CONTRADICTIONS_REPAIRED_WHERE_MACHINE_ADMISSIBLE_OR_EXPLICITLY_RECORDED",
+        "OBSERVED_EVIDENCE_NOT_SILENTLY_REWRITTEN"
+      ],
+      "authority_effect": "NONE",
+      "reuse_instructions": "Reconcile rather than overwrite authority domains. Master Records remains observed-reality authority; WorkerCoordinator remains claim/fence authority; InTr remains governed transition boundary."
+    },
+    {
+      "reusable_task_id": "RT-SESSION-CLOSEOUT-001",
+      "name": "Session Maintenance Closeout",
+      "purpose": "Compose the reusable README, handoff, StegIndex, email-monitor, and canonical-state reconciliation tasks into one bounded session-closeout routine before emitting a successor coordination block.",
+      "trigger": "session has reached its current executable boundary and is preparing handoff",
+      "scope": "current task chain and materially affected artifacts only",
+      "composes": [
+        "RT-README-VALIDATION-001",
+        "RT-MIRROR-HANDOFF-VALIDATION-001",
+        "RT-STEGINDEX-VALIDATION-001",
+        "RT-NATIVE-EMAIL-ACTION-MONITOR-001",
+        "RT-CANONICAL-STATE-RECONCILIATION-001"
+      ],
+      "completion_predicates": [
+        "PRIMARY_WORK_REACHED_CURRENT_BOUNDARY",
+        "ALL_APPLICABLE_COMPOSED_REUSABLE_TASKS_COMPLETED_OR_CURRENT_BOUNDARY_RECORDED",
+        "SUCCESSOR_COORDINATION_BLOCK_CAN_BE_EMITTED"
+      ],
+      "authority_effect": "NONE",
+      "reuse_instructions": "This is a closeout composition, not a prerequisite that may block an admissible primary runtime transition. Apply only to materially affected scope and do not recursively audit the ecosystem."
+    }
+  ]
+}
