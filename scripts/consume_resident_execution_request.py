@@ -29,7 +29,7 @@ CONSUMPTION_REL = Path("receipts/sovereign-host/resident-execution-request-consu
 TARGET_TASK = "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"
 TARGET_MODE = "DEDICATED_ECOSYSTEM_CHAT_PARENT"
 TARGET_ENTRYPOINT = "scripts/refresh_and_execute_resident_task.py"
-MINIMUM_FENCE_EXCLUSIVE = 22
+MINIMUM_FENCE_EXCLUSIVE = 24
 
 
 def load_json(path: Path) -> dict[str, Any]:
