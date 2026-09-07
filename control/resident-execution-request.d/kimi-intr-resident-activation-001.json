@@ -4,7 +4,7 @@
   "state": "REQUESTED",
   "task_id": "KIMI-INTR-RESIDENT-ACTIVATION-001",
   "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
-  "entrypoint": "scripts/refresh_and_execute_resident_task.py",
+  "entrypoint": "scripts/refresh_and_execute_kimi_intr_resident_task.py",
   "fresh_fence_minimum_exclusive": 0,
   "credential_authority": "TV/TVC",
   "github_token_required": false,
@@ -16,5 +16,5 @@
   "provider_credential_material_allowed": false,
   "master_records_credential_material_allowed": false,
   "authority_effect": "NONE_REQUEST_ONLY",
-  "note": "Ask the existing resident WorkerCoordinator to attempt the independently admitted Kimi InTr activation proof. The request grants no claim, fence, transport, Governance, provider, credential, custody, heartbeat, publication, or runtime authority."
+  "note": "Ask the existing resident WorkerCoordinator to attempt the independently admitted Kimi InTr activation proof through the task-specific environment-preservation wrapper. The wrapper reuses the existing source refresher and WorkerCoordinator and grants no claim, fence, transport, Governance, provider, credential, custody, heartbeat, publication, or runtime authority."
 }
