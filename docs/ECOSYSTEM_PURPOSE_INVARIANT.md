@@ -10,7 +10,7 @@ Machine-readable contract: `control/ecosystem-purpose-invariant.json`
 StegVerse exists to provide governance infrastructure through which humans, artificial intelligences, autonomous systems, institutions, and machines can participate in increasingly consequential digital and physical systems while preserving:
 
 - agency;
-- explicit authority;
+- governed authority;
 - bounded consequence;
 - state continuity;
 - reconstructable evidence;
@@ -44,7 +44,7 @@ Every governed StegVerse entity MUST contribute at least one defined capability 
 4. **execution** — performs an admitted consequence while preserving the execution limit/interface contract;
 5. **observability** — exposes truthful state, liveness, timing, and execution facts without manufacturing authority;
 6. **evidence** — produces or preserves reconstructable receipts, provenance, refusal, or outcome evidence;
-7. **recovery** — restores governed operation or continuity without bypassing authority;
+7. **recovery** — restores governed operation or continuity without bypassing governance;
 8. **interoperability** — enables heterogeneous systems to participate through stable governed contracts;
 9. **consequence containment** — limits, fences, reverses, pauses, or otherwise bounds harmful or irreversible transitions where the governing contract permits it.
 
@@ -55,8 +55,9 @@ A component that contributes none of these has no established governed role in t
 Each governed entity, repository, service, protocol, business unit, or runtime lane SHOULD declare:
 
 - its ecosystem-sum contribution class or classes;
-- the authority it holds;
-- the authority it explicitly does not hold;
+- the governance under which it operates;
+- the authority that governance confers for the current state/transition;
+- the authority governance explicitly does not confer;
 - the lifecycle states it can truthfully establish;
 - the evidence it emits or preserves;
 - the upstream and downstream governed interfaces it depends on;
@@ -65,9 +66,25 @@ Each governed entity, repository, service, protocol, business unit, or runtime l
 
 No entity is required to accomplish the entire StegVerse mission by itself.
 
-No entity may silently absorb another layer's authority merely to make an integration convenient.
+No entity may silently absorb authority not conferred by applicable governance merely to make an integration convenient.
 
-## Authority invariant
+## Governance -> authority invariant
+
+**Authority is a consequence of governance.**
+
+Authority is not an independent primitive, source, boundary, or self-asserted property. It exists only to the extent that applicable governance confers it for a defined actor/entity, state, scope, transition, credential use, consequence, and duration.
+
+The canonical relation is:
+
+```text
+governance decision / governing contract
+-> admissibility + scope + conditions
+-> authority conferred for the applicable action/state
+-> bounded execution/consequence
+-> evidence + reconstruction
+```
+
+Therefore:
 
 Capability is not authority.
 
@@ -77,27 +94,29 @@ Model output is not authority.
 
 Compute ownership is not authority.
 
-Agent autonomy is not self-authorization.
+Agent autonomy is not authority.
 
-Observation is not execution.
+Observation is not authority.
 
-Source completion is not activation.
+Source completion is not authority.
 
-CI success is not runtime proof.
+CI success is not authority.
 
-Deployment is not consequence.
+Deployment is not authority.
 
-A receipt is evidence of an event only to the extent that its provenance, binding, and reconstruction contract support that claim.
+Possession of a credential is not authority; credential use remains governed.
 
-Existing authority separations remain controlling, including TV/TVC credential and bounded-operation authority, Interlock/InTr transition governance, HB synchronization/reference roles, execution-system consequence authority, and USER_ONLY conditions where explicitly defined.
+A receipt is evidence of an event only to the extent that its provenance, binding, and reconstruction contract support that claim. A prior receipt does not independently confer authority for a future transition.
 
-Authority is a role/property, not a boundary. Runtime is an execution substrate/surface, not a boundary. Boundary terminology is reserved for actual limits, interfaces, containment edges, trust separations, consequence limits, or explicit progression conditions.
+Governance responsibilities remain separated where canonically assigned, including TV/TVC credential-governance functions, Interlock/InTr transition governance, HB synchronization/reference roles, execution-system consequence handling, Master Records reconstruction, and explicit USER_ONLY or other human-governed conditions where defined. These assignments describe governance roles and responsibilities; they do not make authority an independent layer.
+
+Runtime is an execution substrate/surface, not a boundary and not a source of authority. Boundary terminology is reserved for actual limits, interfaces, containment edges, trust separations, consequence limits, or explicit progression conditions.
 
 ## Non-centralization invariant
 
 StegVerse governance MUST NOT converge into a single entity that decides universally correct outcomes for all actors.
 
-Governance should instead make authority explicit, transitions admissible or inadmissible under declared rules, consequences bounded where possible, and evidence reconstructable afterward.
+Governance should determine admissibility and, when appropriate, confer scoped authority for consequential action under declared rules, while preserving agency, bounded consequence, and reconstructable evidence.
 
 This preserves plural agency while making consequential action governable.
 
@@ -105,10 +124,10 @@ This preserves plural agency while making consequential action governable.
 
 ### Gate I — Governed action exists
 At least one real consequential action can be traced end-to-end:
-proposal -> context/state -> admissibility -> execution interface/limit -> consequence -> receipt -> reconstruction.
+proposal -> context/state -> governance/admissibility -> scoped authority -> execution interface/limit -> consequence -> receipt -> reconstruction.
 
 ### Gate II — Governed action generalizes
-The same governance primitives operate across materially different systems or domains without collapsing their authority separations.
+The same governance primitives operate across materially different systems or domains without collapsing their governance-role separations or consequence limits.
 
 ### Gate III — Governed action becomes interoperable
 External systems can participate through stable connectors, profiles, envelopes, schemas, and evidence contracts rather than bespoke governance reconstruction.
@@ -125,12 +144,13 @@ Before creating or materially expanding a governed entity, determine:
 
 1. Which ecosystem-sum capability does it add?
 2. Why can that capability not be supplied by an existing entity?
-3. What authority separation does it preserve?
-4. What actual interface, consequence limit, or progression condition constrains it?
-5. What consequential transition can it affect?
-6. What evidence proves its behavior?
-7. Which maturity gate does it advance?
-8. Does it reduce dependency on a specific intelligence provider or instead introduce unnecessary lock-in?
+3. Which governance role or responsibility does it implement or depend on?
+4. What authority can that governance confer, under what conditions and scope?
+5. What actual interface, consequence limit, or progression condition constrains it?
+6. What consequential transition can it affect?
+7. What evidence proves its behavior?
+8. Which maturity gate does it advance?
+9. Does it reduce dependency on a specific intelligence provider or instead introduce unnecessary lock-in?
 
 If these cannot be answered, the work is not yet justified as an ecosystem component.
 
@@ -148,6 +168,6 @@ StegVerse is successful at industrial scale when the market no longer asks only:
 
 and routinely asks:
 
-> What was it permitted to do, under whose authority, against what state, with what bounded consequence, and what evidence proves what actually happened?
+> What governance applied, what authority did that governance confer, against what state, for what bounded consequence, and what evidence proves what actually happened?
 
 That is the intended ecosystem contribution to the emerging AI/automation industrial revolution.
