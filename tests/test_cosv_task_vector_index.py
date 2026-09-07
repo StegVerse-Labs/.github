@@ -10,6 +10,7 @@ INDEX = ROOT / "control" / "task-vector-index.json"
 FRAGMENTS = ROOT / "control" / "worker-registry.d"
 GLOBAL_REGISTRY = ROOT / "control" / "worker-registry.json"
 ORGANIZATION_REGISTRY = ROOT / "control" / "organization-task-registry.json"
+CANONICAL_TASK_REGISTRY = ROOT / "data" / "canonical-task-registry.json"
 
 spec = importlib.util.spec_from_file_location("cosv", ROOT / "scripts" / "cosv.py")
 assert spec and spec.loader
@@ -23,7 +24,7 @@ class COSVTaskVectorIndexTests(unittest.TestCase):
 
     def vectorized_registry_tasks(self) -> dict[str, tuple[dict, Path]]:
         found: dict[str, tuple[dict, Path]] = {}
-        paths = [GLOBAL_REGISTRY, ORGANIZATION_REGISTRY, *sorted(FRAGMENTS.glob("*.json"))]
+        paths = [GLOBAL_REGISTRY, ORGANIZATION_REGISTRY, CANONICAL_TASK_REGISTRY, *sorted(FRAGMENTS.glob("*.json"))]
         for path in paths:
             payload = json.loads(path.read_text(encoding="utf-8"))
             for task in payload.get("tasks", []):
