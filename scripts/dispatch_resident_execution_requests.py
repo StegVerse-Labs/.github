@@ -108,7 +108,7 @@ CONSUMERS = (
     ("erl_ai_economic_transparency_review", "scripts/consume_erl_ai_economic_transparency_review_request.py"),
     ("org_claim_allocator", "scripts/consume_org_claim_allocator_request.py"),
     ("native_email_action_monitor", "scripts/consume_native_email_action_monitor_request.py"),
-    ("governed_multilane_manifold_activation", "scripts/consume_governed_multilane_manifold_activation_request.py"),
+    ("governed_multilane_manifold_activation", "control/resident-execution-request.d/consume-governed-multilane-manifold-activation.py"),
     ("canonical_work_coordination", "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py"),
     ("runtime_profile_map", "control/resident-execution-request.d/consume-runtime-profile-map-build.py"),
     ("runtime_profile_map_custody", "control/resident-execution-request.d/consume-runtime-profile-map-custody.py"),
