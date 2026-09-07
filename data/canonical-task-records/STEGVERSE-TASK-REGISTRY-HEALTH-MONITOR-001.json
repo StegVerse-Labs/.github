@@ -1,0 +1,46 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001",
+  "correlation_id": "STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001",
+  "root_correlation_id": "STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001",
+  "parent_task_id": null,
+  "goal": "Monitor canonical task-registry posture, checked-out task worker-return health, and derive deduplicated StegHealth recovery tasks when expected worker history fails to return to Master Records.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "20010000100000",
+  "source_refs": [
+    "docs/STEGVERSE_TASK_REGISTRY_HEALTH_MONITOR_001_MIRROR_HANDOFF.md",
+    "data/task-registry-health-monitor-contract.json",
+    "data/worker-return-observation-contract.json",
+    "control/task-vectors/STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001.json"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegIndex", "StegVerse-Labs/StegDB", "StegVerse-Labs/StegHealth"],
+    "components": ["task-registry-census", "checked-out-task-review", "worker-return-reconciliation", "steghealth-recovery-derivation", "monitor-report"]
+  },
+  "dependencies": [],
+  "blockers": [],
+  "adjacent_task_refs": ["ORG-GITHUB-REPOSITORY-STATUS-SUMMARY-001"],
+  "existing_evidence_refs": [
+    "data/task-lifecycle-status-contract.json",
+    "data/worker-return-observation-contract.json",
+    "data/task-registry-health-monitor-contract.json"
+  ],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "report_complete": false,
+    "summary_ref": null
+  },
+  "next_admissible_work": {
+    "kind": "TASK_REGISTRY_HEALTH_MONITOR_CYCLE",
+    "output": "TASK_COUNTS_CHECKED_OUT_FINDINGS_AND_STEGHEALTH_RECOVERY_DERIVATIONS"
+  },
+  "status_response_contract": {
+    "active": "currently active - checked out",
+    "completed": "completed with monitor findings"
+  },
+  "retired_terminal": true,
+  "retired_resurrection_review_only": true
+}
