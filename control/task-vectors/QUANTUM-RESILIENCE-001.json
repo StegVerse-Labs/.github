@@ -1,0 +1,35 @@
+{
+  "identity": "StegVerse-Labs/.github:task:QUANTUM-RESILIENCE-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "10100000100000",
+  "evidence_refs": [
+    "data/canonical-task-registry.json",
+    "docs/QUANTUM_RESILIENCE_MIRROR_HANDOFF.md",
+    "docs/QUANTUM_CANONICAL_WORK_EXACT_VALUE_ADOPTION_MIRROR_HANDOFF.md",
+    "control/cross-task-coordination.d/quantum-resilience-001-canonical-work-ingress.json",
+    "control/resident-execution-request.d/canonical-work-quantum-resilience-001.json",
+    "docs/COSV_TASK_POINTER_COORDINATION_MIRROR_HANDOFF.md",
+    "management/COSV_PROFILE_V1.json",
+    "master-records/orchestration:CANONICAL_WORK_COORDINATION_CUSTODY_MIRROR_HANDOFF.md",
+    "receipts/preflight/QUANTUM-RESILIENCE-COSV-POINTER-001.json"
+  ],
+  "observed_at": "2026-09-07T09:42:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "UNCLAIMED",
+    "archive_ready": false,
+    "unassigned_work": 1,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  }
+}
