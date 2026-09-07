@@ -1,0 +1,64 @@
+{
+  "schema": "stegverse.machine-preflight/v1",
+  "preflight_id": "ENTITY-AUTONOMOUS-GOAL-RESOLUTION-CONTINUATION-20260907",
+  "task_id": "ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001",
+  "goal_id": "ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-001",
+  "repository": "StegVerse-Labs/.github",
+  "state": "PASS",
+  "canonical_handoff": "docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_MIRROR_HANDOFF.md",
+  "canonical_task_policy": "data/task-coordination-policy.json",
+  "cross_task_coordination": "control/cross-task-coordination.d/entity-autonomous-governed-progression-runtime-adoption.json",
+  "master_records_custody": "master-records/orchestration/CANONICAL_WORK_COORDINATION_CUSTODY_MIRROR_HANDOFF.md",
+  "reuse_determination": {
+    "existing_task_reused": true,
+    "existing_task_id": "ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001",
+    "new_task_created": false,
+    "reason": "The requested behavior is a bounded continuation/reporting extension of the existing autonomous governed progression task; creating another scheduler, coordinator, or duplicate task would violate the canonical handoff."
+  },
+  "proposed_change": {
+    "human_originates": ["IDEA", "QUERY", "GOAL"],
+    "ecosystem_owns": [
+      "TASK_DECOMPOSITION",
+      "TASK_COSV_CONTINUITY",
+      "HANDOFF_REINGESTION",
+      "DEPENDENCY_AND_COLLISION_RESOLUTION",
+      "PARALLEL_GROUPING",
+      "MACHINE_OWNED_CONTINUATION",
+      "EVIDENCE_RECONCILIATION",
+      "NEXT_ADMISSIBLE_WORK_SELECTION"
+    ],
+    "default_report_interval_iterations": 5,
+    "stop_only_for": [
+      "TERMINAL_GOVERNED_GOAL_STATE_REACHED",
+      "EXACT_NEXT_TRANSITION_REQUIRES_HUMAN_AUTHORITY_CLASS",
+      "DENY_WITH_NO_ADMISSIBLE_REPAIR_OR_ALTERNATE",
+      "REQUIRED_RECEIVER_GENUINELY_UNAVAILABLE_WITH_NO_ADMITTED_LOCAL_MATERIALIZATION",
+      "CURRENT_STATE_INVARIANT_UNRECONSTRUCTABLE"
+    ]
+  },
+  "authority": {
+    "effect": "NONE_PREFLIGHT_ONLY",
+    "workercoordinator_claim_fence_required": true,
+    "interlock_intr_transition_admission_required": true,
+    "credential_authority": "TV/TVC",
+    "heartbeat_grants_authority": false,
+    "github_grants_runtime_authority": false
+  },
+  "readme_impact": {
+    "required": true,
+    "material_function_change": true,
+    "reason": "The change alters orchestration continuation semantics, response cadence, and the human-review stop boundary.",
+    "readme_path": "README.md",
+    "readme_updated_in_change_set": true,
+    "planned_evidence_refs": [
+      "control/entity-autonomous-governed-progression-contract.json",
+      "data/task-coordination-policy.json",
+      "scripts/evaluate_goal_resolution_continuation.py",
+      "tests/test_goal_resolution_continuation.py",
+      "docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_MIRROR_HANDOFF.md",
+      "README.md"
+    ]
+  },
+  "collision_result": "REUSE_EXISTING_PROGRESSOR_NO_SECOND_SCHEDULER_OR_COORDINATOR",
+  "machine_work_admissible": true
+}
