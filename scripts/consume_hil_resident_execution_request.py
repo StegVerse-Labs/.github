@@ -8,8 +8,10 @@ SHWP-HIL-SOVEREIGN-RECEIVER-001.
 
 Before targeted execution, the consumer materializes the non-secret HIL
 loopback/shared-Service-Gateway route config. Missing runtime/node route
-predicates are retryable and MUST NOT burn the request. Only a terminal HIL
-runtime observation consumes the request permanently.
+predicates are retryable and MUST NOT burn the request. Successful same-device
+local receiver READY is terminal for this resident request, while the broader
+HIL lifecycle remains independently active for public rendezvous, TVC,
+reconstruction, publication, and Master Records evidence.
 """
 from __future__ import annotations
 
@@ -30,6 +32,7 @@ TARGET_MODE = "TARGETED_INDEPENDENT_TASK_CONTROL"
 TARGET_ENTRYPOINT = "scripts/refresh_and_execute_resident_task.py"
 ROUTE_MATERIALIZER = "scripts/materialize_hil_gateway_route_config.py"
 TERMINAL_TRANSITIONS = {
+    "HIL_RECEIVER_LOCAL_READY_PUBLIC_RENDEZVOUS_REQUIRED",
     "HIL_PUBLIC_HTTPS_RENDEZVOUS",
     "HIL_RECEIVER_RECEIPT_OBSERVED",
     "HIL_RECEIVER_EXACT_BYTE_RECONSTRUCTED",
@@ -176,6 +179,7 @@ def consume(
             "request_sha256": request_hash,
             "runtime_execution_attempted": False,
             "terminal_hil_transition_observed": True,
+            "broader_hil_lifecycle_complete": False,
             "authority_effect": "NONE",
         }
 
@@ -208,6 +212,7 @@ def consume(
             "route_materialization": route_result,
             "runtime_execution_attempted": False,
             "terminal_hil_transition_observed": False,
+            "broader_hil_lifecycle_complete": False,
             "retry_allowed": True,
             "request_granted_authority": False,
             "heartbeat_grants_execution_authority": False,
@@ -271,6 +276,7 @@ def consume(
         "runtime_execution_attempted": True,
         "terminal_hil_transition": terminal,
         "terminal_hil_transition_observed": terminal is not None,
+        "broader_hil_lifecycle_complete": terminal == "HIL_TVC_LIFECYCLE_RECEIPT_OBSERVED",
         "retry_allowed": terminal is None,
         "request_granted_authority": False,
         "heartbeat_grants_execution_authority": False,
