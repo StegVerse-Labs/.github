@@ -33,19 +33,24 @@ The evaluator now resolves compact continuation directly from:
 
 It verifies the exact Task ID/vector binding against `control/task-vector-index.json`, resolves the unique record in `data/canonical-task-registry.json`, derives root goal/correlation identity, resolves applicable `*_MIRROR_HANDOFF.md` references, dependencies, adjacent tasks, evidence references, source state-vector provenance, and registry provenance, and then feeds that resolved task into the existing autonomous continuation evaluation.
 
-Fail-closed tests were added for exact resolution, vector mismatch, and missing task identity. This source fix does not mint WorkerCoordinator claim/fence, Interlock/InTr transition authority, credential authority, or runtime evidence.
+Fail-closed tests were added for exact resolution, vector mismatch, and missing task identity. This source fix does not mint WorkerCoordinator claim/fence state, Interlock/InTr transition admission, credential authority, or runtime evidence.
 
 ## Terminology correction
 
-A runtime is not an authority or governance boundary. It is an execution substrate/surface. The canonical boundaries relevant to this task are:
+A runtime is an execution substrate/surface, not a boundary.
 
-- WorkerCoordinator claim/fence authority;
-- Interlock/InTr governed transition admission;
-- TV/TVC credential authority;
-- Master Records observed-reality and reconstruction authority;
-- explicit human-only authority states where applicable.
+Authority is a role/property, not a boundary.
 
-Runtime availability, locality, freshness, or successful execution may be predicates or observations, but they are not themselves governance boundaries.
+The relevant actual boundaries are explicit conditions that permit, deny, defer, or constrain progression, including:
+
+- WorkerCoordinator claim/fence acquisition and validity conditions;
+- Interlock/InTr governed transition admission conditions;
+- Master Records reconciliation/completion conditions;
+- credential validity/availability conditions where credentials are required;
+- explicit human-only decision or consent conditions where applicable;
+- any other canonically defined predicate that must be satisfied before the next transition may occur.
+
+WorkerCoordinator, Interlock/InTr, TV/TVC, and Master Records may hold distinct roles or authorities, but those roles/authorities are not themselves boundaries. Runtime availability, locality, freshness, or successful execution may be predicates or observations, but they are not themselves boundaries either.
 
 ## Purpose
 
@@ -66,9 +71,9 @@ No second task registry, COSV profile, scheduler, WorkerCoordinator, heartbeat, 
 
 ## Remaining execution evidence
 
-Execution evidence must still demonstrate consumption through the already-materialized resident execution surface, including pointer verification before execution, ordinary WorkerCoordinator admission/claim/fence when admissible, applicable Interlock/InTr transition admission, required bounded invocation construction, execution receipts, Master Records custody/reconstruction, and entropy recovery where applicable.
+Execution evidence must still demonstrate consumption through the already-materialized resident execution surface, including pointer verification before execution, ordinary WorkerCoordinator claim/fence handling when applicable, Interlock/InTr transition admission when applicable, required bounded invocation construction, execution receipts, Master Records custody/reconstruction, and entropy recovery where applicable.
 
-These are execution/evidence requirements across the existing authority boundaries. They are not runtime boundaries.
+These are evidence requirements evaluated against explicit progression predicates. They are not runtime boundaries or authority boundaries.
 
 ## Current COSV state
 
