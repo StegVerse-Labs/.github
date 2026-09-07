@@ -1,0 +1,32 @@
+{
+  "schema": "stegverse.machine-preflight/v1",
+  "task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "observed_pointer": {
+    "profile": "task.v1",
+    "vector": "10100000100000",
+    "symbol_order": "LRUIVGOCMTBEAP"
+  },
+  "canonical_handoff": "docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md",
+  "canonical_registry": "data/canonical-task-registry.json",
+  "existing_runtime_enforcement": "docs/COSV_TASK_POINTER_RUNTIME_ENFORCEMENT_MIRROR_HANDOFF.md",
+  "finding": "CANONICAL_TASK_REGISTERED_BUT_TASK_VECTOR_SOURCE_NOT_INSTALLED_FOR_EXACT_PARENT_POINTER",
+  "reuse": {
+    "existing_cosv_profile": "management/COSV_PROFILE_V1.json#task.v1",
+    "existing_pointer_policy": "data/task-coordination-policy.json",
+    "existing_task_vector_index": "control/task-vector-index.json",
+    "existing_runtime_enforcement_task": "COSV-TASK-POINTER-RUNTIME-ENFORCEMENT-001",
+    "new_runtime": false,
+    "new_scheduler": false,
+    "new_workercoordinator": false,
+    "new_claim_fence_plane": false,
+    "new_task_identifier": false
+  },
+  "admissible_mutation": "INSTALL_TASK_VECTOR_SOURCE_FOR_EXISTING_CANONICAL_PARENT_AND_UPDATE_HANDOFF_PROJECTION",
+  "readme_impact": {
+    "required": false,
+    "determination": "NO_README_CHANGE_REQUIRED",
+    "rationale": "This change instantiates the already-documented task.v1 continuation contract for an existing canonical task. It does not change repository behavior, runtime semantics, interfaces, governance or authority boundaries, evidence semantics, prerequisites, dependencies, failure behavior, or capability meaning."
+  },
+  "authority_effect": "NONE_COORDINATION_ONLY"
+}
