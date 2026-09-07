@@ -52,6 +52,52 @@
     "vector_or_task_id_alone_grants_authority": false,
     "documentation_or_source_state_may_substitute_for_runtime_evidence": false
   },
+  "goal_resolution_continuation_contract": {
+    "contract_ref": "control/entity-autonomous-governed-progression-contract.json",
+    "evaluator_ref": "scripts/evaluate_goal_resolution_continuation.py",
+    "human_originates": ["IDEA", "QUERY", "GOAL"],
+    "ecosystem_owns_continuation": true,
+    "automatic_reingestion_required": true,
+    "reingest": [
+      "TASK_ID",
+      "COSV_TASK_VECTOR",
+      "MIRROR_HANDOFF",
+      "COMPLETION_STATE",
+      "DEPENDENCY",
+      "ADJACENT_TASK",
+      "INTEGRATION_CANDIDATE",
+      "EVIDENCE_AND_RECEIPT"
+    ],
+    "default_report_interval_iterations": 5,
+    "periodic_report_stops_machine_work": false,
+    "report_early_on": [
+      "TERMINAL_GOVERNED_GOAL_STATE_REACHED",
+      "GENUINE_HUMAN_REVIEW_OR_AUTHORITY_BOUNDARY",
+      "DENY_WITH_NO_ADMISSIBLE_REPAIR_OR_ALTERNATE",
+      "CURRENT_STATE_INVARIANT_UNRECONSTRUCTABLE"
+    ],
+    "returned_identifier_requires_human_reentry": false,
+    "returned_identifier_is_automatically_new_task": false,
+    "continuation_sequence": [
+      "INGEST_RETURNED_TASK_COSV_HANDOFF_AND_COMPLETION_STATE",
+      "MATCH_RETURNED_IDS_TO_CANONICAL_ACTIVE_AND_COMPLETED_WORK",
+      "VERIFY_TASK_ID_COSV_VECTOR_BINDING_WHEN_PRESENT",
+      "RESOLVE_APPLICABLE_MIRROR_HANDOFFS",
+      "RECONCILE_MASTER_RECORDS_EVIDENCE",
+      "RESOLVE_WORKERCOORDINATOR_CLAIM_FENCE",
+      "CLASSIFY_CONTINUATION_SUCCESSOR_DEPENDENCY_ADJACENCY_OR_NEW_WORK",
+      "DEDUPLICATE_EQUIVALENT_WORK",
+      "RESOLVE_REPOSITORY_RUNTIME_AUTHORITY_AND_EVIDENCE_COLLISIONS",
+      "REGROUP_PARALLEL_CAPABLE_WORK",
+      "SELECT_NEXT_ADMISSIBLE_NON_DUPLICATE_WORK",
+      "CONTINUE_MACHINE_OWNED_WORK_UNTIL_REPORT_OR_STOP_BOUNDARY"
+    ],
+    "no_second_scheduler_or_coordinator": true,
+    "workercoordinator_claim_fence_still_required": true,
+    "interlock_intr_transition_admission_still_required": true,
+    "master_records_reconciliation_still_required": true,
+    "credential_authority": "TV/TVC"
+  },
   "reusable_task_construct_contract": {
     "registry_ref": "data/reusable-task-registry.json",
     "contract_ref": "data/reusable-task-ephemeral-construct-contract.json",
@@ -106,6 +152,10 @@
     "TASK_IDENTITY_STABLE_ACROSS_SESSIONS_REPOSITORIES_WORKERS_AND_TRANSFERS",
     "TASK_ID_PLUS_COSV_VECTOR_IS_SUFFICIENT_COMPACT_CONTINUATION_POINTER",
     "CANONICALLY_RESOLVABLE_TASK_DOCUMENTATION_IS_NOT_REPEATED_IN_PROMPTS",
+    "HUMAN_ORIGINATES_INTENT_ECOSYSTEM_OWNS_MACHINE_EXECUTION_CONTINUITY",
+    "RETURNED_TASK_COSV_HANDOFF_STATE_IS_REINGESTED_WITHOUT_HUMAN_REPRESENTATION",
+    "PERIODIC_REPORTING_DOES_NOT_TERMINATE_MACHINE_OWNED_GOAL_RESOLUTION",
+    "HUMAN_REVIEW_IS_RESERVED_FOR_EXPLICIT_HUMAN_AUTHORITY_OR_UNRESOLVABLE_BOUNDARIES",
     "DISTINCT_NEW_SAME_GOAL_WORK_BECOMES_ADJACENT_CANONICAL_TASK_NOT_PROMPT_PROSE",
     "REUSABLE_TASK_IS_DURABLE_IDENTITY_NOT_PERSISTENT_RUNNER",
     "INVOCATION_PARAMETERS_DETERMINE_EXACT_DERIVED_TT_RTG_GTG_CONSTRUCT",
@@ -157,6 +207,12 @@
       "fields": ["task_id", "cosv_task_vector"],
       "additional_fields_only_when_not_yet_canonically_resolvable": true
     },
+    "machine_owned_continuation": {
+      "human_reentry_required": false,
+      "automatic_reingestion_required": true,
+      "default_report_interval_iterations": 5,
+      "periodic_report_is_terminal": false
+    },
     "materialize": [
       "ACTIVE_TASKS",
       "COMPLETED_EVIDENCED_WORK",
@@ -191,6 +247,8 @@
     ]
   },
   "nonclaims": [
+    "GOAL_RESOLUTION_CONTINUATION_POLICY_DOES_NOT_GRANT_EXECUTION_OR_TRANSITION_AUTHORITY",
+    "PERIODIC_REPORT_SUPPRESSION_DOES_NOT_PROVE_BACKGROUND_EXECUTION",
     "COSV_TASK_POINTER_DOES_NOT_PROVE_EXECUTION_OR_ADMISSION",
     "REUSABLE_TASK_IDENTITY_DOES_NOT_PROVE_EXECUTION_OR_ADMISSION",
     "DERIVED_TT_RTG_GTG_CONSTRUCT_DOES_NOT_PROVE_EXECUTION_OR_ADMISSION",
