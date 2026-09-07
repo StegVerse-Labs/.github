@@ -1,10 +1,9 @@
 {
   "schema": "stegverse.session-build-preflight-receipt/v1",
   "preflight_id": "SV002-PORTABLE-IPHONE-EXECUTION-BINDING-20260906",
-  "goal": "Bind the already-requested SHWP-SV002-ORG-RUNTIME-ACTIVATION-001 task to the existing CURRENT_USER_IPHONE portable WorkerCoordinator and StegOS external-resident-task execution surface without creating another runtime, task, request, WorkerCoordinator, heartbeat, oscillator, scheduler, claim/fence authority plane, credential path, or user-operated-machine dependency.",
-  "state": "PASS_TO_NARROW_IMPLEMENTATION_BOUNDARY",
+  "goal": "Continue the already-requested SHWP-SV002-ORG-RUNTIME-ACTIVATION-001 task on CURRENT_USER_IPHONE by reusing the existing HB32/WorkerCoordinator/StegOS native resident-loopback implementation without creating another runtime, task, request, WorkerCoordinator, heartbeat, oscillator, scheduler, claim/fence authority plane, credential path, browser principal, or user-operated-machine dependency.",
+  "state": "PASS_TO_EXISTING_NATIVE_ARTIFACT_MATERIALIZATION_BOUNDARY",
   "repository": "StegVerse-Labs/.github",
-  "base_commit": "5a4d6c67a9d32c08d52265eecd294c59b9b3097a",
   "resolved_state": {
     "canonical_task_registry_generation": 15,
     "worker_registry_generation": 22,
@@ -24,33 +23,45 @@
     "ec92570ccfa4ef9b87bef77c4596f0f341ff33b7",
     "511b82e26dcfce0d799f861df23b605fb837ac56",
     "55c03313d72dde2f067434c87cd3691ec0682c14",
+    "543fb39498cdba042796a09d70292c2bd7396e1a",
+    "72e80ce645858c02877277845ffe624cd71ec1e6",
     "7146b112e37781517e37f9815d5bb05a213b0677",
-    "workercoordinator/portable_checkout.js",
-    "docs/WORKERCOORDINATOR_PORTABLE_IPHONE_EXECUTION_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/StegOS/mobile/web-bootstrap/external-resident-task.js"
+    "StegVerse-Labs/StegOS/docs/SAME_DEVICE_NONREFERENCE_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegOS/mobile/ios/StegOSMobile/MobileServiceActivation.swift::SV002NativeLoopbackPrincipalHost",
+    "StegVerse-Labs/StegOS/mobile/ios/StegOSMobile/SV002NativeActionPolicyBackend.swift",
+    "StegVerse-Labs/StegOS/mobile/ios/StegOSMobile/SV002NativeOfflineResourceHarness.swift",
+    "StegVerse-002/micro-node-runtime/docs/SV002_NATIVE_RESOURCE_BUNDLE_MIRROR_HANDOFF.md"
   ],
   "collision_review": {
-    "matching_open_pr_observed": false,
     "new_task_allowed": false,
     "new_request_allowed": false,
     "new_workercoordinator_allowed": false,
     "new_heartbeat_or_oscillator_allowed": false,
     "new_scheduler_allowed": false,
     "new_credential_path_allowed": false,
+    "browser_principal_substitution_allowed": false,
     "existing_reference_only_worker_may_be_promoted_without_execution_binding": false
   },
+  "superseded_direction": {
+    "direction": "StegOS browser external-resident-task profile for frozen SV002 principal",
+    "disposition": "REJECTED_BY_CANONICAL_FROZEN_V0_3_PRINCIPAL_CLASS",
+    "reason": "StegOS canonical source classifies BROWSER_WEB_WORKER as INFRASTRUCTURE_OBSERVATION_ONLY and requires RESIDENT_LOOPBACK_NATIVE_IOS for the frozen experimental principal."
+  },
   "observed_gap": {
-    "portable_workercoordinator_sequential_lineage_ready": true,
-    "sv002_portable_checkout_package_present": false,
-    "sv002_existing_worker_status": "REFERENCE_ONLY",
-    "stegos_external_resident_task_profiles": ["STEGVERSE001_BOUNDED_CONTINUITY_AUDIT_V1"],
-    "sv002_stegos_external_resident_task_profile_present": false,
-    "reason_ready_package_not_admissible": "A portable package marked execution_authorized=true would be false because no subordinate StegOS SV002 execution profile currently exists. The historical SV002 self-characterization worker is REFERENCE_ONLY and may not be represented as AVAILABLE merely to satisfy checkout validation."
+    "native_host_source_complete": true,
+    "native_action_policy_backend_source_complete": true,
+    "native_offline_resource_harness_source_complete": true,
+    "target_native_principal_package_model_source_complete": true,
+    "target_native_resource_bundle_builder_source_complete": true,
+    "real_frozen_resource_bundle_bytes_assembled": false,
+    "exact_package_model_bundle_installed_on_current_iphone_observed": false,
+    "authentic_native_principal_execution_observed": false,
+    "master_records_same_execution_reconstruction_observed": false
   },
   "highest_priority_admissible_machine_work": {
-    "repository": "StegVerse-Labs/StegOS",
-    "surface": "mobile/web-bootstrap/external-resident-task.js plus its schema/tests/handoff/README",
-    "action": "Extend the existing external-resident-task adapter with a bounded SV002 organization-runtime activation profile that consumes an externally admitted canonical WorkerCoordinator claim/fence while preserving StegVerse-002 principal ownership, TV/TVC credential authority, no GitHub runtime authority, no second machine, and the existing stegverse.sv002-org-runtime-activation-consumption/v1 terminal semantics. After that source exists and validates, return to .github and create the existing-task portable package/worker registration; do not create a new task or request.",
+    "repository": "StegVerse-002/micro-node-runtime + StegVerse-Labs/StegOS",
+    "action": "Assemble the exact stegverse.sv002-native-resource-bundle/v1 from the four pinned Admissible-Existence Git trees and pinned organization capability snapshot, then deliver the target-owned package/model/bundle to the already-released StegOS native resident-loopback path on CURRENT_USER_IPHONE. Do not weaken exact-commit/clean-tree/hash predicates and do not substitute a browser principal.",
+    "current_session_execution_surface_note": "The connected repository API resolves the exact pinned Git commits/trees, but the current execution container cannot resolve github.com and therefore cannot satisfy the target assembler's exact-local-Git-checkout predicate. This is a tooling-surface limitation, not a requirement for another user-operated machine.",
     "runtime_execution_claimed": false,
     "activation_claimed": false
   },
@@ -59,13 +70,13 @@
     "material_function_change": false,
     "readme_updated_in_change_set": false,
     "readme_update_required_for_this_preflight_receipt": false,
-    "no_readme_update_reason": "This commit records resolved authority, collision and implementation-boundary evidence only and does not change runtime behavior, interfaces, authority boundaries, evidence semantics, prerequisites, dependencies, failure behavior, or capability meaning. The subsequent StegOS SV002 external-resident-task implementation is a material functional change and MUST update StegOS README.md in the same change set.",
+    "no_readme_update_reason": "This receipt reconciles the implementation boundary to already-merged and already-documented native SV002 behavior. It does not change runtime behavior, interfaces, authority boundaries, evidence semantics, prerequisites, dependencies, failure behavior, or capability meaning.",
     "evidence_refs": [
-      "docs/WORKERCOORDINATOR_PORTABLE_IPHONE_EXECUTION_MIRROR_HANDOFF.md",
-      "receipts/preflight/sv002-current-iphone-portable-consumer-20260905.json",
+      "StegVerse-Labs/StegOS/docs/SAME_DEVICE_NONREFERENCE_MODEL_RUNTIME_MIRROR_HANDOFF.md",
+      "StegVerse-Labs/StegOS/README.md#same-device-non-reference-model-runtime-admission",
+      "StegVerse-002/micro-node-runtime/docs/SV002_NATIVE_RESOURCE_BUNDLE_MIRROR_HANDOFF.md",
       "control/resident-execution-request.d/sv002-org-runtime-activation-001.json",
-      "control/cross-task-coordination.d/sv002-resident-request-predicates.json",
-      "StegVerse-Labs/StegOS/docs/STEGOS_DEVICE_TASK_CONTROL_MIRROR_HANDOFF.md"
+      "control/cross-task-coordination.d/sv002-resident-request-predicates.json"
     ],
     "readme_impact_complete": true
   },
