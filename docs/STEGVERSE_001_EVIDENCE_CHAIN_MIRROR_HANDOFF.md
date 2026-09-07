@@ -1,239 +1,184 @@
 # StegVerse-001 Evidence Chain Continuation Mirror Handoff
 
-Updated: 2026-09-05
-Repository: StegVerse-Labs/.github
+Updated: 2026-09-06
+Repository: `StegVerse-Labs/.github`
 Issue: #761
-Goal: STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001
-Parent runtime: SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001
+Reconciliation: #1128
+Goal / Task Registry identifier: `STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001`
+Parent runtime: `SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001`
+Custody task: `MR-STEGVERSE001-BOUNDED-AUTONOMY-001`
+Observer successor: `SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001`
+State: `SOURCE_CHAIN_COMPLETE_CURRENT_DEVICE_CUSTODY_AND_SV002_RUNTIME_PENDING`
 
 ## Objective
 
-Automatically continue authentic terminal StegVerse-001 / Beta_Orionis bounded-autonomy evidence through Master Records custody/reconstruction and SV002 adversarial observation.
+Continue the already-terminal authentic StegVerse-001 / Beta_Orionis execution through canonical Master Records custody/reconstruction and then SV002 observation/disposition without reopening or rerunning SV001.
 
 ```text
-SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED
--> Master Records resident intake
+canonical terminal G23
+-> exact retained/recovered source
+-> contemporaneous root-InTr governance
+-> Master Records custody/reconstruction
 -> reconstruction PASS
--> SV002 deterministic baseline disposition
--> AO-01 through AO-12 preserved fixture replay
--> local SV002 evidence-chain disposition receipt
+-> SV002 continuation
 ```
 
-## Authority separation
-
-- SV001 execution authority is not reopened.
-- Master Records alone performs custody/reconstruction.
-- SV002 performs observation/disposition only.
-- Frozen SV002 v0.3 findings are not modified.
-- No repository writeback, network source fetch, credential creation, financial binding, accreditation, or sovereignty is permitted.
-
-## Exact source floors
-
-Master Records:
-`d593c920c1630aa5da20cc2622196f8676a74afd`
-
-SV002 evaluator:
-`786323f16e36346c69b2215894086515d7b1d58e`
-
-## Retry rule
-
-The autonomy cycle remains exactly-once after terminal completion.
-
-Downstream evidence continuation is independently retryable until Master Records reconstruction and SV002 disposition are complete. An already-consumed SV001 request MUST NOT suppress downstream retry.
-
-## Authentic completion
-
-Source/CI merge does not establish completion.
-
-Authentic completion requires a local receipt at:
-
-`~/.stegverse/state/sv002-adversarial-observation/receipts/stegverse001.latest.json`
-
-binding the real SV001 receipt hash, Master Records reconstruction hash, baseline disposition, and all 12 adversarial fixture results.
-
-## Current state
+## Canonical terminal source
 
 ```text
-SV001 source/control: COMPLETE
-Master Records automatic intake source: MERGED
-SV002 deterministic evaluator source: MERGED
-downstream resident continuation: SOURCE_MERGED_VALIDATED
-authentic SV001 receipt: OBSERVED / canonical G23
-Master Records reconstruction PASS: NOT OBSERVED
-SV002 authentic disposition: NOT OBSERVED
-```
-
-
-## Implemented machine surfaces
-
-- `scripts/continue_stegverse001_evidence_chain.py`
-- `tests/test_stegverse001_evidence_chain.py`
-- `tests/test_stegverse001_evidence_chain_retry.py`
-- existing `scripts/consume_stegverse001_bounded_autonomy_request.py` now retries downstream evidence after terminal execution without re-running autonomy;
-- sovereign bootstrap/source-refresh/native-service manifests include the continuation script.
-
-Source implementation is not runtime evidence.
-
-
-## Source closure — 2026-09-02
-
-PR #762 merged as `64e8dc3bfb537b02efdf760fa3515e544d10bdff`.
-
-Validation:
-- `33651138551` Cross-Framework Current-Basis Resident Request Validation — SUCCESS
-- `33651138559` organization control plane — SUCCESS
-- `33651138579` Heartbeat Worker Project — SUCCESS
-
-The full source path is now installed:
-
-```text
-terminal SV001 execution
--> independently retryable Master Records resident intake
--> reconstruction PASS requirement
--> deterministic SV002 baseline
--> AO-01..AO-12 preserved fixture evaluation
--> local SV002 disposition receipt
-```
-
-No authentic runtime receipt in that chain is inferred from this source closure.
-
-## Master Records bundle-source repair — 2026-09-02
-
-Issue #766 closes producer/consumer drift in the portable sovereign resident path.
-
-StegDeploy already supports:
-
-```text
-vendor/master-records-orchestration
--> STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT
--> STEGVERSE_MASTER_RECORDS_ROOT
-```
-
-The canonical `.github` bundle producer and `activate_resident_stack.py` now carry that source explicitly.
-
-Packaging requirements:
-
-```text
-required ancestor:
-  d593c920c1630aa5da20cc2622196f8676a74afd
-protected paths:
-  scripts/watch_stegverse001_autonomy_receipt.py
-  scripts/import_stegverse001_autonomy_receipt.py
-local Git source:
-  required
-clean worktree:
-  required
-protected-path drift since source floor:
-  forbidden
-network fetch:
-  false
-credential required:
-  false
-authority effect:
-  NONE_SOURCE_IDENTITY_ONLY
-```
-
-The complete resident-stack activation path now requires a local Master Records root and passes it to the bundle packager. Source packaging/materialization does not establish custody or reconstruction. Authentic completion remains bound to the deployment-local SV001 receipt, Master Records PASS reconstruction, and SV002 disposition.
-
-
-## Authentic current-iPhone SV001 execution observed — 2026-09-03
-
-Authentic source runtime evidence now establishes:
-
-```text
-portable WorkerCoordinator checkout: OBSERVED
+execution surface: CURRENT_USER_IPHONE
+SV001 task: SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001
 claim/fence: G23 / 23
-TVC portable lease issuance: OBSERVED
-SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED: OBSERVED
+transition: SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED
 cycle receipt: sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35
 device-local reconstruction: PASS / same_execution=true
 TVC lease consumption: CONSUMED
-journal replay: PASS / 59 entries
-journal tail: 0725a8208f709b19027b9434cd089cdff0efc01b2ed5f2571036ae6ad8695d0c
+G24: duplicate terminal evidence / NON-CUSTODIAL
+SV001 rerun: PROHIBITED
 ```
 
-The autonomy cycle is terminal and MUST NOT be re-executed merely to satisfy downstream custody. The next exact predicate is Master Records custody/reconstruction of this immutable source receipt, followed by SV002 disposition.
+The G23 hash is a verification predicate, not replacement source material and not authority for later state transitions.
 
-The current-iPhone receipt encodes authorized execution with
-`authorized_execution_source=EXTERNAL_WORKERCOORDINATOR_TVC_BOUND_ENVELOPE`;
-the continuation maps that canonical evidence to the evaluator's boolean authorization
-input without mutating the receipt.
-
-
-## Same-device Master Records custody path released — 2026-09-03
-
-The previously missing browser-journal -> canonical Master Records custody bridge is now implemented without rerunning SV001 and without introducing another machine.
-
-Canonical source:
-- `master-records/orchestration#73`
-- merge `9b617459ec0b9dfceb894ac19495ee72106d1e94`
-- portable module blob `ea390cee958c67ff5d144abb43963e07f891a1ef`
-- portable package blob `568644fc302d75bacf10cc577f27f101cd8d4ac4`
-
-Current-iPhone Site projection:
-- `StegVerse-Labs/Site#956`
-- merge `0b4cd7dc13cb43ffa9feec3c4badc21524efccd2`
-- claim release `StegVerse-Labs/Site#957@9e3582b2e59f953d653f582f39b22d55235845bd`
-
-The Site service worker now exposes a same-origin local custody intake that invokes the exact Master Records portable module, validates the immutable completed cycle receipt, appends the resulting custody and reconstruction objects to the existing StegOS journal, replays that journal, and emits a PASS proof. The endpoint is idempotent for an already-complete custody pair and fails closed on partial custody state.
-
-Source/merge does not establish authentic custody. The exact runtime predicate remains custody/reconstruction for:
-`sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35`.
-
-SV001 is terminal and MUST NOT be rerun. After Master Records reconstruction PASS is observed, the existing SV002 continuation becomes the next machine-owned step.
-
-
-## Final current-iPhone custody import usability release — 2026-09-03
-
-Site #958 / PR #959 merged as `11ffa8fc712569a07edb45397baf2e3427947294`,
-with its claim released by PR #960 / `3f39c48aabae51c46c0afa069aa5364dbef429d1`.
-
-The current-iPhone Master Records UI accepts the complete authentic
-`stegos.workercoordinator_tvc_portable_sv001_execution_proof/v1` object and extracts
-only `subordinate_execution_proof.cycle_receipt` unchanged. Direct cycle-receipt
-input remains supported. No receipt synthesis, SV001 re-execution, or authority
-widening is introduced.
-
-This UI capability is a carrier surface only. Its existence does not make the custody transition human-owned and does not grant custody authority.
-
-## Machine-owned custody reclassification — 2026-09-05
-
-Canonical cross-session reconciliation established that the downstream custody/reconstruction transition is not a HUMAN_ONLY or USER_ONLY action merely because its executable surface is the current iPhone.
-
-Canonical records:
-
-- `control/entity-transition-ownership-evaluations/sv001-master-records-custody.json`;
-- `handoffs/SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001.interaction-admission.json`;
-- `control/current-user-ios-interaction-queue.json`;
-- preflight `receipts/preflight/sv001-evidence-chain-machine-governed-custody-reconciliation-20260905.json`.
-
-Current classification:
+## Authority separation
 
 ```text
-transition_id = SV001_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION
-authority_class = MACHINE_GOVERNED
-execution_surface = CURRENT_USER_IPHONE
-human_interaction_required = false
-route = ENTITY_MACHINE_GOVERNANCE_LOOP
-current_governance_required = true
-prior_receipt_authorizes_transition = false
+Task Registry: work intent / coordination only
+WorkerCoordinator: claim / fence authority
+TV/TVC: credential and bounded-lease authority
+Interlock/InTr: governed transition admission
+Master Records: custody / reconstruction authority
+SV002: observation / disposition only
+HB32: timing / freshness / correlation / observability only; authority NONE
+Site: materialization / same-device carrier only; authority NONE
 ```
 
-The former `IPHONE-MR-SV001-CUSTODY-001` human-action admission is superseded. The current-user iOS interaction queue does not block this machine-owned transition and must not be used as an approval queue for it.
+No source merge, CI run, deployment, cache refresh, heartbeat progression, prior receipt, or recovery result authorizes custody or SV002.
 
-The retained G23 cycle receipt is evidence input only. It does not authorize custody. The exact custody/reconstruction state change still requires contemporaneous applicable Interlock/InTr governance and Master Records custody execution. G24 remains retained duplicate non-custodial evidence and MUST NOT be substituted for G23.
+## Canonical downstream implementation already present
 
-### Current next machine predicate
+The required machine surfaces already exist and must be reused:
+
+- `scripts/continue_stegverse001_evidence_chain.py`;
+- `scripts/consume_stegverse001_bounded_autonomy_request.py` downstream retry behavior;
+- canonical Master Records portable custody/reconstruction and retained-journal G23 recovery in `master-records/orchestration`;
+- root Universal InTr `MasterRecords:SV001Custody` path on the current-iPhone Site projection;
+- `StegOSWebBootstrap.executeMasterRecordsSv001Custody()`;
+- HB32 `OSCILLATOR_ONLY` current-reference derivation;
+- SV002 public/adversarial observation runtime surfaces, including `SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001`.
+
+Downstream continuation is independently retryable after terminal SV001 and must never be suppressed merely because the SV001 request is already consumed.
+
+## Released Site v14 seam repair
+
+The prior same-device recovery carrier could reconstruct exact canonical G23 but stopped at a false wait point:
 
 ```text
-CONTEMPORANEOUS_INTERLOCK_INTR_GOVERNANCE_FOR_SV001_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION
--> Master Records custody/reconstruction of canonical G23
+RECOVERED_HASH_VERIFIED_PENDING_MACHINE_GOVERNANCE
+custody_executed=false
+```
+
+Site #1096 repaired this by automatically invoking the already-existing machine-governed custody executor after exact retained/recovered G23 becomes available. The executor still obtains a fresh HB32-derived reference and a fresh root-InTr decision for the exact transition before Master Records mutation.
+
+Canonical release evidence:
+
+```text
+Site #1096 / PR #1098
+functional merge: 4bb0eafae549ef7b0874d341d2e8f9a11f293595
+claim-release PR #1099
+claim-release merge: c58d3959f485d614240e700c16e8ab372cebf7c8
+claim state: RELEASED_COMPLETE
+Site post-release reconciliation #1100 / PR #1101
+reconciliation merge: 080440fcab5724cf759882188be0eb30f1f5e1ae
+Site handoff state: SOURCE_REPAIR_COMPLETE_AUTHENTIC_CURRENT_DEVICE_RUNTIME_PENDING
+```
+
+The current Site service-worker propagation generation is v14. It imports the exact released v13 runtime predecessor and changes only cache generation so installed current-device clients can refresh the repaired automatic continuation carrier.
+
+## Current evidence state
+
+```text
+SV001 source/control: COMPLETE
+canonical terminal G23 receipt: OBSERVED
+WorkerCoordinator claim/fence G23/23: OBSERVED
+TVC lease issuance/consumption lineage: OBSERVED / CONSUMED
+device-local same-execution reconstruction: PASS
+canonical G23 retained/recovery implementation: MERGED / VALIDATED
+Site automatic G23 -> existing governed custody executor: MERGED / RELEASED
+current-device v14 consumption: NOT YET CLAIMED
+fresh root-InTr ALLOW for custody: NOT YET CLAIMED
+Master Records custody PASS: NOT YET CLAIMED
+Master Records reconstruction PASS: NOT YET CLAIMED
+retained same-execution downstream chain: NOT YET CLAIMED
+SV002 authentic disposition: NOT YET CLAIMED
+```
+
+These last predicates remain fail-closed until authentic current-device evidence exists.
+
+## Retry and failure rules
+
+```text
+terminal SV001
+-> never rerun merely for downstream evidence
+
+G23 unavailable or ambiguous
+-> fail closed
+-> use only exact retained/recovery source path
+-> no G24 substitution
+
+fresh root-InTr DENY / absent / mismatch / timeout
+-> fail closed before custody mutation
+-> no authority reuse from G23 or recovery
+
+partial historical custody/admission
+-> fail closed
+-> no retroactive authorization
+
+Master Records reconstruction PASS absent
+-> SV002 remains pending
+
+SV002 failure/nonterminal disposition
+-> retry SV002 continuation independently
+-> do not reopen SV001
+```
+
+Retry opportunities must reuse existing page/resume/runtime dispatch machinery; no new scheduler, heartbeat, oscillator, WorkerCoordinator, or resident runtime is authorized by this handoff.
+
+## Historical implementation evidence retained by Git
+
+Repository history retains the detailed source chronology. Key canonical references include:
+
+- evidence-chain issue #761 / source closure PR #762;
+- runtime task `SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001`;
+- canonical current-iPhone receipt `receipts/current-iphone/sv001-bounded-autonomy-20260903.json`;
+- Master Records portable custody source and canonical G23 retained-journal recovery in `master-records/orchestration`;
+- Site same-device custody projection and root-InTr governance releases;
+- Site v13 deterministic G23 recovery #1092/#1093;
+- Site v14 automatic machine-governed continuation #1098/#1099;
+- Site post-release reconciliation #1100/#1101.
+
+This handoff intentionally reflects current canonical state instead of preserving stale pre-terminal `NOT OBSERVED` statements that are contradicted by authentic G23 evidence.
+
+## README completeness predicate — reconciliation #1128
+
+**NO README CHANGE REQUIRED.**
+
+The material runtime behavior and user-visible/failure semantics were already implemented and documented by the Site #1098 change set. This `.github` reconciliation only corrects stale handoff status/provenance. It does not alter behavior, runtime semantics, interfaces, governance/authority boundaries, evidence semantics, prerequisites, dependencies, failure behavior, or capability meaning.
+
+## Next admissible machine transition
+
+```text
+existing current-device v14 consumption
+-> exact canonical G23 available
+-> fresh root-InTr ALLOW or DENY
+-> on ALLOW: existing Master Records custody/reconstruction
 -> reconstruction PASS
--> independently retryable SV002 adversarial observation/disposition
+-> existing SV002 continuation/disposition
 ```
 
-No human approval, manual JSON extraction, manual custody commit, SV001 rerun, or second user-operated machine is required by this handoff.
+If progression fails, diagnose the existing HB32 oscillator, Site carrier, root-InTr admission, Master Records custody, and SV002 continuation surfaces before proposing any new implementation.
 
-### README impact determination
+## User work
 
-This 2026-09-05 update is non-material documentation reconciliation only. Runtime behavior and authority semantics were already installed and documented in `README.md`; this change removes stale operator-oriented handoff wording and does not alter interfaces, runtime behavior, governance authority, evidence schema, prerequisites, dependencies, or failure behavior.
+Routine user work: **NONE**.
+
+Do not ask the user to rerun SV001, manually approve machine-owned custody, reconstruct G23 by hand, or provide another machine.

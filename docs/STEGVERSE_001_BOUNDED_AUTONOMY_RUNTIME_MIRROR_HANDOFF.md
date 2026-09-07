@@ -1,51 +1,36 @@
 # StegVerse-001 Bounded Autonomy Runtime Mirror Handoff
 
-Updated: 2026-09-02
-Repository: StegVerse-Labs/.github
+Updated: 2026-09-06
+Repository: `StegVerse-Labs/.github`
 Issue: #739
-Goal: STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001
+Reconciliation: #1128
+Task Registry identifier: `SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001`
 Formal predecessor: Data-Continuation/formalism-tests Stage 35
-Observer successor: SV002 adversarial observation
-Custody successor: master-records/orchestration
+Observer successor: `SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001`
+Custody successor: `MR-STEGVERSE001-BOUNDED-AUTONOMY-001`
+State: `TERMINAL_G23_SOURCE_COMPLETE_DOWNSTREAM_CURRENT_DEVICE_RUNTIME_PENDING`
 
 ## Source of truth
 
 This file governs the first authentic bounded-autonomy runtime lane for StegVerse-001 / Beta_Orionis and is subordinate to `docs/ORG_MIRROR_HANDOFF.md`.
 
-## First live autonomy objective
+The bounded-autonomy cycle itself is already terminal. Do **not** rerun SV001 merely to satisfy downstream custody or SV002.
 
-The first runtime goal is intentionally narrow:
+## Canonical authentic terminal execution
 
 ```text
-observe resident continuity state
--> autonomously discover continuity-audit work
--> construct a bounded two-step plan
--> validate plan against an externally issued lease
--> read current carrier/worker state
--> emit a hash-bound autonomy-cycle receipt
--> stop
+execution surface: CURRENT_USER_IPHONE
+task: SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001
+claim/fence: SHWP-SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001-G23 / 23
+transition: SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED
+cycle receipt: sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35
+device-local reconstruction: PASS / same_execution=true
+TVC lease consumption: CONSUMED
+G24: duplicate terminal evidence / NON-CUSTODIAL
+terminal reexecution allowed: false
 ```
 
-This is real self-directed task discovery and planning, but not external side-effect autonomy.
-
-## Lease boundary
-
-The runtime MUST observe an external local lease at:
-
-`STEGVERSE_SV001_AUTONOMY_LEASE`
-
-or default:
-
-`~/.stegverse/autonomy/stegverse001/lease.active.json`
-
-If no valid lease is already present, the admitted worker may request issuance from an already-local clean TVC source containing merge `d495b67d1c322c3fdd8c9bb6db75657783e19c0c`. Under ProcessWorkerAdapter execution, the requested target is exactly `$STEGVERSE_BOUND_STATE_ROOT/autonomy/lease.active.json`; the adapter later projects only admitted bound-state paths after claim/fence validation. The worker declares `STEGVERSE_SV001_AUTONOMY_LEASE_AUTHORITY=TV/TVC` only to the TVC child process. That declaration requests TVC evaluation; it does not let `.github` construct or widen the lease.
-
-Source merge, resident request existence, WorkerCoordinator admission, heartbeat presence, or task success does not create this lease.
-
-The lease must identify StegVerse-001 / Beta_Orionis, be ACTIVE and unexpired, preserve TV/TVC authority, keep DENY reachable, require receipts, and explicitly allow the transition classes used by the cycle.
-
-Missing lease => `HANDOFF_READY`.
-Expired/revoked/invalid lease => fail closed.
+The receipt hash is identity/verification evidence, not substitute source material and not authority for later transitions.
 
 ## Authority invariant
 
@@ -55,379 +40,159 @@ autonomy != authority
 authority != sovereignty
 ```
 
-The worker may not:
-- self-accredit;
-- create/widen its lease;
-- mutate repositories;
-- perform financial binding;
-- create/use non-TV/TVC credentials;
-- use external network access;
-- claim sovereign authority;
-- treat correct output as proof of authorized execution.
-
-## Machine path
+Authority remains split as follows:
 
 ```text
-resident source refresh
--> resident request dispatcher
--> stegverse001_bounded_autonomy consumer
--> existing refresh_and_execute_resident_task.py
--> WorkerCoordinator independent claim/fence
--> autonomy worker
--> current local TVC authority source >= d495b67d1c322c3fdd8c9bb6db75657783e19c0c
--> TVC dispatcher request for exact hash-bound single-cycle lease when absent
--> independent local lease validation
--> self-directed continuity audit
--> receipt
--> Master Records custody/reconstruction
--> SV002 adversarial observation/disposition
+Task Registry work intent / coordination: data/canonical-task-registry.json generation 15
+WorkerCoordinator claim / fence authority: control/worker-registry.json / WorkerCoordinator
+TV/TVC credential and bounded-lease authority: TV/TVC
+Interlock/InTr governed transition admission: root Universal InTr
+Master Records custody / reconstruction: master-records/orchestration
+HB execution authority: NONE
+HB transition authority: NONE
+Site execution/custody authority: NONE
 ```
 
-## Current source files
+No GitHub token, hosted CI, source merge, heartbeat, cache refresh, prior receipt, or recovery result grants execution/custody/transition authority.
 
-- `handoffs/SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001.json`
-- `control/worker-registry.d/stegverse001-bounded-autonomy-runtime-001.json`
-- `control/process-worker-adapters.d/stegverse001-bounded-autonomy-runtime-001.json`
-- `control/resident-execution-request.d/stegverse001-bounded-autonomy-runtime-001.json`
-- `control/task-vectors/SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001.json`
-- `workers/stegverse001_bounded_autonomy_runtime_worker.py`
-- `scripts/consume_stegverse001_bounded_autonomy_request.py`
-- `cost-basis/worker-runtime/stegverse001-bounded-autonomy-runtime.json`
+## Existing HB / oscillator runtime solution
 
-## Authentic completion
-
-Runtime activation is NOT established by source or CI.
-
-The first autonomy cycle is authentic only when a non-hosted resident emits:
-
-`~/.stegverse/state/stegverse001-bounded-autonomy/receipts/latest.json`
-
-with transition:
-
-`SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED`
-
-and Master Records later independently reconstructs the exact receipt/plan/observation chain.
-
-## Current state
+The runtime solution is already present and must be reused:
 
 ```text
-Stage 35 formal proof: MERGED / PR VALIDATED
-SV002 adversarial-observation source: MERGED
-runtime task source: SOURCE_MERGED_VALIDATED
-runtime source PR: #740
-runtime source merge: 493e4558a39eb516e63fee496f06d6ca8f973ed8
-validation:
-  33607420338 Cross-Framework Current-Basis Resident Request Validation SUCCESS
-  33607420274 Validate organization control plane SUCCESS
-  33607420254 Heartbeat Worker Project SUCCESS
-external live lease: NOT OBSERVED
-resident request consumption: NOT OBSERVED
-autonomy-cycle receipt: NOT OBSERVED
-TV policy request source: MERGED `a8ed178fd5fc5b131491e41452256323c302ba3f`
-TVC lease authority source: MERGED `d495b67d1c322c3fdd8c9bb6db75657783e19c0c`
-Master Records custody source: MERGED `65f97e867a09c3e5da80ef74b2b43ee810821667`
-Master Records custody: NOT OBSERVED
-SV002 disposition: NOT OBSERVED
+HB protocol: HB32
+HB progression dependency: OSCILLATOR_ONLY
+independent oscillator: ACTIVE_PROTOCOL_VERIFIED
+continuous resident daemon required solely for HB progression: false
+HB purpose: timing / freshness / correlation / observability reference only
 ```
 
+Canonical HB/runtime surfaces include:
 
-## 2026-09-02 source merge evidence
+- `handoffs/HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009.json`
+- `docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md`
+- `scripts/run_worker_runtime.py`
+- shared runtime-observability consumer registry.
 
-PR #740 merged as `493e4558a39eb516e63fee496f06d6ca8f973ed8` after all three observed PR validation lanes passed:
+Do not create another heartbeat, oscillator, scheduler, WorkerCoordinator, resident runtime, InTr runtime, or custody implementation to advance this task.
 
-- `33607420338` — Cross-Framework Current-Basis Resident Request Validation — SUCCESS
-- `33607420274` — Validate organization control plane - No GitHub Token Authority — SUCCESS
-- `33607420254` — Heartbeat Worker Project - Validation Only / No GitHub Token Authority — SUCCESS
+## Current downstream machine path
 
-This closes the repository-source implementation gate only. It does not establish an external live autonomy lease, resident request consumption, an autonomy-cycle receipt, Master Records custody/reconstruction, or SV002 disposition.
-
-
-## 2026-09-02 TVC lease-request continuation
-
-The resident worker may now request, but never self-issue, the exact TV/TVC-governed single-cycle autonomy lease when no valid canonical lease is present. The request path is constrained to an already-local clean TVC source containing merge `d495b67d1c322c3fdd8c9bb6db75657783e19c0c`, the exact TV request hash, and the TVC dispatcher transition `TVC_SV001_BOUNDED_AUTONOMY_LEASE_ISSUED`.
-
-The request mechanism does not change the established source-completion evidence from PR #740/#743 and does not establish a live lease or runtime activation. Authentic completion still requires deployment-local issuance/observation, resident request consumption, an autonomy-cycle receipt, Master Records reconstruction, and SV002 disposition.
-
-
-## Fenced bound-state lease carrier — 2026-09-02
-
-TVC merge `d495b67d1c322c3fdd8c9bb6db75657783e19c0c` closes the sandbox boundary. The SV001 worker now treats `STEGVERSE_BOUND_STATE_ROOT` as its state root when invoked by ProcessWorkerAdapter. TVC emits the exact lease into `autonomy/lease.active.json` within that temporary root; the adapter validates the resulting state delta and projects only admitted paths. Direct resident execution outside the adapter retains the canonical same-user lease path.
-
-This prevents the worker or TVC child from bypassing ProcessWorkerAdapter confinement through `$HOME` while preserving TVC as the lease issuer.
-
-
-## 2026-09-02 final source/control closure
-
-The autonomous TVC lease-acquisition and fenced bound-state control continuation is now merged:
-
-- PR #749 — executable TVC lease acquisition continuation — merged as `256e91b7980741acc6de91599b59e441edc36f37`; validation runs `33634043037` and `33634043026` PASS.
-- TVC PR #282 — fenced bound-state lease target — merged as `d495b67d1c322c3fdd8c9bb6db75657783e19c0c`; TVC credential-model validation `33633857236` PASS.
-- PR #751 — final adapter/handoff/request/test closure — merged as `b5fb62485722eaee57465e88af97921898b95566`; organization-control `33634283779` PASS and heartbeat `33634283783` PASS.
-
-Repository/source construction for the first SV001 bounded-autonomy cycle is therefore closed. Remaining completion is runtime evidence only and must not be inferred from these merges.
-
-Current machine-owned evidence gates:
+The post-terminal path is machine-owned and independently retryable:
 
 ```text
-TVC lease issuance receipt: NOT OBSERVED
-resident request consumption receipt: NOT OBSERVED
-SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED receipt: NOT OBSERVED
-Master Records reconstruction PASS: NOT OBSERVED
-SV002 adversarial observation/disposition: NOT OBSERVED
+canonical G23 retained / uniquely recovered
+-> current-device Site v14 carrier
+-> existing StegOSWebBootstrap.executeMasterRecordsSv001Custody()
+-> current HB32 oscillator-derived non-authorizing reference
+-> current registered Node / Interlock binding
+-> fresh root Universal InTr decision for exact custody transition
+-> exact ALLOW required
+-> existing Master Records custody/reconstruction
+-> reconstruction PASS
+-> independently retryable SV002 continuation
 ```
 
-The queued resident request remains the canonical next machine action. No human/manual execution is authorized or required by this handoff.
+The former human-oriented custody admission is superseded. No human approval checkpoint is part of this machine-owned transition.
 
+## Released current-iPhone repair
 
-## Automatic downstream evidence continuation — 2026-09-02
-
-The post-execution chain is source-implemented under issue #761 and `docs/STEGVERSE_001_EVIDENCE_CHAIN_MIRROR_HANDOFF.md`.
-
-Exact source floors:
-
-- Master Records resident custody intake: `d593c920c1630aa5da20cc2622196f8676a74afd`
-- SV002 deterministic adversarial evaluator: `786323f16e36346c69b2215894086515d7b1d58e`
-
-After `SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED`, the resident consumer invokes the downstream continuation. A later `ALREADY_CONSUMED` request does not re-execute autonomy; it retries only Master Records custody/reconstruction and SV002 observation/disposition.
-
-The continuation script is included in sovereign bootstrap, source-refresh, and native-service materialization manifests. No manual receipt transfer is required by source design. Authentic completion remains NOT OBSERVED until deployment-local receipts exist.
-
-
-## Active machine progression path — 2026-09-02
-
-The SV001 goal must not be represented as “wait for runtime evidence.”
-
-After issue #794, an already-authorized sovereign resident may actively execute the two required bounded progression stages through the existing portable one-shot bridge:
+The previous Site recovery carrier stopped at:
 
 ```text
-1. refresh + dispatch one_shot_resident_stack_activation
-   -> complete source materialization / StegDeploy / resident bootstrap
-
-2. refresh + dispatch stegverse001_bounded_autonomy
-   -> TVC lease request if needed
-   -> WorkerCoordinator claim/fence
-   -> Beta_Orionis bounded continuity-audit cycle
+RECOVERED_HASH_VERIFIED_PENDING_MACHINE_GOVERNANCE
+custody_executed=false
 ```
 
-The resulting receipts are completion evidence for performed work; they are not the work itself.
+That false wait point was repaired by reusing the existing HB32/root-InTr/Master Records executor rather than creating a new runtime.
 
-If stage 1 or stage 2 returns a nonterminal machine state, the next task is to repair/execute that specific failed transition and re-run the bounded selector. Do not replace that with observation-only polling.
-
-## Single-command bounded activation progression — 2026-09-02
-
-Issue #801 adds the executable progression:
+Canonical release evidence:
 
 ```text
-python scripts/run_stegverse001_activation_progression.py \
-  --source-root <already-local-current-.github> \
-  --runtime-root <sovereign-runtime>
+Site issue: #1096
+functional PR: #1098
+functional merge: 4bb0eafae549ef7b0874d341d2e8f9a11f293595
+claim-release PR: #1099
+claim-release merge: c58d3959f485d614240e700c16e8ab372cebf7c8
+claim state: RELEASED_COMPLETE
+Site post-release reconciliation: #1100 / PR #1101
+Site reconciliation merge: 080440fcab5724cf759882188be0eb30f1f5e1ae
+current Site handoff state: SOURCE_REPAIR_COMPLETE_AUTHENTIC_CURRENT_DEVICE_RUNTIME_PENDING
 ```
 
-One invocation performs at most two active targeted dispatches:
+The Site repair also advances the cache-first shell through a v14 propagation wrapper that imports the exact released v13 runtime predecessor and changes only cache generation so installed current-device clients can refresh the corrected continuation carrier.
+
+## Runtime truth
+
+The following predicates remain fail-closed until authentic current-device evidence exists:
 
 ```text
-Stage 1: one_shot_resident_stack_activation
-  require: state COMPLETED|ALREADY_CONSUMED + activation_complete=true
-  otherwise: stop and name the actual next machine transition
-
-Stage 2: stegverse001_bounded_autonomy
-  execute only after Stage 1 is complete
-  terminal when the consumer reports terminal_execution_observed=true
+v14 current-device consumption: NOT YET CLAIMED
+fresh root-InTr ALLOW for SV001 Master Records custody: NOT YET CLAIMED
+Master Records custody PASS: NOT YET CLAIMED
+Master Records reconstruction PASS: NOT YET CLAIMED
+retained same-execution downstream continuation chain: NOT YET CLAIMED
+SV002 adversarial/public observation disposition: NOT YET CLAIMED
 ```
 
-The procedure does not loop, watch, poll, or sleep waiting for evidence. If a stage is nonterminal, its `next_required_machine_transition` names the work to execute/repair before a later bounded invocation.
+Source/CI/merge/publication/cache generation does not satisfy any of these predicates.
 
-After terminal SV001 execution, the already-merged consumer continues Master Records custody/reconstruction and SV002 adversarial disposition independently without re-running terminal autonomy.
-
-## Stack-activation execution-order gate — 2026-09-02
-
-Issue #803 makes the staged execution order enforceable rather than advisory.
-
-When the current one-shot resident-stack request is present, the SV001 consumer now requires its matching consumption receipt to prove `activation_complete=true` before invoking WorkerCoordinator/autonomy execution.
+## Failure behavior
 
 ```text
-one-shot request present + activation incomplete
--> SV001 state STACK_ACTIVATION_PENDING
--> runtime_execution_attempted=false
--> next_required_machine_transition=EXECUTE_ONE_SHOT_RESIDENT_STACK_ACTIVATION
+exact G23 unavailable / ambiguous recovery
+-> fail closed / exact source fallback only
+-> no SV001 rerun
 
-one-shot activation COMPLETE
--> completion receipt persisted
--> immediate bounded progression helper invoked once
--> Stage 1 re-enters as ALREADY_CONSUMED
--> Stage 2 executes stegverse001_bounded_autonomy
+exact G23 available + root-InTr DENY/missing/mismatch/timeout
+-> fail closed before custody mutation
+-> no replacement authority
+-> no human approval substitution
+
+partial admission/custody/reconstruction
+-> fail closed
+-> no retroactive authorization
+
+reconstruction PASS absent
+-> SV002 continuation remains pending
 ```
 
-An already-terminal SV001 receipt still wins and is never re-executed; downstream Master Records/SV002 continuation remains independently retryable.
+Retry may occur only through the already-existing current-device/page/resume/runtime progression opportunities. Do not add a new polling loop or scheduler.
 
-## Current external execution boundary — 2026-09-02
+## Source history retained by Git
 
-The source/runtime path is now explicit through merge `3e9aec9680d159a1419aeebb52022316a3b392ed`.
+Historical source/control work remains preserved in repository history, including the original runtime source merge, TV/TVC lease-carrier work, WorkerCoordinator checkout/fence controls, one-shot progression, runtime observability registration, Master Records custody source, and automatic evidence-chain continuation. This handoff intentionally presents the current canonical state rather than repeating stale pre-terminal status blocks.
 
-The next work is **not** to watch for the five receipts. The next work is to execute:
+Key historical source references remain:
+
+- runtime source PR #740 / merge `493e4558a39eb516e63fee496f06d6ca8f973ed8`;
+- executable lease continuation PR #749 / merge `256e91b7980741acc6de91599b59e441edc36f37`;
+- final source/control closure PR #751 / merge `b5fb62485722eaee57465e88af97921898b95566`;
+- evidence-chain issue #761 / source closure PR #762;
+- canonical current-iPhone receipt `receipts/current-iphone/sv001-bounded-autonomy-20260903.json`;
+- Master Records canonical G23 recovery owner `master-records/orchestration`;
+- Site v14 continuation release #1098/#1099.
+
+## README completeness predicate — reconciliation #1128
+
+**NO README CHANGE REQUIRED.**
+
+The material runtime behavior, HB32 non-authority semantics, v14 propagation behavior, and fail-closed continuation semantics were already implemented/documented in Site #1098. This `.github` change reconciles stale handoff status/provenance only. It does not change repository behavior, runtime semantics, interfaces, governance/authority boundaries, evidence semantics, prerequisites, dependencies, failure behavior, or capability meaning.
+
+## Next admissible transition
 
 ```text
-python scripts/run_stegverse001_activation_progression.py \
-  --source-root <current-local-.github> \
-  --runtime-root <sovereign-runtime>
+existing current-device v14 consumption
+-> fresh root-InTr ALLOW or DENY
+-> on ALLOW: existing Master Records custody/reconstruction of canonical G23
+-> reconstruction PASS
+-> existing SV002 continuation
 ```
 
-on the actual non-hosted sovereign resident execution surface.
+If this progression fails, inspect the already-existing HB/oscillator/carrier/InTr/custody surfaces first. Missing runtime evidence is not authorization to create another runtime component.
 
-The current ChatGPT/GitHub connector surface can mutate and validate repository state but cannot launch a local StegVerse process on that sovereign node. GitHub Actions may not be substituted because they have no production/runtime authority.
+## User work
 
-If the native resident is already active with the current local source, its recurring machine dispatch can perform the same work without operator intervention. If it is not active/current, the external prerequisite is to make that resident execution surface available from the current source. Once the resident is active, Stage 1 -> Stage 2 -> Master Records -> SV002 is machine-owned.
+Routine user work: **NONE**.
 
-Receipt absence is only diagnostic:
-
-```text
-no progression receipt -> progression process did not execute
-STACK_ACTIVATION_INCOMPLETE -> execute/repair the named Stage-1 transition
-SV001_AUTONOMY_EXECUTION_INCOMPLETE -> execute/repair the named Stage-2 transition
-terminal SV001 -> downstream MR/SV002 continuation executes independently
-```
-
-Watching, waiting, or polling is not an authorized completion action.
-
-
-## Canonical HB runtime observability consumer binding — 2026-09-02
-
-SV001 is a consumer of the shared organization contract, not an independent runtime-signal project.
-
-Canonical owner surfaces:
-
-```text
-management/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_CONTRACT.json
-heartbeat_runtime/runtime_presence_projection.py
-scripts/project_hb_runtime_presence.py
-canonical validation: tests/test_runtime_presence_projection.py
-resident-local extension: merged via StegVerse-Labs/.github#814 / PR #822 @ 6358375c81fedb579cb6fcac59946268ea485ebb
-```
-
-SV001 predicate mapping remains distinct:
-
-```text
-resident_process_alive_supervised
-  <- shared resident-presence / direct runtime activation evidence only
-
-node_runtime_fresh
-  <- HB reference + resident/worker observation correlation only
-
-governed_request_consumed
-  <- receipts/sovereign-host/stegverse001-bounded-autonomy-request-consumption.latest.json
-
-runtime_execution_completed
-  <- SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED task-specific receipt
-
-receipt_retained
-  <- task-specific retained evidence path
-
-replay_reconstruction_proven
-  <- Master Records reconstruction PASS
-
-SV002 adversarial disposition
-  <- independent SV002 evidence
-```
-
-Neither HB progression, source installation, request-file presence, merge, CI, nor projection-file presence satisfies any of those machine predicates.
-
-This session's exact currently unresolved first predicate is `resident_process_alive_supervised`. It must be supplied by the shared canonical runtime-presence contract when authentic deployment-local activation/liveness evidence exists.
-
-
-## Canonical observability reference reconciliation — 2026-09-02
-
-The earlier SV001 prose still named the superseded experimental projection surfaces
-`org-kernel/runtime_observability.py` and `scripts/project_runtime_observability.py`.
-The organization contract now explicitly marks those surfaces superseded.
-
-SV001 therefore binds only to the current canonical resident-local projection:
-
-```text
-management/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_CONTRACT.json
--> heartbeat_runtime/runtime_presence_projection.py
--> scripts/project_hb_runtime_presence.py
--> tests/test_runtime_presence_projection.py
-```
-
-This is a source-reference correction only. It does not change any runtime predicate,
-claim/fence authority, TV/TVC credential authority, or activation state.
-
-## Shared observability registry installation — 2026-09-03
-
-The SV001 bounded-autonomy lane is now installed in the canonical shared runtime-observability consumer registry:
-
-```text
-consumer descriptor:
-  control/runtime-observability-consumers/stegverse001-bounded-autonomy-runtime-001.json
-registration issue: #849
-registration PR: #856
-registration merge: 3c798be98e931306867d24a870bffb218e96ff96
-shared owner: #814
-```
-
-This registration changes no runtime truth. The first unresolved shared predicate remains `resident_process_alive_supervised`, followed by independently observed node freshness, request consumption, `SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED`, retained receipt, Master Records reconstruction, and SV002 disposition.
-
-Source, merge, CI, HB progression, request presence, or registry membership cannot satisfy those predicates.
-
-
-## Same-device execution correction — 2026-09-03
-
-Architecture invariant: `StegVerse-Labs/.github#201`.
-
-The earlier wording that treated a separate "sovereign resident execution surface" as a possible external prerequisite is superseded.
-
-```text
-required execution scope: SAME_DEVICE
-requires_other_machine: false
-other StegVerse machine allowed as required executor: false
-remote machine role: OPTIONAL only
-blocker when another machine is required:
-  OTHER_MACHINE_REQUIRED
-  INCOMPLETE_REQUIRES_CONTINUED_BUILD
-```
-
-The existing Python resident progression remains valid as a reference implementation and for same-device hosts that can execute it locally. It MUST NOT become a requirement that the active device delegate routine activation/execution to another machine.
-
-For the current device class, completion therefore requires an equivalent same-device StegOS execution path that preserves the same TV/TVC lease, WorkerCoordinator admission/claim/fence, receipt, Master Records, and SV002 evidence semantics. Until that same-device path is independently installed and observed, this lane is implementation-incomplete rather than "waiting for another sovereign machine."
-
-No runtime evidence is claimed by this correction.
-
-
-## Current-iPhone runtime predicate reconciliation — 2026-09-03
-
-The earlier same-device correction is now implementation-satisfied at the source/publication layer.
-
-Released canonical surfaces:
-
-```text
-portable WorkerCoordinator authority source:
-  StegVerse-Labs/.github#862
-  merge bb079758aaf3e36887c1db085aa82b96c9914a53
-
-TVC portable SV001 lease issuer:
-  StegVerse-Labs/TVC#289
-
-current-iPhone external resident-task adapter:
-  StegVerse-Labs/Site#940
-  release 13baddb05104729fb85c41e029c675add07a4107
-
-TASK-2026-0008 current-iPhone projection:
-  StegVerse-Labs/Site#952
-  release 6a08d993af9814cc6d20723f8a1e16957d3fe8d4
-```
-
-Therefore the same-device implementation is no longer missing, and the Service-Gateway request-003 resident-rendezvous chain is not a prerequisite for this bounded current-iPhone execution path.
-
-The exact remaining runtime sequence is:
-
-```text
-portable_workercoordinator_checkout_current_iphone
--> tvc_portable_sv001_lease_issued
--> SV001_BOUNDED_AUTONOMY_CYCLE_COMPLETED
--> Master Records reconstruction PASS / same_execution=true
--> SV002 disposition
-```
-
-The first unsatisfied predicate is the authentic current-iPhone portable WorkerCoordinator checkout. It must be produced by the released secure-browser/service-worker runtime and retained in device-local state; repository source, CI, deployment, HB progression, or a generic runtime-presence projection cannot satisfy it.
-
-No second user-operated device, remote sovereign host, GitHub runtime credential, additional WorkerCoordinator, additional InTr runtime, or parallel credential path is required.
+Do not ask the user to rerun SV001, approve the machine-owned custody transition manually, reconstruct G23 by hand, or provide another machine.
