@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 """Consume the standing native email-action monitor resident request.
 
-The request is revisited by the existing resident request dispatcher, which is
-already driven by the canonical HB/oscillator worker-runtime cycle. This consumer
-creates no scheduler, heartbeat, claim, fence, provider credential, or mailbox
-authority. It locates the already-local StegOps broker and TVC provider-operation
-command, executes one bounded monitor pass, and records a secret-free receipt.
+Each bounded mailbox pass is one execution iteration. A successful pass that
+processed GitHub/task-update mail is not terminal: it emits the canonical Task
+ID + COSV handoff pointer so the existing resident dispatcher resolves and
+initiates the same task again. Completion is allowed only when a successful
+pass begins with no matching GitHub/task-update INBOX messages.
+
+This consumer creates no scheduler, heartbeat, claim, fence, provider
+credential, or mailbox authority.
 """
 from __future__ import annotations
 
@@ -22,6 +25,7 @@ ROOT = Path(__file__).resolve().parents[1]
 REQUEST_REL = Path("control/resident-execution-request.d/native-email-action-monitor-001.json")
 CONSUMPTION_REL = Path("receipts/sovereign-host/native-email-action-monitor-request-consumption.latest.json")
 MONITOR_RECEIPT_REL = Path("receipts/sovereign-host/native-email-action-monitor.latest.json")
+TASK_VECTOR_REL = Path("control/task-vectors/STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001.json")
 TASK_ID = "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001"
 MODE = "NATIVE_EMAIL_ACTION_MONITOR"
 ENTRYPOINT = "scripts/consume_native_email_action_monitor_request.py"
@@ -74,6 +78,19 @@ def validate_request(request: Mapping[str, Any]) -> None:
     for key, wanted in expected.items():
         require(request.get(key) == wanted, f"native email resident request {key} mismatch")
     require(isinstance(request.get("request_id"), str) and bool(request.get("request_id")), "request_id required")
+
+
+def resolve_task_vector(source: Path, runtime: Path) -> str:
+    candidates = [runtime / TASK_VECTOR_REL, source / TASK_VECTOR_REL]
+    for path in candidates:
+        if not path.is_file():
+            continue
+        value = load_json(path)
+        require(value.get("identity") == f"StegVerse-Labs/.github:task:{TASK_ID}", "native email task vector identity mismatch")
+        vector = value.get("vector")
+        require(isinstance(vector, str) and len(vector) == 14 and vector.isdigit(), "native email COSV task vector invalid")
+        return vector
+    raise RuntimeError("native email COSV task vector unavailable")
 
 
 def repo_roots_from_env(values: Mapping[str, str]) -> list[Path]:
@@ -158,26 +175,27 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     request = load_json(request_path)
     validate_request(request)
     request_hash = stable_hash(request)
+    cosv_vector = resolve_task_vector(source, runtime)
 
     monitor = runtime / "scripts/run_native_email_action_monitor.py"
     if not monitor.is_file():
         monitor = source / "scripts/run_native_email_action_monitor.py"
     if not monitor.is_file():
-        return pending(runtime, request, request_hash, "MONITOR_ENTRYPOINT_NOT_MATERIALIZED")
+        return pending(runtime, request, request_hash, "MONITOR_ENTRYPOINT_NOT_MATERIALIZED", handoff_task_id=TASK_ID, handoff_cosv_task_vector=cosv_vector)
 
     stegops = resolve_repo(source, values, env_name="STEGVERSE_STEGOPS_ORCHESTRATOR_ROOT", repo_name="StegOps-Orchestrator")
     if stegops is None:
-        return pending(runtime, request, request_hash, "STEGOPS_PROVIDER_OWNER_ROOT_NOT_MATERIALIZED")
+        return pending(runtime, request, request_hash, "STEGOPS_PROVIDER_OWNER_ROOT_NOT_MATERIALIZED", handoff_task_id=TASK_ID, handoff_cosv_task_vector=cosv_vector)
     broker = stegops / "scripts/native_email_tvc_broker.py"
     if not broker.is_file():
-        return pending(runtime, request, request_hash, "STEGOPS_NATIVE_EMAIL_BROKER_NOT_MATERIALIZED", stegops_root=str(stegops))
+        return pending(runtime, request, request_hash, "STEGOPS_NATIVE_EMAIL_BROKER_NOT_MATERIALIZED", stegops_root=str(stegops), handoff_task_id=TASK_ID, handoff_cosv_task_vector=cosv_vector)
 
     tvc = resolve_repo(source, values, env_name="STEGVERSE_TVC_ROOT", repo_name="TVC")
     if tvc is None:
-        return pending(runtime, request, request_hash, "TVC_ROOT_NOT_MATERIALIZED")
+        return pending(runtime, request, request_hash, "TVC_ROOT_NOT_MATERIALIZED", handoff_task_id=TASK_ID, handoff_cosv_task_vector=cosv_vector)
     provider = tvc / "scripts/tvc_mail_provider_operation.py"
     if not provider.is_file():
-        return pending(runtime, request, request_hash, "TVC_MAIL_PROVIDER_OPERATION_NOT_MATERIALIZED", tvc_root=str(tvc))
+        return pending(runtime, request, request_hash, "TVC_MAIL_PROVIDER_OPERATION_NOT_MATERIALIZED", tvc_root=str(tvc), handoff_task_id=TASK_ID, handoff_cosv_task_vector=cosv_vector)
 
     monitor_receipt = runtime / MONITOR_RECEIPT_REL
     broker_command = [sys.executable, str(broker), "--tvc-provider-command", sys.executable, str(provider)]
@@ -189,20 +207,39 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     ]
     completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=dict(values), timeout=900)
     monitor_result = load_json(monitor_receipt) if monitor_receipt.is_file() else parse_last_json(completed.stdout)
-    success = bool(completed.returncode == 0 and isinstance(monitor_result, dict) and monitor_result.get("schema") == "stegverse.native-email-action-monitor-receipt/v1" and monitor_result.get("state") == "PASS")
+    pass_result = bool(completed.returncode == 0 and isinstance(monitor_result, dict) and monitor_result.get("schema") == "stegverse.native-email-action-monitor-receipt/v1" and monitor_result.get("state") == "PASS")
+    processed = monitor_result.get("processed_exact_count") if isinstance(monitor_result, dict) else None
+    require(processed is None or isinstance(processed, int), "monitor processed_exact_count invalid")
+    inbox_empty_of_github = bool(pass_result and processed == 0)
+    continue_required = bool(pass_result and isinstance(processed, int) and processed > 0)
+
+    if inbox_empty_of_github:
+        state = "COMPLETED"
+    elif continue_required:
+        state = "HANDOFF_READY"
+    else:
+        state = "ATTEMPT_RECORDED"
+
     return write_receipt(runtime, {
         "schema": "stegverse.native-email-action-monitor-request-consumption/v1",
-        "state": "COMPLETED" if success else "ATTEMPT_RECORDED",
+        "state": state,
         "request_id": request.get("request_id"),
         "request_sha256": request_hash,
         "task_id": TASK_ID,
+        "cosv_task_vector": cosv_vector,
         "standing_request": True,
         "provider_route_ready": True,
         "runtime_execution_attempted": True,
         "execution_returncode": completed.returncode,
         "monitor_receipt_ref": str(monitor_receipt),
         "monitor_result": monitor_result,
-        "retry_allowed": True,
+        "github_inbox_empty": inbox_empty_of_github,
+        "continuation_required": continue_required,
+        "terminal_predicate": "GITHUB_INBOX_MATCHING_OPERATIONAL_QUERY_EMPTY",
+        "handoff_task_id": None if inbox_empty_of_github else TASK_ID,
+        "handoff_cosv_task_vector": None if inbox_empty_of_github else cosv_vector,
+        "handoff_action": None if inbox_empty_of_github else "RESOLVE_POINTER_AND_INITIATE_TASK_AGAIN",
+        "retry_allowed": not inbox_empty_of_github,
         "credential_authority": "TV/TVC",
         "credential_material_exported": False,
         "github_token_required": False,
@@ -222,7 +259,7 @@ def main() -> int:
     args = parser.parse_args()
     result = consume(args.source_root, args.runtime_root)
     print(json.dumps(result, sort_keys=True))
-    return 0 if result.get("state") in {"NO_REQUEST", "ATTEMPT_RECORDED", "COMPLETED"} else 1
+    return 0 if result.get("state") in {"NO_REQUEST", "ATTEMPT_RECORDED", "HANDOFF_READY", "COMPLETED"} else 1
 
 
 if __name__ == "__main__":
