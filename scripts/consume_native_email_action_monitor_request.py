@@ -1,21 +1,18 @@
 #!/usr/bin/env python3
 """Consume the standing native email-action monitor resident request.
 
-Each bounded mailbox pass is one execution iteration. A successful pass that
-processed GitHub/task-update mail is not terminal: it emits the canonical Task
-ID + COSV handoff pointer so the existing resident dispatcher resolves and
-initiates the same task again. Completion is allowed only when a successful
-pass begins with no matching GitHub/task-update INBOX messages.
+Each resident visit performs one bounded monitor iteration. Historical actionable
+GitHub mail is replayed first, one acknowledged page at a time, then the exact live
+GitHub/[Task Update] INBOX slice is drained. A successful nonterminal iteration emits
+the same Task ID + COSV handoff so the existing resident dispatcher initiates it again.
 
-Actionable failure observations retain the established corrective-work behavior:
-they are reconciled against the live Canonical Task Registry, reused when an
-existing nonterminal task already owns the correction, or deterministically
-materialized as adjacent corrective tasks and sent through the existing Canonical
-Work/InTr ingress path. Email observation never mints execution authority;
-WorkerCoordinator and Interlock/InTr retain their existing authority boundaries.
+Failure observations are mapped by .github and delegated to StegHealth, which owns
+corrective-task creation/resumption. New StegHealth-created task candidates may then
+enter the existing Canonical Work/InTr path. Email observation and task creation do not
+mint execution authority; WorkerCoordinator and Interlock/InTr retain their boundaries.
 
-This consumer creates no scheduler, heartbeat, claim, fence, provider
-credential, or mailbox authority.
+Completion is allowed only when archived replay is complete, the live operational
+GitHub inbox is empty, and mapped failure ownership is durable.
 """
 from __future__ import annotations
 
@@ -322,7 +319,13 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     ]
     completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=dict(values), timeout=900)
     monitor_result = load_json(monitor_receipt) if monitor_receipt.is_file() else parse_last_json(completed.stdout)
-    pass_result = bool(completed.returncode == 0 and isinstance(monitor_result, dict) and monitor_result.get("schema") == "stegverse.native-email-action-monitor-receipt/v1" and monitor_result.get("state") == "PASS")
+    monitor_state = monitor_result.get("state") if isinstance(monitor_result, dict) else None
+    valid_monitor_result = bool(
+        completed.returncode == 0
+        and isinstance(monitor_result, dict)
+        and monitor_result.get("schema") == "stegverse.native-email-action-monitor-receipt/v1"
+        and monitor_state in {"PASS", "ARCHIVED_REPLAY_PENDING", "ARCHIVED_REPLAY_COMPLETE"}
+    )
     processed = monitor_result.get("processed_exact_count") if isinstance(monitor_result, dict) else None
     require(processed is None or isinstance(processed, int), "monitor processed_exact_count invalid")
 
@@ -336,12 +339,16 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         and failure_reconciliation.get("retry_required") is True
     ) or any(bool(row.get("retry_required")) for row in corrective_task_initiation if isinstance(row, dict))
 
-    inbox_empty_of_github = bool(pass_result and processed == 0)
-    continue_required = bool(pass_result and isinstance(processed, int) and processed > 0)
+    archived_replay = monitor_result.get("archived_replay") if isinstance(monitor_result, dict) else None
+    replay_complete = bool(isinstance(archived_replay, dict) and archived_replay.get("complete") is True)
+    replay_pending = bool(valid_monitor_result and monitor_state == "ARCHIVED_REPLAY_PENDING")
+    inbox_empty_of_github = bool(valid_monitor_result and monitor_state == "PASS" and replay_complete and processed == 0)
+    live_continue_required = bool(valid_monitor_result and monitor_state == "PASS" and isinstance(processed, int) and processed > 0)
+    continue_required = bool(replay_pending or live_continue_required or failure_retry_required)
 
     if inbox_empty_of_github and not failure_retry_required:
         state = "COMPLETED"
-    elif continue_required or failure_retry_required:
+    elif continue_required or (valid_monitor_result and monitor_state == "ARCHIVED_REPLAY_COMPLETE"):
         state = "HANDOFF_READY"
     else:
         state = "ATTEMPT_RECORDED"
@@ -359,14 +366,16 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         "execution_returncode": completed.returncode,
         "monitor_receipt_ref": str(monitor_receipt),
         "monitor_result": monitor_result,
+        "archived_failure_replay_complete": replay_complete,
         "failure_reconciliation": failure_reconciliation,
         "corrective_task_initiation": corrective_task_initiation,
+        "corrective_task_creation_owner": "StegVerse-Labs/StegHealth",
         "corrective_tasks_initiated_count": sum(1 for row in corrective_task_initiation if isinstance(row, dict) and row.get("state") == "CANONICAL_WORK_INGRESS_INITIATED"),
-        "failure_graph_and_task_derivation_preserved": True,
+        "failure_graph_and_steghealth_task_derivation_preserved": True,
         "archived_failure_may_not_discard_corrective_work": True,
         "github_inbox_empty": inbox_empty_of_github,
-        "continuation_required": continue_required or failure_retry_required,
-        "terminal_predicate": "GITHUB_INBOX_MATCHING_OPERATIONAL_QUERY_EMPTY_AND_FAILURE_RECONCILIATION_DURABLE",
+        "continuation_required": state != "COMPLETED",
+        "terminal_predicate": "ARCHIVED_FAILURE_REPLAY_COMPLETE_AND_GITHUB_INBOX_MATCHING_OPERATIONAL_QUERY_EMPTY_AND_FAILURE_RECONCILIATION_DURABLE",
         "handoff_task_id": None if state == "COMPLETED" else TASK_ID,
         "handoff_cosv_task_vector": None if state == "COMPLETED" else cosv_vector,
         "handoff_action": None if state == "COMPLETED" else "RESOLVE_POINTER_AND_INITIATE_TASK_AGAIN",
