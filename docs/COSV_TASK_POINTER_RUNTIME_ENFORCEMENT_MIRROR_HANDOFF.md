@@ -1,6 +1,6 @@
 # COSV Task Pointer Runtime Enforcement Mirror Handoff
 
-Status: SOURCE_COMPACT_CONTINUATION_RESOLUTION_FIXED / EXECUTION_EVIDENCE_PENDING
+Status: SOURCE_COMPACT_CONTINUATION_AND_POST_RESOLUTION_PICKUP_FIXED / EXECUTION_EVIDENCE_PENDING
 Repository: `StegVerse-Labs/.github`
 Task ID: `COSV-TASK-POINTER-RUNTIME-ENFORCEMENT-001`
 Root correlation / goal: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`
@@ -20,60 +20,55 @@ Continuation evaluator: `scripts/evaluate_goal_resolution_continuation.py`
 Compact continuation tests: `tests/test_goal_resolution_compact_pointer.py`
 Expected consumption receipt: `receipts/sovereign-host/cosv-task-pointer-runtime-enforcement-request-consumption.latest.json`
 
-## Defect corrected 2026-09-07
+## Defects corrected 2026-09-07
 
-The continuation evaluator previously required callers to supply pre-expanded `returned_tasks` and an explicit `goal_id`. That contradicted the canonical compact-pointer contract because a receiving session/runtime could not use only `task_id + cosv_task_vector` to reconstruct canonical continuation state.
+Two source defects prevented the intended compact continuation behavior.
 
-The evaluator now resolves compact continuation directly from:
+First, the continuation evaluator required pre-expanded `returned_tasks` and an explicit `goal_id`. That contradicted the compact-pointer contract. The evaluator now accepts only:
 
 ```text
 <TASK_ID>
 <COSV_TASK_VECTOR>
 ```
 
-It verifies the exact Task ID/vector binding against `control/task-vector-index.json`, resolves the unique record in `data/canonical-task-registry.json`, derives root goal/correlation identity, resolves applicable `*_MIRROR_HANDOFF.md` references, dependencies, adjacent tasks, evidence references, source state-vector provenance, and registry provenance, and then feeds that resolved task into the existing autonomous continuation evaluation.
+and resolves the exact Task ID/vector binding, canonical task record, root correlation/goal, applicable `*_MIRROR_HANDOFF.md` references, dependencies, adjacent tasks, evidence references, source-vector provenance, and registry provenance.
 
-Fail-closed tests were added for exact resolution, vector mismatch, and missing task identity. This source fix does not mint WorkerCoordinator claim/fence state, Interlock/InTr transition admission, credential authority, or runtime evidence.
+Second, after successful resolution the evaluator returned `continue_machine_work=true` but did not emit a machine-consumable continuation request. That allowed a receiving session/process to stop at status reporting even though unresolved work remained.
 
-## Terminology correction
+The evaluator now derives the next admissible work from canonical task state. It prefers an explicit canonical `next_admissible_work`/next-transition field when present and otherwise reuses an existing canonical resident execution request referenced by the task. It emits `stegverse.machine-continuation-request/v1` with `automatic_pickup_required=true`, `human_reentry_required=false`, and `status_only_response_is_completion=false`.
+
+If an active task resolves but no next admissible work can be resolved, the evaluator now returns `CONTINUATION_RESOLUTION_INCOMPLETE` and does not claim successful autonomous continuation. A status-only result is explicitly invalid continuation state.
+
+Tests cover exact compact resolution, Task/COSV mismatch, missing task identity, execution-request derivation, and machine continuation-request emission.
+
+## Governance / authority semantics
 
 A runtime is an execution substrate/surface, not a boundary.
 
-Authority is a role/property, not a boundary.
+Authority is a consequence of governance. Governance determines the admissible action, scope, predicates, and conditions from which authority for that consequence follows. Possession of a credential, claim, runtime, model capability, or task identity does not independently create authority.
 
-The relevant actual boundaries are explicit conditions that permit, deny, defer, or constrain progression, including:
-
-- WorkerCoordinator claim/fence acquisition and validity conditions;
-- Interlock/InTr governed transition admission conditions;
-- Master Records reconciliation/completion conditions;
-- credential validity/availability conditions where credentials are required;
-- explicit human-only decision or consent conditions where applicable;
-- any other canonically defined predicate that must be satisfied before the next transition may occur.
-
-WorkerCoordinator, Interlock/InTr, TV/TVC, and Master Records may hold distinct roles or authorities, but those roles/authorities are not themselves boundaries. Runtime availability, locality, freshness, or successful execution may be predicates or observations, but they are not themselves boundaries either.
+Actual boundaries are real limits, interfaces, containment edges, trust separations, consequence limits, or explicit progression conditions. Governance predicates may require claim/fence state, transition admission, credential validity, reconstruction state, human-only consent, or other canonically defined conditions before a consequence may proceed.
 
 ## Purpose
 
-Implement machine/runtime enforcement so a continuation payload containing only:
-
-```text
-<TASK_ID>
-<COSV_TASK_VECTOR>
-```
-
-can resolve complete canonical task context, applicable reusable identities, and the exact invocation-specific TT/RTG/GTG construct needed for the highest-priority admissible work without repeated prompt prose or permanent one-off runners.
+A continuation payload containing only Task ID + COSV task vector must be enough for the system to reconstruct current canonical work and continue from the first unresolved admissible action without requiring the user to replay task prose, handoff text, goal identifiers, or prior session state.
 
 ## Implemented source behavior
 
-The source path includes canonical compact-pointer continuation policy, reusable-task identity/construct semantics, resident pointer validation, resident request/consumer/dispatcher integration, and now direct compact-pointer canonical resolution in the continuation evaluator.
+The source path now includes:
 
-No second task registry, COSV profile, scheduler, WorkerCoordinator, heartbeat, oscillator, credential authority, transition authority, dispatcher, or permanent runner plane was created.
+1. compact Task ID + COSV pointer validation;
+2. canonical task and handoff resolution;
+3. dependency, adjacency, evidence, and provenance resolution;
+4. existing resident execution-request discovery;
+5. next-admissible-work derivation;
+6. machine continuation-request emission;
+7. explicit prohibition on treating a status-only response as successful continuation;
+8. fail-closed incomplete-resolution state when an active task has no resolvable next work;
+9. resident request/consumer/dispatcher integration;
+10. reusable-task identity/construct semantics and bounded execution path.
 
-## Remaining execution evidence
-
-Execution evidence must still demonstrate consumption through the already-materialized resident execution surface, including pointer verification before execution, ordinary WorkerCoordinator claim/fence handling when applicable, Interlock/InTr transition admission when applicable, required bounded invocation construction, execution receipts, Master Records custody/reconstruction, and entropy recovery where applicable.
-
-These are evidence requirements evaluated against explicit progression predicates. They are not runtime boundaries or authority boundaries.
+No second task registry, queue, scheduler, WorkerCoordinator, heartbeat, credential plane, dispatcher, or permanent runner plane was created.
 
 ## Current COSV state
 
@@ -97,11 +92,11 @@ activated: false
 propagated: false
 ```
 
-The vector remains unchanged because source correction and source tests are not a WorkerCoordinator claim, execution receipt, Master Records custody/reconstruction proof, or activation proof.
+The vector is not changed by source correction alone.
 
-## Next evidence predicate
+## Next proof predicate
 
-The source defect that forced pre-expanded continuation context is corrected. The next evidence predicate is successful resident consumption of the corrected compact pointer path. The expected first authentic receipt remains:
+The remaining proof requirement is observation that the corrected compact-pointer continuation request is consumed through the existing execution path and produces the expected governed consequence/evidence. The first expected component-produced receipt remains:
 
 ```text
 receipts/sovereign-host/cosv-task-pointer-runtime-enforcement-request-consumption.latest.json
