@@ -12,6 +12,10 @@
       "evidence_refs": [
         "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
         "receipts/ecosystem-chat-sovereign-inference/orphan-recovery-HB28.json",
+        "control/runtime-observability-consumers/ecosystem-chat-sovereign-inference-001.json",
+        "receipts/preflight/ECOSYSTEM-CHAT-RUNTIME-SOLUTION-HANDOFF-001.json",
+        "docs/RESIDENT_WORKER_SELF_HEAL_MIRROR_HANDOFF.md",
+        "docs/ONE_SHOT_RESIDENT_STACK_ACTIVATION_MIRROR_HANDOFF.md",
         "workers/ecosystem_chat_sovereign_inference_worker.py",
         "workers/ecosystem_chat_sovereign_route_worker.py",
         "workers/master_records_sovereign_reconstruction_bridge.py",
