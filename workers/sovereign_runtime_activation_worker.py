@@ -285,7 +285,7 @@ def execute_v13_self_bootstrap() -> dict:
         return result
     if source_root is None:
         result["reason"] = f"CANONICAL_LOCAL_SOURCE_BINDING_INVALID:{source_binding_error or 'UNKNOWN'}"
-        result["same_host_ephemeral_fallback"]["reason"] = "CANONICAL_LOCAL_SOURCE_REQUIRED_FIRST"
+        result["same_host_ephemeral_fallback"]["reason"] = "CANONICAL_BOOTSTRAP_SOURCE_REQUIRED_FIRST"
         return result
     bootstrap = BOOTSTRAP if source_root == ROOT else (
         source_root / "scripts" / "bootstrap_sovereign_runtime.py"
