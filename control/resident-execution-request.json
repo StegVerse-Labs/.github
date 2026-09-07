@@ -5,7 +5,7 @@
   "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
   "mode": "DEDICATED_ECOSYSTEM_CHAT_PARENT",
   "entrypoint": "scripts/refresh_and_execute_resident_task.py",
-  "fresh_fence_minimum_exclusive": 22,
+  "fresh_fence_minimum_exclusive": 24,
   "credential_authority": "TV/TVC",
   "github_token_required": false,
   "github_token_runtime_authority": "NONE",

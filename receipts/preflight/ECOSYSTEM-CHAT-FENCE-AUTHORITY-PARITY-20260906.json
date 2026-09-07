@@ -1,0 +1,73 @@
+{
+  "schema": "stegverse.session-machine-preflight/v1",
+  "task_id": "ECOSYSTEM-CHAT-FENCE-AUTHORITY-PARITY-20260906",
+  "goal_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+  "state": "PASS",
+  "evaluated_at": "2026-09-06T22:38:00-05:00",
+  "scope": {
+    "repository": "StegVerse-Labs/.github",
+    "base_commit": "1e70dabd5f898a7088245d1aae4a4abad8f06abc",
+    "mutation_paths": [
+      "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+      "control/worker-registry.json",
+      "scripts/consume_resident_execution_request.py",
+      "scripts/run_independent_ecosystem_chat_parent.py",
+      "tests/test_ecosystem_chat_parent_registry_reconciliation.py",
+      "tests/test_independent_ecosystem_chat_parent_executor.py",
+      "tests/test_resident_execution_request.py",
+      "tests/test_targeted_execution_entrypoint_bindings.py",
+      "control/resident-execution-request.json"
+    ]
+  },
+  "canonical_state_resolution": {
+    "task": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+    "authorization": "authorizations/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json",
+    "worker_registry_fragment": "control/worker-registry.d/ecosystem-chat-sovereign-inference-parent-001.json",
+    "portable_package_handoff": "docs/ECOSYSTEM_CHAT_PORTABLE_IPHONE_PACKAGE_MIRROR_HANDOFF.md",
+    "same_device_terminal_handoff": "docs/ECOSYSTEM_CHAT_SAME_DEVICE_TERMINAL_PREDICATES_MIRROR_HANDOFF.md",
+    "canonical_minimum_fencing_token_exclusive": 24,
+    "first_reset_safe_fence": 25
+  },
+  "problem": {
+    "code": "ECOSYSTEM_CHAT_FENCE_FLOOR_PROJECTION_STALE",
+    "evidence": [
+      "The canonical independent-parent authorization requires minimum_fencing_token_exclusive=24.",
+      "The WorkerCoordinator registry fragment requires minimum_fencing_token_exclusive=24 and minimum_parent_fencing_token_exclusive=24.",
+      "The portable Ecosystem Chat package records predecessor_generation_floor=24 and first reset-safe fence G25.",
+      "Active handoff, aggregate registry, dedicated parent executor, compatibility request consumer, compatibility singleton request, and corresponding tests still project the obsolete value 22 on current main.",
+      "Historical G22 orphan-recovery evidence remains historical and is not rewritten."
+    ]
+  },
+  "admitted_repair": {
+    "strategy": "Reconcile only stale active fence-floor projections from 22 to the already-authoritative value 24 without granting new authority or changing runtime ownership.",
+    "functional_mutation": false,
+    "authority_effect": "NONE_RECONCILIATION_TO_EXISTING_AUTHORITY"
+  },
+  "collision_review": {
+    "active_pull_request": 1148,
+    "same_branch_repair": true,
+    "new_claim_or_fence_authority_created": false,
+    "duplicate_runtime_implementation_required": false,
+    "branch_rebased_to_current_main_before_mutation": true
+  },
+  "readme_impact": {
+    "required": false,
+    "material_function_change": false,
+    "readme_updated_in_change_set": false,
+    "no_readme_update_reason": "The 24 floor and G25+ execution semantics are already canonical in authorization, registry fragment, standing request, portable execution documentation, and same-device terminal documentation. This repair restores parity and changes no runtime interface, credential authority, failure behavior, capability meaning, or execution-owner boundary."
+  },
+  "authority": {
+    "workercoordinator_claim_fence_authority": true,
+    "compatibility_request_grants_authority": false,
+    "heartbeat_grants_execution_authority": false,
+    "intr_transition_authority_unchanged": true,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE"
+  },
+  "runtime_evidence": {
+    "runtime_execution_inferred": false,
+    "fresh_g25_or_higher_fence_observed": false,
+    "ecosystem_chat_activation_observed": false
+  },
+  "verdict": "PASS"
+}

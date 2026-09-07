@@ -38,7 +38,7 @@ ROUTE_RECEIPT = RECEIPT_ROOT / "tvc_local_model_route.json"
 LLM_EXECUTION_RECEIPT = RECEIPT_ROOT / "llm_adapter_sovereign_execution.json"
 MR_RECEIPT = RECEIPT_ROOT / "master_records_same_execution_reconstruction.json"
 ACTIVATION_RECEIPT = RECEIPT_ROOT / "independent_parent_activation.latest.json"
-MINIMUM_FENCE_EXCLUSIVE = 22
+MINIMUM_FENCE_EXCLUSIVE = 24
 DEVICE_LOCAL_MODEL_ENDPOINT = "https://stegverse.org/stegos-bootstrap/local-model"
 DEVICE_SERVICE_WORKER_SCOPE = "https://stegverse.org/stegos-bootstrap/"
 NONSECRET_LOCATORS = (
@@ -152,7 +152,7 @@ def validate_registered_executor(root: Path) -> None:
     if admission.get("authority_domain") != "INDEPENDENT_TASK_CONTROL":
         raise RuntimeError("parent is not bound to independent task control")
     if admission.get("minimum_fencing_token_exclusive") != MINIMUM_FENCE_EXCLUSIVE:
-        raise RuntimeError("parent fresh-fence floor does not bind terminal G22 recovery")
+        raise RuntimeError("parent fresh-fence floor does not match canonical G25+ admission")
     if admission.get("heartbeat_required_for_admission") is not False:
         raise RuntimeError("heartbeat may not be an admission prerequisite")
     if admission.get("heartbeat_grants_execution_authority") is not False:
@@ -277,7 +277,7 @@ def release_parent_claim(
     timing = task.get("heartbeat_timing") or {}
     fence = timing.get("fencing_token")
     if not isinstance(claim_id, str) or not isinstance(fence, int) or fence <= MINIMUM_FENCE_EXCLUSIVE:
-        raise RuntimeError("cannot release parent without fresh fence >22")
+        raise RuntimeError("cannot release parent without fresh fence >24")
     if response_state == "COMPLETED" and terminal_verified is not True:
         raise RuntimeError("parent completion requires independently verified terminal evidence")
 
