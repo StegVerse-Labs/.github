@@ -52,6 +52,16 @@ def test_worker_requires_exact_hash_at_ingress_tvc_and_llm_adapter_boundaries():
         assert guard in source
 
 
+def test_terminal_predicates_require_positive_and_negative_invariants_separately():
+    source = WORKER.read_text(encoding="utf-8")
+    assert "required_true = (" in source
+    assert "required_false = (" in source
+    assert "terminal_predicates_satisfied" in source
+    assert "all(predicates[name] is True for name in required_true)" in source
+    assert "all(predicates[name] is False for name in required_false)" in source
+    assert "if not all(predicates.values())" not in source
+
+
 def test_worker_forbids_provider_master_records_and_github_secret_environment():
     module = load_worker()
     forbidden = set(module.FORBIDDEN_SECRET_ENV)
