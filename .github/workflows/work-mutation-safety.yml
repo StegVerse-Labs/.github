@@ -1,0 +1,211 @@
+name: StegVerse Work Mutation Safety - Non-Authorizing
+
+on:
+  workflow_call:
+
+permissions: {}
+
+jobs:
+  validate-work-mutation-safety:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Anonymous caller checkout
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          REPOSITORY: ${{ github.repository }}
+          SERVER_URL: ${{ github.server_url }}
+        run: |
+          set -euo pipefail
+          test -n "${BASE_SHA:-}"
+          test -n "${HEAD_SHA:-}"
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          git init .
+          git remote add origin "${SERVER_URL}/${REPOSITORY}.git"
+          env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "${BASE_SHA}" "${HEAD_SHA}"
+          git checkout --detach "${HEAD_SHA}"
+
+      - name: Validate fresh mutation safety manifest
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import subprocess
+          from pathlib import Path
+
+          base = os.environ['BASE_SHA']
+          head = os.environ['HEAD_SHA']
+          repository = os.environ['REPOSITORY']
+
+          def git(*args):
+              return subprocess.check_output(['git', *args], text=True).splitlines()
+
+          changed = [p for p in git('diff', '--name-only', base, head) if p]
+          added = [p for p in git('diff', '--name-only', '--diff-filter=A', base, head) if p]
+
+          documentary_suffixes = {'.md', '.txt', '.rst', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.pdf'}
+          def functional(path):
+              p = Path(path)
+              if path.startswith('receipts/work-safety/'):
+                  return False
+              return p.suffix.lower() not in documentary_suffixes
+
+          functional_changed = sorted(p for p in changed if functional(p))
+          functional_added = sorted(p for p in added if functional(p))
+          if not functional_changed:
+              print('WORK_MUTATION_SAFETY_DOCUMENTATION_ONLY_PASS')
+              raise SystemExit(0)
+
+          manifest_paths = sorted(
+              p for p in changed
+              if p.startswith('receipts/work-safety/') and p.endswith('.json')
+          )
+          if not manifest_paths:
+              raise SystemExit('functional mutation requires a fresh receipts/work-safety/*.json manifest in the same change set')
+
+          manifests = []
+          for path in manifest_paths:
+              data = json.loads(Path(path).read_text(encoding='utf-8'))
+              if data.get('schema') != 'stegverse.work-mutation-safety/v1':
+                  raise SystemExit(f'{path}: unsupported schema')
+              if not str(data.get('task_id') or '').strip():
+                  raise SystemExit(f'{path}: task_id required')
+              if data.get('authority_effect') not in ('NONE', 'NONE_PREFLIGHT_ONLY'):
+                  raise SystemExit(f'{path}: authority_effect must be NONE/NONE_PREFLIGHT_ONLY')
+
+              handoffs = data.get('canonical_handoff_refs')
+              if not isinstance(handoffs, list) or not handoffs:
+                  raise SystemExit(f'{path}: canonical_handoff_refs required')
+              local_handoff_found = False
+              for ref in handoffs:
+                  ref = str(ref).strip()
+                  if not ref:
+                      raise SystemExit(f'{path}: blank handoff ref')
+                  local = ref.split(':', 1)[-1] if ':' in ref else ref
+                  local = local.split('#', 1)[0]
+                  if ref.startswith(repository + ':') or ':' not in ref:
+                      if Path(local).is_file() and local.endswith('_MIRROR_HANDOFF.md'):
+                          local_handoff_found = True
+              if not local_handoff_found:
+                  raise SystemExit(f'{path}: at least one referenced local *_MIRROR_HANDOFF.md must exist')
+
+              registry_refs = data.get('task_registry_refs')
+              if not isinstance(registry_refs, list) or not any(str(x).strip() for x in registry_refs):
+                  raise SystemExit(f'{path}: task_registry_refs required')
+
+              master = data.get('master_records_review')
+              if not isinstance(master, dict) or not isinstance(master.get('applicable'), bool):
+                  raise SystemExit(f'{path}: master_records_review.applicable boolean required')
+              if master['applicable']:
+                  if not isinstance(master.get('refs'), list) or not any(str(x).strip() for x in master['refs']):
+                      raise SystemExit(f'{path}: applicable Master Records require refs')
+              elif not str(master.get('reason') or '').strip():
+                  raise SystemExit(f'{path}: non-applicable Master Records require reason')
+
+              coordination = data.get('cross_task_coordination')
+              if not isinstance(coordination, dict) or coordination.get('checked') is not True:
+                  raise SystemExit(f'{path}: cross_task_coordination.checked=true required')
+              if not isinstance(coordination.get('refs'), list) or not any(str(x).strip() for x in coordination['refs']):
+                  raise SystemExit(f'{path}: cross-task coordination refs required')
+
+              semantic = data.get('semantic_scan')
+              if not isinstance(semantic, dict) or semantic.get('completed') is not True:
+                  raise SystemExit(f'{path}: semantic_scan.completed=true required')
+              repos = semantic.get('repositories_searched')
+              if not isinstance(repos, list) or repository not in repos:
+                  raise SystemExit(f'{path}: semantic scan must include caller repository {repository}')
+              evidence = semantic.get('evidence_refs')
+              if not isinstance(evidence, list) or not any(str(x).strip() for x in evidence):
+                  raise SystemExit(f'{path}: semantic scan evidence_refs required')
+
+              decision = str(data.get('reuse_decision') or '')
+              allowed = {'REUSE', 'EXTEND', 'REFACTOR', 'MOVE', 'VERSION', 'CREATE_NEW'}
+              if decision not in allowed:
+                  raise SystemExit(f'{path}: invalid reuse_decision')
+              if data.get('existing_equivalent_found') is True and decision == 'CREATE_NEW':
+                  raise SystemExit(f'{path}: CREATE_NEW forbidden when an existing equivalent was found')
+
+              collision = data.get('active_owner_collision')
+              if not isinstance(collision, dict) or collision.get('checked') is not True or not isinstance(collision.get('collision_found'), bool):
+                  raise SystemExit(f'{path}: active_owner_collision checked/collision_found required')
+              if collision['collision_found'] and decision == 'CREATE_NEW':
+                  if collision.get('intentional_parallel_versioning') is not True or not str(collision.get('reconciliation_ref') or '').strip():
+                      raise SystemExit(f'{path}: CREATE_NEW blocked by active owner collision without explicit governed versioning reconciliation')
+
+              impact = data.get('readme_impact')
+              if not isinstance(impact, dict) or not isinstance(impact.get('material_function_change'), bool):
+                  raise SystemExit(f'{path}: readme_impact.material_function_change boolean required')
+              if impact['material_function_change']:
+                  readme_path = str(impact.get('readme_path') or 'README.md')
+                  if impact.get('readme_updated_in_change_set') is not True or readme_path not in changed:
+                      raise SystemExit(f'{path}: material functional change requires README update in same change set')
+                  if not isinstance(impact.get('evidence_refs'), list) or not impact['evidence_refs']:
+                      raise SystemExit(f'{path}: material README decision requires evidence_refs')
+              else:
+                  if not str(impact.get('no_readme_update_reason') or '').strip():
+                      raise SystemExit(f'{path}: nonmaterial README determination requires reason')
+                  if not isinstance(impact.get('evidence_refs'), list) or not impact['evidence_refs']:
+                      raise SystemExit(f'{path}: nonmaterial README determination requires evidence_refs')
+
+              covered = data.get('covered_paths')
+              if not isinstance(covered, list):
+                  raise SystemExit(f'{path}: covered_paths list required')
+
+              new_files = data.get('new_files')
+              if not isinstance(new_files, list):
+                  raise SystemExit(f'{path}: new_files list required')
+              for entry in new_files:
+                  if not isinstance(entry, dict):
+                      raise SystemExit(f'{path}: each new_files entry must be an object')
+                  new_path = str(entry.get('path') or '')
+                  if not new_path:
+                      raise SystemExit(f'{path}: new file path required')
+                  if not str(entry.get('semantic_responsibility') or '').strip():
+                      raise SystemExit(f'{path}: semantic responsibility required for {new_path}')
+                  new_decision = str(entry.get('decision') or '')
+                  if new_decision not in allowed:
+                      raise SystemExit(f'{path}: invalid new-file decision for {new_path}')
+                  closest = str(entry.get('closest_existing_implementation') or '').strip()
+                  if not closest:
+                      raise SystemExit(f'{path}: closest existing implementation/search result required for {new_path}')
+                  if new_decision == 'CREATE_NEW':
+                      if not str(entry.get('justification') or '').strip():
+                          raise SystemExit(f'{path}: CREATE_NEW justification required for {new_path}')
+                      if not str(entry.get('canonical_owner') or '').strip():
+                          raise SystemExit(f'{path}: CREATE_NEW canonical_owner required for {new_path}')
+                      refs = entry.get('evidence_refs')
+                      if not isinstance(refs, list) or not any(str(x).strip() for x in refs):
+                          raise SystemExit(f'{path}: CREATE_NEW evidence_refs required for {new_path}')
+              manifests.append(data)
+
+          covered = {str(p) for m in manifests for p in m.get('covered_paths', [])}
+          missing_coverage = [p for p in functional_changed if p not in covered]
+          if missing_coverage:
+              raise SystemExit('functional changed paths missing from fresh work-safety manifest: ' + ', '.join(missing_coverage))
+
+          declared_new = {
+              str(entry.get('path'))
+              for m in manifests
+              for entry in m.get('new_files', [])
+              if isinstance(entry, dict)
+          }
+          missing_new = [p for p in functional_added if p not in declared_new]
+          if missing_new:
+              raise SystemExit('new functional files missing semantic reuse decision: ' + ', '.join(missing_new))
+
+          print(json.dumps({
+              'schema': 'stegverse.work-mutation-safety-validation/v1',
+              'repository': repository,
+              'functional_changed_paths': functional_changed,
+              'functional_added_paths': functional_added,
+              'manifest_paths': manifest_paths,
+              'decision': 'PASS_STRUCTURAL_MUTATION_SAFETY',
+              'authority_effect': 'NONE',
+              'runtime_authority': 'NONE',
+          }, indent=2, sort_keys=True))
+          PY
