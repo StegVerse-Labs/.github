@@ -1,0 +1,34 @@
+{
+  "identity": "StegVerse-Labs/.github:task:STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "10100000100000",
+  "evidence_refs": [
+    "data/canonical-task-registry.json",
+    "control/cross-task-coordination.d/object-provenance-continuity-190.json",
+    "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md",
+    "docs/COSV_TASK_POINTER_COORDINATION_MIRROR_HANDOFF.md",
+    "management/COSV_PROFILE_V1.json",
+    "StegVerse-Labs/StegOS:docs/CANONICAL_WORK_SAME_DEVICE_INGRESS_MIRROR_HANDOFF.md",
+    "master-records/orchestration:docs/OBJECT_PROVENANCE_CUSTODY_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site#1068"
+  ],
+  "observed_at": "2026-09-07T09:24:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "UNCLAIMED",
+    "archive_ready": false,
+    "unassigned_work": 1,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  }
+}
