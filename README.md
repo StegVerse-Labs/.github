@@ -344,6 +344,29 @@ Master Records retains the exact source observation and its concrete `runtime_ro
 
 Source merge, validation, importer availability, or a local intake-capability receipt does not prove that authentic runtime presence was observed or custodied, and local custody is not proof of remote repository persistence.
 
+### Resident DeepSeek InTr governed runtime
+
+The resident dispatcher now contains one bounded DeepSeek InTr request/consumer for `SHWP-DEEPSEEK-INTR-RUNTIME-001`. It reuses the existing WorkerCoordinator rather than creating another runtime or scheduler. The task must obtain a fresh WorkerCoordinator claim/fence, then a canonical portable StegGate ingress `ALLOW` before TVC can issue the exact-bound single-use DeepSeek lease.
+
+The provider operation uses the existing TVC non-exportable vault broker. DeepSeek credential material never enters `.github` or LLM-adapter. The resulting provider-usage event is sent through the existing Master Records owner-local Unix-socket custody broker; egress cannot continue unless authentic custody is recorded and reconstruction is `PASS`. A separate canonical StegGate egress `ALLOW`, bound to the exact provider response hash, is then required by LLM-adapter's exact-response egress verifier.
+
+The complete resident path is therefore:
+
+```text
+existing resident dispatcher
+-> existing WorkerCoordinator claim + fresh fence
+-> canonical StegGate ingress ALLOW
+-> exact-bound TVC DeepSeek lease
+-> existing TVC non-exportable provider operation
+-> DeepSeek response
+-> Master Records local custody + reconstruction PASS
+-> canonical StegGate egress ALLOW
+-> LLM-adapter exact-response egress admission
+-> same-execution resident receipt
+```
+
+HeartBeat remains timing/reference/carriage only and grants none of these decisions. The standing request, dispatcher, source merge, GitHub Actions validation, provider output, and Master Records custody receipt grant no transition or execution authority. No second user-operated machine, hosted execution surface, GitHub runtime token, DeepSeek credential export, or Master Records bearer export is part of this path. Source/CI completion does not prove that a resident cycle has actually run; authentic completion requires the retained same-execution component receipts.
+
 This invariant exists so the README remains the human-facing projection of what the repository actually does, while canonical machine-readable records and receipts remain authoritative for exact state and evidence.
 
 ---
