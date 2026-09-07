@@ -7,6 +7,13 @@ ID + COSV handoff pointer so the existing resident dispatcher resolves and
 initiates the same task again. Completion is allowed only when a successful
 pass begins with no matching GitHub/task-update INBOX messages.
 
+Actionable failure observations retain the established corrective-work behavior:
+they are reconciled against the live Canonical Task Registry, reused when an
+existing nonterminal task already owns the correction, or deterministically
+materialized as adjacent corrective tasks and sent through the existing Canonical
+Work/InTr ingress path. Email observation never mints execution authority;
+WorkerCoordinator and Interlock/InTr retain their existing authority boundaries.
+
 This consumer creates no scheduler, heartbeat, claim, fence, provider
 credential, or mailbox authority.
 """
@@ -25,7 +32,11 @@ ROOT = Path(__file__).resolve().parents[1]
 REQUEST_REL = Path("control/resident-execution-request.d/native-email-action-monitor-001.json")
 CONSUMPTION_REL = Path("receipts/sovereign-host/native-email-action-monitor-request-consumption.latest.json")
 MONITOR_RECEIPT_REL = Path("receipts/sovereign-host/native-email-action-monitor.latest.json")
+FAILURE_RECONCILIATION_REL = Path("receipts/sovereign-host/native-email-failure-canonical-work.latest.json")
 TASK_VECTOR_REL = Path("control/task-vectors/STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001.json")
+TASK_VECTOR_INDEX_REL = Path("control/task-vector-index.json")
+CANONICAL_REGISTRY_REL = Path("data/canonical-task-registry.json")
+TASK_VECTOR_DIR_REL = Path("control/task-vectors")
 TASK_ID = "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001"
 MODE = "NATIVE_EMAIL_ACTION_MONITOR"
 ENTRYPOINT = "scripts/consume_native_email_action_monitor_request.py"
@@ -163,6 +174,112 @@ def pending(runtime: Path, request: Mapping[str, Any], request_hash: str, reason
     })
 
 
+def resolve_source_script(source: Path, runtime: Path, relative: str) -> Path | None:
+    for candidate in (runtime / relative, source / relative):
+        if candidate.is_file():
+            return candidate
+    return None
+
+
+def reconcile_failure_work(source: Path, runtime: Path, monitor_receipt: Path, monitor_result: dict[str, Any], values: Mapping[str, str], runner) -> tuple[dict[str, Any] | None, list[dict[str, Any]]]:
+    incidents = monitor_result.get("incidents")
+    if not isinstance(incidents, list) or not incidents:
+        return None, []
+
+    reconciler = resolve_source_script(source, runtime, "scripts/reconcile_email_failure_incidents.py")
+    if reconciler is None:
+        return {
+            "schema": "stegverse.email-failure-canonical-work-handoff/v1",
+            "state": "RECONCILER_NOT_MATERIALIZED",
+            "incidents": incidents,
+            "retry_required": True,
+            "authority_effect": "NONE",
+        }, []
+
+    registry = runtime / CANONICAL_REGISTRY_REL
+    vector_index = runtime / TASK_VECTOR_INDEX_REL
+    if not registry.is_file() or not vector_index.is_file():
+        return {
+            "schema": "stegverse.email-failure-canonical-work-handoff/v1",
+            "state": "CANONICAL_COORDINATION_STATE_NOT_MATERIALIZED",
+            "incidents": incidents,
+            "retry_required": True,
+            "registry_ref": str(registry),
+            "vector_index_ref": str(vector_index),
+            "authority_effect": "NONE",
+        }, []
+
+    output = runtime / FAILURE_RECONCILIATION_REL
+    command = [
+        sys.executable,
+        str(reconciler),
+        "--monitor-receipt", str(monitor_receipt),
+        "--registry", str(registry),
+        "--vector-index", str(vector_index),
+        "--vector-dir", str(runtime / TASK_VECTOR_DIR_REL),
+        "--output", str(output),
+    ]
+    completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=dict(values), timeout=300)
+    result = load_json(output) if output.is_file() else parse_last_json(completed.stdout)
+    if completed.returncode != 0 or not isinstance(result, dict):
+        return {
+            "schema": "stegverse.email-failure-canonical-work-handoff/v1",
+            "state": "RECONCILIATION_ATTEMPT_FAILED",
+            "incidents": incidents,
+            "retry_required": True,
+            "returncode": completed.returncode,
+            "authority_effect": "NONE",
+        }, []
+
+    bootstrap = resolve_source_script(source, runtime, "scripts/install_and_run_canonical_work_event_bootstrap.py")
+    initiation_results: list[dict[str, Any]] = []
+    handoffs = result.get("task_handoffs") if isinstance(result.get("task_handoffs"), list) else []
+    for handoff in handoffs:
+        if not isinstance(handoff, dict):
+            continue
+        task_id = handoff.get("task_id")
+        action = handoff.get("next_action")
+        if not isinstance(task_id, str) or not task_id:
+            continue
+        if action != "INITIATE_CANONICAL_WORK_INGRESS":
+            initiation_results.append({
+                "task_id": task_id,
+                "cosv_task_vector": handoff.get("cosv_task_vector"),
+                "state": "EXISTING_TASK_CONTINUATION_PRESERVED",
+                "next_action": action,
+                "runtime_execution_claimed": False,
+            })
+            continue
+        if bootstrap is None:
+            initiation_results.append({
+                "task_id": task_id,
+                "cosv_task_vector": handoff.get("cosv_task_vector"),
+                "state": "CANONICAL_WORK_BOOTSTRAP_NOT_MATERIALIZED",
+                "retry_required": True,
+                "runtime_execution_claimed": False,
+            })
+            continue
+        invoke = [
+            sys.executable,
+            str(bootstrap),
+            "--runtime-root", str(runtime),
+            "--task-id", task_id,
+            "--registry", str(registry),
+        ]
+        attempt = runner(invoke, cwd=runtime, capture_output=True, text=True, check=False, env=dict(values), timeout=300)
+        initiation_results.append({
+            "task_id": task_id,
+            "cosv_task_vector": handoff.get("cosv_task_vector"),
+            "state": "CANONICAL_WORK_INGRESS_INITIATED" if attempt.returncode == 0 else "CANONICAL_WORK_INGRESS_ATTEMPT_FAILED",
+            "returncode": attempt.returncode,
+            "retry_required": attempt.returncode != 0,
+            "runtime_execution_claimed": False,
+            "workercoordinator_claim_fence_still_required": True,
+            "interlock_intr_transition_still_required": True,
+        })
+    return result, initiation_results
+
+
 def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
@@ -177,10 +294,8 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     request_hash = stable_hash(request)
     cosv_vector = resolve_task_vector(source, runtime)
 
-    monitor = runtime / "scripts/run_native_email_action_monitor.py"
-    if not monitor.is_file():
-        monitor = source / "scripts/run_native_email_action_monitor.py"
-    if not monitor.is_file():
+    monitor = resolve_source_script(source, runtime, "scripts/run_native_email_action_monitor.py")
+    if monitor is None:
         return pending(runtime, request, request_hash, "MONITOR_ENTRYPOINT_NOT_MATERIALIZED", handoff_task_id=TASK_ID, handoff_cosv_task_vector=cosv_vector)
 
     stegops = resolve_repo(source, values, env_name="STEGVERSE_STEGOPS_ORCHESTRATOR_ROOT", repo_name="StegOps-Orchestrator")
@@ -210,12 +325,23 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     pass_result = bool(completed.returncode == 0 and isinstance(monitor_result, dict) and monitor_result.get("schema") == "stegverse.native-email-action-monitor-receipt/v1" and monitor_result.get("state") == "PASS")
     processed = monitor_result.get("processed_exact_count") if isinstance(monitor_result, dict) else None
     require(processed is None or isinstance(processed, int), "monitor processed_exact_count invalid")
+
+    failure_reconciliation = None
+    corrective_task_initiation: list[dict[str, Any]] = []
+    if isinstance(monitor_result, dict):
+        failure_reconciliation, corrective_task_initiation = reconcile_failure_work(source, runtime, monitor_receipt, monitor_result, values, runner)
+
+    failure_retry_required = bool(
+        isinstance(failure_reconciliation, dict)
+        and failure_reconciliation.get("retry_required") is True
+    ) or any(bool(row.get("retry_required")) for row in corrective_task_initiation if isinstance(row, dict))
+
     inbox_empty_of_github = bool(pass_result and processed == 0)
     continue_required = bool(pass_result and isinstance(processed, int) and processed > 0)
 
-    if inbox_empty_of_github:
+    if inbox_empty_of_github and not failure_retry_required:
         state = "COMPLETED"
-    elif continue_required:
+    elif continue_required or failure_retry_required:
         state = "HANDOFF_READY"
     else:
         state = "ATTEMPT_RECORDED"
@@ -233,13 +359,18 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         "execution_returncode": completed.returncode,
         "monitor_receipt_ref": str(monitor_receipt),
         "monitor_result": monitor_result,
+        "failure_reconciliation": failure_reconciliation,
+        "corrective_task_initiation": corrective_task_initiation,
+        "corrective_tasks_initiated_count": sum(1 for row in corrective_task_initiation if isinstance(row, dict) and row.get("state") == "CANONICAL_WORK_INGRESS_INITIATED"),
+        "failure_graph_and_task_derivation_preserved": True,
+        "archived_failure_may_not_discard_corrective_work": True,
         "github_inbox_empty": inbox_empty_of_github,
-        "continuation_required": continue_required,
-        "terminal_predicate": "GITHUB_INBOX_MATCHING_OPERATIONAL_QUERY_EMPTY",
-        "handoff_task_id": None if inbox_empty_of_github else TASK_ID,
-        "handoff_cosv_task_vector": None if inbox_empty_of_github else cosv_vector,
-        "handoff_action": None if inbox_empty_of_github else "RESOLVE_POINTER_AND_INITIATE_TASK_AGAIN",
-        "retry_allowed": not inbox_empty_of_github,
+        "continuation_required": continue_required or failure_retry_required,
+        "terminal_predicate": "GITHUB_INBOX_MATCHING_OPERATIONAL_QUERY_EMPTY_AND_FAILURE_RECONCILIATION_DURABLE",
+        "handoff_task_id": None if state == "COMPLETED" else TASK_ID,
+        "handoff_cosv_task_vector": None if state == "COMPLETED" else cosv_vector,
+        "handoff_action": None if state == "COMPLETED" else "RESOLVE_POINTER_AND_INITIATE_TASK_AGAIN",
+        "retry_allowed": state != "COMPLETED",
         "credential_authority": "TV/TVC",
         "credential_material_exported": False,
         "github_token_required": False,
