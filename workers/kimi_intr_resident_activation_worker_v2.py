@@ -310,9 +310,7 @@ def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
         if interlock.get("intr_profile_ref") != "external-provider-operation":
             raise RuntimeError("HOSTED_LLM_GOVERNANCE_INTR_PROFILE_DRIFT")
 
-        # These conditions are derived from the current bounded invocation and loaded
-        # canonical evidence. They are not source constants used to manufacture ALLOW.
-        refusal_available = True  # every pre-provider branch above can refuse without consequence
+        refusal_available = True
         operator_recoverability = "available" if claim_current and fence_bound else "unavailable"
         workload_state = "supported" if CAPABILITY in set(scope.get("required_capabilities") or []) else "unknown"
         time_pressure = "normal" if timing.get("expiry_epoch") in (None, 0) or epoch <= int(timing.get("expiry_epoch") or epoch) else "critical"
@@ -477,7 +475,28 @@ def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
         "governance_grants_execution_authority": False,
         "governance_grants_credential_authority": False,
     }
-    if not all(predicates.values()):
+    required_true = (
+        "same_execution",
+        "exact_tvc_provider_wire_bound",
+        "intr_ingress_complete",
+        "governance_allow",
+        "tvc_kimi_operation_observed",
+        "master_records_custody_recorded",
+        "master_records_reconstruction_pass",
+        "intr_egress_complete",
+    )
+    required_false = (
+        "provider_credential_exported",
+        "master_records_credential_exported",
+        "transport_grants_execution_authority",
+        "governance_grants_execution_authority",
+        "governance_grants_credential_authority",
+    )
+    terminal_predicates_satisfied = (
+        all(predicates[name] is True for name in required_true)
+        and all(predicates[name] is False for name in required_false)
+    )
+    if not terminal_predicates_satisfied:
         return blocked("TERMINAL_SAME_EXECUTION_PREDICATES_NOT_ALL_PROVEN", epoch=epoch, extra={"predicates": predicates})
 
     success: dict[str, Any] = {
@@ -513,6 +532,7 @@ def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
         "master_records": dict(custody),
         "intr_egress": {"intent": egress_packet.intent, "receipt": egress_receipt, "result": egress_complete},
         "predicates": predicates,
+        "terminal_predicates_satisfied": True,
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": "NONE",
         "authority_effect": "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY",
