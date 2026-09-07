@@ -173,7 +173,7 @@ def coordination_profile(data: dict[str, Any], substrate: dict[str, Any]) -> dic
         "component": "Canonical Work Coordination",
         "repository": "StegVerse-Labs/.github",
         "declared": {
-            "capabilities": ["task_registry_reconciliation", "master_records_reconciliation", "worker_claim_projection", "dependency_reevaluation", "intr_task_admission", "runtime_profile_discovery"],
+            "capabilities": ["task_registry_reconciliation", "master_records_reconciliation", "worker_claim_projection", "dependency_reevaluation", "intr_task_admission", "runtime_profile_discovery", "canonical_artifact_validation"],
             "effect_class": "coordination_runtime",
             "mutation_allowed": True,
             "deployment_allowed": False,

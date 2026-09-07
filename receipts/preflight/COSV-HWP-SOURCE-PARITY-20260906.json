@@ -1,0 +1,51 @@
+{
+  "schema": "stegverse.session-machine-preflight/v1",
+  "task_id": "COSV-TASK-POINTER-RUNTIME-ENFORCEMENT-001",
+  "repair_id": "COSV-HWP-SOURCE-PARITY-20260906",
+  "repository": "StegVerse-Labs/.github",
+  "goal": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "state": "PASS",
+  "canonical_handoff": "docs/COSV_TASK_POINTER_RUNTIME_ENFORCEMENT_MIRROR_HANDOFF.md",
+  "observed_base": "29b22c7814b65319ec3922bb1b5ce427caad5de8",
+  "validation_stack": {
+    "base_pr": 1148,
+    "base_branch": "fix/ecosystem-chat-fence-authority-parity",
+    "base_head": "ea5ccaf46c95bf2e3c5c22a57729c3f4f226beea",
+    "reason": "Full HWP source-parity validation must include the already-repaired Ecosystem Chat fence projection so the remaining global COSV and runtime-profile baseline defects are reachable without folding them into PR #1148."
+  },
+  "problem": {
+    "code": "POST_REGISTRATION_CHECKED_PROJECTION_DRIFT",
+    "hwp_failure_count": 10,
+    "ecosystem_chat_failures": 0,
+    "classes": [
+      "COSV_GLOBAL_COVERAGE_COUNTS_STALE",
+      "TASK_VECTOR_INDEX_REGISTRY_PROVENANCE_STALE_OR_NONREGISTRY_ROW",
+      "CANONICAL_TASK_REGISTRY_GENERATION_TEST_STALE",
+      "CANONICAL_COORDINATION_RUNTIME_CAPABILITY_PROJECTION_STALE"
+    ]
+  },
+  "collision_review": {
+    "open_repair_pr_found": false,
+    "duplicate_task_registry_required": false,
+    "duplicate_cosv_profile_required": false,
+    "duplicate_runtime_plane_required": false,
+    "reuse_existing_runtime_profile_map": true,
+    "reuse_existing_task_vector_index": true
+  },
+  "authority": {
+    "new_execution_authority": false,
+    "workercoordinator_claim_fence_unchanged": true,
+    "interlock_intr_transition_authority_unchanged": true,
+    "credential_authority": "TV/TVC",
+    "github_runtime_authority": "NONE"
+  },
+  "readme_impact": {
+    "required": false,
+    "reason": "This follow-up reconciles checked projections and an already-declared canonical coordination capability requirement introduced by generation 17. It creates no new interface, authority boundary, failure mode, deployment prerequisite, or capability meaning beyond the source contract already documented by the COSV pointer runtime-enforcement handoff and README update."
+  },
+  "runtime_evidence": {
+    "authentic_runtime_consumption_inferred": false,
+    "activation_inferred": false
+  },
+  "verdict": "PASS"
+}

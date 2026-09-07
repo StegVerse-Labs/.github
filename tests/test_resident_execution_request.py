@@ -26,7 +26,7 @@ class ResidentExecutionRequestTests(unittest.TestCase):
             "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
             "mode": "DEDICATED_ECOSYSTEM_CHAT_PARENT",
             "entrypoint": "scripts/refresh_and_execute_resident_task.py",
-            "fresh_fence_minimum_exclusive": 22,
+            "fresh_fence_minimum_exclusive": 24,
             "credential_authority": "TV/TVC",
             "github_token_required": False,
             "github_token_runtime_authority": "NONE",
@@ -57,7 +57,7 @@ class ResidentExecutionRequestTests(unittest.TestCase):
             self.assertEqual(first["state"], "ATTEMPT_RECORDED")
             self.assertTrue(first["runtime_execution_attempted"])
             self.assertFalse(first["request_granted_authority"])
-            self.assertEqual(first["fresh_fence_minimum_exclusive"], 22)
+            self.assertEqual(first["fresh_fence_minimum_exclusive"], 24)
             self.assertEqual(len(calls), 1)
             self.assertFalse(first["post_parent_activation_projection"]["attempted"])
             command = calls[0][0]

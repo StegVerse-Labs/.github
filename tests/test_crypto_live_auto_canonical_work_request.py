@@ -15,7 +15,7 @@ README = ROOT / "README.md"
 class CryptoLiveAutoCanonicalWorkRequestTests(unittest.TestCase):
     def test_task_registered_as_proposed_without_worker_claim(self):
         registry = json.loads(REGISTRY.read_text(encoding="utf-8"))
-        self.assertEqual(registry.get("generation"), 16)
+        self.assertEqual(registry.get("generation"), 17)
         matches = [row for row in registry.get("tasks", []) if row.get("task_id") == "CRYPTO-LIVE-AUTO-001"]
         self.assertEqual(len(matches), 1)
         task = matches[0]

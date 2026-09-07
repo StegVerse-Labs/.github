@@ -24,7 +24,7 @@ class IndependentEcosystemChatParentExecutorTests(unittest.TestCase):
         mod.validate_registered_executor(ROOT)
         auth = self.load(mod.AUTH_PATH)
         self.assertEqual(auth["authority_domain"], "INDEPENDENT_TASK_CONTROL")
-        self.assertEqual(auth["minimum_fencing_token_exclusive"], 22)
+        self.assertEqual(auth["minimum_fencing_token_exclusive"], 24)
         self.assertFalse(auth["heartbeat_required_for_admission"])
         self.assertFalse(auth["heartbeat_grants_execution_authority"])
         self.assertFalse(auth["g18_terminalization_required"])
@@ -39,7 +39,7 @@ class IndependentEcosystemChatParentExecutorTests(unittest.TestCase):
 
         task, fence = mod.acquire_parent_claim(registry, fragment, reference_epoch=0)
 
-        self.assertGreater(fence, 22)
+        self.assertGreater(fence, 24)
         self.assertGreater(fence, existing_max)
         self.assertEqual(registry["generation"], fence)
         self.assertEqual(task["state"], "ACTIVE")

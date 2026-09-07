@@ -1,0 +1,42 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SHWP-DEEPSEEK-INTR-RUNTIME-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000101000",
+  "evidence_refs": [
+    "control/worker-registry.d/deepseek-intr-runtime-001.json",
+    "handoffs/SHWP-DEEPSEEK-INTR-RUNTIME-001.json",
+    "StegVerse-Labs/.github#1122"
+  ],
+  "observed_at": "2026-09-06T20:45:15-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 1,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "control/worker-registry.d/deepseek-intr-runtime-001.json state=HANDOFF_READY; executor_binding=AUTHORIZED; resident worker is AVAILABLE",
+    "archive_ready": "control/worker-registry.d/deepseek-intr-runtime-001.json archive_eligible=false",
+    "unassigned_work": "deepseek-intr-runtime-worker + existing sovereign WorkerCoordinator own continuation",
+    "chat_owned_counts": "task is registered for independent machine task-control; no chat execution ownership is declared",
+    "canonical_owner_installed": "worker, process adapter, resident request/consumer, handoff, and released transport reuse bindings are merged",
+    "thread_required": "machine-owned continuation is durably recoverable from the registry and handoff",
+    "blocker_count": "exact admissible-existence blocker list contains DEEPSEEK_INTR_SAME_EXECUTION_RECEIPT_NOT_YET_OBSERVED",
+    "evidence_complete": "authentic same-execution DeepSeek resident receipt is not observed",
+    "activated": "activation_proof_ref=null; source/CI completion is not runtime activation",
+    "propagated": "no downstream activation propagation is claimed"
+  },
+  "authority_effect": "NONE"
+}
