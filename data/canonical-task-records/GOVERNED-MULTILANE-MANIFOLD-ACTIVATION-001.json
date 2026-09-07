@@ -4,7 +4,7 @@
   "correlation_id": "GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001",
   "root_correlation_id": "GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001",
   "parent_task_id": null,
-  "goal": "Activate governed multi-lane manifold functionality by obtaining authentic subject-bound execution receipts from multiple existing governed lanes and deterministically reconciling them while preserving lane provenance, divergence, uncertainty, and authority separation.",
+  "goal": "Activate the full governed manifold represented by its canonical lineage: execute every incomplete subordinate task owned by the canonical runtime, reuse qualifying completed predecessors, observe authority-owned prerequisites without competing for them, reconcile all required lane outputs, and preserve provenance, divergence, uncertainty, and authority separation.",
   "coordination_state": "PROPOSED",
   "checkout_state": "UNCLAIMED",
   "cosv_task_vector": "10100000100000",
@@ -12,35 +12,72 @@
     "docs/GOVERNED_MULTILANE_MANIFOLD_ACTIVATION_MIRROR_HANDOFF.md",
     "handoffs/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json",
     "FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md",
+    "data/formalism-manifold-orchestration/task-state.json",
+    "control/manifold-lineage.d/governed-multilane-manifold-activation-001.json",
     "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
     "control/task-vectors/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs", "Admissible-Existence"],
-    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegCore", "Admissible-Existence/AE", "Admissible-Existence/RTG", "Admissible-Existence/GTG", "Admissible-Existence/TT", "Admissible-Existence/STCM"],
-    "components": ["governed-multilane-execution", "subject-bound-lane-receipts", "manifold-reconciliation", "lane-provenance", "authority-partition-preservation"]
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/StegCore",
+      "StegVerse-Labs/TVC",
+      "StegVerse-Labs/stegfin-governance",
+      "StegVerse-002/micro-node-runtime",
+      "Admissible-Existence/AE",
+      "Admissible-Existence/RTG",
+      "Admissible-Existence/GTG",
+      "Admissible-Existence/TT",
+      "Admissible-Existence/STCM"
+    ],
+    "components": [
+      "governed-multilane-execution",
+      "subject-bound-lane-receipts",
+      "manifold-reconciliation",
+      "lane-provenance",
+      "authority-partition-preservation",
+      "tvc-provider-runtime-prerequisite",
+      "stegfin-continuity-readiness",
+      "completed-local-model-predecessor-reuse"
+    ]
   },
   "dependencies": [
-    {"dependency_id":"DEP-FORMALISM-INVENTORY-RECEIPT","kind":"TASK_EVIDENCE","state":"UNRESOLVED","ref":"SHWP-FORMALISM-INVENTORY-001"},
-    {"dependency_id":"DEP-FORMALISM-HANDOFF-NORMALIZATION-RECEIPT","kind":"TASK_EVIDENCE","state":"UNRESOLVED","ref":"SHWP-FORMALISM-HANDOFF-NORMALIZATION-001"},
-    {"dependency_id":"DEP-FORMALISM-MATHEMATICAL-CROSSWALK-RECEIPT","kind":"TASK_EVIDENCE","state":"UNRESOLVED","ref":"SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001"},
-    {"dependency_id":"DEP-MANIFOLD-GOVERNANCE-MAPPING-RECEIPT","kind":"TASK_EVIDENCE","state":"UNRESOLVED","ref":"SHWP-MANIFOLD-GOVERNANCE-MAPPING-001"},
-    {"dependency_id":"DEP-FORMALISM-MANIFOLD-RECONCILIATION","kind":"TASK_EVIDENCE","state":"UNRESOLVED","ref":"SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001"}
+    {"dependency_id":"DEP-SOVEREIGN-LOCAL-MODEL","kind":"TASK_EVIDENCE","state":"RESOLVED_COMPLETE_REUSE","ref":"SOVEREIGN-LOCAL-MODEL-001","disposition":"REUSE_COMPLETE_DO_NOT_REEXECUTE"},
+    {"dependency_id":"DEP-FORMALISM-INVENTORY-RECEIPT","kind":"TASK_EVIDENCE","state":"UNRESOLVED","ref":"SHWP-FORMALISM-INVENTORY-001","disposition":"EXECUTE_IF_NOT_ALREADY_QUALIFYING"},
+    {"dependency_id":"DEP-FORMALISM-HANDOFF-NORMALIZATION-RECEIPT","kind":"TASK_EVIDENCE","state":"UNRESOLVED","ref":"SHWP-FORMALISM-HANDOFF-NORMALIZATION-001","disposition":"EXECUTE_IF_NOT_ALREADY_QUALIFYING"},
+    {"dependency_id":"DEP-FORMALISM-MATHEMATICAL-CROSSWALK-RECEIPT","kind":"TASK_EVIDENCE","state":"UNRESOLVED","ref":"SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001","disposition":"EXECUTE_IF_NOT_ALREADY_QUALIFYING"},
+    {"dependency_id":"DEP-MANIFOLD-GOVERNANCE-MAPPING-RECEIPT","kind":"TASK_EVIDENCE","state":"UNRESOLVED","ref":"SHWP-MANIFOLD-GOVERNANCE-MAPPING-001","disposition":"EXECUTE_IF_NOT_ALREADY_QUALIFYING"},
+    {"dependency_id":"DEP-FORMALISM-MANIFOLD-RECONCILIATION","kind":"TASK_EVIDENCE","state":"UNRESOLVED","ref":"SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001","disposition":"EXECUTE_AFTER_PREREQUISITES_QUALIFY"},
+    {"dependency_id":"DEP-TVC-PROVIDER-OPERATION-BROKER","kind":"AUTHORITY_OWNED_TASK_EVIDENCE","state":"UNRESOLVED_EXTERNAL_OWNER","ref":"TVC-PROVIDER-OPERATION-BROKER-003","disposition":"OBSERVE_EXISTING_OWNER_NO_COMPETE"},
+    {"dependency_id":"DEP-TVC-CAPABILITY-RUNTIME","kind":"AUTHORITY_OWNED_TASK_EVIDENCE","state":"UNRESOLVED_EXTERNAL_OWNER","ref":"TVC-CAPABILITY-RUNTIME-002","disposition":"OBSERVE_EXISTING_OWNER_NO_COMPETE"},
+    {"dependency_id":"DEP-STEGFIN-CONTINUITY","kind":"TASK_EVIDENCE","state":"UNRESOLVED","ref":"STEGFIN-CONTINUITY-CARRIER-007","disposition":"EXECUTE_WHEN_TVC_RUNTIME_PREREQUISITE_QUALIFIES"}
   ],
   "blockers": [],
   "systemic_incident_ref": null,
   "adjacent_task_refs": [
+    "FORMALISM-MANIFOLD-ORCHESTRATION-001",
+    "SOVEREIGN-LOCAL-MODEL-001",
     "SHWP-FORMALISM-INVENTORY-001",
     "SHWP-FORMALISM-HANDOFF-NORMALIZATION-001",
     "SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001",
     "SHWP-MANIFOLD-GOVERNANCE-MAPPING-001",
-    "SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001"
+    "SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001",
+    "TVC-PROVIDER-OPERATION-BROKER-003",
+    "TVC-CAPABILITY-RUNTIME-002",
+    "STEGFIN-CONTINUITY-CARRIER-007"
   ],
   "existing_evidence_refs": [
     "FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md",
+    "data/formalism-manifold-orchestration/task-state.json",
+    "control/manifold-lineage.d/governed-multilane-manifold-activation-001.json",
     "StegVerse-Labs/StegCore/MANIFOLD_GOVERNANCE_MIRROR_HANDOFF.md"
   ],
   "expected_evidence_predicates": [
+    "FULL_DECLARED_MANIFOLD_LINEAGE_TRAVERSED",
+    "COMPLETED_PREDECESSORS_REUSED_WITHOUT_DUPLICATE_EXECUTION",
+    "INCOMPLETE_CANONICAL_SUBORDINATES_EXECUTED_OR_FAIL_CLOSED",
+    "AUTHORITY_OWNED_PREREQUISITES_OBSERVED_WITHOUT_COMPETING_CLAIMS",
     "TWO_OR_MORE_DISTINCT_GOVERNED_LANES_EXECUTED",
     "QUALIFYING_SUBJECT_BOUND_RECEIPT_PER_PARTICIPATING_LANE",
     "CANONICAL_CLAIM_AND_COLLISION_CHECKS_PASS",
@@ -57,12 +94,13 @@
     "direction": "INTERNAL",
     "mutation_required": false,
     "deployment_required": false,
-    "current_observation_required": true
+    "current_observation_required": true,
+    "manifold_lineage_ref": "control/manifold-lineage.d/governed-multilane-manifold-activation-001.json"
   },
   "runtime_resolution": null,
   "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
   "human_action_ref": null,
-  "completion": {"claimed":false,"validated":false,"reconciliation_ref":null},
+  "completion": {"claimed":false,"validated":false,"reconciliation_ref":null,"full_lineage_traversed":false},
   "allowed_next_transitions": ["INGRESS_ADMITTED"],
   "handoff_projection_refs": ["docs/GOVERNED_MULTILANE_MANIFOLD_ACTIVATION_MIRROR_HANDOFF.md"],
   "authority_model": {"task_registry_mints_execution_authority":false,"source_state_proves_execution":false,"worker_claim_authority":"WORKERCOORDINATOR","master_records_reality_authority":true,"interlock_intr_required_for_governed_ingress_egress":true}
