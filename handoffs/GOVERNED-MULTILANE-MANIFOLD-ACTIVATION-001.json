@@ -1,0 +1,70 @@
+{
+  "schema": "stegverse.governed-multilane-manifold-activation/v1",
+  "goal": {
+    "goal_id": "GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001",
+    "objective": "Prove governed multi-lane manifold functionality through authentic subject-bound execution receipts and deterministic reconciliation under existing StegVerse authority partitions.",
+    "state": "GOAL_ESTABLISHED_SOURCE_BOUND_ACTIVATION_EVIDENCE_PENDING"
+  },
+  "authority": {
+    "coordination": "StegVerse-Labs/.github",
+    "formalism": "applicable Admissible-Existence repository-local canonical sources",
+    "runtime_governance": "StegVerse-Labs/StegCore canonical StegGate runtime",
+    "credential": "TV/TVC",
+    "wallet_signing_broadcast": "USER_ONLY",
+    "authority_effect": "NONE_UNTIL_AUTHENTIC_ACTIVATION_EVIDENCE"
+  },
+  "canonical_refs": [
+    "docs/GOVERNED_MULTILANE_MANIFOLD_ACTIVATION_MIRROR_HANDOFF.md",
+    "FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md",
+    "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegCore/MANIFOLD_GOVERNANCE_MIRROR_HANDOFF.md"
+  ],
+  "initial_lane_task_ids": [
+    "SHWP-FORMALISM-INVENTORY-001",
+    "SHWP-FORMALISM-HANDOFF-NORMALIZATION-001",
+    "SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001",
+    "SHWP-MANIFOLD-GOVERNANCE-MAPPING-001",
+    "SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001"
+  ],
+  "activation_predicates": [
+    "two_or_more_distinct_governed_lanes_executed",
+    "qualifying_subject_bound_receipt_per_participating_lane",
+    "canonical_claim_and_collision_checks_pass",
+    "lane_authority_partition_preserved",
+    "deterministic_reconciliation_completed",
+    "material_divergence_and_uncertainty_preserved",
+    "reconciled_provenance_traceable_to_lane_and_authority",
+    "no_parallel_heartbeat_evaluator_credential_or_signing_authority",
+    "durable_machine_readable_activation_evidence_persisted"
+  ],
+  "current_evidence_state": {
+    "source_implementation": "INHERITED_COMPLETE_REQUIRES_CURRENT_REVALIDATION",
+    "lane_execution_receipts": "UNKNOWN_CURRENT_STATE",
+    "reconciliation": "UNKNOWN_CURRENT_STATE",
+    "activation": "NOT_PROVEN"
+  },
+  "next_actions": [
+    "resolve_current canonical WorkerCoordinator claims/fences and cross-task coordination",
+    "discover current qualifying receipts for the initial five-lane cohort",
+    "reuse only evidence matching subject binding, producer, schema, scope, execution instance, and freshness",
+    "execute only genuinely missing lanes through existing canonical workers",
+    "run reconciliation after qualifying prerequisite receipts exist",
+    "persist reconciliation provenance and unresolved divergence",
+    "declare ACTIVATED only after all activation predicates are evidenced"
+  ],
+  "prohibited": [
+    "create_second_heartbeat",
+    "create_parallel_worker_registry",
+    "create_parallel_steggate_evaluator",
+    "create_non_TV_TVC_credential_path",
+    "infer_runtime_truth_from_source_existence",
+    "flatten_lane_disagreement_during_reconciliation",
+    "wallet_signing_or_broadcast_by_non_user_authority"
+  ],
+  "downstream_release_propagation_after_actual_release": [
+    "StegVerse-Labs/Site",
+    "GCAT-BCAT-Engine/Publisher",
+    "admissibility-wiki",
+    "stegguardian-wiki"
+  ]
+}
