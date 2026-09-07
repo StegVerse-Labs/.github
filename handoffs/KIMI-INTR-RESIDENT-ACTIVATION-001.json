@@ -1,0 +1,119 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-KIMI-INTR-RESIDENT-ACTIVATION-001",
+  "created_at": "2026-09-07T01:10:00Z",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "KIMI-INTR-RESIDENT-ACTIVATION-001",
+    "objective": "Execute one authentic governed Kimi/Moonshot round trip through canonical Universal InTr, StegCore Governance, TVC non-exportable provider operation, Master Records custody/reconstruction, and Universal InTr egress on the existing sovereign WorkerCoordinator.",
+    "success_predicates": [
+      "current fenced WorkerCoordinator claim observed",
+      "exact Kimi wire bytes reach Universal InTr TRANSPORT_COMPLETE",
+      "StegCore hosted-LLM Governance decision is ALLOW",
+      "valid short-lived TVC SV-RECON-001 Kimi lease issued",
+      "TVC vault broker returns authentic kimi-k3 result without secret export",
+      "Master Records local provider-usage custody returns CUSTODY_RECORDED and reconstruction PASS",
+      "Universal InTr response transport completes on exact sanitized provider response",
+      "same session/transition/measurement/request identities retained"
+    ],
+    "failure_predicates": [
+      "hosted runtime marker active",
+      "provider or GitHub secret supplied through worker environment",
+      "required canonical source root/profile absent",
+      "TVC vault broker socket unavailable",
+      "Master Records local custody broker socket unavailable",
+      "Universal InTr transport incomplete",
+      "Governance decision other than ALLOW",
+      "TVC lease refused or provider operation denied",
+      "Master Records custody or reconstruction not PASS",
+      "egress transport incomplete"
+    ],
+    "authority_ceiling": [
+      "current task fenced execution only",
+      "non-secret exact-packet and governance evidence generation",
+      "one TVC-authorized Kimi provider operation",
+      "provider-usage submission to existing Master Records custody authority",
+      "receipt persistence under receipts/kimi-intr-resident-activation/**"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "KIMI-INTR-RESIDENT-ACTIVATION-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "StegVerse-org/LLM-adapter@4dff7620660d5577d6b63da6c477dcd88ed893ac",
+      "StegVerse-Labs/StegOS@809ef737119c28f9ee86f2eb50199fc05aeca36a",
+      "StegVerse-Labs/Governance@c2f89024451dcb9e13ece47ecad1d8ee05af53fd",
+      "StegVerse-Labs/.github#1120",
+      "docs/KIMI_INTR_RESIDENT_ACTIVATION_MIRROR_HANDOFF.md"
+    ],
+    "dependencies": [],
+    "parent_task_id": null,
+    "derivation_reason": "Canonical Kimi source integration was complete but lacked an authentic resident composition binding non-authorizing transport, Governance ALLOW, TVC execution, Master Records custody, and return transport in one execution.",
+    "canonical_owner_ref": "StegVerse-Labs/.github#1120",
+    "canonical_lineage_key": "llm-adapter:kimi:intr:resident-activation",
+    "derivation_depth": 0,
+    "priority": "release"
+  },
+  "authority": {
+    "authority_source": "StegVerse-Labs/.github#1120 bounded resident integration",
+    "heartbeat_grants_execution_authority": false,
+    "heartbeat_dependency": false,
+    "credential_authority": "TV/TVC",
+    "github_token_required": false,
+    "policy_version": "kimi-intr-resident-activation-v1"
+  },
+  "execution": {
+    "required_capabilities": ["kimi_intr_resident_activation"],
+    "allowed_paths": ["receipts/kimi-intr-resident-activation/**"],
+    "allowed_services": ["unix:/run/stegverse/vault-broker.sock", "unix:/run/stegverse/master-records-provider-usage.sock", "https://api.moonshot.ai/v1/chat/completions via TVC only"],
+    "max_actions": 4,
+    "max_retries": 64,
+    "external_cost_ceiling_usd": 1,
+    "runtime_window_beats": 4096,
+    "rate_class": "kimi_intr_resident_activation"
+  },
+  "activation": {
+    "carrier": "separate_worker_runtime",
+    "heartbeat_dependency": false,
+    "carrier_trigger_required": false,
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "StegVerse-Labs/.github#1120",
+    "recheck_trigger": "task-control evaluation while authentic Kimi activation receipt is absent",
+    "checkout_policy": "separate_fenced_independent_task_control"
+  },
+  "continuity": {
+    "checkpoint_ref": "receipts/kimi-intr-resident-activation/KIMI-INTR-RESIDENT-ACTIVATION-001.json",
+    "handoff_destination": "control/worker-registry.json",
+    "master_records_required": true,
+    "status_projection": "control/worker-status.json"
+  },
+  "completion": {
+    "next_authorized_action": "Execute on the existing sovereign resident WorkerCoordinator. Persist exact blockers until all local source and broker/custody sockets are present; never substitute hosted CI or a second machine.",
+    "terminal_when": ["one COMPLETED worker receipt proves the full InTr -> Governance -> TVC/Kimi -> Master Records -> InTr chain with no credential export"]
+  },
+  "block": null,
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:kimi-intr-resident-activation:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": ["docs/KIMI_INTR_RESIDENT_ACTIVATION_MIRROR_HANDOFF.md"],
+    "admissibility_evidence_refs": [
+      "handoffs/KIMI-INTR-RESIDENT-ACTIVATION-001.json",
+      "workers/kimi_intr_resident_activation_worker.py",
+      "control/worker-registry.d/kimi-intr-resident-activation-001.json",
+      "control/process-worker-adapters.d/kimi-intr-resident-activation-001.json",
+      "control/resident-execution-request.d/kimi-intr-resident-activation-001.json"
+    ],
+    "integration_evidence_refs": [],
+    "activation_proof_ref": null,
+    "blockers": ["AUTHENTIC_KIMI_INTR_RESIDENT_ROUND_TRIP_NOT_YET_OBSERVED"],
+    "continuation_owner": "kimi-intr-resident-activation-worker + existing sovereign WorkerCoordinator",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "integrates_capability",
+    "target_phase": "ACTIVATED"
+  }
+}
