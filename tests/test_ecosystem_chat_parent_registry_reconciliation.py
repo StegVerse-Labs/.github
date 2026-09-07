@@ -94,10 +94,14 @@ class EcosystemChatParentRegistryReconciliationTests(unittest.TestCase):
         self.assertEqual(observed, [TASK_ID])
 
     def test_fresh_parent_fence_floor_is_strictly_above_terminal_recovery(self):
-        admission = self.task["admission"]
+        # Fresh claim acquisition projects the dedicated fragment into the registry
+        # before minting a fence. The base registry retains historical post-recovery
+        # state, while the claimable fragment carries the current portable-lineage
+        # floor established after G23/G24.
+        admission = self.fragment_task["admission"]
         handoff_activation = self.handoff["activation"]
-        self.assertEqual(admission["minimum_fencing_token_exclusive"], 22)
-        self.assertEqual(handoff_activation["minimum_fencing_token_exclusive"], 22)
+        self.assertEqual(admission["minimum_fencing_token_exclusive"], 24)
+        self.assertEqual(handoff_activation["minimum_fencing_token_exclusive"], 24)
         self.assertTrue(handoff_activation["fresh_fence_required"])
         self.assertFalse(handoff_activation["recovery_reacquisition_allowed"])
 
