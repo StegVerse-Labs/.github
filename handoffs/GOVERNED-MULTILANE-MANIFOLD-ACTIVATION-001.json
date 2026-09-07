@@ -3,20 +3,24 @@
   "goal": {
     "goal_id": "GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001",
     "task_id": "GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001",
-    "cosv_id": null,
-    "cosv_registration_state": "UNASSIGNED_BLOCKING_ARCHIVE",
+    "cosv_id": "10100000100000",
+    "cosv_registration_state": "REGISTERED_EMITTED_UNCLAIMED",
     "objective": "Prove governed multi-lane manifold functionality through authentic subject-bound execution receipts and deterministic reconciliation under existing StegVerse authority partitions.",
-    "state": "GOAL_ESTABLISHED_SOURCE_BOUND_COSV_REGISTRATION_PENDING_ACTIVATION_EVIDENCE_PENDING"
+    "state": "CANONICAL_TASK_REGISTERED_COSV_EMITTED_WORKERCOORDINATOR_CLAIM_PENDING_ACTIVATION_EVIDENCE_PENDING"
   },
   "authority": {
     "coordination": "StegVerse-Labs/.github",
     "formalism": "applicable Admissible-Existence repository-local canonical sources",
     "runtime_governance": "StegVerse-Labs/StegCore canonical StegGate runtime",
+    "execution_claim_and_fence": "WorkerCoordinator",
     "credential": "TV/TVC",
     "wallet_signing_broadcast": "USER_ONLY",
     "authority_effect": "NONE_UNTIL_AUTHENTIC_ACTIVATION_EVIDENCE"
   },
   "canonical_refs": [
+    "data/canonical-task-records/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json",
+    "control/task-vectors/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json",
+    "control/task-vector-index.d/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json",
     "docs/GOVERNED_MULTILANE_MANIFOLD_ACTIVATION_MIRROR_HANDOFF.md",
     "FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md",
     "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
@@ -43,32 +47,32 @@
   ],
   "current_evidence_state": {
     "source_implementation": "INHERITED_COMPLETE_REQUIRES_CURRENT_REVALIDATION",
-    "cosv_registration": "PENDING",
+    "canonical_task_registration": "COMPLETE",
+    "cosv_registration": "COMPLETE_VECTOR_EMITTED",
+    "workercoordinator_claim": "UNCLAIMED",
     "lane_execution_receipts": "UNKNOWN_CURRENT_STATE",
     "reconciliation": "UNKNOWN_CURRENT_STATE",
     "activation": "NOT_PROVEN"
   },
   "archive_gate": {
     "archive_ready": false,
-    "blocking_reason": "COSV_ID_UNASSIGNED_AND_CANONICAL_COORDINATION_REGISTRATION_INCOMPLETE",
+    "blocking_reason": "WORKERCOORDINATOR_EXECUTION_OWNERSHIP_AND_DURABLE_CONTINUATION_NOT_YET_RESOLVED",
     "required_before_archive": [
-      "assign COSV ID",
-      "persist canonical coordination registration/projection",
-      "verify session-unique state is durably transferred under that registered identity"
+      "resolve canonical WorkerCoordinator claim/fence or prove all remaining executable work is already durably owned by the existing five lane tasks",
+      "verify session-unique state is durably transferred under the registered task/COSV identity"
     ]
   },
   "next_actions": [
-    "assign COSV ID and persist canonical coordination registration/projection",
-    "resolve current canonical WorkerCoordinator claims/fences and cross-task coordination",
+    "resolve current WorkerCoordinator claims/fences and cross-task coordination",
+    "prefer existing five formalism/manifold workers as execution owners rather than creating a duplicate umbrella worker",
     "discover current qualifying receipts for the initial five-lane cohort",
-    "reuse only evidence matching subject binding, producer, schema, scope, execution instance, and freshness",
     "execute only genuinely missing lanes through existing canonical workers",
     "run reconciliation after qualifying prerequisite receipts exist",
     "persist reconciliation provenance and unresolved divergence",
     "declare ACTIVATED only after all activation predicates are evidenced"
   ],
   "prohibited": [
-    "archive_thread_before_cosv_registration",
+    "archive_thread_before_durable_execution_ownership_resolution",
     "create_second_heartbeat",
     "create_parallel_worker_registry",
     "create_parallel_steggate_evaluator",
