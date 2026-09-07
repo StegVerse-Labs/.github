@@ -1,6 +1,6 @@
 # COSV Task Pointer Runtime Enforcement Mirror Handoff
 
-Status: SOURCE_COMPACT_CONTINUATION_RESOLUTION_FIXED / AUTHENTIC_RUNTIME_CONSUMPTION_PENDING
+Status: SOURCE_COMPACT_CONTINUATION_RESOLUTION_FIXED / EXECUTION_EVIDENCE_PENDING
 Repository: `StegVerse-Labs/.github`
 Task ID: `COSV-TASK-POINTER-RUNTIME-ENFORCEMENT-001`
 Root correlation / goal: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`
@@ -35,6 +35,18 @@ It verifies the exact Task ID/vector binding against `control/task-vector-index.
 
 Fail-closed tests were added for exact resolution, vector mismatch, and missing task identity. This source fix does not mint WorkerCoordinator claim/fence, Interlock/InTr transition authority, credential authority, or runtime evidence.
 
+## Terminology correction
+
+A runtime is not an authority or governance boundary. It is an execution substrate/surface. The canonical boundaries relevant to this task are:
+
+- WorkerCoordinator claim/fence authority;
+- Interlock/InTr governed transition admission;
+- TV/TVC credential authority;
+- Master Records observed-reality and reconstruction authority;
+- explicit human-only authority states where applicable.
+
+Runtime availability, locality, freshness, or successful execution may be predicates or observations, but they are not themselves governance boundaries.
+
 ## Purpose
 
 Implement machine/runtime enforcement so a continuation payload containing only:
@@ -52,9 +64,11 @@ The source path includes canonical compact-pointer continuation policy, reusable
 
 No second task registry, COSV profile, scheduler, WorkerCoordinator, heartbeat, oscillator, credential authority, transition authority, dispatcher, or permanent runner plane was created.
 
-## Remaining runtime work
+## Remaining execution evidence
 
-Authentic runtime evidence must still demonstrate resident consumption through the already-materialized execution path, including pointer verification before execution, ordinary WorkerCoordinator admission/claim/fence when admissible, applicable Interlock/InTr transition admission, required bounded invocation construction, runtime receipts, Master Records custody/reconstruction, and entropy recovery where applicable.
+Execution evidence must still demonstrate consumption through the already-materialized resident execution surface, including pointer verification before execution, ordinary WorkerCoordinator admission/claim/fence when admissible, applicable Interlock/InTr transition admission, required bounded invocation construction, execution receipts, Master Records custody/reconstruction, and entropy recovery where applicable.
+
+These are execution/evidence requirements across the existing authority boundaries. They are not runtime boundaries.
 
 ## Current COSV state
 
@@ -78,11 +92,11 @@ activated: false
 propagated: false
 ```
 
-The vector remains unchanged because source correction and source tests are not a WorkerCoordinator claim, authentic resident execution receipt, Master Records custody/reconstruction proof, or activation proof.
+The vector remains unchanged because source correction and source tests are not a WorkerCoordinator claim, execution receipt, Master Records custody/reconstruction proof, or activation proof.
 
-## Evidence boundary
+## Next evidence predicate
 
-The source defect that forced pre-expanded continuation context is corrected. Authentic resident runtime consumption is still the next evidence boundary. The expected first authentic receipt remains:
+The source defect that forced pre-expanded continuation context is corrected. The next evidence predicate is successful resident consumption of the corrected compact pointer path. The expected first authentic receipt remains:
 
 ```text
 receipts/sovereign-host/cosv-task-pointer-runtime-enforcement-request-consumption.latest.json
