@@ -11,8 +11,16 @@ from pathlib import Path
 ROOT = Path.cwd().resolve()
 EXPECTED_TASK = "SHWP-DURABLE-RUNTIME-ACTIVATION"
 RECEIPT_ROOT = (ROOT / "receipts" / "sovereign-runtime-activation").resolve()
+# Compatibility exports retained for direct canonical-source callers/tests.
+# Resident refresh execution resolves the equivalent entrypoints from the
+# validated canonical source binding instead of mutable resident state.
 BOOTSTRAP = (ROOT / "scripts" / "bootstrap_sovereign_runtime.py").resolve()
 EPHEMERAL_CONSOLE = (ROOT / "scripts" / "run_sovereign_ephemeral_console.py").resolve()
+SOURCE_REFRESH_RECEIPT = ROOT / "receipts" / "sovereign-host" / "worker-source-refresh.latest.json"
+REQUIRED_SOURCE_ENTRYPOINTS = (
+    Path("scripts/bootstrap_sovereign_runtime.py"),
+    Path("scripts/run_sovereign_ephemeral_console.py"),
+)
 REQUIRED_PREDICATES = (
     "runtime_materialized",
     "native_service_active",
@@ -66,6 +74,54 @@ def clean_exec_env(env: dict[str, str] | None = None) -> dict[str, str]:
     return {name: values[name] for name in SAFE_EXEC_ENV if values.get(name)}
 
 
+def resolve_canonical_source_root(
+    runtime_root: Path = ROOT,
+    env: dict[str, str] | None = None,
+) -> tuple[Path | None, str, str | None]:
+    """Resolve the already-local canonical source without network transport.
+
+    Direct canonical-source invocation remains supported when no resident refresh
+    receipt or explicit source binding exists. Once a resident refresh receipt is
+    present, its source/runtime separation is mandatory and malformed/stale
+    binding state fails closed rather than treating mutable resident state as
+    canonical source.
+    """
+    runtime = runtime_root.expanduser().resolve()
+    values = os.environ if env is None else env
+    explicit = str(values.get("STEGVERSE_HEARTBEAT_SOURCE_ROOT") or "").strip()
+    refresh = load_json(runtime / "receipts" / "sovereign-host" / "worker-source-refresh.latest.json")
+
+    source_raw: str | None = explicit or None
+    binding_mode = "EXPLICIT_ENV" if explicit else "DIRECT_CANONICAL_SOURCE"
+    if refresh is not None:
+        if refresh.get("schema") != "stegverse.sovereign-worker-runtime-source-refresh/v1":
+            return None, "INVALID_REFRESH_RECEIPT", "SOURCE_REFRESH_SCHEMA_INVALID"
+        if refresh.get("network_fetch_performed") is not False:
+            return None, "INVALID_REFRESH_RECEIPT", "SOURCE_REFRESH_NETWORK_INVARIANT_INVALID"
+        if refresh.get("credential_read_or_acquired") is not False:
+            return None, "INVALID_REFRESH_RECEIPT", "SOURCE_REFRESH_CREDENTIAL_INVARIANT_INVALID"
+        if refresh.get("authority_effect") != "NONE_LOCAL_SOURCE_REFRESH":
+            return None, "INVALID_REFRESH_RECEIPT", "SOURCE_REFRESH_AUTHORITY_EFFECT_INVALID"
+        receipt_runtime = str(refresh.get("runtime_root") or "").strip()
+        if not receipt_runtime or Path(receipt_runtime).expanduser().resolve() != runtime:
+            return None, "INVALID_REFRESH_RECEIPT", "SOURCE_REFRESH_RUNTIME_ROOT_MISMATCH"
+        receipt_source = str(refresh.get("source_root") or "").strip()
+        if not receipt_source:
+            return None, "INVALID_REFRESH_RECEIPT", "SOURCE_REFRESH_SOURCE_ROOT_MISSING"
+        if explicit and Path(explicit).expanduser().resolve() != Path(receipt_source).expanduser().resolve():
+            return None, "INVALID_REFRESH_RECEIPT", "SOURCE_BINDING_ENV_RECEIPT_MISMATCH"
+        source_raw = receipt_source
+        binding_mode = "RESIDENT_SOURCE_REFRESH_RECEIPT"
+
+    source = Path(source_raw).expanduser().resolve() if source_raw else runtime
+    if binding_mode != "DIRECT_CANONICAL_SOURCE" and source == runtime:
+        return None, binding_mode, "CANONICAL_SOURCE_EQUALS_RESIDENT_RUNTIME"
+    missing = [rel.as_posix() for rel in REQUIRED_SOURCE_ENTRYPOINTS if not (source / rel).is_file()]
+    if missing:
+        return None, binding_mode, "CANONICAL_SOURCE_ENTRYPOINTS_MISSING:" + ",".join(missing)
+    return source, binding_mode, None
+
+
 def default_runtime_root(env: dict[str, str] | None = None) -> Path:
     values = os.environ if env is None else env
     override = values.get("STEGVERSE_HEARTBEAT_ROOT")
@@ -105,12 +161,21 @@ def all_activation_predicates_pass(proof: dict | None) -> bool:
     )
 
 
-def execute_same_host_ephemeral_fallback(runtime_root: Path, proof_path: Path) -> dict:
+def execute_same_host_ephemeral_fallback(
+    runtime_root: Path,
+    proof_path: Path,
+    *,
+    source_root: Path,
+) -> dict:
     console_root = default_ephemeral_console_root(runtime_root)
     receipt_path = console_root / "ephemeral-console.latest.json"
+    ephemeral_console = EPHEMERAL_CONSOLE if source_root == ROOT else (
+        source_root / "scripts" / "run_sovereign_ephemeral_console.py"
+    ).resolve()
     result = {
         "attempted": False,
         "entrypoint": "scripts/run_sovereign_ephemeral_console.py",
+        "canonical_source_root": str(source_root),
         "console_root": str(console_root),
         "receipt_ref": str(receipt_path),
         "canonical_proof_path": str(proof_path),
@@ -132,14 +197,14 @@ def execute_same_host_ephemeral_fallback(runtime_root: Path, proof_path: Path) -
     if third_party_hosted_environment():
         result["reason"] = "THIRD_PARTY_HOST_IS_NOT_SOVEREIGN_RUNTIME_EVIDENCE"
         return result
-    if not EPHEMERAL_CONSOLE.is_file():
+    if not ephemeral_console.is_file():
         result["reason"] = "EXISTING_SAME_HOST_EPHEMERAL_CONSOLE_MISSING"
         return result
 
     command = [
         sys.executable,
-        str(EPHEMERAL_CONSOLE),
-        "--source-root", str(ROOT),
+        str(ephemeral_console),
+        "--source-root", str(source_root),
         "--console-root", str(console_root),
         "--canonical-proof-path", str(proof_path),
     ]
@@ -186,10 +251,14 @@ def execute_v13_self_bootstrap() -> dict:
     runtime_root = default_runtime_root()
     proof_path = default_proof_path()
     bootstrap_receipt = default_bootstrap_receipt()
+    source_root, source_binding_mode, source_binding_error = resolve_canonical_source_root(ROOT)
     result = {
         "attempted": False,
         "entrypoint": "scripts/bootstrap_sovereign_runtime.py",
         "runtime_root": str(runtime_root),
+        "canonical_source_root": str(source_root) if source_root is not None else None,
+        "canonical_source_binding_mode": source_binding_mode,
+        "canonical_source_binding_error": source_binding_error,
         "proof_path": str(proof_path),
         "bootstrap_receipt_ref": str(bootstrap_receipt),
         "canonical_carrier_runtime": "heartbeat_runtime.engine_v13.HeartbeatRuntime",
@@ -214,7 +283,14 @@ def execute_v13_self_bootstrap() -> dict:
         result["reason"] = "THIRD_PARTY_HOST_IS_NOT_SOVEREIGN_RUNTIME_EVIDENCE"
         result["same_host_ephemeral_fallback"]["reason"] = "HOSTED_RUNTIME_FALLBACK_PROHIBITED"
         return result
-    if not BOOTSTRAP.is_file():
+    if source_root is None:
+        result["reason"] = f"CANONICAL_LOCAL_SOURCE_BINDING_INVALID:{source_binding_error or 'UNKNOWN'}"
+        result["same_host_ephemeral_fallback"]["reason"] = "CANONICAL_BOOTSTRAP_SOURCE_REQUIRED_FIRST"
+        return result
+    bootstrap = BOOTSTRAP if source_root == ROOT else (
+        source_root / "scripts" / "bootstrap_sovereign_runtime.py"
+    ).resolve()
+    if not bootstrap.is_file():
         result["reason"] = "CANONICAL_V13_BOOTSTRAP_MISSING"
         result["same_host_ephemeral_fallback"]["reason"] = "CANONICAL_BOOTSTRAP_SOURCE_REQUIRED_FIRST"
         return result
@@ -222,8 +298,8 @@ def execute_v13_self_bootstrap() -> dict:
     result["attempted"] = True
     command = [
         sys.executable,
-        str(BOOTSTRAP),
-        "--source-root", str(ROOT),
+        str(bootstrap),
+        "--source-root", str(source_root),
         "--runtime-root", str(runtime_root),
         "--node-marker", str(default_node_marker()),
         "--proof-path", str(proof_path),
@@ -239,16 +315,16 @@ def execute_v13_self_bootstrap() -> dict:
         env=clean_exec_env(),
     )
     result["returncode"] = completed.returncode
-    bootstrap = load_json(bootstrap_receipt) or {}
+    bootstrap_result = load_json(bootstrap_receipt) or {}
     proof = load_json(proof_path) or {}
-    result["state"] = bootstrap.get("state")
-    result["reason"] = bootstrap.get("reason") or (
+    result["state"] = bootstrap_result.get("state")
+    result["reason"] = bootstrap_result.get("reason") or (
         "SOVEREIGN_RUNTIME_SELF_BOOTSTRAP_VERIFIED"
         if completed.returncode == 0 else
         "SOVEREIGN_RUNTIME_SELF_BOOTSTRAP_INCOMPLETE"
     )
-    result["node_declaration_ref"] = bootstrap.get("node_declaration_ref")
-    result["node_eligibility"] = bootstrap.get("node_eligibility")
+    result["node_declaration_ref"] = bootstrap_result.get("node_declaration_ref")
+    result["node_eligibility"] = bootstrap_result.get("node_eligibility")
     result["activation_proof_observed"] = bool(proof)
     result["activation_all_predicates_pass"] = all_activation_predicates_pass(proof)
     result["missing_predicates"] = [
@@ -269,7 +345,11 @@ def execute_v13_self_bootstrap() -> dict:
         }
         return result
 
-    fallback = execute_same_host_ephemeral_fallback(runtime_root, proof_path)
+    fallback = execute_same_host_ephemeral_fallback(
+        runtime_root,
+        proof_path,
+        source_root=source_root,
+    )
     result["same_host_ephemeral_fallback"] = fallback
     if fallback.get("complete") is True:
         proof = load_json(proof_path) or {}
@@ -306,13 +386,16 @@ def blocker_for(attempt: dict) -> dict:
             "durable_state_reconstruction",
         ],
         "observed_reason": reason,
+        "canonical_source_root": attempt.get("canonical_source_root"),
+        "canonical_source_binding_mode": attempt.get("canonical_source_binding_mode"),
+        "canonical_source_binding_error": attempt.get("canonical_source_binding_error"),
         "same_host_ephemeral_fallback_attempted": fallback.get("attempted") is True,
         "same_host_ephemeral_fallback_reason": fallback.get("reason"),
         "physical_additional_machine_required": False,
         "always_on_external_host_required": False,
         "heartbeat_activation_blocked": False,
         "workaround_candidates": [
-            "Retry the existing v13 self-bootstrap on the current non-hosted StegVerse deployment-local surface; G18 automatically exercises the existing same-host ephemeral-console fallback when native proof remains incomplete.",
+            "Retry the existing v13 self-bootstrap on the current non-hosted StegVerse deployment-local surface using the already-local canonical source binding; G18 automatically exercises the existing same-host ephemeral-console fallback when native proof remains incomplete.",
             "If both existing local recovery paths cannot satisfy canonical v13 eligibility/proof, component authority may select another already-admitted StegVerse-owned/federated sovereign surface without treating a second machine as a default requirement.",
         ],
         "next_solution_action": "RETRY_EXISTING_G18_NATIVE_THEN_SAME_HOST_EPHEMERAL_RECOVERY",
