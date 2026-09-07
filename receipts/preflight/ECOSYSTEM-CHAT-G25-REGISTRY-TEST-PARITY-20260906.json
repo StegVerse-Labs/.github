@@ -1,0 +1,60 @@
+{
+  "schema": "stegverse.session-machine-preflight/v1",
+  "task_id": "ECOSYSTEM-CHAT-G25-REGISTRY-TEST-PARITY-20260906",
+  "parent_task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+  "state": "PASS_VALIDATION_PARITY_REPAIR_ADMISSIBLE",
+  "evaluated_at": "2026-09-06T20:52:00-05:00",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "fix/ecosystem-chat-g25-handoff-1141",
+  "canonical_state_resolution": {
+    "historical_mutable_registry_seed": "control/worker-registry.json",
+    "historical_mutable_registry_seed_floor_exclusive": 22,
+    "current_registry_fragment": "control/worker-registry.d/ecosystem-chat-sovereign-inference-parent-001.json",
+    "current_registry_fragment_floor_exclusive": 24,
+    "current_authorization": "authorizations/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json",
+    "current_authorization_floor_exclusive": 24,
+    "current_executable_handoff": "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+    "current_executable_handoff_floor_exclusive": 24,
+    "current_executor_guard_floor_exclusive": 24,
+    "first_safe_fresh_fence": 25,
+    "failing_pr": 1147,
+    "failing_run": 34074355488,
+    "failing_test": "tests.test_ecosystem_chat_parent_registry_reconciliation.EcosystemChatParentRegistryReconciliationTests.test_fresh_parent_fence_floor_is_strictly_above_terminal_recovery",
+    "failure": "the test correctly preserves the historical mutable registry seed floor 22 but incorrectly expects the now-current executable handoff floor to remain 22"
+  },
+  "reuse": {
+    "existing_test_surface": "tests/test_ecosystem_chat_parent_registry_reconciliation.py",
+    "mutable_registry_preservation_semantics_reused": true,
+    "new_runtime": false,
+    "new_authority": false,
+    "new_registry_projection": false
+  },
+  "collision_review": {
+    "canonical_active_repair_pr": 1147,
+    "disposition": "UPDATE_ONLY_STALE_HANDOFF_EXPECTATION_IN_EXISTING_TEST",
+    "duplicate_implementation": false
+  },
+  "planned_change": {
+    "paths": ["tests/test_ecosystem_chat_parent_registry_reconciliation.py"],
+    "change": "retain admission minimum_fencing_token_exclusive == 22 for the historical mutable registry seed; change only the executable-handoff expectation from 22 to 24",
+    "runtime_code_change": false,
+    "authority_change": false,
+    "evidence_semantics_change": false,
+    "mutable_registry_rewrite": false
+  },
+  "readme_impact": {
+    "required": true,
+    "complete": true,
+    "material_function_change": false,
+    "readme_update_required": false,
+    "determination": "NO_README_CHANGE_REQUIRED_TEST_PARITY_AND_MUTABLE_REGISTRY_PRESERVATION_ONLY",
+    "no_readme_update_reason": "This mutation changes one deterministic assertion so the test distinguishes the historical mutable worker-registry seed from the current G25+ handoff/fragment/authorization policy. It changes no runtime behavior, interface, authority boundary, evidence semantics, prerequisite, dependency, failure behavior, capability meaning, or mutable resident state."
+  },
+  "authority": {
+    "claim_fence_authority": "WORKERCOORDINATOR",
+    "credential_authority": "TV/TVC",
+    "heartbeat_grants_execution_authority": false,
+    "github_token_runtime_authority": "NONE"
+  },
+  "verdict": "PASS"
+}
