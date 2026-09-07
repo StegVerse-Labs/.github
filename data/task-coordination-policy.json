@@ -31,9 +31,60 @@
     "workercoordinator_admission_still_required": true,
     "interlock_intr_transition_admission_still_required": true
   },
+  "cosv_task_pointer_contract": {
+    "required_for_compact_session_continuation": true,
+    "minimal_prompt_fields": ["task_id", "cosv_task_vector"],
+    "cosv_profile": "task.v1",
+    "cosv_profile_ref": "management/COSV_PROFILE_V1.json",
+    "cosv_task_index_ref": "control/task-vector-index.json",
+    "task_id_is_stable_identity": true,
+    "vector_is_compact_current_state_projection": true,
+    "prompt_must_not_repeat_canonically_resolvable_task_state": true,
+    "resolution_sequence": [
+      "VERIFY_TASK_ID_VECTOR_BINDING",
+      "RESOLVE_CANONICAL_TASK_RECORD",
+      "RESOLVE_APPLICABLE_MIRROR_HANDOFFS",
+      "RECONCILE_MASTER_RECORDS_EVIDENCE",
+      "RESOLVE_WORKERCOORDINATOR_CLAIM_FENCE",
+      "RESOLVE_DEPENDENCIES_ADJACENCIES_AND_INCIDENTS",
+      "SELECT_NEXT_ADMISSIBLE_NON_DUPLICATE_WORK"
+    ],
+    "vector_or_task_id_alone_grants_authority": false,
+    "documentation_or_source_state_may_substitute_for_runtime_evidence": false
+  },
+  "adjacent_task_derivation_contract": {
+    "enabled": true,
+    "trigger": "CURRENT_TASK_OR_GOAL_REVEALS_DISTINCT_NECESSARY_WORK_NOT_ALREADY_CANONICALLY_TRACKED",
+    "same_goal_relationship_required": true,
+    "reuse_existing_equivalent_task_first": true,
+    "cross_task_coordination_check_required": true,
+    "duplicate_task_creation_prohibited": true,
+    "new_task_must_preserve": [
+      "root_correlation_id",
+      "parent_or_adjacent_relationship",
+      "goal_relationship",
+      "authority_boundaries",
+      "existing_evidence_refs",
+      "non_collision_boundaries"
+    ],
+    "new_task_must_receive": [
+      "UNIQUE_TASK_ID",
+      "CANONICAL_TASK_REGISTRY_RECORD",
+      "COSV_TASK_VECTOR_PROJECTION",
+      "APPLICABLE_HANDOFF_PROJECTION",
+      "RUNTIME_REQUIREMENTS_WHEN_APPLICABLE"
+    ],
+    "new_task_creation_grants_execution_authority": false,
+    "workercoordinator_claim_fence_still_required": true,
+    "interlock_intr_transition_admission_still_required": true,
+    "master_records_reconciliation_still_required": true
+  },
   "invariants": [
     "ONE_CANONICAL_WORK_TRUTH_MANY_PROJECTIONS",
     "TASK_IDENTITY_STABLE_ACROSS_SESSIONS_REPOSITORIES_WORKERS_AND_TRANSFERS",
+    "TASK_ID_PLUS_COSV_VECTOR_IS_SUFFICIENT_COMPACT_CONTINUATION_POINTER",
+    "CANONICALLY_RESOLVABLE_TASK_DOCUMENTATION_IS_NOT_REPEATED_IN_PROMPTS",
+    "DISTINCT_NEW_SAME_GOAL_WORK_BECOMES_ADJACENT_CANONICAL_TASK_NOT_PROMPT_PROSE",
     "TASK_REGISTRY_DOES_NOT_MINT_EXECUTION_AUTHORITY",
     "WORKERCOORDINATOR_OWNS_EXECUTION_CLAIM_AND_FENCE",
     "MASTER_RECORDS_OWNS_OBSERVED_REALITY_AND_RECONSTRUCTION",
@@ -59,6 +110,7 @@
     "ORPHANED_EVENT"
   ],
   "pre_execution_checks": [
+    "VERIFY_TASK_ID_COSV_VECTOR_BINDING",
     "EQUIVALENT_WORK_ALREADY_COMPLETE",
     "EQUIVALENT_WORK_ACTIVELY_CLAIMED",
     "ADJACENT_WORK_PRODUCING_REQUIRED_EVIDENCE",
@@ -70,6 +122,11 @@
   "session_close_contract": {
     "required": true,
     "condition": "NO_UNIQUE_TASK_CONTINUITY_REMAINS_ONLY_IN_SESSION_CONTEXT",
+    "compact_successor_prompt": {
+      "preferred": true,
+      "fields": ["task_id", "cosv_task_vector"],
+      "additional_fields_only_when_not_yet_canonically_resolvable": true
+    },
     "materialize": [
       "ACTIVE_TASKS",
       "COMPLETED_EVIDENCED_WORK",
@@ -88,18 +145,21 @@
   "new_session_entry_contract": {
     "required": true,
     "sequence": [
+      "VERIFY_TASK_ID_COSV_VECTOR_BINDING",
       "QUERY_RELEVANT_CANONICAL_TASKS",
       "RECONCILE_MASTER_RECORDS_EVIDENCE",
       "RESOLVE_ACTIVE_WORKERCOORDINATOR_CLAIMS",
       "RESOLVE_DEPENDENCIES_AND_SYSTEMIC_INCIDENTS",
       "REUSE_ADMISSIBLE_EXISTING_EVIDENCE",
       "SELECT_HIGHEST_PRIORITY_ADMISSIBLE_NON_DUPLICATE_NON_COLLIDING_TASK",
+      "DERIVE_ADJACENT_CANONICAL_TASK_IF_DISTINCT_SAME_GOAL_WORK_IS_REQUIRED",
       "RESOLVE_COMPATIBLE_RUNTIME_PROFILE_CANDIDATES",
       "EVALUATE_TASK_RUNTIME_ROUTING_READINESS",
       "REQUEST_OR_ACQUIRE_APPLICABLE_CLAIM_FENCE_BEFORE_EXECUTION"
     ]
   },
   "nonclaims": [
+    "COSV_TASK_POINTER_DOES_NOT_PROVE_EXECUTION_OR_ADMISSION",
     "SOURCE_POLICY_DOES_NOT_PROVE_RUNTIME_TASK_INGRESS",
     "SOURCE_POLICY_DOES_NOT_PROVE_WORKERCOORDINATOR_CLAIM",
     "SOURCE_POLICY_DOES_NOT_PROVE_MASTER_RECORDS_RECONCILIATION",
