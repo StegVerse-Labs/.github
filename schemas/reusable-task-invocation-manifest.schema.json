@@ -3,7 +3,7 @@
   "$id": "stegverse.reusable-task-invocation-manifest/v1",
   "title": "StegVerse Reusable Task Invocation Manifest",
   "type": "object",
-  "required": ["schema", "invocation_id", "reusable_task_id", "parameters", "construct", "runner_plan", "recording", "authority", "manifest_hash"],
+  "required": ["schema", "invocation_id", "reusable_task_id", "parameters", "construct", "automation_plan", "runner_plan", "recording", "authority", "manifest_hash"],
   "properties": {
     "schema": {"const": "stegverse.reusable-task-invocation-manifest/v1"},
     "invocation_id": {"type": "string", "minLength": 1},
@@ -20,6 +20,20 @@
         "tt": {"type": "object"}
       },
       "additionalProperties": false
+    },
+    "automation_plan": {
+      "type": "object",
+      "required": ["mode", "trigger_driver", "single_trigger", "manual_coordination_between_machine_admissible_internal_steps_required", "declared_runner_refs", "stop_boundaries", "boundary_receipt_required"],
+      "properties": {
+        "mode": {"const": "TRIGGER_ONCE_ADVANCE_UNTIL_COMPLETION_OR_REAL_BOUNDARY"},
+        "trigger_driver": {"const": "scripts/trigger_reusable_task.py"},
+        "single_trigger": {"const": true},
+        "manual_coordination_between_machine_admissible_internal_steps_required": {"const": false},
+        "declared_runner_refs": {"type": "array", "items": {"type": "string"}},
+        "stop_boundaries": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "boundary_receipt_required": {"const": true}
+      },
+      "additionalProperties": true
     },
     "runner_plan": {
       "type": "object",
@@ -49,6 +63,7 @@
         "governed_transition": {"const": "INTERLOCK_INTR"},
         "credential_authority": {"const": "TV/TVC"},
         "observed_reality_and_reconstruction": {"const": "MASTER_RECORDS"},
+        "automation_trigger": {"const": "NON_AUTHORIZING_ORCHESTRATION_ONLY"},
         "github_token_runtime_authority": {"const": "NONE"}
       },
       "additionalProperties": true
