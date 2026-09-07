@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "stegverse.reusable-task-invocation-manifest/v1",
+  "title": "StegVerse Reusable Task Invocation Manifest",
+  "type": "object",
+  "required": ["schema", "invocation_id", "reusable_task_id", "parameters", "construct", "runner_plan", "recording", "authority", "manifest_hash"],
+  "properties": {
+    "schema": {"const": "stegverse.reusable-task-invocation-manifest/v1"},
+    "invocation_id": {"type": "string", "minLength": 1},
+    "reusable_task_id": {"type": "string", "minLength": 1},
+    "task_id": {"type": ["string", "null"]},
+    "cosv_task_vector": {"type": ["string", "null"], "pattern": "^[0-9]{14}$"},
+    "parameters": {"type": "object"},
+    "construct": {
+      "type": "object",
+      "required": ["rtg", "gtg", "tt"],
+      "properties": {
+        "rtg": {"type": "object"},
+        "gtg": {"type": "object"},
+        "tt": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
+    "runner_plan": {
+      "type": "object",
+      "required": ["ephemeral_where_possible", "materialization_refs", "expiry_conditions"],
+      "properties": {
+        "ephemeral_where_possible": {"const": true},
+        "materialization_refs": {"type": "array", "items": {"type": "string"}},
+        "expiry_conditions": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+      },
+      "additionalProperties": true
+    },
+    "recording": {
+      "type": "object",
+      "required": ["levels", "receipt_chain_required", "master_records_required_before_entropy_recovery"],
+      "properties": {
+        "levels": {"type": "array", "items": {"enum": ["operation", "task", "goal", "component", "subsystem", "system", "ecosystem", "master_records"]}},
+        "receipt_chain_required": {"const": true},
+        "master_records_required_before_entropy_recovery": {"const": true}
+      },
+      "additionalProperties": true
+    },
+    "authority": {
+      "type": "object",
+      "required": ["execution_claim_and_fence", "governed_transition", "credential_authority", "observed_reality_and_reconstruction"],
+      "properties": {
+        "execution_claim_and_fence": {"const": "WORKERCOORDINATOR"},
+        "governed_transition": {"const": "INTERLOCK_INTR"},
+        "credential_authority": {"const": "TV/TVC"},
+        "observed_reality_and_reconstruction": {"const": "MASTER_RECORDS"},
+        "github_token_runtime_authority": {"const": "NONE"}
+      },
+      "additionalProperties": true
+    },
+    "manifest_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": true
+}
