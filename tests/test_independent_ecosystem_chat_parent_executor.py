@@ -24,7 +24,7 @@ class IndependentEcosystemChatParentExecutorTests(unittest.TestCase):
         mod.validate_registered_executor(ROOT)
         auth = self.load(mod.AUTH_PATH)
         self.assertEqual(auth["authority_domain"], "INDEPENDENT_TASK_CONTROL")
-        self.assertEqual(auth["minimum_fencing_token_exclusive"], 22)
+        self.assertEqual(auth["minimum_fencing_token_exclusive"], mod.MINIMUM_FENCE_EXCLUSIVE)
         self.assertFalse(auth["heartbeat_required_for_admission"])
         self.assertFalse(auth["heartbeat_grants_execution_authority"])
         self.assertFalse(auth["g18_terminalization_required"])
@@ -32,14 +32,14 @@ class IndependentEcosystemChatParentExecutorTests(unittest.TestCase):
         self.assertFalse(auth["github_token_required"])
         self.assertFalse(auth["render_required"])
 
-    def test_fresh_parent_claim_is_strictly_greater_than_terminal_g22_and_registry_floor(self) -> None:
+    def test_fresh_parent_claim_is_strictly_greater_than_authoritative_and_registry_floor(self) -> None:
         registry = copy.deepcopy(self.load(mod.REGISTRY_PATH))
         fragment = self.load(mod.FRAGMENT_PATH)
         existing_max = mod.max_projected_fence(registry)
 
         task, fence = mod.acquire_parent_claim(registry, fragment, reference_epoch=0)
 
-        self.assertGreater(fence, 22)
+        self.assertGreater(fence, mod.MINIMUM_FENCE_EXCLUSIVE)
         self.assertGreater(fence, existing_max)
         self.assertEqual(registry["generation"], fence)
         self.assertEqual(task["state"], "ACTIVE")
@@ -247,8 +247,8 @@ class IndependentEcosystemChatParentExecutorTests(unittest.TestCase):
                 "va_conversational_runtime": {"state": "COMPLETE"},
             }
             task = {
-                "claim_id": "SHWP-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-G23",
-                "heartbeat_timing": {"fencing_token": 23},
+                "claim_id": "SHWP-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-G25",
+                "heartbeat_timing": {"fencing_token": 25},
             }
             with mock.patch.object(mod, "route_receipt_verified", return_value=True), \
                  mock.patch.object(mod, "execution_receipt_verified", return_value=True), \
