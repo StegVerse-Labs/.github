@@ -89,6 +89,7 @@ STATIC_FILES = (
     Path("scripts/activate_resident_stack.py"),
     Path("scripts/continue_stegverse001_evidence_chain.py"),
     Path("scripts/dispatch_resident_execution_requests.py"),
+    Path("scripts/consume_cosv_task_pointer_runtime_enforcement_request.py"),
     Path("scripts/consume_native_email_action_monitor_request.py"),
     Path("scripts/run_native_email_action_monitor.py"),
     Path("scripts/normalize_github_failure_email_events.py"),
