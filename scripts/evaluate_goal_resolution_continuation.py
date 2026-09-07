@@ -56,6 +56,8 @@ def _normalize_task(task: dict[str, Any]) -> dict[str, Any]:
         "applicable_handoffs": list(task.get("applicable_handoffs") or []),
         "source_state_vector_ref": task.get("source_state_vector_ref"),
         "registry_ref": task.get("registry_ref"),
+        "execution_request_refs": list(task.get("execution_request_refs") or []),
+        "next_admissible_work": task.get("next_admissible_work"),
     }
 
 
@@ -77,6 +79,7 @@ def _deduplicate(tasks: list[dict[str, Any]]) -> list[dict[str, Any]]:
             "integration_candidates",
             "receipts",
             "applicable_handoffs",
+            "execution_request_refs",
         ):
             merged[key] = list(dict.fromkeys([*previous.get(key, []), *task.get(key, [])]))
         for key in (
@@ -87,6 +90,7 @@ def _deduplicate(tasks: list[dict[str, Any]]) -> list[dict[str, Any]]:
             "canonical_record",
             "source_state_vector_ref",
             "registry_ref",
+            "next_admissible_work",
         ):
             if task.get(key) not in (None, ""):
                 merged[key] = task[key]
@@ -100,6 +104,58 @@ def _deduplicate(tasks: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return [by_id[task_id] for task_id in order]
 
 
+def _select_execution_refs(record: dict[str, Any], source_refs: list[str]) -> list[str]:
+    explicit: list[str] = []
+    for key in (
+        "execution_request_ref",
+        "resident_execution_request_ref",
+        "continuation_request_ref",
+        "work_request_ref",
+    ):
+        value = record.get(key)
+        if isinstance(value, str) and value:
+            explicit.append(value)
+    for key in (
+        "execution_request_refs",
+        "resident_execution_request_refs",
+        "continuation_request_refs",
+        "work_request_refs",
+    ):
+        value = record.get(key)
+        if isinstance(value, list):
+            explicit.extend(str(item) for item in value if isinstance(item, str) and item)
+
+    inferred = [
+        ref
+        for ref in source_refs
+        if ref.startswith("control/resident-execution-request.d/") and ref.endswith(".json")
+    ]
+    return list(dict.fromkeys([*explicit, *inferred]))
+
+
+def _derive_next_admissible_work(record: dict[str, Any], execution_refs: list[str]) -> dict[str, Any] | None:
+    explicit = record.get("next_admissible_work")
+    if isinstance(explicit, dict):
+        return explicit
+    if isinstance(explicit, str) and explicit:
+        return {"kind": "CANONICAL_NEXT_ADMISSIBLE_WORK", "ref": explicit}
+
+    for key in ("next_transition", "next_action", "next_work", "continuation_action"):
+        value = record.get(key)
+        if isinstance(value, dict):
+            return {"kind": key.upper(), **value}
+        if isinstance(value, str) and value:
+            return {"kind": key.upper(), "ref": value}
+
+    if execution_refs:
+        return {
+            "kind": "EXISTING_EXECUTION_REQUEST",
+            "ref": execution_refs[0],
+            "all_candidate_refs": execution_refs,
+        }
+    return None
+
+
 def resolve_compact_task_pointer(
     task_id: str,
     cosv_task_vector: str,
@@ -107,12 +163,7 @@ def resolve_compact_task_pointer(
     task_index_path: Path = TASK_INDEX_PATH,
     task_registry_path: Path = TASK_REGISTRY_PATH,
 ) -> dict[str, Any]:
-    """Resolve task_id + COSV task.v1 vector into canonical continuation context.
-
-    Resolution is non-authorizing. It verifies the compact pointer, loads the canonical
-    task record, and projects applicable mirror handoffs and canonical references so a
-    caller does not need to restate task prose or pre-expand returned_tasks.
-    """
+    """Resolve task_id + COSV task.v1 vector into canonical continuation context."""
     task_id = str(task_id or "").strip()
     vector = str(cosv_task_vector or "").strip()
     if not task_id:
@@ -147,6 +198,9 @@ def resolve_compact_task_pointer(
         handoffs.append(explicit_handoff)
     handoffs = list(dict.fromkeys(handoffs))
 
+    execution_request_refs = _select_execution_refs(record, source_refs)
+    next_admissible_work = _derive_next_admissible_work(record, execution_request_refs)
+
     return {
         "task_id": task_id,
         "cosv_task_vector": vector,
@@ -166,6 +220,26 @@ def resolve_compact_task_pointer(
         "authority_effect": "NONE_COORDINATION_RESOLUTION_ONLY",
         "admissible_repair_available": bool(record.get("admissible_repair_available", False)),
         "next_transition_available": bool(record.get("next_transition_available", True)),
+        "execution_request_refs": execution_request_refs,
+        "next_admissible_work": next_admissible_work,
+    }
+
+
+def _build_continuation_request(task: dict[str, Any]) -> dict[str, Any] | None:
+    next_work = task.get("next_admissible_work")
+    if not isinstance(next_work, dict):
+        return None
+    return {
+        "schema": "stegverse.machine-continuation-request/v1",
+        "task_id": task["task_id"],
+        "cosv_task_vector": task.get("cosv_task_vector"),
+        "state": task.get("state"),
+        "handoff": task.get("handoff"),
+        "next_admissible_work": next_work,
+        "execution_request_refs": list(task.get("execution_request_refs") or []),
+        "automatic_pickup_required": True,
+        "status_only_response_is_completion": False,
+        "human_reentry_required": False,
     }
 
 
@@ -218,6 +292,12 @@ def evaluate(payload: dict[str, Any], contract: dict[str, Any] | None = None) ->
     goal_complete = goal_state in TERMINAL_GOAL_STATES or bool(payload.get("goal_complete"))
     hard_machine_stop = bool(no_repair_denials or payload.get("hard_machine_stop"))
 
+    continuation_requests = [
+        request
+        for request in (_build_continuation_request(row) for row in active_tasks)
+        if request is not None
+    ]
+
     if goal_complete:
         disposition = "GOAL_COMPLETE"
         surface_response = True
@@ -228,6 +308,10 @@ def evaluate(payload: dict[str, Any], contract: dict[str, Any] | None = None) ->
         continue_machine_work = False
     elif hard_machine_stop:
         disposition = "MACHINE_STOP_NO_ADMISSIBLE_REPAIR"
+        surface_response = True
+        continue_machine_work = False
+    elif active_tasks and not continuation_requests:
+        disposition = "CONTINUATION_RESOLUTION_INCOMPLETE"
         surface_response = True
         continue_machine_work = False
     else:
@@ -249,7 +333,7 @@ def evaluate(payload: dict[str, Any], contract: dict[str, Any] | None = None) ->
     ]
 
     return {
-        "schema": "stegverse.goal-resolution-continuation-evaluation/v2",
+        "schema": "stegverse.goal-resolution-continuation-evaluation/v3",
         "goal_id": goal_id,
         "iteration": iteration,
         "report_interval_iterations": report_interval,
@@ -257,6 +341,7 @@ def evaluate(payload: dict[str, Any], contract: dict[str, Any] | None = None) ->
         "surface_response": surface_response,
         "continue_machine_work": continue_machine_work,
         "automatic_reingestion": True,
+        "automatic_pickup_required": bool(continuation_requests),
         "compact_pointer_resolved": compact_resolution is not None,
         "compact_pointer_resolution": compact_resolution,
         "returned_task_count": len(tasks),
@@ -264,12 +349,14 @@ def evaluate(payload: dict[str, Any], contract: dict[str, Any] | None = None) ->
         "terminal_task_count": len(terminal_tasks),
         "human_review_task_ids": [row["task_id"] for row in human_review_tasks],
         "continuation_pointers": continuation_pointers,
+        "continuation_requests": continuation_requests,
         "deduplicated_task_ids": [row["task_id"] for row in tasks],
         "authority_effect": "NONE_COORDINATION_EVALUATION_ONLY",
         "workercoordinator_claim_fence_still_required": True,
         "interlock_intr_transition_admission_still_required": True,
         "credential_authority": contract["credential_authority"],
         "periodic_report_stops_machine_work": False,
+        "status_only_result_is_valid_continuation": False,
     }
 
 
