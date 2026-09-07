@@ -1,0 +1,43 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "ORG-GITHUB-REPOSITORY-STATUS-SUMMARY-001",
+  "correlation_id": "ORG-GITHUB-REPOSITORY-STATUS-SUMMARY-001",
+  "root_correlation_id": "ORG-GITHUB-REPOSITORY-STATUS-SUMMARY-001",
+  "parent_task_id": null,
+  "goal": "Provide an abbreviated status summary of all repositories in the StegVerse-Labs GitHub organization.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "20010000100000",
+  "source_refs": [
+    "docs/ORG_GITHUB_REPOSITORY_STATUS_SUMMARY_001_MIRROR_HANDOFF.md",
+    "control/task-vectors/ORG-GITHUB-REPOSITORY-STATUS-SUMMARY-001.json"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": ["StegVerse-Labs/*"],
+    "components": ["organization-repository-census", "abbreviated-status-report"]
+  },
+  "dependencies": [],
+  "blockers": [],
+  "adjacent_task_refs": [],
+  "existing_evidence_refs": [
+    "docs/ORG_GITHUB_REPOSITORY_STATUS_SUMMARY_001_MIRROR_HANDOFF.md"
+  ],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "report_complete": false,
+    "summary_ref": null
+  },
+  "next_admissible_work": {
+    "kind": "ORGANIZATION_REPOSITORY_CENSUS",
+    "organization": "StegVerse-Labs",
+    "output": "ABBREVIATED_STATUS_SUMMARY"
+  },
+  "status_response_contract": {
+    "active": "currently active - checked out",
+    "completed": "completed with summary report"
+  },
+  "retired_terminal": true,
+  "retired_resurrection_review_only": true
+}
