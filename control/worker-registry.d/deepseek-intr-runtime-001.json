@@ -37,6 +37,7 @@
         "fresh_fence_required": true,
         "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
       },
+      "source_state_vector_ref": "control/task-vectors/SHWP-DEEPSEEK-INTR-RUNTIME-001.json",
       "admissible_existence": {
         "capability_id": "stegverse:capability:deepseek-intr-runtime-cycle:v1",
         "capability_version": "1.0.0",
