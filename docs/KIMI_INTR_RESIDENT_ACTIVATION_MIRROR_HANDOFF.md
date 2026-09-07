@@ -11,35 +11,45 @@ Upstream mirror: `StegVerse-org/LLM-adapter/docs/KIMI_INTR_TRANSPORT_MIRROR_HAND
 
 This file is the current continuation source of truth for the resident Kimi activation lane in `StegVerse-Labs/.github`. It does not supersede the upstream Kimi transport handoff and grants no credential, deployment, publication, or autonomous transition authority.
 
-## Already materialized upstream capability
+## Verified upstream runtime/provider binding
 
-The Kimi transport/runtime source is not a blank scaffold. `StegVerse-org/LLM-adapter` already contains:
+The exact Kimi runtime/provider contract is now confirmed from current source:
 
-- `llm_adapter/kimi_intr_transport.py`
-- `llm_adapter/kimi_governed_admission.py`
-- `llm_adapter/kimi_tvc_provider_wire.py`
-- `llm_adapter/kimi_tvc_broker.py`
-- `llm_adapter/kimi_tvc_runtime_executor.py`
-- `llm_adapter/kimi_canonical_runtime.py`
-- Kimi TVC/runtime tests
-- capability registration and task metadata
+- runtime profile: `stegverse:runtime-profile:llm-adapter-kimi:v1`
+- base resident profile: `stegverse:runtime-profile:hb-intr-resident:v1`
+- protocol: `stegverse.intr.kimi.transport.v1`
+- TVC provider: `kimi`
+- TVC capability: `llm.measure.kimi`
+- provider operation: `chat_completion_with_usage`
+- TVC vault ref: `vault://tvc/providers/kimi/api-key`
+- production model currently bound by the LLM-adapter runtime/request surface: `kimi-k3`
+- provider endpoint: `https://api.moonshot.ai/v1/chat/completions`
+- credential authority: `TV/TVC`
+- provider API-key export: prohibited
 
-The production path preserves TVC non-exportable provider use; direct credential-resolver transport remains compatibility/test-only.
+The upstream Kimi transport/runtime source remains materially implemented in `StegVerse-org/LLM-adapter`, including the Kimi InTr transport, governed admission, TVC provider wire/broker, TVC runtime executor, canonical runtime, tests, capability registration, and task metadata.
 
-## Missing resident binding in StegVerse-Labs/.github
+## Current resident binding state in StegVerse-Labs/.github
 
-Unlike DeepSeek, no task-specific resident WorkerCoordinator implementation for `KIMI-INTR-RESIDENT-ACTIVATION-001` is currently materialized in `StegVerse-Labs/.github`.
+The resident binding is no longer an empty scaffold. The repository currently contains:
 
-Required destination surfaces are:
-
-- `workers/kimi_intr_runtime_worker.py`
 - `control/worker-registry.d/kimi-intr-runtime-001.json`
 - `control/process-worker-adapters.d/kimi-intr-runtime-001.json`
 - `control/resident-execution-request.d/kimi-intr-runtime-001.json`
-- `control/resident-execution-request.d/consume-kimi-intr-runtime.py`
 - `handoffs/KIMI-INTR-RESIDENT-ACTIVATION-001.json`
-- Kimi validation-only workflow entry if required by the workflow-surface registry
+- `control/task-vectors/KIMI-INTR-RESIDENT-ACTIVATION-001.json`
+
+The standing request is `REQUESTED`, uses `stegverse:runtime-profile:llm-adapter-kimi:v1`, protocol `stegverse.intr.kimi.transport.v1`, provider `kimi`, model `kimi-k3`, and preserves TV/TVC-only credential authority with hosted runtime and provider credential material prohibited.
+
+## Remaining implementation surfaces
+
+The following task-specific resident surfaces are still not presently observed as materialized:
+
+- `workers/kimi_intr_runtime_worker.py`
+- `control/resident-execution-request.d/consume-kimi-intr-runtime.py`
+- Kimi validation-only workflow entry if required by `control/workflow-surface-registry.json`
 - secret-free runtime receipts under `receipts/kimi-intr-runtime/**`
+- sovereign same-execution terminal activation receipt
 
 ## Required predicates before implementation may claim activation
 
@@ -54,23 +64,25 @@ Required destination surfaces are:
 
 ## Immediate blocker
 
-The upstream Kimi transport/runtime capability is materialized, but the `.github` resident consumer/registry/adapter/request/handoff set has not yet been built for this task identity. TVC-side exact lease/profile compatibility must be confirmed before copying DeepSeek resident semantics; do not invent a Kimi lease issuer name or profile.
+`KIMI_INTR_RESIDENT_WORKER_AND_CONSUMER_NOT_YET_MATERIALIZED`
+
+The exact runtime/profile/provider binding has been confirmed, and the registry/adapter/request/handoff surfaces exist. The remaining source blocker is the bounded Kimi WorkerCoordinator worker plus request consumer. Activation remains separately blocked until a same-execution sovereign receipt is observed.
 
 ## Next authorized build sequence
 
-1. confirm the exact Kimi TVC runtime profile / provider-operation binding already exposed by `StegVerse-Labs/TVC` and the LLM-adapter Kimi runtime executor;
-2. materialize the bounded Kimi resident WorkerCoordinator worker and adapter set in `StegVerse-Labs/.github`;
-3. create a standing resident request with no credential material and no hosted-runtime authority;
-4. wire dispatcher consumption through the existing independent task-control path;
-5. validate source/preflight only in GitHub Actions;
-6. run the actual cycle only on the existing sovereign resident surface;
+1. materialize `workers/kimi_intr_runtime_worker.py` against the confirmed Kimi runtime/profile/provider contract;
+2. materialize `control/resident-execution-request.d/consume-kimi-intr-runtime.py` using the existing independent task-control dispatcher path;
+3. add or register a validation-only Kimi workflow only if required by the workflow-surface registry;
+4. validate source/preflight only in GitHub Actions;
+5. run the actual cycle only on the existing sovereign resident surface;
+6. persist only authorized secret-free receipts;
 7. admit activation only from the same-execution Kimi receipt.
 
 ## Completion accounting
 
 Upstream Kimi transport/runtime implementation: `90%+` materialized.
-Resident `.github` binding for this task: `35%` (authoritative handoff now exists; implementation surfaces remain to be installed).
-Goal activation: `20%` until resident binding exists and a same-execution sovereign receipt is observed.
+Resident `.github` binding for this task: `60%` materialized (task vector, executable handoff, worker registry, process adapter, and resident request exist; worker/consumer/runtime evidence remain).
+Goal activation: `35%` until the resident worker/consumer exist and a same-execution sovereign receipt is observed.
 
 ## Release/tag gate
 
