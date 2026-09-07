@@ -2,43 +2,86 @@
   "schema": "stegverse.session-machine-preflight/v1",
   "task_id": "HB32-RUNTIME-SOLUTION-REUSE-VALIDATION-RECONCILIATION-20260906",
   "parent_task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
-  "state": "PASS_DOCUMENTATION_RECONCILIATION_ONLY",
-  "evaluated_at": "2026-09-06T20:34:00-05:00",
+  "related_task_ids": [
+    "RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001",
+    "SHWP-SV002-ORG-RUNTIME-ACTIVATION-001"
+  ],
+  "state": "PASS_DOCUMENTATION_AND_DISCOVERY_RECONCILIATION_ONLY",
+  "evaluated_at": "2026-09-06T20:36:00-05:00",
   "repository": "StegVerse-Labs/.github",
-  "base_commit": "a5d69cdd0c0c039a6ec48c5c7fda800384089a16",
+  "base_commit_initial": "a5d69cdd0c0c039a6ec48c5c7fda800384089a16",
+  "current_main_reconciled": "3648f0a80317e611fd71bdfc1056616977cea255",
   "canonical_state_resolution": {
     "handoff": "docs/HB32_RUNTIME_SOLUTION_REUSE_MIRROR_HANDOFF.md",
+    "runtime_solution_registry": "data/runtime-solution-registry.d/hb32-existing-runtime-solutions.json",
     "task_registry": "data/canonical-task-registry.json#generation-15",
+    "workercoordinator_registry_generation": 22,
     "runtime_parent": "handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json",
     "master_records": "master-records/orchestration/RUNTIME_PRESENCE_CUSTODY_MIRROR_HANDOFF.md",
     "cross_task_coordination": "docs/RUNTIME_PRESENCE_CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
     "completed_reconciliation_pr": 1114,
     "completed_reconciliation_head": "65311d37ef987728b29364dd8825063d1e697cc7",
-    "completed_reconciliation_merge": "f83480b8592b970b0f7b43acd80fa466f932b34c"
+    "completed_reconciliation_merge": "f83480b8592b970b0f7b43acd80fa466f932b34c",
+    "latest_g18_recovery_repair_pr": 1117,
+    "latest_g18_recovery_repair_head": "09701bcefb5054dd71a375d358f70f5b437fb2a0",
+    "latest_g18_recovery_repair_merge": "3648f0a80317e611fd71bdfc1056616977cea255"
   },
   "validation_evidence": [
     {
       "run_id": 34036347740,
       "name": "Validate organization control plane - No GitHub Token Authority",
       "conclusion": "success",
-      "head_sha": "65311d37ef987728b29364dd8825063d1e697cc7"
+      "head_sha": "65311d37ef987728b29364dd8825063d1e697cc7",
+      "scope": "HB32 runtime-solution discovery reconciliation"
     },
     {
       "run_id": 34036347714,
       "name": "Heartbeat Worker Project - Validation Only / No GitHub Token Authority",
       "conclusion": "success",
-      "head_sha": "65311d37ef987728b29364dd8825063d1e697cc7"
+      "head_sha": "65311d37ef987728b29364dd8825063d1e697cc7",
+      "scope": "HB32 runtime-solution discovery reconciliation"
+    },
+    {
+      "run_id": 34073498209,
+      "name": "Validate organization control plane - No GitHub Token Authority",
+      "conclusion": "success",
+      "head_sha": "09701bcefb5054dd71a375d358f70f5b437fb2a0",
+      "scope": "G18 canonical-source recovery binding repair"
+    },
+    {
+      "run_id": 34073498108,
+      "name": "Heartbeat Worker Project - Validation Only / No GitHub Token Authority",
+      "conclusion": "success",
+      "head_sha": "09701bcefb5054dd71a375d358f70f5b437fb2a0",
+      "scope": "G18 canonical-source recovery binding repair"
     }
   ],
   "collision_review": {
-    "matching_open_pr_observed": false,
+    "matching_open_runtime_solution_pr_observed": false,
+    "existing_open_reconciliation_pr": 1126,
+    "update_existing_pr_instead_of_duplicate": true,
     "duplicate_runtime_solution_required": false,
     "duplicate_runtime_or_authority_plane_allowed": false
   },
+  "newly_resolved_existing_solution": {
+    "problem_class": "G18_RECOVERY_LOSES_CANONICAL_SOURCE_RUNTIME_SEPARATION",
+    "canonical_fix_ref": "3648f0a80317e611fd71bdfc1056616977cea255",
+    "source_pr": 1117,
+    "reuse": [
+      "receipts/sovereign-host/worker-source-refresh.latest.json",
+      "workers/sovereign_runtime_activation_worker.py",
+      "scripts/bootstrap_sovereign_runtime.py",
+      "scripts/run_sovereign_ephemeral_console.py"
+    ],
+    "authority_effect": "NONE_EXISTING_RUNTIME_RECOVERY_BINDING_ONLY"
+  },
   "mutation": {
     "functional": false,
-    "scope": ["docs/HB32_RUNTIME_SOLUTION_REUSE_MIRROR_HANDOFF.md"],
-    "purpose": "Reconcile stale VALIDATION_PENDING prose with already-observed exact-head source-validation results."
+    "scope": [
+      "docs/HB32_RUNTIME_SOLUTION_REUSE_MIRROR_HANDOFF.md",
+      "data/runtime-solution-registry.d/hb32-existing-runtime-solutions.json"
+    ],
+    "purpose": "Reconcile stale validation state and add the already-merged G18 canonical-source/runtime separation repair to the existing non-authorizing runtime-solution discovery index."
   },
   "readme_impact": {
     "complete": true,
@@ -46,13 +89,17 @@
     "readme_update_required": false,
     "readme_updated_in_change_set": false,
     "determination": "NO_README_CHANGE_REQUIRED",
-    "reason": "This continuation changes only stale validation/status prose for an already-merged non-authorizing discovery index. It changes no runtime behavior, interface, governance/authority boundary, evidence semantics, prerequisite, dependency, failure behavior, or capability meaning.",
+    "reason": "This continuation changes only discovery metadata and stale validation/status prose for already-merged repairs. PR #1117 already made and documented the material runtime behavior change. This reconciliation changes no runtime behavior, interface, governance/authority boundary, evidence semantics, prerequisite, dependency, failure behavior, or capability meaning.",
     "evidence_refs": [
+      "README.md as updated by StegVerse-Labs/.github#1117",
       "docs/HB32_RUNTIME_SOLUTION_REUSE_MIRROR_HANDOFF.md",
-      "receipts/preflight/HB32-RUNTIME-SOLUTION-REUSE-G18-PARITY-001.json",
+      "data/runtime-solution-registry.d/hb32-existing-runtime-solutions.json",
       "StegVerse-Labs/.github#1114",
+      "StegVerse-Labs/.github#1117",
       "run:34036347740",
-      "run:34036347714"
+      "run:34036347714",
+      "run:34073498209",
+      "run:34073498108"
     ]
   },
   "authority": {
@@ -63,12 +110,13 @@
     "credential_authority": "TV/TVC",
     "master_records_authority": "CUSTODY_AND_RECONSTRUCTION_ONLY",
     "github_token_runtime_authority": "NONE",
-    "authority_effect": "NONE_DOCUMENTATION_RECONCILIATION_ONLY"
+    "authority_effect": "NONE_DOCUMENTATION_AND_DISCOVERY_RECONCILIATION_ONLY"
   },
   "runtime_truth": {
     "runtime_presence_observed": false,
     "g18_request_consumption_observed": false,
     "sv002_terminal_round_trip_observed": false,
-    "source_validation_is_runtime_execution": false
+    "source_validation_is_runtime_execution": false,
+    "source_merge_is_runtime_execution": false
   }
 }
