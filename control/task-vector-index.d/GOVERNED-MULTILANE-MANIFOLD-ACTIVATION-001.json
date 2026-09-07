@@ -1,0 +1,11 @@
+{
+  "schema": "stegverse.cosv-task-vector-index-entry/v1",
+  "task_id": "GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001",
+  "repository": "StegVerse-Labs/.github",
+  "registry_ref": "data/canonical-task-records/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json",
+  "source_state_vector_ref": "control/task-vectors/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json",
+  "vector": "10100000100000",
+  "vector_state": "EMITTED",
+  "profile": "task.v1",
+  "authority_effect": "NONE"
+}
