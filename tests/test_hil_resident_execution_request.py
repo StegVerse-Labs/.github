@@ -71,13 +71,13 @@ class HILResidentExecutionRequestTests(unittest.TestCase):
             self.assertFalse(mod.previously_consumed(runtime, self.request(), mod.stable_hash(self.request())))
             self.assertEqual(len(calls), 1)
 
-    def test_nonterminal_worker_attempt_remains_retryable(self) -> None:
+    def test_local_ready_consumes_request_without_completing_broader_hil_lifecycle(self) -> None:
         with tempfile.TemporaryDirectory() as td:
             source, runtime = self.setup_runtime(Path(td))
             calls = []
             def runner(command, **kwargs):
                 calls.append(command)
-                if len(calls) % 2 == 1:
+                if len(calls) == 1:
                     return SimpleNamespace(returncode=0, stdout=json.dumps(self.route_ready()) + "\n", stderr="")
                 return SimpleNamespace(returncode=0, stdout=json.dumps({
                     "schema": "stegverse.resident-refresh-targeted-execution/v2",
@@ -85,16 +85,18 @@ class HILResidentExecutionRequestTests(unittest.TestCase):
                     "runtime_execution_attempted": True,
                 }) + "\n", stderr="")
             first = mod.consume(source, runtime, runner=runner, env={"PATH": "/bin", "GITHUB_TOKEN": "forbidden"})
-            self.assertEqual(first["state"], "ATTEMPT_RECORDED")
+            self.assertEqual(first["state"], "COMPLETED")
             self.assertTrue(first["runtime_execution_attempted"])
-            self.assertFalse(first["terminal_hil_transition_observed"])
-            self.assertTrue(first["retry_allowed"])
+            self.assertTrue(first["terminal_hil_transition_observed"])
+            self.assertEqual(first["terminal_hil_transition"], "HIL_RECEIVER_LOCAL_READY_PUBLIC_RENDEZVOUS_REQUIRED")
+            self.assertFalse(first["broader_hil_lifecycle_complete"])
+            self.assertFalse(first["retry_allowed"])
             self.assertEqual(len(calls), 2)
             second = mod.consume(source, runtime, runner=runner, env={"PATH": "/bin"})
-            self.assertEqual(second["state"], "ATTEMPT_RECORDED")
-            self.assertEqual(len(calls), 4)
+            self.assertEqual(second["state"], "ALREADY_CONSUMED")
+            self.assertEqual(len(calls), 2)
 
-    def test_terminal_hil_transition_consumes_request(self) -> None:
+    def test_later_hil_transition_also_consumes_request(self) -> None:
         with tempfile.TemporaryDirectory() as td:
             source, runtime = self.setup_runtime(Path(td))
             calls = []
@@ -128,6 +130,7 @@ class HILResidentExecutionRequestTests(unittest.TestCase):
             self.assertEqual(result["state"], "FAIL_CLOSED")
             self.assertTrue(result["runtime_execution_attempted"])
             self.assertFalse(result["terminal_hil_transition_observed"])
+            self.assertFalse(result["broader_hil_lifecycle_complete"])
             self.assertTrue(result["retry_allowed"])
 
 
