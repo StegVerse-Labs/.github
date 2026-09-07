@@ -1,0 +1,59 @@
+{
+  "schema": "stegverse.session-machine-preflight/v1",
+  "task_id": "SV002-TVC-NATIVE-EMAIL-REBIND-HANDOFF-RECONCILIATION-20260906",
+  "goal_id": "SHWP-SV002-ORG-RUNTIME-ACTIVATION-001",
+  "state": "PASS",
+  "evaluated_at": "2026-09-06T20:38:00-05:00",
+  "scope": {
+    "repository": "StegVerse-Labs/.github",
+    "base_commit": "0220b9c6f59094bdc6c02d66eb19370a3deaeabb",
+    "mutation_paths": [
+      "docs/SV002_HB_AWARENESS_RUNTIME_REPAIR_MIRROR_HANDOFF.md"
+    ]
+  },
+  "canonical_state_resolution": {
+    "canonical_task_registry": "data/canonical-task-registry.json#generation-15",
+    "master_records": "master-records/orchestration/RUNTIME_PRESENCE_CUSTODY_MIRROR_HANDOFF.md",
+    "cross_task_coordination": "docs/RUNTIME_PRESENCE_CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
+    "tvc_delivery_task": "TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006",
+    "tvc_resident_self_heal_task": "TVC-RESIDENT-SERVICE-SELF-HEAL-001",
+    "tvc_runtime_observer_task": "TVC-CAPABILITY-RUNTIME-002",
+    "current_tvc_exact_runtime_source": "StegVerse-Labs/.github@a5d69cdd0c0c039a6ec48c5c7fda800384089a16",
+    "tvc_rebind_pr": 342,
+    "tvc_rebind_merge": "e51ca9b5d39d891c8df087b0fa430eea98cdfadc",
+    "tvc_reconciliation_merge": "fafe0c79c9a9b7782f25fccc20d6b18fd02aeee9",
+    "private_source_validation_run": 34055625562,
+    "credential_model_validation_run": 34055625565
+  },
+  "collision_review": {
+    "matching_open_pr_observed": false,
+    "duplicate_runtime_implementation_required": false,
+    "runtime_presence_cross_task_reuse_authorized": false
+  },
+  "admitted_repair": {
+    "strategy": "Reconcile only the canonical SV002 handoff to the later validated TVC exact-source/native-email rebind. Preserve prior 11cad666/a7e3ed lineage as historical and do not alter runtime code, predicates, dispatcher behavior, HB/oscillator semantics, WorkerCoordinator authority, InTr authority, or credential authority.",
+    "functional_mutation": false,
+    "authority_effect": "NONE_DOCUMENTATION_RECONCILIATION_ONLY"
+  },
+  "readme_impact": {
+    "required": false,
+    "material_function_change": false,
+    "readme_updated_in_change_set": false,
+    "no_readme_update_reason": "This change reconciles handoff provenance to already-merged and already-validated TVC state. It changes no repository behavior, runtime semantics, interface, governance or authority boundary, evidence semantics, prerequisite, dependency, failure behavior, or capability meaning."
+  },
+  "runtime_evidence": {
+    "root_primary_runtime_restart_observed": false,
+    "resident_runtime_presence_observed": false,
+    "native_email_execution_observed": false,
+    "sv002_terminal_round_trip_observed": false,
+    "source_or_documentation_may_substitute": false
+  },
+  "authority": {
+    "heartbeat_grants_execution_authority": false,
+    "workercoordinator_remains_claim_fence_authority": true,
+    "intr_remains_transition_authority": true,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE"
+  },
+  "verdict": "PASS"
+}
