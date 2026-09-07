@@ -1,0 +1,51 @@
+{
+  "schema": "stegverse.session-machine-preflight/v1",
+  "task_id": "COSV-TASK-POINTER-ADJACENT-DERIVATION-001",
+  "goal_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "state": "PASS",
+  "evaluated_at": "2026-09-06T21:45:00-05:00",
+  "scope": {
+    "repository": "StegVerse-Labs/.github",
+    "mutation_paths": [
+      "data/task-coordination-policy.json",
+      "docs/COSV_TASK_POINTER_COORDINATION_MIRROR_HANDOFF.md",
+      "README.md"
+    ]
+  },
+  "canonical_state_resolution": {
+    "canonical_task_registry": "data/canonical-task-registry.json#generation-16",
+    "cosv_profile": "management/COSV_PROFILE_V1.json#task.v1",
+    "cosv_task_index": "control/task-vector-index.json",
+    "cross_task_coordination": "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
+    "master_records": "master-records/orchestration/CANONICAL_WORK_COORDINATION_CUSTODY_MIRROR_HANDOFF.md",
+    "coordination_policy": "data/task-coordination-policy.json"
+  },
+  "collision_review": {
+    "duplicate_task_registry_required": false,
+    "duplicate_cosv_profile_required": false,
+    "duplicate_worker_or_scheduler_required": false,
+    "existing_adjacent_work_resolution_reused": true
+  },
+  "admitted_change": {
+    "strategy": "Make task_id plus its canonical COSV task.v1 vector the minimal portable prompt pointer; resolve task documentation, evidence, claims, dependencies, and next work from canonical sources. When execution reveals distinct necessary work within the same goal, derive a new adjacent canonical task rather than expanding prompt prose or mutating the meaning of the originating task.",
+    "functional_mutation": true,
+    "authority_effect": "NONE_COORDINATION_INTERFACE_ONLY"
+  },
+  "readme_impact": {
+    "required": true,
+    "material_function_change": true,
+    "readme_updated_in_change_set": true,
+    "readme_path": "README.md",
+    "reason": "The change materially alters the canonical session/prompt coordination interface and task derivation semantics: future sessions may use task_id + COSV vector as the minimal continuation pointer and may derive adjacent task records when new same-goal work becomes necessary."
+  },
+  "authority": {
+    "cosv_vector_grants_execution_authority": false,
+    "task_registry_mints_execution_authority": false,
+    "workercoordinator_remains_claim_fence_authority": true,
+    "master_records_remains_observed_reality_authority": true,
+    "intr_remains_transition_authority": true,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE"
+  },
+  "verdict": "PASS"
+}
