@@ -1,11 +1,25 @@
 {
   "schema": "stegverse.entity-autonomous-governed-progression-contract/v1",
-  "updated_at": "2026-09-04T15:56:00-05:00",
+  "updated_at": "2026-09-07T10:14:00-05:00",
   "owner_repository": "StegVerse-Labs/.github",
   "handoff": "docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_MIRROR_HANDOFF.md",
   "authority_effect": "NONE_POLICY_ONLY",
   "credential_authority": "TV/TVC",
   "heartbeat_authority_effect": "NONE_REFERENCE_CARRIER_ONLY",
+  "human_intent_contract": {
+    "human_originates": [
+      "IDEA",
+      "QUERY",
+      "GOAL"
+    ],
+    "ecosystem_resolves_execution_until": [
+      "TERMINAL_GOVERNED_GOAL_STATE_REACHED",
+      "GENUINE_HUMAN_REVIEW_OR_AUTHORITY_BOUNDARY"
+    ],
+    "human_must_represent_intermediate_task_ids": false,
+    "human_must_represent_intermediate_cosv_vectors": false,
+    "human_must_represent_intermediate_handoffs": false
+  },
   "transition_rule": {
     "authority_is_inferred": false,
     "authority_is_reused": false,
@@ -24,8 +38,53 @@
     "CONSUME_AND_EXECUTE",
     "RETAIN_EXECUTION_STATE_RECEIPT",
     "RECONSTRUCT_CURRENT_STATE",
+    "REINGEST_RETURNED_TASK_COSV_HANDOFF_AND_COMPLETION_STATE",
+    "RESOLVE_DUPLICATES_DEPENDENCIES_COLLISIONS_AND_PARALLEL_GROUPS",
     "CONTINUE_WITHOUT_HUMAN_APPROVAL_IF_NEXT_TRANSITION_IS_MACHINE_OWNED"
   ],
+  "goal_resolution_continuation": {
+    "enabled": true,
+    "default_report_interval_iterations": 5,
+    "minimum_iterations_before_periodic_report": 5,
+    "report_earlier_on_terminal_goal": true,
+    "report_earlier_on_human_review_required": true,
+    "automatic_reingestion": {
+      "task_ids": true,
+      "cosv_task_vectors": true,
+      "mirror_handoffs": true,
+      "completion_states": true,
+      "dependencies": true,
+      "adjacent_tasks": true,
+      "integration_candidates": true,
+      "evidence_and_receipts": true
+    },
+    "returned_task_id_is_not_automatically_new_work": true,
+    "continuity_resolution_order": [
+      "MATCH_TASK_ID_AGAINST_CANONICAL_ACTIVE_AND_COMPLETED_WORK",
+      "VERIFY_TASK_ID_COSV_VECTOR_BINDING_WHEN_PRESENT",
+      "RESOLVE_APPLICABLE_MIRROR_HANDOFFS",
+      "RECONCILE_MASTER_RECORDS_EVIDENCE",
+      "RESOLVE_WORKERCOORDINATOR_CLAIM_FENCE",
+      "CLASSIFY_AS_CONTINUATION_SUCCESSOR_DEPENDENCY_ADJACENT_OR_NEW",
+      "DEDUPLICATE_EQUIVALENT_WORK",
+      "RESOLVE_REPOSITORY_RUNTIME_AUTHORITY_AND_EVIDENCE_COLLISIONS",
+      "REGROUP_PARALLEL_CAPABLE_WORK",
+      "SELECT_NEXT_ADMISSIBLE_NON_DUPLICATE_WORK"
+    ],
+    "intermediate_state_is_internal_orchestration": [
+      "UNCHANGED_TASK_ID",
+      "SUCCESSOR_TASK_ID",
+      "UPDATED_COSV_TASK_VECTOR",
+      "NEW_MIRROR_HANDOFF",
+      "VALIDATION_FAILURE_WITH_ADMISSIBLE_REPAIR",
+      "NEW_DEPENDENCY",
+      "NEW_ADJACENT_TASK",
+      "NEW_INTEGRATION_CANDIDATE"
+    ],
+    "periodic_report_does_not_stop_machine_owned_work": true,
+    "no_second_scheduler_or_coordinator": true,
+    "evaluator_ref": "scripts/evaluate_goal_resolution_continuation.py"
+  },
   "human_authority_classes": [
     "HUMAN_ONLY",
     "USER_ONLY",
@@ -43,6 +102,10 @@
   ],
   "invalid_stop_conditions": [
     "ASK_USER_TO_APPROVE_NEXT_MACHINE_TRANSITIONS",
+    "ASK_USER_TO_REPRESENT_RETURNED_TASK_ID",
+    "ASK_USER_TO_REPRESENT_RETURNED_COSV_VECTOR",
+    "ASK_USER_TO_REPRESENT_RETURNED_HANDOFF",
+    "REPORT_INTERVAL_REACHED_SO_STOP_EXECUTION",
     "WAIT_FOR_RECEIPTS_WITHOUT_EXECUTABLE_WORK",
     "HUMAN_UI_CONTROL_EXISTS_SO_HUMAN_MUST_EXECUTE"
   ],
