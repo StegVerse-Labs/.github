@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 16,
-  "status": "RUNTIME_PROFILE_GOVERNANCE_REVIEW_SOURCE_BOUND_AUTHENTIC_RUNTIME_PENDING",
+  "generation": 17,
+  "status": "COSV_TASK_POINTER_RUNTIME_ENFORCEMENT_SOURCE_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -15,17 +15,19 @@
       "correlation_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
       "root_correlation_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
       "parent_task_id": null,
-      "goal": "Implement the canonical coordination substrate for multi-entity StegVerse development using Task Registry, WorkerCoordinator claim/fence references, Master Records reconciliation, Interlock/InTr task transitions, dependency/incident convergence, runtime-profile discovery, routing readiness, transition-readiness projection, governance-review packaging, and handoff projections.",
+      "goal": "Implement the canonical coordination substrate for multi-entity StegVerse development using Task Registry, WorkerCoordinator claim/fence references, Master Records reconciliation, Interlock/InTr task transitions, dependency/incident convergence, runtime-profile discovery, routing readiness, transition-readiness projection, governance-review packaging, handoff projections, and COSV task-pointer continuation with adjacent-task derivation.",
       "coordination_state": "PROPOSED",
       "source_refs": [
         "docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md",
         "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md",
         "docs/UNIVERSAL_WORK_INTERLOCK_MIRROR_HANDOFF.md",
         "docs/CANONICAL_RUNTIME_PROFILE_MAP_MIRROR_HANDOFF.md",
+        "docs/COSV_TASK_POINTER_COORDINATION_MIRROR_HANDOFF.md",
         "control/worker-registry.json",
         "control/canonical-resident-carrier-contract.json",
         "control/canonical-work-runtime-profile.json",
         "control/runtime-profile-map.json",
+        "control/task-vector-index.json",
         "data/task-coordination-policy.json",
         "scripts/resolve_task_runtime_candidates.py",
         "scripts/apply_all_task_runtime_resolutions.py",
@@ -63,7 +65,7 @@
       "targets": {
         "organizations": ["StegVerse-Labs"],
         "repositories": ["StegVerse-Labs/.github"],
-        "components": ["canonical-task-registry", "task-master-records-reconciliation", "handoff-projection", "dependency-incident-graph", "session-continuity", "universal-intr-task-admission", "hb32-runtime-reference-projection", "master-records-work-event-projection", "dependency-resolution-fanout", "github-failure-incident-normalization", "admitted-work-reconciliation", "admitted-dependency-event-consumption", "authentic-ingress-registry-projection", "workercoordinator-claim-fence-projection", "event-triggered-canonical-work-bootstrap", "route-install-and-bootstrap-wrapper", "resident-request-dispatch", "resident-self-materialization", "runtime-profile-discovery", "runtime-resolution-batch-persistence", "task-runtime-routing-readiness", "master-records-custody", "post-custody-reconciliation", "post-reconciliation-transition-readiness", "governance-review-packaging"]
+        "components": ["canonical-task-registry", "task-master-records-reconciliation", "handoff-projection", "dependency-incident-graph", "session-continuity", "cosv-task-pointer-continuation", "adjacent-task-derivation", "universal-intr-task-admission", "hb32-runtime-reference-projection", "master-records-work-event-projection", "dependency-resolution-fanout", "github-failure-incident-normalization", "admitted-work-reconciliation", "admitted-dependency-event-consumption", "authentic-ingress-registry-projection", "workercoordinator-claim-fence-projection", "event-triggered-canonical-work-bootstrap", "route-install-and-bootstrap-wrapper", "resident-request-dispatch", "resident-self-materialization", "runtime-profile-discovery", "runtime-resolution-batch-persistence", "task-runtime-routing-readiness", "master-records-custody", "post-custody-reconciliation", "post-reconciliation-transition-readiness", "governance-review-packaging"]
       },
       "dependencies": [
         {"dependency_id": "DEP-UNIVERSAL-WORK-INTERLOCK-RUNTIME", "kind": "RUNTIME_PREDICATE", "state": "UNRESOLVED", "ref": "docs/UNIVERSAL_WORK_INTERLOCK_MIRROR_HANDOFF.md"},
@@ -71,11 +73,11 @@
       ],
       "blockers": [],
       "systemic_incident_ref": null,
-      "adjacent_task_refs": ["CANONICAL-RESIDENT-CARRIER-974", "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"],
-      "existing_evidence_refs": ["control/worker-registry.json", "docs/UNIVERSAL_WORK_INTERLOCK_MIRROR_HANDOFF.md", "control/canonical-resident-carrier-contract.json", "heartbeat_runtime/intr_carrier_profile.py", "control/canonical-work-runtime-profile.json", "control/runtime-profile-map.json", "data/task-coordination-policy.json", "scripts/evaluate_task_runtime_routing_readiness.py", "scripts/evaluate_runtime_profile_map_transition_readiness.py", "scripts/build_runtime_profile_map_governance_review.py"],
-      "expected_evidence_predicates": ["SOURCE_SCHEMA_VALID", "TASK_REGISTRY_WORKERCOORDINATOR_AUTHORITY_SEPARATION_VALID", "TASK_MASTER_RECORDS_RECONCILIATION_SOURCE_VALID", "HB32_OSCILLATOR_RUNTIME_PROFILE_VALID", "AUTHENTIC_TASK_INGRESS_OBSERVED", "AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED", "AUTHENTIC_MASTER_RECORDS_RECONCILIATION_OBSERVED", "AUTHENTIC_TASK_EGRESS_OR_CLOSURE_OBSERVED"],
+      "adjacent_task_refs": ["CANONICAL-RESIDENT-CARRIER-974", "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001", "COSV-TASK-POINTER-RUNTIME-ENFORCEMENT-001"],
+      "existing_evidence_refs": ["control/worker-registry.json", "docs/UNIVERSAL_WORK_INTERLOCK_MIRROR_HANDOFF.md", "control/canonical-resident-carrier-contract.json", "heartbeat_runtime/intr_carrier_profile.py", "control/canonical-work-runtime-profile.json", "control/runtime-profile-map.json", "control/task-vector-index.json", "data/task-coordination-policy.json", "docs/COSV_TASK_POINTER_COORDINATION_MIRROR_HANDOFF.md", "scripts/evaluate_task_runtime_routing_readiness.py", "scripts/evaluate_runtime_profile_map_transition_readiness.py", "scripts/build_runtime_profile_map_governance_review.py"],
+      "expected_evidence_predicates": ["SOURCE_SCHEMA_VALID", "TASK_REGISTRY_WORKERCOORDINATOR_AUTHORITY_SEPARATION_VALID", "TASK_MASTER_RECORDS_RECONCILIATION_SOURCE_VALID", "COSV_TASK_POINTER_POLICY_VALID", "HB32_OSCILLATOR_RUNTIME_PROFILE_VALID", "AUTHENTIC_TASK_INGRESS_OBSERVED", "AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED", "AUTHENTIC_MASTER_RECORDS_RECONCILIATION_OBSERVED", "AUTHENTIC_TASK_EGRESS_OR_CLOSURE_OBSERVED"],
       "runtime_requirements": {
-        "capabilities": ["task_registry_reconciliation", "master_records_reconciliation", "worker_claim_projection", "dependency_reevaluation", "intr_task_admission"],
+        "capabilities": ["task_registry_reconciliation", "master_records_reconciliation", "worker_claim_projection", "dependency_reevaluation", "intr_task_admission", "canonical_artifact_validation"],
         "environment": "SOVEREIGN_RESIDENT",
         "direction": "INTERNAL",
         "mutation_required": true,
@@ -87,7 +89,7 @@
       "human_action_ref": null,
       "completion": {"claimed": false, "validated": false, "reconciliation_ref": null},
       "allowed_next_transitions": ["INGRESS_ADMITTED"],
-      "handoff_projection_refs": ["docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md", "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md"],
+      "handoff_projection_refs": ["docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md", "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md", "docs/COSV_TASK_POINTER_COORDINATION_MIRROR_HANDOFF.md"],
       "authority_model": {"task_registry_mints_execution_authority": false, "source_state_proves_execution": false, "worker_claim_authority": "WORKERCOORDINATOR", "master_records_reality_authority": true, "interlock_intr_required_for_governed_ingress_egress": true}
     },
     {
@@ -421,10 +423,73 @@
         "StegVerse-Labs/crypto-bot/docs/HB_INTR_RUNTIME_CONSUMPTION_MIRROR_HANDOFF.md"
       ],
       "authority_model": {"task_registry_mints_execution_authority": false, "source_state_proves_execution": false, "worker_claim_authority": "WORKERCOORDINATOR", "master_records_reality_authority": true, "interlock_intr_required_for_governed_ingress_egress": true}
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "COSV-TASK-POINTER-RUNTIME-ENFORCEMENT-001",
+      "correlation_id": "COSV-TASK-POINTER-RUNTIME-ENFORCEMENT-001",
+      "root_correlation_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+      "parent_task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+      "goal": "Implement fail-closed runtime/source enforcement for the canonical task_id + COSV task.v1 vector continuation pointer, including canonical context resolution, stale-vector rejection, and automatic nonduplicate adjacent-task registration when distinct same-goal work is discovered.",
+      "coordination_state": "PROPOSED",
+      "source_refs": [
+        "docs/COSV_TASK_POINTER_RUNTIME_ENFORCEMENT_MIRROR_HANDOFF.md",
+        "docs/COSV_TASK_POINTER_COORDINATION_MIRROR_HANDOFF.md",
+        "data/task-coordination-policy.json",
+        "management/COSV_PROFILE_V1.json",
+        "control/task-vector-index.json",
+        "control/task-vectors/COSV-TASK-POINTER-RUNTIME-ENFORCEMENT-001.json",
+        "receipts/preflight/COSV-TASK-POINTER-ADJACENT-DERIVATION-001.json",
+        "README.md"
+      ],
+      "targets": {
+        "organizations": ["StegVerse-Labs"],
+        "repositories": ["StegVerse-Labs/.github"],
+        "components": ["cosv-task-pointer-validator", "canonical-context-resolver", "adjacent-task-derivation", "canonical-task-registration", "cosv-vector-projection", "session-continuation"]
+      },
+      "dependencies": [],
+      "blockers": [],
+      "systemic_incident_ref": null,
+      "adjacent_task_refs": ["STEGVERSE-CANONICAL-WORK-COORDINATION-001", "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"],
+      "existing_evidence_refs": [
+        "docs/COSV_TASK_POINTER_COORDINATION_MIRROR_HANDOFF.md",
+        "data/task-coordination-policy.json",
+        "management/COSV_PROFILE_V1.json",
+        "control/task-vector-index.json",
+        "receipts/preflight/COSV-TASK-POINTER-ADJACENT-DERIVATION-001.json",
+        "README.md"
+      ],
+      "expected_evidence_predicates": [
+        "TASK_ID_COSV_VECTOR_BINDING_VALIDATED",
+        "STALE_OR_MISMATCHED_POINTER_FAILS_CLOSED",
+        "CANONICAL_TASK_CONTEXT_RESOLVES_FROM_POINTER",
+        "EQUIVALENT_ADJACENT_WORK_REUSED_BEFORE_NEW_TASK_CREATION",
+        "DISTINCT_SAME_GOAL_WORK_DERIVES_CANONICAL_ADJACENT_TASK",
+        "DERIVED_TASK_RECEIVES_COSV_VECTOR_PROJECTION",
+        "TASK_CREATION_DOES_NOT_MINT_EXECUTION_AUTHORITY",
+        "AUTHENTIC_TASK_INGRESS_OBSERVED",
+        "AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+        "AUTHENTIC_MASTER_RECORDS_RECONCILIATION_OBSERVED"
+      ],
+      "runtime_requirements": {
+        "capabilities": ["canonical_artifact_validation", "task_registry_reconciliation", "master_records_reconciliation", "dependency_reevaluation", "intr_task_admission"],
+        "environment": "SOVEREIGN_RESIDENT_AND_SOURCE_VALIDATION",
+        "direction": "INTERNAL",
+        "mutation_required": true,
+        "deployment_required": false,
+        "current_observation_required": false
+      },
+      "runtime_resolution": null,
+      "worker_claim": {"authority": "WORKERCOORDINATOR", "claim_ref": null, "fence_ref": null, "projection_only": true},
+      "human_action_ref": null,
+      "completion": {"claimed": false, "validated": false, "reconciliation_ref": null},
+      "allowed_next_transitions": ["INGRESS_ADMITTED"],
+      "handoff_projection_refs": ["docs/COSV_TASK_POINTER_RUNTIME_ENFORCEMENT_MIRROR_HANDOFF.md", "docs/COSV_TASK_POINTER_COORDINATION_MIRROR_HANDOFF.md"],
+      "authority_model": {"task_registry_mints_execution_authority": false, "source_state_proves_execution": false, "worker_claim_authority": "WORKERCOORDINATOR", "master_records_reality_authority": true, "interlock_intr_required_for_governed_ingress_egress": true}
     }
   ],
   "human_actions": [],
   "systemic_incidents": [],
   "projections": {"handoffs": [], "status_surfaces": []},
-  "nonclaims": ["REGISTRY_BOOTSTRAP_AND_RUNTIME_ADAPTERS_ARE_SOURCE_STATE_ONLY", "HB32_OSCILLATOR_REFERENCE_DOES_NOT_GRANT_TASK_AUTHORITY", "MASTER_RECORDS_PROJECTION_ADAPTER_DOES_NOT_PROVE_RUNTIME_RECONCILIATION", "DEPENDENCY_FANOUT_SOURCE_DOES_NOT_ADMIT_TRANSITIONS", "ADMITTED_RECONCILIATION_SOURCE_DOES_NOT_MINT_EXECUTION_AUTHORITY", "ADMITTED_DEPENDENCY_EVENT_CONSUMPTION_DOES_NOT_MUTATE_WORKERCOORDINATOR", "AUTHENTIC_INGRESS_PROJECTION_REQUIRES_EXISTING_ADMITTED_RECEIPT", "WORKERCOORDINATOR_PROJECTION_DOES_NOT_MINT_CLAIM_OR_FENCE", "EVENT_BOOTSTRAP_USES_EXISTING_SHARED_INTR_SERVER_ONLY", "ROUTE_INSTALL_AND_BOOTSTRAP_SOURCE_DOES_NOT_PROVE_RUNTIME_EXECUTION", "RESIDENT_REQUEST_DISPATCH_DOES_NOT_GRANT_EXECUTION_AUTHORITY", "RESIDENT_SELF_MATERIALIZATION_IS_LOCAL_SOURCE_COPY_ONLY", "RUNTIME_PROFILE_MAP_MATCH_DOES_NOT_GRANT_AUTHORITY", "RUNTIME_PROFILE_RESOLUTION_IS_PROJECTION_ONLY", "RUNTIME_ROUTING_READINESS_DOES_NOT_GRANT_AUTHORITY", "RUNTIME_TRANSITION_READINESS_DOES_NOT_GRANT_AUTHORITY", "RUNTIME_GOVERNANCE_REVIEW_PACKAGE_DOES_NOT_GRANT_AUTHORITY", "MASTER_RECORDS_CUSTODY_DOES_NOT_GRANT_TASK_AUTHORITY", "POST_CUSTODY_RECONCILIATION_DOES_NOT_CHANGE_TASK_STATE", "GENERIC_RUNTIME_MISSING_REQUIRES_CANONICAL_MAP_RESOLUTION", "GITHUB_FAILURE_EMAIL_NORMALIZATION_DOES_NOT_PROVE_RUNTIME_FAILURE", "NO_AUTHENTIC_INTERLOCK_INTR_TASK_INGRESS_IS_CLAIMED", "NO_WORKERCOORDINATOR_CLAIM_IS_MINTED_BY_THIS_REGISTRY", "NO_MASTER_RECORDS_RUNTIME_RECONCILIATION_IS_CLAIMED", "QUANTUM_TASK_REGISTRATION_IS_PROPOSED_SOURCE_STATE_ONLY", "QUANTUM_SOURCE_AND_CENSUS_EVIDENCE_DO_NOT_PROVE_PQ_DEPLOYMENT_OR_RUNTIME_AWARENESS", "ERL_REVIEW_TASK_REGISTRATION_IS_PROPOSED_SOURCE_STATE_ONLY", "OBJECT_PROVENANCE_TASK_REGISTRATION_IS_PROPOSED_SOURCE_STATE_ONLY", "OBJECT_PROVENANCE_SOURCE_AND_CUSTODY_MERGES_DO_NOT_PROVE_AUTHENTIC_RUNTIME_LINEAGE", "CRYPTO_LIVE_AUTO_TASK_REGISTRATION_IS_PROPOSED_SOURCE_STATE_ONLY", "CRYPTO_SOURCE_REQUEST_STAGING_DOES_NOT_PROVE_COINBASE_AUTHENTICATION_ORDER_EXECUTION_OR_GOVERNANCE_APPROVAL"]
+  "nonclaims": ["REGISTRY_BOOTSTRAP_AND_RUNTIME_ADAPTERS_ARE_SOURCE_STATE_ONLY", "HB32_OSCILLATOR_REFERENCE_DOES_NOT_GRANT_TASK_AUTHORITY", "MASTER_RECORDS_PROJECTION_ADAPTER_DOES_NOT_PROVE_RUNTIME_RECONCILIATION", "DEPENDENCY_FANOUT_SOURCE_DOES_NOT_ADMIT_TRANSITIONS", "ADMITTED_RECONCILIATION_SOURCE_DOES_NOT_MINT_EXECUTION_AUTHORITY", "ADMITTED_DEPENDENCY_EVENT_CONSUMPTION_DOES_NOT_MUTATE_WORKERCOORDINATOR", "AUTHENTIC_INGRESS_PROJECTION_REQUIRES_EXISTING_ADMITTED_RECEIPT", "WORKERCOORDINATOR_PROJECTION_DOES_NOT_MINT_CLAIM_OR_FENCE", "EVENT_BOOTSTRAP_USES_EXISTING_SHARED_INTR_SERVER_ONLY", "ROUTE_INSTALL_AND_BOOTSTRAP_SOURCE_DOES_NOT_PROVE_RUNTIME_EXECUTION", "RESIDENT_REQUEST_DISPATCH_DOES_NOT_GRANT_EXECUTION_AUTHORITY", "RESIDENT_SELF_MATERIALIZATION_IS_LOCAL_SOURCE_COPY_ONLY", "RUNTIME_PROFILE_MAP_MATCH_DOES_NOT_GRANT_AUTHORITY", "RUNTIME_PROFILE_RESOLUTION_IS_PROJECTION_ONLY", "RUNTIME_ROUTING_READINESS_DOES_NOT_GRANT_AUTHORITY", "RUNTIME_TRANSITION_READINESS_DOES_NOT_GRANT_AUTHORITY", "RUNTIME_GOVERNANCE_REVIEW_PACKAGE_DOES_NOT_GRANT_AUTHORITY", "MASTER_RECORDS_CUSTODY_DOES_NOT_GRANT_TASK_AUTHORITY", "POST_CUSTODY_RECONCILIATION_DOES_NOT_CHANGE_TASK_STATE", "GENERIC_RUNTIME_MISSING_REQUIRES_CANONICAL_MAP_RESOLUTION", "GITHUB_FAILURE_EMAIL_NORMALIZATION_DOES_NOT_PROVE_RUNTIME_FAILURE", "NO_AUTHENTIC_INTERLOCK_INTR_TASK_INGRESS_IS_CLAIMED", "NO_WORKERCOORDINATOR_CLAIM_IS_MINTED_BY_THIS_REGISTRY", "NO_MASTER_RECORDS_RUNTIME_RECONCILIATION_IS_CLAIMED", "QUANTUM_TASK_REGISTRATION_IS_PROPOSED_SOURCE_STATE_ONLY", "QUANTUM_SOURCE_AND_CENSUS_EVIDENCE_DO_NOT_PROVE_PQ_DEPLOYMENT_OR_RUNTIME_AWARENESS", "ERL_REVIEW_TASK_REGISTRATION_IS_PROPOSED_SOURCE_STATE_ONLY", "OBJECT_PROVENANCE_TASK_REGISTRATION_IS_PROPOSED_SOURCE_STATE_ONLY", "OBJECT_PROVENANCE_SOURCE_AND_CUSTODY_MERGES_DO_NOT_PROVE_AUTHENTIC_RUNTIME_LINEAGE", "CRYPTO_LIVE_AUTO_TASK_REGISTRATION_IS_PROPOSED_SOURCE_STATE_ONLY", "CRYPTO_SOURCE_REQUEST_STAGING_DOES_NOT_PROVE_COINBASE_AUTHENTICATION_ORDER_EXECUTION_OR_GOVERNANCE_APPROVAL", "COSV_TASK_POINTER_TASK_REGISTRATION_IS_PROPOSED_SOURCE_STATE_ONLY", "COSV_VECTOR_AND_TASK_ID_DO_NOT_GRANT_EXECUTION_AUTHORITY"]
 }
