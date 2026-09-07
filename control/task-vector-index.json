@@ -540,7 +540,7 @@
     {
       "task_id": "SHWP-FORMALISM-OWNER-MUTATION-EXECUTOR-001",
       "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/formalism-owner-mutation-executor-001.json",
+      "registry_ref": "control/worker-registry.d/formalism-manifold-orchestration-001.json",
       "source_state_vector_ref": "control/task-vectors/SHWP-FORMALISM-OWNER-MUTATION-EXECUTOR-001.json",
       "vector": "50000000101000",
       "vector_state": "EMITTED",
@@ -549,7 +549,7 @@
     {
       "task_id": "SHWP-FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001",
       "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/formalism-manifold-implementation-admission-001.json",
+      "registry_ref": "control/worker-registry.d/formalism-manifold-orchestration-001.json",
       "source_state_vector_ref": "control/task-vectors/SHWP-FORMALISM-MANIFOLD-IMPLEMENTATION-ADMISSION-001.json",
       "vector": "50000000101000",
       "vector_state": "EMITTED",
@@ -558,7 +558,7 @@
     {
       "task_id": "SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001",
       "repository": "StegVerse-Labs/.github",
-      "registry_ref": "control/worker-registry.d/formalism-tvc-repository-transport-consumers-001.json",
+      "registry_ref": "control/worker-registry.d/formalism-manifold-orchestration-001.json",
       "source_state_vector_ref": "control/task-vectors/SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001.json",
       "vector": "50000000101000",
       "vector_state": "EMITTED",
@@ -859,11 +859,21 @@
       "vector_state": "EMITTED",
       "authority_effect": "NONE",
       "canonical_owner_ref": "docs/LEGACY_CONTINUITY_VALIDATION_MIRROR_HANDOFF.md"
+    },
+    {
+      "task_id": "COSV-TASK-POINTER-RUNTIME-ENFORCEMENT-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "data/canonical-task-registry.json",
+      "source_state_vector_ref": "control/task-vectors/COSV-TASK-POINTER-RUNTIME-ENFORCEMENT-001.json",
+      "vector": "10100000100000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "docs/COSV_TASK_POINTER_RUNTIME_ENFORCEMENT_MIRROR_HANDOFF.md"
     }
   ],
   "coverage": {
-    "indexed_vectorized_tasks": 90,
-    "local_cosv_record_tasks": 90,
+    "indexed_vectorized_tasks": 91,
+    "local_cosv_record_tasks": 91,
     "external_owner_projection_tasks": 0
   },
   "authority_effect": "NONE"
