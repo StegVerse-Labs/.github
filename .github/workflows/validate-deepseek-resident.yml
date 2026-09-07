@@ -113,7 +113,7 @@ jobs:
           assert handoff['readme_impact']['material_function_change'] is True
           assert handoff['readme_impact']['readme_updated_in_change_set'] is True
           assert '### Resident DeepSeek InTr governed runtime' in readme
-          assert len(handoff['execution']['llm_adapter_custody_client_merge'])==40
+          assert handoff['execution']['llm_adapter_custody_client_ref']=='StegVerse-org/LLM-adapter#310/#312'
           assert handoff['execution']['master_records_bearer_export_allowed'] is False
           assert handoff['execution']['master_records_reconstruction_required']=='PASS'
           assert request['second_machine_required'] is False
