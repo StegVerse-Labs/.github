@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
   "created_at": "2026-08-09T19:59:00Z",
-  "updated_at": "2026-08-28T07:04:00-05:00",
+  "updated_at": "2026-09-06T20:33:00-05:00",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "ECOSYSTEM-CHAT-SOVEREIGN-ACTIVATION",
@@ -47,6 +47,7 @@
       "StegVerse-Labs/.github#60",
       "StegVerse-Labs/.github#264",
       "StegVerse-Labs/.github#265",
+      "StegVerse-Labs/.github#1079",
       "StegVerse-org/LLM-adapter#18",
       "StegVerse-org/LLM-adapter:tasks/LLMA-SOVEREIGN-CARRIER-EXECUTION-020.json",
       "StegVerse-002/micro-node-runtime#22",
@@ -56,6 +57,12 @@
       "receipts/ecosystem-chat-sovereign-inference/orphan-recovery-HB28.json",
       "workloads/master-records/orchestration/custody/worker-lifecycle/SHWP-CUSTODY-ECOSYSTEM-CHAT-INFERENCE-001-G20-001.json",
       "control/worker-registry.d/ecosystem-chat-sovereign-inference-parent-001.json",
+      "control/runtime-observability-consumers/ecosystem-chat-sovereign-inference-001.json",
+      "docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md",
+      "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md",
+      "docs/RESIDENT_WORKER_SELF_HEAL_MIRROR_HANDOFF.md",
+      "docs/ONE_SHOT_RESIDENT_STACK_ACTIVATION_MIRROR_HANDOFF.md",
+      "receipts/preflight/ECOSYSTEM-CHAT-RUNTIME-SOLUTION-HANDOFF-001.json",
       "authorizations/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json",
       "scripts/run_independent_ecosystem_chat_parent.py",
       "workers/ecosystem_chat_sovereign_inference_worker.py",
@@ -70,7 +77,7 @@
     ],
     "dependencies": [],
     "parent_task_id": null,
-    "derivation_reason": "Formal local model, persistent endpoint proof, TVC route evaluator, exact LLM-adapter carrier executor, same-execution Master Records verifier bridge, terminal G22 orphan recovery, and an independent parent fresh-fence executor are installed. The remaining transition is actual sovereign execution, not source construction or recovery replay.",
+    "derivation_reason": "Formal local model, persistent endpoint proof, TVC route evaluator, exact LLM-adapter carrier executor, same-execution Master Records verifier bridge, terminal G22 orphan recovery, an independent parent fresh-fence executor, and the HB/oscillator resident self-heal/source-refresh/one-shot runtime remediation chain are installed. The remaining transition is actual sovereign execution, not source construction, runtime reinvention, or recovery replay.",
     "canonical_owner_ref": "StegVerse-Labs/.github#264 -> StegVerse-Labs/TVC -> StegVerse-org/LLM-adapter#18 -> master-records/orchestration:MR-ECOSYSTEM-CHAT-SOVEREIGN-RECONSTRUCTION-024",
     "canonical_lineage_key": "ecosystem-chat:sovereign-inference-activation",
     "derivation_depth": 0,
@@ -129,6 +136,31 @@
     "checkout_policy": "fenced_atomic_checkout",
     "attempt_claim_release_required": true,
     "recheck_trigger": "each admitted StegVerse task-control execution opportunity while HANDOFF_READY",
+    "runtime_absence_resolution": {
+      "state": "REUSE_EXISTING_HB_OSCILLATOR_RUNTIME_SOLUTIONS",
+      "resident_process_absence_is_passive_blocker": false,
+      "heartbeat_reference_derivation": "HB32_PROTOCOL_ANCHOR_OSCILLATOR_ONLY_DAEMON_FREE",
+      "heartbeat_process_required_for_progression": false,
+      "worker_presence_solution_ref": "docs/RESIDENT_WORKER_SELF_HEAL_MIRROR_HANDOFF.md",
+      "worker_presence_repair_ref": "scripts/repair_resident_worker_presence.py",
+      "local_source_refresh_ref": "scripts/refresh_sovereign_worker_runtime_source.py",
+      "one_shot_stack_solution_ref": "docs/ONE_SHOT_RESIDENT_STACK_ACTIVATION_MIRROR_HANDOFF.md",
+      "one_shot_stack_request_ref": "control/resident-execution-request.d/one-shot-resident-stack-activation-001.json",
+      "ecosystem_chat_request_ref": "control/resident-execution-request.d/ecosystem-chat-parent-001.json",
+      "ecosystem_chat_request_id": "RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-002",
+      "duplicate_runtime_allowed": false,
+      "duplicate_request_allowed": false,
+      "manual_claim_or_fence_allowed": false,
+      "selection_order": [
+        "derive current HeartBeat reference from the existing oscillator protocol anchor without waiting for a heartbeat process",
+        "if a canonical carrier is present and WorkerCoordinator is absent, reuse carrier-owned WorkerCoordinator self-heal and require a fresh task-capable tick",
+        "reuse existing local-only source refresh before resident-request dispatch",
+        "if resident materialization/source roots are incomplete, reuse the existing one-shot resident stack activation path",
+        "consume the existing Ecosystem Chat resident request",
+        "let the dedicated parent executor independently acquire a fresh fence >22 and continue through TVC, LLM-adapter, and Master Records"
+      ],
+      "authority_effect": "NONE_SOLUTION_SELECTION_ONLY"
+    },
     "targeted_execution": {
       "mode": "DEDICATED_INDEPENDENT_PARENT_ONE_SHOT",
       "entrypoint": "scripts/run_independent_ecosystem_chat_parent.py",
@@ -269,7 +301,7 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "On the existing sovereign resident surface, consume the already-local current source. The portable direct command remains `python scripts/refresh_and_execute_resident_task.py --ecosystem-chat-parent`. When the local source-refresh service is already installed and active, `control/resident-execution-request.d/ecosystem-chat-parent-001.json` may cause one exactly-once attempt through `scripts/consume_resident_execution_request.py`; the singleton `control/resident-execution-request.json` is compatibility-only. The request grants no authority and the dedicated parent executor must still atomically acquire a fresh fence >22, execute the StegVerse-local model -> TVC -> exact LLM-adapter chain, perform same-execution Master Records reconstruction, verify persistent conversational runtime readiness, and release the bounded parent claim truthfully. Hosted CI cannot satisfy this transition.",
+    "next_authorized_action": "Use the existing HB/oscillator runtime remediation chain before treating resident-process absence as a blocker: derive the current HB32 reference without waiting for a heartbeat process; when carrier presence exists but WorkerCoordinator is absent, reuse the existing carrier-owned WorkerCoordinator self-heal and require a fresh task-capable tick; reuse local-only source refresh; if resident materialization/source roots are incomplete, reuse the existing one-shot resident stack activation path; then consume the existing RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-002 request. The portable direct command remains `python scripts/refresh_and_execute_resident_task.py --ecosystem-chat-parent`. The request grants no authority and the dedicated parent executor must still atomically acquire a fresh fence >22, execute the StegVerse-local model -> TVC -> exact LLM-adapter chain, perform same-execution Master Records reconstruction, verify persistent conversational runtime readiness, and release the bounded parent claim truthfully. Hosted CI cannot satisfy this transition. Do not create another heartbeat, oscillator, WorkerCoordinator, scheduler, runtime, resident request, claim, fence, route authority, or reconstruction path.",
     "terminal_when": [
       "real_model_process_observed=true",
       "private_endpoint_only=true",
@@ -290,17 +322,19 @@
     "state": "SOURCE_EXECUTOR_INSTALLED_LIVE_EXECUTION_PENDING",
     "class": "EXECUTION_PENDING",
     "owner": "independent admitted StegVerse task-control executor -> TVC -> LLM-adapter -> Master Records",
-    "problem_statement": "Resident source refresh/request consumption, fresh parent fence >22, terminal same-execution activation receipt, TVC persistence packet, and Site-local runtime import remain unobserved. Downstream source is now merged through Site local import; hosted GitHub writeback persistence has been retired.",
+    "problem_statement": "Authentic resident self-heal/source-refresh/one-shot remediation selection, Ecosystem Chat request consumption, fresh parent fence >22, terminal same-execution activation receipt, TVC persistence packet, and Site-local runtime import remain unobserved. The runtime repair mechanisms already exist and must be selected before any new runtime implementation. Downstream source is merged through Site local import; hosted GitHub writeback persistence has been retired.",
     "solution_required": true,
     "dependency": null,
     "observer": "independent StegVerse task-control",
     "recheck_trigger": "each admitted StegVerse task-control execution opportunity while parent remains HANDOFF_READY",
     "workaround_candidates": [
-      "Use the locally developed stegverse-reference-lm-v1 as the guaranteed zero-external-dependency runtime",
+      "Reuse the existing carrier-owned WorkerCoordinator self-heal when carrier presence exists and worker presence is missing",
+      "Reuse the existing local-only source refresh and one-shot resident stack activation path when resident materialization/source roots are incomplete",
+      "Use the locally developed stegverse-reference-lm-v1 as the guaranteed zero-external-dependency inference runtime",
       "Use a stronger qualifying locally developed or locally installed model while preserving private endpoint/proof semantics",
-      "Move execution to another StegVerse-owned/federated node if the current sovereign surface lacks the materialized workload roots"
+      "Move execution to another StegVerse-owned/federated node only if an admitted existing sovereign surface already exists; do not create a second user-operated machine dependency"
     ],
-    "next_solution_action": "OBSERVE_OR_TRIGGER_EXISTING_SOVEREIGN_RESIDENT_SOURCE_CONSUMPTION_WITHOUT_HOSTED_RUNTIME_AUTHORITY",
+    "next_solution_action": "SELECT_EXISTING_HB_OSCILLATOR_SELF_HEAL_THEN_CONSUME_EXISTING_ECOSYSTEM_CHAT_REQUEST",
     "machine_observable_release_condition": "receipts/ecosystem-chat-sovereign-inference/independent_parent_activation.latest.json state PASS with fresh parent fence >22, same_execution=true, persistent_conversational_runtime_ready=true, provider_usage_reconstruction_pass=true, transition_reconstruction_pass=true, credential_authority=TV/TVC, github_token_required=false and exact proof/route/usage/reconstruction hash bindings",
     "third_party_blocker": false,
     "human_action_required": false
