@@ -2,8 +2,11 @@
   "schema": "stegverse.governed-multilane-manifold-activation/v1",
   "goal": {
     "goal_id": "GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001",
+    "task_id": "GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001",
+    "cosv_id": null,
+    "cosv_registration_state": "UNASSIGNED_BLOCKING_ARCHIVE",
     "objective": "Prove governed multi-lane manifold functionality through authentic subject-bound execution receipts and deterministic reconciliation under existing StegVerse authority partitions.",
-    "state": "GOAL_ESTABLISHED_SOURCE_BOUND_ACTIVATION_EVIDENCE_PENDING"
+    "state": "GOAL_ESTABLISHED_SOURCE_BOUND_COSV_REGISTRATION_PENDING_ACTIVATION_EVIDENCE_PENDING"
   },
   "authority": {
     "coordination": "StegVerse-Labs/.github",
@@ -27,6 +30,7 @@
     "SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001"
   ],
   "activation_predicates": [
+    "task_has_assigned_cosv_id_and_canonical_coordination_registration",
     "two_or_more_distinct_governed_lanes_executed",
     "qualifying_subject_bound_receipt_per_participating_lane",
     "canonical_claim_and_collision_checks_pass",
@@ -39,12 +43,23 @@
   ],
   "current_evidence_state": {
     "source_implementation": "INHERITED_COMPLETE_REQUIRES_CURRENT_REVALIDATION",
+    "cosv_registration": "PENDING",
     "lane_execution_receipts": "UNKNOWN_CURRENT_STATE",
     "reconciliation": "UNKNOWN_CURRENT_STATE",
     "activation": "NOT_PROVEN"
   },
+  "archive_gate": {
+    "archive_ready": false,
+    "blocking_reason": "COSV_ID_UNASSIGNED_AND_CANONICAL_COORDINATION_REGISTRATION_INCOMPLETE",
+    "required_before_archive": [
+      "assign COSV ID",
+      "persist canonical coordination registration/projection",
+      "verify session-unique state is durably transferred under that registered identity"
+    ]
+  },
   "next_actions": [
-    "resolve_current canonical WorkerCoordinator claims/fences and cross-task coordination",
+    "assign COSV ID and persist canonical coordination registration/projection",
+    "resolve current canonical WorkerCoordinator claims/fences and cross-task coordination",
     "discover current qualifying receipts for the initial five-lane cohort",
     "reuse only evidence matching subject binding, producer, schema, scope, execution instance, and freshness",
     "execute only genuinely missing lanes through existing canonical workers",
@@ -53,6 +68,7 @@
     "declare ACTIVATED only after all activation predicates are evidenced"
   ],
   "prohibited": [
+    "archive_thread_before_cosv_registration",
     "create_second_heartbeat",
     "create_parallel_worker_registry",
     "create_parallel_steggate_evaluator",
