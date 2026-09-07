@@ -2,10 +2,10 @@
   "schema": "stegverse.process-worker-adapter-fragment/v0.1",
   "fragment_id": "KIMI-INTR-RESIDENT-ACTIVATION-001",
   "adapters": [{
-    "adapter_ref": "process:kimi-intr-resident-activation-v1",
+    "adapter_ref": "process:kimi-intr-resident-activation-v2",
     "authority_ref": "handoffs/KIMI-INTR-RESIDENT-ACTIVATION-001.json#authority",
     "capabilities": ["kimi_intr_resident_activation"],
-    "command": ["python", "workers/kimi_intr_resident_activation_worker.py"],
+    "command": ["python", "workers/kimi_intr_resident_activation_worker_v2.py"],
     "cwd": ".",
     "enabled": true,
     "env_allowlist": [
@@ -24,6 +24,7 @@
     "notes": [
       "Provider credentials never enter the worker environment; the TVC broker owns Kimi credential resolution.",
       "Master Records authentication/receipt secrets never enter the worker environment; the Master Records local custody broker owns them.",
+      "The v2 worker binds Universal InTr and Governance to the exact TVC/Moonshot provider JSON bytes and preserves the admitted envelope through TVC execution.",
       "Universal InTr TRANSPORT_COMPLETE and StegCore Governance ALLOW are separate mandatory evidence classes.",
       "No hosted runtime, source fetch, second machine, new scheduler, or alternate authority path is admitted."
     ],
