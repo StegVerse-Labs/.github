@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 16,
+  "generation": 17,
   "status": "RUNTIME_PROFILE_GOVERNANCE_REVIEW_SOURCE_BOUND_AUTHENTIC_RUNTIME_PENDING",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -130,74 +130,15 @@
       "parent_task_id": null,
       "goal": "Make StegVerse cryptographically resilient to future cryptographically relevant quantum computers through an evidence-grounded crypto census, crypto agility, hybrid migration, validated post-quantum cryptographic backends, downgrade resistance, historical verification continuity, and standing three-entity awareness without changing the existing authority model.",
       "coordination_state": "PROPOSED",
-      "source_refs": [
-        "docs/QUANTUM_RESILIENCE_MIRROR_HANDOFF.md",
-        "control/quantum-resilience-contract.json",
-        "control/quantum-crypto-census.json",
-        "docs/QUANTUM_RUNTIME_AWARENESS_MIRROR_HANDOFF.md",
-        "docs/QUANTUM_TLS_CONFIDENTIALITY_CENSUS_MIRROR_HANDOFF.md",
-        "docs/QUANTUM_WALLET_SIGNATURE_CENSUS_MIRROR_HANDOFF.md",
-        "docs/QUANTUM_SOFTWARE_UPDATE_PROVENANCE_CENSUS_MIRROR_HANDOFF.md",
-        "StegVerse-Labs/.github#1008",
-        "StegVerse-Labs/.github#1011",
-        "StegVerse-Labs/.github#1013",
-        "StegVerse-Labs/.github#1014",
-        "StegVerse-Labs/.github#1019",
-        "StegVerse-Labs/.github#1022",
-        "StegVerse-Labs/StegID#9",
-        "StegVerse-Labs/TVC#320",
-        "StegVerse-Labs/TVC#322",
-        "StegVerse-Labs/continuity-vault-kit#187",
-        "StegVerse-Labs/Site#1027"
-      ],
-      "targets": {
-        "organizations": ["StegVerse-Labs"],
-        "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegID", "StegVerse-Labs/TVC", "StegVerse-Labs/continuity-vault-kit", "StegVerse-Labs/Site"],
-        "components": ["quantum-crypto-census", "quantum-runtime-awareness", "continuity-receipt-signatures", "device-node-identity", "skap-key-establishment", "tls-webpki", "wallet-signatures", "software-update-provenance", "long-lived-confidentiality", "adversarial-crypto-migration-tests"]
-      },
-      "dependencies": [
-        {"dependency_id": "DEP-QUANTUM-RESIDENT-AWARENESS", "kind": "RUNTIME_PREDICATE", "state": "UNRESOLVED", "ref": "docs/QUANTUM_RUNTIME_AWARENESS_MIRROR_HANDOFF.md"},
-        {"dependency_id": "DEP-QUANTUM-DEVICE-NODE-CENSUS", "kind": "TASK", "state": "UNRESOLVED", "ref": "StegVerse-Labs/.github#1022"},
-        {"dependency_id": "DEP-QUANTUM-LONG-LIVED-CONFIDENTIALITY-CENSUS", "kind": "TASK", "state": "UNRESOLVED", "ref": "StegVerse-Labs/.github#1014"},
-        {"dependency_id": "DEP-QUANTUM-STEGID-MLDSA", "kind": "TASK", "state": "UNRESOLVED", "ref": "StegVerse-Labs/StegID#9"},
-        {"dependency_id": "DEP-QUANTUM-TVC-MLDSA", "kind": "TASK", "state": "UNRESOLVED", "ref": "StegVerse-Labs/TVC#320"},
-        {"dependency_id": "DEP-QUANTUM-SKAP-MLKEM", "kind": "TASK", "state": "UNRESOLVED", "ref": "StegVerse-Labs/continuity-vault-kit#187;StegVerse-Labs/TVC#322"}
-      ],
+      "source_refs": ["docs/QUANTUM_RESILIENCE_MIRROR_HANDOFF.md", "control/quantum-resilience-contract.json", "control/quantum-crypto-census.json", "docs/QUANTUM_RUNTIME_AWARENESS_MIRROR_HANDOFF.md", "docs/QUANTUM_TLS_CONFIDENTIALITY_CENSUS_MIRROR_HANDOFF.md", "docs/QUANTUM_WALLET_SIGNATURE_CENSUS_MIRROR_HANDOFF.md", "docs/QUANTUM_SOFTWARE_UPDATE_PROVENANCE_CENSUS_MIRROR_HANDOFF.md", "StegVerse-Labs/.github#1008", "StegVerse-Labs/.github#1011", "StegVerse-Labs/.github#1013", "StegVerse-Labs/.github#1014", "StegVerse-Labs/.github#1019", "StegVerse-Labs/.github#1022", "StegVerse-Labs/StegID#9", "StegVerse-Labs/TVC#320", "StegVerse-Labs/TVC#322", "StegVerse-Labs/continuity-vault-kit#187", "StegVerse-Labs/Site#1027"],
+      "targets": {"organizations": ["StegVerse-Labs"], "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegID", "StegVerse-Labs/TVC", "StegVerse-Labs/continuity-vault-kit", "StegVerse-Labs/Site"], "components": ["quantum-crypto-census", "quantum-runtime-awareness", "continuity-receipt-signatures", "device-node-identity", "skap-key-establishment", "tls-webpki", "wallet-signatures", "software-update-provenance", "long-lived-confidentiality", "adversarial-crypto-migration-tests"]},
+      "dependencies": [{"dependency_id": "DEP-QUANTUM-RESIDENT-AWARENESS", "kind": "RUNTIME_PREDICATE", "state": "UNRESOLVED", "ref": "docs/QUANTUM_RUNTIME_AWARENESS_MIRROR_HANDOFF.md"}, {"dependency_id": "DEP-QUANTUM-DEVICE-NODE-CENSUS", "kind": "TASK", "state": "UNRESOLVED", "ref": "StegVerse-Labs/.github#1022"}, {"dependency_id": "DEP-QUANTUM-LONG-LIVED-CONFIDENTIALITY-CENSUS", "kind": "TASK", "state": "UNRESOLVED", "ref": "StegVerse-Labs/.github#1014"}, {"dependency_id": "DEP-QUANTUM-STEGID-MLDSA", "kind": "TASK", "state": "UNRESOLVED", "ref": "StegVerse-Labs/StegID#9"}, {"dependency_id": "DEP-QUANTUM-TVC-MLDSA", "kind": "TASK", "state": "UNRESOLVED", "ref": "StegVerse-Labs/TVC#320"}, {"dependency_id": "DEP-QUANTUM-SKAP-MLKEM", "kind": "TASK", "state": "UNRESOLVED", "ref": "StegVerse-Labs/continuity-vault-kit#187;StegVerse-Labs/TVC#322"}],
       "blockers": [],
       "systemic_incident_ref": null,
       "adjacent_task_refs": ["STEGVERSE-CANONICAL-WORK-COORDINATION-001", "CANONICAL-RESIDENT-CARRIER-974", "ASTRA-CLASS-RESILIENCE-001"],
-      "existing_evidence_refs": [
-        "docs/QUANTUM_RESILIENCE_MIRROR_HANDOFF.md",
-        "control/quantum-resilience-contract.json",
-        "control/quantum-crypto-census.json",
-        "StegVerse-Labs/StegID#10@8ed1bd6f2ec35447bc1f3fd1ac922a717ce1b060",
-        "StegVerse-Labs/TVC#321@c743cebae4452fcbad7abcc7b40448953a9c5422",
-        "StegVerse-Labs/.github#1016@ed936a020f540b8ba0b66e0156e608a9711235fe",
-        "StegVerse-Labs/.github#1017@ef1a26a3e5aa42a518c08f93fd62ff621c9efd2e",
-        "StegVerse-Labs/.github#1018@328e1846ba50b62ee5251bcac316f9c2efd0e847",
-        "StegVerse-Labs/.github#1020@ef6ade876f5d1ec5e0de5dc8d555b73ed2013c57",
-        "StegVerse-Labs/.github#1021@525227de4164bc4cc55ee99b6ec2677cd8bf1889"
-      ],
-      "expected_evidence_predicates": [
-        "QUANTUM_CONTRACT_SOURCE_VALID",
-        "CRYPTO_CENSUS_NO_CRITICAL_UNBOUNDED_SURFACE",
-        "VALIDATED_ML_DSA_BACKEND_EVIDENCE",
-        "VALIDATED_ML_KEM_OR_HYBRID_KEY_ESTABLISHMENT_EVIDENCE",
-        "DOWNGRADE_ROLLBACK_STALE_KEY_DEPRECATED_ALGORITHM_FAIL_CLOSED",
-        "HISTORICAL_RECEIPT_RELEASE_VERIFICATION_CONTINUITY",
-        "HARVEST_NOW_DECRYPT_LATER_DISPOSITION_COMPLETE",
-        "AUTHENTIC_QUANTUM_STANDING_AWARENESS_OBSERVED",
-        "AUTHENTIC_MASTER_RECORDS_RECONCILIATION_OBSERVED",
-        "AUTHENTIC_TASK_EGRESS_OR_CLOSURE_OBSERVED"
-      ],
-      "runtime_requirements": {
-        "capabilities": ["canonical_artifact_validation", "bounded_process_execution", "task_registry_reconciliation", "master_records_reconciliation"],
-        "environment": "SOVEREIGN_RESIDENT_AND_SOURCE_VALIDATION",
-        "direction": "INTERNAL",
-        "mutation_required": true,
-        "deployment_required": false,
-        "current_observation_required": true
-      },
+      "existing_evidence_refs": ["docs/QUANTUM_RESILIENCE_MIRROR_HANDOFF.md", "control/quantum-resilience-contract.json", "control/quantum-crypto-census.json", "StegVerse-Labs/StegID#10@8ed1bd6f2ec35447bc1f3fd1ac922a717ce1b060", "StegVerse-Labs/TVC#321@c743cebae4452fcbad7abcc7b40448953a9c5422", "StegVerse-Labs/.github#1016@ed936a020f540b8ba0b66e0156e608a9711235fe", "StegVerse-Labs/.github#1017@ef1a26a3e5aa42a518c08f93fd62ff621c9efd2e", "StegVerse-Labs/.github#1018@328e1846ba50b62ee5251bcac316f9c2efd0e847", "StegVerse-Labs/.github#1020@ef6ade876f5d1ec5e0de5dc8d555b73ed2013c57", "StegVerse-Labs/.github#1021@525227de4164bc4cc55ee99b6ec2677cd8bf1889"],
+      "expected_evidence_predicates": ["QUANTUM_CONTRACT_SOURCE_VALID", "CRYPTO_CENSUS_NO_CRITICAL_UNBOUNDED_SURFACE", "VALIDATED_ML_DSA_BACKEND_EVIDENCE", "VALIDATED_ML_KEM_OR_HYBRID_KEY_ESTABLISHMENT_EVIDENCE", "DOWNGRADE_ROLLBACK_STALE_KEY_DEPRECATED_ALGORITHM_FAIL_CLOSED", "HISTORICAL_RECEIPT_RELEASE_VERIFICATION_CONTINUITY", "HARVEST_NOW_DECRYPT_LATER_DISPOSITION_COMPLETE", "AUTHENTIC_QUANTUM_STANDING_AWARENESS_OBSERVED", "AUTHENTIC_MASTER_RECORDS_RECONCILIATION_OBSERVED", "AUTHENTIC_TASK_EGRESS_OR_CLOSURE_OBSERVED"],
+      "runtime_requirements": {"capabilities": ["canonical_artifact_validation", "bounded_process_execution", "task_registry_reconciliation", "master_records_reconciliation"], "environment": "SOVEREIGN_RESIDENT_AND_SOURCE_VALIDATION", "direction": "INTERNAL", "mutation_required": true, "deployment_required": false, "current_observation_required": true},
       "runtime_resolution": null,
       "worker_claim": {"authority": "WORKERCOORDINATOR", "claim_ref": null, "fence_ref": null, "projection_only": true},
       "human_action_ref": null,
@@ -214,65 +155,21 @@
       "parent_task_id": null,
       "goal": "Execute the already-authorized bounded independent reconstruction/review of finalized OpenAI, Anthropic, and DeepSeek consumer-surface economic-transparency findings from the existing hash-bound review package, preserving surface-specific scope and emitting only a review recommendation receipt.",
       "coordination_state": "PROPOSED",
-      "source_refs": [
-        "handoffs/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json",
-        "control/worker-registry.d/erl-ai-economic-transparency-review-001.json",
-        "control/process-worker-adapters.d/erl-ai-economic-transparency-review-001.json",
-        "control/task-vectors/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json",
-        "control/resident-execution-request.d/erl-ai-economic-transparency-review-001.json",
-        "review-packages/erl-ai-economic-transparency-001/manifest.json",
-        "docs/ERL_AI_ECONOMIC_TRANSPARENCY_REVIEW_WORKER_MIRROR_HANDOFF.md",
-        "docs/ERL_AI_ECONOMIC_TRANSPARENCY_REVIEW_RUNTIME_PRESENCE_EVIDENCE.md",
-        "StegVerse-Labs/Executive_Rhetoric_Ledger:docs/AI_ECONOMIC_TRANSPARENCY_MIRROR_HANDOFF.md",
-        "StegVerse-Labs/Executive_Rhetoric_Ledger:task-state/ERL-AI-ECON-TRANSPARENCY-001.json",
-        "StegVerse-Labs/Executive_Rhetoric_Ledger:task-state/evidence/ERL-AI-ECON-TRANSPARENCY-001.resident-review-evidence-boundary.2026-09-05.json",
-        "StegVerse-Labs/Executive_Rhetoric_Ledger:task-state/evidence/ERL-AI-ECON-TRANSPARENCY-001.archive-readiness.2026-09-05.json"
-      ],
-      "targets": {
-        "organizations": ["StegVerse-Labs", "master-records"],
-        "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/Executive_Rhetoric_Ledger", "master-records/orchestration"],
-        "components": ["erl-ai-economic-transparency-independent-review", "resident-review-dispatch", "canonical-task-coordination", "master-records-reconciliation"]
-      },
-      "dependencies": [
-        {"dependency_id": "DEP-ERL-RESIDENT-WORKER-PRESENCE", "kind": "RUNTIME_PREDICATE", "state": "UNRESOLVED", "ref": "receipts/sovereign-host/runtime-presence.latest.json"}
-      ],
-      "blockers": [
-        {"blocker_id": "BLOCK-ERL-RESIDENT-WORKER-PRESENCE", "dependency_id": "DEP-ERL-RESIDENT-WORKER-PRESENCE", "reason": "Authentic present resident WorkerCoordinator runtime presence is not observed; historical worker state and source readiness do not prove present execution."}
-      ],
+      "source_refs": ["handoffs/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json", "control/worker-registry.d/erl-ai-economic-transparency-review-001.json", "control/process-worker-adapters.d/erl-ai-economic-transparency-review-001.json", "control/task-vectors/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json", "control/resident-execution-request.d/erl-ai-economic-transparency-review-001.json", "review-packages/erl-ai-economic-transparency-001/manifest.json", "docs/ERL_AI_ECONOMIC_TRANSPARENCY_REVIEW_WORKER_MIRROR_HANDOFF.md", "docs/ERL_AI_ECONOMIC_TRANSPARENCY_REVIEW_RUNTIME_PRESENCE_EVIDENCE.md", "StegVerse-Labs/Executive_Rhetoric_Ledger:docs/AI_ECONOMIC_TRANSPARENCY_MIRROR_HANDOFF.md", "StegVerse-Labs/Executive_Rhetoric_Ledger:task-state/ERL-AI-ECON-TRANSPARENCY-001.json", "StegVerse-Labs/Executive_Rhetoric_Ledger:task-state/evidence/ERL-AI-ECON-TRANSPARENCY-001.resident-review-evidence-boundary.2026-09-05.json", "StegVerse-Labs/Executive_Rhetoric_Ledger:task-state/evidence/ERL-AI-ECON-TRANSPARENCY-001.archive-readiness.2026-09-05.json"],
+      "targets": {"organizations": ["StegVerse-Labs", "master-records"], "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/Executive_Rhetoric_Ledger", "master-records/orchestration"], "components": ["erl-ai-economic-transparency-independent-review", "resident-review-dispatch", "canonical-task-coordination", "master-records-reconciliation"]},
+      "dependencies": [{"dependency_id": "DEP-ERL-RESIDENT-WORKER-PRESENCE", "kind": "RUNTIME_PREDICATE", "state": "UNRESOLVED", "ref": "receipts/sovereign-host/runtime-presence.latest.json"}],
+      "blockers": [{"blocker_id": "BLOCK-ERL-RESIDENT-WORKER-PRESENCE", "dependency_id": "DEP-ERL-RESIDENT-WORKER-PRESENCE", "reason": "Authentic present resident WorkerCoordinator runtime presence is not observed; historical worker state and source readiness do not prove present execution."}],
       "systemic_incident_ref": null,
       "adjacent_task_refs": ["STEGVERSE-CANONICAL-WORK-COORDINATION-001"],
-      "existing_evidence_refs": [
-        "handoffs/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json",
-        "control/worker-registry.d/erl-ai-economic-transparency-review-001.json",
-        "control/resident-execution-request.d/erl-ai-economic-transparency-review-001.json",
-        "review-packages/erl-ai-economic-transparency-001/manifest.json",
-        "StegVerse-Labs/Executive_Rhetoric_Ledger:task-state/evidence/ERL-AI-ECON-TRANSPARENCY-001.resident-review-evidence-boundary.2026-09-05.json",
-        "StegVerse-Labs/Executive_Rhetoric_Ledger:task-state/evidence/ERL-AI-ECON-TRANSPARENCY-001.archive-readiness.2026-09-05.json"
-      ],
-      "expected_evidence_predicates": [
-        "AUTHENTIC_RESIDENT_WORKER_RUNTIME_PRESENCE_OBSERVED",
-        "AUTHENTIC_RESIDENT_REQUEST_DISPATCH_OBSERVED",
-        "AUTHENTIC_ERL_REVIEW_REQUEST_CONSUMPTION_OBSERVED",
-        "AUTHENTIC_ERL_TARGETED_EXECUTION_OBSERVED",
-        "AUTHENTIC_ERL_INDEPENDENT_REVIEW_RECEIPT_OBSERVED"
-      ],
-      "runtime_requirements": {
-        "capabilities": ["runtime_observation", "bounded_process_execution", "evidence_class_preservation"],
-        "environment": "SOVEREIGN_RESIDENT",
-        "direction": "INTERNAL",
-        "mutation_required": true,
-        "deployment_required": false,
-        "current_observation_required": true
-      },
+      "existing_evidence_refs": ["handoffs/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json", "control/worker-registry.d/erl-ai-economic-transparency-review-001.json", "control/resident-execution-request.d/erl-ai-economic-transparency-review-001.json", "review-packages/erl-ai-economic-transparency-001/manifest.json", "StegVerse-Labs/Executive_Rhetoric_Ledger:task-state/evidence/ERL-AI-ECON-TRANSPARENCY-001.resident-review-evidence-boundary.2026-09-05.json", "StegVerse-Labs/Executive_Rhetoric_Ledger:task-state/evidence/ERL-AI-ECON-TRANSPARENCY-001.archive-readiness.2026-09-05.json"],
+      "expected_evidence_predicates": ["AUTHENTIC_RESIDENT_WORKER_RUNTIME_PRESENCE_OBSERVED", "AUTHENTIC_RESIDENT_REQUEST_DISPATCH_OBSERVED", "AUTHENTIC_ERL_REVIEW_REQUEST_CONSUMPTION_OBSERVED", "AUTHENTIC_ERL_TARGETED_EXECUTION_OBSERVED", "AUTHENTIC_ERL_INDEPENDENT_REVIEW_RECEIPT_OBSERVED"],
+      "runtime_requirements": {"capabilities": ["runtime_observation", "bounded_process_execution", "evidence_class_preservation"], "environment": "SOVEREIGN_RESIDENT", "direction": "INTERNAL", "mutation_required": true, "deployment_required": false, "current_observation_required": true},
       "runtime_resolution": null,
       "worker_claim": {"authority": "WORKERCOORDINATOR", "claim_ref": null, "fence_ref": null, "projection_only": true},
       "human_action_ref": null,
       "completion": {"claimed": false, "validated": false, "reconciliation_ref": null},
       "allowed_next_transitions": ["INGRESS_ADMITTED"],
-      "handoff_projection_refs": [
-        "docs/ERL_AI_ECONOMIC_TRANSPARENCY_REVIEW_WORKER_MIRROR_HANDOFF.md",
-        "StegVerse-Labs/Executive_Rhetoric_Ledger:docs/AI_ECONOMIC_TRANSPARENCY_MIRROR_HANDOFF.md"
-      ],
+      "handoff_projection_refs": ["docs/ERL_AI_ECONOMIC_TRANSPARENCY_REVIEW_WORKER_MIRROR_HANDOFF.md", "StegVerse-Labs/Executive_Rhetoric_Ledger:docs/AI_ECONOMIC_TRANSPARENCY_MIRROR_HANDOFF.md"],
       "authority_model": {"task_registry_mints_execution_authority": false, "source_state_proves_execution": false, "worker_claim_authority": "WORKERCOORDINATOR", "master_records_reality_authority": true, "interlock_intr_required_for_governed_ingress_egress": true}
     },
     {
@@ -283,66 +180,21 @@
       "parent_task_id": null,
       "goal": "Complete canonical source-object provenance continuity by executing the already-merged governed displayed-surface ingress with authentic event/receipt identity, binding real downstream derivation edges, retaining and reconstructing the exact lineage in Master Records, and exposing projection-only forward/backward navigation without creating competing provenance authority.",
       "coordination_state": "PROPOSED",
-      "source_refs": [
-        "control/cross-task-coordination.d/object-provenance-continuity-190.json",
-        "StegVerse-Labs/StegOS#190",
-        "StegVerse-Labs/StegOS:docs/OBJECT_PROVENANCE_CONTINUITY_MIRROR_HANDOFF.md",
-        "StegVerse-Labs/StegOS@b76b912cf48ad381a0c705cc62aef015fd8f0351",
-        "StegVerse-Labs/StegOS@c3df97861d281dceae06fb1cf5d2de9f669289f7",
-        "master-records/orchestration#74",
-        "master-records/orchestration:docs/OBJECT_PROVENANCE_CUSTODY_MIRROR_HANDOFF.md",
-        "master-records/orchestration@9fd33842d2efca505c01c29c69c65256f03a8dca",
-        "StegVerse-Labs/.github#1026"
-      ],
-      "targets": {
-        "organizations": ["StegVerse-Labs", "master-records"],
-        "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegOS", "master-records/orchestration"],
-        "components": ["canonical-task-coordination", "object-provenance-continuity", "displayed-surface-provenance-ingress", "universal-interlock-intr", "master-records-custody-reconstruction", "workspace-projection"]
-      },
-      "dependencies": [
-        {"dependency_id": "DEP-OBJECT-PROVENANCE-SOURCE-MERGED", "kind": "CAPABILITY", "state": "RESOLVED", "ref": "StegVerse-Labs/StegOS@b76b912cf48ad381a0c705cc62aef015fd8f0351"},
-        {"dependency_id": "DEP-OBJECT-PROVENANCE-DISPLAYED-SURFACE-INGRESS-MERGED", "kind": "CAPABILITY", "state": "RESOLVED", "ref": "StegVerse-Labs/StegOS@c3df97861d281dceae06fb1cf5d2de9f669289f7"},
-        {"dependency_id": "DEP-OBJECT-PROVENANCE-MASTER-RECORDS-CUSTODY-SOURCE", "kind": "CAPABILITY", "state": "RESOLVED", "ref": "master-records/orchestration@9fd33842d2efca505c01c29c69c65256f03a8dca"}
-      ],
+      "source_refs": ["control/cross-task-coordination.d/object-provenance-continuity-190.json", "StegVerse-Labs/StegOS#190", "StegVerse-Labs/StegOS:docs/OBJECT_PROVENANCE_CONTINUITY_MIRROR_HANDOFF.md", "StegVerse-Labs/StegOS@b76b912cf48ad381a0c705cc62aef015fd8f0351", "StegVerse-Labs/StegOS@c3df97861d281dceae06fb1cf5d2de9f669289f7", "master-records/orchestration#74", "master-records/orchestration:docs/OBJECT_PROVENANCE_CUSTODY_MIRROR_HANDOFF.md", "master-records/orchestration@9fd33842d2efca505c01c29c69c65256f03a8dca", "StegVerse-Labs/.github#1026"],
+      "targets": {"organizations": ["StegVerse-Labs", "master-records"], "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegOS", "master-records/orchestration"], "components": ["canonical-task-coordination", "object-provenance-continuity", "displayed-surface-provenance-ingress", "universal-interlock-intr", "master-records-custody-reconstruction", "workspace-projection"]},
+      "dependencies": [{"dependency_id": "DEP-OBJECT-PROVENANCE-SOURCE-MERGED", "kind": "CAPABILITY", "state": "RESOLVED", "ref": "StegVerse-Labs/StegOS@b76b912cf48ad381a0c705cc62aef015fd8f0351"}, {"dependency_id": "DEP-OBJECT-PROVENANCE-DISPLAYED-SURFACE-INGRESS-MERGED", "kind": "CAPABILITY", "state": "RESOLVED", "ref": "StegVerse-Labs/StegOS@c3df97861d281dceae06fb1cf5d2de9f669289f7"}, {"dependency_id": "DEP-OBJECT-PROVENANCE-MASTER-RECORDS-CUSTODY-SOURCE", "kind": "CAPABILITY", "state": "RESOLVED", "ref": "master-records/orchestration@9fd33842d2efca505c01c29c69c65256f03a8dca"}],
       "blockers": [],
       "systemic_incident_ref": null,
       "adjacent_task_refs": ["STEGVERSE-CANONICAL-WORK-COORDINATION-001", "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"],
-      "existing_evidence_refs": [
-        "control/cross-task-coordination.d/object-provenance-continuity-190.json",
-        "StegVerse-Labs/StegOS@b76b912cf48ad381a0c705cc62aef015fd8f0351",
-        "StegVerse-Labs/StegOS@c3df97861d281dceae06fb1cf5d2de9f669289f7",
-        "master-records/orchestration@9fd33842d2efca505c01c29c69c65256f03a8dca"
-      ],
-      "expected_evidence_predicates": [
-        "OBJECT_PROVENANCE_SOURCE_MERGED",
-        "OBJECT_PROVENANCE_DISPLAYED_SURFACE_INGRESS_MERGED",
-        "OBJECT_PROVENANCE_MASTER_RECORDS_CUSTODY_SOURCE_MERGED",
-        "AUTHENTIC_TASK_INGRESS_OBSERVED",
-        "AUTHENTIC_OBJECT_PROVENANCE_INGRESS_OBSERVED",
-        "AUTHENTIC_RECEIPT_BOUND_DERIVATION_OBSERVED",
-        "AUTHENTIC_MASTER_RECORDS_OBJECT_PROVENANCE_CUSTODY_OBSERVED",
-        "AUTHENTIC_MASTER_RECORDS_OBJECT_PROVENANCE_RECONSTRUCTION_OBSERVED",
-        "AUTHENTIC_REVERSE_SOURCE_RESOLUTION_OBSERVED",
-        "WORKSPACE_PROJECTION_ONLY_NAVIGATION_OBSERVED",
-        "AUTHENTIC_TASK_EGRESS_OR_CLOSURE_OBSERVED"
-      ],
-      "runtime_requirements": {
-        "capabilities": ["intr_task_admission", "bounded_process_execution", "canonical_artifact_validation", "master_records_reconciliation"],
-        "environment": "USER_DEVICE_AND_SOVEREIGN_RESIDENT",
-        "direction": "INGRESS_AND_INTERNAL",
-        "mutation_required": true,
-        "deployment_required": false,
-        "current_observation_required": true
-      },
+      "existing_evidence_refs": ["control/cross-task-coordination.d/object-provenance-continuity-190.json", "StegVerse-Labs/StegOS@b76b912cf48ad381a0c705cc62aef015fd8f0351", "StegVerse-Labs/StegOS@c3df97861d281dceae06fb1cf5d2de9f669289f7", "master-records/orchestration@9fd33842d2efca505c01c29c69c65256f03a8dca"],
+      "expected_evidence_predicates": ["OBJECT_PROVENANCE_SOURCE_MERGED", "OBJECT_PROVENANCE_DISPLAYED_SURFACE_INGRESS_MERGED", "OBJECT_PROVENANCE_MASTER_RECORDS_CUSTODY_SOURCE_MERGED", "AUTHENTIC_TASK_INGRESS_OBSERVED", "AUTHENTIC_OBJECT_PROVENANCE_INGRESS_OBSERVED", "AUTHENTIC_RECEIPT_BOUND_DERIVATION_OBSERVED", "AUTHENTIC_MASTER_RECORDS_OBJECT_PROVENANCE_CUSTODY_OBSERVED", "AUTHENTIC_MASTER_RECORDS_OBJECT_PROVENANCE_RECONSTRUCTION_OBSERVED", "AUTHENTIC_REVERSE_SOURCE_RESOLUTION_OBSERVED", "WORKSPACE_PROJECTION_ONLY_NAVIGATION_OBSERVED", "AUTHENTIC_TASK_EGRESS_OR_CLOSURE_OBSERVED"],
+      "runtime_requirements": {"capabilities": ["intr_task_admission", "bounded_process_execution", "canonical_artifact_validation", "master_records_reconciliation"], "environment": "USER_DEVICE_AND_SOVEREIGN_RESIDENT", "direction": "INGRESS_AND_INTERNAL", "mutation_required": true, "deployment_required": false, "current_observation_required": true},
       "runtime_resolution": null,
       "worker_claim": {"authority": "WORKERCOORDINATOR", "claim_ref": null, "fence_ref": null, "projection_only": true},
       "human_action_ref": null,
       "completion": {"claimed": false, "validated": false, "reconciliation_ref": null},
       "allowed_next_transitions": ["INGRESS_ADMITTED"],
-      "handoff_projection_refs": [
-        "StegVerse-Labs/StegOS:docs/OBJECT_PROVENANCE_CONTINUITY_MIRROR_HANDOFF.md",
-        "master-records/orchestration:docs/OBJECT_PROVENANCE_CUSTODY_MIRROR_HANDOFF.md"
-      ],
+      "handoff_projection_refs": ["StegVerse-Labs/StegOS:docs/OBJECT_PROVENANCE_CONTINUITY_MIRROR_HANDOFF.md", "master-records/orchestration:docs/OBJECT_PROVENANCE_CUSTODY_MIRROR_HANDOFF.md"],
       "authority_model": {"task_registry_mints_execution_authority": false, "source_state_proves_execution": false, "worker_claim_authority": "WORKERCOORDINATOR", "master_records_reality_authority": true, "interlock_intr_required_for_governed_ingress_egress": true}
     },
     {
@@ -353,78 +205,56 @@
       "parent_task_id": null,
       "goal": "Complete governed goal-oriented Coinbase live trading activation by consuming the existing CryptoBot HB/InTr resident runtime profile, authenticating the current-iPhone TVC/SKAP provider boundary, obtaining the StegFin bounded-live decision, executing and reconciling the first max-$10 ETH-USD post-only maker proof, and retaining a second bounded-cycle repeat-loop proof without adding another runtime, scheduler, credential authority, or provider path.",
       "coordination_state": "PROPOSED",
-      "source_refs": [
-        "docs/CRYPTO_LIVE_AUTO_CANONICAL_WORK_MIRROR_HANDOFF.md",
-        "control/cross-task-coordination.d/crypto-live-auto-001-canonical-work-ingress.json",
-        "control/resident-execution-request.d/canonical-work-crypto-live-auto-001.json",
-        "StegVerse-Labs/crypto-bot/claims/CRYPTO-LIVE-AUTO-001.claim.json",
-        "StegVerse-Labs/crypto-bot/docs/LIVE_TRADING_AUTOMATION_MIRROR_HANDOFF.md",
-        "StegVerse-Labs/crypto-bot/docs/HB_INTR_RUNTIME_CONSUMPTION_MIRROR_HANDOFF.md",
-        "StegVerse-Labs/crypto-bot/config/runtime-profile.json",
-        "StegVerse-Labs/TVC#119",
-        "StegVerse-Labs/stegfin-governance#84"
-      ],
-      "targets": {
-        "organizations": ["StegVerse-Labs", "master-records"],
-        "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/crypto-bot", "StegVerse-Labs/TVC", "StegVerse-Labs/stegfin-governance", "master-records/orchestration"],
-        "components": ["canonical-task-coordination", "crypto-bot-goal-trading", "hb-intr-resident-runtime", "tvc-current-iphone-skap-coinbase", "stegfin-bounded-live-gate", "coinbase-advanced-trade-bounded-proof", "master-records-reconciliation"]
-      },
-      "dependencies": [
-        {"dependency_id": "DEP-CRYPTO-CANONICAL-WORK-INGRESS", "kind": "RUNTIME_PREDICATE", "state": "UNRESOLVED", "ref": "receipts/sovereign-host/canonical-work-crypto-live-auto-request-consumption.latest.json"},
-        {"dependency_id": "DEP-CRYPTO-TVC-CURRENT-IPHONE-ACTIVATION", "kind": "TASK", "state": "UNRESOLVED", "ref": "StegVerse-Labs/TVC#119"},
-        {"dependency_id": "DEP-CRYPTO-STEGFIN-BOUNDED-LIVE-DECISION", "kind": "TASK", "state": "UNRESOLVED", "ref": "StegVerse-Labs/stegfin-governance#84"},
-        {"dependency_id": "DEP-CRYPTO-MASTER-RECORDS-RECONCILIATION", "kind": "RUNTIME_PREDICATE", "state": "UNRESOLVED", "ref": "master-records/orchestration/CANONICAL_WORK_COORDINATION_CUSTODY_MIRROR_HANDOFF.md"}
-      ],
+      "source_refs": ["docs/CRYPTO_LIVE_AUTO_CANONICAL_WORK_MIRROR_HANDOFF.md", "control/cross-task-coordination.d/crypto-live-auto-001-canonical-work-ingress.json", "control/resident-execution-request.d/canonical-work-crypto-live-auto-001.json", "StegVerse-Labs/crypto-bot/claims/CRYPTO-LIVE-AUTO-001.claim.json", "StegVerse-Labs/crypto-bot/docs/LIVE_TRADING_AUTOMATION_MIRROR_HANDOFF.md", "StegVerse-Labs/crypto-bot/docs/HB_INTR_RUNTIME_CONSUMPTION_MIRROR_HANDOFF.md", "StegVerse-Labs/crypto-bot/config/runtime-profile.json", "StegVerse-Labs/TVC#119", "StegVerse-Labs/stegfin-governance#84"],
+      "targets": {"organizations": ["StegVerse-Labs", "master-records"], "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/crypto-bot", "StegVerse-Labs/TVC", "StegVerse-Labs/stegfin-governance", "master-records/orchestration"], "components": ["canonical-task-coordination", "crypto-bot-goal-trading", "hb-intr-resident-runtime", "tvc-current-iphone-skap-coinbase", "stegfin-bounded-live-gate", "coinbase-advanced-trade-bounded-proof", "master-records-reconciliation"]},
+      "dependencies": [{"dependency_id": "DEP-CRYPTO-CANONICAL-WORK-INGRESS", "kind": "RUNTIME_PREDICATE", "state": "UNRESOLVED", "ref": "receipts/sovereign-host/canonical-work-crypto-live-auto-request-consumption.latest.json"}, {"dependency_id": "DEP-CRYPTO-TVC-CURRENT-IPHONE-ACTIVATION", "kind": "TASK", "state": "UNRESOLVED", "ref": "StegVerse-Labs/TVC#119"}, {"dependency_id": "DEP-CRYPTO-STEGFIN-BOUNDED-LIVE-DECISION", "kind": "TASK", "state": "UNRESOLVED", "ref": "StegVerse-Labs/stegfin-governance#84"}, {"dependency_id": "DEP-CRYPTO-MASTER-RECORDS-RECONCILIATION", "kind": "RUNTIME_PREDICATE", "state": "UNRESOLVED", "ref": "master-records/orchestration/CANONICAL_WORK_COORDINATION_CUSTODY_MIRROR_HANDOFF.md"}],
       "blockers": [],
       "systemic_incident_ref": null,
       "adjacent_task_refs": ["STEGVERSE-CANONICAL-WORK-COORDINATION-001", "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"],
-      "existing_evidence_refs": [
-        "StegVerse-Labs/crypto-bot/claims/CRYPTO-LIVE-AUTO-001.claim.json",
-        "StegVerse-Labs/crypto-bot/config/runtime-profile.json",
-        "StegVerse-Labs/crypto-bot@51ca907608c2d9ebdbfc1a2cdcdc40d03f1c4b93",
-        "StegVerse-Labs/StegIndex@79588149e0e2c4f5d08d05db857ec1f5717e42ee",
-        "StegVerse-Labs/TVC#119",
-        "StegVerse-Labs/stegfin-governance#84",
-        "control/canonical-resident-carrier-contract.json",
-        "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md"
-      ],
-      "expected_evidence_predicates": [
-        "CRYPTO_RUNTIME_PROFILE_SOURCE_VALID",
-        "CANONICAL_WORK_REQUEST_STAGED",
-        "AUTHENTIC_CRYPTO_CANONICAL_WORK_INGRESS_OBSERVED",
-        "AUTHENTIC_MASTER_RECORDS_RECONCILIATION_OBSERVED",
-        "AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
-        "AUTHENTIC_TVC_CURRENT_IPHONE_SKAP_PROVIDER_EVIDENCE_OBSERVED",
-        "STEGFIN_APPROVE_LIMITED_RUNTIME_SCOPE_OBSERVED",
-        "AUTHENTIC_FIRST_MAX_10_ETH_USD_POST_ONLY_ORDER_OBSERVED",
-        "AUTHENTIC_FILL_FEE_RECONCILIATION_OBSERVED",
-        "AUTHENTIC_NEXT_PORTFOLIO_SNAPSHOT_OBSERVED",
-        "AUTHENTIC_SECOND_BOUNDED_CYCLE_REPEAT_PROOF_OBSERVED",
-        "AUTHENTIC_TASK_EGRESS_OR_CLOSURE_OBSERVED"
-      ],
-      "runtime_requirements": {
-        "capabilities": ["intr_task_admission", "task_registry_reconciliation", "master_records_reconciliation", "worker_claim_projection", "bounded_process_execution", "tvc_coinbase_provider_operation", "stegfin_bounded_live_governance"],
-        "environment": "CURRENT_USER_IPHONE_AND_SOVEREIGN_RESIDENT",
-        "direction": "INGRESS_AND_INTERNAL_AND_PROVIDER",
-        "mutation_required": true,
-        "deployment_required": false,
-        "current_observation_required": true
-      },
+      "existing_evidence_refs": ["StegVerse-Labs/crypto-bot/claims/CRYPTO-LIVE-AUTO-001.claim.json", "StegVerse-Labs/crypto-bot/config/runtime-profile.json", "StegVerse-Labs/crypto-bot@51ca907608c2d9ebdbfc1a2cdcdc40d03f1c4b93", "StegVerse-Labs/StegIndex@79588149e0e2c4f5d08d05db857ec1f5717e42ee", "StegVerse-Labs/TVC#119", "StegVerse-Labs/stegfin-governance#84", "control/canonical-resident-carrier-contract.json", "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md"],
+      "expected_evidence_predicates": ["CRYPTO_RUNTIME_PROFILE_SOURCE_VALID", "CANONICAL_WORK_REQUEST_STAGED", "AUTHENTIC_CRYPTO_CANONICAL_WORK_INGRESS_OBSERVED", "AUTHENTIC_MASTER_RECORDS_RECONCILIATION_OBSERVED", "AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED", "AUTHENTIC_TVC_CURRENT_IPHONE_SKAP_PROVIDER_EVIDENCE_OBSERVED", "STEGFIN_APPROVE_LIMITED_RUNTIME_SCOPE_OBSERVED", "AUTHENTIC_FIRST_MAX_10_ETH_USD_POST_ONLY_ORDER_OBSERVED", "AUTHENTIC_FILL_FEE_RECONCILIATION_OBSERVED", "AUTHENTIC_NEXT_PORTFOLIO_SNAPSHOT_OBSERVED", "AUTHENTIC_SECOND_BOUNDED_CYCLE_REPEAT_PROOF_OBSERVED", "AUTHENTIC_TASK_EGRESS_OR_CLOSURE_OBSERVED"],
+      "runtime_requirements": {"capabilities": ["intr_task_admission", "task_registry_reconciliation", "master_records_reconciliation", "worker_claim_projection", "bounded_process_execution", "tvc_coinbase_provider_operation", "stegfin_bounded_live_governance"], "environment": "CURRENT_USER_IPHONE_AND_SOVEREIGN_RESIDENT", "direction": "INGRESS_AND_INTERNAL_AND_PROVIDER", "mutation_required": true, "deployment_required": false, "current_observation_required": true},
       "runtime_resolution": null,
       "worker_claim": {"authority": "WORKERCOORDINATOR", "claim_ref": null, "fence_ref": null, "projection_only": true},
       "human_action_ref": null,
       "completion": {"claimed": false, "validated": false, "reconciliation_ref": null},
       "allowed_next_transitions": ["INGRESS_ADMITTED"],
-      "handoff_projection_refs": [
-        "docs/CRYPTO_LIVE_AUTO_CANONICAL_WORK_MIRROR_HANDOFF.md",
-        "StegVerse-Labs/crypto-bot/docs/LIVE_TRADING_AUTOMATION_MIRROR_HANDOFF.md",
-        "StegVerse-Labs/crypto-bot/docs/HB_INTR_RUNTIME_CONSUMPTION_MIRROR_HANDOFF.md"
+      "handoff_projection_refs": ["docs/CRYPTO_LIVE_AUTO_CANONICAL_WORK_MIRROR_HANDOFF.md", "StegVerse-Labs/crypto-bot/docs/LIVE_TRADING_AUTOMATION_MIRROR_HANDOFF.md", "StegVerse-Labs/crypto-bot/docs/HB_INTR_RUNTIME_CONSUMPTION_MIRROR_HANDOFF.md"],
+      "authority_model": {"task_registry_mints_execution_authority": false, "source_state_proves_execution": false, "worker_claim_authority": "WORKERCOORDINATOR", "master_records_reality_authority": true, "interlock_intr_required_for_governed_ingress_egress": true}
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "LLMA-ANTHROPIC-INTR-TRANSPORT-288",
+      "correlation_id": "LLMA-ANTHROPIC-INTR-TRANSPORT-288",
+      "root_correlation_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+      "parent_task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+      "goal": "Execute the optional Anthropic/Claude native Messages API transport through the existing sovereign resident WorkerCoordinator runtime, TV/TVC credential authority, exact Interlock/InTr ingress/egress, and Master Records custody/reconstruction without replacing the sovereign local route or granting provider authority.",
+      "coordination_state": "PROPOSED",
+      "source_refs": ["StegVerse-org/LLM-adapter#288", "StegVerse-org/LLM-adapter@cde350e41d16a9932932b96d77c0dbd37b950284", "docs/HOSTED_PROVIDER_INTR_RUNTIME_PROFILE_MIRROR_HANDOFF.md", "control/cross-task-coordination.d/anthropic-intr-transport-288-canonical-work-ingress.json", "control/resident-execution-request.d/canonical-work-anthropic-intr-transport-288.json", "control/runtime-profile-map.json", "control/worker-runtime-state.json", "master-records/orchestration:PROVIDER_USAGE_CUSTODY_MIRROR_HANDOFF.md"],
+      "targets": {"organizations": ["StegVerse-org", "StegVerse-Labs", "master-records"], "repositories": ["StegVerse-org/LLM-adapter", "StegVerse-Labs/.github", "master-records/orchestration"], "components": ["anthropic-intr-transport", "canonical-runtime-profile-binding", "canonical-work-ingress", "workercoordinator-execution", "tvtvc-credential-boundary", "master-records-provider-usage"]},
+      "dependencies": [
+        {"dependency_id": "DEP-ANTHROPIC-ADAPTER-SOURCE-MERGED", "kind": "EVIDENCE", "state": "RESOLVED", "ref": "StegVerse-org/LLM-adapter@cde350e41d16a9932932b96d77c0dbd37b950284"},
+        {"dependency_id": "DEP-ANTHROPIC-CANONICAL-WORK-INGRESS", "kind": "RUNTIME_PREDICATE", "state": "UNRESOLVED", "ref": "receipts/sovereign-host/canonical-work-anthropic-intr-transport-288-request-consumption.latest.json"},
+        {"dependency_id": "DEP-ANTHROPIC-CURRENT-TASK-EXECUTING-WORKERCOORDINATOR", "kind": "RUNTIME_PREDICATE", "state": "UNRESOLVED", "ref": "control/worker-runtime-state.json"},
+        {"dependency_id": "DEP-ANTHROPIC-MASTER-RECORDS-PROVIDER-USAGE", "kind": "RUNTIME_PREDICATE", "state": "UNRESOLVED", "ref": "master-records/orchestration:PROVIDER_USAGE_CUSTODY_MIRROR_HANDOFF.md"}
       ],
+      "blockers": [{"blocker_id": "BLOCK-ANTHROPIC-CURRENT-TASK-EXECUTING-WORKERCOORDINATOR", "dependency_id": "DEP-ANTHROPIC-CURRENT-TASK-EXECUTING-WORKERCOORDINATOR", "reason": "The last retained WorkerCoordinator observation is historical and CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION; a current authentic task-executing WorkerCoordinator observation is required before live Anthropic execution."}],
+      "systemic_incident_ref": null,
+      "adjacent_task_refs": ["STEGVERSE-CANONICAL-WORK-COORDINATION-001", "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"],
+      "existing_evidence_refs": ["StegVerse-org/LLM-adapter@cde350e41d16a9932932b96d77c0dbd37b950284", "control/runtime-profile-map.json", "control/worker-runtime-state.json", "control/heartbeat-carrier-runtime-state.json", "docs/HOSTED_PROVIDER_INTR_RUNTIME_PROFILE_MIRROR_HANDOFF.md", "control/resident-execution-request.d/canonical-work-anthropic-intr-transport-288.json", "control/cross-task-coordination.d/anthropic-intr-transport-288-canonical-work-ingress.json", "master-records/orchestration:PROVIDER_USAGE_CUSTODY_MIRROR_HANDOFF.md"],
+      "expected_evidence_predicates": ["SOURCE_SCHEMA_VALID", "ANTHROPIC_SOURCE_MERGED", "CANONICAL_WORK_REQUEST_STAGED", "RUNTIME_PROFILE_CANDIDATE_RESOLVED", "AUTHENTIC_TASK_INGRESS_OBSERVED", "AUTHENTIC_WORKERCOORDINATOR_TASK_EXECUTION_OBSERVED", "AUTHENTIC_TVTVC_CREDENTIAL_MATERIALIZATION_OBSERVED", "AUTHENTIC_ANTHROPIC_PROVIDER_RESPONSE_OBSERVED", "AUTHENTIC_MASTER_RECORDS_CUSTODY_RECONSTRUCTION_OBSERVED", "AUTHENTIC_INTR_EGRESS_ALLOW_OBSERVED"],
+      "runtime_requirements": {"capabilities": ["bounded_process_execution"], "environment": "SOVEREIGN_RESIDENT", "direction": "INTERNAL", "mutation_required": true, "deployment_required": false, "current_observation_required": false},
+      "runtime_resolution": null,
+      "worker_claim": {"authority": "WORKERCOORDINATOR", "claim_ref": null, "fence_ref": null, "projection_only": true},
+      "human_action_ref": null,
+      "completion": {"claimed": false, "validated": false, "reconciliation_ref": null},
+      "allowed_next_transitions": ["INGRESS_ADMITTED"],
+      "handoff_projection_refs": ["docs/HOSTED_PROVIDER_INTR_RUNTIME_PROFILE_MIRROR_HANDOFF.md", "StegVerse-org/LLM-adapter:docs/ANTHROPIC_INTR_MIRROR_HANDOFF.md"],
       "authority_model": {"task_registry_mints_execution_authority": false, "source_state_proves_execution": false, "worker_claim_authority": "WORKERCOORDINATOR", "master_records_reality_authority": true, "interlock_intr_required_for_governed_ingress_egress": true}
     }
   ],
   "human_actions": [],
   "systemic_incidents": [],
   "projections": {"handoffs": [], "status_surfaces": []},
-  "nonclaims": ["REGISTRY_BOOTSTRAP_AND_RUNTIME_ADAPTERS_ARE_SOURCE_STATE_ONLY", "HB32_OSCILLATOR_REFERENCE_DOES_NOT_GRANT_TASK_AUTHORITY", "MASTER_RECORDS_PROJECTION_ADAPTER_DOES_NOT_PROVE_RUNTIME_RECONCILIATION", "DEPENDENCY_FANOUT_SOURCE_DOES_NOT_ADMIT_TRANSITIONS", "ADMITTED_RECONCILIATION_SOURCE_DOES_NOT_MINT_EXECUTION_AUTHORITY", "ADMITTED_DEPENDENCY_EVENT_CONSUMPTION_DOES_NOT_MUTATE_WORKERCOORDINATOR", "AUTHENTIC_INGRESS_PROJECTION_REQUIRES_EXISTING_ADMITTED_RECEIPT", "WORKERCOORDINATOR_PROJECTION_DOES_NOT_MINT_CLAIM_OR_FENCE", "EVENT_BOOTSTRAP_USES_EXISTING_SHARED_INTR_SERVER_ONLY", "ROUTE_INSTALL_AND_BOOTSTRAP_SOURCE_DOES_NOT_PROVE_RUNTIME_EXECUTION", "RESIDENT_REQUEST_DISPATCH_DOES_NOT_GRANT_EXECUTION_AUTHORITY", "RESIDENT_SELF_MATERIALIZATION_IS_LOCAL_SOURCE_COPY_ONLY", "RUNTIME_PROFILE_MAP_MATCH_DOES_NOT_GRANT_AUTHORITY", "RUNTIME_PROFILE_RESOLUTION_IS_PROJECTION_ONLY", "RUNTIME_ROUTING_READINESS_DOES_NOT_GRANT_AUTHORITY", "RUNTIME_TRANSITION_READINESS_DOES_NOT_GRANT_AUTHORITY", "RUNTIME_GOVERNANCE_REVIEW_PACKAGE_DOES_NOT_GRANT_AUTHORITY", "MASTER_RECORDS_CUSTODY_DOES_NOT_GRANT_TASK_AUTHORITY", "POST_CUSTODY_RECONCILIATION_DOES_NOT_CHANGE_TASK_STATE", "GENERIC_RUNTIME_MISSING_REQUIRES_CANONICAL_MAP_RESOLUTION", "GITHUB_FAILURE_EMAIL_NORMALIZATION_DOES_NOT_PROVE_RUNTIME_FAILURE", "NO_AUTHENTIC_INTERLOCK_INTR_TASK_INGRESS_IS_CLAIMED", "NO_WORKERCOORDINATOR_CLAIM_IS_MINTED_BY_THIS_REGISTRY", "NO_MASTER_RECORDS_RUNTIME_RECONCILIATION_IS_CLAIMED", "QUANTUM_TASK_REGISTRATION_IS_PROPOSED_SOURCE_STATE_ONLY", "QUANTUM_SOURCE_AND_CENSUS_EVIDENCE_DO_NOT_PROVE_PQ_DEPLOYMENT_OR_RUNTIME_AWARENESS", "ERL_REVIEW_TASK_REGISTRATION_IS_PROPOSED_SOURCE_STATE_ONLY", "OBJECT_PROVENANCE_TASK_REGISTRATION_IS_PROPOSED_SOURCE_STATE_ONLY", "OBJECT_PROVENANCE_SOURCE_AND_CUSTODY_MERGES_DO_NOT_PROVE_AUTHENTIC_RUNTIME_LINEAGE", "CRYPTO_LIVE_AUTO_TASK_REGISTRATION_IS_PROPOSED_SOURCE_STATE_ONLY", "CRYPTO_SOURCE_REQUEST_STAGING_DOES_NOT_PROVE_COINBASE_AUTHENTICATION_ORDER_EXECUTION_OR_GOVERNANCE_APPROVAL"]
+  "nonclaims": ["REGISTRY_BOOTSTRAP_AND_RUNTIME_ADAPTERS_ARE_SOURCE_STATE_ONLY", "HB32_OSCILLATOR_REFERENCE_DOES_NOT_GRANT_TASK_AUTHORITY", "MASTER_RECORDS_PROJECTION_ADAPTER_DOES_NOT_PROVE_RUNTIME_RECONCILIATION", "DEPENDENCY_FANOUT_SOURCE_DOES_NOT_ADMIT_TRANSITIONS", "ADMITTED_RECONCILIATION_SOURCE_DOES_NOT_MINT_EXECUTION_AUTHORITY", "ADMITTED_DEPENDENCY_EVENT_CONSUMPTION_DOES_NOT_MUTATE_WORKERCOORDINATOR", "AUTHENTIC_INGRESS_PROJECTION_REQUIRES_EXISTING_ADMITTED_RECEIPT", "WORKERCOORDINATOR_PROJECTION_DOES_NOT_MINT_CLAIM_OR_FENCE", "EVENT_BOOTSTRAP_USES_EXISTING_SHARED_INTR_SERVER_ONLY", "ROUTE_INSTALL_AND_BOOTSTRAP_SOURCE_DOES_NOT_PROVE_RUNTIME_EXECUTION", "RESIDENT_REQUEST_DISPATCH_DOES_NOT_GRANT_EXECUTION_AUTHORITY", "RESIDENT_SELF_MATERIALIZATION_IS_LOCAL_SOURCE_COPY_ONLY", "RUNTIME_PROFILE_MAP_MATCH_DOES_NOT_GRANT_AUTHORITY", "RUNTIME_PROFILE_RESOLUTION_IS_PROJECTION_ONLY", "RUNTIME_ROUTING_READINESS_DOES_NOT_GRANT_AUTHORITY", "RUNTIME_TRANSITION_READINESS_DOES_NOT_GRANT_AUTHORITY", "RUNTIME_GOVERNANCE_REVIEW_PACKAGE_DOES_NOT_GRANT_AUTHORITY", "MASTER_RECORDS_CUSTODY_DOES_NOT_GRANT_TASK_AUTHORITY", "POST_CUSTODY_RECONCILIATION_DOES_NOT_CHANGE_TASK_STATE", "GENERIC_RUNTIME_MISSING_REQUIRES_CANONICAL_MAP_RESOLUTION", "GITHUB_FAILURE_EMAIL_NORMALIZATION_DOES_NOT_PROVE_RUNTIME_FAILURE", "NO_AUTHENTIC_INTERLOCK_INTR_TASK_INGRESS_IS_CLAIMED", "NO_WORKERCOORDINATOR_CLAIM_IS_MINTED_BY_THIS_REGISTRY", "NO_MASTER_RECORDS_RUNTIME_RECONCILIATION_IS_CLAIMED", "QUANTUM_TASK_REGISTRATION_IS_PROPOSED_SOURCE_STATE_ONLY", "QUANTUM_SOURCE_AND_CENSUS_EVIDENCE_DO_NOT_PROVE_PQ_DEPLOYMENT_OR_RUNTIME_AWARENESS", "ERL_REVIEW_TASK_REGISTRATION_IS_PROPOSED_SOURCE_STATE_ONLY", "OBJECT_PROVENANCE_TASK_REGISTRATION_IS_PROPOSED_SOURCE_STATE_ONLY", "OBJECT_PROVENANCE_SOURCE_AND_CUSTODY_MERGES_DO_NOT_PROVE_AUTHENTIC_RUNTIME_LINEAGE", "CRYPTO_LIVE_AUTO_TASK_REGISTRATION_IS_PROPOSED_SOURCE_STATE_ONLY", "CRYPTO_SOURCE_REQUEST_STAGING_DOES_NOT_PROVE_COINBASE_AUTHENTICATION_ORDER_EXECUTION_OR_GOVERNANCE_APPROVAL", "ANTHROPIC_TASK_REGISTRATION_IS_PROPOSED_SOURCE_STATE_ONLY", "ANTHROPIC_REQUEST_STAGING_DOES_NOT_PROVE_RUNTIME_CONSUMPTION_PROVIDER_EXECUTION_CUSTODY_OR_EGRESS_ALLOW"]
 }

@@ -1,0 +1,71 @@
+{
+  "schema": "stegverse.machine-preflight/v1",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "feat/anthropic-canonical-current-main-1123",
+  "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+  "state": "PASS",
+  "goal": "Reconcile stale Ecosystem Chat fence projections, the executor's local fence constant, and consistency tests to the already-authoritative minimum_fencing_token_exclusive=24 while preserving historical G22 recovery/registry evidence and verifying that the current fragment replaces that historical row before any fresh claim.",
+  "canonical_state_resolved": {
+    "handoff": "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+    "executor": "scripts/run_independent_ecosystem_chat_parent.py",
+    "executor_test": "tests/test_independent_ecosystem_chat_parent_executor.py",
+    "registry_reconciliation_test": "tests/test_ecosystem_chat_parent_registry_reconciliation.py",
+    "authorization": "authorizations/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json",
+    "authorization_minimum_fencing_token_exclusive": 24,
+    "current_parent_fragment": "control/worker-registry.d/ecosystem-chat-sovereign-inference-parent-001.json",
+    "current_parent_fragment_minimum_fencing_token_exclusive": 24,
+    "historical_mutable_registry_projection": "control/worker-registry.json",
+    "historical_mutable_registry_projection_minimum_fencing_token_exclusive": 22,
+    "claim_projection_semantics": "project_claimable_parent replaces the mutable task row from the current parent fragment before fresh claim acquisition",
+    "portable_handoff": "docs/ECOSYSTEM_CHAT_PORTABLE_IPHONE_PACKAGE_MIRROR_HANDOFF.md",
+    "portable_predecessor_generation_floor": 24,
+    "portable_minimum_fencing_token_exclusive": 24,
+    "reconciliation_receipt": "receipts/ecosystem-chat-sovereign-inference/STEGOS-SOURCE-PROJECTION-RECONCILIATION-20260906.json",
+    "reconciliation_minimum_fencing_token_exclusive": 24,
+    "reconciliation_first_reset_safe_fence": 25
+  },
+  "collision_preflight": {
+    "authorization_change_required": false,
+    "workercoordinator_algorithm_change_required": false,
+    "mutable_historical_registry_rewrite_required": false,
+    "new_claim_or_fence_required": false,
+    "runtime_execution_claimed": false,
+    "handoff_projection_is_stale": true,
+    "executor_constant_is_stale": true,
+    "test_literals_are_stale": true,
+    "authoritative_floor_is_24": true,
+    "historical_g22_evidence_preserved": true
+  },
+  "readme_completeness": {
+    "impact": "NO_UPDATE_REQUIRED",
+    "material_function_change": false,
+    "readme_path": "README.md",
+    "readme_updated_in_change_set": false,
+    "reason": "The executable authority prerequisite was already raised to 24 in the canonical authorization and portable/reconciliation evidence. Updating stale handoff/executor/test projections and making tests distinguish historical G22 registry evidence from the current G24 parent fragment does not create a new authority model, interface, environment, dependency mechanism, or capability; it restores source consistency with the existing claim-projection algorithm.",
+    "evidence_refs": [
+      "authorizations/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json",
+      "docs/ECOSYSTEM_CHAT_PORTABLE_IPHONE_PACKAGE_MIRROR_HANDOFF.md",
+      "receipts/ecosystem-chat-sovereign-inference/preflight-20260906-fence-floor-reconciliation.json",
+      "receipts/ecosystem-chat-sovereign-inference/STEGOS-SOURCE-PROJECTION-RECONCILIATION-20260906.json",
+      "control/worker-registry.d/ecosystem-chat-sovereign-inference-parent-001.json",
+      "scripts/run_independent_ecosystem_chat_parent.py",
+      "tests/test_ecosystem_chat_inference_binding.py",
+      "tests/test_independent_ecosystem_chat_parent_executor.py",
+      "tests/test_ecosystem_chat_parent_registry_reconciliation.py"
+    ]
+  },
+  "admissible_mutation_scope": [
+    "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+    "scripts/run_independent_ecosystem_chat_parent.py",
+    "tests/test_independent_ecosystem_chat_parent_executor.py",
+    "tests/test_ecosystem_chat_parent_registry_reconciliation.py",
+    "data/preflight/ecosystem-chat-fence-24-handoff-reconciliation.json"
+  ],
+  "runtime_truth": {
+    "fresh_fence_25_or_greater_observed": false,
+    "ecosystem_chat_live_execution_observed": false,
+    "same_execution_master_records_pass_observed": false,
+    "activation_observed": false
+  },
+  "authority_effect": "NONE_PREFLIGHT_ONLY"
+}
