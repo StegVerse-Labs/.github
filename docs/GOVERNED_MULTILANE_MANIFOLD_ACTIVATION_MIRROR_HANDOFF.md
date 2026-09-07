@@ -4,11 +4,20 @@ Updated: 2026-09-07
 Organization: `StegVerse-Labs`
 Repository: `StegVerse-Labs/.github`
 Goal: `GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001`
-Status: `GOAL_ESTABLISHED / SOURCE_BINDING_COMPLETE / AUTHENTIC MULTILANE ACTIVATION EVIDENCE PENDING`
+Task ID: `GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001`
+COSV ID: `10100000100000`
+COSV registration: `REGISTERED_EMITTED_UNCLAIMED`
+Status: `CANONICAL_TASK_REGISTERED / SOURCE_BINDING_COMPLETE / WORKERCOORDINATOR CLAIM PENDING / AUTHENTIC MULTILANE ACTIVATION EVIDENCE PENDING`
 
 ## Source of truth
 
 This is the canonical continuation record for `GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001`.
+
+Canonical task/COSV records:
+- `data/canonical-task-records/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json`
+- `control/task-vectors/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json`
+- `control/task-vector-index.d/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json`
+- `handoffs/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json`
 
 Inherited coordination authority:
 - `docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md`
@@ -56,6 +65,25 @@ Source repositories include `Admissible-Existence/AE`, `RTG`, `GTG`, `TT`, `STCM
 
 ## Current standing
 
+Current task/COSV standing:
+
+- canonical task registration: COMPLETE;
+- COSV ID: `10100000100000`;
+- COSV vector emission: COMPLETE;
+- COSV lifecycle: `UNCLAIMED`;
+- canonical owner installed: YES;
+- thread required by the task vector: NO;
+- activation evidence complete: NO;
+- activation: NOT PROVEN.
+
+Current initial-cohort execution-owner standing from the canonical worker registry:
+
+- five existing repository workers are registered and `AVAILABLE`;
+- all five lane tasks remain `HANDOFF_READY`;
+- all five currently have `claim_id: null`, `worker_id: null`, `worker_instance_id: null`, and no active lease;
+- no replacement umbrella worker is authorized or required;
+- the existing five workers remain the preferred execution owners after canonical WorkerCoordinator claim/fence resolution.
+
 Known inherited source state from the parent manifold orchestration handoff:
 
 - initial five-lane source implementation: COMPLETE;
@@ -66,7 +94,7 @@ Known inherited source state from the parent manifold orchestration handoff:
 - lane receipts: previously 0/5 observed;
 - reconciliation: previously NOT COMPLETE.
 
-Those historical standing claims must be refreshed from authoritative current evidence before activation is declared. They are not automatically carried forward as current runtime truth.
+Those historical runtime claims must still be refreshed from authoritative current evidence before activation is declared. Source existence, registration, worker availability, or COSV emission do not establish execution.
 
 ## Required work
 
@@ -97,7 +125,8 @@ A future tag/release may be evaluated only after activation and release criteria
 Destination `StegVerse-Labs/.github`:
 - current qualifying lane execution receipts;
 - current reconciliation receipt/state;
-- canonical coordination registration/projection for this goal if required by existing registry contracts.
+- WorkerCoordinator claim/fence evidence for the initial activation cohort;
+- current canonical coordination projection after claim resolution.
 
 Destination `StegVerse-Labs/StegCore`:
 - current runtime/manifold consumption evidence consistent with `MANIFOLD_GOVERNANCE_MIRROR_HANDOFF.md`.
@@ -110,4 +139,4 @@ Destination `StegVerse-Labs/TVC`:
 
 ## Archive rule
 
-This thread may be archived once this goal state is durably represented here and any session-unique work has been transferred to canonical machine/authority-owned tasks. The goal itself is not complete until authentic multi-lane activation and reconciliation evidence exists.
+The task identity is now durably registered under COSV `10100000100000`, but this thread is not archive-ready while execution ownership/claim-fence resolution and session-unique continuation transfer remain unresolved in the canonical task state. The goal itself is not complete until authentic multi-lane activation and reconciliation evidence exists.
