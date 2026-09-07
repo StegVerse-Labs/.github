@@ -99,6 +99,18 @@ HeartBeat and HB-derived carriers remain timing/reference/freshness/correlation/
 
 Problems and constraints are metadata, not an operational stopping state. A canonical unresolved task remains active or machine-owned while the current owner attempts a solution within its authority ceiling, derives a successor task, or transfers/escalates through the existing governed mechanism. `BLOCKED` is therefore not a canonical Task Registry `coordination_state`; dependency, problem/constraint, incident, and evidence metadata carry the reason a particular transition cannot yet proceed. Historical receipts or domain-specific schemas may retain older labels as provenance, but those labels do not create a current operational stopping state.
 
+### Human-originated intent and autonomous goal resolution
+
+The human originates an **idea, query, or goal**. After that intent is admitted, the ecosystem owns machine-executable continuation: task decomposition, Task/COSV continuity, handoff resolution, evidence reconciliation, dependency and collision resolution, parallel regrouping, and next-admissible-work selection continue without requiring the human to copy intermediate Task IDs, COSV vectors, or `*_MIRROR_HANDOFF.md` identifiers back into another prompt.
+
+Returned identifiers are orchestration state, not automatically new jobs. The ecosystem first resolves them against canonical active/completed work, verifies Task/COSV binding when present, resolves the applicable handoff, reconciles Master Records evidence, checks WorkerCoordinator claim/fence ownership, classifies continuation versus successor/dependency/adjacency/new work, deduplicates equivalent work, resolves repository/runtime/authority/evidence collisions, and then regroups parallel-capable work.
+
+The default consolidated user-facing report boundary is **five orchestration iterations**. Reaching that boundary may surface a report but **does not stop admitted machine-owned work**. Reporting and execution continuation are separate semantics. The ecosystem surfaces earlier when the governed goal reaches terminal completion or when a genuine human-review/authority boundary is encountered, including `HUMAN_ONLY`, `USER_ONLY`, legal-person signature/consent, a no-repair DENY, a genuinely unavailable required runtime with no admitted local materialization, or an unreconstructable current-state invariant.
+
+Intermediate conditions such as an unchanged Task ID, successor Task ID, updated COSV vector, new handoff, validation failure with an admissible repair, newly exposed dependency, adjacent task, or integration candidate do not by themselves create a human checkpoint.
+
+The deterministic non-authorizing evaluator is `scripts/evaluate_goal_resolution_continuation.py`. It does not schedule work or grant authority; it classifies whether the current cycle continues autonomously, reports-and-continues at the bounded cadence, surfaces human review, surfaces terminal completion, or fails closed for a no-repair machine stop. WorkerCoordinator, Interlock/InTr, TV/TVC, and Master Records retain their existing separated authorities.
+
 ### COSV task-pointer session continuation
 
 A StegVerse continuation prompt should carry only the canonical task identity and its current COSV `task.v1` vector when those values are available:
