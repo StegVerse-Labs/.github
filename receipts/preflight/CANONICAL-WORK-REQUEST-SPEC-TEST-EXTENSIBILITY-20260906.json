@@ -1,0 +1,76 @@
+{
+  "schema": "stegverse.session-machine-preflight/v1",
+  "task_id": "CANONICAL-WORK-REQUEST-SPEC-TEST-EXTENSIBILITY-20260906",
+  "parent_task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "related_task_ids": [
+    "STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190",
+    "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+    "SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001"
+  ],
+  "state": "PASS_FUNCTIONAL_TEST_REPAIR_ADMISSIBLE",
+  "evaluated_at": "2026-09-06T20:40:00-05:00",
+  "repository": "StegVerse-Labs/.github",
+  "base_commit_initial": "209bc6e0383e66dd7952ff8a76cc73deab81b448",
+  "base_commit_reconciled": "23d77c96cdaf817ff30be586e8c1c7a5feb46c46",
+  "canonical_state_resolution": {
+    "task_registry": "data/canonical-task-registry.json#generation-15",
+    "canonical_work_handoff": "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md",
+    "master_records": "master-records/orchestration/RUNTIME_PRESENCE_CUSTODY_MIRROR_HANDOFF.md",
+    "cross_task_coordination": "docs/RUNTIME_PRESENCE_CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
+    "shared_consumer": "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py",
+    "validation_failure_run": 34073672621,
+    "validation_failure_job": 101595600540
+  },
+  "collision_review": {
+    "matching_open_pr_observed": false,
+    "duplicate_consumer_required": false,
+    "duplicate_dispatch_plane_required": false,
+    "existing_shared_consumer_reused": true
+  },
+  "problem": {
+    "code": "TESTS_ENCODE_CLOSED_REQUEST_SPEC_TUPLE",
+    "evidence": [
+      "The object-provenance and runtime-profile-map tests require the shared Canonical Work consumer REQUEST_SPECS tuple to contain exactly four entries.",
+      "Current canonical source has valid additional ERL_REVIEW_SPEC registered in the same shared consumer.",
+      "The failing tests therefore reject legitimate extension of the existing shared consumer even though their required task specifications remain present and ordered."
+    ]
+  },
+  "admitted_repair": {
+    "strategy": "Relax only the two stale tests so they assert their required existing request specifications are present and maintain required relative order without constraining the shared REQUEST_SPECS tuple to a closed ecosystem-wide set.",
+    "runtime_consumer_mutation": false,
+    "task_registry_mutation": false,
+    "authority_effect": "NONE_TEST_CONTRACT_REPAIR_ONLY"
+  },
+  "readme_impact": {
+    "required": true,
+    "complete": true,
+    "material_function_change": false,
+    "readme_update_required": false,
+    "readme_updated_in_change_set": false,
+    "determination": "NO_README_CHANGE_REQUIRED",
+    "no_readme_update_reason": "This mutation changes only brittle test assertions to match the already-documented extensible Canonical Work registered-task ingress model. It changes no repository runtime behavior, interface, governance or authority boundary, evidence semantics, prerequisites, dependencies, failure behavior, or capability meaning.",
+    "evidence_refs": [
+      "README.md#Canonical Work task ingress",
+      "tests/test_object_provenance_canonical_work_resident_request.py",
+      "tests/test_runtime_profile_map_canonical_work_resident_request.py",
+      "tests/test_erl_canonical_work_ingress.py",
+      "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py",
+      "run:34073672621/job:101595600540"
+    ]
+  },
+  "authority": {
+    "task_registry_authority": "TASK_REGISTRY",
+    "worker_claim_fence_authority": "WORKERCOORDINATOR",
+    "master_records_authority": "OBSERVED_REALITY_CUSTODY_RECONSTRUCTION_ONLY",
+    "transition_authority": "INTERLOCK_INTR",
+    "credential_authority": "TV/TVC",
+    "heartbeat_grants_execution_authority": false,
+    "github_token_runtime_authority": "NONE"
+  },
+  "runtime_truth": {
+    "runtime_execution_performed": false,
+    "runtime_presence_inferred": false,
+    "request_consumption_inferred": false,
+    "source_validation_is_runtime_execution": false
+  }
+}
