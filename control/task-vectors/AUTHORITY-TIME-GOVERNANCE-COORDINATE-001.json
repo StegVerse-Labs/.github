@@ -3,7 +3,7 @@
   "task_id": "AUTHORITY-TIME-GOVERNANCE-COORDINATE-001",
   "goal_id": "AUTHORITY-TIME-GOVERNANCE-COORDINATE-001",
   "repository": "StegVerse-Labs/.github",
-  "state": "HANDOFF_READY",
+  "state": "IMPLEMENTED_VALIDATION_PENDING",
   "priority": "critical",
   "canonical_handoff": "docs/AUTHORITY_TIME_GOVERNANCE_COORDINATE_MIRROR_HANDOFF.md",
   "cosv": {
@@ -16,6 +16,10 @@
   "source_refs": [
     "docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegCore/MANIFOLD_GOVERNANCE_MIRROR_HANDOFF.md"
+  ],
+  "implementation_refs": [
+    "workers/authority_time_governance_coordinate_worker.py",
+    "tests/test_authority_time_governance_coordinate_worker.py"
   ],
   "invariants": [
     "human-in-the-loop timing != governance authority",
@@ -34,7 +38,10 @@
     "packet_transition_governance": "InTr/Interlock"
   },
   "completion": {
-    "next_authorized_action": "Install deterministic authority/time conformance checker and fixtures in StegVerse-Labs/.github.",
+    "source_implementation": "INSTALLED",
+    "deterministic_fixture_count": 9,
+    "hosted_validation": "NOT_OBSERVED",
+    "next_authorized_action": "Run repository validation that executes tests/test_authority_time_governance_coordinate_worker.py and emit a non-authorizing conformance receipt.",
     "terminal_when": [
       "conformance checker installed",
       "deterministic timing-independence fixtures pass",
@@ -43,9 +50,8 @@
     ]
   },
   "remaining_install_targets": [
-    "StegVerse-Labs/.github conformance checker",
-    "StegVerse-Labs/.github deterministic fixtures",
-    "StegVerse-Labs/.github conformance receipt schema/output",
+    "StegVerse-Labs/.github hosted/deterministic validation execution",
+    "StegVerse-Labs/.github durable conformance receipt output",
     "StegVerse-Labs/Site propagation review after release readiness",
     "GCAT-BCAT-Engine/Publisher propagation review after release readiness",
     "StegVerse-Labs/admissibility-wiki propagation review after release readiness",
