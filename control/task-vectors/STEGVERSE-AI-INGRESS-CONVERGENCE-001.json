@@ -1,0 +1,29 @@
+{
+  "identity": "StegVerse-Labs/.github:task:STEGVERSE-AI-INGRESS-CONVERGENCE-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50010000110000",
+  "evidence_refs": [
+    "STEGVERSE_AI_INGRESS_CONVERGENCE_MIRROR_HANDOFF.md",
+    "control/worker-registry.d/stegverse-ai-ingress-convergence-001.json",
+    "control/ai-ingress-convergence-child-bindings.json"
+  ],
+  "observed_at": "2026-09-07T12:18:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 1,
+    "chat_owned_validation": 1,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 1,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 1,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  }
+}
