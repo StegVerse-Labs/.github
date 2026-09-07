@@ -1,0 +1,57 @@
+{
+  "schema": "stegverse.session-machine-preflight/v1",
+  "task_id": "COSV-LIVE-DENOMINATOR-DEEPSEEK-RECONCILIATION-20260906",
+  "parent_task_id": "SHWP-DEEPSEEK-INTR-RUNTIME-001",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "fix/ecosystem-chat-g25-handoff-1141",
+  "state": "PASS_PROJECTION_RECONCILIATION_ADMISSIBLE",
+  "verdict": "PASS",
+  "resolved_state": {
+    "coverage_projection": "control/cosv-global-registry-coverage.json",
+    "coverage_unique_worker_task_ids": 83,
+    "live_unique_worker_task_ids": 84,
+    "coverage_indexed_worker_tasks": 76,
+    "historical_completed_unvectorized": 6,
+    "historical_superseded_unvectorized": 1,
+    "new_active_unvectorized_task": "SHWP-DEEPSEEK-INTR-RUNTIME-001",
+    "deepseek_worker_fragment": "control/worker-registry.d/deepseek-intr-runtime-001.json",
+    "deepseek_task_vector_present": false,
+    "deepseek_source_merge": "24e3b5ed1b6909bda605f8a6b8a2fedcaf159f72",
+    "runtime_activation_claimed": false
+  },
+  "reuse": {
+    "existing_cosv_coverage_projection": true,
+    "existing_worker_registry_fragment": true,
+    "existing_deepseek_runtime_task": true,
+    "new_task": false,
+    "new_runtime": false,
+    "new_vector_inferred": false
+  },
+  "collision_review": {
+    "active_cosv_vectorization_claim_for_deepseek_observed": false,
+    "disposition": "RECONCILE_COVERAGE_TRUTH_WITHOUT_INVENTING_VECTOR"
+  },
+  "planned_change": {
+    "paths": ["control/cosv-global-registry-coverage.json"],
+    "change": "advance worker denominator 83 to 84, record one active unvectorized worker task, set total active unvectorized to 1, and list SHWP-DEEPSEEK-INTR-RUNTIME-001 as missing canonical COSV; do not infer or emit a vector",
+    "runtime_code_change": false,
+    "authority_change": false,
+    "evidence_semantics_change": false,
+    "capability_meaning_change": false
+  },
+  "readme_impact": {
+    "required": true,
+    "complete": true,
+    "material_function_change": false,
+    "readme_update_required": false,
+    "determination": "NO_README_CHANGE_REQUIRED_DERIVED_COVERAGE_PROJECTION_ONLY",
+    "no_readme_update_reason": "The change updates a non-authorizing COSV coverage census to reflect an already-merged WorkerCoordinator registry task for which no canonical task vector exists. It does not infer a vector or alter runtime behavior, runtime semantics, interface, authority, evidence semantics, prerequisite, dependency, failure behavior, or capability meaning."
+  },
+  "authority": {
+    "cosv_authority_effect": "NONE",
+    "claim_fence_authority": "WORKERCOORDINATOR",
+    "credential_authority": "TV/TVC",
+    "heartbeat_grants_execution_authority": false,
+    "github_token_runtime_authority": "NONE"
+  }
+}
