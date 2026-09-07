@@ -53,7 +53,13 @@ RUNTIME_PROFILE_MAP_SPEC = {
     "bootstrap_runtime_rel": Path("runtime/canonical-work-runtime-profile-map"),
     "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
 }
-REQUEST_SPECS = (DEFAULT_SPEC, QUANTUM_SPEC, OBJECT_PROVENANCE_SPEC, RUNTIME_PROFILE_MAP_SPEC)
+ANTHROPIC_SPEC = {
+    "request_rel": Path("control/resident-execution-request.d/canonical-work-anthropic-intr-transport-288.json"),
+    "consumption_rel": Path("receipts/sovereign-host/canonical-work-anthropic-intr-transport-288-request-consumption.latest.json"),
+    "bootstrap_runtime_rel": Path("runtime/canonical-work-anthropic-intr-transport-288"),
+    "task_id": "LLMA-ANTHROPIC-INTR-TRANSPORT-288",
+}
+REQUEST_SPECS = (DEFAULT_SPEC, QUANTUM_SPEC, OBJECT_PROVENANCE_SPEC, RUNTIME_PROFILE_MAP_SPEC, ANTHROPIC_SPEC)
 
 MATERIALIZE = (
     Path("scripts/install_and_run_canonical_work_event_bootstrap.py"),
