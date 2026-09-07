@@ -5,8 +5,8 @@
     "task_id": "GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001",
     "cosv_id": "10100000100000",
     "cosv_registration_state": "REGISTERED_EMITTED_UNCLAIMED",
-    "objective": "Prove governed multi-lane manifold functionality through authentic subject-bound execution receipts and deterministic reconciliation under existing StegVerse authority partitions.",
-    "state": "RESIDENT_ACTIVATION_REQUESTED_WORKERCOORDINATOR_CLAIM_PENDING_ACTIVATION_EVIDENCE_PENDING"
+    "objective": "Activate the complete governed manifold by executing every incomplete canonical subordinate, reusing completed predecessor evidence, observing external authority-owned prerequisites without competing claims, and reconciling all required outputs under existing StegVerse authority partitions.",
+    "state": "RESIDENT_ACTIVATION_REQUESTED_COMPLETE_MANIFOLD_LINEAGE_REGISTERED_WORKERCOORDINATOR_CLAIM_PENDING_ACTIVATION_EVIDENCE_PENDING"
   },
   "authority": {
     "coordination": "StegVerse-Labs/.github",
@@ -21,21 +21,45 @@
     "data/canonical-task-records/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json",
     "control/task-vectors/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json",
     "control/task-vector-index.d/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json",
+    "control/manifold-lineage.d/governed-multilane-manifold-activation-001.json",
     "control/resident-execution-request.d/governed-multilane-manifold-activation-001.json",
     "docs/GOVERNED_MULTILANE_MANIFOLD_ACTIVATION_MIRROR_HANDOFF.md",
     "FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md",
+    "data/formalism-manifold-orchestration/task-state.json",
     "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegCore/MANIFOLD_GOVERNANCE_MIRROR_HANDOFF.md"
   ],
-  "initial_lane_task_ids": [
+  "manifold_lineage_ref": "control/manifold-lineage.d/governed-multilane-manifold-activation-001.json",
+  "subordinate_task_ids": [
+    "FORMALISM-MANIFOLD-ORCHESTRATION-001",
+    "SOVEREIGN-LOCAL-MODEL-001",
     "SHWP-FORMALISM-INVENTORY-001",
     "SHWP-FORMALISM-HANDOFF-NORMALIZATION-001",
     "SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001",
     "SHWP-MANIFOLD-GOVERNANCE-MAPPING-001",
-    "SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001"
+    "SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001",
+    "TVC-PROVIDER-OPERATION-BROKER-003",
+    "TVC-CAPABILITY-RUNTIME-002",
+    "STEGFIN-CONTINUITY-CARRIER-007"
   ],
+  "execution_dispositions": {
+    "FORMALISM-MANIFOLD-ORCHESTRATION-001": "REUSE_IMPLEMENTATION_EXECUTE_CHILDREN",
+    "SOVEREIGN-LOCAL-MODEL-001": "REUSE_COMPLETE_DO_NOT_REEXECUTE",
+    "SHWP-FORMALISM-INVENTORY-001": "EXECUTE_IF_NOT_ALREADY_QUALIFYING",
+    "SHWP-FORMALISM-HANDOFF-NORMALIZATION-001": "EXECUTE_IF_NOT_ALREADY_QUALIFYING",
+    "SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001": "EXECUTE_IF_NOT_ALREADY_QUALIFYING",
+    "SHWP-MANIFOLD-GOVERNANCE-MAPPING-001": "EXECUTE_IF_NOT_ALREADY_QUALIFYING",
+    "SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001": "EXECUTE_AFTER_PREREQUISITES_QUALIFY",
+    "TVC-PROVIDER-OPERATION-BROKER-003": "OBSERVE_EXISTING_OWNER_NO_COMPETE",
+    "TVC-CAPABILITY-RUNTIME-002": "OBSERVE_EXISTING_OWNER_NO_COMPETE",
+    "STEGFIN-CONTINUITY-CARRIER-007": "EXECUTE_WHEN_TVC_RUNTIME_PREREQUISITE_QUALIFIES"
+  },
   "activation_predicates": [
     "task_has_assigned_cosv_id_and_canonical_coordination_registration",
+    "full_declared_manifold_lineage_traversed",
+    "completed_predecessors_reused_without_duplicate_execution",
+    "incomplete_canonical_subordinates_executed_or_fail_closed",
+    "external_authority_prerequisites_observed_without_competing_claims",
     "two_or_more_distinct_governed_lanes_executed",
     "qualifying_subject_bound_receipt_per_participating_lane",
     "canonical_claim_and_collision_checks_pass",
@@ -50,30 +74,33 @@
     "source_implementation": "INHERITED_COMPLETE_REQUIRES_CURRENT_REVALIDATION",
     "canonical_task_registration": "COMPLETE",
     "cosv_registration": "COMPLETE_VECTOR_EMITTED",
-    "resident_activation_request": "REQUESTED",
+    "complete_manifold_lineage_registration": "COMPLETE",
+    "resident_activation_request": "REQUESTED_LINEAGE_CORRECTED",
     "resident_activation_request_ref": "control/resident-execution-request.d/governed-multilane-manifold-activation-001.json",
     "workercoordinator_claim": "UNCLAIMED_PENDING_RESIDENT_CONSUMPTION",
-    "lane_execution_receipts": "UNKNOWN_CURRENT_STATE_PENDING_RESIDENT_REFRESH",
+    "subordinate_execution_evidence": "PENDING_CURRENT_RESIDENT_TRAVERSAL",
     "reconciliation": "UNKNOWN_CURRENT_STATE_PENDING_RESIDENT_REFRESH",
     "activation": "NOT_PROVEN"
   },
   "archive_gate": {
     "archive_ready": false,
-    "blocking_reason": "RESIDENT_ACTIVATION_REQUEST_NOT_YET_CONSUMED_AND_AUTHENTIC_ACTIVATION_EVIDENCE_NOT_YET_PRODUCED",
+    "blocking_reason": "CORRECTED_FULL_MANIFOLD_LINEAGE_NOT_YET_TRAVERSED_BY_RESIDENT_RUNTIME",
     "required_before_archive": [
-      "resident consumes the activation request and resolves canonical WorkerCoordinator claim/fence ownership for genuinely missing lane work",
+      "resident traverses the complete declared manifold lineage",
+      "resolve canonical WorkerCoordinator claim/fence ownership for genuinely missing machine-owned subordinate work",
       "verify session-unique state is durably transferred under the registered task/COSV identity"
     ]
   },
   "next_actions": [
-    "resident dispatcher consumes control/resident-execution-request.d/governed-multilane-manifold-activation-001.json",
-    "refresh current qualifying receipts for the initial five-lane cohort",
-    "resolve current WorkerCoordinator claims/fences and cross-task coordination",
-    "prefer existing five formalism/manifold workers as execution owners rather than creating a duplicate umbrella worker",
-    "execute only genuinely missing lanes through existing canonical workers",
-    "run reconciliation after qualifying prerequisite receipts exist",
+    "resident consumes the lineage-corrected activation request",
+    "refresh evidence for every declared manifold node",
+    "reuse completed predecessor nodes without duplicate execution",
+    "execute incomplete formalism lanes through existing canonical workers",
+    "run formalism reconciliation after qualifying prerequisite receipts exist",
+    "observe TVC-PROVIDER-OPERATION-BROKER-003 and TVC-CAPABILITY-RUNTIME-002 through their existing owner without competing claims",
+    "execute STEGFIN-CONTINUITY-CARRIER-007 through its existing WorkerCoordinator worker when the TVC runtime predicate qualifies",
     "persist reconciliation provenance and unresolved divergence",
-    "declare ACTIVATED only after all activation predicates are evidenced"
+    "declare ACTIVATED only after all full-lineage activation predicates are evidenced"
   ],
   "prohibited": [
     "archive_thread_before_durable_execution_ownership_resolution",
@@ -83,7 +110,8 @@
     "create_non_TV_TVC_credential_path",
     "infer_runtime_truth_from_source_existence",
     "flatten_lane_disagreement_during_reconciliation",
-    "wallet_signing_or_broadcast_by_non_user_authority"
+    "wallet_signing_or_broadcast_by_non_user_authority",
+    "silently_exclude_declared_subordinate_from_manifold_traversal"
   ],
   "downstream_release_propagation_after_actual_release": [
     "StegVerse-Labs/Site",
