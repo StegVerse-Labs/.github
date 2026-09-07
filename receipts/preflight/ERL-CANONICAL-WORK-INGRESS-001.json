@@ -1,0 +1,66 @@
+{
+  "schema": "stegverse.session-build-preflight/v1",
+  "goal": "Stage the already-registered ERL independent-review task through the existing Canonical Work / Interlock-InTr ingress path before WorkerCoordinator execution.",
+  "observed_source_head": "c33fa4be9f3b22e446d08291722870586b025446",
+  "canonical_handoffs": [
+    "handoffs/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json",
+    "docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md",
+    "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md",
+    "docs/HEARTBEAT_RUNTIME_SEPARATION_MIRROR_HANDOFF.md",
+    "docs/HEARTBEAT_OSCILLATOR_PRODUCER_MIRROR_HANDOFF.md"
+  ],
+  "task_registry_resolved": true,
+  "task_registry_id": "SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001",
+  "task_registry_generation": 15,
+  "task_registry_coordination_state": "PROPOSED",
+  "task_registry_allowed_next_transition": "INGRESS_ADMITTED",
+  "related_task_registry_ids": ["STEGVERSE-CANONICAL-WORK-COORDINATION-001"],
+  "master_records_role_resolved": "OBSERVED_REALITY_AND_RECONSTRUCTION_ONLY",
+  "cross_task_coordination_resolved": true,
+  "active_claim_collision_discovered": false,
+  "open_pr_collision_discovered": false,
+  "existing_runtime_solution_reused": {
+    "canonical_work_consumer": "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py",
+    "universal_intr_ingress": "workers/canonical_work_intr_ingress.py",
+    "workercoordinator_authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "fresh_fence_required": true,
+    "carrier_trigger_required": false,
+    "heartbeat_grants_execution_authority": false,
+    "oscillator_grants_execution_authority": false
+  },
+  "defect": "The canonical Task Registry contains the ERL reviewer as PROPOSED with INGRESS_ADMITTED as its allowed next transition, but the shared multi-task Canonical Work resident consumer had no fixed ERL request specification and no ERL Canonical Work resident request existed. The task could therefore be source-ready in WorkerCoordinator while canonical coordination ingress remained unstaged.",
+  "mutation_scope": [
+    "control/resident-execution-request.d/canonical-work-erl-ai-economic-transparency-review-001.json",
+    "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py",
+    "control/cross-task-coordination.d/erl-ai-economic-transparency-review-001-canonical-work-ingress.json",
+    "handoffs/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json",
+    "tests/test_erl_canonical_work_ingress.py"
+  ],
+  "readme_impact": {
+    "required": true,
+    "material_function_change": false,
+    "readme_updated_in_change_set": false,
+    "readme_path": "README.md",
+    "no_readme_update_reason": "The repository already documents Canonical Work as a reusable governed ingress mechanism for additional tasks already present in the canonical Task Registry. This change enrolls one existing registered task through an explicit fixed request specification; it does not change the mechanism's runtime semantics, interface shape, authority boundaries, credential model, evidence semantics, prerequisites, failure behavior, or capability meaning.",
+    "evidence_refs": [
+      "README.md#Canonical-Work-task-ingress",
+      "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py",
+      "control/resident-execution-request.d/canonical-work-quantum-resilience-001.json",
+      "control/cross-task-coordination.d/quantum-resilience-001-canonical-work-ingress.json",
+      "data/canonical-task-registry.json"
+    ]
+  },
+  "new_task_identity_created": false,
+  "new_scheduler_required": false,
+  "new_heartbeat_required": false,
+  "new_oscillator_required": false,
+  "new_workercoordinator_required": false,
+  "new_intr_ingress_required": false,
+  "new_runtime_authority_required": false,
+  "master_records_event_fabricated": false,
+  "runtime_execution_claimed": false,
+  "credential_authority": "TV/TVC",
+  "github_token_runtime_authority": "NONE",
+  "authority_effect": "NONE_PREFLIGHT_ONLY",
+  "disposition": "ADMIT_COORDINATION"
+}
