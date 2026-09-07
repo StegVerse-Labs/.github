@@ -1,8 +1,8 @@
 {
   "schema": "stegverse.reusable-task-registry/v1",
-  "generation": 1,
-  "status": "ACTIVE_SOURCE_DEFINED",
-  "purpose": "Provide stable, reusable task definitions that sessions and canonical work may reference without creating duplicate one-off task specifications or granting execution authority.",
+  "generation": 2,
+  "status": "ACTIVE_IDENTITY_CONSTRUCT_SOURCE_DEFINED",
+  "purpose": "Provide durable reusable task identities whose invocation-specific parameters derive exact manifest-bound TT/RTG/GTG constructs and ephemeral runners without creating duplicate permanent implementations or granting execution authority.",
   "authority": {
     "definition_and_discovery": "THIS_REGISTRY",
     "work_intent_and_coordination": "data/canonical-task-registry.json",
@@ -12,12 +12,37 @@
     "credential_authority": "TV/TVC",
     "github_token_runtime_authority": "NONE"
   },
+  "identity_construct_contract": {
+    "ref": "data/reusable-task-ephemeral-construct-contract.json",
+    "constructor": "scripts/materialize_reusable_task_construct.py",
+    "manifest_schema": "schemas/reusable-task-invocation-manifest.schema.json",
+    "canonical_cross_layer_contract": "StegVerse-Labs/StegScholar:papers/rtg-gtg-tt/cross-layer-contract.md",
+    "durability": {
+      "reusable_identity": "DURABLE",
+      "parameters": "INVOCATION_SPECIFIC",
+      "tt_rtg_gtg_construct": "DERIVED",
+      "runner": "EPHEMERAL_WHERE_POSSIBLE",
+      "evidence": "DURABLE",
+      "canonical_task_cosv_identity": "DURABLE_WHEN_TRACKING_REQUIRED",
+      "manifest": "BOUND",
+      "receipts": "CHAINED",
+      "recording": "AT_NECESSARY_LEVELS",
+      "residual_recording_construct": "TEMPORARY_NON_EXECUTING",
+      "terminal_displacement": "ENTROPY_RECOVERY_AFTER_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION"
+    }
+  },
   "reuse_rules": {
     "definitions_are_non_authorizing": true,
     "invocation_requires_current_context_binding": true,
+    "parameters_determine_exact_construct": true,
+    "manifest_binding_required": true,
+    "receipt_chain_required": true,
+    "record_at_necessary_levels_only": true,
     "do_not_create_duplicate_implementation_when_existing_surface_exists": true,
     "materially_affected_scope_only": true,
-    "may_be_composed_into_session_closeout": true
+    "may_be_composed_into_session_closeout": true,
+    "new_distinct_same_goal_work_may_derive_adjacent_canonical_task_after_duplicate_reconciliation": true,
+    "runner_persistence_merely_because_task_repeats_prohibited": true
   },
   "tasks": [
     {
@@ -26,10 +51,10 @@
       "purpose": "Evaluate every materially changed repository and keep its README accurate for behavior, runtime semantics, interfaces, governance and authority boundaries, evidence semantics, prerequisites, dependencies, failure behavior, and capability meaning.",
       "trigger": "repository materially changed in current work",
       "scope": "materially affected repositories only",
-      "completion_predicates": [
-        "README_UPDATED_IN_SAME_CHANGE_SET_IF_REQUIRED",
-        "OR_EVIDENCE_SUPPORTED_NO_README_CHANGE_REQUIRED_RECORDED"
-      ],
+      "parameter_keys": ["repository", "change_set", "materiality_evidence"],
+      "runner_templates": [],
+      "recording_levels": ["task", "goal", "master_records"],
+      "completion_predicates": ["README_UPDATED_IN_SAME_CHANGE_SET_IF_REQUIRED", "OR_EVIDENCE_SUPPORTED_NO_README_CHANGE_REQUIRED_RECORDED"],
       "authority_effect": "NONE",
       "reuse_instructions": "Run as a completeness predicate. Do not rewrite unaffected documentation and do not treat README prose as execution evidence."
     },
@@ -39,11 +64,10 @@
       "purpose": "Resolve and validate applicable *_MIRROR_HANDOFF.md files for repositories touched by current work and update stale task state, next transition, blockers, dependencies, authority boundaries, terminal evidence, and reusable implementation references.",
       "trigger": "repository or task state materially changed in current work",
       "scope": "applicable handoffs for materially affected repositories/tasks",
-      "completion_predicates": [
-        "APPLICABLE_HANDOFFS_RESOLVED",
-        "HANDOFF_STATE_MATCHES_CURRENT_CANONICAL_EVIDENCE",
-        "STALE_SUPERSEDED_EXECUTION_STATE_NOT_PROJECTED_AS_CURRENT"
-      ],
+      "parameter_keys": ["repository", "task_id", "affected_handoffs"],
+      "runner_templates": [],
+      "recording_levels": ["task", "goal", "master_records"],
+      "completion_predicates": ["APPLICABLE_HANDOFFS_RESOLVED", "HANDOFF_STATE_MATCHES_CURRENT_CANONICAL_EVIDENCE", "STALE_SUPERSEDED_EXECUTION_STATE_NOT_PROJECTED_AS_CURRENT"],
       "authority_effect": "NONE",
       "reuse_instructions": "Treat repository-local handoffs as continuation records, not execution authority. Preserve provenance while correcting current-state projections."
     },
@@ -53,11 +77,10 @@
       "purpose": "Verify that capabilities, repositories, releases, runtime states, interfaces, and governed functions materially changed by current work remain accurately represented in StegIndex and related index projections.",
       "trigger": "indexed capability or indexed source materially changed",
       "scope": "materially affected indexed entries only",
-      "completion_predicates": [
-        "INDEXED_ENTRY_DISCOVERABLE",
-        "INDEX_PROJECTION_MATCHES_CURRENT_SOURCE_AND_EVIDENCE",
-        "STALE_OR_OVERCLAIMED_CAPABILITY_NOT_ADVERTISED"
-      ],
+      "parameter_keys": ["capability_or_source", "current_evidence", "affected_index_entries"],
+      "runner_templates": [],
+      "recording_levels": ["task", "goal", "system", "master_records"],
+      "completion_predicates": ["INDEXED_ENTRY_DISCOVERABLE", "INDEX_PROJECTION_MATCHES_CURRENT_SOURCE_AND_EVIDENCE", "STALE_OR_OVERCLAIMED_CAPABILITY_NOT_ADVERTISED"],
       "authority_effect": "NONE_DISCOVERY_ONLY",
       "reuse_instructions": "Use StegIndex as read/discovery projection. Do not convert index presence into runtime, governance, credential, publication, or execution authority."
     },
@@ -67,12 +90,12 @@
       "purpose": "Trigger the existing STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001 through its eligible resident execution path and surface newly actionable items according to its existing authority boundaries.",
       "trigger": "session closeout or explicit reusable-task invocation",
       "scope": "existing native email action monitor only",
+      "parameter_keys": ["bounded_mailbox_scope", "observation_window"],
       "existing_task_ref": "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001",
       "existing_request_ref": "RESIDENT-EXEC-NATIVE-EMAIL-ACTION-MONITOR-001",
-      "completion_predicates": [
-        "EXISTING_MONITOR_TRIGGER_ATTEMPTED_THROUGH_ELIGIBLE_RESIDENT_PATH",
-        "RESULT_OR_CURRENT_BOUNDARY_RECORDED"
-      ],
+      "runner_templates": ["scripts/consume_native_email_action_monitor_request.py", "scripts/run_native_email_action_monitor.py"],
+      "recording_levels": ["operation", "task", "goal", "master_records"],
+      "completion_predicates": ["EXISTING_MONITOR_TRIGGER_ATTEMPTED_THROUGH_ELIGIBLE_RESIDENT_PATH", "RESULT_OR_CURRENT_BOUNDARY_RECORDED"],
       "authority_effect": "NONE_BEYOND_EXISTING_MONITOR_AUTHORITY",
       "reuse_instructions": "Reuse the existing monitor and resident dispatcher. Do not create another scheduler, monitor, polling mechanism, heartbeat, worker, or credential route."
     },
@@ -82,34 +105,93 @@
       "purpose": "Reconcile Task Registry intent, WorkerCoordinator claim/fence projections, Master Records observed reality, applicable receipts, mirror handoffs, README completeness determinations, and StegIndex/index state before handoff.",
       "trigger": "session closeout after material work",
       "scope": "current task chain and materially affected artifacts",
-      "completion_predicates": [
-        "CANONICAL_SURFACES_RECONCILED",
-        "CONTRADICTIONS_REPAIRED_WHERE_MACHINE_ADMISSIBLE_OR_EXPLICITLY_RECORDED",
-        "OBSERVED_EVIDENCE_NOT_SILENTLY_REWRITTEN"
-      ],
+      "parameter_keys": ["task_chain", "affected_artifacts", "evidence_refs"],
+      "runner_templates": [],
+      "recording_levels": ["task", "goal", "system", "ecosystem", "master_records"],
+      "completion_predicates": ["CANONICAL_SURFACES_RECONCILED", "CONTRADICTIONS_REPAIRED_WHERE_MACHINE_ADMISSIBLE_OR_EXPLICITLY_RECORDED", "OBSERVED_EVIDENCE_NOT_SILENTLY_REWRITTEN"],
       "authority_effect": "NONE",
       "reuse_instructions": "Reconcile rather than overwrite authority domains. Master Records remains observed-reality authority; WorkerCoordinator remains claim/fence authority; InTr remains governed transition boundary."
     },
     {
       "reusable_task_id": "RT-SESSION-CLOSEOUT-001",
       "name": "Session Maintenance Closeout",
-      "purpose": "Compose the reusable README, handoff, StegIndex, email-monitor, and canonical-state reconciliation tasks into one bounded session-closeout routine before emitting a successor coordination block.",
+      "purpose": "Compose reusable maintenance identities into one bounded session-closeout construct before emitting a compact successor task_id + COSV vector pointer.",
       "trigger": "session has reached its current executable boundary and is preparing handoff",
       "scope": "current task chain and materially affected artifacts only",
-      "composes": [
-        "RT-README-VALIDATION-001",
-        "RT-MIRROR-HANDOFF-VALIDATION-001",
-        "RT-STEGINDEX-VALIDATION-001",
-        "RT-NATIVE-EMAIL-ACTION-MONITOR-001",
-        "RT-CANONICAL-STATE-RECONCILIATION-001"
-      ],
-      "completion_predicates": [
-        "PRIMARY_WORK_REACHED_CURRENT_BOUNDARY",
-        "ALL_APPLICABLE_COMPOSED_REUSABLE_TASKS_COMPLETED_OR_CURRENT_BOUNDARY_RECORDED",
-        "SUCCESSOR_COORDINATION_BLOCK_CAN_BE_EMITTED"
-      ],
+      "parameter_keys": ["task_chain", "affected_artifacts", "successor_task_pointer"],
+      "composes": ["RT-README-VALIDATION-001", "RT-MIRROR-HANDOFF-VALIDATION-001", "RT-STEGINDEX-VALIDATION-001", "RT-NATIVE-EMAIL-ACTION-MONITOR-001", "RT-CANONICAL-STATE-RECONCILIATION-001"],
+      "runner_templates": [],
+      "recording_levels": ["task", "goal", "system", "master_records"],
+      "completion_predicates": ["PRIMARY_WORK_REACHED_CURRENT_BOUNDARY", "ALL_APPLICABLE_COMPOSED_REUSABLE_TASKS_COMPLETED_OR_CURRENT_BOUNDARY_RECORDED", "SUCCESSOR_TASK_ID_PLUS_COSV_VECTOR_CAN_BE_EMITTED"],
       "authority_effect": "NONE",
-      "reuse_instructions": "This is a closeout composition, not a prerequisite that may block an admissible primary runtime transition. Apply only to materially affected scope and do not recursively audit the ecosystem."
+      "reuse_instructions": "This is a closeout composition, not a prerequisite that may block an admissible primary runtime transition. Do not recursively audit the ecosystem."
+    },
+    {
+      "reusable_task_id": "RT-INTR-PROTOCOL-ESTABLISH-001",
+      "name": "Interlock/InTr Protocol Establishment",
+      "purpose": "Resolve or establish the exact governed Interlock/InTr protocol contract required for an internal or external connection without making provider-specific adapter semantics the governance boundary.",
+      "trigger": "a task requires a governed connection for which no applicable existing InTr protocol resolves",
+      "scope": "one precisely parameterized connection class",
+      "parameter_keys": ["endpoint_class", "direction", "normalized_envelope", "authority_requirements", "evidence_requirements"],
+      "runner_templates": [],
+      "recording_levels": ["task", "goal", "component", "system", "master_records"],
+      "completion_predicates": ["EXISTING_PROTOCOL_REUSED_OR_NON_DUPLICATE_PROTOCOL_CONTRACT_ESTABLISHED", "INGRESS_EGRESS_AUTHORITY_BOUNDARIES_EXPLICIT", "RECEIPT_AND_FAILURE_SEMANTICS_BOUND"],
+      "authority_effect": "NONE_PROTOCOL_DEFINITION_ONLY",
+      "reuse_instructions": "Check existing protocol surfaces first. Do not create another listener, scheduler, WorkerCoordinator, credential authority, or transition authority."
+    },
+    {
+      "reusable_task_id": "RT-EXTERNAL-ADAPTER-ESTABLISH-001",
+      "name": "External Adapter Establishment",
+      "purpose": "Derive the endpoint-specific translation layer on the external side of an established Interlock/InTr boundary while preserving normalized StegVerse semantics internally.",
+      "trigger": "an external endpoint requires protocol translation not already provided by an existing adapter",
+      "scope": "one external endpoint/profile",
+      "parameter_keys": ["endpoint_identity", "endpoint_protocol", "intr_protocol_ref", "operations", "error_mapping", "evidence_mapping"],
+      "runner_templates": [],
+      "recording_levels": ["operation", "task", "goal", "component", "master_records"],
+      "completion_predicates": ["EXISTING_ADAPTER_REUSED_OR_NON_DUPLICATE_ADAPTER_DERIVED", "ADAPTER_REMAINS_EXTERNAL_SIDE_TRANSLATION", "AUTHENTIC_ROUND_TRIP_EVIDENCE_REQUIREMENTS_DECLARED"],
+      "authority_effect": "NONE_TRANSLATION_ONLY",
+      "reuse_instructions": "The adapter is not the governance boundary and receives no inherited InTr, WorkerCoordinator, or credential authority."
+    },
+    {
+      "reusable_task_id": "RT-AI-ADAPTER-ESTABLISH-001",
+      "name": "AI Adapter Establishment",
+      "purpose": "Specialize the external-adapter identity for an AI/model provider, deriving only provider-specific endpoint, request/response, model, usage, and error translation needed across the existing governed InTr boundary.",
+      "trigger": "a governed AI entity/provider requires a provider-specific adapter not already available",
+      "scope": "one AI provider endpoint profile",
+      "parameter_keys": ["provider", "endpoint_profile", "models", "request_mapping", "response_mapping", "usage_mapping", "credential_class", "intr_protocol_ref"],
+      "composes": ["RT-EXTERNAL-ADAPTER-ESTABLISH-001"],
+      "runner_templates": [],
+      "recording_levels": ["operation", "task", "goal", "component", "system", "master_records"],
+      "completion_predicates": ["AI_PROVIDER_TRANSLATION_BOUND", "AUTHENTIC_TWO_WAY_TRANSPORT_EVIDENCE_REQUIRED", "USAGE_AND_ERROR_SEMANTICS_BOUND", "NO_PROVIDER_SPECIFIC_GOVERNANCE_AUTHORITY_CREATED"],
+      "authority_effect": "NONE_AI_TRANSLATION_ONLY",
+      "reuse_instructions": "Reuse common transport and existing provider adapter components. Never call the adapter working without authentic two-way provider evidence."
+    },
+    {
+      "reusable_task_id": "RT-EXTERNAL-ENDPOINT-MONITOR-001",
+      "name": "External Endpoint Monitor",
+      "purpose": "Derive a bounded internal observation task that interacts with an external endpoint only through its existing adapter and governed Interlock/InTr path, recording evidence and deriving adjacent canonical work when a distinct actionable condition appears.",
+      "trigger": "an internal capability requires recurring or event-driven observation of an external endpoint",
+      "scope": "one endpoint and observation predicate set",
+      "parameter_keys": ["endpoint_identity", "adapter_ref", "intr_protocol_ref", "observation_predicates", "trigger_or_cadence", "evidence_destination", "actionable_condition_policy"],
+      "runner_templates": [],
+      "recording_levels": ["operation", "task", "goal", "component", "system", "master_records"],
+      "completion_predicates": ["OBSERVATION_PERFORMED_THROUGH_EXISTING_GOVERNED_PATH", "EVIDENCE_RECORDED", "ACTIONABLE_NEW_WORK_RECONCILED_BEFORE_ADJACENT_TASK_DERIVATION"],
+      "authority_effect": "NONE_OBSERVATION_ONLY_UNLESS_SEPARATELY_ADMITTED",
+      "reuse_instructions": "Do not create a new scheduler, credential route, listener, WorkerCoordinator, or provider-operation authority. Monitoring evidence does not itself authorize remediation."
+    },
+    {
+      "reusable_task_id": "RT-SOCIAL-PLATFORM-INTERACTION-001",
+      "name": "Social Platform Interaction",
+      "purpose": "Derive a bounded social-platform operation through an existing or derived external adapter and governed Interlock/InTr boundary for publication, reading interactions, moderation, engagement evidence, or follow-up task derivation.",
+      "trigger": "StegVerse requires an interaction with a social platform",
+      "scope": "one platform identity, operation, and target object set",
+      "parameter_keys": ["platform", "operation", "account_or_page_identity", "object_refs", "adapter_ref", "intr_protocol_ref", "evidence_requirements", "followup_policy"],
+      "composes": ["RT-EXTERNAL-ADAPTER-ESTABLISH-001"],
+      "runner_templates": [],
+      "recording_levels": ["operation", "task", "goal", "component", "system", "master_records"],
+      "completion_predicates": ["SOCIAL_OPERATION_BOUND_TO_EXACT_PLATFORM_ADAPTER", "GOVERNED_EXTERNAL_INTERACTION_EVIDENCE_RECORDED", "FOLLOWUP_WORK_RECONCILED_AND_DERIVED_ONLY_WHEN_DISTINCT"],
+      "authority_effect": "NONE_BEYOND_SEPARATELY_ADMITTED_PLATFORM_OPERATION",
+      "reuse_instructions": "Platform-specific behavior belongs in the adapter; reusable task semantics, evidence, adjacency, COSV tracking, and governance remain common."
     }
   ]
 }
