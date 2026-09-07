@@ -1,8 +1,8 @@
 {
   "schema": "stegverse.cosv-global-registry-coverage/v0.1",
   "repository": "StegVerse-Labs/.github",
-  "observed_commit": "30dbd0042dfcaa4a9e33d93e327d985a47f2122b",
-  "observed_at": "2026-09-04T14:37:00-05:00",
+  "observed_commit": "24e3b5ed1b6909bda605f8a6b8a2fedcaf159f72",
+  "observed_at": "2026-09-06T20:58:00-05:00",
   "profile": "task.v1",
   "notation": "L R U I V G O C M T B E A P",
   "width": 14,
@@ -10,10 +10,10 @@
   "credential_authority": "TV/TVC",
   "github_token_runtime_authority": "NONE",
   "worker_registry_summary": {
-    "unique_task_ids_global_plus_fragments": 83,
+    "unique_task_ids_global_plus_fragments": 84,
     "canonically_indexed_task_ids": 76,
     "completed_only_historical_unvectorized_task_ids": 6,
-    "active_unvectorized_unique_task_ids": 0,
+    "active_unvectorized_unique_task_ids": 1,
     "superseded_historical_unvectorized_task_ids": 1
   },
   "organization_registry_summary": {
@@ -21,8 +21,8 @@
     "canonically_vectorized_task_ids": 14,
     "active_unvectorized_task_ids": 0
   },
-  "total_active_unvectorized_unique_task_ids": 0,
-  "active_worker_task_ids_missing_canonical_cosv": [],
+  "total_active_unvectorized_unique_task_ids": 1,
+  "active_worker_task_ids_missing_canonical_cosv": ["SHWP-DEEPSEEK-INTR-RUNTIME-001"],
   "active_organization_task_ids_missing_canonical_cosv": [],
   "indexed_vectors": [
     {"task_id":"SHWP-ECOSYSTEM-CHAT-INFERENCE-001","vector":"50000000100000"},
@@ -160,8 +160,8 @@
   "sovereign_runtime_cosv_cohort": {"task_count":4,"indexed_after_projection":50,"active_worker_unvectorized_after_projection":14,"total_active_unvectorized_after_projection":28,"runtime_activation_claimed":false,"authority_effect":"NONE"},
   "cohort_projection_20260830": {"task_count":4,"indexed_after_projection":54,"active_worker_unvectorized_after_projection":10,"total_active_unvectorized_after_projection":24,"runtime_activation_claimed":false,"authority_effect":"NONE"},
   "final_structured_worker_cosv_cohort": {"task_count":7,"indexed_after_projection":61,"active_worker_unvectorized_after_projection":3,"total_active_unvectorized_after_projection":17,"runtime_activation_claimed":false,"authority_effect":"NONE"},
-  "worker_denominator_closure": {"active_worker_tasks_vectorized":76,"active_worker_tasks_unvectorized":0,"completed_historical_unvectorized":6,"superseded_historical_unvectorized":1,"total_unique_worker_task_ids":83,"authority_effect":"NONE","runtime_activation_claimed":false},
-  "active_task_vector_coverage_closure": {"active_worker_tasks_vectorized":75,"active_organization_tasks_vectorized":14,"total_active_tasks_vectorized":89,"active_tasks_unvectorized":0,"source_projection_complete":true,"runtime_activation_claimed":false,"authority_effect":"NONE"},
+  "worker_denominator_closure": {"active_worker_tasks_vectorized":76,"active_worker_tasks_unvectorized":1,"completed_historical_unvectorized":6,"superseded_historical_unvectorized":1,"total_unique_worker_task_ids":84,"authority_effect":"NONE","runtime_activation_claimed":false},
+  "active_task_vector_coverage_closure": {"active_worker_tasks_vectorized":75,"active_organization_tasks_vectorized":14,"total_active_tasks_vectorized":89,"active_tasks_unvectorized":1,"source_projection_complete":false,"runtime_activation_claimed":false,"authority_effect":"NONE"},
   "publication_observer_projection_20260831": {"task_id":"SV-DN1-PUBLICATION-OBSERVER-001","vector":"50000000101000","registry_ref":"control/worker-registry.d/sv-dn1-publication-observer-001.json","source_state_vector_ref":"control/task-vectors/SV-DN1-PUBLICATION-OBSERVER-001.json","product_observer_merge":"StegVerse-org/stegverse-demo-suite@653474a78c912eceebf97b5db51bec9a8737ddec","blocker":"SV_DN1_AUTHENTIC_RESULT_REPOSITORY_PERSISTENCE_AND_PUBLIC_DEPLOYMENT_NOT_YET_OBSERVED","activation_proof_observed":false,"evidence_complete":false,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","repository_writeback_authority":false,"deployment_authority":false,"authority_effect":"NONE"},
   "sv_dn1_repository_persistence_dispatch_projection_20260831": {"task_id":"SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001","vector":"50000000101000","registry_ref":"control/worker-registry.d/sv-dn1-repository-persistence-dispatch-001.json","source_state_vector_ref":"control/task-vectors/SV-DN1-REPOSITORY-PERSISTENCE-DISPATCH-001.json","blocker":"TVC_SV_DN1_REPOSITORY_MUTATION_ADMISSION_NOT_YET_OBSERVED_TVC_264","activation_proof_observed":false,"evidence_complete":false,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","repository_writeback_authority":false,"merge_authority":false,"deployment_authority":false,"authority_effect":"NONE"},
   "sv_dn1_repository_merge_dispatch_projection_20260831": {"task_id":"SV-DN1-REPOSITORY-MERGE-DISPATCH-001","vector":"50000000101000","registry_ref":"control/worker-registry.d/sv-dn1-repository-merge-dispatch-001.json","source_state_vector_ref":"control/task-vectors/SV-DN1-REPOSITORY-MERGE-DISPATCH-001.json","blocker":"AUTHENTIC_SV_DN1_PRODUCT_PR_AND_TVC_MERGE_NOT_YET_OBSERVED","activation_proof_observed":false,"evidence_complete":false,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","repository_writeback_authority":false,"merge_authority":false,"deployment_authority":false,"authority_effect":"NONE"},
