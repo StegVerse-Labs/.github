@@ -14,6 +14,7 @@ TASKS = {
     "ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001": ("50000000101000", "MACHINE_OWNED", 1, "control/worker-registry.d/organization-local-resident-boundary-executor-001.json"),
     "LEGACY-CONTINUITY-VALIDATION-WORKER-001": ("50000000101000", "MACHINE_OWNED", 1, "control/worker-registry.d/legacy-continuity-validation-001.json"),
 }
+KIMI_TASK = "KIMI-INTR-RESIDENT-ACTIVATION-001"
 spec = importlib.util.spec_from_file_location("cosv", ROOT / "scripts" / "cosv.py")
 assert spec and spec.loader
 cosv = importlib.util.module_from_spec(spec)
@@ -40,17 +41,35 @@ class WorkerDenominatorClosureCOSVTests(unittest.TestCase):
             self.assertEqual(task["source_state_vector_ref"], f"control/task-vectors/{task_id}.json")
             self.assertEqual(indexed[task_id]["vector"], expected)
 
-    def test_active_worker_denominator_is_closed(self):
+    def test_active_worker_denominator_is_reconciled_without_invented_runtime_vector(self):
         coverage = json.loads((ROOT / "control/cosv-global-registry-coverage.json").read_text())
-        self.assertEqual(coverage["worker_registry_summary"]["canonically_indexed_task_ids"], 76)
-        self.assertEqual(coverage["worker_registry_summary"]["active_unvectorized_unique_task_ids"], 0)
-        self.assertEqual(coverage["active_worker_task_ids_missing_canonical_cosv"], [])
+        summary = coverage["worker_registry_summary"]
+        self.assertEqual(summary["canonically_indexed_task_ids"], 76)
+        self.assertEqual(summary["active_unvectorized_unique_task_ids"], 1)
+        self.assertEqual(coverage["active_worker_task_ids_missing_canonical_cosv"], [KIMI_TASK])
         self.assertEqual(
             coverage["total_active_unvectorized_unique_task_ids"],
-            coverage["organization_registry_summary"]["active_unvectorized_task_ids"],
+            summary["active_unvectorized_unique_task_ids"]
+            + coverage["organization_registry_summary"]["active_unvectorized_task_ids"],
         )
-        self.assertEqual(coverage["worker_denominator_closure"]["active_worker_tasks_vectorized"], 76)
-        self.assertEqual(coverage["worker_denominator_closure"]["active_worker_tasks_unvectorized"], 0)
+        closure = coverage["worker_denominator_closure"]
+        self.assertEqual(closure["active_worker_tasks_vectorized"], 76)
+        self.assertEqual(closure["active_worker_tasks_unvectorized"], 1)
+        self.assertEqual(closure["total_unique_worker_task_ids"], 84)
+        self.assertFalse(closure["runtime_activation_claimed"])
+        self.assertEqual(closure["authority_effect"], "NONE")
+
+        ae = json.loads((ROOT / "control/admissible-existence-retrospective-conformance.d/kimi-intr-resident-activation-001.json").read_text())
+        entry = next(x for x in ae["entries"] if x["task_id"] == KIMI_TASK)
+        self.assertEqual(entry["phase"], "ADMISSIBLE")
+        self.assertEqual(entry["result"], "PASS")
+        self.assertEqual(entry["task_relationship"], "integrates_capability")
+
+        reconciliation = coverage["kimi_intr_resident_activation_reconciliation"]
+        self.assertEqual(reconciliation["phase"], "ADMISSIBLE")
+        self.assertEqual(reconciliation["target_phase"], "ACTIVATED")
+        self.assertFalse(reconciliation["canonical_vector_emitted"])
+        self.assertFalse(reconciliation["runtime_receipt_observed"])
 
 if __name__ == "__main__":
     unittest.main()

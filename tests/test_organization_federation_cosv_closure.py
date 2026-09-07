@@ -42,16 +42,31 @@ class OrganizationFederationCOSVClosureTests(unittest.TestCase):
         self.assertEqual(record["exact_metrics"]["lifecycle"], "MACHINE_OWNED")
         self.assertEqual(record["exact_metrics"]["blocker_count"], 0)
 
-    def test_active_task_projection_is_closed_without_activation_claim(self):
+    def test_active_task_projection_allows_only_explicit_admissible_runtime_proof_gap(self):
         coverage = json.loads((ROOT / "control/cosv-global-registry-coverage.json").read_text())
-        self.assertEqual(coverage["worker_registry_summary"]["active_unvectorized_unique_task_ids"], 0)
+        missing_worker = coverage["active_worker_task_ids_missing_canonical_cosv"]
+        missing_org = coverage["active_organization_task_ids_missing_canonical_cosv"]
+        self.assertEqual(missing_org, [])
+        self.assertEqual(missing_worker, ["KIMI-INTR-RESIDENT-ACTIVATION-001"])
+        self.assertEqual(coverage["worker_registry_summary"]["active_unvectorized_unique_task_ids"], len(missing_worker))
         self.assertEqual(coverage["organization_registry_summary"]["active_unvectorized_task_ids"], 0)
-        self.assertEqual(coverage["total_active_unvectorized_unique_task_ids"], 0)
-        self.assertEqual(coverage["active_worker_task_ids_missing_canonical_cosv"], [])
-        self.assertEqual(coverage["active_organization_task_ids_missing_canonical_cosv"], [])
+        self.assertEqual(coverage["total_active_unvectorized_unique_task_ids"], len(missing_worker))
+
+        ae = json.loads((ROOT / "control/admissible-existence-retrospective-conformance.d/kimi-intr-resident-activation-001.json").read_text())
+        entry = next(x for x in ae["entries"] if x["task_id"] == missing_worker[0])
+        self.assertEqual(entry["phase"], "ADMISSIBLE")
+        self.assertEqual(entry["result"], "PASS")
+        self.assertEqual(entry["task_relationship"], "integrates_capability")
+
+        reconciliation = coverage["kimi_intr_resident_activation_reconciliation"]
+        self.assertEqual(reconciliation["phase"], "ADMISSIBLE")
+        self.assertEqual(reconciliation["target_phase"], "ACTIVATED")
+        self.assertFalse(reconciliation["canonical_vector_emitted"])
+        self.assertFalse(reconciliation["runtime_receipt_observed"])
+
         closure = coverage["active_task_vector_coverage_closure"]
-        self.assertEqual(closure["total_active_tasks_vectorized"], 89)
-        self.assertTrue(closure["source_projection_complete"])
+        self.assertEqual(closure["active_tasks_unvectorized"], len(missing_worker))
+        self.assertFalse(closure["source_projection_complete"])
         self.assertFalse(closure["runtime_activation_claimed"])
         self.assertEqual(closure["authority_effect"], "NONE")
 
