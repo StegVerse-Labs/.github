@@ -1,0 +1,44 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SHWP-DEEPSEEK-INTR-RUNTIME-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000101000",
+  "evidence_refs": [
+    "handoffs/SHWP-DEEPSEEK-INTR-RUNTIME-001.json",
+    "control/worker-registry.d/deepseek-intr-runtime-001.json",
+    "control/resident-execution-request.d/deepseek-intr-runtime-001.json",
+    "StegVerse-Labs/.github#1122",
+    "StegVerse-Labs/.github#1125"
+  ],
+  "observed_at": "2026-09-07T09:22:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 1,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "handoffs/SHWP-DEEPSEEK-INTR-RUNTIME-001.json#state=HANDOFF_READY with authorized resident worker/consumer path merged; machine continuation owner installed",
+    "archive_ready": "control/worker-registry.d/deepseek-intr-runtime-001.json#archive_eligible=false",
+    "unassigned_work": "control/worker-registry.d/deepseek-intr-runtime-001.json#admissible_existence.continuation_owner",
+    "chat_owned_counts": "resident execution is machine-owned; no chat-owned implementation, validation, integration, observation, or credential step is required",
+    "canonical_owner_installed": "PR #1125 merged the canonical resident WorkerCoordinator request/consumer/worker path",
+    "thread_required": "no chat thread is required for resident execution",
+    "blocker_count": "control/worker-registry.d/deepseek-intr-runtime-001.json#admissible_existence.blockers contains exactly DEEPSEEK_INTR_SAME_EXECUTION_RECEIPT_NOT_YET_OBSERVED",
+    "evidence_complete": "same-execution DeepSeek resident receipt is not yet observed",
+    "activated": "authentic DeepSeek resident same-execution activation is not yet observed",
+    "propagated": "no activation propagation is claimed before authentic completion"
+  },
+  "authority_effect": "NONE"
+}
