@@ -15,6 +15,8 @@ RECOVERY = ROOT / "receipts" / "ecosystem-chat-sovereign-inference" / "orphan-re
 VECTOR = ROOT / "control" / "task-vectors" / "SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json"
 
 TASK_ID = "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"
+TERMINAL_RECOVERY_FENCE = 22
+CURRENT_MINIMUM_FENCE_EXCLUSIVE = 24
 
 
 def load(path: Path) -> dict:
@@ -33,19 +35,19 @@ class EcosystemChatParentRegistryReconciliationTests(unittest.TestCase):
 
     def test_terminal_recovery_is_not_reused_as_parent_authority(self):
         self.assertEqual(self.recovery["state"], "PASS")
-        self.assertEqual(self.recovery["recovery_fencing_token"], 22)
+        self.assertEqual(self.recovery["recovery_fencing_token"], TERMINAL_RECOVERY_FENCE)
         self.assertTrue(self.recovery["old_authority_ended"])
         self.assertFalse(self.recovery["old_authority_reused"])
         self.assertFalse(self.recovery["successor_authority_granted"])
 
         prior = self.task["prior_authority_terminalization"]
         self.assertEqual(prior["old_fencing_token"], 20)
-        self.assertEqual(prior["recovery_fencing_token"], 22)
+        self.assertEqual(prior["recovery_fencing_token"], TERMINAL_RECOVERY_FENCE)
         self.assertTrue(prior["old_authority_ended"])
         self.assertFalse(prior["old_authority_reused"])
         self.assertFalse(prior["recovery_authority_reused"])
 
-    def test_canonical_registry_matches_post_recovery_parent_admission(self):
+    def test_canonical_registry_preserves_post_recovery_historical_projection(self):
         self.assertEqual(self.task["state"], "HANDOFF_READY")
         self.assertEqual(self.task["executor_binding"], "AUTHORIZED")
         self.assertIsNone(self.task["claim_id"])
@@ -59,7 +61,7 @@ class EcosystemChatParentRegistryReconciliationTests(unittest.TestCase):
         self.assertEqual(admission["authority_domain"], "INDEPENDENT_TASK_CONTROL")
         self.assertEqual(admission["claim_state"], "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM")
         self.assertTrue(admission["fresh_fence_required"])
-        self.assertEqual(admission["minimum_fencing_token_exclusive"], 22)
+        self.assertEqual(admission["minimum_fencing_token_exclusive"], TERMINAL_RECOVERY_FENCE)
         self.assertFalse(admission["heartbeat_grants_execution_authority"])
         self.assertFalse(admission["recovery_grants_parent_execution_authority"])
 
@@ -93,11 +95,14 @@ class EcosystemChatParentRegistryReconciliationTests(unittest.TestCase):
         self.assertEqual(count, 1)
         self.assertEqual(observed, [TASK_ID])
 
-    def test_fresh_parent_fence_floor_is_strictly_above_terminal_recovery(self):
-        admission = self.task["admission"]
+    def test_current_claimable_parent_fence_floor_is_strictly_above_terminal_recovery(self):
+        historical_admission = self.task["admission"]
+        fragment_admission = self.fragment_task["admission"]
         handoff_activation = self.handoff["activation"]
-        self.assertEqual(admission["minimum_fencing_token_exclusive"], 22)
-        self.assertEqual(handoff_activation["minimum_fencing_token_exclusive"], 22)
+        self.assertEqual(historical_admission["minimum_fencing_token_exclusive"], TERMINAL_RECOVERY_FENCE)
+        self.assertEqual(fragment_admission["minimum_fencing_token_exclusive"], CURRENT_MINIMUM_FENCE_EXCLUSIVE)
+        self.assertEqual(handoff_activation["minimum_fencing_token_exclusive"], CURRENT_MINIMUM_FENCE_EXCLUSIVE)
+        self.assertGreater(CURRENT_MINIMUM_FENCE_EXCLUSIVE, TERMINAL_RECOVERY_FENCE)
         self.assertTrue(handoff_activation["fresh_fence_required"])
         self.assertFalse(handoff_activation["recovery_reacquisition_allowed"])
 
