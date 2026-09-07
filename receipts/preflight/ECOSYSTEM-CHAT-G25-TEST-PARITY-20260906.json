@@ -1,0 +1,52 @@
+{
+  "schema": "stegverse.session-machine-preflight/v1",
+  "task_id": "ECOSYSTEM-CHAT-G25-TEST-PARITY-20260906",
+  "parent_task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+  "state": "PASS_VALIDATION_PARITY_REPAIR_ADMISSIBLE",
+  "evaluated_at": "2026-09-06T20:49:30-05:00",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "fix/ecosystem-chat-g25-handoff-1141",
+  "canonical_state_resolution": {
+    "executable_handoff_floor_exclusive": 24,
+    "authorization_floor_exclusive": 24,
+    "worker_registry_floor_exclusive": 24,
+    "executor_guard_floor_exclusive": 24,
+    "first_safe_fresh_fence": 25,
+    "failing_pr": 1147,
+    "failing_run": 34074237667,
+    "failing_test": "tests.test_independent_ecosystem_chat_parent_executor.IndependentEcosystemChatParentExecutorTests.test_current_registration_and_authorization_are_claimable",
+    "failure": "test retains historical assertion authorization minimum_fencing_token_exclusive == 22 after canonical G25+ parity correction"
+  },
+  "reuse": {
+    "existing_test_surface": "tests/test_independent_ecosystem_chat_parent_executor.py",
+    "new_runtime": false,
+    "new_authority": false,
+    "new_test_framework": false
+  },
+  "collision_review": {
+    "canonical_active_repair_pr": 1147,
+    "disposition": "UPDATE_STALE_ASSERTION_IN_EXISTING_PR_ONLY"
+  },
+  "planned_change": {
+    "paths": ["tests/test_independent_ecosystem_chat_parent_executor.py"],
+    "change": "replace only the stale exact authorization-floor assertion 22 with the canonical value 24; historical terminal G22 recovery assertions remain historical and unchanged",
+    "runtime_code_change": false,
+    "authority_change": false,
+    "evidence_semantics_change": false
+  },
+  "readme_impact": {
+    "required": true,
+    "complete": true,
+    "material_function_change": false,
+    "readme_update_required": false,
+    "determination": "NO_README_CHANGE_REQUIRED_TEST_ASSERTION_PARITY_ONLY",
+    "no_readme_update_reason": "This mutation changes only a deterministic test assertion to match the already-effective G25+ authorization, registry, handoff, and executor guard. It introduces no runtime behavior, interface, authority boundary, evidence semantic, prerequisite, dependency, failure behavior, or capability meaning."
+  },
+  "authority": {
+    "claim_fence_authority": "WORKERCOORDINATOR",
+    "credential_authority": "TV/TVC",
+    "heartbeat_grants_execution_authority": false,
+    "github_token_runtime_authority": "NONE"
+  },
+  "verdict": "PASS"
+}
