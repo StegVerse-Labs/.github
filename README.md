@@ -260,6 +260,8 @@ For the HB31 Ecosystem Chat autostart projection, `TASK-2026-0008` / fence 4 rem
 
 The portable state is not reset and prior claims are not deleted to make successor work eligible. Existing collision checks remain fail-closed, TV/TVC remains credential authority, HeartBeat grants no claim authority, GitHub has no runtime authority, and no second allocator, scheduler, WorkerCoordinator, or user-operated machine is introduced.
 
+The repeatable resident `org_claim_allocator` request uses `TASK-2026-0009` as its minimum already-local source-catalog freshness floor. Before it materializes missing runtime task definitions or invokes the canonical allocator, the existing consumer requires the exact TASK-0009 requested timestamp, Site dependency surface, and mandatory-scope digest. An older local checkout fails `STALE_SOURCE_CATALOG` with no network fetch and no claim. This floor is freshness-only: it does not determine TASK-0009 eligibility, mint a claim, or grant a fence.
+
 ### Ecosystem Chat same-device terminal execution surface
 
 The canonical Ecosystem Chat parent may satisfy its sovereign runtime-surface predicate through either the existing native/private-process path or the exact `CURRENT_USER_IPHONE` service-worker path. The service-worker path is accepted only when the runtime proof binds `SERVICE_WORKER_LOCAL_INTERCEPT`, the canonical `https://stegverse.org/stegos-bootstrap/local-model` endpoint and StegOS service-worker scope, observed device-local interception, observed real inference, and `network_egress_required=false`.
