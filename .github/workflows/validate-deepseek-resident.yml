@@ -1,0 +1,131 @@
+name: validate-deepseek-resident
+
+on:
+  pull_request:
+    paths:
+      - 'README.md'
+      - 'workers/deepseek_intr_runtime_worker.py'
+      - 'handoffs/SHWP-DEEPSEEK-INTR-RUNTIME-001.json'
+      - 'control/worker-registry.d/deepseek-intr-runtime-001.json'
+      - 'control/process-worker-adapters.d/deepseek-intr-runtime-001.json'
+      - 'control/resident-execution-request.d/deepseek-intr-runtime-001.json'
+      - 'control/resident-execution-request.d/consume-deepseek-intr-runtime.py'
+      - 'scripts/dispatch_resident_execution_requests.py'
+      - 'tests/test_deepseek_intr_resident_bridge.py'
+      - '.github/workflows/validate-deepseek-resident.yml'
+
+permissions: {}
+
+jobs:
+  validate-deepseek-resident:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Refuse credential-bearing environment
+        shell: bash
+        run: |
+          set -euo pipefail
+          for key in GITHUB_TOKEN GH_TOKEN GITHUB_PAT DEEPSEEK_API_KEY OPENAI_API_KEY ANTHROPIC_API_KEY STEGVERSE_PROVIDER_TOKEN STEGVERSE_MASTER_RECORDS_TOKEN ACTIONS_RUNTIME_TOKEN ACTIONS_ID_TOKEN_REQUEST_TOKEN; do
+            if [ -n "${!key:-}" ]; then
+              echo "credential_exposed:$key"
+              exit 1
+            fi
+          done
+
+      - name: Fetch exact branch source anonymously
+        shell: bash
+        env:
+          SOURCE_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          git init source
+          git -C source remote add origin https://github.com/StegVerse-Labs/.github.git
+          git -C source -c http.extraheader= fetch --depth 1 origin "$SOURCE_SHA"
+          git -C source checkout --detach FETCH_HEAD
+
+      - name: Fetch canonical StegIndex source anonymously
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init stegindex
+          git -C stegindex remote add origin https://github.com/StegVerse-Labs/StegIndex.git
+          git -C stegindex -c http.extraheader= fetch --depth 1 origin b85bfa94639bf75e448a15e431dc348435588aa9
+          git -C stegindex checkout --detach FETCH_HEAD
+
+      - name: Run canonical session build preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 source/scripts/session_build_preflight.py \
+            --goal 'reuse existing DeepSeek InTr capability through resident WorkerCoordinator dispatch' \
+            --contribution-class interoperability \
+            --coordination-task-id SHWP-DEEPSEEK-INTR-RUNTIME-001 \
+            --stegindex-root "$PWD/stegindex" \
+            --readme-impact-required \
+            --material-function-change true \
+            --readme-updated-in-change-set \
+            --readme-path README.md \
+            --readme-evidence-ref README.md#resident-deepseek-intr-governed-runtime \
+            --readme-evidence-ref handoffs/SHWP-DEEPSEEK-INTR-RUNTIME-001.json \
+            > deepseek-preflight.json
+          python3 - <<'PY'
+          import json
+          r=json.load(open('deepseek-preflight.json'))
+          assert r['readme_impact_complete'] is True
+          assert r['readme_impact']['disposition']=='README_UPDATED_FOR_MATERIAL_FUNCTION_CHANGE'
+          assert r['authority_effect']=='NONE_PREWORK_DECISION_ONLY'
+          assert r['runtime_execution_performed'] is False
+          assert r['github_token_runtime_authority']=='NONE'
+          print(json.dumps(r, sort_keys=True))
+          PY
+
+      - name: Test DeepSeek resident bridge
+        shell: bash
+        working-directory: source
+        run: |
+          set -euo pipefail
+          python3 -m pip install --user pytest
+          python3 -m pytest -q tests/test_deepseek_intr_resident_bridge.py
+
+      - name: Validate exact control bindings
+        shell: bash
+        working-directory: source
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          handoff=json.loads(Path('handoffs/SHWP-DEEPSEEK-INTR-RUNTIME-001.json').read_text())
+          request=json.loads(Path('control/resident-execution-request.d/deepseek-intr-runtime-001.json').read_text())
+          registry=json.loads(Path('control/worker-registry.d/deepseek-intr-runtime-001.json').read_text())
+          adapter=json.loads(Path('control/process-worker-adapters.d/deepseek-intr-runtime-001.json').read_text())
+          readme=Path('README.md').read_text()
+          dispatcher=Path('scripts/dispatch_resident_execution_requests.py').read_text()
+          assert handoff['readme_impact']['required'] is True
+          assert handoff['readme_impact']['material_function_change'] is True
+          assert handoff['readme_impact']['readme_updated_in_change_set'] is True
+          assert '### Resident DeepSeek InTr governed runtime' in readme
+          assert request['second_machine_required'] is False
+          assert request['master_records_custody_required_for_egress'] is True
+          assert request['same_execution_required'] is True
+          assert registry['tasks'][0]['admission']['fresh_fence_required'] is True
+          assert adapter['adapters'][0]['command']==['python','workers/deepseek_intr_runtime_worker.py']
+          assert '("deepseek_intr_runtime", "control/resident-execution-request.d/consume-deepseek-intr-runtime.py")' in dispatcher
+          assert 'scripts/consume_deepseek_intr_runtime_request.py' not in dispatcher
+          print('deepseek resident control binding: PASS')
+          PY
+
+      - name: Confirm validation-only authority boundary
+        shell: bash
+        working-directory: source
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          text='\n'.join([
+              Path('.github/workflows/validate-deepseek-resident.yml').read_text(),
+              Path('control/resident-execution-request.d/consume-deepseek-intr-runtime.py').read_text(),
+          ]).lower()
+          for forbidden in ('actions/checkout','git push','deepseek_api_key =','stegverse_master_records_token ='):
+              assert forbidden not in text
+          print('validation-only authority boundary: PASS')
+          PY
