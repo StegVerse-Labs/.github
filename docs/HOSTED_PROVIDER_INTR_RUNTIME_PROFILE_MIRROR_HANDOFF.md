@@ -4,7 +4,7 @@ Updated: 2026-09-06
 Repository: `StegVerse-Labs/.github`
 Issue: `#1121`
 Branch: `feat/provider-intr-runtime-profile-1121`
-State: `EXISTING_PROFILE_IDENTIFIED / CROSS_REPO_TASK_PROJECTION_PENDING`
+State: `CANONICAL_TASK_REGISTERED / RESIDENT_REQUEST_STAGED / AUTHENTIC_RESIDENT_EXECUTION_PENDING`
 Authority effect: `NONE_RUNTIME_PROFILE_PROJECTION_ONLY`
 
 ## Source of truth
@@ -45,9 +45,53 @@ provider output authority: NONE
 
 Candidate discovery deliberately does not require a current runtime observation. The matcher otherwise removes a valid declared profile and causes the false generic `runtime missing` failure. Live task execution still requires WorkerCoordinator admission/claim/fence and authentic current runtime evidence through the existing runtime/observability path.
 
-## Anthropic #288 binding
+## Canonical task registration
 
-`StegVerse-org/LLM-adapter#288` now carries explicit `runtime_binding` and `runtime_requirements` selecting this existing profile. Its source handoff records the same binding.
+`LLMA-ANTHROPIC-INTR-TRANSPORT-288` is now present exactly once in `data/canonical-task-registry.json` generation 16 as `PROPOSED`.
+
+Its canonical runtime requirements are:
+
+```text
+capabilities: [bounded_process_execution]
+environment: SOVEREIGN_RESIDENT
+direction: INTERNAL
+mutation_required: true
+deployment_required: false
+current_observation_required: false
+runtime_resolution: null until the normal runtime-profile resolution cycle executes
+worker_claim: null claim / null fence / WORKERCOORDINATOR authority
+allowed_next_transition: INGRESS_ADMITTED
+```
+
+The task explicitly records the current live blocker instead of a false profile blocker:
+
+`BLOCK-ANTHROPIC-CURRENT-TASK-EXECUTING-WORKERCOORDINATOR`.
+
+No task admission, claim, fence, credential, provider call, custody receipt, or egress ALLOW is inferred from registration.
+
+## Resident request staging
+
+The existing Canonical Work resident consumer has been extended only by one explicit task specification; its shared execution logic is unchanged.
+
+```text
+request: control/resident-execution-request.d/canonical-work-anthropic-intr-transport-288.json
+mode: CANONICAL_WORK_EVENT_BOOTSTRAP
+entrypoint: scripts/install_and_run_canonical_work_event_bootstrap.py
+consumer selector: canonical_work_coordination
+consumer implementation: control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py
+expected consumption receipt: receipts/sovereign-host/canonical-work-anthropic-intr-transport-288-request-consumption.latest.json
+second_machine_required: false
+network_source_fetch_allowed: false
+credential_authority: TV/TVC
+GitHub token runtime authority: NONE
+request authority effect: NONE_REQUEST_ONLY
+```
+
+No new dispatcher, scheduler, listener, heartbeat, oscillator, WorkerCoordinator, or runtime implementation was created.
+
+## Anthropic #288 adapter binding
+
+`StegVerse-org/LLM-adapter#314` is the current-main source integration PR. It carries explicit runtime binding plus the native Anthropic transport/executor, schemas, tests, reference transaction, source gate, and README semantics. The prior stale branch/PR is provenance only and is not the merge path.
 
 Required invariants remain:
 
@@ -61,8 +105,6 @@ profile_match_grants_execution_authority: false
 live_runtime_observation_required_before_provider_call: true
 ```
 
-The adapter task binding repairs profile discovery only. It does not synthesize an InTr ALLOW, a WorkerCoordinator claim/fence, provider credentials, provider output, Master Records custody, or activation evidence.
-
 ## Current observed runtime state
 
 Canonical source currently records:
@@ -75,23 +117,22 @@ control/worker-runtime-state.json: observation_mode CARRIER_REFERENCE_ONLY_NO_TA
 
 Therefore the correct remaining runtime predicate is `AUTHENTIC_CURRENT_TASK_EXECUTING_WORKERCOORDINATOR_OBSERVATION`, not `RUNTIME_PROFILE_MISSING`.
 
-## Cross-repository projection
-
-The canonical runtime resolver consumes `runtime_requirements` from `data/canonical-task-registry.json`. The adapter task now has the correct requirements; they still need to enter the canonical Task Registry through the existing Canonical Work coordination/admission path. Do not hand-create execution authority or a parallel registry to bypass this step.
-
 ## README impact
 
-No new runtime capability is introduced after reconciliation; the runtime semantics are existing behavior. README change in `.github` is therefore NOT REQUIRED for the profile itself. The scoped handoff is required because it records the cross-repository selection and explains why no second profile is created. The LLM-adapter README remains REQUIRED by #288 because Anthropic transport/interface semantics are new there.
+No new `.github` runtime capability is introduced after reconciliation; the runtime semantics are existing behavior. Root `.github` README change is therefore not required for the profile itself. This scoped handoff plus canonical task/request state records the cross-repository selection. The LLM-adapter README is required because Anthropic transport/interface semantics are new there and has been updated on #314.
 
 ## Completion predicates
 
 1. adapter task declares exact existing runtime requirements — COMPLETE;
-2. adapter scoped handoff records existing profile and authority boundary — COMPLETE;
-3. cross-repository canonical Task Registry projection — PENDING_CANONICAL_WORK_ADMISSION;
-4. runtime resolution projects `sovereign-runtime-worker-v1` as compatible — PENDING_REGISTRY_PROJECTION;
-5. WorkerCoordinator current task-executing observation — NOT YET OBSERVED;
-6. no live Anthropic/Claude execution is claimed without authentic runtime evidence — PRESERVED.
+2. adapter transport/executor/test/source-gate surfaces installed on current-main branch — COMPLETE_SOURCE_PENDING_FINAL_CI;
+3. LLM-adapter README reconciliation — COMPLETE;
+4. cross-repository canonical Task Registry registration — COMPLETE_SOURCE;
+5. #288 Canonical Work resident request staged in existing consumer — COMPLETE_SOURCE;
+6. runtime resolution projects `sovereign-runtime-worker-v1` as compatible — PENDING_AUTHENTIC_RUNTIME_PROFILE_CYCLE;
+7. authentic Canonical Work ingress/request-consumption receipt — NOT YET OBSERVED;
+8. current task-executing WorkerCoordinator observation — NOT YET OBSERVED;
+9. live Anthropic provider transaction / Master Records reconstruction / exact egress ALLOW — NOT CLAIMED.
 
 ## Downstream boundary
 
-This runtime-profile reconciliation does not authorize Site, Publisher, StegIndex, protocol wiki, tag, release, or activation propagation. Those remain governed by the #288 release/evidence predicates.
+Source merge permits capability documentation only. Site/Publisher availability claims remain gated on an authentic governed transaction whose ingress receipt, exact provider response hash, egress receipt, and Master Records reconstruction all bind the same execution.
