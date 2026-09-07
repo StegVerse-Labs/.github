@@ -1,0 +1,76 @@
+{
+  "schema": "stegverse.session-machine-preflight/v1",
+  "task_id": "ECOSYSTEM-CHAT-G25-EXECUTOR-GUARD-PARITY-20260906",
+  "parent_task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+  "state": "PASS_FUNCTIONAL_PARITY_REPAIR_ADMISSIBLE",
+  "evaluated_at": "2026-09-06T20:47:00-05:00",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "fix/ecosystem-chat-g25-handoff-1141",
+  "canonical_state_resolution": {
+    "executable_handoff": "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+    "authorization": "authorizations/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json",
+    "worker_registry_fragment": "control/worker-registry.d/ecosystem-chat-sovereign-inference-parent-001.json",
+    "canonical_task_registry": "data/canonical-task-registry.json@generation=15",
+    "master_records_task": "master-records/orchestration:MR-ECOSYSTEM-CHAT-SOVEREIGN-RECONSTRUCTION-024",
+    "cross_task_predicate": "PRED-RESIDENT-REQUEST-CONSUMED-ECOSYSTEM-CHAT-PARENT-002",
+    "current_authoritative_floor_exclusive": 24,
+    "first_safe_fresh_fence": 25,
+    "failing_pr": 1147,
+    "failing_validation_predecessor_pr": 1146,
+    "observed_failure": "scripts/run_independent_ecosystem_chat_parent.py still hard-codes MINIMUM_FENCE_EXCLUSIVE=22, causing validate_registered_executor to reject the already-authoritative 24 floor after executable-handoff parity is repaired"
+  },
+  "reuse": {
+    "existing_executor": "scripts/run_independent_ecosystem_chat_parent.py",
+    "existing_workercoordinator": true,
+    "existing_authorization": true,
+    "existing_worker_registry_fragment": true,
+    "new_runtime": false,
+    "new_workercoordinator": false,
+    "new_claim_or_fence_plane": false,
+    "new_task_identifier": false
+  },
+  "collision_review": {
+    "canonical_active_repair_pr": 1147,
+    "duplicate_pr_1146_detected": true,
+    "disposition": "EXTEND_CANONICAL_PR_1147_ONLY",
+    "new_parallel_implementation": false
+  },
+  "planned_change": {
+    "paths": ["scripts/run_independent_ecosystem_chat_parent.py"],
+    "change": "raise only the executor parity constant MINIMUM_FENCE_EXCLUSIVE from 22 to 24 so its validation guard agrees with the already-effective authorization, worker registry fragment, and repaired executable handoff",
+    "runtime_execution_created": false,
+    "claim_or_fence_minted": false,
+    "authority_owner_changed": false
+  },
+  "readme_impact": {
+    "required": true,
+    "complete": true,
+    "material_function_change": false,
+    "readme_update_required": false,
+    "readme_updated_in_change_set": false,
+    "determination": "NO_ADDITIONAL_README_CHANGE_REQUIRED_EXISTING_G25_POLICY_PARITY_ONLY",
+    "no_readme_update_reason": "The effective G25+ floor is already canonical in the authorization and WorkerCoordinator registry fragment and already documented by the portable/current-iPhone Ecosystem Chat handoffs. The executor currently rejects that existing policy only because its local parity constant remained at the historical G22 floor. Updating the constant changes no authority ownership, runtime interface, credential semantics, dependency class, evidence semantics, failure model, or capability meaning; it restores the executor guard to the already-effective policy.",
+    "evidence_refs": [
+      "authorizations/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json#minimum_fencing_token_exclusive=24",
+      "control/worker-registry.d/ecosystem-chat-sovereign-inference-parent-001.json#minimum_fencing_token_exclusive=24",
+      "docs/ECOSYSTEM_CHAT_PORTABLE_IPHONE_PACKAGE_MIRROR_HANDOFF.md#G25+",
+      "docs/ECOSYSTEM_CHAT_SAME_DEVICE_TERMINAL_PREDICATES_MIRROR_HANDOFF.md#G25+",
+      "PR #1147"
+    ]
+  },
+  "authority": {
+    "claim_fence_authority": "WORKERCOORDINATOR",
+    "transition_authority": "INTERLOCK_INTR",
+    "credential_authority": "TV/TVC",
+    "master_records_authority": "OBSERVED_REALITY_CUSTODY_RECONSTRUCTION_ONLY",
+    "heartbeat_grants_execution_authority": false,
+    "github_token_runtime_authority": "NONE"
+  },
+  "runtime_truth": {
+    "fresh_g25_or_later_fence_observed": false,
+    "ecosystem_chat_execution_observed": false,
+    "master_records_reconstruction_observed": false,
+    "source_validation_is_runtime_execution": false
+  },
+  "verdict": "PASS"
+}
