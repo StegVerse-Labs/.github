@@ -5,6 +5,11 @@ This consumer grants no authority. It traverses the canonical manifold lineage,
 reuses completed predecessor nodes, delegates machine-owned subordinate execution
 to the existing WorkerCoordinator targeted task path, and records external
 TV/TVC-owned prerequisites without competing for their claims.
+
+Conditional lineage nodes are fail-closed: they are not delegated until every
+DEPENDS_ON predecessor has explicit qualifying evidence from the current visit.
+A successful WorkerCoordinator process return code alone is not qualifying
+activation evidence.
 """
 from __future__ import annotations
 
@@ -29,11 +34,40 @@ EXECUTE_DISPOSITIONS = {
     "EXECUTE_AFTER_PREREQUISITES_QUALIFY",
     "EXECUTE_WHEN_TVC_RUNTIME_PREREQUISITE_QUALIFIES",
 }
+CONDITIONAL_EXECUTE_DISPOSITIONS = {
+    "EXECUTE_AFTER_PREREQUISITES_QUALIFY",
+    "EXECUTE_WHEN_TVC_RUNTIME_PREREQUISITE_QUALIFIES",
+}
 REUSE_DISPOSITIONS = {
     "REUSE_IMPLEMENTATION_EXECUTE_CHILDREN",
     "REUSE_COMPLETE_DO_NOT_REEXECUTE",
 }
 EXTERNAL_DISPOSITIONS = {"OBSERVE_EXISTING_OWNER_NO_COMPETE"}
+QUALIFYING_STATES = {
+    "ACTIVATED",
+    "COMPLETE",
+    "COMPLETE_RELEASED",
+    "EXECUTED",
+    "QUALIFIED",
+    "QUALIFYING",
+    "READY",
+    "READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND",
+    "RECONCILED",
+    "SUCCESS",
+    "SUCCEEDED",
+    "WALLET_HANDOFF_READY",
+}
+NONQUALIFYING_STATES = {
+    "BLOCKED",
+    "FAILED",
+    "FAIL_CLOSED",
+    "HANDOFF_READY",
+    "PENDING",
+    "PRIMARY_RUNTIME_NOT_YET_PROVEN",
+    "REQUESTED",
+    "UNCLAIMED",
+    "WAITING",
+}
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -67,8 +101,58 @@ def write_receipt(runtime: Path, receipt: dict[str, Any]) -> None:
     tmp.replace(path)
 
 
+def dependency_map(lineage: dict[str, Any]) -> dict[str, list[str]]:
+    deps: dict[str, list[str]] = {}
+    edges = lineage.get("edges")
+    require(isinstance(edges, list), "manifold lineage edges missing")
+    for edge in edges:
+        require(isinstance(edge, dict), "invalid lineage edge")
+        if edge.get("kind") != "DEPENDS_ON":
+            continue
+        child = edge.get("from")
+        prerequisite = edge.get("to")
+        require(isinstance(child, str) and child, "dependency edge child missing")
+        require(isinstance(prerequisite, str) and prerequisite, "dependency edge prerequisite missing")
+        deps.setdefault(child, []).append(prerequisite)
+    return deps
+
+
+def _normalized_state(value: Any) -> str | None:
+    if not isinstance(value, str):
+        return None
+    return value.strip().upper().replace("-", "_").replace(" ", "_")
+
+
+def result_has_qualifying_evidence(result: dict[str, Any] | None) -> bool:
+    """Return true only for explicit positive evidence in a worker result.
+
+    This intentionally does not treat process return code 0 or a generic visit as
+    qualification. Nested worker/result payloads are inspected because the
+    WorkerCoordinator may wrap adapter output.
+    """
+    if not isinstance(result, dict):
+        return False
+
+    for key in ("qualified", "qualifying", "receipt_observed", "activation_proven", "ready"):
+        if result.get(key) is True:
+            return True
+
+    for key in ("state", "status", "completion_state", "validation_state", "integration_state"):
+        state = _normalized_state(result.get(key))
+        if state in NONQUALIFYING_STATES:
+            return False
+        if state in QUALIFYING_STATES:
+            return True
+
+    for key in ("result", "worker_result", "receipt", "evidence"):
+        nested = result.get(key)
+        if isinstance(nested, dict) and result_has_qualifying_evidence(nested):
+            return True
+    return False
+
+
 def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -> dict[str, Any]:
-    source = source_root.expanduser().resolve()
+    source_root.expanduser().resolve()  # retained for CLI/source-root compatibility
     runtime = runtime_root.expanduser().resolve()
     request_path = runtime / REQUEST_REL
     if not request_path.is_file():
@@ -104,13 +188,16 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -> 
     require(isinstance(declared, list) and declared, "request subordinate task ids missing")
     node_ids = [row.get("task_id") for row in nodes if isinstance(row, dict)]
     require(set(node_ids) == set(declared), "request/lineage subordinate set mismatch")
+    dependencies = dependency_map(lineage)
 
     entrypoint = runtime / RUNTIME_ENTRYPOINT_REL
     require(entrypoint.is_file(), "canonical WorkerCoordinator runtime entrypoint missing")
 
     outcomes: list[dict[str, Any]] = []
+    outcome_by_task: dict[str, dict[str, Any]] = {}
     external_pending = False
     execution_failures = False
+    prerequisite_blocks = False
 
     for node in nodes:
         require(isinstance(node, dict), "invalid lineage node")
@@ -120,43 +207,76 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -> 
         require(isinstance(disposition, str) and disposition, f"lineage disposition missing:{child_id}")
 
         if disposition in REUSE_DISPOSITIONS:
-            outcomes.append({
+            outcome = {
                 "task_id": child_id,
                 "disposition": disposition,
                 "state": "REUSED_NO_EXECUTION",
                 "execution_attempted": False,
+                "qualifying_for_dependents": node.get("state") in {"COMPLETE", "COMPLETE_RELEASED", "INITIAL_IMPLEMENTATION_COMPLETE"},
                 "authority_effect": "NONE",
-            })
+            }
+            outcomes.append(outcome)
+            outcome_by_task[child_id] = outcome
             continue
 
         if disposition in EXTERNAL_DISPOSITIONS:
             external_pending = True
-            outcomes.append({
+            outcome = {
                 "task_id": child_id,
                 "disposition": disposition,
                 "state": "EXTERNAL_OWNER_OBSERVATION_REQUIRED",
                 "execution_attempted": False,
+                "qualifying_for_dependents": False,
                 "competing_claim_created": False,
                 "authority_effect": "NONE_EXTERNAL_OWNER_RETAINED",
-            })
+            }
+            outcomes.append(outcome)
+            outcome_by_task[child_id] = outcome
             continue
 
         require(disposition in EXECUTE_DISPOSITIONS, f"unsupported lineage disposition:{child_id}:{disposition}")
+        required = dependencies.get(child_id, [])
+        if disposition in CONDITIONAL_EXECUTE_DISPOSITIONS:
+            missing_or_unqualified = [
+                prerequisite
+                for prerequisite in required
+                if not outcome_by_task.get(prerequisite, {}).get("qualifying_for_dependents")
+            ]
+            if missing_or_unqualified:
+                prerequisite_blocks = True
+                outcome = {
+                    "task_id": child_id,
+                    "disposition": disposition,
+                    "state": "PREREQUISITES_NOT_QUALIFIED_FAIL_CLOSED",
+                    "execution_attempted": False,
+                    "required_prerequisites": required,
+                    "unqualified_prerequisites": missing_or_unqualified,
+                    "qualifying_for_dependents": False,
+                    "authority_effect": "NONE_FAIL_CLOSED",
+                }
+                outcomes.append(outcome)
+                outcome_by_task[child_id] = outcome
+                continue
+
         command = [sys.executable, str(entrypoint), "--root", str(runtime), "--task-id", child_id]
         completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, timeout=1200)
         result = parse_last_json(completed.stdout)
+        qualifying = completed.returncode == 0 and result_has_qualifying_evidence(result)
         if completed.returncode != 0:
             execution_failures = True
-        outcomes.append({
+        outcome = {
             "task_id": child_id,
             "disposition": disposition,
             "state": "WORKERCOORDINATOR_VISIT_COMPLETE" if completed.returncode == 0 else "WORKERCOORDINATOR_VISIT_FAILED_CLOSED",
             "execution_attempted": True,
             "returncode": completed.returncode,
             "result": result,
+            "qualifying_for_dependents": qualifying,
             "claim_and_fence_authority": "CANONICAL_WORKERCOORDINATOR",
             "authority_effect": "NONE_DELEGATED_TO_EXISTING_AUTHORITY",
-        })
+        }
+        outcomes.append(outcome)
+        outcome_by_task[child_id] = outcome
 
     receipt = {
         "schema": "stegverse.governed-manifold-request-consumption/v1",
@@ -169,6 +289,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -> 
         "full_declared_set_visited": len(outcomes) == len(declared),
         "external_authority_evidence_pending": external_pending,
         "workercoordinator_visit_failures_observed": execution_failures,
+        "conditional_prerequisite_blocks_observed": prerequisite_blocks,
         "outcomes": outcomes,
         "activation_declared": False,
         "activation_requires_separate_qualifying_machine_evidence": True,
