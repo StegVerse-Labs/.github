@@ -1,0 +1,73 @@
+{
+  "schema": "stegverse.machine-preflight/v1",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "feat/provider-intr-runtime-profile-1121",
+  "task_id": "LLMA-ANTHROPIC-INTR-TRANSPORT-288",
+  "state": "PASS",
+  "goal": "Continue the existing Anthropic #288 canonical work chain after adapter source merge cde350e41d16a9932932b96d77c0dbd37b950284 by reconciling source dependency and handoff state, validating the existing Canonical Work resident request/consumer binding, and stopping at authentic resident execution evidence.",
+  "canonical_state_resolved": {
+    "canonical_task_registry": "data/canonical-task-registry.json generation 16",
+    "canonical_task_registry_authority": "work intent and coordination only",
+    "adapter_handoff": "StegVerse-org/LLM-adapter:docs/ANTHROPIC_INTR_MIRROR_HANDOFF.md",
+    "adapter_source_merge": "StegVerse-org/LLM-adapter@cde350e41d16a9932932b96d77c0dbd37b950284",
+    "runtime_profile_handoff": "docs/HOSTED_PROVIDER_INTR_RUNTIME_PROFILE_MIRROR_HANDOFF.md",
+    "runtime_profile": "sovereign-runtime-worker-v1",
+    "runtime_substrate": "canonical-resident-substrate-v1",
+    "worker_authority": "WorkerCoordinator",
+    "master_records_handoff": "master-records/orchestration:PROVIDER_USAGE_CUSTODY_MIRROR_HANDOFF.md",
+    "master_records_provider_usage_path": "existing generic provider-usage custody/reconstruction",
+    "master_records_new_anthropic_implementation_required": false,
+    "resident_request": "control/resident-execution-request.d/canonical-work-anthropic-intr-transport-288.json",
+    "resident_consumer": "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py",
+    "cross_task_pr": "StegVerse-Labs/.github#1123"
+  },
+  "collision_preflight": {
+    "new_task_required": false,
+    "new_runtime_profile_required": false,
+    "new_workercoordinator_required": false,
+    "new_scheduler_required": false,
+    "new_dispatcher_required": false,
+    "new_master_records_provider_usage_path_required": false,
+    "reuse_existing_canonical_work_consumer": true,
+    "reuse_existing_master_records_provider_usage_custody": true,
+    "source_dependency_reconciliation_required": true
+  },
+  "readme_completeness": {
+    "impact": "NO_UPDATE_REQUIRED",
+    "material_function_change": false,
+    "readme_path": "README.md",
+    "readme_updated_in_change_set": false,
+    "reason": "The admissible mutation only reconciles post-merge evidence/dependency status and deterministic test expectations for the already-documented generic Canonical Work registered-task path. It does not change runtime behavior, interfaces, authority or governance boundaries, evidence semantics, prerequisites, dependencies as mechanisms, supported environments, failure behavior, or capability meaning.",
+    "evidence_refs": [
+      "README.md#Functional-Change--README-Invariant",
+      "README.md#Active-task-problemsolution-semantics",
+      "docs/HOSTED_PROVIDER_INTR_RUNTIME_PROFILE_MIRROR_HANDOFF.md",
+      "master-records/orchestration:PROVIDER_USAGE_CUSTODY_MIRROR_HANDOFF.md",
+      "StegVerse-org/LLM-adapter@cde350e41d16a9932932b96d77c0dbd37b950284"
+    ]
+  },
+  "admissible_mutation_scope": [
+    "data/canonical-task-registry.json",
+    "docs/HOSTED_PROVIDER_INTR_RUNTIME_PROFILE_MIRROR_HANDOFF.md",
+    "tests/test_anthropic_canonical_work_resident_request.py",
+    "tests/test_object_provenance_canonical_work_resident_request.py",
+    "tests/test_runtime_profile_map_canonical_work_resident_request.py",
+    "data/preflight/llma-anthropic-intr-transport-288-post-merge-reconcile.json"
+  ],
+  "remaining_runtime_predicates": [
+    "AUTHENTIC_CURRENT_TASK_EXECUTING_WORKERCOORDINATOR_OBSERVATION",
+    "AUTHENTIC_CANONICAL_WORK_INGRESS_AND_REQUEST_CONSUMPTION",
+    "AUTHENTIC_TVTVC_CREDENTIAL_MATERIALIZATION_OBSERVED",
+    "AUTHENTIC_ANTHROPIC_PROVIDER_RESPONSE_OBSERVED",
+    "AUTHENTIC_MASTER_RECORDS_CUSTODY_RECONSTRUCTION_OBSERVED",
+    "AUTHENTIC_EXACT_RESPONSE_INTR_EGRESS_ALLOW_OBSERVED"
+  ],
+  "runtime_truth": {
+    "current_task_executing_workercoordinator_observed": false,
+    "canonical_work_request_consumption_observed": false,
+    "live_anthropic_execution_observed": false,
+    "master_records_reconstruction_observed": false,
+    "exact_response_egress_allow_observed": false
+  },
+  "authority_effect": "NONE_PREFLIGHT_ONLY"
+}
