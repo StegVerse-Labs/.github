@@ -114,6 +114,33 @@ When work on an existing task or goal exposes a distinct necessary piece of work
 
 The canonical contract is `data/task-coordination-policy.json`, with scoped continuation documentation at `docs/COSV_TASK_POINTER_COORDINATION_MIRROR_HANDOFF.md`. No unique continuation state should remain only in chat prose at session close.
 
+### Reusable task ephemeral constructs and entropy recovery
+
+Reusable tasks are durable identities, not permanently running task implementations. Each invocation binds invocation-specific parameters and derives the exact RTG -> GTG -> TT construct needed for that invocation from the canonical cross-layer definitions. The resulting manifest binds the reusable identity, parameters, optional tracked task ID + COSV vector, derived construct, runner plan, authority ceiling, dependencies, expected evidence, recording levels, expiry conditions, and entropy-recovery conditions.
+
+The lifecycle is:
+
+```text
+durable reusable identity
++ invocation-specific parameters
+-> derived RTG / GTG / TT construct
+-> manifest-bound bounded runner(s)
+-> governed execution + chained receipts
+-> runner expiry
+-> residual non-executing recording construct when required
+-> required scoped recording
+-> Master Records custody + reconstruction
+-> entropy recovery
+```
+
+Runners are ephemeral where possible. Evidence remains durable. A canonical task/COSV identity remains durable when tracking is required. Manifest binding and receipt chaining are mandatory, and recording occurs only at the levels the derived construct and applicable recording policy require.
+
+After runner expiry, any remaining TT/RTG/GTG construct exists solely to preserve invocation identity and manifest binding, carry chained receipts, project required task/COSV state, perform required scoped recording, carry evidence to Master Records, and support reconstruction verification. It has no original execution purpose and may not acquire credentials, mint claims/fences, repeat provider operations, self-extend, or become a persistent service.
+
+**Entropy recovery** is the final displacement of that residual non-executing construct after required recording is complete and Master Records custody/reconstruction confirms that the information-bearing purpose has been satisfied. Entropy recovery does not delete required evidence or Master Records history and does not reactivate the original runner.
+
+The canonical source contract is `data/reusable-task-ephemeral-construct-contract.json`, reusable identities are in `data/reusable-task-registry.json`, invocation manifests use `schemas/reusable-task-invocation-manifest.schema.json`, and deterministic source construction uses `scripts/materialize_reusable_task_construct.py`. Maintenance, Interlock/InTr protocol establishment, external and AI adapters, endpoint monitoring, and social-platform interaction all use this same reusable identity model.
+
 ---
 
 ## Operational Observer Standard
