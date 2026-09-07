@@ -41,7 +41,7 @@ Every governed StegVerse entity MUST contribute at least one defined capability 
 1. **agency** — preserves legitimate human, machine, organizational, or delegated choice without self-granted authority;
 2. **continuity** — preserves identity, state, temporal, lineage, or reconstruction continuity;
 3. **admissibility** — determines whether a proposed action or transition may proceed under applicable governance;
-4. **execution** — performs an admitted consequence while preserving the execution boundary;
+4. **execution** — performs an admitted consequence while preserving the execution limit/interface contract;
 5. **observability** — exposes truthful state, liveness, timing, and execution facts without manufacturing authority;
 6. **evidence** — produces or preserves reconstructable receipts, provenance, refusal, or outcome evidence;
 7. **recovery** — restores governed operation or continuity without bypassing authority;
@@ -60,7 +60,7 @@ Each governed entity, repository, service, protocol, business unit, or runtime l
 - the lifecycle states it can truthfully establish;
 - the evidence it emits or preserves;
 - the upstream and downstream governed interfaces it depends on;
-- the consequence boundary it can affect;
+- the consequence limit/interface it can affect;
 - its current maturity gate.
 
 No entity is required to accomplish the entire StegVerse mission by itself.
@@ -89,7 +89,9 @@ Deployment is not consequence.
 
 A receipt is evidence of an event only to the extent that its provenance, binding, and reconstruction contract support that claim.
 
-Existing authority separations remain controlling, including TV/TVC credential and bounded-operation authority, Interlock/InTr transition governance, HB synchronization/reference roles, execution-system consequence authority, and USER_ONLY boundaries where explicitly defined.
+Existing authority separations remain controlling, including TV/TVC credential and bounded-operation authority, Interlock/InTr transition governance, HB synchronization/reference roles, execution-system consequence authority, and USER_ONLY conditions where explicitly defined.
+
+Authority is a role/property, not a boundary. Runtime is an execution substrate/surface, not a boundary. Boundary terminology is reserved for actual limits, interfaces, containment edges, trust separations, consequence limits, or explicit progression conditions.
 
 ## Non-centralization invariant
 
@@ -103,10 +105,10 @@ This preserves plural agency while making consequential action governable.
 
 ### Gate I — Governed action exists
 At least one real consequential action can be traced end-to-end:
-proposal -> context/state -> admissibility -> execution boundary -> consequence -> receipt -> reconstruction.
+proposal -> context/state -> admissibility -> execution interface/limit -> consequence -> receipt -> reconstruction.
 
 ### Gate II — Governed action generalizes
-The same governance primitives operate across materially different systems or domains without collapsing their authority boundaries.
+The same governance primitives operate across materially different systems or domains without collapsing their authority separations.
 
 ### Gate III — Governed action becomes interoperable
 External systems can participate through stable connectors, profiles, envelopes, schemas, and evidence contracts rather than bespoke governance reconstruction.
@@ -123,11 +125,12 @@ Before creating or materially expanding a governed entity, determine:
 
 1. Which ecosystem-sum capability does it add?
 2. Why can that capability not be supplied by an existing entity?
-3. What authority boundary does it preserve?
-4. What consequential transition can it affect?
-5. What evidence proves its behavior?
-6. Which maturity gate does it advance?
-7. Does it reduce dependency on a specific intelligence provider or instead introduce unnecessary lock-in?
+3. What authority separation does it preserve?
+4. What actual interface, consequence limit, or progression condition constrains it?
+5. What consequential transition can it affect?
+6. What evidence proves its behavior?
+7. Which maturity gate does it advance?
+8. Does it reduce dependency on a specific intelligence provider or instead introduce unnecessary lock-in?
 
 If these cannot be answered, the work is not yet justified as an ecosystem component.
 
