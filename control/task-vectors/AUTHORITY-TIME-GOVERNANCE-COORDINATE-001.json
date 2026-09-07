@@ -1,0 +1,54 @@
+{
+  "schema": "stegverse.task-vector/v0.1",
+  "task_id": "AUTHORITY-TIME-GOVERNANCE-COORDINATE-001",
+  "goal_id": "AUTHORITY-TIME-GOVERNANCE-COORDINATE-001",
+  "repository": "StegVerse-Labs/.github",
+  "state": "HANDOFF_READY",
+  "priority": "critical",
+  "canonical_handoff": "docs/AUTHORITY_TIME_GOVERNANCE_COORDINATE_MIRROR_HANDOFF.md",
+  "cosv": {
+    "profile": "task.v1",
+    "notation": "L R U I V G O C M T B E A P",
+    "width": 14,
+    "vector": "50000000101000",
+    "authority_effect": "NONE"
+  },
+  "source_refs": [
+    "docs/HEARTBEAT_CARRIER_SIGNAL_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegCore/MANIFOLD_GOVERNANCE_MIRROR_HANDOFF.md"
+  ],
+  "invariants": [
+    "human-in-the-loop timing != governance authority",
+    "wall-clock time != governance authority",
+    "heartbeat cadence != governance authority",
+    "observation != authorization",
+    "protected boundary crossing requires separately applicable authority"
+  ],
+  "authority": {
+    "heartbeat_authority_effect": "NONE_OBSERVATION_REFERENCE_ONLY",
+    "wall_clock_authority_effect": "NONE",
+    "workflow_success_authority_effect": "NONE",
+    "carrier_correctness_authority_effect": "NONE",
+    "credential_authority": "TV/TVC",
+    "runtime_admissibility_authority": "StegCore/StegGate",
+    "packet_transition_governance": "InTr/Interlock"
+  },
+  "completion": {
+    "next_authorized_action": "Install deterministic authority/time conformance checker and fixtures in StegVerse-Labs/.github.",
+    "terminal_when": [
+      "conformance checker installed",
+      "deterministic timing-independence fixtures pass",
+      "non-authorizing receipt emitted",
+      "release propagation verification task created when release-ready"
+    ]
+  },
+  "remaining_install_targets": [
+    "StegVerse-Labs/.github conformance checker",
+    "StegVerse-Labs/.github deterministic fixtures",
+    "StegVerse-Labs/.github conformance receipt schema/output",
+    "StegVerse-Labs/Site propagation review after release readiness",
+    "GCAT-BCAT-Engine/Publisher propagation review after release readiness",
+    "StegVerse-Labs/admissibility-wiki propagation review after release readiness",
+    "StegVerse-Labs/stegguardian-wiki propagation review after release readiness"
+  ]
+}
