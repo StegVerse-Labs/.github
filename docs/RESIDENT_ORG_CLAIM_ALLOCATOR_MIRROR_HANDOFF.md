@@ -1,6 +1,6 @@
 # Resident Organization Claim Allocator Mirror Handoff
 
-Updated: 2026-09-02
+Updated: 2026-09-06
 Issue: StegVerse-Labs/.github#842
 Parent control plane: #12
 
@@ -59,17 +59,19 @@ or product authority.
 
 ## Immediate queued consumer
 
-`TASK-2026-0008` / `StegVerse-Labs/Site#932` is the target consumer for this session.
-It requests only `site:stegos-de006-bound-inference-publication`.
+`TASK-2026-0009` is now the minimum source-catalog freshness consumer for the existing
+resident allocator path. It requests only:
 
-The catalog also contains older queued release-priority `TASK-2026-0007`. The allocator
-may grant that task first. Its Site scope is non-overlapping with TASK-2026-0008, so
-a later resident dispatch can grant TASK-2026-0008 without collision. The repeatable
-resident request is specifically required so queue progress does not stop after one grant.
+`site:hb31-ecosystem-chat-runtime-opportunity-successor`.
+
+TASK-2026-0008/G4 remains predecessor provenance and must not be reactivated. The
+resident allocator may retain existing TASK-0007/TASK-0008 runtime state and claims;
+TASK-0009 is a distinct queued successor whose non-overlapping Site scope permits the
+next monotonic canonical claim/fence when the established resident allocator actually
+runs.
 
 Runtime proof remains deployment-local. Source merge or CI does not prove that the
-resident allocator has consumed the request or granted TASK-2026-0008.
-
+resident allocator has consumed the request or granted TASK-2026-0009.
 
 ## Post-merge source reconciliation
 
@@ -91,51 +93,58 @@ This reconciliation PR exists to validate the exact current-main source through 
 PR ref. Even if validation passes, deployment-local allocator consumption and task
 claim evidence remain independently required.
 
-
-## Minimum source-catalog freshness floor — 2026-09-02
+## Minimum source-catalog freshness floor
 
 A resident runtime can have current allocator consumer source but still be pointed at an
 older already-local canonical checkout. That checkout may predate newly queued
 organization work. The allocator must not silently operate on such a stale catalog.
 
-The repeatable resident request now carries a non-authorizing source-catalog floor:
+The repeatable resident request carries a non-authorizing source-catalog floor. The
+current exact floor is:
 
 ```text
-task_id: TASK-2026-0008
-requested_at: 2026-09-03T00:28:00Z
+task_id: TASK-2026-0009
+requested_at: 2026-09-06T13:25:00Z
 repository: StegVerse-Labs/Site
-dependency_surface: site:stegos-de006-bound-inference-publication
+dependency_surface: site:hb31-ecosystem-chat-runtime-opportunity-successor
+scope_sha256: 121d9e79d98d582642e032a607ef9cacc5965acfba6fdc371bbbc9ccf8716ce1
 purpose: MINIMUM_SOURCE_CATALOG_FRESHNESS_ONLY
 task_eligibility_effect: NONE
 ```
 
 Before any runtime task/control input is materialized and before the canonical
-allocator is invoked, the consumer verifies that the local source checkout contains a
-matching task identity, requested timestamp, repository, and dependency surface.
+allocator is invoked, the consumer verifies that the already-local source checkout
+contains the exact task identity, requested timestamp, repository, dependency surface,
+and mandatory claim-scope digest.
 
 A missing or older catalog fails with `STALE_SOURCE_CATALOG`. No network fetch is
 attempted and no claim is granted.
 
-The floor does **not** require TASK-2026-0008 to remain queued. Once the minimum source
+The floor does **not** require TASK-2026-0009 to remain queued. Once the minimum source
 catalog is known to include that task, later task status is still determined by the
-canonical allocator. This preserves the allocator's generic future use.
+canonical allocator. This preserves the allocator's generic future use and the retained
+TASK-0007/TASK-0008 runtime history.
 
+## Portable exact allocator selector
 
-## Portable exact allocator selector — 2026-09-02
+The native source-refresh service already visits all registered resident consumers, but
+the portable refresh+dispatch bridge maintains an explicit allowlist for one-consumer
+execution. `org_claim_allocator` is admitted to that exact-selector list.
 
-The native source-refresh service already visits all registered resident consumers, but the portable refresh+dispatch bridge maintains an explicit allowlist for one-consumer execution. `org_claim_allocator` is now admitted to that exact-selector list.
+This permits an already-existing non-hosted resident surface to refresh current
+already-local `.github` source and dispatch only `org_claim_allocator` without visiting
+unrelated resident requests and without requiring systemd.
 
-This permits an already-existing non-hosted resident surface to refresh current already-local `.github` source and dispatch only `org_claim_allocator` without visiting unrelated resident requests and without requiring systemd.
+The portable bridge still grants no claim, fence, execution, heartbeat, credential, or
+publication authority. The canonical allocator remains the only claim-grant authority,
+and the source-catalog freshness floor still applies before allocation.
 
-The portable bridge still grants no claim, fence, execution, heartbeat, credential, or publication authority. The canonical allocator remains the only claim-grant authority, and the source-catalog freshness floor still applies before allocation.
-
-
-## Retained per-task claim-grant evidence — 2026-09-02
+## Retained per-task claim-grant evidence
 
 A successful allocator process result is not sufficient by itself to prove a claim.
-After the canonical allocator reports a selected task, the resident consumer now
-re-reads the post-allocation `control/claims-active.json` state and requires one or
-more canonical claims for that exact task with valid lease fencing tokens.
+After the canonical allocator reports a selected task, the resident consumer re-reads
+the post-allocation `control/claims-active.json` state and requires one or more canonical
+claims for that exact task with valid lease fencing tokens.
 
 Only after that post-state agrees does it retain:
 
@@ -157,37 +166,19 @@ The receipt contains:
 The observation receipt grants no claim authority. The canonical allocator mutation
 remains the sole grant transition.
 
-DE-006 binds the stable TASK-2026-0008 receipt as the distinct
-`site_projection_claim_grant` predicate. An allocator visit, an unrelated task grant,
-HB progression, or a selected task id without a matching post-allocation claim cannot
-satisfy that predicate.
-
-
-## TASK-0008 claim-scope freshness fingerprint — 2026-09-02
+## TASK-0008 claim-scope freshness fingerprint — retained provenance
 
 TASK-2026-0008 was widened while still queued from the older five-file DE-006 Site
-projection to the canonical current-iPhone projection package.
-
-Task identity, requested timestamp, repository, and dependency surface did not change,
-so those fields alone cannot distinguish an old local checkout from the current task.
-
-The resident source-catalog floor now pins the canonical SHA-256 of the mandatory
-claim scope:
+projection to the canonical current-iPhone projection package. Its final canonical
+claim-scope digest remains retained as predecessor provenance:
 
 `98096b5825e85dd558f9cb5a4e882002543d4c703cfa7981cd2d826c80c1a05b`
 
-The digest covers the claim scope object (paths, contracts, release surfaces,
-capabilities, workflows, dependency surfaces) and deliberately excludes mutable
-runtime task status.
+That fingerprint no longer defines the minimum resident source-catalog floor after the
+TASK-0009 successor was merged. It remains useful for reconstructing the authentic G4
+predecessor state and must not be reused as successor authority.
 
-Before any materialization or allocator invocation, the consumer recomputes that digest
-from the already-local source task. A mismatch fails `STALE_SOURCE_CATALOG` and no
-allocator call occurs.
-
-
-## Collision reconciliation — canonical same-device bootstrap — 2026-09-03
-
-A later implementation duplicated the already-merged canonical same-device allocator.
+## Collision reconciliation — canonical same-device bootstrap
 
 Canonical lane:
 - `.github#884` / merge `d3da58e0f6822bde7316ada3f532f15f75a2fdcf`;
@@ -196,26 +187,21 @@ Canonical lane:
   `control/portable-org-allocator/current-iphone-package.json`;
 - Site bootstrap: `StegVerse-Labs/Site#945` / merge
   `9868b62ba2bfaaba0a0164318ac4d1d4f6d235d5`;
-- public bootstrap paths live under `stegos-node/`, outside TASK-0008 product paths.
+- public bootstrap paths live under `stegos-node/`, outside TASK-owned product paths.
 
-The later StegOS#181/#182 allocator under `mobile/web-bootstrap/` and .github#905
-TASK widening are superseded duplicate work and must not become the product claim
-boundary.
+The later StegOS#181/#182 allocator under `mobile/web-bootstrap/` and .github#905 TASK
+widening are superseded duplicate work and must not become the product claim boundary.
 
-TASK-2026-0008 is therefore restored to its canonical 17-file Site product scope and
-source-catalog scope SHA-256:
-
-`98096b5825e85dd558f9cb5a4e882002543d4c703cfa7981cd2d826c80c1a05b`
-
-This preserves the bootstrap separation:
+The canonical same-device sequence is now:
 
 ```text
 Site stegOS-node allocator bootstrap
--> physical current-iPhone canonical allocation
--> TASK-0007 may grant first
--> repeat allocation
--> authentic TASK-0008 claim
--> only then Site#932 stegOS-bootstrap product projection
+-> already-local resident source refresh
+-> exact TASK-0009 source-catalog floor passes
+-> existing canonical organization allocator runs
+-> retained G3/G4 history remains intact
+-> authentic TASK-0009 claim receives next monotonic generation/fence if collision-free
+-> only then Site successor projection may mutate TASK-0009 product paths
 ```
 
-No claim/runtime predicate is promoted by this cleanup.
+No claim/runtime predicate is promoted by this source reconciliation.
