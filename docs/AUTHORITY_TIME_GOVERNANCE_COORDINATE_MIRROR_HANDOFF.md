@@ -10,7 +10,7 @@ repository: .github
 branch: main
 task_id: AUTHORITY-TIME-GOVERNANCE-COORDINATE-001
 cosv: 50000000101000
-state: HANDOFF_READY
+state: IMPLEMENTED_VALIDATION_PENDING
 credential_authority: TV/TVC
 github_runtime_authority: NONE
 ```
@@ -93,20 +93,47 @@ This work may not:
 - mint TV/TVC credentials;
 - treat GitHub as runtime authority.
 
-## Initial implementation surfaces
+## Installed implementation surfaces
 
 ```text
 docs/AUTHORITY_TIME_GOVERNANCE_COORDINATE_MIRROR_HANDOFF.md
 control/task-vectors/AUTHORITY-TIME-GOVERNANCE-COORDINATE-001.json
+workers/authority_time_governance_coordinate_worker.py
+tests/test_authority_time_governance_coordinate_worker.py
 ```
 
-## Remaining install targets
+The worker provides deterministic declaration evaluation and emits `stegverse.authority-time-governance-conformance-receipt/v1`. It fails closed when wall-clock, heartbeat, observer freshness, workflow success, or carrier correctness is promoted to governance authority; when a protected transition lacks a recognized authority source; or when human-review timeout is converted to ALLOW.
+
+The installed unittest fixtures cover:
+
+- allowed non-authorizing observations with separate authority;
+- heartbeat promotion rejection;
+- wall-clock promotion rejection;
+- workflow-success promotion rejection;
+- carrier-correctness promotion rejection;
+- observer-freshness promotion rejection;
+- protected-boundary missing authority;
+- human-review timeout-to-ALLOW rejection;
+- deterministic receipt identity for equivalent input ordering.
+
+## Validation status
+
+```text
+source implementation: INSTALLED ON MAIN
+fixture count: 9
+hosted check-runs observed for latest implementation commit: 0
+hosted validation claim: NOT YET ESTABLISHED
+runtime authority from GitHub: NONE
+```
+
+Source presence is not treated as validation proof. Release remains blocked until deterministic repository validation executes the installed tests and a durable non-authorizing conformance receipt is emitted.
+
+## Remaining install / validation targets
 
 ```text
 StegVerse-Labs/.github
-  - conformance checker for authority/time declarations
-  - deterministic fixtures for ALLOW / REVIEW / DENY / FAIL_CLOSED timing-independence cases
-  - non-authorizing receipt schema/output
+  - execute hosted/deterministic validation for the new worker/tests
+  - persist durable conformance receipt/output
 
 StegVerse-Labs/StegCore
   - consume coordinate only if additional explicit cross-repo conformance binding is needed; do not duplicate canonical evaluator
@@ -120,16 +147,18 @@ StegVerse-Labs/stegguardian-wiki
 
 ## Next authorized action
 
-Implement a deterministic control-plane conformance checker that scans declared authority metadata and fails closed when time, heartbeat, observer freshness, workflow success, or carrier correctness is asserted as authority without a separately named governance authority source.
+Run repository validation that executes `tests/test_authority_time_governance_coordinate_worker.py`; on PASS, persist the non-authorizing conformance receipt and advance this task to release/propagation review.
 
 ## Release / propagation condition
 
-Do not tag or release this coordinate until the conformance checker and deterministic fixtures are installed and validated. On release readiness, create/perform propagation verification for Site, Publisher, admissibility-wiki, and stegguardian-wiki as applicable.
+Do not tag or release this coordinate until the conformance checker and deterministic fixtures are validated. On release readiness, create/perform propagation verification for Site, Publisher, admissibility-wiki, and stegguardian-wiki as applicable.
 
 ## Archive state
 
 ```text
 handoff_created: true
-implementation_complete: false
+source_implementation_complete: true
+hosted_validation_complete: false
+release_ready: false
 archive_ready: false
 ```
