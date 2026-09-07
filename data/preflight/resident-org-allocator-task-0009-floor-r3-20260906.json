@@ -1,0 +1,107 @@
+{
+  "schema": "stegverse.machine-preflight/v1",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "fix/resident-org-allocator-task-0009-floor-r3-20260906",
+  "task_id": "TASK-2026-0009-RESIDENT-ALLOCATOR-FRESHNESS-FLOOR",
+  "parent_runtime_task": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+  "state": "PASS",
+  "observed_main": "23d77c96cdaf817ff30be586e8c1c7a5feb46c46",
+  "goal": "Advance the existing resident organization allocator source-catalog freshness floor from TASK-2026-0008 to the exact merged TASK-2026-0009 successor so an already-local current-iPhone resident may materialize the newer task catalog and invoke the existing canonical allocator without creating a new runtime, allocator, scheduler, WorkerCoordinator, claim/fence authority, or network source-fetch dependency.",
+  "canonical_state_resolved": {
+    "canonical_task_registry": "data/canonical-task-registry.json generation 15",
+    "canonical_task_registry_authority": "work intent and coordination only",
+    "parent_task": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+    "parent_state": "HANDOFF_READY",
+    "parent_fresh_fence_required": true,
+    "parent_current_resident_request_fresh_fence_minimum_exclusive": 24,
+    "parent_next_admissible_fence": "G25_OR_GREATER",
+    "parent_fence_domain": "ECOSYSTEM_CHAT_PARENT_WORKERCOORDINATOR",
+    "organization_task_0009_fence_domain": "ORGANIZATION_ALLOCATOR_PORTABLE_LINEAGE",
+    "fence_domains_must_not_be_conflated": true,
+    "worker_registry": "control/worker-registry.json generation 22",
+    "native_org_claim_registry": "control/claims-active.json generation 2; claims=[]",
+    "task_0009": "tasks/TASK-2026-0009.json status queued",
+    "task_0009_source_merge": "cf1a616c9a7116ede8d7607e3a51750242124d43",
+    "master_records_owner": "master-records/orchestration",
+    "master_records_activation_readiness": "MACHINE_OWNED / external evidence pending",
+    "cross_task_coordination": "control/cross-task-coordination.json",
+    "site_orchestration": "OBSERVED_BLOCKED; external_tasks_allowed=false; external_session_ownership_allowed=false"
+  },
+  "concurrent_state_reconciliation": {
+    "ecosystem_chat_parent_floor_update_observed": true,
+    "ecosystem_chat_parent_request": "control/resident-execution-request.d/ecosystem-chat-parent-001.json",
+    "ecosystem_chat_parent_request_floor_exclusive": 24,
+    "organization_allocator_task_0009_scope_collision": false,
+    "readme_concurrent_g18_material_preserved": true,
+    "current_main_target_file_collision": false,
+    "effect": "Concurrent G18/ERL/HIL/runtime-profile and Ecosystem Chat parent-fence work does not alter the exact resident organization allocator request, consumer, test, or handoff surfaces. README additions are preserved. The parent G25+ fence requirement is independent from the organization allocator's monotonic TASK-0009 claim generation."
+  },
+  "collision_preflight": {
+    "open_resident_allocator_pr_collision": false,
+    "site_mutation_admissible": false,
+    "existing_allocator_request": "control/resident-execution-request.d/org-claim-allocator-001.json",
+    "existing_allocator_consumer": "scripts/consume_org_claim_allocator_request.py",
+    "existing_allocator": "scripts/allocate_claims.py",
+    "duplicate_allocator_allowed": false,
+    "duplicate_scheduler_allowed": false,
+    "duplicate_workercoordinator_allowed": false
+  },
+  "defect": {
+    "previous_floor_task_id": "TASK-2026-0008",
+    "previous_floor_requested_at": "2026-09-03T00:28:00Z",
+    "previous_floor_dependency_surface": "site:stegos-de006-bound-inference-publication",
+    "previous_floor_scope_sha256": "98096b5825e85dd558f9cb5a4e882002543d4c703cfa7981cd2d826c80c1a05b",
+    "successor_floor_task_id": "TASK-2026-0009",
+    "successor_floor_requested_at": "2026-09-06T13:25:00Z",
+    "successor_floor_dependency_surface": "site:hb31-ecosystem-chat-runtime-opportunity-successor",
+    "successor_floor_scope_sha256": "121d9e79d98d582642e032a607ef9cacc5965acfba6fdc371bbbc9ccf8716ce1",
+    "consumer_enforcement": "validate_source_catalog_floor executes before materialize_org_control_inputs and allocator invocation",
+    "failure_mode": "STALE_SOURCE_CATALOG",
+    "network_fetch_allowed": false
+  },
+  "existing_solution_reuse": {
+    "resident_request_repeatable": true,
+    "portable_selector": "org_claim_allocator",
+    "canonical_allocator_reused": true,
+    "consumer_algorithm_changed": false,
+    "materialize_missing_tasks_without_overwriting_runtime_task_state": true,
+    "network_source_fetch_performed": false,
+    "second_machine_required": false,
+    "heartbeat_grants_execution_authority": false,
+    "request_grants_claim_authority": false,
+    "allocator_remains_claim_authority": true,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE"
+  },
+  "readme_completeness": {
+    "impact": "REQUIRED",
+    "material_function_change": true,
+    "reason": "The resident allocator minimum source-catalog prerequisite and fail-closed stale-catalog boundary advance to TASK-2026-0009, changing runtime prerequisite/failure semantics for already-local resident allocation.",
+    "readme_path": "README.md",
+    "readme_updated_in_change_set": true,
+    "readme_section": "Portable organization allocator successor-task continuity",
+    "concurrent_readme_material_preserved": true,
+    "evidence_refs": [
+      "README.md#Portable organization allocator successor-task continuity",
+      "control/resident-execution-request.d/org-claim-allocator-001.json",
+      "tests/test_resident_org_claim_allocator.py",
+      "docs/RESIDENT_ORG_CLAIM_ALLOCATOR_MIRROR_HANDOFF.md"
+    ]
+  },
+  "admissible_mutation_scope": [
+    "control/resident-execution-request.d/org-claim-allocator-001.json",
+    "tests/test_resident_org_claim_allocator.py",
+    "docs/RESIDENT_ORG_CLAIM_ALLOCATOR_MIRROR_HANDOFF.md",
+    "README.md",
+    "data/preflight/resident-org-allocator-task-0009-floor-r3-20260906.json"
+  ],
+  "runtime_truth": {
+    "task_0009_claim_granted": false,
+    "organization_next_fence_observed": false,
+    "ecosystem_chat_parent_g25_or_later_observed": false,
+    "site_projection_observed": false,
+    "current_iphone_execution_observed": false,
+    "master_records_same_execution_pass_observed": false
+  },
+  "authority_effect": "NONE_PREFLIGHT_ONLY"
+}
