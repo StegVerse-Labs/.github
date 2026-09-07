@@ -1,0 +1,93 @@
+{
+  "schema": "stegverse.task-lifecycle-status-contract/v1",
+  "status": "CANONICAL_ACTIVE",
+  "states": {
+    "ACTIVE": {
+      "terminal": false,
+      "executable": true,
+      "continuation_allowed": true,
+      "meaning": "Canonical work remains to be performed."
+    },
+    "COMPLETED": {
+      "terminal": false,
+      "executable": "CLOSURE_ONLY",
+      "continuation_allowed": "CLOSURE_ONLY",
+      "meaning": "Primary task work is complete; only explicit closure, propagation, release, or retirement verification may remain."
+    },
+    "RETIRED": {
+      "terminal": true,
+      "executable": false,
+      "continuation_allowed": false,
+      "meaning": "Task is closed permanently under this identity and retained only for provenance, reconstruction, audit, and historical review."
+    },
+    "SUPERSEDED": {
+      "terminal": true,
+      "executable": false,
+      "continuation_allowed": false,
+      "meaning": "Task identity is no longer current; resolution redirects to an explicitly linked successor task."
+    },
+    "INVALID": {
+      "terminal": true,
+      "executable": false,
+      "continuation_allowed": false,
+      "meaning": "Canonical lifecycle state or identity cannot be resolved consistently; fail closed until canonical state is repaired."
+    }
+  },
+  "transitions": {
+    "ACTIVE": ["COMPLETED", "SUPERSEDED", "INVALID"],
+    "COMPLETED": ["RETIRED", "SUPERSEDED", "INVALID"],
+    "RETIRED": [],
+    "SUPERSEDED": [],
+    "INVALID": []
+  },
+  "completed_closure_kinds": [
+    "CLOSURE_VERIFICATION",
+    "PROPAGATION_VERIFICATION",
+    "RELEASE_VERIFICATION",
+    "RETIREMENT_VERIFICATION",
+    "RETIRE_TASK"
+  ],
+  "retired_history_review": {
+    "allowed": true,
+    "review_only": true,
+    "may_restore_execution": false,
+    "may_restore_continuation": false,
+    "may_restore_claim_or_fence": false,
+    "may_restore_transition": false,
+    "may_change_retired_state": false,
+    "new_work_requires_new_task_id": true,
+    "new_task_must_link_retired_task_by_provenance": true
+  },
+  "superseded": {
+    "successor_task_id_required": true,
+    "successor_cosv_task_vector_required_when_available": true,
+    "source_task_may_execute": false,
+    "redirect_only": true
+  },
+  "stale_projection_rule": {
+    "canonical_task_registry_state_wins": true,
+    "handoff_may_not_reactivate_terminal_task": true,
+    "stale_handoff_is_reconciliation_input_only": true
+  },
+  "closure_rule": {
+    "retirement_requires_explicit_closure_predicates": true,
+    "recommended_predicates": [
+      "IMPLEMENTATION_COMPLETE",
+      "VALIDATION_COMPLETE",
+      "REQUIRED_EVIDENCE_RECONCILED",
+      "REQUIRED_PROPAGATION_COMPLETE",
+      "REQUIRED_RELEASE_OR_TAG_COMPLETE",
+      "NO_UNRESOLVED_TASK_OWNED_WORK"
+    ]
+  },
+  "invariants": [
+    "RETIRED_IS_TERMINAL",
+    "RETIRED_RESURRECTION_IS_HISTORY_REVIEW_ONLY",
+    "RETIRED_NEVER_EMITS_CONTINUATION",
+    "NEW_WORK_DISCOVERED_DURING_RETIRED_REVIEW_REQUIRES_NEW_TASK_ID",
+    "SUPERSEDED_IS_REDIRECT_ONLY",
+    "INVALID_FAILS_CLOSED",
+    "COMPLETED_MAY_ONLY_PERFORM_EXPLICIT_CLOSURE_WORK",
+    "STALE_HANDOFF_CANNOT_OVERRIDE_CANONICAL_TASK_STATE"
+  ]
+}
