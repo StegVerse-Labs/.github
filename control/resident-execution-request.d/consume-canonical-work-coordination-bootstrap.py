@@ -65,6 +65,12 @@ CRYPTO_LIVE_AUTO_SPEC = {
     "bootstrap_runtime_rel": Path("runtime/canonical-work-crypto-live-auto"),
     "task_id": "CRYPTO-LIVE-AUTO-001",
 }
+ANTHROPIC_SPEC = {
+    "request_rel": Path("control/resident-execution-request.d/canonical-work-anthropic-intr-transport-288.json"),
+    "consumption_rel": Path("receipts/sovereign-host/canonical-work-anthropic-intr-transport-288-request-consumption.latest.json"),
+    "bootstrap_runtime_rel": Path("runtime/canonical-work-anthropic-intr-transport-288"),
+    "task_id": "LLMA-ANTHROPIC-INTR-TRANSPORT-288",
+}
 REQUEST_SPECS = (
     DEFAULT_SPEC,
     QUANTUM_SPEC,
@@ -72,6 +78,7 @@ REQUEST_SPECS = (
     RUNTIME_PROFILE_MAP_SPEC,
     ERL_REVIEW_SPEC,
     CRYPTO_LIVE_AUTO_SPEC,
+    ANTHROPIC_SPEC,
 )
 
 MATERIALIZE = (
