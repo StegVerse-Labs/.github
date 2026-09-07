@@ -11,8 +11,13 @@ CONTRACT_PATH = ROOT / "control/entity-autonomous-governed-progression-contract.
 TASK_INDEX_PATH = ROOT / "control/task-vector-index.json"
 TASK_REGISTRY_PATH = ROOT / "data/canonical-task-registry.json"
 
-TERMINAL_GOAL_STATES = {"COMPLETE", "COMPLETED", "TERMINAL", "RELEASED", "RETIRED"}
+ACTIVE_STATE = "ACTIVE"
+COMPLETED_STATE = "COMPLETED"
 RETIRED_STATE = "RETIRED"
+SUPERSEDED_STATE = "SUPERSEDED"
+INVALID_STATE = "INVALID"
+CANONICAL_TASK_STATES = {ACTIVE_STATE, COMPLETED_STATE, RETIRED_STATE, SUPERSEDED_STATE, INVALID_STATE}
+TERMINAL_GOAL_STATES = {RETIRED_STATE}
 HUMAN_REVIEW_STATES = {
     "HUMAN_REVIEW_REQUIRED",
     "USER_ACTION_REQUIRED",
@@ -21,10 +26,22 @@ HUMAN_REVIEW_STATES = {
     "LEGAL_PERSON_SIGNATURE",
     "OWNER_EXPLICIT_CONSENT",
 }
+CLOSURE_KINDS = {
+    "CLOSURE_VERIFICATION",
+    "PROPAGATION_VERIFICATION",
+    "RELEASE_VERIFICATION",
+    "RETIREMENT_VERIFICATION",
+    "RETIRE_TASK",
+}
 
 
 def _load_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _state(value: Any) -> str:
+    state = str(value or ACTIVE_STATE).strip().upper()
+    return state if state in CANONICAL_TASK_STATES else INVALID_STATE
 
 
 def _normalize_task(task: dict[str, Any]) -> dict[str, Any]:
@@ -39,7 +56,7 @@ def _normalize_task(task: dict[str, Any]) -> dict[str, Any]:
     return {
         "task_id": task_id,
         "cosv_task_vector": vector,
-        "state": str(task.get("state") or task.get("coordination_state") or "ACTIVE").strip().upper(),
+        "state": _state(task.get("state") or task.get("coordination_state")),
         "authority_class": str(task.get("authority_class") or "MACHINE_GOVERNED").strip().upper(),
         "handoff": task.get("handoff"),
         "applicable_handoffs": list(task.get("applicable_handoffs") or []),
@@ -52,6 +69,9 @@ def _normalize_task(task: dict[str, Any]) -> dict[str, Any]:
         "canonical_record": task.get("canonical_record"),
         "execution_request_refs": list(task.get("execution_request_refs") or []),
         "next_admissible_work": task.get("next_admissible_work"),
+        "successor_task_id": task.get("successor_task_id"),
+        "successor_cosv_task_vector": task.get("successor_cosv_task_vector"),
+        "closure_predicates_satisfied": bool(task.get("closure_predicates_satisfied", False)),
         "admissible_repair_available": bool(task.get("admissible_repair_available", False)),
         "next_transition_available": bool(task.get("next_transition_available", True)),
     }
@@ -70,9 +90,10 @@ def _deduplicate(tasks: list[dict[str, Any]]) -> list[dict[str, Any]]:
         merged = dict(previous)
         for key in ("dependencies", "adjacent_tasks", "integration_candidates", "receipts", "applicable_handoffs", "execution_request_refs"):
             merged[key] = list(dict.fromkeys([*previous.get(key, []), *task.get(key, [])]))
-        for key in ("cosv_task_vector", "state", "authority_class", "handoff", "canonical_record", "source_state_vector_ref", "registry_ref", "next_admissible_work"):
+        for key in ("cosv_task_vector", "state", "authority_class", "handoff", "canonical_record", "source_state_vector_ref", "registry_ref", "next_admissible_work", "successor_task_id", "successor_cosv_task_vector"):
             if task.get(key) not in (None, ""):
                 merged[key] = task[key]
+        merged["closure_predicates_satisfied"] = bool(previous.get("closure_predicates_satisfied") or task.get("closure_predicates_satisfied"))
         merged["admissible_repair_available"] = bool(previous.get("admissible_repair_available") or task.get("admissible_repair_available"))
         merged["next_transition_available"] = bool(previous.get("next_transition_available") or task.get("next_transition_available"))
         by_id[task_id] = merged
@@ -93,33 +114,39 @@ def _select_execution_refs(record: dict[str, Any], source_refs: list[str]) -> li
     return list(dict.fromkeys(refs))
 
 
-def _derive_next_admissible_work(record: dict[str, Any], execution_refs: list[str]) -> dict[str, Any] | None:
-    state = str(record.get("coordination_state") or record.get("state") or "ACTIVE").strip().upper()
-    if state == RETIRED_STATE:
+def _work_kind(work: dict[str, Any] | None) -> str | None:
+    if not isinstance(work, dict):
+        return None
+    value = work.get("kind")
+    return str(value).strip().upper() if value else None
+
+
+def _derive_next_work(record: dict[str, Any], execution_refs: list[str], state: str) -> dict[str, Any] | None:
+    if state in {RETIRED_STATE, SUPERSEDED_STATE, INVALID_STATE}:
         return None
     explicit = record.get("next_admissible_work")
     if isinstance(explicit, dict):
-        return explicit
-    if isinstance(explicit, str) and explicit:
-        return {"kind": "CANONICAL_NEXT_ADMISSIBLE_WORK", "ref": explicit}
-    for key in ("next_transition", "next_action", "next_work", "continuation_action"):
-        value = record.get(key)
-        if isinstance(value, dict):
-            return {"kind": key.upper(), **value}
-        if isinstance(value, str) and value:
-            return {"kind": key.upper(), "ref": value}
-    if execution_refs:
-        return {"kind": "EXISTING_EXECUTION_REQUEST", "ref": execution_refs[0], "all_candidate_refs": execution_refs}
-    return None
+        work = explicit
+    elif isinstance(explicit, str) and explicit:
+        work = {"kind": "CANONICAL_NEXT_ADMISSIBLE_WORK", "ref": explicit}
+    else:
+        work = None
+        for key in ("next_transition", "next_action", "next_work", "continuation_action"):
+            value = record.get(key)
+            if isinstance(value, dict):
+                work = {"kind": key.upper(), **value}
+                break
+            if isinstance(value, str) and value:
+                work = {"kind": key.upper(), "ref": value}
+                break
+        if work is None and execution_refs:
+            work = {"kind": "EXISTING_EXECUTION_REQUEST", "ref": execution_refs[0], "all_candidate_refs": execution_refs}
+    if state == COMPLETED_STATE and _work_kind(work) not in CLOSURE_KINDS:
+        return None
+    return work
 
 
-def resolve_compact_task_pointer(
-    task_id: str,
-    cosv_task_vector: str,
-    *,
-    task_index_path: Path = TASK_INDEX_PATH,
-    task_registry_path: Path = TASK_REGISTRY_PATH,
-) -> dict[str, Any]:
+def resolve_compact_task_pointer(task_id: str, cosv_task_vector: str, *, task_index_path: Path = TASK_INDEX_PATH, task_registry_path: Path = TASK_REGISTRY_PATH) -> dict[str, Any]:
     task_id = str(task_id or "").strip()
     vector = str(cosv_task_vector or "").strip()
     if not task_id:
@@ -128,39 +155,45 @@ def resolve_compact_task_pointer(
         raise ValueError("cosv_task_vector must be a 14-digit task.v1 vector")
 
     index = _load_json(task_index_path)
-    rows = index.get("tasks") if isinstance(index, dict) else None
-    if not isinstance(rows, list):
+    index_rows = index.get("tasks") if isinstance(index, dict) else None
+    if not isinstance(index_rows, list):
         raise ValueError("canonical task-vector index shape is invalid")
-    matches = [row for row in rows if isinstance(row, dict) and row.get("task_id") == task_id]
-    if len(matches) != 1:
+    pointer_matches = [row for row in index_rows if isinstance(row, dict) and row.get("task_id") == task_id]
+    if len(pointer_matches) != 1:
         raise ValueError("task_id must resolve exactly once in canonical task-vector index")
-    pointer = matches[0]
+    pointer = pointer_matches[0]
     if str(pointer.get("vector") or "") != vector:
         raise ValueError("task_id/COSV vector binding mismatch")
 
     registry = _load_json(task_registry_path)
-    rows = registry.get("tasks") if isinstance(registry, dict) else None
-    if not isinstance(rows, list):
+    registry_rows = registry.get("tasks") if isinstance(registry, dict) else None
+    if not isinstance(registry_rows, list):
         raise ValueError("canonical task registry shape is invalid")
-    matches = [row for row in rows if isinstance(row, dict) and row.get("task_id") == task_id]
+    matches = [row for row in registry_rows if isinstance(row, dict) and row.get("task_id") == task_id]
     if len(matches) != 1:
         raise ValueError("task_id must resolve exactly once in canonical task registry")
     record = matches[0]
+    raw_state = record.get("coordination_state") or record.get("state")
+    state = _state(raw_state)
 
-    state = str(record.get("coordination_state") or record.get("state") or "ACTIVE").strip().upper()
     source_refs = [str(ref) for ref in list(record.get("source_refs") or []) if isinstance(ref, str)]
     handoffs = [ref for ref in source_refs if ref.endswith("_MIRROR_HANDOFF.md")]
     explicit_handoff = record.get("handoff")
     if isinstance(explicit_handoff, str) and explicit_handoff.endswith("_MIRROR_HANDOFF.md"):
         handoffs.append(explicit_handoff)
     handoffs = list(dict.fromkeys(handoffs))
-    execution_refs = [] if state == RETIRED_STATE else _select_execution_refs(record, source_refs)
-    next_work = _derive_next_admissible_work(record, execution_refs)
+
+    execution_refs = [] if state in {RETIRED_STATE, SUPERSEDED_STATE, INVALID_STATE} else _select_execution_refs(record, source_refs)
+    next_work = _derive_next_work(record, execution_refs, state)
+    successor_task_id = record.get("successor_task_id") or record.get("superseded_by_task_id")
+    successor_vector = record.get("successor_cosv_task_vector") or record.get("superseded_by_cosv_task_vector")
+    closure_ok = bool(record.get("closure_predicates_satisfied", False))
 
     return {
         "task_id": task_id,
         "cosv_task_vector": vector,
         "state": state,
+        "raw_state": raw_state,
         "authority_class": record.get("authority_class") or "MACHINE_GOVERNED",
         "handoff": handoffs[0] if handoffs else None,
         "applicable_handoffs": handoffs,
@@ -174,10 +207,13 @@ def resolve_compact_task_pointer(
         "root_correlation_id": record.get("root_correlation_id") or record.get("correlation_id") or task_id,
         "pointer_binding_verified": True,
         "authority_effect": "NONE_COORDINATION_RESOLUTION_ONLY",
-        "admissible_repair_available": bool(record.get("admissible_repair_available", False)),
-        "next_transition_available": False if state == RETIRED_STATE else bool(record.get("next_transition_available", True)),
         "execution_request_refs": execution_refs,
         "next_admissible_work": next_work,
+        "successor_task_id": successor_task_id,
+        "successor_cosv_task_vector": successor_vector,
+        "closure_predicates_satisfied": closure_ok,
+        "admissible_repair_available": bool(record.get("admissible_repair_available", False)),
+        "next_transition_available": state in {ACTIVE_STATE, COMPLETED_STATE} and bool(record.get("next_transition_available", True)),
         "retired_terminal": state == RETIRED_STATE,
         "history_reviewable": state == RETIRED_STATE,
         "resurrection_execution_permitted": False,
@@ -185,7 +221,7 @@ def resolve_compact_task_pointer(
 
 
 def _build_continuation_request(task: dict[str, Any]) -> dict[str, Any] | None:
-    if task.get("state") == RETIRED_STATE:
+    if task.get("state") not in {ACTIVE_STATE, COMPLETED_STATE}:
         return None
     next_work = task.get("next_admissible_work")
     if not isinstance(next_work, dict):
@@ -199,7 +235,6 @@ def _build_continuation_request(task: dict[str, Any]) -> dict[str, Any] | None:
         "next_admissible_work": next_work,
         "execution_request_refs": list(task.get("execution_request_refs") or []),
         "automatic_pickup_required": True,
-        "status_only_response_is_completion": False,
         "human_reentry_required": False,
     }
 
@@ -223,70 +258,84 @@ def _history_review_projection(task: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _superseded_redirect(task: dict[str, Any]) -> dict[str, Any] | None:
+    successor = task.get("successor_task_id")
+    if not successor:
+        return None
+    return {
+        "schema": "stegverse.superseded-task-redirect/v1",
+        "from_task_id": task["task_id"],
+        "from_cosv_task_vector": task.get("cosv_task_vector"),
+        "to_task_id": successor,
+        "to_cosv_task_vector": task.get("successor_cosv_task_vector"),
+        "redirect_only": True,
+        "source_task_execution_permitted": False,
+    }
+
+
 def evaluate(payload: dict[str, Any], contract: dict[str, Any] | None = None) -> dict[str, Any]:
     if contract is None:
         contract = _load_json(CONTRACT_PATH)
-    continuation = contract["goal_resolution_continuation"]
-    report_interval = int(continuation["default_report_interval_iterations"])
+    report_interval = int(contract["goal_resolution_continuation"]["default_report_interval_iterations"])
     iteration = int(payload.get("iteration") or 1)
     if iteration < 1:
         raise ValueError("iteration must be >= 1")
 
     returned = list(payload.get("returned_tasks") or [])
-    compact_resolution: dict[str, Any] | None = None
+    compact_resolution = None
     if payload.get("task_id") is not None or payload.get("cosv_task_vector") is not None:
         if payload.get("task_id") is None or payload.get("cosv_task_vector") is None:
             raise ValueError("compact continuation requires both task_id and cosv_task_vector")
         compact_resolution = resolve_compact_task_pointer(str(payload["task_id"]), str(payload["cosv_task_vector"]))
         returned.append(compact_resolution)
-
     tasks = _deduplicate([_normalize_task(row) for row in returned])
+
     goal_id = str(payload.get("goal_id") or "").strip()
     if not goal_id and compact_resolution is not None:
         goal_id = str(compact_resolution.get("root_correlation_id") or compact_resolution["task_id"])
     if not goal_id:
         raise ValueError("goal_id is required unless task_id + cosv_task_vector resolves it canonically")
 
-    goal_state = str(payload.get("goal_state") or "ACTIVE").strip().upper()
-    retired_tasks = [row for row in tasks if row["state"] == RETIRED_STATE]
-    terminal_tasks = [row for row in tasks if row["state"] in TERMINAL_GOAL_STATES]
-    active_tasks = [row for row in tasks if row["state"] not in TERMINAL_GOAL_STATES]
-    human_review_tasks = [row for row in active_tasks if row["authority_class"] in HUMAN_REVIEW_STATES or row["state"] in HUMAN_REVIEW_STATES]
-    no_repair_denials = [row for row in active_tasks if row["state"] == "DENY" and not row["admissible_repair_available"] and not row["next_transition_available"]]
-    continuation_requests = [request for request in (_build_continuation_request(row) for row in active_tasks) if request is not None]
-    history_review_requested = bool(payload.get("history_review") or payload.get("review_retired_task"))
-    history_review = [_history_review_projection(row) for row in retired_tasks] if history_review_requested else []
+    active = [row for row in tasks if row["state"] == ACTIVE_STATE]
+    completed = [row for row in tasks if row["state"] == COMPLETED_STATE]
+    retired = [row for row in tasks if row["state"] == RETIRED_STATE]
+    superseded = [row for row in tasks if row["state"] == SUPERSEDED_STATE]
+    invalid = [row for row in tasks if row["state"] == INVALID_STATE]
+    human_review = [row for row in active + completed if row["authority_class"] in HUMAN_REVIEW_STATES]
+    continuation_requests = [req for req in (_build_continuation_request(row) for row in active + completed) if req]
+    history_requested = bool(payload.get("history_review") or payload.get("review_retired_task"))
+    history_review = [_history_review_projection(row) for row in retired] if history_requested else []
+    redirects = [redirect for redirect in (_superseded_redirect(row) for row in superseded) if redirect]
 
-    if retired_tasks and not active_tasks:
-        disposition = "RETIRED_HISTORY_REVIEW" if history_review_requested else "RETIRED_TERMINAL"
-        surface_response = True
-        continue_machine_work = False
-    elif goal_state == RETIRED_STATE or goal_state in TERMINAL_GOAL_STATES or bool(payload.get("goal_complete")):
-        disposition = "GOAL_COMPLETE"
-        surface_response = True
-        continue_machine_work = False
-    elif human_review_tasks or payload.get("human_review_required"):
-        disposition = "HUMAN_REVIEW_REQUIRED"
-        surface_response = True
-        continue_machine_work = False
-    elif no_repair_denials or payload.get("hard_machine_stop"):
-        disposition = "MACHINE_STOP_NO_ADMISSIBLE_REPAIR"
-        surface_response = True
-        continue_machine_work = False
-    elif active_tasks and not continuation_requests:
-        disposition = "CONTINUATION_RESOLUTION_INCOMPLETE"
-        surface_response = True
-        continue_machine_work = False
+    incomplete_completed = [row for row in completed if not row["closure_predicates_satisfied"] and row.get("next_admissible_work") is None]
+    completed_ready_to_retire = [row for row in completed if row["closure_predicates_satisfied"]]
+
+    if invalid:
+        disposition, surface_response, continue_machine_work = "INVALID_CANONICAL_TASK_STATE", True, False
+    elif retired and not (active or completed or superseded):
+        disposition = "RETIRED_HISTORY_REVIEW" if history_requested else "RETIRED_TERMINAL"
+        surface_response, continue_machine_work = True, False
+    elif superseded and not (active or completed):
+        disposition = "SUPERSEDED_REDIRECT" if len(redirects) == len(superseded) else "SUPERSEDED_SUCCESSOR_UNRESOLVED"
+        surface_response, continue_machine_work = True, False
+    elif completed_ready_to_retire and not active and not incomplete_completed:
+        disposition, surface_response, continue_machine_work = "COMPLETED_READY_TO_RETIRE", True, False
+    elif human_review or payload.get("human_review_required"):
+        disposition, surface_response, continue_machine_work = "HUMAN_REVIEW_REQUIRED", True, False
+    elif incomplete_completed:
+        disposition, surface_response, continue_machine_work = "COMPLETED_CLOSURE_RESOLUTION_INCOMPLETE", True, False
+    elif (active or completed) and not continuation_requests:
+        disposition, surface_response, continue_machine_work = "CONTINUATION_RESOLUTION_INCOMPLETE", True, False
     else:
         surface_response = iteration % report_interval == 0
         disposition = "REPORT_AND_CONTINUE" if surface_response else "CONTINUE_AUTONOMOUSLY"
         continue_machine_work = True
 
     return {
-        "schema": "stegverse.goal-resolution-continuation-evaluation/v4",
+        "schema": "stegverse.goal-resolution-continuation-evaluation/v5",
         "goal_id": goal_id,
         "iteration": iteration,
-        "report_interval_iterations": report_interval,
+        "canonical_task_states": sorted(CANONICAL_TASK_STATES),
         "disposition": disposition,
         "surface_response": surface_response,
         "continue_machine_work": continue_machine_work,
@@ -294,29 +343,27 @@ def evaluate(payload: dict[str, Any], contract: dict[str, Any] | None = None) ->
         "automatic_pickup_required": bool(continuation_requests),
         "compact_pointer_resolved": compact_resolution is not None,
         "compact_pointer_resolution": compact_resolution,
-        "returned_task_count": len(tasks),
-        "active_task_count": len(active_tasks),
-        "terminal_task_count": len(terminal_tasks),
-        "retired_task_count": len(retired_tasks),
-        "retired_task_ids": [row["task_id"] for row in retired_tasks],
+        "active_task_ids": [row["task_id"] for row in active],
+        "completed_task_ids": [row["task_id"] for row in completed],
+        "completed_ready_to_retire_task_ids": [row["task_id"] for row in completed_ready_to_retire],
+        "retired_task_ids": [row["task_id"] for row in retired],
+        "superseded_task_ids": [row["task_id"] for row in superseded],
+        "invalid_task_ids": [row["task_id"] for row in invalid],
         "retired_is_terminal": True,
         "retired_resurrection_review_only": True,
         "history_review": history_review,
-        "human_review_task_ids": [row["task_id"] for row in human_review_tasks],
+        "superseded_redirects": redirects,
         "continuation_requests": continuation_requests,
-        "deduplicated_task_ids": [row["task_id"] for row in tasks],
-        "authority_effect": "NONE_COORDINATION_EVALUATION_ONLY",
-        "workercoordinator_claim_fence_still_required": True,
-        "interlock_intr_transition_admission_still_required": True,
-        "credential_authority": contract["credential_authority"],
-        "periodic_report_stops_machine_work": False,
+        "new_work_from_retired_requires_new_task_id": True,
+        "stale_handoff_cannot_override_canonical_state": True,
         "status_only_result_is_valid_continuation": False,
+        "authority_effect": "NONE_COORDINATION_EVALUATION_ONLY",
     }
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Evaluate bounded autonomous goal-resolution continuation.")
-    parser.add_argument("input", type=Path, help="JSON observation or compact task_id + COSV continuation pointer")
+    parser = argparse.ArgumentParser(description="Evaluate canonical task lifecycle and continuation.")
+    parser.add_argument("input", type=Path)
     parser.add_argument("--contract", type=Path, default=CONTRACT_PATH)
     args = parser.parse_args()
     print(json.dumps(evaluate(_load_json(args.input), _load_json(args.contract)), indent=2, sort_keys=True))
