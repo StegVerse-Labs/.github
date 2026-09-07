@@ -1,10 +1,61 @@
 {
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-DEEPSEEK-INTR-RUNTIME-001",
-  "task_id": "SHWP-DEEPSEEK-INTR-RUNTIME-001",
-  "goal_id": "DEEPSEEK-INTR-END-TO-END-CONNECTION",
-  "repository": "StegVerse-Labs/.github",
+  "created_at": "2026-09-07T01:00:37Z",
   "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "DEEPSEEK-INTR-END-TO-END-CONNECTION",
+    "objective": "Execute one bounded DeepSeek InTr cycle through the existing sovereign resident WorkerCoordinator using canonical StegGate ingress/egress decisions, exact-bound TVC provider use, and Master Records custody/reconstruction.",
+    "success_predicates": [
+      "fresh WorkerCoordinator claim and fence observed",
+      "canonical StegGate ingress ALLOW retained",
+      "exact-bound TVC DeepSeek lease retained",
+      "TVC non-exportable provider operation succeeds",
+      "Master Records custody_recorded=true and reconstructability=PASS",
+      "canonical StegGate egress ALLOW retained for exact response hash",
+      "LLM-adapter exact-response egress admission succeeds",
+      "same-execution resident receipt retained"
+    ],
+    "failure_predicates": [
+      "hosted runtime marker active",
+      "required already-local source root missing",
+      "fresh WorkerCoordinator claim/fence absent",
+      "ingress or egress StegGate disposition not ALLOW",
+      "TVC lease or provider operation refused",
+      "Master Records custody or reconstruction incomplete",
+      "credential material exposed or another physical machine required"
+    ],
+    "authority_ceiling": [
+      "bounded DeepSeek provider inference through existing TVC non-exportable operation",
+      "local Master Records provider-usage custody",
+      "secret-free receipt persistence under receipts/deepseek-intr-runtime/**",
+      "no scheduler, heartbeat authority, credential export, publication, or product-activation authority"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "SHWP-DEEPSEEK-INTR-RUNTIME-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "StegVerse-Labs/.github#1122",
+      "StegVerse-Labs/TVC#343",
+      "StegVerse-org/LLM-adapter#290",
+      "StegVerse-org/LLM-adapter#300",
+      "StegVerse-org/LLM-adapter#304",
+      "StegVerse-org/LLM-adapter#310",
+      "StegVerse-org/LLM-adapter#312",
+      "master-records/orchestration#82",
+      "StegVerse-Labs/StegIndex#49"
+    ],
+    "dependencies": [],
+    "parent_task_id": null,
+    "derivation_reason": "The released DeepSeek InTr transport and TVC runtime bridge required a resident WorkerCoordinator consumer that could complete ingress, provider use, custody, and exact-response egress in one governed cycle.",
+    "canonical_owner_ref": "StegVerse-Labs/.github#1122",
+    "canonical_lineage_key": "deepseek:intr:resident-runtime-cycle",
+    "derivation_depth": 0,
+    "priority": "release"
+  },
   "authority": {
     "authority_source": "StegVerse-Labs/.github#1122 + canonical StegGate + StegVerse-Labs/TVC#343 + StegVerse-org/LLM-adapter#290/#300/#304/#310 + master-records/orchestration#82",
     "authority_domain": "INDEPENDENT_TASK_CONTROL_WITH_INTERLOCK_TVC_AND_MASTER_RECORDS_BOUNDARIES",
@@ -12,23 +63,32 @@
     "transition_authority": "StegVerse-Labs/StegCore canonical StegGate / Interlock",
     "custody_authority": "master-records/orchestration canonical provider-usage custody service",
     "heartbeat_grants_execution_authority": false,
+    "heartbeat_dependency": false,
     "request_grants_execution_authority": false,
     "github_token_runtime_authority": "NONE",
     "provider_output_grants_authority": false,
     "custody_grants_execution_authority": false,
-    "another_physical_machine_required": false
+    "another_physical_machine_required": false,
+    "policy_version": "shwp-deepseek-intr-runtime-v0.1"
   },
   "execution": {
     "worker_id": "deepseek-intr-runtime-worker",
     "adapter_ref": "process:deepseek-intr-runtime-v1",
     "required_capabilities": ["deepseek_intr_runtime_cycle"],
+    "allowed_paths": ["receipts/deepseek-intr-runtime/**"],
+    "allowed_services": [],
+    "max_actions": 4,
+    "max_retries": 64,
+    "external_cost_ceiling_usd": 1,
+    "runtime_window_beats": 4096,
+    "rate_class": "deepseek_intr_runtime_cycle",
     "runtime_profile_id": "stegverse:runtime-profile:llm-adapter-deepseek:v1",
     "base_runtime_profile_id": "stegverse:runtime-profile:hb-intr-resident:v1",
     "protocol": "stegverse.intr.deepseek.transport.v1",
     "provider": "deepseek",
     "operation": "chat_completion_with_usage",
     "model": "deepseek-v4-flash",
-    "llm_adapter_custody_client_merge": "852718d0a1287953ea408511c47b3764e3410b77",
+    "llm_adapter_custody_client_ref": "StegVerse-org/LLM-adapter#310/#312",
     "master_records_local_broker": "/run/stegverse/master-records-provider-usage.sock",
     "master_records_bearer_export_allowed": false,
     "master_records_reconstruction_required": "PASS",
@@ -37,8 +97,18 @@
     "credential_material_allowed": false,
     "second_machine_required": false
   },
+  "activation": {
+    "carrier": "separate_worker_runtime",
+    "heartbeat_dependency": false,
+    "carrier_trigger_required": false,
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "StegVerse-Labs/.github#1122 bounded WorkerCoordinator integration",
+    "recheck_trigger": "task-control evaluation while same-execution DeepSeek runtime receipt is absent",
+    "checkout_policy": "separate_fenced_independent_task_control"
+  },
   "readme_impact": {
     "required": true,
+    "readme_impact_required": true,
     "material_function_change": true,
     "readme_path": "README.md",
     "readme_updated_in_change_set": true,
@@ -48,24 +118,49 @@
     ],
     "authority_effect": "NONE_COMPLETENESS_ONLY"
   },
+  "continuity": {
+    "checkpoint_ref": "receipts/deepseek-intr-runtime/SHWP-DEEPSEEK-INTR-RUNTIME-001.json",
+    "handoff_destination": "control/worker-registry.json",
+    "master_records_required": true,
+    "status_projection": "control/worker-status.json"
+  },
   "completion": {
-    "required_state": "COMPLETED",
-    "required_evidence": [
-      "canonical StegGate ingress ALLOW receipt",
-      "exact-bound TVC DeepSeek lease",
-      "TVC single-use provider use receipt",
-      "DeepSeek response hash",
-      "Master Records custody/reconstruction PASS via local non-exportable broker",
-      "canonical StegGate egress ALLOW receipt",
-      "LLM-adapter exact-response egress admission"
+    "next_authorized_action": "On the existing sovereign resident surface, consume the standing request through the existing dispatcher and WorkerCoordinator. Fail closed at the first unsatisfied ingress, TVC, provider, custody, or egress predicate.",
+    "terminal_when": [
+      "one COMPLETED worker receipt binds canonical ingress ALLOW, exact-bound TVC use, DeepSeek response, Master Records reconstruction PASS, canonical egress ALLOW, and exact-response egress admission in the same execution"
     ],
     "same_execution_required": true,
     "source_merge_is_completion": false
   },
-  "continuity": {
-    "checkpoint_ref": "receipts/deepseek-intr-runtime/SHWP-DEEPSEEK-INTR-RUNTIME-001.json",
-    "handoff_destination": "control/worker-registry.json",
-    "status_projection": "control/worker-status.json"
+  "block": null,
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:deepseek-intr-runtime-cycle:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "StegVerse-org/LLM-adapter#289",
+      "StegVerse-org/LLM-adapter#310/#312",
+      "StegVerse-Labs/TVC#343/#344",
+      "master-records/orchestration#82",
+      "StegVerse-Labs/StegIndex#49"
+    ],
+    "admissibility_evidence_refs": [
+      "handoffs/SHWP-DEEPSEEK-INTR-RUNTIME-001.json",
+      "workers/deepseek_intr_runtime_worker.py",
+      "control/worker-registry.d/deepseek-intr-runtime-001.json",
+      "control/process-worker-adapters.d/deepseek-intr-runtime-001.json",
+      "control/resident-execution-request.d/deepseek-intr-runtime-001.json",
+      "control/resident-execution-request.d/consume-deepseek-intr-runtime.py"
+    ],
+    "integration_evidence_refs": [],
+    "activation_proof_ref": null,
+    "blockers": ["DEEPSEEK_INTR_SAME_EXECUTION_RECEIPT_NOT_YET_OBSERVED"],
+    "continuation_owner": "deepseek-intr-runtime-worker + existing sovereign WorkerCoordinator",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "integrates_capability",
+    "target_phase": "ACTIVATED"
   },
   "authority_effect": "NONE_HANDOFF_ONLY"
 }
