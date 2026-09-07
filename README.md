@@ -99,6 +99,21 @@ HeartBeat and HB-derived carriers remain timing/reference/freshness/correlation/
 
 Problems and constraints are metadata, not an operational stopping state. A canonical unresolved task remains active or machine-owned while the current owner attempts a solution within its authority ceiling, derives a successor task, or transfers/escalates through the existing governed mechanism. `BLOCKED` is therefore not a canonical Task Registry `coordination_state`; dependency, problem/constraint, incident, and evidence metadata carry the reason a particular transition cannot yet proceed. Historical receipts or domain-specific schemas may retain older labels as provenance, but those labels do not create a current operational stopping state.
 
+### COSV task-pointer session continuation
+
+A StegVerse continuation prompt should carry only the canonical task identity and its current COSV `task.v1` vector when those values are available:
+
+```text
+<TASK_ID>
+<COSV_TASK_VECTOR>
+```
+
+The task ID is the stable identity. The 14-position COSV vector is the compact current-state projection. The receiving session or runtime resolves the task's canonical registry record, source vector, applicable `*_MIRROR_HANDOFF.md` documentation, Master Records evidence, WorkerCoordinator claim/fence state, cross-task relationships, runtime requirements, receipts, and other canonical evidence from those two values rather than repeating that information in prompt prose.
+
+When work on an existing task or goal exposes a distinct necessary piece of work that is not already canonically tracked, the system should first search for equivalent or adjacent work and reuse it when present. If the work is genuinely new, it should create a new adjacent canonical task tied to the same root correlation/goal, give that task its own COSV vector and handoff/evidence relationships, and continue through the ordinary WorkerCoordinator, Interlock/InTr, Master Records, and TV/TVC authority boundaries. New task creation is coordination only and grants no execution authority.
+
+The canonical contract is `data/task-coordination-policy.json`, with scoped continuation documentation at `docs/COSV_TASK_POINTER_COORDINATION_MIRROR_HANDOFF.md`. No unique continuation state should remain only in chat prose at session close.
+
 ---
 
 ## Operational Observer Standard
