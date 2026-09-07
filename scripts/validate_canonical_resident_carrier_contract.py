@@ -11,6 +11,7 @@ RUNTIME_SEPARATION = ROOT / "control/runtime-separation-contract.json"
 PROGRESSION = ROOT / "control/entity-autonomous-governed-progression-contract.json"
 PROGRESSION_COORDINATION = ROOT / "control/cross-task-coordination.d/entity-autonomous-governed-progression-runtime-adoption.json"
 TASK_POLICY = ROOT / "data/task-coordination-policy.json"
+GOAL_CONTINUATION = ROOT / "scripts/evaluate_goal_resolution_continuation.py"
 README = ROOT / "README.md"
 
 
@@ -21,6 +22,7 @@ def validate(root: Path = ROOT) -> dict:
     progression_coordination = json.loads((root / PROGRESSION_COORDINATION.relative_to(ROOT)).read_text(encoding="utf-8"))
     task_policy = json.loads((root / TASK_POLICY.relative_to(ROOT)).read_text(encoding="utf-8"))
     dispatcher = (root / DISPATCHER.relative_to(ROOT)).read_text(encoding="utf-8")
+    goal_continuation = (root / GOAL_CONTINUATION.relative_to(ROOT)).read_text(encoding="utf-8")
     readme = (root / README.relative_to(ROOT)).read_text(encoding="utf-8")
 
     assert contract["schema"] == "stegverse.canonical-resident-carrier-contract/v1"
@@ -69,6 +71,29 @@ def validate(root: Path = ROOT) -> dict:
     assert progression_contract["transition_rule"]["human_approval_default"] is False
     assert progression_contract["human_interaction_queue_must_not_schedule_machine_runtime"] is True
 
+    intent = progression_contract["human_intent_contract"]
+    assert intent["human_originates"] == ["IDEA", "QUERY", "GOAL"]
+    assert intent["human_must_represent_intermediate_task_ids"] is False
+    assert intent["human_must_represent_intermediate_cosv_vectors"] is False
+    assert intent["human_must_represent_intermediate_handoffs"] is False
+
+    continuation = progression_contract["goal_resolution_continuation"]
+    assert continuation["enabled"] is True
+    assert continuation["default_report_interval_iterations"] == 5
+    assert continuation["automatic_reingestion"]["task_ids"] is True
+    assert continuation["automatic_reingestion"]["cosv_task_vectors"] is True
+    assert continuation["automatic_reingestion"]["mirror_handoffs"] is True
+    assert continuation["returned_task_id_is_not_automatically_new_work"] is True
+    assert continuation["periodic_report_does_not_stop_machine_owned_work"] is True
+    assert continuation["no_second_scheduler_or_coordinator"] is True
+    assert continuation["evaluator_ref"] == "scripts/evaluate_goal_resolution_continuation.py"
+
+    assert "REPORT_AND_CONTINUE" in goal_continuation
+    assert "CONTINUE_AUTONOMOUSLY" in goal_continuation
+    assert "HUMAN_REVIEW_REQUIRED" in goal_continuation
+    assert "GOAL_COMPLETE" in goal_continuation
+    assert "expected 14 digits" in goal_continuation
+
     assert progression_coordination["schema"] == "stegverse.cross-task-coordination-fragment/v1"
     assert progression_coordination["fragment_id"] == "ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001"
     assert progression_coordination["authority_effect"] == "NONE_COORDINATION_ONLY"
@@ -78,8 +103,11 @@ def validate(root: Path = ROOT) -> dict:
     assert task["readme_impact_required"] is True
     assert task["readme_impact"]["readme_updated_in_change_set"] is True
     assert task["readme_impact"]["readme_path"] == "StegVerse-Labs/.github/README.md"
+    assert "scripts/evaluate_goal_resolution_continuation.py" in task["mutation_scope"]["paths"]
     predicate = next(row for row in progression_coordination["predicates"] if row["predicate_id"] == progression["runtime_adoption_predicate_id"])
     assert predicate["state"] == "UNSATISFIED"
+    assert "returned_task_cosv_handoff_state_reingested" in predicate["required_fields"]
+    assert "human_reentry_for_intermediate_ids=false" in predicate["required_fields"]
 
     assert task_policy["canonical_truth"]["work_intent_and_coordination"] == "CANONICAL_TASK_REGISTRY"
     assert task_policy["canonical_truth"]["execution_claim_and_fence"] == "WORKERCOORDINATOR"
@@ -87,8 +115,19 @@ def validate(root: Path = ROOT) -> dict:
     assert task_policy["canonical_truth"]["governed_ingress_egress"] == "INTERLOCK_INTR"
     assert "SELECT_HIGHEST_PRIORITY_ADMISSIBLE_NON_DUPLICATE_NON_COLLIDING_TASK" in task_policy["new_session_entry_contract"]["sequence"]
 
+    goal_policy = task_policy["goal_resolution_continuation_contract"]
+    assert goal_policy["ecosystem_owns_continuation"] is True
+    assert goal_policy["automatic_reingestion_required"] is True
+    assert goal_policy["default_report_interval_iterations"] == 5
+    assert goal_policy["periodic_report_stops_machine_work"] is False
+    assert goal_policy["returned_identifier_requires_human_reentry"] is False
+    assert goal_policy["no_second_scheduler_or_coordinator"] is True
+
     assert "## Autonomous Governed Entity Progression" in readme
     assert "without inserting a human approval checkpoint between ordinary machine-owned cycles" in readme
+    assert "Human-originated intent and autonomous goal resolution" in readme
+    assert "five orchestration iterations" in readme
+    assert "does not stop admitted machine-owned work" in readme
 
     expected = {
         "stegverse001_bounded_autonomy": "scripts/consume_stegverse001_bounded_autonomy_request.py",
@@ -112,6 +151,7 @@ def validate(root: Path = ROOT) -> dict:
         "heartbeat_progression_dependency": "OSCILLATOR_ONLY",
         "worker_runtime": "WorkerCoordinator",
         "entity_progression_mode": "MACHINE_GOVERNED_AUTONOMOUS",
+        "goal_resolution_continuation": "AUTOMATIC_REINGESTION_FIVE_ITERATION_REPORTING",
         "runtime_adoption_predicate": progression["runtime_adoption_predicate_id"],
         "runtime_adoption_claimed": False,
         "readme_impact_complete": True,
