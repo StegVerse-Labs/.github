@@ -1,14 +1,30 @@
 # StegVerse-001 Evidence Chain Continuation Mirror Handoff
 
-Updated: 2026-09-06
+Updated: 2026-09-07
 Repository: `StegVerse-Labs/.github`
 Issue: #761
 Reconciliation: #1128
 Goal / Task Registry identifier: `STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001`
+Canonical task record: `data/canonical-task-records/STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001.json`
+COSV profile: `task.v1`
+COSV task vector: `50000000100000`
+COSV source vector: `control/task-vectors/STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001.json`
+COSV index shard: `control/task-vector-index.d/STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001.json`
 Parent runtime: `SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001`
 Custody task: `MR-STEGVERSE001-BOUNDED-AUTONOMY-001`
 Observer successor: `SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001`
-State: `SOURCE_CHAIN_COMPLETE_CURRENT_DEVICE_CUSTODY_AND_SV002_RUNTIME_PENDING`
+State: `TASK_REGISTERED_COSV_POINTER_EMITTED_CURRENT_DEVICE_CUSTODY_AND_SV002_RUNTIME_PENDING`
+
+## Handoff pointer
+
+The canonical continuation payload for a later session/runtime is now exactly:
+
+```text
+STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001
+50000000100000
+```
+
+The task ID is the durable continuation identity. The COSV `task.v1` vector is the compact current-state projection. Neither value grants execution, admission, claim/fence, credential, transition, custody, publication, or runtime authority.
 
 ## Objective
 
@@ -52,7 +68,7 @@ HB32: timing / freshness / correlation / observability only; authority NONE
 Site: materialization / same-device carrier only; authority NONE
 ```
 
-No source merge, CI run, deployment, cache refresh, heartbeat progression, prior receipt, or recovery result authorizes custody or SV002.
+No source merge, CI run, deployment, cache refresh, heartbeat progression, prior receipt, recovery result, Task Registry entry, or COSV vector authorizes custody or SV002.
 
 ## Canonical downstream implementation already present
 
@@ -114,6 +130,29 @@ SV002 authentic disposition: NOT YET CLAIMED
 
 These last predicates remain fail-closed until authentic current-device evidence exists.
 
+## COSV projection rationale
+
+Current vector: `50000000100000` under symbol order `LRUIVGOCMTBEAP`.
+
+```text
+L lifecycle = 5 / MACHINE_OWNED
+R archive_ready = false
+U unassigned_work = 0
+I chat_owned_implementation = 0
+V chat_owned_validation = 0
+G chat_owned_integration = 0
+O chat_owned_observation = 0
+C chat_owned_credentials = 0
+M canonical_owner_installed = true
+T thread_required = false
+B blocker_count = 0
+E evidence_complete = false
+A activated = false
+P propagated = false
+```
+
+This projection records that the continuation is machine-owned and already has canonical runtime owners, while authentic downstream completion evidence remains incomplete. It does not mint execution authority.
+
 ## Retry and failure rules
 
 ```text
@@ -158,11 +197,13 @@ Repository history retains the detailed source chronology. Key canonical referen
 
 This handoff intentionally reflects current canonical state instead of preserving stale pre-terminal `NOT OBSERVED` statements that are contradicted by authentic G23 evidence.
 
-## README completeness predicate — reconciliation #1128
+## README completeness predicate
 
 **NO README CHANGE REQUIRED.**
 
-The material runtime behavior and user-visible/failure semantics were already implemented and documented by the Site #1098 change set. This `.github` reconciliation only corrects stale handoff status/provenance. It does not alter behavior, runtime semantics, interfaces, governance/authority boundaries, evidence semantics, prerequisites, dependencies, failure behavior, or capability meaning.
+Registration preflight: `receipts/preflight/STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-REGISTRATION-001.json`.
+
+This change registers an already-defined handoff identity into the existing sharded canonical Task Registry and COSV pointer surfaces. It does not alter runtime behavior, semantics, interfaces, governance/authority boundaries, evidence semantics, prerequisites, dependencies, failure behavior, or capability meaning. The task/COSV continuation interface is already documented by `README.md` and `docs/COSV_TASK_POINTER_COORDINATION_MIRROR_HANDOFF.md`.
 
 ## Next admissible machine transition
 
