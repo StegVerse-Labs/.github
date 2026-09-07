@@ -59,7 +59,7 @@ class EcosystemChatParentRegistryReconciliationTests(unittest.TestCase):
         self.assertEqual(admission["authority_domain"], "INDEPENDENT_TASK_CONTROL")
         self.assertEqual(admission["claim_state"], "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM")
         self.assertTrue(admission["fresh_fence_required"])
-        self.assertEqual(admission["minimum_fencing_token_exclusive"], 22)
+        self.assertEqual(admission["minimum_fencing_token_exclusive"], 24)
         self.assertFalse(admission["heartbeat_grants_execution_authority"])
         self.assertFalse(admission["recovery_grants_parent_execution_authority"])
 
@@ -96,8 +96,8 @@ class EcosystemChatParentRegistryReconciliationTests(unittest.TestCase):
     def test_fresh_parent_fence_floor_is_strictly_above_terminal_recovery(self):
         admission = self.task["admission"]
         handoff_activation = self.handoff["activation"]
-        self.assertEqual(admission["minimum_fencing_token_exclusive"], 22)
-        self.assertEqual(handoff_activation["minimum_fencing_token_exclusive"], 22)
+        self.assertEqual(admission["minimum_fencing_token_exclusive"], 24)
+        self.assertEqual(handoff_activation["minimum_fencing_token_exclusive"], 24)
         self.assertTrue(handoff_activation["fresh_fence_required"])
         self.assertFalse(handoff_activation["recovery_reacquisition_allowed"])
 
