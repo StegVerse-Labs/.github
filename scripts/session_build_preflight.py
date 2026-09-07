@@ -111,6 +111,36 @@ def evaluate_readme_impact(*, required: bool, material: str | None, readme_updat
     }, complete
 
 
+def evaluate_behavioral_parity(*, required: bool, superseded_ref: str | None, predicates: list[str], evidence_refs: list[str], authorized_delta_refs: list[str]) -> tuple[dict, bool]:
+    """Fail closed when migration/replacement work drops prior behavior without an explicit canonical decision."""
+    predicate_rows = [str(item).strip() for item in predicates if str(item).strip()]
+    evidence = [str(item).strip() for item in evidence_refs if str(item).strip()]
+    deltas = [str(item).strip() for item in authorized_delta_refs if str(item).strip()]
+    source = str(superseded_ref or "").strip()
+
+    if not required:
+        return {
+            "required": False,
+            "superseded_capability_ref": source or None,
+            "disposition": "NOT_A_MIGRATION_OR_REPLACEMENT",
+            "authority_effect": "NONE",
+        }, True
+
+    complete = bool(source and predicate_rows and evidence)
+    disposition = "BEHAVIORAL_PARITY_EVIDENCED" if complete else "BEHAVIORAL_PARITY_EVIDENCE_REQUIRED"
+    return {
+        "required": True,
+        "superseded_capability_ref": source or None,
+        "preserved_behavior_predicates": predicate_rows,
+        "evidence_refs": evidence,
+        "authorized_behavior_delta_refs": deltas,
+        "unauthorized_behavior_loss_allowed": False,
+        "behavior_delta_requires_explicit_canonical_decision": True,
+        "disposition": disposition,
+        "authority_effect": "NONE_COMPLETENESS_ONLY",
+    }, complete
+
+
 def decide(result: dict, coordination: dict):
     decision = result.get("decision")
     if decision == "CONTINUE_MACHINE_EXECUTION":
@@ -138,6 +168,11 @@ def main():
     parser.add_argument("--readme-path")
     parser.add_argument("--no-readme-update-reason")
     parser.add_argument("--readme-evidence-ref", action="append", default=[])
+    parser.add_argument("--behavioral-parity-required", action="store_true", help="Require preserved behavior evidence for a migration, refactor, replacement, or native-port of an existing capability.")
+    parser.add_argument("--superseded-capability-ref")
+    parser.add_argument("--preserved-behavior-predicate", action="append", default=[])
+    parser.add_argument("--behavioral-parity-evidence-ref", action="append", default=[])
+    parser.add_argument("--authorized-behavior-delta-ref", action="append", default=[])
     parser.add_argument("--stegindex-root", default=os.environ.get("STEGINDEX_ROOT"), help="Already-materialized StegIndex checkout. No network fetch is performed.")
     args = parser.parse_args()
 
@@ -152,8 +187,19 @@ def main():
         no_update_reason=args.no_readme_update_reason,
         evidence_refs=args.readme_evidence_ref,
     )
+    behavioral_parity, behavioral_parity_complete = evaluate_behavioral_parity(
+        required=args.behavioral_parity_required,
+        superseded_ref=args.superseded_capability_ref,
+        predicates=args.preserved_behavior_predicate,
+        evidence_refs=args.behavioral_parity_evidence_ref,
+        authorized_delta_refs=args.authorized_behavior_delta_ref,
+    )
     if args.readme_impact_required and not readme_impact_complete:
         disposition = "STOP_AT_README_IMPACT_DEPENDENCY"
+        exit_code = EXIT_EXACT_DEPENDENCY
+        task_creation_permitted = False
+    if args.behavioral_parity_required and not behavioral_parity_complete:
+        disposition = "STOP_AT_BEHAVIORAL_PARITY_DEPENDENCY"
         exit_code = EXIT_EXACT_DEPENDENCY
         task_creation_permitted = False
 
@@ -166,8 +212,11 @@ def main():
         "cross_task_coordination": coordination,
         "readme_impact": readme_impact,
         "readme_impact_complete": readme_impact_complete,
+        "behavioral_parity": behavioral_parity,
+        "behavioral_parity_complete": behavioral_parity_complete,
         "coordination_required_before_new_work": True,
         "readme_impact_required_before_functional_mutation": True,
+        "behavioral_parity_required_for_migration_or_replacement": True,
         "authority_effect": "NONE_PREWORK_DECISION_ONLY",
         "network_fetch_performed": False,
         "runtime_execution_performed": False,
