@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 15,
+  "generation": 16,
   "status": "RUNTIME_PROFILE_GOVERNANCE_REVIEW_SOURCE_BOUND_AUTHENTIC_RUNTIME_PENDING",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -344,10 +344,87 @@
         "master-records/orchestration:docs/OBJECT_PROVENANCE_CUSTODY_MIRROR_HANDOFF.md"
       ],
       "authority_model": {"task_registry_mints_execution_authority": false, "source_state_proves_execution": false, "worker_claim_authority": "WORKERCOORDINATOR", "master_records_reality_authority": true, "interlock_intr_required_for_governed_ingress_egress": true}
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "CRYPTO-LIVE-AUTO-001",
+      "correlation_id": "CRYPTO-LIVE-AUTO-001",
+      "root_correlation_id": "CRYPTO-LIVE-AUTO-001",
+      "parent_task_id": null,
+      "goal": "Complete governed goal-oriented Coinbase live trading activation by consuming the existing CryptoBot HB/InTr resident runtime profile, authenticating the current-iPhone TVC/SKAP provider boundary, obtaining the StegFin bounded-live decision, executing and reconciling the first max-$10 ETH-USD post-only maker proof, and retaining a second bounded-cycle repeat-loop proof without adding another runtime, scheduler, credential authority, or provider path.",
+      "coordination_state": "PROPOSED",
+      "source_refs": [
+        "docs/CRYPTO_LIVE_AUTO_CANONICAL_WORK_MIRROR_HANDOFF.md",
+        "control/cross-task-coordination.d/crypto-live-auto-001-canonical-work-ingress.json",
+        "control/resident-execution-request.d/canonical-work-crypto-live-auto-001.json",
+        "StegVerse-Labs/crypto-bot/claims/CRYPTO-LIVE-AUTO-001.claim.json",
+        "StegVerse-Labs/crypto-bot/docs/LIVE_TRADING_AUTOMATION_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/crypto-bot/docs/HB_INTR_RUNTIME_CONSUMPTION_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/crypto-bot/config/runtime-profile.json",
+        "StegVerse-Labs/TVC#119",
+        "StegVerse-Labs/stegfin-governance#84"
+      ],
+      "targets": {
+        "organizations": ["StegVerse-Labs", "master-records"],
+        "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/crypto-bot", "StegVerse-Labs/TVC", "StegVerse-Labs/stegfin-governance", "master-records/orchestration"],
+        "components": ["canonical-task-coordination", "crypto-bot-goal-trading", "hb-intr-resident-runtime", "tvc-current-iphone-skap-coinbase", "stegfin-bounded-live-gate", "coinbase-advanced-trade-bounded-proof", "master-records-reconciliation"]
+      },
+      "dependencies": [
+        {"dependency_id": "DEP-CRYPTO-CANONICAL-WORK-INGRESS", "kind": "RUNTIME_PREDICATE", "state": "UNRESOLVED", "ref": "receipts/sovereign-host/canonical-work-crypto-live-auto-request-consumption.latest.json"},
+        {"dependency_id": "DEP-CRYPTO-TVC-CURRENT-IPHONE-ACTIVATION", "kind": "TASK", "state": "UNRESOLVED", "ref": "StegVerse-Labs/TVC#119"},
+        {"dependency_id": "DEP-CRYPTO-STEGFIN-BOUNDED-LIVE-DECISION", "kind": "TASK", "state": "UNRESOLVED", "ref": "StegVerse-Labs/stegfin-governance#84"},
+        {"dependency_id": "DEP-CRYPTO-MASTER-RECORDS-RECONCILIATION", "kind": "RUNTIME_PREDICATE", "state": "UNRESOLVED", "ref": "master-records/orchestration/CANONICAL_WORK_COORDINATION_CUSTODY_MIRROR_HANDOFF.md"}
+      ],
+      "blockers": [],
+      "systemic_incident_ref": null,
+      "adjacent_task_refs": ["STEGVERSE-CANONICAL-WORK-COORDINATION-001", "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"],
+      "existing_evidence_refs": [
+        "StegVerse-Labs/crypto-bot/claims/CRYPTO-LIVE-AUTO-001.claim.json",
+        "StegVerse-Labs/crypto-bot/config/runtime-profile.json",
+        "StegVerse-Labs/crypto-bot@51ca907608c2d9ebdbfc1a2cdcdc40d03f1c4b93",
+        "StegVerse-Labs/StegIndex@79588149e0e2c4f5d08d05db857ec1f5717e42ee",
+        "StegVerse-Labs/TVC#119",
+        "StegVerse-Labs/stegfin-governance#84",
+        "control/canonical-resident-carrier-contract.json",
+        "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md"
+      ],
+      "expected_evidence_predicates": [
+        "CRYPTO_RUNTIME_PROFILE_SOURCE_VALID",
+        "CANONICAL_WORK_REQUEST_STAGED",
+        "AUTHENTIC_CRYPTO_CANONICAL_WORK_INGRESS_OBSERVED",
+        "AUTHENTIC_MASTER_RECORDS_RECONCILIATION_OBSERVED",
+        "AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+        "AUTHENTIC_TVC_CURRENT_IPHONE_SKAP_PROVIDER_EVIDENCE_OBSERVED",
+        "STEGFIN_APPROVE_LIMITED_RUNTIME_SCOPE_OBSERVED",
+        "AUTHENTIC_FIRST_MAX_10_ETH_USD_POST_ONLY_ORDER_OBSERVED",
+        "AUTHENTIC_FILL_FEE_RECONCILIATION_OBSERVED",
+        "AUTHENTIC_NEXT_PORTFOLIO_SNAPSHOT_OBSERVED",
+        "AUTHENTIC_SECOND_BOUNDED_CYCLE_REPEAT_PROOF_OBSERVED",
+        "AUTHENTIC_TASK_EGRESS_OR_CLOSURE_OBSERVED"
+      ],
+      "runtime_requirements": {
+        "capabilities": ["intr_task_admission", "task_registry_reconciliation", "master_records_reconciliation", "worker_claim_projection", "bounded_process_execution", "tvc_coinbase_provider_operation", "stegfin_bounded_live_governance"],
+        "environment": "CURRENT_USER_IPHONE_AND_SOVEREIGN_RESIDENT",
+        "direction": "INGRESS_AND_INTERNAL_AND_PROVIDER",
+        "mutation_required": true,
+        "deployment_required": false,
+        "current_observation_required": true
+      },
+      "runtime_resolution": null,
+      "worker_claim": {"authority": "WORKERCOORDINATOR", "claim_ref": null, "fence_ref": null, "projection_only": true},
+      "human_action_ref": null,
+      "completion": {"claimed": false, "validated": false, "reconciliation_ref": null},
+      "allowed_next_transitions": ["INGRESS_ADMITTED"],
+      "handoff_projection_refs": [
+        "docs/CRYPTO_LIVE_AUTO_CANONICAL_WORK_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/crypto-bot/docs/LIVE_TRADING_AUTOMATION_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/crypto-bot/docs/HB_INTR_RUNTIME_CONSUMPTION_MIRROR_HANDOFF.md"
+      ],
+      "authority_model": {"task_registry_mints_execution_authority": false, "source_state_proves_execution": false, "worker_claim_authority": "WORKERCOORDINATOR", "master_records_reality_authority": true, "interlock_intr_required_for_governed_ingress_egress": true}
     }
   ],
   "human_actions": [],
   "systemic_incidents": [],
   "projections": {"handoffs": [], "status_surfaces": []},
-  "nonclaims": ["REGISTRY_BOOTSTRAP_AND_RUNTIME_ADAPTERS_ARE_SOURCE_STATE_ONLY", "HB32_OSCILLATOR_REFERENCE_DOES_NOT_GRANT_TASK_AUTHORITY", "MASTER_RECORDS_PROJECTION_ADAPTER_DOES_NOT_PROVE_RUNTIME_RECONCILIATION", "DEPENDENCY_FANOUT_SOURCE_DOES_NOT_ADMIT_TRANSITIONS", "ADMITTED_RECONCILIATION_SOURCE_DOES_NOT_MINT_EXECUTION_AUTHORITY", "ADMITTED_DEPENDENCY_EVENT_CONSUMPTION_DOES_NOT_MUTATE_WORKERCOORDINATOR", "AUTHENTIC_INGRESS_PROJECTION_REQUIRES_EXISTING_ADMITTED_RECEIPT", "WORKERCOORDINATOR_PROJECTION_DOES_NOT_MINT_CLAIM_OR_FENCE", "EVENT_BOOTSTRAP_USES_EXISTING_SHARED_INTR_SERVER_ONLY", "ROUTE_INSTALL_AND_BOOTSTRAP_SOURCE_DOES_NOT_PROVE_RUNTIME_EXECUTION", "RESIDENT_REQUEST_DISPATCH_DOES_NOT_GRANT_EXECUTION_AUTHORITY", "RESIDENT_SELF_MATERIALIZATION_IS_LOCAL_SOURCE_COPY_ONLY", "RUNTIME_PROFILE_MAP_MATCH_DOES_NOT_GRANT_AUTHORITY", "RUNTIME_PROFILE_RESOLUTION_IS_PROJECTION_ONLY", "RUNTIME_ROUTING_READINESS_DOES_NOT_GRANT_AUTHORITY", "RUNTIME_TRANSITION_READINESS_DOES_NOT_GRANT_AUTHORITY", "RUNTIME_GOVERNANCE_REVIEW_PACKAGE_DOES_NOT_GRANT_AUTHORITY", "MASTER_RECORDS_CUSTODY_DOES_NOT_GRANT_TASK_AUTHORITY", "POST_CUSTODY_RECONCILIATION_DOES_NOT_CHANGE_TASK_STATE", "GENERIC_RUNTIME_MISSING_REQUIRES_CANONICAL_MAP_RESOLUTION", "GITHUB_FAILURE_EMAIL_NORMALIZATION_DOES_NOT_PROVE_RUNTIME_FAILURE", "NO_AUTHENTIC_INTERLOCK_INTR_TASK_INGRESS_IS_CLAIMED", "NO_WORKERCOORDINATOR_CLAIM_IS_MINTED_BY_THIS_REGISTRY", "NO_MASTER_RECORDS_RUNTIME_RECONCILIATION_IS_CLAIMED", "QUANTUM_TASK_REGISTRATION_IS_PROPOSED_SOURCE_STATE_ONLY", "QUANTUM_SOURCE_AND_CENSUS_EVIDENCE_DO_NOT_PROVE_PQ_DEPLOYMENT_OR_RUNTIME_AWARENESS", "ERL_REVIEW_TASK_REGISTRATION_IS_PROPOSED_SOURCE_STATE_ONLY", "OBJECT_PROVENANCE_TASK_REGISTRATION_IS_PROPOSED_SOURCE_STATE_ONLY", "OBJECT_PROVENANCE_SOURCE_AND_CUSTODY_MERGES_DO_NOT_PROVE_AUTHENTIC_RUNTIME_LINEAGE"]
+  "nonclaims": ["REGISTRY_BOOTSTRAP_AND_RUNTIME_ADAPTERS_ARE_SOURCE_STATE_ONLY", "HB32_OSCILLATOR_REFERENCE_DOES_NOT_GRANT_TASK_AUTHORITY", "MASTER_RECORDS_PROJECTION_ADAPTER_DOES_NOT_PROVE_RUNTIME_RECONCILIATION", "DEPENDENCY_FANOUT_SOURCE_DOES_NOT_ADMIT_TRANSITIONS", "ADMITTED_RECONCILIATION_SOURCE_DOES_NOT_MINT_EXECUTION_AUTHORITY", "ADMITTED_DEPENDENCY_EVENT_CONSUMPTION_DOES_NOT_MUTATE_WORKERCOORDINATOR", "AUTHENTIC_INGRESS_PROJECTION_REQUIRES_EXISTING_ADMITTED_RECEIPT", "WORKERCOORDINATOR_PROJECTION_DOES_NOT_MINT_CLAIM_OR_FENCE", "EVENT_BOOTSTRAP_USES_EXISTING_SHARED_INTR_SERVER_ONLY", "ROUTE_INSTALL_AND_BOOTSTRAP_SOURCE_DOES_NOT_PROVE_RUNTIME_EXECUTION", "RESIDENT_REQUEST_DISPATCH_DOES_NOT_GRANT_EXECUTION_AUTHORITY", "RESIDENT_SELF_MATERIALIZATION_IS_LOCAL_SOURCE_COPY_ONLY", "RUNTIME_PROFILE_MAP_MATCH_DOES_NOT_GRANT_AUTHORITY", "RUNTIME_PROFILE_RESOLUTION_IS_PROJECTION_ONLY", "RUNTIME_ROUTING_READINESS_DOES_NOT_GRANT_AUTHORITY", "RUNTIME_TRANSITION_READINESS_DOES_NOT_GRANT_AUTHORITY", "RUNTIME_GOVERNANCE_REVIEW_PACKAGE_DOES_NOT_GRANT_AUTHORITY", "MASTER_RECORDS_CUSTODY_DOES_NOT_GRANT_TASK_AUTHORITY", "POST_CUSTODY_RECONCILIATION_DOES_NOT_CHANGE_TASK_STATE", "GENERIC_RUNTIME_MISSING_REQUIRES_CANONICAL_MAP_RESOLUTION", "GITHUB_FAILURE_EMAIL_NORMALIZATION_DOES_NOT_PROVE_RUNTIME_FAILURE", "NO_AUTHENTIC_INTERLOCK_INTR_TASK_INGRESS_IS_CLAIMED", "NO_WORKERCOORDINATOR_CLAIM_IS_MINTED_BY_THIS_REGISTRY", "NO_MASTER_RECORDS_RUNTIME_RECONCILIATION_IS_CLAIMED", "QUANTUM_TASK_REGISTRATION_IS_PROPOSED_SOURCE_STATE_ONLY", "QUANTUM_SOURCE_AND_CENSUS_EVIDENCE_DO_NOT_PROVE_PQ_DEPLOYMENT_OR_RUNTIME_AWARENESS", "ERL_REVIEW_TASK_REGISTRATION_IS_PROPOSED_SOURCE_STATE_ONLY", "OBJECT_PROVENANCE_TASK_REGISTRATION_IS_PROPOSED_SOURCE_STATE_ONLY", "OBJECT_PROVENANCE_SOURCE_AND_CUSTODY_MERGES_DO_NOT_PROVE_AUTHENTIC_RUNTIME_LINEAGE", "CRYPTO_LIVE_AUTO_TASK_REGISTRATION_IS_PROPOSED_SOURCE_STATE_ONLY", "CRYPTO_SOURCE_REQUEST_STAGING_DOES_NOT_PROVE_COINBASE_AUTHENTICATION_ORDER_EXECUTION_OR_GOVERNANCE_APPROVAL"]
 }
