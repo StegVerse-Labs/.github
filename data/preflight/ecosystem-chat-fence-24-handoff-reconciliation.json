@@ -4,9 +4,10 @@
   "branch": "feat/anthropic-canonical-current-main-1123",
   "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
   "state": "PASS",
-  "goal": "Reconcile the stale Ecosystem Chat executable handoff fence floor from 22 to the already-authoritative minimum_fencing_token_exclusive=24 so consolidated inference validation reflects current authority without weakening or creating authority.",
+  "goal": "Reconcile stale Ecosystem Chat fence projections and the executor's local fence constant from 22 to the already-authoritative minimum_fencing_token_exclusive=24 so the registered executor accepts the current authorization without weakening or creating authority.",
   "canonical_state_resolved": {
     "handoff": "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+    "executor": "scripts/run_independent_ecosystem_chat_parent.py",
     "authorization": "authorizations/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json",
     "authorization_minimum_fencing_token_exclusive": 24,
     "portable_handoff": "docs/ECOSYSTEM_CHAT_PORTABLE_IPHONE_PACKAGE_MIRROR_HANDOFF.md",
@@ -22,6 +23,7 @@
     "new_claim_or_fence_required": false,
     "runtime_execution_claimed": false,
     "handoff_projection_is_stale": true,
+    "executor_constant_is_stale": true,
     "authoritative_floor_is_24": true
   },
   "readme_completeness": {
@@ -29,16 +31,19 @@
     "material_function_change": false,
     "readme_path": "README.md",
     "readme_updated_in_change_set": false,
-    "reason": "The executable authority prerequisite was already raised to 24 in the canonical authorization and portable/reconciliation evidence. Updating the stale handoff to the same value does not introduce a new runtime behavior, authority model, interface, environment, dependency mechanism, or capability; it restores projection consistency.",
+    "reason": "The executable authority prerequisite was already raised to 24 in the canonical authorization and portable/reconciliation evidence. Updating the stale handoff projection and executor validation constant to that same existing value does not create a new authority model, interface, environment, dependency mechanism, or capability; it restores source consistency with the current authority contract.",
     "evidence_refs": [
       "authorizations/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json",
       "docs/ECOSYSTEM_CHAT_PORTABLE_IPHONE_PACKAGE_MIRROR_HANDOFF.md",
       "receipts/ecosystem-chat-sovereign-inference/STEGOS-SOURCE-PROJECTION-RECONCILIATION-20260906.json",
-      "tests/test_ecosystem_chat_inference_binding.py"
+      "control/worker-registry.d/ecosystem-chat-sovereign-inference-parent-001.json",
+      "tests/test_ecosystem_chat_inference_binding.py",
+      "tests/test_independent_ecosystem_chat_parent_executor.py"
     ]
   },
   "admissible_mutation_scope": [
     "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+    "scripts/run_independent_ecosystem_chat_parent.py",
     "data/preflight/ecosystem-chat-fence-24-handoff-reconciliation.json"
   ],
   "runtime_truth": {
