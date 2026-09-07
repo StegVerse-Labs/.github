@@ -13,6 +13,15 @@ TARGET_ENTRYPOINT="scripts/refresh_and_execute_kimi_intr_resident_task.py"
 HOSTED_ENV=("GITHUB_ACTIONS","CI","RENDER","RENDER_SERVICE_ID","VERCEL","VERCEL_ENV","CF_PAGES","CLOUDFLARE_WORKERS")
 FORBIDDEN=("GITHUB_TOKEN","GH_TOKEN","GITHUB_PAT","ACTIONS_RUNTIME_TOKEN","OPENAI_API_KEY","ANTHROPIC_API_KEY","DEEPSEEK_API_KEY","MOONSHOT_API_KEY","KIMI_API_KEY","MASTER_RECORDS_AUTH_TOKEN","MASTER_RECORDS_RECEIPT_KEY","STEGVERSE_MASTER_RECORDS_TOKEN","PRIVATE_KEY","SEED","MNEMONIC")
 FORWARD=("PATH","HOME","LANG","LC_ALL","XDG_STATE_HOME","XDG_CONFIG_HOME","LOCALAPPDATA","STEGVERSE_SOVEREIGN_NODE","STEGVERSE_HEARTBEAT_ROOT","STEGVERSE_HEARTBEAT_SOURCE_ROOT","STEGVERSE_LLM_ADAPTER_ROOT","STEGVERSE_TVC_ROOT","STEGVERSE_STEGOS_ROOT","STEGVERSE_GOVERNANCE_ROOT","STEGVERSE_STEGCORE_SOURCE_ROOT","STEGVERSE_TEST_LANES_ROOT","STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT","STEGVERSE_REPO_ROOTS_JSON","STEGVERSE_VAULT_BROKER_SOCKET","STEGVERSE_MASTER_RECORDS_PROVIDER_USAGE_SOCKET")
+ROOT_MAP={
+    "STEGVERSE_LLM_ADAPTER_ROOT":"StegVerse-org/LLM-adapter",
+    "STEGVERSE_TVC_ROOT":"StegVerse-Labs/TVC",
+    "STEGVERSE_STEGOS_ROOT":"StegVerse-Labs/StegOS",
+    "STEGVERSE_GOVERNANCE_ROOT":"StegVerse-Labs/Governance",
+    "STEGVERSE_STEGCORE_SOURCE_ROOT":"StegVerse-Labs/StegCore",
+    "STEGVERSE_TEST_LANES_ROOT":"GCAT-BCAT-Engine/workflows",
+    "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT":"master-records/orchestration",
+}
 
 def truthy(v): return str(v or "").strip().lower() not in {"","0","false","no"}
 def load(p):
@@ -32,6 +41,14 @@ def clean_env(source: Mapping[str,str] | None=None):
     leaked=[k for k in FORBIDDEN if vals.get(k)]
     if leaked: raise RuntimeError("credential-bearing resident consumer environment prohibited: "+",".join(sorted(leaked)))
     env={k:vals[k] for k in FORWARD if vals.get(k)}
+    raw_map=vals.get("STEGVERSE_REPO_ROOTS_JSON","").strip()
+    if raw_map:
+        mapping=json.loads(raw_map)
+        if not isinstance(mapping,dict): raise RuntimeError("STEGVERSE_REPO_ROOTS_JSON_OBJECT_REQUIRED")
+        for env_name,repo in ROOT_MAP.items():
+            if env.get(env_name): continue
+            candidate=mapping.get(repo)
+            if isinstance(candidate,str) and candidate.strip(): env[env_name]=candidate.strip()
     env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"]="TV/TVC"
     env["STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY"]="NONE"
     return env
