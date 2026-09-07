@@ -1,0 +1,10 @@
+{
+  "schema": "stegverse.cosv-task-vector-index-entry/v1",
+  "task_id": "STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001",
+  "repository": "StegVerse-Labs/.github",
+  "registry_ref": "data/canonical-task-records/STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001.json",
+  "source_state_vector_ref": "control/task-vectors/STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001.json",
+  "vector": "20010000100000",
+  "vector_state": "EMITTED",
+  "authority_effect": "NONE"
+}
