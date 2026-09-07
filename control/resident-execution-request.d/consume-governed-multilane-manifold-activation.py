@@ -2,9 +2,10 @@
 """Resident consumer for the complete governed multi-lane manifold lineage.
 
 This file lives in control/resident-execution-request.d so the existing sovereign
-source refresh carries it without expanding the runtime transport contract. It
-materializes only two static canonical inputs (lineage + canonical task record)
-from the already-local source root when absent, then delegates machine-owned
+source refresh carries it without expanding the runtime transport contract. When
+the standing request itself has not yet been materialized into the runtime root,
+the consumer copies that exact canonical request from the already-local source
+root, then materializes the static lineage/task inputs and delegates machine-owned
 subordinate execution to the existing WorkerCoordinator targeted task path.
 """
 from __future__ import annotations
@@ -66,6 +67,18 @@ def materialize_static(source: Path, runtime: Path, rel: Path) -> dict[str, Any]
     return {"ref": rel.as_posix(), "sha256": src_hash, "exact_copy": True}
 
 
+def materialize_request_if_missing(source: Path, runtime: Path) -> dict[str, Any]:
+    src = source / REQUEST_REL
+    dst = runtime / REQUEST_REL
+    if dst.is_file():
+        return {"ref": REQUEST_REL.as_posix(), "materialized": False, "reason": "RUNTIME_REQUEST_ALREADY_PRESENT", "sha256": sha256(dst)}
+    require(src.is_file(), f"canonical resident request missing:{REQUEST_REL}")
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(src, dst)
+    require(dst.is_file() and sha256(dst) == sha256(src), "resident request materialization mismatch")
+    return {"ref": REQUEST_REL.as_posix(), "materialized": True, "reason": "MISSING_RUNTIME_REQUEST_RECOVERED_FROM_ALREADY_LOCAL_CANONICAL_SOURCE", "sha256": sha256(src)}
+
+
 def parse_last_json(stdout: str) -> dict[str, Any] | None:
     for line in reversed([line.strip() for line in stdout.splitlines() if line.strip()]):
         try:
@@ -88,10 +101,9 @@ def write_receipt(runtime: Path, receipt: dict[str, Any]) -> None:
 def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -> dict[str, Any]:
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
-    request_path = runtime / REQUEST_REL
-    if not request_path.is_file():
-        return {"schema":"stegverse.governed-manifold-request-consumption/v1","state":"NO_REQUEST","task_id":TASK_ID,"authority_effect":"NONE"}
 
+    request_transport = materialize_request_if_missing(source, runtime)
+    request_path = runtime / REQUEST_REL
     request = load_json(request_path)
     require(request.get("schema") == "stegverse.resident-execution-request/v1", "request schema mismatch")
     require(request.get("state") == "REQUESTED", "request state mismatch")
@@ -165,6 +177,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -> 
         "state": "MANIFOLD_VISIT_RECORDED",
         "task_id": TASK_ID,
         "cosv_task_vector": COSV,
+        "request_transport": request_transport,
         "static_source_materialization": materialized,
         "declared_subordinate_count": len(declared),
         "visited_subordinate_count": len(outcomes),
