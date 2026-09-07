@@ -4,13 +4,11 @@
 This driver is orchestration only. It never creates a scheduler, mints a
 WorkerCoordinator claim/fence, bypasses Interlock/InTr, acquires credentials,
 invents execution evidence, or writes observed reality on behalf of Master
-Records. It materializes the canonical invocation manifest, then invokes only
-runner templates already declared by the reusable-task registry. Execution
-stops at completion or the first boundary that the declared runner path cannot
-cross without separate authority, evidence, external resource, human decision,
-or additional source binding.
+Records. It materializes the canonical invocation manifest and invokes only the
+primary existing runner entrypoint already declared by the reusable-task
+registry. Remaining runner templates are materialization dependencies, not an
+ordered command list, preventing duplicate execution of nested runners.
 """
-
 from __future__ import annotations
 
 import argparse
@@ -48,10 +46,7 @@ def load_constructor():
 
 def resolve_definition(reusable_task_id: str) -> dict[str, Any]:
     registry = load_json(REGISTRY)
-    matches = [
-        item for item in registry.get("tasks", [])
-        if item.get("reusable_task_id") == reusable_task_id
-    ]
+    matches = [x for x in registry.get("tasks", []) if x.get("reusable_task_id") == reusable_task_id]
     if len(matches) != 1:
         raise SystemExit(f"reusable task identity must resolve exactly once: {reusable_task_id}")
     return matches[0]
@@ -94,9 +89,7 @@ def main() -> None:
     constructor = load_constructor()
     manifest = constructor.build_manifest(manifest_args(args))
 
-    receipt_path = Path(args.receipt) if args.receipt else (
-        DEFAULT_RECEIPT_DIR / f"{args.invocation_id}.latest.json"
-    )
+    receipt_path = Path(args.receipt) if args.receipt else DEFAULT_RECEIPT_DIR / f"{args.invocation_id}.latest.json"
     manifest_path = receipt_path.with_name(f"{args.invocation_id}.manifest.json")
     write_json(manifest_path, manifest)
 
@@ -125,14 +118,34 @@ def main() -> None:
         receipt["state"] = "BOUNDARY_RECORDED"
         receipt["boundary"] = {
             "kind": BOUNDARY_NO_RUNNER,
-            "reason": "Reusable identity has no executable runner template. Trigger is recorded, but source-only completion predicates cannot be fabricated as runtime completion.",
+            "reason": "Reusable identity has no executable runner entrypoint. Trigger is recorded, but completion cannot be fabricated.",
             "manual_intermediate_coordination_required": False,
-            "required_next_binding": "DECLARE_OR_REUSE_AN_EXISTING_MACHINE_EXECUTABLE_RUNNER_FOR_THIS_IDENTITY",
+            "required_next_binding": "DECLARE_OR_REUSE_AN_EXISTING_MACHINE_EXECUTABLE_RUNNER_ENTRYPOINT",
         }
         receipt["continuation"] = "AUTOMATION_STOPS_HERE_UNTIL_EXECUTABLE_BINDING_EXISTS"
         write_json(receipt_path, receipt)
         print(json.dumps(receipt, indent=2, sort_keys=True))
         return
+
+    runner_refs = [str(x) for x in runners]
+    for ref in runner_refs:
+        if not safe_runner_path(ref).is_file():
+            receipt["state"] = "BOUNDARY_RECORDED"
+            receipt["boundary"] = {
+                "kind": BOUNDARY_MISSING_RUNNER,
+                "runner_ref": ref,
+                "reason": "A declared runner dependency is not present in the materialized runtime source.",
+                "manual_intermediate_coordination_required": False,
+            }
+            receipt["continuation"] = "MATERIALIZE_DECLARED_RUNNER_DEPENDENCY_THEN_RETRIGGER"
+            write_json(receipt_path, receipt)
+            print(json.dumps(receipt, indent=2, sort_keys=True))
+            return
+
+    primary_ref = runner_refs[0]
+    primary_runner = safe_runner_path(primary_ref)
+    receipt["primary_runner_ref"] = primary_ref
+    receipt["runner_dependency_refs"] = runner_refs[1:]
 
     env = os.environ.copy()
     env["STEGVERSE_REUSABLE_TASK_MANIFEST"] = str(manifest_path)
@@ -143,57 +156,40 @@ def main() -> None:
         env["STEGVERSE_REUSABLE_TASK_TRACKING_TASK_ID"] = args.task_id
         env["STEGVERSE_REUSABLE_TASK_TRACKING_COSV"] = args.cosv_task_vector or ""
 
-    for ref in runners:
-        runner = safe_runner_path(str(ref))
-        if not runner.is_file():
-            receipt["state"] = "BOUNDARY_RECORDED"
-            receipt["boundary"] = {
-                "kind": BOUNDARY_MISSING_RUNNER,
-                "runner_ref": str(ref),
-                "reason": "Declared runner is not present in the materialized runtime source.",
-                "manual_intermediate_coordination_required": False,
-            }
-            receipt["continuation"] = "MATERIALIZE_DECLARED_RUNNER_THEN_RETRIGGER"
-            write_json(receipt_path, receipt)
-            print(json.dumps(receipt, indent=2, sort_keys=True))
-            return
+    completed = subprocess.run(
+        [sys.executable, str(primary_runner)],
+        cwd=ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    receipt["automatic_steps_attempted"].append({
+        "runner_ref": primary_ref,
+        "returncode": completed.returncode,
+        "stdout_tail": completed.stdout[-4000:],
+        "stderr_tail": completed.stderr[-4000:],
+    })
 
-        completed = subprocess.run(
-            [sys.executable, str(runner)],
-            cwd=ROOT,
-            env=env,
-            text=True,
-            capture_output=True,
-            check=False,
-        )
-        step = {
-            "runner_ref": str(ref),
+    if completed.returncode != 0:
+        receipt["state"] = "BOUNDARY_RECORDED"
+        receipt["boundary"] = {
+            "kind": BOUNDARY_RUNNER_FAILED,
+            "runner_ref": primary_ref,
             "returncode": completed.returncode,
-            "stdout_tail": completed.stdout[-4000:],
-            "stderr_tail": completed.stderr[-4000:],
+            "reason": "Primary declared runner stopped before completion. The trigger driver does not bypass or reinterpret that runner's authority/failure semantics.",
+            "manual_intermediate_coordination_required": False,
         }
-        receipt["automatic_steps_attempted"].append(step)
-        if completed.returncode != 0:
-            receipt["state"] = "BOUNDARY_RECORDED"
-            receipt["boundary"] = {
-                "kind": BOUNDARY_RUNNER_FAILED,
-                "runner_ref": str(ref),
-                "returncode": completed.returncode,
-                "reason": "Declared runner did not complete successfully. The trigger driver does not bypass or reinterpret the runner's own authority/failure semantics.",
-                "manual_intermediate_coordination_required": False,
-            }
-            receipt["continuation"] = "RESOLVE_RECORDED_RUNNER_BOUNDARY_THEN_RETRIGGER_OR_CONTINUE_DOWNSTREAM_WHERE_INDEPENDENT"
-            write_json(receipt_path, receipt)
-            print(json.dumps(receipt, indent=2, sort_keys=True))
-            return
+        receipt["continuation"] = "RESOLVE_RECORDED_RUNNER_BOUNDARY_THEN_RETRIGGER_OR_CONTINUE_INDEPENDENT_WORK"
+    else:
+        receipt["state"] = "AUTOMATABLE_STEPS_EXHAUSTED"
+        receipt["boundary"] = {
+            "kind": BOUNDARY_COMPLETE,
+            "reason": "Primary declared runner returned successfully. Completion remains evidence-driven; exit zero cannot manufacture completion predicates or Master Records custody.",
+            "manual_intermediate_coordination_required": False,
+        }
+        receipt["continuation"] = "RECONCILE_DECLARED_COMPLETION_EVIDENCE_AND_CONTINUE_DEPENDENT_WORK_WHEN_SATISFIED"
 
-    receipt["state"] = "AUTOMATABLE_STEPS_EXHAUSTED"
-    receipt["boundary"] = {
-        "kind": BOUNDARY_COMPLETE,
-        "reason": "Every declared runner returned successfully. Completion remains evidence-driven; the trigger driver will not manufacture satisfaction of completion predicates or Master Records custody.",
-        "manual_intermediate_coordination_required": False,
-    }
-    receipt["continuation"] = "RECONCILE_DECLARED_COMPLETION_EVIDENCE_AND_CONTINUE_DOWNSTREAM_WORK_WHERE_ADMISSIBLE"
     write_json(receipt_path, receipt)
     print(json.dumps(receipt, indent=2, sort_keys=True))
 
