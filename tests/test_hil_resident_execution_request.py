@@ -29,21 +29,7 @@ class HILResidentExecutionRequestTests(unittest.TestCase):
         (runtime / mod.REQUEST_REL).write_text(json.dumps(self.request()) + "\n", encoding="utf-8")
         (runtime / mod.TARGET_ENTRYPOINT).parent.mkdir(parents=True, exist_ok=True)
         (runtime / mod.TARGET_ENTRYPOINT).write_text("# bridge\n", encoding="utf-8")
-        (source / mod.ROUTE_MATERIALIZER).parent.mkdir(parents=True, exist_ok=True)
-        (source / mod.ROUTE_MATERIALIZER).write_text("# route materializer\n", encoding="utf-8")
         return source, runtime
-
-    def route_ready(self) -> dict:
-        return {
-            "schema": "stegverse.hil-intr-route-config-materialization/v1",
-            "state": "MATERIALIZED",
-            "path": "/tmp/hil-route.json",
-            "config": {
-                "public_tls_terminated_by": "STEGVERSE_SHARED_SERVICE_GATEWAY",
-                "credential_authority": "TV/TVC",
-                "g18_completion_required": False,
-            },
-        }
 
     def test_canonical_request_is_intent_only(self) -> None:
         request = self.request()
@@ -52,83 +38,86 @@ class HILResidentExecutionRequestTests(unittest.TestCase):
         self.assertFalse(request["request_granted_authority"])
         self.assertFalse(request["second_machine_required"])
 
-    def test_route_pending_does_not_burn_request(self) -> None:
+    def test_same_device_execution_does_not_require_gateway_materializer(self) -> None:
         with tempfile.TemporaryDirectory() as td:
             source, runtime = self.setup_runtime(Path(td))
             calls = []
+
             def runner(command, **kwargs):
-                calls.append(command)
+                calls.append((command, kwargs))
+                self.assertIn(mod.TARGET_ENTRYPOINT, command[1])
+                self.assertNotIn("GITHUB_TOKEN", kwargs["env"])
                 return SimpleNamespace(returncode=0, stdout=json.dumps({
-                    "schema": "stegverse.hil-intr-route-config-materialization/v1",
-                    "state": "PREDICATE_PENDING",
-                    "reason": "resident runtime route predicate pending",
-                    "authority_effect": "NONE",
+                    "schema": "stegverse.resident-refresh-targeted-execution/v2",
+                    "transition_id": "HIL_RECEIVER_LOCAL_READY_PUBLIC_RENDEZVOUS_REQUIRED",
+                    "runtime_execution_attempted": True,
                 }) + "\n", stderr="")
-            first = mod.consume(source, runtime, runner=runner, env={"PATH": "/bin"})
-            self.assertEqual(first["state"], "PREDICATE_PENDING")
-            self.assertFalse(first["runtime_execution_attempted"])
+
+            first = mod.consume(source, runtime, runner=runner, env={"PATH": "/bin", "GITHUB_TOKEN": "forbidden"})
+            self.assertEqual(first["state"], "ATTEMPT_RECORDED")
+            self.assertTrue(first["runtime_execution_attempted"])
+            self.assertFalse(first["terminal_hil_transition_observed"])
             self.assertTrue(first["retry_allowed"])
-            self.assertFalse(mod.previously_consumed(runtime, self.request(), mod.stable_hash(self.request())))
+            self.assertFalse(first["public_gateway_required_for_lease_open"])
+            self.assertEqual(first["route_materialization"]["state"], "NOT_REQUIRED_SAME_DEVICE")
             self.assertEqual(len(calls), 1)
 
     def test_nonterminal_worker_attempt_remains_retryable(self) -> None:
         with tempfile.TemporaryDirectory() as td:
             source, runtime = self.setup_runtime(Path(td))
             calls = []
+
             def runner(command, **kwargs):
                 calls.append(command)
-                if len(calls) % 2 == 1:
-                    return SimpleNamespace(returncode=0, stdout=json.dumps(self.route_ready()) + "\n", stderr="")
                 return SimpleNamespace(returncode=0, stdout=json.dumps({
                     "schema": "stegverse.resident-refresh-targeted-execution/v2",
                     "transition_id": "HIL_RECEIVER_LOCAL_READY_PUBLIC_RENDEZVOUS_REQUIRED",
                     "runtime_execution_attempted": True,
                 }) + "\n", stderr="")
-            first = mod.consume(source, runtime, runner=runner, env={"PATH": "/bin", "GITHUB_TOKEN": "forbidden"})
+
+            first = mod.consume(source, runtime, runner=runner, env={"PATH": "/bin"})
             self.assertEqual(first["state"], "ATTEMPT_RECORDED")
-            self.assertTrue(first["runtime_execution_attempted"])
-            self.assertFalse(first["terminal_hil_transition_observed"])
             self.assertTrue(first["retry_allowed"])
-            self.assertEqual(len(calls), 2)
             second = mod.consume(source, runtime, runner=runner, env={"PATH": "/bin"})
             self.assertEqual(second["state"], "ATTEMPT_RECORDED")
-            self.assertEqual(len(calls), 4)
+            self.assertEqual(len(calls), 2)
 
     def test_terminal_hil_transition_consumes_request(self) -> None:
         with tempfile.TemporaryDirectory() as td:
             source, runtime = self.setup_runtime(Path(td))
             calls = []
+
             def runner(command, **kwargs):
                 calls.append(command)
-                if len(calls) == 1:
-                    return SimpleNamespace(returncode=0, stdout=json.dumps(self.route_ready()) + "\n", stderr="")
                 return SimpleNamespace(returncode=0, stdout=json.dumps({
                     "schema": "stegverse.resident-refresh-targeted-execution/v2",
                     "transition_id": "HIL_PUBLIC_HTTPS_RENDEZVOUS",
                     "runtime_execution_attempted": True,
                 }) + "\n", stderr="")
+
             first = mod.consume(source, runtime, runner=runner, env={"PATH": "/bin"})
             self.assertEqual(first["state"], "COMPLETED")
             self.assertTrue(first["terminal_hil_transition_observed"])
             self.assertFalse(first["retry_allowed"])
             second = mod.consume(source, runtime, runner=runner, env={"PATH": "/bin"})
             self.assertEqual(second["state"], "ALREADY_CONSUMED")
-            self.assertEqual(len(calls), 2)
+            self.assertEqual(len(calls), 1)
 
     def test_missing_execution_result_fails_closed_but_not_terminal(self) -> None:
         with tempfile.TemporaryDirectory() as td:
             source, runtime = self.setup_runtime(Path(td))
             calls = []
+
             def runner(command, **kwargs):
                 calls.append(command)
-                if len(calls) == 1:
-                    return SimpleNamespace(returncode=0, stdout=json.dumps(self.route_ready()) + "\n", stderr="")
-                return SimpleNamespace(returncode=1, stdout="", stderr="blocked")
+                return SimpleNamespace(returncode=1, stdout="", stderr="runtime attempt failed")
+
             result = mod.consume(source, runtime, runner=runner, env={"PATH": "/bin"})
             self.assertEqual(result["state"], "FAIL_CLOSED")
             self.assertTrue(result["runtime_execution_attempted"])
             self.assertFalse(result["terminal_hil_transition_observed"])
             self.assertTrue(result["retry_allowed"])
+            self.assertEqual(len(calls), 1)
 
 
 if __name__ == "__main__":
