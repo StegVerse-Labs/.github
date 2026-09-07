@@ -1,0 +1,67 @@
+{
+  "schema": "stegverse.session-build-preflight-receipt/v1",
+  "preflight_id": "ECOSYSTEM-CHAT-G25-EXECUTOR-FENCE-PARITY-20260906",
+  "state": "PASS_FUNCTIONAL_GOVERNANCE_PARITY_REPAIR_ADMISSIBLE",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "fix/ecosystem-chat-g25-handoff-fence-parity-20260906",
+  "primary_task": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+  "goal": "Reconcile the existing independent Ecosystem Chat parent executor with the already-effective G25+ fresh-fence floor without erasing historical terminal G22 provenance or creating any new claim, fence, WorkerCoordinator, runtime, scheduler, heartbeat, credential, or authority path.",
+  "resolved_state": {
+    "historical_terminal_recovery_fence": 22,
+    "authorization_minimum_fencing_token_exclusive": 24,
+    "worker_registry_fragment_minimum_fencing_token_exclusive": 24,
+    "executable_handoff_minimum_fencing_token_exclusive_after_parent_parity_branch": 24,
+    "resident_request_minimum_fencing_token_exclusive": 24,
+    "next_current_parent_fence": "G25_OR_GREATER",
+    "source_of_failure": "scripts/run_independent_ecosystem_chat_parent.py still uses one constant value 22 both as historical G22 recovery provenance and as current fresh-fence floor",
+    "observed_validation_failure": "Heartbeat Worker run 34074044714: test_current_registration_and_authorization_are_claimable -> RuntimeError parent fresh-fence floor does not bind terminal G22 recovery"
+  },
+  "reuse": {
+    "existing_parent_executor": "scripts/run_independent_ecosystem_chat_parent.py",
+    "existing_authorization": "authorizations/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json",
+    "existing_worker_registry_fragment": "control/worker-registry.d/ecosystem-chat-sovereign-inference-parent-001.json",
+    "existing_handoff": "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json",
+    "existing_claim_acquisition_algorithm_reused": true,
+    "new_runtime": false,
+    "new_workercoordinator": false,
+    "new_scheduler": false,
+    "new_claim_or_fence_path": false,
+    "heartbeat_authority_added": false,
+    "credential_path_added": false
+  },
+  "admissible_change": {
+    "separate_historical_terminal_recovery_fence_from_current_minimum_fence": true,
+    "terminal_recovery_fence_value": 22,
+    "current_minimum_fence_exclusive": 24,
+    "claim_selection_rule": "max(current_minimum_fence_exclusive, max_projected_fence(registry)) + 1",
+    "minimum_next_fence": 25,
+    "historical_g22_authority_reuse_allowed": false,
+    "g23_or_g24_reuse_allowed": false
+  },
+  "collision_review": {
+    "same_owner_branch_reused": true,
+    "duplicate_parent_parity_pr_created": false,
+    "task_0009_org_allocator_lane_modified": false,
+    "master_records_lane_modified": false
+  },
+  "readme_impact": {
+    "material_function_change": false,
+    "readme_update_required": false,
+    "determination": "NO_ADDITIONAL_README_CHANGE_REQUIRED_EFFECTIVE_G25_SEMANTICS_ALREADY_DOCUMENTED",
+    "reason": "Authorization, registry, resident request, current handoff branch, and existing README already establish fresh G25+ semantics. This repair only removes a stale executor constant that incorrectly equated the current floor with historical terminal G22 recovery.",
+    "evidence_refs": [
+      "README.md#Ecosystem Chat same-device terminal execution surface",
+      "authorizations/SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json",
+      "control/worker-registry.d/ecosystem-chat-sovereign-inference-parent-001.json",
+      "control/resident-execution-request.d/ecosystem-chat-parent-001.json",
+      "handoffs/SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json"
+    ]
+  },
+  "runtime_truth": {
+    "fresh_g25_or_later_claim_observed": false,
+    "inference_execution_observed": false,
+    "master_records_same_execution_pass_observed": false,
+    "activation_observed": false
+  },
+  "authority_effect": "NONE_PREFLIGHT_ONLY"
+}
