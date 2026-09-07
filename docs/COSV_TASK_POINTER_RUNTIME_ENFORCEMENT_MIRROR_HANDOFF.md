@@ -1,89 +1,88 @@
 # COSV Task Pointer Runtime Enforcement Mirror Handoff
 
-Status: SOURCE_COMPACT_CONTINUATION_AND_POST_RESOLUTION_PICKUP_FIXED / EXECUTION_EVIDENCE_PENDING
+Status: SOURCE_COMPACT_CONTINUATION_POST_RESOLUTION_PICKUP_AND_LIFECYCLE_STATUS_SEMANTICS_FIXED / EXECUTION_EVIDENCE_PENDING
 Repository: `StegVerse-Labs/.github`
 Task ID: `COSV-TASK-POINTER-RUNTIME-ENFORCEMENT-001`
+COSV: `10100000100000`
 Root correlation / goal: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`
-Parent task: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`
 Canonical pointer policy: `data/task-coordination-policy.json`
-Pointer contract handoff: `docs/COSV_TASK_POINTER_COORDINATION_MIRROR_HANDOFF.md`
-Reusable construct handoff: `docs/REUSABLE_TASK_EPHEMERAL_CONSTRUCT_MIRROR_HANDOFF.md`
-Reusable registry: `data/reusable-task-registry.json#generation-2`
-Reusable construct contract: `data/reusable-task-ephemeral-construct-contract.json`
-COSV profile: `management/COSV_PROFILE_V1.json#task.v1`
-Machine preflight: `receipts/preflight/COSV-TASK-POINTER-RUNTIME-ENFORCEMENT-001.json`
+Canonical lifecycle contract: `data/task-lifecycle-status-contract.json`
+Continuation evaluator: `scripts/evaluate_goal_resolution_continuation.py`
+Compact continuation tests: `tests/test_goal_resolution_compact_pointer.py`
+Retired review tests: `tests/test_retired_task_history_review.py`
+Lifecycle status tests: `tests/test_task_lifecycle_statuses.py`
 Resident execution request: `control/resident-execution-request.d/cosv-task-pointer-runtime-enforcement-001.json`
 Resident consumer: `scripts/consume_cosv_task_pointer_runtime_enforcement_request.py`
 Resident dispatcher: `scripts/dispatch_resident_execution_requests.py#cosv_task_pointer_runtime_enforcement`
 Resident execution bridge: `scripts/refresh_and_execute_resident_task.py`
-Continuation evaluator: `scripts/evaluate_goal_resolution_continuation.py`
-Compact continuation tests: `tests/test_goal_resolution_compact_pointer.py`
 Expected consumption receipt: `receipts/sovereign-host/cosv-task-pointer-runtime-enforcement-request-consumption.latest.json`
 
-## Defects corrected 2026-09-07
+## Compact continuation invariant
 
-Two source defects prevented the intended compact continuation behavior.
+`Task ID + COSV` is sufficient to resolve canonical task state. The evaluator resolves the canonical record, handoffs, dependencies, adjacent work, evidence/provenance, and existing execution-request references, then derives the next admissible work where the lifecycle state permits continuation.
 
-First, the continuation evaluator required pre-expanded `returned_tasks` and an explicit `goal_id`. That contradicted the compact-pointer contract. The evaluator now accepts only:
+A status-only response is not valid continuation for unresolved ACTIVE work. If ACTIVE work has no resolvable next action, evaluation returns `CONTINUATION_RESOLUTION_INCOMPLETE`.
 
-```text
-<TASK_ID>
-<COSV_TASK_VECTOR>
-```
+## Canonical lifecycle states
 
-and resolves the exact Task ID/vector binding, canonical task record, root correlation/goal, applicable `*_MIRROR_HANDOFF.md` references, dependencies, adjacent tasks, evidence references, source-vector provenance, and registry provenance.
+The canonical lifecycle set is:
 
-Second, after successful resolution the evaluator returned `continue_machine_work=true` but did not emit a machine-consumable continuation request. That allowed a receiving session/process to stop at status reporting even though unresolved work remained.
+- `ACTIVE` — work remains; normal continuation is allowed.
+- `COMPLETED` — primary task work is complete; only explicit closure, propagation, release, or retirement verification work may continue.
+- `RETIRED` — terminal, closed, non-executable, non-resumable, provenance/history only.
+- `SUPERSEDED` — terminal under the old identity; redirect-only to an explicitly linked successor Task ID/COSV.
+- `INVALID` — canonical state/identity is inconsistent or unsupported; fail closed until repaired.
 
-The evaluator now derives the next admissible work from canonical task state. It prefers an explicit canonical `next_admissible_work`/next-transition field when present and otherwise reuses an existing canonical resident execution request referenced by the task. It emits `stegverse.machine-continuation-request/v1` with `automatic_pickup_required=true`, `human_reentry_required=false`, and `status_only_response_is_completion=false`.
+Unknown lifecycle labels normalize to `INVALID`; they do not silently become ACTIVE.
 
-If an active task resolves but no next admissible work can be resolved, the evaluator now returns `CONTINUATION_RESOLUTION_INCOMPLETE` and does not claim successful autonomous continuation. A status-only result is explicitly invalid continuation state.
+## RETIRED invariant
 
-Tests cover exact compact resolution, Task/COSV mismatch, missing task identity, execution-request derivation, and machine continuation-request emission.
+`RETIRED` is terminal. It never emits a continuation request and never restores execution under that Task ID.
+
+Resurrection of a retired task means **history review only**. The history-review projection may expose the canonical record, COSV projection, handoffs, evidence, receipts, and reconstruction material needed to make the history reviewable. It cannot restore execution, continuation, claim/fence use, transition progression, or prior consequence authority.
+
+If historical review discovers new work, the system creates a new Task ID linked to the retired task by provenance. The retired task remains retired.
+
+## COMPLETED invariant
+
+`COMPLETED` is not ordinary implementation work. It may continue only for explicit closure kinds:
+
+- `CLOSURE_VERIFICATION`
+- `PROPAGATION_VERIFICATION`
+- `RELEASE_VERIFICATION`
+- `RETIREMENT_VERIFICATION`
+- `RETIRE_TASK`
+
+When explicit closure predicates are satisfied, the evaluator returns `COMPLETED_READY_TO_RETIRE`; feature implementation under a COMPLETED identity is rejected as unresolved closure semantics rather than resumed as normal work.
+
+Recommended retirement predicates are implementation complete, validation complete, required evidence reconciled, required propagation complete, required release/tag complete, and no unresolved task-owned work.
+
+## SUPERSEDED invariant
+
+`SUPERSEDED` never resumes the source Task ID. It emits a redirect projection only. A successor Task ID is required; successor COSV should be included whenever available. Missing successor identity produces `SUPERSEDED_SUCCESSOR_UNRESOLVED`.
+
+## Stale handoff invariant
+
+Canonical Task Registry lifecycle state wins over handoff projections. A stale handoff cannot reactivate a `RETIRED`, `SUPERSEDED`, or `INVALID` task. Stale handoffs are reconciliation/provenance inputs only.
 
 ## Governance / authority semantics
 
-A runtime is an execution substrate/surface, not a boundary.
-
-Authority is a consequence of governance. Governance determines the admissible action, scope, predicates, and conditions from which authority for that consequence follows. Possession of a credential, claim, runtime, model capability, or task identity does not independently create authority.
-
-Actual boundaries are real limits, interfaces, containment edges, trust separations, consequence limits, or explicit progression conditions. Governance predicates may require claim/fence state, transition admission, credential validity, reconstruction state, human-only consent, or other canonically defined conditions before a consequence may proceed.
-
-## Purpose
-
-A continuation payload containing only Task ID + COSV task vector must be enough for the system to reconstruct current canonical work and continue from the first unresolved admissible action without requiring the user to replay task prose, handoff text, goal identifiers, or prior session state.
+A runtime is an execution substrate/surface, not a boundary. Authority is a consequence of governance: governance determines the admissible action, scope, predicates, and conditions from which authority for a consequence follows. Possession of a credential, claim, runtime, model capability, or task identity does not independently create authority.
 
 ## Implemented source behavior
 
-The source path now includes:
+The source now includes compact pointer resolution, canonical lifecycle classification, next-work derivation, continuation-request emission, status-only rejection, COMPLETED closure-only behavior, RETIRED terminal/review-only behavior, SUPERSEDED redirect-only behavior, INVALID fail-closed behavior, and stale-handoff suppression semantics.
 
-1. compact Task ID + COSV pointer validation;
-2. canonical task and handoff resolution;
-3. dependency, adjacency, evidence, and provenance resolution;
-4. existing resident execution-request discovery;
-5. next-admissible-work derivation;
-6. machine continuation-request emission;
-7. explicit prohibition on treating a status-only response as successful continuation;
-8. fail-closed incomplete-resolution state when an active task has no resolvable next work;
-9. resident request/consumer/dispatcher integration;
-10. reusable-task identity/construct semantics and bounded execution path.
-
-No second task registry, queue, scheduler, WorkerCoordinator, heartbeat, credential plane, dispatcher, or permanent runner plane was created.
+No centralized executable queue was introduced.
 
 ## Current COSV state
 
 ```text
 profile: task.v1
 vector: 10100000100000
-symbol_order: LRUIVGOCMTBEAP
 lifecycle: UNCLAIMED
 archive_ready: false
 unassigned_work: 1
-chat_owned_implementation: 0
-chat_owned_validation: 0
-chat_owned_integration: 0
-chat_owned_observation: 0
-chat_owned_credentials: 0
 canonical_owner_installed: true
 thread_required: false
 blocker_count: 0
