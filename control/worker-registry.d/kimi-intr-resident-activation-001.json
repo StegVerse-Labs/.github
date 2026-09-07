@@ -1,0 +1,69 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "KIMI-INTR-RESIDENT-ACTIVATION-001",
+  "tasks": [{
+    "archive_eligible": false,
+    "archive_reason_codes": ["AUTHENTIC_KIMI_INTR_RESIDENT_ROUND_TRIP_NOT_YET_OBSERVED"],
+    "authorized_policy_version": "kimi-intr-resident-activation-v1",
+    "block_ref": null,
+    "claim_id": null,
+    "cost_basis_ref": null,
+    "evidence_refs": ["docs/KIMI_INTR_RESIDENT_ACTIVATION_MIRROR_HANDOFF.md"],
+    "executor_binding": "AUTHORIZED",
+    "external_entity_job_ref": "StegVerse-Labs/.github#1120",
+    "goal_id": "KIMI-INTR-RESIDENT-ACTIVATION-001",
+    "handoff_ref": "handoffs/KIMI-INTR-RESIDENT-ACTIVATION-001.json",
+    "heartbeat_timing": null,
+    "heartbeat_dependency": false,
+    "last_checkpoint_ref": "docs/KIMI_INTR_RESIDENT_ACTIVATION_MIRROR_HANDOFF.md",
+    "lease": null,
+    "state": "HANDOFF_READY",
+    "task_id": "KIMI-INTR-RESIDENT-ACTIVATION-001",
+    "worker_id": null,
+    "worker_instance_id": null,
+    "admission": {
+      "authority_source": "StegVerse-Labs/.github#1120",
+      "authority_domain": "INDEPENDENT_TASK_CONTROL",
+      "heartbeat_reference_only": true,
+      "heartbeat_grants_execution_authority": false,
+      "carrier_trigger_required": false,
+      "fresh_fence_required": true,
+      "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
+    },
+    "admissible_existence": {
+      "capability_id": "stegverse:capability:kimi-intr-resident-activation:v1",
+      "capability_version": "1.0.0",
+      "phase": "ADMISSIBLE",
+      "standing_evidence_refs": ["docs/KIMI_INTR_RESIDENT_ACTIVATION_MIRROR_HANDOFF.md"],
+      "admissibility_evidence_refs": [
+        "handoffs/KIMI-INTR-RESIDENT-ACTIVATION-001.json",
+        "workers/kimi_intr_resident_activation_worker.py",
+        "control/worker-registry.d/kimi-intr-resident-activation-001.json",
+        "control/process-worker-adapters.d/kimi-intr-resident-activation-001.json",
+        "control/resident-execution-request.d/kimi-intr-resident-activation-001.json"
+      ],
+      "integration_evidence_refs": [],
+      "activation_proof_ref": null,
+      "blockers": ["AUTHENTIC_KIMI_INTR_RESIDENT_ROUND_TRIP_NOT_YET_OBSERVED"],
+      "continuation_owner": "kimi-intr-resident-activation-worker + existing sovereign WorkerCoordinator",
+      "credential_authority": "TV/TVC",
+      "github_token_runtime_authority": false,
+      "temporal_class": "current",
+      "task_relationship": "integrates_capability",
+      "target_phase": "ACTIVATED"
+    }
+  }],
+  "workers": [{
+    "adapter_ref": "process:kimi-intr-resident-activation-v1",
+    "authority_source": "handoffs/KIMI-INTR-RESIDENT-ACTIVATION-001.json#authority",
+    "capabilities": ["kimi_intr_resident_activation"],
+    "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+    "executor_type": "repository_worker",
+    "last_seen_at": null,
+    "status": "AVAILABLE",
+    "worker_id": "kimi-intr-resident-activation-worker"
+  }],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false
+}
