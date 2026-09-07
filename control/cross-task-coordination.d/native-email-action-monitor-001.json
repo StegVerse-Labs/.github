@@ -1,0 +1,171 @@
+{
+  "schema": "stegverse.cross-task-coordination-fragment/v1",
+  "fragment_id": "NATIVE-EMAIL-ACTION-MONITOR-001",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "predicates": [
+    {
+      "predicate_id": "PRED-NATIVE-EMAIL-REQUEST-STAGED-001",
+      "semantic_predicate_id": "resident_request_staged",
+      "subject_binding": {
+        "task_id": "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001",
+        "request_id": "RESIDENT-EXEC-NATIVE-EMAIL-ACTION-MONITOR-001"
+      },
+      "state": "SATISFIED",
+      "description": "The exact standing native-email resident request exists in canonical source and preserves the HB/oscillator non-authority, TV/TVC credential, no-second-machine, and retryable standing-request boundaries.",
+      "authoritative_producer": "StegVerse-Labs/.github source/control plane",
+      "required_schema": "stegverse.resident-execution-request/v1",
+      "required_scope": "native email resident request staging",
+      "required_execution_instance": "RESIDENT-EXEC-NATIVE-EMAIL-ACTION-MONITOR-001",
+      "max_age_seconds": null,
+      "required_fields": ["task_id", "request_id", "state", "credential_authority", "standing_request", "heartbeat_grants_execution_authority", "oscillator_grants_execution_authority", "authority_effect"],
+      "required_field_values": {
+        "task_id": "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001",
+        "request_id": "RESIDENT-EXEC-NATIVE-EMAIL-ACTION-MONITOR-001",
+        "state": "REQUESTED",
+        "credential_authority": "TV/TVC",
+        "standing_request": true,
+        "heartbeat_grants_execution_authority": false,
+        "oscillator_grants_execution_authority": false,
+        "authority_effect": "NONE_REQUEST_ONLY"
+      },
+      "expected_output_ref": "control/resident-execution-request.d/native-email-action-monitor-001.json",
+      "consumers": ["STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001"],
+      "canonical_source_refs": [
+        "docs/NATIVE_EMAIL_ACTION_MONITOR_MIRROR_HANDOFF.md",
+        "control/resident-execution-request.d/native-email-action-monitor-001.json",
+        "scripts/consume_native_email_action_monitor_request.py"
+      ]
+    },
+    {
+      "predicate_id": "PRED-RESIDENT-REQUEST-CONSUMED-NATIVE-EMAIL-ACTION-MONITOR-001",
+      "semantic_predicate_id": "resident_request_consumed",
+      "subject_binding": {
+        "task_id": "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001",
+        "request_id": "RESIDENT-EXEC-NATIVE-EMAIL-ACTION-MONITOR-001"
+      },
+      "state": "UNKNOWN",
+      "description": "The exact standing native-email request was authentically attempted through the existing sovereign resident dispatcher and reached a qualifying completed mailbox-maintenance execution.",
+      "authoritative_producer": "existing native email resident request consumer",
+      "required_schema": "stegverse.native-email-action-monitor-request-consumption/v1",
+      "required_scope": "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001 resident request consumption",
+      "required_execution_instance": "RESIDENT-EXEC-NATIVE-EMAIL-ACTION-MONITOR-001",
+      "max_age_seconds": null,
+      "required_fields": ["request_id", "task_id", "state", "standing_request", "provider_route_ready", "runtime_execution_attempted", "credential_authority", "credential_material_exported", "github_token_runtime_authority", "heartbeat_grants_execution_authority", "oscillator_grants_execution_authority", "hb_continuation_is_trigger_only"],
+      "required_field_values": {
+        "request_id": "RESIDENT-EXEC-NATIVE-EMAIL-ACTION-MONITOR-001",
+        "task_id": "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001",
+        "state": "COMPLETED",
+        "standing_request": true,
+        "provider_route_ready": true,
+        "runtime_execution_attempted": true,
+        "credential_authority": "TV/TVC",
+        "credential_material_exported": false,
+        "github_token_runtime_authority": "NONE",
+        "heartbeat_grants_execution_authority": false,
+        "oscillator_grants_execution_authority": false,
+        "hb_continuation_is_trigger_only": true
+      },
+      "expected_output_ref": "receipts/sovereign-host/native-email-action-monitor-request-consumption.latest.json",
+      "consumers": ["STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001"],
+      "canonical_source_refs": [
+        "control/resident-execution-request.d/native-email-action-monitor-001.json",
+        "scripts/consume_native_email_action_monitor_request.py",
+        "scripts/dispatch_resident_execution_requests.py"
+      ]
+    },
+    {
+      "predicate_id": "PRED-NATIVE-EMAIL-MONITOR-RECEIPT-001",
+      "semantic_predicate_id": "native_email_monitor_receipt_observed",
+      "subject_binding": {
+        "task_id": "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001",
+        "request_id": "RESIDENT-EXEC-NATIVE-EMAIL-ACTION-MONITOR-001"
+      },
+      "state": "UNKNOWN",
+      "description": "The native monitor emitted a qualifying PASS receipt after a bounded exact-ID Gmail maintenance pass without credential export, unrelated inbox selection, or authority transfer.",
+      "authoritative_producer": "scripts/run_native_email_action_monitor.py through existing StegOps/TVC provider route",
+      "required_schema": "stegverse.native-email-action-monitor-receipt/v1",
+      "required_scope": "bounded native email mailbox-maintenance pass",
+      "required_execution_instance": "RESIDENT-EXEC-NATIVE-EMAIL-ACTION-MONITOR-001",
+      "max_age_seconds": null,
+      "required_fields": ["state", "bounded_batch_limit", "credential_authority", "credential_material_exported", "github_token_runtime_authority", "heartbeat_grants_execution_authority", "unrelated_inbox_mail_selected_for_archive", "incident_proposals_require_canonical_task_ingress", "authority_effect"],
+      "required_field_values": {
+        "state": "PASS",
+        "bounded_batch_limit": 100,
+        "credential_authority": "TV/TVC",
+        "credential_material_exported": false,
+        "github_token_runtime_authority": "NONE",
+        "heartbeat_grants_execution_authority": false,
+        "unrelated_inbox_mail_selected_for_archive": false,
+        "incident_proposals_require_canonical_task_ingress": true,
+        "authority_effect": "NONE_MAILBOX_MAINTENANCE_AND_INCIDENT_PROPOSAL_ONLY"
+      },
+      "expected_output_ref": "receipts/sovereign-host/native-email-action-monitor.latest.json",
+      "consumers": ["STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001", "STEGVERSE-CANONICAL-WORK-COORDINATION-001"],
+      "canonical_source_refs": [
+        "scripts/run_native_email_action_monitor.py",
+        "scripts/normalize_github_failure_email_events.py",
+        "StegVerse-Labs/StegOps-Orchestrator:scripts/native_email_tvc_broker.py",
+        "StegVerse-Labs/TVC:scripts/tvc_mail_provider_operation.py"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "evidence_id": "EVID-NATIVE-EMAIL-REQUEST-STAGED-001",
+      "predicate_id": "PRED-NATIVE-EMAIL-REQUEST-STAGED-001",
+      "subject_binding": {
+        "task_id": "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001",
+        "request_id": "RESIDENT-EXEC-NATIVE-EMAIL-ACTION-MONITOR-001"
+      },
+      "producer": "StegVerse-Labs/.github",
+      "ref": "control/resident-execution-request.d/native-email-action-monitor-001.json",
+      "schema": "stegverse.resident-execution-request/v1",
+      "scope": "native email standing resident request staging",
+      "execution_instance": "SOURCE_REQUEST_STAGING_ONLY",
+      "observed_at": "2026-09-06",
+      "fields": {
+        "task_id": "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001",
+        "request_id": "RESIDENT-EXEC-NATIVE-EMAIL-ACTION-MONITOR-001",
+        "state": "REQUESTED",
+        "credential_authority": "TV/TVC",
+        "standing_request": true,
+        "heartbeat_grants_execution_authority": false,
+        "oscillator_grants_execution_authority": false,
+        "authority_effect": "NONE_REQUEST_ONLY"
+      },
+      "authority_effect": "EVIDENCE_ONLY"
+    }
+  ],
+  "gaps": [
+    {
+      "predicate_id": "PRED-RESIDENT-REQUEST-CONSUMED-NATIVE-EMAIL-ACTION-MONITOR-001",
+      "subject_binding": {"task_id": "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001", "request_id": "RESIDENT-EXEC-NATIVE-EMAIL-ACTION-MONITOR-001"},
+      "existing_evidence_refs": ["StegVerse-Labs/.github#1119@a5d69cdd0c0c039a6ec48c5c7fda800384089a16", "StegVerse-Labs/TVC#341@c3728805ddfd7fed505ee04bce9478cd626a3997", "StegVerse-Labs/TVC#342@e51ca9b5d39d891c8df087b0fa430eea98cdfadc"],
+      "rejected_because": ["SOURCE_MERGE_AND_CI_ARE_NOT_RESIDENT_CONSUMPTION", "NO_QUALIFYING_AUTHENTIC_REQUEST_CONSUMPTION_RECEIPT_OBSERVED"],
+      "missing_observation": "Authentic completed consumption of RESIDENT-EXEC-NATIVE-EMAIL-ACTION-MONITOR-001 on the existing resident path.",
+      "required_producer": "existing native email resident request consumer",
+      "required_output_ref": "receipts/sovereign-host/native-email-action-monitor-request-consumption.latest.json",
+      "required_schema": "stegverse.native-email-action-monitor-request-consumption/v1",
+      "required_fields": ["request_id", "task_id", "state", "provider_route_ready", "runtime_execution_attempted"],
+      "required_field_values": {"request_id": "RESIDENT-EXEC-NATIVE-EMAIL-ACTION-MONITOR-001", "task_id": "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001", "state": "COMPLETED", "provider_route_ready": true, "runtime_execution_attempted": true},
+      "required_freshness": null,
+      "collision_refs": ["SHWP-SHWP-DURABLE-RUNTIME-ACTIVATION-G18:fence-18"],
+      "action_without_collision": "Allow the existing TVC current-source/self-heal and HB resident dispatcher path to revisit the standing native-email request. Do not create another monitor, scheduler, heartbeat, oscillator, WorkerCoordinator, resident executor, provider broker, or credential path; do not mutate the unrelated G18 claim/fence."
+    },
+    {
+      "predicate_id": "PRED-NATIVE-EMAIL-MONITOR-RECEIPT-001",
+      "subject_binding": {"task_id": "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001", "request_id": "RESIDENT-EXEC-NATIVE-EMAIL-ACTION-MONITOR-001"},
+      "existing_evidence_refs": ["docs/NATIVE_EMAIL_ACTION_MONITOR_MIRROR_HANDOFF.md", "StegVerse-Labs/TVC:docs/NATIVE_EMAIL_GMAIL_PROVIDER_MIRROR_HANDOFF.md"],
+      "rejected_because": ["NO_QUALIFYING_AUTHENTIC_NATIVE_EMAIL_MONITOR_RECEIPT_OBSERVED", "EMAIL_OR_GITHUB_NOTIFICATION_CONTENT_IS_NOT_RUNTIME_EVIDENCE"],
+      "missing_observation": "A retained stegverse.native-email-action-monitor-receipt/v1 with state PASS from the existing resident/provider path.",
+      "required_producer": "scripts/run_native_email_action_monitor.py through existing StegOps/TVC provider route",
+      "required_output_ref": "receipts/sovereign-host/native-email-action-monitor.latest.json",
+      "required_schema": "stegverse.native-email-action-monitor-receipt/v1",
+      "required_fields": ["state", "credential_authority", "credential_material_exported", "unrelated_inbox_mail_selected_for_archive"],
+      "required_field_values": {"state": "PASS", "credential_authority": "TV/TVC", "credential_material_exported": false, "unrelated_inbox_mail_selected_for_archive": false},
+      "required_freshness": null,
+      "collision_refs": [],
+      "action_without_collision": "Use the existing TV/TVC Gmail owner-session/provider operation and existing resident monitor consumer; preserve fail-closed retry behavior if the owner session or current TVC runtime source is absent."
+    }
+  ]
+}
