@@ -114,6 +114,7 @@ CONSUMERS = (
     ("runtime_profile_map_reconciliation", "control/resident-execution-request.d/consume-runtime-profile-map-reconciliation.py"),
     ("runtime_profile_map_transition_readiness", "control/resident-execution-request.d/consume-runtime-profile-map-transition-readiness.py"),
     ("runtime_profile_map_governance_review", "control/resident-execution-request.d/consume-runtime-profile-map-governance-review.py"),
+    ("cosv_task_pointer_runtime_enforcement", "scripts/consume_cosv_task_pointer_runtime_enforcement_request.py"),
 )
 
 
