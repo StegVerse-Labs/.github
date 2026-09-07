@@ -7,7 +7,7 @@ Goal: `GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001`
 Task ID: `GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001`
 COSV ID: `10100000100000`
 COSV registration: `REGISTERED_EMITTED_UNCLAIMED`
-Status: `RESIDENT ACTIVATION REQUESTED / COMPLETE MANIFOLD LINEAGE REGISTERED / WORKERCOORDINATOR CLAIM PENDING / AUTHENTIC ACTIVATION EVIDENCE PENDING`
+Status: `RESIDENT ACTIVATION REQUESTED / MANIFOLD LINEAGE EXPANDED WITH GADI-001 / WORKERCOORDINATOR CLAIM PENDING / AUTHENTIC ACTIVATION EVIDENCE PENDING`
 
 ## Source of truth
 
@@ -41,9 +41,9 @@ A subordinate task that is declared part of the manifold may not be silently omi
 
 This goal does not authorize a second heartbeat, worker registry, StegGate evaluator, credential system, claim/fence path, scheduler, runtime-truth source, or non-user wallet signing/broadcast.
 
-## Corrected manifold lineage — 2026-09-07
+## Expanded manifold lineage — 2026-09-07
 
-The original activation registration incorrectly represented only the five formalism lanes. The predecessor inventory proves a broader converged workstream. Canonical lineage is now registered at:
+Canonical lineage is registered at:
 
 `control/manifold-lineage.d/governed-multilane-manifold-activation-001.json`
 
@@ -56,6 +56,8 @@ The parent now carries these dispositions:
 - `SHWP-MANIFOLD-GOVERNANCE-MAPPING-001`
 - `SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001`
 - `STEGFIN-CONTINUITY-CARRIER-007` after its TVC runtime prerequisite qualifies
+- `GADI-001` through its canonical repository owners and existing authority paths
+- `GADI-STEGCORE-001` as the first actionable GADI downstream execution lane
 
 ### REUSE COMPLETE / do not duplicate execution
 - `FORMALISM-MANIFOLD-ORCHESTRATION-001` implementation state; execute its incomplete children instead
@@ -68,8 +70,9 @@ The parent now carries these dispositions:
 ### EXCLUDED FROM AUTOMATIC SUBORDINATE EXECUTION BY AUTHORITY BOUNDARY
 - wallet signing/broadcast: `USER_ONLY`
 - `SHWP-DURABLE-RUNTIME-ACTIVATION`: shared runtime infrastructure dependency, not a child of this manifold
+- unauthorized compromise of third-party systems: prohibited; GADI may use only pre-authorized defensive interfaces or controlled simulation/test surfaces
 
-`STEGFIN-CONTINUITY-CARRIER-007` is already registered with the canonical WorkerCoordinator and retains its existing machine worker and collision/fence rules. The parent may cause it to be revisited through that existing path only after TVC evidence qualifies; it may not manually execute or bypass its authority boundary.
+`GADI-001` is now part of the manifold completion rule. Its incomplete canonical children may not be silently omitted merely because GADI spans multiple repositories. The first declared child is `GADI-STEGCORE-001` (`StegVerse-Labs/StegCore#190`), whose claim/fence remains subject to the existing WorkerCoordinator path.
 
 ## Activation request
 
@@ -77,7 +80,7 @@ Standing resident request:
 
 `control/resident-execution-request.d/governed-multilane-manifold-activation-001.json`
 
-The request is deliberately non-authorizing (`authority_effect: NONE_REQUEST_ONLY`). It now binds the umbrella task/COSV to the complete manifold lineage rather than only the initial five lanes.
+The request is deliberately non-authorizing (`authority_effect: NONE_REQUEST_ONLY`) and binds the umbrella task/COSV to the canonical manifold lineage by reference. Because the lineage is authoritative and has now been expanded, resident traversal must include GADI-001 and its declared child lanes.
 
 Required resident behavior:
 1. load and validate the full manifold lineage;
@@ -85,20 +88,23 @@ Required resident behavior:
 3. reuse completed predecessor evidence without duplicate execution;
 4. run canonical cross-task coordination/collision preflight;
 5. claim/fence and execute only incomplete WorkerCoordinator-owned subordinate work;
-6. execute the four prerequisite formalism lanes and require authentic subject-bound receipts;
+6. execute the formalism prerequisite lanes and require authentic subject-bound receipts;
 7. execute formalism reconciliation only after prerequisite receipts qualify;
 8. observe TVC broker/runtime prerequisites under their existing TV/TVC-owned observer without competing claims;
 9. execute `STEGFIN-CONTINUITY-CARRIER-007` only after its TVC prerequisite qualifies;
-10. preserve provenance, disagreement, divergence, uncertainty, and unresolved branches;
-11. verify StegCore consumption under existing governance authority;
-12. declare the umbrella task `ACTIVATED` only after every lineage node has a qualifying execute/reuse/external-owner disposition and all activation predicates are durably machine-evidenced.
+10. traverse `GADI-001`, reuse its completed StegOS contract-layer source state, and execute its incomplete canonical children through their existing repository owners;
+11. route `GADI-STEGCORE-001` through canonical claim/fence rather than leaving it as an unassigned prose successor;
+12. preserve GADI authority boundaries: no autonomous authority minting, no unauthorized compromise, no alternate credential/evaluator/runtime path;
+13. preserve provenance, disagreement, divergence, uncertainty, and unresolved branches;
+14. verify StegCore consumption under existing governance authority;
+15. declare the umbrella task `ACTIVATED` only after every lineage node has a qualifying execute/reuse/external-owner disposition and all activation predicates are durably machine-evidenced.
 
 The activation request and lineage records themselves are not runtime activation evidence.
 
 ## Activation criteria
 
 Activation requires all of the following:
-1. the full declared manifold lineage is traversed;
+1. the full declared manifold lineage is traversed, including GADI-001;
 2. completed predecessor work is reused without unnecessary re-execution;
 3. incomplete canonical subordinate tasks execute or fail closed through their existing owners;
 4. external authority-owned prerequisites are observed without competing claims;
@@ -110,16 +116,17 @@ Activation requires all of the following:
 10. reconciliation consumes qualifying lane receipts and produces a deterministic result;
 11. reconciliation preserves material disagreement, divergence, uncertainty, and unresolved branches;
 12. downstream consumers can identify which lane/evidence/authority produced each reconciled fact;
-13. no duplicate runtime, heartbeat, evaluator, credential, or wallet-signing authority is introduced;
-14. activation is evidenced by durable machine-readable receipts/state, not chat summaries, request creation, lineage creation, or source existence.
+13. GADI execution remains restricted to admitted, pre-authorized defensive capabilities or controlled simulation surfaces;
+14. no duplicate runtime, heartbeat, evaluator, credential, or wallet-signing authority is introduced;
+15. activation is evidenced by durable machine-readable receipts/state, not chat summaries, request creation, lineage creation, issue creation, or source existence.
 
 ## Current standing
 
 - canonical task registration: COMPLETE;
 - COSV ID: `10100000100000`;
 - COSV vector emission: COMPLETE;
-- complete manifold lineage registration: COMPLETE;
-- resident activation request: REQUESTED and lineage-corrected;
+- manifold lineage registration: EXPANDED WITH GADI-001 AND GADI-STEGCORE-001;
+- resident activation request: REQUESTED and lineage-referenced;
 - COSV lifecycle: `UNCLAIMED` pending resident consumption;
 - canonical owner installed: YES;
 - activation evidence complete: NO;
@@ -133,11 +140,13 @@ Known source/control-plane state:
 - `SOVEREIGN-LOCAL-MODEL-001`: COMPLETE_RELEASED and reusable;
 - `STEGFIN-CONTINUITY-CARRIER-007`: machine-owned continuation registered; TVC primary runtime prerequisite pending in predecessor inventory;
 - `TVC-PROVIDER-OPERATION-BROKER-003` / `TVC-CAPABILITY-RUNTIME-002`: existing TV/TVC-owned runtime observation path; do not compete;
-- resident execution receipts/reconciliation for this activation: not yet proven current.
+- `GADI-001`: StegOS contract layer implemented; downstream integration incomplete;
+- `GADI-STEGCORE-001`: actionable StegCore successor issue exists; WorkerCoordinator claim/fence and execution evidence pending;
+- resident execution receipts/reconciliation for the expanded activation: not yet proven current.
 
 ## Completion boundary
 
-`GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001` reaches activation only when the complete declared lineage has a qualifying terminal/reuse/external-owner disposition and governed multi-lane execution plus reconciliation are evidenced under the existing authority partition.
+`GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001` reaches activation only when the complete declared lineage, now including GADI-001, has a qualifying terminal/reuse/external-owner disposition and governed multi-lane execution plus reconciliation are evidenced under the existing authority partition.
 
 A future tag/release may be evaluated only after activation and owning-repository release criteria are satisfied. After an actual release/tag, create/execute propagation verification for:
 - `StegVerse-Labs/Site`
@@ -148,22 +157,25 @@ A future tag/release may be evaluated only after activation and owning-repositor
 ## Remaining files/modules or evidence
 
 Destination `StegVerse-Labs/.github`:
-- resident consumption/traversal evidence for the corrected activation request;
+- resident consumption/traversal evidence for the expanded activation lineage;
+- WorkerCoordinator claim/fence evidence for GADI-001 child work and other machine-owned subordinate tasks;
 - current qualifying formalism lane execution receipts;
 - current reconciliation receipt/state;
-- WorkerCoordinator claim/fence evidence for machine-owned subordinate tasks;
 - qualifying `STEGFIN-CONTINUITY-CARRIER-007` state after TVC predicate;
 - current canonical coordination projection after claim resolution.
 
-Destination `StegVerse-Labs/TVC`:
-- authoritative current evidence for `TVC-PROVIDER-OPERATION-BROKER-003` / `TVC-CAPABILITY-RUNTIME-002`; no new credential path.
-
 Destination `StegVerse-Labs/StegCore`:
+- `GADI-STEGCORE-001` repo-local mirror handoff;
+- threat-state correlation and defensive intervention planning implementation;
 - current runtime/manifold consumption evidence consistent with `MANIFOLD_GOVERNANCE_MIRROR_HANDOFF.md`.
+
+Destination `StegVerse-Labs/TVC`:
+- authoritative current evidence for `TVC-PROVIDER-OPERATION-BROKER-003` / `TVC-CAPABILITY-RUNTIME-002`;
+- GADI capability authority bindings when reached through the GADI workstream; no new credential path.
 
 Destination applicable `Admissible-Existence/*` repositories:
 - no new mathematical authority files unless a genuine source-formalism delta is discovered.
 
 ## Archive rule
 
-The task identity, complete lineage, and corrected activation request are durably represented. This thread is not archive-ready until resident traversal/ownership and session-unique continuation are durably evidenced. The goal itself is not complete until authentic full-manifold activation and reconciliation evidence exists.
+The expanded lineage is durably represented, but this thread is not archive-ready merely because GADI now appears in the manifold. Archive readiness still requires resident traversal/ownership and an actionable canonical continuation path. The manifold goal itself is not complete until authentic full-manifold activation and reconciliation evidence exists.
