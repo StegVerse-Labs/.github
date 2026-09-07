@@ -9,7 +9,9 @@ Ownership is intentionally split:
   the live Canonical Task Registry and task-vector index for ordinary Canonical Work;
 - WorkerCoordinator and Interlock/InTr retain execution/transition authority.
 
-This module MUST NOT invent corrective task identity itself.
+Archived replay is transactional: a replay page is acknowledged only after StegHealth
+has accepted its mapped failures and any StegHealth-created canonical candidates have
+been imported successfully. This module MUST NOT invent corrective task identity itself.
 """
 from __future__ import annotations
 
@@ -24,6 +26,7 @@ from typing import Any, Mapping
 
 TERMINAL_STATES = {"CLOSED", "SUPERSEDED"}
 STEGHEALTH_OWNER = "StegVerse-Labs/StegHealth"
+REPLAY_ACK_SCHEMA = "stegverse.native-email-archived-failure-replay-ack/v1"
 
 
 def require(ok: bool, reason: str) -> None:
@@ -119,6 +122,17 @@ def build_failure_map(monitor: dict[str, Any], registry: dict[str, Any], vector_
         "archive_may_not_discard_unowned_failure": True,
         "authority_effect": "NONE_FAILURE_MAPPING_ONLY",
     }
+
+
+def replay_ack_target(monitor: dict[str, Any]) -> tuple[Path, str] | None:
+    replay = monitor.get("archived_replay")
+    if not isinstance(replay, dict) or replay.get("ack_required") is not True:
+        return None
+    ack_ref = replay.get("ack_ref")
+    batch_hash = replay.get("batch_hash")
+    require(isinstance(ack_ref, str) and bool(ack_ref), "archived replay ack_ref required")
+    require(isinstance(batch_hash, str) and len(batch_hash) == 64, "archived replay batch_hash invalid")
+    return Path(ack_ref), batch_hash
 
 
 def repo_roots(values: Mapping[str, str]) -> list[Path]:
@@ -236,6 +250,7 @@ def main() -> int:
     monitor = load(args.monitor_receipt)
     registry = load(args.registry)
     vector_index = load(args.vector_index)
+    ack_target = replay_ack_target(monitor)
     failure_map = build_failure_map(monitor, registry, vector_index, str(args.monitor_receipt))
     map_path = args.output.with_name(args.output.stem + ".failure-map.json")
     write_json(map_path, failure_map)
@@ -250,6 +265,7 @@ def main() -> int:
             "retry_required": True,
             "task_handoffs": [],
             "registry_changed": False,
+            "archived_replay_page_acknowledged": False,
             "authority_effect": "NONE_FAILURE_MAPPING_ONLY",
         }
         write_json(args.output, result)
@@ -274,6 +290,7 @@ def main() -> int:
             "returncode": completed.returncode,
             "task_handoffs": [],
             "registry_changed": False,
+            "archived_replay_page_acknowledged": False,
             "authority_effect": "NONE_FAILURE_MAPPING_ONLY",
         }
         write_json(args.output, result)
@@ -304,6 +321,25 @@ def main() -> int:
             "interlock_intr_transition_still_required": True,
         })
 
+    ack_written = False
+    ack_ref = None
+    if ack_target is not None:
+        ack_path, digest = ack_target
+        write_json(ack_path, {
+            "schema": REPLAY_ACK_SCHEMA,
+            "state": "STEGHEALTH_FAILURE_PAGE_ACCEPTED",
+            "batch_hash": digest,
+            "failure_map_ref": str(map_path),
+            "steghealth_result_ref": str(owner_output),
+            "task_creation_owner": STEGHEALTH_OWNER,
+            "corrective_task_count": len(normalized_handoffs),
+            "registry_import_complete": True,
+            "execution_authority_granted": False,
+            "authority_effect": "NONE_REPLAY_PAGE_ACCEPTANCE_ONLY",
+        })
+        ack_written = True
+        ack_ref = str(ack_path)
+
     result = {
         "schema": "stegverse.email-failure-canonical-work-handoff/v1",
         "state": "STEGHEALTH_TASK_CREATION_COMPLETE",
@@ -316,6 +352,8 @@ def main() -> int:
         "automatic_corrective_task_derivation": True,
         "automatic_canonical_ingress_required_for_proposed_tasks": True,
         "email_archive_may_not_discard_corrective_work": True,
+        "archived_replay_page_acknowledged": ack_written,
+        "archived_replay_ack_ref": ack_ref,
         "retry_required": False,
         "authority_effect": "NONE_STEGHEALTH_TASK_CREATION_IMPORTED_FOR_CANONICAL_INGRESS",
     }
