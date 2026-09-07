@@ -1,6 +1,6 @@
 # COSV Task Pointer Runtime Enforcement Mirror Handoff
 
-Status: RESIDENT_EXECUTION_REQUEST_MATERIALIZED / AUTHENTIC_RUNTIME_CONSUMPTION_PENDING
+Status: SOURCE_RUNTIME_ENFORCEMENT_PATH_IMPLEMENTED / AUTHENTIC_RUNTIME_CONSUMPTION_PENDING
 Repository: `StegVerse-Labs/.github`
 Task ID: `COSV-TASK-POINTER-RUNTIME-ENFORCEMENT-001`
 Root correlation / goal: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`
@@ -13,6 +13,10 @@ Reusable construct contract: `data/reusable-task-ephemeral-construct-contract.js
 COSV profile: `management/COSV_PROFILE_V1.json#task.v1`
 Machine preflight: `receipts/preflight/COSV-TASK-POINTER-RUNTIME-ENFORCEMENT-001.json`
 Resident execution request: `control/resident-execution-request.d/cosv-task-pointer-runtime-enforcement-001.json`
+Resident consumer: `scripts/consume_cosv_task_pointer_runtime_enforcement_request.py`
+Resident dispatcher: `scripts/dispatch_resident_execution_requests.py#cosv_task_pointer_runtime_enforcement`
+Resident execution bridge: `scripts/refresh_and_execute_resident_task.py`
+Expected consumption receipt: `receipts/sovereign-host/cosv-task-pointer-runtime-enforcement-request-consumption.latest.json`
 
 ## Purpose
 
@@ -27,7 +31,7 @@ can resolve complete canonical task context, applicable reusable identities, and
 
 ## Implemented source behavior
 
-The implementation includes:
+The source path now includes:
 
 1. canonical `task_id + task.v1 vector` continuation policy;
 2. durable reusable-task identity registry generation 2;
@@ -35,16 +39,38 @@ The implementation includes:
 4. deterministic `scripts/materialize_reusable_task_construct.py` source constructor;
 5. manifest schema binding reusable identity, parameters, optional task/COSV pointer, derived RTG/GTG/TT envelopes, runner plan, authority, recording, and entropy-recovery conditions;
 6. shared identity model for maintenance, InTr protocol establishment, external adapters, AI adapters, endpoint monitoring, and social-platform interaction;
-7. explicit ephemeral-runner lifecycle;
-8. residual non-executing recording construct after runner expiry when required recording remains;
-9. required chained receipt semantics and necessary-level recording;
-10. Master Records custody/reconstruction as the terminal prerequisite for entropy recovery;
-11. final displacement of the residual construct through entropy recovery without deleting durable evidence; and
-12. a canonical resident execution request for this exact task pointer using the existing targeted WorkerCoordinator execution bridge rather than a new runtime plane.
+7. explicit ephemeral-runner lifecycle and residual non-executing recording semantics;
+8. the existing resident targeted execution bridge extended with optional `--cosv-task-vector` validation;
+9. exact pointer validation after already-local source refresh and before the existing WorkerCoordinator execution command;
+10. fail-closed handling for malformed vectors, missing or duplicate task identities, missing source-vector provenance, and task/vector mismatch;
+11. resident targeted-execution receipt schema v3 carrying the verified non-authorizing `cosv_task_pointer` projection;
+12. the canonical resident request passing both `--task-id COSV-TASK-POINTER-RUNTIME-ENFORCEMENT-001` and `--cosv-task-vector 10100000100000`;
+13. a dedicated request consumer that verifies the request and requires the execution bridge to report the exact verified pointer before recording `ATTEMPT_RECORDED`;
+14. registration of that consumer in the existing independent resident dispatcher; and
+15. propagation of the consumer through the existing local-only WorkerCoordinator source refresh.
 
-The implementation reuses the existing Canonical Work, COSV, cross-task coordination, WorkerCoordinator, Master Records, runtime-profile map, Interlock/InTr, and TV/TVC surfaces. It creates no second task registry, COSV profile, scheduler, WorkerCoordinator, heartbeat, oscillator, credential authority, transition authority, or permanent runner plane.
+No second task registry, COSV profile, scheduler, WorkerCoordinator, heartbeat, oscillator, credential authority, transition authority, dispatcher, or permanent runner plane was created.
 
-## Runtime request now installed
+## Exact resident path
+
+```text
+already-local canonical source
+-> scripts/refresh_sovereign_worker_runtime_source.py
+-> refreshed control/task-vector-index.json
+-> refreshed resident request + COSV consumer + dispatcher + targeted execution bridge
+-> scripts/dispatch_resident_execution_requests.py
+-> selector cosv_task_pointer_runtime_enforcement
+-> scripts/consume_cosv_task_pointer_runtime_enforcement_request.py
+-> scripts/refresh_and_execute_resident_task.py
+-> exact task_id + task.v1 vector validation
+-> existing scripts/run_worker_runtime.py targeted WorkerCoordinator cycle
+-> ordinary WorkerCoordinator claim/fence + Interlock/InTr governed transition path
+-> runtime receipts / Master Records evidence
+```
+
+Pointer validation occurs before targeted execution and has `authority_effect=NONE`. WorkerCoordinator remains claim/fence authority, Interlock/InTr remains governed transition authority, TV/TVC remains credential authority, and Master Records remains observed-reality/reconstruction authority.
+
+## Current request
 
 The request at `control/resident-execution-request.d/cosv-task-pointer-runtime-enforcement-001.json` binds:
 
@@ -54,26 +80,28 @@ profile: task.v1
 vector: 10100000100000
 mode: TARGETED_INDEPENDENT_TASK_CONTROL
 entrypoint: scripts/refresh_and_execute_resident_task.py
+argv: ... --task-id COSV-TASK-POINTER-RUNTIME-ENFORCEMENT-001 --cosv-task-vector 10100000100000
 ```
 
-The request is coordination only. It does not mint or replace WorkerCoordinator claim/fence authority, Interlock/InTr admission, TV/TVC credential authority, or Master Records runtime truth.
+The request and consumer are coordination/execution-path materialization only. They mint no WorkerCoordinator claim/fence, Interlock/InTr admission, TV/TVC credential authority, or Master Records runtime truth.
 
 ## Remaining runtime work
 
-Authentic runtime enforcement must still demonstrate:
+Authentic runtime evidence must still demonstrate:
 
-1. resident consumption of the installed request;
-2. exact task ID/vector resolution through the live canonical path;
-3. reusable identity + parameter resolution for a real invocation;
-4. exact manifest-bound RTG -> GTG -> TT derivation under the canonical definitions;
-5. ordinary WorkerCoordinator claim/fence and Interlock/InTr admission;
-6. bounded runner materialization and expiry;
-7. chained runtime receipts through execution and expiry;
-8. residual recording-only behavior after runner expiry;
-9. required recording projections;
-10. Master Records custody and reconstruction;
-11. observed entropy recovery after reconstruction; and
-12. adjacent canonical task derivation when genuinely distinct same-goal work appears.
+1. a resident local-source refresh carrying this source revision into the authentic resident runtime;
+2. resident dispatcher visitation of `cosv_task_pointer_runtime_enforcement`;
+3. component-produced consumption receipt with `pointer_binding_verified_before_execution=true`;
+4. ordinary WorkerCoordinator admission and fresh claim/fence for the task when execution is admissible;
+5. applicable Interlock/InTr governed transition admission;
+6. reusable identity + invocation-parameter resolution for a real bounded invocation;
+7. exact manifest-bound RTG -> GTG -> TT derivation under canonical definitions;
+8. bounded runner materialization, execution, and expiry;
+9. chained runtime receipts and residual recording-only behavior after runner expiry;
+10. required recording projections;
+11. Master Records custody and reconstruction;
+12. observed entropy recovery after reconstruction; and
+13. adjacent canonical task derivation when genuinely distinct same-goal work appears.
 
 ## Current COSV state
 
@@ -97,12 +125,20 @@ activated: false
 propagated: false
 ```
 
-The vector remains unchanged because a resident execution request is not a WorkerCoordinator claim, runtime execution receipt, Master Records custody/reconstruction proof, or activation proof.
+The vector remains unchanged because source mutation, request registration, dispatcher registration, and propagation eligibility are not a WorkerCoordinator claim, authentic resident execution receipt, Master Records custody/reconstruction proof, or activation proof.
 
-## Evidence boundary
+## Validation and evidence boundary
 
-The source constructor, contracts, registry generation 2, schema, handoffs, COSV evidence refs, machine preflight, resident execution request, and README prove source/coordination implementation only. They do not prove authentic request consumption, runner materialization, provider interaction, runtime execution, Master Records custody/reconstruction, or entropy recovery.
+Source tests cover exact pointer resolution, fail-closed vector mismatch, duplicate task identity, and malformed vector. Source merge/commit presence and tests are not authentic resident runtime evidence.
+
+The expected first authentic evidence is:
+
+```text
+receipts/sovereign-host/cosv-task-pointer-runtime-enforcement-request-consumption.latest.json
+```
+
+with an actual resident execution attempt and `pointer_binding_verified_before_execution=true`. Broader completion remains false until the downstream claim/fence, InTr, invocation construct, receipt chain, Master Records reconstruction, and entropy-recovery predicates are observed.
 
 ## README completeness
 
-The material reusable-task/ephemeral-capability semantics are reflected in `README.md` under `Reusable task ephemeral constructs and entropy recovery`. The newly materialized resident request does not itself change repository runtime semantics; it instantiates the already-documented targeted execution path. The preflight separately records that any future modification to the resident executor interface requires a README update in that functional change set.
+`README.md` now documents the resident `--cosv-task-vector` interface, fail-closed refreshed-index verification, resident dispatcher consumer, local source propagation, receipt semantics, and the unchanged authority boundaries. This satisfies the task-specific machine preflight README-impact requirement for the implemented source change.
