@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001",
   "created_at": "2026-09-03T16:36:37Z",
-  "updated_at": "2026-09-06T12:27:00Z",
+  "updated_at": "2026-09-07T01:36:00Z",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "ERL-AI-ECON-TRANSPARENCY-001",
@@ -16,10 +16,10 @@
   "task": {
     "task_id": "SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001",
     "repository": "StegVerse-Labs/.github",
-    "source_refs": ["StegVerse-Labs/Executive_Rhetoric_Ledger#104","StegVerse-Labs/Executive_Rhetoric_Ledger:docs/AI_ECONOMIC_TRANSPARENCY_MIRROR_HANDOFF.md","review-packages/erl-ai-economic-transparency-001/manifest.json","control/resident-execution-request.d/erl-ai-economic-transparency-review-001.json","scripts/consume_erl_ai_economic_transparency_review_request.py"],
+    "source_refs": ["StegVerse-Labs/Executive_Rhetoric_Ledger#104","StegVerse-Labs/Executive_Rhetoric_Ledger:docs/AI_ECONOMIC_TRANSPARENCY_MIRROR_HANDOFF.md","review-packages/erl-ai-economic-transparency-001/manifest.json","control/resident-execution-request.d/canonical-work-erl-ai-economic-transparency-review-001.json","control/cross-task-coordination.d/erl-ai-economic-transparency-review-001-canonical-work-ingress.json","control/resident-execution-request.d/erl-ai-economic-transparency-review-001.json","scripts/consume_erl_ai_economic_transparency_review_request.py"],
     "dependencies": [],
     "parent_task_id": null,
-    "derivation_reason": "Bind the fixed independent review package to the canonical resident WorkerCoordinator without granting promotion or publication authority.",
+    "derivation_reason": "Bind the fixed independent review package to the canonical resident WorkerCoordinator without granting promotion or publication authority, while preserving Canonical Task Registry -> Interlock/InTr ingress -> WorkerCoordinator authority ordering.",
     "canonical_owner_ref": "StegVerse-Labs/Executive_Rhetoric_Ledger#104",
     "canonical_lineage_key": "erl:ai-economic-transparency:independent-review",
     "derivation_depth": 0,
@@ -58,7 +58,9 @@
     "carrier": "heartbeat_reference_only",
     "executor_binding": "AUTHORIZED",
     "authorization_ref": "StegVerse-Labs/.github#927",
-    "recheck_trigger": "existing WorkerCoordinator resident request visit or HB-derived machine-continuation revisit while unfinished",
+    "canonical_work_ingress_request_ref": "control/resident-execution-request.d/canonical-work-erl-ai-economic-transparency-review-001.json",
+    "canonical_work_ingress_consumption_ref": "receipts/sovereign-host/canonical-work-erl-ai-economic-transparency-review-request-consumption.latest.json",
+    "recheck_trigger": "existing Canonical Work resident request visit, followed after authentic ingress by WorkerCoordinator resident request visit or HB-derived machine-continuation revisit while unfinished",
     "carrier_event_prerequisite": false,
     "checkout_policy": "fenced_atomic_checkout"
   },
@@ -69,20 +71,20 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "The existing resident request dispatcher or HB-derived machine-continuation revisit may present this HANDOFF_READY task to the canonical independent WorkerCoordinator path. WorkerCoordinator must mint a fresh fence before bounded review execution; no heartbeat event is required or authoritative.",
+    "next_authorized_action": "First allow the existing Canonical Work resident consumer and Universal Interlock/InTr path to process the exact staged ERL registry-ingress request and emit task-specific completed consumption/bootstrap evidence. Only after authentic ingress may the existing resident request dispatcher or HB-derived machine-continuation revisit present this HANDOFF_READY task to the canonical independent WorkerCoordinator path. WorkerCoordinator must mint a fresh fence before bounded review execution; no heartbeat event is required or authoritative.",
     "terminal_when": ["review state=COMPLETE","recommendation in {APPROVE,REVISE}","github_token_used=false","repository_writeback_authority=false","research_promotion_authority=false","publication_authority=false"]
   },
   "block": {
-    "block_reason": "Authentic fenced resident independent-review execution receipt has not yet been observed.",
-    "dependency": "canonical resident WorkerCoordinator execution",
+    "block_reason": "Authentic Canonical Work/InTr ingress followed by fenced resident independent-review execution has not yet been observed.",
+    "dependency": "authentic canonical task ingress then canonical resident WorkerCoordinator execution",
     "solution_task_ref": "SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001",
-    "solution_constraints": ["reuse independent no-carrier-event WorkerCoordinator admission","fresh fence required","no network checkout","no GitHub token runtime authority","no repository writeback","no promotion/activation/publication authority"],
+    "solution_constraints": ["reuse existing Canonical Work registered-task ingress","reuse independent no-carrier-event WorkerCoordinator admission","fresh fence required","no network checkout","no GitHub token runtime authority","no repository writeback","no promotion/activation/publication authority"],
     "observer": "canonical StegVerse resident runtime",
-    "recheck_trigger": "resident request sweep or HB-derived machine-continuation revisit",
+    "recheck_trigger": "Canonical Work resident request sweep then resident WorkerCoordinator request sweep or HB-derived machine-continuation revisit",
     "next_check": null,
-    "escalation_condition": "canonical independent task-control path cannot admit or execute the hash-valid bounded review",
+    "escalation_condition": "existing Canonical Work ingress cannot admit the registered ERL task or canonical independent task-control path cannot admit/execute the hash-valid bounded review",
     "block_expires_at": null,
-    "machine_observable_release_condition": "receipts/erl-ai-economic-transparency-review/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json exists and passes receipt validation"
+    "machine_observable_release_condition": "receipts/sovereign-host/canonical-work-erl-ai-economic-transparency-review-request-consumption.latest.json state=COMPLETED and receipts/erl-ai-economic-transparency-review/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json exists and passes receipt validation"
   },
   "admissible_existence": {
     "capability_id": "stegverse:capability:erl-ai-economic-transparency-independent-review:v1",
@@ -90,10 +92,10 @@
     "phase": "ADMISSIBLE",
     "standing_evidence_refs": ["StegVerse-Labs/Executive_Rhetoric_Ledger:docs/AI_ECONOMIC_TRANSPARENCY_MIRROR_HANDOFF.md","StegVerse-Labs/Executive_Rhetoric_Ledger:task-state/ERL-AI-ECON-TRANSPARENCY-001.json","StegVerse-Labs/Executive_Rhetoric_Ledger#104"],
     "admissibility_evidence_refs": ["handoffs/SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001.json","StegVerse-Labs/.github#927"],
-    "integration_evidence_refs": ["workers/erl_ai_economic_transparency_review_worker.py","control/process-worker-adapters.d/erl-ai-economic-transparency-review-001.json","review-packages/erl-ai-economic-transparency-001/manifest.json","scripts/consume_erl_ai_economic_transparency_review_request.py","control/resident-execution-request.d/erl-ai-economic-transparency-review-001.json"],
+    "integration_evidence_refs": ["workers/erl_ai_economic_transparency_review_worker.py","control/process-worker-adapters.d/erl-ai-economic-transparency-review-001.json","review-packages/erl-ai-economic-transparency-001/manifest.json","control/resident-execution-request.d/canonical-work-erl-ai-economic-transparency-review-001.json","control/cross-task-coordination.d/erl-ai-economic-transparency-review-001-canonical-work-ingress.json","scripts/consume_erl_ai_economic_transparency_review_request.py","control/resident-execution-request.d/erl-ai-economic-transparency-review-001.json"],
     "activation_proof_ref": null,
-    "blockers": ["RESIDENT_EXECUTION_RECEIPT_PENDING"],
-    "continuation_owner": "canonical resident WorkerCoordinator + erl-ai-economic-transparency-review-worker + StegVerse-Labs/Executive_Rhetoric_Ledger#104",
+    "blockers": ["CANONICAL_WORK_INGRESS_RECEIPT_PENDING","RESIDENT_EXECUTION_RECEIPT_PENDING"],
+    "continuation_owner": "existing Canonical Work/Interlock-InTr ingress + canonical resident WorkerCoordinator + erl-ai-economic-transparency-review-worker + StegVerse-Labs/Executive_Rhetoric_Ledger#104",
     "credential_authority": "TV/TVC",
     "github_token_runtime_authority": false,
     "temporal_class": "current",

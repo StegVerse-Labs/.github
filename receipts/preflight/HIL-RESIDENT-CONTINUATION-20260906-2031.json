@@ -1,0 +1,87 @@
+{
+  "schema": "stegverse.machine-preflight/v1",
+  "preflight_id": "HIL-RESIDENT-CONTINUATION-20260906-2031",
+  "task_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "main",
+  "state": "PASS",
+  "verdict": "PASS",
+  "decision": "CONTINUE_MACHINE_EXECUTION",
+  "authority_effect": "NONE_PREFLIGHT_ONLY",
+  "resolved_state": {
+    "canonical_handoff": "docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_MIRROR_HANDOFF.md",
+    "same_device_supersession": "docs/HIL_SAME_DEVICE_RUNTIME_SUPERSESSION_20260906.md",
+    "executable_handoff": "handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json",
+    "worker_registry": "control/worker-registry.d/hil-sovereign-receiver-001.json",
+    "worker_state": "HANDOFF_READY",
+    "claim_id": null,
+    "cross_task_coordination": "control/cross-task-coordination.json",
+    "cross_task_predicate": "PRED-RESIDENT-REQUEST-CONSUMED-HIL-SOVEREIGN-RECEIVER-002",
+    "cross_task_predicate_state": "UNKNOWN",
+    "resident_request": "RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002",
+    "authentic_consumption_receipt_present": false,
+    "site_handoff": "StegVerse-Labs/Site/docs/HIL_MIRROR_HANDOFF.md",
+    "master_records_handoff": "master-records/orchestration/HIL_MASTER_RECORD_MIRROR_HANDOFF.md",
+    "master_record_task": "HIL-MASTER-RECORD-001",
+    "master_record_release_ready": false,
+    "current_main": "0010ab2fbdc57f9666b3c3a87526c70b0568b825"
+  },
+  "reuse": {
+    "runtime_solution_registry": "data/runtime-solution-registry.d/hb32-existing-runtime-solutions.json",
+    "problem_class": "TASK_REQUEST_NOT_CONSUMED_WHILE_RUNTIME_PATH_EXISTS",
+    "existing_dispatcher": "scripts/dispatch_resident_execution_requests.py",
+    "existing_hil_consumer": "scripts/consume_hil_resident_execution_request.py",
+    "existing_targeted_executor": "scripts/refresh_and_execute_resident_task.py",
+    "existing_acceptance_harness": "scripts/run_hil_resident_activation_test.py",
+    "new_task_identifier": false,
+    "duplicate_request_allowed": false,
+    "new_runtime": false,
+    "new_heartbeat": false,
+    "new_oscillator": false,
+    "new_workercoordinator": false,
+    "new_claim_fence_plane": false
+  },
+  "collision_review": {
+    "duplicate_hil_runtime_work": false,
+    "master_records_collision": false,
+    "g18_claim_consumption_allowed": false,
+    "ecosystem_chat_claim_consumption_allowed": false,
+    "disposition": "REUSE_EXISTING_HIL_RESIDENT_DISPATCH_AND_CONSUMER_PATH"
+  },
+  "next_machine_action": {
+    "owner": "existing sovereign resident WorkerCoordinator/dispatcher path",
+    "entrypoint": "scripts/dispatch_resident_execution_requests.py",
+    "target_consumer": "hil",
+    "request_id": "RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002",
+    "task_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+    "required_authentic_output": "receipts/sovereign-host/hil-resident-execution-request-consumption.latest.json",
+    "hosted_ci_is_authentic_runtime": false,
+    "github_connector_is_runtime_executor": false,
+    "second_machine_required": false
+  },
+  "readme_impact": {
+    "readme_impact_required": true,
+    "material_function_change": false,
+    "readme_updated_in_change_set": false,
+    "readme_path": "README.md",
+    "no_readme_update_reason": "This preflight only resolves current canonical HIL state and selects an already-registered runtime solution/dispatcher path. It changes no repository behavior, runtime semantics, interface, authority or governance boundary, evidence semantics, prerequisite, dependency, failure behavior, or capability meaning. The README already documents the resident HIL activation acceptance-evidence denominator.",
+    "evidence_refs": [
+      "README.md#Resident-HIL-activation-acceptance-evidence",
+      "data/runtime-solution-registry.d/hb32-existing-runtime-solutions.json#TASK_REQUEST_NOT_CONSUMED_WHILE_RUNTIME_PATH_EXISTS",
+      "handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json",
+      "control/worker-registry.d/hil-sovereign-receiver-001.json",
+      "control/cross-task-coordination.json#PRED-RESIDENT-REQUEST-CONSUMED-HIL-SOVEREIGN-RECEIVER-002",
+      "StegVerse-Labs/Site/docs/HIL_MIRROR_HANDOFF.md",
+      "master-records/orchestration/HIL_MASTER_RECORD_MIRROR_HANDOFF.md"
+    ],
+    "readme_impact_complete": true
+  },
+  "authority": {
+    "heartbeat_grants_execution_authority": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "transition_authority": "INTERLOCK_INTR",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "preflight_grants_execution_authority": false
+  }
+}
