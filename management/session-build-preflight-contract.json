@@ -1,6 +1,6 @@
 {
   "artifact_type": "stegverse.session_build_preflight_contract",
-  "schema_version": "1.2.0",
+  "schema_version": "1.3.0",
   "status": "ACTIVE_SOURCE_CONTRACT",
   "entrypoint": "scripts/session_build_preflight.py",
   "stegindex_gate": "scripts/stegindex_preflight_gate.py",
@@ -12,6 +12,24 @@
     "runtime_truth_inferred": false,
     "execution_admission_inferred": false,
     "authority_effect": "NONE_INDEX_PROJECTION_ONLY"
+  },
+  "work_mutation_safety": {
+    "reusable_workflow": ".github/workflows/work-mutation-safety.yml",
+    "manifest_glob": "receipts/work-safety/*.json",
+    "schema": "stegverse.work-mutation-safety/v1",
+    "required_for_functional_pull_request_mutation": true,
+    "fresh_manifest_required_in_same_change_set": true,
+    "functional_changed_paths_must_be_covered": true,
+    "new_functional_files_require_semantic_reuse_decision": true,
+    "create_new_forbidden_when_existing_equivalent_found": true,
+    "active_owner_collision_blocks_create_new_without_governed_versioning_reconciliation": true,
+    "canonical_handoff_required": true,
+    "task_registry_reference_required": true,
+    "master_records_applicability_review_required": true,
+    "cross_task_coordination_review_required": true,
+    "semantic_scan_required": true,
+    "readme_impact_required": true,
+    "authority_effect": "NONE_PREFLIGHT_ONLY"
   },
   "readme_impact": {
     "required_before_functional_mutation": true,
@@ -67,13 +85,18 @@
     "new task creation is prohibited when machine continuation is already available",
     "new task creation is prohibited while indexed truth requires reconciliation",
     "new task creation is prohibited until cross-task coordination adjacency/claim/gap discovery has been consulted",
+    "functional pull-request mutation is prohibited without a fresh work-mutation safety manifest covering every functional changed path",
+    "new functional files require an explicit semantic responsibility and reuse decision",
+    "CREATE_NEW is prohibited when an existing semantic equivalent has been found",
+    "an active owner collision blocks CREATE_NEW unless intentional parallel versioning has a governed reconciliation reference",
     "functional mutation is prohibited until README impact completeness has been evaluated",
     "material repository behavior changes require the affected repository README in the same change set",
     "a no-README-update determination requires explicit nonmaterial rationale and supporting evidence",
     "cross-task coordination projection does not itself prove runtime truth or execution readiness",
     "README completeness does not grant execution authority or prove runtime truth",
+    "work-mutation safety validation grants no execution, transition, route, credential, runtime, or governance authority",
     "generic runtime-evidence blockers are not terminal preflight outcomes",
-    "StegIndex, cross-task coordination, README completeness review, and this entrypoint grant no execution authority"
+    "StegIndex, cross-task coordination, README completeness review, mutation-safety review, and this entrypoint grant no execution authority"
   ],
   "authority_effect": "NONE_PREWORK_DECISION_ONLY",
   "network_fetch_performed": false,
