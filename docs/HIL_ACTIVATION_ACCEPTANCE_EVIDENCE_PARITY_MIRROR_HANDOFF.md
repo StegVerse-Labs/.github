@@ -4,7 +4,7 @@ Parent: `docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_MIRROR_HANDOFF.md`
 Task: `SHWP-HIL-SOVEREIGN-RECEIVER-001`
 Canonical request: `RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002`
 Cross-task predicate: `PRED-RESIDENT-REQUEST-CONSUMED-HIL-SOVEREIGN-RECEIVER-002`
-State: `SOURCE_REPAIR_ACTIVE / AUTHENTIC_RUNTIME_CONSUMPTION_NOT_OBSERVED`
+State: `MERGED_VALIDATED / AUTHENTIC_RUNTIME_CONSUMPTION_NOT_OBSERVED`
 Credential authority: `TV/TVC`
 GitHub token runtime authority: `NONE`
 
@@ -84,7 +84,27 @@ Machine preflight:
 
 The preflight passed before functional mutation and resolved the canonical handoff, worker/task registry, Master Records preparation, cross-task predicate, runtime-solution reuse inventory, collision state, and absent authentic runtime receipts.
 
-README impact is material because the acceptance harness changes evidence semantics and failure behavior. `README.md` is updated in the same change set under `Resident HIL activation acceptance evidence`.
+README impact is material because the acceptance harness changes evidence semantics and failure behavior. `README.md` was updated in the same change set under `Resident HIL activation acceptance evidence`.
+
+The later scoped-state reconciliation preflight is:
+
+`receipts/preflight/HIL-ACCEPTANCE-HANDOFF-TERMINALIZATION-20260906.json`
+
+That reconciliation is documentation-only: it changes the stale scoped handoff label from `SOURCE_REPAIR_ACTIVE` to `MERGED_VALIDATED` after the already-completed PR #1112 merge, while retaining `AUTHENTIC_RUNTIME_CONSUMPTION_NOT_OBSERVED`. It changes no runtime behavior or evidence semantics and therefore requires no additional README change.
+
+## Merge and validation record
+
+The acceptance repair was merged in PR #1112 as:
+
+```text
+merge_commit = 2f8c9d1830dea2d0bd19a178afcc86296eb4c280
+exact_head = 14733b522a06fd1a6d5a8af7ec933ecc8d0f05d7
+organization_control_plane_run = 34035947127 SUCCESS
+heartbeat_worker_run = 34035947157 SUCCESS
+complete deterministic repository suite = PASS
+```
+
+This proves source/validation completion for the acceptance-evidence repair only. It does not prove authentic HIL runtime execution.
 
 ## Authority boundary
 
@@ -103,4 +123,4 @@ acceptance receipt authority effect = NONE_TEST_OBSERVATION_ONLY
 
 Source, validation, CI, merge, and this handoff do not establish authentic resident execution. Until a real same-device resident cycle emits the exact request-002 consumption receipt plus the other required component receipts, the canonical cross-task predicate remains `UNKNOWN`, receiver activation remains unproven, TVC lifecycle receiving remains unproven, and Master Record release remains ineligible.
 
-After source validation/merge, the next legitimate transition remains execution through the already-built resident HB32/WorkerCoordinator/dispatcher/HIL-consumer path. No new runtime implementation is required by this repair.
+The next legitimate transition remains execution through the already-built resident HB32/WorkerCoordinator/dispatcher/HIL-consumer path. No new runtime implementation is required by this repair.
