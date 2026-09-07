@@ -12,13 +12,13 @@
       "terminal": false,
       "executable": "CLOSURE_ONLY",
       "continuation_allowed": "CLOSURE_ONLY",
-      "meaning": "Primary task work is complete; only explicit closure, propagation, release, or retirement verification may remain."
+      "meaning": "Primary task work is complete; related or one-hop task work may still remain open, so retirement is not implied."
     },
     "RETIRED": {
       "terminal": true,
       "executable": false,
       "continuation_allowed": false,
-      "meaning": "Task is closed permanently under this identity and retained only for provenance, reconstruction, audit, and historical review."
+      "meaning": "Task execution is closed permanently under this identity and retained for provenance, reconstruction, audit, and historical review."
     },
     "SUPERSEDED": {
       "terminal": true,
@@ -50,6 +50,8 @@
   "retired_history_review": {
     "allowed": true,
     "review_only": true,
+    "revival_reason_must_be": "HISTORICAL_EVIDENCE_REVIEW",
+    "canonical_lifecycle_remains_retired_during_review": true,
     "may_restore_execution": false,
     "may_restore_continuation": false,
     "may_restore_claim_or_fence": false,
@@ -71,23 +73,38 @@
   },
   "closure_rule": {
     "retirement_requires_explicit_closure_predicates": true,
+    "one_hop_relationship_fields": [
+      "parent_task_id",
+      "dependency_refs",
+      "dependencies",
+      "adjacent_task_refs",
+      "adjacent_tasks",
+      "integration_candidates",
+      "successor_task_id",
+      "superseded_by_task_id"
+    ],
+    "open_related_lifecycles": ["ACTIVE", "COMPLETED"],
+    "retirement_blocked_while_any_immediate_or_one_hop_related_task_is_open": true,
     "recommended_predicates": [
       "IMPLEMENTATION_COMPLETE",
       "VALIDATION_COMPLETE",
       "REQUIRED_EVIDENCE_RECONCILED",
       "REQUIRED_PROPAGATION_COMPLETE",
       "REQUIRED_RELEASE_OR_TAG_COMPLETE",
-      "NO_UNRESOLVED_TASK_OWNED_WORK"
+      "NO_UNRESOLVED_TASK_OWNED_WORK",
+      "NO_OPEN_IMMEDIATE_OR_ONE_HOP_RELATED_TASKS"
     ]
   },
   "invariants": [
-    "RETIRED_IS_TERMINAL",
-    "RETIRED_RESURRECTION_IS_HISTORY_REVIEW_ONLY",
-    "RETIRED_NEVER_EMITS_CONTINUATION",
+    "RETIRED_IS_TERMINAL_FOR_EXECUTION",
+    "RETIRED_MAY_BE_REVIVED_ONLY_FOR_HISTORICAL_EVIDENCE_REVIEW",
+    "RETIRED_HISTORY_REVIEW_DOES_NOT_CHANGE_CANONICAL_RETIRED_LIFECYCLE",
+    "RETIRED_NEVER_EMITS_EXECUTION_CONTINUATION",
     "NEW_WORK_DISCOVERED_DURING_RETIRED_REVIEW_REQUIRES_NEW_TASK_ID",
     "SUPERSEDED_IS_REDIRECT_ONLY",
     "INVALID_FAILS_CLOSED",
     "COMPLETED_MAY_ONLY_PERFORM_EXPLICIT_CLOSURE_WORK",
+    "COMPLETED_IS_NOT_RETIREMENT_READY_WHILE_AN_IMMEDIATE_OR_ONE_HOP_RELATED_TASK_REMAINS_OPEN",
     "STALE_HANDOFF_CANNOT_OVERRIDE_CANONICAL_TASK_STATE"
   ]
 }
