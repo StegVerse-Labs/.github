@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "control" / "worker-registry.json"
 FRAGMENT = ROOT / "control" / "worker-registry.d" / "ecosystem-chat-sovereign-inference-parent-001.json"
 HANDOFF = ROOT / "handoffs" / "SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json"
+AUTH = ROOT / "authorizations" / "SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json"
 RECOVERY = ROOT / "receipts" / "ecosystem-chat-sovereign-inference" / "orphan-recovery-HB28.json"
 VECTOR = ROOT / "control" / "task-vectors" / "SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json"
 
@@ -26,6 +27,7 @@ class EcosystemChatParentRegistryReconciliationTests(unittest.TestCase):
         self.registry = load(REGISTRY)
         self.fragment = load(FRAGMENT)
         self.handoff = load(HANDOFF)
+        self.auth = load(AUTH)
         self.recovery = load(RECOVERY)
         self.vector = load(VECTOR)
         self.task = next(row for row in self.registry["tasks"] if row.get("task_id") == TASK_ID)
@@ -45,7 +47,7 @@ class EcosystemChatParentRegistryReconciliationTests(unittest.TestCase):
         self.assertFalse(prior["old_authority_reused"])
         self.assertFalse(prior["recovery_authority_reused"])
 
-    def test_canonical_registry_matches_post_recovery_parent_admission(self):
+    def test_historical_base_registry_remains_unclaimed_and_current_fragment_is_authoritative_for_parent_checkout(self):
         self.assertEqual(self.task["state"], "HANDOFF_READY")
         self.assertEqual(self.task["executor_binding"], "AUTHORIZED")
         self.assertIsNone(self.task["claim_id"])
@@ -55,19 +57,17 @@ class EcosystemChatParentRegistryReconciliationTests(unittest.TestCase):
         self.assertIsNone(self.task["lease"])
         self.assertIsNone(self.task["block_ref"])
 
-        admission = self.task["admission"]
-        self.assertEqual(admission["authority_domain"], "INDEPENDENT_TASK_CONTROL")
-        self.assertEqual(admission["claim_state"], "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM")
-        self.assertTrue(admission["fresh_fence_required"])
-        self.assertEqual(admission["minimum_fencing_token_exclusive"], 24)
-        self.assertFalse(admission["heartbeat_grants_execution_authority"])
-        self.assertFalse(admission["recovery_grants_parent_execution_authority"])
+        historical_admission = self.task["admission"]
+        current_admission = self.fragment_task["admission"]
+        self.assertEqual(historical_admission["minimum_fencing_token_exclusive"], 22)
+        self.assertEqual(current_admission["authority_domain"], "INDEPENDENT_TASK_CONTROL")
+        self.assertEqual(current_admission["claim_state"], "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM")
+        self.assertTrue(current_admission["fresh_fence_required"])
+        self.assertEqual(current_admission["minimum_fencing_token_exclusive"], 24)
+        self.assertFalse(current_admission["heartbeat_grants_execution_authority"])
+        self.assertFalse(current_admission["recovery_grants_parent_execution_authority"])
 
-        for key in (
-            "state",
-            "executor_binding",
-            "handoff_ref",
-        ):
+        for key in ("state", "executor_binding", "handoff_ref"):
             self.assertEqual(self.task[key], self.fragment_task[key])
         self.assertNotIn("source_state_vector_ref", self.fragment_task)
         self.assertNotIn("machine_readable_state", self.fragment_task)
@@ -84,7 +84,7 @@ class EcosystemChatParentRegistryReconciliationTests(unittest.TestCase):
 
         runtime._activate_from_trigger = activate
         count = runtime._activate_independently_admitted_tasks(
-            {"tasks": [dict(self.task)]},
+            {"tasks": [dict(self.fragment_task)]},
             31,
             {"records": []},
             [],
@@ -93,12 +93,14 @@ class EcosystemChatParentRegistryReconciliationTests(unittest.TestCase):
         self.assertEqual(count, 1)
         self.assertEqual(observed, [TASK_ID])
 
-    def test_fresh_parent_fence_floor_is_strictly_above_terminal_recovery(self):
-        admission = self.task["admission"]
+    def test_current_parent_fence_floor_is_strictly_above_terminal_recovery(self):
+        current_admission = self.fragment_task["admission"]
         handoff_activation = self.handoff["activation"]
-        self.assertEqual(admission["minimum_fencing_token_exclusive"], 24)
+        self.assertEqual(current_admission["minimum_fencing_token_exclusive"], 24)
+        self.assertEqual(self.fragment["minimum_parent_fencing_token_exclusive"], 24)
+        self.assertEqual(self.auth["minimum_fencing_token_exclusive"], 24)
         self.assertEqual(handoff_activation["minimum_fencing_token_exclusive"], 24)
-        self.assertGreater(admission["minimum_fencing_token_exclusive"], self.recovery["recovery_fencing_token"])
+        self.assertGreater(current_admission["minimum_fencing_token_exclusive"], self.recovery["recovery_fencing_token"])
         self.assertTrue(handoff_activation["fresh_fence_required"])
         self.assertFalse(handoff_activation["recovery_reacquisition_allowed"])
 
