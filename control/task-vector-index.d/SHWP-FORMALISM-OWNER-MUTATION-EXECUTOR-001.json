@@ -1,0 +1,9 @@
+{
+  "schema": "stegverse.cosv-task-vector-index-entry/v1",
+  "task_id": "SHWP-FORMALISM-OWNER-MUTATION-EXECUTOR-001",
+  "registry_ref": "control/worker-registry.d/formalism-owner-mutation-executor-001.json",
+  "source_state_vector_ref": "control/task-vectors/SHWP-FORMALISM-OWNER-MUTATION-EXECUTOR-001.json",
+  "vector": "50000000101000",
+  "vector_state": "EMITTED",
+  "authority_effect": "NONE"
+}
