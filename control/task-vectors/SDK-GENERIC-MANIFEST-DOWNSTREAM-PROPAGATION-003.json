@@ -13,13 +13,19 @@
     "StegVerse-org/StegVerse-SDK:commit/5e14a4e61984829a6381ef2874d22adf06f94973",
     "StegVerse-org/StegVerse-SDK:pull/131",
     "StegVerse-org/StegVerse-SDK:commit/b4b8583d3e6bf9e83327f312d3c3bc0d99ec0ead",
+    "StegVerse-org/StegVerse-SDK:pull/132",
+    "StegVerse-org/StegVerse-SDK:commit/bd2768b2f5fc75e5f4d984cdf405bab517877cdf",
+    "StegVerse-org/StegVerse-SDK:actions/run/34292303141",
+    "StegVerse-org/StegVerse-SDK:pull/133",
+    "StegVerse-org/StegVerse-SDK:commit/01e679954f5e361fc06644ce10d58478fb37ed08",
+    "StegVerse-org/StegVerse-SDK:actions/run/34292383040",
     "StegVerse-org/StegVerse-SDK:issue/129",
     "StegVerse-Labs/admissibility-wiki:issue/66",
     "StegVerse-Labs/admissibility-wiki:issue/65",
     "public:https://stegverse.org/",
     "public:https://stegverse.org/ecosystem-chat.html"
   ],
-  "observed_at": "2026-09-08T23:22:00Z",
+  "observed_at": "2026-09-08T23:51:00Z",
   "exact_metrics": {
     "lifecycle": "ACTIVE",
     "archive_ready": false,
@@ -41,7 +47,10 @@
     "canonical_public_surface_bound": true,
     "canonical_public_base": "https://stegverse.org/",
     "ecosystem_chat_public_route_observed": true,
-    "dedicated_processor_generic_public_route_observed": false
+    "dedicated_processor_generic_public_route_observed": false,
+    "sdk_downstream_regression_guard_installed": true,
+    "sdk_downstream_regression_guard_validated": true,
+    "sdk_downstream_regression_guard_authority_effect": "NONE"
   },
   "authority_effect": "NONE",
   "canonical_owner_ref": "StegVerse-org/StegVerse-SDK:tasks/SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003.json"
