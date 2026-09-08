@@ -39,7 +39,7 @@ last_reconciled: 2026-09-07
 | StegVerse-Labs/StegVerse-Healer | present | docs/HEALER_MIRROR_HANDOFF.md | repository-local | repository-local |
 | StegVerse-Labs/.github | present | docs/ORG_MIRROR_HANDOFF.md | present | organization standard present |
 
-## Current Access / Search Notes
+## Known Access Or Search Notes
 
 ```text
 TVC: accessible in the connected GitHub installation as of 2026-09-07.

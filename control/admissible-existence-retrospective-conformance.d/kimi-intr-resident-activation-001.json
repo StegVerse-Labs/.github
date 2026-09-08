@@ -1,0 +1,16 @@
+{
+  "schema": "stegverse.admissible-existence-retrospective-conformance-fragment/v1",
+  "entries": [
+    {
+      "task_id": "KIMI-INTR-RESIDENT-ACTIVATION-001",
+      "temporal_class": "current",
+      "ae_impact": "CAPABILITY",
+      "capability_id": "stegverse:capability:kimi-intr-runtime-cycle:v1",
+      "phase": "ADMISSIBLE",
+      "task_relationship": "integrates_capability",
+      "result": "PASS",
+      "continuation_owner": "kimi-intr-runtime-worker + existing sovereign WorkerCoordinator",
+      "rationale": "The Kimi InTr resident lane is explicitly ADMISSIBLE in its executable handoff. Source registration and bounded TV/TVC route preparation do not prove live activation; same-execution ingress, provider use, custody, egress, and reconstruction evidence remain required."
+    }
+  ]
+}
