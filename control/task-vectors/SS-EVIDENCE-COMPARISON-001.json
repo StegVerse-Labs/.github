@@ -1,0 +1,43 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SS-EVIDENCE-COMPARISON-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "20010000100000",
+  "evidence_refs": [
+    "data/canonical-task-records/SS-EVIDENCE-COMPARISON-001.json",
+    "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_EVIDENCE_CONTEXT_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegSocials/docs/EVIDENCE_CONTEXT_KV_MODEL.md",
+    "KnowledgeVault/MYKV_MIRROR_HANDOFF.md"
+  ],
+  "observed_at": "2026-09-08T15:47:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "CLAIMED_IMPLEMENTATION",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 1,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "Schemas, repository semantics, dedicated task handoff, canonical task record, and KV directory lanes are installed; deterministic fixtures, builder, and publication-custody binding remain.",
+    "archive_ready": "Implementation and validation remain incomplete.",
+    "unassigned_work": "Current session owns the active implementation continuation.",
+    "chat_owned_counts": "Current session owns implementation; validation and downstream live publication are separate lanes.",
+    "canonical_owner_installed": "Canonical task record, COSV task vector, dedicated mirror handoff, and repository task file are installed.",
+    "thread_required": "Durable handoff/task/COSV state is sufficient for continuation without this thread.",
+    "blocker_count": "No blocker prevents deterministic implementation work.",
+    "evidence_complete": "Fixtures, deterministic validation, comparison builder, and publication custody binding remain incomplete.",
+    "activated": "The evidence-context capability is not yet activated as a complete deterministic pipeline.",
+    "propagated": "Downstream Master-Records/Publisher/wiki propagation has not been executed for this new goal."
+  },
+  "authority_effect": "NONE"
+}
