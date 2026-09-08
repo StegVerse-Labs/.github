@@ -14,39 +14,47 @@
   "orchestration_ref": "control/formalism-manifold-orchestration.json",
   "worker_registry_refs": [
     "control/worker-registry.d/formalism-manifold-orchestration-001.json",
-    "control/worker-registry.d/stegfin-continuity-carrier-007.json"
+    "control/worker-registry.d/stegfin-continuity-carrier-007.json",
+    "control/worker-registry.d/hil-resident-session-manifold-activation-001.json"
   ],
   "process_adapter_refs": [
-    "control/process-worker-adapters.d/formalism-manifold-orchestration-001.json"
+    "control/process-worker-adapters.d/formalism-manifold-orchestration-001.json",
+    "control/process-worker-adapters.d/hil-resident-session-manifold-activation-001.json"
   ],
   "subordinate_task_ids": [
     "FORMALISM-MANIFOLD-ORCHESTRATION-001",
-    "SOVEREIGN-LOCAL-MODEL-001",
     "SHWP-FORMALISM-INVENTORY-001",
     "SHWP-FORMALISM-HANDOFF-NORMALIZATION-001",
     "SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001",
     "SHWP-MANIFOLD-GOVERNANCE-MAPPING-001",
     "SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001",
+    "SOVEREIGN-LOCAL-MODEL-001",
     "TVC-PROVIDER-OPERATION-BROKER-003",
     "TVC-CAPABILITY-RUNTIME-002",
-    "STEGFIN-CONTINUITY-CARRIER-007"
+    "STEGFIN-CONTINUITY-CARRIER-007",
+    "GADI-001",
+    "GADI-STEGCORE-001",
+    "HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001"
   ],
   "execution_dispositions": {
     "FORMALISM-MANIFOLD-ORCHESTRATION-001": "REUSE_IMPLEMENTATION_EXECUTE_CHILDREN",
-    "SOVEREIGN-LOCAL-MODEL-001": "REUSE_COMPLETE_DO_NOT_REEXECUTE",
     "SHWP-FORMALISM-INVENTORY-001": "EXECUTE_IF_NOT_ALREADY_QUALIFYING",
     "SHWP-FORMALISM-HANDOFF-NORMALIZATION-001": "EXECUTE_IF_NOT_ALREADY_QUALIFYING",
     "SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001": "EXECUTE_IF_NOT_ALREADY_QUALIFYING",
     "SHWP-MANIFOLD-GOVERNANCE-MAPPING-001": "EXECUTE_IF_NOT_ALREADY_QUALIFYING",
     "SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001": "EXECUTE_AFTER_PREREQUISITES_QUALIFY",
+    "SOVEREIGN-LOCAL-MODEL-001": "REUSE_COMPLETE_DO_NOT_REEXECUTE",
     "TVC-PROVIDER-OPERATION-BROKER-003": "OBSERVE_EXISTING_OWNER_NO_COMPETE",
     "TVC-CAPABILITY-RUNTIME-002": "OBSERVE_EXISTING_OWNER_NO_COMPETE",
-    "STEGFIN-CONTINUITY-CARRIER-007": "EXECUTE_WHEN_TVC_RUNTIME_PREREQUISITE_QUALIFIES"
+    "STEGFIN-CONTINUITY-CARRIER-007": "EXECUTE_WHEN_TVC_RUNTIME_PREREQUISITE_QUALIFIES",
+    "GADI-001": "EXECUTE_INCOMPLETE_CANONICAL_CHILDREN_THROUGH_EXISTING_OWNERS",
+    "GADI-STEGCORE-001": "EXECUTE_IF_NOT_ALREADY_QUALIFYING",
+    "HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001": "EXECUTE_IF_NOT_ALREADY_QUALIFYING"
   },
   "execution_sequence": [
     "load and validate the complete manifold lineage before any subordinate execution",
     "refresh current qualifying evidence for every declared lineage node",
-    "reuse SOVEREIGN-LOCAL-MODEL-001 completed evidence without re-execution",
+    "reuse completed aggregate/predecessor evidence without duplicate execution",
     "run canonical cross-task coordination and collision preflight",
     "acquire fresh WorkerCoordinator claim/fence only for genuinely missing HANDOFF_READY local subordinate tasks",
     "execute the four prerequisite formalism evidence lanes through their existing registered process adapters",
@@ -54,6 +62,9 @@
     "execute SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001 only after prerequisites qualify",
     "observe TVC-PROVIDER-OPERATION-BROKER-003 and TVC-CAPABILITY-RUNTIME-002 through their existing TV/TVC-owned runtime path without creating a competing claim",
     "execute STEGFIN-CONTINUITY-CARRIER-007 through its existing WorkerCoordinator worker only after the TVC runtime prerequisite qualifies",
+    "treat GADI-001 as an aggregate whose incomplete canonical child lanes execute separately through existing owners",
+    "execute GADI-STEGCORE-001 through its existing WorkerCoordinator claim/fence path",
+    "execute HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001 as a nested manifold that preserves each HIL cohort child task's independent request, claim/fence, evidence, and completion predicate",
     "persist deterministic reconciliation preserving provenance, divergence, uncertainty, and unresolved branches",
     "verify StegCore consumes the reconciliation under existing governance authority",
     "update the umbrella activation task only after every lineage node has a qualifying execute/reuse/external-owner disposition and all activation predicates are durably machine-evidenced"
@@ -84,7 +95,8 @@
     "non-TV/TVC credential path",
     "wallet signing or broadcast by non-user authority",
     "flattening disagreement during reconciliation",
-    "silently excluding a declared subordinate from manifold traversal"
+    "silently excluding a declared subordinate from manifold traversal",
+    "merging nested HIL child authority or completion predicates"
   ],
   "activation_completion_predicate": "every node in control/manifold-lineage.d/governed-multilane-manifold-activation-001.json has a qualifying terminal/reuse/external-owner evidence disposition and all expected_evidence_predicates in the canonical task record are durably machine-evidenced",
   "authority_effect": "NONE_REQUEST_ONLY",
