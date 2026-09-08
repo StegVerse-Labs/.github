@@ -1,0 +1,35 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001",
+  "task_id": "HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001",
+  "goal_id": "HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001",
+  "state": "HANDOFF_READY",
+  "repository": "StegVerse-Labs/.github",
+  "issue": "StegVerse-Labs/.github#1178",
+  "handoff_ref": "docs/HIL_RESIDENT_SESSION_MANIFOLD_ACTIVATION_MIRROR_HANDOFF.md",
+  "manifold_lineage_ref": "control/manifold-lineage.d/hil-resident-session-manifold-activation-001.json",
+  "resident_request_ref": "control/resident-execution-request.d/hil-resident-session-manifold-activation-001.json",
+  "consumer_ref": "control/resident-execution-request.d/consume-hil-resident-session-manifold-activation.py",
+  "subordinate_task_ids": [
+    "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+    "COSV-LIVE-PACKET-AUTOMATION-006",
+    "SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001",
+    "SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001",
+    "SHWP-TV-TVC-RESIDENT-PROOF-001",
+    "SHWP-DURABLE-RUNTIME-ACTIVATION",
+    "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"
+  ],
+  "authority": {
+    "execution_owner": "CANONICAL_WORKERCOORDINATOR",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "heartbeat_grants_execution_authority": false,
+    "request_grants_execution_authority": false,
+    "second_machine_required": false
+  },
+  "completion": {
+    "source_complete": false,
+    "runtime_complete": false,
+    "activation_claimed": false
+  }
+}
