@@ -95,6 +95,18 @@ SV001 Master Records custody/reconstruction is explicitly classified as a `MACHI
 
 HeartBeat and HB-derived carriers remain timing/reference/freshness/correlation/carriage mechanisms only and grant no execution, admission, credential, routing, transition, claim/fence, custody, publication, receiving, or consequence authority.
 
+### Canonical Work task ingress
+
+Canonical Work task ingress applies to tasks that already exist in the canonical Task Registry. The existing resident Canonical Work consumer may visit multiple explicit task request specifications without creating a second dispatcher, WorkerCoordinator, scheduler, heartbeat, or oscillator. Each request binds the existing `task_id + task.v1 vector` to its registered source state before execution eligibility is evaluated.
+
+The ingress mechanism does not create task identity, mint a WorkerCoordinator claim or fence, grant credentials, authorize an Interlock/InTr transition, or prove runtime execution. The Task Registry remains work-intent/coordination truth, WorkerCoordinator remains claim/fence authority, TV/TVC remains credential authority, Interlock/InTr remains governed transition authority, and Master Records remains observed-reality/reconstruction authority. Multiple explicit task request specifications therefore reuse the same resident ingress mechanism while preserving each task's exact identity and evidence predicates.
+
+### Cross-task runtime-presence evidence
+
+Cross-task runtime-presence evidence is subject-bound observation, not generic proof that arbitrary work executed. shared cross-task reuse is currently deferred until authentic subject binding identifies the relevant `runtime_root`, `resident.node_id` when available from authentic runtime evidence, and the canonical worker runtime identity.
+
+A process-alive or runtime-presence receipt does **not** prove that a specific request was consumed, that a task executed, or that its completion predicate was satisfied. HeartBeat remains non-authorizing: heartbeat/oscillator evidence can support timing, freshness, correlation, and observation, but cannot grant execution, admission, claim/fence, credential, routing, transition, custody, publication, or completion authority.
+
 ### Independent post-terminal SV001 evidence continuation
 
 The registered continuation task `STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001` is independently selectable by the existing WorkerCoordinator after the canonical SV001 execution is already terminal. This prevents downstream Master Records/SV002 evidence progression from being coupled only to retries of the parent SV001 consumer.
