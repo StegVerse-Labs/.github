@@ -7,7 +7,7 @@ Continuation task: `STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001`
 COSV task vector: `50000000100000`
 Custody task: `MR-STEGVERSE001-BOUNDED-AUTONOMY-001`
 Observer successor: `SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001`
-State: `HANDOFF_READY_GOVERNANCE_BYPASS_AND_PROOF_TRANSPORT_INTERFACE_REPAIRED_AUTHENTIC_RUNTIME_EVIDENCE_PENDING`
+State: `HANDOFF_READY_GOVERNANCE_BYPASS_AND_PROOF_TRANSPORT_SCOPE_REPAIRED_AUTHENTIC_RUNTIME_EVIDENCE_PENDING`
 
 ## Canonical continuation pointer
 
@@ -64,14 +64,7 @@ No merge, CI run, deployment, cache refresh, heartbeat, prior receipt, recovered
 
 ## Existing governed Site custody path
 
-`StegOSWebBootstrap.executeMasterRecordsSv001Custody()` remains the canonical current-iPhone transition executor. It:
-
-1. requires exact canonical G23;
-2. derives the current HB32 reference/carrier binding;
-3. asks the existing root Universal InTr `MasterRecords:SV001Custody` profile for a fresh decision;
-4. requires exact contemporaneous `ALLOW`;
-5. submits exact source + retained admission to the existing Master Records service-worker endpoint;
-6. requires custody/reconstruction `PASS` and retained journal replay `PASS`.
+`StegOSWebBootstrap.executeMasterRecordsSv001Custody()` remains the canonical current-iPhone transition executor. It requires exact canonical G23, obtains a fresh root Universal InTr `MasterRecords:SV001Custody` decision, requires contemporaneous `ALLOW`, submits exact source plus retained admission to canonical Master Records, and requires custody/reconstruction plus journal replay `PASS`.
 
 Canonical proof schema:
 
@@ -79,7 +72,7 @@ Canonical proof schema:
 stegos.master-records.portable-sv001-custody-proof/v1
 ```
 
-The proof must retain the exact source identity, InTr admission receipt/journal hashes, custody/reconstruction hashes, final replay tail, current-iPhone execution surface, and explicit non-authority fields.
+The proof must retain exact source identity, InTr admission receipt/journal hashes, custody/reconstruction hashes, final replay tail, current-iPhone execution surface, and explicit non-authority fields.
 
 ## Independent continuation WorkerCoordinator binding
 
@@ -93,7 +86,7 @@ The task remains independently machine-selectable through the existing WorkerCoo
 
 ## Governance-bypass repair
 
-Post-merge review found that `scripts/continue_stegverse001_evidence_chain.py` directly invoked the Master Records resident watcher. That watcher could write reconstruction/custody state without itself verifying the fresh root-InTr admission required by this handoff.
+Post-merge review found `scripts/continue_stegverse001_evidence_chain.py` directly invoked the Master Records resident watcher, which could mutate custody/reconstruction without independently verifying the fresh root-InTr admission required here.
 
 Repair:
 
@@ -113,35 +106,44 @@ Tests forbid the direct watcher/import path and require retained InTr admission 
 
 ## Governed Site custody proof transport interface
 
-A second integration defect was identified after the governance repair: the continuation expected a native filesystem proof at:
-
-```text
-~/.stegverse/state/stegverse001-evidence-chain/site-master-records-custody.latest.json
-```
-
-The canonical Site custody executor instead returns/retains its proof in browser/service-worker continuity state. Therefore the worker could remain correctly fail-closed forever even after authentic custody completed.
-
-The continuation worker now accepts the canonical Site custody proof as non-authorizing evidence inside its existing WorkerCoordinator invocation:
+The continuation worker accepts the canonical Site custody proof as non-authorizing evidence through:
 
 ```text
 invocation.evidence.site_governed_custody_proof
 ```
 
-Repair:
+Initial transport repair:
 
 ```text
 bd5208ac3132dd1398088b8b0e0b0be925bf17da
+119937537fd5043dc2cb2abfdc61a4fdc21020c9
 ```
 
-The worker materializes that evidence only inside its bound local state and passes the path to the canonical continuation. The continuation then independently validates the proof. Evidence transport does not mint a WorkerCoordinator claim/fence, InTr admission, custody authority, execution authority, credential authority, or SV002 authority.
+That repair exposed a bound-state scope mismatch: the worker originally materialized the proof beneath `evidence/**`, while the registered process adapter admits only `receipts/**` and `observed/**`. A real proof delivery would therefore have been rejected by the adapter before completion.
+
+Bound-state scope repair:
+
+```text
+1f5082d73f10ad765d3618a4496d1b51054a2869
+```
+
+The canonical proof location inside the continuation bound state is now:
+
+```text
+observed/site-master-records-custody.latest.json
+```
+
+This path is already covered by the existing adapter's `observed/**` admission and requires no broader state scope.
 
 Regression coverage:
 
 ```text
-119937537fd5043dc2cb2abfdc61a4fdc21020c9
+ccc8f4e09c70b95646297add1c33d78575333d22
 ```
 
-Tests verify canonical proof-schema transport, reject wrong proof schemas, and preserve `NONE_EVIDENCE_ONLY` authority semantics.
+Tests now require the proof path to be inside the admitted `observed/**` lane and verify that an already-materialized observed proof is reused when a later invocation carries no duplicate proof object.
+
+Proof transport remains evidence-only. It mints no WorkerCoordinator claim/fence, InTr admission, custody authority, execution authority, credential authority, or SV002 authority.
 
 Canonical task-record reconciliation:
 
@@ -149,7 +151,7 @@ Canonical task-record reconciliation:
 61a9edb9501bdd92b6c030457ba13a48735c3865
 ```
 
-The task record now explicitly tracks `SITE_GOVERNED_CUSTODY_PROOF_DELIVERED_TO_CONTINUATION` as a runtime predicate rather than incorrectly treating source availability as proof delivery.
+The task record tracks `SITE_GOVERNED_CUSTODY_PROOF_DELIVERED_TO_CONTINUATION` as a runtime predicate rather than treating source availability as proof delivery.
 
 ## Current evidence state
 
@@ -164,6 +166,7 @@ Site automatic G23 -> governed custody executor: MERGED / RELEASED
 independent continuation WorkerCoordinator binding: MERGED / MACHINE-SELECTABLE
 governance-bypass repair: COMMITTED ON MAIN
 Site proof invocation transport interface: COMMITTED ON MAIN
+Site proof bound-state scope alignment: COMMITTED ON MAIN
 current-device v14 consumption: NOT YET CLAIMED
 fresh root-InTr ALLOW for custody: NOT YET CLAIMED
 Master Records custody PASS: NOT YET CLAIMED
@@ -185,6 +188,7 @@ partial/historical admission or custody -> no retroactive authorization
 Site governed custody proof missing -> continuation HANDOFF_READY / retry
 Site governed custody proof invalid -> continuation HANDOFF_READY / retry; no mutation
 transported proof -> evidence only; revalidate before use
+proof outside admitted bound-state scope -> adapter rejects mutation
 Master Records reconstruction PASS absent -> SV002 pending
 SV002 nonterminal/failure -> retry SV002 independently; never reopen SV001
 ```
@@ -198,12 +202,12 @@ existing WorkerCoordinator selects STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001
 -> fresh root-InTr ALLOW or fail closed
 -> Master Records custody/reconstruction PASS
 -> governed Site custody proof is retained
--> existing WorkerCoordinator invocation supplies proof as evidence
+-> existing runtime materializes/supplies proof into admitted observed/** continuation state
 -> continuation independently validates proof without Master Records mutation
 -> SV002 observation/disposition
 ```
 
-The remaining source-level question is not how to create another runtime bridge; it is whether the existing runtime coordinator that assembles the continuation invocation is already wired to source `site_governed_custody_proof` from the Site continuity evidence. Until that authentic delivery is observed, the predicate remains unresolved.
+The remaining transport question is whether the existing current-device/runtime evidence carrier actually deposits the authentic Site proof into the continuation's admitted `observed/**` state or directly populates the invocation evidence object. Until authentic delivery is observed, that predicate remains unresolved.
 
 If progression stalls, diagnose the existing HB32/self-heal/source-refresh/Site/root-InTr/Master Records/WorkerCoordinator evidence-delivery/SV002 surfaces before proposing another runtime component.
 
