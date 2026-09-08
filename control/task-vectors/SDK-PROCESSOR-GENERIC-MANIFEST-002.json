@@ -1,0 +1,36 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SDK-PROCESSOR-GENERIC-MANIFEST-002",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "71000000100110",
+  "evidence_refs": [
+    "StegVerse-org/StegVerse-SDK:GENERIC_MANIFEST_PROCESSING_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:MANIFEST_BUILDER_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:tasks/SDK-PROCESSOR-GENERIC-MANIFEST-002.json",
+    "StegVerse-org/StegVerse-SDK:pull/126",
+    "StegVerse-org/StegVerse-SDK:commit/cb53cb0304efbd21e5a5700677c4f3fb8ef7b874",
+    "StegVerse-org/StegVerse-SDK:actions/runs/34280687649",
+    "StegVerse-org/StegVerse-SDK:actions/runs/34280687697",
+    "StegVerse-org/StegVerse-SDK:actions/runs/34280687650",
+    "StegVerse-org/StegVerse-SDK:actions/runs/34280687651"
+  ],
+  "observed_at": "2026-09-08T21:30:00Z",
+  "exact_metrics": {
+    "lifecycle": "COMPLETE",
+    "archive_ready": true,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": true,
+    "activated": true,
+    "propagated": false
+  },
+  "authority_effect": "NONE",
+  "canonical_owner_ref": "StegVerse-org/StegVerse-SDK:tasks/SDK-PROCESSOR-GENERIC-MANIFEST-002.json"
+}
