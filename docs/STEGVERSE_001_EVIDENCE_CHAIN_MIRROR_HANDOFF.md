@@ -7,7 +7,7 @@ Continuation task: `STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001`
 COSV task vector: `50000000100000`
 Custody task: `MR-STEGVERSE001-BOUNDED-AUTONOMY-001`
 Observer successor: `SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001`
-State: `HANDOFF_READY_GOVERNANCE_BYPASS_AND_PROOF_TRANSPORT_SCOPE_REPAIRED_AUTHENTIC_RUNTIME_EVIDENCE_PENDING`
+State: `HANDOFF_READY_GOVERNED_CUSTODY_PROOF_RENDEZVOUS_WIRED_AUTHENTIC_RUNTIME_EVIDENCE_PENDING`
 
 ## Canonical continuation pointer
 
@@ -28,6 +28,8 @@ canonical terminal G23
 -> fresh current-device root-InTr governance
 -> canonical Master Records custody/reconstruction
 -> governed Site custody proof
+-> non-authorizing resident rendezvous evidence relay
+-> admitted continuation observed/** state
 -> retained same-execution reconstruction PASS
 -> SV002 observation/disposition
 ```
@@ -57,10 +59,11 @@ Master Records: custody/reconstruction authority
 SV002: observation/disposition only
 HB32: timing/freshness/correlation only; authority NONE
 Site: current-device materialization/carrier only; authority NONE
-Site proof transport: evidence movement only; authority NONE
+Resident rendezvous: evidence transport only; execution authority NONE
+Transported Site proof: evidence only; authority NONE
 ```
 
-No merge, CI run, deployment, cache refresh, heartbeat, prior receipt, recovered hash, Task Registry entry, COSV vector, WorkerCoordinator selection, or transported Site proof authorizes custody or SV002.
+No merge, CI run, deployment, cache refresh, heartbeat, prior receipt, recovered hash, Task Registry entry, COSV vector, WorkerCoordinator selection, rendezvous retention, or transported Site proof authorizes custody or SV002.
 
 ## Existing governed Site custody path
 
@@ -102,56 +105,100 @@ Regression coverage:
 960b9dfdfe2b79243c23329e6a9efc249e990348
 ```
 
-Tests forbid the direct watcher/import path and require retained InTr admission plus reconstruction PASS semantics.
+## Governed Site custody proof bound-state contract
 
-## Governed Site custody proof transport interface
-
-The continuation worker accepts the canonical Site custody proof as non-authorizing evidence through:
+The continuation consumes the canonical Site proof only as non-authorizing evidence. Canonical bound-state location:
 
 ```text
-invocation.evidence.site_governed_custody_proof
+observed/site-master-records-custody.latest.json
 ```
 
-Initial transport repair:
+Initial invocation transport support:
 
 ```text
 bd5208ac3132dd1398088b8b0e0b0be925bf17da
 119937537fd5043dc2cb2abfdc61a4fdc21020c9
 ```
 
-That repair exposed a bound-state scope mismatch: the worker originally materialized the proof beneath `evidence/**`, while the registered process adapter admits only `receipts/**` and `observed/**`. A real proof delivery would therefore have been rejected by the adapter before completion.
-
-Bound-state scope repair:
+Bound-state scope correction:
 
 ```text
 1f5082d73f10ad765d3618a4496d1b51054a2869
-```
-
-The canonical proof location inside the continuation bound state is now:
-
-```text
-observed/site-master-records-custody.latest.json
-```
-
-This path is already covered by the existing adapter's `observed/**` admission and requires no broader state scope.
-
-Regression coverage:
-
-```text
 ccc8f4e09c70b95646297add1c33d78575333d22
 ```
 
-Tests now require the proof path to be inside the admitted `observed/**` lane and verify that an already-materialized observed proof is reused when a later invocation carries no duplicate proof object.
+The adapter admits `observed/**`; proof materialization outside that scope is forbidden.
 
-Proof transport remains evidence-only. It mints no WorkerCoordinator claim/fence, InTr admission, custody authority, execution authority, credential authority, or SV002 authority.
+## Automatic Site -> resident proof rendezvous — 2026-09-08
 
-Canonical task-record reconciliation:
+The remaining browser-to-resident gap is now source-wired through the already-existing Service Gateway resident rendezvous rather than a new transport/runtime plane.
+
+Gateway evidence mailbox implementation:
 
 ```text
-61a9edb9501bdd92b6c030457ba13a48735c3865
+StegVerse-org/LLM-adapter
+3d35b4afef55474881c5a73d6879775b3159a343
+  llm_adapter/resident_evidence_api.py
+
+40b177d0b929d8c2182d69574948ae551882d952
+  combined gateway activates the router
+  advertises the evidence endpoint
+
+a7ae5935c5a9d542176c7437905eb38c814bbe8b
+  regression tests
 ```
 
-The task record tracks `SITE_GOVERNED_CUSTODY_PROOF_DELIVERED_TO_CONTINUATION` as a runtime predicate rather than treating source availability as proof delivery.
+Canonical endpoint:
+
+```text
+/api/resident-rendezvous/v1/evidence/site-governed-custody
+```
+
+The mailbox accepts only the exact governed current-iPhone Site custody proof contract, binds it to one canonical resident node ref, rejects conflicting proof replacement, and returns:
+
+```text
+gateway_execution_authority = NONE
+evidence_grants_authority = false
+authority_effect = NONE_EVIDENCE_ONLY
+```
+
+Current-iPhone Site automatic relay:
+
+```text
+StegVerse-Labs/Site
+86c2a2e93158b480d6eb9b610e6829782a5d4dbb
+  stegos-bootstrap/master-records-auto-recovery.js
+```
+
+After `executeMasterRecordsSv001Custody()` returns custody/reconstruction `PASS`, the existing page lifecycle automatically:
+
+1. validates the governed proof;
+2. discovers the current resident through the existing same-origin resident rendezvous;
+3. hashes the exact proof;
+4. posts it to the evidence mailbox;
+5. records `RETAINED` when transport succeeds;
+6. preserves authentic custody PASS if transport is temporarily unavailable so page-resume retry can reattempt without rerunning SV001.
+
+Continuation resident observation:
+
+```text
+StegVerse-Labs/.github
+2aa30cd05d3703e871a2c24631c0424a1fc78fdc
+  continuation worker reads the existing rendezvous mailbox when no local proof is present
+  validates evidence-only authority boundaries
+  materializes only observed/site-master-records-custody.latest.json
+
+d72a630f0198c9db5c087e7aef30895a3153c17a
+  adapter exposes only STEGVERSE_RESIDENT_RENDEZVOUS_URL and STEGVERSE_RESIDENT_RENDEZVOUS_NODE_REF
+
+d19fabe8e93fba28cc8116011648f0346f0bd6d4
+  executable handoff admits only resident-rendezvous-site-custody-evidence-read
+
+6d41e5c0b31baf1d13ba812076d192876e8a5d8c
+  transport regression tests
+```
+
+This uses the existing WorkerCoordinator cycle and existing resident rendezvous. It creates no new scheduler, heartbeat, oscillator, WorkerCoordinator, custody authority, admission authority, or credential authority.
 
 ## Current evidence state
 
@@ -165,13 +212,16 @@ canonical retained G23 recovery: MERGED / VALIDATED
 Site automatic G23 -> governed custody executor: MERGED / RELEASED
 independent continuation WorkerCoordinator binding: MERGED / MACHINE-SELECTABLE
 governance-bypass repair: COMMITTED ON MAIN
-Site proof invocation transport interface: COMMITTED ON MAIN
-Site proof bound-state scope alignment: COMMITTED ON MAIN
-current-device v14 consumption: NOT YET CLAIMED
+Site proof bound-state contract: COMMITTED ON MAIN
+Site -> resident rendezvous submission path: COMMITTED
+resident evidence mailbox: COMMITTED / ROUTER WIRED
+continuation rendezvous fetch/materialization: COMMITTED ON MAIN
+current-device runtime consumption of these latest sources: NOT YET CLAIMED
 fresh root-InTr ALLOW for custody: NOT YET CLAIMED
 Master Records custody PASS: NOT YET CLAIMED
 Master Records reconstruction PASS: NOT YET CLAIMED
-Site governed custody proof delivered to continuation: NOT YET CLAIMED
+Site governed custody proof mailbox RETAINED: NOT YET CLAIMED
+Site governed custody proof materialized to continuation observed/**: NOT YET CLAIMED
 retained same-execution downstream chain: NOT YET CLAIMED
 SV002 authentic disposition: NOT YET CLAIMED
 ```
@@ -186,9 +236,10 @@ G23 missing/ambiguous -> fail closed; no G24 substitution
 fresh root-InTr absent/DENY/mismatch/timeout -> fail closed before custody
 partial/historical admission or custody -> no retroactive authorization
 Site governed custody proof missing -> continuation HANDOFF_READY / retry
-Site governed custody proof invalid -> continuation HANDOFF_READY / retry; no mutation
-transported proof -> evidence only; revalidate before use
-proof outside admitted bound-state scope -> adapter rejects mutation
+rendezvous unavailable -> custody remains valid; transport retries on existing page/worker lifecycle
+rendezvous proof conflict -> fail closed; no replacement
+transported proof -> evidence only; independently revalidate before use
+proof outside admitted observed/** scope -> adapter rejects mutation
 Master Records reconstruction PASS absent -> SV002 pending
 SV002 nonterminal/failure -> retry SV002 independently; never reopen SV001
 ```
@@ -196,20 +247,21 @@ SV002 nonterminal/failure -> retry SV002 independently; never reopen SV001
 ## Next admissible machine transition
 
 ```text
-existing WorkerCoordinator selects STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001
+existing current-device Site lifecycle consumes latest source
 -> exact canonical G23 is available
--> current-device Site automatic continuation invokes executeMasterRecordsSv001Custody()
+-> executeMasterRecordsSv001Custody()
 -> fresh root-InTr ALLOW or fail closed
 -> Master Records custody/reconstruction PASS
--> governed Site custody proof is retained
--> existing runtime materializes/supplies proof into admitted observed/** continuation state
+-> Site posts exact proof to existing resident rendezvous evidence mailbox
+-> mailbox RETAINED
+-> existing WorkerCoordinator selects STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001
+-> continuation fetches proof using configured rendezvous URL + canonical resident node ref
+-> proof materializes under observed/**
 -> continuation independently validates proof without Master Records mutation
 -> SV002 observation/disposition
 ```
 
-The remaining transport question is whether the existing current-device/runtime evidence carrier actually deposits the authentic Site proof into the continuation's admitted `observed/**` state or directly populates the invocation evidence object. Until authentic delivery is observed, that predicate remains unresolved.
-
-If progression stalls, diagnose the existing HB32/self-heal/source-refresh/Site/root-InTr/Master Records/WorkerCoordinator evidence-delivery/SV002 surfaces before proposing another runtime component.
+The source-level browser-to-resident proof transport is now present. Remaining completion is authentic current-device/runtime observation of that chain.
 
 ## User work
 
