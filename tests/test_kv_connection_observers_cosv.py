@@ -5,7 +5,7 @@ import json
 import unittest
 from pathlib import Path
 
-from tests.cosv_index_helpers import indexed_worker_ids, load_effective_index
+from tests.cosv_index_helpers import indexed_worker_ids, load_effective_index, load_live_worker_coverage
 
 ROOT = Path(__file__).resolve().parents[1]
 TASKS = {
@@ -48,7 +48,7 @@ class KVConnectionObserverCOSVTests(unittest.TestCase):
 
     def test_source_bindings_and_index_coverage_are_canonical(self):
         index = json.loads((ROOT / "control/task-vector-index.json").read_text(encoding="utf-8"))
-        coverage = json.loads((ROOT / "control/cosv-global-registry-coverage.json").read_text(encoding="utf-8"))
+        live = load_live_worker_coverage(ROOT)
         indexed = load_effective_index(ROOT)
         for task_id in TASKS:
             _, _, task, handoff = self.load(task_id)
@@ -56,14 +56,13 @@ class KVConnectionObserverCOSVTests(unittest.TestCase):
             self.assertEqual(task["source_state_vector_ref"], ref)
             self.assertEqual(handoff["source_state_vector_ref"], ref)
             self.assertEqual(indexed[task_id]["vector"], "50000000102000")
-            self.assertNotIn(task_id, coverage["active_worker_task_ids_missing_canonical_cosv"])
+            self.assertNotIn(task_id, live["active_worker_task_ids_missing_canonical_cosv"])
         self.assertEqual(index["coverage"]["indexed_vectorized_tasks"], len(index["tasks"]))
-        self.assertEqual(coverage["worker_registry_summary"]["canonically_indexed_task_ids"], len(indexed_worker_ids(ROOT)))
+        self.assertEqual(live["canonically_indexed_task_ids"], len(indexed_worker_ids(ROOT)))
         self.assertGreaterEqual(len(indexed), len(index["tasks"]))
-        worker_gap = coverage["worker_registry_summary"]["active_unvectorized_unique_task_ids"]
-        self.assertEqual(worker_gap, len(coverage["active_worker_task_ids_missing_canonical_cosv"]))
-        org_gap = coverage["organization_registry_summary"]["active_unvectorized_task_ids"]
-        self.assertEqual(coverage["total_active_unvectorized_unique_task_ids"], worker_gap + org_gap)
+        self.assertEqual(live["active_unvectorized_unique_task_ids"], 0)
+        self.assertEqual(live["organization_active_unvectorized_task_ids"], 0)
+        self.assertEqual(live["total_active_unvectorized_unique_task_ids"], 0)
 
     def test_health_reconciler_cannot_promote_connection_verification_or_provider_authority(self):
         _, record, task, handoff = self.load("KV-CONNECTION-HEALTH-RECONCILER-001")
