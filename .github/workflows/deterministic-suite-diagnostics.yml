@@ -45,10 +45,10 @@ jobs:
             env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "${GITHUB_SHA}"
           fi
           git checkout --detach FETCH_HEAD
-          mkdir -p /tmp/stegverse-ci-bin .ci-evidence
+          mkdir -p /tmp/stegverse-ci-bin ci-evidence
           ln -sf "$(command -v python3)" /tmp/stegverse-ci-bin/python
           echo /tmp/stegverse-ci-bin >> "$GITHUB_PATH"
-          git rev-parse HEAD > .ci-evidence/tested-commit.txt
+          git rev-parse HEAD > ci-evidence/tested-commit.txt
 
       - name: Prove diagnostic environment has no GitHub credential token
         run: |
@@ -63,7 +63,7 @@ jobs:
         run: |
           set +e
           set -o pipefail
-          python -m unittest discover -v tests 2>&1 | tee .ci-evidence/deterministic-suite.log
+          python -m unittest discover -v tests 2>&1 | tee ci-evidence/deterministic-suite.log
           suite_status=${PIPESTATUS[0]}
           export SUITE_STATUS="$suite_status"
           python - <<'PY'
@@ -71,7 +71,7 @@ jobs:
           import os
           from pathlib import Path
 
-          evidence_dir = Path('.ci-evidence')
+          evidence_dir = Path('ci-evidence')
           log_path = evidence_dir / 'deterministic-suite.log'
           tested_commit = (evidence_dir / 'tested-commit.txt').read_text(encoding='utf-8').strip()
           log_text = log_path.read_text(encoding='utf-8', errors='replace') if log_path.exists() else ''
@@ -121,7 +121,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: deterministic-suite-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}
-          path: .ci-evidence/
+          path: ci-evidence/
           if-no-files-found: error
           retention-days: 14
 
