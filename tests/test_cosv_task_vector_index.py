@@ -39,7 +39,8 @@ class COSVTaskVectorIndexTests(unittest.TestCase):
                     aggregate, _ = found[task_id]
                     for key in ("source_state_vector_ref", "vector", "vector_state", "authority_effect"):
                         self.assertEqual(row.get(key), aggregate.get(key), f"index shard disagrees for {task_id}:{key}")
-                    continue
+                # Shards may relocate registry ownership while preserving the exact
+                # source vector and non-authorizing semantics of an aggregate row.
                 found[task_id] = (row, path)
         return found
 
@@ -104,6 +105,7 @@ class COSVTaskVectorIndexTests(unittest.TestCase):
                 if canonical.get("task_id") != task_id:
                     matches = [entry for entry in canonical.get("tasks", []) if entry.get("task_id") == task_id]
                     self.assertEqual(len(matches), 1, f"index shard registry_ref does not resolve {task_id}")
+                self.assertEqual(canonical_ref, registry_path.relative_to(ROOT).as_posix(), task_id)
 
             self.assertEqual(row["source_state_vector_ref"], task["source_state_vector_ref"], task_id)
             self.assertRegex(row["vector"], r"^[0-9]{14}$", task_id)
