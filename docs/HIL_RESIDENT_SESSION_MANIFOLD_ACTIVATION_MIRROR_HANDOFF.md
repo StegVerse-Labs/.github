@@ -1,6 +1,6 @@
 # HIL Resident Session Manifold Activation Mirror Handoff
 
-Updated: 2026-09-07
+Updated: 2026-09-08
 Repository: `StegVerse-Labs/.github`
 Issue: `#1178`
 Goal: `HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001`
@@ -17,6 +17,17 @@ Inherited canonical sources:
 - `docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md`
 - `scripts/dispatch_resident_execution_requests.py`
 - `scripts/run_worker_runtime.py`
+
+## Current continuation state
+
+- PR `#1179` remains OPEN and unmerged.
+- README completeness is already committed and remains `NO README CHANGE REQUIRED / EXISTING DOCUMENTED SOURCE-REFRESH CONTRACT` unless later remediation changes externally meaningful semantics.
+- The three previously active COSV gaps are closed through their existing evidence-backed vectors.
+- Corrected aggregate COSV index blob exists as `53bb6d7e9cfe4e53b6c843de1b12d93fa16c2297` and contains 93 aggregate rows; it still must be attached to the feature branch path `control/task-vector-index.json` before exact-head validation.
+- Worker coverage must be reconciled to the corrected live projection (`88` unique worker task IDs / `81` canonically indexed active worker task IDs) and attached to `control/cosv-global-registry-coverage.json`.
+- Obsolete fixed-count worker denominator assertions were removed in commit `369dda428b6866ad5c39fd26b0eaae27c405ec1d`; the test now validates internal denominator relationships instead of freezing a historical count.
+- `main` advanced after the prior reviewed head and is currently ahead of the feature branch merge base through `a6d88ece0e680632ac894c3342756c856cbced00`; exact collision reconciliation is required after the corrected aggregate/coverage projections are attached.
+- Runtime HIL activation/transport proof remains intentionally pending authentic resident execution evidence and is not satisfied by source validation or GitHub Actions.
 
 ## Governing objective
 
@@ -102,7 +113,9 @@ Source completion requires:
 - resident consumer materialized on the existing WorkerCoordinator surface;
 - resident source refresh carries the static lineage/task-record inputs required by the umbrella and nested manifold consumers;
 - deterministic tests proving lane identity, selector mapping, no authority merge, continued visitation semantics, and source-refresh parity;
-- branch validation and collision review.
+- corrected aggregate COSV index and live worker coverage projections attached to the branch;
+- branch validation and collision review against current `main`;
+- exact-head organization-control and Heartbeat validation green before merge.
 
 Runtime completion remains separate and requires authentic child-produced receipts. The manifold itself grants no activation authority.
 
