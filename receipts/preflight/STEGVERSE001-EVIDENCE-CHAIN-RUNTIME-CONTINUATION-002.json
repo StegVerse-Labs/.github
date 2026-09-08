@@ -1,0 +1,39 @@
+{
+  "schema": "stegverse.session-machine-preflight/v1",
+  "task_id": "STEGVERSE001-EVIDENCE-CHAIN-RUNTIME-CONTINUATION-002",
+  "goal_id": "STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001",
+  "evaluated_at": "2026-09-08T14:22:00-05:00",
+  "state": "PASS",
+  "authority_effect": "NONE_PREFLIGHT_ONLY",
+  "predecessor_preflight": "receipts/preflight/STEGVERSE001-EVIDENCE-CHAIN-RUNTIME-CONTINUATION-001.json",
+  "newly_resolved_requirement": "WorkerCoordinator process execution requires a machine-readable executable handoff reference for the independently registered continuation task.",
+  "reuse": {
+    "parent_authority_source": "handoffs/SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001.json#authority",
+    "canonical_continuation_handoff": "docs/STEGVERSE_001_EVIDENCE_CHAIN_MIRROR_HANDOFF.md",
+    "canonical_task_record": "data/canonical-task-records/STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001.json",
+    "worker_runtime": "scripts/run_worker_runtime.py"
+  },
+  "admitted_mutation_scope": [
+    "handoffs/STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001.json",
+    "control/worker-registry.d/stegverse001-evidence-chain-continuation-001.json",
+    "control/process-worker-adapters.d/stegverse001-evidence-chain-continuation-001.json",
+    "workers/stegverse001_evidence_chain_continuation_worker.py",
+    "data/runtime-solution-registry.d/hb32-existing-runtime-solutions.json",
+    "docs/STEGVERSE_001_EVIDENCE_CHAIN_MIRROR_HANDOFF.md",
+    "README.md",
+    "tests/test_stegverse001_evidence_chain_continuation_worker.py"
+  ],
+  "readme_impact": {
+    "material_function_change": true,
+    "readme_path": "README.md",
+    "readme_updated_in_change_set_required": true,
+    "reason": "Independent WorkerCoordinator selection/retry of the post-terminal continuation changes runtime retry semantics and must be documented."
+  },
+  "invariants": [
+    "NEW_HANDOFF_IS_ROUTING_AND_EXECUTION-CONTRACT_METADATA_ONLY",
+    "HANDOFF_DOES_NOT_MINT_AUTHORITY",
+    "PARENT_INDEPENDENT_TASK_CONTROL_AUTHORITY_IS_REFERENCED_NOT_RECREATED",
+    "EVERY_CUSTODY_STATE_CHANGE_STILL_REQUIRES_CURRENT_INTR_GOVERNANCE",
+    "SV001_TERMINAL_EXECUTION_MUST_NOT_RERUN"
+  ]
+}

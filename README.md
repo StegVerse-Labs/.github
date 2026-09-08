@@ -95,6 +95,14 @@ SV001 Master Records custody/reconstruction is explicitly classified as a `MACHI
 
 HeartBeat and HB-derived carriers remain timing/reference/freshness/correlation/carriage mechanisms only and grant no execution, admission, credential, routing, transition, claim/fence, custody, publication, receiving, or consequence authority.
 
+### Independent post-terminal SV001 evidence continuation
+
+The registered continuation task `STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001` is independently selectable by the existing WorkerCoordinator after the canonical SV001 execution is already terminal. This prevents downstream Master Records/SV002 evidence progression from being coupled only to retries of the parent SV001 consumer.
+
+The dedicated binding reuses the existing HB32/self-heal/local-source-refresh runtime and `scripts/continue_stegverse001_evidence_chain.py`. It does **not** rerun terminal SV001, create another heartbeat, oscillator, scheduler, WorkerCoordinator, custody authority, or human approval loop. A WorkerCoordinator claim/fence only admits the continuation worker to execute its bounded task; every new custody state change still requires its own current Interlock/InTr decision, TV/TVC remains credential authority, and Master Records remains custody/reconstruction authority.
+
+If the continuation returns a retryable evidence state, the worker returns `HANDOFF_READY` so the existing machine runtime can retry later. It reports `COMPLETED` only when the canonical continuation itself returns `PASS`. Source registration, worker selection, HB32 progression, or a prior SV001 receipt cannot substitute for the required downstream runtime evidence.
+
 ### Active task problem/solution semantics
 
 Problems and constraints are metadata, not an operational stopping state. A canonical unresolved task remains active or machine-owned while the current owner attempts a solution within its authority ceiling, derives a successor task, or transfers/escalates through the existing governed mechanism. `BLOCKED` is therefore not a canonical Task Registry `coordination_state`; dependency, problem/constraint, incident, and evidence metadata carry the reason a particular transition cannot yet proceed. Historical receipts or domain-specific schemas may retain older labels as provenance, but those labels do not create a current operational stopping state.

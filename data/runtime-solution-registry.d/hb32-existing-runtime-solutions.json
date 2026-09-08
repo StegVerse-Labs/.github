@@ -75,6 +75,25 @@
         "task-specific resident request consumer"
       ],
       "do_not_create": ["duplicate-request", "manual-claim-fence", "task-specific-heartbeat"]
+    },
+    {
+      "problem_class": "POST_TERMINAL_CONTINUATION_COUPLED_TO_PARENT_TASK_RETRY",
+      "reuse": "WorkerCoordinator-selectable continuation task binding",
+      "support": [
+        "control/worker-registry.d/stegverse001-evidence-chain-continuation-001.json",
+        "control/process-worker-adapters.d/stegverse001-evidence-chain-continuation-001.json",
+        "workers/stegverse001_evidence_chain_continuation_worker.py",
+        "scripts/continue_stegverse001_evidence_chain.py"
+      ],
+      "resolution": "make the already-canonical post-terminal continuation independently selectable by the existing WorkerCoordinator so HB32/self-heal/source-refresh cycles can retry downstream evidence without rerunning terminal SV001",
+      "do_not_create": [
+        "duplicate-SV001-execution",
+        "second-heartbeat",
+        "second-oscillator",
+        "second-WorkerCoordinator",
+        "manual-human-approval-loop",
+        "new-custody-authority"
+      ]
     }
   ],
   "authority": {

@@ -1,0 +1,43 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:stegverse001-evidence-chain-continuation-v1",
+      "authority_ref": "handoffs/STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001.json#authority",
+      "capabilities": [
+        "bounded_process_execution",
+        "durable_state_reconstruction",
+        "runtime_observation"
+      ],
+      "command": [
+        "python",
+        "workers/stegverse001_evidence_chain_continuation_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "HOME",
+        "STEGVERSE_BOUND_STATE_ROOT",
+        "STEGVERSE_MASTER_RECORDS_ROOT",
+        "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT",
+        "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT",
+        "STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"
+      ],
+      "bound_state_root": "~/.stegverse/state/stegverse001-evidence-chain-continuation",
+      "bound_state_allowed_paths": [
+        "receipts/**",
+        "observed/**"
+      ],
+      "timeout_seconds": 900,
+      "type": "process_json_bound_state_v0.1",
+      "notes": [
+        "This adapter never reruns terminal SV001; it invokes only the existing post-terminal continuation implementation.",
+        "HB32 is reference/freshness infrastructure only and grants no execution or transition authority.",
+        "Any custody state change remains subject to the contemporaneous Interlock/InTr and Master Records authority semantics already required by the canonical handoff.",
+        "Task/COSV registration and WorkerCoordinator selection do not authorize custody, SV002 disposition, credentials, or publication.",
+        "GitHub tokens, hosted runtime authority, a second heartbeat/oscillator/WorkerCoordinator, and manual human approval are forbidden."
+      ]
+    }
+  ]
+}
