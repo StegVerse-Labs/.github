@@ -19,6 +19,8 @@ TASK_ID = "STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001"
 WORKER_ID = "stegverse001-evidence-chain-continuation-worker"
 BOUND_STATE_ENV = "STEGVERSE_BOUND_STATE_ROOT"
 CONTINUATION_REL = Path("scripts/continue_stegverse001_evidence_chain.py")
+SITE_PROOF_REL = Path("evidence/site-master-records-custody.latest.json")
+SITE_PROOF_SCHEMA = "stegos.master-records.portable-sv001-custody-proof/v1"
 HOSTED_ENV = (
     "GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "VERCEL_ENV",
     "CF_PAGES", "CLOUDFLARE_WORKERS",
@@ -81,6 +83,30 @@ def require_bound_state_root() -> Path:
     return root
 
 
+def materialize_invocation_evidence(invocation: Mapping[str, Any], bound: Path) -> Path | None:
+    """Persist non-authorizing evidence supplied with the WorkerCoordinator invocation.
+
+    The browser/Site proof does not mint a claim, fence, custody authority, or execution
+    authority. It is merely transported into the worker's bound state and is revalidated
+    by the canonical continuation before it can satisfy any downstream predicate.
+    """
+    evidence = invocation.get("evidence") or {}
+    if not isinstance(evidence, Mapping):
+        raise RuntimeError("invocation evidence must be an object")
+    proof = evidence.get("site_governed_custody_proof")
+    if proof is None:
+        existing = bound / SITE_PROOF_REL
+        return existing if existing.is_file() else None
+    if not isinstance(proof, Mapping):
+        raise RuntimeError("site_governed_custody_proof must be an object")
+    if proof.get("schema") != SITE_PROOF_SCHEMA:
+        raise RuntimeError("site governed custody proof schema mismatch")
+    target = bound / SITE_PROOF_REL
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(json.dumps(dict(proof), indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return target
+
+
 def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
     if any(truthy(os.getenv(name)) for name in HOSTED_ENV):
         raise RuntimeError("hosted environment cannot execute sovereign continuation")
@@ -94,6 +120,7 @@ def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
     if not continuation.is_file():
         raise RuntimeError("canonical SV001 evidence-chain continuation source missing")
     bound = require_bound_state_root()
+    site_proof = materialize_invocation_evidence(invocation, bound)
 
     child = {
         "PATH": os.environ.get("PATH", "/usr/bin:/bin"),
@@ -102,9 +129,12 @@ def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
         "LC_ALL": "C.UTF-8",
         "STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY": "TV/TVC",
     }
+    command = [sys.executable, str(continuation), "--source-root", str(root)]
+    if site_proof is not None:
+        command.extend(["--site-custody-proof", str(site_proof)])
 
     proc = subprocess.run(
-        [sys.executable, str(continuation), "--source-root", str(root)],
+        command,
         cwd=root,
         env=child,
         capture_output=True,
@@ -125,6 +155,8 @@ def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
         "continuation_state": state,
         "continuation_returncode": proc.returncode,
         "continuation_result": result,
+        "site_governed_custody_proof_supplied": site_proof is not None,
+        "site_governed_custody_proof_authority_effect": "NONE_EVIDENCE_ONLY",
         "sv001_reexecution_performed": False,
         "master_records_mutation_performed": bool(result.get("master_records_mutation_performed", False)),
         "heartbeat_grants_execution_authority": False,

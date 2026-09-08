@@ -31,6 +31,7 @@
       "root-intr-master-records-custody-admission",
       "master-records-sv001-custody",
       "master-records-sv001-reconstruction",
+      "site-governed-custody-proof-transport",
       "retained-same-execution-evidence-chain",
       "sv002-public-observation-disposition"
     ]
@@ -55,6 +56,12 @@
       "ref": "master-records/orchestration:docs/STEGVERSE_001_BOUNDED_AUTONOMY_CUSTODY_MIRROR_HANDOFF.md"
     },
     {
+      "dependency_id": "DEP-SV001-SITE-GOVERNED-CUSTODY-PROOF-DELIVERY",
+      "kind": "RUNTIME_PREDICATE",
+      "state": "UNRESOLVED",
+      "ref": "workers/stegverse001_evidence_chain_continuation_worker.py"
+    },
+    {
       "dependency_id": "DEP-SV002-AUTHENTIC-DISPOSITION",
       "kind": "RUNTIME_PREDICATE",
       "state": "UNRESOLVED",
@@ -75,6 +82,9 @@
     "handoffs/HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009.json",
     "StegVerse-Labs/.github#1181",
     "StegVerse-Labs/.github@0dc0ca78e72573e0d129c8a4d0e70955b673b851",
+    "StegVerse-Labs/.github@fb26425243c05bc155972019beae474cd6b29d8f",
+    "StegVerse-Labs/.github@bd5208ac3132dd1398088b8b0e0b0be925bf17da",
+    "StegVerse-Labs/.github@119937537fd5043dc2cb2abfdc61a4fdc21020c9",
     "StegVerse-Labs/Site#1098",
     "StegVerse-Labs/Site#1099",
     "StegVerse-Labs/Site#1100",
@@ -86,6 +96,7 @@
     "FRESH_ROOT_INTR_CUSTODY_DECISION_OBSERVED",
     "MASTER_RECORDS_CUSTODY_PASS_OBSERVED",
     "MASTER_RECORDS_RECONSTRUCTION_PASS_OBSERVED",
+    "SITE_GOVERNED_CUSTODY_PROOF_DELIVERED_TO_CONTINUATION",
     "RETAINED_SAME_EXECUTION_DOWNSTREAM_CHAIN_OBSERVED",
     "SV002_AUTHENTIC_DISPOSITION_OBSERVED",
     "SV001_NOT_RERUN",
@@ -99,6 +110,7 @@
       "intr_task_admission",
       "master_records_custody",
       "master_records_reconstruction",
+      "site_governed_custody_proof_transport",
       "same_execution_evidence_retention",
       "sv002_observation_disposition"
     ],
@@ -112,6 +124,9 @@
     "continuation_worker_binding": "MERGED",
     "merge_ref": "StegVerse-Labs/.github#1181",
     "merge_commit": "0dc0ca78e72573e0d129c8a4d0e70955b673b851",
+    "governance_bypass_repair_commit": "fb26425243c05bc155972019beae474cd6b29d8f",
+    "site_proof_invocation_transport_commit": "bd5208ac3132dd1398088b8b0e0b0be925bf17da",
+    "site_proof_transport_tests_commit": "119937537fd5043dc2cb2abfdc61a4fdc21020c9",
     "runtime_predicates_complete": false,
     "authority_effect": "NONE_SOURCE_ONLY"
   },
@@ -136,6 +151,7 @@
     "source_state_proves_execution": false,
     "worker_claim_authority": "WORKERCOORDINATOR",
     "master_records_reality_authority": true,
+    "site_proof_transport_mints_authority": false,
     "interlock_intr_required_for_governed_ingress_egress": true
   }
 }
