@@ -19,7 +19,7 @@ TASK_ID = "STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001"
 WORKER_ID = "stegverse001-evidence-chain-continuation-worker"
 BOUND_STATE_ENV = "STEGVERSE_BOUND_STATE_ROOT"
 CONTINUATION_REL = Path("scripts/continue_stegverse001_evidence_chain.py")
-SITE_PROOF_REL = Path("evidence/site-master-records-custody.latest.json")
+SITE_PROOF_REL = Path("observed/site-master-records-custody.latest.json")
 SITE_PROOF_SCHEMA = "stegos.master-records.portable-sv001-custody-proof/v1"
 HOSTED_ENV = (
     "GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "VERCEL_ENV",
@@ -84,27 +84,26 @@ def require_bound_state_root() -> Path:
 
 
 def materialize_invocation_evidence(invocation: Mapping[str, Any], bound: Path) -> Path | None:
-    """Persist non-authorizing evidence supplied with the WorkerCoordinator invocation.
+    """Persist non-authorizing Site custody proof in the admitted observed/** lane.
 
-    The browser/Site proof does not mint a claim, fence, custody authority, or execution
-    authority. It is merely transported into the worker's bound state and is revalidated
-    by the canonical continuation before it can satisfy any downstream predicate.
+    The proof never mints a claim, fence, custody authority, or execution authority.
+    It is only carried into already-admitted bound state and is revalidated by the
+    canonical continuation before it can satisfy any downstream predicate.
     """
     evidence = invocation.get("evidence") or {}
     if not isinstance(evidence, Mapping):
         raise RuntimeError("invocation evidence must be an object")
     proof = evidence.get("site_governed_custody_proof")
+    existing = bound / SITE_PROOF_REL
     if proof is None:
-        existing = bound / SITE_PROOF_REL
         return existing if existing.is_file() else None
     if not isinstance(proof, Mapping):
         raise RuntimeError("site_governed_custody_proof must be an object")
     if proof.get("schema") != SITE_PROOF_SCHEMA:
         raise RuntimeError("site governed custody proof schema mismatch")
-    target = bound / SITE_PROOF_REL
-    target.parent.mkdir(parents=True, exist_ok=True)
-    target.write_text(json.dumps(dict(proof), indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    return target
+    existing.parent.mkdir(parents=True, exist_ok=True)
+    existing.write_text(json.dumps(dict(proof), indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return existing
 
 
 def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
@@ -156,6 +155,7 @@ def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
         "continuation_returncode": proc.returncode,
         "continuation_result": result,
         "site_governed_custody_proof_supplied": site_proof is not None,
+        "site_governed_custody_proof_ref": SITE_PROOF_REL.as_posix() if site_proof is not None else None,
         "site_governed_custody_proof_authority_effect": "NONE_EVIDENCE_ONLY",
         "sv001_reexecution_performed": False,
         "master_records_mutation_performed": bool(result.get("master_records_mutation_performed", False)),
