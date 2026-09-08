@@ -11,6 +11,7 @@
     "cosv_vector": "50000000100000",
     "parent_runtime": "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
     "parent_consumer": "scripts/consume_stegverse001_bounded_autonomy_request.py",
+    "worker_runtime": "scripts/run_worker_runtime.py",
     "resident_dispatcher": "scripts/dispatch_resident_execution_requests.py",
     "master_records_role": "MASTER_RECORDS",
     "cross_task_coordination": "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
@@ -29,12 +30,13 @@
   },
   "problem_class": "TASK_REQUEST_NOT_CONSUMED_WHILE_RUNTIME_PATH_EXISTS",
   "runtime_solution_reuse": {
-    "reuse": "scripts/dispatch_resident_execution_requests.py",
+    "reuse": "existing WorkerCoordinator + HB32 resident self-heal/source-refresh stack",
     "support": [
       "scripts/run_worker_runtime.py",
+      "scripts/repair_resident_worker_presence.py",
+      "scripts/refresh_sovereign_worker_runtime_source.py",
       "scripts/consume_stegverse001_bounded_autonomy_request.py",
-      "scripts/continue_stegverse001_evidence_chain.py",
-      "HB32 existing resident self-heal/source-refresh/dispatcher stack"
+      "scripts/continue_stegverse001_evidence_chain.py"
     ],
     "do_not_create": [
       "second-heartbeat",
@@ -46,25 +48,25 @@
     ]
   },
   "gap": {
-    "id": "SV001-DOWNSTREAM-RETRY-IS-COUPLED-TO-PARENT-AWARENESS-PROTECTED-CONSUMER",
-    "description": "The post-terminal evidence-chain retry is currently reached only through the awareness-protected stegverse001_bounded_autonomy dispatcher selector. The continuation handoff requires downstream retry to remain independently retryable after terminal SV001. A dedicated continuation selector/request may reuse the existing continuation implementation without rerunning SV001 or minting authority.",
-    "duplicate_equivalent_consumer_found": false,
+    "id": "SV001-DOWNSTREAM-RETRY-LACKS-INDEPENDENT-WORKER-BINDING",
+    "description": "The post-terminal evidence-chain retry exists in source but is reached only as a side effect of the parent SV001 consumer. The continuation handoff is now a distinct canonical machine-owned task and requires an independent WorkerCoordinator-selectable binding so the existing HB32/self-heal runtime can retry downstream evidence without rerunning terminal SV001.",
+    "duplicate_equivalent_worker_binding_found": false,
     "new_runtime_plane_required": false
   },
   "readme_impact": {
     "material_function_change": true,
     "readme_path": "README.md",
     "readme_updated_in_change_set_required": true,
-    "reason": "Adding a dedicated resident continuation selector changes runtime dispatch semantics and failure/retry behavior for the registered continuation task. README must document that downstream evidence progression is independently dispatchable after terminal SV001 while all current-governance and authority separation invariants remain unchanged."
+    "reason": "Adding a WorkerCoordinator-selectable post-terminal continuation changes runtime selection/retry semantics. README must document that the continuation is independently machine-selectable after terminal SV001 and that this creates no new authority or runtime plane."
   },
   "admitted_mutation_scope": [
-    "scripts/dispatch_resident_execution_requests.py",
-    "scripts/consume_stegverse001_evidence_chain_continuation_request.py",
-    "control/resident-execution-request.d/stegverse001-evidence-chain-continuation-001.json",
+    "control/worker-registry.d/stegverse001-evidence-chain-continuation-001.json",
+    "control/process-worker-adapters.d/stegverse001-evidence-chain-continuation-001.json",
+    "workers/stegverse001_evidence_chain_continuation_worker.py",
     "data/runtime-solution-registry.d/hb32-existing-runtime-solutions.json",
     "docs/STEGVERSE_001_EVIDENCE_CHAIN_MIRROR_HANDOFF.md",
     "README.md",
-    "tests/test_stegverse001_evidence_chain_continuation_dispatch.py"
+    "tests/test_stegverse001_evidence_chain_continuation_worker.py"
   ],
   "invariants": [
     "SV001_TERMINAL_EXECUTION_MUST_NOT_RERUN",
