@@ -9,9 +9,13 @@
     "StegVerse-org/StegVerse-SDK:pull/127",
     "StegVerse-org/StegVerse-SDK:commit/f6fc2226f776a54ef3caf808b234c0543121b934",
     "StegVerse-org/StegVerse-SDK:pull/128",
-    "StegVerse-Labs/admissibility-wiki:issue/66"
+    "StegVerse-org/StegVerse-SDK:pull/130",
+    "StegVerse-org/StegVerse-SDK:commit/5e14a4e61984829a6381ef2874d22adf06f94973",
+    "StegVerse-org/StegVerse-SDK:issue/129",
+    "StegVerse-Labs/admissibility-wiki:issue/66",
+    "StegVerse-Labs/admissibility-wiki:issue/65"
   ],
-  "observed_at": "2026-09-08T21:58:00Z",
+  "observed_at": "2026-09-08T22:24:00Z",
   "exact_metrics": {
     "lifecycle": "ACTIVE",
     "archive_ready": false,
@@ -26,7 +30,10 @@
     "blocker_count": 2,
     "evidence_complete": false,
     "activated": false,
-    "propagated": false
+    "propagated": false,
+    "downstream_work_durably_transferred": true,
+    "site_machine_owned_dependency": true,
+    "admissibility_worker_owned_dependency": true
   },
   "authority_effect": "NONE",
   "canonical_owner_ref": "StegVerse-org/StegVerse-SDK:tasks/SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003.json"
