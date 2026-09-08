@@ -23,10 +23,11 @@ Inherited canonical sources:
 - PR `#1179` remains OPEN and unmerged.
 - README completeness is already committed and remains `NO README CHANGE REQUIRED / EXISTING DOCUMENTED SOURCE-REFRESH CONTRACT` unless later remediation changes externally meaningful semantics.
 - The three previously active COSV gaps are closed through their existing evidence-backed vectors.
-- Corrected aggregate COSV index blob exists as `53bb6d7e9cfe4e53b6c843de1b12d93fa16c2297` and contains 93 aggregate rows; it still must be attached to the feature branch path `control/task-vector-index.json` before exact-head validation.
-- Worker coverage must be reconciled to the corrected live projection (`88` unique worker task IDs / `81` canonically indexed active worker task IDs) and attached to `control/cosv-global-registry-coverage.json`.
-- Obsolete fixed-count worker denominator assertions were removed in commit `369dda428b6866ad5c39fd26b0eaae27c405ec1d`; the test now validates internal denominator relationships instead of freezing a historical count.
-- `main` advanced after the prior reviewed head and is currently ahead of the feature branch merge base through `a6d88ece0e680632ac894c3342756c856cbced00`; exact collision reconciliation is required after the corrected aggregate/coverage projections are attached.
+- Corrected aggregate COSV index blob `53bb6d7e9cfe4e53b6c843de1b12d93fa16c2297` containing 93 aggregate rows is attached to `control/task-vector-index.json` on the feature branch by commit `4a847584ccb95f8dbd33e92a3e2b2cf2a97be18e`.
+- Exact merge-ref diagnostics at that head observed the corrected live worker projection: `88` unique worker task IDs / `81` canonically indexed worker task IDs, with zero active unindexed workers and the seven remaining unindexed IDs all terminal historical/superseded.
+- The diagnostic repair candidate for `control/cosv-global-registry-coverage.json` must be attached after branch reconciliation with current `main`, so the branch and PR merge ref use the same denominator source graph.
+- Obsolete fixed-count worker denominator assertions were removed in commit `369dda428b6866ad5c39fd26b0eaae27c405ec1d`; remaining historical tests that count only aggregate rows must be reconciled to the aggregate+shard effective-index model.
+- `main` continued advancing during remediation; exact collision reconciliation against the newest `main` is required before final exact-head validation.
 - Runtime HIL activation/transport proof remains intentionally pending authentic resident execution evidence and is not satisfied by source validation or GitHub Actions.
 
 ## Governing objective
