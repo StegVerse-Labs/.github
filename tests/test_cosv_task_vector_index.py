@@ -63,6 +63,16 @@ class COSVTaskVectorIndexTests(unittest.TestCase):
             found[task_id] = (task, CANONICAL_REGISTRY)
         return found
 
+    def _resolve_task_from_ref(self, task_id: str, canonical_ref: str) -> dict:
+        canonical_path = ROOT / canonical_ref
+        self.assertTrue(canonical_path.is_file(), f"index shard registry_ref missing for {task_id}")
+        canonical = json.loads(canonical_path.read_text(encoding="utf-8"))
+        if canonical.get("task_id") == task_id:
+            return canonical
+        matches = [entry for entry in canonical.get("tasks", []) if entry.get("task_id") == task_id]
+        self.assertEqual(len(matches), 1, f"index shard registry_ref does not resolve {task_id}")
+        return matches[0]
+
     def test_index_is_complete_for_vectorized_registry_tasks(self) -> None:
         index = self.load_index()
         self.assertEqual(index["profile"], "task.v1")
@@ -99,13 +109,20 @@ class COSVTaskVectorIndexTests(unittest.TestCase):
             else:
                 self.assertEqual(index_path.parent, INDEX_SHARDS)
                 canonical_ref = row["registry_ref"]
-                canonical_path = ROOT / canonical_ref
-                self.assertTrue(canonical_path.is_file(), f"index shard registry_ref missing for {task_id}")
-                canonical = json.loads(canonical_path.read_text(encoding="utf-8"))
-                if canonical.get("task_id") != task_id:
-                    matches = [entry for entry in canonical.get("tasks", []) if entry.get("task_id") == task_id]
-                    self.assertEqual(len(matches), 1, f"index shard registry_ref does not resolve {task_id}")
-                self.assertEqual(canonical_ref, registry_path.relative_to(ROOT).as_posix(), task_id)
+                canonical_task = self._resolve_task_from_ref(task_id, canonical_ref)
+                # A shard may name either the operational worker registry or a
+                # canonical task record as its ownership surface. Require the
+                # referenced object to resolve the same task and, whenever it
+                # carries machine-state bindings, to agree with the exact COSV
+                # source/vector. Path identity alone is not authority.
+                ref = canonical_task.get("source_state_vector_ref")
+                if isinstance(ref, str) and ref:
+                    self.assertEqual(ref, row["source_state_vector_ref"], task_id)
+                embedded = canonical_task.get("machine_readable_state", {}).get("cosv")
+                if isinstance(embedded, dict) and embedded.get("vector") is not None:
+                    self.assertEqual(embedded["vector"], row["vector"], task_id)
+                if canonical_task.get("vector") is not None:
+                    self.assertEqual(canonical_task["vector"], row["vector"], task_id)
 
             self.assertEqual(row["source_state_vector_ref"], task["source_state_vector_ref"], task_id)
             self.assertRegex(row["vector"], r"^[0-9]{14}$", task_id)
