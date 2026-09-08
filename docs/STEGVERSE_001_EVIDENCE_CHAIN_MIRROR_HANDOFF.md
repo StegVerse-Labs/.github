@@ -1,6 +1,6 @@
 # StegVerse-001 Evidence Chain Continuation Mirror Handoff
 
-Updated: 2026-09-07
+Updated: 2026-09-08
 Repository: `StegVerse-Labs/.github`
 Issue: #761
 Reconciliation: #1128
@@ -13,11 +13,11 @@ COSV index shard: `control/task-vector-index.d/STEGVERSE001-EVIDENCE-CHAIN-CONTI
 Parent runtime: `SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001`
 Custody task: `MR-STEGVERSE001-BOUNDED-AUTONOMY-001`
 Observer successor: `SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001`
-State: `TASK_REGISTERED_COSV_POINTER_EMITTED_CURRENT_DEVICE_CUSTODY_AND_SV002_RUNTIME_PENDING`
+State: `TASK_REGISTERED_COSV_POINTER_EMITTED_INDEPENDENT_CONTINUATION_WORKER_IN_CHANGESET_VALIDATION_PENDING_CURRENT_DEVICE_CUSTODY_AND_SV002_RUNTIME_PENDING`
 
 ## Handoff pointer
 
-The canonical continuation payload for a later session/runtime is now exactly:
+The canonical continuation payload for a later session/runtime is exactly:
 
 ```text
 STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001
@@ -68,7 +68,7 @@ HB32: timing / freshness / correlation / observability only; authority NONE
 Site: materialization / same-device carrier only; authority NONE
 ```
 
-No source merge, CI run, deployment, cache refresh, heartbeat progression, prior receipt, recovery result, Task Registry entry, or COSV vector authorizes custody or SV002.
+No source merge, CI run, deployment, cache refresh, heartbeat progression, prior receipt, recovery result, Task Registry entry, COSV vector, or WorkerCoordinator selection authorizes custody or SV002.
 
 ## Canonical downstream implementation already present
 
@@ -83,6 +83,32 @@ The required machine surfaces already exist and must be reused:
 - SV002 public/adversarial observation runtime surfaces, including `SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001`.
 
 Downstream continuation is independently retryable after terminal SV001 and must never be suppressed merely because the SV001 request is already consumed.
+
+## Independent WorkerCoordinator continuation binding — 2026-09-08
+
+Runtime-solution review against `docs/HB32_RUNTIME_SOLUTION_REUSE_MIRROR_HANDOFF.md` and `data/runtime-solution-registry.d/hb32-existing-runtime-solutions.json` identified a source-level retry defect: the post-terminal continuation was implemented, but its retry was only reached as a side effect of the awareness-protected parent `stegverse001_bounded_autonomy` consumer.
+
+The continuation task is now given its own ordinary WorkerCoordinator-selectable binding in this change set:
+
+```text
+handoffs/STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001.json
+control/worker-registry.d/stegverse001-evidence-chain-continuation-001.json
+control/process-worker-adapters.d/stegverse001-evidence-chain-continuation-001.json
+workers/stegverse001_evidence_chain_continuation_worker.py
+```
+
+This does not create another scheduler/runtime/heartbeat/oscillator/claim-fence plane. It reuses the existing WorkerCoordinator + HB32 resident self-heal/local-source-refresh stack and invokes only `scripts/continue_stegverse001_evidence_chain.py`. The worker never calls the parent SV001 execution bridge and records `sv001_reexecution_performed=false`.
+
+Retryable downstream states return `HANDOFF_READY`; only continuation state `PASS` returns terminal worker `COMPLETED`. Worker selection still grants no custody or SV002 authority, and every new custody mutation remains subject to the contemporaneous Interlock/InTr and Master Records semantics already required above.
+
+Machine preflights:
+
+```text
+receipts/preflight/STEGVERSE001-EVIDENCE-CHAIN-RUNTIME-CONTINUATION-001.json
+receipts/preflight/STEGVERSE001-EVIDENCE-CHAIN-RUNTIME-CONTINUATION-002.json
+```
+
+Both preserve the no-rerun/no-authority-reuse rules and explicitly reuse the existing HB32 runtime solutions before any new runtime component is considered.
 
 ## Released Site v14 seam repair
 
@@ -120,6 +146,7 @@ TVC lease issuance/consumption lineage: OBSERVED / CONSUMED
 device-local same-execution reconstruction: PASS
 canonical G23 retained/recovery implementation: MERGED / VALIDATED
 Site automatic G23 -> existing governed custody executor: MERGED / RELEASED
+independent continuation WorkerCoordinator binding: IMPLEMENTED IN CHANGE SET / VALIDATION PENDING
 current-device v14 consumption: NOT YET CLAIMED
 fresh root-InTr ALLOW for custody: NOT YET CLAIMED
 Master Records custody PASS: NOT YET CLAIMED
@@ -128,7 +155,7 @@ retained same-execution downstream chain: NOT YET CLAIMED
 SV002 authentic disposition: NOT YET CLAIMED
 ```
 
-These last predicates remain fail-closed until authentic current-device evidence exists.
+The runtime predicates remain fail-closed until authentic evidence exists. Source/worker registration may make the continuation independently executable; it cannot manufacture those runtime receipts.
 
 ## COSV projection rationale
 
@@ -173,6 +200,7 @@ partial historical custody/admission
 -> no retroactive authorization
 
 Master Records reconstruction PASS absent
+-> continuation worker remains retryable / HANDOFF_READY
 -> SV002 remains pending
 
 SV002 failure/nonterminal disposition
@@ -180,7 +208,7 @@ SV002 failure/nonterminal disposition
 -> do not reopen SV001
 ```
 
-Retry opportunities must reuse existing page/resume/runtime dispatch machinery; no new scheduler, heartbeat, oscillator, WorkerCoordinator, or resident runtime is authorized by this handoff.
+Retry opportunities reuse the existing WorkerCoordinator/HB32/self-heal/source-refresh/page-resume/runtime machinery. No new scheduler, heartbeat, oscillator, WorkerCoordinator, or resident runtime is authorized by this handoff.
 
 ## Historical implementation evidence retained by Git
 
@@ -193,22 +221,29 @@ Repository history retains the detailed source chronology. Key canonical referen
 - Site same-device custody projection and root-InTr governance releases;
 - Site v13 deterministic G23 recovery #1092/#1093;
 - Site v14 automatic machine-governed continuation #1098/#1099;
-- Site post-release reconciliation #1100/#1101.
+- Site post-release reconciliation #1100/#1101;
+- canonical task/COSV registration PR #1177 / merge `033b88e05ea798ac52e9f494069ae49cf29bfb99`.
 
-This handoff intentionally reflects current canonical state instead of preserving stale pre-terminal `NOT OBSERVED` statements that are contradicted by authentic G23 evidence.
+This handoff reflects current canonical state instead of preserving stale pre-terminal `NOT OBSERVED` statements contradicted by authentic G23 evidence.
 
 ## README completeness predicate
 
-**NO README CHANGE REQUIRED.**
+The task/COSV registration itself required no README change. The new independent continuation worker binding **is a material runtime-semantics change**, so the repository README is updated in the same functional change set.
 
-Registration preflight: `receipts/preflight/STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-REGISTRATION-001.json`.
+Preflights:
 
-This change registers an already-defined handoff identity into the existing sharded canonical Task Registry and COSV pointer surfaces. It does not alter runtime behavior, semantics, interfaces, governance/authority boundaries, evidence semantics, prerequisites, dependencies, failure behavior, or capability meaning. The task/COSV continuation interface is already documented by `README.md` and `docs/COSV_TASK_POINTER_COORDINATION_MIRROR_HANDOFF.md`.
+```text
+receipts/preflight/STEGVERSE001-EVIDENCE-CHAIN-RUNTIME-CONTINUATION-001.json
+receipts/preflight/STEGVERSE001-EVIDENCE-CHAIN-RUNTIME-CONTINUATION-002.json
+```
+
+README coverage explicitly documents independent post-terminal WorkerCoordinator selection/retry, no SV001 rerun, no new runtime plane, no authority reuse, and fail-closed completion semantics.
 
 ## Next admissible machine transition
 
 ```text
-existing current-device v14 consumption
+existing WorkerCoordinator selects STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001
+-> continuation worker invokes existing post-terminal continuation
 -> exact canonical G23 available
 -> fresh root-InTr ALLOW or DENY
 -> on ALLOW: existing Master Records custody/reconstruction
@@ -216,7 +251,7 @@ existing current-device v14 consumption
 -> existing SV002 continuation/disposition
 ```
 
-If progression fails, diagnose the existing HB32 oscillator, Site carrier, root-InTr admission, Master Records custody, and SV002 continuation surfaces before proposing any new implementation.
+If progression fails, diagnose the existing HB32 oscillator, resident self-heal, local source refresh, Site carrier, root-InTr admission, Master Records custody, and SV002 continuation surfaces before proposing any new implementation.
 
 ## User work
 

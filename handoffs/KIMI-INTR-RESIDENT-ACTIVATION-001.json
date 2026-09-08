@@ -37,7 +37,7 @@
   "task": {
     "task_id": "KIMI-INTR-RESIDENT-ACTIVATION-001",
     "repository": "StegVerse-Labs/.github",
-    "canonical_owner_ref": "StegVerse-Labs/.github#1120",
+    "canonical_owner_ref": "control/worker-registry.d/kimi-intr-runtime-001.json#tasks[0]",
     "source_refs": [
       "docs/KIMI_INTR_RESIDENT_ACTIVATION_MIRROR_HANDOFF.md",
       "StegVerse-org/LLM-adapter/docs/KIMI_INTR_TRANSPORT_MIRROR_HANDOFF.md",
@@ -52,7 +52,7 @@
     "priority": "release"
   },
   "authority": {
-    "authority_source": "StegVerse-Labs/.github#1120 + canonical Kimi InTr/TVC/Master Records contracts",
+    "authority_source": "canonical StegGate + TVC bounded provider-operation authority + this Kimi executable handoff",
     "authority_domain": "INDEPENDENT_TASK_CONTROL_WITH_INTERLOCK_TVC_AND_MASTER_RECORDS_BOUNDARIES",
     "credential_authority": "TV/TVC",
     "transition_authority": "StegVerse-Labs/StegCore canonical StegGate / Interlock",
