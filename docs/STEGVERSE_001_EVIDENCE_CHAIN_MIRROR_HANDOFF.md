@@ -7,7 +7,7 @@ Continuation task: `STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001`
 COSV task vector: `50000000100000`
 Custody task: `MR-STEGVERSE001-BOUNDED-AUTONOMY-001`
 Observer successor: `SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001`
-State: `HANDOFF_READY_GOVERNANCE_BYPASS_REPAIRED_AUTHENTIC_CURRENT_DEVICE_CUSTODY_AND_SV002_RUNTIME_PENDING`
+State: `HANDOFF_READY_GOVERNANCE_BYPASS_AND_PROOF_TRANSPORT_INTERFACE_REPAIRED_AUTHENTIC_RUNTIME_EVIDENCE_PENDING`
 
 ## Canonical continuation pointer
 
@@ -27,6 +27,7 @@ canonical terminal G23
 -> exact retained/recovered source
 -> fresh current-device root-InTr governance
 -> canonical Master Records custody/reconstruction
+-> governed Site custody proof
 -> retained same-execution reconstruction PASS
 -> SV002 observation/disposition
 ```
@@ -56,13 +57,14 @@ Master Records: custody/reconstruction authority
 SV002: observation/disposition only
 HB32: timing/freshness/correlation only; authority NONE
 Site: current-device materialization/carrier only; authority NONE
+Site proof transport: evidence movement only; authority NONE
 ```
 
-No merge, CI run, deployment, cache refresh, heartbeat, prior receipt, recovered hash, Task Registry entry, COSV vector, or WorkerCoordinator selection authorizes custody or SV002.
+No merge, CI run, deployment, cache refresh, heartbeat, prior receipt, recovered hash, Task Registry entry, COSV vector, WorkerCoordinator selection, or transported Site proof authorizes custody or SV002.
 
 ## Existing governed Site custody path
 
-`StegOSWebBootstrap.executeMasterRecordsSv001Custody()` is the canonical current-iPhone transition executor. It:
+`StegOSWebBootstrap.executeMasterRecordsSv001Custody()` remains the canonical current-iPhone transition executor. It:
 
 1. requires exact canonical G23;
 2. derives the current HB32 reference/carrier binding;
@@ -77,21 +79,7 @@ Canonical proof schema:
 stegos.master-records.portable-sv001-custody-proof/v1
 ```
 
-Required proof properties include:
-
-```text
-state = PASS
-execution_surface = CURRENT_USER_IPHONE
-source_receipt_sha256 = canonical G23
-intr_governance_admission_observed = true
-reconstruction_state = PASS
-canonical_owner = master-records/orchestration
-site_custody_authority = false
-site_execution_authority = false
-heartbeat_granted_authority = false
-prior_receipt_authorizes_transition = false
-historical_state_retroactively_authorized = false
-```
+The proof must retain the exact source identity, InTr admission receipt/journal hashes, custody/reconstruction hashes, final replay tail, current-iPhone execution surface, and explicit non-authority fields.
 
 ## Independent continuation WorkerCoordinator binding
 
@@ -103,30 +91,65 @@ PR `StegVerse-Labs/.github#1181` merged at:
 
 The task remains independently machine-selectable through the existing WorkerCoordinator/HB32 runtime. No second scheduler, heartbeat, oscillator, WorkerCoordinator, or authority plane is permitted.
 
-## Governance-bypass defect and repair — 2026-09-08
+## Governance-bypass repair
 
-Post-merge review found that `scripts/continue_stegverse001_evidence_chain.py` directly invoked the Master Records resident watcher. That watcher durably wrote reconstruction/custody state but did not itself verify the fresh root-InTr admission required by this handoff. Therefore the independent continuation lane could bypass the canonical current-iPhone Site governance seam despite the intended authority model.
+Post-merge review found that `scripts/continue_stegverse001_evidence_chain.py` directly invoked the Master Records resident watcher. That watcher could write reconstruction/custody state without itself verifying the fresh root-InTr admission required by this handoff.
 
-This source defect is repaired on `main`:
+Repair:
 
 ```text
 fb26425243c05bc155972019beae474cd6b29d8f
-  scripts/continue_stegverse001_evidence_chain.py
-  removes direct Master Records watcher/import mutation
-  waits for governed Site custody proof
-
-7e8a6398222c560be550eab74685bc8b773915a1
-  workers/stegverse001_evidence_chain_continuation_worker.py
-  treats SITE_GOVERNED_CUSTODY_PENDING / invalid proof as retryable HANDOFF_READY
-  records master_records_mutation_performed=false
-
-960b9dfdfe2b79243c23329e6a9efc249e990348
-  tests/test_stegverse001_evidence_chain_continuation_worker.py
-  regression coverage forbids direct watcher/import custody path
-  requires retained InTr admission + reconstruction PASS semantics
 ```
 
-The continuation worker is now observation/orchestration-only with respect to Master Records. It may consume the authentic governed Site custody proof and continue into SV002 evaluation, but it may not create custody itself.
+The continuation no longer invokes the Master Records watcher/import path. It waits for the governed Site custody proof and remains `HANDOFF_READY` while that proof is absent or invalid. It cannot create Master Records custody.
+
+Regression coverage:
+
+```text
+960b9dfdfe2b79243c23329e6a9efc249e990348
+```
+
+Tests forbid the direct watcher/import path and require retained InTr admission plus reconstruction PASS semantics.
+
+## Governed Site custody proof transport interface
+
+A second integration defect was identified after the governance repair: the continuation expected a native filesystem proof at:
+
+```text
+~/.stegverse/state/stegverse001-evidence-chain/site-master-records-custody.latest.json
+```
+
+The canonical Site custody executor instead returns/retains its proof in browser/service-worker continuity state. Therefore the worker could remain correctly fail-closed forever even after authentic custody completed.
+
+The continuation worker now accepts the canonical Site custody proof as non-authorizing evidence inside its existing WorkerCoordinator invocation:
+
+```text
+invocation.evidence.site_governed_custody_proof
+```
+
+Repair:
+
+```text
+bd5208ac3132dd1398088b8b0e0b0be925bf17da
+```
+
+The worker materializes that evidence only inside its bound local state and passes the path to the canonical continuation. The continuation then independently validates the proof. Evidence transport does not mint a WorkerCoordinator claim/fence, InTr admission, custody authority, execution authority, credential authority, or SV002 authority.
+
+Regression coverage:
+
+```text
+119937537fd5043dc2cb2abfdc61a4fdc21020c9
+```
+
+Tests verify canonical proof-schema transport, reject wrong proof schemas, and preserve `NONE_EVIDENCE_ONLY` authority semantics.
+
+Canonical task-record reconciliation:
+
+```text
+61a9edb9501bdd92b6c030457ba13a48735c3865
+```
+
+The task record now explicitly tracks `SITE_GOVERNED_CUSTODY_PROOF_DELIVERED_TO_CONTINUATION` as a runtime predicate rather than incorrectly treating source availability as proof delivery.
 
 ## Current evidence state
 
@@ -140,10 +163,12 @@ canonical retained G23 recovery: MERGED / VALIDATED
 Site automatic G23 -> governed custody executor: MERGED / RELEASED
 independent continuation WorkerCoordinator binding: MERGED / MACHINE-SELECTABLE
 governance-bypass repair: COMMITTED ON MAIN
+Site proof invocation transport interface: COMMITTED ON MAIN
 current-device v14 consumption: NOT YET CLAIMED
 fresh root-InTr ALLOW for custody: NOT YET CLAIMED
 Master Records custody PASS: NOT YET CLAIMED
 Master Records reconstruction PASS: NOT YET CLAIMED
+Site governed custody proof delivered to continuation: NOT YET CLAIMED
 retained same-execution downstream chain: NOT YET CLAIMED
 SV002 authentic disposition: NOT YET CLAIMED
 ```
@@ -159,6 +184,7 @@ fresh root-InTr absent/DENY/mismatch/timeout -> fail closed before custody
 partial/historical admission or custody -> no retroactive authorization
 Site governed custody proof missing -> continuation HANDOFF_READY / retry
 Site governed custody proof invalid -> continuation HANDOFF_READY / retry; no mutation
+transported proof -> evidence only; revalidate before use
 Master Records reconstruction PASS absent -> SV002 pending
 SV002 nonterminal/failure -> retry SV002 independently; never reopen SV001
 ```
@@ -171,14 +197,17 @@ existing WorkerCoordinator selects STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001
 -> current-device Site automatic continuation invokes executeMasterRecordsSv001Custody()
 -> fresh root-InTr ALLOW or fail closed
 -> Master Records custody/reconstruction PASS
--> governed Site custody proof retained/materialized for continuation observation
--> continuation consumes proof without Master Records mutation
+-> governed Site custody proof is retained
+-> existing WorkerCoordinator invocation supplies proof as evidence
+-> continuation independently validates proof without Master Records mutation
 -> SV002 observation/disposition
 ```
 
-If progression stalls, diagnose the existing HB32/self-heal/source-refresh/Site/root-InTr/Master Records/SV002 surfaces before proposing another runtime component.
+The remaining source-level question is not how to create another runtime bridge; it is whether the existing runtime coordinator that assembles the continuation invocation is already wired to source `site_governed_custody_proof` from the Site continuity evidence. Until that authentic delivery is observed, the predicate remains unresolved.
+
+If progression stalls, diagnose the existing HB32/self-heal/source-refresh/Site/root-InTr/Master Records/WorkerCoordinator evidence-delivery/SV002 surfaces before proposing another runtime component.
 
 ## User work
 
 Routine user work: **NONE**.
-Do not ask the user to rerun SV001, manually approve custody, reconstruct G23 by hand, or provide another machine.
+Do not ask the user to rerun SV001, manually approve custody, reconstruct G23 by hand, manually copy proof data, or provide another machine.
