@@ -11,11 +11,15 @@
     "StegVerse-org/StegVerse-SDK:pull/128",
     "StegVerse-org/StegVerse-SDK:pull/130",
     "StegVerse-org/StegVerse-SDK:commit/5e14a4e61984829a6381ef2874d22adf06f94973",
+    "StegVerse-org/StegVerse-SDK:pull/131",
+    "StegVerse-org/StegVerse-SDK:commit/b4b8583d3e6bf9e83327f312d3c3bc0d99ec0ead",
     "StegVerse-org/StegVerse-SDK:issue/129",
     "StegVerse-Labs/admissibility-wiki:issue/66",
-    "StegVerse-Labs/admissibility-wiki:issue/65"
+    "StegVerse-Labs/admissibility-wiki:issue/65",
+    "public:https://stegverse.org/",
+    "public:https://stegverse.org/ecosystem-chat.html"
   ],
-  "observed_at": "2026-09-08T22:24:00Z",
+  "observed_at": "2026-09-08T23:22:00Z",
   "exact_metrics": {
     "lifecycle": "ACTIVE",
     "archive_ready": false,
@@ -33,7 +37,11 @@
     "propagated": false,
     "downstream_work_durably_transferred": true,
     "site_machine_owned_dependency": true,
-    "admissibility_worker_owned_dependency": true
+    "admissibility_worker_owned_dependency": true,
+    "canonical_public_surface_bound": true,
+    "canonical_public_base": "https://stegverse.org/",
+    "ecosystem_chat_public_route_observed": true,
+    "dedicated_processor_generic_public_route_observed": false
   },
   "authority_effect": "NONE",
   "canonical_owner_ref": "StegVerse-org/StegVerse-SDK:tasks/SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003.json"
