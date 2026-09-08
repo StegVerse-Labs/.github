@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Normalize GitHub failure/problem email observations into canonical incident proposals.
+"""Normalize GitHub failure/error email observations into canonical incident proposals.
 
 Input rows are explicit email-monitor observations. This utility clusters noisy
 messages by normalized repository/workflow/error signature and emits incident
@@ -42,11 +42,30 @@ def norm(value: Any) -> str:
     return text
 
 
+def notification_class(row: dict[str, Any]) -> str:
+    explicit = str(row.get("notification_class") or "").strip().upper()
+    if explicit in {"ERROR", "FAILURE"}:
+        return explicit
+    subject = norm(row.get("subject"))
+    snippet = norm(row.get("snippet"))
+    state = norm(row.get("conclusion") or row.get("status"))
+    combined = " ".join((subject, snippet, state))
+    if re.search(r"(^|\W)error(?:s|ed|ing)?($|\W)", combined):
+        return "ERROR"
+    if re.search(r"(^|\W)fail(?:ed|ure|ures|ing)?($|\W)", combined):
+        return "FAILURE"
+    if row.get("error") not in {None, ""}:
+        return "ERROR"
+    return "FAILURE"
+
+
 def signature(row: dict[str, Any]) -> tuple[str, str, str]:
     repo = norm(row.get("repository") or row.get("repo") or row.get("repository_full_name"))
     workflow = norm(row.get("workflow") or row.get("workflow_name") or row.get("subject"))
     error = norm(row.get("error_signature") or row.get("error") or row.get("failure") or row.get("snippet") or row.get("subject"))
-    return repo or "unknown-repo", workflow or "unknown-workflow", error or "unknown-error"
+    klass = notification_class(row).lower()
+    classified_error = f"{klass}:{error or 'unknown-error'}"
+    return repo or "unknown-repo", workflow or "unknown-workflow", classified_error
 
 
 def incident_id(parts: tuple[str, str, str]) -> str:
@@ -68,9 +87,11 @@ def main() -> int:
     incidents = []
     for sig, observations in sorted(groups.items()):
         refs = sorted({str(r.get("message_id") or r.get("id") or r.get("thread_id") or r.get("source_file")) for r in observations})
+        klass = "ERROR" if sig[2].startswith("error:") else "FAILURE"
         incidents.append({
             "incident_id": incident_id(sig),
-            "kind": "GITHUB_FAILURE_EMAIL_CLUSTER",
+            "kind": f"GITHUB_{klass}_EMAIL_CLUSTER",
+            "notification_class": klass,
             "normalized_repository": sig[0],
             "normalized_workflow": sig[1],
             "normalized_error_signature": sig[2],
@@ -83,13 +104,15 @@ def main() -> int:
         })
 
     result = {
-        "schema": "stegverse.github-failure-email-incident-proposals/v1",
+        "schema": "stegverse.github-failure-error-email-incident-proposals/v2",
         "incident_count": len(incidents),
+        "failure_count": sum(1 for row in incidents if row["notification_class"] == "FAILURE"),
+        "error_count": sum(1 for row in incidents if row["notification_class"] == "ERROR"),
         "incidents": incidents,
         "authority_effect": "NONE_PROPOSAL_ONLY",
         "nonclaims": [
-            "EMAIL_COUNT_IS_NOT_FAILURE_COUNT",
-            "EMAIL_OBSERVATION_DOES_NOT_PROVE_RUNTIME_FAILURE",
+            "EMAIL_COUNT_IS_NOT_FAILURE_OR_ERROR_COUNT",
+            "EMAIL_OBSERVATION_DOES_NOT_PROVE_RUNTIME_FAILURE_OR_ERROR",
             "INCIDENT_PROPOSAL_REQUIRES_CANONICAL_TASK_INGRESS_BEFORE_WORK",
         ],
     }
