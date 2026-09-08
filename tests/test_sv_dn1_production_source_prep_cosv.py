@@ -4,7 +4,7 @@ import json
 import unittest
 from pathlib import Path
 
-from tests.cosv_index_helpers import indexed_worker_ids, load_effective_index
+from tests.cosv_index_helpers import indexed_worker_ids, load_effective_index, load_live_worker_coverage
 
 ROOT = Path(__file__).resolve().parents[1]
 TASK_ID = "SV-DN1-PRODUCTION-SOURCE-PREP-001"
@@ -20,6 +20,7 @@ class SVDN1ProductionSourcePrepCOSVTests(unittest.TestCase):
         self.vector = json.loads((ROOT / f"control/task-vectors/{TASK_ID}.json").read_text(encoding="utf-8"))
         self.index = json.loads((ROOT / "control/task-vector-index.json").read_text(encoding="utf-8"))
         self.coverage = json.loads((ROOT / "control/cosv-global-registry-coverage.json").read_text(encoding="utf-8"))
+        self.live_coverage = load_live_worker_coverage(ROOT)
         self.registry = json.loads((ROOT / "control/worker-registry.d/sv-dn1-production-source-prep-001.json").read_text(encoding="utf-8"))
         self.handoff = json.loads((ROOT / "handoffs/SV-DN1-PRODUCTION-SOURCE-PREP-001.json").read_text(encoding="utf-8"))
 
@@ -51,29 +52,18 @@ class SVDN1ProductionSourcePrepCOSVTests(unittest.TestCase):
         self.assertEqual(row["registry_ref"], "control/worker-registry.d/sv-dn1-production-source-prep-001.json")
         self.assertEqual(row["source_state_vector_ref"], f"control/task-vectors/{TASK_ID}.json")
         self.assertEqual(row["vector"], VECTOR)
-        self.assertNotIn(TASK_ID, self.coverage["active_worker_task_ids_missing_canonical_cosv"])
+        self.assertNotIn(TASK_ID, self.live_coverage["active_worker_task_ids_missing_canonical_cosv"])
         indexed = [row for row in self.coverage["indexed_vectors"] if row.get("task_id") == TASK_ID]
         self.assertEqual(indexed, [{"task_id": TASK_ID, "vector": VECTOR}])
-        summary = self.coverage["worker_registry_summary"]
-        self.assertEqual(summary["canonically_indexed_task_ids"], len(indexed_worker_ids(ROOT)))
+        self.assertEqual(self.live_coverage["canonically_indexed_task_ids"], len(indexed_worker_ids(ROOT)))
         expected_active_unvectorized = (
-            summary["unique_task_ids_global_plus_fragments"]
-            - summary["completed_only_historical_unvectorized_task_ids"]
-            - summary["superseded_historical_unvectorized_task_ids"]
-            - summary["canonically_indexed_task_ids"]
+            self.live_coverage["unique_task_ids_global_plus_fragments"]
+            - self.live_coverage["completed_only_historical_unvectorized_task_count"]
+            - self.live_coverage["superseded_historical_unvectorized_task_count"]
+            - self.live_coverage["canonically_indexed_task_ids"]
         )
-        self.assertEqual(summary["active_unvectorized_unique_task_ids"], expected_active_unvectorized)
-        self.assertEqual(
-            summary["unique_task_ids_global_plus_fragments"],
-            summary["canonically_indexed_task_ids"]
-            + summary["active_unvectorized_unique_task_ids"]
-            + summary["completed_only_historical_unvectorized_task_ids"]
-            + summary["superseded_historical_unvectorized_task_ids"],
-        )
-        self.assertEqual(
-            self.coverage["total_active_unvectorized_unique_task_ids"],
-            expected_active_unvectorized + self.coverage["organization_registry_summary"]["active_unvectorized_task_ids"],
-        )
+        self.assertEqual(self.live_coverage["active_unvectorized_unique_task_ids"], expected_active_unvectorized)
+        self.assertEqual(self.live_coverage["total_active_unvectorized_unique_task_ids"], expected_active_unvectorized + self.live_coverage["organization_active_unvectorized_task_ids"])
 
     def test_projection_cannot_promote_runtime_or_authority(self):
         projection = self.coverage["sv_dn1_production_source_prep_projection"]
