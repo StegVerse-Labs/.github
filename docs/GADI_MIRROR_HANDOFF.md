@@ -9,25 +9,13 @@ COSV ID: `10100000100000`
 Issue: `StegVerse-Labs/.github#1170`
 Canonical task-control status: `coordination_state=PROPOSED / checkout_state=UNCLAIMED / completion.claimed=false / activation_proof_complete=false`
 Retirement status: `NOT_RETIRED`
-Overall GADI status: `MULTI_REPOSITORY_SOURCE_IMPLEMENTATION_ADVANCED / NATIVE_STEGOS_BOUNDARY_DEFENSE_INTEGRATION_ACTIVE / AUTHENTIC_RUNTIME_ACTIVATION_AND_MASTER_RECORDS_PROOF_PENDING`
+Overall GADI status: `MULTI_REPOSITORY_SOURCE_IMPLEMENTATION_ADVANCED / NATIVE_STEGOS_BOUNDARY_DEFENSE_VALIDATED_AND_MERGED / SITE_INGRESS_BINDING_NEXT / AUTHENTIC_RUNTIME_ACTIVATION_AND_MASTER_RECORDS_PROOF_PENDING`
 
 ## Continuation rule
 
-Before any GADI mutation, resolve and preserve:
+Before any GADI mutation, resolve and preserve Goal ID, Task ID, COSV ID, this canonical parent handoff, canonical task record, canonical STATUS, repository-local projection/status, current WorkerCoordinator/claim/fence/collision state, and existing source/validation/runtime/evidence records.
 
-1. Goal ID;
-2. Task ID;
-3. COSV ID;
-4. this canonical parent handoff;
-5. canonical task record;
-6. canonical task **STATUS**;
-7. repository-local projection/status;
-8. current WorkerCoordinator/claim/fence/collision state;
-9. existing source, validation, runtime, and evidence records.
-
-Absence of a repository-local GADI file never means the GADI workstream is absent. A repository-local handoff is only a projection/continuation of this existing task.
-
-A chat/session is not archive-ready merely because work has been handed off, source-completed, validated, merged, released, or activated in one bounded layer. GADI-001 is archive-ready only when its canonical task status is explicitly `RETIRED`.
+Absence of a repository-local GADI file never means the GADI workstream is absent. A repository-local handoff is only a projection of this existing task. GADI-001 is not archive-ready until its canonical task status is explicitly `RETIRED`.
 
 ## Goal
 
@@ -52,15 +40,11 @@ external AI interaction
 -> protected governed environment
 ```
 
-The StegOS boundary may propose defensive dispositions such as observation, challenge, constraint, quarantine, interception, or containment. A proposal is not execution authority. Consequential defensive effects remain manifested, attributable, governed, capability-bound, receipted, and reconstructable.
-
-A material semantic-integrity failure is valid defensive evidence even if the external AI is otherwise using valid credentials/interfaces. It does not independently create execution authority.
+The StegOS boundary can propose observation, challenge, constraint, quarantine, interception, or containment. A proposal is not execution authority. Consequential defensive effects remain manifested, attributable, governed, capability-bound, receipted, and reconstructable. A material semantic-integrity failure is valid defensive evidence even if the external AI is otherwise using valid credentials/interfaces; it does not independently create execution authority.
 
 ## Core invariant
 
-The StegVerse governed AI may act at machine speed against an external autonomous threat, but every consequential defensive action remains manifested, attributable, InTr-governed, capability-bound, receipted, and reconstructable. Intervention must terminate when the qualifying threat state ends.
-
-No GADI component may promote source presence, model output, workflow success, observation, repository-local metadata, or boundary placement into execution authority.
+The StegVerse governed AI may act at machine speed against an external autonomous threat, but every consequential defensive action remains manifested, attributable, InTr-governed, capability-bound, receipted, and reconstructable. Intervention terminates when the qualifying threat state ends. No GADI component may promote source presence, model output, workflow success, observation, repository-local metadata, or boundary placement into execution authority.
 
 ## Canonical system flow
 
@@ -87,7 +71,7 @@ WorkerCoordinator: claim/fence/execution ownership
 InTr / StegGate: governed transition admission
 TV/TVC: credential/capability authority and custody
 StegCore: threat reasoning + bounded proposal generation
-StegOS: GADI contracts + non-authorizing capability discovery + native boundary observation/defensive-policy proposal
+StegOS: GADI contracts + capability correlation + native boundary observation/defensive-policy proposal
 micro-node-runtime: bounded resident execution/reassessment owner
 Continuity: evidence/reconstruction owner
 Site: HIL/external-threat ingress/readiness/projection
@@ -98,106 +82,56 @@ model output authority: NONE
 
 ## Current implemented / merged source state
 
-### StegCore — threat reasoning and semantic-integrity defensive posture
+### StegCore
 
-PR `StegVerse-Labs/StegCore#192` merged as `212300425f99e5fde34300c3c70eba501ce29dee`.
+PR `StegVerse-Labs/StegCore#192` merged as `212300425f99e5fde34300c3c70eba501ce29dee` with threat-state correlation, uncertainty preservation, semantic-integrity observation, least-destructive-effective capability selection, bounded intervention-request generation, and explicit downstream canonical admission requirement.
 
-Implemented:
-- threat-state correlation;
-- uncertainty preservation;
-- semantic-integrity observation, including fail-closed qualifier strengthening such as `may -> is`;
-- least-destructive-effective capability selection;
-- bounded intervention request generation;
-- explicit downstream canonical admission requirement.
+### StegOS
 
-This does not prove runtime admission or external execution.
+Contract layer PR #225 merged as `af51596a27f54e5f9db52fba8c9230fd91f87d06`.
+Capability discovery PR #226 merged as `c0f025ab467a9eb717c8c4efc1b237af9a6f0547`.
+Native organizational boundary-defense PR #227 merged as `d0a9703725c6169f23ab55d4bce8a0b035a3a450` from exact head `4918fff2b9c6408242974fa1664f7465db0d9d2e`.
 
-### StegOS — GADI contracts, capability discovery, and native boundary-defense integration
-
-Contract layer merged through `StegVerse-Labs/StegOS#225` (`af51596a27f54e5f9db52fba8c9230fd91f87d06`).
-
-Capability discovery merged through `StegVerse-Labs/StegOS#226` (`c0f025ab467a9eb717c8c4efc1b237af9a6f0547`).
-
-Native boundary-defense source is being built in `StegVerse-Labs/StegOS#227` on `gadi-001-native-boundary-defense`.
-
-Merged/implemented baseline:
-- autonomous threat observation contract;
-- defensive intervention request contract;
-- governed intervention capability contract;
-- fail-closed contract validation;
-- non-authorizing TV/TVC capability discovery/correlation;
-- separate InTr-admission and runtime-binding requirements.
-
-Boundary-defense branch adds:
+PR #227 adds:
 - deterministic external-AI interaction assessment;
 - identity/source/provenance/authority/scope/semantic-integrity evidence handling;
 - bounded defensive disposition proposal;
-- minimum native placement invariant ensuring StegOS/GADI evaluation precedes the protected governed environment;
+- minimum placement invariant requiring StegOS/GADI evaluation before protected governed environment entry;
 - explicit non-guarantee product/service claim boundary;
-- focused validation workflow and tests.
+- focused source tests and validation workflow.
 
-No successful validation or production network placement is claimed for #227 until separately observed.
+Exact-head validation:
 
-### TVC — capability registry authority binding
+```text
+GADI native boundary defense validation push run: 34288877488 -> PASS
+GADI native boundary defense validation PR run: 34288881940 -> PASS
+GADI capability discovery validation PR run: 34288881816 -> PASS
+StegOS CI PR run: 34288881797 -> PASS
+validated head: 4918fff2b9c6408242974fa1664f7465db0d9d2e
+merge: d0a9703725c6169f23ab55d4bce8a0b035a3a450
+```
 
-PR `StegVerse-Labs/TVC#349` merged as `f24fe84f5260fdd72845ac2d13ea69006f7ef542`.
+This proves source behavior only. It does not prove production network placement, authentic external-AI ingress, InTr admission, resident execution, or external effect.
 
-Implemented:
-- controlled-simulation capability registry metadata;
-- TV/TVC authority binding;
-- fail-closed secret/authority drift checks;
-- no protected credential material returned;
-- `production_eligible=false` controlled-simulation capability.
+### TVC
 
-### TV — capability custody/support source
+PR `StegVerse-Labs/TVC#349` merged as `f24fe84f5260fdd72845ac2d13ea69006f7ef542`, providing controlled-simulation capability registry metadata, TV/TVC authority binding, fail-closed authority drift checks, and no protected credential material.
 
-PR `StegVerse-Labs/TV#17` merged as `8f6d95acdc374229baa31dfc9c1ee6c195b48497`.
+### TV
 
-Implemented:
-- non-secret GADI capability custody/support metadata;
-- TV custody / TVC grant-authority separation;
-- no runtime lease or protected value;
-- controlled-simulation-only source support.
+PR `StegVerse-Labs/TV#17` merged as `8f6d95acdc374229baa31dfc9c1ee6c195b48497`, providing non-secret GADI capability custody/support metadata and TV custody / TVC grant-authority separation.
 
-### micro-node-runtime — controlled simulation and closed-loop reassessment
+### micro-node-runtime
 
-PR `StegVerse-002/micro-node-runtime#87` merged as `35a3738108c9cd506d63b5e7fbf0eb2752aa56b5` after all four PR-triggered validation workflows passed.
+PR `StegVerse-002/micro-node-runtime#87` merged as `35a3738108c9cd506d63b5e7fbf0eb2752aa56b5` after its PR-triggered validation workflows passed. It implements consumption of already-admitted request evidence, controlled-simulation capability evidence, deterministic simulated safe-state intervention, strategy change, reassessment, bounded adaptation, termination, and ordered semantic-integrity-preserving transcript generation. It does not prove resident-runtime observation or production effect.
 
-Implemented:
-- consumption of already-ADMITTED GADI request evidence;
-- consumption of already-DISCOVERABLE controlled-simulation capability evidence;
-- deterministic simulated safe-state intervention;
-- adversary strategy change;
-- reassessment;
-- bounded adapted simulation only while threat remains active;
-- stop on interruption/bounded exhaustion;
-- ordered source transcript preserving semantic-integrity evidence.
+### Continuity
 
-Non-claims remain explicit: no resident-runtime observation, worker claim, runtime lease, production effect, or external effect was produced by this controlled-simulation source validation.
-
-### Continuity — confrontation receipt chain and exact reconstruction
-
-PR `StegVerse-Labs/Continuity#14` merged as `d1956b1cc9860d8bc1de70180e412ca01dc8aec6`.
-
-Implemented:
-- GADI confrontation reconstruction schema;
-- deterministic verifier;
-- controlled-simulation confrontation fixture;
-- positive and fail-closed tests;
-- exact contiguous event ordering;
-- observed InTr admission required before action;
-- discovered capability/authorization evidence required before action;
-- semantic-integrity preservation across request/action evidence;
-- action/result pairing;
-- strategy-change -> reassessment -> adaptation reconstruction;
-- coherent termination;
-- deterministic SHA-256 event-chain reconstruction digest.
-
-Focused validation run `34281464913` / job `102246960827` passed. Artifact `10077759287`, digest `sha256:ef966296cf658e727bba6cda4c0b15063718fff62db78334050cd071789b8cb7`.
+PR `StegVerse-Labs/Continuity#14` merged as `d1956b1cc9860d8bc1de70180e412ca01dc8aec6`. Focused validation run `34281464913` / job `102246960827` passed; retained artifact digest `sha256:ef966296cf658e727bba6cda4c0b15063718fff62db78334050cd071789b8cb7`. This validates controlled-simulation confrontation reconstruction, not authentic runtime confrontation evidence.
 
 ## Current task status vs source maturity
 
-The canonical task record still reports:
+The canonical task record remains nonterminal:
 
 ```text
 coordination_state: PROPOSED
@@ -205,19 +139,17 @@ checkout_state: UNCLAIMED
 completion.claimed: false
 completion.validated: false
 activation_proof_complete: false
-retired: false / NOT RETIRED
+retired: false / NOT_RETIRED
 ```
 
-Those are task-control/activation facts and are not silently upgraded from source work.
-
-## Acceptance predicates: current evidence classification
+## Acceptance predicates
 
 ```text
 AUTONOMOUS_THREAT_OBSERVATION_SCHEMA_VALID: SOURCE_VALIDATED
 DEFENSIVE_INTERVENTION_REQUEST_SCHEMA_VALID: SOURCE_VALIDATED
 GOVERNED_INTERVENTION_CAPABILITY_REGISTRY_VALID: SOURCE_VALIDATED_CONTROLLED_SIMULATION
 THREAT_STATE_MACHINE_VALID: SOURCE_VALIDATED
-NATIVE_STEGOS_EXTERNAL_AI_BOUNDARY_CONTRACT: SOURCE_IMPLEMENTED / VALIDATION_PENDING
+NATIVE_STEGOS_EXTERNAL_AI_BOUNDARY_CONTRACT: SOURCE_VALIDATED_AND_MERGED
 NATIVE_STEGOS_BOUNDARY_NETWORK_PLACEMENT_OBSERVED: PENDING_AUTHENTIC_RUNTIME
 EXTERNAL_AI_INGRESS_OBSERVED_THROUGH_STEGOS_BOUNDARY: PENDING_AUTHENTIC_RUNTIME
 MANIFESTED_GOVERNED_DEFENDER_IDENTITY_OBSERVED: PENDING_AUTHENTIC_RUNTIME
@@ -235,36 +167,15 @@ GADI_001_ACTIVATION_PROOF_COMPLETE: FALSE
 
 ## Highest-priority remaining admissible work
 
-### Native StegOS boundary defense
+1. bind `StegVerse-Labs/Site` HIL/external-AI ingress readiness to the merged StegOS boundary contract without creating another evaluator/runtime/credential path;
+2. establish controlled network-path evidence before claiming StegOS boundary deployment;
+3. preserve external interaction evidence into the existing GADI/Continuity reconstruction chain;
+4. observe authentic InTr admission, runtime capability binding, resident defensive action, effect, reassessment/termination, authentic reconstruction, and Master Records reconciliation;
+5. complete canonical task-control validation and explicit retirement only after activation proof is complete.
 
-1. validate and merge `StegVerse-Labs/StegOS#227` only on exact-head green evidence;
-2. bind Site external-AI/HIL ingress readiness to the same boundary contract without creating another evaluator/runtime/credential path;
-3. establish controlled network-path evidence that StegOS is actually in the ingress path before claiming boundary deployment;
-4. preserve external interaction evidence into the existing GADI/Continuity reconstruction chain.
+## Release propagation rule
 
-### Authentic activation
-
-Still required after source integration:
-1. authentic external-AI interaction is observed through the StegOS boundary;
-2. authentic GADI event reaches canonical InTr path;
-3. authentic ADMITTED defensive decision is observed;
-4. authentic pre-authorized capability binding is observed;
-5. resident defensive action occurs on an allowed controlled/external safe-state surface;
-6. effect is observed;
-7. strategy change and adaptive reassessment are observed when scenario requires;
-8. intervention termination is observed;
-9. authentic receipt chain is retained;
-10. Continuity reconstructs exact authentic confrontation;
-11. Master Records reconciles observed reality;
-12. canonical task completion/retirement process runs.
-
-## Release/tag propagation rule
-
-At genuine release/tag readiness, verify pertinent GADI semantics are propagated/applied to:
-- `StegVerse-Labs/Site`;
-- `GCAT-BCAT-Engine/Publisher`;
-- `StegVerse-Labs/admissibility-wiki`;
-- `StegVerse-002/stegguardian-wiki`.
+At genuine release/tag readiness, verify pertinent GADI semantics in `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `StegVerse-Labs/admissibility-wiki`, and `StegVerse-002/stegguardian-wiki`.
 
 ## Status / archive condition
 
@@ -272,7 +183,7 @@ At genuine release/tag readiness, verify pertinent GADI semantics are propagated
 Goal ID: GADI-001
 Task ID: GADI-001
 COSV ID: 10100000100000
-STATUS: NOT_RETIRED / NATIVE_STEGOS_BOUNDARY_DEFENSE_INTEGRATION_ACTIVE / AUTHENTIC_ACTIVATION_PENDING
+STATUS: NOT_RETIRED / NATIVE_STEGOS_BOUNDARY_DEFENSE_VALIDATED_AND_MERGED / SITE_INGRESS_BINDING_NEXT / AUTHENTIC_ACTIVATION_PENDING
 ARCHIVE_READY: false
 ```
 
