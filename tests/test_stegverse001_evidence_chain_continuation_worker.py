@@ -39,6 +39,8 @@ class TestSv001EvidenceChainContinuationWorker(unittest.TestCase):
         self.assertFalse(handoff["authority"]["repository_writeback_authority"])
         self.assertFalse(handoff["execution"]["requires_other_machine"])
         self.assertFalse(handoff["continuity"]["terminal_autonomy_reexecution_allowed"])
+        self.assertIn("observed/**", process["bound_state_allowed_paths"])
+        self.assertTrue(MOD.SITE_PROOF_REL.as_posix().startswith("observed/"))
 
     def test_retryable_continuation_returns_handoff_ready(self):
         response = MOD.worker_response({
@@ -102,7 +104,18 @@ class TestSv001EvidenceChainContinuationWorker(unittest.TestCase):
             self.assertIsNotNone(target)
             assert target is not None
             self.assertEqual(json.loads(target.read_text()), proof)
-            self.assertTrue(str(target).endswith(str(MOD.SITE_PROOF_REL)))
+            self.assertEqual(target.relative_to(Path(tmp)).as_posix(), MOD.SITE_PROOF_REL.as_posix())
+            self.assertTrue(target.relative_to(Path(tmp)).as_posix().startswith("observed/"))
+
+    def test_worker_reuses_existing_observed_site_proof_when_invocation_has_none(self):
+        proof = {"schema": MOD.SITE_PROOF_SCHEMA, "state": "PASS"}
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            existing = root / MOD.SITE_PROOF_REL
+            existing.parent.mkdir(parents=True, exist_ok=True)
+            existing.write_text(json.dumps(proof))
+            target = MOD.materialize_invocation_evidence({}, root)
+            self.assertEqual(target, existing)
 
     def test_worker_rejects_non_site_proof_schema(self):
         with tempfile.TemporaryDirectory() as tmp:
