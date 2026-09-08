@@ -14,6 +14,8 @@ import subprocess
 import sys
 from pathlib import Path
 from typing import Any, Mapping
+from urllib.parse import urlencode, urlparse
+from urllib.request import Request, urlopen
 
 TASK_ID = "STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001"
 WORKER_ID = "stegverse001-evidence-chain-continuation-worker"
@@ -21,6 +23,10 @@ BOUND_STATE_ENV = "STEGVERSE_BOUND_STATE_ROOT"
 CONTINUATION_REL = Path("scripts/continue_stegverse001_evidence_chain.py")
 SITE_PROOF_REL = Path("observed/site-master-records-custody.latest.json")
 SITE_PROOF_SCHEMA = "stegos.master-records.portable-sv001-custody-proof/v1"
+RENDEZVOUS_FETCH_SCHEMA = "stegverse.resident-rendezvous.site-custody-evidence-fetch/v1"
+RENDEZVOUS_ENVELOPE_SCHEMA = "stegverse.resident-rendezvous.site-custody-evidence/v1"
+RENDEZVOUS_URL_ENV = "STEGVERSE_RESIDENT_RENDEZVOUS_URL"
+RENDEZVOUS_NODE_ENV = "STEGVERSE_RESIDENT_RENDEZVOUS_NODE_REF"
 HOSTED_ENV = (
     "GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "VERCEL_ENV",
     "CF_PAGES", "CLOUDFLARE_WORKERS",
@@ -83,20 +89,73 @@ def require_bound_state_root() -> Path:
     return root
 
 
-def materialize_invocation_evidence(invocation: Mapping[str, Any], bound: Path) -> Path | None:
-    """Persist non-authorizing Site custody proof in the admitted observed/** lane.
+def _valid_rendezvous_base(value: str) -> str:
+    parsed = urlparse(value)
+    if parsed.scheme != "https" and not (parsed.scheme == "http" and parsed.hostname in {"127.0.0.1", "localhost"}):
+        raise RuntimeError("resident rendezvous evidence endpoint must use HTTPS or localhost")
+    if parsed.username or parsed.password or parsed.query or parsed.fragment:
+        raise RuntimeError("resident rendezvous evidence endpoint must be a clean origin")
+    return value.rstrip("/")
 
-    The proof never mints a claim, fence, custody authority, or execution authority.
-    It is only carried into already-admitted bound state and is revalidated by the
-    canonical continuation before it can satisfy any downstream predicate.
-    """
+
+def _validate_relayed_proof(value: Any) -> dict[str, Any]:
+    if not isinstance(value, Mapping) or value.get("schema") != SITE_PROOF_SCHEMA:
+        raise RuntimeError("relayed Site custody proof schema mismatch")
+    if value.get("state") != "PASS" or value.get("execution_surface") != "CURRENT_USER_IPHONE":
+        raise RuntimeError("relayed Site custody proof state mismatch")
+    if value.get("intr_governance_admission_observed") is not True or value.get("reconstruction_state") != "PASS":
+        raise RuntimeError("relayed Site custody proof lacks governed reconstruction PASS")
+    if value.get("site_custody_authority") is not False or value.get("site_execution_authority") is not False:
+        raise RuntimeError("relayed Site custody proof authority boundary mismatch")
+    return dict(value)
+
+
+def fetch_rendezvous_evidence(bound: Path) -> Path | None:
+    base_raw = str(os.getenv(RENDEZVOUS_URL_ENV) or "").strip()
+    node_ref = str(os.getenv(RENDEZVOUS_NODE_ENV) or "").strip()
+    if not base_raw or not node_ref:
+        return None
+    if not node_ref.startswith("SV-NODE-") or len(node_ref) != 32:
+        raise RuntimeError("resident rendezvous node ref invalid")
+    base = _valid_rendezvous_base(base_raw)
+    url = base + "/api/resident-rendezvous/v1/evidence/site-governed-custody?" + urlencode({"target_node_ref": node_ref})
+    req = Request(url, method="GET", headers={"Accept": "application/json", "X-StegVerse-Node-Ref": node_ref, "User-Agent": "StegVerse-SV001-Evidence-Continuation/1"})
+    try:
+        with urlopen(req, timeout=20) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+    except Exception:
+        return None
+    if not isinstance(payload, Mapping) or payload.get("schema") != RENDEZVOUS_FETCH_SCHEMA:
+        raise RuntimeError("resident rendezvous evidence response invalid")
+    if payload.get("gateway_execution_authority") != "NONE" or payload.get("evidence_grants_authority") is not False or payload.get("authority_effect") != "NONE_EVIDENCE_ONLY":
+        raise RuntimeError("resident rendezvous evidence authority boundary invalid")
+    if payload.get("state") == "NO_EVIDENCE":
+        return None
+    if payload.get("state") != "EVIDENCE_AVAILABLE":
+        raise RuntimeError("resident rendezvous evidence state invalid")
+    envelope = payload.get("evidence")
+    if not isinstance(envelope, Mapping) or envelope.get("schema") != RENDEZVOUS_ENVELOPE_SCHEMA or envelope.get("target_node_ref") != node_ref:
+        raise RuntimeError("resident rendezvous evidence envelope invalid")
+    if envelope.get("gateway_execution_authority") != "NONE" or envelope.get("evidence_grants_authority") is not False or envelope.get("authority_effect") != "NONE_EVIDENCE_ONLY":
+        raise RuntimeError("resident rendezvous evidence envelope authority boundary invalid")
+    proof = _validate_relayed_proof(envelope.get("proof"))
+    target = bound / SITE_PROOF_REL
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(json.dumps(proof, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return target
+
+
+def materialize_invocation_evidence(invocation: Mapping[str, Any], bound: Path) -> Path | None:
+    """Persist non-authorizing Site custody proof in the admitted observed/** lane."""
     evidence = invocation.get("evidence") or {}
     if not isinstance(evidence, Mapping):
         raise RuntimeError("invocation evidence must be an object")
     proof = evidence.get("site_governed_custody_proof")
     existing = bound / SITE_PROOF_REL
     if proof is None:
-        return existing if existing.is_file() else None
+        if existing.is_file():
+            return existing
+        return fetch_rendezvous_evidence(bound)
     if not isinstance(proof, Mapping):
         raise RuntimeError("site_governed_custody_proof must be an object")
     if proof.get("schema") != SITE_PROOF_SCHEMA:
