@@ -11,6 +11,8 @@ ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "control" / "worker-registry.json"
 FRAGMENT = ROOT / "control" / "worker-registry.d" / "ecosystem-chat-sovereign-inference-parent-001.json"
 HANDOFF = ROOT / "handoffs" / "SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json"
+AUTH = ROOT / "authorizations" / "SHWP-ECOSYSTEM-CHAT-INFERENCE-001-independent-parent.json"
+REQUEST = ROOT / "control" / "resident-execution-request.d" / "ecosystem-chat-parent-001.json"
 RECOVERY = ROOT / "receipts" / "ecosystem-chat-sovereign-inference" / "orphan-recovery-HB28.json"
 VECTOR = ROOT / "control" / "task-vectors" / "SHWP-ECOSYSTEM-CHAT-INFERENCE-001.json"
 
@@ -26,6 +28,8 @@ class EcosystemChatParentRegistryReconciliationTests(unittest.TestCase):
         self.registry = load(REGISTRY)
         self.fragment = load(FRAGMENT)
         self.handoff = load(HANDOFF)
+        self.auth = load(AUTH)
+        self.request = load(REQUEST)
         self.recovery = load(RECOVERY)
         self.vector = load(VECTOR)
         self.task = next(row for row in self.registry["tasks"] if row.get("task_id") == TASK_ID)
@@ -55,6 +59,10 @@ class EcosystemChatParentRegistryReconciliationTests(unittest.TestCase):
         self.assertIsNone(self.task["lease"])
         self.assertIsNone(self.task["block_ref"])
 
+        # The durable generation-22 registry row is retained as historical
+        # post-recovery state. It is not the fresh-claim floor used by the
+        # current dedicated parent executor; that floor is projected from the
+        # append-only fragment/handoff/authorization surfaces below.
         admission = self.task["admission"]
         self.assertEqual(admission["authority_domain"], "INDEPENDENT_TASK_CONTROL")
         self.assertEqual(admission["claim_state"], "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM")
@@ -93,13 +101,23 @@ class EcosystemChatParentRegistryReconciliationTests(unittest.TestCase):
         self.assertEqual(count, 1)
         self.assertEqual(observed, [TASK_ID])
 
-    def test_fresh_parent_fence_floor_is_strictly_above_terminal_recovery(self):
-        admission = self.task["admission"]
+    def test_current_g25_floor_is_above_historical_terminal_recovery(self):
+        historical_admission = self.task["admission"]
+        fragment_admission = self.fragment_task["admission"]
         handoff_activation = self.handoff["activation"]
-        self.assertEqual(admission["minimum_fencing_token_exclusive"], 22)
-        self.assertEqual(handoff_activation["minimum_fencing_token_exclusive"], 22)
+
+        self.assertEqual(self.recovery["recovery_fencing_token"], 22)
+        self.assertEqual(historical_admission["minimum_fencing_token_exclusive"], 22)
+
+        self.assertEqual(fragment_admission["minimum_fencing_token_exclusive"], 24)
+        self.assertEqual(handoff_activation["minimum_fencing_token_exclusive"], 24)
+        self.assertEqual(self.auth["minimum_fencing_token_exclusive"], 24)
+        self.assertEqual(self.request["fresh_fence_minimum_exclusive"], 24)
+
+        self.assertGreater(fragment_admission["minimum_fencing_token_exclusive"], self.recovery["recovery_fencing_token"])
         self.assertTrue(handoff_activation["fresh_fence_required"])
         self.assertFalse(handoff_activation["recovery_reacquisition_allowed"])
+        self.assertFalse(fragment_admission["recovery_grants_parent_execution_authority"])
 
     def test_cosv_vector_is_emitted_and_bound_to_parent(self):
         cosv = self.task["machine_readable_state"]["cosv"]
