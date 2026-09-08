@@ -22,6 +22,8 @@
         "STEGVERSE_MASTER_RECORDS_ROOT",
         "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT",
         "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT",
+        "STEGVERSE_RESIDENT_RENDEZVOUS_URL",
+        "STEGVERSE_RESIDENT_RENDEZVOUS_NODE_REF",
         "STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"
       ],
       "bound_state_root": "~/.stegverse/state/stegverse001-evidence-chain-continuation",
@@ -34,6 +36,7 @@
       "notes": [
         "This adapter never reruns terminal SV001; it invokes only the existing post-terminal continuation implementation.",
         "HB32 is reference/freshness infrastructure only and grants no execution or transition authority.",
+        "The existing resident rendezvous may be used only to read the retained Site custody proof into observed/**; the gateway grants no execution, admission, credential, custody, or SV002 authority.",
         "Any custody state change remains subject to the contemporaneous Interlock/InTr and Master Records authority semantics already required by the canonical handoff.",
         "Task/COSV registration and WorkerCoordinator selection do not authorize custody, SV002 disposition, credentials, or publication.",
         "GitHub tokens, hosted runtime authority, a second heartbeat/oscillator/WorkerCoordinator, and manual human approval are forbidden."
