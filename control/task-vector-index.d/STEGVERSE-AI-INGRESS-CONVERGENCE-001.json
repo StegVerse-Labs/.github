@@ -1,0 +1,11 @@
+{
+  "schema": "stegverse.cosv-task-vector-index-entry/v1",
+  "task_id": "STEGVERSE-AI-INGRESS-CONVERGENCE-001",
+  "repository": "StegVerse-Labs/.github",
+  "registry_ref": "control/worker-registry.d/stegverse-ai-ingress-convergence-001.json",
+  "source_state_vector_ref": "control/task-vectors/STEGVERSE-AI-INGRESS-CONVERGENCE-001.json",
+  "vector": "50010000110000",
+  "vector_state": "EMITTED",
+  "profile": "task.v1",
+  "authority_effect": "NONE"
+}

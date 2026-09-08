@@ -19,10 +19,10 @@ assert spec and spec.loader
 cosv = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(cosv)
 
+
 class WorkerDenominatorClosureCOSVTests(unittest.TestCase):
     def test_final_worker_vectors_recompute_and_bind(self):
         index = json.loads((ROOT / "control/task-vector-index.json").read_text())
-        coverage = json.loads((ROOT / "control/cosv-global-registry-coverage.json").read_text())
         indexed = {x["task_id"]: x for x in index["tasks"]}
         for task_id, (expected, lifecycle, blockers, regpath) in TASKS.items():
             record = json.loads((ROOT / f"control/task-vectors/{task_id}.json").read_text())
@@ -42,15 +42,43 @@ class WorkerDenominatorClosureCOSVTests(unittest.TestCase):
 
     def test_active_worker_denominator_is_closed(self):
         coverage = json.loads((ROOT / "control/cosv-global-registry-coverage.json").read_text())
-        self.assertEqual(coverage["worker_registry_summary"]["canonically_indexed_task_ids"], 76)
-        self.assertEqual(coverage["worker_registry_summary"]["active_unvectorized_unique_task_ids"], 0)
+        summary = coverage["worker_registry_summary"]
+        closure = coverage["worker_denominator_closure"]
+
+        self.assertEqual(summary["active_unvectorized_unique_task_ids"], 0)
         self.assertEqual(coverage["active_worker_task_ids_missing_canonical_cosv"], [])
         self.assertEqual(
             coverage["total_active_unvectorized_unique_task_ids"],
             coverage["organization_registry_summary"]["active_unvectorized_task_ids"],
         )
-        self.assertEqual(coverage["worker_denominator_closure"]["active_worker_tasks_vectorized"], 76)
-        self.assertEqual(coverage["worker_denominator_closure"]["active_worker_tasks_unvectorized"], 0)
+        self.assertEqual(
+            closure["active_worker_tasks_vectorized"],
+            summary["canonically_indexed_task_ids"],
+        )
+        self.assertEqual(
+            closure["active_worker_tasks_unvectorized"],
+            summary["active_unvectorized_unique_task_ids"],
+        )
+        self.assertEqual(
+            closure["completed_historical_unvectorized"],
+            summary["completed_only_historical_unvectorized_task_ids"],
+        )
+        self.assertEqual(
+            closure["superseded_historical_unvectorized"],
+            summary["superseded_historical_unvectorized_task_ids"],
+        )
+        self.assertEqual(
+            closure["total_unique_worker_task_ids"],
+            summary["unique_task_ids_global_plus_fragments"],
+        )
+        self.assertEqual(
+            closure["active_worker_tasks_vectorized"]
+            + closure["active_worker_tasks_unvectorized"]
+            + closure["completed_historical_unvectorized"]
+            + closure["superseded_historical_unvectorized"],
+            closure["total_unique_worker_task_ids"],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -25,6 +25,7 @@
       "lease": null,
       "state": "HANDOFF_READY",
       "task_id": "KIMI-INTR-RESIDENT-ACTIVATION-001",
+      "source_state_vector_ref": "control/task-vectors/KIMI-INTR-RESIDENT-ACTIVATION-001.json",
       "worker_id": null,
       "worker_instance_id": null,
       "admission": {

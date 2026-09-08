@@ -2,9 +2,9 @@
 """Consume the governed multi-lane manifold activation request.
 
 This consumer grants no authority. It traverses the canonical manifold lineage,
-reuses completed predecessor nodes, delegates machine-owned subordinate execution
-to the existing WorkerCoordinator targeted task path, and records external
-TV/TVC-owned prerequisites without competing for their claims.
+reuses completed predecessor or aggregate nodes, delegates machine-owned
+subordinate execution to the existing WorkerCoordinator targeted task path, and
+records external TV/TVC-owned prerequisites without competing for their claims.
 """
 from __future__ import annotations
 
@@ -32,6 +32,7 @@ EXECUTE_DISPOSITIONS = {
 REUSE_DISPOSITIONS = {
     "REUSE_IMPLEMENTATION_EXECUTE_CHILDREN",
     "REUSE_COMPLETE_DO_NOT_REEXECUTE",
+    "EXECUTE_INCOMPLETE_CANONICAL_CHILDREN_THROUGH_EXISTING_OWNERS",
 }
 EXTERNAL_DISPOSITIONS = {"OBSERVE_EXISTING_OWNER_NO_COMPETE"}
 
@@ -123,8 +124,9 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -> 
             outcomes.append({
                 "task_id": child_id,
                 "disposition": disposition,
-                "state": "REUSED_NO_EXECUTION",
+                "state": "AGGREGATE_OR_COMPLETED_NODE_REUSED_CHILDREN_REMAIN_SEPARATE" if disposition == "EXECUTE_INCOMPLETE_CANONICAL_CHILDREN_THROUGH_EXISTING_OWNERS" else "REUSED_NO_EXECUTION",
                 "execution_attempted": False,
+                "children_must_execute_separately": disposition in {"REUSE_IMPLEMENTATION_EXECUTE_CHILDREN", "EXECUTE_INCOMPLETE_CANONICAL_CHILDREN_THROUGH_EXISTING_OWNERS"},
                 "authority_effect": "NONE",
             })
             continue

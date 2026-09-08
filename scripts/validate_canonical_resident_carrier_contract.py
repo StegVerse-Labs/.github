@@ -96,7 +96,8 @@ def validate(root: Path = ROOT) -> dict:
     assert "REPORT_AND_CONTINUE" in goal_continuation
     assert "CONTINUE_AUTONOMOUSLY" in goal_continuation
     assert "HUMAN_REVIEW_REQUIRED" in goal_continuation
-    assert "GOAL_COMPLETE" in goal_continuation
+    assert "COMPLETED_READY_TO_RETIRE" in goal_continuation
+    assert "RETIRED_TERMINAL" in goal_continuation
     assert "expected 14 digits" in goal_continuation
 
     assert progression_coordination["schema"] == "stegverse.cross-task-coordination-fragment/v1"

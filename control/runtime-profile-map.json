@@ -84,11 +84,11 @@
       "component": "Canonical Work Coordination",
       "repository": "StegVerse-Labs/.github",
       "declared": {
-        "capabilities": ["task_registry_reconciliation", "master_records_reconciliation", "worker_claim_projection", "dependency_reevaluation", "intr_task_admission", "runtime_profile_discovery"],
+        "capabilities": ["canonical_artifact_validation", "task_registry_reconciliation", "master_records_reconciliation", "worker_claim_projection", "dependency_reevaluation", "intr_task_admission", "runtime_profile_discovery"],
         "effect_class": "coordination_runtime",
         "mutation_allowed": true,
         "deployment_allowed": false,
-        "environment_classes": ["SOVEREIGN_RESIDENT"],
+        "environment_classes": ["SOVEREIGN_RESIDENT", "SOVEREIGN_RESIDENT_AND_SOURCE_VALIDATION"],
         "directions": ["INGRESS", "INTERNAL", "EGRESS"]
       },
       "substrate": {"hb_protocol": "HB32", "oscillator": {"mechanism": "INDEPENDENT_PHASE_OSCILLATOR", "reference_frequency_hz": 100, "reference_increment_interval_ms": 10, "progression_dependency": "OSCILLATOR_ONLY", "grants_authority": false}, "worker_runtime": {"class": "WorkerCoordinator"}, "intr": {"authority_effect": "INTERLOCK_INTR_REQUIRED"}, "runtime_root": "SYMBOLIC_RESIDENT_RUNTIME_ROOT"},

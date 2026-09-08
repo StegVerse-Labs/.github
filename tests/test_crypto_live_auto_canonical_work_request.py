@@ -19,7 +19,9 @@ COSV = "50000000106000"
 class CryptoLiveAutoCanonicalWorkRequestTests(unittest.TestCase):
     def test_task_registered_as_proposed_without_worker_claim(self):
         registry = json.loads(REGISTRY.read_text(encoding="utf-8"))
-        self.assertEqual(registry.get("generation"), 16)
+        generation = registry.get("generation")
+        self.assertIsInstance(generation, int)
+        self.assertGreater(generation, 0)
         matches = [row for row in registry.get("tasks", []) if row.get("task_id") == TASK_ID]
         self.assertEqual(len(matches), 1)
         task = matches[0]
@@ -75,10 +77,7 @@ class CryptoLiveAutoCanonicalWorkRequestTests(unittest.TestCase):
         predicates = {row["semantic_predicate_id"]: row for row in fragment["predicates"]}
         staged = predicates["canonical_work_request_staged"]
         consumed = predicates["resident_request_consumed"]
-        expected_binding = {
-            "task_id": TASK_ID,
-            "request_id": "RESIDENT-EXEC-CANONICAL-WORK-CRYPTO-LIVE-AUTO-001",
-        }
+        expected_binding = {"task_id": TASK_ID, "request_id": "RESIDENT-EXEC-CANONICAL-WORK-CRYPTO-LIVE-AUTO-001"}
         self.assertEqual(staged["subject_binding"], expected_binding)
         self.assertEqual(staged["state"], "SATISFIED")
         self.assertEqual(consumed["subject_binding"], expected_binding)

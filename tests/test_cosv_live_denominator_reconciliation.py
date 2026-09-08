@@ -3,6 +3,7 @@ import json, unittest
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
+INDEX_SHARDS=ROOT/"control/task-vector-index.d"
 NEW_TASKS=[
 "SHWP-ARA-GRAPH-RUNTIME-086",
 "RESOLVE-G18-RESIDENT-REQUEST-CONSUMPTION-001",
@@ -15,6 +16,7 @@ NEW_TASKS=[
 "TVC-COINBASE-INTR-RESIDENT-ACTIVATION-001",
 "SV-DN1-PRODUCTION-SOURCE-PREP-001",
 "SHWP-CMC028-ROOT-CUSTODY-EVIDENCE-001",
+"HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001",
 ]
 
 def _unique_worker_task_ids():
@@ -28,25 +30,41 @@ def _unique_worker_task_ids():
                 ids.add(task_id)
     return ids
 
+def _effective_index_rows(index):
+    rows={row["task_id"]:row for row in index["tasks"]}
+    if INDEX_SHARDS.exists():
+        for path in sorted(INDEX_SHARDS.glob("*.json")):
+            row=json.loads(path.read_text(encoding="utf-8"))
+            if row.get("schema") != "stegverse.cosv-task-vector-index-entry/v1":
+                continue
+            task_id=row["task_id"]
+            if task_id in rows:
+                for key in ("source_state_vector_ref","vector","vector_state","authority_effect"):
+                    assert row.get(key)==rows[task_id].get(key), f"index shard disagrees for {task_id}:{key}"
+            else:
+                rows[task_id]=row
+    return rows
+
 class COSVLiveDenominatorReconciliationTests(unittest.TestCase):
     def setUp(self):
-        self.coverage=json.loads((ROOT/"control/cosv-global-registry-coverage.json").read_text(encoding="utf-8"))
+        self.coverage=json.loads((ROOT/"control/cosv-live-worker-coverage.json").read_text(encoding="utf-8"))
         self.index=json.loads((ROOT/"control/task-vector-index.json").read_text(encoding="utf-8"))
         self.healer=json.loads((ROOT/"control/task-vectors/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json").read_text(encoding="utf-8"))
         self.healer_handoff=json.loads((ROOT/"handoffs/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json").read_text(encoding="utf-8"))
 
     def test_live_worker_denominator_and_partition_are_consistent(self):
-        summary=self.coverage["worker_registry_summary"]
-        self.assertEqual(summary["unique_task_ids_global_plus_fragments"],len(_unique_worker_task_ids()))
-        worker_indexed=[row for row in self.index["tasks"] if row.get("registry_ref") != "control/organization-task-registry.json"]
-        self.assertEqual(summary["canonically_indexed_task_ids"],len(worker_indexed))
-        expected_active_unvectorized=summary["unique_task_ids_global_plus_fragments"]-summary["completed_only_historical_unvectorized_task_ids"]-summary["superseded_historical_unvectorized_task_ids"]-summary["canonically_indexed_task_ids"]
-        self.assertEqual(summary["active_unvectorized_unique_task_ids"],expected_active_unvectorized)
-        self.assertEqual(self.coverage["total_active_unvectorized_unique_task_ids"],expected_active_unvectorized+self.coverage["organization_registry_summary"]["active_unvectorized_task_ids"])
+        self.assertEqual(self.coverage["unique_task_ids_global_plus_fragments"],len(_unique_worker_task_ids()))
+        effective=_effective_index_rows(self.index)
+        live_worker_ids=_unique_worker_task_ids()
+        worker_indexed=[row for task_id,row in effective.items() if task_id in live_worker_ids]
+        self.assertEqual(self.coverage["canonically_indexed_task_ids"],len(worker_indexed))
+        expected_active_unvectorized=self.coverage["unique_task_ids_global_plus_fragments"]-self.coverage["completed_only_historical_unvectorized_task_count"]-self.coverage["superseded_historical_unvectorized_task_count"]-self.coverage["canonically_indexed_task_ids"]
+        self.assertEqual(self.coverage["active_unvectorized_unique_task_ids"],expected_active_unvectorized)
+        self.assertEqual(self.coverage["total_active_unvectorized_unique_task_ids"],expected_active_unvectorized+self.coverage["organization_active_unvectorized_task_ids"])
 
     def test_each_new_task_is_exactly_indexed_or_active_missing(self):
         missing=set(self.coverage["active_worker_task_ids_missing_canonical_cosv"])
-        indexed={x["task_id"] for x in self.index["tasks"]}
+        indexed=set(_effective_index_rows(self.index))
         for task_id in NEW_TASKS:
             self.assertNotEqual(task_id in indexed, task_id in missing)
             vector_path=ROOT/f"control/task-vectors/{task_id}.json"

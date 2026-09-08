@@ -1,0 +1,40 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:hil-resident-session-manifold-v1",
+      "authority_ref": "handoffs/HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001.json#authority",
+      "capabilities": ["hil_resident_session_manifold_composition"],
+      "command": [
+        "python",
+        "control/resident-execution-request.d/consume-hil-resident-session-manifold-activation.py",
+        "--source-root",
+        ".",
+        "--runtime-root",
+        "."
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_SOVEREIGN_NODE",
+        "STEGVERSE_HEARTBEAT_ROOT",
+        "STEGVERSE_HEARTBEAT_SOURCE_ROOT",
+        "STEGVERSE_HIL_STATE_ROOT",
+        "STEGVERSE_HIL_RECEIVER_PORT",
+        "STEGVERSE_LLM_ADAPTER_ROOT",
+        "STEGVERSE_STEGOS_ROOT",
+        "STEGVERSE_KV_ROOT",
+        "STEGVERSE_TVC_ROOT",
+        "STEGVERSE_TV_ROOT"
+      ],
+      "notes": [
+        "Composes only existing HIL cohort execution surfaces.",
+        "Child claims, fences, predicates, and completion states remain independent.",
+        "No second runtime, dispatcher, scheduler, heartbeat, credential path, or second machine is introduced."
+      ],
+      "timeout_seconds": 2400,
+      "type": "process_json_v0.1"
+    }
+  ]
+}

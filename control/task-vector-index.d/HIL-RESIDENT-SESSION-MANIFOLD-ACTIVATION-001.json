@@ -1,0 +1,11 @@
+{
+  "schema": "stegverse.cosv-task-vector-index-entry/v1",
+  "task_id": "HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001",
+  "repository": "StegVerse-Labs/.github",
+  "registry_ref": "control/worker-registry.d/hil-resident-session-manifold-activation-001.json",
+  "source_state_vector_ref": "control/task-vectors/HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001.json",
+  "vector": "50000000100000",
+  "vector_state": "EMITTED",
+  "profile": "task.v1",
+  "authority_effect": "NONE"
+}

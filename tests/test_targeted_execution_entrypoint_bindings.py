@@ -79,7 +79,7 @@ class TargetedExecutionEntrypointBindingTests(unittest.TestCase):
             ["python", "scripts/run_independent_ecosystem_chat_parent.py"],
         )
         self.assertFalse(target["generic_worker_runtime_task_id_mode_allowed"])
-        self.assertEqual(target["fresh_fence_minimum_exclusive"], 22)
+        self.assertEqual(target["fresh_fence_minimum_exclusive"], 24)
         self.assertFalse(target["g20_authority_reuse_allowed"])
         self.assertFalse(target["g22_recovery_authority_reuse_allowed"])
         self.assertEqual(target["credential_authority"], "TV/TVC")

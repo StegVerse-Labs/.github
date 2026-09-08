@@ -49,6 +49,12 @@
       "classification": "KEEP_STANDALONE_EXCEPTION",
       "owner": "SHWP-DEEPSEEK-INTR-RUNTIME-001 / .github#1122",
       "reason": "validation-only source/preflight check for the bounded DeepSeek resident request, WorkerCoordinator registration, README completeness, and pinned StegIndex reuse evidence; authentic provider/runtime execution is prohibited on GitHub Actions"
+    },
+    {
+      "path": ".github/workflows/deterministic-suite-diagnostics.yml",
+      "classification": "KEEP_STANDALONE_EXCEPTION",
+      "owner": "HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001 / .github#1179",
+      "reason": "temporary non-authorizing validation-evidence carrier for the complete deterministic repository suite while PR #1179 closes the recurring failure-observability gap; permissions remain empty, GitHub credential authority remains NONE, and this surface grants no runtime, execution, transition, claim/fence, custody, receiving, or completion authority"
     }
   ],
   "removed_in_hygiene_batch_1": [
@@ -90,12 +96,12 @@
   "invariant": "Every repository-authored workflow file must be explicitly registered before merge/push. Unregistered workflow proliferation fails closed; registration is classification evidence, not approval to retain the workflow permanently.",
   "completion_condition": "Every registered surface is KEEP_STABLE_DISPATCHER, KEEP_STANDALONE_EXCEPTION with evidence, CONSOLIDATE_INTO_STABLE_DISPATCHER, TRANSFER_TO_STEGVERSE_WORKER, ELIMINATE, or terminally removed; REVIEW_REQUIRED/BLOCKED states are zero unless supported by active ownership.",
   "completion_evidence": {
-    "live_workflow_count": 7,
+    "live_workflow_count": 8,
     "stable_dispatchers": [
       ".github/workflows/org-control-plane-validate.yml",
       ".github/workflows/heartbeat-worker-project.yml"
     ],
-    "non_dispatcher_count": 5,
+    "non_dispatcher_count": 6,
     "preferred_target_satisfied": false,
     "runtime_authority_effect": "NONE",
     "credential_authority": "TV/TVC"

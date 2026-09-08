@@ -5,6 +5,8 @@ import json
 import unittest
 from pathlib import Path
 
+from tests.cosv_index_helpers import indexed_worker_ids, load_effective_index, load_live_worker_coverage
+
 ROOT = Path(__file__).resolve().parents[1]
 TASK_ID = "SHWP-LOCAL-SOURCE-GENERATION-EXECUTOR-001"
 VECTOR_REF = f"control/task-vectors/{TASK_ID}.json"
@@ -31,6 +33,7 @@ class LocalSourceGenerationCOSVTests(unittest.TestCase):
         retrospective = json.loads((ROOT / "control/admissible-existence-retrospective-conformance.json").read_text(encoding="utf-8"))
         self.ae_entry = next(x for x in retrospective["entries"] if x["task_id"] == TASK_ID)
         self.coverage = json.loads((ROOT / "control/cosv-global-registry-coverage.json").read_text(encoding="utf-8"))
+        self.live_coverage = load_live_worker_coverage(ROOT)
 
     def test_vector_recomputes_from_reconciled_three_blocker_state(self):
         self.assertTrue(cosv.validate_record(self.record))
@@ -74,20 +77,18 @@ class LocalSourceGenerationCOSVTests(unittest.TestCase):
 
     def test_bindings_and_global_coverage_are_structurally_consistent(self):
         index = json.loads((ROOT / "control/task-vector-index.json").read_text(encoding="utf-8"))
-        indexed = {x["task_id"]: x for x in index["tasks"]}
+        indexed = load_effective_index(ROOT)
         self.assertEqual(indexed[TASK_ID]["vector"], "50000000103000")
         self.assertEqual(self.task["source_state_vector_ref"], VECTOR_REF)
         self.assertEqual(self.handoff["source_state_vector_ref"], VECTOR_REF)
         self.assertEqual(self.task_state["source_state_vector_ref"], VECTOR_REF)
-        self.assertNotIn(TASK_ID, self.coverage["active_worker_task_ids_missing_canonical_cosv"])
+        self.assertNotIn(TASK_ID, self.live_coverage["active_worker_task_ids_missing_canonical_cosv"])
         self.assertEqual(index["coverage"]["indexed_vectorized_tasks"], len(index["tasks"]))
-        worker_indexed = [row for row in index["tasks"] if row.get("registry_ref") != "control/organization-task-registry.json"]
-        self.assertEqual(self.coverage["worker_registry_summary"]["canonically_indexed_task_ids"], len(worker_indexed))
-        self.assertGreaterEqual(len(index["tasks"]), 33)
-        worker_gap = self.coverage["worker_registry_summary"]["active_unvectorized_unique_task_ids"]
-        self.assertEqual(worker_gap, len(self.coverage["active_worker_task_ids_missing_canonical_cosv"]))
-        org_gap = self.coverage["organization_registry_summary"]["active_unvectorized_task_ids"]
-        self.assertEqual(self.coverage["total_active_unvectorized_unique_task_ids"], worker_gap + org_gap)
+        self.assertEqual(self.live_coverage["canonically_indexed_task_ids"], len(indexed_worker_ids(ROOT)))
+        self.assertGreaterEqual(len(indexed), len(index["tasks"]))
+        self.assertEqual(self.live_coverage["active_unvectorized_unique_task_ids"], 0)
+        self.assertEqual(self.live_coverage["organization_active_unvectorized_task_ids"], 0)
+        self.assertEqual(self.live_coverage["total_active_unvectorized_unique_task_ids"], 0)
 
 
 if __name__ == "__main__":

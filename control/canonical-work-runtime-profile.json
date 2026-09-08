@@ -5,6 +5,22 @@
   "worker_registry": "control/worker-registry.json",
   "master_records_authority": "MASTER_RECORDS",
   "ingress_egress_authority": "INTERLOCK_INTR",
+  "declared_capabilities": [
+    "canonical_artifact_validation",
+    "task_registry_reconciliation",
+    "master_records_reconciliation",
+    "worker_claim_projection",
+    "dependency_reevaluation",
+    "intr_task_admission",
+    "runtime_profile_discovery"
+  ],
+  "environment_classes": [
+    "SOVEREIGN_RESIDENT",
+    "SOVEREIGN_RESIDENT_AND_SOURCE_VALIDATION"
+  ],
+  "directions": ["INGRESS", "INTERNAL", "EGRESS"],
+  "mutation_allowed": true,
+  "deployment_allowed": false,
   "heartbeat": {
     "protocol_anchor": "HB32",
     "mechanism": "INDEPENDENT_PHASE_OSCILLATOR",
