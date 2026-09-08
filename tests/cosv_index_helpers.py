@@ -23,13 +23,21 @@ def load_effective_index(root: Path) -> dict[str, dict]:
     return rows
 
 
-def indexed_worker_ids(root: Path) -> set[str]:
-    worker_ids: set[str] = set()
+def worker_task_ids(root: Path) -> set[str]:
+    ids: set[str] = set()
     paths = [root / "control/worker-registry.json", *sorted((root / "control/worker-registry.d").glob("*.json"))]
     for path in paths:
         payload = json.loads(path.read_text(encoding="utf-8"))
         for task in payload.get("tasks", []):
             task_id = task.get("task_id")
             if isinstance(task_id, str) and task_id:
-                worker_ids.add(task_id)
-    return set(load_effective_index(root)).intersection(worker_ids)
+                ids.add(task_id)
+    return ids
+
+
+def indexed_worker_ids(root: Path) -> set[str]:
+    return set(load_effective_index(root)).intersection(worker_task_ids(root))
+
+
+def load_live_worker_coverage(root: Path) -> dict:
+    return json.loads((root / "control/cosv-live-worker-coverage.json").read_text(encoding="utf-8"))
