@@ -78,7 +78,7 @@ def _normalize_task(task: dict[str, Any]) -> dict[str, Any]:
 
 
 def _deduplicate(tasks: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    by_id: dict[str, dict[str, Any]] = {}
+    by_id: dict[str, dict] = {}
     order: list[str] = []
     for task in tasks:
         task_id = task["task_id"]
@@ -221,21 +221,25 @@ def resolve_compact_task_pointer(task_id: str, cosv_task_vector: str, *, task_in
 
 
 def _build_continuation_request(task: dict[str, Any]) -> dict[str, Any] | None:
-    if task.get("state") not in {ACTIVE_STATE, COMPLETED_STATE}:
+    state = task.get("state")
+    if state not in {ACTIVE_STATE, COMPLETED_STATE}:
         return None
     next_work = task.get("next_admissible_work")
     if not isinstance(next_work, dict):
+        return None
+    if state == COMPLETED_STATE and _work_kind(next_work) not in CLOSURE_KINDS:
         return None
     return {
         "schema": "stegverse.machine-continuation-request/v1",
         "task_id": task["task_id"],
         "cosv_task_vector": task.get("cosv_task_vector"),
-        "state": task.get("state"),
+        "state": state,
         "handoff": task.get("handoff"),
         "next_admissible_work": next_work,
         "execution_request_refs": list(task.get("execution_request_refs") or []),
         "automatic_pickup_required": True,
         "human_reentry_required": False,
+        "status_only_response_is_completion": False,
     }
 
 
@@ -307,7 +311,11 @@ def evaluate(payload: dict[str, Any], contract: dict[str, Any] | None = None) ->
     history_review = [_history_review_projection(row) for row in retired] if history_requested else []
     redirects = [redirect for redirect in (_superseded_redirect(row) for row in superseded) if redirect]
 
-    incomplete_completed = [row for row in completed if not row["closure_predicates_satisfied"] and row.get("next_admissible_work") is None]
+    incomplete_completed = [
+        row for row in completed
+        if not row["closure_predicates_satisfied"]
+        and (row.get("next_admissible_work") is None or _work_kind(row.get("next_admissible_work")) not in CLOSURE_KINDS)
+    ]
     completed_ready_to_retire = [row for row in completed if row["closure_predicates_satisfied"]]
 
     if invalid:
