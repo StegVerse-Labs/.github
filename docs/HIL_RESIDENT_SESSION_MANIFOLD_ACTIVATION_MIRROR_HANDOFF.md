@@ -20,15 +20,14 @@ Inherited canonical sources:
 
 ## Current continuation state
 
-- PR `#1179` remains OPEN and unmerged.
-- README completeness is already committed and remains `NO README CHANGE REQUIRED / EXISTING DOCUMENTED SOURCE-REFRESH CONTRACT` unless later remediation changes externally meaningful semantics.
-- The three previously active COSV gaps are closed through their existing evidence-backed vectors.
-- Corrected aggregate COSV index blob `53bb6d7e9cfe4e53b6c843de1b12d93fa16c2297` containing 93 aggregate rows is attached to `control/task-vector-index.json` on the feature branch by commit `4a847584ccb95f8dbd33e92a3e2b2cf2a97be18e`.
-- Exact merge-ref diagnostics at that head observed the corrected live worker projection: `88` unique worker task IDs / `81` canonically indexed worker task IDs, with zero active unindexed workers and the seven remaining unindexed IDs all terminal historical/superseded.
-- The diagnostic repair candidate for `control/cosv-global-registry-coverage.json` must be attached after branch reconciliation with current `main`, so the branch and PR merge ref use the same denominator source graph.
-- Obsolete fixed-count worker denominator assertions were removed in commit `369dda428b6866ad5c39fd26b0eaae27c405ec1d`; remaining historical tests that count only aggregate rows must be reconciled to the aggregate+shard effective-index model.
-- `main` continued advancing during remediation; exact collision reconciliation against the newest `main` is required before final exact-head validation.
-- Runtime HIL activation/transport proof remains intentionally pending authentic resident execution evidence and is not satisfied by source validation or GitHub Actions.
+- PR `#1179` is MERGED at `929efd22e7347e339be580fd74fc2da879bb6e59`.
+- Source completion predicates for the HIL resident-session manifold are satisfied: exact lineage and standing request are materialized, the resident consumer is bound to the existing WorkerCoordinator surface, static source-refresh parity is present, and deterministic regression coverage is merged.
+- The corrected aggregate COSV index is attached to `control/task-vector-index.json`; live effective aggregate-plus-shard worker coverage is recorded as `88` unique worker task IDs / `81` canonically indexed worker task IDs, with zero active unindexed workers and the seven remaining unindexed IDs terminal historical/superseded.
+- Obsolete fixed historical denominator assumptions were replaced with relational/effective-index validation, including semantic shard ownership checks that preserve task identity, source-vector identity, vector parity, and `authority_effect: NONE` without requiring unrelated ownership surfaces to have identical paths.
+- The feature branch was reconciled with then-current `main` (`ac8414152875f610477530df35ad34050c488a12`) before final validation and merge.
+- Exact-head validation on `eec101c9d880a88d874c5df0b68dea3a4aca6304` passed organization-control, Workspace DEVICE_KV, DeepSeek resident validation, the complete deterministic repository suite, and Heartbeat validation; Heartbeat deterministic suite step 16 passed.
+- README completeness remains `NO README CHANGE REQUIRED / EXISTING DOCUMENTED SOURCE-REFRESH CONTRACT`.
+- Runtime HIL activation/transport proof remains intentionally pending authentic resident execution evidence. Repository state after merge still contains no authentic `receipts/sovereign-host/hil-resident-execution-request-consumption.latest.json`; source validation, GitHub Actions, and merge do not satisfy the runtime predicate.
 
 ## Governing objective
 
@@ -94,7 +93,7 @@ Preflight found that the existing umbrella manifold consumer requires static inp
 - `control/task-vector-index.d/`;
 - `data/canonical-task-records/`.
 
-The canonical local-only WorkerCoordinator source refresh did not carry those directories. The existing refresh and its base copy are therefore extended to carry those static coordination inputs while continuing to exclude mutable runtime state, network fetch, credential acquisition, or repository mutation.
+The canonical local-only WorkerCoordinator source refresh now carries those static coordination inputs while continuing to exclude mutable runtime state, network fetch, credential acquisition, or repository mutation.
 
 This is a dependency-completeness repair of the existing resident source-refresh contract, not a new runtime or authority plane.
 
@@ -102,23 +101,17 @@ This is a dependency-completeness repair of the existing resident source-refresh
 
 `NO README CHANGE REQUIRED / EXISTING DOCUMENTED SOURCE-REFRESH CONTRACT`.
 
-Evidence-supported basis: `README.md` already documents the externally meaningful local-only WorkerCoordinator source-refresh contract—canonical static dependency propagation, no network fetch or credential acquisition, no second carrier/worker/scheduler, preservation of mutable runtime state, and no inference of runtime execution from refresh. The three newly carried directories are static canonical coordination dependencies required by the already-merged manifold consumer. Their inclusion restores dependency parity without changing the documented authority model, external interface, credential behavior, second-machine requirement, or execution semantics.
-
-This determination follows the same documented parity rule already used for omitted resident self-heal/source-refresh dependencies. If the change expands beyond static dependency parity, README impact must be re-evaluated before merge.
+Evidence-supported basis: `README.md` already documents the externally meaningful local-only WorkerCoordinator source-refresh contract—canonical static dependency propagation, no network fetch or credential acquisition, no second carrier/worker/scheduler, preservation of mutable runtime state, and no inference of runtime execution from refresh. The three carried directories are static canonical coordination dependencies required by the merged manifold consumer. Their inclusion restores dependency parity without changing the documented authority model, external interface, credential behavior, second-machine requirement, or execution semantics.
 
 ## Completion boundary
 
-Source completion requires:
+Source completion is MERGED and validated.
 
-- exact lineage and standing request;
-- resident consumer materialized on the existing WorkerCoordinator surface;
-- resident source refresh carries the static lineage/task-record inputs required by the umbrella and nested manifold consumers;
-- deterministic tests proving lane identity, selector mapping, no authority merge, continued visitation semantics, and source-refresh parity;
-- corrected aggregate COSV index and live worker coverage projections attached to the branch;
-- branch validation and collision review against current `main`;
-- exact-head organization-control and Heartbeat validation green before merge.
+Runtime completion remains separate and requires authentic child-produced receipts. For the HIL receiver lane, the next qualifying evidence remains:
 
-Runtime completion remains separate and requires authentic child-produced receipts. The manifold itself grants no activation authority.
+`receipts/sovereign-host/hil-resident-execution-request-consumption.latest.json`
+
+with subject-bound evidence satisfying `PRED-RESIDENT-REQUEST-CONSUMED-HIL-SOVEREIGN-RECEIVER-002`. The manifold itself, GitHub Actions, and repository merge grant no activation authority.
 
 ## Remaining destinations after authentic activation/release
 
