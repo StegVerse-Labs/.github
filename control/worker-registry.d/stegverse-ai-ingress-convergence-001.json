@@ -23,6 +23,7 @@
       "lease": null,
       "state": "HANDOFF_READY",
       "task_id": "STEGVERSE-AI-INGRESS-CONVERGENCE-001",
+      "source_state_vector_ref": "control/task-vectors/STEGVERSE-AI-INGRESS-CONVERGENCE-001.json",
       "worker_id": null,
       "worker_instance_id": null,
       "admission": {
