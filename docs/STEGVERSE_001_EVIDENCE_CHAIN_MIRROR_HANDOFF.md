@@ -13,7 +13,7 @@ COSV index shard: `control/task-vector-index.d/STEGVERSE001-EVIDENCE-CHAIN-CONTI
 Parent runtime: `SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001`
 Custody task: `MR-STEGVERSE001-BOUNDED-AUTONOMY-001`
 Observer successor: `SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001`
-State: `TASK_REGISTERED_COSV_POINTER_EMITTED_INDEPENDENT_CONTINUATION_WORKER_IN_CHANGESET_VALIDATION_PENDING_CURRENT_DEVICE_CUSTODY_AND_SV002_RUNTIME_PENDING`
+State: `HANDOFF_READY_INDEPENDENT_CONTINUATION_WORKER_MERGED_AUTHENTIC_CURRENT_DEVICE_CUSTODY_AND_SV002_RUNTIME_PENDING`
 
 ## Handoff pointer
 
@@ -84,17 +84,26 @@ The required machine surfaces already exist and must be reused:
 
 Downstream continuation is independently retryable after terminal SV001 and must never be suppressed merely because the SV001 request is already consumed.
 
-## Independent WorkerCoordinator continuation binding — 2026-09-08
+## Independent WorkerCoordinator continuation binding — merged 2026-09-08
 
 Runtime-solution review against `docs/HB32_RUNTIME_SOLUTION_REUSE_MIRROR_HANDOFF.md` and `data/runtime-solution-registry.d/hb32-existing-runtime-solutions.json` identified a source-level retry defect: the post-terminal continuation was implemented, but its retry was only reached as a side effect of the awareness-protected parent `stegverse001_bounded_autonomy` consumer.
 
-The continuation task is now given its own ordinary WorkerCoordinator-selectable binding in this change set:
+The continuation task now has its own ordinary WorkerCoordinator-selectable binding on `main`:
 
 ```text
 handoffs/STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001.json
 control/worker-registry.d/stegverse001-evidence-chain-continuation-001.json
 control/process-worker-adapters.d/stegverse001-evidence-chain-continuation-001.json
 workers/stegverse001_evidence_chain_continuation_worker.py
+```
+
+Canonical merge evidence:
+
+```text
+PR: StegVerse-Labs/.github#1181
+merge commit: 0dc0ca78e72573e0d129c8a4d0e70955b673b851
+source-level continuation binding: MERGED
+runtime authority effect: NONE_SOURCE_ONLY
 ```
 
 This does not create another scheduler/runtime/heartbeat/oscillator/claim-fence plane. It reuses the existing WorkerCoordinator + HB32 resident self-heal/local-source-refresh stack and invokes only `scripts/continue_stegverse001_evidence_chain.py`. The worker never calls the parent SV001 execution bridge and records `sv001_reexecution_performed=false`.
@@ -146,7 +155,7 @@ TVC lease issuance/consumption lineage: OBSERVED / CONSUMED
 device-local same-execution reconstruction: PASS
 canonical G23 retained/recovery implementation: MERGED / VALIDATED
 Site automatic G23 -> existing governed custody executor: MERGED / RELEASED
-independent continuation WorkerCoordinator binding: IMPLEMENTED IN CHANGE SET / VALIDATION PENDING
+independent continuation WorkerCoordinator binding: MERGED / MACHINE-SELECTABLE
 current-device v14 consumption: NOT YET CLAIMED
 fresh root-InTr ALLOW for custody: NOT YET CLAIMED
 Master Records custody PASS: NOT YET CLAIMED
@@ -155,7 +164,7 @@ retained same-execution downstream chain: NOT YET CLAIMED
 SV002 authentic disposition: NOT YET CLAIMED
 ```
 
-The runtime predicates remain fail-closed until authentic evidence exists. Source/worker registration may make the continuation independently executable; it cannot manufacture those runtime receipts.
+The runtime predicates remain fail-closed until authentic evidence exists. Source/worker registration makes the continuation independently selectable; it cannot manufacture those runtime receipts.
 
 ## COSV projection rationale
 
@@ -222,13 +231,14 @@ Repository history retains the detailed source chronology. Key canonical referen
 - Site v13 deterministic G23 recovery #1092/#1093;
 - Site v14 automatic machine-governed continuation #1098/#1099;
 - Site post-release reconciliation #1100/#1101;
-- canonical task/COSV registration PR #1177 / merge `033b88e05ea798ac52e9f494069ae49cf29bfb99`.
+- canonical task/COSV registration PR #1177 / merge `033b88e05ea798ac52e9f494069ae49cf29bfb99`;
+- independent continuation WorkerCoordinator binding PR #1181 / merge `0dc0ca78e72573e0d129c8a4d0e70955b673b851`.
 
-This handoff reflects current canonical state instead of preserving stale pre-terminal `NOT OBSERVED` statements contradicted by authentic G23 evidence.
+This handoff reflects current canonical state instead of preserving stale pre-terminal or pre-merge statements contradicted by authentic evidence or merged source state.
 
 ## README completeness predicate
 
-The task/COSV registration itself required no README change. The new independent continuation worker binding **is a material runtime-semantics change**, so the repository README is updated in the same functional change set.
+The task/COSV registration itself required no README change. The independent continuation worker binding is a material runtime-semantics change, and the repository README was updated in the same merged functional change set.
 
 Preflights:
 
