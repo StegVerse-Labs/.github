@@ -4,6 +4,8 @@ import json
 import unittest
 from pathlib import Path
 
+from tests.cosv_index_helpers import indexed_worker_ids, load_effective_index
+
 ROOT = Path(__file__).resolve().parents[1]
 TASK_ID = "SV-DN1-PRODUCTION-SOURCE-PREP-001"
 VECTOR = "50000000102000"
@@ -44,17 +46,16 @@ class SVDN1ProductionSourcePrepCOSVTests(unittest.TestCase):
         self.assertFalse(projection["network_source_fetch_allowed"])
 
     def test_index_and_coverage_move_exactly_one_existing_task(self):
-        rows = [row for row in self.index["tasks"] if row.get("task_id") == TASK_ID]
-        self.assertEqual(len(rows), 1)
-        self.assertEqual(rows[0]["registry_ref"], "control/worker-registry.d/sv-dn1-production-source-prep-001.json")
-        self.assertEqual(rows[0]["source_state_vector_ref"], f"control/task-vectors/{TASK_ID}.json")
-        self.assertEqual(rows[0]["vector"], VECTOR)
+        effective = load_effective_index(ROOT)
+        row = effective[TASK_ID]
+        self.assertEqual(row["registry_ref"], "control/worker-registry.d/sv-dn1-production-source-prep-001.json")
+        self.assertEqual(row["source_state_vector_ref"], f"control/task-vectors/{TASK_ID}.json")
+        self.assertEqual(row["vector"], VECTOR)
         self.assertNotIn(TASK_ID, self.coverage["active_worker_task_ids_missing_canonical_cosv"])
         indexed = [row for row in self.coverage["indexed_vectors"] if row.get("task_id") == TASK_ID]
         self.assertEqual(indexed, [{"task_id": TASK_ID, "vector": VECTOR}])
         summary = self.coverage["worker_registry_summary"]
-        worker_indexed = [row for row in self.index["tasks"] if row.get("registry_ref") != "control/organization-task-registry.json"]
-        self.assertEqual(summary["canonically_indexed_task_ids"], len(worker_indexed))
+        self.assertEqual(summary["canonically_indexed_task_ids"], len(indexed_worker_ids(ROOT)))
         expected_active_unvectorized = (
             summary["unique_task_ids_global_plus_fragments"]
             - summary["completed_only_historical_unvectorized_task_ids"]
