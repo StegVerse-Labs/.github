@@ -22,6 +22,7 @@
         "STEGVERSE_MASTER_RECORDS_ROOT",
         "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT",
         "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT",
+        "STEGVERSE_SV001_INTR_ADMISSION_RECEIPT",
         "STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"
       ],
       "bound_state_root": "~/.stegverse/state/stegverse001-evidence-chain-continuation",
@@ -32,11 +33,12 @@
       "timeout_seconds": 900,
       "type": "process_json_bound_state_v0.1",
       "notes": [
-        "This adapter never reruns terminal SV001; it invokes only the existing post-terminal continuation implementation.",
+        "This adapter never reruns terminal SV001 and never creates Master Records custody.",
+        "The current-iPhone Site runtime remains the producer of the machine-governed custody transition and must obtain a fresh root-InTr ALLOW for exact canonical G23 before mutation.",
+        "The optional STEGVERSE_SV001_INTR_ADMISSION_RECEIPT locator is evidence input only and grants no authority.",
         "HB32 is reference/freshness infrastructure only and grants no execution or transition authority.",
-        "Any custody state change remains subject to the contemporaneous Interlock/InTr and Master Records authority semantics already required by the canonical handoff.",
         "Task/COSV registration and WorkerCoordinator selection do not authorize custody, SV002 disposition, credentials, or publication.",
-        "GitHub tokens, hosted runtime authority, a second heartbeat/oscillator/WorkerCoordinator, and manual human approval are forbidden."
+        "GitHub tokens, hosted runtime authority, a second heartbeat/oscillator/WorkerCoordinator, retroactive authorization, and manual human approval are forbidden."
       ]
     }
   ]
