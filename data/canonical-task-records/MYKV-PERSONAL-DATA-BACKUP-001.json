@@ -1,0 +1,93 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "MYKV-PERSONAL-DATA-BACKUP-001",
+  "correlation_id": "MYKV-PERSONAL-DATA-BACKUP-001",
+  "root_correlation_id": "MYKV-PERSONAL-DATA-BACKUP-001",
+  "parent_task_id": null,
+  "goal": "Back up user-owned personal data from authorized connected and device-selected sources into MyKV / KnowledgeVault using one provider-neutral ingest contract with source identity, classification, normalization, durable storage, indexing policy, duplicate suppression, readback verification, and receipts.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CLAIMED_INTEGRATION",
+  "cosv_task_vector": "40000100100000",
+  "source_refs": [
+    "docs/MYKV_PERSONAL_DATA_BACKUP_MIRROR_HANDOFF.md",
+    "control/task-vectors/MYKV-PERSONAL-DATA-BACKUP-001.json",
+    "KnowledgeVault/MYKV_MIRROR_HANDOFF.md"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/continuity-vault-kit"],
+    "components": [
+      "mykv-ingest-contract",
+      "source-adapters",
+      "destination-map",
+      "idempotency",
+      "source-inventory",
+      "verification-receipts",
+      "gmail-backup",
+      "calendar-backup",
+      "contacts-backup",
+      "media-backup",
+      "device-selected-import"
+    ]
+  },
+  "dependencies": [
+    {"dependency_id":"DEP-MYKV-KNOWLEDGEVAULT","kind":"STORAGE","state":"AVAILABLE","ref":"KnowledgeVault","disposition":"REUSE_EXISTING_KV_ROOT"},
+    {"dependency_id":"DEP-MYKV-GMAIL","kind":"CONNECTED_SOURCE","state":"PARTIAL","ref":"Gmail","disposition":"CONTINUE_PAGINATION_AND_ITEM_RECEIPTS"},
+    {"dependency_id":"DEP-MYKV-CALENDAR","kind":"CONNECTED_SOURCE","state":"PARTIAL","ref":"Google Calendar","disposition":"CONTINUE_HISTORICAL_WINDOWS_AND_RECEIPTS"},
+    {"dependency_id":"DEP-MYKV-CONTACTS","kind":"CONNECTED_SOURCE","state":"PARTIAL","ref":"Google Contacts","disposition":"RESOLVE_ENUMERATION_OR_PRESERVE_EXPLICIT_LIMITATION"}
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": ["KV-CONNECTION-REVALIDATION-WORKER-001", "KV-PROVIDER-CHANGE-OBSERVER-001", "KV-CONNECTION-HEALTH-RECONCILER-001"],
+  "existing_evidence_refs": [
+    "KnowledgeVault/_Meta/mykv.ingest-contract.v1.json",
+    "KnowledgeVault/_Meta/mykv.destination-map.v1.json",
+    "KnowledgeVault/_Meta/mykv.source-adapters.v1.json",
+    "KnowledgeVault/_Meta/mykv.idempotency.v1.json",
+    "KnowledgeVault/_Meta/mykv.source-inventory.20260908.v1.json",
+    "KnowledgeVault/_System/Continuity/Events/mykv.ingest.20260908.GMAIL.001.receipt.json",
+    "KnowledgeVault/_System/Continuity/Events/mykv.ingest.20260908.MEDIA.001.receipt.json",
+    "KnowledgeVault/_System/Continuity/Events/mykv.ingest.20260908.CALENDAR.001.receipt.json",
+    "KnowledgeVault/_System/Continuity/Events/mykv.idempotency.20260908.MEDIA.001.retry-001.receipt.json"
+  ],
+  "expected_evidence_predicates": [
+    "KNOWLEDGEVAULT_ROOT_WRITABLE",
+    "COMMON_INGEST_CONTRACT_VALID",
+    "SOURCE_IDENTITY_PRESERVED",
+    "DESTINATION_CLASSIFICATION_VALID",
+    "IDEMPOTENT_REINGEST_SUPPRESSION_VALID",
+    "ORIGINAL_BYTES_OR_FAITHFUL_EXPORT_PRESERVED",
+    "READBACK_HASH_VERIFICATION_VALID",
+    "GMAIL_ENUMERATION_COMPLETE_OR_EXPLICITLY_BOUNDED",
+    "CALENDAR_ENUMERATION_COMPLETE_OR_EXPLICITLY_BOUNDED",
+    "CONTACTS_ENUMERATION_COMPLETE_OR_EXPLICITLY_BOUNDED",
+    "DEVICE_SELECTED_IMPORT_PATH_VALID",
+    "COMPREHENSIVE_BACKUP_CLAIM_ONLY_AFTER_SOURCE_COVERAGE_AND_RECEIPTS"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["connected_source_read", "kv_write", "classification", "hashing", "idempotency", "receipt_emission"],
+    "environment": "AUTHORIZED_CONNECTED_SOURCES_PLUS_USER_SELECTED_DEVICE_IMPORTS",
+    "direction": "SOURCE_TO_MYKV",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "runtime_resolution": {
+    "current_executor": "chat-connected-source-orchestration",
+    "authority_basis": "user-authorized connected data access plus canonical task/COSV pointer",
+    "unattended_runtime": false
+  },
+  "worker_claim": {"authority":"CURRENT_SESSION","claim_ref":"docs/MYKV_PERSONAL_DATA_BACKUP_MIRROR_HANDOFF.md","fence_ref":null,"projection_only":false},
+  "human_action_ref": null,
+  "completion": {"claimed":false,"validated":false,"reconciliation_ref":null,"activation_proof_complete":false},
+  "allowed_next_transitions": ["CONTINUE_SOURCE_ENUMERATION", "CONTINUE_VERIFIED_INGEST", "RECONCILE_SOURCE_COVERAGE"],
+  "handoff_projection_refs": ["docs/MYKV_PERSONAL_DATA_BACKUP_MIRROR_HANDOFF.md", "KnowledgeVault/MYKV_MIRROR_HANDOFF.md"],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "connected_source_access_requires_user_authorization": true,
+    "credential_authority": "TV_TVC_WHERE_STEGVERSE_CREDENTIALS_ARE_REQUIRED",
+    "personal_source_credentials_not_copied_into_KV_control_records": true,
+    "all_backup_mutations_must_be_receipted_and_reconstructable": true
+  }
+}
