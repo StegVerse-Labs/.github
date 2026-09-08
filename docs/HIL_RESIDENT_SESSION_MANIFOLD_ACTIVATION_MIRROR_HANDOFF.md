@@ -74,21 +74,34 @@ The consumer:
 5. writes one aggregate visit receipt without promoting any child to complete;
 6. preserves TV/TVC credential authority, GitHub-token runtime authority NONE, HB non-authority, and no-second-machine semantics.
 
+## Resident source-refresh parity repair
+
+Preflight found that the existing umbrella manifold consumer requires static inputs under:
+
+- `control/manifold-lineage.d/`;
+- `control/task-vector-index.d/`;
+- `data/canonical-task-records/`.
+
+The canonical local-only WorkerCoordinator source refresh did not carry those directories. The existing refresh and its base copy are therefore extended to carry those static coordination inputs while continuing to exclude mutable runtime state, network fetch, credential acquisition, or repository mutation.
+
+This is a dependency-completeness repair of the existing resident source-refresh contract, not a new runtime or authority plane.
+
 ## README completeness determination
 
-`NO README CHANGE REQUIRED / EXISTING COMPOSITION SEMANTICS ONLY`.
+`NO README CHANGE REQUIRED / EXISTING DOCUMENTED SOURCE-REFRESH CONTRACT`.
 
-Evidence: this change introduces no new runtime, execution authority, task execution primitive, transport, credential path, claim/fence mechanism, failure semantics, or participant interface. It only composes already-documented existing resident dispatcher exact-selector behavior and existing WorkerCoordinator targeted task visits for the exact cohort already documented in `docs/HIL_RESIDENT_SESSION_COHORT_MIRROR_HANDOFF.md`. The new manifold files are coordination/execution-composition metadata and a bounded caller of existing interfaces.
+Evidence-supported basis: `README.md` already documents the externally meaningful local-only WorkerCoordinator source-refresh contract—canonical static dependency propagation, no network fetch or credential acquisition, no second carrier/worker/scheduler, preservation of mutable runtime state, and no inference of runtime execution from refresh. The three newly carried directories are static canonical coordination dependencies required by the already-merged manifold consumer. Their inclusion restores dependency parity without changing the documented authority model, external interface, credential behavior, second-machine requirement, or execution semantics.
 
-If implementation expands beyond this composition boundary, README impact must be re-evaluated before merge.
+This determination follows the same documented parity rule already used for omitted resident self-heal/source-refresh dependencies. If the change expands beyond static dependency parity, README impact must be re-evaluated before merge.
 
 ## Completion boundary
 
 Source completion requires:
 
 - exact lineage and standing request;
-- resident consumer materialized on the existing dispatcher surface;
-- deterministic tests proving lane identity, selector mapping, no authority merge, and continued visitation semantics;
+- resident consumer materialized on the existing WorkerCoordinator surface;
+- resident source refresh carries the static lineage/task-record inputs required by the umbrella and nested manifold consumers;
+- deterministic tests proving lane identity, selector mapping, no authority merge, continued visitation semantics, and source-refresh parity;
 - branch validation and collision review.
 
 Runtime completion remains separate and requires authentic child-produced receipts. The manifold itself grants no activation authority.
