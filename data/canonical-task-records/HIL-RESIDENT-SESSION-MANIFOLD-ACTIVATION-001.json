@@ -1,0 +1,67 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001",
+  "correlation_id": "HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001",
+  "root_correlation_id": "HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001",
+  "parent_task_id": "GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001",
+  "goal": "Visit the existing HIL resident session cohort through canonical resident-request consumers and WorkerCoordinator task execution while preserving each child task's subject-bound authority, claim/fence, evidence, and completion predicate.",
+  "coordination_state": "PROPOSED",
+  "checkout_state": "UNCLAIMED",
+  "cosv_task_vector": "50000000100000",
+  "source_refs": [
+    "docs/HIL_RESIDENT_SESSION_MANIFOLD_ACTIVATION_MIRROR_HANDOFF.md",
+    "handoffs/HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001.json",
+    "control/manifold-lineage.d/hil-resident-session-manifold-activation-001.json",
+    "control/resident-execution-request.d/hil-resident-session-manifold-activation-001.json",
+    "control/task-vectors/HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001.json"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": ["StegVerse-Labs/.github"],
+    "components": ["hil-resident-session-manifold", "resident-request-dispatch", "workercoordinator-targeted-execution", "subject-bound-runtime-predicates"]
+  },
+  "dependencies": [
+    {"dependency_id":"DEP-HIL-RESIDENT-REQUEST","kind":"TASK_EVIDENCE","state":"UNRESOLVED","ref":"SHWP-HIL-SOVEREIGN-RECEIVER-001","disposition":"VISIT_EXISTING_RESIDENT_CONSUMER"},
+    {"dependency_id":"DEP-COSV-LIVE-PACKET","kind":"TASK_EVIDENCE","state":"UNRESOLVED","ref":"COSV-LIVE-PACKET-AUTOMATION-006","disposition":"VISIT_EXISTING_WORKERCOORDINATOR_TASK"},
+    {"dependency_id":"DEP-STEGOS-RELAY-MATERIALIZATION","kind":"TASK_EVIDENCE","state":"UNRESOLVED","ref":"SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001","disposition":"VISIT_EXISTING_WORKERCOORDINATOR_TASK"},
+    {"dependency_id":"DEP-STEGOS-KV-CONTINUITY","kind":"TASK_EVIDENCE","state":"UNRESOLVED","ref":"SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001","disposition":"VISIT_EXISTING_WORKERCOORDINATOR_TASK"},
+    {"dependency_id":"DEP-TV-TVC-RESIDENT-PROOF","kind":"TASK_EVIDENCE","state":"UNRESOLVED","ref":"SHWP-TV-TVC-RESIDENT-PROOF-001","disposition":"VISIT_EXISTING_WORKERCOORDINATOR_TASK"},
+    {"dependency_id":"DEP-G18-RELATED-LANE","kind":"TASK_EVIDENCE","state":"UNRESOLVED_INDEPENDENT","ref":"SHWP-DURABLE-RUNTIME-ACTIVATION","disposition":"VISIT_EXISTING_RESIDENT_CONSUMER_NO_HIL_DEPENDENCY"},
+    {"dependency_id":"DEP-ECOSYSTEM-CHAT-RELATED-LANE","kind":"TASK_EVIDENCE","state":"UNRESOLVED_INDEPENDENT","ref":"SHWP-ECOSYSTEM-CHAT-INFERENCE-001","disposition":"VISIT_EXISTING_DEDICATED_RESIDENT_CONSUMER"}
+  ],
+  "blockers": [],
+  "adjacent_task_refs": [
+    "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+    "COSV-LIVE-PACKET-AUTOMATION-006",
+    "SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001",
+    "SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001",
+    "SHWP-TV-TVC-RESIDENT-PROOF-001",
+    "SHWP-DURABLE-RUNTIME-ACTIVATION",
+    "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"
+  ],
+  "expected_evidence_predicates": [
+    "FULL_DECLARED_HIL_SESSION_LINEAGE_VISITED",
+    "HIL_RESIDENT_REQUEST_CONSUMPTION_REMAINS_SUBJECT_BOUND",
+    "G18_AND_ECOSYSTEM_CHAT_COMPLETION_NOT_INHERITED_BY_HIL",
+    "EXISTING_EXECUTION_SURFACES_REUSED_WITHOUT_DUPLICATE_RUNTIME",
+    "CHILD_CLAIMS_FENCES_AND_COMPLETION_PREDICATES_REMAIN_DISTINCT",
+    "TV_TVC_CREDENTIAL_AUTHORITY_PRESERVED",
+    "NO_SECOND_MACHINE_REQUIRED"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["resident_request_dispatch", "targeted_workercoordinator_execution"],
+    "environment": "SOVEREIGN_RESIDENT",
+    "direction": "INTERNAL",
+    "mutation_required": false,
+    "deployment_required": false,
+    "current_observation_required": true,
+    "manifold_lineage_ref": "control/manifold-lineage.d/hil-resident-session-manifold-activation-001.json"
+  },
+  "runtime_resolution": null,
+  "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
+  "human_action_ref": null,
+  "completion": {"claimed":false,"validated":false,"full_lineage_traversed":false},
+  "allowed_next_transitions": ["INGRESS_ADMITTED"],
+  "handoff_projection_refs": ["docs/HIL_RESIDENT_SESSION_MANIFOLD_ACTIVATION_MIRROR_HANDOFF.md"],
+  "authority_model": {"task_registry_mints_execution_authority":false,"source_state_proves_execution":false,"worker_claim_authority":"WORKERCOORDINATOR","interlock_intr_required_for_governed_ingress_egress":true}
+}
