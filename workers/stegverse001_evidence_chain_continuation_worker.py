@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""WorkerCoordinator-selectable post-terminal SV001 evidence-chain continuation.
+"""WorkerCoordinator-selectable post-terminal SV001 evidence-chain observer.
 
-This worker never reruns terminal SV001. It reuses the existing continuation script
-and remains fail-closed on missing downstream evidence. Selection/claim/fence state
-is WorkerCoordinator-owned; any custody mutation remains subject to the current
-Interlock/InTr and Master Records semantics required by the canonical handoff.
+The worker never reruns SV001 and never creates Master Records custody. The
+current-iPhone Site runtime owns the exact machine-governed custody transition.
+This worker only observes evidence after a contemporaneous root-InTr ALLOW has
+been retained and bound to canonical G23.
 """
 from __future__ import annotations
 
@@ -29,8 +29,8 @@ FORBIDDEN_CREDENTIAL_ENV = (
 )
 RETRYABLE_STATES = {
     "SV001_RECEIPT_NOT_OBSERVED",
-    "MASTER_RECORDS_SOURCE_NOT_MATERIALIZED",
-    "MASTER_RECORDS_INTAKE_FAILED",
+    "CURRENT_INTR_ADMISSION_NOT_OBSERVED",
+    "MASTER_RECORDS_GOVERNED_CUSTODY_NOT_OBSERVED",
     "MASTER_RECORDS_RECONSTRUCTION_PENDING",
     "SV002_SOURCE_NOT_CURRENT",
 }
@@ -84,7 +84,7 @@ def require_bound_state_root() -> Path:
 
 def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
     if any(truthy(os.getenv(name)) for name in HOSTED_ENV):
-        raise RuntimeError("hosted environment cannot execute sovereign continuation")
+        raise RuntimeError("hosted environment cannot execute sovereign continuation observer")
     present = [name for name in FORBIDDEN_CREDENTIAL_ENV if truthy(os.getenv(name))]
     if present:
         raise RuntimeError("credential-bearing environment forbidden: " + ",".join(sorted(present)))
@@ -93,7 +93,7 @@ def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
     root = Path(__file__).resolve().parents[1]
     continuation = root / CONTINUATION_REL
     if not continuation.is_file():
-        raise RuntimeError("canonical SV001 evidence-chain continuation source missing")
+        raise RuntimeError("canonical SV001 evidence-chain observer source missing")
     bound = require_bound_state_root()
 
     child = {
@@ -107,6 +107,7 @@ def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
         "STEGVERSE_MASTER_RECORDS_ROOT",
         "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT",
         "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT",
+        "STEGVERSE_SV001_INTR_ADMISSION_RECEIPT",
     ):
         if os.environ.get(name):
             child[name] = os.environ[name]
@@ -122,11 +123,11 @@ def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
     )
     result = parse_last_json(proc.stdout)
     if not isinstance(result, dict):
-        raise RuntimeError("continuation returned no machine-readable result")
+        raise RuntimeError("continuation observer returned no machine-readable result")
 
     state = str(result.get("state") or "UNKNOWN")
     receipt = {
-        "schema": "stegverse.sv001-evidence-chain-worker-receipt/v1",
+        "schema": "stegverse.sv001-evidence-chain-worker-receipt/v2",
         "task_id": TASK_ID,
         "worker_id": WORKER_ID,
         "claim_id": (invocation.get("task") or {}).get("claim_id"),
@@ -134,12 +135,14 @@ def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
         "continuation_returncode": proc.returncode,
         "continuation_result": result,
         "sv001_reexecution_performed": False,
+        "custody_mutation_performed_by_worker": False,
+        "current_intr_admission_required": True,
         "heartbeat_grants_execution_authority": False,
         "prior_receipt_authorizes_next_transition": False,
         "credential_authority": "TV/TVC",
         "github_token_used": False,
         "repository_writeback_performed": False,
-        "authority_effect": "NONE_CONTINUATION_ORCHESTRATION_ONLY",
+        "authority_effect": "NONE_CONTINUATION_OBSERVATION_ONLY",
     }
     target = bound / "receipts" / "latest.json"
     target.parent.mkdir(parents=True, exist_ok=True)
@@ -191,15 +194,15 @@ def worker_response(receipt: Mapping[str, Any]) -> dict[str, Any]:
             "problem_statement": f"continuation state {state}",
             "solution_required": True,
             "workaround_candidates": [
-                "re-evaluate the existing HB32/self-heal/source-refresh runtime solutions",
-                "repair only the exact continuation defect without rerunning terminal SV001"
+                "repair the existing current-device Site governed custody path",
+                "repair evidence retention/import without rerunning terminal SV001",
             ],
-            "next_solution_action": "Diagnose existing runtime solution registry before any successor runtime implementation.",
+            "next_solution_action": "Diagnose the existing current-device governance/custody evidence producer; do not synthesize or retroactively authorize custody.",
             "resolvable_by_current_worker": False,
             "escalation_target": "SOVEREIGN_RUNTIME_SANDBOX_RESOLUTION",
-            "required_capabilities": ["repository_resolution", "sandbox_validation"],
-            "completion_evidence": ["continuation retry state returns PASS"],
-            "same_level_retry_authorized": False
+            "required_capabilities": ["repository_resolution", "runtime_evidence_reconciliation"],
+            "completion_evidence": ["fresh root-InTr ALLOW", "Master Records reconstruction PASS", "SV002 disposition"],
+            "same_level_retry_authorized": False,
         },
     }
 
