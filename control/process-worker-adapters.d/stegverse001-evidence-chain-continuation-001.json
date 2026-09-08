@@ -4,7 +4,7 @@
   "adapters": [
     {
       "adapter_ref": "process:stegverse001-evidence-chain-continuation-v1",
-      "authority_ref": "handoffs/SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001.json#authority",
+      "authority_ref": "handoffs/STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001.json#authority",
       "capabilities": [
         "bounded_process_execution",
         "durable_state_reconstruction",
