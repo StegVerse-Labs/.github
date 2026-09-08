@@ -3,6 +3,7 @@ from __future__ import annotations
 import importlib.util
 import json
 from pathlib import Path
+import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -87,6 +88,36 @@ class TestSv001EvidenceChainContinuationWorker(unittest.TestCase):
         self.assertIn('"reconstruction_state":"PASS"', source)
         self.assertIn('"prior_receipt_authorizes_transition":False', source)
         self.assertIn('"historical_state_retroactively_authorized":False', source)
+
+    def test_worker_can_materialize_non_authorizing_site_proof_evidence(self):
+        proof = {
+            "schema": MOD.SITE_PROOF_SCHEMA,
+            "state": "PASS",
+            "execution_surface": "CURRENT_USER_IPHONE",
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            target = MOD.materialize_invocation_evidence(
+                {"evidence": {"site_governed_custody_proof": proof}}, Path(tmp)
+            )
+            self.assertIsNotNone(target)
+            assert target is not None
+            self.assertEqual(json.loads(target.read_text()), proof)
+            self.assertTrue(str(target).endswith(str(MOD.SITE_PROOF_REL)))
+
+    def test_worker_rejects_non_site_proof_schema(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaisesRegex(RuntimeError, "schema mismatch"):
+                MOD.materialize_invocation_evidence(
+                    {"evidence": {"site_governed_custody_proof": {"schema": "wrong"}}},
+                    Path(tmp),
+                )
+
+    def test_site_proof_transport_does_not_create_authority(self):
+        source = WORKER.read_text()
+        self.assertIn("NONE_EVIDENCE_ONLY", source)
+        self.assertIn("site_governed_custody_proof", source)
+        self.assertNotIn("browser_claim", source)
+        self.assertNotIn("browser_fence", source)
 
 
 if __name__ == "__main__":
