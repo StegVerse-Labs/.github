@@ -45,7 +45,7 @@ jobs:
             env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "${GITHUB_SHA}"
           fi
           git checkout --detach FETCH_HEAD
-          mkdir -p /tmp/stegverse-ci-bin ci-evidence
+          mkdir -p /tmp/stegverse-ci-bin ci-evidence/repair-candidates
           ln -sf "$(command -v python3)" /tmp/stegverse-ci-bin/python
           echo /tmp/stegverse-ci-bin >> "$GITHUB_PATH"
           git rev-parse HEAD > ci-evidence/tested-commit.txt
@@ -116,7 +116,7 @@ jobs:
           PY
           exit "$suite_status"
 
-      - name: Emit exact canonical reconciliation gaps
+      - name: Emit exact canonical reconciliation gaps and repair candidates
         if: always()
         run: |
           python - <<'PY'
@@ -124,63 +124,136 @@ jobs:
           from pathlib import Path
 
           root = Path('.')
+          out = root / 'ci-evidence/repair-candidates'
+          out.mkdir(parents=True, exist_ok=True)
+
           def load(path):
               return json.loads((root / path).read_text(encoding='utf-8'))
 
-          worker_ids = set()
-          for path in [root / 'control/worker-registry.json', *sorted((root / 'control/worker-registry.d').glob('*.json'))]:
+          registry_paths = [
+              root / 'control/worker-registry.json',
+              root / 'control/organization-task-registry.json',
+              *sorted((root / 'control/worker-registry.d').glob('*.json')),
+          ]
+          task_locations = {}
+          worker_tasks = {}
+          org_tasks = {}
+          vectorized_registry = {}
+          for path in registry_paths:
               data = json.loads(path.read_text(encoding='utf-8'))
+              rel = path.as_posix()
+              is_org = rel == 'control/organization-task-registry.json'
               for task in data.get('tasks', []):
                   task_id = task.get('task_id')
-                  if isinstance(task_id, str) and task_id:
-                      worker_ids.add(task_id)
+                  if not isinstance(task_id, str) or not task_id:
+                      continue
+                  task_locations.setdefault(task_id, []).append(rel)
+                  if is_org:
+                      org_tasks[task_id] = task
+                  else:
+                      worker_tasks[task_id] = task
+                  if isinstance(task.get('source_state_vector_ref'), str) and task.get('source_state_vector_ref'):
+                      vectorized_registry.setdefault(task_id, []).append((rel, task))
 
           index = load('control/task-vector-index.json')
-          effective = {row['task_id']: row for row in index.get('tasks', [])}
+          repaired_index = json.loads(json.dumps(index))
+          repaired_bindings = []
+          base_orphans = []
+          for row in repaired_index.get('tasks', []):
+              task_id = row.get('task_id')
+              candidates = vectorized_registry.get(task_id, [])
+              if not candidates:
+                  base_orphans.append(task_id)
+                  continue
+              exact = [pair for pair in candidates if pair[1].get('source_state_vector_ref') == row.get('source_state_vector_ref')]
+              selected = exact if exact else candidates
+              if len(selected) == 1:
+                  correct_ref = selected[0][0]
+                  if row.get('registry_ref') != correct_ref:
+                      repaired_bindings.append({
+                          'task_id': task_id,
+                          'from': row.get('registry_ref'),
+                          'to': correct_ref,
+                      })
+                      row['registry_ref'] = correct_ref
+
+          effective = {row['task_id']: row for row in repaired_index.get('tasks', [])}
           for path in sorted((root / 'control/task-vector-index.d').glob('*.json')):
               row = json.loads(path.read_text(encoding='utf-8'))
               if row.get('schema') == 'stegverse.cosv-task-vector-index-entry/v1':
                   effective.setdefault(row['task_id'], row)
 
+          worker_ids = set(worker_tasks)
           worker_indexed = sorted(task_id for task_id in effective if task_id in worker_ids)
           missing_worker = sorted(worker_ids - set(worker_indexed))
+          completed_historical = sorted(
+              task_id for task_id in missing_worker
+              if str(worker_tasks[task_id].get('state') or '').upper() == 'COMPLETED'
+          )
+          superseded_historical = sorted(
+              task_id for task_id in missing_worker
+              if str(worker_tasks[task_id].get('state') or '').upper() == 'SUPERSEDED'
+          )
+          active_missing = sorted(set(missing_worker) - set(completed_historical) - set(superseded_historical))
 
-          registry = load('data/canonical-task-registry.json')
-          vectorized_registry = {}
-          for task in registry.get('tasks', []):
-              task_id = task.get('task_id')
-              ref = task.get('source_state_vector_ref')
-              if isinstance(task_id, str) and isinstance(ref, str) and ref:
-                  vectorized_registry[task_id] = ref
-          missing_index_for_registry = sorted(set(vectorized_registry) - set(effective))
-
-          registry_ref_mismatches = []
-          for task_id, row in sorted(effective.items()):
-              registry_ref = row.get('registry_ref')
-              candidates = []
-              if registry_ref and (root / registry_ref).exists():
-                  candidates.append(registry_ref)
-              for path in sorted((root / 'control/worker-registry.d').glob('*.json')):
-                  data = json.loads(path.read_text(encoding='utf-8'))
-                  if any(t.get('task_id') == task_id for t in data.get('tasks', [])):
-                      candidates.append(path.as_posix())
-              candidates = sorted(set(candidates))
-              if candidates and registry_ref not in candidates:
-                  registry_ref_mismatches.append({'task_id': task_id, 'index_registry_ref': registry_ref, 'candidate_registry_refs': candidates})
+          org_ids = set(org_tasks)
+          org_indexed = sorted(task_id for task_id in effective if task_id in org_ids)
+          org_active_missing = sorted(org_ids - set(org_indexed))
 
           coverage = load('control/cosv-global-registry-coverage.json')
+          repaired_coverage = json.loads(json.dumps(coverage))
+          repaired_coverage['worker_registry_summary'] = {
+              'unique_task_ids_global_plus_fragments': len(worker_ids),
+              'canonically_indexed_task_ids': len(worker_indexed),
+              'completed_only_historical_unvectorized_task_ids': len(completed_historical),
+              'active_unvectorized_unique_task_ids': len(active_missing),
+              'superseded_historical_unvectorized_task_ids': len(superseded_historical),
+          }
+          repaired_coverage['organization_registry_summary'] = {
+              'active_task_ids': len(org_ids),
+              'canonically_vectorized_task_ids': len(org_indexed),
+              'active_unvectorized_task_ids': len(org_active_missing),
+          }
+          repaired_coverage['total_active_unvectorized_unique_task_ids'] = len(active_missing) + len(org_active_missing)
+          repaired_coverage['active_worker_task_ids_missing_canonical_cosv'] = active_missing
+          repaired_coverage['active_organization_task_ids_missing_canonical_cosv'] = org_active_missing
+          if isinstance(repaired_coverage.get('worker_denominator_closure'), dict):
+              repaired_coverage['worker_denominator_closure'].update({
+                  'active_worker_tasks_vectorized': len(worker_indexed),
+                  'active_worker_tasks_unvectorized': len(active_missing),
+                  'completed_historical_unvectorized': len(completed_historical),
+                  'superseded_historical_unvectorized': len(superseded_historical),
+                  'total_unique_worker_task_ids': len(worker_ids),
+              })
+
+          registry = load('data/canonical-task-registry.json')
+          canonical_vectorized = {
+              task.get('task_id') for task in registry.get('tasks', [])
+              if isinstance(task.get('task_id'), str)
+              and isinstance(task.get('source_state_vector_ref'), str)
+              and task.get('source_state_vector_ref')
+          }
+          missing_index_for_registry = sorted(canonical_vectorized - set(effective))
+
           payload = {
-              'schema': 'stegverse.validation-reconciliation-diagnostic/v1',
+              'schema': 'stegverse.validation-reconciliation-diagnostic/v2',
               'worker_unique_count': len(worker_ids),
               'worker_indexed_count': len(worker_indexed),
               'worker_unindexed_ids': missing_worker,
+              'completed_historical_unindexed_ids': completed_historical,
+              'superseded_historical_unindexed_ids': superseded_historical,
+              'active_worker_unindexed_ids': active_missing,
+              'organization_unindexed_ids': org_active_missing,
+              'base_index_ids_without_vectorized_registry_source': base_orphans,
+              'repaired_index_registry_bindings': repaired_bindings,
               'registry_vectorized_missing_index': missing_index_for_registry,
-              'registry_ref_mismatches': registry_ref_mismatches,
-              'coverage_worker_summary': coverage.get('worker_registry_summary'),
-              'coverage_active_missing_ids': coverage.get('active_worker_task_ids_missing_canonical_cosv'),
+              'coverage_worker_summary_before': coverage.get('worker_registry_summary'),
+              'coverage_worker_summary_candidate': repaired_coverage.get('worker_registry_summary'),
               'authority_effect': 'NONE_VALIDATION_EVIDENCE_ONLY',
           }
           Path('ci-evidence/reconciliation.json').write_text(json.dumps(payload, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+          (out / 'task-vector-index.json').write_text(json.dumps(repaired_index, indent=2) + '\n', encoding='utf-8')
+          (out / 'cosv-global-registry-coverage.json').write_text(json.dumps(repaired_coverage, indent=2) + '\n', encoding='utf-8')
           print('RECONCILIATION_DIAGNOSTIC=' + json.dumps(payload, sort_keys=True))
           PY
 
