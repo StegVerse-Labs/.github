@@ -1,0 +1,68 @@
+{
+  "schema": "stegverse.manifold-lineage/v1",
+  "manifold_id": "HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001",
+  "task_id": "HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001",
+  "source_handoff_ref": "docs/HIL_RESIDENT_SESSION_COHORT_MIRROR_HANDOFF.md",
+  "execution_policy": {
+    "visit_all_declared_nodes": true,
+    "preserve_subject_bound_authority": true,
+    "preserve_independent_claims_and_fences": true,
+    "continue_after_task_local_wait_or_failure": true,
+    "reuse_existing_execution_surfaces": true,
+    "user_only_nodes_never_auto_execute": true,
+    "authority_effect": "NONE_LINEAGE_ONLY"
+  },
+  "nodes": [
+    {
+      "task_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+      "role": "PRIMARY_HIL_EXECUTION_LANE",
+      "execution_mode": "RESIDENT_REQUEST_CONSUMER",
+      "selector": "hil",
+      "subject_predicate": "PRED-RESIDENT-REQUEST-CONSUMED-HIL-SOVEREIGN-RECEIVER-002",
+      "owner": "existing HIL resident consumer + canonical WorkerCoordinator"
+    },
+    {
+      "task_id": "COSV-LIVE-PACKET-AUTOMATION-006",
+      "role": "ADJACENT_MACHINE_LANE",
+      "execution_mode": "WORKERCOORDINATOR_TASK",
+      "owner": "existing COSV live packet worker"
+    },
+    {
+      "task_id": "SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001",
+      "role": "ADJACENT_MACHINE_LANE",
+      "execution_mode": "WORKERCOORDINATOR_TASK",
+      "owner": "existing StegOS relay materialization worker"
+    },
+    {
+      "task_id": "SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001",
+      "role": "ADJACENT_MACHINE_LANE",
+      "execution_mode": "WORKERCOORDINATOR_TASK",
+      "owner": "existing StegOS relay/KV continuity worker"
+    },
+    {
+      "task_id": "SHWP-TV-TVC-RESIDENT-PROOF-001",
+      "role": "ADJACENT_MACHINE_LANE",
+      "execution_mode": "WORKERCOORDINATOR_TASK",
+      "owner": "existing TV/TVC resident proof worker"
+    },
+    {
+      "task_id": "SHWP-DURABLE-RUNTIME-ACTIVATION",
+      "role": "RELATED_EXISTING_REQUEST_LANE",
+      "execution_mode": "RESIDENT_REQUEST_CONSUMER",
+      "selector": "g18",
+      "subject_predicate": "PRED-RESIDENT-REQUEST-CONSUMED-G18-RESUME-FENCE18-001",
+      "owner": "existing G18 resident consumer + canonical WorkerCoordinator",
+      "hil_dependency_effect": "NONE"
+    },
+    {
+      "task_id": "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
+      "role": "RELATED_EXISTING_REQUEST_LANE",
+      "execution_mode": "RESIDENT_REQUEST_CONSUMER",
+      "selector": "ecosystem_chat",
+      "subject_predicate": "PRED-RESIDENT-REQUEST-CONSUMED-ECOSYSTEM-CHAT-PARENT-002",
+      "owner": "existing Ecosystem Chat dedicated parent consumer"
+    }
+  ],
+  "completion_rule": "The manifold visit is complete only when every declared node has been visited through its existing execution surface. No child completion predicate is satisfied by aggregate visitation alone.",
+  "authority_effect": "NONE_LINEAGE_ONLY"
+}
