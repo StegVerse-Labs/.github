@@ -46,11 +46,13 @@
     ],
     "dependencies": [],
     "parent_task_id": null,
+    "canonical_owner_ref": "StegVerse-Labs/.github#12",
     "canonical_lineage_key": "kimi:intr:resident-runtime-cycle",
     "derivation_depth": 0,
     "priority": "release"
   },
   "authority": {
+    "authority_source": "StegVerse-Labs/StegCore canonical StegGate / Interlock + StegVerse-Labs/TVC",
     "authority_domain": "INDEPENDENT_TASK_CONTROL_WITH_INTERLOCK_TVC_AND_MASTER_RECORDS_BOUNDARIES",
     "credential_authority": "TV/TVC",
     "transition_authority": "StegVerse-Labs/StegCore canonical StegGate / Interlock",
