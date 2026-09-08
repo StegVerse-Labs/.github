@@ -1,0 +1,45 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SS-KV-SKAP-SOCIAL-RELEASE-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "60000000102000",
+  "evidence_refs": [
+    "data/canonical-task-records/SS-KV-SKAP-SOCIAL-RELEASE-001.json",
+    "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegSocials/tasks/SS-KV-SKAP-SOCIAL-RELEASE-001.yaml",
+    "StegVerse-Labs/StegSocials@3916eede57e1a42802c8007f1050f18fec0216ad:merged",
+    "StegVerse-Labs/StegSocials@813d7c112be31fea057b79db4468e89a1408ce9b:hosted-validation=PASS",
+    "master-records/orchestration/tasks/MR-STEGSOCIALS-RECEIPT-CUSTODY-001.yaml"
+  ],
+  "observed_at": "2026-09-08T18:38:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "BLOCKED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 2,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "Caller-side private-by-default release gating is merged and deterministic validation passed; authentic resident SKAP credential activation and the first governed single-use social publication are still blocked runtime predicates.",
+    "archive_ready": "Activation evidence is incomplete although continuation state is durable in StegSocials and this canonical registration.",
+    "unassigned_work": "All remaining work has explicit owners: TV/TVC resident runtime, the participant for one release grant, StegSocials provider/custody path, and Master Records reconstruction.",
+    "chat_owned_counts": "No implementation, validation, integration, observation, or credential work is exclusively owned by this chat thread.",
+    "canonical_owner_installed": "StegSocials task/handoff are durable and this record installs the previously missing canonical registry/COSV projection.",
+    "thread_required": "Durable task, handoff, and registry records are sufficient for continuation without this thread.",
+    "blocker_count": "Two blockers remain: resident SKAP social credential activation and the first participant-approved governed release.",
+    "evidence_complete": "No authentic resident SKAP activation receipt plus governed provider publication-to-KV-to-Master-Records reconstruction chain has been observed.",
+    "activated": "Source merge and manually configured Facebook Page do not establish governed runtime activation.",
+    "propagated": "No downstream activation propagation is claimed until authentic governed release and custody evidence exist."
+  },
+  "authority_effect": "NONE"
+}
