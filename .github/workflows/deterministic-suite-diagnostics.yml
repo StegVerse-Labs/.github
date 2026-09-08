@@ -1,0 +1,143 @@
+# Validation-only diagnostic carrier for the complete deterministic repository suite.
+# This workflow has no runtime, scheduler, activation, repository-mutation, credential,
+# claim, fence, routing, transition, or completion authority. It transports validation
+# evidence only so a failing exact-source suite can be remediated without UI-log scraping.
+name: Deterministic Repository Suite - Diagnostic Evidence Only
+
+on:
+  pull_request:
+    paths:
+      - 'handoffs/**'
+      - 'heartbeat_runtime/**'
+      - 'workers/**'
+      - 'tests/**'
+      - 'control/**'
+      - 'cost-basis/worker-runtime/**'
+      - 'docs/**'
+      - 'schemas/**'
+      - 'scripts/**'
+      - '.github/workflows/deterministic-suite-diagnostics.yml'
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: deterministic-suite-diagnostics-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deterministic-suite-diagnostics:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Anonymous exact-source checkout without GitHub token
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          git config --global --unset-all http.https://github.com/.extraheader || true
+          git init .
+          git remote add origin https://github.com/StegVerse-Labs/.github.git
+          if [ -n "${PR_NUMBER:-}" ]; then
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "refs/pull/${PR_NUMBER}/merge"
+          else
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "${GITHUB_SHA}"
+          fi
+          git checkout --detach FETCH_HEAD
+          mkdir -p /tmp/stegverse-ci-bin .ci-evidence
+          ln -sf "$(command -v python3)" /tmp/stegverse-ci-bin/python
+          echo /tmp/stegverse-ci-bin >> "$GITHUB_PATH"
+          git rev-parse HEAD > .ci-evidence/tested-commit.txt
+
+      - name: Prove diagnostic environment has no GitHub credential token
+        run: |
+          set -euo pipefail
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          test -z "${GITHUB_PAT:-}"
+          echo NO_GITHUB_CREDENTIAL_TOKEN_PRESENT
+
+      - name: Run complete deterministic repository suite with durable diagnostics
+        shell: bash
+        run: |
+          set +e
+          set -o pipefail
+          python -m unittest discover -v tests 2>&1 | tee .ci-evidence/deterministic-suite.log
+          suite_status=${PIPESTATUS[0]}
+          export SUITE_STATUS="$suite_status"
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          evidence_dir = Path('.ci-evidence')
+          log_path = evidence_dir / 'deterministic-suite.log'
+          tested_commit = (evidence_dir / 'tested-commit.txt').read_text(encoding='utf-8').strip()
+          log_text = log_path.read_text(encoding='utf-8', errors='replace') if log_path.exists() else ''
+
+          markers = []
+          for line in log_text.splitlines():
+              stripped = line.strip()
+              if (
+                  stripped.startswith('FAIL:')
+                  or stripped.startswith('ERROR:')
+                  or 'AssertionError' in stripped
+                  or stripped.startswith('FAILED (')
+              ):
+                  markers.append(stripped)
+
+          payload = {
+              'schema': 'stegverse.validation-diagnostic-evidence/v1',
+              'suite': 'python -m unittest discover -v tests',
+              'status': 'PASS' if os.environ['SUITE_STATUS'] == '0' else 'FAIL',
+              'exit_code': int(os.environ['SUITE_STATUS']),
+              'tested_commit': tested_commit,
+              'github': {
+                  'repository': os.environ.get('GITHUB_REPOSITORY'),
+                  'event_name': os.environ.get('GITHUB_EVENT_NAME'),
+                  'ref': os.environ.get('GITHUB_REF'),
+                  'sha': os.environ.get('GITHUB_SHA'),
+                  'run_id': os.environ.get('GITHUB_RUN_ID'),
+                  'run_attempt': os.environ.get('GITHUB_RUN_ATTEMPT'),
+                  'job': os.environ.get('GITHUB_JOB'),
+              },
+              'diagnostic_markers': markers,
+              'log_file': 'deterministic-suite.log',
+              'authority_effect': 'NONE_VALIDATION_EVIDENCE_ONLY',
+              'runtime_truth_inference': False,
+              'execution_admission_inference': False,
+          }
+          (evidence_dir / 'deterministic-suite.json').write_text(
+              json.dumps(payload, indent=2, sort_keys=True) + '\n',
+              encoding='utf-8',
+          )
+          print(json.dumps(payload, sort_keys=True))
+          PY
+          exit "$suite_status"
+
+      - name: Upload deterministic suite diagnostic evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deterministic-suite-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .ci-evidence/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Prove diagnostic workflow remains non-authorizing
+        if: always()
+        run: |
+          set -euo pipefail
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          test -z "${GITHUB_PAT:-}"
+          python - <<'PY'
+          from pathlib import Path
+          text=Path('.github/workflows/deterministic-suite-diagnostics.yml').read_text(encoding='utf-8')
+          assert 'permissions: {}' in text
+          assert 'repository-mutation' in text
+          assert 'authority_effect' in text
+          assert 'NONE_VALIDATION_EVIDENCE_ONLY' in text
+          print('DETERMINISTIC_DIAGNOSTIC_NON_AUTHORIZING_PASS')
+          PY
