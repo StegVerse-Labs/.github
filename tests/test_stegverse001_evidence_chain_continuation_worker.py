@@ -7,6 +7,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKER = ROOT / "workers" / "stegverse001_evidence_chain_continuation_worker.py"
+CONTINUATION = ROOT / "scripts" / "continue_stegverse001_evidence_chain.py"
 REGISTRY = ROOT / "control" / "worker-registry.d" / "stegverse001-evidence-chain-continuation-001.json"
 ADAPTER = ROOT / "control" / "process-worker-adapters.d" / "stegverse001-evidence-chain-continuation-001.json"
 HANDOFF = ROOT / "handoffs" / "STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001.json"
@@ -40,7 +41,7 @@ class TestSv001EvidenceChainContinuationWorker(unittest.TestCase):
 
     def test_retryable_continuation_returns_handoff_ready(self):
         response = MOD.worker_response({
-            "continuation_state": "MASTER_RECORDS_RECONSTRUCTION_PENDING",
+            "continuation_state": "SITE_GOVERNED_CUSTODY_PENDING",
             "continuation_result": {"retry_allowed": True},
             "local_receipt_ref": "receipts/latest.json",
         })
@@ -71,6 +72,21 @@ class TestSv001EvidenceChainContinuationWorker(unittest.TestCase):
         self.assertNotIn("consume_stegverse001_bounded_autonomy_request.py", source)
         self.assertIn("continue_stegverse001_evidence_chain.py", source)
         self.assertIn('"sv001_reexecution_performed": False', source)
+
+    def test_continuation_never_mutates_master_records_without_site_governance(self):
+        source = CONTINUATION.read_text()
+        self.assertNotIn("watch_stegverse001_autonomy_receipt.py", source)
+        self.assertNotIn("import_stegverse001_autonomy_receipt.py", source)
+        self.assertIn("SITE_GOVERNED_CUSTODY_PENDING", source)
+        self.assertIn("StegOSWebBootstrap.executeMasterRecordsSv001Custody", source)
+        self.assertIn('"master_records_mutation_performed":False', source)
+
+    def test_governed_site_proof_requires_intr_and_reconstruction(self):
+        source = CONTINUATION.read_text()
+        self.assertIn('"intr_governance_admission_observed":True', source)
+        self.assertIn('"reconstruction_state":"PASS"', source)
+        self.assertIn('"prior_receipt_authorizes_transition":False', source)
+        self.assertIn('"historical_state_retroactively_authorized":False', source)
 
 
 if __name__ == "__main__":

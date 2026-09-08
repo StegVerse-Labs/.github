@@ -1,0 +1,34 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SDK-MANIFEST-BUILDER-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "71000000100110",
+  "evidence_refs": [
+    "StegVerse-org/StegVerse-SDK:MANIFEST_BUILDER_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:pull/125",
+    "StegVerse-org/StegVerse-SDK:commit/f2d85e17ca50146f4234585561868d5b8818d1a4",
+    "StegVerse-org/StegVerse-SDK:actions/runs/34278909616",
+    "StegVerse-org/StegVerse-SDK:actions/runs/34278909631",
+    "StegVerse-org/StegVerse-SDK:actions/runs/34278909777",
+    "StegVerse-org/StegVerse-SDK:actions/runs/34278909861"
+  ],
+  "observed_at": "2026-09-08T21:12:00Z",
+  "exact_metrics": {
+    "lifecycle": "COMPLETE",
+    "archive_ready": true,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": true,
+    "activated": true,
+    "propagated": false
+  },
+  "authority_effect": "NONE",
+  "canonical_owner_ref": "StegVerse-org/StegVerse-SDK:tasks/SDK-MANIFEST-BUILDER-001.json"
+}

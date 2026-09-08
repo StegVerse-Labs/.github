@@ -29,9 +29,8 @@ FORBIDDEN_CREDENTIAL_ENV = (
 )
 RETRYABLE_STATES = {
     "SV001_RECEIPT_NOT_OBSERVED",
-    "MASTER_RECORDS_SOURCE_NOT_MATERIALIZED",
-    "MASTER_RECORDS_INTAKE_FAILED",
-    "MASTER_RECORDS_RECONSTRUCTION_PENDING",
+    "SITE_GOVERNED_CUSTODY_PENDING",
+    "SITE_GOVERNED_CUSTODY_PROOF_INVALID",
     "SV002_SOURCE_NOT_CURRENT",
 }
 
@@ -103,13 +102,6 @@ def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
         "LC_ALL": "C.UTF-8",
         "STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY": "TV/TVC",
     }
-    for name in (
-        "STEGVERSE_MASTER_RECORDS_ROOT",
-        "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT",
-        "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT",
-    ):
-        if os.environ.get(name):
-            child[name] = os.environ[name]
 
     proc = subprocess.run(
         [sys.executable, str(continuation), "--source-root", str(root)],
@@ -134,6 +126,7 @@ def execute(invocation: Mapping[str, Any]) -> dict[str, Any]:
         "continuation_returncode": proc.returncode,
         "continuation_result": result,
         "sv001_reexecution_performed": False,
+        "master_records_mutation_performed": bool(result.get("master_records_mutation_performed", False)),
         "heartbeat_grants_execution_authority": False,
         "prior_receipt_authorizes_next_transition": False,
         "credential_authority": "TV/TVC",
