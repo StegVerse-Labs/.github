@@ -7,7 +7,7 @@ Continuation task: `STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001`
 COSV task vector: `50000000100000`
 Custody task: `MR-STEGVERSE001-BOUNDED-AUTONOMY-001`
 Observer successor: `SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001`
-State: `HANDOFF_READY_GOVERNED_CUSTODY_PROOF_RENDEZVOUS_WIRED_AUTHENTIC_RUNTIME_EVIDENCE_PENDING`
+State: `HANDOFF_READY_GOVERNED_CUSTODY_PROOF_RENDEZVOUS_SOURCE_VALIDATED_AUTHENTIC_RUNTIME_EVIDENCE_PENDING`
 
 ## Canonical continuation pointer
 
@@ -129,24 +129,20 @@ ccc8f4e09c70b95646297add1c33d78575333d22
 
 The adapter admits `observed/**`; proof materialization outside that scope is forbidden.
 
-## Automatic Site -> resident proof rendezvous — 2026-09-08
+## Automatic Site -> resident proof rendezvous
 
-The remaining browser-to-resident gap is now source-wired through the already-existing Service Gateway resident rendezvous rather than a new transport/runtime plane.
+The browser-to-resident gap uses the already-existing Service Gateway resident rendezvous rather than a new runtime plane.
 
-Gateway evidence mailbox implementation:
+Gateway evidence mailbox:
 
 ```text
 StegVerse-org/LLM-adapter
-3d35b4afef55474881c5a73d6879775b3159a343
-  llm_adapter/resident_evidence_api.py
-
-40b177d0b929d8c2182d69574948ae551882d952
-  combined gateway activates the router
-  advertises the evidence endpoint
-
-a7ae5935c5a9d542176c7437905eb38c814bbe8b
-  regression tests
+3d35b4afef55474881c5a73d6879775b3159a343  resident_evidence_api.py
+40b177d0b929d8c2182d69574948ae551882d952  router activation / advertisement
+a7ae5935c5a9d542176c7437905eb38c814bbe8b  regression coverage
 ```
+
+Gateway validation is authentic source/CI evidence only, not runtime custody evidence. The `validate` workflow for `a7ae5935c5a9d542176c7437905eb38c814bbe8b` completed `SUCCESS`.
 
 Canonical endpoint:
 
@@ -154,51 +150,33 @@ Canonical endpoint:
 /api/resident-rendezvous/v1/evidence/site-governed-custody
 ```
 
-The mailbox accepts only the exact governed current-iPhone Site custody proof contract, binds it to one canonical resident node ref, rejects conflicting proof replacement, and returns:
+The mailbox accepts only the exact governed current-iPhone Site custody proof contract, binds it to one canonical resident node ref, rejects conflicting proof replacement, and returns evidence-only authority semantics.
 
-```text
-gateway_execution_authority = NONE
-evidence_grants_authority = false
-authority_effect = NONE_EVIDENCE_ONLY
-```
-
-Current-iPhone Site automatic relay:
+Current-iPhone Site relay:
 
 ```text
 StegVerse-Labs/Site
-86c2a2e93158b480d6eb9b610e6829782a5d4dbb
-  stegos-bootstrap/master-records-auto-recovery.js
+86c2a2e93158b480d6eb9b610e6829782a5d4dbb  governed proof relay
+11d034c6bba64dd1cf40cbc49e374714f4a70005  relay-specific governance validation assertions
+77a8ab55cc48240abdfb87833f1649c9719b0126  dependency-free main-push validation lane
 ```
 
-After `executeMasterRecordsSv001Custody()` returns custody/reconstruction `PASS`, the existing page lifecycle automatically:
-
-1. validates the governed proof;
-2. discovers the current resident through the existing same-origin resident rendezvous;
-3. hashes the exact proof;
-4. posts it to the evidence mailbox;
-5. records `RETAINED` when transport succeeds;
-6. preserves authentic custody PASS if transport is temporarily unavailable so page-resume retry can reattempt without rerunning SV001.
+The Site `Validate StegOS Persistent Card UX` workflow run `34292886326` on `77a8ab55cc48240abdfb87833f1649c9719b0126` completed `SUCCESS`. This validates that the relay occurs only after authentic governed custody PASS, remains evidence-only, preserves fail-closed authority boundaries, and does not convert rendezvous failure into custody failure.
 
 Continuation resident observation:
 
 ```text
 StegVerse-Labs/.github
-2aa30cd05d3703e871a2c24631c0424a1fc78fdc
-  continuation worker reads the existing rendezvous mailbox when no local proof is present
-  validates evidence-only authority boundaries
-  materializes only observed/site-master-records-custody.latest.json
-
-d72a630f0198c9db5c087e7aef30895a3153c17a
-  adapter exposes only STEGVERSE_RESIDENT_RENDEZVOUS_URL and STEGVERSE_RESIDENT_RENDEZVOUS_NODE_REF
-
-d19fabe8e93fba28cc8116011648f0346f0bd6d4
-  executable handoff admits only resident-rendezvous-site-custody-evidence-read
-
-6d41e5c0b31baf1d13ba812076d192876e8a5d8c
-  transport regression tests
+2aa30cd05d3703e871a2c24631c0424a1fc78fdc  rendezvous mailbox fetch/materialization
+d72a630f0198c9db5c087e7aef30895a3153c17a  bounded environment exposure
+d19fabe8e93fba28cc8116011648f0346f0bd6d4  executable handoff service admission
+6d41e5c0b31baf1d13ba812076d192876e8a5d8c  transport regression tests
+575c399bc4c13d6d87746b2f7efbbae22e37f8c3  existing no-token control-plane workflow bound to this regression lane
 ```
 
-This uses the existing WorkerCoordinator cycle and existing resident rendezvous. It creates no new scheduler, heartbeat, oscillator, WorkerCoordinator, custody authority, admission authority, or credential authority.
+The `.github` organization-control workflow run `34292595804` on `575c399bc4c13d6d87746b2f7efbbae22e37f8c3` completed `SUCCESS`. This validates the continuation transport contract without granting GitHub/runtime authority.
+
+The source chain is therefore validated end-to-end across gateway -> Site relay -> resident continuation consumption. Source/CI validation still does not satisfy the remaining authentic runtime predicates.
 
 ## Current evidence state
 
@@ -211,12 +189,12 @@ device-local same-execution reconstruction: PASS
 canonical retained G23 recovery: MERGED / VALIDATED
 Site automatic G23 -> governed custody executor: MERGED / RELEASED
 independent continuation WorkerCoordinator binding: MERGED / MACHINE-SELECTABLE
-governance-bypass repair: COMMITTED ON MAIN
-Site proof bound-state contract: COMMITTED ON MAIN
-Site -> resident rendezvous submission path: COMMITTED
-resident evidence mailbox: COMMITTED / ROUTER WIRED
-continuation rendezvous fetch/materialization: COMMITTED ON MAIN
-current-device runtime consumption of these latest sources: NOT YET CLAIMED
+governance-bypass repair: VALIDATED SOURCE
+Site proof bound-state contract: VALIDATED SOURCE
+Site -> resident rendezvous submission path: VALIDATED SOURCE
+resident evidence mailbox: VALIDATED SOURCE / ROUTER WIRED
+continuation rendezvous fetch/materialization: VALIDATED SOURCE
+current-device runtime consumption of latest sources: NOT YET CLAIMED
 fresh root-InTr ALLOW for custody: NOT YET CLAIMED
 Master Records custody PASS: NOT YET CLAIMED
 Master Records reconstruction PASS: NOT YET CLAIMED
@@ -226,7 +204,7 @@ retained same-execution downstream chain: NOT YET CLAIMED
 SV002 authentic disposition: NOT YET CLAIMED
 ```
 
-Source state cannot manufacture the remaining runtime evidence.
+Repository searches on 2026-09-08 found no authentic `RETAINED` mailbox receipt and no `STEGVERSE001_EVIDENCE_CHAIN_CONTINUATION_COMPLETE` runtime receipt beyond source/test contracts. Do not infer runtime completion from the green source validations.
 
 ## Retry / fail-closed rules
 
@@ -247,8 +225,8 @@ SV002 nonterminal/failure -> retry SV002 independently; never reopen SV001
 ## Next admissible machine transition
 
 ```text
-existing current-device Site lifecycle consumes latest source
--> exact canonical G23 is available
+existing current-device Site lifecycle consumes latest deployed source
+-> exact canonical G23 available
 -> executeMasterRecordsSv001Custody()
 -> fresh root-InTr ALLOW or fail closed
 -> Master Records custody/reconstruction PASS
@@ -261,7 +239,7 @@ existing current-device Site lifecycle consumes latest source
 -> SV002 observation/disposition
 ```
 
-The source-level browser-to-resident proof transport is now present. Remaining completion is authentic current-device/runtime observation of that chain.
+The remaining gap is authentic deployed/runtime observation, not another source implementation lane. Render service inspection was not performed because the connected Render control plane had no workspace selected; no workspace was guessed and no deployment mutation was attempted.
 
 ## User work
 
