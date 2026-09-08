@@ -5,29 +5,9 @@
   "goal": {
     "goal_id": "STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001",
     "objective": "Continue the already-terminal canonical SV001 G23 evidence through existing governed Master Records custody/reconstruction and downstream SV002 disposition without rerunning SV001 or creating a new runtime plane.",
-    "success_predicates": [
-      "canonical terminal G23 source observed",
-      "fresh contemporaneous Interlock/InTr decision precedes any new custody mutation",
-      "Master Records custody PASS",
-      "Master Records reconstruction PASS",
-      "retained same-execution downstream evidence chain",
-      "SV002 authentic disposition observed"
-    ],
-    "failure_predicates": [
-      "terminal SV001 rerun",
-      "G24 substituted for canonical G23",
-      "prior receipt or recovery result treated as next-transition authority",
-      "custody mutation without current Interlock/InTr governance",
-      "GitHub or heartbeat treated as runtime or transition authority"
-    ],
-    "authority_ceiling": [
-      "bounded_process_execution",
-      "runtime_observation",
-      "durable_state_reconstruction",
-      "no repository writeback",
-      "no credential creation",
-      "no authority widening"
-    ],
+    "success_predicates": ["canonical terminal G23 source observed","fresh contemporaneous Interlock/InTr decision precedes any new custody mutation","Master Records custody PASS","Master Records reconstruction PASS","retained same-execution downstream evidence chain","SV002 authentic disposition observed"],
+    "failure_predicates": ["terminal SV001 rerun","G24 substituted for canonical G23","prior receipt or recovery result treated as next-transition authority","custody mutation without current Interlock/InTr governance","GitHub or heartbeat treated as runtime or transition authority"],
+    "authority_ceiling": ["bounded_process_execution","runtime_observation","durable_state_reconstruction","no repository writeback","no credential creation","no authority widening"],
     "successor_policy": "INHERIT_OR_NARROW",
     "max_successor_depth": 1
   },
@@ -43,15 +23,12 @@
     "manual_execution_allowed": false,
     "manual_allowed_role": "evidence review only",
     "priority": "release",
-    "dependencies": [
-      "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
-      "MR-STEGVERSE001-BOUNDED-AUTONOMY-001",
-      "SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001"
-    ],
+    "dependencies": ["SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001","MR-STEGVERSE001-BOUNDED-AUTONOMY-001","SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001"],
     "execution_admission_mode": "INDEPENDENT_TASK_CONTROL",
     "parent_task_id": "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
     "derivation_depth": 1,
     "source_refs": [
+      "handoffs/SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001.json",
       "docs/STEGVERSE_001_EVIDENCE_CHAIN_MIRROR_HANDOFF.md",
       "data/canonical-task-records/STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001.json",
       "control/task-vectors/STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001.json",
@@ -74,17 +51,9 @@
     "bounded_local_observation_authority": true
   },
   "execution": {
-    "required_capabilities": [
-      "bounded_process_execution",
-      "runtime_observation",
-      "durable_state_reconstruction"
-    ],
+    "required_capabilities": ["bounded_process_execution","runtime_observation","durable_state_reconstruction"],
     "worker": "workers/stegverse001_evidence_chain_continuation_worker.py",
-    "allowed_paths": [
-      "~/.stegverse/state/stegverse001-bounded-autonomy/**",
-      "~/.stegverse/master-records/stegverse001-bounded-autonomy/**",
-      "~/.stegverse/state/sv002-adversarial-observation/**"
-    ],
+    "allowed_paths": ["~/.stegverse/state/stegverse001-bounded-autonomy/**","~/.stegverse/master-records/stegverse001-bounded-autonomy/**","~/.stegverse/state/sv002-adversarial-observation/**"],
     "allowed_services": [],
     "max_actions": 3,
     "max_retries": 256,
@@ -121,9 +90,7 @@
   },
   "completion": {
     "next_authorized_action": "Continue through existing current governance -> Master Records custody/reconstruction -> SV002 disposition; never rerun terminal SV001.",
-    "terminal_when": [
-      "STEGVERSE001_EVIDENCE_CHAIN_CONTINUATION_COMPLETE"
-    ]
+    "terminal_when": ["STEGVERSE001_EVIDENCE_CHAIN_CONTINUATION_COMPLETE"]
   },
   "source_state_vector_ref": "control/task-vectors/STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001.json"
 }
