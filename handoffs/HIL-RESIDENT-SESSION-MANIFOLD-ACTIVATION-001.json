@@ -1,35 +1,133 @@
 {
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001",
-  "task_id": "HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001",
-  "goal_id": "HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001",
+  "created_at": "2026-09-07T19:26:00-05:00",
   "state": "HANDOFF_READY",
-  "repository": "StegVerse-Labs/.github",
-  "issue": "StegVerse-Labs/.github#1178",
-  "handoff_ref": "docs/HIL_RESIDENT_SESSION_MANIFOLD_ACTIVATION_MIRROR_HANDOFF.md",
-  "manifold_lineage_ref": "control/manifold-lineage.d/hil-resident-session-manifold-activation-001.json",
-  "resident_request_ref": "control/resident-execution-request.d/hil-resident-session-manifold-activation-001.json",
-  "consumer_ref": "control/resident-execution-request.d/consume-hil-resident-session-manifold-activation.py",
-  "subordinate_task_ids": [
-    "SHWP-HIL-SOVEREIGN-RECEIVER-001",
-    "COSV-LIVE-PACKET-AUTOMATION-006",
-    "SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001",
-    "SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001",
-    "SHWP-TV-TVC-RESIDENT-PROOF-001",
-    "SHWP-DURABLE-RUNTIME-ACTIVATION",
-    "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"
-  ],
+  "goal": {
+    "goal_id": "HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001",
+    "objective": "Visit the existing HIL resident session cohort through canonical resident-request consumers and WorkerCoordinator task execution while preserving each child task's subject-bound authority, claim/fence, evidence, and completion predicate.",
+    "success_predicates": [
+      "all seven declared cohort nodes are visited through their existing execution surfaces",
+      "HIL resident request consumption remains subject-bound to its own predicate",
+      "G18 and Ecosystem Chat completion are not inherited by HIL",
+      "no duplicate runtime, dispatcher, WorkerCoordinator, claim/fence plane, credential route, heartbeat, scheduler, or second user-operated machine is introduced"
+    ],
+    "failure_predicates": [
+      "child task authority or completion is inferred from aggregate manifold visitation",
+      "HIL is made dependent on G18 or Ecosystem Chat terminalization",
+      "a child is routed through an execution surface different from its canonical existing path",
+      "TV/TVC credential authority or GitHub-token runtime boundary is weakened"
+    ],
+    "expires_at": null,
+    "authority_ceiling": [
+      "existing resident-request consumer invocation",
+      "existing WorkerCoordinator task visitation",
+      "aggregate non-authorizing visit receipt persistence"
+    ],
+    "successor_policy": "SEPARATE_AUTHORIZATION_REQUIRED_FOR_EXPANSION",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001",
+    "repository": "StegVerse-Labs/.github",
+    "canonical_owner_ref": "StegVerse-Labs/.github#1178",
+    "canonical_lineage_key": "hil:resident-session:manifold-activation",
+    "derivation_depth": 0,
+    "priority": "runtime",
+    "source_refs": [
+      "docs/HIL_RESIDENT_SESSION_MANIFOLD_ACTIVATION_MIRROR_HANDOFF.md",
+      "docs/HIL_RESIDENT_SESSION_COHORT_MIRROR_HANDOFF.md",
+      "control/manifold-lineage.d/hil-resident-session-manifold-activation-001.json",
+      "control/resident-execution-request.d/hil-resident-session-manifold-activation-001.json",
+      "control/resident-execution-request.d/consume-hil-resident-session-manifold-activation.py",
+      "control/worker-registry.d/hil-resident-session-manifold-activation-001.json",
+      "control/process-worker-adapters.d/hil-resident-session-manifold-activation-001.json"
+    ],
+    "dependencies": [
+      "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+      "COSV-LIVE-PACKET-AUTOMATION-006",
+      "SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001",
+      "SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001",
+      "SHWP-TV-TVC-RESIDENT-PROOF-001",
+      "SHWP-DURABLE-RUNTIME-ACTIVATION",
+      "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"
+    ],
+    "source_state_vector_ref": "control/task-vectors/HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001.json",
+    "machine_readable_state": {
+      "cosv": {
+        "profile": "task.v1",
+        "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+        "notation": "L R U I V G O C M T B E A P",
+        "width": 14,
+        "vector": "50000000100000",
+        "vector_state": "EMITTED",
+        "authority_effect": "NONE"
+      }
+    }
+  },
   "authority": {
-    "execution_owner": "CANONICAL_WORKERCOORDINATOR",
-    "credential_authority": "TV/TVC",
-    "github_token_runtime_authority": "NONE",
+    "authority_source": "StegVerse-Labs/.github#1178 + existing child task authorities",
     "heartbeat_grants_execution_authority": false,
+    "credential_authority": "TV/TVC",
+    "credential_value_available_to_worker": false,
+    "github_token_required": false,
+    "github_token_production_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
     "request_grants_execution_authority": false,
-    "second_machine_required": false
+    "second_machine_required": false,
+    "policy_version": "hil-resident-session-manifold-v0.1"
+  },
+  "execution": {
+    "required_capabilities": ["hil_resident_session_manifold_composition"],
+    "allowed_paths": ["receipts/sovereign-host/hil-resident-session-manifold-activation-request-consumption.latest.json"],
+    "allowed_services": [],
+    "max_actions": 7,
+    "max_retries": 1,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 4096,
+    "rate_class": "hil_resident_session_manifold"
+  },
+  "activation": {
+    "carrier": "heartbeat_reference_only",
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "handoffs/HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001.json#authority",
+    "checkout_policy": "fresh_independent_workercoordinator_claim",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "carrier_trigger_required": false,
+    "targeted_execution": {
+      "mode": "TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT",
+      "entrypoint": "scripts/run_worker_runtime.py",
+      "argv": ["python", "scripts/run_worker_runtime.py", "--task-id", "HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001"],
+      "requires_existing_separated_carrier_reference": true,
+      "heartbeat_grants_execution_authority": false,
+      "credential_authority": "TV/TVC",
+      "github_token_runtime_authority": "NONE",
+      "authority_effect": "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY"
+    }
+  },
+  "continuity": {
+    "checkpoint_ref": "receipts/sovereign-host/hil-resident-session-manifold-activation-request-consumption.latest.json",
+    "handoff_destination": "control/worker-registry.json",
+    "master_records_required": false,
+    "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "source_complete": false,
-    "runtime_complete": false,
-    "activation_claimed": false
+    "next_authorized_action": "Execute HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001 through the existing WorkerCoordinator after canonical admission; retain child receipts separately and do not infer child completion from the aggregate visit.",
+    "terminal_when": [
+      "full_declared_set_visited=true",
+      "aggregate_visit_satisfies_child_completion=false",
+      "credential_authority=TV/TVC",
+      "github_token_runtime_authority=NONE",
+      "second_machine_required=false"
+    ]
+  },
+  "block": {
+    "block_reason": "Authentic resident manifold visitation has not yet been observed.",
+    "dependency": "existing sovereign resident WorkerCoordinator",
+    "observer": "single canonical WorkerCoordinator",
+    "recheck_trigger": "after resident source refresh or targeted execution receipt",
+    "next_check": "receipts/sovereign-host/hil-resident-session-manifold-activation-request-consumption.latest.json",
+    "escalation_condition": "authority merge, duplicate runtime creation, source drift, or second-machine requirement",
+    "block_expires_at": null
   }
 }
