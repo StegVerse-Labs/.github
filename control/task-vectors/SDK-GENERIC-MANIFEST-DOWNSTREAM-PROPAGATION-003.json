@@ -1,0 +1,33 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "71000000100110",
+  "evidence_refs": [
+    "StegVerse-org/StegVerse-SDK:SDK_GENERIC_MANIFEST_DOWNSTREAM_PROPAGATION_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:tasks/SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003.json",
+    "StegVerse-org/StegVerse-SDK:pull/127",
+    "StegVerse-org/StegVerse-SDK:commit/f6fc2226f776a54ef3caf808b234c0543121b934",
+    "StegVerse-org/StegVerse-SDK:pull/128",
+    "StegVerse-Labs/admissibility-wiki:issue/66"
+  ],
+  "observed_at": "2026-09-08T21:58:00Z",
+  "exact_metrics": {
+    "lifecycle": "ACTIVE",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 2,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "authority_effect": "NONE",
+  "canonical_owner_ref": "StegVerse-org/StegVerse-SDK:tasks/SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003.json"
+}
