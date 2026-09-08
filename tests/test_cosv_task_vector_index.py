@@ -7,6 +7,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 INDEX = ROOT / "control" / "task-vector-index.json"
+INDEX_SHARDS = ROOT / "control" / "task-vector-index.d"
 FRAGMENTS = ROOT / "control" / "worker-registry.d"
 GLOBAL_REGISTRY = ROOT / "control" / "worker-registry.json"
 ORGANIZATION_REGISTRY = ROOT / "control" / "organization-task-registry.json"
@@ -20,6 +21,26 @@ spec.loader.exec_module(cosv)
 class COSVTaskVectorIndexTests(unittest.TestCase):
     def load_index(self) -> dict:
         return json.loads(INDEX.read_text(encoding="utf-8"))
+
+    def load_effective_index_rows(self) -> dict[str, tuple[dict, Path]]:
+        found: dict[str, tuple[dict, Path]] = {}
+        for row in self.load_index()["tasks"]:
+            task_id = row["task_id"]
+            self.assertNotIn(task_id, found, f"duplicate aggregate index task {task_id}")
+            found[task_id] = (row, INDEX)
+
+        if INDEX_SHARDS.exists():
+            for path in sorted(INDEX_SHARDS.glob("*.json")):
+                row = json.loads(path.read_text(encoding="utf-8"))
+                self.assertEqual(row.get("schema"), "stegverse.cosv-task-vector-index-entry/v1")
+                task_id = row["task_id"]
+                if task_id in found:
+                    aggregate, _ = found[task_id]
+                    for key in ("source_state_vector_ref", "vector", "vector_state", "authority_effect"):
+                        self.assertEqual(row.get(key), aggregate.get(key), f"index shard disagrees for {task_id}:{key}")
+                    continue
+                found[task_id] = (row, path)
+        return found
 
     def vectorized_registry_tasks(self) -> dict[str, tuple[dict, Path]]:
         found: dict[str, tuple[dict, Path]] = {}
@@ -44,7 +65,9 @@ class COSVTaskVectorIndexTests(unittest.TestCase):
         ids = [row["task_id"] for row in rows]
         self.assertEqual(len(ids), len(set(ids)))
         registry = self.vectorized_registry_tasks()
-        self.assertEqual(set(ids), set(registry))
+        effective = self.load_effective_index_rows()
+        self.assertTrue(set(ids).issubset(set(registry)))
+        self.assertTrue(set(registry).issubset(set(effective)))
 
         coverage = index["coverage"]
         self.assertEqual(coverage["indexed_vectorized_tasks"], len(rows))
@@ -54,15 +77,32 @@ class COSVTaskVectorIndexTests(unittest.TestCase):
         )
 
     def test_index_vectors_match_machine_sources(self) -> None:
-        index = self.load_index()
         registry = self.vectorized_registry_tasks()
-        for row in index["tasks"]:
-            task, path = registry[row["task_id"]]
-            self.assertEqual(row["registry_ref"], path.relative_to(ROOT).as_posix())
+        effective = self.load_effective_index_rows()
+        for task_id, (task, registry_path) in registry.items():
+            row, index_path = effective[task_id]
+            if index_path == INDEX:
+                self.assertEqual(row["registry_ref"], registry_path.relative_to(ROOT).as_posix())
+            else:
+                self.assertEqual(index_path.parent, INDEX_SHARDS)
+                canonical_ref = row["registry_ref"]
+                canonical_path = ROOT / canonical_ref
+                self.assertTrue(canonical_path.is_file(), f"index shard registry_ref missing for {task_id}")
+                canonical = json.loads(canonical_path.read_text(encoding="utf-8"))
+                self.assertEqual(canonical.get("task_id"), task_id)
+
             self.assertEqual(row["source_state_vector_ref"], task["source_state_vector_ref"])
             self.assertRegex(row["vector"], r"^[0-9]{14}$")
             self.assertEqual(row["vector_state"], "EMITTED")
             self.assertEqual(row["authority_effect"], "NONE")
+
+            embedded = task.get("machine_readable_state", {}).get("cosv")
+            if isinstance(embedded, dict):
+                self.assertEqual(embedded["profile"], "task.v1")
+                self.assertEqual(embedded["notation"], "L R U I V G O C M T B E A P")
+                self.assertEqual(embedded["width"], 14)
+                self.assertEqual(embedded["vector"], row["vector"])
+                self.assertEqual(embedded["authority_effect"], "NONE")
 
             ref = row["source_state_vector_ref"]
             if ref.startswith("control/task-vectors/"):
@@ -71,17 +111,12 @@ class COSVTaskVectorIndexTests(unittest.TestCase):
                 self.assertEqual(record["profile"], "task.v1")
                 self.assertEqual(record["vector"], row["vector"])
                 self.assertEqual(record["exact_metrics"]["symbol_order"], "LRUIVGOCMTBEAP")
-                if row["task_id"] == "SHWP-DURABLE-RUNTIME-ACTIVATION":
+                if task_id == "SHWP-DURABLE-RUNTIME-ACTIVATION":
                     self.assertEqual(record["vector"], "60000000101000")
                     self.assertEqual(record["exact_metrics"]["lifecycle"], "BLOCKED")
                     self.assertEqual(record["exact_metrics"]["blocker_count"], 1)
             else:
-                embedded = task["machine_readable_state"]["cosv"]
-                self.assertEqual(embedded["profile"], "task.v1")
-                self.assertEqual(embedded["notation"], "L R U I V G O C M T B E A P")
-                self.assertEqual(embedded["width"], 14)
-                self.assertEqual(embedded["vector"], row["vector"])
-                self.assertEqual(embedded["authority_effect"], "NONE")
+                self.assertIsInstance(embedded, dict)
 
 
 if __name__ == "__main__":
