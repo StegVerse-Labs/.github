@@ -90,3 +90,18 @@ def test_umbrella_request_matches_lineage_and_supports_aggregate_gadi() -> None:
     assert request["execution_dispositions"]["GADI-001"] == "EXECUTE_INCOMPLETE_CANONICAL_CHILDREN_THROUGH_EXISTING_OWNERS"
     consumer_source = (ROOT / "scripts/consume_governed_multilane_manifold_activation_request.py").read_text()
     assert '"EXECUTE_INCOMPLETE_CANONICAL_CHILDREN_THROUGH_EXISTING_OWNERS"' in consumer_source
+
+
+def test_resident_refresh_carries_manifold_static_inputs() -> None:
+    required = (
+        'Path("control/manifold-lineage.d")',
+        'Path("control/task-vector-index.d")',
+        'Path("data/canonical-task-records")',
+    )
+    for name in (
+        "scripts/refresh_sovereign_worker_runtime_source.py",
+        "scripts/refresh_sovereign_worker_runtime_source_base.py",
+    ):
+        source = (ROOT / name).read_text(encoding="utf-8")
+        for marker in required:
+            assert marker in source, f"{name} missing static manifold source: {marker}"
