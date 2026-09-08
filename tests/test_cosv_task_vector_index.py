@@ -11,6 +11,7 @@ INDEX_SHARDS = ROOT / "control" / "task-vector-index.d"
 FRAGMENTS = ROOT / "control" / "worker-registry.d"
 GLOBAL_REGISTRY = ROOT / "control" / "worker-registry.json"
 ORGANIZATION_REGISTRY = ROOT / "control" / "organization-task-registry.json"
+CANONICAL_REGISTRY = ROOT / "data" / "canonical-task-registry.json"
 
 spec = importlib.util.spec_from_file_location("cosv", ROOT / "scripts" / "cosv.py")
 assert spec and spec.loader
@@ -50,8 +51,15 @@ class COSVTaskVectorIndexTests(unittest.TestCase):
             for task in payload.get("tasks", []):
                 if task.get("source_state_vector_ref"):
                     task_id = task["task_id"]
-                    self.assertNotIn(task_id, found, f"duplicate vectorized task {task_id}")
+                    self.assertNotIn(task_id, found, f"duplicate vectorized worker/organization task {task_id}")
                     found[task_id] = (task, path)
+
+        canonical = json.loads(CANONICAL_REGISTRY.read_text(encoding="utf-8"))
+        for task in canonical.get("tasks", []):
+            task_id = task.get("task_id")
+            if task_id in found or not task.get("source_state_vector_ref"):
+                continue
+            found[task_id] = (task, CANONICAL_REGISTRY)
         return found
 
     def test_index_is_complete_for_vectorized_registry_tasks(self) -> None:
@@ -89,7 +97,11 @@ class COSVTaskVectorIndexTests(unittest.TestCase):
                 canonical_path = ROOT / canonical_ref
                 self.assertTrue(canonical_path.is_file(), f"index shard registry_ref missing for {task_id}")
                 canonical = json.loads(canonical_path.read_text(encoding="utf-8"))
-                self.assertEqual(canonical.get("task_id"), task_id)
+                if canonical.get("task_id") == task_id:
+                    pass
+                else:
+                    matches = [entry for entry in canonical.get("tasks", []) if entry.get("task_id") == task_id]
+                    self.assertEqual(len(matches), 1, f"index shard registry_ref does not resolve {task_id}")
 
             self.assertEqual(row["source_state_vector_ref"], task["source_state_vector_ref"])
             self.assertRegex(row["vector"], r"^[0-9]{14}$")
