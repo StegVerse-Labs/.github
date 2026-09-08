@@ -26,6 +26,7 @@
       "lease": null,
       "state": "HANDOFF_READY",
       "task_id": "SHWP-DEEPSEEK-INTR-RUNTIME-001",
+      "source_state_vector_ref": "control/task-vectors/SHWP-DEEPSEEK-INTR-RUNTIME-001.json",
       "worker_id": null,
       "worker_instance_id": null,
       "admission": {
