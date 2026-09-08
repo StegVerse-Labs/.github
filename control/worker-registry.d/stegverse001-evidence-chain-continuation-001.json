@@ -10,17 +10,19 @@
       "archive_eligible": false,
       "executor_binding": "AUTHORIZED",
       "authorized_policy_version": "stegverse001-evidence-chain-continuation-v1",
-      "handoff_ref": "docs/STEGVERSE_001_EVIDENCE_CHAIN_MIRROR_HANDOFF.md",
-      "block_ref": "docs/STEGVERSE_001_EVIDENCE_CHAIN_MIRROR_HANDOFF.md",
+      "handoff_ref": "handoffs/STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001.json",
+      "block_ref": "handoffs/STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001.json",
       "evidence_refs": [
         "data/canonical-task-records/STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001.json",
         "control/task-vectors/STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001.json",
         "docs/STEGVERSE_001_EVIDENCE_CHAIN_MIRROR_HANDOFF.md",
+        "handoffs/STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001.json",
         "workers/stegverse001_evidence_chain_continuation_worker.py",
-        "receipts/preflight/STEGVERSE001-EVIDENCE-CHAIN-RUNTIME-CONTINUATION-001.json"
+        "receipts/preflight/STEGVERSE001-EVIDENCE-CHAIN-RUNTIME-CONTINUATION-001.json",
+        "receipts/preflight/STEGVERSE001-EVIDENCE-CHAIN-RUNTIME-CONTINUATION-002.json"
       ],
       "admission": {
-        "authority_source": "handoffs/SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001.json#authority",
+        "authority_source": "handoffs/STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001.json#authority",
         "authority_domain": "INDEPENDENT_TASK_CONTROL",
         "heartbeat_reference_only": true,
         "heartbeat_grants_execution_authority": false,
@@ -37,7 +39,7 @@
       "status": "AVAILABLE",
       "executor_type": "repository_worker",
       "adapter_ref": "process:stegverse001-evidence-chain-continuation-v1",
-      "authority_source": "handoffs/SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001.json#authority",
+      "authority_source": "handoffs/STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001.json#authority",
       "capabilities": [
         "bounded_process_execution",
         "durable_state_reconstruction",
