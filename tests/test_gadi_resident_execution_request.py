@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
+import tempfile
+import unittest
 from pathlib import Path
-
-import pytest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "control" / "resident-execution-request.d" / "consume-gadi-resident-execution.py"
@@ -93,53 +95,64 @@ def actuator_result() -> dict:
     }
 
 
-def test_missing_runtime_evidence_fails_closed(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    module = load_module()
-    materialize_request(tmp_path)
-    micro = tmp_path / "micro-node-runtime"
-    install_fake_micro_node(micro)
-    monkeypatch.setenv("STEGVERSE_MICRO_NODE_ROOT", str(micro))
-    with pytest.raises(RuntimeError, match="current GADI resident command not observed"):
-        module.consume(tmp_path, tmp_path)
+class GADIResidentExecutionRequestTests(unittest.TestCase):
+    def test_missing_runtime_evidence_fails_closed(self) -> None:
+        module = load_module()
+        with tempfile.TemporaryDirectory() as temp_dir:
+            runtime = Path(temp_dir)
+            materialize_request(runtime)
+            micro = runtime / "micro-node-runtime"
+            install_fake_micro_node(micro)
+            with patch.dict(os.environ, {"STEGVERSE_MICRO_NODE_ROOT": str(micro)}):
+                with self.assertRaisesRegex(RuntimeError, "current GADI resident command not observed"):
+                    module.consume(runtime, runtime)
+
+    def test_bound_runtime_evidence_emits_subject_bound_receipt(self) -> None:
+        module = load_module()
+        with tempfile.TemporaryDirectory() as temp_dir:
+            runtime = Path(temp_dir)
+            materialize_request(runtime)
+            micro = runtime / "micro-node-runtime"
+            install_fake_micro_node(micro)
+            state = runtime / "state" / "gadi-resident-execution"
+            write_json(state / "command.json", command())
+            write_json(state / "execution-context.json", context())
+            write_json(state / "actuator-result.json", actuator_result())
+
+            with patch.dict(os.environ, {"STEGVERSE_MICRO_NODE_ROOT": str(micro)}):
+                receipt = module.consume(runtime, runtime)
+
+            self.assertEqual(receipt["state"], "AUTHENTIC_RUNTIME_EVIDENCE_CONSUMED")
+            self.assertEqual(receipt["task_id"], "GADI-RESIDENT-EXECUTION-001")
+            self.assertEqual(receipt["parent_task_id"], "GADI-001")
+            self.assertEqual(receipt["worker_claim_ref"], "worker://claim-1")
+            self.assertEqual(receipt["fence_ref"], "worker://fence-1")
+            self.assertEqual(receipt["intr_decision_ref"], "intr://decision-1")
+            self.assertEqual(receipt["runtime_binding_ref"], "runtime://binding-1")
+            self.assertEqual(receipt["execution_subject"], "stegverse:gadi:test-subject")
+            self.assertTrue(receipt["effect_observed"])
+            self.assertFalse(receipt["execution_authority_minted"])
+            self.assertFalse(receipt["master_records_reconciliation_claimed"])
+            self.assertFalse(receipt["second_machine_required"])
+
+    def test_actuator_binding_mismatch_fails_closed(self) -> None:
+        module = load_module()
+        with tempfile.TemporaryDirectory() as temp_dir:
+            runtime = Path(temp_dir)
+            materialize_request(runtime)
+            micro = runtime / "micro-node-runtime"
+            install_fake_micro_node(micro)
+            state = runtime / "state" / "gadi-resident-execution"
+            write_json(state / "command.json", command())
+            write_json(state / "execution-context.json", context())
+            bad = actuator_result()
+            bad["execution_subject"] = "wrong-subject"
+            write_json(state / "actuator-result.json", bad)
+
+            with patch.dict(os.environ, {"STEGVERSE_MICRO_NODE_ROOT": str(micro)}):
+                with self.assertRaisesRegex(RuntimeError, "actuator subject/context mismatch"):
+                    module.consume(runtime, runtime)
 
 
-def test_bound_runtime_evidence_emits_subject_bound_receipt(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    module = load_module()
-    materialize_request(tmp_path)
-    micro = tmp_path / "micro-node-runtime"
-    install_fake_micro_node(micro)
-    monkeypatch.setenv("STEGVERSE_MICRO_NODE_ROOT", str(micro))
-    state = tmp_path / "state" / "gadi-resident-execution"
-    write_json(state / "command.json", command())
-    write_json(state / "execution-context.json", context())
-    write_json(state / "actuator-result.json", actuator_result())
-
-    receipt = module.consume(tmp_path, tmp_path)
-    assert receipt["state"] == "AUTHENTIC_RUNTIME_EVIDENCE_CONSUMED"
-    assert receipt["task_id"] == "GADI-RESIDENT-EXECUTION-001"
-    assert receipt["parent_task_id"] == "GADI-001"
-    assert receipt["worker_claim_ref"] == "worker://claim-1"
-    assert receipt["fence_ref"] == "worker://fence-1"
-    assert receipt["intr_decision_ref"] == "intr://decision-1"
-    assert receipt["runtime_binding_ref"] == "runtime://binding-1"
-    assert receipt["execution_subject"] == "stegverse:gadi:test-subject"
-    assert receipt["effect_observed"] is True
-    assert receipt["execution_authority_minted"] is False
-    assert receipt["master_records_reconciliation_claimed"] is False
-    assert receipt["second_machine_required"] is False
-
-
-def test_actuator_binding_mismatch_fails_closed(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    module = load_module()
-    materialize_request(tmp_path)
-    micro = tmp_path / "micro-node-runtime"
-    install_fake_micro_node(micro)
-    monkeypatch.setenv("STEGVERSE_MICRO_NODE_ROOT", str(micro))
-    state = tmp_path / "state" / "gadi-resident-execution"
-    write_json(state / "command.json", command())
-    write_json(state / "execution-context.json", context())
-    bad = actuator_result()
-    bad["execution_subject"] = "wrong-subject"
-    write_json(state / "actuator-result.json", bad)
-    with pytest.raises(RuntimeError, match="actuator subject/context mismatch"):
-        module.consume(tmp_path, tmp_path)
+if __name__ == "__main__":
+    unittest.main()
