@@ -7,23 +7,23 @@ Parent Goal: `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001`
 Root Goal: `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001`
 COSV: `50000010100000`
 Canonical issue: `StegVerse-Labs/.github#1299`
-Active consumer PR: `StegVerse-Labs/StegOS#314`
-Merged KV producer PR: `StegVerse-Labs/continuity-vault-kit#206` -> `47c363611210b7501cbb50abce768cfe0911057f`
-Status: `ACTIVE / KV PRODUCER MERGED / CURRENT-IPHONE FILES BRIDGE VALIDATING`
+Merged KV producer: `StegVerse-Labs/continuity-vault-kit#206` -> `47c363611210b7501cbb50abce768cfe0911057f`
+Merged StegOS consumer: `StegVerse-Labs/StegOS#314` -> `19e2ea02a16bd703767aafcd47e71f5ec5efe3cf`
+Status: `ACTIVE / SOURCE PRODUCER+CONSUMER MERGED / AUTHENTIC INTR RECEIPT ADAPTER NEXT`
 
 ## Canonical architecture
 
 KV is the private governed state-transition continuity boundary. A physical device is an interchangeable interoperability node after proof of control/reconstruction of the existing KV. StegOS is the runtime node, StegBrowser is the browser-capability node, and Safari/Chrome/webviews/comparable browser containers are ephemeral presentation carriers rather than identity or continuity roots.
 
-The first-install seam is:
+The intended first-install seam is:
 
 ```text
 minimal rendezvous
 -> KV/device continuity confirmation
--> KV entry transition/admission
--> browser/container capability observation
+-> authentic KV entry transition/admission
+-> actual browser/container capability observation
 -> KV produces opaque purpose-bound projection context
--> iPhone Files supplies that projection artifact to the minimal page
+-> current iPhone supplies the projection artifact to the minimal page
 -> page validates it in memory
 -> exact IPA/WASM signer materializes only after the gate passes
 -> TV/TVC signing/upload boundary
@@ -33,7 +33,7 @@ minimal rendezvous
 
 No browser-local IndexedDB, cookies, localStorage, sessionStorage, browser profile, user-agent identity, device fingerprint, or public bootstrap is the continuity/privacy root for this path.
 
-## KV producer — merged
+## KV producer — merged and validated
 
 `StegVerse-Labs/continuity-vault-kit#206` merged as `47c363611210b7501cbb50abce768cfe0911057f` after Security Baseline, Repository validation diagnostics, KV Guardrails, KV Historical Provenance, and KV Historical Corpus Import all passed.
 
@@ -47,47 +47,15 @@ docs/KV_EPHEMERAL_BROWSER_PROJECTION_MIRROR_HANDOFF.md
 README.md
 ```
 
-The producer does not decide admission or observe a browser. It accepts only:
+The producer requires an already-admitted purpose-bound KV entry transition and same-lineage compatible browser-capability observation, rejects cross-lineage mixing and browser identity authority, and emits only the opaque non-authorizing projection fields required by StegOS. Raw KV lineage identity is not exported.
 
-```text
-stegverse.kv.entry-transition-admission/v1
-  purpose=CURRENT_IPHONE_TESTFLIGHT_SIGNING
-  state=ADMITTED
-  continuity_boundary=KV
-  authority_effect=NONE
+## StegOS consumer — merged and exact-head validated
 
-stegverse.kv.browser-capability-observation/v1
-  purpose=CURRENT_IPHONE_TESTFLIGHT_SIGNING
-  state=OBSERVED_COMPATIBLE
-  continuity_boundary=KV
-  browser_identity_authority=false
-  authority_effect=NONE
-```
+`StegVerse-Labs/StegOS#314` merged as `19e2ea02a16bd703767aafcd47e71f5ec5efe3cf`.
 
-Both inputs must carry the same non-empty KV lineage ID. Cross-lineage mixing fails closed. The raw lineage ID is not exported.
+The branch was first reconciled with `main` at `d84a779b05c4fc60ae52d00e2ef57e2661b03408`, leaving `behind_by=0`, and the validated binary signer artifacts were preserved.
 
-Output is only:
-
-```text
-stegos.kv-bound-ephemeral-projection-context/v1
-purpose=CURRENT_IPHONE_TESTFLIGHT_SIGNING
-entry_state=ADMITTED
-kv_transition_commitment=sha256:...
-admission_commitment=sha256:...
-browser_capability_state=OBSERVED_COMPATIBLE
-browser_capability_commitment=sha256:...
-persistence_effect=NONE_EPHEMERAL_CONTEXT_ONLY
-authority_effect=NONE_PROJECTION_GATE_ONLY
-```
-
-## StegOS consumer — current branch
-
-Branch: `feat/current-iphone-wasm-static-bootstrap-001`
-PR: `StegVerse-Labs/StegOS#314`
-
-The branch was reconciled with current `main` using an explicit merge commit `d84a779b05c4fc60ae52d00e2ef57e2661b03408`; current compare state is `behind_by=0`.
-
-Current source additions/refinements:
+Merged consumer source:
 
 ```text
 mobile/web-bootstrap/kv-bound-ephemeral-projection-context.js
@@ -95,47 +63,56 @@ mobile/web-bootstrap/kv-projection-file-loader.js
 mobile/web-bootstrap/current-iphone-testflight-bootstrap.js
 mobile/web-bootstrap/current-iphone-testflight.html
 tests/test_kv_bound_ephemeral_projection_gate.py
+docs/KV_BOUND_STEGBROWSER_EPHEMERAL_PROJECTION_MIRROR_HANDOFF.md
 ```
 
-The consumer now requires the exact projection schema, exact SHA-256 commitment syntax, exact non-authority/non-persistence effects, ADMITTED entry state, and OBSERVED_COMPATIBLE capability state. The minimal TestFlight page accepts a JSON file through the iPhone Files picker, reads it only in memory, and only then calls the bootstrap. It does not use browser-local durable state for this projection.
-
-The validated signer artifacts remain unchanged:
+At exact PR head `753049754fd0adad1a8f96acd41123f8e20e5f9d` all required checks passed:
 
 ```text
-artifact: stegos-current-iphone-wasm-web
-artifact digest: sha256:cef2ef22a42195dced25bca2f9c99fab9f6a32f21062f1576386ee69a25d48ee
-wasm sha256: 699dc3054788d779ba7920e332c661ef7eac001156f93ab7b1fe1b64ee5a4b93
-wasm bytes: 2277815
-glue sha256: 17fe61cfdae43cbe5a1d211beb39838f58e982efdba90c7156fc36402f3adb
+StegOS CI: PASS — run 34410852666
+Current iPhone IPA Signing Executor Validation: PASS — run 34410852617
+Current iPhone WASM Codesign Core Validation: PASS — run 34410852705
 ```
 
-## Current validation
+The WASM validation passed the pinned wrapper compile, browser-loadable package build, exact compiler diagnostics/package export, signing source-contract tests, and pinned-reference/bounded-wrapper gate before merge.
 
-At head `9c14f4c1bcffff43cfe741a49d2c2c15dfd542b7`:
+## Existing authentic admission primitive discovered
+
+The next runtime-source gap does not require a second InTr implementation. `StegVerse-Labs/Site/stegos-node/device-kv-intr-sync.js` and the root-scoped `intr-service-worker.js` already provide the current-iPhone Device -> KV Universal InTr path.
+
+That path validates and retains authentic `stegverse.device-kv-intr-materialization-ingress/v1` receipts with:
 
 ```text
-StegOS CI: PASS
-Current iPhone IPA Signing Executor Validation: PASS
-Current iPhone WASM Codesign Core Validation: IN_PROGRESS at last observation
+state=INGRESS_ADMITTED
+exact_request_validated=true
+write_once_persisted=true
+node_id=<exact registered node>
+interlock_id=<exact registered Interlock>
+outbox_entry_hash=<exact local write-once entry>
+transport_payload_sha256=<exact payload digest>
+runtime_execution_attempted=false
+claim_or_fence_minted=false
+credential_authority=TV/TVC
+github_token_runtime_authority=NONE
+authority_effect=NONE_INGRESS_ONLY
 ```
 
-Do not promote PR #314 until exact-head validation is fully green.
+This is the canonical admission primitive to reuse. The next adapter must not invent a new admission authority or hand-author an `ADMITTED` receipt.
 
-## Remaining execution sequence
+## Next implementation slice
 
-1. Finish exact-head StegOS validation and remediate any failure.
-2. Maintain StegOS README and PR #314 handoff text for the merged KV producer + Files projection bridge.
-3. Merge PR #314 once source validation is green.
-4. Materialize authentic KV entry-transition admission and browser-capability observation receipts for `CURRENT_IPHONE_TESTFLIGHT_SIGNING`; source contracts alone are not those receipts.
-5. Produce the authentic KV projection JSON and present it through iPhone Files to the minimal TestFlight bootstrap page.
-6. Execute TV/TVC Apple provisioning/signing and native Build Upload.
-7. Install via TestFlight on the current iPhone and capture authentic retained StegOS/StegBrowser runtime evidence.
-8. Return to exactly one frozen measurement-only global convergence pass after the current-iPhone runtime predicates are satisfied.
+1. Extend the existing Device -> KV InTr request vocabulary with one purpose-bound entry class for `CURRENT_IPHONE_TESTFLIGHT_SIGNING`, reusing the same root-scoped `/intr/materialization` path and current-iPhone service worker.
+2. Observe required browser capabilities from actual APIs/features rather than user-agent identity or fingerprinting, bind that observation to the same request/KV lineage, and keep `browser_identity_authority=false`.
+3. Adapt the authentic Device-KV `INGRESS_ADMITTED` receipt plus same-lineage capability observation into the two input receipts expected by the merged continuity-vault-kit projection producer.
+4. Materialize the authentic projection JSON only after those predicates pass.
+5. Project/deploy the merged minimal TestFlight page and exact signer source to Site without turning Site into KV, credential, or transition authority.
+6. Perform current-iPhone Files selection only once the authentic projection artifact exists.
+7. Continue TV/TVC provisioning/signing, native Build Upload, TestFlight installation, retained StegOS/StegBrowser observation, then exactly one frozen global measurement pass.
 
 ## Runtime truth
 
-No authentic purpose-bound KV projection file, TestFlight installation, current-iPhone retained-node materialization, or global convergence receipt is claimed by the source work above.
+No authentic purpose-bound TestFlight KV entry receipt, same-lineage browser-capability receipt, projection JSON, TestFlight installation, current-iPhone retained-node execution, or global convergence receipt is claimed yet. Source producer and consumer are merged; authentic receipt production is now the active boundary.
 
 ## Manual work
 
-None yet. Source validation and merge work remain machine-executable. User interaction becomes necessary only when an authentic current-iPhone Files selection/TestFlight installation step is actually ready.
+None yet. The purpose-bound Device-KV InTr adapter and capability-observation source remain machine-executable. User interaction becomes necessary only when the authentic projection file/current-iPhone TestFlight step is actually ready.
