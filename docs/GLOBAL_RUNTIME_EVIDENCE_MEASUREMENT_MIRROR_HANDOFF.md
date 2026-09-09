@@ -4,79 +4,125 @@ Goal Task ID: `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001`
 Parent Goal: `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001`
 COSV: `50000010100000`
 Canonical issue: `StegVerse-Labs/.github#1294`
-Status: `ACTIVE / PRE-LOOP INGRESS DEFECTS REPAIRED IN SOURCE / README RECONCILED / AUTHENTIC RERUN PENDING`
+Status: `ACTIVE / INGRESS SOURCE REPAIRED AND MERGED / RERUN REACHED SOURCE-DEVICE MATERIALIZATION CONDITION / CURRENT-IPHONE RESIDENT NOT YET OBSERVED`
 
 ## Purpose
 
-Execute exactly one authentic sovereign-resident measurement-only global runtime profile convergence cycle after the merged failure-boundary and pre-run hardening work.
+Execute exactly one authentic current-device/sovereign-resident measurement-only global runtime profile convergence cycle, preserving the frozen run baseline, exact first-failure observations, and before/after retained-node/HB/transition evidence without same-run remediation.
 
 ## Measurement invariants
 
-- Use `scripts/run_global_runtime_node_profile_convergence.py` through the existing Canonical Work/resident bootstrap path.
-- Freeze one run ID before execution.
-- Preserve exact source/profile/projection hashes and per-profile before/after retained-node/HB/state/transition evidence.
-- `measurement_only=true`.
-- `same_run_remediation_allowed=false`.
-- `automatic_retry_after_first_failure=false`.
-- Preserve `PASS_CURRENT_RUN`, `PASS_HISTORICAL_EVIDENCE`, `FAILED_CURRENT_RUN`, and `NOT_REACHED` as distinct meanings.
-- Do not use GitHub Actions, hosted containers, or CI output as substitute sovereign-resident evidence.
+- freeze one run ID before the ten-stage visitor begins;
+- preserve exact source/profile/projection hashes;
+- preserve before/after retained-node, source/current HB, state and transition commitments;
+- `measurement_only=true`;
+- `same_run_remediation_allowed=false`;
+- `automatic_retry_after_first_failure=false`;
+- preserve `PASS_CURRENT_RUN`, `PASS_HISTORICAL_EVIDENCE`, `FAILED_CURRENT_RUN`, and `NOT_REACHED` as distinct meanings;
+- do not substitute GitHub Actions, hosted containers, source merge, or unsigned build evidence for authentic source-device runtime evidence.
 
-## First execution attempt — 2026-09-09
+## Attempt 1 — pre-loop ingress failure
 
-The first attempt did not enter the ten-stage convergence loop. No measurement run ID was frozen and no `receipts/sovereign-host/global-runtime-node-profile-convergence.latest.json` was produced. This was correctly treated as a pre-loop execution-start condition rather than assigning a false stage-02/stage-03 failure to all 18 lanes.
+The first measurement attempt never entered the ten-stage convergence loop. No measurement run ID was frozen and no `receipts/sovereign-host/global-runtime-node-profile-convergence.latest.json` was produced.
 
-## Inspection findings
+Inspection found four concrete source defects:
 
-Source inspection found four concrete ingress defects behind the unconsumed request:
+1. the generic Canonical Work resident consumer did not include the global measurement request in its fixed `REQUEST_SPECS` set;
+2. the measurement child was `ACTIVE`, while Canonical Work ingress requires the `PROPOSED -> INGRESS_ADMITTED` lifecycle;
+3. stale resident monolithic-registry recovery could not resolve a newly registered exact canonical task shard;
+4. the Canonical Work bootstrap triggered global node-profile convergence only for Runtime Profile Map, not for the dedicated measurement child.
 
-1. `control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py` used a fixed `REQUEST_SPECS` tuple that did not include the global measurement task, so the canonical-work resident consumer could never select it.
-2. `scripts/run_canonical_work_event_bootstrap.py` admits only canonical tasks in `PROPOSED` state for the `INGRESS_ADMITTED` transition, while the measurement child had been registered as `ACTIVE`.
-3. the Canonical Work consumer's stale-registry recovery required the task to exist in the monolithic `data/canonical-task-registry.json`; the newly registered measurement child was available as a canonical task shard but not in that preserved monolithic registry.
-4. `scripts/install_and_run_canonical_work_event_bootstrap.py` launched `run_global_runtime_node_profile_convergence.py` only for `STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001`, so a dedicated measurement child could complete Canonical Work ingress without ever starting the intended convergence visitor.
+## Remediation
 
-These defects explain why the staged request could remain `REQUESTED` even if the resident dispatcher and generic canonical-work consumer were otherwise functioning.
+PR `StegVerse-Labs/.github#1296` repaired all four defects and merged at:
 
-## Source remediation
+`607cedc2fed1c81cf20ff6250fa3421089284a8a`
 
-Branch: `fix/global-runtime-measurement-ingress-001`
+The final README-complete source head `971877bbae3225704ab7fb03126f47c8fd86ae1c` passed exact-head deterministic, Heartbeat, organization validation, and resident-oriented validation checks before merge.
 
-Implemented repairs:
+Merged behavior now includes:
 
-- added explicit request `control/resident-execution-request.d/canonical-work-global-runtime-evidence-measurement-001.json` bound to `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001` and COSV `50000010100000`;
-- added `GLOBAL_MEASUREMENT_SPEC` to the generic Canonical Work resident consumer with its own consumption receipt and runtime namespace;
-- generalized task identity self-materialization so an exact canonical task shard may be used when a preserved resident monolithic registry is stale, without replacing that preserved registry;
-- reconciled the measurement child to canonical `PROPOSED -> INGRESS_ADMITTED` lifecycle semantics while keeping its observation checkout metadata;
-- added `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001` to the existing bootstrap wrapper's global-convergence trigger set alongside Runtime Profile Map;
-- preserved the existing dispatcher, shared InTr listener, WorkerCoordinator, TV/TVC, HeartBeat, and measurement-only/no-retry/no-repair authority boundaries;
-- added deterministic regression coverage in `tests/test_global_runtime_measurement_ingress.py` for request registration, measurement-only flags, stale-registry shard fallback, lifecycle compatibility, and convergence triggering;
-- reconciled `README.md` under Canonical Work task ingress to describe the stale monolithic-registry shard fallback and dedicated measurement-child convergence behavior.
+- explicit request `control/resident-execution-request.d/canonical-work-global-runtime-evidence-measurement-001.json`;
+- `GLOBAL_MEASUREMENT_SPEC` in the existing Canonical Work resident consumer;
+- exact canonical task-shard fallback when a preserved resident monolithic registry is stale;
+- canonical `PROPOSED -> INGRESS_ADMITTED` lifecycle for the measurement child;
+- dedicated measurement child invocation of the existing global node-profile convergence visitor;
+- deterministic ingress regressions;
+- README documentation of shard recovery and measurement-only child behavior.
 
-No second runtime, scheduler, dispatcher, listener, WorkerCoordinator, or hosted execution path was introduced.
+No second dispatcher, scheduler, listener, WorkerCoordinator, heartbeat, or hosted runtime was introduced.
 
-## Rerun contract
+## Attempt 2 — post-repair rerun
 
-After this repair is validated and merged, the authentic sovereign resident should refresh from the already-local canonical source and the existing `canonical_work_coordination` dispatcher consumer should encounter:
+After PR #1296 merged, the authentic evidence surfaces were inspected again.
 
-`control/resident-execution-request.d/canonical-work-global-runtime-evidence-measurement-001.json`
+Observed:
 
-The consumer should materialize the measurement task identity from its canonical source shard if the resident monolithic registry is stale, perform the ordinary Canonical Work ingress transition, and invoke the existing global node-profile convergence visitor exactly once.
+```text
+measurement-child source request: MERGED
+measurement-child consumer selector: MERGED
+stale-registry shard recovery: MERGED
+measurement-child convergence trigger: MERGED
+measurement consumption receipt: NOT OBSERVED
+global convergence receipt: NOT OBSERVED
+frozen measurement run ID: NOT OBSERVED
+ten-stage visitor entered: NO
+```
 
-The authoritative measurement artifact remains:
+Therefore the repaired source ingress is no longer the first unresolved condition. None of the 18 lanes may honestly be assigned a stage-01 through stage-10 failure from this rerun.
 
-`receipts/sovereign-host/global-runtime-node-profile-convergence.latest.json`
+## Source-device propagation finding
 
-The rerun is successful as a measurement when that artifact contains a frozen run ID plus current-run/historical/not-reached stage observations and before/after node/HB/transition evidence. It is not required that all 18 lanes succeed.
+`scripts/refresh_sovereign_worker_runtime_source.py` explicitly refreshes from an **already-local canonical source tree**. It deliberately performs no clone, fetch, pull, network lookup, credential acquisition, or source transport.
+
+`scripts/install_sovereign_worker_source_refresh_service.py` likewise watches an already-local source tree and is currently Linux/systemd-user specific. It cannot cause a remote GitHub merge to become source-device-local code on the current iPhone.
+
+Once canonical source is local, the refresh layer is capable of propagating the repaired request/task-shard/consumer/bootstrap source into runtime. The missing transition occurs before that refresh: authentic source-device resident materialization/source delivery.
+
+## Current-iPhone retained-node truth
+
+`StegVerse-Labs/StegOS#277` remains open for signed StegOSMobile/TestFlight materialization. Current source/build evidence proves the native StegOSMobile retained-node, same-device discovery, HB-lineage and receipt-to-transition implementation exists, but signed current-iPhone installation/runtime evidence is not yet observed.
+
+`StegVerse-Labs/StegOS/docs/STEGBROWSER_RETAINED_NODE_BOOTSTRAP_MIRROR_HANDOFF.md` likewise records:
+
+```text
+current-iPhone retained node materialization: NOT OBSERVED
+same-node-before/after-session proof: NOT OBSERVED
+source-HB-root persistence runtime proof: NOT OBSERVED
+authentic receipt-to-transition runtime execution: NOT OBSERVED
+```
+
+The current first unresolved condition is therefore:
+
+`PRE_LOOP_AUTHENTIC_SOURCE_DEVICE_RESIDENT_NOT_MATERIALIZED`
+
+This is outside the ten measured runtime stages. It is not evidence that any of the 18 component lanes failed profile resolution, node continuity, request consumption, or a later predicate.
+
+## Architectural implication
+
+The persistent-node/ephemeral-operation architecture strengthens this diagnosis: continuity should live in the profile-derived current-iPhone StegOS node. The Linux/local-source Python worker path can remain an execution substrate where applicable, but it cannot be treated as the authentic source-device continuity carrier for an iPhone-only deployment.
+
+The next physical/runtime evidence must establish the current-iPhone retained node first; subsequent measurement/control operations may then remain bounded and ephemeral through Interlock/InTr.
+
+## Next execution sequence
+
+1. continue the already-canonical StegOS #277 TestFlight/current-iPhone materialization path rather than creating another resident runtime;
+2. obtain authentic retained-node materialization and same-device discovery evidence;
+3. deliver/materialize the current canonical measurement source through the applicable source-device/StegOS path;
+4. rerun exactly one measurement-only convergence pass;
+5. require a frozen run ID and `global-runtime-node-profile-convergence.latest.json` before interpreting any 18-lane histogram;
+6. remediate measured lane failures only after preserving that first authentic receipt.
 
 ## Current result
 
-`PRE_LOOP_INGRESS_SOURCE_DEFECTS_IDENTIFIED_AND_REPAIRED / README_RECONCILED / AUTHENTIC_RERUN_PENDING`
+`INGRESS_SOURCE_REPAIRED_MERGED / AUTHENTIC_RERUN_EXECUTED_AS_OBSERVATION / PRE_LOOP_AUTHENTIC_SOURCE_DEVICE_RESIDENT_NOT_MATERIALIZED`
 
-No hosted substitute execution has been used. No lane has been remediated during a measurement pass.
+Evidence note posted to `.github#1294` as comment `5606498215`.
 
 ## README impact
 
-README reconciliation is complete in the same change set. `README.md` now documents that exact canonical task shards may be self-materialized when a preserved resident monolithic registry is stale and that the dedicated measurement child reuses the existing Canonical Work/Interlock-InTr path to invoke the existing global convergence visitor in measurement-only mode.
+README reconciliation for the ingress source repair is merged. This rerun result changes evidence/state, not repository behavior, so no additional README mutation is required for this documentation update.
 
 ## Manual work
 
-None while final exact-head validation, merge, and authentic rerun inspection remain machine-executable.
+None for this reconciliation step. Physical TestFlight/current-iPhone materialization remains tracked by the existing StegOS task and should be continued there with its exact prerequisites.
