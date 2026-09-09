@@ -21,7 +21,8 @@
     "StegVerse-Labs/TVC@15f01fd9e4c472982cc2212c86aecb9ea90e5b49",
     "StegVerse-Labs/StegOS@790ee065c491822f2c6bf06e77214e99245afd8f",
     "StegVerse-Labs/StegOS@de38c04accc6196923058db79ccf88db25d85ee6",
-    "StegVerse-Labs/StegOS@ea22296e9bbae7605b241ec86c4e15deac8dc937"
+    "StegVerse-Labs/StegOS@ea22296e9bbae7605b241ec86c4e15deac8dc937",
+    "StegVerse-Labs/StegOS@b241492051e7d98e1b434afd62a030f2bdf54e3d"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
@@ -40,7 +41,8 @@
       "stegosmobile-iphoneos-device-package",
       "site-native-app-handoff-observation",
       "apple-identifiers-tvc-request",
-      "apple-signing-executor-handoff",
+      "current-iphone-ipa-signing-executor",
+      "current-iphone-wasm-codesign-core",
       "tvc-native-build-upload",
       "intr-lease-admission",
       "tvc-skap-ephemeral-credential-session",
@@ -65,9 +67,9 @@
     {
       "dependency_id": "DEP-STEGBROWSER-APPLE-SIGNING",
       "kind": "PHYSICAL_DEVICE_DISTRIBUTION",
-      "state": "GITHUB_CREDENTIAL_EXECUTION_RETIRED_SIGNING_EXECUTOR_NOT_MATERIALIZED",
-      "ref": "StegVerse-Labs/StegOS@ea22296e9bbae7605b241ec86c4e15deac8dc937 + StegVerse-Labs/TVC@15f01fd9e4c472982cc2212c86aecb9ea90e5b49",
-      "disposition": "THE OLD THREE-ASC-SECRET GITHUB EXECUTION PATH IS RETIRED. ACTIVE GITHUB WORKFLOWS ARE VALIDATION/EVIDENCE TRANSPORT ONLY. STEGOS NOW EMITS SECRET-FREE TVC IDENTIFIER/PROVISIONING REQUESTS AND A SIGNING-EXECUTOR HANDOFF. REMAINING REQUIREMENT IS AN ADMITTED MACOS/XCODE EXECUTOR THAT REQUIRES NO SECOND USER-OPERATED MACHINE, GENERATES ITS SIGNING KEY/CSR LOCALLY, USES TVC FOR APPLE CERTIFICATE/PROFILE OPERATIONS, SIGNS/EXPORTS/VERIFIES THE IPA, THEN USES TVC NATIVE BUILD UPLOAD."
+      "state": "CURRENT_IPHONE_SIGNER_BOUNDARY_MERGED_CRYPTO_ENGINE_PENDING",
+      "ref": "StegVerse-Labs/StegOS@b241492051e7d98e1b434afd62a030f2bdf54e3d + StegVerse-Labs/TVC@15f01fd9e4c472982cc2212c86aecb9ea90e5b49",
+      "disposition": "GITHUB APPLE CREDENTIAL/SIGNING EXECUTION IS RETIRED. XCODE CLOUD WAS INVESTIGATED AND REJECTED FOR BOOTSTRAP BECAUSE APPLE REQUIRES INITIAL XCODE ONBOARDING. STEGOS NOW HAS A MERGED CURRENT_USER_IPHONE SAME-DEVICE BROWSER/WASM SIGNING EXECUTOR CONTRACT AND FAIL-CLOSED ORCHESTRATOR. THE REMAINING SOURCE REQUIREMENT IS THE VETTED SAME-DEVICE CRYPTOGRAPHIC ENGINE THAT IMPLEMENTS MACH-O CODEDIRECTORY/SUPERBLOB/CMS/CODERESOURCES/ENTITLEMENTS/NESTED-BUNDLE SIGNING WITHOUT A SECOND USER-OPERATED MACHINE."
     },
     {
       "dependency_id": "DEP-STEGBROWSER-APPLE-TVC-RUNTIME",
@@ -93,9 +95,9 @@
   ],
   "blockers": [
     {
-      "blocker_id": "APPLE-ADMITTED-MACOS-XCODE-SIGNING-EXECUTOR",
-      "state": "NOT_MATERIALIZED",
-      "release_condition": "An admitted macOS/Xcode signing executor exists without a second user-operated machine, generates signing key/CSR locally and ephemerally, binds to TVC certificate/profile operations, signs/exports/verifies the StegOS IPA, destroys signing private key material, and hands the signed artifact to TVC native Build Upload with authentic receipts."
+      "blocker_id": "APPLE-CURRENT-IPHONE-CRYPTOGRAPHIC-SIGNING-ENGINE",
+      "state": "NOT_IMPLEMENTED",
+      "release_condition": "A vetted StegOS-owned or selectively absorbed current-iPhone WASM signing engine exists under the merged #302 boundary and performs real CodeDirectory, SuperBlob, CMS, CodeResources, XML/DER entitlement, nested-bundle and host signing; private signing key remains current-iPhone ephemeral/non-persistent; signed IPA structure and exact commitments validate before TVC Build Upload."
     },
     {
       "blocker_id": "APPLE-TVC-SKAP-RUNTIME-EVIDENCE",
@@ -117,7 +119,11 @@
     "StegVerse-Labs/StegOS/actions/runs/34353817438",
     "StegVerse-Labs/StegOS/actions/runs/34358157189",
     "StegVerse-Labs/StegOS/actions/runs/34358157211",
-    "StegVerse-Labs/StegOS/actions/runs/34358157254"
+    "StegVerse-Labs/StegOS/actions/runs/34358157254",
+    "StegVerse-Labs/StegOS/actions/runs/34359360758",
+    "StegVerse-Labs/StegOS/actions/runs/34359360807",
+    "StegVerse-Labs/StegOS/actions/runs/34359360843",
+    "StegVerse-Labs/StegOS/actions/runs/34359361030"
   ],
   "expected_evidence_predicates": [
     "EPHEMERAL_LEASE_SCOPE_ENFORCED",
@@ -128,7 +134,8 @@
     "IOS_UNSIGNED_DEVICE_PACKAGE_VERIFIED",
     "APPLE_TVC_IDENTIFIER_PROVISIONING_REQUESTS_VERIFIED",
     "APPLE_GITHUB_CREDENTIAL_EXECUTION_RETIRED",
-    "APPLE_ADMITTED_SIGNING_EXECUTOR_OBSERVED",
+    "APPLE_CURRENT_IPHONE_SIGNING_BOUNDARY_VERIFIED",
+    "APPLE_CURRENT_IPHONE_CRYPTOGRAPHIC_SIGNING_ENGINE_OBSERVED",
     "APPLE_TVC_SKAP_CREDENTIAL_SESSION_BOUND",
     "APPLE_TVC_BUILD_UPLOAD_OBSERVED",
     "CURRENT_IPHONE_SIGNED_INSTALLATION_OBSERVED",
@@ -147,7 +154,7 @@
       "ios_same_device_discovery_readback",
       "iphoneos_device_packaging",
       "apple_tvc_identifier_provisioning",
-      "admitted_macos_xcode_signing",
+      "current_iphone_wasm_ipa_signing",
       "tvc_native_build_upload",
       "intr_task_admission",
       "facebook_publication",
@@ -160,8 +167,8 @@
     "current_observation_required": true
   },
   "runtime_resolution": {
-    "current_executor": "StegOSMobile has the canonical resident, same-device readback, unsigned iphoneos package, secret-free TVC provisioning requests, and signing-executor handoff. TVC has the App Store Connect credential/session/recipient/route/Build Upload source path. No admitted macOS/Xcode signing executor or authentic Apple TVC runtime execution has yet been observed.",
-    "authority_basis": "GitHub Actions validates and transports evidence only. TV/TVC remains credential authority. Signing private key material must originate and be destroyed inside the admitted signing executor. Source and CI do not prove Apple execution, signing, TestFlight upload, installation, or resident discovery.",
+    "current_executor": "StegOSMobile has the canonical resident, same-device readback, unsigned iphoneos package, secret-free TVC provisioning requests, and merged current-iPhone signing executor contract/orchestrator. TVC has the App Store Connect credential/session/recipient/route/Build Upload source path. The same-device cryptographic signing engine and authentic Apple TVC runtime execution have not yet been observed.",
+    "authority_basis": "GitHub Actions validates and transports evidence only. TV/TVC remains credential authority. Signing private key material must originate, remain, and be destroyed inside the current-iPhone ephemeral signing executor. Source and CI do not prove Apple execution, signing, TestFlight upload, installation, or resident discovery.",
     "unattended_runtime": false
   },
   "worker_claim": {
@@ -170,11 +177,11 @@
     "fence_ref": null,
     "projection_only": true
   },
-  "human_action_ref": "Apple Developer membership is already observed active through 2027-09-09. No GitHub Apple secrets should be added. Owner action becomes necessary only when the authentic current-iPhone TVC/SKAP ingress is ready for the owner's real App Store Connect key and when Apple account configuration requires App Group/app-record actions not covered by the API. A second user-operated Mac is not an acceptable completion path.",
+  "human_action_ref": "Apple Developer membership is already observed active through 2027-09-09. No GitHub Apple secrets should be added. Owner action becomes necessary only when authentic current-iPhone TVC/SKAP ingress is ready for the real App Store Connect key and when Apple account configuration requires App Group/app-record actions not covered by the API. A second user-operated Mac is not an acceptable completion path.",
   "completion": {
     "claimed": false,
     "validated": true,
-    "reconciliation_ref": "StegVerse-Labs/StegOS@ea22296e9bbae7605b241ec86c4e15deac8dc937",
+    "reconciliation_ref": "StegVerse-Labs/StegOS@b241492051e7d98e1b434afd62a030f2bdf54e3d",
     "activation_proof_complete": false
   },
   "allowed_next_transitions": ["INGRESS_ADMITTED"],
@@ -193,7 +200,8 @@
     "credentials_must_remain_outside_lease_and_repository": true,
     "credential_resolution_must_be_callback_only_at_execution_edge": true,
     "github_actions_apple_credential_execution_allowed": false,
-    "apple_signing_private_key_must_be_executor_local_ephemeral": true,
+    "apple_signing_private_key_must_be_current_iphone_ephemeral": true,
+    "second_user_operated_machine_allowed": false,
     "publication_requires_external_object_identity_and_readback": true,
     "interlock_intr_required_for_governed_ingress_egress": true,
     "worker_claim_authority": "WORKERCOORDINATOR",
