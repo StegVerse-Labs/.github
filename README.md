@@ -187,6 +187,14 @@ The canonical source contract is `data/reusable-task-ephemeral-construct-contrac
 
 ---
 
+## ERL KnowledgeVault evidence custody
+
+Canonical task coordination distinguishes live provider-storage observation from native writer proof. Master Records may preserve and deterministically reconstruct an ERL KV provider observation while its proof class remains `PROVIDER_METADATA_ONLY`; custody does not convert metadata readback into native-adapter execution or byte-for-byte provider readback. Canonical native writer receipts remain separately required before that stronger predicate can be satisfied.
+
+The active task record `data/canonical-task-records/SS-EVIDENCE-COMPARISON-001.json` carries the scoped evidence and dependency state for this lane.
+
+---
+
 ## Operational Observer Standard
 
 Repositories that generate operational proof artifacts should not be promoted from installed proof infrastructure to observed operational completion until a fresh workflow run, expected artifacts, expected proof files, and receipt validation are confirmed.

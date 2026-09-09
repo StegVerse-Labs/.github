@@ -44,7 +44,10 @@
       "erl-kv-provider-observation-schema",
       "erl-provider-readback-verifier",
       "provider-resource-readback-evidence",
-      "provider-receipt-backed-readback-evidence"
+      "provider-receipt-backed-readback-evidence",
+      "master-records-erl-kv-custody",
+      "erl-kv-live-observation-custody",
+      "erl-kv-custody-reconstruction"
     ]
   },
   "dependencies": [
@@ -75,6 +78,13 @@
       "state": "PARTIAL",
       "ref": "MR-STEGSOCIALS-RECEIPT-CUSTODY-001",
       "disposition": "SUPPLEMENTAL_SCHEMA_PIN_INSTALLED_HOSTED_VALIDATION_AND_REAL_RECEIPT_RECONSTRUCTION_PENDING"
+    },
+    {
+      "dependency_id": "DEP-SS-ERL-KV-CUSTODY",
+      "kind": "CUSTODY",
+      "state": "PROVIDER_OBSERVATION_CUSTODIED_AND_RECONSTRUCTED",
+      "ref": "master-records/orchestration/docs/ERL_KV_RECEIPT_CUSTODY_MIRROR_HANDOFF.md",
+      "disposition": "LIVE_PROVIDER_OBSERVATION_PRESERVED_AS_PROVIDER_METADATA_ONLY_NATIVE_WRITER_RECEIPT_PENDING"
     }
   ],
   "blockers": [],
@@ -116,7 +126,15 @@
     "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/ERL_KV_STORAGE_MIRROR_HANDOFF.md",
     "StegVerse-Labs/Executive_Rhetoric_Ledger/schemas/erl-kv-write-receipt.schema.json",
     "StegVerse-Labs/Executive_Rhetoric_Ledger/schemas/erl-kv-provider-write-observation.schema.json",
-    "StegVerse-Labs/Executive_Rhetoric_Ledger@bf73083578fd5c77548e229889fdca91abb26419:checks=PASS"
+    "StegVerse-Labs/Executive_Rhetoric_Ledger@bf73083578fd5c77548e229889fdca91abb26419:checks=PASS",
+    "master-records/orchestration/contracts/erl-kv-source-schemas.yaml",
+    "master-records/orchestration/scripts/import_erl_kv_receipts.py",
+    "master-records/orchestration/scripts/reconstruct_erl_kv_receipt_chain.py",
+    "master-records/orchestration/docs/ERL_KV_RECEIPT_CUSTODY_MIRROR_HANDOFF.md",
+    "master-records/orchestration/custody/erl-kv/index.jsonl",
+    "master-records/orchestration@94fa52a61363494e248859181403c59d03b34980:erl-kv-custody-validation=PASS",
+    "master-records/orchestration@cad9c97deb06e897a72c5fa56ba0ada28edc3e05:live-provider-observation-custody-reconstruction=PASS",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger@2d159da8e29fe0d70f4854aa60b9ad55b3c71edd:master-records-custody-documented-and-validated"
   ],
   "expected_evidence_predicates": [
     "SOURCE_POST_METADATA_SCHEMA_VALID",
@@ -134,7 +152,8 @@
     "ERL_PROVIDER_RESOURCE_IDENTITY_CANNOT_SATISFY_OPERATION_RECEIPT",
     "ERL_PROVIDER_RECEIPT_BACKED_READBACK_REQUIRES_EXPLICIT_PROVIDER_OPERATION_RECEIPT",
     "ERL_NATIVE_WRITER_BYTE_READBACK_RECEIPT_VALID",
-    "PROVIDER_METADATA_OBSERVATION_CANNOT_SATISFY_NATIVE_WRITER_RECEIPT"
+    "PROVIDER_METADATA_OBSERVATION_CANNOT_SATISFY_NATIVE_WRITER_RECEIPT",
+    "ERL_PROVIDER_OBSERVATION_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION_PASS"
   ],
   "runtime_requirements": {
     "capabilities": [
@@ -184,7 +203,8 @@
     "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_ERL_ASSISTED_DRAFTING_MIRROR_HANDOFF.md",
     "KnowledgeVault/MYKV_MIRROR_HANDOFF.md",
     "master-records/orchestration/docs/MASTER_RECORDS_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/ERL_KV_STORAGE_MIRROR_HANDOFF.md"
+    "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/ERL_KV_STORAGE_MIRROR_HANDOFF.md",
+    "master-records/orchestration/docs/ERL_KV_RECEIPT_CUSTODY_MIRROR_HANDOFF.md"
   ],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
@@ -198,13 +218,13 @@
   },
   "readme_impact": {
     "material_function_change": false,
-    "readme_updated_in_change_set": false,
+    "readme_updated_in_change_set": true,
     "readme_path": "README.md",
-    "no_readme_update_reason": "Canonical task evidence reconciliation only; StegVerse-Labs/.github README already documents canonical coordination and README impact semantics, and this change does not alter repository function.",
+    "no_readme_update_reason": null,
     "evidence_refs": [
       "StegVerse-Labs/.github/README.md",
-      "StegVerse-Labs/StegSocials/README.md",
-      "StegVerse-Labs/StegSocials/evidence/provider-readback/2026-09-09-google-drive-openai-alien-mind.json"
+      "StegVerse-Labs/.github/data/canonical-task-records/SS-EVIDENCE-COMPARISON-001.json",
+      "master-records/orchestration/docs/ERL_KV_RECEIPT_CUSTODY_MIRROR_HANDOFF.md"
     ]
   }
 }
