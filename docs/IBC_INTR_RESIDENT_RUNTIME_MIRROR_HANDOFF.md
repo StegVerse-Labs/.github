@@ -4,15 +4,13 @@ Updated: 2026-09-09
 Organization: `StegVerse-Labs`
 Repository: `StegVerse-Labs/.github`
 Goal: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`
-State: `NATIVE_IOS_BUILD_MERGED_VALIDATED / AUTHENTIC_DEVICE_CONSUMPTION_PENDING`
+State: `NATIVE_IOS_BUILD_REACHABLE_VALIDATED / SIGNED_DEVICE_DELIVERY_AND_AUTHENTIC_DEVICE_CONSUMPTION_PENDING`
 
 ## Purpose
 
 Carry the retained, independently verified Cosmos Hub -> Osmosis acknowledgement evidence through the actual StegOSMobile native iOS build and the existing canonical sovereign resident coordination substrate without creating a second runtime, scheduler, credential lane, transition path, or custody path.
 
-## Canonical parent
-
-The canonical Task Registry remains generation 17 with `STEGVERSE-CANONICAL-WORK-COORDINATION-001` in `PROPOSED` state. No dedicated IBC task is registered. This is a bounded continuation under that task identity.
+The canonical Task Registry remains generation 17 with `STEGVERSE-CANONICAL-WORK-COORDINATION-001` in `PROPOSED` state. No dedicated IBC task is registered. This remains a bounded continuation under that task identity.
 
 Canonical references:
 
@@ -22,15 +20,9 @@ Canonical references:
 
 ## Established external evidence
 
-The StegOS IBC lineage already retains:
+The StegOS IBC lineage retains authentic public Cosmos Hub acknowledgement proof material for `transfer/channel-141`, sequence `999999`, independent ICS-23 membership verification, an accepted StegOS verification record, verified classic-IBC evidence, and a canonical `heterogeneous-interop` `ACKNOWLEDGE` transport receipt.
 
-- authentic public Cosmos Hub acknowledgement proof material for `transfer/channel-141`, sequence `999999`;
-- independent ICS-23 membership verification;
-- accepted StegOS verification record;
-- verified classic-IBC evidence projection;
-- canonical `heterogeneous-interop` `ACKNOWLEDGE` transport receipt.
-
-Exact trusted proof/root binding:
+Exact proof/root binding:
 
 ```text
 producer_chain_id: cosmoshub-4
@@ -42,9 +34,7 @@ trusted_app_hash_header_height: 32887307
 trusted_app_hash: sha256:2871a37e07449d753776d47966e7dba63605c86f5c50c55acd49e993a082b7db
 ```
 
-## Native iOS build correction
-
-The prior Python/control-plane resident consumer remains useful for canonical resident coordination, but it is no longer treated as the build implementation.
+## Native iOS build implementation
 
 StegOS PR #296 merged at:
 
@@ -52,7 +42,7 @@ StegOS PR #296 merged at:
 3b09eb8e6240e67753328494462fbbdfcb04610f
 ```
 
-The actual build implementation is compiled directly into:
+`IBCVerifiedACKNativeResident` is compiled directly into the real `StegOSMobile` target through:
 
 ```text
 mobile/ios/StegOSMobile/MobileServiceActivation.swift
@@ -60,45 +50,51 @@ mobile/ios/StegOSMobile.xcodeproj
 scheme: StegOSMobile
 ```
 
-`MobileServiceActivation.swift` is an explicit source member of the native iPhone target. The merged `IBCVerifiedACKNativeResident` implementation therefore compiles into the app itself rather than existing as detached source or scaffolding.
-
-The native implementation:
-
-1. reads `ack-sequence-999999.ics23-verification.json` and `ack-sequence-999999.verified-classic-evidence.json` from app-local Documents storage;
-2. requires `result=accepted` and `proof_verified=true`;
-3. requires the exact Cosmos Hub/Osmosis chain, channel, sequence, proof height, trusted-root height, and trusted app hash listed above;
-4. rejects any classic-evidence widening of transition admission, execution, claim/fence, or custody;
-5. computes SHA-256 bindings over the exact local verification/evidence bytes;
-6. persists `ibc-verified-intr-ack-request-consumption.latest.json` atomically in app-local Documents storage;
-7. emits `state=RESIDENT_INTR_ACK_CONSUMED` only after all native checks pass;
-8. records `residentRuntimeExecutionObserved=true` while preserving original IBC relay, transition admission, application execution, claim/fence, custody, and credential minting as false.
-
-No Python interpreter is required for this native consumption path.
-
-## Native build validation
-
-Exact PR #296 head `cdec02ffab0fe690841c69e891ea0c2efbf47197` passed:
+The native implementation validates the retained ICS-23 verification/classic evidence, enforces the exact chain/channel/sequence/proof/root bindings, rejects transition/execution/claim/custody widening, and atomically writes:
 
 ```text
-iOS Device Package Validation
-run: 34352947552
-run_number: 13
-result: PASS
-
-StegOS CI
-run: 34352947574
-run_number: 1071
-result: PASS
-
-iOS Apple Toolchain Validation
-run: 34352947733
-run_number: 58
-result: PASS
+Documents/ibc-verified-intr-ack-request-consumption.latest.json
 ```
 
-The Apple toolchain lane compiled `StegOSMobile` and both embedded extensions. The device-package lane built the unsigned `iphoneos` product and produced deterministic unsigned package evidence. These are actual build results, not source-only validation.
+PR #296 validation:
 
-## Existing canonical resident coordination
+```text
+iOS Device Package Validation 13 / 34352947552: PASS
+StegOS CI 1071 / 34352947574: PASS
+iOS Apple Toolchain Validation 58 / 34352947733: PASS
+```
+
+## Native launch reachability
+
+StegOS PR #299 merged at:
+
+```text
+e810380ff8d991668c192b722c4369e05ff4147f
+```
+
+This closes the prior compiled-but-uninvoked gap. `StegOSMobileApp.swift` now calls `IBCVerifiedACKNativeLaunchCoordinator` from the actual SwiftUI application launch surface.
+
+The coordinator:
+
+1. reuses the existing canonical Site node binding stored at `stegos.sv001.resident.activation-binding`;
+2. requires its `nodeRef` to match `^SV-NODE-[0-9a-f]{24}$`;
+3. embeds immutable exact copies of the already independently verified ICS-23 result and verified classic IBC evidence directly in compiled native source;
+4. requires no Python interpreter, GitHub/source fetch, evidence-file import, network fetch, or second machine at runtime;
+5. calls the compiled `IBCVerifiedACKNativeResident.consume(...)` implementation directly;
+6. writes the native consumption receipt into app-local Documents storage when all checks pass;
+7. stops at `WAITING_FOR_CANONICAL_NODE_BINDING` instead of inventing a node identity if the canonical binding is absent.
+
+PR #299 exact head `b1d7a026efc6d5032d8228ccc0029e06ef6955fe` passed:
+
+```text
+StegOS CI 1081 / 34354443044: PASS
+iOS Device Package Validation 14 / 34354443058: PASS
+iOS Apple Toolchain Validation 62 / 34354443157: PASS
+```
+
+The exact launch-bound source therefore compiles with Apple tooling and produces a successful unsigned `iphoneos` package.
+
+## Existing resident coordination
 
 `.github` PR #1254 merged at:
 
@@ -106,7 +102,7 @@ The Apple toolchain lane compiled `StegOSMobile` and both embedded extensions. T
 ec4b122c46d80109d95e788e51afd73ba04193b1
 ```
 
-It registers:
+It retains the canonical resident request/dispatcher projection:
 
 ```text
 control/resident-execution-request.d/ibc-verified-intr-ack-resident-001.json
@@ -115,25 +111,30 @@ scripts/dispatch_resident_execution_requests.py
 selector: ibc_verified_intr_ack
 ```
 
-That path remains the canonical resident coordination/dispatch projection. It does not replace the native iOS build implementation.
+This coordination surface does not replace the native iPhone implementation.
 
 ## Current evidence boundary
 
 Authentically established:
 
 ```text
+authentic Cosmos Hub ACK captured: true
+independent ICS-23 proof verification: true
+verified StegOS classic evidence projection: true
+canonical workflow ACK ingress: true
 native iOS implementation compiled into StegOSMobile: true
-unsigned iphoneos package built successfully: true
-Apple toolchain compilation passed: true
-canonical resident request/dispatcher integration merged: true
-authentic Cosmos Hub ACK evidence retained and independently verified: true
+native application-launch invocation compiled into StegOSMobile: true
+exact retained verification/evidence embedded in native build: true
+unsigned iphoneos package successfully built with launch path: true
+canonical resident coordination integration merged: true
 ```
 
 Not yet authentically established:
 
 ```text
-physical iPhone execution of IBCVerifiedACKNativeResident: pending
-app-local ibc-verified-intr-ack-request-consumption.latest.json from physical iPhone: pending
+signed/TestFlight delivery of the launch-bound build: pending
+physical iPhone execution of the launch-bound IBC consumer: pending
+app-local RESIDENT_INTR_ACK_CONSUMED receipt from physical iPhone: pending
 original_ibc_packet_relay_observed: false
 transition_admission_observed: false
 application_execution_observed: false
@@ -144,13 +145,15 @@ custody_result_minted: false
 
 ## Next work
 
-1. deliver/install a signed StegOSMobile build on the current iPhone through the existing Apple/TestFlight path;
-2. place or materialize the exact retained verification/evidence JSON into StegOSMobile app-local storage through the established StegVerse evidence-delivery path;
-3. execute `IBCVerifiedACKNativeResident` on the physical iPhone;
-4. inspect the native `ibc-verified-intr-ack-request-consumption.latest.json` receipt;
-5. retain/reconcile that exact receipt through the applicable Master Records/runtime-evidence path;
-6. advance only the predicates directly proven by that physical-device receipt.
+1. carry the exact launch-bound StegOSMobile source through the existing signed/TestFlight build and TVC App Store Connect delivery path;
+2. install/open that build on the bound current iPhone;
+3. allow app launch to consume the embedded verified evidence using the already-established canonical Site node binding;
+4. inspect `Documents/ibc-verified-intr-ack-request-consumption.latest.json`;
+5. retain/reconcile that exact physical-device receipt through the applicable runtime evidence / Master Records path;
+6. advance only predicates directly proven by that receipt.
+
+No separate evidence-file placement step remains: the verified evidence inputs are now compiled into the same native app build that executes them.
 
 ## Human action
 
-None currently required for source/build completion. Physical-device execution remains dependent on the existing signed StegOSMobile/TestFlight delivery path.
+None currently required for source/build integration. Physical-device execution depends on completion of the existing signed StegOSMobile/TestFlight delivery path.
