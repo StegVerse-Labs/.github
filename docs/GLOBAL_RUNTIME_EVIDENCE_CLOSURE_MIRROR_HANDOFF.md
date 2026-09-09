@@ -2,15 +2,17 @@
 
 Goal Task ID: `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001`
 Canonical issue: `StegVerse-Labs/.github#1260`
-Canonical PR: `StegVerse-Labs/.github#1261`
+Canonical PR: `StegVerse-Labs/.github#1261` (merged) plus current repair PR from `fix/global-runtime-selector-convergence-1260`
 COSV: `50000000100000`
-Status: `ACTIVE / PARTIAL_SOLUTIONS_MACHINE_PROJECTED_ACROSS_18_MEMBERS / RESIDENT_CONVERGENCE_EXECUTION_WIRED_AND_VALIDATED / AUTHENTIC_RESIDENT_CONVERGENCE_RECEIPT_PENDING`
+Status: `ACTIVE / PARTIAL_SOLUTIONS_MACHINE_PROJECTED_ACROSS_18_MEMBERS / RESIDENT_CONVERGENCE_WIRED / STALE_VACC_ID_REPAIRED / ENDPOINT_FANOUT_ROUTE_REPAIRED / GADI_EXISTING_RUNTIME_WRAPPER_REUSED / AUTHENTIC_RESIDENT_CONVERGENCE_EXECUTION_NEXT`
 
 ## Purpose
 
 Converge all StegVerse ecosystem capabilities that are implemented or integration-ready but still require authentic runtime execution/evidence, receipt custody, reconstruction, runtime-bound validation, or downstream propagation proof. The umbrella preserves child Goal Task IDs and resumes each child from its first genuinely unresolved evidence predicate instead of restarting completed stages.
 
-## Canonical registration on PR #1261
+## Canonical registration
+
+The umbrella is registered under issue #1260 and merged source from PR #1261. Canonical source includes:
 
 - `data/canonical-task-records/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.json`
 - `control/task-vectors/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.json`
@@ -22,15 +24,11 @@ Converge all StegVerse ecosystem capabilities that are implemented or integratio
 - `tests/test_global_runtime_evidence_convergence_execution.py`
 - this handoff
 
-The repository's sharded task/vector resolution path is used intentionally. The task record is `ACTIVE / CLAIMED_INTEGRATION`, the task.v1 COSV record is `50000000100000`, and the index shard resolves directly to the canonical task-record shard.
+The task record is `ACTIVE / CLAIMED_INTEGRATION` with task.v1 COSV `50000000100000`.
 
-## Partial-solution implementation
+## Reusable solution classes
 
-The earlier issue-level fanout is now materialized as a machine-readable projection contract rather than remaining advisory prose.
-
-`control/runtime-partial-solution-projections/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.json` contains all 18 current umbrella members. For each member it records canonical task identity, reusable mechanisms adopted from more advanced sibling lanes, and the exact stage at which that member must resume. The projection forbids generic runtime restart for later-stage lanes and permits cross-task evidence reuse only when exact subject binding is compatible.
-
-The seven reusable solution classes are:
+The 18-member projection uses seven reusable mechanism classes:
 
 1. `HIL_G25_BROWSER`
 2. `HF_UNIVERSAL_INTR`
@@ -40,88 +38,63 @@ The seven reusable solution classes are:
 6. `EXACT_RESIDENT_REQUEST`
 7. `RUNTIME_PROFILE_MAP`
 
-`tools/validate_runtime_partial_solution_projection.py` rejects missing members, duplicate task IDs, unknown solution identifiers, empty adoption sets, empty resume stages, generic-runtime restart of later-stage lanes, or cross-task receipt reuse without exact subject binding.
+Cross-task evidence is never treated as substitute evidence; exact subject binding remains required.
 
-This establishes `REUSABLE_PARTIAL_SOLUTIONS_PROJECTED` at source/control level for the current 18 members. It does not claim the physical resident has executed those projected mechanisms yet.
+## Resident convergence execution
 
-## Resident convergence execution now wired
+The Canonical Runtime Profile Map remains the common diagnostic trigger. `scripts/install_and_run_canonical_work_event_bootstrap.py` performs the ordinary task-specific Canonical Work bootstrap and, for `STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001`, invokes `scripts/run_global_runtime_evidence_convergence.py` against the same resident root.
 
-The projection is now connected to the existing sovereign resident execution path rather than remaining a passive map.
+The convergence runner reuses the existing resident dispatcher and existing bounded task-specific runtime wrappers. It does not create a second scheduler or dispatcher. It writes `receipts/sovereign-host/global-runtime-evidence-convergence.latest.json` with per-lane execution route/state and unresolved resume-stage counts.
 
-A bounded convergence visitor now exists at:
+## 2026-09-09 routing repair after PR #1261
 
-`script/run_global_runtime_evidence_convergence.py` is intentionally not a second scheduler or dispatcher. The actual path is `scripts/run_global_runtime_evidence_convergence.py` and it invokes only selectors already registered in `scripts/dispatch_resident_execution_requests.py`.
+Fresh repository reconciliation exposed three concrete defects in the merged umbrella wiring and they are repaired on `fix/global-runtime-selector-convergence-1260`:
 
-The Canonical Runtime Profile Map remains the shared diagnostic trigger. `scripts/install_and_run_canonical_work_event_bootstrap.py` now performs the ordinary task-specific Canonical Work bootstrap first. When the admitted task is exactly `STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001`, it then materializes the already-local convergence helper/projection and runs that helper against the same resident root.
+1. **VACC stale task identity** — the umbrella still pointed at historical `VACP-ADAPTER-AUTHORIZED-EXECUTION-005`, which canonical LLM-adapter records mark `SUPERSEDED`. The projection now points at current `VACP-SOVEREIGN-PROVIDER-REALIGNMENT-023` owned by `StegVerse-org/LLM-adapter#142`.
+2. **Endpoint Fanout false NO_SELECTOR classification** — `SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001` is already part of `scripts/consume_stegos_kv_intr_chain_request.py`; the convergence runner now routes it through existing selector `stegos_kv_intr_chain` instead of reporting it unwired.
+3. **GADI false NO_SELECTOR classification** — canonical source already contains `scripts/dispatch_gadi_resident_execution.py`, which enforces GADI preflight then invokes the exact resident consumer. The convergence runner now reuses that existing bounded wrapper rather than reporting GADI as having no runtime path.
 
-The convergence helper:
+After this repair, explicit unwired convergence members are reduced to:
 
-- selects all currently compatible registered child consumers in one resident visit;
-- excludes `canonical_work_coordination` to prevent recursion;
-- preserves each member's projected resume stage and adopted solution set;
-- records registered-selector outcomes separately per member;
-- recognizes Canonical Work-only ingress evidence for CryptoBot and StegBrowser;
-- reports `NO_REGISTERED_SELECTOR` for current members whose task-specific execution still lacks a compatible registered resident selector rather than flattening them into `runtime pending`;
-- writes `receipts/sovereign-host/global-runtime-evidence-convergence.latest.json` with per-lane runtime outcomes, runtime-state counts, unresolved-resume-stage counts, and whether all members actually converged on one state.
+- current sovereign VACC provider task `VACP-SOVEREIGN-PROVIDER-REALIGNMENT-023` pending exact cross-repository resident binding from LLM-adapter;
+- `DATA-CONTINUATION-STEGCLAW-P4` pending a direct registered resident path;
+- `DECISION-ENVELOPE-DE006` pending exact parent rebinding/re-execution path integration.
 
-Current explicit no-selector members are VACC adapter execution, StegClaw P4, Endpoint Fanout, GADI controlled actuator execution, and DE-006 parent rebinding/re-execution. That classification is now machine-observable and gives those lanes a concrete integration defect if they remain unwired after the convergence receipt is produced.
+The endpoint-fanout and GADI lanes must now produce their real task-local state during the next resident convergence visit rather than being pre-classified as unwired.
 
-A canonical umbrella resident request is also staged at `control/resident-execution-request.d/canonical-work-global-runtime-evidence-closure-001.json`; no claim is made that this request has been authentically consumed yet.
+## Current member routing
 
-## Current member routing after projection
-
-- CryptoBot -> exact request consumption.
+- CryptoBot -> Canonical Work request consumption.
 - HIL -> ESRL `LEASE_OPEN`.
-- Hugging Face / SV-DN1 -> SDK first-round resident analysis.
-- SDK / Ecosystem Chat -> exact parent/SDK execution.
-- VACC -> canonical adapter execution.
-- DEVICE_KV / MyKV -> subject-bound resident request execution.
-- StegVerse-001 -> current-device continuation without rerunning terminal execution.
-- SV002 -> authentic materialization consumption.
-- StegClaw -> resident process + request consumption.
-- Endpoint Fanout -> authentic DEVICE_KV parent.
-- GADI -> WorkerCoordinator claim/fence.
-- Governed Multilane Manifold -> per-child claim/fence + formalism execution.
-- GLM 5.3 Sovereign -> subject-bound GLM execution.
-- SV-011 Phase 5 -> subject-bound Phase-5 execution.
-- Runtime Profile Map -> CanonicalWork `INGRESS_ADMITTED`, then convergence visitor.
-- Native Email -> provider runtime consumption.
-- StegBrowser -> authentic browser invocation.
-- DE-006 -> exact parent rebinding/re-execution.
+- Hugging Face / SV-DN1 -> `sv_dn1` + publication resident selectors.
+- SDK / Ecosystem Chat -> `ecosystem_chat`.
+- VACC -> current `VACP-SOVEREIGN-PROVIDER-REALIGNMENT-023`; cross-repository resident binding still required.
+- DEVICE_KV / MyKV -> `stegos_kv_intr_chain`.
+- Endpoint Fanout -> same existing `stegos_kv_intr_chain` exact chain after authentic DEVICE_KV parent.
+- StegVerse-001 -> current-device continuation.
+- SV002 -> public-observation resident selector.
+- StegClaw -> resident path still unwired.
+- GADI -> existing `scripts/dispatch_gadi_resident_execution.py` preflight + exact consumer path.
+- Governed Multilane Manifold -> existing manifold selector.
+- GLM 5.3 Sovereign -> existing GLM resident selector.
+- SV-011 Phase 5 -> source-materialization + phase-5 selectors.
+- Runtime Profile Map -> CanonicalWork ingress then map lifecycle selectors.
+- Native Email -> native email resident selector.
+- StegBrowser -> Canonical Work ingress/browser path.
+- DE-006 -> exact parent rebinding/re-execution integration still required.
 
-## Failure-point interpretation
+## Failure comparison
 
-The different stopping points do reflect reusable partial solutions. After source/control projection and execution wiring, a member that still fails at an earlier stage can no longer be explained merely by the sibling mechanism being unknown or unassigned.
+The next resident convergence execution now has materially fewer artificial `NO_REGISTERED_SELECTOR` outcomes. It can distinguish actual runtime states for Endpoint Fanout and GADI, while VACC/StegClaw/DE-006 remain explicit integration work rather than being confused with resident process failure.
 
-The next authentic resident convergence receipt is now the decisive comparison. It will distinguish:
+## README review
 
-1. a shared resident/request failure across multiple selectors;
-2. task-specific consumer/claim/InTr/component failures after request consumption;
-3. post-execution custody/reconstruction/propagation failures; and
-4. missing task-specific resident-selector integration (`NO_REGISTERED_SELECTOR`).
+`README.md` was reviewed against this repair. The repository-level documented semantics already require one existing resident dispatcher, task-specific fail-closed consumers/wrappers, exact task/COSV continuity, and autonomous machine continuation. This repair corrects stale/missed routing into those existing semantics and does not add a new public interface, scheduler, dispatcher, authority class, credential path, or user-facing workflow. No README text change is required for this correction.
 
-Only after that receipt exists should clusters be collapsed further.
+## Validation and next execution
 
-## Exact-head validation evidence
-
-PR #1261 head `47b74f6e80cf35ff6151e32fa84badf2ee191c96` contains the convergence runner, Runtime Profile Map bootstrap hook, and regression coverage. All three repository validation surfaces completed successfully on that exact head:
-
-- organization control plane run `34364612570` — SUCCESS
-- deterministic repository suite run `34364612579` — SUCCESS
-- Heartbeat Worker Project run `34364612713` — SUCCESS
-
-These validations prove source/control consistency only. They do not substitute for `receipts/sovereign-host/global-runtime-evidence-convergence.latest.json` from the sovereign resident.
-
-## Next execution sequence
-
-1. Existing resident Canonical Work consumer visits the staged Runtime Profile Map request.
-2. Authentic Runtime Profile Map Canonical Work ingress succeeds.
-3. The bootstrap hook executes the convergence visitor against the same resident root.
-4. Already-registered compatible child consumers are visited from their projected resume points.
-5. The convergence receipt records per-member states and explicit no-selector integrations.
-6. Repair the first common runtime failure if one emerges; otherwise repair the smallest remaining selector/component-specific groups.
-7. Reconcile resulting child evidence into Master Records and regenerate the convergence matrix.
+The repair branch must pass the same organization-control, deterministic repository-suite, and Heartbeat validation surfaces before merge. After merge, the existing resident Runtime Profile Map path should execute the repaired convergence visitor. The highest-value next source repairs are the three remaining explicit unwired paths: current VACC sovereign provider binding, StegClaw P4 resident binding, and DE-006 exact parent re-execution integration.
 
 ## Manual work
 
-None currently required. The source/control implementation is complete enough for the existing resident to perform the convergence visit automatically when the Runtime Profile Map Canonical Work request is authentically consumed. Authentic resident evidence is still required before runtime-state claims are advanced.
+None currently required.
