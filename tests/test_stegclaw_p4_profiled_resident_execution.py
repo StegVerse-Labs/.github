@@ -6,8 +6,10 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-DISPATCH = ROOT / "scripts/dispatch_stegclaw_p4_resident_execution.py"
+DISPATCH = ROOT / "workers/stegclaw_p4_profiled_resident_execution.py"
 ORG_WORKER = ROOT / "workers/organization_local_resident_boundary_executor.py"
+REFRESH = ROOT / "scripts/refresh_sovereign_worker_runtime_source.py"
+REFRESH_BASE = ROOT / "scripts/refresh_sovereign_worker_runtime_source_base.py"
 
 
 def load(path: Path, name: str):
@@ -64,6 +66,12 @@ class StegClawP4ProfiledResidentExecutionTests(unittest.TestCase):
             destination = m.archive_consumed_ingress(ingress, consumed)
             self.assertFalse(ingress.exists())
             self.assertEqual(b'{"x":1}\n', destination.read_bytes())
+
+    def test_worker_bridge_is_covered_by_both_resident_refreshes(self):
+        for path in (REFRESH, REFRESH_BASE):
+            text = path.read_text(encoding="utf-8")
+            self.assertIn('Path("workers")', text)
+        self.assertTrue(DISPATCH.is_file())
 
 
 if __name__ == "__main__":
