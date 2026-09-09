@@ -8,12 +8,12 @@ Canonical Work task ingress discoverable.
 
 On an admitted native resident host it copies only the explicitly enumerated
 Canonical Work source files from the already-local canonical source root into the
-resident checkout, verifies byte equality, preserves an already-existing resident
-canonical task registry, then invokes the registered bounded bootstrap wrapper for
-explicit task specifications. Request specifications are visited independently so
-one task-local failure does not prevent a later task from being attempted. No
-network source fetch, credential use, HB/oscillator advance, claim/fence minting,
-or second runtime implementation is permitted here.
+resident checkout, verifies byte equality, preserves already-existing resident
+canonical task coordination state, then invokes the registered bounded bootstrap
+wrapper for explicit task specifications. Request specifications are visited
+independently so one task-local failure does not prevent a later task from being
+attempted. No network source fetch, credential use, HB/oscillator advance,
+claim/fence minting, or second runtime implementation is permitted here.
 """
 from __future__ import annotations
 
@@ -65,6 +65,12 @@ CRYPTO_LIVE_AUTO_SPEC = {
     "bootstrap_runtime_rel": Path("runtime/canonical-work-crypto-live-auto"),
     "task_id": "CRYPTO-LIVE-AUTO-001",
 }
+STEGBROWSER_EPHEMERAL_SPEC = {
+    "request_rel": Path("control/resident-execution-request.d/canonical-work-stegbrowser-ephemeral-runtime-binding-001.json"),
+    "consumption_rel": Path("receipts/sovereign-host/canonical-work-stegbrowser-ephemeral-runtime-binding-request-consumption.latest.json"),
+    "bootstrap_runtime_rel": Path("runtime/canonical-work-stegbrowser-ephemeral-runtime-binding"),
+    "task_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+}
 REQUEST_SPECS = (
     DEFAULT_SPEC,
     QUANTUM_SPEC,
@@ -72,6 +78,7 @@ REQUEST_SPECS = (
     RUNTIME_PROFILE_MAP_SPEC,
     ERL_REVIEW_SPEC,
     CRYPTO_LIVE_AUTO_SPEC,
+    STEGBROWSER_EPHEMERAL_SPEC,
 )
 
 MATERIALIZE = (
@@ -90,6 +97,7 @@ MATERIALIZE = (
 )
 PRESERVE_IF_PRESENT = (
     Path("data/canonical-task-registry.json"),
+    Path("data/canonical-task-records/STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001.json"),
 )
 
 HOSTED = ("GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "CF_PAGES", "CLOUDFLARE_WORKERS")
@@ -300,6 +308,11 @@ def consume_for_spec(
         "source_materialization_count": len(materialized),
         "existing_canonical_task_registry_preserved": any(
             row.get("path") == "data/canonical-task-registry.json" and row.get("preserved_existing_runtime_projection") is True
+            for row in materialized
+        ),
+        "existing_target_task_shard_preserved": any(
+            row.get("path") == "data/canonical-task-records/STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001.json"
+            and row.get("preserved_existing_runtime_projection") is True
             for row in materialized
         ),
         "command": command,
