@@ -8,91 +8,99 @@ Task ID: `GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001`
 COSV ID: `10100000100000`
 Canonical coordination state: `PROPOSED`
 Canonical checkout state: `UNCLAIMED`
-Status: `RESIDENT ACTIVATION REQUESTED / PREREQUISITE GATING REPAIRED / GADI SOURCE COMPLETE AND RESIDENT EXECUTION CHILD MERGED AND SOURCE-VALIDATED / HIL SOURCE COMPLETE PHYSICAL EXPORT PENDING / WORKERCOORDINATOR CLAIM PENDING / AUTHENTIC ACTIVATION EVIDENCE PENDING`
+Status: `RESIDENT ACTIVATION REQUESTED / LIVE DISPATCH PREREQUISITE GATING REPAIRED / GADI SOURCE COMPLETE AND RESIDENT EXECUTION CHILD MERGED / HIL G25 REQUEST-CONSUMPTION ACCEPTED / HIL ESRL SOURCE+INTAKE MERGED / WORKERCOORDINATOR FORMALISM RECEIPTS PENDING / TVC RUNTIME PENDING / AUTHENTIC FULL ACTIVATION NOT PROVEN`
 
 ## Source of truth
 
-Canonical records are `data/canonical-task-records/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json`, `control/task-vectors/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json`, `handoffs/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json`, `control/manifold-lineage.d/governed-multilane-manifold-activation-001.json`, and `control/resident-execution-request.d/governed-multilane-manifold-activation-001.json`.
+Canonical records:
 
-Inherited sources include `FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md`, `docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md`, `docs/GADI_MIRROR_HANDOFF.md`, `docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md`, and `docs/HIL_RESIDENT_SESSION_MANIFOLD_ACTIVATION_MIRROR_HANDOFF.md`.
+- `data/canonical-task-records/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json`
+- `control/task-vectors/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json`
+- `handoffs/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json`
+- `control/manifold-lineage.d/governed-multilane-manifold-activation-001.json`
+- `control/resident-execution-request.d/governed-multilane-manifold-activation-001.json`
+
+Inherited continuation sources:
+
+- `FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md`
+- `docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md`
+- `docs/GADI_MIRROR_HANDOFF.md`
+- `docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md`
+- `docs/HIL_RESIDENT_SESSION_MANIFOLD_ACTIVATION_MIRROR_HANDOFF.md`
+- `docs/HIL_BROWSER_ESRL_EVIDENCE_INTAKE_MIRROR_HANDOFF.md`
 
 ## Goal
 
-Activate the complete declared manifold through existing owners, reusing completed source/predecessor evidence, observing externally owned prerequisites without competing claims, and requiring current subject-bound execution receipts plus deterministic reconciliation before activation is declared.
+Activate the complete declared manifold through existing owners, reusing qualifying completed evidence, observing externally owned prerequisites without competing claims, executing machine-owned incomplete lanes through the existing WorkerCoordinator, and requiring subject-bound execution receipts plus deterministic reconciliation before activation is declared.
 
-## Current machine-owned formalism lanes
+## Formalism lanes
 
-- `SHWP-FORMALISM-INVENTORY-001`;
-- `SHWP-FORMALISM-HANDOFF-NORMALIZATION-001`;
-- `SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001`;
-- `SHWP-MANIFOLD-GOVERNANCE-MAPPING-001`;
-- `SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001` after its predecessors qualify.
+Machine-owned prerequisite lanes remain:
 
-`STEGFIN-CONTINUITY-CARRIER-007` remains conditional on qualifying `TVC-CAPABILITY-RUNTIME-002` evidence.
+- `SHWP-FORMALISM-INVENTORY-001`
+- `SHWP-FORMALISM-HANDOFF-NORMALIZATION-001`
+- `SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001`
+- `SHWP-MANIFOLD-GOVERNANCE-MAPPING-001`
+
+`SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001` may execute only after the prerequisite lanes qualify.
 
 `SOVEREIGN-LOCAL-MODEL-001` remains `COMPLETE_RELEASED` and reusable without re-execution.
+
+## Runtime-dispatch prerequisite gating
+
+PR `#1222` merged at `8590a6f79de02b33eb01329336d16b1909824d6b` and repaired the canonical scripts consumer so conditional manifold lanes fail closed until explicit current-visit predecessor evidence qualifies.
+
+A later reconciliation found that the live resident dispatcher still targeted the compatibility consumer under `control/resident-execution-request.d/consume-governed-multilane-manifold-activation.py`, which retained the older unconditional delegation behavior.
+
+PR `#1246` repaired that actual runtime-dispatched path and merged at `edc048632afe8db34113101b7d7400f9d5fbb8e4` after Organization/validation and deterministic diagnostics passed. The live compatibility consumer now preserves:
+
+- `DEPENDS_ON` prerequisite mapping;
+- fail-closed handling of `EXECUTE_AFTER_PREREQUISITES_QUALIFY` and `EXECUTE_WHEN_TVC_RUNTIME_PREREQUISITE_QUALIFIES`;
+- explicit qualifying-evidence checks rather than treating WorkerCoordinator return code `0` as proof;
+- aggregate `GADI-001` as non-qualifying for dependents until its incomplete children resolve;
+- observation-only treatment for TV/TVC external-owner prerequisites.
+
+This repair is source/runtime-path correctness. It is not itself authentic resident traversal evidence.
 
 ## TVC prerequisite state
 
 - `TVC-PROVIDER-OPERATION-BROKER-003`: source/binder/host-start delivery validated; live primary-runtime observation pending.
 - `TVC-CAPABILITY-RUNTIME-002`: qualifying current runtime observation pending.
+- `STEGFIN-CONTINUITY-CARRIER-007`: remains fail-closed until TVC runtime qualification exists.
 
-No competing claim is created by this umbrella task.
+No competing umbrella claim is created for TV/TVC-owned prerequisites.
 
 ## GADI state
 
-Completed/reusable source slices include:
+Reusable completed source slices include StegOS native defense contracts, StegCore threat reasoning/planning, TV/TVC capability source bindings, controlled simulation/reassessment, the micro-node resident defensive-command consumer, and the Continuity exact confrontation reconstruction verifier.
 
-- StegOS native defense contracts/discovery/boundary/control plane;
-- StegCore threat reasoning/planning via PR #192;
-- TV/TVC capability source bindings;
-- micro-node controlled simulation/reassessment via PR #87 merged at `35a3738108c9cd506d63b5e7fbf0eb2752aa56b5`;
-- simulation status reconciliation PR #88 merged at `dd6e8e084ba2fac1ff25f614f86fdd8b5ccf1780`;
-- micro-node resident defensive-command consumer via PR #90 merged at `cfdea8f44814dfcefd5c411110cb2b367e34d937`;
-- resident-consumer reconciliation PR #91 merged at `901829b3f36f764b474d7e4be02b68eb5e6e63fe`;
-- Continuity exact confrontation reconstruction verifier via PR #14 merged at `d1956b1cc9860d8bc1de70180e412ca01dc8aec6`;
-- Continuity reconciliation PR #15 merged at `128dbc3d6283c252ad09036be5162ab49cdf08c5`.
+`GADI-RESIDENT-EXECUTION-001` is the canonical targetable WorkerCoordinator child for authentic defensive execution. PR `#1242` merged its task record, executable handoff, task vector/index, standing request, WorkerCoordinator registry fragment, process adapter, fail-closed request consumer, focused tests, and parent/umbrella lineage integration at `95e6049e44b58ed95b678b33ba35dda675eddf61`.
 
-### GADI resident execution child
-
-The authentic execution predicate has a canonical targetable child: `GADI-RESIDENT-EXECUTION-001`.
-
-The child owns the WorkerCoordinator/resident-request execution seam and is registered through:
-
-- `data/canonical-task-records/GADI-RESIDENT-EXECUTION-001.json`;
-- `handoffs/GADI-RESIDENT-EXECUTION-001.json`;
-- `control/task-vectors/GADI-RESIDENT-EXECUTION-001.json`;
-- `control/task-vector-index.d/GADI-RESIDENT-EXECUTION-001.json`;
-- `control/resident-execution-request.d/gadi-resident-execution-001.json`;
-- `control/resident-execution-request.d/consume-gadi-resident-execution.py`;
-- `control/worker-registry.d/gadi-resident-execution-001.json`;
-- `control/process-worker-adapters.d/gadi-resident-execution-001.json`;
-- `docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md`.
-
-The child is `PROPOSED / UNCLAIMED` and registered `HANDOFF_READY`. It reuses the merged micro-node GADI resident consumer and the existing WorkerCoordinator. It does not implement or substitute an actuator. It fails closed until a current GADI command, current WorkerCoordinator claim/fence, current InTr decision, exact runtime binding, and controlled pre-authorized actuator result are all present and mutually bound.
-
-The child executable handoff explicitly declares `parent_task_id=GADI-001`, derivation depth 1, and a canonical parent-record source reference. The umbrella resident request includes the child explicitly, and the manifold lineage includes the `GADI-001 -> GADI-RESIDENT-EXECUTION-001` runtime-execution edge.
-
-PR #1242 merged on 2026-09-09 at `95e6049e44b58ed95b678b33ba35dda675eddf61` after exact-head validation repairs:
-
-- converted `tests/test_gadi_resident_execution_request.py` from an undeclared `pytest` dependency to the repository-supported deterministic `unittest` surface;
-- reconciled `control/cosv-live-worker-coverage.json` after the new canonical worker increased both the live denominator and indexed count by one;
-- repaired executable-handoff external-parent lineage by adding the canonical `GADI-001` parent source reference and explicit parent/derivation metadata;
-- exact pre-merge head `c3edb64011b680508a92e6fa4aa717acaf6b72df` passed Organization Control validation, deterministic repository diagnostics, and Heartbeat Worker Project validation.
-
-These are source/coordination validation results only. They are not authentic runtime execution evidence.
-
-Remaining authentic GADI predicates are current InTr admission, actual WorkerCoordinator claim/fence for the child, current runtime binding, controlled pre-authorized effect execution, subject-bound effect observation, reassessment/termination evidence, authentic receipt-chain custody/Master Records reconciliation, exact reconstruction over that authentic chain, and canonical reconciliation.
+The child remains `PROPOSED / UNCLAIMED` and `HANDOFF_READY`. Authentic execution still requires current InTr admission, actual WorkerCoordinator claim/fence, exact runtime binding, controlled pre-authorized effect execution, subject-bound effect observation, reassessment/termination evidence, receipt-chain custody/Master Records reconciliation, exact Continuity verification, and canonical reconciliation.
 
 ## HIL nested-manifold state
 
-HIL resident-session source is complete and Site controller-refresh repairs are merged. The remaining HIL predicate is exact standalone-Safari JSON export/intake accepted by `scripts/intake_hil_browser_execution_evidence.py`, including `PRED-RESIDENT-REQUEST-CONSUMED-HIL-SOVEREIGN-RECEIVER-002`.
+The umbrella projection must use the HIL child handoff rather than the older pre-G25 status.
 
-Screenshots, source merges, and workflow success cannot substitute for that exact physical artifact.
+Current HIL facts:
 
-## Prerequisite-gating repair
+- HIL resident-session source materialization is complete.
+- Exact current-iPhone standalone-Safari G25 evidence was accepted through canonical intake in `.github` PR `#1237`.
+- `PRED-RESIDENT-REQUEST-CONSUMED-HIL-SOVEREIGN-RECEIVER-002` is satisfied by `receipts/sovereign-host/hil-resident-execution-request-consumption.latest.json`.
+- PR `#1240` reconciled the HIL worker registry and COSV to `50000000103000`, consistent with exactly three remaining blockers.
+- Site PR `#1159` merged the same-context current-iPhone browser ESRL successor.
+- `.github` PR `#1248` merged `scripts/intake_hil_browser_esrl_evidence.py` and the fail-closed ESRL intake surface.
+- `.github` PR `#1249` advanced the HIL handoff to the physical ESRL evidence boundary.
 
-`.github` PR #1222 merged as `8590a6f79de02b33eb01329336d16b1909824d6b` and ensures conditional lanes fail closed until explicit predecessor evidence qualifies. A generic WorkerCoordinator visit or return code does not prove activation.
+The HIL nested manifold is therefore no longer accurately described as awaiting resident request consumption. It is source-complete with accepted G25 request consumption and ESRL producer/intake capability present.
+
+Exactly three HIL evidence obligations remain:
+
+1. `AUTHENTIC_ESRL_HIL_LEASE_OPEN_NOT_YET_OBSERVED`
+2. `POST_RESTART_EXACT_BYTE_PROOF_NOT_YET_PRESERVED`
+3. `TVC_HIL_LIFECYCLE_HANDOFF_NOT_YET_PROVEN`
+
+No exact physical ESRL artifact has yet been accepted. Source merge, deployment, workflow success, screenshots, or G25 acceptance do not satisfy ESRL, post-restart proof, or TVC lifecycle evidence.
 
 ## Resident activation request
 
@@ -103,48 +111,49 @@ Required continuation:
 1. resolve current task/lineage and reuse completed sources;
 2. run canonical collision/coordination preflight;
 3. obtain WorkerCoordinator claim/fence for eligible machine-owned lanes;
-4. execute qualifying formalism lanes through existing owners;
-5. keep conditional lanes fail-closed until predicates qualify;
+4. execute the four prerequisite formalism lanes and require subject-bound qualifying receipts;
+5. execute formalism manifold reconciliation only after those prerequisites qualify;
 6. observe TVC-owned prerequisites without competing claims;
-7. execute StegFin continuation only after TVC qualification;
-8. target `GADI-RESIDENT-EXECUTION-001` through the existing WorkerCoordinator when its exact runtime evidence inputs qualify;
-9. verify the resulting authentic GADI chain with the merged Continuity verifier and Master Records reconciliation;
-10. consume HIL evidence only after exact physical artifact intake qualifies;
-11. emit current subject-bound lane receipts and deterministic reconciliation;
+7. execute StegFin only after TVC qualification;
+8. target `GADI-RESIDENT-EXECUTION-001` only when its current runtime evidence inputs qualify;
+9. reconcile authentic GADI evidence through Continuity and Master Records;
+10. consume HIL ESRL evidence only after an exact physical artifact qualifies, then continue post-restart exact-byte proof and TVC lifecycle evidence;
+11. persist deterministic manifold reconciliation preserving provenance, divergence, uncertainty, and unresolved branches;
 12. declare activation only after every full-lineage predicate is durably machine-evidenced.
 
 ## Current standing
 
-- canonical umbrella task registration: COMPLETE;
-- umbrella coordination state: `PROPOSED`;
-- umbrella checkout state: `UNCLAIMED`;
-- resident activation request: REQUESTED;
-- prerequisite gating: REPAIRED/MERGED;
-- GADI StegCore source: COMPLETE/REUSE;
-- GADI controlled-simulation source: COMPLETE/VALIDATED/REUSE;
-- GADI resident-consumer source: COMPLETE/VALIDATED/REUSE;
-- GADI Continuity reconstruction source: COMPLETE/VALIDATED/REUSE;
-- GADI resident-execution child registration: IMPLEMENTED / SOURCE VALIDATED / MERGED VIA PR #1242 / AUTHENTIC EXECUTION PENDING;
-- HIL nested source: COMPLETE;
-- HIL exact physical export intake: PENDING;
-- umbrella/eligible-lane WorkerCoordinator claim/fence evidence: PENDING;
-- formalism execution receipts: PENDING;
-- TVC runtime/capability observation: PENDING;
-- StegFin continuation: PENDING TVC prerequisite;
-- authentic GADI execution/Master Records reconciliation: PENDING;
-- deterministic manifold reconciliation: PENDING;
-- authentic full-manifold activation evidence: NOT PROVEN.
+- canonical umbrella registration: COMPLETE
+- umbrella coordination state: `PROPOSED`
+- umbrella checkout state: `UNCLAIMED`
+- allowed next canonical transition: `INGRESS_ADMITTED`
+- resident activation request: REQUESTED
+- live dispatcher prerequisite gating: REPAIRED / MERGED VIA PR `#1246`
+- formalism WorkerCoordinator claim/fence evidence: PENDING
+- formalism execution receipts: PENDING
+- formalism deterministic reconciliation: PENDING
+- TVC runtime/capability observation: PENDING
+- StegFin continuation: PENDING TVC qualification
+- GADI source slices: COMPLETE / REUSE
+- GADI resident-execution child: REGISTERED / SOURCE-VALIDATED / AUTHENTIC EXECUTION PENDING
+- HIL G25 request consumption: SATISFIED
+- HIL ESRL source and intake: COMPLETE / MERGED
+- HIL authentic ESRL observation: PENDING
+- HIL post-restart exact-byte proof: PENDING
+- HIL TVC lifecycle handoff: PENDING
+- authentic GADI execution/Master Records reconciliation: PENDING
+- authentic full-manifold activation evidence: NOT PROVEN
 
 ## Remaining destinations
 
-- WorkerCoordinator claim/fence, formalism receipts, traversal, and deterministic reconciliation -> `StegVerse-Labs/.github`;
-- authentic GADI execution/effect/reassessment evidence -> current canonical runtime owner using the merged micro-node consumer;
-- TVC runtime/capability evidence -> `StegVerse-Labs/TVC` / `StegVerse-Labs/TV`;
-- authentic GADI receipt-chain custody/Master Records reconciliation and exact verification -> `StegVerse-Labs/Continuity` / Master Records;
-- exact HIL browser evidence intake and later proof projection -> `StegVerse-Labs/Site` + `.github` intake.
+- WorkerCoordinator claim/fence, formalism receipts, traversal, and deterministic reconciliation -> `StegVerse-Labs/.github`
+- authentic GADI execution/effect/reassessment evidence -> current canonical runtime owner using the merged micro-node consumer
+- TVC runtime/capability evidence -> `StegVerse-Labs/TVC` / `StegVerse-Labs/TV`
+- authentic GADI receipt-chain custody/Master Records reconciliation and exact verification -> `StegVerse-Labs/Continuity` / Master Records
+- HIL exact physical ESRL intake, post-restart exact-byte proof, and TVC lifecycle continuation -> `StegVerse-Labs/Site` + `StegVerse-Labs/.github` + TV/TVC as applicable
 
 ## README and release rule
 
-README reviewed. The `.github` README already documents the generic canonical resident-request -> WorkerCoordinator execution pattern used here, so the task-specific registration and validation repairs do not require additional top-level wording.
+README reviewed. The `.github` README already documents the generic canonical resident-request -> WorkerCoordinator execution pattern and fail-closed evidence semantics used here, so this projection reconciliation requires no README wording change.
 
-The umbrella is not release/tag ready. After an actual future release/tag, create separate propagation verification for `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `admissibility-wiki`, and `stegguardian-wiki`.
+The umbrella is not release/tag ready. After a future qualifying release/tag, create a separate propagation verification task for `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `admissibility-wiki`, and `stegguardian-wiki`, plus `StegVerse-Labs/Sit` only where an applicable consumer role is established.
