@@ -19,6 +19,32 @@ class Sv001RendezvousEvidenceTransportTests(unittest.TestCase):
         self.assertNotIn("watch_stegverse001_autonomy_receipt.py", source)
         self.assertNotIn("consume_stegverse001_bounded_autonomy_request.py", source)
 
+    def test_worker_is_sovereign_local_primary_and_hosted_fallback_only(self):
+        source = WORKER.read_text(encoding="utf-8")
+        self.assertIn('LOCAL_RENDEZVOUS_BASES = ("http://127.0.0.1:8000", "http://localhost:8000")', source)
+        self.assertIn('"resident_rendezvous_primary_transport": "SOVEREIGN_LOCAL_RESIDENT"', source)
+        self.assertIn('"hosted_rendezvous_role": "FALLBACK_ONLY"', source)
+        self.assertIn("for base in local_candidates:", source)
+        self.assertIn("return _fetch_evidence_from_reachable_base(bound, base, node_ref)", source)
+        self.assertIn("Hosted transport is fallback only", source)
+        self.assertLess(source.index("for base in local_candidates:"), source.index("Hosted transport is fallback only"))
+
+    def test_reachable_local_state_cannot_fall_through_to_hosted_transport(self):
+        source = WORKER.read_text(encoding="utf-8")
+        self.assertIn('if payload.get("state") == "NO_EVIDENCE":\n        return None', source)
+        self.assertIn("reachable sovereign resident discovery response invalid", source)
+        self.assertIn("reachable sovereign resident discovery authority boundary invalid", source)
+        self.assertIn("reachable resident discovery lost custody evidence endpoint", source)
+        self.assertIn("configured resident node ref disagrees with sovereign local discovery", source)
+
+    def test_worker_recomputes_proof_digest_and_requires_canonical_node_ref(self):
+        source = WORKER.read_text(encoding="utf-8")
+        self.assertIn('CANONICAL_NODE_REF = re.compile(r"^SV-NODE-[0-9a-f]{24}$")', source)
+        self.assertIn("_canonical_sha256_uri(proof)", source)
+        self.assertIn("resident rendezvous evidence proof digest mismatch", source)
+        self.assertIn("heartbeat_granted_authority", source)
+        self.assertIn("historical_state_retroactively_authorized", source)
+
     def test_adapter_passes_only_rendezvous_location_and_node_identity(self):
         adapter = json.loads(ADAPTER.read_text(encoding="utf-8"))["adapters"][0]
         allow = adapter["env_allowlist"]
