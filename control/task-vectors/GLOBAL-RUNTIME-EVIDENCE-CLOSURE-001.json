@@ -11,12 +11,17 @@
     "control/runtime-profile-sources.json",
     "control/runtime-observability-consumers/stegbrowser-ephemeral-runtime-binding-001.json",
     "scripts/run_global_runtime_node_profile_convergence.py",
+    "scripts/refresh_sovereign_worker_runtime_source.py",
+    "scripts/refresh_sovereign_worker_runtime_source_base.py",
     "tests/test_global_runtime_node_profile_convergence.py",
+    "tests/test_runtime_node_profile_resident_source_refresh.py",
     "docs/milestones/STEGBROWSER_FIRST_EPHEMERAL_STEGOS_NODE_2026-09-09.md",
     "StegVerse-Labs/.github#1260",
+    "StegVerse-Labs/.github#1288",
+    "StegVerse-Labs/.github@c22f0f347bb91e77b81d78e6e5e9b9ce7eea7409",
     "management/COSV_PROFILE_V1.json"
   ],
-  "observed_at": "2026-09-09T15:20:00Z",
+  "observed_at": "2026-09-09T15:33:00Z",
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
     "lifecycle": "MACHINE_OWNED",
