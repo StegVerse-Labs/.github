@@ -7,7 +7,7 @@ Continuation task: `STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001`
 COSV task vector: `50000000100000`
 Custody task: `MR-STEGVERSE001-BOUNDED-AUTONOMY-001`
 Observer successor: `SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001`
-State: `HANDOFF_READY_GOVERNED_CUSTODY_PROOF_RENDEZVOUS_SOURCE_VALIDATED_AUTHENTIC_RUNTIME_EVIDENCE_PENDING`
+State: `HANDOFF_READY_GATEWAY_LIVE_CONFIGURED_SITE_RENDEZVOUS_ROUTE_DEPLOYED_AUTHENTIC_RUNTIME_EVIDENCE_PENDING`
 
 ## Canonical continuation pointer
 
@@ -129,20 +129,24 @@ ccc8f4e09c70b95646297add1c33d78575333d22
 
 The adapter admits `observed/**`; proof materialization outside that scope is forbidden.
 
-## Automatic Site -> resident proof rendezvous
+## Automatic Site -> resident proof rendezvous — 2026-09-08
 
-The browser-to-resident gap uses the already-existing Service Gateway resident rendezvous rather than a new runtime plane.
+The browser-to-resident proof path is source-wired through the already-existing Service Gateway resident rendezvous rather than a new transport/runtime plane.
 
-Gateway evidence mailbox:
+Gateway evidence mailbox implementation:
 
 ```text
 StegVerse-org/LLM-adapter
-3d35b4afef55474881c5a73d6879775b3159a343  resident_evidence_api.py
-40b177d0b929d8c2182d69574948ae551882d952  router activation / advertisement
-a7ae5935c5a9d542176c7437905eb38c814bbe8b  regression coverage
-```
+3d35b4afef55474881c5a73d6879775b3159a343
+  llm_adapter/resident_evidence_api.py
 
-Gateway validation is authentic source/CI evidence only, not runtime custody evidence. The `validate` workflow for `a7ae5935c5a9d542176c7437905eb38c814bbe8b` completed `SUCCESS`.
+40b177d0b929d8c2182d69574948ae551882d952
+  combined gateway activates the router
+  advertises the evidence endpoint
+
+a7ae5935c5a9d542176c7437905eb38c814bbe8b
+  regression tests
+```
 
 Canonical endpoint:
 
@@ -150,33 +154,127 @@ Canonical endpoint:
 /api/resident-rendezvous/v1/evidence/site-governed-custody
 ```
 
-The mailbox accepts only the exact governed current-iPhone Site custody proof contract, binds it to one canonical resident node ref, rejects conflicting proof replacement, and returns evidence-only authority semantics.
+The mailbox accepts only the exact governed current-iPhone Site custody proof contract, binds it to one canonical resident node ref, rejects conflicting proof replacement, and returns:
 
-Current-iPhone Site relay:
+```text
+gateway_execution_authority = NONE
+evidence_grants_authority = false
+authority_effect = NONE_EVIDENCE_ONLY
+```
+
+Current-iPhone Site automatic relay initially landed at:
 
 ```text
 StegVerse-Labs/Site
-86c2a2e93158b480d6eb9b610e6829782a5d4dbb  governed proof relay
-11d034c6bba64dd1cf40cbc49e374714f4a70005  relay-specific governance validation assertions
-77a8ab55cc48240abdfb87833f1649c9719b0126  dependency-free main-push validation lane
+86c2a2e93158b480d6eb9b610e6829782a5d4dbb
+  stegos-bootstrap/master-records-auto-recovery.js
 ```
 
-The Site `Validate StegOS Persistent Card UX` workflow run `34292886326` on `77a8ab55cc48240abdfb87833f1649c9719b0126` completed `SUCCESS`. This validates that the relay occurs only after authentic governed custody PASS, remains evidence-only, preserves fail-closed authority boundaries, and does not convert rendezvous failure into custody failure.
+After `executeMasterRecordsSv001Custody()` returns custody/reconstruction `PASS`, the existing page lifecycle validates the governed proof, discovers the current resident, hashes the exact proof, posts it to the evidence mailbox, records `RETAINED` when transport succeeds, and preserves authentic custody PASS if transport is temporarily unavailable so page-resume retry can reattempt without rerunning SV001.
 
 Continuation resident observation:
 
 ```text
 StegVerse-Labs/.github
-2aa30cd05d3703e871a2c24631c0424a1fc78fdc  rendezvous mailbox fetch/materialization
-d72a630f0198c9db5c087e7aef30895a3153c17a  bounded environment exposure
-d19fabe8e93fba28cc8116011648f0346f0bd6d4  executable handoff service admission
-6d41e5c0b31baf1d13ba812076d192876e8a5d8c  transport regression tests
-575c399bc4c13d6d87746b2f7efbbae22e37f8c3  existing no-token control-plane workflow bound to this regression lane
+2aa30cd05d3703e871a2c24631c0424a1fc78fdc
+  continuation worker reads the existing rendezvous mailbox when no local proof is present
+  validates evidence-only authority boundaries
+  materializes only observed/site-master-records-custody.latest.json
+
+d72a630f0198c9db5c087e7aef30895a3153c17a
+  adapter exposes only STEGVERSE_RESIDENT_RENDEZVOUS_URL and STEGVERSE_RESIDENT_RENDEZVOUS_NODE_REF
+
+d19fabe8e93fba28cc8116011648f0346f0bd6d4
+  executable handoff admits only resident-rendezvous-site-custody-evidence-read
+
+6d41e5c0b31baf1d13ba812076d192876e8a5d8c
+  transport regression tests
 ```
 
-The `.github` organization-control workflow run `34292595804` on `575c399bc4c13d6d87746b2f7efbbae22e37f8c3` completed `SUCCESS`. This validates the continuation transport contract without granting GitHub/runtime authority.
+This uses the existing WorkerCoordinator cycle and existing resident rendezvous. It creates no new scheduler, heartbeat, oscillator, WorkerCoordinator, custody authority, admission authority, or credential authority.
 
-The source chain is therefore validated end-to-end across gateway -> Site relay -> resident continuation consumption. Source/CI validation still does not satisfy the remaining authentic runtime predicates.
+## Deployment and routing remediation — 2026-09-08
+
+Runtime inspection found that the resident evidence mailbox source had not actually reached the Render service. The three mailbox commits were all `build_failed` because the normal `service` extra pulled a Git-pinned StegCore dependency requiring unavailable GitHub credentials during Render build.
+
+Credential-free service packaging repair:
+
+```text
+StegVerse-org/LLM-adapter
+4b109bded506754a5c6d323f6a35ab24c3b92555
+  remove StegCore Git dependency from ordinary service extra
+  preserve exact StegCore pin under explicit stegcore-integration extra
+
+27cf400dd2b5a202e5665acc4df63500b52e298a
+  credential-free service packaging regression
+
+fb3cde088dd59792218b82d253dfef995ee5d18a
+  bind packaging regression into existing credential-free validation
+```
+
+A second runtime defect was then identified in the Render start command: `custody_worker` ran before Uvicorn and could process up to 20 remote retries with a 10-second timeout each, delaying API health for minutes.
+
+Bounded startup repair:
+
+```text
+bf038aeb6e859a51643c7a6d14e4ddc7e833b292
+  custody worker accepts bounded STEGVERSE_CUSTODY_WORKER_LIMIT
+
+0a00e0ab9b25dcc564114090e90c75b05f4752bb
+  startup-limit regression tests
+
+cd45bc91f443f0c50ae001087180757b6eb6e4e4
+  bind startup-limit regression into credential-free validation
+```
+
+Live Render service:
+
+```text
+service: stegverse-ecosystem-chat-gateway
+service id: srv-d9epkh3rjlhs73csc3qg
+runtime head: cd45bc91f443f0c50ae001087180757b6eb6e4e4
+deploy: dep-dagac3o9dm4c73b9u0kg
+state: LIVE
+health: repeated GET /health -> 200
+STEGVERSE_CUSTODY_WORKER_LIMIT=0
+startup custody result: enabled=false / processed=0 / recorded=0 / retry=0 / authority_effect=NONE
+```
+
+GitHub validation for the final gateway head:
+
+```text
+run 34294513111: SUCCESS
+```
+
+No live rendezvous discovery or evidence-retention request was observed in the inspected Render request window after deployment. Therefore deployment/health is authentic runtime evidence for the gateway service itself, but not evidence of current-device custody or proof retention.
+
+### Site route mismatch repair
+
+Further inspection found that `stegverse.org` is a GitHub Pages custom domain (`CNAME=stegverse.org`) while the relay used same-origin `/api/resident-rendezvous/...`; no Site reverse-proxy source existed to carry that path to Render. Existing canonical Site configuration already points directly to the Render gateway and the gateway CORS contract admits `https://stegverse.org` with `GET`, `POST`, `OPTIONS`, and `Content-Type`.
+
+The relay was corrected to reuse that existing configured gateway rather than create a new proxy/runtime:
+
+```text
+StegVerse-Labs/Site
+2a2532637940f30c87edbf95c82404918f956c6d
+  resolve data/ecosystem-chat-gateway.json
+  require non-authorizing gateway boundary
+  derive HTTPS gateway origin
+  use configured origin for resident discovery and custody-proof POST
+
+72090ce30df2cef5f588bc655d90a12cb1989e13
+  validate configured gateway routing and prohibit GitHub-Pages same-origin API assumption
+```
+
+Validation/deployment evidence:
+
+```text
+Site StegOS governance validation run 34294861406: SUCCESS
+Site Bootstrap validation run 34294861481: SUCCESS
+GitHub Pages deployment run 34294861235: SUCCESS
+```
+
+These repairs change transport/deployment reachability only. They mint no custody, execution, admission, credential, or SV002 authority.
 
 ## Current evidence state
 
@@ -189,12 +287,13 @@ device-local same-execution reconstruction: PASS
 canonical retained G23 recovery: MERGED / VALIDATED
 Site automatic G23 -> governed custody executor: MERGED / RELEASED
 independent continuation WorkerCoordinator binding: MERGED / MACHINE-SELECTABLE
-governance-bypass repair: VALIDATED SOURCE
-Site proof bound-state contract: VALIDATED SOURCE
-Site -> resident rendezvous submission path: VALIDATED SOURCE
-resident evidence mailbox: VALIDATED SOURCE / ROUTER WIRED
-continuation rendezvous fetch/materialization: VALIDATED SOURCE
-current-device runtime consumption of latest sources: NOT YET CLAIMED
+governance-bypass repair: COMMITTED ON MAIN
+Site proof bound-state contract: COMMITTED ON MAIN
+resident evidence mailbox: SOURCE VALIDATED / DEPLOYED LIVE
+resident gateway health: AUTHENTIC LIVE 200
+configured Site -> resident rendezvous route: VALIDATED / PAGES DEPLOYED
+continuation rendezvous fetch/materialization: COMMITTED ON MAIN / VALIDATED
+current-device runtime consumption of latest Site route: NOT YET CLAIMED
 fresh root-InTr ALLOW for custody: NOT YET CLAIMED
 Master Records custody PASS: NOT YET CLAIMED
 Master Records reconstruction PASS: NOT YET CLAIMED
@@ -204,7 +303,7 @@ retained same-execution downstream chain: NOT YET CLAIMED
 SV002 authentic disposition: NOT YET CLAIMED
 ```
 
-Repository searches on 2026-09-08 found no authentic `RETAINED` mailbox receipt and no `STEGVERSE001_EVIDENCE_CHAIN_CONTINUATION_COMPLETE` runtime receipt beyond source/test contracts. Do not infer runtime completion from the green source validations.
+Source, CI, deployment, and gateway health cannot manufacture the remaining current-device governance/custody evidence.
 
 ## Retry / fail-closed rules
 
@@ -225,11 +324,12 @@ SV002 nonterminal/failure -> retry SV002 independently; never reopen SV001
 ## Next admissible machine transition
 
 ```text
-existing current-device Site lifecycle consumes latest deployed source
--> exact canonical G23 available
+existing current-device Site lifecycle consumes deployed latest source
+-> exact canonical G23 is available
 -> executeMasterRecordsSv001Custody()
 -> fresh root-InTr ALLOW or fail closed
 -> Master Records custody/reconstruction PASS
+-> Site resolves canonical configured gateway origin
 -> Site posts exact proof to existing resident rendezvous evidence mailbox
 -> mailbox RETAINED
 -> existing WorkerCoordinator selects STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001
@@ -239,7 +339,7 @@ existing current-device Site lifecycle consumes latest deployed source
 -> SV002 observation/disposition
 ```
 
-The remaining gap is authentic deployed/runtime observation, not another source implementation lane. Render service inspection was not performed because the connected Render control plane had no workspace selected; no workspace was guessed and no deployment mutation was attempted.
+The source/deployment browser-to-resident proof transport is now present and live at the gateway, and the Site client route is deployed. Remaining completion is authentic current-device/runtime observation of the governed custody chain and downstream disposition.
 
 ## User work
 
