@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the existing global convergence visitor and bind every lane to one HB32 StegOS runtime-node profile."""
+"""Run global convergence in a frozen measurement context over HB32 retained-node profiles."""
 from __future__ import annotations
 
 import argparse
@@ -9,12 +9,14 @@ import os
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any, Callable, Mapping
 
 ROOT = Path(__file__).resolve().parents[1]
 PROFILE_REL = Path("control/runtime-node-profiles.json")
+PROJECTION_REL = Path("control/runtime-partial-solution-projections/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.json")
 BASE_RUNNER_REL = Path("scripts/run_global_runtime_evidence_convergence.py")
 FAILURE_BOUNDARY_REL = Path("workers/runtime_failure_boundaries.py")
+MEASUREMENT_REL = Path("workers/runtime_convergence_measurement.py")
 PROFILE_RECEIPT_REL = Path("receipts/sovereign-host/global-runtime-node-profile-convergence.latest.json")
 STEGCLAW_WRAPPER_REL = Path("workers/stegclaw_p4_profiled_resident_execution.py")
 VACC_WRAPPER_REL = Path("workers/vacc_profiled_resident_execution.py")
@@ -52,20 +54,13 @@ def _load_python_module(path: Path, module_name: str):
     return module
 
 
-def load_base_runner(source_root: Path):
-    return _load_python_module(source_root / BASE_RUNNER_REL, "stegverse_base_global_convergence")
+def _runtime_or_source(runtime: Path, source: Path, rel: Path) -> Path:
+    candidate = runtime / rel
+    return candidate if candidate.is_file() else source / rel
 
 
-def load_failure_boundaries(source_root: Path, runtime_root: Path):
-    runtime_path = runtime_root / FAILURE_BOUNDARY_REL
-    path = runtime_path if runtime_path.is_file() else source_root / FAILURE_BOUNDARY_REL
-    return _load_python_module(path, "stegverse_runtime_failure_boundaries")
-
-
-def load_profiles(source_root: Path, runtime_root: Path) -> dict[str, Any]:
-    path = runtime_root / PROFILE_REL
-    if not path.is_file():
-        path = source_root / PROFILE_REL
+def load_profiles(source: Path, runtime: Path) -> tuple[dict[str, Any], Path]:
+    path = _runtime_or_source(runtime, source, PROFILE_REL)
     data = load_json(path)
     require(data.get("schema") == "stegverse.runtime-node-profiles/v1", "runtime-node profile schema")
     require(data.get("goal_task_id") == "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001", "runtime-node profile goal")
@@ -83,22 +78,18 @@ def load_profiles(source_root: Path, runtime_root: Path) -> dict[str, Any]:
     require(policy.get("transition_admission") == "INTERLOCK_INTR", "Interlock/InTr admission")
     profiles = data.get("profiles")
     require(isinstance(profiles, list) and len(profiles) == 18, "exactly 18 runtime-node profiles required")
-    task_ids = [row.get("task_id") for row in profiles if isinstance(row, dict)]
-    require(len(task_ids) == len(set(task_ids)) == 18, "runtime-node task identities must be unique")
-    return data
+    require(len({row.get("task_id") for row in profiles if isinstance(row, dict)}) == 18, "runtime-node task identities must be unique")
+    return data, path
 
 
 def _find_vacc_state(runtime: Path) -> dict[str, Any] | None:
-    direct = runtime / "receipts" / "ecosystem-chat-sovereign-inference" / "va_conversational_runtime_process.json"
-    candidates = [direct]
+    candidates = [runtime / "receipts/ecosystem-chat-sovereign-inference/va_conversational_runtime_process.json"]
     receipts = runtime / "receipts"
     if receipts.is_dir():
         candidates.extend(sorted(receipts.glob("**/va_conversational_runtime_process.json")))
-    seen: set[Path] = set()
     for path in candidates:
-        if path in seen or not path.is_file():
+        if not path.is_file():
             continue
-        seen.add(path)
         try:
             state = load_json(path)
         except Exception:
@@ -108,29 +99,14 @@ def _find_vacc_state(runtime: Path) -> dict[str, Any] | None:
     return None
 
 
-def _external_root(runtime: Path, env_name: str, fallback: Path) -> Path | None:
-    configured = str(os.environ.get(env_name) or "").strip()
-    candidates = [Path(configured).expanduser().resolve()] if configured else []
-    candidates.append((runtime / fallback).resolve())
-    for candidate in candidates:
-        if candidate.is_dir():
-            return candidate
-    return None
-
-
 def _run_profile_wrapper(source: Path, runtime: Path, wrapper_rel: Path, label: str, timeout: int = 7200) -> dict[str, Any]:
-    wrapper = runtime / wrapper_rel
-    if not wrapper.is_file():
-        wrapper = source / wrapper_rel
+    wrapper = _runtime_or_source(runtime, source, wrapper_rel)
     require(wrapper.is_file(), f"{label} resident wrapper missing")
+    env = os.environ.copy()
+    env["STEGVERSE_CONVERGENCE_MEASUREMENT_ONLY"] = "1"
     completed = subprocess.run(
         [sys.executable, str(wrapper), "--source-root", str(source), "--runtime-root", str(runtime)],
-        cwd=runtime,
-        capture_output=True,
-        text=True,
-        check=False,
-        timeout=timeout,
-        env=os.environ.copy(),
+        cwd=runtime, capture_output=True, text=True, check=False, timeout=timeout, env=env,
     )
     result = parse_last_json(completed.stdout)
     if isinstance(result, dict):
@@ -138,58 +114,82 @@ def _run_profile_wrapper(source: Path, runtime: Path, wrapper_rel: Path, label: 
     return {"state":f"PROFILE_BOUND_{label}_WRAPPER_NO_RESULT","wrapper_returncode":completed.returncode,"stderr_tail":completed.stderr[-1200:]}
 
 
-def resolve_unwired_profile(source: Path, runtime: Path, profile: dict[str, Any]) -> dict[str, Any]:
+def resolve_profile(source: Path, runtime: Path, profile: dict[str, Any]) -> dict[str, Any]:
     task_id = str(profile.get("task_id"))
     binding = profile.get("execution_binding") or {}
     kind = binding.get("type")
-
     if task_id == "VACP-SOVEREIGN-PROVIDER-REALIGNMENT-023" and kind == "EXISTING_TASK_RUNTIME_WRAPPER":
         return _run_profile_wrapper(source, runtime, VACC_WRAPPER_REL, "VACC")
-
-    if kind == "EXTERNAL_RUNTIME_PROFILE_BRIDGE" and task_id == "VACP-SOVEREIGN-PROVIDER-REALIGNMENT-023":
-        observed = _find_vacc_state(runtime)
-        if observed is not None and observed["value"].get("state") == "LIVE_VERIFIED":
-            return {"state":"PROFILE_BOUND_RUNTIME_LIVE_VERIFIED","runtime_state_ref":observed["path"]}
-        adapter_root = _external_root(runtime, str(binding.get("root_env")), Path("workloads/StegVerse-org/LLM-adapter"))
-        if adapter_root is None:
-            return {"state":"PROFILE_BOUND_EXTERNAL_RUNTIME_NOT_MATERIALIZED","required_root_env":binding.get("root_env")}
-        return {"state":"PROFILE_BOUND_PARENT_RECONSTRUCTION_OR_ROUTE_PENDING","adapter_root":str(adapter_root)}
-
-    if task_id == "DATA-CONTINUATION-STEGCLAW-P4" and kind in {"OBSERVABILITY_BOUND_EXTERNAL_RUNTIME", "EXISTING_TASK_RUNTIME_WRAPPER"}:
+    if task_id == "DATA-CONTINUATION-STEGCLAW-P4" and kind == "EXISTING_TASK_RUNTIME_WRAPPER":
         return _run_profile_wrapper(source, runtime, STEGCLAW_WRAPPER_REL, "STEGCLAW", timeout=1200)
-
     if kind == "EXACT_PARENT_REBIND_PROFILE" and task_id == "DECISION-ENVELOPE-DE006":
-        consumer_path = runtime / str(binding.get("consumer_ref"))
-        if not consumer_path.is_file():
-            consumer_path = source / str(binding.get("consumer_ref"))
+        consumer_path = _runtime_or_source(runtime, source, Path(str(binding.get("consumer_ref"))))
         require(consumer_path.is_file(), "DE006 observability consumer missing")
         consumer = load_json(consumer_path)
         refs = consumer.get("evidence_bindings") or {}
         present = {name: (runtime / str(rel)).is_file() for name, rel in refs.items() if isinstance(rel, str)}
-        if all(present.values()) and present:
-            return {"state":"PROFILE_BOUND_PARENT_CHAIN_PRESENT_REEXECUTION_READY","evidence_bindings":present}
         return {
-            "state":"PROFILE_BOUND_PARENT_REBIND_REQUIRED",
+            "state":"PROFILE_BOUND_PARENT_CHAIN_PRESENT_REEXECUTION_READY" if present and all(present.values()) else "PROFILE_BOUND_PARENT_REBIND_REQUIRED",
             "required_parent_predicate":binding.get("required_parent_predicate"),
-            "reusable_device_evidence_task":binding.get("reusable_device_evidence_task"),
             "evidence_bindings":present,
+            "measurement_only":True,
         }
+    return {}
 
-    raise RuntimeError(f"FAIL_CLOSED: unsupported unwired runtime-node binding:{task_id}:{kind}")
+
+def _state_success_current(state: str) -> bool:
+    value = state.upper()
+    return value in {"COMPLETED","EXECUTED","OBSERVED","ADMITTED","VERIFIED","PASS","PASSED","STEGCLAW_P4_RESIDENT_EXECUTION_OBSERVED","VACC_PROFILED_RESIDENT_REQUEST_EXECUTED"}
+
+
+def _derive_observations(result: Mapping[str, Any], profile: Mapping[str, Any], boundaries) -> dict[str, Any]:
+    if isinstance(result.get("stage_observations"), Mapping):
+        return dict(result["stage_observations"])
+    resume_index = boundaries._stage_from_resume(profile.get("resume_stage"))
+    observations: dict[str, Any] = {}
+    state = str(result.get("state") or "UNKNOWN")
+    for stage in boundaries.STAGES:
+        idx, name = stage["index"], stage["stage"]
+        if idx == 1:
+            observations[name] = {"state":"PASS_CURRENT_RUN","basis":"profile resolved from frozen registry"}
+        elif idx < resume_index:
+            observations[name] = {"state":"PASS_HISTORICAL_EVIDENCE","basis":"canonical non-regression resume stage; not re-proven in this run"}
+        elif idx == resume_index:
+            if state.upper() == "ALREADY_CONSUMED":
+                observations[name] = {"state":"PASS_HISTORICAL_EVIDENCE","basis":state}
+            elif _state_success_current(state):
+                observations[name] = {"state":"PASS_CURRENT_RUN","basis":state}
+            else:
+                observations[name] = {"state":"FAILED_CURRENT_RUN","reason":state}
+        else:
+            observations[name] = {"state":"NOT_REACHED"}
+    return observations
 
 
 def execute(source_root: Path, runtime_root: Path, *, base_executor: Callable[[Path, Path], dict[str, Any]] | None = None) -> dict[str, Any]:
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
-    profile_data = load_profiles(source, runtime)
-    failure_boundaries = load_failure_boundaries(source, runtime)
+    profile_data, profile_path = load_profiles(source, runtime)
+    boundaries = _load_python_module(_runtime_or_source(runtime, source, FAILURE_BOUNDARY_REL), "stegverse_runtime_failure_boundaries")
+    measurement = _load_python_module(_runtime_or_source(runtime, source, MEASUREMENT_REL), "stegverse_runtime_convergence_measurement")
+    projection_path = _runtime_or_source(runtime, source, PROJECTION_REL)
+    context = measurement.freeze_context(source, runtime, profile_path, projection_path, profile_data["profiles"])
     by_task = {row["task_id"]: row for row in profile_data["profiles"]}
 
-    if base_executor is None:
-        base = load_base_runner(source)
-        base_receipt = base.execute(source, runtime)
-    else:
-        base_receipt = base_executor(source, runtime)
+    prior_measurement = os.environ.get("STEGVERSE_CONVERGENCE_MEASUREMENT_ONLY")
+    os.environ["STEGVERSE_CONVERGENCE_MEASUREMENT_ONLY"] = "1"
+    try:
+        if base_executor is None:
+            base = _load_python_module(_runtime_or_source(runtime, source, BASE_RUNNER_REL), "stegverse_base_global_convergence")
+            base_receipt = base.execute(source, runtime)
+        else:
+            base_receipt = base_executor(source, runtime)
+    finally:
+        if prior_measurement is None:
+            os.environ.pop("STEGVERSE_CONVERGENCE_MEASUREMENT_ONLY", None)
+        else:
+            os.environ["STEGVERSE_CONVERGENCE_MEASUREMENT_ONLY"] = prior_measurement
+
     require(base_receipt.get("schema") == "stegverse.global-runtime-evidence-convergence/v1", "base convergence receipt schema")
     outcomes = base_receipt.get("lane_outcomes")
     require(isinstance(outcomes, list) and len(outcomes) == 18, "base convergence must contain 18 lane outcomes")
@@ -207,35 +207,38 @@ def execute(source_root: Path, runtime_root: Path, *, base_executor: Callable[[P
             "node_state_class":profile_data["profile_policy"]["node_state_class"],
             "execution_session_class":profile_data["profile_policy"]["execution_session_class"],
             "node_identity_survives_session_teardown":True,
+            "measurement_run_id":context["run_id"],
         })
         if lane.get("state") == "NO_REGISTERED_SELECTOR" or lane.get("execution_path") == "UNWIRED_CHILD_RUNTIME":
-            resolved = resolve_unwired_profile(source, runtime, profile)
-            result["execution_path"] = "HB_SYNCED_STEGOS_RUNTIME_NODE_PROFILE"
-            result.update(resolved)
-        profiled.append(failure_boundaries.annotate_lane_outcome(result))
+            resolved = resolve_profile(source, runtime, profile)
+            if resolved:
+                result["execution_path"] = "HB_SYNCED_STEGOS_RUNTIME_NODE_PROFILE"
+                result.update(resolved)
+        result["stage_observations"] = _derive_observations(result, profile, boundaries)
+        profiled.append(boundaries.annotate_lane_outcome(result))
 
     require(not any(row.get("execution_path") == "UNWIRED_CHILD_RUNTIME" for row in profiled), "unwired child runtime remains after profile convergence")
-    boundary_summary = failure_boundaries.summarize_failure_boundaries(profiled)
+    context = measurement.finish_context(context, runtime, profile_data["profiles"])
     receipt = {
         "schema":"stegverse.global-runtime-node-profile-convergence/v1",
-        "state":"PROFILE_CONVERGENCE_VISIT_COMPLETE",
+        "state":"PROFILE_CONVERGENCE_MEASUREMENT_COMPLETE",
         "goal_task_id":"GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
         "cosv":profile_data.get("cosv"),
-        "baseline_milestone":profile_data.get("baseline_milestone"),
-        "hb_protocol":profile_data["profile_policy"]["hb_protocol"],
+        "measurement_context":context,
         "member_count":len(profiled),
         "unwired_member_count":0,
         "lane_outcomes":profiled,
-        "failure_boundary_summary":boundary_summary,
+        "failure_boundary_summary":boundaries.summarize_failure_boundaries(profiled),
         "base_convergence_state":base_receipt.get("state"),
         "authority_effect":"NONE_PROFILE_AND_OBSERVATION_ONLY",
         "nonclaims":[
+            "HISTORICAL_PASS_IS_NOT_CURRENT_RUN_PASS",
             "PROFILE_BINDING_DOES_NOT_PROVE_RUNTIME_EXECUTION",
             "HB_SYNC_DOES_NOT_GRANT_EXECUTION_AUTHORITY",
             "RETAINED_NODE_PROFILE_DOES_NOT_MINT_CLAIM_OR_FENCE",
             "FAILURE_BOUNDARY_CLASSIFICATION_DOES_NOT_ADVANCE_RUNTIME_STATE",
-            "CURRENT_DEVICE_OR_PROVIDER_RUNTIME_EVIDENCE_REMAINS_REQUIRED_WHERE_UNOBSERVED"
-        ]
+            "MEASUREMENT_RUN_DOES_NOT_REPAIR_OR_RETRY_AFTER_FIRST_FAILURE",
+        ],
     }
     out = runtime / PROFILE_RECEIPT_REL
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -249,7 +252,7 @@ def main() -> int:
     parser.add_argument("--runtime-root", type=Path, default=ROOT)
     args = parser.parse_args()
     result = execute(args.source_root, args.runtime_root)
-    print(json.dumps({"state":result["state"],"member_count":result["member_count"],"unwired_member_count":result["unwired_member_count"],"hb_protocol":result["hb_protocol"],"failure_boundary_summary":result["failure_boundary_summary"],"receipt":str(args.runtime_root.expanduser().resolve() / PROFILE_RECEIPT_REL)}, sort_keys=True))
+    print(json.dumps({"state":result["state"],"run_id":result["measurement_context"]["run_id"],"member_count":result["member_count"],"failure_boundary_summary":result["failure_boundary_summary"],"receipt":str(args.runtime_root.expanduser().resolve() / PROFILE_RECEIPT_REL)}, sort_keys=True))
     return 0
 
 
