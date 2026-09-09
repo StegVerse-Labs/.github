@@ -14,19 +14,15 @@
   "network_source_fetch_allowed": false,
   "request_granted_authority": false,
   "authority_effect": "NONE_REQUEST_ONLY",
+  "standing_request": true,
+  "recurrence": "EACH_ELIGIBLE_RESIDENT_SCHEDULER_CYCLE",
   "requested_at": "2026-08-31T13:46:00-05:00",
-  "trigger_reason": "Public SV002 Universal InTr profile observed HTTP 404 after source route existed; repaired Healer/Gateway bindings are merged and require an admitted resident retry.",
+  "trigger_reason": "Run the existing sovereign Healer scheduler on each eligible resident scheduler cycle so due reusable-task slots, including RT-NATIVE-EMAIL-ACTION-MONITOR-001, can execute without recreating the request.",
   "source_repairs": [
     "StegVerse-org/LLM-adapter#244@49676d20cff32ee346f22cfd79726b0127d80b33",
     "StegVerse-Labs/StegVerse-Healer#53@7629e2d98d203aedc2ef49ff778a0e8b8802030b",
-    "StegVerse-Labs/.github#679@e946ba322476ca893029bf728423bdb80c07b4fc"
+    "StegVerse-Labs/.github#679@e946ba322476ca893029bf728423bdb80c07b4fc",
+    "StegVerse-Labs/StegVerse-Healer#57@ef5d90a8c215056e055385a04534e16c49d9a3d5"
   ],
-  "public_observation": {
-    "site_issue": 860,
-    "run": 33425263120,
-    "artifact": 9770511743,
-    "classification": "OBSERVED_BLOCKED",
-    "result": "HTTP_404_NOT_FOUND"
-  },
-  "note": "Request only. Existing WorkerCoordinator admission, dependency, claim, fence, and fixed-handler checks remain authoritative. Public route success requires separate observation."
+  "note": "Standing recurring request only. Every cycle still requires the existing WorkerCoordinator admission, dependency, claim, fence, and fixed-handler checks. A completed scheduler cycle does not consume or retire this standing request."
 }
