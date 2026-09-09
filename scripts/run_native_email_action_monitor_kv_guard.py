@@ -30,17 +30,17 @@ class KVGuardedBroker:
         self.kv_receipts: list[dict[str, Any]] = []
 
     def call(self, operation: str, **payload: Any) -> dict[str, Any]:
+        if operation == "ARCHIVE_IDS":
+            # Do not call the provider archive operation until every normalized
+            # incident from the inspected live batch is durably stored and read back.
+            if self.live_incidents:
+                self.kv_receipts = persist_incidents(self.live_incidents, kv_root=self.kv_root)
+            return self.inner.call(operation, **payload)
+
         response = self.inner.call(operation, **payload)
         if operation == "SEARCH_MESSAGES" and payload.get("query") == monitor.INBOX_QUERY and payload.get("label_ids") == ["INBOX"]:
             rows = monitor.stable_rows(response, "messages")
             self.live_incidents = monitor.cluster_incidents(rows)
-        elif operation == "ARCHIVE_IDS":
-            # This executes before the provider archive call would otherwise happen.
-            # Persist exactly the normalized incident set derived from the inspected
-            # live batch. No incidents means there is nothing failure-specific to persist.
-            if self.live_incidents:
-                self.kv_receipts = persist_incidents(self.live_incidents, kv_root=self.kv_root)
-            response = self.inner.call(operation, **payload)
         return response
 
 
