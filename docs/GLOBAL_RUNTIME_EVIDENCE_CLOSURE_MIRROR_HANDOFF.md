@@ -4,7 +4,7 @@ Goal Task ID: `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001`
 Canonical issue: `StegVerse-Labs/.github#1260`
 Canonical PR: `StegVerse-Labs/.github#1261` (merged) plus current repair branch `fix/global-runtime-selector-convergence-1260`
 COSV: `50000000100000`
-Status: `ACTIVE / PROFILE_DERIVED_PERSISTENT_NODES / EPHEMERAL_EXECUTION_AND_TRANSPORT / SOURCE_DEVICE_HB_LINEAGE_IMPLEMENTATION_ACTIVE / STEGBROWSER_PR33 / STEGOS_PR310 / FAILURE_FRONTIER_OVERLAY_MATERIALIZED / AUTHENTIC_RETAINED_NODE_AND_CONVERGENCE_RECEIPTS_PENDING`
+Status: `ACTIVE / PROFILE_DERIVED_PERSISTENT_NODES / EPHEMERAL_EXECUTION_AND_TRANSPORT / SOURCE_DEVICE_HB_LINEAGE_IMPLEMENTED_IN_STEGBROWSER / STEGOS_RECEIPT_HOOK_IMPLEMENTED_SOURCE / AUTHENTIC_RETAINED_NODE_AND_CONVERGENCE_RECEIPTS_PENDING`
 
 ## Purpose
 
@@ -44,7 +44,7 @@ for each bounded operation:
   -> node instance remains for the next operation
 ```
 
-StegBrowser is the first concrete component implementation of this pattern. Cross-task evidence remains subject-bound; mechanism reuse does not make one task's receipt evidence for another task.
+Cross-task evidence remains subject-bound; mechanism reuse does not make one task's receipt evidence for another task.
 
 ## Source-device HB lineage invariant
 
@@ -56,69 +56,71 @@ The reference HB from the source device propagates outward with node lineage. A 
 
 HB remains non-authorizing. The lineage grants no execution, claim/fence, Interlock/InTr admission, credential, custody, publication, or completion authority.
 
-## Runtime implementation now active
+## StegBrowser durable-node implementation
 
-### StegBrowser PR #33
+StegBrowser PR #33 has now merged at:
 
-`StegVerse-Labs/StegBrowser#33` on `feat/source-device-hb-lineage` now implements retained node schema `stegbrowser.resident-node-state/v2` in `ios/StegBrowserResidentNodeStore.swift`.
+`bbb8075298d2e7b309aafd5507d6a7a6ad118a18`
 
-Implemented retained fields include:
+The merged retained node schema `stegbrowser.resident-node-state/v2` implements:
 
-- profile reference;
+- explicit runtime-profile binding;
 - immutable source-device HB reference;
 - append-only transition history;
 - fresh current-observed HB reference per transition;
 - task/request/COSV references when applicable;
 - Interlock/InTr transition reference when applicable;
 - result and state commitments;
-- prior-transition and transition commitments.
+- prior-transition and transition commitments;
+- fail-closed reconstruction on node/profile/source-HB/history substitution.
 
-Transition commitments are SHA-256 hash-linked and reload validation fails closed on node/profile/source-HB/history substitution. Browser cookies, provider sessions, credentials, history, and temporary page state remain excluded from retained node state.
+StegBrowser exact-head validation run `34378439457` completed `SUCCESS` before merge. Browser cookies, provider sessions, credentials, history, and temporary page state remain excluded from retained node state.
 
-PR #33 validation initially exposed handoff compatibility assertions rather than implementation defects. The first missing legacy status string was repaired at `a1b1f961edaaf1e949e29c0b56741770fff3659b`; the second was repaired at `d1f10004fa7cbf5ed559278c04a82ed4cc3b8500`. Exact-head validation run `34378267926` is queued after the second repair.
+## StegOS compiled/mobile implementation
 
-### StegOS PR #310
+StegOS PR #310 remains open on `feat/source-device-hb-lineage`.
 
-`StegVerse-Labs/StegOS#310` on `feat/source-device-hb-lineage` implements the compiled StegOSMobile side and generic outward InTr propagation.
+The compiled node bootstrap in `mobile/ios/StegOSMobile/StegBrowserResidentNodeBootstrap.swift` implements the same persistent profile-derived node semantics and canonical HB32 source-root derivation.
 
-`mobile/ios/StegOSMobile/StegBrowserResidentNodeBootstrap.swift` now:
+The generic transition path in `stegos/heartbeat_protocol_sample.py` creates `stegos.node-heartbeat-lineage/v1` and propagates a non-authorizing source-device HB root plus fresh current observation outward through transition packets while preserving `heartbeat_payload_included=false`, `heartbeat_grants_authority=false`, and `authority_effect=NONE`.
 
-- uses retained node schema v2;
-- binds the node to `canonical-resident-substrate-v1/stegbrowser`;
-- derives the source-device HB from the canonical HB32 protocol anchor (`epoch 32`, anchor Unix ms `1787511600000`, 10 ms period);
-- persists the immutable source-device HB root at node materialization;
-- exposes `appendTransition` to derive a fresh current HB observation and append a hash-linked transition record;
-- validates node/profile/HB/COSV/result/state/prior-transition lineage on reload.
+### Current-iPhone receipt -> retained transition hook
 
-The generic StegOS transition path in `stegos/heartbeat_protocol_sample.py` now creates `stegos.node-heartbeat-lineage/v1` and requires transition packets to carry non-authorizing lineage containing:
+The previously missing source hook is now implemented in `SV001ResidentActivationController.persistRuntimeReceipt`.
+
+For one exact loopback discovery observation the code now:
+
+1. loads the already-retained profile-derived StegBrowser node;
+2. refuses node-reference drift;
+3. derives the exact current canonical HB reference at one observation time;
+4. writes profile, immutable source HB, current HB, task, COSV, node, discovery result, and non-authority semantics into the receipt body;
+5. computes the exact receipt-body SHA-256;
+6. derives the next state commitment from prior node state + exact receipt digest + source/current HB + task/COSV/session identity;
+7. calls `appendTransition` using the receipt digest as `resultCommitment` and the same observation time;
+8. verifies the resulting transition preserves exact source/current HB, receipt digest, and next state commitment;
+9. persists the receipt envelope with retained-node generation, state commitment, transition sequence, transition commitment, and an envelope SHA-256.
+
+Canonical reconstruction shape is now:
 
 ```text
-source_device_heartbeat_reference
-current_observed_heartbeat_reference
-protocol_anchor_source
-reference_frequency_hz
-reference_period_ms
-propagation_direction = OUTWARD
-heartbeat_payload_included = false
-heartbeat_grants_authority = false
-authority_effect = NONE
+exact loopback observation
+-> exact receipt body digest
+-> retained node appendTransition(result_commitment = receipt digest)
+-> append-only transition commitment
+-> receipt envelope references resulting transition commitment
 ```
 
-`stegos/real_peer_manifold_pipeline.py` and `scripts/build_real_ipod_current_hb32_network_observation.py` now propagate that same source HB root through node-to-node / observation-sink transition packets, and focused tests reject HB-lineage substitution or digest tampering.
+This is source/build implementation, not authentic current-iPhone runtime proof.
 
-On StegOS head `bc78192d8a04c7abdb0d0c0ee4fc0d18e9297754`:
+## Exact-head validation state
 
-- StegOS CI run `34378182741`: SUCCESS;
-- iOS Device Package Validation `34378182582`: SUCCESS;
-- iOS Apple Toolchain Validation `34378182287`: IN PROGRESS at last observation.
+On StegOS head `e10cceb9bf5eb2d3128056029e617728f5fed40e`:
 
-The prior StegOS CI failure on `160cc11d07b71521277265e28041d1a6babc6c7e` was one stale handoff string assertion after 1372/1373 tests passed; that compatibility assertion was repaired at `bc78192d8a04c7abdb0d0c0ee4fc0d18e9297754` and the full deterministic suite then passed.
+- StegOS CI run `34379628347`: `SUCCESS`;
+- iOS Device Package Validation `34379628253`: `SUCCESS`;
+- iOS Apple Toolchain Validation `34379628365`: `IN_PROGRESS` at last observation.
 
-## Remaining runtime hook
-
-The current-iPhone loopback discovery/result receipt path in StegOSMobile still needs to call the retained node `appendTransition` API with the exact receipt/result commitment and the same current HB observation. Until that hook is integrated and authentically executed, source/build validation does not constitute current-iPhone HB-lineage proof.
-
-The StegOS README must also be updated in the same functional PR before merge to describe profile-derived retained nodes, outward source-HB lineage, and ephemeral InTr/transport/session semantics.
+The StegOS README still contains an older paragraph saying the application target binds a Site-provided node identity. That paragraph is now stale relative to the compiled source and is a merge-blocking documentation defect until reconciled. PR #310 must not be merged while that contradiction remains.
 
 ## Corrected routing
 
@@ -162,7 +164,8 @@ source-device HB root observed
 -> runtime profile materializes component-specific StegOS node instance
 -> node retains immutable source-device HB root
 -> ephemeral governed operation executes with fresh current HB observation
--> transition receipt links source/current HB + profile/node/task identity
+-> exact receipt digest advances persistent node transition history
+-> receipt envelope references resulting transition commitment
 -> ephemeral transport/session destroyed
 -> same node remains
 -> later independent operation binds to same node
@@ -173,13 +176,13 @@ Transient browser/provider/transport credentials or session state must not persi
 
 ## Next machine work
 
-1. complete exact StegBrowser #33 validation;
-2. complete StegOS #310 Apple-toolchain validation;
-3. wire StegOSMobile loopback receipt/result commitment into `appendTransition`;
-4. update StegOS README in the same functional PR;
-5. validate and merge the two implementation PRs only after exact-head gates are clean;
-6. finish VACC exact resident bridge;
-7. obtain authentic current-iPhone profile-derived node + source-HB-lineage evidence;
+1. complete StegOS #310 Apple-toolchain validation on exact head `e10cceb9...`;
+2. reconcile the stale StegOS README current-iPhone node-origin paragraph;
+3. re-run exact-head deterministic/device-package/Apple-toolchain gates after README reconciliation;
+4. merge StegOS #310 only when all exact-head gates are clean and README/source semantics agree;
+5. finish VACC exact resident bridge;
+6. propagate profile-derived node/HB-lineage semantics into remaining component-specific node materializers/receipt emitters that do not already inherit the generic transition path;
+7. obtain authentic current-iPhone retained-node/source-HB/receipt-to-transition evidence;
 8. execute Runtime Profile Map + global convergence visitor and compare measured frontiers with `control/global-runtime-failure-frontier-overlay.json`;
 9. reconcile successful node/HB/execution receipts into Master Records and downstream propagation tasks.
 
