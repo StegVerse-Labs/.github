@@ -3,12 +3,12 @@
   "fragment_id": "GADI-RESIDENT-EXECUTION-001",
   "adapters": [
     {
-      "adapter_ref": "process:gadi-resident-execution-v1",
+      "adapter_ref": "process:gadi-resident-execution-v2-preflight-gated",
       "authority_ref": "handoffs/GADI-RESIDENT-EXECUTION-001.json#authority",
       "capabilities": ["gadi_resident_defensive_execution"],
       "command": [
         "python",
-        "control/resident-execution-request.d/consume-gadi-resident-execution.py",
+        "scripts/dispatch_gadi_resident_execution.py",
         "--source-root",
         ".",
         "--runtime-root",
@@ -24,7 +24,8 @@
         "STEGVERSE_STEGOS_ROOT"
       ],
       "notes": [
-        "Reuses the existing canonical WorkerCoordinator and merged micro-node GADI resident consumer.",
+        "Reuses the existing canonical WorkerCoordinator and merged micro-node GADI resident consumer through the mandatory GADI preflight-gated dispatcher.",
+        "A zero-blocker READY_FOR_RESIDENT_CONSUMPTION preflight is required before the raw resident consumer may be invoked.",
         "Requires already-observed claim/fence, InTr admission, runtime binding, and controlled pre-authorized actuator result.",
         "Does not create an actuator, runtime, scheduler, heartbeat, credential route, claim/fence plane, or Master Records custody path."
       ],
