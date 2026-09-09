@@ -4,7 +4,7 @@ Goal Task ID: `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001`
 Canonical issue: `StegVerse-Labs/.github#1260`
 Canonical PR: `StegVerse-Labs/.github#1261` (merged) plus current repair branch `fix/global-runtime-selector-convergence-1260`
 COSV: `50000000100000`
-Status: `ACTIVE / PARTIAL_SOLUTIONS_MACHINE_PROJECTED_ACROSS_18_MEMBERS / RESIDENT_CONVERGENCE_WIRED / STALE_VACC_ID_REPAIRED / ENDPOINT_FANOUT_ROUTE_REPAIRED / GADI_EXISTING_RUNTIME_WRAPPER_REUSED / PERSISTENT_NODE_EPHEMERAL_EXECUTION_MODEL_PROJECTED / AUTHENTIC_RESIDENT_CONVERGENCE_EXECUTION_NEXT`
+Status: `ACTIVE / PERSISTENT_NODE_EPHEMERAL_EXECUTION_MODEL_PROJECTED / FAILURE_FRONTIER_OVERLAY_MATERIALIZED / AUTHENTIC_RETAINED_NODE_AND_CONVERGENCE_RECEIPTS_PENDING`
 
 ## Purpose
 
@@ -16,13 +16,9 @@ The umbrella is registered under issue #1260 and merged source from PR #1261. Th
 
 ## Reusable solution model
 
-The projection keeps existing specific mechanism classes and now adds one ecosystem-wide composite runtime class:
+The ecosystem-wide composite runtime class is:
 
 `PERSISTENT_NODE_EPHEMERAL_EXECUTION`
-
-This supersedes the earlier attempt to model retained-node continuity and StegBrowser ephemeral execution as two independent ecosystem solution classes.
-
-### Persistent node + ephemeral calls/transports/execution
 
 The reusable behavior is:
 
@@ -47,86 +43,78 @@ for each bounded operation:
   -> persistent node remains for the next operation
 ```
 
-The StegBrowser implementation is the first concrete source implementation of this ecosystem pattern: browser execution is ephemeral while node continuity persists. The same pattern is appropriate beyond browser lanes because Interlock/InTr calls and data transports are themselves bounded transient operations; they do not need to become persistent merely because the node is persistent.
-
-Therefore `PERSISTENT_NODE_EPHEMERAL_EXECUTION` is projected across all 18 current runtime members.
-
-This does not mean every member uses a browser. It means every member can bind ephemeral governed work and ephemeral transport to the same persistent StegOS continuity anchor.
-
-### What persists
-
-Only continuity-bearing state:
-
-- canonical node identity;
-- genesis commitment;
-- continuity generation;
-- non-secret committed state;
-- admitted evidence commitments and references necessary for reconstruction.
-
-### What remains ephemeral
-
-As applicable to the lane:
-
-- task execution process;
-- Interlock/InTr invocation;
-- request/response transport;
-- browser context;
-- provider/model session;
-- credential exposure/material;
-- network connection;
-- temporary page/application state;
-- transient worker/action process.
-
-Persistence is therefore an identity/evidence continuity property, not a requirement that execution processes or transport channels stay alive indefinitely.
-
-## Implication for the global failure map
-
-This model directly changes the interpretation of the early shared failure band.
-
-The desired ecosystem progression becomes:
-
-```text
-persistent retained node observed
--> exact ephemeral task/request binds to retained node
--> fresh bounded claim/fence
--> ephemeral Interlock/InTr call
--> ephemeral transport
--> component execution
--> receipt/readback
--> node evidence commitment advances
--> transient execution/transport torn down
--> retained node remains
-```
-
-If authentic current-iPhone retained-node continuity is established, then repeated failure at `AUTHENTIC_RESIDENT_PROCESS_OBSERVED` should no longer require rediscovering/recreating a resident subject per task. The comparison can move immediately to whether each exact ephemeral request is consumed and admitted against the already-known node.
-
-If multiple lanes then fail at the same request-consumption or claim/fence transition, that is a much sharper common failure boundary.
-
-If they diverge after node binding, the persistent substrate is functioning and the remaining failures are task-specific ephemeral execution-path defects.
-
-## Existing specific reusable mechanisms retained
-
-- `HIL_G25_BROWSER`
-- `HF_UNIVERSAL_INTR`
-- `VACC_LOCAL_RUNTIME`
-- `DE006_SAME_EXEC_RECONSTRUCTION`
-- `SV001_POST_TERMINAL_CONTINUATION`
-- `EXACT_RESIDENT_REQUEST`
-- `RUNTIME_PROFILE_MAP`
-- `PERSISTENT_NODE_EPHEMERAL_EXECUTION`
+StegBrowser is the first concrete implementation of this pattern: browser execution is ephemeral while StegOS node continuity persists. The same pattern is projected across all 18 runtime members. Persistence is an identity/evidence-continuity property, not a requirement that task processes, Interlock/InTr calls, transports, network connections, provider sessions, or credentials stay alive.
 
 Cross-task evidence remains subject-bound; mechanism reuse does not make one task's receipt evidence for another task.
 
-## Current routing corrections
+## Corrected routing
 
-The repaired convergence routing preserves:
+The convergence routing preserves:
 
 - VACC current task identity: `VACP-SOVEREIGN-PROVIDER-REALIGNMENT-023`;
 - Endpoint Fanout through the existing `stegos_kv_intr_chain`;
 - GADI through its existing bounded preflight/consumer route;
+- DE-006 through the existing Ecosystem Chat parent continuation path;
+- StegClaw through the shared runtime-presence projector plus subject-specific continuation;
 - Runtime Profile Map as the convergence diagnostic trigger.
 
-Current VACC still requires its exact resident bridge before the measured convergence run can represent all 18 members without an artificial integration boundary.
+Current VACC still requires its exact resident bridge before an authentic measured 18-member convergence run can remove that artificial integration condition.
+
+## Failure-frontier overlay under the composite model
+
+Machine-readable projection:
+
+`control/global-runtime-failure-frontier-overlay.json`
+
+This projection is explicitly **not** an authentic runtime receipt. It asks what the failure map becomes under two assumptions:
+
+1. authentic persistent-node continuity has been established; and
+2. VACC's exact resident bridge has been wired.
+
+Existing later-stage authentic evidence is never moved backward merely to adopt the new solution class.
+
+The comparison axis is now:
+
+1. `SOURCE_AND_REQUEST_READY`
+2. `PERSISTENT_NODE_CONTINUITY_OBSERVED`
+3. `EPHEMERAL_REQUEST_BOUND_AND_CONSUMED`
+4. `WORKERCOORDINATOR_CLAIM_FENCE`
+5. `EPHEMERAL_INTERLOCK_INTR_ADMISSION`
+6. `EPHEMERAL_TRANSPORT_PROVIDER_OR_LEASE_BINDING`
+7. `COMPONENT_EXECUTION_OR_REEXECUTION`
+8. `EXACT_RECEIPT_COMMITMENT_OR_RETENTION`
+9. `MASTER_RECORDS_CUSTODY_RECONSTRUCTION`
+10. `DOWNSTREAM_PROPAGATION_VERIFICATION`
+
+Projected first-frontier counts after persistent-node continuity and VACC bridge:
+
+```text
+persistent-node continuity             0
+exact ephemeral request consumption    5
+WorkerCoordinator claim/fence          2
+ephemeral Interlock/InTr admission     1
+ephemeral transport/provider/lease     2
+component execution/re-execution       8
+receipt commitment                     0
+Master Records reconstruction          0
+propagation                             0
+```
+
+The former resident-process-persistence wall therefore disappears from the projected map. The map becomes strongly bimodal:
+
+- **5 lanes** concentrate at exact ephemeral request binding/consumption: CryptoBot, DEVICE_KV/MyKV, SV002, StegClaw, Runtime Profile Map.
+- **8 lanes** concentrate at component execution/re-execution: Hugging Face/SV-DN1, SDK/Ecosystem Chat, VACC after bridge, Endpoint Fanout, GLM 5.3, SV-011 Phase 5, StegBrowser, DE-006.
+- GADI and Governed Multilane Manifold remain at fresh WorkerCoordinator claim/fence.
+- StegVerse-001 moves to ephemeral root InTr/current-device continuation.
+- HIL and Native Email remain at transport/provider/lease binding.
+
+This is a materially sharper failure topology than the prior resident-process model. If authentic retained-node continuity is proven, a lane still reporting `resident_process_alive_supervised` must be examined for a stale predicate/model assumption rather than automatically requiring a permanently alive task process.
+
+## Validation
+
+`tools/validate_runtime_partial_solution_projection.py` now validates both the all-member `PERSISTENT_NODE_EPHEMERAL_EXECUTION` adoption and the failure-frontier overlay. It fails if the old split classes reappear, any member omits the composite class, the overlay member set diverges from the 18-member projection, or the projected frontier counts drift without an intentional update.
+
+There is still no authentic `receipts/sovereign-host/global-runtime-evidence-convergence.latest.json` observed in repository state. The source runner exists, but source presence is not execution evidence.
 
 ## Authentic proof target
 
@@ -140,23 +128,21 @@ same StegOS node before operation
 -> later independent operation binds to the same node
 ```
 
-The proof should additionally show that transient browser/provider/transport credentials or session state did not persist merely because the node persisted.
+Transient browser/provider/transport credentials or session state must not persist merely because the node persists.
 
-This is the substrate experiment that can determine whether node/session conflation has been contributing to the repeated runtime failures.
+## Next machine work
+
+1. finish VACC exact resident bridge;
+2. validate and merge the current repair branch;
+3. obtain authentic retained-node continuity evidence;
+4. execute Runtime Profile Map + global convergence visitor;
+5. compare the authentic 18-member first unresolved predicates against `control/global-runtime-failure-frontier-overlay.json`;
+6. treat any residual resident-process-persistence predicate as a candidate stale modeling defect and reconcile it against persistent-node continuity;
+7. reconcile successful execution receipts into Master Records and downstream propagation tasks.
 
 ## README review
 
-No new scheduler, dispatcher, credential authority, or persistent transport is introduced. The model reuses the existing single resident substrate while explicitly making work/transport lifecycles bounded and ephemeral. README changes are not currently required for this correction.
-
-## Validation and next execution
-
-Next machine work is:
-
-1. finish VACC exact resident bridge;
-2. validate the corrected composite projection;
-3. obtain authentic retained-node continuity evidence;
-4. execute Runtime Profile Map + global convergence visitor;
-5. compare all 18 first unresolved predicates after they bind ephemeral operations to one persistent node.
+The current work adds a diagnostic/projection model and validation around already-declared bounded reusable-task and continuity semantics. It does not itself alter the deployed runtime, create a persistent transport, add a scheduler/dispatcher, or alter credential authority. README remains unchanged for this projection-only step. Any subsequent runtime implementation that changes actual lifecycle behavior must update README in the same change set.
 
 ## Manual work
 
