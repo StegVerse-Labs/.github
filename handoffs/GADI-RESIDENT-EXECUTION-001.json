@@ -34,7 +34,9 @@
     "repository": "StegVerse-Labs/.github",
     "canonical_owner_ref": "StegVerse-Labs/.github#1239",
     "canonical_lineage_key": "gadi:resident:defensive-execution",
+    "parent_task_id": "GADI-001",
     "derivation_depth": 1,
+    "derivation_reason": "Canonical child for authentic resident execution required by GADI-001.",
     "priority": "runtime",
     "source_refs": [
       "data/canonical-task-records/GADI-001.json",
