@@ -1,0 +1,69 @@
+{
+  "schema": "stegverse.global-runtime-failure-frontier-overlay/v1",
+  "goal_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+  "cosv": "50000000100000",
+  "mode": "PROJECTED_AFTER_AUTHENTIC_PERSISTENT_NODE_CONTINUITY_AND_VACC_BRIDGE",
+  "authority_effect": "NONE_ANALYSIS_ONLY",
+  "observed_runtime_receipt_present": false,
+  "observed_runtime_receipt_expected": "receipts/sovereign-host/global-runtime-evidence-convergence.latest.json",
+  "non_regression_rule": "Existing later-stage authentic evidence is never invalidated or moved backward merely to adopt the persistent-node/ephemeral-execution solution class.",
+  "stage_axis": [
+    {"index":1,"stage":"SOURCE_AND_REQUEST_READY"},
+    {"index":2,"stage":"PERSISTENT_NODE_CONTINUITY_OBSERVED"},
+    {"index":3,"stage":"EPHEMERAL_REQUEST_BOUND_AND_CONSUMED"},
+    {"index":4,"stage":"WORKERCOORDINATOR_CLAIM_FENCE"},
+    {"index":5,"stage":"EPHEMERAL_INTERLOCK_INTR_ADMISSION"},
+    {"index":6,"stage":"EPHEMERAL_TRANSPORT_PROVIDER_OR_LEASE_BINDING"},
+    {"index":7,"stage":"COMPONENT_EXECUTION_OR_REEXECUTION"},
+    {"index":8,"stage":"EXACT_RECEIPT_COMMITMENT_OR_RETENTION"},
+    {"index":9,"stage":"MASTER_RECORDS_CUSTODY_RECONSTRUCTION"},
+    {"index":10,"stage":"DOWNSTREAM_PROPAGATION_VERIFICATION"}
+  ],
+  "projection_assumptions": {
+    "persistent_node_continuity_authentically_observed": true,
+    "vacc_exact_resident_bridge_wired": true,
+    "all_intr_calls_ephemeral": true,
+    "all_data_transport_ephemeral": true,
+    "task_execution_process_persistence_not_required": true,
+    "subject_binding_uses_persistent_node_identity": true
+  },
+  "members": [
+    {"lane":"CryptoBot","task_id":"CRYPTO-LIVE-AUTO-001","frontier_stage":3,"frontier":"EPHEMERAL_REQUEST_BOUND_AND_CONSUMED","reason":"exact CryptoBot request consumption remains first unresolved"},
+    {"lane":"HIL","task_id":"SHWP-HIL-SOVEREIGN-RECEIVER-001","frontier_stage":6,"frontier":"EPHEMERAL_TRANSPORT_PROVIDER_OR_LEASE_BINDING","reason":"G25 request consumption exists; ESRL LEASE_OPEN/receiver lifecycle is next"},
+    {"lane":"Hugging Face / SV-DN1","task_id":"SV-DN1-SOVEREIGN-EXECUTION-CHAIN-001","frontier_stage":7,"frontier":"COMPONENT_EXECUTION_OR_REEXECUTION","reason":"browser observation and Universal InTr ingress already observed; SDK first-round resident analysis remains"},
+    {"lane":"SDK / Ecosystem Chat","task_id":"SHWP-ECOSYSTEM-CHAT-INFERENCE-001","frontier_stage":7,"frontier":"COMPONENT_EXECUTION_OR_REEXECUTION","reason":"exact SDK/parent inference execution remains"},
+    {"lane":"VACC","task_id":"VACP-SOVEREIGN-PROVIDER-REALIGNMENT-023","frontier_stage":7,"frontier":"COMPONENT_EXECUTION_OR_REEXECUTION","reason":"projection assumes exact resident bridge is wired; sovereign adapter execution is then next"},
+    {"lane":"DEVICE_KV / MyKV","task_id":"SHWP-DEVICE-KV-INTR-OBSERVATION-001","frontier_stage":3,"frontier":"EPHEMERAL_REQUEST_BOUND_AND_CONSUMED","reason":"persistent node removes resident-subject ambiguity; exact DEVICE_KV request execution/consumption remains"},
+    {"lane":"StegVerse-001","task_id":"SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001","frontier_stage":5,"frontier":"EPHEMERAL_INTERLOCK_INTR_ADMISSION","reason":"projection assumes retained-node continuity and same-device rendezvous; root InTr/current-device continuation remains"},
+    {"lane":"SV002","task_id":"SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001","frontier_stage":3,"frontier":"EPHEMERAL_REQUEST_BOUND_AND_CONSUMED","reason":"persistent node supplies subject anchor; exact materialization/observation request consumption remains"},
+    {"lane":"StegClaw","task_id":"DATA-CONTINUATION-STEGCLAW-P4","frontier_stage":3,"frontier":"EPHEMERAL_REQUEST_BOUND_AND_CONSUMED","reason":"resident-process persistence is no longer required by the projected model; StegClaw-attributable request consumption is next"},
+    {"lane":"Endpoint Fanout","task_id":"SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001","frontier_stage":7,"frontier":"COMPONENT_EXECUTION_OR_REEXECUTION","reason":"existing StegOS/KV/InTr chain reaches fanout after authentic DEVICE_KV parent"},
+    {"lane":"GADI","task_id":"GADI-RESIDENT-EXECUTION-001","frontier_stage":4,"frontier":"WORKERCOORDINATOR_CLAIM_FENCE","reason":"existing bounded GADI wrapper reaches current claim/fence precondition"},
+    {"lane":"Governed Multilane Manifold","task_id":"GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001","frontier_stage":4,"frontier":"WORKERCOORDINATOR_CLAIM_FENCE","reason":"per-child claim/fence is next before formalism execution"},
+    {"lane":"GLM 5.3 Sovereign","task_id":"SHWP-GLM53-SOVEREIGN-LANE-001","frontier_stage":7,"frontier":"COMPONENT_EXECUTION_OR_REEXECUTION","reason":"local-model artifact/runtime and subject-bound GLM execution remain"},
+    {"lane":"SV-011 Phase 5","task_id":"SV011-PHASE5-RESIDENT-BRIDGE-001","frontier_stage":7,"frontier":"COMPONENT_EXECUTION_OR_REEXECUTION","reason":"subject-bound Phase 5 execution remains after existing bridge source"},
+    {"lane":"Runtime Profile Map","task_id":"STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001","frontier_stage":3,"frontier":"EPHEMERAL_REQUEST_BOUND_AND_CONSUMED","reason":"persistent node supplies stable subject; CanonicalWork task ingress/consumption begins the map lifecycle"},
+    {"lane":"Native Email","task_id":"STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001","frontier_stage":6,"frontier":"EPHEMERAL_TRANSPORT_PROVIDER_OR_LEASE_BINDING","reason":"provider/mailbox runtime binding and ephemeral action transport remain"},
+    {"lane":"StegBrowser","task_id":"STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001","frontier_stage":7,"frontier":"COMPONENT_EXECUTION_OR_REEXECUTION","reason":"retained node is the model source; authentic ephemeral browser/provider operation remains"},
+    {"lane":"DE-006","task_id":"DECISION-ENVELOPE-DE006","frontier_stage":7,"frontier":"COMPONENT_EXECUTION_OR_REEXECUTION","reason":"device-local inference/reconstruction already exists; exact parent rebinding/re-execution remains"}
+  ],
+  "frontier_counts": {
+    "2:PERSISTENT_NODE_CONTINUITY_OBSERVED": 0,
+    "3:EPHEMERAL_REQUEST_BOUND_AND_CONSUMED": 5,
+    "4:WORKERCOORDINATOR_CLAIM_FENCE": 2,
+    "5:EPHEMERAL_INTERLOCK_INTR_ADMISSION": 1,
+    "6:EPHEMERAL_TRANSPORT_PROVIDER_OR_LEASE_BINDING": 2,
+    "7:COMPONENT_EXECUTION_OR_REEXECUTION": 8,
+    "8:EXACT_RECEIPT_COMMITMENT_OR_RETENTION": 0,
+    "9:MASTER_RECORDS_CUSTODY_RECONSTRUCTION": 0,
+    "10:DOWNSTREAM_PROPAGATION_VERIFICATION": 0
+  },
+  "interpretation": {
+    "resident_process_persistence_wall_removed_in_projection": true,
+    "largest_projected_frontier":"COMPONENT_EXECUTION_OR_REEXECUTION",
+    "largest_projected_frontier_count":8,
+    "second_largest_projected_frontier":"EPHEMERAL_REQUEST_BOUND_AND_CONSUMED",
+    "second_largest_projected_frontier_count":5,
+    "diagnostic":"If authentic retained-node continuity is proven, the former resident-process band should collapse. The ecosystem should then expose two dominant real failure concentrations: exact ephemeral request consumption and component execution/re-execution."
+  }
+}
