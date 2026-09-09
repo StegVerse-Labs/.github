@@ -15,6 +15,7 @@
   },
   "nodes": [
     {"task_id":"FORMALISM-MANIFOLD-ORCHESTRATION-001","role":"PREDECESSOR_AGGREGATE","disposition":"REUSE_IMPLEMENTATION_EXECUTE_CHILDREN","state":"INITIAL_IMPLEMENTATION_COMPLETE","owner":"canonical resident WorkerCoordinator + registered formalism/manifold workers"},
+    {"task_id":"SHWP-FORMALISM-SOURCE-DISCOVERY-001","role":"FORMALISM_SOURCE_PREREQUISITE","disposition":"EXECUTE_IF_NOT_ALREADY_QUALIFYING","state":"HANDOFF_READY_ROOTS_MANIFEST_PENDING","owner":"formalism-source-discovery-worker","refs":["FORMALISM_SOURCE_DISCOVERY_MIRROR_HANDOFF.md","handoffs/SHWP-FORMALISM-SOURCE-DISCOVERY-001.json","control/worker-registry.d/formalism-source-discovery-001.json","control/process-worker-adapters.d/formalism-source-discovery-001.json"]},
     {"task_id":"SHWP-FORMALISM-INVENTORY-001","role":"EXECUTION_LANE","disposition":"EXECUTE_IF_NOT_ALREADY_QUALIFYING","owner":"formalism-inventory-worker"},
     {"task_id":"SHWP-FORMALISM-HANDOFF-NORMALIZATION-001","role":"EXECUTION_LANE","disposition":"EXECUTE_IF_NOT_ALREADY_QUALIFYING","owner":"formalism-handoff-normalization-worker"},
     {"task_id":"SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001","role":"EXECUTION_LANE","disposition":"EXECUTE_IF_NOT_ALREADY_QUALIFYING","owner":"formalism-mathematical-crosswalk-worker"},
@@ -24,18 +25,23 @@
     {"task_id":"TVC-PROVIDER-OPERATION-BROKER-003","role":"AUTHORITY_OWNED_PREREQUISITE","disposition":"OBSERVE_EXISTING_OWNER_NO_COMPETE","state":"SOURCE_AND_HOST_START_DELIVERY_VALIDATED_LIVE_RUNTIME_OBSERVATION_PENDING","owner":"StegVerse-Labs/TVC runtime observer + TV/TVC runtime authority","refs":["StegVerse-Labs/TVC/tasks/TVC-PROVIDER-OPERATION-BROKER-003.json","StegVerse-Labs/TVC/docs/PROVIDER_OPERATION_BROKER_MIRROR_HANDOFF.md"]},
     {"task_id":"TVC-CAPABILITY-RUNTIME-002","role":"AUTHORITY_OWNED_RUNTIME_PREREQUISITE","disposition":"OBSERVE_EXISTING_OWNER_NO_COMPETE","owner":"repository-native TVC runtime observer + TV/TVC runtime authority"},
     {"task_id":"STEGFIN-CONTINUITY-CARRIER-007","role":"MACHINE_OWNED_CONTINUATION","disposition":"EXECUTE_WHEN_TVC_RUNTIME_PREREQUISITE_QUALIFIES","owner":"stegfin-continuity-carrier-worker"},
-    {"task_id":"GADI-001","role":"MACHINE_OWNED_MULTIREPO_CONTINUATION","disposition":"EXECUTE_INCOMPLETE_CANONICAL_CHILDREN_THROUGH_EXISTING_OWNERS","state":"ACTIVE_SOURCE_COMPLETE_RESIDENT_EXECUTION_CHILD_REGISTERED_AUTHENTIC_EXECUTION_MASTER_RECORDS_RECONCILIATION_PENDING","owner":"canonical WorkerCoordinator routing across GADI repository owners","refs":["data/canonical-task-records/GADI-001.json","docs/GADI_MIRROR_HANDOFF.md","StegVerse-Labs/.github#1170","StegVerse-Labs/StegCore/docs/GADI_STEGCORE_MIRROR_HANDOFF.md","StegVerse-002/micro-node-runtime/docs/GADI_RUNTIME_MIRROR_HANDOFF.md","StegVerse-002/micro-node-runtime#87","StegVerse-002/micro-node-runtime#88","StegVerse-002/micro-node-runtime#90","StegVerse-002/micro-node-runtime#91","StegVerse-Labs/Continuity/docs/GADI_CONTINUITY_MIRROR_HANDOFF.md","StegVerse-Labs/Continuity#14","StegVerse-Labs/Continuity#15","docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"]},
-    {"task_id":"GADI-STEGCORE-001","role":"GADI_EXECUTION_LANE","disposition":"REUSE_COMPLETE_DO_NOT_REEXECUTE","state":"SOURCE_OBJECTIVE_COMPLETE_MERGED","owner":"StegVerse-Labs/StegCore canonical task owner","refs":["StegVerse-Labs/StegCore#190","StegVerse-Labs/StegCore#192","StegVerse-Labs/StegCore/docs/GADI_STEGCORE_MIRROR_HANDOFF.md","StegVerse-Labs/StegOS/docs/GADI_STEGOS_MIRROR_HANDOFF.md"]},
-    {"task_id":"GADI-RESIDENT-EXECUTION-001","role":"GADI_RUNTIME_EXECUTION_LANE","disposition":"EXECUTE_IF_NOT_ALREADY_QUALIFYING","state":"HANDOFF_READY_RUNTIME_EVIDENCE_PENDING","owner":"gadi-resident-execution-worker + existing canonical WorkerCoordinator","refs":["StegVerse-Labs/.github#1239","data/canonical-task-records/GADI-RESIDENT-EXECUTION-001.json","docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md","handoffs/GADI-RESIDENT-EXECUTION-001.json","control/resident-execution-request.d/gadi-resident-execution-001.json","control/worker-registry.d/gadi-resident-execution-001.json"]},
-    {"task_id":"HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001","role":"NESTED_MACHINE_OWNED_MANIFOLD","disposition":"EXECUTE_IF_NOT_ALREADY_QUALIFYING","state":"SOURCE_COMPLETE_PHYSICAL_EXPORT_AND_RESIDENT_CONSUMPTION_EVIDENCE_PENDING","owner":"canonical WorkerCoordinator + HIL resident-session manifold worker","refs":["StegVerse-Labs/.github#1178","docs/HIL_RESIDENT_SESSION_MANIFOLD_ACTIVATION_MIRROR_HANDOFF.md","control/manifold-lineage.d/hil-resident-session-manifold-activation-001.json"]}
+    {"task_id":"GADI-001","role":"MACHINE_OWNED_MULTIREPO_CONTINUATION","disposition":"EXECUTE_INCOMPLETE_CANONICAL_CHILDREN_THROUGH_EXISTING_OWNERS","state":"ACTIVE_SOURCE_COMPLETE_RESIDENT_EXECUTION_CHILD_REGISTERED_AUTHENTIC_EXECUTION_MASTER_RECORDS_RECONCILIATION_PENDING","owner":"canonical WorkerCoordinator routing across GADI repository owners"},
+    {"task_id":"GADI-STEGCORE-001","role":"GADI_EXECUTION_LANE","disposition":"REUSE_COMPLETE_DO_NOT_REEXECUTE","state":"SOURCE_OBJECTIVE_COMPLETE_MERGED","owner":"StegVerse-Labs/StegCore canonical task owner"},
+    {"task_id":"GADI-RESIDENT-EXECUTION-001","role":"GADI_RUNTIME_EXECUTION_LANE","disposition":"EXECUTE_IF_NOT_ALREADY_QUALIFYING","state":"HANDOFF_READY_RUNTIME_EVIDENCE_PENDING","owner":"gadi-resident-execution-worker + existing canonical WorkerCoordinator"},
+    {"task_id":"HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001","role":"NESTED_MACHINE_OWNED_MANIFOLD","disposition":"EXECUTE_IF_NOT_ALREADY_QUALIFYING","state":"G25_CONSUMPTION_SATISFIED_ESRL_AND_DOWNSTREAM_EVIDENCE_PENDING","owner":"canonical WorkerCoordinator + HIL resident-session manifold worker"}
   ],
   "edges": [
     {"from":"GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001","to":"FORMALISM-MANIFOLD-ORCHESTRATION-001","kind":"INHERITS"},
+    {"from":"FORMALISM-MANIFOLD-ORCHESTRATION-001","to":"SHWP-FORMALISM-SOURCE-DISCOVERY-001","kind":"CONTAINS"},
     {"from":"FORMALISM-MANIFOLD-ORCHESTRATION-001","to":"SHWP-FORMALISM-INVENTORY-001","kind":"CONTAINS"},
     {"from":"FORMALISM-MANIFOLD-ORCHESTRATION-001","to":"SHWP-FORMALISM-HANDOFF-NORMALIZATION-001","kind":"CONTAINS"},
     {"from":"FORMALISM-MANIFOLD-ORCHESTRATION-001","to":"SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001","kind":"CONTAINS"},
     {"from":"FORMALISM-MANIFOLD-ORCHESTRATION-001","to":"SHWP-MANIFOLD-GOVERNANCE-MAPPING-001","kind":"CONTAINS"},
     {"from":"FORMALISM-MANIFOLD-ORCHESTRATION-001","to":"SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001","kind":"CONTAINS"},
+    {"from":"SHWP-FORMALISM-INVENTORY-001","to":"SHWP-FORMALISM-SOURCE-DISCOVERY-001","kind":"DEPENDS_ON"},
+    {"from":"SHWP-FORMALISM-HANDOFF-NORMALIZATION-001","to":"SHWP-FORMALISM-SOURCE-DISCOVERY-001","kind":"DEPENDS_ON"},
+    {"from":"SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001","to":"SHWP-FORMALISM-SOURCE-DISCOVERY-001","kind":"DEPENDS_ON"},
+    {"from":"SHWP-MANIFOLD-GOVERNANCE-MAPPING-001","to":"SHWP-FORMALISM-SOURCE-DISCOVERY-001","kind":"DEPENDS_ON"},
     {"from":"SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001","to":"SHWP-FORMALISM-INVENTORY-001","kind":"DEPENDS_ON"},
     {"from":"SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001","to":"SHWP-FORMALISM-HANDOFF-NORMALIZATION-001","kind":"DEPENDS_ON"},
     {"from":"SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001","to":"SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001","kind":"DEPENDS_ON"},
@@ -54,9 +60,8 @@
   ],
   "excluded_from_auto_execution": [
     {"scope":"wallet signing/broadcast","owner":"USER_ONLY","reason":"authority boundary"},
-    {"task_id":"SHWP-DURABLE-RUNTIME-ACTIVATION","reason":"shared runtime infrastructure dependency, not a direct subordinate of the umbrella manifold; may be visited only inside the HIL resident-session manifold under its independent subject-bound semantics"},
-    {"scope":"unauthorized compromise of third-party systems","reason":"GADI authority boundary; only pre-authorized defensive interfaces or controlled simulation/test surfaces are admissible"}
+    {"task_id":"SHWP-DURABLE-RUNTIME-ACTIVATION","reason":"shared runtime infrastructure dependency, not a direct subordinate of the umbrella manifold"}
   ],
-  "completion_rule": "The parent may not declare manifold activation until every lineage node is either completed/reused, qualifying under its existing owner, or executed to its declared terminal/evidence state, and all required reconciliation predicates pass. GADI-001, GADI-RESIDENT-EXECUTION-001, and the HIL resident-session nested manifold plus their declared incomplete canonical children are included in this rule and may not be silently omitted.",
+  "completion_rule": "The parent may not declare manifold activation until every lineage node is either completed/reused, qualifying under its existing owner, or executed to its declared terminal/evidence state. Formalism source discovery is a required prerequisite whenever the deterministic roots manifest is absent; the four source-reading formalism lanes may not be treated as traversable without that prerequisite. GADI and HIL incomplete children remain independently required.",
   "authority_effect": "NONE_LINEAGE_ONLY"
 }
