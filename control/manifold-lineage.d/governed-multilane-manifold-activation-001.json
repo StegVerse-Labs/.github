@@ -16,6 +16,7 @@
   "nodes": [
     {"task_id":"FORMALISM-MANIFOLD-ORCHESTRATION-001","role":"PREDECESSOR_AGGREGATE","disposition":"REUSE_IMPLEMENTATION_EXECUTE_CHILDREN","state":"INITIAL_IMPLEMENTATION_COMPLETE","owner":"canonical resident WorkerCoordinator + registered formalism/manifold workers"},
     {"task_id":"SHWP-FORMALISM-SOURCE-DISCOVERY-001","role":"FORMALISM_SOURCE_PREREQUISITE","disposition":"EXECUTE_IF_NOT_ALREADY_QUALIFYING","state":"HANDOFF_READY_ROOTS_MANIFEST_PENDING","owner":"formalism-source-discovery-worker","refs":["FORMALISM_SOURCE_DISCOVERY_MIRROR_HANDOFF.md","handoffs/SHWP-FORMALISM-SOURCE-DISCOVERY-001.json","control/worker-registry.d/formalism-source-discovery-001.json","control/process-worker-adapters.d/formalism-source-discovery-001.json"]},
+    {"task_id":"SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001","role":"FORMALISM_SOURCE_MATERIALIZATION_RECOVERY","disposition":"EXECUTE_IF_SOURCE_DISCOVERY_REPORTS_MISSING_OR_INVALID_ROOT","state":"HANDOFF_READY_RUNTIME_CYCLE_PENDING","owner":"formalism-tvc-repository-transport-worker + TV/TVC broker","refs":["FORMALISM_TVC_REPOSITORY_TRANSPORT_CONSUMERS_MIRROR_HANDOFF.md","FORMALISM_TVC_LOCAL_SPOOL_MIRROR_HANDOFF.md","FORMALISM_TVC_MATERIALIZATION_FOLLOWUP_MIRROR_HANDOFF.md","handoffs/SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001.json","control/worker-registry.d/formalism-tvc-repository-transport-consumers-001.json","control/process-worker-adapters.d/formalism-tvc-repository-transport-consumers-001.json"]},
     {"task_id":"SHWP-FORMALISM-INVENTORY-001","role":"EXECUTION_LANE","disposition":"EXECUTE_IF_NOT_ALREADY_QUALIFYING","owner":"formalism-inventory-worker"},
     {"task_id":"SHWP-FORMALISM-HANDOFF-NORMALIZATION-001","role":"EXECUTION_LANE","disposition":"EXECUTE_IF_NOT_ALREADY_QUALIFYING","owner":"formalism-handoff-normalization-worker"},
     {"task_id":"SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001","role":"EXECUTION_LANE","disposition":"EXECUTE_IF_NOT_ALREADY_QUALIFYING","owner":"formalism-mathematical-crosswalk-worker"},
@@ -33,6 +34,8 @@
   "edges": [
     {"from":"GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001","to":"FORMALISM-MANIFOLD-ORCHESTRATION-001","kind":"INHERITS"},
     {"from":"FORMALISM-MANIFOLD-ORCHESTRATION-001","to":"SHWP-FORMALISM-SOURCE-DISCOVERY-001","kind":"CONTAINS"},
+    {"from":"SHWP-FORMALISM-SOURCE-DISCOVERY-001","to":"SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001","kind":"RECOVERS_MISSING_OR_INVALID_SOURCE_THROUGH_TVC"},
+    {"from":"SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001","to":"SHWP-FORMALISM-SOURCE-DISCOVERY-001","kind":"RERUNS_AFTER_MATERIALIZATION_RECEIPT"},
     {"from":"FORMALISM-MANIFOLD-ORCHESTRATION-001","to":"SHWP-FORMALISM-INVENTORY-001","kind":"CONTAINS"},
     {"from":"FORMALISM-MANIFOLD-ORCHESTRATION-001","to":"SHWP-FORMALISM-HANDOFF-NORMALIZATION-001","kind":"CONTAINS"},
     {"from":"FORMALISM-MANIFOLD-ORCHESTRATION-001","to":"SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001","kind":"CONTAINS"},
@@ -62,6 +65,6 @@
     {"scope":"wallet signing/broadcast","owner":"USER_ONLY","reason":"authority boundary"},
     {"task_id":"SHWP-DURABLE-RUNTIME-ACTIVATION","reason":"shared runtime infrastructure dependency, not a direct subordinate of the umbrella manifold"}
   ],
-  "completion_rule": "The parent may not declare manifold activation until every lineage node is either completed/reused, qualifying under its existing owner, or executed to its declared terminal/evidence state. Formalism source discovery is a required prerequisite whenever the deterministic roots manifest is absent; the four source-reading formalism lanes may not be treated as traversable without that prerequisite. GADI and HIL incomplete children remain independently required.",
+  "completion_rule": "The parent may not declare manifold activation until every lineage node is either completed/reused, qualifying under its existing owner, or executed to its declared terminal/evidence state. Formalism source discovery is required whenever the deterministic roots manifest is absent; missing or invalid-handoff roots must enter the existing TVC materialization recovery lane and be rediscovered before the four source-reading formalism lanes may execute. GADI and HIL incomplete children remain independently required.",
   "authority_effect": "NONE_LINEAGE_ONLY"
 }
