@@ -1,0 +1,40 @@
+{
+  "schema": "stegverse.runtime-task-handoff/v0.1",
+  "task_id": "SHWP-STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001",
+  "goal_id": "STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001",
+  "state": "HANDOFF_READY",
+  "operational_state": "REQUIRED_RUNTIME_EXECUTION",
+  "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+  "fencing_token": null,
+  "fresh_fence_required": true,
+  "minimum_fencing_token_exclusive": 21,
+  "authority": {
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "heartbeat_reference_only": true,
+    "heartbeat_grants_execution_authority": false,
+    "canonical_transition_authority": "Interlock/InTr",
+    "request_grants_execution_authority": false
+  },
+  "execution": {
+    "adapter_ref": "process:stegos-sovereign-relay-return-path-v1",
+    "targeted_command": "python scripts/run_worker_runtime.py --task-id SHWP-STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001",
+    "portable_refresh_command": "python scripts/refresh_and_execute_resident_task.py --task-id SHWP-STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001",
+    "network_source_fetch_allowed": false,
+    "physical_additional_machine_required": false,
+    "third_party_runtime_required": false,
+    "required_local_env": ["STEGVERSE_STEGOS_ROOT","STEGVERSE_RELAY_EGRESS_BINDING","STEGVERSE_RELAY_EGRESS_AUTHORIZATION","STEGVERSE_RELAY_EGRESS_PAYLOAD"],
+    "optional_local_env": ["STEGVERSE_RELAY_RUNTIME_BASE"]
+  },
+  "terminal_evidence": "receipts/stegos-sovereign-relay/SHWP-STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001.json",
+  "terminal_when": [
+    "WorkerCoordinator independently admits the task under a fresh fence >21",
+    "current local StegOS source contains sovereign_relay_round_trip",
+    "already-local real EGRESS binding authorization and payload are consumed",
+    "real far-side HIL INGRESS_ADMITTED receipt is observed",
+    "RETURN_PATH_VERIFIED is produced",
+    "durable return queue and Interlock ingestion predicates are true",
+    "canonical transition remains false in this transport/return layer"
+  ]
+}
