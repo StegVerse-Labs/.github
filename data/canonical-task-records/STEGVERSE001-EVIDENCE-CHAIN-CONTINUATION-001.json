@@ -4,22 +4,19 @@
   "correlation_id": "STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001",
   "root_correlation_id": "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
   "parent_task_id": "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
-  "goal": "Continue the already-terminal authentic StegVerse-001 execution through exact canonical G23 source availability, contemporaneous root-InTr governance, canonical Master Records custody/reconstruction, retained same-execution evidence, and downstream SV002 observation/disposition without rerunning SV001 or creating another runtime solution.",
+  "goal": "Continue the already-terminal authentic StegVerse-001 execution through exact canonical G23 source availability, fresh current-device root-InTr governance, canonical Master Records custody/reconstruction, resident evidence retention, retained same-execution continuation evidence, and downstream SV002 observation/disposition without rerunning SV001 or creating another runtime solution.",
   "coordination_state": "HANDOFF_READY",
   "source_refs": [
     "docs/STEGVERSE_001_EVIDENCE_CHAIN_MIRROR_HANDOFF.md",
-    "docs/STEGVERSE_001_BOUNDED_AUTONOMY_RUNTIME_MIRROR_HANDOFF.md",
-    "handoffs/SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001.json",
     "receipts/current-iphone/sv001-bounded-autonomy-20260903.json",
-    "docs/COSV_TASK_POINTER_COORDINATION_MIRROR_HANDOFF.md",
     "handoffs/HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009.json",
     "control/task-vectors/STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001.json",
     "StegVerse-Labs/.github#1181",
-    "StegVerse-Labs/Site#1096",
+    "StegVerse-Labs/Site:docs/STEGOS_V15_CONFIGURED_RENDEZVOUS_PROPAGATION.md",
     "master-records/orchestration:docs/STEGVERSE_001_BOUNDED_AUTONOMY_CUSTODY_MIRROR_HANDOFF.md"
   ],
   "targets": {
-    "organizations": ["StegVerse-Labs", "StegVerse-002", "master-records"],
+    "organizations": ["StegVerse-Labs", "StegVerse-002", "master-records", "StegVerse-org"],
     "repositories": [
       "StegVerse-Labs/.github",
       "StegVerse-Labs/Site",
@@ -32,18 +29,19 @@
       "root-intr-master-records-custody-admission",
       "master-records-sv001-custody",
       "master-records-sv001-reconstruction",
-      "site-governed-custody-proof-transport",
+      "site-v15-configured-rendezvous-propagation",
       "resident-rendezvous-evidence-mailbox",
+      "continuation-observed-proof-materialization",
       "retained-same-execution-evidence-chain",
       "sv002-public-observation-disposition"
     ]
   },
   "dependencies": [
     {
-      "dependency_id": "DEP-SV001-CURRENT-DEVICE-V14-CONSUMPTION",
+      "dependency_id": "DEP-SV001-CURRENT-DEVICE-V15-CONSUMPTION",
       "kind": "RUNTIME_PREDICATE",
       "state": "UNRESOLVED",
-      "ref": "docs/STEGVERSE_001_EVIDENCE_CHAIN_MIRROR_HANDOFF.md"
+      "ref": "StegVerse-Labs/Site:docs/STEGOS_V15_CONFIGURED_RENDEZVOUS_PROPAGATION.md"
     },
     {
       "dependency_id": "DEP-SV001-FRESH-ROOT-INTR-CUSTODY-DECISION",
@@ -58,7 +56,13 @@
       "ref": "master-records/orchestration:docs/STEGVERSE_001_BOUNDED_AUTONOMY_CUSTODY_MIRROR_HANDOFF.md"
     },
     {
-      "dependency_id": "DEP-SV001-SITE-GOVERNED-CUSTODY-PROOF-DELIVERY",
+      "dependency_id": "DEP-SV001-SITE-GOVERNED-CUSTODY-PROOF-RETAINED",
+      "kind": "RUNTIME_PREDICATE",
+      "state": "UNRESOLVED",
+      "ref": "StegVerse-org/LLM-adapter:llm_adapter/resident_evidence_api.py"
+    },
+    {
+      "dependency_id": "DEP-SV001-CONTINUATION-PROOF-MATERIALIZATION",
       "kind": "RUNTIME_PREDICATE",
       "state": "UNRESOLVED",
       "ref": "workers/stegverse001_evidence_chain_continuation_worker.py"
@@ -71,7 +75,6 @@
     }
   ],
   "blockers": [],
-  "systemic_incident_ref": null,
   "adjacent_task_refs": [
     "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
     "MR-STEGVERSE001-BOUNDED-AUTONOMY-001",
@@ -79,51 +82,40 @@
     "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
   ],
   "existing_evidence_refs": [
-    "docs/STEGVERSE_001_EVIDENCE_CHAIN_MIRROR_HANDOFF.md",
     "receipts/current-iphone/sv001-bounded-autonomy-20260903.json",
-    "handoffs/HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009.json",
-    "StegVerse-Labs/.github#1181",
     "StegVerse-Labs/.github@0dc0ca78e72573e0d129c8a4d0e70955b673b851",
     "StegVerse-Labs/.github@fb26425243c05bc155972019beae474cd6b29d8f",
     "StegVerse-Labs/.github@2aa30cd05d3703e871a2c24631c0424a1fc78fdc",
-    "StegVerse-Labs/.github@d72a630f0198c9db5c087e7aef30895a3153c17a",
-    "StegVerse-Labs/.github@d19fabe8e93fba28cc8116011648f0346f0bd6d4",
-    "StegVerse-Labs/.github@575c399bc4c13d6d87746b2f7efbbae22e37f8c3",
     "StegVerse-Labs/.github:actions/run/34292595804:SUCCESS",
-    "StegVerse-Labs/Site@86c2a2e93158b480d6eb9b610e6829782a5d4dbb",
-    "StegVerse-Labs/Site@11d034c6bba64dd1cf40cbc49e374714f4a70005",
-    "StegVerse-Labs/Site@77a8ab55cc48240abdfb87833f1649c9719b0126",
-    "StegVerse-Labs/Site:actions/run/34292886326:SUCCESS",
-    "StegVerse-org/LLM-adapter@3d35b4afef55474881c5a73d6879775b3159a343",
-    "StegVerse-org/LLM-adapter@40b177d0b929d8c2182d69574948ae551882d952",
-    "StegVerse-org/LLM-adapter@a7ae5935c5a9d542176c7437905eb38c814bbe8b",
-    "master-records/orchestration#81"
+    "StegVerse-org/LLM-adapter@cd45bc91f443f0c50ae001087180757b6eb6e4e4",
+    "StegVerse-org/LLM-adapter:actions/run/34294513111:SUCCESS",
+    "Render:srv-d9epkh3rjlhs73csc3qg:dep-dagac3o9dm4c73b9u0kg:LIVE",
+    "Render:srv-d9epkh3rjlhs73csc3qg:/health:200",
+    "StegVerse-Labs/Site@2a2532637940f30c87edbf95c82404918f956c6d",
+    "StegVerse-Labs/Site@1f88f47b74c91460cb28a05e422afe2228886284",
+    "StegVerse-Labs/Site@4b311ade3f929a14c8c5806266141101ed6a1434",
+    "StegVerse-Labs/Site@5638b702ee627750212652e061eff775c94b56aa",
+    "StegVerse-Labs/Site@db25fb055a8d9a891729756eaf2dab4bab606a79",
+    "StegVerse-Labs/Site@229b804157233ccf2066d0bd3a8586762727fe70",
+    "StegVerse-Labs/Site:actions/run/34295587339:SUCCESS",
+    "StegVerse-Labs/Site:actions/run/34295587443:SUCCESS",
+    "StegVerse-Labs/Site:pages/run/34295586060:SUCCESS"
   ],
   "expected_evidence_predicates": [
     "CANONICAL_TERMINAL_G23_SOURCE_AVAILABLE",
-    "CURRENT_DEVICE_V14_CONSUMPTION_OBSERVED",
+    "CURRENT_DEVICE_V15_CONSUMPTION_OBSERVED",
     "FRESH_ROOT_INTR_CUSTODY_DECISION_OBSERVED",
     "MASTER_RECORDS_CUSTODY_PASS_OBSERVED",
     "MASTER_RECORDS_RECONSTRUCTION_PASS_OBSERVED",
-    "SITE_GOVERNED_CUSTODY_PROOF_DELIVERED_TO_CONTINUATION",
+    "SITE_GOVERNED_CUSTODY_PROOF_MAILBOX_RETAINED",
+    "SITE_GOVERNED_CUSTODY_PROOF_MATERIALIZED_TO_CONTINUATION",
     "RETAINED_SAME_EXECUTION_DOWNSTREAM_CHAIN_OBSERVED",
     "SV002_AUTHENTIC_DISPOSITION_OBSERVED",
     "SV001_NOT_RERUN",
     "NO_AUTHORITY_INFERRED_OR_REUSED",
-    "NO_NEW_RUNTIME_SCHEDULER_HEARTBEAT_OR_WORKERCOORDINATOR_CREATED"
+    "NO_NEW_RUNTIME_SCHEDULER_HEARTBEAT_WORKERCOORDINATOR_OR_PROXY_CREATED"
   ],
   "runtime_requirements": {
-    "capabilities": [
-      "canonical_g23_source_recovery_or_reuse",
-      "hb32_current_reference_derivation",
-      "intr_task_admission",
-      "master_records_custody",
-      "master_records_reconstruction",
-      "site_governed_custody_proof_transport",
-      "resident_rendezvous_evidence_mailbox",
-      "same_execution_evidence_retention",
-      "sv002_observation_disposition"
-    ],
     "environment": "CURRENT_USER_IPHONE_SOVEREIGN_RESIDENT",
     "direction": "INTERNAL_DOWNSTREAM_CONTINUATION",
     "mutation_required": true,
@@ -131,20 +123,29 @@
     "current_observation_required": true
   },
   "runtime_resolution": {
-    "continuation_worker_binding": "MERGED",
-    "merge_ref": "StegVerse-Labs/.github#1181",
-    "merge_commit": "0dc0ca78e72573e0d129c8a4d0e70955b673b851",
-    "governance_bypass_repair_commit": "fb26425243c05bc155972019beae474cd6b29d8f",
-    "site_relay_commit": "86c2a2e93158b480d6eb9b610e6829782a5d4dbb",
-    "gateway_mailbox_commit": "3d35b4afef55474881c5a73d6879775b3159a343",
-    "gateway_router_commit": "40b177d0b929d8c2182d69574948ae551882d952",
-    "continuation_mailbox_fetch_commit": "2aa30cd05d3703e871a2c24631c0424a1fc78fdc",
-    "site_source_validation": "PASS:34292886326",
-    "continuation_source_validation": "PASS:34292595804",
-    "gateway_source_validation": "PASS",
-    "source_chain_validated": true,
+    "continuation_worker_binding": "MERGED_MACHINE_SELECTABLE",
+    "governance_bypass_repair": "VALIDATED",
+    "resident_gateway_source": "VALIDATED",
+    "resident_gateway_deployment": "LIVE",
+    "resident_gateway_health": "AUTHENTIC_200",
+    "site_configured_gateway_route": "VALIDATED_DEPLOYED",
+    "site_installed_client_propagation_generation": "stegos-web-bootstrap-v15",
+    "site_v15_exact_runtime_predecessor": "service-worker-v13-runtime.js",
+    "site_v15_validation": "PASS:34295587339",
+    "site_bootstrap_validation": "PASS:34295587443",
+    "site_pages_deployment": "PASS:34295586060",
+    "post_v15_rendezvous_request_observed": false,
+    "post_v15_rendezvous_log_window": "2026-09-09T00:34:45Z/2026-09-09T00:45:00Z",
+    "current_device_v15_consumption_observed": false,
+    "fresh_root_intr_custody_allow_observed": false,
+    "master_records_custody_pass_observed": false,
+    "master_records_reconstruction_pass_observed": false,
+    "mailbox_retained_observed": false,
+    "continuation_proof_materialized_observed": false,
+    "retained_downstream_same_execution_chain_observed": false,
+    "sv002_authentic_disposition_observed": false,
     "runtime_predicates_complete": false,
-    "authority_effect": "NONE_SOURCE_ONLY"
+    "authority_effect": "NONE_SOURCE_DEPLOYMENT_OBSERVATION_ONLY"
   },
   "worker_claim": {
     "authority": "WORKERCOORDINATOR",
@@ -152,19 +153,18 @@
     "fence_ref": null,
     "projection_only": true
   },
-  "human_action_ref": null,
   "completion": {
     "claimed": false,
     "validated": false,
     "reconciliation_ref": null
   },
   "allowed_next_transitions": ["INGRESS_ADMITTED"],
-  "handoff_projection_refs": [
-    "docs/STEGVERSE_001_EVIDENCE_CHAIN_MIRROR_HANDOFF.md"
-  ],
+  "handoff_projection_refs": ["docs/STEGVERSE_001_EVIDENCE_CHAIN_MIRROR_HANDOFF.md"],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "source_state_proves_execution": false,
+    "cache_generation_proves_current_device_consumption": false,
+    "deployment_proves_custody": false,
     "worker_claim_authority": "WORKERCOORDINATOR",
     "master_records_reality_authority": true,
     "site_proof_transport_mints_authority": false,
