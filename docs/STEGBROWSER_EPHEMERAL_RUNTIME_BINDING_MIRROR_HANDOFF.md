@@ -1,6 +1,6 @@
 # StegBrowser Ephemeral Runtime Binding Mirror Handoff
 
-Updated: 2026-09-08
+Updated: 2026-09-09
 
 ## Task pointer
 
@@ -11,7 +11,7 @@ Updated: 2026-09-08
 
 ## Working-instance trajectory
 
-Profile/provider expansion is deferred. The active objective is one authentic current-iPhone StegBrowser resident instance.
+The active objective is one authentic current-iPhone StegBrowser resident instance, followed by the first verified native social publication through the ephemeral browser path.
 
 Merged path:
 
@@ -22,13 +22,44 @@ canonical Site SV-NODE
 -> 127.0.0.1:8000
 -> exact same-device discovery readback
 -> component evidence receipt
+-> ephemeral social execution
+-> external object/readback verification
+-> StegSocials publication receipt
 ```
 
-The real `iphoneos` product, host + two extensions, bundle identities, App Group entitlement wiring, and canonical resident markers are validated. The provisional `stegverse://browser/start`/temporary-node route is retired.
+The real `iphoneos` product, host + two extensions, bundle identities, App Group entitlement wiring, canonical resident markers, durable local evidence retention, and same-device discovery readback source are validated. The provisional `stegverse://browser/start`/temporary-node route is retired.
+
+## Site activation handoff observation repair
+
+Site PR #1135 merged at `48006a08c877a3f18ab36e00e934350ec07a1f55` after exact-head success in:
+
+- Site Bootstrap Validate;
+- Site Handoff Orchestrator;
+- Ecosystem Heartbeat Orchestration;
+- Validate StegOS Persistent Card UX.
+
+The deployed public activation surface now distinguishes a custom-scheme request from an actually observed browser-to-app handoff:
+
+```text
+APP_OPEN_REQUESTED_NOT_PROVEN
+-> APP_HANDOFF_OBSERVED_LISTENER_NOT_PROVEN
+   when Safari actually leaves the foreground
+or
+-> APP_HANDOFF_NOT_OBSERVED
+   when Safari remains foreground after the bounded handoff interval
+```
+
+Neither state substitutes for the StegOSMobile same-device discovery receipt. The current-iPhone discovery/readback must still be observed inside the installed app.
+
+The implementation claim for this repair was terminalized through Site PR #1147 after merge and deployment evidence were recorded.
+
+Public surface:
+
+`https://stegverse.org/stegos-bootstrap/native-resident-activate.html`
 
 ## Preferred Apple delivery path
 
-The preferred path now requires only three owner-supplied GitHub Actions secrets after Apple account setup:
+The preferred path requires only three owner-supplied GitHub Actions secrets after Apple account setup:
 
 ```text
 ASC_KEY_ID
@@ -65,7 +96,7 @@ No user-operated Mac is required by this path.
 
 ## Physical boundary
 
-Repository-side working-instance implementation is exhausted up to Apple account materialization. The remaining sequence is:
+Repository-side working-instance implementation is exhausted up to Apple account/TestFlight materialization. The remaining sequence is:
 
 ```text
 Apple Developer membership/API access
@@ -76,17 +107,34 @@ Apple Developer membership/API access
 -> create App Store Connect app record for org.stegverse.stegosmobile
 -> run iOS Ephemeral Provision and TestFlight
 -> install processed build from TestFlight on current iPhone
--> activate canonical Site resident-rendezvous projection
--> observe actual 127.0.0.1 discovery
+-> open https://stegverse.org/stegos-bootstrap/native-resident-activate.html in the same standalone Safari context that owns the registered canonical Node
+-> tap Open StegOS Local Resident
+-> require APP_HANDOFF_OBSERVED_LISTENER_NOT_PROVEN on the Site surface
+-> require Same-device discovery observed: YES inside StegOSMobile
+-> require non-NONE Runtime receipt digest
 -> persist authentic component receipt
 ```
 
+If the public surface reports `APP_HANDOFF_NOT_OBSERVED`, continue the Apple/TestFlight installation path rather than changing resident source. If the handoff is observed but StegOSMobile does not show same-device discovery, continue native loopback/runtime remediation rather than changing the Site projection.
+
 Source/CI/package/signing-workflow evidence does not substitute for those physical observations.
 
-## Deferred until working instance
+## After working-instance proof
 
-Provider session acquisition, connection-profile expansion, Facebook/LinkedIn live publication, and publication custody remain deferred until signed installation plus same-device resident discovery are authentic.
+Continue directly into the native StegSocials trajectory:
+
+```text
+verified current-iPhone resident
+-> short-lived social session
+-> Facebook execution
+-> platform object ID + canonical URL + exact content commitment + readback
+-> StegSocials publication receipt
+-> KV / Master Records custody
+-> LinkedIn parity
+```
+
+Windsor is not required for this path.
 
 ## Current state
 
-`CANONICAL_RESIDENT_MERGED_VALIDATED / IPHONEOS_PACKAGE_VALIDATED / COMPLETE_SIGNING_SURFACE_VALIDATED / IDENTIFIERS_BOOTSTRAP_MERGED / THREE_SECRET_EPHEMERAL_TESTFLIGHT_PIPELINE_MERGED_HARDENED / APPLE_ACCOUNT_PREREQUISITES_PENDING / AUTHENTIC_CURRENT_IPHONE_INSTALL_LISTENER_DISCOVERY_PENDING`
+`CANONICAL_RESIDENT_MERGED_VALIDATED / IPHONEOS_PACKAGE_VALIDATED / COMPLETE_SIGNING_SURFACE_VALIDATED / IDENTIFIERS_BOOTSTRAP_MERGED / THREE_SECRET_EPHEMERAL_TESTFLIGHT_PIPELINE_MERGED_HARDENED / SITE_APP_HANDOFF_OBSERVATION_MERGED_DEPLOYED / APPLE_ACCOUNT_TESTFLIGHT_MATERIALIZATION_PENDING / AUTHENTIC_CURRENT_IPHONE_INSTALL_LISTENER_DISCOVERY_PENDING / NATIVE_SOCIAL_PUBLICATION_PROOF_PENDING`
