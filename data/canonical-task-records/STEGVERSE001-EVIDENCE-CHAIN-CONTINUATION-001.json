@@ -14,6 +14,9 @@
     "StegVerse-Labs/.github#1181",
     "StegVerse-Labs/Site:data/ecosystem-chat-gateway.json",
     "StegVerse-Labs/Site:stegos-bootstrap/master-records-auto-recovery.js",
+    "StegVerse-Labs/StegBrowser:src/stegbrowser/resident_rendezvous.py",
+    "StegVerse-Labs/StegBrowser:ios/StegBrowserResidentRendezvousListener.swift",
+    "StegVerse-Labs/StegBrowser:docs/STEGBROWSER_IOS_RESIDENT_RENDEZVOUS_MIRROR_HANDOFF.md",
     "master-records/orchestration:docs/STEGVERSE_001_BOUNDED_AUTONOMY_CUSTODY_MIRROR_HANDOFF.md"
   ],
   "targets": {
@@ -21,6 +24,7 @@
     "repositories": [
       "StegVerse-Labs/.github",
       "StegVerse-Labs/Site",
+      "StegVerse-Labs/StegBrowser",
       "master-records/orchestration",
       "StegVerse-org/LLM-adapter"
     ],
@@ -31,6 +35,8 @@
       "master-records-sv001-custody",
       "master-records-sv001-reconstruction",
       "site-v15-sovereign-primary-rendezvous-propagation",
+      "stegbrowser-transport-neutral-resident-rendezvous",
+      "stegbrowser-ios-loopback-resident-listener",
       "resident-rendezvous-evidence-mailbox",
       "continuation-sovereign-primary-proof-materialization",
       "hosted-rendezvous-fallback-only",
@@ -39,6 +45,12 @@
     ]
   },
   "dependencies": [
+    {
+      "dependency_id": "DEP-SV001-STEGBROWSER-IOS-NATIVE-LISTENER-BINDING",
+      "kind": "INTERNAL_CAPABILITY",
+      "state": "PARTIAL_SOURCE_IMPLEMENTED_RUNTIME_UNRESOLVED",
+      "ref": "StegVerse-Labs/StegBrowser:docs/STEGBROWSER_IOS_RESIDENT_RENDEZVOUS_MIRROR_HANDOFF.md"
+    },
     {
       "dependency_id": "DEP-SV001-CURRENT-DEVICE-V15-SOVEREIGN-PRIMARY-CONSUMPTION",
       "kind": "RUNTIME_PREDICATE",
@@ -76,11 +88,23 @@
       "ref": "SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001"
     }
   ],
-  "blockers": [],
+  "blockers": [
+    {
+      "blocker_id": "CURRENT_IPHONE_NATIVE_LOOPBACK_LISTENER_NOT_YET_BOUND",
+      "dependency_class": "INTERNAL_CAPABILITY",
+      "state": "SOURCE_PARTIAL_RUNTIME_BLOCKING",
+      "problem_statement": "The sovereign-local Site and continuation paths probe loopback, but the current iPhone has no authenticated native StegBrowser/StegVerse listener lifecycle yet proven to bind that loopback endpoint.",
+      "source_progress": "Transport-neutral StegBrowser resident semantics and an iOS Network.framework loopback transport wrapper are implemented; app-target/lifecycle integration and authentic current-device runtime proof remain.",
+      "workaround_allowed": false,
+      "hosted_fallback_substitutes_for_primary": false,
+      "next_solution_action": "Bind the validated StegBrowser iOS loopback transport wrapper into the canonical native iPhone app lifecycle and prove local discovery before hosted fallback."
+    }
+  ],
   "adjacent_task_refs": [
     "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
     "MR-STEGVERSE001-BOUNDED-AUTONOMY-001",
     "SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001",
+    "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
     "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
   ],
   "existing_evidence_refs": [
@@ -100,12 +124,20 @@
     "StegVerse-Labs/Site:actions/run/34300988601:SUCCESS",
     "StegVerse-Labs/Site:actions/run/34300988580:SUCCESS",
     "StegVerse-Labs/Site:pages/run/34300987577:SUCCESS",
+    "StegVerse-Labs/StegBrowser@3b09b59a984df60c7c728373f260e2b79d338b18",
+    "StegVerse-Labs/StegBrowser@6cd64f0ca423547dd7fa9ed0b0883e36c5e29ad9",
+    "StegVerse-Labs/StegBrowser@44b5bde1a425f0d3e09d325f149c490c2445459e",
+    "StegVerse-Labs/StegBrowser@d33fe99b613be432b4fae25d45b1861963df1d1a",
+    "StegVerse-Labs/StegBrowser:actions/run/34302248904:SUCCESS",
+    "StegVerse-Labs/StegBrowser@222a5689326b6a3c9d7acc3c9ffbbe7afce7639f",
+    "StegVerse-Labs/StegBrowser@71d276703592c7b7fd072a123f5ad74e96c18fab",
     "StegVerse-org/LLM-adapter@cd45bc91f443f0c50ae001087180757b6eb6e4e4",
     "StegVerse-org/LLM-adapter:actions/run/34294513111:SUCCESS",
     "Render:srv-d9epkh3rjlhs73csc3qg:HOSTED_FALLBACK_ONLY"
   ],
   "expected_evidence_predicates": [
     "CANONICAL_TERMINAL_G23_SOURCE_AVAILABLE",
+    "CURRENT_IPHONE_NATIVE_SOVEREIGN_LISTENER_BOUND",
     "CURRENT_DEVICE_V15_SOVEREIGN_PRIMARY_CONSUMPTION_OBSERVED",
     "FRESH_ROOT_INTR_CUSTODY_DECISION_OBSERVED",
     "MASTER_RECORDS_CUSTODY_PASS_OBSERVED",
@@ -123,6 +155,7 @@
     "environment": "CURRENT_USER_IPHONE_SOVEREIGN_RESIDENT",
     "direction": "INTERNAL_DOWNSTREAM_CONTINUATION",
     "primary_transport": "SOVEREIGN_LOCAL_RESIDENT",
+    "current_iphone_local_host": "STEGBROWSER_NATIVE_LOOPBACK",
     "hosted_transport_role": "FALLBACK_ONLY",
     "mutation_required": true,
     "deployment_required": true,
@@ -148,6 +181,11 @@
     "continuation_proof_digest_recomputed": true,
     "continuation_strict_node_ref_validation": true,
     "continuation_validation": "PASS:34301353083",
+    "stegbrowser_resident_contract": "IMPLEMENTED_VALIDATED",
+    "stegbrowser_resident_contract_validation": "PASS:34302248904",
+    "stegbrowser_ios_loopback_transport_source": "IMPLEMENTED_STATIC_VALIDATION_PENDING_LATEST_HEAD",
+    "stegbrowser_ios_listener_compiled_in_native_app_target": false,
+    "stegbrowser_ios_listener_runtime_observed": false,
     "hosted_fallback_available": true,
     "hosted_fallback_is_primary": false,
     "current_device_sovereign_primary_consumption_observed": false,
@@ -179,6 +217,7 @@
     "source_state_proves_execution": false,
     "cache_generation_proves_current_device_consumption": false,
     "deployment_proves_custody": false,
+    "native_listener_bind_proves_governance": false,
     "hosted_fallback_health_proves_primary_health": false,
     "worker_claim_authority": "WORKERCOORDINATOR",
     "master_records_reality_authority": true,
