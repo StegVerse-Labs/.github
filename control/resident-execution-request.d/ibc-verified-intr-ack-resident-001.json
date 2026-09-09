@@ -1,0 +1,20 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-EXEC-IBC-VERIFIED-INTR-ACK-001",
+  "state": "REQUESTED",
+  "task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "mode": "IBC_VERIFIED_INTR_ACK_RESIDENT",
+  "entrypoint": "scripts/materialize_verified_ibc_intr_ack.py",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "request_granted_authority": false,
+  "network_source_fetch_allowed": false,
+  "second_machine_required": false,
+  "requires_sovereign_node_marker": true,
+  "requires_local_stegos_source": true,
+  "observation_class": "SOVEREIGN_RESIDENT_EXECUTED_CANONICAL_INTR_TRANSPORT_RECEIPT",
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "note": "Consume only the already-merged and locally materialized verified Cosmos Hub -> Osmosis ACK evidence through the canonical StegOS heterogeneous-interop ACKNOWLEDGE materializer. No GitHub/network source fetch is allowed during resident dispatch. This request does not claim original IBC packet relay, transition admission, application execution, claim/fence minting, credentials, or Master Records custody."
+}
