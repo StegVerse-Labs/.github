@@ -3,106 +3,106 @@
 Goal Task ID: `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001`
 Canonical issue: `StegVerse-Labs/.github#1260`
 COSV: `50000000100000`
-Status: `ACTIVE / ALL_18_RUNTIME_LANES_HB32_NODE_PROFILED / STEGCLAW_AND_VACC_EXECUTABLE_PROFILES_MERGED / PRECISE_FAILURE_BOUNDARY_RESPONSES_IMPLEMENTED / DE006_EXECUTABLE_REBIND_NEXT / AUTHENTIC_PROFILED_CONVERGENCE_RECEIPT_PENDING`
+Status: `ACTIVE / 18 HB32 PROFILE-DERIVED NODES / PRECISE FAILURE BOUNDARIES / DEFINITIVE MEASUREMENT HARDENING VALIDATING`
 
-## Purpose
+## Canonical runtime model
 
-Converge all source-ready StegVerse capabilities that still require authentic runtime execution/evidence, custody/reconstruction, runtime-bound validation, or downstream propagation proof. Preserve each child task identity and resume it from the first unresolved subject-bound predicate.
-
-## Retained-node runtime model
-
-The reusable ecosystem loop is now:
+The ecosystem loop is:
 
 ```text
-runtime/node profile resolution
--> retained profile-derived StegOS node identity + continuity
--> immutable source-device HB lineage + fresh current HB observation
--> exact ephemeral task/request/COSV binding and consumption
+runtime/node profile
+-> profile-derived retained StegOS node
+-> immutable source-device HB lineage + current HB observation
+-> ephemeral request consumption
 -> ephemeral WorkerCoordinator claim/fence
 -> ephemeral Interlock/InTr admission
 -> ephemeral transport/provider/lease
--> exact component execution or re-execution
--> exact receipt commitment into retained node lineage
--> Master Records same-execution custody/reconstruction
--> required downstream propagation verification
+-> component execution
+-> exact receipt commitment
+-> Master Records reconstruction
+-> downstream propagation
 ```
 
-Node identity/evidence/HB lineage persists. Claims/fences, InTr invocations, transports, provider/browser/model/action sessions, credentials, and task execution processes remain bounded and ephemeral. HB remains observability/freshness/correlation only and grants no authority.
+Node identity/evidence/HB lineage persist. Claims/fences, InTr calls, transports, credentials, provider/browser/model/action sessions, and execution processes remain bounded and ephemeral. HB remains observability/freshness/correlation only.
 
-## Global profile convergence
+## Merged prerequisites
 
-`.github` PR #1288 merged at `c22f0f347bb91e77b81d78e6e5e9b9ce7eea7409`, establishing exactly 18 `HB32 / RETAINED_STEGOS_NODE / EPHEMERAL_OR_BOUNDED_RUNTIME_LEASE` task profiles. Resident source-refresh propagation merged at `64a8f9156255593fcd75ec029b50dc4612f282db`, carrying the profile registry/builders/runners/observability sources into the already-local resident root while preserving mutable runtime state.
+- StegBrowser retained-node/HB lineage implementation merged.
+- StegOS profile-derived retained-node, outward HB lineage and receipt-to-transition implementation merged.
+- `.github` 18-lane HB32 runtime-node profile convergence merged.
+- StegClaw executable profile merged.
+- VACC executable profile merged.
+- typed ten-stage failure responses merged in PR #1292 at `e64c5d518af05dac6b9d09c3355d38d75bc27295`.
 
-StegClaw executable profile PR #1290 merged at `fa4cc25500775e0f75daeb05474429ff8d91a83f`.
-
-VACC executable profile PR #1291 merged at `b948d9a56e70d5ad919e5fbd0895907e0f72ae58`. VACC is no longer a generic profile-only bridge: `workers/vacc_profiled_resident_execution.py` reuses the existing Ecosystem Chat/local-model/TVC/Master Records chain and performs one bounded real VACC request against the exact live loopback runtime before retaining a subject-bound execution receipt.
-
-## Precise failure/error response instrumentation
+## Definitive measurement hardening
 
 Active branch:
 
-```text
-fix/runtime-failure-boundary-responses-20260909
-```
+`fix/runtime-failure-boundary-prerun-hardening-20260909`
 
-The resident-refreshable worker tree now contains:
+The first definitive convergence run is now explicitly measurement-only.
 
-```text
-workers/runtime_failure_boundaries.py
-```
+`workers/runtime_convergence_measurement.py` freezes one run identity before execution containing:
 
-It defines ten stable typed failure boundaries:
+- unique `run_id`;
+- start timestamp;
+- exact local source git head when available;
+- exact runtime-node profile registry SHA-256;
+- exact partial-solution projection SHA-256;
+- `measurement_only=true`;
+- `same_run_remediation_allowed=false`;
+- `automatic_retry_after_first_failure=false`;
+- per-profile before snapshots of known subject/canonical-work receipt files and retained node/HB/transition fields when present.
 
-```text
-01 RUNTIME_PROFILE_RESOLUTION
-02 PERSISTENT_NODE_CONTINUITY
-03 EPHEMERAL_REQUEST_CONSUMPTION
-04 WORKERCOORDINATOR_CLAIM_FENCE
-05 EPHEMERAL_INTERLOCK_INTR_ADMISSION
-06 EPHEMERAL_TRANSPORT_PROVIDER_LEASE
-07 COMPONENT_EXECUTION
-08 EXACT_RECEIPT_COMMITMENT
-09 MASTER_RECORDS_RECONSTRUCTION
-10 DOWNSTREAM_PROPAGATION
-```
+After execution the same evidence surfaces are snapshotted again. Before/after tracked fields include node/profile identity, genesis, source/current HB references, state generation/state commitment and prior/current transition commitments when present. This allows the measured run to distinguish `same node + advanced lineage` from unrelated component output.
 
-Each boundary emits one `stegverse.runtime-failure-response/v1` containing task/lane identity, exact stage index/name/code, raw child state, reason/evidence reference when available, next predicate-specific action, `subject_bound=true`, `heartbeat_grants_authority=false`, and `authority_effect=NONE_DIAGNOSTIC_ONLY`.
+`run_global_runtime_node_profile_convergence.py` now:
 
-`run_global_runtime_node_profile_convergence.py` now annotates every lane with:
+1. freezes that measurement context before visiting the 18 lanes;
+2. exports `STEGVERSE_CONVERGENCE_MEASUREMENT_ONLY=1` during the run;
+3. labels canonical earlier-stage evidence as `PASS_HISTORICAL_EVIDENCE`, never as current-run proof;
+4. labels an exact predicate crossed in this run as `PASS_CURRENT_RUN`;
+5. labels the first observed failure as `FAILED_CURRENT_RUN` and later stages `NOT_REACHED`;
+6. accepts child-supplied explicit `stage_observations` and requires them to be contiguous through the reported failure;
+7. emits the frozen measurement context, typed per-lane boundary trace and aggregate failure map into `receipts/sovereign-host/global-runtime-node-profile-convergence.latest.json`.
 
-```text
-boundary_trace[]
-first_failure
-first_failure_stage_index
-first_failure_code
-```
+Readiness/liveness states are not terminal completion. `PROFILE_BOUND_PARENT_CHAIN_PRESENT_REEXECUTION_READY` and `PROFILE_BOUND_RUNTIME_LIVE_VERIFIED` therefore remain unresolved at the applicable later execution predicate. `NOT_REACHED` is downstream flow state and is never itself treated as a failure.
 
-and emits a global `failure_boundary_summary` with exact stage/code counts.
+## Same-run remediation suppression
 
-Child runtime implementations may provide explicit `stage_observations`; the classifier always selects the earliest actual failed/unobserved stage. When a child does not yet emit stage observations, the canonical `resume_stage` remains the non-regressive fallback first boundary. Existing later-stage evidence is not moved backward.
+VACC previously could advance its Ecosystem Chat/local-model parent prerequisite when no verified VACC process existed. During the definitive convergence measurement that repair is disabled. If the frozen baseline has no verified VACC loopback process, VACC reports stage 6 transport/provider runtime failure and does not repair the parent during the same measurement pass. Outside measurement mode, the existing repair behavior remains available.
 
-The classifier resides under `workers/`, which is already copied as a static resident source directory by `refresh_sovereign_worker_runtime_source.py`; no separate refresh path or scheduler is introduced.
+The measurement contract is diagnostic and grants no execution, claim/fence, InTr, credential, custody, publication or completion authority.
 
-Focused injected regressions live at:
+## Measurement interpretation
+
+The definitive receipt must preserve three different meanings:
 
 ```text
-tests/test_runtime_failure_boundaries.py
+PASS_CURRENT_RUN
+PASS_HISTORICAL_EVIDENCE
+NOT_REACHED
 ```
 
-They force all ten failure codes, verify every current global resume label maps to the intended canonical stage, verify explicit stage observations override projected resume points at the first true failure, verify terminal success emits no failure, verify boundary-count summaries, and verify resident-refresh materialization of the classifier.
+Historical evidence is retained by non-regression but cannot be represented as current-run passage. A later precise failure cannot be reported if an earlier required explicit observation is missing; that missing predicate becomes the first unobserved boundary.
 
-## Remaining exact runtime repair
+The measured histogram is authoritative only for what the run actually observed. It must not be described as a runtime completion receipt.
 
-DE-006 remains the last formerly generic-unwired lane without an executable profile wrapper. It already has authentic device-local inference + same-execution reconstruction evidence, but still requires exact parent rebinding/re-execution through its existing parent continuation path. That repair must not promote prior device-local evidence into DE-006 completion by inference.
+## Remaining work before authentic run
 
-## Test / merge gate
+1. pass exact-head organization-control, deterministic repository suite and Heartbeat validation for the hardening branch;
+2. merge the hardening PR;
+3. refresh the already-local sovereign runtime source so `workers/runtime_convergence_measurement.py`, the hardened failure classifier and profiled runner are materialized together;
+4. execute one authentic Runtime Profile Map/profiled convergence measurement without same-pass repair/retry;
+5. inspect the measured per-lane first-failure map and before/after node/HB transition commitments;
+6. only after measurement, remediate discovered predicates in subsequent executions.
 
-Before merge, the failure-boundary branch must pass the exact-head organization control, deterministic repository suite, and Heartbeat validation. After merge/source refresh, the authentic resident profile convergence cycle must emit `global-runtime-node-profile-convergence.latest.json`; its `failure_boundary_summary` becomes the measured overlay for the 18 lanes.
+DE-006 still requires exact executable parent rebinding/re-execution; the measurement must report that truth rather than treating readiness as completion.
 
-## README review
+## README impact
 
-`README.md` was reviewed. Existing retained-identity, bounded-execution, exact-evidence, single-resident-path, and subject-bound failure semantics cover this instrumentation. No README mutation is required for the diagnostic response format.
+The repository README already defines retained identity, bounded execution, exact evidence, subject-bound failure semantics, non-authorizing HB, and the functional-change invariant. This hardening changes diagnostic measurement semantics rather than execution authority or product behavior; no additional README text is required before the measurement PR is validated.
 
 ## Manual work
 
-None currently required.
+None while source validation and merge remain machine-executable.
