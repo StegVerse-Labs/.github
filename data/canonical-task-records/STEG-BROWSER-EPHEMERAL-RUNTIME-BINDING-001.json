@@ -18,8 +18,10 @@
     "StegVerse-Labs/StegBrowser@d12728ab0615a52eb6d9e5178eae1808025e1910",
     "StegVerse-Labs/StegBrowser@b56a0c53c45b556e03b651d13fdae98f2915da94",
     "StegVerse-Labs/StegSocials@d8e1e0bc19d154cd0f2818fa688dd066558ece3c",
+    "StegVerse-Labs/StegSocials@a3cd036be5b6080b694dafc20dd11994360aad3e",
     "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_STEGBROWSER_OBSERVATION_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/.github@04ce23ac8d33551dba401c8fc32fdbd766102042"
+    "StegVerse-Labs/.github@04ce23ac8d33551dba401c8fc32fdbd766102042",
+    "StegVerse-Labs/TVC/docs/SOCIAL_PROVIDER_SKAP_ARTICULATION_MIRROR_HANDOFF.md"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
@@ -29,8 +31,10 @@
       "playwright-chromium-substrate",
       "public-surface-retrieval",
       "publication-surface-observation",
+      "authenticated-publication-surface-observation",
       "terminal-session-destruction-receipt",
       "stegsocials-browser-caller",
+      "stegsocials-authenticated-browser-caller",
       "intr-lease-admission",
       "tvc-skap-ephemeral-credential-session",
       "opaque-credential-session-binding",
@@ -40,24 +44,26 @@
   },
   "dependencies": [
     {"dependency_id":"DEP-STEGBROWSER-INTR-ADMISSION","kind":"GOVERNED_RUNTIME_ADMISSION","state":"READY_FOR_INGRESS","ref":"StegVerse-Labs/.github/docs/UNIVERSAL_WORK_INTERLOCK_MIRROR_HANDOFF.md","disposition":"USE_EXISTING_CANONICAL_WORK_INTERLOCK_INTR_INGRESS"},
-    {"dependency_id":"DEP-STEGBROWSER-STEGSOCIALS-CALLER","kind":"ECOSYSTEM_CALLER","state":"AVAILABLE","ref":"SS-EVIDENCE-COMPARISON-001","disposition":"STEGSOCIALS_BROWSER_CALLER_MERGED_AT_D8E1E0BC"},
-    {"dependency_id":"DEP-STEGBROWSER-CREDENTIAL-SESSION","kind":"CREDENTIAL_RUNTIME","state":"SOURCE_READY_RUNTIME_DEFERRED_UNTIL_INGRESS_COMPLETE","ref":"StegVerse-Labs/TVC + StegVerse-Labs/StegBrowser","disposition":"USE_EXISTING_TV_TVC_SKAP_CALLBACK_ONLY_PROVIDER_SESSION_WITH_STEGBROWSER_BINDING_D93B72EB_CONTEXT_BRIDGE_D12728AB_AND_PROGRAMMATIC_RUNNER_B56A0C53; DO_NOT_EMBED_CREDENTIALS_OR_LIVE_SESSION_HANDLES_IN_LEASE_ARGV_REPOSITORY_LOGS_OR_ARTIFACTS"}
+    {"dependency_id":"DEP-STEGBROWSER-STEGSOCIALS-CALLER","kind":"ECOSYSTEM_CALLER","state":"AVAILABLE_AUTHENTICATED_SOURCE_READY","ref":"SS-EVIDENCE-COMPARISON-001","disposition":"PUBLIC_BROWSER_CALLER_MERGED_AT_D8E1E0BC_AND_AUTHENTICATED_OBSERVATION_CALLER_MERGED_AT_A3CD036B; BOTH REMAIN OBSERVATION_ONLY_AND_DO_NOT PROVE PUBLICATION"},
+    {"dependency_id":"DEP-STEGBROWSER-CREDENTIAL-SESSION","kind":"CREDENTIAL_RUNTIME","state":"SOURCE_READY_RUNTIME_DEFERRED_UNTIL_INGRESS_COMPLETE","ref":"StegVerse-Labs/TVC + StegVerse-Labs/StegBrowser + StegVerse-Labs/StegSocials","disposition":"USE_EXISTING_SOCIAL_PROVIDER_SKAP_ARTICULATION_AND_TV_TVC_SKAP_CALLBACK_ONLY_PROVIDER_SESSION_WITH_STEGBROWSER_BINDING_D93B72EB_CONTEXT_BRIDGE_D12728AB_AND_PROGRAMMATIC_RUNNER_B56A0C53; DO_NOT_EMBED CREDENTIALS OR LIVE SESSION HANDLES IN LEASE ARGV REPOSITORY LOGS OR ARTIFACTS"}
   ],
   "blockers": [],
   "systemic_incident_ref": null,
-  "adjacent_task_refs": ["SS-EVIDENCE-COMPARISON-001"],
+  "adjacent_task_refs": ["SS-EVIDENCE-COMPARISON-001", "SS-KV-SKAP-SOCIAL-RELEASE-001"],
   "existing_evidence_refs": [
     "StegVerse-Labs/StegBrowser@d9453e9a2e2dd56ed16a99b2ce2b297dc613de48",
     "StegVerse-Labs/StegBrowser/actions/runs/34298624360",
     "StegVerse-Labs/StegBrowser/actions/artifacts/10084081467",
-    "StegVerse-Labs/StegBrowser@dd596c4cb3ccbdcd85758b4d12bc8ad9e2ee539d",
+    "StegVerse-Labs/StegBrowser@dd596c4cb3ccbd85758b4d12bc8ad9e2ee539d",
     "StegVerse-Labs/StegBrowser/actions/runs/34298752980",
     "StegVerse-Labs/StegBrowser/actions/artifacts/10084130220",
     "StegVerse-Labs/StegSocials@d8e1e0bc19d154cd0f2818fa688dd066558ece3c",
+    "StegVerse-Labs/StegSocials@a3cd036be5b6080b694dafc20dd11994360aad3e",
     "StegVerse-Labs/.github@04ce23ac8d33551dba401c8fc32fdbd766102042",
     "StegVerse-Labs/StegBrowser@d93b72eb14871d8216a3e6282015f73c3d4b65e2",
     "StegVerse-Labs/StegBrowser@d12728ab0615a52eb6d9e5178eae1808025e1910",
-    "StegVerse-Labs/StegBrowser@b56a0c53c45b556e03b651d13fdae98f2915da94"
+    "StegVerse-Labs/StegBrowser@b56a0c53c45b556e03b651d13fdae98f2915da94",
+    "StegVerse-Labs/TVC@0452707866e96be93eff9544389268d462637aff"
   ],
   "expected_evidence_predicates": [
     "EPHEMERAL_LEASE_SCOPE_ENFORCED",
@@ -67,12 +73,13 @@
     "PROFILE_COOKIES_HISTORY_AND_CREDENTIALS_NOT_RETAINED",
     "TERMINAL_SESSION_DESTRUCTION_RECEIPT_VALID",
     "STEGSOCIALS_CALLER_BINDING_VALID",
+    "STEGSOCIALS_AUTHENTICATED_CALLER_BINDING_VALID",
     "INTERLOCK_INTR_LEASE_ADMISSION_OBSERVED",
     "CREDENTIALED_EPHEMERAL_SESSION_TEST_OBSERVED",
     "PROPAGATION_VERIFICATION_COMPLETE"
   ],
   "runtime_requirements": {
-    "capabilities": ["bounded_process_execution", "ephemeral_browser_execution", "public_web_retrieval", "lease_scope_enforcement", "browser_session_destruction", "intr_task_admission", "ephemeral_credential_session_injection"],
+    "capabilities": ["bounded_process_execution", "ephemeral_browser_execution", "public_web_retrieval", "authenticated_web_observation", "lease_scope_enforcement", "browser_session_destruction", "intr_task_admission", "ephemeral_credential_session_injection"],
     "environment": "EPHEMERAL_BROWSER_SUBSTRATE_PLUS_SOVEREIGN_ADMISSION",
     "direction": "ECOSYSTEM_CALLER_TO_BROWSER_TO_EXTERNAL_SURFACE",
     "mutation_required": true,
@@ -80,19 +87,20 @@
     "current_observation_required": true
   },
   "runtime_resolution": {
-    "current_executor": "StegVerse-Labs/StegBrowser Playwright Chromium ephemeral substrate with programmatic callback-only credential-session injection source readiness",
-    "authority_basis": "merged bounded lease contract plus observed ephemeral browser execution evidence; canonical resident InTr ingress and live TV/TVC+SKAP provider-session capability remain runtime predicates",
+    "current_executor": "StegVerse-Labs/StegBrowser Playwright Chromium ephemeral substrate with programmatic callback-only credential-session injection source readiness and merged StegSocials authenticated observation caller",
+    "authority_basis": "merged bounded lease contract plus observed public ephemeral browser execution evidence; canonical resident InTr ingress and live TV/TVC+SKAP social provider-session capability remain runtime predicates",
     "unattended_runtime": false
   },
   "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
-  "human_action_ref": "No human action is required for source/public-surface integration. Credentialed-site testing begins only after authentic resident InTr admission and a live TV/TVC + SKAP provider-session capability are available to the resident execution edge.",
+  "human_action_ref": "No human action is required for source/public-surface integration. Credentialed-site testing begins only after authentic resident InTr admission and a live TV/TVC + SKAP social provider-session capability are available to the resident execution edge.",
   "completion": {"claimed":false,"validated":true,"reconciliation_ref":"StegVerse-Labs/StegBrowser/actions/runs/34298752980","activation_proof_complete":false},
   "allowed_next_transitions": ["INGRESS_ADMITTED"],
   "handoff_projection_refs": [
     "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_ECOSYSTEM_EPHEMERAL_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_EPHEMERAL_CREDENTIAL_SESSION_MIRROR_HANDOFF.md",
     "docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_STEGBROWSER_OBSERVATION_MIRROR_HANDOFF.md"
+    "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_STEGBROWSER_OBSERVATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/TVC/docs/SOCIAL_PROVIDER_SKAP_ARTICULATION_MIRROR_HANDOFF.md"
   ],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
@@ -102,6 +110,7 @@
     "credentials_must_remain_outside_lease_and_repository": true,
     "live_session_handles_must_remain_outside_lease_argv_repository_logs_and_artifacts": true,
     "credential_resolution_must_be_callback_only_at_execution_edge": true,
+    "authenticated_observation_does_not_mint_publication_authority": true,
     "interlock_intr_required_for_governed_ingress_egress": true,
     "worker_claim_authority": "WORKERCOORDINATOR",
     "master_records_reality_authority": true
