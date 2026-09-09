@@ -8,7 +8,7 @@ Task ID: `GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001`
 COSV ID: `10100000100000`
 Canonical coordination state: `PROPOSED`
 Canonical checkout state: `UNCLAIMED`
-Status: `RESIDENT ACTIVATION REQUESTED / SOURCE-DISCOVERY + SOURCE-MATERIALIZATION RECOVERY MERGED / COMPLETE-ALL-DECLARED-CHILDREN POLICY MERGED / TVC PRIMARY-RUNTIME OWNER BRIDGE IN CURRENT BRANCH / GADI SOURCE COMPLETE / HIL G25 SATISFIED + ESRL SOURCE/INTAKE MERGED / AUTHENTIC FULL ACTIVATION NOT PROVEN`
+Status: `RESIDENT ACTIVATION REQUESTED / SOURCE-DISCOVERY + SOURCE-MATERIALIZATION RECOVERY MERGED / COMPLETE-ALL-DECLARED-CHILDREN POLICY MERGED / TVC PRIMARY-RUNTIME OWNER BRIDGE MERGED + VALIDATED / GADI SOURCE COMPLETE / HIL G25 SATISFIED + ESRL SOURCE/INTAKE MERGED / AUTHENTIC FULL ACTIVATION NOT PROVEN`
 
 ## Source of truth
 
@@ -36,9 +36,11 @@ Ambiguous roots still fail closed. No root, TVC receipt, materialization receipt
 
 ## TVC primary-runtime manual seam remediation
 
-`StegVerse-Labs/TVC/tasks/TVC-CAPABILITY-RUNTIME-002.json` still records `primary_runtime_bound=false` and `primary_runtime_service_installed_observed=false`. Its completed binder task already exposes repository-native dispatcher selectors `tvc.primary_runtime_binder.preflight` and `tvc.primary_runtime_binder.activate`, but the recorded next executable action still depended on someone invoking that dispatcher on the TV/TVC host.
+`StegVerse-Labs/TVC/tasks/TVC-CAPABILITY-RUNTIME-002.json` still records `primary_runtime_bound=false` and `primary_runtime_service_installed_observed=false`. Its completed binder task already exposes repository-native dispatcher selectors `tvc.primary_runtime_binder.preflight` and `tvc.primary_runtime_binder.activate`, but the recorded next executable action previously depended on someone invoking that dispatcher on the TV/TVC host.
 
-Current branch `governed-manifold-tvc-runtime-owner-bridge` removes that manual-command seam without creating a competing TVC task or claim:
+PR `#1284` merged at `8f50f126a6eda83927e181c18e03e207923d2dd1`. The first deterministic-suite run exposed only a test-harness dependency defect (`pytest` was not installed in the canonical unittest-only suite); the test was converted to native `unittest`, after which deterministic-suite run 185, organization-control run 2649, and Heartbeat run 2930 all passed on head `8fe7503a296197a9e7702d3c186ea9e0475a10ea`.
+
+The merged bridge removes the manual-command seam without creating a competing TVC task or claim:
 
 - both governed-manifold consumer surfaces recognize only the existing external-owner tasks `TVC-PROVIDER-OPERATION-BROKER-003` and `TVC-CAPABILITY-RUNTIME-002`;
 - hosted execution is rejected;
@@ -48,9 +50,7 @@ Current branch `governed-manifold-tvc-runtime-owner-bridge` removes that manual-
 - only `READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND` is qualifying; dispatcher success alone is not qualifying evidence;
 - no GitHub/runtime credential authority, new TVC claim, provider operation, wallet signing, or broadcast capability is introduced.
 
-Focused regression coverage checks both consumer surfaces, fail-closed absence of the TV/TVC declaration, and hosted-surface rejection.
-
-This is source-path remediation, not a claim that the authorized TV/TVC host has executed it yet.
+This is source/runtime-path remediation, not a claim that the authorized TV/TVC host has executed it yet.
 
 ## Required formalism order
 
@@ -69,7 +69,7 @@ PR `#1246` merged at `edc048632afe8db34113101b7d7400f9d5fbb8e4`; conditional lan
 
 ## TVC / StegFin
 
-`TVC-PROVIDER-OPERATION-BROKER-003` and `TVC-CAPABILITY-RUNTIME-002` still require qualifying current runtime observation. `STEGFIN-CONTINUITY-CARRIER-007` remains fail-closed until TVC qualification exists. The current branch makes the existing TVC owner path directly visitable by the resident umbrella when the TV/TVC host predicates are present.
+`TVC-PROVIDER-OPERATION-BROKER-003` and `TVC-CAPABILITY-RUNTIME-002` still require qualifying current runtime observation. `STEGFIN-CONTINUITY-CARRIER-007` remains fail-closed until TVC qualification exists. The resident umbrella can now directly visit the existing TVC owner path when the TV/TVC host predicates are present.
 
 ## GADI
 
@@ -90,8 +90,8 @@ HIL G25 request consumption is satisfied and task COSV is `50000000103000`. Site
 - source-materialization recovery wiring: `MERGED / VALIDATED`
 - first-cohort upstream source presence: `CANONICAL HANDOFF-BEARING REPOSITORIES OBSERVED`
 - source-discovery resident receipt / roots manifest: `NOT OBSERVED`
-- TVC primary-runtime owner bridge: `IMPLEMENTED IN CURRENT BRANCH / VALIDATION PENDING`
-- TVC authentic runtime qualification: `PENDING`
+- TVC primary-runtime owner bridge: `MERGED / VALIDATED`
+- TVC authentic runtime qualification: `PENDING AUTHENTIC RESIDENT VISIT`
 - four formalism lane receipts: `PENDING`
 - formalism manifold reconciliation: `PENDING`
 - StegFin continuation: `PENDING TVC`
