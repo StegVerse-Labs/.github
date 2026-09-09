@@ -24,14 +24,32 @@ class GlobalRuntimeEvidenceConvergenceExecutionTests(unittest.TestCase):
         projection = json.loads(PROJECTION.read_text(encoding="utf-8"))
         module = load_runner()
         members = {row["task_id"] for row in projection["members"]}
-        selector_tasks = set(module.TASK_SELECTORS)
+        selector_tasks = set(module.TASK_SELECTORS) & members
+        direct_tasks = set(module.DIRECT_CONSUMERS) & members
         canonical_work_tasks = set(module.CANONICAL_WORK_ONLY) & members
-        no_selector_tasks = set(module.NO_SELECTOR_REASON)
+        unwired_tasks = set(module.NO_EXECUTION_PATH_REASON) & members
         self.assertEqual(18, len(members))
-        self.assertEqual(members, selector_tasks | canonical_work_tasks | no_selector_tasks)
-        self.assertFalse(selector_tasks & canonical_work_tasks)
-        self.assertFalse(selector_tasks & no_selector_tasks)
-        self.assertFalse(canonical_work_tasks & no_selector_tasks)
+        self.assertEqual(members, selector_tasks | direct_tasks | canonical_work_tasks | unwired_tasks)
+        classes = [selector_tasks, direct_tasks, canonical_work_tasks, unwired_tasks]
+        for index, left in enumerate(classes):
+            for right in classes[index + 1:]:
+                self.assertFalse(left & right)
+
+    def test_latent_existing_paths_are_reused(self):
+        module = load_runner()
+        self.assertEqual(("stegos_kv_intr_chain",), module.TASK_SELECTORS["SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001"])
+        self.assertEqual(
+            Path("control/resident-execution-request.d/consume-gadi-resident-execution.py"),
+            module.DIRECT_CONSUMERS["GADI-RESIDENT-EXECUTION-001"],
+        )
+        self.assertNotIn("GADI-RESIDENT-EXECUTION-001", module.NO_EXECUTION_PATH_REASON)
+        self.assertNotIn("SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001", module.NO_EXECUTION_PATH_REASON)
+
+    def test_vacc_projection_uses_current_sovereign_task(self):
+        projection = json.loads(PROJECTION.read_text(encoding="utf-8"))
+        vacc = next(row for row in projection["members"] if row["lane"] == "VACC")
+        self.assertEqual("VACP-SOVEREIGN-PROVIDER-REALIGNMENT-023", vacc["task_id"])
+        self.assertEqual("SOVEREIGN_VACC_REQUEST_EXECUTION", vacc["resume_stage"])
 
     def test_global_visitor_reuses_existing_dispatcher_and_does_not_recurse(self):
         module = load_runner()
