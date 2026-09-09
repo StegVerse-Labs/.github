@@ -11,6 +11,8 @@ import sys
 from pathlib import Path
 from typing import Any, Callable
 
+from runtime_failure_boundaries import annotate_lane_outcome, summarize_failure_boundaries
+
 ROOT = Path(__file__).resolve().parents[1]
 PROFILE_REL = Path("control/runtime-node-profiles.json")
 BASE_RUNNER_REL = Path("scripts/run_global_runtime_evidence_convergence.py")
@@ -136,7 +138,6 @@ def resolve_unwired_profile(source: Path, runtime: Path, profile: dict[str, Any]
     if task_id == "VACP-SOVEREIGN-PROVIDER-REALIGNMENT-023" and kind == "EXISTING_TASK_RUNTIME_WRAPPER":
         return _run_profile_wrapper(source, runtime, VACC_WRAPPER_REL, "VACC")
 
-    # Backward-compatible diagnosis for an older materialized profile copy.
     if kind == "EXTERNAL_RUNTIME_PROFILE_BRIDGE" and task_id == "VACP-SOVEREIGN-PROVIDER-REALIGNMENT-023":
         observed = _find_vacc_state(runtime)
         if observed is not None and observed["value"].get("state") == "LIVE_VERIFIED":
@@ -202,9 +203,10 @@ def execute(source_root: Path, runtime_root: Path, *, base_executor: Callable[[P
             resolved = resolve_unwired_profile(source, runtime, profile)
             result["execution_path"] = "HB_SYNCED_STEGOS_RUNTIME_NODE_PROFILE"
             result.update(resolved)
-        profiled.append(result)
+        profiled.append(annotate_lane_outcome(result))
 
     require(not any(row.get("execution_path") == "UNWIRED_CHILD_RUNTIME" for row in profiled), "unwired child runtime remains after profile convergence")
+    boundary_summary = summarize_failure_boundaries(profiled)
     receipt = {
         "schema":"stegverse.global-runtime-node-profile-convergence/v1",
         "state":"PROFILE_CONVERGENCE_VISIT_COMPLETE",
@@ -215,12 +217,14 @@ def execute(source_root: Path, runtime_root: Path, *, base_executor: Callable[[P
         "member_count":len(profiled),
         "unwired_member_count":0,
         "lane_outcomes":profiled,
+        "failure_boundary_summary":boundary_summary,
         "base_convergence_state":base_receipt.get("state"),
         "authority_effect":"NONE_PROFILE_AND_OBSERVATION_ONLY",
         "nonclaims":[
             "PROFILE_BINDING_DOES_NOT_PROVE_RUNTIME_EXECUTION",
             "HB_SYNC_DOES_NOT_GRANT_EXECUTION_AUTHORITY",
             "RETAINED_NODE_PROFILE_DOES_NOT_MINT_CLAIM_OR_FENCE",
+            "FAILURE_BOUNDARY_CLASSIFICATION_DOES_NOT_ADVANCE_RUNTIME_STATE",
             "CURRENT_DEVICE_OR_PROVIDER_RUNTIME_EVIDENCE_REMAINS_REQUIRED_WHERE_UNOBSERVED"
         ]
     }
@@ -236,7 +240,7 @@ def main() -> int:
     parser.add_argument("--runtime-root", type=Path, default=ROOT)
     args = parser.parse_args()
     result = execute(args.source_root, args.runtime_root)
-    print(json.dumps({"state":result["state"],"member_count":result["member_count"],"unwired_member_count":result["unwired_member_count"],"hb_protocol":result["hb_protocol"],"receipt":str(args.runtime_root.expanduser().resolve() / PROFILE_RECEIPT_REL)}, sort_keys=True))
+    print(json.dumps({"state":result["state"],"member_count":result["member_count"],"unwired_member_count":result["unwired_member_count"],"hb_protocol":result["hb_protocol"],"failure_boundary_summary":result["failure_boundary_summary"],"receipt":str(args.runtime_root.expanduser().resolve() / PROFILE_RECEIPT_REL)}, sort_keys=True))
     return 0
 
 
