@@ -1,0 +1,105 @@
+{
+  "schema": "stegverse.org-task/v0.2",
+  "task_id": "TASK-2026-0010",
+  "organization": "StegVerse-Labs",
+  "goal": "Project the exact current-iPhone StegOS TestFlight static bootstrap successor from StegVerse-Labs/StegOS into StegVerse-Labs/Site under a fresh canonical allocator fence so the authentic source-device retained-node measurement path can advance, without reactivating TASK-2026-0008 or widening HeartBeat, WorkerCoordinator, credential, runtime, publication, signing, TestFlight, Interlock/InTr, or custody authority.",
+  "status": "queued",
+  "requested_at": "2026-09-09T23:56:43Z",
+  "priority_class": "release",
+  "rank_reason": [
+    "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001 is pre-loop because authentic current-iPhone resident materialization is not yet observed",
+    "StegOS successor package STEGOS-CURRENT-IPHONE-TESTFLIGHT-STATIC-BOOTSTRAP-001 is source-ready and binds the validated WASM signer, unsigned IPA, signing executor, TVC provider client, TestFlight action, and exact destination mappings",
+    "The successor package explicitly requires a fresh Site allocation and forbids mutation under the terminal TASK-2026-0008 predecessor claim",
+    "Site issue #1180 records the fresh destination projection work and exact authority ceiling"
+  ],
+  "requirements": {
+    "mandatory": [
+      {
+        "repository": {
+          "host": "github.com",
+          "owner": "StegVerse-Labs",
+          "name": "Site",
+          "full_name": "StegVerse-Labs/Site",
+          "default_branch": "main"
+        },
+        "mode": "scoped_exclusive",
+        "preemptible": true,
+        "scope": {
+          "paths": [
+            "stegos-bootstrap/current-iphone-testflight.html",
+            "stegos-bootstrap/current-iphone-testflight-bootstrap.js",
+            "stegos-bootstrap/current-iphone-unsigned-ipa-materializer.js",
+            "stegos-bootstrap/StegOSMobile-unsigned-device.ipa",
+            "stegos-bootstrap/StegOSMobile-unsigned-device-manifest.json",
+            "stegos-bootstrap/StegOSMobile.signing-requirements.json",
+            "stegos-bootstrap/current-iphone-wasm-materializer.js",
+            "stegos-bootstrap/stegos_current_iphone_ipa_signer.js",
+            "stegos-bootstrap/stegos_current_iphone_ipa_signer_bg.wasm",
+            "stegos-bootstrap/current-iphone-wasm-signing-engine.js",
+            "stegos-bootstrap/current-iphone-ipa-signing-executor.js",
+            "stegos-bootstrap/current-iphone-tvc-provider-client.js",
+            "stegos-bootstrap/current-iphone-testflight-signing-action.js",
+            "contracts/current-iphone-ipa-signing-executor.v1.json",
+            "README.md",
+            "docs/CURRENT_IPHONE_TESTFLIGHT_STATIC_BOOTSTRAP_SITE_PROJECTION_MIRROR_HANDOFF.md",
+            "data/tasks/SITE-CURRENT-IPHONE-TESTFLIGHT-STATIC-BOOTSTRAP-001.json",
+            "data/session-work-claims.d/site-current-iphone-testflight-static-bootstrap-001.json"
+          ],
+          "contracts": [
+            "stegos.current-iphone-site-projection-successor.v1",
+            "stegos.current-iphone-ipa-signing-executor.v1"
+          ],
+          "release_surfaces": [
+            "site:current-iphone-testflight-static-bootstrap"
+          ],
+          "capabilities": [
+            "current-iphone-testflight-static-bootstrap-projection"
+          ],
+          "workflows": [],
+          "dependency_surfaces": [
+            "site:current-iphone-testflight-static-bootstrap"
+          ]
+        }
+      }
+    ],
+    "optional": []
+  },
+  "dependencies": [],
+  "workspace": {
+    "branch": "claim/site-current-iphone-testflight-static-bootstrap-r1",
+    "merge_target": "main",
+    "direct_push_allowed": false,
+    "pull_request_required": true
+  },
+  "supersedes": null,
+  "predecessor_provenance": {
+    "allocator_task": "TASK-2026-0008",
+    "site_projection_pr": 952,
+    "site_projection_merge": "6a08d993af9814cc6d20723f8a1e16957d3fe8d4",
+    "reactivation_allowed": false
+  },
+  "source_successor": {
+    "repository": "StegVerse-Labs/StegOS",
+    "package": "release/current-iphone-site-projection/successors/current-iphone-testflight-static-bootstrap.json",
+    "package_state": "SUCCESSOR_PACKAGE_READY_AWAITING_FRESH_SITE_ALLOCATION",
+    "asset_package_commit": "57f32a9e8b9dfbc70e66e0df3cb7de419fc0701b",
+    "wasm_sha256": "699dc3054788d779ba7920e332c661ef7eac001156f93ab7b1fe1b64ee5a4b93",
+    "wasm_glue_sha256": "17fe61cfdae43cbe5a1d1b211beb39838f58e982efdba90c7156fc36402f3adb",
+    "unsigned_ipa_sha256": "557d559082bdefca5fcc69c86f342d8cc035c2d803d154de5ed45b5677f80c35"
+  },
+  "destination_issue": "StegVerse-Labs/Site#1180",
+  "parent_goal": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+  "measurement_child": "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001",
+  "cosv_task_vector": "50000010100000",
+  "authority": {
+    "heartbeat_grants_claim_authority": false,
+    "workercoordinator_authority_owner": "StegVerse-Labs/.github WorkerCoordinator",
+    "credential_authority": "TV/TVC",
+    "github_actions_runtime_authority": "NONE",
+    "site_mutation_authority_before_fresh_claim": false,
+    "runtime_execution_inferred": false,
+    "testflight_execution_inferred": false,
+    "signing_authority_inferred": false,
+    "interlock_intr_authority_inferred": false
+  }
+}
