@@ -1,7 +1,7 @@
 # GADI Mirror Handoff
 
 Updated: 2026-09-09
-Status: `NOT_RETIRED / STEGOS_NATIVE_DEFENSE_SOURCE_MERGED / STEGCORE_REASONING_SOURCE_MERGED / TV_TVC_CAPABILITY_BINDINGS_MERGED / CONTROLLED_SIMULATION_SOURCE_VALIDATED_MERGED / RESIDENT_CONSUMER_SOURCE_VALIDATED_MERGED / CONTINUITY_RECONSTRUCTION_SOURCE_VALIDATED_MERGED / AUTHENTIC_RESIDENT_EXECUTION_MASTER_RECORDS_RECONCILIATION_PENDING / AUTHENTIC_ACTIVATION_PENDING`
+Status: `NOT_RETIRED / STEGOS_NATIVE_DEFENSE_SOURCE_MERGED / STEGCORE_REASONING_SOURCE_MERGED / TV_TVC_CAPABILITY_BINDINGS_MERGED / CONTROLLED_SIMULATION_SOURCE_VALIDATED_MERGED / RESIDENT_CONSUMER_SOURCE_VALIDATED_MERGED / CONTINUITY_RECONSTRUCTION_SOURCE_VALIDATED_MERGED / STEGOS_ADVERSARIAL_VALIDATION_AND_DEFENSIVE_MATURITY_CHAIN_MERGED / EVIDENCE_QUALITY_AND_CONFIDENCE_CHAIN_MERGED / DECISION_RECEIPT_REPLAY_ATTESTATION_RECONCILIATION_CHAIN_MERGED / AUTHENTIC_RESIDENT_EXECUTION_MASTER_RECORDS_RECONCILIATION_PENDING / AUTHENTIC_ACTIVATION_PENDING`
 Repository: `StegVerse-Labs/.github`
 Canonical task: `GADI-001`
 Canonical record: `data/canonical-task-records/GADI-001.json`
@@ -9,48 +9,44 @@ COSV ID: `10100000100000`
 
 ## Purpose
 
-Implement end-to-end Governed Autonomous Defensive Intervention with native StegOS defensive abilities, StegCore reasoning, current InTr/StegGate admission, TV/TVC capability custody, existing-runtime execution/reassessment, and Continuity/Master Records reconstruction.
+Implement end-to-end Governed Autonomous Defensive Intervention with native StegOS defensive abilities, StegCore reasoning, current InTr admission, TV/TVC capability custody, existing-runtime execution/reassessment, and exact Continuity/Master Records reconstruction.
 
 ## Current merged source chain
 
-- StegOS native contracts/discovery/boundary/control plane: merged.
+- StegOS native defense contracts/discovery/control plane and network-native fabric: merged.
 - StegCore threat reasoning/planning: merged.
-- TV/TVC capability source bindings: merged.
+- TV/TVC capability bindings: merged.
 - micro-node controlled simulation/reassessment PR #87: merged at `35a3738108c9cd506d63b5e7fbf0eb2752aa56b5`.
-- simulation handoff reconciliation PR #88: merged at `dd6e8e084ba2fac1ff25f614f86fdd8b5ccf1780`.
 - resident defensive command consumer PR #90: merged at `cfdea8f44814dfcefd5c411110cb2b367e34d937`.
-- resident-consumer handoff/claim reconciliation PR #91: merged at `901829b3f36f764b474d7e4be02b68eb5e6e63fe`.
 - Continuity confrontation reconstruction verifier PR #14: merged at `d1956b1cc9860d8bc1de70180e412ca01dc8aec6`.
-- Continuity handoff reconciliation PR #15: merged at `128dbc3d6283c252ad09036be5162ab49cdf08c5`.
 
-## Resident consumer source
+### StegOS adversarial-validation and maturity chain
 
-`StegVerse-002/micro-node-runtime/micro_node/gadi_resident_consumer.py` accepts only canonical `stegos.gadi-native-defensive-command.v1` commands in `READY_FOR_RESIDENT_EXECUTION` state. It requires exact GADI/COSV identity, TV/TVC credential authority, observed InTr admission, exact InTr decision reference, observed runtime binding, and caller-supplied already-observed WorkerCoordinator claim/fence context with exact runtime/control-surface/target/subject binding.
+- PR #236 — authorized adversarial validation and ROE validation.
+- PR #239 — passive outside-in drift — `6bd7f22ecd80d923f084e9aa694444678e1a70d3`.
+- PR #242 — adversarial finding lifecycle — `c2d2ae9e1fd867bb2abf505e056a961f3dfade5b`.
+- PR #246 — defensive maturity signals — `eb6a66960e86ee1b99acf5cea43adb6830fc32b7`.
+- PR #250 — defensive control coverage — `d7cadf6b3e585d5da5dd8f2d2a5164095e88d232`.
+- PR #254 — risk-prioritized exercise scheduler — `0762ee6bd04236f347eee777e032e5a2304fcb9d`.
+- PR #266 — exercise result normalization — `eabb3a450990b7b21740900710af55c33bb55580`.
 
-It does not mint claims, fences, InTr admission, credentials, runtime leases, schedulers, services, transports, or custody authority. Its non-authorizing receipt explicitly retains `execution_authority_minted=false`, `scheduler_created=false`, `runtime_created=false`, `master_records_custody_claimed=false`, and `authority_effect=NONE_EXECUTION_EVIDENCE_ONLY`.
+### StegOS evidence/confidence/reconstruction chain
 
-Final functional PR head `0dbc4cb1c64787548af2cde8c1ee43812013ef77` passed exact module compile, eight focused positive/fail-closed cases, and all four repository workflows. The Validate Micro-Node Runtime workflow remained bounded by absent TVC private-source capability and therefore intentionally skipped canonical `tools/run_all.py`; no source failure was observed.
+- PR #275 — evidence quality / anti-gaming — `8304c953a58da5a61fd603f05e8c5505123ebab1`.
+- PR #276 — deterministic confidence propagation — `3df8cfa40ad068c2711ea2129264d168fe056069`.
+- PR #279 — defensive opportunity graph confidence — `1bed91cc8b0628845751b91a195fa679acfceb79`.
+- PR #280 — opportunity-graph decision receipts — `f716ee4b16df39132aa6d94298b45c82a1220948`.
+- PR #281 — deterministic decision receipt replay — `4c79266d25442491036d3cd8bcd231bea6ae1aad`.
+- PR #285 — replay attestation packaging — `3ee20ade1e840cf5d46a46a2c6a2a9ab007d903d`.
+- PR #286 — replay attestation downstream reconciliation — `1c6d703db8b92108dbfe9787dccac615aa7af605`.
 
-README maintenance for this functional runtime-consumption interface was completed in micro-node PR #90.
+These layers establish deterministic evidence-quality handling, confidence bounds, defensive-path ranking, decision receipts, historical replay, digest-bound replay attestations, and append-only reconciliation semantics. Duplicate/shared-lineage/stale/simulation/CI evidence cannot inflate live confidence; strong contradictory evidence cannot be outvoted by repeated weak positives; historical replay cannot inject newer evidence or remove adverse evidence; conflicting attestations remain preserved instead of being silently resolved by recency.
 
-## Continuity reconstruction source
+## Authentic activation boundary
 
-`StegVerse-Labs/Continuity/scripts/verify_gadi_confrontation.py` plus `schemas/gadi-confrontation-reconstruction.v1.schema.json` now provide the merged bounded exact-confrontation verifier. It validates ordered event continuity, observed InTr admission before action, capability/authorization evidence, semantic-integrity preservation, action/result pairing, strategy-change/reassessment/adaptation relationships, coherent termination, controlled-simulation non-production semantics, and deterministic reconstruction digest binding.
+The source chain is materially broader and more reconstructable, but activation remains unproven. One authentic current chain is still required:
 
-Continuity PR #14 final head `2c62689c0e2225d616b566886352110e48eb1494` passed focused GADI reconstruction workflow `34281573723`. The repository-wide anonymous/private-source validation failure occurred before repository validators and is retained as a bounded repository dependency, not a GADI source failure. PR #15 reconciled the handoff after merge.
-
-The Continuity verifier does not mint InTr admission, TV/TVC authority, WorkerCoordinator authority, execution, Master Records reality, or activation. It is reusable source capability only.
-
-## Canonical dependency standing
-
-Resolved source dependencies:
-
-- StegOS native defense contracts and command materialization;
-- StegCore reasoning;
-- TV/TVC capability source bindings;
-- controlled simulation/reassessment harness;
-- resident defensive-command consumer;
-- Continuity confrontation reconstruction verifier.
+`observation -> reasoning -> capability -> current InTr admission -> current WorkerCoordinator claim/fence -> bound StegOS command -> existing-runtime consumption -> effect -> reassessment/termination -> Continuity custody/verification -> Master Records reconciliation -> exact reconstruction`.
 
 Still unresolved authentic predicates:
 
@@ -61,27 +57,17 @@ Still unresolved authentic predicates:
 - live reassessment/adaptation/termination evidence;
 - authentic receipt-chain custody and Master Records reconciliation;
 - exact confrontation verification over that authentic chain;
-- canonical cross-repository reconciliation and final GADI activation proof.
-
-## Activation rule
-
-Source existence, CI success, simulation transcripts, merged consumer/verifier code, or historical decisions cannot substitute for one authentic current chain:
-
-`observation -> reasoning -> capability -> current InTr admission -> bound StegOS command -> existing-runtime consumption -> effect -> reassessment/termination -> Continuity verification -> Master Records reconciliation`.
+- canonical cross-repository reconciliation and final activation proof.
 
 ## Boundary
 
-Unauthorized compromise of third-party systems is not permitted. External effects must use organization-controlled mechanisms, pre-authorized defensive interfaces, TV/TVC-governed capabilities, or controlled test surfaces. Missing authority, runtime binding, claim/fence, or evidence fails closed.
-
-## README impact
-
-This `.github` change is coordination/evidence reconciliation only; the existing `.github` README remains accurate. The functional README change was completed in micro-node PR #90. Continuity PR #14 added an internal verifier package and required no top-level README change under its documented impact determination.
+Unauthorized compromise of unrelated third-party systems is not permitted. External effects must use organization-controlled mechanisms, explicitly authorized test targets, pre-authorized defensive interfaces, TV/TVC-governed capabilities, or controlled simulation surfaces. Missing scope, authority predicate, runtime binding, claim/fence, or evidence fails closed.
 
 ## Remaining destinations
 
-- authentic GADI execution context and effect/reassessment evidence -> current canonical WorkerCoordinator/runtime owners;
+- authentic GADI execution/effect/reassessment evidence -> current canonical WorkerCoordinator/runtime owners;
 - authentic receipt-chain custody and Master Records reconciliation -> `StegVerse-Labs/Continuity` / Master Records;
 - canonical dependency/activation reconciliation -> `StegVerse-Labs/.github`;
 - proof/readiness projection after underlying evidence qualifies -> `StegVerse-Labs/Site`.
 
-GADI remains ACTIVE and is not release/tag ready. After an actual future release/tag, create separate propagation verification for `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `admissibility-wiki`, and `stegguardian-wiki`.
+GADI remains ACTIVE and is not release/tag ready.
