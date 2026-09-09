@@ -1,0 +1,59 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "GADI-RESIDENT-EXECUTION-001",
+  "correlation_id": "GADI-RESIDENT-EXECUTION-001",
+  "root_correlation_id": "GADI-001",
+  "parent_task_id": "GADI-001",
+  "goal": "Consume one current, already-admitted and runtime-bound GADI defensive command through the existing canonical resident runtime and pre-authorized controlled actuator surface, preserving WorkerCoordinator claim/fence identity and emitting subject-bound execution evidence without creating parallel runtime infrastructure.",
+  "coordination_state": "PROPOSED",
+  "checkout_state": "UNCLAIMED",
+  "cosv_task_vector": "10100000100000",
+  "source_refs": [
+    "docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
+    "handoffs/GADI-RESIDENT-EXECUTION-001.json",
+    "control/resident-execution-request.d/gadi-resident-execution-001.json",
+    "control/resident-execution-request.d/consume-gadi-resident-execution.py",
+    "control/worker-registry.d/gadi-resident-execution-001.json",
+    "control/process-worker-adapters.d/gadi-resident-execution-001.json",
+    "control/task-vectors/GADI-RESIDENT-EXECUTION-001.json",
+    "StegVerse-002/micro-node-runtime/micro_node/gadi_resident_consumer.py"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs", "StegVerse-002"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-002/micro-node-runtime"],
+    "components": ["gadi-resident-execution", "workercoordinator-claim-fence", "intr-bound-command", "runtime-binding", "subject-bound-effect-evidence"]
+  },
+  "dependencies": [
+    {"dependency_id":"DEP-GADI-RESIDENT-CONSUMER-SOURCE","kind":"IMPLEMENTATION","state":"RESOLVED_SOURCE_COMPLETE_VALIDATED_MERGED","ref":"StegVerse-002/micro-node-runtime#90","disposition":"REUSE_MERGED_CONSUMER"},
+    {"dependency_id":"DEP-GADI-INTR-ADMISSION","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"GADI-001","disposition":"REQUIRE_CURRENT_INTR_DECISION_REF"},
+    {"dependency_id":"DEP-GADI-WORKERCOORDINATOR-CLAIM","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"STEGVERSE-CANONICAL-WORK-COORDINATION-001","disposition":"REQUIRE_CURRENT_CLAIM_AND_FENCE"},
+    {"dependency_id":"DEP-GADI-RUNTIME-BINDING","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"StegVerse-002/micro-node-runtime","disposition":"REQUIRE_EXACT_CURRENT_RUNTIME_BINDING"},
+    {"dependency_id":"DEP-GADI-PREAUTHORIZED-ACTUATOR","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"StegVerse-Labs/TV;StegVerse-Labs/TVC","disposition":"REQUIRE_CONTROLLED_PREAUTHORIZED_ACTUATOR_RESULT"}
+  ],
+  "blockers": [],
+  "adjacent_task_refs": ["GADI-001", "TVC-CAPABILITY-RUNTIME-002", "STEGVERSE-CANONICAL-WORK-COORDINATION-001"],
+  "expected_evidence_predicates": [
+    "CURRENT_GADI_COMMAND_ADMITTED_AND_RUNTIME_BOUND",
+    "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+    "CONTROL_SURFACE_TARGET_AND_SUBJECT_BINDING_MATCH",
+    "PREAUTHORIZED_CONTROLLED_ACTUATOR_RESULT_OBSERVED",
+    "GADI_RESIDENT_CONSUMPTION_RECEIPT_VALID",
+    "SUBJECT_BOUND_EFFECT_OBSERVATION_PRESERVED",
+    "NO_PARALLEL_RUNTIME_SCHEDULER_HEARTBEAT_OR_CREDENTIAL_PATH"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["gadi_resident_defensive_execution"],
+    "environment": "SOVEREIGN_RESIDENT_WITH_CONTROLLED_EXTERNAL_TEST_SURFACE",
+    "direction": "INTERNAL_AND_PREAUTHORIZED_EXTERNAL_DEFENSIVE",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "runtime_resolution": null,
+  "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
+  "human_action_ref": null,
+  "completion": {"claimed":false,"validated":false,"resident_execution_observed":false},
+  "allowed_next_transitions": ["INGRESS_ADMITTED"],
+  "handoff_projection_refs": ["docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"],
+  "authority_model": {"task_registry_mints_execution_authority":false,"source_state_proves_execution":false,"worker_claim_authority":"WORKERCOORDINATOR","interlock_intr_required_for_governed_ingress_egress":true,"credential_authority":"TV_TVC","request_grants_execution_authority":false}
+}

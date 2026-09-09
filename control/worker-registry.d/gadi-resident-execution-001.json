@@ -1,0 +1,87 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "GADI-RESIDENT-EXECUTION-001",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": ["AUTHENTIC_GADI_RESIDENT_EXECUTION_NOT_YET_OBSERVED"],
+      "authorized_policy_version": "gadi-resident-execution-v0.1",
+      "block_ref": null,
+      "claim_id": null,
+      "cost_basis_ref": null,
+      "evidence_refs": [
+        "handoffs/GADI-RESIDENT-EXECUTION-001.json",
+        "docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
+        "control/resident-execution-request.d/gadi-resident-execution-001.json"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": null,
+      "goal_id": "GADI-001",
+      "handoff_ref": "handoffs/GADI-RESIDENT-EXECUTION-001.json",
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": "docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "GADI-RESIDENT-EXECUTION-001",
+      "worker_id": null,
+      "worker_instance_id": null,
+      "admissible_existence": {
+        "capability_id": "stegverse:capability:gadi-resident-defensive-execution:v1",
+        "capability_version": "1.0.0",
+        "phase": "ADMISSIBLE",
+        "standing_evidence_refs": [
+          "docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
+          "docs/GADI_MIRROR_HANDOFF.md"
+        ],
+        "admissibility_evidence_refs": [
+          "handoffs/GADI-RESIDENT-EXECUTION-001.json"
+        ],
+        "integration_evidence_refs": [
+          "control/resident-execution-request.d/consume-gadi-resident-execution.py",
+          "control/process-worker-adapters.d/gadi-resident-execution-001.json",
+          "control/worker-registry.d/gadi-resident-execution-001.json"
+        ],
+        "activation_proof_ref": null,
+        "blockers": [
+          "CURRENT_GADI_INTR_ADMISSION_NOT_OBSERVED",
+          "CURRENT_GADI_WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED",
+          "CURRENT_GADI_RUNTIME_BINDING_NOT_OBSERVED",
+          "CONTROLLED_PREAUTHORIZED_ACTUATOR_RESULT_NOT_OBSERVED"
+        ],
+        "continuation_owner": "gadi-resident-execution-worker",
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": false,
+        "temporal_class": "current",
+        "task_relationship": "integrates_capability",
+        "target_phase": "ACTIVATED"
+      },
+      "source_state_vector_ref": "control/task-vectors/GADI-RESIDENT-EXECUTION-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "10100000100000",
+          "vector_state": "EMITTED",
+          "authority_effect": "NONE"
+        }
+      }
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:gadi-resident-execution-v1",
+      "authority_source": "handoffs/GADI-RESIDENT-EXECUTION-001.json#authority",
+      "capabilities": ["gadi_resident_defensive_execution"],
+      "capability_profile_ref": "control/worker-capability-profiles.json#repository-maintenance-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "gadi-resident-execution-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false
+}

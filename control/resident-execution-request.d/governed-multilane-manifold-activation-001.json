@@ -15,10 +15,12 @@
   "worker_registry_refs": [
     "control/worker-registry.d/formalism-manifold-orchestration-001.json",
     "control/worker-registry.d/stegfin-continuity-carrier-007.json",
+    "control/worker-registry.d/gadi-resident-execution-001.json",
     "control/worker-registry.d/hil-resident-session-manifold-activation-001.json"
   ],
   "process_adapter_refs": [
     "control/process-worker-adapters.d/formalism-manifold-orchestration-001.json",
+    "control/process-worker-adapters.d/gadi-resident-execution-001.json",
     "control/process-worker-adapters.d/hil-resident-session-manifold-activation-001.json"
   ],
   "subordinate_task_ids": [
@@ -34,6 +36,7 @@
     "STEGFIN-CONTINUITY-CARRIER-007",
     "GADI-001",
     "GADI-STEGCORE-001",
+    "GADI-RESIDENT-EXECUTION-001",
     "HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001"
   ],
   "execution_dispositions": {
@@ -48,7 +51,8 @@
     "TVC-CAPABILITY-RUNTIME-002": "OBSERVE_EXISTING_OWNER_NO_COMPETE",
     "STEGFIN-CONTINUITY-CARRIER-007": "EXECUTE_WHEN_TVC_RUNTIME_PREREQUISITE_QUALIFIES",
     "GADI-001": "EXECUTE_INCOMPLETE_CANONICAL_CHILDREN_THROUGH_EXISTING_OWNERS",
-    "GADI-STEGCORE-001": "EXECUTE_IF_NOT_ALREADY_QUALIFYING",
+    "GADI-STEGCORE-001": "REUSE_COMPLETE_DO_NOT_REEXECUTE",
+    "GADI-RESIDENT-EXECUTION-001": "EXECUTE_IF_NOT_ALREADY_QUALIFYING",
     "HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001": "EXECUTE_IF_NOT_ALREADY_QUALIFYING"
   },
   "execution_sequence": [
@@ -63,7 +67,8 @@
     "observe TVC-PROVIDER-OPERATION-BROKER-003 and TVC-CAPABILITY-RUNTIME-002 through their existing TV/TVC-owned runtime path without creating a competing claim",
     "execute STEGFIN-CONTINUITY-CARRIER-007 through its existing WorkerCoordinator worker only after the TVC runtime prerequisite qualifies",
     "treat GADI-001 as an aggregate whose incomplete canonical child lanes execute separately through existing owners",
-    "execute GADI-STEGCORE-001 through its existing WorkerCoordinator claim/fence path",
+    "reuse completed GADI-STEGCORE-001 source evidence without duplicate execution",
+    "execute GADI-RESIDENT-EXECUTION-001 through its registered process adapter only when current command, claim/fence, InTr decision, exact runtime binding, and controlled pre-authorized actuator evidence are present; otherwise fail closed",
     "execute HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001 as a nested manifold that preserves each HIL cohort child task's independent request, claim/fence, evidence, and completion predicate",
     "persist deterministic reconciliation preserving provenance, divergence, uncertainty, and unresolved branches",
     "verify StegCore consumes the reconciliation under existing governance authority",
@@ -96,10 +101,11 @@
     "wallet signing or broadcast by non-user authority",
     "flattening disagreement during reconciliation",
     "silently excluding a declared subordinate from manifold traversal",
-    "merging nested HIL child authority or completion predicates"
+    "merging nested HIL child authority or completion predicates",
+    "promoting GADI resident task registration into execution evidence"
   ],
   "activation_completion_predicate": "every node in control/manifold-lineage.d/governed-multilane-manifold-activation-001.json has a qualifying terminal/reuse/external-owner evidence disposition and all expected_evidence_predicates in the canonical task record are durably machine-evidenced",
   "authority_effect": "NONE_REQUEST_ONLY",
   "requested_at": "2026-09-07T14:45:00-05:00",
-  "lineage_corrected_at": "2026-09-07"
+  "lineage_corrected_at": "2026-09-09"
 }
