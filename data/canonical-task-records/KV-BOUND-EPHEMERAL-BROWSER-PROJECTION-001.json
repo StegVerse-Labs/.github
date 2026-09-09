@@ -10,15 +10,16 @@
   "cosv_task_vector": "50000010100000",
   "source_refs": [
     "docs/KV_BOUND_EPHEMERAL_BROWSER_PROJECTION_MIRROR_HANDOFF.md",
-    "docs/GLOBAL_RUNTIME_EVIDENCE_MEASUREMENT_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github#1299",
     "StegVerse-Labs/continuity-vault-kit/docs/KV_PRIVACY_STATE_TRANSITION_CONTINUITY.md",
     "StegVerse-Labs/continuity-vault-kit/docs/KV_EPHEMERAL_BROWSER_PROJECTION_MIRROR_HANDOFF.md",
     "StegVerse-Labs/continuity-vault-kit#206",
     "StegVerse-Labs/continuity-vault-kit@47c363611210b7501cbb50abce768cfe0911057f",
     "StegVerse-Labs/StegOS/docs/KV_BOUND_STEGBROWSER_EPHEMERAL_PROJECTION_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/StegOS:feat/current-iphone-wasm-static-bootstrap-001",
-    "StegVerse-Labs/StegOS#314"
+    "StegVerse-Labs/StegOS#314",
+    "StegVerse-Labs/StegOS@19e2ea02a16bd703767aafcd47e71f5ec5efe3cf",
+    "StegVerse-Labs/Site/stegos-node/device-kv-intr-sync.js",
+    "StegVerse-Labs/Site/intr-service-worker.js"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
@@ -36,16 +37,16 @@
     {
       "dependency_id": "DEP-CURRENT-IPHONE-SIGNER-STATIC-AVAILABILITY",
       "kind": "SOURCE_DISTRIBUTION_PREDICATE",
-      "state": "SOURCE_BRIDGE_VALIDATION_IN_PROGRESS",
-      "ref": "StegVerse-Labs/StegOS#314",
-      "disposition": "BRANCH_RECONCILED_WITH_MAIN_BEHIND_BY_ZERO; EXACT_WASM_AND_UNSIGNED_IPA_PRESERVED; PUBLIC_PAGE_REQUIRES_IN_MEMORY_KV_PROJECTION_FILE_BEFORE_SIGNER_MATERIALIZATION; STEGOS_CI_AND_IPA_SIGNING_VALIDATION_PASS; WASM_CODESIGN_VALIDATION_PENDING_AT_LAST_OBSERVATION"
+      "state": "SOURCE_CONSUMER_MERGED_VALIDATED",
+      "ref": "StegVerse-Labs/StegOS@19e2ea02a16bd703767aafcd47e71f5ec5efe3cf",
+      "disposition": "EXACT_WASM_AND_UNSIGNED_IPA_PRESERVED; KV_FILES_PROJECTION_GATE_MERGED; STEGOS_CI_IPA_SIGNING_AND_WASM_CODESIGN_VALIDATION_PASS_AT_EXACT_PR_HEAD"
     },
     {
       "dependency_id": "DEP-AUTHENTIC-KV-PROJECTION-RECEIPT-PRODUCTION",
       "kind": "PHYSICAL_RUNTIME_PREDICATE",
-      "state": "UNRESOLVED",
-      "ref": "StegVerse-Labs/continuity-vault-kit/docs/KV_EPHEMERAL_BROWSER_PROJECTION_MIRROR_HANDOFF.md",
-      "disposition": "SOURCE_CONTRACT_EXISTS_BUT_AUTHENTIC_KV_ENTRY_TRANSITION_AND_BROWSER_CAPABILITY_RECEIPTS_HAVE_NOT_YET_BEEN_OBSERVED_FOR_CURRENT_IPHONE_TESTFLIGHT_SIGNING"
+      "state": "SOURCE_RUNTIME_ADAPTER_RECONCILIATION_REQUIRED",
+      "ref": "StegVerse-Labs/Site/stegos-node/device-kv-intr-sync.js",
+      "disposition": "EXISTING_CURRENT_IPHONE_DEVICE_TO_KV_INTR_ALREADY_PRODUCES_EXACT_INGRESS_ADMITTED_RECEIPTS; NEXT_SOURCE_STEP_IS_PURPOSE_BOUND_TESTFLIGHT_ENTRY_AND_BROWSER_CAPABILITY_ADAPTER_REUSING_THIS_CANONICAL_INGRESS"
     },
     {
       "dependency_id": "DEP-AUTHENTIC-CURRENT-IPHONE-RETAINED-NODE-MATERIALIZATION",
@@ -66,12 +67,10 @@
   "existing_evidence_refs": [
     "StegVerse-Labs/.github#1299",
     "StegVerse-Labs/continuity-vault-kit@47c363611210b7501cbb50abce768cfe0911057f",
-    "StegVerse-Labs/continuity-vault-kit#206",
-    "StegVerse-Labs/StegOS@d84a779b05c4fc60ae52d00e2ef57e2661b03408",
-    "StegVerse-Labs/StegOS@7d0fe93647c37a2edc737e7a0d5a62a5c84565df",
-    "StegVerse-Labs/StegOS@de276388658d509927d7c41766c6ae1a35f5574c",
-    "StegVerse-Labs/StegOS@680e0cf9a7833a61e130e1dd1c6928f2dfb36a2c",
-    "StegVerse-Labs/StegOS@9c14f4c1bcffff43cfe741a49d2c2c15dfd542b7"
+    "StegVerse-Labs/StegOS@19e2ea02a16bd703767aafcd47e71f5ec5efe3cf",
+    "StegVerse-Labs/StegOS/actions/runs/34410852666",
+    "StegVerse-Labs/StegOS/actions/runs/34410852617",
+    "StegVerse-Labs/StegOS/actions/runs/34410852705"
   ],
   "expected_evidence_predicates": [
     "KV_PRIVACY_BOUNDARY_SOURCE_RECONCILED",
@@ -95,7 +94,7 @@
     "entrypoint": "KV_ENTRY_TRANSITION_DEPENDENT_EPHEMERAL_PROJECTION",
     "same_run_remediation_allowed": true,
     "automatic_retry_after_first_failure": false,
-    "latest_state": "KV_PRODUCER_MERGED_STEGOS_FIRST_INSTALL_FILES_BRIDGE_VALIDATING"
+    "latest_state": "KV_PRODUCER_AND_STEGOS_CONSUMER_MERGED_NEXT_CANONICAL_INTR_RECEIPT_ADAPTER"
   },
   "worker_claim": {
     "authority": "WORKERCOORDINATOR",
@@ -107,7 +106,7 @@
   "completion": {
     "claimed": false,
     "validated": false,
-    "reconciliation_ref": "StegVerse-Labs/StegOS#314",
+    "reconciliation_ref": "StegVerse-Labs/StegOS@19e2ea02a16bd703767aafcd47e71f5ec5efe3cf",
     "activation_proof_complete": false
   },
   "allowed_next_transitions": ["INGRESS_ADMITTED"],
