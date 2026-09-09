@@ -4,7 +4,7 @@ Updated: 2026-09-09
 Organization: `StegVerse-Labs`
 Repository: `StegVerse-Labs/.github`
 Goal: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`
-State: `RESIDENT_CONSUMER_SOURCE_VALIDATED / MERGE_PENDING / AUTHENTIC_RESIDENT_CONSUMPTION_PENDING`
+State: `RESIDENT_CONSUMER_SOURCE_MERGED_VALIDATED / AUTHENTIC_RESIDENT_CONSUMPTION_PENDING`
 
 ## Purpose
 
@@ -16,9 +16,9 @@ Carry the already-retained, independently verified Cosmos Hub -> Osmosis acknowl
 - `docs/CANONICAL_RESIDENT_CARRIER_MIRROR_HANDOFF.md`
 - `StegVerse-Labs/StegOS/docs/IBC_INTR_INTEROPERABILITY_MIRROR_HANDOFF.md`
 
-The canonical Task Registry remains generation 17 with `STEGVERSE-CANONICAL-WORK-COORDINATION-001` in `PROPOSED` state. No dedicated IBC task is registered. This resident experiment is therefore a bounded continuation under that task identity.
+The canonical Task Registry remains generation 17 with `STEGVERSE-CANONICAL-WORK-COORDINATION-001` in `PROPOSED` state. No dedicated IBC task is registered. This resident experiment remains a bounded continuation under that task identity.
 
-## Established StegOS dependency
+## Merged StegOS dependency
 
 StegOS PR #295 merged at:
 
@@ -26,16 +26,24 @@ StegOS PR #295 merged at:
 ca45fec7c0c39a86dbbd6f027d3b68688295c3d7
 ```
 
-That merge makes the verified ACK materializer execution context explicit and fail-closed. The same canonical source supports only these observation classes:
+The verified ACK materializer now exposes only these explicit execution-context classifications:
 
 ```text
 WORKFLOW_EXECUTED_CANONICAL_INTR_TRANSPORT_CONFORMANCE_RECEIPT
 SOVEREIGN_RESIDENT_EXECUTED_CANONICAL_INTR_TRANSPORT_RECEIPT
 ```
 
-The workflow class remains the default. Resident dispatch must explicitly select the resident class and supply an output path in the resident runtime tree. Arbitrary observation classes fail closed.
+The workflow class remains the default. Resident dispatch must explicitly select the resident class and write output into the resident runtime tree. Arbitrary observation classes fail closed.
 
-## Resident source implemented
+## Merged resident source
+
+`.github` PR #1254 merged at:
+
+```text
+ec4b122c46d80109d95e788e51afd73ba04193b1
+```
+
+Merged resident source:
 
 ```text
 control/resident-execution-request.d/ibc-verified-intr-ack-resident-001.json
@@ -47,13 +55,13 @@ tests/test_ibc_intr_resident_consumer.py
 README_IBC_INTR_RESIDENT_RUNTIME.md
 ```
 
-The canonical dispatcher selector is:
+Canonical dispatcher selector:
 
 ```text
 ibc_verified_intr_ack
 ```
 
-The local-only source refresher copies the consumer script, while `control/resident-execution-request.d/` propagates the request as a static control directory. The targeted refresh-and-dispatch bridge explicitly allows only this registered selector when requested.
+The request is propagated by the existing static `control/resident-execution-request.d/` refresh. The consumer script is included in the local-only source refresh. The targeted one-shot refresh-and-dispatch bridge also admits `ibc_verified_intr_ack` without visiting unrelated work.
 
 ## Resident experiment contract
 
@@ -80,82 +88,98 @@ runtime_execution_attempted: false
 
 This prevents CI/source validation from manufacturing resident-runtime evidence.
 
-## Evidence boundaries
+## Final-head validation evidence
 
-A successful authentic resident consumption receipt may establish:
-
-```text
-resident_runtime_execution_observed: true
-```
-
-for local sovereign execution of the verified external ACK through the canonical StegOS InTr ingress source.
-
-It still does not establish or mint:
-
-```text
-original IBC packet relay
-transition admission
-application execution
-WorkerCoordinator claim/fence
-credentials
-Master Records custody/reconstruction
-```
-
-Those predicates remain separately gated and false unless their own evidence appears.
-
-## Validation evidence
-
-The first complete validation cycle on source head `765c7ab8baff0bf55420ca2feabf3de3ae3fd78c` is green:
+The exact final PR #1254 head `f921f504e26ca3b18cdc0f0d6179bee168c58462` passed all triggered validation lanes before merge:
 
 ```text
 Validate organization control plane - No GitHub Token Authority
-run: 34332308707
-run_number: 2596
+run: 34332523888
+run_number: 2597
 result: PASS
 
 Deterministic Repository Suite - Diagnostic Evidence Only
-run: 34332308717
-run_number: 135
+run: 34332522996
+run_number: 136
 result: PASS
 
 Heartbeat Worker Project - Validation Only / No GitHub Token Authority
-run: 34332308693
-run_number: 2879
+run: 34332524531
+run_number: 2880
 result: PASS
 
 Cross-Framework Current-Basis Resident Request Validation (Non-Authorizing)
-run: 34332308678
-run_number: 278
+run: 34332523203
+run_number: 279
 result: PASS
 
 validate-deepseek-resident
-run: 34332308744
-run_number: 77
+run: 34332524532
+run_number: 78
 result: PASS
 
 Workspace DEVICE_KV Validation Only
-run: 34332308742
-run_number: 226
+run: 34332523461
+run_number: 227
 result: PASS
 ```
 
-The Heartbeat lane compiled runtime/workers/scripts, parsed canonical JSON, validated handoffs and runtime surfaces, and passed the complete deterministic repository test suite. Organization-control and deterministic-diagnostics lanes are also green.
+The Heartbeat lane compiled runtime/workers/scripts, parsed canonical JSON, validated executable handoffs/runtime surfaces, and passed the complete deterministic repository test suite. This is source/control validation only, not resident runtime execution evidence.
 
-This validation proves source/control consistency only. It is not resident execution evidence.
+## Existing event-driven bridge
 
-## Merge gate
+The already-existing rootless local source-refresh watcher monitors the canonical local source tree, including `control/resident-execution-request.d/`. On a local source refresh it immediately runs the generic resident dispatcher. It performs no network source fetch and does not create another scheduler, heartbeat, or runtime.
 
-PR #1254 may merge only after the exact final handoff-reconciled head repeats the required validation successfully. The handoff reconciliation itself must not inherit the prior head's validation by assumption.
+Therefore no additional IBC-specific timer/runtime is required. Once canonical `.github` source is materialized into an active sovereign resident source tree, the existing refresh/dispatch path can visit `ibc_verified_intr_ack`.
+
+## Post-merge runtime observation
+
+Immediately after PR #1254 merged, canonical GitHub `main` was checked for:
+
+```text
+receipts/sovereign-host/ibc-verified-intr-ack-request-consumption.latest.json
+receipts/sovereign-host/ibc-verified-intr-ack-transport.latest.json
+receipts/sovereign-host/resident-request-dispatch.latest.json
+```
+
+All three were **NOT OBSERVED** on canonical GitHub `main` at that check.
+
+This does not prove that the resident runtime is absent; resident receipts are first written to the sovereign runtime tree and require their own retention/custody/projection path before appearing in canonical GitHub state. No local resident execution is inferred from source merge or GitHub absence.
+
+## Evidence boundaries
+
+Authentically established:
+
+```text
+resident consumer source merged: true
+resident consumer source validated: true
+resident request registered: true
+canonical dispatcher registered: true
+local source refresh propagation registered: true
+targeted refresh-and-dispatch selector registered: true
+```
+
+Not yet authentically established:
+
+```text
+resident_runtime_execution_observed: false / pending authentic receipt
+original_ibc_packet_relay_observed: false
+transition_admission_observed: false
+application_execution_observed: false
+workercoordinator_claim_fence_observed: false
+credential_minted: false
+custody_result_minted: false
+```
+
+A successful authentic resident consumption receipt may establish only the resident execution of the verified external ACK through the canonical StegOS InTr ingress source. Original IBC relay, transition, application execution, claim/fence, credentials, and Master Records custody remain independently gated.
 
 ## Next work
 
-1. require organization-control, deterministic-suite, and Heartbeat validation on the exact final head;
-2. merge PR #1254 only after those final-head gates pass;
-3. locally refresh canonical `.github` source into the existing sovereign resident runtime;
-4. targeted-dispatch `ibc_verified_intr_ack`;
-5. inspect `receipts/sovereign-host/ibc-verified-intr-ack-request-consumption.latest.json`;
-6. advance the resident-runtime predicate only if the authentic receipt reports `RESIDENT_INTR_ACK_CONSUMED` with `resident_runtime_execution_observed=true`;
-7. keep original packet relay, transition, application execution, claim/fence, credential, and custody predicates unchanged unless separately observed.
+1. allow the existing local-only source-refresh/dispatcher substrate to materialize and visit the merged request on an actual sovereign resident;
+2. inspect `receipts/sovereign-host/ibc-verified-intr-ack-request-consumption.latest.json` when authentic runtime evidence becomes available;
+3. advance `resident_runtime_execution_observed` only if the receipt reports `RESIDENT_INTR_ACK_CONSUMED` with `resident_runtime_execution_observed=true`;
+4. retain/reconcile that receipt through the applicable Master Records/runtime-evidence path;
+5. leave original packet relay, transition, application execution, claim/fence, credential, and custody predicates unchanged unless separately observed.
 
 ## Human action
 
