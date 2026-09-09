@@ -76,7 +76,20 @@ Stage A — `iOS Apple Identifiers Bootstrap`:
 - emits bootstrap evidence;
 - performs no signing/upload.
 
-Apple still requires owner-side account configuration that its public API does not replace: active Developer Program membership, App Store Connect API access/key, registration/assignment of shared App Group `group.org.stegverse.stegosmobile` to all three App IDs, and creation of the App Store Connect app record for `org.stegverse.stegosmobile`.
+Apple still requires owner-side account configuration that its public API does not replace: App Store Connect API access/key, registration/assignment of shared App Group `group.org.stegverse.stegosmobile` to all three App IDs, and creation of the App Store Connect app record for `org.stegverse.stegosmobile`.
+
+### Apple Developer membership observation
+
+Authentic owner-provided iPhone evidence observed on 2026-09-09 confirms:
+
+```text
+role: Account Holder
+program: Apple Developer Program
+membership term: 1 year
+valid through: Sep 09, 2027
+```
+
+Therefore the Apple Developer membership predicate is SATISFIED and must not remain represented as pending. This evidence does not prove App Store Connect API access, shared App Group registration/assignment, App Store Connect app record creation, signed IPA generation, TestFlight processing, or current-iPhone installation.
 
 Stage B — `iOS Ephemeral Provision and TestFlight`:
 
@@ -96,10 +109,11 @@ No user-operated Mac is required by this path.
 
 ## Physical boundary
 
-Repository-side working-instance implementation is exhausted up to Apple account/TestFlight materialization. The remaining sequence is:
+Repository-side working-instance implementation is exhausted up to App Store Connect/TestFlight materialization. The remaining sequence is:
 
 ```text
-Apple Developer membership/API access
+Apple Developer membership active: OBSERVED / VALID THROUGH 2027-09-09
+-> App Store Connect API access
 -> team App Store Connect API key
 -> add the three GitHub Actions secrets
 -> run iOS Apple Identifiers Bootstrap
@@ -137,4 +151,4 @@ Windsor is not required for this path.
 
 ## Current state
 
-`CANONICAL_RESIDENT_MERGED_VALIDATED / IPHONEOS_PACKAGE_VALIDATED / COMPLETE_SIGNING_SURFACE_VALIDATED / IDENTIFIERS_BOOTSTRAP_MERGED / THREE_SECRET_EPHEMERAL_TESTFLIGHT_PIPELINE_MERGED_HARDENED / SITE_APP_HANDOFF_OBSERVATION_MERGED_DEPLOYED / APPLE_ACCOUNT_TESTFLIGHT_MATERIALIZATION_PENDING / AUTHENTIC_CURRENT_IPHONE_INSTALL_LISTENER_DISCOVERY_PENDING / NATIVE_SOCIAL_PUBLICATION_PROOF_PENDING`
+`CANONICAL_RESIDENT_MERGED_VALIDATED / IPHONEOS_PACKAGE_VALIDATED / COMPLETE_SIGNING_SURFACE_VALIDATED / IDENTIFIERS_BOOTSTRAP_MERGED / THREE_SECRET_EPHEMERAL_TESTFLIGHT_PIPELINE_MERGED_HARDENED / SITE_APP_HANDOFF_OBSERVATION_MERGED_DEPLOYED / APPLE_DEVELOPER_MEMBERSHIP_OBSERVED_ACTIVE_THROUGH_2027-09-09 / APP_STORE_CONNECT_API_AND_APP_RECORD_MATERIALIZATION_PENDING / AUTHENTIC_CURRENT_IPHONE_INSTALL_LISTENER_DISCOVERY_PENDING / NATIVE_SOCIAL_PUBLICATION_PROOF_PENDING`
