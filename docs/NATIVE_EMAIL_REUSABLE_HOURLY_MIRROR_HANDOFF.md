@@ -10,7 +10,9 @@ Scheduler owner: `StegVerse-Labs/StegVerse-Healer` / existing `SHWP-HEALER-SOVER
 Source merge: PR `#1252` / merge `700f959dca0160f0d71d92fc391c9f262f27feea`
 Scheduler merge: `StegVerse-Labs/StegVerse-Healer#57` / merge `ef5d90a8c215056e055385a04534e16c49d9a3d5`
 Canonical Task Registry merge: PR `#1255` / merge `2eb089842ea8960845dcd021f5241126432f3b74`
-State: `SOURCE_INTEGRATION_MERGED / HOURLY_REUSABLE_BINDING_MERGED / CANONICAL_TASK_REGISTERED / RESIDENT_RECURRING_CARRIER_REPAIR_IN_VALIDATION / AUTHENTIC_SCHEDULED_RUNTIME_RECEIPT_PENDING`
+Recurring carrier merge: PR `#1259` / merge `569b6dde49cc9f568c0a24daf9fc723eee807b6f`
+Resident runtime-root merge: `StegVerse-Labs/StegVerse-Healer#58` / merge `a0f6daeaf33198f26e358c7b124fc9f80aad8b6b`
+State: `SOURCE_INTEGRATION_MERGED / HOURLY_REUSABLE_BINDING_MERGED / CANONICAL_TASK_REGISTERED / STANDING_RECURRING_CARRIER_MERGED / SOURCE_RUNTIME_SEPARATION_MERGED / AUTHENTIC_SCHEDULED_RUNTIME_RECEIPT_PENDING`
 
 ## Scoped objective
 
@@ -20,18 +22,30 @@ Make the existing native email action monitor directly reusable and recurring ho
 
 PR #1252 made `RT-NATIVE-EMAIL-ACTION-MONITOR-001` executable through the canonical reusable-task trigger. Healer PR #57 added an hourly schedule entry for all UTC hours with deterministic UTC-hour invocation IDs and retained receipts, enforcing at-most-once execution per hour slot. PR #1255 registered the exact goal in the canonical sharded Task Registry.
 
-## Resident recurring-carrier defect and repair
+## Standing recurring carrier
 
-Post-merge runtime investigation found a deeper carrier defect in `scripts/consume_healer_sovereign_scheduler_request.py`: `RESIDENT-EXEC-HEALER-SOVEREIGN-SCHEDULER-001` was treated as a one-shot terminal request. Once any scheduler pass emitted `HEALER_SOVEREIGN_SCHEDULER_COMPLETED`, later resident visits returned `ALREADY_CONSUMED`. That lifecycle is incompatible with an hourly scheduler even though the hourly target configuration itself was correct.
+PR #1259 repaired `RESIDENT-EXEC-HEALER-SOVEREIGN-SCHEDULER-001` from one-shot terminal consumption to a standing recurring scheduler request:
 
-Branch `fix/healer-recurring-resident-scheduler-20260909` repairs the carrier by:
+- `standing_request=true`;
+- recurrence `EACH_ELIGIBLE_RESIDENT_SCHEDULER_CYCLE`;
+- a successful `HEALER_SOVEREIGN_SCHEDULER_COMPLETED` result records one `CYCLE_COMPLETED` pass instead of retiring the request;
+- `retry_allowed=true` and `request_consumed=false` remain true after each completed cycle.
 
-- marking `control/resident-execution-request.d/healer-sovereign-scheduler-001.json` as `standing_request=true` with recurrence `EACH_ELIGIBLE_RESIDENT_SCHEDULER_CYCLE`;
-- treating `HEALER_SOVEREIGN_SCHEDULER_COMPLETED` as one completed scheduler cycle rather than retirement of the standing request;
-- keeping `retry_allowed=true` and `request_consumed=false` after a completed cycle;
-- replacing the prior exactly-once terminal test with a deterministic test proving two eligible resident visits execute two scheduler cycles.
+The reusable-task layer retains the narrower per-UTC-hour idempotency boundary, so multiple resident scheduler cycles within one hour do not duplicate the email invocation.
 
-The hourly reusable-task layer still provides the narrower per-hour idempotency boundary, so repeated resident scheduler cycles during the same UTC hour do not duplicate the native-email invocation.
+## Source/runtime separation
+
+Healer PR #58 repaired the remaining scheduled invocation topology. The first hourly source implementation passed the local `.github` source checkout as both `source_root` and `runtime_root`, which could place reusable-task receipts under source and collapse source with execution state.
+
+The merged repair now:
+
+- treats the already-materialized local `.github` checkout only as `source_root`;
+- resolves an actual resident heartbeat runtime from explicit `STEGVERSE_HEARTBEAT_ROOT` or exactly one canonical local heartbeat-runtime location;
+- requires the materialized native-email standing request to validate that runtime candidate;
+- passes the resident heartbeat tree only as `runtime_root`;
+- stores `receipts/reusable-task/<UTC-hour-slot>.latest.json` under the resident runtime;
+- fails closed with `RESIDENT_RUNTIME_ROOT_NOT_MATERIALIZED` rather than using source as runtime;
+- preserves same-slot idempotency against the resident receipt.
 
 ## Cadence
 
@@ -42,19 +56,24 @@ native_email_cadence: HOURLY
 eligible_utc_hours: 00..23
 at_most_once_per_hour_slot: true
 slot_identity: RT-NATIVE-EMAIL-ACTION-MONITOR-001 + UTC YYYYMMDDTHH
+receipt_location: resident heartbeat runtime / receipts/reusable-task/
 mailbox_batch_limit: existing native monitor limit (100)
 ```
 
-## Validation evidence already merged
+## Validation evidence
 
 - PR #1252 exact head: Heartbeat `34332023132`, org-control `34332023277`, deterministic suite `34332023168` SUCCESS.
 - Healer PR #57 exact head: Test Readiness `34332190725` SUCCESS.
 - PR #1255 exact head: Heartbeat `34332579197`, org-control `34332579252`, deterministic suite `34332579274` SUCCESS.
+- PR #1259 exact head `1b5bcd87b752ae643f88cbf1dc788f4a1c2dec45`: Heartbeat `34352789541`, org-control `34352789580`, deterministic suite `34352789603` SUCCESS.
+- Healer PR #58 exact head `8fae4401381d7479373add148d21de6c514d2e7b`: Test Readiness `34356342498` SUCCESS.
 
 ## README determination
 
-No additional `.github/README.md` change is required: the root README already documents resident request/reusable-task architecture. StegVerse-Healer README already documents reusable-task scheduling responsibility from PR #57. This repair changes lifecycle semantics of the existing scheduler request, documented here and in deterministic tests.
+The `.github` root README already documents resident requests and reusable-task architecture; no additional root README change is required for this task-specific topology repair. `StegVerse-Healer/README.md` was updated in PR #58 to document resident runtime separation and receipt placement.
 
 ## Remaining authentic boundary
 
-After the recurring-carrier repair validates and merges, source-side recurring execution semantics are complete. Authentic operation still requires the resident runtime to materialize the updated standing request/consumer and produce a real scheduler-cycle receipt. The first hourly mailbox-processing claim additionally requires the corresponding reusable-task and TV/TVC Gmail/provider monitor receipts.
+Source-side reusable invocation, hourly scheduling, standing recurrence, canonical task registration, source/runtime separation, resident receipt placement, fail-closed runtime discovery, validation, and repository documentation are complete and merged.
+
+The remaining boundary is authentic resident execution: the already-local canonical source must be refreshed/materialized into the resident heartbeat runtime and the standing Healer scheduler must traverse one eligible cycle. Completion evidence for the timer requires a real resident `receipts/reusable-task/rt-native-email-action-monitor-001-<UTC-hour>Z.latest.json`. A mailbox-processing claim additionally requires the corresponding native-email monitor receipt and TV/TVC Gmail provider-operation evidence. No user-operated second machine is required.
