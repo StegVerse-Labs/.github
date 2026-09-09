@@ -10,60 +10,51 @@ Scheduler owner: `StegVerse-Labs/StegVerse-Healer` / existing `SHWP-HEALER-SOVER
 Source merge: PR `#1252` / merge `700f959dca0160f0d71d92fc391c9f262f27feea`
 Scheduler merge: `StegVerse-Labs/StegVerse-Healer#57` / merge `ef5d90a8c215056e055385a04534e16c49d9a3d5`
 Canonical Task Registry merge: PR `#1255` / merge `2eb089842ea8960845dcd021f5241126432f3b74`
-State: `SOURCE_INTEGRATION_MERGED / HOURLY_REUSABLE_BINDING_MERGED / CANONICAL_TASK_REGISTERED / AUTHENTIC_SCHEDULED_RUNTIME_RECEIPT_PENDING`
+State: `SOURCE_INTEGRATION_MERGED / HOURLY_REUSABLE_BINDING_MERGED / CANONICAL_TASK_REGISTERED / RESIDENT_RECURRING_CARRIER_REPAIR_IN_VALIDATION / AUTHENTIC_SCHEDULED_RUNTIME_RECEIPT_PENDING`
 
 ## Scoped objective
 
-Make the existing native email action monitor both directly reusable through the canonical reusable-task trigger and recurring on an hourly timer without creating another mailbox monitor, heartbeat, polling loop, WorkerCoordinator, scheduler, or credential route.
+Make the existing native email action monitor directly reusable and recurring hourly through the existing sovereign Healer scheduler without creating another mailbox monitor, heartbeat, polling loop, WorkerCoordinator, scheduler, or credential route.
 
-## Merged source
+## Implemented hourly path
 
-PR #1252 updates `scripts/trigger_reusable_task.py` so the already-registered `RT-NATIVE-EMAIL-ACTION-MONITOR-001` primary runner receives its required `--source-root` and `--runtime-root` arguments from the manifest-bound invocation parameters. Other reusable runners retain their prior command shape.
+PR #1252 made `RT-NATIVE-EMAIL-ACTION-MONITOR-001` executable through the canonical reusable-task trigger. Healer PR #57 added an hourly schedule entry for all UTC hours with deterministic UTC-hour invocation IDs and retained receipts, enforcing at-most-once execution per hour slot. PR #1255 registered the exact goal in the canonical sharded Task Registry.
 
-The hourly timer binding is merged in `StegVerse-Labs/StegVerse-Healer#57` through `data/reusable_task_schedule.json` and the existing sovereign Healer scheduler. Each UTC-hour slot uses a deterministic invocation id and retained local receipt so repeated resident visits within the same hour do not duplicate the reusable invocation.
+## Resident recurring-carrier defect and repair
+
+Post-merge runtime investigation found a deeper carrier defect in `scripts/consume_healer_sovereign_scheduler_request.py`: `RESIDENT-EXEC-HEALER-SOVEREIGN-SCHEDULER-001` was treated as a one-shot terminal request. Once any scheduler pass emitted `HEALER_SOVEREIGN_SCHEDULER_COMPLETED`, later resident visits returned `ALREADY_CONSUMED`. That lifecycle is incompatible with an hourly scheduler even though the hourly target configuration itself was correct.
+
+Branch `fix/healer-recurring-resident-scheduler-20260909` repairs the carrier by:
+
+- marking `control/resident-execution-request.d/healer-sovereign-scheduler-001.json` as `standing_request=true` with recurrence `EACH_ELIGIBLE_RESIDENT_SCHEDULER_CYCLE`;
+- treating `HEALER_SOVEREIGN_SCHEDULER_COMPLETED` as one completed scheduler cycle rather than retirement of the standing request;
+- keeping `retry_allowed=true` and `request_consumed=false` after a completed cycle;
+- replacing the prior exactly-once terminal test with a deterministic test proving two eligible resident visits execute two scheduler cycles.
+
+The hourly reusable-task layer still provides the narrower per-hour idempotency boundary, so repeated resident scheduler cycles during the same UTC hour do not duplicate the native-email invocation.
 
 ## Cadence
 
 ```text
-cadence: HOURLY
+resident_scheduler_request: STANDING_RECURRING
+resident_cycle_recurrence: EACH_ELIGIBLE_RESIDENT_SCHEDULER_CYCLE
+native_email_cadence: HOURLY
 eligible_utc_hours: 00..23
-at_most_once_per_slot: true
+at_most_once_per_hour_slot: true
 slot_identity: RT-NATIVE-EMAIL-ACTION-MONITOR-001 + UTC YYYYMMDDTHH
 mailbox_batch_limit: existing native monitor limit (100)
 ```
 
-A scheduled invocation may still stop at an existing provider/runtime boundary. Timer eligibility does not prove provider authorization, mailbox access, corrective-task completion, runtime activation, or Master Records custody.
+## Validation evidence already merged
 
-## Canonical Task Registry reconciliation
-
-PR #1255 repaired the registry gap discovered after the source merges. The task now resolves from the canonical sharded Task Registry at:
-
-`data/canonical-task-records/STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001.json`
-
-The registered record binds `coordination_state=PROPOSED`, `checkout_state=UNCLAIMED`, COSV `10100000100000`, the merged reusable/hourly source and evidence, and `allowed_next_transitions=[INGRESS_ADMITTED]`. `tests/test_native_email_canonical_task_registry.py` proves generic sharded Task Registry resolution and canonical-work ingress eligibility.
-
-This registry record is coordination state only; it does not claim a WorkerCoordinator claim/fence, mailbox execution, provider authorization, or activation.
+- PR #1252 exact head: Heartbeat `34332023132`, org-control `34332023277`, deterministic suite `34332023168` SUCCESS.
+- Healer PR #57 exact head: Test Readiness `34332190725` SUCCESS.
+- PR #1255 exact head: Heartbeat `34332579197`, org-control `34332579252`, deterministic suite `34332579274` SUCCESS.
 
 ## README determination
 
-The root `.github/README.md` already documents the reusable-task architecture, sharded canonical Task Registry model, and generic continuation/authority boundaries. This scoped change does not add a new repository responsibility or public interface; detailed cadence and task-specific registry state belong in this handoff and the Healer scheduler README. `NO_README_CHANGE_REQUIRED` for `.github` is therefore recorded for this change set. `StegVerse-Healer/README.md` was updated in PR #57 for its new reusable-task scheduling responsibility.
-
-## Validation evidence
-
-The exact PR #1252 head `d13f210e7a75e9a3a6515d157d9bc4fed148f51b` passed all retained pull-request validation families before merge:
-
-- Heartbeat Worker Project - Validation Only / No GitHub Token Authority: run `34332023132` SUCCESS.
-- Validate organization control plane - No GitHub Token Authority: run `34332023277` SUCCESS.
-- Deterministic Repository Suite - Diagnostic Evidence Only: run `34332023168` SUCCESS.
-
-The coordinated Healer exact head `99e63e6e01962232125f70becec5e21eac11ae30` passed Test Readiness run `34332190725` after correcting a test-fixture aliasing defect; the scheduler implementation itself was not weakened.
-
-The exact PR #1255 registry-reconciliation head `05643f8def5a703c4bf5889218f9421953ff93f1` also passed all retained validation families before merge:
-
-- Heartbeat Worker Project: run `34332579197` SUCCESS.
-- Validate organization control plane: run `34332579252` SUCCESS.
-- Deterministic Repository Suite: run `34332579274` SUCCESS.
+No additional `.github/README.md` change is required: the root README already documents resident request/reusable-task architecture. StegVerse-Healer README already documents reusable-task scheduling responsibility from PR #57. This repair changes lifecycle semantics of the existing scheduler request, documented here and in deterministic tests.
 
 ## Remaining authentic boundary
 
-Source integration, reusable invocation binding, hourly cadence configuration, same-slot idempotency, canonical Task Registry registration, deterministic validation, README maintenance, and all coordinated merges are complete. The remaining evidence boundary is an authentic resident Healer scheduled invocation producing a retained reusable-task receipt for an hourly slot and, for a mailbox-processing claim, the corresponding TV/TVC Gmail provider/monitor receipt. Until that is observed, this handoff does not claim live hourly mailbox execution.
+After the recurring-carrier repair validates and merges, source-side recurring execution semantics are complete. Authentic operation still requires the resident runtime to materialize the updated standing request/consumer and produce a real scheduler-cycle receipt. The first hourly mailbox-processing claim additionally requires the corresponding reusable-task and TV/TVC Gmail/provider monitor receipts.
