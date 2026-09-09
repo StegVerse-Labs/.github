@@ -1,0 +1,27 @@
+{
+  "schema": "stegverse.cosv-record/v1",
+  "identity": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+  "profile": "task.v1",
+  "level": "task",
+  "notation": "L R U I V G O C M T B E A P",
+  "vector": "50000000100000",
+  "evidence_refs": [
+    "data/canonical-task-records/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.json",
+    "docs/GLOBAL_RUNTIME_EVIDENCE_CLOSURE_MIRROR_HANDOFF.md",
+    "docs/GLOBAL_RUNTIME_EVIDENCE_CONVERGENCE_MATRIX.md",
+    "StegVerse-Labs/.github#1260"
+  ],
+  "observed_at": "2026-09-09T13:18:00Z",
+  "exact_metrics": {
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "authority_effect": "NONE"
+}
