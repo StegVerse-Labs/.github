@@ -1,0 +1,35 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "GADI-RESIDENT-EXECUTION-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:gadi-resident-execution-v1",
+      "authority_ref": "handoffs/GADI-RESIDENT-EXECUTION-001.json#authority",
+      "capabilities": ["gadi_resident_defensive_execution"],
+      "command": [
+        "python",
+        "control/resident-execution-request.d/consume-gadi-resident-execution.py",
+        "--source-root",
+        ".",
+        "--runtime-root",
+        "."
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_SOVEREIGN_NODE",
+        "STEGVERSE_MICRO_NODE_ROOT",
+        "STEGVERSE_TVC_ROOT",
+        "STEGVERSE_TV_ROOT",
+        "STEGVERSE_STEGOS_ROOT"
+      ],
+      "notes": [
+        "Reuses the existing canonical WorkerCoordinator and merged micro-node GADI resident consumer.",
+        "Requires already-observed claim/fence, InTr admission, runtime binding, and controlled pre-authorized actuator result.",
+        "Does not create an actuator, runtime, scheduler, heartbeat, credential route, claim/fence plane, or Master Records custody path."
+      ],
+      "timeout_seconds": 300,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
