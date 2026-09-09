@@ -5,7 +5,7 @@
   "root_correlation_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
   "parent_task_id": "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001",
   "goal": "Reconcile and implement the current-iPhone bootstrap/TestFlight path around KV as the private governed state-transition continuity boundary, making physical devices interchangeable interoperability nodes, StegBrowser the browser-capability node, and substantive browser UI/WASM/action presentation ephemeral and dependent on KV entry admission plus current browser/container capability observation before continuing authentic global runtime measurement.",
-  "coordination_state": "PROPOSED",
+  "coordination_state": "ACTIVE",
   "checkout_state": "CLAIMED_OBSERVATION",
   "cosv_task_vector": "50000010100000",
   "source_refs": [
@@ -14,7 +14,8 @@
     "StegVerse-Labs/.github#1299",
     "StegVerse-Labs/continuity-vault-kit/docs/KV_PRIVACY_STATE_TRANSITION_CONTINUITY.md",
     "StegVerse-Labs/StegOS/docs/STEGBROWSER_RETAINED_NODE_BOOTSTRAP_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/StegOS:feat/current-iphone-wasm-static-bootstrap-001"
+    "StegVerse-Labs/StegOS:feat/current-iphone-wasm-static-bootstrap-001",
+    "StegVerse-Labs/StegOS#314"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
@@ -25,16 +26,16 @@
     {
       "dependency_id": "DEP-KV-ENTRY-STATE-TRANSITION-CONTRACT",
       "kind": "ARCHITECTURE_SOURCE_PREDICATE",
-      "state": "DOCUMENTED_CANONICAL_SOURCE",
-      "ref": "StegVerse-Labs/continuity-vault-kit/docs/KV_PRIVACY_STATE_TRANSITION_CONTINUITY.md",
-      "disposition": "KV_PRIVACY_AND_STATE_TRANSITION_CONTINUITY_DOCUMENTED; IMPLEMENTATION_RECONCILIATION_PENDING"
+      "state": "SOURCE_GATE_IMPLEMENTED",
+      "ref": "StegVerse-Labs/StegOS#314",
+      "disposition": "BOOTSTRAP_NOW_FAILS_CLOSED_UNLESS_PURPOSE_BOUND_KV_ADMISSION_AND_BROWSER_CAPABILITY_COMMITMENTS_ARE_SUPPLIED; PRODUCER_BINDING_REMAINS_PENDING"
     },
     {
       "dependency_id": "DEP-CURRENT-IPHONE-SIGNER-STATIC-AVAILABILITY",
       "kind": "SOURCE_DISTRIBUTION_PREDICATE",
-      "state": "UNRESOLVED",
+      "state": "RECONCILIATION_IN_PROGRESS",
       "ref": "StegVerse-Labs/StegOS:feat/current-iphone-wasm-static-bootstrap-001",
-      "disposition": "VALIDATED_WASM_ARTIFACT_EXISTS; DISTRIBUTION_MUST_BE_RECONCILED_WITH_KV_BOUND_EPHEMERAL_PRESENTATION_MODEL"
+      "disposition": "VALIDATED_WASM_AND_UNSIGNED_IPA_ARTIFACTS_PRESERVED; PUBLIC_PAGE_REDUCED_TO_EPHEMERAL_KV_GATED_PRESENTATION_SEAM; BRANCH_REBASE_AND_CI_PENDING"
     },
     {
       "dependency_id": "DEP-AUTHENTIC-CURRENT-IPHONE-RETAINED-NODE-MATERIALIZATION",
@@ -55,7 +56,11 @@
   "existing_evidence_refs": [
     "StegVerse-Labs/.github#1299",
     "StegVerse-Labs/continuity-vault-kit@5037346f15d609160eb2bf2c35e7d3d4154a71f4",
-    "StegVerse-Labs/.github@2dac82a13e72daa7a3b1d03a8b3aa9101ff78f7d"
+    "StegVerse-Labs/.github@2dac82a13e72daa7a3b1d03a8b3aa9101ff78f7d",
+    "StegVerse-Labs/StegOS@829b979959837b0dc8f834a53a379d3f86af4023",
+    "StegVerse-Labs/StegOS@0de7050ba9c9a1949f524a8ea19fa757104f027a",
+    "StegVerse-Labs/StegOS@747d20c9ab7e9ce06b09c67dff604ebe06847670",
+    "StegVerse-Labs/StegOS@2b5cc7bd8886309bc1a228d8d03b58f83233a887"
   ],
   "expected_evidence_predicates": [
     "KV_PRIVACY_BOUNDARY_SOURCE_RECONCILED",
@@ -78,7 +83,7 @@
     "entrypoint": "KV_ENTRY_TRANSITION_DEPENDENT_EPHEMERAL_PROJECTION",
     "same_run_remediation_allowed": true,
     "automatic_retry_after_first_failure": false,
-    "latest_state": "ARCHITECTURE_DOCUMENTED_IMPLEMENTATION_RECONCILIATION_PENDING"
+    "latest_state": "KV_GATE_SOURCE_IMPLEMENTED_PRODUCER_BINDING_AND_BRANCH_RECONCILIATION_PENDING"
   },
   "worker_claim": {
     "authority": "WORKERCOORDINATOR",
@@ -90,7 +95,7 @@
   "completion": {
     "claimed": false,
     "validated": false,
-    "reconciliation_ref": "StegVerse-Labs/.github#1299",
+    "reconciliation_ref": "StegVerse-Labs/StegOS#314",
     "activation_proof_complete": false
   },
   "allowed_next_transitions": ["INGRESS_ADMITTED"],
