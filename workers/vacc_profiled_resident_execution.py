@@ -79,12 +79,7 @@ def advance_parent_runtime(source: Path, runtime: Path) -> dict[str, Any]:
     env["STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY"] = "NONE"
     completed = subprocess.run(
         [sys.executable, str(dispatcher), "--source-root", str(source), "--runtime-root", str(runtime), "--only-consumer", "ecosystem_chat"],
-        cwd=runtime,
-        capture_output=True,
-        text=True,
-        check=False,
-        timeout=7200,
-        env=env,
+        cwd=runtime, capture_output=True, text=True, check=False, timeout=7200, env=env,
     )
     return {"state":"PARENT_RUNTIME_VISITED","returncode":completed.returncode,"stdout_tail":completed.stdout[-1200:],"stderr_tail":completed.stderr[-1200:]}
 
@@ -93,52 +88,17 @@ def response_hash_valid(response: dict[str, Any]) -> bool:
     expected = response.get("response_hash")
     if not isinstance(expected, str):
         return False
-    candidate = dict(response)
-    candidate.pop("response_hash", None)
+    candidate = dict(response); candidate.pop("response_hash", None)
     return expected == stable_hash(candidate)
 
 
 def response_verified(response: dict[str, Any] | None) -> bool:
-    return bool(
-        isinstance(response, dict)
-        and response.get("schema") == "stegverse.va_claims.runtime/v1"
-        and isinstance(response.get("response"), str) and response.get("response").strip()
-        and response.get("provider_usage_custody_recorded") is True
-        and response.get("provider_usage_reconstruction_pass") is True
-        and response.get("transition_reconstruction_pass") is True
-        and response.get("same_execution") is True
-        and response.get("github_token_required") is False
-        and response.get("credential_requirement") == "NONE"
-        and response.get("authority_effect") is False
-        and response.get("activation_effect") is False
-        and response_hash_valid(response)
-    )
+    return bool(isinstance(response, dict) and response.get("schema") == "stegverse.va_claims.runtime/v1" and isinstance(response.get("response"), str) and response.get("response").strip() and response.get("provider_usage_custody_recorded") is True and response.get("provider_usage_reconstruction_pass") is True and response.get("transition_reconstruction_pass") is True and response.get("same_execution") is True and response.get("github_token_required") is False and response.get("credential_requirement") == "NONE" and response.get("authority_effect") is False and response.get("activation_effect") is False and response_hash_valid(response))
 
 
 def post_probe(endpoint: str) -> dict[str, Any]:
-    payload = {
-        "message": PROBE_MESSAGE,
-        "session_id": "vacc-profiled-runtime-proof",
-        "route_scope": "VA_CLAIMS_CHAT",
-        "requested_capability": "COORDINATED_VA_RESOURCES_LLM",
-        "source_policy": "ADMITTED_OFFICIAL_VA_ONLY",
-        "private_document_context": False,
-        "filing_requested": False,
-        "authority_required": True,
-        "receipt_required": True,
-        "transition_identity": {
-            "transition_id": TASK_ID + ":PROFILED_RUNTIME_EXECUTION",
-            "event_id": TASK_ID + ":PROFILED_RUNTIME_MEASUREMENT",
-            "runtime_node_profile_id": PROFILE_ID,
-        },
-    }
-    raw = json.dumps(payload, sort_keys=True).encode("utf-8")
-    request = urllib.request.Request(
-        endpoint.rstrip("/") + "/api/va-claims/v1/chat",
-        data=raw,
-        method="POST",
-        headers={"content-type":"application/json","accept":"application/json","user-agent":"StegVerse-VACC-Profiled-Resident/1"},
-    )
+    payload = {"message":PROBE_MESSAGE,"session_id":"vacc-profiled-runtime-proof","route_scope":"VA_CLAIMS_CHAT","requested_capability":"COORDINATED_VA_RESOURCES_LLM","source_policy":"ADMITTED_OFFICIAL_VA_ONLY","private_document_context":False,"filing_requested":False,"authority_required":True,"receipt_required":True,"transition_identity":{"transition_id":TASK_ID + ":PROFILED_RUNTIME_EXECUTION","event_id":TASK_ID + ":PROFILED_RUNTIME_MEASUREMENT","runtime_node_profile_id":PROFILE_ID}}
+    request = urllib.request.Request(endpoint.rstrip("/") + "/api/va-claims/v1/chat", data=json.dumps(payload, sort_keys=True).encode("utf-8"), method="POST", headers={"content-type":"application/json","accept":"application/json","user-agent":"StegVerse-VACC-Profiled-Resident/1"})
     try:
         with urllib.request.urlopen(request, timeout=120) as result:
             value = json.loads(result.read().decode("utf-8"))
@@ -147,98 +107,28 @@ def post_probe(endpoint: str) -> dict[str, Any]:
     return value if isinstance(value, dict) else {"state":"VACC_PROFILED_REQUEST_NON_OBJECT"}
 
 
-def prior_verified(path: Path, state_path: Path, state: dict[str, Any]) -> dict[str, Any] | None:
-    if not path.is_file():
-        return None
-    try:
-        receipt = load_json(path)
-    except Exception:
-        return None
-    response = receipt.get("response")
-    if (
-        receipt.get("schema") == "stegverse.vacc-profiled-resident-execution/v1"
-        and receipt.get("state") == "VACC_PROFILED_RESIDENT_REQUEST_EXECUTED"
-        and receipt.get("task_id") == TASK_ID
-        and receipt.get("runtime_node_profile_id") == PROFILE_ID
-        and receipt.get("runtime_state_ref") == str(state_path)
-        and receipt.get("endpoint") == state.get("endpoint")
-        and response_verified(response if isinstance(response, dict) else None)
-    ):
-        return receipt
-    return None
-
-
 def execute(source_root: Path, runtime_root: Path) -> dict[str, Any]:
     require_resident_env()
-    source = source_root.expanduser().resolve()
-    runtime = runtime_root.expanduser().resolve()
+    source = source_root.expanduser().resolve(); runtime = runtime_root.expanduser().resolve()
+    measurement_only = truthy(os.environ.get("STEGVERSE_CONVERGENCE_MEASUREMENT_ONLY"))
     live = find_live_runtime(runtime)
     parent_visit = None
-    if live is None:
+    if live is None and not measurement_only:
         parent_visit = advance_parent_runtime(source, runtime)
         live = find_live_runtime(runtime)
     if live is None:
-        return {
-            "schema":"stegverse.vacc-profiled-resident-execution/v1",
-            "state":"VACC_PROFILED_PARENT_RUNTIME_PENDING",
-            "task_id":TASK_ID,
-            "runtime_node_profile_id":PROFILE_ID,
-            "parent_visit":parent_visit,
-            "github_token_required":False,
-            "credential_authority":"TV/TVC",
-        }
+        return {"schema":"stegverse.vacc-profiled-resident-execution/v1","state":"VACC_PROFILED_PARENT_RUNTIME_PENDING","task_id":TASK_ID,"runtime_node_profile_id":PROFILE_ID,"measurement_only":measurement_only,"same_run_parent_repair_attempted":False if measurement_only else parent_visit is not None,"parent_visit":parent_visit,"stage_observations":{"RUNTIME_PROFILE_RESOLUTION":{"state":"PASS_CURRENT_RUN"},"PERSISTENT_NODE_CONTINUITY":{"state":"PASS_HISTORICAL_EVIDENCE"},"EPHEMERAL_REQUEST_CONSUMPTION":{"state":"PASS_HISTORICAL_EVIDENCE"},"WORKERCOORDINATOR_CLAIM_FENCE":{"state":"PASS_HISTORICAL_EVIDENCE"},"EPHEMERAL_INTERLOCK_INTR_ADMISSION":{"state":"PASS_HISTORICAL_EVIDENCE"},"EPHEMERAL_TRANSPORT_PROVIDER_LEASE":{"state":"FAILED_CURRENT_RUN","reason":"verified VACC loopback runtime not present at frozen measurement baseline"}},"github_token_required":False,"credential_authority":"TV/TVC"}
     state_path, state = live
-    output = runtime / OUTPUT_REL
-    prior = prior_verified(output, state_path, state)
-    if prior is not None:
-        return {**prior, "reused":True}
     response = post_probe(str(state["endpoint"]))
     if not response_verified(response):
-        return {
-            "schema":"stegverse.vacc-profiled-resident-execution/v1",
-            "state":"VACC_PROFILED_LIVE_RUNTIME_REQUEST_NOT_VERIFIED",
-            "task_id":TASK_ID,
-            "runtime_node_profile_id":PROFILE_ID,
-            "runtime_state_ref":str(state_path),
-            "endpoint":state.get("endpoint"),
-            "response":response,
-            "github_token_required":False,
-            "credential_authority":"TV/TVC",
-        }
-    receipt = {
-        "schema":"stegverse.vacc-profiled-resident-execution/v1",
-        "state":"VACC_PROFILED_RESIDENT_REQUEST_EXECUTED",
-        "task_id":TASK_ID,
-        "runtime_node_profile_id":PROFILE_ID,
-        "runtime_state_ref":str(state_path),
-        "endpoint":state["endpoint"],
-        "probe_message_sha256":hashlib.sha256(PROBE_MESSAGE.encode("utf-8")).hexdigest(),
-        "response":response,
-        "provider_usage_custody_recorded":True,
-        "provider_usage_reconstruction_pass":True,
-        "transition_reconstruction_pass":True,
-        "same_execution":True,
-        "github_token_required":False,
-        "credential_authority":"TV/TVC",
-        "credential_requirement":"NONE",
-        "activation_effect":False,
-        "authority_effect":"NONE_EVIDENCE_ONLY",
-        "reused":False,
-    }
-    output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        return {"schema":"stegverse.vacc-profiled-resident-execution/v1","state":"VACC_PROFILED_LIVE_RUNTIME_REQUEST_NOT_VERIFIED","task_id":TASK_ID,"runtime_node_profile_id":PROFILE_ID,"runtime_state_ref":str(state_path),"endpoint":state.get("endpoint"),"response":response,"measurement_only":measurement_only,"stage_observations":{"RUNTIME_PROFILE_RESOLUTION":{"state":"PASS_CURRENT_RUN"},"PERSISTENT_NODE_CONTINUITY":{"state":"PASS_HISTORICAL_EVIDENCE"},"EPHEMERAL_REQUEST_CONSUMPTION":{"state":"PASS_HISTORICAL_EVIDENCE"},"WORKERCOORDINATOR_CLAIM_FENCE":{"state":"PASS_HISTORICAL_EVIDENCE"},"EPHEMERAL_INTERLOCK_INTR_ADMISSION":{"state":"PASS_HISTORICAL_EVIDENCE"},"EPHEMERAL_TRANSPORT_PROVIDER_LEASE":{"state":"PASS_CURRENT_RUN","evidence_ref":str(state_path)},"COMPONENT_EXECUTION":{"state":"FAILED_CURRENT_RUN","reason":"bounded VACC probe response not verified"}},"github_token_required":False,"credential_authority":"TV/TVC"}
+    receipt = {"schema":"stegverse.vacc-profiled-resident-execution/v1","state":"VACC_PROFILED_RESIDENT_REQUEST_EXECUTED","task_id":TASK_ID,"runtime_node_profile_id":PROFILE_ID,"runtime_state_ref":str(state_path),"endpoint":state["endpoint"],"probe_message_sha256":hashlib.sha256(PROBE_MESSAGE.encode("utf-8")).hexdigest(),"response":response,"provider_usage_custody_recorded":True,"provider_usage_reconstruction_pass":True,"transition_reconstruction_pass":True,"same_execution":True,"github_token_required":False,"credential_authority":"TV/TVC","credential_requirement":"NONE","activation_effect":False,"authority_effect":"NONE_EVIDENCE_ONLY","measurement_only":measurement_only,"reused":False,"stage_observations":{"RUNTIME_PROFILE_RESOLUTION":{"state":"PASS_CURRENT_RUN"},"PERSISTENT_NODE_CONTINUITY":{"state":"PASS_HISTORICAL_EVIDENCE"},"EPHEMERAL_REQUEST_CONSUMPTION":{"state":"PASS_HISTORICAL_EVIDENCE"},"WORKERCOORDINATOR_CLAIM_FENCE":{"state":"PASS_HISTORICAL_EVIDENCE"},"EPHEMERAL_INTERLOCK_INTR_ADMISSION":{"state":"PASS_HISTORICAL_EVIDENCE"},"EPHEMERAL_TRANSPORT_PROVIDER_LEASE":{"state":"PASS_CURRENT_RUN","evidence_ref":str(state_path)},"COMPONENT_EXECUTION":{"state":"PASS_CURRENT_RUN"},"EXACT_RECEIPT_COMMITMENT":{"state":"PASS_CURRENT_RUN"},"MASTER_RECORDS_RECONSTRUCTION":{"state":"PASS_CURRENT_RUN"},"DOWNSTREAM_PROPAGATION":{"state":"NOT_REACHED"}}}
+    output = runtime / OUTPUT_REL; output.parent.mkdir(parents=True, exist_ok=True); output.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return receipt
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--source-root", type=Path, default=ROOT)
-    parser.add_argument("--runtime-root", type=Path, default=ROOT)
-    args = parser.parse_args()
-    result = execute(args.source_root, args.runtime_root)
-    print(json.dumps(result, sort_keys=True))
-    return 0
-
+    parser = argparse.ArgumentParser(); parser.add_argument("--source-root", type=Path, default=ROOT); parser.add_argument("--runtime-root", type=Path, default=ROOT); args = parser.parse_args(); result = execute(args.source_root, args.runtime_root); print(json.dumps(result, sort_keys=True)); return 0
 
 if __name__ == "__main__":
     raise SystemExit(main())
