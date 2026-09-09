@@ -22,13 +22,15 @@
     "StegVerse-Labs/StegBrowser@3f27c8420cca8fc72e6caad305ba52cdd3cd3821",
     "StegVerse-Labs/StegBrowser@4d929f8f82a19663233ebbe7cd958ef686c1d228",
     "StegVerse-Labs/StegBrowser@86cb4c42bbde1366ca03088a01983273f73de400",
+    "StegVerse-Labs/StegOS@eb99b9222eba056478aa8d7ed3bc3bafb54fc194",
+    "StegVerse-Labs/StegOS/docs/STEGBROWSER_IOS_RESIDENT_APP_TARGET_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegSocials@122811f8f44dc2494a1d5e771d50c210d1d8a555",
     "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_STEGBROWSER_PUBLICATION_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_STEGBROWSER_OBSERVATION_MIRROR_HANDOFF.md"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
-    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegBrowser", "StegVerse-Labs/StegSocials", "StegVerse-Labs/TVC", "master-records/orchestration"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegBrowser", "StegVerse-Labs/StegOS", "StegVerse-Labs/StegSocials", "StegVerse-Labs/TVC", "master-records/orchestration"],
     "components": [
       "ecosystem-ephemeral-browser-lease",
       "playwright-chromium-substrate",
@@ -41,6 +43,7 @@
       "facebook-end-to-end-publication-entrypoint",
       "ios-resident-rendezvous-loopback-listener",
       "ios-resident-rendezvous-bounded-lifecycle",
+      "stegosmobile-resident-app-target-binding",
       "intr-lease-admission",
       "tvc-skap-ephemeral-credential-session",
       "opaque-credential-session-binding",
@@ -51,7 +54,7 @@
   },
   "dependencies": [
     {"dependency_id":"DEP-STEGBROWSER-INTR-ADMISSION","kind":"GOVERNED_RUNTIME_ADMISSION","state":"READY_FOR_INGRESS","ref":"StegVerse-Labs/.github/docs/UNIVERSAL_WORK_INTERLOCK_MIRROR_HANDOFF.md","disposition":"USE_EXISTING_CANONICAL_WORK_INTERLOCK_INTR_INGRESS"},
-    {"dependency_id":"DEP-STEGBROWSER-IOS-RESIDENT-LIFECYCLE","kind":"SOVEREIGN_NATIVE_RUNTIME","state":"SOURCE_READY_APP_TARGET_AND_RUNTIME_PROOF_PENDING","ref":"StegVerse-Labs/StegBrowser@86cb4c42bbde1366ca03088a01983273f73de400","disposition":"USE_LOOPBACK_ONLY_NWLISTENER_PLUS_BOUNDED_LIFECYCLE; VERIFY_NATIVE_APP_TARGET_INTEGRATION_AND_CURRENT_IPHONE_RUNTIME_BEFORE CLAIMING AVAILABILITY"},
+    {"dependency_id":"DEP-STEGBROWSER-IOS-RESIDENT-LIFECYCLE","kind":"SOVEREIGN_NATIVE_RUNTIME","state":"APP_TARGET_SOURCE_MERGED_VALIDATED_CURRENT_DEVICE_PROOF_PENDING","ref":"StegVerse-Labs/StegOS@eb99b9222eba056478aa8d7ed3bc3bafb54fc194","disposition":"STEGOSMOBILE NOW COMPILES THE LOOPBACK-ONLY RENDEZVOUS CORE/LISTENER/LIFECYCLE; NEXT BIND AN EXTERNALLY CANONICAL NODE REF AND OBSERVE A CURRENT-IPHONE LISTENER/DISCOVERY RECEIPT"},
     {"dependency_id":"DEP-STEGBROWSER-STEGSOCIALS-CALLER","kind":"ECOSYSTEM_CALLER","state":"MERGED_VALIDATED","ref":"StegVerse-Labs/StegSocials@122811f8f44dc2494a1d5e771d50c210d1d8a555","disposition":"USE_NATIVE_STEGBROWSER_FACEBOOK_PUBLICATION_CALLER; DO_NOT TREAT CONNECTOR_OR_BROWSER_COMPLETION_AS_PUBLICATION_PROOF"},
     {"dependency_id":"DEP-STEGBROWSER-CREDENTIAL-SESSION","kind":"CREDENTIAL_RUNTIME","state":"SOURCE_READY_RUNTIME_EVIDENCE_PENDING","ref":"StegVerse-Labs/TVC + StegVerse-Labs/StegBrowser","disposition":"USE_EXISTING_TV_TVC_SKAP_CALLBACK_ONLY_PROVIDER_SESSION; DO NOT EMBED CREDENTIALS OR LIVE SESSION HANDLES IN LEASE_ARGV_REPOSITORY_LOGS_OR_ARTIFACTS"},
     {"dependency_id":"DEP-STEGBROWSER-PUBLICATION-CUSTODY","kind":"POST_PUBLICATION_CUSTODY","state":"PENDING_AUTHENTIC_PUBLICATION_RECEIPT","ref":"master-records/orchestration","disposition":"INGEST ONLY AFTER LIVE PUBLICATION PROOF EXISTS"}
@@ -72,6 +75,9 @@
     "StegVerse-Labs/StegBrowser/actions/runs/34301794080",
     "StegVerse-Labs/StegBrowser@86cb4c42bbde1366ca03088a01983273f73de400",
     "StegVerse-Labs/StegBrowser/actions/runs/34303703951",
+    "StegVerse-Labs/StegOS@eb99b9222eba056478aa8d7ed3bc3bafb54fc194",
+    "StegVerse-Labs/StegOS/actions/runs/34304328189",
+    "StegVerse-Labs/StegOS/actions/runs/34304328284",
     "StegVerse-Labs/StegSocials@122811f8f44dc2494a1d5e771d50c210d1d8a555",
     "StegVerse-Labs/StegSocials/actions/runs/34302291053"
   ],
@@ -103,18 +109,19 @@
     "current_observation_required": true
   },
   "runtime_resolution": {
-    "current_executor": "StegVerse-Labs/StegBrowser native ephemeral Playwright Facebook publication path plus source-ready iOS loopback resident lifecycle and StegSocials caller integration",
-    "authority_basis": "merged bounded lease, iOS loopback transport lifecycle, credential-session, Facebook interaction, publication-proof, and StegSocials caller contracts; authentic current-iPhone runtime, resident claim/fence, InTr admission, live TV/TVC+SKAP provider session, and publication receipt remain runtime predicates",
+    "current_executor": "StegVerse-Labs/StegOS StegOSMobile app target now compiles the source-ready sovereign resident rendezvous; StegVerse-Labs/StegBrowser provides native ephemeral Playwright Facebook publication and StegSocials caller integration",
+    "authority_basis": "merged bounded lease, compiled iOS app-target loopback transport/evidence semantics, credential-session, Facebook interaction, publication-proof, and StegSocials caller contracts; authentic current-iPhone listener/discovery, resident claim/fence, InTr admission, live TV/TVC+SKAP provider session, and publication receipt remain runtime predicates",
     "unattended_runtime": false
   },
   "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
-  "human_action_ref": "No manual repository work is required. Native iOS app-target integration/current-iPhone runtime proof and the admitted resident execution must be observed before one already-approved Facebook release is executed; preserve only permitted proof/custody receipts.",
-  "completion": {"claimed":false,"validated":true,"reconciliation_ref":"StegVerse-Labs/StegBrowser/actions/runs/34303703951","activation_proof_complete":false},
+  "human_action_ref": "No manual repository work is required. The next physical predicate is a canonical node-ref-bound current-iPhone StegOSMobile rendezvous session/discovery observation; only after governed resident admission and TV/TVC+SKAP session resolution should one already-approved Facebook release execute.",
+  "completion": {"claimed":false,"validated":true,"reconciliation_ref":"StegVerse-Labs/StegOS/actions/runs/34304328284","activation_proof_complete":false},
   "allowed_next_transitions": ["INGRESS_ADMITTED"],
   "handoff_projection_refs": [
     "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_ECOSYSTEM_EPHEMERAL_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_EPHEMERAL_CREDENTIAL_SESSION_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_IOS_RESIDENT_RENDEZVOUS_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegOS/docs/STEGBROWSER_IOS_RESIDENT_APP_TARGET_MIRROR_HANDOFF.md",
     "docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_STEGBROWSER_PUBLICATION_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_STEGBROWSER_OBSERVATION_MIRROR_HANDOFF.md"
@@ -126,6 +133,7 @@
     "browser_session_is_ephemeral": true,
     "ios_resident_listener_is_loopback_only": true,
     "ios_resident_lifecycle_mints_authority": false,
+    "ios_app_target_derives_node_identity_from_hardware": false,
     "credentials_must_remain_outside_lease_and_repository": true,
     "live_session_handles_must_remain_outside_lease_argv_repository_logs_and_artifacts": true,
     "credential_resolution_must_be_callback_only_at_execution_edge": true,
