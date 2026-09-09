@@ -41,13 +41,17 @@ class HealerResidentRequestTests(unittest.TestCase):
     def roots(self):
         td = tempfile.TemporaryDirectory()
         root = Path(td.name)
+        source = root / "source"
         runtime = root / "runtime"
+        source.mkdir()
         runtime.mkdir()
+        (source / "scripts").mkdir()
+        (source / consumer.TARGET_ENTRYPOINT).write_text("# canonical source placeholder\n", encoding="utf-8")
         (runtime / "control/resident-execution-request.d").mkdir(parents=True)
         (runtime / "scripts").mkdir()
-        (runtime / consumer.TARGET_ENTRYPOINT).write_text("# placeholder\n", encoding="utf-8")
+        (runtime / consumer.TARGET_ENTRYPOINT).write_text("# resident placeholder\n", encoding="utf-8")
         (runtime / consumer.REQUEST_REL).write_text(json.dumps(self.request()), encoding="utf-8")
-        return td, root, runtime
+        return td, source, runtime
 
     def test_blocked_scheduler_attempt_remains_retryable(self):
         td, source, runtime = self.roots()
@@ -60,6 +64,7 @@ class HealerResidentRequestTests(unittest.TestCase):
             self.assertTrue(result["retry_allowed"])
             self.assertTrue(result["standing_request"])
             self.assertFalse(result["terminal_scheduler_completion_observed"])
+            self.assertTrue(result["source_runtime_separated"])
         finally:
             td.cleanup()
 
@@ -71,7 +76,7 @@ class HealerResidentRequestTests(unittest.TestCase):
                 calls["count"] += 1
                 return Completed({
                     "schema": "stegverse.resident-refresh-targeted-execution/v2",
-                    "execution_result": {"state": "COMPLETED", "transition_id": "HEALER_SOVEREIGN_SCHEDULER_COMPLETED"},
+                    "execution_result": {"state": "HANDOFF_READY", "transition_id": "HEALER_SOVEREIGN_SCHEDULER_COMPLETED"},
                 })
             first = consumer.consume(source, runtime, runner=runner, env={"PATH": "/usr/bin"})
             second = consumer.consume(source, runtime, runner=runner, env={"PATH": "/usr/bin"})
@@ -85,13 +90,56 @@ class HealerResidentRequestTests(unittest.TestCase):
         finally:
             td.cleanup()
 
+    def test_runtime_as_dispatcher_source_resolves_distinct_service_source(self):
+        td, source, runtime = self.roots()
+        try:
+            captured = {}
+            def runner(command, **kwargs):
+                captured["command"] = command
+                return Completed({
+                    "schema": "stegverse.resident-refresh-targeted-execution/v2",
+                    "execution_result": {"state": "HANDOFF_READY", "transition_id": "HEALER_SOVEREIGN_SCHEDULER_COMPLETED"},
+                })
+            result = consumer.consume(
+                runtime,
+                runtime,
+                runner=runner,
+                env={"PATH": "/usr/bin", "STEGVERSE_HEARTBEAT_SOURCE_ROOT": str(source)},
+            )
+            self.assertEqual(result["source_resolution"], "STEGVERSE_HEARTBEAT_SOURCE_ROOT")
+            self.assertEqual(Path(result["source_root"]), source.resolve())
+            self.assertEqual(Path(result["runtime_root"]), runtime.resolve())
+            self.assertTrue(result["source_runtime_separated"])
+            self.assertIn(str(source.resolve()), captured["command"])
+            self.assertIn(str(runtime.resolve()), captured["command"])
+        finally:
+            td.cleanup()
+
+    def test_runtime_as_source_without_distinct_source_fails_closed(self):
+        td, _source, runtime = self.roots()
+        try:
+            result = consumer.consume(runtime, runtime, env={"PATH": "/usr/bin"})
+            self.assertEqual(result["state"], "ATTEMPT_RECORDED")
+            self.assertFalse(result["runtime_execution_attempted"])
+            self.assertEqual(result["source_resolution"], "DISTINCT_SOURCE_ROOT_NOT_PROVIDED")
+            self.assertEqual(result["blocker"], "DISTINCT_LOCAL_CANONICAL_SOURCE_REQUIRED")
+            self.assertTrue(result["retry_allowed"])
+        finally:
+            td.cleanup()
+
     def test_dispatcher_has_exact_healer_selector(self):
         selected = dispatcher.select_consumers(("healer_sovereign_scheduler",))
         self.assertEqual(selected, (("healer_sovereign_scheduler", "scripts/consume_healer_sovereign_scheduler_request.py"),))
 
     def test_dispatcher_forwards_healer_and_hil_config_as_nonsecret(self):
-        env = dispatcher.clean_exec_env({"PATH": "/usr/bin", "STEGVERSE_HEALER_ROOT": "/local/healer", "STEGVERSE_HIL_INTR_ROUTE_CONFIG": "/local/config/hil-intr-runtime.json"})
+        env = dispatcher.clean_exec_env({
+            "PATH": "/usr/bin",
+            "STEGVERSE_HEALER_ROOT": "/local/healer",
+            "STEGVERSE_HEARTBEAT_SOURCE_ROOT": "/local/source",
+            "STEGVERSE_HIL_INTR_ROUTE_CONFIG": "/local/config/hil-intr-runtime.json",
+        })
         self.assertEqual(env["STEGVERSE_HEALER_ROOT"], "/local/healer")
+        self.assertEqual(env["STEGVERSE_HEARTBEAT_SOURCE_ROOT"], "/local/source")
         self.assertEqual(env["STEGVERSE_HIL_INTR_ROUTE_CONFIG"], "/local/config/hil-intr-runtime.json")
         self.assertEqual(env["STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY"], "NONE")
 
