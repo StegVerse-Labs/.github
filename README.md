@@ -197,7 +197,9 @@ The active task record `data/canonical-task-records/SS-EVIDENCE-COMPARISON-001.j
 
 ## ERL KV propagation verification
 
-Completed ERL-to-MyKV provider-operation evidence is propagated through a separate verification task. `SS-ERL-KV-PROPAGATION-VERIFICATION-001` requires evidence-backed applicability decisions for Site, Publisher, admissibility-wiki, and stegguardian-wiki; documentation alone cannot claim runtime or publication propagation.
+The completed task `SS-ERL-KV-PROPAGATION-VERIFICATION-001` propagated authenticated ERL-to-MyKV provider-operation proof to its two applicable consumers. Site merged and validated its MyKV ERL/StegSocials projection; Publisher merged and validated its governed KV document-rendering projection. Repository inspection recorded evidence-backed `NOT_APPLICABLE` dispositions for the admissibility and Guardian wikis, and corrected the Guardian target to `StegVerse-002/stegguardian-wiki`.
+
+Canonical closure evidence is retained in `evidence/erl-kv-propagation/2026-09-09-verification-receipt.json` and `docs/SS_ERL_KV_PROPAGATION_VERIFICATION_MIRROR_HANDOFF.md`. The propagation task is retired with no runtime activation, publication, or deployment inference.
 
 ---
 
