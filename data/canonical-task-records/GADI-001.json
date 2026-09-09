@@ -18,7 +18,9 @@
     "StegVerse-Labs/StegOS#232",
     "StegVerse-002/micro-node-runtime/docs/GADI_RUNTIME_MIRROR_HANDOFF.md",
     "StegVerse-002/micro-node-runtime#87",
-    "StegVerse-002/micro-node-runtime#88"
+    "StegVerse-002/micro-node-runtime#88",
+    "StegVerse-002/micro-node-runtime#90",
+    "StegVerse-002/micro-node-runtime#91"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs", "StegVerse-002"],
@@ -56,7 +58,8 @@
     {"dependency_id":"DEP-GADI-EXTERNAL-AI-TRANSITION-POLICY","kind":"SOURCE_POLICY","state":"AVAILABLE","ref":"data/external-ai-transition-policy.json","disposition":"REUSE_AND_EXTEND_ONLY_IF_REQUIRED"},
     {"dependency_id":"DEP-GADI-DEFENSIVE-CAPABILITY-REGISTRY","kind":"IMPLEMENTATION","state":"AVAILABLE","ref":"docs/GADI_MIRROR_HANDOFF.md","disposition":"REUSE_MERGED_STEGOS_TV_TVC_CAPABILITY_DISCOVERY_AND_AUTHORITY_BINDINGS"},
     {"dependency_id":"DEP-GADI-SIMULATION-HARNESS","kind":"IMPLEMENTATION","state":"RESOLVED_SOURCE_COMPLETE_VALIDATED_MERGED","ref":"StegVerse-002/micro-node-runtime/docs/GADI_RUNTIME_MIRROR_HANDOFF.md","disposition":"REUSE_CONTROLLED_SIMULATION_SOURCE_DO_NOT_TREAT_AS_RUNTIME_ACTIVATION"},
-    {"dependency_id":"DEP-GADI-RESIDENT-CONSUMER","kind":"IMPLEMENTATION_AND_RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"StegVerse-002/micro-node-runtime","disposition":"CONNECT_READY_FOR_RESIDENT_EXECUTION_COMMANDS_TO_EXISTING_CANONICAL_RUNTIME_WITHOUT_PARALLEL_SCHEDULER"},
+    {"dependency_id":"DEP-GADI-RESIDENT-CONSUMER","kind":"IMPLEMENTATION","state":"RESOLVED_SOURCE_COMPLETE_VALIDATED_MERGED","ref":"StegVerse-002/micro-node-runtime/docs/GADI_RUNTIME_MIRROR_HANDOFF.md","disposition":"REUSE_MERGED_RESIDENT_CONSUMER_AND_REQUIRE_AUTHENTIC_WORKERCOORDINATOR_INTR_RUNTIME_CONTEXT"},
+    {"dependency_id":"DEP-GADI-RESIDENT-EXECUTION-PROOF","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"StegVerse-002/micro-node-runtime","disposition":"REQUIRE_AUTHENTIC_BOUND_COMMAND_CONSUMPTION_EFFECT_REASSESSMENT_AND_TERMINATION"},
     {"dependency_id":"DEP-GADI-RECONSTRUCTION-PROOF","kind":"EVIDENCE","state":"UNRESOLVED","ref":"StegVerse-Labs/Continuity","disposition":"REQUIRE_EXACT_ACTION_AND_STATE_RECONSTRUCTION"}
   ],
   "blockers": [],
@@ -82,6 +85,9 @@
     "StegVerse-Labs/TV#17",
     "StegVerse-002/micro-node-runtime#87",
     "StegVerse-002/micro-node-runtime#88",
+    "StegVerse-002/micro-node-runtime#90",
+    "StegVerse-002/micro-node-runtime#91",
+    "StegVerse-002/micro-node-runtime/micro_node/gadi_resident_consumer.py",
     "StegVerse-002/micro-node-runtime/docs/GADI_RUNTIME_MIRROR_HANDOFF.md",
     "StegVerse-Labs/Continuity",
     "StegVerse-Labs/Site/stegos-node/hil-intr-sync.js",
@@ -97,9 +103,11 @@
     "NATIVE_STEGOS_DEFENSIVE_COMMAND_MATERIALIZATION_VALID",
     "THREAT_STATE_MACHINE_VALID",
     "CONTROLLED_SIMULATION_REASSESSMENT_SOURCE_VALIDATED",
+    "RESIDENT_DEFENSIVE_COMMAND_CONSUMER_SOURCE_VALIDATED",
     "MANIFESTED_GOVERNED_DEFENDER_IDENTITY_OBSERVED",
     "AUTHENTIC_INTR_DEFENSIVE_ADMISSION_OBSERVED",
     "PREAUTHORIZED_DEFENSIVE_CAPABILITY_BINDING_OBSERVED",
+    "AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
     "AUTHENTIC_RESIDENT_DEFENSIVE_ACTION_OBSERVED",
     "EXTERNAL_SAFE_STATE_EFFECT_OBSERVED",
     "ADAPTIVE_REASSESSMENT_AFTER_ADVERSARY_STRATEGY_CHANGE_OBSERVED",
@@ -118,6 +126,7 @@
       "native_stegos_defensive_ability_selection",
       "capability_registry_discovery",
       "native_stegos_defensive_command_materialization",
+      "resident_defensive_command_consumption",
       "preauthorized_external_safe_state_execution",
       "closed_loop_observation_and_reassessment",
       "receipt_emission",
@@ -152,6 +161,7 @@
     "unauthorized_third_party_compromise_authorized": false,
     "stegos_native_defensive_owner": true,
     "stegos_self_authorizes_consequential_defensive_effects": false,
+    "resident_consumer_mints_execution_authority": false,
     "all_consequential_actions_must_be_receipted_and_reconstructable": true
   }
 }

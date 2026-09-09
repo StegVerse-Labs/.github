@@ -61,9 +61,10 @@
     {"dependency_id":"DEP-TVC-PROVIDER-OPERATION-BROKER","kind":"AUTHORITY_OWNED_TASK_EVIDENCE","state":"SOURCE_AND_HOST_START_DELIVERY_VALIDATED_LIVE_RUNTIME_OBSERVATION_PENDING","ref":"TVC-PROVIDER-OPERATION-BROKER-003","disposition":"OBSERVE_EXISTING_OWNER_NO_COMPETE"},
     {"dependency_id":"DEP-TVC-CAPABILITY-RUNTIME","kind":"AUTHORITY_OWNED_TASK_EVIDENCE","state":"UNRESOLVED_EXTERNAL_OWNER","ref":"TVC-CAPABILITY-RUNTIME-002","disposition":"OBSERVE_EXISTING_OWNER_NO_COMPETE"},
     {"dependency_id":"DEP-STEGFIN-CONTINUITY","kind":"TASK_EVIDENCE","state":"UNRESOLVED","ref":"STEGFIN-CONTINUITY-CARRIER-007","disposition":"EXECUTE_WHEN_TVC_RUNTIME_PREREQUISITE_QUALIFIES"},
-    {"dependency_id":"DEP-GADI-MULTIREPO-CONTINUATION","kind":"TASK_EVIDENCE","state":"ACTIVE_STEGOS_STEGCORE_TV_TVC_AND_CONTROLLED_SIMULATION_SOURCE_COMPLETE_RESIDENT_EXECUTION_AND_RECONSTRUCTION_PENDING","ref":"GADI-001","disposition":"EXECUTE_INCOMPLETE_CANONICAL_CHILDREN_THROUGH_EXISTING_OWNERS"},
+    {"dependency_id":"DEP-GADI-MULTIREPO-CONTINUATION","kind":"TASK_EVIDENCE","state":"ACTIVE_STEGOS_STEGCORE_TV_TVC_SIMULATION_AND_RESIDENT_CONSUMER_SOURCE_COMPLETE_AUTHENTIC_EXECUTION_AND_RECONSTRUCTION_PENDING","ref":"GADI-001","disposition":"EXECUTE_INCOMPLETE_CANONICAL_CHILDREN_THROUGH_EXISTING_OWNERS"},
     {"dependency_id":"DEP-GADI-STEGCORE-SOURCE","kind":"TASK_EVIDENCE","state":"RESOLVED_COMPLETE_REUSE","ref":"GADI-STEGCORE-001","disposition":"REUSE_COMPLETE_DO_NOT_REEXECUTE"},
     {"dependency_id":"DEP-GADI-CONTROLLED-SIMULATION-SOURCE","kind":"TASK_EVIDENCE","state":"RESOLVED_COMPLETE_REUSE","ref":"StegVerse-002/micro-node-runtime/docs/GADI_RUNTIME_MIRROR_HANDOFF.md","disposition":"REUSE_COMPLETE_DO_NOT_TREAT_AS_RUNTIME_ACTIVATION"},
+    {"dependency_id":"DEP-GADI-RESIDENT-CONSUMER-SOURCE","kind":"TASK_EVIDENCE","state":"RESOLVED_COMPLETE_REUSE","ref":"StegVerse-002/micro-node-runtime#90","disposition":"REUSE_COMPLETE_DO_NOT_TREAT_AS_RUNTIME_EXECUTION"},
     {"dependency_id":"DEP-HIL-RESIDENT-SESSION-MANIFOLD","kind":"NESTED_MANIFOLD","state":"SOURCE_COMPLETE_PHYSICAL_EXPORT_AND_RESIDENT_CONSUMPTION_EVIDENCE_PENDING","ref":"HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001","disposition":"EXECUTE_IF_NOT_ALREADY_QUALIFYING"}
   ],
   "blockers": [],
@@ -92,6 +93,8 @@
     "StegVerse-Labs/StegCore#192",
     "StegVerse-002/micro-node-runtime#87",
     "StegVerse-002/micro-node-runtime#88",
+    "StegVerse-002/micro-node-runtime#90",
+    "StegVerse-002/micro-node-runtime#91",
     "StegVerse-002/micro-node-runtime/docs/GADI_RUNTIME_MIRROR_HANDOFF.md",
     "StegVerse-Labs/TVC/tasks/TVC-PROVIDER-OPERATION-BROKER-003.json",
     "docs/HIL_RESIDENT_SESSION_MANIFOLD_ACTIVATION_MIRROR_HANDOFF.md"
@@ -109,13 +112,14 @@
     "MATERIAL_DIVERGENCE_AND_UNCERTAINTY_PRESERVED",
     "RECONCILED_PROVENANCE_TRACEABLE_TO_LANE_AND_AUTHORITY",
     "GADI_CONTROLLED_SIMULATION_SOURCE_REUSED_WITHOUT_ACTIVATION_INFERENCE",
+    "GADI_RESIDENT_CONSUMER_SOURCE_REUSED_WITHOUT_EXECUTION_INFERENCE",
     "GADI_INCOMPLETE_RUNTIME_AND_RECONSTRUCTION_CHILDREN_RESOLVED_OR_FAIL_CLOSED",
     "HIL_NESTED_MANIFOLD_TERMINAL_OR_QUALIFYING",
     "NO_PARALLEL_HEARTBEAT_EVALUATOR_CREDENTIAL_OR_SIGNING_AUTHORITY",
     "DURABLE_MACHINE_READABLE_ACTIVATION_EVIDENCE_PERSISTED"
   ],
   "runtime_requirements": {
-    "capabilities": ["formalism_inventory_reconciliation", "formalism_handoff_normalization_analysis", "formalism_mathematical_crosswalk", "manifold_governance_mapping", "formalism_manifold_reconciliation", "gadi_runtime_integration", "hil_resident_session_manifold"],
+    "capabilities": ["formalism_inventory_reconciliation", "formalism_handoff_normalization_analysis", "formalism_mathematical_crosswalk", "manifold_governance_mapping", "formalism_manifold_reconciliation", "gadi_runtime_integration", "gadi_resident_defensive_command_consumption", "hil_resident_session_manifold"],
     "environment": "SOVEREIGN_RESIDENT",
     "direction": "INTERNAL_AND_DECLARED_PREAUTHORIZED_EXTERNAL_WHERE_APPLICABLE",
     "mutation_required": false,
