@@ -7,6 +7,8 @@
   "source_handoff_ref": "FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md",
   "execution_policy": {
     "activate_all_incomplete_owned_nodes": true,
+    "complete_all_declared_subordinates": true,
+    "do_not_prune_incomplete_tasks_for_expected_future_consolidation": true,
     "reuse_completed_nodes": true,
     "observe_external_authority_nodes_without_competing": true,
     "user_only_nodes_never_auto_execute": true,
@@ -65,6 +67,6 @@
     {"scope":"wallet signing/broadcast","owner":"USER_ONLY","reason":"authority boundary"},
     {"task_id":"SHWP-DURABLE-RUNTIME-ACTIVATION","reason":"shared runtime infrastructure dependency, not a direct subordinate of the umbrella manifold"}
   ],
-  "completion_rule": "The parent may not declare manifold activation until every lineage node is either completed/reused, qualifying under its existing owner, or executed to its declared terminal/evidence state. Formalism source discovery is required whenever the deterministic roots manifest is absent; missing or invalid-handoff roots must enter the existing TVC materialization recovery lane and be rediscovered before the four source-reading formalism lanes may execute. GADI and HIL incomplete children remain independently required.",
+  "completion_rule": "The parent may not declare manifold activation until every declared lineage node reaches its canonical completion predicate or has already-completed evidence reused without duplicate execution. Incomplete declared children may not be retired, skipped, or pruned merely because future shared infrastructure may make their implementation path reusable or simpler. Formalism source discovery is required whenever the deterministic roots manifest is absent; missing or invalid-handoff roots must enter the existing TVC materialization recovery lane and be rediscovered before the four source-reading formalism lanes may execute. GADI and HIL incomplete children remain independently required.",
   "authority_effect": "NONE_LINEAGE_ONLY"
 }
