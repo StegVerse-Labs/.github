@@ -13,59 +13,146 @@
     "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_EPHEMERAL_CREDENTIAL_SESSION_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_IOS_RESIDENT_RENDEZVOUS_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_LINKEDIN_PLAYWRIGHT_EXECUTION_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/StegBrowser#4",
-    "StegVerse-Labs/StegBrowser@86cb4c42bbde1366ca03088a01983273f73de400",
-    "StegVerse-Labs/StegBrowser@10ab121dfc7a3d91a0436fee333b4d8318d43576",
-    "StegVerse-Labs/StegBrowser@4fd4603cc5ba6255c1b99bd133634df9434e5386",
-    "StegVerse-Labs/StegOS@9d069503671d8c5f2a19856c0adece3e2eba962e",
-    "StegVerse-Labs/StegOS@b9325bb69c721420218ba622297f95ef80c36cda",
-    "StegVerse-Labs/StegOS@91e93a70ed15d21d84cc7b511b6c71b64b9dc19b",
-    "StegVerse-Labs/StegOS@781928dc82443d0664e05d299495dca77861a331",
-    "StegVerse-Labs/StegOS@22b97c52dda22e5532bc27d598b7d65c7654bf6d",
     "StegVerse-Labs/StegOS/docs/STEGBROWSER_IOS_RESIDENT_APP_TARGET_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/Site@48006a08c877a3f18ab36e00e934350ec07a1f55",
-    "StegVerse-Labs/Site@de696b5f8b5080faaddb18b1e984cdbcb4d2cca5",
-    "StegVerse-Labs/StegSocials@122811f8f44dc2494a1d5e771d50c210d1d8a555",
-    "StegVerse-Labs/StegSocials@414e8f597f6b0a8aa62f092d105a16c0629cedf4",
+    "StegVerse-Labs/TVC/docs/APP_STORE_CONNECT_TV_TVC_SKAP_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site/docs/APP_STORE_CONNECT_SKAP_IPHONE_INGRESS_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_STEGBROWSER_PUBLICATION_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_STEGBROWSER_LINKEDIN_PUBLICATION_MIRROR_HANDOFF.md"
+    "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_STEGBROWSER_LINKEDIN_PUBLICATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/TVC@15f01fd9e4c472982cc2212c86aecb9ea90e5b49",
+    "StegVerse-Labs/StegOS@790ee065c491822f2c6bf06e77214e99245afd8f",
+    "StegVerse-Labs/StegOS@de38c04accc6196923058db79ccf88db25d85ee6",
+    "StegVerse-Labs/StegOS@ea22296e9bbae7605b241ec86c4e15deac8dc937"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
     "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegBrowser", "StegVerse-Labs/StegOS", "StegVerse-Labs/Site", "StegVerse-Labs/StegSocials", "StegVerse-Labs/TVC", "master-records/orchestration"],
-    "components": ["ecosystem-ephemeral-browser-lease", "playwright-chromium-substrate", "stegsocials-browser-caller", "facebook-end-to-end-publication-entrypoint", "linkedin-company-page-runtime", "linkedin-playwright-page-driver", "linkedin-end-to-end-publication-entrypoint", "stegsocials-linkedin-caller", "ios-resident-rendezvous-loopback-listener", "stegosmobile-same-device-discovery-readback", "stegosmobile-iphoneos-device-package", "site-native-app-handoff-observation", "apple-identifiers-bootstrap", "ephemeral-apple-provisioning-testflight", "intr-lease-admission", "tvc-skap-ephemeral-credential-session", "publication-receipt-custody"]
+    "components": [
+      "ecosystem-ephemeral-browser-lease",
+      "playwright-chromium-substrate",
+      "stegsocials-browser-caller",
+      "facebook-end-to-end-publication-entrypoint",
+      "linkedin-company-page-runtime",
+      "linkedin-playwright-page-driver",
+      "linkedin-end-to-end-publication-entrypoint",
+      "stegsocials-linkedin-caller",
+      "ios-resident-rendezvous-loopback-listener",
+      "stegosmobile-same-device-discovery-readback",
+      "stegosmobile-iphoneos-device-package",
+      "site-native-app-handoff-observation",
+      "apple-identifiers-tvc-request",
+      "apple-signing-executor-handoff",
+      "tvc-native-build-upload",
+      "intr-lease-admission",
+      "tvc-skap-ephemeral-credential-session",
+      "publication-receipt-custody"
+    ]
   },
   "dependencies": [
-    {"dependency_id":"DEP-STEGBROWSER-INTR-ADMISSION","kind":"GOVERNED_RUNTIME_ADMISSION","state":"READY_FOR_INGRESS","ref":"StegVerse-Labs/.github/docs/UNIVERSAL_WORK_INTERLOCK_MIRROR_HANDOFF.md","disposition":"USE_EXISTING_CANONICAL_WORK_INTERLOCK_INTR_INGRESS"},
-    {"dependency_id":"DEP-STEGBROWSER-IOS-RESIDENT-LIFECYCLE","kind":"SOVEREIGN_NATIVE_RUNTIME","state":"SITE_HANDOFF_DIAGNOSTIC_AND_DEVICE_DELIVERY_PIPELINE_MERGED_CURRENT_DEVICE_PROOF_PENDING","ref":"StegVerse-Labs/Site@48006a08c877a3f18ab36e00e934350ec07a1f55 + StegVerse-Labs/StegOS@22b97c52dda22e5532bc27d598b7d65c7654bf6d","disposition":"CANONICAL SITE-NODE-BOUND LOOPBACK LIFECYCLE, SAME-DEVICE READBACK, IPHONEOS PACKAGE, TESTFLIGHT DELIVERY, AND BROWSER-TO-APP HANDOFF OBSERVATION ARE MERGED. NEXT MATERIALIZE APPLE ACCOUNT PREREQUISITES, INSTALL ON CURRENT IPHONE, OBSERVE APP_HANDOFF_OBSERVED_LISTENER_NOT_PROVEN, THEN REQUIRE SAME-DEVICE DISCOVERY INSIDE STEGOSMOBILE."},
-    {"dependency_id":"DEP-STEGBROWSER-APPLE-SIGNING","kind":"PHYSICAL_DEVICE_DISTRIBUTION","state":"THREE_SECRET_EPHEMERAL_PIPELINE_READY_OWNER_APPLE_ACCOUNT_PREREQUISITES_PENDING","ref":"StegVerse-Labs/StegOS@22b97c52dda22e5532bc27d598b7d65c7654bf6d","disposition":"PREFERRED PATH REQUIRES ONLY ASC_KEY_ID, ASC_ISSUER_ID, AND RAW MULTILINE ASC_PRIVATE_KEY_P8 AS GITHUB ACTIONS SECRETS. IDENTIFIERS BOOTSTRAP CREATES/REUSES THE THREE BUNDLE IDS AND ENABLES APP_GROUPS. OWNER MUST HAVE APPLE DEVELOPER MEMBERSHIP/API ACCESS, REGISTER AND ASSIGN group.org.stegverse.stegosmobile TO ALL THREE APP IDS, AND CREATE THE APP STORE CONNECT APP RECORD. EPHEMERAL RUNNER THEN CREATES/REVOKES DISTRIBUTION CERTIFICATE AND PROFILES, DERIVES TEAM ID, SIGNS, VERIFIES, AND UPLOADS TO TESTFLIGHT. NO USER-OPERATED MAC REQUIRED."},
-    {"dependency_id":"DEP-STEGBROWSER-STEGSOCIALS-CALLER","kind":"ECOSYSTEM_CALLER","state":"FACEBOOK_AND_LINKEDIN_CALLER_PARITY_MERGED_VALIDATED_DEFERRED_UNTIL_WORKING_INSTANCE","ref":"StegVerse-Labs/StegSocials@414e8f597f6b0a8aa62f092d105a16c0629cedf4","disposition":"FACEBOOK AND LINKEDIN NATIVE CALLERS ARE SOURCE-COMPLETE. AFTER CURRENT-IPHONE RESIDENT PROOF, EXECUTE ONE APPROVED ACTION PER PLATFORM AND REQUIRE REAL PLATFORM OBJECT ID, CANONICAL URL, EXACT CONTENT COMMITMENT, VISIBILITY, READBACK, AND TERMINAL SESSION DESTRUCTION BEFORE EMITTING COMPLETE PUBLICATION RECEIPTS."},
-    {"dependency_id":"DEP-STEGBROWSER-CREDENTIAL-SESSION","kind":"CREDENTIAL_RUNTIME","state":"SOURCE_READY_RUNTIME_EVIDENCE_PENDING_DEFERRED","ref":"StegVerse-Labs/TVC + StegVerse-Labs/StegBrowser","disposition":"DEFER UNTIL WORKING CURRENT-IPHONE INSTANCE IS PROVEN"},
-    {"dependency_id":"DEP-STEGBROWSER-PUBLICATION-CUSTODY","kind":"POST_PUBLICATION_CUSTODY","state":"PENDING_AUTHENTIC_PUBLICATION_RECEIPT","ref":"master-records/orchestration","disposition":"INGEST ONLY AFTER LIVE PUBLICATION PROOF EXISTS"}
+    {
+      "dependency_id": "DEP-STEGBROWSER-INTR-ADMISSION",
+      "kind": "GOVERNED_RUNTIME_ADMISSION",
+      "state": "READY_FOR_INGRESS",
+      "ref": "StegVerse-Labs/.github/docs/UNIVERSAL_WORK_INTERLOCK_MIRROR_HANDOFF.md",
+      "disposition": "USE_EXISTING_CANONICAL_WORK_INTERLOCK_INTR_INGRESS"
+    },
+    {
+      "dependency_id": "DEP-STEGBROWSER-IOS-RESIDENT-LIFECYCLE",
+      "kind": "SOVEREIGN_NATIVE_RUNTIME",
+      "state": "SOURCE_AND_UNSIGNED_PACKAGE_READY_CURRENT_DEVICE_PROOF_PENDING",
+      "ref": "StegVerse-Labs/StegOS/docs/STEGBROWSER_IOS_RESIDENT_APP_TARGET_MIRROR_HANDOFF.md",
+      "disposition": "CANONICAL SITE-NODE-BOUND LOOPBACK LIFECYCLE, SAME-DEVICE READBACK, AND IPHONEOS UNSIGNED PACKAGE ARE VALIDATED. CURRENT-IPHONE INSTALLATION AND DISCOVERY REQUIRE THE APPLE SIGNING/TESTFLIGHT CHAIN TO COMPLETE."
+    },
+    {
+      "dependency_id": "DEP-STEGBROWSER-APPLE-SIGNING",
+      "kind": "PHYSICAL_DEVICE_DISTRIBUTION",
+      "state": "GITHUB_CREDENTIAL_EXECUTION_RETIRED_SIGNING_EXECUTOR_NOT_MATERIALIZED",
+      "ref": "StegVerse-Labs/StegOS@ea22296e9bbae7605b241ec86c4e15deac8dc937 + StegVerse-Labs/TVC@15f01fd9e4c472982cc2212c86aecb9ea90e5b49",
+      "disposition": "THE OLD THREE-ASC-SECRET GITHUB EXECUTION PATH IS RETIRED. ACTIVE GITHUB WORKFLOWS ARE VALIDATION/EVIDENCE TRANSPORT ONLY. STEGOS NOW EMITS SECRET-FREE TVC IDENTIFIER/PROVISIONING REQUESTS AND A SIGNING-EXECUTOR HANDOFF. REMAINING REQUIREMENT IS AN ADMITTED MACOS/XCODE EXECUTOR THAT REQUIRES NO SECOND USER-OPERATED MACHINE, GENERATES ITS SIGNING KEY/CSR LOCALLY, USES TVC FOR APPLE CERTIFICATE/PROFILE OPERATIONS, SIGNS/EXPORTS/VERIFIES THE IPA, THEN USES TVC NATIVE BUILD UPLOAD."
+    },
+    {
+      "dependency_id": "DEP-STEGBROWSER-APPLE-TVC-RUNTIME",
+      "kind": "CREDENTIAL_RUNTIME",
+      "state": "SOURCE_COMPLETE_RUNTIME_EVIDENCE_PENDING",
+      "ref": "StegVerse-Labs/TVC/docs/APP_STORE_CONNECT_TV_TVC_SKAP_MIRROR_HANDOFF.md",
+      "disposition": "TVC APP STORE CONNECT CREDENTIAL CLASS, SKAP RESOLVER, RECIPIENT PROJECTION, INTR ROUTE CONTRACT, PROVIDER OPERATION BOUNDARY, AND NATIVE BUILD UPLOAD ARE MERGED. AUTHENTIC RECIPIENT/LIVENESS/ROUTE, REAL SKAP CUSTODY, AND LIVE PROVIDER EXECUTION REMAIN UNOBSERVED."
+    },
+    {
+      "dependency_id": "DEP-STEGBROWSER-STEGSOCIALS-CALLER",
+      "kind": "ECOSYSTEM_CALLER",
+      "state": "FACEBOOK_AND_LINKEDIN_CALLER_PARITY_MERGED_VALIDATED_DEFERRED_UNTIL_WORKING_INSTANCE",
+      "ref": "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_STEGBROWSER_PUBLICATION_MIRROR_HANDOFF.md",
+      "disposition": "AFTER CURRENT-IPHONE RESIDENT PROOF, EXECUTE ONE APPROVED ACTION PER PLATFORM AND REQUIRE REAL PLATFORM OBJECT ID, CANONICAL URL, EXACT CONTENT COMMITMENT, VISIBILITY, READBACK, AND TERMINAL SESSION DESTRUCTION BEFORE COMPLETE PUBLICATION RECEIPTS."
+    },
+    {
+      "dependency_id": "DEP-STEGBROWSER-PUBLICATION-CUSTODY",
+      "kind": "POST_PUBLICATION_CUSTODY",
+      "state": "PENDING_AUTHENTIC_PUBLICATION_RECEIPT",
+      "ref": "master-records/orchestration",
+      "disposition": "INGEST ONLY AFTER LIVE PUBLICATION PROOF EXISTS"
+    }
   ],
-  "blockers": [],
+  "blockers": [
+    {
+      "blocker_id": "APPLE-ADMITTED-MACOS-XCODE-SIGNING-EXECUTOR",
+      "state": "NOT_MATERIALIZED",
+      "release_condition": "An admitted macOS/Xcode signing executor exists without a second user-operated machine, generates signing key/CSR locally and ephemerally, binds to TVC certificate/profile operations, signs/exports/verifies the StegOS IPA, destroys signing private key material, and hands the signed artifact to TVC native Build Upload with authentic receipts."
+    },
+    {
+      "blocker_id": "APPLE-TVC-SKAP-RUNTIME-EVIDENCE",
+      "state": "NOT_OBSERVED",
+      "release_condition": "Authentic current TVC Apple recipient/liveness/InTr route evidence exists and the owner's real App Store Connect credential is sealed into SKAP through the current-iPhone ingress without credential export."
+    }
+  ],
   "systemic_incident_ref": null,
   "adjacent_task_refs": ["SS-EVIDENCE-COMPARISON-001", "SS-KV-SKAP-SOCIAL-RELEASE-001"],
   "existing_evidence_refs": [
-    "StegVerse-Labs/StegBrowser@86cb4c42bbde1366ca03088a01983273f73de400",
-    "StegVerse-Labs/StegBrowser@10ab121dfc7a3d91a0436fee333b4d8318d43576",
-    "StegVerse-Labs/StegBrowser/actions/runs/34304171541",
-    "StegVerse-Labs/StegBrowser@4fd4603cc5ba6255c1b99bd133634df9434e5386",
-    "StegVerse-Labs/StegOS/actions/runs/34306875317",
-    "StegVerse-Labs/StegOS@b9325bb69c721420218ba622297f95ef80c36cda",
-    "StegVerse-Labs/StegOS/actions/runs/34307735192",
-    "StegVerse-Labs/StegOS@22b97c52dda22e5532bc27d598b7d65c7654bf6d",
-    "StegVerse-Labs/StegOS/actions/runs/34309757923",
-    "StegVerse-Labs/Site@48006a08c877a3f18ab36e00e934350ec07a1f55",
-    "StegVerse-Labs/Site@de696b5f8b5080faaddb18b1e984cdbcb4d2cca5",
-    "StegVerse-Labs/StegSocials@122811f8f44dc2494a1d5e771d50c210d1d8a555",
-    "StegVerse-Labs/StegSocials@414e8f597f6b0a8aa62f092d105a16c0629cedf4",
-    "StegVerse-Labs/StegSocials/actions/runs/34304357178",
-    "StegVerse-Labs/StegSocials/actions/runs/34304357164"
+    "StegVerse-Labs/TVC/actions/runs/34350815902",
+    "StegVerse-Labs/TVC/actions/runs/34351285862",
+    "StegVerse-Labs/TVC/actions/runs/34352933939",
+    "StegVerse-Labs/TVC/actions/runs/34353987812",
+    "StegVerse-Labs/TVC/actions/runs/34353987850",
+    "StegVerse-Labs/StegOS/actions/runs/34353547846",
+    "StegVerse-Labs/StegOS/actions/runs/34353547894",
+    "StegVerse-Labs/StegOS/actions/runs/34353817109",
+    "StegVerse-Labs/StegOS/actions/runs/34353817438",
+    "StegVerse-Labs/StegOS/actions/runs/34358157189",
+    "StegVerse-Labs/StegOS/actions/runs/34358157211",
+    "StegVerse-Labs/StegOS/actions/runs/34358157254"
   ],
-  "expected_evidence_predicates": ["EPHEMERAL_LEASE_SCOPE_ENFORCED", "AUTHENTIC_CHROMIUM_PUBLIC_RETRIEVAL_OBSERVED", "TERMINAL_SESSION_DESTRUCTION_RECEIPT_VALID", "IOS_RESIDENT_APP_TARGET_INTEGRATION_VERIFIED", "IOS_SAME_DEVICE_DISCOVERY_READBACK_SOURCE_VERIFIED", "IOS_COMPLETE_SIGNING_SURFACE_VERIFIED", "APPLE_IDENTIFIERS_BOOTSTRAP_COMPLETE", "SITE_NATIVE_APP_HANDOFF_OBSERVATION_VERIFIED", "CURRENT_IPHONE_SIGNED_INSTALLATION_OBSERVED", "CURRENT_IPHONE_RESIDENT_RENDEZVOUS_AVAILABLE", "INTERLOCK_INTR_LEASE_ADMISSION_OBSERVED", "WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED", "AUTHENTIC_TVC_SKAP_FACEBOOK_SESSION_BOUND", "AUTHENTIC_FACEBOOK_PUBLICATION_CREATED", "AUTHENTIC_TVC_SKAP_LINKEDIN_SESSION_BOUND", "AUTHENTIC_LINKEDIN_PUBLICATION_CREATED", "PUBLICATION_RECEIPT_CUSTODY_COMPLETE"],
+  "expected_evidence_predicates": [
+    "EPHEMERAL_LEASE_SCOPE_ENFORCED",
+    "AUTHENTIC_CHROMIUM_PUBLIC_RETRIEVAL_OBSERVED",
+    "TERMINAL_SESSION_DESTRUCTION_RECEIPT_VALID",
+    "IOS_RESIDENT_APP_TARGET_INTEGRATION_VERIFIED",
+    "IOS_SAME_DEVICE_DISCOVERY_READBACK_SOURCE_VERIFIED",
+    "IOS_UNSIGNED_DEVICE_PACKAGE_VERIFIED",
+    "APPLE_TVC_IDENTIFIER_PROVISIONING_REQUESTS_VERIFIED",
+    "APPLE_GITHUB_CREDENTIAL_EXECUTION_RETIRED",
+    "APPLE_ADMITTED_SIGNING_EXECUTOR_OBSERVED",
+    "APPLE_TVC_SKAP_CREDENTIAL_SESSION_BOUND",
+    "APPLE_TVC_BUILD_UPLOAD_OBSERVED",
+    "CURRENT_IPHONE_SIGNED_INSTALLATION_OBSERVED",
+    "CURRENT_IPHONE_RESIDENT_RENDEZVOUS_AVAILABLE",
+    "INTERLOCK_INTR_LEASE_ADMISSION_OBSERVED",
+    "WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+    "AUTHENTIC_FACEBOOK_PUBLICATION_CREATED",
+    "AUTHENTIC_LINKEDIN_PUBLICATION_CREATED",
+    "PUBLICATION_RECEIPT_CUSTODY_COMPLETE"
+  ],
   "runtime_requirements": {
-    "capabilities": ["bounded_process_execution", "ephemeral_browser_execution", "ios_loopback_resident_rendezvous", "ios_same_device_discovery_readback", "iphoneos_device_packaging", "site_native_app_handoff_observation", "apple_identifiers_bootstrap", "ephemeral_apple_signing_testflight", "intr_task_admission", "facebook_publication", "linkedin_publication"],
+    "capabilities": [
+      "bounded_process_execution",
+      "ephemeral_browser_execution",
+      "ios_loopback_resident_rendezvous",
+      "ios_same_device_discovery_readback",
+      "iphoneos_device_packaging",
+      "apple_tvc_identifier_provisioning",
+      "admitted_macos_xcode_signing",
+      "tvc_native_build_upload",
+      "intr_task_admission",
+      "facebook_publication",
+      "linkedin_publication"
+    ],
     "environment": "EPHEMERAL_BROWSER_SUBSTRATE_PLUS_SOVEREIGN_ADMISSION",
     "direction": "ECOSYSTEM_CALLER_TO_SOVEREIGN_RESIDENT_TO_BROWSER_TO_EXTERNAL_SURFACE_TO_CUSTODY",
     "mutation_required": true,
@@ -73,15 +160,31 @@
     "current_observation_required": true
   },
   "runtime_resolution": {
-    "current_executor": "StegOSMobile has the canonical resident, same-device readback, real iphoneos package, Apple identifiers bootstrap, and hardened three-secret ephemeral signing/TestFlight workflows. Site now distinguishes requested custom-scheme navigation from an observed browser-to-app foreground handoff. StegBrowser and StegSocials have merged Facebook and LinkedIn execution/caller source paths.",
-    "authority_basis": "Source/package validation and browser-handoff observation prove delivery and diagnostic machinery only. Apple membership/API key/app-group/app-record prerequisites plus authentic current-iPhone installation/discovery and live platform publication evidence remain physical/runtime predicates.",
+    "current_executor": "StegOSMobile has the canonical resident, same-device readback, unsigned iphoneos package, secret-free TVC provisioning requests, and signing-executor handoff. TVC has the App Store Connect credential/session/recipient/route/Build Upload source path. No admitted macOS/Xcode signing executor or authentic Apple TVC runtime execution has yet been observed.",
+    "authority_basis": "GitHub Actions validates and transports evidence only. TV/TVC remains credential authority. Signing private key material must originate and be destroyed inside the admitted signing executor. Source and CI do not prove Apple execution, signing, TestFlight upload, installation, or resident discovery.",
     "unattended_runtime": false
   },
-  "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
-  "human_action_ref": "Working-instance source work is exhausted up to the Apple account boundary. Required owner inputs are Apple Developer membership/API access, a team App Store Connect API key (Key ID, Issuer ID, raw .p8), shared App Group registration/assignment, and App Store Connect app record creation. After those inputs, run the existing identifiers bootstrap and ephemeral TestFlight workflows from GitHub on the iPhone, install the build, then use https://stegverse.org/stegos-bootstrap/native-resident-activate.html in the same standalone Safari context that owns the registered canonical Node. No user-operated Mac is required.",
-  "completion": {"claimed":false,"validated":true,"reconciliation_ref":"StegVerse-Labs/.github@eb050adff7e712114e8830cb867ec6a38018ad14","activation_proof_complete":false},
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "human_action_ref": "Apple Developer membership is already observed active through 2027-09-09. No GitHub Apple secrets should be added. Owner action becomes necessary only when the authentic current-iPhone TVC/SKAP ingress is ready for the owner's real App Store Connect key and when Apple account configuration requires App Group/app-record actions not covered by the API. A second user-operated Mac is not an acceptable completion path.",
+  "completion": {
+    "claimed": false,
+    "validated": true,
+    "reconciliation_ref": "StegVerse-Labs/StegOS@ea22296e9bbae7605b241ec86c4e15deac8dc937",
+    "activation_proof_complete": false
+  },
   "allowed_next_transitions": ["INGRESS_ADMITTED"],
-  "handoff_projection_refs": ["StegVerse-Labs/StegBrowser/docs/STEGBROWSER_ECOSYSTEM_EPHEMERAL_MIRROR_HANDOFF.md", "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_LINKEDIN_PLAYWRIGHT_EXECUTION_MIRROR_HANDOFF.md", "StegVerse-Labs/StegOS/docs/STEGBROWSER_IOS_RESIDENT_APP_TARGET_MIRROR_HANDOFF.md", "docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md"],
+  "handoff_projection_refs": [
+    "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_ECOSYSTEM_EPHEMERAL_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_LINKEDIN_PLAYWRIGHT_EXECUTION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegOS/docs/STEGBROWSER_IOS_RESIDENT_APP_TARGET_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/TVC/docs/APP_STORE_CONNECT_TV_TVC_SKAP_MIRROR_HANDOFF.md",
+    "docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md"
+  ],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "source_state_proves_execution": false,
@@ -89,6 +192,8 @@
     "ios_same_device_discovery_receipt_mints_authority": false,
     "credentials_must_remain_outside_lease_and_repository": true,
     "credential_resolution_must_be_callback_only_at_execution_edge": true,
+    "github_actions_apple_credential_execution_allowed": false,
+    "apple_signing_private_key_must_be_executor_local_ephemeral": true,
     "publication_requires_external_object_identity_and_readback": true,
     "interlock_intr_required_for_governed_ingress_egress": true,
     "worker_claim_authority": "WORKERCOORDINATOR",
