@@ -6,7 +6,7 @@ Goal task: `SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001`
 Continuation task: `STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001`
 Custody task: `MR-STEGVERSE001-BOUNDED-AUTONOMY-001`
 Observer successor: `SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001`
-State: `HANDOFF_READY_SOVEREIGN_LOCAL_RENDEZVOUS_PRIMARY_STEGBROWSER_TRANSPORT_CONTRACT_VALIDATED_IOS_NATIVE_LISTENER_RUNTIME_PENDING`
+State: `HANDOFF_READY_NATIVE_RESIDENT_SOURCE_AND_UNSIGNED_IPHONE_PACKAGE_VALIDATED_SIGNED_CURRENT_IPHONE_RUNTIME_EVIDENCE_PENDING`
 
 ## Canonical terminal source
 
@@ -21,9 +21,9 @@ G24: duplicate terminal evidence / NON-CUSTODIAL
 SV001 rerun: PROHIBITED
 ```
 
-The G23 hash is a verification predicate, not replacement source material and not downstream authority.
+The G23 hash is a verification predicate. It is not replacement source material and does not authorize any downstream transition.
 
-## Authority and transport separation
+## Authority separation
 
 ```text
 WorkerCoordinator: continuation claim/fence only
@@ -32,14 +32,13 @@ Interlock/InTr: fresh governed transition admission
 Master Records: custody/reconstruction authority
 SV002: observation/disposition only
 HB32: timing/freshness/correlation only; authority NONE
-Site: current-device materialization/carrier only; authority NONE
-Sovereign resident rendezvous: PRIMARY evidence transport; authority NONE
-StegBrowser native resident wrapper: local transport/lifecycle only; authority NONE
-Hosted/Render rendezvous: FALLBACK evidence transport only; authority NONE
-Transported Site proof: evidence only; authority NONE
+Site: same-device materialization/carrier only; authority NONE
+StegOS/StegBrowser native resident: local evidence transport/lifecycle only; authority NONE
+resident mailbox retention: evidence only; authority NONE
+hosted rendezvous: FALLBACK evidence transport only; authority NONE
 ```
 
-Render is not a primary support dependency. A live hosted service, CI run, deployment, cache generation, heartbeat, prior receipt, recovered hash, task registration, WorkerCoordinator selection, rendezvous retention, or transported proof does not authorize custody or SV002.
+No merge, CI run, Apple compilation, unsigned IPA, deployment, cache refresh, heartbeat progression, prior receipt, recovered hash, Site proof, resident discovery response, or retained mailbox record authorizes custody or SV002.
 
 ## Canonical continuation chain
 
@@ -49,15 +48,16 @@ exact retained/recovered canonical G23
 -> fresh root Universal InTr MasterRecords:SV001Custody ALLOW
 -> canonical Master Records custody/reconstruction PASS
 -> Site governed custody proof
--> sovereign local resident rendezvous first
--> StegBrowser/iOS native loopback wrapper when current device is iPhone
--> hosted rendezvous only if sovereign local rendezvous is unavailable
--> non-authorizing mailbox RETAINED
+-> sovereign-local resident rendezvous first
+-> StegOSMobile/StegBrowser loopback resident on current iPhone
+-> local mailbox RETAINED
 -> WorkerCoordinator continuation fetch/materialization under observed/**
 -> independent continuation proof validation without Master Records mutation
 -> retained downstream same-execution reconstruction
 -> SV002 observation/disposition
 ```
+
+Hosted rendezvous is eligible only when the sovereign-local path is unavailable; it never becomes custody/execution authority.
 
 Canonical Site custody proof schema:
 
@@ -67,16 +67,16 @@ stegos.master-records.portable-sv001-custody-proof/v1
 
 ## Existing continuation controls
 
-Independent continuation WorkerCoordinator binding merged through `.github#1181`:
+Independent continuation WorkerCoordinator binding:
 
 ```text
-0dc0ca78e72573e0d129c8a4d0e70955b673b851
+StegVerse-Labs/.github@0dc0ca78e72573e0d129c8a4d0e70955b673b851
 ```
 
 Governance-bypass repair:
 
 ```text
-fb26425243c05bc155972019beae474cd6b29d8f
+StegVerse-Labs/.github@fb26425243c05bc155972019beae474cd6b29d8f
 ```
 
 Canonical proof materialization path:
@@ -85,11 +85,20 @@ Canonical proof materialization path:
 observed/site-master-records-custody.latest.json
 ```
 
-The continuation cannot invoke the Master Records watcher/import path, create custody, rerun SV001, or infer authority from transported proof.
+Sovereign-primary continuation transport hardening:
 
-## Evidence mailbox
+```text
+b8459ceddd5d13aeadd9fc83e686e2859b20cfed
+b1ea15c47eb481dc014b07df347aa61886e80a73
+3694f635bd5799e489274f2366633cda1aa39bcc
+organization-control validation 34301353083: SUCCESS
+```
 
-`StegVerse-org/LLM-adapter` mailbox implementation:
+The continuation recomputes proof digest, validates exact lowercase canonical node identity, keeps reachable local `NO_EVIDENCE` local/pending, fails closed on malformed/authority-invalid local responses, and consults hosted transport only when all sovereign-local candidates are unavailable.
+
+## Resident evidence mailbox
+
+`StegVerse-org/LLM-adapter` evidence mailbox source:
 
 ```text
 3d35b4afef55474881c5a73d6879775b3159a343
@@ -103,130 +112,149 @@ Endpoint:
 /api/resident-rendezvous/v1/evidence/site-governed-custody
 ```
 
-The mailbox is evidence-only. It grants no execution, custody, admission, credential, routing, or SV002 authority.
+The mailbox remains non-authorizing.
 
-## Hosted fallback availability
+## Site sovereign-local projection
 
-Credential-free hosted fallback packaging/startup was repaired so the fallback remains usable when required:
-
-```text
-4b109bded506754a5c6d323f6a35ab24c3b92555
-27cf400dd2b5a202e5665acc4df63500b52e298a
-fb3cde088dd59792218b82d253dfef995ee5d18a
-bf038aeb6e859a51643c7a6d14e4ddc7e833b292
-0a00e0ab9b25dcc564114090e90c75b05f4752bb
-cd45bc91f443f0c50ae001087180757b6eb6e4e4
-```
-
-Hosted fallback validation run `34294513111`: `SUCCESS`.
-
-The Render service may remain live and healthy, but its role is `HOSTED_FALLBACK_ONLY`. Hosted availability is not evidence that the sovereign primary path is healthy or that current-device custody occurred.
-
-## Sovereign-primary Site transport correction
-
-The prior Site configuration incorrectly represented hosted transport as primary. The contract was reversed:
+The Site transport hierarchy is sovereign-local primary with hosted fallback only. The current canonical native-activation projection merged through Site PR #1130:
 
 ```text
-StegVerse-Labs/Site
-fd11d7b0e58ba1f1a19f51384e6de719ad156d24
-  schema_version: 1.2.0
-  mode: SOVEREIGN_LOCAL_PRIMARY_WITH_HOSTED_FALLBACK
-  primary_transport: SOVEREIGN_LOCAL_RESIDENT
-  hosted_fallback.role: HOSTED_FALLBACK_ONLY
-  discovery.selection: FIRST_VALID_SOVEREIGN_LOCAL_THEN_HOSTED_FALLBACK
-
-044801750fa115158cc0b1369f1102ae5ba0867b
-  executable validation requires sovereign loopback candidates first and hosted fallback-only semantics
+merge: b40e5f2c59bed820dfcfdf684de40fde555ef910
+public source domain: https://stegverse.org/
+activation page: /stegos-bootstrap/native-resident-activate.html
+activation source: /stegos-bootstrap/sv001-native-resident-activation.js
 ```
 
-Site Bootstrap validation run `34297837613`: `SUCCESS`.
+The projection:
 
-The SV001 relay itself was then corrected so it no longer bypasses that hierarchy:
+- reads the existing canonical `stegos-node-v1` registration and Receipt #1;
+- recomputes and verifies Receipt #1 SHA-256;
+- accepts only canonical `SV-NODE-[0-9a-f]{24}` identity;
+- accepts only `https://stegverse.org` / `https://www.stegverse.org` source origin;
+- creates only `stegverse://resident-rendezvous/activate` with `NONE_BINDING_ONLY` semantics;
+- records projection authority `NONE_PROJECTION_ONLY`;
+- does not claim that app-open proves listener readiness, custody, runtime continuity, or SV002;
+- preserves the exact released v13 runtime predecessor;
+- preserves the current HIL stale-worker refresh (`RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002`, `skipWaiting()`, `clients.claim()`).
+
+Exact reconciled PR validations:
 
 ```text
-0c88338b7bbafecb7d99d82d75de397b7f505090
-  master-records-auto-recovery.js probes only sovereign loopback primary candidates first
-  hosted fallback is eligible only after both sovereign candidates are unavailable
-  custody proof authority semantics remain unchanged
-
-1a7252912faed1bcfed3d441582924d4abbd2f7d
-  refresh existing v15 service-worker source bytes so installed clients obtain corrected relay
-  exact released v13 runtime predecessor retained
-
-3a650516927ec9a5d6480bcf6d7d0ba21a1bf43c
-  projection validation records sovereign-local primary and Render fallback-only
+Ecosystem Heartbeat Orchestration 34306880636: SUCCESS
+Site Handoff Orchestrator 34306880670: SUCCESS
+Site Bootstrap Validate 34306880681: SUCCESS
+Validate StegOS Persistent Card UX 34306880682: SUCCESS
 ```
 
-Exact-head validation/deployment:
+Post-merge validation:
 
 ```text
-Validate StegOS Persistent Card UX run 34300988601: SUCCESS
-Site Bootstrap Validate run 34300988580: SUCCESS
-GitHub Pages build/deployment run 34300987577: SUCCESS
+Validate StegOS Persistent Card UX 34306941374: SUCCESS
+Site Bootstrap Validate 34306941352: SUCCESS
 ```
 
-## Sovereign-primary resident continuation correction
+Direct public observation of the two newly merged activation assets is still pending; source/CI success is not substituted for public propagation evidence.
 
-The continuation worker previously depended entirely on configured rendezvous URL/node values and could therefore inherit a hosted URL as its effective primary transport. That seam is repaired:
+## Native StegOSMobile resident capability
+
+The prior handoff state that described the iPhone listener as unimplemented is obsolete.
+
+### Canonical activation/lifecycle binding
+
+StegOS PR #245 merged at:
 
 ```text
-StegVerse-Labs/.github
-b8459ceddd5d13aeadd9fc83e686e2859b20cfed
-  local primary candidates: http://127.0.0.1:8000 and http://localhost:8000
-  local resident discovery validates non-authorizing discovery contract and canonical SV-NODE ref
-  reachable local NO_EVIDENCE remains local pending; no hosted fallthrough
-  reachable malformed/authority-invalid local data fails closed; no hosted fallthrough
-  hosted configured URL is fallback-only and consulted only when all local candidates are unavailable
-  transported proof canonical SHA-256 is recomputed before observed/** materialization
-  heartbeat/prior-state/non-retroactive authority boundaries are independently rechecked
-
-b1ea15c47eb481dc014b07df347aa61886e80a73
-  sovereign-primary/fallback-only regression coverage
-
-3694f635bd5799e489274f2366633cda1aa39bcc
-  binds rendezvous regression to no-token organization-control workflow
+419cdfde4e2a9fe68b74c5083aefd1c6c92c1a37
+StegOS CI 34305004634: SUCCESS
+iOS Apple Toolchain Validation 34305004648: SUCCESS
 ```
 
-No-token organization-control validation run `34301353083`: `SUCCESS`.
+The real `StegOSMobile` app target consumes the canonical Site-provided `SV-NODE-*` + Receipt #1 binding and starts the existing bounded local listener lifecycle. Local hardware labels are never converted into canonical node identity.
 
-## Current-iPhone resident listener gap and StegBrowser repair
+### Durable local evidence retention
 
-The existing `StegVerse-org/LLM-adapter/llm_adapter/node_service.py` portable-node lifecycle is Python/process-supervision based. It can launch a valid local resident on supported desktop/server hosts, but Safari/PWA code and GitHub Pages do not create an iPhone-native loopback process. Therefore the sovereign-local hierarchy was source-correct but had no canonical iOS listener implementation behind `127.0.0.1:8000`.
-
-The shared rendezvous semantics have now been extracted into StegBrowser as a transport-neutral local contract:
+StegOS PR #248 merged at:
 
 ```text
-StegVerse-Labs/StegBrowser
-3b09b59a984df60c7c728373f260e2b79d338b18
-  src/stegbrowser/resident_rendezvous.py
-  deterministic discovery / evidence-retain / evidence-fetch core
-  canonical node validation
-  canonical G23 + governed custody proof validation
-  proof digest recomputation
-  idempotent same-proof retention / conflicting replacement refusal
-  authority effect NONE only
-
-6cd64f0ca423547dd7fa9ed0b0883e36c5e29ad9
-  tests/test_resident_rendezvous.py
-
-44b5bde1a425f0d3e09d325f149c490c2445459e
-  public package export
-
-d33fe99b613be432b4fae25d45b1861963df1d1a
-  docs/STEGBROWSER_IOS_RESIDENT_RENDEZVOUS_MIRROR_HANDOFF.md
+bfa580942ee834799f87fdff3a9f1ea8d78067d4
+StegOS CI 34306233655: SUCCESS
+iOS Apple Toolchain Validation 34306233903: SUCCESS
 ```
 
-StegBrowser Validate run `34302248904`: `SUCCESS`.
+Validated governed-custody evidence is atomically persisted in app-local storage, restored/revalidated after app/process reconstruction, idempotent for the same proof, and conflicting/corrupt replacement fails closed. Persistence authority remains `NONE_EVIDENCE_ONLY`.
 
-The platform binding is intentionally not fabricated. The remaining current-device implementation is an actual iOS native loopback listener/lifecycle (for example a Network.framework `NWListener`) that wraps the validated StegBrowser contract, binds loopback only, and exposes exactly:
+### Same-device discovery self-readback
+
+StegOS PR #253 source head:
 
 ```text
-GET  /api/resident-rendezvous/v1/discovery
-POST /api/resident-rendezvous/v1/evidence/site-governed-custody
-GET  /api/resident-rendezvous/v1/evidence/site-governed-custody?target_node_ref=<SV-NODE-...>
+4d46ee10f8032e2e2eeaad10867d95ad0fab4fee
 ```
 
-No governance, custody, credential, heartbeat, routing, or execution authority may be added by that wrapper.
+Merged source:
+
+```text
+9d069503671d8c5f2a19856c0adece3e2eba962e
+```
+
+After a canonical node-bound local session starts, the app connects to `127.0.0.1:8000`, requests `GET /api/resident-rendezvous/v1/discovery`, validates exact discovery schema/state/node/TV-TVC/NONE-authority semantics, and only then emits a non-authorizing component observation receipt.
+
+Exact PR #253 validation:
+
+```text
+StegOS CI 34306875310: SUCCESS
+iOS Apple Toolchain Validation 34306875357: SUCCESS
+iOS Device Package Validation 34306875317: SUCCESS
+```
+
+The component receipt source explicitly keeps adjacent predicates false until separately observed:
+
+```text
+intr_admission_observed=false
+workercoordinator_claim_observed=false
+canonical_request_consumption_observed=false
+provider_session_observed=false
+publication_observed=false
+authority_effect=NONE_COMPONENT_EVIDENCE_ONLY
+```
+
+## Unsigned iPhone package evidence
+
+PR #253 produced a real `iphoneos` Release package artifact:
+
+```text
+workflow run: 34306875317
+artifact id: 10086970431
+artifact: stegos-mobile-unsigned-device-34306875317
+artifact archive digest: sha256:db0b995860d5305dd9c3111fc55c06d46199f860072ef75e966bdebdbf014b44
+source commit: 4d46ee10f8032e2e2eeaad10867d95ad0fab4fee
+bundle id: org.stegverse.stegosmobile
+IPA SHA-256: sha256:49913d18e37158fa431525ff766c7162c44719c975b12e55d82d820bd1e339da
+iphoneos build: true
+StegBrowser host embedded: true
+signed: false
+installable_on_physical_device: false
+next_required_boundary: TV_TVC_APPLE_SIGNING_AND_PROVISIONING
+```
+
+The IPA SHA-256 was independently recomputed from the downloaded artifact and matched its manifest exactly.
+
+This is package evidence only. It does not prove installation or execution on the authentic current iPhone.
+
+## Apple signing/provisioning boundary
+
+Current Xcode source uses automatic signing but contains no team identity, signing certificate, provisioning profile, Apple-account credential, or App Store Connect secret.
+
+Existing target identities that must be provisioned consistently are:
+
+```text
+app: org.stegverse.stegosmobile
+capture extension: org.stegverse.stegosmobile.capture
+broadcast extension: org.stegverse.stegosmobile.capture.broadcast
+shared app group: group.org.stegverse.stegosmobile
+```
+
+All three targets share the app-group entitlement. No new runtime plane is required to cross this boundary; the existing compiled package needs governed Apple signing/provisioning material.
 
 ## Current evidence state
 
@@ -234,64 +262,70 @@ No governance, custody, credential, heartbeat, routing, or execution authority m
 SV001 source/control: COMPLETE
 canonical terminal G23 receipt: OBSERVED
 WorkerCoordinator claim/fence G23/23: OBSERVED
-TVC lease issuance/consumption lineage: OBSERVED / CONSUMED
+TVC lease lineage: OBSERVED / CONSUMED
 device-local same-execution reconstruction: PASS
 canonical retained G23 recovery: MERGED / VALIDATED
 Site automatic governed custody executor: MERGED / RELEASED
 independent continuation WorkerCoordinator binding: MERGED / MACHINE-SELECTABLE
 governance-bypass repair: VALIDATED
 resident evidence mailbox source: VALIDATED
-sovereign-local Site transport hierarchy: VALIDATED / PAGES DEPLOYED
+sovereign-local Site transport hierarchy: VALIDATED
 sovereign-local continuation transport hierarchy: VALIDATED
-StegBrowser transport-neutral resident contract: VALIDATED
-current-iPhone native loopback listener wrapper: NOT YET IMPLEMENTED
-hosted rendezvous fallback: AVAILABLE / FALLBACK_ONLY
-current-device consumption of latest sovereign-primary Site source: NOT YET OBSERVED
-fresh root-InTr ALLOW for custody: NOT YET OBSERVED
-Master Records custody PASS: NOT YET OBSERVED
-Master Records reconstruction PASS: NOT YET OBSERVED
-Site governed custody proof mailbox RETAINED: NOT YET OBSERVED
-Site proof materialized to continuation observed/**: NOT YET OBSERVED
-retained same-execution downstream chain: NOT YET OBSERVED
-SV002 authentic disposition: NOT YET OBSERVED
+StegBrowser resident semantics: VALIDATED
+StegOSMobile native listener/lifecycle: MERGED / APPLE-TOOLCHAIN VALIDATED
+canonical Site -> native activation binding: MERGED / VALIDATED
+durable native evidence retention: MERGED / APPLE-TOOLCHAIN VALIDATED
+same-device discovery readback source: MERGED / VALIDATED
+unsigned current-source iphoneos IPA: BUILT / HASH-VERIFIED
+signed/installable current-iPhone package: NOT OBSERVED
+current-iPhone native listener start: NOT OBSERVED
+current-iPhone discovery response: NOT OBSERVED
+current-iPhone component observation receipt: NOT OBSERVED
+current-device consumption of current Site activation projection: NOT OBSERVED
+fresh root-InTr ALLOW for custody: NOT OBSERVED
+Master Records custody PASS: NOT OBSERVED
+Master Records reconstruction PASS: NOT OBSERVED
+Site governed custody proof local RETAINED: NOT OBSERVED
+Site proof materialized to continuation observed/**: NOT OBSERVED
+retained same-execution downstream chain: NOT OBSERVED
+SV002 authentic disposition: NOT OBSERVED
 ```
 
-Source, CI, Pages deployment, and hosted fallback health cannot manufacture the remaining current-device governance/custody evidence.
-
-## Fail-closed transport rules
+## Fail-closed rules
 
 ```text
 terminal SV001 -> never rerun for downstream evidence
 G23 missing/ambiguous -> fail closed; no G24 substitution
+signed/installable app absent -> do not claim native runtime
+app-open absent -> do not claim listener start
+loopback discovery absent/invalid -> no component runtime receipt
 fresh root-InTr absent/DENY/mismatch/timeout -> fail closed before custody
 partial/historical admission or custody -> no retroactive authorization
-Safari/PWA source without native listener -> local resident remains unavailable; do not claim resident execution
-sovereign local rendezvous reachable + NO_EVIDENCE -> remain pending locally; do not use hosted fallback
-sovereign local rendezvous reachable + malformed/authority-invalid -> fail closed; do not use hosted fallback
-all sovereign local rendezvous candidates unavailable -> hosted fallback may be attempted
-hosted fallback proof -> evidence only; independently revalidate before use
+sovereign local reachable + NO_EVIDENCE -> remain pending locally; do not fall through to hosted
+sovereign local reachable + malformed/authority-invalid -> fail closed; do not fall through to hosted
+all sovereign local candidates unavailable -> hosted fallback may be attempted
+hosted fallback proof -> evidence only; independently revalidate
 proof digest mismatch -> fail closed
 proof outside observed/** -> adapter rejects mutation
 Master Records reconstruction PASS absent -> SV002 pending
 SV002 nonterminal/failure -> retry SV002 independently; never reopen SV001
 ```
 
-## Next admissible machine transition
+## Next admissible transition
 
 ```text
-implement/bind actual iOS-native StegBrowser resident loopback wrapper to validated transport-neutral contract
--> current-device lifecycle starts bounded loopback listener
--> Site discovers sovereign local resident before hosted fallback
--> exact canonical G23 available from retained same-device evidence
--> executeMasterRecordsSv001Custody()
+resolve TV_TVC_APPLE_SIGNING_AND_PROVISIONING for the existing validated StegOSMobile package
+-> materialize the signed existing app on the authentic current iPhone
+-> open the canonical Site activation projection using the existing registered Node Receipt #1
+-> obtain authentic local discovery AVAILABLE + component observation receipt
+-> consume exact canonical G23 through executeMasterRecordsSv001Custody()
 -> fresh root-InTr ALLOW or fail closed
 -> Master Records custody/reconstruction PASS
--> exact proof POST to local resident
+-> exact governed proof POST to local resident
 -> local mailbox RETAINED
--> WorkerCoordinator continuation again prefers local evidence
--> proof materializes under observed/** after digest/authority validation
+-> WorkerCoordinator continuation validates/materializes proof under observed/**
 -> retained downstream same-execution reconstruction
 -> SV002 observation/disposition
 ```
 
-No new scheduler, heartbeat, oscillator, WorkerCoordinator, proxy, or authority plane is required or permitted by this handoff.
+No new scheduler, heartbeat, oscillator, WorkerCoordinator, proxy, hosted primary, or authority plane is required or permitted by this handoff.
