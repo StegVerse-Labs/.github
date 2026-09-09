@@ -13,6 +13,8 @@ import argparse
 import importlib.util
 import json
 import os
+import subprocess
+import sys
 from pathlib import Path
 from typing import Any, Callable
 
@@ -20,6 +22,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PROFILE_REL = Path("control/runtime-node-profiles.json")
 BASE_RUNNER_REL = Path("scripts/run_global_runtime_evidence_convergence.py")
 PROFILE_RECEIPT_REL = Path("receipts/sovereign-host/global-runtime-node-profile-convergence.latest.json")
+STEGCLAW_WRAPPER_REL = Path("scripts/dispatch_stegclaw_p4_resident_execution.py")
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -32,6 +35,17 @@ def load_json(path: Path) -> dict[str, Any]:
 def require(ok: bool, reason: str) -> None:
     if not ok:
         raise RuntimeError("FAIL_CLOSED: " + reason)
+
+
+def parse_last_json(stdout: str) -> dict[str, Any] | None:
+    for line in reversed([line.strip() for line in stdout.splitlines() if line.strip()]):
+        try:
+            value = json.loads(line)
+        except Exception:
+            continue
+        if isinstance(value, dict):
+            return value
+    return None
 
 
 def load_base_runner(source_root: Path):
@@ -100,7 +114,27 @@ def _external_root(runtime: Path, env_name: str, fallback: Path) -> Path | None:
     return None
 
 
-def resolve_unwired_profile(runtime: Path, profile: dict[str, Any]) -> dict[str, Any]:
+def _run_stegclaw_profile_wrapper(source: Path, runtime: Path) -> dict[str, Any]:
+    wrapper = runtime / STEGCLAW_WRAPPER_REL
+    if not wrapper.is_file():
+        wrapper = source / STEGCLAW_WRAPPER_REL
+    require(wrapper.is_file(), "StegClaw P4 resident wrapper missing")
+    completed = subprocess.run(
+        [sys.executable, str(wrapper), "--source-root", str(source), "--runtime-root", str(runtime)],
+        cwd=runtime,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=1200,
+        env=os.environ.copy(),
+    )
+    result = parse_last_json(completed.stdout)
+    if isinstance(result, dict):
+        return {**result, "wrapper_returncode": completed.returncode, "wrapper": str(STEGCLAW_WRAPPER_REL)}
+    return {"state":"PROFILE_BOUND_STEGCLAW_WRAPPER_NO_RESULT","wrapper_returncode":completed.returncode,"stderr_tail":completed.stderr[-1200:]}
+
+
+def resolve_unwired_profile(source: Path, runtime: Path, profile: dict[str, Any]) -> dict[str, Any]:
     task_id = str(profile.get("task_id"))
     binding = profile.get("execution_binding") or {}
     kind = binding.get("type")
@@ -120,24 +154,8 @@ def resolve_unwired_profile(runtime: Path, profile: dict[str, Any]) -> dict[str,
             return {"state": "PROFILE_BOUND_EXTERNAL_RUNTIME_SOURCE_INCOMPLETE", "adapter_root": str(adapter_root), "missing_surfaces": missing}
         return {"state": "PROFILE_BOUND_PARENT_RECONSTRUCTION_OR_ROUTE_PENDING", "adapter_root": str(adapter_root), "task_ref": str(task_ref)}
 
-    if kind == "OBSERVABILITY_BOUND_EXTERNAL_RUNTIME" and task_id == "DATA-CONTINUATION-STEGCLAW-P4":
-        external = _external_root(runtime, str(binding.get("root_env")), Path("workloads/Data-Continuation/StegClaw"))
-        if external is None:
-            return {"state": "PROFILE_BOUND_RESIDENT_MATERIALIZATION_PENDING", "first_runtime_predicate": binding.get("first_runtime_predicate")}
-        state_path = external / str(binding.get("external_state_ref"))
-        if not state_path.is_file():
-            return {"state": "PROFILE_BOUND_EXTERNAL_STATE_PENDING", "external_root": str(external), "state_ref": str(state_path)}
-        state = load_json(state_path)
-        predicate_map = state.get("predicate_map") or {}
-        first = str(binding.get("first_runtime_predicate"))
-        value = predicate_map.get(first) if isinstance(predicate_map, dict) else None
-        observed = value.get("observed") if isinstance(value, dict) else None
-        return {
-            "state": "PROFILE_BOUND_RUNTIME_PREDICATE_OBSERVED" if observed is True else "PROFILE_BOUND_RUNTIME_PREDICATE_PENDING",
-            "external_state_ref": str(state_path),
-            "first_runtime_predicate": first,
-            "observed": observed,
-        }
+    if task_id == "DATA-CONTINUATION-STEGCLAW-P4" and kind in {"OBSERVABILITY_BOUND_EXTERNAL_RUNTIME", "EXISTING_TASK_RUNTIME_WRAPPER"}:
+        return _run_stegclaw_profile_wrapper(source, runtime)
 
     if kind == "EXACT_PARENT_REBIND_PROFILE" and task_id == "DECISION-ENVELOPE-DE006":
         consumer_path = runtime / str(binding.get("consumer_ref"))
@@ -194,7 +212,7 @@ def execute(
             "node_identity_survives_session_teardown": True,
         })
         if lane.get("state") == "NO_REGISTERED_SELECTOR" or lane.get("execution_path") == "UNWIRED_CHILD_RUNTIME":
-            resolved = resolve_unwired_profile(runtime, profile)
+            resolved = resolve_unwired_profile(source, runtime, profile)
             result["execution_path"] = "HB_SYNCED_STEGOS_RUNTIME_NODE_PROFILE"
             result.update(resolved)
         profiled.append(result)
