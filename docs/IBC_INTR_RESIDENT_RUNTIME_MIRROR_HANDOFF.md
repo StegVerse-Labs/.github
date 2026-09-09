@@ -4,7 +4,7 @@ Updated: 2026-09-09
 Organization: `StegVerse-Labs`
 Repository: `StegVerse-Labs/.github`
 Goal: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`
-State: `RESIDENT_CONSUMER_SOURCE_COMPLETE / VALIDATION_PENDING / AUTHENTIC_RESIDENT_CONSUMPTION_PENDING`
+State: `RESIDENT_CONSUMER_SOURCE_VALIDATED / MERGE_PENDING / AUTHENTIC_RESIDENT_CONSUMPTION_PENDING`
 
 ## Purpose
 
@@ -26,7 +26,7 @@ StegOS PR #295 merged at:
 ca45fec7c0c39a86dbbd6f027d3b68688295c3d7
 ```
 
-That merge makes the verified ACK materializer execution context explicit and fail-closed. The same canonical source now supports only these observation classes:
+That merge makes the verified ACK materializer execution context explicit and fail-closed. The same canonical source supports only these observation classes:
 
 ```text
 WORKFLOW_EXECUTED_CANONICAL_INTR_TRANSPORT_CONFORMANCE_RECEIPT
@@ -35,7 +35,7 @@ SOVEREIGN_RESIDENT_EXECUTED_CANONICAL_INTR_TRANSPORT_RECEIPT
 
 The workflow class remains the default. Resident dispatch must explicitly select the resident class and supply an output path in the resident runtime tree. Arbitrary observation classes fail closed.
 
-## Resident source now implemented
+## Resident source implemented
 
 ```text
 control/resident-execution-request.d/ibc-verified-intr-ack-resident-001.json
@@ -53,7 +53,7 @@ The canonical dispatcher selector is:
 ibc_verified_intr_ack
 ```
 
-The local-only source refresher now copies the consumer script, while `control/resident-execution-request.d/` already propagates the request as a static control directory. The targeted refresh-and-dispatch bridge explicitly allows only this registered selector when requested.
+The local-only source refresher copies the consumer script, while `control/resident-execution-request.d/` propagates the request as a static control directory. The targeted refresh-and-dispatch bridge explicitly allows only this registered selector when requested.
 
 ## Resident experiment contract
 
@@ -88,7 +88,7 @@ A successful authentic resident consumption receipt may establish:
 resident_runtime_execution_observed: true
 ```
 
-for the local sovereign execution of the verified external ACK through the canonical StegOS InTr ingress source.
+for local sovereign execution of the verified external ACK through the canonical StegOS InTr ingress source.
 
 It still does not establish or mint:
 
@@ -103,19 +103,59 @@ Master Records custody/reconstruction
 
 Those predicates remain separately gated and false unless their own evidence appears.
 
-## Validation posture
+## Validation evidence
 
-Source implementation is complete on `feature/ibc-intr-resident-consumer`. Deterministic tests cover both the fail-closed nonresident case and successful sovereign-context result validation, plus dispatcher, local-source refresh, and targeted bridge wiring.
+The first complete validation cycle on source head `765c7ab8baff0bf55420ca2feabf3de3ae3fd78c` is green:
 
-Source/CI/merge remain non-runtime evidence. Authentic resident completion requires the canonical sovereign dispatcher to consume the request on an actual resident runtime after the source is merged and locally refreshed.
+```text
+Validate organization control plane - No GitHub Token Authority
+run: 34332308707
+run_number: 2596
+result: PASS
+
+Deterministic Repository Suite - Diagnostic Evidence Only
+run: 34332308717
+run_number: 135
+result: PASS
+
+Heartbeat Worker Project - Validation Only / No GitHub Token Authority
+run: 34332308693
+run_number: 2879
+result: PASS
+
+Cross-Framework Current-Basis Resident Request Validation (Non-Authorizing)
+run: 34332308678
+run_number: 278
+result: PASS
+
+validate-deepseek-resident
+run: 34332308744
+run_number: 77
+result: PASS
+
+Workspace DEVICE_KV Validation Only
+run: 34332308742
+run_number: 226
+result: PASS
+```
+
+The Heartbeat lane compiled runtime/workers/scripts, parsed canonical JSON, validated handoffs and runtime surfaces, and passed the complete deterministic repository test suite. Organization-control and deterministic-diagnostics lanes are also green.
+
+This validation proves source/control consistency only. It is not resident execution evidence.
+
+## Merge gate
+
+PR #1254 may merge only after the exact final handoff-reconciled head repeats the required validation successfully. The handoff reconciliation itself must not inherit the prior head's validation by assumption.
 
 ## Next work
 
-1. validate and merge the `.github` resident consumer slice;
-2. locally refresh canonical `.github` source into the existing sovereign resident runtime;
-3. targeted-dispatch `ibc_verified_intr_ack`;
-4. retain and inspect the task-specific sovereign-host receipt;
-5. only then advance the resident-runtime predicate, while leaving original packet relay, transition, execution, claim/fence, credential, and custody predicates unchanged unless separately observed.
+1. require organization-control, deterministic-suite, and Heartbeat validation on the exact final head;
+2. merge PR #1254 only after those final-head gates pass;
+3. locally refresh canonical `.github` source into the existing sovereign resident runtime;
+4. targeted-dispatch `ibc_verified_intr_ack`;
+5. inspect `receipts/sovereign-host/ibc-verified-intr-ack-request-consumption.latest.json`;
+6. advance the resident-runtime predicate only if the authentic receipt reports `RESIDENT_INTR_ACK_CONSUMED` with `resident_runtime_execution_observed=true`;
+7. keep original packet relay, transition, application execution, claim/fence, credential, and custody predicates unchanged unless separately observed.
 
 ## Human action
 
