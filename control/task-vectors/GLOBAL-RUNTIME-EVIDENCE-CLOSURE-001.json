@@ -1,21 +1,26 @@
 {
-  "schema": "stegverse.cosv-record/v1",
-  "identity": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+  "identity": "StegVerse-Labs/.github:task:GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
   "profile": "task.v1",
   "level": "task",
-  "notation": "L R U I V G O C M T B E A P",
   "vector": "50000000100000",
   "evidence_refs": [
     "data/canonical-task-records/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.json",
     "docs/GLOBAL_RUNTIME_EVIDENCE_CLOSURE_MIRROR_HANDOFF.md",
     "docs/GLOBAL_RUNTIME_EVIDENCE_CONVERGENCE_MATRIX.md",
-    "StegVerse-Labs/.github#1260"
+    "StegVerse-Labs/.github#1260",
+    "management/COSV_PROFILE_V1.json"
   ],
   "observed_at": "2026-09-09T13:18:00Z",
   "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
     "lifecycle": "MACHINE_OWNED",
     "archive_ready": false,
     "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 1,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
     "canonical_owner_installed": true,
     "thread_required": false,
     "blocker_count": 0,
