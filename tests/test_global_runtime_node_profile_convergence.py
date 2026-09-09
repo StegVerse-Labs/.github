@@ -4,21 +4,27 @@ import importlib.util
 import json
 import tempfile
 import unittest
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PROFILES = ROOT / "control/runtime-node-profiles.json"
 WRAPPER = ROOT / "scripts/run_global_runtime_node_profile_convergence.py"
 BOOTSTRAP = ROOT / "scripts/install_and_run_canonical_work_event_bootstrap.py"
+PROFILE_BUILDER = ROOT / "scripts/build_runtime_profile_map.py"
 STEGBROWSER_OBSERVABILITY = ROOT / "control/runtime-observability-consumers/stegbrowser-ephemeral-runtime-binding-001.json"
 
 
-def load_wrapper():
-    spec = importlib.util.spec_from_file_location("global_runtime_node_profile_convergence", WRAPPER)
+def load_module(path: Path, name: str):
+    spec = importlib.util.spec_from_file_location(name, path)
     module = importlib.util.module_from_spec(spec)
     assert spec.loader is not None
     spec.loader.exec_module(module)
     return module
+
+
+def load_wrapper():
+    return load_module(WRAPPER, "global_runtime_node_profile_convergence")
 
 
 class GlobalRuntimeNodeProfileConvergenceTests(unittest.TestCase):
@@ -52,6 +58,25 @@ class GlobalRuntimeNodeProfileConvergenceTests(unittest.TestCase):
         self.assertEqual("STEGBROWSER_RESIDENT", obs["hb_profile"]["node_state_origin"])
         self.assertTrue(obs["predicate_map"]["retained_node_source_implemented"]["observed"])
         self.assertFalse(obs["predicate_map"]["resident_process_alive_supervised"]["observed"])
+
+    def test_runtime_profile_map_projects_every_runtime_node_as_product_runtime(self):
+        builder = load_module(PROFILE_BUILDER, "runtime_profile_builder_with_nodes")
+        result = builder.build(
+            ROOT,
+            now=datetime(2026, 9, 9, 15, 20, tzinfo=timezone.utc),
+            freshness_seconds=900,
+        )
+        product = [row for row in result["profiles"] if row["profile_class"] == "PRODUCT_RUNTIME"]
+        self.assertEqual(18, len(product))
+        self.assertEqual(18, len({row["profile_id"] for row in product}))
+        by_task = {row["runtime_node"]["task_id"]: row for row in product}
+        self.assertIn("STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001", by_task)
+        browser = by_task["STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001"]
+        self.assertEqual("STEGBROWSER_RESIDENT", browser["runtime_node"]["node_origin"])
+        self.assertTrue(browser["runtime_node"]["node_identity_survives_session_teardown"])
+        self.assertFalse(browser["runtime_node"]["session_credentials_survive_teardown"])
+        self.assertEqual("HB32", browser["substrate"]["hb_protocol"])
+        self.assertFalse(browser["authority"]["hb_grants_authority"])
 
     def test_previously_unwired_lanes_now_have_profile_bound_resolution_classes(self):
         data = json.loads(PROFILES.read_text(encoding="utf-8"))
