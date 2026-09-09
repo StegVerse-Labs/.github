@@ -6,26 +6,20 @@
   "evidence_refs": [
     "data/canonical-task-records/STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001.json",
     "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_ECOSYSTEM_EPHEMERAL_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_EPHEMERAL_CREDENTIAL_SESSION_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_IOS_RESIDENT_RENDEZVOUS_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegOS/docs/STEGBROWSER_IOS_RESIDENT_APP_TARGET_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/StegBrowser@dd596c4cb3ccbdcd85758b4d12bc8ad9e2ee539d",
-    "StegVerse-Labs/StegBrowser@42f9a78b513586d19ff9c5447b725ef29c168390",
-    "StegVerse-Labs/StegBrowser@fabcc468dde8bca1161a2e564fb17af389404cb3",
-    "StegVerse-Labs/StegBrowser@3f27c8420cca8fc72e6caad305ba52cdd3cd3821",
-    "StegVerse-Labs/StegBrowser@4d929f8f82a19663233ebbe7cd958ef686c1d228",
     "StegVerse-Labs/StegBrowser@86cb4c42bbde1366ca03088a01983273f73de400",
     "StegVerse-Labs/StegBrowser/actions/runs/34303703951",
-    "StegVerse-Labs/StegOS@eb99b9222eba056478aa8d7ed3bc3bafb54fc194",
-    "StegVerse-Labs/StegOS/actions/runs/34304328189",
-    "StegVerse-Labs/StegOS/actions/runs/34304328284",
     "StegVerse-Labs/StegOS@bfa580942ee834799f87fdff3a9f1ea8d78067d4",
     "StegVerse-Labs/StegOS/actions/runs/34306233655",
     "StegVerse-Labs/StegOS/actions/runs/34306233903",
+    "StegVerse-Labs/StegOS@9d069503671d8c5f2a19856c0adece3e2eba962e",
+    "StegVerse-Labs/StegOS/actions/runs/34306875310",
+    "StegVerse-Labs/StegOS/actions/runs/34306875357",
+    "StegVerse-Labs/StegOS/actions/runs/34306875317",
     "StegVerse-Labs/StegSocials@122811f8f44dc2494a1d5e771d50c210d1d8a555",
     "StegVerse-Labs/StegSocials/actions/runs/34302291053"
   ],
-  "observed_at": "2026-09-09T03:15:00Z",
+  "observed_at": "2026-09-09T03:28:00Z",
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
     "lifecycle": "CLAIMED_INTEGRATION",
@@ -44,16 +38,16 @@
     "propagated": false
   },
   "metric_evidence": {
-    "lifecycle": "Native Facebook publication source and StegSocials caller are merged. StegOSMobile now compiles the sovereign resident rendezvous and durably persists independently validated Site custody evidence across app/process reconstruction; StegOS CI 34306233655 and Apple toolchain validation 34306233903 passed. Authentic current-iPhone listener/discovery remains next.",
-    "archive_ready": "Current-iPhone listener/discovery proof, authentic WorkerCoordinator claim/fence, Interlock/InTr admission, live Facebook session binding, browser-created publication/readback, custody completion, LinkedIn parity, and propagation remain incomplete.",
-    "unassigned_work": "Remaining work is explicitly assigned to the canonical StegOSMobile/StegBrowser/InTr/WorkerCoordinator/TVC/StegSocials/Master Records continuation path.",
-    "chat_owned_counts": "Durable implementation and validation evidence are repository-backed; no chat-only source work is required for continuation.",
-    "canonical_owner_installed": "Canonical task record, COSV task vector, index shard, resident request, and mirror handoffs provide durable coordination ownership.",
-    "thread_required": "Repository handoffs and task/COSV state are sufficient for continuation without chat-only state.",
-    "blocker_count": "No unresolved source-code blocker is known for the Facebook, iOS app-target, or durable local custody source path. Outstanding conditions are authentic current-device/runtime evidence and downstream integration predicates.",
-    "evidence_complete": "Public retrieval, credential-session plumbing, native Facebook publication source execution, StegSocials caller validation, StegOSMobile app-target compilation, and durable local custody source validation exist; current-iPhone runtime and live governed publication/readback/custody/propagation evidence do not.",
-    "activated": "The native Facebook and iOS resident app-target/durable-custody source paths are source-ready and validated, but governed activation is not claimed until current-device resident admission and authentic publication proof exist.",
-    "propagated": "Cross-repository release propagation verification remains open and is not release-ready."
+    "lifecycle": "StegOSMobile same-device resident discovery readback and component-receipt source are merged at 9d069503671d8c5f2a19856c0adece3e2eba962e. Exact-head StegOS CI 34306875310, Apple toolchain 34306875357, and iOS Device Package Validation 34306875317 all succeeded. Authentic current-iPhone execution remains next.",
+    "archive_ready": "Current-iPhone discovery receipt, WorkerCoordinator claim/fence, InTr admission, provider session, Facebook publication/readback, custody completion, LinkedIn parity, and propagation remain incomplete.",
+    "unassigned_work": "Remaining work is assigned to the canonical StegOSMobile/.github/TVC/StegBrowser/StegSocials/Master Records continuation path.",
+    "chat_owned_counts": "No chat-only implementation or validation state is required for continuation.",
+    "canonical_owner_installed": "Canonical task/COSV ownership and mirror handoffs remain installed.",
+    "thread_required": "Repository state is sufficient for continuation.",
+    "blocker_count": "No known source blocker remains before current-device observation.",
+    "evidence_complete": "Installed source and package evidence exist; authentic current-device and downstream publication/custody evidence do not.",
+    "activated": "Activation remains false until authentic current-device resident admission and downstream evidence are observed.",
+    "propagated": "Propagation verification remains pending."
   },
   "authority_effect": "NONE"
 }

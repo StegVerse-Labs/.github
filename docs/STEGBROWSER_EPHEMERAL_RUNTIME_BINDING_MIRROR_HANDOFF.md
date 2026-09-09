@@ -7,108 +7,94 @@
 - COSV vector: `40000100100000`
 - Canonical record: `data/canonical-task-records/STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001.json`
 - Canonical vector: `control/task-vectors/STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001.json`
-- Index shard: `control/task-vector-index.d/STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001.json`
 - Browser implementation handoff: `StegVerse-Labs/StegBrowser/docs/STEGBROWSER_ECOSYSTEM_EPHEMERAL_MIRROR_HANDOFF.md`
-- Browser iOS handoff: `StegVerse-Labs/StegBrowser/docs/STEGBROWSER_IOS_RESIDENT_RENDEZVOUS_MIRROR_HANDOFF.md`
 - Native app-target handoff: `StegVerse-Labs/StegOS/docs/STEGBROWSER_IOS_RESIDENT_APP_TARGET_MIRROR_HANDOFF.md`
 
-## Observed browser state
+## Current source chain
 
-StegBrowser has authentic public Chromium execution evidence for `https://stegverse.org/` and the supplied StegVerse Facebook publication surface, with terminal session destruction and minimized retained evidence. These observations prove the ephemeral browser substrate and public-surface reachability; they do not prove governed resident admission, provider authentication, a browser-created publication, or current-iPhone resident availability.
+StegBrowser native Facebook publication source and the StegSocials native caller remain merged and validated. The iOS resident path has now advanced through four distinct source boundaries without converting source evidence into runtime authority:
 
-## Merged native Facebook source path
+1. standalone loopback listener/bounded lifecycle: `StegVerse-Labs/StegBrowser@86cb4c42bbde1366ca03088a01983273f73de400`;
+2. compiled `StegOSMobile` app-target binding: `StegVerse-Labs/StegOS@eb99b9222eba056478aa8d7ed3bc3bafb54fc194`;
+3. durable app-local Site custody retention: `StegVerse-Labs/StegOS@bfa580942ee834799f87fdff3a9f1ea8d78067d4`;
+4. same-device loopback discovery self-readback and component receipt source: `StegVerse-Labs/StegOS@9d069503671d8c5f2a19856c0adece3e2eba962e`.
 
-Merged StegBrowser source includes opaque TV/TVC + SKAP credential-session binding, callback-only in-memory credential injection, a credential-aware ephemeral runner, bounded Facebook runtime/profile checks, concrete semantic Playwright Page interaction, publication proof semantics, canonical URL/object identity validation, and terminal destruction.
+## Same-device discovery/readback source
 
-Key merged source includes:
+The merged source extends the existing canonical Site-node-bound `SV001ResidentActivationController`; no second activation, node-identity, WorkerCoordinator, or InTr plane is introduced.
 
-- `StegVerse-Labs/StegBrowser@42f9a78b513586d19ff9c5447b725ef29c168390`
-- `StegVerse-Labs/StegBrowser@fabcc468dde8bca1161a2e564fb17af389404cb3`
-- `StegVerse-Labs/StegBrowser@3f27c8420cca8fc72e6caad305ba52cdd3cd3821`
-- `StegVerse-Labs/StegBrowser@4d929f8f82a19663233ebbe7cd958ef686c1d228`
-
-## Native iOS resident source, app target, and durable custody
-
-`StegVerse-Labs/StegBrowser@86cb4c42bbde1366ca03088a01983273f73de400` merged the standalone loopback-only iOS resident listener and bounded lifecycle source.
-
-`StegVerse-Labs/StegOS@eb99b9222eba056478aa8d7ed3bc3bafb54fc194` then compiled the resident core/listener/lifecycle into the existing `StegOSMobile` application target. Its app-target validation passed StegOS CI `34304328189` and Apple toolchain run `34304328284`.
-
-The next source gap was durability: validated Site custody evidence was retained only in process memory. That gap is now closed in source. `StegVerse-Labs/StegOS@bfa580942ee834799f87fdff3a9f1ea8d78067d4` merges app-local retained evidence storage keyed by canonical `SV-NODE-[0-9a-f]{24}` identity with these invariants:
+After a bounded canonical-node-bound local session starts, StegOSMobile now connects to `127.0.0.1:8000`, requests `GET /api/resident-rendezvous/v1/discovery`, and requires the exact discovery contract:
 
 ```text
-same proof -> idempotent RETAINED
-conflicting proof -> refuse
-app/process reconstruction -> reload and revalidate exact retained envelope
-corrupt or mismatched retained state -> fail closed
-write -> atomic
-persistence authority -> NONE_EVIDENCE_ONLY
+schema=stegverse.resident-rendezvous.discovery/v1
+state=AVAILABLE
+target_node_ref=<exact bound canonical SV-NODE>
+gateway_execution_authority=NONE
+credential_authority=TV/TVC
+discovery_grants_authority=false
+authority_effect=NONE_DISCOVERY_ONLY
 ```
 
-Exact-head validation for the durable source passed:
+Only after exact local readback may the app append `stegos-stegbrowser-current-iphone-rendezvous-receipts.jsonl`. The component receipt explicitly records these predicates as false until separately observed:
 
-- StegOS CI `34306233655`: SUCCESS;
-- iOS Apple Toolchain Validation `34306233903`: SUCCESS.
+```text
+intr_admission_observed=false
+workercoordinator_claim_observed=false
+canonical_request_consumption_observed=false
+provider_session_observed=false
+publication_observed=false
+authority_effect=NONE_COMPONENT_EVIDENCE_ONLY
+```
 
-The durable store does not grant WorkerCoordinator, InTr, credential, Master Records, publication, heartbeat, node-identity, or SV002 authority. Source durability also does not prove that any authentic Site custody envelope has yet been retained on the current iPhone.
+If the listener cannot be reached or the discovery object violates the exact contract after bounded retries, the local session fails closed.
 
-## Canonical Site node binding
+Exact-head validation for the merged source passed:
 
-Current `StegOSMobile` source already contains the canonical Site node-binding path through `stegverse://resident-rendezvous/activate`. It requires a canonical `SV-NODE-[0-9a-f]{24}` reference and Node Receipt #1 SHA-256, retains the binding locally with authority effect `NONE_BINDING_ONLY`, and starts the bounded local lifecycle from that canonical identity rather than deriving a node from mutable hardware metadata.
+- StegOS CI `34306875310`: SUCCESS;
+- iOS Apple Toolchain Validation `34306875357`: SUCCESS;
+- iOS Device Package Validation `34306875317`: SUCCESS, including unsigned iphoneos product construction and verification that the StegBrowser working-instance host is present in the device binary.
 
-Current source state therefore separates three facts:
+These runs prove installed/package capability only. They do not prove that the current participant iPhone executed the listener or emitted the component receipt.
 
-1. app-target transport source is compiled and validated;
-2. durable local evidence retention is merged and validated;
-3. authentic current-iPhone listener readiness and discovery readback are still unobserved.
+## Durable local custody
 
-## Ecosystem caller state
+The prior in-memory retention gap remains closed. Validated Site custody evidence is persisted atomically in app-local storage keyed by canonical node identity, reconstructed/revalidated after app process reconstruction, idempotent for the same proof, and conflicting-proof fail-closed. Persistence authority remains `NONE_EVIDENCE_ONLY`.
 
-The native Facebook publication caller is merged at `StegVerse-Labs/StegSocials@122811f8f44dc2494a1d5e771d50c210d1d8a555` after validation run `34302291053` passed.
+## Canonical resident / InTr state
 
-A complete live publication still requires the exact approved content commitment, target account, visible result, real Facebook object ID, canonical Facebook URL, successful terminal destruction, and absence of retained secret/session/profile state.
+The canonical resident request remains separate from component evidence. Required authentic continuation evidence still includes:
 
-## Canonical InTr / resident staging state
-
-Generic sharded Canonical Work ingress and task-specific resident request staging are merged. The request remains COSV-bound to `40000100100000`, uses TV/TVC as credential authority, grants no execution authority, requires no GitHub runtime token, and permits no network source fetch.
-
-Expected authentic evidence remains:
-
-- `receipts/sovereign-host/canonical-work-stegbrowser-ephemeral-runtime-binding-request-consumption.latest.json`;
-- `runtime/canonical-work-stegbrowser-ephemeral-runtime-binding/receipts/sovereign-host/canonical-work-event-bootstrap.latest.json`;
+- task-specific resident request consumption;
 - task-specific shared InTr `INGRESS_ADMITTED` evidence;
-- authentic WorkerCoordinator claim/fence produced after governed reconciliation.
+- authentic WorkerCoordinator claim/fence;
+- admitted TV/TVC + SKAP provider session;
+- actual Facebook publication/readback proof;
+- publication custody/reconstruction.
 
-Source, CI, merge, local persistence capability, task staging, or heartbeat progression must not substitute for those receipts.
-
-## WorkerCoordinator projection
-
-The canonical record remains pre-activation with `worker_claim.projection_only=true` and no fabricated claim/fence reference. WorkerCoordinator remains authoritative for authentic execution claim/fence state.
+A same-device discovery receipt must not be promoted into any of those predicates by interpretation.
 
 ## Active continuation
 
-1. Extend the existing canonical Site node-bound `SV001ResidentActivationController` with a same-device discovery probe rather than introducing a second activation/binding controller.
-2. After the bounded loopback session starts, read `GET /api/resident-rendezvous/v1/discovery` from `127.0.0.1:8000` and verify exact schema, state, canonical node reference, TV/TVC credential authority, and NONE discovery authority.
-3. Persist a component runtime receipt only after exact discovery readback; explicitly keep InTr admission, WorkerCoordinator claim, canonical request consumption, provider session, and publication observations false until separately observed.
-4. Compile and validate that source with StegOS CI and Apple toolchain, then merge.
-5. Materialize the canonical Site node binding on the current iPhone and obtain authentic local listener/discovery evidence.
-6. Observe authentic resident request consumption and task-specific shared InTr `INGRESS_ADMITTED` evidence.
-7. Reconcile through Master Records / WorkerCoordinator and obtain authentic claim/fence evidence.
-8. Resolve one admitted Facebook provider session through the existing TV/TVC + SKAP callback-only boundary.
-9. Execute exactly one already-approved StegSocials Facebook release through the merged StegBrowser path.
-10. Verify Facebook object ID, canonical URL, exact content commitment, visibility, terminal destruction, and publication custody.
-11. Implement LinkedIn company-page parity, then verify propagation under `STEGBROWSER-ECOSYSTEM-PROPAGATION-VERIFY-001`.
+1. Materialize the existing canonical Site node binding on the current iPhone using its real `SV-NODE` identity and Node Receipt #1 digest.
+2. Allow the merged StegOSMobile source to start one bounded local session and obtain an authentic exact discovery readback/component receipt.
+3. Bind that authentic component evidence into the canonical `.github` resident-request continuation without converting it into execution authority.
+4. Observe authentic resident request consumption and shared InTr `INGRESS_ADMITTED` evidence.
+5. Reconcile through canonical WorkerCoordinator/Master Records and obtain the authentic claim/fence.
+6. Resolve one admitted Facebook provider session through TV/TVC + SKAP callback-only custody.
+7. Execute one already-approved StegSocials Facebook release through the merged StegBrowser native path.
+8. Verify Facebook object ID, canonical URL, exact content commitment, visibility, terminal destruction, and publication custody/reconstruction.
+9. Implement LinkedIn company-page parity.
+10. Verify propagation under `STEGBROWSER-ECOSYSTEM-PROPAGATION-VERIFY-001`.
 
 ## Installation / integration remainder
 
-- Same-device discovery/self-readback source -> `StegVerse-Labs/StegOS`
-- Authentic current-iPhone listener/discovery proof -> `StegVerse-Labs/StegOS`
+- Authentic current-iPhone listener/discovery component receipt -> `StegVerse-Labs/StegOS` + `StegVerse-Labs/.github`
 - Resident request consumption / InTr evidence -> `StegVerse-Labs/.github`
-- WorkerCoordinator reconciliation -> `StegVerse-Labs/.github` + `master-records/orchestration`
+- WorkerCoordinator + custody reconciliation -> `StegVerse-Labs/.github` + `master-records/orchestration`
 - Admitted Facebook provider session -> `StegVerse-Labs/TVC` + `StegVerse-Labs/StegBrowser`
-- First live Facebook publication/readback proof -> `StegVerse-Labs/StegBrowser` + `StegVerse-Labs/StegSocials`
-- Publication receipt custody -> `master-records/orchestration`
-- LinkedIn runtime/profile -> `StegVerse-Labs/StegBrowser`
-- LinkedIn caller parity -> `StegVerse-Labs/StegSocials`
+- Live Facebook publication/readback -> `StegVerse-Labs/StegBrowser` + `StegVerse-Labs/StegSocials`
+- Publication custody -> `master-records/orchestration`
+- LinkedIn parity -> `StegVerse-Labs/StegBrowser` + `StegVerse-Labs/StegSocials`
 - Release propagation/status -> `StegVerse-Labs/Site`
 - Publication provenance -> `GCAT-BCAT-Engine/Publisher`
 - Governance/admissibility docs -> `StegVerse-Labs/admissibility-wiki`
@@ -116,4 +102,4 @@ The canonical record remains pre-activation with `worker_claim.projection_only=t
 
 ## Current state
 
-`NATIVE_FACEBOOK_SOURCE_PATH_MERGED_VALIDATED / STEGSOCIALS_NATIVE_CALLER_MERGED_VALIDATED / STEGOSMOBILE_RESIDENT_APP_TARGET_MERGED_APPLE_COMPILED / STEGOSMOBILE_DURABLE_LOCAL_CUSTODY_SOURCE_MERGED_APPLE_COMPILED / CANONICAL_TASK_COSV_INSTALLED / AUTHENTIC_CURRENT_IPHONE_WORKER_INTR_SESSION_PUBLICATION_READBACK_CUSTODY_PENDING`
+`NATIVE_FACEBOOK_SOURCE_PATH_MERGED_VALIDATED / STEGSOCIALS_NATIVE_CALLER_MERGED_VALIDATED / STEGOSMOBILE_DURABLE_CUSTODY_MERGED_VALIDATED / SAME_DEVICE_DISCOVERY_READBACK_MERGED_CI_APPLE_DEVICE_PACKAGE_VALIDATED / CANONICAL_TASK_COSV_INSTALLED / AUTHENTIC_CURRENT_IPHONE_WORKER_INTR_SESSION_PUBLICATION_READBACK_CUSTODY_PENDING`
