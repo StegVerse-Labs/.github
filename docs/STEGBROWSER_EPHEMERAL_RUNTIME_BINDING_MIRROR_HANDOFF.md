@@ -12,59 +12,99 @@
 
 ## Observed browser state
 
-Merged StegBrowser source includes a Playwright/Chromium ephemeral execution substrate that consumes the bounded lease contract, opens a fresh browser context, validates origin/action/navigation scope, retains only admitted commitments and receipts, closes the context/browser, and emits a terminal destruction receipt.
+StegBrowser has authentic public Chromium execution evidence for both `https://stegverse.org/` and the supplied StegVerse Facebook publication surface, with terminal session destruction and minimized retained evidence.
 
-Observed execution evidence:
+Those observations prove the ephemeral browser substrate and external public-surface reachability. They do not prove governed resident admission, provider authentication, or a browser-created publication.
 
-- `StegVerse-Labs/StegBrowser@d9453e9a2e2dd56ed16a99b2ce2b297dc613de48`
-- run `34298624360`: authentic Chromium retrieval of `https://stegverse.org/` + terminal destruction validation
-- artifact `10084081467`, digest `sha256:a9612d5be08128a5b7dae59114499921ef66fad1101dc6701ec23839c17499d5`
-- `StegVerse-Labs/StegBrowser@dd596c4cb3ccbdcd85758b4d12bc8ad9e2ee539d`
-- run `34298752980`: authentic bounded Chromium retrieval of the supplied StegVerse Facebook publication URL + terminal destruction validation
-- artifact `10084130220`, digest `sha256:eabb6cfe6e8e1c5a9464d3b684260f458f5adb75e72db1599963fb189f5f8a6c`
+## Merged native Facebook source path
 
-These observations prove the ephemeral browser substrate and external public-surface reachability. They do not by themselves prove governed resident admission or credentialed-site access.
+The source path has advanced beyond observation-only integration. Merged StegBrowser source now includes:
+
+- opaque TV/TVC + SKAP credential-session binding;
+- callback-only in-memory credential context injection;
+- credential-aware CLI-blind ephemeral runner;
+- social publication request/observation proof contract;
+- Facebook runtime/profile with exact account/content/lease checks;
+- concrete semantic Playwright Facebook Page driver;
+- end-to-end Facebook publication entrypoint from transient session injection through Page interaction, visible post observation, canonical URL/object identity validation, and terminal destruction.
+
+Key merged commits:
+
+- `StegVerse-Labs/StegBrowser@42f9a78b513586d19ff9c5447b725ef29c168390`
+- `StegVerse-Labs/StegBrowser@fabcc468dde8bca1161a2e564fb17af389404cb3`
+- `StegVerse-Labs/StegBrowser@3f27c8420cca8fc72e6caad305ba52cdd3cd3821`
+- `StegVerse-Labs/StegBrowser@4d929f8f82a19663233ebbe7cd958ef686c1d228`
+- current reconciled StegBrowser main: `2948b4d3a70ccba3a4d09faaf8d9f8b4b46ed030`
+
+The implementation-branch validation runs for the Facebook runtime/profile, concrete driver, and end-to-end entrypoint passed before merge.
 
 ## Ecosystem caller state
 
-StegSocials PR #4 is merged at `d8e1e0bc19d154cd0f2818fa688dd066558ece3c`. The adapter emits bounded StegBrowser publication-observation requests, requests no credential material or persistent browser identity, validates terminal destruction, and preserves `observation_only=true` / `publication_proven=false` semantics.
+StegSocials now has both observation and native publication callers.
 
-## Canonical InTr state
+The native Facebook publication caller is merged at `StegVerse-Labs/StegSocials@122811f8f44dc2494a1d5e771d50c210d1d8a555` after `Validate StegSocials Objects` run `34302291053` passed.
 
-Generic sharded Canonical Work ingress support is merged in `.github` PR #1198 at `934073a6b68427c1823860652b714df5f7ea43b3`. Canonical tasks registered in `data/canonical-task-records/` can resolve through the existing shared Universal InTr route and project post-ingress state without duplication into the legacy monolithic registry.
+The caller converts a READY Personal-KV/SKAP release decision into a bounded StegBrowser lease, exact social publication request, and opaque credential-session request. It emits no publication proof from connector/browser completion alone.
 
-## Resident request staging
+A COMPLETE live publication requires the exact approved content commitment, target account, visible result, real Facebook object ID, canonical Facebook URL, successful terminal destruction, and no retained secret/session/profile state.
 
-`.github` PR #1199 is merged at `04ce23ac8d33551dba401c8fc32fdbd766102042` after all three exact-head validation lanes passed. It stages `STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001` through the existing `canonical_work_coordination` resident consumer. The request is COSV-bound to `40000100100000`, uses TV/TVC as credential authority, grants no execution authority, requires no GitHub token, and permits no network source fetch.
+## Canonical InTr / resident staging state
 
-The resident consumer seeds the exact StegBrowser task shard when absent and preserves an already-existing resident shard byte-for-byte so a later source refresh cannot overwrite newer resident coordination state. The same existing dispatcher selector and shared Universal InTr listener are reused; no second scheduler, WorkerCoordinator, listener, browser runtime, or credential path is introduced.
+Generic sharded Canonical Work ingress and the task-specific resident request staging are merged. The request remains COSV-bound to `40000100100000`, uses TV/TVC as credential authority, grants no execution authority, requires no GitHub token, and permits no network source fetch.
 
-Expected authentic resident evidence after resident dispatch:
+Expected authentic resident evidence remains:
 
 - `receipts/sovereign-host/canonical-work-stegbrowser-ephemeral-runtime-binding-request-consumption.latest.json`
 - nested `runtime/canonical-work-stegbrowser-ephemeral-runtime-binding/receipts/sovereign-host/canonical-work-event-bootstrap.latest.json`
-- task-specific `INGRESS_ADMITTED` ingress/consumption evidence produced by the shared Canonical Work/InTr path
+- task-specific `INGRESS_ADMITTED` ingress/consumption evidence from the shared Canonical Work/InTr path
+- authentic WorkerCoordinator claim/fence produced after governed reconciliation
 
-Source, CI, merge, request staging, or heartbeat progression must not substitute for those receipts.
+Source, CI, merge, request staging, heartbeat progression, or task registry state must not substitute for those receipts.
 
-## Credential-session reuse boundary
+## Credential-session boundary
 
-Repository review identified an existing owner-browser sealing and SKAP/InTr provider-session pattern in Site/TVC. Its relevant invariants are compatible with StegBrowser: TV/TVC remains credential authority, SKAP or KV-hosted SKAP Vault remains sealed credential custody, the current device/browser is an ephemeral owner-authorized edge, ordinary KV has no credential decryption authority, GitHub has no runtime credential authority, plaintext credential carriage is forbidden, browser persistence/logging is forbidden, and destination changes/blind retries fail closed.
+StegBrowser reuses the existing owner-browser TV/TVC + SKAP/InTr credential pattern rather than creating another credential system.
 
-StegBrowser credentialed-session work should reuse this boundary rather than creating a new credential architecture. Reuse is source-direction only until an authentic governed provider-session binding and ephemeral browser execution receipt are observed.
+Required invariants remain:
+
+- TV/TVC retains credential authority;
+- SKAP or KV-hosted SKAP Vault retains sealed credential custody;
+- the browser is an ephemeral owner-authorized execution edge;
+- ordinary KV has no credential decryption authority;
+- GitHub has no runtime credential authority;
+- plaintext credential carriage is forbidden;
+- live session handles remain outside lease payloads, argv, repository state, logs, and retained evidence;
+- browser profile/cookie/history persistence is forbidden;
+- credential resolution occurs callback-only at the execution edge.
 
 ## WorkerCoordinator projection
 
-The canonical task record remains pre-ingress with `worker_claim.projection_only=true` and no fabricated claim/fence reference. WorkerCoordinator remains the source for an authentic execution claim/fence after governed admission and reconciliation.
+The canonical record remains pre-activation with `worker_claim.projection_only=true` and no fabricated claim/fence reference. WorkerCoordinator remains authoritative for authentic execution claim/fence state.
 
 ## Active continuation
 
 1. Observe authentic resident request consumption and task-specific shared InTr `INGRESS_ADMITTED` evidence.
-2. Reconcile the admitted task through Master Records / WorkerCoordinator without inferring claim authority from the ingress receipt.
-3. Bind the admitted StegSocials observation request to StegBrowser execution and preserve terminal destruction evidence.
-4. Reuse the existing TV/TVC + SKAP owner-browser provider-session boundary for one credentialed ephemeral browser session without embedding raw credential/session material in repository state, lease payloads, retained artifacts, cookies, history, or a persistent browser profile.
-5. Verify propagation under `STEGBROWSER-ECOSYSTEM-PROPAGATION-VERIFY-001`.
+2. Reconcile the admitted task through Master Records / WorkerCoordinator and obtain authentic claim/fence evidence.
+3. Resolve one admitted Facebook provider session only through the existing TV/TVC + SKAP callback-only boundary.
+4. Supply that live capability in memory to the merged StegBrowser Facebook publication entrypoint.
+5. Execute exactly one already-approved StegSocials Facebook release.
+6. Independently verify the resulting Facebook object ID, canonical URL, exact content commitment, visibility, and terminal destruction receipt.
+7. Emit the StegSocials live publication-attempt receipt and complete KV / Master Records custody.
+8. Implement LinkedIn company-page parity using the same boundaries.
+9. After authentic publication/custody proof, review release readiness and verify propagation under `STEGBROWSER-ECOSYSTEM-PROPAGATION-VERIFY-001`.
+
+## Installation / integration remainder
+
+- Authentic resident Facebook session execution -> existing `StegVerse-Labs/TVC` + `StegVerse-Labs/.github` resident edge
+- First live Facebook publication/readback proof -> `StegVerse-Labs/StegBrowser` + `StegVerse-Labs/StegSocials`
+- Publication receipt custody -> `master-records/orchestration`
+- LinkedIn interaction/runtime profile -> `StegVerse-Labs/StegBrowser`
+- LinkedIn caller parity -> `StegVerse-Labs/StegSocials`
+- Release propagation/status -> `StegVerse-Labs/Site`
+- Publication provenance -> `GCAT-BCAT-Engine/Publisher`
+- Governance/admissibility docs -> `StegVerse-Labs/admissibility-wiki`
+- Guardian/security docs -> `StegVerse-Labs/stegguardian-wiki`
 
 ## Current state
 
-`RESIDENT_REQUEST_MERGED_GREEN / STEGSOCIALS_CALLER_MERGED / SHARD_AWARE_INTR_MERGED / AUTHENTIC_RESIDENT_ADMISSION_AND_CREDENTIALED_SESSION_PENDING`
+`NATIVE_FACEBOOK_SOURCE_PATH_MERGED_VALIDATED / STEGSOCIALS_NATIVE_CALLER_MERGED_VALIDATED / CANONICAL_TASK_COSV_INSTALLED / AUTHENTIC_WORKER_INTR_SESSION_PUBLICATION_READBACK_CUSTODY_PENDING`
