@@ -5,6 +5,7 @@ from pathlib import Path
 
 projection_path = Path('control/runtime-partial-solution-projections/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.json')
 overlay_path = Path('control/global-runtime-failure-frontier-overlay.json')
+hb_lineage_path = Path('control/stegos-node-hb-lineage-contract.json')
 
 data = json.loads(projection_path.read_text())
 assert data['schema'] == 'stegverse.runtime-partial-solution-projection/v1'
@@ -14,6 +15,9 @@ assert policy['resume_at_first_unresolved_stage'] is True
 assert policy['mechanism_reuse_allowed'] is True
 assert policy['cross_task_receipt_reuse_requires_exact_subject_binding'] is True
 assert policy['generic_runtime_restart_for_later_stage_lane'] is False
+assert policy['profile_derived_node_instances_required'] is True
+assert policy['source_device_hb_lineage_required'] is True
+assert policy['source_device_hb_reference_propagates_outward'] is True
 solutions = set(data['solution_catalog'])
 assert 'PERSISTENT_NODE_EPHEMERAL_EXECUTION' in solutions
 assert 'STEGOS_RETAINED_NODE_CONTINUITY' not in solutions
@@ -29,6 +33,23 @@ for member in members:
     assert member['adopt']
     assert set(member['adopt']) <= solutions
     assert 'PERSISTENT_NODE_EPHEMERAL_EXECUTION' in member['adopt']
+
+hb = json.loads(hb_lineage_path.read_text())
+assert hb['schema'] == 'stegverse.stegos-node-hb-lineage-contract/v1'
+assert hb['goal_task_id'] == data['goal_task_id']
+assert hb['authority_effect'] == 'NONE_OBSERVABILITY_LINEAGE_ONLY'
+assert hb['node_instance']['profile_ref_required'] is True
+assert hb['node_instance']['source_device_hb_reference_required'] is True
+assert hb['hb_lineage']['origin_reference_immutable'] is True
+assert hb['hb_lineage']['propagate_outward_on_every_transition'] is True
+assert hb['hb_lineage']['retain_source_device_reference_on_descendant_nodes'] is True
+assert hb['hb_lineage']['append_transition_history'] is True
+assert hb['ephemeral_operation']['interlock_intr_invocation_ephemeral'] is True
+assert hb['ephemeral_operation']['data_transport_ephemeral'] is True
+assert hb['persistence']['hb_transition_lineage'] is True
+assert hb['persistence']['transport_session_state'] is False
+assert 'HB_REFERENCE_DOES_NOT_GRANT_EXECUTION_AUTHORITY' in hb['nonclaims']
+assert 'HB_REFERENCE_DOES_NOT_GRANT_INTERLOCK_INTR_ADMISSION' in hb['nonclaims']
 
 overlay = json.loads(overlay_path.read_text())
 assert overlay['schema'] == 'stegverse.global-runtime-failure-frontier-overlay/v1'
@@ -60,4 +81,5 @@ assert overlay['interpretation']['largest_projected_frontier_count'] == 8
 assert overlay['interpretation']['second_largest_projected_frontier'] == 'EPHEMERAL_REQUEST_BOUND_AND_CONSUMED'
 assert overlay['interpretation']['second_largest_projected_frontier_count'] == 5
 print('RUNTIME_PARTIAL_SOLUTION_PROJECTION=PASS')
+print('STEGOS_NODE_HB_LINEAGE_CONTRACT=PASS')
 print('GLOBAL_RUNTIME_FAILURE_FRONTIER_OVERLAY=PASS')
