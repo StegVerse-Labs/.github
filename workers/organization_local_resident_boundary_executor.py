@@ -20,6 +20,7 @@ TASK_ID = "ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001"
 PACKET_SCHEMA = "stegverse.organization-local-boundary.packet/v1"
 PROFILE_ID = "stegverse.organization-local-intr/v1"
 INGRESS_DIR = ROOT / "spool/organization-local-boundary/ingress"
+CONSUMED_DIR = ROOT / "spool/organization-local-boundary/consumed"
 EGRESS_DIR = ROOT / "spool/organization-local-boundary/egress"
 RECEIPT_DIR = ROOT / "receipts/organization-local-boundary"
 SAFE_ID = re.compile(r"^[A-Za-z0-9._:-]{1,160}$")
@@ -53,6 +54,24 @@ def load_json(path: Path) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise ValueError("json_object_required")
     return value
+
+
+def archive_consumed_ingress(path: Path, consumed_dir: Path = CONSUMED_DIR) -> Path:
+    """Move an already-verified ingress packet out of the live queue.
+
+    The receipt and egress packet remain the durable evidence. The archived ingress
+    retains the exact original bytes while preventing the sorted live queue from
+    repeatedly selecting an already-consumed packet and starving later work.
+    """
+    consumed_dir.mkdir(parents=True, exist_ok=True)
+    destination = consumed_dir / path.name
+    if destination.exists():
+        if destination.read_bytes() != path.read_bytes():
+            raise ValueError("consumed_ingress_archive_collision")
+        path.unlink()
+        return destination
+    os.replace(path, destination)
+    return destination
 
 
 def reject_forbidden(value: Any) -> None:
@@ -194,6 +213,7 @@ def main() -> int:
         receipt = load_json(receipt_path)
         egress = load_json(egress_path)
         if receipt.get("ingress_packet_sha256") == ingress_hash and receipt.get("egress_packet_sha256") == sha256_uri(egress):
+            archive_consumed_ingress(path)
             json.dump(response("COMPLETED", "ORGANIZATION_LOCAL_BOUNDARY_ITEM_CONSUMED", epoch), sys.stdout)
             print()
             return 0
@@ -248,6 +268,7 @@ def main() -> int:
 
     if load_json(egress_path) != egress or load_json(receipt_path) != receipt:
         return 6
+    archive_consumed_ingress(path)
     json.dump(response("COMPLETED", "ORGANIZATION_LOCAL_BOUNDARY_ITEM_CONSUMED", epoch), sys.stdout)
     print()
     return 0
