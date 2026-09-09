@@ -13,18 +13,21 @@
   "canonical_task_record_ref": "data/canonical-task-records/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json",
   "orchestration_ref": "control/formalism-manifold-orchestration.json",
   "worker_registry_refs": [
+    "control/worker-registry.d/formalism-source-discovery-001.json",
     "control/worker-registry.d/formalism-manifold-orchestration-001.json",
     "control/worker-registry.d/stegfin-continuity-carrier-007.json",
     "control/worker-registry.d/gadi-resident-execution-001.json",
     "control/worker-registry.d/hil-resident-session-manifold-activation-001.json"
   ],
   "process_adapter_refs": [
+    "control/process-worker-adapters.d/formalism-source-discovery-001.json",
     "control/process-worker-adapters.d/formalism-manifold-orchestration-001.json",
     "control/process-worker-adapters.d/gadi-resident-execution-001.json",
     "control/process-worker-adapters.d/hil-resident-session-manifold-activation-001.json"
   ],
   "subordinate_task_ids": [
     "FORMALISM-MANIFOLD-ORCHESTRATION-001",
+    "SHWP-FORMALISM-SOURCE-DISCOVERY-001",
     "SHWP-FORMALISM-INVENTORY-001",
     "SHWP-FORMALISM-HANDOFF-NORMALIZATION-001",
     "SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001",
@@ -41,6 +44,7 @@
   ],
   "execution_dispositions": {
     "FORMALISM-MANIFOLD-ORCHESTRATION-001": "REUSE_IMPLEMENTATION_EXECUTE_CHILDREN",
+    "SHWP-FORMALISM-SOURCE-DISCOVERY-001": "EXECUTE_IF_NOT_ALREADY_QUALIFYING",
     "SHWP-FORMALISM-INVENTORY-001": "EXECUTE_IF_NOT_ALREADY_QUALIFYING",
     "SHWP-FORMALISM-HANDOFF-NORMALIZATION-001": "EXECUTE_IF_NOT_ALREADY_QUALIFYING",
     "SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001": "EXECUTE_IF_NOT_ALREADY_QUALIFYING",
@@ -61,7 +65,8 @@
     "reuse completed aggregate/predecessor evidence without duplicate execution",
     "run canonical cross-task coordination and collision preflight",
     "acquire fresh WorkerCoordinator claim/fence only for genuinely missing HANDOFF_READY local subordinate tasks",
-    "execute the four prerequisite formalism evidence lanes through their existing registered process adapters",
+    "execute SHWP-FORMALISM-SOURCE-DISCOVERY-001 first when the completed roots manifest is absent; require its deterministic roots manifest or fail closed",
+    "execute the four prerequisite formalism evidence lanes through their existing registered process adapters using the discovered roots manifest",
     "require authentic subject-bound COMPLETED receipts for prerequisite lanes",
     "execute SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001 only after prerequisites qualify",
     "observe TVC-PROVIDER-OPERATION-BROKER-003 and TVC-CAPABILITY-RUNTIME-002 through their existing TV/TVC-owned runtime path without creating a competing claim",
