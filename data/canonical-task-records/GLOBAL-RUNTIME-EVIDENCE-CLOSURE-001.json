@@ -14,6 +14,8 @@
     "StegVerse-Labs/.github#1260",
     "StegVerse-Labs/.github#1261",
     "StegVerse-Labs/.github#1286",
+    "StegVerse-Labs/.github#1288",
+    "StegVerse-Labs/.github@c22f0f347bb91e77b81d78e6e5e9b9ce7eea7409",
     "control/runtime-observability-consumers",
     "control/runtime-observability-consumers/stegbrowser-ephemeral-runtime-binding-001.json",
     "control/runtime-node-profiles.json",
@@ -23,7 +25,10 @@
     "scripts/run_global_runtime_evidence_convergence.py",
     "scripts/run_global_runtime_node_profile_convergence.py",
     "scripts/install_and_run_canonical_work_event_bootstrap.py",
+    "scripts/refresh_sovereign_worker_runtime_source.py",
+    "scripts/refresh_sovereign_worker_runtime_source_base.py",
     "tests/test_global_runtime_node_profile_convergence.py",
+    "tests/test_runtime_node_profile_resident_source_refresh.py",
     "docs/milestones/STEGBROWSER_FIRST_EPHEMERAL_STEGOS_NODE_2026-09-09.md",
     "StegVerse-Labs/StegBrowser@0de903391f30cb8af50a3f9a8d95cfcd1ea9edf3",
     "StegVerse-Labs/StegOS@cfe1e0b27f085d084c6290d346b6c2ff6be50fcb"
@@ -36,6 +41,7 @@
       "resident-runtime-convergence",
       "hb32-retained-stegos-runtime-node-profiles",
       "stegbrowser-retained-node-lifecycle-reference",
+      "resident-source-refresh-propagation",
       "cross-lane-evidence-reuse",
       "runtime-predicate-comparison",
       "profile-bound-external-runtime-resolution",
@@ -50,14 +56,14 @@
       "kind": "RUNTIME_PREDICATE",
       "state": "UNRESOLVED",
       "ref": "docs/CANONICAL_RUNTIME_PROFILE_MAP_MIRROR_HANDOFF.md",
-      "disposition": "All 18 lanes now have retained HB32 StegOS runtime-node profiles; authentic resident/process/request/transition evidence remains task-specific and must be observed during the resident profile convergence cycle."
+      "disposition": "All 18 lanes have retained HB32 StegOS runtime-node profiles. Resident source-refresh propagation now carries the profile registry, builder, profiled convergence runner, base convergence runner, partial-solution projection and runtime-observability consumers into the sovereign runtime root. Authentic resident/process/request/transition evidence remains task-specific and must be observed during the resident profile convergence cycle."
     },
     {
       "dependency_id": "DEP-GLOBAL-RUNTIME-CHILD-EVIDENCE-CLOSURE",
       "kind": "EVIDENCE",
       "state": "UNRESOLVED",
       "ref": "docs/GLOBAL_RUNTIME_EVIDENCE_CONVERGENCE_MATRIX.md",
-      "disposition": "Resume every child from the first missing subject-bound predicate reported by its runtime-node profile; profile binding is not execution proof."
+      "disposition": "Resume every child from the first missing subject-bound predicate reported by its runtime-node profile; source refresh and profile binding are not execution proof."
     }
   ],
   "blockers": [],
@@ -83,12 +89,16 @@
     "docs/milestones/STEGBROWSER_FIRST_EPHEMERAL_STEGOS_NODE_2026-09-09.md",
     "StegVerse-Labs/StegOS/actions/runs/34366834530",
     "StegVerse-Labs/StegOS/actions/runs/34366834574",
-    "StegVerse-Labs/StegOS/actions/runs/34366834510"
+    "StegVerse-Labs/StegOS/actions/runs/34366834510",
+    "StegVerse-Labs/.github/actions/runs/34369862142",
+    "StegVerse-Labs/.github/actions/runs/34369861959",
+    "StegVerse-Labs/.github/actions/runs/34369862200"
   ],
   "expected_evidence_predicates": [
     "GLOBAL_CHILD_INVENTORY_CURRENT",
     "ALL_18_RUNTIME_LANES_HAVE_EXACT_HB32_RETAINED_STEGOS_NODE_PROFILE",
     "STEGBROWSER_RETAINED_NODE_PROFILE_SYNCHRONIZED_WITH_HB_RUNTIME_MAP",
+    "RUNTIME_NODE_PROFILE_SOURCE_REFRESH_MATERIALIZED_IN_SOVEREIGN_ROOT",
     "GENERIC_UNWIRED_CHILD_RUNTIME_CLASSIFICATION_ELIMINATED",
     "FIRST_UNRESOLVED_PREDICATE_CLASSIFIED_PER_CHILD",
     "REUSABLE_PARTIAL_SOLUTIONS_PROJECTED",
@@ -105,7 +115,8 @@
       "runtime_profile_discovery",
       "retained_stegos_node_state",
       "hb_runtime_profile_sync",
-      "exact_subject_binding"
+      "exact_subject_binding",
+      "resident_source_refresh"
     ],
     "environment": "SOVEREIGN_RESIDENT",
     "direction": "INTERNAL",
@@ -123,9 +134,23 @@
     "session_credentials_survive_teardown": false,
     "profiled_convergence_runner": "scripts/run_global_runtime_node_profile_convergence.py",
     "profiled_receipt": "receipts/sovereign-host/global-runtime-node-profile-convergence.latest.json",
+    "resident_refresh_refs": [
+      "scripts/refresh_sovereign_worker_runtime_source.py",
+      "scripts/refresh_sovereign_worker_runtime_source_base.py"
+    ],
+    "resident_refresh_required_static_sources": [
+      "scripts/build_runtime_profile_map.py",
+      "scripts/run_global_runtime_evidence_convergence.py",
+      "scripts/run_global_runtime_node_profile_convergence.py",
+      "control/runtime-node-profiles.json",
+      "control/runtime-profile-sources.json",
+      "control/runtime-partial-solution-projections/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.json",
+      "control/runtime-observability-consumers"
+    ],
     "generic_unwired_target_state": 0,
     "source_profile_binding_proves_runtime": false,
-    "next_runtime_action": "After validated merge, execute the existing Runtime Profile Map CanonicalWork event on the authentic sovereign resident; consume the profiled convergence receipt and resume each lane from its exact first unresolved predicate."
+    "source_refresh_proves_runtime": false,
+    "next_runtime_action": "After validated resident-refresh propagation merge, refresh the authentic sovereign resident from the already-local canonical source and execute the existing Runtime Profile Map CanonicalWork event; consume the profiled convergence receipt and resume each lane from its exact first unresolved predicate."
   },
   "worker_claim": {
     "authority": "WORKERCOORDINATOR",
@@ -137,7 +162,7 @@
   "completion": {
     "claimed": false,
     "validated": false,
-    "reconciliation_ref": null,
+    "reconciliation_ref": "StegVerse-Labs/.github@c22f0f347bb91e77b81d78e6e5e9b9ce7eea7409",
     "activation_proof_complete": false
   },
   "allowed_next_transitions": ["INGRESS_ADMITTED"],
@@ -149,6 +174,7 @@
     "task_registry_mints_execution_authority": false,
     "source_state_proves_execution": false,
     "runtime_profile_match_grants_execution_authority": false,
+    "source_refresh_grants_execution_authority": false,
     "hb_grants_execution_authority": false,
     "worker_claim_authority": "WORKERCOORDINATOR",
     "credential_authority": "TV/TVC",
