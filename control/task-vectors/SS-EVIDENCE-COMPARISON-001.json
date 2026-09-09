@@ -16,9 +16,20 @@
     "KnowledgeVault/02_Research/ERL/ERL-2026-09-06-OPENAI-AN-ALIEN-MIND/manifest.json",
     "google-drive:file:1NpuurTS_ejiTCpATXeflAIA30IXdZdp5",
     "google-drive:file:11E6Gpx0GtIbR37XHFDEVMa79jNl38x5H",
-    "master-records/orchestration/contracts/stegsocials-evidence-context-source-schemas.yaml"
+    "master-records/orchestration/contracts/stegsocials-evidence-context-source-schemas.yaml",
+    "google-drive:folder:1esoETwRd5A2YgdVTMskCSgzTOpuRyIV5",
+    "google-drive:file:1c5RlkMHLuDwEFRJU31GJSzmDvLj8FMpC",
+    "google-drive:file:1cAwpxdxxZVTFV0meK8nGREGYP5b0dX3C",
+    "google-drive:file:1vHHpaS0CbkppbptLnC3JRMtvi_M8vbC-",
+    "google-drive:file:1vnajCmAwpK_YlofY2MN4I7C4KrCHYoJh",
+    "google-drive:file:1yKB0QUbjbC1ZYwqgR9lq751QKDwwlgV3",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger@8569d8b811b787cd49ee3f38c352c46fb86c3bca:live-provider-operation-validation=PASS",
+    "master-records/orchestration@1c565c160d1a25b408e130402b5da52e855a8169:authentic-erl-receipt-custody=PASS",
+    "master-records/orchestration@3e1bc4f2f98bde1932261c2ce96ca42fa9952a19:terminal-custody-handoff=PASS",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger@722a11cf2ada6205a31e3678d489254fb736e8f7:erl-kv-integration-complete",
+    "StegVerse-Labs/StegSocials@41f1eae88f12d461df6a72fbb3edce90966c0fd9:completed-erl-kv-proof-consumed"
   ],
-  "observed_at": "2026-09-09T08:58:00-05:00",
+  "observed_at": "2026-09-09T08:10:00-05:00",
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
     "lifecycle": "CLAIMED_INTEGRATION",
@@ -37,16 +48,16 @@
     "propagated": false
   },
   "metric_evidence": {
-    "lifecycle": "Standard ERL-assisted drafting, governed draft admission, exact device-local readback implementation, provider-neutral readback verification, and an authentic Google Drive Level 1 provider-resource readback are durable; integration continues because authentic current-iPhone full-flow evidence, receipt-backed provider readback, and live publication/custody proof remain.",
+    "lifecycle": "ERL-to-MyKV native writing, provider persistence, exact readback, retained provider receipt, Master Records custody/reconstruction, and StegSocials consumption are complete; the parent remains claimed for the distinct authentic current-iPhone standard-flow predicate.",
     "archive_ready": "Activation evidence remains incomplete even though continuation state and authentic Google Drive Level 1 evidence are durable.",
     "unassigned_work": "Current session owns integration continuation; no unassigned machine-executable work is introduced by this evidence reconciliation.",
     "chat_owned_counts": "Implementation and deterministic validation are durable; current session remains integration owner only.",
-    "canonical_owner_installed": "Canonical task record, COSV vector, handoffs, repository task, KV lanes, Google Drive Level 1 evidence, and Master Records supplemental schema pin are installed.",
+    "canonical_owner_installed": "Canonical task, ERL/StegSocials handoffs, live Drive receipts, Master Records reconstruction, and the separate propagation-verification task are installed.",
     "thread_required": "Durable handoffs/task/COSV/provider evidence are sufficient for continuation without this thread.",
-    "blocker_count": "No canonical blocker prevents further integration. The Google Drive connector did not expose an independent provider-operation receipt, so Level 2 remains an unmet evidence predicate rather than a blocker state.",
-    "evidence_complete": "Google Drive Level 1 exact-byte provider-resource readback is observed, but authentic current-iPhone standard-flow evidence, receipt-backed provider readback, and one live publication-to-KV-to-Master-Records reconstruction remain unobserved.",
+    "blocker_count": "No canonical blocker prevents the remaining current-iPhone evidence collection; ERL KV provider proof is complete.",
+    "evidence_complete": "ERL KV provider-operation evidence is complete; the broader parent task still awaits authentic current-iPhone standard-flow evidence and keeps premium publication separate.",
     "activated": "Capability is implemented and authentic provider resource readback is partially observed, but activation remains false until the remaining runtime/provider/custody predicates are satisfied.",
-    "propagated": "No downstream Publisher/wiki propagation is claimed for this additive goal."
+    "propagated": "Propagation is delegated to SS-ERL-KV-PROPAGATION-VERIFICATION-001 and is not yet claimed."
   },
   "authority_effect": "NONE"
 }

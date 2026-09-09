@@ -195,6 +195,12 @@ The active task record `data/canonical-task-records/SS-EVIDENCE-COMPARISON-001.j
 
 ---
 
+## ERL KV propagation verification
+
+Completed ERL-to-MyKV provider-operation evidence is propagated through a separate verification task. `SS-ERL-KV-PROPAGATION-VERIFICATION-001` requires evidence-backed applicability decisions for Site, Publisher, admissibility-wiki, and stegguardian-wiki; documentation alone cannot claim runtime or publication propagation.
+
+---
+
 ## Operational Observer Standard
 
 Repositories that generate operational proof artifacts should not be promoted from installed proof infrastructure to observed operational completion until a fresh workflow run, expected artifacts, expected proof files, and receipt validation are confirmed.
