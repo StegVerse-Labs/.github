@@ -12,11 +12,12 @@ Scheduler merge: `StegVerse-Labs/StegVerse-Healer#57` / merge `ef5d90a8c215056e0
 Canonical Task Registry merge: PR `#1255` / merge `2eb089842ea8960845dcd021f5241126432f3b74`
 Recurring carrier merge: PR `#1259` / merge `569b6dde49cc9f568c0a24daf9fc723eee807b6f`
 Resident runtime-root merge: `StegVerse-Labs/StegVerse-Healer#58` / merge `a0f6daeaf33198f26e358c7b124fc9f80aad8b6b`
-State: `SOURCE_INTEGRATION_MERGED / HOURLY_REUSABLE_BINDING_MERGED / CANONICAL_TASK_REGISTERED / STANDING_RECURRING_CARRIER_MERGED / SOURCE_RUNTIME_SEPARATION_MERGED / WORKERCOORDINATOR_CYCLE_REARM_AND_DISPATCH_SOURCE_SEPARATION_IN_VALIDATION / AUTHENTIC_SCHEDULED_RUNTIME_RECEIPT_PENDING`
+WorkerCoordinator rearm/source-separation merge: PR `#1273` / merge `438aeb9a4b187419ea3a91984ed0436c89b26819`
+State: `SOURCE_INTEGRATION_MERGED / HOURLY_REUSABLE_BINDING_MERGED / CANONICAL_TASK_REGISTERED / STANDING_RECURRENCE_MERGED / SOURCE_RUNTIME_SEPARATION_MERGED / WORKERCOORDINATOR_REARM_MERGED / KV_FAILURE_PERSISTENCE_IN_VALIDATION / AUTHENTIC_SCHEDULED_KV_RECEIPT_PENDING`
 
 ## Scoped objective
 
-Make the existing native email action monitor directly reusable and recurring hourly through the existing sovereign Healer scheduler without creating another mailbox monitor, heartbeat, polling loop, WorkerCoordinator, scheduler, or credential route.
+Make the existing native email action monitor directly reusable and recurring hourly through the existing sovereign Healer scheduler, and persist normalized GitHub failure observations into the already-materialized KnowledgeVault before live failure mail is archived, without creating another mailbox monitor, heartbeat, polling loop, WorkerCoordinator, scheduler, credential route, or KV provider-mount path.
 
 ## Implemented hourly path
 
@@ -28,53 +29,61 @@ PR #1259 repaired `RESIDENT-EXEC-HEALER-SOVEREIGN-SCHEDULER-001` from one-shot t
 
 - `standing_request=true`;
 - recurrence `EACH_ELIGIBLE_RESIDENT_SCHEDULER_CYCLE`;
-- a successful `HEALER_SOVEREIGN_SCHEDULER_COMPLETED` result records one `CYCLE_COMPLETED` pass instead of retiring the request;
+- a successful `HEALER_SOVEREIGN_SCHEDULER_COMPLETED` result records one completed pass instead of retiring the request;
 - `retry_allowed=true` and `request_consumed=false` remain true after each completed cycle.
 
 The reusable-task layer retains the narrower per-UTC-hour idempotency boundary, so multiple resident scheduler cycles within one hour do not duplicate the email invocation.
 
 ## Source/runtime separation
 
-Healer PR #58 repaired the scheduled invocation topology. The first hourly source implementation passed the local `.github` source checkout as both `source_root` and `runtime_root`, which could place reusable-task receipts under source and collapse source with execution state.
+Healer PR #58 repaired the scheduled invocation topology. The merged path treats the already-materialized local `.github` checkout only as `source_root`, resolves the actual resident heartbeat runtime separately, stores reusable-task receipts under resident runtime, and fails closed if no resident runtime is materialized.
 
-The merged repair now:
-
-- treats the already-materialized local `.github` checkout only as `source_root`;
-- resolves an actual resident heartbeat runtime from explicit `STEGVERSE_HEARTBEAT_ROOT` or exactly one canonical local heartbeat-runtime location;
-- requires the materialized native-email standing request to validate that runtime candidate;
-- passes the resident heartbeat tree only as `runtime_root`;
-- stores `receipts/reusable-task/<UTC-hour-slot>.latest.json` under the resident runtime;
-- fails closed with `RESIDENT_RUNTIME_ROOT_NOT_MATERIALIZED` rather than using source as runtime;
-- preserves same-slot idempotency against the resident receipt.
+PR #1273 additionally repaired automatic resident dispatch when the runtime tree is initially presented as both dispatcher source and runtime. The Healer request consumer resolves the existing `STEGVERSE_HEARTBEAT_SOURCE_ROOT`, requires it to be a distinct already-local canonical source tree, and performs no network source fetch.
 
 ## WorkerCoordinator cycle rearm
 
-A post-merge lifecycle review found that the standing resident request alone was insufficient. WorkerCoordinator accepts a `COMPLETED` worker response as terminal task completion, releases the worker, and leaves the scheduler task in `COMPLETED`. Independent task control can acquire only a `HANDOFF_READY` unclaimed task, so the scheduler would still stop after its first successful WorkerCoordinator cycle.
+PR #1273 also repaired the scheduler task lifecycle. A successful scheduler pass preserves its durable completed-cycle receipt and transition, but the WorkerCoordinator-facing response is `HANDOFF_READY`. Existing WorkerCoordinator semantics therefore release the current claim/worker binding and permit a fresh fenced acquisition on a later scheduler cycle. Blocked and failed responses are unchanged.
 
-The current repair keeps the completed-cycle evidence unchanged while changing only the WorkerCoordinator-facing lifecycle response:
+## KnowledgeVault failure-observation persistence
+
+The native email monitor previously normalized GitHub failure incidents but archived the exact Gmail message IDs before any KV persistence step existed. That meant a successful provider archive could discard inbox visibility even if later durable KV storage failed.
+
+The current repair adds a narrow storage-evidence leg to the existing task rather than creating a second monitor or ingestion path:
+
+- `scripts/persist_native_email_incidents_to_kv.py` writes normalized failure observations only;
+- `scripts/run_native_email_action_monitor_kv_guard.py` wraps the existing monitor broker and gates `ARCHIVE_IDS` on successful KV persistence/readback;
+- `scripts/consume_native_email_action_monitor_request.py` requires an already-materialized KnowledgeVault from `STEGVERSE_KV_ROOT` or `STEGVERSE_KV_PROVIDER_MATERIALIZED_ROOT` and remains retryable when neither resolves;
+- `StegVerse-Healer` forwards those two non-secret path bindings through the existing scheduler/reusable-task hop;
+- archived replay incidents are backfilled into the same KV record class before downstream failure reconciliation proceeds.
+
+The canonical KV location for this task is:
 
 ```text
-Healer child scheduler result: COMPLETE
--> durable scheduler worker receipt: state=COMPLETED / transition=HEALER_SOVEREIGN_SCHEDULER_COMPLETED
--> WorkerCoordinator-facing response: state=HANDOFF_READY / same completed-cycle transition
--> current claim + worker binding released by existing WorkerCoordinator HANDOFF_READY semantics
--> scheduler task remains eligible for a fresh independently admitted claim/fence on a later resident cycle
+05_Projects/StegVerse/Operations/GitHubFailureEmail/
 ```
 
-Blocked and failure responses are not rewritten. The task therefore receives a fresh fencing generation for each new scheduler cycle instead of retaining or reviving the prior claim.
+Each record contains bounded normalized operational evidence: task/COSV binding, incident ID, normalized repository/workflow/error signature, Gmail message-ID evidence references, and storage/evidence semantics. Full email bodies, credentials, provider tokens, and unrelated personal mailbox contents are not written.
 
-## Automatic resident-dispatch source separation
+The record writer is append-only and deterministic. It uses canonical JSON bytes, exclusive creation, fsync, exact-byte readback verification, and a filename derived from incident identity plus the exact observation-reference set. Repeated identical replay is a verified no-op; a conflicting write fails closed.
 
-The continuous WorkerCoordinator resident dispatcher invokes the generic request dispatcher from the resident tree and historically supplied that runtime root as both dispatcher `source_root` and `runtime_root`. The Healer request consumer delegates to `refresh_and_execute_resident_task.py`, whose refresh contract correctly requires source and runtime to remain distinct.
+### Required ordering
 
-The sovereign service/bootstrap already provides the non-secret local canonical checkout as `STEGVERSE_HEARTBEAT_SOURCE_ROOT`. The current consumer repair therefore resolves source as follows:
+For a live failure batch the enforced ordering is:
 
-1. If the dispatcher already supplies a distinct existing source root, use it.
-2. If dispatcher source equals runtime, resolve `STEGVERSE_HEARTBEAT_SOURCE_ROOT`.
-3. Require that candidate to be a distinct existing local directory containing `scripts/refresh_and_execute_resident_task.py`.
-4. If no valid distinct source exists, record `DISTINCT_LOCAL_CANONICAL_SOURCE_REQUIRED`, keep the standing request retryable, and perform no runtime execution or network source fetch.
+```text
+SEARCH_MESSAGES
+-> normalize GitHub failure incidents
+-> exact-byte KnowledgeVault write
+-> exact-byte KnowledgeVault readback verification
+-> ARCHIVE_IDS for the exact bounded Gmail IDs
+-> actionable recheck / inbox accounting
+-> StegHealth failure reconciliation
+-> Canonical Work / InTr continuation when applicable
+```
 
-This repairs autonomous continuous-dispatch compatibility without changing the generic dispatcher contract for unrelated resident consumers.
+If KV persistence fails or no already-materialized KV root resolves, `ARCHIVE_IDS` is not called for the failure batch. The standing task remains retryable.
+
+KV is storage/evidence in this path. The writer does not mount providers, resolve credentials, create task identity, admit execution, mint a claim/fence, or perform a governed state transition.
 
 ## Cadence
 
@@ -90,24 +99,28 @@ eligible_utc_hours: 00..23
 at_most_once_per_hour_slot: true
 slot_identity: RT-NATIVE-EMAIL-ACTION-MONITOR-001 + UTC YYYYMMDDTHH
 receipt_location: resident heartbeat runtime / receipts/reusable-task/
+kv_failure_record_root: 05_Projects/StegVerse/Operations/GitHubFailureEmail/
+kv_exact_byte_readback_required: true
+archive_after_required_kv_persistence_only: true
 mailbox_batch_limit: existing native monitor limit (100)
 ```
 
-## Validation evidence
+## Validation evidence already merged
 
 - PR #1252 exact head: Heartbeat `34332023132`, org-control `34332023277`, deterministic suite `34332023168` SUCCESS.
 - Healer PR #57 exact head: Test Readiness `34332190725` SUCCESS.
 - PR #1255 exact head: Heartbeat `34332579197`, org-control `34332579252`, deterministic suite `34332579274` SUCCESS.
 - PR #1259 exact head `1b5bcd87b752ae643f88cbf1dc788f4a1c2dec45`: Heartbeat `34352789541`, org-control `34352789580`, deterministic suite `34352789603` SUCCESS.
 - Healer PR #58 exact head `8fae4401381d7479373add148d21de6c514d2e7b`: Test Readiness `34356342498` SUCCESS.
-- WorkerCoordinator cycle-rearm and automatic-dispatch source-separation validation are pending on PR #1273.
+- PR #1273 exact head: organization-control `34358206486`, Heartbeat `34358206495`, deterministic suite `34358206492` SUCCESS.
+- KV persistence and Healer KV-path-forwarding validation are pending on the current coordinated branches.
 
 ## README determination
 
-The `.github` root README already documents resident requests, WorkerCoordinator lifecycle, source/runtime separation, and reusable-task architecture; no additional root README change is required for these task-specific lifecycle/consumer repairs. `StegVerse-Healer/README.md` was updated in PR #58 to document resident runtime separation and receipt placement.
+This KV persistence change materially changes runtime behavior and failure handling, so repository README maintenance is required in the current change set. The README must state that normalized GitHub failure observations are persisted to an already-materialized KnowledgeVault with exact-byte verification before live failure mail may be archived, and that missing KV persistence blocks archive rather than falling back. `StegVerse-Healer/README.md` is being updated in its coordinated branch to document non-secret KV path forwarding.
 
 ## Remaining authentic boundary
 
-After PR #1273 validates and merges, source-side reusable invocation, hourly scheduling, standing request recurrence, fresh scheduler claim/fence recurrence, automatic dispatcher source/runtime separation, canonical task registration, resident receipt placement, fail-closed runtime discovery, validation, and repository documentation are complete.
+After the KV persistence and Healer path-forwarding changes validate and merge, source-side reusable invocation, hourly scheduling, standing recurrence, fresh scheduler claims/fences, automatic dispatcher source/runtime separation, KV-before-archive ordering, exact-byte KV persistence/readback, failure reconciliation ordering, and repository documentation will be source-complete.
 
-The remaining boundary is authentic resident execution: the already-local canonical source must be refreshed/materialized into the resident heartbeat runtime and the standing Healer scheduler must traverse one eligible cycle. Completion evidence for the timer requires a real resident `receipts/reusable-task/rt-native-email-action-monitor-001-<UTC-hour>Z.latest.json`. A mailbox-processing claim additionally requires the corresponding native-email monitor receipt and TV/TVC Gmail provider-operation evidence. No user-operated second machine is required.
+Authentic operation still requires a resident scheduler traversal producing a retained reusable-task receipt plus a native-email monitor receipt whose `kv_persistence.write_receipts` prove real KnowledgeVault writes/readbacks for observed failures, together with corresponding TV/TVC Gmail provider-operation evidence. Source validation alone is not runtime proof. No user-operated second machine is required.
