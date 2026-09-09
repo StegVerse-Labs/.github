@@ -32,22 +32,54 @@ def sha_uri(value: Any) -> str:
     return "sha256:" + hashlib.sha256(raw).hexdigest()
 
 
+def load_object(path: Path) -> dict[str, Any]:
+    value = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(value, dict):
+        raise SystemExit(f"FAIL_CLOSED: object required: {path}")
+    return value
+
+
+def resolve_task(*, task_id: str, registry: Path, registry_shards: Path) -> tuple[dict[str, Any], str]:
+    document = load_object(registry)
+    monolithic = [task for task in document.get("tasks", []) if task.get("task_id") == task_id]
+    if len(monolithic) > 1:
+        raise SystemExit("FAIL_CLOSED: canonical task identity must resolve exactly once")
+    if len(monolithic) == 1:
+        return monolithic[0], "MONOLITHIC_REGISTRY"
+
+    matches: list[tuple[dict[str, Any], Path]] = []
+    if registry_shards.is_dir():
+        preferred = registry_shards / f"{task_id}.json"
+        candidates = [preferred] if preferred.is_file() else list(registry_shards.glob("*.json"))
+        for path in candidates:
+            try:
+                value = load_object(path)
+            except (OSError, json.JSONDecodeError):
+                raise SystemExit(f"FAIL_CLOSED: invalid canonical task shard: {path}")
+            if value.get("task_id") == task_id:
+                matches.append((value, path))
+    if len(matches) != 1:
+        raise SystemExit("FAIL_CLOSED: canonical task identity must resolve exactly once")
+    return matches[0][0], f"SHARDED_REGISTRY:{matches[0][1]}"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("task_id")
     parser.add_argument("--correlation-id")
     parser.add_argument("--operation", choices=["TASK_INGRESS", "TASK_TRANSFER", "TASK_EGRESS", "DEPENDENCY_REEVALUATION"], default="TASK_INGRESS")
     parser.add_argument("--registry", default="data/canonical-task-registry.json")
+    parser.add_argument("--registry-shards", default="data/canonical-task-records")
     parser.add_argument("--payload-output", default="intr-payloads/canonical-work")
     parser.add_argument("--output")
     parser.add_argument("--without-carrier-binding", action="store_true")
     args = parser.parse_args()
 
-    registry = json.loads(Path(args.registry).read_text(encoding="utf-8"))
-    matches = [task for task in registry.get("tasks", []) if task.get("task_id") == args.task_id]
-    if len(matches) != 1:
-        raise SystemExit("FAIL_CLOSED: canonical task identity must resolve exactly once")
-    task = matches[0]
+    task, registry_source = resolve_task(
+        task_id=args.task_id,
+        registry=Path(args.registry),
+        registry_shards=Path(args.registry_shards),
+    )
     correlation_id = args.correlation_id or task.get("correlation_id")
     if correlation_id != task.get("correlation_id"):
         raise SystemExit("FAIL_CLOSED: correlation identity drift")
@@ -61,6 +93,7 @@ def main() -> int:
         "dependencies": task.get("dependencies", []),
         "blockers": task.get("blockers", []),
         "worker_claim_ref": task.get("worker_claim", {}),
+        "registry_source": registry_source,
         "authority": {
             "task_registry_mints_execution_authority": False,
             "claim_fence_authority": "WORKERCOORDINATOR",
