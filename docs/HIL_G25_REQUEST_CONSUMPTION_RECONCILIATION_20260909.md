@@ -2,7 +2,7 @@
 
 Goal task: `SHWP-HIL-SOVEREIGN-RECEIVER-001`
 Parent handoff: `HIL-RESIDENT-SESSION-MANIFOLD-ACTIVATION-001`
-COSV: `50000000105000`
+COSV: `50000000103000`
 Predicate: `PRED-RESIDENT-REQUEST-CONSUMED-HIL-SOVEREIGN-RECEIVER-002`
 
 ## Canonical evidence
@@ -33,6 +33,8 @@ Bound evidence:
 
 This removes the prior worker-registry blockers for an unobserved HIL claim/fence and an unpreserved Site browser receipt.
 
+`.github` PR `#1240` subsequently reconciled the canonical worker state, task vector, aggregate task-vector index, and focused regression coverage to that accepted G25 evidence and merged at `6d5be30e71f824fc5cc0fc9ba27e2ecbcdc28c0f`. The resulting task COSV is `50000000103000`; exact-head organization-control, deterministic repository-suite, and Heartbeat validation all passed before merge.
+
 ## Remaining HIL receiver blockers
 
 The receiver remains non-archivable while these independent evidence obligations remain:
@@ -57,4 +59,4 @@ Existing downstream gates remain fail-closed until their own required activation
 
 ## README determination
 
-No README change is required. This reconciliation updates runtime evidence and machine state; it does not change the repository's functional interface or documented execution architecture.
+README was re-reviewed during the G25 reconciliation. No README change is required because this reconciliation updates runtime evidence and machine state without changing the repository's functional interface or documented execution architecture.
