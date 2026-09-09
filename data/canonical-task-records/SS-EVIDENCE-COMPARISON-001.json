@@ -38,7 +38,9 @@
       "master-records-schema-pin",
       "erl-kv-artifact-schema",
       "erl-kv-writer",
-      "erl-kv-provider-observation"
+      "erl-kv-provider-observation",
+      "erl-kv-write-receipt-schema",
+      "erl-kv-provider-observation-schema"
     ]
   },
   "dependencies": [
@@ -100,7 +102,10 @@
     "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/ERL_KV_STORAGE_MIRROR_HANDOFF.md",
     "StegVerse-Labs/Executive_Rhetoric_Ledger@2aebab1c1cfaa3108818da191de562b249a966ef:checks=PASS",
     "KnowledgeVault/02_Research/ERL/ERL-2026-09-06-OPENAI-AN-ALIEN-MIND/manifest.json",
-    "KnowledgeVault/02_Research/ERL/ERL-2026-09-06-OPENAI-AN-ALIEN-MIND/provider-write-observation.json"
+    "KnowledgeVault/02_Research/ERL/ERL-2026-09-06-OPENAI-AN-ALIEN-MIND/provider-write-observation.json",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger/schemas/erl-kv-write-receipt.schema.json",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger/schemas/erl-kv-provider-write-observation.schema.json",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger@bf73083578fd5c77548e229889fdca91abb26419:checks=PASS"
   ],
   "expected_evidence_predicates": [
     "SOURCE_POST_METADATA_SCHEMA_VALID",
@@ -114,7 +119,8 @@
     "MASTER_RECORDS_SUPPLEMENTAL_SCHEMA_PIN_VALID",
     "REAL_LIVE_PUBLICATION_TO_KV_AND_MASTER_RECORDS_RECONSTRUCTION_PASS",
     "ERL_KV_PROVIDER_STORAGE_AND_METADATA_READBACK_OBSERVED",
-    "ERL_NATIVE_WRITER_BYTE_READBACK_RECEIPT_VALID"
+    "ERL_NATIVE_WRITER_BYTE_READBACK_RECEIPT_VALID",
+    "PROVIDER_METADATA_OBSERVATION_CANNOT_SATISFY_NATIVE_WRITER_RECEIPT"
   ],
   "runtime_requirements": {
     "capabilities": [
