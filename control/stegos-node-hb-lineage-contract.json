@@ -1,0 +1,57 @@
+{
+  "schema": "stegverse.stegos-node-hb-lineage-contract/v1",
+  "goal_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+  "authority_effect": "NONE_OBSERVABILITY_LINEAGE_ONLY",
+  "principle": "Every profile-derived StegOS node instance preserves outward lineage to the originating source-device HB reference while all governed operations, Interlock/InTr calls, transports, and task execution remain ephemeral.",
+  "node_instance": {
+    "profile_ref_required": true,
+    "node_id_required": true,
+    "genesis_commitment_required": true,
+    "continuity_generation_required": true,
+    "source_device_node_ref_required": true,
+    "source_device_hb_reference_required": true
+  },
+  "hb_lineage": {
+    "origin_reference_immutable": true,
+    "propagate_outward_on_every_transition": true,
+    "retain_source_device_reference_on_descendant_nodes": true,
+    "append_transition_history": true,
+    "transition_history_fields": [
+      "source_device_hb_reference",
+      "observed_hb_reference",
+      "profile_ref",
+      "node_id",
+      "task_id",
+      "request_id",
+      "cosv_when_applicable",
+      "intr_route_or_transition_ref",
+      "result_or_receipt_commitment",
+      "prior_transition_commitment"
+    ],
+    "history_semantics": "Each node retains an append-only observational lineage showing how its transitions relate to the originating device HB and to prior node transitions. A descendant may add a current observed HB reference but may not replace or erase the source-device HB root reference."
+  },
+  "ephemeral_operation": {
+    "workercoordinator_claim_fence_lifecycle_ephemeral": true,
+    "interlock_intr_invocation_ephemeral": true,
+    "data_transport_ephemeral": true,
+    "provider_browser_model_action_session_ephemeral": true,
+    "credential_exposure_ephemeral": true,
+    "task_execution_process_ephemeral": true
+  },
+  "persistence": {
+    "node_identity": true,
+    "genesis_commitment": true,
+    "continuity_generation": true,
+    "non_secret_state_commitment": true,
+    "admitted_evidence_commitments": true,
+    "hb_transition_lineage": true,
+    "transport_session_state": false
+  },
+  "nonclaims": [
+    "HB_REFERENCE_DOES_NOT_GRANT_EXECUTION_AUTHORITY",
+    "HB_REFERENCE_DOES_NOT_GRANT_INTERLOCK_INTR_ADMISSION",
+    "HB_REFERENCE_DOES_NOT_MINT_WORKERCOORDINATOR_CLAIM_OR_FENCE",
+    "HB_REFERENCE_DOES_NOT_GRANT_CREDENTIAL_AUTHORITY",
+    "HB_LINEAGE_DOES_NOT_PROVE_COMPONENT_EXECUTION_BY_ITSELF"
+  ]
+}
