@@ -10,6 +10,7 @@
   "cosv_task_vector": "40000100100000",
   "source_refs": [
     "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_EVIDENCE_CONTEXT_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_ERL_ASSISTED_DRAFTING_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegSocials/tasks/SS-EVIDENCE-COMPARISON-001.yaml",
     "KnowledgeVault/MYKV_MIRROR_HANDOFF.md",
     "master-records/orchestration/contracts/stegsocials-evidence-context-source-schemas.yaml",
@@ -40,7 +41,10 @@
       "erl-kv-writer",
       "erl-kv-provider-observation",
       "erl-kv-write-receipt-schema",
-      "erl-kv-provider-observation-schema"
+      "erl-kv-provider-observation-schema",
+      "erl-provider-readback-verifier",
+      "provider-resource-readback-evidence",
+      "provider-receipt-backed-readback-evidence"
     ]
   },
   "dependencies": [
@@ -54,9 +58,9 @@
     {
       "dependency_id": "DEP-SS-ERL",
       "kind": "EVIDENCE_AUTHORITY",
-      "state": "LIVE_PROVIDER_STORAGE_OBSERVED",
+      "state": "LIVE_PROVIDER_RESOURCE_READBACK_OBSERVED",
       "ref": "02_Research/ERL",
-      "disposition": "CANONICAL_MANIFEST_AND_PROVIDER_METADATA_READBACK_PRESENT_NATIVE_WRITER_RECEIPT_PENDING"
+      "disposition": "GOOGLE_DRIVE_LEVEL1_EXACT_BYTES_MATCH_MANIFEST_RECEIPT_BACKED_LEVEL2_PENDING"
     },
     {
       "dependency_id": "DEP-SS-PUBLICATION",
@@ -83,6 +87,7 @@
   ],
   "existing_evidence_refs": [
     "StegVerse-Labs/StegSocials/docs/EVIDENCE_CONTEXT_KV_MODEL.md",
+    "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_ERL_ASSISTED_DRAFTING_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegSocials/schemas/source-post-metadata.schema.json",
     "StegVerse-Labs/StegSocials/schemas/evidence-bundle.schema.json",
     "StegVerse-Labs/StegSocials/schemas/claim-evidence-comparison.schema.json",
@@ -90,19 +95,25 @@
     "StegVerse-Labs/StegSocials/scripts/build_evidence_context_bundle.py",
     "StegVerse-Labs/StegSocials/scripts/materialize_publication_record.py",
     "StegVerse-Labs/StegSocials/adapters/kv/publication_record_writer.py",
-    "StegVerse-Labs/StegSocials@d6e1d95e9ca93dbc7deed1907cd3b05929c6035e:checks=PASS",
+    "StegVerse-Labs/StegSocials/adapters/kv/erl_provider_readback.py",
+    "StegVerse-Labs/StegSocials/scripts/test_erl_provider_readback.py",
+    "StegVerse-Labs/StegSocials/evidence/provider-readback/2026-09-09-google-drive-openai-alien-mind.json",
+    "StegVerse-Labs/StegSocials@2633af551932ede2f88d17aede050e525f41c63c:provider-readback-verifier=PASS",
+    "StegVerse-Labs/StegSocials@1fd6428c936cb48732fef10e51514f77772807e3:google-drive-level1-readback=PASS",
+    "StegVerse-Labs/StegSocials@763dcbbf415e937255e665ccd2a3bfa668a20e33:focused-handoff-reconciled=PASS",
     "master-records/orchestration/contracts/stegsocials-evidence-context-source-schemas.yaml",
     "KnowledgeVault/02_Research/ERL",
     "KnowledgeVault/02_Research/StegSocials/Evidence",
     "KnowledgeVault/03_Records/StegSocials/Publications",
     "KnowledgeVault/04_Media/Pictures/StegSocials",
     "KnowledgeVault/04_Media/Videos/StegSocials",
+    "KnowledgeVault/02_Research/ERL/ERL-2026-09-06-OPENAI-AN-ALIEN-MIND/manifest.json",
+    "KnowledgeVault/02_Research/ERL/ERL-2026-09-06-OPENAI-AN-ALIEN-MIND/2026-09-06_OpenAI_An-Alien-Mind_ERL.md",
+    "google-drive:file:1NpuurTS_ejiTCpATXeflAIA30IXdZdp5",
+    "google-drive:file:11E6Gpx0GtIbR37XHFDEVMa79jNl38x5H",
     "StegVerse-Labs/Executive_Rhetoric_Ledger/schemas/erl-kv-artifact.schema.json",
     "StegVerse-Labs/Executive_Rhetoric_Ledger/adapters/kv/erl_kv_writer.py",
     "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/ERL_KV_STORAGE_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/Executive_Rhetoric_Ledger@2aebab1c1cfaa3108818da191de562b249a966ef:checks=PASS",
-    "KnowledgeVault/02_Research/ERL/ERL-2026-09-06-OPENAI-AN-ALIEN-MIND/manifest.json",
-    "KnowledgeVault/02_Research/ERL/ERL-2026-09-06-OPENAI-AN-ALIEN-MIND/provider-write-observation.json",
     "StegVerse-Labs/Executive_Rhetoric_Ledger/schemas/erl-kv-write-receipt.schema.json",
     "StegVerse-Labs/Executive_Rhetoric_Ledger/schemas/erl-kv-provider-write-observation.schema.json",
     "StegVerse-Labs/Executive_Rhetoric_Ledger@bf73083578fd5c77548e229889fdca91abb26419:checks=PASS"
@@ -119,6 +130,9 @@
     "MASTER_RECORDS_SUPPLEMENTAL_SCHEMA_PIN_VALID",
     "REAL_LIVE_PUBLICATION_TO_KV_AND_MASTER_RECORDS_RECONSTRUCTION_PASS",
     "ERL_KV_PROVIDER_STORAGE_AND_METADATA_READBACK_OBSERVED",
+    "ERL_PROVIDER_RESOURCE_READBACK_EXACT_BYTES_MATCH_MANIFEST_OBSERVED",
+    "ERL_PROVIDER_RESOURCE_IDENTITY_CANNOT_SATISFY_OPERATION_RECEIPT",
+    "ERL_PROVIDER_RECEIPT_BACKED_READBACK_REQUIRES_EXPLICIT_PROVIDER_OPERATION_RECEIPT",
     "ERL_NATIVE_WRITER_BYTE_READBACK_RECEIPT_VALID",
     "PROVIDER_METADATA_OBSERVATION_CANNOT_SATISFY_NATIVE_WRITER_RECEIPT"
   ],
@@ -127,12 +141,14 @@
       "source_capture_metadata",
       "evidence_reference",
       "kv_write",
+      "kv_provider_resource_readback",
+      "kv_provider_receipt_validation",
       "comparison_build",
       "receipt_reference",
       "custody_reconstruction"
     ],
     "environment": "STEGSOCIALS_PLUS_MYKV_PLUS_MASTER_RECORDS",
-    "direction": "SOURCE_TO_EVIDENCE_TO_PUBLICATION_RECORD_TO_CUSTODY",
+    "direction": "SOURCE_TO_EVIDENCE_TO_PREPARATION_TO_PUBLICATION_RECORD_TO_CUSTODY",
     "mutation_required": true,
     "deployment_required": false,
     "current_observation_required": true
@@ -148,7 +164,7 @@
     "fence_ref": null,
     "projection_only": false
   },
-  "human_action_ref": "Provider/account authorization is required only when a real live publication is attempted.",
+  "human_action_ref": "Authentic current-iPhone preparation/save/readback is remaining evidence collection for the standard lane; provider/account authorization is required only when a real live premium publication is attempted.",
   "completion": {
     "claimed": false,
     "validated": true,
@@ -159,10 +175,13 @@
     "CONTINUE_INTEGRATION",
     "VALIDATE_MASTER_RECORDS_PIN",
     "EXECUTE_REAL_END_TO_END_PROOF",
-    "EXECUTE_ERL_NATIVE_KV_WRITER_PROOF"
+    "EXECUTE_ERL_NATIVE_KV_WRITER_PROOF",
+    "EXECUTE_PROVIDER_RECEIPT_BACKED_READBACK_PROOF",
+    "EXECUTE_AUTHENTIC_CURRENT_IPHONE_STANDARD_FLOW"
   ],
   "handoff_projection_refs": [
     "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_EVIDENCE_CONTEXT_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_ERL_ASSISTED_DRAFTING_MIRROR_HANDOFF.md",
     "KnowledgeVault/MYKV_MIRROR_HANDOFF.md",
     "master-records/orchestration/docs/MASTER_RECORDS_MIRROR_HANDOFF.md",
     "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/ERL_KV_STORAGE_MIRROR_HANDOFF.md"
@@ -173,7 +192,19 @@
     "erl_research_authority_remains_erl": true,
     "stegsocials_owns_comparison_and_publication_semantics": true,
     "acquired_evidence_and_publication_records_are_distinct": true,
+    "provider_resource_identity_is_not_operation_receipt": true,
     "live_provider_publication_authority_remains_separate": true,
     "master_records_owns_receipt_custody_not_publication": true
+  },
+  "readme_impact": {
+    "material_function_change": false,
+    "readme_updated_in_change_set": false,
+    "readme_path": "README.md",
+    "no_readme_update_reason": "Canonical task evidence reconciliation only; StegVerse-Labs/.github README already documents canonical coordination and README impact semantics, and this change does not alter repository function.",
+    "evidence_refs": [
+      "StegVerse-Labs/.github/README.md",
+      "StegVerse-Labs/StegSocials/README.md",
+      "StegVerse-Labs/StegSocials/evidence/provider-readback/2026-09-09-google-drive-openai-alien-mind.json"
+    ]
   }
 }
