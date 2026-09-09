@@ -2,7 +2,7 @@
   "identity": "StegVerse-Labs/.github:task:SHWP-HIL-SOVEREIGN-RECEIVER-001",
   "profile": "task.v1",
   "level": "task",
-  "vector": "50000000105000",
+  "vector": "50000000103000",
   "evidence_refs": [
     "control/worker-registry.d/hil-sovereign-receiver-001.json",
     "handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json",
