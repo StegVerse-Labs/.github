@@ -8,7 +8,7 @@ Task ID: `GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001`
 COSV ID: `10100000100000`
 Canonical coordination state: `PROPOSED`
 Canonical checkout state: `UNCLAIMED`
-Status: `RESIDENT ACTIVATION REQUESTED / PREREQUISITE GATING REPAIRED / GADI SOURCE COMPLETE AND RESIDENT EXECUTION CHILD REGISTERED / HIL SOURCE COMPLETE PHYSICAL EXPORT PENDING / WORKERCOORDINATOR CLAIM PENDING / AUTHENTIC ACTIVATION EVIDENCE PENDING`
+Status: `RESIDENT ACTIVATION REQUESTED / PREREQUISITE GATING REPAIRED / GADI SOURCE COMPLETE AND RESIDENT EXECUTION CHILD REGISTERED AND SOURCE-VALIDATED / HIL SOURCE COMPLETE PHYSICAL EXPORT PENDING / WORKERCOORDINATOR CLAIM PENDING / AUTHENTIC ACTIVATION EVIDENCE PENDING`
 
 ## Source of truth
 
@@ -55,9 +55,7 @@ Completed/reusable source slices include:
 
 ### GADI resident execution child
 
-The authentic execution predicate is no longer represented only as an unresolved aggregate dependency. It now has a canonical targetable child:
-
-`GADI-RESIDENT-EXECUTION-001`
+The authentic execution predicate has a canonical targetable child: `GADI-RESIDENT-EXECUTION-001`.
 
 The child owns the WorkerCoordinator/resident-request execution seam and is registered through:
 
@@ -73,11 +71,18 @@ The child owns the WorkerCoordinator/resident-request execution seam and is regi
 
 The child is `PROPOSED / UNCLAIMED` and registered `HANDOFF_READY`. It reuses the merged micro-node GADI resident consumer and the existing WorkerCoordinator. It does not implement or substitute an actuator. It fails closed until a current GADI command, current WorkerCoordinator claim/fence, current InTr decision, exact runtime binding, and controlled pre-authorized actuator result are all present and mutually bound.
 
-The umbrella resident request now includes this child explicitly, and the manifold lineage includes a `GADI-001 -> GADI-RESIDENT-EXECUTION-001` runtime-execution edge. This removes the prior coordination gap where runtime execution was required but had no distinct canonical task/request target.
+The child executable handoff explicitly declares `parent_task_id=GADI-001`, derivation depth 1, and a canonical parent-record source reference. The umbrella resident request includes the child explicitly, and the manifold lineage includes the `GADI-001 -> GADI-RESIDENT-EXECUTION-001` runtime-execution edge.
+
+PR #1242 exact-head validation repairs completed on 2026-09-09:
+
+- converted `tests/test_gadi_resident_execution_request.py` from an undeclared `pytest` dependency to the repository-supported deterministic `unittest` surface;
+- reconciled `control/cosv-live-worker-coverage.json` after the new canonical worker increased both the live denominator and indexed count by one;
+- repaired executable-handoff external-parent lineage by adding the canonical `GADI-001` parent source reference and explicit parent/derivation metadata;
+- exact head `06ac168e8f0edf9ecac2dcd42a254f10bcfbb21f` passed Organization Control validation, deterministic repository diagnostics, and Heartbeat Worker Project validation before this handoff-only status update.
+
+These are source/coordination validation results only. They are not authentic runtime execution evidence.
 
 Remaining authentic GADI predicates are current InTr admission, actual WorkerCoordinator claim/fence for the child, current runtime binding, controlled pre-authorized effect execution, subject-bound effect observation, reassessment/termination evidence, authentic receipt-chain custody/Master Records reconciliation, exact reconstruction over that authentic chain, and canonical reconciliation.
-
-Source registration is not execution evidence.
 
 ## HIL nested-manifold state
 
@@ -119,7 +124,7 @@ Required continuation:
 - GADI controlled-simulation source: COMPLETE/VALIDATED/REUSE;
 - GADI resident-consumer source: COMPLETE/VALIDATED/REUSE;
 - GADI Continuity reconstruction source: COMPLETE/VALIDATED/REUSE;
-- GADI resident-execution child registration: IMPLEMENTED / VALIDATION PENDING / AUTHENTIC EXECUTION PENDING;
+- GADI resident-execution child registration: IMPLEMENTED / SOURCE VALIDATED / PR #1242 MERGE PENDING / AUTHENTIC EXECUTION PENDING;
 - HIL nested source: COMPLETE;
 - HIL exact physical export intake: PENDING;
 - umbrella/eligible-lane WorkerCoordinator claim/fence evidence: PENDING;
@@ -130,8 +135,16 @@ Required continuation:
 - deterministic manifold reconciliation: PENDING;
 - authentic full-manifold activation evidence: NOT PROVEN.
 
+## Remaining destinations
+
+- WorkerCoordinator claim/fence, formalism receipts, traversal, and deterministic reconciliation -> `StegVerse-Labs/.github`;
+- authentic GADI execution/effect/reassessment evidence -> current canonical runtime owner using the merged micro-node consumer;
+- TVC runtime/capability evidence -> `StegVerse-Labs/TVC` / `StegVerse-Labs/TV`;
+- authentic GADI receipt-chain custody/Master Records reconciliation and exact verification -> `StegVerse-Labs/Continuity` / Master Records;
+- exact HIL browser evidence intake and later proof projection -> `StegVerse-Labs/Site` + `.github` intake.
+
 ## README and release rule
 
-README reviewed. The `.github` README already documents the generic canonical resident-request -> WorkerCoordinator execution pattern used here, so the new task-specific registration does not require additional top-level wording.
+README reviewed. The `.github` README already documents the generic canonical resident-request -> WorkerCoordinator execution pattern used here, so the task-specific registration and validation repairs do not require additional top-level wording.
 
 The umbrella is not release/tag ready. After an actual future release/tag, create separate propagation verification for `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `admissibility-wiki`, and `stegguardian-wiki`.
