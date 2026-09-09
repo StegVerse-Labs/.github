@@ -272,14 +272,20 @@ def build_healer_child_env(targets: Path, roots_json: str) -> dict[str, str]:
 
 
 def _response(state: str, transition: str, checkpoint: str, blocker: dict | None, epoch: int) -> dict:
+    # One Healer scheduler pass may complete, but the scheduler task itself is a
+    # standing recurring capability. Preserve the completed-cycle transition and
+    # durable receipt while returning HANDOFF_READY to WorkerCoordinator so the
+    # current claim/fence is closed and a fresh fenced claim can be issued later.
+    cycle_completed = state == "COMPLETED" and transition == "HEALER_SOVEREIGN_SCHEDULER_COMPLETED"
+    worker_state = "HANDOFF_READY" if cycle_completed else state
     return {
         "schema": "stegverse.worker-response/v0.1",
-        "state": state,
+        "state": worker_state,
         "transition_id": transition,
         "transition_sequence": 1,
-        "expected_next_transition": None if state == "COMPLETED" else "HEALER_SOVEREIGN_SCHEDULER_RECHECK",
-        "expected_next_earliest_epoch": None if state == "COMPLETED" else epoch + 1,
-        "expected_next_latest_epoch": None if state == "COMPLETED" else epoch + 1,
+        "expected_next_transition": "HEALER_SOVEREIGN_SCHEDULER_RECHECK" if cycle_completed or worker_state != "COMPLETED" else None,
+        "expected_next_earliest_epoch": epoch + 1 if cycle_completed or worker_state != "COMPLETED" else None,
+        "expected_next_latest_epoch": epoch + 1 if cycle_completed or worker_state != "COMPLETED" else None,
         "checkpoint_ref": checkpoint,
         "evidence_refs": [checkpoint],
         "blocker": blocker,
