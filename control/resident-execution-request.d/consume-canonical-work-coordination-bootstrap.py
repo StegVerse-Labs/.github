@@ -1,19 +1,12 @@
 #!/usr/bin/env python3
-"""Resident Canonical Work bootstrap consumer carried by the copied control request directory.
+"""Consume bounded Canonical Work resident requests from already-local canonical source.
 
-This consumer exists in `control/resident-execution-request.d`, which is already
-materialized wholesale by the sovereign worker source refresh. It therefore does
-not require expanding the resident static-script manifest merely to make bounded
-Canonical Work task ingress discoverable.
-
-On an admitted native resident host it copies only the explicitly enumerated
-Canonical Work source files from the already-local canonical source root into the
-resident checkout, verifies byte equality, preserves already-existing resident
-canonical task coordination state, then invokes the registered bounded bootstrap
-wrapper for explicit task specifications. Request specifications are visited
-independently so one task-local failure does not prevent a later task from being
-attempted. No network source fetch, credential use, HB/oscillator advance,
-claim/fence minting, or second runtime implementation is permitted here.
+The consumer is sovereign-only and non-authorizing. It may self-materialize an
+explicit staged request and, when a preserved resident monolithic registry is
+older than the request, install a task-specific fallback shard from the same
+already-local canonical source. This prevents stale resident source projection
+from turning a newly registered task into a permanent NO_REQUEST / task-not-found
+condition without overwriting resident registry state.
 """
 from __future__ import annotations
 
@@ -99,7 +92,6 @@ PRESERVE_IF_PRESENT = (
     Path("data/canonical-task-registry.json"),
     Path("data/canonical-task-records/STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001.json"),
 )
-
 HOSTED = ("GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "CF_PAGES", "CLOUDFLARE_WORKERS")
 FORBIDDEN = (
     "GITHUB_TOKEN", "GH_TOKEN", "GITHUB_PAT", "GITHUB_PERSONAL_ACCESS_TOKEN",
@@ -208,12 +200,7 @@ def copy_exact(source: Path, destination: Path) -> dict[str, Any]:
     if not destination.is_file() or sha256(destination) != source_hash:
         shutil.copy2(source, destination)
     require(destination.is_file() and sha256(destination) == source_hash, f"materialized byte mismatch:{destination}")
-    return {
-        "path": str(destination),
-        "sha256": source_hash,
-        "exact_copy": True,
-        "preserved_existing_runtime_projection": False,
-    }
+    return {"path": str(destination), "sha256": source_hash, "exact_copy": True, "preserved_existing_runtime_projection": False}
 
 
 def materialize(source: Path, runtime: Path) -> list[dict[str, Any]]:
@@ -222,19 +209,11 @@ def materialize(source: Path, runtime: Path) -> list[dict[str, Any]]:
         copied = copy_exact(source / rel, runtime / rel)
         copied["path"] = rel.as_posix()
         rows.append(copied)
-
     for rel in PRESERVE_IF_PRESENT:
-        src = source / rel
-        dst = runtime / rel
+        src, dst = source / rel, runtime / rel
         require(src.is_file(), f"canonical source file missing:{rel}")
         if dst.is_file():
-            rows.append({
-                "path": rel.as_posix(),
-                "sha256": sha256(dst),
-                "exact_copy": False,
-                "preserved_existing_runtime_projection": True,
-                "source_sha256": sha256(src),
-            })
+            rows.append({"path": rel.as_posix(), "sha256": sha256(dst), "exact_copy": False, "preserved_existing_runtime_projection": True, "source_sha256": sha256(src)})
         else:
             copied = copy_exact(src, dst)
             copied["path"] = rel.as_posix()
@@ -242,26 +221,46 @@ def materialize(source: Path, runtime: Path) -> list[dict[str, Any]]:
     return rows
 
 
-def consume_for_spec(
-    source_root: Path,
-    runtime_root: Path,
-    spec: Mapping[str, Any],
-    *,
-    runner=subprocess.run,
-    env: Mapping[str, str] | None = None,
-) -> dict[str, Any]:
+def ensure_request_materialized(source: Path, runtime: Path, spec: Mapping[str, Any]) -> dict[str, Any]:
+    rel = spec["request_rel"]
+    copied = copy_exact(source / rel, runtime / rel)
+    copied["path"] = rel.as_posix()
+    copied["purpose"] = "EXPLICIT_STAGED_REQUEST_SELF_MATERIALIZATION"
+    return copied
+
+
+def ensure_task_identity_materialized(source: Path, runtime: Path, task_id: str) -> dict[str, Any]:
+    runtime_registry = runtime / "data/canonical-task-registry.json"
+    source_registry = source / "data/canonical-task-registry.json"
+    require(source_registry.is_file(), "canonical source registry missing")
+    source_doc = load_json(source_registry)
+    source_matches = [row for row in source_doc.get("tasks", []) if isinstance(row, dict) and row.get("task_id") == task_id]
+    require(len(source_matches) == 1, "source canonical task identity must resolve exactly once")
+    if runtime_registry.is_file():
+        runtime_doc = load_json(runtime_registry)
+        runtime_matches = [row for row in runtime_doc.get("tasks", []) if isinstance(row, dict) and row.get("task_id") == task_id]
+        require(len(runtime_matches) <= 1, "runtime canonical task identity duplicated")
+        if len(runtime_matches) == 1:
+            return {"task_id": task_id, "state": "MONOLITHIC_RUNTIME_IDENTITY_PRESENT", "materialized": False, "registry_preserved": True}
+    shard = runtime / "data/canonical-task-records" / f"{task_id}.json"
+    atomic_json(shard, source_matches[0])
+    require(load_json(shard).get("task_id") == task_id, "materialized task shard identity mismatch")
+    return {
+        "task_id": task_id,
+        "state": "SOURCE_TASK_SHARD_MATERIALIZED",
+        "materialized": True,
+        "registry_preserved": runtime_registry.is_file(),
+        "shard_ref": str(shard),
+        "sha256": sha256(shard),
+    }
+
+
+def consume_for_spec(source_root: Path, runtime_root: Path, spec: Mapping[str, Any], *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
     validate_spec(spec)
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
+    request_materialization = ensure_request_materialized(source, runtime, spec)
     request_path = runtime / spec["request_rel"]
-    if not request_path.is_file():
-        return {
-            "schema": "stegverse.canonical-work-bootstrap-request-consumption/v1",
-            "state": "NO_REQUEST",
-            "task_id": spec["task_id"],
-            "authority_effect": "NONE",
-        }
-
     request = load_json(request_path)
     validate_request(request, spec)
     request_hash = stable_hash(request)
@@ -274,29 +273,15 @@ def consume_for_spec(
                 return {**previous, "state": "ALREADY_CONSUMED"}
 
     materialized = materialize(source, runtime)
+    task_identity = ensure_task_identity_materialized(source, runtime, spec["task_id"])
     entrypoint = runtime / TARGET_ENTRYPOINT
     safe_env = clean_env(env)
     bootstrap_runtime = runtime / spec["bootstrap_runtime_rel"]
-    command = [
-        sys.executable,
-        str(entrypoint),
-        "--task-id",
-        spec["task_id"],
-        "--runtime-root",
-        str(bootstrap_runtime),
-        "--registry",
-        str(runtime / "data/canonical-task-registry.json"),
-    ]
+    command = [sys.executable, str(entrypoint), "--task-id", spec["task_id"], "--runtime-root", str(bootstrap_runtime), "--registry", str(runtime / "data/canonical-task-registry.json")]
     completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=safe_env, timeout=1200)
     result = parse_json_object(completed.stdout)
     bootstrap_receipt = bootstrap_runtime / "receipts/sovereign-host/canonical-work-event-bootstrap.latest.json"
-    completed_ok = bool(
-        completed.returncode == 0
-        and isinstance(result, dict)
-        and result.get("state") == "INGRESS_CONSUMPTION_AND_PROJECTION_OBSERVED"
-        and result.get("task_id") == spec["task_id"]
-        and bootstrap_receipt.is_file()
-    )
+    completed_ok = bool(completed.returncode == 0 and isinstance(result, dict) and result.get("state") == "INGRESS_CONSUMPTION_AND_PROJECTION_OBSERVED" and result.get("task_id") == spec["task_id"] and bootstrap_receipt.is_file())
     receipt = {
         "schema": "stegverse.canonical-work-bootstrap-request-consumption/v1",
         "state": "COMPLETED" if completed_ok else "ATTEMPT_RECORDED",
@@ -304,17 +289,12 @@ def consume_for_spec(
         "request_sha256": request_hash,
         "task_id": spec["task_id"],
         "entrypoint": str(TARGET_ENTRYPOINT),
+        "request_self_materialization": request_materialization,
+        "task_identity_materialization": task_identity,
         "source_materialization": materialized,
         "source_materialization_count": len(materialized),
-        "existing_canonical_task_registry_preserved": any(
-            row.get("path") == "data/canonical-task-registry.json" and row.get("preserved_existing_runtime_projection") is True
-            for row in materialized
-        ),
-        "existing_target_task_shard_preserved": any(
-            row.get("path") == "data/canonical-task-records/STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001.json"
-            and row.get("preserved_existing_runtime_projection") is True
-            for row in materialized
-        ),
+        "existing_canonical_task_registry_preserved": any(row.get("path") == "data/canonical-task-registry.json" and row.get("preserved_existing_runtime_projection") is True for row in materialized),
+        "existing_target_task_shard_preserved": any(row.get("path") == "data/canonical-task-records/STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001.json" and row.get("preserved_existing_runtime_projection") is True for row in materialized),
         "command": command,
         "returncode": completed.returncode,
         "result": result,
@@ -344,14 +324,8 @@ def consume_all(source_root: Path, runtime_root: Path, *, runner=subprocess.run,
         try:
             outcomes.append(consume_for_spec(source_root, runtime_root, spec, runner=runner, env=env))
         except Exception as exc:
-            outcomes.append({
-                "schema": "stegverse.canonical-work-bootstrap-request-consumption/v1",
-                "state": "REQUEST_CONSUMPTION_EXCEPTION",
-                "task_id": spec["task_id"],
-                "error_type": type(exc).__name__,
-                "authority_effect": "NONE_FAIL_CLOSED",
-            })
-    acceptable = {"NO_REQUEST", "ALREADY_CONSUMED", "COMPLETED", "ATTEMPT_RECORDED"}
+            outcomes.append({"schema": "stegverse.canonical-work-bootstrap-request-consumption/v1", "state": "REQUEST_CONSUMPTION_EXCEPTION", "task_id": spec["task_id"], "error_type": type(exc).__name__, "error": str(exc), "authority_effect": "NONE_FAIL_CLOSED"})
+    acceptable = {"ALREADY_CONSUMED", "COMPLETED", "ATTEMPT_RECORDED"}
     all_acceptable = all(row.get("state") in acceptable for row in outcomes)
     return {
         "schema": "stegverse.canonical-work-bootstrap-request-set-consumption/v1",
