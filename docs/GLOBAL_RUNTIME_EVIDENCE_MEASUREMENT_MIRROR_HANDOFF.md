@@ -4,7 +4,7 @@ Goal Task ID: `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001`
 Parent Goal: `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001`
 COSV: `50000010100000`
 Canonical issue: `StegVerse-Labs/.github#1294`
-Status: `ACTIVE / PRE-LOOP INGRESS DEFECTS REPAIRED IN SOURCE / AUTHENTIC RERUN PENDING`
+Status: `ACTIVE / PRE-LOOP INGRESS DEFECTS REPAIRED IN SOURCE / README RECONCILED / AUTHENTIC RERUN PENDING`
 
 ## Purpose
 
@@ -48,7 +48,8 @@ Implemented repairs:
 - reconciled the measurement child to canonical `PROPOSED -> INGRESS_ADMITTED` lifecycle semantics while keeping its observation checkout metadata;
 - added `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001` to the existing bootstrap wrapper's global-convergence trigger set alongside Runtime Profile Map;
 - preserved the existing dispatcher, shared InTr listener, WorkerCoordinator, TV/TVC, HeartBeat, and measurement-only/no-retry/no-repair authority boundaries;
-- added deterministic regression coverage in `tests/test_global_runtime_measurement_ingress.py` for request registration, measurement-only flags, stale-registry shard fallback, lifecycle compatibility, and convergence triggering.
+- added deterministic regression coverage in `tests/test_global_runtime_measurement_ingress.py` for request registration, measurement-only flags, stale-registry shard fallback, lifecycle compatibility, and convergence triggering;
+- reconciled `README.md` under Canonical Work task ingress to describe the stale monolithic-registry shard fallback and dedicated measurement-child convergence behavior.
 
 No second runtime, scheduler, dispatcher, listener, WorkerCoordinator, or hosted execution path was introduced.
 
@@ -68,14 +69,14 @@ The rerun is successful as a measurement when that artifact contains a frozen ru
 
 ## Current result
 
-`PRE_LOOP_INGRESS_SOURCE_DEFECTS_IDENTIFIED_AND_REPAIRED / AUTHENTIC_RERUN_PENDING`
+`PRE_LOOP_INGRESS_SOURCE_DEFECTS_IDENTIFIED_AND_REPAIRED / README_RECONCILED / AUTHENTIC_RERUN_PENDING`
 
 No hosted substitute execution has been used. No lane has been remediated during a measurement pass.
 
 ## README impact
 
-This repair materially changes resident Canonical Work ingress behavior by making a newly registered canonical task shard addressable even when the resident monolithic registry is stale and by giving the dedicated measurement child an explicit bounded convergence trigger. README reconciliation is required before this repair is considered documentation-complete.
+README reconciliation is complete in the same change set. `README.md` now documents that exact canonical task shards may be self-materialized when a preserved resident monolithic registry is stale and that the dedicated measurement child reuses the existing Canonical Work/Interlock-InTr path to invoke the existing global convergence visitor in measurement-only mode.
 
 ## Manual work
 
-None while source validation, README reconciliation, merge, and authentic rerun inspection remain machine-executable.
+None while final exact-head validation, merge, and authentic rerun inspection remain machine-executable.
