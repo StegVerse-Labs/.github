@@ -4,38 +4,101 @@ Updated: 2026-09-09
 Organization: `StegVerse-Labs`
 Repository: `StegVerse-Labs/.github`
 Goal: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`
-State: `RESIDENT_CONSUMER_SOURCE_MERGED_VALIDATED / AUTHENTIC_RESIDENT_CONSUMPTION_PENDING`
+State: `NATIVE_IOS_BUILD_MERGED_VALIDATED / AUTHENTIC_DEVICE_CONSUMPTION_PENDING`
 
 ## Purpose
 
-Carry the already-retained, independently verified Cosmos Hub -> Osmosis acknowledgement evidence through the existing canonical sovereign resident WorkerCoordinator/dispatcher substrate without creating a second runtime, scheduler, credential lane, transition path, or custody path.
+Carry the retained, independently verified Cosmos Hub -> Osmosis acknowledgement evidence through the actual StegOSMobile native iOS build and the existing canonical sovereign resident coordination substrate without creating a second runtime, scheduler, credential lane, transition path, or custody path.
 
-## Canonical parents
+## Canonical parent
+
+The canonical Task Registry remains generation 17 with `STEGVERSE-CANONICAL-WORK-COORDINATION-001` in `PROPOSED` state. No dedicated IBC task is registered. This is a bounded continuation under that task identity.
+
+Canonical references:
 
 - `docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md`
 - `docs/CANONICAL_RESIDENT_CARRIER_MIRROR_HANDOFF.md`
 - `StegVerse-Labs/StegOS/docs/IBC_INTR_INTEROPERABILITY_MIRROR_HANDOFF.md`
 
-The canonical Task Registry remains generation 17 with `STEGVERSE-CANONICAL-WORK-COORDINATION-001` in `PROPOSED` state. No dedicated IBC task is registered. This resident experiment remains a bounded continuation under that task identity.
+## Established external evidence
 
-## Merged StegOS dependency
+The StegOS IBC lineage already retains:
 
-StegOS PR #295 merged at:
+- authentic public Cosmos Hub acknowledgement proof material for `transfer/channel-141`, sequence `999999`;
+- independent ICS-23 membership verification;
+- accepted StegOS verification record;
+- verified classic-IBC evidence projection;
+- canonical `heterogeneous-interop` `ACKNOWLEDGE` transport receipt.
+
+Exact trusted proof/root binding:
 
 ```text
-ca45fec7c0c39a86dbbd6f027d3b68688295c3d7
+producer_chain_id: cosmoshub-4
+counterparty_chain_id: osmosis-1
+port/channel: transfer/channel-141
+sequence: 999999
+proof_height: 4-32887306
+trusted_app_hash_header_height: 32887307
+trusted_app_hash: sha256:2871a37e07449d753776d47966e7dba63605c86f5c50c55acd49e993a082b7db
 ```
 
-The verified ACK materializer now exposes only these explicit execution-context classifications:
+## Native iOS build correction
+
+The prior Python/control-plane resident consumer remains useful for canonical resident coordination, but it is no longer treated as the build implementation.
+
+StegOS PR #296 merged at:
 
 ```text
-WORKFLOW_EXECUTED_CANONICAL_INTR_TRANSPORT_CONFORMANCE_RECEIPT
-SOVEREIGN_RESIDENT_EXECUTED_CANONICAL_INTR_TRANSPORT_RECEIPT
+3b09eb8e6240e67753328494462fbbdfcb04610f
 ```
 
-The workflow class remains the default. Resident dispatch must explicitly select the resident class and write output into the resident runtime tree. Arbitrary observation classes fail closed.
+The actual build implementation is compiled directly into:
 
-## Merged resident source
+```text
+mobile/ios/StegOSMobile/MobileServiceActivation.swift
+mobile/ios/StegOSMobile.xcodeproj
+scheme: StegOSMobile
+```
+
+`MobileServiceActivation.swift` is an explicit source member of the native iPhone target. The merged `IBCVerifiedACKNativeResident` implementation therefore compiles into the app itself rather than existing as detached source or scaffolding.
+
+The native implementation:
+
+1. reads `ack-sequence-999999.ics23-verification.json` and `ack-sequence-999999.verified-classic-evidence.json` from app-local Documents storage;
+2. requires `result=accepted` and `proof_verified=true`;
+3. requires the exact Cosmos Hub/Osmosis chain, channel, sequence, proof height, trusted-root height, and trusted app hash listed above;
+4. rejects any classic-evidence widening of transition admission, execution, claim/fence, or custody;
+5. computes SHA-256 bindings over the exact local verification/evidence bytes;
+6. persists `ibc-verified-intr-ack-request-consumption.latest.json` atomically in app-local Documents storage;
+7. emits `state=RESIDENT_INTR_ACK_CONSUMED` only after all native checks pass;
+8. records `residentRuntimeExecutionObserved=true` while preserving original IBC relay, transition admission, application execution, claim/fence, custody, and credential minting as false.
+
+No Python interpreter is required for this native consumption path.
+
+## Native build validation
+
+Exact PR #296 head `cdec02ffab0fe690841c69e891ea0c2efbf47197` passed:
+
+```text
+iOS Device Package Validation
+run: 34352947552
+run_number: 13
+result: PASS
+
+StegOS CI
+run: 34352947574
+run_number: 1071
+result: PASS
+
+iOS Apple Toolchain Validation
+run: 34352947733
+run_number: 58
+result: PASS
+```
+
+The Apple toolchain lane compiled `StegOSMobile` and both embedded extensions. The device-package lane built the unsigned `iphoneos` product and produced deterministic unsigned package evidence. These are actual build results, not source-only validation.
+
+## Existing canonical resident coordination
 
 `.github` PR #1254 merged at:
 
@@ -43,126 +106,34 @@ The workflow class remains the default. Resident dispatch must explicitly select
 ec4b122c46d80109d95e788e51afd73ba04193b1
 ```
 
-Merged resident source:
+It registers:
 
 ```text
 control/resident-execution-request.d/ibc-verified-intr-ack-resident-001.json
 scripts/consume_ibc_intr_resident_request.py
 scripts/dispatch_resident_execution_requests.py
-scripts/refresh_sovereign_worker_runtime_source.py
-scripts/refresh_and_dispatch_resident_requests.py
-tests/test_ibc_intr_resident_consumer.py
-README_IBC_INTR_RESIDENT_RUNTIME.md
+selector: ibc_verified_intr_ack
 ```
 
-Canonical dispatcher selector:
+That path remains the canonical resident coordination/dispatch projection. It does not replace the native iOS build implementation.
 
-```text
-ibc_verified_intr_ack
-```
-
-The request is propagated by the existing static `control/resident-execution-request.d/` refresh. The consumer script is included in the local-only source refresh. The targeted one-shot refresh-and-dispatch bridge also admits `ibc_verified_intr_ack` without visiting unrelated work.
-
-## Resident experiment contract
-
-The resident consumer:
-
-1. executes only through the existing canonical dispatcher substrate;
-2. requires `STEGVERSE_SOVEREIGN_NODE` before resident execution can be claimed;
-3. requires a locally materialized StegOS root via `STEGVERSE_STEGOS_ROOT`;
-4. performs no GitHub/source/network fetch during resident dispatch;
-5. verifies the local retained ICS-23 result is accepted and proof-verified;
-6. verifies the local classic evidence preserves transition/execution/custody false flags;
-7. executes canonical StegOS `ACKNOWLEDGE` ingress with `SOVEREIGN_RESIDENT_EXECUTED_CANONICAL_INTR_TRANSPORT_RECEIPT`;
-8. writes the inner transport artifact to `receipts/sovereign-host/ibc-verified-intr-ack-transport.latest.json`;
-9. writes the task-specific consumption receipt to `receipts/sovereign-host/ibc-verified-intr-ack-request-consumption.latest.json`;
-10. preserves `TV/TVC` credential authority and `NONE` GitHub-token runtime authority.
-
-Without `STEGVERSE_SOVEREIGN_NODE`, the consumer returns:
-
-```text
-SOVEREIGN_NODE_MARKER_REQUIRED
-resident_runtime_execution_observed: false
-runtime_execution_attempted: false
-```
-
-This prevents CI/source validation from manufacturing resident-runtime evidence.
-
-## Final-head validation evidence
-
-The exact final PR #1254 head `f921f504e26ca3b18cdc0f0d6179bee168c58462` passed all triggered validation lanes before merge:
-
-```text
-Validate organization control plane - No GitHub Token Authority
-run: 34332523888
-run_number: 2597
-result: PASS
-
-Deterministic Repository Suite - Diagnostic Evidence Only
-run: 34332522996
-run_number: 136
-result: PASS
-
-Heartbeat Worker Project - Validation Only / No GitHub Token Authority
-run: 34332524531
-run_number: 2880
-result: PASS
-
-Cross-Framework Current-Basis Resident Request Validation (Non-Authorizing)
-run: 34332523203
-run_number: 279
-result: PASS
-
-validate-deepseek-resident
-run: 34332524532
-run_number: 78
-result: PASS
-
-Workspace DEVICE_KV Validation Only
-run: 34332523461
-run_number: 227
-result: PASS
-```
-
-The Heartbeat lane compiled runtime/workers/scripts, parsed canonical JSON, validated executable handoffs/runtime surfaces, and passed the complete deterministic repository test suite. This is source/control validation only, not resident runtime execution evidence.
-
-## Existing event-driven bridge
-
-The already-existing rootless local source-refresh watcher monitors the canonical local source tree, including `control/resident-execution-request.d/`. On a local source refresh it immediately runs the generic resident dispatcher. It performs no network source fetch and does not create another scheduler, heartbeat, or runtime.
-
-Therefore no additional IBC-specific timer/runtime is required. Once canonical `.github` source is materialized into an active sovereign resident source tree, the existing refresh/dispatch path can visit `ibc_verified_intr_ack`.
-
-## Post-merge runtime observation
-
-Immediately after PR #1254 merged, canonical GitHub `main` was checked for:
-
-```text
-receipts/sovereign-host/ibc-verified-intr-ack-request-consumption.latest.json
-receipts/sovereign-host/ibc-verified-intr-ack-transport.latest.json
-receipts/sovereign-host/resident-request-dispatch.latest.json
-```
-
-All three were **NOT OBSERVED** on canonical GitHub `main` at that check.
-
-This does not prove that the resident runtime is absent; resident receipts are first written to the sovereign runtime tree and require their own retention/custody/projection path before appearing in canonical GitHub state. No local resident execution is inferred from source merge or GitHub absence.
-
-## Evidence boundaries
+## Current evidence boundary
 
 Authentically established:
 
 ```text
-resident consumer source merged: true
-resident consumer source validated: true
-resident request registered: true
-canonical dispatcher registered: true
-local source refresh propagation registered: true
-targeted refresh-and-dispatch selector registered: true
+native iOS implementation compiled into StegOSMobile: true
+unsigned iphoneos package built successfully: true
+Apple toolchain compilation passed: true
+canonical resident request/dispatcher integration merged: true
+authentic Cosmos Hub ACK evidence retained and independently verified: true
 ```
 
 Not yet authentically established:
 
 ```text
-resident_runtime_execution_observed: false / pending authentic receipt
+physical iPhone execution of IBCVerifiedACKNativeResident: pending
+app-local ibc-verified-intr-ack-request-consumption.latest.json from physical iPhone: pending
 original_ibc_packet_relay_observed: false
 transition_admission_observed: false
 application_execution_observed: false
@@ -171,16 +142,15 @@ credential_minted: false
 custody_result_minted: false
 ```
 
-A successful authentic resident consumption receipt may establish only the resident execution of the verified external ACK through the canonical StegOS InTr ingress source. Original IBC relay, transition, application execution, claim/fence, credentials, and Master Records custody remain independently gated.
-
 ## Next work
 
-1. allow the existing local-only source-refresh/dispatcher substrate to materialize and visit the merged request on an actual sovereign resident;
-2. inspect `receipts/sovereign-host/ibc-verified-intr-ack-request-consumption.latest.json` when authentic runtime evidence becomes available;
-3. advance `resident_runtime_execution_observed` only if the receipt reports `RESIDENT_INTR_ACK_CONSUMED` with `resident_runtime_execution_observed=true`;
-4. retain/reconcile that receipt through the applicable Master Records/runtime-evidence path;
-5. leave original packet relay, transition, application execution, claim/fence, credential, and custody predicates unchanged unless separately observed.
+1. deliver/install a signed StegOSMobile build on the current iPhone through the existing Apple/TestFlight path;
+2. place or materialize the exact retained verification/evidence JSON into StegOSMobile app-local storage through the established StegVerse evidence-delivery path;
+3. execute `IBCVerifiedACKNativeResident` on the physical iPhone;
+4. inspect the native `ibc-verified-intr-ack-request-consumption.latest.json` receipt;
+5. retain/reconcile that exact receipt through the applicable Master Records/runtime-evidence path;
+6. advance only the predicates directly proven by that physical-device receipt.
 
 ## Human action
 
-None currently required.
+None currently required for source/build completion. Physical-device execution remains dependent on the existing signed StegOSMobile/TestFlight delivery path.
