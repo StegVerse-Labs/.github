@@ -4,7 +4,7 @@ Goal Task ID: `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001`
 Canonical issue: `StegVerse-Labs/.github#1260`
 Canonical PR: `StegVerse-Labs/.github#1261` (merged) plus current repair PR from `fix/global-runtime-selector-convergence-1260`
 COSV: `50000000100000`
-Status: `ACTIVE / PARTIAL_SOLUTIONS_MACHINE_PROJECTED_ACROSS_18_MEMBERS / RESIDENT_CONVERGENCE_WIRED / STALE_VACC_ID_REPAIRED / ENDPOINT_FANOUT_ROUTE_REPAIRED / GADI_EXISTING_RUNTIME_WRAPPER_REUSED / AUTHENTIC_RESIDENT_CONVERGENCE_EXECUTION_NEXT`
+Status: `ACTIVE / PARTIAL_SOLUTIONS_MACHINE_PROJECTED_ACROSS_18_MEMBERS / RESIDENT_CONVERGENCE_WIRED / STALE_VACC_ID_REPAIRED / ENDPOINT_FANOUT_ROUTE_REPAIRED / GADI_EXISTING_RUNTIME_WRAPPER_REUSED / STEGOS_RETAINED_NODE_AND_EPHEMERAL_EXECUTION_CLASSES_PROJECTED / AUTHENTIC_RESIDENT_CONVERGENCE_EXECUTION_NEXT`
 
 ## Purpose
 
@@ -28,7 +28,7 @@ The task record is `ACTIVE / CLAIMED_INTEGRATION` with task.v1 COSV `50000000100
 
 ## Reusable solution classes
 
-The 18-member projection uses seven reusable mechanism classes:
+The 18-member projection now uses nine reusable mechanism classes:
 
 1. `HIL_G25_BROWSER`
 2. `HF_UNIVERSAL_INTR`
@@ -37,8 +37,28 @@ The 18-member projection uses seven reusable mechanism classes:
 5. `SV001_POST_TERMINAL_CONTINUATION`
 6. `EXACT_RESIDENT_REQUEST`
 7. `RUNTIME_PROFILE_MAP`
+8. `STEGOS_RETAINED_NODE_CONTINUITY`
+9. `STEGBROWSER_EPHEMERAL_EXECUTION`
 
 Cross-task evidence is never treated as substitute evidence; exact subject binding remains required.
+
+### StegOS retained-node continuity solution class
+
+The 2026-09-09 StegBrowser/StegOS implementation milestone establishes a source/CI-level mechanism in which canonical StegOS node identity, genesis commitment, non-secret state commitment, continuity generation, and admitted evidence commitments survive bounded browser/session teardown while browser cookies, provider sessions, credential material, navigation history, and temporary page state remain disposable.
+
+This is projected as `STEGOS_RETAINED_NODE_CONTINUITY` across all 18 current members because it can provide a stable same-device subject identity and rendezvous anchor for resident observation, task/request binding, restart continuity, and evidence correlation without itself claiming request consumption, WorkerCoordinator claim/fence, InTr admission, component execution, or custody completion.
+
+The class is particularly relevant to the early shared failure band around `AUTHENTIC_RESIDENT_PROCESS_OBSERVED` and subject binding. If authentic current-iPhone proof shows the same retained node before and after session teardown/restart, Runtime Profile Map and each task-specific resident receipt can bind against one continuity anchor rather than repeatedly rediscovering an ambiguous resident subject.
+
+Current evidence remains implementation/source evidence, not authentic physical runtime proof. The required runtime milestone is the same retained node observed before a bounded session, after session teardown, and after a subsequent app/session restart with no persistence of session credentials/cookies.
+
+### StegBrowser ephemeral-execution solution class
+
+`STEGBROWSER_EPHEMERAL_EXECUTION` is separately projected only to browser-compatible lanes: HIL, Hugging Face/SV-DN1, SDK/Ecosystem Chat, and StegBrowser itself.
+
+Its purpose is to reuse a retained StegOS node while creating short-lived lease-bounded browser/provider execution state for external operations, then destroy session material while retaining admitted evidence commitments. This class targets later external/browser execution and readback boundaries; it does not replace the resident node, grant execution authority, or solve non-browser component execution by itself.
+
+Keeping these two classes separate is required: persistent node continuity is a substrate/identity mechanism, while ephemeral browser execution is an execution-session mechanism.
 
 ## Resident convergence execution
 
@@ -87,13 +107,15 @@ The endpoint-fanout and GADI lanes must now produce their real task-local state 
 
 The next resident convergence execution now has materially fewer artificial `NO_REGISTERED_SELECTOR` outcomes. It can distinguish actual runtime states for Endpoint Fanout and GADI, while VACC/StegClaw/DE-006 remain explicit integration work rather than being confused with resident process failure.
 
+The retained-node class adds a new high-value diagnostic: after authentic current-iPhone node continuity is observed, any lane still failing at `AUTHENTIC_RESIDENT_PROCESS_OBSERVED` must distinguish between failure to observe the shared retained StegOS node and failure of task-specific request consumption. That should compress the left-side failure map if node identity/session-reset ambiguity has been contributing to repeated resident failures.
+
 ## README review
 
-`README.md` was reviewed against this repair. The repository-level documented semantics already require one existing resident dispatcher, task-specific fail-closed consumers/wrappers, exact task/COSV continuity, and autonomous machine continuation. This repair corrects stale/missed routing into those existing semantics and does not add a new public interface, scheduler, dispatcher, authority class, credential path, or user-facing workflow. No README text change is required for this correction.
+`README.md` was reviewed against this repair. The repository-level documented semantics already require one existing resident dispatcher, task-specific fail-closed consumers/wrappers, exact task/COSV continuity, autonomous machine continuation, and reusable ephemeral constructs. The new classes reuse those semantics and do not introduce a second scheduler, dispatcher, credential route, or execution authority. No README text change is required for this correction.
 
 ## Validation and next execution
 
-The repair branch must pass the same organization-control, deterministic repository-suite, and Heartbeat validation surfaces before merge. After merge, the existing resident Runtime Profile Map path should execute the repaired convergence visitor. The highest-value next source repairs are the three remaining explicit unwired paths: current VACC sovereign provider binding, StegClaw P4 resident binding, and DE-006 exact parent re-execution integration.
+The repair branch must pass the same organization-control, deterministic repository-suite, and Heartbeat validation surfaces before merge. After merge, the existing resident Runtime Profile Map path should execute the repaired convergence visitor. The highest-value next source repair remains the current VACC sovereign provider binding, followed by authentic retained-node continuity observation and a new convergence run that measures whether the early resident/subject-binding failure band collapses.
 
 ## Manual work
 
