@@ -48,7 +48,10 @@
       "master-records-erl-kv-custody",
       "erl-kv-live-observation-custody",
       "erl-kv-custody-reconstruction",
-      "stegsocials-erl-artifact-custody-reference"
+      "stegsocials-erl-artifact-custody-reference",
+      "erl-kv-provider-operation-receipt-schema",
+      "erl-kv-authentic-provider-operation",
+      "erl-kv-native-and-provider-receipt-custody"
     ]
   },
   "dependencies": [
@@ -62,9 +65,9 @@
     {
       "dependency_id": "DEP-SS-ERL",
       "kind": "EVIDENCE_AUTHORITY",
-      "state": "LIVE_PROVIDER_RESOURCE_READBACK_OBSERVED",
+      "state": "LIVE_PROVIDER_OPERATION_AND_BYTE_READBACK_VERIFIED",
       "ref": "02_Research/ERL",
-      "disposition": "GOOGLE_DRIVE_LEVEL1_EXACT_BYTES_MATCH_MANIFEST_RECEIPT_BACKED_LEVEL2_PENDING"
+      "disposition": "NATIVE_WRITER_PROVIDER_UPLOAD_MANIFEST_LAST_AND_EXACT_PROVIDER_READBACK_COMPLETE"
     },
     {
       "dependency_id": "DEP-SS-PUBLICATION",
@@ -83,9 +86,9 @@
     {
       "dependency_id": "DEP-SS-ERL-KV-CUSTODY",
       "kind": "CUSTODY",
-      "state": "PROVIDER_OBSERVATION_CUSTODIED_AND_RECONSTRUCTED",
+      "state": "NATIVE_AND_PROVIDER_OPERATION_RECEIPTS_CUSTODIED_AND_RECONSTRUCTED",
       "ref": "master-records/orchestration/docs/ERL_KV_RECEIPT_CUSTODY_MIRROR_HANDOFF.md",
-      "disposition": "LIVE_PROVIDER_OBSERVATION_PRESERVED_AS_PROVIDER_METADATA_ONLY_NATIVE_WRITER_RECEIPT_PENDING"
+      "disposition": "ALL_THREE_ERL_KV_PROOF_CLASSES_PRESERVED_AND_RECONSTRUCTED"
     }
   ],
   "blockers": [],
@@ -94,7 +97,8 @@
     "SS-CONTENT-PIPELINE-001",
     "SS-KV-SKAP-SOCIAL-RELEASE-001",
     "MYKV-PERSONAL-DATA-BACKUP-001",
-    "MR-STEGSOCIALS-RECEIPT-CUSTODY-001"
+    "MR-STEGSOCIALS-RECEIPT-CUSTODY-001",
+    "SS-ERL-KV-PROPAGATION-VERIFICATION-001"
   ],
   "existing_evidence_refs": [
     "StegVerse-Labs/StegSocials/docs/EVIDENCE_CONTEXT_KV_MODEL.md",
@@ -136,7 +140,18 @@
     "master-records/orchestration@94fa52a61363494e248859181403c59d03b34980:erl-kv-custody-validation=PASS",
     "master-records/orchestration@cad9c97deb06e897a72c5fa56ba0ada28edc3e05:live-provider-observation-custody-reconstruction=PASS",
     "StegVerse-Labs/Executive_Rhetoric_Ledger@2d159da8e29fe0d70f4854aa60b9ad55b3c71edd:master-records-custody-documented-and-validated",
-    "StegVerse-Labs/StegSocials@a0b049730d16df8febafcb85cf5190974c19f15d:stable-erl-artifact-and-master-records-custody-refs=PASS"
+    "StegVerse-Labs/StegSocials@a0b049730d16df8febafcb85cf5190974c19f15d:stable-erl-artifact-and-master-records-custody-refs=PASS",
+    "google-drive:folder:1esoETwRd5A2YgdVTMskCSgzTOpuRyIV5",
+    "google-drive:file:1c5RlkMHLuDwEFRJU31GJSzmDvLj8FMpC",
+    "google-drive:file:1cAwpxdxxZVTFV0meK8nGREGYP5b0dX3C",
+    "google-drive:file:1vHHpaS0CbkppbptLnC3JRMtvi_M8vbC-",
+    "google-drive:file:1vnajCmAwpK_YlofY2MN4I7C4KrCHYoJh",
+    "google-drive:file:1yKB0QUbjbC1ZYwqgR9lq751QKDwwlgV3",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger@8569d8b811b787cd49ee3f38c352c46fb86c3bca:live-provider-operation-validation=PASS",
+    "master-records/orchestration@1c565c160d1a25b408e130402b5da52e855a8169:authentic-erl-receipt-custody=PASS",
+    "master-records/orchestration@3e1bc4f2f98bde1932261c2ce96ca42fa9952a19:terminal-custody-handoff=PASS",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger@722a11cf2ada6205a31e3678d489254fb736e8f7:erl-kv-integration-complete",
+    "StegVerse-Labs/StegSocials@41f1eae88f12d461df6a72fbb3edce90966c0fd9:completed-erl-kv-proof-consumed"
   ],
   "expected_evidence_predicates": [
     "SOURCE_POST_METADATA_SCHEMA_VALID",
@@ -156,7 +171,10 @@
     "ERL_NATIVE_WRITER_BYTE_READBACK_RECEIPT_VALID",
     "PROVIDER_METADATA_OBSERVATION_CANNOT_SATISFY_NATIVE_WRITER_RECEIPT",
     "ERL_PROVIDER_OBSERVATION_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION_PASS",
-    "STEGSOCIALS_STABLE_ERL_ARTIFACT_AND_MASTER_RECORDS_CUSTODY_REFERENCES_PRESENT"
+    "STEGSOCIALS_STABLE_ERL_ARTIFACT_AND_MASTER_RECORDS_CUSTODY_REFERENCES_PRESENT",
+    "ERL_NATIVE_WRITER_PROVIDER_UPLOAD_AND_EXACT_READBACK_PASS",
+    "ERL_PROVIDER_OPERATION_RECEIPT_RETAINED",
+    "ERL_NATIVE_AND_PROVIDER_OPERATION_RECEIPTS_MASTER_RECORDS_RECONSTRUCTION_PASS"
   ],
   "runtime_requirements": {
     "capabilities": [
@@ -194,12 +212,9 @@
     "activation_proof_complete": false
   },
   "allowed_next_transitions": [
-    "CONTINUE_INTEGRATION",
-    "VALIDATE_MASTER_RECORDS_PIN",
-    "EXECUTE_REAL_END_TO_END_PROOF",
-    "EXECUTE_ERL_NATIVE_KV_WRITER_PROOF",
-    "EXECUTE_PROVIDER_RECEIPT_BACKED_READBACK_PROOF",
-    "EXECUTE_AUTHENTIC_CURRENT_IPHONE_STANDARD_FLOW"
+    "EXECUTE_AUTHENTIC_CURRENT_IPHONE_STANDARD_FLOW",
+    "CONTINUE_SEPARATE_PREMIUM_PUBLICATION_TASK",
+    "OBSERVE_PROPAGATION_VERIFICATION_TASK"
   ],
   "handoff_projection_refs": [
     "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_EVIDENCE_CONTEXT_MIRROR_HANDOFF.md",
@@ -207,7 +222,8 @@
     "KnowledgeVault/MYKV_MIRROR_HANDOFF.md",
     "master-records/orchestration/docs/MASTER_RECORDS_MIRROR_HANDOFF.md",
     "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/ERL_KV_STORAGE_MIRROR_HANDOFF.md",
-    "master-records/orchestration/docs/ERL_KV_RECEIPT_CUSTODY_MIRROR_HANDOFF.md"
+    "master-records/orchestration/docs/ERL_KV_RECEIPT_CUSTODY_MIRROR_HANDOFF.md",
+    "docs/SS_ERL_KV_PROPAGATION_VERIFICATION_MIRROR_HANDOFF.md"
   ],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
@@ -227,7 +243,7 @@
     "evidence_refs": [
       "StegVerse-Labs/.github/README.md",
       "StegVerse-Labs/.github/data/canonical-task-records/SS-EVIDENCE-COMPARISON-001.json",
-      "StegVerse-Labs/StegSocials@a0b049730d16df8febafcb85cf5190974c19f15d"
+      "docs/SS_ERL_KV_PROPAGATION_VERIFICATION_MIRROR_HANDOFF.md"
     ]
   }
 }
