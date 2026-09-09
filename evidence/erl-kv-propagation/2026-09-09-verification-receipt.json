@@ -1,0 +1,77 @@
+{
+  "schema": "stegverse.erl-kv-propagation-verification-receipt/v1",
+  "task_id": "SS-ERL-KV-PROPAGATION-VERIFICATION-001",
+  "observed_at": "2026-09-09T09:30:00-05:00",
+  "upstream": {
+    "erl_integration_commit": "722a11cf2ada6205a31e3678d489254fb736e8f7",
+    "master_records_custody_commit": "3e1bc4f2f98bde1932261c2ce96ca42fa9952a19",
+    "stegsocials_consumer_commit": "41f1eae88f12d461df6a72fbb3edce90966c0fd9"
+  },
+  "dispositions": [
+    {
+      "repository": "StegVerse-Labs/Site",
+      "disposition": "UPDATE_REQUIRED",
+      "reason": "Existing MyKV ERL and StegSocials preparation path directly consumes ERL artifacts.",
+      "implementation_commit": "ca106480cd78a35fffa107e73a678219ca918bb1",
+      "terminal_handoff_commit": "3ac0a20ddf9895e724984e9b24dfa174537cc796",
+      "validation": {
+        "hosted_workflows_total": 10,
+        "hosted_workflows_passed": 10,
+        "focused_run_id": 34363246456
+      }
+    },
+    {
+      "repository": "GCAT-BCAT-Engine/Publisher",
+      "disposition": "UPDATE_REQUIRED",
+      "reason": "Governed KnowledgeVault document pipeline can render owner-authorized ERL exports.",
+      "implementation_commit": "93a4743ceb5974689c1872c0e88dbb86de980f7e",
+      "terminal_handoff_commit": "0debdb0cf0e06f672a515e8b7fbf6d642521588e",
+      "validation": {
+        "hosted_workflows_total": 4,
+        "hosted_workflows_passed": 4,
+        "focused_run_id": 34363249351
+      }
+    },
+    {
+      "repository": "StegVerse-Labs/admissibility-wiki",
+      "disposition": "NOT_APPLICABLE",
+      "reason": "Repository is a public governance-vocabulary layer and has no ERL, KnowledgeVault, Master Records, or StegSocials consumer path.",
+      "observed_commit": "7da34bf2ce1b8b0fa3c3e4564191c3c69e05e4a4",
+      "search_terms": [
+        "ERL",
+        "KnowledgeVault",
+        "Master Records",
+        "StegSocials"
+      ],
+      "matching_consumer_paths": 0
+    },
+    {
+      "repository": "StegVerse-002/stegguardian-wiki",
+      "disposition": "NOT_APPLICABLE",
+      "reason": "Repository is a Guardian boundary and contestability documentation projection and has no ERL, KnowledgeVault, Master Records, or StegSocials consumer path.",
+      "observed_commit": "32554def402a5d3d1ebe077766ec1407e3a268c6",
+      "search_terms": [
+        "ERL",
+        "KnowledgeVault",
+        "Master Records",
+        "StegSocials"
+      ],
+      "matching_consumer_paths": 0
+    }
+  ],
+  "predicates": {
+    "each_target_inspected_for_applicability": true,
+    "required_consumer_references_merged_and_validated": true,
+    "no_change_required_dispositions_evidence_backed": true,
+    "no_runtime_or_publication_state_inferred_from_documentation": true
+  },
+  "source_target_correction": {
+    "prior": "StegVerse-Labs/stegguardian-wiki",
+    "corrected": "StegVerse-002/stegguardian-wiki",
+    "reason": "The canonical StegGuardian wiki repository is intentionally hosted under the governed-entity organization."
+  },
+  "runtime_activation_claimed": false,
+  "publication_claimed": false,
+  "deployment_claimed": false,
+  "authority_effect": "NONE_VERIFICATION_EVIDENCE_ONLY"
+}

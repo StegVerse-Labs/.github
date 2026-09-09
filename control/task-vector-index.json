@@ -885,7 +885,7 @@
       "repository": "StegVerse-Labs/.github",
       "registry_ref": "data/canonical-task-records/SS-ERL-KV-PROPAGATION-VERIFICATION-001.json",
       "source_state_vector_ref": "control/task-vectors/SS-ERL-KV-PROPAGATION-VERIFICATION-001.json",
-      "vector": "10000100100000",
+      "vector": "71000000100101",
       "vector_state": "EMITTED",
       "authority_effect": "NONE"
     }

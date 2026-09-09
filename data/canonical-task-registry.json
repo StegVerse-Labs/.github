@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 18,
+  "generation": 19,
   "status": "COSV_TASK_POINTER_RUNTIME_ENFORCEMENT_SOURCE_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -1229,7 +1229,7 @@
       "root_correlation_id": "SS-EVIDENCE-COMPARISON-001",
       "parent_task_id": "SS-EVIDENCE-COMPARISON-001",
       "goal": "Verify post-merge propagation of the completed ERL KnowledgeVault provider-operation and custody evidence across applicable Site, Publisher, admissibility-wiki, and stegguardian-wiki surfaces.",
-      "coordination_state": "PROPOSED",
+      "coordination_state": "RETIRED",
       "source_refs": [
         "docs/SS_ERL_KV_PROPAGATION_VERIFICATION_MIRROR_HANDOFF.md",
         "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/ERL_KV_STORAGE_MIRROR_HANDOFF.md",
@@ -1238,13 +1238,14 @@
       "targets": {
         "organizations": [
           "StegVerse-Labs",
+          "StegVerse-002",
           "GCAT-BCAT-Engine"
         ],
         "repositories": [
           "StegVerse-Labs/Site",
           "GCAT-BCAT-Engine/Publisher",
           "StegVerse-Labs/admissibility-wiki",
-          "StegVerse-Labs/stegguardian-wiki"
+          "StegVerse-002/stegguardian-wiki"
         ],
         "components": [
           "erl-kv-provider-operation-projection",
@@ -1258,6 +1259,18 @@
           "kind": "EVIDENCE",
           "state": "RESOLVED",
           "ref": "StegVerse-Labs/Executive_Rhetoric_Ledger@722a11cf2ada6205a31e3678d489254fb736e8f7"
+        },
+        {
+          "dependency_id": "DEP-SITE-PROJECTION",
+          "kind": "CONSUMER_PROPAGATION",
+          "state": "MERGED_VALIDATED",
+          "ref": "StegVerse-Labs/Site@3ac0a20ddf9895e724984e9b24dfa174537cc796"
+        },
+        {
+          "dependency_id": "DEP-PUBLISHER-PROJECTION",
+          "kind": "CONSUMER_PROPAGATION",
+          "state": "MERGED_VALIDATED",
+          "ref": "GCAT-BCAT-Engine/Publisher@0debdb0cf0e06f672a515e8b7fbf6d642521588e"
         }
       ],
       "blockers": [],
@@ -1268,7 +1281,14 @@
       "existing_evidence_refs": [
         "StegVerse-Labs/Executive_Rhetoric_Ledger@8569d8b811b787cd49ee3f38c352c46fb86c3bca",
         "master-records/orchestration@1c565c160d1a25b408e130402b5da52e855a8169",
-        "StegVerse-Labs/StegSocials@41f1eae88f12d461df6a72fbb3edce90966c0fd9"
+        "StegVerse-Labs/StegSocials@41f1eae88f12d461df6a72fbb3edce90966c0fd9",
+        "StegVerse-Labs/Site@ca106480cd78a35fffa107e73a678219ca918bb1:erl-kv-provider-proof-projection=PASS",
+        "StegVerse-Labs/Site@3ac0a20ddf9895e724984e9b24dfa174537cc796:terminal-handoff=PASS",
+        "GCAT-BCAT-Engine/Publisher@93a4743ceb5974689c1872c0e88dbb86de980f7e:erl-kv-provider-proof-projection=PASS",
+        "GCAT-BCAT-Engine/Publisher@0debdb0cf0e06f672a515e8b7fbf6d642521588e:terminal-handoff=PASS",
+        "StegVerse-Labs/admissibility-wiki@7da34bf2ce1b8b0fa3c3e4564191c3c69e05e4a4:NOT_APPLICABLE",
+        "StegVerse-002/stegguardian-wiki@32554def402a5d3d1ebe077766ec1407e3a268c6:NOT_APPLICABLE",
+        "evidence/erl-kv-propagation/2026-09-09-verification-receipt.json"
       ],
       "expected_evidence_predicates": [
         "EACH_TARGET_INSPECTED_FOR_APPLICABILITY",
@@ -1288,20 +1308,19 @@
         "current_observation_required": true
       },
       "worker_claim": {
-        "authority": "WORKERCOORDINATOR",
-        "claim_ref": null,
+        "authority": "CURRENT_SESSION",
+        "claim_ref": "StegVerse-Labs/Site@3ac0a20ddf9895e724984e9b24dfa174537cc796 + GCAT-BCAT-Engine/Publisher@0debdb0cf0e06f672a515e8b7fbf6d642521588e",
         "fence_ref": null,
-        "projection_only": true
+        "projection_only": false
       },
       "human_action_ref": null,
       "completion": {
-        "claimed": false,
-        "validated": false,
-        "reconciliation_ref": null
+        "claimed": true,
+        "validated": true,
+        "reconciliation_ref": "evidence/erl-kv-propagation/2026-09-09-verification-receipt.json",
+        "activation_proof_complete": false
       },
-      "allowed_next_transitions": [
-        "INGRESS_ADMITTED"
-      ],
+      "allowed_next_transitions": [],
       "handoff_projection_refs": [
         "docs/SS_ERL_KV_PROPAGATION_VERIFICATION_MIRROR_HANDOFF.md"
       ],
@@ -1311,7 +1330,22 @@
         "worker_claim_authority": "WORKERCOORDINATOR",
         "master_records_reality_authority": true,
         "interlock_intr_required_for_governed_ingress_egress": true
-      }
+      },
+      "checkout_state": "RETIRED",
+      "cosv_task_vector": "71000000100101",
+      "readme_impact": {
+        "material_function_change": false,
+        "readme_updated_in_change_set": true,
+        "readme_path": "README.md",
+        "no_readme_update_reason": null,
+        "evidence_refs": [
+          "README.md",
+          "docs/SS_ERL_KV_PROPAGATION_VERIFICATION_MIRROR_HANDOFF.md",
+          "evidence/erl-kv-propagation/2026-09-09-verification-receipt.json"
+        ]
+      },
+      "retired_terminal": true,
+      "retired_resurrection_review_only": true
     }
   ],
   "human_actions": [],
