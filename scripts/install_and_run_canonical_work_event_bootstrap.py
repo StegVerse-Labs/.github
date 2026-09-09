@@ -9,16 +9,14 @@ It performs only repository-local machine steps in sequence:
 2. launch the bounded event bootstrap in a fresh Python process for one explicit
    task that already exists in the canonical Task Registry; and
 3. when that task is the Canonical Runtime Profile Map, materialize and execute
-   the global runtime-evidence convergence visitor through the already-existing
-   resident dispatcher.
+   the global runtime-node-profile convergence visitor through the already-existing
+   resident dispatcher and base convergence runner.
 
 It does not define or start a second heartbeat, oscillator, scheduler,
-WorkerCoordinator implementation, dispatcher, or ingress implementation. The
-bootstrap uses the existing shared Universal InTr Server for exactly one
-event-triggered request. The convergence visitor only selects already-registered
-resident consumers. Source installation is not itself runtime evidence; only
-receipts emitted by the resident bootstrap and convergence visitor may be used as
-observed execution evidence.
+WorkerCoordinator implementation, dispatcher, or ingress implementation. HB is
+observability only. The profile wrapper retains StegOS node identity/continuity
+across bounded execution sessions while session credentials/cookies/navigation
+state remain disposable.
 """
 from __future__ import annotations
 
@@ -33,8 +31,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_TASK_ID = "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
 RUNTIME_PROFILE_MAP_TASK_ID = "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"
-GLOBAL_HELPER_REL = Path("scripts/run_global_runtime_evidence_convergence.py")
+GLOBAL_HELPER_REL = Path("scripts/run_global_runtime_node_profile_convergence.py")
+GLOBAL_BASE_HELPER_REL = Path("scripts/run_global_runtime_evidence_convergence.py")
 GLOBAL_PROJECTION_REL = Path("control/runtime-partial-solution-projections/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.json")
+GLOBAL_NODE_PROFILES_REL = Path("control/runtime-node-profiles.json")
 
 
 def run(command: list[str]) -> None:
@@ -66,9 +66,15 @@ def resolve_local_source_root() -> Path:
         candidates.append(Path(configured).expanduser().resolve())
     candidates.append(ROOT)
     for candidate in candidates:
-        if (candidate / GLOBAL_HELPER_REL).is_file() and (candidate / GLOBAL_PROJECTION_REL).is_file():
+        required = (
+            GLOBAL_HELPER_REL,
+            GLOBAL_BASE_HELPER_REL,
+            GLOBAL_PROJECTION_REL,
+            GLOBAL_NODE_PROFILES_REL,
+        )
+        if all((candidate / rel).is_file() for rel in required):
             return candidate
-    raise RuntimeError("already-local global runtime convergence source is not materialized")
+    raise RuntimeError("already-local global runtime-node convergence source is not materialized")
 
 
 def run_global_convergence_if_applicable(task_id: str) -> None:
@@ -76,7 +82,9 @@ def run_global_convergence_if_applicable(task_id: str) -> None:
         return
     source_root = resolve_local_source_root()
     helper = materialize_exact(source_root, GLOBAL_HELPER_REL)
+    materialize_exact(source_root, GLOBAL_BASE_HELPER_REL)
     materialize_exact(source_root, GLOBAL_PROJECTION_REL)
+    materialize_exact(source_root, GLOBAL_NODE_PROFILES_REL)
     run([
         sys.executable,
         str(helper),
@@ -121,7 +129,7 @@ def main() -> int:
 
     print(f"PASS: route installation/check completed and bounded CanonicalWork bootstrap returned success for {args.task_id}")
     if args.task_id == RUNTIME_PROFILE_MAP_TASK_ID:
-        print("PASS: global runtime-evidence convergence visitor completed through the existing resident dispatcher")
+        print("PASS: global HB-synchronized runtime-node profile convergence completed through the existing resident dispatcher")
     print("NONCLAIM: this wrapper does not itself prove WorkerCoordinator claim/fence, governed work, Master Records reconciliation, egress, or closure")
     return 0
 
