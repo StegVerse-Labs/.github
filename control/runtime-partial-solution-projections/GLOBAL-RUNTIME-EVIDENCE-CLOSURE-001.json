@@ -6,7 +6,10 @@
     "resume_at_first_unresolved_stage": true,
     "mechanism_reuse_allowed": true,
     "cross_task_receipt_reuse_requires_exact_subject_binding": true,
-    "generic_runtime_restart_for_later_stage_lane": false
+    "generic_runtime_restart_for_later_stage_lane": false,
+    "profile_derived_node_instances_required": true,
+    "source_device_hb_lineage_required": true,
+    "source_device_hb_reference_propagates_outward": true
   },
   "solution_catalog": {
     "HIL_G25_BROWSER": "task+request+COSV binding; retained checkout; physical browser artifact export; journal replay; exact intake",
@@ -16,7 +19,7 @@
     "SV001_POST_TERMINAL_CONTINUATION": "continue custody/reconstruction/propagation without rerunning terminal primary execution",
     "EXACT_RESIDENT_REQUEST": "staged request -> task/request/COSV-bound consumption -> WorkerCoordinator fresh claim/fence -> InTr admission -> execution",
     "RUNTIME_PROFILE_MAP": "CanonicalWork ingress and resident map lifecycle as first-missing-predicate discovery input",
-    "PERSISTENT_NODE_EPHEMERAL_EXECUTION": "persistent StegOS node identity/genesis/state/continuity across cycles while every Interlock/InTr invocation, data transport, browser/provider session, credential exposure, and task execution channel is bounded and ephemeral; admitted evidence commitments advance the retained node without retaining transport/session state"
+    "PERSISTENT_NODE_EPHEMERAL_EXECUTION": "runtime profiles materialize component-specific persistent StegOS node instances with stable identity/genesis/state/continuity and immutable source-device HB lineage; the originating HB reference propagates outward through descendant node transitions while each node appends transition history relating current observed HB references to that source; every WorkerCoordinator lifecycle, Interlock/InTr invocation, data transport, browser/provider/model/action session, credential exposure, and task execution channel remains bounded and ephemeral; admitted evidence commitments advance node state without retaining transport/session state"
   },
   "members": [
     {"lane":"CryptoBot","task_id":"CRYPTO-LIVE-AUTO-001","adopt":["EXACT_RESIDENT_REQUEST","RUNTIME_PROFILE_MAP","PERSISTENT_NODE_EPHEMERAL_EXECUTION"],"resume_stage":"AUTHENTIC_REQUEST_CONSUMPTION"},
