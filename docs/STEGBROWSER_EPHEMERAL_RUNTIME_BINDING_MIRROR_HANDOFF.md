@@ -8,8 +8,9 @@
 - Canonical record: `data/canonical-task-records/STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001.json`
 - Canonical vector: `control/task-vectors/STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001.json`
 - Index shard: `control/task-vector-index.d/STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001.json`
-- Implementation handoff: `StegVerse-Labs/StegBrowser/docs/STEGBROWSER_ECOSYSTEM_EPHEMERAL_MIRROR_HANDOFF.md`
-- iOS handoff: `StegVerse-Labs/StegBrowser/docs/STEGBROWSER_IOS_RESIDENT_RENDEZVOUS_MIRROR_HANDOFF.md`
+- Browser implementation handoff: `StegVerse-Labs/StegBrowser/docs/STEGBROWSER_ECOSYSTEM_EPHEMERAL_MIRROR_HANDOFF.md`
+- Browser iOS handoff: `StegVerse-Labs/StegBrowser/docs/STEGBROWSER_IOS_RESIDENT_RENDEZVOUS_MIRROR_HANDOFF.md`
+- Native app-target handoff: `StegVerse-Labs/StegOS/docs/STEGBROWSER_IOS_RESIDENT_APP_TARGET_MIRROR_HANDOFF.md`
 
 ## Observed browser state
 
@@ -36,72 +37,54 @@ Key merged commits:
 - `StegVerse-Labs/StegBrowser@3f27c8420cca8fc72e6caad305ba52cdd3cd3821`
 - `StegVerse-Labs/StegBrowser@4d929f8f82a19663233ebbe7cd958ef686c1d228`
 
-The implementation-branch validation runs for the Facebook runtime/profile, concrete driver, and end-to-end entrypoint passed before merge.
+## Native iOS resident source and app-target state
 
-## iOS sovereign resident source path
+`StegVerse-Labs/StegBrowser@86cb4c42bbde1366ca03088a01983273f73de400` merged and validated the standalone iOS loopback listener + bounded lifecycle source:
 
-The previous iOS handoff incorrectly lagged the repository: the loopback listener source already existed while the document still described it as unimplemented.
+- loopback-only Network.framework listener on `127.0.0.1`;
+- discovery / Site governed-custody evidence routes;
+- CORS bounded to `https://stegverse.org` and `https://www.stegverse.org`;
+- one local session at a time with maximum 900-second lifetime;
+- automatic teardown and stale-session stop refusal;
+- no WorkerCoordinator, InTr, credential, custody, node-identity, or execution authority.
 
-That mismatch is now repaired. `StegVerse-Labs/StegBrowser@86cb4c42bbde1366ca03088a01983273f73de400` merges and validates:
+The native integration has now advanced into the actual physical iPhone application source. `StegVerse-Labs/StegOS@eb99b9222eba056478aa8d7ed3bc3bafb54fc194` compiles the StegBrowser resident rendezvous core/listener/lifecycle inside the existing `StegOSMobile` target through the already-targeted `MobileRuntimeState.swift` source.
 
-- the existing `ios/StegBrowserResidentRendezvousListener.swift` loopback-only Network.framework listener bound to `127.0.0.1`;
-- `ios/StegBrowserResidentRendezvousLifecycle.swift`, which owns one bounded local session at a time, maximum 900 seconds, automatic teardown, explicit stop, stale-session stop refusal, and no authority minting;
-- updated source tests and iOS mirror handoff distinguishing source implementation from native app-target/current-device proof.
+That app-target binding preserves:
 
-`Validate` run `34303703951` passed for that source state.
+- exact resident discovery/evidence schemas;
+- canonical G23 proof receipt binding;
+- canonical `SV-NODE-[0-9a-f]{24}` requirement;
+- no derivation or minting of node identity from local hardware metadata;
+- exact `CURRENT_USER_IPHONE`, InTr admission, reconstruction PASS, Master Records owner, and no-authority custody-proof predicates;
+- deterministic proof SHA-256 verification;
+- loopback-only transport and 900-second maximum lifecycle;
+- task `STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001`, COSV `40000100100000`, TV/TVC credential authority, GitHub runtime authority NONE.
 
-Still pending:
+Validation evidence for the app-target source:
 
-- integration of the listener/lifecycle source into an actual iOS app target/process lifecycle;
-- authentic current-iPhone discovery response;
-- authentic local resident request consumption / bootstrap receipt.
+- StegOS CI run `34304328189`: SUCCESS;
+- iOS Apple Toolchain Validation run `34304328284`: SUCCESS, including unsigned compilation of `StegOSMobile` and embedded extensions.
+
+This satisfies source/app-target compilation integration. It does **not** prove that the listener has started on the participant's current iPhone.
 
 ## Ecosystem caller state
 
-StegSocials has both observation and native publication callers.
-
 The native Facebook publication caller is merged at `StegVerse-Labs/StegSocials@122811f8f44dc2494a1d5e771d50c210d1d8a555` after `Validate StegSocials Objects` run `34302291053` passed.
 
-The caller converts a READY Personal-KV/SKAP release decision into a bounded StegBrowser lease, exact social publication request, and opaque credential-session request. It emits no publication proof from connector/browser completion alone.
-
-A COMPLETE live publication requires the exact approved content commitment, target account, visible result, real Facebook object ID, canonical Facebook URL, successful terminal destruction, and no retained secret/session/profile state.
+The caller converts a READY Personal-KV/SKAP release decision into a bounded StegBrowser lease, exact social publication request, and opaque credential-session request. A COMPLETE live publication requires the exact approved content commitment, target account, visible result, real Facebook object ID, canonical Facebook URL, successful terminal destruction, and no retained secret/session/profile state.
 
 ## Canonical InTr / resident staging state
 
 Generic sharded Canonical Work ingress and task-specific resident request staging are merged. The request is COSV-bound to `40000100100000`, uses TV/TVC as credential authority, grants no execution authority, requires no GitHub token, and permits no network source fetch.
 
-Repository-visible inspection on this continuation confirmed:
+Repository-visible inspection in this continuation confirmed:
 
 - `control/resident-execution-request.d/canonical-work-stegbrowser-ephemeral-runtime-binding-001.json` remains `REQUESTED`;
 - `receipts/sovereign-host/canonical-work-stegbrowser-ephemeral-runtime-binding-request-consumption.latest.json` is not present on main;
 - `runtime/canonical-work-stegbrowser-ephemeral-runtime-binding/receipts/sovereign-host/canonical-work-event-bootstrap.latest.json` is not present on main.
 
-The consumer source explicitly includes the StegBrowser task spec and expected receipt paths, so the current gap is authentic resident execution/evidence rather than missing task selection scaffolding.
-
-Expected authentic resident evidence remains:
-
-- request-consumption receipt at the path above;
-- nested bootstrap receipt at the path above;
-- task-specific `INGRESS_ADMITTED` ingress/consumption evidence from shared Canonical Work/InTr;
-- authentic WorkerCoordinator claim/fence produced after governed reconciliation.
-
-Source, CI, merge, request staging, heartbeat progression, iOS source implementation, or task registry state must not substitute for those receipts.
-
-## Credential-session boundary
-
-StegBrowser reuses the existing owner-browser TV/TVC + SKAP/InTr credential pattern rather than creating another credential system.
-
-Required invariants remain:
-
-- TV/TVC retains credential authority;
-- SKAP or KV-hosted SKAP Vault retains sealed credential custody;
-- browser and native rendezvous are ephemeral owner-authorized execution/transport edges only;
-- ordinary KV has no credential decryption authority;
-- GitHub has no runtime credential authority;
-- plaintext credential carriage is forbidden;
-- live session handles remain outside lease payloads, argv, repository state, logs, and retained evidence;
-- browser profile/cookie/history persistence is forbidden;
-- credential resolution occurs callback-only at the execution edge.
+The consumer source already includes the StegBrowser task selector and expected receipt paths. The remaining gap is authentic current-device resident execution/evidence, not missing repository dispatch scaffolding.
 
 ## WorkerCoordinator projection
 
@@ -109,22 +92,24 @@ The canonical record remains pre-activation with `worker_claim.projection_only=t
 
 ## Active continuation
 
-1. Integrate the merged iOS loopback listener + bounded lifecycle into the canonical native StegBrowser/iOS app target and obtain authentic current-iPhone discovery/runtime evidence.
-2. Observe authentic resident request consumption and task-specific shared InTr `INGRESS_ADMITTED` evidence.
-3. Reconcile the admitted task through Master Records / WorkerCoordinator and obtain authentic claim/fence evidence.
-4. Resolve one admitted Facebook provider session only through the existing TV/TVC + SKAP callback-only boundary.
-5. Supply that live capability in memory to the merged StegBrowser Facebook publication entrypoint.
-6. Execute exactly one already-approved StegSocials Facebook release.
-7. Independently verify the resulting Facebook object ID, canonical URL, exact content commitment, visibility, and terminal destruction receipt.
-8. Emit the StegSocials live publication-attempt receipt and complete KV / Master Records custody.
-9. Implement LinkedIn company-page parity using the same boundaries.
-10. After authentic publication/custody proof, review release readiness and verify propagation under `STEGBROWSER-ECOSYSTEM-PROPAGATION-VERIFY-001`.
+1. Supply the StegOSMobile app-target binding with an externally canonical sovereign node reference from the existing admitted node/WorkerCoordinator path; do not derive one from mutable hardware metadata.
+2. Start one bounded current-iPhone resident rendezvous session and retain authentic local listener/discovery evidence.
+3. Observe authentic resident request consumption and task-specific shared InTr `INGRESS_ADMITTED` evidence.
+4. Reconcile the admitted task through Master Records / WorkerCoordinator and obtain authentic claim/fence evidence.
+5. Resolve one admitted Facebook provider session only through the existing TV/TVC + SKAP callback-only boundary.
+6. Supply that live capability in memory to the merged StegBrowser Facebook publication entrypoint.
+7. Execute exactly one already-approved StegSocials Facebook release.
+8. Independently verify the resulting Facebook object ID, canonical URL, exact content commitment, visibility, and terminal destruction receipt.
+9. Emit the StegSocials live publication-attempt receipt and complete KV / Master Records custody.
+10. Implement LinkedIn company-page parity using the same boundaries.
+11. After authentic publication/custody proof, review release readiness and verify propagation under `STEGBROWSER-ECOSYSTEM-PROPAGATION-VERIFY-001`.
 
 ## Installation / integration remainder
 
-- Native app-target integration of iOS resident listener/lifecycle -> canonical StegBrowser iOS application surface
-- Authentic current-iPhone resident discovery/consumption proof -> StegBrowser/iOS + `StegVerse-Labs/.github` resident edge
-- Authentic resident Facebook session execution -> existing `StegVerse-Labs/TVC` + `StegVerse-Labs/.github` resident edge
+- Canonical node-ref runtime injection -> `StegVerse-Labs/StegOS` + `StegVerse-Labs/.github`
+- Authentic current-iPhone listener/discovery proof -> `StegVerse-Labs/StegOS`
+- Authentic resident request consumption / InTr evidence -> `StegVerse-Labs/.github`
+- Authentic resident Facebook session execution -> `StegVerse-Labs/TVC` + `StegVerse-Labs/StegBrowser`
 - First live Facebook publication/readback proof -> `StegVerse-Labs/StegBrowser` + `StegVerse-Labs/StegSocials`
 - Publication receipt custody -> `master-records/orchestration`
 - LinkedIn interaction/runtime profile -> `StegVerse-Labs/StegBrowser`
@@ -136,4 +121,4 @@ The canonical record remains pre-activation with `worker_claim.projection_only=t
 
 ## Current state
 
-`NATIVE_FACEBOOK_SOURCE_PATH_MERGED_VALIDATED / STEGSOCIALS_NATIVE_CALLER_MERGED_VALIDATED / IOS_LOOPBACK_AND_BOUNDED_LIFECYCLE_SOURCE_MERGED_VALIDATED / CANONICAL_TASK_COSV_INSTALLED / AUTHENTIC_CURRENT_IPHONE_WORKER_INTR_SESSION_PUBLICATION_READBACK_CUSTODY_PENDING`
+`NATIVE_FACEBOOK_SOURCE_PATH_MERGED_VALIDATED / STEGSOCIALS_NATIVE_CALLER_MERGED_VALIDATED / STEGOSMOBILE_RESIDENT_APP_TARGET_SOURCE_MERGED_APPLE_COMPILED / CANONICAL_TASK_COSV_INSTALLED / AUTHENTIC_CURRENT_IPHONE_WORKER_INTR_SESSION_PUBLICATION_READBACK_CUSTODY_PENDING`
