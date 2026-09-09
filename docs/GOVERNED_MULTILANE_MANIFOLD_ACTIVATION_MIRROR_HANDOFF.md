@@ -8,7 +8,7 @@ Task ID: `GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001`
 COSV ID: `10100000100000`
 Canonical coordination state: `PROPOSED`
 Canonical checkout state: `UNCLAIMED`
-Status: `RESIDENT ACTIVATION REQUESTED / PREREQUISITE GATING REPAIRED / GADI SOURCE COMPLETE AND RESIDENT EXECUTION CHILD REGISTERED AND SOURCE-VALIDATED / HIL SOURCE COMPLETE PHYSICAL EXPORT PENDING / WORKERCOORDINATOR CLAIM PENDING / AUTHENTIC ACTIVATION EVIDENCE PENDING`
+Status: `RESIDENT ACTIVATION REQUESTED / PREREQUISITE GATING REPAIRED / GADI SOURCE COMPLETE AND RESIDENT EXECUTION CHILD MERGED AND SOURCE-VALIDATED / HIL SOURCE COMPLETE PHYSICAL EXPORT PENDING / WORKERCOORDINATOR CLAIM PENDING / AUTHENTIC ACTIVATION EVIDENCE PENDING`
 
 ## Source of truth
 
@@ -73,12 +73,12 @@ The child is `PROPOSED / UNCLAIMED` and registered `HANDOFF_READY`. It reuses th
 
 The child executable handoff explicitly declares `parent_task_id=GADI-001`, derivation depth 1, and a canonical parent-record source reference. The umbrella resident request includes the child explicitly, and the manifold lineage includes the `GADI-001 -> GADI-RESIDENT-EXECUTION-001` runtime-execution edge.
 
-PR #1242 exact-head validation repairs completed on 2026-09-09:
+PR #1242 merged on 2026-09-09 at `95e6049e44b58ed95b678b33ba35dda675eddf61` after exact-head validation repairs:
 
 - converted `tests/test_gadi_resident_execution_request.py` from an undeclared `pytest` dependency to the repository-supported deterministic `unittest` surface;
 - reconciled `control/cosv-live-worker-coverage.json` after the new canonical worker increased both the live denominator and indexed count by one;
 - repaired executable-handoff external-parent lineage by adding the canonical `GADI-001` parent source reference and explicit parent/derivation metadata;
-- exact head `06ac168e8f0edf9ecac2dcd42a254f10bcfbb21f` passed Organization Control validation, deterministic repository diagnostics, and Heartbeat Worker Project validation before this handoff-only status update.
+- exact pre-merge head `c3edb64011b680508a92e6fa4aa717acaf6b72df` passed Organization Control validation, deterministic repository diagnostics, and Heartbeat Worker Project validation.
 
 These are source/coordination validation results only. They are not authentic runtime execution evidence.
 
@@ -124,7 +124,7 @@ Required continuation:
 - GADI controlled-simulation source: COMPLETE/VALIDATED/REUSE;
 - GADI resident-consumer source: COMPLETE/VALIDATED/REUSE;
 - GADI Continuity reconstruction source: COMPLETE/VALIDATED/REUSE;
-- GADI resident-execution child registration: IMPLEMENTED / SOURCE VALIDATED / PR #1242 MERGE PENDING / AUTHENTIC EXECUTION PENDING;
+- GADI resident-execution child registration: IMPLEMENTED / SOURCE VALIDATED / MERGED VIA PR #1242 / AUTHENTIC EXECUTION PENDING;
 - HIL nested source: COMPLETE;
 - HIL exact physical export intake: PENDING;
 - umbrella/eligible-lane WorkerCoordinator claim/fence evidence: PENDING;
