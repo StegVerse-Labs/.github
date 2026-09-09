@@ -9,7 +9,8 @@ Parent handoff: `docs/NATIVE_EMAIL_ACTION_MONITOR_MIRROR_HANDOFF.md`
 Scheduler owner: `StegVerse-Labs/StegVerse-Healer` / existing `SHWP-HEALER-SOVEREIGN-SCHEDULER-001`
 Source merge: PR `#1252` / merge `700f959dca0160f0d71d92fc391c9f262f27feea`
 Scheduler merge: `StegVerse-Labs/StegVerse-Healer#57` / merge `ef5d90a8c215056e055385a04534e16c49d9a3d5`
-State: `SOURCE_INTEGRATION_MERGED / HOURLY_REUSABLE_BINDING_MERGED / CANONICAL_TASK_SHARD_RECONCILIATION_IN_PROGRESS / AUTHENTIC_SCHEDULED_RUNTIME_RECEIPT_PENDING`
+Canonical Task Registry merge: PR `#1255` / merge `2eb089842ea8960845dcd021f5241126432f3b74`
+State: `SOURCE_INTEGRATION_MERGED / HOURLY_REUSABLE_BINDING_MERGED / CANONICAL_TASK_REGISTERED / AUTHENTIC_SCHEDULED_RUNTIME_RECEIPT_PENDING`
 
 ## Scoped objective
 
@@ -35,16 +36,17 @@ A scheduled invocation may still stop at an existing provider/runtime boundary. 
 
 ## Canonical Task Registry reconciliation
 
-The post-merge registry check found that the reusable-task registry and COSV task-vector index already contained this identity, but the canonical sharded Task Registry did not contain the exact task record. The reconciliation branch `fix/native-email-canonical-task-registry-20260909` adds:
+PR #1255 repaired the registry gap discovered after the source merges. The task now resolves from the canonical sharded Task Registry at:
 
-- `data/canonical-task-records/STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001.json` with `coordination_state=PROPOSED`, `checkout_state=UNCLAIMED`, COSV `10100000100000`, source/dependency/evidence bindings, and `allowed_next_transitions=[INGRESS_ADMITTED]`;
-- `tests/test_native_email_canonical_task_registry.py` proving generic sharded Task Registry resolution and canonical-work ingress eligibility.
+`data/canonical-task-records/STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001.json`
 
-This registry repair records coordination intent only; it does not claim a WorkerCoordinator claim/fence, mailbox execution, provider authorization, or activation.
+The registered record binds `coordination_state=PROPOSED`, `checkout_state=UNCLAIMED`, COSV `10100000100000`, the merged reusable/hourly source and evidence, and `allowed_next_transitions=[INGRESS_ADMITTED]`. `tests/test_native_email_canonical_task_registry.py` proves generic sharded Task Registry resolution and canonical-work ingress eligibility.
+
+This registry record is coordination state only; it does not claim a WorkerCoordinator claim/fence, mailbox execution, provider authorization, or activation.
 
 ## README determination
 
-The root `.github/README.md` already documents the reusable-task architecture, sharded canonical Task Registry model, and generic continuation/authority boundaries. This scoped change does not add a new repository responsibility or public interface; detailed cadence and task-specific registry state belong in this handoff and the Healer scheduler README. `NO_README_CHANGE_REQUIRED` for `.github` is therefore recorded for this change set.
+The root `.github/README.md` already documents the reusable-task architecture, sharded canonical Task Registry model, and generic continuation/authority boundaries. This scoped change does not add a new repository responsibility or public interface; detailed cadence and task-specific registry state belong in this handoff and the Healer scheduler README. `NO_README_CHANGE_REQUIRED` for `.github` is therefore recorded for this change set. `StegVerse-Healer/README.md` was updated in PR #57 for its new reusable-task scheduling responsibility.
 
 ## Validation evidence
 
@@ -56,6 +58,12 @@ The exact PR #1252 head `d13f210e7a75e9a3a6515d157d9bc4fed148f51b` passed all re
 
 The coordinated Healer exact head `99e63e6e01962232125f70becec5e21eac11ae30` passed Test Readiness run `34332190725` after correcting a test-fixture aliasing defect; the scheduler implementation itself was not weakened.
 
+The exact PR #1255 registry-reconciliation head `05643f8def5a703c4bf5889218f9421953ff93f1` also passed all retained validation families before merge:
+
+- Heartbeat Worker Project: run `34332579197` SUCCESS.
+- Validate organization control plane: run `34332579252` SUCCESS.
+- Deterministic Repository Suite: run `34332579274` SUCCESS.
+
 ## Remaining authentic boundary
 
-Source integration, reusable invocation binding, hourly cadence configuration, same-slot idempotency, tests, README maintenance, and both repository merges are complete. Canonical Task Registry shard reconciliation is being validated. After that, the remaining evidence boundary is an authentic resident Healer scheduled invocation producing a retained reusable-task receipt for an hourly slot. Until that is observed, this handoff does not claim live hourly mailbox execution.
+Source integration, reusable invocation binding, hourly cadence configuration, same-slot idempotency, canonical Task Registry registration, deterministic validation, README maintenance, and all coordinated merges are complete. The remaining evidence boundary is an authentic resident Healer scheduled invocation producing a retained reusable-task receipt for an hourly slot and, for a mailbox-processing claim, the corresponding TV/TVC Gmail provider/monitor receipt. Until that is observed, this handoff does not claim live hourly mailbox execution.
