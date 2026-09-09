@@ -134,7 +134,7 @@
     "master-records/orchestration/custody/erl-kv/index.jsonl",
     "master-records/orchestration@94fa52a61363494e248859181403c59d03b34980:erl-kv-custody-validation=PASS",
     "master-records/orchestration@cad9c97deb06e897a72c5fa56ba0ada28edc3e05:live-provider-observation-custody-reconstruction=PASS",
-    "StegVerse-Labs/Executive_Rhetoric_Ledger@b7c342d7fba15392daf50bd7d9079ca18729d6c3:master-records-custody-documented"
+    "StegVerse-Labs/Executive_Rhetoric_Ledger@2d159da8e29fe0d70f4854aa60b9ad55b3c71edd:master-records-custody-documented-and-validated"
   ],
   "expected_evidence_predicates": [
     "SOURCE_POST_METADATA_SCHEMA_VALID",
