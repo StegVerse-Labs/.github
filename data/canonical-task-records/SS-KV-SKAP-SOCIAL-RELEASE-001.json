@@ -14,6 +14,7 @@
     "StegVerse-Labs/StegSocials/adapters/publishers/kv_skap_gate.py",
     "StegVerse-Labs/StegSocials@cd60b32bd754de9588153fb044eb4e2b0e44443f",
     "StegVerse-Labs/TVC@0452707866e96be93eff9544389268d462637aff",
+    "StegVerse-Labs/TVC@024a06397e6fc1b3a461c5d71f7bbc513843493c",
     "StegVerse-Labs/TVC/docs/SOCIAL_PROVIDER_SKAP_ARTICULATION_MIRROR_HANDOFF.md"
   ],
   "targets": {
@@ -36,13 +37,13 @@
   },
   "dependencies": [
     {"dependency_id":"DEP-SS-SOCIAL-KV","kind":"STORAGE","state":"IMPLEMENTED_NOT_RUNTIME_OBSERVED","ref":"Personal-KV/_Vault/SKAP","disposition":"REQUIRE_ACTUAL_AUTHORIZED_RESIDENT_SHARED_ROOT_OBSERVATION"},
-    {"dependency_id":"DEP-SS-SOCIAL-SKAP","kind":"CREDENTIAL_CUSTODY","state":"SOURCE_IMPLEMENTED_RUNTIME_BLOCKED","ref":"StegVerse-Labs/TVC@0452707866e96be93eff9544389268d462637aff","disposition":"TVC_SOCIAL_PROVIDER_ARTICULATION_IS_MERGED_AND_CI_VALIDATED; AUTHENTIC_RESIDENT_SKAP_CUSTODY_AND_LEASE_LIVENESS_REMAIN_REQUIRED"},
-    {"dependency_id":"DEP-SS-SOCIAL-WINDSOR","kind":"TRANSPORT","state":"AVAILABLE_PROVIDER_SCOPE_DEFECT_OBSERVED","ref":"windsor.ai/facebook_organic","disposition":"OWNER_REAUTH_SUCCEEDED_BUT_PROVIDER_TOKEN_STILL_LACKS_PAGES_READ_ENGAGEMENT_AND_PAGES_MANAGE_POSTS; SUPPORT_TOKEN_SCOPE_REPAIR_REQUIRED_BEFORE_ONE_RETRY"},
+    {"dependency_id":"DEP-SS-SOCIAL-SKAP","kind":"CREDENTIAL_CUSTODY","state":"SOURCE_VALIDATED_MERGED_RUNTIME_BLOCKED","ref":"StegVerse-Labs/TVC@024a06397e6fc1b3a461c5d71f7bbc513843493c","disposition":"TVC_SOCIAL_PROVIDER_ARTICULATION_IS_MERGED_AND_EXACT_MAIN_VALIDATED; AUTHENTIC_RESIDENT_SKAP_CUSTODY_AND_LEASE_LIVENESS_REMAIN_REQUIRED"},
+    {"dependency_id":"DEP-SS-SOCIAL-WINDSOR","kind":"TRANSPORT","state":"AVAILABLE_PROVIDER_SCOPE_DEFECT_ESCALATED","ref":"windsor.ai/facebook_organic","disposition":"OWNER_REAUTH_SUCCEEDED_BUT_PROVIDER_TOKEN_STILL_LACKED_PAGES_READ_ENGAGEMENT_AND_PAGES_MANAGE_POSTS; SUPPORT_REQUEST_89167085_SUBMITTED; DO_NOT_REPEAT_IDENTICAL_PUBLISH_UNTIL_SCOPE_REPAIR_CONFIRMED"},
     {"dependency_id":"DEP-SS-SOCIAL-CUSTODY","kind":"CUSTODY","state":"IMPLEMENTED_PENDING_REAL_RECEIPT","ref":"MR-STEGSOCIALS-RECEIPT-CUSTODY-001","disposition":"IMPORT_AND_RECONSTRUCT_ONLY_AFTER_AUTHENTIC_SOURCE_RECEIPT_EXISTS"}
   ],
   "blockers": [
     {"blocker_id":"RESIDENT-SKAP-SOCIAL-CREDENTIAL-ACTIVATION","owner":"TV/TVC resident sole-host runtime","state":"BLOCKED_DEPENDENCY_MACHINE_OWNED","release_condition":"Actual resident/shared Personal-KV _Vault/SKAP root, social credential custody, active lease/liveness, and exact double-interlock receipts are observed."},
-    {"blocker_id":"FACEBOOK-PROVIDER-SCOPE-REPAIR-AND-FIRST-SUCCESSFUL-RELEASE","owner":"Windsor Facebook Organic provider lane plus TV/TVC runtime","state":"BLOCKED_EXTERNAL_PROVIDER_SCOPE","release_condition":"The existing owner-authorized Facebook release is retried only after the provider token is confirmed to carry pages_read_engagement and pages_manage_posts, and an authentic publication receipt with real platform post ID/URL is retained."}
+    {"blocker_id":"FACEBOOK-PROVIDER-SCOPE-REPAIR-AND-FIRST-SUCCESSFUL-RELEASE","owner":"Windsor Facebook Organic provider lane plus TV/TVC runtime","state":"BLOCKED_EXTERNAL_PROVIDER_SCOPE_ESCALATED","release_condition":"Windsor support confirms the existing facebook_organic StegVerse token carries pages_read_engagement and pages_manage_posts; then the existing authorized release is retried once and an authentic publication receipt with real platform post ID/URL is retained."}
   ],
   "systemic_incident_ref": null,
   "adjacent_task_refs": ["SS-CONTENT-PIPELINE-001", "SS-EVIDENCE-COMPARISON-001", "MR-STEGSOCIALS-RECEIPT-CUSTODY-001"],
@@ -52,7 +53,10 @@
     "StegVerse-Labs/StegSocials@cd60b32bd754de9588153fb044eb4e2b0e44443f:provider-permission-contract-merged",
     "StegVerse-Labs/TVC@0452707866e96be93eff9544389268d462637aff:social-provider-skap-articulation-merged",
     "StegVerse-Labs/TVC/actions/runs/34293917362:credential-model-consistency=PASS",
+    "StegVerse-Labs/TVC/actions/runs/34293975020:exact-main-credential-model-consistency=PASS",
+    "StegVerse-Labs/TVC@024a06397e6fc1b3a461c5d71f7bbc513843493c:validation-reconciliation-merged",
     "StegVerse-Labs/StegSocials:publication-receipt-facebook-launch-001-post-reauth-003-20260908T230303Z:FAILED_PROVIDER_SCOPE",
+    "Windsor.ai/support/89167085:FACEBOOK_ORGANIC_SCOPE_REPAIR_REQUESTED",
     "master-records/orchestration/tasks/MR-STEGSOCIALS-RECEIPT-CUSTODY-001.yaml"
   ],
   "expected_evidence_predicates": [
@@ -84,7 +88,7 @@
     "unattended_runtime": false
   },
   "worker_claim": {"authority":"MACHINE_RUNTIME_PLUS_PARTICIPANT_RELEASE","claim_ref":"StegVerse-Labs/StegSocials/docs/STEGSOCIALS_MIRROR_HANDOFF.md","fence_ref":"double-interlock receipts required","projection_only":false},
-  "human_action_ref": "Facebook PUBLIC_RELEASE authorization already exists for the exact approved launch draft. Owner reauthorization through Windsor also completed but the resulting provider token still failed the required Page scopes. Current human action is limited to authorizing the secret-free Windsor support escalation; do not repeat identical publish attempts until provider scope repair is confirmed.",
+  "human_action_ref": "The exact Facebook PUBLIC_RELEASE authorization and owner reauthorization already exist. Windsor support request 89167085 has now been submitted for the provider-scope defect. No further participant action is required until Windsor confirms pages_read_engagement and pages_manage_posts are present; after that confirmation, permit exactly one idempotency-bound retry.",
   "completion": {"claimed":false,"validated":true,"reconciliation_ref":"master-records/orchestration/tasks/MR-STEGSOCIALS-RECEIPT-CUSTODY-001.yaml","activation_proof_complete":false},
   "allowed_next_transitions": ["OBSERVE_RESIDENT_SKAP_ACTIVATION", "CONFIRM_FACEBOOK_PROVIDER_SCOPE_REPAIR", "EXECUTE_EXISTING_GOVERNED_PROVIDER_RELEASE_ONCE", "WRITE_PUBLICATION_TO_KV", "RECONSTRUCT_IN_MASTER_RECORDS"],
   "handoff_projection_refs": ["StegVerse-Labs/StegSocials/docs/STEGSOCIALS_MIRROR_HANDOFF.md", "StegVerse-Labs/TVC/docs/SOCIAL_PROVIDER_SKAP_ARTICULATION_MIRROR_HANDOFF.md", "master-records/orchestration/docs/MASTER_RECORDS_MIRROR_HANDOFF.md"],
