@@ -40,6 +40,7 @@ def load(path: Path) -> dict[str, Any]:
 
 def validate_target_task(*, registry: Path, registry_shards: Path, task_id: str) -> dict[str, Any]:
     task, _ = resolve_task(task_id=task_id, registry=registry, registry_shards=registry_shards)
+    require(task.get("task_id") == task_id, "canonical_task_identity_must_resolve_exactly_once")
     correlation_id = task.get("correlation_id")
     require(isinstance(correlation_id, str) and bool(correlation_id), "canonical_task_correlation_missing")
     require(task.get("coordination_state") == "PROPOSED", "canonical_task_not_proposed_for_ingress")
