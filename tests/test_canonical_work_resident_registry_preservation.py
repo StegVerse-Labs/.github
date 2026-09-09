@@ -17,6 +17,18 @@ def load_module():
     return module
 
 
+def seed_preserved_source_state(mod, source: Path) -> None:
+    source_registry = source / "data/canonical-task-registry.json"
+    source_registry.parent.mkdir(parents=True, exist_ok=True)
+    source_registry.write_text(json.dumps({"generation": 15}) + "\n", encoding="utf-8")
+    for rel in mod.PRESERVE_IF_PRESENT:
+        if rel == Path("data/canonical-task-registry.json"):
+            continue
+        path = source / rel
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("{}\n", encoding="utf-8")
+
+
 class CanonicalWorkResidentRegistryPreservationTests(unittest.TestCase):
     def setUp(self):
         self.mod = load_module()
@@ -29,9 +41,8 @@ class CanonicalWorkResidentRegistryPreservationTests(unittest.TestCase):
                 path = source / rel
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text("source\n", encoding="utf-8")
+            seed_preserved_source_state(self.mod, source)
             source_registry = source / "data/canonical-task-registry.json"
-            source_registry.parent.mkdir(parents=True, exist_ok=True)
-            source_registry.write_text(json.dumps({"generation": 15}) + "\n", encoding="utf-8")
             runtime_registry = runtime / "data/canonical-task-registry.json"
             runtime_registry.parent.mkdir(parents=True, exist_ok=True)
             runtime_registry.write_text(json.dumps({"generation": 99, "runtime_projection": True}) + "\n", encoding="utf-8")
@@ -54,9 +65,8 @@ class CanonicalWorkResidentRegistryPreservationTests(unittest.TestCase):
                 path = source / rel
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text("source\n", encoding="utf-8")
+            seed_preserved_source_state(self.mod, source)
             source_registry = source / "data/canonical-task-registry.json"
-            source_registry.parent.mkdir(parents=True, exist_ok=True)
-            source_registry.write_text(json.dumps({"generation": 15}) + "\n", encoding="utf-8")
 
             rows = self.mod.materialize(source, runtime)
             runtime_registry = runtime / "data/canonical-task-registry.json"
