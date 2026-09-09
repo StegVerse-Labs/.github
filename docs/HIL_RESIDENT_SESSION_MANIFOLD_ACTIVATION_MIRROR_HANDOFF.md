@@ -122,3 +122,15 @@ Only after owning release predicates qualify, verify pertinent propagation to:
 - `StegVerse-Labs/admissibility-wiki`
 - `StegVerse-002/stegguardian-wiki`
 - `StegVerse-Labs/Sit` only after repository identity/role is independently verified.
+
+## 2026-09-08 physical current-iPhone browser continuation
+
+A standalone iPhone browser context has now displayed authentic component result `BROWSER_HIL_LOCAL_READY_OBSERVED` with claim/fence G25 and journal replay `PASS`. ChatGPT's in-app browser simultaneously retained an independent WebKit storage/service-worker context and continued to fail closed on its own checkout state. The two contexts are intentionally not conflated.
+
+The displayed standalone-browser result is meaningful physical component evidence, but the canonical resident-consumption predicate is not promoted from screenshots. The exact exported JSON artifact is required.
+
+Issue `#1211` adds the fail-closed deterministic intake `scripts/intake_hil_browser_execution_evidence.py`. The public Site successor binds exact resident request `RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002` and stable request SHA256 `6bf940fb920f672111ba1040fd0bf9bf7016d6bf032bbcfd164a1a2347ee7038` into new browser execution results and exports exact JSON per browser context.
+
+Once an exact physical exported artifact passes canonical intake, the resulting canonical receipt may use `runtime_execution_surface=CURRENT_USER_IPHONE_BROWSER` while preserving the existing request-consumption schema and local-ready terminal transition. This explicitly records the portable browser successor rather than pretending the historical Python subprocess executed.
+
+Until that exact artifact is supplied and accepted, `PRED-RESIDENT-REQUEST-CONSUMED-HIL-SOVEREIGN-RECEIVER-002` remains unsatisfied and no repository receipt is fabricated.
