@@ -90,6 +90,7 @@ STATIC_FILES = (
     Path("scripts/consume_sv011_phase5_resident_execution_request.py"),
     Path("scripts/consume_glm53_sovereign_lane_request.py"),
     Path("scripts/consume_erl_ai_economic_transparency_review_request.py"),
+    Path("scripts/consume_ibc_intr_resident_request.py"),
     Path("scripts/activate_resident_stack.py"),
     Path("scripts/continue_stegverse001_evidence_chain.py"),
     Path("scripts/dispatch_resident_execution_requests.py"),
