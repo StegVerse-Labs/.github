@@ -53,7 +53,8 @@ class StegBrowserCanonicalWorkResidentRequestTests(unittest.TestCase):
         expected = f'Path("data/canonical-task-records/{TASK_ID}.json")'
         self.assertIn(expected, consumer)
         self.assertIn("existing_target_task_shard_preserved", consumer)
-        self.assertNotIn("network source fetch", consumer.lower().split("def clean_env", 1)[0])
+        self.assertIn('"network_source_fetch_performed": False', consumer)
+        self.assertIn('"claim_or_fence_minted": False', consumer)
 
 
 if __name__ == "__main__":
