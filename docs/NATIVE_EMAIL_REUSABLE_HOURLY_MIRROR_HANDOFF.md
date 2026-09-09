@@ -12,7 +12,7 @@ Scheduler merge: `StegVerse-Labs/StegVerse-Healer#57` / merge `ef5d90a8c215056e0
 Canonical Task Registry merge: PR `#1255` / merge `2eb089842ea8960845dcd021f5241126432f3b74`
 Recurring carrier merge: PR `#1259` / merge `569b6dde49cc9f568c0a24daf9fc723eee807b6f`
 Resident runtime-root merge: `StegVerse-Labs/StegVerse-Healer#58` / merge `a0f6daeaf33198f26e358c7b124fc9f80aad8b6b`
-State: `SOURCE_INTEGRATION_MERGED / HOURLY_REUSABLE_BINDING_MERGED / CANONICAL_TASK_REGISTERED / STANDING_RECURRING_CARRIER_MERGED / SOURCE_RUNTIME_SEPARATION_MERGED / AUTHENTIC_SCHEDULED_RUNTIME_RECEIPT_PENDING`
+State: `SOURCE_INTEGRATION_MERGED / HOURLY_REUSABLE_BINDING_MERGED / CANONICAL_TASK_REGISTERED / STANDING_RECURRING_CARRIER_MERGED / SOURCE_RUNTIME_SEPARATION_MERGED / WORKERCOORDINATOR_CYCLE_REARM_IN_VALIDATION / AUTHENTIC_SCHEDULED_RUNTIME_RECEIPT_PENDING`
 
 ## Scoped objective
 
@@ -35,7 +35,7 @@ The reusable-task layer retains the narrower per-UTC-hour idempotency boundary, 
 
 ## Source/runtime separation
 
-Healer PR #58 repaired the remaining scheduled invocation topology. The first hourly source implementation passed the local `.github` source checkout as both `source_root` and `runtime_root`, which could place reusable-task receipts under source and collapse source with execution state.
+Healer PR #58 repaired the scheduled invocation topology. The first hourly source implementation passed the local `.github` source checkout as both `source_root` and `runtime_root`, which could place reusable-task receipts under source and collapse source with execution state.
 
 The merged repair now:
 
@@ -47,11 +47,29 @@ The merged repair now:
 - fails closed with `RESIDENT_RUNTIME_ROOT_NOT_MATERIALIZED` rather than using source as runtime;
 - preserves same-slot idempotency against the resident receipt.
 
+## WorkerCoordinator cycle rearm
+
+A post-merge lifecycle review found that the standing resident request alone was insufficient. WorkerCoordinator accepts a `COMPLETED` worker response as terminal task completion, releases the worker, and leaves the scheduler task in `COMPLETED`. Independent task control can acquire only a `HANDOFF_READY` unclaimed task, so the scheduler would still stop after its first successful WorkerCoordinator cycle.
+
+The current repair keeps the completed-cycle evidence unchanged while changing only the WorkerCoordinator-facing lifecycle response:
+
+```text
+Healer child scheduler result: COMPLETE
+-> durable scheduler worker receipt: state=COMPLETED / transition=HEALER_SOVEREIGN_SCHEDULER_COMPLETED
+-> WorkerCoordinator-facing response: state=HANDOFF_READY / same completed-cycle transition
+-> current claim + worker binding released by existing WorkerCoordinator HANDOFF_READY semantics
+-> scheduler task remains eligible for a fresh independently admitted claim/fence on a later resident cycle
+```
+
+Blocked and failure responses are not rewritten. The task therefore receives a fresh fencing generation for each new scheduler cycle instead of retaining or reviving the prior claim.
+
 ## Cadence
 
 ```text
 resident_scheduler_request: STANDING_RECURRING
 resident_cycle_recurrence: EACH_ELIGIBLE_RESIDENT_SCHEDULER_CYCLE
+workercoordinator_post_success_state: HANDOFF_READY
+fresh_claim_and_fence_each_scheduler_cycle: true
 native_email_cadence: HOURLY
 eligible_utc_hours: 00..23
 at_most_once_per_hour_slot: true
@@ -67,13 +85,14 @@ mailbox_batch_limit: existing native monitor limit (100)
 - PR #1255 exact head: Heartbeat `34332579197`, org-control `34332579252`, deterministic suite `34332579274` SUCCESS.
 - PR #1259 exact head `1b5bcd87b752ae643f88cbf1dc788f4a1c2dec45`: Heartbeat `34352789541`, org-control `34352789580`, deterministic suite `34352789603` SUCCESS.
 - Healer PR #58 exact head `8fae4401381d7479373add148d21de6c514d2e7b`: Test Readiness `34356342498` SUCCESS.
+- WorkerCoordinator cycle-rearm validation is pending on `fix/healer-standing-worker-cycle-rearm-20260909`.
 
 ## README determination
 
-The `.github` root README already documents resident requests and reusable-task architecture; no additional root README change is required for this task-specific topology repair. `StegVerse-Healer/README.md` was updated in PR #58 to document resident runtime separation and receipt placement.
+The `.github` root README already documents resident requests, WorkerCoordinator lifecycle, and reusable-task architecture; no additional root README change is required for this task-specific lifecycle repair. `StegVerse-Healer/README.md` was updated in PR #58 to document resident runtime separation and receipt placement.
 
 ## Remaining authentic boundary
 
-Source-side reusable invocation, hourly scheduling, standing recurrence, canonical task registration, source/runtime separation, resident receipt placement, fail-closed runtime discovery, validation, and repository documentation are complete and merged.
+After the WorkerCoordinator cycle-rearm repair validates and merges, source-side reusable invocation, hourly scheduling, standing request recurrence, fresh scheduler claim/fence recurrence, canonical task registration, source/runtime separation, resident receipt placement, fail-closed runtime discovery, validation, and repository documentation are complete.
 
 The remaining boundary is authentic resident execution: the already-local canonical source must be refreshed/materialized into the resident heartbeat runtime and the standing Healer scheduler must traverse one eligible cycle. Completion evidence for the timer requires a real resident `receipts/reusable-task/rt-native-email-action-monitor-001-<UTC-hour>Z.latest.json`. A mailbox-processing claim additionally requires the corresponding native-email monitor receipt and TV/TVC Gmail provider-operation evidence. No user-operated second machine is required.
