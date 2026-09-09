@@ -1,0 +1,11 @@
+{
+  "schema": "stegverse.cosv-task-vector-index-entry/v1",
+  "task_id": "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001",
+  "repository": "StegVerse-Labs/.github",
+  "registry_ref": "data/canonical-task-records/GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001.json",
+  "source_state_vector_ref": "control/task-vectors/GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001.json",
+  "vector": "50000010100000",
+  "vector_state": "EMITTED",
+  "profile": "task.v1",
+  "authority_effect": "NONE"
+}
