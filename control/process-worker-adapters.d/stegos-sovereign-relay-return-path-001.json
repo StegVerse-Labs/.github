@@ -1,0 +1,22 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "SHWP-STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:stegos-sovereign-relay-return-path-v1",
+      "authority_ref": "handoffs/SHWP-STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001.json#authority",
+      "capabilities": ["runtime_observation","bounded_process_execution","sovereign_relay_return_path"],
+      "command": ["python", "workers/stegos_sovereign_relay_return_path_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": ["STEGVERSE_STEGOS_ROOT","STEGVERSE_RELAY_RUNTIME_BASE","STEGVERSE_RELAY_EGRESS_BINDING","STEGVERSE_RELAY_EGRESS_AUTHORIZATION","STEGVERSE_RELAY_EGRESS_PAYLOAD"],
+      "notes": [
+        "Consumes only already-local non-secret artifact locators and the merged StegOS round-trip path.",
+        "Does not mint route, EGRESS, credential, Interlock, settlement, HeartBeat, or GitHub runtime authority.",
+        "Terminal only on authentic RETURN_PATH_VERIFIED with far-side, durable-return, and Interlock-ingestion predicates true."
+      ],
+      "timeout_seconds": 180,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
