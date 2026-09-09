@@ -6,26 +6,29 @@ Goal Task ID: SS-ERL-KV-PROPAGATION-VERIFICATION-001
 
 Parent task: SS-EVIDENCE-COMPARISON-001
 
-COSV: 10000100100000
+COSV: 71000000100101
 
 ## Purpose
 
-Verify whether the completed ERL-to-MyKV provider-operation and Master Records custody evidence requires consumer updates in StegVerse-Labs/Site, GCAT-BCAT-Engine/Publisher, admissibility-wiki, and stegguardian-wiki.
+Verify post-merge propagation of the completed ERL KnowledgeVault provider-operation and custody evidence across applicable Site, Publisher, admissibility-wiki, and stegguardian-wiki surfaces.
 
-## Source evidence
+## Terminal dispositions
 
-- ERL integration: `StegVerse-Labs/Executive_Rhetoric_Ledger@722a11cf2ada6205a31e3678d489254fb736e8f7`
-- Live schema/evidence implementation: `StegVerse-Labs/Executive_Rhetoric_Ledger@8569d8b811b787cd49ee3f38c352c46fb86c3bca`
-- Master Records custody/reconstruction: `master-records/orchestration@3e1bc4f2f98bde1932261c2ce96ca42fa9952a19`
-- StegSocials consumption: `StegVerse-Labs/StegSocials@41f1eae88f12d461df6a72fbb3edce90966c0fd9`
+| Repository | Disposition | Evidence |
+| --- | --- | --- |
+| StegVerse-Labs/Site | UPDATE_REQUIRED — MERGED / VALIDATED | `ca106480cd78a35fffa107e73a678219ca918bb1`; terminal handoff `3ac0a20ddf9895e724984e9b24dfa174537cc796`; 10/10 hosted workflows PASS |
+| GCAT-BCAT-Engine/Publisher | UPDATE_REQUIRED — MERGED / VALIDATED | `93a4743ceb5974689c1872c0e88dbb86de980f7e`; terminal handoff `0debdb0cf0e06f672a515e8b7fbf6d642521588e`; 4/4 hosted workflows PASS |
+| StegVerse-Labs/admissibility-wiki | NOT_APPLICABLE | At `7da34bf2ce1b8b0fa3c3e4564191c3c69e05e4a4`, repository purpose and code search show no ERL/KV/Master Records/StegSocials consumer path |
+| StegVerse-002/stegguardian-wiki | NOT_APPLICABLE | Corrected canonical location; at `32554def402a5d3d1ebe077766ec1407e3a268c6`, repository purpose and code search show no ERL/KV/Master Records/StegSocials consumer path |
 
-## Required work
+## Receipt
 
-1. Inspect each target for an applicable ERL KV or evidence-custody projection.
-2. Record evidence-backed `UPDATE_REQUIRED`, `NO_CHANGE_REQUIRED`, or `NOT_APPLICABLE` per target.
-3. Implement and validate required consumer references without inferring runtime, publication, or propagation state from documentation alone.
-4. Retain a propagation-verification receipt and close this task only after every target has a terminal disposition.
+`evidence/erl-kv-propagation/2026-09-09-verification-receipt.json`
+
+The receipt records each observed commit, search terms, consumer disposition, merged projection, hosted validation result, and explicit nonclaims.
 
 ## Current state
 
-PROPOSED / SOURCE_INTEGRATION_COMPLETE / DOWNSTREAM_INSPECTION_PENDING
+RETIRED / COMPLETE / EVIDENCE_COMPLETE / PROPAGATED
+
+No runtime activation, publication, deployment, credential use, or provider operation is inferred or repeated by this task.
