@@ -47,7 +47,8 @@
       "provider-receipt-backed-readback-evidence",
       "master-records-erl-kv-custody",
       "erl-kv-live-observation-custody",
-      "erl-kv-custody-reconstruction"
+      "erl-kv-custody-reconstruction",
+      "stegsocials-erl-artifact-custody-reference"
     ]
   },
   "dependencies": [
@@ -134,7 +135,8 @@
     "master-records/orchestration/custody/erl-kv/index.jsonl",
     "master-records/orchestration@94fa52a61363494e248859181403c59d03b34980:erl-kv-custody-validation=PASS",
     "master-records/orchestration@cad9c97deb06e897a72c5fa56ba0ada28edc3e05:live-provider-observation-custody-reconstruction=PASS",
-    "StegVerse-Labs/Executive_Rhetoric_Ledger@2d159da8e29fe0d70f4854aa60b9ad55b3c71edd:master-records-custody-documented-and-validated"
+    "StegVerse-Labs/Executive_Rhetoric_Ledger@2d159da8e29fe0d70f4854aa60b9ad55b3c71edd:master-records-custody-documented-and-validated",
+    "StegVerse-Labs/StegSocials@a0b049730d16df8febafcb85cf5190974c19f15d:stable-erl-artifact-and-master-records-custody-refs=PASS"
   ],
   "expected_evidence_predicates": [
     "SOURCE_POST_METADATA_SCHEMA_VALID",
@@ -153,7 +155,8 @@
     "ERL_PROVIDER_RECEIPT_BACKED_READBACK_REQUIRES_EXPLICIT_PROVIDER_OPERATION_RECEIPT",
     "ERL_NATIVE_WRITER_BYTE_READBACK_RECEIPT_VALID",
     "PROVIDER_METADATA_OBSERVATION_CANNOT_SATISFY_NATIVE_WRITER_RECEIPT",
-    "ERL_PROVIDER_OBSERVATION_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION_PASS"
+    "ERL_PROVIDER_OBSERVATION_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION_PASS",
+    "STEGSOCIALS_STABLE_ERL_ARTIFACT_AND_MASTER_RECORDS_CUSTODY_REFERENCES_PRESENT"
   ],
   "runtime_requirements": {
     "capabilities": [
@@ -224,7 +227,7 @@
     "evidence_refs": [
       "StegVerse-Labs/.github/README.md",
       "StegVerse-Labs/.github/data/canonical-task-records/SS-EVIDENCE-COMPARISON-001.json",
-      "master-records/orchestration/docs/ERL_KV_RECEIPT_CUSTODY_MIRROR_HANDOFF.md"
+      "StegVerse-Labs/StegSocials@a0b049730d16df8febafcb85cf5190974c19f15d"
     ]
   }
 }

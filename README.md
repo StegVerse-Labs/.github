@@ -191,7 +191,7 @@ The canonical source contract is `data/reusable-task-ephemeral-construct-contrac
 
 Canonical task coordination distinguishes live provider-storage observation from native writer proof. Master Records may preserve and deterministically reconstruct an ERL KV provider observation while its proof class remains `PROVIDER_METADATA_ONLY`; custody does not convert metadata readback into native-adapter execution or byte-for-byte provider readback. Canonical native writer receipts remain separately required before that stronger predicate can be satisfied.
 
-The active task record `data/canonical-task-records/SS-EVIDENCE-COMPARISON-001.json` carries the scoped evidence and dependency state for this lane.
+The active task record `data/canonical-task-records/SS-EVIDENCE-COMPARISON-001.json` carries the scoped evidence and dependency state for this lane. StegSocials consumes the stable ERL artifact identity and Master Records custody reference without promoting either into stronger provider-operation or native-writer proof.
 
 ---
 
