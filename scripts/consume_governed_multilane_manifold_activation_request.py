@@ -6,15 +6,20 @@ reuses completed predecessor or aggregate nodes, delegates machine-owned
 subordinate execution to the existing WorkerCoordinator targeted task path, and
 records external TV/TVC-owned prerequisites without competing for their claims.
 
+For the existing TVC primary-runtime owner tasks only, an already-authorized
+resident TV/TVC host may invoke the existing TVC dispatcher and observer. The
+bridge does not mint authority: it requires the TVC activation declaration and
+local TVC source, rejects hosted execution, and never supplies credentials.
+
 Conditional lineage nodes fail closed: they are not delegated until every
 DEPENDS_ON predecessor has explicit qualifying evidence from the current visit.
-A successful WorkerCoordinator process return code alone is not qualifying
-activation evidence.
+A successful process return code alone is not qualifying activation evidence.
 """
 from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -26,8 +31,12 @@ LINEAGE_REL = Path("control/manifold-lineage.d/governed-multilane-manifold-activ
 TASK_RECORD_REL = Path("data/canonical-task-records/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json")
 RUNTIME_ENTRYPOINT_REL = Path("scripts/run_worker_runtime.py")
 RECEIPT_REL = Path("receipts/sovereign-host/governed-multilane-manifold-activation-request-consumption.latest.json")
+TVC_OBSERVATION_REL = Path("receipts/sovereign-host/tvc-primary-runtime-boundary-observation.latest.json")
 TASK_ID = "GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001"
 COSV = "10100000100000"
+TVC_REPO = "StegVerse-Labs/TVC"
+TVC_RUNTIME_OWNER_TASKS = {"TVC-PROVIDER-OPERATION-BROKER-003", "TVC-CAPABILITY-RUNTIME-002"}
+HOSTED_ENV = ("GITHUB_ACTIONS", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "CF_PAGES", "CLOUDFLARE_WORKERS")
 
 EXECUTE_DISPOSITIONS = {
     "EXECUTE_IF_NOT_ALREADY_QUALIFYING",
@@ -69,6 +78,10 @@ NONQUALIFYING_STATES = {
     "UNCLAIMED",
     "WAITING",
 }
+
+
+def truthy(value: Any) -> bool:
+    return str(value or "").strip().lower() not in {"", "0", "false", "no"}
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -128,18 +141,15 @@ def result_has_qualifying_evidence(result: dict[str, Any] | None) -> bool:
     """Require explicit positive evidence; return-code success is not enough."""
     if not isinstance(result, dict):
         return False
-
     for key in ("qualified", "qualifying", "receipt_observed", "activation_proven", "ready"):
         if result.get(key) is True:
             return True
-
     for key in ("state", "status", "completion_state", "validation_state", "integration_state"):
         state = _normalized_state(result.get(key))
         if state in NONQUALIFYING_STATES:
             return False
         if state in QUALIFYING_STATES:
             return True
-
     for key in ("result", "worker_result", "receipt", "evidence"):
         nested = result.get(key)
         if isinstance(nested, dict) and result_has_qualifying_evidence(nested):
@@ -150,24 +160,88 @@ def result_has_qualifying_evidence(result: dict[str, Any] | None) -> bool:
 def reuse_is_qualifying(node: dict[str, Any], disposition: str) -> bool:
     if disposition == "EXECUTE_INCOMPLETE_CANONICAL_CHILDREN_THROUGH_EXISTING_OWNERS":
         return False
-    return _normalized_state(node.get("state")) in {
-        "COMPLETE",
-        "COMPLETE_RELEASED",
-        "INITIAL_IMPLEMENTATION_COMPLETE",
+    return _normalized_state(node.get("state")) in {"COMPLETE", "COMPLETE_RELEASED", "INITIAL_IMPLEMENTATION_COMPLETE"}
+
+
+def _tvc_root_from_environment() -> Path | None:
+    explicit = os.environ.get("STEGVERSE_TVC_ROOT", "").strip()
+    if explicit:
+        path = Path(explicit).expanduser().resolve()
+        return path if path.is_dir() else None
+    raw = os.environ.get("STEGVERSE_REPO_ROOTS_JSON", "").strip()
+    if not raw:
+        return None
+    try:
+        roots = json.loads(raw)
+    except Exception:
+        return None
+    if not isinstance(roots, dict):
+        return None
+    value = roots.get(TVC_REPO)
+    if not isinstance(value, str) or not value:
+        return None
+    path = Path(value).expanduser().resolve()
+    return path if path.is_dir() else None
+
+
+def execute_existing_tvc_runtime_owner_path(runtime: Path, *, runner=subprocess.run) -> dict[str, Any]:
+    hosted = sorted(name for name in HOSTED_ENV if truthy(os.environ.get(name)))
+    if hosted:
+        return {"state": "BLOCKED_HOSTED_SURFACE_REJECTED", "hosted": hosted, "authority_effect": "NONE_FAIL_CLOSED"}
+    if os.environ.get("STEGTV_PRIMARY_RUNTIME_ACTIVATION_AUTHORITY") != "TV/TVC":
+        return {"state": "BLOCKED_TV_TVC_RUNTIME_ACTIVATION_DECLARATION_REQUIRED", "authority_effect": "NONE_FAIL_CLOSED"}
+    tvc = _tvc_root_from_environment()
+    if tvc is None:
+        return {"state": "BLOCKED_TVC_LOCAL_REPOSITORY_NOT_MATERIALIZED", "authority_effect": "NONE_FAIL_CLOSED"}
+    required = [tvc / "tools/task_dispatcher.py", tvc / "scripts/observe_tvc_runtime_boundary.py"]
+    missing = [str(path.relative_to(tvc)) for path in required if not path.is_file()]
+    if missing:
+        return {"state": "BLOCKED_TVC_RUNTIME_SOURCE_INCOMPLETE", "missing": missing, "authority_effect": "NONE_FAIL_CLOSED"}
+
+    commands = [
+        [sys.executable, "tools/task_dispatcher.py", "tvc.primary_runtime_binder.preflight"],
+        [sys.executable, "tools/task_dispatcher.py", "tvc.primary_runtime_binder.activate"],
+    ]
+    visits: list[dict[str, Any]] = []
+    for command in commands:
+        completed = runner(command, cwd=tvc, capture_output=True, text=True, check=False, timeout=1200)
+        result = parse_last_json(completed.stdout)
+        visits.append({"command": command[-1], "returncode": completed.returncode, "result": result})
+        if completed.returncode != 0:
+            return {
+                "state": "BLOCKED_TVC_OWNER_DISPATCH_FAILED_CLOSED",
+                "dispatch_visits": visits,
+                "authority_effect": "NONE_OWNER_DISPATCH_ONLY",
+            }
+
+    output = runtime / TVC_OBSERVATION_REL
+    output.parent.mkdir(parents=True, exist_ok=True)
+    observe_command = [sys.executable, "scripts/observe_tvc_runtime_boundary.py", "--output", str(output)]
+    observed = runner(observe_command, cwd=tvc, capture_output=True, text=True, check=False, timeout=120)
+    summary = parse_last_json(observed.stdout)
+    receipt = load_json(output) if output.is_file() else summary
+    qualifying = observed.returncode == 0 and result_has_qualifying_evidence(receipt)
+    return {
+        "state": "READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND" if qualifying else "PRIMARY_RUNTIME_NOT_YET_PROVEN",
+        "qualified": qualifying,
+        "dispatch_visits": visits,
+        "observer_returncode": observed.returncode,
+        "observer_summary": summary,
+        "receipt": receipt,
+        "receipt_ref": str(TVC_OBSERVATION_REL),
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": "NONE",
+        "competing_claim_created": False,
+        "authority_effect": "NONE_OWNER_DISPATCH_AND_OBSERVATION_ONLY",
     }
 
 
 def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -> dict[str, Any]:
-    source_root.expanduser().resolve()  # retained for CLI/source-root compatibility
+    source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
     request_path = runtime / REQUEST_REL
     if not request_path.is_file():
-        return {
-            "schema": "stegverse.governed-manifold-request-consumption/v1",
-            "state": "NO_REQUEST",
-            "task_id": TASK_ID,
-            "authority_effect": "NONE",
-        }
+        return {"schema": "stegverse.governed-manifold-request-consumption/v1", "state": "NO_REQUEST", "task_id": TASK_ID, "authority_effect": "NONE"}
 
     request = load_json(request_path)
     require(request.get("schema") == "stegverse.resident-execution-request/v1", "request schema mismatch")
@@ -195,7 +269,6 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -> 
     node_ids = [row.get("task_id") for row in nodes if isinstance(row, dict)]
     require(set(node_ids) == set(declared), "request/lineage subordinate set mismatch")
     dependencies = dependency_map(lineage)
-
     entrypoint = runtime / RUNTIME_ENTRYPOINT_REL
     require(entrypoint.is_file(), "canonical WorkerCoordinator runtime entrypoint missing")
 
@@ -227,16 +300,32 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -> 
             continue
 
         if disposition in EXTERNAL_DISPOSITIONS:
-            external_pending = True
-            outcome = {
-                "task_id": child_id,
-                "disposition": disposition,
-                "state": "EXTERNAL_OWNER_OBSERVATION_REQUIRED",
-                "execution_attempted": False,
-                "qualifying_for_dependents": False,
-                "competing_claim_created": False,
-                "authority_effect": "NONE_EXTERNAL_OWNER_RETAINED",
-            }
+            if child_id in TVC_RUNTIME_OWNER_TASKS:
+                result = execute_existing_tvc_runtime_owner_path(runtime, runner=runner)
+                qualifying = result_has_qualifying_evidence(result)
+                if not qualifying:
+                    external_pending = True
+                outcome = {
+                    "task_id": child_id,
+                    "disposition": disposition,
+                    "state": "EXISTING_EXTERNAL_OWNER_PATH_VISITED" if qualifying else "EXTERNAL_OWNER_PATH_NOT_YET_QUALIFIED",
+                    "execution_attempted": result.get("state") not in {"BLOCKED_HOSTED_SURFACE_REJECTED", "BLOCKED_TV_TVC_RUNTIME_ACTIVATION_DECLARATION_REQUIRED", "BLOCKED_TVC_LOCAL_REPOSITORY_NOT_MATERIALIZED", "BLOCKED_TVC_RUNTIME_SOURCE_INCOMPLETE"},
+                    "result": result,
+                    "qualifying_for_dependents": qualifying,
+                    "competing_claim_created": False,
+                    "authority_effect": "NONE_EXTERNAL_OWNER_RETAINED",
+                }
+            else:
+                external_pending = True
+                outcome = {
+                    "task_id": child_id,
+                    "disposition": disposition,
+                    "state": "EXTERNAL_OWNER_OBSERVATION_REQUIRED",
+                    "execution_attempted": False,
+                    "qualifying_for_dependents": False,
+                    "competing_claim_created": False,
+                    "authority_effect": "NONE_EXTERNAL_OWNER_RETAINED",
+                }
             outcomes.append(outcome)
             outcome_by_task[child_id] = outcome
             continue
@@ -244,11 +333,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -> 
         require(disposition in EXECUTE_DISPOSITIONS, f"unsupported lineage disposition:{child_id}:{disposition}")
         required = dependencies.get(child_id, [])
         if disposition in CONDITIONAL_EXECUTE_DISPOSITIONS:
-            unqualified = [
-                prerequisite
-                for prerequisite in required
-                if not outcome_by_task.get(prerequisite, {}).get("qualifying_for_dependents")
-            ]
+            unqualified = [prerequisite for prerequisite in required if not outcome_by_task.get(prerequisite, {}).get("qualifying_for_dependents")]
             if unqualified:
                 prerequisite_blocks = True
                 outcome = {

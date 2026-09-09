@@ -8,7 +8,7 @@ Task ID: `GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001`
 COSV ID: `10100000100000`
 Canonical coordination state: `PROPOSED`
 Canonical checkout state: `UNCLAIMED`
-Status: `RESIDENT ACTIVATION REQUESTED / SOURCE-DISCOVERY WIRING MERGED / SOURCE-MATERIALIZATION RECOVERY WIRING MERGED / COMPLETE-ALL-DECLARED-CHILDREN POLICY IN CURRENT BRANCH / GADI SOURCE COMPLETE / HIL G25 SATISFIED + ESRL SOURCE/INTAKE MERGED / AUTHENTIC FULL ACTIVATION NOT PROVEN`
+Status: `RESIDENT ACTIVATION REQUESTED / SOURCE-DISCOVERY + SOURCE-MATERIALIZATION RECOVERY MERGED / COMPLETE-ALL-DECLARED-CHILDREN POLICY MERGED / TVC PRIMARY-RUNTIME OWNER BRIDGE IN CURRENT BRANCH / GADI SOURCE COMPLETE / HIL G25 SATISFIED + ESRL SOURCE/INTAKE MERGED / AUTHENTIC FULL ACTIVATION NOT PROVEN`
 
 ## Source of truth
 
@@ -18,21 +18,39 @@ Inherited continuation includes `FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF
 
 ## Execution policy
 
-Every task declared in this umbrella remains an execution obligation until its canonical completion predicate is actually satisfied. Do not retire, prune, skip, or downgrade an incomplete declared subordinate merely because shared infrastructure is expected to make its current implementation path redundant later.
-
-Completed tasks may be reused without duplicate execution. A task may only cease to require its original implementation path when a completed replacement path supplies the same canonical completion evidence; future expectations, architectural consolidation, or likely obsolescence are not completion evidence.
+PR `#1281` merged at `d3c039ff64da3b2d20cc16db1cbff43f99956cc4` after organization-control, deterministic-suite diagnostics, and Heartbeat validation all passed. Every declared subordinate remains an execution obligation until its canonical completion predicate is actually satisfied. Completed evidence may be reused without duplicate execution; incomplete work may not be pruned merely because future shared infrastructure may make its implementation path reusable or simpler.
 
 ## Formalism traversal
 
 PR `#1265` merged at `77513c799656809ee650e8915c5b2e7f445cba61` and made the already-registered `SHWP-FORMALISM-SOURCE-DISCOVERY-001` producer reachable before the four source-reading lanes.
 
-PR `#1277` merged at `f9532ebc56e00881a1723cf9f92e34f33a02e432` after organization-control, deterministic-suite diagnostics, and Heartbeat validation all passed. It closes the next dead edge by wiring the existing `SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001` worker into the umbrella whenever source discovery reports a missing or invalid-handoff root.
+PR `#1277` merged at `f9532ebc56e00881a1723cf9f92e34f33a02e432` after organization-control, deterministic-suite diagnostics, and Heartbeat validation all passed. It wired `SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001` into the umbrella whenever source discovery reports a missing or invalid-handoff root.
 
-The merged path is now:
+The six configured first-cohort repositories are `Admissible-Existence/AE`, `RTG`, `GTG`, `TT`, `STCM`, and `StegVerse-Labs/StegCore`; current GitHub inspection confirms handoff-bearing canonical source exists for the cohort. The unresolved source-discovery predicate is therefore resident materialization/observation, not evidence that the upstream source repositories themselves are absent.
+
+The merged path is:
 
 `source discovery -> bounded TVC inspect/materialization recovery -> source rediscovery -> four source-reading formalism lanes -> manifold reconciliation`.
 
-Ambiguous roots still fail closed. No root, TVC receipt, materialization receipt, formalism lane receipt, runtime claim/fence, or activation has been fabricated or asserted.
+Ambiguous roots still fail closed. No root, TVC receipt, materialization receipt, formalism lane receipt, runtime claim/fence, or activation is fabricated or asserted.
+
+## TVC primary-runtime manual seam remediation
+
+`StegVerse-Labs/TVC/tasks/TVC-CAPABILITY-RUNTIME-002.json` still records `primary_runtime_bound=false` and `primary_runtime_service_installed_observed=false`. Its completed binder task already exposes repository-native dispatcher selectors `tvc.primary_runtime_binder.preflight` and `tvc.primary_runtime_binder.activate`, but the recorded next executable action still depended on someone invoking that dispatcher on the TV/TVC host.
+
+Current branch `governed-manifold-tvc-runtime-owner-bridge` removes that manual-command seam without creating a competing TVC task or claim:
+
+- both governed-manifold consumer surfaces recognize only the existing external-owner tasks `TVC-PROVIDER-OPERATION-BROKER-003` and `TVC-CAPABILITY-RUNTIME-002`;
+- hosted execution is rejected;
+- the bridge requires the pre-existing `STEGTV_PRIMARY_RUNTIME_ACTIVATION_AUTHORITY=TV/TVC` declaration and a locally materialized `StegVerse-Labs/TVC` root;
+- the bridge invokes TVC's own dispatcher preflight and activation selectors rather than reproducing binder logic;
+- it then invokes TVC's existing non-secret `observe_tvc_runtime_boundary.py` observer and persists the observation into the resident manifold receipt tree;
+- only `READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND` is qualifying; dispatcher success alone is not qualifying evidence;
+- no GitHub/runtime credential authority, new TVC claim, provider operation, wallet signing, or broadcast capability is introduced.
+
+Focused regression coverage checks both consumer surfaces, fail-closed absence of the TV/TVC declaration, and hosted-surface rejection.
+
+This is source-path remediation, not a claim that the authorized TV/TVC host has executed it yet.
 
 ## Required formalism order
 
@@ -51,7 +69,7 @@ PR `#1246` merged at `edc048632afe8db34113101b7d7400f9d5fbb8e4`; conditional lan
 
 ## TVC / StegFin
 
-`TVC-PROVIDER-OPERATION-BROKER-003` and `TVC-CAPABILITY-RUNTIME-002` still require qualifying current runtime observation. `STEGFIN-CONTINUITY-CARRIER-007` remains fail-closed until TVC qualification exists.
+`TVC-PROVIDER-OPERATION-BROKER-003` and `TVC-CAPABILITY-RUNTIME-002` still require qualifying current runtime observation. `STEGFIN-CONTINUITY-CARRIER-007` remains fail-closed until TVC qualification exists. The current branch makes the existing TVC owner path directly visitable by the resident umbrella when the TV/TVC host predicates are present.
 
 ## GADI
 
@@ -66,14 +84,16 @@ HIL G25 request consumption is satisfied and task COSV is `50000000103000`. Site
 - umbrella coordination: `PROPOSED / UNCLAIMED`
 - allowed next canonical transition: `INGRESS_ADMITTED`
 - resident activation request: `REQUESTED`
-- complete-all-declared-children policy: `IMPLEMENTED IN CURRENT BRANCH`
+- complete-all-declared-children policy: `MERGED / VALIDATED`
 - live dispatcher prerequisite gating: `REPAIRED / MERGED`
 - source-discovery traversal wiring: `MERGED`
 - source-materialization recovery wiring: `MERGED / VALIDATED`
+- first-cohort upstream source presence: `CANONICAL HANDOFF-BEARING REPOSITORIES OBSERVED`
 - source-discovery resident receipt / roots manifest: `NOT OBSERVED`
+- TVC primary-runtime owner bridge: `IMPLEMENTED IN CURRENT BRANCH / VALIDATION PENDING`
+- TVC authentic runtime qualification: `PENDING`
 - four formalism lane receipts: `PENDING`
 - formalism manifold reconciliation: `PENDING`
-- TVC runtime qualification: `PENDING`
 - StegFin continuation: `PENDING TVC`
 - GADI authentic execution / Master Records reconciliation: `PENDING`
 - HIL G25 request consumption: `SATISFIED`
@@ -82,6 +102,6 @@ HIL G25 request consumption is satisfied and task COSV is `50000000103000`. Site
 
 ## README and release rule
 
-README reviewed. Existing resident-request, WorkerCoordinator, TV/TVC transport, and fail-closed evidence documentation remains accurate; no top-level README wording change is required for this policy clarification.
+README reviewed. Existing resident-request, WorkerCoordinator, TV/TVC transport, and fail-closed evidence documentation remains accurate; no top-level README wording change is required for this bridge repair.
 
 The umbrella is not release/tag ready. Future qualifying release/tag requires separate propagation verification for `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `admissibility-wiki`, and `stegguardian-wiki`, plus `StegVerse-Labs/Sit` only when an applicable consumer role exists.
