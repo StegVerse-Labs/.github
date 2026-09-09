@@ -66,7 +66,7 @@
           "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
           "notation": "L R U I V G O C M T B E A P",
           "width": 14,
-          "vector": "50000000105000",
+          "vector": "50000000103000",
           "vector_state": "EMITTED",
           "vector_observed_at": "2026-09-09T00:48:00-05:00",
           "authority_effect": "NONE"
