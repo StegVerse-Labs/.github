@@ -6,7 +6,7 @@ Goal task: `SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001`
 Continuation task: `STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001`
 Custody task: `MR-STEGVERSE001-BOUNDED-AUTONOMY-001`
 Observer successor: `SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001`
-State: `HANDOFF_READY_SOVEREIGN_LOCAL_RENDEZVOUS_PRIMARY_HOSTED_FALLBACK_ONLY_VALIDATED_DEPLOYED_AUTHENTIC_CURRENT_DEVICE_EVIDENCE_PENDING`
+State: `HANDOFF_READY_SOVEREIGN_LOCAL_RENDEZVOUS_PRIMARY_STEGBROWSER_TRANSPORT_CONTRACT_VALIDATED_IOS_NATIVE_LISTENER_RUNTIME_PENDING`
 
 ## Canonical terminal source
 
@@ -34,6 +34,7 @@ SV002: observation/disposition only
 HB32: timing/freshness/correlation only; authority NONE
 Site: current-device materialization/carrier only; authority NONE
 Sovereign resident rendezvous: PRIMARY evidence transport; authority NONE
+StegBrowser native resident wrapper: local transport/lifecycle only; authority NONE
 Hosted/Render rendezvous: FALLBACK evidence transport only; authority NONE
 Transported Site proof: evidence only; authority NONE
 ```
@@ -49,6 +50,7 @@ exact retained/recovered canonical G23
 -> canonical Master Records custody/reconstruction PASS
 -> Site governed custody proof
 -> sovereign local resident rendezvous first
+-> StegBrowser/iOS native loopback wrapper when current device is iPhone
 -> hosted rendezvous only if sovereign local rendezvous is unavailable
 -> non-authorizing mailbox RETAINED
 -> WorkerCoordinator continuation fetch/materialization under observed/**
@@ -187,7 +189,44 @@ b1ea15c47eb481dc014b07df347aa61886e80a73
 
 No-token organization-control validation run `34301353083`: `SUCCESS`.
 
-The generic sovereign runtime poller may still accept explicitly configured rendezvous environment values, but this SV001 continuation lane no longer requires a hosted URL to operate and does not treat one as primary.
+## Current-iPhone resident listener gap and StegBrowser repair
+
+The existing `StegVerse-org/LLM-adapter/llm_adapter/node_service.py` portable-node lifecycle is Python/process-supervision based. It can launch a valid local resident on supported desktop/server hosts, but Safari/PWA code and GitHub Pages do not create an iPhone-native loopback process. Therefore the sovereign-local hierarchy was source-correct but had no canonical iOS listener implementation behind `127.0.0.1:8000`.
+
+The shared rendezvous semantics have now been extracted into StegBrowser as a transport-neutral local contract:
+
+```text
+StegVerse-Labs/StegBrowser
+3b09b59a984df60c7c728373f260e2b79d338b18
+  src/stegbrowser/resident_rendezvous.py
+  deterministic discovery / evidence-retain / evidence-fetch core
+  canonical node validation
+  canonical G23 + governed custody proof validation
+  proof digest recomputation
+  idempotent same-proof retention / conflicting replacement refusal
+  authority effect NONE only
+
+6cd64f0ca423547dd7fa9ed0b0883e36c5e29ad9
+  tests/test_resident_rendezvous.py
+
+44b5bde1a425f0d3e09d325f149c490c2445459e
+  public package export
+
+d33fe99b613be432b4fae25d45b1861963df1d1a
+  docs/STEGBROWSER_IOS_RESIDENT_RENDEZVOUS_MIRROR_HANDOFF.md
+```
+
+StegBrowser Validate run `34302248904`: `SUCCESS`.
+
+The platform binding is intentionally not fabricated. The remaining current-device implementation is an actual iOS native loopback listener/lifecycle (for example a Network.framework `NWListener`) that wraps the validated StegBrowser contract, binds loopback only, and exposes exactly:
+
+```text
+GET  /api/resident-rendezvous/v1/discovery
+POST /api/resident-rendezvous/v1/evidence/site-governed-custody
+GET  /api/resident-rendezvous/v1/evidence/site-governed-custody?target_node_ref=<SV-NODE-...>
+```
+
+No governance, custody, credential, heartbeat, routing, or execution authority may be added by that wrapper.
 
 ## Current evidence state
 
@@ -204,6 +243,8 @@ governance-bypass repair: VALIDATED
 resident evidence mailbox source: VALIDATED
 sovereign-local Site transport hierarchy: VALIDATED / PAGES DEPLOYED
 sovereign-local continuation transport hierarchy: VALIDATED
+StegBrowser transport-neutral resident contract: VALIDATED
+current-iPhone native loopback listener wrapper: NOT YET IMPLEMENTED
 hosted rendezvous fallback: AVAILABLE / FALLBACK_ONLY
 current-device consumption of latest sovereign-primary Site source: NOT YET OBSERVED
 fresh root-InTr ALLOW for custody: NOT YET OBSERVED
@@ -224,6 +265,7 @@ terminal SV001 -> never rerun for downstream evidence
 G23 missing/ambiguous -> fail closed; no G24 substitution
 fresh root-InTr absent/DENY/mismatch/timeout -> fail closed before custody
 partial/historical admission or custody -> no retroactive authorization
+Safari/PWA source without native listener -> local resident remains unavailable; do not claim resident execution
 sovereign local rendezvous reachable + NO_EVIDENCE -> remain pending locally; do not use hosted fallback
 sovereign local rendezvous reachable + malformed/authority-invalid -> fail closed; do not use hosted fallback
 all sovereign local rendezvous candidates unavailable -> hosted fallback may be attempted
@@ -237,17 +279,16 @@ SV002 nonterminal/failure -> retry SV002 independently; never reopen SV001
 ## Next admissible machine transition
 
 ```text
-current-device Site lifecycle consumes deployed sovereign-primary v15 source
+implement/bind actual iOS-native StegBrowser resident loopback wrapper to validated transport-neutral contract
+-> current-device lifecycle starts bounded loopback listener
+-> Site discovers sovereign local resident before hosted fallback
 -> exact canonical G23 available from retained same-device evidence
 -> executeMasterRecordsSv001Custody()
 -> fresh root-InTr ALLOW or fail closed
 -> Master Records custody/reconstruction PASS
--> Site probes sovereign local resident rendezvous first
--> if local resident available, local transport owns evidence state
--> hosted fallback only when sovereign local rendezvous is unavailable
--> exact proof RETAINED
--> WorkerCoordinator selects continuation
--> continuation again prefers sovereign local resident evidence
+-> exact proof POST to local resident
+-> local mailbox RETAINED
+-> WorkerCoordinator continuation again prefers local evidence
 -> proof materializes under observed/** after digest/authority validation
 -> retained downstream same-execution reconstruction
 -> SV002 observation/disposition
