@@ -1,17 +1,21 @@
 from copy import deepcopy
 from pathlib import Path
 import importlib.util
-import pytest
+import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-SPEC = importlib.util.spec_from_file_location("hil_browser_intake", ROOT / "scripts" / "intake_hil_browser_execution_evidence.py")
+SPEC = importlib.util.spec_from_file_location(
+    "hil_browser_intake", ROOT / "scripts" / "intake_hil_browser_execution_evidence.py"
+)
 MOD = importlib.util.module_from_spec(SPEC)
 assert SPEC.loader is not None
 SPEC.loader.exec_module(MOD)
 
 
 def request():
-    return MOD.load_json(ROOT / "control" / "resident-execution-request.d" / "hil-sovereign-receiver-001.json")
+    return MOD.load_json(
+        ROOT / "control" / "resident-execution-request.d" / "hil-sovereign-receiver-001.json"
+    )
 
 
 def evidence():
@@ -38,69 +42,74 @@ def evidence():
     }
 
 
-def test_exact_browser_evidence_builds_consumption_receipt_without_widening_authority():
-    receipt = MOD.build_consumption_receipt(request(), evidence())
-    assert receipt["state"] == "COMPLETED"
-    assert receipt["request_id"] == MOD.REQUEST_ID
-    assert receipt["request_sha256"] == MOD.REQUEST_SHA256
-    assert receipt["runtime_execution_attempted"] is True
-    assert receipt["runtime_execution_surface"] == "CURRENT_USER_IPHONE_BROWSER"
-    assert receipt["terminal_hil_transition_observed"] is True
-    assert receipt["terminal_hil_transition"] == MOD.TRANSITION
-    assert receipt["broader_hil_lifecycle_complete"] is False
-    assert receipt["retry_allowed"] is False
-    assert receipt["github_token_runtime_authority"] == "NONE"
-    assert receipt["heartbeat_grants_execution_authority"] is False
-    assert receipt["credential_authority"] == "TV/TVC"
-    assert receipt["second_machine_required"] is False
-    assert receipt["screenshot_substitution_allowed"] is False
-    assert receipt["component_claimed_request_consumption"] is False
+class HILBrowserExecutionEvidenceIntakeTests(unittest.TestCase):
+    def test_exact_browser_evidence_builds_consumption_receipt_without_widening_authority(self):
+        receipt = MOD.build_consumption_receipt(request(), evidence())
+        self.assertEqual(receipt["state"], "COMPLETED")
+        self.assertEqual(receipt["request_id"], MOD.REQUEST_ID)
+        self.assertEqual(receipt["request_sha256"], MOD.REQUEST_SHA256)
+        self.assertIs(receipt["runtime_execution_attempted"], True)
+        self.assertEqual(receipt["runtime_execution_surface"], "CURRENT_USER_IPHONE_BROWSER")
+        self.assertIs(receipt["terminal_hil_transition_observed"], True)
+        self.assertEqual(receipt["terminal_hil_transition"], MOD.TRANSITION)
+        self.assertIs(receipt["broader_hil_lifecycle_complete"], False)
+        self.assertIs(receipt["retry_allowed"], False)
+        self.assertEqual(receipt["github_token_runtime_authority"], "NONE")
+        self.assertIs(receipt["heartbeat_grants_execution_authority"], False)
+        self.assertEqual(receipt["credential_authority"], "TV/TVC")
+        self.assertIs(receipt["second_machine_required"], False)
+        self.assertIs(receipt["screenshot_substitution_allowed"], False)
+        self.assertIs(receipt["component_claimed_request_consumption"], False)
+
+    def test_browser_evidence_fails_closed_on_binding_or_component_drift(self):
+        drift_cases = [
+            ("resident_request_id", "wrong"),
+            ("resident_request_sha256", "0" * 64),
+            ("state", "READY"),
+            ("transition", "OTHER"),
+            ("journal_replay_state", "FAIL"),
+            ("second_claim_minted", True),
+            ("request_consumption_claimed", True),
+            ("browser_receiver_execution_observed", False),
+            ("installed_native_app_required", True),
+            ("authority_effect", "OTHER"),
+        ]
+        for field, value in drift_cases:
+            with self.subTest(field=field, value=value):
+                item = evidence()
+                item[field] = value
+                with self.assertRaises(RuntimeError):
+                    MOD.build_consumption_receipt(request(), item)
+
+    def test_claim_and_fence_must_match_and_be_above_g24(self):
+        item = evidence()
+        item["claim_id"] = "SHWP-SHWP-HIL-SOVEREIGN-RECEIVER-001-G26"
+        with self.assertRaises(RuntimeError):
+            MOD.build_consumption_receipt(request(), item)
+
+        item = evidence()
+        item["claim_id"] = "SHWP-SHWP-HIL-SOVEREIGN-RECEIVER-001-G24"
+        item["fencing_token"] = 24
+        with self.assertRaises(RuntimeError):
+            MOD.build_consumption_receipt(request(), item)
+
+    def test_request_object_must_remain_exact_stable_hash(self):
+        req = deepcopy(request())
+        req["note"] += " changed"
+        with self.assertRaises(RuntimeError):
+            MOD.build_consumption_receipt(req, evidence())
+
+    def test_browser_context_and_journal_hashes_are_required(self):
+        item = evidence()
+        item["browser_context_id"] = "ctx_bad"
+        with self.assertRaises(RuntimeError):
+            MOD.build_consumption_receipt(request(), item)
+
+        item = evidence()
+        item["execution_entry_sha256"] = "short"
+        with self.assertRaises(RuntimeError):
+            MOD.build_consumption_receipt(request(), item)
 
 
-@pytest.mark.parametrize("field,value", [
-    ("resident_request_id", "wrong"),
-    ("resident_request_sha256", "0" * 64),
-    ("state", "READY"),
-    ("transition", "OTHER"),
-    ("journal_replay_state", "FAIL"),
-    ("second_claim_minted", True),
-    ("request_consumption_claimed", True),
-    ("browser_receiver_execution_observed", False),
-    ("installed_native_app_required", True),
-    ("authority_effect", "OTHER"),
-])
-def test_browser_evidence_fails_closed_on_binding_or_component_drift(field, value):
-    item = evidence()
-    item[field] = value
-    with pytest.raises(RuntimeError):
-        MOD.build_consumption_receipt(request(), item)
-
-
-def test_claim_and_fence_must_match_and_be_above_g24():
-    item = evidence()
-    item["claim_id"] = "SHWP-SHWP-HIL-SOVEREIGN-RECEIVER-001-G26"
-    with pytest.raises(RuntimeError):
-        MOD.build_consumption_receipt(request(), item)
-    item = evidence()
-    item["claim_id"] = "SHWP-SHWP-HIL-SOVEREIGN-RECEIVER-001-G24"
-    item["fencing_token"] = 24
-    with pytest.raises(RuntimeError):
-        MOD.build_consumption_receipt(request(), item)
-
-
-def test_request_object_must_remain_exact_stable_hash():
-    req = deepcopy(request())
-    req["note"] += " changed"
-    with pytest.raises(RuntimeError):
-        MOD.build_consumption_receipt(req, evidence())
-
-
-def test_browser_context_and_journal_hashes_are_required():
-    item = evidence()
-    item["browser_context_id"] = "ctx_bad"
-    with pytest.raises(RuntimeError):
-        MOD.build_consumption_receipt(request(), item)
-    item = evidence()
-    item["execution_entry_sha256"] = "short"
-    with pytest.raises(RuntimeError):
-        MOD.build_consumption_receipt(request(), item)
+if __name__ == "__main__":
+    unittest.main()
