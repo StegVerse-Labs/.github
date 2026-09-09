@@ -74,42 +74,49 @@ class GlobalRuntimeNodeProfileConvergenceTests(unittest.TestCase):
         self.assertEqual("HB32", browser["substrate"]["hb_protocol"])
         self.assertFalse(browser["authority"]["hb_grants_authority"])
 
-    def test_previously_unwired_lanes_have_profile_bound_resolution_classes(self):
+    def test_former_unwired_lanes_have_exact_profile_classes(self):
         data = json.loads(PROFILES.read_text(encoding="utf-8"))
         by_task = {row["task_id"]: row for row in data["profiles"]}
-        self.assertEqual("EXTERNAL_RUNTIME_PROFILE_BRIDGE", by_task["VACP-SOVEREIGN-PROVIDER-REALIGNMENT-023"]["execution_binding"]["type"])
+        vacc = by_task["VACP-SOVEREIGN-PROVIDER-REALIGNMENT-023"]["execution_binding"]
+        self.assertEqual("EXISTING_TASK_RUNTIME_WRAPPER", vacc["type"])
+        self.assertEqual("workers/vacc_profiled_resident_execution.py", vacc["wrapper"])
         stegclaw = by_task["DATA-CONTINUATION-STEGCLAW-P4"]["execution_binding"]
         self.assertEqual("EXISTING_TASK_RUNTIME_WRAPPER", stegclaw["type"])
         self.assertEqual("ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001", stegclaw["executor_task_id"])
         self.assertEqual("50000000101000", stegclaw["executor_cosv"])
         self.assertEqual("EXACT_PARENT_REBIND_PROFILE", by_task["DECISION-ENVELOPE-DE006"]["execution_binding"]["type"])
 
-    def test_wrapper_executes_stegclaw_profile_instead_of_observation_only(self):
+    def test_wrapper_executes_vacc_and_stegclaw_profiles(self):
         module = load_wrapper()
         profile_data = json.loads(PROFILES.read_text(encoding="utf-8"))
         outcomes = []
         for row in profile_data["profiles"]:
             state = "NO_REGISTERED_SELECTOR" if row["task_id"] in {"VACP-SOVEREIGN-PROVIDER-REALIGNMENT-023", "DATA-CONTINUATION-STEGCLAW-P4", "DECISION-ENVELOPE-DE006"} else "WAITING_FOR_REQUEST"
             path = "UNWIRED_CHILD_RUNTIME" if state == "NO_REGISTERED_SELECTOR" else "REGISTERED_RESIDENT_SELECTOR"
-            outcomes.append({"lane": row["lane"], "task_id": row["task_id"], "state": state, "execution_path": path, "resume_stage": row["resume_stage"]})
+            outcomes.append({"lane":row["lane"],"task_id":row["task_id"],"state":state,"execution_path":path,"resume_stage":row["resume_stage"]})
 
         def fake_base(_source: Path, _runtime: Path):
-            return {"schema": "stegverse.global-runtime-evidence-convergence/v1", "state": "CONVERGENCE_VISIT_COMPLETE", "lane_outcomes": outcomes}
+            return {"schema":"stegverse.global-runtime-evidence-convergence/v1","state":"CONVERGENCE_VISIT_COMPLETE","lane_outcomes":outcomes}
+
+        def fake_wrapper(_source: Path, _runtime: Path, _rel: Path, label: str, timeout: int = 7200):
+            if label == "VACC":
+                return {"state":"VACC_PROFILED_RESIDENT_REQUEST_EXECUTED","same_execution":True}
+            if label == "STEGCLAW":
+                return {"state":"STEGCLAW_P4_RESIDENT_EXECUTION_OBSERVED","p4_executor_receipt_predicate_satisfied":True}
+            raise AssertionError(label)
 
         with tempfile.TemporaryDirectory() as tmp:
             runtime = Path(tmp)
             (runtime / "control/runtime-observability-consumers").mkdir(parents=True)
             source_de006 = ROOT / "control/runtime-observability-consumers/decision-envelope-de006.json"
             (runtime / "control/runtime-observability-consumers/decision-envelope-de006.json").write_bytes(source_de006.read_bytes())
-            with mock.patch.object(module, "_run_stegclaw_profile_wrapper", return_value={"state":"STEGCLAW_P4_RESIDENT_EXECUTION_OBSERVED","p4_executor_receipt_predicate_satisfied":True,"stegclaw_path_attribution":True}):
+            with mock.patch.object(module, "_run_profile_wrapper", side_effect=fake_wrapper):
                 result = module.execute(ROOT, runtime, base_executor=fake_base)
             self.assertEqual(18, result["member_count"])
             self.assertEqual(0, result["unwired_member_count"])
-            self.assertFalse(any(row["execution_path"] == "UNWIRED_CHILD_RUNTIME" for row in result["lane_outcomes"]))
             by_task = {row["task_id"]: row for row in result["lane_outcomes"]}
-            self.assertEqual("PROFILE_BOUND_EXTERNAL_RUNTIME_NOT_MATERIALIZED", by_task["VACP-SOVEREIGN-PROVIDER-REALIGNMENT-023"]["state"])
+            self.assertEqual("VACC_PROFILED_RESIDENT_REQUEST_EXECUTED", by_task["VACP-SOVEREIGN-PROVIDER-REALIGNMENT-023"]["state"])
             self.assertEqual("STEGCLAW_P4_RESIDENT_EXECUTION_OBSERVED", by_task["DATA-CONTINUATION-STEGCLAW-P4"]["state"])
-            self.assertTrue(by_task["DATA-CONTINUATION-STEGCLAW-P4"]["p4_executor_receipt_predicate_satisfied"])
             self.assertEqual("PROFILE_BOUND_PARENT_REBIND_REQUIRED", by_task["DECISION-ENVELOPE-DE006"]["state"])
 
     def test_runtime_profile_map_bootstrap_uses_profiled_wrapper_and_materializes_profile_registry(self):

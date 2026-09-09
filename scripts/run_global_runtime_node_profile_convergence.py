@@ -1,12 +1,5 @@
 #!/usr/bin/env python3
-"""Run the existing global convergence visitor and bind every lane to one HB32 StegOS runtime-node profile.
-
-This is a convergence wrapper over the existing resident dispatcher/runner. It does not
-create another heartbeat, scheduler, dispatcher, WorkerCoordinator, credential path, or
-transition authority. The StegBrowser retained-node implementation is the state-lifecycle
-reference: node identity/continuity is retained while bounded execution-session state may
-be torn down. HB remains observability only.
-"""
+"""Run the existing global convergence visitor and bind every lane to one HB32 StegOS runtime-node profile."""
 from __future__ import annotations
 
 import argparse
@@ -23,6 +16,7 @@ PROFILE_REL = Path("control/runtime-node-profiles.json")
 BASE_RUNNER_REL = Path("scripts/run_global_runtime_evidence_convergence.py")
 PROFILE_RECEIPT_REL = Path("receipts/sovereign-host/global-runtime-node-profile-convergence.latest.json")
 STEGCLAW_WRAPPER_REL = Path("workers/stegclaw_p4_profiled_resident_execution.py")
+VACC_WRAPPER_REL = Path("workers/vacc_profiled_resident_execution.py")
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -114,24 +108,24 @@ def _external_root(runtime: Path, env_name: str, fallback: Path) -> Path | None:
     return None
 
 
-def _run_stegclaw_profile_wrapper(source: Path, runtime: Path) -> dict[str, Any]:
-    wrapper = runtime / STEGCLAW_WRAPPER_REL
+def _run_profile_wrapper(source: Path, runtime: Path, wrapper_rel: Path, label: str, timeout: int = 7200) -> dict[str, Any]:
+    wrapper = runtime / wrapper_rel
     if not wrapper.is_file():
-        wrapper = source / STEGCLAW_WRAPPER_REL
-    require(wrapper.is_file(), "StegClaw P4 resident wrapper missing")
+        wrapper = source / wrapper_rel
+    require(wrapper.is_file(), f"{label} resident wrapper missing")
     completed = subprocess.run(
         [sys.executable, str(wrapper), "--source-root", str(source), "--runtime-root", str(runtime)],
         cwd=runtime,
         capture_output=True,
         text=True,
         check=False,
-        timeout=1200,
+        timeout=timeout,
         env=os.environ.copy(),
     )
     result = parse_last_json(completed.stdout)
     if isinstance(result, dict):
-        return {**result, "wrapper_returncode": completed.returncode, "wrapper": str(STEGCLAW_WRAPPER_REL)}
-    return {"state":"PROFILE_BOUND_STEGCLAW_WRAPPER_NO_RESULT","wrapper_returncode":completed.returncode,"stderr_tail":completed.stderr[-1200:]}
+        return {**result, "wrapper_returncode": completed.returncode, "wrapper": str(wrapper_rel)}
+    return {"state":f"PROFILE_BOUND_{label}_WRAPPER_NO_RESULT","wrapper_returncode":completed.returncode,"stderr_tail":completed.stderr[-1200:]}
 
 
 def resolve_unwired_profile(source: Path, runtime: Path, profile: dict[str, Any]) -> dict[str, Any]:
@@ -139,50 +133,43 @@ def resolve_unwired_profile(source: Path, runtime: Path, profile: dict[str, Any]
     binding = profile.get("execution_binding") or {}
     kind = binding.get("type")
 
+    if task_id == "VACP-SOVEREIGN-PROVIDER-REALIGNMENT-023" and kind == "EXISTING_TASK_RUNTIME_WRAPPER":
+        return _run_profile_wrapper(source, runtime, VACC_WRAPPER_REL, "VACC")
+
+    # Backward-compatible diagnosis for an older materialized profile copy.
     if kind == "EXTERNAL_RUNTIME_PROFILE_BRIDGE" and task_id == "VACP-SOVEREIGN-PROVIDER-REALIGNMENT-023":
         observed = _find_vacc_state(runtime)
-        if observed is not None:
-            value = observed["value"]
-            if value.get("state") == "LIVE_VERIFIED":
-                return {"state": "PROFILE_BOUND_RUNTIME_LIVE_VERIFIED", "runtime_state_ref": observed["path"]}
+        if observed is not None and observed["value"].get("state") == "LIVE_VERIFIED":
+            return {"state":"PROFILE_BOUND_RUNTIME_LIVE_VERIFIED","runtime_state_ref":observed["path"]}
         adapter_root = _external_root(runtime, str(binding.get("root_env")), Path("workloads/StegVerse-org/LLM-adapter"))
         if adapter_root is None:
-            return {"state": "PROFILE_BOUND_EXTERNAL_RUNTIME_NOT_MATERIALIZED", "required_root_env": binding.get("root_env")}
-        task_ref = adapter_root / str(binding.get("task_ref"))
-        missing = [ref for ref in binding.get("required_surfaces", []) if not (adapter_root / str(ref)).is_file()]
-        if not task_ref.is_file() or missing:
-            return {"state": "PROFILE_BOUND_EXTERNAL_RUNTIME_SOURCE_INCOMPLETE", "adapter_root": str(adapter_root), "missing_surfaces": missing}
-        return {"state": "PROFILE_BOUND_PARENT_RECONSTRUCTION_OR_ROUTE_PENDING", "adapter_root": str(adapter_root), "task_ref": str(task_ref)}
+            return {"state":"PROFILE_BOUND_EXTERNAL_RUNTIME_NOT_MATERIALIZED","required_root_env":binding.get("root_env")}
+        return {"state":"PROFILE_BOUND_PARENT_RECONSTRUCTION_OR_ROUTE_PENDING","adapter_root":str(adapter_root)}
 
     if task_id == "DATA-CONTINUATION-STEGCLAW-P4" and kind in {"OBSERVABILITY_BOUND_EXTERNAL_RUNTIME", "EXISTING_TASK_RUNTIME_WRAPPER"}:
-        return _run_stegclaw_profile_wrapper(source, runtime)
+        return _run_profile_wrapper(source, runtime, STEGCLAW_WRAPPER_REL, "STEGCLAW", timeout=1200)
 
     if kind == "EXACT_PARENT_REBIND_PROFILE" and task_id == "DECISION-ENVELOPE-DE006":
         consumer_path = runtime / str(binding.get("consumer_ref"))
         if not consumer_path.is_file():
-            consumer_path = ROOT / str(binding.get("consumer_ref"))
+            consumer_path = source / str(binding.get("consumer_ref"))
         require(consumer_path.is_file(), "DE006 observability consumer missing")
         consumer = load_json(consumer_path)
         refs = consumer.get("evidence_bindings") or {}
         present = {name: (runtime / str(rel)).is_file() for name, rel in refs.items() if isinstance(rel, str)}
         if all(present.values()) and present:
-            return {"state": "PROFILE_BOUND_PARENT_CHAIN_PRESENT_REEXECUTION_READY", "evidence_bindings": present}
+            return {"state":"PROFILE_BOUND_PARENT_CHAIN_PRESENT_REEXECUTION_READY","evidence_bindings":present}
         return {
-            "state": "PROFILE_BOUND_PARENT_REBIND_REQUIRED",
-            "required_parent_predicate": binding.get("required_parent_predicate"),
-            "reusable_device_evidence_task": binding.get("reusable_device_evidence_task"),
-            "evidence_bindings": present,
+            "state":"PROFILE_BOUND_PARENT_REBIND_REQUIRED",
+            "required_parent_predicate":binding.get("required_parent_predicate"),
+            "reusable_device_evidence_task":binding.get("reusable_device_evidence_task"),
+            "evidence_bindings":present,
         }
 
     raise RuntimeError(f"FAIL_CLOSED: unsupported unwired runtime-node binding:{task_id}:{kind}")
 
 
-def execute(
-    source_root: Path,
-    runtime_root: Path,
-    *,
-    base_executor: Callable[[Path, Path], dict[str, Any]] | None = None,
-) -> dict[str, Any]:
+def execute(source_root: Path, runtime_root: Path, *, base_executor: Callable[[Path, Path], dict[str, Any]] | None = None) -> dict[str, Any]:
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
     profile_data = load_profiles(source, runtime)
@@ -204,12 +191,12 @@ def execute(
         profile = by_task[task_id]
         result = dict(lane)
         result.update({
-            "runtime_node_profile_id": profile.get("profile_id"),
-            "runtime_node_origin": profile.get("node_origin"),
-            "hb_protocol": profile_data["profile_policy"]["hb_protocol"],
-            "node_state_class": profile_data["profile_policy"]["node_state_class"],
-            "execution_session_class": profile_data["profile_policy"]["execution_session_class"],
-            "node_identity_survives_session_teardown": True,
+            "runtime_node_profile_id":profile.get("profile_id"),
+            "runtime_node_origin":profile.get("node_origin"),
+            "hb_protocol":profile_data["profile_policy"]["hb_protocol"],
+            "node_state_class":profile_data["profile_policy"]["node_state_class"],
+            "execution_session_class":profile_data["profile_policy"]["execution_session_class"],
+            "node_identity_survives_session_teardown":True,
         })
         if lane.get("state") == "NO_REGISTERED_SELECTOR" or lane.get("execution_path") == "UNWIRED_CHILD_RUNTIME":
             resolved = resolve_unwired_profile(source, runtime, profile)
@@ -219,18 +206,18 @@ def execute(
 
     require(not any(row.get("execution_path") == "UNWIRED_CHILD_RUNTIME" for row in profiled), "unwired child runtime remains after profile convergence")
     receipt = {
-        "schema": "stegverse.global-runtime-node-profile-convergence/v1",
-        "state": "PROFILE_CONVERGENCE_VISIT_COMPLETE",
-        "goal_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
-        "cosv": profile_data.get("cosv"),
-        "baseline_milestone": profile_data.get("baseline_milestone"),
-        "hb_protocol": profile_data["profile_policy"]["hb_protocol"],
-        "member_count": len(profiled),
-        "unwired_member_count": 0,
-        "lane_outcomes": profiled,
-        "base_convergence_state": base_receipt.get("state"),
-        "authority_effect": "NONE_PROFILE_AND_OBSERVATION_ONLY",
-        "nonclaims": [
+        "schema":"stegverse.global-runtime-node-profile-convergence/v1",
+        "state":"PROFILE_CONVERGENCE_VISIT_COMPLETE",
+        "goal_task_id":"GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+        "cosv":profile_data.get("cosv"),
+        "baseline_milestone":profile_data.get("baseline_milestone"),
+        "hb_protocol":profile_data["profile_policy"]["hb_protocol"],
+        "member_count":len(profiled),
+        "unwired_member_count":0,
+        "lane_outcomes":profiled,
+        "base_convergence_state":base_receipt.get("state"),
+        "authority_effect":"NONE_PROFILE_AND_OBSERVATION_ONLY",
+        "nonclaims":[
             "PROFILE_BINDING_DOES_NOT_PROVE_RUNTIME_EXECUTION",
             "HB_SYNC_DOES_NOT_GRANT_EXECUTION_AUTHORITY",
             "RETAINED_NODE_PROFILE_DOES_NOT_MINT_CLAIM_OR_FENCE",
@@ -249,13 +236,7 @@ def main() -> int:
     parser.add_argument("--runtime-root", type=Path, default=ROOT)
     args = parser.parse_args()
     result = execute(args.source_root, args.runtime_root)
-    print(json.dumps({
-        "state": result["state"],
-        "member_count": result["member_count"],
-        "unwired_member_count": result["unwired_member_count"],
-        "hb_protocol": result["hb_protocol"],
-        "receipt": str((args.runtime_root.expanduser().resolve() / PROFILE_RECEIPT_REL)),
-    }, sort_keys=True))
+    print(json.dumps({"state":result["state"],"member_count":result["member_count"],"unwired_member_count":result["unwired_member_count"],"hb_protocol":result["hb_protocol"],"receipt":str(args.runtime_root.expanduser().resolve() / PROFILE_RECEIPT_REL)}, sort_keys=True))
     return 0
 
 
