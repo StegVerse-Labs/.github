@@ -2,9 +2,9 @@
 
 Goal Task ID: `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001`
 Canonical issue: `StegVerse-Labs/.github#1260`
-Canonical PR: `StegVerse-Labs/.github#1261` (merged) plus current repair PR from `fix/global-runtime-selector-convergence-1260`
+Canonical PR: `StegVerse-Labs/.github#1261` (merged) plus current repair branch `fix/global-runtime-selector-convergence-1260`
 COSV: `50000000100000`
-Status: `ACTIVE / PARTIAL_SOLUTIONS_MACHINE_PROJECTED_ACROSS_18_MEMBERS / RESIDENT_CONVERGENCE_WIRED / STALE_VACC_ID_REPAIRED / ENDPOINT_FANOUT_ROUTE_REPAIRED / GADI_EXISTING_RUNTIME_WRAPPER_REUSED / STEGOS_RETAINED_NODE_AND_EPHEMERAL_EXECUTION_CLASSES_PROJECTED / AUTHENTIC_RESIDENT_CONVERGENCE_EXECUTION_NEXT`
+Status: `ACTIVE / PARTIAL_SOLUTIONS_MACHINE_PROJECTED_ACROSS_18_MEMBERS / RESIDENT_CONVERGENCE_WIRED / STALE_VACC_ID_REPAIRED / ENDPOINT_FANOUT_ROUTE_REPAIRED / GADI_EXISTING_RUNTIME_WRAPPER_REUSED / PERSISTENT_NODE_EPHEMERAL_EXECUTION_MODEL_PROJECTED / AUTHENTIC_RESIDENT_CONVERGENCE_EXECUTION_NEXT`
 
 ## Purpose
 
@@ -12,110 +12,151 @@ Converge all StegVerse ecosystem capabilities that are implemented or integratio
 
 ## Canonical registration
 
-The umbrella is registered under issue #1260 and merged source from PR #1261. Canonical source includes:
+The umbrella is registered under issue #1260 and merged source from PR #1261. The task record is `ACTIVE / CLAIMED_INTEGRATION` with task.v1 COSV `50000000100000`.
 
-- `data/canonical-task-records/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.json`
-- `control/task-vectors/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.json`
-- `control/task-vector-index.d/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.json`
-- `docs/GLOBAL_RUNTIME_EVIDENCE_CONVERGENCE_MATRIX.md`
-- `control/runtime-partial-solution-projections/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.json`
-- `tools/validate_runtime_partial_solution_projection.py`
-- `scripts/run_global_runtime_evidence_convergence.py`
-- `tests/test_global_runtime_evidence_convergence_execution.py`
-- this handoff
+## Reusable solution model
 
-The task record is `ACTIVE / CLAIMED_INTEGRATION` with task.v1 COSV `50000000100000`.
+The projection keeps existing specific mechanism classes and now adds one ecosystem-wide composite runtime class:
 
-## Reusable solution classes
+`PERSISTENT_NODE_EPHEMERAL_EXECUTION`
 
-The 18-member projection now uses nine reusable mechanism classes:
+This supersedes the earlier attempt to model retained-node continuity and StegBrowser ephemeral execution as two independent ecosystem solution classes.
 
-1. `HIL_G25_BROWSER`
-2. `HF_UNIVERSAL_INTR`
-3. `VACC_LOCAL_RUNTIME`
-4. `DE006_SAME_EXEC_RECONSTRUCTION`
-5. `SV001_POST_TERMINAL_CONTINUATION`
-6. `EXACT_RESIDENT_REQUEST`
-7. `RUNTIME_PROFILE_MAP`
-8. `STEGOS_RETAINED_NODE_CONTINUITY`
-9. `STEGBROWSER_EPHEMERAL_EXECUTION`
+### Persistent node + ephemeral calls/transports/execution
 
-Cross-task evidence is never treated as substitute evidence; exact subject binding remains required.
+The reusable behavior is:
 
-### StegOS retained-node continuity solution class
+```text
+persistent StegOS node
+  - stable node identity
+  - genesis commitment
+  - non-secret state commitment
+  - continuity generation
+  - admitted evidence commitments
 
-The 2026-09-09 StegBrowser/StegOS implementation milestone establishes a source/CI-level mechanism in which canonical StegOS node identity, genesis commitment, non-secret state commitment, continuity generation, and admitted evidence commitments survive bounded browser/session teardown while browser cookies, provider sessions, credential material, navigation history, and temporary page state remain disposable.
+for each bounded operation:
+  -> ephemeral task/request manifestation
+  -> ephemeral WorkerCoordinator claim/fence lifecycle as applicable
+  -> ephemeral Interlock/InTr invocation
+  -> ephemeral data transport
+  -> ephemeral provider/browser/model/action session
+  -> component execution
+  -> exact result/readback/receipt
+  -> admitted evidence commitment advances retained node state
+  -> transport/session/credential/transient execution state destroyed
+  -> persistent node remains for the next operation
+```
 
-This is projected as `STEGOS_RETAINED_NODE_CONTINUITY` across all 18 current members because it can provide a stable same-device subject identity and rendezvous anchor for resident observation, task/request binding, restart continuity, and evidence correlation without itself claiming request consumption, WorkerCoordinator claim/fence, InTr admission, component execution, or custody completion.
+The StegBrowser implementation is the first concrete source implementation of this ecosystem pattern: browser execution is ephemeral while node continuity persists. The same pattern is appropriate beyond browser lanes because Interlock/InTr calls and data transports are themselves bounded transient operations; they do not need to become persistent merely because the node is persistent.
 
-The class is particularly relevant to the early shared failure band around `AUTHENTIC_RESIDENT_PROCESS_OBSERVED` and subject binding. If authentic current-iPhone proof shows the same retained node before and after session teardown/restart, Runtime Profile Map and each task-specific resident receipt can bind against one continuity anchor rather than repeatedly rediscovering an ambiguous resident subject.
+Therefore `PERSISTENT_NODE_EPHEMERAL_EXECUTION` is projected across all 18 current runtime members.
 
-Current evidence remains implementation/source evidence, not authentic physical runtime proof. The required runtime milestone is the same retained node observed before a bounded session, after session teardown, and after a subsequent app/session restart with no persistence of session credentials/cookies.
+This does not mean every member uses a browser. It means every member can bind ephemeral governed work and ephemeral transport to the same persistent StegOS continuity anchor.
 
-### StegBrowser ephemeral-execution solution class
+### What persists
 
-`STEGBROWSER_EPHEMERAL_EXECUTION` is separately projected only to browser-compatible lanes: HIL, Hugging Face/SV-DN1, SDK/Ecosystem Chat, and StegBrowser itself.
+Only continuity-bearing state:
 
-Its purpose is to reuse a retained StegOS node while creating short-lived lease-bounded browser/provider execution state for external operations, then destroy session material while retaining admitted evidence commitments. This class targets later external/browser execution and readback boundaries; it does not replace the resident node, grant execution authority, or solve non-browser component execution by itself.
+- canonical node identity;
+- genesis commitment;
+- continuity generation;
+- non-secret committed state;
+- admitted evidence commitments and references necessary for reconstruction.
 
-Keeping these two classes separate is required: persistent node continuity is a substrate/identity mechanism, while ephemeral browser execution is an execution-session mechanism.
+### What remains ephemeral
 
-## Resident convergence execution
+As applicable to the lane:
 
-The Canonical Runtime Profile Map remains the common diagnostic trigger. `scripts/install_and_run_canonical_work_event_bootstrap.py` performs the ordinary task-specific Canonical Work bootstrap and, for `STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001`, invokes `scripts/run_global_runtime_evidence_convergence.py` against the same resident root.
+- task execution process;
+- Interlock/InTr invocation;
+- request/response transport;
+- browser context;
+- provider/model session;
+- credential exposure/material;
+- network connection;
+- temporary page/application state;
+- transient worker/action process.
 
-The convergence runner reuses the existing resident dispatcher and existing bounded task-specific runtime wrappers. It does not create a second scheduler or dispatcher. It writes `receipts/sovereign-host/global-runtime-evidence-convergence.latest.json` with per-lane execution route/state and unresolved resume-stage counts.
+Persistence is therefore an identity/evidence continuity property, not a requirement that execution processes or transport channels stay alive indefinitely.
 
-## 2026-09-09 routing repair after PR #1261
+## Implication for the global failure map
 
-Fresh repository reconciliation exposed three concrete defects in the merged umbrella wiring and they are repaired on `fix/global-runtime-selector-convergence-1260`:
+This model directly changes the interpretation of the early shared failure band.
 
-1. **VACC stale task identity** — the umbrella still pointed at historical `VACP-ADAPTER-AUTHORIZED-EXECUTION-005`, which canonical LLM-adapter records mark `SUPERSEDED`. The projection now points at current `VACP-SOVEREIGN-PROVIDER-REALIGNMENT-023` owned by `StegVerse-org/LLM-adapter#142`.
-2. **Endpoint Fanout false NO_SELECTOR classification** — `SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001` is already part of `scripts/consume_stegos_kv_intr_chain_request.py`; the convergence runner now routes it through existing selector `stegos_kv_intr_chain` instead of reporting it unwired.
-3. **GADI false NO_SELECTOR classification** — canonical source already contains `scripts/dispatch_gadi_resident_execution.py`, which enforces GADI preflight then invokes the exact resident consumer. The convergence runner now reuses that existing bounded wrapper rather than reporting GADI as having no runtime path.
+The desired ecosystem progression becomes:
 
-After this repair, explicit unwired convergence members are reduced to:
+```text
+persistent retained node observed
+-> exact ephemeral task/request binds to retained node
+-> fresh bounded claim/fence
+-> ephemeral Interlock/InTr call
+-> ephemeral transport
+-> component execution
+-> receipt/readback
+-> node evidence commitment advances
+-> transient execution/transport torn down
+-> retained node remains
+```
 
-- current sovereign VACC provider task `VACP-SOVEREIGN-PROVIDER-REALIGNMENT-023` pending exact cross-repository resident binding from LLM-adapter;
-- `DATA-CONTINUATION-STEGCLAW-P4` pending a direct registered resident path;
-- `DECISION-ENVELOPE-DE006` pending exact parent rebinding/re-execution path integration.
+If authentic current-iPhone retained-node continuity is established, then repeated failure at `AUTHENTIC_RESIDENT_PROCESS_OBSERVED` should no longer require rediscovering/recreating a resident subject per task. The comparison can move immediately to whether each exact ephemeral request is consumed and admitted against the already-known node.
 
-The endpoint-fanout and GADI lanes must now produce their real task-local state during the next resident convergence visit rather than being pre-classified as unwired.
+If multiple lanes then fail at the same request-consumption or claim/fence transition, that is a much sharper common failure boundary.
 
-## Current member routing
+If they diverge after node binding, the persistent substrate is functioning and the remaining failures are task-specific ephemeral execution-path defects.
 
-- CryptoBot -> Canonical Work request consumption.
-- HIL -> ESRL `LEASE_OPEN`.
-- Hugging Face / SV-DN1 -> `sv_dn1` + publication resident selectors.
-- SDK / Ecosystem Chat -> `ecosystem_chat`.
-- VACC -> current `VACP-SOVEREIGN-PROVIDER-REALIGNMENT-023`; cross-repository resident binding still required.
-- DEVICE_KV / MyKV -> `stegos_kv_intr_chain`.
-- Endpoint Fanout -> same existing `stegos_kv_intr_chain` exact chain after authentic DEVICE_KV parent.
-- StegVerse-001 -> current-device continuation.
-- SV002 -> public-observation resident selector.
-- StegClaw -> resident path still unwired.
-- GADI -> existing `scripts/dispatch_gadi_resident_execution.py` preflight + exact consumer path.
-- Governed Multilane Manifold -> existing manifold selector.
-- GLM 5.3 Sovereign -> existing GLM resident selector.
-- SV-011 Phase 5 -> source-materialization + phase-5 selectors.
-- Runtime Profile Map -> CanonicalWork ingress then map lifecycle selectors.
-- Native Email -> native email resident selector.
-- StegBrowser -> Canonical Work ingress/browser path.
-- DE-006 -> exact parent rebinding/re-execution integration still required.
+## Existing specific reusable mechanisms retained
 
-## Failure comparison
+- `HIL_G25_BROWSER`
+- `HF_UNIVERSAL_INTR`
+- `VACC_LOCAL_RUNTIME`
+- `DE006_SAME_EXEC_RECONSTRUCTION`
+- `SV001_POST_TERMINAL_CONTINUATION`
+- `EXACT_RESIDENT_REQUEST`
+- `RUNTIME_PROFILE_MAP`
+- `PERSISTENT_NODE_EPHEMERAL_EXECUTION`
 
-The next resident convergence execution now has materially fewer artificial `NO_REGISTERED_SELECTOR` outcomes. It can distinguish actual runtime states for Endpoint Fanout and GADI, while VACC/StegClaw/DE-006 remain explicit integration work rather than being confused with resident process failure.
+Cross-task evidence remains subject-bound; mechanism reuse does not make one task's receipt evidence for another task.
 
-The retained-node class adds a new high-value diagnostic: after authentic current-iPhone node continuity is observed, any lane still failing at `AUTHENTIC_RESIDENT_PROCESS_OBSERVED` must distinguish between failure to observe the shared retained StegOS node and failure of task-specific request consumption. That should compress the left-side failure map if node identity/session-reset ambiguity has been contributing to repeated resident failures.
+## Current routing corrections
+
+The repaired convergence routing preserves:
+
+- VACC current task identity: `VACP-SOVEREIGN-PROVIDER-REALIGNMENT-023`;
+- Endpoint Fanout through the existing `stegos_kv_intr_chain`;
+- GADI through its existing bounded preflight/consumer route;
+- Runtime Profile Map as the convergence diagnostic trigger.
+
+Current VACC still requires its exact resident bridge before the measured convergence run can represent all 18 members without an artificial integration boundary.
+
+## Authentic proof target
+
+The highest-value substrate proof remains authentic current-iPhone retained-node continuity:
+
+```text
+same StegOS node before operation
+-> ephemeral governed operation executes
+-> ephemeral transport/session is destroyed
+-> same node remains
+-> later independent operation binds to the same node
+```
+
+The proof should additionally show that transient browser/provider/transport credentials or session state did not persist merely because the node persisted.
+
+This is the substrate experiment that can determine whether node/session conflation has been contributing to the repeated runtime failures.
 
 ## README review
 
-`README.md` was reviewed against this repair. The repository-level documented semantics already require one existing resident dispatcher, task-specific fail-closed consumers/wrappers, exact task/COSV continuity, autonomous machine continuation, and reusable ephemeral constructs. The new classes reuse those semantics and do not introduce a second scheduler, dispatcher, credential route, or execution authority. No README text change is required for this correction.
+No new scheduler, dispatcher, credential authority, or persistent transport is introduced. The model reuses the existing single resident substrate while explicitly making work/transport lifecycles bounded and ephemeral. README changes are not currently required for this correction.
 
 ## Validation and next execution
 
-The repair branch must pass the same organization-control, deterministic repository-suite, and Heartbeat validation surfaces before merge. After merge, the existing resident Runtime Profile Map path should execute the repaired convergence visitor. The highest-value next source repair remains the current VACC sovereign provider binding, followed by authentic retained-node continuity observation and a new convergence run that measures whether the early resident/subject-binding failure band collapses.
+Next machine work is:
+
+1. finish VACC exact resident bridge;
+2. validate the corrected composite projection;
+3. obtain authentic retained-node continuity evidence;
+4. execute Runtime Profile Map + global convergence visitor;
+5. compare all 18 first unresolved predicates after they bind ephemeral operations to one persistent node.
 
 ## Manual work
 
