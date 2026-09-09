@@ -7,7 +7,8 @@ Parent Goal: `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001`
 Root Goal: `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001`
 COSV: `50000010100000`
 Canonical issue: `StegVerse-Labs/.github#1299`
-Status: `ACTIVE / ARCHITECTURE CANONICALIZED / IMPLEMENTATION NOT YET RECONCILED`
+Active implementation PR: `StegVerse-Labs/StegOS#314`
+Status: `ACTIVE / KV PROJECTION GATE IMPLEMENTED / PRODUCER BINDING + BRANCH RECONCILIATION PENDING`
 
 ## Purpose
 
@@ -50,7 +51,7 @@ current-iPhone bootstrap/rendezvous
 -> one measurement-only global convergence run
 ```
 
-But the bootstrap/presentation seam must now be implemented as:
+The bootstrap/presentation seam is now being implemented as:
 
 ```text
 minimal rendezvous
@@ -65,37 +66,62 @@ minimal rendezvous
 
 Static signer/WASM source may still need to be distributable before the first TestFlight installation, but static availability does not make the public bootstrap a persistent private presentation or identity root.
 
-## Existing implementation to reconcile
+## 2026-09-09 branch audit and repair
 
-Branch `StegVerse-Labs/StegOS:feat/current-iphone-wasm-static-bootstrap-001` was created while solving exact WASM distribution. Its current contract must be reviewed before continuing so it does not encode Safari ownership, browser-local continuity, or a permanently materialized private presentation.
+Audited `StegVerse-Labs/StegOS:feat/current-iphone-wasm-static-bootstrap-001` against this architecture.
 
-The validated signer artifact remains:
+Observed mismatch before repair:
+
+- `mobile/web-bootstrap/current-iphone-testflight.html` directly invoked the complete static TestFlight signing bootstrap from the public page.
+- `mobile/web-bootstrap/current-iphone-testflight-bootstrap.js` accepted only fetch/provider parameters and did not require a KV-originating admission predicate or browser-capability observation before private signing materialization.
+- The branch was 24 commits ahead and 1 commit behind `main` at audit time, so it is not yet ready for promotion without branch reconciliation.
+
+Implemented repair in PR #314 branch:
+
+- `mobile/web-bootstrap/kv-bound-ephemeral-projection-context.js` now validates a purpose-bound `CURRENT_IPHONE_TESTFLIGHT_SIGNING` context.
+- The gate requires `entry_state=ADMITTED`, an opaque KV transition commitment, an opaque admission commitment, `browser_capability_state=OBSERVED_COMPATIBLE`, and an opaque browser-capability commitment.
+- The gate declares `persistence_effect=NONE_EPHEMERAL_CONTEXT_ONLY` and `authority_effect=NONE_PROJECTION_GATE_ONLY`.
+- The injected projection context is consumed from `window.__STEGVERSE_KV_PROJECTION_CONTEXT__` and deleted immediately; the gate itself does not use localStorage, sessionStorage, IndexedDB, cookies, user-agent identity, or browser-local persistence.
+- `current-iphone-testflight-bootstrap.js` validates the projection context before loading/materializing the unsigned IPA.
+- The public TestFlight page now fails closed when a valid ephemeral KV projection context is absent.
+- `tests/test_kv_bound_ephemeral_projection_gate.py` adds deterministic source-level regression coverage for the admission/capability gate and no-browser-storage-root semantics.
+- PR #314 metadata was reconciled from the exhausted parent goal to this successor Goal Task ID.
+
+Implementation commits:
+
+```text
+829b979959837b0dc8f834a53a379d3f86af4023  add KV-bound ephemeral projection gate
+0de7050ba9c9a1949f524a8ea19fa757104f027a  require gate before TestFlight materialization
+747d20c9ab7e9ce06b09c67dff604ebe06847670  consume ephemeral KV projection context in public page
+2b5cc7bd8886309bc1a228d8d03b58f83233a887  add projection-gate regression coverage
+```
+
+## Preserved exact signer artifacts
+
+The validated signer artifact remains unchanged by this reconciliation:
 
 ```text
 artifact: stegos-current-iphone-wasm-web
 artifact digest: sha256:cef2ef22a42195dced25bca2f9c99fab9f6a32f21062f1576386ee69a25d48ee
 wasm sha256: 699dc3054788d779ba7920e332c661ef7eac001156f93ab7b1fe1b64ee5a4b93
 wasm bytes: 2277815
-glue sha256: 17fe61cfdae43cbe5a1d1b211beb39838f58e982efdba90c7156fc36402f3adb
+glue sha256: 17fe61cfdae43cbe5a1d211beb39838f58e982efdba90c7156fc36402f3adb
 ```
 
-## Next execution sequence
+## Remaining source sequence
 
-1. Audit the existing StegOS static-bootstrap branch against the KV privacy/continuity contract.
-2. Separate minimal public rendezvous source from post-KV private presentation source.
-3. Define the KV entry dependency and purpose-bound KV-originating admission artifact required before private browser projection materializes.
-4. Define browser/container capability observation as private KV state where possible; expose only opaque commitments/references downstream.
-5. Rework signer/WASM delivery so exact static availability can bootstrap first installation without becoming browser/device continuity or public private-state storage.
-6. Preserve browser-container neutrality and fail closed on missing required capability rather than user-agent identity.
-7. Reconcile StegOS retained-node semantics so device identity is interoperability rather than user continuity and StegBrowser remains capability continuity.
-8. Reconcile continuity-vault-kit, StegOS, Site, and global measurement documentation/source contracts.
-9. Validate and merge the implementation slice.
-10. Continue TVC provider activation, real signing/upload, TestFlight install, retained-node evidence, and exactly one frozen measurement-only convergence pass.
+1. Bind the producer that creates the purpose-bound KV transition/admission commitment and browser-capability commitment consumed by the new gate; do not synthesize those values in the public page.
+2. Reconcile/rebase PR #314 against current `main` without dropping the exact static artifact or the new KV gate.
+3. Run exact-head CI and remediate any regression from the gate or rebase.
+4. Reconcile StegOS retained-node semantics so device identity remains interoperability rather than user continuity and StegBrowser remains capability continuity.
+5. Reconcile continuity-vault-kit, StegOS, Site, and global measurement source/docs around the same admission/projection contract.
+6. Merge only after source validation is green.
+7. Continue TVC provider activation, real signing/upload, TestFlight install, authentic retained-node evidence, and exactly one frozen measurement-only convergence pass.
 
 ## Runtime truth
 
-No authentic current-iPhone TestFlight install, retained-node materialization, KV-bound browser projection, or global convergence receipt is claimed by this documentation decomposition.
+No authentic current-iPhone TestFlight install, retained-node materialization, KV-bound browser projection runtime, or global convergence receipt is claimed by this source reconciliation.
 
 ## Manual work
 
-None while source-contract reconciliation remains machine-executable.
+None while producer binding, branch reconciliation, CI, and source integration remain machine-executable.
