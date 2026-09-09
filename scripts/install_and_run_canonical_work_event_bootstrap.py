@@ -2,32 +2,89 @@
 """Install the CanonicalWork route and run one bounded event bootstrap.
 
 This wrapper is intended for an admitted StegVerse resident execution context.
-It performs only two repository-local machine steps in sequence:
+It performs only repository-local machine steps in sequence:
 
 1. apply/check the fail-closed CanonicalWork route transformation against the
-   existing shared Universal InTr router source; and
+   existing shared Universal InTr router source;
 2. launch the bounded event bootstrap in a fresh Python process for one explicit
-   task that already exists in the canonical Task Registry.
+   task that already exists in the canonical Task Registry; and
+3. when that task is the Canonical Runtime Profile Map, materialize and execute
+   the global runtime-evidence convergence visitor through the already-existing
+   resident dispatcher.
 
 It does not define or start a second heartbeat, oscillator, scheduler,
-WorkerCoordinator implementation, or ingress implementation. The bootstrap uses
-the existing shared Universal InTr Server for exactly one event-triggered request.
-Source installation is not itself runtime evidence; only receipts emitted by the
-second step may be used as observed execution evidence.
+WorkerCoordinator implementation, dispatcher, or ingress implementation. The
+bootstrap uses the existing shared Universal InTr Server for exactly one
+event-triggered request. The convergence visitor only selects already-registered
+resident consumers. Source installation is not itself runtime evidence; only
+receipts emitted by the resident bootstrap and convergence visitor may be used as
+observed execution evidence.
 """
 from __future__ import annotations
 
 import argparse
+import hashlib
+import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_TASK_ID = "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+RUNTIME_PROFILE_MAP_TASK_ID = "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"
+GLOBAL_HELPER_REL = Path("scripts/run_global_runtime_evidence_convergence.py")
+GLOBAL_PROJECTION_REL = Path("control/runtime-partial-solution-projections/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.json")
 
 
 def run(command: list[str]) -> None:
     subprocess.run(command, cwd=str(ROOT), check=True)
+
+
+def sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def materialize_exact(source_root: Path, rel: Path) -> Path:
+    source = source_root / rel
+    destination = ROOT / rel
+    if not source.is_file():
+        raise RuntimeError(f"global convergence source missing: {source}")
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    if source.resolve() != destination.resolve():
+        if not destination.is_file() or sha256(destination) != sha256(source):
+            shutil.copy2(source, destination)
+    if not destination.is_file() or sha256(destination) != sha256(source):
+        raise RuntimeError(f"global convergence materialization mismatch: {rel}")
+    return destination
+
+
+def resolve_local_source_root() -> Path:
+    candidates = []
+    configured = str(os.environ.get("STEGVERSE_HEARTBEAT_SOURCE_ROOT") or "").strip()
+    if configured:
+        candidates.append(Path(configured).expanduser().resolve())
+    candidates.append(ROOT)
+    for candidate in candidates:
+        if (candidate / GLOBAL_HELPER_REL).is_file() and (candidate / GLOBAL_PROJECTION_REL).is_file():
+            return candidate
+    raise RuntimeError("already-local global runtime convergence source is not materialized")
+
+
+def run_global_convergence_if_applicable(task_id: str) -> None:
+    if task_id != RUNTIME_PROFILE_MAP_TASK_ID:
+        return
+    source_root = resolve_local_source_root()
+    helper = materialize_exact(source_root, GLOBAL_HELPER_REL)
+    materialize_exact(source_root, GLOBAL_PROJECTION_REL)
+    run([
+        sys.executable,
+        str(helper),
+        "--source-root",
+        str(source_root),
+        "--runtime-root",
+        str(ROOT),
+    ])
 
 
 def main() -> int:
@@ -60,8 +117,11 @@ def main() -> int:
     if args.without_carrier_binding:
         command.append("--without-carrier-binding")
     run(command)
+    run_global_convergence_if_applicable(args.task_id)
 
     print(f"PASS: route installation/check completed and bounded CanonicalWork bootstrap returned success for {args.task_id}")
+    if args.task_id == RUNTIME_PROFILE_MAP_TASK_ID:
+        print("PASS: global runtime-evidence convergence visitor completed through the existing resident dispatcher")
     print("NONCLAIM: this wrapper does not itself prove WorkerCoordinator claim/fence, governed work, Master Records reconciliation, egress, or closure")
     return 0
 
