@@ -75,6 +75,20 @@ def write_json(path: Path, value: dict[str, Any]) -> None:
     path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
+def build_runner_command(primary_ref: str, primary_runner: Path, parameters: dict[str, Any]) -> list[str]:
+    command = [sys.executable, str(primary_runner)]
+    if primary_ref == "scripts/consume_native_email_action_monitor_request.py":
+        runtime_raw = str(parameters.get("runtime_root") or "").strip()
+        if not runtime_raw:
+            raise SystemExit("RT-NATIVE-EMAIL-ACTION-MONITOR-001 requires parameters.runtime_root")
+        source_raw = str(parameters.get("source_root") or ROOT).strip()
+        command.extend([
+            "--source-root", str(Path(source_raw).expanduser().resolve()),
+            "--runtime-root", str(Path(runtime_raw).expanduser().resolve()),
+        ])
+    return command
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--reusable-task-id", required=True)
@@ -88,6 +102,9 @@ def main() -> None:
     definition = resolve_definition(args.reusable_task_id)
     constructor = load_constructor()
     manifest = constructor.build_manifest(manifest_args(args))
+    parameters = manifest.get("parameters")
+    if not isinstance(parameters, dict):
+        raise SystemExit("manifest parameters must be an object")
 
     receipt_path = Path(args.receipt) if args.receipt else DEFAULT_RECEIPT_DIR / f"{args.invocation_id}.latest.json"
     manifest_path = receipt_path.with_name(f"{args.invocation_id}.manifest.json")
@@ -156,8 +173,9 @@ def main() -> None:
         env["STEGVERSE_REUSABLE_TASK_TRACKING_TASK_ID"] = args.task_id
         env["STEGVERSE_REUSABLE_TASK_TRACKING_COSV"] = args.cosv_task_vector or ""
 
+    command = build_runner_command(primary_ref, primary_runner, parameters)
     completed = subprocess.run(
-        [sys.executable, str(primary_runner)],
+        command,
         cwd=ROOT,
         env=env,
         text=True,
@@ -166,6 +184,7 @@ def main() -> None:
     )
     receipt["automatic_steps_attempted"].append({
         "runner_ref": primary_ref,
+        "command": command,
         "returncode": completed.returncode,
         "stdout_tail": completed.stdout[-4000:],
         "stderr_tail": completed.stderr[-4000:],
