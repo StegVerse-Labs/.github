@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 """Execute the current global runtime-evidence resume projection on one sovereign resident cycle.
 
-This runner reuses only already-registered resident consumers. It does not create a
-second scheduler or dispatcher. Canonical Work ingress for the umbrella, CryptoBot,
+This runner reuses already-registered resident consumers plus bounded task-specific
+runtime wrappers that already exist in the canonical source tree. It does not create
+a second scheduler or dispatcher. Canonical Work ingress for the umbrella, CryptoBot,
 StegBrowser, and Runtime Profile Map is handled by the existing
 canonical_work_coordination consumer before this runner is invoked.
 
 Each member is resumed from its projected first unresolved stage. Members that do
-not yet have a compatible registered resident selector are reported explicitly as
-NO_REGISTERED_SELECTOR rather than being collapsed into generic runtime pending.
+not yet have a compatible registered resident selector or existing bounded wrapper
+are reported explicitly as NO_REGISTERED_SELECTOR rather than being collapsed into
+generic runtime pending.
 """
 from __future__ import annotations
 
@@ -35,6 +37,7 @@ TASK_SELECTORS: dict[str, tuple[str, ...]] = {
     "SV-DN1-SOVEREIGN-EXECUTION-CHAIN-001": ("sv_dn1", "sv_dn1_publication"),
     "SHWP-ECOSYSTEM-CHAT-INFERENCE-001": ("ecosystem_chat",),
     "SHWP-DEVICE-KV-INTR-OBSERVATION-001": ("stegos_kv_intr_chain",),
+    "SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001": ("stegos_kv_intr_chain",),
     "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001": ("stegverse001_bounded_autonomy",),
     "SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001": ("sv002_public_observation",),
     "GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001": ("governed_multilane_manifold_activation",),
@@ -50,20 +53,22 @@ TASK_SELECTORS: dict[str, tuple[str, ...]] = {
     "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001": ("native_email_action_monitor",),
 }
 
+# Existing task-specific runtime wrappers that already enforce their own canonical
+# preflight/consumer chain. Invoking them here does not create a new dispatcher.
+DIRECT_RUNTIME_WRAPPERS: dict[str, Path] = {
+    "GADI-RESIDENT-EXECUTION-001": Path("scripts/dispatch_gadi_resident_execution.py"),
+}
+
 CANONICAL_WORK_ONLY = {
     "CRYPTO-LIVE-AUTO-001": Path("receipts/sovereign-host/canonical-work-crypto-live-auto-request-consumption.latest.json"),
     "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001": Path("receipts/sovereign-host/canonical-work-stegbrowser-ephemeral-runtime-binding-request-consumption.latest.json"),
     "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001": Path("receipts/sovereign-host/canonical-work-global-runtime-evidence-closure-request-consumption.latest.json"),
 }
 
-# These are intentionally explicit. Their current first unresolved stages require
-# task-specific resident integration or an upstream authentic parent rather than
-# pretending an unrelated selector can execute them.
+# These remain explicit until an exact canonical resident path exists.
 NO_SELECTOR_REASON = {
-    "VACP-ADAPTER-AUTHORIZED-EXECUTION-005": "VACC adapter execution is not registered in the .github resident dispatcher",
+    "VACP-SOVEREIGN-PROVIDER-REALIGNMENT-023": "current sovereign VACC adapter execution is owned by StegVerse-org/LLM-adapter and is not yet bound into the .github resident convergence visitor",
     "DATA-CONTINUATION-STEGCLAW-P4": "StegClaw P4 has no direct registered .github resident selector",
-    "SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001": "endpoint fanout first requires authentic DEVICE_KV parent evidence and has no direct selector",
-    "GADI-RESIDENT-EXECUTION-001": "GADI controlled actuator execution has no direct registered selector",
     "DECISION-ENVELOPE-DE006": "DE-006 continuation requires exact parent rebinding/re-execution and has no direct registered selector",
 }
 
@@ -117,6 +122,17 @@ def load_json(path: Path) -> dict[str, Any]:
     return value
 
 
+def parse_last_json(stdout: str) -> dict[str, Any] | None:
+    for line in reversed([line.strip() for line in stdout.splitlines() if line.strip()]):
+        try:
+            value = json.loads(line)
+        except Exception:
+            continue
+        if isinstance(value, dict):
+            return value
+    return None
+
+
 def atomic_json(path: Path, value: Mapping[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_name("." + path.name + ".tmp")
@@ -164,13 +180,14 @@ def execute(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
                 if selector not in selectors:
                     selectors.append(selector)
 
+    safe_env = clean_exec_env(env)
     dispatcher = runtime / DISPATCHER_REL
     if not dispatcher.is_file():
         raise RuntimeError("resident dispatcher not materialized")
     command = [sys.executable, str(dispatcher), "--source-root", str(source), "--runtime-root", str(runtime)]
     for selector in selectors:
         command.extend(["--only-consumer", selector])
-    completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=clean_exec_env(env), timeout=7200)
+    completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=safe_env, timeout=7200)
     dispatch_receipt_path = runtime / DISPATCH_RECEIPT_REL
     dispatch_receipt = load_json(dispatch_receipt_path) if dispatch_receipt_path.is_file() else None
     by_consumer = {}
@@ -178,6 +195,36 @@ def execute(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         for outcome in dispatch_receipt.get("outcomes", []):
             if isinstance(outcome, dict) and isinstance(outcome.get("consumer"), str):
                 by_consumer[outcome["consumer"]] = outcome
+
+    direct_results: dict[str, dict[str, Any]] = {}
+    for member in members:
+        task_id = member.get("task_id") if isinstance(member, dict) else None
+        wrapper_rel = DIRECT_RUNTIME_WRAPPERS.get(task_id) if isinstance(task_id, str) else None
+        if wrapper_rel is None or task_id in direct_results:
+            continue
+        wrapper = runtime / wrapper_rel
+        if not wrapper.is_file():
+            wrapper = source / wrapper_rel
+        if not wrapper.is_file():
+            direct_results[task_id] = {"state": "WRAPPER_NOT_MATERIALIZED", "wrapper": str(wrapper_rel), "attempted": False}
+            continue
+        direct = runner(
+            [sys.executable, str(wrapper), "--source-root", str(source), "--runtime-root", str(runtime)],
+            cwd=runtime,
+            capture_output=True,
+            text=True,
+            check=False,
+            env=safe_env,
+            timeout=1200,
+        )
+        direct_result = parse_last_json(direct.stdout)
+        direct_results[task_id] = {
+            "state": direct_result.get("state") if isinstance(direct_result, dict) else "NO_MACHINE_RESULT",
+            "wrapper": str(wrapper_rel),
+            "returncode": direct.returncode,
+            "result": direct_result,
+            "attempted": True,
+        }
 
     lane_outcomes: list[dict[str, Any]] = []
     for member in members:
@@ -193,6 +240,10 @@ def execute(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
             selector_results = [by_consumer.get(selector) for selector in task_selectors]
             states = [row.get("state") if isinstance(row, dict) else "SELECTOR_NOT_VISITED" for row in selector_results]
             lane_outcomes.append({**projected, "execution_path": "REGISTERED_RESIDENT_SELECTOR", "selectors": list(task_selectors), "selector_states": states, "state": states[0] if len(states) == 1 else "MULTI_STAGE:" + ">".join(states)})
+            continue
+        direct = direct_results.get(task_id)
+        if direct is not None:
+            lane_outcomes.append({**projected, "execution_path": "EXISTING_TASK_RUNTIME_WRAPPER", "wrapper": direct.get("wrapper"), "wrapper_returncode": direct.get("returncode"), "state": direct.get("state", "UNKNOWN")})
             continue
         cw = canonical_work_state(runtime, task_id)
         if cw is not None:
@@ -213,6 +264,7 @@ def execute(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         "cosv": projection.get("cosv"),
         "member_count": len(lane_outcomes),
         "registered_selector_count": len(selectors),
+        "direct_runtime_wrapper_count": len(direct_results),
         "selected_consumers": selectors,
         "dispatcher_returncode": completed.returncode,
         "dispatch_receipt_observed": isinstance(dispatch_receipt, dict),
