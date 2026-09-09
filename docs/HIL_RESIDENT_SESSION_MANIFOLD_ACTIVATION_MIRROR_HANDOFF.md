@@ -28,6 +28,9 @@ Inherited canonical sources:
 - Exact-head validation on `eec101c9d880a88d874c5df0b68dea3a4aca6304` passed organization-control, Workspace DEVICE_KV, DeepSeek resident validation, the complete deterministic repository suite, and Heartbeat validation; Heartbeat deterministic suite step 16 passed.
 - README completeness remains `NO README CHANGE REQUIRED / EXISTING DOCUMENTED SOURCE-REFRESH CONTRACT`.
 - Runtime HIL activation/transport proof remains intentionally pending authentic resident execution evidence. Repository state after merge still contains no authentic `receipts/sovereign-host/hil-resident-execution-request-consumption.latest.json`; source validation, GitHub Actions, and merge do not satisfy the runtime predicate.
+- PR `#1213` is MERGED at `858670d709dc4855b583449e489ba74f5f37e798`, adding the fail-closed exact physical browser-evidence intake for the current-iPhone successor.
+- PR `#1213` initially failed because its new regression module imported `pytest` while the canonical deterministic and Heartbeat validation runners intentionally execute in the standard-library `unittest` environment. The test was converted to native `unittest` at `1d8f4fe17618c95adf7872aff5f3d9be3172b632`; deterministic diagnostics, Heartbeat validation including step 16, and the independent organization-control validation all then passed on the repaired exact head before merge.
+- The remaining HIL action is no longer source repair: export the exact component-produced JSON from the successful standalone iPhone browser context and submit that exact artifact through `scripts/intake_hil_browser_execution_evidence.py` so a canonical resident-consumption receipt can be produced and persisted.
 
 ## Governing objective
 
@@ -129,7 +132,7 @@ A standalone iPhone browser context has now displayed authentic component result
 
 The displayed standalone-browser result is meaningful physical component evidence, but the canonical resident-consumption predicate is not promoted from screenshots. The exact exported JSON artifact is required.
 
-Issue `#1211` adds the fail-closed deterministic intake `scripts/intake_hil_browser_execution_evidence.py`. The public Site successor binds exact resident request `RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002` and stable request SHA256 `6bf940fb920f672111ba1040fd0bf9bf7016d6bf032bbcfd164a1a2347ee7038` into new browser execution results and exports exact JSON per browser context.
+The merged fail-closed deterministic intake is `scripts/intake_hil_browser_execution_evidence.py`. The public Site successor binds exact resident request `RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002` and stable request SHA256 `6bf940fb920f672111ba1040fd0bf9bf7016d6bf032bbcfd164a1a2347ee7038` into new browser execution results and exports exact JSON per browser context.
 
 Once an exact physical exported artifact passes canonical intake, the resulting canonical receipt may use `runtime_execution_surface=CURRENT_USER_IPHONE_BROWSER` while preserving the existing request-consumption schema and local-ready terminal transition. This explicitly records the portable browser successor rather than pretending the historical Python subprocess executed.
 
