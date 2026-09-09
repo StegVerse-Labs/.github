@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
 """Resident consumer for the complete governed multi-lane manifold lineage.
 
-This file lives in control/resident-execution-request.d so the existing sovereign
-source refresh carries it without expanding the runtime transport contract. When
-the standing request itself has not yet been materialized into the runtime root,
-the consumer copies that exact canonical request from the already-local source
-root, then materializes the static lineage/task inputs and delegates machine-owned
-subordinate execution to the existing WorkerCoordinator targeted task path.
+This control-directory copy is the runtime-dispatched compatibility surface. It
+must preserve the same fail-closed prerequisite gating as the canonical scripts
+consumer while remaining source-refresh compatible.
 """
 from __future__ import annotations
 
@@ -33,11 +30,41 @@ EXECUTE_DISPOSITIONS = {
     "EXECUTE_AFTER_PREREQUISITES_QUALIFY",
     "EXECUTE_WHEN_TVC_RUNTIME_PREREQUISITE_QUALIFIES",
 }
+CONDITIONAL_EXECUTE_DISPOSITIONS = {
+    "EXECUTE_AFTER_PREREQUISITES_QUALIFY",
+    "EXECUTE_WHEN_TVC_RUNTIME_PREREQUISITE_QUALIFIES",
+}
 REUSE_DISPOSITIONS = {
     "REUSE_IMPLEMENTATION_EXECUTE_CHILDREN",
     "REUSE_COMPLETE_DO_NOT_REEXECUTE",
+    "EXECUTE_INCOMPLETE_CANONICAL_CHILDREN_THROUGH_EXISTING_OWNERS",
 }
 EXTERNAL_DISPOSITIONS = {"OBSERVE_EXISTING_OWNER_NO_COMPETE"}
+QUALIFYING_STATES = {
+    "ACTIVATED",
+    "COMPLETE",
+    "COMPLETE_RELEASED",
+    "EXECUTED",
+    "QUALIFIED",
+    "QUALIFYING",
+    "READY",
+    "READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND",
+    "RECONCILED",
+    "SUCCESS",
+    "SUCCEEDED",
+    "WALLET_HANDOFF_READY",
+}
+NONQUALIFYING_STATES = {
+    "BLOCKED",
+    "FAILED",
+    "FAIL_CLOSED",
+    "HANDOFF_READY",
+    "PENDING",
+    "PRIMARY_RUNTIME_NOT_YET_PROVEN",
+    "REQUESTED",
+    "UNCLAIMED",
+    "WAITING",
+}
 
 
 def require(ok: bool, reason: str) -> None:
@@ -71,12 +98,22 @@ def materialize_request_if_missing(source: Path, runtime: Path) -> dict[str, Any
     src = source / REQUEST_REL
     dst = runtime / REQUEST_REL
     if dst.is_file():
-        return {"ref": REQUEST_REL.as_posix(), "materialized": False, "reason": "RUNTIME_REQUEST_ALREADY_PRESENT", "sha256": sha256(dst)}
+        return {
+            "ref": REQUEST_REL.as_posix(),
+            "materialized": False,
+            "reason": "RUNTIME_REQUEST_ALREADY_PRESENT",
+            "sha256": sha256(dst),
+        }
     require(src.is_file(), f"canonical resident request missing:{REQUEST_REL}")
     dst.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(src, dst)
     require(dst.is_file() and sha256(dst) == sha256(src), "resident request materialization mismatch")
-    return {"ref": REQUEST_REL.as_posix(), "materialized": True, "reason": "MISSING_RUNTIME_REQUEST_RECOVERED_FROM_ALREADY_LOCAL_CANONICAL_SOURCE", "sha256": sha256(src)}
+    return {
+        "ref": REQUEST_REL.as_posix(),
+        "materialized": True,
+        "reason": "MISSING_RUNTIME_REQUEST_RECOVERED_FROM_ALREADY_LOCAL_CANONICAL_SOURCE",
+        "sha256": sha256(src),
+    }
 
 
 def parse_last_json(stdout: str) -> dict[str, Any] | None:
@@ -98,13 +135,68 @@ def write_receipt(runtime: Path, receipt: dict[str, Any]) -> None:
     tmp.replace(path)
 
 
+def dependency_map(lineage: dict[str, Any]) -> dict[str, list[str]]:
+    deps: dict[str, list[str]] = {}
+    edges = lineage.get("edges")
+    require(isinstance(edges, list), "manifold lineage edges missing")
+    for edge in edges:
+        require(isinstance(edge, dict), "invalid lineage edge")
+        if edge.get("kind") != "DEPENDS_ON":
+            continue
+        child = edge.get("from")
+        prerequisite = edge.get("to")
+        require(isinstance(child, str) and child, "dependency edge child missing")
+        require(isinstance(prerequisite, str) and prerequisite, "dependency edge prerequisite missing")
+        deps.setdefault(child, []).append(prerequisite)
+    return deps
+
+
+def normalized_state(value: Any) -> str | None:
+    if not isinstance(value, str):
+        return None
+    return value.strip().upper().replace("-", "_").replace(" ", "_")
+
+
+def result_has_qualifying_evidence(result: dict[str, Any] | None) -> bool:
+    if not isinstance(result, dict):
+        return False
+    for key in ("qualified", "qualifying", "receipt_observed", "activation_proven", "ready"):
+        if result.get(key) is True:
+            return True
+    for key in ("state", "status", "completion_state", "validation_state", "integration_state"):
+        state = normalized_state(result.get(key))
+        if state in NONQUALIFYING_STATES:
+            return False
+        if state in QUALIFYING_STATES:
+            return True
+    for key in ("result", "worker_result", "receipt", "evidence"):
+        nested = result.get(key)
+        if isinstance(nested, dict) and result_has_qualifying_evidence(nested):
+            return True
+    return False
+
+
+def reuse_is_qualifying(node: dict[str, Any], disposition: str) -> bool:
+    if disposition == "EXECUTE_INCOMPLETE_CANONICAL_CHILDREN_THROUGH_EXISTING_OWNERS":
+        return False
+    return normalized_state(node.get("state")) in {
+        "COMPLETE",
+        "COMPLETE_RELEASED",
+        "INITIAL_IMPLEMENTATION_COMPLETE",
+    }
+
+
 def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -> dict[str, Any]:
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
 
     request_transport = materialize_request_if_missing(source, runtime)
-    request_path = runtime / REQUEST_REL
-    request = load_json(request_path)
+    materialized = [
+        materialize_static(source, runtime, LINEAGE_REL),
+        materialize_static(source, runtime, TASK_RECORD_REL),
+    ]
+
+    request = load_json(runtime / REQUEST_REL)
     require(request.get("schema") == "stegverse.resident-execution-request/v1", "request schema mismatch")
     require(request.get("state") == "REQUESTED", "request state mismatch")
     require(request.get("task_id") == TASK_ID, "request task mismatch")
@@ -117,10 +209,6 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -> 
     require(request.get("request_granted_authority") is False, "request authority mismatch")
     require(request.get("manifold_lineage_ref") == str(LINEAGE_REL), "lineage ref mismatch")
 
-    materialized = [
-        materialize_static(source, runtime, LINEAGE_REL),
-        materialize_static(source, runtime, TASK_RECORD_REL),
-    ]
     lineage = load_json(runtime / LINEAGE_REL)
     record = load_json(runtime / TASK_RECORD_REL)
     require(lineage.get("schema") == "stegverse.manifold-lineage/v1", "lineage schema mismatch")
@@ -133,12 +221,15 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -> 
     require(isinstance(declared, list) and declared, "request subordinate ids missing")
     node_ids = [row.get("task_id") for row in nodes if isinstance(row, dict)]
     require(set(node_ids) == set(declared), "request/lineage subordinate set mismatch")
+    dependencies = dependency_map(lineage)
 
     entrypoint = runtime / RUNTIME_ENTRYPOINT_REL
     require(entrypoint.is_file(), "WorkerCoordinator runtime entrypoint missing")
     outcomes: list[dict[str, Any]] = []
+    outcome_by_task: dict[str, dict[str, Any]] = {}
     external_pending = False
     execution_failures = False
+    prerequisite_blocks = False
 
     for node in nodes:
         require(isinstance(node, dict), "invalid lineage node")
@@ -148,29 +239,82 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -> 
         require(isinstance(disposition, str) and disposition, f"lineage disposition missing:{child_id}")
 
         if disposition in REUSE_DISPOSITIONS:
-            outcomes.append({"task_id":child_id,"disposition":disposition,"state":"REUSED_NO_EXECUTION","execution_attempted":False,"authority_effect":"NONE"})
+            outcome = {
+                "task_id": child_id,
+                "disposition": disposition,
+                "state": "AGGREGATE_OR_COMPLETED_NODE_REUSED_CHILDREN_REMAIN_SEPARATE"
+                if disposition == "EXECUTE_INCOMPLETE_CANONICAL_CHILDREN_THROUGH_EXISTING_OWNERS"
+                else "REUSED_NO_EXECUTION",
+                "execution_attempted": False,
+                "children_must_execute_separately": disposition
+                in {"REUSE_IMPLEMENTATION_EXECUTE_CHILDREN", "EXECUTE_INCOMPLETE_CANONICAL_CHILDREN_THROUGH_EXISTING_OWNERS"},
+                "qualifying_for_dependents": reuse_is_qualifying(node, disposition),
+                "authority_effect": "NONE",
+            }
+            outcomes.append(outcome)
+            outcome_by_task[child_id] = outcome
             continue
+
         if disposition in EXTERNAL_DISPOSITIONS:
             external_pending = True
-            outcomes.append({"task_id":child_id,"disposition":disposition,"state":"EXTERNAL_OWNER_OBSERVATION_REQUIRED","execution_attempted":False,"competing_claim_created":False,"authority_effect":"NONE_EXTERNAL_OWNER_RETAINED"})
+            outcome = {
+                "task_id": child_id,
+                "disposition": disposition,
+                "state": "EXTERNAL_OWNER_OBSERVATION_REQUIRED",
+                "execution_attempted": False,
+                "qualifying_for_dependents": False,
+                "competing_claim_created": False,
+                "authority_effect": "NONE_EXTERNAL_OWNER_RETAINED",
+            }
+            outcomes.append(outcome)
+            outcome_by_task[child_id] = outcome
             continue
 
         require(disposition in EXECUTE_DISPOSITIONS, f"unsupported disposition:{child_id}:{disposition}")
+        required = dependencies.get(child_id, [])
+        if disposition in CONDITIONAL_EXECUTE_DISPOSITIONS:
+            unqualified = [
+                prerequisite
+                for prerequisite in required
+                if not outcome_by_task.get(prerequisite, {}).get("qualifying_for_dependents")
+            ]
+            if unqualified:
+                prerequisite_blocks = True
+                outcome = {
+                    "task_id": child_id,
+                    "disposition": disposition,
+                    "state": "PREREQUISITES_NOT_QUALIFIED_FAIL_CLOSED",
+                    "execution_attempted": False,
+                    "required_prerequisites": required,
+                    "unqualified_prerequisites": unqualified,
+                    "qualifying_for_dependents": False,
+                    "authority_effect": "NONE_FAIL_CLOSED",
+                }
+                outcomes.append(outcome)
+                outcome_by_task[child_id] = outcome
+                continue
+
         command = [sys.executable, str(entrypoint), "--root", str(runtime), "--task-id", child_id]
         completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, timeout=1200)
         result = parse_last_json(completed.stdout)
+        qualifying = completed.returncode == 0 and result_has_qualifying_evidence(result)
         if completed.returncode != 0:
             execution_failures = True
-        outcomes.append({
+        outcome = {
             "task_id": child_id,
             "disposition": disposition,
-            "state": "WORKERCOORDINATOR_VISIT_COMPLETE" if completed.returncode == 0 else "WORKERCOORDINATOR_VISIT_FAILED_CLOSED",
+            "state": "WORKERCOORDINATOR_VISIT_COMPLETE"
+            if completed.returncode == 0
+            else "WORKERCOORDINATOR_VISIT_FAILED_CLOSED",
             "execution_attempted": True,
             "returncode": completed.returncode,
             "result": result,
+            "qualifying_for_dependents": qualifying,
             "claim_and_fence_authority": "CANONICAL_WORKERCOORDINATOR",
             "authority_effect": "NONE_DELEGATED_TO_EXISTING_AUTHORITY",
-        })
+        }
+        outcomes.append(outcome)
+        outcome_by_task[child_id] = outcome
 
     receipt = {
         "schema": "stegverse.governed-manifold-request-consumption/v1",
@@ -179,11 +323,13 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -> 
         "cosv_task_vector": COSV,
         "request_transport": request_transport,
         "static_source_materialization": materialized,
+        "manifold_lineage_ref": str(LINEAGE_REL),
         "declared_subordinate_count": len(declared),
         "visited_subordinate_count": len(outcomes),
         "full_declared_set_visited": len(outcomes) == len(declared),
         "external_authority_evidence_pending": external_pending,
         "workercoordinator_visit_failures_observed": execution_failures,
+        "conditional_prerequisite_blocks_observed": prerequisite_blocks,
         "outcomes": outcomes,
         "activation_declared": False,
         "activation_requires_separate_qualifying_machine_evidence": True,
@@ -208,13 +354,13 @@ def main() -> int:
         receipt = consume(args.source_root, args.runtime_root)
     except Exception as exc:
         receipt = {
-            "schema":"stegverse.governed-manifold-request-consumption/v1",
-            "state":"MANIFOLD_REQUEST_REJECTED_FAIL_CLOSED",
-            "task_id":TASK_ID,
-            "error_type":type(exc).__name__,
-            "error":str(exc),
-            "activation_declared":False,
-            "authority_effect":"NONE_FAIL_CLOSED",
+            "schema": "stegverse.governed-manifold-request-consumption/v1",
+            "state": "MANIFOLD_REQUEST_REJECTED_FAIL_CLOSED",
+            "task_id": TASK_ID,
+            "error_type": type(exc).__name__,
+            "error": str(exc),
+            "activation_declared": False,
+            "authority_effect": "NONE_FAIL_CLOSED",
         }
         write_receipt(args.runtime_root.expanduser().resolve(), receipt)
         print(json.dumps(receipt, sort_keys=True))
