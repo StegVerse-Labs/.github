@@ -34,6 +34,9 @@ TASK_SELECTORS: dict[str, tuple[str, ...]] = {
     "SHWP-HIL-SOVEREIGN-RECEIVER-001": ("hil",),
     "SV-DN1-SOVEREIGN-EXECUTION-CHAIN-001": ("sv_dn1", "sv_dn1_publication"),
     "SHWP-ECOSYSTEM-CHAT-INFERENCE-001": ("ecosystem_chat",),
+    # DE-006 current frontier explicitly resumes through the already-issued
+    # RESIDENT-EXEC-ECOSYSTEM-CHAT-PARENT-002 parent path.
+    "DECISION-ENVELOPE-DE006": ("ecosystem_chat",),
     "SHWP-DEVICE-KV-INTR-OBSERVATION-001": ("stegos_kv_intr_chain",),
     # Endpoint Fanout is the fourth terminal step of the same already-merged chain.
     "SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001": ("stegos_kv_intr_chain",),
@@ -53,9 +56,11 @@ TASK_SELECTORS: dict[str, tuple[str, ...]] = {
 }
 
 # Existing task-specific local consumers that are already registered in their own
-# worker/process-adapter surfaces but are not exposed as generic dispatcher names.
+# worker/process-adapter surfaces, or bounded subject-specific wrappers over an
+# existing canonical projector, but are not exposed as generic dispatcher names.
 DIRECT_CONSUMERS: dict[str, Path] = {
     "GADI-RESIDENT-EXECUTION-001": Path("control/resident-execution-request.d/consume-gadi-resident-execution.py"),
+    "DATA-CONTINUATION-STEGCLAW-P4": Path("scripts/project_stegclaw_runtime_observability.py"),
 }
 
 CANONICAL_WORK_ONLY = {
@@ -63,10 +68,10 @@ CANONICAL_WORK_ONLY = {
     "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001": Path("receipts/sovereign-host/canonical-work-stegbrowser-ephemeral-runtime-binding-request-consumption.latest.json"),
 }
 
+# Current VACC is the sole inventoried member for which no exact resident entrypoint
+# has yet been located. Its obsolete GitHub-Models task was removed from this map.
 NO_EXECUTION_PATH_REASON = {
     "VACP-SOVEREIGN-PROVIDER-REALIGNMENT-023": "current VACC task is machine-owned and has implemented LLM-adapter/TVC runtime surfaces, but no exact .github resident consumer entrypoint is materialized for this task identity",
-    "DATA-CONTINUATION-STEGCLAW-P4": "StegClaw P4 has shared resident observability but no exact resident request-consumption/execution consumer attributable to the StegClaw path",
-    "DECISION-ENVELOPE-DE006": "DE-006 has resident observability and prior device-local execution evidence, but exact parent rebinding/re-execution is not exposed as a compatible resident consumer",
 }
 
 HOSTED_ENV = ("GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "VERCEL_ENV", "CF_PAGES", "CLOUDFLARE_WORKERS")
