@@ -64,6 +64,12 @@ STEGBROWSER_EPHEMERAL_SPEC = {
     "bootstrap_runtime_rel": Path("runtime/canonical-work-stegbrowser-ephemeral-runtime-binding"),
     "task_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
 }
+GLOBAL_MEASUREMENT_SPEC = {
+    "request_rel": Path("control/resident-execution-request.d/canonical-work-global-runtime-evidence-measurement-001.json"),
+    "consumption_rel": Path("receipts/sovereign-host/canonical-work-global-runtime-evidence-measurement-request-consumption.latest.json"),
+    "bootstrap_runtime_rel": Path("runtime/canonical-work-global-runtime-evidence-measurement"),
+    "task_id": "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001",
+}
 REQUEST_SPECS = (
     DEFAULT_SPEC,
     QUANTUM_SPEC,
@@ -72,6 +78,7 @@ REQUEST_SPECS = (
     ERL_REVIEW_SPEC,
     CRYPTO_LIVE_AUTO_SPEC,
     STEGBROWSER_EPHEMERAL_SPEC,
+    GLOBAL_MEASUREMENT_SPEC,
 )
 
 MATERIALIZE = (
@@ -235,21 +242,31 @@ def ensure_task_identity_materialized(source: Path, runtime: Path, task_id: str)
     require(source_registry.is_file(), "canonical source registry missing")
     source_doc = load_json(source_registry)
     source_matches = [row for row in source_doc.get("tasks", []) if isinstance(row, dict) and row.get("task_id") == task_id]
-    require(len(source_matches) == 1, "source canonical task identity must resolve exactly once")
+    require(len(source_matches) <= 1, "source canonical task identity duplicated")
+    if source_matches:
+        source_task = source_matches[0]
+        source_kind = "MONOLITHIC_SOURCE_REGISTRY"
+    else:
+        source_shard = source / "data/canonical-task-records" / f"{task_id}.json"
+        require(source_shard.is_file(), "source canonical task identity missing from registry and shard")
+        source_task = load_json(source_shard)
+        require(source_task.get("task_id") == task_id, "source canonical task shard identity mismatch")
+        source_kind = "SOURCE_TASK_SHARD"
     if runtime_registry.is_file():
         runtime_doc = load_json(runtime_registry)
         runtime_matches = [row for row in runtime_doc.get("tasks", []) if isinstance(row, dict) and row.get("task_id") == task_id]
         require(len(runtime_matches) <= 1, "runtime canonical task identity duplicated")
         if len(runtime_matches) == 1:
-            return {"task_id": task_id, "state": "MONOLITHIC_RUNTIME_IDENTITY_PRESENT", "materialized": False, "registry_preserved": True}
+            return {"task_id": task_id, "state": "MONOLITHIC_RUNTIME_IDENTITY_PRESENT", "materialized": False, "registry_preserved": True, "source_kind": source_kind}
     shard = runtime / "data/canonical-task-records" / f"{task_id}.json"
-    atomic_json(shard, source_matches[0])
+    atomic_json(shard, source_task)
     require(load_json(shard).get("task_id") == task_id, "materialized task shard identity mismatch")
     return {
         "task_id": task_id,
         "state": "SOURCE_TASK_SHARD_MATERIALIZED",
         "materialized": True,
         "registry_preserved": runtime_registry.is_file(),
+        "source_kind": source_kind,
         "shard_ref": str(shard),
         "sha256": sha256(shard),
     }
