@@ -8,13 +8,19 @@ Task ID: `GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001`
 COSV ID: `10100000100000`
 Canonical coordination state: `PROPOSED`
 Canonical checkout state: `UNCLAIMED`
-Status: `RESIDENT ACTIVATION REQUESTED / SOURCE-DISCOVERY WIRING MERGED / SOURCE-MATERIALIZATION RECOVERY WIRING MERGED / GADI SOURCE COMPLETE / HIL G25 SATISFIED + ESRL SOURCE/INTAKE MERGED / AUTHENTIC FULL ACTIVATION NOT PROVEN`
+Status: `RESIDENT ACTIVATION REQUESTED / SOURCE-DISCOVERY WIRING MERGED / SOURCE-MATERIALIZATION RECOVERY WIRING MERGED / COMPLETE-ALL-DECLARED-CHILDREN POLICY IN CURRENT BRANCH / GADI SOURCE COMPLETE / HIL G25 SATISFIED + ESRL SOURCE/INTAKE MERGED / AUTHENTIC FULL ACTIVATION NOT PROVEN`
 
 ## Source of truth
 
 Canonical records are `data/canonical-task-records/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json`, `control/task-vectors/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json`, `handoffs/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json`, `control/manifold-lineage.d/governed-multilane-manifold-activation-001.json`, and `control/resident-execution-request.d/governed-multilane-manifold-activation-001.json`.
 
 Inherited continuation includes `FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md`, `FORMALISM_SOURCE_DISCOVERY_MIRROR_HANDOFF.md`, `FORMALISM_TVC_REPOSITORY_TRANSPORT_CONSUMERS_MIRROR_HANDOFF.md`, `FORMALISM_TVC_LOCAL_SPOOL_MIRROR_HANDOFF.md`, `FORMALISM_TVC_MATERIALIZATION_FOLLOWUP_MIRROR_HANDOFF.md`, `docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md`, and `docs/HIL_RESIDENT_SESSION_MANIFOLD_ACTIVATION_MIRROR_HANDOFF.md`.
+
+## Execution policy
+
+Every task declared in this umbrella remains an execution obligation until its canonical completion predicate is actually satisfied. Do not retire, prune, skip, or downgrade an incomplete declared subordinate merely because shared infrastructure is expected to make its current implementation path redundant later.
+
+Completed tasks may be reused without duplicate execution. A task may only cease to require its original implementation path when a completed replacement path supplies the same canonical completion evidence; future expectations, architectural consolidation, or likely obsolescence are not completion evidence.
 
 ## Formalism traversal
 
@@ -60,6 +66,7 @@ HIL G25 request consumption is satisfied and task COSV is `50000000103000`. Site
 - umbrella coordination: `PROPOSED / UNCLAIMED`
 - allowed next canonical transition: `INGRESS_ADMITTED`
 - resident activation request: `REQUESTED`
+- complete-all-declared-children policy: `IMPLEMENTED IN CURRENT BRANCH`
 - live dispatcher prerequisite gating: `REPAIRED / MERGED`
 - source-discovery traversal wiring: `MERGED`
 - source-materialization recovery wiring: `MERGED / VALIDATED`
@@ -75,6 +82,6 @@ HIL G25 request consumption is satisfied and task COSV is `50000000103000`. Site
 
 ## README and release rule
 
-README reviewed. Existing resident-request, WorkerCoordinator, TV/TVC transport, and fail-closed evidence documentation remains accurate; no top-level README wording change is required for this repair.
+README reviewed. Existing resident-request, WorkerCoordinator, TV/TVC transport, and fail-closed evidence documentation remains accurate; no top-level README wording change is required for this policy clarification.
 
 The umbrella is not release/tag ready. Future qualifying release/tag requires separate propagation verification for `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `admissibility-wiki`, and `stegguardian-wiki`, plus `StegVerse-Labs/Sit` only when an applicable consumer role exists.
