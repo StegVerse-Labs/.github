@@ -5,14 +5,17 @@
   "vector": "10100000100000",
   "evidence_refs": [
     "docs/NATIVE_EMAIL_ACTION_MONITOR_MIRROR_HANDOFF.md",
+    "docs/NATIVE_EMAIL_REUSABLE_HOURLY_MIRROR_HANDOFF.md",
     "control/resident-execution-request.d/native-email-action-monitor-001.json",
     "scripts/consume_native_email_action_monitor_request.py",
     "scripts/run_native_email_action_monitor.py",
+    "scripts/trigger_reusable_task.py",
+    "tests/test_reusable_native_email_trigger.py",
     "data/reusable-task-registry.json",
     "management/COSV_PROFILE_V1.json",
     "README.md"
   ],
-  "observed_at": "2026-09-07T09:22:00-05:00",
+  "observed_at": "2026-09-09T03:37:00-05:00",
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
     "lifecycle": "UNCLAIMED",
