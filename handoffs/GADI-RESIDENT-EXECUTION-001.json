@@ -37,6 +37,7 @@
     "derivation_depth": 1,
     "priority": "runtime",
     "source_refs": [
+      "data/canonical-task-records/GADI-001.json",
       "docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
       "docs/GADI_MIRROR_HANDOFF.md",
       "control/resident-execution-request.d/gadi-resident-execution-001.json",
