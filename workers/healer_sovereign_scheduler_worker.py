@@ -20,6 +20,7 @@ HIL_INTR_CONFIG_ENV = "STEGVERSE_HIL_INTR_ROUTE_CONFIG"
 HIL_INTR_CONFIG_DEFAULT = Path.home() / ".stegverse" / "config" / "hil-intr-runtime.json"
 UNIVERSAL_INTR_CONFIG_ENV = "STEGVERSE_UNIVERSAL_INTR_ROUTE_CONFIG"
 UNIVERSAL_INTR_CONFIG_DEFAULT = Path.home() / ".stegverse" / "config" / "universal-intr-runtime.json"
+KV_PATH_ENV_NAMES = ("STEGVERSE_KV_ROOT", "STEGVERSE_KV_PROVIDER_MATERIALIZED_ROOT")
 
 CANONICAL_REPO_BASES = (
     Path.home() / ".stegverse" / "repos",
@@ -43,10 +44,7 @@ def discover_healer_root(explicit: str = "") -> tuple[Path | None, str]:
     if explicit.strip():
         root = Path(explicit).expanduser().resolve()
         return (root, "EXPLICIT_NONSECRET_OVERRIDE") if _complete_healer_root(root) else (None, "EXPLICIT_INVALID")
-    candidates = [
-        base / "StegVerse-Labs" / "StegVerse-Healer"
-        for base in CANONICAL_REPO_BASES
-    ]
+    candidates = [base / "StegVerse-Labs" / "StegVerse-Healer" for base in CANONICAL_REPO_BASES]
     valid = [path.resolve() for path in candidates if _complete_healer_root(path)]
     unique = list(dict.fromkeys(str(path) for path in valid))
     if len(unique) == 1:
@@ -102,10 +100,7 @@ def atomic_write(path: Path, value: dict) -> None:
 def evaluator_gateway_projection() -> dict[str, str]:
     raw = os.environ.get(EVALUATOR_CONFIG_ENV, "").strip()
     path = Path(raw).expanduser().resolve() if raw else EVALUATOR_CONFIG_DEFAULT.expanduser().resolve()
-    disabled = {
-        "STEGVERSE_EVALUATOR_INTR_ENABLED": "false",
-        "STEGVERSE_EVALUATOR_INTR_UPSTREAM": "",
-    }
+    disabled = {"STEGVERSE_EVALUATOR_INTR_ENABLED": "false", "STEGVERSE_EVALUATOR_INTR_UPSTREAM": ""}
     if not path.is_file():
         return disabled
     try:
@@ -127,10 +122,7 @@ def evaluator_gateway_projection() -> dict[str, str]:
     port = value.get("port")
     if not isinstance(port, int) or port < 1024 or port > 65535:
         return disabled
-    return {
-        "STEGVERSE_EVALUATOR_INTR_ENABLED": "true",
-        "STEGVERSE_EVALUATOR_INTR_UPSTREAM": f"http://127.0.0.1:{port}/intr/evaluator",
-    }
+    return {"STEGVERSE_EVALUATOR_INTR_ENABLED": "true", "STEGVERSE_EVALUATOR_INTR_UPSTREAM": f"http://127.0.0.1:{port}/intr/evaluator"}
 
 
 def sv002_observation_gateway_projection() -> dict[str, str]:
@@ -149,7 +141,6 @@ def sv002_observation_gateway_projection() -> dict[str, str]:
     port = value.get("port")
     if not isinstance(port, int) or port < 1024 or port > 65535: return disabled
     return {"STEGVERSE_SV002_OBSERVE_ENABLED": "true", "STEGVERSE_SV002_OBSERVE_UPSTREAM": f"http://127.0.0.1:{port}/intr/sv002-observe"}
-
 
 
 def hil_intr_gateway_projection() -> dict[str, str]:
@@ -188,10 +179,7 @@ def hil_intr_gateway_projection() -> dict[str, str]:
         return disabled
     if port < 1024 or port > 65535:
         return disabled
-    return {
-        "STEGVERSE_HIL_INTR_ENABLED": "true",
-        "STEGVERSE_HIL_INTR_UPSTREAM": loopback + "/intr/materialization",
-    }
+    return {"STEGVERSE_HIL_INTR_ENABLED": "true", "STEGVERSE_HIL_INTR_UPSTREAM": loopback + "/intr/materialization"}
 
 
 def universal_intr_gateway_projection() -> dict[str, str]:
@@ -223,10 +211,7 @@ def universal_intr_gateway_projection() -> dict[str, str]:
     if not isinstance(profiles,list) or "KV:KnowledgeVaultInterlock" not in profiles:return disabled
     port=value.get("port")
     if not isinstance(port,int) or port<1024 or port>65535:return disabled
-    return {
-      "STEGVERSE_UNIVERSAL_INTR_ENABLED":"true",
-      "STEGVERSE_UNIVERSAL_INTR_UPSTREAM":f"http://127.0.0.1:{port}/intr/materialization",
-    }
+    return {"STEGVERSE_UNIVERSAL_INTR_ENABLED":"true","STEGVERSE_UNIVERSAL_INTR_UPSTREAM":f"http://127.0.0.1:{port}/intr/materialization"}
 
 
 NAMED_REPOSITORY_ROOT_BINDINGS = {
@@ -264,6 +249,10 @@ def build_healer_child_env(targets: Path, roots_json: str) -> dict[str, str]:
         "TARGETS_FILE": str(targets),
         "STEGVERSE_REPO_ROOTS_JSON": roots_json,
     }
+    for name in KV_PATH_ENV_NAMES:
+        raw = str(os.environ.get(name) or "").strip()
+        if raw:
+            env[name] = raw
     env.update(evaluator_gateway_projection())
     env.update(sv002_observation_gateway_projection())
     env.update(hil_intr_gateway_projection())
@@ -272,10 +261,6 @@ def build_healer_child_env(targets: Path, roots_json: str) -> dict[str, str]:
 
 
 def _response(state: str, transition: str, checkpoint: str, blocker: dict | None, epoch: int) -> dict:
-    # One Healer scheduler pass may complete, but the scheduler task itself is a
-    # standing recurring capability. Preserve the completed-cycle transition and
-    # durable receipt while returning HANDOFF_READY to WorkerCoordinator so the
-    # current claim/fence is closed and a fresh fenced claim can be issued later.
     cycle_completed = state == "COMPLETED" and transition == "HEALER_SOVEREIGN_SCHEDULER_COMPLETED"
     worker_state = "HANDOFF_READY" if cycle_completed else state
     return {
@@ -289,12 +274,7 @@ def _response(state: str, transition: str, checkpoint: str, blocker: dict | None
         "checkpoint_ref": checkpoint,
         "evidence_refs": [checkpoint],
         "blocker": blocker,
-        "cost_observation": {
-            "hb_transition_count": 1,
-            "compute_units": 1,
-            "external_cost_usd": 0,
-            "task_class": "healer_sovereign_scheduler",
-        },
+        "cost_observation": {"hb_transition_count": 1,"compute_units": 1,"external_cost_usd": 0,"task_class": "healer_sovereign_scheduler"},
     }
 
 
@@ -304,25 +284,20 @@ def main() -> int:
     except Exception as exc:
         print(f"invalid invocation: {exc}", file=sys.stderr)
         return 2
-    if invocation.get("schema") != "stegverse.worker-invocation/v0.1":
-        return 3
+    if invocation.get("schema") != "stegverse.worker-invocation/v0.1": return 3
     epoch = invocation.get("heartbeat_epoch")
     task = invocation.get("task") or {}
     handoff = invocation.get("handoff") or {}
-    if not isinstance(epoch, int) or task.get("task_id") != EXPECTED_TASK:
-        return 4
+    if not isinstance(epoch, int) or task.get("task_id") != EXPECTED_TASK: return 4
     timing = task.get("heartbeat_timing") or {}
     claim_id = task.get("claim_id")
     fence = timing.get("fencing_token")
-    if not claim_id or not isinstance(fence, int):
-        return 5
+    if not claim_id or not isinstance(fence, int): return 5
     execution = handoff.get("execution") or {}
     required = set(execution.get("required_capabilities") or [])
     allowed = set(execution.get("allowed_paths") or [])
-    if "healer_sovereign_scheduling" not in required:
-        return 6
-    if "receipts/healer-sovereign-scheduler/**" not in allowed:
-        return 7
+    if "healer_sovereign_scheduling" not in required: return 6
+    if "receipts/healer-sovereign-scheduler/**" not in allowed: return 7
 
     forbidden = [name for name in ("HEALER_GH_TOKEN", "GITHUB_TOKEN", "GH_TOKEN", "HEALER_PAT", "GH_STEGVERSE_AI_TOKEN") if os.getenv(name)]
     healer_root, healer_root_source = discover_healer_root(os.getenv("STEGVERSE_HEALER_ROOT", ""))
@@ -335,63 +310,23 @@ def main() -> int:
     transition = "HEALER_SOVEREIGN_SCHEDULER_BLOCKED"
 
     if forbidden:
-        blocker = {
-            "dependency_class": "AUTHORITY_CONFLICT",
-            "problem_statement": "Forbidden GitHub credential environment is present in the sovereign Healer worker.",
-            "solution_required": True,
-            "may_remain_blocked": False,
-            "next_solution_action": "REMOVE_GITHUB_CREDENTIAL_ENVIRONMENT",
-            "forbidden_variables": sorted(forbidden),
-        }
+        blocker = {"dependency_class":"AUTHORITY_CONFLICT","problem_statement":"Forbidden GitHub credential environment is present in the sovereign Healer worker.","solution_required":True,"may_remain_blocked":False,"next_solution_action":"REMOVE_GITHUB_CREDENTIAL_ENVIRONMENT","forbidden_variables":sorted(forbidden)}
     elif healer_root is None:
-        blocker = {
-            "dependency_class": "LOCAL_RESOURCE",
-            "problem_statement": "A unique complete local StegVerse-Healer root was not discovered.",
-            "solution_required": True,
-            "may_remain_blocked": True,
-            "next_solution_action": "MATERIALIZE_UNIQUE_LOCAL_STEGVERSE_HEALER_ROOT",
-            "discovery_state": healer_root_source,
-        }
+        blocker = {"dependency_class":"LOCAL_RESOURCE","problem_statement":"A unique complete local StegVerse-Healer root was not discovered.","solution_required":True,"may_remain_blocked":True,"next_solution_action":"MATERIALIZE_UNIQUE_LOCAL_STEGVERSE_HEALER_ROOT","discovery_state":healer_root_source}
     elif not roots_json:
-        blocker = {
-            "dependency_class": "LOCAL_RESOURCE",
-            "problem_statement": "No usable local repository-root map was discovered.",
-            "solution_required": True,
-            "may_remain_blocked": True,
-            "next_solution_action": "MATERIALIZE_LOCAL_REPOSITORY_ROOTS_OR_SUPPLY_NONSECRET_MAP",
-            "discovery_state": repo_roots_source,
-        }
+        blocker = {"dependency_class":"LOCAL_RESOURCE","problem_statement":"No usable local repository-root map was discovered.","solution_required":True,"may_remain_blocked":True,"next_solution_action":"MATERIALIZE_LOCAL_REPOSITORY_ROOTS_OR_SUPPLY_NONSECRET_MAP","discovery_state":repo_roots_source}
     else:
         entry = healer_root / "app" / "dispatch_orchestrators.py"
         targets = healer_root / "data" / "orchestrator_targets.json"
         if not healer_root.is_dir() or not entry.is_file() or not targets.is_file():
-            blocker = {
-                "dependency_class": "LOCAL_RESOURCE",
-                "problem_statement": "Declared StegVerse-Healer root is incomplete.",
-                "solution_required": True,
-                "may_remain_blocked": True,
-                "next_solution_action": "MATERIALIZE_COMPLETE_STEGVERSE_HEALER_TREE",
-            }
+            blocker = {"dependency_class":"LOCAL_RESOURCE","problem_statement":"Declared StegVerse-Healer root is incomplete.","solution_required":True,"may_remain_blocked":True,"next_solution_action":"MATERIALIZE_COMPLETE_STEGVERSE_HEALER_TREE"}
         else:
             env = build_healer_child_env(targets, roots_json)
-            proc = subprocess.run(
-                [sys.executable, str(entry)],
-                cwd=healer_root,
-                env=env,
-                text=True,
-                capture_output=True,
-                timeout=240,
-                check=False,
-            )
+            proc = subprocess.run([sys.executable, str(entry)], cwd=healer_root, env=env, text=True, capture_output=True, timeout=240, check=False)
             try:
                 child_receipt = json.loads(proc.stdout.strip().splitlines()[-1])
             except Exception:
-                child_receipt = {
-                    "state": "FAILED",
-                    "error": "INVALID_HEALER_CHILD_RECEIPT",
-                    "stdout_tail": proc.stdout[-4000:],
-                    "stderr_tail": proc.stderr[-4000:],
-                }
+                child_receipt = {"state":"FAILED","error":"INVALID_HEALER_CHILD_RECEIPT","stdout_tail":proc.stdout[-4000:],"stderr_tail":proc.stderr[-4000:]}
             child_state = child_receipt.get("state")
             if proc.returncode == 0 and child_state == "COMPLETE":
                 state = "COMPLETED"
@@ -399,42 +334,31 @@ def main() -> int:
             elif child_state in {"BLOCKED", "REVIEW_REQUIRED"}:
                 state = "BLOCKED"
                 transition = "HEALER_SOVEREIGN_SCHEDULER_BLOCKED"
-                blocker = {
-                    "dependency_class": "INTERNAL_CAPABILITY",
-                    "problem_statement": "One or more due Healer targets lack a completed sovereign local handler.",
-                    "solution_required": True,
-                    "may_remain_blocked": True,
-                    "next_solution_action": "COMPLETE_BLOCKED_HEALER_TARGET_ADAPTERS",
-                }
+                blocker = {"dependency_class":"INTERNAL_CAPABILITY","problem_statement":"One or more due Healer targets lack a completed sovereign local handler.","solution_required":True,"may_remain_blocked":True,"next_solution_action":"COMPLETE_BLOCKED_HEALER_TARGET_ADAPTERS"}
             else:
                 state = "FAILED"
                 transition = "HEALER_SOVEREIGN_SCHEDULER_FAILED"
-                blocker = {
-                    "dependency_class": "IMPLEMENTATION",
-                    "problem_statement": "Sovereign Healer child execution failed.",
-                    "solution_required": True,
-                    "may_remain_blocked": False,
-                    "next_solution_action": "REPAIR_HEALER_SOVEREIGN_SCHEDULER",
-                }
+                blocker = {"dependency_class":"IMPLEMENTATION","problem_statement":"Sovereign Healer child execution failed.","solution_required":True,"may_remain_blocked":False,"next_solution_action":"REPAIR_HEALER_SOVEREIGN_SCHEDULER"}
 
     receipt = {
-        "schema": "stegverse.healer.sovereign_scheduler_worker_receipt/v0.1",
-        "task_id": EXPECTED_TASK,
-        "claim_id": claim_id,
-        "heartbeat_epoch": epoch,
-        "fencing_token": fence,
-        "state": state,
-        "transition_id": transition,
-        "credential_authority": CURRENT_AUTHORITY,
-        "github_token_required": False,
-        "github_actions_production_role": False,
-        "child_receipt": child_receipt,
-        "healer_root": str(healer_root) if healer_root is not None else None,
-        "healer_root_source": healer_root_source,
-        "repository_root_count": len(repo_roots),
-        "repository_roots_source": repo_roots_source,
-        "blocker": blocker,
-        "authority_effect": "BOUNDED_LOCAL_SCHEDULER_EXECUTION_ONLY",
+        "schema":"stegverse.healer.sovereign_scheduler_worker_receipt/v0.1",
+        "task_id":EXPECTED_TASK,
+        "claim_id":claim_id,
+        "heartbeat_epoch":epoch,
+        "fencing_token":fence,
+        "state":state,
+        "transition_id":transition,
+        "credential_authority":CURRENT_AUTHORITY,
+        "github_token_required":False,
+        "github_actions_production_role":False,
+        "child_receipt":child_receipt,
+        "healer_root":str(healer_root) if healer_root is not None else None,
+        "healer_root_source":healer_root_source,
+        "repository_root_count":len(repo_roots),
+        "repository_roots_source":repo_roots_source,
+        "kv_path_env_forwarded":sorted(name for name in KV_PATH_ENV_NAMES if str(os.environ.get(name) or "").strip()),
+        "blocker":blocker,
+        "authority_effect":"BOUNDED_LOCAL_SCHEDULER_EXECUTION_ONLY",
     }
     rel = f"receipts/healer-sovereign-scheduler/{EXPECTED_TASK}.json"
     atomic_write(ROOT / rel, receipt)
