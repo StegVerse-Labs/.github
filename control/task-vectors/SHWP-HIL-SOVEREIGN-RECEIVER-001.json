@@ -6,9 +6,11 @@
   "evidence_refs": [
     "control/worker-registry.d/hil-sovereign-receiver-001.json",
     "handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json",
-    "docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_MIRROR_HANDOFF.md"
+    "docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_MIRROR_HANDOFF.md",
+    "docs/HIL_G25_REQUEST_CONSUMPTION_RECONCILIATION_20260909.md",
+    "receipts/sovereign-host/hil-resident-execution-request-consumption.latest.json"
   ],
-  "observed_at": "2026-08-30T21:35:00-05:00",
+  "observed_at": "2026-09-09T00:48:00-05:00",
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
     "lifecycle": "MACHINE_OWNED",
@@ -21,22 +23,22 @@
     "chat_owned_credentials": 0,
     "canonical_owner_installed": true,
     "thread_required": false,
-    "blocker_count": 5,
+    "blocker_count": 3,
     "evidence_complete": false,
     "activated": false,
     "propagated": false
   },
   "metric_evidence": {
-    "lifecycle": "handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json HANDOFF_READY with authorized independent task control",
+    "lifecycle": "resident request-consumption predicate is satisfied from exact current-iPhone browser evidence; broader HIL lifecycle remains machine-owned",
     "archive_ready": "control/worker-registry.d/hil-sovereign-receiver-001.json archive_eligible=false",
     "unassigned_work": "registered worker owns continuation",
     "chat_owned_counts": "no chat-owned execution or credential role",
-    "canonical_owner_installed": "canonical handoff, worker, adapter, and registry are installed",
+    "canonical_owner_installed": "canonical handoff, worker, adapter, registry, exact physical evidence, and consumption receipt are installed",
     "thread_required": "durable machine handoff is independently recoverable",
-    "blocker_count": "exact archive_reason_codes/blocker conditions count = 5",
-    "evidence_complete": "required runtime terminal evidence is not observed",
-    "activated": "runtime activation/observation remains pending",
-    "propagated": "downstream consequences remain gated on authentic runtime evidence"
+    "blocker_count": "three archive reason codes remain after G25 claim/fence observation and browser receipt preservation",
+    "evidence_complete": "request-consumption evidence is complete; ESRL lease-open observation, post-restart exact-byte proof, and TVC lifecycle handoff remain outstanding",
+    "activated": "local-ready request consumption is observed but broader HIL lifecycle activation is not yet complete",
+    "propagated": "downstream propagation remains gated on owning release predicates; verification task is StegVerse-Labs/.github#1238"
   },
   "authority_effect": "NONE"
 }
