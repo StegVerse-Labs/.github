@@ -1,0 +1,44 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SHWP-STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000101000",
+  "evidence_refs": [
+    "control/worker-registry.d/stegos-sovereign-relay-return-path-001.json",
+    "handoffs/SHWP-STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001.json",
+    "docs/STEGOS_SOVEREIGN_RELAY_RETURN_PATH_RUNTIME_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegOS#315",
+    "StegVerse-Labs/StegOS#316"
+  ],
+  "observed_at": "2026-09-09T18:50:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 1,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "handoffs/SHWP-STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001.json HANDOFF_READY under independent task control",
+    "archive_ready": "runtime terminal return-path receipt has not yet been observed",
+    "unassigned_work": "registered resident worker owns continuation",
+    "chat_owned_counts": "no chat-owned execution, observation, or credential role",
+    "canonical_owner_installed": "merged StegOS return path plus .github worker, adapter, handoff, and registry are installed on this branch",
+    "thread_required": "durable machine handoff is independently recoverable",
+    "blocker_count": "one runtime evidence gate remains: authentic real-artifact resident round trip",
+    "evidence_complete": "SOVEREIGN_RELAY_RETURN_PATH_VERIFIED terminal evidence is not yet observed",
+    "activated": "resident runtime execution remains pending",
+    "propagated": "governed downstream consequence evaluation remains gated on authentic return-path evidence"
+  },
+  "authority_effect": "NONE"
+}
