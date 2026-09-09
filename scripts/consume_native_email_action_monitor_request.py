@@ -3,16 +3,19 @@
 
 Each resident visit performs one bounded monitor iteration. Historical actionable
 GitHub mail is replayed first, one acknowledged page at a time, then the exact live
-GitHub/[Task Update] INBOX slice is drained. A successful nonterminal iteration emits
-the same Task ID + COSV handoff so the existing resident dispatcher initiates it again.
+GitHub/[Task Update] INBOX slice is drained. Normalized failure incidents are persisted
+into the already-materialized KnowledgeVault with exact-byte readback before any live
+ARCHIVE_IDS operation is permitted. A successful nonterminal iteration emits the same
+Task ID + COSV handoff so the existing resident dispatcher initiates it again.
 
 Failure observations are mapped by .github and delegated to StegHealth, which owns
 corrective-task creation/resumption. New StegHealth-created task candidates may then
-enter the existing Canonical Work/InTr path. Email observation and task creation do not
-mint execution authority; WorkerCoordinator and Interlock/InTr retain their boundaries.
+enter the existing Canonical Work/InTr path. Email observation, KV storage, and task
+creation do not mint execution authority.
 
 Completion is allowed only when archived replay is complete, the live operational
-GitHub inbox is empty, and mapped failure ownership is durable.
+GitHub inbox is empty, KV persistence is satisfied for observed failures, and mapped
+failure ownership is durable.
 """
 from __future__ import annotations
 
@@ -37,6 +40,7 @@ TASK_VECTOR_DIR_REL = Path("control/task-vectors")
 TASK_ID = "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001"
 MODE = "NATIVE_EMAIL_ACTION_MONITOR"
 ENTRYPOINT = "scripts/consume_native_email_action_monitor_request.py"
+MONITOR_ENTRYPOINT = "scripts/run_native_email_action_monitor_kv_guard.py"
 
 
 def require(ok: bool, reason: str) -> None:
@@ -134,6 +138,22 @@ def resolve_repo(source: Path, values: Mapping[str, str], *, env_name: str, repo
             continue
         if resolved.name == repo_name and resolved.is_dir():
             return resolved
+    return None
+
+
+def resolve_kv_root(values: Mapping[str, str]) -> Path | None:
+    candidates: list[Path] = []
+    for name in ("STEGVERSE_KV_ROOT", "STEGVERSE_KV_PROVIDER_MATERIALIZED_ROOT"):
+        raw = values.get(name)
+        if isinstance(raw, str) and raw:
+            candidates.append(Path(raw).expanduser())
+    for candidate in candidates:
+        try:
+            root = candidate.resolve()
+        except Exception:
+            continue
+        if root.is_dir() and (root.name == "KnowledgeVault" or (root / "_System").exists() or (root / "00_Inbox").exists()):
+            return root
     return None
 
 
@@ -291,9 +311,13 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     request_hash = stable_hash(request)
     cosv_vector = resolve_task_vector(source, runtime)
 
-    monitor = resolve_source_script(source, runtime, "scripts/run_native_email_action_monitor.py")
+    monitor = resolve_source_script(source, runtime, MONITOR_ENTRYPOINT)
     if monitor is None:
-        return pending(runtime, request, request_hash, "MONITOR_ENTRYPOINT_NOT_MATERIALIZED", handoff_task_id=TASK_ID, handoff_cosv_task_vector=cosv_vector)
+        return pending(runtime, request, request_hash, "KV_GUARDED_MONITOR_ENTRYPOINT_NOT_MATERIALIZED", handoff_task_id=TASK_ID, handoff_cosv_task_vector=cosv_vector)
+
+    kv_root = resolve_kv_root(values)
+    if kv_root is None:
+        return pending(runtime, request, request_hash, "KV_ROOT_NOT_MATERIALIZED", handoff_task_id=TASK_ID, handoff_cosv_task_vector=cosv_vector, kv_persistence_required=True, archive_permitted=False)
 
     stegops = resolve_repo(source, values, env_name="STEGVERSE_STEGOPS_ORCHESTRATOR_ROOT", repo_name="StegOps-Orchestrator")
     if stegops is None:
@@ -315,23 +339,32 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         sys.executable, str(monitor),
         "--output", str(monitor_receipt),
         "--batch-limit", "100",
+        "--kv-root", str(kv_root),
         "--broker-json", json.dumps(broker_command, separators=(",", ":")),
     ]
     completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=dict(values), timeout=900)
     monitor_result = load_json(monitor_receipt) if monitor_receipt.is_file() else parse_last_json(completed.stdout)
     monitor_state = monitor_result.get("state") if isinstance(monitor_result, dict) else None
+    kv_persistence = monitor_result.get("kv_persistence") if isinstance(monitor_result, dict) else None
+    kv_persistence_satisfied = bool(
+        isinstance(kv_persistence, dict)
+        and kv_persistence.get("state") == "KV_STORED_VERIFIED"
+        and kv_persistence.get("archive_after_kv_persistence") is True
+        and kv_persistence.get("exact_byte_readback_required") is True
+    )
     valid_monitor_result = bool(
         completed.returncode == 0
         and isinstance(monitor_result, dict)
         and monitor_result.get("schema") == "stegverse.native-email-action-monitor-receipt/v1"
         and monitor_state in {"PASS", "ARCHIVED_REPLAY_PENDING", "ARCHIVED_REPLAY_COMPLETE"}
+        and kv_persistence_satisfied
     )
     processed = monitor_result.get("processed_exact_count") if isinstance(monitor_result, dict) else None
     require(processed is None or isinstance(processed, int), "monitor processed_exact_count invalid")
 
     failure_reconciliation = None
     corrective_task_initiation: list[dict[str, Any]] = []
-    if isinstance(monitor_result, dict):
+    if isinstance(monitor_result, dict) and kv_persistence_satisfied:
         failure_reconciliation, corrective_task_initiation = reconcile_failure_work(source, runtime, monitor_receipt, monitor_result, values, runner)
 
     failure_retry_required = bool(
@@ -366,6 +399,11 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         "execution_returncode": completed.returncode,
         "monitor_receipt_ref": str(monitor_receipt),
         "monitor_result": monitor_result,
+        "kv_root": str(kv_root),
+        "kv_persistence_required": True,
+        "kv_persistence_satisfied": kv_persistence_satisfied,
+        "kv_persistence": kv_persistence,
+        "archive_after_kv_persistence_required": True,
         "archived_failure_replay_complete": replay_complete,
         "failure_reconciliation": failure_reconciliation,
         "corrective_task_initiation": corrective_task_initiation,
@@ -375,7 +413,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         "archived_failure_may_not_discard_corrective_work": True,
         "github_inbox_empty": inbox_empty_of_github,
         "continuation_required": state != "COMPLETED",
-        "terminal_predicate": "ARCHIVED_FAILURE_REPLAY_COMPLETE_AND_GITHUB_INBOX_MATCHING_OPERATIONAL_QUERY_EMPTY_AND_FAILURE_RECONCILIATION_DURABLE",
+        "terminal_predicate": "ARCHIVED_FAILURE_REPLAY_COMPLETE_AND_GITHUB_INBOX_MATCHING_OPERATIONAL_QUERY_EMPTY_AND_KV_FAILURE_PERSISTENCE_VERIFIED_AND_FAILURE_RECONCILIATION_DURABLE",
         "handoff_task_id": None if state == "COMPLETED" else TASK_ID,
         "handoff_cosv_task_vector": None if state == "COMPLETED" else cosv_vector,
         "handoff_action": None if state == "COMPLETED" else "RESOLVE_POINTER_AND_INITIATE_TASK_AGAIN",
