@@ -26,13 +26,17 @@
     "StegVerse-org/StegVerse-SDK:pull/135",
     "StegVerse-org/StegVerse-SDK:commit/97101a829a87f5bc443b186a6e53d9431d588b33",
     "StegVerse-org/StegVerse-SDK:actions/run/34301117338",
+    "StegVerse-org/StegVerse-SDK:pull/136",
+    "StegVerse-org/StegVerse-SDK:commit/4005be5dcd816082d49578421e79013c6e9ca9da",
+    "StegVerse-org/StegVerse-SDK:actions/run/34306391472",
     "StegVerse-org/StegVerse-SDK:issue/129",
+    "StegVerse-org/StegVerse-SDK:issue/129#issuecomment-5595193431",
     "StegVerse-Labs/admissibility-wiki:issue/66",
     "StegVerse-Labs/admissibility-wiki:issue/65",
     "public:https://stegverse.org/",
     "public:https://stegverse.org/ecosystem-chat.html"
   ],
-  "observed_at": "2026-09-09T01:56:00Z",
+  "observed_at": "2026-09-09T03:16:00Z",
   "exact_metrics": {
     "lifecycle": "ACTIVE",
     "archive_ready": false,
@@ -61,6 +65,8 @@
     "sdk_downstream_dependency_manifest_validated": true,
     "sdk_downstream_completion_predicates_installed": true,
     "sdk_downstream_completion_predicates_validated": true,
+    "site_conectrr_governance_contamination_subblocker_tracked": true,
+    "site_conectrr_governance_contamination_resolved": false,
     "site_completion_predicate_satisfied": false,
     "admissibility_completion_predicate_satisfied": false,
     "sdk_downstream_regression_guard_authority_effect": "NONE"
