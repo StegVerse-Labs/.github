@@ -7,16 +7,18 @@
     "data/canonical-task-records/STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001.json",
     "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_ECOSYSTEM_EPHEMERAL_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_EPHEMERAL_CREDENTIAL_SESSION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_IOS_RESIDENT_RENDEZVOUS_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegBrowser@dd596c4cb3ccbdcd85758b4d12bc8ad9e2ee539d",
     "StegVerse-Labs/StegBrowser@42f9a78b513586d19ff9c5447b725ef29c168390",
     "StegVerse-Labs/StegBrowser@fabcc468dde8bca1161a2e564fb17af389404cb3",
     "StegVerse-Labs/StegBrowser@3f27c8420cca8fc72e6caad305ba52cdd3cd3821",
     "StegVerse-Labs/StegBrowser@4d929f8f82a19663233ebbe7cd958ef686c1d228",
-    "StegVerse-Labs/StegBrowser@2948b4d3a70ccba3a4d09faaf8d9f8b4b46ed030",
+    "StegVerse-Labs/StegBrowser@86cb4c42bbde1366ca03088a01983273f73de400",
+    "StegVerse-Labs/StegBrowser/actions/runs/34303703951",
     "StegVerse-Labs/StegSocials@122811f8f44dc2494a1d5e771d50c210d1d8a555",
     "StegVerse-Labs/StegSocials/actions/runs/34302291053"
   ],
-  "observed_at": "2026-09-09T02:27:00Z",
+  "observed_at": "2026-09-09T02:35:00Z",
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
     "lifecycle": "CLAIMED_INTEGRATION",
@@ -35,15 +37,15 @@
     "propagated": false
   },
   "metric_evidence": {
-    "lifecycle": "Native Facebook publication source chain and StegSocials caller are merged and validated through callback-only TV/TVC+SKAP session injection, concrete Playwright Page interaction, publication object/URL/content proof, and terminal destruction semantics; authentic resident execution remains next.",
-    "archive_ready": "Authentic WorkerCoordinator claim/fence, Interlock/InTr admission, live Facebook session binding, browser-created publication/readback, custody, LinkedIn parity, and propagation remain incomplete.",
-    "unassigned_work": "Remaining work is explicitly assigned to the canonical StegBrowser/InTr/WorkerCoordinator/TVC/StegSocials/Master Records continuation path.",
+    "lifecycle": "Native Facebook publication source chain, StegSocials caller, loopback-only iOS NWListener wrapper, and bounded 900-second iOS resident lifecycle controller are merged and validated; native app-target integration and authentic current-iPhone resident execution remain next.",
+    "archive_ready": "Native app-target/current-iPhone proof, authentic WorkerCoordinator claim/fence, Interlock/InTr admission, live Facebook session binding, browser-created publication/readback, custody, LinkedIn parity, and propagation remain incomplete.",
+    "unassigned_work": "Remaining work is explicitly assigned to the canonical StegBrowser/iOS/InTr/WorkerCoordinator/TVC/StegSocials/Master Records continuation path.",
     "chat_owned_counts": "Durable implementation and validation evidence are repository-backed; no chat-only source work is required for continuation.",
     "canonical_owner_installed": "Canonical task record, COSV task vector, index shard, resident request, and mirror handoffs provide durable coordination ownership.",
     "thread_required": "Repository handoffs and task/COSV state are sufficient for continuation without chat-only state.",
-    "blocker_count": "No source blocker remains. Outstanding conditions are authentic resident/runtime evidence predicates and downstream integration work, not missing Facebook source scaffolding.",
-    "evidence_complete": "Public retrieval, credential-session plumbing, Facebook publication source execution, and StegSocials caller validation exist; live governed publication/readback/custody/propagation evidence does not.",
-    "activated": "The native Facebook execution path is source-ready and validated, but full governed ecosystem activation is not claimed until resident admission and authentic publication proof exist.",
+    "blocker_count": "No unresolved source-code blocker is known for the Facebook or iOS loopback lifecycle source path. Outstanding conditions are authentic resident/runtime evidence and downstream integration predicates.",
+    "evidence_complete": "Public retrieval, credential-session plumbing, native Facebook publication source execution, StegSocials caller validation, and iOS loopback/lifecycle source validation exist; current-iPhone runtime, live governed publication/readback/custody/propagation evidence does not.",
+    "activated": "The native Facebook and iOS resident source paths are source-ready and validated, but full governed ecosystem activation is not claimed until current-device resident admission and authentic publication proof exist.",
     "propagated": "Cross-repository release propagation verification remains open and is not release-ready."
   },
   "authority_effect": "NONE"
