@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Consume the bounded Healer sovereign scheduler resident request."""
+"""Consume the standing Healer sovereign scheduler resident request."""
 from __future__ import annotations
 
 import argparse
@@ -34,9 +34,7 @@ def load_json(path: Path) -> dict[str, Any]:
 
 
 def stable_hash(value: Any) -> str:
-    return hashlib.sha256(
-        json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
-    ).hexdigest()
+    return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()).hexdigest()
 
 
 def clean_env(source: dict[str, str] | None = None) -> dict[str, str]:
@@ -63,6 +61,8 @@ def validate_request(request: dict[str, Any]) -> None:
         "network_source_fetch_allowed": False,
         "request_granted_authority": False,
         "authority_effect": "NONE_REQUEST_ONLY",
+        "standing_request": True,
+        "recurrence": "EACH_ELIGIBLE_RESIDENT_SCHEDULER_CYCLE",
     }
     for key, value in expected.items():
         if request.get(key) != value:
@@ -82,98 +82,47 @@ def parse_last_json(stdout: str) -> dict[str, Any] | None:
     return None
 
 
-def terminally_consumed(runtime: Path, request: dict[str, Any], request_hash: str) -> bool:
-    path = runtime / CONSUMPTION_REL
-    if not path.is_file():
-        return False
-    try:
-        receipt = load_json(path)
-    except Exception:
-        return False
-    return bool(
-        receipt.get("request_id") == request["request_id"]
-        and receipt.get("request_sha256") == request_hash
-        and receipt.get("terminal_scheduler_completion_observed") is True
-    )
-
-
-def consume(
-    source_root: Path,
-    runtime_root: Path,
-    *,
-    runner=subprocess.run,
-    env: dict[str, str] | None = None,
-) -> dict[str, Any]:
+def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env: dict[str, str] | None = None) -> dict[str, Any]:
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
     request_path = runtime / REQUEST_REL
     if not request_path.is_file():
-        return {
-            "schema": "stegverse.healer-resident-request-consumption/v1",
-            "state": "NO_REQUEST",
-            "runtime_execution_attempted": False,
-            "terminal_scheduler_completion_observed": False,
-            "authority_effect": "NONE",
-        }
+        return {"schema": "stegverse.healer-resident-request-consumption/v1", "state": "NO_REQUEST", "runtime_execution_attempted": False, "standing_request": True, "authority_effect": "NONE"}
 
     request = load_json(request_path)
     validate_request(request)
     request_hash = stable_hash(request)
-    if terminally_consumed(runtime, request, request_hash):
-        return {
-            "schema": "stegverse.healer-resident-request-consumption/v1",
-            "state": "ALREADY_CONSUMED",
-            "request_id": request["request_id"],
-            "request_sha256": request_hash,
-            "runtime_execution_attempted": False,
-            "terminal_scheduler_completion_observed": True,
-            "authority_effect": "NONE_REQUEST_ONLY",
-        }
-
     entrypoint = runtime / TARGET_ENTRYPOINT
     if not entrypoint.is_file():
         raise RuntimeError(f"Healer resident execution entrypoint missing: {entrypoint}")
-    command = [
-        sys.executable,
-        str(entrypoint),
-        "--source-root",
-        str(source),
-        "--runtime-root",
-        str(runtime),
-        "--task-id",
-        TARGET_TASK,
-    ]
-    completed = runner(
-        command,
-        cwd=runtime,
-        capture_output=True,
-        text=True,
-        check=False,
-        env=clean_env(env),
-        timeout=1200,
-    )
+
+    command = [sys.executable, str(entrypoint), "--source-root", str(source), "--runtime-root", str(runtime), "--task-id", TARGET_TASK]
+    completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=clean_env(env), timeout=1200)
     result = parse_last_json(completed.stdout)
     execution_result = result.get("execution_result") if isinstance(result, dict) else None
-    transition = None
-    if isinstance(execution_result, dict):
-        transition = execution_result.get("transition_id")
+    transition = execution_result.get("transition_id") if isinstance(execution_result, dict) else None
     if transition is None and isinstance(result, dict):
         transition = result.get("transition_id")
-    terminal = transition == "HEALER_SOVEREIGN_SCHEDULER_COMPLETED"
+    cycle_completed = transition == "HEALER_SOVEREIGN_SCHEDULER_COMPLETED"
+
     receipt = {
         "schema": "stegverse.healer-resident-request-consumption/v1",
-        "state": "COMPLETED" if terminal else "ATTEMPT_RECORDED",
+        "state": "CYCLE_COMPLETED" if cycle_completed else "ATTEMPT_RECORDED",
         "request_id": request["request_id"],
         "request_sha256": request_hash,
         "task_id": TARGET_TASK,
         "mode": TARGET_MODE,
+        "standing_request": True,
+        "recurrence": request["recurrence"],
         "command": command,
         "execution_returncode": completed.returncode,
         "execution_result_observed": isinstance(result, dict),
         "execution_result": result,
         "runtime_execution_attempted": True,
-        "terminal_scheduler_completion_observed": terminal,
-        "retry_allowed": not terminal,
+        "scheduler_cycle_completion_observed": cycle_completed,
+        "terminal_scheduler_completion_observed": False,
+        "retry_allowed": True,
+        "request_consumed": False,
         "request_granted_authority": False,
         "heartbeat_grants_execution_authority": False,
         "github_token_required": False,
