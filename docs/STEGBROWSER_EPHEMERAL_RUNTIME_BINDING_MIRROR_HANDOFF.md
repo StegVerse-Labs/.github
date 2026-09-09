@@ -1,5 +1,7 @@
 # StegBrowser Ephemeral Runtime Binding Mirror Handoff
 
+Updated: 2026-09-08
+
 ## Task pointer
 
 - Goal Task ID: `STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001`
@@ -12,18 +14,35 @@
 
 ## Current source chain
 
-StegBrowser native Facebook publication source and the StegSocials native caller remain merged and validated. The iOS resident path has now advanced through four distinct source boundaries without converting source evidence into runtime authority:
+The working-instance lane is intentionally ahead of profile/social expansion. StegBrowser native browser mechanics remain merged, but current work is constrained to producing an authentic current-iPhone resident instance.
+
+Merged native/device chain:
 
 1. standalone loopback listener/bounded lifecycle: `StegVerse-Labs/StegBrowser@86cb4c42bbde1366ca03088a01983273f73de400`;
-2. compiled `StegOSMobile` app-target binding: `StegVerse-Labs/StegOS@eb99b9222eba056478aa8d7ed3bc3bafb54fc194`;
+2. compiled `StegOSMobile` app-target binding and canonical Site-node activation;
 3. durable app-local Site custody retention: `StegVerse-Labs/StegOS@bfa580942ee834799f87fdff3a9f1ea8d78067d4`;
-4. same-device loopback discovery self-readback and component receipt source: `StegVerse-Labs/StegOS@9d069503671d8c5f2a19856c0adece3e2eba962e`.
+4. same-device loopback discovery self-readback/component receipt: `StegVerse-Labs/StegOS@9d069503671d8c5f2a19856c0adece3e2eba962e`;
+5. canonical `iphoneos` device packaging with the provisional duplicate browser host removed;
+6. complete Apple signing-surface validation: `StegVerse-Labs/StegOS@b9325bb69c721420218ba622297f95ef80c36cda`;
+7. GitHub-macOS signed/TestFlight build pipeline: `StegVerse-Labs/StegOS@91e93a70ed15d21d84cc7b511b6c71b64b9dc19b`.
 
-## Same-device discovery/readback source
+## Canonical current-iPhone resident path
 
-The merged source extends the existing canonical Site-node-bound `SV001ResidentActivationController`; no second activation, node-identity, WorkerCoordinator, or InTr plane is introduced.
+There is one resident activation path:
 
-After a bounded canonical-node-bound local session starts, StegOSMobile now connects to `127.0.0.1:8000`, requests `GET /api/resident-rendezvous/v1/discovery`, and requires the exact discovery contract:
+```text
+stegverse://resident-rendezvous/activate
+-> existing canonical Site SV-NODE identity
+-> bounded StegOSMobile loopback lifecycle
+-> 127.0.0.1:8000
+-> GET /api/resident-rendezvous/v1/discovery
+-> exact discovery validation
+-> NONE_COMPONENT_EVIDENCE_ONLY local receipt
+```
+
+The retired provisional `stegverse://browser/start` path and temporary node identity are not part of the physical-runtime path.
+
+After a bounded canonical-node-bound local session starts, StegOSMobile requires:
 
 ```text
 schema=stegverse.resident-rendezvous.discovery/v1
@@ -35,71 +54,81 @@ discovery_grants_authority=false
 authority_effect=NONE_DISCOVERY_ONLY
 ```
 
-Only after exact local readback may the app append `stegos-stegbrowser-current-iphone-rendezvous-receipts.jsonl`. The component receipt explicitly records these predicates as false until separately observed:
+The local component receipt keeps downstream predicates false until separately observed, including InTr admission, WorkerCoordinator claim/fence, canonical request consumption, provider session, and publication.
+
+## Physical-device package and signing surface
+
+The unsigned `iphoneos` build path is validated against the real device SDK. The complete signing surface is now checked before credentials are introduced:
 
 ```text
-intr_admission_observed=false
-workercoordinator_claim_observed=false
-canonical_request_consumption_observed=false
-provider_session_observed=false
-publication_observed=false
-authority_effect=NONE_COMPONENT_EVIDENCE_ONLY
+host app: org.stegverse.stegosmobile
+capture extension: org.stegverse.stegosmobile.capture
+broadcast extension: org.stegverse.stegosmobile.capture.broadcast
+shared app group: group.org.stegverse.stegosmobile
 ```
 
-If the listener cannot be reached or the discovery object violates the exact contract after bounded retries, the local session fails closed.
+StegOS PR #259 merged at `b9325bb69c721420218ba622297f95ef80c36cda` after:
 
-Exact-head validation for the merged source passed:
+```text
+StegOS CI 34307735221: SUCCESS
+iOS Device Package Validation 34307735192: SUCCESS
+```
 
-- StegOS CI `34306875310`: SUCCESS;
-- iOS Apple Toolchain Validation `34306875357`: SUCCESS;
-- iOS Device Package Validation `34306875317`: SUCCESS, including unsigned iphoneos product construction and verification that the StegBrowser working-instance host is present in the device binary.
+The package gate verifies both embedded extensions, exact bundle identifiers, entitlement files, target entitlement wiring, canonical StegBrowser resident strings, and the shared App Group. This remains unsigned package evidence and does not prove installation.
 
-These runs prove installed/package capability only. They do not prove that the current participant iPhone executed the listener or emitted the component receipt.
+## Signed/TestFlight pipeline
 
-## Durable local custody
+StegOS PR #260 merged at `91e93a70ed15d21d84cc7b511b6c71b64b9dc19b`; StegOS CI `34307932313` passed.
 
-The prior in-memory retention gap remains closed. Validated Site custody evidence is persisted atomically in app-local storage keyed by canonical node identity, reconstructed/revalidated after app process reconstruction, idempotent for the same proof, and conflicting-proof fail-closed. Persistence authority remains `NONE_EVIDENCE_ONLY`.
+The workflow-dispatch-only signing lane runs on GitHub macOS so no user-operated Mac is required. It is designed to:
+
+1. consume Apple-issued signing material only from GitHub Actions secrets;
+2. create a temporary keychain;
+3. install/validate the distribution certificate and the three matching provisioning profiles;
+4. require exact bundle IDs and shared App Group;
+5. archive the real `iphoneos` application;
+6. export an App Store Connect/TestFlight IPA;
+7. verify code signatures, entitlements, embedded extensions, and canonical resident markers;
+8. emit signed IPA/manifest evidence;
+9. optionally upload to App Store Connect/TestFlight with API-key material;
+10. destroy transient signing material.
+
+No certificate, profile, Apple-account credential, API private key, or signing private key is committed to source.
+
+## Current external boundary
+
+Repository implementation is no longer the blocker for signed-build construction. The remaining pre-install input is authentic Apple-issued material/account access. No connected evidence currently establishes that the required distribution certificate/provisioning profiles/App Store Connect API material already exist.
+
+Required physical sequence:
+
+```text
+Apple-issued signing/account material
+-> merged GitHub macOS signing workflow
+-> signed IPA / optional TestFlight upload
+-> install on current iPhone
+-> canonical Site-node activation
+-> actual 127.0.0.1 listener start
+-> actual same-device discovery response
+-> persisted current-iPhone component receipt
+```
+
+Source, CI, unsigned IPA evidence, and signing-pipeline existence must not be promoted into current-iPhone runtime evidence.
 
 ## Canonical resident / InTr state
 
-The canonical resident request remains separate from component evidence. Required authentic continuation evidence still includes:
-
-- task-specific resident request consumption;
-- task-specific shared InTr `INGRESS_ADMITTED` evidence;
-- authentic WorkerCoordinator claim/fence;
-- admitted TV/TVC + SKAP provider session;
-- actual Facebook publication/readback proof;
-- publication custody/reconstruction.
-
-A same-device discovery receipt must not be promoted into any of those predicates by interpretation.
+The canonical resident request remains separate from component evidence. Required authentic continuation evidence still includes task-specific resident request consumption, shared InTr `INGRESS_ADMITTED`, authentic WorkerCoordinator claim/fence, and later provider/publication evidence. Those later social/provider steps remain deliberately deferred until a working current-iPhone instance exists.
 
 ## Active continuation
 
-1. Materialize the existing canonical Site node binding on the current iPhone using its real `SV-NODE` identity and Node Receipt #1 digest.
-2. Allow the merged StegOSMobile source to start one bounded local session and obtain an authentic exact discovery readback/component receipt.
-3. Bind that authentic component evidence into the canonical `.github` resident-request continuation without converting it into execution authority.
-4. Observe authentic resident request consumption and shared InTr `INGRESS_ADMITTED` evidence.
-5. Reconcile through canonical WorkerCoordinator/Master Records and obtain the authentic claim/fence.
-6. Resolve one admitted Facebook provider session through TV/TVC + SKAP callback-only custody.
-7. Execute one already-approved StegSocials Facebook release through the merged StegBrowser native path.
-8. Verify Facebook object ID, canonical URL, exact content commitment, visibility, terminal destruction, and publication custody/reconstruction.
-9. Implement LinkedIn company-page parity.
-10. Verify propagation under `STEGBROWSER-ECOSYSTEM-PROPAGATION-VERIFY-001`.
-
-## Installation / integration remainder
-
-- Authentic current-iPhone listener/discovery component receipt -> `StegVerse-Labs/StegOS` + `StegVerse-Labs/.github`
-- Resident request consumption / InTr evidence -> `StegVerse-Labs/.github`
-- WorkerCoordinator + custody reconciliation -> `StegVerse-Labs/.github` + `master-records/orchestration`
-- Admitted Facebook provider session -> `StegVerse-Labs/TVC` + `StegVerse-Labs/StegBrowser`
-- Live Facebook publication/readback -> `StegVerse-Labs/StegBrowser` + `StegVerse-Labs/StegSocials`
-- Publication custody -> `master-records/orchestration`
-- LinkedIn parity -> `StegVerse-Labs/StegBrowser` + `StegVerse-Labs/StegSocials`
-- Release propagation/status -> `StegVerse-Labs/Site`
-- Publication provenance -> `GCAT-BCAT-Engine/Publisher`
-- Governance/admissibility docs -> `StegVerse-Labs/admissibility-wiki`
-- Guardian/security docs -> `StegVerse-Labs/stegguardian-wiki`
+1. Materialize authentic Apple signing/account inputs for the existing app + two extension identities and shared App Group.
+2. Run the merged signed/TestFlight workflow without a user-operated Mac.
+3. Install the resulting build on the current iPhone.
+4. Activate the existing canonical Site node binding and obtain authentic loopback discovery/component evidence.
+5. Bind that component evidence into the canonical resident-request continuation.
+6. Observe authentic resident request consumption and shared InTr `INGRESS_ADMITTED`.
+7. Reconcile through canonical WorkerCoordinator/Master Records and obtain the authentic claim/fence.
+8. Only after the working instance is proven, resume provider-session/profile/publication work.
 
 ## Current state
 
-`NATIVE_FACEBOOK_SOURCE_PATH_MERGED_VALIDATED / STEGSOCIALS_NATIVE_CALLER_MERGED_VALIDATED / STEGOSMOBILE_DURABLE_CUSTODY_MERGED_VALIDATED / SAME_DEVICE_DISCOVERY_READBACK_MERGED_CI_APPLE_DEVICE_PACKAGE_VALIDATED / CANONICAL_TASK_COSV_INSTALLED / AUTHENTIC_CURRENT_IPHONE_WORKER_INTR_SESSION_PUBLICATION_READBACK_CUSTODY_PENDING`
+`NATIVE_BROWSER_SOURCE_MERGED_VALIDATED / STEGOSMOBILE_CANONICAL_RESIDENT_MERGED_VALIDATED / SAME_DEVICE_DISCOVERY_READBACK_MERGED_VALIDATED / IPHONEOS_DEVICE_PACKAGE_VALIDATED / COMPLETE_APP_EXTENSION_APPGROUP_SIGNING_SURFACE_VALIDATED / GITHUB_MACOS_SIGNED_TESTFLIGHT_PIPELINE_MERGED / APPLE_ISSUED_SIGNING_MATERIAL_PENDING / AUTHENTIC_CURRENT_IPHONE_INSTALL_LISTENER_DISCOVERY_PENDING`

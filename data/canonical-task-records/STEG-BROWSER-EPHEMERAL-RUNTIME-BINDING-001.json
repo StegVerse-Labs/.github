@@ -21,6 +21,8 @@
     "StegVerse-Labs/StegOS@eb99b9222eba056478aa8d7ed3bc3bafb54fc194",
     "StegVerse-Labs/StegOS@bfa580942ee834799f87fdff3a9f1ea8d78067d4",
     "StegVerse-Labs/StegOS@9d069503671d8c5f2a19856c0adece3e2eba962e",
+    "StegVerse-Labs/StegOS@b9325bb69c721420218ba622297f95ef80c36cda",
+    "StegVerse-Labs/StegOS@91e93a70ed15d21d84cc7b511b6c71b64b9dc19b",
     "StegVerse-Labs/StegOS/docs/STEGBROWSER_IOS_RESIDENT_APP_TARGET_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegSocials@122811f8f44dc2494a1d5e771d50c210d1d8a555",
     "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_STEGBROWSER_PUBLICATION_MIRROR_HANDOFF.md",
@@ -40,6 +42,8 @@
       "stegosmobile-resident-durable-custody",
       "stegosmobile-same-device-discovery-readback",
       "stegosmobile-current-iphone-component-receipt",
+      "stegosmobile-iphoneos-device-package",
+      "stegosmobile-apple-signing-testflight-pipeline",
       "intr-lease-admission",
       "tvc-skap-ephemeral-credential-session",
       "publication-receipt-custody"
@@ -47,7 +51,8 @@
   },
   "dependencies": [
     {"dependency_id":"DEP-STEGBROWSER-INTR-ADMISSION","kind":"GOVERNED_RUNTIME_ADMISSION","state":"READY_FOR_INGRESS","ref":"StegVerse-Labs/.github/docs/UNIVERSAL_WORK_INTERLOCK_MIRROR_HANDOFF.md","disposition":"USE_EXISTING_CANONICAL_WORK_INTERLOCK_INTR_INGRESS"},
-    {"dependency_id":"DEP-STEGBROWSER-IOS-RESIDENT-LIFECYCLE","kind":"SOVEREIGN_NATIVE_RUNTIME","state":"SAME_DEVICE_DISCOVERY_SOURCE_MERGED_VALIDATED_CURRENT_DEVICE_PROOF_PENDING","ref":"StegVerse-Labs/StegOS@9d069503671d8c5f2a19856c0adece3e2eba962e","disposition":"STEGOSMOBILE NOW STARTS THE EXISTING CANONICAL-NODE-BOUND LOOPBACK LIFECYCLE, SELF-READS THE EXACT DISCOVERY CONTRACT, AND EMITS A NONE_COMPONENT_EVIDENCE_ONLY RECEIPT ONLY AFTER VERIFIED READBACK; NEXT MATERIALIZE THIS PATH ON THE CURRENT IPHONE"},
+    {"dependency_id":"DEP-STEGBROWSER-IOS-RESIDENT-LIFECYCLE","kind":"SOVEREIGN_NATIVE_RUNTIME","state":"DEVICE_PACKAGE_AND_SIGNING_PIPELINE_MERGED_CURRENT_DEVICE_PROOF_PENDING","ref":"StegVerse-Labs/StegOS@91e93a70ed15d21d84cc7b511b6c71b64b9dc19b","disposition":"CANONICAL SITE-NODE-BOUND LOOPBACK LIFECYCLE, SAME-DEVICE READBACK, FULL IPHONEOS PACKAGE SURFACE, AND CI SIGNING/TESTFLIGHT PIPELINE ARE MERGED; NEXT MATERIALIZE AN APPLE-SIGNED BUILD AND INSTALL IT ON THE CURRENT IPHONE"},
+    {"dependency_id":"DEP-STEGBROWSER-APPLE-SIGNING","kind":"PHYSICAL_DEVICE_DISTRIBUTION","state":"PIPELINE_MERGED_APPLE_ISSUED_MATERIAL_PENDING","ref":"StegVerse-Labs/StegOS@91e93a70ed15d21d84cc7b511b6c71b64b9dc19b","disposition":"USE THE MERGED GITHUB MACOS SIGNING PIPELINE WITH APPLE-ISSUED DISTRIBUTION CERTIFICATE, THREE MATCHING PROVISIONING PROFILES, AND OPTIONAL APP STORE CONNECT API MATERIAL; DO NOT COMMIT SIGNING MATERIAL OR REQUIRE A USER-OPERATED MAC"},
     {"dependency_id":"DEP-STEGBROWSER-STEGSOCIALS-CALLER","kind":"ECOSYSTEM_CALLER","state":"MERGED_VALIDATED","ref":"StegVerse-Labs/StegSocials@122811f8f44dc2494a1d5e771d50c210d1d8a555","disposition":"USE_NATIVE_STEGBROWSER_FACEBOOK_PUBLICATION_CALLER; DO NOT TREAT CONNECTOR_OR_BROWSER_COMPLETION_AS PUBLICATION PROOF"},
     {"dependency_id":"DEP-STEGBROWSER-CREDENTIAL-SESSION","kind":"CREDENTIAL_RUNTIME","state":"SOURCE_READY_RUNTIME_EVIDENCE_PENDING","ref":"StegVerse-Labs/TVC + StegVerse-Labs/StegBrowser","disposition":"USE_EXISTING_TV_TVC_SKAP_CALLBACK_ONLY_PROVIDER_SESSION"},
     {"dependency_id":"DEP-STEGBROWSER-PUBLICATION-CUSTODY","kind":"POST_PUBLICATION_CUSTODY","state":"PENDING_AUTHENTIC_PUBLICATION_RECEIPT","ref":"master-records/orchestration","disposition":"INGEST ONLY AFTER LIVE PUBLICATION PROOF EXISTS"}
@@ -65,6 +70,10 @@
     "StegVerse-Labs/StegOS/actions/runs/34306875310",
     "StegVerse-Labs/StegOS/actions/runs/34306875357",
     "StegVerse-Labs/StegOS/actions/runs/34306875317",
+    "StegVerse-Labs/StegOS@b9325bb69c721420218ba622297f95ef80c36cda",
+    "StegVerse-Labs/StegOS/actions/runs/34307735192",
+    "StegVerse-Labs/StegOS@91e93a70ed15d21d84cc7b511b6c71b64b9dc19b",
+    "StegVerse-Labs/StegOS/actions/runs/34307932313",
     "StegVerse-Labs/StegSocials@122811f8f44dc2494a1d5e771d50c210d1d8a555",
     "StegVerse-Labs/StegSocials/actions/runs/34302291053"
   ],
@@ -76,6 +85,8 @@
     "IOS_RESIDENT_APP_TARGET_INTEGRATION_VERIFIED",
     "IOS_RESIDENT_DURABLE_CUSTODY_SOURCE_VERIFIED",
     "IOS_SAME_DEVICE_DISCOVERY_READBACK_SOURCE_VERIFIED",
+    "IOS_COMPLETE_SIGNING_SURFACE_VERIFIED",
+    "CURRENT_IPHONE_SIGNED_INSTALLATION_OBSERVED",
     "CURRENT_IPHONE_RESIDENT_RENDEZVOUS_AVAILABLE",
     "INTERLOCK_INTR_LEASE_ADMISSION_OBSERVED",
     "WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
@@ -87,21 +98,21 @@
     "PROPAGATION_VERIFICATION_COMPLETE"
   ],
   "runtime_requirements": {
-    "capabilities": ["bounded_process_execution", "ephemeral_browser_execution", "ios_loopback_resident_rendezvous", "ios_app_local_durable_evidence_custody", "ios_same_device_discovery_readback", "component_runtime_receipt_persistence", "intr_task_admission", "ephemeral_credential_session_injection", "facebook_page_publication", "publication_readback_verification"],
+    "capabilities": ["bounded_process_execution", "ephemeral_browser_execution", "ios_loopback_resident_rendezvous", "ios_app_local_durable_evidence_custody", "ios_same_device_discovery_readback", "component_runtime_receipt_persistence", "iphoneos_device_packaging", "apple_signed_distribution", "intr_task_admission", "ephemeral_credential_session_injection", "facebook_page_publication", "publication_readback_verification"],
     "environment": "EPHEMERAL_BROWSER_SUBSTRATE_PLUS_SOVEREIGN_ADMISSION",
     "direction": "ECOSYSTEM_CALLER_TO_SOVEREIGN_RESIDENT_TO_BROWSER_TO_EXTERNAL_SURFACE_TO_CUSTODY",
     "mutation_required": true,
-    "deployment_required": false,
+    "deployment_required": true,
     "current_observation_required": true
   },
   "runtime_resolution": {
-    "current_executor": "StegOSMobile now compiles and device-packages the canonical-node-bound loopback listener, durable custody, exact same-device discovery readback, and component receipt source; StegBrowser provides native ephemeral Facebook publication and StegSocials caller integration",
-    "authority_basis": "merged/validated source and device-package evidence prove installed capability only; authentic current-iPhone discovery receipt, resident claim/fence, InTr admission, live TV/TVC+SKAP provider session, publication, and custody completion remain runtime predicates",
+    "current_executor": "StegOSMobile compiles and device-packages the canonical-node-bound loopback listener, durable custody, exact same-device discovery readback, and component receipt source; the complete host/capture/broadcast signing surface is validated and a GitHub macOS signed/TestFlight pipeline is merged; StegBrowser provides native ephemeral Facebook publication and StegSocials caller integration",
+    "authority_basis": "merged/validated source, iphoneos package evidence, and signing-pipeline source prove installable-path readiness only; Apple-issued signing material, authentic signed current-iPhone installation/discovery receipt, resident claim/fence, InTr admission, live TV/TVC+SKAP provider session, publication, and custody completion remain runtime predicates",
     "unattended_runtime": false
   },
   "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
-  "human_action_ref": "Repository source work is green through same-device discovery readback. The next physical predicate requires the existing canonical Site node binding to execute on the current iPhone and produce an authentic local discovery component receipt; do not infer InTr/WorkerCoordinator/provider/publication state from that receipt.",
-  "completion": {"claimed":false,"validated":true,"reconciliation_ref":"StegVerse-Labs/StegOS/actions/runs/34306875357","activation_proof_complete":false},
+  "human_action_ref": "Repository implementation is green through complete iphoneos signing-surface validation and a no-user-Mac GitHub signing/TestFlight pipeline. The next physical predicate requires authentic Apple-issued signing/account material to produce and distribute a signed build, followed by installation on the current iPhone and authentic local discovery evidence. Do not infer physical execution from source, unsigned package, or signing-pipeline existence.",
+  "completion": {"claimed":false,"validated":true,"reconciliation_ref":"StegVerse-Labs/StegOS/actions/runs/34307932313","activation_proof_complete":false},
   "allowed_next_transitions": ["INGRESS_ADMITTED"],
   "handoff_projection_refs": [
     "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_ECOSYSTEM_EPHEMERAL_MIRROR_HANDOFF.md",
