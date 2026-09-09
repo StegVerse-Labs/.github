@@ -38,7 +38,7 @@ class StegBrowserCanonicalWorkResidentRequestTests(unittest.TestCase):
         self.assertIsNone(task["worker_claim"]["claim_ref"])
         self.assertIsNone(task["worker_claim"]["fence_ref"])
         self.assertFalse(task["authority_model"]["task_registry_mints_execution_authority"])
-        self.assertTrue(task["authority_model"]["interlock_intr_required_for_governed_admission"])
+        self.assertTrue(task["authority_model"]["interlock_intr_required_for_governed_ingress_egress"])
 
     def test_existing_consumer_visits_stegbrowser_request(self):
         consumer = CONSUMER.read_text(encoding="utf-8")
