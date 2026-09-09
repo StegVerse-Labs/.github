@@ -103,6 +103,71 @@ def resident_profile(contract: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def runtime_node_profiles(data: dict[str, Any], substrate: dict[str, Any]) -> list[dict[str, Any]]:
+    policy = data.get("profile_policy") if isinstance(data.get("profile_policy"), dict) else {}
+    require(data.get("schema") == "stegverse.runtime-node-profiles/v1", "runtime-node profile source schema")
+    require(policy.get("hb_protocol") == substrate.get("hb_protocol") == "HB32", "runtime-node/HB substrate mismatch")
+    require(policy.get("node_state_class") == "RETAINED_STEGOS_NODE", "runtime-node retained state class")
+    require(policy.get("execution_session_class") == "EPHEMERAL_OR_BOUNDED_RUNTIME_LEASE", "runtime-node execution session class")
+    require(policy.get("node_identity_survives_session_teardown") is True, "runtime-node identity continuity")
+    require(policy.get("session_credentials_survive_teardown") is False, "runtime-node session credential teardown")
+    require(policy.get("hb_is_observability_only") is True, "runtime-node HB observability boundary")
+    require(policy.get("hb_grants_execution_authority") is False, "runtime-node HB authority forbidden")
+    require(policy.get("profile_match_grants_execution_authority") is False, "runtime-node profile match authority forbidden")
+    rows: list[dict[str, Any]] = []
+    source_profiles = data.get("profiles")
+    require(isinstance(source_profiles, list) and len(source_profiles) == 18, "exactly 18 runtime-node profiles required")
+    for node in source_profiles:
+        require(isinstance(node, dict), "runtime-node profile object required")
+        task_id = str(node.get("task_id") or "")
+        profile_id = str(node.get("profile_id") or "")
+        binding = node.get("execution_binding") if isinstance(node.get("execution_binding"), dict) else {}
+        require(task_id and profile_id, "runtime-node task/profile identity required")
+        selectors = binding.get("selectors") if isinstance(binding.get("selectors"), list) else []
+        rows.append({
+            "profile_id": profile_id,
+            "profile_class": "PRODUCT_RUNTIME",
+            "component": str(node.get("lane") or task_id),
+            "repository": str(node.get("repository") or "StegVerse-Labs/.github"),
+            "declared": {
+                "capabilities": [
+                    "retained_stegos_node_state",
+                    "hb_runtime_profile_sync",
+                    "bounded_runtime_session",
+                    "task_subject_binding",
+                    "execution_binding:" + str(binding.get("type") or "UNKNOWN"),
+                ],
+                "effect_class": "profiled_product_runtime",
+                "mutation_allowed": True,
+                "deployment_allowed": False,
+                "environment_classes": ["SOVEREIGN_RESIDENT"],
+                "directions": ["INTERNAL"],
+            },
+            "substrate": substrate,
+            "required_predicates": [str(node.get("resume_stage"))] if node.get("resume_stage") else [],
+            "observed": declared_only_observation(),
+            "task_selectors": sorted(set(str(value) for value in selectors)),
+            "authority": base_authority(),
+            "runtime_node": {
+                "task_id": task_id,
+                "node_origin": node.get("node_origin"),
+                "node_state_schema": node.get("node_state_schema"),
+                "execution_binding": binding,
+                "retained_state": node.get("retained_state", []),
+                "ephemeral_state": node.get("ephemeral_state", []),
+                "node_state_class": policy.get("node_state_class"),
+                "execution_session_class": policy.get("execution_session_class"),
+                "node_identity_survives_session_teardown": True,
+                "session_credentials_survive_teardown": False,
+            },
+            "provenance": {
+                "source_refs": ["control/runtime-node-profiles.json"],
+                "projection_method": "HB32_SYNCED_RETAINED_STEGOS_NODE_PROFILE",
+            },
+        })
+    return rows
+
+
 def worker_profiles(data: dict[str, Any], substrate: dict[str, Any], normalization: dict[str, Any]) -> list[dict[str, Any]]:
     rows = []
     default_envs = normalization.get("default_environment_classes", [])
@@ -281,6 +346,7 @@ def build(root: Path, *, now: datetime | None = None, freshness_seconds: int = D
     contract = load(root / "control/canonical-resident-carrier-contract.json")
     substrate = carrier_substrate(contract)
     profiles = [resident_profile(contract)]
+    profiles.extend(runtime_node_profiles(load(root / "control/runtime-node-profiles.json"), substrate))
     profiles.extend(worker_profiles(
         load(root / "control/worker-capability-profiles.json"),
         substrate,
@@ -316,6 +382,7 @@ def build(root: Path, *, now: datetime | None = None, freshness_seconds: int = D
             "HB32_OSCILLATOR_REFERENCE_DOES_NOT_GRANT_AUTHORITY",
             "MAP_DOES_NOT_MINT_WORKERCOORDINATOR_CLAIM_OR_FENCE",
             "MAP_DOES_NOT_GRANT_CREDENTIAL_OR_DEPLOYMENT_AUTHORITY",
+            "RETAINED_STEGOS_NODE_PROFILE_DOES_NOT_PROVE_NODE_IS_CURRENTLY_RUNNING",
         ],
     }
 

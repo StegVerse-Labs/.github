@@ -12,6 +12,13 @@
       "resident_materialization": "EXACT_LOCAL_SOURCE_COPY_ALLOWED"
     },
     {
+      "source_id": "runtime-node-profiles",
+      "kind": "PRODUCT_RUNTIME_NODE_SET",
+      "ref": "control/runtime-node-profiles.json",
+      "required": true,
+      "resident_materialization": "EXACT_LOCAL_SOURCE_COPY_ALLOWED_HB32_SYNCHRONIZED"
+    },
+    {
       "source_id": "worker-capability-profiles",
       "kind": "WORKER_CAPABILITY_SET",
       "ref": "control/worker-capability-profiles.json",
@@ -83,7 +90,9 @@
     "mutable_worker_registry_overwrite_allowed": false,
     "resident_router_overwrite_for_projection_allowed": false,
     "existing_generated_projection_reset_allowed": false,
-    "environment_normalization_must_be_explicit": true
+    "environment_normalization_must_be_explicit": true,
+    "runtime_node_identity_survives_ephemeral_session": true,
+    "runtime_node_session_secrets_survive_teardown": false
   },
   "authority": {
     "map_grants_execution_authority": false,

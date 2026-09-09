@@ -7,10 +7,16 @@
     "data/canonical-task-records/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.json",
     "docs/GLOBAL_RUNTIME_EVIDENCE_CLOSURE_MIRROR_HANDOFF.md",
     "docs/GLOBAL_RUNTIME_EVIDENCE_CONVERGENCE_MATRIX.md",
+    "control/runtime-node-profiles.json",
+    "control/runtime-profile-sources.json",
+    "control/runtime-observability-consumers/stegbrowser-ephemeral-runtime-binding-001.json",
+    "scripts/run_global_runtime_node_profile_convergence.py",
+    "tests/test_global_runtime_node_profile_convergence.py",
+    "docs/milestones/STEGBROWSER_FIRST_EPHEMERAL_STEGOS_NODE_2026-09-09.md",
     "StegVerse-Labs/.github#1260",
     "management/COSV_PROFILE_V1.json"
   ],
-  "observed_at": "2026-09-09T13:18:00Z",
+  "observed_at": "2026-09-09T15:20:00Z",
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
     "lifecycle": "MACHINE_OWNED",
