@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import importlib.util
+import os
 from pathlib import Path
-
-import pytest
+import tempfile
+import unittest
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "consume_governed_multilane_manifold_activation_request.py"
@@ -18,35 +20,43 @@ def _load(path: Path):
     return module
 
 
-@pytest.mark.parametrize("path", [SCRIPT, CONTROL])
-def test_tvc_runtime_owner_bridge_is_present_in_both_consumers(path: Path) -> None:
-    source = path.read_text(encoding="utf-8")
-    assert "execute_existing_tvc_runtime_owner_path" in source
-    assert "tvc.primary_runtime_binder.preflight" in source
-    assert "tvc.primary_runtime_binder.activate" in source
-    assert "observe_tvc_runtime_boundary.py" in source
-    assert "TVC-PROVIDER-OPERATION-BROKER-003" in source
-    assert "TVC-CAPABILITY-RUNTIME-002" in source
+class GovernedManifoldTVCRuntimeOwnerBridgeTests(unittest.TestCase):
+    def test_tvc_runtime_owner_bridge_is_present_in_both_consumers(self) -> None:
+        for path in (SCRIPT, CONTROL):
+            with self.subTest(path=path):
+                source = path.read_text(encoding="utf-8")
+                self.assertIn("execute_existing_tvc_runtime_owner_path", source)
+                self.assertIn("tvc.primary_runtime_binder.preflight", source)
+                self.assertIn("tvc.primary_runtime_binder.activate", source)
+                self.assertIn("observe_tvc_runtime_boundary.py", source)
+                self.assertIn("TVC-PROVIDER-OPERATION-BROKER-003", source)
+                self.assertIn("TVC-CAPABILITY-RUNTIME-002", source)
+
+    def test_bridge_fails_closed_without_tvtvc_activation_declaration(self) -> None:
+        module = _load(SCRIPT)
+        env = dict(os.environ)
+        for name in module.HOSTED_ENV:
+            env.pop(name, None)
+        env.pop("STEGTV_PRIMARY_RUNTIME_ACTIVATION_AUTHORITY", None)
+        env.pop("STEGVERSE_TVC_ROOT", None)
+        env.pop("STEGVERSE_REPO_ROOTS_JSON", None)
+        with tempfile.TemporaryDirectory() as temp, mock.patch.dict(os.environ, env, clear=True):
+            result = module.execute_existing_tvc_runtime_owner_path(Path(temp))
+        self.assertEqual(result["state"], "BLOCKED_TV_TVC_RUNTIME_ACTIVATION_DECLARATION_REQUIRED")
+        self.assertEqual(result["authority_effect"], "NONE_FAIL_CLOSED")
+
+    def test_bridge_rejects_hosted_execution_before_owner_dispatch(self) -> None:
+        module = _load(SCRIPT)
+        env = dict(os.environ)
+        for name in module.HOSTED_ENV:
+            env.pop(name, None)
+        env["GITHUB_ACTIONS"] = "true"
+        env["STEGTV_PRIMARY_RUNTIME_ACTIVATION_AUTHORITY"] = "TV/TVC"
+        with tempfile.TemporaryDirectory() as temp, mock.patch.dict(os.environ, env, clear=True):
+            result = module.execute_existing_tvc_runtime_owner_path(Path(temp))
+        self.assertEqual(result["state"], "BLOCKED_HOSTED_SURFACE_REJECTED")
+        self.assertIn("GITHUB_ACTIONS", result["hosted"])
 
 
-def test_bridge_fails_closed_without_tvtvc_activation_declaration(monkeypatch, tmp_path: Path) -> None:
-    module = _load(SCRIPT)
-    for name in module.HOSTED_ENV:
-        monkeypatch.delenv(name, raising=False)
-    monkeypatch.delenv("STEGTV_PRIMARY_RUNTIME_ACTIVATION_AUTHORITY", raising=False)
-    monkeypatch.delenv("STEGVERSE_TVC_ROOT", raising=False)
-    monkeypatch.delenv("STEGVERSE_REPO_ROOTS_JSON", raising=False)
-
-    result = module.execute_existing_tvc_runtime_owner_path(tmp_path)
-    assert result["state"] == "BLOCKED_TV_TVC_RUNTIME_ACTIVATION_DECLARATION_REQUIRED"
-    assert result["authority_effect"] == "NONE_FAIL_CLOSED"
-
-
-def test_bridge_rejects_hosted_execution_before_owner_dispatch(monkeypatch, tmp_path: Path) -> None:
-    module = _load(SCRIPT)
-    monkeypatch.setenv("GITHUB_ACTIONS", "true")
-    monkeypatch.setenv("STEGTV_PRIMARY_RUNTIME_ACTIVATION_AUTHORITY", "TV/TVC")
-
-    result = module.execute_existing_tvc_runtime_owner_path(tmp_path)
-    assert result["state"] == "BLOCKED_HOSTED_SURFACE_REJECTED"
-    assert "GITHUB_ACTIONS" in result["hosted"]
+if __name__ == "__main__":
+    unittest.main()
