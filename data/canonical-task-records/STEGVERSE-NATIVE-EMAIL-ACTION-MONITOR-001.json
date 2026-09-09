@@ -1,0 +1,119 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001",
+  "correlation_id": "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001",
+  "root_correlation_id": "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001",
+  "parent_task_id": null,
+  "goal": "Periodically consume the bounded GitHub/[Task Update] operational mailbox slice through the existing TV/TVC-backed native email monitor, normalize actionable failure observations, reconcile corrective work through StegHealth and Canonical Work/InTr, and preserve durable evidence without creating a second monitor, scheduler, heartbeat, WorkerCoordinator, or credential route.",
+  "coordination_state": "PROPOSED",
+  "checkout_state": "UNCLAIMED",
+  "cosv_task_vector": "10100000100000",
+  "source_refs": [
+    "docs/NATIVE_EMAIL_ACTION_MONITOR_MIRROR_HANDOFF.md",
+    "docs/NATIVE_EMAIL_REUSABLE_HOURLY_MIRROR_HANDOFF.md",
+    "control/resident-execution-request.d/native-email-action-monitor-001.json",
+    "control/task-vectors/STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001.json",
+    "data/reusable-task-registry.json",
+    "scripts/trigger_reusable_task.py",
+    "scripts/consume_native_email_action_monitor_request.py",
+    "scripts/run_native_email_action_monitor.py",
+    "scripts/normalize_github_failure_email_events.py",
+    "scripts/reconcile_email_failure_incidents.py",
+    "StegVerse-Labs/StegVerse-Healer:data/reusable_task_schedule.json",
+    "StegVerse-Labs/StegVerse-Healer:app/reusable_task_scheduler.py"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegVerse-Healer", "StegVerse-Labs/StegHealth", "StegVerse-Labs/StegOps-Orchestrator", "StegVerse-Labs/TVC"],
+    "components": ["native-email-action-monitor", "reusable-task-trigger", "hourly-reusable-task-schedule", "github-failure-normalization", "steghealth-failure-remediation", "canonical-work-intr-handoff", "tvc-mail-provider-operation"]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-NATIVE-EMAIL-HEALER-SCHEDULE",
+      "kind": "SOVEREIGN_SCHEDULER",
+      "state": "SOURCE_MERGED_RUNTIME_RECEIPT_PENDING",
+      "ref": "StegVerse-Labs/StegVerse-Healer#57",
+      "disposition": "USE_EXISTING_SHWP_HEALER_SOVEREIGN_SCHEDULER_001_HOURLY_REUSABLE_TASK_SLOT"
+    },
+    {
+      "dependency_id": "DEP-NATIVE-EMAIL-TVC-GMAIL-OWNER",
+      "kind": "PROVIDER_CREDENTIAL_RUNTIME",
+      "state": "AUTHENTIC_RUNTIME_OBSERVATION_REQUIRED",
+      "ref": "StegVerse-Labs/TVC:tasks/TVC-NATIVE-EMAIL-GMAIL-OWNER-SESSION-001.json",
+      "disposition": "USE_EXISTING_TV_TVC_MAIL_PROVIDER_OPERATION; NO_CREDENTIAL_MATERIAL_IN_TASK_OR_REPOSITORY"
+    },
+    {
+      "dependency_id": "DEP-NATIVE-EMAIL-STEGHEALTH-REMEDIATION",
+      "kind": "CORRECTIVE_TASK_RECONCILIATION",
+      "state": "SOURCE_INSTALLED_RUNTIME_EVIDENCE_PENDING",
+      "ref": "StegVerse-Labs/StegHealth:tasks/STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001.json",
+      "disposition": "REUSE_OR_CREATE_CORRECTIVE_TASKS_THROUGH_EXISTING_STEGHEALTH_OWNER_PATH"
+    }
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": ["STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001", "SHWP-HEALER-SOVEREIGN-SCHEDULER-001"],
+  "existing_evidence_refs": [
+    "StegVerse-Labs/.github#1252",
+    "StegVerse-Labs/.github@700f959dca0160f0d71d92fc391c9f262f27feea",
+    "StegVerse-Labs/.github/actions/runs/34332023132",
+    "StegVerse-Labs/.github/actions/runs/34332023277",
+    "StegVerse-Labs/.github/actions/runs/34332023168",
+    "StegVerse-Labs/StegVerse-Healer#57",
+    "StegVerse-Labs/StegVerse-Healer@ef5d90a8c215056e055385a04534e16c49d9a3d5",
+    "StegVerse-Labs/StegVerse-Healer/actions/runs/34332190725"
+  ],
+  "expected_evidence_predicates": [
+    "REUSABLE_TASK_IDENTITY_RESOLVES",
+    "HOURLY_SCHEDULE_CONFIGURATION_VALID",
+    "SAME_SLOT_IDEMPOTENCY_VALID",
+    "AUTHENTIC_RESIDENT_HOURLY_INVOCATION_OBSERVED",
+    "AUTHENTIC_TVC_GMAIL_PROVIDER_OPERATION_OBSERVED",
+    "GITHUB_OPERATIONAL_MAILBOX_SLICE_PROCESSED",
+    "ACTIONABLE_FAILURE_RECONCILIATION_DURABLE",
+    "NO_DUPLICATE_MONITOR_OR_SCHEDULER_CREATED"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["bounded_process_execution", "reusable_task_invocation", "hourly_scheduling", "tvc_mail_provider_operation", "failure_incident_normalization", "canonical_work_ingress"],
+    "environment": "SOVEREIGN_RESIDENT",
+    "direction": "INTERNAL_TO_GMAIL_PROVIDER_AND_BACK_TO_CANONICAL_WORK",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "runtime_resolution": {
+    "current_executor": "Existing SHWP-HEALER-SOVEREIGN-SCHEDULER-001 source now schedules RT-NATIVE-EMAIL-ACTION-MONITOR-001 once per UTC-hour slot and invokes the existing native email resident consumer through the reusable-task trigger.",
+    "authority_basis": "Merged source and deterministic validation prove construction and cadence semantics only. Authentic resident schedule, TV/TVC provider, mailbox, failure reconciliation, and downstream corrective execution receipts remain runtime predicates.",
+    "unattended_runtime": true
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "human_action_ref": null,
+  "completion": {
+    "claimed": false,
+    "validated": true,
+    "reconciliation_ref": "docs/NATIVE_EMAIL_REUSABLE_HOURLY_MIRROR_HANDOFF.md",
+    "activation_proof_complete": false
+  },
+  "allowed_next_transitions": ["INGRESS_ADMITTED"],
+  "handoff_projection_refs": [
+    "docs/NATIVE_EMAIL_ACTION_MONITOR_MIRROR_HANDOFF.md",
+    "docs/NATIVE_EMAIL_REUSABLE_HOURLY_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegVerse-Healer:docs/NATIVE_EMAIL_REUSABLE_SCHEDULE_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "scheduler_grants_execution_authority": false,
+    "email_observation_is_runtime_execution_evidence": false,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "interlock_intr_required_for_governed_ingress_egress": true,
+    "master_records_reality_authority": true
+  }
+}
