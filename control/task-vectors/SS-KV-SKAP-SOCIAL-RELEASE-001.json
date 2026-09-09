@@ -5,17 +5,15 @@
   "vector": "60000000102000",
   "evidence_refs": [
     "data/canonical-task-records/SS-KV-SKAP-SOCIAL-RELEASE-001.json",
-    "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_NATIVE_STEGBROWSER_TRANSPORT_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegSocials/tasks/SS-KV-SKAP-SOCIAL-RELEASE-001.yaml",
-    "StegVerse-Labs/StegSocials@cd60b32bd754de9588153fb044eb4e2b0e44443f:provider-permission-contract-merged",
-    "StegVerse-Labs/TVC@0452707866e96be93eff9544389268d462637aff:social-provider-skap-articulation-merged",
-    "StegVerse-Labs/TVC/actions/runs/34293975020:exact-main-credential-model-consistency=PASS",
+    "StegVerse-Labs/StegSocials@794489e59c386f7865752be22e08b12b6af5f7c8:windsor-retired-stegbrowser-pivot-merged",
+    "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_ECOSYSTEM_EPHEMERAL_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegBrowser#4",
     "StegVerse-Labs/TVC@024a06397e6fc1b3a461c5d71f7bbc513843493c:validation-reconciliation-merged",
-    "StegVerse-Labs/StegSocials:publication-receipt-facebook-launch-001-post-reauth-003-20260908T230303Z:FAILED_PROVIDER_SCOPE",
-    "Windsor.ai/support/89167085:FACEBOOK_ORGANIC_SCOPE_REPAIR_REQUESTED",
     "master-records/orchestration/tasks/MR-STEGSOCIALS-RECEIPT-CUSTODY-001.yaml"
   ],
-  "observed_at": "2026-09-08T20:15:00-05:00",
+  "observed_at": "2026-09-08T20:24:00-05:00",
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
     "lifecycle": "BLOCKED",
@@ -34,16 +32,16 @@
     "propagated": false
   },
   "metric_evidence": {
-    "lifecycle": "StegSocials provider-permission binding and TVC social-provider/SKAP articulation are merged; the exact TVC main merge head passed hosted credential-model validation and the handoff is reconciled. Runtime remains blocked on authentic resident SKAP credential activation plus successful provider publication after Facebook provider-scope repair.",
-    "archive_ready": "Activation evidence is incomplete although continuation state is durable in StegSocials, TVC, and canonical coordination records.",
-    "unassigned_work": "All remaining work has explicit owners: TV/TVC resident runtime, Windsor Facebook provider-scope remediation, StegSocials publication/custody path, and Master Records reconstruction.",
+    "lifecycle": "The third-party Windsor transport is retired by explicit participant decision. StegSocials now binds activation to the native governed ephemeral StegBrowser path; runtime remains blocked on authentic resident SKAP activation plus native credentialed browser publication proof.",
+    "archive_ready": "Activation evidence remains incomplete although the transport pivot and continuation state are durable.",
+    "unassigned_work": "Remaining work has explicit owners: TV/TVC resident runtime, StegBrowser runtime binding, StegSocials publication/custody path, and Master Records reconstruction.",
     "chat_owned_counts": "No implementation, validation, integration, observation, or credential work is exclusively owned by this chat thread.",
-    "canonical_owner_installed": "StegSocials task/handoff, TVC provider articulation and validation handoff, and this registry/COSV projection are durable.",
-    "thread_required": "Durable task, handoff, source, support reference, and registry records are sufficient for continuation without this thread.",
-    "blocker_count": "Two blockers remain: resident SKAP social credential activation and provider-scope repair followed by the first successful governed provider release. Windsor support request 89167085 owns the provider-scope escalation; the exact Facebook PUBLIC_RELEASE authorization itself has already been observed.",
-    "evidence_complete": "No authentic resident SKAP activation receipt plus successful governed provider publication-to-KV-to-Master-Records reconstruction chain has been observed.",
-    "activated": "Merged source, owner/provider consent observations, and support escalation do not establish governed runtime activation until credential custody and provider success are authentically evidenced.",
-    "propagated": "No downstream activation propagation is claimed until authentic governed release and custody evidence exist."
+    "canonical_owner_installed": "The StegSocials native StegBrowser scoped handoff, StegBrowser runtime issue/handoff, task record, and COSV projection provide durable ownership.",
+    "thread_required": "Durable task, handoff, source, and registry records are sufficient for continuation without this thread.",
+    "blocker_count": "Two blockers remain: authentic resident SKAP credential activation and completion/authentic proof of the StegBrowser native social publication runtime. Windsor is retired and is not a blocker.",
+    "evidence_complete": "No authentic resident SKAP activation receipt plus native StegBrowser publication/session-destruction-to-KV-to-Master-Records chain has been observed.",
+    "activated": "Merged source and the transport pivot do not establish native governed runtime activation until those receipts exist.",
+    "propagated": "No downstream activation propagation is claimed until authentic native governed release and custody evidence exist."
   },
   "authority_effect": "NONE"
 }
