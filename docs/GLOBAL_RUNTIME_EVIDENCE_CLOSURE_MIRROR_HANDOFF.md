@@ -3,7 +3,7 @@
 Goal Task ID: `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001`
 Canonical issue: `StegVerse-Labs/.github#1260`
 COSV: `50000000100000`
-Status: `ACTIVE / 18 HB32 PROFILE-DERIVED NODES / PRECISE FAILURE BOUNDARIES / DEFINITIVE MEASUREMENT HARDENING MERGED / AUTHENTIC ONE-PASS MEASUREMENT NEXT`
+Status: `ACTIVE / 18 HB32 PROFILE-DERIVED NODES / MEASUREMENT HARDENING MERGED / MEASUREMENT CHILD ACTIVE / CURRENT-IPHONE STATIC BOOTSTRAP FRESH SITE ALLOCATION REGISTERED`
 
 ## Canonical runtime model
 
@@ -31,78 +31,67 @@ Node identity/evidence/HB lineage persist. Claims/fences, InTr calls, transports
 - StegClaw executable profile: merged.
 - VACC executable profile: merged.
 - typed ten-stage first-failure responses: PR #1292 merged at `e64c5d518af05dac6b9d09c3355d38d75bc27295`.
-- definitive measurement hardening: PR #1293 merged at `44c6d88abb42351ec26a576e3136caec3400a613` after exact-head organization-control, deterministic repository-suite, and Heartbeat checks all completed successfully.
+- definitive measurement hardening: PR #1293 merged at `44c6d88abb42351ec26a576e3136caec3400a613`.
+- measurement ingress source repair: PR #1296 merged at `607cedc2fed1c81cf20ff6250fa3421089284a8a`.
+- current-iPhone same-device WASM signer source: StegOS PR #312 merged at `4692ab506838affcf39a628c4e01dc9994abbb7b`.
+- current-iPhone TVC provider client: StegOS PR #313 merged at `b98fad08b1491f6d7c243b6d23d497cf9c00d62b`.
+- narrow TVC browser transport exposure: TVC PR #373 merged at `01fbf9bcb22857db01e421bcc27e6eab6ec7488c`.
 
 ## Definitive measurement contract
 
-`workers/runtime_convergence_measurement.py` freezes one measurement identity before execution containing:
+`workers/runtime_convergence_measurement.py` freezes one measurement identity before execution containing a unique run ID, start timestamp, local source head where available, exact runtime-node-profile and partial-solution hashes, `measurement_only=true`, `same_run_remediation_allowed=false`, `automatic_retry_after_first_failure=false`, and per-profile before/after snapshots of known canonical-work/subject receipts and retained node/HB/state/transition commitments.
 
-- unique `run_id`;
-- start timestamp;
-- local source git head when available;
-- exact runtime-node profile registry SHA-256;
-- exact partial-solution projection SHA-256;
-- `measurement_only=true`;
-- `same_run_remediation_allowed=false`;
-- `automatic_retry_after_first_failure=false`;
-- per-profile before snapshots of known canonical-work/subject receipts and any node/profile/genesis/source-HB/current-HB/state/transition commitments present in those receipts.
+`run_global_runtime_node_profile_convergence.py` distinguishes `PASS_CURRENT_RUN`, `PASS_HISTORICAL_EVIDENCE`, `FAILED_CURRENT_RUN`, and `NOT_REACHED`. Historical evidence is retained without being promoted to current-run passage. Readiness/liveness states are not terminal completion.
 
-The same evidence surfaces are captured after the run. This makes `same retained node + advanced lineage` distinguishable from unrelated output.
+## Current source-device condition
 
-`run_global_runtime_node_profile_convergence.py` now distinguishes:
+The dedicated child `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001` is now the execution owner for the one-pass authentic measurement. Two observations after its ingress repair still produced no frozen run ID and no `receipts/sovereign-host/global-runtime-node-profile-convergence.latest.json`; the ten-stage visitor therefore has not yet been entered authentically.
 
-```text
-PASS_CURRENT_RUN
-PASS_HISTORICAL_EVIDENCE
-FAILED_CURRENT_RUN
-NOT_REACHED
-```
+The first unresolved condition is pre-loop, not one of the ten component stages:
 
-Historical non-regression evidence is retained but is never represented as current-run passage. Child-supplied explicit stage observations must be contiguous through the first reported failure; if an earlier required predicate is missing, that missing predicate becomes the first unobserved boundary. Readiness/liveness states are not terminal completion, and `NOT_REACHED` is downstream flow state rather than a failure.
+`PRE_LOOP_AUTHENTIC_SOURCE_DEVICE_RESIDENT_NOT_MATERIALIZED`
 
-## Same-run remediation suppression
+The next concrete source condition inside that prerequisite is:
 
-During measurement the runner exports `STEGVERSE_CONVERGENCE_MEASUREMENT_ONLY=1`.
+`CURRENT_IPHONE_SIGNER_WASM_NOT_MATERIALIZED_IN_SERVED_BOOTSTRAP_DISTRIBUTION`
 
-VACC honors that flag: when the frozen baseline has no verified VACC loopback runtime, it reports the transport/provider predicate failure and does not invoke the Ecosystem Chat parent repair during the same measurement pass. Ordinary non-measurement repair behavior remains available for later remediation runs.
+The validated browser package is retained by StegOS successor `release/current-iphone-site-projection/successors/current-iphone-testflight-static-bootstrap.json`, including exact SHA-256/byte bindings for the WASM signer, bindgen glue and unsigned IPA plus the signer/executor/TVC/TestFlight modules.
 
-The convergence layer does not automatically retry a lane after its first measured failure. Repairs occur only after the measurement receipt is inspected.
+## Fresh Site allocation continuation — 2026-09-09
 
-## Failure response shape
+The successor explicitly forbids reactivation of the terminal `TASK-2026-0008` Site allocation and requires a fresh monotonic allocation before destination mutation.
 
-Every lane receives an ordered ten-stage `boundary_trace`, `first_failure`, exact stage index/code, reason/evidence reference where present, and an aggregate `failure_boundary_summary`.
+Fresh destination work is now instantiated as:
 
-The ten canonical boundaries remain:
+- Site issue `StegVerse-Labs/Site#1180`;
+- organization task `TASK-2026-0010`;
+- requested Site branch `claim/site-current-iphone-testflight-static-bootstrap-r1`;
+- exact scope: the 14 successor destination mappings plus Site README, scoped handoff, task projection and claim receipt;
+- authority ceiling unchanged: package/manifest grants no Site mutation, publication, execution, signing, TestFlight, credential, Interlock/InTr, claim/fence, or custody authority; TV/TVC remains credential/provider authority and WorkerCoordinator remains claim/fence authority.
 
-1. runtime profile resolution;
-2. persistent node continuity;
-3. ephemeral request consumption;
-4. WorkerCoordinator claim/fence;
-5. ephemeral Interlock/InTr admission;
-6. ephemeral transport/provider/lease;
-7. component execution;
-8. exact receipt commitment;
-9. Master Records reconstruction;
-10. downstream propagation.
+Registration is coordination only. Site mutation must wait for the fresh canonical allocator claim/fencing evidence and a re-observed destination baseline.
 
-Classification is diagnostic only and grants no execution, claim/fence, Interlock/InTr, credential, custody, publication, or completion authority.
+## Next execution sequence
 
-## Authentic next action
+1. merge the `TASK-2026-0010` registry addition after repository validation;
+2. run the existing organization allocator for the fresh Site scope and retain its new claim/fence evidence;
+3. re-observe current Site `main` and bind that exact destination baseline;
+4. project all 14 exact successor files into the claimed Site branch and verify source/destination hashes/bytes;
+5. update Site README and `docs/CURRENT_IPHONE_TESTFLIGHT_STATIC_BOOTSTRAP_SITE_PROJECTION_MIRROR_HANDOFF.md` in the same functional change;
+6. merge the validated Site projection and update the StegOS successor package with fresh task/claim/fence and destination merge evidence;
+7. observe the static assets from the current iPhone through the served bootstrap;
+8. activate/observe the already-built TVC primary provider runtime through its authority-owned path;
+9. execute current-iPhone TVC app-resource resolution, provisioning, ephemeral signing, same-session verification, and native Build Upload;
+10. install through TestFlight and obtain authentic retained-node materialization, same-device discovery, source-HB lineage, and receipt-to-transition evidence;
+11. materialize the canonical measurement source into that retained node and execute exactly one measurement-only convergence pass;
+12. require a frozen run ID and `global-runtime-node-profile-convergence.latest.json`, preserve it, then remediate measured lane failures only in later executions.
 
-1. refresh the already-local sovereign runtime source so the merged measurement worker, hardened boundary classifier, VACC measurement behavior, and profiled convergence runner are materialized together while mutable resident state is preserved;
-2. execute exactly one authentic Runtime Profile Map/profiled convergence measurement;
-3. do not repair or automatically retry a lane after its first failure during that run;
-4. retain `receipts/sovereign-host/global-runtime-node-profile-convergence.latest.json`;
-5. compare its measured first-failure histogram with the prior projection;
-6. inspect before/after retained-node/HB/transition commitments to determine which node instances actually advanced;
-7. begin remediation only in subsequent executions.
-
-DE-006 remains expected to expose exact parent rebinding/re-execution until authentic evidence proves otherwise; readiness must not hide that boundary.
+DE-006 remains expected to expose exact parent rebinding/re-execution once the authentic visitor is entered; readiness must not hide that stage if observed.
 
 ## README impact
 
-Repository README semantics already cover retained identity, bounded/ephemeral execution, exact evidence, subject-bound failure behavior, non-authorizing HB, and functional-change documentation requirements. No additional README mutation is required for this diagnostic measurement hardening.
+The organization README already defines fresh-task derivation, canonical allocator/WorkerCoordinator authority, COSV continuation, non-authorizing HeartBeat, and the functional-change README invariant. Registering this scoped successor task does not change those repository semantics. Site README mutation is required with the actual static bootstrap projection.
 
 ## Manual work
 
-None before the machine-executable authentic measurement attempt.
+None for the current source/coordination continuation.
