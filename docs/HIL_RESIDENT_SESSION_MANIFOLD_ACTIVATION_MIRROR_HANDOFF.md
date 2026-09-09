@@ -18,8 +18,10 @@ Inherited canonical sources:
 - `docs/GOVERNED_MULTILANE_MANIFOLD_ACTIVATION_MIRROR_HANDOFF.md`
 - `docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md`
 - `docs/HIL_G25_REQUEST_CONSUMPTION_RECONCILIATION_20260909.md`
+- `docs/HIL_BROWSER_ESRL_EVIDENCE_INTAKE_MIRROR_HANDOFF.md`
 - `scripts/dispatch_resident_execution_requests.py`
 - `scripts/run_worker_runtime.py`
+- `scripts/intake_hil_browser_esrl_evidence.py`
 
 ## Current continuation state
 
@@ -30,9 +32,12 @@ Inherited canonical sources:
 - `PRED-RESIDENT-REQUEST-CONSUMED-HIL-SOVEREIGN-RECEIVER-002` is `SATISFIED` by `receipts/sovereign-host/hil-resident-execution-request-consumption.latest.json`.
 - Accepted evidence is bound to `RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002`, runtime surface `CURRENT_USER_IPHONE_BROWSER`, claim `SHWP-SHWP-HIL-SOVEREIGN-RECEIVER-001-G25`, fencing token `25`, and an observed terminal HIL transition. The broader HIL lifecycle remains incomplete.
 - PR `#1240` reconciled the canonical worker registry, per-task COSV, aggregate COSV index, and focused regression coverage to the accepted G25 state and MERGED at `6d5be30e71f824fc5cc0fc9ba27e2ecbcdc28c0f`.
-- Canonical task COSV is now `50000000103000`, consistent with exactly three remaining blockers.
+- Canonical task COSV is `50000000103000`, consistent with exactly three remaining blockers.
+- Site PR `#1159` is MERGED at `72c3620348019996cd6731e3b59b770c734f7477`. It adds the same-context current-iPhone browser ESRL successor while preserving the exact admitted v16 service-worker wrapper and existing G25 WorkerCoordinator checkout lineage. Exact-head Site Bootstrap, persistent-card, Site handoff, and Ecosystem Heartbeat validation all passed before merge.
+- `.github` PR `#1248` is MERGED at `f56f1e734e458706119023c8c226e80db46adb70`. It adds `scripts/intake_hil_browser_esrl_evidence.py`, focused standard-library tests, and the ESRL intake handoff. Exact-head organization-control, deterministic repository suite, and Heartbeat validation all passed before merge.
+- Source capability now exists on both sides of the ESRL evidence boundary: Site can produce/export a same-context `stegverse.hil-browser-esrl-lease-open/v1` artifact, and `.github` can fail-closed validate that exact artifact against the canonical G25 subject bindings.
+- Source merge does not satisfy runtime observation. No exact physical ESRL artifact has yet been accepted by `.github`, so `AUTHENTIC_ESRL_HIL_LEASE_OPEN_NOT_YET_OBSERVED` remains active.
 - `archive_eligible=false`; broader activation and downstream propagation remain false/fail-closed.
-- Exact-head validation for the #1240 aggregate repair passed organization-control, the deterministic repository suite, and Heartbeat validation before merge.
 
 ## Remaining HIL receiver blockers
 
@@ -42,7 +47,7 @@ Exactly three independent evidence obligations remain:
 2. `POST_RESTART_EXACT_BYTE_PROOF_NOT_YET_PRESERVED`
 3. `TVC_HIL_LIFECYCLE_HANDOFF_NOT_YET_PROVEN`
 
-These blockers must be discharged by their own authentic evidence. G25 request consumption does not imply them.
+These blockers must be discharged by their own authentic evidence. G25 request consumption and ESRL source merge do not imply them.
 
 ## Governing objective
 
@@ -88,15 +93,27 @@ The G25 reconciliation details are preserved in:
 
 ## Next actionable predicate: authentic ESRL LEASE_OPEN
 
-The source path for same-device ESRL `LEASE_OPEN` is already implemented and merged. The remaining obligation is authentic runtime observation, not another source implementation.
+The same-device source path and current-iPhone successor are now implemented and merged. The remaining obligation is authentic runtime observation.
 
-Relevant existing source surfaces include:
+Canonical producer/intake path:
 
-- `workers/hil_esrl_runtime_bridge.py`
-- `scripts/consume_hil_intr_materialization_request.py`
-- StegOS `stegos/hil_esrl_intake_runtime.py`
+```text
+same standalone-Safari context holding accepted G25 local-ready state
+-> Site /stegos-bootstrap/hil-esrl-activate.html
+-> existing portable WorkerCoordinator state / exact retained G25 checkout
+-> HIL_BROWSER_ESRL_V1
+-> explicit REQUESTED -> ADMITTED -> PROVISIONING -> LOCAL_READY -> LEASE_OPEN
+-> exact exported stegverse.hil-browser-esrl-lease-open/v1 JSON
+-> scripts/intake_hil_browser_esrl_evidence.py
+-> accepted non-authorizing ESRL evidence receipt
+-> separate worker/task/COSV reconciliation
+```
 
-The accepted evidence must independently demonstrate the HIL same-device event/runtime path reaching ESRL state `LEASE_OPEN`; public HTTPS observation is a distinct downstream interoperability condition and is not a prerequisite for routine local lease opening.
+The Site successor requires the exact G25 task/request/context/node/claim/fence, retained checkout receipt hash, source execution-entry hash, and journal replay `PASS`. It does not mint another claim/fence. It explicitly leaves custody, post-restart exact-byte proof, TVC lifecycle, broader HIL completion, publication, and release unclaimed.
+
+The `.github` intake cross-checks the exported artifact against the canonical G25 request-consumption receipt and fails closed on subject mismatch or downstream overclaim. Public HTTPS observation remains a distinct downstream interoperability condition and is not a prerequisite for routine same-device lease opening.
+
+Source, CI, merge, page availability, service-worker installation, or deployment do not satisfy this predicate. Only an exact physical component artifact accepted by the canonical intake can qualify.
 
 ## Subsequent predicates
 
@@ -105,7 +122,7 @@ After authentic ESRL `LEASE_OPEN`, preserve the existing independent evidence ob
 - post-restart exact-byte reconstruction/proof; and
 - TVC HIL lifecycle handoff.
 
-Neither is inferred from source validation, GitHub Actions, G25 browser evidence, or ESRL source availability.
+Neither is inferred from source validation, GitHub Actions, G25 browser evidence, ESRL source availability, or ESRL source merge.
 
 ## Resident source-refresh parity
 
@@ -119,7 +136,7 @@ The canonical local-only WorkerCoordinator source refresh carries these static i
 
 ## README completeness determination
 
-README was re-reviewed after the G25/COSV reconciliation. `NO README CHANGE REQUIRED / EXISTING DOCUMENTED SOURCE-REFRESH CONTRACT` remains correct: no externally meaningful repository interface or execution architecture changed. The canonical status belongs in this handoff and machine-readable task state rather than redundant README prose.
+README was re-reviewed for both the Site ESRL successor and `.github` intake. Site retains the exact admitted v16 service-worker wrapper and loads the ESRL successor through the existing HIL portable-state bridge; the accepted `HIL_BROWSER_EVIDENCE_V16` path remains unchanged. `.github` already documents cross-task evidence, WorkerCoordinator, and fail-closed runtime observation semantics. No README prose change is required for either repository at this stage.
 
 ## Downstream continuation
 
@@ -133,7 +150,7 @@ Pertinent destinations are:
 - `StegVerse-002/stegguardian-wiki`
 - `StegVerse-Labs/Sit` only if an HIL-specific consumer/role is independently established.
 
-No downstream destination may treat G25 request consumption as equivalent to full HIL activation or release.
+No downstream destination may treat G25 request consumption or ESRL source merge as equivalent to full HIL activation or release.
 
 ## Completion boundary
 
