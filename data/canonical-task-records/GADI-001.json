@@ -15,7 +15,10 @@
     "docs/SV_DN1_INTR_RUNTIME_MIRROR_HANDOFF.md",
     "data/external-ai-transition-policy.json",
     "control/task-vectors/GADI-001.json",
-    "StegVerse-Labs/StegOS#232"
+    "StegVerse-Labs/StegOS#232",
+    "StegVerse-002/micro-node-runtime/docs/GADI_RUNTIME_MIRROR_HANDOFF.md",
+    "StegVerse-002/micro-node-runtime#87",
+    "StegVerse-002/micro-node-runtime#88"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs", "StegVerse-002"],
@@ -52,7 +55,8 @@
     {"dependency_id":"DEP-GADI-INTR-RUNTIME","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"docs/SV_DN1_INTR_RUNTIME_MIRROR_HANDOFF.md","disposition":"REUSE_EXISTING_INTR_RUNTIME_AND_PROVE_REQUIRED_ROUTE"},
     {"dependency_id":"DEP-GADI-EXTERNAL-AI-TRANSITION-POLICY","kind":"SOURCE_POLICY","state":"AVAILABLE","ref":"data/external-ai-transition-policy.json","disposition":"REUSE_AND_EXTEND_ONLY_IF_REQUIRED"},
     {"dependency_id":"DEP-GADI-DEFENSIVE-CAPABILITY-REGISTRY","kind":"IMPLEMENTATION","state":"AVAILABLE","ref":"docs/GADI_MIRROR_HANDOFF.md","disposition":"REUSE_MERGED_STEGOS_TV_TVC_CAPABILITY_DISCOVERY_AND_AUTHORITY_BINDINGS"},
-    {"dependency_id":"DEP-GADI-SIMULATION-HARNESS","kind":"IMPLEMENTATION","state":"UNRESOLVED","ref":"docs/GADI_MIRROR_HANDOFF.md","disposition":"BUILD_NON_LETHAL_CONTROLLED_TEST_SURFACE"},
+    {"dependency_id":"DEP-GADI-SIMULATION-HARNESS","kind":"IMPLEMENTATION","state":"RESOLVED_SOURCE_COMPLETE_VALIDATED_MERGED","ref":"StegVerse-002/micro-node-runtime/docs/GADI_RUNTIME_MIRROR_HANDOFF.md","disposition":"REUSE_CONTROLLED_SIMULATION_SOURCE_DO_NOT_TREAT_AS_RUNTIME_ACTIVATION"},
+    {"dependency_id":"DEP-GADI-RESIDENT-CONSUMER","kind":"IMPLEMENTATION_AND_RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"StegVerse-002/micro-node-runtime","disposition":"CONNECT_READY_FOR_RESIDENT_EXECUTION_COMMANDS_TO_EXISTING_CANONICAL_RUNTIME_WITHOUT_PARALLEL_SCHEDULER"},
     {"dependency_id":"DEP-GADI-RECONSTRUCTION-PROOF","kind":"EVIDENCE","state":"UNRESOLVED","ref":"StegVerse-Labs/Continuity","disposition":"REQUIRE_EXACT_ACTION_AND_STATE_RECONSTRUCTION"}
   ],
   "blockers": [],
@@ -76,6 +80,9 @@
     "StegVerse-Labs/StegOS#232",
     "StegVerse-Labs/TVC#349",
     "StegVerse-Labs/TV#17",
+    "StegVerse-002/micro-node-runtime#87",
+    "StegVerse-002/micro-node-runtime#88",
+    "StegVerse-002/micro-node-runtime/docs/GADI_RUNTIME_MIRROR_HANDOFF.md",
     "StegVerse-Labs/Continuity",
     "StegVerse-Labs/Site/stegos-node/hil-intr-sync.js",
     "StegVerse-Labs/Site#1112",
@@ -89,6 +96,7 @@
     "NATIVE_STEGOS_DEFENSIVE_ABILITY_SELECTION_VALID",
     "NATIVE_STEGOS_DEFENSIVE_COMMAND_MATERIALIZATION_VALID",
     "THREAT_STATE_MACHINE_VALID",
+    "CONTROLLED_SIMULATION_REASSESSMENT_SOURCE_VALIDATED",
     "MANIFESTED_GOVERNED_DEFENDER_IDENTITY_OBSERVED",
     "AUTHENTIC_INTR_DEFENSIVE_ADMISSION_OBSERVED",
     "PREAUTHORIZED_DEFENSIVE_CAPABILITY_BINDING_OBSERVED",
@@ -127,7 +135,12 @@
   "human_action_ref": null,
   "completion": {"claimed":false,"validated":false,"reconciliation_ref":"StegVerse-Labs/.github#1192","activation_proof_complete":false},
   "allowed_next_transitions": ["INGRESS_ADMITTED"],
-  "handoff_projection_refs": ["docs/GADI_MIRROR_HANDOFF.md", "StegVerse-Labs/StegOS/docs/GADI_STEGOS_MIRROR_HANDOFF.md", "StegVerse-Labs/Site/docs/GADI_SITE_MIRROR_HANDOFF.md"],
+  "handoff_projection_refs": [
+    "docs/GADI_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegOS/docs/GADI_STEGOS_MIRROR_HANDOFF.md",
+    "StegVerse-002/micro-node-runtime/docs/GADI_RUNTIME_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site/docs/GADI_SITE_MIRROR_HANDOFF.md"
+  ],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "source_state_proves_execution": false,
