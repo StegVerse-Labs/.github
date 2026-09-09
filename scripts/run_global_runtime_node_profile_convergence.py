@@ -11,11 +11,10 @@ import sys
 from pathlib import Path
 from typing import Any, Callable
 
-from runtime_failure_boundaries import annotate_lane_outcome, summarize_failure_boundaries
-
 ROOT = Path(__file__).resolve().parents[1]
 PROFILE_REL = Path("control/runtime-node-profiles.json")
 BASE_RUNNER_REL = Path("scripts/run_global_runtime_evidence_convergence.py")
+FAILURE_BOUNDARY_REL = Path("workers/runtime_failure_boundaries.py")
 PROFILE_RECEIPT_REL = Path("receipts/sovereign-host/global-runtime-node-profile-convergence.latest.json")
 STEGCLAW_WRAPPER_REL = Path("workers/stegclaw_p4_profiled_resident_execution.py")
 VACC_WRAPPER_REL = Path("workers/vacc_profiled_resident_execution.py")
@@ -44,14 +43,23 @@ def parse_last_json(stdout: str) -> dict[str, Any] | None:
     return None
 
 
-def load_base_runner(source_root: Path):
-    path = source_root / BASE_RUNNER_REL
-    require(path.is_file(), "base convergence runner missing")
-    spec = importlib.util.spec_from_file_location("stegverse_base_global_convergence", path)
-    require(spec is not None and spec.loader is not None, "base convergence runner import failed")
+def _load_python_module(path: Path, module_name: str):
+    require(path.is_file(), f"python module missing:{path}")
+    spec = importlib.util.spec_from_file_location(module_name, path)
+    require(spec is not None and spec.loader is not None, f"python module import failed:{path}")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
+
+def load_base_runner(source_root: Path):
+    return _load_python_module(source_root / BASE_RUNNER_REL, "stegverse_base_global_convergence")
+
+
+def load_failure_boundaries(source_root: Path, runtime_root: Path):
+    runtime_path = runtime_root / FAILURE_BOUNDARY_REL
+    path = runtime_path if runtime_path.is_file() else source_root / FAILURE_BOUNDARY_REL
+    return _load_python_module(path, "stegverse_runtime_failure_boundaries")
 
 
 def load_profiles(source_root: Path, runtime_root: Path) -> dict[str, Any]:
@@ -174,6 +182,7 @@ def execute(source_root: Path, runtime_root: Path, *, base_executor: Callable[[P
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
     profile_data = load_profiles(source, runtime)
+    failure_boundaries = load_failure_boundaries(source, runtime)
     by_task = {row["task_id"]: row for row in profile_data["profiles"]}
 
     if base_executor is None:
@@ -203,10 +212,10 @@ def execute(source_root: Path, runtime_root: Path, *, base_executor: Callable[[P
             resolved = resolve_unwired_profile(source, runtime, profile)
             result["execution_path"] = "HB_SYNCED_STEGOS_RUNTIME_NODE_PROFILE"
             result.update(resolved)
-        profiled.append(annotate_lane_outcome(result))
+        profiled.append(failure_boundaries.annotate_lane_outcome(result))
 
     require(not any(row.get("execution_path") == "UNWIRED_CHILD_RUNTIME" for row in profiled), "unwired child runtime remains after profile convergence")
-    boundary_summary = summarize_failure_boundaries(profiled)
+    boundary_summary = failure_boundaries.summarize_failure_boundaries(profiled)
     receipt = {
         "schema":"stegverse.global-runtime-node-profile-convergence/v1",
         "state":"PROFILE_CONVERGENCE_VISIT_COMPLETE",
