@@ -133,3 +133,14 @@ def test_sovereign_context_requires_successful_resident_artifact(tmp_path):
     assert receipt["credential_authority"] == "TV/TVC"
     assert receipt["github_token_runtime_authority"] == "NONE"
     assert receipt["authority_effect"] == "NONE_RESIDENT_CONSUMPTION_ONLY"
+
+
+def test_dispatch_refresh_and_targeted_bridge_wiring_is_present():
+    dispatcher = (ROOT / "scripts/dispatch_resident_execution_requests.py").read_text()
+    refresher = (ROOT / "scripts/refresh_sovereign_worker_runtime_source.py").read_text()
+    targeted = (ROOT / "scripts/refresh_and_dispatch_resident_requests.py").read_text()
+
+    assert '("ibc_verified_intr_ack", "scripts/consume_ibc_intr_resident_request.py")' in dispatcher
+    assert '"SOVEREIGN_NODE_MARKER_REQUIRED", "RESIDENT_INTR_ACK_CONSUMED"' in dispatcher
+    assert 'Path("scripts/consume_ibc_intr_resident_request.py")' in refresher
+    assert '"ibc_verified_intr_ack"' in targeted
