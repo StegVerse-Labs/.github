@@ -9,7 +9,7 @@ Parent handoff: `docs/NATIVE_EMAIL_ACTION_MONITOR_MIRROR_HANDOFF.md`
 Scheduler owner: `StegVerse-Labs/StegVerse-Healer` / existing `SHWP-HEALER-SOVEREIGN-SCHEDULER-001`
 Source merge: PR `#1252` / merge `700f959dca0160f0d71d92fc391c9f262f27feea`
 Scheduler merge: `StegVerse-Labs/StegVerse-Healer#57` / merge `ef5d90a8c215056e055385a04534e16c49d9a3d5`
-State: `SOURCE_INTEGRATION_MERGED / HOURLY_REUSABLE_BINDING_MERGED / AUTHENTIC_SCHEDULED_RUNTIME_RECEIPT_PENDING`
+State: `SOURCE_INTEGRATION_MERGED / HOURLY_REUSABLE_BINDING_MERGED / CANONICAL_TASK_SHARD_RECONCILIATION_IN_PROGRESS / AUTHENTIC_SCHEDULED_RUNTIME_RECEIPT_PENDING`
 
 ## Scoped objective
 
@@ -33,9 +33,18 @@ mailbox_batch_limit: existing native monitor limit (100)
 
 A scheduled invocation may still stop at an existing provider/runtime boundary. Timer eligibility does not prove provider authorization, mailbox access, corrective-task completion, runtime activation, or Master Records custody.
 
+## Canonical Task Registry reconciliation
+
+The post-merge registry check found that the reusable-task registry and COSV task-vector index already contained this identity, but the canonical sharded Task Registry did not contain the exact task record. The reconciliation branch `fix/native-email-canonical-task-registry-20260909` adds:
+
+- `data/canonical-task-records/STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001.json` with `coordination_state=PROPOSED`, `checkout_state=UNCLAIMED`, COSV `10100000100000`, source/dependency/evidence bindings, and `allowed_next_transitions=[INGRESS_ADMITTED]`;
+- `tests/test_native_email_canonical_task_registry.py` proving generic sharded Task Registry resolution and canonical-work ingress eligibility.
+
+This registry repair records coordination intent only; it does not claim a WorkerCoordinator claim/fence, mailbox execution, provider authorization, or activation.
+
 ## README determination
 
-The root `.github/README.md` already documents the reusable-task architecture and the generic continuation/authority boundaries. This scoped change does not add a new repository responsibility or public interface; detailed cadence belongs in this task handoff and the Healer scheduler README. `NO_README_CHANGE_REQUIRED` for `.github` is therefore recorded for this change set.
+The root `.github/README.md` already documents the reusable-task architecture, sharded canonical Task Registry model, and generic continuation/authority boundaries. This scoped change does not add a new repository responsibility or public interface; detailed cadence and task-specific registry state belong in this handoff and the Healer scheduler README. `NO_README_CHANGE_REQUIRED` for `.github` is therefore recorded for this change set.
 
 ## Validation evidence
 
@@ -49,4 +58,4 @@ The coordinated Healer exact head `99e63e6e01962232125f70becec5e21eac11ae30` pas
 
 ## Remaining authentic boundary
 
-Source integration, reusable invocation binding, hourly cadence configuration, same-slot idempotency, tests, README maintenance, and both repository merges are complete. The remaining evidence boundary is an authentic resident Healer scheduled invocation producing a retained reusable-task receipt for an hourly slot. Until that is observed, this handoff does not claim live hourly mailbox execution.
+Source integration, reusable invocation binding, hourly cadence configuration, same-slot idempotency, tests, README maintenance, and both repository merges are complete. Canonical Task Registry shard reconciliation is being validated. After that, the remaining evidence boundary is an authentic resident Healer scheduled invocation producing a retained reusable-task receipt for an hourly slot. Until that is observed, this handoff does not claim live hourly mailbox execution.
