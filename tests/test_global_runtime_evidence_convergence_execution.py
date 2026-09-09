@@ -34,16 +34,27 @@ class GlobalRuntimeEvidenceConvergenceExecutionTests(unittest.TestCase):
         for index, left in enumerate(classes):
             for right in classes[index + 1:]:
                 self.assertFalse(left & right)
+        self.assertEqual({"VACP-SOVEREIGN-PROVIDER-REALIGNMENT-023"}, unwired_tasks)
 
     def test_latent_existing_paths_are_reused(self):
         module = load_runner()
         self.assertEqual(("stegos_kv_intr_chain",), module.TASK_SELECTORS["SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001"])
+        self.assertEqual(("ecosystem_chat",), module.TASK_SELECTORS["DECISION-ENVELOPE-DE006"])
         self.assertEqual(
             Path("control/resident-execution-request.d/consume-gadi-resident-execution.py"),
             module.DIRECT_CONSUMERS["GADI-RESIDENT-EXECUTION-001"],
         )
-        self.assertNotIn("GADI-RESIDENT-EXECUTION-001", module.NO_EXECUTION_PATH_REASON)
-        self.assertNotIn("SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001", module.NO_EXECUTION_PATH_REASON)
+        self.assertEqual(
+            Path("scripts/project_stegclaw_runtime_observability.py"),
+            module.DIRECT_CONSUMERS["DATA-CONTINUATION-STEGCLAW-P4"],
+        )
+        for task_id in (
+            "GADI-RESIDENT-EXECUTION-001",
+            "SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001",
+            "DATA-CONTINUATION-STEGCLAW-P4",
+            "DECISION-ENVELOPE-DE006",
+        ):
+            self.assertNotIn(task_id, module.NO_EXECUTION_PATH_REASON)
 
     def test_vacc_projection_uses_current_sovereign_task(self):
         projection = json.loads(PROJECTION.read_text(encoding="utf-8"))
