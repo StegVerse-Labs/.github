@@ -8,61 +8,57 @@ Task ID: `GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001`
 COSV ID: `10100000100000`
 Canonical coordination state: `PROPOSED`
 Canonical checkout state: `UNCLAIMED`
-Status: `RESIDENT ACTIVATION REQUESTED / LIVE DISPATCH GATING REPAIRED / FORMALISM SOURCE-DISCOVERY LINEAGE DEFECT REPAIRED IN CURRENT PR / GADI SOURCE COMPLETE / HIL G25 SATISFIED + ESRL SOURCE/INTAKE MERGED / AUTHENTIC FULL ACTIVATION NOT PROVEN`
+Status: `RESIDENT ACTIVATION REQUESTED / SOURCE-DISCOVERY WIRING MERGED / SOURCE-MATERIALIZATION RECOVERY WIRING IN CURRENT BRANCH / GADI SOURCE COMPLETE / HIL G25 SATISFIED + ESRL SOURCE/INTAKE MERGED / AUTHENTIC FULL ACTIVATION NOT PROVEN`
 
 ## Source of truth
 
 Canonical records are `data/canonical-task-records/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json`, `control/task-vectors/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json`, `handoffs/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json`, `control/manifold-lineage.d/governed-multilane-manifold-activation-001.json`, and `control/resident-execution-request.d/governed-multilane-manifold-activation-001.json`.
 
-Inherited continuation includes `FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md`, `FORMALISM_SOURCE_DISCOVERY_MIRROR_HANDOFF.md`, `docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md`, and `docs/HIL_RESIDENT_SESSION_MANIFOLD_ACTIVATION_MIRROR_HANDOFF.md`.
+Inherited continuation includes `FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md`, `FORMALISM_SOURCE_DISCOVERY_MIRROR_HANDOFF.md`, `FORMALISM_TVC_REPOSITORY_TRANSPORT_CONSUMERS_MIRROR_HANDOFF.md`, `FORMALISM_TVC_LOCAL_SPOOL_MIRROR_HANDOFF.md`, `FORMALISM_TVC_MATERIALIZATION_FOLLOWUP_MIRROR_HANDOFF.md`, `docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md`, and `docs/HIL_RESIDENT_SESSION_MANIFOLD_ACTIVATION_MIRROR_HANDOFF.md`.
 
-## Formalism execution defect discovered and repaired
+## Formalism traversal
 
-The four source-reading formalism adapters do not discover GitHub repositories themselves. They consume either explicit non-secret `STEGVERSE_FORMALISM_ROOTS_JSON` or the deterministic resident artifact `receipts/formalism-source-discovery/formalism-roots.json` through `scripts/run_formalism_manifold_with_discovered_roots.py`.
+PR `#1265` merged at `77513c799656809ee650e8915c5b2e7f445cba61` and made the already-registered `SHWP-FORMALISM-SOURCE-DISCOVERY-001` producer reachable before the four source-reading lanes.
 
-On current `main`, no persisted roots manifest exists. The wrapper therefore correctly substitutes an empty root map and the four lanes fail closed. The existing registered producer, `SHWP-FORMALISM-SOURCE-DISCOVERY-001`, is `HANDOFF_READY`; its canonical handoff states that resident discovery and the roots manifest are still not observed.
+The next gap was found immediately after that repair: source discovery is intentionally local-only and, when a required root is missing or lacks mirror-handoff standing, its worker explicitly derives `DERIVE_SEPARATELY_AUTHORIZED_FORMALISM_SOURCE_MATERIALIZATION_TASK`. The repository already contains the complete machine path for that condition under `SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001`, including bounded TVC inspection, local spool, deterministic `MATERIALIZE_SOURCE_ARCHIVE` follow-up, sanitized receipt consumption, exact materialization, and source rediscovery. The umbrella request/lineage did not include that recovery worker.
 
-The umbrella lineage/request omitted that producer even though the umbrella attempted to execute its downstream consumers. That omission was the first concrete machine-owned formalism traversal defect.
+Current branch repair `governed-manifold-formalism-materialization-recovery`:
 
-Current repair:
+- adds `SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001` to the umbrella subordinate set;
+- adds its existing WorkerCoordinator registry and process-adapter fragments;
+- adds a conditional execution disposition only when source discovery reports missing or invalid-handoff roots;
+- adds lineage edges `source discovery -> TVC recovery -> source rediscovery`;
+- requires rediscovery before any source-reading formalism lane can execute;
+- adds focused regression coverage for request/lineage reachability and fail-closed ordering.
 
-- add `SHWP-FORMALISM-SOURCE-DISCOVERY-001` to the umbrella subordinate set;
-- add its existing WorkerCoordinator registry and process-adapter fragments to the resident request;
-- execute source discovery before the four source-reading formalism lanes when a qualifying roots manifest is absent;
-- add explicit `DEPENDS_ON` lineage edges from each source-reading formalism lane to source discovery;
-- preserve fail-closed behavior if any required local first-cohort source is missing, ambiguous, or lacks mirror-handoff standing;
-- add regression coverage requiring lineage/request parity and the source-discovery prerequisite.
+No root, TVC receipt, materialization receipt, formalism lane receipt, runtime claim/fence, or activation is fabricated.
 
-This does not fabricate a roots manifest or formalism receipt. It makes the existing resident producer reachable from the umbrella execution path so the next resident visit can either emit the deterministic manifest or expose the exact missing-source absence set.
+## Required formalism order
 
-## Formalism continuation
-
-Required order is now:
-
-1. `SHWP-FORMALISM-SOURCE-DISCOVERY-001` -> emit qualifying `formalism-roots.json` or fail closed with exact absence/ambiguity evidence;
-2. `SHWP-FORMALISM-INVENTORY-001`;
-3. `SHWP-FORMALISM-HANDOFF-NORMALIZATION-001`;
-4. `SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001`;
-5. `SHWP-MANIFOLD-GOVERNANCE-MAPPING-001`;
-6. `SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001` only after the four prerequisite receipts qualify.
+1. `SHWP-FORMALISM-SOURCE-DISCOVERY-001`.
+2. If complete: proceed to the four source-reading lanes.
+3. If missing/invalid root: execute `SHWP-FORMALISM-TVC-REPOSITORY-TRANSPORT-CONSUMERS-001` through its existing bounded TV/TVC materialization path, then rerun source discovery.
+4. If ambiguous: remain fail-closed pending deterministic disambiguation evidence.
+5. Execute `SHWP-FORMALISM-INVENTORY-001`, `SHWP-FORMALISM-HANDOFF-NORMALIZATION-001`, `SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001`, and `SHWP-MANIFOLD-GOVERNANCE-MAPPING-001` only after a qualifying completed roots manifest exists.
+6. Execute `SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001` only after all four prerequisite receipts qualify.
 
 `SOVEREIGN-LOCAL-MODEL-001` remains complete/reusable.
 
 ## Runtime-dispatch gating
 
-PR `#1246` merged at `edc048632afe8db34113101b7d7400f9d5fbb8e4` and repaired the actual control-directory consumer invoked by the sovereign dispatcher. Conditional lanes now fail closed on explicit prerequisite evidence instead of WorkerCoordinator return code alone. This remains source/runtime-path correctness, not runtime execution evidence.
+PR `#1246` merged at `edc048632afe8db34113101b7d7400f9d5fbb8e4`; conditional lanes fail closed on explicit prerequisite evidence instead of WorkerCoordinator return code alone. This is source/runtime-path correctness, not runtime execution evidence.
 
 ## TVC / StegFin
 
-`TVC-PROVIDER-OPERATION-BROKER-003` and `TVC-CAPABILITY-RUNTIME-002` still require qualifying current runtime observation. `STEGFIN-CONTINUITY-CARRIER-007` remains fail-closed until TVC qualification exists.
+`TVC-PROVIDER-OPERATION-BROKER-003` and `TVC-CAPABILITY-RUNTIME-002` still require qualifying current runtime observation. `STEGFIN-CONTINUITY-CARRIER-007` remains fail-closed until TVC qualification exists. Formalism source materialization uses its already-defined TVC repository transport path and does not convert TVC runtime qualification into a completed claim.
 
 ## GADI
 
-GADI source slices and the targetable `GADI-RESIDENT-EXECUTION-001` child are registered/merged. Authentic current execution still requires current InTr admission, WorkerCoordinator claim/fence, exact runtime binding, controlled effect observation, reassessment/termination, receipt custody, Continuity verification, Master Records reconciliation, and canonical reconciliation.
+GADI source slices and targetable `GADI-RESIDENT-EXECUTION-001` are registered/merged. Authentic current execution, receipt custody, Continuity verification, Master Records reconciliation, and canonical reconciliation remain pending.
 
 ## HIL
 
-HIL G25 request consumption is satisfied and task COSV is `50000000103000`. Site ESRL successor and `.github` ESRL intake are merged. Exactly three HIL evidence obligations remain: authentic ESRL `LEASE_OPEN`, post-restart exact-byte proof, and TVC HIL lifecycle handoff.
+HIL G25 request consumption is satisfied and task COSV is `50000000103000`. Site ESRL successor and `.github` ESRL intake are merged. Three evidence obligations remain: authentic ESRL `LEASE_OPEN`, post-restart exact-byte proof, and TVC HIL lifecycle handoff.
 
 ## Current standing
 
@@ -70,9 +66,9 @@ HIL G25 request consumption is satisfied and task COSV is `50000000103000`. Site
 - allowed next canonical transition: `INGRESS_ADMITTED`
 - resident activation request: `REQUESTED`
 - live dispatcher prerequisite gating: `REPAIRED / MERGED`
-- formalism source discovery implementation: `IMPLEMENTED / REGISTERED`
-- formalism source-discovery resident receipt / roots manifest: `NOT OBSERVED`
-- umbrella source-discovery traversal wiring: `REPAIRED IN CURRENT PR`
+- source-discovery traversal wiring: `MERGED`
+- source-discovery resident receipt / roots manifest: `NOT OBSERVED`
+- missing/invalid source materialization recovery wiring: `IMPLEMENTED IN CURRENT BRANCH / VALIDATION PENDING`
 - four formalism lane receipts: `PENDING`
 - formalism manifold reconciliation: `PENDING`
 - TVC runtime qualification: `PENDING`
@@ -82,15 +78,8 @@ HIL G25 request consumption is satisfied and task COSV is `50000000103000`. Site
 - HIL ESRL / post-restart / TVC lifecycle: `PENDING`
 - authentic full-manifold activation: `NOT PROVEN`
 
-## Remaining destinations
-
-- source discovery, WorkerCoordinator claim/fence, formalism receipts and deterministic reconciliation -> `StegVerse-Labs/.github`;
-- TVC runtime evidence -> `StegVerse-Labs/TVC` / `StegVerse-Labs/TV`;
-- GADI authentic execution -> current canonical runtime owner; reconstruction/custody -> `StegVerse-Labs/Continuity` / Master Records;
-- HIL remaining evidence -> `StegVerse-Labs/Site` + `.github` + TV/TVC as applicable.
-
 ## README and release rule
 
-README reviewed. Existing generic resident-request / WorkerCoordinator / fail-closed evidence documentation remains accurate; no top-level README wording change is required.
+README reviewed. Existing resident-request, WorkerCoordinator, TV/TVC transport, and fail-closed evidence documentation remains accurate; no top-level README wording change is required for this repair.
 
 The umbrella is not release/tag ready. Future qualifying release/tag requires separate propagation verification for `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `admissibility-wiki`, and `stegguardian-wiki`, plus `StegVerse-Labs/Sit` only when an applicable consumer role exists.
