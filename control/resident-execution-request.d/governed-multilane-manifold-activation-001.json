@@ -66,6 +66,7 @@
   "execution_sequence": [
     "load and validate the complete manifold lineage before any subordinate execution",
     "refresh current qualifying evidence for every declared lineage node",
+    "finish every declared subordinate to its canonical completion predicate; do not retire, skip, or prune an incomplete task merely because future shared infrastructure may make its implementation easier or reusable",
     "reuse completed aggregate/predecessor evidence without duplicate execution",
     "run canonical cross-task coordination and collision preflight",
     "acquire fresh WorkerCoordinator claim/fence only for genuinely missing HANDOFF_READY local subordinate tasks",
@@ -97,6 +98,8 @@
   "fail_closed": true,
   "lineage_policy": {
     "activate_all_incomplete_owned_nodes": true,
+    "complete_all_declared_subordinates": true,
+    "do_not_prune_incomplete_tasks_for_expected_future_consolidation": true,
     "reuse_completed_nodes": true,
     "observe_external_authority_nodes_without_competing": true,
     "user_only_nodes_never_auto_execute": true,
@@ -112,6 +115,7 @@
     "wallet signing or broadcast by non-user authority",
     "flattening disagreement during reconciliation",
     "silently excluding a declared subordinate from manifold traversal",
+    "retiring or pruning an incomplete declared subordinate solely because shared infrastructure is expected to supersede its current implementation path",
     "merging nested HIL child authority or completion predicates",
     "promoting GADI resident task registration into execution evidence"
   ],
