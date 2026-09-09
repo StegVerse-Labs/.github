@@ -2,19 +2,20 @@
   "identity": "StegVerse-Labs/.github:task:SS-ERL-KV-PROPAGATION-VERIFICATION-001",
   "profile": "task.v1",
   "level": "task",
-  "vector": "10000100100000",
+  "vector": "71000000100101",
   "evidence_refs": [
     "data/canonical-task-records/SS-ERL-KV-PROPAGATION-VERIFICATION-001.json",
     "docs/SS_ERL_KV_PROPAGATION_VERIFICATION_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/Executive_Rhetoric_Ledger@722a11cf2ada6205a31e3678d489254fb736e8f7",
-    "master-records/orchestration@3e1bc4f2f98bde1932261c2ce96ca42fa9952a19"
+    "evidence/erl-kv-propagation/2026-09-09-verification-receipt.json",
+    "StegVerse-Labs/Site@3ac0a20ddf9895e724984e9b24dfa174537cc796",
+    "GCAT-BCAT-Engine/Publisher@0debdb0cf0e06f672a515e8b7fbf6d642521588e"
   ],
-  "observed_at": "2026-09-09T08:10:00-05:00",
+  "observed_at": "2026-09-09T09:30:00-05:00",
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
-    "lifecycle": "PROPOSED",
-    "archive_ready": false,
-    "unassigned_work": 1,
+    "lifecycle": "COMPLETE",
+    "archive_ready": true,
+    "unassigned_work": 0,
     "chat_owned_implementation": 0,
     "chat_owned_validation": 0,
     "chat_owned_integration": 0,
@@ -23,21 +24,21 @@
     "canonical_owner_installed": true,
     "thread_required": false,
     "blocker_count": 0,
-    "evidence_complete": false,
+    "evidence_complete": true,
     "activated": false,
-    "propagated": false
+    "propagated": true
   },
   "metric_evidence": {
-    "lifecycle": "New adjacent verification task created from a completed source integration.",
-    "archive_ready": "Four downstream applicability determinations remain.",
-    "unassigned_work": "One bounded propagation-verification task awaits canonical admission/claim.",
-    "chat_owned_counts": "No execution claim or fence is inferred from task creation.",
-    "canonical_owner_installed": "Canonical task record, COSV vector/index entry, and handoff are installed.",
-    "thread_required": "Durable task state is sufficient for another session.",
-    "blocker_count": "No blocker; next transition is INGRESS_ADMITTED.",
-    "evidence_complete": "No downstream applicability results are yet retained.",
-    "activated": "Verification task is not an activation task.",
-    "propagated": "No downstream propagation is claimed before repository inspection and validation."
+    "lifecycle": "All four target repositories have terminal applicability dispositions.",
+    "archive_ready": "Verification receipt, merged consumer changes, and terminal handoffs are durable.",
+    "unassigned_work": "No work remains in this bounded propagation task.",
+    "chat_owned_counts": "No implementation, validation, integration, observation, or credential work remains chat-owned.",
+    "canonical_owner_installed": "Canonical task record, receipt, handoff, and COSV projection are installed.",
+    "thread_required": "Durable repository evidence is sufficient without this thread.",
+    "blocker_count": "No unresolved propagation condition remains.",
+    "evidence_complete": "Site and Publisher updates are merged and validated; both wiki dispositions are evidence-backed.",
+    "activated": "This verification task does not activate a runtime.",
+    "propagated": "Every target has a terminal UPDATE_REQUIRED-merged or NOT_APPLICABLE disposition."
   },
   "authority_effect": "NONE"
 }
