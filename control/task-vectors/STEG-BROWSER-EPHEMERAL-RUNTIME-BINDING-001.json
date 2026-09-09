@@ -6,9 +6,13 @@
   "evidence_refs": [
     "data/canonical-task-records/STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001.json",
     "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_ECOSYSTEM_EPHEMERAL_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_LINKEDIN_PLAYWRIGHT_EXECUTION_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegOS/docs/STEGBROWSER_IOS_RESIDENT_APP_TARGET_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegBrowser@86cb4c42bbde1366ca03088a01983273f73de400",
     "StegVerse-Labs/StegBrowser/actions/runs/34303703951",
+    "StegVerse-Labs/StegBrowser@10ab121dfc7a3d91a0436fee333b4d8318d43576",
+    "StegVerse-Labs/StegBrowser/actions/runs/34304171541",
+    "StegVerse-Labs/StegBrowser@4fd4603cc5ba6255c1b99bd133634df9434e5386",
     "StegVerse-Labs/StegOS@bfa580942ee834799f87fdff3a9f1ea8d78067d4",
     "StegVerse-Labs/StegOS/actions/runs/34306233655",
     "StegVerse-Labs/StegOS/actions/runs/34306233903",
@@ -16,10 +20,17 @@
     "StegVerse-Labs/StegOS/actions/runs/34306875310",
     "StegVerse-Labs/StegOS/actions/runs/34306875357",
     "StegVerse-Labs/StegOS/actions/runs/34306875317",
+    "StegVerse-Labs/StegOS@22b97c52dda22e5532bc27d598b7d65c7654bf6d",
+    "StegVerse-Labs/StegOS/actions/runs/34309757923",
+    "StegVerse-Labs/Site@48006a08c877a3f18ab36e00e934350ec07a1f55",
+    "StegVerse-Labs/Site@de696b5f8b5080faaddb18b1e984cdbcb4d2cca5",
     "StegVerse-Labs/StegSocials@122811f8f44dc2494a1d5e771d50c210d1d8a555",
-    "StegVerse-Labs/StegSocials/actions/runs/34302291053"
+    "StegVerse-Labs/StegSocials/actions/runs/34302291053",
+    "StegVerse-Labs/StegSocials@414e8f597f6b0a8aa62f092d105a16c0629cedf4",
+    "StegVerse-Labs/StegSocials/actions/runs/34304357178",
+    "StegVerse-Labs/StegSocials/actions/runs/34304357164"
   ],
-  "observed_at": "2026-09-09T03:28:00Z",
+  "observed_at": "2026-09-09T05:33:00Z",
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
     "lifecycle": "CLAIMED_INTEGRATION",
@@ -38,14 +49,14 @@
     "propagated": false
   },
   "metric_evidence": {
-    "lifecycle": "StegOSMobile same-device resident discovery readback and component-receipt source are merged at 9d069503671d8c5f2a19856c0adece3e2eba962e. Exact-head StegOS CI 34306875310, Apple toolchain 34306875357, and iOS Device Package Validation 34306875317 all succeeded. Authentic current-iPhone execution remains next.",
-    "archive_ready": "Current-iPhone discovery receipt, WorkerCoordinator claim/fence, InTr admission, provider session, Facebook publication/readback, custody completion, LinkedIn parity, and propagation remain incomplete.",
+    "lifecycle": "Current source state includes validated StegOSMobile same-device discovery readback and TestFlight delivery machinery, deployed Site browser-to-app handoff observation, merged StegBrowser LinkedIn end-to-end execution, and merged StegSocials Facebook/LinkedIn caller parity. Authentic current-iPhone installation/discovery remains next.",
+    "archive_ready": "Current-iPhone discovery receipt, WorkerCoordinator claim/fence, InTr admission, provider sessions, Facebook and LinkedIn live publication/readback, custody completion, and propagation remain incomplete.",
     "unassigned_work": "Remaining work is assigned to the canonical StegOSMobile/.github/TVC/StegBrowser/StegSocials/Master Records continuation path.",
     "chat_owned_counts": "No chat-only implementation or validation state is required for continuation.",
-    "canonical_owner_installed": "Canonical task/COSV ownership and mirror handoffs remain installed.",
+    "canonical_owner_installed": "Canonical task/COSV ownership and mirror handoffs remain installed and now include the deployed Site handoff diagnostic plus LinkedIn execution/caller parity.",
     "thread_required": "Repository state is sufficient for continuation.",
-    "blocker_count": "No known source blocker remains before current-device observation.",
-    "evidence_complete": "Installed source and package evidence exist; authentic current-device and downstream publication/custody evidence do not.",
+    "blocker_count": "No known source-code blocker remains before Apple/TestFlight current-device observation.",
+    "evidence_complete": "Source, package, handoff-diagnostic, Facebook caller, LinkedIn runtime, and LinkedIn caller validation exist; authentic current-device and live publication/custody evidence do not.",
     "activated": "Activation remains false until authentic current-device resident admission and downstream evidence are observed.",
     "propagated": "Propagation verification remains pending."
   },
