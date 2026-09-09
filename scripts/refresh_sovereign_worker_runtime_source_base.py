@@ -76,6 +76,12 @@ STATIC_FILES = (
     Path("scripts/activate_resident_stack.py"),
     Path("scripts/continue_stegverse001_evidence_chain.py"),
     Path("scripts/dispatch_resident_execution_requests.py"),
+    Path("scripts/build_runtime_profile_map.py"),
+    Path("scripts/run_global_runtime_evidence_convergence.py"),
+    Path("scripts/run_global_runtime_node_profile_convergence.py"),
+    Path("control/runtime-node-profiles.json"),
+    Path("control/runtime-profile-sources.json"),
+    Path("control/runtime-partial-solution-projections/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.json"),
     Path("scripts/refresh_and_dispatch_resident_requests.py"),
     Path("scripts/run_stegverse001_activation_progression.py"),
     Path("scripts/materialize_live_cosv_packet.py"),
@@ -96,6 +102,7 @@ CONTROL_DIRS = (
     Path("control/task-vector-index.d"),
     Path("control/resident-execution-request.d"),
     Path("control/manifold-lineage.d"),
+    Path("control/runtime-observability-consumers"),
     Path("data/canonical-task-records"),
 )
 CONTROL_FILES = (
