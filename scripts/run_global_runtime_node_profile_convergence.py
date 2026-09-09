@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PROFILE_REL = Path("control/runtime-node-profiles.json")
 BASE_RUNNER_REL = Path("scripts/run_global_runtime_evidence_convergence.py")
 PROFILE_RECEIPT_REL = Path("receipts/sovereign-host/global-runtime-node-profile-convergence.latest.json")
-STEGCLAW_WRAPPER_REL = Path("scripts/dispatch_stegclaw_p4_resident_execution.py")
+STEGCLAW_WRAPPER_REL = Path("workers/stegclaw_p4_profiled_resident_execution.py")
 
 
 def load_json(path: Path) -> dict[str, Any]:
