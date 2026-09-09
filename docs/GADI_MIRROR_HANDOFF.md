@@ -1,7 +1,7 @@
 # GADI Mirror Handoff
 
 Updated: 2026-09-09
-Status: `NOT_RETIRED / STEGOS_NATIVE_DEFENSE_SOURCE_MERGED / STEGCORE_REASONING_SOURCE_MERGED / TV_TVC_CAPABILITY_BINDINGS_MERGED / CONTROLLED_SIMULATION_SOURCE_VALIDATED_MERGED / RESIDENT_CONSUMER_SOURCE_VALIDATED_MERGED / CONTINUITY_RECONSTRUCTION_SOURCE_VALIDATED_MERGED / AUTHENTIC_RESIDENT_EXECUTION_MASTER_RECORDS_RECONCILIATION_PENDING / AUTHENTIC_ACTIVATION_PENDING`
+Status: `NOT_RETIRED / STEGOS_NATIVE_DEFENSE_SOURCE_MERGED / STEGCORE_REASONING_SOURCE_MERGED / TV_TVC_CAPABILITY_BINDINGS_MERGED / CONTROLLED_SIMULATION_SOURCE_VALIDATED_MERGED / RESIDENT_CONSUMER_SOURCE_VALIDATED_MERGED / CONTINUITY_RECONSTRUCTION_SOURCE_VALIDATED_MERGED / GADI_RESIDENT_EXECUTION_CHILD_REGISTERED / AUTHENTIC_RESIDENT_EXECUTION_MASTER_RECORDS_RECONCILIATION_PENDING / AUTHENTIC_ACTIVATION_PENDING`
 Repository: `StegVerse-Labs/.github`
 Canonical task: `GADI-001`
 Canonical record: `data/canonical-task-records/GADI-001.json`
@@ -41,6 +41,28 @@ Continuity PR #14 final head `2c62689c0e2225d616b566886352110e48eb1494` passed f
 
 The Continuity verifier does not mint InTr admission, TV/TVC authority, WorkerCoordinator authority, execution, Master Records reality, or activation. It is reusable source capability only.
 
+## Canonical resident execution child
+
+The previously prose-only resident-execution predicate now has a distinct canonical machine-owned child:
+
+`GADI-RESIDENT-EXECUTION-001`
+
+Canonical surfaces:
+
+- `data/canonical-task-records/GADI-RESIDENT-EXECUTION-001.json`;
+- `handoffs/GADI-RESIDENT-EXECUTION-001.json`;
+- `control/task-vectors/GADI-RESIDENT-EXECUTION-001.json`;
+- `control/task-vector-index.d/GADI-RESIDENT-EXECUTION-001.json`;
+- `control/resident-execution-request.d/gadi-resident-execution-001.json`;
+- `control/resident-execution-request.d/consume-gadi-resident-execution.py`;
+- `control/worker-registry.d/gadi-resident-execution-001.json`;
+- `control/process-worker-adapters.d/gadi-resident-execution-001.json`;
+- `docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md`.
+
+The child is `PROPOSED / UNCLAIMED` with a `HANDOFF_READY` WorkerCoordinator registration. It reuses the merged micro-node resident consumer rather than creating another runtime executor. The process adapter requires current task-local command/context/actuator evidence and fails closed until all exact bindings qualify.
+
+This registration does not claim that a current WorkerCoordinator claim/fence, InTr decision, runtime binding, external effect, reassessment, or Master Records reconciliation exists. It converts the execution gap from an unaddressable aggregate predicate into a targetable canonical runtime task.
+
 ## Canonical dependency standing
 
 Resolved source dependencies:
@@ -50,12 +72,13 @@ Resolved source dependencies:
 - TV/TVC capability source bindings;
 - controlled simulation/reassessment harness;
 - resident defensive-command consumer;
-- Continuity confrontation reconstruction verifier.
+- Continuity confrontation reconstruction verifier;
+- canonical WorkerCoordinator/resident-request registration for `GADI-RESIDENT-EXECUTION-001`.
 
 Still unresolved authentic predicates:
 
 - current InTr route/admission proof applicable to the actual GADI transition;
-- current WorkerCoordinator claim/fence;
+- current WorkerCoordinator claim/fence for `GADI-RESIDENT-EXECUTION-001`;
 - exact runtime binding and controlled pre-authorized execution surface;
 - subject-bound command consumption/effect observation;
 - live reassessment/adaptation/termination evidence;
@@ -65,9 +88,9 @@ Still unresolved authentic predicates:
 
 ## Activation rule
 
-Source existence, CI success, simulation transcripts, merged consumer/verifier code, or historical decisions cannot substitute for one authentic current chain:
+Source existence, CI success, simulation transcripts, merged consumer/verifier code, task registration, or historical decisions cannot substitute for one authentic current chain:
 
-`observation -> reasoning -> capability -> current InTr admission -> bound StegOS command -> existing-runtime consumption -> effect -> reassessment/termination -> Continuity verification -> Master Records reconciliation`.
+`observation -> reasoning -> capability -> current InTr admission -> bound StegOS command -> GADI-RESIDENT-EXECUTION-001 WorkerCoordinator claim/fence -> existing-runtime consumption -> effect -> reassessment/termination -> Continuity verification -> Master Records reconciliation`.
 
 ## Boundary
 
@@ -75,11 +98,11 @@ Unauthorized compromise of third-party systems is not permitted. External effect
 
 ## README impact
 
-This `.github` change is coordination/evidence reconciliation only; the existing `.github` README remains accurate. The functional README change was completed in micro-node PR #90. Continuity PR #14 added an internal verifier package and required no top-level README change under its documented impact determination.
+README reviewed. The `.github` README already documents the generic resident-request -> WorkerCoordinator execution model and separation semantics. `GADI-RESIDENT-EXECUTION-001` is a task-specific registration under that existing interface, so no additional top-level README wording is required.
 
 ## Remaining destinations
 
-- authentic GADI execution context and effect/reassessment evidence -> current canonical WorkerCoordinator/runtime owners;
+- targeted `GADI-RESIDENT-EXECUTION-001` claim/fence and authentic execution/effect/reassessment evidence -> current canonical WorkerCoordinator/runtime owner;
 - authentic receipt-chain custody and Master Records reconciliation -> `StegVerse-Labs/Continuity` / Master Records;
 - canonical dependency/activation reconciliation -> `StegVerse-Labs/.github`;
 - proof/readiness projection after underlying evidence qualifies -> `StegVerse-Labs/Site`.
