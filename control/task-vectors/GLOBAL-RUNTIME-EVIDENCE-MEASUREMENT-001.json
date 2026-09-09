@@ -1,0 +1,31 @@
+{
+  "identity": "StegVerse-Labs/.github:task:GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000010100000",
+  "evidence_refs": [
+    "data/canonical-task-records/GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001.json",
+    "docs/GLOBAL_RUNTIME_EVIDENCE_MEASUREMENT_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github#1294",
+    "management/COSV_PROFILE_V1.json"
+  ],
+  "observed_at": "2026-09-09T17:45:00Z",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 1,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "authority_effect": "NONE"
+}
