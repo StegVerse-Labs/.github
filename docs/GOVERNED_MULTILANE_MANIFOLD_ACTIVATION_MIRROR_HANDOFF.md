@@ -8,161 +8,112 @@ Task ID: `GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001`
 COSV ID: `10100000100000`
 Canonical coordination state: `PROPOSED`
 Canonical checkout state: `UNCLAIMED`
-Status: `RESIDENT ACTIVATION REQUESTED / PREREQUISITE GATING REPAIRED / GADI STEGCORE AND CONTROLLED-SIMULATION SOURCE COMPLETE / HIL SOURCE COMPLETE PHYSICAL EXPORT PENDING / WORKERCOORDINATOR CLAIM PENDING / AUTHENTIC ACTIVATION EVIDENCE PENDING`
+Status: `RESIDENT ACTIVATION REQUESTED / PREREQUISITE GATING REPAIRED / GADI STEGCORE SIMULATION AND RESIDENT-CONSUMER SOURCE COMPLETE / HIL SOURCE COMPLETE PHYSICAL EXPORT PENDING / WORKERCOORDINATOR CLAIM PENDING / AUTHENTIC ACTIVATION EVIDENCE PENDING`
 
 ## Source of truth
 
-This is the canonical continuation record for `GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001`.
+Canonical records are `data/canonical-task-records/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json`, `control/task-vectors/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json`, `handoffs/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json`, `control/manifold-lineage.d/governed-multilane-manifold-activation-001.json`, and `control/resident-execution-request.d/governed-multilane-manifold-activation-001.json`.
 
-Canonical records:
-
-- `data/canonical-task-records/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json`;
-- `control/task-vectors/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json`;
-- `control/task-vector-index.d/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json`;
-- `handoffs/GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001.json`;
-- `control/manifold-lineage.d/governed-multilane-manifold-activation-001.json`;
-- `control/resident-execution-request.d/governed-multilane-manifold-activation-001.json`.
-
-Inherited sources:
-
-- `docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md`;
-- `FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md`;
-- `data/formalism-manifold-orchestration/task-state.json`;
-- `docs/GADI_MIRROR_HANDOFF.md`;
-- `docs/HIL_RESIDENT_SESSION_MANIFOLD_ACTIVATION_MIRROR_HANDOFF.md`.
+Inherited sources include `FORMALISM_MANIFOLD_ORCHESTRATION_MIRROR_HANDOFF.md`, `docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md`, `docs/GADI_MIRROR_HANDOFF.md`, and `docs/HIL_RESIDENT_SESSION_MANIFOLD_ACTIVATION_MIRROR_HANDOFF.md`.
 
 ## Goal
 
-Activate the governed manifold by traversing the complete declared lineage, reusing qualifying completed predecessor/source evidence, executing incomplete machine-owned lanes only through their existing owners, observing externally owned prerequisites without competing claims, and producing current subject-bound receipts plus deterministic reconciliation.
+Activate the complete declared manifold through existing owners, reusing completed source/predecessor evidence, observing externally owned prerequisites without competing claims, and requiring current subject-bound execution receipts plus deterministic reconciliation before activation is declared.
 
-No source file, PR, workflow, issue closure, request record, or simulation transcript alone proves runtime activation.
-
-## Current declared execution work
-
-Machine-owned formalism lanes:
+## Current machine-owned formalism lanes
 
 - `SHWP-FORMALISM-INVENTORY-001`;
 - `SHWP-FORMALISM-HANDOFF-NORMALIZATION-001`;
 - `SHWP-FORMALISM-MATHEMATICAL-CROSSWALK-001`;
 - `SHWP-MANIFOLD-GOVERNANCE-MAPPING-001`;
-- `SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001` after its predecessors qualify.
+- `SHWP-FORMALISM-MANIFOLD-RECONCILIATION-001` after predecessors qualify.
 
-Conditional continuation:
+`STEGFIN-CONTINUITY-CARRIER-007` remains conditional on qualifying `TVC-CAPABILITY-RUNTIME-002` evidence.
 
-- `STEGFIN-CONTINUITY-CARRIER-007` only after `TVC-CAPABILITY-RUNTIME-002` qualifies.
+`SOVEREIGN-LOCAL-MODEL-001` remains `COMPLETE_RELEASED` and reusable without re-execution.
 
-Reusable completed predecessor:
+## TVC prerequisite state
 
-- `SOVEREIGN-LOCAL-MODEL-001` (`COMPLETE_RELEASED`).
+- `TVC-PROVIDER-OPERATION-BROKER-003`: source/binder/host-start delivery validated; live primary-runtime observation pending.
+- `TVC-CAPABILITY-RUNTIME-002`: qualifying current runtime observation pending.
 
-Externally owned prerequisite observations:
-
-- `TVC-PROVIDER-OPERATION-BROKER-003`: source/binder/host-start delivery validated; live primary runtime observation pending;
-- `TVC-CAPABILITY-RUNTIME-002`: current external-owner observation still pending.
+No competing claim is created by this umbrella task.
 
 ## GADI state
 
 Completed/reusable source slices now include:
 
-- StegOS native defensive contracts/discovery/boundary/control-plane source;
-- StegCore `GADI-STEGCORE-001` threat reasoning/planning source via merged PR #192;
-- TV/TVC controlled-simulation capability bindings;
-- `StegVerse-002/micro-node-runtime` controlled-simulation/reassessment harness via PR #87 merged at `35a3738108c9cd506d63b5e7fbf0eb2752aa56b5`;
-- micro-node GADI status reconciliation PR #88 merged at `dd6e8e084ba2fac1ff25f614f86fdd8b5ccf1780`.
+- StegOS native defense contracts/discovery/boundary/control plane;
+- StegCore threat reasoning/planning via PR #192;
+- TV/TVC capability source bindings;
+- micro-node controlled simulation/reassessment via PR #87 merged at `35a3738108c9cd506d63b5e7fbf0eb2752aa56b5`;
+- controlled-simulation status reconciliation PR #88 merged at `dd6e8e084ba2fac1ff25f614f86fdd8b5ccf1780`;
+- micro-node resident defensive-command consumer via PR #90 merged at `cfdea8f44814dfcefd5c411110cb2b367e34d937`;
+- resident-consumer handoff/claim reconciliation PR #91 merged at `901829b3f36f764b474d7e4be02b68eb5e6e63fe`.
 
-The simulation harness validates bounded reassessment and stop semantics without claiming a resident runtime, WorkerCoordinator claim, runtime lease, production effect, or external effect. It is reusable source evidence and must not be re-executed as though it were a missing implementation dependency.
+The resident consumer closes the source implementation gap for consuming canonical StegOS `READY_FOR_RESIDENT_EXECUTION` commands. It requires caller-supplied observed WorkerCoordinator claim/fence context plus exact InTr/runtime/control-surface/target/subject binding and cannot mint authority, claims, leases, credentials, schedulers, services, transports, or custody state.
 
-Remaining GADI predicates:
+Remaining authentic GADI predicates are current InTr admission, an actual WorkerCoordinator claim/fence, current runtime binding, controlled pre-authorized command consumption, subject-bound effect observation, reassessment/termination evidence, Continuity/Master Records custody, exact confrontation reconstruction, and canonical reconciliation.
 
-- authentic current InTr defensive admission;
-- pre-authorized capability binding at runtime;
-- existing canonical resident consumer for `READY_FOR_RESIDENT_EXECUTION` commands;
-- subject-bound safe-state effect observation;
-- live reassessment and termination evidence;
-- Continuity/Master Records receipt custody and exact confrontation reconstruction.
+The completed simulation and resident-consumer source must be reused without being treated as execution or activation evidence.
 
 ## HIL nested-manifold state
 
-The HIL resident-session source implementation is merged and validated. Site controller-refresh repairs are merged. Standalone Safari produced meaningful current-iPhone component evidence, but the exact exported browser JSON artifact has not yet been accepted into canonical intake.
+HIL resident-session source is complete and Site controller-refresh repairs are merged. The remaining HIL predicate is exact standalone-Safari JSON export/intake accepted by `scripts/intake_hil_browser_execution_evidence.py`, including `PRED-RESIDENT-REQUEST-CONSUMED-HIL-SOVEREIGN-RECEIVER-002`.
 
-Therefore the HIL nested manifold is no longer a source-implementation gap. Its current unsatisfied predicate is authentic physical artifact transfer/resident-consumption evidence, specifically the exact exported JSON accepted by `scripts/intake_hil_browser_execution_evidence.py` and satisfying `PRED-RESIDENT-REQUEST-CONSUMED-HIL-SOVEREIGN-RECEIVER-002`.
-
-No screenshot or source merge substitutes for that artifact.
+Screenshots, source merges, and workflow success cannot substitute for that exact physical artifact.
 
 ## Prerequisite-gating repair
 
-`.github` PR #1222 merged as `8590a6f79de02b33eb01329336d16b1909824d6b` after deterministic, organization-control, and Heartbeat validation passed.
-
-The consumer now fails closed on conditional lanes until explicit predecessor evidence qualifies and no longer treats a generic WorkerCoordinator return or visit as activation evidence.
+`.github` PR #1222 merged as `8590a6f79de02b33eb01329336d16b1909824d6b` and ensures conditional lanes fail closed until explicit predecessor evidence qualifies. A generic WorkerCoordinator visit or return code does not prove activation.
 
 ## Resident activation request
 
-Standing request:
+Standing request: `control/resident-execution-request.d/governed-multilane-manifold-activation-001.json`.
 
-`control/resident-execution-request.d/governed-multilane-manifold-activation-001.json`
+Required continuation:
 
-Required next runtime behavior:
-
-1. resolve the current task record and full lineage;
-2. reconcile predecessor/source evidence and reuse completed slices;
-3. run canonical collision/coordination preflight;
-4. obtain WorkerCoordinator claim/fence for eligible machine-owned lanes;
-5. execute qualifying incomplete lanes through existing owners;
-6. keep conditional lanes fail-closed until their predicates qualify;
-7. observe TVC-owned prerequisites without competing claims;
-8. execute StegFin continuation only after TVC runtime evidence qualifies;
-9. continue GADI from resident execution/reconstruction, not from already-complete simulation source;
-10. consume HIL physical evidence only after exact artifact intake qualifies;
-11. produce current subject-bound lane receipts and deterministic reconciliation;
-12. declare activation only after every full-lineage predicate is durably machine-evidenced.
+1. resolve current task/lineage and reuse completed sources;
+2. run canonical collision/coordination preflight;
+3. obtain WorkerCoordinator claim/fence for eligible machine-owned lanes;
+4. execute qualifying formalism lanes through existing owners;
+5. keep conditional lanes fail-closed until predicates qualify;
+6. observe TVC-owned prerequisites without competing claims;
+7. execute StegFin continuation only after TVC qualification;
+8. continue GADI from authentic runtime execution/reconstruction using the merged resident consumer;
+9. consume HIL evidence only after exact physical artifact intake qualifies;
+10. emit current subject-bound receipts and deterministic reconciliation;
+11. declare activation only after every full-lineage predicate is durably machine-evidenced.
 
 ## Current standing
 
 - canonical task registration: COMPLETE;
 - coordination state: `PROPOSED`;
 - checkout state: `UNCLAIMED`;
-- COSV: `10100000100000`;
 - resident activation request: REQUESTED;
 - prerequisite gating: REPAIRED/MERGED;
 - GADI StegCore source: COMPLETE/REUSE;
 - GADI controlled-simulation source: COMPLETE/VALIDATED/REUSE;
-- HIL nested-manifold source: COMPLETE;
+- GADI resident-consumer source: COMPLETE/VALIDATED/REUSE;
+- HIL nested source: COMPLETE;
 - HIL exact physical export intake: PENDING;
-- WorkerCoordinator umbrella/eligible-lane claim/fence evidence: PENDING;
-- qualifying formalism lane execution receipts: PENDING;
-- TVC primary runtime/capability observation: PENDING;
+- umbrella/eligible-lane WorkerCoordinator claim/fence evidence: PENDING;
+- formalism execution receipts: PENDING;
+- TVC runtime/capability observation: PENDING;
 - StegFin continuation: PENDING TVC prerequisite;
-- deterministic manifold reconciliation receipt: PENDING;
+- deterministic manifold reconciliation: PENDING;
 - authentic full-manifold activation evidence: NOT PROVEN.
 
 ## Remaining destinations
 
-Destination `StegVerse-Labs/.github`:
+- WorkerCoordinator claim/fence, formalism receipts, traversal and reconciliation -> `StegVerse-Labs/.github`;
+- authentic GADI execution/effect/reassessment evidence -> current canonical runtime owner using merged micro-node consumer;
+- TVC runtime/capability evidence -> `StegVerse-Labs/TVC` / `StegVerse-Labs/TV`;
+- exact GADI receipt-chain custody/reconstruction -> `StegVerse-Labs/Continuity` / Master Records;
+- exact HIL browser evidence intake and later proof projection -> `StegVerse-Labs/Site` + `.github` intake.
 
-- WorkerCoordinator claim/fence and resident traversal evidence;
-- formalism lane receipts and reconciliation;
-- canonical projection refresh after runtime evidence;
-- StegFin continuation after TVC qualification.
+## README and release rule
 
-Destination `StegVerse-002/micro-node-runtime` or canonical runtime successor:
-
-- connect admitted GADI commands to the existing resident path;
-- emit subject-bound execution/reassessment/termination evidence without creating a parallel scheduler/runtime.
-
-Destination `StegVerse-Labs/TVC` / `StegVerse-Labs/TV`:
-
-- current primary runtime/capability observation and GADI runtime capability binding.
-
-Destination `StegVerse-Labs/Continuity`:
-
-- intervention receipt-chain custody and exact reconstruction.
-
-Destination `StegVerse-Labs/Site`:
-
-- HIL exact browser evidence export/import path and later proof projection after underlying evidence qualifies.
-
-## README impact and release rule
-
-This update reconciles canonical coordination/evidence state only. `.github` repository behavior has not changed, and the current README remains accurate; no README wording change is required.
+This `.github` update is coordination/evidence reconciliation only; the existing `.github` README remains accurate. The functional micro-node README was updated with PR #90.
 
 The umbrella is not release/tag ready. After an actual future release/tag, create separate propagation verification for `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `admissibility-wiki`, and `stegguardian-wiki`.
