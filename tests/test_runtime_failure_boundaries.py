@@ -2,7 +2,7 @@ import importlib.util
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-MODULE_PATH = ROOT / "scripts" / "runtime_failure_boundaries.py"
+MODULE_PATH = ROOT / "workers" / "runtime_failure_boundaries.py"
 
 
 def load_module():
@@ -122,3 +122,11 @@ def test_failure_summary_counts_exact_first_boundaries():
     }
     assert summary["failure_code_counts"]["RUNTIME_STAGE_03_REQUEST_NOT_CONSUMED"] == 2
     assert summary["failure_code_counts"]["RUNTIME_STAGE_04_CLAIM_FENCE_NOT_OBSERVED"] == 1
+
+
+def test_failure_classifier_is_in_worker_tree_that_resident_refresh_already_copies():
+    refresh = (ROOT / "scripts" / "refresh_sovereign_worker_runtime_source.py").read_text(encoding="utf-8")
+    assert 'Path("workers")' in refresh
+    runner = (ROOT / "scripts" / "run_global_runtime_node_profile_convergence.py").read_text(encoding="utf-8")
+    assert 'FAILURE_BOUNDARY_REL = Path("workers/runtime_failure_boundaries.py")' in runner
+    assert "load_failure_boundaries(source, runtime)" in runner
