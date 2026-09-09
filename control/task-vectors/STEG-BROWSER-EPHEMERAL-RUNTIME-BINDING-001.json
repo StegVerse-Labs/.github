@@ -16,9 +16,11 @@
     "StegVerse-Labs/.github@04ce23ac8d33551dba401c8fc32fdbd766102042",
     "StegVerse-Labs/StegBrowser@d93b72eb14871d8216a3e6282015f73c3d4b65e2",
     "StegVerse-Labs/StegBrowser@d12728ab0615a52eb6d9e5178eae1808025e1910",
-    "StegVerse-Labs/StegBrowser@b56a0c53c45b556e03b651d13fdae98f2915da94"
+    "StegVerse-Labs/StegBrowser@b56a0c53c45b556e03b651d13fdae98f2915da94",
+    "StegVerse-Labs/StegSocials@a3cd036be5b6080b694dafc20dd11994360aad3e",
+    "StegVerse-Labs/TVC@0452707866e96be93eff9544389268d462637aff"
   ],
-  "observed_at": "2026-09-09T01:59:00Z",
+  "observed_at": "2026-09-09T02:06:00Z",
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
     "lifecycle": "CLAIMED_INTEGRATION",
@@ -37,15 +39,15 @@
     "propagated": false
   },
   "metric_evidence": {
-    "lifecycle": "Bounded public Chromium execution, external Facebook reachability, StegSocials caller integration, shard-aware Canonical Work ingress source, resident request staging, opaque TV/TVC+SKAP credential binding, callback-only credential injection, and credential-aware programmatic runner source are merged; authentic resident admission remains next.",
-    "archive_ready": "Authentic resident InTr admission, live provider-session proof, governed reconciliation/claim, and propagation remain incomplete.",
-    "unassigned_work": "Remaining runtime work is explicitly assigned to the canonical StegBrowser/InTr/WorkerCoordinator/TVC continuation path.",
+    "lifecycle": "Bounded public Chromium execution, external Facebook reachability, public and authenticated StegSocials observation callers, sharded Canonical Work ingress source, resident request staging, opaque TV/TVC+SKAP credential binding, callback-only credential injection, and credential-aware programmatic runner source are merged; authentic resident admission remains next.",
+    "archive_ready": "Authentic resident InTr admission, live social provider-session proof, governed reconciliation/claim, and propagation remain incomplete.",
+    "unassigned_work": "Remaining runtime work is explicitly assigned to the canonical StegBrowser/InTr/WorkerCoordinator/TVC/StegSocials continuation path.",
     "chat_owned_counts": "Current session advanced source integration; durable source and validation evidence are repository-backed.",
     "canonical_owner_installed": "Canonical task record, COSV task vector, index shard, resident request, and mirror handoffs provide durable coordination ownership.",
     "thread_required": "Repository handoffs and task/COSV state are sufficient for continuation without chat-only state.",
-    "blocker_count": "No source blocker remains; authentic resident/runtime predicates are outstanding evidence requirements rather than source implementation blockers.",
-    "evidence_complete": "Public and external publication execution evidence exists and credential plumbing is source-ready, but governed resident admission, live credentialed session, and propagation proof remain.",
-    "activated": "The browser substrate and credential-aware runner are demonstrated/source-ready, but full governed ecosystem activation is not yet claimed.",
+    "blocker_count": "No source blocker remains in the caller/browser credential plumbing; authentic resident/runtime predicates are outstanding evidence requirements rather than source implementation blockers.",
+    "evidence_complete": "Public and external publication execution evidence exists and authenticated caller/credential plumbing is source-ready, but governed resident admission, live credentialed session, and propagation proof remain.",
+    "activated": "The browser substrate and authenticated caller are source-ready, but full governed ecosystem activation is not yet claimed.",
     "propagated": "Cross-repository propagation verification remains open."
   },
   "authority_effect": "NONE"
