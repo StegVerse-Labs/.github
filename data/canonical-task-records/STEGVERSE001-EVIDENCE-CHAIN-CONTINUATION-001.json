@@ -7,6 +7,7 @@
   "goal": "Continue the already-terminal authentic StegVerse-001 execution through exact canonical G23 source availability, signed current-iPhone sovereign-local resident materialization, fresh current-device root-InTr governance, canonical Master Records custody/reconstruction, retained same-execution continuation evidence, and downstream SV002 observation/disposition without rerunning SV001 or creating another runtime solution.",
   "coordination_state": "HANDOFF_READY",
   "source_refs": [
+    "docs/STEGVERSE_001_TESTFLIGHT_MATERIALIZATION_MIRROR_HANDOFF.md",
     "docs/STEGVERSE_001_EVIDENCE_CHAIN_MIRROR_HANDOFF.md",
     "receipts/current-iphone/sv001-bounded-autonomy-20260903.json",
     "control/task-vectors/STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001.json",
@@ -17,6 +18,10 @@
     "StegVerse-Labs/StegBrowser:src/stegbrowser/resident_rendezvous.py",
     "StegVerse-Labs/StegOS:mobile/ios/StegOSMobile/ContentView.swift",
     "StegVerse-Labs/StegOS:mobile/ios/StegOSMobile/MobileRuntimeState.swift",
+    "StegVerse-Labs/StegOS:mobile/ios/StegOSMobile.signing-requirements.json",
+    "StegVerse-Labs/StegOS:.github/workflows/ios-apple-identifiers-bootstrap.yml",
+    "StegVerse-Labs/StegOS:.github/workflows/ios-ephemeral-testflight.yml",
+    "StegVerse-Labs/StegOS:tools/apple_ephemeral_provisioning.py",
     "StegVerse-Labs/StegOS:docs/STEGBROWSER_IOS_RESIDENT_APP_TARGET_MIRROR_HANDOFF.md",
     "master-records/orchestration:docs/STEGVERSE_001_BOUNDED_AUTONOMY_CUSTODY_MIRROR_HANDOFF.md"
   ],
@@ -42,6 +47,9 @@
       "stegosmobile-durable-resident-evidence",
       "stegosmobile-same-device-discovery-readback",
       "stegosmobile-unsigned-iphoneos-package",
+      "stegosmobile-apple-signing-requirements",
+      "stegosmobile-apple-identifiers-bootstrap",
+      "stegosmobile-ephemeral-testflight-delivery",
       "resident-rendezvous-evidence-mailbox",
       "continuation-sovereign-primary-proof-materialization",
       "hosted-rendezvous-fallback-only",
@@ -51,10 +59,10 @@
   },
   "dependencies": [
     {
-      "dependency_id": "DEP-SV001-STEGBOS-IOS-SIGNED-CURRENT-IPHONE-MATERIALIZATION",
+      "dependency_id": "DEP-SV001-STEGOS-IOS-SIGNED-CURRENT-IPHONE-MATERIALIZATION",
       "kind": "PHYSICAL_RUNTIME_CAPABILITY",
-      "state": "SOURCE_AND_UNSIGNED_PACKAGE_VALIDATED_SIGNING_PROVISIONING_PENDING",
-      "ref": "StegVerse-Labs/StegOS:docs/STEGBROWSER_IOS_RESIDENT_APP_TARGET_MIRROR_HANDOFF.md"
+      "state": "SOURCE_SIGNING_AND_EPHEMERAL_TESTFLIGHT_PATH_VALIDATED_OWNER_APPLE_CONFIGURATION_PENDING",
+      "ref": "docs/STEGVERSE_001_TESTFLIGHT_MATERIALIZATION_MIRROR_HANDOFF.md"
     },
     {
       "dependency_id": "DEP-SV001-CURRENT-IPHONE-LOCAL-DISCOVERY-OBSERVATION",
@@ -103,12 +111,12 @@
     {
       "blocker_id": "SIGNED_CURRENT_IPHONE_STEGOS_PACKAGE_NOT_YET_MATERIALIZED",
       "dependency_class": "PHYSICAL_RUNTIME_CAPABILITY",
-      "state": "SIGNING_PROVISIONING_BLOCKING_AUTHENTIC_RUNTIME",
-      "problem_statement": "The native listener, lifecycle, durable mailbox, canonical Site binding, same-device discovery readback, and unsigned iphoneos package are implemented and validated, but no signed/installable StegOSMobile package has yet been observed on the authentic current iPhone.",
-      "source_progress": "StegOS PR #253 passed StegOS CI, Apple toolchain, and iOS Device Package Validation; the unsigned IPA hash is verified and the package explicitly identifies TV_TVC_APPLE_SIGNING_AND_PROVISIONING as the next boundary.",
+      "state": "OWNER_APPLE_CONFIGURATION_AND_TESTFLIGHT_MATERIALIZATION_PENDING",
+      "problem_statement": "The native listener, lifecycle, durable mailbox, canonical Site binding, same-device discovery readback, full signing surface, signing requirements contract, and preferred ephemeral TestFlight delivery source are implemented and validated, but no signed/TestFlight StegOSMobile package has yet been observed installed on the authentic current iPhone.",
+      "source_progress": "StegOS PR #259 merged full app/extension/app-group signing-surface validation; PR #273 merged the nonsecret signing requirements contract, regression coverage, package integration, and README maintenance at 90535b284f8eb25fa4877fdbe4a6305db9e15f16. Its code head passed StegOS CI 34309764529, iOS Device Package Validation 34309764400, and iOS Apple Toolchain Validation 34309764367. The preferred ios-ephemeral-testflight workflow can generate temporary signing material from App Store Connect API credentials, upload to TestFlight, and revoke generated certificate/profiles afterward.",
       "workaround_allowed": false,
       "hosted_fallback_substitutes_for_primary": false,
-      "next_solution_action": "Resolve Apple signing/provisioning for the existing StegOSMobile app, embedded capture extensions, and shared app group, then obtain authentic current-iPhone local discovery evidence without adding another runtime."
+      "next_solution_action": "Use the existing App Store Connect API credential through the StegOS identifier bootstrap and ephemeral TestFlight workflows; complete the app-record/shared-app-group owner configuration when absent; install the resulting signed build on the authentic current iPhone; then obtain authentic local discovery evidence without adding another runtime."
     }
   ],
   "adjacent_task_refs": [
@@ -143,12 +151,20 @@
     "StegVerse-Labs/StegOS:actions/run/34306875317:SUCCESS",
     "StegVerse-Labs/StegOS:artifact/10086970431:sha256:db0b995860d5305dd9c3111fc55c06d46199f860072ef75e966bdebdbf014b44",
     "StegOSMobile-unsigned-device.ipa:sha256:49913d18e37158fa431525ff766c7162c44719c975b12e55d82d820bd1e339da",
+    "StegVerse-Labs/StegOS@b9325bb69c721420218ba622297f95ef80c36cda",
+    "StegVerse-Labs/StegOS@90535b284f8eb25fa4877fdbe4a6305db9e15f16",
+    "StegVerse-Labs/StegOS:actions/run/34309764529:SUCCESS",
+    "StegVerse-Labs/StegOS:actions/run/34309764400:SUCCESS",
+    "StegVerse-Labs/StegOS:actions/run/34309764367:SUCCESS",
     "StegVerse-Labs/StegBrowser@3b09b59a984df60c7c728373f260e2b79d338b18",
     "StegVerse-Labs/StegBrowser:actions/run/34302248904:SUCCESS",
     "StegVerse-org/LLM-adapter@a7ae5935c5a9d542176c7437905eb38c814bbe8b"
   ],
   "expected_evidence_predicates": [
     "CANONICAL_TERMINAL_G23_SOURCE_AVAILABLE",
+    "APP_STORE_CONNECT_CREDENTIAL_AVAILABLE_FOR_BOUNDED_DELIVERY",
+    "APPLE_IDENTIFIERS_AND_SHARED_APP_GROUP_CONFIGURED",
+    "TESTFLIGHT_SIGNED_PACKAGE_CREATED_AND_UPLOADED",
     "SIGNED_STEGOS_PACKAGE_MATERIALIZED_ON_CURRENT_IPHONE",
     "CURRENT_IPHONE_NATIVE_SOVEREIGN_LISTENER_BOUND",
     "CURRENT_IPHONE_LOCAL_DISCOVERY_AVAILABLE_OBSERVED",
@@ -188,7 +204,7 @@
     "site_native_activation_source_validated": true,
     "site_native_activation_public_propagation_observed": false,
     "continuation_primary_transport": "SOVEREIGN_LOCAL_RESIDENT",
-    "continuation_hosted_transport_role": "FALLBACK_ONLY",
+    "continuation_hosted_transport_role": "HOSTED_FALLBACK_ONLY",
     "continuation_local_no_evidence_falls_through_to_hosted": false,
     "continuation_invalid_local_falls_through_to_hosted": false,
     "continuation_proof_digest_recomputed": true,
@@ -202,7 +218,17 @@
     "stegosmobile_component_receipt_source": "MERGED_VALIDATED",
     "stegosmobile_unsigned_iphoneos_package": "BUILT_HASH_VERIFIED_NON_INSTALLABLE_UNTIL_SIGNED",
     "stegosmobile_unsigned_ipa_sha256": "sha256:49913d18e37158fa431525ff766c7162c44719c975b12e55d82d820bd1e339da",
-    "next_physical_boundary": "TV_TVC_APPLE_SIGNING_AND_PROVISIONING",
+    "stegosmobile_full_signing_surface": "MERGED_VALIDATED",
+    "stegosmobile_signing_requirements_schema": "stegos.mobile-apple-signing-requirements/v1",
+    "stegosmobile_signing_contract": "MERGED_VALIDATED",
+    "stegosmobile_preferred_delivery": "EPHEMERAL_APP_STORE_CONNECT_TESTFLIGHT",
+    "stegosmobile_identifier_bootstrap_source": "MERGED_SOURCE_VALIDATED",
+    "stegosmobile_ephemeral_testflight_source": "MERGED_SOURCE_VALIDATED",
+    "app_store_connect_api_credential_configuration": "NOT_OBSERVED",
+    "apple_app_record_shared_group_configuration": "NOT_OBSERVED",
+    "testflight_signing_workflow_execution": "NOT_OBSERVED",
+    "testflight_upload_observed": false,
+    "next_physical_boundary": "OWNER_APPLE_CONFIGURATION_AND_EPHEMERAL_TESTFLIGHT_MATERIALIZATION",
     "stegosmobile_signed_current_iphone_installation_observed": false,
     "stegosmobile_listener_runtime_observed": false,
     "stegosmobile_local_discovery_observed": false,
@@ -216,7 +242,7 @@
     "retained_downstream_same_execution_chain_observed": false,
     "sv002_authentic_disposition_observed": false,
     "runtime_predicates_complete": false,
-    "authority_effect": "NONE_SOURCE_PACKAGE_OBSERVATION_ONLY"
+    "authority_effect": "NONE_SOURCE_PACKAGE_DELIVERY_PATH_OBSERVATION_ONLY"
   },
   "worker_claim": {
     "authority": "WORKERCOORDINATOR",
@@ -230,12 +256,17 @@
     "reconciliation_ref": null
   },
   "allowed_next_transitions": ["SIGNED_DEVICE_MATERIALIZED", "LOCAL_DISCOVERY_OBSERVED", "INGRESS_ADMITTED"],
-  "handoff_projection_refs": ["docs/STEGVERSE_001_EVIDENCE_CHAIN_MIRROR_HANDOFF.md"],
+  "handoff_projection_refs": [
+    "docs/STEGVERSE_001_TESTFLIGHT_MATERIALIZATION_MIRROR_HANDOFF.md",
+    "docs/STEGVERSE_001_EVIDENCE_CHAIN_MIRROR_HANDOFF.md"
+  ],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "source_state_proves_execution": false,
+    "workflow_source_proves_workflow_execution": false,
     "unsigned_package_proves_device_installation": false,
     "signed_package_proves_listener_runtime": false,
+    "testflight_upload_proves_device_installation": false,
     "app_open_proves_listener_runtime": false,
     "local_discovery_receipt_mints_transition_authority": false,
     "deployment_proves_custody": false,
