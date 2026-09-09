@@ -1,0 +1,17 @@
+name: GADI Resident Execution Preflight Validation
+on:
+  pull_request:
+    paths:
+      - 'scripts/preflight_gadi_resident_execution.py'
+      - 'tests/test_gadi_resident_execution_preflight.py'
+      - '.github/workflows/gadi-resident-execution-preflight-validation.yml'
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install pytest
+      - run: python -m pytest -q tests/test_gadi_resident_execution_preflight.py
