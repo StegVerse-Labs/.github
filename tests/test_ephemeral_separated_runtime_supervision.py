@@ -33,7 +33,13 @@ class EphemeralSeparatedRuntimeSupervisionTests(unittest.TestCase):
                 "GH_TOKEN": "forbidden",
                 "STEGVERSE_GITHUB_TOKEN": "forbidden",
                 "TVC_TOKEN": "forbidden",
+                "OPENAI_API_KEY": "must-not-leak",
+                "AWS_SECRET_ACCESS_KEY": "must-not-leak",
+                "RANDOM_PROVIDER_TOKEN": "must-not-leak",
+                "SESSION_COOKIE": "must-not-leak",
                 "PATH": "/usr/bin:/bin",
+                "LANG": "C.UTF-8",
+                "STEGVERSE_STEGOS_ROOT": "/srv/stegos",
             }
             tick = {
                 "observed": True,
@@ -66,10 +72,44 @@ class EphemeralSeparatedRuntimeSupervisionTests(unittest.TestCase):
             self.assertEqual(result["canonical_carrier_runtime"], "heartbeat_runtime.engine_v13.HeartbeatRuntime")
             self.assertEqual(result["worker_runtime"], "heartbeat_runtime.worker_runtime.WorkerCoordinator")
             self.assertFalse(result["non_tv_tvc_secret_or_token_used"])
+            self.assertFalse(result["parent_environment_inherited"])
+            self.assertTrue(result["child_environment_allowlist_enforced"])
             wait_tick.assert_called_once()
             for _command, child_env in spawned:
-                for name in supervisor.FORBIDDEN_ENV:
-                    self.assertEqual(child_env.get(name), "")
+                for name in (
+                    *supervisor.FORBIDDEN_ENV,
+                    "OPENAI_API_KEY",
+                    "AWS_SECRET_ACCESS_KEY",
+                    "RANDOM_PROVIDER_TOKEN",
+                    "SESSION_COOKIE",
+                ):
+                    self.assertNotIn(name, child_env)
+                self.assertEqual(child_env["PATH"], "/usr/bin:/bin")
+                self.assertEqual(child_env["LANG"], "C.UTF-8")
+                self.assertEqual(child_env["STEGVERSE_STEGOS_ROOT"], "/srv/stegos")
+                self.assertEqual(child_env["STEGVERSE_SOVEREIGN_NODE"], "1")
+                self.assertEqual(child_env["STEGVERSE_HEARTBEAT_ROOT"], str(root.resolve()))
+                self.assertEqual(child_env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"], "TV/TVC")
+                self.assertEqual(child_env["STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY"], "NONE")
+
+    def test_child_env_is_explicit_allowlist_not_pattern_guessing(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            result = supervisor.child_env(
+                root,
+                {
+                    "PATH": "/bin",
+                    "STEGVERSE_STEGOS_ROOT": "/stegos",
+                    "STEGVERSE_MADE_UP_SECRET": "do-not-forward",
+                    "UNKNOWN_TOKEN": "do-not-forward",
+                    "DATABASE_URL": "do-not-forward",
+                },
+            )
+            self.assertEqual(result["PATH"], "/bin")
+            self.assertEqual(result["STEGVERSE_STEGOS_ROOT"], "/stegos")
+            self.assertNotIn("STEGVERSE_MADE_UP_SECRET", result)
+            self.assertNotIn("UNKNOWN_TOKEN", result)
+            self.assertNotIn("DATABASE_URL", result)
 
     def test_start_fails_closed_when_worker_tick_is_not_observed(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -138,11 +178,49 @@ class EphemeralSeparatedRuntimeSupervisionTests(unittest.TestCase):
             self.assertTrue(result["worker_restart_observed"])
             self.assertTrue(result["restart_observed"])
 
-            no_tick = dict(fresh)
-            no_tick["worker_task_capable_cycle_observed"] = False
-            with mock.patch.object(supervisor, "_terminate", side_effect=[True, True]), mock.patch.object(supervisor, "start", return_value=no_tick):
-                result = supervisor.restart(root)
-            self.assertFalse(result["restart_observed"])
+            with mock.patch.object(supervisor, "_terminate", side_effect=[True, False]), mock.patch.object(supervisor, "start") as start:
+                with self.assertRaisesRegex(RuntimeError, "previous_ephemeral_process_teardown_incomplete"):
+                    supervisor.restart(root)
+            start.assert_not_called()
+
+    def test_teardown_verifies_no_supervised_process_residue_and_preserves_evidence(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self._runtime_root(tmp)
+            process = root / supervisor.PROCESS_RECEIPT
+            process.parent.mkdir(parents=True, exist_ok=True)
+            process.write_text('{"carrier_pid": 41, "worker_pid": 42}\n', encoding="utf-8")
+            durable = root / "return-queue" / "sovereign-relay" / "evidence.json"
+            durable.parent.mkdir(parents=True, exist_ok=True)
+            durable.write_text('{"durable":true}\n', encoding="utf-8")
+
+            with (
+                mock.patch.object(supervisor, "_terminate", side_effect=[True, True]),
+                mock.patch.object(supervisor, "_alive", side_effect=[False, False]),
+            ):
+                result = supervisor.teardown(root)
+
+            self.assertEqual(result["state"], "TEARDOWN_COMPLETE")
+            self.assertTrue(result["no_supervised_process_residue"])
+            self.assertFalse(result["durable_evidence_deleted"])
+            self.assertFalse(result["same_root_reinstantiation_allowed"])
+            self.assertTrue(result["same_root_continuation_requires_restart"])
+            self.assertTrue(durable.is_file())
+            self.assertTrue((root / supervisor.TEARDOWN_RECEIPT).is_file())
+
+    def test_new_ephemeral_instance_requires_unused_or_empty_runtime_root(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            missing = base / "missing"
+            empty = base / "empty"
+            empty.mkdir()
+            supervisor.assert_fresh_runtime_root(missing)
+            supervisor.assert_fresh_runtime_root(empty)
+
+            reused = base / "reused"
+            (reused / "control").mkdir(parents=True)
+            (reused / "control" / "worker-runtime-state.json").write_text('{"runtime_tick":99}\n', encoding="utf-8")
+            with self.assertRaisesRegex(RuntimeError, "fresh_ephemeral_runtime_root_required"):
+                supervisor.assert_fresh_runtime_root(reused)
 
     def test_ephemeral_service_receipt_requires_both_v13_processes(self):
         with tempfile.TemporaryDirectory() as tmp:
