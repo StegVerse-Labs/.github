@@ -1,0 +1,23 @@
+{
+  "schema":"stegverse.canonical-task-record/v1",
+  "task_id":"SS-SKAP-ACCOUNT-INVENTORY-PROJECTION-001",
+  "correlation_id":"SS-SKAP-ACCOUNT-INVENTORY-PROJECTION-001",
+  "root_correlation_id":"SS-EVIDENCE-COMPARISON-001",
+  "parent_task_id":"SS-DATA-RECLAMATION-DISCLOSURE-INGESTION-001",
+  "goal":"Produce a bounded non-secret projection of SKAP-maintained account/provider metadata for evidence reconciliation without exposing credentials, tokens, sealed payloads, or secret material.",
+  "coordination_state":"INACTIVE",
+  "checkout_state":"UNCLAIMED",
+  "cosv_task_vector":"40000100100000",
+  "source_refs":["docs/SKAP_ACCOUNT_INVENTORY_PROJECTION_MIRROR_HANDOFF.md","StegVerse-Labs/Executive_Rhetoric_Ledger/schemas/skap-account-inventory-projection.schema.json"],
+  "targets":{"organizations":["StegVerse-Labs"],"repositories":["StegVerse-Labs/continuity-vault-kit","StegVerse-Labs/TVC","StegVerse-Labs/StegOS","StegVerse-Labs/Executive_Rhetoric_Ledger","StegVerse-Labs/.github"],"components":["skap-account-metadata-projection","secret-exclusion-validator","evidence-reconciliation-input"]},
+  "dependencies":[],
+  "blockers":[],
+  "adjacent_task_refs":["SS-DATA-RECLAMATION-DISCLOSURE-INGESTION-001"],
+  "existing_evidence_refs":["StegVerse-Labs/Executive_Rhetoric_Ledger@41722df474638bfca3297549fff215fc39375f7e:skap-evidence-reconciliation"],
+  "expected_evidence_predicates":["REAL_SKAP_ACCOUNT_METADATA_ENUMERATED","PROJECTION_CONTAINS_NO_SECRET_MATERIAL","STABLE_ACCOUNT_AND_PROVIDER_REFS_EMITTED","PROJECTION_VALIDATES_AGAINST_ERL_CONTRACT","ERL_RECONCILER_CONSUMES_AUTHENTIC_PROJECTION"],
+  "runtime_requirements":{"capabilities":["skap_metadata_read","projection_emit","schema_validation"],"environment":"AUTHORIZED_SKAP_SURFACE","direction":"SKAP_METADATA_TO_RECLAMATION_RECONCILER","mutation_required":true,"deployment_required":false,"current_observation_required":true},
+  "completion":{"claimed":false,"validated":false,"reconciliation_ref":null,"activation_proof_complete":false},
+  "allowed_next_transitions":["CLAIM_IMPLEMENTATION","LOCATE_SKAP_ACCOUNT_INDEX","IMPLEMENT_NON_SECRET_PROJECTION","EXECUTE_AUTHENTIC_PROJECTION"],
+  "handoff_projection_refs":["docs/SKAP_ACCOUNT_INVENTORY_PROJECTION_MIRROR_HANDOFF.md"],
+  "authority_model":{"task_registry_mints_execution_authority":false,"projection_exposes_credentials":false,"projection_grants_provider_authority":false,"intr_governs_state_transitions":true}
+}
