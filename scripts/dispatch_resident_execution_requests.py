@@ -90,7 +90,7 @@ CONSUMERS = (
     ("sv_dn1", "scripts/consume_sv_dn1_resident_execution_request.py"),
     ("sv_dn1_publication", "scripts/consume_sv_dn1_publication_resident_request.py"),
     ("stegos_kv_intr_chain", "scripts/consume_stegos_kv_intr_chain_request.py"),
-    ("stegos_sovereign_relay_return_path", "scripts/consume_stegos_sovereign_relay_return_path_request.py"),
+    ("stegos_sovereign_relay_return_path", "workers/stegos_sovereign_relay_return_path_request_consumer.py"),
     ("bootstrap_v1_release_prep", "scripts/consume_bootstrap_v1_release_prep_request.py"),
     ("bootstrap_v1_intr_bundle_delivery", "scripts/consume_bootstrap_v1_intr_bundle_delivery_request.py"),
     ("tvc_broker_validation", "scripts/consume_tvc_broker_validation_request.py"),
