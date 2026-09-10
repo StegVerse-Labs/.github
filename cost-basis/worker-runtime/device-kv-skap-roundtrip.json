@@ -1,0 +1,32 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "device_kv_skap_roundtrip",
+  "sample_count": 0,
+  "hb_estimate": {
+    "expected_completion_beats": 8,
+    "expected_idle_beats": 1,
+    "expiry_candidate_beats": 512,
+    "confidence": "LOW"
+  },
+  "cost_estimate": {
+    "compute_units": 2,
+    "token_units": 0,
+    "storage_bytes": 2097152,
+    "network_bytes": 0,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 4
+  },
+  "evidence_refs": [
+    "docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md",
+    "workers/device_kv_skap_roundtrip_verifier.py",
+    "workers/run_device_kv_skap_roundtrip_worker.py",
+    "handoffs/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json"
+  ],
+  "notes": [
+    "The registered worker verifies already-local evidence and does not perform provider network operations.",
+    "Network bytes are zero for the verifier itself; the separately governed InTr transport producers own their carrier costs.",
+    "No hosted runtime, GitHub token authority, non-TV/TVC credential, second user device, or external financial cost is admitted."
+  ]
+}
