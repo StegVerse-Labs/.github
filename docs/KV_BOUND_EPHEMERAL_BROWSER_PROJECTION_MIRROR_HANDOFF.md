@@ -10,13 +10,12 @@ Canonical issue: `StegVerse-Labs/.github#1299`
 Merged KV producer: `StegVerse-Labs/continuity-vault-kit#206` -> `47c363611210b7501cbb50abce768cfe0911057f`
 Merged StegOS consumer: `StegVerse-Labs/StegOS#314` -> `19e2ea02a16bd703767aafcd47e71f5ec5efe3cf`
 Merged Site purpose-bound adapter: `StegVerse-Labs/Site#1178` -> `3da593a61a536a625fcea4a26df8d1f491f00b44`
-Status: `ACTIVE / PRODUCER+CONSUMER+PURPOSE-BOUND SITE ADAPTER MERGED / AUTHENTIC CURRENT-IPHONE INVOCATION NEXT`
+Merged Site Safari recovery: `StegVerse-Labs/Site#1197` -> `bd4c64a4dfa8130d3b8c015a242fbab5afc67fa1`
+Status: `ACTIVE / AUTHENTIC SAFARI INVOCATION OBSERVED / RESIDENT KV RECOVERY MERGED+PUBLISHED / AUTHENTIC RETRY NEXT`
 
 ## Canonical architecture
 
 KV is the private governed state-transition continuity boundary. A physical device is an interchangeable interoperability node after proof of control/reconstruction of the existing KV. StegOS is the runtime node, StegBrowser is the browser-capability node, and Safari/Chrome/webviews/comparable browser containers are ephemeral presentation carriers rather than identity or continuity roots.
-
-The intended first-install seam is:
 
 ```text
 minimal rendezvous
@@ -34,72 +33,73 @@ minimal rendezvous
 
 No browser-local IndexedDB, cookies, localStorage, sessionStorage, browser profile, user-agent identity, device fingerprint, or public bootstrap is the continuity/privacy root for this path.
 
-## Source implementation now merged
+## Merged implementation
 
 ### KV producer
 
-`StegVerse-Labs/continuity-vault-kit#206` merged as `47c363611210b7501cbb50abce768cfe0911057f`. It requires an already-admitted purpose-bound KV entry transition and same-lineage compatible browser-capability observation, rejects cross-lineage mixing and browser identity authority, and emits only opaque non-authorizing projection fields.
+`continuity-vault-kit#206` merged at `47c363611210b7501cbb50abce768cfe0911057f`. It requires an already-admitted purpose-bound KV entry transition and same-lineage compatible browser-capability observation, rejects cross-lineage mixing and browser identity authority, and emits only opaque non-authorizing projection fields.
 
 ### StegOS consumer
 
-`StegVerse-Labs/StegOS#314` merged as `19e2ea02a16bd703767aafcd47e71f5ec5efe3cf`. Exact-head StegOS CI, current-iPhone IPA signing validation, and WASM codesign validation passed before merge. The consumer independently validates the exact KV-bound projection before IPA/WASM materialization.
+`StegOS#314` merged at `19e2ea02a16bd703767aafcd47e71f5ec5efe3cf`. The consumer independently validates the exact KV-bound projection before IPA/WASM materialization.
 
 ### Site purpose-bound Device -> KV adapter
 
-`StegVerse-Labs/Site#1178` merged as `3da593a61a536a625fcea4a26df8d1f491f00b44`.
+`Site#1178` merged at `3da593a61a536a625fcea4a26df8d1f491f00b44`. It reuses the existing root-scoped current-device Device -> KV Universal InTr runtime and the supported `MY_KV_INSTALLATION_STATUS` request class, placing exact purpose `CURRENT_IPHONE_TESTFLIGHT_SIGNING` inside the admitted request hash. It requires authentic `INGRESS_ADMITTED`, verified resident KV installation, signer-relevant browser capability observation, and emits only the canonical nine-field projection.
 
-The merged adapter reuses the existing root-scoped current-device Device -> KV Universal InTr runtime rather than creating a second admission path. It deliberately reuses the already-supported `MY_KV_INSTALLATION_STATUS` request class and places exact purpose `CURRENT_IPHONE_TESTFLIGHT_SIGNING` inside the admitted request hash.
+### Authentic current-iPhone observation and recovery
 
-Merged Site surfaces include:
+The published page was invoked on the current iPhone. Safari reached the governed adapter and returned:
 
 ```text
-assets/kv-testflight-projection-entry.js
-assets/kv-testflight-projection-export.js
-kv-testflight-projection.html
-tests/kv-testflight-projection-entry.test.cjs
-.github/workflows/kv-testflight-projection-entry.yml
-docs/KV_TESTFLIGHT_PROJECTION_ENTRY_MIRROR_HANDOFF.md
+FAIL_CLOSED: resident KV installation not verified
 ```
 
-The adapter requires the authentic `stegverse.device-kv-intr-materialization-ingress/v1` receipt with `state=INGRESS_ADMITTED`, verifies resident KV installation evidence, observes only signer-relevant browser APIs/features, records `browser_identity_authority=false`, and derives same-lineage entry/capability commitments. The export adapter emits only the canonical nine-field projection context and fails closed on lineage leakage or field drift.
+A separate ChatGPT in-app-browser attempt exposed an IndexedDB object-store mismatch. That remains a browser-partition-local observation and is not promoted as Safari runtime truth.
 
-The Site implementation claim is already terminalized as `RELEASED` with PR #1178 merge evidence. This closes the prior source-runtime-adapter reconciliation condition.
+The Safari result established that the page and purpose-bound path execute on the current device but that the resident device-local KV did not currently expose a canonical installation receipt satisfying `KV_INSTALLATION_VERIFIED`.
+
+`Site#1197` therefore reused the already-existing `StegVerseKVInstallationBridge` rather than adding a second KV/admission path. The repaired page exposes `Admit Existing KV Installation Receipt` only after the resident-verification predicate fails, owner-selects canonical `_System/installation.receipt.json`, requires the existing Device→KV path to return `device_local_kv_materialization_observed=true`, then automatically retries the original purpose-bound projection. `Save Projection JSON` remains hidden until `PROJECTION_CONTEXT_READY`.
+
+PR #1197 merged at `bd4c64a4dfa8130d3b8c015a242fbab5afc67fa1` after its focused KV TestFlight, Site Bootstrap, Site Handoff, and Ecosystem Heartbeat validations passed. Pages build/deployment run `34531380154` for that functional merge completed successfully. The implementation claim was subsequently terminalized by claim-registry-only `Site#1198`, merged at `1df85a660cef242f05819e2b847ef942dff88ae1` after corrected terminalization validation passed.
 
 ## Superseded Site-first allocation path
 
-The temporary `.github` PR #1302 and Site issue #1180 were derived from the older Site-first static-bootstrap sequence before the KV-bound adapter state was reconciled. They are now closed unmerged/not-planned and are not execution authority or current continuation truth. No `TASK-2026-0010` from that unmerged branch is canonical registry state.
+The temporary `.github` PR #1302 and Site issue #1180 were derived from the older Site-first static-bootstrap sequence before the KV-bound adapter state was reconciled. They remain closed and are not execution authority or current continuation truth. No `TASK-2026-0010` from that unmerged branch is canonical registry state.
 
 ## Current first unresolved predicate
 
-Source implementation is no longer the first missing predicate. The current unresolved condition is authentic execution on the current iPhone:
-
 ```text
-AUTHENTIC_CURRENT_IPHONE_KV_TESTFLIGHT_PROJECTION_INVOCATION
+AUTHENTIC_CURRENT_IPHONE_KV_INSTALLATION_RECEIPT_RECOVERY_AND_PROJECTION_RETRY
 ```
 
-Required evidence from one real invocation:
+Required evidence from the repaired Safari path:
 
 ```text
-purpose-bound Device->KV INGRESS_ADMITTED receipt
-verified resident KV installation result
+owner-mediated canonical installation receipt selection if resident verification still fails
+Device->KV admission with device_local_kv_materialization_observed=true
+automatic retry of CURRENT_IPHONE_TESTFLIGHT_SIGNING
+purpose-bound INGRESS_ADMITTED receipt
+KV_INSTALLATION_VERIFIED result
 same-lineage compatible browser capability observation
 exact opaque nine-field projection JSON
 ```
 
-Source presence, merge state, CI, browser availability, or historical KV evidence must not be promoted into this runtime proof.
+Source presence, merge state, CI, Pages deployment, or historical KV evidence do not satisfy this runtime proof.
 
 ## Next execution sequence
 
-1. verify that the merged `kv-testflight-projection.html` route is present in the active Site publication/deployment output;
-2. invoke that route on the current iPhone;
-3. require the actual Device->KV InTr admission, verified KV installation result, and capability observation to pass;
-4. save the resulting `stegverse-kv-testflight-projection.json` exactly as emitted;
-5. supply that exact projection file to the already-merged StegOS TestFlight bootstrap page;
-6. continue TV/TVC app-resource resolution, provisioning, ephemeral same-device signing, same-session verification, and native Build Upload;
-7. install through TestFlight;
-8. observe retained StegOS/StegBrowser node materialization, source-HB lineage, same-device discovery and receipt-to-transition execution;
-9. materialize current canonical global-measurement source into that retained node;
-10. execute exactly one frozen measurement-only global convergence pass and retain `receipts/sovereign-host/global-runtime-node-profile-convergence.latest.json` before any lane remediation.
+1. re-open the repaired published `kv-testflight-projection.html` route in Safari on the current iPhone;
+2. run `Create KV Projection Context`;
+3. if resident KV verification fails, use `Admit Existing KV Installation Receipt` and select canonical `_System/installation.receipt.json`;
+4. require observed Device→KV admission and automatic projection retry;
+5. save `stegverse-kv-testflight-projection.json` exactly as emitted only after `PROJECTION_CONTEXT_READY`;
+6. supply that exact file to the merged StegOS TestFlight bootstrap;
+7. continue TV/TVC app-resource resolution, provisioning, ephemeral same-device signing, same-session verification, and native Build Upload;
+8. install through TestFlight;
+9. observe retained StegOS/StegBrowser node materialization, source-HB lineage, same-device discovery and receipt-to-transition execution;
+10. materialize current canonical global-measurement source into that retained node;
+11. execute exactly one frozen measurement-only global convergence pass and retain `receipts/sovereign-host/global-runtime-node-profile-convergence.latest.json` before lane remediation.
 
 ## Authority boundaries
 
@@ -110,12 +110,12 @@ Source presence, merge state, CI, browser availability, or historical KV evidenc
 - HB remains observability/carrier only.
 - Browser capability observation grants no identity or execution authority.
 - GitHub Actions remain validation/evidence transport only.
-- Site publication does not prove current-iPhone execution, signing, TestFlight installation, retained runtime or global measurement.
+- Site publication does not prove successful recovery/retry, projection emission, signing, TestFlight installation, retained runtime, or global measurement.
 
 ## README impact
 
-The repositories that received functional source changes already carry their README/handoff updates. This reconciliation changes canonical coordination/evidence state only; no new `.github` README semantics are required.
+Functional Site changes include repo-local handoff/test maintenance. This canonical reconciliation changes evidence/continuation state only; no new `.github` README semantics are required.
 
 ## Manual work
 
-None until the published current-iPhone invocation surface is confirmed. Once confirmed, the exact manual action is to open the published KV TestFlight projection page on the current iPhone, tap `Create KV Projection Context`, and save the emitted `stegverse-kv-testflight-projection.json` to Files for the next governed bootstrap step.
+On the current iPhone in Safari, open the published KV TestFlight projection page and tap `Create KV Projection Context`. If resident verification fails, tap `Admit Existing KV Installation Receipt`, select canonical `_System/installation.receipt.json`, allow the automatic retry, and save `stegverse-kv-testflight-projection.json` only if state reaches `PROJECTION_CONTEXT_READY`.
