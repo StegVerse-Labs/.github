@@ -1,0 +1,44 @@
+{
+  "identity": "StegVerse-Labs/.github:task:STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000102000",
+  "evidence_refs": [
+    "data/canonical-task-records/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json",
+    "control/worker-registry.d/device-kv-skap-roundtrip-001.json",
+    "handoffs/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json",
+    "docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegOS#326"
+  ],
+  "observed_at": "2026-09-10T14:12:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 3,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "HANDOFF_READY with a registered resident verifier; StegOS four-leg composition source is merged and exact-head validated",
+    "archive_ready": "authentic four-leg current-device runtime and readback evidence remain absent",
+    "unassigned_work": "registered roundtrip worker owns evidence verification continuation",
+    "chat_owned_counts": "runtime verification is machine-owned and does not require chat execution authority",
+    "canonical_owner_installed": "StegOS PR #326 merged at 2339f2f2fc8c28eb4d63077387013154dac9b75c after run 34517908014 SUCCESS",
+    "thread_required": "canonical task record, executable handoff, worker registry, adapter, verifier, and mirror handoff define continuation",
+    "blocker_count": "AUTHENTIC_CURRENT_DEVICE_FOUR_LEG_INTR_ROUNDTRIP_NOT_YET_OBSERVED | AUTHENTIC_SKAP_KV_RETURN_RECEIPT_NOT_YET_OBSERVED | KV_SKAP_TERMINAL_EXACT_READBACK_NOT_YET_OBSERVED",
+    "evidence_complete": "no authentic terminal stegverse.device-kv-skap.runtime-roundtrip-proof/v1 exists",
+    "activated": "runtime activation is not claimed from source or CI",
+    "propagated": "no terminal roundtrip proof has propagated to parent reconciliation"
+  },
+  "authority_effect": "NONE"
+}
