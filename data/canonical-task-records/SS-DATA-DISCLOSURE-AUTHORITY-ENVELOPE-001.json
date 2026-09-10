@@ -1,0 +1,21 @@
+{
+  "schema":"stegverse.canonical-task-record/v1",
+  "task_id":"SS-DATA-DISCLOSURE-AUTHORITY-ENVELOPE-001",
+  "correlation_id":"SS-DATA-DISCLOSURE-AUTHORITY-ENVELOPE-001",
+  "root_correlation_id":"SS-EVIDENCE-COMPARISON-001",
+  "parent_task_id":"SS-EVIDENCE-COMPARISON-001",
+  "goal":"Add prospective disclosure authority envelopes for new StegVerse-originated data so custody, access, correlation, derivation, propagation, revocation, and expiry permissions are explicit before downstream distribution occurs.",
+  "coordination_state":"INACTIVE",
+  "checkout_state":"UNCLAIMED",
+  "cosv_task_vector":"40000100100000",
+  "source_refs":["StegVerse-Labs/Executive_Rhetoric_Ledger/docs/DIGITAL_DATA_RECLAMATION_AND_SOVEREIGNTY_MIRROR_HANDOFF.md","docs/DATA_DISCLOSURE_AUTHORITY_ENVELOPE_MIRROR_HANDOFF.md"],
+  "targets":{"organizations":["StegVerse-Labs"],"repositories":["StegVerse-Labs/Executive_Rhetoric_Ledger","StegVerse-Labs/.github"],"components":["disclosure-authority-envelope","authority-dimensions","revocation-propagation-binding"]},
+  "dependencies":[],"blockers":[],"adjacent_task_refs":["SS-DATA-RECLAMATION-INTR-AUTHORITY-BINDING-001","SS-EVIDENCE-COMPARISON-001"],
+  "existing_evidence_refs":["StegVerse-Labs/Executive_Rhetoric_Ledger@c78b2fe4be29dc4e9e15167281b35be8105a922a:five-authority-dimensions"],
+  "expected_evidence_predicates":["AUTHORITY_DIMENSIONS_EXPLICIT_BEFORE_DISCLOSURE","CORRELATION_AND_DERIVATION_SEPARABLE_FROM_ACCESS","PROPAGATION_SCOPE_AND_EXPIRY_MACHINE_READABLE","REVOCATION_BINDING_PRESERVES_PRIOR_PROVENANCE","MISSING_AUTHORITY_FAILS_CLOSED"],
+  "runtime_requirements":{"capabilities":["authority_manifest","policy_binding","receipt_emission","revocation_reference"],"environment":"STEGVERSE_ORIGINATED_DATA_FLOW","direction":"DATA_ORIGIN_TO_AUTHORITY_ENVELOPE_TO_DISCLOSURE","mutation_required":true,"deployment_required":false,"current_observation_required":false},
+  "completion":{"claimed":false,"validated":false,"reconciliation_ref":null,"activation_proof_complete":false},
+  "allowed_next_transitions":["CLAIM_IMPLEMENTATION","DEFINE_AUTHORITY_ENVELOPE_SCHEMA","BIND_DISCLOSURE_TO_INTR"],
+  "handoff_projection_refs":["docs/DATA_DISCLOSURE_AUTHORITY_ENVELOPE_MIRROR_HANDOFF.md"],
+  "authority_model":{"task_registry_mints_execution_authority":false,"intr_governs_disclosure_transition":true,"technical_access_does_not_imply_derivation_or_propagation_authority":true}
+}
