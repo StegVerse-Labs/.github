@@ -5,40 +5,37 @@ Updated: 2026-09-10
 ```text
 goal_id: STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001
 task_id: SHWP-STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001
-state: RESIDENT_EXECUTION_WIRED / ARTIFACT_AUTODISCOVERY_MERGED / REFRESH_DISPATCH_MERGED / CONTROL_PLANE_SOURCE_PACKAGE_MERGED / DETERMINISTIC_REAL_RETURN_INTEGRATION_VERIFIED / LIVE_EXTERNAL_RETURN_PATH_RECEIPT_PENDING
+state: RESIDENT_EXECUTION_WIRED / ARTIFACT_AUTODISCOVERY_MERGED / REFRESH_DISPATCH_MERGED / CONTROL_PLANE_SOURCE_PACKAGE_MERGED / REAL_LOOPBACK_TLS_RETURN_PATH_VERIFIED / LIVE_EXTERNAL_RETURN_PATH_RECEIPT_PENDING
 credential_authority: TV/TVC
 github_runtime_authority: NONE
 heartbeat_execution_authority: false
 worker_registration_merge: 6c4b1227579c7b561458bdf4b8b122df5985d059
 artifact_autodiscovery_merge: db2d8095a549a3feee7f55d916c49e8e55dc6aa3
-handoff_autodiscovery_reconciliation_merge: 679056bfe6d3624c49085133ef169931816f4ad1
 refresh_to_targeted_dispatch_merge: e73e6b9a87cdcff7eb4ffa555d83f6a3b5fa7643
 control_plane_source_package_merge: 52f29fbba0751787ceaca5f1c9022bdcb37338fb
-public_source_package_gateway_merge: d4601f449743bb086ac2e9e38777b46b21ba8e27
 stegos_round_trip_source_merge: dff05631a6bdab10311013c0da73339667867364
 stegos_real_return_integration_merge: f90e8cfc9c9e0409dc74d2bb258d8500e5ca07ca
+stegos_real_loopback_tls_merge: 1b2abfe8290da3d4e864af6419f2828b59b425aa
 cosv: 50000000101000
 ```
 
 ## Primary proof target
 
-The goal is the StegVerse-to-ephemeral-Stegos return loop, not the current-iPhone bootstrap lane:
-
 ```text
 StegVerse organization/runtime
 -> WorkerCoordinator independent task control
 -> ephemeral StegOS relay EGRESS
--> real far-side HIL INGRESS_ADMITTED
+-> HIL INGRESS_ADMITTED
 -> durable ESRL return queue
 -> Interlock same-key ingestion/dedupe
 -> RETURN_PATH_VERIFIED
 ```
 
-The current-iPhone/TestFlight path remains a separate bootstrap/portability lane and does not supersede this primary proof target.
+The current-iPhone/TestFlight lane is separate bootstrap/portability work and does not block this proof.
 
 ## Resident execution
 
-The existing WorkerCoordinator owns execution through:
+The canonical request exists at `control/resident-execution-request.d/stegos-sovereign-relay-return-path-001.json`. Its consumer is registered as `stegos_sovereign_relay_return_path` in the existing resident dispatcher. Materialization copies the complete `control/` and `workers/` trees, so the request and consumer are carried into ephemeral sovereign runtimes without creating a new scheduler or runtime owner.
 
 ```text
 SHWP-STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001
@@ -51,50 +48,48 @@ physical_additional_machine_required: false
 third_party_runtime_required: false
 ```
 
-The request is already present at `control/resident-execution-request.d/stegos-sovereign-relay-return-path-001.json` and the task-specific consumer is registered as `stegos_sovereign_relay_return_path` in the existing resident dispatcher. The request grants no execution, claim, fence, heartbeat, route, credential, transition, repository, or source-fetch authority.
+Mutable runtime receipts are intentionally excluded from source propagation. Therefore absence of a request-consumption receipt in GitHub repository custody is not evidence that a resident runtime did not consume the request; runtime observation must be taken from the resident/ephemeral runtime state itself.
 
-## Deterministic real-return integration proof
+## Real integrated return proof
 
-StegOS PR #317 merged at `f90e8cfc9c9e0409dc74d2bb258d8500e5ca07ca` after StegOS CI run `34473723279` completed SUCCESS.
+StegOS PR #317 merged `f90e8cfc9c9e0409dc74d2bb258d8500e5ca07ca` after CI run `34473723279` passed. It removed the previous wiring-only gap by exercising the real EGRESS executor, ACK binding, durable return processor, write-once ESRL queue, and Interlock ingestion in one call.
 
-The added integration proof keeps only the socket/TLS hop deterministic. In one integrated call it executes the real:
+That proof exposed and repaired a replay defect: a replayed single-use `TRANSPORT_ACCEPTED` EGRESS receipt had no newly populated transport object from which to recover the far-side ACK. The round-trip layer now persists verified far-side evidence write-once and reuses it on replay, so reconstruction does not retransmit an already-consumed authorization.
+
+## Real HTTPS/TLS loop proof
+
+StegOS PR #318 merged `1b2abfe8290da3d4e864af6419f2828b59b425aa` after StegOS CI run `34474184074` completed SUCCESS.
+
+This closes the last synthetic transport step in the deterministic loop proof. The test starts an actual loopback HTTPS peer and exercises:
 
 ```text
-TVC-bound sovereign relay EGRESS executor
--> far-side HIL ACK binding
--> durable sovereign relay return processor
--> write-once ESRL return queue
--> Interlock same-key ingestion/dedupe
+real TLS socket
+-> certificate trust validation
+-> exact certificate SHA-256 pin
+-> actual HTTP POST of opaque relay bytes
+-> HIL-style HTTP 202 + INGRESS_ADMITTED JSON receipt
+-> real EGRESS execution receipt
+-> real ACK binding
+-> persisted far-side evidence
+-> write-once durable ESRL return queue
+-> real Interlock ingestion/dedupe
 -> RETURN_PATH_VERIFIED
 ```
 
-The proof discovered and repaired a real replay defect. Before PR #317, a repeated call with the same single-use EGRESS authorization correctly reused the persisted `TRANSPORT_ACCEPTED` EGRESS receipt, but the round-trip layer instantiated a fresh transport and then failed because no new `far_side_receipt` existed. That behavior would prevent deterministic reconstruction after a successful first send.
+A second identical call is required to make zero additional HTTP POSTs. It must reuse the persisted single-use EGRESS receipt and far-side ACK evidence and return the identical durable/Interlock result. Thus the tested loop now includes real network socket and TLS mechanics rather than a Python transport stub.
 
-PR #317 now persists the verified far-side ACK evidence write-once under the authorization identity. On replay:
+The localhost certificate/key are deterministic test-only fixtures and confer no production credential authority. Hosted CI validates source behavior only; it is not asserted as sovereign production activation.
 
-```text
-persisted TRANSPORT_ACCEPTED EGRESS receipt
-+ persisted verified far-side ACK evidence
--> no network retransmission
--> real return processor re-entry
--> same write-once return queue
--> same Interlock ingestion
--> RETURN_PATH_VERIFIED
-```
+## What remains
 
-The integration executes the same fencing identity twice and requires exactly one durable return-queue artifact and one Interlock ingestion artifact. The queue must declare `survives_compute_teardown=true` and `compute_provider_can_delete_expire_or_rewrite=false`; Interlock ingestion must keep `execute_consequence=false` and `canonical_transition_committed=false`.
+The return-path architecture and actual HTTPS/TLS mechanics are now proven together without depending on the iPhone lane. The remaining terminal proof is an authentic external/runtime execution using the existing sovereign resident/ephemeral StegOS runtime and a concrete HIL HTTPS rendezvous.
 
-This is stronger than the previous wiring-only round-trip test because EGRESS execution and the return processor are no longer monkeypatched. It remains deterministic source/runtime-logic evidence rather than an authentic external-network receipt because the socket/TLS hop is intentionally controlled by the test harness.
+The currently documented HIL state still lacks fresh public HTTPS endpoint/identity/readiness evidence. That is now the first externally observable deployment boundary—not relay return logic, allocator behavior, or physical-device bootstrap.
 
-## Remaining runtime gate
-
-The repository still does not contain:
-
-`receipts/stegos-sovereign-relay/SHWP-STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001.json`
-
-with all terminal predicates:
+Terminal runtime evidence remains:
 
 ```text
+receipts/stegos-sovereign-relay/SHWP-STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001.json
 state=COMPLETED
 transition_id=SOVEREIGN_RELAY_RETURN_PATH_VERIFIED
 round_trip_result.state=RETURN_PATH_VERIFIED
@@ -104,24 +99,22 @@ round_trip_result.interlock_ingestion_verified=true
 round_trip_result.canonical_transition_committed=false
 ```
 
-The first unresolved runtime boundary is therefore not relay-return logic anymore. It is authentic resident request consumption / real external transport execution from the existing sovereign runtime. The canonical request exists, and the consumer is registered, but no `receipts/sovereign-host/stegos-sovereign-relay-return-path-request-consumption.latest.json` is currently in repository custody.
-
 ## Next execution order
 
 ```text
 existing sovereign resident/ephemeral StegOS runtime
 -> existing resident dispatcher visits stegos_sovereign_relay_return_path
--> request consumer invokes refresh_and_execute_resident_task.py
--> WorkerCoordinator admits fresh fence >21
--> exact already-local EGRESS binding/authorization/payload autodiscovery
--> real HIL ingress transport
--> persisted far-side ACK evidence
+-> WorkerCoordinator fresh fence >21
+-> exact already-local EGRESS binding/authorization/payload
+-> concrete HIL HTTPS rendezvous
+-> real external INGRESS_ADMITTED ACK
+-> persisted far-side evidence
 -> durable return queue
 -> Interlock ingestion
 -> terminal RETURN_PATH_VERIFIED receipt
 ```
 
-Do not reopen relay materialization, allocator, browser, or TestFlight work to satisfy this proof unless a later observed runtime failure specifically binds to those surfaces.
+Do not reopen allocator, browser, TestFlight, or relay source implementation unless new runtime evidence specifically binds a failure there.
 
 ## Authority invariants
 
