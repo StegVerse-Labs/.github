@@ -3,7 +3,7 @@
 Goal Task ID: `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001`
 Canonical issue: `StegVerse-Labs/.github#1260`
 COSV: `50000000100000`
-Status: `ACTIVE / 18 HB32 PROFILE-DERIVED NODES / MEASUREMENT HARDENING MERGED / KV-BOUND CURRENT-IPHONE RECOVERY MERGED+PUBLISHED / AUTHENTIC SAFARI RETRY NEXT`
+Status: `ACTIVE / 18 HB32 PROFILE-DERIVED NODES / MEASUREMENT HARDENING MERGED / AUTHENTIC CURRENT-IPHONE KV PROJECTION READY / EXACT ARTIFACT -> STEGOS NEXT`
 
 ## Canonical runtime model
 
@@ -58,40 +58,37 @@ Merged/source/runtime evidence:
 - KV producer: `continuity-vault-kit#206` -> `47c363611210b7501cbb50abce768cfe0911057f`.
 - StegOS consumer: `StegOS#314` -> `19e2ea02a16bd703767aafcd47e71f5ec5efe3cf`.
 - Site purpose-bound Device→KV adapter/export/page: `Site#1178` -> `3da593a61a536a625fcea4a26df8d1f491f00b44`.
-- authentic current-iPhone Safari invocation reached `FAIL_CLOSED: resident KV installation not verified`.
-- ChatGPT in-app browser separately exposed an IndexedDB object-store mismatch; that remains partition-local and is not promoted as Safari runtime truth.
-- Site recovery PR #1197 merged at `bd4c64a4dfa8130d3b8c015a242fbab5afc67fa1` after KV TestFlight Projection Entry, Site Bootstrap Validate, Site Handoff Orchestrator, and Ecosystem Heartbeat exact-head checks all passed.
-- #1197 reuses the existing `StegVerseKVInstallationBridge`, exposes `Admit Existing KV Installation Receipt` only for the resident-verification failure, requires observed DEVICE_KV materialization, then automatically retries the original `CURRENT_IPHONE_TESTFLIGHT_SIGNING` projection. `Save Projection JSON` remains unavailable until `PROJECTION_CONTEXT_READY`.
-- Pages build/deployment run `34531380154` for the functional #1197 merge completed successfully.
-- the #1197 implementation claim was terminalized by claim-registry-only Site PR #1198, merged at `1df85a660cef242f05819e2b847ef942dff88ae1` after corrected terminalization validation passed.
+- first authentic current-iPhone Safari invocation reached `FAIL_CLOSED: resident KV installation not verified`.
+- Site recovery PR #1197 merged at `bd4c64a4dfa8130d3b8c015a242fbab5afc67fa1`, reusing the existing `StegVerseKVInstallationBridge` and preserving Device→KV/InTr authority boundaries.
+- Pages build/deployment run `34531380154` for the functional recovery merge succeeded.
+- the recovery implementation claim was terminalized by Site PR #1198 merged at `1df85a660cef242f05819e2b847ef942dff88ae1`.
+- second authentic current-iPhone Safari invocation crossed the prior resident-KV failure and reached `PROJECTION_CONTEXT_READY`.
+- observed projection summary: purpose `CURRENT_IPHONE_TESTFLIGHT_SIGNING`; entry state `ADMITTED`; browser capability state `OBSERVED_COMPATIBLE`; KV installation receipt commitment `sha256:bd23d0bab718e83c374fc5584d0c6f455f6cd81f715defe220bc855c85ede601`; authority effect `NONE_PROJECTION_ONLY`.
+
+The screenshot/runtime observation proves the governed current-device projection context was produced. It does not substitute for custody of the exact downloadable nine-field JSON bytes or independent StegOS consumer validation.
 
 ## Current first unresolved condition
 
-`AUTHENTIC_CURRENT_IPHONE_KV_INSTALLATION_RECEIPT_RECOVERY_AND_PROJECTION_RETRY`
+`EXACT_KV_PROJECTION_FILE_BYTES_BOUND_TO_STEGOS_CONSUMER`
 
-Required current-device evidence:
+Required evidence:
 
-1. open the repaired published page in Safari;
-2. run `Create KV Projection Context`;
-3. if resident KV verification still fails, owner-select canonical `_System/installation.receipt.json` via `Admit Existing KV Installation Receipt`;
-4. require `device_local_kv_materialization_observed=true`;
-5. require automatic retry of the original purpose-bound projection;
-6. require purpose-bound `INGRESS_ADMITTED`, `KV_INSTALLATION_VERIFIED`, compatible browser-capability observation, and exact emitted `stegverse-kv-testflight-projection.json`.
-
-Source merge, CI, historical KV data, or Pages deployment alone do not satisfy those runtime predicates.
+1. save the exact `stegverse-kv-testflight-projection.json` emitted by the successful Safari page;
+2. retain/upload the exact file without editing or reconstruction from displayed summary fields;
+3. pass that exact artifact to the merged StegOS TestFlight projection consumer;
+4. require independent nine-field schema/commitment/authority validation before IPA/WASM materialization.
 
 ## Next execution sequence
 
-1. re-run the repaired published projection in Safari on the current iPhone;
-2. admit the canonical installation receipt if prompted and retain the automatic retry result;
-3. save the exact projection JSON only after `PROJECTION_CONTEXT_READY`;
-4. feed that file to the merged StegOS TestFlight bootstrap;
-5. execute TV/TVC provisioning, ephemeral same-device signing, same-session verification and native Build Upload;
-6. install through TestFlight;
-7. observe authentic retained StegOS/StegBrowser node state, source-HB lineage, same-device discovery and receipt-to-transition execution;
-8. materialize current canonical measurement source into the retained node;
-9. run exactly one measurement-only convergence pass without same-run repair/retry;
-10. preserve the receipt and measured first-failure histogram before remediation.
+1. save and return the exact emitted projection JSON from the current iPhone;
+2. validate/bind that exact file with the merged StegOS TestFlight bootstrap;
+3. materialize exact IPA/WASM only after the KV projection gate passes;
+4. execute TV/TVC provisioning, ephemeral same-device signing, same-session verification and native Build Upload;
+5. install through TestFlight;
+6. observe authentic retained StegOS/StegBrowser node state, source-HB lineage, same-device discovery and receipt-to-transition execution;
+7. materialize current canonical measurement source into the retained node;
+8. run exactly one measurement-only convergence pass without same-run repair/retry;
+9. preserve the receipt and measured first-failure histogram before remediation.
 
 DE-006 remains expected to expose exact parent rebinding/re-execution only if the authentic visitor reaches that stage; readiness must not pre-classify it.
 
@@ -101,8 +98,8 @@ Task Registry does not mint execution authority. WorkerCoordinator owns claim/fe
 
 ## README impact
 
-No new `.github` product semantics are introduced by this reconciliation. Site functional source and repo-local handoff were maintained in the implementation work; root `.github` README semantics remain sufficient.
+No new `.github` product semantics are introduced by this reconciliation. Functional Site source and repo-local handoffs were maintained in the implementation work; root `.github` README semantics remain sufficient.
 
 ## Manual work
 
-On the current iPhone in Safari, open the published KV TestFlight projection page, tap `Create KV Projection Context`, use `Admit Existing KV Installation Receipt` if the resident verification failure appears, select canonical `_System/installation.receipt.json`, allow the automatic retry, and save `stegverse-kv-testflight-projection.json` only if the state reaches `PROJECTION_CONTEXT_READY`.
+On the current iPhone Safari page already showing `PROJECTION_CONTEXT_READY`, tap `Save Projection JSON`, save the exact `stegverse-kv-testflight-projection.json` without editing it, then upload that exact file for StegOS consumer validation and continuation.
