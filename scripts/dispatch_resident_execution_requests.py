@@ -77,6 +77,7 @@ NONSECRET_ENV = (
     "STEGVERSE_GLM53_ENDPOINT", "STEGVERSE_GLM53_MODEL_PATH", "STEGVERSE_GLM53_RUNTIME_IDENTITY",
     "STEGVERSE_GLM53_ENERGY_KWH", "STEGVERSE_GLM53_HARDWARE_AMORTIZATION_USD",
     "STEGVERSE_GLM53_ENERGY_COST_USD", "STEGVERSE_GLM53_STORAGE_NETWORK_RUNTIME_OVERHEAD_USD",
+    "STEGVERSE_RELAY_EGRESS_BINDING", "STEGVERSE_RELAY_EGRESS_AUTHORIZATION", "STEGVERSE_RELAY_EGRESS_PAYLOAD",
 )
 CONSUMERS = (
     ("ecosystem_chat", "scripts/consume_resident_execution_request.py"),
@@ -89,6 +90,7 @@ CONSUMERS = (
     ("sv_dn1", "scripts/consume_sv_dn1_resident_execution_request.py"),
     ("sv_dn1_publication", "scripts/consume_sv_dn1_publication_resident_request.py"),
     ("stegos_kv_intr_chain", "scripts/consume_stegos_kv_intr_chain_request.py"),
+    ("stegos_sovereign_relay_return_path", "workers/stegos_sovereign_relay_return_path_request_consumer.py"),
     ("bootstrap_v1_release_prep", "scripts/consume_bootstrap_v1_release_prep_request.py"),
     ("bootstrap_v1_intr_bundle_delivery", "scripts/consume_bootstrap_v1_intr_bundle_delivery_request.py"),
     ("tvc_broker_validation", "scripts/consume_tvc_broker_validation_request.py"),
@@ -242,7 +244,7 @@ def dispatch(source_root: Path, runtime_root: Path, *, runner=subprocess.run, en
     accepted_wait_states = {
         "NO_REQUEST", "ALREADY_CONSUMED", "ALREADY_TERMINAL", "WAITING_FOR_CUSTODY_PACKAGE", "WAITING_FOR_MASTER_RECORDS_CUSTODY", "WAITING_FOR_RECONCILIATION", "WAITING_FOR_TRANSITION_READINESS",
         "MASTER_RECORDS_LOCAL_ROOT_NOT_MATERIALIZED", "MASTER_RECORDS_CUSTODY_CONSUMER_NOT_MATERIALIZED", "MASTER_RECORDS_PROJECTOR_NOT_MATERIALIZED", "ATTEMPT_RECORDED", "COMPLETED", "MANIFOLD_VISIT_RECORDED",
-        "SOVEREIGN_NODE_MARKER_REQUIRED", "RESIDENT_INTR_ACK_CONSUMED",
+        "SOVEREIGN_NODE_MARKER_REQUIRED", "RESIDENT_INTR_ACK_CONSUMED", "RETURN_PATH_VERIFIED",
     }
     request_failures = [row["consumer"] for row in outcomes if row["state"] not in accepted_wait_states]
     receipt = {

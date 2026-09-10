@@ -24,14 +24,24 @@
     "network_source_fetch_allowed": false,
     "physical_additional_machine_required": false,
     "third_party_runtime_required": false,
-    "required_local_env": ["STEGVERSE_STEGOS_ROOT","STEGVERSE_RELAY_EGRESS_BINDING","STEGVERSE_RELAY_EGRESS_AUTHORIZATION","STEGVERSE_RELAY_EGRESS_PAYLOAD"],
-    "optional_local_env": ["STEGVERSE_RELAY_RUNTIME_BASE"]
+    "required_local_env": [],
+    "optional_local_env": [
+      "STEGVERSE_STEGOS_ROOT",
+      "STEGVERSE_TVC_ROOT",
+      "STEGVERSE_ORG_CONTROL_ROOT",
+      "STEGVERSE_HIL_STATE_ROOT",
+      "STEGVERSE_RELAY_RUNTIME_BASE",
+      "STEGVERSE_RELAY_EGRESS_BINDING",
+      "STEGVERSE_RELAY_EGRESS_AUTHORIZATION",
+      "STEGVERSE_RELAY_EGRESS_PAYLOAD"
+    ],
+    "artifact_resolution": "EXACT_LOCAL_SCHEMA_LINEAGE_HASH_AUTODISCOVERY_WITH_OPTIONAL_REVALIDATED_OVERRIDES"
   },
   "terminal_evidence": "receipts/stegos-sovereign-relay/SHWP-STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001.json",
   "terminal_when": [
     "WorkerCoordinator independently admits the task under a fresh fence >21",
     "current local StegOS source contains sovereign_relay_round_trip",
-    "already-local real EGRESS binding authorization and payload are consumed",
+    "already-local real EGRESS binding authorization and payload are discovered or revalidated and consumed",
     "real far-side HIL INGRESS_ADMITTED receipt is observed",
     "RETURN_PATH_VERIFIED is produced",
     "durable return queue and Interlock ingestion predicates are true",

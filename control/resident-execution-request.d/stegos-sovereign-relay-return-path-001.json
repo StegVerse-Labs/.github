@@ -1,0 +1,18 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-EXEC-STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001",
+  "state": "REQUESTED",
+  "task_id": "SHWP-STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001",
+  "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
+  "entrypoint": "scripts/refresh_and_execute_resident_task.py",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "request_granted_authority": false,
+  "network_source_fetch_allowed": false,
+  "second_machine_required": false,
+  "protected_material_allowed_in_request": false,
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "note": "After an already-local source refresh, immediately attempt the existing independently admitted relay return-path task; artifact resolution remains exact local schema/lineage/hash discovery in the worker."
+}
