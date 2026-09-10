@@ -4,7 +4,7 @@
   "correlation_id": "FEDERAL-HEALTH-PII-EXCEEDANCE-HARDENING-001",
   "root_correlation_id": "FEDERAL-HEALTH-PII-EXCEEDANCE-HARDENING-001",
   "parent_task_id": "STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001",
-  "goal": "Engineer StegVerse sensitive-data handling so technical enforcement for health information and PII intentionally exceeds the current federal baseline while preserving TV/TVC credential authority, Interlock/InTr transition authority, fail-closed evidence, and sovereign single-device constraints without claiming legal certification or authorization.",
+  "goal": "Engineer StegVerse sensitive-data handling so technical enforcement for health information and PII intentionally exceeds the current federal baseline while preserving TV/TVC credential authority, Interlock/InTr transition and posture-resolution authority, fail-closed evidence, and sovereign single-device constraints without claiming legal certification or authorization.",
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT",
   "cosv_task_vector": "71000000100100",
@@ -14,16 +14,25 @@
     "StegVerse-Labs/StegOS/stegos/sensitive_data_minimum_necessary.py",
     "StegVerse-Labs/StegOS/stegos/intr_sensitive_data_binding.py",
     "StegVerse-Labs/StegOS/stegos/sensitive_data_audit_receipt.py",
+    "StegVerse-Labs/StegOS/stegos/intr_security_posture_resolution.py",
+    "StegVerse-Labs/StegOS/specs/kv-skap-account-metadata-profile.v1.json",
     "StegVerse-org/StegVerse-SDK/stegverse/security_posture.py",
-    "StegVerse-org/StegVerse-SDK/stegverse/security_posture_binding.py"
+    "StegVerse-org/StegVerse-SDK/stegverse/security_posture_binding.py",
+    "StegVerse-org/StegVerse-SDK/stegverse/security_posture_stack.py",
+    "StegVerse-Labs/TVC/tools/skap_kv_account_metadata_ingress.py",
+    "StegVerse-Labs/Site/docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs", "StegVerse-org"],
-    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegOS", "StegVerse-org/StegVerse-SDK"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegOS", "StegVerse-org/StegVerse-SDK", "StegVerse-Labs/TVC", "StegVerse-Labs/Site"],
     "components": [
       "minimum-necessary-sensitive-data-admission",
       "versioned-security-posture",
       "task-scoped-ephemeral-posture",
+      "authoritative-intr-posture-resolution",
+      "sdk-posture-request-projection",
+      "mykv-okv-posture-ui",
+      "tvc-skap-posture-verification",
       "exact-manifest-posture-payload-intr-binding",
       "raw-phi-free-audit-receipt",
       "automatic-disposition-proof",
@@ -43,6 +52,7 @@
     "SDK-TASK-SCOPED-EPHEMERAL-POSTURE-002",
     "INTR-SENSITIVE-DATA-MANIFEST-PAYLOAD-BINDING-001",
     "INTR-SENSITIVE-DATA-RAW-PHI-FREE-AUDIT-RECEIPT-002",
+    "INTR-AUTHORITATIVE-SECURITY-POSTURE-RESOLUTION-004",
     "INTR-SENSITIVE-DATA-AUTOMATIC-DISPOSITION-PROOF-003"
   ],
   "existing_evidence_refs": [
@@ -52,13 +62,35 @@
     "StegVerse-org/StegVerse-SDK#170",
     "StegVerse-Labs/StegOS#322",
     "StegVerse-Labs/StegOS#323",
+    "StegVerse-Labs/StegOS#324",
+    "StegVerse-Labs/StegOS#325",
+    "StegVerse-org/StegVerse-SDK#171",
+    "StegVerse-Labs/Site#1194",
+    "StegVerse-Labs/Site#1195",
+    "StegVerse-Labs/TVC#375",
+    "StegVerse-Labs/TVC#376",
     "StegVerse-org/StegVerse-SDK@4601a6537270167edf72d7eecec28aad8de3fe76:validation=34506885779_SUCCESS",
     "StegVerse-Labs/StegOS@05848191ea2715aa9bdf37d63e22622744128a9d:validation=34506947325_SUCCESS",
-    "StegVerse-Labs/StegOS@d62ce42b38f8006a22de1fe530bc47e2be21fdcc:validation=34507366997_SUCCESS"
+    "StegVerse-Labs/StegOS@d62ce42b38f8006a22de1fe530bc47e2be21fdcc:validation=34507366997_SUCCESS",
+    "StegVerse-Labs/StegOS@938f0a6b07e0fe931b794e8462dfddf3f8457fca:validation=34513906903_SUCCESS,34513906952_SUCCESS",
+    "StegVerse-Labs/StegOS@9ba6c84ce30cceb1afaf99153f1c6d1ad196cb52:validation=34514308622_SUCCESS",
+    "StegVerse-org/StegVerse-SDK@8780482e8b688597be270ad31332b1b920da3819:validation=34514224865_SUCCESS",
+    "StegVerse-Labs/Site@872f6ba64f956779191d39db20d99497311bd25a:validation=34513855435_SUCCESS,34513854751_SUCCESS",
+    "StegVerse-Labs/Site@f2696e3591becebdb4314d51d55d927f2cd062b1:validation=34514537767_SUCCESS,34514537784_SUCCESS",
+    "StegVerse-Labs/TVC@9033b9d984332ae8ae139d6b303343a2eea73844:validation=34513528421_SUCCESS",
+    "StegVerse-Labs/TVC@e507bd58ae7c4ca0d50009c4ac27bda2f5d62292:validation=34514931254_SUCCESS"
   ],
   "expected_evidence_predicates": [
     "MINIMUM_NECESSARY_SENSITIVE_DATA_ADMISSION_FAILS_CLOSED",
     "TASK_SCOPED_SECURITY_POSTURE_CANNOT_BE_DOWNGRADED_OR_REUSED",
+    "SDK_POSTURE_REQUEST_DOES_NOT_ASSERT_AUTHORITATIVE_FINAL_POSTURE",
+    "INTERLOCK_INTR_EXCLUSIVELY_RESOLVES_AUTOMATIC_AND_EFFECTIVE_TASK_POSTURE",
+    "NO_EXPLICIT_POSTURE_SELECTION_USES_AUTOMATIC_FLOOR_WITH_SELECTION_PRESENT_FALSE",
+    "EXPLICIT_POSTURE_SELECTION_BELOW_AUTOMATIC_FLOOR_FAILS_CLOSED",
+    "KV_SKAP_AND_SKAP_KV_CHANNEL_FLOOR_IS_HIGHEST",
+    "POSTURE_INSTANCE_BINDS_TASK_PAYLOAD_TRANSITION_AND_VALIDITY_WINDOW",
+    "TVC_SKAP_VERIFIES_POSTURE_BINDING_WITHOUT_REINTERPRETING_POLICY",
+    "UI_AND_RECEIPTS_PRESERVE_AUTOMATIC_SELECTED_EFFECTIVE_POSTURE_PROVENANCE",
     "EXACT_PAYLOAD_MANIFEST_POSTURE_AND_INTR_REQUEST_BINDING_FAILS_CLOSED",
     "RAW_SENSITIVE_PAYLOAD_ABSENT_FROM_BINDING_EVIDENCE",
     "RAW_PHI_PII_ABSENT_FROM_WRITE_ONCE_AUDIT_RECEIPTS",
@@ -69,9 +101,9 @@
     "CONTINUOUS_MACHINE_READABLE_CONTROL_ASSESSMENT_AVAILABLE"
   ],
   "runtime_requirements": {
-    "capabilities": ["sensitive_data_admission", "security_posture", "intr_exact_binding", "audit_and_disposition_evidence"],
+    "capabilities": ["sensitive_data_admission", "security_posture", "intr_posture_resolution", "intr_exact_binding", "tvc_skap_posture_verification", "audit_and_disposition_evidence"],
     "environment": "SOURCE_CONTROL_AND_SOVEREIGN_INTR_BOUNDARY",
-    "direction": "SENSITIVE_DATA_ADMISSION_TO_INTR_TO_AUDIT_AND_DISPOSITION",
+    "direction": "SDK_POSTURE_INPUT_TO_INTR_RESOLUTION_TO_TVC_SKAP_VERIFICATION_TO_AUDIT_AND_DISPOSITION",
     "mutation_required": true,
     "deployment_required": false,
     "current_observation_required": false
@@ -93,14 +125,20 @@
     "validated": false,
     "reconciliation_ref": "docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md",
     "exact_intr_binding_source_complete": true,
-    "raw_phi_free_audit_receipt_source_complete": true
+    "raw_phi_free_audit_receipt_source_complete": true,
+    "authoritative_posture_resolution_source_complete": true,
+    "posture_ui_projection_source_complete": true,
+    "tvc_skap_posture_verification_source_complete": true
   },
   "allowed_next_transitions": [
     "IMPLEMENT_INTR_SENSITIVE_DATA_AUTOMATIC_DISPOSITION_PROOF_003"
   ],
   "handoff_projection_refs": [
     "docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/StegOS/docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md"
+    "StegVerse-Labs/StegOS/docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK/docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site/docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/TVC/docs/SKAP_KV_ACCOUNT_METADATA_INGRESS_MIRROR_HANDOFF.md"
   ],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
@@ -108,6 +146,9 @@
     "worker_claim_authority": "WORKERCOORDINATOR",
     "master_records_reality_authority": true,
     "interlock_intr_required_for_governed_ingress_egress": true,
+    "security_posture_resolution_authority": "INTERLOCK_INTR",
+    "sdk_posture_authority": "REQUEST_INPUT_AND_REPORTING_ONLY",
+    "tvc_skap_posture_authority": "VERIFY_ONLY_NO_REINTERPRETATION",
     "credential_authority": "TV_TVC",
     "github_runtime_authority": "NONE",
     "heartbeat_execution_authority": false,
