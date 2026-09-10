@@ -3,103 +3,108 @@
 Goal Task ID: `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001`
 Canonical issue: `StegVerse-Labs/.github#1260`
 COSV: `50000000100000`
-Status: `ACTIVE / 18 HB32 PROFILE-DERIVED NODES / MEASUREMENT HARDENING MERGED / AUTHENTIC CURRENT-IPHONE KV PROJECTION READY / EXACT ARTIFACT -> STEGOS NEXT`
+Status: `ACTIVE / 18 HB32 PROFILE-DERIVED NODES / MEASUREMENT HARDENING MERGED / EXACT CURRENT-IPHONE KV PROJECTION VALIDATED / TASK-2026-0010 ALLOCATION RETRY NEXT`
 
 ## Canonical runtime model
 
 ```text
 runtime/node profile
--> profile-derived retained StegOS node
--> immutable source-device HB lineage + current HB observation
+-> retained StegOS node identity + source-device HB lineage
 -> ephemeral request consumption
--> ephemeral WorkerCoordinator claim/fence
--> ephemeral Interlock/InTr admission
--> ephemeral transport/provider/lease
+-> WorkerCoordinator claim/fence
+-> Interlock/InTr admission
+-> bounded transport/provider/credential session
 -> component execution
 -> exact receipt commitment
 -> Master Records reconstruction
 -> downstream propagation
 ```
 
-Node identity/evidence/HB lineage persist. Claims/fences, InTr calls, transports, credentials, provider/browser/model/action sessions, and execution processes remain bounded and ephemeral. HB remains observability/freshness/correlation only.
+HB is observability/freshness/correlation only. WorkerCoordinator owns claim/fence authority. Interlock/InTr owns governed admission/transition authority. TV/TVC owns credentials/provider authority. Master Records owns observed-reality/reconstruction. GitHub Actions are validation/evidence transport only.
 
-## Measurement implementation state
+## Global measurement state
 
-- 18 HB32 runtime-node profiles plus profiled convergence runner: merged.
-- StegClaw executable profile: merged.
-- VACC executable profile: merged.
-- typed ten-stage first-failure responses: `.github` PR #1292 merged at `e64c5d518af05dac6b9d09c3355d38d75bc27295`.
-- definitive one-pass measurement hardening: PR #1293 merged at `44c6d88abb42351ec26a576e3136caec3400a613`.
-- measurement ingress repair: PR #1296 merged.
+Merged:
+- 18 HB32 runtime-node profiles plus profiled convergence runner;
+- StegClaw executable profile;
+- VACC executable profile;
+- typed ten-stage first-failure responses via `.github#1292` at `e64c5d518af05dac6b9d09c3355d38d75bc27295`;
+- one-pass measurement hardening via `.github#1293` at `44c6d88abb42351ec26a576e3136caec3400a613`;
+- measurement ingress repair via `.github#1296`.
 
-The authentic measurement still requires one frozen run ID and `receipts/sovereign-host/global-runtime-node-profile-convergence.latest.json`. No lane failure histogram is authoritative before that receipt exists.
+Authentic global measurement still requires one frozen run ID and `receipts/sovereign-host/global-runtime-node-profile-convergence.latest.json`. No lane failure histogram is authoritative before that receipt exists.
 
 ## Current source-device trajectory
 
-The earlier Site-first static-bootstrap sequence is superseded. The active child is `KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001`.
+Active child: `KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001`.
+
+The Site-first bootstrap ordering remains superseded. The current sequence is:
 
 ```text
-current device / minimal rendezvous
--> existing Device→KV Universal InTr
--> purpose CURRENT_IPHONE_TESTFLIGHT_SIGNING admitted in exact request
--> verified resident KV installation
--> same-lineage browser capability observation
--> opaque nine-field KV projection
--> StegOS TestFlight bootstrap validates projection in memory
--> exact IPA/WASM materialization
--> TV/TVC provisioning + ephemeral signing + Build Upload
+current iPhone Device→KV/InTr admission
+-> verified KV installation
+-> browser capability observation
+-> exact opaque KV projection
+-> canonical TASK-2026-0010 allocation/fence
+-> Site TestFlight bootstrap projection
+-> StegOS projection gate
+-> TV/TVC provision/sign/upload
 -> TestFlight install
--> retained StegOS/StegBrowser runtime observation
--> one frozen global measurement pass
+-> retained StegOS/StegBrowser observation
+-> frozen global measurement
 ```
 
-Merged/source/runtime evidence:
+## Evidence advanced in this session
 
-- KV producer: `continuity-vault-kit#206` -> `47c363611210b7501cbb50abce768cfe0911057f`.
-- StegOS consumer: `StegOS#314` -> `19e2ea02a16bd703767aafcd47e71f5ec5efe3cf`.
-- Site purpose-bound Device→KV adapter/export/page: `Site#1178` -> `3da593a61a536a625fcea4a26df8d1f491f00b44`.
-- first authentic current-iPhone Safari invocation reached `FAIL_CLOSED: resident KV installation not verified`.
-- Site recovery PR #1197 merged at `bd4c64a4dfa8130d3b8c015a242fbab5afc67fa1`, reusing the existing `StegVerseKVInstallationBridge` and preserving Device→KV/InTr authority boundaries.
-- Pages build/deployment run `34531380154` for the functional recovery merge succeeded.
-- the recovery implementation claim was terminalized by Site PR #1198 merged at `1df85a660cef242f05819e2b847ef942dff88ae1`.
-- second authentic current-iPhone Safari invocation crossed the prior resident-KV failure and reached `PROJECTION_CONTEXT_READY`.
-- observed projection summary: purpose `CURRENT_IPHONE_TESTFLIGHT_SIGNING`; entry state `ADMITTED`; browser capability state `OBSERVED_COMPATIBLE`; KV installation receipt commitment `sha256:bd23d0bab718e83c374fc5584d0c6f455f6cd81f715defe220bc855c85ede601`; authority effect `NONE_PROJECTION_ONLY`.
+Authentic current-iPhone Safari reached `PROJECTION_CONTEXT_READY` for `CURRENT_IPHONE_TESTFLIGHT_SIGNING`. Two exact downloaded 620-byte projection artifacts were retained and independently checked against the merged StegOS projection validator:
 
-The screenshot/runtime observation proves the governed current-device projection context was produced. It does not substitute for custody of the exact downloadable nine-field JSON bytes or independent StegOS consumer validation.
+```text
+primary sha256: 93caa302f310be097005c21639504bc13a7e8090d161d56cd0823c37363db3f8
+repeat sha256: 064c8fcac9e1ee87c6f6dc73807689fded772865ae4b3f461b304d26aaf7df64
+schema: stegos.kv-bound-ephemeral-projection-context/v1
+entry_state: ADMITTED
+browser_capability_state: OBSERVED_COMPATIBLE
+persistence_effect: NONE_EPHEMERAL_CONTEXT_ONLY
+authority_effect: NONE_PROJECTION_GATE_ONLY
+```
+
+That retires `EXACT_KV_PROJECTION_FILE_BYTES_BOUND_TO_STEGOS_CONSUMER` as the first unresolved condition.
+
+The next current-iPhone allocator attempt verified the established StegOS node continuity but failed before mutation with `FAIL_CLOSED: auto-execution requires exactly one queued canonical successor`; displayed evidence explicitly reported `mutation_performed:false`.
+
+Inspection showed that restriction was wrapper-local. The canonical allocator supports multiple queued tasks and owns deterministic selection. `Site#1205` removed only the false single-queue restriction, requires `TASK-2026-0010` to be present and canonically selected, and continues to fail closed if another task wins. It merged at `281bcb0c56d84eef933e57a21f6ed1ef91660dfb` after Site Handoff, Site Bootstrap, Ecosystem Heartbeat, and StegOS Node Public Observation exact-head checks passed. The repaired page was published through Site Pages. Claim-only `Site#1206` merged at `66c30c269d546520e75fa65a50c912a076ea7b6e` after corrected release-only terminalization checks passed.
 
 ## Current first unresolved condition
 
-`EXACT_KV_PROJECTION_FILE_BYTES_BOUND_TO_STEGOS_CONSUMER`
+`AUTHENTIC_CURRENT_IPHONE_TASK_2026_0010_CANONICAL_ALLOCATION_RETRY_AND_CLAIM_EVIDENCE`
 
-Required evidence:
+Required next evidence:
 
-1. save the exact `stegverse-kv-testflight-projection.json` emitted by the successful Safari page;
-2. retain/upload the exact file without editing or reconstruction from displayed summary fields;
-3. pass that exact artifact to the merged StegOS TestFlight projection consumer;
-4. require independent nine-field schema/commitment/authority validation before IPA/WASM materialization.
+1. current iPhone again verifies the established node continuity;
+2. canonical allocator queue contains `TASK-2026-0010`;
+3. canonical allocator selects `TASK-2026-0010`;
+4. retained allocator CAS commits the next generation;
+5. fresh claim/fencing evidence is emitted and exported exactly.
 
-## Next execution sequence
+Do not mutate the task-gated TestFlight product branch until that authentic claim/fence exists.
 
-1. save and return the exact emitted projection JSON from the current iPhone;
-2. validate/bind that exact file with the merged StegOS TestFlight bootstrap;
-3. materialize exact IPA/WASM only after the KV projection gate passes;
-4. execute TV/TVC provisioning, ephemeral same-device signing, same-session verification and native Build Upload;
-5. install through TestFlight;
-6. observe authentic retained StegOS/StegBrowser node state, source-HB lineage, same-device discovery and receipt-to-transition execution;
-7. materialize current canonical measurement source into the retained node;
-8. run exactly one measurement-only convergence pass without same-run repair/retry;
-9. preserve the receipt and measured first-failure histogram before remediation.
+## After successful allocation
+
+1. Bind the emitted `TASK-2026-0010` claim/fence to `claim/current-iphone-testflight-static-bootstrap-r1`.
+2. Re-observe Site `main` and project exact StegOS successor assets under the fresh fence.
+3. Validate/merge the Site bootstrap projection and update successor provenance.
+4. Feed the primary exact KV projection artifact into the published StegOS TestFlight bootstrap.
+5. Continue TV/TVC app-resource resolution, provisioning, ephemeral same-device signing, same-session verification and native Build Upload.
+6. Install through TestFlight and observe retained StegOS/StegBrowser node state, source-HB lineage, same-device discovery and receipt-to-transition execution.
+7. Materialize current canonical measurement source and run exactly one measurement-only convergence pass without same-run repair/retry.
+8. Preserve the global receipt and first-failure histogram before remediation.
 
 DE-006 remains expected to expose exact parent rebinding/re-execution only if the authentic visitor reaches that stage; readiness must not pre-classify it.
 
-## Authority invariants
-
-Task Registry does not mint execution authority. WorkerCoordinator owns claim/fence authority. Interlock/InTr owns governed admission/transition authority. TV/TVC owns credential/provider authority. Master Records owns observed-reality/reconstruction authority. KV is the private continuity boundary. HB is observability/carrier only. GitHub Actions are validation/evidence transport only.
-
 ## README impact
 
-No new `.github` product semantics are introduced by this reconciliation. Functional Site source and repo-local handoffs were maintained in the implementation work; root `.github` README semantics remain sufficient.
+No new `.github` product semantics are introduced by this evidence reconciliation; existing root README semantics remain sufficient. Functional Site changes maintain their repo-local handoff/tests.
 
 ## Manual work
 
-On the current iPhone Safari page already showing `PROJECTION_CONTEXT_READY`, tap `Save Projection JSON`, save the exact `stegverse-kv-testflight-projection.json` without editing it, then upload that exact file for StegOS consumer validation and continuation.
+On the current iPhone in Safari, open `https://stegverse.org/stegos-node/org-allocator-bootstrap-auto.html`. If it reports `Canonical allocation auto-executed: TASK-2026-0010`, export the exact allocator evidence JSON and return it. If it fails closed, retain the exact displayed result and do not reset allocator/browser state.
