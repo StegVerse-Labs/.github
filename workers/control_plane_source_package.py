@@ -137,13 +137,15 @@ def validate_package(package: Mapping[str, Any]) -> dict[str, Any]:
     return {"source_identity": identity, "manifest": {"file_count": len(rows), "source_bundle_sha256": manifest_digest, "files": rows}, "decoded": decoded}
 
 
-def package_store_path(package_root: Path) -> Path:
-    return package_root.expanduser().resolve() / PACKAGE_SLUG / "package.json"
+def package_store_path(package_root: Path, source_identity: str) -> Path:
+    if not source_identity.startswith("sha256:") or len(source_identity) != 71:
+        raise ControlPlaneSourcePackageError("source identity invalid")
+    return package_root.expanduser().resolve() / PACKAGE_SLUG / "packages" / f"{source_identity[7:]}.json"
 
 
 def write_once_package(package_root: Path, package: Mapping[str, Any]) -> Path:
-    validate_package(package)
-    path = package_store_path(package_root)
+    verified = validate_package(package)
+    path = package_store_path(package_root, verified["source_identity"])
     path.parent.mkdir(parents=True, exist_ok=True)
     rendered = json.dumps(dict(package), indent=2, sort_keys=True) + "\n"
     if path.exists():
