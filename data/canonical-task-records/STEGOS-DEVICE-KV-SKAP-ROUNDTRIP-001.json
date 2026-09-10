@@ -14,6 +14,9 @@
     "docs/KV_SKAP_OPERATIONAL_INTR_TRANSPORT_MIRROR_HANDOFF.md",
     "docs/DEVICE_KV_INTR_SOVEREIGN_OBSERVATION_MIRROR_HANDOFF.md",
     "management/UNIVERSAL_DATA_TRANSPORT_INVARIANT.json",
+    "workers/run_device_kv_skap_roundtrip_worker.py",
+    "scripts/continue_device_kv_skap_from_tvc_custody.py",
+    "scripts/materialize_kv_device_from_skap_return.py",
     "StegVerse-Labs/StegOS/stegos/device_kv_skap_roundtrip.py",
     "StegVerse-Labs/StegOS/stegos/universal_intr_transport.py",
     "StegVerse-Labs/StegOS/stegos/intr_backbone.py",
@@ -34,6 +37,8 @@
   "adjacent_task_refs": ["KV-CONNECTION-REVALIDATION-WORKER-001", "SHWP-DEVICE-KV-INTR-OBSERVATION-001", "STEGVERSE-UNIVERSAL-INTR-TRANSPORT-001", "FEDERAL-HEALTH-PII-EXCEEDANCE-HARDENING-001"],
   "existing_evidence_refs": [
     "StegVerse-Labs/StegOS#326@2339f2f2fc8c28eb4d63077387013154dac9b75c:validation=34517908014_SUCCESS",
+    "StegVerse-org/LLM-adapter#331@f4db7005818c7b77bf7e25345c86df1277760a93",
+    "StegVerse-Labs/TVC#377@72aa78c8f60226621c19d58751ec776f777583f9",
     "StegVerse-Labs/continuity-vault-kit#205@5ad01e04d6693b2ab8e19e9214e318d91d6dad74",
     "SITE-CLOUD-KV-4347408852127319cbda574f02e03edb:RESIDENT_INGRESS_OBSERVED"
   ],
@@ -45,6 +50,7 @@
     "EVERY_COMPLETED_HOP_HAS_VERIFIED_INTERLOCK_RECEIPT",
     "SKAP_CREDENTIAL_MATERIAL_NEVER_ENTERS_ORDINARY_KV_DEVICE_OR_REPOSITORY_STATE",
     "TVC_REMAINS_SOLE_CREDENTIAL_AUTHORITY",
+    "TVC_REMAINS_SINGLE_SKAP_CIPHERTEXT_CUSTODY_WRITER",
     "CURRENT_DEVICE_RUNTIME_EMITS_ALL_FOUR_ADMITTED_HOP_RECEIPTS",
     "KV_AND_SKAP_TERMINAL_STATE_EXACT_READBACK_VERIFIED",
     "NO_HOSTED_RUNTIME_FALLBACK_USED",
@@ -73,13 +79,15 @@
   "completion": {
     "claimed": false,
     "validated": false,
-    "reconciliation_ref": "docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md",
     "single_roundtrip_composition_source_complete": true,
+    "resident_tvc_continuation_wired": true,
     "authentic_four_leg_roundtrip_observed": false,
-    "kv_skap_exact_readback_observed": false
+    "kv_skap_exact_readback_observed": false,
+    "reconciliation_ref": "docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md"
   },
   "allowed_next_transitions": [
-    "BIND_EXISTING_RESIDENT_DEVICE_KV_AND_KV_SKAP_RECEIPTS_TO_ROUNDTRIP_VERIFIER",
+    "VALIDATE_AND_MERGE_RESIDENT_TVC_CONTINUATION",
+    "PROPAGATE_MERGED_CONTINUATION_TO_SOVEREIGN_RESIDENT",
     "EXECUTE_AUTHENTIC_MACHINE_GOVERNED_NON_DESTRUCTIVE_ROUNDTRIP",
     "RETAIN_FOUR_HOP_RECEIPTS_AND_EXACT_READBACK"
   ],
