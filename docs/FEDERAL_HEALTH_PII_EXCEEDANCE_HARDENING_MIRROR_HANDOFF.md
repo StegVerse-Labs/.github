@@ -73,29 +73,45 @@ ePHI / sensitive-health-data -> HIGHEST
 KV-SKAP / SKAP-KV -> HIGHEST regardless of evaluator request
 ```
 
-This permits SDK evaluators to request the security level appropriate to their organization while preventing them from weakening mandatory StegVerse, data-class, or channel floors. KV/SKAP always instantiates the strongest current posture. Future stronger posture versions can raise these floors without rewriting historical task evidence.
+## Child 4 — exact manifest/posture/payload/InTr binding
+
+```text
+task_id: INTR-SENSITIVE-DATA-MANIFEST-PAYLOAD-BINDING-001
+state: COMPLETE_VALIDATED_MERGED_SOURCE_CONTROL
+SDK PR: #170
+SDK merge: 4601a6537270167edf72d7eecec28aad8de3fe76
+SDK validation: 34506885779 SUCCESS
+StegOS PR: #322
+StegOS merge: 05848191ea2715aa9bdf37d63e22622744128a9d
+StegOS validation: 34506947325 SUCCESS
+```
+
+SDK #170 adds an exact task-posture projection only after the ephemeral instance passes task and lifetime validation. The projection binds the complete posture-instance SHA-256, posture ID, posture-definition version/digest, effective tier, issuance/expiry, and explicit non-transferability/non-reuse state. It remains admission evidence only.
+
+StegOS #322 adds the fail-closed `stegos.intr-sensitive-data-payload-binding.v1` boundary evidence object. Before sensitive Universal InTr materialization it re-runs minimum-necessary manifest admission, requires exact payload bytes, binds the canonical manifest digest, binds the exact SDK posture instance and projection, verifies task/lifetime and mandatory security floors, verifies the exact Universal InTr request hash, requires the request payload hash to equal the exact payload bytes, and binds task identity, purpose, requested field set, sink, retention policy, posture identity/version/digest, and transition request in one deterministic evidence object. Raw sensitive payload is explicitly absent from evidence.
+
+The companion boundary verifier recomputes the full evidence object from exact inputs. Detached or mutated payloads, manifests, posture instances, transition requests, expired/cross-task posture instances, or mutated binding evidence fail closed. The evidence does not commit a transition or grant execution, transport, claim/fence, credential, GitHub, Heartbeat, or model-output authority. Interlock/InTr remains transition-admission authority and TV/TVC remains credential authority.
 
 ## Next hardening child
 
 ```text
-task_id: INTR-SENSITIVE-DATA-MANIFEST-PAYLOAD-BINDING-001
+task_id: INTR-SENSITIVE-DATA-RAW-PHI-FREE-AUDIT-RECEIPT-002
 state: NEXT
 ```
 
-Bind the admitted sensitive-data manifest and ephemeral task-posture instance cryptographically to exact payload bytes and require that binding at the Interlock/InTr materialization boundary. A sensitive payload must not be transportable merely because an adjacent manifest/posture exists; payload digest, manifest digest, posture ID/version/digest, task identity, purpose, field set, sink, retention policy, and transition request must be one fail-closed evidence object.
+Add write-once sensitive-data audit receipts that preserve binding/provenance and subject pseudonymization while prohibiting raw PHI/PII values and raw subject identifiers from the receipt layer. Receipts must bind the exact Child 4 evidence identity, purpose, field names (not sensitive field values), sink, posture identity, transition identity, disposition obligation, timestamp, prior receipt hash where applicable, and TV/TVC credential semantics without turning audit custody into transition authority.
 
 ## Planned exceedance sequence
 
-1. Exact manifest/posture-to-payload cryptographic binding at InTr ingress/egress.
-2. Raw-PHI-free write-once audit receipts with subject pseudonymization.
-3. Automatic disposition proof and bounded transient-state verification.
-4. Object/field-level authorization plus purpose-of-use enforcement independent of network identity.
-5. Break-glass emergency access with explicit dual receipt, strict timeout, no silent persistence, mandatory post-event review.
-6. Availability/reconstruction controls preserving authorized clinical availability without restoring stale authority.
-7. Continuous machine-readable control assessment mapped to NIST SP 800-53A, not annual-only review.
-8. Incident detection, containment, disclosure-impact lineage, and deterministic remediation evidence.
-9. Supply-chain/component provenance checks for any code handling PII/ePHI.
-10. Machine-readable federal control crosswalk with exact evidence refs and explicit SATISFIED/PARTIAL/UNMET/NA states.
+1. Raw-PHI-free write-once audit receipts with subject pseudonymization.
+2. Automatic disposition proof and bounded transient-state verification.
+3. Object/field-level authorization plus purpose-of-use enforcement independent of network identity.
+4. Break-glass emergency access with explicit dual receipt, strict timeout, no silent persistence, mandatory post-event review.
+5. Availability/reconstruction controls preserving authorized clinical availability without restoring stale authority.
+6. Continuous machine-readable control assessment mapped to NIST SP 800-53A, not annual-only review.
+7. Incident detection, containment, disclosure-impact lineage, and deterministic remediation evidence.
+8. Supply-chain/component provenance checks for any code handling PII/ePHI.
+9. Machine-readable federal control crosswalk with exact evidence refs and explicit SATISFIED/PARTIAL/UNMET/NA states.
 
 ## Invariants
 
@@ -105,6 +121,8 @@ minimum necessary enforced before execution
 posture definition durable; posture instance task-ephemeral
 organization/data/channel security floors cannot be downgraded
 KV-SKAP and SKAP-KV always require HIGHEST current posture
+exact payload bytes must be bound to manifest + posture + transition request before sensitive InTr materialization
+raw sensitive payload must not appear in binding evidence
 TV/TVC credential authority only
 Interlock/InTr transition admission remains canonical
 no GitHub runtime authority
