@@ -5,7 +5,7 @@ Updated: 2026-09-09
 ```text
 goal_id: STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001
 task_id: SHWP-STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001
-state: RESIDENT_EXECUTION_WIRED / ARTIFACT_AUTODISCOVERY_MERGED / REFRESH_DISPATCH_MERGED / CONTROL_PLANE_SOURCE_PACKAGE_MERGED / CURRENT_IPHONE_BOOTSTRAP_REFRESH_MERGED_PUBLICLY_OBSERVED / TASK_0010_G6_PHYSICAL_ALLOCATION_PENDING
+state: RESIDENT_EXECUTION_WIRED / ARTIFACT_AUTODISCOVERY_MERGED / REFRESH_DISPATCH_MERGED / CONTROL_PLANE_SOURCE_PACKAGE_MERGED / CURRENT_IPHONE_BOOTSTRAP_REFRESH_MERGED_PUBLICLY_OBSERVED / VERIFIED_ALLOCATOR_AUTO_EXECUTION_MERGED / TASK_0010_G6_RUNTIME_EVIDENCE_PENDING
 credential_authority: TV/TVC
 github_runtime_authority: NONE
 heartbeat_execution_authority: false
@@ -17,7 +17,10 @@ control_plane_source_package_merge: 52f29fbba0751787ceaca5f1c9022bdcb37338fb
 public_source_package_gateway_merge: d4601f449743bb086ac2e9e38777b46b21ba8e27
 current_iphone_allocator_successor_merge: e484be32e5b017a4a6f172635ea80c5d46913d8e
 site_allocator_bootstrap_refresh_merge: 7d52ff8b6cf60b62adcd18aed493b8f6a61b1107
-site_bootstrap_claim_terminalization_merge: 5a6a70730d01210b70954f0857575efe60b80b1f
+site_allocator_collision_fix_merge: 933a388b0b2ff156446bcbfe5e423fd3f91dc5a0
+site_allocator_cache_freshness_merge: e86333e873fa067e42255c2712867cd3b2e96b24
+site_allocator_immutable_g6_entry_merge: 34e726d5365e3b9a8f1151a03c867b117696358a
+site_allocator_auto_execution_merge: e565105748a5cd52638e365c68de7803d35b5dbd
 cosv: 50000000101000
 ```
 
@@ -34,22 +37,13 @@ state: HANDOFF_READY
 fresh fence required: >21
 ```
 
-The standing worker-runtime cycle already calls `WorkerCoordinator.cycle(...)`; when no exact `--task-id` is supplied it remains the normal task sweep. No second scheduler is required.
+The standing worker-runtime cycle already calls `WorkerCoordinator.cycle(...)`; no second scheduler is required.
 
 ## Real artifact discovery
 
-Manual paths for the EGRESS binding, authorization and payload are not required. The merged resident worker searches bounded already-local sovereign roots and requires:
+The merged resident worker discovers the EGRESS binding, TVC authorization, and exact payload from bounded already-local sovereign roots. `required_local_env` is empty. Optional locator environment variables are constrained overrides only and are independently revalidated against schema, lineage, endpoint, payload SHA-256, and size.
 
-1. JSON schema `stegos.sovereign_relay_egress_binding.v1`;
-2. JSON schema `stegverse.tvc.sovereign-relay-egress-authorization/v1` with `ALLOW_RELAY_EGRESS` and TV/TVC authority;
-3. exact binding-id, route-id, transport-id and next-hop endpoint agreement;
-4. exact payload bytes discovered by the authorization's SHA-256 and size.
-
-The executable handoff matches that behavior: `required_local_env` is empty. Optional locator environment variables remain constrained overrides only and are revalidated against the same hashes/lineage.
-
-## Refresh -> immediate exact execution
-
-PR #1304 merged the deterministic post-refresh continuation:
+## Refresh -> exact resident execution
 
 ```text
 already-local canonical source changes
@@ -65,33 +59,17 @@ already-local canonical source changes
 -> real round-trip attempt
 ```
 
-The request `RESIDENT-EXEC-STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001` grants no execution, claim, fence, heartbeat, route, credential, transition, repository, or source-fetch authority.
+The resident request grants no execution, claim, fence, heartbeat, route, credential, transition, repository, or source-fetch authority.
 
-## Control-plane source-package remediation
+## Control-plane source transport
 
-`.github` PR #1305 merged `stegverse.control-plane` under the existing `stegverse.source-package/v1` contract and a bounded `/intr/source-package` ingress on the existing profiled HIL/Universal InTr listener. LLM-adapter PR #330 merged the matching public same-Gateway projection.
+`.github` PR #1305 merged `stegverse.control-plane` under `stegverse.source-package/v1` and a bounded `/intr/source-package` ingress on the existing profiled HIL/Universal InTr listener. LLM-adapter PR #330 merged the matching public same-Gateway projection.
 
-Package invariants:
+Only the existing static control-plane source surface is writable. `.git`, runtime receipts, checkpoints, events, heartbeat state, monolithic mutable worker state, claims/fences, and other mutable runtime state remain forbidden package targets.
 
-```text
-component_id = stegverse.control-plane
-package_version = 1.0.0
-credential_material_included = false
-authority_effect = NONE_SOURCE_TRANSPORT_ONLY
-TVC_RELAY_EGRESS origin required
-TVC authorization-id required
-exact HTTP body SHA-256 required
-```
+## Current-iPhone first-hop bootstrap
 
-Only the existing static control-plane source surface is writable. `.git`, runtime receipts, checkpoints, events, heartbeat state, monolithic mutable worker state, claims/fences, and other mutable runtime state are forbidden package targets.
-
-This closes steady-state source acquisition after a resident already has the package-capable ingress. It does not by itself solve the first stale-control-plane bootstrap hop.
-
-## First stale-control-plane bootstrap remediation
-
-The canonical current-iPhone path already had a same-device organization allocator bootstrap under Site `stegos-node/`. Inspection found that public Site was still serving the original September 2 two-task allocator/package, so it could not see later successor tasks.
-
-A fresh non-overlapping allocator successor was therefore created rather than widening or reactivating TASK-2026-0008:
+The first stale-control-plane hop uses the established current-iPhone StegOS Node and canonical organization allocator. TASK-2026-0010 is the fresh Site-scoped successor for the current-iPhone TestFlight static bootstrap:
 
 ```text
 TASK-2026-0010
@@ -101,60 +79,61 @@ workspace: claim/current-iphone-testflight-static-bootstrap-r1
 source successor: StegVerse-Labs/StegOS/release/current-iphone-site-projection/successors/current-iphone-testflight-static-bootstrap.json
 ```
 
-`.github` PR #1306 merged the four-task current-iPhone allocator catalog and exact TASK-0010 source binding. Its regression proves retained G3/G4/G5 allocator state can preserve prior claims and select TASK-0010 only at monotonic generation/fence 6 when its disjoint Site scope is admissible.
+The physical iPhone produced authentic retained allocator state through G5. That evidence exposed two TASK-0010 scope collisions, which `.github#1308` removed. Subsequent retries exposed stale browser/service-worker delivery, which Site #1185 and #1187 repaired with network-only allocator assets, versioned source binding, and a never-before-used immutable entry.
 
-Site PR #1181 then refreshed only the public `stegos-node/` bootstrap transport copies to the exact merged allocator bytes. During validation it also repaired one stale HIL source assertion that incorrectly required the historical two-profile Universal InTr literal after `MasterRecords:SV001Custody` had already been canonically added. All four Site PR gates passed.
+## Verified allocator auto-execution
 
-The post-merge push workflow `StegOS Node Public Observation` run `34424948923` completed successfully against the deployed `https://stegverse.org/stegos-node/` surface. Site PR #1182 subsequently terminalized the bootstrap repair claim.
+Site PR #1188 removed the unnecessary manual `Run canonical allocation` interaction. The new immutable entry is:
 
-Current first-hop topology is therefore:
+```text
+https://stegverse.org/stegos-node/org-allocator-bootstrap-auto.html
+```
+
+The browser remains only the local execution carrier. Canonical organization allocator authority remains in `StegVerse-Labs/.github`.
+
+Auto-commit is allowed only after all of these predicates pass:
+
+```text
+established current-iPhone node/device continuity validates
++ exact node journal replay passes
++ canonical portable allocator package validates
++ source_binding.task_0010_git_blob_sha == 248bed8cf5428c3ba759ee0d34db5fec8949a835
++ retained allocator state already exists
++ canonical allocator preview runs against a non-persistent cloned store
++ preview blocked_missing_dependency_declaration is empty
++ preview queued set contains exactly one successor
++ preview selects TASK-2026-0010
++ preview generation == retained generation + 1
+-> invoke the same canonical allocator exactly once against the real IndexedDB CAS store
+-> committed task/generation must equal preview
+-> append same-device execution evidence to the established StegOS node journal
+```
+
+Any mismatch fails closed. No allocator-state reset, alternate eligibility implementation, Site claim authority, browser claim authority, HeartBeat execution authority, GitHub runtime authority, second user-operated device, or hosted fallback is introduced.
+
+This removes the manual allocator button as an architectural progression requirement. A page/runtime carrier must still be executing on iOS for browser-resident JavaScript to run; iOS does not provide an always-on unrestricted background web runtime. Once the carrier is active, the allocator transition itself is automatic and deterministic.
+
+## Current progression
 
 ```text
 current iPhone established StegOS Node continuity
--> deployed current four-task canonical allocator package
--> existing IndexedDB portable allocator state / atomic CAS
--> TASK-2026-0010 fresh claim/fence when physically executed and admissible
--> only then project exact TestFlight/WASM static successor bytes into Site
+-> verified allocator auto-execution carrier
+-> authentic TASK-2026-0010 claim/fence if retained G5 state remains admissible
+-> project exact TestFlight/WASM static successor bytes into Site under TASK-0010
 -> current-iPhone TestFlight/bootstrap materialization
 -> resident obtains current source-capable control plane
--> steady-state /intr/source-package path available for later control-plane source transport
+-> steady-state /intr/source-package source transport
 -> existing local source refresh + exact resident dispatch
 -> relay return-path runtime rerun
 ```
 
-## Current physical gate
-
-No authentic TASK-2026-0010 claim receipt has appeared in repository/runtime custody. The deployed `stegos-node/org-allocator-bootstrap.html` verifies established current-iPhone continuity automatically, loads the exact current allocator package, and then deliberately waits for the `Run canonical allocation` control. Its current source does not automatically invoke the allocator after continuity verification.
-
-The required physical action is therefore bounded to the established current iPhone:
-
-```text
-open https://stegverse.org/stegos-node/org-allocator-bootstrap.html
--> continuity verified
--> Run canonical allocation
--> expected selected_task_id = TASK-2026-0010 if retained current state is collision-free
--> retain/export generated allocator evidence if the page does not otherwise surface it into canonical custody
-```
-
-The expected G6/fence-6 value is a source-tested continuation from retained G5 state, not a runtime claim. If authentic retained state differs, the allocator's actual returned generation/fence is authoritative and must be reconciled instead of forcing 6.
+No authentic TASK-2026-0010 G6/fence-6 receipt is yet present in repository custody. The previous manual-button gate is retired; the next evidence condition is the result of the verified auto-execution entry on the established current iPhone.
 
 ## Execution entrypoints
 
-Targeted execution remains:
-
 ```text
 python scripts/run_worker_runtime.py --task-id SHWP-STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001
-```
-
-Portable already-local refresh + execution remains:
-
-```text
 python scripts/refresh_and_execute_resident_task.py --task-id SHWP-STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001
-```
-
-Control-plane delta package construction is source-side only:
-
-```text
 python scripts/build_control_plane_source_package.py --out /tmp/stegverse-control-plane.package.json
 ```
 
@@ -171,8 +150,8 @@ round_trip_result.interlock_ingestion_verified=true
 round_trip_result.canonical_transition_committed=false
 ```
 
-No such terminal receipt is currently present in repository custody. The next progression condition is the authentic current-iPhone TASK-0010 allocator receipt, followed by its separately scoped Site TestFlight static projection and current-iPhone bootstrap materialization.
+No such terminal receipt is currently present in repository custody.
 
 ## README impact
 
-The root README already documents canonical source-shard recovery, local-only resident source refresh, WorkerCoordinator authority, TV/TVC credential authority, InTr transition authority and non-authorizing HeartBeat. This scoped handoff records the source-transport/bootstrap specialization; no authority model or repository-wide execution concept is changed by this documentation update.
+The root README already documents canonical source-shard recovery, local-only resident source refresh, WorkerCoordinator authority, TV/TVC credential authority, InTr transition authority, and non-authorizing HeartBeat. This handoff records the current-iPhone bootstrap trigger specialization; no repository-wide authority model changes.
