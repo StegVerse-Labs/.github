@@ -1,0 +1,143 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
+  "correlation_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
+  "root_correlation_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
+  "parent_task_id": null,
+  "goal": "Make the sovereign single-device StegOS Device <-> KnowledgeVault <-> SKAP Vault lane bidirectionally functional through canonical adjacent Interlock/InTr hops, TV/TVC credential authority, exact packet custody, receipt hash lineage, and authentic readback without hosted runtime fallback or a second user-operated device.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "50000000102000",
+  "source_refs": [
+    "KV_CONNECTION_REVALIDATION_COSV_MIRROR_HANDOFF.md",
+    "KV_CONNECTION_REVALIDATION_WORKER_MIRROR_HANDOFF.md",
+    "docs/KV_SKAP_OPERATIONAL_INTR_TRANSPORT_MIRROR_HANDOFF.md",
+    "docs/DEVICE_KV_INTR_SOVEREIGN_OBSERVATION_MIRROR_HANDOFF.md",
+    "management/UNIVERSAL_DATA_TRANSPORT_INVARIANT.json",
+    "StegVerse-Labs/continuity-vault-kit/KV_MULTI_INSTANCE_COSV_BINDING_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegOS/stegos/universal_intr_transport.py",
+    "StegVerse-Labs/StegOS/stegos/intr_backbone.py",
+    "StegVerse-Labs/StegOS/stegos/device_kv_skap_roundtrip.py",
+    "StegVerse-Labs/StegOS/docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/TVC/tools/skap_kv_account_metadata_ingress.py"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/continuity-vault-kit",
+      "StegVerse-Labs/StegOS",
+      "StegVerse-Labs/TVC",
+      "StegVerse-Labs/Site"
+    ],
+    "components": [
+      "device-kv-bidirectional-intr",
+      "kv-skap-bidirectional-intr",
+      "device-kv-skap-single-roundtrip-lineage",
+      "tvc-skap-credential-reference-resolution",
+      "exact-packet-hash-verification",
+      "resident-kv-readback",
+      "resident-skap-readback",
+      "cloud-kv-provider-connect-verify",
+      "multi-instance-kv-state"
+    ]
+  },
+  "dependencies": [],
+  "blockers": [
+    "AUTHENTIC_CURRENT_DEVICE_FOUR_LEG_INTR_ROUNDTRIP_NOT_YET_OBSERVED",
+    "AUTHENTIC_SKAP_KV_RETURN_RECEIPT_NOT_YET_OBSERVED",
+    "GOOGLE_DRIVE_CONNECT_VERIFY_PROVIDER_EXECUTION_PENDING",
+    "GOOGLE_DRIVE_KV2_MATERIALIZATION_PENDING"
+  ],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+    "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
+    "SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001",
+    "SS-KV-SKAP-SOCIAL-RELEASE-001",
+    "STEGVERSE-UNIVERSAL-INTR-TRANSPORT-001",
+    "FEDERAL-HEALTH-PII-EXCEEDANCE-HARDENING-001"
+  ],
+  "existing_evidence_refs": [
+    "StegVerse-Labs/continuity-vault-kit#205@5ad01e04d6693b2ab8e19e9214e318d91d6dad74",
+    "StegVerse-Labs/StegOS#326:SOURCE_VALIDATION_IN_PROGRESS",
+    "SITE-CLOUD-KV-4347408852127319cbda574f02e03edb:RESIDENT_INGRESS_OBSERVED"
+  ],
+  "expected_evidence_predicates": [
+    "DEVICE_KV_REQUEST_AND_RETURN_USE_CANONICAL_ADJACENT_INTR_HOPS",
+    "KV_SKAP_REQUEST_AND_RETURN_USE_CANONICAL_ADJACENT_INTR_HOPS",
+    "DEVICE_KV_SKAP_ROUNDTRIP_IS_ONE_RECEIPT_HASH_CHAIN",
+    "CURRENT_PACKET_BYTES_MATCH_INTENT_HASH_AT_COMPLETION",
+    "EVERY_COMPLETED_HOP_HAS_VERIFIED_INTERLOCK_RECEIPT",
+    "SKAP_CREDENTIAL_MATERIAL_NEVER_ENTERS_ORDINARY_KV_DEVICE_OR_REPOSITORY_STATE",
+    "TVC_REMAINS_SOLE_CREDENTIAL_AUTHORITY",
+    "TRANSPORT_DOES_NOT_TRANSFER_EXECUTION_OR_TRANSITION_AUTHORITY",
+    "CURRENT_DEVICE_RUNTIME_EMITS_ALL_FOUR_ADMITTED_HOP_RECEIPTS",
+    "KV_AND_SKAP_TERMINAL_STATE_EXACT_READBACK_VERIFIED",
+    "NO_HOSTED_RUNTIME_FALLBACK_USED",
+    "NO_SECOND_USER_OPERATED_DEVICE_REQUIRED"
+  ],
+  "runtime_requirements": {
+    "capabilities": [
+      "device_kv_intr_bidirectional",
+      "kv_skap_intr_bidirectional",
+      "tvc_skap_reference_verification",
+      "exact_packet_receipt_lineage",
+      "kv_skap_exact_readback"
+    ],
+    "environment": "CURRENT_USER_IPHONE_AND_SOVEREIGN_STEGOS_RUNTIME",
+    "direction": "DEVICE_SYSTEM_TO_KV_TO_SKAP_VAULT_TO_KV_TO_DEVICE_SYSTEM",
+    "mutation_required": true,
+    "deployment_required": true,
+    "current_observation_required": true
+  },
+  "runtime_resolution": {
+    "current_executor": "SOVEREIGN_RESIDENT_AND_CURRENT_DEVICE_ONLY",
+    "authority_basis": "Interlock/InTr per-hop admission with TV/TVC credential authority",
+    "unattended_runtime": false
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": "handoffs/KV-CONNECTION-REVALIDATION-WORKER-001.json",
+    "fence_ref": null,
+    "projection_only": false
+  },
+  "human_action_ref": "control/current-user-ios-interaction-queue.json",
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": "KV_CONNECTION_REVALIDATION_COSV_MIRROR_HANDOFF.md",
+    "provider_binding_source_complete": true,
+    "device_kv_source_complete": true,
+    "kv_skap_source_complete": true,
+    "single_roundtrip_composition_source_complete": false,
+    "authentic_four_leg_roundtrip_observed": false,
+    "kv_skap_exact_readback_observed": false,
+    "google_drive_kv2_materialized": false
+  },
+  "allowed_next_transitions": [
+    "MERGE_DEVICE_KV_SKAP_SINGLE_ROUNDTRIP_COMPOSITION_AFTER_GREEN_VALIDATION",
+    "BIND_EXISTING_RESIDENT_DEVICE_KV_AND_KV_SKAP_PRODUCERS_TO_ROUNDTRIP_PROOF",
+    "RECONCILE_CURRENT_IOS_INTERACTION_QUEUE_BEFORE_ANY_USER_DEVICE_MUTATION",
+    "EXECUTE_AUTHENTIC_NON_DESTRUCTIVE_DEVICE_KV_SKAP_ROUNDTRIP",
+    "RETAIN_FOUR_HOP_RECEIPTS_AND_EXACT_READBACK"
+  ],
+  "handoff_projection_refs": [
+    "KV_CONNECTION_REVALIDATION_COSV_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/continuity-vault-kit/KV_MULTI_INSTANCE_COSV_BINDING_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegOS/docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md",
+    "docs/KV_SKAP_OPERATIONAL_INTR_TRANSPORT_MIRROR_HANDOFF.md",
+    "docs/DEVICE_KV_INTR_SOVEREIGN_OBSERVATION_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "master_records_reality_authority": true,
+    "interlock_intr_required_for_governed_ingress_egress": true,
+    "credential_authority": "TV_TVC",
+    "github_runtime_authority": "NONE",
+    "heartbeat_execution_authority": false,
+    "model_output_authority": false,
+    "hosted_execution_fallback": false
+  }
+}
