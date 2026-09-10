@@ -4,14 +4,15 @@
   "correlation_id": "SS-KV-SKAP-SOCIAL-RELEASE-001",
   "root_correlation_id": "SS-KV-SKAP-SOCIAL-RELEASE-001",
   "parent_task_id": null,
-  "goal": "Keep StegSocials drafts private by default in Personal-KV and permit public Facebook, LinkedIn, or Instagram release only through an explicit single-use participant grant gated by StegID, TV/TVC SKAP custody, double-interlock evidence, exact content/platform/account binding, replay protection, and a native governed ephemeral StegBrowser session.",
+  "goal": "Keep StegSocials drafts private by default in Personal-KV and permit public Facebook, LinkedIn, or Instagram release only through either an exact single-use participant grant or an explicitly bounded participant-approved multi-post group, gated by StegID, TV/TVC SKAP custody, double-interlock evidence, exact source/claim/content/platform/account binding, replay protection, durable atomic use-state, and a native governed ephemeral StegBrowser session.",
   "coordination_state": "ACTIVE",
   "checkout_state": "BLOCKED_RUNTIME_ACTIVATION",
   "cosv_task_vector": "60000000102000",
   "source_refs": [
     "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_NATIVE_STEGBROWSER_TRANSPORT_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegSocials/tasks/SS-KV-SKAP-SOCIAL-RELEASE-001.yaml",
-    "StegVerse-Labs/StegSocials@794489e59c386f7865752be22e08b12b6af5f7c8",
+    "StegVerse-Labs/StegSocials@3139c290df6279db517fe564398a9ea606df4be4",
+    "StegVerse-Labs/StegSocials@59f4ef16f60ee8494eb08b41845a95fcc266ab2c",
     "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_ECOSYSTEM_EPHEMERAL_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegBrowser#4",
     "StegVerse-Labs/TVC@024a06397e6fc1b3a461c5d71f7bbc513843493c"
@@ -22,6 +23,8 @@
     "components": [
       "personal-kv-private-draft-reference",
       "single-use-public-release-grant",
+      "bounded-scope-post-group-grant",
+      "bounded-group-atomic-use-state",
       "stegid-approval-binding",
       "tv-tvc-skap-social-credential-custody",
       "double-interlock-evidence",
@@ -36,20 +39,21 @@
     ]
   },
   "dependencies": [
-    {"dependency_id":"DEP-SS-SOCIAL-KV","kind":"STORAGE","state":"IMPLEMENTED_NOT_RUNTIME_OBSERVED","ref":"Personal-KV/_Vault/SKAP","disposition":"REQUIRE_ACTUAL_AUTHORIZED_RESIDENT_SHARED_ROOT_OBSERVATION"},
+    {"dependency_id":"DEP-SS-SOCIAL-KV","kind":"STORAGE","state":"SOURCE_CAS_VALIDATED_RUNTIME_NOT_OBSERVED","ref":"Personal-KV/StegSocials/PostGroupState plus Personal-KV/_Vault/SKAP","disposition":"REFERENCE_COMPARE_AND_SWAP_DURABILITY_MERGED; REQUIRE_EQUIVALENT_AUTHENTIC_PERSONAL_KV_NATIVE_OR_PROVIDER_CONDITIONAL_WRITE_AND_SHARED_ROOT_OBSERVATION"},
     {"dependency_id":"DEP-SS-SOCIAL-SKAP","kind":"CREDENTIAL_CUSTODY","state":"SOURCE_VALIDATED_MERGED_RUNTIME_BLOCKED","ref":"StegVerse-Labs/TVC@024a06397e6fc1b3a461c5d71f7bbc513843493c","disposition":"AUTHENTIC_RESIDENT_SKAP_CUSTODY_AND_LEASE_LIVENESS_REMAIN_REQUIRED"},
-    {"dependency_id":"DEP-SS-SOCIAL-STEGBROWSER","kind":"NATIVE_EPHEMERAL_TRANSPORT","state":"SOURCE_PARTIAL_RUNTIME_BLOCKED","ref":"StegVerse-Labs/StegBrowser#4","disposition":"COMPLETE_NATIVE_BROWSER_RUNTIME_BINDING_AND_CREDENTIALED_PLATFORM_ACTION_SUPPORT_WITH_TERMINAL_SESSION_DESTRUCTION"},
-    {"dependency_id":"DEP-SS-SOCIAL-WINDSOR","kind":"RETIRED_TRANSPORT","state":"RETIRED_BY_USER_DECISION","ref":"windsor.ai","disposition":"HISTORICAL_EVIDENCE_ONLY; NO_RECONNECT_SUPPORT_SCOPE_REPAIR_OR_PUBLICATION_DEPENDENCY"},
+    {"dependency_id":"DEP-SS-SOCIAL-STEGBROWSER","kind":"NATIVE_EPHEMERAL_TRANSPORT","state":"SOURCE_PARTIAL_RUNTIME_BLOCKED","ref":"StegVerse-Labs/StegBrowser#4","disposition":"COMPLETE_NATIVE_BROWSER_RUNTIME_BINDING, RETAINED_NODE_PROOF, EXTERNALLY_ADMITTED_INTR_LEASE, AND_CREDENTIALED_PLATFORM_ACTION_SUPPORT_WITH_TERMINAL_SESSION_DESTRUCTION"},
     {"dependency_id":"DEP-SS-SOCIAL-CUSTODY","kind":"CUSTODY","state":"IMPLEMENTED_PENDING_REAL_RECEIPT","ref":"MR-STEGSOCIALS-RECEIPT-CUSTODY-001","disposition":"IMPORT_AND_RECONSTRUCT_ONLY_AFTER_AUTHENTIC_NATIVE_SOURCE_RECEIPT_EXISTS"}
   ],
   "blockers": [
     {"blocker_id":"RESIDENT-SKAP-SOCIAL-CREDENTIAL-ACTIVATION","owner":"TV/TVC resident sole-host runtime","state":"BLOCKED_DEPENDENCY_MACHINE_OWNED","release_condition":"Actual resident/shared Personal-KV _Vault/SKAP root, social credential custody, active lease/liveness, and exact double-interlock receipts are observed."},
-    {"blocker_id":"STEGBROWSER-NATIVE-SOCIAL-PUBLISH-RUNTIME","owner":"StegVerse-Labs/StegBrowser plus StegVerse-Labs/StegSocials","state":"BLOCKED_IMPLEMENTATION_AND_RUNTIME_PROOF","release_condition":"StegBrowser consumes an externally admitted ephemeral lease, uses TV/TVC-provided ephemeral platform session material, performs one bounded publication, emits publication evidence and a terminal session_state_destroyed receipt, then feeds the result into KV and Master Records custody."}
+    {"blocker_id":"STEGBROWSER-NATIVE-SOCIAL-PUBLISH-RUNTIME","owner":"StegVerse-Labs/StegBrowser plus StegVerse-Labs/StegSocials","state":"BLOCKED_IMPLEMENTATION_AND_RUNTIME_PROOF","release_condition":"StegBrowser consumes an externally admitted ephemeral lease, uses TV/TVC-provided ephemeral platform session material, performs bounded publication, emits publication evidence and terminal session_state_destroyed receipt, then feeds the result and atomic use-state into KV and Master Records custody."},
+    {"blocker_id":"BOUNDED-SCOPE-POST-GROUP-RUNTIME","owner":"StegVerse-Labs/StegSocials plus Personal-KV/InTr runtime","state":"SOURCE_ATOMIC_STATE_VALIDATED_RUNTIME_PROOF_PENDING","release_condition":"Authentic Personal-KV supplies equivalent conditional-write/exclusive-transaction semantics around each proven group publication, multiple in-scope uses succeed without renewed approval, and replay/widening/concurrent stale writes fail closed."}
   ],
   "systemic_incident_ref": null,
   "adjacent_task_refs": ["STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001", "SS-EVIDENCE-COMPARISON-001", "MR-STEGSOCIALS-RECEIPT-CUSTODY-001"],
   "existing_evidence_refs": [
-    "StegVerse-Labs/StegSocials@794489e59c386f7865752be22e08b12b6af5f7c8:windsor-retired-stegbrowser-pivot-merged",
+    "StegVerse-Labs/StegSocials@3139c290df6279db517fe564398a9ea606df4be4:bounded-post-group-source-and-validation-merged",
+    "StegVerse-Labs/StegSocials@59f4ef16f60ee8494eb08b41845a95fcc266ab2c:atomic-bounded-group-state-store-and-validation-merged",
     "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_STEGBROWSER_OBSERVATION_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_ECOSYSTEM_EPHEMERAL_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegBrowser#4",
@@ -58,7 +62,9 @@
   ],
   "expected_evidence_predicates": [
     "PRIVATE_DRAFT_REMAINS_PERSONAL_VIEW_ONLY_WITHOUT_RELEASE_GRANT",
-    "PUBLIC_RELEASE_GRANT_IS_EXACT_SINGLE_USE_UNEXPIRED_AND_CONTENT_HASH_BOUND",
+    "PUBLIC_RELEASE_GRANT_IS_EXACT_SINGLE_USE_UNEXPIRED_AND_CONTENT_HASH_BOUND_OR_BOUNDED_GROUP_IS_EXPLICITLY_PARTICIPANT_APPROVED_AND_SCOPE_BOUND",
+    "BOUNDED_GROUP_SOURCE_EVIDENCE_CLAIM_TARGET_COUNT_CADENCE_EXPIRY_AND_TRANSFORMATIONS_REMAIN_WITHIN_APPROVED_ENVELOPE",
+    "BOUNDED_GROUP_USE_STATE_COMMITS_ATOMICALLY_AFTER_PROVEN_PUBLICATION_AND_STALE_OR_REPLAYED_WRITERS_FAIL_CLOSED",
     "STEGID_APPROVAL_RECEIPT_MATCHES_RELEASE",
     "TV_TVC_SKAP_CUSTODY_AND_ACTIVE_LEASE_ARE_AUTHENTICALLY_OBSERVED",
     "DOUBLE_INTERLOCK_RECEIPTS_MATCH_RELEASE",
@@ -67,26 +73,26 @@
     "LIVE_PLATFORM_RESULT_IS_COMPLETE_AND_PUBLICATION_PROVEN",
     "STEGBROWSER_TERMINAL_RECEIPT_REPORTS_SESSION_STATE_DESTROYED_TRUE",
     "PUBLICATION_RECEIPT_CONTAINS_REAL_PLATFORM_POST_ID_URL_AND_EXACT_CONTENT_HASH",
-    "PUBLICATION_RECORD_WRITES_TO_AUTHORIZED_PERSONAL_KV_AND_READBACK_VERIFIES",
+    "PUBLICATION_RECORD_AND_UPDATED_GROUP_STATE_WRITE_TO_AUTHORIZED_PERSONAL_KV_AND_READBACK_VERIFY",
     "MASTER_RECORDS_IMPORT_AND_RECONSTRUCTION_PASS"
   ],
   "runtime_requirements": {
-    "capabilities": ["personal_kv_read", "skap_credential_custody", "stegid_approval", "double_interlock", "stegbrowser_ephemeral_execute", "platform_publish", "publication_receipt", "kv_write", "custody_reconstruction"],
+    "capabilities": ["personal_kv_read", "personal_kv_conditional_write", "skap_credential_custody", "stegid_approval", "double_interlock", "stegbrowser_ephemeral_execute", "platform_publish", "publication_receipt", "kv_write", "custody_reconstruction"],
     "environment": "TV_TVC_RESIDENT_PLUS_PERSONAL_KV_PLUS_STEGSOCIALS_PLUS_STEGBROWSER_PLUS_MASTER_RECORDS",
-    "direction": "PERSONAL_KV_TO_TV_TVC_SKAP_TO_STEGBROWSER_TO_PLATFORM_TO_KV_CUSTODY_TO_MASTER_RECORDS",
+    "direction": "PERSONAL_KV_TO_TV_TVC_SKAP_TO_STEGBROWSER_TO_PLATFORM_TO_ATOMIC_GROUP_STATE_AND_KV_CUSTODY_TO_MASTER_RECORDS",
     "mutation_required": true,
     "deployment_required": true,
     "current_observation_required": true
   },
   "runtime_resolution": {
     "current_executor": "native StegBrowser ephemeral runtime bound to TV/TVC resident credential/session material",
-    "authority_basis": "existing TV/TVC credential authority plus exact participant release grant plus admitted StegBrowser lease",
+    "authority_basis": "existing TV/TVC credential authority plus exact participant release grant or participant-approved bounded group plus admitted StegBrowser lease",
     "unattended_runtime": false
   },
-  "worker_claim": {"authority":"MACHINE_RUNTIME_PLUS_PARTICIPANT_RELEASE","claim_ref":"StegVerse-Labs/StegSocials/docs/STEGSOCIALS_NATIVE_STEGBROWSER_TRANSPORT_MIRROR_HANDOFF.md","fence_ref":"double-interlock plus StegBrowser lease and destruction receipt required","projection_only":false},
-  "human_action_ref": "Windsor is retired. No reconnect, reauthorization, support, or provider-scope repair is required. Manual work is deferred until the native StegBrowser lane reaches an unavoidable owner-interaction boundary and that exact action is specified by its handoff.",
+  "worker_claim": {"authority":"MACHINE_RUNTIME_PLUS_PARTICIPANT_RELEASE","claim_ref":"StegVerse-Labs/StegSocials/docs/STEGSOCIALS_NATIVE_STEGBROWSER_TRANSPORT_MIRROR_HANDOFF.md","fence_ref":"double-interlock plus atomic group use-state plus StegBrowser lease and destruction receipt required","projection_only":false},
+  "human_action_ref": "Manual work is deferred until the native StegBrowser/SKAP lane reaches an unavoidable owner-interaction boundary and that exact action is specified by its handoff.",
   "completion": {"claimed":false,"validated":true,"reconciliation_ref":"master-records/orchestration/tasks/MR-STEGSOCIALS-RECEIPT-CUSTODY-001.yaml","activation_proof_complete":false},
-  "allowed_next_transitions": ["COMPLETE_STEGBROWSER_RUNTIME_BINDING", "OBSERVE_RESIDENT_SKAP_ACTIVATION", "EXECUTE_NATIVE_GOVERNED_PROVIDER_RELEASE_ONCE", "WRITE_PUBLICATION_TO_KV", "RECONSTRUCT_IN_MASTER_RECORDS"],
+  "allowed_next_transitions": ["BIND_PERSONAL_KV_CONDITIONAL_WRITE", "COMPLETE_STEGBROWSER_RUNTIME_BINDING", "OBSERVE_RESIDENT_SKAP_ACTIVATION", "EXECUTE_NATIVE_GOVERNED_PROVIDER_RELEASE_ONCE", "EXECUTE_BOUNDED_MULTI_POST_GROUP", "WRITE_PUBLICATION_TO_KV", "RECONSTRUCT_IN_MASTER_RECORDS"],
   "handoff_projection_refs": ["StegVerse-Labs/StegSocials/docs/STEGSOCIALS_NATIVE_STEGBROWSER_TRANSPORT_MIRROR_HANDOFF.md", "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_ECOSYSTEM_EPHEMERAL_MIRROR_HANDOFF.md", "StegVerse-Labs/TVC/docs/SOCIAL_PROVIDER_SKAP_ARTICULATION_MIRROR_HANDOFF.md", "master-records/orchestration/docs/MASTER_RECORDS_MIRROR_HANDOFF.md"],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
@@ -95,9 +101,9 @@
     "device_has_durable_secret_custody": false,
     "tv_tvc_remains_sole_credential_authority": true,
     "stegbrowser_is_ephemeral_execution_surface_not_publication_authority": true,
-    "windsor_is_required_transport": false,
     "private_draft_is_release_approval": false,
     "participant_release_is_required": true,
+    "bounded_group_does_not_widen_participant_authority": true,
     "master_records_owns_receipt_custody_not_publication": true
   }
 }
