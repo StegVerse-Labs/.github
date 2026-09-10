@@ -13,6 +13,7 @@
     "StegVerse-Labs/StegOS/docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegOS/stegos/sensitive_data_minimum_necessary.py",
     "StegVerse-Labs/StegOS/stegos/intr_sensitive_data_binding.py",
+    "StegVerse-Labs/StegOS/stegos/sensitive_data_audit_receipt.py",
     "StegVerse-org/StegVerse-SDK/stegverse/security_posture.py",
     "StegVerse-org/StegVerse-SDK/stegverse/security_posture_binding.py"
   ],
@@ -41,7 +42,8 @@
     "SDK-SECURITY-POSTURE-PACKAGE-001",
     "SDK-TASK-SCOPED-EPHEMERAL-POSTURE-002",
     "INTR-SENSITIVE-DATA-MANIFEST-PAYLOAD-BINDING-001",
-    "INTR-SENSITIVE-DATA-RAW-PHI-FREE-AUDIT-RECEIPT-002"
+    "INTR-SENSITIVE-DATA-RAW-PHI-FREE-AUDIT-RECEIPT-002",
+    "INTR-SENSITIVE-DATA-AUTOMATIC-DISPOSITION-PROOF-003"
   ],
   "existing_evidence_refs": [
     "StegVerse-Labs/StegOS#320",
@@ -49,8 +51,10 @@
     "StegVerse-org/StegVerse-SDK#168",
     "StegVerse-org/StegVerse-SDK#170",
     "StegVerse-Labs/StegOS#322",
+    "StegVerse-Labs/StegOS#323",
     "StegVerse-org/StegVerse-SDK@4601a6537270167edf72d7eecec28aad8de3fe76:validation=34506885779_SUCCESS",
-    "StegVerse-Labs/StegOS@05848191ea2715aa9bdf37d63e22622744128a9d:validation=34506947325_SUCCESS"
+    "StegVerse-Labs/StegOS@05848191ea2715aa9bdf37d63e22622744128a9d:validation=34506947325_SUCCESS",
+    "StegVerse-Labs/StegOS@d62ce42b38f8006a22de1fe530bc47e2be21fdcc:validation=34507366997_SUCCESS"
   ],
   "expected_evidence_predicates": [
     "MINIMUM_NECESSARY_SENSITIVE_DATA_ADMISSION_FAILS_CLOSED",
@@ -88,10 +92,11 @@
     "claimed": false,
     "validated": false,
     "reconciliation_ref": "docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md",
-    "exact_intr_binding_source_complete": true
+    "exact_intr_binding_source_complete": true,
+    "raw_phi_free_audit_receipt_source_complete": true
   },
   "allowed_next_transitions": [
-    "IMPLEMENT_INTR_SENSITIVE_DATA_RAW_PHI_FREE_AUDIT_RECEIPT_002"
+    "IMPLEMENT_INTR_SENSITIVE_DATA_AUTOMATIC_DISPOSITION_PROOF_003"
   ],
   "handoff_projection_refs": [
     "docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md",
