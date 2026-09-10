@@ -1,25 +1,24 @@
 #!/usr/bin/env python3
-"""Backward-compatible HIL profile over the shared Universal InTr ingress.
-
-The historic HIL profile schema remains stable for existing probes. POST
-/intr/materialization is handled by the shared profiled ingress for HIL/SV002
-and additionally admits the SV-DN-1 established-web-bootstrap browser evidence
-profile without changing either existing path.
-"""
+"""Backward-compatible HIL profile over the shared Universal InTr ingress."""
 from __future__ import annotations
 
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 from typing import Any, Mapping
 
 from workers import universal_intr_profiled_ingress as shared
 from workers import sv_dn1_browser_evidence_intr_ingress as svdn1
+from workers import control_plane_source_package as controlpkg
 
 PROFILE_PATH = shared.PROFILE_PATH
+SOURCE_PACKAGE_PATH = "/intr/source-package"
 PROFILE_SCHEMA = "stegverse.hil-intr-materialization-ingress-profile/v1"
 PROFILE_AUTHORITY_EFFECT = "NONE_DISCOVERY_EVIDENCE_ONLY"
+SOURCE_PACKAGE_RECEIPT_DIR = Path("receipts/sovereign-network/control-plane-source-package")
+SOURCE_PACKAGE_MAX_BYTES = 8 * 1024 * 1024
 
 
 def build_profile(*, tls_enabled: bool) -> dict[str, Any]:
@@ -29,6 +28,7 @@ def build_profile(*, tls_enabled: bool) -> dict[str, Any]:
         "protocol": "InTr",
         "profile_path": PROFILE_PATH,
         "materialization_path": shared.INGRESS_PATH,
+        "control_plane_source_package_path": SOURCE_PACKAGE_PATH,
         "supported_origins": [shared.hil.ORIGIN_NODE, shared.hil.ORIGIN_RELAY, svdn1.ORIGIN],
         "direct_node_credential_requirement": "NONE",
         "direct_node_tvc_authorization_required": False,
@@ -38,6 +38,8 @@ def build_profile(*, tls_enabled: bool) -> dict[str, Any]:
         "second_user_device_required": False,
         "exact_request_validation_required": True,
         "write_once_queue_admission": True,
+        "control_plane_source_package_component": controlpkg.COMPONENT_ID,
+        "control_plane_source_package_execution_authority": "NONE",
         "tls_enabled": bool(tls_enabled),
         "public_tls_terminated_by": "STEGVERSE_SHARED_SERVICE_GATEWAY",
         "runtime_execution_attempted": False,
@@ -47,7 +49,7 @@ def build_profile(*, tls_enabled: bool) -> dict[str, Any]:
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": "NONE",
         "execution_authority": "NONE",
-        "additional_materialization_profiles": ["SV002:PublicObservation", svdn1.PROFILE],
+        "additional_materialization_profiles": ["SV002:PublicObservation", svdn1.PROFILE, controlpkg.COMPONENT_ID],
         "authority_effect": PROFILE_AUTHORITY_EFFECT,
     }
 
@@ -73,6 +75,66 @@ def _svdn1_transport_headers(headers: Mapping[str, str], body: bytes) -> str:
     return actual
 
 
+def _source_package_transport_headers(headers: Mapping[str, str], body: bytes) -> tuple[str, str]:
+    if len(body) > SOURCE_PACKAGE_MAX_BYTES:
+        raise ValueError("source_package_too_large")
+    if str(headers.get("X-StegVerse-Transport", "")) != "InTr":
+        raise ValueError("transport_header_mismatch")
+    if str(headers.get("X-StegVerse-Transport-Origin", "")) != shared.hil.ORIGIN_RELAY:
+        raise ValueError("control_plane_source_package_requires_tvc_relay")
+    authorization_id = str(headers.get("X-StegVerse-Authorization-Id", "")).strip()
+    if not authorization_id:
+        raise ValueError("authorization_id_header_required_for_relay")
+    content_type = str(headers.get("Content-Type", "")).split(";", 1)[0].strip().lower()
+    if content_type != "application/json":
+        raise ValueError("content_type_not_supported")
+    supplied = str(headers.get("X-StegVerse-Payload-SHA256", "")).lower()
+    actual = hashlib.sha256(body).hexdigest()
+    if len(supplied) != 64 or any(ch not in "0123456789abcdef" for ch in supplied) or supplied != actual:
+        raise ValueError("payload_sha256_header_mismatch")
+    return authorization_id, actual
+
+
+def admit_control_plane_source_package(*, runtime_root: Path, body: bytes, headers: Mapping[str, str]) -> dict[str, Any]:
+    authorization_id, transport_sha = _source_package_transport_headers(headers, body)
+    package = json.loads(body.decode("utf-8"))
+    if not isinstance(package, dict):
+        raise ValueError("source_package_object_required")
+    verified = controlpkg.validate_package(package)
+    package_root = Path(os.environ.get("STEGVERSE_SOURCE_PACKAGE_ROOT", str(Path.home() / ".stegverse/packages/source/v1"))).expanduser().resolve()
+    package_path = controlpkg.write_once_package(package_root, package)
+    source_value = str(os.environ.get("STEGVERSE_HEARTBEAT_SOURCE_ROOT") or "").strip()
+    materialization = None
+    state = "PACKAGE_RETAINED_SOURCE_ROOT_NOT_DECLARED"
+    if source_value:
+        source_root = Path(source_value).expanduser().resolve()
+        materialization = controlpkg.materialize_into_source(source_root, package)
+        state = "SOURCE_MATERIALIZED_VERIFIED"
+    receipt = {
+        "schema": "stegverse.control-plane-source-package-ingress/v1",
+        "state": state,
+        "component_id": controlpkg.COMPONENT_ID,
+        "source_identity": verified["source_identity"],
+        "file_count": verified["manifest"]["file_count"],
+        "transport_payload_sha256": transport_sha,
+        "transport_authorization_id": authorization_id,
+        "package_ref": str(package_path),
+        "source_materialization": materialization,
+        "network_source_fetch_performed": False,
+        "credential_material_included": False,
+        "request_grants_execution_authority": False,
+        "claim_or_fence_minted": False,
+        "heartbeat_grants_execution_authority": False,
+        "github_token_runtime_authority": "NONE",
+        "credential_authority": "TV/TVC",
+        "canonical_transition_committed": False,
+        "authority_effect": "NONE_SOURCE_TRANSPORT_AND_LOCAL_MATERIALIZATION_ONLY",
+    }
+    receipt_path = runtime_root / SOURCE_PACKAGE_RECEIPT_DIR / f"{verified['source_identity'][7:]}.json"
+    shared.hil._write_once(receipt_path, json.dumps(receipt, indent=2, sort_keys=True).encode("utf-8") + b"\n")
+    return receipt
+
+
 class ProfiledIngressHandler(shared.Handler):
     server: "ProfiledIngressServer"
 
@@ -83,7 +145,7 @@ class ProfiledIngressHandler(shared.Handler):
         self.send_json(200, build_profile(tls_enabled=self.server.tls_enabled))
 
     def do_POST(self) -> None:  # noqa: N802
-        if self.path != shared.INGRESS_PATH:
+        if self.path not in {shared.INGRESS_PATH, SOURCE_PACKAGE_PATH}:
             self.send_json(404, {"state": "NOT_FOUND", "authority_effect": shared.AUTHORITY_EFFECT})
             return
         try:
@@ -91,19 +153,23 @@ class ProfiledIngressHandler(shared.Handler):
         except ValueError:
             self.send_json(411, {"state": "REJECTED", "reason": "content_length_invalid", "authority_effect": shared.AUTHORITY_EFFECT})
             return
-        if length < 0 or length > shared.hil.MAX_REQUEST_BYTES:
+        limit = SOURCE_PACKAGE_MAX_BYTES if self.path == SOURCE_PACKAGE_PATH else shared.hil.MAX_REQUEST_BYTES
+        if length < 0 or length > limit:
             self.send_json(413, {"state": "REJECTED", "reason": "request_body_too_large", "authority_effect": shared.AUTHORITY_EFFECT})
             return
         body = self.rfile.read(length)
         try:
-            payload = json.loads(body.decode("utf-8"))
-            if isinstance(payload, dict) and payload.get("schema") == svdn1.TRANSPORT_SCHEMA:
-                transport_sha = _svdn1_transport_headers(self.headers, body)
-                receipt = svdn1.admit(runtime_root=self.server.runtime_root, payload=payload, transport_payload_sha256=transport_sha)
-            elif shared._is_sv002(payload):
-                receipt = shared.admit_sv002(runtime_root=self.server.runtime_root, body=body, headers=self.headers)
+            if self.path == SOURCE_PACKAGE_PATH:
+                receipt = admit_control_plane_source_package(runtime_root=self.server.runtime_root, body=body, headers=self.headers)
             else:
-                receipt = shared.hil.admit_materialization(runtime_root=self.server.runtime_root, body=body, headers=self.headers)
+                payload = json.loads(body.decode("utf-8"))
+                if isinstance(payload, dict) and payload.get("schema") == svdn1.TRANSPORT_SCHEMA:
+                    transport_sha = _svdn1_transport_headers(self.headers, body)
+                    receipt = svdn1.admit(runtime_root=self.server.runtime_root, payload=payload, transport_payload_sha256=transport_sha)
+                elif shared._is_sv002(payload):
+                    receipt = shared.admit_sv002(runtime_root=self.server.runtime_root, body=body, headers=self.headers)
+                else:
+                    receipt = shared.hil.admit_materialization(runtime_root=self.server.runtime_root, body=body, headers=self.headers)
         except Exception as exc:
             self.send_json(400, {"state": "REJECTED", "reason": str(exc), "authority_effect": shared.AUTHORITY_EFFECT})
             return
@@ -163,10 +229,11 @@ def main() -> int:
         "bound_port": port,
         "profile_path": PROFILE_PATH,
         "materialization_path": shared.INGRESS_PATH,
+        "control_plane_source_package_path": SOURCE_PACKAGE_PATH,
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": "NONE",
         "execution_authority": "NONE",
-        "additional_materialization_profiles": ["SV002:PublicObservation", svdn1.PROFILE],
+        "additional_materialization_profiles": ["SV002:PublicObservation", svdn1.PROFILE, controlpkg.COMPONENT_ID],
         "authority_effect": PROFILE_AUTHORITY_EFFECT,
     }, sort_keys=True))
     return 0
