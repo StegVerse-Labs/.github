@@ -38,7 +38,7 @@ def test_portable_allocator_package_is_exact_current_floor():
         "task_0007_git_blob_sha":"a5fd4662b2a370e8a86099c943b8d1ec18b93e19",
         "task_0008_git_blob_sha":"f534167633c867bbee6b397ae345b10ed502aa2b",
         "task_0009_git_blob_sha":"eeb661ca59f305ce8a86c2f46adced37056baec8",
-        "task_0010_git_blob_sha":"4a5100162b05e871f0983532b6be134b4d50166f",
+        "task_0010_git_blob_sha":"248bed8cf5428c3ba759ee0d34db5fec8949a835",
         "claims_git_blob_sha":"9e7eaf9cb1319dd570714a0c1806d7173a7ba7ff",
         "queue_git_blob_sha":"6cab961c8750495dab36d1a523980516b1ac3a5e",
     }
