@@ -1,0 +1,27 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:device-kv-skap-roundtrip-v1",
+      "authority_ref": "handoffs/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json#authority",
+      "capabilities": ["runtime_observation", "bounded_process_execution", "durable_state_reconstruction"],
+      "command": ["python", "workers/run_device_kv_skap_roundtrip_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_DEVICE_KV_SKAP_RUNTIME_ROOT",
+        "STEGVERSE_DEVICE_KV_SKAP_ROUNDTRIP_MANIFEST",
+        "STEGVERSE_DEVICE_KV_SKAP_ROUNDTRIP_OUTPUT"
+      ],
+      "notes": [
+        "Only non-secret local evidence paths may be forwarded.",
+        "The verifier consumes existing canonical InTr evidence and cannot mint receipts or transition authority.",
+        "Credential material is prohibited; TV/TVC remains sole credential authority.",
+        "Hosted runtime and second user-operated device substitutions are forbidden."
+      ],
+      "timeout_seconds": 120,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
