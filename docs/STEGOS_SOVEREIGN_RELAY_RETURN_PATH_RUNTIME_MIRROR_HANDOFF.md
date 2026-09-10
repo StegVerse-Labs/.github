@@ -5,7 +5,7 @@ Updated: 2026-09-10
 ```text
 goal_id: STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001
 task_id: SHWP-STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001
-state: RESIDENT_EXECUTION_WIRED / ARTIFACT_AUTODISCOVERY_MERGED / REFRESH_DISPATCH_MERGED / CONTROL_PLANE_SOURCE_PACKAGE_MERGED / REAL_LOOPBACK_TLS_RETURN_PATH_VERIFIED / LIVE_EXTERNAL_RETURN_PATH_RECEIPT_PENDING
+state: RESIDENT_EXECUTION_WIRED / ARTIFACT_AUTODISCOVERY_MERGED / REFRESH_DISPATCH_MERGED / CONTROL_PLANE_SOURCE_PACKAGE_MERGED / REAL_LOOPBACK_TLS_RETURN_PATH_VERIFIED / EPHEMERAL_LIFECYCLE_HARDENED / LIVE_EXTERNAL_RETURN_PATH_RECEIPT_PENDING
 credential_authority: TV/TVC
 github_runtime_authority: NONE
 heartbeat_execution_authority: false
@@ -16,6 +16,7 @@ control_plane_source_package_merge: 52f29fbba0751787ceaca5f1c9022bdcb37338fb
 stegos_round_trip_source_merge: dff05631a6bdab10311013c0da73339667867364
 stegos_real_return_integration_merge: f90e8cfc9c9e0409dc74d2bb258d8500e5ca07ca
 stegos_real_loopback_tls_merge: 1b2abfe8290da3d4e864af6419f2828b59b425aa
+ephemeral_lifecycle_hardening_merge: 252b9767b68bcd270f7c8c97ba665c80f951fe65
 cosv: 50000000101000
 ```
 
@@ -76,15 +77,54 @@ real TLS socket
 -> RETURN_PATH_VERIFIED
 ```
 
-A second identical call is required to make zero additional HTTP POSTs. It must reuse the persisted single-use EGRESS receipt and far-side ACK evidence and return the identical durable/Interlock result. Thus the tested loop now includes real network socket and TLS mechanics rather than a Python transport stub.
+A second identical call is required to make zero additional HTTP POSTs. It must reuse the persisted single-use EGRESS receipt and far-side ACK evidence and return the identical durable/Interlock result.
 
-The localhost certificate/key are deterministic test-only fixtures and confer no production credential authority. Hosted CI validates source behavior only; it is not asserted as sovereign production activation.
+## Ephemeral lifecycle hardening
+
+`.github` PR #1318 merged `252b9767b68bcd270f7c8c97ba665c80f951fe65` after organization-control, deterministic-repository, and Heartbeat Worker Project validation all passed.
+
+This closes the previously recorded August 18 release-blocking environment-boundary finding against `scripts/restart_sovereign_ephemeral_node.py`.
+
+Before this repair, the supervisor copied the complete parent environment and blanked only four named token variables. Arbitrary unrelated credentials or session material could therefore reach ephemeral carrier/WorkerCoordinator children despite the runtime receipt claiming no non-TV/TVC secret usage.
+
+The merged lifecycle now requires:
+
+```text
+new ephemeral node
+-> previously unused or empty runtime root
+-> canonical source materialization
+-> explicit non-secret child environment allowlist
+-> no arbitrary *_TOKEN / *_SECRET / provider/session inheritance
+-> STEGVERSE_SOVEREIGN_NODE=1
+-> exact STEGVERSE_HEARTBEAT_ROOT
+-> TV/TVC credential-authority marker
+-> GitHub runtime authority NONE
+-> separated carrier + WorkerCoordinator
+-> task-capable worker tick observed
+```
+
+Intentional same-node continuity remains a separate `restart()` path. A restart refuses to start replacement processes unless the previous carrier and worker are both terminated successfully.
+
+Explicit teardown now performs:
+
+```text
+previous carrier + worker PIDs
+-> terminate both
+-> independently verify both are dead
+-> TEARDOWN_COMPLETE only when no supervised-process residue remains
+-> retain governed durable evidence
+-> mark same-root new-instance reuse forbidden
+```
+
+Validation peers created by the sovereign ephemeral console now use this verified teardown instead of sending SIGTERM and assuming success. A supposedly fresh ephemeral instance fails closed if its runtime root is non-empty, preventing stale worker state, receipts, queues, fences, or other mutable residue from silently becoming the state of a new instance.
+
+This hardening does not delete durable evidence during teardown. Reconstruction/continuity must explicitly consume authenticated retained evidence rather than inheriting an old mutable runtime directory.
 
 ## What remains
 
-The return-path architecture and actual HTTPS/TLS mechanics are now proven together without depending on the iPhone lane. The remaining terminal proof is an authentic external/runtime execution using the existing sovereign resident/ephemeral StegOS runtime and a concrete HIL HTTPS rendezvous.
+The return-path architecture, real HTTPS/TLS mechanics, and ephemeral instantiation/teardown boundaries are now hardened together without depending on the iPhone lane. The remaining terminal proof is authentic external/runtime execution using the existing sovereign resident/ephemeral StegOS runtime and a concrete HIL HTTPS rendezvous.
 
-The currently documented HIL state still lacks fresh public HTTPS endpoint/identity/readiness evidence. That is now the first externally observable deployment boundary—not relay return logic, allocator behavior, or physical-device bootstrap.
+The currently documented HIL state still lacks fresh public HTTPS endpoint/identity/readiness evidence. That is the first externally observable deployment boundary—not relay return logic, allocator behavior, physical-device bootstrap, or ephemeral lifecycle source hardening.
 
 Terminal runtime evidence remains:
 
@@ -114,7 +154,7 @@ existing sovereign resident/ephemeral StegOS runtime
 -> terminal RETURN_PATH_VERIFIED receipt
 ```
 
-Do not reopen allocator, browser, TestFlight, or relay source implementation unless new runtime evidence specifically binds a failure there.
+Do not reopen allocator, browser, TestFlight, relay source implementation, or lifecycle source hardening unless new runtime evidence specifically binds a failure there.
 
 ## Authority invariants
 
@@ -127,3 +167,7 @@ canonical transition authority: Interlock/InTr
 second user-operated machine required: false
 hosted execution fallback: false
 ```
+
+## README impact
+
+The root README already documents the separated carrier/WorkerCoordinator model, TV/TVC credential boundary, non-authorizing Heartbeat, source/runtime separation, and sovereign runtime constraints. This change hardens implementation behavior under those existing rules and does not introduce a new repository-wide architecture contract.
