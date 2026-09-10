@@ -3,7 +3,7 @@
 Goal Task ID: `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001`
 Canonical issue: `StegVerse-Labs/.github#1260`
 COSV: `50000000100000`
-Status: `ACTIVE / 18 HB32 PROFILE-DERIVED NODES / PRECISE FAILURE BOUNDARIES / DEFINITIVE MEASUREMENT HARDENING MERGED / AUTHENTIC ONE-PASS MEASUREMENT NEXT`
+Status: `ACTIVE / 18 HB32 PROFILE-DERIVED NODES / MEASUREMENT HARDENING MERGED / KV-BOUND CURRENT-IPHONE SOURCE PATH MERGED / AUTHENTIC DEVICE INVOCATION NEXT`
 
 ## Canonical runtime model
 
@@ -23,86 +23,89 @@ runtime/node profile
 
 Node identity/evidence/HB lineage persist. Claims/fences, InTr calls, transports, credentials, provider/browser/model/action sessions, and execution processes remain bounded and ephemeral. HB remains observability/freshness/correlation only.
 
-## Merged implementation state
+## Measurement implementation state
 
-- StegBrowser retained-node/HB-lineage implementation: merged.
-- StegOS profile-derived retained node, outward source-HB lineage, and receipt-to-transition implementation: merged.
 - 18 HB32 runtime-node profiles plus profiled convergence runner: merged.
 - StegClaw executable profile: merged.
 - VACC executable profile: merged.
-- typed ten-stage first-failure responses: PR #1292 merged at `e64c5d518af05dac6b9d09c3355d38d75bc27295`.
-- definitive measurement hardening: PR #1293 merged at `44c6d88abb42351ec26a576e3136caec3400a613` after exact-head organization-control, deterministic repository-suite, and Heartbeat checks all completed successfully.
+- typed ten-stage first-failure responses: `.github` PR #1292 merged at `e64c5d518af05dac6b9d09c3355d38d75bc27295`.
+- definitive one-pass measurement hardening: PR #1293 merged at `44c6d88abb42351ec26a576e3136caec3400a613`.
+- measurement ingress repair: PR #1296 merged.
 
-## Definitive measurement contract
+The authentic measurement still requires one frozen run ID and `receipts/sovereign-host/global-runtime-node-profile-convergence.latest.json`. No lane failure histogram is authoritative before that receipt exists.
 
-`workers/runtime_convergence_measurement.py` freezes one measurement identity before execution containing:
+## Current source-device trajectory
 
-- unique `run_id`;
-- start timestamp;
-- local source git head when available;
-- exact runtime-node profile registry SHA-256;
-- exact partial-solution projection SHA-256;
-- `measurement_only=true`;
-- `same_run_remediation_allowed=false`;
-- `automatic_retry_after_first_failure=false`;
-- per-profile before snapshots of known canonical-work/subject receipts and any node/profile/genesis/source-HB/current-HB/state/transition commitments present in those receipts.
+The earlier Site-first static-bootstrap sequence is superseded. The active child is:
 
-The same evidence surfaces are captured after the run. This makes `same retained node + advanced lineage` distinguishable from unrelated output.
+`KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001`
 
-`run_global_runtime_node_profile_convergence.py` now distinguishes:
+Current architecture:
 
 ```text
-PASS_CURRENT_RUN
-PASS_HISTORICAL_EVIDENCE
-FAILED_CURRENT_RUN
-NOT_REACHED
+current device / minimal rendezvous
+-> existing Device→KV Universal InTr
+-> purpose CURRENT_IPHONE_TESTFLIGHT_SIGNING admitted in exact request
+-> verified resident KV installation
+-> same-lineage browser capability observation
+-> opaque nine-field KV projection
+-> StegOS TestFlight bootstrap validates projection in memory
+-> exact IPA/WASM materialization
+-> TV/TVC provisioning + ephemeral signing + Build Upload
+-> TestFlight install
+-> retained StegOS/StegBrowser runtime observation
+-> one frozen global measurement pass
 ```
 
-Historical non-regression evidence is retained but is never represented as current-run passage. Child-supplied explicit stage observations must be contiguous through the first reported failure; if an earlier required predicate is missing, that missing predicate becomes the first unobserved boundary. Readiness/liveness states are not terminal completion, and `NOT_REACHED` is downstream flow state rather than a failure.
+Merged source evidence:
 
-## Same-run remediation suppression
+- KV projection producer: `continuity-vault-kit#206` -> `47c363611210b7501cbb50abce768cfe0911057f`.
+- StegOS projection consumer: `StegOS#314` -> `19e2ea02a16bd703767aafcd47e71f5ec5efe3cf`.
+- purpose-bound Site Device→KV adapter/export/page: `Site#1178` -> `3da593a61a536a625fcea4a26df8d1f491f00b44`.
+- Site implementation claim for PR #1178 is released with merge evidence.
 
-During measurement the runner exports `STEGVERSE_CONVERGENCE_MEASUREMENT_ONLY=1`.
+The Site adapter does not create a new InTr record class or second service worker. It reuses `MY_KV_INSTALLATION_STATUS`, binds `CURRENT_IPHONE_TESTFLIGHT_SIGNING` into the exact request hash, requires an authentic `INGRESS_ADMITTED` receipt plus verified KV installation, observes only required browser APIs/features, and emits the exact opaque projection expected by StegOS.
 
-VACC honors that flag: when the frozen baseline has no verified VACC loopback runtime, it reports the transport/provider predicate failure and does not invoke the Ecosystem Chat parent repair during the same measurement pass. Ordinary non-measurement repair behavior remains available for later remediation runs.
+## Superseded temporary work
 
-The convergence layer does not automatically retry a lane after its first measured failure. Repairs occur only after the measurement receipt is inspected.
+`.github` PR #1302 and Site issue #1180 were created from the older Site-first sequencing before the KV-bound child state was reconciled. Both are now closed without merge/current execution effect. The unmerged `TASK-2026-0010` branch artifact is not canonical Task Registry truth.
 
-## Failure response shape
+## Current first unresolved condition
 
-Every lane receives an ordered ten-stage `boundary_trace`, `first_failure`, exact stage index/code, reason/evidence reference where present, and an aggregate `failure_boundary_summary`.
+`AUTHENTIC_CURRENT_IPHONE_KV_TESTFLIGHT_PROJECTION_INVOCATION`
 
-The ten canonical boundaries remain:
+Required current-device evidence:
 
-1. runtime profile resolution;
-2. persistent node continuity;
-3. ephemeral request consumption;
-4. WorkerCoordinator claim/fence;
-5. ephemeral Interlock/InTr admission;
-6. ephemeral transport/provider/lease;
-7. component execution;
-8. exact receipt commitment;
-9. Master Records reconstruction;
-10. downstream propagation.
+1. purpose-bound Device→KV `INGRESS_ADMITTED` receipt;
+2. verified resident KV installation response;
+3. compatible same-lineage browser capability observation;
+4. exact emitted `stegverse-kv-testflight-projection.json`.
 
-Classification is diagnostic only and grants no execution, claim/fence, Interlock/InTr, credential, custody, publication, or completion authority.
+Source merge, CI, route existence, or historical KV data do not satisfy these predicates.
 
-## Authentic next action
+## Next execution sequence
 
-1. refresh the already-local sovereign runtime source so the merged measurement worker, hardened boundary classifier, VACC measurement behavior, and profiled convergence runner are materialized together while mutable resident state is preserved;
-2. execute exactly one authentic Runtime Profile Map/profiled convergence measurement;
-3. do not repair or automatically retry a lane after its first failure during that run;
-4. retain `receipts/sovereign-host/global-runtime-node-profile-convergence.latest.json`;
-5. compare its measured first-failure histogram with the prior projection;
-6. inspect before/after retained-node/HB/transition commitments to determine which node instances actually advanced;
-7. begin remediation only in subsequent executions.
+1. verify the merged `kv-testflight-projection.html` is included in the active Site publication/deployment output;
+2. invoke it on the current iPhone and retain the actual admission/capability evidence;
+3. save the exact emitted projection JSON;
+4. feed that file to the merged StegOS TestFlight bootstrap;
+5. execute TV/TVC provisioning, ephemeral same-device signing, same-session verification and native Build Upload;
+6. install through TestFlight;
+7. observe authentic retained StegOS/StegBrowser node state, source-HB lineage, same-device discovery and receipt-to-transition execution;
+8. materialize current canonical measurement source into the retained node;
+9. run exactly one measurement-only convergence pass without same-run repair/retry;
+10. preserve the receipt and measured first-failure histogram before remediation.
 
-DE-006 remains expected to expose exact parent rebinding/re-execution until authentic evidence proves otherwise; readiness must not hide that boundary.
+DE-006 remains expected to expose exact parent rebinding/re-execution only if the authentic visitor reaches that stage; readiness must not pre-classify it.
+
+## Authority invariants
+
+Task Registry does not mint execution authority. WorkerCoordinator owns claim/fence authority. Interlock/InTr owns governed admission/transition authority. TV/TVC owns credential/provider authority. Master Records owns observed-reality/reconstruction authority. KV is the private continuity boundary. HB is observability/carrier only. GitHub Actions are validation/evidence transport only.
 
 ## README impact
 
-Repository README semantics already cover retained identity, bounded/ephemeral execution, exact evidence, subject-bound failure behavior, non-authorizing HB, and functional-change documentation requirements. No additional README mutation is required for this diagnostic measurement hardening.
+No new `.github` functional semantics are introduced by this coordination reconciliation. Existing README authority/continuation semantics remain sufficient. Functional changes in Site, StegOS and continuity-vault-kit already carry repository README/handoff maintenance.
 
 ## Manual work
 
-None before the machine-executable authentic measurement attempt.
+None until the published current-iPhone invocation route is confirmed. Once confirmed, the user action is to open the published KV TestFlight projection page on the current iPhone, tap `Create KV Projection Context`, and save the resulting `stegverse-kv-testflight-projection.json` to Files.
