@@ -12,12 +12,17 @@
       "env_allowlist": [
         "STEGVERSE_DEVICE_KV_SKAP_RUNTIME_ROOT",
         "STEGVERSE_DEVICE_KV_SKAP_ROUNDTRIP_MANIFEST",
-        "STEGVERSE_DEVICE_KV_SKAP_ROUNDTRIP_OUTPUT"
+        "STEGVERSE_DEVICE_KV_SKAP_ROUNDTRIP_OUTPUT",
+        "STEGVERSE_DEVICE_KV_SKAP_GATEWAY_SIDECAR",
+        "STEGVERSE_DEVICE_KV_SKAP_TVC_DRAIN_RECEIPT",
+        "STEGVERSE_STEGOS_ROOT"
       ],
       "notes": [
-        "Only non-secret local evidence paths may be forwarded.",
-        "The verifier consumes existing canonical InTr evidence and cannot mint receipts or transition authority.",
-        "Credential material is prohibited; TV/TVC remains sole credential authority.",
+        "Only non-secret local evidence/source paths may be forwarded.",
+        "Preferred authentic current-device mode consumes the Gateway canonical first-hop sidecar plus the terminal TVC custody receipt and invokes the TVC single-writer continuation automatically.",
+        "Manifest-only mode remains available for verification/reconstruction of already-materialized canonical evidence.",
+        "The continuation may mint only canonical transport receipts from observed non-secret reference/readback evidence; it does not write SKAP ciphertext custody or resolve secrets.",
+        "Credential material is prohibited; TV/TVC remains sole credential authority and TVC remains the single ciphertext custody writer.",
         "Hosted runtime and second user-operated device substitutions are forbidden."
       ],
       "timeout_seconds": 120,
