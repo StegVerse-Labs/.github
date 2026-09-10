@@ -5,7 +5,7 @@ Updated: 2026-09-09
 ```text
 goal_id: STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001
 task_id: SHWP-STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001
-state: RESIDENT_EXECUTION_WIRED / ARTIFACT_AUTODISCOVERY_MERGED / REFRESH_DISPATCH_MERGED / CONTROL_PLANE_SOURCE_ACQUISITION_REMEDIATION_ACTIVE
+state: RESIDENT_EXECUTION_WIRED / ARTIFACT_AUTODISCOVERY_MERGED / REFRESH_DISPATCH_MERGED / CONTROL_PLANE_SOURCE_PACKAGE_MERGED / CURRENT_IPHONE_BOOTSTRAP_REFRESH_MERGED_PUBLICLY_OBSERVED / TASK_0010_G6_PHYSICAL_ALLOCATION_PENDING
 credential_authority: TV/TVC
 github_runtime_authority: NONE
 heartbeat_execution_authority: false
@@ -13,6 +13,11 @@ worker_registration_merge: 6c4b1227579c7b561458bdf4b8b122df5985d059
 artifact_autodiscovery_merge: db2d8095a549a3feee7f55d916c49e8e55dc6aa3
 handoff_autodiscovery_reconciliation_merge: 679056bfe6d3624c49085133ef169931816f4ad1
 refresh_to_targeted_dispatch_merge: e73e6b9a87cdcff7eb4ffa555d83f6a3b5fa7643
+control_plane_source_package_merge: 52f29fbba0751787ceaca5f1c9022bdcb37338fb
+public_source_package_gateway_merge: d4601f449743bb086ac2e9e38777b46b21ba8e27
+current_iphone_allocator_successor_merge: e484be32e5b017a4a6f172635ea80c5d46913d8e
+site_allocator_bootstrap_refresh_merge: 7d52ff8b6cf60b62adcd18aed493b8f6a61b1107
+site_bootstrap_claim_terminalization_merge: 5a6a70730d01210b70954f0857575efe60b80b1f
 cosv: 50000000101000
 ```
 
@@ -62,22 +67,9 @@ already-local canonical source changes
 
 The request `RESIDENT-EXEC-STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001` grants no execution, claim, fence, heartbeat, route, credential, transition, repository, or source-fetch authority.
 
-## Newly isolated source-acquisition defect
-
-Post-#1304 inspection showed that the resident refresh layer can only copy from an already-local canonical `.github` checkout. It deliberately performs no clone/fetch/pull/network lookup. The content-addressed source-package subsystem can remediate four application components, but the resident control plane itself is not a packageable/materializable component. The HIL/Universal InTr ingress also persists materialization requests but does not persist referenced source-package bytes.
-
-That leaves one circular failure mode:
-
-```text
-new WorkerCoordinator/control-plane source merged
--> resident local checkout remains stale
--> local refresh faithfully copies stale source
--> new task/consumer cannot become resident-local
-```
-
 ## Control-plane source-package remediation
 
-The active source repair adds `stegverse.control-plane` under the existing `stegverse.source-package/v1` contract and a bounded `/intr/source-package` ingress on the existing profiled HIL/Universal InTr listener.
+`.github` PR #1305 merged `stegverse.control-plane` under the existing `stegverse.source-package/v1` contract and a bounded `/intr/source-package` ingress on the existing profiled HIL/Universal InTr listener. LLM-adapter PR #330 merged the matching public same-Gateway projection.
 
 Package invariants:
 
@@ -93,22 +85,58 @@ exact HTTP body SHA-256 required
 
 Only the existing static control-plane source surface is writable. `.git`, runtime receipts, checkpoints, events, heartbeat state, monolithic mutable worker state, claims/fences, and other mutable runtime state are forbidden package targets.
 
-On admitted package receipt:
+This closes steady-state source acquisition after a resident already has the package-capable ingress. It does not by itself solve the first stale-control-plane bootstrap hop.
+
+## First stale-control-plane bootstrap remediation
+
+The canonical current-iPhone path already had a same-device organization allocator bootstrap under Site `stegos-node/`. Inspection found that public Site was still serving the original September 2 two-task allocator/package, so it could not see later successor tasks.
+
+A fresh non-overlapping allocator successor was therefore created rather than widening or reactivating TASK-2026-0008:
 
 ```text
-TVC-authorized InTr relay
--> /intr/source-package
--> exact package validation
--> content-addressed write-once package retention
--> if STEGVERSE_HEARTBEAT_SOURCE_ROOT is declared:
-   atomic allowlisted source-file replacement + readback verification
--> existing source watcher observes canonical local source changes
--> existing local source refresh
--> existing exact resident dispatcher
--> SHWP-STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001 execution attempt
+TASK-2026-0010
+repository: StegVerse-Labs/Site
+dependency surface: site:current-iphone-testflight-static-bootstrap
+workspace: claim/current-iphone-testflight-static-bootstrap-r1
+source successor: StegVerse-Labs/StegOS/release/current-iphone-site-projection/successors/current-iphone-testflight-static-bootstrap.json
 ```
 
-The package ingress and materializer grant no execution, claim/fence, credential, canonical transition, custody, or repository-metadata authority. They perform source transport/local materialization only. GitHub is not consulted by the resident path.
+`.github` PR #1306 merged the four-task current-iPhone allocator catalog and exact TASK-0010 source binding. Its regression proves retained G3/G4/G5 allocator state can preserve prior claims and select TASK-0010 only at monotonic generation/fence 6 when its disjoint Site scope is admissible.
+
+Site PR #1181 then refreshed only the public `stegos-node/` bootstrap transport copies to the exact merged allocator bytes. During validation it also repaired one stale HIL source assertion that incorrectly required the historical two-profile Universal InTr literal after `MasterRecords:SV001Custody` had already been canonically added. All four Site PR gates passed.
+
+The post-merge push workflow `StegOS Node Public Observation` run `34424948923` completed successfully against the deployed `https://stegverse.org/stegos-node/` surface. Site PR #1182 subsequently terminalized the bootstrap repair claim.
+
+Current first-hop topology is therefore:
+
+```text
+current iPhone established StegOS Node continuity
+-> deployed current four-task canonical allocator package
+-> existing IndexedDB portable allocator state / atomic CAS
+-> TASK-2026-0010 fresh claim/fence when physically executed and admissible
+-> only then project exact TestFlight/WASM static successor bytes into Site
+-> current-iPhone TestFlight/bootstrap materialization
+-> resident obtains current source-capable control plane
+-> steady-state /intr/source-package path available for later control-plane source transport
+-> existing local source refresh + exact resident dispatch
+-> relay return-path runtime rerun
+```
+
+## Current physical gate
+
+No authentic TASK-2026-0010 claim receipt has appeared in repository/runtime custody. The deployed `stegos-node/org-allocator-bootstrap.html` verifies established current-iPhone continuity automatically, loads the exact current allocator package, and then deliberately waits for the `Run canonical allocation` control. Its current source does not automatically invoke the allocator after continuity verification.
+
+The required physical action is therefore bounded to the established current iPhone:
+
+```text
+open https://stegverse.org/stegos-node/org-allocator-bootstrap.html
+-> continuity verified
+-> Run canonical allocation
+-> expected selected_task_id = TASK-2026-0010 if retained current state is collision-free
+-> retain/export generated allocator evidence if the page does not otherwise surface it into canonical custody
+```
+
+The expected G6/fence-6 value is a source-tested continuation from retained G5 state, not a runtime claim. If authentic retained state differs, the allocator's actual returned generation/fence is authoritative and must be reconciled instead of forcing 6.
 
 ## Execution entrypoints
 
@@ -143,8 +171,8 @@ round_trip_result.interlock_ingestion_verified=true
 round_trip_result.canonical_transition_committed=false
 ```
 
-No such terminal receipt is currently present in repository custody. After source-package validation/merge, the rerun sequence is public Gateway projection -> TVC-authorized control-plane package delivery -> resident source materialization -> existing refresh/dispatch -> real return-path execution.
+No such terminal receipt is currently present in repository custody. The next progression condition is the authentic current-iPhone TASK-0010 allocator receipt, followed by its separately scoped Site TestFlight static projection and current-iPhone bootstrap materialization.
 
 ## README impact
 
-The root README already documents canonical source-shard recovery, local-only resident source refresh, WorkerCoordinator authority, TV/TVC credential authority, InTr transition authority and non-authorizing HeartBeat. This scoped handoff records the new source-transport specialization; root README mutation is deferred only because the repository README is large and connector retrieval is truncated, making whole-file replacement unsafe in this session.
+The root README already documents canonical source-shard recovery, local-only resident source refresh, WorkerCoordinator authority, TV/TVC credential authority, InTr transition authority and non-authorizing HeartBeat. This scoped handoff records the source-transport/bootstrap specialization; no authority model or repository-wide execution concept is changed by this documentation update.
