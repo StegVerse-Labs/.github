@@ -37,6 +37,8 @@
   },
   "task": {
     "task_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+    "parent_task_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
+    "derivation_reason": "The parent revalidates KV connection/provider state; this child separately owns the end-to-end Device<->KV<->SKAP transport/runtime proof so the parent is not widened into a different operational capability.",
     "repository": "StegVerse-Labs/.github",
     "canonical_owner_ref": "data/canonical-task-records/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json",
     "canonical_lineage_key": "stegos:device-kv-skap:roundtrip",
@@ -45,6 +47,8 @@
     "operational_state": "AWAITING_AUTHENTIC_FOUR_LEG_RUNTIME_EVIDENCE",
     "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
     "source_refs": [
+      "KV-CONNECTION-REVALIDATION-WORKER-001",
+      "KV_CONNECTION_REVALIDATION_COSV_MIRROR_HANDOFF.md",
       "docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md",
       "workers/device_kv_skap_roundtrip_verifier.py",
       "workers/run_device_kv_skap_roundtrip_worker.py",
