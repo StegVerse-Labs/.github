@@ -1,0 +1,14 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "STEGCORE-UNKNOWN-PROBE-SEMANTICS-001",
+  "correlation_id": "STEGCORE-UNKNOWN-PROBE-SEMANTICS-001",
+  "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "parent_task_id": "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001",
+  "goal": "Preserve unknown governance predicates through the StegGate-to-three-layer boundary so unestablished state becomes explicit probe-required fail-closed evidence rather than false/stale denial, while preserving explicit false denial semantics and validating the frozen cross-framework current-basis v0.4 artifact unchanged.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CLAIMED_IMPLEMENTATION",
+  "repository": "StegVerse-Labs/StegCore",
+  "handoff": "docs/STEGCORE_UNKNOWN_PROBE_SEMANTICS_MIRROR_HANDOFF.md",
+  "cosv": {"profile": "task.v1", "vector": "71000000100110"},
+  "github_runtime_authority": "NONE"
+}
