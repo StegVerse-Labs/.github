@@ -5,10 +5,23 @@
   "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
   "parent_task_id": "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001",
   "goal": "Preserve unknown governance predicates through the StegGate-to-three-layer boundary so unestablished state becomes explicit probe-required fail-closed evidence rather than false/stale denial, while preserving explicit false denial semantics and validating the frozen cross-framework current-basis v0.4 artifact unchanged.",
-  "coordination_state": "ACTIVE",
-  "checkout_state": "CLAIMED_IMPLEMENTATION",
+  "coordination_state": "RETIRED",
+  "checkout_state": "COMPLETED",
   "repository": "StegVerse-Labs/StegCore",
   "handoff": "docs/STEGCORE_UNKNOWN_PROBE_SEMANTICS_MIRROR_HANDOFF.md",
   "cosv": {"profile": "task.v1", "vector": "71000000100110"},
+  "completion_evidence": {
+    "semantic_merge": "a4348d3db8e22f89acad4ae7454341968e6046d6",
+    "exact_frozen_regression_merge": "cdb15df1c15fab5d9ca688e4d18cd47d81ebfc04",
+    "documentation_closure_merge": "e60e67916f9692b1d67018b22f81fd38e88fa9a1",
+    "unknown_probe_validation_run": 34531630404,
+    "current_basis_validation_run": 34531630392,
+    "frozen_v04_regression_run": 34531908876,
+    "frozen_manifest_sha256": "07a08496c21b31f70f6f45ef731aa5f6b2522a6fc8f67f2d0a4c2b6fceda7a3f",
+    "historical_reason": "execution.authority_stale",
+    "repaired_reason": "execution.probe_required",
+    "repaired_disposition": "FAIL_CLOSED"
+  },
+  "continuation_task_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
   "github_runtime_authority": "NONE"
 }
