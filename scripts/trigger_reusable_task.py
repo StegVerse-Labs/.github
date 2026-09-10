@@ -24,6 +24,8 @@ ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "data" / "reusable-task-registry.json"
 CONSTRUCTOR = ROOT / "scripts" / "materialize_reusable_task_construct.py"
 DEFAULT_RECEIPT_DIR = ROOT / "receipts" / "reusable-task"
+NATIVE_EMAIL_PRIMARY = "scripts/consume_native_email_action_monitor_request.py"
+NATIVE_EMAIL_KV_RUNNER = ROOT / "scripts" / "consume_native_email_action_monitor_request_kv.py"
 
 BOUNDARY_COMPLETE = "COMPLETION_PREDICATES_REQUIRE_EVIDENCE_RECONCILIATION"
 BOUNDARY_NO_RUNNER = "NO_EXECUTABLE_RUNNER_DECLARED"
@@ -76,8 +78,13 @@ def write_json(path: Path, value: dict[str, Any]) -> None:
 
 
 def build_runner_command(primary_ref: str, primary_runner: Path, parameters: dict[str, Any]) -> list[str]:
-    command = [sys.executable, str(primary_runner)]
-    if primary_ref == "scripts/consume_native_email_action_monitor_request.py":
+    effective_runner = primary_runner
+    if primary_ref == NATIVE_EMAIL_PRIMARY:
+        if not NATIVE_EMAIL_KV_RUNNER.is_file():
+            raise SystemExit("RT-NATIVE-EMAIL-ACTION-MONITOR-001 KV-enforcing runner is not materialized")
+        effective_runner = NATIVE_EMAIL_KV_RUNNER
+    command = [sys.executable, str(effective_runner)]
+    if primary_ref == NATIVE_EMAIL_PRIMARY:
         runtime_raw = str(parameters.get("runtime_root") or "").strip()
         if not runtime_raw:
             raise SystemExit("RT-NATIVE-EMAIL-ACTION-MONITOR-001 requires parameters.runtime_root")
@@ -162,6 +169,11 @@ def main() -> None:
     primary_ref = runner_refs[0]
     primary_runner = safe_runner_path(primary_ref)
     receipt["primary_runner_ref"] = primary_ref
+    receipt["effective_runner_ref"] = (
+        "scripts/consume_native_email_action_monitor_request_kv.py"
+        if primary_ref == NATIVE_EMAIL_PRIMARY
+        else primary_ref
+    )
     receipt["runner_dependency_refs"] = runner_refs[1:]
 
     env = os.environ.copy()
@@ -183,7 +195,7 @@ def main() -> None:
         check=False,
     )
     receipt["automatic_steps_attempted"].append({
-        "runner_ref": primary_ref,
+        "runner_ref": receipt["effective_runner_ref"],
         "command": command,
         "returncode": completed.returncode,
         "stdout_tail": completed.stdout[-4000:],
@@ -194,7 +206,7 @@ def main() -> None:
         receipt["state"] = "BOUNDARY_RECORDED"
         receipt["boundary"] = {
             "kind": BOUNDARY_RUNNER_FAILED,
-            "runner_ref": primary_ref,
+            "runner_ref": receipt["effective_runner_ref"],
             "returncode": completed.returncode,
             "reason": "Primary declared runner stopped before completion. The trigger driver does not bypass or reinterpret that runner's authority/failure semantics.",
             "manual_intermediate_coordination_required": False,
