@@ -5,22 +5,82 @@
   "root_correlation_id": "SS-EVIDENCE-COMPARISON-001",
   "parent_task_id": "SS-EVIDENCE-COMPARISON-001",
   "goal": "Bind Personal Data Inventory, SKAP account topology, and generated reclamation target sets to authentic KnowledgeVault writer/readback receipts and reconstructable custody evidence.",
-  "coordination_state": "ACTIVE",
-  "checkout_state": "CLAIMED_INTEGRATION",
+  "coordination_state": "RETIRED",
+  "checkout_state": "RETIRED",
   "cosv_task_vector": "40000100100000",
-  "source_refs": ["StegVerse-Labs/Executive_Rhetoric_Ledger/docs/DIGITAL_DATA_RECLAMATION_AND_SOVEREIGNTY_MIRROR_HANDOFF.md", "docs/DATA_RECLAMATION_KV_CUSTODY_MIRROR_HANDOFF.md"],
-  "targets": {"organizations":["StegVerse-Labs","master-records"],"repositories":["StegVerse-Labs/Executive_Rhetoric_Ledger","StegVerse-Labs/continuity-vault-kit","master-records/orchestration","StegVerse-Labs/.github"],"components":["reclamation-target-set-writer","kv-readback-receipt","reclamation-custody-reconstruction"]},
-  "dependencies": [{"dependency_id":"DEP-RECLAMATION-KV","kind":"STORAGE","state":"AVAILABLE","ref":"KnowledgeVault","disposition":"REUSE_EXISTING_KV_ROOT_AND_RECEIPT_MODEL"}],
+  "source_refs": [
+    "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/DIGITAL_DATA_RECLAMATION_AND_SOVEREIGNTY_MIRROR_HANDOFF.md",
+    "docs/DATA_RECLAMATION_KV_CUSTODY_MIRROR_HANDOFF.md",
+    "master-records/orchestration/docs/DATA_RECLAMATION_KV_CUSTODY_MIRROR_HANDOFF.md"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs", "master-records"],
+    "repositories": ["StegVerse-Labs/Executive_Rhetoric_Ledger", "StegVerse-Labs/continuity-vault-kit", "master-records/orchestration", "StegVerse-Labs/.github"],
+    "components": ["reclamation-target-set-writer", "kv-readback-receipt", "reclamation-custody-reconstruction"]
+  },
+  "dependencies": [
+    {"dependency_id":"DEP-RECLAMATION-KV","kind":"STORAGE","state":"RESOLVED","ref":"KnowledgeVault","disposition":"AUTHENTIC_PROVIDER_OPERATION_EXACT_READBACK_AND_MASTER_RECORDS_CUSTODY_COMPLETE"}
+  ],
   "blockers": [],
-  "adjacent_task_refs": ["MYKV-PERSONAL-DATA-BACKUP-001","SS-EVIDENCE-COMPARISON-001"],
-  "existing_evidence_refs": ["StegVerse-Labs/Executive_Rhetoric_Ledger@e0c026f6147f5628b6201ee5de93951816e99a2e:reclamation-handoff-merged", "StegVerse-Labs/.github@7c27980b1f885d17177a3dc587dbc917472dd96c:reclamation-successors-canonicalized", "StegVerse-Labs/.github@5751467fa1aa39ffba0e40a67d2d83cea0898db6:standard-iphone-successor-canonicalized"],
-  "expected_evidence_predicates": ["TARGET_SET_WRITTEN_TO_AUTHORIZED_KV","EXACT_BYTE_READBACK_MATCHES_WRITER_COMMITMENT","WRITE_AND_READBACK_RECEIPTS_CUSTODIED","CUSTODY_CHAIN_RECONSTRUCTS_WITHOUT_SOURCE_THREAD"],
-  "runtime_requirements": {"capabilities":["kv_write","kv_readback","hashing","receipt_emission","custody_reconstruction"],"environment":"AUTHORIZED_KNOWLEDGEVAULT_PLUS_MASTER_RECORDS","direction":"RECLAMATION_STATE_TO_KV_TO_CUSTODY","mutation_required":true,"deployment_required":false,"current_observation_required":true},
-  "runtime_resolution": {"current_executor":"current-session-repository-and-kv-orchestration","authority_basis":"canonical task/COSV plus user-authorized KnowledgeVault access","unattended_runtime":false},
-  "worker_claim": {"authority":"CURRENT_SESSION","claim_ref":"docs/DATA_RECLAMATION_KV_CUSTODY_MIRROR_HANDOFF.md","fence_ref":null,"projection_only":false},
+  "adjacent_task_refs": ["MYKV-PERSONAL-DATA-BACKUP-001", "SS-EVIDENCE-COMPARISON-001", "SS-DATA-RECLAMATION-DISCLOSURE-INGESTION-001"],
+  "existing_evidence_refs": [
+    "StegVerse-Labs/Executive_Rhetoric_Ledger@e0c026f6147f5628b6201ee5de93951816e99a2e:reclamation-handoff-merged",
+    "StegVerse-Labs/.github@7c27980b1f885d17177a3dc587dbc917472dd96c:reclamation-successors-canonicalized",
+    "StegVerse-Labs/.github@5751467fa1aa39ffba0e40a67d2d83cea0898db6:standard-iphone-successor-canonicalized",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger@35e4a544866f855af94c76f75bc56e50f0694bb7:reclamation-kv-writer-and-provider-operation-proof=PASS",
+    "google-drive:file:1hEupmHWhc3l0r-pxhIM_m2RTWZuTAFSB:1810-bytes:sha256=6dceb82a933be3668fe7ac6e38695bad889ef95add2cf57ca27d1bdd256957cd",
+    "master-records/orchestration@af2b800189fd3b2fac88b7a8130fee469d75c0e2:reclamation-kv-custody-reconstruction=PASS"
+  ],
+  "expected_evidence_predicates": [
+    "TARGET_SET_WRITTEN_TO_AUTHORIZED_KV",
+    "EXACT_BYTE_READBACK_MATCHES_WRITER_COMMITMENT",
+    "WRITE_AND_READBACK_RECEIPTS_CUSTODIED",
+    "CUSTODY_CHAIN_RECONSTRUCTS_WITHOUT_SOURCE_THREAD"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["kv_write", "kv_readback", "hashing", "receipt_emission", "custody_reconstruction"],
+    "environment": "AUTHORIZED_KNOWLEDGEVAULT_PLUS_MASTER_RECORDS",
+    "direction": "RECLAMATION_STATE_TO_KV_TO_CUSTODY",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "runtime_resolution": {
+    "current_executor": "current-session-repository-and-kv-orchestration",
+    "authority_basis": "canonical task/COSV plus user-authorized KnowledgeVault access",
+    "unattended_runtime": false
+  },
+  "worker_claim": {
+    "authority": "CURRENT_SESSION",
+    "claim_ref": "StegVerse-Labs/Executive_Rhetoric_Ledger@35e4a544866f855af94c76f75bc56e50f0694bb7 + master-records/orchestration@af2b800189fd3b2fac88b7a8130fee469d75c0e2",
+    "fence_ref": null,
+    "projection_only": false
+  },
   "human_action_ref": null,
-  "completion": {"claimed":false,"validated":false,"reconciliation_ref":null,"activation_proof_complete":false},
-  "allowed_next_transitions": ["IMPLEMENT_KV_WRITER","EXECUTE_AUTHENTIC_KV_READBACK","CUSTODY_RECONSTRUCTION"],
-  "handoff_projection_refs": ["docs/DATA_RECLAMATION_KV_CUSTODY_MIRROR_HANDOFF.md"],
-  "authority_model": {"task_registry_mints_execution_authority":false,"source_state_proves_execution":false,"intr_governs_state_transitions":true,"provider_or_kv_success_requires_authentic_receipt":true}
+  "completion": {
+    "claimed": true,
+    "validated": true,
+    "reconciliation_ref": "master-records/orchestration/docs/DATA_RECLAMATION_KV_CUSTODY_MIRROR_HANDOFF.md",
+    "activation_proof_complete": true
+  },
+  "allowed_next_transitions": [],
+  "handoff_projection_refs": ["docs/DATA_RECLAMATION_KV_CUSTODY_MIRROR_HANDOFF.md", "master-records/orchestration/docs/DATA_RECLAMATION_KV_CUSTODY_MIRROR_HANDOFF.md"],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "intr_governs_state_transitions": true,
+    "provider_or_kv_success_requires_authentic_receipt": true,
+    "provider_operation_exact_readback_satisfies_this_task_storage_predicates": true,
+    "native_writer_proof_claimed": false,
+    "provider_deletion_success_claimed": false
+  },
+  "readme_impact": {
+    "material_function_change": true,
+    "readme_updated_in_change_set": true,
+    "readme_path": "master-records/orchestration/README.md",
+    "no_readme_update_reason": null,
+    "evidence_refs": ["master-records/orchestration@af2b800189fd3b2fac88b7a8130fee469d75c0e2:README-digital-data-reclamation-kv-custody"]
+  },
+  "retired_terminal": true,
+  "retired_resurrection_review_only": true
 }
