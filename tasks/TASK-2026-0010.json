@@ -10,7 +10,8 @@
     "StegOS current-iPhone TestFlight successor package is source-ready at release/current-iphone-site-projection/successors/current-iphone-testflight-static-bootstrap.json",
     "The package binds the validated signer WASM, wasm-bindgen glue, unsigned IPA, signing executor, TVC provider client, and same-device TestFlight action",
     "StegVerse-Labs/Site currently does not contain the successor static assets under stegos-bootstrap/",
-    "TASK-2026-0008 remains queued with a distinct 17-file current-iPhone product projection scope and must not be widened",
+    "TASK-2026-0008 remains unchanged and must not be widened",
+    "TASK-2026-0009 G5 owns README.md and the generic successor lineage contract; TASK-2026-0010 intentionally excludes those shared coordination surfaces so its scoped-exclusive claim is limited to its distinct TestFlight product/runtime surface",
     "A distinct successor task preserves fresh monotonic allocator fencing and bootstrap/product separation"
   ],
   "requirements": {
@@ -41,12 +42,10 @@
             "stegos-bootstrap/current-iphone-tvc-provider-client.js",
             "stegos-bootstrap/current-iphone-testflight-signing-action.js",
             "contracts/current-iphone-ipa-signing-executor.v1.json",
-            "README.md",
             "docs/CURRENT_IPHONE_TESTFLIGHT_STATIC_BOOTSTRAP_MIRROR_HANDOFF.md",
             "data/tasks/SITE-CURRENT-IPHONE-TESTFLIGHT-STATIC-BOOTSTRAP.json"
           ],
           "contracts": [
-            "stegos.current-iphone-site-projection-successor.v1",
             "stegverse.current-iphone-ipa-signing-executor/v1"
           ],
           "release_surfaces": [
