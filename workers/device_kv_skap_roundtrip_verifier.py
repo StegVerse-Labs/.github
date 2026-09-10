@@ -79,9 +79,12 @@ def _validate_leg(*, name: str, expected_from: str, expected_to: str, intent: Ma
     require(intent.get("boundary_path") == [expected_from, expected_to], f"{name}_boundary_path_invalid")
     require((intent.get("source") or {}).get("boundary") == expected_from, f"{name}_source_boundary_invalid")
     require((intent.get("destination") or {}).get("boundary") == expected_to, f"{name}_destination_boundary_invalid")
+    require(bool((intent.get("source") or {}).get("subsystem")) and bool((intent.get("destination") or {}).get("subsystem")), f"{name}_subsystem_identity_required")
     require(intent.get("interlock_required") is True, f"{name}_interlock_required")
     require(intent.get("prior_transport_receipt_hash") == expected_prior, f"{name}_intent_prior_hash_mismatch")
     require(intent.get("payload_hash") == sha_uri(payload), f"{name}_exact_packet_hash_mismatch")
+    require(isinstance(intent.get("operation_id"), str) and bool(intent.get("operation_id")), f"{name}_operation_id_required")
+    require(isinstance(intent.get("packet_id"), str) and intent.get("packet_id", "").startswith("INTR-"), f"{name}_packet_id_invalid")
     authority = intent.get("authority") or {}
     require(authority.get("authority_transfer") is False, f"{name}_intent_authority_transfer_forbidden")
     require(authority.get("transport_grants_execution_authority") is False, f"{name}_intent_execution_authority_forbidden")
@@ -90,14 +93,22 @@ def _validate_leg(*, name: str, expected_from: str, expected_to: str, intent: Ma
     require(set(receipt) == RECEIPT_FIELDS, f"{name}_receipt_field_set_invalid")
     require(receipt.get("schema") == RECEIPT_SCHEMA, f"{name}_receipt_schema_invalid")
     require(receipt.get("packet_id") == intent.get("packet_id"), f"{name}_receipt_packet_mismatch")
-    require(receipt.get("hop_index") == 1, f"{name}_receipt_hop_invalid")
+    require(receipt.get("hop_index") == 1 and receipt.get("direction") == "FORWARD", f"{name}_receipt_hop_invalid")
     require(receipt.get("from_role") == expected_from and receipt.get("to_role") == expected_to, f"{name}_receipt_boundary_invalid")
+    expected_operation_hash = sha_uri({
+        "operation_id": intent["operation_id"],
+        "packet_id": intent["packet_id"],
+        "payload_hash": intent["payload_hash"],
+    })
+    require(receipt.get("operation_hash") == expected_operation_hash, f"{name}_receipt_operation_hash_mismatch")
     require(receipt.get("payload_hash") == intent.get("payload_hash"), f"{name}_receipt_payload_mismatch")
     require(receipt.get("prior_receipt_hash") == expected_prior, f"{name}_receipt_prior_hash_mismatch")
+    require(isinstance(receipt.get("boundary_identity_ref"), str) and bool(receipt.get("boundary_identity_ref")), f"{name}_boundary_identity_required")
     require(receipt.get("boundary_verification") == "VERIFIED", f"{name}_boundary_not_verified")
     require(receipt.get("transition_state") == "RECEIVED", f"{name}_transition_not_received")
     require(receipt.get("secret_plaintext_present") is False, f"{name}_secret_plaintext_forbidden")
     require(receipt.get("authority_transfer") is False, f"{name}_receipt_authority_transfer_forbidden")
+    require(isinstance(receipt.get("recorded_at"), str) and bool(receipt.get("recorded_at")), f"{name}_recorded_at_required")
     body = dict(receipt)
     claimed = body.pop("receipt_hash", None)
     require(_valid_sha(claimed) and claimed == sha_uri(body), f"{name}_receipt_hash_invalid")
