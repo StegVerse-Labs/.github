@@ -1,0 +1,23 @@
+{
+  "schema":"stegverse.canonical-task-record/v1",
+  "task_id":"SS-SKAP-AUTHENTIC-ACCOUNT-METADATA-POPULATION-001",
+  "correlation_id":"SS-SKAP-AUTHENTIC-ACCOUNT-METADATA-POPULATION-001",
+  "root_correlation_id":"SS-EVIDENCE-COMPARISON-001",
+  "parent_task_id":"SS-SKAP-ACCOUNT-INVENTORY-PROJECTION-001",
+  "goal":"Populate authentic non-secret SKAP account metadata from independently observed provider-account bindings through the existing governed SKAP receipt path, without copying provider identifiers or secrets into public repository state.",
+  "coordination_state":"INACTIVE",
+  "checkout_state":"UNCLAIMED",
+  "cosv_task_vector":"40000100100000",
+  "source_refs":["docs/SKAP_AUTHENTIC_ACCOUNT_METADATA_POPULATION_MIRROR_HANDOFF.md","StegVerse-Labs/TVC/tools/skap_account_inventory_projection.py"],
+  "targets":{"organizations":["StegVerse-Labs"],"repositories":["StegVerse-Labs/TVC","StegVerse-Labs/continuity-vault-kit","StegVerse-Labs/StegOS","StegVerse-Labs/.github"],"components":["provider-account-observation-intake","skap-nonsecret-account-receipt","intr-account-metadata-transition"]},
+  "dependencies":[],
+  "blockers":[],
+  "adjacent_task_refs":["SS-SKAP-ACCOUNT-INVENTORY-PROJECTION-001","SS-DATA-RECLAMATION-DISCLOSURE-INGESTION-001"],
+  "existing_evidence_refs":["StegVerse-Labs/TVC@7111c5c54b4be8e884a25a476dc26fb26f3fb8c0:skap-account-projection-validation","CONNECTED_PROVIDER_SURFACE:FACEBOOK_INSTAGRAM_LINKEDIN_YOUTUBE_OBSERVED_2026-09-10"],
+  "expected_evidence_predicates":["AUTHENTIC_PROVIDER_ACCOUNT_OBSERVATION_NORMALIZED","RAW_PROVIDER_ACCOUNT_IDENTIFIER_NOT_PERSISTED_PUBLICLY","NONSECRET_SKAP_ACCOUNT_RECEIPT_CREATED","SYNTHETIC_TEST_INPUT_CANNOT_SATISFY_AUTHENTIC_POPULATION","INTR_TRANSITION_EVIDENCE_RETAINED","PROJECTION_ENUMERATES_POPULATED_ACCOUNT"],
+  "runtime_requirements":{"capabilities":["provider_account_observation","nonsecret_skap_metadata_write","intr_transition","receipt_emit"],"environment":"AUTHORIZED_PROVIDER_AND_SKAP_SURFACES","direction":"PROVIDER_ACCOUNT_OBSERVATION_TO_SKAP_METADATA","mutation_required":true,"deployment_required":false,"current_observation_required":true},
+  "completion":{"claimed":false,"validated":false,"reconciliation_ref":null,"activation_proof_complete":false},
+  "allowed_next_transitions":["CLAIM_IMPLEMENTATION","NORMALIZE_PROVIDER_ACCOUNT_OBSERVATION","BUILD_SKAP_METADATA_INGRESS","EXECUTE_AUTHENTIC_ACCOUNT_POPULATION"],
+  "handoff_projection_refs":["docs/SKAP_AUTHENTIC_ACCOUNT_METADATA_POPULATION_MIRROR_HANDOFF.md"],
+  "authority_model":{"task_registry_mints_execution_authority":false,"provider_observation_grants_credential_authority":false,"raw_provider_ids_publicly_persisted":false,"intr_governs_state_transitions":true}
+}
