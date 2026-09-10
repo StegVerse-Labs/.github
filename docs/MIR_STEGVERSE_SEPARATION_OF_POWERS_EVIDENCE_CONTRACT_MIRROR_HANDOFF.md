@@ -8,7 +8,7 @@ Goal Task ID: `MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001`
 
 Canonical contract candidate: `docs/contracts/MIR_STEGVERSE_SEPARATION_OF_POWERS_EVIDENCE_CONTRACT_v0.3.md`
 
-Status: ACTIVE — convergence candidate captured; StegVerse implementation and joint proof/witness conformance remain incomplete.
+Status: ACTIVE — StegVerse accepts the exact v0.3 convergence candidate for freeze; bilateral freeze remains pending explicit MIR acceptance of the same artifact. StegVerse implementation and conformance measurement continue as process work under the accepted contract and are not prerequisites to StegVerse acceptance.
 
 ## Constitutional invariant
 
@@ -56,7 +56,11 @@ TO-BUILD / not yet proven shipped:
 
 Until inclusion proof and witness surfaces are shipped, `witnesses[]` must remain empty and `proofStatus` must report only `NOT_REQUESTED` or `UNAVAILABLE` as appropriate.
 
-## StegVerse implementation work
+## StegVerse implementation and conformance process
+
+The contract defines the interface and normative behavior. Measuring whether StegVerse, MIR, or another implementation conforms to that contract is a StegVerse process concern and does not alter the accepted contract semantics.
+
+The following work implements and measures conformance to the accepted interface; it is not a prerequisite to StegVerse accepting v0.3 for freeze:
 
 1. Materialize schemas for `mir.evidence.v0`, `mir.proof.v0`, `stegverse.mir-reference.v0`, and `stegverse.governance-decision.v0` without importing MIR history custody.
 2. Implement an evidence-intake validator that rejects verdict-bearing MIR payloads before governance evaluation.
@@ -69,9 +73,11 @@ Until inclusion proof and witness surfaces are shipped, `witnesses[]` must remai
 9. Build negative fixtures for authority collapse, proof overclaim, selector mismatch, stale evidence, unsupported scheme, invalid path, missing witness, and prohibited historical replication.
 10. Establish shared `mir.leaf.v3` fixture reproduction with MIR and a third implementation once MIR provides the required canonical event-core fixtures.
 
-## External MIR-dependent conditions
+The shared v3 fixture is therefore a conformance measurement of the frozen interface. Failure of a tested implementation to reproduce it indicates implementation nonconformance or an implementation defect to investigate; it does not silently rewrite the frozen contract.
 
-These conditions do not stop StegVerse-side implementation:
+## External MIR-dependent implementation conditions
+
+These conditions do not stop StegVerse acceptance or StegVerse-side implementation:
 
 - confirm MIR canonical checkpoint and `canonicalEventCore` fixtures;
 - confirm the StegVerse integration `entityRef` derivation profile/privacy properties;
@@ -87,15 +93,12 @@ StegVerse can complete validators, schemas, canonicalization, reference/custody 
 
 `SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003` is adjacent because MIR evidence can enter a generic manifested path, but this contract defines the custody/governance/provenance authority discipline that the adapter must preserve.
 
-## Completion / freeze predicates
+## Freeze state
 
-The v0.3 contract may be frozen only after mutual agreement and evidence for the applicable implementation predicates. Source completion alone is insufficient. At minimum:
+StegVerse acceptance: `ACCEPTED_FOR_FREEZE` for the exact v0.3 convergence-candidate artifact currently recorded at `docs/contracts/MIR_STEGVERSE_SEPARATION_OF_POWERS_EVIDENCE_CONTRACT_v0.3.md`.
 
-- StegVerse-side schemas/validators/canonicalization/tests pass;
-- no verdict-bearing MIR evidence path is accepted;
-- no StegVerse MIR-history replica is created;
-- MIR implementation fixtures confirm canonical serialization and entityRef profile;
-- MIR proof and witness surfaces exist before `PROVIDED`/witness claims are made;
-- shared `mir.leaf.v3` fixture reproduces identically in MIR, StegVerse, and a third implementation.
+Bilateral contract state: not yet claimed frozen. Freeze occurs when MIR explicitly accepts the same exact artifact/version. No additional StegVerse conformance test, implementation result, runtime evidence, proof availability, witness availability, or deployment result is required to make StegVerse's acceptance effective.
 
-No runtime, deployment, proof availability, witness availability, or mutual freeze is claimed by this handoff.
+After bilateral freeze, implementation and conformance work continues against the frozen v0.3 target. Any later normative change requires an explicitly versioned successor contract rather than silently changing the v0.3 target during testing.
+
+No MIR acceptance, bilateral freeze, runtime, deployment, proof availability, witness availability, or implementation conformance is claimed without corresponding evidence.
