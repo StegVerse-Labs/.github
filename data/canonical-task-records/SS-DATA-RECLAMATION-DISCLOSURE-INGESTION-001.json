@@ -1,0 +1,21 @@
+{
+  "schema":"stegverse.canonical-task-record/v1",
+  "task_id":"SS-DATA-RECLAMATION-DISCLOSURE-INGESTION-001",
+  "correlation_id":"SS-DATA-RECLAMATION-DISCLOSURE-INGESTION-001",
+  "root_correlation_id":"SS-EVIDENCE-COMPARISON-001",
+  "parent_task_id":"SS-EVIDENCE-COMPARISON-001",
+  "goal":"Build evidence ingestion that derives SKAP account disclosure-graph edges from provider policies, subprocessor lists, regulatory records, user exports, and authentic transfer observations without promoting inference into observed traversal.",
+  "coordination_state":"INACTIVE",
+  "checkout_state":"UNCLAIMED",
+  "cosv_task_vector":"40000100100000",
+  "source_refs":["StegVerse-Labs/Executive_Rhetoric_Ledger/docs/DIGITAL_DATA_RECLAMATION_AND_SOVEREIGNTY_MIRROR_HANDOFF.md","docs/DATA_RECLAMATION_DISCLOSURE_INGESTION_MIRROR_HANDOFF.md"],
+  "targets":{"organizations":["StegVerse-Labs"],"repositories":["StegVerse-Labs/Executive_Rhetoric_Ledger","StegVerse-Labs/.github"],"components":["disclosure-evidence-ingest","edge-evidence-normalization","evidence-confidence-boundary"]},
+  "dependencies":[],"blockers":[],"adjacent_task_refs":["SS-EVIDENCE-COMPARISON-001"],
+  "existing_evidence_refs":["StegVerse-Labs/Executive_Rhetoric_Ledger@c78b2fe4be29dc4e9e15167281b35be8105a922a:reclamation-target-reconciliation"],
+  "expected_evidence_predicates":["SUPPORTED_DISCLOSURE_SOURCE_CLASSES_INGEST","EVIDENCE_REFERENCES_RETAINED","INFERRED_EDGE_CANNOT_BECOME_OBSERVED_TRANSFER","SUBJECT_SPECIFIC_TRAVERSAL_NOT_INFERRED_FROM_PROVIDER_DISCLOSURE"],
+  "runtime_requirements":{"capabilities":["evidence_ingest","normalization","classification","receipt_reference"],"environment":"AUTHORIZED_EVIDENCE_SOURCES","direction":"SOURCE_EVIDENCE_TO_DISCLOSURE_GRAPH","mutation_required":true,"deployment_required":false,"current_observation_required":false},
+  "completion":{"claimed":false,"validated":false,"reconciliation_ref":null,"activation_proof_complete":false},
+  "allowed_next_transitions":["CLAIM_IMPLEMENTATION","BUILD_INGEST_ADAPTERS","VALIDATE_EDGE_CLASSIFICATION"],
+  "handoff_projection_refs":["docs/DATA_RECLAMATION_DISCLOSURE_INGESTION_MIRROR_HANDOFF.md"],
+  "authority_model":{"task_registry_mints_execution_authority":false,"evidence_source_does_not_issue_governance_verdict":true,"inference_cannot_claim_subject_traversal":true}
+}
