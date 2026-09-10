@@ -1,0 +1,32 @@
+{
+  "identity": "StegVerse-Labs/.github:task:INTER-ENTITY-EPISTEMIC-STATE-PROTOCOL-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "71000000100110",
+  "evidence_refs": [
+    "StegVerse-Labs/continuity-vault-kit:INTER_ENTITY_EPISTEMIC_STATE_PROTOCOL_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/continuity-vault-kit:tasks/INTER-ENTITY-EPISTEMIC-STATE-PROTOCOL-001.json",
+    "StegVerse-Labs/continuity-vault-kit:schemas/intr-epistemic-state-envelope.schema.json",
+    "StegVerse-Labs/continuity-vault-kit:runtime/intr_epistemic_state.py",
+    "StegVerse-Labs/continuity-vault-kit:tests/test_intr_epistemic_state.py"
+  ],
+  "observed_at": "2026-09-10T17:12:00Z",
+  "exact_metrics": {
+    "lifecycle": "ACTIVE",
+    "archive_ready": false,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false,
+    "protocol_scope": "ALL_INTER_ENTITY_COMMUNICATION",
+    "intr_transport_authority_changed": false,
+    "sdk_readiness_consumer_identified": true,
+    "source_schema_created": true,
+    "source_runtime_helpers_created": true,
+    "focused_tests_created": true,
+    "intr_packet_binding_complete": false,
+    "cross_entity_roundtrip_proof_complete": false,
+    "readme_reconciled": false
+  },
+  "authority_effect": "NONE",
+  "canonical_owner_ref": "StegVerse-Labs/continuity-vault-kit:tasks/INTER-ENTITY-EPISTEMIC-STATE-PROTOCOL-001.json"
+}
