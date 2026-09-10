@@ -5,7 +5,7 @@ Updated: 2026-09-10
 ```text
 goal_id: STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001
 task_id: SHWP-STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001
-state: RESIDENT_EXECUTION_WIRED / ARTIFACT_AUTODISCOVERY_MERGED / REFRESH_DISPATCH_MERGED / CONTROL_PLANE_SOURCE_PACKAGE_MERGED / REAL_LOOPBACK_TLS_RETURN_PATH_VERIFIED / EPHEMERAL_LIFECYCLE_HARDENED / LIVE_EXTERNAL_RETURN_PATH_RECEIPT_PENDING
+state: RESIDENT_EXECUTION_WIRED / ARTIFACT_AUTODISCOVERY_MERGED / REFRESH_DISPATCH_MERGED / CONTROL_PLANE_SOURCE_PACKAGE_MERGED / REAL_LOOPBACK_TLS_RETURN_PATH_VERIFIED / EPHEMERAL_LIFECYCLE_HARDENED / SUCCESSOR_PREDECESSOR_AUTHORITY_REJECTION_VERIFIED / LIVE_EXTERNAL_RETURN_PATH_RECEIPT_PENDING
 credential_authority: TV/TVC
 github_runtime_authority: NONE
 heartbeat_execution_authority: false
@@ -17,6 +17,7 @@ stegos_round_trip_source_merge: dff05631a6bdab10311013c0da73339667867364
 stegos_real_return_integration_merge: f90e8cfc9c9e0409dc74d2bb258d8500e5ca07ca
 stegos_real_loopback_tls_merge: 1b2abfe8290da3d4e864af6419f2828b59b425aa
 ephemeral_lifecycle_hardening_merge: 252b9767b68bcd270f7c8c97ba665c80f951fe65
+stegos_successor_isolation_merge: 60f2b5fdd3bdff14931dbcb337432d3ea28e1c1a
 cosv: 50000000101000
 ```
 
@@ -120,9 +121,43 @@ Validation peers created by the sovereign ephemeral console now use this verifie
 
 This hardening does not delete durable evidence during teardown. Reconstruction/continuity must explicitly consume authenticated retained evidence rather than inheriting an old mutable runtime directory.
 
+## Successor predecessor-authority rejection
+
+StegOS PR #319 merged `60f2b5fdd3bdff14931dbcb337432d3ea28e1c1a` after StegOS CI run `34487150614` completed SUCCESS.
+
+The existing Node-KV recreation verifier already required distinct evidence, a distinct lease, the same durable Node-KV state root, and a higher generation after teardown/recreation. PR #319 adds a separate fail-closed successor-isolation proof so persistent identity continuity cannot be mistaken for runtime-authority continuity.
+
+A recreated ephemeral node now must prove:
+
+```text
+same authenticated durable Node-KV state root
++ fresh runtime root
++ fresh lease bound to recreated continuity evidence
++ strictly higher fencing token
++ fresh EGRESS authorization identity
++ fresh grant replay key
++ fresh route binding
++ predecessor runtime inactive
++ predecessor fence inadmissible
++ predecessor authorization inadmissible
++ predecessor grant replay inadmissible
++ predecessor mutable queue not mounted
+```
+
+The proof rejects runtime-root reuse, lease reuse, stale/non-advancing fence, predecessor authorization reuse, predecessor grant-replay-key reuse, predecessor route-binding reuse, a still-active predecessor runtime, any predecessor fence/authorization/grant that remains admissible, or remounting of the predecessor mutable queue.
+
+The resulting security invariant is explicit:
+
+```text
+identity continuity may persist
+runtime authority continuity may not
+```
+
+The successor-isolation evidence is non-authorizing and cannot commit a canonical transition.
+
 ## What remains
 
-The return-path architecture, real HTTPS/TLS mechanics, and ephemeral instantiation/teardown boundaries are now hardened together without depending on the iPhone lane. The remaining terminal proof is authentic external/runtime execution using the existing sovereign resident/ephemeral StegOS runtime and a concrete HIL HTTPS rendezvous.
+The return-path architecture, real HTTPS/TLS mechanics, ephemeral instantiation/teardown boundaries, and predecessor-authority rejection are now hardened together without depending on the iPhone lane. The remaining terminal proof is authentic external/runtime execution using the existing sovereign resident/ephemeral StegOS runtime and a concrete HIL HTTPS rendezvous.
 
 The currently documented HIL state still lacks fresh public HTTPS endpoint/identity/readiness evidence. That is the first externally observable deployment boundary—not relay return logic, allocator behavior, physical-device bootstrap, or ephemeral lifecycle source hardening.
 
