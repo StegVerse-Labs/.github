@@ -17,8 +17,14 @@
     "StegVerse-Labs/StegOS@19e2ea02a16bd703767aafcd47e71f5ec5efe3cf",
     "StegVerse-Labs/Site#1178",
     "StegVerse-Labs/Site@3da593a61a536a625fcea4a26df8d1f491f00b44",
+    "StegVerse-Labs/Site#1197",
+    "StegVerse-Labs/Site@bd4c64a4dfa8130d3b8c015a242fbab5afc67fa1",
+    "StegVerse-Labs/Site#1198",
+    "StegVerse-Labs/Site@1df85a660cef242f05819e2b847ef942dff88ae1",
+    "StegVerse-Labs/Site/actions/runs/34531380154",
     "StegVerse-Labs/Site/stegos-node/device-kv-intr-sync.js",
     "StegVerse-Labs/Site/intr-service-worker.js",
+    "StegVerse-Labs/Site/assets/my-kv-portable-installation-bridge.js",
     "StegVerse-Labs/Site/assets/kv-testflight-projection-entry.js",
     "StegVerse-Labs/Site/assets/kv-testflight-projection-export.js",
     "StegVerse-Labs/Site/kv-testflight-projection.html"
@@ -41,14 +47,14 @@
       "kind": "SOURCE_DISTRIBUTION_PREDICATE",
       "state": "SOURCE_CONSUMER_MERGED_VALIDATED",
       "ref": "StegVerse-Labs/StegOS@19e2ea02a16bd703767aafcd47e71f5ec5efe3cf",
-      "disposition": "EXACT_WASM_AND_UNSIGNED_IPA_PRESERVED; KV_FILES_PROJECTION_GATE_MERGED; STEGOS_CI_IPA_SIGNING_AND_WASM_CODESIGN VALIDATED"
+      "disposition": "EXACT_WASM_AND_UNSIGNED_IPA_PRESERVED; KV_FILES_PROJECTION_GATE_MERGED; STEGOS_CI_IPA_SIGNING_AND WASM_CODESIGN VALIDATED"
     },
     {
       "dependency_id": "DEP-AUTHENTIC-KV-PROJECTION-RECEIPT-PRODUCTION",
       "kind": "PHYSICAL_RUNTIME_PREDICATE",
-      "state": "SOURCE_ADAPTER_MERGED_RUNTIME_INVOCATION_REQUIRED",
-      "ref": "StegVerse-Labs/Site@3da593a61a536a625fcea4a26df8d1f491f00b44",
-      "disposition": "PURPOSE_BOUND SITE ADAPTER NOW REUSES EXISTING DEVICE_TO_KV INTR, REQUIRES AUTHENTIC INGRESS_ADMITTED PLUS VERIFIED KV INSTALLATION, OBSERVES SAME_LINEAGE BROWSER CAPABILITIES, AND EXPORTS EXACT NINE_FIELD OPAQUE PROJECTION; REAL CURRENT_IPHONE INVOCATION REMAINS REQUIRED"
+      "state": "AUTHENTIC_SAFARI_RESIDENT_VERIFY_FAIL_RECOVERY_MERGED_PUBLISHED_RETRY_REQUIRED",
+      "ref": "StegVerse-Labs/Site@bd4c64a4dfa8130d3b8c015a242fbab5afc67fa1",
+      "disposition": "CURRENT_IPHONE_SAFARI_REACHED PURPOSE_BOUND DEVICE_TO_KV PATH AND FAILED CLOSED AT RESIDENT_KV_INSTALLATION_NOT_VERIFIED; RECOVERY NOW REUSES EXISTING OWNER_MEDIATED CANONICAL INSTALLATION_RECEIPT DEVICE_KV ADMISSION, REQUIRES OBSERVED DEVICE_LOCAL MATERIALIZATION, THEN RETRIES ORIGINAL CURRENT_IPHONE_TESTFLIGHT_SIGNING PROJECTION; AUTHENTIC RETRY RESULT REQUIRED"
     },
     {
       "dependency_id": "DEP-AUTHENTIC-CURRENT-IPHONE-RETAINED-NODE-MATERIALIZATION",
@@ -74,7 +80,13 @@
     "StegVerse-Labs/StegOS/actions/runs/34410852617",
     "StegVerse-Labs/StegOS/actions/runs/34410852705",
     "StegVerse-Labs/Site@3da593a61a536a625fcea4a26df8d1f491f00b44",
-    "StegVerse-Labs/Site#1178"
+    "StegVerse-Labs/Site#1178",
+    "AUTHENTIC_CURRENT_IPHONE_SAFARI:FAIL_CLOSED_RESIDENT_KV_INSTALLATION_NOT_VERIFIED",
+    "StegVerse-Labs/Site#1197",
+    "StegVerse-Labs/Site@bd4c64a4dfa8130d3b8c015a242fbab5afc67fa1",
+    "StegVerse-Labs/Site/actions/runs/34531380154",
+    "StegVerse-Labs/Site#1198",
+    "StegVerse-Labs/Site@1df85a660cef242f05819e2b847ef942dff88ae1"
   ],
   "expected_evidence_predicates": [
     "KV_PRIVACY_BOUNDARY_SOURCE_RECONCILED",
@@ -83,6 +95,7 @@
     "BROWSER_CONTAINER_NEUTRAL_EPHEMERAL_PROJECTION_DEFINED",
     "EXACT_WASM_SIGNER_AVAILABLE_WITHOUT_PUBLIC_PRIVATE_STATE_ROOT",
     "PURPOSE_BOUND_DEVICE_KV_PROJECTION_ADAPTER_SOURCE_MERGED",
+    "AUTHENTIC_CURRENT_IPHONE_KV_INSTALLATION_RECEIPT_RECOVERY_OBSERVED",
     "AUTHENTIC_KV_PROJECTION_CONTEXT_PRODUCED",
     "TESTFLIGHT_CURRENT_IPHONE_RUNTIME_OBSERVED",
     "GLOBAL_MEASUREMENT_HANDOFF_RETURNED_TO_AUTHENTIC_EXECUTION"
@@ -100,8 +113,8 @@
     "same_run_remediation_allowed": true,
     "automatic_retry_after_first_failure": false,
     "source_adapter_complete": true,
-    "source_adapter_merge": "3da593a61a536a625fcea4a26df8d1f491f00b44",
-    "latest_state": "AUTHENTIC_CURRENT_IPHONE_KV_TESTFLIGHT_PROJECTION_INVOCATION_REQUIRED",
+    "source_adapter_merge": "bd4c64a4dfa8130d3b8c015a242fbab5afc67fa1",
+    "latest_state": "AUTHENTIC_CURRENT_IPHONE_KV_INSTALLATION_RECEIPT_RECOVERY_AND_PROJECTION_RETRY_REQUIRED",
     "next_runtime_surface": "StegVerse-Labs/Site/kv-testflight-projection.html"
   },
   "worker_claim": {
@@ -110,11 +123,11 @@
     "fence_ref": null,
     "projection_only": true
   },
-  "human_action_ref": null,
+  "human_action_ref": "CURRENT_IPHONE_SAFARI_KV_INSTALLATION_RECEIPT_RECOVERY_AND_PROJECTION_RETRY",
   "completion": {
     "claimed": false,
     "validated": false,
-    "reconciliation_ref": "StegVerse-Labs/Site@3da593a61a536a625fcea4a26df8d1f491f00b44",
+    "reconciliation_ref": "StegVerse-Labs/Site@bd4c64a4dfa8130d3b8c015a242fbab5afc67fa1",
     "activation_proof_complete": false
   },
   "allowed_next_transitions": ["INGRESS_ADMITTED"],
