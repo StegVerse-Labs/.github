@@ -1,0 +1,22 @@
+{
+  "schema":"stegverse.canonical-task-record/v1",
+  "task_id":"SS-DATA-RECLAMATION-PROVIDER-EXECUTION-001",
+  "correlation_id":"SS-DATA-RECLAMATION-PROVIDER-EXECUTION-001",
+  "root_correlation_id":"SS-EVIDENCE-COMPARISON-001",
+  "parent_task_id":"SS-EVIDENCE-COMPARISON-001",
+  "goal":"Build provider discovery, deletion, restriction, opt-out, and verification adapters with proof classes that distinguish request submission, provider assertion, observed disappearance, and independently verified deletion.",
+  "coordination_state":"INACTIVE",
+  "checkout_state":"UNCLAIMED",
+  "cosv_task_vector":"40000100100000",
+  "source_refs":["StegVerse-Labs/Executive_Rhetoric_Ledger/docs/DIGITAL_DATA_RECLAMATION_AND_SOVEREIGNTY_MIRROR_HANDOFF.md","docs/DATA_RECLAMATION_PROVIDER_EXECUTION_MIRROR_HANDOFF.md"],
+  "targets":{"organizations":["StegVerse-Labs"],"repositories":["StegVerse-Labs/Executive_Rhetoric_Ledger","StegVerse-Labs/.github"],"components":["provider-discovery-adapters","removal-restriction-adapters","verification-proof-class-engine","legal-rights-router"]},
+  "dependencies":[{"dependency_id":"DEP-RECLAMATION-INTR","kind":"GOVERNANCE","state":"REQUIRED","ref":"SS-DATA-RECLAMATION-INTR-AUTHORITY-BINDING-001","disposition":"NO_PROVIDER_MUTATION_WITHOUT_GOVERNED_DECISION"}],
+  "blockers":[],"adjacent_task_refs":["SS-DATA-RECLAMATION-INTR-AUTHORITY-BINDING-001","SS-EVIDENCE-COMPARISON-001"],
+  "existing_evidence_refs":["StegVerse-Labs/Executive_Rhetoric_Ledger@e0c026f6147f5628b6201ee5de93951816e99a2e:reclamation-handoff-merged"],
+  "expected_evidence_predicates":["PROVIDER_ADAPTERS_DECLARE_SUPPORTED_ACTIONS","REQUEST_SUBMISSION_NOT_EQUAL_DELETION","PROVIDER_ASSERTION_NOT_EQUAL_INDEPENDENT_VERIFICATION","AUTHENTIC_PROVIDER_OPERATION_RECEIPTS_RETAINED","LEGAL_RIGHTS_ROUTE_BOUND_TO_JURISDICTION_AND_SUBJECT_AUTHORITY"],
+  "runtime_requirements":{"capabilities":["provider_discovery","provider_mutation","response_capture","verification","receipt_emission","jurisdiction_routing"],"environment":"GOVERNED_PROVIDER_EXECUTION","direction":"INTR_ADMITTED_TARGET_TO_PROVIDER_TO_VERIFICATION","mutation_required":true,"deployment_required":false,"current_observation_required":true},
+  "completion":{"claimed":false,"validated":false,"reconciliation_ref":null,"activation_proof_complete":false},
+  "allowed_next_transitions":["CLAIM_IMPLEMENTATION","BUILD_PROVIDER_ADAPTER_CONTRACT","EXECUTE_AUTHENTIC_PROVIDER_TEST"],
+  "handoff_projection_refs":["docs/DATA_RECLAMATION_PROVIDER_EXECUTION_MIRROR_HANDOFF.md"],
+  "authority_model":{"task_registry_mints_execution_authority":false,"intr_decision_required_for_mutation":true,"provider_response_is_evidence_not_governance":true,"deletion_claim_requires_matching_proof_class":true}
+}
