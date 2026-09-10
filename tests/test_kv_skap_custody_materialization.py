@@ -42,7 +42,9 @@ class KVSkapCustodyTransportTests(unittest.TestCase):
         for marker in ('PROFILE_ID="kv-skap-custody"','stegos.universal_intr_transport','stegos.universal_intr_materialization','build_transport_intent(','build_materialization_request(','build_carrier_binding(','"TVC_RELAY_EGRESS"','admit_kv_skap(','"NONE_TRANSPORT_DISPATCH_ONLY"','canonical_device_kv_receipt'):self.assertIn(marker,self.dispatcher)
         self.assertNotIn("requests.",self.dispatcher);self.assertNotIn("github.com",self.dispatcher)
     def test_canonical_return_uses_backbone_and_exact_readback(self):
-        for marker in ('connector.prepare(','connector.accept_hop(','connector.validate_complete(','connector.prepare_response(','SKAP_TO_KV_RETURN_PERSISTED','skap_exact_readback_mismatch','"SKAP_VAULT"','"KV"'):self.assertIn(marker,self.returner)
+        for marker in ('connector.prepare(','connector.accept_hop(','connector.validate_complete(','connector.prepare_response(','SKAP_TO_KV_RETURN_PERSISTED','skap_exact_readback_mismatch','backbone.sha256_uri(stored)','boundary_identity_ref="tvc://SKAP_VAULT"','boundary_identity_ref="kv://KnowledgeVault:SKAPClient"'):
+            self.assertIn(marker,self.returner)
+        self.assertNotIn("payload_hash_uri",self.returner)
         self.assertNotIn("requests.",self.returner)
 
 if __name__=="__main__":unittest.main()
