@@ -6,11 +6,14 @@
   "parent_task_id":"SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
   "goal":"Complete evaluator-safe SDK governance manifest integration by carrying non-authorizing security-posture request inputs through the one-command external framework path and binding runtime execution to an authoritative Interlock/InTr posture resolution over the exact task, payload, and transition request without contaminating evaluator preregistration or governance evidence.",
   "coordination_state":"ACTIVE",
-  "checkout_state":"CLAIMED_IMPLEMENTATION",
+  "checkout_state":"HANDOFF_READY_RUNTIME_PROOF_PENDING",
   "repository":"StegVerse-org/StegVerse-SDK",
   "handoff":"SDK_EVALUATOR_GOVERNANCE_POSTURE_MANIFEST_MIRROR_HANDOFF.md",
   "cosv":{"profile":"task.v1","vector":"71000000100110"},
   "credential_authority":"TV/TVC",
   "posture_resolution_authority":"Interlock/InTr",
-  "github_runtime_authority":"NONE"
+  "github_runtime_authority":"NONE",
+  "source_integration_complete":true,
+  "source_merge":"b9beedcbbed3b09ed7620ac6de6f51788c6567a1",
+  "remaining_predicate":"AUTHENTIC_SDK_TO_LIVE_STEGOS_INTR_POSTURE_BOUND_GOVERNANCE_EXECUTION_EVIDENCE"
 }
