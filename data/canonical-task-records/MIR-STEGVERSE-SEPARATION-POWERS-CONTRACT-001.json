@@ -1,0 +1,60 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "MIR-STEGVERSE-SEPARATION-POWERS-CONTRACT-001",
+  "correlation_id": "MIR-STEGVERSE-SEPARATION-POWERS-CONTRACT-001",
+  "root_correlation_id": "MIR-STEGVERSE-SEPARATION-POWERS-CONTRACT-001",
+  "parent_task_id": null,
+  "goal": "Converge, freeze, and implement the MIR × StegVerse Separation-of-Powers Evidence Contract while preserving independent MIR historical custody, StegVerse governance authority, and bounded provenance, then prove the interoperable proof seam with shared conformance evidence.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CLAIMED_INTEGRATION",
+  "source_refs": [
+    "docs/MIR_STEGVERSE_SEPARATION_POWERS_CONTRACT_MIRROR_HANDOFF.md",
+    "docs/contracts/MIR_STEGVERSE_SEPARATION_OF_POWERS_EVIDENCE_CONTRACT_v0.3-rc1.md"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": ["StegVerse-Labs/.github"],
+    "components": ["mir-evidence-contract", "historical-custody-boundary", "governance-admissibility-boundary", "proof-verification-seam", "mir-leaf-v3-conformance"]
+  },
+  "dependencies": [
+    {"dependency_id":"DEP-MIR-INCLUSION-PROOF","kind":"EXTERNAL_IMPLEMENTATION","state":"PENDING_EXTERNAL_OWNER","ref":"MIR 12.5 inclusion-proof endpoint"},
+    {"dependency_id":"DEP-MIR-WITNESS-ENVELOPE","kind":"EXTERNAL_IMPLEMENTATION","state":"PENDING_EXTERNAL_OWNER","ref":"MIR 12.6 witness-attestation envelope"}
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [],
+  "existing_evidence_refs": ["docs/MIR_STEGVERSE_SEPARATION_POWERS_CONTRACT_MIRROR_HANDOFF.md"],
+  "expected_evidence_predicates": [
+    "MUTUAL_CONTRACT_FREEZE_RECORDED",
+    "MIR_STANDING_SURFACE_CONTRACT_ALIGNED",
+    "MIR_INCLUSION_PROOF_OBSERVED",
+    "MIR_SIGNED_WITNESS_ENVELOPE_OBSERVED",
+    "STEGVERSE_VERIFIER_PRESERVES_NONCUSTODIAL_BOUNDARY",
+    "MIR_LEAF_V3_SHARED_CONFORMANCE_PASSES"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["contract_convergence", "cryptographic_verification", "cross_implementation_conformance"],
+    "environment": "MIR_PLUS_STEGVERSE_PLUS_INDEPENDENT_THIRD_IMPLEMENTATION",
+    "direction": "HISTORY_EVIDENCE_TO_VERIFICATION_TO_GOVERNANCE_TO_PROVENANCE",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "runtime_resolution": {
+    "current_executor": "current-session-integration",
+    "authority_basis": "canonical task shard plus mutual MIR/StegVerse contract agreement",
+    "unattended_runtime": false
+  },
+  "worker_claim": {"authority":"CURRENT_SESSION_INTEGRATION","claim_ref":null,"fence_ref":null,"projection_only":false},
+  "human_action_ref": "Rigel sends the convergence candidate to Richard Whitney; mutual agreement is required to freeze the contract text.",
+  "completion": {"claimed":false,"validated":false,"reconciliation_ref":null,"activation_proof_complete":false},
+  "allowed_next_transitions": ["SEND_CONVERGENCE_CANDIDATE", "FREEZE_ON_MUTUAL_AGREEMENT", "IMPLEMENT_PROOF_SURFACE", "RUN_SHARED_V3_CONFORMANCE"],
+  "handoff_projection_refs": ["docs/MIR_STEGVERSE_SEPARATION_POWERS_CONTRACT_MIRROR_HANDOFF.md"],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "mir_history_authority_transfers_to_stegverse": false,
+    "mir_evidence_classification_mints_governance_authority": false,
+    "provenance_mints_history_or_governance_authority": false
+  }
+}
