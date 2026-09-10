@@ -1,0 +1,21 @@
+{
+  "schema":"stegverse.canonical-task-record/v1",
+  "task_id":"SS-DATA-RECLAMATION-INTR-AUTHORITY-BINDING-001",
+  "correlation_id":"SS-DATA-RECLAMATION-INTR-AUTHORITY-BINDING-001",
+  "root_correlation_id":"SS-EVIDENCE-COMPARISON-001",
+  "parent_task_id":"SS-EVIDENCE-COMPARISON-001",
+  "goal":"Bind derived-data authority and reclamation target execution to Interlock/InTr governed transition evaluation so discovery context cannot independently authorize deletion, restriction, correlation, or derivation actions.",
+  "coordination_state":"INACTIVE",
+  "checkout_state":"UNCLAIMED",
+  "cosv_task_vector":"40000100100000",
+  "source_refs":["StegVerse-Labs/Executive_Rhetoric_Ledger/docs/DIGITAL_DATA_RECLAMATION_AND_SOVEREIGNTY_MIRROR_HANDOFF.md","docs/DATA_RECLAMATION_INTR_AUTHORITY_BINDING_MIRROR_HANDOFF.md"],
+  "targets":{"organizations":["StegVerse-Labs"],"repositories":["StegVerse-Labs/Executive_Rhetoric_Ledger","StegVerse-Labs/.github"],"components":["derived-data-authority-evaluation","reclamation-transition-manifest","intr-decision-receipt-binding"]},
+  "dependencies":[],"blockers":[],"adjacent_task_refs":["SS-EVIDENCE-COMPARISON-001"],
+  "existing_evidence_refs":["StegVerse-Labs/Executive_Rhetoric_Ledger@c78b2fe4be29dc4e9e15167281b35be8105a922a:derived-data-authority-foundation"],
+  "expected_evidence_predicates":["TARGET_ACTION_REQUIRES_INTR_DECISION","DISCOVERY_GRAPH_HAS_NO_EXECUTION_AUTHORITY","DERIVATION_AUTHORITY_FAILS_CLOSED","DECISION_RECEIPT_BINDS_SUBJECT_TARGET_ACTION_AND_EVIDENCE"],
+  "runtime_requirements":{"capabilities":["manifest_build","intr_evaluation","decision_receipt","replay_protection"],"environment":"STEGVERSE_INTR_GOVERNED_RUNTIME","direction":"TARGET_CANDIDATE_TO_GOVERNED_DECISION","mutation_required":true,"deployment_required":false,"current_observation_required":true},
+  "completion":{"claimed":false,"validated":false,"reconciliation_ref":null,"activation_proof_complete":false},
+  "allowed_next_transitions":["CLAIM_INTEGRATION","BIND_INTR_EVALUATOR","EXECUTE_FAIL_CLOSED_RUNTIME_TEST"],
+  "handoff_projection_refs":["docs/DATA_RECLAMATION_INTR_AUTHORITY_BINDING_MIRROR_HANDOFF.md"],
+  "authority_model":{"task_registry_mints_execution_authority":false,"intr_is_transition_authority":true,"graph_membership_is_not_execution_authority":true}
+}

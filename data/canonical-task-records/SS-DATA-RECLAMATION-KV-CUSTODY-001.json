@@ -1,0 +1,23 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SS-DATA-RECLAMATION-KV-CUSTODY-001",
+  "correlation_id": "SS-DATA-RECLAMATION-KV-CUSTODY-001",
+  "root_correlation_id": "SS-EVIDENCE-COMPARISON-001",
+  "parent_task_id": "SS-EVIDENCE-COMPARISON-001",
+  "goal": "Bind Personal Data Inventory, SKAP account topology, and generated reclamation target sets to authentic KnowledgeVault writer/readback receipts and reconstructable custody evidence.",
+  "coordination_state": "INACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "cosv_task_vector": "40000100100000",
+  "source_refs": ["StegVerse-Labs/Executive_Rhetoric_Ledger/docs/DIGITAL_DATA_RECLAMATION_AND_SOVEREIGNTY_MIRROR_HANDOFF.md", "docs/DATA_RECLAMATION_KV_CUSTODY_MIRROR_HANDOFF.md"],
+  "targets": {"organizations":["StegVerse-Labs","master-records"],"repositories":["StegVerse-Labs/Executive_Rhetoric_Ledger","StegVerse-Labs/continuity-vault-kit","master-records/orchestration","StegVerse-Labs/.github"],"components":["reclamation-target-set-writer","kv-readback-receipt","reclamation-custody-reconstruction"]},
+  "dependencies": [{"dependency_id":"DEP-RECLAMATION-KV","kind":"STORAGE","state":"AVAILABLE","ref":"KnowledgeVault","disposition":"REUSE_EXISTING_KV_ROOT_AND_RECEIPT_MODEL"}],
+  "blockers": [],
+  "adjacent_task_refs": ["MYKV-PERSONAL-DATA-BACKUP-001","SS-EVIDENCE-COMPARISON-001"],
+  "existing_evidence_refs": ["StegVerse-Labs/Executive_Rhetoric_Ledger@e0c026f6147f5628b6201ee5de93951816e99a2e:reclamation-handoff-merged"],
+  "expected_evidence_predicates": ["TARGET_SET_WRITTEN_TO_AUTHORIZED_KV","EXACT_BYTE_READBACK_MATCHES_WRITER_COMMITMENT","WRITE_AND_READBACK_RECEIPTS_CUSTODIED","CUSTODY_CHAIN_RECONSTRUCTS_WITHOUT_SOURCE_THREAD"],
+  "runtime_requirements": {"capabilities":["kv_write","kv_readback","hashing","receipt_emission","custody_reconstruction"],"environment":"AUTHORIZED_KNOWLEDGEVAULT_PLUS_MASTER_RECORDS","direction":"RECLAMATION_STATE_TO_KV_TO_CUSTODY","mutation_required":true,"deployment_required":false,"current_observation_required":true},
+  "completion": {"claimed":false,"validated":false,"reconciliation_ref":null,"activation_proof_complete":false},
+  "allowed_next_transitions": ["CLAIM_INTEGRATION","IMPLEMENT_KV_WRITER","EXECUTE_AUTHENTIC_KV_READBACK"],
+  "handoff_projection_refs": ["docs/DATA_RECLAMATION_KV_CUSTODY_MIRROR_HANDOFF.md"],
+  "authority_model": {"task_registry_mints_execution_authority":false,"source_state_proves_execution":false,"intr_governs_state_transitions":true,"provider_or_kv_success_requires_authentic_receipt":true}
+}

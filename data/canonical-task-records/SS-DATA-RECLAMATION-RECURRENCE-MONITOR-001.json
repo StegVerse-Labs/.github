@@ -1,0 +1,22 @@
+{
+  "schema":"stegverse.canonical-task-record/v1",
+  "task_id":"SS-DATA-RECLAMATION-RECURRENCE-MONITOR-001",
+  "correlation_id":"SS-DATA-RECLAMATION-RECURRENCE-MONITOR-001",
+  "root_correlation_id":"SS-EVIDENCE-COMPARISON-001",
+  "parent_task_id":"SS-EVIDENCE-COMPARISON-001",
+  "goal":"Build recurrence and reappearance monitoring for reclaimed personal data so new observations reopen evidence state without rewriting prior deletion or restriction receipts.",
+  "coordination_state":"INACTIVE",
+  "checkout_state":"UNCLAIMED",
+  "cosv_task_vector":"40000100100000",
+  "source_refs":["StegVerse-Labs/Executive_Rhetoric_Ledger/docs/DIGITAL_DATA_RECLAMATION_AND_SOVEREIGNTY_MIRROR_HANDOFF.md","docs/DATA_RECLAMATION_RECURRENCE_MONITOR_MIRROR_HANDOFF.md"],
+  "targets":{"organizations":["StegVerse-Labs"],"repositories":["StegVerse-Labs/Executive_Rhetoric_Ledger","StegVerse-Labs/.github"],"components":["recurrence-observer","reappearance-event","verification-state-reopen"]},
+  "dependencies":[{"dependency_id":"DEP-RECLAMATION-PROVIDER-EXECUTION","kind":"EVIDENCE","state":"OPTIONAL_FOR_INITIAL_BUILD","ref":"SS-DATA-RECLAMATION-PROVIDER-EXECUTION-001","disposition":"REUSE_VERIFICATION_PROOF_CLASSES_WHEN_AVAILABLE"}],
+  "blockers":[],"adjacent_task_refs":["SS-DATA-RECLAMATION-PROVIDER-EXECUTION-001","SS-EVIDENCE-COMPARISON-001"],
+  "existing_evidence_refs":["StegVerse-Labs/Executive_Rhetoric_Ledger@c78b2fe4be29dc4e9e15167281b35be8105a922a:reappeared-propagation-posture"],
+  "expected_evidence_predicates":["REAPPEARANCE_CREATES_NEW_OBSERVATION_EVENT","PRIOR_RECEIPTS_REMAIN_IMMUTABLE","WATCH_TARGET_CAN_REOPEN_TO_ELIGIBLE_WITH_NEW_EVIDENCE","MONITORING_CANNOT_CLAIM_PROVIDER_MUTATION"],
+  "runtime_requirements":{"capabilities":["observation","comparison","state_reopen","receipt_emission"],"environment":"AUTHORIZED_RECLAMATION_OBSERVATION","direction":"VERIFIED_STATE_TO_NEW_OBSERVATION_TO_RECONCILIATION","mutation_required":true,"deployment_required":false,"current_observation_required":true},
+  "completion":{"claimed":false,"validated":false,"reconciliation_ref":null,"activation_proof_complete":false},
+  "allowed_next_transitions":["CLAIM_IMPLEMENTATION","BUILD_RECURRENCE_OBSERVER","VALIDATE_REAPPEARANCE_STATE_TRANSITION"],
+  "handoff_projection_refs":["docs/DATA_RECLAMATION_RECURRENCE_MONITOR_MIRROR_HANDOFF.md"],
+  "authority_model":{"task_registry_mints_execution_authority":false,"observation_does_not_authorize_provider_mutation":true,"prior_evidence_is_append_only":true}
+}
