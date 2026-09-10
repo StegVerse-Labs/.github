@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Dispatch GADI-RESIDENT-EXECUTION-001 through mandatory preflight gating.
+"""Dispatch GADI-RESIDENT-EXECUTION-001 through materialization and mandatory preflight gating.
 
-The preflight must return READY_FOR_RESIDENT_CONSUMPTION before the canonical
-resident consumer is invoked. A blocked preflight is terminal for this dispatch
-attempt and does not claim execution, activation, or authority.
+Already-observed local runtime evidence is first projected into the canonical GADI bundle.
+The preflight must then return READY_FOR_RESIDENT_CONSUMPTION before the resident consumer
+is invoked. Any missing/mismatched source evidence fails closed without execution claims.
 """
 from __future__ import annotations
 
@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
+MATERIALIZER = Path("scripts/materialize_gadi_resident_runtime_bundle.py")
 PREFLIGHT = Path("scripts/preflight_gadi_resident_execution.py")
 CONSUMER = Path("control/resident-execution-request.d/consume-gadi-resident-execution.py")
 RECEIPT_REL = Path("receipts/sovereign-host/gadi-resident-dispatch.latest.json")
@@ -39,22 +40,40 @@ def write_receipt(runtime: Path, payload: dict[str, Any]) -> None:
     tmp.replace(path)
 
 
+def resolve(runtime: Path, source: Path, rel: Path) -> Path | None:
+    local = runtime / rel
+    if local.is_file():
+        return local
+    source_path = source / rel
+    return source_path if source_path.is_file() else None
+
+
 def dispatch(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -> dict[str, Any]:
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
-    preflight_path = runtime / PREFLIGHT
-    if not preflight_path.is_file():
-        preflight_path = source / PREFLIGHT
-    consumer_path = runtime / CONSUMER
-    if not consumer_path.is_file():
-        consumer_path = source / CONSUMER
+    materializer_path = resolve(runtime, source, MATERIALIZER)
+    preflight_path = resolve(runtime, source, PREFLIGHT)
+    consumer_path = resolve(runtime, source, CONSUMER)
 
-    if not preflight_path.is_file():
-        result = {"schema":"stegverse.gadi-resident-dispatch/v1","state":"BLOCKED_FAIL_CLOSED","blocker":"PREFLIGHT_NOT_MATERIALIZED","execution_claimed":False,"activation_claimed":False}
-        write_receipt(runtime, result)
-        return result
-    if not consumer_path.is_file():
-        result = {"schema":"stegverse.gadi-resident-dispatch/v1","state":"BLOCKED_FAIL_CLOSED","blocker":"CONSUMER_NOT_MATERIALIZED","execution_claimed":False,"activation_claimed":False}
+    for label, path in (("MATERIALIZER", materializer_path), ("PREFLIGHT", preflight_path), ("CONSUMER", consumer_path)):
+        if path is None:
+            result = {"schema":"stegverse.gadi-resident-dispatch/v1","state":"BLOCKED_FAIL_CLOSED","blocker":f"{label}_NOT_MATERIALIZED","consumer_attempted":False,"execution_claimed":False,"activation_claimed":False}
+            write_receipt(runtime, result)
+            return result
+
+    materialized = runner([sys.executable, str(materializer_path), "--runtime-root", str(runtime)], cwd=runtime, capture_output=True, text=True, check=False, timeout=120)
+    materialized_result = parse_last_json(materialized.stdout)
+    if materialized.returncode != 0 or not isinstance(materialized_result, dict) or materialized_result.get("state") != "MATERIALIZED_READY_FOR_PREFLIGHT" or materialized_result.get("ready") is not True or materialized_result.get("blockers") not in ([], None):
+        result = {
+            "schema":"stegverse.gadi-resident-dispatch/v1",
+            "state":"MATERIALIZATION_BLOCKED_FAIL_CLOSED",
+            "materializer_returncode":materialized.returncode,
+            "materialization":materialized_result,
+            "preflight_attempted":False,
+            "consumer_attempted":False,
+            "execution_claimed":False,
+            "activation_claimed":False,
+        }
         write_receipt(runtime, result)
         return result
 
@@ -64,8 +83,10 @@ def dispatch(source_root: Path, runtime_root: Path, *, runner=subprocess.run) ->
         result = {
             "schema":"stegverse.gadi-resident-dispatch/v1",
             "state":"PREFLIGHT_BLOCKED_FAIL_CLOSED",
+            "materialization":materialized_result,
             "preflight_returncode":pre.returncode,
             "preflight":pre_result,
+            "preflight_attempted":True,
             "consumer_attempted":False,
             "execution_claimed":False,
             "activation_claimed":False,
@@ -79,8 +100,10 @@ def dispatch(source_root: Path, runtime_root: Path, *, runner=subprocess.run) ->
     result = {
         "schema":"stegverse.gadi-resident-dispatch/v1",
         "state":state,
+        "materialization":materialized_result,
         "preflight":pre_result,
         "preflight_returncode":pre.returncode,
+        "preflight_attempted":True,
         "consumer_attempted":True,
         "consumer_returncode":consumed.returncode,
         "consumer":consume_result,
