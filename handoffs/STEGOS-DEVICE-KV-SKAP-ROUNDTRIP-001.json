@@ -1,0 +1,73 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+  "created_at": "2026-09-10T14:10:00-05:00",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+    "objective": "Consume authentic resident Device->KV->SKAP->KV->Device canonical InTr packet/receipt/readback evidence and emit one fail-closed terminal roundtrip proof without creating or upgrading evidence.",
+    "success_predicates": ["four adjacent canonical InTr hops exist in DEVICE_SYSTEM->KV->SKAP_VAULT->KV->DEVICE_SYSTEM order","all current packet bytes match their intent payload hashes","each hop receipt is canonical, boundary-verified, RECEIVED, and hash-valid","each next intent is chained to the previous terminal receipt hash","SKAP and KV exact readback are observed and receipt-bound","credential authority remains TV/TVC","no secret plaintext or authority transfer appears in transport evidence","no hosted runtime or second user-operated device is used"],
+    "failure_predicates": ["source or CI evidence is treated as runtime proof","missing or fabricated hop receipt is accepted","detached request/response pairs are accepted as one roundtrip","mutated packet bytes retain eligibility through a stale intent hash","readback is absent or detached from the admitted lineage","GitHub, Heartbeat, transport, or the verifier grants execution or credential authority"],
+    "authority_ceiling": ["evidence verification and proof persistence only","no receipt minting","no transition admission","no credential resolution","no provider operation","no canonical KV or SKAP mutation"],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+    "parent_task_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
+    "derivation_reason": "The parent revalidates KV connection/provider state; this child separately owns the end-to-end Device<->KV<->SKAP transport/runtime proof so the parent is not widened into a different operational capability.",
+    "repository": "StegVerse-Labs/.github",
+    "canonical_owner_ref": "data/canonical-task-records/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json",
+    "canonical_lineage_key": "stegos:device-kv-skap:roundtrip",
+    "derivation_depth": 1,
+    "priority": "continuity",
+    "operational_state": "AWAITING_AUTHENTIC_FOUR_LEG_RUNTIME_EVIDENCE",
+    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+    "source_refs": ["handoffs/KV-CONNECTION-REVALIDATION-WORKER-001.json","KV_CONNECTION_REVALIDATION_COSV_MIRROR_HANDOFF.md","docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md","workers/device_kv_skap_roundtrip_verifier.py","workers/run_device_kv_skap_roundtrip_worker.py","StegVerse-Labs/StegOS/stegos/device_kv_skap_roundtrip.py"],
+    "dependencies": []
+  },
+  "authority": {
+    "authority_source": "management/UNIVERSAL_DATA_TRANSPORT_INVARIANT.json + KV-CONNECTION-REVALIDATION-WORKER-001",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "heartbeat_grants_execution_authority": false,
+    "fresh_fence_required": true,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "provider_operation_authority": "NONE",
+    "policy_version": "device-kv-skap-roundtrip-v1"
+  },
+  "execution": {
+    "required_capabilities": ["runtime_observation","bounded_process_execution","durable_state_reconstruction"],
+    "allowed_paths": ["StegVerse-Labs/.github","StegVerse-Labs/StegOS","/var/lib/stegverse/**"],
+    "allowed_services": [],
+    "max_actions": 24,
+    "max_retries": 2,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 16,
+    "rate_class": "device_kv_skap_roundtrip",
+    "nonsecret_runtime_bindings": ["STEGVERSE_DEVICE_KV_SKAP_RUNTIME_ROOT","STEGVERSE_DEVICE_KV_SKAP_ROUNDTRIP_MANIFEST","STEGVERSE_DEVICE_KV_SKAP_ROUNDTRIP_OUTPUT"]
+  },
+  "completion": {
+    "runtime_activation_claimed": false,
+    "terminal_evidence": "stegverse.device-kv-skap.runtime-roundtrip-proof/v1 with state DEVICE_KV_SKAP_ROUNDTRIP_VERIFIED",
+    "terminal_when": ["all four authentic hop receipts validate","receipt hash lineage is continuous","all exact packet hashes validate","SKAP and KV exact readback validate","proof persists write-once"],
+    "next_authorized_action": "Return the non-authorizing proof to canonical task reconciliation; do not infer provider or credential authority."
+  },
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:device-kv-skap-roundtrip:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": ["management/UNIVERSAL_DATA_TRANSPORT_INVARIANT.json","StegVerse-Labs/StegOS#326"],
+    "admissibility_evidence_refs": ["docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md","handoffs/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json","control/worker-registry.d/device-kv-skap-roundtrip-001.json","control/process-worker-adapters.d/device-kv-skap-roundtrip-001.json","workers/device_kv_skap_roundtrip_verifier.py","workers/run_device_kv_skap_roundtrip_worker.py"],
+    "integration_evidence_refs": [],
+    "activation_proof_ref": null,
+    "blockers": ["AUTHENTIC_CURRENT_DEVICE_FOUR_LEG_INTR_ROUNDTRIP_NOT_YET_OBSERVED","AUTHENTIC_SKAP_KV_RETURN_RECEIPT_NOT_YET_OBSERVED","KV_SKAP_TERMINAL_EXACT_READBACK_NOT_YET_OBSERVED"],
+    "continuation_owner": "device-kv-skap-roundtrip-worker + StegOS + TVC",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "integrates_capability",
+    "target_phase": "ACTIVATED"
+  }
+}

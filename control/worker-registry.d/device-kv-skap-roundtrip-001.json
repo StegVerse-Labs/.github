@@ -1,0 +1,102 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": ["AUTHENTIC_DEVICE_KV_SKAP_ROUNDTRIP_NOT_YET_OBSERVED"],
+      "authorized_policy_version": "device-kv-skap-roundtrip-v1",
+      "block_ref": "docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md",
+      "claim_id": null,
+      "cost_basis_ref": "cost-basis/worker-runtime/device-kv-skap-roundtrip.json",
+      "evidence_refs": [
+        "docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md",
+        "handoffs/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json",
+        "workers/device_kv_skap_roundtrip_verifier.py",
+        "workers/run_device_kv_skap_roundtrip_worker.py",
+        "StegVerse-Labs/StegOS/stegos/device_kv_skap_roundtrip.py"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": null,
+      "goal_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "handoff_ref": "handoffs/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json",
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": "docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "worker_id": null,
+      "worker_instance_id": null,
+      "admission": {
+        "authority_source": "management/UNIVERSAL_DATA_TRANSPORT_INVARIANT.json + KV-CONNECTION-REVALIDATION-WORKER-001",
+        "authority_domain": "INDEPENDENT_TASK_CONTROL",
+        "heartbeat_reference_only": true,
+        "heartbeat_grants_execution_authority": false,
+        "carrier_trigger_required": false,
+        "fresh_fence_required": true,
+        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+        "admitted_predecessor_rule": "AUTHENTIC_FOUR_LEG_INTR_EVIDENCE_PRESENT",
+        "event_materialization_grants_authority": false
+      },
+      "source_state_vector_ref": "control/task-vectors/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000102000",
+          "vector_state": "EMITTED",
+          "authority_effect": "NONE"
+        }
+      },
+      "admissible_existence": {
+        "capability_id": "stegverse:capability:device-kv-skap-roundtrip:v1",
+        "capability_version": "1.0.0",
+        "phase": "ADMISSIBLE",
+        "standing_evidence_refs": [
+          "management/UNIVERSAL_DATA_TRANSPORT_INVARIANT.json",
+          "StegVerse-Labs/StegOS#326"
+        ],
+        "admissibility_evidence_refs": [
+          "docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md",
+          "handoffs/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json",
+          "control/worker-registry.d/device-kv-skap-roundtrip-001.json",
+          "control/process-worker-adapters.d/device-kv-skap-roundtrip-001.json",
+          "workers/device_kv_skap_roundtrip_verifier.py",
+          "workers/run_device_kv_skap_roundtrip_worker.py"
+        ],
+        "integration_evidence_refs": [],
+        "activation_proof_ref": null,
+        "blockers": [
+          "AUTHENTIC_CURRENT_DEVICE_FOUR_LEG_INTR_ROUNDTRIP_NOT_YET_OBSERVED",
+          "AUTHENTIC_SKAP_KV_RETURN_RECEIPT_NOT_YET_OBSERVED",
+          "KV_SKAP_TERMINAL_EXACT_READBACK_NOT_YET_OBSERVED"
+        ],
+        "continuation_owner": "device-kv-skap-roundtrip-worker + StegOS + TVC",
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": false,
+        "temporal_class": "current",
+        "task_relationship": "integrates_capability",
+        "target_phase": "ACTIVATED"
+      }
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:device-kv-skap-roundtrip-v1",
+      "authority_source": "handoffs/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json#authority",
+      "capabilities": ["runtime_observation", "bounded_process_execution", "durable_state_reconstruction"],
+      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "device-kv-skap-roundtrip-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "non_tv_tvc_secret_or_token_required": false,
+  "third_party_runtime_required": false
+}
