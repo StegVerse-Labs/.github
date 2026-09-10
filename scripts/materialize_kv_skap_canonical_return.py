@@ -99,7 +99,7 @@ def materialize(*, request: Mapping[str, Any], persisted: Mapping[str, Any], run
         "operation_id": request["operation_id"],
         "credential_ref": capsule.get("credential_ref"),
         "forward_terminal_receipt_hash": forward["receipt_hash"],
-        "stored_object_sha256": backbone.payload_hash_uri(stored),
+        "stored_object_sha256": backbone.sha256_uri(stored),
         "exact_ciphertext_readback_verified": True,
         "secret_plaintext_present": False,
         "credential_material_present": False,
