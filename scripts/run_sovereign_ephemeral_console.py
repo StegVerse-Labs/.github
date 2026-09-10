@@ -18,7 +18,6 @@ import hashlib
 import json
 import os
 import shutil
-import signal
 import subprocess
 import sys
 import tempfile
@@ -31,7 +30,12 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from scripts.install_sovereign_heartbeat_service import materialize
-from scripts.restart_sovereign_ephemeral_node import start as start_node
+from scripts.restart_sovereign_ephemeral_node import (
+    assert_fresh_runtime_root,
+    child_env as build_child_env,
+    start as start_node,
+    teardown as teardown_node,
+)
 
 THIRD_PARTY_ENV_VARS = (
     "GITHUB_ACTIONS",
@@ -81,12 +85,8 @@ def _sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def _scrubbed_env(base: dict[str, str] | None = None) -> dict[str, str]:
-    env = dict(os.environ if base is None else base)
-    for name in CREDENTIAL_ENV_VARS:
-        env[name] = ""
-    env["STEGVERSE_SOVEREIGN_NODE"] = "1"
-    return env
+def _scrubbed_env(base: dict[str, str] | None, runtime_root: Path) -> dict[str, str]:
+    return build_child_env(runtime_root, os.environ if base is None else base)
 
 
 def _service_receipt(source_root: Path, runtime_root: Path, process: dict[str, Any], interval_ms: float) -> dict[str, Any]:
@@ -99,7 +99,7 @@ def _service_receipt(source_root: Path, runtime_root: Path, process: dict[str, A
         and isinstance(process.get("worker_pid"), int)
     )
     return {
-        "schema": "stegverse.sovereign-heartbeat-service/v3",
+        "schema": "stegverse.sovereign-heartbeat-service/v4",
         "platform": "logical-node",
         "registration_kind": "stegverse-ephemeral-console",
         "runtime_root": str(runtime_root),
@@ -125,6 +125,13 @@ def _service_receipt(source_root: Path, runtime_root: Path, process: dict[str, A
             "--interval-ms",
             str(interval_ms),
         ],
+        "teardown_command": [
+            sys.executable,
+            str(restart_helper),
+            "--runtime-root",
+            str(runtime_root),
+            "--teardown",
+        ],
         "third_party_process_host_required": False,
         "third_party_scheduler_required": False,
         "third_party_deployment_required": False,
@@ -132,6 +139,8 @@ def _service_receipt(source_root: Path, runtime_root: Path, process: dict[str, A
         "credential_authority": "TV/TVC",
         "github_token_required": False,
         "non_tv_tvc_secret_or_token_used": False,
+        "parent_environment_inherited": False,
+        "child_environment_allowlist_enforced": True,
         "heartbeat_grants_execution_authority": False,
         "authority_effect": "LOGICAL_NODE_PROCESS_SUPERVISION_ONLY",
     }
@@ -139,6 +148,7 @@ def _service_receipt(source_root: Path, runtime_root: Path, process: dict[str, A
 
 def prepare_node(source_root: Path, root: Path, node_index: int, interval_ms: float) -> dict[str, Any]:
     root = root.resolve()
+    assert_fresh_runtime_root(root)
     materialization = materialize(source_root, root, interval_ms=interval_ms)
     identity = {
         "schema": "stegverse.ephemeral-logical-node-identity/v1",
@@ -148,6 +158,7 @@ def prepare_node(source_root: Path, root: Path, node_index: int, interval_ms: fl
         "credential_requirement": "NONE",
         "credential_authority": "TV/TVC",
         "node_sovereign_membership_granted": False,
+        "fresh_runtime_root_required": True,
         "authority_effect": "VALIDATION_IDENTITY_ONLY",
     }
     identity_path = root / "receipts" / "sovereign-host" / "ephemeral-node-identity.json"
@@ -170,32 +181,17 @@ def prepare_node(source_root: Path, root: Path, node_index: int, interval_ms: fl
     }
 
 
-def _stop_pid(pid: Any) -> None:
-    if not isinstance(pid, int) or pid <= 0:
-        return
-    try:
-        os.kill(pid, signal.SIGTERM)
-    except OSError:
-        return
-
-
-def _stop_node_processes(process: dict[str, Any]) -> None:
-    _stop_pid(process.get("carrier_pid", process.get("pid")))
-    _stop_pid(process.get("worker_pid"))
-
-
 def verify_node(source_root: Path, runtime_root: Path, node_index: int, env: dict[str, str]) -> dict[str, Any]:
     proof_path = runtime_root / "receipts" / "sovereign-host" / "canonical-nine-predicate-proof.json"
-    child_env = _scrubbed_env(env)
-    child_env["STEGVERSE_SOVEREIGN_PROOF_PATH"] = str(proof_path)
-    child_env["STEGVERSE_HEARTBEAT_ROOT"] = str(runtime_root)
+    child_environment = _scrubbed_env(env, runtime_root)
+    child_environment["STEGVERSE_SOVEREIGN_PROOF_PATH"] = str(proof_path)
     command = [
         sys.executable,
         str(source_root / "scripts" / "verify_sovereign_runtime_activation.py"),
         "--runtime-root",
         str(runtime_root),
     ]
-    completed = subprocess.run(command, check=False, capture_output=True, text=True, timeout=180, env=child_env)
+    completed = subprocess.run(command, check=False, capture_output=True, text=True, timeout=180, env=child_environment)
     proof = _load(proof_path)
     return {
         "node_index": node_index,
@@ -224,7 +220,7 @@ def run_console(
     values = dict(os.environ if env is None else env)
     hosted = hosted_environment(values)
     body: dict[str, Any] = {
-        "schema": "stegverse.sovereign-ephemeral-console-proof/v2",
+        "schema": "stegverse.sovereign-ephemeral-console-proof/v3",
         "task_id": "SHWP-SOVEREIGN-EPHEMERAL-CONSOLE-002",
         "source_root": str(source_root),
         "console_root": str(console_root),
@@ -235,12 +231,16 @@ def run_console(
         "credential_authority": "TV/TVC",
         "github_token_required": False,
         "non_tv_tvc_secret_or_token_used": False,
+        "parent_environment_inherited": False,
+        "child_environment_allowlist_enforced": True,
+        "fresh_runtime_root_required": True,
         "third_party_runtime_required": False,
         "hosted_environment_observed": hosted,
         "validation_only": validation_only,
         "canonical_proof_promoted": False,
         "state": "FAIL_CLOSED",
         "nodes": [],
+        "teardown_verifications": [],
     }
     if node_count < 3:
         body["reason"] = "THREE_LOGICAL_NODES_REQUIRED_FOR_THIRD_MACHINE_EMULATION"
@@ -310,11 +310,20 @@ def run_console(
             body["state"] = "REVIEW_REQUIRED"
             body["reason"] = "LOGICAL_NODE_OR_ISOLATION_PROOF_INCOMPLETE"
     finally:
+        teardown_rows: list[dict[str, Any]] = []
         for index, _row in enumerate(prepared, start=1):
             if retain_primary and index == 1:
                 continue
-            latest = _load(console_root / f"node-{index}" / "receipts/sovereign-host/ephemeral-process.latest.json")
-            _stop_node_processes(latest)
+            runtime_root = console_root / f"node-{index}"
+            teardown_rows.append({"node_index": index, **teardown_node(runtime_root)})
+        body["teardown_verifications"] = teardown_rows
+        body["validation_peers_teardown_verified"] = all(
+            row.get("state") == "TEARDOWN_COMPLETE" and row.get("no_supervised_process_residue") is True
+            for row in teardown_rows
+        ) if teardown_rows else True
+        if body.get("state") == "COMPLETE" and not body["validation_peers_teardown_verified"]:
+            body["state"] = "REVIEW_REQUIRED"
+            body["reason"] = "VALIDATION_PEER_TEARDOWN_INCOMPLETE"
         body["primary_retained"] = retain_primary and bool(prepared)
         if retain_primary and prepared:
             primary = _load(console_root / "node-1" / "receipts/sovereign-host/ephemeral-process.latest.json")
