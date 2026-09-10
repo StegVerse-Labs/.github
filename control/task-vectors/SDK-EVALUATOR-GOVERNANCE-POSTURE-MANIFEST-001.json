@@ -1,0 +1,12 @@
+{
+  "identity":"StegVerse-Labs/.github:task:SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001",
+  "profile":"task.v1",
+  "task_id":"SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001",
+  "vector":"71000000100110",
+  "parent_task_id":"SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "evidence_refs":[
+    "StegVerse-org/StegVerse-SDK:SDK_EVALUATOR_GOVERNANCE_POSTURE_MANIFEST_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:pull/172",
+    "StegVerse-org/StegVerse-SDK:commit/7aaf0ea4a3a4b133941a8b16ffd410817746a6ee"
+  ]
+}
