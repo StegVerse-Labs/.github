@@ -1,0 +1,52 @@
+{
+  "schema": "stegverse.machine-preflight/v1",
+  "repository": "StegVerse-Labs/.github",
+  "branch": "fix/current-iphone-testflight-successor-allocation-001",
+  "task_id": "TASK-2026-0010-PREPARATION",
+  "parent_runtime_task": "SHWP-STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001",
+  "state": "PASS",
+  "goal": "Extend the existing canonical current-iPhone organization allocator catalog with one non-overlapping Site successor task for the validated TestFlight static bootstrap while preserving retained portable state and requiring a fresh claim fence.",
+  "canonical_state_resolved": {
+    "portable_allocator_handoff": "docs/PORTABLE_ORG_CLAIM_ALLOCATOR_IPHONE_MIRROR_HANDOFF.md",
+    "adjacent_handoff": "docs/CURRENT_IPHONE_TESTFLIGHT_SUCCESSOR_ALLOCATION_MIRROR_HANDOFF.md",
+    "source_successor": "StegVerse-Labs/StegOS:release/current-iphone-site-projection/successors/current-iphone-testflight-static-bootstrap.json",
+    "prior_site_projection": "StegVerse-Labs/Site#952 / TASK-2026-0008 / authentic allocator fence 4",
+    "task_0009_scope_preserved": true
+  },
+  "collision_preflight": {
+    "prior_task_0008_reactivation_allowed": false,
+    "successor_dependency_surface": "site:current-iphone-testflight-static-bootstrap",
+    "successor_scope_overlaps_task_0008": false,
+    "successor_scope_overlaps_task_0009": false
+  },
+  "existing_solution_reuse": {
+    "canonical_allocator": "scripts/allocate_claims.py",
+    "portable_allocator": "org_allocator/portable_allocator.js",
+    "portable_authority_epoch": "ORG-ALLOCATOR-PORTABLE-IPHONE-20260902",
+    "portable_cas_reused": true,
+    "new_allocator_created": false,
+    "new_scheduler_created": false,
+    "new_workercoordinator_created": false,
+    "state_reset_allowed": false,
+    "prior_fence_reuse_allowed": false,
+    "heartbeat_grants_claim_authority": false,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "other_machine_required": false
+  },
+  "admission_design": {
+    "successor_task_id": "TASK-2026-0010",
+    "task_status": "queued",
+    "priority_class": "release",
+    "repository": "StegVerse-Labs/Site",
+    "expected_portable_behavior": "retained G3/G4/G5 state remains valid; missing persisted TASK-2026-0010 status defaults to queued from the updated source package; existing allocator may grant only the next monotonic generation if retained active claims do not collide",
+    "source_does_not_claim_next_fence": true
+  },
+  "runtime_truth": {
+    "task_0010_claim_granted": false,
+    "g6_fence_observed": false,
+    "site_projection_observed": false,
+    "physical_current_iphone_execution_observed": false
+  },
+  "authority_effect": "NONE_PREFLIGHT_ONLY"
+}
