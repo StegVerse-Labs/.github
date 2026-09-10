@@ -1,0 +1,112 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "FEDERAL-HEALTH-PII-EXCEEDANCE-HARDENING-001",
+  "correlation_id": "FEDERAL-HEALTH-PII-EXCEEDANCE-HARDENING-001",
+  "root_correlation_id": "FEDERAL-HEALTH-PII-EXCEEDANCE-HARDENING-001",
+  "parent_task_id": "STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001",
+  "goal": "Engineer StegVerse sensitive-data handling so technical enforcement for health information and PII intentionally exceeds the current federal baseline while preserving TV/TVC credential authority, Interlock/InTr transition authority, fail-closed evidence, and sovereign single-device constraints without claiming legal certification or authorization.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "71000000100100",
+  "source_refs": [
+    "docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegOS/docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegOS/stegos/sensitive_data_minimum_necessary.py",
+    "StegVerse-Labs/StegOS/stegos/intr_sensitive_data_binding.py",
+    "StegVerse-org/StegVerse-SDK/stegverse/security_posture.py",
+    "StegVerse-org/StegVerse-SDK/stegverse/security_posture_binding.py"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs", "StegVerse-org"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegOS", "StegVerse-org/StegVerse-SDK"],
+    "components": [
+      "minimum-necessary-sensitive-data-admission",
+      "versioned-security-posture",
+      "task-scoped-ephemeral-posture",
+      "exact-manifest-posture-payload-intr-binding",
+      "raw-phi-free-audit-receipt",
+      "automatic-disposition-proof",
+      "purpose-of-use-field-authorization",
+      "break-glass-control",
+      "availability-reconstruction",
+      "continuous-control-assessment"
+    ]
+  },
+  "dependencies": [],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+    "STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001",
+    "STEGOS-SENSITIVE-DATA-MINIMUM-NECESSARY-001",
+    "SDK-SECURITY-POSTURE-PACKAGE-001",
+    "SDK-TASK-SCOPED-EPHEMERAL-POSTURE-002",
+    "INTR-SENSITIVE-DATA-MANIFEST-PAYLOAD-BINDING-001",
+    "INTR-SENSITIVE-DATA-RAW-PHI-FREE-AUDIT-RECEIPT-002"
+  ],
+  "existing_evidence_refs": [
+    "StegVerse-Labs/StegOS#320",
+    "StegVerse-org/StegVerse-SDK#167",
+    "StegVerse-org/StegVerse-SDK#168",
+    "StegVerse-org/StegVerse-SDK#170",
+    "StegVerse-Labs/StegOS#322",
+    "StegVerse-org/StegVerse-SDK@4601a6537270167edf72d7eecec28aad8de3fe76:validation=34506885779_SUCCESS",
+    "StegVerse-Labs/StegOS@05848191ea2715aa9bdf37d63e22622744128a9d:validation=34506947325_SUCCESS"
+  ],
+  "expected_evidence_predicates": [
+    "MINIMUM_NECESSARY_SENSITIVE_DATA_ADMISSION_FAILS_CLOSED",
+    "TASK_SCOPED_SECURITY_POSTURE_CANNOT_BE_DOWNGRADED_OR_REUSED",
+    "EXACT_PAYLOAD_MANIFEST_POSTURE_AND_INTR_REQUEST_BINDING_FAILS_CLOSED",
+    "RAW_SENSITIVE_PAYLOAD_ABSENT_FROM_BINDING_EVIDENCE",
+    "RAW_PHI_PII_ABSENT_FROM_WRITE_ONCE_AUDIT_RECEIPTS",
+    "AUTOMATIC_DISPOSITION_PROOF_VERIFIABLE",
+    "PURPOSE_OF_USE_AND_FIELD_AUTHORIZATION_ENFORCED",
+    "BREAK_GLASS_ACCESS_DUAL_RECEIPTED_AND_TIME_BOUNDED",
+    "AUTHORIZED_AVAILABILITY_RECONSTRUCTION_PRESERVES_CURRENT_AUTHORITY",
+    "CONTINUOUS_MACHINE_READABLE_CONTROL_ASSESSMENT_AVAILABLE"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["sensitive_data_admission", "security_posture", "intr_exact_binding", "audit_and_disposition_evidence"],
+    "environment": "SOURCE_CONTROL_AND_SOVEREIGN_INTR_BOUNDARY",
+    "direction": "SENSITIVE_DATA_ADMISSION_TO_INTR_TO_AUDIT_AND_DISPOSITION",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": false
+  },
+  "runtime_resolution": {
+    "current_executor": "current-session-repository-orchestration",
+    "authority_basis": "user-authorized GitHub source mutation under canonical task/handoff custody",
+    "unattended_runtime": false
+  },
+  "worker_claim": {
+    "authority": "CURRENT_SESSION",
+    "claim_ref": "docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md",
+    "fence_ref": null,
+    "projection_only": false
+  },
+  "human_action_ref": null,
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": "docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md",
+    "exact_intr_binding_source_complete": true
+  },
+  "allowed_next_transitions": [
+    "IMPLEMENT_INTR_SENSITIVE_DATA_RAW_PHI_FREE_AUDIT_RECEIPT_002"
+  ],
+  "handoff_projection_refs": [
+    "docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegOS/docs/FEDERAL_HEALTH_PII_EXCEEDANCE_HARDENING_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "master_records_reality_authority": true,
+    "interlock_intr_required_for_governed_ingress_egress": true,
+    "credential_authority": "TV_TVC",
+    "github_runtime_authority": "NONE",
+    "heartbeat_execution_authority": false,
+    "model_output_authority": false,
+    "hosted_execution_fallback": false
+  }
+}
