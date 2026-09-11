@@ -1,0 +1,39 @@
+{
+  "schema": "stegverse.task-registry-sovereign-kv-event-custody/v1",
+  "status": "ACTIVE",
+  "source_event_schema": "stegverse.task-registry-checkin-event/v1",
+  "projection_request_schema": "stegverse.task-registry-sovereign-kv-projection-request/v1",
+  "projection_receipt_schema": "stegverse.task-registry-sovereign-kv-projection-receipt/v1",
+  "custody_class": "STEGVERSE_SOVEREIGN_KV",
+  "provider_neutral": true,
+  "required_request_bindings": [
+    "task_id",
+    "session_id",
+    "event_sha256",
+    "predecessor_event_sha256",
+    "exact_event"
+  ],
+  "required_receipt_bindings": [
+    "event_sha256",
+    "custody_class",
+    "provider_adapter_ref",
+    "interlock_intr_receipt_ref",
+    "kv_instance_ref",
+    "stored_event_sha256"
+  ],
+  "success_predicate": "stored_event_sha256 == event_sha256 AND custody_class == STEGVERSE_SOVEREIGN_KV",
+  "fallback_semantics": {
+    "github_is_optional_projection": true,
+    "runtime_filesystem_may_remain_local_projection": true,
+    "missing_sovereign_kv_receipt_does_not_invent_custody": true
+  },
+  "authority_effect": "NONE",
+  "invariants": [
+    "EVENT_BYTES_AND_EVENT_HASH_ARE_NOT_REWRITTEN_BY_PROJECTION",
+    "PROJECTION_DOES_NOT_CREATE_TASK_OR_EXECUTION_AUTHORITY",
+    "INTERLOCK_INTR_REMAINS_TRANSITION_ADMISSION_AUTHORITY",
+    "TV_TVC_REMAINS_CREDENTIAL_AUTHORITY",
+    "MASTER_RECORDS_REMAINS_OBSERVED_REALITY_AND_RECONSTRUCTION_AUTHORITY",
+    "NO_GITHUB_RUNTIME_AUTHORITY"
+  ]
+}
