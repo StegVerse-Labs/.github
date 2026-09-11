@@ -281,3 +281,8 @@ README completeness is evidence-only. It grants no execution, claim, fence, leas
 Machine-preflight receipts are retained as historical evidence even when a later canonical correction changes whether their result is currently admissible. Consumers that need **current** preflight meaning must resolve the receipt through `scripts/resolve_machine_preflight_receipt.py` rather than reading a retained `state=PASS` in isolation.
 
 A sibling `<receipt>.supersession.json` is accepted only when it targets that exact receipt, uses `stegverse.preflight-supersession/v1`, retains a `NONE*` authority effect, and explicitly forbids runtime-truth and execution-admission inference. A valid supersession preserves the historical result but makes `current_admissible=false` with the successor disposition. Malformed, mismatched, or authority-escalating supersession state fails closed. Supersession resolution grants no execution, claim, fence, transition, credential, routing, custody, publication, or runtime authority.
+
+
+### Current-iPhone TVC opaque recipient capability
+
+Canonical dependency `TVC-IOS-OPAQUE-RECIPIENT-CAPABILITY-001` now has validated source on both owning sides: the StegOS Mobile target contains the non-exportable P-256 Secure Enclave candidate and TVC-challenge proof-of-possession signer, while TVC verifies the exact ECDSA signature/bindings and alone projects canonical activation/liveness receipts through its Coinbase capability seam. TV/TVC retains credential/capability authority, Interlock/InTr retains transition authority, and GitHub has no runtime authority. Physical current-iPhone execution and the parent Device/KV/SKAP roundtrip remain evidence-gated and are not inferred from merge or CI.
