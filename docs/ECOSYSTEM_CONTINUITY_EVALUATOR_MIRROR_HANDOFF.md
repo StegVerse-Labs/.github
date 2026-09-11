@@ -8,7 +8,7 @@ COSV: 71000000100111
 Repository: StegVerse-Labs/.github
 Canonical issue: #1524
 Core PR: #1525
-Status: ACTIVE / CORE MERGED+VALIDATED / HEALER INTAKE MERGED+VALIDATED / SITE PROJECTION VALIDATING
+Status: ACTIVE / CORE MERGED+VALIDATED / HEALER INTAKE MERGED+VALIDATED / SITE PROJECTION MERGED+VALIDATED
 Authority effect: NONE_DIAGNOSTIC_ONLY
 Repair owner: StegVerse-Labs/StegVerse-Healer
 GitHub runtime authority: NONE
@@ -66,13 +66,21 @@ PROBE_REQUIRED
 
 The intake accepts canonical non-PASS findings, freezes a deterministic finding snapshot hash, begins Healer state at `DETECTED`, and carries `authority_effect=NONE_INTAKE_ONLY`. PASS findings are not queued for repair. Source merge does not prove live intake, dispatch, scheduler execution, repair, or recovery.
 
-## Site consumer — active validation
+## Site consumer — merged and validated
 
-`StegVerse-Labs/Site` PR #1241 implements fail-closed read-only projection. Initial head `4e774fa08da39817a06dd4c2ac365c02bf392ec1` correctly failed Site governance because no active pre-work claim existed. The exact failure was `pull request branch must resolve to exactly one active pre-work claim`.
+`StegVerse-Labs/Site` PR #1241 merged at `8214d3c28522c0af98276ce5cbd2c591cd4a4f3e` from exact head `dec3b3040576e8bd91e7ef01cd5222fb896ebef2`.
 
-The branch was repaired by adding `data/session-work-claims.d/site-ece-continuity-projection-20260911.json`; current head is `dec3b3040576e8bd91e7ef01cd5222fb896ebef2`. Ecosystem Heartbeat run `34653841821` has already passed at that head; Site Handoff Orchestrator and Site Bootstrap validation were still running at last observation.
+Exact-head validation PASS:
 
-Site v1 projection deliberately excludes raw evidence locators, free-form detail, remediation class, credentials, private KV paths, callback material, and sensitive infrastructure identifiers. Invalid/missing/authorizing source fails closed to `INDETERMINATE` rather than reusing a stale green state.
+```text
+Ecosystem Heartbeat Orchestration: 34653841821
+Site Handoff Orchestrator: 34653841962
+Site Bootstrap Validate: 34653841899
+```
+
+The initial branch head correctly failed because the PR did not resolve to exactly one active pre-work claim. `data/session-work-claims.d/site-ece-continuity-projection-20260911.json` repaired that repository-governance condition without altering evaluator semantics.
+
+Site v1 projection excludes raw evidence locators, free-form detail, remediation class, credentials, private KV paths, callback material, and sensitive infrastructure identifiers. Invalid/missing/authorizing source fails closed to `INDETERMINATE` rather than reusing a stale green state. Source merge does not prove live projection or authentic retained ECE input.
 
 ## Authority roles
 
@@ -95,8 +103,8 @@ ECE must not create a second scheduler. Periodic execution must reuse the existi
 ```text
 ECE core source: MERGED / EXACT VALIDATION PASS
 Healer finding-intake source: MERGED / EXACT VALIDATION PASS
+Site projection source: MERGED / EXACT VALIDATION PASS
 Healer live intake/dispatch: NOT PROVEN
-Site projection source: OPEN / VALIDATING
 Site live continuity projection: NOT PROVEN
 Master Records ECE custody/reconstruction: NOT IMPLEMENTED / NOT PROVEN
 Periodic Healer-scheduled ECE execution: NOT IMPLEMENTED / NOT PROVEN
@@ -106,11 +114,10 @@ Independent repair->re-evaluation recovery loop: NOT PROVEN
 
 ## Next sequence
 
-1. Finish exact-head Site #1241 validation; repair only exact failures and merge only after required checks pass.
-2. Add Master Records custody/reconstruction for exact ECE evaluation bytes and identity.
-3. Bind periodic ECE invocation to the existing Healer sovereign scheduler without creating a second scheduler.
-4. Materialize one authentic retained evaluation from bounded component observations.
-5. Feed its non-PASS findings through the merged Healer intake and project the safe retained evaluation to Site.
-6. Prove the first repair/re-evaluation lifecycle without allowing Healer state or repair receipts to self-certify recovery.
-7. Add authentic component probes incrementally.
-8. Reconcile the root `.github` README ECE section without replacing unrelated existing content; `README_ECE_SECTION.md` remains the safe integration carrier until that edit can be performed without clobbering the large README.
+1. Add Master Records custody/reconstruction for exact ECE evaluation bytes and identity.
+2. Bind periodic ECE invocation to the existing Healer sovereign scheduler without creating a second scheduler.
+3. Materialize one authentic retained evaluation from bounded component observations.
+4. Feed its non-PASS findings through the merged Healer intake and project the safe retained evaluation to Site.
+5. Prove the first repair/re-evaluation lifecycle without allowing Healer state or repair receipts to self-certify recovery.
+6. Add authentic component probes incrementally.
+7. Reconcile the root `.github` README ECE section without replacing unrelated existing content; `README_ECE_SECTION.md` remains the safe integration carrier until that edit can be performed without clobbering the large README.
