@@ -5,9 +5,12 @@
   "vector": "40000100100000",
   "evidence_refs": [
     "data/canonical-task-records/STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001.json",
+    "docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_ECOSYSTEM_EPHEMERAL_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_LINKEDIN_PLAYWRIGHT_EXECUTION_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegOS/docs/STEGBROWSER_IOS_RESIDENT_APP_TARGET_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github@9776ceba4877f8c213af534176f277c28ec58d39",
+    "StegVerse-Labs/.github@5eba3974ff9c141aab74e616742e959ecdbd2ded",
     "StegVerse-Labs/StegBrowser@86cb4c42bbde1366ca03088a01983273f73de400",
     "StegVerse-Labs/StegBrowser/actions/runs/34303703951",
     "StegVerse-Labs/StegBrowser@10ab121dfc7a3d91a0436fee333b4d8318d43576",
@@ -30,7 +33,7 @@
     "StegVerse-Labs/StegSocials/actions/runs/34304357178",
     "StegVerse-Labs/StegSocials/actions/runs/34304357164"
   ],
-  "observed_at": "2026-09-09T05:33:00Z",
+  "observed_at": "2026-09-11T14:38:18Z",
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
     "lifecycle": "CLAIMED_INTEGRATION",
@@ -49,15 +52,15 @@
     "propagated": false
   },
   "metric_evidence": {
-    "lifecycle": "Current source state includes validated StegOSMobile same-device discovery readback and TestFlight delivery machinery, deployed Site browser-to-app handoff observation, merged StegBrowser LinkedIn end-to-end execution, and merged StegSocials Facebook/LinkedIn caller parity. Authentic current-iPhone installation/discovery remains next.",
-    "archive_ready": "Current-iPhone discovery receipt, WorkerCoordinator claim/fence, InTr admission, provider sessions, Facebook and LinkedIn live publication/readback, custody completion, and propagation remain incomplete.",
-    "unassigned_work": "Remaining work is assigned to the canonical StegOSMobile/.github/TVC/StegBrowser/StegSocials/Master Records continuation path.",
+    "lifecycle": "Current source state includes validated StegOSMobile same-device discovery/readback and current-iPhone WASM signing source, merged exact TVC source-promotion request/consumer, deployed Site browser-to-app handoff observation, merged StegBrowser LinkedIn execution, and merged StegSocials Facebook/LinkedIn caller parity. Authentic resident source-promotion consumption and current-iPhone runtime evidence remain next.",
+    "archive_ready": "Resident source-promotion consumption, pinned TVC materialization/restart, simultaneous 8765/8775 listeners, Apple OWNER_INGRESS_READY, real SKAP custody, current-iPhone signing/TestFlight installation/discovery, WorkerCoordinator claim/fence where required, live publication/readback, custody completion, and propagation remain incomplete.",
+    "unassigned_work": "Remaining work is assigned to the canonical .github/TVC/StegOSMobile/StegBrowser/StegSocials/Master Records continuation path.",
     "chat_owned_counts": "No chat-only implementation or validation state is required for continuation.",
-    "canonical_owner_installed": "Canonical task/COSV ownership and mirror handoffs remain installed and now include the deployed Site handoff diagnostic plus LinkedIn execution/caller parity.",
-    "thread_required": "Repository state is sufficient for continuation.",
-    "blocker_count": "No known source-code blocker remains before Apple/TestFlight current-device observation.",
-    "evidence_complete": "Source, package, handoff-diagnostic, Facebook caller, LinkedIn runtime, and LinkedIn caller validation exist; authentic current-device and live publication/custody evidence do not.",
-    "activated": "Activation remains false until authentic current-device resident admission and downstream evidence are observed.",
+    "canonical_owner_installed": "Canonical task/COSV ownership, exact resident source-promotion request/consumer, and mirror handoffs are installed in repository source.",
+    "thread_required": "Repository state is sufficient for continuation; authentic runtime execution still requires the sovereign resident/execution substrate.",
+    "blocker_count": "No unresolved source-implementation blocker is counted in this vector. Authentic runtime evidence and the external Apple Terms/account gate remain progression predicates rather than source-code blockers.",
+    "evidence_complete": "Source and validation evidence exist for the resident request, TVC promotion path, current-iPhone signing source, Site handoff diagnostic, and social callers. Authentic resident consumption, TVC runtime promotion, Apple ingress, current-device signing/install/discovery, and live publication/custody evidence do not.",
+    "activated": "Activation remains false until authentic current-device resident admission/execution and downstream evidence are observed.",
     "propagated": "Propagation verification remains pending."
   },
   "authority_effect": "NONE"
