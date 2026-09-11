@@ -1,0 +1,105 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SITE-PUBLICATION-NATIVE-RUNTIME-EXECUTION-001",
+  "correlation_id": "SITE-PUBLICATION-NATIVE-RUNTIME-EXECUTION-001",
+  "root_correlation_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
+  "parent_task_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
+  "goal": "Complete only the authentic native Site publication runtime proof chain from sovereign source refresh through fresh WorkerCoordinator claim/fence, exact-materialization candidate validation, bounded EVENT_EPHEMERAL lease, independent public HTTPS equivalence observation, lease closure, final publication transition admission, and conditional DNS/TLS recovery proof.",
+  "coordination_state": "INACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "cosv_task_vector": "50000000102000",
+  "repository": "StegVerse-Labs/.github",
+  "activation_condition": "PARENT_POST_MERGE_RECONCILIATION_PR_1483_MERGED_GREEN",
+  "handoff_projection_refs": [
+    "StegVerse-Labs/.github:docs/SITE_PUBLICATION_NATIVE_RUNTIME_EXECUTION_001_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github:docs/SITE_PUBLICATION_INTR_CONSUMER_MIRROR_HANDOFF.md"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/Site", "StegVerse-Labs/StegOS"],
+    "components": [
+      "sovereign-source-refresh",
+      "workercoordinator-claim-fence",
+      "site-publication-candidate-validation",
+      "event-ephemeral-publication-lease",
+      "public-https-profile-observation",
+      "http-byte-path-equivalence",
+      "lease-closure",
+      "final-publication-transition",
+      "dns-tls-recovery-proof"
+    ]
+  },
+  "existing_evidence_refs": [
+    "StegVerse-Labs/.github:pull/1398",
+    "StegVerse-Labs/.github:commit/7444aefbdd2c644c46ae105192af4a524ef02172",
+    "StegVerse-Labs/Site:commit/bc1ee7257ebc64f77dab3f0b746bb3a86a279b6c",
+    "StegVerse-Labs/.github:issue/1486",
+    "StegVerse-Labs/.github:pull/1483"
+  ],
+  "source_state": {
+    "worker_registration_merged_validated": true,
+    "exact_materialization_id": "INTR-MAT-0e1ba4786b0ea8a00e1f166e",
+    "exact_packet_id": "INTR-58dec5416bd4358190c11372",
+    "artifact_manifest_sha256": "sha256:e6bc47580f25296df61d16dfe5a74f3f49fec0dda018c813696195c960e77f09",
+    "sovereign_source_refresh_observed": false,
+    "fresh_worker_claim_fence_observed": false,
+    "runtime_worker_execution_observed": false,
+    "bounded_event_ephemeral_lease_observed": false,
+    "public_https_intr_profile_observed": false,
+    "exact_http_equivalence_observed": false,
+    "lease_closure_observed": false,
+    "final_publication_transition_admitted": false,
+    "dns_tls_recovery_proven": false,
+    "github_runtime_authority": "NONE",
+    "hosted_execution_fallback": false
+  },
+  "remaining_predicates": [
+    "SOVEREIGN_SOURCE_REFRESH_OBSERVED",
+    "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+    "RUNTIME_WORKER_EXECUTION_OBSERVED",
+    "BOUNDED_EVENT_EPHEMERAL_LEASE_EXECUTION_OBSERVED",
+    "PUBLIC_HTTPS_INTR_PROFILE_OBSERVED",
+    "EXACT_HTTP_BYTE_PATH_EQUIVALENCE_OBSERVED",
+    "LEASE_CLOSURE_OBSERVED",
+    "FINAL_PUBLICATION_TRANSITION_ADMITTED",
+    "DNS_TLS_RECOVERY_PROVEN"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "credential_authority": "TV/TVC",
+    "interlock_intr_required_for_governed_ingress_egress": true,
+    "github_runtime_authority": "NONE",
+    "hosted_execution_fallback": false,
+    "render_dependency_required": false,
+    "second_user_operated_device_required": false
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "activation_proof_complete": false
+  },
+  "runtime_requirements": {
+    "capabilities": ["resident_request_dispatch", "bounded_process_execution", "runtime_observation"],
+    "environment": "SOVEREIGN_RESIDENT",
+    "direction": "INTERNAL",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true,
+    "already_local_source_required": true,
+    "second_user_operated_device_required": false
+  },
+  "runtime_resolution": null,
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "readme_impact": {
+    "material_function_change": false,
+    "readme_updated_in_change_set": false,
+    "readme_path": "README.md",
+    "no_readme_update_reason": "Prompt-budget succession and runtime-evidence ownership only; no new public capability or runtime owner is introduced."
+  }
+}
