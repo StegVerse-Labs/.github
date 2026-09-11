@@ -48,11 +48,13 @@
       "control/process-worker-adapters.d/gadi-resident-execution-001.json",
       "StegVerse-002/micro-node-runtime/micro_node/gadi_resident_consumer.py"
     ],
-    "dependencies": [
+    "dependencies": [],
+    "coordination_refs": [
       "GADI-001",
       "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
       "TVC-CAPABILITY-RUNTIME-002"
     ],
+    "dependency_semantics": "WorkerCoordinator task.dependencies contains only terminal predecessor worker tasks. GADI parent/coordination/TV-TVC relationships remain non-terminal authority and runtime-predicate references enforced by source validation and preflight, not terminal completion gates.",
     "source_state_vector_ref": "control/task-vectors/GADI-RESIDENT-EXECUTION-001.json",
     "machine_readable_state": {
       "cosv": {
