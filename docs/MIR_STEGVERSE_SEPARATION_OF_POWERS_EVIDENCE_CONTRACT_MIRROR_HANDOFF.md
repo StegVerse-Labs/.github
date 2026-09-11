@@ -1,6 +1,6 @@
 # MIR × StegVerse Separation-of-Powers Evidence Contract Mirror Handoff
 
-Updated: 2026-09-10
+Updated: 2026-09-11
 
 ## Canonical task
 
@@ -8,9 +8,23 @@ Goal Task ID: `MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001`
 
 Frozen contract: `docs/contracts/MIR_STEGVERSE_SEPARATION_OF_POWERS_EVIDENCE_CONTRACT_v0.3.md`
 
-Status: ACTIVE — v0.3 is bilaterally frozen. StegVerse and MIR have both accepted the same v0.3 artifact. Implementation and conformance work now proceeds against that fixed target and does not alter the frozen text.
+Status: ACTIVE — v0.3 is bilaterally frozen. StegVerse and MIR have both accepted v0.3. Implementation and conformance work proceeds against that fixed normative target and does not alter the frozen text.
 
 Freeze evidence: `evidence/mir-stegverse-v0.3-bilateral-freeze-2026-09-10.md`
+
+## Shared Docs reconciliation — 2026-09-11
+
+The Shared Docs text supplied by the user contains the same v0.3 normative contract in two representations: a full long-form copy followed by a condensed copy labeled as verbatim. The GitHub canonical contract stores one Markdown-formatted long-form representation.
+
+Accordingly:
+
+- the Shared Docs paste and GitHub contract are substantively/normatively aligned on v0.3;
+- the Shared Docs paste is not byte-for-byte identical to the GitHub Markdown artifact because of duplication and formatting differences;
+- bilateral freeze evidence establishes mutual acceptance of the v0.3 normative contract/version and no post-freeze normative amendment;
+- do not claim a cross-system byte-identical document hash unless MIR and StegVerse explicitly agree one canonical serialization/hash;
+- the GitHub file remains StegVerse's canonical implementation target and must not be silently edited to reflect later implementation notes.
+
+The status line inside the frozen text still reads `Convergence candidate — not frozen until mutual agreement`. That line is part of the mutually reviewed candidate text and is not rewritten after the fact. Current freeze state is carried by this handoff and the freeze-evidence record so the accepted normative text remains unchanged.
 
 ## Constitutional invariant
 
@@ -109,13 +123,13 @@ These conditions do not alter the frozen contract and do not stop StegVerse-side
 
 ## Freeze state
 
-StegVerse acceptance: `ACCEPTED_FOR_FREEZE` for the exact v0.3 artifact.
+StegVerse acceptance: v0.3 accepted for freeze.
 
 MIR acceptance: explicit acceptance received; MIR stated it was freezing v0.3 on its side as well.
 
 Bilateral contract state: `FROZEN_V0_3`.
 
-The frozen artifact remains `docs/contracts/MIR_STEGVERSE_SEPARATION_OF_POWERS_EVIDENCE_CONTRACT_v0.3.md`. No textual amendment is implied by the section 12.3 build note or by later conformance work.
+The frozen normative target remains `docs/contracts/MIR_STEGVERSE_SEPARATION_OF_POWERS_EVIDENCE_CONTRACT_v0.3.md`. No textual amendment is implied by the section 12.3 build note, Shared Docs formatting/duplication, or later conformance work.
 
 Any later normative change requires an explicitly versioned successor contract rather than silently changing v0.3 during implementation or testing.
 
