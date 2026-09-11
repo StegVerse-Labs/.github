@@ -9,7 +9,9 @@ Canonical parent handoff: `docs/HIL_RESIDENT_SESSION_MANIFOLD_ACTIVATION_MIRROR_
 
 The exact user-exported standalone-Safari ESRL `LEASE_OPEN` artifact has been received and preserved byte-for-byte. Its SHA256 is `a6756c54da15f09cd6a3dbb201375891803f6589fd644db4c545be39ebe41b92`; the uploaded source and repository-preserved file share Git blob SHA-1 `64477f85c954d8428bece619c311cd97afb7734a`, confirming exact-byte identity.
 
-Canonical ESRL intake is accepted and the only lawful bookkeeping transition is now prepared and applied in this change:
+Canonical ESRL intake is accepted. The already-defined lawful bookkeeping transition is now fully evidenced but is **not applied in this PR** because the first exact-head deterministic run exposed an additional repository invariant: `control/task-vector-index.json` and `control/cosv-global-registry-coverage.json` must advance atomically with the task vector/worker-registry COSV mutation.
+
+The pending coordinated transition remains:
 
 ```text
 50000000103000 -> 50000000102000
@@ -18,7 +20,7 @@ retain POST_RESTART_EXACT_BYTE_PROOF_NOT_YET_PRESERVED
 retain TVC_HIL_LIFECYCLE_HANDOFF_NOT_YET_PROVEN
 ```
 
-Parent worker state remains `HANDOFF_READY`; `archive_eligible=false`, `activated=false`, and `propagated=false` remain unchanged.
+This PR therefore preserves and accepts the exact physical artifact while leaving the canonical vector/registry/index/coverage state unchanged at `50000000103000` until that four-surface reconciliation is performed together. No evidence is discarded and no runtime predicate is demoted.
 
 ## Evidence
 
@@ -28,10 +30,14 @@ Parent worker state remains `HANDOFF_READY`; `archive_eligible=false`, `activate
 - `receipts/sovereign-host/hil-esrl-exact-byte-staging-manifest.latest.json`
 - `docs/HIL_ESRL_EXACT_BYTE_ACCEPTANCE_RESULT_20260911.md`
 
+## Validation finding
+
+The first exact-head deterministic suite failed only on COSV parity because task vector/worker registry were advanced before aggregate task-vector index and global coverage. Those state mutations were reverted on this branch. Exact-byte evidence and intake remain valid. The next canonical change must update all four COSV surfaces atomically.
+
 ## Next stage
 
-Continue at `HIL_RECEIVER_READY_AND_CUSTODY`, then preserve post-restart exact-byte reconstruction proof, then prove TVC HIL lifecycle handoff. Do not rerun G25 or mint a replacement claim/fence.
+First complete the coordinated COSV/index/coverage reconciliation. Once that merges, resume at `HIL_RECEIVER_READY_AND_CUSTODY`, then preserve post-restart exact-byte reconstruction proof, then prove TVC HIL lifecycle handoff. Do not rerun G25 or mint a replacement claim/fence.
 
 ## README maintenance
 
-README was re-reviewed. This is a task-specific evidence/state reconciliation and does not change the documented repository or public runtime interface. No README update is required.
+README was re-reviewed. This is a task-specific evidence intake/reconciliation record and does not change the documented repository or public runtime interface. No README update is required.
