@@ -41,13 +41,14 @@ Relevant merged evidence:
 .github #1469  merge eea45d164be4d570d4e8eb6ca5e5d960c6cdac24
 .github #1487  merge 1d007fc696dc35b2e16f7b52bbd0f9ddd094f26b
 .github #1522  merge 430ae9ae38094e0db4d65d553a62f9cca5e45f47
+.github #1533  merge 48b0027320c92f7a9cb8d0f86ee00d696e331497
 TVC #386      merge 2e1bda01699439731569dce45d5d7b4c5b342424
 TVC #387      merge aef6b6f5dc99d2a531718ca475d20858ae8e68a6
 ```
 
-The task-specific Canonical Work bootstrap and the portable exact-selector bridge are source-valid. The portable path requires an already-local `.github` checkout and performs no clone/fetch/pull/network source transport.
+The task-specific Canonical Work bootstrap and portable exact-selector bridge are source-valid. The portable path requires an already-local `.github` checkout and performs no clone/fetch/pull/network source transport.
 
-## Source-revision evidence contract
+## Source-revision and dedicated-consumption evidence contract
 
 `scripts/refresh_sovereign_worker_runtime_source.py` records the local canonical source revision as:
 
@@ -66,9 +67,13 @@ receipts/sovereign-host/resident-refresh-dispatch.latest.json
   dispatch_receipt.selected_consumers = [stegbrowser_tvc_source_promotion]
 ```
 
-PR #1487 added a behavioral regression test requiring the exact source Git HEAD and exact selector to survive together into the persisted portable bridge receipt. All three exact-head validation lanes passed before merge: organization control-plane validation, Heartbeat validation, and the complete deterministic repository suite. Runtime behavior is unchanged.
+PR #1487 added the regression contract requiring the exact source Git HEAD and exact selector to survive together into the persisted portable bridge receipt.
 
-This allows future resident evidence to prove both **which local source revision executed** and **which single consumer was selected**, without inferring source freshness from repository state. No source/CI result substitutes for the authentic resident receipt.
+PR #1533 strengthened the same bridge without adding another runtime or executor. For the `stegbrowser_tvc_source_promotion` selector, `REFRESH_AND_DISPATCH_COMPLETE` now additionally requires the dedicated consumption receipt to exist and match the canonical StegBrowser task plus pinned TVC SHA `aef6b6f5dc99d2a531718ca475d20858ae8e68a6`. The bridge persists the dedicated receipt and its canonical SHA-256 commitment alongside the source-head and exact-selector evidence. If the dispatcher reports success but the dedicated receipt is missing or identity-invalid, the bridge fails closed as `REFRESH_COMPLETE_DISPATCH_INCOMPLETE`.
+
+Exact-head #1533 validation passed in all triggered lanes: Cross-Framework Current-Basis Resident Request Validation, complete deterministic repository suite, organization control-plane validation, and Heartbeat validation.
+
+The existing canonical predicate `RESIDENT_REFRESH_DISPATCH_SOURCE_GIT_HEAD_AND_EXACT_SELECTOR_OBSERVED` remains valid; #1533 tightens what counts as successful StegBrowser portable dispatch evidence rather than changing task identity, transition state, or completion truth.
 
 ## Remote computer / ephemeral Node interpretation
 
@@ -112,14 +117,14 @@ GitHub Actions remains validation/evidence transport only. TV/TVC remains creden
 
 PR #1522 merged the canonical task-record reconciliation at `430ae9ae38094e0db4d65d553a62f9cca5e45f47` after organization-control, Heartbeat, and complete deterministic-suite validation passed at exact head `132db951f3b2cf1a40cb09617b2b273a04219c55`.
 
-The canonical record now carries the merged #1461 bootstrap reachability, #1465 portable exact-dispatch, #1463 Remote Computer ephemeral-node interpretation, and #1487 source-revision evidence refs; requires `RESIDENT_REFRESH_DISPATCH_SOURCE_GIT_HEAD_AND_EXACT_SELECTOR_OBSERVED`; and records `remote_computer_ephemeral_node_capacity_allowed=true` while preserving `second_user_operated_machine_allowed=false`.
+The canonical record carries the merged #1461 bootstrap reachability, #1465 portable exact-dispatch, #1463 Remote Computer ephemeral-node interpretation, and #1487 source-revision evidence refs; requires `RESIDENT_REFRESH_DISPATCH_SOURCE_GIT_HEAD_AND_EXACT_SELECTOR_OBSERVED`; and records `remote_computer_ephemeral_node_capacity_allowed=true` while preserving `second_user_operated_machine_allowed=false`.
 
-This reconciliation did not change either Apple blocker, did not populate WorkerCoordinator claim/fence refs, did not mark completion or activation proof complete, and did not move the task beyond `CLAIMED_INTEGRATION`. The remaining boundary is authentic resident execution evidence.
+PR #1533 does not require a coordination-state or completion-state change. It hardens the source evidence acceptance condition for the already-defined predicate. Neither Apple blocker changes, WorkerCoordinator claim/fence refs remain unpopulated, completion remains unclaimed, activation proof remains incomplete, and the task remains `CLAIMED_INTEGRATION`.
 
 ## Remaining sequence
 
-1. When an authorized sovereign resident or admitted Remote Computer ephemeral Node is reachable, verify its local `.github` source HEAD contains #1461, #1465, and #1487 or a later compatible main.
-2. Execute the existing refresh+dispatch bridge for exactly `stegbrowser_tvc_source_promotion` and retain all three provenance/dispatch receipts plus the dedicated consumption receipt.
+1. When an authorized sovereign resident or admitted Remote Computer ephemeral Node is reachable, verify its local `.github` source HEAD contains #1533 or a later compatible main.
+2. Execute the existing refresh+dispatch bridge for exactly `stegbrowser_tvc_source_promotion`; a complete bridge receipt must now bind local `source_git_head`, exact selector, dedicated consumption receipt, and dedicated receipt SHA-256 together.
 3. Observe exact TVC materialization, #387 promotion, #386 same-service restart, and simultaneous `8765/8775`.
 4. Observe Apple recipient/liveness/InTr `OWNER_INGRESS_READY`.
 5. Resolve the external Apple Terms/account gate, create the Team API key, and seal it from the current iPhone into SKAP without export.
@@ -128,8 +133,8 @@ This reconciliation did not change either Apple blocker, did not populate Worker
 
 ## README disposition
 
-Repository `README.md` remains accurate for Canonical Work and authority separation. The source-head/selector evidence hardening and task-record reconciliation are task-specific and require no repository-wide README text change.
+Repository `README.md` was re-reviewed and remains accurate for Canonical Work and authority separation. The dedicated-consumption evidence binding is task-specific and requires no repository-wide README text change.
 
 ## Current state
 
-`ACTIVE_NOT_SUPERSEDED / TASK_REGISTRY_AND_COSV_RECONCILED_1437 / GLOBAL_CONVERGENCE_SELECTOR_REPAIR_MERGED_VALIDATED_1440 / STEGBROWSER_BOOTSTRAP_REACHABILITY_MERGED_VALIDATED_1461 / PORTABLE_STEGBROWSER_PROMOTION_DISPATCH_MERGED_VALIDATED_1465 / HANDOFF_RECONCILED_1469 / SOURCE_HEAD_PLUS_EXACT_SELECTOR_EVIDENCE_TEST_MERGED_VALIDATED_1487 / TASK_REGISTRY_RUNTIME_EVIDENCE_CONTRACT_RECONCILED_1522 / REMOTE_COMPUTER_ELIGIBLE_AS_ADMITTED_EPHEMERAL_STEGOS_CAPACITY / REMOTE_COMPUTER_CURRENTLY_UNAVAILABLE / AUTHENTIC_RESIDENT_SOURCE_REVISION_NOT_OBSERVED / AUTHENTIC_RESIDENT_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / AUTHENTIC_TVC_MATERIALIZATION_AND_RESTART_NOT_OBSERVED / LIVE_APPLE_OWNER_INGRESS_READY_NOT_OBSERVED / AUTHENTIC_CURRENT_IPHONE_INSTALL_LISTENER_DISCOVERY_PENDING`
+`ACTIVE_NOT_SUPERSEDED / TASK_REGISTRY_AND_COSV_RECONCILED_1437 / GLOBAL_CONVERGENCE_SELECTOR_REPAIR_MERGED_VALIDATED_1440 / STEGBROWSER_BOOTSTRAP_REACHABILITY_MERGED_VALIDATED_1461 / PORTABLE_STEGBROWSER_PROMOTION_DISPATCH_MERGED_VALIDATED_1465 / HANDOFF_RECONCILED_1469 / SOURCE_HEAD_PLUS_EXACT_SELECTOR_EVIDENCE_TEST_MERGED_VALIDATED_1487 / TASK_REGISTRY_RUNTIME_EVIDENCE_CONTRACT_RECONCILED_1522 / DEDICATED_CONSUMPTION_EVIDENCE_BINDING_MERGED_VALIDATED_1533 / REMOTE_COMPUTER_ELIGIBLE_AS_ADMITTED_EPHEMERAL_STEGOS_CAPACITY / REMOTE_COMPUTER_CURRENTLY_UNAVAILABLE / AUTHENTIC_RESIDENT_SOURCE_REVISION_NOT_OBSERVED / AUTHENTIC_RESIDENT_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / AUTHENTIC_TVC_MATERIALIZATION_AND_RESTART_NOT_OBSERVED / LIVE_APPLE_OWNER_INGRESS_READY_NOT_OBSERVED / AUTHENTIC_CURRENT_IPHONE_INSTALL_LISTENER_DISCOVERY_PENDING`
