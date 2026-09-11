@@ -50,7 +50,11 @@
     "task_registry_registration_merge": "66cb83f9d8bed7dbadedde935fb005f6d186bd38",
     "global_runtime_handoff_reconciled_before_portable_bridge_mutation": true,
     "global_runtime_current_predicate": "AUTHENTIC_TASK_2026_0011_V2_CURRENT_IPHONE_CANONICAL_ALLOCATION_EVIDENCE",
-    "hard_same_component_or_lineage_collision_identified_for_portable_bridge_repair": false
+    "hard_same_component_or_lineage_collision_identified_for_portable_bridge_repair": false,
+    "sdk_reconciliation_pr": 196,
+    "sdk_reconciliation_merge": "e55c0e415759a3f2baf2d553f403a3729719f891",
+    "sdk_reconciliation_exact_head": "57a66144f910bc559c6afe9863406baf75e05569",
+    "sdk_reconciliation_validation_runs": [34560810500, 34560810440, 34560810392]
   },
   "source_state": {
     "resident_reseal_dispatcher_registered": true,
@@ -67,6 +71,9 @@
     ],
     "resident_reseal_consumption_receipt_observed": false,
     "resident_consent_listener_consumption_receipt_observed": false,
+    "retained_drive_reseal_receipt_observed": false,
+    "retained_drive_listener_receipt_observed": false,
+    "authorized_remote_runtime_online_observed": false,
     "source_merge_proves_runtime": false
   },
   "remaining_predicates": [
