@@ -8,7 +8,7 @@ Parent task: `GADI-001`
 Umbrella goal: `GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001`
 COSV ID: `10100000100000`
 Canonical issue: `StegVerse-Labs/.github#1239`
-Status: `SOURCE_CONTRACTS_RECONCILED / WORKERCOORDINATOR_REGISTRATION_REPAIR_MERGED / WORKER_PROTOCOL_BRIDGE_MERGED / AUTHENTIC_RESIDENT_EXECUTION_PENDING`
+Status: `SOURCE_CONTRACTS_RECONCILED / WORKERCOORDINATOR_REGISTRATION_REPAIR_MERGED / WORKER_PROTOCOL_BRIDGE_MERGED / NONCLAIM_READINESS_CONVERGENCE_REPAIR_IN_VALIDATION / AUTHENTIC_RESIDENT_EXECUTION_PENDING`
 
 ## Current canonical state
 
@@ -20,12 +20,16 @@ PR #1388 repaired targeted WorkerCoordinator registration and merged as `261b163
 
 PR #1395 repaired the post-claim ProcessWorkerAdapter/GADI dispatcher protocol gap. Exact head `cc5df51b4663417d2b910a3cbebf94d5647c8d08` passed organization-control run `34559259086`, deterministic repository-suite run `34559259115`, and Heartbeat run `34559259028`, then squash-merged as `b1b613452406b26d8fe17a9fbb98b57054a4f046`.
 
+PR #1396 reconciled that merged bridge into the canonical handoff. Exact head `3174f8ecd53a4e988e6531ebdcd877f5e5bf160a` passed all three canonical validations and squash-merged as `b4b6e467d057b476e1e12fae75097d2b39b3c7e0`.
+
 The canonical runtime evidence state still remains `HANDOFF_READY` with no authentic current claim/fence, InTr admission, runtime binding, controlled actuator result, or resident-consumption receipt observed.
 
 ## Canonical execution chain
 
 ```text
-SOURCE RESOLUTION
+NON-CLAIM LOCAL SOURCE READINESS
+-> TARGETED WORKERCOORDINATOR CLAIM/FENCE
+-> SOURCE RESOLUTION WITH WORKER CLAIM DEFERRED
 -> FRESH WORKERCOORDINATOR CLAIM PROJECTION
 -> MATERIALIZATION
 -> PREFLIGHT
@@ -34,60 +38,91 @@ SOURCE RESOLUTION
 
 The four runtime source classes remain independently owned by StegOS command materialization, canonical InTr admission, WorkerCoordinator claim/fence assignment, and the controlled pre-authorized actuator observation plane.
 
-## Targeted WorkerCoordinator registration — merged
+## Non-claim readiness / convergence audit — repair in validation
 
-PR #1388 resolved five structural claimability defects without creating runtime evidence:
+Inspection of the merged bridge against the global runtime-evidence convergence runner found two remaining architectural collisions.
 
-1. projected existing `INDEPENDENT_TASK_CONTROL` authority into the registry admission row;
-2. added a conservative finite 16-beat LOW-confidence non-empirical cost basis;
-3. removed parent/coordination/runtime authority identifiers from terminal worker dependencies and preserved them as coordination refs;
-4. aligned the worker to `process:gadi-resident-execution-v2-preflight-gated`;
-5. bound the worker to the narrow `gadi-resident-defensive-execution-v1` capability profile.
+### 1. Locator circularity
 
-## Post-claim worker protocol bridge — merged
+When `state/gadi-resident-execution/source-locators.json` exists, the source resolver previously required all four locators, including `worker_claim`, before WorkerCoordinator had created the fresh claim. That recreated the claim circularity even though the post-claim dispatcher was ready to inject the live row.
 
-PR #1395 closed the interface between the canonical WorkerCoordinator claim and the existing GADI resident dispatcher without adding a second runtime.
+`scripts/resolve_gadi_resident_runtime_sources.py` now supports `--defer-worker-claim`. In that mode it resolves only:
 
-The canonical WorkerCoordinator creates the fresh claim/fence first. `ProcessWorkerAdapter` then supplies the claimed task row through `stegverse.worker-invocation/v0.1` stdin. `workers/gadi_resident_execution_worker.py` validates the already-created task/claim/fence and invocation-scope parity, passes that exact row to the existing dispatcher, and translates the dispatcher outcome into `stegverse.worker-response/v0.1`.
+- `stegos_command`;
+- `intr_admission`;
+- `actuator_observation`.
 
-The bridge maps only `AUTHENTIC_RUNTIME_EVIDENCE_CONSUMED` to `COMPLETED`. Any non-consumed or fail-closed outcome maps to `HANDOFF_READY`, so the canonical WorkerCoordinator relinquishes the temporary claim instead of preserving stale ownership.
+It neither requires nor copies a worker-claim locator. The post-claim dispatcher stages the exact current WorkerCoordinator row immediately afterward. This avoids both a missing-locator deadlock and stale pre-claim claim bytes.
 
-The bridge grants no InTr, credential, claim/fence, runtime, actuator, deployment, or Master Records authority.
+`dispatch_gadi_resident_execution.dispatch()` automatically uses this deferred mode whenever `current_worker_claim` is supplied by the merged process-worker bridge.
 
-## Current-claim staging order
+### 2. Global convergence bypassed WorkerCoordinator
 
-`scripts/dispatch_gadi_resident_execution.py` now accepts the already-created current WorkerCoordinator task row. The local source resolver runs first; only then is the exact current row staged into:
+`run_global_runtime_evidence_convergence.py` classifies GADI as an existing task-specific wrapper and invokes the dispatcher CLI directly. After the corrected claim model, a claimless direct dispatcher invocation may not satisfy the GADI bundle because WorkerCoordinator is the sole claim/fence authority.
 
-`state/gadi-resident-execution/source/worker-claim.json`
+Rather than adding a second dispatcher or synthetic claim, the claimless `dispatch_gadi_resident_execution.py` CLI now delegates to:
 
-This prevents a stale worker-claim locator from overwriting the fresh claim. The staging helper requires the expected GADI task identity, `ACTIVE` state, current worker and worker instance, positive fencing token, and exact claim-generation/fence equality. It manufactures none of those values.
+`scripts/run_gadi_targeted_runtime_if_ready.py`
 
-The existing materializer consumes the exact row directly and derives `worker_claim_ref`, `fence_ref`, worker identity, and worker instance from it.
+The Python `dispatch()` function remains the post-claim path called by `workers/gadi_resident_execution_worker.py` with the authentic current task row.
 
-## Exact fenced mutation scope
+## Readiness-gated targeted entry
 
-The executable handoff admits only the exact GADI files written by the resolver/materializer/preflight/consumer chain:
+`run_gadi_targeted_runtime_if_ready.py` is non-authorizing until the canonical targeted WorkerCoordinator is invoked.
+
+It first runs local source resolution with worker claim deferred and validates the current three non-claim source classes for:
+
+- native command ready state;
+- observed InTr admission;
+- exact `intr_decision_ref`;
+- non-empty runtime binding;
+- control-surface and target-class bindings;
+- controlled pre-authorized actuator observation;
+- no credential exposure;
+- matching command/InTr/actuator bindings;
+- existing separated carrier reference.
+
+If any predicate is missing, it returns `NONCLAIM_RUNTIME_EVIDENCE_PENDING` and does not invoke WorkerCoordinator.
+
+Only when those inputs are coherent does it invoke:
 
 ```text
-state/gadi-resident-execution/source/stegos-command.json
-state/gadi-resident-execution/source/intr-admission.json
-state/gadi-resident-execution/source/worker-claim.json
-state/gadi-resident-execution/source/actuator-observation.json
-state/gadi-resident-execution/source-resolution.json
-state/gadi-resident-execution/materialization.json
-state/gadi-resident-execution/command.json
-state/gadi-resident-execution/execution-context.json
-state/gadi-resident-execution/actuator-result.json
-state/gadi-resident-execution/preflight.json
-receipts/sovereign-host/gadi-resident-dispatch.latest.json
-receipts/sovereign-host/gadi-resident-execution-consumption.latest.json
+python scripts/run_worker_runtime.py --root <runtime> --task-id GADI-RESIDENT-EXECUTION-001
 ```
 
-No wildcard repository mutation scope was added.
+That existing targeted runtime remains the sole creator of the fresh claim/fence.
+
+## Stale-consumption replay protection
+
+The readiness wrapper records the SHA-256 of any pre-existing `gadi-resident-execution-consumption.latest.json` before targeted invocation and compares it afterward. A prior unchanged `AUTHENTIC_RUNTIME_EVIDENCE_CONSUMED` receipt cannot satisfy the new visit.
+
+Success requires a newly created or changed receipt from this invocation whose state is exactly `AUTHENTIC_RUNTIME_EVIDENCE_CONSUMED`.
+
+Otherwise the wrapper reports `TARGETED_WORKER_RUNTIME_VISITED_NO_NEW_CONSUMPTION`.
+
+## Regression coverage
+
+`tests/test_gadi_runtime_source_resolution.py` now verifies that a locator manifest may omit `worker_claim` only when explicit fresh-claim deferral is enabled, while the three non-claim sources are still exact-local resolved.
+
+`tests/test_gadi_targeted_runtime_readiness.py` verifies:
+
+- missing non-claim sources never trigger targeted execution;
+- an unchanged old consumption receipt cannot satisfy a new visit;
+- a changed authentic-consumption receipt may satisfy the visit;
+- the wrapper does not claim to create the WorkerCoordinator claim;
+- the claimless dispatcher CLI is readiness-gated and uses deferred worker-claim source resolution.
+
+## Universal InTr observation
+
+The shared profiled Universal InTr ingress currently exposes explicit purpose-specific materialization paths for HIL, SV002, DEVICE_KV, KV/SKAP, Publisher and related lanes. Inspection did not surface a dedicated GADI profiled ingress/destination in that shared ingress implementation.
+
+The global convergence matrix instead identifies GADI as using its existing preflight-gated wrapper with the next evidence stage being real preflight + claim/fence + InTr + controlled execution evidence. Therefore this repair does not invent a new GADI InTr authority or endpoint. It only ensures that any current GADI command/InTr/controlled-output evidence already materialized locally is evaluated before the existing targeted WorkerCoordinator is visited.
+
+A dedicated GADI InTr ingress should be added only if subsequent runtime inspection proves that no existing canonical InTr producer can materialize the required current admission artifact.
 
 ## Authentic evidence boundary
 
-Merged source, CI, registration repair, protocol bridging, capability eligibility, simulation, and request records are not authentic resident execution evidence.
+Merged source, CI, registration repair, protocol bridging, readiness evaluation, capability eligibility, simulation, and request records are not authentic resident execution evidence.
 
 Current authentic conditions remain unobserved until produced by their authority planes:
 
@@ -98,24 +133,25 @@ CURRENT_GADI_RUNTIME_BINDING_NOT_OBSERVED
 CONTROLLED_PREAUTHORIZED_ACTUATOR_RESULT_NOT_OBSERVED
 ```
 
-A future WorkerCoordinator claim is valid only when created by the actual targeted runtime invocation. It must not be fabricated or retained merely because the source path is now structurally complete.
+A future WorkerCoordinator claim is valid only when created by the actual targeted runtime invocation. It must not be fabricated or retained merely because the source path is structurally complete.
 
 ## Remaining authentic completion predicates
 
-1. Produce or locate an authentic current native StegOS GADI command.
-2. Produce or locate the exact current canonical InTr admission carrying the matching `intr_decision_ref` and runtime-binding context.
-3. Produce the controlled pre-authorized software test-surface effect and governed output receipt through the merged StegOS seam.
-4. Materialize those non-claim runtime sources locally.
-5. Invoke the existing targeted WorkerCoordinator; it alone creates the fresh claim/fence, which the merged protocol bridge stages into the existing claim source slot.
-6. Require zero-blocker materialization/preflight before resident consumption.
-7. Independently inspect the subject-bound resident receipt.
-8. Complete closed-loop reassessment/adaptation/termination evidence.
-9. Pass the authentic receipt chain to Continuity/Master Records and prove exact reconstruction.
-10. Reconcile parent `GADI-001` and the umbrella manifold only from authentic observations.
+1. Validate and merge the non-claim readiness/convergence repair.
+2. Produce or locate an authentic current native StegOS GADI command.
+3. Produce or locate the exact current canonical InTr admission carrying the matching `intr_decision_ref` and runtime-binding context.
+4. Produce the controlled pre-authorized software test-surface effect and governed output receipt through the merged StegOS seam.
+5. Materialize those non-claim runtime sources locally.
+6. Allow the readiness gate to invoke the existing targeted WorkerCoordinator; it alone creates the fresh claim/fence.
+7. Require zero-blocker materialization/preflight before resident consumption.
+8. Independently inspect the newly changed subject-bound resident receipt.
+9. Complete closed-loop reassessment/adaptation/termination evidence.
+10. Pass the authentic receipt chain to Continuity/Master Records and prove exact reconstruction.
+11. Reconcile parent `GADI-001` and the umbrella manifold only from authentic observations.
 
 ## Immediate continuation
 
-Inspect the current Universal InTr/GADI ingress and locally available non-claim source state. Determine whether a current GADI command/admission/runtime-binding/controlled-output observation already exists through the canonical runtime surfaces. Do not run targeted WorkerCoordinator solely because source code is ready. A targeted run is appropriate only when the current non-claim evidence is locally available; otherwise the task must remain unclaimed/HANDOFF_READY.
+After this repair validates and merges, inspect current runtime-local source evidence and the canonical InTr producer path that would create the GADI admission artifact. If no current non-claim evidence is observed, keep GADI unclaimed and identify the exact missing producer rather than firing a targeted WorkerCoordinator claim against source-only state.
 
 ## Collision boundary
 
@@ -123,8 +159,8 @@ No second heartbeat, WorkerCoordinator, scheduler, resident service, runtime lea
 
 ## README impact
 
-`README.md` was reviewed. Existing top-level documentation already defines WorkerCoordinator authority separation, targeted independent execution, local-only source refresh, and non-authorizing heartbeat semantics. The merged bridge is an internal protocol alignment within those existing surfaces, so no root README mutation is required.
+`README.md` was reviewed. Existing top-level documentation already defines WorkerCoordinator authority separation, targeted independent execution, local-only source refresh, runtime convergence, and non-authorizing heartbeat semantics. This repair aligns GADI with those existing surfaces and adds no new user-facing interface; no root README mutation is required.
 
 ## Release rule
 
-This merged protocol path is not a GADI release or activation. Release/tag propagation remains deferred until authentic resident runtime execution, closed-loop evidence, exact reconstruction, and canonical activation predicates are satisfied.
+This readiness/convergence repair is not a GADI release or activation. Release/tag propagation remains deferred until authentic resident runtime execution, closed-loop evidence, exact reconstruction, and canonical activation predicates are satisfied.
