@@ -7,7 +7,7 @@ Updated: 2026-09-11
 - Parent handoff: `StegVerse-Labs/StegSocials/docs/STEGSOCIALS_NATIVE_STEGBROWSER_TRANSPORT_MIRROR_HANDOFF.md`
 - Organization boundary owner: `StegVerse-Labs/.github`
 - Status: `ACTIVE`
-- Source state: `RESIDENT_CONSUMER_REFRESH_PROPAGATION_REPAIR_OPEN`
+- Source state: `RESIDENT_CONSUMER_REFRESH_PROPAGATION_MERGED_VALIDATED_RUNTIME_INPUT_PENDING`
 
 ## Purpose
 
@@ -23,7 +23,9 @@ Close the source seam from the already-merged StegSocials canonical `stegverse.u
 
 `.github` PR #1482 merged canonical reconciliation at `d55af379c89e6bdf3cf15a4d3ac5584c0c0b4798` after organization control, deterministic repository suite, and Heartbeat passed on exact head `5c7cb4379dae7d4921c0e7d2902628d4fef774a5`.
 
-The merged route, consumer, and dispatcher registration remain non-authorizing. Source and CI do not prove authentic admission. Only an actual invocation of the existing shared sovereign listener may emit `stegverse.stegsocials-bounded-intr-materialization-ingress/v1` with `state=INGRESS_ADMITTED`.
+`.github` PR #1496 merged the resident source-refresh propagation repair at `d6cb21f360d99d3c15d7d6b58cbed678353aad4b`. Exact head `d6aa7f2116458063b8a8120fb4614ad0f04ada79` passed Workspace DEVICE_KV validation, SDK WorkSpace reseal resident validation, organization control, deterministic repository suite, and Heartbeat. Both `refresh_sovereign_worker_runtime_source.py` and its base variant now materialize `consume_stegsocials_bounded_intr_admission_request.py` into an already-local resident runtime.
+
+The merged route, consumer, dispatcher registration, and source-refresh propagation remain non-authorizing. Source and CI do not prove authentic admission. Only an actual invocation of the existing shared sovereign listener may emit `stegverse.stegsocials-bounded-intr-materialization-ingress/v1` with `state=INGRESS_ADMITTED`.
 
 ## Current resident-consumption implementation
 
@@ -55,11 +57,11 @@ The existing resident dispatcher now visits the Socials consumer under selector 
 
 Deterministic coverage at `tests/test_stegsocials_bounded_intr_resident_dispatch.py` proves exact single registration and that `INPUT_NOT_MATERIALIZED` yields `DISPATCH_COMPLETE` with no request failure while non-authorizing dispatcher semantics remain intact.
 
-## Resident source-refresh propagation repair
+## Resident source-refresh propagation
 
 Post-merge inspection found that `scripts/refresh_sovereign_worker_runtime_source.py` copied the registered dispatcher into an already-materialized resident runtime but did not include `scripts/consume_stegsocials_bounded_intr_admission_request.py` in its explicit `STATIC_FILES` set. A normal local source refresh could therefore update the dispatcher while leaving the Socials consumer absent or stale, producing `CONSUMER_NOT_MATERIALIZED` even though source registration was correct.
 
-Branch `fix-socials-consumer-refresh-propagation-001` adds the Socials consumer to both the canonical refresh module and `refresh_sovereign_worker_runtime_source_base.py`, with deterministic regression coverage in `tests/test_stegsocials_consumer_source_refresh.py`. This is source propagation only: no runtime receipt, input pointer, InTr admission, provider action, credential material, or authority is created by the repair.
+PR #1496 repaired this by adding the Socials consumer to both the canonical refresh module and `refresh_sovereign_worker_runtime_source_base.py`, with deterministic regression coverage in `tests/test_stegsocials_consumer_source_refresh.py`. This remains source propagation only: no runtime receipt, input pointer, InTr admission, provider action, credential material, or authority is created by the repair.
 
 Root `README.md` was re-reviewed. Its existing bounded StegSocials Universal InTr section remains semantically correct, so no README text change is required for this propagation-only repair.
 
@@ -91,11 +93,10 @@ second user-operated device required: false
 
 ## Remaining execution sequence
 
-1. Validate and merge the Socials consumer source-refresh propagation repair.
-2. Materialize one real already-authorized bounded Socials `INGRESS/RECEIVED` object plus the hash-bound runtime input pointer in the sovereign current execution context.
-3. Reuse the already-running shared Universal InTr listener and retain the resulting authentic `INGRESS_ADMITTED` receipt.
-4. Materialize task-scoped TV/TVC-SKAP session authority and retain its authentic receipt.
-5. Continue through the merged StegSocials native event bridge, StegBrowser provider execution, terminal destruction proof, execution reconciliation, existing Site CAS, exact KV readback, second bounded use, refusal proof, and Master Records reconstruction.
+1. Materialize one real already-authorized bounded Socials `INGRESS/RECEIVED` object plus the hash-bound runtime input pointer in the sovereign current execution context.
+2. Reuse the already-running shared Universal InTr listener and retain the resulting authentic `INGRESS_ADMITTED` receipt.
+3. Materialize task-scoped TV/TVC-SKAP session authority and retain its authentic receipt.
+4. Continue through the merged StegSocials native event bridge, StegBrowser provider execution, terminal destruction proof, execution reconciliation, existing Site CAS, exact KV readback, second bounded use, refusal proof, and Master Records reconstruction.
 
 ## Manual work
 
