@@ -5,7 +5,7 @@ Repository: `StegVerse-Labs/.github`
 Goal Task ID: `SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004`
 Parent Goal Task ID: `SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003`
 COSV: `71000000100110`
-Status: `ACTIVE / RESOLVER REPAIR MERGED + VALIDATED / EXISTING AUTHORIZED RESIDENT RECONNECTION STILL REQUIRED`
+Status: `ACTIVE / RESOLVER REPAIR MERGED + VALIDATED / SOURCE COMPATIBILITY PINNED / AUTHENTIC RESIDENT OBSERVATION REQUIRED`
 
 ## Purpose
 
@@ -27,7 +27,19 @@ PR #1460 merged at `3bc8898655d344ba12f47bb4120e38f2ac1ded6e` from exact head `a
 
 The merged repair makes runtime-profile discovery fall back to the exact standalone canonical task record when the aggregate registry has no row, fails closed on duplicate aggregate identities and standalone record-ID mismatch, and aligns `resident_request_dispatch` discovery with `mutation_required=false`. Mutation/execution authority remains with WorkerCoordinator + Interlock/InTr; the change creates no runtime authority.
 
-README review remains accurate: this is resolver/coordination semantics only and creates no public capability change.
+## Runtime source compatibility boundary
+
+Post-merge reconciliation against the current canonical runtime-profile map establishes that `canonical-resident-substrate-v1` now satisfies every static requirement for this task: `resident_request_dispatch`, `SOVEREIGN_RESIDENT`, `INTERNAL`, no mutation requirement, and no deployment requirement. The profile is still `DECLARED_ONLY`, while this task requires a current observed runtime.
+
+The exact remaining resolver rejection is therefore:
+
+```text
+CURRENT_OBSERVATION_REQUIRED:DECLARED_ONLY
+```
+
+There is no remaining known source-side capability/environment/direction/mutation/deployment mismatch. Focused regression coverage now pins this boundary so the resolver must continue to return zero candidates until an authentic current observation exists, while preserving non-authorizing discovery semantics.
+
+README review remains accurate: this is resolver regression evidence and coordination semantics only and creates no public capability change.
 
 ## Fresh authentic observation
 
@@ -37,7 +49,7 @@ Current session re-observation after #1460 merge found:
 - retained Google Drive exact reseal receipt matches: zero;
 - retained Google Drive exact listener receipt matches: zero.
 
-Therefore runtime resolution remains unresolved. No resident execution, target custody/readback, listener health, CMC-029 live TLS adoption, sovereign callback reachability, Google consent, provider probe, MIR, Master Records reconstruction, one-device completion, downstream propagation, or public distribution is claimed.
+Therefore runtime resolution remains unresolved solely at the authentic-current-observation boundary. No resident execution, target custody/readback, listener health, CMC-029 live TLS adoption, sovereign callback reachability, Google consent, provider probe, MIR, Master Records reconstruction, one-device completion, downstream propagation, or public distribution is claimed.
 
 Expected resident receipts remain:
 
@@ -53,6 +65,8 @@ portable exact dispatch: MERGED / VALIDATED
 Service Gateway three-route source: MERGED / VALIDATED
 resolver standalone-record fallback: MERGED / VALIDATED
 successor dispatcher discovery mutation semantic: MERGED / VALIDATED
+static resolver source compatibility: PROVEN
+remaining resolver condition: CURRENT_OBSERVATION_REQUIRED:DECLARED_ONLY
 resident reseal receipt: NOT OBSERVED
 resident listener receipt: NOT OBSERVED
 authorized remote runtime online: NOT OBSERVED
@@ -71,7 +85,7 @@ public distributions complete: FALSE
 
 ## Exact next sequence
 
-1. Re-resolve this active task through the repaired canonical runtime-profile resolver and recheck the existing authorized resident connection.
+1. Recheck the existing authorized resident connection and current runtime observation. No additional resolver/source remediation is presently indicated.
 2. When the existing resident is present, exact-dispatch only `sdk_workspace_external_collab_client_secret_reseal` and `sdk_workspace_external_collab_consent_listener` from already-local canonical source.
 3. Accept only authentic reseal `TARGET_ALREADY_PRESENT`, `COMPLETED`, or exact `BLOCKED`; validate custody/readback without overwrite.
 4. Accept only authentic listener `SERVICE_ALREADY_HEALTHY`, `COMPLETED` with `loopback_health_verified=true`, or exact `BLOCKED`; remediate only the exact resident prerequisite if blocked.
