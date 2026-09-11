@@ -46,6 +46,8 @@
       "control/resident-execution-request.d/consume-gadi-resident-execution.py",
       "control/worker-registry.d/gadi-resident-execution-001.json",
       "control/process-worker-adapters.d/gadi-resident-execution-001.json",
+      "workers/gadi_resident_execution_worker.py",
+      "scripts/dispatch_gadi_resident_execution.py",
       "StegVerse-002/micro-node-runtime/micro_node/gadi_resident_consumer.py"
     ],
     "dependencies": [],
@@ -83,9 +85,17 @@
   "execution": {
     "required_capabilities": ["gadi_resident_defensive_execution"],
     "allowed_paths": [
+      "state/gadi-resident-execution/source/stegos-command.json",
+      "state/gadi-resident-execution/source/intr-admission.json",
+      "state/gadi-resident-execution/source/worker-claim.json",
+      "state/gadi-resident-execution/source/actuator-observation.json",
+      "state/gadi-resident-execution/source-resolution.json",
+      "state/gadi-resident-execution/materialization.json",
       "state/gadi-resident-execution/command.json",
       "state/gadi-resident-execution/execution-context.json",
       "state/gadi-resident-execution/actuator-result.json",
+      "state/gadi-resident-execution/preflight.json",
+      "receipts/sovereign-host/gadi-resident-dispatch.latest.json",
       "receipts/sovereign-host/gadi-resident-execution-consumption.latest.json"
     ],
     "allowed_services": [],
@@ -120,7 +130,7 @@
     "status_projection": "control/worker-status.json"
   },
   "completion": {
-    "next_authorized_action": "Execute GADI-RESIDENT-EXECUTION-001 through the existing WorkerCoordinator only when the current command, claim/fence, InTr decision, exact runtime binding, and controlled pre-authorized actuator result are present.",
+    "next_authorized_action": "Execute GADI-RESIDENT-EXECUTION-001 through the existing WorkerCoordinator only when current non-claim runtime evidence is locally materialized; the WorkerCoordinator then creates the fresh claim/fence and the process-worker bridge stages that exact current row before GADI materialization/preflight.",
     "terminal_when": [
       "command_consumed=true",
       "current_workercoordinator_claim_fence_observed=true",
@@ -132,10 +142,10 @@
     ]
   },
   "block": {
-    "block_reason": "Authentic current GADI command/claim/fence/InTr/runtime-binding/actuator evidence has not yet been observed.",
-    "dependency": "existing sovereign resident WorkerCoordinator + current GADI runtime evidence",
+    "block_reason": "Authentic current GADI command/InTr/runtime-binding/actuator evidence has not yet been observed; WorkerCoordinator claim/fence must be created only by the canonical targeted execution path and is injected by the process-worker protocol bridge after claim acquisition.",
+    "dependency": "existing sovereign resident WorkerCoordinator + current GADI non-claim runtime evidence",
     "observer": "single canonical WorkerCoordinator",
-    "recheck_trigger": "after current GADI runtime evidence materialization or targeted execution receipt",
+    "recheck_trigger": "after current GADI non-claim runtime evidence materialization or targeted execution receipt",
     "next_check": "receipts/sovereign-host/gadi-resident-execution-consumption.latest.json",
     "escalation_condition": "authority merge, duplicate runtime creation, source drift, credential exposure, or second-machine requirement",
     "block_expires_at": null
@@ -154,7 +164,8 @@
     "integration_evidence_refs": [
       "control/resident-execution-request.d/consume-gadi-resident-execution.py",
       "control/process-worker-adapters.d/gadi-resident-execution-001.json",
-      "control/worker-registry.d/gadi-resident-execution-001.json"
+      "control/worker-registry.d/gadi-resident-execution-001.json",
+      "workers/gadi_resident_execution_worker.py"
     ],
     "activation_proof_ref": null,
     "blockers": [

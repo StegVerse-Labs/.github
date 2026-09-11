@@ -8,11 +8,7 @@
       "capabilities": ["gadi_resident_defensive_execution"],
       "command": [
         "python",
-        "scripts/dispatch_gadi_resident_execution.py",
-        "--source-root",
-        ".",
-        "--runtime-root",
-        "."
+        "workers/gadi_resident_execution_worker.py"
       ],
       "cwd": ".",
       "enabled": true,
@@ -24,10 +20,11 @@
         "STEGVERSE_STEGOS_ROOT"
       ],
       "notes": [
-        "Reuses the existing canonical WorkerCoordinator and merged micro-node GADI resident consumer through the mandatory GADI preflight-gated dispatcher.",
+        "Reuses the existing canonical WorkerCoordinator and merged micro-node GADI resident consumer through a thin worker-protocol bridge plus the mandatory GADI preflight-gated dispatcher.",
+        "The bridge receives only the already-created current WorkerCoordinator task row from ProcessWorkerAdapter stdin and projects that exact row into the existing GADI worker-claim source slot after local source resolution.",
         "A zero-blocker READY_FOR_RESIDENT_CONSUMPTION preflight is required before the raw resident consumer may be invoked.",
-        "Requires already-observed claim/fence, InTr admission, runtime binding, and controlled pre-authorized actuator result.",
-        "Does not create an actuator, runtime, scheduler, heartbeat, credential route, claim/fence plane, or Master Records custody path."
+        "Missing command/InTr/runtime-binding/actuator evidence returns HANDOFF_READY so the current claim is relinquished rather than promoted into execution truth.",
+        "Does not create an actuator, runtime, scheduler, heartbeat, credential route, claim/fence plane, InTr admission, or Master Records custody path."
       ],
       "timeout_seconds": 300,
       "type": "process_json_v0.1"
