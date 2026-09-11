@@ -1,0 +1,88 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-STEGOS-DEVICE-KV-SKAP-AUTHENTIC-RUNTIME-002",
+  "created_at": "2026-09-11T14:03:00-05:00",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "STEGOS-DEVICE-KV-SKAP-AUTHENTIC-RUNTIME-002",
+    "objective": "Consume only authentic current-iPhone/TVC prerequisites and execute the existing canonical Device->KV->SKAP->KV->Device runtime path to one exact terminal proof.",
+    "success_predicates": [
+      "authentic current-iPhone Secure Enclave recipient activation is observed",
+      "fresh TVC challenge proof-of-possession is verified for the same opaque key handle",
+      "TVC public recipient configuration is projected from that exchange",
+      "authentic Gateway sidecar and matching canonical-roundtrip-eligible TVC drain receipt exist",
+      "fresh WorkerCoordinator claim/fence and canonical EVENT_EPHEMERAL lease are bound",
+      "four adjacent canonical Interlock/InTr receipts exist in order",
+      "receipt-hash lineage and exact packet hashes validate",
+      "SKAP and KV exact readback validate",
+      "terminal state is DEVICE_KV_SKAP_ROUNDTRIP_VERIFIED",
+      "no hosted runtime or second user-operated device is used"
+    ],
+    "failure_predicates": [
+      "source or CI evidence is treated as runtime proof",
+      "fixture, reconstruction, fabricated or hosted substitute evidence is accepted",
+      "private-key bytes are exported",
+      "a duplicate runtime, verifier, InTr executor, or SKAP custody writer is created without a concrete authentic-runtime defect",
+      "GitHub, Heartbeat, model output, or the task registry grants transition or credential authority"
+    ],
+    "authority_ceiling": [
+      "runtime evidence observation and proof retention",
+      "invoke only existing canonical runtime and Interlock/InTr continuation after prerequisites are authentic",
+      "no self-admission",
+      "no credential-authority transfer",
+      "no duplicate SKAP ciphertext write",
+      "no hosted fallback"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "STEGOS-DEVICE-KV-SKAP-AUTHENTIC-RUNTIME-002",
+    "parent_task_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+    "derivation_reason": "Parent reached the 20/20 prompt ceiling with source/native implementation complete; this successor owns only the separable authentic runtime evidence remainder.",
+    "repository": "StegVerse-Labs/.github",
+    "canonical_owner_ref": "data/canonical-task-records/STEGOS-DEVICE-KV-SKAP-AUTHENTIC-RUNTIME-002.json",
+    "canonical_lineage_key": "stegos:device-kv-skap:authentic-runtime",
+    "derivation_depth": 1,
+    "priority": "continuity",
+    "operational_state": "AWAITING_AUTHENTIC_CURRENT_IPHONE_TVC_ACTIVATION",
+    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+    "source_refs": [
+      "docs/DEVICE_KV_SKAP_AUTHENTIC_RUNTIME_MIRROR_HANDOFF.md",
+      "data/canonical-task-records/TVC-IOS-OPAQUE-RECIPIENT-CAPABILITY-001.json",
+      "workers/run_device_kv_skap_canonical_runtime_worker.py",
+      "scripts/continue_device_kv_skap_from_tvc_custody.py"
+    ],
+    "dependencies": ["TVC-IOS-OPAQUE-RECIPIENT-CAPABILITY-001"]
+  },
+  "authority": {
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "heartbeat_grants_execution_authority": false,
+    "fresh_fence_required": true,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "provider_operation_authority": "EXISTING_TVC_OWNER_ONLY",
+    "transition_authority": "Interlock/InTr"
+  },
+  "execution": {
+    "required_capabilities": ["runtime_observation", "bounded_process_execution", "durable_state_reconstruction"],
+    "max_actions": 24,
+    "max_retries": 2,
+    "external_cost_ceiling_usd": 0,
+    "persistent_transport_runtime_required": false,
+    "event_ephemeral_materialization_allowed": true,
+    "event_execution_entrypoint": "scripts/execute_device_kv_skap_roundtrip_event.py"
+  },
+  "completion": {
+    "runtime_activation_claimed": false,
+    "terminal_evidence": "stegverse.device-kv-skap.runtime-roundtrip-proof/v1 with state DEVICE_KV_SKAP_ROUNDTRIP_VERIFIED",
+    "terminal_when": [
+      "authentic current-iPhone TVC activation/challenge/public projection are verified",
+      "authentic Gateway/TVC input pair validates",
+      "all four authentic hop receipts validate",
+      "receipt hash lineage and exact packet hashes validate",
+      "SKAP and KV exact readback validate",
+      "proof persists write-once"
+    ]
+  }
+}
