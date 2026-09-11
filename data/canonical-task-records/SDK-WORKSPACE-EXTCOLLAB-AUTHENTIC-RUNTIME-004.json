@@ -5,7 +5,7 @@
   "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
   "parent_task_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
   "goal": "Complete the authentic sovereign-resident external-collaboration runtime proof chain from resident reseal/listener consumption through target custody, sovereign callback reachability, owner-present consent, provider probe, SDK predicate re-evaluation, MIR reporting, Master Records reconstruction, one-current-device proof, and downstream/public distribution evidence without creating a hosted fallback or duplicate authority path.",
-  "coordination_state": "ACTIVE",
+  "coordination_state": "INACTIVE",
   "checkout_state": "UNCLAIMED",
   "cosv_task_vector": "71000000100110",
   "repository": "StegVerse-Labs/.github",
