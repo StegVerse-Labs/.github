@@ -1,0 +1,23 @@
+{
+  "authority_effect": "NONE_STAGING_ONLY",
+  "canonical_mutation_performed": false,
+  "intake_state": "ACCEPTED",
+  "lease_id": "HIL-BROWSER-ESRL-7bafde4a280e847758da157e",
+  "next_runtime_stage": "HIL_RECEIVER_READY_AND_CUSTODY",
+  "previous_vector": "50000000103000",
+  "proposed_vector": "50000000102000",
+  "reconciliation_state": "READY_FOR_CANONICAL_RECONCILIATION",
+  "remaining_blockers": [
+    "POST_RESTART_EXACT_BYTE_PROOF_NOT_YET_PRESERVED",
+    "TVC_HIL_LIFECYCLE_HANDOFF_NOT_YET_PROVEN"
+  ],
+  "runtime_mutation_performed": false,
+  "schema": "stegverse.hil-esrl-exact-byte-staging/v1",
+  "source_artifact_sha256": "sha256:a6756c54da15f09cd6a3dbb201375891803f6589fd644db4c545be39ebe41b92",
+  "source_artifact_size": 2011,
+  "staged_exact_artifact": "evidence/physical/hil-esrl-lease-open-a6756c54da15f09cd6a3dbb201375891803f6589fd644db4c545be39ebe41b92.json",
+  "staged_intake_receipt": "receipts/sovereign-host/hil-browser-esrl-evidence-intake.latest.json",
+  "staged_reconciliation_proposal": "receipts/sovereign-host/hil-esrl-acceptance-reconciliation-proposal.latest.json",
+  "state": "READY_FOR_EXACT_BYTE_CANONICAL_INTAKE",
+  "task_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001"
+}
