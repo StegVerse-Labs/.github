@@ -8,15 +8,23 @@ Parent task: `GADI-001`
 Umbrella goal: `GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001`
 COSV ID: `10100000100000`
 Canonical issue: `StegVerse-Labs/.github#1239`
-Status: `SOURCE_RESOLUTION_MERGED_VALIDATED / STEGOS_COMMAND_CONTRACT_REPAIR_MERGED / INTR_ADMISSION_CONTRACT_REPAIR_IN_VALIDATION / AUTHENTIC_RESIDENT_EXECUTION_PENDING`
+Status: `SOURCE_RESOLUTION_MERGED_VALIDATED / STEGOS_COMMAND_CONTRACT_MERGED / INTR_ADMISSION_CONTRACT_MERGED / WORKERCOORDINATOR_CONTRACT_REPAIR_IN_VALIDATION / AUTHENTIC_RESIDENT_EXECUTION_PENDING`
 
 ## Current canonical state
 
 `GADI-001` remains ACTIVE and is not superseded.
 
-Canonical runtime-evidence materialization was merged at `2a86ea27ce222eda7f248e448e17d084004b7ede`.
+Canonical runtime-evidence materialization merged at `2a86ea27ce222eda7f248e448e17d084004b7ede`.
 
-PR `StegVerse-Labs/.github#1341` validated local-only authentic runtime source resolution and the four-stage chain and merged as `5b5d795d89b75829c4101719dc8c9f75c227c2d7`:
+PR `StegVerse-Labs/.github#1341` added local-only authentic runtime source resolution and merged as `5b5d795d89b75829c4101719dc8c9f75c227c2d7`.
+
+PR `StegVerse-Labs/.github#1351` reconciled the canonical handoff and merged as `04150ebcfc58c275afefb069792461176960b7c8`.
+
+PR `StegVerse-Labs/.github#1362` aligned the bridge with the native StegOS command contract and merged as `aad9915f6bfbe48bb75ce78d23e101ed0c3f7ff0` after exact-head validation.
+
+PR `StegVerse-Labs/.github#1366` aligned the bridge with canonical GADI InTr admission semantics. Exact head `642edd07345221862fb1348adff537b0adc82ba0` passed organization-control, deterministic repository-suite, and Heartbeat validation and squash-merged as `0f857232707c7e3c9fa26c320e98f5031b75d76e`.
+
+The canonical execution chain remains:
 
 ```text
 SOURCE RESOLUTION
@@ -25,113 +33,62 @@ SOURCE RESOLUTION
 -> RESIDENT CONSUMPTION
 ```
 
-PR `StegVerse-Labs/.github#1351` reconciled this handoff and merged as `04150ebcfc58c275afefb069792461176960b7c8` after exact-head validation.
+## WorkerCoordinator contract repair now in validation
 
-PR `StegVerse-Labs/.github#1362` repaired the native StegOS command producer/consumer mismatch. Exact head `4eddc1b5446284e24eec36699b8b80ae002f08cc` passed GADI preflight validation, organization-control validation, deterministic repository diagnostics, and Heartbeat validation, then squash-merged as `aad9915f6bfbe48bb75ce78d23e101ed0c3f7ff0`.
+Inspection of the existing WorkerCoordinator producer found another bridge-specific reshaping dependency.
 
-The bridge now correctly accepts authentic native StegOS consequential commands with:
+Authentic WorkerCoordinator assignment state owns:
 
 ```text
-task_id = GADI-001
-command_state = READY_FOR_RESIDENT_EXECUTION
+claim_id
+worker_id
+worker_instance_id
+fencing_token
+assignment state/timer
 ```
 
-while retaining fail-closed compatibility for prior bridge projections.
+The GADI materializer was instead requiring a hand-shaped source with:
 
-## InTr admission contract repair now in validation
-
-Inspection of canonical GADI contracts found the next authority-boundary mismatch.
-
-Canonical GADI admission is represented as:
-
-```json
-{
-  "admission": {
-    "state": "ADMITTED",
-    "intr_decision_ref": "..."
-  }
-}
+```text
+worker_claim_ref
+fence_ref
+runtime_binding_ref
+control_surface
+target_class
+execution_subject
 ```
 
-The canonical `Admission` model requires an InTr decision reference for `ADMITTED` state but does not contain or own `runtime_binding_ref`. Runtime binding is introduced later by the native StegOS command/runtime execution binding.
-
-The resident materializer was incorrectly requiring `runtime_binding_ref` on the separate `intr-admission.json` source and comparing that value to the StegOS command. That requirement crossed authority boundaries and would reject an authentic canonical GADI admission artifact.
+The latter incorrectly made the WorkerCoordinator source appear to own StegOS runtime/target fields and the actuator execution subject.
 
 Current repair branch:
 
-`gadi-intr-admission-contract-repair-001`
+`gadi-workercoordinator-contract-repair-001`
 
 The repair:
 
-1. recognizes authentic nested `admission.state` and `admission.intr_decision_ref` from canonical GADI intervention-request artifacts;
-2. retains top-level admission projection compatibility for existing local evidence without promoting it over the canonical form;
-3. removes the false requirement that InTr admission itself own a runtime binding;
-4. continues to require exact `intr_decision_ref` equality between the authentic InTr admission and native StegOS command;
-5. continues to require exact runtime-binding equality between the StegOS command and WorkerCoordinator execution context;
-6. records the exact InTr source SHA-256 in the materialized execution context;
-7. adds regressions proving canonical nested admission succeeds without an InTr runtime-binding field, mismatched InTr decisions fail closed, and command/claim runtime-binding mismatch still fails closed.
+1. accepts an authentic WorkerCoordinator task row or registry/fragment containing exactly one `GADI-RESIDENT-EXECUTION-001` row;
+2. projects existing `claim_id` to the resident consumer's `worker_claim_ref` representation without minting a claim;
+3. projects the existing assignment/heartbeat `fencing_token` to the consumer's `fence_ref` representation without minting a fence;
+4. requires the WorkerCoordinator row to be in a current claimed/running state;
+5. removes false requirements that the WorkerCoordinator source own runtime binding, control surface, target class, or execution subject;
+6. takes runtime binding, control surface, and target class from the already-admitted native StegOS command;
+7. takes execution subject from the controlled pre-authorized actuator observation;
+8. cross-checks command and actuator control-surface, target-class, runtime-binding, and InTr-decision bindings fail closed;
+9. preserves exact source SHA-256 evidence and WorkerCoordinator worker/instance identifiers in the execution context;
+10. retains legacy hand-shaped bridge claim compatibility only as a compatibility lane.
 
-No InTr decision, runtime binding, claim/fence, actuator observation, command value, credential, or execution authority is synthesized.
+No WorkerCoordinator claim, fence, runtime binding, GADI target binding, actuator observation, InTr decision, or execution authority is synthesized.
 
-## Purpose
+## Authentic source ownership
 
-This task installs and executes the canonical WorkerCoordinator/resident-request seam for authentic GADI defensive execution. It does not create a new runtime, scheduler, claim/fence plane, InTr authority, provider transport, credential route, or actuator.
+The four source classes and their authority boundaries are now explicit:
 
-The authentic execution chain is:
+- **StegOS command:** native command state, `intr_decision_ref`, `runtime_binding_ref`, `control_surface`, `target_class`.
+- **InTr admission:** canonical admission state and matching `intr_decision_ref`; InTr admission does not own runtime binding.
+- **WorkerCoordinator claim/fence:** `claim_id`, `fencing_token`, worker identity/instance and current assignment state; WorkerCoordinator does not own GADI target/runtime fields.
+- **Actuator observation:** controlled pre-authorized surface observation, `execution_subject`, observed state/effect, and optional matching command bindings.
 
-```text
-current native StegOS GADI command already admitted by InTr
-+ exact authentic InTr admission decision
-+ current WorkerCoordinator claim/fence context
-+ exact current runtime binding
-+ controlled pre-authorized actuator result
-+ merged micro-node GADI resident consumer
--> subject-bound resident consumption receipt
--> later Continuity/Master Records reconstruction
-```
-
-## Canonical surfaces
-
-- `data/canonical-task-records/GADI-001.json`
-- `data/canonical-task-records/GADI-RESIDENT-EXECUTION-001.json`
-- `handoffs/GADI-RESIDENT-EXECUTION-001.json`
-- `control/task-vectors/GADI-RESIDENT-EXECUTION-001.json`
-- `control/task-vector-index.d/GADI-RESIDENT-EXECUTION-001.json`
-- `control/resident-execution-request.d/gadi-resident-execution-001.json`
-- `control/resident-execution-request.d/consume-gadi-resident-execution.py`
-- `control/worker-registry.d/gadi-resident-execution-001.json`
-- `control/process-worker-adapters.d/gadi-resident-execution-001.json`
-- `scripts/resolve_gadi_resident_runtime_sources.py`
-- `scripts/materialize_gadi_resident_runtime_bundle.py`
-- `scripts/preflight_gadi_resident_execution.py`
-- `scripts/dispatch_gadi_resident_execution.py`
-- `tests/test_gadi_runtime_source_resolution.py`
-- `tests/test_gadi_runtime_evidence_materializer.py`
-- `tests/test_gadi_stegos_command_contract.py`
-- `tests/test_gadi_stegos_preflight_contract.py`
-- `tests/test_gadi_resident_execution_preflight.py`
-- `tests/test_gadi_resident_execution_request.py`
-
-Merged downstream implementation reused:
-
-`StegVerse-002/micro-node-runtime/micro_node/gadi_resident_consumer.py`
-
-## Authentic source inputs
-
-The source resolver accepts either already-staged authentic files or a local-only locator manifest at:
-
-`state/gadi-resident-execution/source-locators.json`
-
-The four authentic source classes remain:
-
-```text
-StegOS command
-current InTr admission
-current WorkerCoordinator claim/fence
-controlled pre-authorized actuator observation
-```
-
-Canonical staging paths:
+Canonical staging paths remain:
 
 ```text
 state/gadi-resident-execution/source/stegos-command.json
@@ -140,59 +97,41 @@ state/gadi-resident-execution/source/worker-claim.json
 state/gadi-resident-execution/source/actuator-observation.json
 ```
 
-Successful materialization projects validated current evidence into:
+Successful materialization projects those independently owned values into the resident consumer's combined execution context without promoting one authority plane into another.
 
-```text
-state/gadi-resident-execution/command.json
-state/gadi-resident-execution/execution-context.json
-state/gadi-resident-execution/actuator-result.json
-```
+## Current WorkerCoordinator evidence state
 
-## WorkerCoordinator producer state
+The repository registration for `GADI-RESIDENT-EXECUTION-001` remains `HANDOFF_READY` with no authentic current `claim_id` or fencing token observed. Therefore this repair is source compatibility only and is not WorkerCoordinator execution proof.
 
-The canonical registered GADI worker exists and remains `HANDOFF_READY`, but current repository registration still has no authentic `claim_id`, worker instance, assignment timing, or fencing token. Therefore WorkerCoordinator execution evidence is not yet claimed.
-
-The existing WorkerCoordinator assignment machinery already owns `claim_id`, `worker_instance_id`, and `fencing_token`. The runtime continuation must obtain those values from that existing plane rather than minting them in the GADI bridge.
-
-## Evidence boundary
-
-Source implementation, GitHub validation, merge state, request registration, source resolution, materialization, and preflight code are not resident execution evidence.
-
-A successful resident execution claim requires authentic current runtime-local inputs from the existing StegOS/InTr/WorkerCoordinator/actuator planes, exact cross-surface binding, successful preflight, actual resident consumption, and a subject-bound receipt.
-
-Output:
-
-`receipts/sovereign-host/gadi-resident-execution-consumption.latest.json`
-
-A qualifying receipt must preserve exact claim/fence, InTr decision, runtime binding, subject, control surface, target, observed state, effect, reassessment, and stop-condition fields while explicitly recording that request/materialization tooling minted no execution authority and created no scheduler/runtime or Master Records reconciliation.
+The existing WorkerCoordinator assignment machinery remains the sole authority for authentic claim/fence production.
 
 ## Remaining authentic completion predicates
 
-1. Validate and merge the InTr admission contract repair without weakening fail-closed decision binding.
+1. Validate and merge the WorkerCoordinator contract repair without weakening claim/fence provenance.
 2. Produce or locate an authentic current native StegOS GADI command for `GADI-001`.
-3. Produce or locate the exact current canonical InTr admission carrying the matching `intr_decision_ref`.
-4. Obtain the current WorkerCoordinator claim/fence for `GADI-RESIDENT-EXECUTION-001` from the existing WorkerCoordinator authority plane.
-5. Produce a controlled pre-authorized actuator observation bound to the same runtime/control surface/target/subject.
+3. Produce or locate the exact current canonical InTr admission with matching `intr_decision_ref`.
+4. Obtain an authentic current WorkerCoordinator `claim_id` + `fencing_token` for `GADI-RESIDENT-EXECUTION-001`.
+5. Produce a controlled pre-authorized actuator observation bound to the same command/runtime/control surface/target and carrying the execution subject.
 6. Run source resolution -> materialization -> preflight -> resident consumption against those exact local bytes.
 7. Emit and independently inspect the subject-bound resident consumption receipt.
-8. Complete GADI closed-loop reassessment/adaptation/termination evidence.
+8. Complete closed-loop reassessment/adaptation/termination evidence.
 9. Pass the authentic receipt chain to Continuity/Master Records and prove exact reconstruction.
-10. Reconcile parent `GADI-001` and the umbrella manifold only from those authentic observations.
+10. Reconcile parent `GADI-001` and the umbrella manifold only from authentic observations.
 
 ## Immediate continuation
 
-After this InTr repair validates and merges, inspect the WorkerCoordinator claim/fence producer and projection path for direct compatibility with `worker-claim.json`, then inspect the controlled pre-authorized actuator-observation producer.
+After the WorkerCoordinator repair validates and merges, inspect and implement the controlled pre-authorized actuator-observation producer/adapter so authentic observation bytes can enter the existing local source-resolution path without hand construction.
 
-Do not synthesize any authentic source class in CI or GitHub. If a source class is absent, repair the corresponding existing producer/authority plane rather than fabricate evidence or create a second runtime plane.
+Do not synthesize authentic runtime evidence in GitHub or CI. Missing source evidence must be produced by its existing authoritative plane.
 
-## Collision boundary
+## Evidence boundary
 
-No second heartbeat, WorkerCoordinator, scheduler, resident service, runtime lease plane, claim/fence plane, InTr authority, provider transport, credential route, actuator implementation, or Master Records custody path is introduced.
+Source implementation, validation, merges, compatibility projection, and source-resolution tooling are not resident execution evidence. Authentic execution remains pending until all current runtime-local inputs exist and the resident consumer emits a qualifying receipt.
 
 ## README impact
 
-`README.md` was reviewed for this repair. Existing documentation already states the generic canonical resident-request/WorkerCoordinator authority separation, Universal InTr non-authorizing transport semantics, and local-only source-refresh model. This slice corrects an internal evidence-authority boundary and does not introduce a new top-level interface, so no README text mutation is required.
+`README.md` was reviewed. Existing documentation already covers WorkerCoordinator authority separation, local-only source refresh, Universal InTr non-authorizing semantics, and resident-request dispatch. This repair changes internal evidence normalization only and introduces no new top-level interface; no README text mutation is required for this slice.
 
 ## Release rule
 
-This source slice is not a GADI release or activation. Release/tag propagation remains deferred until authentic resident runtime execution, closed-loop evidence, reconstruction, and canonical activation predicates are satisfied.
+This source slice is not a GADI release or activation. Release/tag propagation remains deferred until authentic resident runtime execution, closed-loop evidence, exact reconstruction, and canonical activation predicates are satisfied.

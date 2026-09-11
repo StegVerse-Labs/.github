@@ -25,6 +25,7 @@ COMMAND_OUT = OUT_DIR / "command.json"
 CONTEXT_OUT = OUT_DIR / "execution-context.json"
 ACTUATOR_OUT = OUT_DIR / "actuator-result.json"
 MANIFEST_OUT = OUT_DIR / "materialization.json"
+CURRENT_WORKER_STATES = {"CLAIMED", "ACTIVE", "IN_PROGRESS", "RUNNING"}
 
 
 def load(path: Path) -> dict[str, Any]:
@@ -50,18 +51,47 @@ def nonempty(value: Any) -> bool:
 
 
 def canonical_intr_admission(value: dict[str, Any]) -> dict[str, Any]:
-    """Return the canonical GADI admission object without inventing missing fields.
-
-    Authentic GADI requests carry admission under ``admission`` while older bridge
-    fixtures used a top-level projection. Both are evidence-only views of the same
-    InTr decision. Runtime binding is intentionally not part of canonical InTr
-    admission; it is validated later across the StegOS command and WorkerCoordinator
-    execution context.
-    """
     nested = value.get("admission")
     if isinstance(nested, dict):
         return nested
     return value
+
+
+def worker_claim_row(value: dict[str, Any]) -> tuple[dict[str, Any], str]:
+    """Resolve one authentic WorkerCoordinator row without minting ownership.
+
+    A local source may be the actual WorkerCoordinator task row or a registry/fragment
+    containing that row. Legacy hand-shaped bridge projections remain accepted only as
+    compatibility input.
+    """
+    tasks = value.get("tasks")
+    if isinstance(tasks, list):
+        matches = [row for row in tasks if isinstance(row, dict) and row.get("task_id") == TASK_ID]
+        if len(matches) != 1:
+            return {}, "WORKERCOORDINATOR_REGISTRY"
+        return matches[0], "WORKERCOORDINATOR_REGISTRY"
+    if "claim_id" in value or "assignment_timer" in value or "heartbeat_timing" in value:
+        return value, "WORKERCOORDINATOR_ROW"
+    return value, "BRIDGE_COMPATIBILITY"
+
+
+def normalize_worker_claim(value: dict[str, Any]) -> tuple[dict[str, Any], str]:
+    row, shape = worker_claim_row(value)
+    timer = row.get("assignment_timer") if isinstance(row.get("assignment_timer"), dict) else {}
+    timing = row.get("heartbeat_timing") if isinstance(row.get("heartbeat_timing"), dict) else {}
+    claim_ref = row.get("worker_claim_ref", row.get("claim_id"))
+    fence = row.get("fence_ref")
+    if fence is None:
+        fence = timer.get("fencing_token", timing.get("fencing_token"))
+    return {
+        "task_id": row.get("task_id"),
+        "parent_task_id": row.get("parent_task_id"),
+        "state": row.get("state"),
+        "worker_claim_ref": claim_ref,
+        "fence_ref": fence,
+        "worker_id": row.get("worker_id"),
+        "worker_instance_id": row.get("worker_instance_id"),
+    }, shape
 
 
 def materialize(runtime_root: Path) -> dict[str, Any]:
@@ -88,7 +118,8 @@ def materialize(runtime_root: Path) -> dict[str, Any]:
     command = source.get("command", {})
     intr_source = source.get("intr", {})
     intr = canonical_intr_admission(intr_source) if intr_source else {}
-    claim = source.get("claim", {})
+    claim_source = source.get("claim", {})
+    claim, claim_shape = normalize_worker_claim(claim_source) if claim_source else ({}, "MISSING")
     actuator = source.get("actuator", {})
 
     if command:
@@ -97,19 +128,21 @@ def materialize(runtime_root: Path) -> dict[str, Any]:
         if command.get("task_id") not in (None, PARENT_TASK_ID, TASK_ID): blockers.append("COMMAND_TASK_MISMATCH")
         if not nonempty(command.get("intr_decision_ref")): blockers.append("COMMAND_INTR_REF_MISSING")
         if not nonempty(command.get("runtime_binding_ref")): blockers.append("COMMAND_RUNTIME_BINDING_MISSING")
+        if not nonempty(command.get("control_surface")): blockers.append("COMMAND_CONTROL_SURFACE_MISSING")
+        if not nonempty(command.get("target_class")): blockers.append("COMMAND_TARGET_CLASS_MISSING")
         if command.get("intr_admission_observed") is not True: blockers.append("COMMAND_INTR_ADMISSION_NOT_OBSERVED")
 
     if intr:
         if intr.get("state") != "ADMITTED": blockers.append("INTR_NOT_ADMITTED")
         if not nonempty(intr.get("intr_decision_ref")): blockers.append("INTR_DECISION_REF_MISSING")
 
-    if claim:
-        if claim.get("task_id") != TASK_ID: blockers.append("CLAIM_TASK_MISMATCH")
-        if claim.get("parent_task_id") not in (None, PARENT_TASK_ID): blockers.append("CLAIM_PARENT_MISMATCH")
-        if claim.get("state") not in {"CLAIMED", "ACTIVE"}: blockers.append("WORKER_CLAIM_NOT_CURRENT")
-        for field, code in (("worker_claim_ref","WORKER_CLAIM_REF_MISSING"),("fence_ref","FENCE_REF_MISSING"),("runtime_binding_ref","CLAIM_RUNTIME_BINDING_MISSING"),("control_surface","CONTROL_SURFACE_MISSING"),("target_class","TARGET_CLASS_MISSING"),("execution_subject","EXECUTION_SUBJECT_MISSING")):
-            if not nonempty(claim.get(field)): blockers.append(code)
-        if claim.get("workercoordinator_authority_observed") is not True: blockers.append("WORKERCOORDINATOR_NOT_OBSERVED")
+    if claim_source:
+        if not claim: blockers.append("WORKER_CLAIM_TASK_AMBIGUOUS_OR_MISSING")
+        if claim and claim.get("task_id") not in (None, TASK_ID): blockers.append("CLAIM_TASK_MISMATCH")
+        if claim and claim.get("parent_task_id") not in (None, PARENT_TASK_ID): blockers.append("CLAIM_PARENT_MISMATCH")
+        if claim and claim.get("state") not in CURRENT_WORKER_STATES: blockers.append("WORKER_CLAIM_NOT_CURRENT")
+        if claim and not nonempty(claim.get("worker_claim_ref")): blockers.append("WORKER_CLAIM_REF_MISSING")
+        if claim and claim.get("fence_ref") is None: blockers.append("FENCE_REF_MISSING")
 
     if actuator:
         if actuator.get("preauthorized_controlled_surface") is not True: blockers.append("ACTUATOR_NOT_PREAUTHORIZED")
@@ -117,17 +150,15 @@ def materialize(runtime_root: Path) -> dict[str, Any]:
         for field in ("control_surface", "target_class", "execution_subject"):
             if not nonempty(actuator.get(field)): blockers.append(f"ACTUATOR_{field.upper()}_MISSING")
 
-    if command and intr:
-        if command.get("intr_decision_ref") != intr.get("intr_decision_ref"): blockers.append("INTR_DECISION_REF_MISMATCH")
-    if command and claim and command.get("runtime_binding_ref") != claim.get("runtime_binding_ref"):
-        blockers.append("COMMAND_CLAIM_RUNTIME_BINDING_MISMATCH")
-    if claim and actuator:
-        for field in ("control_surface", "target_class", "execution_subject"):
-            if claim.get(field) != actuator.get(field): blockers.append(f"CLAIM_ACTUATOR_{field.upper()}_MISMATCH")
-    if command and actuator and actuator.get("intr_decision_ref") not in (None, command.get("intr_decision_ref")):
-        blockers.append("ACTUATOR_INTR_DECISION_MISMATCH")
-    if claim and actuator and actuator.get("runtime_binding_ref") not in (None, claim.get("runtime_binding_ref")):
-        blockers.append("ACTUATOR_RUNTIME_BINDING_MISMATCH")
+    if command and intr and command.get("intr_decision_ref") != intr.get("intr_decision_ref"):
+        blockers.append("INTR_DECISION_REF_MISMATCH")
+    if command and actuator:
+        for field, code in (("control_surface", "COMMAND_ACTUATOR_CONTROL_SURFACE_MISMATCH"), ("target_class", "COMMAND_ACTUATOR_TARGET_CLASS_MISMATCH")):
+            if command.get(field) != actuator.get(field): blockers.append(code)
+        if actuator.get("intr_decision_ref") not in (None, command.get("intr_decision_ref")):
+            blockers.append("ACTUATOR_INTR_DECISION_MISMATCH")
+        if actuator.get("runtime_binding_ref") not in (None, command.get("runtime_binding_ref")):
+            blockers.append("ACTUATOR_RUNTIME_BINDING_MISMATCH")
 
     blockers = sorted(set(blockers))
     ready = not blockers
@@ -141,27 +172,33 @@ def materialize(runtime_root: Path) -> dict[str, Any]:
         "source_sha256": dict(sorted(source_sha.items())),
         "intr_admission_shape": "NESTED_CANONICAL" if isinstance(intr_source.get("admission"), dict) else "TOP_LEVEL_COMPATIBILITY",
         "intr_runtime_binding_required": False,
+        "worker_claim_shape": claim_shape,
+        "worker_claim_owns_runtime_binding": False,
+        "worker_claim_owns_gadi_target_binding": False,
         "authority_minted": False,
         "execution_claimed": False,
         "activation_claimed": False,
     }
     if ready:
+        fence_ref = str(claim["fence_ref"])
         context = {
             "task_id": TASK_ID,
             "parent_task_id": PARENT_TASK_ID,
             "workercoordinator_authority_observed": True,
-            "worker_claim_ref": claim["worker_claim_ref"],
-            "fence_ref": claim["fence_ref"],
-            "runtime_binding_ref": claim["runtime_binding_ref"],
-            "control_surface": claim["control_surface"],
-            "target_class": claim["target_class"],
-            "execution_subject": claim["execution_subject"],
+            "worker_claim_ref": str(claim["worker_claim_ref"]),
+            "fence_ref": fence_ref,
+            "runtime_binding_ref": command["runtime_binding_ref"],
+            "control_surface": command["control_surface"],
+            "target_class": command["target_class"],
+            "execution_subject": actuator["execution_subject"],
             "runtime_lease_observed": False,
+            "worker_id": claim.get("worker_id"),
+            "worker_instance_id": claim.get("worker_instance_id"),
             "source_worker_claim_sha256": source_sha["claim"],
             "source_intr_admission_sha256": source_sha["intr"],
         }
         projected_actuator = dict(actuator)
-        projected_actuator.setdefault("runtime_binding_ref", claim["runtime_binding_ref"])
+        projected_actuator.setdefault("runtime_binding_ref", command["runtime_binding_ref"])
         projected_actuator.setdefault("intr_decision_ref", command["intr_decision_ref"])
         write(runtime / COMMAND_OUT, command)
         write(runtime / CONTEXT_OUT, context)
