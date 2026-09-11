@@ -11,7 +11,9 @@
   "repository": "StegVerse-org/StegVerse-SDK",
   "handoff_projection_refs": [
     "StegVerse-org/StegVerse-SDK:SDK_GENERIC_MANIFEST_DOWNSTREAM_PROPAGATION_MIRROR_HANDOFF.md",
-    "StegVerse-org/StegVerse-SDK:docs/SHARED_DOCS_EPHEMERAL_MANIFEST_WORKSPACE_MIRROR_HANDOFF.md"
+    "StegVerse-org/StegVerse-SDK:docs/SHARED_DOCS_EPHEMERAL_MANIFEST_WORKSPACE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github:docs/SDK_GENERIC_MANIFEST_TASK_REGISTRY_REGISTRATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github:docs/SDK_WORKSPACE_EXTERNAL_COLLAB_PORTABLE_DISPATCH_MIRROR_HANDOFF.md"
   ],
   "targets": {
     "organizations": ["StegVerse-org", "StegVerse-Labs"],
@@ -43,6 +45,30 @@
     "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
     "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001"
   ],
+  "coordination_evidence": {
+    "task_registry_registration_pr": 1389,
+    "task_registry_registration_merge": "66cb83f9d8bed7dbadedde935fb005f6d186bd38",
+    "global_runtime_handoff_reconciled_before_portable_bridge_mutation": true,
+    "global_runtime_current_predicate": "AUTHENTIC_TASK_2026_0011_V2_CURRENT_IPHONE_CANONICAL_ALLOCATION_EVIDENCE",
+    "hard_same_component_or_lineage_collision_identified_for_portable_bridge_repair": false
+  },
+  "source_state": {
+    "resident_reseal_dispatcher_registered": true,
+    "resident_consent_listener_dispatcher_registered": true,
+    "portable_exact_dispatch_selectors_merged": true,
+    "portable_exact_dispatch_pr": 1393,
+    "portable_exact_dispatch_merge": "312a31976bf5e794aa3912c2aa2c9ce0016c1102",
+    "portable_exact_dispatch_source_head": "cab250db7895e13fe63721d72497a64be020d0e0",
+    "portable_exact_dispatch_validation_runs": [34558793611, 34558793613, 34558793653, 34558793622],
+    "listener_nonsecret_inputs_forwarded": [
+      "STEGVERSE_GOOGLE_DRIVE_CLIENT_ID",
+      "STEGVERSE_OWNER_BINDING_DIGEST",
+      "STEGVERSE_STEGFIN_SOURCE_ROOT"
+    ],
+    "resident_reseal_consumption_receipt_observed": false,
+    "resident_consent_listener_consumption_receipt_observed": false,
+    "source_merge_proves_runtime": false
+  },
   "remaining_predicates": [
     "RESIDENT_RESEAL_CONSUMPTION_RECEIPT_OBSERVED",
     "RESIDENT_CONSENT_LISTENER_CONSUMPTION_RECEIPT_OBSERVED",
