@@ -11,24 +11,40 @@
   "repository": "StegVerse-Labs/.github",
   "canonical_issue": 1524,
   "handoff_projection_refs": [
-    "StegVerse-Labs/.github:docs/ECOSYSTEM_CONTINUITY_EVALUATOR_MIRROR_HANDOFF.md"
+    "StegVerse-Labs/.github:docs/ECOSYSTEM_CONTINUITY_EVALUATOR_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site:docs/ECOSYSTEM_CONTINUITY_SITE_PROJECTION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegVerse-Healer:docs/ECOSYSTEM_CONTINUITY_HEALER_INTAKE_MIRROR_HANDOFF.md"
   ],
   "targets": {
-    "repositories": [
-      "StegVerse-Labs/.github",
-      "StegVerse-Labs/Site",
-      "StegVerse-Labs/StegVerse-Healer",
-      "master-records",
-      "StegVerse-org/StegVerse-SDK"
-    ],
-    "components": [
-      "ece-registry",
-      "ece-evaluator",
-      "ece-findings",
-      "site-continuity-projection",
-      "healer-finding-intake",
-      "master-records-evaluation-custody"
-    ]
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/Site", "StegVerse-Labs/StegVerse-Healer", "master-records", "StegVerse-org/StegVerse-SDK"],
+    "components": ["ece-registry", "ece-evaluator", "ece-findings", "site-continuity-projection", "healer-finding-intake", "master-records-evaluation-custody"]
+  },
+  "core_source_state": {
+    "pull_request": 1525,
+    "exact_head": "eed1a5eaa8e6875562f00cc64d69909ec3f5a125",
+    "merge_commit": "935ba8c21dc5b55a393a22747f326d5f7d06da7a",
+    "validation_runs": {"heartbeat": 34643563011, "deterministic_suite": 34643563044, "organization_control": 34643563005},
+    "merged_validated": true
+  },
+  "consumer_integration_state": {
+    "healer_intake": {
+      "pull_request": 63,
+      "exact_head": "60d41e5c9e0c8d2899bc8146b1f7be7b301484c3",
+      "test_readiness_run": 34653764422,
+      "merge_commit": "a0f907af1febc4125af745a7211de8da88095fca",
+      "merged_validated": true,
+      "live_intake_claimed": false
+    },
+    "site_projection": {
+      "pull_request": 1241,
+      "exact_head": "dec3b3040576e8bd91e7ef01cd5222fb896ebef2",
+      "validation_runs": {"heartbeat": 34653841821, "handoff_orchestrator": 34653841962, "site_bootstrap": 34653841899},
+      "merge_commit": "8214d3c28522c0af98276ce5cbd2c591cd4a4f3e",
+      "merged_validated": true,
+      "live_projection_claimed": false
+    },
+    "master_records_custody": {"implemented": false, "authentic_custody_claimed": false},
+    "periodic_healer_schedule": {"implemented": false, "authentic_execution_claimed": false}
   },
   "authority_model": {
     "diagnostic_authority": "OBSERVATION_CLASSIFICATION_ONLY",
@@ -40,9 +56,13 @@
     "later_ece_observation_required_for_recovery": true,
     "second_scheduler_allowed": false
   },
-  "completion": {
-    "claimed": false,
-    "validated": false,
-    "activation_proof_complete": false
-  }
+  "remaining_predicates": [
+    "MASTER_RECORDS_ECE_CUSTODY_RECONSTRUCTION_IMPLEMENTED",
+    "HEALER_SOVEREIGN_PERIODIC_ECE_INVOCATION_IMPLEMENTED",
+    "AUTHENTIC_RETAINED_ECE_EVALUATION_OBSERVED",
+    "SITE_LIVE_CONTINUITY_PROJECTION_OBSERVED",
+    "HEALER_LIVE_FINDING_INTAKE_OBSERVED",
+    "RECOVERY_LOOP_INDEPENDENT_REEVALUATION_PROVEN"
+  ],
+  "completion": {"claimed": false, "validated": false, "activation_proof_complete": false}
 }
