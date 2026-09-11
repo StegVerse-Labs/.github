@@ -66,6 +66,17 @@ def populate_sources(root: Path) -> None:
     })
 
 
+def materialized_tools(root: Path) -> None:
+    for rel in (dispatcher.RESOLVER, dispatcher.MATERIALIZER, dispatcher.PREFLIGHT, dispatcher.CONSUMER):
+        path = root / rel
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("# stub\n", encoding="utf-8")
+
+
+def resolver_success():
+    return SimpleNamespace(returncode=0, stdout='{"state":"SOURCE_RESOLUTION_COMPLETE","blockers":[]}\n')
+
+
 def test_materializer_fails_closed_when_sources_missing(tmp_path):
     result = materializer.materialize(tmp_path)
     assert result["state"] == "MATERIALIZATION_BLOCKED_FAIL_CLOSED"
@@ -99,28 +110,41 @@ def test_materializer_rejects_cross_surface_runtime_binding_mismatch(tmp_path):
     assert "INTR_RUNTIME_BINDING_MISMATCH" not in result["blockers"]
 
 
-def test_dispatch_stops_before_preflight_when_materialization_blocks(tmp_path):
-    for rel in (dispatcher.MATERIALIZER, dispatcher.PREFLIGHT, dispatcher.CONSUMER):
-        path = tmp_path / rel
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text("# stub\n", encoding="utf-8")
+def test_dispatch_stops_before_materializer_when_source_resolution_blocks(tmp_path):
+    materialized_tools(tmp_path)
     calls = []
     def runner(command, **kwargs):
         calls.append(command)
-        return SimpleNamespace(returncode=2, stdout='{"state":"MATERIALIZATION_BLOCKED_FAIL_CLOSED","ready":false,"blockers":["INTR_NOT_ADMITTED"]}\n')
+        return SimpleNamespace(returncode=2, stdout='{"state":"SOURCE_RESOLUTION_BLOCKED_FAIL_CLOSED","blockers":["NETWORK_SOURCE_FETCH_FORBIDDEN"]}\n')
     result = dispatcher.dispatch(tmp_path, tmp_path, runner=runner)
-    assert result["state"] == "MATERIALIZATION_BLOCKED_FAIL_CLOSED"
+    assert result["state"] == "SOURCE_RESOLUTION_BLOCKED_FAIL_CLOSED"
+    assert result["materializer_attempted"] is False
     assert result["preflight_attempted"] is False
     assert result["consumer_attempted"] is False
     assert len(calls) == 1
 
 
-def test_dispatch_order_is_materialize_then_preflight_then_consume(tmp_path):
-    for rel in (dispatcher.MATERIALIZER, dispatcher.PREFLIGHT, dispatcher.CONSUMER):
-        path = tmp_path / rel
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text("# stub\n", encoding="utf-8")
+def test_dispatch_stops_before_preflight_when_materialization_blocks(tmp_path):
+    materialized_tools(tmp_path)
+    calls = []
     outputs = [
+        resolver_success(),
+        SimpleNamespace(returncode=2, stdout='{"state":"MATERIALIZATION_BLOCKED_FAIL_CLOSED","ready":false,"blockers":["INTR_NOT_ADMITTED"]}\n'),
+    ]
+    def runner(command, **kwargs):
+        calls.append(command)
+        return outputs.pop(0)
+    result = dispatcher.dispatch(tmp_path, tmp_path, runner=runner)
+    assert result["state"] == "MATERIALIZATION_BLOCKED_FAIL_CLOSED"
+    assert result["preflight_attempted"] is False
+    assert result["consumer_attempted"] is False
+    assert len(calls) == 2
+
+
+def test_dispatch_order_is_resolve_materialize_preflight_consume(tmp_path):
+    materialized_tools(tmp_path)
+    outputs = [
+        resolver_success(),
         SimpleNamespace(returncode=0, stdout='{"state":"MATERIALIZED_READY_FOR_PREFLIGHT","ready":true,"blockers":[]}\n'),
         SimpleNamespace(returncode=0, stdout='{"state":"READY_FOR_RESIDENT_CONSUMPTION","ready":true,"blocker_count":0}\n'),
         SimpleNamespace(returncode=0, stdout='{"state":"AUTHENTIC_RUNTIME_EVIDENCE_CONSUMED"}\n'),
@@ -133,6 +157,7 @@ def test_dispatch_order_is_materialize_then_preflight_then_consume(tmp_path):
     assert result["state"] == "AUTHENTIC_RUNTIME_EVIDENCE_CONSUMED"
     assert result["consumer_attempted"] is True
     assert result["activation_claimed"] is False
-    assert dispatcher.MATERIALIZER.name in calls[0][1]
-    assert dispatcher.PREFLIGHT.name in calls[1][1]
-    assert dispatcher.CONSUMER.name in calls[2][1]
+    assert dispatcher.RESOLVER.name in calls[0][1]
+    assert dispatcher.MATERIALIZER.name in calls[1][1]
+    assert dispatcher.PREFLIGHT.name in calls[2][1]
+    assert dispatcher.CONSUMER.name in calls[3][1]

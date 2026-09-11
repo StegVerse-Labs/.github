@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""Dispatch GADI-RESIDENT-EXECUTION-001 through materialization and mandatory preflight gating.
+"""Dispatch GADI-RESIDENT-EXECUTION-001 through local source resolution, materialization, and mandatory preflight gating.
 
-Already-observed local runtime evidence is first projected into the canonical GADI bundle.
-The preflight must then return READY_FOR_RESIDENT_CONSUMPTION before the resident consumer
-is invoked. Any missing/mismatched source evidence fails closed without execution claims.
+Already-observed local runtime evidence may remain at its native runtime paths. A local-only
+resolver first stages exact bytes into the canonical GADI source directory without network
+fetches or invented values. The materializer then validates/projects the bundle, and the
+preflight must return READY_FOR_RESIDENT_CONSUMPTION before the resident consumer is invoked.
+Any missing/mismatched source evidence fails closed without execution claims.
 """
 from __future__ import annotations
 
@@ -15,6 +17,7 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
+RESOLVER = Path("scripts/resolve_gadi_resident_runtime_sources.py")
 MATERIALIZER = Path("scripts/materialize_gadi_resident_runtime_bundle.py")
 PREFLIGHT = Path("scripts/preflight_gadi_resident_execution.py")
 CONSUMER = Path("control/resident-execution-request.d/consume-gadi-resident-execution.py")
@@ -51,15 +54,33 @@ def resolve(runtime: Path, source: Path, rel: Path) -> Path | None:
 def dispatch(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -> dict[str, Any]:
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
+    resolver_path = resolve(runtime, source, RESOLVER)
     materializer_path = resolve(runtime, source, MATERIALIZER)
     preflight_path = resolve(runtime, source, PREFLIGHT)
     consumer_path = resolve(runtime, source, CONSUMER)
 
-    for label, path in (("MATERIALIZER", materializer_path), ("PREFLIGHT", preflight_path), ("CONSUMER", consumer_path)):
+    for label, path in (("RESOLVER", resolver_path), ("MATERIALIZER", materializer_path), ("PREFLIGHT", preflight_path), ("CONSUMER", consumer_path)):
         if path is None:
             result = {"schema":"stegverse.gadi-resident-dispatch/v1","state":"BLOCKED_FAIL_CLOSED","blocker":f"{label}_NOT_MATERIALIZED","consumer_attempted":False,"execution_claimed":False,"activation_claimed":False}
             write_receipt(runtime, result)
             return result
+
+    resolved = runner([sys.executable, str(resolver_path), "--runtime-root", str(runtime)], cwd=runtime, capture_output=True, text=True, check=False, timeout=120)
+    resolved_result = parse_last_json(resolved.stdout)
+    if resolved.returncode != 0 or not isinstance(resolved_result, dict) or resolved_result.get("state") != "SOURCE_RESOLUTION_COMPLETE":
+        result = {
+            "schema":"stegverse.gadi-resident-dispatch/v1",
+            "state":"SOURCE_RESOLUTION_BLOCKED_FAIL_CLOSED",
+            "source_resolution_returncode":resolved.returncode,
+            "source_resolution":resolved_result,
+            "materializer_attempted":False,
+            "preflight_attempted":False,
+            "consumer_attempted":False,
+            "execution_claimed":False,
+            "activation_claimed":False,
+        }
+        write_receipt(runtime, result)
+        return result
 
     materialized = runner([sys.executable, str(materializer_path), "--runtime-root", str(runtime)], cwd=runtime, capture_output=True, text=True, check=False, timeout=120)
     materialized_result = parse_last_json(materialized.stdout)
@@ -67,6 +88,7 @@ def dispatch(source_root: Path, runtime_root: Path, *, runner=subprocess.run) ->
         result = {
             "schema":"stegverse.gadi-resident-dispatch/v1",
             "state":"MATERIALIZATION_BLOCKED_FAIL_CLOSED",
+            "source_resolution":resolved_result,
             "materializer_returncode":materialized.returncode,
             "materialization":materialized_result,
             "preflight_attempted":False,
@@ -83,6 +105,7 @@ def dispatch(source_root: Path, runtime_root: Path, *, runner=subprocess.run) ->
         result = {
             "schema":"stegverse.gadi-resident-dispatch/v1",
             "state":"PREFLIGHT_BLOCKED_FAIL_CLOSED",
+            "source_resolution":resolved_result,
             "materialization":materialized_result,
             "preflight_returncode":pre.returncode,
             "preflight":pre_result,
@@ -100,6 +123,7 @@ def dispatch(source_root: Path, runtime_root: Path, *, runner=subprocess.run) ->
     result = {
         "schema":"stegverse.gadi-resident-dispatch/v1",
         "state":state,
+        "source_resolution":resolved_result,
         "materialization":materialized_result,
         "preflight":pre_result,
         "preflight_returncode":pre.returncode,
