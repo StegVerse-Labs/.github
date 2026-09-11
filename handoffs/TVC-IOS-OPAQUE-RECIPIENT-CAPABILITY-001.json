@@ -6,7 +6,11 @@
   "state": "ACTIVE",
   "checkout_state": "CHECKED_OUT",
   "canonical_handoff": "docs/TVC_IOS_OPAQUE_RECIPIENT_CAPABILITY_MIRROR_HANDOFF.md",
-  "owners": ["StegVerse-Labs/TVC", "StegVerse-Labs/StegOS"],
-  "next_transition": "IMPLEMENT_STEGOS_IOS_TVC_OPAQUE_KEY_ADAPTER",
-  "claims_runtime_complete": false
+  "owners": [
+    "StegVerse-Labs/TVC",
+    "StegVerse-Labs/StegOS"
+  ],
+  "next_transition": "OBSERVE_AUTHENTIC_CURRENT_IPHONE_ACTIVATION",
+  "claims_runtime_complete": false,
+  "source_validated": true
 }

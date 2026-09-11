@@ -269,3 +269,10 @@ Root `README.md` was reviewed during the source integration. The changes are int
 ## Manual work
 
 None. Do not enter provider credentials into chat, GitHub, Drive, ordinary KV, logs, screenshots, or repository state. Any eventual owner credential entry remains browser-local sealing only after authentic ingress-readiness predicates are satisfied.
+
+
+## Current-iPhone recipient-capability dependency progress
+
+The bounded dependency `TVC-IOS-OPAQUE-RECIPIENT-CAPABILITY-001` is source-implemented and validated. StegOS #338/#339/#340 provide the compiled Secure Enclave candidate and TVC-challenge proof-of-possession signer. TVC #407 provides the TVC-owned verifier/adopter and binds verified artifacts into the existing Coinbase recipient-capability activation seam. No private-key bytes are exported, and no credential, transition, runtime, custody, or GitHub authority is transferred.
+
+Authentic current-iPhone Secure Enclave activation, a fresh TVC-issued challenge/verified attestation exchange, and public recipient-config projection remain unobserved. Consequently the authentic Gateway/TVC input pair, four-leg Interlock/InTr traversal, and exact SKAP/KV readback remain unproven.

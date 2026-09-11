@@ -15,17 +15,25 @@
   },
   "source_refs": [
     "StegVerse-Labs/TVC/scripts/tvc_recipient_key_capability.py",
+    "StegVerse-Labs/TVC/scripts/ios_opaque_recipient_capability.py",
     "StegVerse-Labs/TVC/scripts/activate_coinbase_intr_capability.py",
+    "StegVerse-Labs/StegOS/mobile/ios/StegOSMobile/TVCRecipientKeyCandidate.swift",
     "StegVerse-Labs/StegOS/mobile/ios/StegOSMobile.xcodeproj",
-    "StegVerse-Labs/StegOS/mobile/ios/StegOSMobile/",
     "docs/TVC_IOS_OPAQUE_RECIPIENT_CAPABILITY_MIRROR_HANDOFF.md"
   ],
   "current_truth": {
     "platform_neutral_tvc_capability_contract_merged": true,
     "linux_root_adapter_exists": true,
     "native_ios_project_exists": true,
-    "ios_tvc_opaque_key_adapter_exists": false,
-    "authentic_current_device_activation_observed": false
+    "ios_tvc_opaque_key_adapter_exists": true,
+    "authentic_current_device_activation_observed": false,
+    "stegos_ios_candidate_compiled": true,
+    "stegos_ios_liveness_signer_compiled": true,
+    "tvc_ios_signature_verifier_merged": true,
+    "tvc_coinbase_activation_seam_bound": true,
+    "source_and_apple_toolchain_validated": true,
+    "authentic_tvc_challenge_exchange_observed": false,
+    "tvc_public_recipient_config_projected_from_authentic_exchange": false
   },
   "required_implementation": [
     "Implement a TVC-owned iOS recipient capability adapter inside the existing StegOS Mobile target using Apple Security APIs and a non-exportable P-256 private key handle.",
@@ -57,15 +65,23 @@
   "completion": {
     "claimed": false,
     "validated": false,
-    "runtime_observed": false
+    "runtime_observed": false,
+    "source_implemented": true,
+    "source_validated": true
   },
   "allowed_next_transitions": [
-    "IMPLEMENT_STEGOS_IOS_TVC_OPAQUE_KEY_ADAPTER",
-    "BIND_TVC_ACTIVATION_SEAM",
-    "VALIDATE_BUILD_AND_SOURCE",
-    "OBSERVE_AUTHENTIC_CURRENT_IPHONE_ACTIVATION"
+    "OBSERVE_AUTHENTIC_CURRENT_IPHONE_ACTIVATION",
+    "VERIFY_AUTHENTIC_TVC_CHALLENGE_EXCHANGE",
+    "PROJECT_TVC_PUBLIC_RECIPIENT_CONFIG"
   ],
   "handoff_projection_refs": [
     "docs/TVC_IOS_OPAQUE_RECIPIENT_CAPABILITY_MIRROR_HANDOFF.md"
-  ]
+  ],
+  "implementation_evidence": {
+    "StegOS_PR_338": "9b532806f3c7d71dd7ae90ecc5ba76192b6027a7",
+    "StegOS_PR_339": "cff17eb68ac156bd60e6db388dfefeefb71ea01b",
+    "StegOS_PR_340": "01fc87a88cd956d83fb3206082513e9de59c0647",
+    "TVC_PR_407": "3fbdba0cb539b3672b53c3aa29e948e58e4fdb8e",
+    "validation": "StegOS Apple-toolchain/device-package/CI SUCCESS; TVC recipient-capability/credential-model/consent HTTP validation SUCCESS"
+  }
 }
