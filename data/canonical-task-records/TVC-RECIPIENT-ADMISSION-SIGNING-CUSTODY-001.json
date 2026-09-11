@@ -1,0 +1,64 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "TVC-RECIPIENT-ADMISSION-SIGNING-CUSTODY-001",
+  "correlation_id": "TVC-RECIPIENT-ADMISSION-SIGNING-CUSTODY-001",
+  "root_correlation_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+  "parent_task_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+  "goal": "Establish authentic TVC-controlled production custody for the recipient-capability admission signing key and bind the matching public JWK trust anchor without exporting private-key material or granting GitHub, CI, model, StegOS, or Interlock signing authority.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "50000000102000",
+  "owners": {
+    "credential_authority": "TV/TVC",
+    "implementation_owner": "StegVerse-Labs/TVC",
+    "consumer": "TVC-IOS-OPAQUE-RECIPIENT-CAPABILITY-001"
+  },
+  "source_refs": [
+    "docs/TVC_RECIPIENT_ADMISSION_SIGNING_CUSTODY_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/TVC/scripts/stegos_ios_recipient_authenticated_adoption.py"
+  ],
+  "blockers": [
+    "TVC_PRODUCTION_RECIPIENT_ADMISSION_SIGNING_CUSTODY_NOT_YET_OBSERVED",
+    "TVC_RECIPIENT_ADMISSION_PUBLIC_TRUST_ANCHOR_NOT_YET_BOUND",
+    "FRESH_PRODUCTION_SIGNED_RECIPIENT_ADMISSION_NOT_YET_OBSERVED"
+  ],
+  "expected_evidence_predicates": [
+    "TVC_PRODUCTION_RECIPIENT_ADMISSION_SIGNING_CUSTODY_OBSERVED",
+    "TVC_RECIPIENT_ADMISSION_PUBLIC_TRUST_ANCHOR_BOUND",
+    "FRESH_SIGNED_RECIPIENT_ADMISSION_BOUND_TO_EXACT_WORKER_FENCE_AND_LEASE",
+    "PRIVATE_SIGNING_KEY_BYTES_NEVER_EXPORTED",
+    "GITHUB_CI_MODEL_HAVE_NO_SIGNING_AUTHORITY"
+  ],
+  "current_truth": {
+    "tvc_408_authenticated_adoption_merged": true,
+    "stegos_343_authenticated_verifier_merged": true,
+    "test_only_ephemeral_signer_exists": true,
+    "production_secure_custody_primitive_found_in_tvc_source_search": false,
+    "production_signing_custody_observed": false,
+    "public_trust_anchor_bound": false,
+    "production_signed_admission_observed": false
+  },
+  "authority_model": {
+    "credential_authority": "TV_TVC",
+    "transition_authority": "Interlock/InTr",
+    "github_runtime_authority": "NONE",
+    "github_ci_model_may_create_production_signing_key": false,
+    "stegos_may_mint_tvc_signing_authority": false,
+    "hosted_execution_fallback": false
+  },
+  "allowed_next_transitions": [
+    "IMPLEMENT_OR_BIND_TVC_OWNED_NON_EXPORTABLE_SIGNING_CUSTODY",
+    "BIND_MATCHING_PUBLIC_JWK_TRUST_ANCHOR",
+    "VALIDATE_WITH_NON_PRODUCTION_TEST_VECTORS",
+    "OBSERVE_AUTHENTIC_TVC_CONTROLLED_PRODUCTION_MATERIALIZATION",
+    "ISSUE_FRESH_BOUND_SIGNED_RECIPIENT_ADMISSION"
+  ],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "runtime_observed": false
+  },
+  "handoff_projection_refs": [
+    "docs/TVC_RECIPIENT_ADMISSION_SIGNING_CUSTODY_MIRROR_HANDOFF.md"
+  ]
+}
