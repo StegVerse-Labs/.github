@@ -55,11 +55,17 @@
     "StegVerse-org/StegVerse-SDK:pull/199",
     "StegVerse-org/StegVerse-SDK:commit/19db2775b6dbcd361f8329b6b0710699f4467462",
     "StegVerse-Labs/.github:pull/1415",
-    "StegVerse-Labs/.github:commit/4af1b801a193a3c9ace7c6327ef010fd40915b15"
+    "StegVerse-Labs/.github:commit/4af1b801a193a3c9ace7c6327ef010fd40915b15",
+    "StegVerse-Labs/.github:pull/1449",
+    "StegVerse-Labs/.github:commit/07b4b21dc79126849aa74424f0238163ef5dc0dd",
+    "StegVerse-Labs/.github:pull/1460",
+    "StegVerse-Labs/.github:commit/3bc8898655d344ba12f47bb4120e38f2ac1ded6e"
   ],
   "source_state": {
     "portable_exact_dispatch_merged": true,
     "service_gateway_three_route_source_merged": true,
+    "runtime_resolver_standalone_record_fallback_merged": true,
+    "runtime_discovery_mutation_semantic_reconciled": true,
     "resident_reseal_consumption_receipt_observed": false,
     "resident_consent_listener_consumption_receipt_observed": false,
     "retained_drive_receipts_observed": false,
@@ -116,7 +122,7 @@
     "already_local_source_required": true,
     "second_user_operated_device_required": false
   },
-  "runtime_resolution": null,
+  "runtime_resolution": "UNRESOLVED_NO_CURRENT_AUTHORIZED_DEVICE",
   "worker_claim": {
     "authority": "WORKERCOORDINATOR",
     "claim_ref": null,
@@ -124,7 +130,7 @@
     "projection_only": true
   },
   "latest_runtime_observation": {
-    "observed_at": "2026-09-11T14:53:41.405Z",
+    "observed_at": "2026-09-11T15:20:00Z",
     "authorized_remote_device_count": 0,
     "retained_drive_reseal_receipt_matches": 0,
     "retained_drive_listener_receipt_matches": 0,
