@@ -5,7 +5,7 @@ Organization: `StegVerse-Labs`
 Repository: `StegVerse-Labs/.github`
 Goal: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`
 COSV ID: `10100000100000`
-State: `ZERO_INPUT_TESTFLIGHT_HANDOFF_MERGED_VALIDATED / TVC_PROVIDER_EXECUTION_SIGNED_DEVICE_DELIVERY_AND_AUTHENTIC_DEVICE_CONSUMPTION_PENDING`
+State: `IBC_LAUNCH_SOURCE_BOUND_TO_CURRENT_IPHONE_SUCCESSOR / SITE_ALLOCATION_TVC_PROVIDER_EXECUTION_SIGNED_DEVICE_DELIVERY_AND_AUTHENTIC_DEVICE_CONSUMPTION_PENDING`
 
 ## Purpose
 
@@ -146,27 +146,76 @@ PR #330 merged at:
 8bf316765d7467659f3df8e23def23d34b551c5f
 ```
 
-The merged path now establishes:
-
-```text
-manual workflow-dispatch inputs: 0
-manual App Store Connect app-resource ID input: forbidden
-App Store Connect resource discovery: TVC RESOLVE_APP_RESOURCE_ID
-canonical bundle: org.stegverse.stegosmobile
-Apple credential authority: TV/TVC
-Apple credential custody: SKAP_SEALED_TV_TVC_OWNED
-GitHub Actions Apple credential access: false
-GitHub Actions signing private-key custody: false
-second user-operated machine: forbidden
-```
-
-StegOS PR #307 is closed as `REPLACED_BY_330`; this does not supersede the Goal Task.
+The merged repository contract establishes zero human-supplied App Store Connect resource ID, TVC `RESOLVE_APP_RESOURCE_ID`, TV/TVC + SKAP credential custody, no GitHub Apple credential access, and no second user-operated machine. StegOS PR #307 is closed as `REPLACED_BY_330`; this does not supersede the Goal Task.
 
 Repository task README evidence was updated on StegOS main at commit:
 
 ```text
 ba1370c55709aa3efdaf8042d5b4466485a8dc53
 ```
+
+## Canonical current-iPhone execution surface
+
+The preferred signing execution surface is the already-merged current-iPhone path, not a second Mac/Xcode executor.
+
+```text
+execution_surface: CURRENT_USER_IPHONE
+executor_class: SAME_DEVICE_BROWSER_WASM_IPA_SIGNER
+credential_authority: TV/TVC
+App Store Connect credential custody: SKAP_SEALED_TV_TVC_OWNED
+private signing key: opaque ephemeral WASM session on current iPhone
+private-key export/persistence: forbidden
+second user-operated machine: forbidden
+```
+
+TVC PR #373 merged at `01fbf9bcb22857db01e421bcc27e6eab6ec7488c` and exact-head Current iPhone Provider CORS Validation run `34398658506` passed, allowing only `https://stegverse.org` to call the canonical TVC provider route without consumer credentials.
+
+## Exact Site successor binding
+
+The canonical Site allocator already has a distinct task for publishing the current-iPhone TestFlight successor:
+
+```text
+allocator task: TASK-2026-0010
+execution surface: CURRENT_USER_IPHONE
+release surface: site:current-iphone-testflight-static-bootstrap
+status in portable package: queued
+fresh allocator claim/fence required: true
+mutation before fresh claim: false
+```
+
+This IBC trajectory must reuse that allocation and must not create a competing Site claim.
+
+The exact successor package is:
+
+```text
+StegVerse-Labs/StegOS/release/current-iphone-site-projection/successors/current-iphone-testflight-static-bootstrap.json
+successor_id: STEGOS-CURRENT-IPHONE-TESTFLIGHT-STATIC-BOOTSTRAP-001
+asset_package_commit: 57f32a9e8b9dfbc70e66e0df3cb7de419fc0701b
+unsigned IPA source commit: 32115e32d701e783af2c2659a900e4bc90460fd2
+unsigned IPA sha256: 557d559082bdefca5fcc69c86f342d8cc035c2d803d154de5ed45b5677f80c35
+unsigned IPA bytes: 389564
+WASM sha256: 699dc3054788d779ba7920e332c661ef7eac001156f93ab7b1fe1b64ee5a4b93
+```
+
+Git comparison proves the unsigned IPA source commit `32115e32...` is 49 commits ahead of IBC launch-reachability merge `e810380f...` with `behind_by=0`. Therefore the exact successor IPA is descendant source containing the merged IBC launch coordinator; no separate IBC-specific IPA build is required before signing.
+
+The Site portable allocator package independently names `TASK-2026-0010` as the immediate target and binds the same unsigned IPA SHA-256. The current Site main does not yet contain `stegos-bootstrap/current-iphone-testflight.html`, so publication/runtime must not be claimed until the allocator trajectory completes its fresh claim/fence and projection.
+
+## TVC provider runtime and credential boundary
+
+TVC source for the App Store Connect class, SKAP resolver, provider-operation broker, current-iPhone CORS exposure, resource resolution, provisioning, and native Build Upload is merged/validated.
+
+Authentic provider execution still requires current TVC runtime/credential evidence. The TVC App Store Connect handoff currently records:
+
+```text
+authentic sovereign-host execution of current TVC source: NOT_OBSERVED
+live Apple recipient/route projection: NOT_OBSERVED
+real Apple credential SKAP custody: NOT_OBSERVED
+provider-backed app_store_connect_app_id: NOT_OBSERVED
+TestFlight upload through TVC: NOT_OBSERVED
+```
+
+It also records an external Apple account condition: App Store Connect Terms acceptance was not usable on the current iPhone at the last observation, so no real Team API key is claimed created or admitted to SKAP. This condition does not invalidate the completed source work; it gates authentic provider execution and credential custody.
 
 ## Current evidence boundary
 
@@ -182,14 +231,21 @@ native application-launch invocation compiled into StegOSMobile: true
 exact retained verification/evidence embedded in native build: true
 unsigned iphoneos package successfully built with launch path: true
 canonical resident coordination integration merged: true
-zero-input TestFlight signing handoff merged: true
+zero-input TestFlight handoff contract merged: true
 TVC App Store Connect resource-resolution contract merged: true
-exact zero-input reconciliation CI: PASS
+current-iPhone WASM signing path merged: true
+current-iPhone TVC provider client/CORS path merged and validated: true
+exact Site successor package contains descendant IBC launch source: true
+TASK-2026-0010 is canonical Site projection target: true
 ```
 
 Not yet authentically established:
 
 ```text
+TASK-2026-0010 fresh allocator claim/fence: pending in its owner trajectory
+Site publication of current-iPhone TestFlight successor: pending
+TVC current provider runtime epoch: pending
+real Apple credential SKAP custody: pending
 TVC resident RESOLVE_APP_RESOURCE_ID execution: pending
 Apple App Store Connect resource ID returned by provider: pending
 current-iPhone signing execution: pending
@@ -207,18 +263,19 @@ custody_result_minted: false
 
 ## Next work
 
-1. execute the merged zero-input `ios-signed-testflight-build.yml` handoff without supplying an App Store Connect app ID;
-2. retain the exact generated unsigned-artifact bindings and TVC `RESOLVE_APP_RESOURCE_ID` request;
-3. carry that request into the existing authenticated TVC/SKAP App Store Connect provider session;
-4. observe authentic TVC resource-resolution evidence and only then continue provisioning/signing/Build Upload;
-5. install/open the resulting exact build on the bound current iPhone;
-6. allow app launch to consume the embedded verified IBC evidence using the already-established canonical Site node binding;
-7. inspect `Documents/ibc-verified-intr-ack-request-consumption.latest.json`;
-8. retain/reconcile that exact physical-device receipt through the applicable runtime evidence / Master Records path;
-9. advance only predicates directly proven by authentic receipts.
+1. allow the existing `TASK-2026-0010` owner trajectory to obtain the fresh allocator claim/fence and project the exact successor package; do not create a competing claim from this task;
+2. once projected, use the exact current-iPhone successor bound above rather than rebuilding an IBC-specific signing package;
+3. independently continue TVC runtime evidence work: materialize/observe the canonical current TVC provider runtime and current Apple recipient/route epoch without introducing Render or a second provider broker;
+4. resolve the external Apple Terms/account condition and admit the real Team API credential through current-iPhone -> KV -> SKAP only when Apple exposes a usable credential-creation path;
+5. execute TVC `RESOLVE_APP_RESOURCE_ID`, provisioning, current-iPhone WASM signing, exact signed-IPA verification and TVC Build Upload;
+6. install/open the resulting exact build on the bound current iPhone;
+7. allow app launch to consume the embedded verified IBC evidence using the already-established canonical Site node binding;
+8. inspect `Documents/ibc-verified-intr-ack-request-consumption.latest.json`;
+9. retain/reconcile that exact physical-device receipt through the applicable runtime evidence / Master Records path;
+10. advance only predicates directly proven by authentic receipts.
 
-No separate evidence-file placement step remains: the verified IBC evidence inputs are compiled into the same native app build that executes them.
+No separate evidence-file placement or IBC-specific rebuild is required. The canonical current-iPhone successor already contains the IBC launch-bound source.
 
 ## Human action
 
-None currently required for repository/source integration. Any later Apple/TestFlight interaction or current-iPhone installation step is not to be claimed until the corresponding provider/device evidence exists.
+None required at this moment for this IBC coordination lane. The separate Apple account/Terms condition may later require owner action in App Store Connect; when that UI becomes actionable, the exact step is to accept the applicable Apple terms, create the Team API key, and immediately use the current-iPhone SKAP ingress without placing the `.p8` in GitHub, chat, logs, or artifacts.
