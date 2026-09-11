@@ -123,6 +123,7 @@ CONSUMERS = (
     ("ibc_verified_intr_ack", "scripts/consume_ibc_intr_resident_request.py"),
     ("sdk_workspace_external_collab_client_secret_reseal", "control/resident-execution-request.d/consume-sdk-workspace-external-collab-client-secret-reseal.py"),
     ("sdk_workspace_external_collab_consent_listener", "control/resident-execution-request.d/consume-sdk-workspace-external-collab-consent-listener.py"),
+    ("stegsocials_bounded_intr_admission", "scripts/consume_stegsocials_bounded_intr_admission_request.py"),
 )
 
 
@@ -248,7 +249,7 @@ def dispatch(source_root: Path, runtime_root: Path, *, runner=subprocess.run, en
     accepted_wait_states = {
         "NO_REQUEST", "ALREADY_CONSUMED", "ALREADY_TERMINAL", "WAITING_FOR_CUSTODY_PACKAGE", "WAITING_FOR_MASTER_RECORDS_CUSTODY", "WAITING_FOR_RECONCILIATION", "WAITING_FOR_TRANSITION_READINESS",
         "MASTER_RECORDS_LOCAL_ROOT_NOT_MATERIALIZED", "MASTER_RECORDS_CUSTODY_CONSUMER_NOT_MATERIALIZED", "MASTER_RECORDS_PROJECTOR_NOT_MATERIALIZED", "ATTEMPT_RECORDED", "COMPLETED", "MANIFOLD_VISIT_RECORDED",
-        "SOVEREIGN_NODE_MARKER_REQUIRED", "RESIDENT_INTR_ACK_CONSUMED", "RETURN_PATH_VERIFIED", "SERVICE_ALREADY_HEALTHY",
+        "SOVEREIGN_NODE_MARKER_REQUIRED", "RESIDENT_INTR_ACK_CONSUMED", "RETURN_PATH_VERIFIED", "SERVICE_ALREADY_HEALTHY", "INPUT_NOT_MATERIALIZED",
     }
     request_failures = [row["consumer"] for row in outcomes if row["state"] not in accepted_wait_states]
     receipt = {
