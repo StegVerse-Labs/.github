@@ -2,13 +2,13 @@
 """Dispatch GADI-RESIDENT-EXECUTION-001 through local source resolution, materialization, and mandatory preflight gating.
 
 Already-observed local runtime evidence may remain at its native runtime paths. A local-only
-resolver first stages exact bytes into the canonical GADI source directory without network
-fetches or invented values. When the canonical WorkerCoordinator invokes this dispatcher
-through the process-worker protocol, its already-created current task row may be supplied
-explicitly and is staged only after source resolution so a stale locator cannot overwrite
-the live claim/fence. The materializer then validates/projects the bundle, and the preflight
-must return READY_FOR_RESIDENT_CONSUMPTION before the resident consumer is invoked.
-Any missing/mismatched source evidence fails closed without execution claims.
+resolver first stages exact non-claim bytes into the canonical GADI source directory without
+network fetches or invented values. When the canonical WorkerCoordinator invokes this
+dispatcher through the process-worker protocol, its already-created current task row is
+supplied explicitly; worker-claim locator resolution is deferred and the exact live row is
+staged immediately after the three non-claim source classes resolve. The materializer then
+validates/projects the four-source bundle, and preflight must return
+READY_FOR_RESIDENT_CONSUMPTION before the resident consumer is invoked.
 """
 from __future__ import annotations
 
@@ -83,8 +83,6 @@ def validate_current_worker_claim(task: dict[str, Any]) -> None:
 
 def stage_current_worker_claim(runtime: Path, task: dict[str, Any]) -> None:
     validate_current_worker_claim(task)
-    # Exact task-row projection only. No claim, fence, worker identity, or timing
-    # value is manufactured here; all values originate in WorkerCoordinator.
     write_json(runtime / CURRENT_CLAIM_REL, task)
 
 
@@ -108,19 +106,17 @@ def dispatch(
             write_receipt(runtime, result)
             return result
 
-    resolved = runner([sys.executable, str(resolver_path), "--runtime-root", str(runtime)], cwd=runtime, capture_output=True, text=True, check=False, timeout=120)
+    resolver_command = [sys.executable, str(resolver_path), "--runtime-root", str(runtime)]
+    if current_worker_claim is not None:
+        resolver_command.append("--defer-worker-claim")
+    resolved = runner(resolver_command, cwd=runtime, capture_output=True, text=True, check=False, timeout=120)
     resolved_result = parse_last_json(resolved.stdout)
     if resolved.returncode != 0 or not isinstance(resolved_result, dict) or resolved_result.get("state") != "SOURCE_RESOLUTION_COMPLETE":
         result = {
-            "schema":"stegverse.gadi-resident-dispatch/v1",
-            "state":"SOURCE_RESOLUTION_BLOCKED_FAIL_CLOSED",
-            "source_resolution_returncode":resolved.returncode,
-            "source_resolution":resolved_result,
-            "materializer_attempted":False,
-            "preflight_attempted":False,
-            "consumer_attempted":False,
-            "execution_claimed":False,
-            "activation_claimed":False,
+            "schema":"stegverse.gadi-resident-dispatch/v1","state":"SOURCE_RESOLUTION_BLOCKED_FAIL_CLOSED",
+            "source_resolution_returncode":resolved.returncode,"source_resolution":resolved_result,
+            "materializer_attempted":False,"preflight_attempted":False,"consumer_attempted":False,
+            "execution_claimed":False,"activation_claimed":False,
         }
         write_receipt(runtime, result)
         return result
@@ -130,16 +126,10 @@ def dispatch(
             stage_current_worker_claim(runtime, current_worker_claim)
         except Exception as exc:
             result = {
-                "schema":"stegverse.gadi-resident-dispatch/v1",
-                "state":"WORKER_CLAIM_PROJECTION_BLOCKED_FAIL_CLOSED",
-                "error_type":type(exc).__name__,
-                "error":str(exc),
-                "source_resolution":resolved_result,
-                "materializer_attempted":False,
-                "preflight_attempted":False,
-                "consumer_attempted":False,
-                "execution_claimed":False,
-                "activation_claimed":False,
+                "schema":"stegverse.gadi-resident-dispatch/v1","state":"WORKER_CLAIM_PROJECTION_BLOCKED_FAIL_CLOSED",
+                "error_type":type(exc).__name__,"error":str(exc),"source_resolution":resolved_result,
+                "materializer_attempted":False,"preflight_attempted":False,"consumer_attempted":False,
+                "execution_claimed":False,"activation_claimed":False,
             }
             write_receipt(runtime, result)
             return result
@@ -148,15 +138,9 @@ def dispatch(
     materialized_result = parse_last_json(materialized.stdout)
     if materialized.returncode != 0 or not isinstance(materialized_result, dict) or materialized_result.get("state") != "MATERIALIZED_READY_FOR_PREFLIGHT" or materialized_result.get("ready") is not True or materialized_result.get("blockers") not in ([], None):
         result = {
-            "schema":"stegverse.gadi-resident-dispatch/v1",
-            "state":"MATERIALIZATION_BLOCKED_FAIL_CLOSED",
-            "source_resolution":resolved_result,
-            "materializer_returncode":materialized.returncode,
-            "materialization":materialized_result,
-            "preflight_attempted":False,
-            "consumer_attempted":False,
-            "execution_claimed":False,
-            "activation_claimed":False,
+            "schema":"stegverse.gadi-resident-dispatch/v1","state":"MATERIALIZATION_BLOCKED_FAIL_CLOSED",
+            "source_resolution":resolved_result,"materializer_returncode":materialized.returncode,"materialization":materialized_result,
+            "preflight_attempted":False,"consumer_attempted":False,"execution_claimed":False,"activation_claimed":False,
         }
         write_receipt(runtime, result)
         return result
@@ -165,16 +149,9 @@ def dispatch(
     pre_result = parse_last_json(pre.stdout)
     if pre.returncode != 0 or not isinstance(pre_result, dict) or pre_result.get("state") != "READY_FOR_RESIDENT_CONSUMPTION" or pre_result.get("ready") is not True or pre_result.get("blocker_count") != 0:
         result = {
-            "schema":"stegverse.gadi-resident-dispatch/v1",
-            "state":"PREFLIGHT_BLOCKED_FAIL_CLOSED",
-            "source_resolution":resolved_result,
-            "materialization":materialized_result,
-            "preflight_returncode":pre.returncode,
-            "preflight":pre_result,
-            "preflight_attempted":True,
-            "consumer_attempted":False,
-            "execution_claimed":False,
-            "activation_claimed":False,
+            "schema":"stegverse.gadi-resident-dispatch/v1","state":"PREFLIGHT_BLOCKED_FAIL_CLOSED",
+            "source_resolution":resolved_result,"materialization":materialized_result,"preflight_returncode":pre.returncode,"preflight":pre_result,
+            "preflight_attempted":True,"consumer_attempted":False,"execution_claimed":False,"activation_claimed":False,
         }
         write_receipt(runtime, result)
         return result
@@ -183,18 +160,10 @@ def dispatch(
     consume_result = parse_last_json(consumed.stdout)
     state = consume_result.get("state") if isinstance(consume_result, dict) else "NO_MACHINE_RESULT"
     result = {
-        "schema":"stegverse.gadi-resident-dispatch/v1",
-        "state":state,
-        "source_resolution":resolved_result,
-        "materialization":materialized_result,
-        "preflight":pre_result,
-        "preflight_returncode":pre.returncode,
-        "preflight_attempted":True,
-        "consumer_attempted":True,
-        "consumer_returncode":consumed.returncode,
-        "consumer":consume_result,
-        "execution_claimed":state == "AUTHENTIC_RUNTIME_EVIDENCE_CONSUMED",
-        "activation_claimed":False,
+        "schema":"stegverse.gadi-resident-dispatch/v1","state":state,"source_resolution":resolved_result,
+        "materialization":materialized_result,"preflight":pre_result,"preflight_returncode":pre.returncode,
+        "preflight_attempted":True,"consumer_attempted":True,"consumer_returncode":consumed.returncode,"consumer":consume_result,
+        "execution_claimed":state == "AUTHENTIC_RUNTIME_EVIDENCE_CONSUMED","activation_claimed":False,
     }
     write_receipt(runtime, result)
     return result
