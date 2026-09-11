@@ -49,7 +49,8 @@
         "integration_evidence_refs": [
           "control/resident-execution-request.d/consume-gadi-resident-execution.py",
           "control/process-worker-adapters.d/gadi-resident-execution-001.json",
-          "control/worker-registry.d/gadi-resident-execution-001.json"
+          "control/worker-registry.d/gadi-resident-execution-001.json",
+          "control/gadi-worker-capability-profiles.json"
         ],
         "activation_proof_ref": null,
         "blockers": [
@@ -84,7 +85,7 @@
       "adapter_ref": "process:gadi-resident-execution-v2-preflight-gated",
       "authority_source": "handoffs/GADI-RESIDENT-EXECUTION-001.json#authority",
       "capabilities": ["gadi_resident_defensive_execution"],
-      "capability_profile_ref": "control/worker-capability-profiles.json#repository-maintenance-v1",
+      "capability_profile_ref": "control/gadi-worker-capability-profiles.json#gadi-resident-defensive-execution-v1",
       "executor_type": "repository_worker",
       "last_seen_at": null,
       "status": "AVAILABLE",
