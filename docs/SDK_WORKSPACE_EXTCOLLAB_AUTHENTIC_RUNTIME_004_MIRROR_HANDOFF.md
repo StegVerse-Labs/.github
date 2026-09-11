@@ -43,13 +43,15 @@ README review remains accurate: this is resolver regression evidence and coordin
 
 ## Fresh authentic observation
 
-Current session re-observation after #1460 merge found:
+Re-observation at `2026-09-11T18:58:00Z` found:
 
 - authorized remote-resident connector: zero devices;
 - retained Google Drive exact reseal receipt matches: zero;
 - retained Google Drive exact listener receipt matches: zero.
 
-Therefore runtime resolution remains unresolved solely at the authentic-current-observation boundary. No resident execution, target custody/readback, listener health, CMC-029 live TLS adoption, sovereign callback reachability, Google consent, provider probe, MIR, Master Records reconstruction, one-device completion, downstream propagation, or public distribution is claimed.
+Canonical runtime resolution is therefore explicitly `UNRESOLVED_NO_CURRENT_AUTHORIZED_DEVICE`, while the resolver rejection remains `CURRENT_OBSERVATION_REQUIRED:DECLARED_ONLY` until an authentic current resident observation exists.
+
+No resident execution, target custody/readback, listener health, CMC-029 live TLS adoption, sovereign callback reachability, Google consent, provider probe, MIR, Master Records reconstruction, one-device completion, downstream propagation, or public distribution is claimed.
 
 Expected resident receipts remain:
 
@@ -67,6 +69,7 @@ resolver standalone-record fallback: MERGED / VALIDATED
 successor dispatcher discovery mutation semantic: MERGED / VALIDATED
 static resolver source compatibility: PROVEN
 remaining resolver condition: CURRENT_OBSERVATION_REQUIRED:DECLARED_ONLY
+runtime resolution: UNRESOLVED_NO_CURRENT_AUTHORIZED_DEVICE
 resident reseal receipt: NOT OBSERVED
 resident listener receipt: NOT OBSERVED
 authorized remote runtime online: NOT OBSERVED
