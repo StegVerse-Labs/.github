@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/stegverse.ecosystem-continuity-evaluation.v1.schema.json",
+  "title": "StegVerse Ecosystem Continuity Evaluation v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "evaluation_id", "evaluated_at", "evaluator_version", "registry_sha256", "continuity_state", "completeness", "findings", "authority_effect"],
+  "properties": {
+    "schema": {"const": "stegverse.ecosystem-continuity-evaluation.v1"},
+    "evaluation_id": {"type": "string", "minLength": 16},
+    "evaluated_at": {"type": "string", "format": "date-time"},
+    "evaluator_version": {"type": "string", "minLength": 1},
+    "registry_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "continuity_state": {"enum": ["CONTINUOUS", "CONTINUOUS_WITH_DEGRADATION", "AT_RISK", "INTERRUPTED", "INDETERMINATE"]},
+    "completeness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["registered_predicates", "observed_predicates", "evaluation_errors"],
+      "properties": {
+        "registered_predicates": {"type": "integer", "minimum": 0},
+        "observed_predicates": {"type": "integer", "minimum": 0},
+        "evaluation_errors": {"type": "integer", "minimum": 0}
+      }
+    },
+    "findings": {"type": "array", "items": {"$ref": "stegverse.ecosystem-continuity-finding.v1.schema.json"}},
+    "authority_effect": {"const": "NONE_DIAGNOSTIC_ONLY"}
+  }
+}
