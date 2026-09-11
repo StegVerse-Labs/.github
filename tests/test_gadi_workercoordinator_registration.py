@@ -5,6 +5,7 @@ import unittest
 from pathlib import Path
 
 from heartbeat_runtime.worker_runtime import WorkerCoordinator
+from scripts.run_worker_runtime import load_adapters
 
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "control" / "worker-registry.d" / "gadi-resident-execution-001.json"
@@ -35,12 +36,23 @@ class GADIWorkerCoordinatorRegistrationTests(unittest.TestCase):
         self.assertFalse(self.handoff["authority"]["heartbeat_grants_execution_authority"])
         self.assertFalse(self.handoff["authority"]["request_grants_execution_authority"])
 
-    def test_worker_uses_enabled_preflight_gated_adapter(self) -> None:
+    def test_worker_uses_enabled_preflight_gated_adapter_and_narrow_profile(self) -> None:
         self.assertTrue(self.adapter["enabled"])
         self.assertEqual(self.worker["adapter_ref"], self.adapter["adapter_ref"])
         self.assertEqual(self.adapter["adapter_ref"], "process:gadi-resident-execution-v2-preflight-gated")
         self.assertIn("gadi_resident_defensive_execution", self.worker["capabilities"])
         self.assertIn("gadi_resident_defensive_execution", self.adapter["capabilities"])
+
+        profile_ref = self.worker["capability_profile_ref"]
+        profile_path, profile_id = profile_ref.split("#", 1)
+        profile_registry = self.load(ROOT / profile_path)
+        profile = next(item for item in profile_registry["profiles"] if item["profile_id"] == profile_id)
+        self.assertEqual(profile["executor_type"], self.worker["executor_type"])
+        self.assertEqual(profile["allowed_capabilities"], ["gadi_resident_defensive_execution"])
+        self.assertTrue(profile["mutation_allowed"])
+        self.assertFalse(profile["deployment_allowed"])
+        self.assertFalse(profile["availability_grants_authority"])
+        self.assertFalse(profile["capability_match_grants_authority"])
 
     def test_runtime_predicates_are_not_terminal_worker_dependencies(self) -> None:
         self.assertEqual(self.handoff["task"]["dependencies"], [])
@@ -63,9 +75,11 @@ class GADIWorkerCoordinatorRegistrationTests(unittest.TestCase):
         self.assertEqual(record["hb_estimate"]["confidence"], "LOW")
         self.assertEqual(record["estimate_basis"], "CONSERVATIVE_SOURCE_BOUNDED_ONE_SHOT_NOT_EMPIRICAL_RUNTIME_MEASUREMENT")
 
-    def test_worker_selection_contract_is_resolvable_when_adapter_is_loaded(self) -> None:
-        runtime = WorkerCoordinator(ROOT, adapters={self.adapter["adapter_ref"]: object()})
-        selected = runtime._worker_for(self.task, {"workers": [self.worker]})
+    def test_worker_selection_contract_is_resolvable_by_canonical_loader(self) -> None:
+        adapters = load_adapters(ROOT)
+        self.assertIn(self.adapter["adapter_ref"], adapters)
+        runtime = WorkerCoordinator(ROOT, adapters=adapters)
+        selected = runtime._worker_for(self.task, {"workers": [self.worker], "tasks": [self.task]})
         self.assertIsNotNone(selected)
         self.assertEqual(selected["worker_id"], "gadi-resident-execution-worker")
 
