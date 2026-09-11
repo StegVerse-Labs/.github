@@ -20,9 +20,15 @@ If any screenshot artifact or purpose binding changes, the existing experiment e
 
 ## Canonical implementation
 
-Registration was merged through `.github` PR #1450 at merge commit `eb79cf1f700336dbd7d05576e461df46a9093eb1` after exact-head validation succeeded.
+Task registration was merged through `.github` PR #1450 at merge commit `eb79cf1f700336dbd7d05576e461df46a9093eb1` after exact-head validation succeeded.
 
-The implementation continuation is on branch `mir-frozen-screenshot-contract-002` and adds:
+The screenshot-continuity implementation was merged through `.github` PR #1453 at squash commit `e0e6a47e479a9bc54ca9ca9647aad8ad54cc0c6f`. Exact implementation head `1b53e9f0c1e4102240ffce0ac9a49331e216c62e` passed all observed required validation lanes before merge:
+
+- organization-control run `34614318562` — PASS;
+- deterministic repository suite run `34614318572` — PASS;
+- Heartbeat worker validation run `34614318539` — PASS.
+
+Canonical source now includes:
 
 - `schemas/mir-frozen-screenshot-manifest.schema.json`
 - `scripts/validate_mir_frozen_screenshot_manifest.py`
@@ -88,7 +94,7 @@ No MIR v0.3 experiment continuity claim is made yet. Completion still requires:
 5. post-run deterministic comparison proving no purpose/artifact binding changed; and
 6. retained experiment evidence showing any mutation caused a successor epoch rather than silent substitution.
 
-COSV ID is not yet established and must not be invented from adjacent tasks.
+COSV ID is not yet established. A fresh canonical repository search after PR #1453 found the task record and handoff but no matching task-vector/index entry; a COSV vector must therefore be established through the canonical task-vector coordination path rather than copied from an adjacent task.
 
 ## Completion boundary
 
