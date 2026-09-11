@@ -4,7 +4,7 @@ Goal Task ID: `TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001`
 Parent Goal: `TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001`
 Canonical issue: `StegVerse-Labs/.github#1387`
 PR: `StegVerse-Labs/.github#1390`
-Status: `ACTIVE / CHECKED_OUT / HASH-LINKED EVENT LEDGER IMPLEMENTED / RECENT-WINDOW EVALUATOR INTEGRATION IMPLEMENTED / EXACT-HEAD VALIDATION PENDING`
+Status: `ACTIVE / CHECKED_OUT / HASH-LINKED EVENT LEDGER IMPLEMENTED / RECENT-WINDOW EVALUATOR INTEGRATION IMPLEMENTED / CANONICAL SESSION RETURN RECORDER IMPLEMENTED / EXACT-HEAD VALIDATION PENDING`
 
 ## Objective
 
@@ -21,8 +21,10 @@ This child consumes that existing evaluator and disposition contract. It does no
 - `schemas/task-registry-checkin-event.v1.schema.json`
 - `scripts/task_registry_checkin_event_history.py`
 - `scripts/evaluate_task_registry_collision_checkin.py`
+- `scripts/record_task_registry_session_return.py`
 - `tests/test_task_registry_checkin_event_history.py`
 - `tests/test_task_registry_recent_event_collision_integration.py`
+- `tests/test_task_registry_session_return_recorder.py`
 
 ## Event contract
 
@@ -62,13 +64,15 @@ Recent history augments canonical task-record collision evidence. It cannot crea
 
 The check-in event is recorded by the registry evaluator before downstream Canonical Work source mutation or portable WorkerCoordinator claim issuance, preserving the parent ordering contract.
 
-## Return / check-out recording
+## Canonical session return path
 
-`scripts/task_registry_checkin_event_history.py` is also the canonical non-authorizing append path for `CHECK_OUT`, `RETURNED`, and `STOPPED` events. Session/task return callers must supply the exact prior/current Task Registry disposition object and retained task/session context. Hash-chain validation fails closed on tampering or predecessor mismatch.
+`scripts/record_task_registry_session_return.py` is the bounded session/task relinquish entrypoint. It accepts only `CHECK_OUT`, `RETURNED`, or `STOPPED`, requires the exact Task Registry disposition object on stdin, validates exact task identity and `authority_effect=NONE`, appends through the same hash-linked ledger implementation, and emits `stegverse.task-registry-session-return-receipt/v1` containing the resulting event/predecessor hashes with no authority effect.
+
+This makes the return side explicit rather than relying on callers to construct ledger rows directly.
 
 ## Tests
 
-Deterministic tests now cover:
+Deterministic tests cover:
 
 - hash-linked append/reload;
 - recent returned overlap;
@@ -76,7 +80,9 @@ Deterministic tests now cover:
 - latest-session-state replacement;
 - tamper/hash failure;
 - existing evaluator consumption of recent returned evidence;
-- evaluator recording of the current `CHECK_IN` event.
+- evaluator recording of current `CHECK_IN`;
+- canonical return recorder append;
+- wrong-task disposition rejection before ledger mutation.
 
 ## Authority invariants
 
@@ -85,7 +91,7 @@ Task Registry event history is coordination evidence only. WorkerCoordinator rem
 ## Remaining
 
 1. obtain exact-head validation and repair any regression;
-2. add/confirm explicit session-return invocation at the canonical session/task relinquish path rather than relying on ad-hoc callers;
+2. bind the canonical return recorder into the actual session/task relinquish/stop/supersession orchestration path so callers do not need to invoke it manually;
 3. update root README with the durable recent-session collision-window protocol if required by repository functional-change invariant;
 4. merge PR #1390 after exact-head validation is green;
 5. after merge, evaluate projection of the event ledger into StegVerse sovereign KV custody without changing evaluator semantics.
