@@ -23,30 +23,33 @@
     "scripts/run_native_email_action_monitor_kv_guard.py",
     "scripts/persist_native_email_incidents_to_kv.py",
     "scripts/materialize_personal_kv_provider_root.py",
+    "scripts/refresh_sovereign_worker_runtime_source.py",
     "scripts/normalize_github_failure_email_events.py",
     "scripts/reconcile_email_failure_incidents.py",
     "tests/test_native_email_kv_persistence.py",
     "tests/test_native_email_kv_entrypoint.py",
+    "tests/test_native_email_kv_resident_refresh.py",
     "StegVerse-Labs/StegVerse-Healer:data/reusable_task_schedule.json",
-    "StegVerse-Labs/StegVerse-Healer:app/reusable_task_scheduler.py"
+    "StegVerse-Labs/StegVerse-Healer:app/reusable_task_scheduler.py",
+    "StegVerse-Labs/StegVerse-Healer:tests/test_reusable_task_retryable_slot.py"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
     "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegVerse-Healer", "StegVerse-Labs/StegHealth", "StegVerse-Labs/StegOps-Orchestrator", "StegVerse-Labs/TVC", "StegVerse-Labs/continuity-vault-kit"],
-    "components": ["native-email-action-monitor", "native-email-kv-guard", "knowledgevault-failure-observation-writer", "reusable-task-trigger", "hourly-reusable-task-schedule", "standing-healer-resident-cycle", "resident-runtime-receipt-binding", "kv-provider-materialization-receipt", "github-failure-normalization", "steghealth-failure-remediation", "canonical-work-intr-handoff", "tvc-mail-provider-operation"]
+    "components": ["native-email-action-monitor", "native-email-kv-guard", "knowledgevault-failure-observation-writer", "reusable-task-trigger", "hourly-reusable-task-schedule", "bounded-failed-slot-retry", "standing-healer-resident-cycle", "resident-runtime-receipt-binding", "resident-source-refresh", "kv-provider-materialization-receipt", "github-failure-normalization", "steghealth-failure-remediation", "canonical-work-intr-handoff", "tvc-mail-provider-operation"]
   },
   "dependencies": [
     {
       "dependency_id": "DEP-NATIVE-EMAIL-HEALER-SCHEDULE",
       "kind": "SOVEREIGN_SCHEDULER",
-      "state": "RECURRING_SOURCE_RUNTIME_AND_KV_PATH_FORWARDING_MERGED_RUNTIME_RECEIPT_PENDING",
-      "ref": "StegVerse-Labs/StegVerse-Healer#57 + StegVerse-Labs/.github#1259 + StegVerse-Labs/StegVerse-Healer#58 + StegVerse-Labs/.github#1273 + StegVerse-Labs/StegVerse-Healer#59",
-      "disposition": "USE_EXISTING_SHWP_HEALER_SOVEREIGN_SCHEDULER_001_STANDING_RESIDENT_CYCLES_AND_HOURLY_REUSABLE_TASK_SLOT; STORE_SLOT_RECEIPTS_IN_RESIDENT_HEARTBEAT_RUNTIME"
+      "state": "RECURRING_SOURCE_RUNTIME_KV_AND_BOUNDED_RETRY_MERGED_RUNTIME_RECEIPT_PENDING",
+      "ref": "StegVerse-Labs/StegVerse-Healer#57 + StegVerse-Labs/.github#1259 + StegVerse-Labs/StegVerse-Healer#58 + StegVerse-Labs/.github#1273 + StegVerse-Labs/StegVerse-Healer#59 + StegVerse-Labs/StegVerse-Healer#60 + StegVerse-Labs/StegVerse-Healer#61",
+      "disposition": "USE_EXISTING_SHWP_HEALER_SOVEREIGN_SCHEDULER_001_STANDING_RESIDENT_CYCLES_AND_HOURLY_REUSABLE_TASK_SLOT; ONLY_SUCCESSFUL_TRIGGER_RECEIPT_SATISFIES_SLOT; FAILED_ATTEMPTS_RETRY_NO_SOONER_THAN_15_MINUTES_AND_MAX_4_PER_SLOT; STORE_SLOT_AND_ATTEMPT_RECEIPTS_IN_RESIDENT_HEARTBEAT_RUNTIME"
     },
     {
       "dependency_id": "DEP-NATIVE-EMAIL-KV-MATERIALIZATION",
       "kind": "SOVEREIGN_LOCAL_STORAGE",
-      "state": "SOURCE_BINDING_IN_VALIDATION_AUTHENTIC_KV_WRITE_RECEIPT_PENDING",
+      "state": "SOURCE_BINDING_MERGED_AUTHENTIC_KV_WRITE_RECEIPT_PENDING",
       "ref": "control/kv-provider-materialization/latest.json + scripts/materialize_personal_kv_provider_root.py + StegVerse-Labs/continuity-vault-kit:runtime/personal_provider_binding.py",
       "disposition": "RESOLVE_ONLY_AN_ALREADY_MATERIALIZED_KNOWLEDGEVAULT_ROOT_FROM_NONSECRET_ENV_OR_VALIDATED_RESIDENT_MATERIALIZATION_RECEIPT; EXACT_BYTE_PERSIST_FAILURE_INCIDENTS_BEFORE_LIVE_ARCHIVE; FAIL_CLOSED_WITHOUT_KV"
     },
@@ -94,7 +97,29 @@
     "StegVerse-Labs/.github/actions/runs/34358206492",
     "StegVerse-Labs/StegVerse-Healer#59",
     "StegVerse-Labs/StegVerse-Healer@93b637ddcc48777900e3804f994b22036d507571",
-    "StegVerse-Labs/StegVerse-Healer/actions/runs/34363810591"
+    "StegVerse-Labs/StegVerse-Healer/actions/runs/34363810591",
+    "StegVerse-Labs/.github#1342",
+    "StegVerse-Labs/.github@1d4093e6266154a0552d942f3fc1b5fdafb71b70",
+    "StegVerse-Labs/.github/actions/runs/34544669388",
+    "StegVerse-Labs/.github/actions/runs/34544669233",
+    "StegVerse-Labs/.github/actions/runs/34544669416",
+    "StegVerse-Labs/.github#1356",
+    "StegVerse-Labs/.github@2c8978eb89c0f99f2c221fc523710d2347a7cea1",
+    "StegVerse-Labs/.github/actions/runs/34551259728",
+    "StegVerse-Labs/.github/actions/runs/34551259752",
+    "StegVerse-Labs/.github/actions/runs/34551259798",
+    "StegVerse-Labs/.github/actions/runs/34551259733",
+    "StegVerse-Labs/StegVerse-Healer#60",
+    "StegVerse-Labs/StegVerse-Healer@cd74e971ee54344c2f772fe2fd35827174914e66",
+    "StegVerse-Labs/StegVerse-Healer/actions/runs/34551667188",
+    "StegVerse-Labs/.github#1357",
+    "StegVerse-Labs/.github@05c1250c91b6b09d54def657c37de5c77bd89c15",
+    "StegVerse-Labs/.github/actions/runs/34551629855",
+    "StegVerse-Labs/.github/actions/runs/34551629876",
+    "StegVerse-Labs/.github/actions/runs/34551629899",
+    "StegVerse-Labs/StegVerse-Healer#61",
+    "StegVerse-Labs/StegVerse-Healer@9c1661476ff1eadbe8c6ba300519a0c3f925d2e9",
+    "StegVerse-Labs/StegVerse-Healer/actions/runs/34551986643"
   ],
   "expected_evidence_predicates": [
     "REUSABLE_TASK_IDENTITY_RESOLVES",
@@ -102,7 +127,10 @@
     "STANDING_RESIDENT_SCHEDULER_RECURRENCE_VALID",
     "SOURCE_AND_RESIDENT_RUNTIME_SEPARATED",
     "RESIDENT_RUNTIME_RECEIPT_PLACEMENT_VALID",
-    "SAME_SLOT_IDEMPOTENCY_VALID",
+    "SUCCESSFUL_SLOT_IDEMPOTENCY_VALID",
+    "FAILED_SLOT_DOES_NOT_SATISFY_HOURLY_INVOCATION",
+    "FAILED_SLOT_RETRY_BACKOFF_BOUNDED",
+    "RESIDENT_REFRESH_CARRIES_KV_ENFORCEMENT_CHAIN",
     "KV_ROOT_RESOLVES_FROM_ALREADY_MATERIALIZED_LOCAL_STATE",
     "KV_FAILURE_INCIDENT_PERSISTENCE_PRECEDES_LIVE_ARCHIVE",
     "KV_FAILURE_INCIDENT_EXACT_BYTE_READBACK_VERIFIED",
@@ -114,7 +142,7 @@
     "NO_DUPLICATE_MONITOR_OR_SCHEDULER_CREATED"
   ],
   "runtime_requirements": {
-    "capabilities": ["bounded_process_execution", "reusable_task_invocation", "hourly_scheduling", "standing_resident_scheduler_cycle", "resident_runtime_discovery", "already_materialized_kv_root_resolution", "exact_byte_kv_persistence", "tvc_mail_provider_operation", "failure_incident_normalization", "canonical_work_ingress"],
+    "capabilities": ["bounded_process_execution", "reusable_task_invocation", "hourly_scheduling", "bounded_retry_backoff", "standing_resident_scheduler_cycle", "resident_runtime_discovery", "resident_source_refresh", "already_materialized_kv_root_resolution", "exact_byte_kv_persistence", "tvc_mail_provider_operation", "failure_incident_normalization", "canonical_work_ingress"],
     "environment": "SOVEREIGN_RESIDENT",
     "direction": "INTERNAL_TO_GMAIL_PROVIDER_TO_KNOWLEDGEVAULT_AND_BACK_TO_CANONICAL_WORK",
     "mutation_required": true,
@@ -122,8 +150,8 @@
     "current_observation_required": true
   },
   "runtime_resolution": {
-    "current_executor": "SHWP-HEALER-SOVEREIGN-SCHEDULER-001 has a standing recurring resident request. The existing Healer scheduler selects RT-NATIVE-EMAIL-ACTION-MONITOR-001 once per UTC-hour slot and invokes the native-email KV-enforcing entrypoint in the resident heartbeat runtime. That entrypoint resolves the already-materialized KnowledgeVault from a non-secret path binding or the validated resident control/kv-provider-materialization/latest.json receipt, then requires normalized failure incidents to be exact-byte persisted and read back before ARCHIVE_IDS can reach the TV/TVC-backed Gmail provider route.",
-    "authority_basis": "Merged scheduler source plus current-main KV source under validation prove construction and ordering semantics only. Authentic resident schedule, KnowledgeVault write/readback, TV/TVC provider, mailbox, failure reconciliation, and downstream corrective execution receipts remain runtime predicates.",
+    "current_executor": "SHWP-HEALER-SOVEREIGN-SCHEDULER-001 has a standing recurring resident request. The existing Healer scheduler selects RT-NATIVE-EMAIL-ACTION-MONITOR-001 by deterministic UTC-hour slot, invokes the KV-enforcing native-email path in the resident heartbeat runtime, treats only AUTOMATABLE_STEPS_EXHAUSTED as a satisfied slot, and bounds failed-slot retries to no sooner than every 15 minutes with at most four failed attempts per slot. The native-email entrypoint resolves the already-materialized KnowledgeVault from a non-secret path binding or validated resident materialization receipt and requires exact-byte persistence before ARCHIVE_IDS can reach the TV/TVC-backed Gmail route.",
+    "authority_basis": "Merged source and deterministic validation prove construction, propagation, ordering, idempotency, and retry semantics only. Authentic resident schedule, KnowledgeVault write/readback, TV/TVC provider, mailbox, failure reconciliation, and downstream corrective execution receipts remain runtime predicates.",
     "unattended_runtime": true
   },
   "worker_claim": {
@@ -135,7 +163,7 @@
   "human_action_ref": null,
   "completion": {
     "claimed": false,
-    "validated": false,
+    "validated": true,
     "reconciliation_ref": "docs/NATIVE_EMAIL_REUSABLE_HOURLY_MIRROR_HANDOFF.md",
     "activation_proof_complete": false
   },
