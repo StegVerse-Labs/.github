@@ -1,0 +1,68 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001",
+  "correlation_id": "SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001",
+  "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "parent_task_id": "SHARED-DOCS-MULTIPARTY-FREEZE-001",
+  "goal": "Integrate the merged Shared Docs multiparty freeze state machine with provider observations and admitted document mutations while preserving provider/TVC authority, Interlock/InTr transition authority, immutable prior revision provenance, and one-current-device operation.",
+  "coordination_state": "ACTIVE",
+  "source_refs": [
+    "StegVerse-org/StegVerse-SDK:docs/SHARED_DOCS_PROVIDER_FREEZE_INTEGRATION_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:commit/d505e937dd9f5e531c56427d7477e026789e4769"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-org", "StegVerse-Labs"],
+    "repositories": ["StegVerse-org/StegVerse-SDK", "StegVerse-Labs/TVC", "StegVerse-Labs/.github"],
+    "components": ["shared-docs", "provider-freeze-binding", "provider-version-binding", "freeze-metadata-projection", "revision-successor-integration"]
+  },
+  "dependencies": [],
+  "blockers": [],
+  "adjacent_task_refs": [
+    "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+    "SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004",
+    "MIR-EXPERIMENT-FROZEN-SCREENSHOT-EVIDENCE-001"
+  ],
+  "expected_evidence_predicates": [
+    "PROVIDER_DOCUMENT_ID_BOUND_TO_LOGICAL_DOCUMENT",
+    "PROVIDER_VERSION_BOUND_TO_IMMUTABLE_REVISION",
+    "PROVIDER_CONTENT_DIGEST_BOUND_TO_FREEZE_REVISION",
+    "FREEZE_METADATA_PROJECTION_DOES_NOT_MUTATE_REVIEWED_BYTES",
+    "ADMITTED_EDIT_CREATES_SUCCESSOR_REVISION",
+    "STALE_PROVIDER_REVISION_FREEZE_REJECTED",
+    "PRIOR_FROZEN_PROVIDER_REVISION_PROVENANCE_PRESERVED",
+    "PROVIDER_MUTATION_AUTHORITY_REMAINS_TV_TVC",
+    "GOVERNED_TRANSITION_AUTHORITY_REMAINS_INTERLOCK_INTR",
+    "ONE_CURRENT_DEVICE_OPERATION_PRESERVED"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["provider_metadata_observation", "canonical_artifact_validation"],
+    "environment": "SOVEREIGN_RESIDENT",
+    "direction": "EXTERNAL_PROVIDER_AND_INTERNAL",
+    "mutation_required": false,
+    "deployment_required": false,
+    "current_observation_required": false
+  },
+  "runtime_resolution": null,
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "human_action_ref": null,
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": null
+  },
+  "allowed_next_transitions": ["INGRESS_ADMITTED"],
+  "handoff_projection_refs": ["StegVerse-org/StegVerse-SDK:docs/SHARED_DOCS_PROVIDER_FREEZE_INTEGRATION_MIRROR_HANDOFF.md"],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_provider_execution": false,
+    "provider_authority": "TV/TVC",
+    "transition_authority": "Interlock/InTr",
+    "master_records_reality_authority": true,
+    "freeze_module_grants_provider_write_authority": false
+  }
+}
