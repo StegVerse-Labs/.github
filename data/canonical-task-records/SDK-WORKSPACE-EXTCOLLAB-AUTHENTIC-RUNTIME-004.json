@@ -5,7 +5,7 @@
   "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
   "parent_task_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
   "goal": "Complete the authentic sovereign-resident external-collaboration runtime proof chain from resident reseal/listener consumption through target custody, sovereign callback reachability, owner-present consent, provider probe, SDK predicate re-evaluation, MIR reporting, Master Records reconstruction, one-current-device proof, and downstream/public distribution evidence without creating a hosted fallback or duplicate authority path.",
-  "coordination_state": "INACTIVE",
+  "coordination_state": "ACTIVE",
   "checkout_state": "UNCLAIMED",
   "cosv_task_vector": "71000000100110",
   "repository": "StegVerse-Labs/.github",
@@ -16,9 +16,32 @@
     "StegVerse-Labs/.github:docs/SDK_WORKSPACE_EXTERNAL_COLLAB_PORTABLE_DISPATCH_MIRROR_HANDOFF.md"
   ],
   "targets": {
-    "organizations": ["StegVerse-Labs", "StegVerse-org"],
-    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/TVC", "StegVerse-org/LLM-adapter", "StegVerse-org/StegVerse-SDK", "StegVerse-Labs/Site", "StegVerse-Labs/admissibility-wiki"],
-    "components": ["resident-reseal-consumption", "resident-consent-listener-consumption", "external-collaboration-client-secret-custody", "sovereign-service-gateway", "owner-present-google-consent", "external-provider-file-probe", "sdk-active-probe", "mir-reporting", "master-records-reconstruction", "one-current-device-proof", "downstream-propagation", "public-distribution"]
+    "organizations": [
+      "StegVerse-Labs",
+      "StegVerse-org"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/TVC",
+      "StegVerse-org/LLM-adapter",
+      "StegVerse-org/StegVerse-SDK",
+      "StegVerse-Labs/Site",
+      "StegVerse-Labs/admissibility-wiki"
+    ],
+    "components": [
+      "resident-reseal-consumption",
+      "resident-consent-listener-consumption",
+      "external-collaboration-client-secret-custody",
+      "sovereign-service-gateway",
+      "owner-present-google-consent",
+      "external-provider-file-probe",
+      "sdk-active-probe",
+      "mir-reporting",
+      "master-records-reconstruction",
+      "one-current-device-proof",
+      "downstream-propagation",
+      "public-distribution"
+    ]
   },
   "existing_evidence_refs": [
     "StegVerse-Labs/.github:pull/1393",
@@ -70,5 +93,34 @@
     "hosted_execution_fallback": false,
     "second_user_operated_device_required": false
   },
-  "completion": {"claimed": false, "validated": false, "activation_proof_complete": false}
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "activation_proof_complete": false
+  },
+  "activation_condition_status": "SATISFIED",
+  "activation_evidence": {
+    "parent_task_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+    "parent_goal_prompt_count": 20,
+    "activation_basis": "PARENT_GOAL_PROMPT_COUNT_REACHES_20"
+  },
+  "runtime_requirements": {
+    "capabilities": [
+      "resident_request_dispatch"
+    ],
+    "environment": "SOVEREIGN_RESIDENT",
+    "direction": "INTERNAL",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true,
+    "already_local_source_required": true,
+    "second_user_operated_device_required": false
+  },
+  "runtime_resolution": null,
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  }
 }

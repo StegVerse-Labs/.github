@@ -5,11 +5,11 @@ Repository: `StegVerse-Labs/.github`
 Goal Task ID: `SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004`
 Parent Goal Task ID: `SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003`
 COSV: `71000000100110`
-Status: `PRE-STAGED / DO NOT ACTIVATE BEFORE PARENT PROMPT CEILING / AUTHENTIC SOVEREIGN-RESIDENT CONSUMPTION NEXT`
+Status: `ACTIVE / PARENT 20-PROMPT CEILING REACHED / RUNTIME DISCOVERY NEXT`
 
 ## Purpose
 
-This task is the pre-staged canonical runtime-proof continuation for the genuinely separable authentic sovereign-resident phase. It must not be activated or treated as replacing the parent before `SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003` reaches its 20-prompt ceiling. It does not reset or duplicate parent work.
+This task is the active canonical continuation for the genuinely separable authentic sovereign-resident phase. Parent `SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003` reached its 20-prompt ceiling and transferred all unresolved runtime, custody, callback, consent, provider, reconstruction, propagation, and publication predicates here without claiming completion.
 
 ## Reconciled starting state
 
@@ -23,6 +23,19 @@ This task is the pre-staged canonical runtime-proof continuation for the genuine
 - Current recheck still finds neither exact resident receipt in GitHub or retained Drive, and the authorized remote runtime connector still exposes no online device.
 
 Source/merge/CI proves neither resident execution nor runtime reachability.
+
+## Activation reconciliation
+
+```text
+parent: SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003
+parent final goal prompt count: 20/20
+parent coordination state: RETIRED
+successor activation condition: SATISFIED
+this task coordination state: ACTIVE
+runtime execution observed: FALSE
+```
+
+The task now declares canonical sovereign-resident runtime discovery requirements: `resident_request_dispatch`, `SOVEREIGN_RESIDENT`, current observation required, already-local source required, no deployment, no hosted fallback, and no second user-operated device. Runtime resolution remains unresolved until the canonical resolver produces a current observed match.
 
 ## Canonical authority separation
 
@@ -70,16 +83,17 @@ receipts/sovereign-host/sdk-workspace-external-collab-client-secret-reseal.lates
 receipts/sovereign-host/sdk-workspace-external-collab-consent-listener.latest.json
 ```
 
-## Exact next sequence after activation
+## Exact next sequence
 
-1. Recheck the two exact resident evidence paths and the authorized sovereign resident connection.
-2. If the existing resident is available, exact-dispatch `sdk_workspace_external_collab_client_secret_reseal` and `sdk_workspace_external_collab_consent_listener` from already-local canonical source.
-3. For reseal, accept only authentic `TARGET_ALREADY_PRESENT`, `COMPLETED`, or exact `BLOCKED`; validate target custody/readback without overwrite.
-4. For listener, accept only authentic `SERVICE_ALREADY_HEALTHY`, `COMPLETED` with `loopback_health_verified=true`, or exact `BLOCKED`; remediate only the exact reported resident prerequisite.
-5. After listener health, observe the already-merged Service Gateway #332 source through the existing CMC-029/native-TLS `stegverse.org` runtime and independently prove the three public routes with no callback-query leakage.
-6. Only after target custody and sovereign callback reachability are both proven, perform owner-present Google consent on the current iPhone.
-7. Execute one exact authoritative provider-file metadata probe and retain secret-free durable replay/use evidence.
-8. Feed the result through SDK normalization/active-probe re-evaluation, then complete lifecycle/MIR, Master Records reconstruction, one-device evidence, downstream propagation, and public-distribution proof.
+1. Resolve this active task through the canonical runtime-profile resolver using the declared requirements.
+2. Recheck the two exact resident evidence paths and the authorized sovereign resident connection.
+3. If the existing resident is available, exact-dispatch `sdk_workspace_external_collab_client_secret_reseal` and `sdk_workspace_external_collab_consent_listener` from already-local canonical source.
+4. For reseal, accept only authentic `TARGET_ALREADY_PRESENT`, `COMPLETED`, or exact `BLOCKED`; validate target custody/readback without overwrite.
+5. For listener, accept only authentic `SERVICE_ALREADY_HEALTHY`, `COMPLETED` with `loopback_health_verified=true`, or exact `BLOCKED`; remediate only the exact reported resident prerequisite.
+6. After listener health, observe the already-merged Service Gateway #332 source through the existing CMC-029/native-TLS `stegverse.org` runtime and independently prove the three public routes with no callback-query leakage.
+7. Only after target custody and sovereign callback reachability are both proven, perform owner-present Google consent on the current iPhone.
+8. Execute one exact authoritative provider-file metadata probe and retain secret-free durable replay/use evidence.
+9. Feed the result through SDK normalization/active-probe re-evaluation, then complete lifecycle/MIR, Master Records reconstruction, one-device evidence, downstream propagation, and public-distribution proof.
 
 ## README review
 
@@ -87,4 +101,4 @@ Root `README.md` remains accurate. This branch only maintains a future coordinat
 
 ## Human action
 
-None before activation. Do not initiate Google consent until authentic target client-secret custody and sovereign callback reachability are both proven.
+None now. Do not initiate Google consent until authentic target client-secret custody and sovereign callback reachability are both proven. Do not manually publish StegCore v0.3.0; publication waits for authentic TV/TVC GRANTED release authority and resident SKAP/double-Interlock evidence.
