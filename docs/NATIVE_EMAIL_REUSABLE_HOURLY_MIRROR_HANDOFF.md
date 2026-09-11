@@ -7,7 +7,7 @@ COSV task vector: `10100000100000`
 Reusable identity: `RT-NATIVE-EMAIL-ACTION-MONITOR-001`
 Parent handoff: `docs/NATIVE_EMAIL_ACTION_MONITOR_MIRROR_HANDOFF.md`
 Scheduler owner: `StegVerse-Labs/StegVerse-Healer` / `SHWP-HEALER-SOVEREIGN-SCHEDULER-001`
-State: `SOURCE_INTEGRATION_MERGED / HOURLY_REUSABLE_BINDING_MERGED / KV_BEFORE_ARCHIVE_MERGED / RESIDENT_REFRESH_PROPAGATION_MERGED / RETRY_SEMANTICS_AND_BOUNDED_BACKOFF_MERGED / AUTHENTIC_SCHEDULED_GMAIL_KV_RECEIPT_PENDING`
+State: `SOURCE_INTEGRATION_MERGED / HOURLY_REUSABLE_BINDING_MERGED / KV_BEFORE_ARCHIVE_MERGED / RESIDENT_REFRESH_PROPAGATION_MERGED / RETRY_SEMANTICS_AND_BOUNDED_BACKOFF_MERGED / ARCHIVE_GOVERNANCE_CONTEXT_IN_VALIDATION / AUTHENTIC_SCHEDULED_GMAIL_KV_GOVERNANCE_RECEIPT_PENDING`
 
 ## Canonical execution path
 
@@ -25,7 +25,11 @@ resident WorkerCoordinator cycle
 -> normalize failure incidents
 -> scripts/persist_native_email_incidents_to_kv.py
 -> append-only write + fsync + exact-byte readback
--> only then ARCHIVE_IDS for exact reviewed live IDs
+-> bind exact reviewed message IDs + verified KV receipts into archive governance context
+-> StegOps generic stegverse.ingress-manifest.v1 governance route
+-> canonical StegCore StegGate + commit coherence
+-> only on ALLOW: TVC ARCHIVE_IDS bounded consequence
+-> Gmail provider result + route/transaction/Master Records evidence
 -> StegHealth failure reconciliation
 -> Canonical Work / Interlock/InTr continuation when applicable
 -> completed scheduler-cycle receipt
@@ -68,18 +72,43 @@ Normalized GitHub failure observations are stored under `05_Projects/StegVerse/O
 
 The KV root is accepted only from an already-materialized non-secret local binding or validated resident `control/kv-provider-materialization/latest.json`; this task does not mount a provider or acquire credentials.
 
+The KV guard now additionally binds the exact reviewed Gmail ID set and the verified write receipts into `stegverse.native-email-archive-governance-context/v1`. That context is evidence input only. It does not itself authorize Gmail mutation.
+
+## Governed provider mutation boundary
+
+`ARCHIVE_IDS` changes external provider state. The StegOps broker therefore may not call TVC archive merely because the Gmail credential session exists. The in-validation integration reuses the installed generic SDK path:
+
+```text
+stegverse.ingress-manifest.v1
+-> governance processor / canonical route
+-> canonical StegCore transaction lifecycle
+-> StegGate evaluation
+-> commit coherence
+-> bounded consequence callback
+```
+
+The callback is the exact TVC `ARCHIVE_IDS` operation. A non-ALLOW governance disposition or commit-coherence refusal leaves the callback unreachable. Successful source execution must retain the transaction identity, manifest receipt, route receipt chain, result binding, and Master Records custody status. The provider credential remains TV/TVC-owned and never enters the manifest.
+
+`TRASH_IDS` is not part of the canonical native-email monitor contract and is being removed from the StegOps monitor broker rather than left as an ungoverned mutation surface.
+
+Scoped StegOps handoff: `StegVerse-Labs/StegOps-Orchestrator:docs/NATIVE_EMAIL_ARCHIVE_GOVERNED_CONSEQUENCE_MIRROR_HANDOFF.md`.
+
 ## Resident source propagation
 
 The existing local source refresh copies the KV wrapper, guard, and writer into resident runtime before local request dispatch on a fresh continuous-runtime cycle. Bootstrap supplies the distinct `STEGVERSE_HEARTBEAT_SOURCE_ROOT`; no second source transport or user-operated machine is required.
 
+The archive governance change modifies the already-propagated KV guard rather than adding a new resident script, so the existing refresh set remains sufficient for the `.github` side. StegOps and SDK are resolved from the already-materialized local repository map.
+
 ## Remaining authentic predicates
 
-All identified source/construction defects in this lane are merged and validated. Runtime completion still requires authentic evidence of:
+Source validation for the archive-governance binding is still pending. Runtime completion additionally requires authentic evidence of:
 
 - an eligible resident hourly reusable-task invocation;
 - already-materialized KnowledgeVault resolution;
 - `KV_STORED_VERIFIED` for every observed failure incident before live archive;
-- corresponding TV/TVC Gmail provider operations;
+- canonical SDK/StegCore ALLOW + commit-coherence evidence for the exact archive transition;
+- corresponding TV/TVC Gmail provider mutation evidence;
+- route/transaction/Master Records custody evidence;
 - bounded mailbox progression;
 - durable StegHealth/Canonical Work reconciliation for actionable incidents.
 
@@ -87,4 +116,4 @@ No repository artifact currently substitutes for those resident/provider receipt
 
 ## README determination
 
-`NO_README_CHANGE_REQUIRED` for `.github`: root documentation already covers local resident source refresh, reusable-task constructs, Canonical Work ingress, resident execution, and Personal KnowledgeVault custody. Healer README was updated with the retry/backoff behavior.
+`NO_README_CHANGE_REQUIRED` for `.github`: root documentation already covers local resident source refresh, reusable-task constructs, Canonical Work ingress, resident execution, and Personal KnowledgeVault custody. StegOps README is being updated because its provider-boundary behavior materially changes; Healer README already documents the retry/backoff behavior.
