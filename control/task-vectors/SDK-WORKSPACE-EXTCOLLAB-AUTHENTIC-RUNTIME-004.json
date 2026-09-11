@@ -1,0 +1,40 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "71000000100110",
+  "evidence_refs": [
+    "StegVerse-Labs/.github:docs/SDK_WORKSPACE_EXTCOLLAB_AUTHENTIC_RUNTIME_004_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github:pull/1393",
+    "StegVerse-Labs/.github:commit/312a31976bf5e794aa3912c2aa2c9ce0016c1102",
+    "StegVerse-org/StegVerse-SDK:pull/196",
+    "StegVerse-org/StegVerse-SDK:commit/e55c0e415759a3f2baf2d553f403a3729719f891",
+    "StegVerse-Labs/.github:pull/1402",
+    "StegVerse-Labs/.github:commit/c2d03c776895ab99fa99ed49ca7c9ca9256d45cf"
+  ],
+  "observed_at": "2026-09-11T04:41:06Z",
+  "exact_metrics": {
+    "lifecycle": "ACTIVE",
+    "archive_ready": false,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false,
+    "portable_exact_dispatch_merged": true,
+    "resident_reseal_consumption_receipt_observed": false,
+    "resident_consent_listener_consumption_receipt_observed": false,
+    "external_collaboration_client_secret_custody_proven": false,
+    "sovereign_callback_reachability_proven": false,
+    "owner_present_google_consent_proven": false,
+    "authoritative_provider_file_probe_proven": false,
+    "sdk_active_probe_complete_predicate_reevaluation_proven": false,
+    "mir_transition_reporting_proven": false,
+    "master_records_custody_reconstruction_proven": false,
+    "one_current_device_end_to_end_proven": false,
+    "downstream_propagation_complete": false,
+    "public_distributions_complete": false,
+    "github_runtime_authority": "NONE",
+    "hosted_execution_fallback": false
+  },
+  "authority_effect": "NONE",
+  "canonical_owner_ref": "StegVerse-Labs/.github:data/canonical-task-records/SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004.json"
+}
