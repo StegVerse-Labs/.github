@@ -7,6 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 CONSUMER = ROOT / "control/resident-execution-request.d/consume-stegbrowser-tvc-source-promotion.py"
 REQUEST = ROOT / "control/resident-execution-request.d/stegbrowser-tvc-source-promotion-001.json"
+REFRESH_DISPATCH = ROOT / "scripts/refresh_and_dispatch_resident_requests.py"
 TARGET_SHA = "aef6b6f5dc99d2a531718ca475d20858ae8e68a6"
 
 spec = importlib.util.spec_from_file_location("stegbrowser_tvc_source_promotion", CONSUMER)
@@ -85,3 +86,9 @@ def test_dispatcher_registers_materialized_consumer():
     assert '("stegbrowser_tvc_source_promotion", "control/resident-execution-request.d/consume-stegbrowser-tvc-source-promotion.py")' in source
     refresh = (ROOT / "scripts/refresh_sovereign_worker_runtime_source.py").read_text()
     assert 'Path("control/resident-execution-request.d")' in refresh
+
+
+def test_portable_refresh_dispatch_allows_exact_stegbrowser_promotion_selector():
+    source = REFRESH_DISPATCH.read_text()
+    assert '"stegbrowser_tvc_source_promotion"' in source
+    assert 'parser.add_argument("--only-consumer", choices=ALLOWED_TARGET_CONSUMERS' in source
