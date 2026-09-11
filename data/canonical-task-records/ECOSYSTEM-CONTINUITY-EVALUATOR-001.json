@@ -1,0 +1,48 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "ECOSYSTEM-CONTINUITY-EVALUATOR-001",
+  "correlation_id": "ECOSYSTEM-CONTINUITY-EVALUATOR-001",
+  "root_correlation_id": "ECOSYSTEM-CONTINUITY-EVALUATOR-001",
+  "parent_task_id": null,
+  "goal": "Build a trustworthy periodic ecosystem continuity evaluator that emits retained evidence-bound continuity findings, projects safe status to Site, and feeds actionable findings to StegVerse-Healer without granting the evaluator repair or execution authority.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "cosv_task_vector": "71000000100111",
+  "repository": "StegVerse-Labs/.github",
+  "canonical_issue": 1524,
+  "handoff_projection_refs": [
+    "StegVerse-Labs/.github:docs/ECOSYSTEM_CONTINUITY_EVALUATOR_MIRROR_HANDOFF.md"
+  ],
+  "targets": {
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/Site",
+      "StegVerse-Labs/StegVerse-Healer",
+      "master-records",
+      "StegVerse-org/StegVerse-SDK"
+    ],
+    "components": [
+      "ece-registry",
+      "ece-evaluator",
+      "ece-findings",
+      "site-continuity-projection",
+      "healer-finding-intake",
+      "master-records-evaluation-custody"
+    ]
+  },
+  "authority_model": {
+    "diagnostic_authority": "OBSERVATION_CLASSIFICATION_ONLY",
+    "repair_dispatch_owner": "StegVerse-Labs/StegVerse-Healer",
+    "governed_transition_authority": "Interlock/InTr",
+    "credential_authority": "TV/TVC",
+    "github_runtime_authority": "NONE",
+    "healer_dispatch_proves_recovery": false,
+    "later_ece_observation_required_for_recovery": true,
+    "second_scheduler_allowed": false
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "activation_proof_complete": false
+  }
+}
