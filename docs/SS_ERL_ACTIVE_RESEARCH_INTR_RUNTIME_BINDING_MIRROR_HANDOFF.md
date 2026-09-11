@@ -16,21 +16,11 @@ Status: `ACTIVE / CLAIMED_INTEGRATION`
 
 Bind the already-merged ERL active-research Universal InTr intent to the existing sovereign Universal InTr resident execution owner without creating a second runtime owner, dispatcher, scheduler, heartbeat, credential path, provider operation, or synthetic transport receipt.
 
-## Reconciled canonical owner
+## Canonical owner and path
 
-The existing resident DEVICE_SYSTEM -> KV materialization owner remains:
+Existing terminal owner remains `SHWP-DEVICE-KV-INTR-OBSERVATION-001` through the shared `workers/universal_intr_profiled_ingress.py`, `scripts/consume_device_kv_intr_materialization_request.py`, and downstream owner `StegVerse-Labs/continuity-vault-kit#79`. TV/TVC remains credential authority; GitHub runtime authority is `NONE`.
 
-- canonical runtime task: `SHWP-DEVICE-KV-INTR-OBSERVATION-001`
-- profiled ingress: `workers/universal_intr_profiled_ingress.py`
-- materialization consumer: `scripts/consume_device_kv_intr_materialization_request.py`
-- downstream owner: `StegVerse-Labs/continuity-vault-kit#79`
-- resident refresh/execute bridge: `scripts/refresh_and_execute_resident_task.py`
-- credential authority: `TV/TVC`
-- GitHub runtime authority: `NONE`
-
-`StegVerse-Labs/Executive_Rhetoric_Ledger:active-research-kv-consumer` remains a repository-side ERL consumer identity, not an independent resident owner.
-
-## Canonical path
+Canonical path:
 
 ```text
 EXTERNAL_SYSTEM
@@ -43,42 +33,38 @@ One operation identity, one packet identity, one exact acquisition-envelope payl
 
 ## Merged implementation evidence
 
-PR `StegVerse-Labs/.github#1424` merged at `b89a1ec010fc8d94ef770d900cb8244c11afe363` after exact-head validation on `e9039116395577702fbe0e4b32b034638eb9d9d7` with organization-control, Heartbeat validation, and deterministic repository suite all successful.
+- PR #1424 merged at `b89a1ec010fc8d94ef770d900cb8244c11afe363` after organization-control, Heartbeat validation, and deterministic-suite PASS. It added the ERL shared-ingress profile, route installer, DEVICE_KV prior-lineage preservation, and tests.
+- PR #1444 merged at `0bcfba4a7a99b1fc2b641580e805543a320a9f80` after the same three exact-head validation classes PASS. It added bounded resident source preparation.
+- PR #1468 merged at `233992aead73e054f9ded66d62af29b0980107a8` from exact head `ceab2ab090ca8d8edd813400180b12d25df1c873` after organization-control, Heartbeat validation, and deterministic-suite PASS. It added the canonical resident request, binding-materialization consumer, resident request wiring installer, resident-source copy wiring, and deterministic tests. Binding/envelope sidecars remain write-once while status evidence is an atomic latest projection so `INPUT_NOT_MATERIALIZED` can legitimately advance later.
 
-Merged source includes:
+No merged source above proves resident execution or any InTr hop.
 
-- `workers/erl_active_research_intr_profile.py`
-- `scripts/install_erl_active_research_universal_intr_route.py`
-- `scripts/install_erl_device_kv_prior_lineage.py`
-- deterministic tests for profile/path/identity/lineage/refusal semantics.
+## Local shared-InTr submission continuation
 
-PR `StegVerse-Labs/.github#1444` then merged at `0bcfba4a7a99b1fc2b641580e805543a320a9f80` after exact-head organization-control, Heartbeat validation, and deterministic-suite success. It added `scripts/prepare_erl_active_research_intr_runtime_source.py`, which applies/checks the existing ERL route and DEVICE_KV lineage transforms without claiming runtime execution.
+Current branch: `ss-erl-local-intr-submission-001`.
 
-## Resident request wiring continuation
+Implemented on branch:
 
-Current branch: `ss-erl-resident-request-wiring-001`.
-
-Added:
-
-- `control/resident-execution-request.d/erl-active-research-intr-runtime-binding-001.json`
-  - exact Task/COSV identity;
-  - exact `EXTERNAL_SYSTEM -> STEGOS_ECOSYSTEM -> DEVICE_SYSTEM -> KV` path;
-  - existing terminal owner `SHWP-DEVICE-KV-INTR-OBSERVATION-001` / `StegVerse-Labs/continuity-vault-kit#79`;
-  - provider replay forbidden;
-  - TV/TVC credential authority, GitHub runtime authority NONE, no second machine.
-- `control/resident-execution-request.d/consume-erl-active-research-intr-runtime-binding.py`
-  - validates only the bounded request;
-  - verifies resident source preparation with `--check`;
-  - fails to `INPUT_NOT_MATERIALIZED` when local ERL source/dispatch inputs are absent;
-  - when those local inputs exist, runs the merged ERL deterministic binding builder and persists only the exact binding/envelope sidecars;
-  - explicitly stops at `BINDING_MATERIALIZED_AWAITING_AUTHENTIC_INTR_SUBMISSION` and does not submit transport, contact the provider, or synthesize receipts.
+- `scripts/submit_erl_active_research_intr_binding.py`
+  - accepts only a runtime-local ERL binding sidecar;
+  - requires a loopback-only `http://127.0.0.1|localhost|::1/.../intr/materialization` endpoint;
+  - requires an already-issued `TVC_RELAY_EGRESS` authorization identifier and never creates one;
+  - POSTs the exact canonical binding bytes with the shared Universal InTr transport headers;
+  - rejects hosted execution and any non-loopback endpoint;
+  - validates only the authentic ERL profile response from the shared listener;
+  - accepts exactly two verified upstream `FORWARDED` receipts and requires their lineage to bind the projected terminal `DEVICE_SYSTEM -> KV` request;
+  - records `terminal_runtime_receipt_present=false` and never fabricates hop 3 or replays the provider operation.
+- `control/resident-execution-request.d/consume-erl-active-research-intr-submission.py`
+  - delegates to the bounded submitter through the existing resident dispatcher;
+  - remains a non-authorizing dispatcher consumer and waits when source/input is unavailable.
 - `scripts/install_erl_resident_request_wiring.py`
-  - idempotently adds the ERL selector to the existing resident dispatcher;
-  - permits only the local nonsecret `STEGVERSE_ERL_ROOT` and `STEGVERSE_ERL_ACTIVE_RESEARCH_DISPATCH_PATH` bindings;
-  - extends the existing native materialization allow-list with the already-merged ERL preparation/install scripts;
-  - creates no second dispatcher/listener/runtime.
-- `scripts/prepare_erl_active_research_intr_runtime_source.py` now includes the request-wiring installer in its apply/check sequence.
-- deterministic tests cover request authority/path invariants, wiring idempotency, source-preparation composition, no-request behavior, and fail-closed preparation state.
+  - registers the local submission consumer in the existing dispatcher;
+  - adds the submitter to the existing native resident source copy/required allow-list;
+  - creates no second listener, dispatcher, runtime, or credential path.
+- `scripts/install_erl_active_research_universal_intr_route.py`
+  - repairs a discovered digest-format defect: `validate_transport_headers()` returns bare 64-hex while the ERL profile requires a `sha256:` URI;
+  - upgrades both fresh and already-installed legacy ERL route source to pass `sha256:<digest>` fail-closed.
+- deterministic tests cover loopback-only submission, exact TVC relay headers, two-hop profile-response lineage, route digest normalization, and existing-dispatcher/native-materialization reuse.
 
 ## Existing proof that must not be repeated
 
@@ -90,15 +76,15 @@ Added:
 
 ## Remaining work
 
-1. Validate and merge the resident request-wiring branch only if applicable exact-head checks pass.
-2. On the authentic sovereign resident source, apply `scripts/prepare_erl_active_research_intr_runtime_source.py`, then run it again with `--check`; source preparation remains non-authorizing.
-3. Let the existing resident dispatcher consume `erl_active_research_intr_runtime_binding` when local ERL source/dispatch inputs are present; preserve the binding/envelope sidecars.
-4. Add the bounded authentic shared-InTr submission from that materialized binding without provider replay or a second runtime owner.
-5. Execute one authentic admitted ERL acquisition through the existing shared resident ingress.
-6. Preserve authentic hop-1, hop-2, and DEVICE_SYSTEM -> KV hop-3 receipts with exact operation/packet/payload/prior-receipt continuity.
-7. Verify the complete chain with the merged ERL consumer and bind the terminal transport proof to the existing provider readback evidence.
+1. Validate and merge the local-submission branch only if applicable exact-head checks pass.
+2. On the authentic sovereign resident source, apply and verify `scripts/prepare_erl_active_research_intr_runtime_source.py`.
+3. Materialize the existing local ERL source/dispatch inputs and deterministic binding/envelope through the existing resident dispatcher.
+4. Materialize the bounded submission input only when an authentic loopback shared ingress and already-issued TVC relay authorization ID exist.
+5. Observe one authentic shared-ingress ERL response, preserving authentic hop 1 and hop 2 receipts and the projected terminal request.
+6. Let the existing DEVICE_KV owner execute the terminal bytes and preserve authentic hop 3 with exact prior-receipt continuity.
+7. Verify the complete three-receipt chain with the merged ERL consumer and bind terminal transport proof to the pre-existing provider readback evidence without provider replay.
 8. Reconcile the parent ERL handoff with exact receipt hashes and final proof class.
 
 ## Current state
 
-`PROFILE_AND_SOURCE_PREPARATION_MERGED_AND_VALIDATED / RESIDENT_REQUEST_AND_BINDING_MATERIALIZATION_WIRING_ON_BRANCH / AUTHENTIC_RESIDENT_SOURCE_MATERIALIZATION_NOT_YET_OBSERVED / AUTHENTIC_INTR_SUBMISSION_AND_THREE_HOP_TRAVERSAL_NOT_YET_OBSERVED`
+`PROFILE_SOURCE_PREPARATION_AND_RESIDENT_BINDING_WIRING_MERGED_AND_VALIDATED / LOOPBACK_TVC_AUTHORIZED_SHARED_INTR_SUBMISSION_IMPLEMENTED_ON_BRANCH / AUTHENTIC_RESIDENT_SOURCE_MATERIALIZATION_NOT_YET_OBSERVED / AUTHENTIC_THREE_HOP_TRAVERSAL_NOT_YET_OBSERVED`
