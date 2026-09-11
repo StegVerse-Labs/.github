@@ -7,12 +7,7 @@ COSV task vector: `10100000100000`
 Reusable identity: `RT-NATIVE-EMAIL-ACTION-MONITOR-001`
 Parent handoff: `docs/NATIVE_EMAIL_ACTION_MONITOR_MIRROR_HANDOFF.md`
 Scheduler owner: `StegVerse-Labs/StegVerse-Healer` / `SHWP-HEALER-SOVEREIGN-SCHEDULER-001`
-Current implementation branch: `fix/native-email-kv-persistence-current-main-20260910`
-State: `HOURLY_REUSABLE_RUNTIME_SOURCE_MERGED / KV_ROOT_FORWARDING_MERGED / CURRENT_MAIN_KV_BEFORE_ARCHIVE_SOURCE_IN_VALIDATION / AUTHENTIC_SCHEDULED_GMAIL_KV_RECEIPT_PENDING`
-
-## Objective
-
-Use the existing sovereign Healer scheduler and existing TV/TVC Gmail provider path to process the bounded GitHub/[Task Update] operational mailbox slice hourly. Normalized failure observations must be durably stored in the already-materialized Personal KnowledgeVault with exact-byte readback before the corresponding live Gmail IDs may be archived. No second monitor, scheduler, heartbeat, polling loop, WorkerCoordinator, provider mount, credential route, or second user-operated machine is introduced.
+State: `SOURCE_INTEGRATION_MERGED / HOURLY_REUSABLE_BINDING_MERGED / KV_BEFORE_ARCHIVE_MERGED / STALE_PR_1280_CLOSED_SUPERSEDED / AUTHENTIC_SCHEDULED_GMAIL_KV_RECEIPT_PENDING`
 
 ## Canonical execution path
 
@@ -37,86 +32,54 @@ resident WorkerCoordinator cycle
 -> WorkerCoordinator HANDOFF_READY rearm for a fresh later cycle
 ```
 
-## Hourly and recurring source already merged
+## Merged source chain
 
-- `.github` PR #1252 / `700f959dca0160f0d71d92fc391c9f262f27feea` made `RT-NATIVE-EMAIL-ACTION-MONITOR-001` executable through the canonical reusable-task trigger.
-- `StegVerse-Healer` PR #57 / `ef5d90a8c215056e055385a04534e16c49d9a3d5` installed the hourly schedule with deterministic UTC-hour slot IDs and at-most-once-per-slot receipts.
-- `.github` PR #1255 / `2eb089842ea8960845dcd021f5241126432f3b74` registered the canonical task.
-- `.github` PR #1259 / `569b6dde49cc9f568c0a24daf9fc723eee807b6f` changed the Healer resident request from one-shot terminal consumption to a standing recurring request.
-- `StegVerse-Healer` PR #58 / `a0f6daeaf33198f26e358c7b124fc9f80aad8b6b` separated local source from resident runtime and moved reusable-task slot receipts into the resident runtime.
-- `.github` PR #1273 / `438aeb9a4b187419ea3a91984ed0436c89b26819` preserved completed-cycle evidence while returning `HANDOFF_READY` to WorkerCoordinator so each later scheduler cycle receives a fresh claim/fence; it also repaired automatic resident-dispatch source/runtime separation.
-- `StegVerse-Healer` PR #59 / `93b637ddcc48777900e3804f994b22036d507571` forwards already-present non-secret KV path bindings through the existing reusable-task scheduler. Exact-head Test Readiness run `34363810591` passed.
+- `.github` #1252 / `700f959dca0160f0d71d92fc391c9f262f27feea`: reusable trigger execution.
+- `StegVerse-Healer` #57 / `ef5d90a8c215056e055385a04534e16c49d9a3d5`: hourly deterministic UTC-slot scheduling.
+- `.github` #1255 / `2eb089842ea8960845dcd021f5241126432f3b74`: canonical task registration.
+- `.github` #1259 / `569b6dde49cc9f568c0a24daf9fc723eee807b6f`: standing recurring resident scheduler request.
+- `StegVerse-Healer` #58 / `a0f6daeaf33198f26e358c7b124fc9f80aad8b6b`: source/runtime separation and resident receipt placement.
+- `.github` #1273 / `438aeb9a4b187419ea3a91984ed0436c89b26819`: fresh WorkerCoordinator claim/fence recurrence and automatic dispatcher source/runtime separation.
+- `StegVerse-Healer` #59 / `93b637ddcc48777900e3804f994b22036d507571`: non-secret KV-root forwarding through the existing scheduler path; Test Readiness `34363810591` SUCCESS.
+- `.github` #1342 / `1d4093e6266154a0552d942f3fc1b5fdafb71b70`: current-main KV-before-archive implementation. Exact head `78d628a342be58a863db3978de5969ff892d8894` passed Heartbeat `34544669388`, organization-control `34544669233`, and Deterministic Repository Suite `34544669416`.
 
-## Current-main KV-before-archive repair
+## KV-before-archive contract
 
-The original KV implementation branch behind PR #1280 diverged from current `.github/main` by 273 commits. It is not safe to merge directly. The functional deltas are being ported onto current main `77d0ae25b8abd4fac0ff4df04398c6cd6a59f7ce` on `fix/native-email-kv-persistence-current-main-20260910`.
+The merged current-main implementation adds:
 
-The current-main port adds:
+- `scripts/persist_native_email_incidents_to_kv.py`: deterministic append-only failure-observation records under `05_Projects/StegVerse/Operations/GitHubFailureEmail/`, with write-once behavior, fsync, and exact-byte readback;
+- `scripts/run_native_email_action_monitor_kv_guard.py`: prevents live `ARCHIVE_IDS` from reaching the provider until normalized live failure incidents have been persisted and verified;
+- `scripts/consume_native_email_action_monitor_request_kv.py`: thin wrapper around the evolved current-main consumer, preserving existing resident logic while enforcing KV availability and guarded monitor execution;
+- focused regression tests for idempotent exact-byte storage, KV-before-archive ordering, fail-closed missing KV, materialization-receipt discovery, stale monitor-receipt rejection, and both canonical entry routes.
 
-- `scripts/persist_native_email_incidents_to_kv.py` — deterministic append-only incident records under `05_Projects/StegVerse/Operations/GitHubFailureEmail/`, `O_EXCL` write-once semantics, fsync, and exact-byte readback;
-- `scripts/run_native_email_action_monitor_kv_guard.py` — intercepts only the canonical monitor broker flow and refuses to forward `ARCHIVE_IDS` until normalized live failure incidents are persisted and read back;
-- `scripts/consume_native_email_action_monitor_request_kv.py` — thin canonical wrapper around the existing consumer, preserving current-main consumer logic while requiring KnowledgeVault availability and substituting the KV guard only for the monitor subprocess;
-- `tests/test_native_email_kv_persistence.py` and `tests/test_native_email_kv_entrypoint.py` — regression coverage for append-only/idempotent exact-byte persistence, persist-before-archive ordering, missing-KV fail-closed behavior, runtime materialization-receipt discovery, standing-request routing, and reusable-trigger routing.
-
-The standing resident request now names `scripts/consume_native_email_action_monitor_request_kv.py`. The reusable-task trigger retains the registered historical primary runner reference but records and invokes the KV wrapper as the effective runner for this reusable identity, preventing either canonical entry route from bypassing persistence.
+Both the standing resident request and reusable hourly trigger route through the KV wrapper. Neither canonical entry route may bypass persistence.
 
 ## KnowledgeVault resolution
 
-The KV wrapper never mounts a provider and never acquires credentials. It accepts only an already-materialized local KnowledgeVault root. Resolution order is:
+The wrapper mounts no provider and acquires no credential. It accepts only an already-materialized local KnowledgeVault root, resolved from either:
 
-1. existing non-secret `STEGVERSE_KV_ROOT` or `STEGVERSE_KV_PROVIDER_MATERIALIZED_ROOT` when present and recognizable as a KnowledgeVault;
-2. otherwise, resident `control/kv-provider-materialization/latest.json` with schema `stegverse.kv.provider-materialization-receipt/v2`, `exact_readback_verified=true`, TV/TVC credential authority, no persisted/consumer-visible provider credential, and a currently materialized `materialized_root`.
+1. existing non-secret `STEGVERSE_KV_ROOT` / `STEGVERSE_KV_PROVIDER_MATERIALIZED_ROOT`; or
+2. resident `control/kv-provider-materialization/latest.json` carrying schema `stegverse.kv.provider-materialization-receipt/v2`, `exact_readback_verified=true`, TV/TVC credential authority, no persisted/consumer-visible provider credential, and a currently materialized `materialized_root`.
 
-The second route is important because WorkerCoordinator process adapters intentionally sanitize child environments. The local materialization receipt is already resident state and contains the non-secret `materialized_root`; using it avoids broadening the shared process-adapter environment allowlist.
+The resident receipt route avoids widening the shared WorkerCoordinator process-adapter environment allowlist. Missing or invalid KV state remains retryable and forbids live archive.
 
-Missing, stale, invalid, or non-materialized KV state yields a retryable `KV_ROOT_NOT_MATERIALIZED` attempt with `archive_permitted=false`. The monitor/provider archive call is not attempted.
+## Stale implementation retired from coordination
 
-## Persistence contract
+PR #1280 used the earlier `fix/native-email-kv-persistence-20260909` branch and was found 273 commits behind current main. Its functional intent was ported onto current main in #1342 without overwriting evolved runtime/control-plane logic. PR #1280 is now CLOSED UNMERGED with an explicit supersession note pointing to #1342. It must not be progressed or used as the canonical implementation source.
 
-Each normalized incident record contains the canonical task/COSV identity, normalized repository/workflow/error signature, exact Gmail observation refs, provider/source class, and explicit non-authorizing evidence semantics. Its filename is deterministic from the incident ID plus observation-ref digest. Replaying the identical incident set is a no-op only when the exact stored bytes match; any collision with different bytes fails closed.
+## Remaining authentic predicates
 
-For live mailbox batches the enforced ordering is:
+Source integration and deterministic validation are complete. Runtime completion still requires authentic resident evidence of:
 
-```text
-SEARCH_MESSAGES
--> SEARCH_IDS exact bounded IDs
--> normalize / cluster incidents
--> append-only KV write
--> fsync
--> exact-byte readback
--> KV_STORED_VERIFIED receipt
--> ARCHIVE_IDS exact reviewed IDs
--> actionable failure search / inbox counts
--> StegHealth reconciliation
-```
-
-Archived historical replay is not restored or re-archived. Its normalized incidents are persisted into the same KV evidence class before subsequent StegHealth acknowledgement/progression.
-
-## Validation evidence already retained
-
-- #1252: Heartbeat `34332023132`, org-control `34332023277`, deterministic suite `34332023168` SUCCESS.
-- Healer #57: Test Readiness `34332190725` SUCCESS.
-- #1255: Heartbeat `34332579197`, org-control `34332579252`, deterministic suite `34332579274` SUCCESS.
-- #1259 exact head: Heartbeat `34352789541`, org-control `34352789580`, deterministic suite `34352789603` SUCCESS.
-- Healer #58 exact head: Test Readiness `34356342498` SUCCESS.
-- #1273: org-control `34358206486`, Heartbeat `34358206495`, deterministic suite `34358206492` SUCCESS.
-- Healer #59 exact head: Test Readiness `34363810591` SUCCESS; merge `93b637ddcc48777900e3804f994b22036d507571`.
-
-The stale PR #1280 validation failures are not evidence against the current-main port because its head is 273 commits behind current main and includes stale shared-control files. The new branch must receive its own exact-head validation before merge.
-
-## Remaining completion predicates
-
-Source completion for the current-main KV port requires all retained `.github` validation suites to pass and the branch to merge without reverting unrelated current-main runtime evolution. Runtime completion additionally requires authentic evidence of:
-
-- an eligible resident hourly reusable-task invocation;
-- KnowledgeVault resolution from already-materialized local state;
-- `KV_STORED_VERIFIED` for each observed failure incident before live archive;
-- the corresponding TV/TVC Gmail provider operations;
+- an eligible hourly reusable-task invocation;
+- KnowledgeVault resolution from already-materialized resident/local state;
+- `KV_STORED_VERIFIED` for every observed failure incident before live archive;
+- corresponding TV/TVC Gmail provider operations;
 - bounded mailbox progression;
 - durable StegHealth/Canonical Work reconciliation for actionable incidents.
 
-Source validation or merge does not substitute for those authentic runtime receipts.
+Repository search after #1342 merge did not identify an authentic retained `receipts/reusable-task/rt-native-email-action-monitor-001-<UTC-hour>Z.latest.json`; documentation references are not runtime evidence. The task therefore remains nonterminal pending resident execution evidence.
 
 ## README determination
 
-The root README already defines reusable-task constructs, Canonical Work ingress, resident execution semantics, Personal KnowledgeVault custody distinctions, and the functional-change invariant. This scoped change does not create a new repository responsibility or public interface; it hardens one existing resident task's ordering and evidence requirements. The task-specific behavioral contract is maintained here and in the canonical task record. If repository validation identifies a required root README delta, it must be added before merge.
+`NO_README_CHANGE_REQUIRED` for `.github`: the root README already defines reusable-task constructs, Canonical Work ingress, resident execution semantics, Personal KnowledgeVault custody distinctions, and the functional-change invariant. `StegVerse-Healer/README.md` already carries the scheduler/KV-path behavior from #59.
