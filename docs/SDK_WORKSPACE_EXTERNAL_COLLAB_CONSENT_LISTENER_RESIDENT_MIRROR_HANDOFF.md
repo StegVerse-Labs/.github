@@ -4,7 +4,7 @@ Updated: 2026-09-10
 Repository: `StegVerse-Labs/.github`
 Goal Task ID: `SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003`
 Parent handoff: `StegVerse-org/StegVerse-SDK:docs/SHARED_DOCS_EPHEMERAL_MANIFEST_WORKSPACE_MIRROR_HANDOFF.md`
-Status: `ACTIVE / RESIDENT CONSENT-LISTENER INSTALL REQUEST IMPLEMENTATION`
+Status: `ACTIVE / RESIDENT CONSENT-LISTENER REQUEST SOURCE VALIDATED / FINAL SHARED-GATE VALIDATION + MERGE NEXT`
 
 ## Purpose
 
@@ -31,6 +31,7 @@ request: control/resident-execution-request.d/sdk-workspace-external-collab-cons
 consumer: control/resident-execution-request.d/consume-sdk-workspace-external-collab-consent-listener.py
 selector: sdk_workspace_external_collab_consent_listener
 request_id: RESIDENT-EXEC-SDK-WORKSPACE-EXTCOLLAB-CONSENT-LISTENER-001
+receipt: receipts/sovereign-host/sdk-workspace-external-collab-consent-listener.latest.json
 ```
 
 The request carries no credential material. It grants no provider operation, Google consent, public route, Gateway, GitHub-token, HeartBeat, signing, broadcast, or final readiness authority.
@@ -45,7 +46,7 @@ STEGVERSE_OWNER_BINDING_DIGEST
 STEGVERSE_STEGFIN_SOURCE_ROOT
 ```
 
-The dispatcher may carry only those named non-secret values. The consumer fails closed when any are absent or malformed. It must not infer them from credential plaintext, GitHub secrets, browser input, or Personal-KV consent authority.
+The dispatcher carries only those named non-secret values. The consumer fails closed when any are absent or malformed. It does not infer them from credential plaintext, GitHub secrets, browser input, or Personal-KV consent authority.
 
 ## Consumer behavior
 
@@ -61,6 +62,37 @@ The consumer:
 8. accepts completion only when health reports `state=HEALTHY`, `client_secret_purpose=google_drive.external_collaboration.client_secret`, `credential_material_present=false`, `provider_contact_performed=false`, and `runtime_activation_claimed=false`;
 9. retains only a secret-free resident consumption receipt;
 10. never claims public `stegverse.org` routing, client-secret custody, owner consent, provider probe, or WorkSpace readiness.
+
+## Dispatcher integration
+
+`scripts/dispatch_resident_execution_requests.py` now registers the exact selector and passes only the three additional non-secret values through the existing dispatcher allowlist. `SERVICE_ALREADY_HEALTHY` is accepted as a terminal non-authorizing wait/completion state. No secret-bearing environment name was added.
+
+## Validation history
+
+PR: `StegVerse-Labs/.github#1382`
+
+Initial source head `5107d92945d0f6f069b12f24312b3bde8988cd96`:
+
+- `SDK WorkSpace External Collaboration Consent Listener Resident Validation` push run `34557829121` — PASS.
+- PR run `34557838324` — PASS.
+- `SDK WorkSpace External Collaboration Reseal Resident Validation` `34557838315` — PASS.
+- `Deterministic Repository Suite - Diagnostic Evidence Only` `34557838366` — PASS.
+- `Cross-Framework Current-Basis Resident Request Validation (Non-Authorizing)` `34557838336` — PASS.
+- `validate-deepseek-resident` `34557838310` — PASS.
+- `Validate organization control plane - No GitHub Token Authority` `34557838308` — FAIL at workflow-surface hygiene only because the new validation workflow had not yet been registered. No runtime/consumer semantic step ran.
+
+Repair head `7a654b6cad2827c6b24b9847b04bf0bb346395b2` explicitly registered the new workflow in `control/workflow-surface-registry.json` as a validation-only `KEEP_STANDALONE_EXCEPTION` owned by this exact goal/PR. This preserves the repository invariant that every authored workflow is classified before merge and grants no runtime, Gateway, or credential authority.
+
+On repair head:
+
+- exact consent-listener validation `34557941302` — PASS;
+- DeepSeek resident validation `34557941275` — PASS;
+- Cross-Framework current-basis validation `34557941332` — PASS;
+- deterministic suite `34557941278` — PASS;
+- external-collaboration reseal resident regression `34557941261` — PASS;
+- organization-control and Heartbeat shared gates remained pending at the time this handoff revision was written and must pass on the final head before merge.
+
+Hosted workflow PASS is source validation only. It is not authentic systemd installation, loopback health, resident request consumption, public route binding, Google consent, or provider execution evidence.
 
 ## Collision boundary
 
@@ -97,16 +129,17 @@ Neither state implies public callback reachability or Google consent.
 
 ## README review
 
-Root README semantics already cover machine-owned continuation, TV/TVC credential authority, InTr transition separation, and no hosted runtime authority. No public capability change is claimed by this internal request.
+Root README semantics already cover machine-owned continuation, TV/TVC credential authority, InTr transition separation, and no hosted runtime authority. No public capability or user-facing route is introduced by this internal request, so no README text change is required. The README should be revisited only when an authentic externally observable workflow is activated.
 
 ## Next sequence
 
-1. Validate and merge this exact request/consumer/dispatcher binding.
-2. Observe the existing resident consume it; do not create a hosted substitute.
-3. If `BLOCKED`, remediate only the exact missing non-secret/source/root prerequisite through its existing owner.
-4. Retain authentic loopback health evidence.
-5. Let machine-owned Service Gateway #72 bind the exact three public consent routes and CMC-029 TLS; independently verify public reachability.
-6. Only after client-secret custody and public callback reachability are both proven, perform owner-present Google consent on the current iPhone.
+1. Require the organization-control and Heartbeat shared gates to pass on the final PR head.
+2. Merge PR #1382 only after exact-head gates are green.
+3. Observe the existing resident consume this request; do not create a hosted substitute.
+4. If `BLOCKED`, remediate only the exact missing non-secret/source/root prerequisite through its existing owner.
+5. Retain authentic loopback health evidence.
+6. Let machine-owned Service Gateway #72 bind the exact three public consent routes and CMC-029 TLS; independently verify public reachability.
+7. Only after client-secret custody and public callback reachability are both proven, perform owner-present Google consent on the current iPhone.
 
 ## Human action
 
