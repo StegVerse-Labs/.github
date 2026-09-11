@@ -82,7 +82,11 @@ class NativeEmailKVPersistenceTests(unittest.TestCase):
             inner = FakeInner(missing)
             wrapped = guard.KVGuardedBroker(inner, missing)
             wrapped.live_incidents = [dict(INCIDENT)]
-            with self.assertRaises(kv.NativeEmailKVPersistenceError):
+            # The guard imports the writer as a top-level script module while this
+            # test imports it through the namespace package, so the concrete custom
+            # exception class has two Python module identities. RuntimeError is the
+            # stable public failure contract across both import paths.
+            with self.assertRaisesRegex(RuntimeError, "kv_root_not_materialized"):
                 wrapped.call("ARCHIVE_IDS", message_ids=["gmail-message-1"])
             self.assertEqual(inner.calls, [])
 
