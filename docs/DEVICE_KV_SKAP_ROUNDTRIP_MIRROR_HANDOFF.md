@@ -60,6 +60,7 @@ Canonical references:
 - `.github` #1352 merged at `ec7594aac88b8d60b0d230be15f7901f1040b0fa`; exact-head `742461f32253579a1b3148a074160814e304fffb` passed the complete deterministic repository suite, organization-control validation, and deterministic diagnostics after converting the new test to canonical stdlib `unittest`.
 - Site #1196 merged at `064f77f24b9ad505d2533bc4efc4a46f74c76799` after exact-head `3fa31a60c53552d09f8ca0e9194ab1c2f2db8dd1` passed all 13 triggered workflows. It adds the provider-neutral MyKV service federation source, SKAP-first non-secret account-onboarding request contract, provenance-preserving service projections, README status, and event-ephemeral child ownership without claiming provider/runtime activation.
 - Site #1227 merged at `64701e9e9896af0e0e97672706918b9417540cf3` after claim-only terminalization validation passed; the Site federation implementation claim is `RELEASED_COMPLETE` while this canonical child remains ACTIVE for authentic runtime proof.
+- `.github` #1371 merged at `f00ab3f885f172a4703b8ae1b83e5676f3341eba`; it superseded stale #1364, reconciled the canonical task/handoff to current main, retained #1352 validation and Site #1196/#1227 closure, and made the exact authentic Gateway sidecar + TVC canonical-roundtrip-eligible drain receipt the next prerequisite without claiming runtime activation.
 
 ## Site MyKV federation closure
 
@@ -98,7 +99,7 @@ The worker itself does not fabricate or self-authorize hop receipts. After the p
 
 This execution wrapper grants no execution, transition, provider, or credential authority. It exists to make the already-admissible task actually targetable on an `EVENT_EPHEMERAL` sovereign runtime without a persistent listener.
 
-## Current evidence state after #1352
+## Current evidence state after #1371
 
 Repository-wide source search after merge found no retained authentic outcome carrying `status: ADMITTED_TO_SKAP_VAULT_CUSTODY` together with `canonical_roundtrip_eligible: true`. The only matches were producer/consumer implementation and tests. Therefore no repository artifact may be promoted into the required runtime input pair.
 
@@ -119,6 +120,16 @@ credential_persistence_ref points to the exact TVC-written SKAP ciphertext
 ```
 
 The TVC producer is `StegVerse-Labs/TVC/tools/coinbase_gateway_stage_drain.py`; it writes drain receipts under the TVC `_Vault/SKAP/Receipts/coinbase-drain` custody tree. A test fixture, reconstructed receipt, repository-only synthetic packet, GitHub Actions artifact, or hosted substitute is not eligible.
+
+## Coinbase activation ownership and collision boundary
+
+The Coinbase-specific recipient-key, liveness, public route, owner-ingress projection, and Gateway stage-drain activation prerequisites are NOT owned by this roundtrip task. They are already canonically owned by `StegVerse-Labs/TVC/tasks/TVC-COINBASE-RESIDENT-ACTIVATION-091.json` under goal `TVC-COINBASE-BROKER-001`, with supporting handoffs `docs/SKAP_BROWSER_RECIPIENT_KEY_PROVISIONING_MIRROR_HANDOFF.md` and `docs/TVC_COINBASE_IPHONE_SKAP_ACTIVATION_MIRROR_HANDOFF.md`.
+
+That owner currently records the production recipient/liveness/route/real-iPhone ingress predicates as open. Its source already contains the one-command activation, recipient-key and liveness verification, shared Service Gateway observation, Site public projection, event-driven stage drain, double-Interlock custody, and exact ciphertext readback surfaces.
+
+Therefore this task MUST NOT create a second Coinbase recipient runtime, alternate Site route descriptor, duplicate stage-drain owner, or substitute hosted/GitHub execution. It waits for and consumes the authentic evidence emitted by the canonical TVC owner. Once that owner emits a matching current-device Gateway sidecar plus `ADMITTED_TO_SKAP_VAULT_CUSTODY` drain receipt with `canonical_roundtrip_eligible=true`, this goal immediately continues with its distinct bounded four-leg return-chain execution.
+
+The broader `STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001` browser/Apple work is reusable infrastructure only and does not supersede this goal or the TVC Coinbase activation owner.
 
 ## MyKV relationship
 
@@ -161,15 +172,15 @@ AUTHENTIC_SKAP_KV_RETURN_RECEIPT_NOT_YET_OBSERVED
 KV_SKAP_TERMINAL_EXACT_READBACK_NOT_YET_OBSERVED
 ```
 
-These are execution/evidence conditions only. `PHYSICAL_RUNTIME_NOT_PRESENT`, `ALWAYS_ON_RECEIVER_NOT_PRESENT`, or `TESTFLIGHT_NOT_INSTALLED` MUST NOT be introduced as blockers for this data-transport proof unless a separate capability explicitly depends on them.
+The first two conditions are satisfied only by authentic evidence from the canonical TVC Coinbase activation owner; they are not invitations to build a parallel activation lane here. These are execution/evidence conditions only. `PHYSICAL_RUNTIME_NOT_PRESENT`, `ALWAYS_ON_RECEIVER_NOT_PRESENT`, or `TESTFLIGHT_NOT_INSTALLED` MUST NOT be introduced as blockers for this data-transport proof unless a separate capability explicitly depends on them.
 
 ## Next
 
-1. Produce or locate one authentic current-device Gateway canonical sidecar and its matching TVC `ADMITTED_TO_SKAP_VAULT_CUSTODY` drain receipt through the existing non-hosted TV/TVC path.
+1. Reuse/observe the canonical TVC Coinbase activation owner until it emits one authentic current-device Gateway canonical sidecar and matching `ADMITTED_TO_SKAP_VAULT_CUSTODY` drain receipt with `canonical_roundtrip_eligible=true`; do not duplicate recipient, route, or stage-drain ownership in this goal.
 2. Execute `scripts/execute_device_kv_skap_roundtrip_event.py` against that exact pair on a bounded sovereign `EVENT_EPHEMERAL` runtime bound to the retained Node identity/continuity context.
 3. Retain the four chained receipts and exact SKAP/KV readbacks.
 4. Close the evidence conditions only when the terminal verifier returns `DEVICE_KV_SKAP_ROUNDTRIP_VERIFIED`.
 
 ## Manual work
 
-None. No continuously running physical node or second user-operated device is required by the Universal InTr transport contract.
+None. No continuously running physical node or second user-operated device is required by the Universal InTr transport contract. Current-iPhone credential entry remains owned by the canonical TVC Coinbase activation lane and must occur only after that lane projects current recipient/liveness/route readiness.
