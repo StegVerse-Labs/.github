@@ -1,0 +1,84 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "MIR-LEAF-V3-CONFORMANCE-FIXTURE-001",
+  "correlation_id": "MIR-LEAF-V3-CONFORMANCE-FIXTURE-001",
+  "root_correlation_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+  "parent_task_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+  "goal": "Implement frozen-contract section 12.8 by establishing one exact mir.leaf.v3 conformance fixture that StegVerse, MIR, and a neutral third implementation independently reproduce to the same ordered leaf hashes, Merkle root, and checkpoint tip without fabricating proof or witness evidence.",
+  "coordination_state": "ACTIVE",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "50000000100000",
+    "source_state_vector_ref": "control/task-vectors/MIR-LEAF-V3-CONFORMANCE-FIXTURE-001.json",
+    "authority_effect": "NONE"
+  },
+  "source_refs": [
+    "docs/MIR_LEAF_V3_CONFORMANCE_FIXTURE_MIRROR_HANDOFF.md",
+    "control/task-vectors/MIR-LEAF-V3-CONFORMANCE-FIXTURE-001.json",
+    "StegVerse-org/StegVerse-SDK#213",
+    "StegVerse-org/StegVerse-SDK#214",
+    "StegVerse-org/StegVerse-SDK@28e56a40dd0f36d14f9c5ec39e37776e11892eb6"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs", "StegVerse-org"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-org/StegVerse-SDK"],
+    "components": ["mir-leaf-v3", "proof-conformance", "merkle-tree", "checkpoint-tip", "counterpart-reproduction"]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-MIR-LEAF-V3-MIR-REPRODUCTION",
+      "kind": "EXTERNAL_CONFORMANCE_EVIDENCE",
+      "state": "PENDING",
+      "ref": "StegVerse-org/StegVerse-SDK/docs/MIR_LEAF_V3_COUNTERPART_REPRODUCTION_GUIDE.md",
+      "disposition": "REQUIRE_AUTHENTIC_MIR_INDEPENDENT_REPRODUCTION; DO_NOT_SYNTHESIZE"
+    }
+  ],
+  "blockers": [],
+  "adjacent_task_refs": [
+    "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+    "MIR-EXPERIMENT-FROZEN-SCREENSHOT-EVIDENCE-001",
+    "SHARED-DOCS-MULTIPARTY-FREEZE-001"
+  ],
+  "expected_evidence_predicates": [
+    "MIR_LEAF_V3_FIXTURE_BYTES_FROZEN",
+    "STEGVERSE_INDEPENDENT_REPRODUCTION_MATCHES",
+    "NEUTRAL_INDEPENDENT_REPRODUCTION_MATCHES",
+    "MIR_INDEPENDENT_REPRODUCTION_OBSERVED",
+    "ORDERED_LEAF_HASHES_EXACT_MATCH",
+    "MERKLE_ROOT_EXACT_MATCH",
+    "CHECKPOINT_TIP_EXACT_MATCH",
+    "MUTATION_FAILS_CLOSED",
+    "PROOF_STATUS_REMAINS_HONEST",
+    "WITNESSES_REMAIN_EMPTY_UNTIL_SHIPPED",
+    "NO_AUTHORITY_COLLAPSE"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["canonical_artifact_validation", "cross_implementation_conformance_comparison"],
+    "environment": "SOVEREIGN_OR_INDEPENDENT_IMPLEMENTATION",
+    "direction": "CROSS_SYSTEM_CONFORMANCE_EVIDENCE",
+    "mutation_required": false,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": null
+  },
+  "allowed_next_transitions": ["INGRESS_ADMITTED"],
+  "handoff_projection_refs": ["docs/MIR_LEAF_V3_CONFORMANCE_FIXTURE_MIRROR_HANDOFF.md"],
+  "authority_model": {
+    "fixture_grants_governance_authority": false,
+    "fixture_grants_historical_custody": false,
+    "fixture_grants_transition_authority": false,
+    "fixture_grants_witness_authority": false,
+    "counterpart_result_may_be_synthesized": false,
+    "conformance_mismatch_is_governance_verdict": false
+  }
+}
