@@ -107,6 +107,12 @@ resident discovery:                          NOT OBSERVED
 
 GitHub Actions remains validation/evidence transport only. TV/TVC remains credential authority; Interlock/InTr remains transition authority; WorkerCoordinator remains claim/fence authority; Master Records remains runtime-reality/provenance authority.
 
+## Task Registry reconciliation
+
+The canonical task record is being reconciled to the already-merged source/runtime semantics without advancing runtime truth. The record now carries the merged #1461 bootstrap reachability, #1465 portable exact-dispatch, #1463 Remote Computer ephemeral-node interpretation, and #1487 source-revision evidence refs; requires `RESIDENT_REFRESH_DISPATCH_SOURCE_GIT_HEAD_AND_EXACT_SELECTOR_OBSERVED`; and records `remote_computer_ephemeral_node_capacity_allowed=true` while preserving `second_user_operated_machine_allowed=false`.
+
+This reconciliation does not change either Apple blocker, does not populate WorkerCoordinator claim/fence refs, does not mark completion or activation proof complete, and does not move the task beyond `CLAIMED_INTEGRATION`. It only makes the Task Registry agree with the already-merged handoff and executable source contract.
+
 ## Remaining sequence
 
 1. When an authorized sovereign resident or admitted Remote Computer ephemeral Node is reachable, verify its local `.github` source HEAD contains #1461, #1465, and #1487 or a later compatible main.
@@ -119,8 +125,8 @@ GitHub Actions remains validation/evidence transport only. TV/TVC remains creden
 
 ## README disposition
 
-Repository `README.md` remains accurate for Canonical Work and authority separation. The source-head/selector evidence hardening is task-specific and requires no repository-wide README text change.
+Repository `README.md` remains accurate for Canonical Work and authority separation. The source-head/selector evidence hardening and task-record reconciliation are task-specific and require no repository-wide README text change.
 
 ## Current state
 
-`ACTIVE_NOT_SUPERSEDED / TASK_REGISTRY_AND_COSV_RECONCILED_1437 / GLOBAL_CONVERGENCE_SELECTOR_REPAIR_MERGED_VALIDATED_1440 / STEGBROWSER_BOOTSTRAP_REACHABILITY_MERGED_VALIDATED_1461 / PORTABLE_STEGBROWSER_PROMOTION_DISPATCH_MERGED_VALIDATED_1465 / HANDOFF_RECONCILED_1469 / SOURCE_HEAD_PLUS_EXACT_SELECTOR_EVIDENCE_TEST_MERGED_VALIDATED_1487 / REMOTE_COMPUTER_ELIGIBLE_AS_ADMITTED_EPHEMERAL_STEGOS_CAPACITY / REMOTE_COMPUTER_CURRENTLY_UNAVAILABLE / AUTHENTIC_RESIDENT_SOURCE_REVISION_NOT_OBSERVED / AUTHENTIC_RESIDENT_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / AUTHENTIC_TVC_MATERIALIZATION_AND_RESTART_NOT_OBSERVED / LIVE_APPLE_OWNER_INGRESS_READY_NOT_OBSERVED / AUTHENTIC_CURRENT_IPHONE_INSTALL_LISTENER_DISCOVERY_PENDING`
+`ACTIVE_NOT_SUPERSEDED / TASK_REGISTRY_AND_COSV_RECONCILED_1437 / GLOBAL_CONVERGENCE_SELECTOR_REPAIR_MERGED_VALIDATED_1440 / STEGBROWSER_BOOTSTRAP_REACHABILITY_MERGED_VALIDATED_1461 / PORTABLE_STEGBROWSER_PROMOTION_DISPATCH_MERGED_VALIDATED_1465 / HANDOFF_RECONCILED_1469 / SOURCE_HEAD_PLUS_EXACT_SELECTOR_EVIDENCE_TEST_MERGED_VALIDATED_1487 / TASK_REGISTRY_RUNTIME_EVIDENCE_CONTRACT_RECONCILIATION_PENDING / REMOTE_COMPUTER_ELIGIBLE_AS_ADMITTED_EPHEMERAL_STEGOS_CAPACITY / REMOTE_COMPUTER_CURRENTLY_UNAVAILABLE / AUTHENTIC_RESIDENT_SOURCE_REVISION_NOT_OBSERVED / AUTHENTIC_RESIDENT_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / AUTHENTIC_TVC_MATERIALIZATION_AND_RESTART_NOT_OBSERVED / LIVE_APPLE_OWNER_INGRESS_READY_NOT_OBSERVED / AUTHENTIC_CURRENT_IPHONE_INSTALL_LISTENER_DISCOVERY_PENDING`
