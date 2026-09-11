@@ -87,8 +87,9 @@ def preflight(source_root: Path, runtime_root: Path) -> dict[str, Any]:
     actuator = loaded.get("actuator_result", {})
 
     if command:
-        if command.get("state") != "READY_FOR_RESIDENT_EXECUTION":
-            add(blockers, "COMMAND_NOT_READY", str(command.get("state")))
+        command_state = command.get("command_state", command.get("state"))
+        if command_state != "READY_FOR_RESIDENT_EXECUTION":
+            add(blockers, "COMMAND_NOT_READY", str(command_state))
         if not command.get("intr_decision_ref"):
             add(blockers, "INTR_DECISION_REF_MISSING", "command lacks current InTr decision ref")
         if not command.get("runtime_binding_ref"):
