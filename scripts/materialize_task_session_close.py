@@ -63,12 +63,18 @@ def main() -> int:
         check=True,
     )
     return_receipt = json.loads(proc.stdout)
+    return_event_sha256 = return_receipt.get("event_sha256")
+    if not isinstance(return_event_sha256, str) or not return_event_sha256.startswith("sha256:"):
+        raise SystemExit("session return receipt missing canonical event hash")
+
     print(json.dumps({
         "schema": "stegverse.task-session-close/v1",
         "task_id": args.task_id,
         "session_id": args.session_id,
         "return_receipt": return_receipt,
         "continuity_materialized": True,
+        "footer_handoff_emission_admissible": True,
+        "required_pre_footer_return_event_sha256": return_event_sha256,
         "authority_effect": "NONE",
     }, sort_keys=True))
     return 0
