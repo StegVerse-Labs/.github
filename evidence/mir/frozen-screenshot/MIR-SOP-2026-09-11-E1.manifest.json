@@ -1,0 +1,27 @@
+{
+  "schema": "stegverse.mir-frozen-screenshot-manifest/v1",
+  "experiment_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-v0.3",
+  "evidence_epoch": "MIR-SOP-2026-09-11-E1",
+  "frozen_at": "2026-09-11T19:10:17Z",
+  "frozen_by": "MIR-EXPERIMENT-FROZEN-SCREENSHOT-EVIDENCE-001",
+  "entries": [
+    {
+      "purpose_id": "CONTRACT_WORKING_DRAFT_ORIGIN_STATE",
+      "purpose_description": "Preserve the visible MIR × StegVerse Separation-of-Powers Evidence Contract v0.2 working-draft state and authorship context before experiment execution.",
+      "artifact_ref": "library:0EA31497-25B3-487C-ADBC-F03CCA7382EE.png",
+      "artifact_sha256": "ab6ba08673592192643bec63131d71348c9abecaa052c2c297b7506a0d412ed6"
+    },
+    {
+      "purpose_id": "COUNTERPART_SHARED_CONTRACT_STATE",
+      "purpose_description": "Preserve the Richard-owned shared interoperability-contract view showing the three-powers separation framing and joint authorship context.",
+      "artifact_ref": "library:IMG_2533.png",
+      "artifact_sha256": "55983980adafee1cf7e8d30823a37ce5df77600063efd6a66012069f4027ffc6"
+    },
+    {
+      "purpose_id": "SHARED_DOCUMENT_DISCOVERY_STATE",
+      "purpose_description": "Preserve the Shared Docs index state showing the MIR × StegVerse interoperability document present as a shared document before experiment execution.",
+      "artifact_ref": "library:IMG_2572.png",
+      "artifact_sha256": "a400e52d632df5322562b4d5e102df55199faf0a93a0c9e8ff50436d670f24fb"
+    }
+  ]
+}
