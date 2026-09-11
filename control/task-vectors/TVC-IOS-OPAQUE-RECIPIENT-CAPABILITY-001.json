@@ -1,0 +1,16 @@
+{
+  "schema": "stegverse.task-vector/v1",
+  "task_id": "TVC-IOS-OPAQUE-RECIPIENT-CAPABILITY-001",
+  "cosv_id": "50000000102000",
+  "parent_task_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+  "state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "repository_owners": ["StegVerse-Labs/TVC", "StegVerse-Labs/StegOS"],
+  "authority": {
+    "credential": "TV/TVC",
+    "transition": "Interlock/InTr",
+    "runtime": "canonical StegOS EVENT_EPHEMERAL lane",
+    "github": "NONE"
+  },
+  "next": "Implement a non-exportable current-iPhone TVC P-256 recipient capability in the existing StegOS Mobile iOS target and bind it to the TVC capability activation seam without authority transfer."
+}

@@ -1,0 +1,71 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "TVC-IOS-OPAQUE-RECIPIENT-CAPABILITY-001",
+  "correlation_id": "TVC-IOS-OPAQUE-RECIPIENT-CAPABILITY-001",
+  "root_correlation_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+  "parent_task_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+  "goal": "Materialize a real current-iPhone TVC recipient-key capability for Coinbase ingress using an opaque non-exportable P-256 key handle in the existing StegOS Mobile iOS target, while preserving TV/TVC credential authority, Interlock/InTr transition authority, no private-key export, and no second runtime owner.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "50000000102000",
+  "owners": {
+    "credential_capability_owner": "StegVerse-Labs/TVC",
+    "mobile_host_integration_owner": "StegVerse-Labs/StegOS",
+    "roundtrip_consumer": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001"
+  },
+  "source_refs": [
+    "StegVerse-Labs/TVC/scripts/tvc_recipient_key_capability.py",
+    "StegVerse-Labs/TVC/scripts/activate_coinbase_intr_capability.py",
+    "StegVerse-Labs/StegOS/mobile/ios/StegOSMobile.xcodeproj",
+    "StegVerse-Labs/StegOS/mobile/ios/StegOSMobile/",
+    "docs/TVC_IOS_OPAQUE_RECIPIENT_CAPABILITY_MIRROR_HANDOFF.md"
+  ],
+  "current_truth": {
+    "platform_neutral_tvc_capability_contract_merged": true,
+    "linux_root_adapter_exists": true,
+    "native_ios_project_exists": true,
+    "ios_tvc_opaque_key_adapter_exists": false,
+    "authentic_current_device_activation_observed": false
+  },
+  "required_implementation": [
+    "Implement a TVC-owned iOS recipient capability adapter inside the existing StegOS Mobile target using Apple Security APIs and a non-exportable P-256 private key handle.",
+    "Bind key creation/liveness to a TVC namespace and emit only public key material, recipient_key_id, runtime_instance_id, lease metadata, and an opaque tvc-capability:// handle.",
+    "Do not expose raw private-key bytes to StegOS Mobile, ordinary KV, GitHub, logs, screenshots, argv, or provider payloads.",
+    "Provide a TVC-verifiable activation/liveness envelope compatible with stegverse.tvc.recipient-key-capability/v1 semantics.",
+    "Fail closed when Secure Enclave/non-exportability requirements cannot be satisfied; do not silently downgrade to an exportable software key for production proof.",
+    "Wire the capability into the existing Coinbase recipient activation seam without creating another runtime lifecycle or transition authority.",
+    "Validate source/build behavior, then require authentic current-iPhone activation before projecting READY_FOR_OWNER_INGRESS or producing a Gateway sidecar."
+  ],
+  "authority_invariants": {
+    "credential_authority": "TV/TVC",
+    "transition_authority": "Interlock/InTr",
+    "mobile_host_mints_credential_authority": false,
+    "mobile_host_mints_transition_authority": false,
+    "private_key_export_allowed": false,
+    "github_runtime_authority": "NONE",
+    "hosted_runtime_fallback": false,
+    "second_user_operated_device_required": false
+  },
+  "expected_evidence_predicates": [
+    "IOS_TVC_OPAQUE_P256_KEY_CREATED_NON_EXPORTABLE",
+    "IOS_TVC_PUBLIC_RECIPIENT_CONFIG_DERIVED",
+    "IOS_TVC_LIVENESS_MATCHES_ACTIVATION",
+    "IOS_TVC_PRIVATE_KEY_BYTES_NEVER_EXPORTED",
+    "CURRENT_IPHONE_RECIPIENT_CAPABILITY_ACTIVATION_OBSERVED",
+    "CURRENT_IPHONE_RECIPIENT_CAPABILITY_LIVENESS_OBSERVED"
+  ],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "runtime_observed": false
+  },
+  "allowed_next_transitions": [
+    "IMPLEMENT_STEGOS_IOS_TVC_OPAQUE_KEY_ADAPTER",
+    "BIND_TVC_ACTIVATION_SEAM",
+    "VALIDATE_BUILD_AND_SOURCE",
+    "OBSERVE_AUTHENTIC_CURRENT_IPHONE_ACTIVATION"
+  ],
+  "handoff_projection_refs": [
+    "docs/TVC_IOS_OPAQUE_RECIPIENT_CAPABILITY_MIRROR_HANDOFF.md"
+  ]
+}
