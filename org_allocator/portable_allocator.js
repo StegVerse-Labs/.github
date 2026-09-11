@@ -66,6 +66,28 @@
     if(pkg.heartbeat_grants_claim_authority!==false||pkg.request_grants_claim_authority!==false||pkg.stegos_grants_claim_authority!==false){fail("claim authority widening");}
     if(pkg.requires_other_machine!==false||pkg.second_user_operated_device_required!==false||pkg.always_on_external_host_required!==false){fail("other-machine dependency prohibited");}
     var source=pkg.source_binding||{};
+    var ids=Array.isArray(pkg.tasks)?pkg.tasks.map(function(t){return t.task_id;}).sort().join("|"):"";
+    function validateTaskFloor(task,requestedAt,surface){
+      if(!task||task.organization!=="StegVerse-Labs"||task.status!=="queued"||task.requested_at!==requestedAt||task.priority_class!=="release"){fail("portable allocator task floor mismatch");}
+      if((task.dependencies||[]).length!==0){fail("portable allocator task dependency floor mismatch");}
+      var mandatory=((task.requirements||{}).mandatory)||[];
+      if(mandatory.length!==1||!mandatory[0].repository||mandatory[0].repository.full_name!=="StegVerse-Labs/Site"){fail("portable allocator task repository floor mismatch");}
+      if(dependencySurfaces(mandatory[0]).indexOf(surface)===-1){fail("portable allocator task dependency surface floor mismatch");}
+    }
+    if(ids==="TASK-2026-0011"){
+      var exact11={
+        allocator_git_blob_sha:"7c0105c8529b682c24a94b39ba31a8ca574c3717",
+        task_0011_git_blob_sha:"a9f90414e59e308d66faf7ff2d5c31173b1687ca",
+        claims_git_blob_sha:"9e7eaf9cb1319dd570714a0c1806d7173a7ba7ff",
+        queue_git_blob_sha:"6cab961c8750495dab36d1a523980516b1ac3a5e"
+      };
+      Object.keys(exact11).forEach(function(k){if(source[k]!==exact11[k]){fail("source binding mismatch: "+k);}});
+      if(pkg.tasks.length!==1){fail("TASK-2026-0011 successor package must contain exactly one task");}
+      validateTaskFloor(pkg.tasks[0],"2026-09-11T01:51:58Z","site:current-iphone-kv-testflight-static-bootstrap");
+      if(pkg.claims_state.schema!=="stegverse.org-claims/v1"||pkg.queue_state.schema!=="stegverse.org-queue/v1"){fail("portable allocator predecessor state schema mismatch");}
+      if(pkg.claims_state.generation!==2||!Array.isArray(pkg.claims_state.claims)||pkg.claims_state.claims.length!==0){fail("portable allocator predecessor claim state mismatch");}
+      return pkg;
+    }
     var exact={
       allocator_git_blob_sha:"7c0105c8529b682c24a94b39ba31a8ca574c3717",
       task_0007_git_blob_sha:"a5fd4662b2a370e8a86099c943b8d1ec18b93e19",
@@ -79,7 +101,7 @@
     if(successor9Sha!==undefined&&successor9Sha!=="eeb661ca59f305ce8a86c2f46adced37056baec8"){fail("source binding mismatch: task_0009_git_blob_sha");}
     if(successor10Sha!==undefined&&successor10Sha!=="248bed8cf5428c3ba759ee0d34db5fec8949a835"){fail("source binding mismatch: task_0010_git_blob_sha");}
     if(!Array.isArray(pkg.tasks)||(pkg.tasks.length<2||pkg.tasks.length>4)){fail("portable allocator current task package mismatch");}
-    var ids=pkg.tasks.map(function(t){return t.task_id;}).sort().join("|");
+    ids=pkg.tasks.map(function(t){return t.task_id;}).sort().join("|");
     var predecessorIds="TASK-2026-0007|TASK-2026-0008";
     var successor9Ids="TASK-2026-0007|TASK-2026-0008|TASK-2026-0009";
     var successor10Ids="TASK-2026-0007|TASK-2026-0008|TASK-2026-0009|TASK-2026-0010";
@@ -92,13 +114,6 @@
     var task8=pkg.tasks.find(function(t){return t.task_id==="TASK-2026-0008";});
     var task9=pkg.tasks.find(function(t){return t.task_id==="TASK-2026-0009";});
     var task10=pkg.tasks.find(function(t){return t.task_id==="TASK-2026-0010";});
-    function validateTaskFloor(task,requestedAt,surface){
-      if(!task||task.organization!=="StegVerse-Labs"||task.status!=="queued"||task.requested_at!==requestedAt||task.priority_class!=="release"){fail("portable allocator task floor mismatch");}
-      if((task.dependencies||[]).length!==0){fail("portable allocator task dependency floor mismatch");}
-      var mandatory=((task.requirements||{}).mandatory)||[];
-      if(mandatory.length!==1||!mandatory[0].repository||mandatory[0].repository.full_name!=="StegVerse-Labs/Site"){fail("portable allocator task repository floor mismatch");}
-      if(dependencySurfaces(mandatory[0]).indexOf(surface)===-1){fail("portable allocator task dependency surface floor mismatch");}
-    }
     validateTaskFloor(task7,"2026-08-22T04:39:00Z","site:unified-conversational-capability-contract");
     validateTaskFloor(task8,"2026-09-03T00:28:00Z","site:stegos-de006-bound-inference-publication");
     if(task9){validateTaskFloor(task9,"2026-09-06T13:25:00Z","site:hb31-ecosystem-chat-runtime-opportunity-successor");}
