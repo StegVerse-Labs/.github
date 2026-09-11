@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.reusable-task-registry/v1",
-  "generation": 2,
+  "generation": 3,
   "status": "ACTIVE_IDENTITY_CONSTRUCT_SOURCE_DEFINED",
   "purpose": "Provide durable reusable task identities whose invocation-specific parameters derive exact manifest-bound TT/RTG/GTG constructs and ephemeral runners without creating duplicate permanent implementations or granting execution authority.",
   "authority": {
@@ -192,6 +192,20 @@
       "completion_predicates": ["SOCIAL_OPERATION_BOUND_TO_EXACT_PLATFORM_ADAPTER", "GOVERNED_EXTERNAL_INTERACTION_EVIDENCE_RECORDED", "FOLLOWUP_WORK_RECONCILED_AND_DERIVED_ONLY_WHEN_DISTINCT"],
       "authority_effect": "NONE_BEYOND_SEPARATELY_ADMITTED_PLATFORM_OPERATION",
       "reuse_instructions": "Platform-specific behavior belongs in the adapter; reusable task semantics, evidence, adjacency, COSV tracking, and governance remain common."
+    },
+    {
+      "reusable_task_id": "RT-ECOSYSTEM-CONTINUITY-EVALUATION-001",
+      "name": "Ecosystem Continuity Evaluation",
+      "purpose": "Run one bounded ecosystem continuity evaluation cycle from already-local canonical sources and resident observations, retain exact evaluation bytes through Master Records custody/reconstruction, prepare Healer finding intake, and produce the Site-safe projection without granting repair or recovery authority.",
+      "trigger": "periodic continuity evaluation through the existing StegVerse-Healer reusable-task scheduler",
+      "scope": "registered StegVerse ecosystem continuity predicates and already-materialized resident evidence only",
+      "parameter_keys": ["observation_source", "resident_output_scope", "cadence"],
+      "existing_task_ref": "ECOSYSTEM-CONTINUITY-EVALUATOR-001",
+      "runner_templates": ["scripts/run_ecosystem_continuity_reusable_task.py"],
+      "recording_levels": ["operation", "task", "goal", "ecosystem", "master_records"],
+      "completion_predicates": ["CANONICAL_ECE_EVALUATION_EXECUTED_OR_EXACT_BOUNDARY_RECORDED", "EXACT_EVALUATION_BYTES_CUSTODIED_AND_RECONSTRUCTED_BEFORE_DOWNSTREAM_PROJECTION", "HEALER_INTAKE_AND_SITE_SAFE_PROJECTION_MATERIALIZED", "RECOVERY_NOT_SELF_CERTIFIED"],
+      "authority_effect": "NONE_DIAGNOSTIC_ORCHESTRATION_ONLY",
+      "reuse_instructions": "Reuse the existing Healer reusable-task scheduler. Missing observations must remain NOT_OBSERVED/AT_RISK rather than synthetic PASS. Do not create another scheduler, evaluator, repair authority, custody authority, or recovery authority."
     }
   ]
 }
