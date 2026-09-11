@@ -2,11 +2,12 @@
   "identity": "StegVerse-Labs/.github:task:PUBLISHER-VISUAL-EVIDENCE-COMPLETENESS-001",
   "profile": "task.v1",
   "task_id": "PUBLISHER-VISUAL-EVIDENCE-COMPLETENESS-001",
-  "vector": "50000000100010",
+  "vector": "71000000100110",
   "evidence_refs": [
     "data/canonical-task-records/PUBLISHER-VISUAL-EVIDENCE-COMPLETENESS-001.json",
     "docs/PUBLISHER_VISUAL_EVIDENCE_COMPLETENESS_MIRROR_HANDOFF.md",
-    "ELAN-CUMULATIVE-PUBLICATION-001"
+    "GCAT-BCAT-Engine/Publisher@228bd19aa28fe387270fce034d5c820842cc34dd",
+    "sha256:c807f2f4ab2479c5edb0a820d877ff53018bad690e5a249c8e9eec8e8ff2ecf2"
   ],
   "authority_effect": "NONE"
 }
