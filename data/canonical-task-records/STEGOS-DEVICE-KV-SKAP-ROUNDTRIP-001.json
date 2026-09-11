@@ -23,14 +23,19 @@
     "StegVerse-Labs/StegOS/stegos/device_kv_skap_roundtrip.py",
     "StegVerse-Labs/StegOS/stegos/universal_intr_transport.py",
     "StegVerse-Labs/StegOS/stegos/intr_backbone.py",
-    "StegVerse-Labs/continuity-vault-kit/KV_MULTI_INSTANCE_COSV_BINDING_MIRROR_HANDOFF.md"
+    "StegVerse-Labs/continuity-vault-kit/KV_MULTI_INSTANCE_COSV_BINDING_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/TVC/tasks/TVC-COINBASE-RESIDENT-ACTIVATION-091.json",
+    "StegVerse-Labs/TVC/docs/SKAP_BROWSER_RECIPIENT_KEY_PROVISIONING_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/TVC/docs/TVC_COINBASE_IPHONE_SKAP_ACTIVATION_MIRROR_HANDOFF.md"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
     "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegOS", "StegVerse-Labs/continuity-vault-kit", "StegVerse-Labs/TVC", "StegVerse-Labs/Site"],
     "components": ["device-kv-bidirectional-intr", "kv-skap-bidirectional-intr", "single-roundtrip-receipt-lineage", "tvc-skap-credential-reference", "exact-packet-verification", "ephemeral-node-kv-skap-readback"]
   },
-  "dependencies": [],
+  "dependencies": [
+    "StegVerse-Labs/TVC:tasks/TVC-COINBASE-RESIDENT-ACTIVATION-091.json"
+  ],
   "blockers": [
     "AUTHENTIC_CURRENT_DEVICE_GATEWAY_SIDECAR_NOT_YET_OBSERVED",
     "AUTHENTIC_TVC_CANONICAL_ROUNDTRIP_ELIGIBLE_DRAIN_RECEIPT_NOT_YET_OBSERVED",
@@ -39,7 +44,15 @@
     "KV_SKAP_TERMINAL_EXACT_READBACK_NOT_YET_OBSERVED"
   ],
   "systemic_incident_ref": null,
-  "adjacent_task_refs": ["KV-CONNECTION-REVALIDATION-WORKER-001", "SHWP-DEVICE-KV-INTR-OBSERVATION-001", "STEGVERSE-UNIVERSAL-INTR-TRANSPORT-001", "FEDERAL-HEALTH-PII-EXCEEDANCE-HARDENING-001"],
+  "adjacent_task_refs": [
+    "KV-CONNECTION-REVALIDATION-WORKER-001",
+    "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
+    "STEGVERSE-UNIVERSAL-INTR-TRANSPORT-001",
+    "FEDERAL-HEALTH-PII-EXCEEDANCE-HARDENING-001",
+    "TVC-COINBASE-RESIDENT-ACTIVATION-091",
+    "TVC-COINBASE-BROKER-001",
+    "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001"
+  ],
   "existing_evidence_refs": [
     "StegVerse-Labs/StegOS#326@2339f2f2fc8c28eb4d63077387013154dac9b75c:validation=34517908014_SUCCESS",
     "StegVerse-org/LLM-adapter#331@f4db7005818c7b77bf7e25345c86df1277760a93",
@@ -47,6 +60,7 @@
     "StegVerse-Labs/.github#1332@42996a4582e2fb9e4d3207dd3e45b764dc727723",
     "StegVerse-Labs/.github#1339@861647893df88c30f591e374a8be30fccaf7c64f",
     "StegVerse-Labs/.github#1352@ec7594aac88b8d60b0d230be15f7901f1040b0fa:exact_head=742461f32253579a1b3148a074160814e304fffb:validation=SUCCESS",
+    "StegVerse-Labs/.github#1371@f00ab3f885f172a4703b8ae1b83e5676f3341eba:canonical_runtime_prerequisite_reconciliation",
     "StegVerse-Labs/continuity-vault-kit#205@5ad01e04d6693b2ab8e19e9214e318d91d6dad74",
     "StegVerse-Labs/Site#1196@064f77f24b9ad505d2533bc4efc4a46f74c76799",
     "StegVerse-Labs/Site#1227@64701e9e9896af0e0e97672706918b9417540cf3",
@@ -108,7 +122,7 @@
     "reconciliation_ref": "docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md"
   },
   "allowed_next_transitions": [
-    "PRODUCE_OR_LOCATE_AUTHENTIC_CURRENT_DEVICE_GATEWAY_TVC_INPUT_PAIR",
+    "CONSUME_CANONICAL_TVC_COINBASE_OWNER_AUTHENTIC_GATEWAY_TVC_INPUT_PAIR",
     "EXECUTE_AUTHENTIC_BOUNDED_EVENT_EPHEMERAL_NON_DESTRUCTIVE_ROUNDTRIP",
     "RETAIN_FOUR_HOP_RECEIPTS_AND_EXACT_READBACK"
   ],
