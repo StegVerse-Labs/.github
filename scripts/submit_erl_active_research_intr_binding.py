@@ -22,7 +22,10 @@ TASK_ID = "SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001"
 INPUT_SCHEMA = "stegverse.erl-active-research-intr-submission-input/v1"
 RECEIPT_SCHEMA = "stegverse.erl-active-research-intr-submission-consumption/v1"
 BINDING_SCHEMA = "stegverse.erl.active-research-intr-binding/v1"
+PROFILE_SCHEMA = "stegverse.erl.active-research-intr-profile-admission/v1"
 PATH = ["EXTERNAL_SYSTEM", "STEGOS_ECOSYSTEM", "DEVICE_SYSTEM", "KV"]
+TERMINAL_PATH = ["DEVICE_SYSTEM", "KV"]
+TERMINAL_OWNER = "StegVerse-Labs/continuity-vault-kit#79"
 DEFAULT_INPUT_REL = Path("runtime-state/erl-active-research/intr-submission-input.json")
 DEFAULT_RECEIPT_REL = Path("receipts/sovereign-host/erl-active-research-intr-submission.latest.json")
 HOSTED = ("GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "VERCEL_ENV", "CF_PAGES", "CLOUDFLARE_WORKERS")
@@ -75,7 +78,6 @@ def validate_input(value: Mapping[str, Any], runtime_root: Path) -> tuple[Path, 
     body = dict(value)
     claimed = body.pop("input_hash", None)
     require(claimed == sha_uri(body), "input_hash_mismatch")
-
     binding_ref = value.get("binding_ref")
     require(isinstance(binding_ref, str) and binding_ref.strip(), "binding_ref_required")
     binding = Path(binding_ref).expanduser()
@@ -85,7 +87,6 @@ def validate_input(value: Mapping[str, Any], runtime_root: Path) -> tuple[Path, 
     runtime = runtime_root.resolve()
     require(binding == runtime or runtime in binding.parents, "binding_must_be_runtime_local")
     require(binding.is_file(), "binding_not_materialized")
-
     ingress_url = value.get("ingress_url")
     require(isinstance(ingress_url, str) and ingress_url, "ingress_url_required")
     parsed = urlparse(ingress_url)
@@ -93,7 +94,6 @@ def validate_input(value: Mapping[str, Any], runtime_root: Path) -> tuple[Path, 
     require((parsed.hostname or "").lower() in {"127.0.0.1", "localhost", "::1"}, "ingress_url_must_be_loopback")
     require(parsed.path == "/intr/materialization", "ingress_url_path_invalid")
     require(parsed.username is None and parsed.password is None, "ingress_url_credentials_forbidden")
-
     authorization_id = value.get("tvc_relay_authorization_id")
     require(isinstance(authorization_id, str) and authorization_id.strip(), "tvc_relay_authorization_id_required")
     return binding, ingress_url, authorization_id
@@ -154,26 +154,43 @@ def post_exact(binding: Mapping[str, Any], ingress_url: str, authorization_id: s
     return value
 
 
-def validate_admission(response: Mapping[str, Any], request: Mapping[str, Any], authorization_id: str) -> None:
+def validate_admission(response: Mapping[str, Any], request: Mapping[str, Any], binding: Mapping[str, Any]) -> None:
     expected = {
-        "state": "INGRESS_ADMITTED",
+        "schema": PROFILE_SCHEMA,
+        "state": "PROFILE_ADMITTED_TERMINAL_MATERIALIZATION_PENDING",
         "materialization_id": request["materialization_id"],
-        "request_hash": request["request_hash"],
-        "payload_hash": request["payload_hash"],
-        "transport_intent_hash": request["transport_intent_hash"],
         "operation_id": request["operation_id"],
         "packet_id": request["packet_id"],
-        "transport_origin": "TVC_RELAY_EGRESS",
-        "transport_authorization_id": authorization_id,
+        "payload_hash": request["payload_hash"],
+        "terminal_runtime_receipt_present": False,
+        "provider_operation_reexecution_authorized": False,
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": "NONE",
+        "authority_effect": "NONE_PROFILE_ADMISSION_ONLY",
     }
     for key, wanted in expected.items():
         require(response.get(key) == wanted, f"admission_{key}_mismatch")
-    schema = response.get("schema")
-    require(schema in {"stegverse.erl-active-research-intr-ingress/v1", "stegverse.erl.active-research-intr-ingress/v1"}, "admission_schema_invalid")
-    require(response.get("authority_effect") in {"NONE_INGRESS_ONLY", "INGRESS_TRANSITION_OBSERVED_ONLY"}, "admission_authority_effect_invalid")
-    require(response.get("provider_operation_authorized") in {None, False}, "admission_provider_authority_forbidden")
+    require(response.get("transport_payload_sha256") == sha_uri(canonical(binding)), "admission_transport_payload_hash_mismatch")
+    receipts = response.get("hop_receipts")
+    require(isinstance(receipts, list) and len(receipts) == 2, "admission_upstream_receipt_count_invalid")
+    prior = None
+    for index, receipt in enumerate(receipts, start=1):
+        require(isinstance(receipt, dict), "admission_receipt_object_required")
+        require(receipt.get("schema") == "stegverse.intr.hop_receipt/v1", "admission_receipt_schema_invalid")
+        require(receipt.get("hop_index") == index, "admission_receipt_index_invalid")
+        require(receipt.get("packet_id") == request["packet_id"], "admission_receipt_packet_mismatch")
+        require(receipt.get("payload_hash") == request["payload_hash"], "admission_receipt_payload_mismatch")
+        require(receipt.get("prior_receipt_hash") == prior, "admission_receipt_lineage_invalid")
+        require(receipt.get("boundary_verification") == "VERIFIED", "admission_receipt_boundary_not_verified")
+        require(receipt.get("transition_state") == "FORWARDED", "admission_receipt_transition_invalid")
+        require(receipt.get("authority_transfer") is False, "admission_receipt_authority_transfer_forbidden")
+        prior = receipt.get("receipt_hash")
+    terminal = response.get("terminal_materialization_request")
+    require(isinstance(terminal, dict), "admission_terminal_request_required")
+    require(terminal.get("boundary_path") == TERMINAL_PATH, "admission_terminal_path_invalid")
+    require(terminal.get("downstream_owner_ref") == TERMINAL_OWNER, "admission_terminal_owner_invalid")
+    require(terminal.get("prior_transport_receipt_hash") == prior, "admission_terminal_prior_receipt_invalid")
+    require(terminal.get("operation_id") == request["operation_id"] and terminal.get("packet_id") == request["packet_id"] and terminal.get("payload_hash") == request["payload_hash"], "admission_terminal_identity_mismatch")
 
 
 def consume(runtime_root: Path, input_path: Path, *, opener=urlopen, env: Mapping[str, str] | None = None) -> dict[str, Any]:
@@ -195,10 +212,10 @@ def consume(runtime_root: Path, input_path: Path, *, opener=urlopen, env: Mappin
     binding = load_json(binding_path)
     request = validate_binding(binding)
     response = post_exact(binding, ingress_url, authorization_id, opener=opener)
-    validate_admission(response, request, authorization_id)
+    validate_admission(response, request, binding)
     result = {
         "schema": RECEIPT_SCHEMA,
-        "state": "INGRESS_ADMITTED",
+        "state": "PROFILE_ADMITTED_TERMINAL_MATERIALIZATION_PENDING",
         "task_id": TASK_ID,
         "input_hash": input_value["input_hash"],
         "binding_ref": str(binding_path),
@@ -210,13 +227,15 @@ def consume(runtime_root: Path, input_path: Path, *, opener=urlopen, env: Mappin
         "packet_id": request["packet_id"],
         "transport_submission_attempted": True,
         "authentic_shared_ingress_response_observed": True,
-        "ingress_response": dict(response),
+        "upstream_hop_receipts": response["hop_receipts"],
+        "terminal_materialization_request": response["terminal_materialization_request"],
+        "terminal_runtime_receipt_present": False,
         "provider_operation_attempted": False,
         "runtime_receipts_fabricated": False,
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": "NONE",
         "second_machine_required": False,
-        "authority_effect": "INGRESS_TRANSITION_OBSERVED_ONLY",
+        "authority_effect": "INGRESS_TRANSITIONS_OBSERVED_TERMINAL_PENDING",
     }
     write_atomic(runtime / DEFAULT_RECEIPT_REL, result)
     return result
