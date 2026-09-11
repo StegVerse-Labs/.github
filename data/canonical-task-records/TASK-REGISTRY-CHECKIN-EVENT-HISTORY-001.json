@@ -1,0 +1,91 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001",
+  "correlation_id": "TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001",
+  "root_correlation_id": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001",
+  "parent_task_id": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001",
+  "goal": "Persist non-authorizing Task Registry check-in/check-out event history so anti-collision aggregation can include recently returned sessions and their exact branch, PR, source-head, predicate, repository, component, and disposition lineage without creating a second collision engine or granting execution authority.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "50000000100000",
+  "source_refs": [
+    "docs/TASK_REGISTRY_CHECKIN_EVENT_HISTORY_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github#1387",
+    "data/canonical-task-records/TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001.json",
+    "scripts/evaluate_task_registry_collision_checkin.py"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": ["StegVerse-Labs/.github"],
+    "components": [
+      "task-registry-checkin-event-history",
+      "recent-session-collision-window",
+      "session-target-metadata",
+      "task-registry-collision-evaluator",
+      "portable-workercoordinator-preclaim-lineage"
+    ]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-TASK-REGISTRY-ANTI-COLLISION-MERGED",
+      "kind": "SOURCE_BASELINE",
+      "state": "MERGED_VALIDATED",
+      "ref": "StegVerse-Labs/.github#1344@a1b6043348354072af59b9e1696451720b83cda6",
+      "disposition": "Consume the merged disposition contract; do not implement a second collision engine."
+    }
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+    "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001",
+    "STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001",
+    "STEGOS-NODE-MANIFOLD-001",
+    "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001"
+  ],
+  "expected_evidence_predicates": [
+    "CHECKIN_AND_CHECKOUT_EVENTS_RETAIN_SESSION_ID_AND_TIMESTAMPS",
+    "EVENTS_BIND_TASK_BRANCH_PR_SOURCE_HEAD_AND_FIRST_UNRESOLVED_PREDICATE",
+    "EVENTS_BIND_REPOSITORIES_AND_COMPONENTS_UNDER_MUTATION",
+    "EVENTS_BIND_EXACT_DISPOSITION_HASH",
+    "RECENT_RETURNED_SESSION_WINDOW_PARTICIPATES_IN_COLLISION_EVALUATION",
+    "EVENT_HISTORY_IS_NON_AUTHORIZING",
+    "EVENT_HISTORY_STORAGE_IS_PROVIDER_NEUTRAL_AND_PORTABLE_TO_SOVEREIGN_KV"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["task_registry_reconciliation", "coordination_event_retention", "recent_collision_window"],
+    "environment": "SOURCE_CONTROL_AND_SOVEREIGN_COORDINATION_RUNTIME",
+    "direction": "INTERNAL",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": false
+  },
+  "runtime_resolution": {
+    "current_executor": "current-session-repository-orchestration",
+    "authority_basis": "user-authorized source mutation under canonical task/handoff custody",
+    "unattended_runtime": false
+  },
+  "worker_claim": {
+    "authority": "CURRENT_SESSION",
+    "claim_ref": "docs/TASK_REGISTRY_CHECKIN_EVENT_HISTORY_MIRROR_HANDOFF.md",
+    "fence_ref": null,
+    "projection_only": false
+  },
+  "human_action_ref": null,
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "activation_proof_complete": false
+  },
+  "allowed_next_transitions": ["IMPLEMENT_COORDINATION_EVENT_SCHEMA_AND_STORE"],
+  "handoff_projection_refs": ["docs/TASK_REGISTRY_CHECKIN_EVENT_HISTORY_MIRROR_HANDOFF.md"],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "event_history_grants_execution_authority": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "credential_authority": "TV/TVC",
+    "interlock_intr_required_for_governed_ingress_egress": true,
+    "master_records_reality_authority": true,
+    "github_runtime_authority": "NONE",
+    "heartbeat_execution_authority": false
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "stegverse:task-registry-checkin-event:v1",
+  "title": "Task Registry Check-in Event",
+  "type": "object",
+  "required": [
+    "schema",
+    "event_type",
+    "task_id",
+    "session_id",
+    "event_at",
+    "context",
+    "registry_disposition",
+    "registry_disposition_sha256",
+    "coordination_state",
+    "predecessor_event_sha256",
+    "event_sha256",
+    "authority_effect"
+  ],
+  "properties": {
+    "schema": {"const": "stegverse.task-registry-checkin-event/v1"},
+    "event_type": {"enum": ["CHECK_IN", "CHECK_OUT", "RETURNED", "STOPPED"]},
+    "task_id": {"type": "string", "minLength": 1},
+    "session_id": {"type": "string", "minLength": 1},
+    "event_at": {"type": "string", "format": "date-time"},
+    "context": {
+      "type": "object",
+      "required": ["repository", "branch", "pull_request", "source_head", "first_unresolved_predicate", "repositories", "components"],
+      "properties": {
+        "repository": {"type": ["string", "null"]},
+        "branch": {"type": ["string", "null"]},
+        "pull_request": {"type": ["integer", "null"], "minimum": 1},
+        "source_head": {"type": ["string", "null"]},
+        "first_unresolved_predicate": {"type": ["string", "null"]},
+        "repositories": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "components": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      },
+      "additionalProperties": false
+    },
+    "registry_disposition": {"type": "string", "minLength": 1},
+    "registry_disposition_sha256": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "coordination_state": {"enum": ["ACTIVE", "RETURNED", "STOPPED"]},
+    "predecessor_event_sha256": {"type": ["string", "null"], "pattern": "^sha256:[a-f0-9]{64}$"},
+    "event_sha256": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "authority_effect": {"const": "NONE"}
+  },
+  "additionalProperties": false
+}
