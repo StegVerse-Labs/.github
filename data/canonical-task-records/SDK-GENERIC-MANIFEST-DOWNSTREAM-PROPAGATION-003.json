@@ -1,0 +1,81 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "parent_task_id": "SDK-PROCESSOR-GENERIC-MANIFEST-002",
+  "goal": "Propagate processor-generic stegverse.ingress-manifest.v1 semantics to downstream consumers and complete public governed-runtime distribution without duplicating processor, resident-runtime, transition, credential, or readiness authority.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "cosv_task_vector": "71000000100110",
+  "repository": "StegVerse-org/StegVerse-SDK",
+  "handoff_projection_refs": [
+    "StegVerse-org/StegVerse-SDK:SDK_GENERIC_MANIFEST_DOWNSTREAM_PROPAGATION_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:docs/SHARED_DOCS_EPHEMERAL_MANIFEST_WORKSPACE_MIRROR_HANDOFF.md"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-org", "StegVerse-Labs"],
+    "repositories": [
+      "StegVerse-org/StegVerse-SDK",
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/TVC",
+      "StegVerse-Labs/stegfin-governance",
+      "StegVerse-org/LLM-adapter",
+      "StegVerse-Labs/Site",
+      "StegVerse-Labs/admissibility-wiki"
+    ],
+    "components": [
+      "sdk-generic-manifest",
+      "workspace-external-collaboration",
+      "workspace-active-probe",
+      "external-collaboration-consent",
+      "external-collaboration-client-secret-custody",
+      "resident-request-dispatcher",
+      "resident-refresh-dispatch",
+      "sovereign-service-gateway",
+      "sdk-public-distribution",
+      "master-records-public-distribution"
+    ]
+  },
+  "adjacent_task_refs": [
+    "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001",
+    "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+    "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+    "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001"
+  ],
+  "remaining_predicates": [
+    "RESIDENT_RESEAL_CONSUMPTION_RECEIPT_OBSERVED",
+    "RESIDENT_CONSENT_LISTENER_CONSUMPTION_RECEIPT_OBSERVED",
+    "EXTERNAL_COLLAB_CLIENT_SECRET_CUSTODY_PROVEN",
+    "SOVEREIGN_CALLBACK_REACHABILITY_PROVEN",
+    "OWNER_PRESENT_GOOGLE_CONSENT_PROVEN",
+    "AUTHORITATIVE_PROVIDER_FILE_PROBE_PROVEN",
+    "SDK_ACTIVE_PROBE_COMPLETE_PREDICATE_REEVALUATION_PROVEN",
+    "MIR_TRANSITION_REPORTING_PROVEN",
+    "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_PROVEN",
+    "ONE_CURRENT_DEVICE_END_TO_END_PROVEN",
+    "DOWNSTREAM_PROPAGATION_COMPLETE",
+    "PUBLIC_DISTRIBUTIONS_COMPLETE"
+  ],
+  "worker_claim": {
+    "authority": "NONE_TASK_REGISTRY_PROJECTION_ONLY",
+    "claim_ref": null,
+    "projection_only": true
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "activation_proof_complete": false
+  },
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "credential_authority": "TV/TVC",
+    "master_records_reality_authority": true,
+    "interlock_intr_required_for_governed_ingress_egress": true,
+    "heartbeat_execution_authority": false,
+    "github_runtime_authority": "NONE",
+    "hosted_execution_fallback": false,
+    "second_user_operated_device_required": false
+  }
+}
