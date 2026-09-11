@@ -56,6 +56,7 @@ Canonical references:
 - LLM-adapter #331 merged at `f4db7005818c7b77bf7e25345c86df1277760a93`; Gateway ingress emits the canonical DEVICE->KV first-hop sidecar without credential plaintext.
 - TVC #377 merged at `72aa78c8f60226621c19d58751ec776f777583f9`; TVC validates the sidecar and remains the single SKAP ciphertext custody writer.
 - `.github` #1332 merged at `42996a4582e2fb9e4d3207dd3e45b764dc727723`; WorkerCoordinator can continue from the Gateway/TVC evidence into the canonical return chain.
+- `.github` #1339 merged at `861647893df88c30f591e374a8be30fccaf7c64f`; the canonical task no longer incorrectly requires a persistent physical transport process or always-on receiver.
 
 ## Preferred custody continuation
 
@@ -71,6 +72,22 @@ After TVC has admitted one authentic sealed ciphertext, `scripts/continue_device
 8. runs the terminal verifier.
 
 TVC remains the single ciphertext custody writer. `consume_kv_skap_custody_materialization_request.py` is compatibility/direct custody only and MUST NOT duplicate a TVC custody write for the same ciphertext.
+
+The worker itself does not fabricate or self-authorize hop receipts. After the prerequisite current-device and TVC custody evidence is already admitted, the worker may invoke the canonical StegOS Interlock/InTr connector. That connector may materialize the receipts for those invoked transitions under its own transition semantics. GitHub, WorkerCoordinator, the carrier, and the verifier still grant no transition or credential authority.
+
+## Bounded event execution surface
+
+`scripts/execute_device_kv_skap_roundtrip_event.py` is the dedicated one-shot execution surface for this task. It:
+
+1. requires an already-local canonical source root, bounded runtime root, canonical StegOS root, Gateway DEVICE->KV sidecar, and terminal TVC drain receipt;
+2. rejects hosted execution markers;
+3. refreshes already-local WorkerCoordinator source into the bounded event runtime;
+4. validates `STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001 + 50000000102000` against the refreshed COSV task-vector index;
+5. forwards only the non-secret evidence paths required by the registered worker;
+6. invokes `scripts/run_worker_runtime.py --task-id STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001`, preserving normal WorkerCoordinator fresh claim/fence semantics;
+7. reports terminal success only when the nested worker returns `DEVICE_KV_SKAP_ROUNDTRIP_VERIFIED`.
+
+This execution wrapper grants no execution, transition, provider, or credential authority. It exists to make the already-admissible task actually targetable on an `EVENT_EPHEMERAL` sovereign runtime without a persistent listener.
 
 ## MyKV relationship
 
@@ -115,11 +132,11 @@ These are execution/evidence blockers only. `PHYSICAL_RUNTIME_NOT_PRESENT`, `ALW
 
 ## Next
 
-1. Validate and merge this ephemeral-runtime contract reconciliation.
-2. Execute one already-authorized, non-destructive bounded event-ephemeral Device->KV->SKAP->KV->Device operation using the existing canonical Node identity/continuity context.
+1. Validate and merge the dedicated bounded-event executor and corrected receipt-authority wording.
+2. Execute one already-authorized, non-destructive bounded event-ephemeral Device->KV->SKAP->KV->Device operation using the existing canonical Node identity/continuity context and `scripts/execute_device_kv_skap_roundtrip_event.py`.
 3. Retain the four receipts and exact SKAP/KV readbacks.
 4. Close the three evidence blockers only when the terminal verifier returns `DEVICE_KV_SKAP_ROUNDTRIP_VERIFIED`.
 
 ## Manual work
 
-None for this documentation/source reconciliation. No continuously running physical node or second user-operated device is required by the Universal InTr transport contract.
+None for this source reconciliation. No continuously running physical node or second user-operated device is required by the Universal InTr transport contract.
