@@ -10,7 +10,7 @@
     "failure_predicates": ["retired task is reused for ordinary continuation","runtime completion is inferred from source or CI"],
     "authority_ceiling": ["retirement and lineage evidence only","no self-admission","no credential resolution","no provider operation","no duplicate SKAP ciphertext custody write","no authority transfer"],
     "successor_policy": "INHERIT_OR_NARROW",
-    "max_successor_depth": 1
+    "max_successor_depth": 2
   },
   "task": {
     "task_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
