@@ -1,0 +1,31 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "SITE-PUBLICATION-INTR-CONSUMER-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:site-publication-intr-consumer-v1",
+      "authority_ref": "handoffs/SITE-PUBLICATION-INTR-CONSUMER-001.json#authority",
+      "capabilities": [
+        "bounded_process_execution",
+        "durable_state_reconstruction",
+        "intr_ingress"
+      ],
+      "command": [
+        "python",
+        "workers/site_publication_intr_consumer_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_SITE_PUBLICATION_MATERIALIZATION_ID"
+      ],
+      "notes": [
+        "Only the opaque materialization id from an already-admitted Site publication ingress may be forwarded.",
+        "The process requires an authentic WorkerCoordinator claim/fence in the worker invocation and mints neither itself.",
+        "The worker may validate candidate materialization evidence but does not admit final publication or DNS/TLS state."
+      ],
+      "timeout_seconds": 120,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
