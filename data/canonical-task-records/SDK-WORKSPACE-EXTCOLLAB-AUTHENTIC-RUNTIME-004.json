@@ -5,13 +5,14 @@
   "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
   "parent_task_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
   "goal": "Complete the authentic sovereign-resident external-collaboration runtime proof chain from resident reseal/listener consumption through target custody, sovereign callback reachability, owner-present consent, provider probe, SDK predicate re-evaluation, MIR reporting, Master Records reconstruction, one-current-device proof, and downstream/public distribution evidence without creating a hosted fallback or duplicate authority path.",
-  "coordination_state": "ACTIVE",
+  "coordination_state": "INACTIVE",
   "checkout_state": "UNCLAIMED",
   "cosv_task_vector": "71000000100110",
   "repository": "StegVerse-Labs/.github",
+  "activation_condition": "PARENT_GOAL_PROMPT_COUNT_REACHES_20",
   "handoff_projection_refs": [
     "StegVerse-Labs/.github:docs/SDK_WORKSPACE_EXTCOLLAB_AUTHENTIC_RUNTIME_004_MIRROR_HANDOFF.md",
-    "StegVerse-org/StegVerse-SDK:SDK_GENERIC_MANIFEST_DOWNSTREAM_PROPAGATION_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:docs/SHARED_DOCS_EPHEMERAL_MANIFEST_WORKSPACE_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github:docs/SDK_WORKSPACE_EXTERNAL_COLLAB_PORTABLE_DISPATCH_MIRROR_HANDOFF.md"
   ],
   "targets": {
@@ -25,14 +26,22 @@
     "StegVerse-org/StegVerse-SDK:pull/196",
     "StegVerse-org/StegVerse-SDK:commit/e55c0e415759a3f2baf2d553f403a3729719f891",
     "StegVerse-Labs/.github:pull/1402",
-    "StegVerse-Labs/.github:commit/c2d03c776895ab99fa99ed49ca7c9ca9256d45cf"
+    "StegVerse-Labs/.github:commit/c2d03c776895ab99fa99ed49ca7c9ca9256d45cf",
+    "StegVerse-org/LLM-adapter:pull/332",
+    "StegVerse-org/LLM-adapter:commit/9ab7e019eaf694f20c978ce65ad7a2d5c886010a",
+    "StegVerse-org/StegVerse-SDK:pull/199",
+    "StegVerse-org/StegVerse-SDK:commit/19db2775b6dbcd361f8329b6b0710699f4467462",
+    "StegVerse-Labs/.github:pull/1415",
+    "StegVerse-Labs/.github:commit/4af1b801a193a3c9ace7c6327ef010fd40915b15"
   ],
   "source_state": {
     "portable_exact_dispatch_merged": true,
+    "service_gateway_three_route_source_merged": true,
     "resident_reseal_consumption_receipt_observed": false,
     "resident_consent_listener_consumption_receipt_observed": false,
     "retained_drive_receipts_observed": false,
     "authorized_remote_runtime_online_observed": false,
+    "sovereign_callback_reachability_proven": false,
     "github_runtime_authority": "NONE",
     "hosted_execution_fallback": false
   },
@@ -61,9 +70,5 @@
     "hosted_execution_fallback": false,
     "second_user_operated_device_required": false
   },
-  "completion": {
-    "claimed": false,
-    "validated": false,
-    "activation_proof_complete": false
-  }
+  "completion": {"claimed": false, "validated": false, "activation_proof_complete": false}
 }
