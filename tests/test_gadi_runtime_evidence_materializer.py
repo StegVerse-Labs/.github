@@ -29,8 +29,8 @@ def populate_sources(root: Path) -> None:
     base = root / materializer.SOURCE_DIR
     write_json(base / "stegos-command.json", {
         "schema": "stegos.gadi-native-defensive-command.v1",
-        "task_id": materializer.TASK_ID,
-        "state": "READY_FOR_RESIDENT_EXECUTION",
+        "task_id": materializer.PARENT_TASK_ID,
+        "command_state": "READY_FOR_RESIDENT_EXECUTION",
         "intr_admission_observed": True,
         "intr_decision_ref": "intr:decision:1",
         "runtime_binding_ref": "runtime:binding:1",
@@ -38,9 +38,12 @@ def populate_sources(root: Path) -> None:
         "credential_authority": "TV/TVC",
     })
     write_json(base / "intr-admission.json", {
-        "state": "ADMITTED",
-        "intr_decision_ref": "intr:decision:1",
-        "runtime_binding_ref": "runtime:binding:1",
+        "schema": "stegos.defensive_intervention_request.v1",
+        "task_id": materializer.PARENT_TASK_ID,
+        "admission": {
+            "state": "ADMITTED",
+            "intr_decision_ref": "intr:decision:1",
+        },
     })
     write_json(base / "worker-claim.json", {
         "task_id": materializer.TASK_ID,
@@ -85,17 +88,44 @@ def test_materializer_fails_closed_when_sources_missing(tmp_path):
     assert not (tmp_path / materializer.COMMAND_OUT).exists()
 
 
-def test_materializer_projects_only_coherent_observed_bundle(tmp_path):
+def test_materializer_projects_canonical_intr_admission_without_intr_runtime_binding(tmp_path):
     populate_sources(tmp_path)
     result = materializer.materialize(tmp_path)
     assert result["state"] == "MATERIALIZED_READY_FOR_PREFLIGHT"
     assert result["ready"] is True
     assert result["blockers"] == []
+    assert result["intr_admission_shape"] == "NESTED_CANONICAL"
+    assert result["intr_runtime_binding_required"] is False
     context = json.loads((tmp_path / materializer.CONTEXT_OUT).read_text())
     assert context["worker_claim_ref"] == "wc:claim:1"
     assert context["fence_ref"] == "wc:fence:1"
     assert context["runtime_binding_ref"] == "runtime:binding:1"
+    assert context["source_intr_admission_sha256"] == result["source_sha256"]["intr"]
     assert result["authority_minted"] is False
+
+
+def test_materializer_accepts_legacy_top_level_intr_admission_projection(tmp_path):
+    populate_sources(tmp_path)
+    intr_path = tmp_path / materializer.INTR_SOURCE
+    write_json(intr_path, {
+        "state": "ADMITTED",
+        "intr_decision_ref": "intr:decision:1",
+    })
+    result = materializer.materialize(tmp_path)
+    assert result["ready"] is True
+    assert result["intr_admission_shape"] == "TOP_LEVEL_COMPATIBILITY"
+    assert "INTR_RUNTIME_BINDING_MISSING" not in result["blockers"]
+
+
+def test_materializer_rejects_intr_decision_mismatch(tmp_path):
+    populate_sources(tmp_path)
+    intr_path = tmp_path / materializer.INTR_SOURCE
+    intr = json.loads(intr_path.read_text())
+    intr["admission"]["intr_decision_ref"] = "intr:decision:other"
+    write_json(intr_path, intr)
+    result = materializer.materialize(tmp_path)
+    assert result["ready"] is False
+    assert "INTR_DECISION_REF_MISMATCH" in result["blockers"]
 
 
 def test_materializer_rejects_cross_surface_runtime_binding_mismatch(tmp_path):
