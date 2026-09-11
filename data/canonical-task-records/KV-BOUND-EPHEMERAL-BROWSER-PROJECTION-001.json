@@ -16,6 +16,9 @@
     "StegVerse-Labs/Site#1225",
     "StegVerse-Labs/Site#1230",
     "StegVerse-Labs/Site@437a519f7a2557f39ec3505eb5b9e0b8e2794574",
+    "StegVerse-Labs/Site#1236",
+    "StegVerse-Labs/Site@841ab0298741fd5152c9cf88211468c3b86093d3",
+    "StegVerse-Labs/Site:actions/run/34616154322",
     "StegVerse-Labs/.github/tasks/TASK-2026-0010.json",
     "StegVerse-Labs/.github/tasks/TASK-2026-0011.json"
   ],
@@ -49,15 +52,16 @@
     {
       "dependency_id": "DEP-COMPLETE-KV-GATED-SITE-PROJECTION",
       "kind": "SOURCE_PROJECTION_PREDICATE",
-      "state": "ACTIVE",
-      "ref": "StegVerse-Labs/Site:claim/current-iphone-kv-testflight-static-bootstrap-r1",
-      "disposition": "Project exact StegOS commit 19e2ea02a16bd703767aafcd47e71f5ec5efe3cf KV-gated entry/bootstrap and both KV consumer modules under TASK-2026-0011 generation 7 / fence 7 while retaining exact static predecessor commitments."
+      "state": "SATISFIED_MERGED_PUBLIC_EXACT",
+      "ref": "StegVerse-Labs/Site#1236@841ab0298741fd5152c9cf88211468c3b86093d3",
+      "disposition": "Exact frozen StegOS KV-gated bootstrap and signing-support chain merged through Site PR #1236. Post-merge main validation run 34615914477 passed. Public publication proof run 34616154322 fetched stegverse.org/stegos-bootstrap and matched the frozen HTML/bootstrap/KV-loader/signer Git blobs plus exact IPA/WASM SHA-256, sizes, and Git blobs; publication grants no runtime or authority proof."
     },
     {
       "dependency_id": "DEP-TESTFLIGHT-CURRENT-IPHONE-RUNTIME",
       "kind": "PHYSICAL_RUNTIME_PREDICATE",
-      "state": "UNRESOLVED",
-      "ref": "StegVerse-Labs/StegOS#314"
+      "state": "ACTIVE_CURRENT_IPHONE_EXECUTION_REQUIRED",
+      "ref": "https://stegverse.org/stegos-bootstrap/current-iphone-testflight.html",
+      "disposition": "Use the established current iPhone and one already-produced authentic CURRENT_IPHONE_TESTFLIGHT_SIGNING KV projection JSON. The public page must admit the projection, materialize/sign through TV/TVC authority, continue Build Upload/TestFlight, and retain authentic same-device runtime evidence. GitHub publication/CI is not runtime proof."
     }
   ],
   "blockers": [],
@@ -69,11 +73,15 @@
     "AUTHENTIC_CURRENT_IPHONE_NODE_JOURNAL:SEQUENCE66:REPLAY_PASS",
     "AUTHENTIC_CURRENT_IPHONE_ALLOCATOR:TASK-2026-0011:G7:FENCE7:CLAIM_GRANT_OBSERVED",
     "AUTHENTIC_CURRENT_IPHONE_NODE_JOURNAL:SEQUENCE67:ENTRY_SHA256:34d649f1227db25f1a9ddb38fbea709c0fdf4ff5ad0148bb781bbee5c18fb5cf",
-    "StegVerse-Labs/Site#1219:CLOSED_UNMERGED_STALE_SCOPE"
+    "StegVerse-Labs/Site#1219:CLOSED_UNMERGED_STALE_SCOPE",
+    "StegVerse-Labs/Site#1236:MERGED:841ab0298741fd5152c9cf88211468c3b86093d3",
+    "StegVerse-Labs/Site:RUN34615914477:MAIN_VALIDATION_SUCCESS",
+    "StegVerse-Labs/Site:RUN34616154322:PUBLIC_EXACT_PUBLICATION_PASS"
   ],
   "expected_evidence_predicates": [
     "AUTHENTIC_TASK_2026_0011_CLAIM_AND_FENCE_OBSERVED",
     "COMPLETE_KV_GATED_SITE_BOOTSTRAP_PROJECTED",
+    "PUBLIC_EXACT_KV_GATED_SITE_BOOTSTRAP_OBSERVED",
     "TESTFLIGHT_CURRENT_IPHONE_RUNTIME_OBSERVED",
     "GLOBAL_MEASUREMENT_HANDOFF_RETURNED_TO_AUTHENTIC_EXECUTION"
   ],
@@ -86,11 +94,11 @@
     "current_observation_required": true
   },
   "runtime_resolution": {
-    "entrypoint": "TASK_2026_0011_FENCED_SITE_SOURCE_PROJECTION",
+    "entrypoint": "https://stegverse.org/stegos-bootstrap/current-iphone-testflight.html",
     "same_run_remediation_allowed": true,
     "automatic_retry_after_first_failure": false,
-    "latest_state": "TASK_0011_G7_FENCE7_AUTHENTIC_SOURCE_PROJECTION_ACTIVE",
-    "next_runtime_surface": "StegVerse-Labs/Site:claim/current-iphone-kv-testflight-static-bootstrap-r1"
+    "latest_state": "TASK_0011_G7_FENCE7_SITE_PUBLICATION_EXACT_PROVEN_CURRENT_IPHONE_RUNTIME_PENDING",
+    "next_runtime_surface": "AUTHENTIC_CURRENT_IPHONE_SAFARI:CURRENT_IPHONE_TESTFLIGHT_SIGNING"
   },
   "worker_claim": {
     "authority": "WORKERCOORDINATOR",
@@ -98,13 +106,13 @@
     "fence_ref": "FENCE7",
     "projection_only": false
   },
-  "human_action_ref": null,
+  "human_action_ref": "CURRENT_IPHONE_OPEN_PUBLIC_BOOTSTRAP_AND_SELECT_EXISTING_AUTHENTIC_KV_PROJECTION_JSON",
   "completion": {
     "claimed": false,
     "validated": false,
     "activation_proof_complete": false
   },
-  "allowed_next_transitions": ["COMPLETE_KV_GATED_SITE_BOOTSTRAP_PROJECTED", "TESTFLIGHT_CURRENT_IPHONE_RUNTIME_OBSERVED"],
+  "allowed_next_transitions": ["TESTFLIGHT_CURRENT_IPHONE_RUNTIME_OBSERVED"],
   "handoff_projection_refs": ["docs/KV_BOUND_EPHEMERAL_BROWSER_PROJECTION_MIRROR_HANDOFF.md"],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
