@@ -13,6 +13,7 @@
     "StegVerse-Labs/StegSocials/tasks/SS-KV-SKAP-SOCIAL-RELEASE-001.yaml",
     "StegVerse-Labs/StegSocials@3139c290df6279db517fe564398a9ea606df4be4",
     "StegVerse-Labs/StegSocials@59f4ef16f60ee8494eb08b41845a95fcc266ab2c",
+    "StegVerse-Labs/StegSocials@b0922b21abeb95c43751675a2c596b962a1e0bd6",
     "StegVerse-Labs/Site@a934718e4b490945d7e287876fd58e56f57110d9",
     "StegVerse-Labs/StegOS/docs/UNIVERSAL_INTERLOCK_PROTOCOL_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegOS/docs/STEGBROWSER_RETAINED_NODE_BOOTSTRAP_MIRROR_HANDOFF.md",
@@ -27,6 +28,7 @@
       "single-use-public-release-grant",
       "bounded-scope-post-group-grant",
       "bounded-group-atomic-use-state",
+      "bounded-group-event-publication-bridge",
       "event-ephemeral-intr-execution",
       "tv-tvc-skap-social-credential-custody",
       "stegbrowser-event-ephemeral-session",
@@ -39,8 +41,8 @@
   },
   "dependencies": [
     {"dependency_id":"DEP-SS-SOCIAL-KV","kind":"STORAGE","state":"SOURCE_CAS_VALIDATED_EXECUTION_EVIDENCE_PENDING","ref":"Personal-KV/StegSocials/PostGroupState","disposition":"DEVICE_KV CAS and registered-Node/InTr route are merged; retain authentic pre/post exact readback during bounded execution."},
-    {"dependency_id":"DEP-SS-SOCIAL-SKAP","kind":"CREDENTIAL_CUSTODY","state":"EVENT_EXECUTION_EVIDENCE_PENDING","ref":"TV/TVC SKAP social credential lease","disposition":"Do not require a separately resident always-on SKAP process; materialize task-scoped credential/session authority during the admitted event and retain its receipts."},
-    {"dependency_id":"DEP-SS-SOCIAL-STEGBROWSER","kind":"EVENT_EPHEMERAL_TRANSPORT","state":"EVENT_EXECUTION_EVIDENCE_PENDING","ref":"StegVerse-Labs/StegBrowser plus StegOS Node continuity","disposition":"Materialize bounded browser/provider execution for the admitted event; preserve retained Node identity while destroying transient browser/session state afterward."},
+    {"dependency_id":"DEP-SS-SOCIAL-SKAP","kind":"CREDENTIAL_CUSTODY","state":"EVENT_EXECUTION_EVIDENCE_PENDING","ref":"TV/TVC SKAP social credential lease","disposition":"Materialize task-scoped credential/session authority during the admitted event and retain exact receipt references; no separately resident always-on SKAP process is required."},
+    {"dependency_id":"DEP-SS-SOCIAL-STEGBROWSER","kind":"EVENT_EPHEMERAL_TRANSPORT","state":"SOURCE_BRIDGE_VALIDATED_EXECUTION_EVIDENCE_PENDING","ref":"StegVerse-Labs/StegSocials@b0922b21abeb95c43751675a2c596b962a1e0bd6","disposition":"Bounded-group READY uses now materialize into existing Facebook/LinkedIn native StegBrowser callers only when exact InTr admission and TV/TVC-SKAP session receipt refs are supplied; authentic provider execution remains pending."},
     {"dependency_id":"DEP-SS-SOCIAL-CUSTODY","kind":"CUSTODY","state":"IMPLEMENTED_PENDING_REAL_RECEIPT","ref":"MR-STEGSOCIALS-RECEIPT-CUSTODY-001","disposition":"Import and reconstruct after authentic publication and state-transition receipts exist."}
   ],
   "blockers": [
@@ -54,6 +56,7 @@
   "existing_evidence_refs": [
     "StegVerse-Labs/StegSocials@3139c290df6279db517fe564398a9ea606df4be4:bounded-post-group-source-and-validation-merged",
     "StegVerse-Labs/StegSocials@59f4ef16f60ee8494eb08b41845a95fcc266ab2c:atomic-bounded-group-state-store-and-validation-merged",
+    "StegVerse-Labs/StegSocials@b0922b21abeb95c43751675a2c596b962a1e0bd6:bounded-event-publication-bridge-merged-and-validated",
     "StegVerse-Labs/Site@5a3de454a530a1ce0d8cf8ce442935d1b9366790:registered-node-intr-device-kv-route-merged",
     "StegVerse-Labs/Site@a934718e4b490945d7e287876fd58e56f57110d9:bounded-group-runtime-observation-surface-merged",
     "StegVerse-Labs/StegOS/docs/UNIVERSAL_INTERLOCK_PROTOCOL_MIRROR_HANDOFF.md",
@@ -64,6 +67,7 @@
     "PRIVATE_DRAFT_REMAINS_PERSONAL_VIEW_ONLY_WITHOUT_RELEASE_GRANT",
     "PUBLIC_RELEASE_GRANT_IS_EXACT_SINGLE_USE_UNEXPIRED_AND_CONTENT_HASH_BOUND_OR_BOUNDED_GROUP_IS_EXPLICITLY_PARTICIPANT_APPROVED_AND_SCOPE_BOUND",
     "BOUNDED_GROUP_SOURCE_EVIDENCE_CLAIM_TARGET_COUNT_CADENCE_EXPIRY_AND_TRANSFORMATIONS_REMAIN_WITHIN_APPROVED_ENVELOPE",
+    "BOUNDED_EVENT_BRIDGE_REQUIRES_EXACT_INTR_ADMISSION_AND_TV_TVC_SKAP_SESSION_RECEIPT_REFS",
     "BOUNDED_EVENT_EPHEMERAL_NODE_EXECUTION_USES_CANONICAL_ADJACENT_INTR_HOPS",
     "PERSISTENT_NODE_IDENTITY_AND_CONTINUITY_BINDING_SURVIVE_EPHEMERAL_INVOCATION",
     "PERSISTENT_TRANSPORT_PROCESS_NOT_REQUIRED",
@@ -102,7 +106,7 @@
   "worker_claim": {
     "authority": "CURRENT_SESSION_PLUS_PREAUTHORIZED_BOUNDED_GROUP",
     "claim_ref": "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_NATIVE_STEGBROWSER_TRANSPORT_MIRROR_HANDOFF.md",
-    "fence_ref": "bounded group envelope plus Interlock/InTr receipts plus atomic use-state plus terminal browser destruction receipt",
+    "fence_ref": "bounded group envelope plus exact InTr admission receipt plus TV/TVC-SKAP session receipt plus atomic use-state plus terminal browser destruction receipt",
     "projection_only": false
   },
   "human_action_ref": "Participant action is required to create/revoke a bounded group or when a provider requires an unavoidable interactive authentication step; individual in-scope posts do not require renewed approval.",
@@ -113,12 +117,12 @@
     "atomic_use_state_source_complete": true,
     "device_kv_intr_route_source_complete": true,
     "event_ephemeral_runtime_semantics_reconciled": true,
+    "bounded_event_publication_bridge_source_complete": true,
     "authentic_social_event_execution_observed": false,
     "authentic_two_post_group_observed": false,
     "reconciliation_ref": "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_NATIVE_STEGBROWSER_TRANSPORT_MIRROR_HANDOFF.md"
   },
   "allowed_next_transitions": [
-    "VALIDATE_AND_MERGE_EVENT_EPHEMERAL_RUNTIME_RECONCILIATION",
     "EXECUTE_AUTHENTIC_BOUNDED_EVENT_EPHEMERAL_SOCIAL_OPERATION",
     "RETAIN_INTR_SKAP_PUBLICATION_DESTRUCTION_AND_KV_RECEIPTS",
     "EXECUTE_SECOND_IN_SCOPE_POST_WITHOUT_RENEWED_APPROVAL",
@@ -134,6 +138,7 @@
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "source_state_proves_execution": false,
+    "bounded_group_ready_alone_grants_publication_authority": false,
     "transport_availability_grants_execution_authority": false,
     "interlock_intr_required_for_governed_ingress_egress": true,
     "personal_kv_has_decryption_authority": false,
