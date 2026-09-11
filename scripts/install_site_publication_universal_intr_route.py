@@ -1,0 +1,79 @@
+#!/usr/bin/env python3
+"""Install Site publication routing into the existing Universal InTr ingress.
+
+Source transformation only: no second listener, scheduler, heartbeat, claim,
+fence, credential, or execution authority is created.
+"""
+from __future__ import annotations
+
+import argparse
+from pathlib import Path
+
+IMPORT_BLOCK = '''from workers import site_publication_intr_ingress as site_publication  # noqa: E402\n'''
+IMPORT_ANCHOR = '''from workers.sv002_intr_materialization_consumer import (  # noqa: E402\n    DESTINATION as SV002_DESTINATION,\n    DOWNSTREAM_OWNER as SV002_OWNER,\n    scrubbed_env as sv002_scrubbed_env,\n    validate_request as validate_sv002_request,\n)\n'''
+PROFILE_TOKEN = '"StegOS:SitePublicationRuntime"'
+FALLBACK_ROUTE = 'hil.admit_materialization(runtime_root=self.server.runtime_root, body=body, headers=self.headers)'
+SITE_ROUTE = 'site_publication.admit(runtime_root=self.server.runtime_root, payload=payload, transport_payload_sha256=hil.validate_transport_headers(self.headers, body)["payload_sha256"]) if site_publication.is_site_publication(payload) else ' + FALLBACK_ROUTE
+
+
+def require(ok: bool, reason: str) -> None:
+    if not ok:
+        raise SystemExit("FAIL_CLOSED: " + reason)
+
+
+def transform(source: str) -> str:
+    result = source
+    if IMPORT_BLOCK not in result:
+        require(IMPORT_ANCHOR in result, "sv002 import anchor drift")
+        result = result.replace(IMPORT_ANCHOR, IMPORT_ANCHOR + IMPORT_BLOCK, 1)
+
+    # Support either the pre-CanonicalWork or post-CanonicalWork profile list.
+    if PROFILE_TOKEN not in result:
+        marker = '"profiles": ['
+        start = result.find(marker)
+        require(start >= 0, "profile-list anchor missing")
+        end = result.find('],', start)
+        require(end >= 0, "profile-list terminator missing")
+        segment = result[start:end]
+        require('"HIL:Ingress"' in segment and '"SV002:PublicObservation"' in segment, "shared profile invariants missing")
+        result = result[:end] + ', ' + PROFILE_TOKEN + result[end:]
+
+    # The shared ingress intentionally composes profiles as one nested dispatcher
+    # expression.  Anchor only the unique final HIL fallback so this installation
+    # remains compatible whether CanonicalWork (or another admitted profile) was
+    # installed before or after this source was based.  A missing/duplicate
+    # fallback fails closed rather than guessing at router structure.
+    if 'site_publication.admit(' not in result:
+        require(result.count(FALLBACK_ROUTE) == 1, "shared router fallback anchor drift")
+        result = result.replace(FALLBACK_ROUTE, '(' + SITE_ROUTE + ')', 1)
+
+    require(IMPORT_BLOCK in result, "site publication import not installed")
+    require(PROFILE_TOKEN in result, "site publication profile not installed")
+    require('site_publication.admit(' in result, "site publication route not installed")
+    require(result.count("ThreadingHTTPServer") >= 1, "existing shared listener anchor missing")
+    return result
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--router", default="workers/universal_intr_profiled_ingress.py")
+    parser.add_argument("--check", action="store_true")
+    args = parser.parse_args()
+    path = Path(args.router)
+    source = path.read_text(encoding="utf-8")
+    transformed = transform(source)
+    if args.check:
+        require(transformed == source, "site publication route is not installed")
+        print("PASS: Site publication route already installed in shared Universal InTr ingress")
+        return 0
+    if transformed != source:
+        path.write_text(transformed, encoding="utf-8")
+        print("INSTALLED: Site publication route into existing Universal InTr ingress")
+    else:
+        print("NOOP: Site publication route already installed")
+    print("NONCLAIM: source routing does not prove ingress, lease execution, publication, or DNS/TLS recovery")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
