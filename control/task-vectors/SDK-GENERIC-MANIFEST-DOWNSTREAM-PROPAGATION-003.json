@@ -55,9 +55,9 @@
     "public:https://stegverse.org/",
     "public:https://stegverse.org/ecosystem-chat.html"
   ],
-  "observed_at": "2026-09-11T05:50:00Z",
+  "observed_at": "2026-09-11T14:50:02.500Z",
   "exact_metrics": {
-    "lifecycle": "ACTIVE",
+    "lifecycle": "RETIRED",
     "archive_ready": false,
     "blocker_count": 2,
     "evidence_complete": false,
@@ -161,7 +161,11 @@
     "workspace_master_records_custody_reconstruction_proven": false,
     "workspace_one_device_end_to_end_proven": false,
     "readme_review_current_for_internal_workspace_source": true,
-    "sdk_downstream_regression_guard_authority_effect": "NONE"
+    "sdk_downstream_regression_guard_authority_effect": "NONE",
+    "goal_prompt_count_final": 20,
+    "remaining_work_transferred": true,
+    "successor_task_id": "SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004",
+    "successor_activation_condition_satisfied": true
   },
   "authority_effect": "NONE",
   "canonical_owner_ref": "StegVerse-org/StegVerse-SDK:tasks/SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003.json"
