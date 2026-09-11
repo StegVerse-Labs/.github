@@ -34,6 +34,8 @@ def populate_sources(root: Path) -> None:
         "intr_admission_observed": True,
         "intr_decision_ref": "intr:decision:1",
         "runtime_binding_ref": "runtime:binding:1",
+        "control_surface": "safe-state-control",
+        "target_class": "CONTROLLED_SIMULATION",
         "authorization_evidence_ref": "tvtvc:capability:1",
         "credential_authority": "TV/TVC",
     })
@@ -46,16 +48,16 @@ def populate_sources(root: Path) -> None:
         },
     })
     write_json(base / "worker-claim.json", {
-        "task_id": materializer.TASK_ID,
-        "parent_task_id": materializer.PARENT_TASK_ID,
-        "state": "CLAIMED",
-        "workercoordinator_authority_observed": True,
-        "worker_claim_ref": "wc:claim:1",
-        "fence_ref": "wc:fence:1",
-        "runtime_binding_ref": "runtime:binding:1",
-        "control_surface": "safe-state-control",
-        "target_class": "CONTROLLED_SIMULATION",
-        "execution_subject": "stegverse:gadi:test-subject",
+        "schema": "stegverse.worker-registry-fragment/v0.1",
+        "tasks": [{
+            "task_id": materializer.TASK_ID,
+            "goal_id": materializer.PARENT_TASK_ID,
+            "state": "IN_PROGRESS",
+            "claim_id": "wc:claim:1",
+            "worker_id": "gadi-resident-execution-worker",
+            "worker_instance_id": "gadi-worker-instance-1",
+            "assignment_timer": {"fencing_token": 17},
+        }],
     })
     write_json(base / "actuator-observation.json", {
         "preauthorized_controlled_surface": True,
@@ -88,7 +90,7 @@ def test_materializer_fails_closed_when_sources_missing(tmp_path):
     assert not (tmp_path / materializer.COMMAND_OUT).exists()
 
 
-def test_materializer_projects_canonical_intr_admission_without_intr_runtime_binding(tmp_path):
+def test_materializer_projects_authentic_workercoordinator_claim_and_canonical_intr(tmp_path):
     populate_sources(tmp_path)
     result = materializer.materialize(tmp_path)
     assert result["state"] == "MATERIALIZED_READY_FOR_PREFLIGHT"
@@ -96,25 +98,38 @@ def test_materializer_projects_canonical_intr_admission_without_intr_runtime_bin
     assert result["blockers"] == []
     assert result["intr_admission_shape"] == "NESTED_CANONICAL"
     assert result["intr_runtime_binding_required"] is False
+    assert result["worker_claim_shape"] == "WORKERCOORDINATOR_REGISTRY"
+    assert result["worker_claim_owns_runtime_binding"] is False
+    assert result["worker_claim_owns_gadi_target_binding"] is False
     context = json.loads((tmp_path / materializer.CONTEXT_OUT).read_text())
     assert context["worker_claim_ref"] == "wc:claim:1"
-    assert context["fence_ref"] == "wc:fence:1"
+    assert context["fence_ref"] == "17"
     assert context["runtime_binding_ref"] == "runtime:binding:1"
+    assert context["control_surface"] == "safe-state-control"
+    assert context["target_class"] == "CONTROLLED_SIMULATION"
+    assert context["execution_subject"] == "stegverse:gadi:test-subject"
+    assert context["worker_id"] == "gadi-resident-execution-worker"
+    assert context["worker_instance_id"] == "gadi-worker-instance-1"
     assert context["source_intr_admission_sha256"] == result["source_sha256"]["intr"]
     assert result["authority_minted"] is False
 
 
-def test_materializer_accepts_legacy_top_level_intr_admission_projection(tmp_path):
+def test_materializer_accepts_legacy_top_level_intr_and_bridge_claim_projection(tmp_path):
     populate_sources(tmp_path)
     intr_path = tmp_path / materializer.INTR_SOURCE
-    write_json(intr_path, {
-        "state": "ADMITTED",
-        "intr_decision_ref": "intr:decision:1",
+    write_json(intr_path, {"state": "ADMITTED", "intr_decision_ref": "intr:decision:1"})
+    claim_path = tmp_path / materializer.CLAIM_SOURCE
+    write_json(claim_path, {
+        "task_id": materializer.TASK_ID,
+        "parent_task_id": materializer.PARENT_TASK_ID,
+        "state": "CLAIMED",
+        "worker_claim_ref": "wc:claim:legacy",
+        "fence_ref": "wc:fence:legacy",
     })
     result = materializer.materialize(tmp_path)
     assert result["ready"] is True
     assert result["intr_admission_shape"] == "TOP_LEVEL_COMPATIBILITY"
-    assert "INTR_RUNTIME_BINDING_MISSING" not in result["blockers"]
+    assert result["worker_claim_shape"] == "BRIDGE_COMPATIBILITY"
 
 
 def test_materializer_rejects_intr_decision_mismatch(tmp_path):
@@ -128,16 +143,37 @@ def test_materializer_rejects_intr_decision_mismatch(tmp_path):
     assert "INTR_DECISION_REF_MISMATCH" in result["blockers"]
 
 
-def test_materializer_rejects_cross_surface_runtime_binding_mismatch(tmp_path):
+def test_materializer_rejects_missing_workercoordinator_fence(tmp_path):
     populate_sources(tmp_path)
     claim_path = tmp_path / materializer.CLAIM_SOURCE
     claim = json.loads(claim_path.read_text())
-    claim["runtime_binding_ref"] = "runtime:binding:other"
+    claim["tasks"][0]["assignment_timer"] = {}
     write_json(claim_path, claim)
     result = materializer.materialize(tmp_path)
     assert result["ready"] is False
-    assert "COMMAND_CLAIM_RUNTIME_BINDING_MISMATCH" in result["blockers"]
-    assert "INTR_RUNTIME_BINDING_MISMATCH" not in result["blockers"]
+    assert "FENCE_REF_MISSING" in result["blockers"]
+
+
+def test_materializer_rejects_command_actuator_runtime_binding_mismatch(tmp_path):
+    populate_sources(tmp_path)
+    actuator_path = tmp_path / materializer.ACTUATOR_SOURCE
+    actuator = json.loads(actuator_path.read_text())
+    actuator["runtime_binding_ref"] = "runtime:binding:other"
+    write_json(actuator_path, actuator)
+    result = materializer.materialize(tmp_path)
+    assert result["ready"] is False
+    assert "ACTUATOR_RUNTIME_BINDING_MISMATCH" in result["blockers"]
+
+
+def test_materializer_rejects_command_actuator_target_mismatch(tmp_path):
+    populate_sources(tmp_path)
+    actuator_path = tmp_path / materializer.ACTUATOR_SOURCE
+    actuator = json.loads(actuator_path.read_text())
+    actuator["control_surface"] = "other-surface"
+    write_json(actuator_path, actuator)
+    result = materializer.materialize(tmp_path)
+    assert result["ready"] is False
+    assert "COMMAND_ACTUATOR_CONTROL_SURFACE_MISMATCH" in result["blockers"]
 
 
 def test_dispatch_stops_before_materializer_when_source_resolution_blocks(tmp_path):
@@ -157,10 +193,7 @@ def test_dispatch_stops_before_materializer_when_source_resolution_blocks(tmp_pa
 def test_dispatch_stops_before_preflight_when_materialization_blocks(tmp_path):
     materialized_tools(tmp_path)
     calls = []
-    outputs = [
-        resolver_success(),
-        SimpleNamespace(returncode=2, stdout='{"state":"MATERIALIZATION_BLOCKED_FAIL_CLOSED","ready":false,"blockers":["INTR_NOT_ADMITTED"]}\n'),
-    ]
+    outputs = [resolver_success(), SimpleNamespace(returncode=2, stdout='{"state":"MATERIALIZATION_BLOCKED_FAIL_CLOSED","ready":false,"blockers":["INTR_NOT_ADMITTED"]}\n')]
     def runner(command, **kwargs):
         calls.append(command)
         return outputs.pop(0)
