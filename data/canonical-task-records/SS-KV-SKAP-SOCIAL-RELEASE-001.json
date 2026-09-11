@@ -19,6 +19,8 @@
     "StegVerse-Labs/StegSocials@42c1357ce173c7991cd78d64de58e360852022cb",
     "StegVerse-Labs/StegSocials@05ebcd5ec055577379dead0f24b93a825bd1ec9f",
     "StegVerse-Labs/StegSocials@7e8ba2f932e45fea05e30698999014c916814e56",
+    "StegVerse-Labs/StegSocials@79fd1e090826e4a748af53a71df931e160b43c6d",
+    "StegVerse-Labs/StegSocials@d639510d05a577e98203a525efb382002dd1e6cb",
     "StegVerse-Labs/Site@a934718e4b490945d7e287876fd58e56f57110d9",
     "StegVerse-Labs/StegOS/docs/UNIVERSAL_INTERLOCK_PROTOCOL_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegOS/docs/STEGBROWSER_RETAINED_NODE_BOOTSTRAP_MIRROR_HANDOFF.md",
@@ -34,6 +36,7 @@
       "bounded-scope-post-group-grant",
       "bounded-group-atomic-use-state",
       "bounded-group-pre-admission-intr-intent",
+      "bounded-group-universal-interlock-received-ingress",
       "bounded-group-event-publication-bridge",
       "bounded-group-execution-evidence-reconciler",
       "bounded-group-execution-to-site-cas-projection",
@@ -48,8 +51,8 @@
     ]
   },
   "dependencies": [
-    {"dependency_id":"DEP-SS-SOCIAL-INTR","kind":"GOVERNED_RUNTIME_ADMISSION","state":"SOURCE_INGRESS_INTENT_VALIDATED_AUTHENTIC_ADMISSION_PENDING","ref":"StegVerse-Labs/StegSocials@05ebcd5ec055577379dead0f24b93a825bd1ec9f","disposition":"A READY bounded use now projects into a secret-free stable-work/correlation/convergence InTr execution intent without inventing runtime receipts or authority. Submit the intent through canonical Interlock/InTr and retain only an authentic admission receipt returned by that boundary."},
-    {"dependency_id":"DEP-SS-SOCIAL-KV","kind":"STORAGE","state":"SOURCE_CAS_PROJECTION_VALIDATED_EXECUTION_EVIDENCE_PENDING","ref":"Personal-KV/StegSocials/PostGroupState","disposition":"DEVICE_KV CAS and registered-Node/InTr route are merged; authentic provider execution can now be reconciled and projected into the exact existing Site conditional-write request without creating a second state-write contract; retain authentic pre/post exact readback during execution."},
+    {"dependency_id":"DEP-SS-SOCIAL-INTR","kind":"GOVERNED_RUNTIME_ADMISSION","state":"SOURCE_CANONICAL_RECEIVED_INGRESS_VALIDATED_AUTHENTIC_ADMISSION_PENDING","ref":"StegVerse-Labs/StegSocials@79fd1e090826e4a748af53a71df931e160b43c6d","disposition":"A READY bounded use now projects through the secret-free InTr intent into the canonical Universal Work Interlock v1 INGRESS/RECEIVED record with stable work/correlation/source/dependency/convergence/authority binding. Submit that record through authentic Interlock/InTr and retain only real ADMITTED evidence returned by the runtime boundary."},
+    {"dependency_id":"DEP-SS-SOCIAL-KV","kind":"STORAGE","state":"SOURCE_CAS_PROJECTION_VALIDATED_EXECUTION_EVIDENCE_PENDING","ref":"Personal-KV/StegSocials/PostGroupState","disposition":"DEVICE_KV CAS and registered-Node/InTr route are merged; authentic provider execution can be reconciled and projected into the exact existing Site conditional-write request without creating a second state-write contract; retain authentic pre/post exact readback during execution."},
     {"dependency_id":"DEP-SS-SOCIAL-SKAP","kind":"CREDENTIAL_CUSTODY","state":"EVENT_EXECUTION_EVIDENCE_PENDING","ref":"TV/TVC SKAP social credential lease","disposition":"Materialize task-scoped credential/session authority during the admitted event and retain exact receipt references; no separately resident always-on SKAP process is required."},
     {"dependency_id":"DEP-SS-SOCIAL-STEGBROWSER","kind":"EVENT_EPHEMERAL_TRANSPORT","state":"SOURCE_EXECUTION_RECONCILIATION_VALIDATED_EXECUTION_EVIDENCE_PENDING","ref":"StegVerse-Labs/StegSocials@4f5f9646bca912390352d75ffd66e3c608156c09","disposition":"After authentic InTr admission and TV/TVC-SKAP session materialization, the bounded event may enter the existing Facebook/LinkedIn native StegBrowser callers. Returned provider execution is reconciled before the exact Site CAS request is projected; authentic provider execution remains pending."},
     {"dependency_id":"DEP-SS-SOCIAL-CUSTODY","kind":"CUSTODY","state":"IMPLEMENTED_PENDING_REAL_RECEIPT","ref":"MR-STEGSOCIALS-RECEIPT-CUSTODY-001","disposition":"Import and reconstruct after authentic publication and state-transition receipts exist."}
@@ -70,6 +73,8 @@
     "StegVerse-Labs/StegSocials@42c1357ce173c7991cd78d64de58e360852022cb:execution-to-existing-site-cas-projection-merged-and-validated",
     "StegVerse-Labs/StegSocials@05ebcd5ec055577379dead0f24b93a825bd1ec9f:pre-admission-intr-intent-merged-and-validated",
     "StegVerse-Labs/StegSocials@7e8ba2f932e45fea05e30698999014c916814e56:pre-admission-intr-intent-handoff-task-readme-reconciled",
+    "StegVerse-Labs/StegSocials@79fd1e090826e4a748af53a71df931e160b43c6d:universal-work-interlock-received-projection-merged-and-validated",
+    "StegVerse-Labs/StegSocials@d639510d05a577e98203a525efb382002dd1e6cb:universal-work-interlock-received-projection-handoff-task-reconciled",
     "StegVerse-Labs/Site@5a3de454a530a1ce0d8cf8ce442935d1b9366790:registered-node-intr-device-kv-route-merged",
     "StegVerse-Labs/Site@a934718e4b490945d7e287876fd58e56f57110d9:bounded-group-runtime-observation-surface-merged",
     "StegVerse-Labs/StegOS/docs/UNIVERSAL_INTERLOCK_PROTOCOL_MIRROR_HANDOFF.md",
@@ -82,6 +87,8 @@
     "BOUNDED_GROUP_SOURCE_EVIDENCE_CLAIM_TARGET_COUNT_CADENCE_EXPIRY_AND_TRANSFORMATIONS_REMAIN_WITHIN_APPROVED_ENVELOPE",
     "READY_BOUNDED_USE_PROJECTS_TO_SECRET_FREE_PRE_ADMISSION_INTR_INTENT_WITH_STABLE_WORK_CORRELATION_DEPENDENCY_AND_DUPLICATE_CONVERGENCE_IDENTITY",
     "PRE_ADMISSION_INTR_INTENT_CARRIES_NO_SYNTHETIC_INTR_OR_SKAP_RECEIPT_AND_GRANTS_NO_EXECUTION_AUTHORITY",
+    "PRE_ADMISSION_INTENT_PROJECTS_TO_CANONICAL_UNIVERSAL_WORK_INTERLOCK_INGRESS_RECEIVED_RECORD_WITHOUT_CLAIMING_ADMISSION",
+    "UNIVERSAL_WORK_INTERLOCK_RECEIVED_RECORD_CARRIES_NO_SYNTHETIC_ADMISSION_RECEIPT_AND_NEXT_OWNER_IS_INTERLOCK_INTR",
     "BOUNDED_EVENT_BRIDGE_REQUIRES_EXACT_AUTHENTIC_INTR_ADMISSION_AND_TV_TVC_SKAP_SESSION_RECEIPT_REFS",
     "BOUNDED_EXECUTION_RECONCILER_REQUIRES_EXACT_GROUP_USE_APPROVAL_INTR_SKAP_PROVIDER_AND_DESTRUCTION_BINDINGS_BEFORE_STATE_TRANSITION",
     "RECONCILED_EXECUTION_PROJECTS_ONLY_TO_EXISTING_SITE_CAS_REQUEST_WITH_NO_NEW_AUTHORITY_OR_WRITE_CONTRACT",
@@ -123,7 +130,7 @@
   "worker_claim": {
     "authority": "CURRENT_SESSION_PLUS_PREAUTHORIZED_BOUNDED_GROUP",
     "claim_ref": "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_NATIVE_STEGBROWSER_TRANSPORT_MIRROR_HANDOFF.md",
-    "fence_ref": "bounded group envelope plus authentic InTr admission receipt plus TV/TVC-SKAP session receipt plus verified provider publication/destruction plus existing Site CAS atomic use-state",
+    "fence_ref": "bounded group envelope plus canonical Universal Work Interlock RECEIVED record plus authentic InTr admission receipt plus TV/TVC-SKAP session receipt plus verified provider publication/destruction plus existing Site CAS atomic use-state",
     "projection_only": false
   },
   "human_action_ref": "Participant action is required to create/revoke a bounded group or when a provider requires an unavoidable interactive authentication step; individual in-scope posts do not require renewed approval.",
@@ -135,6 +142,7 @@
     "device_kv_intr_route_source_complete": true,
     "event_ephemeral_runtime_semantics_reconciled": true,
     "bounded_pre_admission_intr_intent_source_complete": true,
+    "bounded_universal_interlock_received_ingress_source_complete": true,
     "bounded_event_publication_bridge_source_complete": true,
     "bounded_execution_evidence_reconciler_source_complete": true,
     "bounded_execution_to_site_cas_projection_source_complete": true,
@@ -143,7 +151,7 @@
     "reconciliation_ref": "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_NATIVE_STEGBROWSER_TRANSPORT_MIRROR_HANDOFF.md"
   },
   "allowed_next_transitions": [
-    "SUBMIT_AUTHENTIC_BOUNDED_INTR_INGRESS_INTENT",
+    "SUBMIT_CANONICAL_RECEIVED_RECORD_TO_AUTHENTIC_INTR_BOUNDARY",
     "RETAIN_AUTHENTIC_INTR_ADMISSION_AND_TV_TVC_SKAP_SESSION_RECEIPTS",
     "EXECUTE_AUTHENTIC_BOUNDED_EVENT_EPHEMERAL_SOCIAL_OPERATION",
     "RECONCILE_AUTHENTIC_EXECUTION_AND_PROJECT_EXISTING_SITE_CAS_REQUEST",
@@ -163,6 +171,9 @@
     "source_state_proves_execution": false,
     "pre_admission_intr_intent_mints_execution_authority": false,
     "pre_admission_intr_intent_may_claim_runtime_receipts": false,
+    "universal_interlock_received_record_mints_execution_authority": false,
+    "universal_interlock_received_record_is_runtime_admission": false,
+    "source_may_synthesize_admitted_state_or_admission_receipt": false,
     "bounded_group_ready_alone_grants_publication_authority": false,
     "transport_availability_grants_execution_authority": false,
     "interlock_intr_required_for_governed_ingress_egress": true,
