@@ -1,6 +1,6 @@
 # HIL Resident Session Manifold Activation Mirror Handoff
 
-Updated: 2026-09-09
+Updated: 2026-09-10
 Repository: `StegVerse-Labs/.github`
 Issue: `#1178`
 Canonical goal task: `SHWP-HIL-SOVEREIGN-RECEIVER-001`
@@ -19,8 +19,12 @@ Primary inherited sources:
 - `docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md`
 - `docs/HIL_G25_REQUEST_CONSUMPTION_RECONCILIATION_20260909.md`
 - `docs/HIL_BROWSER_ESRL_EVIDENCE_INTAKE_MIRROR_HANDOFF.md`
+- `docs/HIL_POST_ESRL_READINESS_MIRROR_HANDOFF.md`
+- `docs/HIL_ESRL_ACCEPTANCE_RECONCILIATION_MIRROR_HANDOFF.md`
 - `StegVerse-Labs/Site/docs/HIL_BROWSER_ESRL_LEASE_OPEN_MIRROR_HANDOFF.md`
 - `scripts/intake_hil_browser_esrl_evidence.py`
+- `scripts/evaluate_hil_post_esrl_readiness.py`
+- `scripts/reconcile_hil_esrl_acceptance.py`
 - `scripts/verify_hil_post_restart_reconstruction.py`
 
 ## Canonical current state
@@ -83,11 +87,11 @@ Post-merge push validation on `61865d7649fc39669caa39008568764f8b7c45b4` also pa
 
 Site PR `#1176`, merged at `c1b75e1a7ee095918db727a0da87688c544af5e4`, reconciled the canonical Site ESRL handoff to the #1173 merge/validation state. Its exact-head validation passed: Site Handoff Orchestrator `34365046902`, Ecosystem Heartbeat `34365046877`, and Site Bootstrap `34365046905`.
 
-A separate terminalization-only Site claim-release PR `#1177` now releases the post-merge handoff reconciliation claim; it does not release the still-active stale-navigation runtime observation claim.
+A separate terminalization-only Site claim-release PR `#1177` releases the post-merge handoff reconciliation claim; it does not release the still-active stale-navigation runtime observation claim.
 
 ## Current physical evidence boundary
 
-Repository source, exact-head validation, merge, and post-merge handoff reconciliation are complete for the stale-navigation repair. Public propagation into the retained standalone-Safari context is still a physical observation requirement. The current execution environment could not resolve `stegverse.org`, so that limitation is not treated as evidence either for or against propagation.
+Repository source, exact-head validation, merge, and post-merge handoff reconciliation are complete for the stale-navigation repair. Public propagation into the retained standalone-Safari context is still a physical observation requirement. A control-plane execution environment that cannot directly observe the retained Safari storage/service-worker state cannot substitute for that physical evidence.
 
 The next successful physical path must be:
 
@@ -125,6 +129,22 @@ The `.github` intake cross-checks the exported ESRL artifact against accepted G2
 
 Source availability, CI, merge, service-worker installation, page availability, automatic retry, cache convergence, or deployment do not satisfy `AUTHENTIC_ESRL_HIL_LEASE_OPEN_NOT_YET_OBSERVED`. Only an exact physical component artifact accepted by canonical intake qualifies.
 
+## Prewired post-ESRL continuation
+
+PR `#1353`, merged at `8ce03ba2d7597f844cdf791d0201f2aaf1273a24`, installed the fail-closed read-only post-ESRL readiness classifier `scripts/evaluate_hil_post_esrl_readiness.py` plus `docs/HIL_POST_ESRL_READINESS_MIRROR_HANDOFF.md`. It consumes only accepted ESRL intake evidence and reports the first unsupported downstream stage: receiver READY/custody, post-restart exact-byte proof, TVC lifecycle handoff, or parent runtime-evidence completion. It cannot launch, restart, invoke TVC, mutate WorkerCoordinator/COSV, or promote source/CI into runtime evidence.
+
+Issue `#1354` and `docs/HIL_ESRL_ACCEPTANCE_RECONCILIATION_MIRROR_HANDOFF.md` prewire the canonical bookkeeping bridge immediately after accepted ESRL evidence. `scripts/reconcile_hil_esrl_acceptance.py` requires the current exact task vector `50000000103000`, current three-blocker registry state, and an accepted exact ESRL intake receipt. Only then may it propose:
+
+```text
+50000000103000 -> 50000000102000
+remove only AUTHENTIC_ESRL_HIL_LEASE_OPEN_NOT_YET_OBSERVED
+retain POST_RESTART_EXACT_BYTE_PROOF_NOT_YET_PRESERVED
+retain TVC_HIL_LIFECYCLE_HANDOFF_NOT_YET_PROVEN
+next runtime stage = HIL_RECEIVER_READY_AND_CUSTODY
+```
+
+The proposal is deliberately non-mutating (`mutation_performed=false`). The actual task-vector/registry/COSV mutation remains a separate reviewed reconciliation after authentic intake.
+
 ## Subsequent predicates
 
 After authentic ESRL `LEASE_OPEN`, preserve the independent obligations for:
@@ -150,13 +170,13 @@ Each child keeps independent request identity, claim/fence, evidence, completion
 
 ## README maintenance
 
-README state was re-reviewed for the Site stale-navigation repair and this canonical reconciliation. Site still uses the admitted v16 wrapper / `HIL_BROWSER_EVIDENCE_V16` contract, and `.github` already documents cross-task evidence and fail-closed runtime observation semantics. No README prose change is required for accuracy at this stage.
+README state was re-reviewed for the Site stale-navigation repair, post-ESRL readiness classifier, and ESRL acceptance reconciliation helper. These remain internal fail-closed continuation/control helpers and do not change the documented public runtime interface or the existing execution/governance architecture. No README prose change is required for accuracy at this stage.
 
 ## Downstream continuation
 
 Downstream verification remains fail-closed and tracked separately by `.github` issue `#1238`. Pertinent destinations remain `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `StegVerse-Labs/admissibility-wiki`, `StegVerse-002/stegguardian-wiki`, and `StegVerse-Labs/Sit` only if an HIL-specific consumer/role is independently established.
 
-No destination may treat G25 consumption, ESRL source merge, stale-page convergence, or Site merge as full HIL activation/release.
+No destination may treat G25 consumption, ESRL source merge, stale-page convergence, Site merge, readiness classification, or a reconciliation proposal as full HIL activation/release.
 
 ## Completion boundary
 
