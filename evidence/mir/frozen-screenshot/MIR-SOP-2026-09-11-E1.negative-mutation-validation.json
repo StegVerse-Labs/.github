@@ -1,0 +1,13 @@
+{
+  "test": "intentional mutation of COUNTERPART_SHARED_CONTRACT_STATE artifact_sha256",
+  "expected_exit": 1,
+  "result": {
+    "errors": [
+      "SCREENSHOT_MANIFEST_DIGEST_CHANGED",
+      "SCREENSHOT_PURPOSE_BINDING_CHANGED:COUNTERPART_SHARED_CONTRACT_STATE"
+    ],
+    "manifest_sha256": "5d20d58865b5f2c0323d314fef99240ebb05a1b469920ad090f8a3ee553fbdbe",
+    "schema": "stegverse.mir-frozen-screenshot-validation/v1",
+    "valid": false
+  }
+}
