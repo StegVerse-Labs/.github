@@ -15,6 +15,7 @@
     "docs/DEVICE_KV_INTR_SOVEREIGN_OBSERVATION_MIRROR_HANDOFF.md",
     "management/UNIVERSAL_DATA_TRANSPORT_INVARIANT.json",
     "workers/run_device_kv_skap_roundtrip_worker.py",
+    "scripts/execute_device_kv_skap_roundtrip_event.py",
     "scripts/continue_device_kv_skap_from_tvc_custody.py",
     "scripts/materialize_kv_device_from_skap_return.py",
     "StegVerse-Labs/StegOS/docs/UNIVERSAL_INTERLOCK_PROTOCOL_MIRROR_HANDOFF.md",
@@ -31,6 +32,8 @@
   },
   "dependencies": [],
   "blockers": [
+    "AUTHENTIC_CURRENT_DEVICE_GATEWAY_SIDECAR_NOT_YET_OBSERVED",
+    "AUTHENTIC_TVC_CANONICAL_ROUNDTRIP_ELIGIBLE_DRAIN_RECEIPT_NOT_YET_OBSERVED",
     "AUTHENTIC_FOUR_LEG_INTR_ROUNDTRIP_NOT_YET_OBSERVED",
     "AUTHENTIC_SKAP_KV_RETURN_RECEIPT_NOT_YET_OBSERVED",
     "KV_SKAP_TERMINAL_EXACT_READBACK_NOT_YET_OBSERVED"
@@ -42,10 +45,16 @@
     "StegVerse-org/LLM-adapter#331@f4db7005818c7b77bf7e25345c86df1277760a93",
     "StegVerse-Labs/TVC#377@72aa78c8f60226621c19d58751ec776f777583f9",
     "StegVerse-Labs/.github#1332@42996a4582e2fb9e4d3207dd3e45b764dc727723",
+    "StegVerse-Labs/.github#1339@861647893df88c30f591e374a8be30fccaf7c64f",
+    "StegVerse-Labs/.github#1352@ec7594aac88b8d60b0d230be15f7901f1040b0fa:exact_head=742461f32253579a1b3148a074160814e304fffb:validation=SUCCESS",
     "StegVerse-Labs/continuity-vault-kit#205@5ad01e04d6693b2ab8e19e9214e318d91d6dad74",
+    "StegVerse-Labs/Site#1196@064f77f24b9ad505d2533bc4efc4a46f74c76799",
+    "StegVerse-Labs/Site#1227@64701e9e9896af0e0e97672706918b9417540cf3",
     "SITE-CLOUD-KV-4347408852127319cbda574f02e03edb:RESIDENT_INGRESS_OBSERVED"
   ],
   "expected_evidence_predicates": [
+    "AUTHENTIC_CURRENT_DEVICE_GATEWAY_CANONICAL_SIDECAR_OBSERVED",
+    "AUTHENTIC_TVC_CANONICAL_ROUNDTRIP_ELIGIBLE_DRAIN_RECEIPT_OBSERVED",
     "DEVICE_KV_REQUEST_AND_RETURN_USE_CANONICAL_ADJACENT_INTR_HOPS",
     "KV_SKAP_REQUEST_AND_RETURN_USE_CANONICAL_ADJACENT_INTR_HOPS",
     "DEVICE_KV_SKAP_ROUNDTRIP_IS_ONE_RECEIPT_HASH_CHAIN",
@@ -91,13 +100,15 @@
     "validated": false,
     "single_roundtrip_composition_source_complete": true,
     "tvc_continuation_wired": true,
+    "bounded_event_executor_merged": true,
     "ephemeral_transport_semantics_reconciled": true,
+    "authentic_gateway_tvc_input_pair_observed": false,
     "authentic_four_leg_roundtrip_observed": false,
     "kv_skap_exact_readback_observed": false,
     "reconciliation_ref": "docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md"
   },
   "allowed_next_transitions": [
-    "VALIDATE_AND_MERGE_EPHEMERAL_RUNTIME_CONTRACT_RECONCILIATION",
+    "PRODUCE_OR_LOCATE_AUTHENTIC_CURRENT_DEVICE_GATEWAY_TVC_INPUT_PAIR",
     "EXECUTE_AUTHENTIC_BOUNDED_EVENT_EPHEMERAL_NON_DESTRUCTIVE_ROUNDTRIP",
     "RETAIN_FOUR_HOP_RECEIPTS_AND_EXACT_READBACK"
   ],

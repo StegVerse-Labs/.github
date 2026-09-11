@@ -57,6 +57,7 @@ Canonical references:
 - TVC #377 merged at `72aa78c8f60226621c19d58751ec776f777583f9`; TVC validates the sidecar and remains the single SKAP ciphertext custody writer.
 - `.github` #1332 merged at `42996a4582e2fb9e4d3207dd3e45b764dc727723`; WorkerCoordinator can continue from the Gateway/TVC evidence into the canonical return chain.
 - `.github` #1339 merged at `861647893df88c30f591e374a8be30fccaf7c64f`; the canonical task no longer incorrectly requires a persistent physical transport process or always-on receiver.
+- `.github` #1352 merged at `ec7594aac88b8d60b0d230be15f7901f1040b0fa`; exact-head `742461f32253579a1b3148a074160814e304fffb` passed the complete deterministic repository suite, organization-control validation, and deterministic diagnostics after converting the new test to canonical stdlib `unittest`.
 - Site #1196 merged at `064f77f24b9ad505d2533bc4efc4a46f74c76799` after exact-head `3fa31a60c53552d09f8ca0e9194ab1c2f2db8dd1` passed all 13 triggered workflows. It adds the provider-neutral MyKV service federation source, SKAP-first non-secret account-onboarding request contract, provenance-preserving service projections, README status, and event-ephemeral child ownership without claiming provider/runtime activation.
 - Site #1227 merged at `64701e9e9896af0e0e97672706918b9417540cf3` after claim-only terminalization validation passed; the Site federation implementation claim is `RELEASED_COMPLETE` while this canonical child remains ACTIVE for authentic runtime proof.
 
@@ -97,6 +98,28 @@ The worker itself does not fabricate or self-authorize hop receipts. After the p
 
 This execution wrapper grants no execution, transition, provider, or credential authority. It exists to make the already-admissible task actually targetable on an `EVENT_EPHEMERAL` sovereign runtime without a persistent listener.
 
+## Current evidence state after #1352
+
+Repository-wide source search after merge found no retained authentic outcome carrying `status: ADMITTED_TO_SKAP_VAULT_CUSTODY` together with `canonical_roundtrip_eligible: true`. The only matches were producer/consumer implementation and tests. Therefore no repository artifact may be promoted into the required runtime input pair.
+
+The exact next prerequisite is one authentic current-device pair produced by the already-merged ingress/custody path:
+
+```text
+A. Gateway sidecar
+schema = stegverse.service-gateway.device-kv-canonical-stage/v1
+contains canonical DEVICE_SYSTEM -> KV intent + RECEIVED receipt
+credential_material_present = false
+authority_effect = NONE_EVIDENCE_ONLY
+
+B. TVC terminal drain receipt
+status = ADMITTED_TO_SKAP_VAULT_CUSTODY
+canonical_roundtrip_eligible = true
+canonical_device_kv_binding.receipt_hash matches A
+credential_persistence_ref points to the exact TVC-written SKAP ciphertext
+```
+
+The TVC producer is `StegVerse-Labs/TVC/tools/coinbase_gateway_stage_drain.py`; it writes drain receipts under the TVC `_Vault/SKAP/Receipts/coinbase-drain` custody tree. A test fixture, reconstructed receipt, repository-only synthetic packet, GitHub Actions artifact, or hosted substitute is not eligible.
+
 ## MyKV relationship
 
 MyKV personal-information ingestion already uses DEVICE_KV read/write with exact-readback requirements for canonical Personal KV records. Ordinary personal information belongs in KV. Credential/signing material belongs in SKAP; MyKV retains only a SKAP reference. This child proves the transport/evidence lane connecting those boundaries rather than moving ordinary personal data wholesale into SKAP.
@@ -131,19 +154,22 @@ A persistent resident/physical runtime is not itself a completion predicate. Sou
 ## Current blockers
 
 ```text
+AUTHENTIC_CURRENT_DEVICE_GATEWAY_SIDECAR_NOT_YET_OBSERVED
+AUTHENTIC_TVC_CANONICAL_ROUNDTRIP_ELIGIBLE_DRAIN_RECEIPT_NOT_YET_OBSERVED
 AUTHENTIC_FOUR_LEG_INTR_ROUNDTRIP_NOT_YET_OBSERVED
 AUTHENTIC_SKAP_KV_RETURN_RECEIPT_NOT_YET_OBSERVED
 KV_SKAP_TERMINAL_EXACT_READBACK_NOT_YET_OBSERVED
 ```
 
-These are execution/evidence blockers only. `PHYSICAL_RUNTIME_NOT_PRESENT`, `ALWAYS_ON_RECEIVER_NOT_PRESENT`, or `TESTFLIGHT_NOT_INSTALLED` MUST NOT be introduced as blockers for this data-transport proof unless a separate capability explicitly depends on them.
+These are execution/evidence conditions only. `PHYSICAL_RUNTIME_NOT_PRESENT`, `ALWAYS_ON_RECEIVER_NOT_PRESENT`, or `TESTFLIGHT_NOT_INSTALLED` MUST NOT be introduced as blockers for this data-transport proof unless a separate capability explicitly depends on them.
 
 ## Next
 
-1. Execute one already-authorized, non-destructive bounded event-ephemeral Device->KV->SKAP->KV->Device operation using the existing canonical Node identity/continuity context and `scripts/execute_device_kv_skap_roundtrip_event.py`.
-2. Retain the four receipts and exact SKAP/KV readbacks.
-3. Close the three evidence blockers only when the terminal verifier returns `DEVICE_KV_SKAP_ROUNDTRIP_VERIFIED`.
+1. Produce or locate one authentic current-device Gateway canonical sidecar and its matching TVC `ADMITTED_TO_SKAP_VAULT_CUSTODY` drain receipt through the existing non-hosted TV/TVC path.
+2. Execute `scripts/execute_device_kv_skap_roundtrip_event.py` against that exact pair on a bounded sovereign `EVENT_EPHEMERAL` runtime bound to the retained Node identity/continuity context.
+3. Retain the four chained receipts and exact SKAP/KV readbacks.
+4. Close the evidence conditions only when the terminal verifier returns `DEVICE_KV_SKAP_ROUNDTRIP_VERIFIED`.
 
 ## Manual work
 
-None for the current source/runtime preparation. No continuously running physical node or second user-operated device is required by the Universal InTr transport contract.
+None. No continuously running physical node or second user-operated device is required by the Universal InTr transport contract.
