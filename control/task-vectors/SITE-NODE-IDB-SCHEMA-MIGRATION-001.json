@@ -1,0 +1,10 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SITE-NODE-IDB-SCHEMA-MIGRATION-001",
+  "profile": "task.v1",
+  "task_id": "SITE-NODE-IDB-SCHEMA-MIGRATION-001",
+  "cosv": "40000100100000",
+  "state": "ACTIVE",
+  "checkout_state": "CLAIMED_INTEGRATION",
+  "parent_task_id": "SS-EVIDENCE-COMPARISON-001",
+  "handoff": "docs/SITE_NODE_IDB_SCHEMA_MIGRATION_MIRROR_HANDOFF.md"
+}

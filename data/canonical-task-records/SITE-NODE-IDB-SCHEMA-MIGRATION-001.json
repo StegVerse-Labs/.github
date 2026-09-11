@@ -1,0 +1,87 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SITE-NODE-IDB-SCHEMA-MIGRATION-001",
+  "correlation_id": "SITE-NODE-IDB-SCHEMA-MIGRATION-001",
+  "root_correlation_id": "SS-EVIDENCE-COMPARISON-001",
+  "parent_task_id": "SS-EVIDENCE-COMPARISON-001",
+  "goal": "Repair the current-iPhone Site Node IndexedDB schema so the shared stegos-node-v1 database preserves registration and Receipt #1 while guaranteeing the canonical meta, receipts, and intr_outbox stores required by DEVICE_KV runtime admission.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CLAIMED_INTEGRATION",
+  "cosv_task_vector": "40000100100000",
+  "source_refs": [
+    "StegVerse-Labs/Site/issues/1233",
+    "StegVerse-Labs/.github/docs/SITE_NODE_IDB_SCHEMA_MIGRATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_ERL_ASSISTED_DRAFTING_MIRROR_HANDOFF.md"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": ["StegVerse-Labs/Site", "StegVerse-Labs/.github", "StegVerse-Labs/StegSocials"],
+    "components": ["stegos-node-v1", "DEVICE_KV", "Node continuity", "IndexedDB schema migration", "ERL standard-flow admission"]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-SITE-IDB-AUTHENTIC-OBSERVATION",
+      "kind": "RUNTIME_EVIDENCE",
+      "state": "AVAILABLE",
+      "ref": "StegVerse-Labs/Site/issues/1233",
+      "disposition": "USE_CURRENT_IPHONE_MISSING_OBJECT_STORE_OBSERVATION_AS_REPAIR_TRIGGER_ONLY"
+    }
+  ],
+  "blockers": [],
+  "adjacent_task_refs": ["SS-EVIDENCE-COMPARISON-001"],
+  "existing_evidence_refs": [
+    "StegVerse-Labs/Site/issues/1233",
+    "StegVerse-Labs/Site/assets/stegverse-node-continuity.js",
+    "StegVerse-Labs/Site/stegos-node/device-kv-intr-sync.js",
+    "StegVerse-Labs/Site/stegos-node/hil-intr-sync.js",
+    "StegVerse-Labs/Site/stegos-node/stegos-node.js"
+  ],
+  "expected_evidence_predicates": [
+    "CANONICAL_NODE_DB_SCHEMA_OWNER_DEFINED",
+    "MALFORMED_V2_META_RECEIPTS_ONLY_MIGRATES_WITHOUT_DATA_LOSS",
+    "V1_META_RECEIPTS_MIGRATES_WITHOUT_DATA_LOSS",
+    "CURRENT_SCHEMA_REOPEN_IS_IDEMPOTENT",
+    "REGISTRATION_AND_RECEIPT_1_EXACT_IDENTITY_PRESERVED",
+    "DEVICE_KV_INTR_OUTBOX_TRANSACTION_AVAILABLE_AFTER_MIGRATION",
+    "ALL_RUNTIME_OPENERS_ALIGNED_TO_CANONICAL_NODE_DB_VERSION",
+    "SITE_VALIDATION_PASS",
+    "README_AND_HANDOFF_RECONCILED",
+    "LIVE_SOURCE_PROPAGATION_OBSERVED_BEFORE_IPHONE_RETRY"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["indexeddb_schema_migration", "device_kv_query", "node_continuity"],
+    "environment": "CURRENT_USER_IPHONE_SITE_ORIGIN",
+    "direction": "PRESERVE_NODE_IDENTITY_THEN_RESTORE_DEVICE_KV_ADMISSION",
+    "mutation_required": true,
+    "deployment_required": true,
+    "current_observation_required": true
+  },
+  "runtime_resolution": {
+    "current_executor": "current-session-repository-orchestration",
+    "authority_basis": "canonical task/COSV plus user-authorized GitHub access",
+    "unattended_runtime": false
+  },
+  "worker_claim": {
+    "authority": "CURRENT_SESSION",
+    "claim_ref": "StegVerse-Labs/.github/docs/SITE_NODE_IDB_SCHEMA_MIGRATION_MIRROR_HANDOFF.md",
+    "fence_ref": null,
+    "projection_only": false
+  },
+  "human_action_ref": "No user action until migration repair is merged and live-source propagation is observed; then exactly one current-iPhone ERL retry is permitted.",
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": null,
+    "activation_proof_complete": false
+  },
+  "allowed_next_transitions": [
+    "IMPLEMENT_CANONICAL_NODE_DB_MIGRATION",
+    "VALIDATE_AND_MERGE_SITE_REPAIR",
+    "VERIFY_LIVE_SOURCE_PROPAGATION",
+    "REQUEST_SINGLE_CURRENT_IPHONE_RETRY"
+  ],
+  "handoff_projection_refs": [
+    "StegVerse-Labs/.github/docs/SITE_NODE_IDB_SCHEMA_MIGRATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_ERL_ASSISTED_DRAFTING_MIRROR_HANDOFF.md"
+  ]
+}
