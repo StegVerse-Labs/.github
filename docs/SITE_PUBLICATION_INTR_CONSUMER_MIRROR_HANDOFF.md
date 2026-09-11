@@ -1,6 +1,6 @@
 # Site Publication InTr Consumer Mirror Handoff
 
-Updated: 2026-09-10
+Updated: 2026-09-11
 Repository: `StegVerse-Labs/.github`
 Issue: #1372
 Task: `SITE-PUBLICATION-INTR-CONSUMER-001`
@@ -66,6 +66,14 @@ The zero floor encodes only that checkout must mint a nonzero fresh generation; 
 
 The worker refuses an invocation without both a real `claim_id` and integer fencing token. It accepts only `STEGVERSE_SITE_PUBLICATION_MATERIALIZATION_ID`, which must identify an already-admitted exact Site request. Candidate validation then remains ACTIVE with authentic lease/public-observation work still unresolved.
 
+## Exact-head validation repair
+
+The previous exact head `aef2740e9f0bb57241d78ec5d7898e8c6a436a92` passed Organization Control and the Deterministic Repository Suite but failed Heartbeat Worker Project run `34566974758` at the later carrier-only/non-mutating dry-run proof. The heartbeat workflow on the branch matched the current main workflow; the failure was isolated to transport of the full branch-specific dry-run projection as one command-line argument.
+
+Commit `041a929253ca058138d3ab2d0c8f3e6bdae1854a` changes only that validation transport: `scripts/run_heartbeat_runtime.py --dry-run --cycles 1` is tee'd to a temporary file and the same JSON is parsed from that file. The existing before/after repository hashes and every carrier non-authority/projection assertion remain unchanged. No heartbeat authority, admission, claim, fence, task activation, worker invocation, lease mutation, or repository persistence is added by this repair.
+
+Exact-head validation for the repaired branch is pending and must be green across Organization Control, Deterministic Repository Suite, and Heartbeat Worker Project before PR #1398 can merge.
+
 ## Runtime/publication predicates still false
 
 ```text
@@ -81,7 +89,7 @@ Persistent Node continuity remains required. Persistent host, always-on receiver
 
 ## Remaining work
 
-1. Validate and merge the WorkerCoordinator registration slice.
+1. Obtain all three green exact-head validation suites and merge PR #1398 only then.
 2. Refresh the merged source into the already-local sovereign runtime.
 3. Target `SITE-PUBLICATION-INTR-CONSUMER-001` through the existing WorkerCoordinator so it receives a fresh independent claim/fence; do not reuse the parent claim.
 4. Bind only the exact admitted Site publication materialization id to that fenced invocation.
