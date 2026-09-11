@@ -3,48 +3,27 @@
 Goal Task ID: `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001`
 Canonical issue: `StegVerse-Labs/.github#1260`
 COSV: `50000000100000`
-Status: `ACTIVE / EXACT CURRENT-IPHONE KV PROJECTION VALIDATED / ALLOCATOR STALE-DOCUMENT FAILURE REPAIRED / RETAINED TASK-0010 JOURNAL RECOVERY NEXT`
+Status: `ACTIVE / EXACT CURRENT-IPHONE KV PROJECTION VALIDATED / TASK-0010 G6 CLAIM RECOVERED / KV-GATED SUCCESSOR ALLOCATION NEXT`
 
 ## Canonical runtime model
 
 ```text
-runtime/node profile
--> retained StegOS node identity + source-device HB lineage
+retained StegOS node identity + source-device HB lineage
 -> ephemeral request consumption
--> WorkerCoordinator claim/fence
+-> WorkerCoordinator/canonical allocator claim/fence
 -> Interlock/InTr admission
--> bounded transport/provider/credential session
+-> bounded TV/TVC provider/credential session
 -> component execution
 -> exact receipt commitment
 -> Master Records reconstruction
 -> downstream propagation
 ```
 
-HB is observability/freshness/correlation only. WorkerCoordinator/canonical allocator owns claim/fence authority. Interlock/InTr owns governed admission/transition authority. TV/TVC owns credential/provider authority. Master Records owns observed-reality/reconstruction. GitHub Actions are validation/evidence transport only.
+HB is observability only. WorkerCoordinator/canonical allocator owns claim/fence authority. Interlock/InTr owns governed transition authority. TV/TVC owns credential/provider authority. Master Records owns observed-reality/reconstruction. GitHub Actions are validation/evidence transport only.
 
-## Global measurement state
+## Proven current-iPhone evidence
 
-The HB32 profile map, StegClaw/VACC executable profiles, ten-stage typed failure responses, one-pass measurement hardening, and measurement-ingress repair are merged. Authentic global measurement still requires one frozen run ID and `receipts/sovereign-host/global-runtime-node-profile-convergence.latest.json` from the retained runtime.
-
-## Current KV-bound current-iPhone trajectory
-
-Active child: `KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001`.
-
-```text
-current iPhone Device→KV/InTr admission
--> verified KV installation
--> browser capability observation
--> exact opaque KV projection
--> TASK-2026-0010 canonical claim/fence
--> Site TestFlight bootstrap projection
--> StegOS projection gate
--> TV/TVC provision/sign/upload
--> TestFlight install
--> retained StegOS/StegBrowser observation
--> frozen global measurement
-```
-
-Two exact 620-byte current-iPhone KV TestFlight projection files were retained and independently satisfy the merged StegOS consumer contract:
+Two exact 620-byte KV TestFlight projection files satisfy the merged StegOS projection validator:
 
 ```text
 primary sha256 93caa302f310be097005c21639504bc13a7e8090d161d56cd0823c37363db3f8
@@ -54,63 +33,62 @@ entry_state ADMITTED
 browser_capability_state OBSERVED_COMPATIBLE
 ```
 
-## Allocator evidence advanced — 2026-09-10
-
-The current iPhone established node continuity successfully. The user then observed one allocator opening in the ChatGPT browser as green/successful, followed by later ChatGPT-browser and Safari presentations of the obsolete failure:
+Read-only immutable journal recovery then proved the prior green allocator execution was authentic:
 
 ```text
-FAIL_CLOSED: auto-execution requires exactly one queued canonical successor
-mutation_performed: false
+TASK-2026-0010 selected
+claim registry generation 6
+fencing token 6
+claim observation CLAIM_GRANT_OBSERVED
+canonical allocator receipt ALLOCATION_COMPLETE
+node journal sequence 66
+node journal replay PASS
+recovery allocator mutation false
 ```
 
-Current merged Site source no longer contains that wrapper restriction. `Site#1205` replaced it with canonical queue membership plus canonical selection of `TASK-2026-0010`.
+The recovered receipt remains authentic provenance and must not be rerun or reconstructed.
 
-The divergent browser presentations therefore expose stale document presentation, not a new canonical allocator predicate. Because successful allocator execution writes a `stegos.org_allocator_same_device_execution_receipt/v1` and claim observation into the established StegOS node journal, the first green execution may already contain the required TASK-0010 G6 claim/fence evidence.
+## Scope reconciliation
 
-Repeated allocation is no longer the first action.
-
-## Immutable recovery remediation
-
-`Site#1210` merged at `764a14ec4fc6b975254f56cc05e1d17b1372d2e9` after exact-head Site Bootstrap, Site Handoff, Ecosystem Heartbeat, and StegOS Node Public Observation validations passed. Claim release `Site#1211` merged at `f09939293e9a5f7ef2b1312e638cd0b1527c1cf9`.
-
-New Site surfaces:
+Before mutating the TASK-0010 product branch, current StegOS source was compared with the pre-KV successor package. Merged StegOS PR #314 (`19e2ea02a16bd703767aafcd47e71f5ec5efe3cf`) added two mandatory modules to the TestFlight path:
 
 ```text
-/stegos-node/org-allocator-evidence-recovery-task0010-g6-v1.html
-  read-only
-  validates established node/device continuity and complete journal replay
-  accepts only retained TASK-2026-0010 same-device allocator receipt + claim observation
-  does not open allocator state DB, call allocate(), or perform CAS
-
-/stegos-node/org-allocator-bootstrap-task0010-g6-v2.html
-  release-immutable execution path
-  checks journal first
-  if TASK-0010 already executed, exports retained evidence and performs no allocator mutation
-  otherwise uses existing canonical preview + retained-state CAS path
+mobile/web-bootstrap/kv-bound-ephemeral-projection-context.js
+mobile/web-bootstrap/kv-projection-file-loader.js
 ```
 
-Service-worker lineage is advanced to `stegos-node-shell-v11-immutable-allocator-recovery-v1` and the new paths are network-only. Site now documents the rule that allocator execution URLs are release-immutable; fixes receive a new path rather than silently replacing an execution document.
+The current TestFlight page loads the KV projection JSON from Files, validates it in memory, and the bootstrap validates the projection before unsigned IPA/WASM materialization.
+
+Those two paths are absent from the authentic TASK-0010 G6 scoped-exclusive claim. Therefore G6 cannot be widened retroactively to publish the complete current package. Site support PR #1219 was closed unmerged before any product-byte transport occurred.
+
+## Fresh successor
+
+Canonical successor `TASK-2026-0011` is being registered for the complete KV-gated package under Site issue #1220. Its scope uses a new product branch and includes the two KV modules explicitly. TASK-0010 remains predecessor provenance with reactivation/widening prohibited.
+
+Current sequence:
+
+```text
+register/validate TASK-2026-0011
+-> make canonical current-iPhone allocator consume the successor task
+-> authentic current-iPhone fresh successor claim/fence
+-> project exact KV-gated StegOS package to Site
+-> feed retained primary KV projection through the published page
+-> TV/TVC provision/sign/native Build Upload
+-> TestFlight install
+-> retained StegOS/StegBrowser observation
+-> exactly one frozen global measurement pass
+```
 
 ## Current first unresolved condition
 
-`RETAINED_TASK_2026_0010_EXECUTION_RECEIPT_RECOVERY_OR_FRESH_IMMUTABLE_G6_EXECUTION`
+`TASK_2026_0011_KV_GATED_SUCCESSOR_REGISTRY_AND_ALLOCATOR_CONSUMPTION`
 
-Required next evidence:
-
-1. use the read-only immutable recovery URL first on the browser storage partition that displayed the green result;
-2. if a retained TASK-2026-0010 receipt exists, export its exact evidence and do not re-run allocation;
-3. verify selected task, generation, claim observation and fencing tokens from that exact export;
-4. only if recovery proves no retained TASK-0010 execution exists, use immutable `org-allocator-bootstrap-task0010-g6-v2.html`;
-5. never reset allocator IndexedDB, node journal, or node continuity to make the test pass.
-
-## After authentic claim/fence evidence
-
-Bind the exact TASK-0010 claim/fence to the task-gated TestFlight static bootstrap work, re-observe Site main, project/validate the StegOS successor assets, feed the primary exact KV projection into the TestFlight bootstrap, continue TV/TVC same-device provisioning/signing/upload, install through TestFlight, observe retained StegOS/StegBrowser runtime, then execute exactly one frozen global measurement pass.
+No new user-operated device work is required until the successor allocator surface is merged and published.
 
 ## README impact
 
-Site `stegos-node/README.md` now carries the immutable allocator/recovery rule. No new `.github` root README semantic is introduced by this evidence-state reconciliation.
+No new `.github` root README semantics are introduced. Site/StegOS repo-local handoffs and README surfaces carry implementation-specific projection semantics.
 
 ## Manual work
 
-Open the read-only immutable recovery page first. Export retained TASK-2026-0010 evidence if found. Use the immutable execution page only if recovery explicitly reports no retained TASK-2026-0010 execution receipt.
+None.
