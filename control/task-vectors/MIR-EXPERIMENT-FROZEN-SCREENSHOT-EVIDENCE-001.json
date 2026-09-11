@@ -1,0 +1,15 @@
+{
+  "identity":"StegVerse-Labs/.github:task:MIR-EXPERIMENT-FROZEN-SCREENSHOT-EVIDENCE-001",
+  "profile":"task.v1",
+  "task_id":"MIR-EXPERIMENT-FROZEN-SCREENSHOT-EVIDENCE-001",
+  "vector":"50000000100000",
+  "parent_task_id":"MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+  "evidence_refs":[
+    "StegVerse-Labs/.github:docs/MIR_EXPERIMENT_FROZEN_SCREENSHOT_EVIDENCE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github:pull/1450",
+    "StegVerse-Labs/.github:pull/1453",
+    "StegVerse-Labs/.github:pull/1474",
+    "StegVerse-Labs/.github:commit/e0e6a47e479a9bc54ca9ca9647aad8ad54cc0c6f",
+    "StegVerse-Labs/.github:commit/048c574acc0a4a3540c2b493f3aa40acff468a70"
+  ]
+}
