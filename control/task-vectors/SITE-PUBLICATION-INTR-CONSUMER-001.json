@@ -1,0 +1,42 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SITE-PUBLICATION-INTR-CONSUMER-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000102000",
+  "evidence_refs": [
+    "control/worker-registry.d/site-publication-intr-consumer-001.json",
+    "handoffs/SITE-PUBLICATION-INTR-CONSUMER-001.json",
+    "docs/SITE_PUBLICATION_INTR_CONSUMER_MIRROR_HANDOFF.md"
+  ],
+  "observed_at": "2026-09-11T03:20:00Z",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 2,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "worker, adapter, task registry, cost basis, and handoff are installed as machine-owned source; authentic claim/fence and runtime evidence remain pending",
+    "archive_ready": "authentic publication lease and public observation are not complete",
+    "unassigned_work": "registered worker owns continuation",
+    "chat_owned_counts": "no chat-owned runtime or credential role",
+    "canonical_owner_installed": "canonical worker registration surfaces installed",
+    "thread_required": "durable machine handoff independently recoverable",
+    "blocker_count": "fresh WorkerCoordinator claim/fence and authentic EVENT_EPHEMERAL lease/public observation remain unsatisfied",
+    "evidence_complete": "runtime/publication proof not observed",
+    "activated": "runtime lease pending",
+    "propagated": "publication/DNS/TLS remains gated"
+  },
+  "authority_effect": "NONE"
+}
