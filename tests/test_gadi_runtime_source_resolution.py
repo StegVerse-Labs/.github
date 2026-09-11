@@ -36,16 +36,13 @@ def test_locator_manifest_copies_exact_local_bytes(tmp_path):
     }
     for name, rel in sources.items():
         write_json(tmp_path / rel, {"source": name, "value": 1})
-    write_json(
-        tmp_path / module.LOCATOR_REL,
-        {
-            "schema": "stegverse.gadi-resident-runtime-source-locators/v1",
-            "task_id": module.TASK_ID,
-            "parent_task_id": module.PARENT_TASK_ID,
-            "network_fetch_allowed": False,
-            "sources": sources,
-        },
-    )
+    write_json(tmp_path / module.LOCATOR_REL, {
+        "schema": "stegverse.gadi-resident-runtime-source-locators/v1",
+        "task_id": module.TASK_ID,
+        "parent_task_id": module.PARENT_TASK_ID,
+        "network_fetch_allowed": False,
+        "sources": sources,
+    })
     result = module.resolve(tmp_path)
     assert result["state"] == "SOURCE_RESOLUTION_COMPLETE"
     assert result["resolved_count"] == 4
@@ -55,22 +52,43 @@ def test_locator_manifest_copies_exact_local_bytes(tmp_path):
         assert result["resolved"][name]["sha256"] == module.digest(tmp_path / target_rel)
 
 
+def test_fresh_workercoordinator_claim_can_be_deferred_from_locator_manifest(tmp_path):
+    sources = {
+        "stegos_command": "native/stegos-command.json",
+        "intr_admission": "native/intr-admission.json",
+        "actuator_observation": "native/actuator-observation.json",
+    }
+    for name, rel in sources.items():
+        write_json(tmp_path / rel, {"source": name})
+    write_json(tmp_path / module.LOCATOR_REL, {
+        "schema": "stegverse.gadi-resident-runtime-source-locators/v1",
+        "task_id": module.TASK_ID,
+        "parent_task_id": module.PARENT_TASK_ID,
+        "network_fetch_allowed": False,
+        "sources": sources,
+    })
+    result = module.resolve(tmp_path, defer_worker_claim=True)
+    assert result["state"] == "SOURCE_RESOLUTION_COMPLETE"
+    assert result["resolved_count"] == 3
+    assert result["deferred_sources"] == ["worker_claim"]
+    assert result["worker_claim_deferred_to_current_workercoordinator_invocation"] is True
+    assert "WORKER_CLAIM_LOCATOR_MISSING_OR_UNSAFE" not in result["blockers"]
+    assert not (tmp_path / module.TARGETS["worker_claim"]).exists()
+
+
 def test_unsafe_locator_fails_closed(tmp_path):
-    write_json(
-        tmp_path / module.LOCATOR_REL,
-        {
-            "schema": "stegverse.gadi-resident-runtime-source-locators/v1",
-            "task_id": module.TASK_ID,
-            "parent_task_id": module.PARENT_TASK_ID,
-            "network_fetch_allowed": False,
-            "sources": {
-                "stegos_command": "../outside.json",
-                "intr_admission": "native/intr.json",
-                "worker_claim": "native/claim.json",
-                "actuator_observation": "native/actuator.json",
-            },
+    write_json(tmp_path / module.LOCATOR_REL, {
+        "schema": "stegverse.gadi-resident-runtime-source-locators/v1",
+        "task_id": module.TASK_ID,
+        "parent_task_id": module.PARENT_TASK_ID,
+        "network_fetch_allowed": False,
+        "sources": {
+            "stegos_command": "../outside.json",
+            "intr_admission": "native/intr.json",
+            "worker_claim": "native/claim.json",
+            "actuator_observation": "native/actuator.json",
         },
-    )
+    })
     result = module.resolve(tmp_path)
     assert result["state"] == "SOURCE_RESOLUTION_BLOCKED_FAIL_CLOSED"
     assert "STEGOS_COMMAND_LOCATOR_MISSING_OR_UNSAFE" in result["blockers"]
@@ -78,16 +96,13 @@ def test_unsafe_locator_fails_closed(tmp_path):
 
 
 def test_network_fetch_permission_is_rejected(tmp_path):
-    write_json(
-        tmp_path / module.LOCATOR_REL,
-        {
-            "schema": "stegverse.gadi-resident-runtime-source-locators/v1",
-            "task_id": module.TASK_ID,
-            "parent_task_id": module.PARENT_TASK_ID,
-            "network_fetch_allowed": True,
-            "sources": {},
-        },
-    )
+    write_json(tmp_path / module.LOCATOR_REL, {
+        "schema": "stegverse.gadi-resident-runtime-source-locators/v1",
+        "task_id": module.TASK_ID,
+        "parent_task_id": module.PARENT_TASK_ID,
+        "network_fetch_allowed": True,
+        "sources": {},
+    })
     result = module.resolve(tmp_path)
     assert result["state"] == "SOURCE_RESOLUTION_BLOCKED_FAIL_CLOSED"
     assert "NETWORK_SOURCE_FETCH_FORBIDDEN" in result["blockers"]
