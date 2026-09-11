@@ -16,98 +16,82 @@ transition_authority: Interlock/InTr
 github_runtime_authority: NONE
 hosted_runtime_fallback: NONE
 second_user_operated_device_required: false
+source_implemented: true
+source_validated: true
+authentic_runtime_observed: false
 ```
 
-## Why this dependency exists
+## Goal
 
-Canonical reconciliation of `STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001` established that `.github` PR #1403 is merged and validated and that its source integration is complete. The remaining roundtrip predicates begin with one authentic current-device Gateway sidecar plus a matching TVC `canonical_roundtrip_eligible=true` drain receipt.
+Materialize and authenticate one real current-iPhone TVC recipient capability using a non-exportable P-256 Secure Enclave key while preserving TV/TVC credential authority, Interlock/InTr transition authority, no private-key export, and the existing StegOS canonical runtime owner.
 
-TVC PR #401 introduced the platform-neutral `stegverse.tvc.recipient-key-capability/v1` boundary and PR #402 reconciled Linux/root/systemd/Remote Desktop/second-device absence out of the universal architecture. The only concrete production adapter currently present is still the Linux root-protected PEM adapter. Repository-wide source search found no existing Apple Secure Enclave / `SecKey` recipient adapter.
+## Merged implementation lineage
 
-Therefore current-iPhone execution cannot honestly produce the authentic recipient activation/liveness evidence yet. This task is the bounded remediation. It must not create a second runtime owner or reassign TV/TVC credential authority to StegOS.
+- StegOS #338: Secure-Enclave-only P-256 candidate source.
+- StegOS #339: candidate compiled into the StegOSMobile target.
+- StegOS #340: challenge-bound proof-of-possession signing.
+- TVC #407: TVC verifier/adopter and Coinbase activation-seam binding.
+- TVC #408 merged at `8aa8eb084c3348e2565f81ca5d2e27044a5a4421`: authenticated runtime-facing adopter requiring a signed TVC admission plus explicit TVC authority public JWK. Unsigned, wrong-anchor, stale/tampered, and broken challenge/admission bindings fail closed. Validation run `34613199534` succeeded.
+- StegOS #343 merged at `0f3980ae29273b4dd131e6831034f11b7cde0df3`: authenticated admission verifier compiled into StegOSMobile. Exact-head StegOS CI `34613115673`, iOS Device Package `34613115670`, and Apple Toolchain `34613115687` all succeeded.
 
-## Required implementation
+No production TVC signing private key or trust anchor is embedded in source. No private iPhone recipient-key bytes are exported.
 
-Use the existing StegOS Mobile iOS target under:
+## Current runtime gate
+
+Source implementation is complete through authenticated admission verification. Authentic execution now requires:
 
 ```text
-StegVerse-Labs/StegOS/mobile/ios/StegOSMobile.xcodeproj
-StegVerse-Labs/StegOS/mobile/ios/StegOSMobile/
+TVC-controlled production recipient-admission signing-key custody
+-> canonical distribution of matching TVC authority public JWK
+-> fresh signed admission bound to exact WorkerCoordinator fence + bounded lease
+-> StegOSMobile admission verification
+-> Secure Enclave key operation on the current iPhone
+-> TVC challenge verification/adoption
+-> public recipient configuration projection
 ```
 
-Implement a TVC-owned mobile recipient capability with these properties:
+The source must fail closed until the trust anchor is supplied through the canonical TVC-controlled path. GitHub, CI, model output, ordinary KV, and repository state are not permitted to mint or custody the production signing private key.
 
-1. Create or resolve a P-256 private key through Apple Security APIs using a non-exportable Secure Enclave-backed handle when supported by the current device.
-2. Namespace the key as TVC recipient capability state; StegOS Mobile hosts the adapter but does not gain credential authority.
-3. Export only the public key/JWK-equivalent material required for recipient projection plus non-secret identifiers, lease metadata, and an opaque `tvc-capability://` handle.
-4. Emit activation and liveness evidence compatible with the semantic checks already enforced by `StegVerse-Labs/TVC/scripts/tvc_recipient_key_capability.py`.
-5. Keep raw private-key bytes unavailable to StegOS Mobile application state, ordinary KV, repository state, logs, screenshots, argv, and provider payloads.
-6. Fail closed if required non-exportability/Secure Enclave semantics are unavailable for production proof. Do not silently substitute an exportable software key.
-7. Bind the mobile capability into the existing TVC Coinbase capability activation seam; do not open routes, grant InTr authority, or start provider operations from the adapter.
-8. Preserve the existing canonical EVENT_EPHEMERAL StegOS runtime owner and the existing TVC activation owner.
+CMC-028 is not reused as a signing-authority mint. Its current registered worker is evidence/observation only and explicitly cannot grant key custody, issuance, signing, credential, claim, fence, or heartbeat authority.
 
-## Validation levels
-
-Source presence is not runtime proof. Close predicates in order:
+## Evidence state
 
 ```text
-SOURCE_IMPLEMENTED
--> IOS_TARGET_INTEGRATED
--> BUILD_VALIDATED
--> CURRENT_IPHONE_NON_EXPORTABLE_KEY_ACTIVATION_OBSERVED
--> CURRENT_IPHONE_LIVENESS_MATCHES_ACTIVATION
--> TVC_RECIPIENT_PUBLIC_CONFIG_PROJECTED
-```
-
-Only after authentic current-iPhone activation/liveness may the parent task continue to Gateway sidecar creation, TVC stage drain, four-leg Interlock/InTr traversal, SKAP/KV exact readback, and `DEVICE_KV_SKAP_ROUNDTRIP_VERIFIED`.
-
-## Authority boundary
-
-```text
-TVC recipient capability
-  -> protected key operation / activation / liveness evidence
-
-StegOS Mobile
-  -> host integration only
-  -> no raw key bytes
-  -> no credential-authority minting
-  -> no transition-authority minting
-
-Interlock/InTr
-  -> governed hop admission only
-
-Canonical StegOS EVENT_EPHEMERAL lane
-  -> runtime lease lifecycle only
-```
-
-## Current state
-
-```text
-PLATFORM_NEUTRAL_TVC_CAPABILITY_CONTRACT = MERGED
-LINUX_ROOT_ADAPTER = PRESENT
-NATIVE_IOS_PROJECT = PRESENT
-IOS_TVC_OPAQUE_KEY_ADAPTER = MERGED_AND_APPLE_TOOLCHAIN_VALIDATED\nTVC_IOS_SIGNATURE_VERIFIER = MERGED_AND_VALIDATED\nTVC_COINBASE_ACTIVATION_SEAM = SOURCE_BOUND\nAUTHENTIC_TVC_CHALLENGE_EXCHANGE = NOT_OBSERVED
-AUTHENTIC_CURRENT_IPHONE_ACTIVATION = NOT_OBSERVED
+SOURCE_IMPLEMENTED = true
+IOS_TARGET_INTEGRATED = true
+APPLE_TOOLCHAIN_BUILD_VALIDATED = true
+AUTHENTICATED_ADMISSION_VERIFIER_MERGED = true
+UNSIGNED_ADMISSION_FAILS_CLOSED = true
+WRONG_ANCHOR_FAILS_CLOSED = true
+TVC_PRODUCTION_ADMISSION_SIGNING_CUSTODY_OBSERVED = false
+TVC_AUTHORITY_PUBLIC_JWK_BOUND = false
+FRESH_AUTHENTIC_SIGNED_ADMISSION_OBSERVED = false
+CURRENT_IPHONE_SECURE_ENCLAVE_EXECUTION_OBSERVED = false
+AUTHENTIC_TVC_CHALLENGE_EXCHANGE_OBSERVED = false
+TVC_PUBLIC_RECIPIENT_CONFIG_PROJECTED = false
 ```
 
 ## Next
 
-Source implementation and validation are complete through StegOS #338/#339/#340 and TVC #407. Next obtain one authentic current-iPhone Secure Enclave candidate plus TVC-issued challenge/attestation exchange, verify it through the merged TVC adapter, and project the public recipient configuration. After that, return control to `STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001` for the authentic Gateway/TVC input pair and canonical four-leg roundtrip.
+1. Resolve or observe production TVC-controlled admission-signing custody outside GitHub/CI/model state.
+2. Bind/distribute only its matching public JWK through the canonical TVC-controlled trust path.
+3. Issue one fresh signed admission for the exact current WorkerCoordinator fence/lease.
+4. Run the compiled StegOSMobile authenticated verifier and Secure Enclave operation on the current iPhone.
+5. Complete TVC challenge verification/adoption and project the public recipient config.
+6. Return control to `STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001` for Gateway/TVC pair creation and four-leg roundtrip proof.
+
+## Authority boundary
+
+- TV/TVC remains credential authority.
+- Interlock/InTr remains transition authority.
+- StegOS Mobile is a host/integration surface, not authority.
+- GitHub/CI/Heartbeat are validation/evidence surfaces only.
+- No hosted runtime fallback or second user-operated device is authorized.
 
 ## README
 
-The functional implementation is documented in the StegOS and TVC repository README/handoff surfaces. This coordination projection updates the organization README because implementation has now landed in both owning repositories.
+The parent and owning-repository README principles remain accurate. This reconciliation changes only the authentic runtime/evidence gate, so no README prose change is required.
 
 ## Manual work
 
-None at this coordination stage. Do not enter provider credentials, key material, or private-key bytes into chat, GitHub, ordinary KV, logs, screenshots, or repository state.
-
-
-## Validated merged source lineage
-
-- StegOS #338 merged the Secure-Enclave-only P-256 candidate source.
-- StegOS #339 compiled it into the StegOSMobile target with Apple-toolchain validation.
-- StegOS #340 added challenge-bound proof-of-possession signing and passed exact-head StegOS CI, iOS Device Package Validation, and iOS Apple Toolchain Validation.
-- TVC #407 merged at `3fbdba0cb539b3672b53c3aa29e948e58e4fdb8e`; the dedicated recipient-capability suite, credential-model consistency validation, and consent HTTP validation all passed at exact head `704f064a6fb07b6c72076b4ced68851fe7e84ea1`.
-
-These results close source implementation, target integration, Apple-toolchain build, TVC signature-verification, and Coinbase activation-seam binding. They do not close physical current-iPhone execution or runtime evidence.
+None at this stage. Do not enter provider credentials. Do not create/export the TVC authority signing private key in GitHub/CI. Do not manually create or export the iPhone recipient private key.
