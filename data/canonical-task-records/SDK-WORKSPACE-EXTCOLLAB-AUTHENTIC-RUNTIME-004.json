@@ -139,7 +139,7 @@
     "already_local_source_required": true,
     "second_user_operated_device_required": false
   },
-  "runtime_resolution": null,
+  "runtime_resolution": "UNRESOLVED_NO_CURRENT_AUTHORIZED_DEVICE",
   "worker_claim": {
     "authority": "WORKERCOORDINATOR",
     "claim_ref": null,
