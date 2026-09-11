@@ -25,10 +25,13 @@
     "StegVerse-org/StegVerse-SDK:pull/196",
     "StegVerse-org/StegVerse-SDK:commit/e55c0e415759a3f2baf2d553f403a3729719f891",
     "StegVerse-Labs/.github:pull/1402",
-    "StegVerse-Labs/.github:commit/c2d03c776895ab99fa99ed49ca7c9ca9256d45cf"
+    "StegVerse-Labs/.github:commit/c2d03c776895ab99fa99ed49ca7c9ca9256d45cf",
+    "StegVerse-Labs/.github:pull/1415",
+    "StegVerse-Labs/.github:commit/4af1b801a193a3c9ace7c6327ef010fd40915b15"
   ],
   "source_state": {
     "portable_exact_dispatch_merged": true,
+    "gateway_source_reconciliation_merged": true,
     "resident_reseal_consumption_receipt_observed": false,
     "resident_consent_listener_consumption_receipt_observed": false,
     "retained_drive_receipts_observed": false,
@@ -36,6 +39,17 @@
     "github_runtime_authority": "NONE",
     "hosted_execution_fallback": false
   },
+  "runtime_requirements": {
+    "capabilities": ["resident_request_dispatch"],
+    "environment": "SOVEREIGN_RESIDENT",
+    "direction": "INTERNAL",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true,
+    "already_local_source_required": true,
+    "second_user_operated_device_required": false
+  },
+  "runtime_resolution": null,
   "remaining_predicates": [
     "RESIDENT_RESEAL_CONSUMPTION_RECEIPT_OBSERVED",
     "RESIDENT_CONSENT_LISTENER_CONSUMPTION_RECEIPT_OBSERVED",
@@ -50,6 +64,12 @@
     "DOWNSTREAM_PROPAGATION_COMPLETE",
     "PUBLIC_DISTRIBUTIONS_COMPLETE"
   ],
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "worker_claim_authority": "WORKERCOORDINATOR",
