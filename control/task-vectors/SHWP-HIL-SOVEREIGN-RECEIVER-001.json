@@ -2,15 +2,19 @@
   "identity": "StegVerse-Labs/.github:task:SHWP-HIL-SOVEREIGN-RECEIVER-001",
   "profile": "task.v1",
   "level": "task",
-  "vector": "50000000103000",
+  "vector": "50000000102000",
   "evidence_refs": [
     "control/worker-registry.d/hil-sovereign-receiver-001.json",
     "handoffs/SHWP-HIL-SOVEREIGN-RECEIVER-001.json",
     "docs/HIL_SOVEREIGN_RECEIVER_ACTIVATION_MIRROR_HANDOFF.md",
     "docs/HIL_G25_REQUEST_CONSUMPTION_RECONCILIATION_20260909.md",
-    "receipts/sovereign-host/hil-resident-execution-request-consumption.latest.json"
+    "docs/HIL_ESRL_EXACT_INTAKE_RECONCILIATION_20260911.md",
+    "receipts/sovereign-host/hil-resident-execution-request-consumption.latest.json",
+    "receipts/sovereign-host/hil-browser-esrl-evidence-intake.latest.json",
+    "receipts/sovereign-host/hil-esrl-acceptance-reconciliation-proposal.latest.json",
+    "evidence/physical/hil-esrl-lease-open-a6756c54da15f09cd6a3dbb201375891803f6589fd644db4c545be39ebe41b92.json"
   ],
-  "observed_at": "2026-09-09T00:48:00-05:00",
+  "observed_at": "2026-09-11T09:31:00-05:00",
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
     "lifecycle": "MACHINE_OWNED",
@@ -23,21 +27,21 @@
     "chat_owned_credentials": 0,
     "canonical_owner_installed": true,
     "thread_required": false,
-    "blocker_count": 3,
+    "blocker_count": 2,
     "evidence_complete": false,
     "activated": false,
     "propagated": false
   },
   "metric_evidence": {
-    "lifecycle": "resident request-consumption predicate is satisfied from exact current-iPhone browser evidence; broader HIL lifecycle remains machine-owned",
+    "lifecycle": "resident request-consumption and exact physical ESRL LEASE_OPEN predicates are satisfied; broader HIL lifecycle remains machine-owned",
     "archive_ready": "control/worker-registry.d/hil-sovereign-receiver-001.json archive_eligible=false",
     "unassigned_work": "registered worker owns continuation",
     "chat_owned_counts": "no chat-owned execution or credential role",
-    "canonical_owner_installed": "canonical handoff, worker, adapter, registry, exact physical evidence, and consumption receipt are installed",
+    "canonical_owner_installed": "canonical handoff, worker, adapter, registry, exact physical G25 evidence, exact physical ESRL artifact, and accepted ESRL intake receipt are installed",
     "thread_required": "durable machine handoff is independently recoverable",
-    "blocker_count": "three archive reason codes remain after G25 claim/fence observation and browser receipt preservation",
-    "evidence_complete": "request-consumption evidence is complete; ESRL lease-open observation, post-restart exact-byte proof, and TVC lifecycle handoff remain outstanding",
-    "activated": "local-ready request consumption is observed but broader HIL lifecycle activation is not yet complete",
+    "blocker_count": "two archive reason codes remain after exact physical ESRL LEASE_OPEN bytes were accepted",
+    "evidence_complete": "request-consumption and ESRL lease-open evidence are complete; post-restart exact-byte proof and TVC lifecycle handoff remain outstanding",
+    "activated": "ESRL lease-open is observed but broader HIL lifecycle activation is not yet complete",
     "propagated": "downstream propagation remains gated on owning release predicates; verification task is StegVerse-Labs/.github#1238"
   },
   "authority_effect": "NONE"
