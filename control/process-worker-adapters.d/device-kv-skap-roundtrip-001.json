@@ -6,7 +6,7 @@
       "adapter_ref": "process:device-kv-skap-roundtrip-v1",
       "authority_ref": "handoffs/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json#authority",
       "capabilities": ["runtime_observation", "bounded_process_execution", "durable_state_reconstruction"],
-      "command": ["python", "workers/run_device_kv_skap_roundtrip_worker.py"],
+      "command": ["python", "workers/run_device_kv_skap_canonical_runtime_worker.py"],
       "cwd": ".",
       "enabled": true,
       "env_allowlist": [
@@ -15,13 +15,18 @@
         "STEGVERSE_DEVICE_KV_SKAP_ROUNDTRIP_OUTPUT",
         "STEGVERSE_DEVICE_KV_SKAP_GATEWAY_SIDECAR",
         "STEGVERSE_DEVICE_KV_SKAP_TVC_DRAIN_RECEIPT",
-        "STEGVERSE_STEGOS_ROOT"
+        "STEGVERSE_STEGOS_ROOT",
+        "STEGVERSE_DEVICE_KV_SKAP_INTR_MATERIALIZATION",
+        "STEGVERSE_DEVICE_KV_SKAP_RETAINED_NODE",
+        "STEGVERSE_DEVICE_KV_SKAP_CANONICAL_LEASE_SNAPSHOT",
+        "STEGVERSE_DEVICE_KV_SKAP_BRIDGE_RECEIPT"
       ],
       "notes": [
         "Only non-secret local evidence/source paths may be forwarded.",
+        "The process adapter consumes the exact WorkerCoordinator invocation and authentic retained-Node, Universal InTr materialization, and already-open canonical EVENT_EPHEMERAL lease evidence through WorkerCoordinatorCanonicalRuntimeBridge.",
+        "The adapter does not mint a claim/fence, open a runtime lease, or grant Interlock/InTr transition admission.",
         "Preferred authentic current-device mode consumes the Gateway canonical first-hop sidecar plus the terminal TVC custody receipt and invokes the TVC single-writer continuation automatically.",
         "Manifest-only mode remains available for verification/reconstruction of already-materialized canonical evidence.",
-        "The continuation may mint only canonical transport receipts from observed non-secret reference/readback evidence; it does not write SKAP ciphertext custody or resolve secrets.",
         "Credential material is prohibited; TV/TVC remains sole credential authority and TVC remains the single ciphertext custody writer.",
         "Hosted runtime and second user-operated device substitutions are forbidden."
       ],
