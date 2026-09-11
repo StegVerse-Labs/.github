@@ -16,32 +16,9 @@
     "StegVerse-Labs/.github:docs/SDK_WORKSPACE_EXTERNAL_COLLAB_PORTABLE_DISPATCH_MIRROR_HANDOFF.md"
   ],
   "targets": {
-    "organizations": [
-      "StegVerse-Labs",
-      "StegVerse-org"
-    ],
-    "repositories": [
-      "StegVerse-Labs/.github",
-      "StegVerse-Labs/TVC",
-      "StegVerse-org/LLM-adapter",
-      "StegVerse-org/StegVerse-SDK",
-      "StegVerse-Labs/Site",
-      "StegVerse-Labs/admissibility-wiki"
-    ],
-    "components": [
-      "resident-reseal-consumption",
-      "resident-consent-listener-consumption",
-      "external-collaboration-client-secret-custody",
-      "sovereign-service-gateway",
-      "owner-present-google-consent",
-      "external-provider-file-probe",
-      "sdk-active-probe",
-      "mir-reporting",
-      "master-records-reconstruction",
-      "one-current-device-proof",
-      "downstream-propagation",
-      "public-distribution"
-    ]
+    "organizations": ["StegVerse-Labs", "StegVerse-org"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/TVC", "StegVerse-org/LLM-adapter", "StegVerse-org/StegVerse-SDK", "StegVerse-Labs/Site", "StegVerse-Labs/admissibility-wiki"],
+    "components": ["resident-reseal-consumption", "resident-consent-listener-consumption", "external-collaboration-client-secret-custody", "sovereign-service-gateway", "owner-present-google-consent", "external-provider-file-probe", "sdk-active-probe", "mir-reporting", "master-records-reconstruction", "one-current-device-proof", "downstream-propagation", "public-distribution"]
   },
   "existing_evidence_refs": [
     "StegVerse-Labs/.github:pull/1393",
@@ -105,18 +82,17 @@
     "activation_basis": "PARENT_GOAL_PROMPT_COUNT_REACHES_20"
   },
   "runtime_requirements": {
-    "capabilities": [
-      "resident_request_dispatch"
-    ],
+    "capabilities": ["resident_request_dispatch"],
     "environment": "SOVEREIGN_RESIDENT",
     "direction": "INTERNAL",
-    "mutation_required": true,
+    "mutation_required": false,
     "deployment_required": false,
     "current_observation_required": true,
     "already_local_source_required": true,
     "second_user_operated_device_required": false
   },
   "runtime_resolution": null,
+  "runtime_discovery_semantics": "DISCOVER_EXISTING_RESIDENT_DISPATCHER_ONLY; MUTATING_TASK_EXECUTION_REMAINS_WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
   "worker_claim": {
     "authority": "WORKERCOORDINATOR",
     "claim_ref": null,
