@@ -2,70 +2,92 @@
 
 Updated: 2026-09-11
 Goal Task ID: `PUBLISHER-VISUAL-EVIDENCE-COMPLETENESS-001`
-COSV ID: `50000000100010`
-Status: `ACTIVE / RULE + ELAN RUN 2 VISUAL REPAIR IN PROGRESS`
+COSV ID: `71000000100110`
+Status: `COMPLETE / RENDERED VALIDATED NOT PUBLISHED`
 
 ## Goal
 
-Every published experimental/evaluator-facing Publisher document must include the pertinent end-to-end screenshots needed to both substantiate the evidence flow and help evaluators understand how to experiment with the SDK or applicable interface.
+Every published experimental/evaluator-facing Publisher document must include the pertinent end-to-end screenshots needed to substantiate the evidence flow and help evaluators understand how to experiment with the SDK or applicable interface.
 
-This task applies that rule immediately to the completed predecessor `ELAN-CUMULATIVE-PUBLICATION-001` by adding a Run 2 visual sequence parallel to Run 1 and issuing a revised cumulative package without deleting or rewriting the prior render receipt.
+This task applied that rule to the completed predecessor `ELAN-CUMULATIVE-PUBLICATION-001` by adding a Run 2 visual sequence parallel to Run 1 and issuing a revised cumulative package without deleting or rewriting the predecessor render receipt.
 
 ## Evidence boundary
 
-The authentic Run 2 workflow already completed in `StegVerse-org/StegVerse-SDK` run `34565152578`. No contemporaneous Run 2 screenshots were retained in that artifact.
+The authentic Run 2 workflow completed in `StegVerse-org/StegVerse-SDK` run `34565152578`. No contemporaneous Run 2 screenshots were retained in that artifact.
 
-Therefore the Run 2 images produced here must be labeled **post-run evidence views reconstructed from exact retained Run 2 artifacts**. They may display exact artifact values and the evaluator flow, but they may not be described as screenshots captured during the historical execution.
+The fourteen Run 2 images produced by this task are therefore explicitly classified `POST_RUN_RECONSTRUCTED_EVIDENCE_VIEW`: post-run evidence views reconstructed from exact retained Run 2 artifacts. They display exact artifact values and the evaluator flow, but are not historical execution screenshots.
 
-## Required Run 2 visual sequence
+## Publisher-wide rule
 
-1. Source-native input: Events 1, 2, 3; Event 3 explicit observed non-emission.
-2. Evaluation declaration: observed evidence, no inferred intent/semantics.
-3. Governance request.
-4. Completed manifest.
-5. Exact transition request.
-6. InTr posture binding.
-7. SDK-to-governance handoff.
-8. Governance decision: `ALLOW / ok`.
-9. Route receipts / transition chain.
-10. Exact-run custody: `RECORDED`.
-11. Replay: deterministic match.
-12. Reconstruction: chain verified.
-13. Returned result.
-14. Controlled comparison: baseline missing Event 3 vs observed-silence Event 3.
+Publisher merge `228bd19aa28fe387270fce034d5c820842cc34dd` adds:
 
-## Publisher-wide visual rule
+- `data/publisher-visual-evidence-contract.json`;
+- `data/elan-cumulative-publication-visual-revision.json`;
+- `docs/PUBLISHER_VISUAL_EVIDENCE_COMPLETENESS_MIRROR_HANDOFF.md`;
+- `tools/check_visual_evidence_completeness.py`;
+- `.github/workflows/validate-visual-evidence-completeness.yml`.
 
-For experimental/evaluator-facing publications, the canonical source must declare either:
+For experimental/evaluator-facing publications, the canonical record must declare either:
 
-- `visual_evidence_required: true` with an ordered visual-evidence manifest covering all material stages; or
-- `visual_evidence_required: false` with an explicit reason explaining why screenshots are not pertinent.
+- `visual_evidence_required: true` with ordered material-stage coverage and provenance classification; or
+- `visual_evidence_required: false` with an explicit reason that screenshots are not pertinent.
 
-A publication must not silently omit screenshots. When historical execution did not retain contemporaneous screenshots, Publisher may generate post-run evidence views from hash-bound retained artifacts, provided the views are labeled reconstructed/post-run and never represented as historical captures.
+A publication must not silently omit pertinent screenshots.
 
-## ELAN predecessor
+## Run 2 completed visual sequence
 
-Predecessor task: `ELAN-CUMULATIVE-PUBLICATION-001`
+1. source-native input;
+2. evaluation declaration;
+3. governance request;
+4. completed manifest;
+5. exact transition request;
+6. InTr posture binding;
+7. SDK-to-governance handoff;
+8. governance decision `ALLOW / ok`;
+9. route receipts;
+10. exact-run custody `RECORDED`;
+11. deterministic replay;
+12. reconstruction;
+13. returned result;
+14. controlled comparison.
 
-Terminal predecessor COSV: `71000000100100`
+Run 1 retains six preserved original visuals. Run 2 now has fourteen ordered reconstructed evidence views.
 
-Original cumulative render receipt remains evidence of the prior package and must not be overwritten. This task must create a successor revision receipt and new artifact hashes.
+## Revision package
 
-## Completion predicates
+Lifecycle: `GENERATED_VALIDATED_NOT_PUBLISHED`.
 
-- Publisher visual-evidence rule is documented and machine-checkable.
-- Run 2 gets all 14 pertinent end-to-end evidence views from authentic retained artifacts.
-- Each Run 2 image clearly says it is a post-run reconstructed evidence view.
-- Revised cumulative source embeds Run 1 and Run 2 visuals.
-- PDF and DOCX are regenerated and visually inspected page-by-page.
-- HTML, Markdown, JSON, DOCX, and PDF hashes are rebound in a successor render receipt.
-- Prior source/render receipts remain preserved.
-- No public-release claim is inferred from rendering.
+Hashes:
 
-## Next work
+- Markdown: `7351296b5ae489ca1c1f050cf428b28b7c17f8e4d1678a34f9bd8721e88e8a82`
+- HTML: `4ad0ce103bafb9b1ee5abfdd58b8201213b8810ca2da01327ac2935477a0e4b6`
+- JSON: `b2da38dc56845bad11a78166ac725d27150fe0f6bf041d0427b4811b092076ef`
+- DOCX: `57931e6ca17414237502d173de9e927640f5652802cfd8f9a5e0537550076bce`
+- PDF: `77fd79b1c985265fe7b9c722e1758e2f6120db4c0609f569a4199c3e76686343`
+- artifact manifest: `326d0004fba8482868f0cf3c03df8bc3c2ba5ef4bd64ee43c41118e6ec250ac1`
+- package ZIP: `c807f2f4ab2479c5edb0a820d877ff53018bad690e5a249c8e9eec8e8ff2ecf2`
 
-1. Materialize the 14 Run 2 post-run evidence views from the retained Run 2 artifact ZIP.
-2. Add the universal visual-evidence contract and validator to Publisher.
-3. Revise the ELAN cumulative source and generated package.
-4. Validate PDF/DOCX visually.
-5. Record successor receipt and merge only from exact-head green validation.
+## QA and validation
+
+Revised DOCX: 21 pages, visual review PASS.
+
+Revised PDF: 21 pages, visual review PASS.
+
+Observed blank pages: 0.
+
+Observed clipping/overlap: none.
+
+Publisher PR #65 exact head `dec9a42a92981717bd51995d6937621764075417` passed:
+
+- Publisher Check `34656071305`;
+- Publisher Readiness `34656071391`;
+- Architecture Guard `34656071315`;
+- Validate Visual Evidence Completeness `34656071371`.
+
+Publisher PR #65 merged at `228bd19aa28fe387270fce034d5c820842cc34dd`.
+
+Task Registry registration PR #1536 exact head `d9a099c186767de2f419e067112663a73a1269fe` passed organization-control `34656078450`, deterministic suite `34656078349`, and Heartbeat `34656078604`, then merged at `73e620e30cbd4aede53047922e6720f02487f375`.
+
+## Authority boundary
+
+Rendering and visual reconstruction grant no publication, execution, governance, credential, custody, deployment, or live-runtime authority. The revised package remains validated but not publicly published. The predecessor ELAN task and its historical receipts remain preserved.
