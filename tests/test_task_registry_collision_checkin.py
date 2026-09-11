@@ -5,6 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "evaluate_task_registry_collision_checkin.py"
+BOOTSTRAP = ROOT / "scripts" / "install_and_run_canonical_work_event_bootstrap.py"
 
 
 def run(task_id):
@@ -31,3 +32,15 @@ def test_retired_task_returns_stop_disposition():
     out = run("STEGCORE-UNKNOWN-PROBE-SEMANTICS-001")
     assert out["disposition"] in {"STOP_INACTIVE", "STOP_SUPERSEDED"}
     assert out["session_action"].startswith("END_SESSION")
+
+
+def test_canonical_work_bootstrap_requires_registry_preflight_before_route_mutation():
+    text = BOOTSTRAP.read_text(encoding="utf-8")
+    assert 'COLLISION_EVALUATOR_REL = Path("scripts/evaluate_task_registry_collision_checkin.py")' in text
+    assert "checkin = collision_preflight(args.task_id)" in text
+    checkin_pos = text.index("checkin = collision_preflight(args.task_id)")
+    installer_pos = text.index("run([sys.executable, installer])")
+    assert checkin_pos < installer_pos
+    assert 'if disposition != "CONTINUE":' in text
+    assert 'raise RuntimeError("TASK_REGISTRY_CHECKIN:"' in text
+    assert 'result.get("authority_effect") != "NONE"' in text
