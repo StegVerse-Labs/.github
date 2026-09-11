@@ -1,0 +1,26 @@
+{
+  "activated": false,
+  "authority_effect": "NONE_PROPOSAL_ONLY",
+  "broader_hil_lifecycle_complete": false,
+  "mutation_performed": false,
+  "next_runtime_stage": "HIL_RECEIVER_READY_AND_CUSTODY",
+  "post_restart_exact_byte_proof_observed": false,
+  "previous_vector": "50000000103000",
+  "propagated": false,
+  "proposed_archive_eligible": false,
+  "proposed_blocker_count": 2,
+  "proposed_vector": "50000000102000",
+  "proposed_worker_state": "HANDOFF_READY",
+  "remaining_blockers": [
+    "POST_RESTART_EXACT_BYTE_PROOF_NOT_YET_PRESERVED",
+    "TVC_HIL_LIFECYCLE_HANDOFF_NOT_YET_PROVEN"
+  ],
+  "removed_blocker": "AUTHENTIC_ESRL_HIL_LEASE_OPEN_NOT_YET_OBSERVED",
+  "schema": "stegverse.hil-esrl-acceptance-reconciliation-proposal/v1",
+  "source_artifact_sha256": "sha256:a6756c54da15f09cd6a3dbb201375891803f6589fd644db4c545be39ebe41b92",
+  "source_intake_schema": "stegverse.hil-browser-esrl-evidence-intake/v1",
+  "source_lease_id": "HIL-BROWSER-ESRL-7bafde4a280e847758da157e",
+  "state": "READY_FOR_CANONICAL_RECONCILIATION",
+  "task_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+  "tvc_lifecycle_receipt_observed": false
+}

@@ -1,0 +1,22 @@
+{
+  "authority_effect": "NONE_EVIDENCE_INTAKE_ONLY",
+  "broader_hil_lifecycle_complete": false,
+  "browser_context_id": "ctx_d151139d2db1eeecb6512f5844058246",
+  "canonical_request_consumption_ref": "receipts/sovereign-host/hil-resident-execution-request-consumption.latest.json",
+  "claim_id": "SHWP-SHWP-HIL-SOVEREIGN-RECEIVER-001-G25",
+  "credential_authority": "TV/TVC",
+  "esrl_lease_open_observed": true,
+  "fencing_token": 25,
+  "github_token_runtime_authority": "NONE",
+  "lease_id": "HIL-BROWSER-ESRL-7bafde4a280e847758da157e",
+  "lease_state": "LEASE_OPEN",
+  "node_id": "stegnode-web-f24e3bfb7f5343cb37323187a88e51f3",
+  "post_restart_exact_byte_proof_observed": false,
+  "request_id": "RESIDENT-EXEC-HIL-SOVEREIGN-RECEIVER-002",
+  "runtime_execution_surface": "CURRENT_USER_IPHONE_BROWSER",
+  "schema": "stegverse.hil-browser-esrl-evidence-intake/v1",
+  "source_artifact_sha256": "sha256:a6756c54da15f09cd6a3dbb201375891803f6589fd644db4c545be39ebe41b92",
+  "state": "ACCEPTED",
+  "task_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+  "tvc_lifecycle_receipt_observed": false
+}
