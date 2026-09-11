@@ -4,98 +4,70 @@
   "correlation_id": "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001",
   "root_correlation_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
   "parent_task_id": "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001",
-  "goal": "Reconcile and implement the current-iPhone bootstrap/TestFlight path around KV as the private governed state-transition continuity boundary, making physical devices interchangeable interoperability nodes, StegBrowser the browser-capability node, and substantive browser UI/WASM/action presentation ephemeral and dependent on KV entry admission plus current browser/container capability observation before continuing authentic global runtime measurement.",
+  "goal": "Reconcile and implement the current-iPhone bootstrap/TestFlight path around KV as the private governed state-transition continuity boundary, using ephemeral browser presentation and authentic claim/fence, credential, runtime, custody, and measurement evidence without transferring authority to Site, HB, browser state, or GitHub Actions.",
   "coordination_state": "ACTIVE",
   "checkout_state": "HANDOFF_READY_RUNTIME_PROOF_PENDING",
   "cosv_task_vector": "50000010100000",
   "source_refs": [
     "docs/KV_BOUND_EPHEMERAL_BROWSER_PROJECTION_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/.github#1299",
-    "StegVerse-Labs/continuity-vault-kit#206",
     "StegVerse-Labs/continuity-vault-kit@47c363611210b7501cbb50abce768cfe0911057f",
-    "StegVerse-Labs/StegOS#314",
     "StegVerse-Labs/StegOS@19e2ea02a16bd703767aafcd47e71f5ec5efe3cf",
-    "StegVerse-Labs/Site#1178",
     "StegVerse-Labs/Site@3da593a61a536a625fcea4a26df8d1f491f00b44",
-    "StegVerse-Labs/Site#1197",
     "StegVerse-Labs/Site@bd4c64a4dfa8130d3b8c015a242fbab5afc67fa1",
-    "StegVerse-Labs/Site#1198",
-    "StegVerse-Labs/Site@1df85a660cef242f05819e2b847ef942dff88ae1",
-    "StegVerse-Labs/Site#1205",
     "StegVerse-Labs/Site@281bcb0c56d84eef933e57a21f6ed1ef91660dfb",
-    "StegVerse-Labs/Site#1206",
-    "StegVerse-Labs/Site@66c30c269d546520e75fa65a50c912a076ea7b6e",
+    "StegVerse-Labs/Site#1210",
+    "StegVerse-Labs/Site@764a14ec4fc6b975254f56cc05e1d17b1372d2e9",
+    "StegVerse-Labs/Site#1211",
+    "StegVerse-Labs/Site@f09939293e9a5f7ef2b1312e638cd0b1527c1cf9",
     "StegVerse-Labs/.github/tasks/TASK-2026-0010.json"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
     "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/continuity-vault-kit", "StegVerse-Labs/StegOS", "StegVerse-Labs/Site"],
-    "components": ["kv-privacy-boundary", "kv-state-transition-continuity", "device-interoperability-node", "stegbrowser-capability-node", "ephemeral-browser-projection", "current-iphone-bootstrap", "testflight-materialization"]
+    "components": ["kv-privacy-boundary", "kv-state-transition-continuity", "stegbrowser-capability-node", "ephemeral-browser-projection", "current-iphone-bootstrap", "testflight-materialization"]
   },
   "dependencies": [
-    {
-      "dependency_id": "DEP-KV-ENTRY-STATE-TRANSITION-CONTRACT",
-      "kind": "ARCHITECTURE_SOURCE_PREDICATE",
-      "state": "SOURCE_PRODUCER_MERGED",
-      "ref": "StegVerse-Labs/continuity-vault-kit@47c363611210b7501cbb50abce768cfe0911057f"
-    },
-    {
-      "dependency_id": "DEP-CURRENT-IPHONE-SIGNER-STATIC-AVAILABILITY",
-      "kind": "SOURCE_DISTRIBUTION_PREDICATE",
-      "state": "SOURCE_CONSUMER_MERGED_VALIDATED",
-      "ref": "StegVerse-Labs/StegOS@19e2ea02a16bd703767aafcd47e71f5ec5efe3cf"
-    },
     {
       "dependency_id": "DEP-AUTHENTIC-KV-PROJECTION-RECEIPT-PRODUCTION",
       "kind": "PHYSICAL_RUNTIME_PREDICATE",
       "state": "AUTHENTIC_CURRENT_IPHONE_EXACT_FILE_VALIDATED",
       "ref": "AUTHENTIC_CURRENT_IPHONE_SAFARI:EXACT_KV_PROJECTION_ARTIFACTS",
-      "disposition": "PRIMARY 620-BYTE ARTIFACT SHA256 93caa302f310be097005c21639504bc13a7e8090d161d56cd0823c37363db3f8 AND INDEPENDENT REPEAT SHA256 064c8fcac9e1ee87c6f6dc73807689fded772865ae4b3f461b304d26aaf7df64 BOTH SATISFY THE MERGED STEGOS PROJECTION VALIDATOR; PURPOSE CURRENT_IPHONE_TESTFLIGHT_SIGNING, ENTRY ADMITTED, BROWSER OBSERVED_COMPATIBLE, NONE_EPHEMERAL_CONTEXT_ONLY, NONE_PROJECTION_GATE_ONLY"
+      "disposition": "PRIMARY SHA256 93caa302f310be097005c21639504bc13a7e8090d161d56cd0823c37363db3f8 AND REPEAT SHA256 064c8fcac9e1ee87c6f6dc73807689fded772865ae4b3f461b304d26aaf7df64 BOTH SATISFY THE MERGED STEGOS PROJECTION VALIDATOR."
     },
     {
       "dependency_id": "DEP-TASK-2026-0010-FRESH-ALLOCATION",
       "kind": "PHYSICAL_RUNTIME_PREDICATE",
-      "state": "AUTHENTIC_RETRY_REQUIRED_AFTER_WRAPPER_REPAIR",
-      "ref": "StegVerse-Labs/Site@281bcb0c56d84eef933e57a21f6ed1ef91660dfb",
-      "disposition": "CURRENT_IPHONE VERIFIED ESTABLISHED NODE CONTINUITY BUT PRE-REPAIR WRAPPER FAILED CLOSED BECAUSE IT INCORRECTLY REQUIRED EXACTLY ONE QUEUED SUCCESSOR; MUTATION_PERFORMED FALSE. SITE PR 1205 REMOVED ONLY THAT WRAPPER-LOCAL ASSUMPTION, REQUIRES TASK-2026-0010 QUEUE MEMBERSHIP AND CANONICAL ALLOCATOR SELECTION OF TASK-2026-0010, AND MERGED AFTER EXACT-HEAD VALIDATION. AUTHENTIC CURRENT-IPHONE RETRY AND EXPORTED CLAIM/FENCE EVIDENCE ARE NOW REQUIRED."
+      "state": "RETAINED_JOURNAL_RECOVERY_REQUIRED_BEFORE_FRESH_EXECUTION",
+      "ref": "StegVerse-Labs/Site@764a14ec4fc6b975254f56cc05e1d17b1372d2e9",
+      "disposition": "ONE CURRENT-IPHONE CHATGPT-BROWSER OPENING WAS OBSERVED GREEN/SUCCESSFUL BEFORE LATER CHATGPT-BROWSER/SAFARI LOADS DISPLAYED AN OBSOLETE SINGLE-QUEUE FAILURE ABSENT FROM CURRENT SOURCE. A SUCCESSFUL TASK-0010 RECEIPT MAY ALREADY EXIST IN THE ESTABLISHED STEGOS NODE JOURNAL. SITE #1210 ADDS READ-ONLY JOURNAL RECOVERY AND A RELEASE-IMMUTABLE TASK0010-G6-V2 EXECUTION SURFACE THAT CHECKS THE JOURNAL BEFORE MUTATION."
     },
     {
       "dependency_id": "DEP-AUTHENTIC-CURRENT-IPHONE-RETAINED-NODE-MATERIALIZATION",
       "kind": "PHYSICAL_RUNTIME_PREDICATE",
       "state": "UNRESOLVED",
       "ref": "StegVerse-Labs/StegOS#277",
-      "disposition": "TESTFLIGHT INSTALL AND AUTHENTIC CURRENT_IPHONE RUNTIME EVIDENCE NOT YET OBSERVED"
+      "disposition": "TESTFLIGHT INSTALL AND AUTHENTIC RETAINED STEGOS/STEGBROWSER RUNTIME EVIDENCE NOT YET OBSERVED"
     }
   ],
   "blockers": [],
-  "systemic_incident_ref": null,
   "adjacent_task_refs": [
     "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001",
     "KV-CONNECTION-REVALIDATION-WORKER-001",
     "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
-    "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
     "TASK-2026-0010"
   ],
   "existing_evidence_refs": [
-    "AUTHENTIC_CURRENT_IPHONE_SAFARI:PROJECTION_CONTEXT_READY",
     "AUTHENTIC_CURRENT_IPHONE_FILE:93caa302f310be097005c21639504bc13a7e8090d161d56cd0823c37363db3f8",
     "AUTHENTIC_CURRENT_IPHONE_REPEAT_FILE:064c8fcac9e1ee87c6f6dc73807689fded772865ae4b3f461b304d26aaf7df64",
-    "AUTHENTIC_CURRENT_IPHONE_ALLOCATOR:CONTINUITY_VERIFIED:FAIL_CLOSED_SINGLE_QUEUE_ASSUMPTION:MUTATION_FALSE",
-    "StegVerse-Labs/Site#1205",
-    "StegVerse-Labs/Site@281bcb0c56d84eef933e57a21f6ed1ef91660dfb",
-    "StegVerse-Labs/Site#1206",
-    "StegVerse-Labs/Site@66c30c269d546520e75fa65a50c912a076ea7b6e"
+    "AUTHENTIC_CURRENT_IPHONE_ALLOCATOR:CONTINUITY_VERIFIED",
+    "AUTHENTIC_CURRENT_IPHONE_ALLOCATOR:FIRST_OPEN_GREEN_SUCCESS_OBSERVED_BY_USER",
+    "AUTHENTIC_CURRENT_IPHONE_ALLOCATOR:LATER_STALE_SINGLE_QUEUE_PRESENTATION:MUTATION_FALSE",
+    "StegVerse-Labs/Site@764a14ec4fc6b975254f56cc05e1d17b1372d2e9",
+    "StegVerse-Labs/Site@f09939293e9a5f7ef2b1312e638cd0b1527c1cf9"
   ],
   "expected_evidence_predicates": [
-    "KV_PRIVACY_BOUNDARY_SOURCE_RECONCILED",
-    "DEVICE_INTEROPERABILITY_CONTINUITY_SOURCE_RECONCILED",
-    "KV_ENTRY_ADMISSION_DEPENDENCY_DEFINED",
-    "BROWSER_CONTAINER_NEUTRAL_EPHEMERAL_PROJECTION_DEFINED",
-    "EXACT_WASM_SIGNER_AVAILABLE_WITHOUT_PUBLIC_PRIVATE_STATE_ROOT",
-    "PURPOSE_BOUND_DEVICE_KV_PROJECTION_ADAPTER_SOURCE_MERGED",
-    "AUTHENTIC_CURRENT_IPHONE_KV_INSTALLATION_RECEIPT_RECOVERY_OBSERVED",
-    "AUTHENTIC_KV_PROJECTION_CONTEXT_PRODUCED",
     "EXACT_KV_PROJECTION_FILE_BYTES_BOUND_TO_STEGOS_CONSUMER",
+    "RETAINED_TASK_2026_0010_EXECUTION_RECEIPT_RECOVERED_OR_FRESH_IMMUTABLE_G6_EXECUTED",
     "AUTHENTIC_TASK_2026_0010_CANONICAL_ALLOCATION_AND_FENCE_OBSERVED",
     "TESTFLIGHT_CURRENT_IPHONE_RUNTIME_OBSERVED",
     "GLOBAL_MEASUREMENT_HANDOFF_RETURNED_TO_AUTHENTIC_EXECUTION"
@@ -109,13 +81,14 @@
     "current_observation_required": true
   },
   "runtime_resolution": {
-    "entrypoint": "CURRENT_IPHONE_CANONICAL_ORGANIZATION_ALLOCATOR",
+    "entrypoint": "CURRENT_IPHONE_READ_ONLY_ALLOCATOR_JOURNAL_RECOVERY",
     "same_run_remediation_allowed": true,
     "automatic_retry_after_first_failure": false,
     "source_adapter_complete": true,
-    "source_adapter_merge": "281bcb0c56d84eef933e57a21f6ed1ef91660dfb",
-    "latest_state": "EXACT_KV_PROJECTION_VALIDATED_TASK_0010_AUTHENTIC_ALLOCATION_RETRY_REQUIRED",
-    "next_runtime_surface": "https://stegverse.org/stegos-node/org-allocator-bootstrap-auto.html"
+    "source_adapter_merge": "764a14ec4fc6b975254f56cc05e1d17b1372d2e9",
+    "latest_state": "EXACT_KV_PROJECTION_VALIDATED_TASK_0010_RETAINED_JOURNAL_RECOVERY_REQUIRED",
+    "next_runtime_surface": "https://stegverse.org/stegos-node/org-allocator-evidence-recovery-task0010-g6-v1.html",
+    "fallback_runtime_surface_only_if_recovery_absent": "https://stegverse.org/stegos-node/org-allocator-bootstrap-task0010-g6-v2.html"
   },
   "worker_claim": {
     "authority": "WORKERCOORDINATOR",
@@ -123,19 +96,20 @@
     "fence_ref": null,
     "projection_only": true
   },
-  "human_action_ref": "CURRENT_IPHONE_RETRY_TASK_2026_0010_AUTO_ALLOCATOR_AND_EXPORT_EVIDENCE",
+  "human_action_ref": "CURRENT_IPHONE_READ_ONLY_TASK_2026_0010_JOURNAL_RECOVERY",
   "completion": {
     "claimed": false,
     "validated": false,
-    "reconciliation_ref": "StegVerse-Labs/Site@281bcb0c56d84eef933e57a21f6ed1ef91660dfb",
+    "reconciliation_ref": "StegVerse-Labs/Site@764a14ec4fc6b975254f56cc05e1d17b1372d2e9",
     "activation_proof_complete": false
   },
-  "allowed_next_transitions": ["TASK_2026_0010_CANONICAL_ALLOCATION_OBSERVED"],
+  "allowed_next_transitions": ["TASK_2026_0010_RETAINED_EVIDENCE_RECOVERED", "TASK_2026_0010_FRESH_IMMUTABLE_G6_EXECUTION_REQUIRED"],
   "handoff_projection_refs": ["docs/KV_BOUND_EPHEMERAL_BROWSER_PROJECTION_MIRROR_HANDOFF.md"],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "source_state_proves_execution": false,
     "hb_grants_execution_authority": false,
+    "browser_freshness_grants_authority": false,
     "worker_claim_authority": "WORKERCOORDINATOR",
     "credential_authority": "TV/TVC",
     "master_records_reality_authority": true,
