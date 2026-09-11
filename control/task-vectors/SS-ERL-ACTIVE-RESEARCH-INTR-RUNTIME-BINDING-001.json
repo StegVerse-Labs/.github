@@ -1,0 +1,45 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "40000100100000",
+  "evidence_refs": [
+    "data/canonical-task-records/SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001.json",
+    "docs/SS_ERL_ACTIVE_RESEARCH_INTR_RUNTIME_BINDING_MIRROR_HANDOFF.md",
+    "handoffs/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json",
+    "workers/universal_intr_profiled_ingress.py",
+    "scripts/consume_device_kv_intr_materialization_request.py",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger@bfb76a068717ff0aaf96c32af97ebcc43324149f:erl-active-research-runtime-binding-merged"
+  ],
+  "observed_at": "2026-09-11T04:41:00Z",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "CLAIMED_INTEGRATION",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 1,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 1,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "The actual existing resident DEVICE_SYSTEM -> KV owner is identified and the bounded successor runtime-binding task is registered; ERL profile implementation and authentic three-hop execution remain.",
+    "archive_ready": "Authentic three-hop runtime receipts have not yet been observed.",
+    "unassigned_work": "Current integration session owns the bounded successor implementation trajectory.",
+    "chat_owned_counts": "One bounded implementation/integration trajectory is active; no credential or observation authority is claimed.",
+    "canonical_owner_installed": "The successor record and handoff point to the existing SHWP-DEVICE-KV-INTR-OBSERVATION-001 resident owner and CVK downstream owner.",
+    "thread_required": "Canonical task, COSV vector, and handoff are sufficient for continuation without chat-only state.",
+    "blocker_count": "No canonical blocker; the next condition is implementation and authentic resident execution.",
+    "evidence_complete": "Provider persistence/readback is already complete under the parent, but Universal InTr runtime transport evidence is incomplete.",
+    "activated": "False until one authentic three-hop ERL acquisition traversal is observed.",
+    "propagated": "Not applicable before runtime activation evidence exists."
+  },
+  "authority_effect": "NONE"
+}
