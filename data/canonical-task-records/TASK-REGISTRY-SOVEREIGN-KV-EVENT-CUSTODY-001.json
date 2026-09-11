@@ -10,13 +10,14 @@
     "StegVerse-Labs/.github#1423",
     "scripts/task_registry_checkin_event_history.py",
     "scripts/project_task_registry_event_to_sovereign_kv.py",
+    "data/task-registry-sovereign-kv-runtime-intake-contract.json",
     "StegVerse-Labs/continuity-vault-kit#211",
     "StegVerse-Labs/continuity-vault-kit/runtime/task_registry_event_sovereign_kv_binding.py"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
     "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegOS", "StegVerse-Labs/continuity-vault-kit"],
-    "components": ["task-registry", "session-event-history", "sovereign-kv", "interlock-intr", "provider-adapter", "custody-projection"]
+    "components": ["task-registry", "session-event-history", "sovereign-kv", "interlock-intr", "provider-adapter", "custody-projection", "runtime-intake"]
   },
   "dependencies": [
     "TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001",
@@ -33,7 +34,8 @@
     "GITHUB_PROVIDER_NEUTRAL_EVENT_CUSTODY_BRIDGE",
     "CONTINUITY_VAULT_KIT_PROVIDER_NEUTRAL_WRITE_BINDING",
     "EXACT_EVENT_HASH_OBJECT_BINDING",
-    "FAIL_CLOSED_EXACT_HASH_READBACK_VALIDATOR"
+    "FAIL_CLOSED_EXACT_HASH_READBACK_VALIDATOR",
+    "RUNTIME_INTAKE_CONTRACT_BOUND_TO_EXISTING_EXECUTION_OWNERS"
   ],
   "first_unresolved_predicate": "AUTHENTIC_ADMITTED_PROVIDER_WRITE_AND_EXACT_EVENT_HASH_READBACK_FROM_SOVEREIGN_KV",
   "authority": {
