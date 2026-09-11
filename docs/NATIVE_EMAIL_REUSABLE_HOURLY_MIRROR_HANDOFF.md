@@ -7,7 +7,7 @@ COSV task vector: `10100000100000`
 Reusable identity: `RT-NATIVE-EMAIL-ACTION-MONITOR-001`
 Parent handoff: `docs/NATIVE_EMAIL_ACTION_MONITOR_MIRROR_HANDOFF.md`
 Scheduler owner: `StegVerse-Labs/StegVerse-Healer` / `SHWP-HEALER-SOVEREIGN-SCHEDULER-001`
-State: `SOURCE_INTEGRATION_MERGED / HOURLY_REUSABLE_BINDING_MERGED / KV_BEFORE_ARCHIVE_MERGED / RESIDENT_REFRESH_PROPAGATION_MERGED / BOUNDED_RETRY_MERGED / GOVERNED_ARCHIVE_MERGED / VERIFIED_SDK_SOURCE_REUSE_MERGED / SOURCE_PREP_LOCATOR_FORWARDING_REPAIR_MERGED_VALIDATED / AUTHENTIC_SOURCE_PREP_CLAIM_FENCE_AND_SCHEDULED_GMAIL_KV_GOVERNANCE_RECEIPTS_PENDING`
+State: `SOURCE_INTEGRATION_MERGED / HOURLY_REUSABLE_BINDING_MERGED / KV_BEFORE_ARCHIVE_MERGED / RESIDENT_REFRESH_PROPAGATION_MERGED / BOUNDED_RETRY_MERGED / GOVERNED_ARCHIVE_MERGED / VERIFIED_SDK_SOURCE_REUSE_MERGED / SOURCE_PREP_LOCATOR_FORWARDING_REPAIR_MERGED_VALIDATED / RESIDENT_BRIDGE_LOCATOR_FORWARDING_REPAIR_IN_VALIDATION / AUTHENTIC_SOURCE_PREP_CLAIM_FENCE_AND_SCHEDULED_GMAIL_KV_GOVERNANCE_RECEIPTS_PENDING`
 
 ## Canonical execution path
 
@@ -53,6 +53,7 @@ Core schedule / KV chain:
 - Healer #60 / `cd74e971ee54344c2f772fe2fd35827174914e66` and `.github` #1357 / `05c1250c91b6b09d54def657c37de5c77bd89c15` — failed/boundary attempts no longer satisfy a UTC-hour slot.
 - Healer #61 / `9c1661476ff1eadbe8c6ba300519a0c3f925d2e9` — retry no sooner than 15 minutes, max four failed attempts per UTC-hour slot; Test Readiness `34551986643` SUCCESS.
 - `.github` #1407 / `37fd97aca81580f4482ca78e4913346e1d53b71b` — forwarded the four canonical non-secret local source-root locators through the existing SV-DN1 source-prep process adapter. Exact-head organization-control `34563595503`, deterministic suite `34563595471`, and Heartbeat `34563595469` SUCCESS.
+- Current repair branch `fix/native-email-resident-bridge-source-locators` — the existing `refresh_and_execute_resident_task.py` bridge sanitized away `STEGVERSE_SDK_SOURCE_ROOT` and `STEGVERSE_CORE_LITE_SOURCE_ROOT` before the WorkerCoordinator subprocess, preventing the #1407 adapter allowlist from receiving all four canonical local roots through the canonical targeted resident bridge. The repair adds only those two non-secret locator names to the existing bridge allowlist and adds deterministic regression coverage. No scheduler, resident request, source acquisition, credential path, provider mutation, or authority is added.
 
 Governed provider mutation:
 
@@ -113,7 +114,7 @@ The governed consequence requires already-local SDK, StegCore, Core-Lite, and Ma
 
 Absent or invalid source-prep evidence contributes zero roots. Repository search after #1407 still shows no authentic production-source-preparation v2 receipt. The source-prep worker fragment remains `HANDOFF_READY`, `claim_id=null`, and its worker `last_seen_at=null`, so the next authentic predicate is a fresh WorkerCoordinator claim/fence and actual worker consumption, not additional source construction.
 
-The WorkerCoordinator already contains a direct `INDEPENDENT_TASK_CONTROL` path for eligible `HANDOFF_READY` tasks; no second scheduler, carrier trigger, or portable claim mechanism is required by the canonical source. The source-prep task's admission object satisfies that path. Therefore absence of a claim after #1407 is runtime-consumption evidence, not evidence that another claim-generation architecture should be added.
+The WorkerCoordinator already contains a direct `INDEPENDENT_TASK_CONTROL` path for eligible `HANDOFF_READY` tasks; no second scheduler, carrier trigger, or portable claim mechanism is required by the canonical source. The source-prep task's admission object satisfies that path. The canonical targeted resident bridge also already invokes `run_worker_runtime.py --task-id`; after this locator-forwarding repair validates, it can preserve all four already-local source locators through that existing execution boundary. Therefore absence of a claim remains runtime-consumption evidence, not justification for another claim-generation architecture.
 
 ## Remaining authentic predicates
 
@@ -134,4 +135,4 @@ No repository artifact substitutes for those resident/provider receipts. Source 
 
 ## README determination
 
-`NO_README_CHANGE_REQUIRED` for `.github`: root documentation already covers resident source refresh, reusable tasks, Canonical Work ingress, resident execution, KnowledgeVault custody, and local source-root execution. #1407 changed adapter forwarding to match that existing documented contract rather than repository responsibilities. StegOps and Healer READMEs were updated where their responsibilities materially changed.
+`NO_README_CHANGE_REQUIRED` for `.github`: root documentation already covers resident source refresh, reusable tasks, Canonical Work ingress, resident execution, KnowledgeVault custody, and local source-root execution. The current bridge repair aligns the existing targeted resident bridge with the already-documented four-root source-prep contract and does not add a repository responsibility. StegOps and Healer READMEs were updated where their responsibilities materially changed.
