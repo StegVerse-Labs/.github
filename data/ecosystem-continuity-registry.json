@@ -1,0 +1,36 @@
+{
+  "schema": "stegverse.ecosystem-continuity-registry.v1",
+  "components": [
+    {
+      "component_id": "sdk",
+      "authority_owner": "StegVerse-org/StegVerse-SDK",
+      "predicates": [
+        {"predicate_id": "processor_contract_available", "continuity_critical": true, "max_age_seconds": 86400},
+        {"predicate_id": "runtime_route_observed", "continuity_critical": false, "max_age_seconds": 3600}
+      ]
+    },
+    {
+      "component_id": "healer",
+      "authority_owner": "StegVerse-Labs/StegVerse-Healer",
+      "predicates": [
+        {"predicate_id": "scheduler_source_valid", "continuity_critical": true, "max_age_seconds": 86400},
+        {"predicate_id": "scheduler_runtime_observed", "continuity_critical": true, "max_age_seconds": 3600}
+      ]
+    },
+    {
+      "component_id": "master_records",
+      "authority_owner": "master-records",
+      "predicates": [
+        {"predicate_id": "custody_available", "continuity_critical": true, "max_age_seconds": 3600},
+        {"predicate_id": "reconstruction_available", "continuity_critical": true, "max_age_seconds": 3600}
+      ]
+    },
+    {
+      "component_id": "site",
+      "authority_owner": "StegVerse-Labs/Site",
+      "predicates": [
+        {"predicate_id": "continuity_projection_available", "continuity_critical": false, "max_age_seconds": 3600}
+      ]
+    }
+  ]
+}

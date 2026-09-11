@@ -1,0 +1,13 @@
+{
+  "schema": "stegverse.cosv-task-vector/v1",
+  "task_id": "ECOSYSTEM-CONTINUITY-EVALUATOR-001",
+  "vector": "71000000100111",
+  "level": "task",
+  "repository": "StegVerse-Labs/.github",
+  "evidence_refs": [
+    "StegVerse-Labs/.github:docs/ECOSYSTEM_CONTINUITY_EVALUATOR_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github:data/canonical-task-records/ECOSYSTEM-CONTINUITY-EVALUATOR-001.json",
+    "StegVerse-Labs/.github:issues/1524"
+  ],
+  "authority_effect": "NONE_COORDINATION_ONLY"
+}
