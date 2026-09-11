@@ -57,6 +57,14 @@ Canonical references:
 - TVC #377 merged at `72aa78c8f60226621c19d58751ec776f777583f9`; TVC validates the sidecar and remains the single SKAP ciphertext custody writer.
 - `.github` #1332 merged at `42996a4582e2fb9e4d3207dd3e45b764dc727723`; WorkerCoordinator can continue from the Gateway/TVC evidence into the canonical return chain.
 - `.github` #1339 merged at `861647893df88c30f591e374a8be30fccaf7c64f`; the canonical task no longer incorrectly requires a persistent physical transport process or always-on receiver.
+- Site #1196 merged at `064f77f24b9ad505d2533bc4efc4a46f74c76799` after exact-head `3fa31a60c53552d09f8ca0e9194ab1c2f2db8dd1` passed all 13 triggered workflows. It adds the provider-neutral MyKV service federation source, SKAP-first non-secret account-onboarding request contract, provenance-preserving service projections, README status, and event-ephemeral child ownership without claiming provider/runtime activation.
+- Site #1227 merged at `64701e9e9896af0e0e97672706918b9417540cf3` after claim-only terminalization validation passed; the Site federation implementation claim is `RELEASED_COMPLETE` while this canonical child remains ACTIVE for authentic runtime proof.
+
+## Site MyKV federation closure
+
+The Site source reconciliation is complete. `assets/my-kv-service-federation.js` and its deterministic suite establish the non-secret MyKV edge for service/account binding and SKAP-first onboarding. Site remains an interaction/projection surface only: provider credential custody remains TV/TVC + SKAP, provider/transition admission remains Interlock/InTr, and no source/CI/merge result is provider-runtime evidence.
+
+The Site slice may consume the same bounded `EVENT_EPHEMERAL` transport semantics as the canonical child. It does not create a second runtime, require an always-on receiver, duplicate TVC SKAP ciphertext custody, or reopen the parent `KV-CONNECTION-REVALIDATION-WORKER-001` semantics.
 
 ## Preferred custody continuation
 
@@ -132,11 +140,10 @@ These are execution/evidence blockers only. `PHYSICAL_RUNTIME_NOT_PRESENT`, `ALW
 
 ## Next
 
-1. Validate and merge the dedicated bounded-event executor and corrected receipt-authority wording.
-2. Execute one already-authorized, non-destructive bounded event-ephemeral Device->KV->SKAP->KV->Device operation using the existing canonical Node identity/continuity context and `scripts/execute_device_kv_skap_roundtrip_event.py`.
-3. Retain the four receipts and exact SKAP/KV readbacks.
-4. Close the three evidence blockers only when the terminal verifier returns `DEVICE_KV_SKAP_ROUNDTRIP_VERIFIED`.
+1. Execute one already-authorized, non-destructive bounded event-ephemeral Device->KV->SKAP->KV->Device operation using the existing canonical Node identity/continuity context and `scripts/execute_device_kv_skap_roundtrip_event.py`.
+2. Retain the four receipts and exact SKAP/KV readbacks.
+3. Close the three evidence blockers only when the terminal verifier returns `DEVICE_KV_SKAP_ROUNDTRIP_VERIFIED`.
 
 ## Manual work
 
-None for this source reconciliation. No continuously running physical node or second user-operated device is required by the Universal InTr transport contract.
+None for the current source/runtime preparation. No continuously running physical node or second user-operated device is required by the Universal InTr transport contract.
