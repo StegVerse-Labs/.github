@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 TASKS = {
-    "SHWP-HIL-SOVEREIGN-RECEIVER-001": ("50000000103000", 3, "control/worker-registry.d/hil-sovereign-receiver-001.json"),
+    "SHWP-HIL-SOVEREIGN-RECEIVER-001": ("50000000102000", 2, "control/worker-registry.d/hil-sovereign-receiver-001.json"),
     "SHWP-STEGOS-SOVEREIGN-RELAY-MATERIALIZATION-001": ("50000000101000", 1, "control/worker-registry.d/stegos-sovereign-relay-materialization-001.json"),
     "SHWP-STEGOS-RELAY-NODE-KV-CONTINUITY-001": ("50000000101000", 1, "control/worker-registry.d/stegos-relay-node-kv-continuity-001.json"),
     "SHWP-DEVICE-KV-INTR-OBSERVATION-001": ("50000000101000", 1, "control/worker-registry.d/device-kv-intr-observation-001.json"),
