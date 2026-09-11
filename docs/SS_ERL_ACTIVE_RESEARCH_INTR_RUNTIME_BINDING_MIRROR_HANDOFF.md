@@ -18,9 +18,7 @@ Bind the already-merged ERL active-research Universal InTr intent to the existin
 
 ## Reconciled canonical owner
 
-GitHub inspection established that `StegVerse-Labs/Executive_Rhetoric_Ledger:active-research-kv-consumer` is an ERL repository-side consumer identity, not an independently authorized resident Universal InTr execution owner.
-
-The existing resident DEVICE_SYSTEM -> KV materialization owner is:
+The existing resident DEVICE_SYSTEM -> KV materialization owner remains:
 
 - canonical runtime task: `SHWP-DEVICE-KV-INTR-OBSERVATION-001`
 - profiled ingress: `workers/universal_intr_profiled_ingress.py`
@@ -30,11 +28,9 @@ The existing resident DEVICE_SYSTEM -> KV materialization owner is:
 - credential authority: `TV/TVC`
 - GitHub runtime authority: `NONE`
 
-The existing task explicitly forbids a second runtime owner and requires VERIFIED boundary receipts only after authentic byte receipt/validation.
+`StegVerse-Labs/Executive_Rhetoric_Ledger:active-research-kv-consumer` remains a repository-side ERL consumer identity, not an independent resident owner.
 
-## Required binding shape
-
-The ERL source intent remains the canonical full path:
+## Canonical path
 
 ```text
 EXTERNAL_SYSTEM
@@ -43,22 +39,30 @@ EXTERNAL_SYSTEM
 -> KV
 ```
 
-The binding must therefore preserve one packet identity, one operation identity, and the exact acquisition-envelope payload hash across three adjacent authentic hops. It may adapt the final DEVICE_SYSTEM -> KV event to the existing resident owner only after the first two adjacent hops have actually executed and produced their authentic chained receipts.
+The profile preserves one operation identity, one packet identity, one acquisition-envelope hash, and prior-receipt lineage across the path. The terminal hop is projected onto the existing DEVICE_KV owner only after the preceding two transitions have been observed by the shared ingress path.
 
-The adapter must not rewrite the full-path intent into a false one-hop history, and it must not use `build_hop_receipt()` or fixture construction as evidence that runtime transport occurred. Receipt builders remain schema/policy utilities; authentic receipts are emitted only by the observing runtime at the corresponding boundary transition.
+## Implementation on current branch
 
-## Implementation target
+Branch: `ss-erl-active-research-intr-profile-001`
 
-Add a reusable ERL active-research profile to the existing Universal InTr resident ingress/consumer stack rather than creating a new ingress service. The profile must:
+Implemented:
 
-1. admit only `stegverse.erl.active-research-intr-binding/v1` / `stegverse.universal-intr-materialization-request/v1` requests whose payload hash matches the exact admitted acquisition envelope;
-2. require the canonical path `EXTERNAL_SYSTEM -> STEGOS_ECOSYSTEM -> DEVICE_SYSTEM -> KV`;
-3. preserve the ERL operation/packet identity and prior-receipt lineage;
-4. persist write-once authentic ingress/transition evidence for the first two hops when those bytes actually cross the corresponding resident boundaries;
-5. project the terminal DEVICE_SYSTEM -> KV materialization event onto the existing `SHWP-DEVICE-KV-INTR-OBSERVATION-001` / `StegVerse-Labs/continuity-vault-kit#79` owner instead of inventing an ERL runtime owner;
-6. retain the three canonical `stegverse.intr.hop_receipt/v1` receipts for ERL consumer verification;
-7. keep `request_grants_execution_authority=false`, `claim_or_fence_minted=false`, `authority_transfer=false`, `credential_authority=TV/TVC`, and `github_token_runtime_authority=NONE`;
-8. bind terminal transport proof to the existing authentic MyKV provider-write/readback proof without re-running or reclassifying that provider operation.
+- `workers/erl_active_research_intr_profile.py`
+  - validates the merged ERL binding/envelope/intent/request contract;
+  - rejects skipped/reordered canonical boundaries and authority transfer;
+  - emits hop 1 only after exact ERL binding bytes are admitted by the shared `STEGOS_ECOSYSTEM` ingress;
+  - emits hop 2 only as the same admitted packet is projected into the resident device-materialization path;
+  - preserves operation ID, packet ID, envelope hash, and receipt lineage;
+  - creates no terminal KV receipt and explicitly retains `terminal_runtime_receipt_present=false`;
+  - projects the final request to `StegVerse-Labs/continuity-vault-kit#79` with `DEVICE_SYSTEM -> KV` as the remaining adjacent boundary;
+  - forbids provider-operation replay and keeps TV/TVC/GitHub authority separation unchanged.
+- `scripts/install_erl_active_research_universal_intr_route.py`
+  - idempotently installs the ERL profile into the existing `workers/universal_intr_profiled_ingress.py` source;
+  - creates no listener, scheduler, heartbeat, WorkerCoordinator, credential path, or second execution owner.
+- `tests/test_erl_active_research_intr_profile.py`
+  - covers identity/lineage preservation, terminal-owner projection, skipped-boundary rejection, authority-transfer rejection, write-once collision refusal, and installer idempotency/shared-listener reuse.
+
+The implementation does not claim that hop 3 occurred. Authentic DEVICE_SYSTEM -> KV receipt production remains owned by the existing DEVICE_KV resident runtime and must occur only after actual runtime receipt/validation of the terminal bytes.
 
 ## Existing proof that must not be repeated
 
@@ -68,18 +72,16 @@ Add a reusable ERL active-research profile to the existing Universal InTr reside
 - ERL PR #157 reusable non-authorizing runtime binding merged at `bfb76a068717ff0aaf96c32af97ebcc43324149f`.
 - CISA/Iran public-source capture provider write and exact-byte provider readback are already authentic and separate from InTr transport proof.
 
-## Completion predicates
+## Remaining work
 
-This goal is complete only when:
-
-- the existing resident Universal InTr stack has an ERL active-research profile bound to the canonical owner above;
-- exact-head validation passes for the implementation;
-- one authentic admitted ERL acquisition envelope traverses all three adjacent boundaries;
-- all three real chained receipts are retained and accepted by the merged ERL consumer;
-- the terminal KV receipt is bound to the pre-existing authentic provider readback evidence;
-- the parent ERL handoff is reconciled with the exact receipt hashes and proof class;
-- no hosted/fixture/generated receipt is promoted to runtime evidence.
+1. Run exact-head validation for the profile implementation and installer.
+2. Merge only if the applicable validation lanes pass.
+3. Ensure the terminal DEVICE_KV consumer preserves the upstream hop-2 receipt as the prior receipt for the authentic terminal hop; do not substitute the ingress-record hash if that would break canonical ERL lineage.
+4. Execute one authentic admitted ERL acquisition through the resident shared ingress when a sovereign resident device surface is available.
+5. Preserve the authentic terminal receipt and verify the complete three-receipt chain with the merged ERL consumer.
+6. Bind terminal proof to the pre-existing MyKV provider-write/readback evidence without re-running the provider operation.
+7. Reconcile the parent ERL handoff with exact runtime receipt hashes and final proof class.
 
 ## Current state
 
-`CANONICAL_RUNTIME_OWNER_IDENTIFIED / SUCCESSOR_RUNTIME_BINDING_TASK_REGISTERED / PROFILE_IMPLEMENTATION_AND_AUTHENTIC_TRAVERSAL_PENDING`
+`CANONICAL_RUNTIME_OWNER_IDENTIFIED / ERL_SHARED_INGRESS_PROFILE_IMPLEMENTED_ON_BRANCH / TERMINAL_PRIOR_LINEAGE_RECONCILIATION_AND_EXACT_HEAD_VALIDATION_PENDING / AUTHENTIC_THREE_HOP_TRAVERSAL_NOT_YET_OBSERVED`
