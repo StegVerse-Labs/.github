@@ -2,12 +2,15 @@
   "identity": "StegVerse-Labs/.github:task:ELAN-CUMULATIVE-PUBLICATION-001",
   "profile": "task.v1",
   "task_id": "ELAN-CUMULATIVE-PUBLICATION-001",
-  "vector": "50000000100000",
+  "vector": "71000000100100",
   "evidence_refs": [
     "data/canonical-task-records/ELAN-CUMULATIVE-PUBLICATION-001.json",
     "docs/ELAN_CUMULATIVE_RUN2_PUBLICATION_MIRROR_HANDOFF.md",
     "StegVerse-org/StegVerse-SDK:pull/197",
-    "StegVerse-org/StegVerse-SDK:actions/run/34565152578"
+    "StegVerse-org/StegVerse-SDK:actions/run/34565152578",
+    "GCAT-BCAT-Engine/Publisher@aabbf8dcfb8ac4e01b2f6a4b978ec24a00e4a3d6",
+    "GCAT-BCAT-Engine/Publisher@81d8b59e6119499abeab41ec71cfd7959653df38",
+    "GCAT-BCAT-Engine/Publisher:evidence/elan/ELAN-CUMULATIVE-PUBLICATION-001.render-receipt.json"
   ],
   "authority_effect": "NONE"
 }
