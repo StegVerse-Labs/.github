@@ -16,6 +16,7 @@ from match_runtime_profile import evaluate
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_REGISTRY = ROOT / "data/canonical-task-registry.json"
+DEFAULT_RECORDS_DIR = ROOT / "data/canonical-task-records"
 DEFAULT_MAP = ROOT / "control/runtime-profile-map.json"
 
 
@@ -31,10 +32,25 @@ def require(ok: bool, reason: str) -> None:
         raise RuntimeError("FAIL_CLOSED: " + reason)
 
 
-def find_task(registry: dict[str, Any], task_id: str) -> dict[str, Any]:
+def find_task(
+    registry: dict[str, Any],
+    task_id: str,
+    records_dir: Path | None = None,
+) -> dict[str, Any]:
     rows = [row for row in registry.get("tasks", []) if row.get("task_id") == task_id]
-    require(len(rows) == 1, "task identity must resolve exactly once")
-    return rows[0]
+    require(len(rows) <= 1, "task identity must not duplicate in aggregate registry")
+    if rows:
+        return rows[0]
+
+    if records_dir is not None:
+        record_path = records_dir / f"{task_id}.json"
+        if record_path.is_file():
+            record = load(record_path)
+            require(record.get("task_id") == task_id, "standalone task record identity mismatch")
+            return record
+
+    require(False, "task identity must resolve exactly once")
+    raise AssertionError("unreachable")
 
 
 def resolve(task: dict[str, Any], runtime_map: dict[str, Any], map_ref: str) -> dict[str, Any]:
@@ -82,13 +98,14 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("task_id")
     parser.add_argument("--registry", type=Path, default=DEFAULT_REGISTRY)
+    parser.add_argument("--records-dir", type=Path, default=DEFAULT_RECORDS_DIR)
     parser.add_argument("--map", type=Path, default=DEFAULT_MAP)
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
 
     registry = load(args.registry)
     runtime_map = load(args.map)
-    task = find_task(registry, args.task_id)
+    task = find_task(registry, args.task_id, args.records_dir)
     result = resolve(task, runtime_map, str(args.map))
     raw = json.dumps(result, indent=2, sort_keys=True) + "\n"
     if args.output:
