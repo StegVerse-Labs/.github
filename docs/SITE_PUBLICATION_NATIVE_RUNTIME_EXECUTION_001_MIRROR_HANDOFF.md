@@ -47,6 +47,12 @@ Own only the genuinely remaining authentic native-runtime and publication-eviden
 8. Separately admit the final publication transition.
 9. Only after the preceding predicates pass, prove canonical-domain DNS/TLS recovery and public content equivalence.
 
+## Latest native-runtime observation
+
+At `2026-09-11T13:53:12-05:00`, the authorized remote runtime connector returned an empty device list (`0` connected devices). This is a current non-authorizing observation only. It does not prove source refresh, checkout, claim/fence, worker execution, lease execution, publication, reachability, or DNS/TLS state. No hosted substitute or second user-operated device is introduced.
+
+Disposition: remain `ACTIVE` and wait for the existing authorized native resident runtime surface to reconnect; then resume at step 2 of the required evidence chain using already-local source.
+
 ## Predicates currently false
 
 ```text
