@@ -21,6 +21,10 @@
       "env_allowlist": [
         "STEGVERSE_SOURCE_MATERIALIZATION_ROOT",
         "STEGVERSE_SOURCE_PACKAGE_ROOT",
+        "STEGVERSE_SDK_SOURCE_ROOT",
+        "STEGVERSE_STEGCORE_SOURCE_ROOT",
+        "STEGVERSE_CORE_LITE_SOURCE_ROOT",
+        "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT",
         "HOME",
         "PATH"
       ],
@@ -34,7 +38,7 @@
       "type": "process_json_bound_state_v0.1",
       "notes": [
         "No network source acquisition is permitted; GitHub and all other external platforms are optional provenance/mirror surfaces only.",
-        "Resolve source only from an already-local verified root or a content-addressed StegVerse source package in the local package store.",
+        "Resolve source only from an already-local verified root, including the four canonical STEGVERSE_*_SOURCE_ROOT locators admitted through this adapter, or a content-addressed StegVerse source package in the local package store.",
         "Historical Git blob anchors are provenance markers, not immutable hashes of current source bytes; current integrity is the complete sha256-content-manifest identity plus required runtime marker presence.",
         "Stops HANDOFF_READY when a required package/root is absent; no automatic platform fallback exists.",
         "No credential, repository writeback, SDK admission, governance, publication or certification authority."

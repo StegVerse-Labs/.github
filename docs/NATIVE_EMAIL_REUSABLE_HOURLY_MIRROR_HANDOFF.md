@@ -7,7 +7,7 @@ COSV task vector: `10100000100000`
 Reusable identity: `RT-NATIVE-EMAIL-ACTION-MONITOR-001`
 Parent handoff: `docs/NATIVE_EMAIL_ACTION_MONITOR_MIRROR_HANDOFF.md`
 Scheduler owner: `StegVerse-Labs/StegVerse-Healer` / `SHWP-HEALER-SOVEREIGN-SCHEDULER-001`
-State: `SOURCE_INTEGRATION_MERGED / HOURLY_REUSABLE_BINDING_MERGED / KV_BEFORE_ARCHIVE_MERGED / RESIDENT_REFRESH_PROPAGATION_MERGED / BOUNDED_RETRY_MERGED / GOVERNED_ARCHIVE_MERGED / VERIFIED_SDK_SOURCE_REUSE_MERGED / AUTHENTIC_SCHEDULED_GMAIL_KV_GOVERNANCE_RECEIPT_PENDING`
+State: `SOURCE_INTEGRATION_MERGED / HOURLY_REUSABLE_BINDING_MERGED / KV_BEFORE_ARCHIVE_MERGED / RESIDENT_REFRESH_PROPAGATION_MERGED / BOUNDED_RETRY_MERGED / GOVERNED_ARCHIVE_MERGED / VERIFIED_SDK_SOURCE_REUSE_MERGED / SOURCE_PREP_LOCATOR_FORWARDING_REPAIR_IN_VALIDATION / AUTHENTIC_SCHEDULED_GMAIL_KV_GOVERNANCE_RECEIPT_PENDING`
 
 ## Canonical execution path
 
@@ -109,9 +109,15 @@ The governed consequence requires already-local SDK, StegCore, Core-Lite, and Ma
 
 Absent or invalid source-prep evidence contributes zero roots. The current SV-DN1 handoff still states that an authentic production-source-preparation v2 receipt has **not yet been observed**, so this remains a real runtime dependency unless the four components are already present through the local repository map.
 
+### Source-prep locator forwarding repair — 2026-09-10
+
+GitHub reconciliation found a concrete adapter mismatch in `SV-DN1-PRODUCTION-SOURCE-PREP-001`: the canonical source-prep handoff and worker permit already-local source through `STEGVERSE_SDK_SOURCE_ROOT`, `STEGVERSE_STEGCORE_SOURCE_ROOT`, `STEGVERSE_CORE_LITE_SOURCE_ROOT`, and `STEGVERSE_MASTER_RECORDS_SOURCE_ROOT`, but the registered process adapter did not forward those four variables in its `env_allowlist`.
+
+The repair branch `fix/native-email-source-prep-locators` adds only those four non-secret local-root locators to the existing adapter and adds deterministic regression coverage. It does not add network acquisition, credentials, GitHub runtime dependence, a new scheduler, a new WorkerCoordinator, or a new resident request. Until that repair is exact-head validated and merged, an authentic source-prep receipt remains pending.
+
 ## Remaining authentic predicates
 
-Source construction identified in this lane is merged and validated. Runtime completion still requires authentic evidence of:
+Source construction identified in this lane is merged and validated except for the locator-forwarding repair described above. Runtime completion still requires authentic evidence of:
 
 - an eligible resident hourly reusable-task invocation;
 - already-materialized KnowledgeVault resolution;
@@ -127,4 +133,4 @@ No repository artifact substitutes for those resident/provider receipts. Source 
 
 ## README determination
 
-`NO_README_CHANGE_REQUIRED` for `.github`: root documentation already covers resident source refresh, reusable tasks, Canonical Work ingress, resident execution, and KnowledgeVault custody. StegOps and Healer READMEs were updated where their responsibilities materially changed.
+`NO_README_CHANGE_REQUIRED` for `.github`: root documentation already covers resident source refresh, reusable tasks, Canonical Work ingress, resident execution, KnowledgeVault custody, and local source-root execution. This repair changes adapter forwarding to match that existing documented contract rather than changing repository responsibilities. StegOps and Healer READMEs were updated where their responsibilities materially changed.
