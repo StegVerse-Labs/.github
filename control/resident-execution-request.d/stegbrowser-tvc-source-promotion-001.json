@@ -4,7 +4,7 @@
   "request_id": "stegbrowser-tvc-source-promotion-aef6b6f5",
   "task_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
   "mode": "TVC_EXACT_SOURCE_PROMOTION_REQUEST",
-  "entrypoint": "scripts/consume_stegbrowser_tvc_source_promotion_request.py",
+  "entrypoint": "control/resident-execution-request.d/consume-stegbrowser-tvc-source-promotion.py",
   "credential_authority": "TV/TVC",
   "github_token_required": false,
   "github_token_runtime_authority": "NONE",
