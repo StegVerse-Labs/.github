@@ -4,7 +4,7 @@
   "state": "HANDOFF_READY_MACHINE_OWNED",
   "goal": {
     "goal_id": "SV-DN1-PRODUCTION-SOURCE-PREPARATION-001",
-    "objective": "Prepare the canonical local SDK, StegCore, Core-Lite, and Master Records source roots for the first SV-DN-1 production round exclusively from already-local source or transport-neutral content-addressed StegVerse source packages.",
+    "objective": "Prepare the canonical local SDK, StegCore, Core-Lite, and Master Records source roots exclusively from already-local source or transport-neutral content-addressed StegVerse source packages so any separately admitted sovereign consumer can reuse them, including the first SV-DN-1 production round.",
     "success_predicates": [
       "all four source roots are locally present and migration anchors verify",
       "all four source roots have canonical sha256-content-manifest source identities",
@@ -53,18 +53,12 @@
     "manual_allowed_role": "evidence review only",
     "priority": "release",
     "parent_task_id": "SV-DN1-INTR-RUNTIME-001",
-    "derivation_reason": "The canonical SDK first-round worker requires four local production source roots. This task now resolves every component uniformly from already-local verified source or a transport-neutral content-addressed StegVerse source package; external repository platforms are optional provenance only.",
+    "derivation_reason": "The canonical SDK first-round worker requires four local production source roots. Source preparation itself does not consume or depend on route-specific InTr state, so it may run under independent task control before that downstream execution route terminalizes. Any consumer still retains its own admission and runtime prerequisites.",
     "derivation_depth": 2,
     "source_handoff_ref": "docs/SV_DN1_PRODUCTION_SOURCE_PREPARATION_MIRROR_HANDOFF.md",
-    "dependencies": [
-      "SV-DN1-INTR-RUNTIME-001"
-    ],
+    "dependencies": [],
     "execution_admission_mode": "INDEPENDENT_TASK_CONTROL",
-    "upstream_runtime_dependency": {
-      "task_id": "SV-DN1-INTR-RUNTIME-001",
-      "terminal_state_required": "COMPLETED",
-      "terminal_transition_required": "SV_DN1_ROUTE_SPECIFIC_INTR_COMPLETE"
-    }
+    "upstream_runtime_dependency": null
   },
   "authority": {
     "authority_source": "canonical SV-DN-1 source-root requirement + StegVerse content-addressed source-package contract + sovereign WorkerCoordinator",
@@ -172,7 +166,7 @@
     "carrier": "independent_task_control",
     "executor_binding": "AUTHORIZED",
     "authorization_ref": "docs/SV_DN1_PRODUCTION_SOURCE_PREPARATION_MIRROR_HANDOFF.md",
-    "recheck_trigger": "each admitted assignment opportunity after SV-DN1-INTR-RUNTIME-001 completes until all four exact production source roots verify",
+    "recheck_trigger": "each admitted independent assignment opportunity until all four exact production source roots verify",
     "checkout_policy": "fenced_atomic_checkout",
     "authority_domain": "INDEPENDENT_TASK_CONTROL",
     "heartbeat_reference_only": true,
@@ -190,7 +184,7 @@
     "source_package_needs": "~/.stegverse/state/sv-dn1-production-source-prep/requests/source-package-needs.json"
   },
   "completion": {
-    "next_authorized_action": "Run SV-DN1-SDK-FIRST-ROUND-001 with the four exact non-secret source roots from this receipt plus the authentic resident/InTr evidence chain.",
+    "next_authorized_action": "Expose the four exact non-secret source roots to any separately admitted consumer. SV-DN1-SDK-FIRST-ROUND-001 still requires its own authentic resident/InTr evidence chain before production-round execution.",
     "terminal_when": [
       "SV_DN1_PRODUCTION_SOURCE_PREPARATION_COMPLETE",
       "all four source_identities use sha256-content-manifest",

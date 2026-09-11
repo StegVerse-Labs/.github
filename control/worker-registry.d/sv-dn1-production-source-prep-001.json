@@ -54,10 +54,7 @@
         "carrier_trigger_required": false,
         "fresh_fence_required": true,
         "minimum_fencing_token_exclusive": 22,
-        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
-        "parent_task_id": "SV-DN1-INTR-RUNTIME-001",
-        "parent_terminal_state_required": "COMPLETED",
-        "parent_terminal_transition_required": "SV_DN1_ROUTE_SPECIFIC_INTR_COMPLETE"
+        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM"
       },
       "source_state_vector_ref": "control/task-vectors/SV-DN1-PRODUCTION-SOURCE-PREP-001.json",
       "machine_readable_state": {

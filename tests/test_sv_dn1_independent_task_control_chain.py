@@ -35,9 +35,9 @@ TASKS = [
         "SV-DN1-PRODUCTION-SOURCE-PREP-001",
         "handoffs/SV-DN1-PRODUCTION-SOURCE-PREP-001.json",
         "control/worker-registry.d/sv-dn1-production-source-prep-001.json",
-        ["SV-DN1-INTR-RUNTIME-001"],
-        "SV-DN1-INTR-RUNTIME-001",
-        "SV_DN1_ROUTE_SPECIFIC_INTR_COMPLETE",
+        [],
+        None,
+        None,
     ),
     (
         "SV-DN1-SDK-FIRST-ROUND-001",
@@ -97,7 +97,7 @@ class SvDn1IndependentTaskControlTests(unittest.TestCase):
                     },
                 )
 
-    def test_workercoordinator_dependency_gate_blocks_until_parent_completed(self):
+    def test_workercoordinator_dependency_gate_keeps_source_prep_independent(self):
         source_root = Path(__file__).resolve().parents[1]
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -127,18 +127,19 @@ class SvDn1IndependentTaskControlTests(unittest.TestCase):
             sdk = records["SV-DN1-SDK-FIRST-ROUND-001"]
 
             self.assertTrue(runtime._dependencies_complete(source, records))
+            self.assertTrue(runtime._dependencies_complete(prep, records))
             self.assertFalse(runtime._dependencies_complete(resident, records))
             self.assertFalse(runtime._dependencies_complete(intr, records))
-            self.assertFalse(runtime._dependencies_complete(prep, records))
             self.assertFalse(runtime._dependencies_complete(sdk, records))
 
             source["state"] = "COMPLETED"
             self.assertTrue(runtime._dependencies_complete(resident, records))
+            self.assertTrue(runtime._dependencies_complete(prep, records))
             self.assertFalse(runtime._dependencies_complete(intr, records))
 
             resident["state"] = "COMPLETED"
             self.assertTrue(runtime._dependencies_complete(intr, records))
-            self.assertFalse(runtime._dependencies_complete(prep, records))
+            self.assertTrue(runtime._dependencies_complete(prep, records))
             self.assertFalse(runtime._dependencies_complete(sdk, records))
 
             intr["state"] = "COMPLETED"
