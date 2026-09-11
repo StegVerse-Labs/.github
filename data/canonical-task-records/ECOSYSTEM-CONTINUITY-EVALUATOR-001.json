@@ -14,13 +14,14 @@
     "StegVerse-Labs/.github:docs/ECOSYSTEM_CONTINUITY_EVALUATOR_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github:docs/ECOSYSTEM_CONTINUITY_REUSABLE_SCHEDULE_MIRROR_HANDOFF.md",
     "StegVerse-Labs/Site:docs/ECOSYSTEM_CONTINUITY_SITE_PROJECTION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site:docs/ECOSYSTEM_CONTINUITY_PANEL_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegVerse-Healer:docs/ECOSYSTEM_CONTINUITY_HEALER_INTAKE_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegVerse-Healer:docs/ECOSYSTEM_CONTINUITY_PERIODIC_CYCLE_MIRROR_HANDOFF.md",
     "master-records/orchestration:docs/ECOSYSTEM_CONTINUITY_EVALUATION_CUSTODY_MIRROR_HANDOFF.md"
   ],
   "targets": {
     "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/Site", "StegVerse-Labs/StegVerse-Healer", "master-records/orchestration", "StegVerse-org/StegVerse-SDK"],
-    "components": ["ece-registry", "ece-evaluator", "ece-findings", "site-continuity-projection", "healer-finding-intake", "master-records-evaluation-custody", "periodic-healer-reusable-schedule"]
+    "components": ["ece-registry", "ece-evaluator", "ece-findings", "site-continuity-projection", "site-continuity-panel", "healer-finding-intake", "master-records-evaluation-custody", "periodic-healer-reusable-schedule"]
   },
   "core_source_state": {
     "pull_request": 1525,
@@ -50,6 +51,19 @@
       "merged_validated": true,
       "live_projection_claimed": false
     },
+    "site_panel": {
+      "pull_request": 1247,
+      "exact_head": "a397233283b3501168e57e1f05ad488c9475b80d",
+      "validation_runs": {"heartbeat": 34655632691, "handoff_orchestrator": 34655632712, "site_bootstrap": 34655632715, "node_idb_regression": 34655632758},
+      "merge_commit": "8323f7bd5bdfa89542d470557bf932059a6339fb",
+      "claim_terminalization_pr": 1249,
+      "claim_terminalization_head": "2eff5724efcdf66009083487fe7e821104948668",
+      "claim_terminalization_validation_runs": {"heartbeat": 34655772537, "handoff_orchestrator": 34655772501, "site_bootstrap": 34655772534},
+      "claim_terminalization_merge": "a389511dbbd27ad5b633cef6c30a78824b914776",
+      "merged_validated": true,
+      "authentic_projection_materialized": false,
+      "live_panel_claimed": false
+    },
     "master_records_custody": {
       "pull_request": 92,
       "exact_head": "fdb23972256e0f126d73c3422cdf39d9543ae626",
@@ -73,6 +87,12 @@
       "authentic_execution_claimed": false
     }
   },
+  "latest_runtime_observation": {
+    "observed_at": "2026-09-11",
+    "authorized_remote_devices": 0,
+    "connected_drive_ece_artifacts_found": false,
+    "runtime_execution_claimed": false
+  },
   "authority_model": {
     "diagnostic_authority": "OBSERVATION_CLASSIFICATION_ONLY",
     "repair_dispatch_owner": "StegVerse-Labs/StegVerse-Healer",
@@ -87,6 +107,7 @@
     "AUTHENTIC_HEALER_REUSABLE_ECE_SLOT_CONSUMED",
     "AUTHENTIC_RETAINED_ECE_EVALUATION_OBSERVED",
     "MASTER_RECORDS_AUTHENTIC_ECE_CUSTODY_RECONSTRUCTION_OBSERVED",
+    "AUTHENTIC_SITE_SAFE_PROJECTION_MATERIALIZED",
     "SITE_LIVE_CONTINUITY_PROJECTION_OBSERVED",
     "HEALER_LIVE_FINDING_INTAKE_OBSERVED",
     "RECOVERY_LOOP_INDEPENDENT_REEVALUATION_PROVEN"
