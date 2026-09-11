@@ -7,13 +7,13 @@ Parent Goal: `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001`
 Root Goal: `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001`
 COSV: `50000010100000`
 Canonical issue: `StegVerse-Labs/.github#1299`
-Status: `ACTIVE / EXACT KV PROJECTION VALIDATED / TASK-0010 G6 RETAINED / TASK-0011 G7 AUTHENTIC / FOUR KV-GATE FILES PROJECTED / STATIC SUPPORT EXACT-BYTE TRANSPORT UNRESOLVED`
+Status: `ACTIVE / EXACT KV PROJECTION VALIDATED / TASK-0011 G7 AUTHENTIC / COMPLETE FROZEN SITE PRODUCT CHAIN MATERIALIZED / PR #1236 OPEN`
 
 ## Canonical architecture
 
 KV is the private governed continuity boundary. Browser presentation is ephemeral. Interlock/InTr owns transition/admission; WorkerCoordinator/canonical allocator owns claim/fence; TV/TVC owns credentials/provider operations; HB is observability only; GitHub Actions are validation/evidence transport only. No Render or hosted fallback is admissible.
 
-## Proven authentic evidence
+## Authentic KV and allocator evidence
 
 Two authentic current-iPhone KV projection artifacts were accepted by the merged StegOS consumer:
 
@@ -27,9 +27,9 @@ persistence_effect NONE_EPHEMERAL_CONTEXT_ONLY
 authority_effect NONE_PROJECTION_GATE_ONLY
 ```
 
-TASK-2026-0010 was authentically recovered at generation 6 / fence 6 with `ALLOCATION_COMPLETE`, `CLAIM_GRANT_OBSERVED`, and journal replay `PASS`. It remains immutable predecessor provenance and is not widened.
+TASK-2026-0010 remains immutable generation-6/fence-6 predecessor provenance and is not widened.
 
-TASK-2026-0011 was then authentically selected by the canonical allocator on the current iPhone:
+TASK-2026-0011 authentic current-iPhone allocator evidence:
 
 ```text
 selected_task_id: TASK-2026-0011
@@ -45,96 +45,85 @@ journal replay: PASS
 allocator recovery/export mutation: false
 ```
 
-No TASK-2026-0011 allocator retry is authorized or needed.
+No allocator retry is authorized or needed.
 
-## Active Site workspace
+## Active Site integration
 
 ```text
 repository: StegVerse-Labs/Site
 workspace: claim/current-iphone-kv-testflight-static-bootstrap-r1
 canonical issue: StegVerse-Labs/Site#1220
+product PR: StegVerse-Labs/Site#1236
 pinned StegOS source: 19e2ea02a16bd703767aafcd47e71f5ec5efe3cf
 Site handoff: docs/CURRENT_IPHONE_KV_TESTFLIGHT_STATIC_BOOTSTRAP_MIRROR_HANDOFF.md
 ```
 
-The branch already contains byte-identical copies of all four new KV-gating files; destination Git blob identities exactly equal the pinned StegOS source:
+The four KV-gating files are byte-identical to the frozen StegOS source, and the complete unchanged current-iPhone signing support chain is now materialized in Site.
+
+Key frozen identities:
 
 ```text
-stegos-bootstrap/current-iphone-testflight.html
-  c468ceef66a10f1475efc0406c0c9277def004ba
-stegos-bootstrap/current-iphone-testflight-bootstrap.js
-  e9962ba5589e5f0e3fa2ec32381d65bb41f4f39f
-stegos-bootstrap/kv-bound-ephemeral-projection-context.js
-  11f69313eae67b9a7f9126f2e1af331331291dec
-stegos-bootstrap/kv-projection-file-loader.js
-  2682b2f9203770203010146bafcd539313a42948
-```
-
-These four files alone are not a runnable product chain because the bootstrap imports the unchanged static predecessor support package.
-
-## Exact static support package still required
-
-The frozen StegOS successor manifest at the same pinned commit identifies the unchanged support chain that must be present on Site before merge/runtime claims:
-
-```text
-stegos-bootstrap/current-iphone-unsigned-ipa-materializer.js
-stegos-bootstrap/StegOSMobile-unsigned-device.ipa
-stegos-bootstrap/StegOSMobile-unsigned-device-manifest.json
-stegos-bootstrap/StegOSMobile.signing-requirements.json
-stegos-bootstrap/current-iphone-wasm-materializer.js
-stegos-bootstrap/stegos_current_iphone_ipa_signer.js
-stegos-bootstrap/stegos_current_iphone_ipa_signer_bg.wasm
-stegos-bootstrap/current-iphone-wasm-signing-engine.js
-stegos-bootstrap/current-iphone-ipa-signing-executor.js
-stegos-bootstrap/current-iphone-tvc-provider-client.js
-stegos-bootstrap/current-iphone-testflight-signing-action.js
-contracts/current-iphone-ipa-signing-executor.v1.json
-```
-
-Frozen binary commitments:
-
-```text
+current-iphone-testflight.html
+  blob c468ceef66a10f1475efc0406c0c9277def004ba
+current-iphone-testflight-bootstrap.js
+  blob e9962ba5589e5f0e3fa2ec32381d65bb41f4f39f
+kv-bound-ephemeral-projection-context.js
+  blob 11f69313eae67b9a7f9126f2e1af331331291dec
+kv-projection-file-loader.js
+  blob 2682b2f9203770203010146bafcd539313a42948
 StegOSMobile-unsigned-device.ipa
+  blob 3183c95dbcd73ab7d86acad9b68aef41ea1110b0
   sha256 557d559082bdefca5fcc69c86f342d8cc035c2d803d154de5ed45b5677f80c35
   bytes 389564
-  git blob 3183c95dbcd73ab7d86acad9b68aef41ea1110b0
-
+stegos_current_iphone_ipa_signer.js
+  blob 4a44ef69ac3e61b9c353d439b4781bec3811f63e
+  sha256 17fe61cfdae43cbe5a1d1b211beb39838f58e982efdba90c7156fc36402f3adb
 stegos_current_iphone_ipa_signer_bg.wasm
+  blob 74d9ece3a911c20ce9f89e879c91e027fab10c12
   sha256 699dc3054788d779ba7920e332c661ef7eac001156f93ab7b1fe1b64ee5a4b93
   bytes 2277815
-  git blob 74d9ece3a911c20ce9f89e879c91e027fab10c12
 ```
 
-The authentic source artifacts were recovered through authorized StegOS workflow-artifact access: unsigned-device artifact `10119511850` and WASM artifact `10120870613`. Local hash verification matched the frozen successor commitments. Artifact recovery proves source availability only; it does not prove destination materialization.
+Authentic source artifacts were recovered from StegOS workflow artifacts `10119511850` and `10120870613`. Their binary commitments match the frozen source. Site commit `7e3937c1863d512d46f831263f77491a3a9389a3` materialized the exact binary objects; `4a47b56c5dc2a7719f4315aac612c15b8600a9ae` repaired exact signer-JS identity; `83ca0a5e8fcb157a615c84959da998d5440b2db0` retired the temporary exact-binary relay.
 
-## Transport investigation
+## Transport condition resolved safely
 
-The first Site transport run `34558913408` failed before mutation because `raw.githubusercontent.com` returned HTTP 404 for the non-public StegOS source.
+The earlier raw-source and Site-token cross-repository checkout failures remain negative evidence, but are no longer active blockers. No StegOS private-repository credential was added to Site and no GitHub runtime authority was widened.
 
-Site commit `541823fec8c5b40201e98dfb767697e68cb79763` repaired the transport workflow to attempt a pinned second checkout and made the workflow self-triggering. Exact-head Site validation started successfully, but transport run `34611288342` failed at the StegOS checkout because the Site-scoped `GITHUB_TOKEN` has no cross-repository StegOS read permission (`Repository not found`). No product support bytes were committed by either failed run.
+Site commit `0aa6d7f912bb2d1b9f4816bbb8688ed72a1c2a21` converted the obsolete transport workflow into a read-only local exact-source verifier. It verifies every frozen Git blob plus IPA/WASM/signer SHA-256 and binary sizes with `contents: read` only.
 
-A direct connector-side Git tree experiment also established that a StegOS binary blob SHA cannot simply be referenced from the Site repository: GitHub rejected source blob `3183c95dbcd73ab7d86acad9b68aef41ea1110b0` as not a valid Site blob. Exact binary bytes must be transferred into Site's object database.
+Observed exact-head success at that commit:
 
-The failure is therefore a bounded exact-byte transport condition, not a KV, allocator, StegOS source, or runtime-architecture failure. Do not solve it by exposing a private StegOS credential in Site, widening GitHub Actions authority, using Render, or requiring a second user-operated machine.
+```text
+Site Bootstrap Validate run 34615091923: SUCCESS
+TASK-0011 Exact Product Source Verification run 34615092070: SUCCESS
+```
+
+The Site product handoff was reconciled at commit `d2360fcebc446aeba49ba583c22e78048bf2e06f`. Its push validation run `34615150772` and PR-triggered checks were still executing when this canonical handoff was updated, so merge is not yet claimed.
+
+## Product PR
+
+Site PR `#1236` is OPEN from `claim/current-iphone-kv-testflight-static-bootstrap-r1` to `main`. GitHub currently reports the PR mergeable. It contains 20 changed files and preserves source/CI/merge/publication as non-runtime evidence.
+
+Do not merge until all exact-head PR checks are successful. After merge, observe public publication before claiming Site propagation.
 
 ## Current first unresolved predicate
 
-`EXACT_STATIC_SIGNING_CHAIN_MATERIALIZED_AND_VERIFIED_ON_TASK_2026_0011_PRODUCT_BRANCH`
+`SITE_PR_1236_EXACT_HEAD_CHECKS_PASS_AND_MERGE_IS_COMPLETED`
 
-The next continuation should:
+Then continue in this order:
 
-1. use the existing authorized connector/evidence channel to place the frozen support bytes into the TASK-2026-0011 Site workspace without exposing private-repository credentials;
-2. verify every destination Git blob and frozen SHA-256/size commitment;
-3. validate positive and fail-closed KV projection behavior against the complete product chain;
-4. update Site README and both Site/canonical handoffs with exact validation evidence;
-5. open the product PR only after the complete exact-byte chain exists;
-6. merge only after exact-head checks pass and publication is observed;
-7. then continue current-iPhone KV selection -> same-device signing -> TV/TVC Build Upload -> TestFlight install -> retained StegOS/StegBrowser evidence -> one frozen global measurement pass.
+1. observe public Site publication of the merged exact product chain;
+2. on the established current iPhone select the already-produced authentic KV projection JSON;
+3. run the same-device TestFlight bootstrap;
+4. continue through TV/TVC native Build Upload;
+5. retain TestFlight installation and StegOS/StegBrowser runtime evidence;
+6. only then continue the frozen global runtime measurement sequence.
 
-## Coordination hygiene
+## README state
 
-During connector write-capability discovery, an accidental empty `noop` file was created on `StegVerse-Labs/.github` main at commit `4a956862fc061e2ae5178c7a35997ebe91c046cf` and immediately deleted at `9d27831384028f9a5de375702f96f05e98a56a4f`. There is no net tree change and neither commit is task/runtime/validation evidence.
+The Site README was reviewed on the active branch. Its existing authority boundary already states that Site is a public mirror, does not generate receipts, and must not become credential/runtime authority. No conflicting README claim was found in this continuation; task-specific exact materialization and validation evidence remains in the product and canonical handoffs rather than being promoted to a runtime claim in README.
 
 ## Manual work
 
-None. The current condition is repository-side exact-byte transport and validation.
+None at this stage. Repository validation/integration is active; no iPhone runtime action or credential entry is required until Site merge and publication are proven.
