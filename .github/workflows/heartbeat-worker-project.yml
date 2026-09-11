@@ -278,13 +278,15 @@ jobs:
         run: |
           set -euo pipefail
           before="$(sha256sum control/worker-registry.json control/heartbeat-state.json control/worker-cost-observations.json | sha256sum | cut -d' ' -f1)"
-          output="$(python scripts/run_heartbeat_runtime.py --dry-run --cycles 1)"
-          echo "$output"
+          projection_file="$(mktemp)"
+          trap 'rm -f "$projection_file"' EXIT
+          python scripts/run_heartbeat_runtime.py --dry-run --cycles 1 | tee "$projection_file"
           after="$(sha256sum control/worker-registry.json control/heartbeat-state.json control/worker-cost-observations.json | sha256sum | cut -d' ' -f1)"
           test "$before" = "$after"
-          python - <<'PY' "$output"
+          python - "$projection_file" <<'PY'
           import json, sys
-          value=json.loads(sys.argv[1])
+          with open(sys.argv[1], encoding='utf-8') as handle:
+              value=json.load(handle)
           assert value['authority_effect']=='NONE_CARRIER_ONLY', value
           assert value['claims_issued'] == 0, value
           assert value['workers_invoked'] == 0, value
