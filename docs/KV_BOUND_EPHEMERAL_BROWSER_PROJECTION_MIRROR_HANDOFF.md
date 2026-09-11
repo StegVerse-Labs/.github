@@ -7,7 +7,7 @@ Parent Goal: `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001`
 Root Goal: `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001`
 COSV: `50000010100000`
 Canonical issue: `StegVerse-Labs/.github#1299`
-Status: `ACTIVE / EXACT KV PROJECTION VALIDATED / TASK-0010 G6 RECOVERED / COMPLETE KV-GATED SUCCESSOR SCOPE REGISTERING`
+Status: `ACTIVE / EXACT KV PROJECTION VALIDATED / TASK-0010 G6 RECOVERED / TASK-0011 V2 PUBLISHED / AUTHENTIC SUCCESSOR ALLOCATION PENDING`
 
 ## Canonical architecture
 
@@ -67,30 +67,78 @@ Merged StegOS PR #314 requires both modules. `current-iphone-testflight.html` no
 
 Therefore the G6 claim is authentic but insufficient for the complete current package. It is retained as provenance only; no retroactive scope widening is permitted. Site PR #1219 was closed without merge before any stale product source was transported.
 
-## Successor allocation
+## TASK-2026-0011 successor registration
 
-`TASK-2026-0011` is the fresh canonical successor. It uses a distinct Site branch/surface and explicitly scopes:
-- the KV-gated TestFlight entry/bootstrap;
-- both KV projection consumer modules;
-- the unchanged exact unsigned IPA/WASM/signing/provider material;
-- the executor contract;
-- a dedicated product handoff and task evidence file.
+`TASK-2026-0011` is the fresh canonical successor. Exact canonical source:
 
-Site issue: `StegVerse-Labs/Site#1220`.
+```text
+StegVerse-Labs/.github/tasks/TASK-2026-0011.json
+Git blob: a9f90414e59e308d66faf7ff2d5c31173b1687ca
+requested_at: 2026-09-11T01:51:58Z
+dependency surface: site:current-iphone-kv-testflight-static-bootstrap
+workspace: claim/current-iphone-kv-testflight-static-bootstrap-r1
+```
+
+It explicitly scopes the KV-gated TestFlight entry/bootstrap, both KV projection consumer modules, unchanged exact unsigned IPA/WASM/signing/provider material, executor contract, and dedicated product evidence/handoff. TASK-0010 generation-6/fence-6 remains immutable predecessor provenance.
+
+## TASK-2026-0011 v1 authentic fail-closed observation
+
+Site PR #1225 merged at `e8da5540ba5c243f47c2e8c7b647f9f407a0618e` and exact-merge GitHub Pages publication passed.
+
+The established current iPhone then loaded the immutable v1 successor surface and observed continuity verified followed by:
+
+```text
+FAIL_CLOSED: canonical preview selected TASK-2026-0009 instead of TASK-2026-0011
+allocator_release: task0011-g7-v1-20260910
+mutation_performed: false
+```
+
+The observation is retained as correct fail-closed evidence. Inspection showed the successor allocator was preserving package fallback semantics when historical predecessor `task_statuses` were absent in retained IndexedDB even though the cryptographically replayed node journal already proved canonical predecessor allocations. This was a retained-state reconstruction gap, not a sort/selection defect.
+
+## TASK-2026-0011 v2 bounded reconciliation
+
+Site PR #1230 implements immutable v2 reconciliation and merged at:
+
+```text
+437a519f7a2557f39ec3505eb5b9e0b8e2794574
+```
+
+Exact-head PR validation passed after reconciling the active pre-work claim to the remediation branch. Exact-merge validation, public observation, GitHub Pages build/deploy, build-status reporting, and the existing Cloudflare publication check all completed successfully.
+
+Published surface:
+
+```text
+/stegos-node/org-allocator-bootstrap-task0011-g7-v2.html
+release: task0011-g7-v2-20260910
+service-worker lineage: stegos-node-shell-v14-task0011-g7-journal-reconciliation-v2
+```
+
+V2 preserves v1 as immutable evidence and performs only bounded predecessor-status reconstruction:
+
+1. verify established node/device binding;
+2. cryptographically replay the complete retained node journal;
+3. admit a predecessor status observation only from a retained canonical allocator execution receipt whose selected task, canonical receipt selection, and claim observation agree;
+4. require retained TASK-2026-0010 evidence before successor reconciliation;
+5. reconstruct only missing/queued proven predecessor status to `active`; never synthesize `completed`;
+6. run the unchanged TASK-0011 allocator preview against the normalized in-memory state;
+7. require exact TASK-2026-0011 selection and generation +1;
+8. atomically compare against the original raw retained IndexedDB state and commit normalized predecessor status plus the TASK-0011 transition in one CAS;
+9. retain the resulting canonical allocator receipt in the node journal.
+
+The journal remains evidence, not claim authority. Reconstruction does not grant a claim and does not synthesize completion. No allocator state reset, browser-state reset, TASK-0010 scope widening, Render fallback, GitHub runtime credential, or second user-operated machine is introduced.
 
 ## Current first unresolved predicate
 
-`TASK_2026_0011_REGISTERED_AND_CONSUMABLE_BY_CURRENT_IPHONE_CANONICAL_ALLOCATOR`
+`AUTHENTIC_TASK_2026_0011_V2_CURRENT_IPHONE_CANONICAL_ALLOCATION_EVIDENCE`
 
-Next machine sequence:
+Next sequence:
 
-1. validate/merge TASK-0011 registry and canonical handoff reconciliation;
-2. extend the canonical portable allocator/package lineage to consume TASK-0011 without resetting retained current-iPhone allocator state;
-3. publish a new immutable allocator execution surface;
-4. obtain authentic successor claim/fence from the current iPhone;
-5. project exact current StegOS KV-gated source under that fence;
-6. continue through TV/TVC, TestFlight, retained runtime, and one frozen global measurement pass.
+1. on the same established current-iPhone Safari storage partition, open only the published v2 surface;
+2. preserve IndexedDB, node journal, Safari/site state, and continuity state;
+3. require either recovered TASK-0011 evidence, fresh canonical TASK-0011 allocation evidence, or an exact fail-closed diagnostic;
+4. after authentic TASK-0011 claim/fence evidence exists, project the exact current StegOS KV-gated source under that fence;
+5. continue through TV/TVC, TestFlight, retained runtime, and one frozen global measurement pass.
 
 ## Manual work
 
-None until the fresh successor allocator surface is published.
+Open `https://stegverse.org/stegos-node/org-allocator-bootstrap-task0011-g7-v2.html` on the same established current iPhone without clearing site data. If TASK-0011 is recovered or allocated, export the exact allocator evidence JSON. If it fails closed, preserve the exact displayed result and do not reset state.
