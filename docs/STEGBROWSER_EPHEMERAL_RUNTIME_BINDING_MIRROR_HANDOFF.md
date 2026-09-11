@@ -146,7 +146,7 @@ SKAP does not bypass Apple's Terms gate. Once the Team API key can be generated,
 ## Authentic closure sequence
 
 ```text
-resident dispatcher visits stegbbrowser_tvc_source_promotion
+resident dispatcher visits stegbrowser_tvc_source_promotion
 -> exact TVC aef6b6f5 request staged when private-source slot is available
 -> existing private-source path/timer consumes request
 -> exact immutable TVC source materialized and verified
