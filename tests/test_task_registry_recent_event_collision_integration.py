@@ -102,3 +102,26 @@ def test_evaluator_records_checkin_event_before_returning(tmp_path):
     assert rows[-1]["session_id"] == "recorded-session"
     assert rows[-1]["event_sha256"] == out["checkin_event_sha256"]
     assert rows[-1]["authority_effect"] == "NONE"
+
+
+def test_rejected_checkin_is_immediately_closed_with_stopped_event(tmp_path):
+    ledger = tmp_path / "events.jsonl"
+    out = run_evaluator(ledger, {
+        "task_id": "UNREGISTERED-COLLISION-TEST-TASK",
+        "checkin_context": {
+            "session_id": "rejected-session",
+            "checked_in_at": "2026-09-11T03:50:00Z",
+            "repository": "StegVerse-Labs/.github",
+            "branch": "rejected-branch",
+            "source_head": "d" * 40,
+            "first_unresolved_predicate": "REGISTRATION",
+            "repositories_under_mutation": ["StegVerse-Labs/.github"],
+            "components_under_mutation": ["task-registry"],
+        },
+    })
+    rows = [json.loads(line) for line in ledger.read_text(encoding="utf-8").splitlines() if line.strip()]
+    assert out["disposition"] == "STOP_NOT_REGISTERED"
+    assert [row["event_type"] for row in rows] == ["CHECK_IN", "STOPPED"]
+    assert rows[-1]["session_id"] == "rejected-session"
+    assert rows[-1]["event_sha256"] == out["stopped_event_sha256"]
+    assert rows[-1]["authority_effect"] == "NONE"
