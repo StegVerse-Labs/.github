@@ -1,0 +1,39 @@
+{
+  "schema": "stegverse.device-org-allocator-recovered-evidence/v1",
+  "state": "RETAINED_CANONICAL_ALLOCATION_EVIDENCE_RECOVERED",
+  "selected_task_id": "TASK-2026-0011",
+  "claim_registry_generation": 7,
+  "claim_observation": {
+    "schema": "stegverse.org-claim-grant-observation/v1",
+    "state": "CLAIM_GRANT_OBSERVED",
+    "task_id": "TASK-2026-0011",
+    "claim_registry_generation": 7,
+    "fencing_tokens": [7],
+    "dependency_surfaces": ["site:current-iphone-kv-testflight-static-bootstrap"],
+    "claim_snapshot_sha256": "1ac3e86851ff78f15d40d56642df0307d851a0cc87c0d1adcc9078d038cb12bd",
+    "allocator_remains_claim_authority": true,
+    "observation_grants_claim_authority": false,
+    "heartbeat_grants_claim_authority": false,
+    "github_token_required": false,
+    "network_source_fetch_performed": false,
+    "credential_authority": "TV/TVC",
+    "second_machine_required": false,
+    "execution_surface": "CURRENT_USER_IPHONE",
+    "authority_effect": "NONE_OBSERVATION_ONLY"
+  },
+  "allocator_release": "task0011-g7-v2-20260910",
+  "node_journal_entry": {
+    "sequence": 67,
+    "receipt_sha256": "3655269dbf7a0bf2c494a46fc258f7d6cce0698b26202d2d73bb61f7549bf4a4",
+    "entry_sha256": "34d649f1227db25f1a9ddb38fbea709c0fdf4ff5ad0148bb781bbee5c18fb5cf"
+  },
+  "node_journal_replay": {
+    "state": "PASS",
+    "entries": 67,
+    "tail_sha256": "34d649f1227db25f1a9ddb38fbea709c0fdf4ff5ad0148bb781bbee5c18fb5cf"
+  },
+  "allocator_mutation_performed": false,
+  "authority_effect": "NONE_EVIDENCE_ONLY",
+  "recovered_at": "2026-09-11T05:40:37.127Z",
+  "source_note": "Canonicalized evidence projection from user-exported current-iPhone TASK-2026-0011 G7 v2 evidence. The original exported artifact remains the source evidence; this repository projection intentionally records only the fields required for canonical coordination and does not replace the original artifact."
+}
