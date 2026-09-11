@@ -49,6 +49,21 @@ def nonempty(value: Any) -> bool:
     return isinstance(value, str) and bool(value.strip())
 
 
+def canonical_intr_admission(value: dict[str, Any]) -> dict[str, Any]:
+    """Return the canonical GADI admission object without inventing missing fields.
+
+    Authentic GADI requests carry admission under ``admission`` while older bridge
+    fixtures used a top-level projection. Both are evidence-only views of the same
+    InTr decision. Runtime binding is intentionally not part of canonical InTr
+    admission; it is validated later across the StegOS command and WorkerCoordinator
+    execution context.
+    """
+    nested = value.get("admission")
+    if isinstance(nested, dict):
+        return nested
+    return value
+
+
 def materialize(runtime_root: Path) -> dict[str, Any]:
     runtime = runtime_root.expanduser().resolve()
     blockers: list[str] = []
@@ -71,7 +86,8 @@ def materialize(runtime_root: Path) -> dict[str, Any]:
             blockers.append(f"{name.upper()}_SOURCE_INVALID_JSON")
 
     command = source.get("command", {})
-    intr = source.get("intr", {})
+    intr_source = source.get("intr", {})
+    intr = canonical_intr_admission(intr_source) if intr_source else {}
     claim = source.get("claim", {})
     actuator = source.get("actuator", {})
 
@@ -86,7 +102,6 @@ def materialize(runtime_root: Path) -> dict[str, Any]:
     if intr:
         if intr.get("state") != "ADMITTED": blockers.append("INTR_NOT_ADMITTED")
         if not nonempty(intr.get("intr_decision_ref")): blockers.append("INTR_DECISION_REF_MISSING")
-        if not nonempty(intr.get("runtime_binding_ref")): blockers.append("INTR_RUNTIME_BINDING_MISSING")
 
     if claim:
         if claim.get("task_id") != TASK_ID: blockers.append("CLAIM_TASK_MISMATCH")
@@ -104,7 +119,6 @@ def materialize(runtime_root: Path) -> dict[str, Any]:
 
     if command and intr:
         if command.get("intr_decision_ref") != intr.get("intr_decision_ref"): blockers.append("INTR_DECISION_REF_MISMATCH")
-        if command.get("runtime_binding_ref") != intr.get("runtime_binding_ref"): blockers.append("INTR_RUNTIME_BINDING_MISMATCH")
     if command and claim and command.get("runtime_binding_ref") != claim.get("runtime_binding_ref"):
         blockers.append("COMMAND_CLAIM_RUNTIME_BINDING_MISMATCH")
     if claim and actuator:
@@ -125,6 +139,8 @@ def materialize(runtime_root: Path) -> dict[str, Any]:
         "ready": ready,
         "blockers": blockers,
         "source_sha256": dict(sorted(source_sha.items())),
+        "intr_admission_shape": "NESTED_CANONICAL" if isinstance(intr_source.get("admission"), dict) else "TOP_LEVEL_COMPATIBILITY",
+        "intr_runtime_binding_required": False,
         "authority_minted": False,
         "execution_claimed": False,
         "activation_claimed": False,
@@ -142,6 +158,7 @@ def materialize(runtime_root: Path) -> dict[str, Any]:
             "execution_subject": claim["execution_subject"],
             "runtime_lease_observed": False,
             "source_worker_claim_sha256": source_sha["claim"],
+            "source_intr_admission_sha256": source_sha["intr"],
         }
         projected_actuator = dict(actuator)
         projected_actuator.setdefault("runtime_binding_ref", claim["runtime_binding_ref"])
