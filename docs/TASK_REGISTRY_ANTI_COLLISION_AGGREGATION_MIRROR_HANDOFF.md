@@ -3,7 +3,7 @@
 Goal Task ID: `TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001`
 Canonical issue: `StegVerse-Labs/.github#1343`
 PR: `StegVerse-Labs/.github#1344`
-Status: `ACTIVE / CHECKED_OUT / REGISTRY-BOUNDARY DISPOSITION IMPLEMENTED / CANONICAL WORK PREFLIGHT BOUND / PORTABLE WORKERCOORDINATOR PRECLAIM GATE BOUND / EXACT-HEAD VALIDATION PENDING`
+Status: `ACTIVE / CHECKED_OUT / REGISTRY-BOUNDARY DISPOSITION IMPLEMENTED / CANONICAL WORK PREFLIGHT BOUND / PORTABLE WORKERCOORDINATOR PRECLAIM GATE BOUND / NODE-MANIFOLD CENTRAL REGISTRATION ADDED / EXACT-HEAD VALIDATION PENDING`
 
 ## Objective
 
@@ -25,6 +25,7 @@ The evaluator returns task ID, canonical handoff when available, disposition, se
 ## Current implementation
 
 - `data/canonical-task-records/TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001.json`
+- `data/canonical-task-records/STEGOS-NODE-MANIFOLD-001.json`
 - `scripts/evaluate_task_registry_collision_checkin.py`
 - `scripts/install_and_run_canonical_work_event_bootstrap.py`
 - `workercoordinator/portable_checkout.js`
@@ -35,7 +36,7 @@ The evaluator reads all canonical task records at check-in time. It does not gra
 
 Canonical Work event bootstrap executes the registry collision preflight before route installation or bounded work bootstrap. Only `CONTINUE` proceeds automatically. `COORDINATE_CONVERGENCE` and every `STOP_*` result fail closed before mutation and surface the complete `TASK_REGISTRY_CHECKIN` JSON to the caller/session. A missing evaluator, malformed response, identity mismatch, or non-NONE authority effect also fails closed before route mutation.
 
-Portable current-iPhone WorkerCoordinator checkout now requires that same disposition as an explicit third input before it reads or mutates portable WorkerCoordinator state. The checkout validates schema, exact task identity, `authority_effect=NONE`, and `disposition=CONTINUE`; any other condition fails closed before claim/fence mutation. The emitted WorkerCoordinator checkout receipt includes `registry_checkin_disposition`, `registry_checkin_sha256`, and `registry_checkin_authority_effect`, and the portable state retains the latest registry-checkin hash. This binds claim issuance to the exact non-authorizing Task Registry decision that preceded it without converting the registry into claim authority.
+Portable current-iPhone WorkerCoordinator checkout requires that same disposition as an explicit third input before it reads or mutates portable WorkerCoordinator state. The checkout validates schema, exact task identity, `authority_effect=NONE`, and `disposition=CONTINUE`; any other condition fails closed before claim/fence mutation. The emitted WorkerCoordinator checkout receipt includes `registry_checkin_disposition`, `registry_checkin_sha256`, and `registry_checkin_authority_effect`, and the portable state retains the latest registry-checkin hash. This binds claim issuance to the exact non-authorizing Task Registry decision that preceded it without converting the registry into claim authority.
 
 ## Validation evidence
 
@@ -51,29 +52,34 @@ Canonical Work ingress head `d7b36d6a6e850e2a423dac62ebf721ca871117fe` passed:
 - Validate organization control plane run `34549352440`;
 - Heartbeat Worker Project validation run `34549352456`.
 
-The branch has advanced again with portable WorkerCoordinator preclaim enforcement and focused tests. Fresh exact-head validation is required before merge.
+Portable preclaim gate head `888314d7fd4ed5e301fff360e32581dfb19b8f0f` passed:
 
-## Known gap this task addresses
+- Deterministic Repository Suite run `34553056822`;
+- Validate organization control plane run `34553056856`;
+- Heartbeat Worker Project validation run `34553056820`.
 
-`STEGOS-NODE-MANIFOLD-001` was actively being worked in StegOS while absent from central `.github` canonical task records. Under the new boundary behavior, an unregistered task receives `STOP_NOT_REGISTERED`, preventing invisible work from proceeding without central coordination visibility.
+The branch has advanced again with central `STEGOS-NODE-MANIFOLD-001` registration. Fresh exact-head validation is required before merge.
+
+## Node Manifold visibility repair
+
+The previously invisible active Goal Task `STEGOS-NODE-MANIFOLD-001` is now represented in the central `.github` canonical task records on this branch. Its record points to StegOS issue #23 and the Node Manifold / StegVerse Genesis service-KV handoffs, identifies its shared repositories/components, and marks adjacency to global runtime, KV revalidation, Device/KV/SKAP roundtrip, KV-bound browser projection, and Ecosystem Chat work. This converts the earlier `STOP_NOT_REGISTERED` blind spot into collision-visible registry state without claiming physical network proof or runtime activation.
 
 ## Remaining integration
 
-1. obtain fresh exact-head validation for the portable preclaim gate and repair any regression;
+1. obtain fresh exact-head validation after Node Manifold registration and repair any regression;
 2. identify any portable checkout caller that still invokes the old two-argument checkout contract and migrate it to supply the exact Task Registry disposition;
 3. expose check-in timestamp/session identity/branch-PR target metadata as retained coordination evidence;
 4. make task registration/check-in persist enough target information to compute recent-returned collision windows deterministically;
-5. reconcile currently invisible active task identities such as `STEGOS-NODE-MANIFOLD-001` into central registry custody;
-6. add a direct root README reference to the registry preflight and preclaim gate before merge if needed to make the functional change explicit;
-7. merge only when required validation remains green.
+5. add a direct root README reference to the registry preflight and preclaim gate before merge if needed to make the functional change explicit;
+6. merge only when required validation remains green.
 
 ## Authority invariants
 
 Task Registry check-in is coordination evidence only. It grants no claim/fence, execution, credential, transition, custody, publication, release, or completion authority. WorkerCoordinator remains claim/fence authority; Interlock/InTr remains transition/admission authority; TV/TVC remains credential authority; Master Records remains observed-reality/reconstruction authority; HB remains observability only; GitHub runtime authority remains NONE.
 
-## README impact
+## Session handoff note
 
-The existing root README already defines Canonical Work task ingress and cross-task collision resolution as Task Registry coordination responsibilities. The implementation now materially adds fail-closed pre-mutation and preclaim enforcement. A direct root README reference to the evaluator/preclaim sequence remains required before merge unless current README semantics are formally judged sufficient and that disposition is recorded.
+This session reached its coordination handoff threshold. The next session should begin from `TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001`, read this handoff first, verify the exact PR #1344 head, and continue from the remaining-integration list rather than reopening already-green enforcement work.
 
 ## Manual work
 
