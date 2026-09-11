@@ -16,18 +16,23 @@ MATERIALIZER = ROOT / "scripts/install_sovereign_heartbeat_service.py"
 
 CONSUMER_ROW = '    ("erl_active_research_intr_runtime_binding", "control/resident-execution-request.d/consume-erl-active-research-intr-runtime-binding.py"),\n'
 CONSUMER_ANCHOR = '    ("stegos_kv_intr_chain", "scripts/consume_stegos_kv_intr_chain_request.py"),\n'
-ENV_ROW = '    "STEGVERSE_ERL_ROOT",\n'
+ENV_ROWS = (
+    '    "STEGVERSE_ERL_ROOT",\n',
+    '    "STEGVERSE_ERL_ACTIVE_RESEARCH_DISPATCH_PATH",\n',
+)
 ENV_ANCHOR = '    "STEGVERSE_GOOGLE_DRIVE_CLIENT_ID", "STEGVERSE_OWNER_BINDING_DIGEST", "STEGVERSE_STEGFIN_SOURCE_ROOT",\n'
 COPY_ROWS = (
     '    "scripts/prepare_erl_active_research_intr_runtime_source.py",\n',
     '    "scripts/install_erl_active_research_universal_intr_route.py",\n',
     '    "scripts/install_erl_device_kv_prior_lineage.py",\n',
+    '    "scripts/install_erl_resident_request_wiring.py",\n',
 )
 COPY_ANCHOR = '    "scripts/consume_stegos_kv_intr_chain_request.py",\n'
 REQUIRED_ROWS = (
     '        target_root / "scripts" / "prepare_erl_active_research_intr_runtime_source.py",\n',
     '        target_root / "scripts" / "install_erl_active_research_universal_intr_route.py",\n',
     '        target_root / "scripts" / "install_erl_device_kv_prior_lineage.py",\n',
+    '        target_root / "scripts" / "install_erl_resident_request_wiring.py",\n',
 )
 REQUIRED_ANCHOR = '        target_root / "scripts" / "consume_stegos_kv_intr_chain_request.py",\n'
 
@@ -42,9 +47,10 @@ def transform_dispatcher(text: str) -> str:
     if CONSUMER_ROW not in result:
         require(result.count(CONSUMER_ANCHOR) == 1, "dispatcher consumer anchor drift")
         result = result.replace(CONSUMER_ANCHOR, CONSUMER_ANCHOR + CONSUMER_ROW, 1)
-    if ENV_ROW not in result:
+    if any(row not in result for row in ENV_ROWS):
         require(result.count(ENV_ANCHOR) == 1, "dispatcher env anchor drift")
-        result = result.replace(ENV_ANCHOR, ENV_ANCHOR + ENV_ROW, 1)
+        insertion = ''.join(row for row in ENV_ROWS if row not in result)
+        result = result.replace(ENV_ANCHOR, ENV_ANCHOR + insertion, 1)
     return result
 
 
