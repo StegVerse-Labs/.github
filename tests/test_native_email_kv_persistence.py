@@ -28,10 +28,12 @@ class FakeInner:
         self.kv_root = kv_root
         self.calls: list[str] = []
         self.archive_saw_persisted_record = False
+        self.archive_payload = None
 
     def call(self, operation: str, **payload):
         self.calls.append(operation)
         if operation == "ARCHIVE_IDS":
+            self.archive_payload = dict(payload)
             records = list((self.kv_root / kv.KV_RELATIVE_ROOT).glob("*.json"))
             self.archive_saw_persisted_record = bool(records)
             return {
@@ -64,17 +66,39 @@ class NativeEmailKVPersistenceTests(unittest.TestCase):
             self.assertEqual(first["record_hash"], second["record_hash"])
             self.assertEqual(first["relative_path"], second["relative_path"])
 
-    def test_archive_call_happens_only_after_kv_record_exists(self):
+    def test_archive_call_happens_only_after_kv_record_exists_and_binds_governance_context(self):
         with tempfile.TemporaryDirectory() as td:
             root = self.knowledge_vault(Path(td))
             inner = FakeInner(root)
             wrapped = guard.KVGuardedBroker(inner, root)
             wrapped.live_incidents = [dict(INCIDENT)]
-            result = wrapped.call("ARCHIVE_IDS", message_ids=["gmail-message-1", "gmail-message-2"])
+            reviewed = ["gmail-message-1", "gmail-message-2"]
+            result = wrapped.call("ARCHIVE_IDS", message_ids=reviewed)
             self.assertTrue(inner.archive_saw_persisted_record)
-            self.assertEqual(result["archived_ids"], ["gmail-message-1", "gmail-message-2"])
+            self.assertEqual(result["archived_ids"], reviewed)
             self.assertEqual(len(wrapped.kv_receipts), 1)
             self.assertTrue(wrapped.kv_receipts[0]["exact_byte_readback_verified"])
+            context = inner.archive_payload["governance_context"]
+            self.assertEqual(context["schema"], guard.ARCHIVE_CONTEXT_SCHEMA)
+            self.assertEqual(context["task_id"], guard.TASK_ID)
+            self.assertEqual(context["cosv_task_vector"], guard.COSV_TASK_VECTOR)
+            self.assertEqual(context["reviewed_message_ids"], reviewed)
+            self.assertEqual(context["incident_count"], 1)
+            self.assertEqual(context["kv_write_receipts"], wrapped.kv_receipts)
+            self.assertTrue(context["kv_before_archive_required"])
+            self.assertFalse(context["credential_material_present"])
+
+    def test_zero_incident_archive_still_binds_exact_reviewed_set(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = self.knowledge_vault(Path(td))
+            inner = FakeInner(root)
+            wrapped = guard.KVGuardedBroker(inner, root)
+            wrapped.live_incidents = []
+            wrapped.call("ARCHIVE_IDS", message_ids=["informational-message"])
+            context = inner.archive_payload["governance_context"]
+            self.assertEqual(context["reviewed_message_ids"], ["informational-message"])
+            self.assertEqual(context["incident_count"], 0)
+            self.assertEqual(context["kv_write_receipts"], [])
 
     def test_missing_kv_fails_before_archive_provider_call(self):
         with tempfile.TemporaryDirectory() as td:
