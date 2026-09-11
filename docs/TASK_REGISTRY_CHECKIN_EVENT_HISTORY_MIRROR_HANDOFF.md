@@ -3,7 +3,8 @@
 Goal Task ID: `TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001`
 Parent Goal: `TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001`
 Canonical issue: `StegVerse-Labs/.github#1387`
-Status: `ACTIVE / CHECKED_OUT / CHILD REGISTERED / IMPLEMENTATION READY`
+PR: `StegVerse-Labs/.github#1390`
+Status: `ACTIVE / CHECKED_OUT / HASH-LINKED EVENT LEDGER IMPLEMENTED / RECENT-WINDOW EVALUATOR INTEGRATION IMPLEMENTED / EXACT-HEAD VALIDATION PENDING`
 
 ## Objective
 
@@ -11,58 +12,83 @@ Persist non-authorizing Task Registry check-in/check-out history so collision ag
 
 ## Merged prerequisite
 
-Parent PR `StegVerse-Labs/.github#1344` merged at `a1b6043348354072af59b9e1696451720b83cda6` with:
+Parent PR `StegVerse-Labs/.github#1344` merged at `a1b6043348354072af59b9e1696451720b83cda6` with deterministic Task Registry dispositions, fail-closed Canonical Work pre-mutation enforcement, fail-closed portable WorkerCoordinator preclaim enforcement, exact disposition-hash binding into WorkerCoordinator receipt lineage, central `STEGOS-NODE-MANIFOLD-001` registration, and normalized check-in context carrying session/branch/PR/source-head/first-predicate/intended-target metadata.
 
-- deterministic Task Registry dispositions;
-- fail-closed Canonical Work pre-mutation enforcement;
-- fail-closed portable WorkerCoordinator preclaim enforcement;
-- exact disposition-hash binding into WorkerCoordinator receipt lineage;
-- central registration of `STEGOS-NODE-MANIFOLD-001`;
-- normalized check-in context carrying session/branch/PR/source-head/first-predicate/intended-target metadata.
+This child consumes that existing evaluator and disposition contract. It does not create a second collision engine.
 
-This child must consume that existing evaluator and disposition contract. It must not create a second collision engine.
+## Implemented source
 
-## Required retained event fields
+- `schemas/task-registry-checkin-event.v1.schema.json`
+- `scripts/task_registry_checkin_event_history.py`
+- `scripts/evaluate_task_registry_collision_checkin.py`
+- `tests/test_task_registry_checkin_event_history.py`
+- `tests/test_task_registry_recent_event_collision_integration.py`
 
-- `task_id`
-- `session_id`
-- `event_type` (`CHECK_IN`, `CHECK_OUT`, `RETURNED`, or equivalent canonical states)
-- `checked_in_at` / `checked_out_at`
-- repository
-- branch
-- pull request
-- source head
-- first unresolved predicate
-- repositories under mutation
-- components under mutation
-- registry disposition
-- exact disposition SHA-256
-- checkout/return state
-- predecessor event hash / event hash for reconstructable ordering
+## Event contract
 
-## Required behavior
+The event ledger uses `stegverse.task-registry-checkin-event/v1` and retains:
 
-1. Record check-in before source mutation or claim issuance.
-2. Record return/check-out when a session relinquishes the task or is stopped/superseded.
-3. Define a deterministic recent-returned window policy.
-4. Feed qualifying recent events into `evaluate_task_registry_collision_checkin.py` as additional collision evidence.
-5. Preserve current task-record collision checks; event history augments rather than replaces them.
-6. Keep all event evidence non-authorizing.
-7. Keep storage/provider semantics abstract enough to move from GitHub/runtime projection to StegVerse sovereign KV custody later.
+- `task_id` and `session_id`;
+- `event_type`: `CHECK_IN`, `CHECK_OUT`, `RETURNED`, or `STOPPED`;
+- timezone-aware `event_at`;
+- repository / branch / PR / source head / first unresolved predicate;
+- repositories and components under mutation;
+- registry disposition plus exact disposition SHA-256;
+- coordination state;
+- predecessor event SHA-256 and current event SHA-256;
+- `authority_effect=NONE`.
+
+The JSONL ledger path is configurable through `STEGVERSE_TASK_REGISTRY_EVENT_LEDGER`; default source/runtime projection is `runtime/task-registry/checkin-events.jsonl`. This avoids binding the protocol to GitHub storage and preserves later migration to sovereign KV custody.
+
+## Recent-returned policy
+
+The initial deterministic recent-returned collision window is `1800` seconds / 30 minutes.
+
+For each `(task_id, session_id)`, only the latest event controls whether the session participates. A latest `RETURNED` or `STOPPED` event inside the window contributes collision evidence when its retained repository/component targets overlap the arriving task. A later `CHECK_IN` for that same session supersedes its earlier returned state. Expired events do not participate.
+
+Recent history augments canonical task-record collision evidence. It cannot create a hard current-checkout stop by itself; it produces convergence evidence. Current canonical `CHECKED_OUT` component/lineage overlap remains the source of `STOP_COLLISION` hard-stop behavior.
+
+## Evaluator integration
+
+`evaluate_task_registry_collision_checkin.py` now:
+
+1. reads canonical task records exactly as before;
+2. computes current-record collision candidates;
+3. reads qualifying recent returned/stopped events from the configured ledger;
+4. appends `source=RECENT_EVENT_HISTORY` candidates without replacing canonical-record candidates;
+5. returns `COORDINATE_CONVERGENCE` when recent overlap exists absent a harder current checkout collision;
+6. records the arriving session's own `CHECK_IN` event when a `session_id` is supplied;
+7. returns that `checkin_event_sha256` in the disposition envelope.
+
+The check-in event is recorded by the registry evaluator before downstream Canonical Work source mutation or portable WorkerCoordinator claim issuance, preserving the parent ordering contract.
+
+## Return / check-out recording
+
+`scripts/task_registry_checkin_event_history.py` is also the canonical non-authorizing append path for `CHECK_OUT`, `RETURNED`, and `STOPPED` events. Session/task return callers must supply the exact prior/current Task Registry disposition object and retained task/session context. Hash-chain validation fails closed on tampering or predecessor mismatch.
+
+## Tests
+
+Deterministic tests now cover:
+
+- hash-linked append/reload;
+- recent returned overlap;
+- 30-minute expiry;
+- latest-session-state replacement;
+- tamper/hash failure;
+- existing evaluator consumption of recent returned evidence;
+- evaluator recording of the current `CHECK_IN` event.
 
 ## Authority invariants
 
-Task Registry history is coordination evidence only. WorkerCoordinator remains claim/fence authority; Interlock/InTr remains transition/admission authority; TV/TVC remains credential authority; Master Records remains observed-reality/reconstruction authority; HB remains observability only; GitHub runtime authority remains NONE.
+Task Registry event history is coordination evidence only. WorkerCoordinator remains claim/fence authority; Interlock/InTr remains transition/admission authority; TV/TVC remains credential authority; Master Records remains observed-reality/reconstruction authority; HB remains observability only; GitHub runtime authority remains NONE.
 
-## Next implementation
+## Remaining
 
-1. define versioned event schema;
-2. implement append/record helper with hash-linked events;
-3. implement recent-window reader;
-4. augment the merged anti-collision evaluator with recent-event candidates;
-5. add deterministic tests for check-in, return, expiry, collision, and supersession cases;
-6. update README/handoff where functionally required;
-7. validate exact head and merge.
+1. obtain exact-head validation and repair any regression;
+2. add/confirm explicit session-return invocation at the canonical session/task relinquish path rather than relying on ad-hoc callers;
+3. update root README with the durable recent-session collision-window protocol if required by repository functional-change invariant;
+4. merge PR #1390 after exact-head validation is green;
+5. after merge, evaluate projection of the event ledger into StegVerse sovereign KV custody without changing evaluator semantics.
 
 ## Manual work
 
