@@ -11,7 +11,9 @@
   "repository": "StegVerse-Labs/.github",
   "canonical_issue": 1524,
   "handoff_projection_refs": [
-    "StegVerse-Labs/.github:docs/ECOSYSTEM_CONTINUITY_EVALUATOR_MIRROR_HANDOFF.md"
+    "StegVerse-Labs/.github:docs/ECOSYSTEM_CONTINUITY_EVALUATOR_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site:docs/ECOSYSTEM_CONTINUITY_SITE_PROJECTION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegVerse-Healer:docs/ECOSYSTEM_CONTINUITY_HEALER_INTAKE_MIRROR_HANDOFF.md"
   ],
   "targets": {
     "repositories": [
@@ -30,6 +32,42 @@
       "master-records-evaluation-custody"
     ]
   },
+  "core_source_state": {
+    "pull_request": 1525,
+    "exact_head": "eed1a5eaa8e6875562f00cc64d69909ec3f5a125",
+    "merge_commit": "935ba8c21dc5b55a393a22747f326d5f7d06da7a",
+    "validation_runs": {
+      "heartbeat": 34643563011,
+      "deterministic_suite": 34643563044,
+      "organization_control": 34643563005
+    },
+    "merged_validated": true
+  },
+  "consumer_integration_state": {
+    "healer_intake": {
+      "pull_request": 63,
+      "exact_head": "60d41e5c9e0c8d2899bc8146b1f7be7b301484c3",
+      "test_readiness_run": 34653764422,
+      "merge_commit": "a0f907af1febc4125af745a7211de8da88095fca",
+      "merged_validated": true,
+      "live_intake_claimed": false
+    },
+    "site_projection": {
+      "pull_request": 1241,
+      "current_head": "dec3b3040576e8bd91e7ef01cd5222fb896ebef2",
+      "active_prework_claim_added": true,
+      "merged": false,
+      "live_projection_claimed": false
+    },
+    "master_records_custody": {
+      "implemented": false,
+      "authentic_custody_claimed": false
+    },
+    "periodic_healer_schedule": {
+      "implemented": false,
+      "authentic_execution_claimed": false
+    }
+  },
   "authority_model": {
     "diagnostic_authority": "OBSERVATION_CLASSIFICATION_ONLY",
     "repair_dispatch_owner": "StegVerse-Labs/StegVerse-Healer",
@@ -40,6 +78,15 @@
     "later_ece_observation_required_for_recovery": true,
     "second_scheduler_allowed": false
   },
+  "remaining_predicates": [
+    "SITE_PROJECTION_SOURCE_MERGED_VALIDATED",
+    "MASTER_RECORDS_ECE_CUSTODY_RECONSTRUCTION_IMPLEMENTED",
+    "HEALER_SOVEREIGN_PERIODIC_ECE_INVOCATION_IMPLEMENTED",
+    "AUTHENTIC_RETAINED_ECE_EVALUATION_OBSERVED",
+    "SITE_LIVE_CONTINUITY_PROJECTION_OBSERVED",
+    "HEALER_LIVE_FINDING_INTAKE_OBSERVED",
+    "RECOVERY_LOOP_INDEPENDENT_REEVALUATION_PROVEN"
+  ],
   "completion": {
     "claimed": false,
     "validated": false,
