@@ -1,6 +1,6 @@
 # SV-DN-1 Production Source Preparation Mirror Handoff
 
-Updated: 2026-08-29
+Updated: 2026-09-10
 Repository: `StegVerse-Labs/.github`
 Goal: `SV-DN1-PRODUCTION-SOURCE-PREPARATION-001`
 
@@ -9,6 +9,10 @@ Goal: `SV-DN1-PRODUCTION-SOURCE-PREPARATION-001`
 The production bootstrap MUST NOT depend on GitHub or any other external platform for source acquisition.
 
 GitHub repository names and historical commit SHAs are retained only as migration/provenance coordinates. They are not runtime locators, admission authorities, or availability dependencies.
+
+Source preparation is also not semantically dependent on route-specific InTr completion. It is pure local source verification/materialization under independent task control. The former `SV-DN1-INTR-RUNTIME-001 -> SV-DN1-PRODUCTION-SOURCE-PREP-001` execution gate was sequencing for the original first-round chain, not a source-safety predicate, and is removed from source-prep admission. `SV-DN1-SDK-FIRST-ROUND-001` retains its own separate InTr and source-prep prerequisites before that production round may execute.
+
+This allows the same verified SDK / StegCore / Core-Lite / Master Records roots to be reused by other separately admitted sovereign consumers without granting those consumers SDK, governance, provider, or execution authority.
 
 ## Canonical runtime contract
 
@@ -29,7 +33,16 @@ materialize local source root
         ↓
 emit source-preparation receipt
         ↓
-SV-DN1-SDK-FIRST-ROUND-001
+separately admitted consumer may use exact roots
+```
+
+For the original SV-DN-1 production chain:
+
+```text
+source-preparation COMPLETE
++
+SV-DN1-INTR-RUNTIME-001 COMPLETE
+-> SV-DN1-SDK-FIRST-ROUND-001 may become dependency-complete
 ```
 
 Required source locators remain:
@@ -41,7 +54,23 @@ STEGVERSE_CORE_LITE_SOURCE_ROOT
 STEGVERSE_MASTER_RECORDS_SOURCE_ROOT
 ```
 
-When any of these locators already names a local directory, the worker now verifies that directory directly: migration anchor(s) must match and a complete `sha256-content-manifest` identity is recomputed from the local bytes. A configured local root is not copied merely to satisfy a preferred directory layout. Only a truly absent component falls through to the local content-addressed package store.
+When any of these locators already names a local directory, the worker verifies that directory directly: migration anchor(s) must match and a complete `sha256-content-manifest` identity is recomputed from the local bytes. A configured local root is not copied merely to satisfy a preferred directory layout. Only a truly absent component falls through to the local content-addressed package store.
+
+## Independent task-control admission
+
+`SV-DN1-PRODUCTION-SOURCE-PREP-001` is eligible for its own fresh WorkerCoordinator claim/fence whenever it is `HANDOFF_READY`. It no longer requires a parent task to be `COMPLETED` before source verification/materialization can begin.
+
+This does not let HeartBeat grant execution authority and does not bypass WorkerCoordinator:
+
+```text
+execution_admission_mode: INDEPENDENT_TASK_CONTROL
+fresh_fence_required: true
+carrier_trigger_required: false
+heartbeat_grants_execution_authority: false
+parent terminalization required for source prep: false
+```
+
+The semantic parent lineage to the original SV-DN-1 workstream is retained as provenance. Only the runtime dependency is removed.
 
 ## Source package
 
@@ -122,7 +151,7 @@ A missing component produces `HANDOFF_READY / SV_DN1_SOURCE_PACKAGE_MATERIALIZAT
 ## Runtime truth
 
 ```text
-resident/InTr upstream: OBSERVED
+route-specific InTr terminalization prerequisite for source prep: REMOVED
 platform-neutral source package schema: IMPLEMENTED
 production source worker network source acquisition: REMOVED
 GitHub runtime/source dependency: NONE BY CONTRACT
@@ -130,6 +159,8 @@ first four canonical SHA-256 source identities: NOT YET OBSERVED/FROZEN
 production source prep receipt v2: NOT YET OBSERVED
 SDK first round: NOT YET EXECUTED
 ```
+
+The separate current registry for `SV-DN1-INTR-RUNTIME-001` still reports its own authentic runtime blockers. Removing it as a source-prep prerequisite does not claim that InTr task complete.
 
 ## Completion
 
@@ -144,7 +175,6 @@ repository_writeback_performed=false
 ```
 
 Newer authentic runtime evidence overrides older source/PR/session descriptions.
-
 
 ## Local-root and v2 chain reconciliation — 2026-08-30
 
@@ -174,4 +204,4 @@ For v2, durable receipt acceptance requires:
 - `repository_writeback_performed=false`;
 - `sdk_admitted=false`.
 
-This correction removes a false runtime blocker without creating any new source-acquisition or credential authority.
+This correction removes false runtime blockers without creating any new source-acquisition or credential authority.
