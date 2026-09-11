@@ -1,6 +1,6 @@
 # StegBrowser Ephemeral Runtime Binding Mirror Handoff
 
-Updated: 2026-09-10
+Updated: 2026-09-11
 
 ## Task pointer
 
@@ -31,7 +31,7 @@ canonical Site SV-NODE
 
 The prior GitHub-hosted `ASC_*` credential path is retired. The preferred path is current-iPhone local sealing -> InTr -> Device/KV/SKAP -> callback-only TVC provider operation. The real `.p8` must not be placed in GitHub, logs, artifacts, task payloads or chat.
 
-Merged TVC implementation now includes:
+Merged TVC implementation includes:
 
 ```text
 #356/#357  exact App Store Connect credential class + callback-only provider boundary
@@ -50,7 +50,7 @@ Merged TVC implementation now includes:
 #387       successful private-source read -> separate transient promotion dispatch; merge aef6b6f5dc99d2a531718ca475d20858ae8e68a6
 ```
 
-PR #378 fixes the resident listener collision:
+Canonical listener topology:
 
 ```text
 TVC primary provider-operation runtime: 127.0.0.1:8765
@@ -59,17 +59,11 @@ Coinbase SKAP local upstream:            http://127.0.0.1:8775
 App Store Connect SKAP local upstream:   http://127.0.0.1:8775
 ```
 
-The shared SKAP ingress and tunnel systemd units render from the active TVC `@REPO_ROOT@`; `/opt/stegverse/TVC` is no longer the fixed runtime assumption for those services.
-
 ## Exact TVC source promotion path
 
-TVC #386 and #387 close the source-level gap between exact source materialization and the already-existing primary service.
+TVC #386 and #387 close the source-level gap between exact TVC private-source materialization and the already-existing primary runtime service.
 
-The exact source promotion bridge requires an immutable TVC materialization under `/var/lib/stegverse/private-source-read/materialized`, exact `git HEAD` equality, and a matching private-source execution receipt. It then invokes that materialization's existing `install_tvc_primary_runtime_service.py --activate`, which re-renders and restarts the same fixed `stegtvc-primary-runtime.service`. No second primary runtime is created.
-
-The private-source oneshot now has a post-materialization dispatcher. It is a no-op for unrelated reads. For an exact `StegVerse-Labs/TVC` IMMUTABLE_COMMIT receipt whose `consumer_task` is this Goal Task, it launches the promotion bridge in a separate transient systemd oneshot so restarting the primary service cannot terminate the promotion transaction before its receipt is written.
-
-The immutable TVC source selected for first resident promotion is:
+The immutable TVC source selected for the first resident promotion remains:
 
 ```text
 repository: StegVerse-Labs/TVC
@@ -78,58 +72,81 @@ contains: #386 + #387 promotion chain
 materialization id: stegbrowser-tvc-runtime-aef6b6f5
 ```
 
+The promotion bridge requires an immutable TVC materialization under `/var/lib/stegverse/private-source-read/materialized`, exact `git HEAD` equality, and a matching private-source execution receipt. It then invokes that materialization's existing `install_tvc_primary_runtime_service.py --activate`, re-rendering/restarting the same fixed `stegtvc-primary-runtime.service`. No second primary runtime is created.
+
 ## Resident request source
 
-The canonical resident control plane now carries a dedicated request and consumer for this exact source promotion:
+The canonical resident request/consumer projection is now merged and validated through `.github` PR #1358:
 
 ```text
+PR: #1358
+head: a6b6c9928e21f3b8eb41017ee8a26336ecda197d
+merge: 9776ceba4877f8c213af534176f277c28ec58d39
 request: control/resident-execution-request.d/stegbrowser-tvc-source-promotion-001.json
 consumer: control/resident-execution-request.d/consume-stegbrowser-tvc-source-promotion.py
 dispatcher selector: stegbrowser_tvc_source_promotion
 private-source handoff: <runtime>/tvc-handoff/private-source-request.json
 ```
 
-The request consumer performs no network source fetch and starts no system service. It stages only the exact TVC IMMUTABLE_COMMIT request. If the single private-source handoff slot is occupied by another task, it records `HANDOFF_READY` as its outcome and does not overwrite the other task. If the existing request belongs to the same StegBrowser/TVC source identity, it may restage only the exact pinned coordinate.
+All five observed exact-head GitHub checks for #1358 completed successfully. GitHub Actions validation remains source/transport evidence only; it does not prove resident execution.
 
-Both the request and consumer live under the already-materialized `control/resident-execution-request.d` directory, so no new source-refresh directory or transport is introduced.
+The consumer performs no network source fetch and starts no system service. It stages only the exact TVC `IMMUTABLE_COMMIT` request. An unrelated occupied private-source slot yields `HANDOFF_READY`; same-identity restaging is constrained to the exact pinned coordinate.
+
+The stale pre-convergence PR #1206 was closed unmerged on 2026-09-11 because it was non-mergeable and projected an obsolete canonical task state.
+
+## Current authentic runtime evidence
+
+No canonical source currently contains the runtime receipt expected at:
+
+```text
+receipts/sovereign-host/stegbrowser-tvc-source-promotion-request-consumption.latest.json
+```
+
+The only canonical match is the consumer source defining that receipt path. Therefore the following must remain unclaimed:
+
+```text
+resident dispatcher consumed stegbrowser_tvc_source_promotion: NOT OBSERVED
+exact TVC request staged by authentic resident:               NOT OBSERVED
+pinned TVC materialization executed:                          NOT OBSERVED
+#387 transient promotion executed:                            NOT OBSERVED
+#386 same-primary-runtime restart executed:                    NOT OBSERVED
+simultaneous 8765/8775 listeners observed:                    NOT OBSERVED
+Apple recipient/liveness/InTr OWNER_INGRESS_READY:            NOT OBSERVED
+```
+
+No new scheduler, heartbeat, hosted fallback, second runtime, or second user-operated machine should be introduced to manufacture these predicates.
 
 ## Device/KV/SKAP convergence
 
-StegOS #326 and #327 compose and verify the full four-leg Universal InTr chain:
+StegOS #326 and #327 compose and verify the four-leg Universal InTr chain:
 
 ```text
 DEVICE_SYSTEM -> KV -> SKAP_VAULT -> KV -> DEVICE_SYSTEM
 ```
 
-The verifier requires exact receipt-hash chaining and current Interlock/InTr posture binding. These are source/validation capabilities; authentic Apple credential custody has not yet been observed.
+These are source/validation capabilities. Authentic Apple credential custody remains unobserved.
 
 ## Current-iPhone signing
 
-The same-device signing executor contract/orchestrator remains merged. The actual StegOS-owned same-device cryptographic transformation engine remains a separate downstream implementation requirement before a real signed IPA can be produced without a second user-operated machine.
+The StegOS current-iPhone WASM signing implementation has advanced beyond the old generic `NOT_IMPLEMENTED` wording: merged source includes the pinned WASM signing core, in-memory IPA transformation, same-session private-key custody, independent verification, and zero-input TVC app-resource resolution. Authentic current-iPhone signing and signed IPA evidence remain unobserved, so source completion must not be promoted into runtime completion.
 
 ## Apple account state
 
 Owner-provided iPhone evidence confirms Apple Developer Program Account Holder membership active through `2027-09-09`.
 
-App Store Connect is currently blocked by an Apple Terms/account UI defect: the Terms checkbox can be selected, but no usable acceptance control is rendered on the current iPhone across multiple browsers. Therefore:
+App Store Connect remains externally gated by the observed Terms/account UI defect on the current iPhone. Therefore:
 
 ```text
 Apple Team API key: NOT_CREATED_OR_NOT_OBSERVED
 real Apple credential SKAP custody: NOT_OBSERVED
 ```
 
-SKAP does not bypass Apple's Terms gate. Once the Team API key can be generated, the intended ingress is the current-iPhone SKAP page, not GitHub Actions secrets.
+SKAP does not bypass Apple's Terms gate. Once the Team API key can be generated, intended ingress remains current-iPhone local sealing into SKAP, never GitHub Actions secrets.
 
-## Remaining bootstrap boundary
-
-The exact source request, private-source materializer, post-materialization promotion hook and same-service restart bridge now exist in source. Authentic evidence still does not establish that the sovereign resident has refreshed to this `.github` request/consumer set or executed the pinned TVC materialization.
-
-The existing TVC self-heal `run_once()` re-installs the private-source watcher family on every admitted sovereign-runtime locator cycle. Therefore once its TVC control source contains #387, it can refresh the installed private-source unit without requiring a primary-process restart first. Source merge alone does not prove that host control tree has advanced.
-
-Current authentic closure sequence:
+## Authentic closure sequence
 
 ```text
-resident dispatcher visits stegbrowser_tvc_source_promotion
+resident dispatcher visits stegbbrowser_tvc_source_promotion
 -> exact TVC aef6b6f5 request staged when private-source slot is available
 -> existing private-source path/timer consumes request
 -> exact immutable TVC source materialized and verified
@@ -147,14 +164,18 @@ No source merge or hosted CI result substitutes for those host observations.
 
 ## Remaining sequence
 
-1. Validate and merge the resident exact-TVC-source request/consumer projection.
-2. Resolve the remaining authentic resident source-uptake boundary and observe the pinned TVC materialization plus same-service restart receipts.
+1. Obtain authentic resident source-uptake evidence for the already-merged #1358 request/consumer.
+2. Observe the pinned TVC materialization and same-primary-runtime restart receipts.
 3. Obtain authentic simultaneous 8765/8775 listener evidence and Apple recipient/liveness/route `OWNER_INGRESS_READY` evidence.
 4. Resolve the external Apple Terms/account gate, generate the Team API key, and seal it from the current iPhone directly into SKAP.
 5. Observe authentic Device -> KV -> SKAP custody receipts and execute TVC Apple identifier/capability/resource/provisioning operations.
-6. Complete same-device cryptographic IPA signing, TVC Build Upload, TestFlight install and canonical same-device discovery.
+6. Execute and verify authentic same-device IPA signing, TVC Build Upload, TestFlight install, and canonical same-device discovery.
 7. Only after working-instance proof continue native StegSocials publication/readback.
+
+## README disposition
+
+The repository `README.md` Canonical Work ingress section was reviewed during this reconciliation. Its architecture remains accurate: registered requests reuse the existing resident consumer, Task Registry does not mint execution authority, and runtime execution still requires authentic downstream evidence. No README text change is required for this state-only reconciliation.
 
 ## Current state
 
-`ACTIVE_NOT_SUPERSEDED / CANONICAL_RESIDENT_SOURCE_MERGED_VALIDATED / IPHONEOS_UNSIGNED_PACKAGE_VALIDATED / GITHUB_APPLE_CREDENTIAL_EXECUTION_RETIRED / TVC_APP_STORE_CONNECT_PROVIDER_AND_SKAP_PATH_MERGED / TVC_PRIMARY_8765_SKAP_8775_COLLISION_REPAIR_MERGED_VALIDATED / VERIFIED_TVC_SOURCE_TO_SAME_PRIMARY_RUNTIME_PROMOTION_MERGED / PRIVATE_SOURCE_POST_PROMOTION_HOOK_MERGED / RESIDENT_EXACT_TVC_SOURCE_REQUEST_IMPLEMENTED_VALIDATION_PENDING / APPLE_DEVELOPER_MEMBERSHIP_OBSERVED_ACTIVE_THROUGH_2027-09-09 / APP_STORE_CONNECT_TERMS_GATE_BLOCKED / APPLE_TEAM_API_KEY_NOT_CREATED_OR_NOT_OBSERVED / AUTHENTIC_TVC_MATERIALIZATION_AND_RESTART_NOT_OBSERVED / LIVE_APPLE_OWNER_INGRESS_READY_NOT_OBSERVED / SAME_DEVICE_CRYPTOGRAPHIC_SIGNING_ENGINE_REMAINS_DOWNSTREAM / AUTHENTIC_CURRENT_IPHONE_INSTALL_LISTENER_DISCOVERY_PENDING`
+`ACTIVE_NOT_SUPERSEDED / CANONICAL_RESIDENT_SOURCE_MERGED_VALIDATED / RESIDENT_EXACT_TVC_SOURCE_REQUEST_MERGED_VALIDATED_1358 / STALE_PR_1206_CLOSED_UNMERGED / IPHONEOS_UNSIGNED_PACKAGE_VALIDATED / GITHUB_APPLE_CREDENTIAL_EXECUTION_RETIRED / TVC_APP_STORE_CONNECT_PROVIDER_AND_SKAP_PATH_MERGED / TVC_PRIMARY_8765_SKAP_8775_COLLISION_REPAIR_MERGED_VALIDATED / VERIFIED_TVC_SOURCE_TO_SAME_PRIMARY_RUNTIME_PROMOTION_MERGED / PRIVATE_SOURCE_POST_PROMOTION_HOOK_MERGED / AUTHENTIC_RESIDENT_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / AUTHENTIC_TVC_MATERIALIZATION_AND_RESTART_NOT_OBSERVED / LIVE_APPLE_OWNER_INGRESS_READY_NOT_OBSERVED / APPLE_DEVELOPER_MEMBERSHIP_OBSERVED_ACTIVE_THROUGH_2027-09-09 / APP_STORE_CONNECT_TERMS_GATE_BLOCKED / APPLE_TEAM_API_KEY_NOT_CREATED_OR_NOT_OBSERVED / SAME_DEVICE_SIGNING_SOURCE_IMPLEMENTED_RUNTIME_NOT_OBSERVED / AUTHENTIC_CURRENT_IPHONE_INSTALL_LISTENER_DISCOVERY_PENDING`
