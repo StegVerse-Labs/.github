@@ -17,34 +17,10 @@
   ],
   "targets": {
     "organizations": ["StegVerse-org", "StegVerse-Labs"],
-    "repositories": [
-      "StegVerse-org/StegVerse-SDK",
-      "StegVerse-Labs/.github",
-      "StegVerse-Labs/TVC",
-      "StegVerse-Labs/stegfin-governance",
-      "StegVerse-org/LLM-adapter",
-      "StegVerse-Labs/Site",
-      "StegVerse-Labs/admissibility-wiki"
-    ],
-    "components": [
-      "sdk-generic-manifest",
-      "workspace-external-collaboration",
-      "workspace-active-probe",
-      "external-collaboration-consent",
-      "external-collaboration-client-secret-custody",
-      "resident-request-dispatcher",
-      "resident-refresh-dispatch",
-      "sovereign-service-gateway",
-      "sdk-public-distribution",
-      "master-records-public-distribution"
-    ]
+    "repositories": ["StegVerse-org/StegVerse-SDK", "StegVerse-Labs/.github", "StegVerse-Labs/TVC", "StegVerse-Labs/stegfin-governance", "StegVerse-org/LLM-adapter", "StegVerse-Labs/Site", "StegVerse-Labs/admissibility-wiki"],
+    "components": ["sdk-generic-manifest", "workspace-external-collaboration", "workspace-active-probe", "external-collaboration-consent", "external-collaboration-client-secret-custody", "resident-request-dispatcher", "resident-refresh-dispatch", "sovereign-service-gateway", "sdk-public-distribution", "master-records-public-distribution"]
   },
-  "adjacent_task_refs": [
-    "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001",
-    "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
-    "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
-    "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001"
-  ],
+  "adjacent_task_refs": ["TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001", "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001", "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001", "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001"],
   "coordination_evidence": {
     "task_registry_registration_pr": 1389,
     "task_registry_registration_merge": "66cb83f9d8bed7dbadedde935fb005f6d186bd38",
@@ -54,7 +30,15 @@
     "sdk_reconciliation_pr": 196,
     "sdk_reconciliation_merge": "e55c0e415759a3f2baf2d553f403a3729719f891",
     "sdk_reconciliation_exact_head": "57a66144f910bc559c6afe9863406baf75e05569",
-    "sdk_reconciliation_validation_runs": [34560810500, 34560810440, 34560810392]
+    "sdk_reconciliation_validation_runs": [34560810500, 34560810440, 34560810392],
+    "gateway_source_pr": 332,
+    "gateway_source_merge": "9ab7e019eaf694f20c978ce65ad7a2d5c886010a",
+    "gateway_source_exact_head": "5d199cfc11be410f03c884cd70278d81d956c9f5",
+    "gateway_source_validation_runs": [34563524745, 34563524752, 34563524742],
+    "sdk_gateway_reconciliation_pr": 199,
+    "sdk_gateway_reconciliation_merge": "19db2775b6dbcd361f8329b6b0710699f4467462",
+    "sdk_gateway_reconciliation_exact_head": "f8ed8260f965da5655780f6e4949c0799d2ac67e",
+    "sdk_gateway_reconciliation_validation_runs": [34566917409, 34566917412, 34566917413]
   },
   "source_state": {
     "resident_reseal_dispatcher_registered": true,
@@ -64,42 +48,19 @@
     "portable_exact_dispatch_merge": "312a31976bf5e794aa3912c2aa2c9ce0016c1102",
     "portable_exact_dispatch_source_head": "cab250db7895e13fe63721d72497a64be020d0e0",
     "portable_exact_dispatch_validation_runs": [34558793611, 34558793613, 34558793653, 34558793622],
-    "listener_nonsecret_inputs_forwarded": [
-      "STEGVERSE_GOOGLE_DRIVE_CLIENT_ID",
-      "STEGVERSE_OWNER_BINDING_DIGEST",
-      "STEGVERSE_STEGFIN_SOURCE_ROOT"
-    ],
+    "service_gateway_three_route_source_merged": true,
+    "listener_nonsecret_inputs_forwarded": ["STEGVERSE_GOOGLE_DRIVE_CLIENT_ID", "STEGVERSE_OWNER_BINDING_DIGEST", "STEGVERSE_STEGFIN_SOURCE_ROOT"],
     "resident_reseal_consumption_receipt_observed": false,
     "resident_consent_listener_consumption_receipt_observed": false,
     "retained_drive_reseal_receipt_observed": false,
     "retained_drive_listener_receipt_observed": false,
     "authorized_remote_runtime_online_observed": false,
+    "sovereign_callback_reachability_proven": false,
     "source_merge_proves_runtime": false
   },
-  "remaining_predicates": [
-    "RESIDENT_RESEAL_CONSUMPTION_RECEIPT_OBSERVED",
-    "RESIDENT_CONSENT_LISTENER_CONSUMPTION_RECEIPT_OBSERVED",
-    "EXTERNAL_COLLAB_CLIENT_SECRET_CUSTODY_PROVEN",
-    "SOVEREIGN_CALLBACK_REACHABILITY_PROVEN",
-    "OWNER_PRESENT_GOOGLE_CONSENT_PROVEN",
-    "AUTHORITATIVE_PROVIDER_FILE_PROBE_PROVEN",
-    "SDK_ACTIVE_PROBE_COMPLETE_PREDICATE_REEVALUATION_PROVEN",
-    "MIR_TRANSITION_REPORTING_PROVEN",
-    "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_PROVEN",
-    "ONE_CURRENT_DEVICE_END_TO_END_PROVEN",
-    "DOWNSTREAM_PROPAGATION_COMPLETE",
-    "PUBLIC_DISTRIBUTIONS_COMPLETE"
-  ],
-  "worker_claim": {
-    "authority": "NONE_TASK_REGISTRY_PROJECTION_ONLY",
-    "claim_ref": null,
-    "projection_only": true
-  },
-  "completion": {
-    "claimed": false,
-    "validated": false,
-    "activation_proof_complete": false
-  },
+  "remaining_predicates": ["RESIDENT_RESEAL_CONSUMPTION_RECEIPT_OBSERVED", "RESIDENT_CONSENT_LISTENER_CONSUMPTION_RECEIPT_OBSERVED", "EXTERNAL_COLLAB_CLIENT_SECRET_CUSTODY_PROVEN", "SOVEREIGN_CALLBACK_REACHABILITY_PROVEN", "OWNER_PRESENT_GOOGLE_CONSENT_PROVEN", "AUTHORITATIVE_PROVIDER_FILE_PROBE_PROVEN", "SDK_ACTIVE_PROBE_COMPLETE_PREDICATE_REEVALUATION_PROVEN", "MIR_TRANSITION_REPORTING_PROVEN", "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_PROVEN", "ONE_CURRENT_DEVICE_END_TO_END_PROVEN", "DOWNSTREAM_PROPAGATION_COMPLETE", "PUBLIC_DISTRIBUTIONS_COMPLETE"],
+  "worker_claim": {"authority": "NONE_TASK_REGISTRY_PROJECTION_ONLY", "claim_ref": null, "projection_only": true},
+  "completion": {"claimed": false, "validated": false, "activation_proof_complete": false},
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "worker_claim_authority": "WORKERCOORDINATOR",
@@ -107,6 +68,7 @@
     "master_records_reality_authority": true,
     "interlock_intr_required_for_governed_ingress_egress": true,
     "heartbeat_execution_authority": false,
+    "gateway_owner": "StegVerse-org/LLM-adapter#72",
     "github_runtime_authority": "NONE",
     "hosted_execution_fallback": false,
     "second_user_operated_device_required": false
