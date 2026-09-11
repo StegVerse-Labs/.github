@@ -76,8 +76,9 @@ def materialize(runtime_root: Path) -> dict[str, Any]:
     actuator = source.get("actuator", {})
 
     if command:
-        if command.get("state") != "READY_FOR_RESIDENT_EXECUTION": blockers.append("COMMAND_NOT_READY")
-        if command.get("task_id") not in (None, TASK_ID): blockers.append("COMMAND_TASK_MISMATCH")
+        command_state = command.get("command_state", command.get("state"))
+        if command_state != "READY_FOR_RESIDENT_EXECUTION": blockers.append("COMMAND_NOT_READY")
+        if command.get("task_id") not in (None, PARENT_TASK_ID, TASK_ID): blockers.append("COMMAND_TASK_MISMATCH")
         if not nonempty(command.get("intr_decision_ref")): blockers.append("COMMAND_INTR_REF_MISSING")
         if not nonempty(command.get("runtime_binding_ref")): blockers.append("COMMAND_RUNTIME_BINDING_MISSING")
         if command.get("intr_admission_observed") is not True: blockers.append("COMMAND_INTR_ADMISSION_NOT_OBSERVED")
