@@ -1,0 +1,28 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "gadi_resident_execution",
+  "sample_count": 0,
+  "hb_estimate": {
+    "expected_completion_beats": 1,
+    "expected_idle_beats": 0,
+    "expiry_candidate_beats": 16,
+    "confidence": "LOW"
+  },
+  "cost_estimate": {
+    "compute_units": 4,
+    "token_units": 0,
+    "storage_bytes": 131072,
+    "network_bytes": 0,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 2
+  },
+  "evidence_refs": [
+    "handoffs/GADI-RESIDENT-EXECUTION-001.json:max_actions=1,max_retries=1,runtime_window_beats=4096",
+    "control/process-worker-adapters.d/gadi-resident-execution-001.json:timeout_seconds=300",
+    "scripts/dispatch_gadi_resident_execution.py:single-preflight-gated-dispatch"
+  ],
+  "estimate_basis": "CONSERVATIVE_SOURCE_BOUNDED_ONE_SHOT_NOT_EMPIRICAL_RUNTIME_MEASUREMENT",
+  "authority_effect": "NONE_COST_BASIS_ONLY"
+}
