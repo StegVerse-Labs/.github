@@ -7,7 +7,7 @@ Updated: 2026-09-11
 - Parent handoff: `StegVerse-Labs/StegSocials/docs/STEGSOCIALS_NATIVE_STEGBROWSER_TRANSPORT_MIRROR_HANDOFF.md`
 - Organization boundary owner: `StegVerse-Labs/.github`
 - Status: `ACTIVE`
-- Source state: `RESIDENT_CONSUMER_MERGED_VALIDATED_DISPATCH_REGISTRATION_OPEN`
+- Source state: `RESIDENT_CONSUMER_DISPATCH_REGISTERED_MERGED_VALIDATED_RUNTIME_INPUT_PENDING`
 
 ## Purpose
 
@@ -19,7 +19,9 @@ Close the source seam from the already-merged StegSocials canonical `stegverse.u
 
 `.github` PR #1439 merged `scripts/consume_stegsocials_bounded_intr_admission_request.py` and its deterministic tests at `ef97fc882412cb13c5c54f5b6498a8762b5b3933`. Its exact source head `1943d3123d050d8fe4f7df80c9a5976ba046b5a5` passed organization-control, heartbeat-validation, and deterministic-suite validation before merge.
 
-The merged route and consumer remain non-authorizing. Source and CI do not prove authentic admission. Only an actual invocation of the existing shared sovereign listener may emit `stegverse.stegsocials-bounded-intr-materialization-ingress/v1` with `state=INGRESS_ADMITTED`.
+`.github` PR #1462 merged dispatcher registration at `b76a301361337290aa7d228b4d1813fa89ac3e75`. Exact head `2bb44fc66025796d14b02348fe702572bca92ea9` passed all seven observed workflows, including organization control, deterministic repository suite, Heartbeat, DeepSeek resident validation, cross-framework current-basis validation, and both SDK external-collaboration resident validations. The registration adds selector `stegsocials_bounded_intr_admission` to the existing resident dispatcher and preserves `INPUT_NOT_MATERIALIZED` as a non-authorizing accepted wait state.
+
+The merged route, consumer, and dispatcher registration remain non-authorizing. Source and CI do not prove authentic admission. Only an actual invocation of the existing shared sovereign listener may emit `stegverse.stegsocials-bounded-intr-materialization-ingress/v1` with `state=INGRESS_ADMITTED`.
 
 ## Current resident-consumption implementation
 
@@ -47,11 +49,15 @@ If the runtime-local input pointer is absent, the consumer returns `INPUT_NOT_MA
 
 ## Dispatcher registration
 
-Branch `ss-kv-skap-social-dispatch-registration-001` registers the consumer as `stegsocials_bounded_intr_admission` in the existing `scripts/dispatch_resident_execution_requests.py` consumer table and adds `INPUT_NOT_MATERIALIZED` to the dispatcher's accepted non-authorizing wait states. No dispatcher authority semantics change: registration only makes the already-merged consumer visitable by the existing resident dispatcher, and a missing authentic input pointer remains a no-execution wait state rather than a failure or authorization signal.
+The existing resident dispatcher now visits the Socials consumer under selector `stegsocials_bounded_intr_admission`. This is registration only: it creates no new listener/runtime and does not authorize execution. `INPUT_NOT_MATERIALIZED` is explicitly accepted as a non-authorizing wait state so a resident cycle can remain complete while authentic runtime-local material has not yet been provided. The dispatcher still reports `request_dispatch_grants_authority=false` and `authority_effect=NONE_DISPATCH_ONLY`.
 
-Deterministic coverage is added at `tests/test_stegsocials_bounded_intr_resident_dispatch.py` to prove exact single registration and that `INPUT_NOT_MATERIALIZED` yields `DISPATCH_COMPLETE` with no request failure while `request_dispatch_grants_authority=false` and `authority_effect=NONE_DISPATCH_ONLY` remain intact.
+Deterministic coverage at `tests/test_stegsocials_bounded_intr_resident_dispatch.py` proves exact single registration and that `INPUT_NOT_MATERIALIZED` yields `DISPATCH_COMPLETE` with no request failure while non-authorizing dispatcher semantics remain intact.
 
-Root `README.md` was re-reviewed. Its existing `Bounded StegSocials Universal InTr ingress` section already documents the same shared-listener reuse, non-admission meaning of RECEIVED, TV/TVC credential authority, non-authorizing route semantics, and no second runtime/listener, so no README wording change is needed for this internal registration-only step.
+Root `README.md` was re-reviewed. Its existing `Bounded StegSocials Universal InTr ingress` section already documents the same shared-listener reuse, non-admission meaning of RECEIVED, TV/TVC credential authority, non-authorizing route semantics, and no second runtime/listener, so no README wording change is required for this reconciliation-only step.
+
+## Current runtime observation
+
+At the 2026-09-11 continuation check, the authorized remote-device connector returned no devices. That observation does not change task authority or source readiness and is not treated as proof that no sovereign runtime exists outside the connector. It means this session has no authenticated resident execution surface through which to materialize the required runtime-local RECEIVED object or invoke the shared listener. No synthetic runtime input, admission receipt, or provider evidence may be substituted.
 
 ## Authority and evidence boundaries
 
@@ -76,11 +82,10 @@ second user-operated device required: false
 
 ## Remaining execution sequence
 
-1. Validate and merge the resident dispatcher registration and deterministic coverage.
-2. Materialize one real already-authorized bounded Socials `INGRESS/RECEIVED` object plus the hash-bound runtime input pointer in the sovereign current execution context.
-3. Reuse the already-running shared Universal InTr listener and retain the resulting authentic `INGRESS_ADMITTED` receipt.
-4. Materialize task-scoped TV/TVC-SKAP session authority and retain its authentic receipt.
-5. Continue through the merged StegSocials native event bridge, StegBrowser provider execution, terminal destruction proof, execution reconciliation, existing Site CAS, exact KV readback, second bounded use, refusal proof, and Master Records reconstruction.
+1. Materialize one real already-authorized bounded Socials `INGRESS/RECEIVED` object plus the hash-bound runtime input pointer in the sovereign current execution context.
+2. Reuse the already-running shared Universal InTr listener and retain the resulting authentic `INGRESS_ADMITTED` receipt.
+3. Materialize task-scoped TV/TVC-SKAP session authority and retain its authentic receipt.
+4. Continue through the merged StegSocials native event bridge, StegBrowser provider execution, terminal destruction proof, execution reconciliation, existing Site CAS, exact KV readback, second bounded use, refusal proof, and Master Records reconstruction.
 
 ## Manual work
 
