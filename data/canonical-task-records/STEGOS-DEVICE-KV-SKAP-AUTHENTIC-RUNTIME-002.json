@@ -1,0 +1,69 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "STEGOS-DEVICE-KV-SKAP-AUTHENTIC-RUNTIME-002",
+  "correlation_id": "STEGOS-DEVICE-KV-SKAP-AUTHENTIC-RUNTIME-002",
+  "root_correlation_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
+  "parent_task_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+  "goal": "Close the remaining authentic current-iPhone Device <-> KV <-> SKAP runtime evidence chain without widening authority or duplicating already-merged source/runtime owners.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "50000000102000",
+  "repository": "StegVerse-Labs/.github",
+  "issue_ref": "StegVerse-Labs/.github#1500",
+  "handoff_projection_refs": ["docs/DEVICE_KV_SKAP_AUTHENTIC_RUNTIME_MIRROR_HANDOFF.md"],
+  "source_refs": [
+    "data/canonical-task-records/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json",
+    "data/canonical-task-records/TVC-IOS-OPAQUE-RECIPIENT-CAPABILITY-001.json",
+    "StegVerse-Labs/StegOS#341",
+    "StegVerse-Labs/TVC#407",
+    "workers/run_device_kv_skap_canonical_runtime_worker.py",
+    "scripts/continue_device_kv_skap_from_tvc_custody.py"
+  ],
+  "remaining_predicates": [
+    "AUTHENTIC_CURRENT_IPHONE_TVC_RECIPIENT_ACTIVATION_OBSERVED",
+    "AUTHENTIC_TVC_CHALLENGE_EXCHANGE_VERIFIED",
+    "TVC_PUBLIC_RECIPIENT_CONFIG_PROJECTED_FROM_AUTHENTIC_EXCHANGE",
+    "AUTHENTIC_CURRENT_DEVICE_GATEWAY_CANONICAL_SIDECAR_OBSERVED",
+    "AUTHENTIC_TVC_CANONICAL_ROUNDTRIP_ELIGIBLE_DRAIN_RECEIPT_OBSERVED",
+    "AUTHENTIC_RETAINED_NODE_BINDING_OBSERVED",
+    "AUTHENTIC_CANONICAL_EVENT_EPHEMERAL_LEASE_OPEN_OBSERVED",
+    "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_BOUND_TO_CANONICAL_RUNTIME_BRIDGE",
+    "AUTHENTIC_FOUR_LEG_INTR_ROUNDTRIP_OBSERVED",
+    "AUTHENTIC_SKAP_KV_RETURN_RECEIPT_OBSERVED",
+    "KV_SKAP_TERMINAL_EXACT_READBACK_OBSERVED",
+    "DEVICE_KV_SKAP_ROUNDTRIP_VERIFIED"
+  ],
+  "authority_model": {
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "transition_authority": "Interlock/InTr",
+    "credential_authority": "TV/TVC",
+    "github_runtime_authority": "NONE",
+    "task_registry_mints_execution_authority": false,
+    "heartbeat_execution_authority": false,
+    "hosted_execution_fallback": false,
+    "second_user_operated_device_required": false,
+    "private_key_export_allowed": false
+  },
+  "source_state": {
+    "source_integration_complete": true,
+    "ios_recipient_capability_source_complete": true,
+    "native_current_iphone_invocation_source_complete": true,
+    "source_merge_proves_runtime": false,
+    "new_source_work_allowed_only_after_authentic_runtime_defect": true
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "activation_proof_complete": false,
+    "terminal_state_required": "DEVICE_KV_SKAP_ROUNDTRIP_VERIFIED"
+  },
+  "allowed_next_transitions": [
+    "OBSERVE_AUTHENTIC_CURRENT_IPHONE_TVC_RECIPIENT_ACTIVATION",
+    "VERIFY_AUTHENTIC_TVC_CHALLENGE_EXCHANGE",
+    "PROJECT_TVC_PUBLIC_RECIPIENT_CONFIG",
+    "PRODUCE_AUTHENTIC_GATEWAY_TVC_INPUT_PAIR",
+    "EXECUTE_CANONICAL_EVENT_EPHEMERAL_FOUR_HOP_ROUNDTRIP",
+    "RETAIN_EXACT_SKAP_KV_READBACK_AND_TERMINAL_PROOF"
+  ],
+  "goal_prompt_count": 0
+}
