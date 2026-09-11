@@ -1,0 +1,13 @@
+{
+  "identity":"StegVerse-Labs/.github:task:SHARED-DOCS-MULTIPARTY-FREEZE-001",
+  "profile":"task.v1",
+  "task_id":"SHARED-DOCS-MULTIPARTY-FREEZE-001",
+  "vector":"71000000100110",
+  "parent_task_id":"SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "evidence_refs":[
+    "StegVerse-org/StegVerse-SDK:docs/SHARED_DOCS_MULTIPARTY_FREEZE_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:pull/202",
+    "StegVerse-Labs/.github:pull/1430",
+    "StegVerse-Labs/.github:commit/8c46421bab695d99f2cc6c419fdda11512fa99e8"
+  ]
+}
