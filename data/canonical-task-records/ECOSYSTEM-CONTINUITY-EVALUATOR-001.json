@@ -12,12 +12,15 @@
   "canonical_issue": 1524,
   "handoff_projection_refs": [
     "StegVerse-Labs/.github:docs/ECOSYSTEM_CONTINUITY_EVALUATOR_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github:docs/ECOSYSTEM_CONTINUITY_REUSABLE_SCHEDULE_MIRROR_HANDOFF.md",
     "StegVerse-Labs/Site:docs/ECOSYSTEM_CONTINUITY_SITE_PROJECTION_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/StegVerse-Healer:docs/ECOSYSTEM_CONTINUITY_HEALER_INTAKE_MIRROR_HANDOFF.md"
+    "StegVerse-Labs/StegVerse-Healer:docs/ECOSYSTEM_CONTINUITY_HEALER_INTAKE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegVerse-Healer:docs/ECOSYSTEM_CONTINUITY_PERIODIC_CYCLE_MIRROR_HANDOFF.md",
+    "master-records/orchestration:docs/ECOSYSTEM_CONTINUITY_EVALUATION_CUSTODY_MIRROR_HANDOFF.md"
   ],
   "targets": {
-    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/Site", "StegVerse-Labs/StegVerse-Healer", "master-records", "StegVerse-org/StegVerse-SDK"],
-    "components": ["ece-registry", "ece-evaluator", "ece-findings", "site-continuity-projection", "healer-finding-intake", "master-records-evaluation-custody"]
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/Site", "StegVerse-Labs/StegVerse-Healer", "master-records/orchestration", "StegVerse-org/StegVerse-SDK"],
+    "components": ["ece-registry", "ece-evaluator", "ece-findings", "site-continuity-projection", "healer-finding-intake", "master-records-evaluation-custody", "periodic-healer-reusable-schedule"]
   },
   "core_source_state": {
     "pull_request": 1525,
@@ -40,11 +43,35 @@
       "exact_head": "dec3b3040576e8bd91e7ef01cd5222fb896ebef2",
       "validation_runs": {"heartbeat": 34653841821, "handoff_orchestrator": 34653841962, "site_bootstrap": 34653841899},
       "merge_commit": "8214d3c28522c0af98276ce5cbd2c591cd4a4f3e",
+      "claim_terminalization_pr": 1242,
+      "claim_terminalization_head": "aff760dc5b2ac26729f44fd2e853dbcb87af90bd",
+      "claim_terminalization_validation_runs": {"heartbeat": 34654163349, "handoff_orchestrator": 34654163404, "site_bootstrap": 34654163335},
+      "claim_terminalization_merge": "f1da3ced486460c6e897b7ff969ef8d8a94cb0ed",
       "merged_validated": true,
       "live_projection_claimed": false
     },
-    "master_records_custody": {"implemented": false, "authentic_custody_claimed": false},
-    "periodic_healer_schedule": {"implemented": false, "authentic_execution_claimed": false}
+    "master_records_custody": {
+      "pull_request": 92,
+      "exact_head": "fdb23972256e0f126d73c3422cdf39d9543ae626",
+      "runtime_evidence_validation_run": 34654171547,
+      "merge_commit": "4eed4d8454a099daf0d1873c20cadfb5f1f3642d",
+      "implemented_validated": true,
+      "authentic_custody_claimed": false
+    },
+    "periodic_healer_schedule": {
+      "github_reusable_pull_request": 1531,
+      "github_reusable_exact_head": "8e9638246935e31cacc5041609963ddd6623267f",
+      "github_reusable_validation_runs": {"heartbeat": 34654617867, "deterministic_suite": 34654617778, "organization_control": 34654617794},
+      "github_reusable_merge": "8d8e3a9e94db5c39448a3a6f63f6d584897b9c47",
+      "healer_pull_request": 64,
+      "healer_exact_head": "6d07a5b2349335b37977e9a7cf990e405e2a38dd",
+      "healer_test_readiness_run": 34654596937,
+      "healer_merge": "eb6e3918be5464ed376395ff259ad859c989edac",
+      "reusable_task_id": "RT-ECOSYSTEM-CONTINUITY-EVALUATION-001",
+      "cadence": "HOURLY_UTC",
+      "implemented_validated": true,
+      "authentic_execution_claimed": false
+    }
   },
   "authority_model": {
     "diagnostic_authority": "OBSERVATION_CLASSIFICATION_ONLY",
@@ -57,9 +84,9 @@
     "second_scheduler_allowed": false
   },
   "remaining_predicates": [
-    "MASTER_RECORDS_ECE_CUSTODY_RECONSTRUCTION_IMPLEMENTED",
-    "HEALER_SOVEREIGN_PERIODIC_ECE_INVOCATION_IMPLEMENTED",
+    "AUTHENTIC_HEALER_REUSABLE_ECE_SLOT_CONSUMED",
     "AUTHENTIC_RETAINED_ECE_EVALUATION_OBSERVED",
+    "MASTER_RECORDS_AUTHENTIC_ECE_CUSTODY_RECONSTRUCTION_OBSERVED",
     "SITE_LIVE_CONTINUITY_PROJECTION_OBSERVED",
     "HEALER_LIVE_FINDING_INTAKE_OBSERVED",
     "RECOVERY_LOOP_INDEPENDENT_REEVALUATION_PROVEN"
