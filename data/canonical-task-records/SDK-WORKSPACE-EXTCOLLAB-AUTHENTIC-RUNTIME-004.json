@@ -70,11 +70,7 @@
     "hosted_execution_fallback": false,
     "second_user_operated_device_required": false
   },
-  "completion": {
-    "claimed": false,
-    "validated": false,
-    "activation_proof_complete": false
-  },
+  "completion": {"claimed": false, "validated": false, "activation_proof_complete": false},
   "activation_condition_status": "SATISFIED",
   "activation_evidence": {
     "parent_task_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
@@ -98,5 +94,13 @@
     "claim_ref": null,
     "fence_ref": null,
     "projection_only": true
+  },
+  "latest_runtime_observation": {
+    "observed_at": "2026-09-11T14:53:41.405Z",
+    "authorized_remote_device_count": 0,
+    "retained_drive_reseal_receipt_matches": 0,
+    "retained_drive_listener_receipt_matches": 0,
+    "disposition": "ACTIVE_WAIT_FOR_EXISTING_AUTHORIZED_RESIDENT_RECONNECTION",
+    "authority_effect": "NONE"
   }
 }
