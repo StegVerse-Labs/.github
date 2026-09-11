@@ -13,9 +13,9 @@ It then performs only repository-local machine steps in sequence:
    existing shared Universal InTr router source;
 2. launch the bounded event bootstrap in a fresh Python process for one explicit
    task that already exists in the canonical Task Registry; and
-3. when that task is the Canonical Runtime Profile Map or the dedicated global
-   runtime evidence measurement child, materialize and execute the global
-   runtime-node-profile convergence visitor through the already-existing
+3. when that task is StegBrowser, the Canonical Runtime Profile Map, or the
+   dedicated global runtime evidence measurement child, materialize and execute
+   the global runtime-node-profile convergence visitor through the already-existing
    resident dispatcher and base convergence runner.
 
 It does not define or start a second heartbeat, oscillator, scheduler,
@@ -39,7 +39,8 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_TASK_ID = "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
 RUNTIME_PROFILE_MAP_TASK_ID = "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"
 GLOBAL_MEASUREMENT_TASK_ID = "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001"
-GLOBAL_CONVERGENCE_TASK_IDS = {RUNTIME_PROFILE_MAP_TASK_ID, GLOBAL_MEASUREMENT_TASK_ID}
+STEGBROWSER_TASK_ID = "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001"
+GLOBAL_CONVERGENCE_TASK_IDS = {RUNTIME_PROFILE_MAP_TASK_ID, GLOBAL_MEASUREMENT_TASK_ID, STEGBROWSER_TASK_ID}
 GLOBAL_HELPER_REL = Path("scripts/run_global_runtime_node_profile_convergence.py")
 GLOBAL_BASE_HELPER_REL = Path("scripts/run_global_runtime_evidence_convergence.py")
 GLOBAL_PROJECTION_REL = Path("control/runtime-partial-solution-projections/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.json")
