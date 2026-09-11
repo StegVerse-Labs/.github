@@ -5,11 +5,11 @@
   "root_correlation_id": "ELAN-CUMULATIVE-PUBLICATION-001",
   "parent_task_id": "ELAN-CUMULATIVE-PUBLICATION-001",
   "goal": "Establish and apply the Publisher visual-evidence completeness rule that every published experimental/evaluator document includes pertinent end-to-end screenshots, and revise the ELAN Run 1 + Run 2 cumulative package so Run 2 has an evaluator-oriented screenshot sequence derived from authentic retained evidence.",
-  "coordination_state": "ACTIVE",
-  "checkout_state": "CLAIMED_IMPLEMENTATION",
+  "coordination_state": "COMPLETE",
+  "checkout_state": "COMPLETE_RENDERED_VALIDATED_NOT_PUBLISHED",
   "cosv": {
     "profile": "task.v1",
-    "vector": "50000000100010",
+    "vector": "71000000100110",
     "source_state_vector_ref": "control/task-vectors/PUBLISHER-VISUAL-EVIDENCE-COMPLETENESS-001.json",
     "authority_effect": "NONE"
   },
@@ -17,7 +17,10 @@
     "docs/PUBLISHER_VISUAL_EVIDENCE_COMPLETENESS_MIRROR_HANDOFF.md",
     "ELAN-CUMULATIVE-PUBLICATION-001",
     "StegVerse-org/StegVerse-SDK/actions/runs/34565152578",
-    "GCAT-BCAT-Engine/Publisher:evidence/elan/ELAN-CUMULATIVE-PUBLICATION-001.render-receipt.json"
+    "GCAT-BCAT-Engine/Publisher@228bd19aa28fe387270fce034d5c820842cc34dd",
+    "GCAT-BCAT-Engine/Publisher:data/publisher-visual-evidence-contract.json",
+    "GCAT-BCAT-Engine/Publisher:data/elan-cumulative-publication-visual-revision.json",
+    "sha256:c807f2f4ab2479c5edb0a820d877ff53018bad690e5a249c8e9eec8e8ff2ecf2"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs", "GCAT-BCAT-Engine", "StegVerse-org"],
@@ -26,7 +29,8 @@
   },
   "dependencies": [
     {"dependency_id":"DEP-ELAN-CUMULATIVE-COMPLETE","kind":"EVIDENCE","state":"AVAILABLE_VALIDATED","ref":"ELAN-CUMULATIVE-PUBLICATION-001 terminal COSV 71000000100100"},
-    {"dependency_id":"DEP-ELAN-RUN2-ARTIFACT","kind":"EVIDENCE","state":"AVAILABLE_VALIDATED","ref":"workflow run 34565152578 artifact elan-local-sdk-governance-observed-silence sha256:2187e46441f3fc2018daf6b624ea81eb18f27353359fa99655e3a3a1febde91f"}
+    {"dependency_id":"DEP-ELAN-RUN2-ARTIFACT","kind":"EVIDENCE","state":"AVAILABLE_VALIDATED","ref":"workflow run 34565152578 artifact elan-local-sdk-governance-observed-silence sha256:2187e46441f3fc2018daf6b624ea81eb18f27353359fa99655e3a3a1febde91f"},
+    {"dependency_id":"DEP-PUBLISHER-VISUAL-RULE","kind":"IMPLEMENTATION","state":"AVAILABLE_VALIDATED","ref":"GCAT-BCAT-Engine/Publisher@228bd19aa28fe387270fce034d5c820842cc34dd"}
   ],
   "blockers": [],
   "adjacent_task_refs": ["ELAN-CUMULATIVE-PUBLICATION-001", "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001"],
@@ -46,11 +50,15 @@
     "direction": "AUTHENTIC_EVIDENCE_TO_VISUAL_PUBLICATION",
     "mutation_required": true,
     "deployment_required": false,
-    "current_observation_required": true
+    "current_observation_required": false
   },
   "worker_claim": {"authority":"CURRENT_SESSION","claim_ref":null,"fence_ref":null,"projection_only":false},
-  "completion": {"claimed":false,"validated":false,"reconciliation_ref":null},
-  "allowed_next_transitions": ["IMPLEMENT_VISUAL_RULE", "BUILD_RUN2_VISUALS", "RENDER_REVISION", "VALIDATE_REVISION", "MERGE"],
+  "completion": {
+    "claimed": true,
+    "validated": true,
+    "reconciliation_ref": "GCAT-BCAT-Engine/Publisher:data/elan-cumulative-publication-visual-revision.json"
+  },
+  "allowed_next_transitions": [],
   "handoff_projection_refs": ["docs/PUBLISHER_VISUAL_EVIDENCE_COMPLETENESS_MIRROR_HANDOFF.md"],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
