@@ -1,0 +1,69 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004",
+  "correlation_id": "SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004",
+  "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "parent_task_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "goal": "Complete the authentic sovereign-resident external-collaboration runtime proof chain from resident reseal/listener consumption through target custody, sovereign callback reachability, owner-present consent, provider probe, SDK predicate re-evaluation, MIR reporting, Master Records reconstruction, one-current-device proof, and downstream/public distribution evidence without creating a hosted fallback or duplicate authority path.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "cosv_task_vector": "71000000100110",
+  "repository": "StegVerse-Labs/.github",
+  "handoff_projection_refs": [
+    "StegVerse-Labs/.github:docs/SDK_WORKSPACE_EXTCOLLAB_AUTHENTIC_RUNTIME_004_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:SDK_GENERIC_MANIFEST_DOWNSTREAM_PROPAGATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github:docs/SDK_WORKSPACE_EXTERNAL_COLLAB_PORTABLE_DISPATCH_MIRROR_HANDOFF.md"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs", "StegVerse-org"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/TVC", "StegVerse-org/LLM-adapter", "StegVerse-org/StegVerse-SDK", "StegVerse-Labs/Site", "StegVerse-Labs/admissibility-wiki"],
+    "components": ["resident-reseal-consumption", "resident-consent-listener-consumption", "external-collaboration-client-secret-custody", "sovereign-service-gateway", "owner-present-google-consent", "external-provider-file-probe", "sdk-active-probe", "mir-reporting", "master-records-reconstruction", "one-current-device-proof", "downstream-propagation", "public-distribution"]
+  },
+  "existing_evidence_refs": [
+    "StegVerse-Labs/.github:pull/1393",
+    "StegVerse-Labs/.github:commit/312a31976bf5e794aa3912c2aa2c9ce0016c1102",
+    "StegVerse-org/StegVerse-SDK:pull/196",
+    "StegVerse-org/StegVerse-SDK:commit/e55c0e415759a3f2baf2d553f403a3729719f891",
+    "StegVerse-Labs/.github:pull/1402",
+    "StegVerse-Labs/.github:commit/c2d03c776895ab99fa99ed49ca7c9ca9256d45cf"
+  ],
+  "source_state": {
+    "portable_exact_dispatch_merged": true,
+    "resident_reseal_consumption_receipt_observed": false,
+    "resident_consent_listener_consumption_receipt_observed": false,
+    "retained_drive_receipts_observed": false,
+    "authorized_remote_runtime_online_observed": false,
+    "github_runtime_authority": "NONE",
+    "hosted_execution_fallback": false
+  },
+  "remaining_predicates": [
+    "RESIDENT_RESEAL_CONSUMPTION_RECEIPT_OBSERVED",
+    "RESIDENT_CONSENT_LISTENER_CONSUMPTION_RECEIPT_OBSERVED",
+    "EXTERNAL_COLLAB_CLIENT_SECRET_CUSTODY_PROVEN",
+    "SOVEREIGN_CALLBACK_REACHABILITY_PROVEN",
+    "OWNER_PRESENT_GOOGLE_CONSENT_PROVEN",
+    "AUTHORITATIVE_PROVIDER_FILE_PROBE_PROVEN",
+    "SDK_ACTIVE_PROBE_COMPLETE_PREDICATE_REEVALUATION_PROVEN",
+    "MIR_TRANSITION_REPORTING_PROVEN",
+    "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_PROVEN",
+    "ONE_CURRENT_DEVICE_END_TO_END_PROVEN",
+    "DOWNSTREAM_PROPAGATION_COMPLETE",
+    "PUBLIC_DISTRIBUTIONS_COMPLETE"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "credential_authority": "TV/TVC",
+    "interlock_intr_required_for_governed_ingress_egress": true,
+    "master_records_reality_authority": true,
+    "gateway_owner": "StegVerse-org/LLM-adapter#72",
+    "github_runtime_authority": "NONE",
+    "hosted_execution_fallback": false,
+    "second_user_operated_device_required": false
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "activation_proof_complete": false
+  }
+}
