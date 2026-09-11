@@ -16,10 +16,7 @@
     "StegVerse-Labs/.github:docs/SDK_WORKSPACE_EXTERNAL_COLLAB_PORTABLE_DISPATCH_MIRROR_HANDOFF.md"
   ],
   "targets": {
-    "organizations": [
-      "StegVerse-Labs",
-      "StegVerse-org"
-    ],
+    "organizations": ["StegVerse-Labs", "StegVerse-org"],
     "repositories": [
       "StegVerse-Labs/.github",
       "StegVerse-Labs/TVC",
@@ -55,11 +52,25 @@
     "StegVerse-org/StegVerse-SDK:pull/199",
     "StegVerse-org/StegVerse-SDK:commit/19db2775b6dbcd361f8329b6b0710699f4467462",
     "StegVerse-Labs/.github:pull/1415",
-    "StegVerse-Labs/.github:commit/4af1b801a193a3c9ace7c6327ef010fd40915b15"
+    "StegVerse-Labs/.github:commit/4af1b801a193a3c9ace7c6327ef010fd40915b15",
+    "StegVerse-Labs/.github:pull/1460",
+    "StegVerse-Labs/.github:commit/3bc8898655d344ba12f47bb4120e38f2ac1ded6e"
   ],
+  "resolver_repair": {
+    "pull_request": 1460,
+    "exact_head": "a926d04e563fa6f89920bd608a2ff359b272ca13",
+    "merge_commit": "3bc8898655d344ba12f47bb4120e38f2ac1ded6e",
+    "validation_runs": [34615578871, 34615578937, 34615578890],
+    "standalone_task_record_fallback": true,
+    "duplicate_identity_fail_closed": true,
+    "standalone_id_mismatch_fail_closed": true,
+    "discovery_mutation_required": false,
+    "merged_validated": true
+  },
   "source_state": {
     "portable_exact_dispatch_merged": true,
     "service_gateway_three_route_source_merged": true,
+    "resolver_repair_merged_validated": true,
     "resident_reseal_consumption_receipt_observed": false,
     "resident_consent_listener_consumption_receipt_observed": false,
     "retained_drive_receipts_observed": false,
@@ -105,9 +116,7 @@
     "activation_basis": "PARENT_GOAL_PROMPT_COUNT_REACHES_20"
   },
   "runtime_requirements": {
-    "capabilities": [
-      "resident_request_dispatch"
-    ],
+    "capabilities": ["resident_request_dispatch"],
     "environment": "SOVEREIGN_RESIDENT",
     "direction": "INTERNAL",
     "mutation_required": false,
@@ -124,7 +133,7 @@
     "projection_only": true
   },
   "latest_runtime_observation": {
-    "observed_at": "2026-09-11T14:53:41.405Z",
+    "observed_at": "2026-09-11T17:47:00Z",
     "authorized_remote_device_count": 0,
     "retained_drive_reseal_receipt_matches": 0,
     "retained_drive_listener_receipt_matches": 0,
