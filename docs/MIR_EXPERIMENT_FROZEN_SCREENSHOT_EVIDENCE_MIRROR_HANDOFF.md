@@ -36,6 +36,7 @@ Canonical source now includes:
 - `schemas/mir-frozen-screenshot-manifest.schema.json`
 - `scripts/validate_mir_frozen_screenshot_manifest.py`
 - `control/task-vectors/MIR-EXPERIMENT-FROZEN-SCREENSHOT-EVIDENCE-001.json`
+- `docs/MIR_SDK_TEST_PRESENTATION_SPEC.md`
 
 The schema fixes the manifest vocabulary. The validator computes a deterministic SHA-256 over canonical JSON and compares a candidate manifest against the frozen baseline. Within one evidence epoch it fails closed if experiment identity changes, evidence epoch changes, the purpose set changes, any purpose maps to a different artifact reference/digest, or the complete manifest digest changes.
 
@@ -93,21 +94,64 @@ These are experiment evidence states, not governance outcomes.
 
 This task governs the MIR experiment's fixed screenshot evidence basis. The two tasks may reuse generic digest/freeze primitives, but neither task subsumes the other.
 
+## Frozen evidence epoch materialized
+
+Evidence epoch `MIR-SOP-2026-09-11-E1` now has a retained purpose-indexed manifest at:
+
+- `evidence/mir/frozen-screenshot/MIR-SOP-2026-09-11-E1.manifest.json`
+
+Frozen manifest SHA-256:
+
+- `7181561fbaa55e2b4297a48551ed5b47f3f7a8ed0f9c329b498e41f1fbb794b4`
+
+Retained deterministic validation evidence:
+
+- `evidence/mir/frozen-screenshot/MIR-SOP-2026-09-11-E1.positive-validation.json`
+- `evidence/mir/frozen-screenshot/MIR-SOP-2026-09-11-E1.negative-mutation-validation.json`
+
+The unchanged manifest validates successfully. An intentional artifact-digest mutation fails closed with `SCREENSHOT_PURPOSE_BINDING_CHANGED` and `SCREENSHOT_MANIFEST_DIGEST_CHANGED`.
+
+The current frozen set contains three unique retained Library screenshots. A fourth discovered Library image was byte-identical to an existing screenshot and was not falsely represented as a fourth unique artifact.
+
+## Canonical evaluator-facing PDF specification
+
+`docs/MIR_SDK_TEST_PRESENTATION_SPEC.md` defines the agreed single-PDF structure for the completed evaluator presentation.
+
+The final report is required to include:
+
+1. abstract;
+2. test objective and scope;
+3. frozen parameters;
+4. end-to-end flow overview;
+5. primary execution and result;
+6. replay and replay result;
+7. reconstruction and reconstruction result;
+8. conclusion;
+9. screenshot walkthrough covering the evaluator-relevant path from Manifest Builder through final result, replay, reconstruction, and evidence export where available;
+10. Appendix A — evidence ledger;
+11. Appendix B — SDK overview and usage guide with a worked example; and
+12. Appendix C — roadmap and future development, including browser-friendly access to all SDK functions that can be safely exposed with semantic parity to the programmatic SDK.
+
+The PDF must remain two-layered: reader-facing narrative first, evidence rigor underneath. UI screenshots may explain the flow, but receipts, hashes, checkpoint pins, manifests, replay evidence, and reconstruction evidence remain the proof basis.
+
 ## Evidence still required
 
-No MIR v0.3 experiment continuity claim is made yet. Completion still requires:
+No complete MIR v0.3 integration-test continuity claim is made yet. The pre-run screenshot freeze and mutation/fail-closed validation now exist, but completion of the full evaluator test presentation still requires:
 
-1. the actual pre-execution purpose-indexed screenshot manifest;
-2. exact screenshot artifacts whose bytes hash to the bound SHA-256 values;
-3. a retained frozen manifest digest before experiment execution;
-4. every evidence-consuming stage to reference that same digest;
-5. post-run deterministic comparison proving no purpose/artifact binding changed; and
-6. retained experiment evidence showing any mutation caused a successor epoch rather than silent substitution.
+1. authentic live primary execution evidence;
+2. every evidence-consuming stage to reference the same frozen manifest digest where applicable;
+3. authentic replay input and result;
+4. authentic reconstruction input and result;
+5. evaluator-facing screenshots for the key SDK stages defined in the presentation spec;
+6. post-run deterministic comparison proving no purpose/artifact binding changed; and
+7. the final generated PDF populated from those authentic retained artifacts.
 
-The per-task COSV shard and canonical task record now bind vector `50000000100000`. Aggregate task-vector-index visibility remains subject to repository validation and will be reconciled if the deterministic suite requires explicit index insertion.
+The live MIR `POST /v1/policy/standing` read-head-then-pin call has not yet been executed because no authentic MIR API base and no valid opaque test `entityRef` were recovered from the connected project sources searched so far. Neither value may be fabricated.
+
+The per-task COSV shard and canonical task record bind vector `50000000100000`. Aggregate task-vector-index visibility remains subject to repository validation and will be reconciled if the deterministic suite requires explicit index insertion.
 
 ## Completion boundary
 
-Completion requires a pre-execution purpose-indexed screenshot manifest, exact artifact digests, deterministic validation, test-stage references to the same manifest digest, and retained evidence that no screenshot or purpose binding changed during the run.
+Completion requires the frozen screenshot manifest and exact artifact digests, authentic primary execution, replay, reconstruction, test-stage references to the same frozen basis where required, evaluator-relevant screenshots, post-run continuity validation, and the final evidence-backed PDF defined by `docs/MIR_SDK_TEST_PRESENTATION_SPEC.md`.
 
-No experiment continuity or screenshot freeze is claimed until those artifacts exist and the validation evidence passes.
+No completed integration-test or final-PDF claim is made until those authentic artifacts exist and the validation evidence passes.
