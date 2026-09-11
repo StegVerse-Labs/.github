@@ -74,6 +74,30 @@ class NativeEmailKVEntrypointTests(unittest.TestCase):
         self.assertIn("--source-root", command)
         self.assertIn("--runtime-root", command)
 
+    def test_pre_execution_pending_does_not_satisfy_reusable_slot(self):
+        self.assertFalse(wrapper.reusable_slot_satisfied({
+            "state": "ATTEMPT_RECORDED",
+            "runtime_execution_attempted": False,
+            "retry_allowed": True,
+            "pending_reason": "KV_ROOT_NOT_MATERIALIZED",
+        }))
+
+    def test_missing_kv_proof_does_not_satisfy_reusable_slot(self):
+        self.assertFalse(wrapper.reusable_slot_satisfied({
+            "state": "ATTEMPT_RECORDED",
+            "runtime_execution_attempted": True,
+            "retry_allowed": True,
+            "pending_reason": "KV_PERSISTENCE_PROOF_REQUIRED",
+        }))
+
+    def test_successful_bounded_attempt_satisfies_one_hourly_slot_even_if_task_continues(self):
+        self.assertTrue(wrapper.reusable_slot_satisfied({
+            "state": "ATTEMPT_RECORDED",
+            "runtime_execution_attempted": True,
+            "retry_allowed": True,
+            "pending_reason": None,
+        }))
+
 
 if __name__ == "__main__":
     unittest.main()
