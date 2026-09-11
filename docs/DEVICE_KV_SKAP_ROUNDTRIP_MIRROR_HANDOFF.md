@@ -9,9 +9,10 @@ cosv_id: 50000000102000
 state: ACTIVE
 canonical_owner: StegVerse-Labs/.github
 implementation_owner: StegVerse-Labs/StegOS
+canonical_runtime_lifecycle_owner: StegVerse-Labs/StegOS/stegos/canonical_runtime_lane.py
+worker_claim_authority: WorkerCoordinator
 transition_authority: Interlock/InTr
 credential_authority: TV/TVC
-worker_claim_authority: WorkerCoordinator
 github_runtime_authority: NONE
 hosted_runtime_fallback: NONE
 second_user_operated_device_required: false
@@ -21,7 +22,7 @@ event_ephemeral_materialization_allowed: true
 
 ## Goal
 
-Prove one authentic sovereign single-device operation lineage:
+Prove one authentic sovereign operation lineage:
 
 ```text
 DEVICE_SYSTEM -> KV -> SKAP_VAULT -> KV -> DEVICE_SYSTEM
@@ -30,8 +31,6 @@ DEVICE_SYSTEM -> KV -> SKAP_VAULT -> KV -> DEVICE_SYSTEM
 Completion requires four adjacent canonical InTr receipts, exact packet/readback verification, one continuous receipt-hash chain, TV/TVC credential authority, no secret plaintext in ordinary KV/device/repository state, no authority transfer, no hosted fallback, and no second user-operated device.
 
 ## Persistent Node / ephemeral execution separation
-
-Canonical StegOS architecture separates retained identity from bounded task execution:
 
 ```text
 PERSISTENT
@@ -42,99 +41,114 @@ state commitment
 append-only evidence lineage
 
 EPHEMERAL
-current WorkerCoordinator task claim
-StegOS runtime lease
+current WorkerCoordinator claim/fence
+canonical StegOS runtime lease
 Interlock/InTr invocation
 transport connection
 task process
 provider session
 ```
 
-Universal InTr does not require an always-on receiver. Exact packets may be transported immediately, durably queued, or cause bounded `EVENT_EPHEMERAL` materialization. A persistent physical server, TestFlight deployment, Render/Vercel runtime, or second user-operated machine is therefore not a prerequisite to this proof.
+Universal InTr does not require an always-on receiver. A persistent physical server, TestFlight deployment, Render/Vercel runtime, Remote Desktop connector, or second user-operated machine is not a prerequisite to this proof.
 
-Ephemeral execution does not relax authority or evidence requirements. The bounded invocation must bind to retained Node identity/continuity and authentic runtime evidence.
+## Canonical runtime collision reconciliation
 
-## Correct authority layering
+StegOS already had a proven application-neutral `EVENT_EPHEMERAL` runtime before this roundtrip work:
 
 ```text
+stegos/canonical_runtime_lane.py
+stegos/ephemeral_runtime_lease.py
+docs/CANONICAL_RUNTIME_LANE_MIRROR_HANDOFF.md
+evidence/canonical-runtime/2026-08-30-first-observed-lane.json
+```
+
+That lane has authentic end-to-end evidence from an existing StegVerse Node through `REQUESTED -> ADMITTED -> PROVISIONING -> LOCAL_READY -> LEASE_OPEN -> bounded operation -> evidence retention -> LEASE_CLOSED`, with no persistent host or second participant/developer machine required.
+
+Therefore this task MUST NOT create a competing Node runtime lifecycle. The recently added `stegos/node_event_execution_broker.py` is now canonically narrowed to a compatibility bridge whose role is:
+
+```text
+WORKERCOORDINATOR_TO_CANONICAL_RUNTIME_LANE
+```
+
+It binds one fresh WorkerCoordinator claim/fence and one registered domain capability to an already-open canonical lease plus exact retained-Node continuity. `WorkerCoordinatorCanonicalRuntimeBridge` aliases the historical class name so consumers do not fork implementation.
+
+## Authority layering
+
+```text
+Canonical Runtime Lane -> runtime lease lifecycle / materialization / teardown contract
+LeaseMachine -> canonical lease state + snapshot/resume
 WorkerCoordinator -> fresh task claim/fence
-StegOS runtime lease -> bounded process lifetime/admission
-Interlock/InTr -> each governed state-transition admission
-TV/TVC -> credential authority and TVC SKAP ciphertext custody writer
-StegOS retained Node -> identity/continuity/evidence lineage
+WorkerCoordinator->Runtime bridge -> exact claim/fence + exact open lease + retained Node + capability binding
+Interlock/InTr -> each governed state-transition admission inside the capability
+TV/TVC -> credential authority and sole TVC SKAP ciphertext custody writer
+retained StegOS Node -> identity/continuity/evidence lineage
 GitHub/CI/HB -> source validation / evidence / observation only
 ```
 
-A process being allowed to run is not itself an Interlock/InTr transition admission. Conversely, an `EVENT_EPHEMERAL` lease grants no transition authority. Each Device/KV/SKAP hop remains individually governed by canonical Interlock/InTr.
+A process being allowed to run is not itself a state-transition admission. An open canonical lease grants no Interlock/InTr transition authority. The bridge does not mint claims, open leases, grant transition admission, or own runtime lifecycle.
 
 ## Merged source lineage
 
-Earlier source remains merged and applicable:
+Existing transport/custody work remains applicable:
 
-- StegOS #326 -> `2339f2f2fc8c28eb4d63077387013154dac9b75c`; four-leg roundtrip composition/verification source.
-- LLM-adapter #331 -> `f4db7005818c7b77bf7e25345c86df1277760a93`; Gateway emits canonical secret-free DEVICE->KV sidecar.
-- TVC #377 -> `72aa78c8f60226621c19d58751ec776f777583f9`; TVC validates sidecar and remains sole SKAP ciphertext custody writer.
+- StegOS #326 -> `2339f2f2fc8c28eb4d63077387013154dac9b75c`; four-leg roundtrip composition/verification.
+- LLM-adapter #331 -> `f4db7005818c7b77bf7e25345c86df1277760a93`; canonical secret-free DEVICE->KV Gateway sidecar.
+- TVC #377 -> `72aa78c8f60226621c19d58751ec776f777583f9`; sidecar validation + sole SKAP ciphertext custody writer.
 - `.github` #1332 -> `42996a4582e2fb9e4d3207dd3e45b764dc727723`; canonical continuation from Gateway/TVC evidence.
-- `.github` #1339 -> `861647893df88c30f591e374a8be30fccaf7c64f`; persistent physical transport/always-on receiver removed as false prerequisite.
-- `.github` #1352 -> `ec7594aac88b8d60b0d230be15f7901f1040b0fa`; canonical event-execution/COSV reconciliation validated.
-- Site #1196 -> `064f77f24b9ad505d2533bc4efc4a46f74c76799`; provider-neutral MyKV service federation source.
-- Site #1227 -> `64701e9e9896af0e0e97672706918b9417540cf3`; Site implementation claim released while canonical child remained ACTIVE.
+- `.github` #1339 -> `861647893df88c30f591e374a8be30fccaf7c64f`; false persistent-receiver prerequisite removed.
+- `.github` #1352 -> `ec7594aac88b8d60b0d230be15f7901f1040b0fa`; event-execution/COSV reconciliation.
+- Site #1196 -> `064f77f24b9ad505d2533bc4efc4a46f74c76799`; provider-neutral MyKV service federation.
+- Site #1227 -> `64701e9e9896af0e0e97672706918b9417540cf3`; Site claim released while this task remains ACTIVE.
 
-Native Node execution progression:
+Runtime/WorkerCoordinator reconciliation:
 
-- StegOS #332 merged at `288a5a32c8c89bf0e44176330ce99bf487e4cc6c`; exact-head StegOS CI run `34561345030` SUCCESS. Added reusable `stegos/node_event_execution_broker.py`, focused tests, and Node broker handoff. The broker consumes Universal InTr materialization + retained Node continuity + external WorkerCoordinator authority and executes one registered bounded capability without becoming credential or transition authority.
-- StegOS #333 merged at `f955068eb23556458434e22d25d696ce9ff5cc9d`; exact-head StegOS CI run `34561637472` SUCCESS. Corrected the broker authority layering so process execution is admitted by the existing canonical StegOS `EVENT_EPHEMERAL` `LeaseMachine`, while Interlock/InTr remains responsible for each state transition inside the task. The broker requires an exact `LEASE_OPEN` single-operation admission and cannot open its own lease, mint claim/fence, or grant transition admission.
-- `.github` #1399 merged at `b273b35fbe96010ca136e84e3d48914d087a00fd`; exact-head organization-control run `34561728446`, deterministic repository suite `34561728451`, and Heartbeat Worker validation `34561728452` all SUCCESS. The registered Device/KV/SKAP worker now consumes the actual fenced `stegverse.worker-invocation/v0.1`, validates task/handoff/claim/fence/authority bindings before touching runtime evidence, and emits the required `stegverse.worker-response/v0.1` rather than ignoring the ProcessWorkerAdapter invocation protocol.
+- StegOS #332 merged `288a5a32c8c89bf0e44176330ce99bf487e4cc6c`; exact-head CI `34561345030` SUCCESS. Added the WorkerCoordinator/Node capability bridge source and tests.
+- StegOS #333 merged `f955068eb23556458434e22d25d696ce9ff5cc9d`; exact-head CI `34561637472` SUCCESS. Corrected process admission to consume canonical `LeaseMachine` `EVENT_EPHEMERAL` state instead of pre-admitting Interlock transitions.
+- `.github` #1399 merged `b273b35fbe96010ca136e84e3d48914d087a00fd`; exact-head organization-control `34561728446`, deterministic repository suite `34561728451`, and Heartbeat Worker validation `34561728452` all SUCCESS. The roundtrip process worker now consumes its actual fenced `stegverse.worker-invocation/v0.1`, fail-closes task/handoff/claim/fence/authority mismatches, and returns `stegverse.worker-response/v0.1`.
+- StegOS #334 merged `18020e50bc5732216abeb5c2f00e6ec2ea91a11a`; exact-head StegOS CI `34561948078` SUCCESS. Explicitly absorbed the new bridge into the pre-existing Canonical Runtime Lane, records `bridge_owns_runtime_lifecycle=false`, and prohibits parallel runtime semantics.
 
-No merge or CI result above is authentic four-leg runtime proof.
+No source merge or CI result above is authentic Device->KV->SKAP->KV->Device runtime proof.
 
 ## Node Manifold collision boundary
 
-`STEGOS-NODE-MANIFOLD-001` remains a distinct ACTIVE workstream owning physical multi-node/network-manifold proof: distinct second Node, `NETWORK_PRESENT`, fragmentation/reformation, and exact multi-node replay/reconstruction.
+`STEGOS-NODE-MANIFOLD-001` remains a separate ACTIVE owner of physical multi-node/network-manifold proof: distinct second Node, `NETWORK_PRESENT`, fragmentation/reformation, and exact multi-node replay/reconstruction.
 
-Its canonical record explicitly permits separately tracked service-KV work to reuse retained-Node and Interlock/InTr primitives without claiming physical network proof. This task therefore reuses Node execution primitives but MUST NOT claim Node-Manifold completion, second-node participation, or physical-network evidence.
+Its canonical record explicitly permits separately tracked service-KV work to reuse retained-Node and Interlock/InTr primitives without claiming physical-network proof. This task MUST NOT claim Node-Manifold completion, second-node participation, or physical-network evidence.
 
-## Native Node execution broker
+## Canonical consumer architecture
 
-The durable execution architecture is now:
+The intended final source path is now:
 
 ```text
 retained Node identity/continuity
 -> Universal InTr materialization request
+-> canonical StegOS EVENT_EPHEMERAL lease lifecycle
 -> fresh WorkerCoordinator claim/fence
--> canonical StegOS EVENT_EPHEMERAL lease -> LEASE_OPEN
--> registered capability adapter
--> bounded task invocation
--> canonical Interlock/InTr per governed hop
--> exact result / receipt commitments
--> lease/process teardown
--> retained Node identity/continuity remains
+-> WorkerCoordinatorCanonicalRuntimeBridge
+-> Device/KV/SKAP bounded domain capability
+-> Interlock/InTr admission per governed hop
+-> exact four-leg proof/readbacks
+-> canonical runtime evidence/closure
+-> retained Node continuity advances
 ```
 
-Remote Desktop Commander or another external terminal bridge may be operationally useful, but it is not part of the StegOS architecture and is not a completion predicate.
+The bridge consumes an exact canonical `LEASE_OPEN` snapshot with:
 
-The generic broker is merged. The roundtrip-specific binding of the existing Device/KV/SKAP worker into that broker remains an implementation condition. That binding must consume authentic retained-Node and runtime-lease evidence; it may not fabricate either merely to make the adapter callable.
-
-## Preferred custody continuation
-
-After TVC has admitted one authentic sealed ciphertext, `scripts/continue_device_kv_skap_from_tvc_custody.py`:
-
-1. validates the canonical DEVICE->KV sidecar;
-2. validates terminal TVC custody and exact SKAP readback;
-3. uses canonical `kv-skap` REFERENCE semantics for KV->SKAP;
-4. emits chained SKAP->KV evidence;
-5. persists and exact-readbacks the KV return;
-6. emits final KV->DEVICE receipt chained to SKAP->KV;
-7. materializes the four-leg manifest;
-8. runs the terminal verifier.
-
-TVC remains the single ciphertext custody writer. `consume_kv_skap_custody_materialization_request.py` MUST NOT duplicate a TVC custody write for the same ciphertext.
-
-The worker may invoke canonical StegOS Interlock/InTr only under the admitted task/runtime scope. The connector may materialize hop receipts under its own transition semantics. WorkerCoordinator, GitHub, HB, transport, broker, and verifier grant no transition or credential authority.
+```text
+runtime_class = EVENT_EPHEMERAL
+max_operations = 1
+persistent_host_required = false
+participant_machine_required = false
+developer_machine_required = false
+credential_authority = TV/TVC
+authority_effect = NONE
+bridge_owns_runtime_lifecycle = false
+runtime_lease_grants_transition_authority = false
+```
 
 ## WorkerCoordinator integration
 
-The registered process adapter remains:
+Registered adapter:
 
 ```text
 control/process-worker-adapters.d/device-kv-skap-roundtrip-001.json
@@ -142,37 +156,46 @@ adapter_ref = process:device-kv-skap-roundtrip-v1
 command = python workers/run_device_kv_skap_roundtrip_worker.py
 ```
 
-After `.github` #1399, the worker binds the exact ProcessWorkerAdapter invocation:
+After `.github` #1399 the worker requires/binds:
 
 ```text
 schema = stegverse.worker-invocation/v0.1
 task.task_id = STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001
 scope.claim_id = task.claim_id
 scope.fencing_token = task.heartbeat_timing.fencing_token
-claim suffix generation matches fence
+claim generation suffix matches fence
 handoff goal/task identity matches
 credential_authority = TV/TVC
 github_token_runtime_authority = NONE
 transition_authority = Interlock/InTr
 ```
 
-On authentic terminal success it returns `stegverse.worker-response/v0.1` with `state=COMPLETED` and transition `DEVICE_KV_SKAP_ROUNDTRIP_VERIFIED`. It does not mint the claim/fence and it still requires the authentic continuation inputs.
+The worker may not mint claim/fence. Terminal worker response may be `COMPLETED / DEVICE_KV_SKAP_ROUNDTRIP_VERIFIED` only after authentic roundtrip verification succeeds.
 
-## Existing bounded event wrapper
+## Preferred custody continuation
 
-`scripts/execute_device_kv_skap_roundtrip_event.py` remains the current one-shot orchestration wrapper. It rejects hosted markers, refreshes already-local canonical WorkerCoordinator source, validates the task/COSV pointer, forwards only non-secret evidence paths, and invokes:
+After TVC admits one authentic sealed ciphertext, `scripts/continue_device_kv_skap_from_tvc_custody.py`:
 
-```text
-scripts/run_worker_runtime.py --task-id STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001
-```
+1. validates canonical DEVICE->KV sidecar;
+2. validates terminal TVC custody and exact SKAP readback;
+3. executes canonical KV->SKAP semantics;
+4. emits chained SKAP->KV evidence;
+5. persists/exact-readbacks KV return;
+6. emits final KV->DEVICE receipt chained to SKAP->KV;
+7. materializes four-leg manifest;
+8. runs terminal verifier.
 
-That targeted runtime obtains normal WorkerCoordinator claim/fence semantics. The wrapper itself grants no execution, transition, provider, or credential authority.
+TVC remains the single ciphertext custody writer. Compatibility/direct custody code MUST NOT duplicate the same TVC custody write.
 
-The next implementation step is to route this one-shot path through the merged native Node execution broker using an authentic retained-Node snapshot and exact open `EVENT_EPHEMERAL` lease admission, without creating a second WorkerCoordinator or Interlock authority path.
+## Current bounded event wrapper
+
+`scripts/execute_device_kv_skap_roundtrip_event.py` remains the existing one-shot WorkerCoordinator wrapper. It rejects hosted markers, refreshes already-local source, validates task/COSV, forwards only non-secret evidence paths, and invokes targeted WorkerCoordinator runtime.
+
+Its current direct WorkerCoordinator execution semantics are valid but not yet the final canonical consumer wiring. Remaining source work is to bind the fenced worker invocation into the already-proven Canonical Runtime Lane/bridge without creating another claim, lease, or transition-authority path.
 
 ## Authentic prerequisite pair
 
-Repository evidence still does not contain an eligible authentic current-device outcome carrying both an authentic Gateway first hop and matching TVC roundtrip-eligible custody admission. Required pair:
+Required runtime pair remains:
 
 ```text
 A. Gateway sidecar
@@ -193,10 +216,6 @@ Receipt tree: `_Vault/SKAP/Receipts/coinbase-drain`.
 
 Fixture, reconstruction, GitHub Actions artifact, hosted substitute, or synthetic packet is not eligible.
 
-## MyKV relationship
-
-Ordinary personal information belongs in KV. Credential/signing material belongs in SKAP; KV may retain only a non-secret SKAP reference/binding. This child proves the governed transport/evidence lane connecting those boundaries and does not move ordinary personal data wholesale into SKAP.
-
 ## Completion contract
 
 One authentic bounded execution must prove:
@@ -213,10 +232,12 @@ KV exact return readback verified
 TV/TVC credential authority preserved
 TVC single ciphertext custody writer preserved
 credential plaintext absent from ordinary transport/evidence
-canonical retained Node identity/continuity binding preserved
+retained Node identity/continuity binding preserved
 fresh WorkerCoordinator claim/fence preserved
-bounded StegOS EVENT_EPHEMERAL lease preserved
-broker grants no transition/credential authority
+canonical EVENT_EPHEMERAL lease preserved
+bridge owns no runtime/transition/credential authority
+canonical runtime evidence retained before teardown
+canonical lease closes cleanly
 persistent transport process required = false
 always-on receiver required = false
 hosted_runtime_used = false
@@ -227,10 +248,10 @@ terminal state = DEVICE_KV_SKAP_ROUNDTRIP_VERIFIED
 ## Current implementation condition
 
 ```text
-ROUNDTRIP_SPECIFIC_NODE_EVENT_EXECUTION_BROKER_BINDING_NOT_YET_MERGED
+DEVICE_KV_SKAP_CANONICAL_RUNTIME_DOMAIN_BINDING_NOT_YET_MERGED
 ```
 
-This is a source integration condition, not runtime evidence and not a reason to introduce a persistent server. The generic broker, runtime-lease correction, and WorkerCoordinator process protocol are merged/validated.
+This is source integration only. It does not replace or satisfy authentic runtime evidence.
 
 ## Current authentic evidence conditions
 
@@ -242,16 +263,16 @@ AUTHENTIC_SKAP_KV_RETURN_RECEIPT_NOT_YET_OBSERVED
 KV_SKAP_TERMINAL_EXACT_READBACK_NOT_YET_OBSERVED
 ```
 
-`PHYSICAL_RUNTIME_NOT_PRESENT`, `ALWAYS_ON_RECEIVER_NOT_PRESENT`, `TESTFLIGHT_NOT_INSTALLED`, `REMOTE_DESKTOP_NOT_CONNECTED`, or `SECOND_DEVICE_NOT_PRESENT` MUST NOT be introduced as blockers for this proof.
+`PHYSICAL_RUNTIME_NOT_PRESENT`, `ALWAYS_ON_RECEIVER_NOT_PRESENT`, `TESTFLIGHT_NOT_INSTALLED`, `REMOTE_DESKTOP_NOT_CONNECTED`, or `SECOND_DEVICE_NOT_PRESENT` MUST NOT be introduced as blockers.
 
 ## Next
 
-1. Bind the registered Device/KV/SKAP worker as the first consumer of the merged StegOS Node event broker, reusing the existing WorkerCoordinator claim/fence and canonical StegOS single-operation `EVENT_EPHEMERAL` lease; do not create parallel claim, lease, or transition authority.
-2. Produce or locate one authentic current-device Gateway canonical sidecar and matching TVC `ADMITTED_TO_SKAP_VAULT_CUSTODY` / `canonical_roundtrip_eligible=true` drain receipt through the existing non-hosted TV/TVC path.
-3. Execute the broker-bound one-shot roundtrip under retained Node identity/continuity.
-4. Retain the four chained receipts plus exact SKAP/KV readbacks and broker/lease/claim evidence.
-5. Close the evidence conditions only when terminal verification returns `DEVICE_KV_SKAP_ROUNDTRIP_VERIFIED`.
+1. Bind `run_device_kv_skap_roundtrip_worker.py` as the Device/KV/SKAP domain consumer of the existing Canonical Runtime Lane using the exact fresh WorkerCoordinator claim/fence; do not create a second runtime lifecycle.
+2. Consume authentic retained-Node and canonical lease evidence; never fabricate them merely to make the domain adapter callable.
+3. Produce/locate one authentic current-device Gateway sidecar + matching TVC `ADMITTED_TO_SKAP_VAULT_CUSTODY` / `canonical_roundtrip_eligible=true` receipt through the non-hosted TV/TVC path.
+4. Execute the canonical lane/domain consumer and retain bridge + lease + four-hop + exact-readback evidence through canonical closure.
+5. Close evidence conditions only when terminal verification returns `DEVICE_KV_SKAP_ROUNDTRIP_VERIFIED`.
 
 ## Manual work
 
-None. Do not enter provider credential into chat, GitHub, Drive, ordinary KV, logs, screenshots, or repository state. Any eventual owner credential entry remains browser-local sealing only after the authentic ingress readiness predicates are satisfied.
+None. Do not enter provider credential into chat, GitHub, Drive, ordinary KV, logs, screenshots, or repository state. Any eventual owner credential entry remains browser-local sealing only after authentic ingress readiness predicates are satisfied.
