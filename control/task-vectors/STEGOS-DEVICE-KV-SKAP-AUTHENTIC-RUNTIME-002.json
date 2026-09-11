@@ -1,0 +1,41 @@
+{
+  "identity": "StegVerse-Labs/.github:task:STEGOS-DEVICE-KV-SKAP-AUTHENTIC-RUNTIME-002",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000102000",
+  "evidence_refs": [
+    "data/canonical-task-records/STEGOS-DEVICE-KV-SKAP-AUTHENTIC-RUNTIME-002.json",
+    "docs/DEVICE_KV_SKAP_AUTHENTIC_RUNTIME_MIRROR_HANDOFF.md",
+    "data/canonical-task-records/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json",
+    "data/canonical-task-records/TVC-IOS-OPAQUE-RECIPIENT-CAPABILITY-001.json",
+    "StegVerse-Labs/.github#1500"
+  ],
+  "observed_at": "2026-09-11T14:03:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 12,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "source integration is complete; only authentic runtime-evidence closure remains",
+    "archive_ready": "current-iPhone activation, TVC challenge/public projection, Gateway/TVC pair, four-hop InTr and exact readback remain unobserved",
+    "unassigned_work": "successor #1500 owns runtime-evidence closure",
+    "canonical_owner_installed": ".github #1456 merged after exact-head validation; StegOS #341 and TVC #407 are merged owners",
+    "evidence_complete": "terminal DEVICE_KV_SKAP_ROUNDTRIP_VERIFIED proof is absent",
+    "activated": "runtime activation is not inferred from source or CI",
+    "propagated": "no terminal roundtrip proof has propagated"
+  },
+  "authority_effect": "NONE"
+}
