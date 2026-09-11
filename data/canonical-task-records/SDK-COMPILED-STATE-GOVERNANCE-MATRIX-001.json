@@ -5,13 +5,28 @@
   "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
   "parent_task_id": "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001",
   "goal": "Validate the final single-lane compiled-state governance boundary where upstream sensing and interpretation are already complete, preserving the exact distinction Event 3 NO_SIGNAL -> DENY versus Event 3 OBSERVED_SILENCE as a state transition from Event 2 -> ALLOW without reinterpreting upstream parameters.",
-  "coordination_state": "ACTIVE",
-  "checkout_state": "CHECKED_OUT",
+  "coordination_state": "RETIRED",
+  "checkout_state": "COMPLETED",
   "repository": "StegVerse-org/StegVerse-SDK",
   "handoff": "SDK_COMPILED_STATE_GOVERNANCE_MATRIX_MIRROR_HANDOFF.md",
   "cosv": {"profile": "task.v1", "vector": "71000000100110"},
   "credential_authority": "TV/TVC",
   "posture_resolution_authority": "Interlock/InTr",
   "github_runtime_authority": "NONE",
-  "remaining_predicate": "EXACT_HEAD_COMPILED_STATE_MATRIX_VALIDATION_AND_CANONICAL_MERGE"
+  "validation_head": "377dda35e7d8e3c17e806d31db2712835a4e27f7",
+  "validation_run": 34611435186,
+  "validation_result": "PASS",
+  "evidence_artifact": {
+    "name": "elan-compiled-state-governance-matrix",
+    "artifact_id": 10269041130,
+    "digest": "sha256:2bc6091bf9ebe94c2717f0af1e1cf7130b883217ce91d8c0ac4f838597a272ce"
+  },
+  "source_merge": "8878a7d4d8c0348ceef10e6d2acbb41a1a597233",
+  "handoff_closeout_merge": "3ac2f09a4ff820f50b1995c5b180a7ac64de60cd",
+  "result": {
+    "no_signal_after_event_2": "DENY_SIGNAL_INPUTS_INCOMPLETE",
+    "observed_silence_event_2_to_event_3": "ALLOW_OK",
+    "upstream_parameters_reinterpreted": false
+  },
+  "remaining_predicate": "NONE"
 }
