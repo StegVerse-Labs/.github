@@ -86,18 +86,28 @@ Canonical StegOS EVENT_EPHEMERAL lane
 PLATFORM_NEUTRAL_TVC_CAPABILITY_CONTRACT = MERGED
 LINUX_ROOT_ADAPTER = PRESENT
 NATIVE_IOS_PROJECT = PRESENT
-IOS_TVC_OPAQUE_KEY_ADAPTER = NOT_PRESENT
+IOS_TVC_OPAQUE_KEY_ADAPTER = MERGED_AND_APPLE_TOOLCHAIN_VALIDATED\nTVC_IOS_SIGNATURE_VERIFIER = MERGED_AND_VALIDATED\nTVC_COINBASE_ACTIVATION_SEAM = SOURCE_BOUND\nAUTHENTIC_TVC_CHALLENGE_EXCHANGE = NOT_OBSERVED
 AUTHENTIC_CURRENT_IPHONE_ACTIVATION = NOT_OBSERVED
 ```
 
 ## Next
 
-Implement and validate the native iOS TVC opaque-key adapter in the existing StegOS Mobile target, then bind it to the TVC capability activation seam and obtain authentic current-iPhone activation/liveness evidence. After that, return control to `STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001` for the authentic Gateway/TVC input pair and canonical four-leg roundtrip.
+Source implementation and validation are complete through StegOS #338/#339/#340 and TVC #407. Next obtain one authentic current-iPhone Secure Enclave candidate plus TVC-issued challenge/attestation exchange, verify it through the merged TVC adapter, and project the public recipient configuration. After that, return control to `STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001` for the authentic Gateway/TVC input pair and canonical four-leg roundtrip.
 
 ## README
 
-The parent repositories' README files have been reviewed conceptually for this coordination step. This PR registers a dependency and changes no user-facing runtime behavior; no README prose mutation is required until implementation lands in the owning repository.
+The functional implementation is documented in the StegOS and TVC repository README/handoff surfaces. This coordination projection updates the organization README because implementation has now landed in both owning repositories.
 
 ## Manual work
 
 None at this coordination stage. Do not enter provider credentials, key material, or private-key bytes into chat, GitHub, ordinary KV, logs, screenshots, or repository state.
+
+
+## Validated merged source lineage
+
+- StegOS #338 merged the Secure-Enclave-only P-256 candidate source.
+- StegOS #339 compiled it into the StegOSMobile target with Apple-toolchain validation.
+- StegOS #340 added challenge-bound proof-of-possession signing and passed exact-head StegOS CI, iOS Device Package Validation, and iOS Apple Toolchain Validation.
+- TVC #407 merged at `3fbdba0cb539b3672b53c3aa29e948e58e4fdb8e`; the dedicated recipient-capability suite, credential-model consistency validation, and consent HTTP validation all passed at exact head `704f064a6fb07b6c72076b4ced68851fe7e84ea1`.
+
+These results close source implementation, target integration, Apple-toolchain build, TVC signature-verification, and Coinbase activation-seam binding. They do not close physical current-iPhone execution or runtime evidence.
