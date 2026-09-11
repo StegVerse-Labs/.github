@@ -1,11 +1,18 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-import hashlib, json, sys
+import hashlib, json, os, sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 RECORDS = ROOT / "data" / "canonical-task-records"
 ACTIVEISH = {"ACTIVE", "CHECKED_OUT", "CLAIMED_INTEGRATION", "HANDOFF_READY_RUNTIME_PROOF_PENDING", "BLOCKED_RUNTIME_ACTIVATION"}
+sys.path.insert(0, str(ROOT / "scripts"))
+from task_registry_checkin_event_history import (  # noqa: E402
+    DEFAULT_LEDGER,
+    append_event,
+    recent_collision_candidates,
+)
 
 
 def load_records():
@@ -70,11 +77,64 @@ def overlap(a, b, request_context=None):
     return repos, comps, lineage, adjacent
 
 
+def event_ledger_path() -> Path:
+    configured = str(os.environ.get("STEGVERSE_TASK_REGISTRY_EVENT_LEDGER") or "").strip()
+    return Path(configured).expanduser().resolve() if configured else DEFAULT_LEDGER
+
+
+def recent_events_for(tid, task_record, context):
+    targets = task_record.get("targets") or {}
+    repositories = set(targets.get("repositories") or [])
+    components = set(targets.get("components") or [])
+    repositories.update(context.get("repositories_under_mutation") or [])
+    components.update(context.get("components_under_mutation") or [])
+    if context.get("repository"):
+        repositories.add(str(context["repository"]))
+    checked_in_at = context.get("checked_in_at")
+    if isinstance(checked_in_at, str) and checked_in_at.strip():
+        now = datetime.fromisoformat(checked_in_at.replace("Z", "+00:00"))
+    else:
+        now = datetime.now(timezone.utc)
+    return recent_collision_candidates(
+        event_ledger_path(),
+        now=now,
+        task_id=tid,
+        repositories=sorted(repositories),
+        components=sorted(components),
+    )
+
+
+def record_checkin(envelope, context):
+    session_id = str(context.get("session_id") or "").strip()
+    if not session_id:
+        return None
+    event_context = {
+        "repository": context.get("repository"),
+        "branch": context.get("branch"),
+        "pull_request": context.get("pull_request"),
+        "source_head": context.get("source_head"),
+        "first_unresolved_predicate": context.get("first_unresolved_predicate"),
+        "repositories": context.get("repositories_under_mutation") or [],
+        "components": context.get("components_under_mutation") or [],
+    }
+    return append_event(event_ledger_path(), {
+        "event_type": "CHECK_IN",
+        "task_id": envelope["task_id"],
+        "session_id": session_id,
+        "event_at": context.get("checked_in_at") or datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        "context": event_context,
+        "registry_disposition": envelope,
+    })
+
+
 def emit(payload, request_context):
     envelope = dict(payload)
     envelope["checkin_context"] = request_context
     envelope["checkin_context_sha256"] = stable_hash(request_context)
     envelope["checkin_disposition_sha256"] = stable_hash({k: v for k, v in envelope.items() if k != "checkin_disposition_sha256"})
+    event = record_checkin(envelope, request_context)
+    if event:
+        envelope["checkin_event_sha256"] = event["event_sha256"]
     print(json.dumps(envelope, sort_keys=True))
 
 
@@ -105,12 +165,20 @@ def main():
             continue
         repos, comps, lineage, adjacent = overlap(r, o, context)
         if repos or comps or lineage or adjacent:
-            collisions.append({"task_id":oid,"handoff":handoff(o),"coordination_state":os,"checkout_state":oc,"overlap":{"repositories":repos,"components":comps,"lineage":lineage,"adjacent":adjacent}})
+            collisions.append({"task_id":oid,"handoff":handoff(o),"coordination_state":os,"checkout_state":oc,"overlap":{"repositories":repos,"components":comps,"lineage":lineage,"adjacent":adjacent},"source":"CANONICAL_TASK_RECORD"})
 
-    hard=[c for c in collisions if c["checkout_state"]=="CHECKED_OUT" and (c["overlap"]["components"] or c["overlap"]["lineage"])]
+    recent = recent_events_for(tid, r, context)
+    known = {(c["task_id"], "CANONICAL_TASK_RECORD") for c in collisions}
+    for row in recent:
+        marker = (row["task_id"], "RECENT_EVENT_HISTORY")
+        if marker not in known:
+            collisions.append(row)
+            known.add(marker)
+
+    hard=[c for c in collisions if c.get("source") == "CANONICAL_TASK_RECORD" and c.get("checkout_state")=="CHECKED_OUT" and (c["overlap"]["components"] or c["overlap"]["lineage"])]
     disposition = "STOP_COLLISION" if hard else ("COORDINATE_CONVERGENCE" if collisions else "CONTINUE")
     action = "END_SESSION_AND_CONTINUE_IN_RETURNED_COLLISION_OWNER" if hard else ("COORDINATE_BEFORE_MUTATION" if collisions else "CONTINUE_CURRENT_TASK")
-    emit({"schema":"stegverse.task-registry-checkin-disposition/v1","task_id":tid,"task_handoff":handoff(r),"disposition":disposition,"session_action":action,"collision_candidates":collisions,"hard_collision_task_ids":[c["task_id"] for c in hard],"authority_effect":"NONE"}, context)
+    emit({"schema":"stegverse.task-registry-checkin-disposition/v1","task_id":tid,"task_handoff":handoff(r),"disposition":disposition,"session_action":action,"collision_candidates":collisions,"hard_collision_task_ids":[c["task_id"] for c in hard],"recent_event_window_seconds":1800,"authority_effect":"NONE"}, context)
 
 if __name__ == "__main__":
     main()
