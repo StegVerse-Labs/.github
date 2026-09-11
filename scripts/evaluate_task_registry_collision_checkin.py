@@ -104,11 +104,8 @@ def recent_events_for(tid, task_record, context):
     )
 
 
-def record_checkin(envelope, context):
-    session_id = str(context.get("session_id") or "").strip()
-    if not session_id:
-        return None
-    event_context = {
+def event_context(context):
+    return {
         "repository": context.get("repository"),
         "branch": context.get("branch"),
         "pull_request": context.get("pull_request"),
@@ -117,12 +114,18 @@ def record_checkin(envelope, context):
         "repositories": context.get("repositories_under_mutation") or [],
         "components": context.get("components_under_mutation") or [],
     }
+
+
+def record_event(envelope, context, event_type):
+    session_id = str(context.get("session_id") or "").strip()
+    if not session_id:
+        return None
     return append_event(event_ledger_path(), {
-        "event_type": "CHECK_IN",
+        "event_type": event_type,
         "task_id": envelope["task_id"],
         "session_id": session_id,
         "event_at": context.get("checked_in_at") or datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
-        "context": event_context,
+        "context": event_context(context),
         "registry_disposition": envelope,
     })
 
@@ -132,9 +135,13 @@ def emit(payload, request_context):
     envelope["checkin_context"] = request_context
     envelope["checkin_context_sha256"] = stable_hash(request_context)
     envelope["checkin_disposition_sha256"] = stable_hash({k: v for k, v in envelope.items() if k != "checkin_disposition_sha256"})
-    event = record_checkin(envelope, request_context)
-    if event:
-        envelope["checkin_event_sha256"] = event["event_sha256"]
+    checkin = record_event(envelope, request_context, "CHECK_IN")
+    if checkin:
+        envelope["checkin_event_sha256"] = checkin["event_sha256"]
+    if str(envelope.get("disposition") or "").startswith("STOP_"):
+        stopped = record_event(envelope, request_context, "STOPPED")
+        if stopped:
+            envelope["stopped_event_sha256"] = stopped["event_sha256"]
     print(json.dumps(envelope, sort_keys=True))
 
 
