@@ -64,6 +64,16 @@ def write_once(path: Path, value: Mapping[str, Any]) -> None:
         raise RuntimeError(f"write_once_readback_mismatch:{path}")
 
 
+def write_latest(path: Path, value: Mapping[str, Any]) -> None:
+    rendered = json.dumps(dict(value), indent=2, sort_keys=True) + "\n"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name("." + path.name + ".tmp")
+    tmp.write_text(rendered, encoding="utf-8")
+    os.replace(tmp, path)
+    if path.read_text(encoding="utf-8") != rendered:
+        raise RuntimeError(f"latest_readback_mismatch:{path}")
+
+
 def validate_request(request: Mapping[str, Any]) -> None:
     expected = {
         "schema": "stegverse.resident-execution-request/v1",
@@ -133,7 +143,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
             "source_preparation_check_passed":False,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE",
             "heartbeat_grants_execution_authority":False,"second_machine_required":False,"authority_effect":"NONE_WAIT_STATE"
         }
-        write_once(runtime / RECEIPT_REL, receipt)
+        write_latest(runtime / RECEIPT_REL, receipt)
         return receipt
     erl_root_raw = str(values.get("STEGVERSE_ERL_ROOT") or "").strip()
     dispatch_raw = str(values.get("STEGVERSE_ERL_ACTIVE_RESEARCH_DISPATCH_PATH") or "").strip()
@@ -146,7 +156,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
             "credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","heartbeat_grants_execution_authority":False,
             "second_machine_required":False,"authority_effect":"NONE_WAIT_STATE"
         }
-        write_once(runtime / RECEIPT_REL, receipt)
+        write_latest(runtime / RECEIPT_REL, receipt)
         return receipt
     erl_root = Path(erl_root_raw).expanduser().resolve()
     dispatch = Path(dispatch_raw).expanduser().resolve()
@@ -186,7 +196,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         "github_token_runtime_authority":"NONE","heartbeat_grants_execution_authority":False,"second_machine_required":False,
         "authority_effect":"NONE_BINDING_MATERIALIZATION_ONLY"
     }
-    write_once(runtime / RECEIPT_REL, receipt)
+    write_latest(runtime / RECEIPT_REL, receipt)
     return receipt
 
 
