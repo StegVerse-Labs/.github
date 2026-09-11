@@ -1,6 +1,6 @@
 # StegBrowser Ephemeral Runtime Binding Mirror Handoff
 
-Updated: 2026-09-09
+Updated: 2026-09-10
 
 ## Task pointer
 
@@ -10,156 +10,113 @@ Updated: 2026-09-09
 - Native app-target handoff: `StegVerse-Labs/StegOS/docs/STEGBROWSER_IOS_RESIDENT_APP_TARGET_MIRROR_HANDOFF.md`
 - TVC Apple handoff: `StegVerse-Labs/TVC/docs/APP_STORE_CONNECT_TV_TVC_SKAP_MIRROR_HANDOFF.md`
 
-## Working-instance trajectory
+## Active objective
 
-The active objective remains one authentic current-iPhone StegBrowser resident instance, followed by the first verified native social publication through the ephemeral browser path.
+The Goal remains ACTIVE and is not superseded. The immediate objective is one authentic current-iPhone StegBrowser resident instance. Native StegSocials publication remains downstream of that proof.
 
 ```text
 canonical Site SV-NODE
 -> current-iPhone owner ingress
--> TVC App Store Connect recipient + InTr route
--> SKAP sealed App Store Connect credential custody
--> secret-free TVC identifier/provisioning requests
--> current-iPhone same-device IPA signing executor
+-> live TVC App Store Connect recipient + InTr route
+-> Device -> KV -> SKAP sealed credential custody
+-> secret-free TVC Apple operations
+-> same-device IPA signing
 -> TVC native Build Upload
--> TestFlight installation
+-> TestFlight install
 -> canonical same-device resident discovery
--> component evidence receipt
--> ephemeral social execution
--> external object/readback verification
--> StegSocials publication receipt
+-> runtime evidence receipt
 ```
 
-## Merged resident/package baseline
+## Canonical Apple credential path
 
-The real `iphoneos` product, host + two extensions, exact bundle identities, App Group entitlement wiring, canonical resident markers, durable local evidence retention, and same-device discovery readback source are validated. The provisional temporary-node route remains retired.
+The prior GitHub-hosted `ASC_*` credential path is retired. The preferred path is current-iPhone local sealing -> InTr -> Device/KV/SKAP -> callback-only TVC provider operation. The real `.p8` must not be placed in GitHub, logs, artifacts, task payloads or chat.
 
-## Apple delivery architecture — current canonical state
-
-The prior GitHub Apple execution path is retired and must not be restored.
-
-### TVC source complete
-
-Merged TVC source provides the exact App Store Connect credential class, SKAP callback-only resolver, provider-operation broker/executor, exact Apple recipient projection, exact Apple InTr route contract, and native Build Upload transaction.
+Merged TVC implementation now includes:
 
 ```text
-TVC #358 merge: cc5106b381112893893d68f61032e33ab16aab0f
-TVC #360 merge: b71f41a131cf5274df7e1a05a23f5758d8667a6b
-TVC #361 merge: 963c0037f7f3120a86c9ea657b65124d0ed0eeeb
-TVC #363 merge: 15f01fd9e4c472982cc2212c86aecb9ea90e5b49
+#356/#357  exact App Store Connect credential class + callback-only provider boundary
+#358       exact Apple SKAP recipient class
+#360       exact Apple InTr route contract
+#361       native App Store Connect Build Upload transaction
+#364       executable Apple ciphertext ingress + separate custody + Device->KV->SKAP receipts
+#365       same-epoch public-only Site recipient/route exporter
+#367       tvc.app_store_connect_skap.activate primary-runtime task registration
+#368       RESOLVE_APP_RESOURCE_ID inside authenticated TVC session
+#369       Apple tunnel active-repo-root rendering
+#370       bounded Apple SKAP bootstrap during normal TVC primary activation
+#378       current-main listener/root convergence; validated and merged at 1853cb632ff8cf97deed5b08ec4f0964d1ef4978
+#379       Apple SKAP runtime-handoff reconciliation; merged at adb1c48f1b0459c38ed9d519b0a18bc8039de7ef
 ```
 
-No live Apple/SKAP execution is inferred from source completion.
-
-### StegOS provider/upload convergence
+PR #378 fixes two authentic deployment blockers that source review exposed:
 
 ```text
-StegOS #297 merge: 790ee065c491822f2c6bf06e77214e99245afd8f
-StegOS #298 merge: de38c04accc6196923058db79ccf88db25d85ee6
-StegOS #301 merge: ea22296e9bbae7605b241ec86c4e15deac8dc937
+TVC primary provider-operation runtime: 127.0.0.1:8765
+shared SKAP ciphertext ingress:          127.0.0.1:8775
+Coinbase SKAP local upstream:            http://127.0.0.1:8775
+App Store Connect SKAP local upstream:   http://127.0.0.1:8775
 ```
 
-#297 merged the secret-free signed-IPA -> TVC upload request builder. #298 retired direct `ASC_*`, runner-local App Store Connect `.p8`, and `altool` upload. #301 removed the remaining Apple credential/signing execution from active GitHub workflows and merged secret-free TVC provisioning request surfaces. GitHub Actions is validation/evidence transport only.
+The shared SKAP ingress and tunnel systemd units now render from the active TVC `@REPO_ROOT@`; `/opt/stegverse/TVC` is no longer the fixed runtime assumption for those services. Current Apple validation and the newer POST_RETURN SKAP lane both passed against the #378 head.
 
-### Xcode Cloud candidate disposition
+## Device/KV/SKAP convergence
 
-Apple Xcode Cloud was investigated as a provider-native signing executor. It can archive/sign/distribute in Apple's macOS/Xcode environment and App Store Connect/API can manage workflows after onboarding. Apple's current documentation still requires initial Xcode Cloud project/workflow onboarding in Xcode, and the App Store Connect API exposes products only after Xcode Cloud has detected/created them; there is no Xcode Cloud product-creation bootstrap endpoint.
-
-Therefore Xcode Cloud is rejected as the current bootstrap path because it would reintroduce an initial second-machine/Xcode dependency.
-
-### Current-iPhone signing executor — merged source boundary
-
-StegOS #302 replaces the generic macOS/Xcode signer blocker with a current-iPhone same-device browser/WASM signing executor contract and fail-closed orchestrator.
+StegOS #326 and #327 now compose and verify the full four-leg Universal InTr chain:
 
 ```text
-StegOS #302 merge: b241492051e7d98e1b434afd62a030f2bdf54e3d
-Current iPhone IPA Signing Executor Validation: 34359361030 SUCCESS
-Apple TVC Credential Boundary Validation: 34359360843 SUCCESS
-TVC TestFlight Upload Handoff Validation: 34359360807 SUCCESS
-StegOS CI: 34359360758 SUCCESS
+DEVICE_SYSTEM -> KV -> SKAP_VAULT -> KV -> DEVICE_SYSTEM
 ```
 
-Merged source:
+The verifier requires exact receipt-hash chaining and current Interlock/InTr posture binding. These are source/validation capabilities; authentic Apple credential custody has not yet been observed.
+
+## Current-iPhone signing
+
+The same-device signing executor contract/orchestrator remains merged. The actual StegOS-owned same-device cryptographic transformation engine remains a separate downstream implementation requirement before a real signed IPA can be produced without a second user-operated machine.
+
+## Apple account state
+
+Owner-provided iPhone evidence confirms Apple Developer Program Account Holder membership active through `2027-09-09`.
+
+App Store Connect is currently blocked by an Apple Terms/account UI defect: the Terms checkbox can be selected, but no usable acceptance control is rendered on the current iPhone across multiple browsers. Therefore:
 
 ```text
-contracts/current-iphone-ipa-signing-executor.v1.json
-mobile/web-bootstrap/current-iphone-ipa-signing-executor.js
-tests/test_current_iphone_ipa_signing_executor.py
-.github/workflows/current-iphone-ipa-signing-executor-validation.yml
+Apple Team API key: NOT_CREATED_OR_NOT_OBSERVED
+real Apple credential SKAP custody: NOT_OBSERVED
 ```
 
-Exact execution boundary:
+SKAP does not bypass Apple's Terms gate. Once the Team API key can be generated, the intended ingress is the current-iPhone SKAP page, not GitHub Actions secrets.
+
+## Current sovereign-runtime blocker
+
+TVC already contains a released primary-runtime installer that restarts the same `stegtvc-primary-runtime.service` so it imports the current local TVC checkout. The existing private-source resident path can also materialize and verify an exact immutable TVC checkout.
+
+Those two capabilities are not yet connected by an observed resident operation. Current authentic evidence does not establish that the sovereign host has materialized TVC main containing #378/#379 and restarted the existing primary service from that source.
+
+This is now the first SKAP runtime closure target:
 
 ```text
-execution_surface: CURRENT_USER_IPHONE
-executor_class: SAME_DEVICE_BROWSER_WASM_IPA_SIGNER
-external_machine_required: false
-second_user_operated_machine_allowed: false
-github_actions_execution_allowed: false
-credential_authority: TV/TVC
-app_store_connect_credential_custody: SKAP_SEALED_TV_TVC_OWNED
-signing_private_key.origin: CURRENT_IPHONE_EPHEMERAL_SESSION
-signing_private_key.persistence_allowed: false
-signing_private_key.network_export_allowed: false
-signing_private_key.artifact_export_allowed: false
+resident exact-source request for current TVC
+-> TVC private-source service materializes and verifies exact immutable TVC commit
+-> bounded existing-primary-service source rebind/restart
+-> primary TVC listener observed on 8765
+-> shared SKAP listener observed simultaneously on 8775
+-> Apple recipient key + liveness
+-> Apple InTr carrier + public health
+-> OWNER_INGRESS_READY
+-> public-only Site projection
 ```
 
-The orchestrator binds exact unsigned IPA bytes/SHA-256, source commit, app ID and build number; creates an ephemeral same-device signing key + public CSR; requests certificate/profile material through TVC; requires exact app/control/broadcast bundle IDs and shared App Group in returned profiles; signs nested bundles before the host; verifies codesign structure/entitlements; destroys the key; and emits a signed-IPA commitment and secret-free TVC upload input.
+No source merge or hosted CI result substitutes for those host observations.
 
-The executor requires real iOS signing semantics: CodeDirectory, SuperBlob, CMS signature, CodeResources, XML + DER entitlements, depth-first nested signing, host signing last, and embedded provisioning profiles for each target.
+## Remaining sequence
 
-## Current source blocker — same-device cryptographic engine
-
-The same-device orchestration and contract are merged, but the actual cryptographic transformation engine is not yet implemented. External cross-platform/browser signing implementations were investigated as feasibility references only. A pinned reference audit confirms that pure-Rust WASM-compatible Mach-O/CMS/CodeResources signing is technically feasible, but no unverified external signer is imported into StegOS runtime.
-
-The next implementation target is the StegOS-owned selectively absorbed/vetted WASM cryptographic core beneath the merged #302 interface. It must keep the signing private key local/ephemeral and must not require a Mac, Xcode Cloud bootstrap, GitHub signing, or a second user-operated machine.
-
-## Apple Developer membership observation
-
-Authentic owner-provided iPhone evidence observed on 2026-09-09 confirms Account Holder membership in the Apple Developer Program through Sep 09, 2027. This satisfies membership only; it does not prove App Store Connect API access, App Group/app record materialization, SKAP custody, signed IPA generation, TestFlight processing, or installation.
-
-## Current physical/runtime sequence
-
-```text
-App Store Connect API access/key available to owner
--> authentic TVC Apple recipient/liveness/InTr route
--> owner seals .p8 through current-iPhone Site ingress into SKAP
--> TVC identifier/capability requests execute
--> shared App Group registered/assigned to all three App IDs
--> App Store Connect app record exists
--> current-iPhone cryptographic signer engine materialized under #302 contract
--> current-iPhone ephemeral key + CSR
--> TVC certificate/profile operations
--> same-device sign/repack/verify IPA
--> TVC native Build Upload
--> Apple processes build
--> install through TestFlight
--> activate canonical Site rendezvous
--> observe exact same-device discovery
--> persist component runtime/observation evidence
-```
-
-Source/CI/package validation does not substitute for those observations.
-
-## After working-instance proof
-
-Continue directly into native StegSocials:
-
-```text
-verified current-iPhone resident
--> short-lived social session
--> approved Facebook/LinkedIn execution
--> platform object ID + canonical URL + exact content commitment + readback
--> StegSocials publication receipt
--> KV / Master Records custody
-```
-
-Windsor is not required for this path.
-
-## Documentation note
-
-StegOS `README.md` still contains stale old GitHub Apple-delivery wording. It was reviewed and is noncanonical for execution; the StegOS task handoff and this umbrella handoff supersede it until safe whole-file reconciliation is completed.
+1. Close the resident exact-TVC-source -> existing-primary-runtime restart handoff without creating a second runtime or requiring a second user-operated machine.
+2. Obtain authentic simultaneous 8765/8775 listener evidence and Apple recipient/liveness/route `OWNER_INGRESS_READY` evidence.
+3. Resolve the external Apple Terms/account gate, generate the Team API key, and seal it from the current iPhone directly into SKAP.
+4. Observe authentic Device -> KV -> SKAP custody receipts and execute TVC Apple identifier/capability/resource/provisioning operations.
+5. Complete same-device cryptographic IPA signing, TVC Build Upload, TestFlight install and canonical same-device discovery.
+6. Only after working-instance proof continue native StegSocials publication/readback.
 
 ## Current state
 
-`CANONICAL_RESIDENT_MERGED_VALIDATED / IPHONEOS_UNSIGNED_PACKAGE_VALIDATED / TVC_APP_STORE_CONNECT_SOURCE_COMPLETE / GITHUB_APPLE_CREDENTIAL_EXECUTION_RETIRED / SECRET_FREE_TVC_PROVISIONING_REQUESTS_MERGED / CURRENT_IPHONE_SIGNING_EXECUTOR_CONTRACT_ORCHESTRATOR_MERGED_VALIDATED / SAME_DEVICE_CRYPTOGRAPHIC_SIGNING_ENGINE_NOT_IMPLEMENTED / XCODE_CLOUD_BOOTSTRAP_REJECTED_REQUIRES_INITIAL_XCODE / APPLE_DEVELOPER_MEMBERSHIP_OBSERVED_ACTIVE_THROUGH_2027-09-09 / APP_STORE_CONNECT_RUNTIME_AND_APP_RECORD_MATERIALIZATION_PENDING / AUTHENTIC_CURRENT_IPHONE_INSTALL_LISTENER_DISCOVERY_PENDING / NATIVE_SOCIAL_PUBLICATION_PROOF_PENDING`
+`ACTIVE_NOT_SUPERSEDED / CANONICAL_RESIDENT_SOURCE_MERGED_VALIDATED / IPHONEOS_UNSIGNED_PACKAGE_VALIDATED / GITHUB_APPLE_CREDENTIAL_EXECUTION_RETIRED / TVC_APP_STORE_CONNECT_PROVIDER_AND_SKAP_PATH_MERGED / TVC_PRIMARY_8765_SKAP_8775_COLLISION_REPAIR_MERGED_VALIDATED / ACTIVE_TVC_REPO_ROOT_RENDERING_MERGED_VALIDATED / STEGOS_DEVICE_KV_SKAP_FOUR_LEG_CHAIN_MERGED_VALIDATED / APPLE_DEVELOPER_MEMBERSHIP_OBSERVED_ACTIVE_THROUGH_2027-09-09 / APP_STORE_CONNECT_TERMS_GATE_BLOCKED / APPLE_TEAM_API_KEY_NOT_CREATED_OR_NOT_OBSERVED / AUTHENTIC_CURRENT_TVC_SOURCE_RESTART_NOT_OBSERVED / LIVE_APPLE_OWNER_INGRESS_READY_NOT_OBSERVED / SAME_DEVICE_CRYPTOGRAPHIC_SIGNING_ENGINE_REMAINS_DOWNSTREAM / AUTHENTIC_CURRENT_IPHONE_INSTALL_LISTENER_DISCOVERY_PENDING`
