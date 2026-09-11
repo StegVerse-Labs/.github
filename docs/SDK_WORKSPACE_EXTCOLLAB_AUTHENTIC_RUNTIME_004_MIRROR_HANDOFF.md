@@ -5,7 +5,7 @@ Repository: `StegVerse-Labs/.github`
 Goal Task ID: `SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004`
 Parent Goal Task ID: `SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003`
 COSV: `71000000100110`
-Status: `ACTIVE / RESOLVER REPAIR MERGED + VALIDATED / SOURCE COMPATIBILITY PINNED / AUTHENTIC RESIDENT OBSERVATION REQUIRED`
+Status: `ACTIVE / RESOLVER + OBSERVATION-BOUNDARY REPAIRS MERGED + VALIDATED / AUTHENTIC RESIDENT OBSERVATION REQUIRED`
 
 ## Purpose
 
@@ -17,7 +17,7 @@ Task Registry is coordination only. WorkerCoordinator owns claim/fence authority
 
 ## Reconciled merged source state
 
-The existing source chain remains merged and validated through `.github` #1393, SDK #196, `.github` #1402, LLM-adapter #332, SDK #199, `.github` #1415, TVC #403, SDK #201, `.github` #1427, and `.github` #1460.
+The existing source chain remains merged and validated through `.github` #1393, SDK #196, `.github` #1402, LLM-adapter #332, SDK #199, `.github` #1415, TVC #403, SDK #201, `.github` #1427, `.github` #1460, and `.github` #1485.
 
 PR #1460 merged at `3bc8898655d344ba12f47bb4120e38f2ac1ded6e` from exact head `a926d04e563fa6f89920bd608a2ff359b272ca13`. Exact-head validation passed in all three required lanes:
 
@@ -25,25 +25,33 @@ PR #1460 merged at `3bc8898655d344ba12f47bb4120e38f2ac1ded6e` from exact head `a
 - Organization Control: `34615578937` PASS;
 - Heartbeat Worker Project validation: `34615578890` PASS.
 
-The merged repair makes runtime-profile discovery fall back to the exact standalone canonical task record when the aggregate registry has no row, fails closed on duplicate aggregate identities and standalone record-ID mismatch, and aligns `resident_request_dispatch` discovery with `mutation_required=false`. Mutation/execution authority remains with WorkerCoordinator + Interlock/InTr; the change creates no runtime authority.
+The #1460 repair makes runtime-profile discovery fall back to the exact standalone canonical task record when the aggregate registry has no row, fails closed on duplicate aggregate identities and standalone record-ID mismatch, and aligns `resident_request_dispatch` discovery with `mutation_required=false`.
+
+PR #1485 merged at `329b65cf5f50883001ee90c7ee03120c67a7375d` from exact head `9b5d5c8e25f0a53ff208827bf8881edc5e84df52`. Exact-head validation also passed in all three required lanes:
+
+- Deterministic Repository Suite: `34635461458` PASS;
+- Heartbeat Worker Project validation: `34635461437` PASS;
+- Organization Control: `34635461393` PASS.
+
+The #1485 regression pins the exact runtime-resolution boundary: `canonical-resident-substrate-v1` satisfies all static source requirements for this task and remains rejected only because current authentic runtime observation is absent. Mutation/execution authority remains with WorkerCoordinator + Interlock/InTr; neither repair creates runtime authority.
 
 ## Runtime source compatibility boundary
 
-Post-merge reconciliation against the current canonical runtime-profile map establishes that `canonical-resident-substrate-v1` now satisfies every static requirement for this task: `resident_request_dispatch`, `SOVEREIGN_RESIDENT`, `INTERNAL`, no mutation requirement, and no deployment requirement. The profile is still `DECLARED_ONLY`, while this task requires a current observed runtime.
+`canonical-resident-substrate-v1` satisfies every static requirement for this task: `resident_request_dispatch`, `SOVEREIGN_RESIDENT`, `INTERNAL`, no mutation requirement, and no deployment requirement. The profile is still `DECLARED_ONLY`, while this task requires a current observed runtime.
 
-The exact remaining resolver rejection is therefore:
+The exact remaining resolver rejection is:
 
 ```text
 CURRENT_OBSERVATION_REQUIRED:DECLARED_ONLY
 ```
 
-There is no remaining known source-side capability/environment/direction/mutation/deployment mismatch. Focused regression coverage now pins this boundary so the resolver must continue to return zero candidates until an authentic current observation exists, while preserving non-authorizing discovery semantics.
+There is no remaining known source-side capability/environment/direction/mutation/deployment mismatch. Focused regression coverage pins this boundary so the resolver must continue to return zero candidates until an authentic current observation exists, while preserving non-authorizing discovery semantics.
 
 README review remains accurate: this is resolver regression evidence and coordination semantics only and creates no public capability change.
 
 ## Fresh authentic observation
 
-Current session re-observation after #1460 merge found:
+Immediate post-#1485-merge re-observation found:
 
 - authorized remote-resident connector: zero devices;
 - retained Google Drive exact reseal receipt matches: zero;
@@ -65,7 +73,7 @@ portable exact dispatch: MERGED / VALIDATED
 Service Gateway three-route source: MERGED / VALIDATED
 resolver standalone-record fallback: MERGED / VALIDATED
 successor dispatcher discovery mutation semantic: MERGED / VALIDATED
-static resolver source compatibility: PROVEN
+static resolver source compatibility regression: MERGED / VALIDATED
 remaining resolver condition: CURRENT_OBSERVATION_REQUIRED:DECLARED_ONLY
 resident reseal receipt: NOT OBSERVED
 resident listener receipt: NOT OBSERVED

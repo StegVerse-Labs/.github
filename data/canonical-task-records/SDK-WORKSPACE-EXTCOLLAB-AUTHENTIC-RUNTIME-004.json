@@ -54,7 +54,9 @@
     "StegVerse-Labs/.github:pull/1415",
     "StegVerse-Labs/.github:commit/4af1b801a193a3c9ace7c6327ef010fd40915b15",
     "StegVerse-Labs/.github:pull/1460",
-    "StegVerse-Labs/.github:commit/3bc8898655d344ba12f47bb4120e38f2ac1ded6e"
+    "StegVerse-Labs/.github:commit/3bc8898655d344ba12f47bb4120e38f2ac1ded6e",
+    "StegVerse-Labs/.github:pull/1485",
+    "StegVerse-Labs/.github:commit/329b65cf5f50883001ee90c7ee03120c67a7375d"
   ],
   "resolver_repair": {
     "pull_request": 1460,
@@ -81,10 +83,20 @@
     "candidate_count_until_authentic_observation": 0,
     "authority_effect": "NONE_DISCOVERY_ONLY"
   },
+  "observation_boundary_proof": {
+    "pull_request": 1485,
+    "exact_head": "9b5d5c8e25f0a53ff208827bf8881edc5e84df52",
+    "merge_commit": "329b65cf5f50883001ee90c7ee03120c67a7375d",
+    "validation_runs": [34635461458, 34635461437, 34635461393],
+    "static_source_compatibility_pinned": true,
+    "sole_remaining_resolver_condition": "CURRENT_OBSERVATION_REQUIRED:DECLARED_ONLY",
+    "merged_validated": true
+  },
   "source_state": {
     "portable_exact_dispatch_merged": true,
     "service_gateway_three_route_source_merged": true,
     "resolver_repair_merged_validated": true,
+    "observation_boundary_regression_merged_validated": true,
     "resident_reseal_consumption_receipt_observed": false,
     "resident_consent_listener_consumption_receipt_observed": false,
     "retained_drive_receipts_observed": false,
@@ -151,6 +163,7 @@
     "authorized_remote_device_count": 0,
     "retained_drive_reseal_receipt_matches": 0,
     "retained_drive_listener_receipt_matches": 0,
+    "post_pr_1485_merge_recheck": true,
     "disposition": "ACTIVE_WAIT_FOR_EXISTING_AUTHORIZED_RESIDENT_RECONNECTION",
     "authority_effect": "NONE"
   },
