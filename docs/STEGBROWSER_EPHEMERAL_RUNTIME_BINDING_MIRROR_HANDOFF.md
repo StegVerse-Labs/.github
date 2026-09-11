@@ -38,46 +38,39 @@ Relevant merged evidence:
 .github #1441  merge 55c33048e1671143d7cc30ccb74b677f9e8241f1
 .github #1461  merge 4179a3e630c25a1430decd6f072866e6c6fc3798
 .github #1465  merge f128716def180dfdeb2f0b0eeb6bff0da6086841
+.github #1469  merge eea45d164be4d570d4e8eb6ca5e5d960c6cdac24
 TVC #386      merge 2e1bda01699439731569dce45d5d7b4c5b342424
 TVC #387      merge aef6b6f5dc99d2a531718ca475d20858ae8e68a6
 ```
 
-#1461 closed the task-specific bootstrap reachability gap by adding `STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001` to `GLOBAL_CONVERGENCE_TASK_IDS`; organization-control, Heartbeat, and complete deterministic-suite validation all passed before merge.
+The task-specific Canonical Work bootstrap and the portable exact-selector bridge are both source-valid. The portable path requires an already-local `.github` checkout and performs no clone/fetch/pull/network source transport.
 
-#1465 closed the portable exact-dispatch omission by adding `stegbrowser_tvc_source_promotion` to `ALLOWED_TARGET_CONSUMERS` in `scripts/refresh_and_dispatch_resident_requests.py`. Four exact-head validation lanes passed before merge: organization control, Heartbeat, complete deterministic suite, and the dedicated Cross-Framework Current-Basis Resident Request validation.
+## Source-revision evidence contract
 
-The existing portable path now supports:
+`scripts/refresh_sovereign_worker_runtime_source.py` already records the local canonical source revision as:
 
 ```text
-already-local current .github source
--> refresh_sovereign_worker_runtime_source.refresh
--> --only-consumer stegbrowser_tvc_source_promotion
--> existing resident dispatcher
--> existing #1358 consumer
+receipts/sovereign-host/worker-source-refresh.latest.json
+  source_git_head = <exact local .github HEAD>
 ```
 
-It performs no clone/fetch/pull/network source transport, acquires no credential, creates no scheduler/dispatcher/heartbeat, and grants no execution authority.
+`scripts/refresh_and_dispatch_resident_requests.py` preserves that entire refresh receipt inside:
+
+```text
+receipts/sovereign-host/resident-refresh-dispatch.latest.json
+  refresh_receipt.source_git_head
+  target_consumer = stegbrowser_tvc_source_promotion
+  exact_consumer_selection_observed = true
+  dispatch_receipt.selected_consumers = [stegbrowser_tvc_source_promotion]
+```
+
+The current evidence-hardening change adds a behavioral regression test requiring the exact source Git HEAD and exact selector to survive together into the persisted portable bridge receipt. Runtime behavior is unchanged. This test exists so a future resident execution can prove both **which local source revision executed** and **which single consumer was selected**, rather than inferring source freshness from repository state.
+
+No source/CI result substitutes for the authentic resident receipt.
 
 ## Remote computer / ephemeral Node interpretation
 
-A connected Remote Computer is eligible StegOS execution capacity when it is treated as an ephemeral Node/runtime substrate under the existing StegOS + Interlock/InTr protocol. Remote-computer presence alone grants no task execution, claim/fence, credential, route, transition, custody, publication, or completion authority.
-
-The required execution sequence is:
-
-```text
-remote computer available
--> candidate ephemeral StegOS capacity
--> exact task/COSV binding
--> fresh WorkerCoordinator claim/fence when required
--> current Interlock/InTr admission for the exact transition
--> bounded materialization of already-admitted runtime/source
--> authentic execution + receipt retention
--> teardown/release after bounded work
-```
-
-This does not violate the prohibition on depending on a second user-operated machine. The prohibited case is requiring the user to operate another durable machine as a completion prerequisite. A remotely connected machine used as ecosystem-controlled ephemeral capacity is admissible only through the ordinary StegOS lifecycle and does not become credential or transition authority merely by being connected.
-
-Current Remote Desktop observation for this reconciliation: no authorized remote device is online. That is an availability condition only, not an architectural blocker and not evidence that the Remote Computer path is invalid.
+A connected Remote Computer is eligible StegOS execution capacity only as an admitted ephemeral Node/runtime substrate under the existing StegOS + Interlock/InTr protocol. Presence alone grants no execution, claim/fence, credential, transition, custody, publication, or completion authority. This does not create a dependency on a second user-operated machine.
 
 ## Authentic runtime evidence
 
@@ -87,41 +80,47 @@ Expected first dedicated receipt:
 receipts/sovereign-host/stegbrowser-tvc-source-promotion-request-consumption.latest.json
 ```
 
-A current canonical search still finds only the consumer definition, not an authentic runtime receipt. The authorized resident connector currently reports no online device. Therefore these remain unclaimed:
+Expected supporting provenance receipts:
 
 ```text
-resident source-promotion consumption: NOT OBSERVED
-exact TVC request staging:             NOT OBSERVED
-pinned TVC materialization:            NOT OBSERVED
-#387 transient promotion:              NOT OBSERVED
-#386 primary-runtime restart:          NOT OBSERVED
-simultaneous 8765/8775:                NOT OBSERVED
-Apple OWNER_INGRESS_READY:             NOT OBSERVED
-real Apple SKAP custody:               NOT OBSERVED
-current-iPhone signing/TestFlight:     NOT OBSERVED
-resident discovery:                    NOT OBSERVED
+receipts/sovereign-host/worker-source-refresh.latest.json
+receipts/sovereign-host/resident-refresh-dispatch.latest.json
+receipts/sovereign-host/resident-request-dispatch.latest.json
 ```
 
-GitHub Actions remains validation/evidence transport only. TV/TVC remains credential authority; Interlock/InTr remains transition authority; source and CI do not prove runtime execution.
+Current canonical search still does not show an authentic source-promotion consumption receipt, and the authorized remote resident connector currently reports no online device. Therefore these remain unclaimed:
 
-## Source-refresh boundary
+```text
+resident local source revision at execution: NOT OBSERVED
+resident source-promotion consumption:       NOT OBSERVED
+exact TVC request staging:                   NOT OBSERVED
+pinned TVC materialization:                  NOT OBSERVED
+#387 transient promotion:                    NOT OBSERVED
+#386 primary-runtime restart:                NOT OBSERVED
+simultaneous 8765/8775:                      NOT OBSERVED
+Apple OWNER_INGRESS_READY:                   NOT OBSERVED
+real Apple SKAP custody:                     NOT OBSERVED
+current-iPhone signing/TestFlight:           NOT OBSERVED
+resident discovery:                          NOT OBSERVED
+```
 
-The portable refresh path requires an **already-local current `.github` source tree** and deliberately performs no network source fetch. Authentic execution therefore still requires the sovereign resident or admitted Remote Computer ephemeral Node to have a local source root containing at least merged commit `f128716def180dfdeb2f0b0eeb6bff0da6086841` or a later compatible main. No evidence currently proves such a resident-side source revision because the authorized resident connector is offline.
+GitHub Actions remains validation/evidence transport only. TV/TVC remains credential authority; Interlock/InTr remains transition authority; WorkerCoordinator remains claim/fence authority; Master Records remains runtime-reality/provenance authority.
 
 ## Remaining sequence
 
-1. When an authorized sovereign resident or Remote Computer ephemeral Node is reachable, verify its local `.github` source revision contains #1461 and #1465.
-2. Execute the existing refresh+dispatch bridge for exactly `stegbrowser_tvc_source_promotion` and capture the authentic consumption receipt.
-3. Observe exact TVC materialization, #387 promotion, #386 same-service restart, and simultaneous `8765/8775`.
-4. Observe Apple recipient/liveness/InTr `OWNER_INGRESS_READY`.
-5. Resolve the external Apple Terms/account gate, create the Team API key, and seal it from the current iPhone into SKAP without export.
-6. Complete authentic Device -> KV -> SKAP custody, TVC Apple operations, same-device IPA signing, Build Upload, TestFlight installation, and resident discovery.
-7. Continue native StegSocials publication/readback only after working-instance proof.
+1. Validate and merge the source-head/selector evidence-contract regression test.
+2. When an authorized sovereign resident or admitted Remote Computer ephemeral Node is reachable, verify its local `.github` source HEAD is `f128716def180dfdeb2f0b0eeb6bff0da6086841` or a later compatible commit containing #1461 and #1465.
+3. Execute the existing refresh+dispatch bridge for exactly `stegbrowser_tvc_source_promotion` and retain all three provenance/dispatch receipts plus the dedicated consumption receipt.
+4. Observe exact TVC materialization, #387 promotion, #386 same-service restart, and simultaneous `8765/8775`.
+5. Observe Apple recipient/liveness/InTr `OWNER_INGRESS_READY`.
+6. Resolve the external Apple Terms/account gate, create the Team API key, and seal it from the current iPhone into SKAP without export.
+7. Complete authentic Device -> KV -> SKAP custody, TVC Apple operations, same-device IPA signing, Build Upload, TestFlight installation, and resident discovery.
+8. Continue native StegSocials publication/readback only after working-instance proof.
 
 ## README disposition
 
-Repository `README.md` remains accurate for Canonical Work and authority separation. The Remote Computer clarification is task-scoped execution-substrate semantics and does not require a repository-wide README text change.
+Repository `README.md` remains accurate for Canonical Work and authority separation. This change hardens a task-specific evidence assertion and does not require repository-wide README text changes.
 
 ## Current state
 
-`ACTIVE_NOT_SUPERSEDED / TASK_REGISTRY_AND_COSV_RECONCILED_1437 / GLOBAL_CONVERGENCE_SELECTOR_REPAIR_MERGED_VALIDATED_1440 / STEGBROWSER_BOOTSTRAP_REACHABILITY_MERGED_VALIDATED_1461 / PORTABLE_STEGBROWSER_PROMOTION_DISPATCH_MERGED_VALIDATED_1465 / REMOTE_COMPUTER_ELIGIBLE_AS_ADMITTED_EPHEMERAL_STEGOS_CAPACITY / REMOTE_COMPUTER_CURRENTLY_UNAVAILABLE / AUTHENTIC_RESIDENT_SOURCE_REVISION_NOT_OBSERVED / AUTHENTIC_RESIDENT_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / AUTHENTIC_TVC_MATERIALIZATION_AND_RESTART_NOT_OBSERVED / LIVE_APPLE_OWNER_INGRESS_READY_NOT_OBSERVED / AUTHENTIC_CURRENT_IPHONE_INSTALL_LISTENER_DISCOVERY_PENDING`
+`ACTIVE_NOT_SUPERSEDED / TASK_REGISTRY_AND_COSV_RECONCILED_1437 / GLOBAL_CONVERGENCE_SELECTOR_REPAIR_MERGED_VALIDATED_1440 / STEGBROWSER_BOOTSTRAP_REACHABILITY_MERGED_VALIDATED_1461 / PORTABLE_STEGBROWSER_PROMOTION_DISPATCH_MERGED_VALIDATED_1465 / HANDOFF_RECONCILED_1469 / SOURCE_HEAD_PLUS_EXACT_SELECTOR_EVIDENCE_TEST_IMPLEMENTED_VALIDATION_PENDING / REMOTE_COMPUTER_ELIGIBLE_AS_ADMITTED_EPHEMERAL_STEGOS_CAPACITY / REMOTE_COMPUTER_CURRENTLY_UNAVAILABLE / AUTHENTIC_RESIDENT_SOURCE_REVISION_NOT_OBSERVED / AUTHENTIC_RESIDENT_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / AUTHENTIC_TVC_MATERIALIZATION_AND_RESTART_NOT_OBSERVED / LIVE_APPLE_OWNER_INGRESS_READY_NOT_OBSERVED / AUTHENTIC_CURRENT_IPHONE_INSTALL_LISTENER_DISCOVERY_PENDING`
