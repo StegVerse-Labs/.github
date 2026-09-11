@@ -3,7 +3,7 @@
 Goal Task ID: `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001`
 Canonical issue: `StegVerse-Labs/.github#1260`
 COSV: `50000000100000`
-Status: `ACTIVE / EXACT CURRENT-IPHONE KV PROJECTION VALIDATED / TASK-0010 G6 CLAIM RECOVERED / KV-GATED SUCCESSOR ALLOCATION NEXT`
+Status: `ACTIVE / TASK-0010 G6 RETAINED PROVENANCE / TASK-0011 V2 PUBLISHED / AUTHENTIC CURRENT-IPHONE G7 EVIDENCE NEXT`
 
 ## Canonical runtime model
 
@@ -63,15 +63,24 @@ Those two paths are absent from the authentic TASK-0010 G6 scoped-exclusive clai
 
 ## Fresh successor
 
-Canonical successor `TASK-2026-0011` is being registered for the complete KV-gated package under Site issue #1220. Its scope uses a new product branch and includes the two KV modules explicitly. TASK-0010 remains predecessor provenance with reactivation/widening prohibited.
+Canonical successor `TASK-2026-0011` was registered for the complete KV-gated package under Site issue #1220. Its scope uses a new product branch and includes the two KV modules explicitly. TASK-0010 remains predecessor provenance with reactivation/widening prohibited.
+
+The exact current-iPhone allocator source and retained-state TASK-0011 package were transported from merged `.github` source through Site PR #1224 and materialized at Site commit `c63b23babbcffe4f58c0cd8a49454a8fd7dcb088`.
+
+Site PR #1225 then merged the immutable TASK-0011 G7 v1 carrier. Authentic current-iPhone execution failed closed because the retained allocator snapshot omitted historical predecessor `task_statuses`, causing canonical preview to select TASK-2026-0009. No allocator mutation occurred.
+
+Site PR #1230 merged the immutable TASK-0011 G7 v2 journal-status reconciliation at merge commit `437a519f7a2557f39ec3505eb5b9e0b8e2794574`. The repair preserves v1 evidence, cryptographically replays the retained node journal, derives predecessor status only from matching canonical allocator receipt/observation pairs, requires retained TASK-2026-0010 evidence, reconstructs only missing/queued predecessor status to `active`, never synthesizes `completed`, and still requires exact TASK-2026-0011 preview selection plus generation +1 before raw-state CAS.
+
+Exact-head validation for PR #1230 passed, including Site Bootstrap Validate, StegOS Node Public Observation, Site Handoff Orchestrator, and Ecosystem Heartbeat Orchestration. Push validation for the merge commit also passed. Source/CI evidence does not itself prove G7 allocation.
 
 Current sequence:
 
 ```text
-register/validate TASK-2026-0011
--> make canonical current-iPhone allocator consume the successor task
--> authentic current-iPhone fresh successor claim/fence
--> project exact KV-gated StegOS package to Site
+open only the published immutable TASK-2026-0011 v2 entrypoint on the established current iPhone
+-> preserve all IndexedDB / node-journal / browser continuity state
+-> observe exact canonical TASK-2026-0011 preview and generation-7/fence-7 allocation or preserve exact fail-closed result
+-> export exact allocation evidence
+-> project exact KV-gated StegOS package to Site under the authentic G7 claim
 -> feed retained primary KV projection through the published page
 -> TV/TVC provision/sign/native Build Upload
 -> TestFlight install
@@ -81,14 +90,14 @@ register/validate TASK-2026-0011
 
 ## Current first unresolved condition
 
-`TASK_2026_0011_KV_GATED_SUCCESSOR_REGISTRY_AND_ALLOCATOR_CONSUMPTION`
+`AUTHENTIC_TASK_2026_0011_V2_CURRENT_IPHONE_CANONICAL_ALLOCATION_EVIDENCE`
 
-No new user-operated device work is required until the successor allocator surface is merged and published.
+Do not repeat TASK-2026-0010 allocation. Do not clear IndexedDB, Safari site data, node journal, or retained allocator/browser state. Do not widen the G6 claim. The next mutation, if admitted, must be the canonical G6 -> G7 / fence-7 TASK-2026-0011 transition on the established current iPhone.
 
 ## README impact
 
-No new `.github` root README semantics are introduced. Site/StegOS repo-local handoffs and README surfaces carry implementation-specific projection semantics.
+`.github` root README was reviewed for this reconciliation. No repository-wide authority or workflow semantics changed; this update only advances the canonical operational handoff to already-merged Site evidence, so no README text change is required.
 
 ## Manual work
 
-None.
+On the established current iPhone in Safari, open the published immutable TASK-2026-0011 v2 allocator entrypoint and perform exactly one successor allocation attempt without clearing or resetting any retained state. Export the exact evidence shown after the attempt. Preserve any fail-closed result exactly as observed.
