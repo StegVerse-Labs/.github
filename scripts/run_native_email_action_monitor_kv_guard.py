@@ -4,7 +4,9 @@
 The underlying monitor remains canonical. This guard wraps only its broker so that
 normalized GitHub failure incidents from the currently inspected live INBOX batch are
 persisted with exact-byte readback before any ARCHIVE_IDS operation is allowed.
-Archived replay is also persisted before returning its incident proposals.
+The exact reviewed message set plus those verified KV write receipts are then bound
+into the broker's generic governed-consequence request. Archived replay is also
+persisted before returning its incident proposals.
 """
 from __future__ import annotations
 
@@ -21,6 +23,10 @@ if str(SCRIPT_DIR) not in sys.path:
 import run_native_email_action_monitor as monitor
 from persist_native_email_incidents_to_kv import persist_incidents
 
+ARCHIVE_CONTEXT_SCHEMA = "stegverse.native-email-archive-governance-context/v1"
+TASK_ID = "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001"
+COSV_TASK_VECTOR = "10100000100000"
+
 
 class KVGuardedBroker:
     def __init__(self, inner: monitor.Broker, kv_root: Path):
@@ -35,7 +41,22 @@ class KVGuardedBroker:
             # incident from the inspected live batch is durably stored and read back.
             if self.live_incidents:
                 self.kv_receipts = persist_incidents(self.live_incidents, kv_root=self.kv_root)
-            return self.inner.call(operation, **payload)
+            message_ids = payload.get("message_ids")
+            if not isinstance(message_ids, list) or not all(isinstance(value, str) and value for value in message_ids):
+                raise RuntimeError("archive_message_ids_invalid")
+            if len(message_ids) != len(set(message_ids)):
+                raise RuntimeError("archive_message_ids_duplicate")
+            governance_context = {
+                "schema": ARCHIVE_CONTEXT_SCHEMA,
+                "task_id": TASK_ID,
+                "cosv_task_vector": COSV_TASK_VECTOR,
+                "reviewed_message_ids": list(message_ids),
+                "incident_count": len(self.live_incidents),
+                "kv_write_receipts": [dict(row) for row in self.kv_receipts],
+                "kv_before_archive_required": True,
+                "credential_material_present": False,
+            }
+            return self.inner.call(operation, **payload, governance_context=governance_context)
 
         response = self.inner.call(operation, **payload)
         if operation == "SEARCH_MESSAGES" and payload.get("query") == monitor.INBOX_QUERY and payload.get("label_ids") == ["INBOX"]:
@@ -64,6 +85,7 @@ def run_guarded(broker_command: list[str], *, kv_root: Path, batch_limit: int, r
         "record_count": len(all_receipts),
         "write_receipts": all_receipts,
         "archive_after_kv_persistence": True,
+        "archive_governance_context_bound": True,
         "exact_byte_readback_required": True,
         "kv_root_materialized": True,
         "authority_effect": "NONE_STORAGE_EVIDENCE_ONLY",
