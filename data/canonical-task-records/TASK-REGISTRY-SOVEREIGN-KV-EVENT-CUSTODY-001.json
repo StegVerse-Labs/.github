@@ -1,0 +1,38 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001",
+  "parent_task_id": "TASK-REGISTRY-SESSION-RETURN-ORCHESTRATION-001",
+  "goal": "Project the canonical hash-linked Task Registry session event history into provider-neutral StegVerse sovereign KV custody without changing collision semantics or authority boundaries.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "source_refs": [
+    "docs/TASK_REGISTRY_SOVEREIGN_KV_EVENT_CUSTODY_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github#1423",
+    "scripts/task_registry_checkin_event_history.py",
+    "scripts/project_task_registry_event_to_sovereign_kv.py"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegOS", "StegVerse-Labs/continuity-vault-kit"],
+    "components": ["task-registry", "session-event-history", "sovereign-kv", "interlock-intr", "provider-adapter", "custody-projection"]
+  },
+  "dependencies": [
+    "TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001",
+    "TASK-REGISTRY-SESSION-RETURN-ORCHESTRATION-001"
+  ],
+  "adjacent_task_refs": [
+    "KV-CONNECTION-REVALIDATION-WORKER-001",
+    "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+    "STEGOS-NODE-MANIFOLD-001"
+  ],
+  "first_unresolved_predicate": "PROVIDER_NEUTRAL_SOVEREIGN_KV_PROJECTION_RECEIPT_BOUND_TO_EXACT_EVENT_HASH",
+  "authority": {
+    "task_registry": "COORDINATION_ONLY",
+    "workercoordinator": "CLAIM_FENCE",
+    "interlock_intr": "TRANSITION_ADMISSION",
+    "credential_authority": "TV/TVC",
+    "master_records": "OBSERVED_REALITY_RECONSTRUCTION",
+    "heartbeat": "OBSERVABILITY_ONLY",
+    "github_runtime_authority": "NONE"
+  }
+}
