@@ -3,13 +3,34 @@
 Updated: 2026-09-11
 Goal Task ID: `ELAN-CUMULATIVE-PUBLICATION-001`
 COSV ID: `50000000100000`
-Status: `ACTIVE / RUN 2 AUTHENTIC EVIDENCE AVAILABLE / UNIVERSAL DOCUMENT IMPLEMENTATION IN PROGRESS`
+Status: `ACTIVE / TASK REGISTRATION + PUBLISHER SOURCE IMPLEMENTED / FINAL EXACT-HEAD VALIDATION IN PROGRESS`
 
 ## Goal
 
 Produce one cumulative evaluator-facing ELAN publication under the current Publisher document protocol while preserving Run 1 as historical evidence and binding the already-executed Run 2 observed-silence evidence as the second experiment.
 
 The publication must not rewrite Run 1, infer intent from Event 3, or treat rendering as publication/execution/governance authority.
+
+## Canonical coordination
+
+Task Registry PR: `StegVerse-Labs/.github#1527`
+
+Task record:
+
+`data/canonical-task-records/ELAN-CUMULATIVE-PUBLICATION-001.json`
+
+COSV projection:
+
+`control/task-vectors/ELAN-CUMULATIVE-PUBLICATION-001.json`
+
+Publisher PR: `GCAT-BCAT-Engine/Publisher#63`
+
+Publisher canonical source:
+
+- `docs/ELAN_CUMULATIVE_RUN1_RUN2_UNIVERSAL.md`
+- `data/elan-cumulative-publication-001.evidence.json`
+- `docs/ELAN_CUMULATIVE_RUN2_PUBLICATION_MIRROR_HANDOFF.md`
+- `README.md` ELAN cumulative evidence projection
 
 ## Run 1 source package
 
@@ -92,17 +113,31 @@ Required sections:
 
 Historical Run 1 evidence must remain attributable to its original artifacts. Presentation normalization may add headings/navigation and evidence references but may not silently rewrite the original evidence or describe Run 1 as having performed governance consumption.
 
+## Validation evidence
+
+Task Registry PR #1527 previous exact head `5929fbd71d340aa0db03d9faab63384c3813c593` passed:
+
+- deterministic repository suite `34653043572` — `success`;
+- organization-control `34653043635` — `success`;
+- Heartbeat validation `34653043621` — `success`.
+
+This handoff reconciliation creates a successor branch head, so fresh exact-head validation is required before merge. The earlier successful runs remain provenance and are not reused as merge evidence for the new head.
+
+Publisher PR #63 previous exact source head `9a64335a0848ab5f0727566d1dc14bef98092270` passed Publisher Check `34653051933`, Publisher Readiness `34653051916`, and Architecture Guard `34653051985`. Publisher README and handoff maintenance subsequently created a successor head and likewise requires fresh exact-head validation before merge.
+
 ## Authority boundary
 
-Publisher rendering remains `GENERATED_VALIDATED_NOT_PUBLISHED` unless a separate publication/release transition is admitted. Rendering grants no publication, execution, governance, credential, custody, or deployment authority.
+Publisher source and rendering remain non-authorizing. Until an explicit release/publication transition is separately admitted, the publication lifecycle is `GENERATED_SOURCE_NOT_YET_PUBLISHED` or `GENERATED_VALIDATED_NOT_PUBLISHED` after rendering.
+
+Rendering grants no publication, execution, governance, credential, custody, deployment, or live-runtime authority.
 
 The prior SDK task `SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001` remains distinct and retains its own live-runtime proof predicate. This cumulative publication task may cite the bounded local test evidence without claiming that the prior task's remaining sovereign/live-runtime predicate has been satisfied.
 
 ## Next work
 
-1. Install the universal ELAN cumulative document source in `GCAT-BCAT-Engine/Publisher`.
-2. Bind Run 1 package hashes and Run 2 Actions artifact digest into its evidence ledger.
-3. Validate one renderer-neutral source model and format outputs.
-4. Open Publisher PR and validate exact head.
-5. Update this handoff with PR/validation evidence and merge state.
-6. After merge, create a separate propagation-verification task only if the document is actually released/published to downstream public surfaces.
+1. Require fresh exact-head PASS on Task Registry PR #1527 and Publisher PR #63.
+2. Merge the Task Registry PR first so the publication task identity is canonical on `main`.
+3. Merge Publisher PR #63 only after its exact final head passes all applicable checks.
+4. Render the merged universal source through Publisher into Markdown, HTML, PDF, DOCX, and JSON while retaining non-published lifecycle state.
+5. Record artifact hashes/receipt evidence and reconcile this handoff.
+6. Create a separate propagation-verification task only if an actual downstream public release/publication transition occurs.
