@@ -16,6 +16,7 @@
     "StegVerse-Labs/StegSocials@b0922b21abeb95c43751675a2c596b962a1e0bd6",
     "StegVerse-Labs/StegSocials@4f5f9646bca912390352d75ffd66e3c608156c09",
     "StegVerse-Labs/StegSocials@61d4922dc34197ce1e7604c705a5ad4a6656959b",
+    "StegVerse-Labs/StegSocials@42c1357ce173c7991cd78d64de58e360852022cb",
     "StegVerse-Labs/Site@a934718e4b490945d7e287876fd58e56f57110d9",
     "StegVerse-Labs/StegOS/docs/UNIVERSAL_INTERLOCK_PROTOCOL_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegOS/docs/STEGBROWSER_RETAINED_NODE_BOOTSTRAP_MIRROR_HANDOFF.md",
@@ -32,6 +33,7 @@
       "bounded-group-atomic-use-state",
       "bounded-group-event-publication-bridge",
       "bounded-group-execution-evidence-reconciler",
+      "bounded-group-execution-to-site-cas-projection",
       "event-ephemeral-intr-execution",
       "tv-tvc-skap-social-credential-custody",
       "stegbrowser-event-ephemeral-session",
@@ -43,9 +45,9 @@
     ]
   },
   "dependencies": [
-    {"dependency_id":"DEP-SS-SOCIAL-KV","kind":"STORAGE","state":"SOURCE_CAS_VALIDATED_EXECUTION_EVIDENCE_PENDING","ref":"Personal-KV/StegSocials/PostGroupState","disposition":"DEVICE_KV CAS and registered-Node/InTr route are merged; the execution reconciler now derives the exact expected-etag state transition only after provider publication/destruction proof; retain authentic pre/post exact readback during bounded execution."},
+    {"dependency_id":"DEP-SS-SOCIAL-KV","kind":"STORAGE","state":"SOURCE_CAS_PROJECTION_VALIDATED_EXECUTION_EVIDENCE_PENDING","ref":"Personal-KV/StegSocials/PostGroupState","disposition":"DEVICE_KV CAS and registered-Node/InTr route are merged; authentic provider execution can now be reconciled and projected into the exact existing Site conditional-write request without creating a second state-write contract; retain authentic pre/post exact readback during execution."},
     {"dependency_id":"DEP-SS-SOCIAL-SKAP","kind":"CREDENTIAL_CUSTODY","state":"EVENT_EXECUTION_EVIDENCE_PENDING","ref":"TV/TVC SKAP social credential lease","disposition":"Materialize task-scoped credential/session authority during the admitted event and retain exact receipt references; no separately resident always-on SKAP process is required."},
-    {"dependency_id":"DEP-SS-SOCIAL-STEGBROWSER","kind":"EVENT_EPHEMERAL_TRANSPORT","state":"SOURCE_EXECUTION_RECONCILIATION_VALIDATED_EXECUTION_EVIDENCE_PENDING","ref":"StegVerse-Labs/StegSocials@4f5f9646bca912390352d75ffd66e3c608156c09","disposition":"Bounded-group READY uses materialize into existing Facebook/LinkedIn native StegBrowser callers only when exact InTr admission and TV/TVC-SKAP session receipt refs are supplied; returned provider execution is now reconciled to exact group/use/publication/destruction bindings before any state transition is derived; authentic provider execution remains pending."},
+    {"dependency_id":"DEP-SS-SOCIAL-STEGBROWSER","kind":"EVENT_EPHEMERAL_TRANSPORT","state":"SOURCE_EXECUTION_RECONCILIATION_VALIDATED_EXECUTION_EVIDENCE_PENDING","ref":"StegVerse-Labs/StegSocials@4f5f9646bca912390352d75ffd66e3c608156c09","disposition":"Bounded-group READY uses materialize into existing Facebook/LinkedIn native StegBrowser callers only when exact InTr admission and TV/TVC-SKAP session receipt refs are supplied; returned provider execution is reconciled before the exact Site CAS request is projected; authentic provider execution remains pending."},
     {"dependency_id":"DEP-SS-SOCIAL-CUSTODY","kind":"CUSTODY","state":"IMPLEMENTED_PENDING_REAL_RECEIPT","ref":"MR-STEGSOCIALS-RECEIPT-CUSTODY-001","disposition":"Import and reconstruct after authentic publication and state-transition receipts exist."}
   ],
   "blockers": [
@@ -62,6 +64,7 @@
     "StegVerse-Labs/StegSocials@b0922b21abeb95c43751675a2c596b962a1e0bd6:bounded-event-publication-bridge-merged-and-validated",
     "StegVerse-Labs/StegSocials@4f5f9646bca912390352d75ffd66e3c608156c09:bounded-execution-evidence-reconciler-merged-and-validated",
     "StegVerse-Labs/StegSocials@61d4922dc34197ce1e7604c705a5ad4a6656959b:execution-reconciler-handoff-task-readme-reconciled",
+    "StegVerse-Labs/StegSocials@42c1357ce173c7991cd78d64de58e360852022cb:execution-to-existing-site-cas-projection-merged-and-validated",
     "StegVerse-Labs/Site@5a3de454a530a1ce0d8cf8ce442935d1b9366790:registered-node-intr-device-kv-route-merged",
     "StegVerse-Labs/Site@a934718e4b490945d7e287876fd58e56f57110d9:bounded-group-runtime-observation-surface-merged",
     "StegVerse-Labs/StegOS/docs/UNIVERSAL_INTERLOCK_PROTOCOL_MIRROR_HANDOFF.md",
@@ -74,6 +77,7 @@
     "BOUNDED_GROUP_SOURCE_EVIDENCE_CLAIM_TARGET_COUNT_CADENCE_EXPIRY_AND_TRANSFORMATIONS_REMAIN_WITHIN_APPROVED_ENVELOPE",
     "BOUNDED_EVENT_BRIDGE_REQUIRES_EXACT_INTR_ADMISSION_AND_TV_TVC_SKAP_SESSION_RECEIPT_REFS",
     "BOUNDED_EXECUTION_RECONCILER_REQUIRES_EXACT_GROUP_USE_APPROVAL_INTR_SKAP_PROVIDER_AND_DESTRUCTION_BINDINGS_BEFORE_STATE_TRANSITION",
+    "RECONCILED_EXECUTION_PROJECTS_ONLY_TO_EXISTING_SITE_CAS_REQUEST_WITH_NO_NEW_AUTHORITY_OR_WRITE_CONTRACT",
     "BOUNDED_EVENT_EPHEMERAL_NODE_EXECUTION_USES_CANONICAL_ADJACENT_INTR_HOPS",
     "PERSISTENT_NODE_IDENTITY_AND_CONTINUITY_BINDING_SURVIVE_EPHEMERAL_INVOCATION",
     "PERSISTENT_TRANSPORT_PROCESS_NOT_REQUIRED",
@@ -112,7 +116,7 @@
   "worker_claim": {
     "authority": "CURRENT_SESSION_PLUS_PREAUTHORIZED_BOUNDED_GROUP",
     "claim_ref": "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_NATIVE_STEGBROWSER_TRANSPORT_MIRROR_HANDOFF.md",
-    "fence_ref": "bounded group envelope plus exact InTr admission receipt plus TV/TVC-SKAP session receipt plus verified provider publication/destruction plus atomic use-state",
+    "fence_ref": "bounded group envelope plus exact InTr admission receipt plus TV/TVC-SKAP session receipt plus verified provider publication/destruction plus existing Site CAS atomic use-state",
     "projection_only": false
   },
   "human_action_ref": "Participant action is required to create/revoke a bounded group or when a provider requires an unavoidable interactive authentication step; individual in-scope posts do not require renewed approval.",
@@ -125,13 +129,14 @@
     "event_ephemeral_runtime_semantics_reconciled": true,
     "bounded_event_publication_bridge_source_complete": true,
     "bounded_execution_evidence_reconciler_source_complete": true,
+    "bounded_execution_to_site_cas_projection_source_complete": true,
     "authentic_social_event_execution_observed": false,
     "authentic_two_post_group_observed": false,
     "reconciliation_ref": "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_NATIVE_STEGBROWSER_TRANSPORT_MIRROR_HANDOFF.md"
   },
   "allowed_next_transitions": [
     "EXECUTE_AUTHENTIC_BOUNDED_EVENT_EPHEMERAL_SOCIAL_OPERATION",
-    "RECONCILE_AUTHENTIC_EXECUTION_AND_DERIVE_ATOMIC_KV_STATE_TRANSITION",
+    "RECONCILE_AUTHENTIC_EXECUTION_AND_PROJECT_EXISTING_SITE_CAS_REQUEST",
     "APPLY_AND_VERIFY_EXPECTED_ETAG_KV_COMMIT",
     "EXECUTE_SECOND_IN_SCOPE_POST_WITHOUT_RENEWED_APPROVAL",
     "PROVE_REPLAY_WIDENING_AND_STALE_USE_REFUSAL",
