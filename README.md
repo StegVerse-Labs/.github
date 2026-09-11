@@ -105,6 +105,23 @@ A newly registered canonical task may be present as an exact `data/canonical-tas
 
 The dedicated `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001` request uses this same Canonical Work consumer and shared Interlock/InTr ingress. Once its ordinary `PROPOSED -> INGRESS_ADMITTED` bootstrap succeeds, the existing bootstrap wrapper invokes the already-implemented global runtime-node-profile convergence visitor in measurement-only mode. That measurement path freezes one run identity and forbids same-run remediation or automatic retry after a lane's first failure; it does not create a second dispatcher, listener, runtime, scheduler, WorkerCoordinator, heartbeat, or authority source.
 
+### Bounded StegSocials Universal InTr ingress
+
+Bounded StegSocials social publication reuses the same organization-owned, event-triggered Universal InTr listener rather than creating a separate social runtime or admission service. StegSocials first emits a secret-free `stegverse.universal-work-interlock/v1` `INGRESS/RECEIVED` record for one already-authorized bounded use. The `.github` organization owner binds that exact record into the existing `stegverse.universal-intr-materialization-request/v1` transport shape and routes it through the shared `workers/universal_intr_profiled_ingress.py` listener under the `StegSocials:BoundedSocialIngress` profile.
+
+The source-side RECEIVED record is not an admission receipt. Only invocation by the authentic shared sovereign listener may emit the write-once `stegverse.stegsocials-bounded-intr-materialization-ingress/v1` `INGRESS_ADMITTED` receipt. That receipt proves the exact bounded work/group/use/content/platform/account request crossed the governed ingress transition; it does **not** grant publication/provider authority, resolve credentials, mint a WorkerCoordinator claim/fence, or prove provider execution. TV/TVC remains credential authority, and the admitted event proceeds next to task-scoped SKAP session materialization and the existing event-ephemeral StegBrowser path.
+
+The route is installed idempotently into the existing shared listener, starts no second listener/scheduler/heartbeat/WorkerCoordinator, requires no persistent transport runtime or always-on application receiver, and permits durable queue or event-ephemeral materialization when the receiver is unavailable. Raw credentials are prohibited. Node-outbox wrappers are rejected unless their exact wrapper hash/identity contract is separately validated; no node/interlock identity may be inferred from an unverified wrapper.
+
+Canonical source for this lane:
+
+```text
+scripts/build_stegsocials_bounded_intr_materialization.py
+workers/stegsocials_bounded_intr_ingress.py
+scripts/install_stegsocials_bounded_universal_intr_route.py
+docs/STEGSOCIALS_BOUNDED_INTR_ADMISSION_ROUTE_MIRROR_HANDOFF.md
+```
+
 ### Cross-task runtime-presence evidence
 
 Cross-task runtime-presence evidence is subject-bound observation, not generic proof that arbitrary work executed. shared cross-task reuse is currently deferred until authentic subject binding identifies the relevant `runtime_root`, `resident.node_id` when available from authentic runtime evidence, and the canonical worker runtime identity.
