@@ -2,6 +2,7 @@
 
 Updated: 2026-09-11
 Goal Task ID: `MIR-EXPERIMENT-FROZEN-SCREENSHOT-EVIDENCE-001`
+COSV ID: `50000000100000`
 Adjacent contract task: `MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001`
 Separate Shared Docs task: `SHARED-DOCS-MULTIPARTY-FREEZE-001`
 Status: `ACTIVE`
@@ -28,14 +29,23 @@ The screenshot-continuity implementation was merged through `.github` PR #1453 a
 - deterministic repository suite run `34614318572` — PASS;
 - Heartbeat worker validation run `34614318539` — PASS.
 
+Post-implementation handoff reconciliation PR #1474 exact head `b18c5a6daf2deda29ed248145544b12f49442353` passed organization-control run `34616424431`, Heartbeat run `34616424504`, and deterministic repository suite run `34616424418`, then merged at `048c574acc0a4a3540c2b493f3aa40acff468a70`.
+
 Canonical source now includes:
 
 - `schemas/mir-frozen-screenshot-manifest.schema.json`
 - `scripts/validate_mir_frozen_screenshot_manifest.py`
+- `control/task-vectors/MIR-EXPERIMENT-FROZEN-SCREENSHOT-EVIDENCE-001.json`
 
 The schema fixes the manifest vocabulary. The validator computes a deterministic SHA-256 over canonical JSON and compares a candidate manifest against the frozen baseline. Within one evidence epoch it fails closed if experiment identity changes, evidence epoch changes, the purpose set changes, any purpose maps to a different artifact reference/digest, or the complete manifest digest changes.
 
 These validation failures remain experiment-evidence states. They grant no governance or execution authority.
+
+## COSV binding
+
+The task is assigned `task.v1` vector `50000000100000` (`L R U I V G O C M T B E A P`). This records an ACTIVE machine-owned task (`L=5`) with no unassigned/chat-owned work encoded at this coordination point, canonical owner installation known (`M=1`), no blocker encoded, evidence incomplete, and activation/propagation unclaimed.
+
+The vector is coordination state only. It grants no execution, governance, credential, claim/fence, custody, publication, or experiment-evidence authority.
 
 ## Required manifest fields
 
@@ -94,7 +104,7 @@ No MIR v0.3 experiment continuity claim is made yet. Completion still requires:
 5. post-run deterministic comparison proving no purpose/artifact binding changed; and
 6. retained experiment evidence showing any mutation caused a successor epoch rather than silent substitution.
 
-COSV ID is not yet established. A fresh canonical repository search after PR #1453 found the task record and handoff but no matching task-vector/index entry; a COSV vector must therefore be established through the canonical task-vector coordination path rather than copied from an adjacent task.
+The per-task COSV shard and canonical task record now bind vector `50000000100000`. Aggregate task-vector-index visibility remains subject to repository validation and will be reconciled if the deterministic suite requires explicit index insertion.
 
 ## Completion boundary
 
