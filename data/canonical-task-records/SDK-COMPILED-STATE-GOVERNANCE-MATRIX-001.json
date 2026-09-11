@@ -1,0 +1,17 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-COMPILED-STATE-GOVERNANCE-MATRIX-001",
+  "correlation_id": "SDK-COMPILED-STATE-GOVERNANCE-MATRIX-001",
+  "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "parent_task_id": "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001",
+  "goal": "Validate the final single-lane compiled-state governance boundary where upstream sensing and interpretation are already complete, preserving the exact distinction Event 3 NO_SIGNAL -> DENY versus Event 3 OBSERVED_SILENCE as a state transition from Event 2 -> ALLOW without reinterpreting upstream parameters.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "repository": "StegVerse-org/StegVerse-SDK",
+  "handoff": "SDK_COMPILED_STATE_GOVERNANCE_MATRIX_MIRROR_HANDOFF.md",
+  "cosv": {"profile": "task.v1", "vector": "71000000100110"},
+  "credential_authority": "TV/TVC",
+  "posture_resolution_authority": "Interlock/InTr",
+  "github_runtime_authority": "NONE",
+  "remaining_predicate": "EXACT_HEAD_COMPILED_STATE_MATRIX_VALIDATION_AND_CANONICAL_MERGE"
+}
