@@ -1,0 +1,13 @@
+{
+  "identity":"StegVerse-Labs/.github:task:MIR-LEAF-V3-CONFORMANCE-FIXTURE-001",
+  "profile":"task.v1",
+  "task_id":"MIR-LEAF-V3-CONFORMANCE-FIXTURE-001",
+  "vector":"50000000100000",
+  "parent_task_id":"MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+  "evidence_refs":[
+    "StegVerse-org/StegVerse-SDK:issue/213",
+    "StegVerse-org/StegVerse-SDK:pull/214",
+    "StegVerse-org/StegVerse-SDK:commit/28e56a40dd0f36d14f9c5ec39e37776e11892eb6",
+    "StegVerse-org/StegVerse-SDK:docs/MIR_LEAF_V3_CONFORMANCE_FIXTURE_MIRROR_HANDOFF.md"
+  ]
+}
