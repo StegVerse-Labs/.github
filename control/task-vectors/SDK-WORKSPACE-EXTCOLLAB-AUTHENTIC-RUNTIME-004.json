@@ -16,9 +16,13 @@
     "StegVerse-org/StegVerse-SDK:pull/199",
     "StegVerse-org/StegVerse-SDK:commit/19db2775b6dbcd361f8329b6b0710699f4467462",
     "StegVerse-Labs/.github:pull/1415",
-    "StegVerse-Labs/.github:commit/4af1b801a193a3c9ace7c6327ef010fd40915b15"
+    "StegVerse-Labs/.github:commit/4af1b801a193a3c9ace7c6327ef010fd40915b15",
+    "StegVerse-Labs/.github:pull/1449",
+    "StegVerse-Labs/.github:commit/07b4b21dc79126849aa74424f0238163ef5dc0dd",
+    "StegVerse-Labs/.github:pull/1460",
+    "StegVerse-Labs/.github:commit/3bc8898655d344ba12f47bb4120e38f2ac1ded6e"
   ],
-  "observed_at": "2026-09-11T14:53:41.405Z",
+  "observed_at": "2026-09-11T15:20:00Z",
   "exact_metrics": {
     "lifecycle": "ACTIVE",
     "activation_condition": "PARENT_GOAL_PROMPT_COUNT_REACHES_20",
@@ -28,6 +32,8 @@
     "propagated": false,
     "portable_exact_dispatch_merged": true,
     "service_gateway_three_route_source_merged": true,
+    "runtime_resolver_standalone_record_fallback_merged": true,
+    "runtime_discovery_mutation_semantic_reconciled": true,
     "resident_reseal_consumption_receipt_observed": false,
     "resident_consent_listener_consumption_receipt_observed": false,
     "external_collaboration_client_secret_custody_proven": false,
