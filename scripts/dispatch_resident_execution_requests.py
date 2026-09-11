@@ -120,6 +120,7 @@ CONSUMERS = (
     ("runtime_profile_map_governance_review", "control/resident-execution-request.d/consume-runtime-profile-map-governance-review.py"),
     ("cosv_task_pointer_runtime_enforcement", "scripts/consume_cosv_task_pointer_runtime_enforcement_request.py"),
     ("ibc_verified_intr_ack", "scripts/consume_ibc_intr_resident_request.py"),
+    ("sdk_workspace_external_collab_client_secret_reseal", "control/resident-execution-request.d/consume-sdk-workspace-external-collab-client-secret-reseal.py"),
 )
 
 

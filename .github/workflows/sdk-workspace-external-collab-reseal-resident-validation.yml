@@ -1,0 +1,47 @@
+name: SDK WorkSpace External Collaboration Reseal Resident Validation
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - control/resident-execution-request.d/sdk-workspace-external-collab-client-secret-reseal-001.json
+      - control/resident-execution-request.d/consume-sdk-workspace-external-collab-client-secret-reseal.py
+      - scripts/dispatch_resident_execution_requests.py
+      - scripts/refresh_sovereign_worker_runtime_source.py
+      - tests/test_sdk_workspace_external_collab_client_secret_reseal_resident.py
+      - docs/SDK_WORKSPACE_EXTERNAL_COLLAB_CLIENT_SECRET_RESEAL_RESIDENT_MIRROR_HANDOFF.md
+      - .github/workflows/sdk-workspace-external-collab-reseal-resident-validation.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-resident-carrier:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install test dependency
+        run: python -m pip install pytest
+      - name: Validate request, consumer, and dispatcher binding
+        run: |
+          set -eu
+          python -m pytest -q tests/test_sdk_workspace_external_collab_client_secret_reseal_resident.py
+          python -m py_compile control/resident-execution-request.d/consume-sdk-workspace-external-collab-client-secret-reseal.py scripts/dispatch_resident_execution_requests.py
+          python -m json.tool control/resident-execution-request.d/sdk-workspace-external-collab-client-secret-reseal-001.json >/dev/null
+      - name: Assert non-hosted non-authorizing boundary
+        run: |
+          set -eu
+          grep -q 'expected_tvc_reseal_script_git_blob.*fba3f668e08dba300cd994e85b3c70872fc1f8e6' control/resident-execution-request.d/sdk-workspace-external-collab-client-secret-reseal-001.json
+          grep -q 'google_drive.external_collaboration.client_secret' control/resident-execution-request.d/sdk-workspace-external-collab-client-secret-reseal-001.json
+          grep -q 'credential_material_allowed.*false' control/resident-execution-request.d/sdk-workspace-external-collab-client-secret-reseal-001.json
+          grep -q 'network_source_fetch_allowed.*false' control/resident-execution-request.d/sdk-workspace-external-collab-client-secret-reseal-001.json
+          grep -q 'sdk_workspace_external_collab_client_secret_reseal' scripts/dispatch_resident_execution_requests.py
+          grep -q 'control/resident-execution-request.d' scripts/refresh_sovereign_worker_runtime_source.py
+          echo 'SDK_WORKSPACE_EXTCOLLAB_CLIENT_SECRET_RESEAL_RESIDENT_SOURCE_VALIDATION_PASS'
+          echo 'Hosted CI executes synthetic validation only; authentic ciphertext/key custody execution remains resident TV/TVC-only.'
