@@ -1,0 +1,22 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "state": "REQUESTED",
+  "request_id": "stegbrowser-tvc-source-promotion-aef6b6f5",
+  "task_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+  "mode": "TVC_EXACT_SOURCE_PROMOTION_REQUEST",
+  "entrypoint": "scripts/consume_stegbrowser_tvc_source_promotion_request.py",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "oscillator_grants_execution_authority": false,
+  "second_machine_required": false,
+  "network_source_fetch_allowed": false,
+  "request_granted_authority": false,
+  "source_repository": "StegVerse-Labs/TVC",
+  "reference_mode": "IMMUTABLE_COMMIT",
+  "exact_sha": "aef6b6f5dc99d2a531718ca475d20858ae8e68a6",
+  "materialization_id": "stegbrowser-tvc-runtime-aef6b6f5",
+  "ttl_seconds": 900,
+  "authority_effect": "NONE_REQUEST_ONLY"
+}
