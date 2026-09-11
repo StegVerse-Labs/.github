@@ -12,6 +12,8 @@ from pathlib import Path
 IMPORT_BLOCK = '''from workers import site_publication_intr_ingress as site_publication  # noqa: E402\n'''
 IMPORT_ANCHOR = '''from workers.sv002_intr_materialization_consumer import (  # noqa: E402\n    DESTINATION as SV002_DESTINATION,\n    DOWNSTREAM_OWNER as SV002_OWNER,\n    scrubbed_env as sv002_scrubbed_env,\n    validate_request as validate_sv002_request,\n)\n'''
 PROFILE_TOKEN = '"StegOS:SitePublicationRuntime"'
+FALLBACK_ROUTE = 'hil.admit_materialization(runtime_root=self.server.runtime_root, body=body, headers=self.headers)'
+SITE_ROUTE = 'site_publication.admit(runtime_root=self.server.runtime_root, payload=payload, transport_payload_sha256=hil.validate_transport_headers(self.headers, body)["payload_sha256"]) if site_publication.is_site_publication(payload) else ' + FALLBACK_ROUTE
 
 
 def require(ok: bool, reason: str) -> None:
@@ -36,11 +38,14 @@ def transform(source: str) -> str:
         require('"HIL:Ingress"' in segment and '"SV002:PublicObservation"' in segment, "shared profile invariants missing")
         result = result[:end] + ', ' + PROFILE_TOKEN + result[end:]
 
-    route_anchor = 'elif _is_sv002(payload):\n                    receipt = admit_sv002(runtime_root=self.server.runtime_root, body=body, headers=self.headers)'
-    route_block = '''elif site_publication.is_site_publication(payload):\n                    transport = hil.validate_transport_headers(self.headers, body)\n                    receipt = site_publication.admit(runtime_root=self.server.runtime_root, payload=payload, transport_payload_sha256=transport["payload_sha256"])\n                elif _is_sv002(payload):\n                    receipt = admit_sv002(runtime_root=self.server.runtime_root, body=body, headers=self.headers)'''
+    # The shared ingress intentionally composes profiles as one nested dispatcher
+    # expression.  Anchor only the unique final HIL fallback so this installation
+    # remains compatible whether CanonicalWork (or another admitted profile) was
+    # installed before or after this source was based.  A missing/duplicate
+    # fallback fails closed rather than guessing at router structure.
     if 'site_publication.admit(' not in result:
-        require(route_anchor in result, "shared router anchor drift")
-        result = result.replace(route_anchor, route_block, 1)
+        require(result.count(FALLBACK_ROUTE) == 1, "shared router fallback anchor drift")
+        result = result.replace(FALLBACK_ROUTE, '(' + SITE_ROUTE + ')', 1)
 
     require(IMPORT_BLOCK in result, "site publication import not installed")
     require(PROFILE_TOKEN in result, "site publication profile not installed")
