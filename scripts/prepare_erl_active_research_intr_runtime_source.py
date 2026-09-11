@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Prepare existing resident source for ERL active-research Universal InTr.
 
-This helper applies only the already-merged idempotent source transforms. It
-creates no listener, scheduler, worker owner, heartbeat, claim/fence, credential
-path, transport event, provider operation, or runtime receipt.
+This helper applies only the merged idempotent source transforms. It creates no
+listener, scheduler, worker owner, heartbeat, claim/fence, credential path,
+transport event, provider operation, or runtime receipt.
 """
 from __future__ import annotations
 
@@ -15,6 +15,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 ROUTER_INSTALLER = ROOT / "scripts/install_erl_active_research_universal_intr_route.py"
 LINEAGE_INSTALLER = ROOT / "scripts/install_erl_device_kv_prior_lineage.py"
+REQUEST_WIRING_INSTALLER = ROOT / "scripts/install_erl_resident_request_wiring.py"
 
 
 def run(*args: str) -> None:
@@ -33,9 +34,10 @@ def main() -> int:
 
     run(str(ROUTER_INSTALLER), *mode)
     run(str(LINEAGE_INSTALLER), *mode)
+    run(str(REQUEST_WIRING_INSTALLER), *mode)
 
     print("PASS: ERL active-research resident source preparation is consistent")
-    print("NONCLAIM: source preparation does not prove ingress, DEVICE_SYSTEM->KV transport, three-hop traversal, provider replay, or runtime completion")
+    print("NONCLAIM: source preparation does not prove request consumption, ingress, DEVICE_SYSTEM->KV transport, three-hop traversal, provider replay, or runtime completion")
     return 0
 
 
