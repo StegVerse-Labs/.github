@@ -4,7 +4,7 @@ Updated: 2026-09-10
 Repository: `StegVerse-Labs/.github`
 Goal Task ID: `SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003`
 Parent handoff: `StegVerse-org/StegVerse-SDK:docs/SHARED_DOCS_EPHEMERAL_MANIFEST_WORKSPACE_MIRROR_HANDOFF.md`
-Status: `ACTIVE / RESIDENT CONSENT-LISTENER REQUEST SOURCE VALIDATED / FINAL SHARED-GATE VALIDATION + MERGE NEXT`
+Status: `ACTIVE / RESIDENT CONSENT-LISTENER REQUEST MERGED / AUTHENTIC RESIDENT CONSUMPTION NEXT`
 
 ## Purpose
 
@@ -65,32 +65,27 @@ The consumer:
 
 ## Dispatcher integration
 
-`scripts/dispatch_resident_execution_requests.py` now registers the exact selector and passes only the three additional non-secret values through the existing dispatcher allowlist. `SERVICE_ALREADY_HEALTHY` is accepted as a terminal non-authorizing wait/completion state. No secret-bearing environment name was added.
+`scripts/dispatch_resident_execution_requests.py` registers the exact selector and passes only the three additional non-secret values through the existing dispatcher allowlist. `SERVICE_ALREADY_HEALTHY` is accepted as a terminal non-authorizing state. No secret-bearing environment name was added.
 
-## Validation history
+## Validation and merge evidence
 
 PR: `StegVerse-Labs/.github#1382`
+Merge: `f791bf2fa3eacfcdf7e9459916eec991293eb2c1`
+Exact validated final source head: `fa560f09e7003b3a9d16e73c1390335c9dc726a1`
 
-Initial source head `5107d92945d0f6f069b12f24312b3bde8988cd96`:
+Initial source head `5107d92945d0f6f069b12f24312b3bde8988cd96` passed the focused consent-listener gate but exposed one valid repository-hygiene failure: organization-control run `34557838308` stopped at workflow-surface hygiene because the new source-validation workflow had not yet been classified. No runtime or consumer semantic step failed.
 
-- `SDK WorkSpace External Collaboration Consent Listener Resident Validation` push run `34557829121` — PASS.
-- PR run `34557838324` — PASS.
-- `SDK WorkSpace External Collaboration Reseal Resident Validation` `34557838315` — PASS.
-- `Deterministic Repository Suite - Diagnostic Evidence Only` `34557838366` — PASS.
-- `Cross-Framework Current-Basis Resident Request Validation (Non-Authorizing)` `34557838336` — PASS.
-- `validate-deepseek-resident` `34557838310` — PASS.
-- `Validate organization control plane - No GitHub Token Authority` `34557838308` — FAIL at workflow-surface hygiene only because the new validation workflow had not yet been registered. No runtime/consumer semantic step ran.
+Repair head `7a654b6cad2827c6b24b9847b04bf0bb346395b2` registered the workflow in `control/workflow-surface-registry.json` as validation-only `KEEP_STANDALONE_EXCEPTION`, preserving the fail-closed workflow-proliferation invariant without granting runtime authority.
 
-Repair head `7a654b6cad2827c6b24b9847b04bf0bb346395b2` explicitly registered the new workflow in `control/workflow-surface-registry.json` as a validation-only `KEEP_STANDALONE_EXCEPTION` owned by this exact goal/PR. This preserves the repository invariant that every authored workflow is classified before merge and grants no runtime, Gateway, or credential authority.
+Final head `fa560f09e7003b3a9d16e73c1390335c9dc726a1` passed all observed affected gates:
 
-On repair head:
-
-- exact consent-listener validation `34557941302` — PASS;
-- DeepSeek resident validation `34557941275` — PASS;
-- Cross-Framework current-basis validation `34557941332` — PASS;
-- deterministic suite `34557941278` — PASS;
-- external-collaboration reseal resident regression `34557941261` — PASS;
-- organization-control and Heartbeat shared gates remained pending at the time this handoff revision was written and must pass on the final head before merge.
+- `SDK WorkSpace External Collaboration Consent Listener Resident Validation` `34558002459` — PASS;
+- `Validate organization control plane - No GitHub Token Authority` `34558002391` — PASS;
+- `Heartbeat Worker Project - Validation Only / No GitHub Token Authority` `34558002427` — PASS;
+- `SDK WorkSpace External Collaboration Reseal Resident Validation` `34558002497` — PASS;
+- `Deterministic Repository Suite - Diagnostic Evidence Only` `34558002382` — PASS;
+- `Cross-Framework Current-Basis Resident Request Validation (Non-Authorizing)` `34558002425` — PASS;
+- `validate-deepseek-resident` `34558002480` — PASS.
 
 Hosted workflow PASS is source validation only. It is not authentic systemd installation, loopback health, resident request consumption, public route binding, Google consent, or provider execution evidence.
 
@@ -103,15 +98,7 @@ Hosted workflow PASS is source validation only. It is not authentic systemd inst
 
 ## Completion boundary
 
-Source/CI completion is only:
-
-```text
-resident request + consumer merged
--> exact dispatcher registration merged
--> source refresh carries request/consumer
-```
-
-Authentic runtime completion requires a resident-produced secret-free receipt with either:
+Source/CI completion is now merged. Authentic runtime completion still requires a resident-produced secret-free receipt with either:
 
 ```text
 state=SERVICE_ALREADY_HEALTHY
@@ -133,13 +120,12 @@ Root README semantics already cover machine-owned continuation, TV/TVC credentia
 
 ## Next sequence
 
-1. Require the organization-control and Heartbeat shared gates to pass on the final PR head.
-2. Merge PR #1382 only after exact-head gates are green.
-3. Observe the existing resident consume this request; do not create a hosted substitute.
-4. If `BLOCKED`, remediate only the exact missing non-secret/source/root prerequisite through its existing owner.
-5. Retain authentic loopback health evidence.
-6. Let machine-owned Service Gateway #72 bind the exact three public consent routes and CMC-029 TLS; independently verify public reachability.
-7. Only after client-secret custody and public callback reachability are both proven, perform owner-present Google consent on the current iPhone.
+1. Observe the existing sovereign resident dispatcher consume `sdk_workspace_external_collab_consent_listener`; do not create a hosted substitute.
+2. If the secret-free receipt is `BLOCKED`, remediate only the exact missing non-secret/source/root prerequisite through its existing owner.
+3. Retain authentic loopback health evidence from `127.0.0.1:8786`.
+4. Independently observe the already-merged client-secret reseal request and keep custody false until its authentic receipt proves otherwise.
+5. Let machine-owned Service Gateway #72 bind the exact three public consent routes and CMC-029 TLS; independently verify public reachability.
+6. Only after client-secret custody and public callback reachability are both proven, perform owner-present Google consent on the current iPhone.
 
 ## Human action
 
