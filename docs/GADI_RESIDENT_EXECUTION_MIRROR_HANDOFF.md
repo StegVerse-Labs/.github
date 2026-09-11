@@ -8,44 +8,44 @@ Parent task: `GADI-001`
 Umbrella goal: `GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001`
 COSV ID: `10100000100000`
 Canonical issue: `StegVerse-Labs/.github#1239`
-Status: `ACTIVE / NONCLAIM_READINESS_MERGED / GOVERNANCE_INTR_ADMISSION_PRODUCER_MERGED / RUNTIME_SUBJECT_BINDING_REPAIR_IN_VALIDATION / AUTHENTIC_RESIDENT_EXECUTION_PENDING`
+Status: `ACTIVE / NONCLAIM_READINESS_MERGED / GOVERNANCE_INTR_ADMISSION_PRODUCER_MERGED / RUNTIME_SUBJECT_BINDING_MERGED / NATIVE_COMMAND_ARTIFACT_BRIDGE_MERGED / AUTHENTIC_RESIDENT_EXECUTION_PENDING`
 
 ## Current canonical state
 
 `GADI-001` remains ACTIVE / CLAIMED_INTEGRATION and is not superseded.
 
-The resident trajectory now has merged source/contract support for:
+The source/contract chain now contains all of the following without introducing parallel authority planes:
 
-- native StegOS defensive command validation;
-- canonical GADI InTr admission shape;
-- WorkerCoordinator claim/fence normalization;
-- governed actuator observation projection;
-- controlled StegOS output receipt materialization;
-- resident source resolution/materialization/preflight/consumption;
-- targeted WorkerCoordinator registration and post-claim dispatcher bridging;
-- claimless readiness gating and stale-consumption replay protection;
-- Governance-owned GADI defensive-intervention profile;
-- StegCore governance-decision -> GADI Admission projection.
+- canonical runtime evidence source resolution/materialization/preflight/consumption;
+- native StegOS defensive planning and command validation;
+- Governance-owned GADI connector profile;
+- StegCore governance-decision -> GADI Admission projection;
+- current subject-bound GADI runtime-binding observation;
+- exact native-command artifact bridge from plan + admitted request + current runtime binding;
+- controlled StegOS actuator-output receipt seam;
+- WorkerCoordinator claim/fence normalization and targeted worker bridge;
+- non-claim readiness gating and stale-consumption replay protection.
 
-Authentic current runtime execution is still unobserved. No current claim/fence, concrete runtime binding, current admitted intervention traversal, controlled actuator effect, or new resident-consumption receipt is claimed.
+Authentic current runtime execution is still unobserved. Source, CI, merged code, profile declarations, and simulation evidence do not satisfy runtime predicates.
 
 ## Relevant merged trajectory
 
 - `.github` PR #1388 -> `261b1636db05baa3d34072236557618e9607b5e7`: targeted WorkerCoordinator registration repair.
-- `.github` PR #1395 -> `b1b613452406b26d8fe17a9fbb98b57054a4f046`: post-claim ProcessWorkerAdapter/GADI dispatcher protocol repair.
+- `.github` PR #1395 -> `b1b613452406b26d8fe17a9fbb98b57054a4f046`: post-claim ProcessWorkerAdapter/GADI dispatcher bridge.
 - `.github` PR #1396 -> `b4b6e467d057b476e1e12fae75097d2b39b3c7e0`: canonical handoff reconciliation.
-- `.github` PR #1405 -> `1fe63d76ffd2d499daaeab9a942af5dfef50b4d9`: non-claim readiness convergence repair. This made claimless dispatch resolve only current non-claim evidence first, then visit the existing targeted WorkerCoordinator only when ready; unchanged historical consumption receipts cannot satisfy a new visit.
-- `StegVerse-Labs/Governance` PR #40 -> `2765854132872078bcd15a4432a65095831b432e`: authoritative `gadi.defensive-intervention.v1` Universal Governance Connector profile. It reuses `governance-external-action`, full canonical governance/admissibility, separate consequence authority, TV/TVC credential authority, and no execution authority.
-- `StegVerse-Labs/StegCore` PR #202 -> `282f30e9e46efc3a8d0d867f48e08c3aa6534e22`: hash-bound governance-decision -> GADI `Admission` projector. `ALLOW` projects `ADMITTED`; `DENY/FAIL-CLOSED` project `DENIED`; runtime binding and execution authority are not minted. The StegCore cross-repo snapshot remains pinned to the authoritative Governance merge.
-
-These merges close the source-level GADI admission producer gap. They do not prove a current runtime admission.
+- `.github` PR #1405 -> `1fe63d76ffd2d499daaeab9a942af5dfef50b4d9`: non-claim readiness convergence and stale-consumption replay protection.
+- `StegVerse-Labs/Governance` PR #40 -> `2765854132872078bcd15a4432a65095831b432e`: authoritative `gadi.defensive-intervention.v1` profile reusing `governance-external-action`; no execution authority.
+- `StegVerse-Labs/StegCore` PR #202 -> `282f30e9e46efc3a8d0d867f48e08c3aa6534e22`: exact governance-decision -> GADI Admission projection; no runtime binding or execution authority minted.
+- `.github` PR #1413 -> `71338d71c7122e7be9d4a1015e2bde353a3ff0e6`: current runtime-root/node subject binding from canonical runtime-presence evidence and exact readiness enforcement.
+- `StegVerse-Labs/StegOS` PR #337 -> `0409aadbc894c9d0976e41a946b588ef93c34b8d`: native command artifact bridge. Exact head `c597ff3f7791040e0d3f247072821bd81f59d86d` passed all six observed StegOS validation lanes before merge.
 
 ## Canonical execution chain
 
 ```text
 CURRENT RESIDENT-PRESENCE SUBJECT BINDING
--> CURRENT GOVERNANCE/INTR ADMISSION
--> NATIVE STEGOS COMMAND BOUND TO THAT EXACT RUNTIME SUBJECT
+-> CURRENT PRE-ADMISSION NATIVE DEFENSE PLAN
+-> CURRENT GOVERNANCE / INTR ADMISSION
+-> NATIVE STEGOS COMMAND BOUND TO EXACT RUNTIME SUBJECT
 -> CONTROLLED PREAUTHORIZED OUTPUT OBSERVATION
 -> NON-CLAIM READINESS
 -> TARGETED WORKERCOORDINATOR CLAIM/FENCE
@@ -58,96 +58,45 @@ CURRENT RESIDENT-PRESENCE SUBJECT BINDING
 -> CONTINUITY / MASTER RECORDS RECONSTRUCTION
 ```
 
-WorkerCoordinator remains sole claim/fence authority. HB/runtime-presence remains observation only. TV/TVC remains credential authority. InTr/Governance remains transition/admission authority. GitHub validation does not become runtime authority.
+WorkerCoordinator remains sole claim/fence authority. HB/runtime-presence remains observation only. TV/TVC remains credential authority. Governance/InTr remains transition/admission authority. GitHub validation does not become runtime authority.
 
-## Runtime subject-binding gap identified
+## Runtime subject binding — merged
 
-Inspection of the shared runtime-presence architecture established that `control/runtime-node-profiles.json#runtime-node:gadi-resident-execution-001` is only a retained runtime profile declaration. Profile presence must not be treated as a concrete runtime binding.
+`scripts/materialize_gadi_runtime_binding.py`, merged by PR #1413, consumes only canonical runtime-presence and referenced supervision evidence. It emits `state/gadi-resident-execution/runtime-binding.json` only when the exact runtime root, resident node ID, canonical carrier runtime, canonical WorkerCoordinator identity, process separation, worker-cycle freshness, and non-authority boundaries are observed.
 
-The canonical shared contract is:
+The binding is deterministic as `runtime://gadi/<sha256>` and explicitly grants no claim/fence, lease, execution authority, heartbeat authority, GitHub-token authority, or credentials.
 
-- `management/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_CONTRACT.json`
-- `heartbeat_runtime/runtime_presence_projection.py`
-- `receipts/sovereign-host/runtime-presence.latest.json`
+`run_gadi_targeted_runtime_if_ready.py` requires the native command's `runtime_binding_ref` to equal this current binding exactly before WorkerCoordinator may be visited.
 
-The existing cross-task correction explicitly requires concrete `runtime_root`, `resident.node_id`, and canonical worker-runtime identity before resident-presence evidence may satisfy a consumer. This GADI repair reuses that exact rule rather than creating another runtime probe or heartbeat plane.
+## Governance / InTr admission producer — merged
 
-## Current runtime-binding repair — in validation
-
-Branch: `gadi-runtime-binding-observation-001`
-
-### `scripts/materialize_gadi_runtime_binding.py`
-
-This projector reads only local canonical runtime-presence evidence and emits:
-
-`state/gadi-resident-execution/runtime-binding.json`
-
-A binding is emitted only when all of the following are observed:
-
-- canonical runtime-presence schema;
-- exact `runtime_root` match to the runtime being evaluated;
-- concrete non-empty `resident.node_id`;
-- `runtime_alive_observed=true`;
-- `present_worker_runtime_observed=true`;
-- fresh worker cycle;
-- HB explicitly non-authorizing;
-- runtime-presence projection explicitly non-authorizing;
-- TV/TVC credential boundary intact;
-- GitHub token runtime authority `NONE`;
-- referenced supervision evidence remains inside the same runtime root;
-- supervision evidence explicitly identifies `heartbeat_runtime.engine_v13.HeartbeatRuntime`;
-- supervision evidence explicitly identifies `heartbeat_runtime.worker_runtime.WorkerCoordinator`;
-- carrier and worker processes are active/separate;
-- no third-party process host is required.
-
-When valid, the projector produces a deterministic:
-
-`runtime://gadi/<sha256>`
-
-bound to the exact task/profile, `runtime_root`, `resident.node_id`, canonical carrier/worker identity, exact runtime-presence receipt hash, and exact supervision-receipt hash.
-
-The artifact explicitly records:
+Governance PR #40 provides the authoritative GADI profile. StegCore PR #202 binds the exact PENDING intervention-request candidate hash to a canonical governance result and projects:
 
 ```text
-claim_or_fence_granted = false
-runtime_lease_granted = false
-execution_authority_granted = false
-heartbeat_grants_execution_authority = false
-credential_authority = TV/TVC
-github_token_runtime_authority = NONE
-authority_effect = NONE_OBSERVATION_ONLY
+ALLOW       -> ADMITTED + intr://governance-decision/<receipt_hash>
+DENY        -> DENIED   + intr://governance-decision/<receipt_hash>
+FAIL-CLOSED -> DENIED   + intr://governance-decision/<receipt_hash>
 ```
 
-### Runtime observability consumer
+The projection mints no runtime binding, credential, continuity authority, or execution authority.
 
-`control/runtime-observability-consumers/gadi-resident-execution-001.json` registers GADI as a consumer of the existing shared runtime-presence contract. It does not create a new observer/runtime. Its current predicates remain unobserved until authentic local receipts exist.
+## Native command artifact bridge — merged
 
-### Readiness strengthening
+StegOS PR #337 adds `stegos/gadi_native_command_bridge.py` and uses the existing `materialize_native_defensive_command()` implementation rather than adding a second planner or command authority.
 
-`scripts/run_gadi_targeted_runtime_if_ready.py` now refreshes the GADI runtime-binding observation before source readiness evaluation.
+The bridge accepts exactly:
 
-A native GADI command may no longer pass readiness merely because `runtime_binding_ref` is non-empty. Its `runtime_binding_ref` must exactly equal the current subject-bound observation produced from the runtime-presence receipt. A stale/different runtime or node therefore fails closed before WorkerCoordinator is visited.
+1. a serialized pre-admission StegOS `NativeDefensePlan` with one already-selected discoverable TV/TVC capability;
+2. a canonical GADI intervention request whose admission is `ADMITTED` and whose `required_capability_id` exactly matches the plan;
+3. the current `stegverse.gadi-runtime-binding-observation/v1` in state `CURRENT_RUNTIME_SUBJECT_BOUND`.
 
-This closes a previous semantic hole in which a syntactically valid but stale/arbitrary runtime binding could survive the pre-claim readiness gate.
+It rejects PENDING/DENIED requests, capability mismatch, stale or wrong runtime subject, claim/lease/execution-authority drift, heartbeat authority drift, GitHub-token authority, or selected-capability preclaim.
 
-## Regression coverage
+On success the existing native materializer receives the exact admitted `intr_decision_ref` and exact current `runtime_binding_ref`. Reconstruction bindings are retained for intervention request, receipt correlation, threat observation, runtime root, and resident node. StegOS still records `execution_authority_claimed_by_stegos=false`.
 
-`tests/test_gadi_runtime_binding_observation.py` covers:
+## Controlled output seam
 
-- current exact runtime subject -> observational binding;
-- runtime-root mismatch -> fail closed;
-- missing node identity -> fail closed;
-- noncanonical WorkerCoordinator identity -> fail closed;
-- binding changes when exact presence subject changes;
-- no authority/lease/claim minting.
-
-`tests/test_gadi_targeted_runtime_readiness.py` now additionally covers:
-
-- command binding must match current subject-bound runtime binding;
-- missing current runtime subject binding prevents WorkerCoordinator visitation;
-- missing non-claim inputs still do not trigger targeted execution;
-- unchanged old consumption receipt cannot satisfy a new visit;
-- changed authentic consumption receipt may satisfy the visit.
+StegOS PR #331 remains the merged controlled-output receipt seam. `stegos/gadi_controlled_actuator.py` can receipt an effect that the caller has already authentically observed through the existing StegOS kernel chain. The recorder does not execute the actuator and cannot substitute for an actual controlled effect observation.
 
 ## Current authentic evidence boundary
 
@@ -156,6 +105,7 @@ The following remain unobserved until produced on the actual resident runtime:
 ```text
 CURRENT_GADI_RUNTIME_PRESENCE_SUBJECT_NOT_OBSERVED
 CURRENT_GADI_RUNTIME_BINDING_NOT_OBSERVED
+CURRENT_GADI_PRE_ADMISSION_PLAN_NOT_OBSERVED
 CURRENT_GADI_INTR_ADMISSION_NOT_OBSERVED
 CURRENT_GADI_NATIVE_COMMAND_NOT_OBSERVED
 CONTROLLED_PREAUTHORIZED_ACTUATOR_RESULT_NOT_OBSERVED
@@ -163,19 +113,18 @@ CURRENT_GADI_WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED
 CURRENT_GADI_RESIDENT_CONSUMPTION_NOT_OBSERVED
 ```
 
-Source code, CI, profile declarations, governance tests, simulated commands, and historical receipts must not satisfy these predicates.
+A future WorkerCoordinator claim is valid only when created by the actual targeted runtime invocation after all non-claim evidence is coherent. It must not be fabricated or retained from source-only state.
 
-## Immediate continuation after this repair
+## Immediate continuation
 
-1. Validate this runtime-binding repair on its exact branch head and merge only if all applicable canonical validation lanes pass.
-2. On the actual runtime root, allow the existing canonical runtime-presence projector to emit a current subject-bound receipt; do not create a parallel probe.
-3. Materialize the GADI runtime-binding observation from that exact receipt.
-4. Use the merged StegCore/Governance path to produce a current hash-bound GADI admission artifact.
-5. Materialize a native StegOS command whose `runtime_binding_ref` equals the current GADI binding observation and whose `intr_decision_ref` equals the current admission.
-6. Produce the controlled pre-authorized software test-surface output observation through the merged StegOS actuator seam.
-7. Only then allow `run_gadi_targeted_runtime_if_ready.py` to visit the canonical targeted WorkerCoordinator and obtain a fresh claim/fence.
-8. Require zero-blocker materialization/preflight and a newly changed resident-consumption receipt.
-9. Continue closed-loop reassessment/termination and exact Continuity/Master Records reconstruction.
+1. On the actual runtime root, obtain a current canonical runtime-presence receipt and materialize the subject-bound GADI runtime binding; do not create a parallel runtime probe.
+2. Materialize a current pre-admission `NativeDefensePlan` from an actual boundary interaction plus current discoverable TV/TVC capability evidence.
+3. Submit the exact intervention request through the merged Governance/StegCore path and obtain the matching current ADMITTED artifact.
+4. Feed the exact plan + admitted request + current runtime binding through the merged StegOS native-command bridge.
+5. Observe the controlled pre-authorized software test-surface effect and receipt it through the merged StegOS actuator seam.
+6. Let `run_gadi_targeted_runtime_if_ready.py` verify those non-claim artifacts; only then visit the canonical targeted WorkerCoordinator for a fresh claim/fence.
+7. Require zero-blocker materialization/preflight and a newly changed resident-consumption receipt.
+8. Complete adaptive reassessment/termination, Continuity custody, Master Records reconciliation, and exact confrontation reconstruction.
 
 ## Collision boundary
 
@@ -183,8 +132,8 @@ No second heartbeat, runtime-presence projector, WorkerCoordinator, scheduler, r
 
 ## README impact
 
-No root README mutation is required for this bounded repair. The repository already documents the shared runtime-presence subject-binding rule, WorkerCoordinator authority separation, runtime convergence, and non-authorizing HB semantics. This change applies those existing rules to GADI.
+No root README mutation is required. Existing documentation already defines runtime-presence subject binding, WorkerCoordinator authority separation, runtime convergence, and non-authorizing HB semantics.
 
 ## Release rule
 
-None of the work above is GADI activation or release evidence. Release/tag propagation remains deferred until authentic current resident execution, adaptive reassessment/termination, complete receipt chain, exact reconstruction, and canonical activation predicates are observed.
+None of the source/contract merges above is GADI activation or release evidence. Release/tag propagation remains deferred until authentic current resident execution, adaptive reassessment/termination, complete receipt chain, exact reconstruction, and canonical activation predicates are observed.
