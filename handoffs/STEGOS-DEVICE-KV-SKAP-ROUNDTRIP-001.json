@@ -73,7 +73,7 @@
     "continuation_owner": "STEGOS-DEVICE-KV-SKAP-AUTHENTIC-RUNTIME-002",
     "credential_authority": "TV/TVC",
     "github_token_runtime_authority": false,
-    "temporal_class": "historical",
+    "temporal_class": "recently_completed",
     "task_relationship": "integrates_capability",
     "target_phase": "ACTIVATED"
   }
