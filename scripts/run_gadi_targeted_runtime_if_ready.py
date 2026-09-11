@@ -10,6 +10,7 @@ which remains the sole claim/fence authority.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import subprocess
 import sys
@@ -33,6 +34,10 @@ def load(path: Path) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise ValueError(f"expected JSON object: {path}")
     return value
+
+
+def digest_if_present(path: Path) -> str | None:
+    return hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else None
 
 
 def canonical_intr(value: dict[str, Any]) -> dict[str, Any]:
@@ -148,19 +153,26 @@ def execute(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -> 
         result = {**result, "state":"WORKER_RUNTIME_NOT_MATERIALIZED", "ready":False, "blockers":["WORKER_RUNTIME_NOT_MATERIALIZED"]}
         write(runtime / RECEIPT, result)
         return result
+    consumption_path = runtime / CONSUMPTION
+    before_consumption_sha = digest_if_present(consumption_path)
     completed = runner(
         [sys.executable, str(worker), "--root", str(runtime), "--task-id", TASK_ID],
         cwd=runtime, capture_output=True, text=True, check=False, timeout=1800,
     )
     worker_result = parse_last_json(completed.stdout)
-    consumption = load(runtime / CONSUMPTION) if (runtime / CONSUMPTION).is_file() else None
-    consumed = isinstance(consumption, dict) and consumption.get("state") == "AUTHENTIC_RUNTIME_EVIDENCE_CONSUMED"
+    after_consumption_sha = digest_if_present(consumption_path)
+    fresh_receipt = after_consumption_sha is not None and after_consumption_sha != before_consumption_sha
+    consumption = load(consumption_path) if fresh_receipt else None
+    consumed = fresh_receipt and isinstance(consumption, dict) and consumption.get("state") == "AUTHENTIC_RUNTIME_EVIDENCE_CONSUMED"
     result = {
         **result,
-        "state": "AUTHENTIC_RUNTIME_EVIDENCE_CONSUMED" if consumed else "TARGETED_WORKER_RUNTIME_VISITED_NO_CONSUMPTION",
+        "state": "AUTHENTIC_RUNTIME_EVIDENCE_CONSUMED" if consumed else "TARGETED_WORKER_RUNTIME_VISITED_NO_NEW_CONSUMPTION",
         "targeted_execution_attempted": True,
         "worker_runtime_returncode": completed.returncode,
         "worker_runtime_result": worker_result,
+        "consumption_receipt_changed_by_invocation": fresh_receipt,
+        "consumption_receipt_sha256_before": before_consumption_sha,
+        "consumption_receipt_sha256_after": after_consumption_sha,
         "consumption_receipt_observed": consumed,
         "workercoordinator_claim_created_by_wrapper": False,
         "authority_effect": "NONE_OR_EXISTING_WORKERCOORDINATOR_AUTHORITY_ONLY",
