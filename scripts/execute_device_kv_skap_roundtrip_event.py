@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
-"""Execute one bounded Device->KV->SKAP->KV->Device task on a sovereign event runtime.
+"""Execute one governed Device->KV->SKAP->KV->Device canonical runtime event.
 
-This wrapper does not grant execution, transition, or credential authority. It refreshes
-already-local canonical WorkerCoordinator source into the supplied event runtime,
-validates the task/COSV pointer, forwards only the non-secret evidence bindings needed
-by the registered worker, and invokes the normal WorkerCoordinator task runner so a
-fresh claim/fence is still required by canonical task control.
+The supplied ``runtime_root`` is a runtime *base*, not a pre-existing authority
+surface.  This wrapper asks StegOS to materialize one same-device
+EVENT_EPHEMERAL lease from the authentic retained Node plus Gateway first-hop
+evidence, then runs the normal fenced WorkerCoordinator task inside that exact
+runtime.  The worker binds its fresh claim/fence back to the exact Node,
+materialization request, and open lease before invoking the four-leg
+continuation.
 
-Terminal success is derived from canonical WorkerCoordinator evidence: the targeted
-cycle result, exact COMPLETED worker_response event, canonical fenced checkpoint,
-COMPLETED task registry state, and exact worker-result readback. The worker response
-is intentionally not expected to escape the WorkerCoordinator protocol directly.
+Terminal success requires canonical WorkerCoordinator evidence, the exact
+WorkerCoordinator->Canonical Runtime Lane bridge receipt, pre-release domain
+evidence, and canonical lease closure.  No source/CI object can substitute for
+those runtime artifacts.
 """
 from __future__ import annotations
 
@@ -27,8 +29,11 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from refresh_sovereign_worker_runtime_source import refresh
 from scripts.refresh_and_execute_resident_task import validate_cosv_task_pointer
+from workers.device_kv_skap_canonical_runtime_binding import (
+    close_roundtrip_runtime,
+    materialize_roundtrip_runtime,
+)
 
 TASK_ID = "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001"
 COSV_VECTOR = "50000000102000"
@@ -58,7 +63,19 @@ def _existing_dir(path: Path, label: str) -> Path:
     return resolved
 
 
-def _safe_env(base: Mapping[str, str] | None, *, runtime: Path, stegos: Path, sidecar: Path, tvc_receipt: Path, output: Path) -> dict[str, str]:
+def _safe_env(
+    base: Mapping[str, str] | None,
+    *,
+    runtime: Path,
+    stegos: Path,
+    sidecar: Path,
+    tvc_receipt: Path,
+    output: Path,
+    retained_node: Path,
+    intr_materialization: Path,
+    lease_snapshot: Path,
+    bridge_receipt: Path,
+) -> dict[str, str]:
     values = dict(os.environ if base is None else base)
     if any(str(values.get(name, "")).strip().lower() not in {"", "0", "false", "no"} for name in HOSTED_ENV):
         raise RoundtripEventExecutionError("hosted_runtime_forbidden")
@@ -70,6 +87,10 @@ def _safe_env(base: Mapping[str, str] | None, *, runtime: Path, stegos: Path, si
             "STEGVERSE_DEVICE_KV_SKAP_ROUNDTRIP_OUTPUT": str(output),
             "STEGVERSE_DEVICE_KV_SKAP_GATEWAY_SIDECAR": str(sidecar),
             "STEGVERSE_DEVICE_KV_SKAP_TVC_DRAIN_RECEIPT": str(tvc_receipt),
+            "STEGVERSE_DEVICE_KV_SKAP_RETAINED_NODE": str(retained_node),
+            "STEGVERSE_DEVICE_KV_SKAP_INTR_MATERIALIZATION": str(intr_materialization),
+            "STEGVERSE_DEVICE_KV_SKAP_RUNTIME_LEASE_SNAPSHOT": str(lease_snapshot),
+            "STEGVERSE_DEVICE_KV_SKAP_BRIDGE_RECEIPT": str(bridge_receipt),
             "STEGVERSE_STEGOS_ROOT": str(stegos),
             "STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY": "TV/TVC",
             "STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY": "NONE",
@@ -194,60 +215,124 @@ def _validate_targeted_terminal_evidence(*, runtime: Path, cycle: Mapping[str, A
     }
 
 
-def execute(*, source_root: Path, runtime_root: Path, stegos_root: Path, gateway_sidecar: Path, tvc_drain_receipt: Path, output: Path | None = None, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
+def execute(
+    *,
+    source_root: Path,
+    runtime_root: Path,
+    stegos_root: Path,
+    retained_node: Path,
+    gateway_sidecar: Path,
+    tvc_drain_receipt: Path,
+    output: Path | None = None,
+    runner=subprocess.run,
+    env: Mapping[str, str] | None = None,
+) -> dict[str, Any]:
     source = _existing_dir(source_root, "source_root")
-    runtime = runtime_root.expanduser().resolve()
-    runtime.mkdir(parents=True, exist_ok=True)
+    runtime_base = runtime_root.expanduser().resolve()
+    runtime_base.mkdir(parents=True, exist_ok=True)
     stegos = _existing_dir(stegos_root, "stegos_root")
+    node_path = _existing_file(retained_node, "retained_node")
     sidecar = _existing_file(gateway_sidecar, "gateway_sidecar")
     tvc_receipt = _existing_file(tvc_drain_receipt, "tvc_drain_receipt")
-    result_path = (output or runtime / "receipts/sovereign-host/device-kv-skap-roundtrip/worker-result.json").expanduser().resolve()
 
-    refresh_receipt = refresh(source, runtime)
+    context = materialize_roundtrip_runtime(
+        control_root=source,
+        runtime_base=runtime_base,
+        stegos_root=stegos,
+        retained_node_path=node_path,
+        gateway_sidecar_path=sidecar,
+    )
+    runtime = context.runtime_root
+    result_path = (output or runtime / "receipts/sovereign-host/device-kv-skap-roundtrip/worker-result.json").expanduser().resolve()
     pointer = validate_cosv_task_pointer(runtime, TASK_ID, COSV_VECTOR)
     runner_path = runtime / RUNNER_REL
     if not runner_path.is_file():
+        context.adapter.release(context.compute_lease)
         raise RoundtripEventExecutionError(f"workercoordinator_runner_missing:{runner_path}")
     if not (runtime / CARRIER_REL).is_file():
+        context.adapter.release(context.compute_lease)
         raise RoundtripEventExecutionError("separated_carrier_reference_missing")
 
-    child_env = _safe_env(env, runtime=runtime, stegos=stegos, sidecar=sidecar, tvc_receipt=tvc_receipt, output=result_path)
+    child_env = _safe_env(
+        env,
+        runtime=runtime,
+        stegos=stegos,
+        sidecar=sidecar,
+        tvc_receipt=tvc_receipt,
+        output=result_path,
+        retained_node=context.artifact_paths["retained_node"],
+        intr_materialization=context.artifact_paths["materialization"],
+        lease_snapshot=context.artifact_paths["lease_snapshot"],
+        bridge_receipt=context.artifact_paths["bridge_receipt"],
+    )
     command = [sys.executable, str(runner_path), "--root", str(runtime), "--task-id", TASK_ID]
     completed = runner(command, cwd=runtime, env=child_env, check=False, capture_output=True, text=True)
     cycle_result = _last_json(completed.stdout)
     terminal_evidence = None
     terminal_error = None
+    canonical_runtime = None
+    cleanup = None
+
     if completed.returncode == 0 and isinstance(cycle_result, dict):
         try:
             terminal_evidence = _validate_targeted_terminal_evidence(runtime=runtime, cycle=cycle_result, result_path=result_path)
-        except RoundtripEventExecutionError as exc:
+            bridge_receipt = _load_object(
+                _existing_file(context.artifact_paths["bridge_receipt"], "canonical_runtime_bridge_receipt"),
+                "canonical_runtime_bridge_receipt",
+            )
+            canonical_runtime = close_roundtrip_runtime(
+                context,
+                terminal_evidence=terminal_evidence,
+                bridge_receipt=bridge_receipt,
+            )
+        except (RoundtripEventExecutionError, Exception) as exc:
             terminal_error = str(exc)
     else:
         terminal_error = "workercoordinator_cycle_failed_or_missing"
 
-    terminal_verified = isinstance(terminal_evidence, dict) and terminal_evidence.get("state") == TERMINAL_TRANSITION
+    terminal_verified = (
+        isinstance(terminal_evidence, dict)
+        and terminal_evidence.get("state") == TERMINAL_TRANSITION
+        and isinstance(canonical_runtime, Mapping)
+        and canonical_runtime.get("closure", {}).get("state") == "LEASE_CLOSED"
+    )
+    if not terminal_verified:
+        try:
+            cleanup = dict(context.adapter.release(context.compute_lease))
+        except Exception as exc:
+            cleanup = {"released": False, "reason": str(exc), "authority_effect": "NONE"}
+
     receipt = {
-        "schema": "stegverse.device-kv-skap.event-ephemeral-execution/v2",
+        "schema": "stegverse.device-kv-skap.event-ephemeral-execution/v3",
         "state": TERMINAL_TRANSITION if terminal_verified else "DEVICE_KV_SKAP_ROUNDTRIP_EXECUTION_INCOMPLETE",
         "task_id": TASK_ID,
         "cosv_task_pointer": pointer,
-        "refresh_receipt": refresh_receipt,
+        "runtime_base": str(runtime_base),
+        "runtime_root": str(runtime),
+        "runtime_id": context.runtime.get("runtime_id"),
+        "canonical_runtime_binding_ref": str(context.artifact_paths["binding"]),
+        "canonical_runtime_lease_id": context.machine.request.lease_id,
         "workercoordinator_command": command,
         "workercoordinator_returncode": completed.returncode,
         "workercoordinator_cycle_result": cycle_result,
         "terminal_evidence": terminal_evidence,
+        "canonical_runtime": canonical_runtime,
+        "failure_cleanup": cleanup,
         "terminal_validation_error": terminal_error,
         "runtime_execution_attempted": True,
+        "canonical_runtime_lane_consumed": True,
+        "workercoordinator_bridge_required": True,
         "event_ephemeral_materialization": True,
         "persistent_transport_runtime_required": False,
         "always_on_receiver_required": False,
         "second_user_operated_device_used": False,
         "hosted_runtime_used": False,
         "credential_authority": "TV/TVC",
+        "transition_authority": "Interlock/InTr",
         "github_token_runtime_authority": "NONE",
         "request_grants_execution_authority": False,
         "transport_grants_execution_authority": False,
-        "authority_effect": "EXISTING_WORKERCOORDINATOR_AND_INTR_AUTHORITY_ONLY",
+        "authority_effect": "EXISTING_WORKERCOORDINATOR_CANONICAL_RUNTIME_AND_INTR_AUTHORITY_ONLY",
     }
     receipt_path = runtime / RECEIPT_REL
     receipt_path.parent.mkdir(parents=True, exist_ok=True)
@@ -259,16 +344,25 @@ def execute(*, source_root: Path, runtime_root: Path, stegos_root: Path, gateway
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Execute one governed Device-KV-SKAP roundtrip on a bounded sovereign event runtime.")
+    parser = argparse.ArgumentParser(description="Execute one governed Device-KV-SKAP roundtrip on the canonical same-device EVENT_EPHEMERAL runtime.")
     parser.add_argument("--source-root", type=Path, default=ROOT)
-    parser.add_argument("--runtime-root", type=Path, required=True)
+    parser.add_argument("--runtime-root", type=Path, required=True, help="Base directory under which StegOS materializes the bounded canonical runtime.")
     parser.add_argument("--stegos-root", type=Path, required=True)
+    parser.add_argument("--retained-node", type=Path, required=True)
     parser.add_argument("--gateway-sidecar", type=Path, required=True)
     parser.add_argument("--tvc-drain-receipt", type=Path, required=True)
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
     try:
-        receipt = execute(source_root=args.source_root, runtime_root=args.runtime_root, stegos_root=args.stegos_root, gateway_sidecar=args.gateway_sidecar, tvc_drain_receipt=args.tvc_drain_receipt, output=args.output)
+        receipt = execute(
+            source_root=args.source_root,
+            runtime_root=args.runtime_root,
+            stegos_root=args.stegos_root,
+            retained_node=args.retained_node,
+            gateway_sidecar=args.gateway_sidecar,
+            tvc_drain_receipt=args.tvc_drain_receipt,
+            output=args.output,
+        )
     except Exception as exc:
         print(json.dumps({"state": "BLOCKED", "reason": str(exc), "authority_effect": "NONE"}, sort_keys=True))
         return 1
