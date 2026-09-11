@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """Dispatch GADI-RESIDENT-EXECUTION-001 through local source resolution, materialization, and mandatory preflight gating.
 
-Already-observed local runtime evidence may remain at its native runtime paths. A local-only
-resolver first stages exact non-claim bytes into the canonical GADI source directory without
-network fetches or invented values. When the canonical WorkerCoordinator invokes this
-dispatcher through the process-worker protocol, its already-created current task row is
-supplied explicitly; worker-claim locator resolution is deferred and the exact live row is
-staged immediately after the three non-claim source classes resolve. The materializer then
-validates/projects the four-source bundle, and preflight must return
-READY_FOR_RESIDENT_CONSUMPTION before the resident consumer is invoked.
+The `dispatch()` function is the post-claim path used by the process-worker bridge. It
+accepts the already-created current WorkerCoordinator task row, resolves only non-claim
+sources first, then stages the exact live claim before materialization/preflight.
+
+The claimless CLI is a resident/convergence entry surface. It may not bypass
+WorkerCoordinator. Therefore `main()` delegates to the readiness-gated targeted runtime
+wrapper, which verifies current non-claim evidence and invokes the canonical targeted
+WorkerCoordinator only when those inputs and the separated carrier reference are ready.
 """
 from __future__ import annotations
 
@@ -174,9 +174,15 @@ def main() -> int:
     parser.add_argument("--source-root", type=Path, default=ROOT)
     parser.add_argument("--runtime-root", type=Path, required=True)
     args = parser.parse_args()
-    result = dispatch(args.source_root, args.runtime_root)
+    # The CLI is intentionally pre-claim. Global convergence and human/operator
+    # visits may not call the post-claim dispatcher directly. The readiness wrapper
+    # invokes the existing targeted WorkerCoordinator only when current non-claim
+    # evidence is coherent; ProcessWorkerAdapter then calls dispatch() with the
+    # authentic current task row.
+    from run_gadi_targeted_runtime_if_ready import execute as execute_if_ready
+    result = execute_if_ready(args.source_root, args.runtime_root)
     print(json.dumps(result, sort_keys=True))
-    return 0 if result.get("state") == "AUTHENTIC_RUNTIME_EVIDENCE_CONSUMED" else 2
+    return 0
 
 
 if __name__ == "__main__":
