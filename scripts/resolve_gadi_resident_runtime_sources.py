@@ -6,6 +6,11 @@ performs network access. When a runtime source-locator manifest exists, it copie
 referenced bytes into the canonical GADI source staging paths. Without a locator manifest,
 existing staged files are preserved and missing inputs remain missing for the materializer
 to report fail-closed.
+
+When a fresh WorkerCoordinator claim has already been created by the canonical targeted
+runtime path, callers may defer the worker-claim source. In that mode the resolver handles
+only the three non-claim source classes and the dispatcher stages the exact current claim
+row immediately afterward. This avoids requiring or copying a stale pre-claim locator.
 """
 from __future__ import annotations
 
@@ -56,11 +61,12 @@ def safe_relative(value: Any) -> Path | None:
     return rel
 
 
-def resolve(runtime_root: Path) -> dict[str, Any]:
+def resolve(runtime_root: Path, *, defer_worker_claim: bool = False) -> dict[str, Any]:
     runtime = runtime_root.expanduser().resolve()
     locator_path = runtime / LOCATOR_REL
     blockers: list[str] = []
     resolved: dict[str, dict[str, str]] = {}
+    deferred = ["worker_claim"] if defer_worker_claim else []
 
     if locator_path.is_file():
         try:
@@ -82,6 +88,8 @@ def resolve(runtime_root: Path) -> dict[str, Any]:
                 blockers.append("SOURCE_LOCATOR_SOURCES_INVALID")
                 sources = {}
             for name, target_rel in TARGETS.items():
+                if defer_worker_claim and name == "worker_claim":
+                    continue
                 rel = safe_relative(sources.get(name))
                 if rel is None:
                     blockers.append(f"{name.upper()}_LOCATOR_MISSING_OR_UNSAFE")
@@ -113,6 +121,8 @@ def resolve(runtime_root: Path) -> dict[str, Any]:
         # source files remain valid. Missing staged inputs are left for the materializer
         # to identify deterministically.
         for name, target_rel in TARGETS.items():
+            if defer_worker_claim and name == "worker_claim":
+                continue
             target = runtime / target_rel
             if target.is_file():
                 try:
@@ -131,6 +141,8 @@ def resolve(runtime_root: Path) -> dict[str, Any]:
         "parent_task_id": PARENT_TASK_ID,
         "state": "SOURCE_RESOLUTION_COMPLETE" if not blockers else "SOURCE_RESOLUTION_BLOCKED_FAIL_CLOSED",
         "locator_manifest_observed": locator_path.is_file(),
+        "worker_claim_deferred_to_current_workercoordinator_invocation": defer_worker_claim,
+        "deferred_sources": deferred,
         "resolved_count": len(resolved),
         "resolved": dict(sorted(resolved.items())),
         "blockers": sorted(set(blockers)),
@@ -146,8 +158,9 @@ def resolve(runtime_root: Path) -> dict[str, Any]:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--runtime-root", type=Path, required=True)
+    parser.add_argument("--defer-worker-claim", action="store_true")
     args = parser.parse_args()
-    result = resolve(args.runtime_root)
+    result = resolve(args.runtime_root, defer_worker_claim=args.defer_worker_claim)
     print(json.dumps(result, sort_keys=True))
     return 0 if result["state"] == "SOURCE_RESOLUTION_COMPLETE" else 2
 
