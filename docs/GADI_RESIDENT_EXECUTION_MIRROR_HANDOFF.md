@@ -8,7 +8,7 @@ Parent task: `GADI-001`
 Umbrella goal: `GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001`
 COSV ID: `10100000100000`
 Canonical issue: `StegVerse-Labs/.github#1239`
-Status: `SOURCE_CONTRACTS_RECONCILED_THROUGH_WORKERCOORDINATOR / ACTUATOR_OBSERVATION_ADAPTER_IN_VALIDATION / AUTHENTIC_RESIDENT_EXECUTION_PENDING`
+Status: `SOURCE_CONTRACTS_RECONCILED_THROUGH_WORKERCOORDINATOR / ACTUATOR_OBSERVATION_ADAPTER_REPAIRED_REVALIDATION_PENDING / AUTHENTIC_RESIDENT_EXECUTION_PENDING`
 
 ## Current canonical state
 
@@ -34,7 +34,7 @@ SOURCE RESOLUTION
 
 ## Authentic source ownership
 
-The four runtime source classes now have explicit non-overlapping ownership:
+The four runtime source classes have explicit non-overlapping ownership:
 
 - **StegOS command:** native command state, `intr_decision_ref`, `runtime_binding_ref`, `control_surface`, `target_class`.
 - **InTr admission:** canonical admission state and matching `intr_decision_ref`; no runtime-binding ownership.
@@ -50,7 +50,7 @@ state/gadi-resident-execution/source/worker-claim.json
 state/gadi-resident-execution/source/actuator-observation.json
 ```
 
-## Controlled actuator observation adapter now in validation
+## Controlled actuator observation adapter
 
 Repository inspection found no production GADI actuator-observation producer. StegOS already defines actuator output as a governed state transition and requires governed output packets to preserve target node, mode, source, duration, risk class, authority reference, and receipt pointer.
 
@@ -81,7 +81,19 @@ execution_claimed = false
 authority_effect = NONE_EXECUTION_EVIDENCE_ONLY
 ```
 
-Regression coverage in `tests/test_gadi_actuator_observation_adapter.py` proves valid already-receipted controlled output projects without authority creation and unreceipted, uncontrolled, authority-drifted, or unbound evidence fails closed.
+Regression coverage is in `tests/test_gadi_actuator_observation_adapter.py`.
+
+### Exact-head validation failure and repair
+
+PR #1369 exact head `6e0f30b659f6918740bd0ba4189b023c1c695e85` produced:
+
+- organization-control validation: PASS;
+- deterministic repository suite: FAIL;
+- Heartbeat validation: FAIL at the shared complete deterministic repository-suite step.
+
+The deterministic log isolated one regression: the new actuator-adapter test imported `pytest`, while the canonical repository validation environment intentionally executes `python -m unittest discover -v tests` without pytest installed. The test was also written as free pytest-style functions, so merely removing the import would not have caused those assertions to be discovered by unittest.
+
+Commit `1645c4c6e2a8ce89d92b0ee8f4370ba688475391` repairs the regression by converting the entire actuator-adapter test file to stdlib `unittest.TestCase` plus `assertRaisesRegex`, preserving the same positive and fail-closed assertions without adding any dependency. Revalidation is required on the new exact branch head before merge.
 
 This adapter is not an actuator implementation and cannot create authentic runtime evidence. It only removes manual reshaping once an authoritative governed-output receipt exists.
 
@@ -89,11 +101,11 @@ This adapter is not an actuator implementation and cannot create authentic runti
 
 No authentic current GADI WorkerCoordinator claim/fence is presently claimed. The registered worker remains source-compatible but runtime claim/fence must originate from the existing WorkerCoordinator assignment plane.
 
-No authentic current controlled actuator output receipt has yet been observed. The new adapter therefore provides the producer seam but does not satisfy the actuator evidence predicate by itself.
+No authentic current controlled actuator output receipt has yet been observed. The adapter therefore provides the producer seam but does not satisfy the actuator evidence predicate by itself.
 
 ## Remaining authentic completion predicates
 
-1. Validate and merge the governed actuator-observation adapter without weakening output-receipt provenance.
+1. Revalidate and merge PR #1369 only after its corrected exact head passes the observed canonical validations.
 2. Produce or locate an authentic current native StegOS GADI command for `GADI-001`.
 3. Produce or locate its exact canonical InTr admission with matching `intr_decision_ref`.
 4. Obtain an authentic current WorkerCoordinator `claim_id` and `fencing_token` for `GADI-RESIDENT-EXECUTION-001`.
@@ -107,7 +119,7 @@ No authentic current controlled actuator output receipt has yet been observed. T
 
 ## Immediate continuation
 
-After this adapter validates and merges, inspect the existing StegOS/Node governed-output transition implementation for the concrete controlled test surface capable of producing the required authentic receipt without introducing a second actuator or runtime plane. Then bind that output path to the already-merged GADI source-resolution chain.
+After PR #1369 revalidates and merges, inspect the existing StegOS/Node governed-output transition implementation for the concrete controlled test surface capable of producing the required authentic receipt without introducing a second actuator or runtime plane. Then bind that output path to the already-merged GADI source-resolution chain.
 
 Do not synthesize authentic runtime evidence in GitHub or CI.
 
@@ -117,7 +129,7 @@ Source implementation, CI validation, merges, compatibility adapters, source pro
 
 ## README impact
 
-`README.md` was reviewed. Existing documentation already covers local-only source refresh, resident-request dispatch, WorkerCoordinator authority separation, and non-authorizing transport semantics. This slice adds an internal evidence adapter and introduces no new top-level interface; no README mutation is required.
+`README.md` was reviewed. Existing documentation already covers local-only source refresh, resident-request dispatch, WorkerCoordinator authority separation, and non-authorizing transport semantics. This slice adds an internal evidence adapter and test-runner compatibility repair and introduces no new top-level interface; no README mutation is required.
 
 ## Release rule
 
