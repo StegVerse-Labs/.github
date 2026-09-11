@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/stegverse.ecosystem-continuity-finding.v1.schema.json",
+  "title": "StegVerse Ecosystem Continuity Finding v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "finding_id", "component_id", "predicate_id", "observation_state", "severity", "continuity_critical", "evidence", "authority_owner", "remediation_state"],
+  "properties": {
+    "schema": {"const": "stegverse.ecosystem-continuity-finding.v1"},
+    "finding_id": {"type": "string", "minLength": 16},
+    "component_id": {"type": "string", "minLength": 1},
+    "predicate_id": {"type": "string", "minLength": 1},
+    "observation_state": {"enum": ["PASS", "FAIL", "DEGRADED", "UNKNOWN", "NOT_OBSERVED", "STALE", "UNREACHABLE", "PROBE_REQUIRED"]},
+    "severity": {"enum": ["INFO", "LOW", "MEDIUM", "HIGH", "CRITICAL"]},
+    "continuity_critical": {"type": "boolean"},
+    "evidence": {"type": "array", "items": {"type": "string"}},
+    "evidence_age_seconds": {"type": ["integer", "null"], "minimum": 0},
+    "authority_owner": {"type": "string", "minLength": 1},
+    "remediation_class": {"enum": ["NONE", "AUTO_REMEDIABLE", "DISPATCHABLE", "AUTHORITY_BOUNDARY", "HUMAN_BOUNDARY"]},
+    "remediation_state": {"enum": ["UNASSIGNED", "DETECTED", "ACKNOWLEDGED_BY_HEALER", "DISPATCHED", "REMEDIATION_IN_PROGRESS", "AWAITING_AUTHORITY", "RECOVERY_PENDING_VERIFICATION", "VERIFIED_RECOVERED", "SUPERSEDED"]},
+    "detail": {"type": "string"}
+  }
+}
