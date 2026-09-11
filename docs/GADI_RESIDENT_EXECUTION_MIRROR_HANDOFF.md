@@ -8,7 +8,7 @@ Parent task: `GADI-001`
 Umbrella goal: `GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001`
 COSV ID: `10100000100000`
 Canonical issue: `StegVerse-Labs/.github#1239`
-Status: `SOURCE_CONTRACTS_RECONCILED / ACTUATOR_OBSERVATION_ADAPTER_MERGED / STEGOS_CONTROLLED_OUTPUT_RECEIPT_SEAM_MERGED / WORKERCOORDINATOR_REGISTRATION_REPAIR_IN_VALIDATION / AUTHENTIC_RESIDENT_EXECUTION_PENDING`
+Status: `SOURCE_CONTRACTS_RECONCILED / ACTUATOR_OBSERVATION_ADAPTER_MERGED / STEGOS_CONTROLLED_OUTPUT_RECEIPT_SEAM_MERGED / WORKERCOORDINATOR_REGISTRATION_REPAIR_IN_REVALIDATION / AUTHENTIC_RESIDENT_EXECUTION_PENDING`
 
 ## Current canonical state
 
@@ -61,22 +61,15 @@ PR #1369 installed `scripts/materialize_gadi_actuator_observation.py` as a non-a
 
 StegOS PR #331 added `stegos/gadi_controlled_actuator.py` without creating a second runtime or actuator. `record_controlled_actuator_output()` reuses the caller-supplied existing `StegOSKernel`, receipts only an effect already observed by the runtime caller, and binds the resulting packet to the existing hash-linked runtime receipt chain. Source/CI still do not prove an authentic effect.
 
-## WorkerCoordinator runtime-registration audit — repair in validation
+## WorkerCoordinator runtime-registration audit — repair in revalidation
 
-Runtime assembly inspection found that the GADI child was source-compatible but not actually claimable through the existing targeted WorkerCoordinator path. Four stale/missing registration projections were identified.
+Runtime assembly inspection found that the GADI child was source-compatible but not actually claimable through the existing targeted WorkerCoordinator path. Five stale/missing registration projections were identified.
 
 ### 1. Missing independent-task-control admission
 
-`heartbeat_runtime/worker_runtime_legacy.py` requires an independently targeted `HANDOFF_READY` task to carry:
+The existing WorkerCoordinator requires an independently targeted `HANDOFF_READY` task to project `INDEPENDENT_TASK_CONTROL`, `AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM`, `fresh_fence_required=true`, and a non-authorizing heartbeat posture. The executable GADI handoff already authorizes `TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT`, but the GADI registry fragment did not project that existing authority into the task row.
 
-```text
-authority_domain = INDEPENDENT_TASK_CONTROL
-claim_state = AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM
-fresh_fence_required = true
-heartbeat_grants_execution_authority = false
-```
-
-The executable GADI handoff already authorizes `TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT`, but `control/worker-registry.d/gadi-resident-execution-001.json` did not project that existing authority into the registry task row. The repair adds the missing non-authorizing admission projection and uses the current canonical portable fresh-fence floor:
+The repair adds the missing non-authorizing admission projection with the current portable fresh-fence floor:
 
 ```text
 minimum_fencing_token_exclusive = 24
@@ -86,13 +79,9 @@ This does not mint a claim or fence. It only allows the existing WorkerCoordinat
 
 ### 2. Missing finite WorkerCoordinator expiry basis
 
-The GADI task had `cost_basis_ref = null`. The existing WorkerCoordinator fails closed with `EXPIRY_BASIS_UNAVAILABLE` when `_expiry_budget()` cannot resolve a finite task-class budget.
+The GADI task had `cost_basis_ref = null`, so the existing WorkerCoordinator would fail closed with `EXPIRY_BASIS_UNAVAILABLE`.
 
-The repair installs:
-
-`cost-basis/worker-runtime/gadi-resident-execution.json`
-
-It is explicitly a conservative source-bounded estimate, not runtime measurement:
+The repair installs `cost-basis/worker-runtime/gadi-resident-execution.json` with an explicitly non-empirical conservative source-bounded estimate:
 
 ```text
 sample_count = 0
@@ -101,59 +90,64 @@ expiry_candidate_beats = 16
 estimate_basis = CONSERVATIVE_SOURCE_BOUNDED_ONE_SHOT_NOT_EMPIRICAL_RUNTIME_MEASUREMENT
 ```
 
-The estimate is bounded by the existing one-action/one-retry handoff and 300-second process-adapter timeout; it claims no authentic execution timing.
+No authentic execution timing is claimed.
 
 ### 3. Non-terminal relationships incorrectly modeled as terminal worker dependencies
 
-The executable handoff previously listed:
+The executable handoff previously placed `GADI-001`, `STEGVERSE-CANONICAL-WORK-COORDINATION-001`, and `TVC-CAPABILITY-RUNTIME-002` inside `task.dependencies`. The generic WorkerCoordinator interprets every such entry as a predecessor worker task that must be `COMPLETED`; because `GADI-001` is intentionally ACTIVE, that made the child permanently unclaimable.
 
-```text
-GADI-001
-STEGVERSE-CANONICAL-WORK-COORDINATION-001
-TVC-CAPABILITY-RUNTIME-002
-```
-
-inside `task.dependencies`.
-
-The generic WorkerCoordinator interprets every `task.dependencies` entry as a predecessor worker task that must exist in the same registry and be `COMPLETED`. These three identifiers are parent/coordination/runtime-authority relationships, not terminal predecessor worker tasks. In particular, `GADI-001` is intentionally ACTIVE, so retaining it as a WorkerCoordinator dependency made the child permanently unclaimable.
-
-The repair sets:
-
-```text
-task.dependencies = []
-```
-
-and preserves the three identifiers under `task.coordination_refs`. Their actual runtime requirements remain enforced by the GADI source resolver/materializer/preflight and authority model. This removes a false terminal dependency gate; it does not remove InTr, TV/TVC, parent-goal, or runtime-evidence requirements.
+The repair sets `task.dependencies=[]` and preserves those identifiers under `task.coordination_refs`. Actual InTr, TV/TVC, parent-goal, and runtime-evidence requirements remain enforced by the GADI authority/source/preflight chain.
 
 ### 4. Stale worker adapter identity
 
-The registered GADI worker pointed to:
+The registered GADI worker pointed to `process:gadi-resident-execution-v1`, while the enabled adapter is `process:gadi-resident-execution-v2-preflight-gated`. The repair aligns the worker row to the already-enabled preflight-gated v2 adapter.
 
-`process:gadi-resident-execution-v1`
+### 5. Incompatible generic worker capability profile
 
-while the enabled process adapter is:
+Exact-head validation of PR #1388 exposed another real registration defect: the GADI worker used `control/worker-capability-profiles.json#repository-maintenance-v1`, but current WorkerCoordinator `_worker_for()` validates that every required capability is explicitly allowed by the selected profile. `repository-maintenance-v1` does not allow `gadi_resident_defensive_execution`, so the GADI worker remained correctly unselectable even after its adapter identity was repaired.
 
-`process:gadi-resident-execution-v2-preflight-gated`
+The repair adds a dedicated narrow profile:
 
-Because WorkerCoordinator resolves workers only when their `adapter_ref` exists in the loaded adapter table, the stale v1 identity made the worker unselectable. The repair aligns the worker row to the already-enabled preflight-gated v2 adapter.
+`control/gadi-worker-capability-profiles.json#gadi-resident-defensive-execution-v1`
+
+It allows exactly:
+
+```text
+gadi_resident_defensive_execution
+```
+
+with `executor_type=repository_worker`, bounded local mutation, no deployment authority, and explicit statements that profile availability/capability matching grants no authority. The GADI worker now references that narrow profile rather than broadening the shared repository-maintenance profile.
+
+## Exact-head validation failure and regression repair
+
+PR #1388 initial exact head `b94cde8b7c7efbbbebf38998c7289c3622ba05f4` produced:
+
+- organization-control validation: PASS;
+- deterministic repository suite: FAIL;
+- Heartbeat validation: FAIL at the shared complete deterministic repository-suite step.
+
+The failure was isolated to the new WorkerCoordinator registration regression path rather than an organization-control or authority-plane failure. Inspection of the current admitted runtime showed that normal imports resolve `heartbeat_runtime.worker_runtime.WorkerCoordinator` to the admitted WorkerCoordinator wrapper, whose inherited `_worker_for()` path enforces canonical worker capability profiles. The initial regression incorrectly treated adapter presence as sufficient worker eligibility and therefore failed to model the real profile gate.
+
+The repaired test now loads adapters through the canonical `scripts.run_worker_runtime.load_adapters()` path and asks the admitted WorkerCoordinator to resolve the GADI worker using its actual registry/profile contract. The dedicated GADI capability profile was added because the resulting profile mismatch was a real production registration defect, not bypassed in the test.
 
 ### Regression coverage
 
-`tests/test_gadi_workercoordinator_registration.py` verifies:
+`tests/test_gadi_workercoordinator_registration.py` now verifies:
 
 - independent-task-control admission projects the existing handoff authority and remains heartbeat-non-authorizing;
 - fresh-fence floor is 24;
 - the registered worker matches the enabled preflight-gated adapter;
+- the worker uses the dedicated narrow GADI capability profile and that profile does not grant authority by availability or capability match;
 - runtime/authority relationships are coordination references rather than false terminal worker dependencies;
 - `_expiry_budget()` resolves the finite 16-beat LOW-confidence source estimate;
-- `_worker_for()` can resolve `gadi-resident-execution-worker` when the enabled adapter is loaded;
+- canonical adapter loading plus the admitted WorkerCoordinator can resolve exactly the GADI worker;
 - authentic InTr/runtime/actuator blockers remain present.
 
-This repair makes the existing task registration structurally eligible for future WorkerCoordinator admission. It does not make current runtime evidence appear and does not itself execute the task.
+This repair only makes the existing task registration structurally eligible for future WorkerCoordinator admission. It does not make current runtime evidence appear and does not itself execute the task.
 
 ## Current WorkerCoordinator evidence state
 
-The canonical runtime evidence state remains unchanged while this repair validates:
+The canonical runtime evidence state remains unchanged while this repair revalidates:
 
 ```text
 state = HANDOFF_READY
@@ -179,19 +173,11 @@ No claim, fence, admission, runtime binding, or actuator result is inferred from
 
 ## Controlled simulation boundary
 
-The historical Continuity controlled-simulation fixture is useful for closed-loop semantics only and explicitly records:
-
-```text
-production_effect = false
-resident_runtime_observed = false
-master_records_reconciliation_observed = false
-```
-
-It therefore cannot satisfy authentic runtime execution predicates.
+The historical Continuity controlled-simulation fixture remains semantic evidence only and cannot satisfy authentic runtime execution predicates because it explicitly records no production effect, resident runtime observation, or Master Records reconciliation.
 
 ## Remaining authentic completion predicates
 
-1. Validate and merge the WorkerCoordinator registration repair without weakening runtime preflight.
+1. Revalidate and merge the WorkerCoordinator registration repair without weakening runtime preflight.
 2. Produce or locate an authentic current native StegOS GADI command for `GADI-001`.
 3. Produce or locate the exact current canonical InTr admission carrying the matching `intr_decision_ref`.
 4. Allow the existing WorkerCoordinator to acquire an authentic fresh claim/fence for `GADI-RESIDENT-EXECUTION-001` only after its real admission predicates pass.
@@ -206,9 +192,9 @@ It therefore cannot satisfy authentic runtime execution predicates.
 
 ## Immediate continuation
 
-After this registration repair validates and merges, inspect the current Universal InTr/GADI ingress opportunity and runtime-local source state. Do not invoke targeted WorkerCoordinator execution merely because the task becomes structurally claimable. A legitimate claim must still be paired with current admitted GADI runtime evidence and the preflight-gated source chain.
+After this registration repair validates and merges, inspect the post-claim GADI source-projection order for circularity, then inspect the current Universal InTr/GADI ingress opportunity and runtime-local source state. Do not invoke targeted WorkerCoordinator execution merely because the task becomes structurally claimable. A legitimate claim must still be paired with current admitted GADI runtime evidence and the preflight-gated source chain.
 
-Do not treat GitHub source, CI, historical simulation, a request record, an AVAILABLE worker registration, or the admission projection itself as authentic resident execution evidence.
+Do not treat GitHub source, CI, historical simulation, a request record, an AVAILABLE worker registration, a capability profile, or the admission projection itself as authentic resident execution evidence.
 
 ## Collision boundary
 
@@ -216,7 +202,7 @@ No second heartbeat, WorkerCoordinator, scheduler, resident service, runtime lea
 
 ## Evidence boundary
 
-Source implementation, CI validation, registration repair, compatibility adapters, source projection, test receipts, and historical simulation are not authentic resident execution evidence. Authentic execution remains pending until current runtime-local evidence exists and the resident consumer emits a qualifying subject-bound receipt.
+Source implementation, CI validation, registration repair, capability-profile eligibility, compatibility adapters, source projection, test receipts, and historical simulation are not authentic resident execution evidence. Authentic execution remains pending until current runtime-local evidence exists and the resident consumer emits a qualifying subject-bound receipt.
 
 ## README impact
 
