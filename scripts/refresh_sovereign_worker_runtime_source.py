@@ -96,7 +96,10 @@ STATIC_FILES = (
     Path("scripts/dispatch_resident_execution_requests.py"),
     Path("scripts/consume_cosv_task_pointer_runtime_enforcement_request.py"),
     Path("scripts/consume_native_email_action_monitor_request.py"),
+    Path("scripts/consume_native_email_action_monitor_request_kv.py"),
     Path("scripts/run_native_email_action_monitor.py"),
+    Path("scripts/run_native_email_action_monitor_kv_guard.py"),
+    Path("scripts/persist_native_email_incidents_to_kv.py"),
     Path("scripts/normalize_github_failure_email_events.py"),
     Path("scripts/reconcile_email_failure_incidents.py"),
     Path("scripts/install_and_run_canonical_work_event_bootstrap.py"),
@@ -302,7 +305,7 @@ def refresh(source_root: Path, runtime_root: Path) -> dict:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Refresh static sovereign WorkerCoordinator source from an already-local checkout.")
+    parser = argparse.ArgumentParser(description="Refresh static sovereign WorkerCoordinator source from an already-local canonical checkout.")
     parser.add_argument("--source-root", required=True, type=Path)
     parser.add_argument("--runtime-root", required=True, type=Path)
     args = parser.parse_args()
