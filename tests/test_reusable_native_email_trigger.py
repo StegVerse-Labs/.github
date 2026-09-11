@@ -14,14 +14,14 @@ spec.loader.exec_module(subject)
 
 
 class ReusableNativeEmailTriggerTests(unittest.TestCase):
-    def test_native_email_runner_receives_source_and_runtime_roots(self) -> None:
-        runner = ROOT / "scripts" / "consume_native_email_action_monitor_request.py"
+    def test_native_email_runner_receives_source_and_runtime_roots_through_kv_wrapper(self) -> None:
+        declared_runner = ROOT / "scripts" / "consume_native_email_action_monitor_request.py"
         command = subject.build_runner_command(
             "scripts/consume_native_email_action_monitor_request.py",
-            runner,
+            declared_runner,
             {"source_root": str(ROOT), "runtime_root": str(ROOT)},
         )
-        self.assertEqual(command[1], str(runner))
+        self.assertEqual(command[1], str(ROOT / "scripts" / "consume_native_email_action_monitor_request_kv.py"))
         self.assertIn("--source-root", command)
         self.assertIn("--runtime-root", command)
         self.assertEqual(command[command.index("--runtime-root") + 1], str(ROOT.resolve()))
