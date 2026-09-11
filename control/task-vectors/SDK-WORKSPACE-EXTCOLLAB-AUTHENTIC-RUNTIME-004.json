@@ -18,7 +18,7 @@
     "StegVerse-Labs/.github:pull/1415",
     "StegVerse-Labs/.github:commit/4af1b801a193a3c9ace7c6327ef010fd40915b15"
   ],
-  "observed_at": "2026-09-11T14:50:05.385Z",
+  "observed_at": "2026-09-11T14:53:41.405Z",
   "exact_metrics": {
     "lifecycle": "ACTIVE",
     "activation_condition": "PARENT_GOAL_PROMPT_COUNT_REACHES_20",
@@ -45,8 +45,11 @@
     "activation_condition_status": "SATISFIED",
     "parent_goal_prompt_count": 20,
     "coordination_activated": true,
-    "runtime_resolution": "UNRESOLVED",
-    "authentic_runtime_execution_observed": false
+    "runtime_resolution": "UNRESOLVED_NO_CURRENT_AUTHORIZED_DEVICE",
+    "authentic_runtime_execution_observed": false,
+    "authorized_remote_device_count": 0,
+    "retained_drive_reseal_receipt_matches": 0,
+    "retained_drive_listener_receipt_matches": 0
   },
   "authority_effect": "NONE",
   "canonical_owner_ref": "StegVerse-Labs/.github:data/canonical-task-records/SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004.json"
