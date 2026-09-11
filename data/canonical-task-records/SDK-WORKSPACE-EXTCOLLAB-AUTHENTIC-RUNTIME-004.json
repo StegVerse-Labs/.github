@@ -110,7 +110,7 @@
     ],
     "environment": "SOVEREIGN_RESIDENT",
     "direction": "INTERNAL",
-    "mutation_required": true,
+    "mutation_required": false,
     "deployment_required": false,
     "current_observation_required": true,
     "already_local_source_required": true,
@@ -130,5 +130,11 @@
     "retained_drive_listener_receipt_matches": 0,
     "disposition": "ACTIVE_WAIT_FOR_EXISTING_AUTHORIZED_RESIDENT_RECONNECTION",
     "authority_effect": "NONE"
+  },
+  "readme_impact": {
+    "material_function_change": false,
+    "readme_updated_in_change_set": false,
+    "readme_path": "README.md",
+    "no_readme_update_reason": "Resolver and coordination semantics only; no new public runtime capability is claimed."
   }
 }
