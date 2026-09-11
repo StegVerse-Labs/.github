@@ -8,8 +8,11 @@ SCRIPT = ROOT / "scripts" / "evaluate_task_registry_collision_checkin.py"
 BOOTSTRAP = ROOT / "scripts" / "install_and_run_canonical_work_event_bootstrap.py"
 
 
-def run(task_id):
-    p = subprocess.run([sys.executable, str(SCRIPT)], input=json.dumps({"task_id":task_id}), text=True, capture_output=True, check=True)
+def run(task_id, context=None):
+    payload = {"task_id": task_id}
+    if context is not None:
+        payload["checkin_context"] = context
+    p = subprocess.run([sys.executable, str(SCRIPT)], input=json.dumps(payload), text=True, capture_output=True, check=True)
     return json.loads(p.stdout)
 
 
@@ -18,6 +21,9 @@ def test_unregistered_stops_before_mutation():
     assert out["disposition"] == "STOP_NOT_REGISTERED"
     assert out["session_action"] == "END_OR_REGISTER_BEFORE_MUTATION"
     assert out["authority_effect"] == "NONE"
+    assert out["checkin_context"] == {}
+    assert out["checkin_context_sha256"].startswith("sha256:")
+    assert out["checkin_disposition_sha256"].startswith("sha256:")
 
 
 def test_checked_out_task_returns_collision_context():
@@ -32,6 +38,30 @@ def test_retired_task_returns_stop_disposition():
     out = run("STEGCORE-UNKNOWN-PROBE-SEMANTICS-001")
     assert out["disposition"] in {"STOP_INACTIVE", "STOP_SUPERSEDED"}
     assert out["session_action"].startswith("END_SESSION")
+
+
+def test_session_branch_pr_and_intended_targets_are_bound_into_disposition():
+    context = {
+        "session_id": "session-abc",
+        "checked_in_at": "2026-09-11T03:30:00Z",
+        "repository": "StegVerse-Labs/StegOS",
+        "branch": "task-registry-test",
+        "pull_request": 999,
+        "source_head": "0123456789abcdef",
+        "first_unresolved_predicate": "AUTHENTIC_RUNTIME_PROOF",
+        "repositories_under_mutation": ["StegVerse-Labs/StegOS", "StegVerse-Labs/.github"],
+        "components_under_mutation": ["universal-intr", "task-registry-checkin"],
+    }
+    out = run("STEGOS-NODE-MANIFOLD-001", context)
+    assert out["checkin_context"] == {
+        **context,
+        "repositories_under_mutation": sorted(context["repositories_under_mutation"]),
+        "components_under_mutation": sorted(context["components_under_mutation"]),
+    }
+    assert out["checkin_context_sha256"].startswith("sha256:")
+    assert out["checkin_disposition_sha256"].startswith("sha256:")
+    candidates = {row["task_id"]: row for row in out.get("collision_candidates", [])}
+    assert "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001" in candidates or "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001" in candidates
 
 
 def test_canonical_work_bootstrap_requires_registry_preflight_before_route_mutation():
