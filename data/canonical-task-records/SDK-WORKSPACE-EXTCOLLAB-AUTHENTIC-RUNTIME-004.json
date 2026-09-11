@@ -139,7 +139,7 @@
     "already_local_source_required": true,
     "second_user_operated_device_required": false
   },
-  "runtime_resolution": null,
+  "runtime_resolution": "UNRESOLVED_NO_CURRENT_AUTHORIZED_DEVICE",
   "worker_claim": {
     "authority": "WORKERCOORDINATOR",
     "claim_ref": null,
@@ -147,7 +147,7 @@
     "projection_only": true
   },
   "latest_runtime_observation": {
-    "observed_at": "2026-09-11T18:46:00Z",
+    "observed_at": "2026-09-11T18:58:00Z",
     "authorized_remote_device_count": 0,
     "retained_drive_reseal_receipt_matches": 0,
     "retained_drive_listener_receipt_matches": 0,
