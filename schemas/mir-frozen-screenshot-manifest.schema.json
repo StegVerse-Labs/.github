@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stegverse.org/schemas/mir-frozen-screenshot-manifest.schema.json",
+  "title": "MIR Frozen Screenshot Evidence Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "experiment_id",
+    "evidence_epoch",
+    "frozen_at",
+    "frozen_by",
+    "entries"
+  ],
+  "properties": {
+    "schema": {"const": "stegverse.mir-frozen-screenshot-manifest/v1"},
+    "experiment_id": {"type": "string", "minLength": 1},
+    "evidence_epoch": {"type": "string", "minLength": 1},
+    "frozen_at": {"type": "string", "format": "date-time"},
+    "frozen_by": {"type": "string", "minLength": 1},
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "purpose_id",
+          "purpose_description",
+          "artifact_ref",
+          "artifact_sha256"
+        ],
+        "properties": {
+          "purpose_id": {"type": "string", "minLength": 1},
+          "purpose_description": {"type": "string", "minLength": 1},
+          "artifact_ref": {"type": "string", "minLength": 1},
+          "artifact_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "captured_at": {"type": ["string", "null"], "format": "date-time"}
+        }
+      }
+    }
+  }
+}
