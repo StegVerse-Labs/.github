@@ -40,6 +40,7 @@ Relevant merged evidence:
 .github #1465  merge f128716def180dfdeb2f0b0eeb6bff0da6086841
 .github #1469  merge eea45d164be4d570d4e8eb6ca5e5d960c6cdac24
 .github #1487  merge 1d007fc696dc35b2e16f7b52bbd0f9ddd094f26b
+.github #1522  merge 430ae9ae38094e0db4d65d553a62f9cca5e45f47
 TVC #386      merge 2e1bda01699439731569dce45d5d7b4c5b342424
 TVC #387      merge aef6b6f5dc99d2a531718ca475d20858ae8e68a6
 ```
@@ -109,9 +110,11 @@ GitHub Actions remains validation/evidence transport only. TV/TVC remains creden
 
 ## Task Registry reconciliation
 
-The canonical task record is being reconciled to the already-merged source/runtime semantics without advancing runtime truth. The record now carries the merged #1461 bootstrap reachability, #1465 portable exact-dispatch, #1463 Remote Computer ephemeral-node interpretation, and #1487 source-revision evidence refs; requires `RESIDENT_REFRESH_DISPATCH_SOURCE_GIT_HEAD_AND_EXACT_SELECTOR_OBSERVED`; and records `remote_computer_ephemeral_node_capacity_allowed=true` while preserving `second_user_operated_machine_allowed=false`.
+PR #1522 merged the canonical task-record reconciliation at `430ae9ae38094e0db4d65d553a62f9cca5e45f47` after organization-control, Heartbeat, and complete deterministic-suite validation passed at exact head `132db951f3b2cf1a40cb09617b2b273a04219c55`.
 
-This reconciliation does not change either Apple blocker, does not populate WorkerCoordinator claim/fence refs, does not mark completion or activation proof complete, and does not move the task beyond `CLAIMED_INTEGRATION`. It only makes the Task Registry agree with the already-merged handoff and executable source contract.
+The canonical record now carries the merged #1461 bootstrap reachability, #1465 portable exact-dispatch, #1463 Remote Computer ephemeral-node interpretation, and #1487 source-revision evidence refs; requires `RESIDENT_REFRESH_DISPATCH_SOURCE_GIT_HEAD_AND_EXACT_SELECTOR_OBSERVED`; and records `remote_computer_ephemeral_node_capacity_allowed=true` while preserving `second_user_operated_machine_allowed=false`.
+
+This reconciliation did not change either Apple blocker, did not populate WorkerCoordinator claim/fence refs, did not mark completion or activation proof complete, and did not move the task beyond `CLAIMED_INTEGRATION`. The remaining boundary is authentic resident execution evidence.
 
 ## Remaining sequence
 
@@ -129,4 +132,4 @@ Repository `README.md` remains accurate for Canonical Work and authority separat
 
 ## Current state
 
-`ACTIVE_NOT_SUPERSEDED / TASK_REGISTRY_AND_COSV_RECONCILED_1437 / GLOBAL_CONVERGENCE_SELECTOR_REPAIR_MERGED_VALIDATED_1440 / STEGBROWSER_BOOTSTRAP_REACHABILITY_MERGED_VALIDATED_1461 / PORTABLE_STEGBROWSER_PROMOTION_DISPATCH_MERGED_VALIDATED_1465 / HANDOFF_RECONCILED_1469 / SOURCE_HEAD_PLUS_EXACT_SELECTOR_EVIDENCE_TEST_MERGED_VALIDATED_1487 / TASK_REGISTRY_RUNTIME_EVIDENCE_CONTRACT_RECONCILIATION_PENDING / REMOTE_COMPUTER_ELIGIBLE_AS_ADMITTED_EPHEMERAL_STEGOS_CAPACITY / REMOTE_COMPUTER_CURRENTLY_UNAVAILABLE / AUTHENTIC_RESIDENT_SOURCE_REVISION_NOT_OBSERVED / AUTHENTIC_RESIDENT_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / AUTHENTIC_TVC_MATERIALIZATION_AND_RESTART_NOT_OBSERVED / LIVE_APPLE_OWNER_INGRESS_READY_NOT_OBSERVED / AUTHENTIC_CURRENT_IPHONE_INSTALL_LISTENER_DISCOVERY_PENDING`
+`ACTIVE_NOT_SUPERSEDED / TASK_REGISTRY_AND_COSV_RECONCILED_1437 / GLOBAL_CONVERGENCE_SELECTOR_REPAIR_MERGED_VALIDATED_1440 / STEGBROWSER_BOOTSTRAP_REACHABILITY_MERGED_VALIDATED_1461 / PORTABLE_STEGBROWSER_PROMOTION_DISPATCH_MERGED_VALIDATED_1465 / HANDOFF_RECONCILED_1469 / SOURCE_HEAD_PLUS_EXACT_SELECTOR_EVIDENCE_TEST_MERGED_VALIDATED_1487 / TASK_REGISTRY_RUNTIME_EVIDENCE_CONTRACT_RECONCILED_1522 / REMOTE_COMPUTER_ELIGIBLE_AS_ADMITTED_EPHEMERAL_STEGOS_CAPACITY / REMOTE_COMPUTER_CURRENTLY_UNAVAILABLE / AUTHENTIC_RESIDENT_SOURCE_REVISION_NOT_OBSERVED / AUTHENTIC_RESIDENT_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / AUTHENTIC_TVC_MATERIALIZATION_AND_RESTART_NOT_OBSERVED / LIVE_APPLE_OWNER_INGRESS_READY_NOT_OBSERVED / AUTHENTIC_CURRENT_IPHONE_INSTALL_LISTENER_DISCOVERY_PENDING`
