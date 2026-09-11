@@ -1,20 +1,23 @@
 # Native Email Reusable Hourly Mirror Handoff
 
-Updated: 2026-09-10
+Updated: 2026-09-11
 Repository: `StegVerse-Labs/.github`
 Task: `STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001`
 COSV task vector: `10100000100000`
 Reusable identity: `RT-NATIVE-EMAIL-ACTION-MONITOR-001`
 Parent handoff: `docs/NATIVE_EMAIL_ACTION_MONITOR_MIRROR_HANDOFF.md`
 Scheduler owner: `StegVerse-Labs/StegVerse-Healer` / `SHWP-HEALER-SOVEREIGN-SCHEDULER-001`
-State: `SOURCE_INTEGRATION_MERGED / HOURLY_REUSABLE_BINDING_MERGED / KV_BEFORE_ARCHIVE_MERGED / RESIDENT_REFRESH_PROPAGATION_MERGED / BOUNDED_RETRY_MERGED / GOVERNED_ARCHIVE_MERGED / VERIFIED_SDK_SOURCE_REUSE_MERGED / SOURCE_PREP_LOCATOR_FORWARDING_REPAIR_IN_VALIDATION / AUTHENTIC_SCHEDULED_GMAIL_KV_GOVERNANCE_RECEIPT_PENDING`
+State: `SOURCE_INTEGRATION_MERGED / HOURLY_REUSABLE_BINDING_MERGED / KV_BEFORE_ARCHIVE_MERGED / RESIDENT_REFRESH_PROPAGATION_MERGED / BOUNDED_RETRY_MERGED / GOVERNED_ARCHIVE_MERGED / VERIFIED_SDK_SOURCE_REUSE_MERGED / SOURCE_PREP_LOCATOR_FORWARDING_REPAIR_MERGED_VALIDATED / AUTHENTIC_SOURCE_PREP_CLAIM_FENCE_AND_SCHEDULED_GMAIL_KV_GOVERNANCE_RECEIPTS_PENDING`
 
 ## Canonical execution path
 
 ```text
 resident WorkerCoordinator cycle
+-> independently admitted SV-DN1 source prep when required
+-> fresh source-prep claim/fence
+-> verified four local SDK/StegCore/Core-Lite/Master Records source roots
 -> standing SHWP-HEALER-SOVEREIGN-SCHEDULER-001 request
--> fresh claim/fence
+-> fresh scheduler claim/fence
 -> existing Healer scheduler
 -> hourly RT-NATIVE-EMAIL-ACTION-MONITOR-001 slot
 -> scripts/trigger_reusable_task.py
@@ -49,12 +52,13 @@ Core schedule / KV chain:
 - `.github` #1356 / `2c8978eb89c0f99f2c221fc523710d2347a7cea1` — resident refresh carries KV wrapper/guard/writer; applicable validations SUCCESS.
 - Healer #60 / `cd74e971ee54344c2f772fe2fd35827174914e66` and `.github` #1357 / `05c1250c91b6b09d54def657c37de5c77bd89c15` — failed/boundary attempts no longer satisfy a UTC-hour slot.
 - Healer #61 / `9c1661476ff1eadbe8c6ba300519a0c3f925d2e9` — retry no sooner than 15 minutes, max four failed attempts per UTC-hour slot; Test Readiness `34551986643` SUCCESS.
+- `.github` #1407 / `37fd97aca81580f4482ca78e4913346e1d53b71b` — forwarded the four canonical non-secret local source-root locators through the existing SV-DN1 source-prep process adapter. Exact-head organization-control `34563595503`, deterministic suite `34563595471`, and Heartbeat `34563595469` SUCCESS.
 
 Governed provider mutation:
 
 - StegOps #18 / `0d3768a7f8575af18c67b01a40f6745f35b93c0f` — `ARCHIVE_IDS` executes only as the SDK/StegCore bounded consequence; exact head `624c4edcb8f46a4f526f31e1aa2117c6f6fc6834`; Guardrails `34555040293`, Test Readiness `34555040405`, BCAT `34555040586` SUCCESS.
 - `.github` #1375 / `53175dadad4de762299a9c3be1ac67cbed71998e` — exact reviewed IDs + verified KV receipts bound into `stegverse.native-email-archive-governance-context/v1`; org-control `34555087030`, Heartbeat `34555087160`, deterministic `34555087161` SUCCESS.
-- Healer #62 / `d4f038999a63a4e05bb0e818cb38dd176ae75299` — reuses the existing verified SV-DN1 production-source-preparation v2 receipt to augment local SDK/StegCore/Core-Lite/Master Records roots; exact head `b0c9cf69d4044e499a6170e8edb43947e1a4946f`, Test Readiness `34555673051` SUCCESS.
+- Healer #62 / `d4f038999a63a4e05bb0e818cb38dd176ae75299` — reuses an existing verified SV-DN1 production-source-preparation v2 receipt when one is authentically present to augment local SDK/StegCore/Core-Lite/Master Records roots; Test Readiness `34555673051` SUCCESS.
 
 The stale `.github` #1280 branch remains CLOSED UNMERGED and superseded by #1342.
 
@@ -90,7 +94,7 @@ stegverse.ingress-manifest.v1
 -> bounded TVC ARCHIVE_IDS consequence
 ```
 
-The existing SDK authority model explicitly permits a trusted runtime-installed bounded consequence while keeping `caller request external_consequence_enabled=false`. Therefore no new SDK route or email-specific evaluator was created. The caller cannot self-enable Gmail mutation.
+The existing SDK authority model permits a trusted runtime-installed bounded consequence while keeping `caller request external_consequence_enabled=false`. No new SDK route or email-specific evaluator was created. The caller cannot self-enable Gmail mutation.
 
 `TRASH_IDS` is intentionally not exposed by the native-email monitor broker because it is an unused provider-state mutation outside this task contract.
 
@@ -107,22 +111,19 @@ The governed consequence requires already-local SDK, StegCore, Core-Lite, and Ma
 - no network/GitHub/credential source acquisition or repository writeback;
 - every declared root still materialized with its required runtime marker.
 
-Absent or invalid source-prep evidence contributes zero roots. The current SV-DN1 handoff still states that an authentic production-source-preparation v2 receipt has **not yet been observed**, so this remains a real runtime dependency unless the four components are already present through the local repository map.
+Absent or invalid source-prep evidence contributes zero roots. Repository search after #1407 still shows no authentic production-source-preparation v2 receipt. The source-prep worker fragment remains `HANDOFF_READY`, `claim_id=null`, and its worker `last_seen_at=null`, so the next authentic predicate is a fresh WorkerCoordinator claim/fence and actual worker consumption, not additional source construction.
 
-### Source-prep locator forwarding repair — 2026-09-10
-
-GitHub reconciliation found a concrete adapter mismatch in `SV-DN1-PRODUCTION-SOURCE-PREP-001`: the canonical source-prep handoff and worker permit already-local source through `STEGVERSE_SDK_SOURCE_ROOT`, `STEGVERSE_STEGCORE_SOURCE_ROOT`, `STEGVERSE_CORE_LITE_SOURCE_ROOT`, and `STEGVERSE_MASTER_RECORDS_SOURCE_ROOT`, but the registered process adapter did not forward those four variables in its `env_allowlist`.
-
-The repair branch `fix/native-email-source-prep-locators` adds only those four non-secret local-root locators to the existing adapter and adds deterministic regression coverage. It does not add network acquisition, credentials, GitHub runtime dependence, a new scheduler, a new WorkerCoordinator, or a new resident request. Until that repair is exact-head validated and merged, an authentic source-prep receipt remains pending.
+The WorkerCoordinator already contains a direct `INDEPENDENT_TASK_CONTROL` path for eligible `HANDOFF_READY` tasks; no second scheduler, carrier trigger, or portable claim mechanism is required by the canonical source. The source-prep task's admission object satisfies that path. Therefore absence of a claim after #1407 is runtime-consumption evidence, not evidence that another claim-generation architecture should be added.
 
 ## Remaining authentic predicates
 
-Source construction identified in this lane is merged and validated except for the locator-forwarding repair described above. Runtime completion still requires authentic evidence of:
+Source construction in this lane is merged and validated. Runtime completion still requires authentic evidence of:
 
+- `SV-DN1-PRODUCTION-SOURCE-PREP-001` fresh WorkerCoordinator claim/fence;
+- source-prep worker invocation and `SV_DN1_PRODUCTION_SOURCE_PREPARATION_COMPLETE` v2 receipt with exactly four verified source roots;
 - an eligible resident hourly reusable-task invocation;
 - already-materialized KnowledgeVault resolution;
 - `KV_STORED_VERIFIED` for every observed failure incident;
-- current local SDK/StegCore/Core-Lite/Master Records source availability;
 - canonical SDK/StegCore ALLOW + commit-coherence evidence for the exact archive transition;
 - corresponding TV/TVC Gmail mutation evidence;
 - route/transaction/Master Records custody evidence;
@@ -133,4 +134,4 @@ No repository artifact substitutes for those resident/provider receipts. Source 
 
 ## README determination
 
-`NO_README_CHANGE_REQUIRED` for `.github`: root documentation already covers resident source refresh, reusable tasks, Canonical Work ingress, resident execution, KnowledgeVault custody, and local source-root execution. This repair changes adapter forwarding to match that existing documented contract rather than changing repository responsibilities. StegOps and Healer READMEs were updated where their responsibilities materially changed.
+`NO_README_CHANGE_REQUIRED` for `.github`: root documentation already covers resident source refresh, reusable tasks, Canonical Work ingress, resident execution, KnowledgeVault custody, and local source-root execution. #1407 changed adapter forwarding to match that existing documented contract rather than repository responsibilities. StegOps and Healer READMEs were updated where their responsibilities materially changed.
