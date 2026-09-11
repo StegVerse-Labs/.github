@@ -20,6 +20,10 @@
     "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_STEGBROWSER_LINKEDIN_PUBLICATION_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github@9776ceba4877f8c213af534176f277c28ec58d39",
     "StegVerse-Labs/.github@5eba3974ff9c141aab74e616742e959ecdbd2ded",
+    "StegVerse-Labs/.github@4179a3e630c25a1430decd6f072866e6c6fc3798",
+    "StegVerse-Labs/.github@f128716def180dfdeb2f0b0eeb6bff0da6086841",
+    "StegVerse-Labs/.github@b872e0f6b72feadc9d6db4beb7b0a080364ff47b",
+    "StegVerse-Labs/.github@1d0077224da888301639031545bc818264b0dadb",
     "StegVerse-Labs/TVC@15f01fd9e4c472982cc2212c86aecb9ea90e5b49",
     "StegVerse-Labs/StegOS@790ee065c491822f2c6bf06e77214e99245afd8f",
     "StegVerse-Labs/StegOS@de38c04accc6196923058db79ccf88db25d85ee6",
@@ -112,6 +116,10 @@
   "existing_evidence_refs": [
     "StegVerse-Labs/.github@9776ceba4877f8c213af534176f277c28ec58d39",
     "StegVerse-Labs/.github@5eba3974ff9c141aab74e616742e959ecdbd2ded",
+    "StegVerse-Labs/.github@4179a3e630c25a1430decd6f072866e6c6fc3798",
+    "StegVerse-Labs/.github@f128716def180dfdeb2f0b0eeb6bff0da6086841",
+    "StegVerse-Labs/.github@b872e0f6b72feadc9d6db4beb7b0a080364ff47b",
+    "StegVerse-Labs/.github@1d0077224da888301639031545bc818264b0dadb",
     "StegVerse-Labs/TVC/actions/runs/34350815902",
     "StegVerse-Labs/TVC/actions/runs/34351285862",
     "StegVerse-Labs/TVC/actions/runs/34352933939",
@@ -146,6 +154,7 @@
     "CURRENT_IPHONE_RESIDENT_RENDEZVOUS_AVAILABLE",
     "INTERLOCK_INTR_LEASE_ADMISSION_OBSERVED",
     "WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+    "RESIDENT_REFRESH_DISPATCH_SOURCE_GIT_HEAD_AND_EXACT_SELECTOR_OBSERVED",
     "AUTHENTIC_FACEBOOK_PUBLICATION_CREATED",
     "AUTHENTIC_LINKEDIN_PUBLICATION_CREATED",
     "PUBLICATION_RECEIPT_CUSTODY_COMPLETE"
@@ -171,8 +180,8 @@
     "current_observation_required": true
   },
   "runtime_resolution": {
-    "current_executor": "StegOSMobile source includes the canonical resident, same-device readback, unsigned iphoneos package, secret-free TVC provisioning requests, and the current-iPhone WASM signing implementation. TVC source includes the App Store Connect credential/session/recipient/route/Build Upload path plus exact-source materialization and same-primary-runtime promotion. Authentic resident source-promotion consumption, TVC materialization/restart, live Apple owner ingress, current-iPhone signing, TestFlight upload/install, and same-device discovery have not yet been observed.",
-    "authority_basis": "GitHub Actions validates and transports evidence only. TV/TVC remains credential authority. Signing private key material must originate, remain, and be destroyed inside the current-iPhone ephemeral signing executor. Source and CI do not prove Apple execution, signing, TestFlight upload, installation, resident discovery, TVC runtime promotion, or live SKAP readiness.",
+    "current_executor": "The portable resident refresh+dispatch path is source-complete for stegbrowser_tvc_source_promotion after merged #1461, #1465, and #1487. An authentic sovereign resident or admitted Remote Computer ephemeral StegOS Node may execute it only from an already-local current .github source tree. Authentic source-promotion consumption, TVC materialization/restart, live Apple owner ingress, current-iPhone signing, TestFlight upload/install, and same-device discovery remain unobserved.",
+    "authority_basis": "GitHub Actions validates and transports evidence only. TV/TVC remains credential authority and Interlock/InTr remains transition authority. Authentic portable dispatch evidence must retain source_revision_head_kind=GIT_HEAD, an exact lowercase 40-hex source_git_head, exact selector stegbrowser_tvc_source_promotion, and exact one-consumer dispatch evidence together; source/CI state does not prove runtime execution. Signing private key material must originate, remain, and be destroyed inside the current-iPhone ephemeral signing executor.",
     "unattended_runtime": false
   },
   "worker_claim": {
@@ -181,7 +190,7 @@
     "fence_ref": null,
     "projection_only": true
   },
-  "human_action_ref": "Apple Developer membership is already observed active through 2027-09-09. No GitHub Apple secrets should be added. Owner action becomes necessary only when authentic current-iPhone TVC/SKAP ingress is ready for the real App Store Connect key and when Apple account configuration requires App Group/app-record actions not covered by the API. A second user-operated Mac is not an acceptable completion path.",
+  "human_action_ref": "Apple Developer membership is already observed active through 2027-09-09. No GitHub Apple secrets should be added. Owner action becomes necessary only when authentic current-iPhone TVC/SKAP ingress is ready for the real App Store Connect key and when Apple account configuration requires App Group/app-record actions not covered by the API. A second user-operated Mac is not an acceptable completion path; a Remote Computer may be used only as admitted ephemeral StegOS capacity and not as a durable user-operated prerequisite.",
   "completion": {
     "claimed": false,
     "validated": true,
@@ -206,6 +215,7 @@
     "github_actions_apple_credential_execution_allowed": false,
     "apple_signing_private_key_must_be_current_iphone_ephemeral": true,
     "second_user_operated_machine_allowed": false,
+    "remote_computer_ephemeral_node_capacity_allowed": true,
     "publication_requires_external_object_identity_and_readback": true,
     "interlock_intr_required_for_governed_ingress_egress": true,
     "worker_claim_authority": "WORKERCOORDINATOR",
