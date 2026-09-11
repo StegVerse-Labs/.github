@@ -7,7 +7,7 @@ COSV task vector: `10100000100000`
 Reusable identity: `RT-NATIVE-EMAIL-ACTION-MONITOR-001`
 Parent handoff: `docs/NATIVE_EMAIL_ACTION_MONITOR_MIRROR_HANDOFF.md`
 Scheduler owner: `StegVerse-Labs/StegVerse-Healer` / `SHWP-HEALER-SOVEREIGN-SCHEDULER-001`
-State: `SOURCE_INTEGRATION_MERGED / HOURLY_REUSABLE_BINDING_MERGED / KV_BEFORE_ARCHIVE_MERGED / STALE_PR_1280_CLOSED_SUPERSEDED / AUTHENTIC_SCHEDULED_GMAIL_KV_RECEIPT_PENDING`
+State: `SOURCE_INTEGRATION_MERGED / HOURLY_REUSABLE_BINDING_MERGED / KV_BEFORE_ARCHIVE_MERGED / RESIDENT_REFRESH_PROPAGATION_IN_VALIDATION / AUTHENTIC_SCHEDULED_GMAIL_KV_RECEIPT_PENDING`
 
 ## Canonical execution path
 
@@ -63,13 +63,27 @@ The wrapper mounts no provider and acquires no credential. It accepts only an al
 
 The resident receipt route avoids widening the shared WorkerCoordinator process-adapter environment allowlist. Missing or invalid KV state remains retryable and forbids live archive.
 
+## Resident source-refresh propagation repair
+
+Post-merge inspection of `scripts/refresh_sovereign_worker_runtime_source.py` found that the existing resident refresh copied the historical native-email consumer and base monitor but did not copy the three KV enforcement scripts introduced by #1342. Because `control/resident-execution-request.d/native-email-action-monitor-001.json` now names `scripts/consume_native_email_action_monitor_request_kv.py`, a refreshed resident could receive the new request while missing its executable entrypoint.
+
+The current repair adds all three required scripts to the existing `STATIC_FILES` refresh set:
+
+```text
+scripts/consume_native_email_action_monitor_request_kv.py
+scripts/run_native_email_action_monitor_kv_guard.py
+scripts/persist_native_email_incidents_to_kv.py
+```
+
+`tests/test_native_email_kv_resident_refresh.py` asserts that all three remain part of the static resident source set and are not classified as mutable runtime state. This uses the existing local source-refresh mechanism; no network source transport, second scheduler, or alternate dispatcher is added.
+
 ## Stale implementation retired from coordination
 
-PR #1280 used the earlier `fix/native-email-kv-persistence-20260909` branch and was found 273 commits behind current main. Its functional intent was ported onto current main in #1342 without overwriting evolved runtime/control-plane logic. PR #1280 is now CLOSED UNMERGED with an explicit supersession note pointing to #1342. It must not be progressed or used as the canonical implementation source.
+PR #1280 used the earlier `fix/native-email-kv-persistence-20260909` branch and was found 273 commits behind current main. Its functional intent was ported onto current main in #1342 without overwriting evolved runtime/control-plane logic. PR #1280 is CLOSED UNMERGED and must not be progressed or used as the canonical implementation source.
 
 ## Remaining authentic predicates
 
-Source integration and deterministic validation are complete. Runtime completion still requires authentic resident evidence of:
+After the resident refresh propagation repair validates and merges, source integration required for both hourly source execution and direct resident request dispatch is complete. Runtime completion still requires authentic resident evidence of:
 
 - an eligible hourly reusable-task invocation;
 - KnowledgeVault resolution from already-materialized resident/local state;
@@ -82,4 +96,4 @@ Repository search after #1342 merge did not identify an authentic retained `rece
 
 ## README determination
 
-`NO_README_CHANGE_REQUIRED` for `.github`: the root README already defines reusable-task constructs, Canonical Work ingress, resident execution semantics, Personal KnowledgeVault custody distinctions, and the functional-change invariant. `StegVerse-Healer/README.md` already carries the scheduler/KV-path behavior from #59.
+`NO_README_CHANGE_REQUIRED` for `.github`: the root README already defines local resident source refresh, reusable-task constructs, Canonical Work ingress, resident execution semantics, Personal KnowledgeVault custody distinctions, and the functional-change invariant. This repair only restores dependency parity for an already-documented resident task path.
