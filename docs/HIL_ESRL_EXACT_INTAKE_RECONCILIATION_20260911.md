@@ -14,6 +14,7 @@ Exact byte facts:
 
 - size: `2011` bytes;
 - SHA256: `a6756c54da15f09cd6a3dbb201375891803f6589fd644db4c545be39ebe41b92`;
+- Git blob SHA-1: `64477f85c954d8428bece619c311cd97afb7734a`, identical for uploaded source and preserved repository file;
 - schema: `stegverse.hil-browser-esrl-lease-open/v1`;
 - state / lease state: `LEASE_OPEN`;
 - lease: `HIL-BROWSER-ESRL-7bafde4a280e847758da157e`;
@@ -47,7 +48,7 @@ with:
 - exact `source_artifact_sha256=sha256:a6756c54da15f09cd6a3dbb201375891803f6589fd644db4c545be39ebe41b92`;
 - unchanged downstream false claims.
 
-The already-merged reconciliation contract then yields:
+The already-merged reconciliation contract yields:
 
 `receipts/sovereign-host/hil-esrl-acceptance-reconciliation-proposal.latest.json`
 
@@ -61,9 +62,13 @@ retain TVC_HIL_LIFECYCLE_HANDOFF_NOT_YET_PROVEN
 next runtime stage = HIL_RECEIVER_READY_AND_CUSTODY
 ```
 
-## Canonical state reconciliation
+## Canonical state reconciliation boundary
 
-This change reconciles the task vector and HIL worker registry to two remaining blockers while preserving:
+The first exact-head deterministic validation exposed a required atomicity boundary: the task vector and worker registry cannot advance independently of `control/task-vector-index.json` and `control/cosv-global-registry-coverage.json`.
+
+Accordingly, this evidence-intake PR does **not** mutate the canonical task vector/worker registry. Their `50000000103000` / three-blocker state is retained until a dedicated follow-up updates all four COSV surfaces together. This is fail-closed bookkeeping only; it does not negate or discard the now-authentic accepted ESRL evidence.
+
+The pending atomic reconciliation must preserve:
 
 - `HANDOFF_READY`;
 - `archive_eligible=false`;
@@ -74,8 +79,8 @@ This change reconciles the task vector and HIL worker registry to two remaining 
 - no second machine requirement;
 - no promotion of post-restart or TVC lifecycle evidence.
 
-The next execution/evidence stage is `HIL_RECEIVER_READY_AND_CUSTODY`, followed independently by post-restart exact-byte reconstruction proof and TVC lifecycle handoff.
+After that coordinated state transition merges, the next execution/evidence stage is `HIL_RECEIVER_READY_AND_CUSTODY`, followed independently by post-restart exact-byte reconstruction proof and TVC lifecycle handoff.
 
 ## README maintenance
 
-`README.md` was re-reviewed. This is a task-specific canonical evidence reconciliation and does not alter the documented public repository/runtime interface, so no README prose change is required.
+`README.md` was re-reviewed. This is a task-specific evidence intake/reconciliation record and does not alter the documented public repository/runtime interface, so no README prose change is required.
