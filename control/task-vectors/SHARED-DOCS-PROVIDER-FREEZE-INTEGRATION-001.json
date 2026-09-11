@@ -1,0 +1,11 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001",
+  "profile": "task.v1",
+  "task_id": "SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001",
+  "vector": "71000000100110",
+  "parent_task_id": "SHARED-DOCS-MULTIPARTY-FREEZE-001",
+  "evidence_refs": [
+    "StegVerse-org/StegVerse-SDK:docs/SHARED_DOCS_PROVIDER_FREEZE_INTEGRATION_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:commit/d505e937dd9f5e531c56427d7477e026789e4769"
+  ]
+}
