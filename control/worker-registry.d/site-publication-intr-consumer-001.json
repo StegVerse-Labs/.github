@@ -1,0 +1,73 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "SITE-PUBLICATION-INTR-CONSUMER-001",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": ["SITE_PUBLICATION_AUTHENTIC_EVENT_EPHEMERAL_LEASE_NOT_YET_OBSERVED"],
+      "authorized_policy_version": "site-publication-intr-consumer-v0.1",
+      "block_ref": "docs/SITE_PUBLICATION_INTR_CONSUMER_MIRROR_HANDOFF.md",
+      "claim_id": null,
+      "cost_basis_ref": "cost-basis/worker-runtime/site-publication-intr-consumer.json",
+      "evidence_refs": [
+        "docs/SITE_PUBLICATION_INTR_CONSUMER_MIRROR_HANDOFF.md",
+        "handoffs/SITE-PUBLICATION-INTR-CONSUMER-001.json",
+        "workers/site_publication_intr_consumer_worker.py",
+        "receipts/sovereign-network/site-publication-intr-ingress/**"
+      ],
+      "executor_binding": "AUTHORIZED",
+      "external_entity_job_ref": null,
+      "goal_id": "SITE-PUBLICATION-INTR-CONSUMER-001",
+      "handoff_ref": "handoffs/SITE-PUBLICATION-INTR-CONSUMER-001.json",
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": "handoffs/SITE-PUBLICATION-INTR-CONSUMER-001.json",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "SITE-PUBLICATION-INTR-CONSUMER-001",
+      "worker_id": null,
+      "worker_instance_id": null,
+      "admission": {
+        "authority_source": "Site publication Universal InTr candidate ingress + existing independent WorkerCoordinator task control",
+        "authority_domain": "INDEPENDENT_TASK_CONTROL",
+        "heartbeat_reference_only": true,
+        "heartbeat_grants_execution_authority": false,
+        "carrier_trigger_required": false,
+        "fresh_fence_required": true,
+        "minimum_fencing_token_exclusive": 0,
+        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+        "admitted_predecessor_rule": "VERIFIED_SITE_PUBLICATION_EVENT_MATERIALIZATION_INGRESS",
+        "event_materialization_grants_authority": false
+      },
+      "source_state_vector_ref": "control/task-vectors/SITE-PUBLICATION-INTR-CONSUMER-001.json",
+      "machine_readable_state": {
+        "cosv": {
+          "profile": "task.v1",
+          "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+          "notation": "L R U I V G O C M T B E A P",
+          "width": 14,
+          "vector": "50000000102000",
+          "vector_state": "EMITTED",
+          "vector_observed_at": "2026-09-11T03:20:00Z",
+          "authority_effect": "NONE"
+        }
+      }
+    }
+  ],
+  "workers": [
+    {
+      "adapter_ref": "process:site-publication-intr-consumer-v1",
+      "authority_source": "handoffs/SITE-PUBLICATION-INTR-CONSUMER-001.json#authority",
+      "capabilities": ["bounded_process_execution", "durable_state_reconstruction", "intr_ingress"],
+      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+      "executor_type": "repository_worker",
+      "last_seen_at": null,
+      "status": "AVAILABLE",
+      "worker_id": "site-publication-intr-consumer-worker"
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "non_tv_tvc_secret_or_token_required": false,
+  "third_party_runtime_required": false
+}
