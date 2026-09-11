@@ -63,9 +63,11 @@ class GlobalRuntimeEvidenceConvergenceExecutionTests(unittest.TestCase):
         self.assertIn("VACP-SOVEREIGN-PROVIDER-REALIGNMENT-023", module.NO_SELECTOR_REASON)
         self.assertNotIn("VACP-ADAPTER-AUTHORIZED-EXECUTION-005", module.NO_SELECTOR_REASON)
 
-    def test_runtime_profile_map_bootstrap_triggers_global_visitor(self):
+    def test_runtime_profile_map_and_stegbrowser_bootstrap_trigger_global_visitor(self):
         text = BOOTSTRAP.read_text(encoding="utf-8")
         self.assertIn('RUNTIME_PROFILE_MAP_TASK_ID = "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"', text)
+        self.assertIn('STEGBROWSER_TASK_ID = "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001"', text)
+        self.assertIn("GLOBAL_CONVERGENCE_TASK_IDS = {RUNTIME_PROFILE_MAP_TASK_ID, GLOBAL_MEASUREMENT_TASK_ID, STEGBROWSER_TASK_ID}", text)
         self.assertIn("run_global_convergence_if_applicable(args.task_id)", text)
         self.assertIn("run_global_runtime_evidence_convergence.py", text)
         self.assertNotIn("systemd", text.lower())
