@@ -26,6 +26,7 @@ COPY_ROWS = (
     '    "scripts/install_erl_active_research_universal_intr_route.py",\n',
     '    "scripts/install_erl_device_kv_prior_lineage.py",\n',
     '    "scripts/install_erl_resident_request_wiring.py",\n',
+    '    "scripts/submit_erl_active_research_intr_binding.py",\n',
 )
 COPY_ANCHOR = '    "scripts/consume_stegos_kv_intr_chain_request.py",\n'
 REQUIRED_ROWS = (
@@ -33,6 +34,7 @@ REQUIRED_ROWS = (
     '        target_root / "scripts" / "install_erl_active_research_universal_intr_route.py",\n',
     '        target_root / "scripts" / "install_erl_device_kv_prior_lineage.py",\n',
     '        target_root / "scripts" / "install_erl_resident_request_wiring.py",\n',
+    '        target_root / "scripts" / "submit_erl_active_research_intr_binding.py",\n',
 )
 REQUIRED_ANCHOR = '        target_root / "scripts" / "consume_stegos_kv_intr_chain_request.py",\n'
 
