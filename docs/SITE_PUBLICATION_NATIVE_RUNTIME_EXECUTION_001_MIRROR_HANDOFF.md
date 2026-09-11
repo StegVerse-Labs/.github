@@ -7,11 +7,11 @@ Goal Task ID: `SITE-PUBLICATION-NATIVE-RUNTIME-EXECUTION-001`
 Parent Goal Task ID: `KV-CONNECTION-REVALIDATION-WORKER-001`
 Child runtime task: `SITE-PUBLICATION-INTR-CONSUMER-001`
 COSV: `50000000102000`
-Status: `INACTIVE / PRE-STAGED UNTIL PARENT RECONCILIATION MERGES`
+Status: `ACTIVE`
 
 ## Purpose
 
-Own only the genuinely remaining authentic native-runtime and publication-evidence phase after the parent goal reaches its 20/20 prompt ceiling. Do not re-open completed source-registration or CI-repair work.
+Own only the genuinely remaining authentic native-runtime and publication-evidence phase after the parent goal reached its 20/20 prompt ceiling. Do not re-open completed source-registration or CI-repair work.
 
 ## Inherited validated source truth
 
@@ -20,7 +20,9 @@ Own only the genuinely remaining authentic native-runtime and publication-eviden
 - Exact admitted materialization: `INTR-MAT-0e1ba4786b0ea8a00e1f166e`.
 - Packet: `INTR-58dec5416bd4358190c11372`.
 - Manifest: `sha256:e6bc47580f25296df61d16dfe5a74f3f49fec0dda018c813696195c960e77f09`.
-- Parent post-merge handoff reconciliation was recreated from current main as PR #1483 after PR #1472 became non-mergeable from base drift. PR #1483 must be green and merged before this successor is activated.
+- Parent post-merge handoff reconciliation PR #1483 passed exact-head Heartbeat `34635435820`, Organization Control `34635435835`, and Deterministic Repository Suite `34635435815`, then squash-merged at `4ab13a252eed668f1d828c08bd998b00b54e3c43`.
+- Superseded conflicted reconciliation PR #1472 is not authoritative after #1483.
+- Parent `KV-CONNECTION-REVALIDATION-WORKER-001` is retired for prompt-budget continuation; unresolved native-runtime/publication predicates are transferred here.
 
 ## Authority boundaries
 
@@ -59,9 +61,9 @@ final publication transition admitted = false
 DNS/TLS recovery proven = false
 ```
 
-## Activation condition
+## Activation
 
-Activate this successor only after the canonical parent reconciliation PR #1483 passes all required exact-head suites and merges. At activation, `KV-CONNECTION-REVALIDATION-WORKER-001` is retired for prompt-budget purposes; unresolved native-runtime/publication predicates transfer here without changing runtime authority or evidence requirements.
+Activation condition is satisfied by merged, exact-head-green parent reconciliation PR #1483. This successor is now ACTIVE. The transfer changes only coordination ownership; it does not mint runtime authority, claim/fence state, credentials, publication state, or proof.
 
 ## README maintenance
 
@@ -69,4 +71,4 @@ Root `README.md` was reviewed in the parent lane and requires no wording change 
 
 ## Next action
 
-Verify and merge PR #1483 only if its exact head is fully green, then change this record from pre-staged to ACTIVE and continue at the first authentic native-runtime observation. Until then, no runtime/publication proof is claimed.
+At the next authentic authorized native-runtime observation, execute the required evidence chain beginning with already-local source refresh and a fresh WorkerCoordinator claim/fence. Until those receipts exist, all runtime/publication predicates remain false.
