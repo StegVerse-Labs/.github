@@ -4,11 +4,12 @@
   "correlation_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
   "root_correlation_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
   "parent_task_id": null,
-  "goal": "Implement and verify the StegVerse side of the MIR x StegVerse Separation-of-Powers Evidence Contract v0.3 while preserving strict separation among MIR historical custody, StegVerse governance authority, and bounded cryptographic provenance.",
+  "goal": "Implement and verify the StegVerse side of the bilaterally frozen MIR x StegVerse Separation-of-Powers Evidence Contract v0.3 while preserving strict separation among MIR historical custody, StegVerse governance authority, and bounded cryptographic provenance.",
   "coordination_state": "ACTIVE",
   "source_refs": [
     "docs/contracts/MIR_STEGVERSE_SEPARATION_OF_POWERS_EVIDENCE_CONTRACT_v0.3.md",
-    "docs/MIR_STEGVERSE_SEPARATION_OF_POWERS_EVIDENCE_CONTRACT_MIRROR_HANDOFF.md"
+    "docs/MIR_STEGVERSE_SEPARATION_OF_POWERS_EVIDENCE_CONTRACT_MIRROR_HANDOFF.md",
+    "evidence/mir-stegverse-v0.3-bilateral-freeze-2026-09-10.md"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
@@ -54,6 +55,7 @@
     "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003"
   ],
   "existing_evidence_refs": [
+    "evidence/mir-stegverse-v0.3-bilateral-freeze-2026-09-10.md",
     "StegVerse-Labs/Standing-Proof-Engine/SPE_MIRROR_HANDOFF.md"
   ],
   "expected_evidence_predicates": [
