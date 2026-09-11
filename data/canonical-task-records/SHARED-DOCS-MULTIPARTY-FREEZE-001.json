@@ -5,76 +5,39 @@
   "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
   "parent_task_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
   "goal": "Add a provider-neutral Shared Docs multiparty freeze state machine so each eligible reviewer can independently freeze an exact document revision, collective freeze occurs only when the revision-bound review policy is satisfied, and any content/reviewer-policy change creates a new review revision without erasing prior frozen provenance.",
-  "coordination_state": "ACTIVE",
+  "coordination_state": "RETIRED",
   "source_refs": [
     "StegVerse-org/StegVerse-SDK:docs/SHARED_DOCS_MULTIPARTY_FREEZE_MIRROR_HANDOFF.md",
     "StegVerse-org/StegVerse-SDK:stegverse/shared_docs_freeze.py",
-    "StegVerse-org/StegVerse-SDK:tests/test_shared_docs_freeze.py"
+    "StegVerse-org/StegVerse-SDK:tests/test_shared_docs_freeze.py",
+    "StegVerse-org/StegVerse-SDK:commit/d505e937dd9f5e531c56427d7477e026789e4769"
   ],
   "targets": {
     "organizations": ["StegVerse-org", "StegVerse-Labs"],
     "repositories": ["StegVerse-org/StegVerse-SDK", "StegVerse-Labs/.github"],
-    "components": [
-      "shared-docs",
-      "document-revision-provenance",
-      "per-reviewer-freeze-receipts",
-      "collective-freeze-evaluator",
-      "review-epoch-reset"
-    ]
+    "components": ["shared-docs", "document-revision-provenance", "per-reviewer-freeze-receipts", "collective-freeze-evaluator", "review-epoch-reset"]
   },
   "dependencies": [],
   "blockers": [],
   "systemic_incident_ref": null,
-  "adjacent_task_refs": [
-    "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
-    "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001"
-  ],
+  "adjacent_task_refs": ["SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003", "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001", "SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001"],
   "existing_evidence_refs": [
-    "StegVerse-org/StegVerse-SDK:docs/SHARED_DOCS_EPHEMERAL_MANIFEST_WORKSPACE_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/.github:evidence/mir-stegverse-v0.3-bilateral-freeze-2026-09-10.md"
+    "StegVerse-org/StegVerse-SDK:actions/run/34568759924",
+    "StegVerse-org/StegVerse-SDK:actions/run/34568759892",
+    "StegVerse-org/StegVerse-SDK:actions/run/34568759896",
+    "StegVerse-org/StegVerse-SDK:actions/run/34568759884",
+    "StegVerse-org/StegVerse-SDK:actions/run/34568759906",
+    "StegVerse-org/StegVerse-SDK:actions/run/34568759890",
+    "StegVerse-org/StegVerse-SDK:actions/run/34568759899",
+    "StegVerse-org/StegVerse-SDK:commit/d505e937dd9f5e531c56427d7477e026789e4769"
   ],
-  "expected_evidence_predicates": [
-    "FREEZE_BINDS_EXACT_REVISION_AND_DIGEST",
-    "INDIVIDUAL_FREEZE_DOES_NOT_IMPLY_COLLECTIVE_FREEZE",
-    "ALL_ELIGIBLE_FREEZE_PRODUCES_COLLECTIVE_FROZEN_STATE",
-    "STALE_REVISION_FREEZE_REJECTED",
-    "CONTENT_CHANGE_CREATES_UNFROZEN_SUCCESSOR",
-    "PRIOR_FROZEN_REVISION_PROVENANCE_PRESERVED",
-    "REVIEWER_SET_CHANGE_RESETS_REVIEW_EPOCH",
-    "FREEZE_STATE_DOES_NOT_GRANT_EDIT_OR_GOVERNANCE_AUTHORITY"
-  ],
-  "runtime_requirements": {
-    "capabilities": ["canonical_artifact_validation"],
-    "environment": "SOVEREIGN_RESIDENT",
-    "direction": "INTERNAL",
-    "mutation_required": false,
-    "deployment_required": false,
-    "current_observation_required": false
-  },
-  "runtime_resolution": null,
-  "worker_claim": {
-    "authority": "WORKERCOORDINATOR",
-    "claim_ref": null,
-    "fence_ref": null,
-    "projection_only": true
-  },
+  "expected_evidence_predicates": ["FREEZE_BINDS_EXACT_REVISION_AND_DIGEST", "INDIVIDUAL_FREEZE_DOES_NOT_IMPLY_COLLECTIVE_FREEZE", "ALL_ELIGIBLE_FREEZE_PRODUCES_COLLECTIVE_FROZEN_STATE", "STALE_REVISION_FREEZE_REJECTED", "CONTENT_CHANGE_CREATES_UNFROZEN_SUCCESSOR", "PRIOR_FROZEN_REVISION_PROVENANCE_PRESERVED", "REVIEWER_SET_CHANGE_RESETS_REVIEW_EPOCH", "FREEZE_STATE_DOES_NOT_GRANT_EDIT_OR_GOVERNANCE_AUTHORITY"],
+  "runtime_requirements": {"capabilities": ["canonical_artifact_validation"], "environment": "SOURCE_VALIDATION_ONLY", "direction": "INTERNAL", "mutation_required": false, "deployment_required": false, "current_observation_required": false},
+  "runtime_resolution": {"source_merge": "d505e937dd9f5e531c56427d7477e026789e4769", "dedicated_validation_run": 34568759924, "provider_runtime_sync_claimed": false},
+  "worker_claim": {"authority": "WORKERCOORDINATOR", "claim_ref": null, "fence_ref": null, "projection_only": true},
   "human_action_ref": null,
-  "completion": {
-    "claimed": false,
-    "validated": false,
-    "reconciliation_ref": null
-  },
-  "allowed_next_transitions": ["INGRESS_ADMITTED"],
-  "handoff_projection_refs": [
-    "StegVerse-org/StegVerse-SDK:docs/SHARED_DOCS_MULTIPARTY_FREEZE_MIRROR_HANDOFF.md"
-  ],
-  "authority_model": {
-    "task_registry_mints_execution_authority": false,
-    "source_state_proves_execution": false,
-    "worker_claim_authority": "WORKERCOORDINATOR",
-    "master_records_reality_authority": true,
-    "interlock_intr_required_for_governed_ingress_egress": true,
-    "reviewer_freeze_grants_edit_authority": false,
-    "collective_freeze_grants_governance_authority": false
-  }
+  "completion": {"claimed": true, "validated": true, "reconciliation_ref": "StegVerse-org/StegVerse-SDK:commit/d505e937dd9f5e531c56427d7477e026789e4769"},
+  "allowed_next_transitions": [],
+  "handoff_projection_refs": ["StegVerse-org/StegVerse-SDK:docs/SHARED_DOCS_MULTIPARTY_FREEZE_MIRROR_HANDOFF.md"],
+  "authority_model": {"task_registry_mints_execution_authority": false, "source_state_proves_execution": false, "worker_claim_authority": "WORKERCOORDINATOR", "master_records_reality_authority": true, "interlock_intr_required_for_governed_ingress_egress": true, "reviewer_freeze_grants_edit_authority": false, "collective_freeze_grants_governance_authority": false}
 }
