@@ -1,0 +1,11 @@
+{
+  "schema": "stegverse.cosv-task-vector-index-entry/v1",
+  "task_id": "SITE-PUBLICATION-INTR-CONSUMER-001",
+  "repository": "StegVerse-Labs/.github",
+  "registry_ref": "control/worker-registry.d/site-publication-intr-consumer-001.json",
+  "source_state_vector_ref": "control/task-vectors/SITE-PUBLICATION-INTR-CONSUMER-001.json",
+  "vector": "50000000102000",
+  "vector_state": "EMITTED",
+  "authority_effect": "NONE",
+  "canonical_owner_ref": "docs/SITE_PUBLICATION_INTR_CONSUMER_MIRROR_HANDOFF.md"
+}
