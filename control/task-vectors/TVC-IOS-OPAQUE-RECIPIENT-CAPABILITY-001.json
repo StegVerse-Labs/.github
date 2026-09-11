@@ -5,12 +5,15 @@
   "parent_task_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
   "state": "ACTIVE",
   "checkout_state": "CHECKED_OUT",
-  "repository_owners": ["StegVerse-Labs/TVC", "StegVerse-Labs/StegOS"],
+  "repository_owners": [
+    "StegVerse-Labs/TVC",
+    "StegVerse-Labs/StegOS"
+  ],
   "authority": {
     "credential": "TV/TVC",
     "transition": "Interlock/InTr",
     "runtime": "canonical StegOS EVENT_EPHEMERAL lane",
     "github": "NONE"
   },
-  "next": "Implement a non-exportable current-iPhone TVC P-256 recipient capability in the existing StegOS Mobile iOS target and bind it to the TVC capability activation seam without authority transfer."
-}
+  "next": "Execute one authentic current-iPhone Secure Enclave candidate/challenge/attestation exchange, verify it through the merged TVC adapter, and project the public recipient configuration without private-key export or authority transfer."
+}\n
