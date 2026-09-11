@@ -18,6 +18,7 @@
     "StegVerse-Labs/TVC/scripts/ios_opaque_recipient_capability.py",
     "StegVerse-Labs/TVC/scripts/activate_coinbase_intr_capability.py",
     "StegVerse-Labs/StegOS/mobile/ios/StegOSMobile/TVCRecipientKeyCandidate.swift",
+    "StegVerse-Labs/StegOS/mobile/ios/StegOSMobile/StegOSMobileApp.swift",
     "StegVerse-Labs/StegOS/mobile/ios/StegOSMobile.xcodeproj",
     "docs/TVC_IOS_OPAQUE_RECIPIENT_CAPABILITY_MIRROR_HANDOFF.md"
   ],
@@ -26,12 +27,14 @@
     "linux_root_adapter_exists": true,
     "native_ios_project_exists": true,
     "ios_tvc_opaque_key_adapter_exists": true,
-    "authentic_current_device_activation_observed": false,
     "stegos_ios_candidate_compiled": true,
     "stegos_ios_liveness_signer_compiled": true,
+    "stegos_ios_url_exchange_merged": true,
     "tvc_ios_signature_verifier_merged": true,
     "tvc_coinbase_activation_seam_bound": true,
     "source_and_apple_toolchain_validated": true,
+    "native_source_invocation_gap_closed": true,
+    "authentic_current_device_activation_observed": false,
     "authentic_tvc_challenge_exchange_observed": false,
     "tvc_public_recipient_config_projected_from_authentic_exchange": false
   },
@@ -42,6 +45,7 @@
     "Provide a TVC-verifiable activation/liveness envelope compatible with stegverse.tvc.recipient-key-capability/v1 semantics.",
     "Fail closed when Secure Enclave/non-exportability requirements cannot be satisfied; do not silently downgrade to an exportable software key for production proof.",
     "Wire the capability into the existing Coinbase recipient activation seam without creating another runtime lifecycle or transition authority.",
+    "Expose the bounded candidate/challenge exchange through the existing StegOS Mobile URL scheme without widening callback origin, credential, transition, runtime, custody, provider, or GitHub authority.",
     "Validate source/build behavior, then require authentic current-iPhone activation before projecting READY_FOR_OWNER_INGRESS or producing a Gateway sidecar."
   ],
   "authority_invariants": {
@@ -67,7 +71,9 @@
     "validated": false,
     "runtime_observed": false,
     "source_implemented": true,
-    "source_validated": true
+    "source_validated": true,
+    "native_invocation_source_merged": true,
+    "native_invocation_source_validated": true
   },
   "allowed_next_transitions": [
     "OBSERVE_AUTHENTIC_CURRENT_IPHONE_ACTIVATION",
@@ -82,6 +88,14 @@
     "StegOS_PR_339": "cff17eb68ac156bd60e6db388dfefeefb71ea01b",
     "StegOS_PR_340": "01fc87a88cd956d83fb3206082513e9de59c0647",
     "TVC_PR_407": "3fbdba0cb539b3672b53c3aa29e948e58e4fdb8e",
-    "validation": "StegOS Apple-toolchain/device-package/CI SUCCESS; TVC recipient-capability/credential-model/consent HTTP validation SUCCESS"
+    "StegOS_PR_341": "a43b203d7c6d738f8c571d64b1669bd6285fc9ff",
+    "StegOS_PR_341_head": "710fc16d4c3c7cca07257e7575e8914859d76846",
+    "StegOS_PR_341_validation_runs": {
+      "StegOS_CI": 34612835986,
+      "GADI_native_boundary_defense_validation": 34612835913,
+      "iOS_Device_Package_Validation": 34612836055,
+      "iOS_Apple_Toolchain_Validation": 34612835919
+    },
+    "validation": "StegOS candidate/signing/native URL exchange source and Apple-toolchain/device-package/CI validation SUCCESS; TVC recipient-capability/credential-model/consent HTTP validation SUCCESS"
   }
 }
