@@ -14,7 +14,10 @@ ROOT = Path(__file__).resolve().parents[1]
 DISPATCHER = ROOT / "scripts/dispatch_resident_execution_requests.py"
 MATERIALIZER = ROOT / "scripts/install_sovereign_heartbeat_service.py"
 
-CONSUMER_ROW = '    ("erl_active_research_intr_runtime_binding", "control/resident-execution-request.d/consume-erl-active-research-intr-runtime-binding.py"),\n'
+CONSUMER_ROWS = (
+    '    ("erl_active_research_intr_runtime_binding", "control/resident-execution-request.d/consume-erl-active-research-intr-runtime-binding.py"),\n',
+    '    ("erl_active_research_intr_submission", "control/resident-execution-request.d/consume-erl-active-research-intr-submission.py"),\n',
+)
 CONSUMER_ANCHOR = '    ("stegos_kv_intr_chain", "scripts/consume_stegos_kv_intr_chain_request.py"),\n'
 ENV_ROWS = (
     '    "STEGVERSE_ERL_ROOT",\n',
@@ -26,6 +29,7 @@ COPY_ROWS = (
     '    "scripts/install_erl_active_research_universal_intr_route.py",\n',
     '    "scripts/install_erl_device_kv_prior_lineage.py",\n',
     '    "scripts/install_erl_resident_request_wiring.py",\n',
+    '    "scripts/submit_erl_active_research_intr_binding.py",\n',
 )
 COPY_ANCHOR = '    "scripts/consume_stegos_kv_intr_chain_request.py",\n'
 REQUIRED_ROWS = (
@@ -33,6 +37,7 @@ REQUIRED_ROWS = (
     '        target_root / "scripts" / "install_erl_active_research_universal_intr_route.py",\n',
     '        target_root / "scripts" / "install_erl_device_kv_prior_lineage.py",\n',
     '        target_root / "scripts" / "install_erl_resident_request_wiring.py",\n',
+    '        target_root / "scripts" / "submit_erl_active_research_intr_binding.py",\n',
 )
 REQUIRED_ANCHOR = '        target_root / "scripts" / "consume_stegos_kv_intr_chain_request.py",\n'
 
@@ -44,9 +49,10 @@ def require(ok: bool, reason: str) -> None:
 
 def transform_dispatcher(text: str) -> str:
     result = text
-    if CONSUMER_ROW not in result:
+    if any(row not in result for row in CONSUMER_ROWS):
         require(result.count(CONSUMER_ANCHOR) == 1, "dispatcher consumer anchor drift")
-        result = result.replace(CONSUMER_ANCHOR, CONSUMER_ANCHOR + CONSUMER_ROW, 1)
+        insertion = ''.join(row for row in CONSUMER_ROWS if row not in result)
+        result = result.replace(CONSUMER_ANCHOR, CONSUMER_ANCHOR + insertion, 1)
     if any(row not in result for row in ENV_ROWS):
         require(result.count(ENV_ANCHOR) == 1, "dispatcher env anchor drift")
         insertion = ''.join(row for row in ENV_ROWS if row not in result)

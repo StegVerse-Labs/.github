@@ -286,3 +286,25 @@ A sibling `<receipt>.supersession.json` is accepted only when it targets that ex
 ### Current-iPhone TVC opaque recipient capability
 
 Canonical dependency `TVC-IOS-OPAQUE-RECIPIENT-CAPABILITY-001` now has validated source on both owning sides: the StegOS Mobile target contains the non-exportable P-256 Secure Enclave candidate and TVC-challenge proof-of-possession signer, while TVC verifies the exact ECDSA signature/bindings and alone projects canonical activation/liveness receipts through its Coinbase capability seam. TV/TVC retains credential/capability authority, Interlock/InTr retains transition authority, and GitHub has no runtime authority. Physical current-iPhone execution and the parent Device/KV/SKAP roundtrip remain evidence-gated and are not inferred from merge or CI.
+
+---
+
+## ERL active-research shared Universal InTr submission
+
+The active-research ERL lane reuses the existing resident dispatcher and the existing shared `workers/universal_intr_profiled_ingress.py` listener. It does not create a second resident runtime, listener, scheduler, heartbeat, WorkerCoordinator, credential path, or provider-operation path.
+
+The bounded local submitter accepts only a resident-local ERL binding sidecar and a loopback `http://127.0.0.1`, `localhost`, or `::1` Universal InTr materialization endpoint. Submission through `TVC_RELAY_EGRESS` requires an already-issued TVC relay authorization identifier; the submitter cannot mint, infer, or replace that authorization. TV/TVC remains credential authority, Interlock/InTr remains transition authority, and GitHub runtime authority remains `NONE`.
+
+A successful shared-listener profile response may preserve the first two verified upstream hop receipts for `EXTERNAL_SYSTEM -> STEGOS_ECOSYSTEM -> DEVICE_SYSTEM` and project the terminal `DEVICE_SYSTEM -> KV` request to the existing `SHWP-DEVICE-KV-INTR-OBSERVATION-001` / `StegVerse-Labs/continuity-vault-kit#79` owner. The submitter never fabricates the terminal KV receipt and explicitly forbids provider-operation replay. The complete three-hop chain is proven only after the existing DEVICE_KV owner executes the exact terminal bytes and the resulting receipt preserves prior-receipt continuity.
+
+Source implementation, deterministic tests, GitHub validation, or merge status do not prove authentic resident source materialization, TVC authorization, InTr traversal, or terminal KV receipt. Those remain runtime-evidence predicates.
+
+Canonical source for this lane includes:
+
+```text
+workers/erl_active_research_intr_profile.py
+scripts/submit_erl_active_research_intr_binding.py
+scripts/install_erl_active_research_universal_intr_route.py
+scripts/install_erl_resident_request_wiring.py
+docs/SS_ERL_ACTIVE_RESEARCH_INTR_RUNTIME_BINDING_MIRROR_HANDOFF.md
+```
