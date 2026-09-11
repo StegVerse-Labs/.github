@@ -9,7 +9,9 @@
     "docs/TASK_REGISTRY_SOVEREIGN_KV_EVENT_CUSTODY_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github#1423",
     "scripts/task_registry_checkin_event_history.py",
-    "scripts/project_task_registry_event_to_sovereign_kv.py"
+    "scripts/project_task_registry_event_to_sovereign_kv.py",
+    "StegVerse-Labs/continuity-vault-kit#211",
+    "StegVerse-Labs/continuity-vault-kit/runtime/task_registry_event_sovereign_kv_binding.py"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
@@ -18,14 +20,22 @@
   },
   "dependencies": [
     "TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001",
-    "TASK-REGISTRY-SESSION-RETURN-ORCHESTRATION-001"
+    "TASK-REGISTRY-SESSION-RETURN-ORCHESTRATION-001",
+    "KV-CONNECTION-REVALIDATION-WORKER-001",
+    "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001"
   ],
   "adjacent_task_refs": [
     "KV-CONNECTION-REVALIDATION-WORKER-001",
     "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
     "STEGOS-NODE-MANIFOLD-001"
   ],
-  "first_unresolved_predicate": "PROVIDER_NEUTRAL_SOVEREIGN_KV_PROJECTION_RECEIPT_BOUND_TO_EXACT_EVENT_HASH",
+  "completed_source_integration": [
+    "GITHUB_PROVIDER_NEUTRAL_EVENT_CUSTODY_BRIDGE",
+    "CONTINUITY_VAULT_KIT_PROVIDER_NEUTRAL_WRITE_BINDING",
+    "EXACT_EVENT_HASH_OBJECT_BINDING",
+    "FAIL_CLOSED_EXACT_HASH_READBACK_VALIDATOR"
+  ],
+  "first_unresolved_predicate": "AUTHENTIC_ADMITTED_PROVIDER_WRITE_AND_EXACT_EVENT_HASH_READBACK_FROM_SOVEREIGN_KV",
   "authority": {
     "task_registry": "COORDINATION_ONLY",
     "workercoordinator": "CLAIM_FENCE",
