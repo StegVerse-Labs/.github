@@ -1,0 +1,253 @@
+{
+  "schema": "stegverse.device-org-allocator-recovered-evidence/v1",
+  "state": "RETAINED_CANONICAL_ALLOCATION_EVIDENCE_RECOVERED",
+  "selected_task_id": "TASK-2026-0011",
+  "claim_registry_generation": 7,
+  "claim_observation": {
+    "schema": "stegverse.org-claim-grant-observation/v1",
+    "state": "CLAIM_GRANT_OBSERVED",
+    "task_id": "TASK-2026-0011",
+    "claim_registry_generation": 7,
+    "fencing_tokens": [
+      7
+    ],
+    "dependency_surfaces": [
+      "site:current-iphone-kv-testflight-static-bootstrap"
+    ],
+    "claims": [
+      {
+        "repository": {
+          "host": "github.com",
+          "owner": "StegVerse-Labs",
+          "name": "Site",
+          "full_name": "StegVerse-Labs/Site",
+          "default_branch": "main"
+        },
+        "mode": "scoped_exclusive",
+        "preemptible": true,
+        "scope": {
+          "paths": [
+            "stegos-bootstrap/current-iphone-kv-testflight.html",
+            "stegos-bootstrap/current-iphone-kv-testflight-bootstrap.js",
+            "stegos-bootstrap/kv-bound-ephemeral-projection-context.js",
+            "stegos-bootstrap/kv-projection-file-loader.js",
+            "docs/CURRENT_IPHONE_KV_TESTFLIGHT_STATIC_BOOTSTRAP_MIRROR_HANDOFF.md",
+            "data/tasks/SITE-CURRENT-IPHONE-KV-TESTFLIGHT-STATIC-BOOTSTRAP.json"
+          ],
+          "contracts": [
+            "stegos.kv-bound-ephemeral-projection-context/v1"
+          ],
+          "release_surfaces": [
+            "site:current-iphone-kv-testflight-static-bootstrap"
+          ],
+          "capabilities": [
+            "current-iphone-kv-testflight-entry",
+            "kv-bound-ephemeral-projection-gate"
+          ],
+          "workflows": [],
+          "dependency_surfaces": [
+            "site:current-iphone-kv-testflight-static-bootstrap"
+          ]
+        },
+        "task_id": "TASK-2026-0011",
+        "lease": {
+          "expires_at": "2026-09-12T03:26:05Z",
+          "heartbeat_due_at": "2026-09-11T11:26:05Z",
+          "fencing_token": 7,
+          "service_class": "low_contention"
+        }
+      }
+    ],
+    "claim_snapshot_sha256": "1ac3e86851ff78f15d40d56642df0307d851a0cc87c0d1adcc9078d038cb12bd",
+    "allocator_remains_claim_authority": true,
+    "observation_grants_claim_authority": false,
+    "heartbeat_grants_claim_authority": false,
+    "github_token_required": false,
+    "network_source_fetch_performed": false,
+    "credential_authority": "TV/TVC",
+    "second_machine_required": false,
+    "execution_surface": "CURRENT_USER_IPHONE",
+    "authority_effect": "NONE_OBSERVATION_ONLY"
+  },
+  "allocator_release": "task0011-g7-v2-20260910",
+  "node_journal_entry": {
+    "schema": "stegos.web_bootstrap_journal_entry.v1",
+    "sequence": 67,
+    "previous_entry_sha256": "da84685aa788221e05f4e316b681ee8d17575f0c9c894ecedf2ca27e57081f19",
+    "receipt": {
+      "schema": "stegos.org_allocator_same_device_execution_receipt/v1",
+      "node_id": "stegnode-web-2d6daa94e496d451d16bd5619bd30a25",
+      "device_continuity_id": "stegdevice-0d0f5403f48ff804fb3d31fb346e748c94e395bc",
+      "execution_surface": "CURRENT_USER_IPHONE",
+      "execution_trigger": "VERIFIED_AUTO_EXECUTION_AFTER_JOURNAL_STATUS_RECONCILIATION",
+      "allocator_release": "task0011-g7-v2-20260910",
+      "portable_package_source_binding": {
+        "allocator_git_blob_sha": "7c0105c8529b682c24a94b39ba31a8ca574c3717",
+        "task_0007_git_blob_sha": "a5fd4662b2a370e8a86099c943b8d1ec18b93e19",
+        "task_0008_git_blob_sha": "f534167633c867bbee6b397ae345b10ed502aa2b",
+        "task_0009_git_blob_sha": "eeb661ca59f305ce8a86c2f46adced37056baec8",
+        "task_0010_git_blob_sha": "248bed8cf5428c3ba759ee0d34db5fec8949a835",
+        "claims_git_blob_sha": "9e7eaf9cb1319dd570714a0c1806d7173a7ba7ff",
+        "queue_git_blob_sha": "6cab961c8750495dab36d1a523980516b1ac3a5e",
+        "task_0011_git_blob_sha": "a9f90414e59e308d66faf7ff2d5c31173b1687ca"
+      },
+      "canonical_allocator_receipt": {
+        "schema": "stegverse.org-allocator-portable-receipt/v1",
+        "state": "ALLOCATION_COMPLETE",
+        "selected": "TASK-2026-0011",
+        "queued": [
+          "TASK-2026-0011"
+        ],
+        "blocked_missing_dependency_declaration": [],
+        "claim_registry_generation": 7,
+        "granted_claims": [
+          {
+            "repository": {
+              "host": "github.com",
+              "owner": "StegVerse-Labs",
+              "name": "Site",
+              "full_name": "StegVerse-Labs/Site",
+              "default_branch": "main"
+            },
+            "mode": "scoped_exclusive",
+            "preemptible": true,
+            "scope": {
+              "paths": [
+                "stegos-bootstrap/current-iphone-kv-testflight.html",
+                "stegos-bootstrap/current-iphone-kv-testflight-bootstrap.js",
+                "stegos-bootstrap/kv-bound-ephemeral-projection-context.js",
+                "stegos-bootstrap/kv-projection-file-loader.js",
+                "docs/CURRENT_IPHONE_KV_TESTFLIGHT_STATIC_BOOTSTRAP_MIRROR_HANDOFF.md",
+                "data/tasks/SITE-CURRENT-IPHONE-KV-TESTFLIGHT-STATIC-BOOTSTRAP.json"
+              ],
+              "contracts": [
+                "stegos.kv-bound-ephemeral-projection-context/v1"
+              ],
+              "release_surfaces": [
+                "site:current-iphone-kv-testflight-static-bootstrap"
+              ],
+              "capabilities": [
+                "current-iphone-kv-testflight-entry",
+                "kv-bound-ephemeral-projection-gate"
+              ],
+              "workflows": [],
+              "dependency_surfaces": [
+                "site:current-iphone-kv-testflight-static-bootstrap"
+              ]
+            },
+            "task_id": "TASK-2026-0011",
+            "lease": {
+              "expires_at": "2026-09-12T03:26:05Z",
+              "heartbeat_due_at": "2026-09-11T11:26:05Z",
+              "fencing_token": 7,
+              "service_class": "low_contention"
+            }
+          }
+        ],
+        "execution_surface": "CURRENT_USER_IPHONE",
+        "canonical_authority_owner": "StegVerse-Labs/.github organization allocator",
+        "credential_authority": "TV/TVC",
+        "heartbeat_grants_claim_authority": false,
+        "request_grants_claim_authority": false,
+        "stegos_grants_claim_authority": false,
+        "github_token_runtime_authority": "NONE",
+        "network_source_fetch_performed": false,
+        "requires_other_machine": false,
+        "second_user_operated_device_required": false,
+        "authority_effect": "CLAIM_AUTHORITY_ONLY_WHEN_SELECTED_BY_CANONICAL_ALLOCATOR",
+        "receipt_sha256": "sha256:3cd0aa9245be0ac5e9b81bc6c5a48aae0edc6f7c95162998e854feea04e75520"
+      },
+      "claim_observation": {
+        "schema": "stegverse.org-claim-grant-observation/v1",
+        "state": "CLAIM_GRANT_OBSERVED",
+        "task_id": "TASK-2026-0011",
+        "claim_registry_generation": 7,
+        "fencing_tokens": [
+          7
+        ],
+        "dependency_surfaces": [
+          "site:current-iphone-kv-testflight-static-bootstrap"
+        ],
+        "claims": [
+          {
+            "repository": {
+              "host": "github.com",
+              "owner": "StegVerse-Labs",
+              "name": "Site",
+              "full_name": "StegVerse-Labs/Site",
+              "default_branch": "main"
+            },
+            "mode": "scoped_exclusive",
+            "preemptible": true,
+            "scope": {
+              "paths": [
+                "stegos-bootstrap/current-iphone-kv-testflight.html",
+                "stegos-bootstrap/current-iphone-kv-testflight-bootstrap.js",
+                "stegos-bootstrap/kv-bound-ephemeral-projection-context.js",
+                "stegos-bootstrap/kv-projection-file-loader.js",
+                "docs/CURRENT_IPHONE_KV_TESTFLIGHT_STATIC_BOOTSTRAP_MIRROR_HANDOFF.md",
+                "data/tasks/SITE-CURRENT-IPHONE-KV-TESTFLIGHT-STATIC-BOOTSTRAP.json"
+              ],
+              "contracts": [
+                "stegos.kv-bound-ephemeral-projection-context/v1"
+              ],
+              "release_surfaces": [
+                "site:current-iphone-kv-testflight-static-bootstrap"
+              ],
+              "capabilities": [
+                "current-iphone-kv-testflight-entry",
+                "kv-bound-ephemeral-projection-gate"
+              ],
+              "workflows": [],
+              "dependency_surfaces": [
+                "site:current-iphone-kv-testflight-static-bootstrap"
+              ]
+            },
+            "task_id": "TASK-2026-0011",
+            "lease": {
+              "expires_at": "2026-09-12T03:26:05Z",
+              "heartbeat_due_at": "2026-09-11T11:26:05Z",
+              "fencing_token": 7,
+              "service_class": "low_contention"
+            }
+          }
+        ],
+        "claim_snapshot_sha256": "1ac3e86851ff78f15d40d56642df0307d851a0cc87c0d1adcc9078d038cb12bd",
+        "allocator_remains_claim_authority": true,
+        "observation_grants_claim_authority": false,
+        "heartbeat_grants_claim_authority": false,
+        "github_token_required": false,
+        "network_source_fetch_performed": false,
+        "credential_authority": "TV/TVC",
+        "second_machine_required": false,
+        "execution_surface": "CURRENT_USER_IPHONE",
+        "authority_effect": "NONE_OBSERVATION_ONLY"
+      },
+      "portable_claim_registry_generation": 7,
+      "selected_task_id": "TASK-2026-0011",
+      "reconciled_predecessor_task_status_ids": [],
+      "reconciliation_source": "CRYPTOGRAPHICALLY_REPLAYED_NODE_JOURNAL_CANONICAL_ALLOCATOR_RECEIPTS",
+      "reconciliation_grants_claim_authority": false,
+      "reconciliation_synthesizes_completion": false,
+      "allocator_remains_claim_authority": true,
+      "site_grants_claim_authority": false,
+      "heartbeat_grants_claim_authority": false,
+      "credential_authority": "TV/TVC",
+      "github_token_runtime_authority": "NONE",
+      "requires_other_machine": false,
+      "predecessor_task_0010_scope_widened": false,
+      "authority_effect": "NONE_EVIDENCE_OF_CANONICAL_ALLOCATOR_TRANSITION",
+      "executed_at": "2026-09-11T03:26:05.774Z"
+    },
+    "receipt_sha256": "3655269dbf7a0bf2c494a46fc258f7d6cce0698b26202d2d73bb61f7549bf4a4",
+    "entry_sha256": "34d649f1227db25f1a9ddb38fbea709c0fdf4ff5ad0148bb781bbee5c18fb5cf"
+  },
+  "node_journal_replay": {
+    "state": "PASS",
+    "entries": 67,
+    "tail_sha256": "34d649f1227db25f1a9ddb38fbea709c0fdf4ff5ad0148bb781bbee5c18fb5cf"
+  },
+  "allocator_mutation_performed": false,
+  "authority_effect": "NONE_EVIDENCE_ONLY",
+  "recovered_at": "2026-09-11T05:40:37.127Z"
+}
