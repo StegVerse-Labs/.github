@@ -1,0 +1,120 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SITE-PUBLICATION-INTR-CONSUMER-001",
+  "created_at": "2026-09-11T03:20:00Z",
+  "updated_at": "2026-09-11T03:20:00Z",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "SITE-PUBLICATION-INTR-CONSUMER-001",
+    "objective": "Consume an exact admitted SITE_PUBLICATION_EVENT under a fresh independent WorkerCoordinator claim/fence and advance only into the existing bounded EVENT_EPHEMERAL Site publication runtime path without treating ingress, HeartBeat, source validation, or candidate evidence as final publication.",
+    "success_predicates": [
+      "Exact Site publication materialization ingress is admitted candidate-only.",
+      "WorkerCoordinator issues a fresh independent claim/fence for this task.",
+      "Existing canonical EVENT_EPHEMERAL runtime executes one bounded publication lease.",
+      "Independent HTTPS /intr/profile and exact path/byte SHA equivalence are observed for the same publication manifest.",
+      "Candidate result evidence is exported and the bounded lease closes.",
+      "Final publication transition remains separately admitted before DNS/TLS completion is claimed."
+    ],
+    "failure_predicates": [
+      "CI/source validation is represented as runtime execution.",
+      "Ingress or HeartBeat mints a claim/fence.",
+      "Parent claim/fence is reused.",
+      "Render or another hosted provider becomes required.",
+      "A persistent host, always-on receiver, or second user-operated device becomes required.",
+      "Candidate evidence is represented as canonical publication."
+    ],
+    "authority_ceiling": [
+      "bounded Site publication candidate processing only",
+      "no final publication transition admission",
+      "no DNS/TLS mutation",
+      "no credential issuance",
+      "no hosted-provider runtime substitution"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "SITE-PUBLICATION-INTR-CONSUMER-001",
+    "repository": "StegVerse-Labs/.github",
+    "canonical_owner_ref": "docs/SITE_PUBLICATION_INTR_CONSUMER_MIRROR_HANDOFF.md",
+    "canonical_lineage_key": "site:publication:intr-consumer",
+    "derivation_depth": 1,
+    "priority": "release",
+    "operational_state": "AWAITING_FRESH_WORKERCOORDINATOR_CLAIM_AND_AUTHENTIC_EVENT_EPHEMERAL_LEASE",
+    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+    "fencing_token": null,
+    "source_refs": [
+      "docs/SITE_PUBLICATION_INTR_CONSUMER_MIRROR_HANDOFF.md",
+      "workers/site_publication_intr_ingress.py",
+      "workers/site_publication_intr_consumer_worker.py",
+      "scripts/consume_site_publication_intr_materialization_request.py",
+      "scripts/install_site_publication_universal_intr_route.py"
+    ],
+    "source_issue": 1372
+  },
+  "authority": {
+    "authority_source": "verified Site publication Universal InTr ingress + existing independent WorkerCoordinator task control; TV/TVC unchanged",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "policy_version": "site-publication-intr-consumer-v0.1",
+    "heartbeat_grants_execution_authority": false,
+    "fresh_fence_required": true,
+    "minimum_fencing_token_exclusive": 0,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "third_party_runtime_required": false,
+    "physical_additional_machine_required": false
+  },
+  "execution": {
+    "required_capabilities": ["bounded_process_execution", "durable_state_reconstruction", "intr_ingress"],
+    "allowed_paths": [
+      "intr-materialization/**",
+      "receipts/sovereign-network/site-publication-intr-ingress/**",
+      "receipts/sovereign-host/site-publication-intr-consumer/**",
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/Site"
+    ],
+    "allowed_services": [],
+    "max_actions": 6,
+    "max_retries": 3,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 24,
+    "rate_class": "site_publication_intr_consumer",
+    "parent_task_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
+    "parent_terminal_evidence": null
+  },
+  "completion": {
+    "source_implementation_state": "WORKER_REGISTRATION_SOURCE_PENDING_VALIDATION",
+    "runtime_activation_state": "PENDING_FRESH_CLAIM_FENCE_AND_AUTHENTIC_EVENT_EPHEMERAL_EXECUTION",
+    "runtime_observation_claimed": false,
+    "public_profile_observed": false,
+    "exact_http_readback_observed": false,
+    "content_equivalence_observed": false,
+    "lease_closure_observed": false,
+    "final_publication_transition_admitted": false,
+    "next_authorized_action": "After source validation/merge, target SITE-PUBLICATION-INTR-CONSUMER-001 through the existing WorkerCoordinator. Require a newly issued claim/fence and bind only the exact admitted materialization id; do not infer runtime execution from merge/CI.",
+    "targeted_command": "python scripts/run_worker_runtime.py --task-id SITE-PUBLICATION-INTR-CONSUMER-001"
+  },
+  "activation": {
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "carrier": "universal_intr_event_materialization",
+    "carrier_trigger_required": false,
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "existing independent task control",
+    "checkout_policy": "fenced_atomic_checkout",
+    "claim_generation_rule": "fresh WorkerCoordinator fencing generation; no parent or historical claim/fence reuse"
+  },
+  "source_state_vector_ref": "control/task-vectors/SITE-PUBLICATION-INTR-CONSUMER-001.json",
+  "machine_readable_state": {
+    "cosv": {
+      "profile": "task.v1",
+      "canonical_profile_ref": "management/COSV_PROFILE_V1.json",
+      "notation": "L R U I V G O C M T B E A P",
+      "width": 14,
+      "vector": "50000000102000",
+      "vector_state": "EMITTED",
+      "vector_observed_at": "2026-09-11T03:20:00Z",
+      "authority_effect": "NONE"
+    }
+  }
+}
