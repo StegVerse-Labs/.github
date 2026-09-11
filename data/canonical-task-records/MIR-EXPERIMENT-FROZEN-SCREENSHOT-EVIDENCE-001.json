@@ -6,8 +6,15 @@
   "parent_task_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
   "goal": "Freeze the MIR experiment's exact purpose-indexed screenshot evidence set before execution and require the same exact screenshot artifacts and purpose bindings throughout the complete test.",
   "coordination_state": "ACTIVE",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "50000000100000",
+    "source_state_vector_ref": "control/task-vectors/MIR-EXPERIMENT-FROZEN-SCREENSHOT-EVIDENCE-001.json",
+    "authority_effect": "NONE"
+  },
   "source_refs": [
     "docs/MIR_EXPERIMENT_FROZEN_SCREENSHOT_EVIDENCE_MIRROR_HANDOFF.md",
+    "control/task-vectors/MIR-EXPERIMENT-FROZEN-SCREENSHOT-EVIDENCE-001.json",
     "issue/1446",
     "issue/1447"
   ],
