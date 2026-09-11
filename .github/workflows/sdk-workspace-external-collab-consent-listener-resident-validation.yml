@@ -1,0 +1,46 @@
+name: SDK WorkSpace External Collaboration Consent Listener Resident Validation
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - control/resident-execution-request.d/sdk-workspace-external-collab-consent-listener-001.json
+      - control/resident-execution-request.d/consume-sdk-workspace-external-collab-consent-listener.py
+      - scripts/dispatch_resident_execution_requests.py
+      - tests/test_sdk_workspace_external_collab_consent_listener_resident.py
+      - docs/SDK_WORKSPACE_EXTERNAL_COLLAB_CONSENT_LISTENER_RESIDENT_MIRROR_HANDOFF.md
+      - .github/workflows/sdk-workspace-external-collab-consent-listener-resident-validation.yml
+  push:
+    branches:
+      - sdk-workspace-external-collab-consent-listener-resident
+
+permissions:
+  contents: read
+
+jobs:
+  validate-resident-carrier:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate request, consumer, and dispatcher binding
+        run: |
+          set -eu
+          python -m unittest -q tests.test_sdk_workspace_external_collab_consent_listener_resident
+          python -m py_compile control/resident-execution-request.d/consume-sdk-workspace-external-collab-consent-listener.py scripts/dispatch_resident_execution_requests.py
+          python -m json.tool control/resident-execution-request.d/sdk-workspace-external-collab-consent-listener-001.json >/dev/null
+      - name: Assert non-hosted non-authorizing boundary
+        run: |
+          set -eu
+          grep -q 'expected_tvc_installer_git_blob.*dae00dbec1a79d611a3184e185e04e6f29110348' control/resident-execution-request.d/sdk-workspace-external-collab-consent-listener-001.json
+          grep -q '127.0.0.1:8786' control/resident-execution-request.d/sdk-workspace-external-collab-consent-listener-001.json
+          grep -q 'google_drive.external_collaboration.client_secret' control/resident-execution-request.d/sdk-workspace-external-collab-consent-listener-001.json
+          grep -q 'sdk_workspace_external_collab_consent_listener' scripts/dispatch_resident_execution_requests.py
+          ! grep -Eq 'GOOGLE_DRIVE_CLIENT_SECRET|client_secret\s*=|refresh_token\s*=|access_token\s*=|secrets\.' control/resident-execution-request.d/consume-sdk-workspace-external-collab-consent-listener.py control/resident-execution-request.d/sdk-workspace-external-collab-consent-listener-001.json
+          ! grep -Eq 'render\.com|vercel\.app|trycloudflare|cloudflared' control/resident-execution-request.d/consume-sdk-workspace-external-collab-consent-listener.py control/resident-execution-request.d/sdk-workspace-external-collab-consent-listener-001.json
+          echo 'SDK_WORKSPACE_EXTCOLLAB_CONSENT_LISTENER_RESIDENT_SOURCE_VALIDATION_PASS'
+          echo 'Hosted CI validates source only; authentic systemd installation remains resident TV/TVC-only.'
