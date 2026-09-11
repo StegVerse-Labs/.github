@@ -4,6 +4,7 @@
   var PACKAGE_SCHEMA = "stegverse.workercoordinator-portable-checkout-package/v1";
   var STATE_SCHEMA = "stegverse.workercoordinator-portable-state/v1";
   var RECEIPT_SCHEMA = "stegverse.workercoordinator-portable-checkout-receipt/v1";
+  var REGISTRY_DISPOSITION_SCHEMA = "stegverse.task-registry-checkin-disposition/v1";
 
   function fail(reason) { throw new Error("FAIL_CLOSED: " + reason); }
   function isObject(value) { return value && typeof value === "object" && !Array.isArray(value); }
@@ -31,6 +32,15 @@
     return crypto.subtle.digest("SHA-256", new TextEncoder().encode(text)).then(function (digest) {
       return bytesToHex(new Uint8Array(digest));
     });
+  }
+  function validateRegistryDisposition(disposition, taskId) {
+    if (!isObject(disposition) || disposition.schema !== REGISTRY_DISPOSITION_SCHEMA) { fail("Task Registry disposition required before WorkerCoordinator checkout"); }
+    if (disposition.task_id !== taskId) { fail("Task Registry disposition task mismatch"); }
+    if (disposition.authority_effect !== "NONE") { fail("Task Registry disposition may not grant authority"); }
+    if (disposition.disposition !== "CONTINUE") {
+      fail("Task Registry disposition prohibits checkout: " + String(disposition.disposition || "UNKNOWN"));
+    }
+    return disposition;
   }
   function validatePackage(pkg) {
     if (!isObject(pkg) || pkg.schema !== PACKAGE_SCHEMA) { fail("package schema mismatch"); }
@@ -90,76 +100,83 @@
     if (ids.length === 0 && checkoutCount > 0 && state.last_task_id) { ids.push(state.last_task_id); }
     return ids;
   }
-  function checkout(pkg, store) {
+  function checkout(pkg, store, registryDisposition) {
     validatePackage(pkg);
+    validateRegistryDisposition(registryDisposition, pkg.task.task_id);
     if (!store || typeof store.atomicCompareAndSwap !== "function") { fail("atomic state store required"); }
-    return store.read().then(function (existing) {
-      var state = existing || initialState(pkg);
-      if (state.schema !== STATE_SCHEMA || state.portable_authority_epoch !== pkg.portable_authority_epoch) { fail("portable state lineage mismatch"); }
-      if (state.predecessor_registry_git_blob_sha !== pkg.predecessor_registry_git_blob_sha) { fail("predecessor registry mismatch"); }
-      if (state.parallel_workercoordinator_claim_issuance_allowed !== false) { fail("parallel issuance state invalid"); }
-      var generation = asPositiveInt(state.generation, "state generation");
-      var inferredCheckoutCount = Number.isInteger(state.checkout_count) ? state.checkout_count : Math.max(0, generation - pkg.predecessor_generation_floor);
-      var priorTaskIds = checkedOutTaskIds(state, inferredCheckoutCount);
-      if (priorTaskIds.indexOf(pkg.task.task_id) !== -1) { fail("task package already checked out; terminal/downstream continuation must not mint another claim for the same task"); }
-      if (generation < pkg.predecessor_generation_floor) { fail("portable generation regressed below predecessor floor"); }
-      var minimum = pkg.minimum_fencing_token_exclusive;
-      if (Number.isInteger(minimum) && generation <= minimum) { generation = minimum; }
-      var nextGeneration = generation + 1;
-      var claimId = "SHWP-" + pkg.task.task_id + "-G" + nextGeneration;
-      var beforeHashPromise = sha256Hex(state);
-      return beforeHashPromise.then(function (beforeHash) {
-        var receiptBody = {
-          schema: RECEIPT_SCHEMA,
-          portable_authority_epoch: pkg.portable_authority_epoch,
-          canonical_authority_owner: pkg.canonical_authority_owner,
-          authority_domain: "INDEPENDENT_TASK_CONTROL",
-          task_id: pkg.task.task_id,
-          worker_id: pkg.worker.worker_id,
-          claim_id: claimId,
-          fencing_token: nextGeneration,
-          predecessor_generation: state.generation,
-          predecessor_state_sha256: "sha256:" + beforeHash,
-          predecessor_registry_git_blob_sha: pkg.predecessor_registry_git_blob_sha,
-          task_fragment_git_blob_sha: pkg.source_binding.task_fragment_git_blob_sha,
-          handoff_git_blob_sha: pkg.source_binding.handoff_git_blob_sha,
-          state_vector_git_blob_sha: pkg.source_binding.state_vector_git_blob_sha,
-          execution_surface: "CURRENT_USER_IPHONE",
-          heartbeat_reference: pkg.heartbeat_reference || null,
-          heartbeat_granted_authority: false,
-          credential_authority: "TV/TVC",
-          github_token_runtime_authority: "NONE",
-          global_workercoordinator_authority: true,
-          stegos_device_task_authority: false,
-          external_non_stegverse_machine_required: false,
-          parallel_workercoordinator_claim_issuance_allowed: false,
-          governed_transfer_required_before_other_surface_claims: true,
-          authority_effect: "CANONICAL_WORKERCOORDINATOR_CLAIM_FENCE"
-        };
-        return sha256Hex(receiptBody).then(function (receiptHash) {
-          receiptBody.receipt_sha256 = "sha256:" + receiptHash;
-          var nextState = {
-            schema: STATE_SCHEMA,
+    return sha256Hex(registryDisposition).then(function (registryDispositionHash) {
+      return store.read().then(function (existing) {
+        var state = existing || initialState(pkg);
+        if (state.schema !== STATE_SCHEMA || state.portable_authority_epoch !== pkg.portable_authority_epoch) { fail("portable state lineage mismatch"); }
+        if (state.predecessor_registry_git_blob_sha !== pkg.predecessor_registry_git_blob_sha) { fail("predecessor registry mismatch"); }
+        if (state.parallel_workercoordinator_claim_issuance_allowed !== false) { fail("parallel issuance state invalid"); }
+        var generation = asPositiveInt(state.generation, "state generation");
+        var inferredCheckoutCount = Number.isInteger(state.checkout_count) ? state.checkout_count : Math.max(0, generation - pkg.predecessor_generation_floor);
+        var priorTaskIds = checkedOutTaskIds(state, inferredCheckoutCount);
+        if (priorTaskIds.indexOf(pkg.task.task_id) !== -1) { fail("task package already checked out; terminal/downstream continuation must not mint another claim for the same task"); }
+        if (generation < pkg.predecessor_generation_floor) { fail("portable generation regressed below predecessor floor"); }
+        var minimum = pkg.minimum_fencing_token_exclusive;
+        if (Number.isInteger(minimum) && generation <= minimum) { generation = minimum; }
+        var nextGeneration = generation + 1;
+        var claimId = "SHWP-" + pkg.task.task_id + "-G" + nextGeneration;
+        var beforeHashPromise = sha256Hex(state);
+        return beforeHashPromise.then(function (beforeHash) {
+          var receiptBody = {
+            schema: RECEIPT_SCHEMA,
             portable_authority_epoch: pkg.portable_authority_epoch,
             canonical_authority_owner: pkg.canonical_authority_owner,
-            execution_surface: "CURRENT_USER_IPHONE",
-            predecessor_generation_floor: pkg.predecessor_generation_floor,
+            authority_domain: "INDEPENDENT_TASK_CONTROL",
+            task_id: pkg.task.task_id,
+            worker_id: pkg.worker.worker_id,
+            claim_id: claimId,
+            fencing_token: nextGeneration,
+            predecessor_generation: state.generation,
+            predecessor_state_sha256: "sha256:" + beforeHash,
             predecessor_registry_git_blob_sha: pkg.predecessor_registry_git_blob_sha,
-            generation: nextGeneration,
-            checkout_count: inferredCheckoutCount + 1,
-            checked_out_task_ids: priorTaskIds.concat([pkg.task.task_id]),
-            checkout_tail_sha256: receiptBody.receipt_sha256,
-            last_checkout_receipt: receiptBody,
-            last_claim_id: claimId,
-            last_task_id: pkg.task.task_id,
+            task_fragment_git_blob_sha: pkg.source_binding.task_fragment_git_blob_sha,
+            handoff_git_blob_sha: pkg.source_binding.handoff_git_blob_sha,
+            state_vector_git_blob_sha: pkg.source_binding.state_vector_git_blob_sha,
+            registry_checkin_disposition: "CONTINUE",
+            registry_checkin_sha256: "sha256:" + registryDispositionHash,
+            registry_checkin_authority_effect: "NONE",
+            execution_surface: "CURRENT_USER_IPHONE",
+            heartbeat_reference: pkg.heartbeat_reference || null,
+            heartbeat_granted_authority: false,
+            credential_authority: "TV/TVC",
+            github_token_runtime_authority: "NONE",
+            global_workercoordinator_authority: true,
+            stegos_device_task_authority: false,
+            external_non_stegverse_machine_required: false,
             parallel_workercoordinator_claim_issuance_allowed: false,
             governed_transfer_required_before_other_surface_claims: true,
-            credential_authority: "TV/TVC",
-            authority_effect: "CANONICAL_WORKERCOORDINATOR_STATE"
+            authority_effect: "CANONICAL_WORKERCOORDINATOR_CLAIM_FENCE"
           };
-          return store.atomicCompareAndSwap(state, nextState).then(function (committed) {
-            if (committed !== true) { fail("atomic WorkerCoordinator checkout lost race or stale state"); }
-            return { state: nextState, receipt: receiptBody };
+          return sha256Hex(receiptBody).then(function (receiptHash) {
+            receiptBody.receipt_sha256 = "sha256:" + receiptHash;
+            var nextState = {
+              schema: STATE_SCHEMA,
+              portable_authority_epoch: pkg.portable_authority_epoch,
+              canonical_authority_owner: pkg.canonical_authority_owner,
+              execution_surface: "CURRENT_USER_IPHONE",
+              predecessor_generation_floor: pkg.predecessor_generation_floor,
+              predecessor_registry_git_blob_sha: pkg.predecessor_registry_git_blob_sha,
+              generation: nextGeneration,
+              checkout_count: inferredCheckoutCount + 1,
+              checked_out_task_ids: priorTaskIds.concat([pkg.task.task_id]),
+              checkout_tail_sha256: receiptBody.receipt_sha256,
+              last_checkout_receipt: receiptBody,
+              last_claim_id: claimId,
+              last_task_id: pkg.task.task_id,
+              last_registry_checkin_sha256: receiptBody.registry_checkin_sha256,
+              parallel_workercoordinator_claim_issuance_allowed: false,
+              governed_transfer_required_before_other_surface_claims: true,
+              credential_authority: "TV/TVC",
+              authority_effect: "CANONICAL_WORKERCOORDINATOR_STATE"
+            };
+            return store.atomicCompareAndSwap(state, nextState).then(function (committed) {
+              if (committed !== true) { fail("atomic WorkerCoordinator checkout lost race or stale state"); }
+              return { state: nextState, receipt: receiptBody };
+            });
           });
         });
       });
@@ -170,8 +187,10 @@
     packageSchema: PACKAGE_SCHEMA,
     stateSchema: STATE_SCHEMA,
     receiptSchema: RECEIPT_SCHEMA,
+    registryDispositionSchema: REGISTRY_DISPOSITION_SCHEMA,
     canonicalize: canonicalize,
     sha256Hex: sha256Hex,
+    validateRegistryDisposition: validateRegistryDisposition,
     validatePackage: validatePackage,
     initialState: initialState,
     checkout: checkout

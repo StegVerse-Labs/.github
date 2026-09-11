@@ -2,7 +2,12 @@
 """Install the CanonicalWork route and run one bounded event bootstrap.
 
 This wrapper is intended for an admitted StegVerse resident execution context.
-It performs only repository-local machine steps in sequence:
+Before any route installation or task mutation, it performs a non-authorizing
+Task Registry collision check-in. Only CONTINUE may proceed automatically.
+COORDINATE_CONVERGENCE and every STOP_* disposition fail closed before mutation
+and return the exact registry disposition to the caller/session.
+
+It then performs only repository-local machine steps in sequence:
 
 1. apply/check the fail-closed CanonicalWork route transformation against the
    existing shared Universal InTr router source;
@@ -23,6 +28,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import json
 import os
 import shutil
 import subprocess
@@ -38,10 +44,38 @@ GLOBAL_HELPER_REL = Path("scripts/run_global_runtime_node_profile_convergence.py
 GLOBAL_BASE_HELPER_REL = Path("scripts/run_global_runtime_evidence_convergence.py")
 GLOBAL_PROJECTION_REL = Path("control/runtime-partial-solution-projections/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.json")
 GLOBAL_NODE_PROFILES_REL = Path("control/runtime-node-profiles.json")
+COLLISION_EVALUATOR_REL = Path("scripts/evaluate_task_registry_collision_checkin.py")
+COLLISION_SCHEMA = "stegverse.task-registry-checkin-disposition/v1"
 
 
 def run(command: list[str]) -> None:
     subprocess.run(command, cwd=str(ROOT), check=True)
+
+
+def collision_preflight(task_id: str) -> dict:
+    evaluator = ROOT / COLLISION_EVALUATOR_REL
+    if not evaluator.is_file():
+        raise RuntimeError("Task Registry collision evaluator missing; fail closed before Canonical Work mutation")
+    proc = subprocess.run(
+        [sys.executable, str(evaluator)],
+        cwd=str(ROOT),
+        input=json.dumps({"task_id": task_id}),
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    try:
+        result = json.loads(proc.stdout)
+    except Exception as exc:
+        raise RuntimeError("Task Registry collision evaluator returned non-JSON output") from exc
+    if result.get("schema") != COLLISION_SCHEMA or result.get("task_id") != task_id:
+        raise RuntimeError("Task Registry collision disposition identity/schema mismatch")
+    if result.get("authority_effect") != "NONE":
+        raise RuntimeError("Task Registry collision disposition attempted authority effect")
+    disposition = str(result.get("disposition") or "")
+    if disposition != "CONTINUE":
+        raise RuntimeError("TASK_REGISTRY_CHECKIN:" + json.dumps(result, sort_keys=True, separators=(",", ":")))
+    return result
 
 
 def sha256(path: Path) -> str:
@@ -106,6 +140,9 @@ def main() -> int:
     parser.add_argument("--consumer-timeout-seconds", type=float, default=5.0)
     parser.add_argument("--without-carrier-binding", action="store_true")
     args = parser.parse_args()
+
+    checkin = collision_preflight(args.task_id)
+    print("TASK_REGISTRY_CHECKIN:" + json.dumps(checkin, sort_keys=True, separators=(",", ":")))
 
     installer = str(ROOT / "scripts" / "install_canonical_work_universal_intr_route.py")
     bootstrap = str(ROOT / "scripts" / "run_canonical_work_event_bootstrap.py")

@@ -1,0 +1,54 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "STEGOS-NODE-MANIFOLD-001",
+  "correlation_id": "STEGOS-NODE-MANIFOLD-001",
+  "root_correlation_id": "STEGOS-NODE-MANIFOLD-001",
+  "parent_task_id": null,
+  "goal": "Physically prove the governed StegOS Node and ephemeral Network Manifold from retained node genesis through distinct peer participation, NETWORK_PRESENT, degradation/reformation, and exact replay/reconstruction, while allowing separately tracked service-KV substrate work to reuse the same retained-node and Interlock/InTr primitives without claiming physical network proof.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "repository": "StegVerse-Labs/StegOS",
+  "canonical_issue": "StegVerse-Labs/StegOS#23",
+  "handoff_projection_refs": [
+    "StegVerse-Labs/StegOS/docs/STEGOS_NODE_MANIFOLD_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegOS/docs/STEGVERSE_GENESIS_SERVICE_KV_TOPOLOGY_MIRROR_HANDOFF.md"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": ["StegVerse-Labs/StegOS", "StegVerse-Labs/.github", "StegVerse-Labs/Site", "StegVerse-Labs/continuity-vault-kit"],
+    "components": ["retained-stegos-node", "node-genesis", "network-manifold", "universal-intr", "service-root-kv-topology", "ecosystem-chat-service-kv", "physical-peer-evidence", "replay-reconstruction"]
+  },
+  "adjacent_task_refs": [
+    "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+    "KV-CONNECTION-REVALIDATION-WORKER-001",
+    "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+    "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001",
+    "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"
+  ],
+  "remaining_predicates": [
+    "DISTINCT_SECOND_ACTIVE_NODE_OBSERVED",
+    "NETWORK_PRESENT_PROVEN",
+    "REAL_FRAGMENTATION_AND_REFORMATION_OBSERVED",
+    "EXACT_MULTI_NODE_REPLAY_RECONSTRUCTION_EQUALITY"
+  ],
+  "worker_claim": {
+    "authority": "CURRENT_SESSION_COORDINATION_ONLY",
+    "claim_ref": "StegVerse-Labs/StegOS#23",
+    "projection_only": true
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "activation_proof_complete": false
+  },
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "credential_authority": "TV/TVC",
+    "master_records_reality_authority": true,
+    "interlock_intr_required_for_governed_ingress_egress": true,
+    "heartbeat_execution_authority": false,
+    "github_runtime_authority": "NONE",
+    "hosted_execution_fallback": false
+  }
+}

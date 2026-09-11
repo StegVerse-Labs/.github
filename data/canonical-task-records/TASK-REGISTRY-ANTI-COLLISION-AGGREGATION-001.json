@@ -1,0 +1,20 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001",
+  "correlation_id": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001",
+  "root_correlation_id": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001",
+  "parent_task_id": null,
+  "goal": "Make every canonical Task Registry check-in return a deterministic anti-collision disposition before mutation, including exact conflicting or superseding task and handoff information sufficient for a session to continue, converge, or terminate cleanly.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "20010000110000",
+  "source_refs": ["docs/TASK_REGISTRY_ANTI_COLLISION_AGGREGATION_MIRROR_HANDOFF.md", "scripts/evaluate_task_registry_collision_checkin.py", "StegVerse-Labs/.github#1343"],
+  "targets": {"organizations":["StegVerse-Labs"],"repositories":["StegVerse-Labs/.github"],"components":["canonical-task-registry","worker-checkout","collision-detection","supersession-disposition","session-convergence"]},
+  "dependencies": [],
+  "blockers": [],
+  "adjacent_task_refs": ["STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001","GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001"],
+  "worker_claim": {"authority":"CURRENT_SESSION","claim_ref":"docs/TASK_REGISTRY_ANTI_COLLISION_AGGREGATION_MIRROR_HANDOFF.md","fence_ref":null,"projection_only":false},
+  "completion": {"claimed":false,"validated":false,"activation_proof_complete":false},
+  "allowed_next_transitions": ["VALIDATE","MERGE","PROPAGATE_TO_CANONICAL_TASK_CHECKIN"],
+  "authority_model": {"task_registry_mints_execution_authority":false,"worker_claim_authority":"WORKERCOORDINATOR","github_runtime_authority":"NONE","model_output_authority":false}
+}
