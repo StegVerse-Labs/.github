@@ -25,6 +25,7 @@ Primary inherited sources:
 - `docs/HIL_ESRL_EXACT_INTAKE_RECONCILIATION_20260911.md`
 - `docs/HIL_ESRL_EXACT_BYTE_ACCEPTANCE_MIRROR_HANDOFF.md`
 - `StegVerse-Labs/Site/docs/HIL_BROWSER_ESRL_LEASE_OPEN_MIRROR_HANDOFF.md`
+- `StegVerse-Labs/Site/docs/HIL_SAME_DEVICE_BROWSER_CUSTODY_MIRROR_HANDOFF.md`
 - `scripts/intake_hil_browser_esrl_evidence.py`
 - `scripts/evaluate_hil_post_esrl_readiness.py`
 - `scripts/reconcile_hil_esrl_acceptance.py`
@@ -63,14 +64,14 @@ Canonical request-consumption evidence remains `receipts/sovereign-host/hil-resi
 
 The exact current-iPhone ESRL `LEASE_OPEN` artifact was preserved byte-for-byte as `evidence/physical/hil-esrl-lease-open-a6756c54da15f09cd6a3dbb201375891803f6589fd644db4c545be39ebe41b92.json`. `.github` PR `#1454` merged the accepted exact artifact at `658f8c710a3af1726565904d372050d6e1948013` after organization-control, deterministic repository-suite, and Heartbeat validation passed.
 
-PR `#1454` intentionally left canonical COSV fail-closed because initial local task-vector/worker-registry mutation exposed aggregate parity requirements. Issue `#1458` owns the coordinated transition across all four canonical projection surfaces:
+PR `#1454` intentionally left canonical COSV fail-closed because initial local task-vector/worker-registry mutation exposed aggregate parity requirements. Issue `#1458` owned the coordinated transition across all four canonical projection surfaces:
 
 - `control/task-vectors/SHWP-HIL-SOVEREIGN-RECEIVER-001.json`
 - `control/worker-registry.d/hil-sovereign-receiver-001.json`
 - `control/task-vector-index.json`
 - `control/cosv-global-registry-coverage.json`
 
-The only admissible transition is:
+The admissible transition was:
 
 ```text
 50000000103000 -> 50000000102000
@@ -82,7 +83,7 @@ preserve accepted ESRL exact bytes and accepted intake
 next runtime stage = HIL_RECEIVER_READY_AND_CUSTODY
 ```
 
-The four surfaces now express that transition together on the `#1458` reconciliation branch. This is bookkeeping reconciliation only: `archive_eligible=false`, broader activation remains false, propagation remains false, TV/TVC remains credential authority, and GitHub runtime authority remains `NONE`.
+`.github` PR `#1475` repaired the stale cohort regression expectation, passed exact-head Organization Control `34635801991`, Deterministic Repository Suite `34635801994`, and Heartbeat `34635801977`, then squash-merged at `30c081c4c63c39cca19cbbb4b25b16b3ec886699`. Issue `#1458` is closed complete. The four canonical COSV surfaces now express `50000000102000` together. This reconciliation is bookkeeping only: `archive_eligible=false`, broader activation remains false, propagation remains false, TV/TVC remains credential authority, and GitHub runtime authority remains `NONE`.
 
 ## Completed ESRL source lineage
 
@@ -110,7 +111,28 @@ accepted exact ESRL LEASE_OPEN
 -> parent completion evaluation
 ```
 
-No source merge, CI result, task-vector edit, or handoff prose may substitute for authentic runtime/custody/restart/TVC evidence.
+No source merge, CI result, task-vector edit, handoff prose, or public page availability may substitute for authentic runtime/custody/restart/TVC evidence.
+
+## Same-device receiver/custody source release
+
+After the atomic ESRL reconciliation, no authorized remote carrier was available and the canonical post-ESRL classifier correctly found no authentic receiver/custody artifact. The accepted ESRL artifact explicitly carries `custody_observed=false`, so ESRL `LEASE_OPEN` was not promoted into custody.
+
+Site issue `#1238` therefore owned a bounded one-device source successor. Site PR `#1239` refreshed the browser InTr projection from the canonical StegOS registry and added the StegOS-owned `hil-ingress-custody / ACCEPT_CUSTODY` and `hil-tvc-lifecycle / ADMIT_LIFECYCLE` profiles without redefining them locally. The generated projection remains hash-bound to StegOS registry SHA256 `831b5aa69cfc78cfff3d631949f7dfe0667511d618129f50a077b5ac222a047b`; the generated six-profile browser artifact SHA256 is `462f2e8abfd03a9904eb84f0d57d6b58508e006e2691c3aff54795aa998a75fc`.
+
+PR `#1239` also added a same-device StegOS service-worker custody successor that can consume only an already-staged exact HIL packet plus the accepted ESRL lineage, independently re-verify exact bytes/provenance/canonical ingress and materialization bindings, persist exact bytes write-once in a separate same-device custody store, re-read/re-hash them, and only then emit a bounded `HIL-RECEIVER-RECEIPT-v2` with `custody_state=EXACT_BYTES_PERSISTED` and `registry_state=RECORDED`. It preserves G25/fence 25, `CURRENT_USER_IPHONE`, no other-machine dependency, no second claim/fence, TV/TVC credential authority, and GitHub runtime authority `NONE`. It may construct and retain the next `hil-tvc-lifecycle` intent, but `tvc_admission_completed` remains false until TVC independently admits it.
+
+The approved `stegos-web-bootstrap-v16` wrapper remained byte-for-byte unchanged; the custody successor is loaded through the existing portable HIL bridge and therefore does not create a second service worker/runtime. Exact PR head `3f77aa4b40afb3473bbc4df9706cc92c75502274` passed all six relevant Site workflows:
+
+- Site Bootstrap Validate `34637525153`
+- Site Handoff Orchestrator `34637525247`
+- Node IndexedDB Schema Migration `34637525172`
+- Canonical Generated InTr Connectors `34637525246`
+- Validate StegOS Persistent Card UX `34637525161`
+- Ecosystem Heartbeat Orchestration `34637525465`
+
+PR `#1239` squash-merged at `29f369759d9d3e52299dfd3a7e0dcbd1207ccfb4`; Site issue `#1238` closed complete. Site PR `#1240` then terminalized only the corresponding repository pre-work claim after Bootstrap, Handoff Orchestrator, and Heartbeat all passed on exact head `c0f07b890c9c6af3b18745f2e5abccbcc4c81220`; it squash-merged at `fc0a3366b6cb7a0ae7952807741c063352c6ceb1`.
+
+These Site merges establish source readiness only. They do not establish authentic current-iPhone receiver custody, public propagation, post-restart reconstruction, TVC lifecycle admission, release, or full HIL activation. The first runtime evidence still required is an exact current-iPhone `HIL-RECEIVER-RECEIPT-v2` generated from the retained accepted ESRL lease and the exact already-staged packet.
 
 ## Fail-closed evidence semantics
 
@@ -118,24 +140,24 @@ The ESRL lineage remains bound to exact task/request/context/node/claim/fence, r
 
 The accepted `.github` intake cross-checks the exact artifact against accepted G25 request-consumption evidence. Subject mismatch, transformed lineage, or downstream overclaim remains inadmissible.
 
-The accepted ESRL artifact proves only the ESRL predicate. It does not prove receiver custody, restart reconstruction, TVC lifecycle handoff, release, propagation, or full HIL activation.
+The accepted ESRL artifact proves only the ESRL predicate. The released same-device custody source proves only source readiness. Neither proves receiver custody, restart reconstruction, TVC lifecycle handoff, release, propagation, or full HIL activation.
 
 ## Post-ESRL continuation
 
 PR `#1353`, merged at `8ce03ba2d7597f844cdf791d0201f2aaf1273a24`, installed the fail-closed read-only classifier `scripts/evaluate_hil_post_esrl_readiness.py` plus `docs/HIL_POST_ESRL_READINESS_MIRROR_HANDOFF.md`. It consumes accepted ESRL intake evidence and identifies the first unsupported downstream stage. It cannot launch, restart, invoke TVC, mutate WorkerCoordinator/COSV, or promote source/CI into runtime evidence.
 
-Issue `#1354` and `scripts/reconcile_hil_esrl_acceptance.py` prewired the exact `50000000103000 -> 50000000102000` proposal. That helper remains deliberately non-mutating. Issue `#1458` is the reviewed canonical realization of that proposal across task-local and aggregate projection surfaces.
+Issue `#1354` and `scripts/reconcile_hil_esrl_acceptance.py` prewired the exact `50000000103000 -> 50000000102000` proposal. That helper remains deliberately non-mutating. Issue `#1458` and merged PR `#1475` are the reviewed canonical realization of that proposal across task-local and aggregate projection surfaces.
 
-The next stage is `HIL_RECEIVER_READY_AND_CUSTODY`. The continuation must reuse the admitted G25/ESRL identity and may not mint replacement evidence merely to obtain a favorable result.
+The next stage remains `HIL_RECEIVER_READY_AND_CUSTODY`. The continuation must reuse the admitted G25/ESRL identity and may not mint replacement evidence merely to obtain a favorable result. The released Site same-device successor is the current source path for producing that artifact from the retained current-iPhone state.
 
 ## Remaining predicates
 
-The two independent obligations after accepted ESRL `LEASE_OPEN` are:
+The two independent parent obligations after accepted ESRL `LEASE_OPEN` remain:
 
 - post-restart exact-byte reconstruction/proof; and
 - TVC HIL lifecycle handoff.
 
-Neither may be inferred from ESRL `LEASE_OPEN`, receiver source state, repository validation, or the COSV reconciliation.
+Authentic receiver/custody evidence is the immediate prerequisite for entering the restart-proof step, but it does not discharge either parent obligation by itself. Neither parent predicate may be inferred from ESRL `LEASE_OPEN`, receiver source state, Site source merge, repository validation, public propagation, or the COSV reconciliation.
 
 ## Declared manifold lineage
 
@@ -153,14 +175,14 @@ Each child keeps independent request identity, claim/fence, evidence, completion
 
 ## README maintenance
 
-README state was re-reviewed for the exact ESRL acceptance and the atomic COSV reconciliation. These changes reconcile internal evidence/control state and do not change the documented public runtime interface or governance architecture. No README prose change is required for accuracy at this stage.
+README state was re-reviewed for the exact ESRL acceptance, atomic COSV reconciliation, and same-device custody source release. These changes preserve the documented non-authority and runtime-evidence boundaries and do not change the documented public governance architecture. No README prose change is required for accuracy at this stage.
 
 ## Downstream continuation
 
 Downstream verification remains fail-closed and tracked separately by `.github` issue `#1238`. Pertinent destinations remain `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `StegVerse-Labs/admissibility-wiki`, `StegVerse-002/stegguardian-wiki`, and `StegVerse-Labs/Sit` only if an HIL-specific consumer/role is independently established.
 
-No destination may treat G25 consumption, ESRL acceptance, readiness classification, COSV reconciliation, or repository validation as full HIL activation/release.
+No destination may treat G25 consumption, ESRL acceptance, readiness classification, COSV reconciliation, Site custody-source release, or repository validation as full HIL activation/release.
 
 ## Completion boundary
 
-The HIL receiver lane remains `ACTIVE / HANDOFF_READY`, `archive_eligible=false`, broader activation false, and downstream propagation false until authentic evidence discharges both remaining parent obligations. Current continuation begins at `HIL_RECEIVER_READY_AND_CUSTODY`.
+The HIL receiver lane remains `ACTIVE / HANDOFF_READY`, `archive_eligible=false`, broader activation false, and downstream propagation false until authentic evidence discharges both remaining parent obligations. Current continuation remains `HIL_RECEIVER_READY_AND_CUSTODY`; the next admissible evidence is an exact current-iPhone receiver/custody artifact from the retained G25/ESRL lineage.
