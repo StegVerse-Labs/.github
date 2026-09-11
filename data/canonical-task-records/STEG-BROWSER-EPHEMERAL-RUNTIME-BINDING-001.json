@@ -18,6 +18,8 @@
     "StegVerse-Labs/Site/docs/APP_STORE_CONNECT_SKAP_IPHONE_INGRESS_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_STEGBROWSER_PUBLICATION_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_STEGBROWSER_LINKEDIN_PUBLICATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github@9776ceba4877f8c213af534176f277c28ec58d39",
+    "StegVerse-Labs/.github@5eba3974ff9c141aab74e616742e959ecdbd2ded",
     "StegVerse-Labs/TVC@15f01fd9e4c472982cc2212c86aecb9ea90e5b49",
     "StegVerse-Labs/StegOS@790ee065c491822f2c6bf06e77214e99245afd8f",
     "StegVerse-Labs/StegOS@de38c04accc6196923058db79ccf88db25d85ee6",
@@ -67,16 +69,16 @@
     {
       "dependency_id": "DEP-STEGBROWSER-APPLE-SIGNING",
       "kind": "PHYSICAL_DEVICE_DISTRIBUTION",
-      "state": "CURRENT_IPHONE_SIGNER_BOUNDARY_MERGED_CRYPTO_ENGINE_PENDING",
-      "ref": "StegVerse-Labs/StegOS@b241492051e7d98e1b434afd62a030f2bdf54e3d + StegVerse-Labs/TVC@15f01fd9e4c472982cc2212c86aecb9ea90e5b49",
-      "disposition": "GITHUB APPLE CREDENTIAL/SIGNING EXECUTION IS RETIRED. XCODE CLOUD WAS INVESTIGATED AND REJECTED FOR BOOTSTRAP BECAUSE APPLE REQUIRES INITIAL XCODE ONBOARDING. STEGOS NOW HAS A MERGED CURRENT_USER_IPHONE SAME-DEVICE BROWSER/WASM SIGNING EXECUTOR CONTRACT AND FAIL-CLOSED ORCHESTRATOR. THE REMAINING SOURCE REQUIREMENT IS THE VETTED SAME-DEVICE CRYPTOGRAPHIC ENGINE THAT IMPLEMENTS MACH-O CODEDIRECTORY/SUPERBLOB/CMS/CODERESOURCES/ENTITLEMENTS/NESTED-BUNDLE SIGNING WITHOUT A SECOND USER-OPERATED MACHINE."
+      "state": "CURRENT_IPHONE_WASM_SIGNING_SOURCE_IMPLEMENTED_RUNTIME_EVIDENCE_PENDING",
+      "ref": "StegVerse-Labs/StegOS/docs/STEGBROWSER_IOS_RESIDENT_APP_TARGET_MIRROR_HANDOFF.md",
+      "disposition": "GITHUB APPLE CREDENTIAL/SIGNING EXECUTION IS RETIRED. STEGOS SOURCE NOW INCLUDES THE CURRENT_USER_IPHONE BROWSER/WASM SIGNING EXECUTOR, PINNED WASM CODESIGN CORE, IN-MEMORY IPA TRANSFORMATION, SAME-SESSION PRIVATE-KEY CUSTODY, INDEPENDENT VERIFICATION, AND ZERO-INPUT TVC APP-RESOURCE RESOLUTION. AUTHENTIC CURRENT-IPHONE SIGNING, SIGNED IPA, BUILD UPLOAD, TESTFLIGHT INSTALLATION, AND SAME-DEVICE DISCOVERY REMAIN UNOBSERVED."
     },
     {
       "dependency_id": "DEP-STEGBROWSER-APPLE-TVC-RUNTIME",
       "kind": "CREDENTIAL_RUNTIME",
       "state": "SOURCE_COMPLETE_RUNTIME_EVIDENCE_PENDING",
       "ref": "StegVerse-Labs/TVC/docs/APP_STORE_CONNECT_TV_TVC_SKAP_MIRROR_HANDOFF.md",
-      "disposition": "TVC APP STORE CONNECT CREDENTIAL CLASS, SKAP RESOLVER, RECIPIENT PROJECTION, INTR ROUTE CONTRACT, PROVIDER OPERATION BOUNDARY, AND NATIVE BUILD UPLOAD ARE MERGED. AUTHENTIC RECIPIENT/LIVENESS/ROUTE, REAL SKAP CUSTODY, AND LIVE PROVIDER EXECUTION REMAIN UNOBSERVED."
+      "disposition": "TVC APP STORE CONNECT CREDENTIAL CLASS, SKAP RESOLVER, RECIPIENT PROJECTION, INTR ROUTE CONTRACT, PROVIDER OPERATION BOUNDARY, NATIVE BUILD UPLOAD, EXACT-SOURCE MATERIALIZATION PROMOTION, AND PRIMARY-RUNTIME REBIND SOURCE ARE MERGED. AUTHENTIC RESIDENT SOURCE-PROMOTION CONSUMPTION, TVC MATERIALIZATION/RESTART, SIMULTANEOUS 8765/8775 LISTENERS, APPLE RECIPIENT/LIVENESS/ROUTE, REAL SKAP CUSTODY, AND LIVE PROVIDER EXECUTION REMAIN UNOBSERVED."
     },
     {
       "dependency_id": "DEP-STEGBROWSER-STEGSOCIALS-CALLER",
@@ -96,18 +98,20 @@
   "blockers": [
     {
       "blocker_id": "APPLE-CURRENT-IPHONE-CRYPTOGRAPHIC-SIGNING-ENGINE",
-      "state": "NOT_IMPLEMENTED",
-      "release_condition": "A vetted StegOS-owned or selectively absorbed current-iPhone WASM signing engine exists under the merged #302 boundary and performs real CodeDirectory, SuperBlob, CMS, CodeResources, XML/DER entitlement, nested-bundle and host signing; private signing key remains current-iPhone ephemeral/non-persistent; signed IPA structure and exact commitments validate before TVC Build Upload."
+      "state": "SOURCE_IMPLEMENTED_RUNTIME_NOT_OBSERVED",
+      "release_condition": "Authentic current-iPhone execution demonstrates the merged StegOS-owned WASM signing path performing the required CodeDirectory, SuperBlob, CMS, CodeResources, XML/DER entitlement, nested-bundle and host signing with private signing key remaining current-iPhone ephemeral/non-persistent; final signed IPA structure and exact commitments validate before TVC Build Upload."
     },
     {
       "blocker_id": "APPLE-TVC-SKAP-RUNTIME-EVIDENCE",
       "state": "NOT_OBSERVED",
-      "release_condition": "Authentic current TVC Apple recipient/liveness/InTr route evidence exists and the owner's real App Store Connect credential is sealed into SKAP through the current-iPhone ingress without credential export."
+      "release_condition": "Authentic resident source-promotion consumption materializes and promotes the pinned TVC source, simultaneous primary 8765 and SKAP 8775 listeners are observed, the exact Apple recipient/liveness/InTr route reaches OWNER_INGRESS_READY, and the owner's real App Store Connect credential is sealed into SKAP through current-iPhone ingress without credential export."
     }
   ],
   "systemic_incident_ref": null,
   "adjacent_task_refs": ["SS-EVIDENCE-COMPARISON-001", "SS-KV-SKAP-SOCIAL-RELEASE-001"],
   "existing_evidence_refs": [
+    "StegVerse-Labs/.github@9776ceba4877f8c213af534176f277c28ec58d39",
+    "StegVerse-Labs/.github@5eba3974ff9c141aab74e616742e959ecdbd2ded",
     "StegVerse-Labs/TVC/actions/runs/34350815902",
     "StegVerse-Labs/TVC/actions/runs/34351285862",
     "StegVerse-Labs/TVC/actions/runs/34352933939",
@@ -167,8 +171,8 @@
     "current_observation_required": true
   },
   "runtime_resolution": {
-    "current_executor": "StegOSMobile has the canonical resident, same-device readback, unsigned iphoneos package, secret-free TVC provisioning requests, and merged current-iPhone signing executor contract/orchestrator. TVC has the App Store Connect credential/session/recipient/route/Build Upload source path. The same-device cryptographic signing engine and authentic Apple TVC runtime execution have not yet been observed.",
-    "authority_basis": "GitHub Actions validates and transports evidence only. TV/TVC remains credential authority. Signing private key material must originate, remain, and be destroyed inside the current-iPhone ephemeral signing executor. Source and CI do not prove Apple execution, signing, TestFlight upload, installation, or resident discovery.",
+    "current_executor": "StegOSMobile source includes the canonical resident, same-device readback, unsigned iphoneos package, secret-free TVC provisioning requests, and the current-iPhone WASM signing implementation. TVC source includes the App Store Connect credential/session/recipient/route/Build Upload path plus exact-source materialization and same-primary-runtime promotion. Authentic resident source-promotion consumption, TVC materialization/restart, live Apple owner ingress, current-iPhone signing, TestFlight upload/install, and same-device discovery have not yet been observed.",
+    "authority_basis": "GitHub Actions validates and transports evidence only. TV/TVC remains credential authority. Signing private key material must originate, remain, and be destroyed inside the current-iPhone ephemeral signing executor. Source and CI do not prove Apple execution, signing, TestFlight upload, installation, resident discovery, TVC runtime promotion, or live SKAP readiness.",
     "unattended_runtime": false
   },
   "worker_claim": {
@@ -181,7 +185,7 @@
   "completion": {
     "claimed": false,
     "validated": true,
-    "reconciliation_ref": "StegVerse-Labs/StegOS@b241492051e7d98e1b434afd62a030f2bdf54e3d",
+    "reconciliation_ref": "StegVerse-Labs/.github@5eba3974ff9c141aab74e616742e959ecdbd2ded",
     "activation_proof_complete": false
   },
   "allowed_next_transitions": ["INGRESS_ADMITTED"],
