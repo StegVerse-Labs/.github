@@ -160,23 +160,17 @@ def admit(*, runtime_root: Path, body: bytes, headers: Mapping[str, str], transp
     except Exception as exc:
         raise ValueError("request_json_invalid") from exc
     require(isinstance(incoming, dict), "request_object_required")
+    # This profile currently accepts the exact organization-owned materialization
+    # request only. Node-outbox wrappers have their own hash/identity contract and
+    # may not be accepted here until that exact wrapper is independently validated.
+    require(not isinstance(incoming.get("node_outbox_entry"), dict), "node_outbox_wrapper_not_supported_without_exact_binding_validation")
     request: Mapping[str, Any] = incoming
-    source: dict[str, Any] = {"node_id": None, "interlock_id": None, "outbox_entry_hash": None}
-    if isinstance(incoming.get("node_outbox_entry"), dict):
-        entry = incoming["node_outbox_entry"]
-        require(isinstance(entry.get("materialization_request"), dict), "node_outbox_materialization_request_required")
-        request = entry["materialization_request"]
-        source = {
-            "node_id": entry.get("node_id"),
-            "interlock_id": entry.get("interlock_id"),
-            "outbox_entry_hash": entry.get("outbox_entry_hash"),
-        }
     validate_request(request)
     runtime = runtime_root.expanduser().resolve()
     payload_path = runtime / PAYLOAD_DIR / f"{request['materialization_id']}.json"
     require(payload_path.is_file(), "payload_not_materialized")
     payload = load_object(payload_path)
-    intent = validate_payload(payload, request)
+    validate_payload(payload, request)
 
     materialization_id = str(request["materialization_id"])
     request_path = runtime / REQUEST_DIR / f"{materialization_id}.json"
@@ -209,9 +203,9 @@ def admit(*, runtime_root: Path, body: bytes, headers: Mapping[str, str], transp
         "transport_origin": transport.get("origin"),
         "transport_authorization_id": transport.get("authorization_id"),
         "transport_payload_sha256": transport.get("payload_sha256"),
-        "node_id": source.get("node_id"),
-        "interlock_id": source.get("interlock_id"),
-        "outbox_entry_hash": source.get("outbox_entry_hash"),
+        "node_id": None,
+        "interlock_id": None,
+        "outbox_entry_hash": None,
         "queue_ref": str(request_path),
         "payload_ref": str(payload_path),
         "exact_request_validated": True,
