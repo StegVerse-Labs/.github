@@ -91,8 +91,6 @@ def _request_context(source: Path, runtime: Path) -> tuple[dict[str, Any], str, 
     if not request_path.is_file():
         raise RuntimeError("native email resident request not materialized")
     request = base.load_json(request_path)
-    # The wrapper is now the canonical resident entrypoint; reuse the base validator
-    # without duplicating the rest of the request contract.
     base.ENTRYPOINT = ENTRYPOINT
     base.validate_request(request)
     return request, base.stable_hash(request), base.resolve_task_vector(source, runtime)
@@ -132,8 +130,6 @@ def consume(
                 raise RuntimeError("KV guarded native email monitor not materialized")
             cmd[1] = str(GUARDED_MONITOR)
             cmd.extend(["--kv-root", str(kv_root)])
-            # Never allow a failed guarded attempt to be interpreted using a stale
-            # prior monitor receipt.
             try:
                 output_index = cmd.index("--output") + 1
                 Path(cmd[output_index]).unlink(missing_ok=True)
@@ -161,7 +157,6 @@ def consume(
             "archive_after_kv_persistence_required": True,
             "kv_persistence": kv_proof,
         })
-        # A completed mailbox pass may never be claimed without the guard proof.
         if result.get("state") == "COMPLETED" and not kv_satisfied:
             result["state"] = "ATTEMPT_RECORDED"
             result["retry_allowed"] = True
@@ -174,6 +169,20 @@ def consume(
     return result
 
 
+def reusable_slot_satisfied(result: Mapping[str, Any]) -> bool:
+    """A slot is satisfied only after an actual bounded monitor attempt succeeds.
+
+    Infrastructure/pre-execution pending states and missing KV proof remain retryable
+    in the same UTC-hour slot. A successful bounded monitor pass may remain logically
+    nonterminal for the standing task while still satisfying that one hourly visit.
+    """
+    if result.get("runtime_execution_attempted") is not True:
+        return False
+    if result.get("pending_reason") == "KV_PERSISTENCE_PROOF_REQUIRED":
+        return False
+    return result.get("state") in {"ATTEMPT_RECORDED", "COMPLETED"}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--source-root", type=Path, required=True)
@@ -181,7 +190,7 @@ def main() -> int:
     args = parser.parse_args()
     result = consume(args.source_root, args.runtime_root)
     print(json.dumps(result, indent=2, sort_keys=True))
-    return 0
+    return 0 if reusable_slot_satisfied(result) else 3
 
 
 if __name__ == "__main__":
