@@ -1,0 +1,62 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "ELAN-CUMULATIVE-PUBLICATION-001",
+  "correlation_id": "ELAN-CUMULATIVE-PUBLICATION-001",
+  "root_correlation_id": "ELAN-CUMULATIVE-PUBLICATION-001",
+  "parent_task_id": null,
+  "goal": "Produce one cumulative ELAN evaluator publication that preserves the original Run 1 evidence package, adopts the already-authentic Run 2 observed-silence execution evidence, and renders a universal Publisher document with explicit provenance, comparison, replay, reconstruction, evidence boundaries, and machine-readable references without rewriting historical evidence or creating publication authority by rendering.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CLAIMED_IMPLEMENTATION",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "50000000100000",
+    "source_state_vector_ref": "control/task-vectors/ELAN-CUMULATIVE-PUBLICATION-001.json",
+    "authority_effect": "NONE"
+  },
+  "source_refs": [
+    "docs/ELAN_CUMULATIVE_RUN2_PUBLICATION_MIRROR_HANDOFF.md",
+    "control/task-vectors/ELAN-CUMULATIVE-PUBLICATION-001.json",
+    "StegVerse-org/StegVerse-SDK#197",
+    "StegVerse-org/StegVerse-SDK/actions/runs/34565152578"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs", "StegVerse-org", "GCAT-BCAT-Engine"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-org/StegVerse-SDK", "GCAT-BCAT-Engine/Publisher"],
+    "components": ["elan-run1-provenance", "elan-run2-observed-silence", "publisher-universal-document", "replay", "reconstruction", "evidence-ledger"]
+  },
+  "dependencies": [
+    {"dependency_id":"DEP-ELAN-RUN1-EVIDENCE","kind":"EVIDENCE","state":"AVAILABLE","ref":"user-supplied Run 1 packages sha256:888917ebf4a639ecb16b83ac899e09ca8083d3ca23c17cf0fc27046dd803cdf1 and sha256:81e50c33d3328256f7093d04040045c6b0d290bcec825afb747f0fb135d63f32"},
+    {"dependency_id":"DEP-ELAN-RUN2-EVIDENCE","kind":"EVIDENCE","state":"AVAILABLE_VALIDATED","ref":"StegVerse-org/StegVerse-SDK actions run 34565152578 artifact elan-local-sdk-governance-observed-silence sha256:2187e46441f3fc2018daf6b624ea81eb18f27353359fa99655e3a3a1febde91f"},
+    {"dependency_id":"DEP-PUBLISHER-DOCUMENT-PIPELINE","kind":"IMPLEMENTATION","state":"AVAILABLE","ref":"GCAT-BCAT-Engine/Publisher publisher/document_pipeline.py"}
+  ],
+  "blockers": [],
+  "adjacent_task_refs": ["SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001", "SDK-COMPILED-STATE-GOVERNANCE-MATRIX-001"],
+  "expected_evidence_predicates": [
+    "RUN1_ORIGINAL_ARTIFACTS_PRESERVED",
+    "RUN2_AUTHENTIC_ACTIONS_EVIDENCE_BOUND",
+    "CONTROLLED_DIFFERENCE_STATED_WITHOUT_POST_HOC_REINTERPRETATION",
+    "RUN2_REPLAY_DETERMINISTIC_MATCH",
+    "RUN2_RECONSTRUCTION_CHAIN_VERIFIED",
+    "CUMULATIVE_DOCUMENT_PROVENANCE_COMPLETE",
+    "UNIVERSAL_FORMATS_SHARE_ONE_CANONICAL_DOCUMENT_MODEL",
+    "RENDERING_DOES_NOT_GRANT_PUBLICATION_OR_EXECUTION_AUTHORITY"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["github_repository_read", "github_pull_request_write", "publisher_document_rendering"],
+    "environment": "CURRENT_SESSION_GITHUB_AND_PUBLISHER",
+    "direction": "EVIDENCE_TO_CUMULATIVE_PUBLICATION",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "worker_claim": {"authority":"CURRENT_SESSION","claim_ref":null,"fence_ref":null,"projection_only":false},
+  "completion": {"claimed":false,"validated":false,"reconciliation_ref":null},
+  "allowed_next_transitions": ["IMPLEMENT_SOURCE", "VALIDATE_SOURCE", "MERGE"],
+  "handoff_projection_refs": ["docs/ELAN_CUMULATIVE_RUN2_PUBLICATION_MIRROR_HANDOFF.md"],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "publisher_rendering_mints_publication_authority": false,
+    "historical_evidence_may_be_rewritten": false,
+    "run2_actions_success_is_execution_evidence_for_the_bounded_test": true
+  }
+}
