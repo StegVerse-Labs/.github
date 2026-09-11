@@ -116,6 +116,21 @@ Apple recipient/liveness/InTr OWNER_INGRESS_READY:            NOT OBSERVED
 
 No new scheduler, heartbeat, hosted fallback, second runtime, or second user-operated machine should be introduced to manufacture these predicates.
 
+## Convergence selector repair
+
+The resident dispatcher already registered `stegbrowser_tvc_source_promotion`, and sovereign source refresh already materialized the complete `control/resident-execution-request.d` directory. The remaining source gap was in `scripts/run_global_runtime_evidence_convergence.py`: its explicit `TASK_SELECTORS` map did not include the StegBrowser task, while StegBrowser was still classified only as `CANONICAL_WORK_INGRESS`. Because the global visitor invokes the dispatcher with explicit `--only-consumer` selectors, the merged #1358 consumer could be present yet never selected by that convergence cycle.
+
+The current repair reuses the existing convergence visitor and dispatcher:
+
+```text
+Canonical Work StegBrowser ingress remains the prerequisite
+-> global convergence visitor selects stegbrowser_tvc_source_promotion
+-> existing resident dispatcher invokes the already-merged #1358 consumer
+-> dedicated source-promotion receipt becomes the first subject-bound runtime predicate
+```
+
+The runtime-node profile and global partial-solution projection are aligned to `AUTHENTIC_TVC_SOURCE_PROMOTION_CONSUMPTION`. This changes no credential authority, execution authority, scheduler, heartbeat, dispatcher, or machine boundary. Source/CI validation of this repair still does not establish authentic resident execution.
+
 ## Device/KV/SKAP convergence
 
 StegOS #326 and #327 compose and verify the four-leg Universal InTr chain:
@@ -146,7 +161,9 @@ SKAP does not bypass Apple's Terms gate. Once the Team API key can be generated,
 ## Authentic closure sequence
 
 ```text
-resident dispatcher visits stegbrowser_tvc_source_promotion
+Canonical Work admits StegBrowser continuation
+-> global convergence visitor selects stegbrowser_tvc_source_promotion
+-> resident dispatcher visits stegbrowser_tvc_source_promotion
 -> exact TVC aef6b6f5 request staged when private-source slot is available
 -> existing private-source path/timer consumes request
 -> exact immutable TVC source materialized and verified
@@ -164,8 +181,8 @@ No source merge or hosted CI result substitutes for those host observations.
 
 ## Remaining sequence
 
-1. Obtain authentic resident source-uptake evidence for the already-merged #1358 request/consumer.
-2. Observe the pinned TVC materialization and same-primary-runtime restart receipts.
+1. Validate and merge the convergence-selector repair that makes the already-merged #1358 consumer reachable through the existing global visitor.
+2. Obtain authentic resident source-promotion consumption and observe the pinned TVC materialization plus same-primary-runtime restart receipts.
 3. Obtain authentic simultaneous 8765/8775 listener evidence and Apple recipient/liveness/route `OWNER_INGRESS_READY` evidence.
 4. Resolve the external Apple Terms/account gate, generate the Team API key, and seal it from the current iPhone directly into SKAP.
 5. Observe authentic Device -> KV -> SKAP custody receipts and execute TVC Apple identifier/capability/resource/provisioning operations.
@@ -174,8 +191,8 @@ No source merge or hosted CI result substitutes for those host observations.
 
 ## README disposition
 
-The repository `README.md` Canonical Work ingress section was reviewed during this reconciliation. Its architecture remains accurate: registered requests reuse the existing resident consumer, Task Registry does not mint execution authority, and runtime execution still requires authentic downstream evidence. No README text change is required for this state-only reconciliation.
+The repository `README.md` Canonical Work ingress section was reviewed during this reconciliation. Its architecture remains accurate: registered requests reuse the existing resident consumer, Task Registry does not mint execution authority, and runtime execution still requires authentic downstream evidence. No README text change is required for this selector-routing repair.
 
 ## Current state
 
-`ACTIVE_NOT_SUPERSEDED / CANONICAL_RESIDENT_SOURCE_MERGED_VALIDATED / RESIDENT_EXACT_TVC_SOURCE_REQUEST_MERGED_VALIDATED_1358 / STALE_PR_1206_CLOSED_UNMERGED / IPHONEOS_UNSIGNED_PACKAGE_VALIDATED / GITHUB_APPLE_CREDENTIAL_EXECUTION_RETIRED / TVC_APP_STORE_CONNECT_PROVIDER_AND_SKAP_PATH_MERGED / TVC_PRIMARY_8765_SKAP_8775_COLLISION_REPAIR_MERGED_VALIDATED / VERIFIED_TVC_SOURCE_TO_SAME_PRIMARY_RUNTIME_PROMOTION_MERGED / PRIVATE_SOURCE_POST_PROMOTION_HOOK_MERGED / AUTHENTIC_RESIDENT_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / AUTHENTIC_TVC_MATERIALIZATION_AND_RESTART_NOT_OBSERVED / LIVE_APPLE_OWNER_INGRESS_READY_NOT_OBSERVED / APPLE_DEVELOPER_MEMBERSHIP_OBSERVED_ACTIVE_THROUGH_2027-09-09 / APP_STORE_CONNECT_TERMS_GATE_BLOCKED / APPLE_TEAM_API_KEY_NOT_CREATED_OR_NOT_OBSERVED / SAME_DEVICE_SIGNING_SOURCE_IMPLEMENTED_RUNTIME_NOT_OBSERVED / AUTHENTIC_CURRENT_IPHONE_INSTALL_LISTENER_DISCOVERY_PENDING`
+`ACTIVE_NOT_SUPERSEDED / CANONICAL_RESIDENT_SOURCE_MERGED_VALIDATED / RESIDENT_EXACT_TVC_SOURCE_REQUEST_MERGED_VALIDATED_1358 / TASK_REGISTRY_AND_COSV_RECONCILED_1437 / GLOBAL_CONVERGENCE_STEGBROWSER_SELECTOR_REPAIR_IMPLEMENTED_VALIDATION_PENDING / STALE_PR_1206_CLOSED_UNMERGED / IPHONEOS_UNSIGNED_PACKAGE_VALIDATED / GITHUB_APPLE_CREDENTIAL_EXECUTION_RETIRED / TVC_APP_STORE_CONNECT_PROVIDER_AND_SKAP_PATH_MERGED / TVC_PRIMARY_8765_SKAP_8775_COLLISION_REPAIR_MERGED_VALIDATED / VERIFIED_TVC_SOURCE_TO_SAME_PRIMARY_RUNTIME_PROMOTION_MERGED / PRIVATE_SOURCE_POST_PROMOTION_HOOK_MERGED / AUTHENTIC_RESIDENT_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / AUTHENTIC_TVC_MATERIALIZATION_AND_RESTART_NOT_OBSERVED / LIVE_APPLE_OWNER_INGRESS_READY_NOT_OBSERVED / APPLE_DEVELOPER_MEMBERSHIP_OBSERVED_ACTIVE_THROUGH_2027-09-09 / APP_STORE_CONNECT_TERMS_GATE_BLOCKED / APPLE_TEAM_API_KEY_NOT_CREATED_OR_NOT_OBSERVED / SAME_DEVICE_SIGNING_SOURCE_IMPLEMENTED_RUNTIME_NOT_OBSERVED / AUTHENTIC_CURRENT_IPHONE_INSTALL_LISTENER_DISCOVERY_PENDING`

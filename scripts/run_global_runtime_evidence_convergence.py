@@ -51,6 +51,7 @@ TASK_SELECTORS: dict[str, tuple[str, ...]] = {
         "runtime_profile_map_governance_review",
     ),
     "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001": ("native_email_action_monitor",),
+    "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001": ("stegbrowser_tvc_source_promotion",),
 }
 
 # Existing task-specific runtime wrappers that already enforce their own canonical
@@ -61,7 +62,6 @@ DIRECT_RUNTIME_WRAPPERS: dict[str, Path] = {
 
 CANONICAL_WORK_ONLY = {
     "CRYPTO-LIVE-AUTO-001": Path("receipts/sovereign-host/canonical-work-crypto-live-auto-request-consumption.latest.json"),
-    "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001": Path("receipts/sovereign-host/canonical-work-stegbrowser-ephemeral-runtime-binding-request-consumption.latest.json"),
     "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001": Path("receipts/sovereign-host/canonical-work-global-runtime-evidence-closure-request-consumption.latest.json"),
 }
 
