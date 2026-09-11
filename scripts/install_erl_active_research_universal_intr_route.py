@@ -9,8 +9,10 @@ IMPORT_BLOCK = 'from workers import erl_active_research_intr_profile as erl_acti
 IMPORT_ANCHOR = '''from workers.sv002_intr_materialization_consumer import (  # noqa: E402\n    DESTINATION as SV002_DESTINATION,\n    DOWNSTREAM_OWNER as SV002_OWNER,\n    scrubbed_env as sv002_scrubbed_env,\n    validate_request as validate_sv002_request,\n)\n'''
 PROFILE_TOKEN = '"ERL:ActiveResearch"'
 FALLBACK_ROUTE = 'hil.admit_materialization(runtime_root=self.server.runtime_root, body=body, headers=self.headers)'
-OLD_ERL_ROUTE = 'erl_active_research.admit(runtime_root=self.server.runtime_root, payload=payload, transport_payload_sha256=hil.validate_transport_headers(self.headers, body)["payload_sha256"]) if erl_active_research.is_erl_active_research(payload) else ' + FALLBACK_ROUTE
-ERL_ROUTE = 'erl_active_research.admit(runtime_root=self.server.runtime_root, payload=payload, transport_payload_sha256="sha256:"+hil.validate_transport_headers(self.headers, body)["payload_sha256"]) if erl_active_research.is_erl_active_research(payload) else ' + FALLBACK_ROUTE
+OLD_HASH_EXPR = 'transport_payload_sha256=hil.validate_transport_headers(self.headers, body)["payload_sha256"]'
+NEW_HASH_EXPR = 'transport_payload_sha256="sha256:"+hil.validate_transport_headers(self.headers, body)["payload_sha256"]'
+OLD_ERL_ROUTE = 'erl_active_research.admit(runtime_root=self.server.runtime_root, payload=payload, ' + OLD_HASH_EXPR + ') if erl_active_research.is_erl_active_research(payload) else ' + FALLBACK_ROUTE
+ERL_ROUTE = 'erl_active_research.admit(runtime_root=self.server.runtime_root, payload=payload, ' + NEW_HASH_EXPR + ') if erl_active_research.is_erl_active_research(payload) else ' + FALLBACK_ROUTE
 
 
 def require(ok: bool, reason: str) -> None:
@@ -32,14 +34,17 @@ def transform(source: str) -> str:
         segment = result[start:end]
         require('"HIL:Ingress"' in segment and '"SV002:PublicObservation"' in segment, "shared profile invariants missing")
         result = result[:end] + ', ' + PROFILE_TOKEN + result[end:]
-    if OLD_ERL_ROUTE in result:
-        result = result.replace(OLD_ERL_ROUTE, ERL_ROUTE, 1)
+    if OLD_HASH_EXPR in result:
+        require(result.count(OLD_HASH_EXPR) == 1, "legacy ERL payload digest anchor drift")
+        result = result.replace(OLD_HASH_EXPR, NEW_HASH_EXPR, 1)
     elif 'erl_active_research.admit(' not in result:
         require(result.count(FALLBACK_ROUTE) == 1, "shared router fallback anchor drift")
         result = result.replace(FALLBACK_ROUTE, '(' + ERL_ROUTE + ')', 1)
     require(IMPORT_BLOCK in result, "erl import not installed")
     require(PROFILE_TOKEN in result, "erl profile token not installed")
-    require(ERL_ROUTE in result, "erl route not normalized")
+    require('erl_active_research.admit(' in result, "erl route not installed")
+    require(NEW_HASH_EXPR in result, "erl route digest not normalized")
+    require(OLD_HASH_EXPR not in result, "legacy ERL payload digest retained")
     require(result.count("ThreadingHTTPServer") >= 1, "existing shared listener anchor missing")
     return result
 
