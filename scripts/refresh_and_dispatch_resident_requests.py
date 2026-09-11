@@ -11,6 +11,7 @@ fence, credential path, or runtime authority.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import subprocess
@@ -29,8 +30,13 @@ DISPATCHER_REL = Path("scripts/dispatch_resident_execution_requests.py")
 DISPATCH_RECEIPT_REL = Path("receipts/sovereign-host/resident-request-dispatch.latest.json")
 RECEIPT_REL = Path("receipts/sovereign-host/resident-refresh-dispatch.latest.json")
 SV_DN1_BROWSER_LOCATOR_REL = Path("control/sv-dn1-browser-observation-locator.json")
+STEG_BROWSER_TVC_CONSUMER = "stegbrowser_tvc_source_promotion"
+STEG_BROWSER_TVC_CONSUMPTION_REL = Path("receipts/sovereign-host/stegbrowser-tvc-source-promotion-request-consumption.latest.json")
+STEG_BROWSER_TASK_ID = "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001"
+STEG_BROWSER_TVC_EXACT_SHA = "aef6b6f5dc99d2a531718ca475d20858ae8e68a6"
+STEG_BROWSER_TVC_ALLOWED_OUTCOMES = {"STAGED", "ALREADY_STAGED", "RESTAGED_EXACT_SOURCE", "HANDOFF_READY"}
 TARGET_CONSUMER = "cross_framework_current_basis_v04"
-ALLOWED_TARGET_CONSUMERS = (TARGET_CONSUMER, "hil", "sv_dn1", "sv_dn1_publication", "stegos_kv_intr_chain", "sv002_self_characterization", "sv002_public_observation", "astra_class_resilience_awareness", "quantum_resilience_awareness", "sv002_org_runtime_activation", "healer_sovereign_scheduler", "universal_governance_enforced_reference", "one_shot_resident_stack_activation", "stegverse001_bounded_autonomy", "erl_ai_economic_transparency_review", "org_claim_allocator", "ibc_verified_intr_ack", "canonical_work_coordination", "sdk_workspace_external_collab_client_secret_reseal", "sdk_workspace_external_collab_consent_listener", "stegbrowser_tvc_source_promotion")
+ALLOWED_TARGET_CONSUMERS = (TARGET_CONSUMER, "hil", "sv_dn1", "sv_dn1_publication", "stegos_kv_intr_chain", "sv002_self_characterization", "sv002_public_observation", "astra_class_resilience_awareness", "quantum_resilience_awareness", "sv002_org_runtime_activation", "healer_sovereign_scheduler", "universal_governance_enforced_reference", "one_shot_resident_stack_activation", "stegverse001_bounded_autonomy", "erl_ai_economic_transparency_review", "org_claim_allocator", "ibc_verified_intr_ack", "canonical_work_coordination", "sdk_workspace_external_collab_client_secret_reseal", "sdk_workspace_external_collab_consent_listener", STEG_BROWSER_TVC_CONSUMER)
 HOSTED_ENV = (
     "GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID",
     "VERCEL", "VERCEL_ENV", "CF_PAGES", "CLOUDFLARE_WORKERS",
@@ -110,6 +116,11 @@ def load_json(path: Path) -> dict[str, Any]:
     return value
 
 
+def json_sha256(value: Mapping[str, Any]) -> str:
+    payload = json.dumps(dict(value), sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
+
+
 def atomic_json(path: Path, value: Mapping[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temp = path.with_name("." + path.name + ".tmp")
@@ -135,6 +146,25 @@ def persist_sv_dn1_browser_locator(runtime: Path, safe_env: Mapping[str, str], t
         "authority_effect": "NONE_LOCAL_EVIDENCE_LOCATOR_ONLY",
     })
     return True
+
+
+def stegbrowser_consumption_evidence(runtime: Path, target_consumer: str) -> tuple[dict[str, Any] | None, str | None, bool]:
+    if target_consumer != STEG_BROWSER_TVC_CONSUMER:
+        return None, None, True
+    path = runtime / STEG_BROWSER_TVC_CONSUMPTION_REL
+    if not path.is_file():
+        return None, None, False
+    receipt = load_json(path)
+    valid = (
+        receipt.get("schema") == "stegverse.stegbrowser-tvc-source-promotion-request-consumption/v1"
+        and receipt.get("state") == "ATTEMPT_RECORDED"
+        and receipt.get("task_id") == STEG_BROWSER_TASK_ID
+        and receipt.get("exact_sha") == STEG_BROWSER_TVC_EXACT_SHA
+        and receipt.get("outcome") in STEG_BROWSER_TVC_ALLOWED_OUTCOMES
+        and receipt.get("credential_material_present") is False
+        and receipt.get("network_source_fetch_performed") is False
+    )
+    return receipt, json_sha256(receipt), bool(valid)
 
 
 def refresh_and_dispatch(
@@ -178,7 +208,15 @@ def refresh_and_dispatch(
         and dispatch_receipt.get("selected_consumers") == [target_consumer]
         and dispatch_receipt.get("consumer_count") == 1
     )
-    state = "REFRESH_AND_DISPATCH_COMPLETE" if completed.returncode == 0 and dispatch_observed and exact_selection and dispatch_receipt.get("state") == "DISPATCH_COMPLETE" else "REFRESH_COMPLETE_DISPATCH_INCOMPLETE"
+    target_consumption_receipt, target_consumption_sha256, target_consumption_valid = stegbrowser_consumption_evidence(runtime, target_consumer)
+    target_consumption_required = target_consumer == STEG_BROWSER_TVC_CONSUMER
+    state = "REFRESH_AND_DISPATCH_COMPLETE" if (
+        completed.returncode == 0
+        and dispatch_observed
+        and exact_selection
+        and dispatch_receipt.get("state") == "DISPATCH_COMPLETE"
+        and target_consumption_valid
+    ) else "REFRESH_COMPLETE_DISPATCH_INCOMPLETE"
 
     receipt = {
         "schema": "stegverse.resident-refresh-dispatch/v1", "state": state,
@@ -187,7 +225,14 @@ def refresh_and_dispatch(
         "sv_dn1_browser_locator_persisted": browser_locator_persisted,
         "exact_consumer_selection_observed": bool(exact_selection), "unrelated_consumers_dispatched": False,
         "dispatch_returncode": completed.returncode, "dispatch_receipt_observed": dispatch_observed,
-        "dispatch_receipt": dispatch_receipt, "runtime_execution_possible_in_target_consumer": True,
+        "dispatch_receipt": dispatch_receipt,
+        "target_consumption_evidence_required": target_consumption_required,
+        "target_consumption_receipt_path": str(STEG_BROWSER_TVC_CONSUMPTION_REL) if target_consumption_required else None,
+        "target_consumption_receipt_observed": target_consumption_receipt is not None,
+        "exact_target_consumption_evidence_observed": bool(target_consumption_valid),
+        "target_consumption_receipt_sha256": target_consumption_sha256,
+        "target_consumption_receipt": target_consumption_receipt,
+        "runtime_execution_possible_in_target_consumer": True,
         "bridge_grants_execution_authority": False, "bridge_mints_claim_or_fence": False,
         "source_refresh_is_runtime_execution": False, "network_source_fetch_performed": False,
         "credential_read_or_acquired": False, "github_token_required": False,
