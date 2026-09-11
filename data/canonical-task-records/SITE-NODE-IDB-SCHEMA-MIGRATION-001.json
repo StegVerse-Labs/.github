@@ -10,6 +10,9 @@
   "cosv_task_vector": "40000100100000",
   "source_refs": [
     "StegVerse-Labs/Site/issues/1233",
+    "StegVerse-Labs/Site/pull/1235",
+    "StegVerse-Labs/Site@a3bd73f0ced551738f37a6222b3ca933c3433fdf",
+    "StegVerse-Labs/Site/actions/runs/34617268914",
     "StegVerse-Labs/.github/docs/SITE_NODE_IDB_SCHEMA_MIGRATION_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_ERL_ASSISTED_DRAFTING_MIRROR_HANDOFF.md"
   ],
@@ -25,16 +28,23 @@
       "state": "AVAILABLE",
       "ref": "StegVerse-Labs/Site/issues/1233",
       "disposition": "USE_CURRENT_IPHONE_MISSING_OBJECT_STORE_OBSERVATION_AS_REPAIR_TRIGGER_ONLY"
+    },
+    {
+      "dependency_id": "DEP-SITE-IDB-LIVE-PROPAGATION",
+      "kind": "PUBLIC_SOURCE_OBSERVATION",
+      "state": "SATISFIED",
+      "ref": "StegVerse-Labs/Site/actions/runs/34617268914",
+      "disposition": "LIVE_SOURCE_PROPAGATION_OBSERVED; SINGLE_CURRENT_IPHONE_RETRY_NOW_PERMITTED"
     }
   ],
   "blockers": [],
   "adjacent_task_refs": ["SS-EVIDENCE-COMPARISON-001"],
   "existing_evidence_refs": [
     "StegVerse-Labs/Site/issues/1233",
-    "StegVerse-Labs/Site/assets/stegverse-node-continuity.js",
-    "StegVerse-Labs/Site/stegos-node/device-kv-intr-sync.js",
-    "StegVerse-Labs/Site/stegos-node/hil-intr-sync.js",
-    "StegVerse-Labs/Site/stegos-node/stegos-node.js"
+    "StegVerse-Labs/Site/pull/1235",
+    "StegVerse-Labs/Site@a3bd73f0ced551738f37a6222b3ca933c3433fdf",
+    "StegVerse-Labs/Site/actions/runs/34617268914",
+    "StegVerse-Labs/Site/actions/artifacts/10270802544"
   ],
   "expected_evidence_predicates": [
     "CANONICAL_NODE_DB_SCHEMA_OWNER_DEFINED",
@@ -46,7 +56,8 @@
     "ALL_RUNTIME_OPENERS_ALIGNED_TO_CANONICAL_NODE_DB_VERSION",
     "SITE_VALIDATION_PASS",
     "README_AND_HANDOFF_RECONCILED",
-    "LIVE_SOURCE_PROPAGATION_OBSERVED_BEFORE_IPHONE_RETRY"
+    "LIVE_SOURCE_PROPAGATION_OBSERVED_BEFORE_IPHONE_RETRY",
+    "AUTHENTIC_CURRENT_IPHONE_RETRY_NO_MISSING_OBJECT_STORE_FAILURE"
   ],
   "runtime_requirements": {
     "capabilities": ["indexeddb_schema_migration", "device_kv_query", "node_continuity"],
@@ -57,8 +68,8 @@
     "current_observation_required": true
   },
   "runtime_resolution": {
-    "current_executor": "current-session-repository-orchestration",
-    "authority_basis": "canonical task/COSV plus user-authorized GitHub access",
+    "current_executor": "current-user-iphone-next",
+    "authority_basis": "canonical task/COSV plus merged Site repair plus non-authorizing live-source observation",
     "unattended_runtime": false
   },
   "worker_claim": {
@@ -67,18 +78,17 @@
     "fence_ref": null,
     "projection_only": false
   },
-  "human_action_ref": "No user action until migration repair is merged and live-source propagation is observed; then exactly one current-iPhone ERL retry is permitted.",
+  "human_action_ref": "Exactly one current-iPhone ERL retry is now permitted after merge and live-source propagation. Preserve Safari/site storage and existing Node registration/Receipt #1; do not clear storage or re-register.",
   "completion": {
     "claimed": false,
-    "validated": false,
-    "reconciliation_ref": null,
+    "validated": true,
+    "reconciliation_ref": "StegVerse-Labs/Site@a3bd73f0ced551738f37a6222b3ca933c3433fdf + StegVerse-Labs/Site/actions/runs/34617268914",
     "activation_proof_complete": false
   },
   "allowed_next_transitions": [
-    "IMPLEMENT_CANONICAL_NODE_DB_MIGRATION",
-    "VALIDATE_AND_MERGE_SITE_REPAIR",
-    "VERIFY_LIVE_SOURCE_PROPAGATION",
-    "REQUEST_SINGLE_CURRENT_IPHONE_RETRY"
+    "REQUEST_SINGLE_CURRENT_IPHONE_RETRY",
+    "OBSERVE_REPAIRED_DEVICE_KV_DIRECTORY_READBACK",
+    "RETURN_TO_SS_EVIDENCE_COMPARISON_STANDARD_FLOW_IF_REPAIR_CONFIRMED"
   ],
   "handoff_projection_refs": [
     "StegVerse-Labs/.github/docs/SITE_NODE_IDB_SCHEMA_MIGRATION_MIRROR_HANDOFF.md",
