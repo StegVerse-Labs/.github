@@ -5,24 +5,41 @@ Repository: `StegVerse-Labs/.github`
 Goal Task ID: `SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004`
 Parent Goal Task ID: `SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003`
 COSV: `71000000100110`
-Status: `PRE-STAGED / DO NOT ACTIVATE BEFORE PARENT PROMPT CEILING / AUTHENTIC SOVEREIGN-RESIDENT CONSUMPTION NEXT`
+Status: `ACTIVE / PARENT 20-PROMPT ACTIVATION CONDITION SATISFIED / RUNTIME DISCOVERY NEXT`
 
 ## Purpose
 
-This task is the pre-staged canonical runtime-proof continuation for the genuinely separable authentic sovereign-resident phase. It must not be activated or treated as replacing the parent before `SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003` reaches its 20-prompt ceiling. It does not reset or duplicate parent work.
+This task is the canonical runtime-proof continuation for the genuinely separable authentic sovereign-resident phase. The parent `SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003` reached its 20-prompt ceiling before this continuation, satisfying the activation condition recorded by `.github` #1422. This coordination fact grants no execution authority and does not reset or duplicate parent work.
 
 ## Reconciled starting state
 
-- SDK #195 merged at `2c88e7079e92c129eb10ca47093c1e5ed423911a`.
-- StegVerse-Labs/.github #1393 merged at `312a31976bf5e794aa3912c2aa2c9ce0016c1102`, carrying exact portable dispatch for both resident selectors.
+- StegVerse-Labs/.github #1393 merged exact portable dispatch for both resident selectors.
 - SDK #196 merged at `e55c0e415759a3f2baf2d553f403a3729719f891` with exact-head validation PASS.
-- StegVerse-Labs/.github #1402 merged at `c2d03c776895ab99fa99ed49ca7c9ca9256d45cf`, recording no retained resident receipts and no online authorized remote runtime during that observation.
-- StegVerse-org/LLM-adapter #332 merged at `9ab7e019eaf694f20c978ce65ad7a2d5c886010a`; exact head `5d199cfc11be410f03c884cd70278d81d956c9f5` passed runs `34563524745`, `34563524752`, and `34563524742`.
-- SDK #199 merged at `19db2775b6dbcd361f8329b6b0710699f4467462`; exact head `f8ed8260f965da5655780f6e4949c0799d2ac67e` passed runs `34566917409`, `34566917412`, and `34566917413`.
-- StegVerse-Labs/.github #1415 merged at `4af1b801a193a3c9ace7c6327ef010fd40915b15`, reconciling the parent Task Registry with merged Gateway source evidence.
-- Current recheck still finds neither exact resident receipt in GitHub or retained Drive, and the authorized remote runtime connector still exposes no online device.
+- StegVerse-Labs/.github #1402 recorded no retained resident receipts and no online authorized remote runtime during that observation.
+- StegVerse-org/LLM-adapter #332 merged at `9ab7e019eaf694f20c978ce65ad7a2d5c886010a`, providing the bounded three-route Service Gateway source; source is not runtime proof.
+- SDK #199 merged at `19db2775b6dbcd361f8329b6b0710699f4467462` and preserved the runtime proof boundary.
+- StegVerse-Labs/.github #1415 merged at `4af1b801a193a3c9ace7c6327ef010fd40915b15`, reconciling Gateway source evidence.
+- StegVerse-Labs/.github #1422 merged at `e11ceed84081cbe2fa6621f50a50322c25ef3d48`, pre-staging this successor as INACTIVE until `PARENT_GOAL_PROMPT_COUNT_REACHES_20`.
+- That activation condition is now satisfied by the originating parent goal counter at 20/20.
+- Current evidence still contains neither authentic resident consumption receipt, and the authorized remote runtime connector currently exposes no online device.
 
-Source/merge/CI proves neither resident execution nor runtime reachability.
+## Runtime discovery reconciliation
+
+The pre-staged record omitted runtime discovery fields. The activated task now declares only the existing sovereign-resident substrate requirements:
+
+```text
+capabilities: resident_request_dispatch
+environment: SOVEREIGN_RESIDENT
+direction: INTERNAL
+mutation_required: true
+deployment_required: false
+current_observation_required: true
+already_local_source_required: true
+second_user_operated_device_required: false
+runtime_resolution: null until canonical resolver output is observed
+```
+
+Runtime discovery is compatibility projection only. It does not mint a WorkerCoordinator claim/fence, authorize an Interlock/InTr transition, grant TV/TVC credentials, create a Gateway/runtime, or prove execution.
 
 ## Canonical authority separation
 
@@ -39,17 +56,16 @@ hosted fallback = FALSE
 second user-operated device = NOT REQUIRED
 ```
 
-Do not create a competing resident runtime, Gateway, tunnel, callback implementation, credential path, hosted executor, or Heartbeat execution authority.
-
 ## Current proof boundary
 
 ```text
 portable exact dispatch: MERGED / VALIDATED
-Service Gateway three-route source: MERGED / VALIDATED
+Service Gateway three-route source: MERGED / VALIDATED SOURCE ONLY
 resident reseal receipt: NOT OBSERVED
 resident listener receipt: NOT OBSERVED
-retained Drive exact receipts: NOT OBSERVED
 authorized remote runtime online: NOT OBSERVED
+runtime requirements: DECLARED
+runtime resolution: UNRESOLVED
 target client-secret custody/readback: NOT PROVEN
 resident listener health on 127.0.0.1:8786: NOT PROVEN
 sovereign stegverse.org callback/public HTTPS reachability: NOT PROVEN
@@ -70,21 +86,22 @@ receipts/sovereign-host/sdk-workspace-external-collab-client-secret-reseal.lates
 receipts/sovereign-host/sdk-workspace-external-collab-consent-listener.latest.json
 ```
 
-## Exact next sequence after activation
+## Exact next sequence
 
-1. Recheck the two exact resident evidence paths and the authorized sovereign resident connection.
-2. If the existing resident is available, exact-dispatch `sdk_workspace_external_collab_client_secret_reseal` and `sdk_workspace_external_collab_consent_listener` from already-local canonical source.
-3. For reseal, accept only authentic `TARGET_ALREADY_PRESENT`, `COMPLETED`, or exact `BLOCKED`; validate target custody/readback without overwrite.
-4. For listener, accept only authentic `SERVICE_ALREADY_HEALTHY`, `COMPLETED` with `loopback_health_verified=true`, or exact `BLOCKED`; remediate only the exact reported resident prerequisite.
-5. After listener health, observe the already-merged Service Gateway #332 source through the existing CMC-029/native-TLS `stegverse.org` runtime and independently prove the three public routes with no callback-query leakage.
-6. Only after target custody and sovereign callback reachability are both proven, perform owner-present Google consent on the current iPhone.
-7. Execute one exact authoritative provider-file metadata probe and retain secret-free durable replay/use evidence.
-8. Feed the result through SDK normalization/active-probe re-evaluation, then complete lifecycle/MIR, Master Records reconstruction, one-device evidence, downstream propagation, and public-distribution proof.
+1. Resolve this ACTIVE task through the canonical runtime-profile resolver.
+2. Recheck both exact resident receipt paths and the authorized sovereign resident connection.
+3. When the existing resident is actually available, exact-dispatch `sdk_workspace_external_collab_client_secret_reseal` and `sdk_workspace_external_collab_consent_listener` from already-local canonical source.
+4. For reseal, accept only authentic `TARGET_ALREADY_PRESENT`, `COMPLETED`, or exact `BLOCKED`; remediate only the exact observed prerequisite and validate target custody/readback without overwrite.
+5. For listener, accept only authentic `SERVICE_ALREADY_HEALTHY`, `COMPLETED` with `loopback_health_verified=true`, or exact `BLOCKED`; remediate only the exact observed prerequisite.
+6. After listener health, prove the already-merged Service Gateway route through the existing CMC-029/native-TLS `stegverse.org` runtime.
+7. Only after target custody and sovereign callback reachability are both proven, perform owner-present Google consent on the current iPhone.
+8. Execute one exact authoritative provider-file metadata probe and retain secret-free durable replay/use evidence.
+9. Feed the result through SDK normalization/active-probe re-evaluation, then complete lifecycle/MIR, Master Records reconstruction, one-device evidence, downstream propagation, and public-distribution proof.
 
 ## README review
 
-Root `README.md` remains accurate. This branch only maintains a future coordination continuation and adds no public runtime capability claim.
+Root `README.md` remains accurate. Activation plus runtime-discovery metadata changes coordination state only and introduces no new public runtime capability.
 
 ## Human action
 
-None before activation. Do not initiate Google consent until authentic target client-secret custody and sovereign callback reachability are both proven.
+None now. Do not initiate Google consent until authentic target custody and sovereign callback reachability are both proven.

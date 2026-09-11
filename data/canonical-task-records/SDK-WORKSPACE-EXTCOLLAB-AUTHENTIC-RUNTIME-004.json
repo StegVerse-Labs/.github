@@ -5,11 +5,13 @@
   "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
   "parent_task_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
   "goal": "Complete the authentic sovereign-resident external-collaboration runtime proof chain from resident reseal/listener consumption through target custody, sovereign callback reachability, owner-present consent, provider probe, SDK predicate re-evaluation, MIR reporting, Master Records reconstruction, one-current-device proof, and downstream/public distribution evidence without creating a hosted fallback or duplicate authority path.",
-  "coordination_state": "INACTIVE",
+  "coordination_state": "ACTIVE",
   "checkout_state": "UNCLAIMED",
   "cosv_task_vector": "71000000100110",
   "repository": "StegVerse-Labs/.github",
   "activation_condition": "PARENT_GOAL_PROMPT_COUNT_REACHES_20",
+  "activation_condition_satisfied": true,
+  "activation_evidence": "Originating parent Goal Prompt Count reached 20/20 before continuation into this successor; prompt-count evidence is coordination state only and grants no execution authority.",
   "handoff_projection_refs": [
     "StegVerse-Labs/.github:docs/SDK_WORKSPACE_EXTCOLLAB_AUTHENTIC_RUNTIME_004_MIRROR_HANDOFF.md",
     "StegVerse-org/StegVerse-SDK:docs/SHARED_DOCS_EPHEMERAL_MANIFEST_WORKSPACE_MIRROR_HANDOFF.md",
@@ -32,7 +34,9 @@
     "StegVerse-org/StegVerse-SDK:pull/199",
     "StegVerse-org/StegVerse-SDK:commit/19db2775b6dbcd361f8329b6b0710699f4467462",
     "StegVerse-Labs/.github:pull/1415",
-    "StegVerse-Labs/.github:commit/4af1b801a193a3c9ace7c6327ef010fd40915b15"
+    "StegVerse-Labs/.github:commit/4af1b801a193a3c9ace7c6327ef010fd40915b15",
+    "StegVerse-Labs/.github:pull/1422",
+    "StegVerse-Labs/.github:commit/e11ceed84081cbe2fa6621f50a50322c25ef3d48"
   ],
   "source_state": {
     "portable_exact_dispatch_merged": true,
@@ -45,6 +49,17 @@
     "github_runtime_authority": "NONE",
     "hosted_execution_fallback": false
   },
+  "runtime_requirements": {
+    "capabilities": ["resident_request_dispatch"],
+    "environment": "SOVEREIGN_RESIDENT",
+    "direction": "INTERNAL",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true,
+    "already_local_source_required": true,
+    "second_user_operated_device_required": false
+  },
+  "runtime_resolution": null,
   "remaining_predicates": [
     "RESIDENT_RESEAL_CONSUMPTION_RECEIPT_OBSERVED",
     "RESIDENT_CONSENT_LISTENER_CONSUMPTION_RECEIPT_OBSERVED",
@@ -59,6 +74,7 @@
     "DOWNSTREAM_PROPAGATION_COMPLETE",
     "PUBLIC_DISTRIBUTIONS_COMPLETE"
   ],
+  "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "worker_claim_authority": "WORKERCOORDINATOR",
