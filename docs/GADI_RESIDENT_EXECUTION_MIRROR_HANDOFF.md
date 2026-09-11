@@ -8,7 +8,7 @@ Parent task: `GADI-001`
 Umbrella goal: `GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001`
 COSV ID: `10100000100000`
 Canonical issue: `StegVerse-Labs/.github#1239`
-Status: `SOURCE_CONTRACTS_RECONCILED_THROUGH_WORKERCOORDINATOR / ACTUATOR_OBSERVATION_ADAPTER_REPAIRED_REVALIDATION_PENDING / AUTHENTIC_RESIDENT_EXECUTION_PENDING`
+Status: `SOURCE_CONTRACTS_RECONCILED / ACTUATOR_OBSERVATION_ADAPTER_MERGED / STEGOS_CONTROLLED_OUTPUT_RECEIPT_SEAM_MERGED / AUTHENTIC_RESIDENT_EXECUTION_PENDING`
 
 ## Current canonical state
 
@@ -21,7 +21,9 @@ Merged trajectory:
 - handoff reconciliation PR #1351: `04150ebcfc58c275afefb069792461176960b7c8`;
 - native StegOS command-contract repair PR #1362: `aad9915f6bfbe48bb75ce78d23e101ed0c3f7ff0`;
 - canonical InTr admission-contract repair PR #1366: `0f857232707c7e3c9fa26c320e98f5031b75d76e`;
-- WorkerCoordinator claim/fence-contract repair PR #1368: exact head `ca51e1b3a0190742322f335646a7f1a6512d050b` passed all three observed exact-head validations and squash-merged as `26b3a8fda10f66946d2467e64e2e29b367c34d5f`.
+- WorkerCoordinator claim/fence-contract repair PR #1368: `26b3a8fda10f66946d2467e64e2e29b367c34d5f`;
+- governed actuator-observation adapter PR #1369: exact repaired head `7be42c4e779d9b1a59dec7698a5e1f1bf3e2723c` passed organization-control, Heartbeat, and deterministic repository-suite validation and squash-merged as `260c12ea0b3877ffc0829c840dd9f8b9ef7b330a`;
+- StegOS controlled-output receipt seam PR #331: exact repaired head `c016858cadae8a159cd7667034c2063b9dab5aca` passed all six observed exact-head validations and squash-merged as `84302fc96502eceb074ce2920b8816eb491b9d83`.
 
 The canonical execution chain remains:
 
@@ -41,7 +43,7 @@ The four runtime source classes have explicit non-overlapping ownership:
 - **WorkerCoordinator:** authentic `claim_id`, `fencing_token`, worker identity/instance and assignment state; no GADI target/runtime ownership.
 - **Actuator observation:** already-executed, controlled pre-authorized governed output, execution subject, observed state/effect, and exact command/runtime bindings.
 
-Canonical staging paths:
+Canonical staging paths remain:
 
 ```text
 state/gadi-resident-execution/source/stegos-command.json
@@ -50,29 +52,20 @@ state/gadi-resident-execution/source/worker-claim.json
 state/gadi-resident-execution/source/actuator-observation.json
 ```
 
-## Controlled actuator observation adapter
+## Governed actuator observation adapter — merged
 
-Repository inspection found no production GADI actuator-observation producer. StegOS already defines actuator output as a governed state transition and requires governed output packets to preserve target node, mode, source, duration, risk class, authority reference, and receipt pointer.
+PR #1369 installed `scripts/materialize_gadi_actuator_observation.py` as a non-authorizing adapter for the fourth source class.
 
-Current branch:
-
-`gadi-actuator-observation-adapter-001`
-
-New adapter:
-
-`scripts/materialize_gadi_actuator_observation.py`
-
-It accepts only an already-observed governed output receipt and projects it into the existing GADI `actuator-observation.json` source shape. It requires:
+It accepts only an already-receipted, pre-authorized controlled governed-output observation and requires:
 
 - `preauthorized_controlled_surface=true`;
-- no credential exposure;
-- no authority drift;
+- no credential exposure or authority drift;
 - non-empty governed-output receipt pointer and authority reference;
-- target node, mode, source, and risk class;
+- target node, mode, source, duration, and risk class;
 - execution subject, control surface, target class, and observed state;
 - exact runtime binding and InTr decision reference.
 
-It preserves the exact source receipt SHA-256 and explicitly records:
+It preserves exact source SHA-256 and explicitly records:
 
 ```text
 actuator_executed_by_adapter = false
@@ -81,56 +74,116 @@ execution_claimed = false
 authority_effect = NONE_EXECUTION_EVIDENCE_ONLY
 ```
 
-Regression coverage is in `tests/test_gadi_actuator_observation_adapter.py`.
+Initial head `6e0f30b659f6918740bd0ba4189b023c1c695e85` failed deterministic and Heartbeat validation because the new test imported `pytest` while canonical `.github` validation runs stdlib unittest. Commit `1645c4c6e2a8ce89d92b0ee8f4370ba688475391` converted the full test to `unittest.TestCase`. Final exact head `7be42c4e779d9b1a59dec7698a5e1f1bf3e2723c` passed all three observed validations before merge as `260c12ea0b3877ffc0829c840dd9f8b9ef7b330a`.
 
-### Exact-head validation failure and repair
+## StegOS controlled-output receipt seam — merged
 
-PR #1369 exact head `6e0f30b659f6918740bd0ba4189b023c1c695e85` produced:
+StegOS PR #331 added `stegos/gadi_controlled_actuator.py` without creating a second runtime or actuator.
 
-- organization-control validation: PASS;
-- deterministic repository suite: FAIL;
-- Heartbeat validation: FAIL at the shared complete deterministic repository-suite step.
+`record_controlled_actuator_output()` reuses the caller-supplied existing `StegOSKernel`. It only receipts an effect that the caller has already observed and requires:
 
-The deterministic log isolated one regression: the new actuator-adapter test imported `pytest`, while the canonical repository validation environment intentionally executes `python -m unittest discover -v tests` without pytest installed. The test was also written as free pytest-style functions, so merely removing the import would not have caused those assertions to be discovered by unittest.
+1. an ACTIVE governed StegOS session;
+2. an already-materialized native `stegos.gadi-native-defensive-command.v1` for `GADI-001` / COSV `10100000100000`;
+3. `TV/TVC` credential authority;
+4. observed current InTr admission and runtime binding;
+5. `execution_authority_claimed_by_stegos=false`;
+6. an active peripheral node with `SafetyClass.ACTUATOR`;
+7. `actuator` capability plus the exact command control surface;
+8. explicit node allowlist and receipt-requirement admission for `controlled_actuator_output`;
+9. complete subject/state/decision/runtime/target/authorization evidence.
 
-Commit `1645c4c6e2a8ce89d92b0ee8f4370ba688475391` repairs the regression by converting the entire actuator-adapter test file to stdlib `unittest.TestCase` plus `assertRaisesRegex`, preserving the same positive and fail-closed assertions without adding any dependency. Revalidation is required on the new exact branch head before merge.
+On success it appends one `controlled_actuator_output` receipt through the existing kernel receipt path and returns a governed-output packet bound to the exact existing hash-linked runtime receipt-chain hash. The packet explicitly records:
 
-This adapter is not an actuator implementation and cannot create authentic runtime evidence. It only removes manual reshaping once an authoritative governed-output receipt exists.
+```text
+actuator_executed_by_recorder = false
+authority_minted = false
+runtime_created = false
+receipt_chain_created = false
+authority_effect = NONE_EXECUTION_EVIDENCE_ONLY
+```
 
-## Current authentic evidence state
+PR #331 validation exposed and repaired two classes of source-package error without weakening policy: canonical handoff reconciliation markers were restored rather than relaxing the validator, and two test-fixture defects were corrected. Final exact head `c016858cadae8a159cd7667034c2063b9dab5aca` passed:
 
-No authentic current GADI WorkerCoordinator claim/fence is presently claimed. The registered worker remains source-compatible but runtime claim/fence must originate from the existing WorkerCoordinator assignment plane.
+- StegOS CI;
+- GADI native defensive control-plane validation;
+- GADI Authorized Adversarial Validation;
+- GADI Handoff Reconciliation Validation;
+- GADI native boundary defense validation;
+- GADI capability discovery validation.
 
-No authentic current controlled actuator output receipt has yet been observed. The adapter therefore provides the producer seam but does not satisfy the actuator evidence predicate by itself.
+It then squash-merged as `84302fc96502eceb074ce2920b8816eb491b9d83`.
+
+## Current WorkerCoordinator evidence state
+
+The canonical WorkerCoordinator fragment for `GADI-RESIDENT-EXECUTION-001` remains `HANDOFF_READY` with:
+
+```text
+claim_id = null
+worker_id = null
+worker_instance_id = null
+heartbeat_timing = null
+lease = null
+```
+
+The registered `gadi-resident-execution-worker` remains `AVAILABLE`.
+
+Its current admissible-existence conditions remain explicitly unobserved:
+
+```text
+CURRENT_GADI_INTR_ADMISSION_NOT_OBSERVED
+CURRENT_GADI_WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED
+CURRENT_GADI_RUNTIME_BINDING_NOT_OBSERVED
+CONTROLLED_PREAUTHORIZED_ACTUATOR_RESULT_NOT_OBSERVED
+```
+
+No claim, fence, admission, runtime binding, or actuator result is inferred from source availability or CI.
+
+## Controlled simulation boundary
+
+The historical Continuity controlled-simulation fixture is useful for closed-loop semantics only. It explicitly records:
+
+```text
+production_effect = false
+resident_runtime_observed = false
+master_records_reconciliation_observed = false
+```
+
+It therefore cannot satisfy authentic runtime execution predicates.
 
 ## Remaining authentic completion predicates
 
-1. Revalidate and merge PR #1369 only after its corrected exact head passes the observed canonical validations.
-2. Produce or locate an authentic current native StegOS GADI command for `GADI-001`.
-3. Produce or locate its exact canonical InTr admission with matching `intr_decision_ref`.
-4. Obtain an authentic current WorkerCoordinator `claim_id` and `fencing_token` for `GADI-RESIDENT-EXECUTION-001`.
-5. Execute only a controlled pre-authorized governed output through the existing StegOS/Node transition surface and retain its authoritative receipt.
-6. Project that already-receipted output through `materialize_gadi_actuator_observation.py`.
-7. Run source resolution -> materialization -> preflight -> resident consumption against the exact four source artifacts.
+1. Produce or locate an authentic current native StegOS GADI command for `GADI-001`.
+2. Produce or locate the exact current canonical InTr admission carrying the matching `intr_decision_ref`.
+3. Obtain an authentic current WorkerCoordinator `claim_id` and `fencing_token` for `GADI-RESIDENT-EXECUTION-001` from the existing WorkerCoordinator authority plane.
+4. Bind the actual controlled pre-authorized software test-surface node to the same runtime/control surface/target and observe an actual controlled effect.
+5. Receipt that already-observed effect through the merged existing-kernel StegOS controlled-output seam.
+6. Project that exact governed-output receipt through the merged `.github` actuator-observation adapter.
+7. Run source resolution -> materialization -> preflight -> resident consumption against the exact four authentic source artifacts.
 8. Emit and independently inspect the subject-bound resident consumption receipt.
 9. Complete closed-loop reassessment/adaptation/termination evidence.
 10. Pass the authentic receipt chain to Continuity/Master Records and prove exact reconstruction.
-11. Reconcile parent `GADI-001` and the umbrella manifold only from authentic observations.
+11. Reconcile parent `GADI-001` and the umbrella manifold only from those authentic observations.
 
 ## Immediate continuation
 
-After PR #1369 revalidates and merges, inspect the existing StegOS/Node governed-output transition implementation for the concrete controlled test surface capable of producing the required authentic receipt without introducing a second actuator or runtime plane. Then bind that output path to the already-merged GADI source-resolution chain.
+The next continuation is runtime assembly, not another source-contract implementation lane.
 
-Do not synthesize authentic runtime evidence in GitHub or CI.
+Inspect the existing InTr runtime and WorkerCoordinator assignment authority for a current GADI admission/claim opportunity. Do not mint or fabricate either. If a current admitted runtime path becomes available, bind the already-merged StegOS command/control-surface chain and capture the exact local bytes required by the four source classes.
+
+Do not treat GitHub source, CI, historical simulation, a request record, or an AVAILABLE worker registration as authentic resident execution evidence.
+
+## Collision boundary
+
+No second heartbeat, WorkerCoordinator, scheduler, resident service, runtime lease plane, claim/fence plane, InTr authority, provider transport, credential route, actuator implementation, or Master Records custody path is introduced.
 
 ## Evidence boundary
 
-Source implementation, CI validation, merges, compatibility adapters, source projection, and test receipts are not authentic resident execution evidence. Authentic execution remains pending until current runtime-local evidence exists and the resident consumer emits a qualifying subject-bound receipt.
+Source implementation, CI validation, merges, compatibility adapters, source projection, test receipts, and historical simulation are not authentic resident execution evidence. Authentic execution remains pending until current runtime-local evidence exists and the resident consumer emits a qualifying subject-bound receipt.
 
 ## README impact
 
-`README.md` was reviewed. Existing documentation already covers local-only source refresh, resident-request dispatch, WorkerCoordinator authority separation, and non-authorizing transport semantics. This slice adds an internal evidence adapter and test-runner compatibility repair and introduces no new top-level interface; no README mutation is required.
+`README.md` was reviewed during the source-contract slices. Existing documentation already covers local-only source refresh, resident-request dispatch, WorkerCoordinator authority separation, and non-authorizing transport semantics. The current reconciliation adds no new top-level interface, so no README mutation is required.
 
 ## Release rule
 
-This source slice is not a GADI release or activation. Release/tag propagation remains deferred until authentic resident runtime execution, closed-loop evidence, exact reconstruction, and canonical activation predicates are satisfied.
+This source chain is not a GADI release or activation. Release/tag propagation remains deferred until authentic resident runtime execution, closed-loop evidence, exact reconstruction, and canonical activation predicates are satisfied.
