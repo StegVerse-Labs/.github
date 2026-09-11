@@ -461,7 +461,7 @@
       "repository": "StegVerse-Labs/.github",
       "registry_ref": "control/worker-registry.d/hil-sovereign-receiver-001.json",
       "source_state_vector_ref": "control/task-vectors/SHWP-HIL-SOVEREIGN-RECEIVER-001.json",
-      "vector": "50000000103000",
+      "vector": "50000000102000",
       "vector_state": "EMITTED",
       "authority_effect": "NONE"
     },
