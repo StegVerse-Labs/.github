@@ -1,0 +1,32 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "state": "REQUESTED",
+  "request_id": "RESIDENT-EXEC-SDK-WORKSPACE-EXTCOLLAB-CONSENT-LISTENER-001",
+  "task_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
+  "selector": "sdk_workspace_external_collab_consent_listener",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "second_machine_required": false,
+  "network_source_fetch_allowed": false,
+  "credential_material_allowed": false,
+  "request_granted_authority": false,
+  "execution_requires_root": true,
+  "tvc_root_locator_required": true,
+  "tvc_installer": "scripts/install_external_collab_google_drive_consent_service.py",
+  "expected_tvc_installer_git_blob": "dae00dbec1a79d611a3184e185e04e6f29110348",
+  "loopback_health_url": "http://127.0.0.1:8786/tvc/external-collaboration/google-drive/consent/health",
+  "expected_client_secret_purpose": "google_drive.external_collaboration.client_secret",
+  "required_nonsecret_environment": [
+    "STEGVERSE_GOOGLE_DRIVE_CLIENT_ID",
+    "STEGVERSE_OWNER_BINDING_DIGEST",
+    "STEGVERSE_STEGFIN_SOURCE_ROOT"
+  ],
+  "public_https_binding_allowed": false,
+  "google_owner_consent_allowed": false,
+  "provider_contact_allowed": false,
+  "gateway_authority": false,
+  "authority_effect": "NONE_REQUEST_ONLY"
+}
