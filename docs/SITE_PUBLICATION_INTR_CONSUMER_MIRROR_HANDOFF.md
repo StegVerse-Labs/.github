@@ -9,6 +9,7 @@ Parent Site lane: `SITE-497-THIRD-PARTY-DEPENDENCY-ERADICATION`
 COSV: `50000000102000`
 Canonical Site source boundary: `StegVerse-Labs/Site@bc1ee7257ebc64f77dab3f0b746bb3a86a279b6c`
 Consumer source merge: `.github@e89a65307248a69e057bc07dac07a5ca98bc4677` (PR #1373)
+Runtime-ingress integration merge: `.github@3cead1c10329f5df2577b36259f68180e43d52c2` (PR #1381)
 
 ## Purpose
 
@@ -25,68 +26,72 @@ request state = QUEUED_FOR_EVENT_EPHEMERAL_MATERIALIZATION
 runtime class = EVENT_EPHEMERAL
 ```
 
-## Merged consumer source
+## Merged source
 
-PR #1373 merged after all three exact-head organization suites passed.
+PR #1373 merged the strict candidate consumer. PR #1381 merged the Site publication adapter and fail-closed shared Universal InTr route installer after organization control, Heartbeat validation, and the deterministic repository suite all passed on the repaired exact head.
+
+Merged surfaces include:
 
 - `scripts/consume_site_publication_intr_materialization_request.py`
-- `tests/test_site_publication_intr_materialization_consumer.py`
-
-The merged consumer validates exact request/hash/payload-manifest binding and emits a write-once `stegverse.site-publication-intr-materialization-consumption/v1` candidate receipt.
-
-## Current runtime-ingress integration slice
-
-This continuation adds:
-
 - `workers/site_publication_intr_ingress.py`
 - `scripts/install_site_publication_universal_intr_route.py`
-- `tests/test_install_site_publication_universal_intr_route.py`
+- associated regression tests
 
-`workers/` is already copied wholesale by `scripts/refresh_sovereign_worker_runtime_source.py`, so the Site publication ingress adapter propagates through the existing sovereign source-refresh path without widening that whitelist.
+`workers/` is already copied wholesale by `scripts/refresh_sovereign_worker_runtime_source.py`; no second listener or source-refresh owner was introduced.
 
-The route installer follows the existing CanonicalWork pattern: it idempotently and fail-closed transforms the existing `workers/universal_intr_profiled_ingress.py`, advertises `StegOS:SitePublicationRuntime`, and inserts one Site publication destination branch. It does not create a second listener, heartbeat, scheduler, WorkerCoordinator, claim/fence path, credential path, or runtime owner.
+## Current WorkerCoordinator registration slice
 
-The ingress adapter persists the exact validated materialization request write-once and emits only `INGRESS_ADMITTED_CANDIDATE_ONLY`. It deliberately leaves authentic runtime/publication predicates false:
+This continuation registers the child task without pre-claiming it:
 
-```text
-runtime_materialization_attempted = false
-runtime_execution_observed = false
-public_https_profile_observed = false
-exact_http_readback_observed = false
-content_equivalence_observed = false
-lease_closure_observed = false
-final_publication_transition_admitted = false
-```
+- `workers/site_publication_intr_consumer_worker.py`
+- `control/worker-registry.d/site-publication-intr-consumer-001.json`
+- `control/process-worker-adapters.d/site-publication-intr-consumer-001.json`
+- `cost-basis/worker-runtime/site-publication-intr-consumer.json`
+- `control/task-vectors/SITE-PUBLICATION-INTR-CONSUMER-001.json`
+- `handoffs/SITE-PUBLICATION-INTR-CONSUMER-001.json`
+- `tests/test_site_publication_intr_worker_registration.py`
 
-It also preserves:
+The registry state is deliberately:
 
 ```text
-persistent Node identity = required
-persistent host = false
-always-on receiver = false
-second user-operated device = false
-hosted provider = false
-Render = prohibited
-credential authority = TV/TVC
-GitHub token runtime authority = NONE
+state = HANDOFF_READY
+claim_id = null
+heartbeat_timing = null
+lease = null
+fresh_fence_required = true
+minimum_fencing_token_exclusive = 0
 ```
 
-## Independent-task boundary
+The zero floor encodes only that checkout must mint a nonzero fresh generation; it does not hard-code or reuse any historical task fence. The actual claim/fencing generation remains a WorkerCoordinator runtime operation.
 
-This task is a fresh child of `KV-CONNECTION-REVALIDATION-WORKER-001`; parent-claim reuse remains prohibited. Neither ingress admission nor source routing mints a claim/fence. Authentic lease execution remains blocked until the existing WorkerCoordinator issues a fresh independent claim/fence for `SITE-PUBLICATION-INTR-CONSUMER-001`.
+The worker refuses an invocation without both a real `claim_id` and integer fencing token. It accepts only `STEGVERSE_SITE_PUBLICATION_MATERIALIZATION_ID`, which must identify an already-admitted exact Site request. Candidate validation then remains ACTIVE with authentic lease/public-observation work still unresolved.
+
+## Runtime/publication predicates still false
+
+```text
+runtime execution observed = false
+public HTTPS /intr/profile observed = false
+exact HTTP byte/path equivalence observed = false
+lease closure observed = false
+final publication transition admitted = false
+DNS/TLS recovery proven = false
+```
+
+Persistent Node continuity remains required. Persistent host, always-on receiver, second user-operated device, hosted-provider runtime, and Render remain prohibited/not required.
 
 ## Remaining work
 
-1. Validate and merge the current runtime-ingress integration slice.
-2. Register/derive the child task in canonical worker/task control so WorkerCoordinator can issue its fresh independent claim/fence without parent reuse.
-3. Install the Site route into the bounded runtime copy of the existing Universal InTr ingress.
-4. Execute one authentic bounded `EVENT_EPHEMERAL` publication lease.
-5. Independently observe `/intr/profile`, exact HTTP bytes/path hashes, candidate result return, evidence export, and lease closure.
-6. Keep final publication transition and DNS/TLS recovery separately admitted.
+1. Validate and merge the WorkerCoordinator registration slice.
+2. Refresh the merged source into the already-local sovereign runtime.
+3. Target `SITE-PUBLICATION-INTR-CONSUMER-001` through the existing WorkerCoordinator so it receives a fresh independent claim/fence; do not reuse the parent claim.
+4. Bind only the exact admitted Site publication materialization id to that fenced invocation.
+5. Execute one authentic bounded `EVENT_EPHEMERAL` publication lease.
+6. Independently observe `/intr/profile`, exact HTTP bytes/path hashes, candidate-result evidence export, and lease closure.
+7. Separately admit the final publication transition; only then proceed to canonical-domain DNS/TLS recovery proof.
 
 ## Non-claims
 
-Source/CI success does not prove authentic ingress, runtime execution, public reachability, content equivalence, publication, or DNS/TLS recovery.
+Source/CI success, task registration, ingress admission, HeartBeat observation, or candidate receipts do not prove authentic runtime execution, public reachability, content equivalence, publication, or DNS/TLS recovery.
 
 ## README maintenance
 
