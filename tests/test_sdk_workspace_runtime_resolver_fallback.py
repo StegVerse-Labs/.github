@@ -20,6 +20,7 @@ spec.loader.exec_module(resolver)
 
 TASK_ID = "SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004"
 RECORDS = ROOT / "data" / "canonical-task-records"
+MAP = ROOT / "control" / "runtime-profile-map.json"
 
 
 def test_resolver_falls_back_to_dedicated_canonical_record() -> None:
@@ -52,3 +53,20 @@ def test_standalone_identity_mismatch_fails_closed(tmp_path: Path) -> None:
         assert "identity mismatch" in str(exc)
     else:
         raise AssertionError("mismatched standalone identity must fail closed")
+
+
+def test_current_map_has_no_source_side_mismatch_beyond_observation() -> None:
+    task = resolver.find_task({"tasks": []}, TASK_ID, RECORDS)
+    runtime_map = json.loads(MAP.read_text(encoding="utf-8"))
+    result = resolver.resolve(task, runtime_map, str(MAP))
+    rows = {row["profile_id"]: row for row in result["evaluated"]}
+    resident = rows["canonical-resident-substrate-v1"]
+
+    assert resident["capabilities_satisfied"] == ["resident_request_dispatch"]
+    assert resident["missing_capabilities"] == []
+    assert resident["compatible"] is False
+    assert resident["observed_state"] == "DECLARED_ONLY"
+    assert resident["reasons"] == ["CURRENT_OBSERVATION_REQUIRED:DECLARED_ONLY"]
+    assert result["candidate_count"] == 0
+    assert result["candidate_profile_ids"] == []
+    assert result["selection_grants_authority"] is False

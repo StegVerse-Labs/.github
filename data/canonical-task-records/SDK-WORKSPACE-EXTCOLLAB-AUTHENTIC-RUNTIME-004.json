@@ -67,6 +67,20 @@
     "discovery_mutation_required": false,
     "merged_validated": true
   },
+  "runtime_source_compatibility": {
+    "profile_id": "canonical-resident-substrate-v1",
+    "capability": "resident_request_dispatch",
+    "capability_satisfied": true,
+    "environment_satisfied": true,
+    "direction_satisfied": true,
+    "mutation_constraint_satisfied": true,
+    "deployment_constraint_satisfied": true,
+    "current_observation_state": "DECLARED_ONLY",
+    "remaining_rejection_reason": "CURRENT_OBSERVATION_REQUIRED:DECLARED_ONLY",
+    "source_side_mismatch_remaining": false,
+    "candidate_count_until_authentic_observation": 0,
+    "authority_effect": "NONE_DISCOVERY_ONLY"
+  },
   "source_state": {
     "portable_exact_dispatch_merged": true,
     "service_gateway_three_route_source_merged": true,
@@ -133,7 +147,7 @@
     "projection_only": true
   },
   "latest_runtime_observation": {
-    "observed_at": "2026-09-11T17:47:00Z",
+    "observed_at": "2026-09-11T18:46:00Z",
     "authorized_remote_device_count": 0,
     "retained_drive_reseal_receipt_matches": 0,
     "retained_drive_listener_receipt_matches": 0,
@@ -144,6 +158,6 @@
     "material_function_change": false,
     "readme_updated_in_change_set": false,
     "readme_path": "README.md",
-    "no_readme_update_reason": "Resolver and coordination semantics only; no new public runtime capability is claimed."
+    "no_readme_update_reason": "Resolver regression evidence and coordination semantics only; no new public runtime capability is claimed."
   }
 }
