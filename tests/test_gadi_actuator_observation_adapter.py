@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import importlib.util
+import unittest
 from pathlib import Path
-import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 PATH = ROOT / "scripts" / "materialize_gadi_actuator_observation.py"
@@ -37,48 +37,49 @@ def receipt() -> dict:
     }
 
 
-def test_projects_already_receipted_controlled_output_without_minting_authority():
-    result = module.project(receipt(), receipt_sha256="abc123")
-    assert result["task_id"] == module.TASK_ID
-    assert result["parent_task_id"] == module.PARENT_TASK_ID
-    assert result["runtime_binding_ref"] == "runtime://binding/1"
-    assert result["intr_decision_ref"] == "intr://decision/1"
-    assert result["execution_subject"] == "stegverse:gadi:subject-1"
-    assert result["control_surface"] == "safe-state-control"
-    assert result["target_class"] == "CONTROLLED_SIMULATION"
-    assert result["governed_output"]["source_receipt_sha256"] == "abc123"
-    assert result["actuator_executed_by_adapter"] is False
-    assert result["authority_minted"] is False
-    assert result["execution_claimed"] is False
+class GADIActuatorObservationAdapterTests(unittest.TestCase):
+    def test_projects_already_receipted_controlled_output_without_minting_authority(self):
+        result = module.project(receipt(), receipt_sha256="abc123")
+        self.assertEqual(result["task_id"], module.TASK_ID)
+        self.assertEqual(result["parent_task_id"], module.PARENT_TASK_ID)
+        self.assertEqual(result["runtime_binding_ref"], "runtime://binding/1")
+        self.assertEqual(result["intr_decision_ref"], "intr://decision/1")
+        self.assertEqual(result["execution_subject"], "stegverse:gadi:subject-1")
+        self.assertEqual(result["control_surface"], "safe-state-control")
+        self.assertEqual(result["target_class"], "CONTROLLED_SIMULATION")
+        self.assertEqual(result["governed_output"]["source_receipt_sha256"], "abc123")
+        self.assertIs(result["actuator_executed_by_adapter"], False)
+        self.assertIs(result["authority_minted"], False)
+        self.assertIs(result["execution_claimed"], False)
+
+    def test_rejects_unreceipted_output(self):
+        value = receipt()
+        value["receipt_pointer"] = ""
+        with self.assertRaisesRegex(SystemExit, "receipt pointer missing"):
+            module.project(value, receipt_sha256="abc123")
+
+    def test_rejects_uncontrolled_output(self):
+        value = receipt()
+        value["preauthorized_controlled_surface"] = False
+        with self.assertRaisesRegex(SystemExit, "not pre-authorized/controlled"):
+            module.project(value, receipt_sha256="abc123")
+
+    def test_rejects_authority_drift(self):
+        value = receipt()
+        value["authority_effect"] = "EXECUTION_GRANTED"
+        with self.assertRaisesRegex(SystemExit, "authority drift"):
+            module.project(value, receipt_sha256="abc123")
+
+    def test_rejects_missing_runtime_or_intr_binding(self):
+        value = receipt()
+        value["runtime_binding_ref"] = ""
+        with self.assertRaisesRegex(SystemExit, "runtime binding missing"):
+            module.project(value, receipt_sha256="abc123")
+        value = receipt()
+        value["intr_decision_ref"] = ""
+        with self.assertRaisesRegex(SystemExit, "InTr decision reference missing"):
+            module.project(value, receipt_sha256="abc123")
 
 
-def test_rejects_unreceipted_output():
-    value = receipt()
-    value["receipt_pointer"] = ""
-    with pytest.raises(SystemExit, match="receipt pointer missing"):
-        module.project(value, receipt_sha256="abc123")
-
-
-def test_rejects_uncontrolled_output():
-    value = receipt()
-    value["preauthorized_controlled_surface"] = False
-    with pytest.raises(SystemExit, match="not pre-authorized/controlled"):
-        module.project(value, receipt_sha256="abc123")
-
-
-def test_rejects_authority_drift():
-    value = receipt()
-    value["authority_effect"] = "EXECUTION_GRANTED"
-    with pytest.raises(SystemExit, match="authority drift"):
-        module.project(value, receipt_sha256="abc123")
-
-
-def test_rejects_missing_runtime_or_intr_binding():
-    value = receipt()
-    value["runtime_binding_ref"] = ""
-    with pytest.raises(SystemExit, match="runtime binding missing"):
-        module.project(value, receipt_sha256="abc123")
-    value = receipt()
-    value["intr_decision_ref"] = ""
-    with pytest.raises(SystemExit, match="InTr decision reference missing"):
-        module.project(value, receipt_sha256="abc123")
+if __name__ == "__main__":
+    unittest.main()
