@@ -74,13 +74,15 @@ Current repository-wide Heartbeat validation executes:
 python -m unittest discover -v tests
 ```
 
-Current-main inspection found multiple GADI regression modules implemented as pytest-style free functions. Those functions are directly runnable under pytest but are invisible to `unittest` discovery, leaving real GADI regression coverage outside the canonical repository validation carrier.
+Current-main inspection found multiple GADI regression modules implemented as pytest-style free functions. Those functions are directly runnable under pytest but were invisible to `unittest` discovery, leaving real GADI regression coverage outside the canonical repository validation carrier.
 
 PR #1459 adds `tests/test_gadi_unittest_discovery_harness.py`, a dependency-free unittest bridge that loads the existing free-function GADI modules and executes each `test_*` function. Existing zero-argument functions are called directly; existing `tmp_path` functions receive an isolated temporary `Path`; any unsupported fixture signature fails closed.
 
-The bridge covers the current pytest-style GADI regression surfaces for resident preflight, dispatcher gating, WorkerCoordinator adapter gating, runtime evidence materialization, local runtime-source resolution, and native StegOS compatibility. It does not change production GADI behavior, runtime authority, admission, credentials, WorkerCoordinator authority, claim/fence semantics, or activation predicates.
+The first full exact-head execution at `4f8bc789dbcf605d41f51e205f9fa4e793db1727` proved the bridge was functioning and exposed exactly four stale hidden expectations. Organization Control passed. Deterministic Repository Suite run `34615594904` and Heartbeat run `34615594783` failed because the newly collected tests still encoded pre-#1341/pre-#1395 topology: three dispatch tests omitted mandatory source-resolution/materialization stages, and one adapter test expected direct ProcessWorkerAdapter -> dispatcher routing instead of the merged ProcessWorkerAdapter -> `workers/gadi_resident_execution_worker.py` -> dispatcher bridge.
 
-PR #1459 opened at initial head `0ea205e142f75bdd22185e77afe1d7248653091b`. Exact-head hosted validation must be reconciled after the handoff commit before any merge-ready claim.
+Those four stale expectations were repaired without changing production code. `tests/test_gadi_resident_preflight_dispatch.py` now stages all four dispatcher components and proves resolve -> materialize -> preflight -> consume order, including fail-closed preflight cases. `tests/test_gadi_worker_adapter_preflight_gate.py` now proves the registered adapter enters through the canonical worker-protocol bridge, that the bridge imports the preflight-gated dispatcher and passes the current WorkerCoordinator task row, and that the raw consumer is not the registered adapter command.
+
+The repaired PR branch reached `3ee359a754230719efb78248a06c0a7fab20945d` before this handoff reconciliation. Hosted validation for the final handoff-bearing exact head must be green before merge. No production GADI runtime, authority, admission, credential, WorkerCoordinator, claim/fence, or activation semantics were changed by the repair.
 
 ## Current authentic evidence boundary
 
@@ -102,11 +104,11 @@ CURRENT_GADI_RESIDENT_CONSUMPTION_NOT_OBSERVED
 
 A future WorkerCoordinator claim is valid only when created by the actual targeted runtime invocation after all non-claim evidence is coherent. It must not be fabricated or retained from source-only state.
 
-The currently authorized remote-device inventory is empty, so this session cannot produce authentic resident execution evidence through the available remote-runtime surface. That absence is an execution condition, not permission to synthesize evidence.
+The most recent authorized remote-device inventory observation returned no connected device, so authentic resident execution evidence could not be produced through that remote-runtime surface. That absence is an execution condition, not permission to synthesize evidence.
 
 ## Immediate continuation
 
-1. Reconcile PR #1459 exact-head Organization Control, Deterministic Repository Suite, and Heartbeat validation; repair only observed failures and merge only after exact-head evidence is green.
+1. Reconcile PR #1459 exact-head Organization Control, Deterministic Repository Suite, and Heartbeat validation after the stale-test repairs and this handoff update; merge only after exact-head evidence is green.
 2. On an actual sovereign runtime root, obtain a current canonical runtime-presence receipt and materialize the subject-bound GADI runtime binding; do not create a parallel runtime probe.
 3. Materialize a current controlled-software-surface `stegos.gadi-external-ai-interaction.v1` observation from actual runtime observation.
 4. Run the merged StegOS native-plan materializer against that exact interaction and authoritative local TV/TVC capability evidence.
