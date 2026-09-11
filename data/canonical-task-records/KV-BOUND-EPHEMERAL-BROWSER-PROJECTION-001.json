@@ -6,16 +6,16 @@
   "parent_task_id": "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001",
   "goal": "Complete the current-iPhone KV-bound ephemeral TestFlight bootstrap with authentic KV projection, canonical successor claim/fence, TV/TVC signing/upload, retained StegOS/StegBrowser evidence, and return to one frozen global runtime measurement.",
   "coordination_state": "ACTIVE",
-  "checkout_state": "HANDOFF_READY_RUNTIME_PROOF_PENDING",
+  "checkout_state": "CLAIMED_INTEGRATION",
   "cosv_task_vector": "50000010100000",
   "source_refs": [
     "docs/KV_BOUND_EPHEMERAL_BROWSER_PROJECTION_MIRROR_HANDOFF.md",
     "StegVerse-Labs/continuity-vault-kit@47c363611210b7501cbb50abce768cfe0911057f",
     "StegVerse-Labs/StegOS#314",
     "StegVerse-Labs/StegOS@19e2ea02a16bd703767aafcd47e71f5ec5efe3cf",
-    "StegVerse-Labs/Site#1210",
-    "StegVerse-Labs/Site@764a14ec4fc6b975254f56cc05e1d17b1372d2e9",
-    "StegVerse-Labs/Site#1220",
+    "StegVerse-Labs/Site#1225",
+    "StegVerse-Labs/Site#1230",
+    "StegVerse-Labs/Site@437a519f7a2557f39ec3505eb5b9e0b8e2794574",
     "StegVerse-Labs/.github/tasks/TASK-2026-0010.json",
     "StegVerse-Labs/.github/tasks/TASK-2026-0011.json"
   ],
@@ -37,14 +37,21 @@
       "kind": "PHYSICAL_RUNTIME_PREDICATE",
       "state": "SATISFIED_BUT_SCOPE_SUPERSEDED",
       "ref": "AUTHENTIC_CURRENT_IPHONE_RECOVERED_ALLOCATOR_EVIDENCE:G6:FENCE6",
-      "disposition": "TASK-2026-0010 ALLOCATION_COMPLETE / CLAIM_GRANT_OBSERVED / JOURNAL REPLAY PASS. AUTHENTIC CLAIM IS RETAINED AS PROVENANCE ONLY BECAUSE ITS SCOPED PATHS PRECEDE THE TWO MANDATORY KV CONSUMER MODULES MERGED IN STEGOS PR 314. RETROACTIVE SCOPE WIDENING PROHIBITED."
+      "disposition": "TASK-2026-0010 ALLOCATION_COMPLETE / CLAIM_GRANT_OBSERVED / JOURNAL REPLAY PASS. RETAINED AS IMMUTABLE PREDECESSOR PROVENANCE; NO RETROACTIVE SCOPE WIDENING."
     },
     {
       "dependency_id": "DEP-TASK-2026-0011-KV-GATED-SUCCESSOR",
       "kind": "CANONICAL_ALLOCATION_PREDICATE",
-      "state": "REGISTRY_IN_VALIDATION",
-      "ref": "StegVerse-Labs/.github/tasks/TASK-2026-0011.json",
-      "disposition": "FRESH SUCCESSOR EXPLICITLY SCOPES THE COMPLETE KV-GATED PACKAGE INCLUDING KV PROJECTION VALIDATOR AND FILE LOADER."
+      "state": "SATISFIED_AUTHENTIC_G7_FENCE7",
+      "ref": "AUTHENTIC_CURRENT_IPHONE_ALLOCATOR:TASK-2026-0011:G7:FENCE7",
+      "disposition": "TASK-2026-0011 selected by canonical allocator; ALLOCATION_COMPLETE; CLAIM_GRANT_OBSERVED; dependency surface site:current-iphone-kv-testflight-static-bootstrap; canonical receipt sha256:3cd0aa9245be0ac5e9b81bc6c5a48aae0edc6f7c95162998e854feea04e75520; journal sequence 67 replay PASS; export recovery mutation false."
+    },
+    {
+      "dependency_id": "DEP-COMPLETE-KV-GATED-SITE-PROJECTION",
+      "kind": "SOURCE_PROJECTION_PREDICATE",
+      "state": "ACTIVE",
+      "ref": "StegVerse-Labs/Site:claim/current-iphone-kv-testflight-static-bootstrap-r1",
+      "disposition": "Project exact StegOS commit 19e2ea02a16bd703767aafcd47e71f5ec5efe3cf KV-gated entry/bootstrap and both KV consumer modules under TASK-2026-0011 generation 7 / fence 7 while retaining exact static predecessor commitments."
     },
     {
       "dependency_id": "DEP-TESTFLIGHT-CURRENT-IPHONE-RUNTIME",
@@ -60,11 +67,11 @@
     "AUTHENTIC_CURRENT_IPHONE_REPEAT_FILE:064c8fcac9e1ee87c6f6dc73807689fded772865ae4b3f461b304d26aaf7df64",
     "AUTHENTIC_CURRENT_IPHONE_ALLOCATOR:TASK-2026-0010:G6:FENCE6:CLAIM_GRANT_OBSERVED",
     "AUTHENTIC_CURRENT_IPHONE_NODE_JOURNAL:SEQUENCE66:REPLAY_PASS",
+    "AUTHENTIC_CURRENT_IPHONE_ALLOCATOR:TASK-2026-0011:G7:FENCE7:CLAIM_GRANT_OBSERVED",
+    "AUTHENTIC_CURRENT_IPHONE_NODE_JOURNAL:SEQUENCE67:ENTRY_SHA256:34d649f1227db25f1a9ddb38fbea709c0fdf4ff5ad0148bb781bbee5c18fb5cf",
     "StegVerse-Labs/Site#1219:CLOSED_UNMERGED_STALE_SCOPE"
   ],
   "expected_evidence_predicates": [
-    "TASK_2026_0011_REGISTERED",
-    "TASK_2026_0011_CANONICAL_ALLOCATOR_CONSUMPTION_READY",
     "AUTHENTIC_TASK_2026_0011_CLAIM_AND_FENCE_OBSERVED",
     "COMPLETE_KV_GATED_SITE_BOOTSTRAP_PROJECTED",
     "TESTFLIGHT_CURRENT_IPHONE_RUNTIME_OBSERVED",
@@ -79,17 +86,17 @@
     "current_observation_required": true
   },
   "runtime_resolution": {
-    "entrypoint": "CANONICAL_SUCCESSOR_REGISTRY_AND_ALLOCATOR_RECONCILIATION",
+    "entrypoint": "TASK_2026_0011_FENCED_SITE_SOURCE_PROJECTION",
     "same_run_remediation_allowed": true,
     "automatic_retry_after_first_failure": false,
-    "latest_state": "TASK_0010_G6_AUTHENTIC_SCOPE_INSUFFICIENT_TASK_0011_REGISTERING",
-    "next_runtime_surface": null
+    "latest_state": "TASK_0011_G7_FENCE7_AUTHENTIC_SOURCE_PROJECTION_ACTIVE",
+    "next_runtime_surface": "StegVerse-Labs/Site:claim/current-iphone-kv-testflight-static-bootstrap-r1"
   },
   "worker_claim": {
     "authority": "WORKERCOORDINATOR",
-    "claim_ref": null,
-    "fence_ref": null,
-    "projection_only": true
+    "claim_ref": "TASK-2026-0011:G7",
+    "fence_ref": "FENCE7",
+    "projection_only": false
   },
   "human_action_ref": null,
   "completion": {
@@ -97,7 +104,7 @@
     "validated": false,
     "activation_proof_complete": false
   },
-  "allowed_next_transitions": ["TASK_2026_0011_REGISTERED", "TASK_2026_0011_ALLOCATOR_CONSUMABLE"],
+  "allowed_next_transitions": ["COMPLETE_KV_GATED_SITE_BOOTSTRAP_PROJECTED", "TESTFLIGHT_CURRENT_IPHONE_RUNTIME_OBSERVED"],
   "handoff_projection_refs": ["docs/KV_BOUND_EPHEMERAL_BROWSER_PROJECTION_MIRROR_HANDOFF.md"],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
