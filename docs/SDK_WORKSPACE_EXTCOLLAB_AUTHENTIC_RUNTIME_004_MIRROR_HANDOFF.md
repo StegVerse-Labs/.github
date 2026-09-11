@@ -31,13 +31,15 @@ README review remains accurate: this is resolver/coordination semantics only and
 
 ## Fresh authentic observation
 
-Current session re-observation after #1460 merge found:
+At `2026-09-11T18:47:00Z`, re-observation after the resolver repair found:
 
 - authorized remote-resident connector: zero devices;
 - retained Google Drive exact reseal receipt matches: zero;
 - retained Google Drive exact listener receipt matches: zero.
 
-Therefore runtime resolution remains unresolved. No resident execution, target custody/readback, listener health, CMC-029 live TLS adoption, sovereign callback reachability, Google consent, provider probe, MIR, Master Records reconstruction, one-device completion, downstream propagation, or public distribution is claimed.
+Therefore canonical runtime resolution is `UNRESOLVED_NO_CURRENT_AUTHORIZED_DEVICE`. PR #1466 had already validated green at exact head `093dd7d56a4689f6eaab647d4b6f2824442a1980`, but it became merge-conflicted after `main` advanced; its broader projection changes are superseded by this current-main reconciliation rather than force-merging stale history.
+
+No resident execution, target custody/readback, listener health, CMC-029 live TLS adoption, sovereign callback reachability, Google consent, provider probe, MIR, Master Records reconstruction, one-device completion, downstream propagation, or public distribution is claimed.
 
 Expected resident receipts remain:
 
@@ -56,6 +58,7 @@ successor dispatcher discovery mutation semantic: MERGED / VALIDATED
 resident reseal receipt: NOT OBSERVED
 resident listener receipt: NOT OBSERVED
 authorized remote runtime online: NOT OBSERVED
+runtime resolution: UNRESOLVED_NO_CURRENT_AUTHORIZED_DEVICE
 target client-secret custody/readback: NOT PROVEN
 resident listener health 127.0.0.1:8786: NOT PROVEN
 sovereign stegverse.org callback/public HTTPS reachability: NOT PROVEN
