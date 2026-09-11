@@ -1,0 +1,23 @@
+{
+  "schema": "stegverse.worker-capability-profiles/v0.1",
+  "generation": 1,
+  "profiles": [
+    {
+      "profile_id": "gadi-resident-defensive-execution-v1",
+      "executor_type": "repository_worker",
+      "effect_class": "governed_resident_defensive_execution",
+      "allowed_capabilities": [
+        "gadi_resident_defensive_execution"
+      ],
+      "mutation_allowed": true,
+      "deployment_allowed": false,
+      "availability_grants_authority": false,
+      "capability_match_grants_authority": false,
+      "notes": [
+        "This profile is limited to the already-admitted GADI resident defensive execution handoff and its preflight-gated local process adapter.",
+        "It grants no InTr admission, WorkerCoordinator claim/fence, heartbeat authority, credential authority, external-target authority, second-runtime authority, deployment authority, or Master Records action authority.",
+        "Local mutation is confined to the handoff-approved GADI state and resident receipt namespaces after current source preflight passes."
+      ]
+    }
+  ]
+}
