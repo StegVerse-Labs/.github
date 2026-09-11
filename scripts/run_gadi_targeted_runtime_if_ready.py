@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """Visit the GADI runtime only when current non-claim evidence is ready.
 
-This wrapper does not create InTr admission, runtime binding, actuator evidence, or a
-WorkerCoordinator claim. It locally resolves/validates the three non-claim source
-classes. Only when those exact inputs are coherent and the separated carrier reference
-already exists does it invoke the canonical targeted WorkerCoordinator entry point,
-which remains the sole claim/fence authority.
+This wrapper does not create InTr admission, runtime authority, actuator evidence, or a
+WorkerCoordinator claim. It first refreshes the non-authorizing GADI runtime-binding
+observation from canonical runtime-presence evidence, then locally resolves/validates
+the three non-claim source classes. Only when those exact inputs are coherent and the
+separated carrier reference already exists does it invoke the canonical targeted
+WorkerCoordinator entry point, which remains the sole claim/fence authority.
 """
 from __future__ import annotations
 
@@ -23,6 +24,8 @@ SOURCE_DIR = Path("state/gadi-resident-execution/source")
 COMMAND = SOURCE_DIR / "stegos-command.json"
 INTR = SOURCE_DIR / "intr-admission.json"
 ACTUATOR = SOURCE_DIR / "actuator-observation.json"
+BINDING = Path("state/gadi-resident-execution/runtime-binding.json")
+BINDING_PROJECTOR = Path("scripts/materialize_gadi_runtime_binding.py")
 CARRIER = Path("control/heartbeat-carrier-runtime-state.json")
 WORKER_RUNNER = Path("scripts/run_worker_runtime.py")
 RECEIPT = Path("receipts/sovereign-host/gadi-targeted-runtime-readiness.latest.json")
@@ -68,10 +71,31 @@ def write(path: Path, value: dict[str, Any]) -> None:
 def readiness(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -> dict[str, Any]:
     source = source_root.resolve()
     runtime = runtime_root.resolve()
+    blockers: list[str] = []
+
+    binding_projector = runtime / BINDING_PROJECTOR
+    if not binding_projector.is_file():
+        binding_projector = source / BINDING_PROJECTOR
+    binding_observation: dict[str, Any] | None = None
+    if not binding_projector.is_file():
+        blockers.append("RUNTIME_BINDING_PROJECTOR_NOT_MATERIALIZED")
+    else:
+        completed = runner(
+            [sys.executable, str(binding_projector), "--runtime-root", str(runtime)],
+            cwd=runtime, capture_output=True, text=True, check=False, timeout=120,
+        )
+        binding_observation = parse_last_json(completed.stdout)
+        if (
+            completed.returncode != 0
+            or not isinstance(binding_observation, dict)
+            or binding_observation.get("state") != "CURRENT_RUNTIME_SUBJECT_BOUND"
+            or not nonempty(binding_observation.get("runtime_binding_ref"))
+        ):
+            blockers.append("CURRENT_RUNTIME_SUBJECT_BINDING_NOT_OBSERVED")
+
     resolver = runtime / "scripts/resolve_gadi_resident_runtime_sources.py"
     if not resolver.is_file():
         resolver = source / "scripts/resolve_gadi_resident_runtime_sources.py"
-    blockers: list[str] = []
     resolution: dict[str, Any] | None = None
     if not resolver.is_file():
         blockers.append("SOURCE_RESOLVER_NOT_MATERIALIZED")
@@ -105,6 +129,9 @@ def readiness(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -
         if command.get("intr_admission_observed") is not True: blockers.append("COMMAND_INTR_ADMISSION_NOT_OBSERVED")
         for field in ("intr_decision_ref", "runtime_binding_ref", "control_surface", "target_class"):
             if not nonempty(command.get(field)): blockers.append(f"COMMAND_{field.upper()}_MISSING")
+    if binding_observation and binding_observation.get("state") == "CURRENT_RUNTIME_SUBJECT_BOUND" and command:
+        if command.get("runtime_binding_ref") != binding_observation.get("runtime_binding_ref"):
+            blockers.append("COMMAND_RUNTIME_BINDING_NOT_CURRENT_SUBJECT")
     if intr:
         if intr.get("state") != "ADMITTED": blockers.append("INTR_NOT_ADMITTED")
         if not nonempty(intr.get("intr_decision_ref")): blockers.append("INTR_DECISION_REF_MISSING")
@@ -131,6 +158,7 @@ def readiness(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -
         "state": "NONCLAIM_RUNTIME_EVIDENCE_READY" if not blockers else "NONCLAIM_RUNTIME_EVIDENCE_PENDING",
         "ready": not blockers,
         "blockers": blockers,
+        "runtime_binding_observation": binding_observation,
         "source_resolution": resolution,
         "separated_carrier_reference_present": carrier_present,
         "workercoordinator_claim_created": False,
