@@ -5,11 +5,20 @@
   "root_correlation_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
   "parent_task_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
   "goal": "Complete only the authentic native Site publication runtime proof chain from sovereign source refresh through fresh WorkerCoordinator claim/fence, exact-materialization candidate validation, bounded EVENT_EPHEMERAL lease, independent public HTTPS equivalence observation, lease closure, final publication transition admission, and conditional DNS/TLS recovery proof.",
-  "coordination_state": "INACTIVE",
+  "coordination_state": "ACTIVE",
   "checkout_state": "UNCLAIMED",
   "cosv_task_vector": "50000000102000",
   "repository": "StegVerse-Labs/.github",
   "activation_condition": "PARENT_POST_MERGE_RECONCILIATION_PR_1483_MERGED_GREEN",
+  "activation_condition_status": "SATISFIED",
+  "activation_evidence": {
+    "parent_task_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
+    "parent_goal_prompt_count": 20,
+    "reconciliation_pull_request": 1483,
+    "reconciliation_exact_head": "35b53ba710a25b2fdd88366253484090b3ccc738",
+    "reconciliation_merge_commit": "4ab13a252eed668f1d828c08bd998b00b54e3c43",
+    "validation_runs": [34635435820, 34635435835, 34635435815]
+  },
   "handoff_projection_refs": [
     "StegVerse-Labs/.github:docs/SITE_PUBLICATION_NATIVE_RUNTIME_EXECUTION_001_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github:docs/SITE_PUBLICATION_INTR_CONSUMER_MIRROR_HANDOFF.md"
@@ -34,10 +43,12 @@
     "StegVerse-Labs/.github:commit/7444aefbdd2c644c46ae105192af4a524ef02172",
     "StegVerse-Labs/Site:commit/bc1ee7257ebc64f77dab3f0b746bb3a86a279b6c",
     "StegVerse-Labs/.github:issue/1486",
-    "StegVerse-Labs/.github:pull/1483"
+    "StegVerse-Labs/.github:pull/1483",
+    "StegVerse-Labs/.github:commit/4ab13a252eed668f1d828c08bd998b00b54e3c43"
   ],
   "source_state": {
     "worker_registration_merged_validated": true,
+    "parent_reconciliation_merged_validated": true,
     "exact_materialization_id": "INTR-MAT-0e1ba4786b0ea8a00e1f166e",
     "exact_packet_id": "INTR-58dec5416bd4358190c11372",
     "artifact_manifest_sha256": "sha256:e6bc47580f25296df61d16dfe5a74f3f49fec0dda018c813696195c960e77f09",
