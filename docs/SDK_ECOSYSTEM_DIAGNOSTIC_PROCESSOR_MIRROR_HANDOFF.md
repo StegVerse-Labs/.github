@@ -1,6 +1,6 @@
 # SDK Ecosystem Diagnostic Processor Mirror Handoff
 
-Updated: 2026-09-11
+Updated: 2026-09-12
 
 ```text
 Goal Task ID: SDK-ECOSYSTEM-DIAGNOSTIC-PROCESSOR-001
@@ -8,7 +8,7 @@ Parent Task ID: ECOSYSTEM-CONTINUITY-EVALUATOR-001
 COSV: 71000000101000
 Repository owner: StegVerse-org/StegVerse-SDK
 Coordination repository: StegVerse-Labs/.github
-State: ACTIVE / SDK SOURCE MERGED+VALIDATED / ECE BRIDGE+AUTHENTIC RUNTIME PENDING
+State: ACTIVE / SDK PROCESSOR + HEALER->SDK->ECE BRIDGE MERGED+VALIDATED / AUTHENTIC RUNTIME PENDING
 Authority effect: NONE_DIAGNOSTIC_ONLY
 GitHub runtime authority: NONE
 Credential authority: TV/TVC
@@ -16,7 +16,7 @@ Credential authority: TV/TVC
 
 ## Goal
 
-Install `ecosystem_diagnostic` as a first-class StegVerse SDK processing capability so internal or external callers can submit manifested diagnostic requests through the generic SDK processing contract and receive evidence-bound diagnostic observation artifacts. ECE remains the longitudinal continuity evaluator; this SDK processor does not calculate ecosystem continuity and does not repair anything.
+Install `ecosystem_diagnostic` as a first-class StegVerse SDK processing capability so internal or external callers can submit manifested diagnostic requests and receive evidence-bound diagnostic observation artifacts. Route the existing periodic ECE cycle through that SDK processor while keeping ECE as the only continuity interpreter and StegVerse-Healer as repair-dispatch owner.
 
 ## Frozen separation
 
@@ -24,7 +24,7 @@ Install `ecosystem_diagnostic` as a first-class StegVerse SDK processing capabil
 SDK diagnostic processor = manifested diagnostic request + bounded diagnostic observations/results
 ECE = dependency-aware continuity interpretation across retained observations over time
 Master Records = retained observation/evaluation custody and reconstruction
-StegVerse-Healer = finding intake and repair dispatch
+StegVerse-Healer = scheduler, finding intake, repair dispatch
 Interlock/InTr = governed transition authority where applicable
 TV/TVC = credential/provider/release authority where applicable
 Site = read-only safe projection only
@@ -42,42 +42,13 @@ Organization Control: 34670501716 PASS
 
 Canonical issue: `.github#1545`.
 
-## SDK implementation — merged and validated
+## SDK processor — merged and validated
 
 `StegVerse-org/StegVerse-SDK` PR #219 merged at `50fa9ca306ada6f75fb928281e2bf495ebb08ce8` from exact head `19f573c54c39298e266caa4fe63d7706c9d09d34`.
 
-Exact-head PASS runs:
+All 13 exact-head SDK validation lanes passed, including Manifest Builder, Evaluator Manifest, External Framework Public Submission, package artifact, and Output-Boundary validation.
 
-```text
-MCP Source Validation: 34670488331
-Manifest Builder Source Validation: 34670488339
-Portable Package Source Validation: 34670488380
-External Framework Public Submission Validation: 34670488297
-Portable Release Index: 34670488334
-Connect my LLM Source Validation: 34670488353
-Evaluator Contract Console Validation: 34670488636
-SDK Production Manifold Governance Validation: 34670488263
-Release Dependency Alignment Validation: 34670488338
-Evaluator Manifest Source Validation: 34670488333
-Communication Edge SDK Demo Validation: 34670488287
-SDK Package Artifact Validation: 34670488313
-SDK Output-Boundary Proof Validation: 34670488212
-```
-
-Installed source includes:
-
-```text
-schemas/stegverse.ecosystem-diagnostic-request.v1.schema.json
-schemas/stegverse.ecosystem-diagnostic-result.v1.schema.json
-stegverse/ecosystem_diagnostic_runtime.py
-stegverse/ecosystem_diagnostic_cli.py
-stegverse/route_resolution.py
-stegverse/manifest_builder.py
-pyproject.toml
-tests/test_ecosystem_diagnostic_processor.py
-```
-
-## Installed capability contract
+Installed capability:
 
 ```text
 processing.capability = ecosystem_diagnostic
@@ -90,67 +61,56 @@ authority_effect = NONE_DIAGNOSTIC_ONLY
 mutation_permitted = false
 ```
 
-Manifest Builder now supports:
+Missing observation packets remain `NOT_OBSERVED`. Pre-registered evidence expectations fail closed to `PROBE_REQUIRED` when a claimed backed state lacks evidence references. SDK results explicitly have `continuity_state_present=false`.
+
+## Healer periodic SDK bridge — merged and validated
+
+`StegVerse-Labs/StegVerse-Healer` PR #65 merged at `5e3313f344315437539973e55a6b64273abe24a1` from exact head `cb11707741136fc8c1d96c919e41ac0cc4b75413`; Test Readiness `34676641198` PASS.
+
+The existing periodic ECE cycle now requires already-local `StegVerse-org/StegVerse-SDK` source and executes this chain:
 
 ```text
-stegverse manifest build --process ecosystem_diagnostic --processor-request <request.json> ...
+existing Healer hourly reusable slot
+-> canonical ECE component/predicate registry + optional resident observation bundle
+-> SDK ecosystem_diagnostic request
+-> stegverse.ingress-manifest.v1
+-> installed SDK diagnostic runtime
+-> exact diagnostic-result bytes retained in resident continuity receipts
+-> result SHA-256 + underlying evidence refs translated into ECE observation input
+-> canonical ECE continuity evaluation
+-> Master Records exact-byte ECE custody/reconstruction
+-> Healer finding intake
+-> Site-safe projection
 ```
 
-The universal ingress envelope remains `stegverse.ingress-manifest.v1`; diagnostic manifests do not require a governance candidate or `stegverse_governance_request`.
+Every ECE observation receives the provenance reference `sdk-diagnostic-result-sha256:<exact-result-sha256>` in addition to underlying diagnostic evidence refs. This binds the continuity evaluation back to the exact SDK artifact without treating the envelope hash as proof of the underlying predicate.
 
-## Diagnostic semantics
-
-Supported observation vocabulary:
-
-```text
-PASS
-FAIL
-DEGRADED
-UNKNOWN
-NOT_OBSERVED
-STALE
-UNREACHABLE
-PROBE_REQUIRED
-```
-
-Missing observation packets remain `NOT_OBSERVED`. When evidence fields were pre-registered and an asserted PASS/FAIL/DEGRADED/STALE/UNREACHABLE observation has no evidence refs, the processor fails closed to `PROBE_REQUIRED`. Backed observation state/evidence is preserved rather than reinterpreted.
-
-The result explicitly states:
-
-```text
-mutation_performed = false
-authority_effect = NONE_DIAGNOSTIC_ONLY
-continuity_state_present = false
-```
-
-ECE remains responsible for dependency-aware continuity interpretation across retained diagnostic results over time.
+The bridge fails closed before ECE execution if the SDK result drifts in schema, route, capability, authority, mutation semantics, or attempts to supply any continuity state.
 
 ## Current proof boundary
 
 ```text
 Canonical child task/COSV: MERGED / EXACT VALIDATION PASS
 SDK request/result schemas: MERGED / EXACT VALIDATION PASS
-SDK installed diagnostic route: MERGED / EXACT VALIDATION PASS
+SDK installed diagnostic route/runtime source: MERGED / EXACT VALIDATION PASS
 Manifest Builder diagnostic binding: MERGED / EXACT VALIDATION PASS
-SDK diagnostic runtime handler source: MERGED / EXACT VALIDATION PASS
-SDK diagnostic CLI source: MERGED / EXACT VALIDATION PASS
-Healer periodic ECE -> SDK diagnostic bridge: NOT IMPLEMENTED
-Exact SDK diagnostic-result bytes in ECE/Master Records chain: NOT PROVEN
+Healer periodic ECE -> SDK diagnostic bridge source: MERGED / TEST READINESS PASS
+Exact SDK diagnostic result binding into ECE source path: MERGED / TEST READINESS PASS
 Authentic resident SDK diagnostic request/result: NOT OBSERVED
+Authentic SDK diagnostic result exact bytes bound into resident ECE/Master Records chain: NOT OBSERVED
 ```
 
-No source, merge, package artifact, or GitHub Actions run is promoted to authentic diagnostic runtime evidence.
+No source, merge, package artifact, GitHub Actions run, or unit test is promoted to authentic resident diagnostic execution.
 
 ## Exact next sequence
 
-1. In a fresh implementation tranche, modify the existing Healer periodic ECE cycle to build a canonical `ecosystem_diagnostic` manifest from the registered ECE component/predicate set and current authentic observation bundle.
-2. Execute that manifest through the installed SDK `ecosystem_diagnostic` processor and retain the exact diagnostic-result bytes/hash under the resident ECE cycle.
-3. Transform only the SDK result observations into the canonical ECE observation bundle; do not allow the SDK result to supply a continuity state.
-4. Bind the SDK diagnostic-result identity/hash into the ECE evaluation and Master Records evidence chain.
-5. Preserve an honest `NOT_OBSERVED` baseline when authentic observation packets are absent.
-6. Observe one authentic resident SDK diagnostic request/result before claiming the diagnostic lane operational.
-7. Only after that runtime proof continue with Site current-projection materialization and repair/re-evaluation lifecycle proof.
+1. Observe the existing authorized resident reusable scheduler consuming `RT-ECOSYSTEM-CONTINUITY-EVALUATION-001` with all required already-local roots including `StegVerse-org/StegVerse-SDK`.
+2. Require one authentic `sdkdiag_<sha>.result.json` plus `sdk-diagnostic-result.latest.json` under the resident continuity receipts.
+3. Require the same cycle receipt to report the exact SDK result SHA-256 and `sdk_diagnostic_result_bound_into_ece=true`.
+4. Require the resulting ECE evaluation, Master Records exact-byte custody/reconstruction, Healer intake, and Site-safe projection from that same resident cycle.
+5. If no authentic observation bundle exists, accept the SDK/ECE `NOT_OBSERVED`/`AT_RISK` baseline rather than synthesizing PASS.
+6. Only after runtime proof continue with Site current-projection materialization and independent repair -> later ECE recovery verification.
 
 ## Documentation maintenance
 
-The SDK root README still contains older prose stating governance is the only installed processing capability. That text now requires a patch-safe update in the next SDK documentation tranche; do not replace/truncate the large README merely to satisfy bookkeeping.
+The SDK root README contains older prose stating governance is the only installed processing capability. It still needs a patch-safe documentation update; do not replace or truncate the large README merely for bookkeeping.
