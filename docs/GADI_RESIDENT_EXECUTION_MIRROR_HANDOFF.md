@@ -7,13 +7,13 @@ Task ID: `GADI-RESIDENT-EXECUTION-001`
 Parent task: `GADI-001`
 COSV ID: `10100000100000`
 Canonical issue: `StegVerse-Labs/.github#1239`
-Status: `ACTIVE / SOURCE-CHAIN-MERGED / RETAINED-STEGBROWSER-STEGOS-SUBSTRATE-SELECTED / PROVIDER-VERIFICATION-BINDING-MATERIALIZER-MERGED / NATIVE-DISCOVERY-CONTRACT-REUSED / GADI-RETAINED-DISCOVERY-OBSERVER-IN-VALIDATION / CURRENT-RUNTIME-DISCOVERY-EVIDENCE-PENDING / AUTHENTIC-RESIDENT-EXECUTION-PENDING`
+Status: `ACTIVE / SOURCE-CHAIN-MERGED / RETAINED-STEGBROWSER-STEGOS-SUBSTRATE-SELECTED / PROVIDER-VERIFICATION-BINDING-MATERIALIZER-MERGED / GADI-RETAINED-DISCOVERY-OBSERVER-MERGED / RUNTIME-PRESENCE-RENDEZVOUS-SUBJECT-PROPAGATION-IN-VALIDATION / CURRENT-RUNTIME-DISCOVERY-EVIDENCE-PENDING / AUTHENTIC-RESIDENT-EXECUTION-PENDING`
 
 ## Current canonical state
 
 `GADI-001` remains ACTIVE and not superseded. Authentic current resident execution remains unobserved.
 
-Task Registry substrate sorting remains:
+The canonical single-device substrate remains:
 
 ```text
 SELECTED: STEG-BROWSER-RETAINED-RESIDENT-NODE
@@ -27,25 +27,30 @@ second_user_operated_device_allowed=false
 authority_effect=NONE
 ```
 
-A missing Remote Computer connection, missing browser receipt, or temporarily unreachable listener is an `EVIDENCE_REACHABILITY` condition. It is not evidence that another physical device is required.
+Missing current discovery/runtime evidence is `EVIDENCE_REACHABILITY`, not evidence that another physical device is required.
 
-## Retained resident discovery contract
+## Retained discovery observer — merged
 
-The retained resident node originates in StegBrowser and is loaded/materialized by StegOSMobile before any Site/Safari projection or bounded ephemeral browser lease.
-
-Canonical source lineage includes:
+`.github` PR #1555 merged at:
 
 ```text
-StegVerse-Labs/StegBrowser/ios/StegBrowserResidentNodeStore.swift
-StegVerse-Labs/StegBrowser/src/stegbrowser/resident_rendezvous.py
-StegVerse-Labs/StegOS/mobile/ios/StegOSMobile/StegBrowserResidentNodeBootstrap.swift
-StegVerse-Labs/StegOS/mobile/ios/StegOSMobile/MobileRuntimeState.swift
+6374478f9f48d4923c61d53c5e3659fc61aca464
 ```
 
-The native retained-resident discovery contract is task-agnostic:
+Validated exact head:
 
 ```text
-GET /api/resident-rendezvous/v1/discovery
+f6b706061b058fb31724b768b5518309b0da75ac
+Heartbeat Worker Project run 3307 — SUCCESS
+Validate organization control plane run 3025 — SUCCESS
+Deterministic Repository Suite run 556 — SUCCESS
+```
+
+PR #1555 adds `scripts/observe_gadi_retained_resident_discovery.py`, which observes only the existing task-agnostic localhost contract:
+
+```text
+GET http://127.0.0.1:8000/api/resident-rendezvous/v1/discovery
+GET http://localhost:8000/api/resident-rendezvous/v1/discovery
 schema = stegverse.resident-rendezvous.discovery/v1
 state = AVAILABLE
 target_node_ref = SV-NODE-<24 lowercase hex>
@@ -55,97 +60,63 @@ discovery_grants_authority = false
 authority_effect = NONE_DISCOVERY_ONLY
 ```
 
-Both the StegBrowser transport-neutral core and compiled StegOSMobile loopback listener implement this same shape. It contains no GADI/KV task identity and grants no execution, claim/fence, credential, admission, transition, or runtime-binding authority.
+There is no hosted fallback and no new listener/page/protocol. The Site KV wrapper is not used. The observer writes only `state/gadi-resident-execution/retained-resident-discovery.json` and grants no runtime binding, admission, claim/fence, credential, transition, or execution authority.
 
-The Site `assets/kv-ui/resident-rendezvous-client.js` wrapper intentionally binds the generic discovery response to KV request `RESIDENT-EXEC-STEGOS-KV-INTR-CHAIN-003`. That wrapper is not a GADI request/submission surface and must not be reused as GADI execution evidence.
+`run_gadi_targeted_runtime_if_ready.py` now requires current retained discovery before WorkerCoordinator can be visited and fails closed if the discovered `target_node_ref` differs from the stronger current runtime-binding `node_id`.
 
-## GADI retained discovery observer — in validation
+Source/CI validation of #1555 is not current discovery evidence.
 
-Branch: `gadi-retained-resident-discovery-observer-001`
+## Runtime-presence retained-node subject propagation — in validation
 
-New local-only observer:
+Post-#1555 audit found a concrete shared convergence defect.
 
-```text
-scripts/observe_gadi_retained_resident_discovery.py
-```
-
-It probes only the already-existing same-device localhost contract:
+The selected native service path already writes the retained resident identity into `receipts/sovereign-host/activation.latest.json` as:
 
 ```text
-http://127.0.0.1:8000/api/resident-rendezvous/v1/discovery
-http://localhost:8000/api/resident-rendezvous/v1/discovery
+resident_rendezvous_node_ref = SV-NODE-<24 lowercase hex>
 ```
 
-It has no hosted fallback, creates no listener/page/protocol, and does not use the KV request wrapper. A successful observation must contain the exact canonical discovery fields and a canonical `SV-NODE-<24 lowercase hex>` node reference. The observer preserves the exact response SHA-256 and writes only:
+`repair_resident_worker_presence.py` preserves prior activation fields into its self-heal supervision receipt. However, the canonical shared projector `heartbeat_runtime/runtime_presence_projection.py` previously projected `resident.node_id` only from:
 
 ```text
-state/gadi-resident-execution/retained-resident-discovery.json
-schema = stegverse.gadi-retained-resident-discovery-observation/v1
-state = CURRENT_RETAINED_RESIDENT_DISCOVERY_OBSERVED
-authority_effect = NONE_DISCOVERY_ONLY
+node_id
+sovereign_node
 ```
 
-If neither localhost endpoint is reachable it writes `RETAINED_RESIDENT_DISCOVERY_UNOBSERVED_FAIL_CLOSED`; absence remains reachability evidence only.
+Therefore a healthy selected retained StegBrowser/StegOS native runtime could know the exact retained node while canonical runtime presence still emitted `resident.node_id = null`, making GADI discovery/runtime-subject convergence impossible.
 
-`run_gadi_targeted_runtime_if_ready.py` now invokes this observer before the existing runtime-binding projector. WorkerCoordinator remains unreachable unless both:
+Branch `runtime-presence-rendezvous-node-subject-001` repairs the shared projector, not GADI policy:
 
-1. current native retained-node discovery is observed; and
-2. the stronger current runtime-binding observation exists for the exact same node subject.
+- existing nonempty `node_id` remains first priority;
+- existing nonempty `sovereign_node` remains second priority;
+- `resident_rendezvous_node_ref` is accepted only when it matches `^SV-NODE-[0-9a-f]{24}$`;
+- output now records `resident.node_identity_source`;
+- malformed rendezvous refs remain unusable;
+- runtime-alive, worker freshness, canonical supervision, HB non-authority, credential authority, and all other existing gates are unchanged.
 
-If `target_node_ref != runtime_binding.node_id`, readiness fails with `DISCOVERY_RUNTIME_SUBJECT_MISMATCH`.
+This is observation-only subject propagation. It does not make the rendezvous field a liveness signal and grants no authority.
 
-This closes the source gap behind canonical predicate `CURRENT_RETAINED_STEGBROWSER_STEGOS_NODE_DISCOVERY_OBSERVED` without promoting discovery into runtime liveness or authority.
+Regression coverage in `tests/test_runtime_presence_projection.py` requires:
 
-## GADI runtime-binding boundary
+1. canonical native-service rendezvous identity projects into `resident.node_id`;
+2. self-heal preserved rendezvous identity projects identically;
+3. malformed rendezvous identity does not become a runtime subject;
+4. existing historical `node_id` precedence remains compatible;
+5. existing liveness/freshness tests remain unchanged.
 
-`scripts/materialize_gadi_runtime_binding.py` remains the authoritative non-authorizing GADI runtime-binding projector. It requires current resident runtime-presence evidence plus its supervision receipt, including:
-
-```text
-runtime_root subject match
-resident.node_id present
-runtime_alive_observed = true
-present_worker_runtime_observed = true
-worker_cycle_fresh = true
-canonical carrier runtime observed
-canonical WorkerCoordinator runtime observed
-carrier/worker supervision active
-HB authority effect NONE
-credential authority TV/TVC
-GitHub runtime authority NONE
-```
-
-Correct sequence:
-
-```text
-native retained-node discovery
--> exact discovery subject match
--> current resident presence/supervision observation for that subject
--> materialize_gadi_runtime_binding.py
--> CURRENT_RUNTIME_SUBJECT_BOUND
-```
-
-Discovery alone never satisfies `CURRENT_RUNTIME_SUBJECT_BOUND`.
+The shared `HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_CONTRACT` already defines generic concrete resident presence and does not enumerate identity-source fields, so no authority-contract expansion is required.
 
 ## Provider-verification source boundary — merged
 
-StegOS PR #346 merged at `4b29ea35ee27d9327da87231ca516475dcee6cd8` after exact head `f76a99be9dcfabc5abe1af24896dd5be4c204c12` passed StegOS CI run `34668002777`.
-
-PR #346 adds evidence-only `stegos/provider_evidence_verification.py`, which emits the existing StegCore #207 schema only when four independently supplied verification inputs agree with the exact external-evidence envelope:
-
-1. accepted signature verification from the existing verifier framework;
-2. independent provider authorization + authorized scope;
-3. independent evidence-chain verification;
-4. independent freshness verification.
-
-The materializer does not authorize providers, perform cryptographic verification by itself, create chain truth, decide freshness, mint credentials, perform InTr/Governance admission, or grant execution authority.
+Representative verified-evidence lineage remains:
 
 ```text
-StegCore #207 verified-binding consumer: MERGED
-StegOS #345 Ed25519 verifier: MERGED
-StegOS #346 independent binding materializer: MERGED
-current authentic provider/signature/chain/freshness inputs: NOT OBSERVED
-current GADI verified-external-evidence binding: NOT OBSERVED
+StegCore #207 independently verified external-evidence requirement — MERGED
+StegOS #345 trusted-key Ed25519 verifier — MERGED
+StegOS #346 independent provider-evidence verification binding materializer — MERGED
 ```
+
+Current authentic provider/signature/chain/freshness inputs remain unobserved. No envelope may self-assert those predicates.
 
 ## Existing merged GADI execution chain
 
@@ -165,12 +136,13 @@ StegCore #204 local InTr/Governance admission materializer
 StegOS #344 native command CLI
 StegCore #205 PENDING request + Governance candidate
 .github #1479 canonical pre-claim artifact chain
-StegCore #206 external evidence -> governance facts
-StegCore #207 independently verified external-evidence requirement
+StegCore #206 external evidence -> Governance facts
+StegCore #207 independently verified external evidence
 StegOS #345 trusted-key Ed25519 verifier
-StegOS #346 independent provider-evidence verification binding materializer
+StegOS #346 provider-evidence verification binding materializer
 .github #1539 Task Registry single-device-first substrate sorting
-.github #1541 GADI retained StegBrowser/StegOS substrate reconciliation
+.github #1541 retained StegBrowser/StegOS substrate reconciliation
+.github #1555 retained native discovery observer + readiness subject match
 ```
 
 ## Canonical execution sequence
@@ -201,7 +173,7 @@ CURRENT RETAINED STEGBROWSER/STEGOS NATIVE DISCOVERY
 -> CONTINUITY / MASTER RECORDS RECONSTRUCTION
 ```
 
-WorkerCoordinator remains sole claim/fence authority. Interlock/InTr remains transition/admission authority. TV/TVC remains credential authority. HB remains observation only. GitHub validation remains non-authorizing.
+WorkerCoordinator remains sole claim/fence authority. Interlock/InTr remains transition/admission authority. TV/TVC remains credential authority. HB/runtime-presence remains observation only. GitHub validation remains non-authorizing.
 
 ## Current authentic evidence boundary
 
@@ -229,18 +201,13 @@ CURRENT_GADI_WORKERCOORDINATOR_CLAIM_FENCE
 CURRENT_GADI_RESIDENT_CONSUMPTION
 ```
 
-Source/CI success for this observer does not satisfy the first predicate. Only a current response from the actual retained resident does.
-
 ## Immediate continuation
 
-1. Validate and merge the retained-discovery observer only if exact-head organization-control, deterministic-suite, and Heartbeat lanes pass.
-2. On the sovereign runtime, let the existing readiness path observe the native localhost retained-node discovery; do not create a page/listener/protocol or use the KV wrapper.
-3. Correlate the exact discovered `SV-NODE-*` with current resident presence/supervision evidence; mismatch fails closed.
-4. Run the existing GADI runtime-binding projector only after that stronger current presence evidence exists.
-5. Continue with current threat/boundary observations and independently verified GADI external evidence through the existing merged chain.
-6. Observe only the controlled pre-authorized software test-surface effect.
-7. Let non-claim readiness complete before a fresh WorkerCoordinator claim/fence.
-8. Require exact materialization/preflight, newly changed resident-consumption evidence, reassessment/termination, Continuity custody, Master Records reconciliation, and exact reconstruction.
+1. Validate and merge the shared runtime-presence retained-node subject repair only on an unchanged exact head with organization-control, deterministic-suite, and Heartbeat success.
+2. On the actual sovereign runtime, let the existing #1555 observer obtain current localhost retained discovery; do not create another listener/page/protocol.
+3. Require canonical runtime-presence/self-heal evidence to project the exact same retained `SV-NODE-*` identity.
+4. Run the existing GADI runtime-binding projector only after current liveness/supervision/freshness evidence exists for that subject.
+5. Continue through the already-merged external-evidence, Governance/InTr, command, controlled-output, readiness, WorkerCoordinator, resident-consumption, reassessment/termination, Continuity, and Master Records chain.
 
 ## Collision boundary
 
@@ -248,4 +215,4 @@ No second heartbeat, resident service, runtime scheduler, listener, activation p
 
 ## Manual work
 
-None at this stage. Do not ask the user to activate a HIL/KV page for GADI. A user action should be requested only if the existing native retained-resident discovery cannot be observed through an already-valid GADI/current-device surface and Task Registry confirms a collision-safe action surface.
+None at this stage. Do not ask the user to activate a HIL/KV page for GADI. A user action should be requested only if the existing native retained-resident discovery cannot be observed through an already-valid current-device surface and Task Registry confirms a collision-safe action surface.
