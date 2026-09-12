@@ -18,7 +18,7 @@ def canonical_node(char: str = "a") -> str:
 
 
 def seed_discovery(runtime: Path, *, node_id: str | None = None, state: str = "CURRENT_RETAINED_NODE_DISCOVERY_OBSERVED") -> None:
-    node = node_id or canonical_node()
+    node = canonical_node() if node_id is None else node_id
     write_json(runtime / module.DISCOVERY_REL, {
         "schema": module.DISCOVERY_SCHEMA,
         "task_id": module.TASK_ID,
@@ -35,7 +35,7 @@ def seed_discovery(runtime: Path, *, node_id: str | None = None, state: str = "C
 
 
 def seed_presence(runtime: Path, *, node_id: str | None = None, runtime_root: str | None = None, worker_runtime: str | None = None) -> None:
-    node = node_id or canonical_node()
+    node = canonical_node() if node_id is None else node_id
     supervision = runtime / "receipts/sovereign-host/ephemeral-process.latest.json"
     write_json(supervision, {
         "active": True,
