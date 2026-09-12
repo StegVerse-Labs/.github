@@ -17,7 +17,10 @@
     "StegVerse-Labs/stegfin-governance/stegwallet/recipient_admission_signing.py",
     "StegVerse-Labs/stegfin-governance/stegwallet/vault_agent_service.py",
     "StegVerse-Labs/StegOS/mobile/ios/StegOSMobile/TVCRecipientKeyCandidate.swift",
-    "StegVerse-Labs/StegOS/docs/TVC_RECIPIENT_ADMISSION_AUTHORITY_KEY_CANDIDATE_MIRROR_HANDOFF.md"
+    "StegVerse-Labs/StegOS/docs/TVC_RECIPIENT_ADMISSION_AUTHORITY_KEY_CANDIDATE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/TVC/scripts/tvc_recipient_capability_admission.py",
+    "StegVerse-Labs/TVC/scripts/tvc_recipient_admission_resident_signer.py",
+    "StegVerse-Labs/TVC/docs/TVC_RECIPIENT_ADMISSION_VAULT_AGENT_CONSOLIDATION_MIRROR_HANDOFF.md"
   ],
   "blockers": [
     "AUTHENTICATED_VAULT_AGENT_TO_SECURE_ENCLAVE_SIGNING_BRIDGE_NOT_YET_IMPLEMENTED",
@@ -38,6 +41,10 @@
     "role_separated_secure_enclave_authority_candidate_source_merged": true,
     "role_separated_secure_enclave_authority_candidate_merge": "StegVerse-Labs/StegOS@e81b981c1218fca2031a43207afd0a419ff1263d",
     "authority_candidate_signing_reachable": false,
+    "tvc_vault_agent_caller_consolidated": true,
+    "tvc_vault_agent_caller_merge": "StegVerse-Labs/TVC@5edf023aa7d45e1f525dd1bb556d25cacd35ae74",
+    "legacy_second_signer_socket_rejected": true,
+    "worker_invocation_validated_before_signer_call": true,
     "separate_tvc_authority_backend_bound_to_vault_agent": false,
     "recipient_secure_enclave_key_is_eligible_authority_key": false,
     "production_backend_materialized": false,
@@ -53,8 +60,7 @@
     "hosted_execution_fallback": false
   },
   "allowed_next_transitions": [
-    "DEFINE_AUTHENTICATED_NON_PUBLIC_SIGN_REQUEST_BRIDGE",
-    "BIND_BACKEND_TO_EXISTING_VAULT_AGENT_PROCESS",
+    "BIND_PLATFORM_SIGNER_BACKEND_TO_EXISTING_VAULT_AGENT_PROCESS",
     "PROJECT_MATCHING_PUBLIC_JWK_ONLY",
     "OBSERVE_AUTHENTIC_PRODUCTION_MATERIALIZATION"
   ],
