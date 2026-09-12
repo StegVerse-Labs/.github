@@ -1,0 +1,13 @@
+{
+  "schema": "stegverse.cosv-task-vector/v1",
+  "task_id": "SDK-ELYRIA-INTR-ADAPTER-001",
+  "vector": "71000000100112",
+  "level": "task",
+  "repository": "StegVerse-Labs/.github",
+  "evidence_refs": [
+    "StegVerse-Labs/.github:docs/SDK_ELYRIA_INTR_ADAPTER_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github:data/canonical-task-records/SDK-ELYRIA-INTR-ADAPTER-001.json",
+    "StegVerse-Labs/.github:issues/1607"
+  ],
+  "authority_effect": "NONE_COORDINATION_ONLY"
+}
