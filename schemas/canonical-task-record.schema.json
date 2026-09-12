@@ -85,6 +85,44 @@
         "selection_grants_authority": {"const": false}
       }
     },
+    "execution_substrate_resolution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "review_order", "reviews", "selected_substrate_id", "external_device_required", "second_user_operated_device_allowed", "authority_effect"],
+      "properties": {
+        "schema": {"const": "stegverse.execution-substrate-resolution/v1"},
+        "review_order": {
+          "const": [
+            "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+            "STEGOS-CURRENT-DEVICE-NODE",
+            "STEG-BROWSER-EPHEMERAL-LEASE",
+            "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+            "ADMITTED-EPHEMERAL-STEGOS-NODE",
+            "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+          ]
+        },
+        "reviews": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["substrate_id", "disposition", "limitation_class", "evidence_refs"],
+            "properties": {
+              "substrate_id": {"type": "string"},
+              "disposition": {"enum": ["SELECTED", "SUITABLE", "PENDING_EVIDENCE", "UNSUITABLE", "NOT_APPLICABLE"]},
+              "limitation_class": {"enum": ["NONE", "EVIDENCE_REACHABILITY", "ARCHITECTURAL", "AUTHORITY", "PLATFORM", "NOT_APPLICABLE"]},
+              "evidence_refs": {"type": "array", "items": {"type": "string"}}
+            }
+          }
+        },
+        "selected_substrate_id": {"type": ["string", "null"]},
+        "external_device_required": {"type": "boolean"},
+        "second_user_operated_device_allowed": {"const": false},
+        "authority_effect": {"const": "NONE"}
+      }
+    },
     "worker_claim": {
       "type": "object",
       "additionalProperties": false,
