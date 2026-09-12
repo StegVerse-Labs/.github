@@ -19,16 +19,39 @@
     "heartbeat_user_verifier_authority": "NONE",
     "model_user_verifier_authority": "NONE",
     "execution_surface_connectivity_authority": "NONE_OBSERVATION_ONLY",
+    "remote_computer_role": "TRANSPORT_DISCOVERY_ONLY",
+    "remote_computer_inventory_semantics": "EVIDENCE_REACHABILITY_ONLY",
+    "remote_computer_is_distinct_execution_substrate": false,
+    "remote_computer_is_machine_dependency": false,
+    "remote_computer_is_completion_predicate": false,
+    "ephemeral_capacity_runtime_class": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+    "ephemeral_capacity_requires_intr_admission": true,
+    "runtime_substrate_review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "evidence_reachability_may_establish_substrate_unsuitable": false,
+    "second_user_operated_device_allowed": false,
+    "execution_substrate_selection_authority_effect": "NONE",
     "transition_authority": "Interlock/InTr",
-    "credential_authority": "TV/TVC"
+    "worker_claim_authority": "WorkerCoordinator",
+    "credential_authority": "TV/TVC",
+    "runtime_reality_authority": "Master Records"
   },
   "semantics": {
     "kv_skap_vault": "Maintains the verifier for the user and is the sole source of user-verification state.",
     "stegos_device": "An interchangeable StegOS transport node that may carry or execute bounded work. Device identity, node identity, transport channel identity, local key possession, and local hardware do not establish user-verifier authority and are not verification gates.",
     "node_local_capability": "A node may expose and invoke locally available capabilities after applicable KV/SKAP-backed user-verification state and Interlock/InTr admission are bound to the exact operation. Local execution does not make the node the user verifier.",
     "transport_integrity": "A transport may preserve integrity, freshness, routing, replay protection, and evidence bindings without becoming a user verifier or trust root for the user.",
-    "execution_surface_observation": "Connector or runtime observations such as reachable, connected, alive, local, or unavailable describe execution-surface availability only. They never mean authorized, verified, trusted, user-verified, or authority-bearing.",
-    "device_interchangeability": "Replacing one eligible StegOS device/node with another does not change the user's verifier. Only available local capability endpoints and resulting execution evidence may change."
+    "execution_surface_observation": "Connector or runtime observations such as reachable, connected, alive, local, or unavailable describe execution-surface availability only. They never mean authorized, verified, trusted, user-verified, authority-bearing, substrate-unsuitable, or external-device-required.",
+    "device_interchangeability": "Replacing one eligible StegOS device/node with another does not change the user's verifier. Only available local capability endpoints and resulting execution evidence may change.",
+    "remote_computer_transport": "Remote Computer is a transport/discovery surface only. Capacity discovered through it may execute only after materializing as the canonical StegBrowser/StegOS node class and being admitted as ADMITTED-EPHEMERAL-STEGOS-NODE through Interlock/InTr.",
+    "ephemeral_substrate": "Temporary compute is not a separate authority or durable machine dependency. Presence or connectivity grants no execution, transition, WorkerCoordinator claim/fence, credential, custody, publication, or completion authority.",
+    "runtime_substrate_order": "Runtime-capable tasks must evaluate the canonical single-device-first substrate order before any remote/external-device last resort. EVIDENCE_REACHABILITY may remain pending but cannot establish UNSUITABLE or create an external-device requirement."
   },
   "prohibitions": [
     "NO_SECONDARY_USER_VERIFIER_OUTSIDE_KV_SKAP_VAULT",
@@ -40,7 +63,13 @@
     "NO_SECURE_ENCLAVE_PRESENCE_AS_USER_VERIFICATION",
     "NO_GITHUB_HEARTBEAT_OR_MODEL_AS_USER_VERIFIER",
     "NO_DEVICE_PINNING_AS_USER_VERIFICATION_AUTHORITY",
-    "NO_CONNECTOR_DEVICE_LIST_AS_AUTHORIZATION_OR_VERIFICATION"
+    "NO_CONNECTOR_DEVICE_LIST_AS_AUTHORIZATION_OR_VERIFICATION",
+    "NO_REMOTE_COMPUTER_AS_DISTINCT_EXECUTION_AUTHORITY",
+    "NO_REMOTE_COMPUTER_AVAILABILITY_AS_TASK_STATE",
+    "NO_REMOTE_COMPUTER_INVENTORY_AS_SUBSTRATE_UNSUITABILITY",
+    "NO_REMOTE_COMPUTER_AS_SECOND_MACHINE_REQUIREMENT",
+    "NO_EPHEMERAL_CAPACITY_EXECUTION_BEFORE_INTERLOCK_INTR_ADMISSION",
+    "NO_EVIDENCE_REACHABILITY_GAP_AS_EXTERNAL_DEVICE_REQUIREMENT"
   ],
   "authority_effect": "NONE_REGISTRY_INVARIANT_ONLY"
 }

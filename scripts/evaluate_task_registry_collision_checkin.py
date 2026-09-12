@@ -9,12 +9,12 @@ RECORDS = ROOT / "data" / "canonical-task-records"
 GLOBAL_INVARIANTS = ROOT / "data" / "task-registry-global-invariants.json"
 ACTIVEISH = {"ACTIVE", "CHECKED_OUT", "CLAIMED_INTEGRATION", "HANDOFF_READY_RUNTIME_PROOF_PENDING", "BLOCKED_RUNTIME_ACTIVATION"}
 sys.path.insert(0, str(ROOT / "scripts"))
-from task_registry_checkin_event_history import (  # noqa: E402
+from task_registry_checkin_event_history import (
     DEFAULT_LEDGER,
     append_event,
     recent_collision_candidates,
 )
-from validate_task_registration_substrate_resolution import validate_resolution  # noqa: E402
+from validate_task_registration_substrate_resolution import validate_resolution
 
 
 def load_records():
@@ -178,7 +178,7 @@ def main():
         emit({"schema":"stegverse.task-registry-checkin-disposition/v1","task_id":tid,"disposition":"STOP_NOT_REGISTERED","session_action":"END_OR_REGISTER_BEFORE_MUTATION","authority_effect":"NONE"}, context)
         return
 
-    if "execution_substrate_resolution" in r:
+    if isinstance(r.get("runtime_requirements"), dict):
         try:
             validate_resolution(r)
         except Exception as exc:
