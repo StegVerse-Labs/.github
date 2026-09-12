@@ -13,6 +13,9 @@
     "handoffs/GADI-RESIDENT-EXECUTION-001.json",
     "control/resident-execution-request.d/gadi-resident-execution-001.json",
     "control/resident-execution-request.d/consume-gadi-resident-execution.py",
+    "control/resident-execution-request.d/gadi-runtime-observation-001.json",
+    "workers/gadi_runtime_observation_request_consumer.py",
+    "scripts/dispatch_resident_execution_requests.py",
     "control/worker-registry.d/gadi-resident-execution-001.json",
     "control/process-worker-adapters.d/gadi-resident-execution-001.json",
     "control/task-vectors/GADI-RESIDENT-EXECUTION-001.json",
@@ -29,7 +32,7 @@
   "targets": {
     "organizations": ["StegVerse-Labs", "StegVerse-002"],
     "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegOS", "StegVerse-Labs/StegBrowser", "StegVerse-002/micro-node-runtime"],
-    "components": ["gadi-resident-execution", "stegbrowser-retained-resident-node", "stegos-current-device-node", "retained-resident-discovery-observer", "current-iphone-discovery-receipt-observer", "provider-evidence-verification-binding", "workercoordinator-claim-fence", "intr-bound-command", "runtime-binding", "subject-bound-effect-evidence"]
+    "components": ["gadi-resident-execution", "resident-runtime-observation-dispatch", "stegbrowser-retained-resident-node", "stegos-current-device-node", "retained-resident-discovery-observer", "current-iphone-discovery-receipt-observer", "provider-evidence-verification-binding", "workercoordinator-claim-fence", "intr-bound-command", "runtime-binding", "subject-bound-effect-evidence"]
   },
   "dependencies": [
     {"dependency_id":"DEP-GADI-RESIDENT-CONSUMER-SOURCE","kind":"IMPLEMENTATION","state":"RESOLVED_SOURCE_COMPLETE_VALIDATED_MERGED","ref":"StegVerse-002/micro-node-runtime#90","disposition":"REUSE_MERGED_CONSUMER"},
