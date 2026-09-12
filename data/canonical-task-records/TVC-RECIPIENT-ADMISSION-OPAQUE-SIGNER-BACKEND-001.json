@@ -1,0 +1,66 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "TVC-RECIPIENT-ADMISSION-OPAQUE-SIGNER-BACKEND-001",
+  "correlation_id": "TVC-RECIPIENT-ADMISSION-OPAQUE-SIGNER-BACKEND-001",
+  "root_correlation_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+  "parent_task_id": "TVC-RECIPIENT-ADMISSION-SIGNING-CUSTODY-001",
+  "goal": "Materialize or bind an authentic TVC-controlled non-exportable P-256 recipient-admission authority signer backend to the existing vault-agent OpaqueRecipientAdmissionSigner interface without reusing the recipient Secure Enclave key, creating a second credential path, or exporting private-key material.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "50000000102000",
+  "owners": {
+    "credential_authority": "TV/TVC",
+    "implementation_owner": "StegVerse-Labs/stegfin-governance + StegVerse-Labs/TVC",
+    "consumer": "TVC-RECIPIENT-ADMISSION-SIGNING-CUSTODY-001"
+  },
+  "source_refs": [
+    "StegVerse-Labs/stegfin-governance/stegwallet/recipient_admission_signing.py",
+    "StegVerse-Labs/stegfin-governance/stegwallet/vault_agent_service.py",
+    "StegVerse-Labs/StegOS/mobile/ios/StegOSMobile/TVCRecipientKeyCandidate.swift"
+  ],
+  "blockers": [
+    "NO_SEPARATE_TVC_ADMISSION_AUTHORITY_NON_EXPORTABLE_SIGNER_BACKEND_OBSERVED",
+    "PRODUCTION_AUTHORITY_KEY_MATERIALIZATION_NOT_YET_OBSERVED",
+    "MATCHING_PUBLIC_JWK_BINDING_NOT_YET_OBSERVED"
+  ],
+  "expected_evidence_predicates": [
+    "TVC_ADMISSION_AUTHORITY_BACKEND_BOUND_TO_EXISTING_VAULT_AGENT",
+    "TVC_PRODUCTION_RECIPIENT_ADMISSION_SIGNING_CUSTODY_OBSERVED",
+    "TVC_RECIPIENT_ADMISSION_PUBLIC_TRUST_ANCHOR_BOUND",
+    "PRIVATE_SIGNING_KEY_BYTES_NEVER_EXPORTED",
+    "RECIPIENT_SECURE_ENCLAVE_KEY_NOT_REPURPOSED_AS_AUTHORITY_KEY",
+    "NO_SECOND_SIGNER_DAEMON_OR_CREDENTIAL_PATH"
+  ],
+  "current_truth": {
+    "opaque_signing_protocol_merged": true,
+    "existing_vault_agent_dispatch_integration_merged": true,
+    "separate_tvc_authority_backend_found_in_source_search": false,
+    "recipient_secure_enclave_key_is_eligible_authority_key": false,
+    "production_backend_materialized": false,
+    "public_trust_anchor_bound": false
+  },
+  "authority_model": {
+    "credential_authority": "TV_TVC",
+    "transition_authority": "Interlock/InTr",
+    "github_runtime_authority": "NONE",
+    "github_ci_model_may_create_production_signing_key": false,
+    "recipient_key_may_be_promoted_to_authority_key": false,
+    "alternate_credential_path_authorized": false,
+    "hosted_execution_fallback": false
+  },
+  "allowed_next_transitions": [
+    "IDENTIFY_ELIGIBLE_EXISTING_NON_EXPORTABLE_BACKEND",
+    "IMPLEMENT_SMALLEST_TVC_OWNED_BACKEND_ADAPTER_IF_NONE_EXISTS",
+    "BIND_BACKEND_TO_EXISTING_VAULT_AGENT_PROCESS",
+    "PROJECT_MATCHING_PUBLIC_JWK_ONLY",
+    "OBSERVE_AUTHENTIC_PRODUCTION_MATERIALIZATION"
+  ],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "runtime_observed": false
+  },
+  "handoff_projection_refs": [
+    "docs/TVC_RECIPIENT_ADMISSION_OPAQUE_SIGNER_BACKEND_MIRROR_HANDOFF.md"
+  ]
+}
