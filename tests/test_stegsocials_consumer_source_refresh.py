@@ -5,7 +5,8 @@ from pathlib import Path
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-TARGET = Path("scripts/consume_stegsocials_bounded_intr_admission_request.py")
+CONSUMER = Path("scripts/consume_stegsocials_bounded_intr_admission_request.py")
+BUILDER = Path("scripts/build_stegsocials_bounded_intr_materialization.py")
 
 
 def load(name: str, rel: str):
@@ -18,13 +19,17 @@ def load(name: str, rel: str):
 
 
 class StegSocialsConsumerSourceRefreshTests(unittest.TestCase):
-    def test_current_refresh_materializes_registered_consumer(self) -> None:
-        module = load("socials_refresh", "scripts/refresh_sovereign_worker_runtime_source.py")
-        self.assertIn(TARGET, module.STATIC_FILES)
+    def assert_socials_runtime_dependencies(self, module) -> None:
+        self.assertIn(CONSUMER, module.STATIC_FILES)
+        self.assertIn(BUILDER, module.STATIC_FILES)
 
-    def test_base_refresh_cannot_regress_registered_consumer(self) -> None:
+    def test_current_refresh_materializes_registered_consumer_and_builder(self) -> None:
+        module = load("socials_refresh", "scripts/refresh_sovereign_worker_runtime_source.py")
+        self.assert_socials_runtime_dependencies(module)
+
+    def test_base_refresh_cannot_regress_consumer_or_builder(self) -> None:
         module = load("socials_refresh_base", "scripts/refresh_sovereign_worker_runtime_source_base.py")
-        self.assertIn(TARGET, module.STATIC_FILES)
+        self.assert_socials_runtime_dependencies(module)
 
 
 if __name__ == "__main__":

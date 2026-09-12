@@ -95,6 +95,7 @@ STATIC_FILES = (
     Path("scripts/continue_stegverse001_evidence_chain.py"),
     Path("scripts/dispatch_resident_execution_requests.py"),
     Path("scripts/consume_stegsocials_bounded_intr_admission_request.py"),
+    Path("scripts/build_stegsocials_bounded_intr_materialization.py"),
     Path("scripts/consume_cosv_task_pointer_runtime_enforcement_request.py"),
     Path("scripts/consume_native_email_action_monitor_request.py"),
     Path("scripts/consume_native_email_action_monitor_request_kv.py"),
