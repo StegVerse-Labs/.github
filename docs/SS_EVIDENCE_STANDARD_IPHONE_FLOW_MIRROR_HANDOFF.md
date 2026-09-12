@@ -3,30 +3,28 @@
 Goal Task ID: `SS-EVIDENCE-STANDARD-IPHONE-FLOW-001`
 Parent Goal Task ID: `SS-EVIDENCE-COMPARISON-001`
 COSV: `40000100100000`
-Status: `INACTIVE / UNCLAIMED`
+Status: `SUPERSEDED`
 
-## Purpose
+## Supersession
 
-Own the one remaining parent predicate that was not part of Digital Data Reclamation decomposition: authentic current-iPhone execution of the standard StegSocials preparation -> private Personal-KV save -> exact-content readback path.
+This task/handoff is retired as an active execution path because it encoded a device-bound requirement that conflicts with the canonical StegVerse authority model.
 
-This task is deliberately separate from premium public social publication. A successful private standard-flow receipt MUST NOT be treated as Facebook, LinkedIn, Instagram, StegBrowser, TV/TVC, or public-release authority.
+Replacement task: `SS-EVIDENCE-STANDARD-KV-FLOW-001`
+Replacement handoff: `docs/SS_EVIDENCE_STANDARD_KV_FLOW_MIRROR_HANDOFF.md`
+Canonical invariant: `docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md`
 
-## Completion predicates
+## Correct authority model
 
-- authentic current-iPhone standard flow executed;
-- Personal-KV private draft write observed;
-- exact saved-content readback matches the submitted bytes/content identity;
-- standard-flow receipt retained and reconstructable;
-- no premium/publication authority inferred.
+There is no device verification, device attestation, physical-device identity gate, or device-bound user authority requirement in the StegSocials standard flow.
 
-## Current evidence
+Devices are interchangeable StegOS transport nodes. User verification and authority are maintained through KV/SKAP. Interlock/InTr governs transitions. Historical iPhone observations remain historical transport/debugging evidence only and do not establish an iPhone requirement, user identity, signing authority, or evidence-validity predicate.
 
-The parent task already has deterministic implementation, ERL-to-KV provider proof, Master Records custody/reconstruction, and StegSocials consumption evidence. Those proofs remain inputs only; they do not prove this current-iPhone action occurred.
+## Historical note
 
-## Continuation
+The original task isolated the remaining standard preparation -> private KV save -> exact-content readback evidence step from premium provider publication. That separation remains correct. Only the device-bound formulation was wrong.
 
-Claim this task independently when ready to execute the current-iPhone evidence step. Keep `SS-KV-SKAP-SOCIAL-RELEASE-001` separate for any premium/public provider release.
+Continue exclusively under `SS-EVIDENCE-STANDARD-KV-FLOW-001` for the standard-flow evidence predicate.
 
 ## Manual work
 
-None until the task reaches the exact current-iPhone interaction step.
+None.
