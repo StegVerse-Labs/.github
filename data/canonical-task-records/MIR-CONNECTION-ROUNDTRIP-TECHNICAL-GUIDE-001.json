@@ -1,0 +1,73 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001",
+  "correlation_id": "MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001",
+  "goal": "Create an independent technical and operational guide for StegVerse <-> MIR connection establishment, bidirectional Universal Interlock/InTr transport, source-native artifact preservation, TV/TVC credential brokerage where required, correlation, retry, evidence, and round-trip verification without depending on any individual test or experiment.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "50000000100000",
+  "owners": {
+    "documentation_and_public_connection_surface": "StegVerse-Labs/Site",
+    "transition_owner": "Interlock/InTr",
+    "credential_owner": "TV/TVC",
+    "mir_history_or_accounting_owner": "MIR",
+    "stegverse_governance_owner": "STEGVERSE"
+  },
+  "source_refs": [
+    "StegVerse-Labs/Site#1277",
+    "StegVerse-Labs/Site/docs/MIR_CONNECTION_ROUNDTRIP_TECHNICAL_GUIDE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site/docs/MIR_CONNECTION_AND_ROUNDTRIP_TECHNICAL_GUIDE.md",
+    "StegVerse-Labs/Site/docs/INTERLOCK_INTR_CONNECTION_GUIDE.md",
+    "StegVerse-Labs/Site/docs/MIR_INTR_SDK_RETURN_PROFILE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/TVC/docs/MIR_TVC_PROVIDER_ROUNDTRIP_MIRROR_HANDOFF.md"
+  ],
+  "current_truth": {
+    "independent_goal_established": true,
+    "handoff_created": true,
+    "standalone_technical_guide_drafted": true,
+    "normative_procedure_independent_of_run2": true,
+    "shared_document_carrier_documented": true,
+    "authenticated_provider_operation_documented": true,
+    "universal_intr_reuse_documented": true,
+    "tvtvc_credential_boundary_documented": true,
+    "roundtrip_state_model_documented": true,
+    "retry_and_fail_closed_behavior_documented": true,
+    "site_pr_merged": false,
+    "guide_discoverable_from_main": false
+  },
+  "authority_invariants": {
+    "credential_authority": "TV/TVC",
+    "mir_history_or_accounting_authority": "MIR",
+    "stegverse_governance_authority": "STEGVERSE",
+    "github_runtime_authority": "NONE",
+    "heartbeat_authority": "NONE_CARRIER_ONLY",
+    "alternate_transport_required": false
+  },
+  "expected_evidence_predicates": [
+    "INDEPENDENT_GUIDE_EXISTS_OUTSIDE_EXPERIMENT",
+    "UNIVERSAL_INTR_CONNECTION_SEQUENCE_DOCUMENTED",
+    "SOURCE_NATIVE_CARRIER_SEMANTICS_DOCUMENTED",
+    "MIR_RETURN_CORRELATION_DOCUMENTED",
+    "TV_TVC_CREDENTIAL_BOUNDARY_DOCUMENTED",
+    "ROUNDTRIP_VERIFICATION_STATE_MODEL_DOCUMENTED",
+    "RETRY_MUTATION_STALE_RESPONSE_FAIL_CLOSED_DOCUMENTED",
+    "GUIDE_MERGED_AND_DISCOVERABLE"
+  ],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "source_implemented": true,
+    "source_validated": false,
+    "runtime_observed": false
+  },
+  "allowed_next_transitions": [
+    "OPEN_SITE_DOCUMENTATION_PR",
+    "VALIDATE_SITE_DOCUMENTATION",
+    "MERGE_SITE_GUIDE",
+    "UPDATE_DISCOVERABILITY_LINKS",
+    "RECONCILE_CANONICAL_TASK_RECORD"
+  ],
+  "handoff_projection_refs": [
+    "StegVerse-Labs/Site/docs/MIR_CONNECTION_ROUNDTRIP_TECHNICAL_GUIDE_MIRROR_HANDOFF.md"
+  ]
+}
