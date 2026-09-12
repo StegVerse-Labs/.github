@@ -14,13 +14,19 @@ Status: `ACTIVE / CLAIMED_INTEGRATION`
 
 ## Purpose
 
-Bind the already-merged ERL active-research Universal InTr intent to the existing sovereign Universal InTr resident execution owner without creating a second runtime owner, dispatcher, scheduler, heartbeat, credential path, provider operation, or synthetic transport receipt.
+Bind ERL active research to the existing sovereign Universal InTr resident execution owner and obtain one authentic, reconstructable three-hop `EXTERNAL_SYSTEM -> STEGOS_ECOSYSTEM -> DEVICE_SYSTEM -> KV` receipt chain without creating a second runtime owner, listener, scheduler, heartbeat, credential path, provider operation, or synthetic receipt.
 
-## Canonical owner and path
+## Canonical owner and authority model
 
-Existing terminal owner remains `SHWP-DEVICE-KV-INTR-OBSERVATION-001` through the shared `workers/universal_intr_profiled_ingress.py`, `scripts/consume_device_kv_intr_materialization_request.py`, and downstream owner `StegVerse-Labs/continuity-vault-kit#79`. TV/TVC remains credential authority for transitions that require credentials; GitHub runtime authority is `NONE`.
+Terminal owner remains `SHWP-DEVICE-KV-INTR-OBSERVATION-001` through the shared `workers/universal_intr_profiled_ingress.py`, the existing DEVICE_KV materialization path, and downstream owner `StegVerse-Labs/continuity-vault-kit#79`.
 
-Canonical logical path:
+- Interlock/InTr remains transition authority.
+- TV/TVC remains credential authority where credentials are required.
+- HeartBeat remains timing/reference/carriage/observability only.
+- GitHub runtime authority is `NONE`.
+- Provider-operation replay remains unauthorized.
+
+## Canonical path invariants
 
 ```text
 EXTERNAL_SYSTEM
@@ -29,135 +35,60 @@ EXTERNAL_SYSTEM
 -> KV
 ```
 
-One operation identity, one packet identity, one exact acquisition-envelope payload hash, and prior-receipt lineage must be preserved across all three authentic adjacent transitions.
+All three authentic receipts must preserve one exact operation identity, packet identity, acquisition-envelope payload hash, and prior-receipt chain. Hop 1 and hop 2 are `FORWARDED`; hop 3 is `RECEIVED`. Receipt hashes must recompute from canonical receipt bodies, payload plaintext is forbidden in receipts, and transport cannot transfer authority.
 
 ## Merged implementation evidence
 
-- PR #1424 merged at `b89a1ec010fc8d94ef770d900cb8244c11afe363` after organization-control, Heartbeat validation, and deterministic-suite PASS. It added the ERL shared-ingress profile, route installer, DEVICE_KV prior-lineage preservation, and tests.
-- PR #1444 merged at `0bcfba4a7a99b1fc2b641580e805543a320a9f80` after the same three exact-head validation classes PASS. It added bounded resident source preparation.
-- PR #1468 merged at `233992aead73e054f9ded66d62af29b0980107a8` from exact head `ceab2ab090ca8d8edd813400180b12d25df1c873` after organization-control, Heartbeat validation, and deterministic-suite PASS. It added the canonical resident request, binding-materialization consumer, resident request wiring installer, resident-source copy wiring, and deterministic tests.
-- PR #1476 merged at `af0fcb239956e9744fdd4129bb454655efd54243` from exact head `5fb90e43675b5fdefe403171bea668727d3bf1d8` after organization-control, Heartbeat/repository validation, deterministic-suite diagnostics, and DeepSeek resident validation all passed. It added the bounded loopback ERL submitter, existing-dispatcher submission consumer, resident-source copy wiring, digest normalization, canonical `unittest` regression coverage, and README runtime-interface documentation.
-- PR #1546 merged at `83a1b090ab850bf347c30f1818279064102d87d9` after exact-head control-plane validation PASS. It reconciled the canonical task record so already-completed implementation/validation steps are no longer listed as future transitions; completion and activation remain false.
-- PR #1554 merged at `aaf663112db68b031019c0e9ea274ff6bb9382d2` from exact head `b2b9591deda89e2aa5f7f3618329c1da8f889ba9` after both validation lanes, deterministic-suite diagnostics, and DeepSeek resident validation passed. It added submission-input materialization and exposed the transport-origin dependency corrected later.
-- PR #1568 merged at `ebac65426065a78863c6613fcd3f9c63ecb0e67e` after exact-head validation PASS. It reconciled the handoff after #1554 without claiming runtime evidence.
-- PR #1585 merged at `fd1d7b3f3d42c6bb2fe1bb59838121f45ace5a55` from exact head `fb2a7ffc212f6bd5a68cd3030954f6e3da6c9089` after both validation lanes, full Heartbeat/repository validation, deterministic-suite diagnostics, and DeepSeek resident validation all passed. It corrected ERL loopback carriage to the credentialless `STEGOS_RESIDENT_LOCAL` transport origin, removed the active dependency on sovereign-relay authorization, added exact retained-resident local-source convergence, tests, README documentation, and canonical Task Registry reconciliation.
-- PR #1605 merged at `c6434d85a89a0cc283bdfc1262411152ecf6ae13` from exact head `c5ae49f5d31cbba16c00cc8d85305a1dd3b61c6f` after organization-control, full Heartbeat/repository validation, and deterministic-suite diagnostics all passed on the rebuilt current-main baseline. It added exact-byte recomputation for both upstream hop receipt hashes, terminal request hash validation, exact ingress-response hashing, and tamper-rejection regression coverage before resident submission evidence can be persisted.
-- PR #1645 merged at `e6fa3c2de5c89c1668d91b5815dbc71a1969b860` from exact head `e7fd4320f3e74a4044e925deb5a11aed4d3bdd54` after organization-control, full Heartbeat/repository validation, and deterministic-suite diagnostics all passed. It made the independently dispatchable submission lane retain canonical source/runtime roots, exact SHA-256 dependency digests, atomic durable dispatch receipts, and the exact submission input reference for later reconstruction.
+- #1424 `b89a1ec010fc8d94ef770d900cb8244c11afe363`: shared-ingress ERL profile, terminal projection, prior-lineage migration, tests.
+- #1444 `0bcfba4a7a99b1fc2b641580e805543a320a9f80`: bounded resident source preparation.
+- #1468 `233992aead73e054f9ded66d62af29b0980107a8`: resident request, binding consumer, source wiring.
+- #1476 `af0fcb239956e9744fdd4129bb454655efd54243`: bounded loopback submitter and dispatcher integration.
+- #1546 `83a1b090ab850bf347c30f1818279064102d87d9`: canonical Task Registry reconciliation.
+- #1554 `aaf663112db68b031019c0e9ea274ff6bb9382d2`: submission-input materialization.
+- #1568 `ebac65426065a78863c6613fcd3f9c63ecb0e67e`: post-merge reconciliation.
+- #1585 `fd1d7b3f3d42c6bb2fe1bb59838121f45ace5a55`: corrected active carriage to credentialless `STEGOS_RESIDENT_LOCAL`; removed inappropriate relay-authorization dependency; added exact retained-runtime local-source convergence.
+- #1605 `c6434d85a89a0cc283bdfc1262411152ecf6ae13`: exact recomputation of hop-1/hop-2 receipt hashes, terminal request hash, and complete shared-ingress-response hash before evidence promotion.
+- #1645 `e6fa3c2de5c89c1668d91b5815dbc71a1969b860`: durable submission-dispatch reconstruction evidence with exact source/runtime roots and per-dependency SHA-256 digests.
+- #1648 `8a1ffeeb223a3d6125caebafd22cfbd8fc58f34d`: corrected the terminal DEVICE_KV path so ERL no longer remints a new controlled-observation packet for hop 3. Exact-head organization control, full Heartbeat/repository validation including the deterministic suite, and deterministic diagnostics all passed before merge.
 
-Merged source does not prove resident execution, authentic shared-ingress observation, any authentic InTr hop, terminal KV receipt, or provider replay.
+## Terminal identity continuity correction — merged #1648
 
-## Resident-local transport correction
+Inspection after #1645 found a real runtime-proof blocker. The pre-existing DEVICE_KV event path preserved the ERL hop-2 prior hash but then called the generic `device-kv` connector to create a fresh `kv.interlock.request.v1`, which necessarily minted a new operation ID, packet ID, and payload hash. That could never satisfy this task's three-hop identity invariant.
 
-Investigation on 2026-09-12 established that the earlier ERL submitter incorrectly used `TVC_RELAY_EGRESS` as the transport origin for a resident-local loopback handoff.
+Merged #1648 corrects the existing owner instead of adding another transport:
 
-Canonical TVC source `docs/SOVEREIGN_RELAY_EGRESS_AUTHORIZATION_MIRROR_HANDOFF.md` defines sovereign relay EGRESS authorization as exact-scope and single-use, bound to a real admitted relay route, exact opaque payload hash/size, and a live TVC execution grant. TVC also records `live_egress_authorization: false`. That authorization class is therefore neither presently available nor semantically appropriate for the ERL resident-local loopback handoff.
+- `workers/erl_active_research_intr_profile.py` now carries the exact original full-path `erl_transport_intent` into the terminal materialization request and hash-binds that intent.
+- `scripts/submit_erl_active_research_intr_binding_local.py` rejects any terminal projection whose original intent, intent hash, operation ID, packet ID, payload hash, path, or upstream receipt chain diverges.
+- `workers/erl_device_kv_terminal.py` is a bounded helper invoked only inside the existing DEVICE_KV owner. It loads the already-materialized canonical acquisition envelope, verifies its hash against the original intent, transports the exact canonical envelope bytes over deployment-local ephemeral loopback carriage, durably reads those exact bytes back at KV, emits hop index 3 from the original full-path intent, and validates the complete three-hop receipt chain.
+- `scripts/install_erl_device_kv_prior_lineage.py` now upgrades retained workers to this exact-identity path while leaving non-ERL DEVICE_KV behavior unchanged.
+- `scripts/install_erl_resident_request_wiring.py` and the submission consumer propagate/materialize the new helper through the already-existing resident source mechanism.
+- Regression coverage verifies migration idempotence, original-intent preservation, hop-3 `DEVICE_SYSTEM -> KV` identity, exact canonical byte transport/readback, and absence of provider replay.
 
-The shared HIL transport validator independently confirms the distinction: `TVC_RELAY_EGRESS` requires an authorization identifier because it represents a governed sovereign relay, while local transport origins must not claim a TVC relay authorization.
+This merged source proves the corrected implementation and deterministic validation only. It does not prove that an authentic sovereign resident has executed the path.
 
-Merged correction:
+## Existing provider proof — do not replay
 
-- `workers/erl_active_research_transport.py`
-  - defines ERL-only transport origin `STEGOS_RESIDENT_LOCAL`;
-  - requires `InTr`, JSON, exact raw-body SHA-256, and no authorization header;
-  - is invoked only after the shared listener identifies an ERL active-research binding;
-  - does not become a generic HIL origin and grants no authority.
-- `scripts/install_erl_active_research_universal_intr_route.py`
-  - migrates fresh or already-installed ERL route source from HIL relay-header validation to the ERL-specific resident-local validator;
-  - leaves non-ERL routes on their existing validators unchanged.
-- `scripts/materialize_erl_active_research_intr_resident_local_input.py`
-  - consumes the already-materialized ERL binding receipt and requires only the explicit authentic loopback ingress URL;
-  - creates no TVC authorization and carries none in the input;
-  - records `transport_origin=STEGOS_RESIDENT_LOCAL` and `transport_credential_required=false`.
-- `scripts/submit_erl_active_research_intr_binding_local.py`
-  - reuses the already-validated ERL binding and profile-admission validators;
-  - sends exact binding bytes with `X-StegVerse-Transport-Origin: STEGOS_RESIDENT_LOCAL`;
-  - emits no `X-StegVerse-Authorization-Id` header;
-  - rejects any resident-local input that contains a TVC relay authorization field.
-- `control/resident-execution-request.d/consume-erl-active-research-intr-submission.py`
-  - selects the resident-local materializer and resident-local submitter as the active ERL resident path.
-- `scripts/install_erl_resident_request_wiring.py`
-  - propagates the resident-local transport validator/materializer/submitter through the existing resident source path;
-  - requires only `STEGVERSE_UNIVERSAL_INTR_INGRESS_URL` for ERL local submission;
-  - creates no second listener, runtime, scheduler, heartbeat, WorkerCoordinator, claim/fence path, credential issuer, or provider operation.
+The active-research source is `ERL-CYBER-CISA-IRAN-2025-JOINT-FACT-SHEET`. Existing canonical ERL evidence records an authentic Google Drive provider write plus independent exact-byte readback:
 
-The legacy relay submitter/materializer remain source history but are no longer selected by the active ERL resident dispatcher. Their existence does not authorize relay use.
+- parent folder `google-drive:folder:147zp4--w_dnf_cOJzC0nKGZrWtwB2M6n`
+- artifact folder `google-drive:folder:1osZ9dvIHmYI58t7PoopRVI6UbrPLxxIG`
+- file `google-drive:file:1KKBS1drUFVh-czLpmg5koRgDs4YMf-gG`
+- filename `ERL-CYBER-CISA-IRAN-2025-JOINT-FACT-SHEET.capture.txt`
+- size `1015`
+- SHA-256 `94470c58db24e544c3edfcd390cca395375a348879ec3c53451ba517ff917763`
 
-## Retained-resident exact local source convergence
-
-Inspection of `scripts/refresh_sovereign_worker_runtime_source.py` showed that retained-runtime refresh already propagates the `workers/` tree and `control/resident-execution-request.d/` consumers, but does not generically copy every ERL `scripts/...` dependency. A refreshed resident could therefore receive the ERL consumer while still lacking one or more exact scripts that consumer invokes.
-
-Merged #1585 closes that gap without widening generic refresh:
-
-- both the binding and submission consumers carry the same exact allow-list of ERL source dependencies;
-- dependencies are copied only from the already-local canonical source root to a distinct resident runtime root;
-- missing dependencies fail closed;
-- target drift is atomically repaired and SHA-256 parity is verified after every copy;
-- canonical source and runtime roots are forbidden from aliasing, preventing mutation of the canonical checkout;
-- no clone, fetch, pull, network source transport, credential acquisition, or repository mutation occurs;
-- the binding consumer applies `scripts/prepare_erl_active_research_intr_runtime_source.py` and immediately verifies the idempotent `--check` state before building the deterministic binding;
-- the submission consumer performs the same local-source convergence/preparation independently so selected-subset dispatch does not depend on a prior binding-consumer visit;
-- this source convergence grants no execution, claim/fence, credential, Interlock/InTr transition, provider, or completion authority and does not itself prove authentic traversal.
-
-Deterministic regression coverage verifies exact allow-list materialization, drift repair, missing-dependency fail-closed behavior, independent submission-lane source completeness, source/runtime root separation, and preparation apply-then-check ordering.
-
-## Merged profile / terminal contract retained
-
-The ERL profile still:
-
-- validates the deterministic ERL binding, exact acquisition-envelope hash, and full logical boundary path;
-- emits hop 1 only after the exact binding reaches and passes the authentic shared STEGOS_ECOSYSTEM ingress;
-- emits hop 2 when the same packet is projected into the existing device-materialization path;
-- projects only the terminal `DEVICE_SYSTEM -> KV` request to `StegVerse-Labs/continuity-vault-kit#79`;
-- preserves exact operation ID, packet ID, payload hash, and prior-receipt lineage;
-- never fabricates hop 3 and never replays the provider operation.
-
-## Merged exact-byte proof-verifier hardening
-
-PR #1605 hardens the resident-local submission verifier before authentic runtime execution. The earlier admission path validated receipt structure and lineage but did not independently recompute every supplied upstream hop `receipt_hash` or the projected terminal request hash before persisting submission evidence.
-
-The merged verifier now fails closed unless:
-
-- each upstream hop receipt hash recomputes from the exact canonical receipt body;
-- hop identity, operation identity, packet identity, payload hash, adjacent boundary roles, verification state, authority-transfer prohibition, and plaintext-secret prohibition remain exact;
-- hop 2 binds hop 1 through the exact prior-receipt hash;
-- the projected terminal request preserves both upstream receipt hashes and binds hop 2 as its immediate predecessor;
-- the terminal request hash recomputes from the exact canonical request body;
-- the complete shared-ingress response is itself hash-bound before promotion into the resident submission receipt.
-
-This hardening creates no runtime evidence and grants no execution, transition, claim/fence, credential, provider, or completion authority. It exists so a future authentic resident traversal can be independently proven from exact bytes rather than trusted hash fields.
-
-## Merged submission-dispatch reconstruction evidence hardening
-
-PR #1645 makes the independently dispatchable ERL submission lane reconstruction-grade before the first authentic resident traversal.
-
-The merged consumer now:
-
-- persists the canonical source root and runtime root used for local source convergence;
-- retains a SHA-256 digest for every exact allow-listed ERL dependency after source/runtime parity verification;
-- atomically persists wait-state and post-submission dispatch results to `receipts/sovereign-host/erl-active-research-intr-submission-dispatch.latest.json` with readback verification;
-- retains the exact resident-local submission input reference together with nested input-materialization and submission evidence;
-- preserves `provider_operation_attempted=false` and keeps source/dispatch evidence explicitly non-authorizing.
-
-This hardening does not prove a resident visit, shared-ingress traversal, hop receipt, DEVICE_KV execution, or provider operation. It ensures that when those authentic events occur, the exact source bytes and dispatch progression can be reconstructed independently.
-
-## Existing proof that must not be repeated
-
-- ERL PR #154 active-research dispatch merged.
-- ERL PR #155 acquisition consumer merged.
-- ERL PR #156 exact three-hop admission contract merged.
-- ERL PR #157 reusable non-authorizing runtime binding merged at `bfb76a068717ff0aaf96c32af97ebcc43324149f`.
-- CISA/Iran public-source capture provider write and exact-byte provider readback are already authentic and remain separate from InTr transport proof.
+That evidence proves the provider write/readback class only; it does not substitute for Universal InTr traversal. Provider reexecution remains unauthorized.
 
 ## Remaining work
 
-1. On an authentic sovereign resident visit, let the existing ERL consumer self-materialize and verify its exact local source dependencies and apply/check resident preparation; preserve the resulting non-authorizing source-materialization evidence.
-2. Materialize the existing local ERL source/dispatch inputs and deterministic binding/envelope through the existing resident dispatcher.
-3. Observe the authentic shared loopback ingress URL; let the existing submission consumer materialize the resident-local input automatically without relay authorization.
-4. Observe one authentic shared-ingress ERL response, preserving authentic hop 1 and hop 2 receipts and the projected terminal request.
-5. Let the existing DEVICE_KV owner execute the terminal bytes and preserve authentic hop 3 with exact prior-receipt continuity.
-6. Verify the complete three-receipt chain and bind terminal transport proof to the pre-existing provider readback evidence without provider replay.
+1. On an authentic sovereign resident visit, self-materialize/verify the exact ERL source dependencies and apply/check resident preparation.
+2. Materialize the existing active-research dispatch inputs, exact acquisition envelope, and deterministic runtime binding through the existing resident dispatcher.
+3. Observe the authentic shared loopback ingress URL and submit via `STEGOS_RESIDENT_LOCAL` without relay authorization.
+4. Preserve authentic hop 1 and hop 2 plus the hash-bound terminal materialization request.
+5. Let the existing DEVICE_KV owner execute the corrected ERL terminal helper and produce authentic hop 3 from the original full-path intent with exact envelope byte readback at KV.
+6. Verify the complete three-receipt chain and bind its source identity to the pre-existing provider write/readback evidence without replay. If no structured provider-proof object exists, create only a non-authorizing machine-readable projection of the already-observed provider evidence; do not claim it as a new provider event.
 7. Reconcile the parent ERL handoff with exact receipt hashes and final proof class.
 
 ## Current state
 
-`PROFILE_SOURCE_PREPARATION_RESIDENT_BINDING_LOOPBACK_SUBMISSION_AND_INPUT_MATERIALIZATION_MERGED / RESIDENT_LOCAL_TRANSPORT_ORIGIN_AND_EXACT_LOCAL_SOURCE_CONVERGENCE_MERGED_AND_VALIDATED / EXACT_BYTE_PROOF_VERIFIER_HARDENING_MERGED_AND_VALIDATED / SUBMISSION_DISPATCH_RECONSTRUCTION_EVIDENCE_HARDENING_MERGED_AND_VALIDATED / AUTHENTIC_RESIDENT_SOURCE_MATERIALIZATION_NOT_YET_OBSERVED / AUTHENTIC_SHARED_LOOPBACK_INGRESS_NOT_YET_OBSERVED / AUTHENTIC_THREE_HOP_TRAVERSAL_NOT_YET_OBSERVED`
+`PROFILE_SOURCE_PREPARATION_RESIDENT_BINDING_LOOPBACK_SUBMISSION_AND_INPUT_MATERIALIZATION_MERGED / RESIDENT_LOCAL_TRANSPORT_ORIGIN_AND_EXACT_LOCAL_SOURCE_CONVERGENCE_MERGED_AND_VALIDATED / EXACT_BYTE_PROOF_VERIFIER_HARDENING_MERGED_AND_VALIDATED / SUBMISSION_DISPATCH_RECONSTRUCTION_EVIDENCE_HARDENING_MERGED_AND_VALIDATED / TERMINAL_FULL_INTENT_IDENTITY_CONTINUITY_CORRECTED_AND_VALIDATED / AUTHENTIC_RESIDENT_SOURCE_MATERIALIZATION_NOT_YET_OBSERVED / AUTHENTIC_SHARED_LOOPBACK_INGRESS_NOT_YET_OBSERVED / AUTHENTIC_THREE_HOP_TRAVERSAL_NOT_YET_OBSERVED`
