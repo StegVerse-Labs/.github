@@ -102,6 +102,12 @@ def main() -> None:
     detect_dependency_cycles(tasks)
 
     subprocess.run(
+        [sys.executable, str(ROOT / "scripts" / "validate_task_registration_substrate_resolution.py")],
+        cwd=ROOT,
+        check=True,
+    )
+
+    subprocess.run(
         [sys.executable, str(ROOT / "scripts" / "validate_cosv_ecosystem_adoption.py")],
         cwd=ROOT,
         check=True,
@@ -133,6 +139,7 @@ def main() -> None:
                 "task_count": len(tasks),
                 "control_repository_claimable": False,
                 "dependency_cycles": False,
+                "task_registration_substrate_resolution": True,
                 "repository_operational_state": True,
             },
             sort_keys=True,
