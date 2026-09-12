@@ -1,6 +1,6 @@
 # SDK WorkSpace External-Collaboration Authentic Runtime 004 Mirror Handoff
 
-Updated: 2026-09-11
+Updated: 2026-09-12
 Repository: `StegVerse-Labs/.github`
 Goal Task ID: `SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004`
 Parent Goal Task ID: `SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003`
@@ -17,37 +17,48 @@ Task Registry is coordination only. WorkerCoordinator owns claim/fence authority
 
 ## Reconciled merged source state
 
-The existing source chain remains merged and validated through `.github` #1393, SDK #196, `.github` #1402, LLM-adapter #332, SDK #199, `.github` #1415, TVC #403, SDK #201, `.github` #1427, and `.github` #1460.
+The existing source chain remains merged and validated through `.github` #1393, SDK #196, `.github` #1402, LLM-adapter #332, SDK #199, `.github` #1415, TVC #403, SDK #201, `.github` #1427, `.github` #1460, `.github` #1478, and `.github` #1485.
 
-PR #1460 merged at `3bc8898655d344ba12f47bb4120e38f2ac1ded6e` from exact head `a926d04e563fa6f89920bd608a2ff359b272ca13`. Exact-head validation passed in all three required lanes:
+PR #1460 merged at `3bc8898655d344ba12f47bb4120e38f2ac1ded6e` from exact head `a926d04e563fa6f89920bd608a2ff359b272ca13`. Exact-head validation passed in all three required lanes: Deterministic Repository Suite `34615578871`, Organization Control `34615578937`, and Heartbeat Worker Project validation `34615578890`.
 
-- Deterministic Repository Suite: `34615578871` PASS;
-- Organization Control: `34615578937` PASS;
-- Heartbeat Worker Project validation: `34615578890` PASS.
+PR #1485 merged at `329b65cf5f50883001ee90c7ee03120c67a7375d` from exact head `9b5d5c8e25f0a53ff208827bf8881edc5e84df52`. Exact-head validation passed in Deterministic Repository Suite `34635461458`, Heartbeat Worker Project `34635461437`, and Organization Control `34635461393`.
 
-The merged repair makes runtime-profile discovery fall back to the exact standalone canonical task record when the aggregate registry has no row, fails closed on duplicate aggregate identities and standalone record-ID mismatch, and aligns `resident_request_dispatch` discovery with `mutation_required=false`. Mutation/execution authority remains with WorkerCoordinator + Interlock/InTr; the change creates no runtime authority.
+The merged resolver repair falls back to the exact standalone canonical task record when the aggregate registry has no row, fails closed on duplicate aggregate identities and standalone record-ID mismatch, and aligns `resident_request_dispatch` discovery with `mutation_required=false`. Mutation/execution authority remains with WorkerCoordinator + Interlock/InTr; no runtime authority is created.
 
 ## Runtime source compatibility boundary
 
-Post-merge reconciliation against the current canonical runtime-profile map establishes that `canonical-resident-substrate-v1` now satisfies every static requirement for this task: `resident_request_dispatch`, `SOVEREIGN_RESIDENT`, `INTERNAL`, no mutation requirement, and no deployment requirement. The profile is still `DECLARED_ONLY`, while this task requires a current observed runtime.
+`canonical-resident-substrate-v1` satisfies every static requirement for this task: `resident_request_dispatch`, `SOVEREIGN_RESIDENT`, `INTERNAL`, no mutation requirement, and no deployment requirement. The profile remains `DECLARED_ONLY`, while this task requires a current observed runtime.
 
-The exact remaining resolver rejection is therefore:
+The exact remaining resolver rejection is:
 
 ```text
 CURRENT_OBSERVATION_REQUIRED:DECLARED_ONLY
 ```
 
-There is no remaining known source-side capability/environment/direction/mutation/deployment mismatch. Focused regression coverage now pins this boundary so the resolver must continue to return zero candidates until an authentic current observation exists, while preserving non-authorizing discovery semantics.
+There is no remaining known source-side capability/environment/direction/mutation/deployment mismatch. Focused regression coverage pins this boundary so the resolver must continue to return zero candidates until an authentic current observation exists, while preserving non-authorizing discovery semantics.
 
-README review remains accurate: this is resolver regression evidence and coordination semantics only and creates no public capability change.
+## Canonical runtime-presence reuse boundary
+
+The sole canonical presence producer remains `heartbeat_runtime/runtime_presence_projection.py`, with output `receipts/sovereign-host/runtime-presence.latest.json`. Do not create another liveness/presence probe.
+
+Cross-task reuse remains intentionally unauthorized until authentic evidence binds the exact runtime subject:
+
+```text
+runtime_root identity
++ resident.node_id when available
++ canonical WorkerCoordinator identity
+```
+
+A profile-level or WorkerCoordinator-class match alone must not allow one node/runtime instance to satisfy a different consumer. The canonical cross-task coordination handoff remains `docs/RUNTIME_PRESENCE_CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md`.
 
 ## Fresh authentic observation
 
-Current session re-observation after #1460 merge found:
+At `2026-09-12T03:25:00Z`, this continuation rechecked available evidence channels and recorded the non-authorizing observation at `receipts/preflight/SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004-OBSERVATION-20260912.json`:
 
 - authorized remote-resident connector: zero devices;
 - retained Google Drive exact reseal receipt matches: zero;
-- retained Google Drive exact listener receipt matches: zero.
+- retained Google Drive exact listener receipt matches: zero;
+- GitHub repository search: no authentic committed `runtime-presence.latest.json`, reseal receipt, or listener receipt; only source/documentation/reference surfaces were found.
 
 Therefore runtime resolution remains unresolved solely at the authentic-current-observation boundary. No resident execution, target custody/readback, listener health, CMC-029 live TLS adoption, sovereign callback reachability, Google consent, provider probe, MIR, Master Records reconstruction, one-device completion, downstream propagation, or public distribution is claimed.
 
@@ -66,6 +77,8 @@ Service Gateway three-route source: MERGED / VALIDATED
 resolver standalone-record fallback: MERGED / VALIDATED
 successor dispatcher discovery mutation semantic: MERGED / VALIDATED
 static resolver source compatibility: PROVEN
+canonical runtime-presence producer: EXISTING / REUSE REQUIRED
+cross-task presence subject binding: NOT YET ADMISSIBLE
 remaining resolver condition: CURRENT_OBSERVATION_REQUIRED:DECLARED_ONLY
 resident reseal receipt: NOT OBSERVED
 resident listener receipt: NOT OBSERVED
@@ -86,13 +99,18 @@ public distributions complete: FALSE
 ## Exact next sequence
 
 1. Recheck the existing authorized resident connection and current runtime observation. No additional resolver/source remediation is presently indicated.
-2. When the existing resident is present, exact-dispatch only `sdk_workspace_external_collab_client_secret_reseal` and `sdk_workspace_external_collab_consent_listener` from already-local canonical source.
-3. Accept only authentic reseal `TARGET_ALREADY_PRESENT`, `COMPLETED`, or exact `BLOCKED`; validate custody/readback without overwrite.
-4. Accept only authentic listener `SERVICE_ALREADY_HEALTHY`, `COMPLETED` with `loopback_health_verified=true`, or exact `BLOCKED`; remediate only the exact resident prerequisite if blocked.
-5. After listener health, prove the existing Service Gateway public routes and CMC-029/native-TLS adoption without callback-query leakage.
-6. Only after target custody plus sovereign callback reachability, perform owner-present Google consent on the current iPhone.
-7. Run one exact authoritative provider-file metadata probe, then SDK re-evaluation, MIR, Master Records reconstruction, one-device proof, downstream propagation, and public-distribution proof.
-8. Do not manually publish StegCore; wait for authentic TV/TVC GRANTED release authority and required resident SKAP/double-Interlock evidence.
+2. If authentic `runtime-presence.latest.json` appears, require exact runtime subject binding before using it for this task; do not infer reuse from profile identity alone.
+3. When the existing resident is present and resolves lawfully, exact-dispatch only `sdk_workspace_external_collab_client_secret_reseal` and `sdk_workspace_external_collab_consent_listener` from already-local canonical source.
+4. Accept only authentic reseal `TARGET_ALREADY_PRESENT`, `COMPLETED`, or exact `BLOCKED`; validate custody/readback without overwrite.
+5. Accept only authentic listener `SERVICE_ALREADY_HEALTHY`, `COMPLETED` with `loopback_health_verified=true`, or exact `BLOCKED`; remediate only the exact resident prerequisite if blocked.
+6. After listener health, prove the existing Service Gateway public routes and CMC-029/native-TLS adoption without callback-query leakage.
+7. Only after target custody plus sovereign callback reachability, perform owner-present Google consent on the current iPhone.
+8. Run one exact authoritative provider-file metadata probe, then SDK re-evaluation, MIR, Master Records reconstruction, one-device proof, downstream propagation, and public-distribution proof.
+9. Do not manually publish StegCore; wait for authentic TV/TVC GRANTED release authority and required resident SKAP/double-Interlock evidence.
+
+## README review
+
+Root `README.md` remains accurate. This change records a fresh non-authorizing observation and clarifies existing runtime-presence reuse boundaries; it introduces no public capability or runtime behavior change.
 
 ## Human action
 
