@@ -12,6 +12,34 @@ Updated: 2026-09-12
 
 The Goal remains ACTIVE and not superseded. The immediate target is authentic resident consumption of `stegbrowser_tvc_source_promotion`, followed by exact TVC materialization, same-primary-runtime restart, simultaneous `8765/8775`, Apple `OWNER_INGRESS_READY`, current-iPhone SKAP custody, signing, TestFlight installation, and resident discovery.
 
+## Canonical execution-substrate model
+
+This task follows the already-established Task Registry substrate invariant. The execution model is not defined by a Remote Computer connector or by the availability of any particular remote machine.
+
+Canonical substrate order is:
+
+```text
+1. STEG-BROWSER-RETAINED-RESIDENT-NODE
+2. STEGOS-CURRENT-DEVICE-NODE
+3. STEG-BROWSER-EPHEMERAL-LEASE
+4. SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER
+5. ADMITTED-EPHEMERAL-STEGOS-NODE
+6. REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT
+```
+
+For this task:
+
+- `STEG-BROWSER-RETAINED-RESIDENT-NODE` is the selected canonical substrate;
+- the current-device StegOS node and StegBrowser ephemeral lease are reusable parts of the same architecture;
+- additional temporary execution capacity, including capacity discovered through a Remote Computer transport, is eligible only when it materializes as an `ADMITTED-EPHEMERAL-STEGOS-NODE` and is admitted through the existing Interlock/InTr protocol;
+- Remote Computer is transport/discovery only. It is not a distinct execution authority, machine dependency, scheduler, runtime class, credential authority, transition authority, or completion authority;
+- an empty Remote Computer inventory or unavailable connector is only an `EVIDENCE_REACHABILITY` observation. It does not make the canonical StegBrowser/StegOS substrate unsuitable and cannot create an external-device requirement;
+- `REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT` is not selected and no second user-operated device is allowed.
+
+Presence or connectivity never grants execution. Interlock/InTr remains admission/transition authority, WorkerCoordinator remains claim/fence authority, TV/TVC remains credential authority, and Master Records remains observed-reality/provenance authority.
+
+This is the existing standard recorded by `docs/TASK_REGISTRY_ANTI_COLLISION_AGGREGATION_MIRROR_HANDOFF.md` and the first StegBrowser StegOS-node milestone; it is not a new interpretation introduced by this handoff.
+
 ## Current merged source chain
 
 ```text
@@ -96,7 +124,7 @@ receipts/sovereign-host/resident-request-dispatch.latest.json
 /var/lib/stegverse/tvc/primary-runtime-source-promotion/latest.json
 ```
 
-The authorized Remote Computer connector currently reports no online device. Therefore these remain unclaimed:
+No authentic admitted StegBrowser/StegOS execution instance has yet produced the required receipts. A connector inventory observation may help discover eligible ephemeral capacity, but connector availability is not itself a task-state predicate. Therefore these remain unclaimed:
 
 ```text
 resident local source revision at execution: NOT OBSERVED
@@ -116,18 +144,19 @@ GitHub Actions remains validation/evidence transport only. TV/TVC remains creden
 
 ## Remaining sequence
 
-1. When an authorized sovereign resident or admitted Remote Computer ephemeral Node is reachable, verify its local `.github` source contains #1579 and #1590 or a later compatible main.
-2. Execute the existing refresh+dispatch bridge for exactly `stegbrowser_tvc_source_promotion`; complete evidence must bind current local source HEAD, exact selector, current dispatcher result, identical dedicated staged-consumption receipt, and canonical dedicated-receipt SHA-256.
-3. Observe exact TVC materialization, transient promotion, same-service restart, and simultaneous `8765/8775`.
-4. Observe Apple recipient/liveness/InTr `OWNER_INGRESS_READY`.
-5. Resolve the external Apple Terms/account gate, create the Team API key, and seal it from the current iPhone into SKAP without export.
-6. Complete authentic Device -> KV -> SKAP custody, TVC Apple operations, same-device IPA signing, Build Upload, TestFlight installation, and resident discovery.
-7. Continue native StegSocials publication/readback only after working-instance proof.
+1. Observe or discover an eligible instance of the existing StegBrowser/StegOS execution substrate. If temporary capacity is surfaced through Remote Computer transport, classify it as an `ADMITTED-EPHEMERAL-STEGOS-NODE` and require normal Interlock/InTr admission before execution.
+2. Verify the admitted execution instance uses local `.github` source containing #1579 and #1590 or a later compatible main.
+3. Execute the existing refresh+dispatch bridge for exactly `stegbrowser_tvc_source_promotion`; complete evidence must bind current local source HEAD, exact selector, current dispatcher result, identical dedicated staged-consumption receipt, and canonical dedicated-receipt SHA-256.
+4. Observe exact TVC materialization, transient promotion, same-service restart, and simultaneous `8765/8775`.
+5. Observe Apple recipient/liveness/InTr `OWNER_INGRESS_READY`.
+6. Resolve the external Apple Terms/account gate, create the Team API key, and seal it from the current iPhone into SKAP without export.
+7. Complete authentic Device -> KV -> SKAP custody, TVC Apple operations, same-device IPA signing, Build Upload, TestFlight installation, and resident discovery.
+8. Continue native StegSocials publication/readback only after working-instance proof.
 
 ## README disposition
 
-Repository `README.md` remains accurate for Canonical Work and authority separation. The #1590 reconciliation is task-specific canonical evidence semantics and requires no repository-wide README change.
+Repository `README.md` remains accurate for Canonical Work and authority separation. This reconciliation restores the already-established execution-substrate semantics to the task-specific canonical surfaces and requires no repository-wide README change.
 
 ## Current state
 
-`ACTIVE_NOT_SUPERSEDED / TASK_REGISTRY_RUNTIME_EVIDENCE_CONTRACT_RECONCILED_1522 / DEDICATED_CONSUMPTION_EVIDENCE_BINDING_MERGED_VALIDATED_1533 / HANDOFF_READY_FAIL_CLOSED_REPAIR_MERGED_VALIDATED_1556 / TASK_REGISTRY_STAGED_CONSUMPTION_SEMANTICS_RECONCILED_1566 / CURRENT_DISPATCH_DEDICATED_CONSUMPTION_BINDING_MERGED_VALIDATED_1579 / TASK_REGISTRY_CURRENT_DISPATCH_BINDING_RECONCILED_1590 / REMOTE_COMPUTER_CURRENTLY_UNAVAILABLE / AUTHENTIC_RESIDENT_SOURCE_REVISION_NOT_OBSERVED / AUTHENTIC_RESIDENT_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / AUTHENTIC_TVC_MATERIALIZATION_AND_RESTART_NOT_OBSERVED / LIVE_APPLE_OWNER_INGRESS_READY_NOT_OBSERVED / AUTHENTIC_CURRENT_IPHONE_INSTALL_LISTENER_DISCOVERY_PENDING`
+`ACTIVE_NOT_SUPERSEDED / CANONICAL_EXECUTION_SUBSTRATE_MODEL_RESTORED / RETAINED_STEGBROWSER_STEGOS_NODE_SELECTED / ADMITTED_EPHEMERAL_STEGOS_NODE_CAPACITY_ALLOWED / REMOTE_COMPUTER_TRANSPORT_NOT_TASK_STATE / SECOND_USER_OPERATED_DEVICE_NOT_ALLOWED / TASK_REGISTRY_RUNTIME_EVIDENCE_CONTRACT_RECONCILED_1522 / DEDICATED_CONSUMPTION_EVIDENCE_BINDING_MERGED_VALIDATED_1533 / HANDOFF_READY_FAIL_CLOSED_REPAIR_MERGED_VALIDATED_1556 / TASK_REGISTRY_STAGED_CONSUMPTION_SEMANTICS_RECONCILED_1566 / CURRENT_DISPATCH_DEDICATED_CONSUMPTION_BINDING_MERGED_VALIDATED_1579 / TASK_REGISTRY_CURRENT_DISPATCH_BINDING_RECONCILED_1590 / AUTHENTIC_RESIDENT_SOURCE_REVISION_NOT_OBSERVED / AUTHENTIC_RESIDENT_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / AUTHENTIC_TVC_MATERIALIZATION_AND_RESTART_NOT_OBSERVED / LIVE_APPLE_OWNER_INGRESS_READY_NOT_OBSERVED / AUTHENTIC_CURRENT_IPHONE_INSTALL_LISTENER_DISCOVERY_PENDING`
