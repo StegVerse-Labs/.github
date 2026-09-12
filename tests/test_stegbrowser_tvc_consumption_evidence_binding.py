@@ -38,16 +38,19 @@ def dispatch_receipt():
     }
 
 
-def consumption_receipt():
-    return {
+def consumption_receipt(outcome: str = "STAGED"):
+    value = {
         "schema": "stegverse.stegbrowser-tvc-source-promotion-request-consumption/v1",
         "state": "ATTEMPT_RECORDED",
-        "outcome": "STAGED",
+        "outcome": outcome,
         "task_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
         "exact_sha": TARGET_SHA,
         "credential_material_present": False,
         "network_source_fetch_performed": False,
     }
+    if outcome == "HANDOFF_READY":
+        value["pending_reason"] = "PRIVATE_SOURCE_REQUEST_SLOT_OCCUPIED_BY_OTHER_TASK"
+    return value
 
 
 def prepare(tmp_path: Path):
@@ -61,7 +64,7 @@ def prepare(tmp_path: Path):
     return bridge, source, runtime
 
 
-def test_stegbrowser_complete_requires_and_binds_dedicated_consumption_receipt(tmp_path: Path, monkeypatch):
+def run_with_consumption(tmp_path: Path, monkeypatch, outcome: str):
     bridge, source, runtime = prepare(tmp_path)
     monkeypatch.setattr(bridge, "refresh", fake_refresh)
 
@@ -72,7 +75,7 @@ def test_stegbrowser_complete_requires_and_binds_dedicated_consumption_receipt(t
         dispatch_path.write_text(json.dumps(dispatch_receipt()))
         consumption_path = runtime / bridge.STEG_BROWSER_TVC_CONSUMPTION_REL
         consumption_path.parent.mkdir(parents=True, exist_ok=True)
-        consumption_path.write_text(json.dumps(consumption_receipt()))
+        consumption_path.write_text(json.dumps(consumption_receipt(outcome)))
         return SimpleNamespace(returncode=0)
 
     result = bridge.refresh_and_dispatch(
@@ -82,6 +85,11 @@ def test_stegbrowser_complete_requires_and_binds_dedicated_consumption_receipt(t
         runner=runner,
         env={},
     )
+    return bridge, runtime, result
+
+
+def test_stegbrowser_complete_requires_and_binds_dedicated_consumption_receipt(tmp_path: Path, monkeypatch):
+    bridge, runtime, result = run_with_consumption(tmp_path, monkeypatch, "STAGED")
 
     assert result["state"] == "REFRESH_AND_DISPATCH_COMPLETE"
     assert result["refresh_receipt"]["source_git_head"] == EXPECTED_HEAD
@@ -123,3 +131,13 @@ def test_stegbrowser_dispatch_fails_closed_when_dedicated_consumption_receipt_mi
     assert result["target_consumption_receipt_observed"] is False
     assert result["exact_target_consumption_evidence_observed"] is False
     assert result["target_consumption_receipt_sha256"] is None
+
+
+def test_stegbrowser_handoff_ready_does_not_count_as_complete_consumption(tmp_path: Path, monkeypatch):
+    _bridge, _runtime, result = run_with_consumption(tmp_path, monkeypatch, "HANDOFF_READY")
+
+    assert result["state"] == "REFRESH_COMPLETE_DISPATCH_INCOMPLETE"
+    assert result["target_consumption_receipt_observed"] is True
+    assert result["exact_target_consumption_evidence_observed"] is False
+    assert result["target_consumption_receipt"]["outcome"] == "HANDOFF_READY"
+    assert result["target_consumption_receipt"]["pending_reason"] == "PRIVATE_SOURCE_REQUEST_SLOT_OCCUPIED_BY_OTHER_TASK"
