@@ -297,6 +297,8 @@ The active ERL resident loopback path uses the ERL-specific transport origin `ST
 
 `TVC_RELAY_EGRESS` is not a generic local-ingress credential. It is reserved for the separate sovereign-relay path whose TVC authorization is exact-scope and single-use against a real admitted relay route, exact opaque payload hash/size, and live execution grant. The legacy ERL relay submitter/materializer remain source history but are no longer selected by the active ERL resident dispatcher.
 
+A retained resident does not depend on generic source refresh knowing every ERL script. Each ERL binding/submission consumer can self-materialize only its exact allow-listed ERL source dependencies from the already-local canonical source root, atomically repair byte drift, verify SHA-256 parity, and then apply and `--check` the idempotent ERL source preparation. Canonical source and runtime roots must be distinct. This convergence performs no clone/fetch/pull/network source transport, creates no authority, and does not itself prove runtime traversal.
+
 When the resident ERL binding already exists but `runtime-state/erl-active-research/intr-submission-input.json` does not, the existing ERL submission consumer materializes the bounded resident-local input from the binding reference plus the explicit `STEGVERSE_UNIVERSAL_INTR_INGRESS_URL`. Missing ingress remains a non-authorizing wait state. The materializer requires loopback HTTP at `/intr/materialization`, binds the exact input hash, and cannot discover or start a listener, create a credential, grant execution authority, or authorize provider replay.
 
 The ERL-only transport validator requires `InTr`, JSON, the exact raw-body SHA-256, `X-StegVerse-Transport-Origin: STEGOS_RESIDENT_LOCAL`, and absence of a relay authorization header. The installed ERL route uses that validator only after identifying an ERL active-research binding; non-ERL profiles retain their existing transport-origin and authorization rules.
@@ -314,6 +316,7 @@ scripts/materialize_erl_active_research_intr_resident_local_input.py
 scripts/submit_erl_active_research_intr_binding_local.py
 scripts/install_erl_active_research_universal_intr_route.py
 scripts/install_erl_resident_request_wiring.py
+control/resident-execution-request.d/consume-erl-active-research-intr-runtime-binding.py
 control/resident-execution-request.d/consume-erl-active-research-intr-submission.py
 docs/SS_ERL_ACTIVE_RESEARCH_INTR_RUNTIME_BINDING_MIRROR_HANDOFF.md
 ```
