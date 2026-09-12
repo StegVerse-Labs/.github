@@ -29,15 +29,6 @@ def fake_refresh(source_root: Path, runtime_root: Path):
     }
 
 
-def dispatch_receipt():
-    return {
-        "state": "DISPATCH_COMPLETE",
-        "selection_scope": "EXACT_SELECTOR",
-        "selected_consumers": ["stegbrowser_tvc_source_promotion"],
-        "consumer_count": 1,
-    }
-
-
 def consumption_receipt(outcome: str = "STAGED"):
     value = {
         "schema": "stegverse.stegbrowser-tvc-source-promotion-request-consumption/v1",
@@ -51,6 +42,24 @@ def consumption_receipt(outcome: str = "STAGED"):
     if outcome == "HANDOFF_READY":
         value["pending_reason"] = "PRIVATE_SOURCE_REQUEST_SLOT_OCCUPIED_BY_OTHER_TASK"
     return value
+
+
+def dispatch_receipt(result=None):
+    row = {
+        "consumer": "stegbrowser_tvc_source_promotion",
+        "consumer_ref": "control/resident-execution-request.d/consume-stegbrowser-tvc-source-promotion.py",
+        "state": result.get("state") if isinstance(result, dict) else "NO_MACHINE_RESULT",
+        "returncode": 0,
+        "result": result,
+        "attempted": True,
+    }
+    return {
+        "state": "DISPATCH_COMPLETE",
+        "selection_scope": "EXACT_SELECTOR",
+        "selected_consumers": ["stegbrowser_tvc_source_promotion"],
+        "consumer_count": 1,
+        "outcomes": [row],
+    }
 
 
 def prepare(tmp_path: Path):
@@ -70,12 +79,13 @@ def run_with_consumption(tmp_path: Path, monkeypatch, outcome: str):
 
     def runner(command, **_kwargs):
         assert command[-2:] == ["--only-consumer", "stegbrowser_tvc_source_promotion"]
+        current = consumption_receipt(outcome)
         dispatch_path = runtime / bridge.DISPATCH_RECEIPT_REL
         dispatch_path.parent.mkdir(parents=True, exist_ok=True)
-        dispatch_path.write_text(json.dumps(dispatch_receipt()))
+        dispatch_path.write_text(json.dumps(dispatch_receipt(current)))
         consumption_path = runtime / bridge.STEG_BROWSER_TVC_CONSUMPTION_REL
         consumption_path.parent.mkdir(parents=True, exist_ok=True)
-        consumption_path.write_text(json.dumps(consumption_receipt(outcome)))
+        consumption_path.write_text(json.dumps(current))
         return SimpleNamespace(returncode=0)
 
     result = bridge.refresh_and_dispatch(
@@ -96,6 +106,7 @@ def test_stegbrowser_complete_requires_and_binds_dedicated_consumption_receipt(t
     assert result["exact_consumer_selection_observed"] is True
     assert result["target_consumption_evidence_required"] is True
     assert result["target_consumption_receipt_observed"] is True
+    assert result["target_consumption_matches_current_dispatch_result"] is True
     assert result["exact_target_consumption_evidence_observed"] is True
     assert len(result["target_consumption_receipt_sha256"]) == 64
     assert result["target_consumption_receipt"]["task_id"] == "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001"
@@ -104,6 +115,7 @@ def test_stegbrowser_complete_requires_and_binds_dedicated_consumption_receipt(t
     persisted = json.loads((runtime / bridge.RECEIPT_REL).read_text())
     assert persisted["refresh_receipt"]["source_git_head"] == EXPECTED_HEAD
     assert persisted["dispatch_receipt"]["selected_consumers"] == ["stegbrowser_tvc_source_promotion"]
+    assert persisted["target_consumption_matches_current_dispatch_result"] is True
     assert persisted["target_consumption_receipt_sha256"] == result["target_consumption_receipt_sha256"]
 
 
@@ -114,7 +126,7 @@ def test_stegbrowser_dispatch_fails_closed_when_dedicated_consumption_receipt_mi
     def runner(_command, **_kwargs):
         dispatch_path = runtime / bridge.DISPATCH_RECEIPT_REL
         dispatch_path.parent.mkdir(parents=True, exist_ok=True)
-        dispatch_path.write_text(json.dumps(dispatch_receipt()))
+        dispatch_path.write_text(json.dumps(dispatch_receipt(consumption_receipt())))
         return SimpleNamespace(returncode=0)
 
     result = bridge.refresh_and_dispatch(
@@ -129,6 +141,7 @@ def test_stegbrowser_dispatch_fails_closed_when_dedicated_consumption_receipt_mi
     assert result["exact_consumer_selection_observed"] is True
     assert result["target_consumption_evidence_required"] is True
     assert result["target_consumption_receipt_observed"] is False
+    assert result["target_consumption_matches_current_dispatch_result"] is False
     assert result["exact_target_consumption_evidence_observed"] is False
     assert result["target_consumption_receipt_sha256"] is None
 
@@ -138,6 +151,40 @@ def test_stegbrowser_handoff_ready_does_not_count_as_complete_consumption(tmp_pa
 
     assert result["state"] == "REFRESH_COMPLETE_DISPATCH_INCOMPLETE"
     assert result["target_consumption_receipt_observed"] is True
+    assert result["target_consumption_matches_current_dispatch_result"] is True
     assert result["exact_target_consumption_evidence_observed"] is False
     assert result["target_consumption_receipt"]["outcome"] == "HANDOFF_READY"
     assert result["target_consumption_receipt"]["pending_reason"] == "PRIVATE_SOURCE_REQUEST_SLOT_OCCUPIED_BY_OTHER_TASK"
+
+
+def test_stegbrowser_stale_prior_receipt_cannot_satisfy_current_dispatch(tmp_path: Path, monkeypatch):
+    bridge, source, runtime = prepare(tmp_path)
+    monkeypatch.setattr(bridge, "refresh", fake_refresh)
+    stale = consumption_receipt("STAGED")
+    stale["request_id"] = "prior-dispatch"
+    consumption_path = runtime / bridge.STEG_BROWSER_TVC_CONSUMPTION_REL
+    consumption_path.parent.mkdir(parents=True, exist_ok=True)
+    consumption_path.write_text(json.dumps(stale))
+
+    def runner(_command, **_kwargs):
+        current = consumption_receipt("STAGED")
+        current["request_id"] = "current-dispatch"
+        dispatch_path = runtime / bridge.DISPATCH_RECEIPT_REL
+        dispatch_path.parent.mkdir(parents=True, exist_ok=True)
+        dispatch_path.write_text(json.dumps(dispatch_receipt(current)))
+        return SimpleNamespace(returncode=0)
+
+    result = bridge.refresh_and_dispatch(
+        source,
+        runtime,
+        target_consumer="stegbrowser_tvc_source_promotion",
+        runner=runner,
+        env={},
+    )
+
+    assert result["state"] == "REFRESH_COMPLETE_DISPATCH_INCOMPLETE"
+    assert result["target_consumption_receipt_observed"] is True
+    assert result["target_consumption_matches_current_dispatch_result"] is False
+    assert result["exact_target_consumption_evidence_observed"] is False
+    assert result["target_consumption_receipt"]["request_id"] == "prior-dispatch"
+    assert result["dispatch_receipt"]["outcomes"][0]["result"]["request_id"] == "current-dispatch"
