@@ -164,6 +164,12 @@ def verify_admission_proof(response: Mapping[str, Any], request: Mapping[str, An
     require(terminal.get("payload_hash") == request["payload_hash"], "proof_terminal_payload_mismatch")
     require(terminal.get("prior_transport_receipt_hash") == receipt_hashes[-1], "proof_terminal_prior_receipt_invalid")
     require(terminal.get("erl_upstream_receipt_hashes") == receipt_hashes, "proof_terminal_upstream_hashes_invalid")
+    original_intent = terminal.get("erl_transport_intent")
+    require(isinstance(original_intent, dict), "proof_terminal_original_intent_required")
+    require(original_intent.get("boundary_path") == FULL_PATH, "proof_terminal_original_intent_path_invalid")
+    require(terminal.get("transport_intent_hash") == sha_uri(original_intent), "proof_terminal_original_intent_hash_mismatch")
+    for key in ("operation_id", "packet_id", "payload_hash"):
+        require(original_intent.get(key) == request.get(key), "proof_terminal_original_intent_identity_mismatch:" + key)
     require(terminal.get("request_grants_execution_authority") is False, "proof_terminal_execution_authority_forbidden")
     require(terminal.get("claim_or_fence_minted") is False, "proof_terminal_claim_forbidden")
     require(terminal.get("transport_grants_execution_authority") is False, "proof_terminal_transport_authority_forbidden")
@@ -177,6 +183,7 @@ def verify_admission_proof(response: Mapping[str, Any], request: Mapping[str, An
         "proof_verification": "VERIFIED",
         "upstream_receipt_hashes": receipt_hashes,
         "terminal_request_hash": terminal_hash,
+        "terminal_transport_intent_hash": sha_uri(original_intent),
         "ingress_response_hash": sha_uri(response),
     }
 
@@ -222,6 +229,7 @@ def consume(runtime_root: Path, input_path: Path, *, opener=urlopen, env: Mappin
         "ingress_response_hash": proof_summary["ingress_response_hash"],
         "upstream_hop_receipt_hashes": proof_summary["upstream_receipt_hashes"],
         "terminal_request_hash": proof_summary["terminal_request_hash"],
+        "terminal_transport_intent_hash": proof_summary["terminal_transport_intent_hash"],
         "upstream_hop_receipts": response["hop_receipts"],
         "terminal_materialization_request": response["terminal_materialization_request"],
         "terminal_runtime_receipt_present": False,
