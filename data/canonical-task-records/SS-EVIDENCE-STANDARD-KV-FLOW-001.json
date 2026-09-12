@@ -1,0 +1,67 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SS-EVIDENCE-STANDARD-KV-FLOW-001",
+  "correlation_id": "SS-EVIDENCE-STANDARD-KV-FLOW-001",
+  "root_correlation_id": "SS-EVIDENCE-COMPARISON-001",
+  "parent_task_id": "SS-EVIDENCE-COMPARISON-001",
+  "goal": "Execute and evidence the authentic StegSocials standard preparation -> private KV save -> exact-content readback flow on any eligible StegOS transport node, with user verification and authority sourced only from KV/SKAP and no device verification or device attestation requirement.",
+  "coordination_state": "INACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "cosv_task_vector": "40000100100000",
+  "source_refs": [
+    "docs/SS_EVIDENCE_STANDARD_KV_FLOW_MIRROR_HANDOFF.md",
+    "docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md",
+    "data/canonical-task-records/SS-EVIDENCE-COMPARISON-001.json",
+    "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_ERL_ASSISTED_DRAFTING_MIRROR_HANDOFF.md"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": ["StegVerse-Labs/StegSocials", "StegVerse-Labs/Site", "StegVerse-Labs/.github"],
+    "components": ["standard-kv-flow", "personal-kv-draft-save", "exact-content-readback", "standard-flow-evidence-export", "kv-skap-authority-boundary"]
+  },
+  "dependencies": [
+    {"dependency_id":"DEP-SS-STANDARD-KV","kind":"STORAGE","state":"AVAILABLE","ref":"KnowledgeVault"}
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": ["SS-EVIDENCE-COMPARISON-001", "SS-KV-SKAP-SOCIAL-RELEASE-001", "SS-EVIDENCE-STANDARD-IPHONE-FLOW-001"],
+  "existing_evidence_refs": [
+    "docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md",
+    "StegVerse-Labs/StegSocials@6011cda524a05d965b9752ffd84198f6a41bff4e:device-verification-removed",
+    "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_ERL_ASSISTED_DRAFTING_MIRROR_HANDOFF.md"
+  ],
+  "expected_evidence_predicates": [
+    "AUTHENTIC_STANDARD_KV_FLOW_EXECUTED",
+    "PERSONAL_KV_STANDARD_DRAFT_WRITE_OBSERVED",
+    "EXACT_CONTENT_READBACK_MATCHES_SAVED_CONTENT",
+    "STANDARD_FLOW_EVIDENCE_RETAINED",
+    "DEVICE_VERIFICATION_NOT_REQUIRED",
+    "DEVICE_ATTESTATION_NOT_REQUIRED",
+    "TRANSPORT_NODE_NOT_IDENTITY_OR_AUTHORITY_ROOT",
+    "KV_SKAP_USER_VERIFICATION_AUTHORITY_PRESERVED",
+    "PREMIUM_PUBLICATION_AUTHORITY_NOT_INFERRED"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["kv_write", "exact_byte_readback", "evidence_export"],
+    "environment": "ANY_ELIGIBLE_STEGOS_TRANSPORT_NODE_PLUS_PERSONAL_KV",
+    "direction": "PREPARATION_TO_PRIVATE_SAVE_TO_READBACK_TO_EVIDENCE",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "worker_claim": {"authority":"NONE","claim_ref":null,"fence_ref":null,"projection_only":false},
+  "human_action_ref": "When an owner-controlled interaction is necessary to select or import content, it may occur on any eligible StegOS transport node; no device identity, device verification, or device attestation is required.",
+  "completion": {"claimed":false,"validated":false,"reconciliation_ref":"docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md","activation_proof_complete":false},
+  "allowed_next_transitions": ["CLAIM_STANDARD_KV_FLOW", "EXECUTE_AUTHENTIC_STANDARD_KV_FLOW"],
+  "handoff_projection_refs": ["docs/SS_EVIDENCE_STANDARD_KV_FLOW_MIRROR_HANDOFF.md"],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "premium_publication_authority_separate": true,
+    "device_verification_required": false,
+    "device_attestation_required": false,
+    "devices_are_interchangeable_transport_nodes": true,
+    "user_verification_authority_source": "KV_SKAP",
+    "transition_authority_source": "INTERLOCK_INTR"
+  }
+}
