@@ -1,6 +1,6 @@
 # Site Publication Native Runtime Execution Mirror Handoff
 
-Updated: 2026-09-11
+Updated: 2026-09-12
 Repository: `StegVerse-Labs/.github`
 Canonical issue: `#1486`
 Goal Task ID: `SITE-PUBLICATION-NATIVE-RUNTIME-EXECUTION-001`
@@ -21,7 +21,8 @@ Own only the genuinely remaining authentic native-runtime and publication-eviden
 - Packet: `INTR-58dec5416bd4358190c11372`.
 - Manifest: `sha256:e6bc47580f25296df61d16dfe5a74f3f49fec0dda018c813696195c960e77f09`.
 - Parent post-merge handoff reconciliation PR #1483 passed exact-head Heartbeat `34635435820`, Organization Control `34635435835`, and Deterministic Repository Suite `34635435815`, then squash-merged at `4ab13a252eed668f1d828c08bd998b00b54e3c43`.
-- Superseded conflicted reconciliation PR #1472 is not authoritative after #1483.
+- PR #1494 recorded the 2026-09-11T13:53:12-05:00 zero-device observation, passed Organization Control `34635855425`, Deterministic Repository Suite `34635855445`, and Heartbeat `34635855400`, and merged at `6a846b80ffa6313628795421301644b0067edf63`.
+- PR #1549 later passed Heartbeat `34670439646`, Organization Control `34670439067`, and Deterministic Repository Suite `34670439050`, but became non-mergeable from base drift and was closed unmerged; its non-authorizing evidence is carried forward here from current `main`.
 - Parent `KV-CONNECTION-REVALIDATION-WORKER-001` is retired for prompt-budget continuation; unresolved native-runtime/publication predicates are transferred here.
 
 ## Authority boundaries
@@ -49,7 +50,9 @@ Own only the genuinely remaining authentic native-runtime and publication-eviden
 
 ## Latest native-runtime observation
 
-At `2026-09-11T13:53:12-05:00`, the authorized remote runtime connector returned an empty device list (`0` connected devices). This is a current non-authorizing observation only. It does not prove source refresh, checkout, claim/fence, worker execution, lease execution, publication, reachability, or DNS/TLS state. No hosted substitute or second user-operated device is introduced.
+At `2026-09-12T00:54:00-05:00`, the authorized remote runtime connector again returned an empty device list (`0` connected devices). Earlier observations at `2026-09-11T13:53:12-05:00` and `2026-09-11T22:27:28-05:00` also returned `0` connected devices. Fresh connected-Drive searches made during the prior observation found no retained match for exact materialization `INTR-MAT-0e1ba4786b0ea8a00e1f166e` or packet `INTR-58dec5416bd4358190c11372`.
+
+These are non-authorizing observations only. They do not prove source refresh, checkout, claim/fence, worker execution, lease execution, publication, reachability, or DNS/TLS state. No hosted substitute or second user-operated device is introduced.
 
 Disposition: remain `ACTIVE` and wait for the existing authorized native resident runtime surface to reconnect; then resume at step 2 of the required evidence chain using already-local source.
 
