@@ -49,6 +49,62 @@
     "deployment_required": false,
     "current_observation_required": true
   },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "SUITABLE",
+        "limitation_class": "NONE",
+        "evidence_refs": ["docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md"]
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "SUITABLE",
+        "limitation_class": "NONE",
+        "evidence_refs": ["docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md"]
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "SUITABLE",
+        "limitation_class": "NONE",
+        "evidence_refs": ["docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md"]
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "SUITABLE",
+        "limitation_class": "PLATFORM",
+        "evidence_refs": ["docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md"]
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "SELECTED",
+        "limitation_class": "NONE",
+        "evidence_refs": [
+          "docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md",
+          "docs/SS_EVIDENCE_STANDARD_KV_FLOW_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": []
+      }
+    ],
+    "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  },
   "worker_claim": {"authority":"NONE","claim_ref":null,"fence_ref":null,"projection_only":false},
   "human_action_ref": "When an owner-controlled interaction is necessary to select or import content, it may occur on any eligible StegOS transport node; no device identity, device verification, or device attestation is required.",
   "completion": {"claimed":false,"validated":false,"reconciliation_ref":"docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md","activation_proof_complete":false},
@@ -62,6 +118,7 @@
     "device_attestation_required": false,
     "devices_are_interchangeable_transport_nodes": true,
     "user_verification_authority_source": "KV_SKAP",
-    "transition_authority_source": "INTERLOCK_INTR"
+    "transition_authority_source": "INTERLOCK_INTR",
+    "substrate_selection_grants_identity_or_authority": false
   }
 }
