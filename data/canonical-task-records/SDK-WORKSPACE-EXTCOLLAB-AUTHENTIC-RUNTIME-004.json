@@ -54,7 +54,14 @@
     "StegVerse-Labs/.github:pull/1415",
     "StegVerse-Labs/.github:commit/4af1b801a193a3c9ace7c6327ef010fd40915b15",
     "StegVerse-Labs/.github:pull/1460",
-    "StegVerse-Labs/.github:commit/3bc8898655d344ba12f47bb4120e38f2ac1ded6e"
+    "StegVerse-Labs/.github:commit/3bc8898655d344ba12f47bb4120e38f2ac1ded6e",
+    "StegVerse-Labs/.github:pull/1478",
+    "StegVerse-Labs/.github:commit/2aa2c5ffaae40efae0a7b62b7e4462ee22f47ed1",
+    "StegVerse-Labs/.github:pull/1485",
+    "StegVerse-Labs/.github:commit/329b65cf5f50883001ee90c7ee03120c67a7375d",
+    "StegVerse-Labs/.github:pull/1547",
+    "StegVerse-Labs/.github:commit/e9da6d0fe35390eba3344905c478ba92aa41de32",
+    "StegVerse-Labs/.github:receipts/preflight/SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004-OBSERVATION-20260912.json"
   ],
   "resolver_repair": {
     "pull_request": 1460,
@@ -147,10 +154,14 @@
     "projection_only": true
   },
   "latest_runtime_observation": {
-    "observed_at": "2026-09-11T18:46:00Z",
+    "observed_at": "2026-09-12T03:25:00Z",
+    "evidence_ref": "receipts/preflight/SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004-OBSERVATION-20260912.json",
     "authorized_remote_device_count": 0,
     "retained_drive_reseal_receipt_matches": 0,
     "retained_drive_listener_receipt_matches": 0,
+    "github_authentic_runtime_presence_receipt_observed": false,
+    "github_authentic_reseal_receipt_observed": false,
+    "github_authentic_listener_receipt_observed": false,
     "disposition": "ACTIVE_WAIT_FOR_EXISTING_AUTHORIZED_RESIDENT_RECONNECTION",
     "authority_effect": "NONE"
   },
@@ -158,6 +169,6 @@
     "material_function_change": false,
     "readme_updated_in_change_set": false,
     "readme_path": "README.md",
-    "no_readme_update_reason": "Resolver regression evidence and coordination semantics only; no new public runtime capability is claimed."
+    "no_readme_update_reason": "Registry reconciliation to already-merged non-authorizing observation evidence; no public runtime capability or behavior change."
   }
 }
