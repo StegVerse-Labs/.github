@@ -18,7 +18,10 @@ from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
-from scripts import materialize_gadi_retained_node_discovery as retained_projector
+try:
+    from scripts import materialize_gadi_retained_node_discovery as retained_projector
+except ModuleNotFoundError:
+    import materialize_gadi_retained_node_discovery as retained_projector
 
 TASK_ID = "GADI-RESIDENT-EXECUTION-001"
 PARENT_TASK_ID = "GADI-001"
