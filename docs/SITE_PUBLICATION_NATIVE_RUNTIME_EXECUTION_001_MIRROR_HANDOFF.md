@@ -47,9 +47,13 @@ Own only the genuinely remaining authentic native-runtime and publication-eviden
 8. Separately admit the final publication transition.
 9. Only after the preceding predicates pass, prove canonical-domain DNS/TLS recovery and public content equivalence.
 
-## Latest native-runtime observation
+## Latest native-runtime observations
 
-At `2026-09-11T13:53:12-05:00`, the authorized remote runtime connector returned an empty device list (`0` connected devices). This is a current non-authorizing observation only. It does not prove source refresh, checkout, claim/fence, worker execution, lease execution, publication, reachability, or DNS/TLS state. No hosted substitute or second user-operated device is introduced.
+At `2026-09-11T13:53:12-05:00`, the authorized remote runtime connector returned an empty device list (`0` connected devices). This was recorded through merged PR #1494 at `6a846b80ffa6313628795421301644b0067edf63` after exact-head Organization Control `34635855425`, Deterministic Repository Suite `34635855445`, and Heartbeat `34635855400` passed.
+
+At `2026-09-11T22:27:28-05:00`, the authorized remote runtime connector again returned an empty device list (`0` connected devices). Fresh connected-Drive searches also returned no retained match for exact materialization `INTR-MAT-0e1ba4786b0ea8a00e1f166e` and no retained match for packet `INTR-58dec5416bd4358190c11372`.
+
+Both are non-authorizing observations only. They do not prove source refresh, checkout, claim/fence, worker execution, lease execution, publication, reachability, or DNS/TLS state. No hosted substitute or second user-operated device is introduced.
 
 Disposition: remain `ACTIVE` and wait for the existing authorized native resident runtime surface to reconnect; then resume at step 2 of the required evidence chain using already-local source.
 
