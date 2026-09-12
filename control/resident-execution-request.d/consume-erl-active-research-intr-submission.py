@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Invoke the bounded ERL loopback InTr submitter from the existing dispatcher."""
+"""Invoke the bounded resident-local ERL loopback InTr submitter from the existing dispatcher."""
 from __future__ import annotations
 
 import argparse
@@ -8,8 +8,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-SUBMITTER = Path("scripts/submit_erl_active_research_intr_binding.py")
-MATERIALIZER = Path("scripts/materialize_erl_active_research_intr_submission_input.py")
+SUBMITTER = Path("scripts/submit_erl_active_research_intr_binding_local.py")
+MATERIALIZER = Path("scripts/materialize_erl_active_research_intr_resident_local_input.py")
 INPUT_REL = Path("runtime-state/erl-active-research/intr-submission-input.json")
 
 
