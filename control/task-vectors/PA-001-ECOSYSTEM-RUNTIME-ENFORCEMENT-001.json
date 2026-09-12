@@ -1,0 +1,37 @@
+{
+  "identity": "StegVerse-Labs/.github:task:PA-001-ECOSYSTEM-RUNTIME-ENFORCEMENT-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000114000",
+  "evidence_refs": [
+    "control/worker-registry.d/pa001-ecosystem-runtime-enforcement-001.json",
+    "docs/PA001_ECOSYSTEM_RUNTIME_ENFORCEMENT_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegCore#208",
+    "StegVerse-Labs/StegCore#209"
+  ],
+  "observed_at": "2026-09-12T12:44:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": true,
+    "blocker_count": 4,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "blocker_evidence": [
+    "exact-head source validation and merge are not yet complete",
+    "authentic resident commit-path execution is not yet observed",
+    "same-execution reconstruction is not yet observed",
+    "ecosystem propagation is not yet proven"
+  ],
+  "authority_effect": "NONE"
+}
