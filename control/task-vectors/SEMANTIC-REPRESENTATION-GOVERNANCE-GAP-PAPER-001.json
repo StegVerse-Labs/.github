@@ -1,0 +1,12 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SEMANTIC-REPRESENTATION-GOVERNANCE-GAP-PAPER-001",
+  "profile": "task.v1",
+  "task_id": "SEMANTIC-REPRESENTATION-GOVERNANCE-GAP-PAPER-001",
+  "vector": "20010000110000",
+  "evidence_refs": [
+    "data/canonical-task-records/SEMANTIC-REPRESENTATION-GOVERNANCE-GAP-PAPER-001.json",
+    "docs/SEMANTIC_REPRESENTATION_GOVERNANCE_GAP_PAPER_MIRROR_HANDOFF.md",
+    "ELAN-CUMULATIVE-PUBLICATION-001"
+  ],
+  "authority_effect": "NONE"
+}

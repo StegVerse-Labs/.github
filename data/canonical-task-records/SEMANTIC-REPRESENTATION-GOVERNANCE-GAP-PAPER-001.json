@@ -1,0 +1,57 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SEMANTIC-REPRESENTATION-GOVERNANCE-GAP-PAPER-001",
+  "correlation_id": "SEMANTIC-REPRESENTATION-GOVERNANCE-GAP-PAPER-001",
+  "root_correlation_id": "SEMANTIC-REPRESENTATION-GOVERNANCE-GAP-PAPER-001",
+  "parent_task_id": null,
+  "goal": "Produce a concise nonpartisan working paper describing the semantic representation gap and governance consequence gap observed in AI-mediated systems, using the ELAN experiment only as a minimized motivating case, and prepare an invitation to Elisabeth to collaborate without naming her as a co-author before consent.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CLAIMED_IMPLEMENTATION",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "20010000110000",
+    "source_state_vector_ref": "control/task-vectors/SEMANTIC-REPRESENTATION-GOVERNANCE-GAP-PAPER-001.json",
+    "authority_effect": "NONE"
+  },
+  "source_refs": [
+    "docs/SEMANTIC_REPRESENTATION_GOVERNANCE_GAP_PAPER_MIRROR_HANDOFF.md",
+    "ELAN-CUMULATIVE-PUBLICATION-001",
+    "PUBLISHER-VISUAL-EVIDENCE-COMPLETENESS-001"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs", "GCAT-BCAT-Engine"],
+    "repositories": ["StegVerse-Labs/.github", "GCAT-BCAT-Engine/Publisher"],
+    "components": ["working-paper", "collaboration-invitation", "semantic-representation-gap", "governance-consequence-gap"]
+  },
+  "dependencies": [
+    {"dependency_id":"DEP-ELAN-CUMULATIVE","kind":"EVIDENCE","state":"AVAILABLE_VALIDATED","ref":"ELAN-CUMULATIVE-PUBLICATION-001"},
+    {"dependency_id":"DEP-VISUAL-COMPLETENESS","kind":"EVIDENCE","state":"AVAILABLE_VALIDATED","ref":"PUBLISHER-VISUAL-EVIDENCE-COMPLETENESS-001"}
+  ],
+  "blockers": [],
+  "adjacent_task_refs": ["ELAN-CUMULATIVE-PUBLICATION-001", "ELAN-PUBLICATION-STRUCTURAL-CLARITY-001"],
+  "expected_evidence_predicates": [
+    "PAPER_IS_NONPARTISAN",
+    "ELAN_DETAILS_ARE_MINIMIZED",
+    "OBSERVATION_INTERPRETATION_GOVERNANCE_ARE_DISTINGUISHED",
+    "MOTIVATING_CASE_DOES_NOT_OVERCLAIM",
+    "COLLABORATOR_NOT_NAMED_AS_COAUTHOR_BEFORE_CONSENT",
+    "PDF_AND_DOCX_RENDER_CLEAN"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["document_authoring", "github_repository_write"],
+    "environment": "CURRENT_SESSION",
+    "direction": "OBSERVATION_TO_WORKING_PAPER",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": false
+  },
+  "worker_claim": {"authority":"CURRENT_SESSION","claim_ref":null,"fence_ref":null,"projection_only":false},
+  "completion": {"claimed":false,"validated":false,"reconciliation_ref":null},
+  "allowed_next_transitions": ["VALIDATE_DRAFT", "SHARE_FOR_COLLABORATION", "REVISE_WITH_COLLABORATOR"],
+  "handoff_projection_refs": ["docs/SEMANTIC_REPRESENTATION_GOVERNANCE_GAP_PAPER_MIRROR_HANDOFF.md"],
+  "authority_model": {
+    "task_registry_mints_publication_authority": false,
+    "working_draft_mints_coauthorship": false,
+    "collaboration_requires_affirmative_consent": true
+  }
+}
