@@ -22,15 +22,17 @@
     {
       "path": "scripts/record_task_registry_session_return.py",
       "role": "SESSION_RETURN_EVENT_ENTRYPOINT",
-      "actor_identity_gate": "NONE_OBSERVED",
-      "non_chatgpt_ai_denial": "NOT_PROVEN",
+      "actor_identity_gate": "SOURCE_DECLARATION_FAIL_CLOSED",
+      "non_chatgpt_ai_denial": "PASS_SOURCE_LEVEL",
+      "chatgpt_return_requires_gated_checkin_disposition": true,
       "runtime_identity_attestation": "NOT_PROVEN"
     },
     {
       "path": "scripts/materialize_task_session_close.py",
       "role": "SESSION_CLOSE_COORDINATION_MATERIALIZATION",
-      "actor_identity_gate": "NOT_YET_INVENTORIED_IN_DETAIL",
-      "non_chatgpt_ai_denial": "NOT_PROVEN",
+      "actor_identity_gate": "SOURCE_DECLARATION_FAIL_CLOSED_VIA_RETURN_RECORDER",
+      "non_chatgpt_ai_denial": "PASS_SOURCE_LEVEL",
+      "actor_kind_roundtrip_verified": true,
       "runtime_identity_attestation": "NOT_PROVEN"
     },
     {
@@ -43,8 +45,9 @@
   ],
   "conclusions": {
     "task_registry_ai_entry_surfaces_inventoried": "PARTIAL",
-    "chatgpt_only_task_registry_entry_enforced": "PARTIAL_WRAPPER_ONLY",
-    "non_chatgpt_ai_task_registry_denial_enforced": "PARTIAL_WRAPPER_ONLY",
+    "chatgpt_only_task_registry_entry_enforced": "PARTIAL_SESSION_LIFECYCLE_SOURCE_GATE",
+    "non_chatgpt_ai_task_registry_denial_enforced": "PARTIAL_SESSION_LIFECYCLE_SOURCE_GATE",
+    "session_return_close_bypass_closed_source_level": true,
     "direct_general_checkin_bypass_closed": false,
     "runtime_identity_attestation_proven": false
   },
@@ -52,7 +55,6 @@
     "CLASSIFY_EVERY_CALLER_OF_GENERAL_CHECKIN_AS_AI_SESSION_HUMAN_OR_NON_AI_INTERNAL",
     "ROUTE_ALL_AI_SESSION_CALLERS_THROUGH_AI_SESSION_GATE",
     "PREVENT_EXTERNAL_AI_REACHABILITY_TO_GENERAL_CHECKIN",
-    "APPLY_EQUIVALENT_ACTOR_POLICY_TO_SESSION_RETURN_AND_CLOSE_SURFACES",
     "ADD_RUNTIME_IDENTITY_ORIGIN_EVIDENCE_BEFORE_CLAIMING_CHATGPT_EXCLUSIVITY"
   ]
 }
