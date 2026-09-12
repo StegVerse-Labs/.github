@@ -71,6 +71,8 @@ def materialize_source_dependencies(source_root: Path, runtime_root: Path) -> di
     runtime = runtime_root.expanduser().resolve()
     if not source.is_dir():
         raise RuntimeError("canonical_local_source_root_missing")
+    if source == runtime:
+        raise RuntimeError("source_root_and_runtime_root_must_be_distinct")
     copied: list[str] = []
     verified: list[str] = []
     for rel in SOURCE_DEPENDENCIES:
@@ -78,9 +80,7 @@ def materialize_source_dependencies(source_root: Path, runtime_root: Path) -> di
         if not src.is_file():
             raise RuntimeError(f"canonical_local_source_dependency_missing:{rel.as_posix()}")
         dst = runtime / rel
-        if source == runtime:
-            verified.append(rel.as_posix())
-        elif atomic_copy_exact(src, dst):
+        if atomic_copy_exact(src, dst):
             copied.append(rel.as_posix())
         else:
             verified.append(rel.as_posix())
