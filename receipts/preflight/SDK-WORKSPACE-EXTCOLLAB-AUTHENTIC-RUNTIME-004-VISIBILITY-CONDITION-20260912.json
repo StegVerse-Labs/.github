@@ -1,0 +1,37 @@
+{
+  "schema": "stegverse.runtime-visibility-condition-preflight/v1",
+  "task_id": "SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004",
+  "cosv_task_vector": "71000000100110",
+  "observed_at": "2026-09-12T06:05:00Z",
+  "authority_effect": "NONE_OBSERVATION_ONLY",
+  "observation": {
+    "authorized_remote_device_count": 0,
+    "retained_drive_reseal_receipt_matches": 0,
+    "retained_drive_listener_receipt_matches": 0,
+    "authentic_current_runtime_presence_observed": false
+  },
+  "investigation": {
+    "resolver_source_remediation_remaining": false,
+    "resident_worker_self_heal_source_merged_validated": true,
+    "self_heal_requires_live_canonical_carrier": true,
+    "live_canonical_carrier_observed": false,
+    "g18_is_downstream_gate": false,
+    "g18_projection_state": "STALE_HOUSEKEEPING_ONLY",
+    "same_host_ephemeral_fallback_exists": true,
+    "same_host_ephemeral_fallback_session_startable": false,
+    "same_host_ephemeral_fallback_requires_eligible_local_sovereign_host": true,
+    "hosted_fallback_authorized": false,
+    "second_user_operated_device_authorized": false
+  },
+  "current_condition": "AUTHENTIC_CURRENT_CARRIER_OR_WORKERCOORDINATOR_OBSERVATION_NOT_VISIBLE",
+  "next_admissible_transition": "OBSERVE_EXISTING_AUTHORIZED_RESIDENT_OR_CANONICAL_RUNTIME_PRESENCE_WITH_EXACT_SUBJECT_BINDING",
+  "do_not": [
+    "create_second_runtime",
+    "create_second_workercoordinator",
+    "create_second_heartbeat",
+    "treat_g18_terminalization_as_downstream_gate",
+    "use_hosted_runtime_as_sovereign_presence",
+    "require_second_user_operated_device"
+  ],
+  "manual_user_action_required": false
+}
