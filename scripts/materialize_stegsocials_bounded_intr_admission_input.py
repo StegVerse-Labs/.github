@@ -42,9 +42,13 @@ def canonical(value: Any) -> bytes:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False).encode("utf-8")
 
 
-def sha_uri(value: Any) -> str:
+def sha_hex(value: Any) -> str:
     raw = value if isinstance(value, bytes) else canonical(value)
-    return "sha256:" + hashlib.sha256(raw).hexdigest()
+    return hashlib.sha256(raw).hexdigest()
+
+
+def sha_uri(value: Any) -> str:
+    return "sha256:" + sha_hex(value)
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -96,19 +100,39 @@ def validate_received(record: Mapping[str, Any]) -> None:
     require(isinstance(authority, Mapping), "received_authority_required")
     require(authority.get("credential_authority") == "TV/TVC", "received_credential_authority_invalid")
     require(authority.get("github_token_runtime_authority") == "NONE", "received_github_runtime_authority_invalid")
+    require(authority.get("heartbeat_granted_authority") is False, "received_heartbeat_authority_invalid")
+    require(authority.get("interlock_self_grants_authority") is False, "received_interlock_self_authority_invalid")
+    require(authority.get("intr_self_grants_authority") is False, "received_intr_self_authority_invalid")
     require(authority.get("authority_effect") == "NONE_RECEIVED_INGRESS_RECORD_ONLY", "received_authority_effect_invalid")
 
 
 def validate_binding_authorization(binding: Mapping[str, Any], authorization: Mapping[str, Any], payload_raw: bytes) -> tuple[str, str]:
     require(binding.get("schema") == BINDING_SCHEMA, "binding_schema_invalid")
+    require(binding.get("route_admitted") is True, "binding_route_admission_required")
+    require(binding.get("egress_authorized") is False, "binding_must_be_pre_authorization")
+    require(binding.get("runtime_executed") is False, "binding_may_not_claim_runtime_execution")
+    require(binding.get("credential_authority") == "TV/TVC", "binding_credential_authority_invalid")
+    require(binding.get("credential_material_present") is False, "binding_credential_material_forbidden")
+
     require(authorization.get("schema") == AUTH_SCHEMA, "authorization_schema_invalid")
     require(authorization.get("decision") == "ALLOW_RELAY_EGRESS", "relay_egress_not_authorized")
     require(authorization.get("issuer_authority") == "TV/TVC", "authorization_issuer_invalid")
     require(authorization.get("credential_authority") == "TV/TVC", "authorization_credential_authority_invalid")
+    require(authorization.get("credential_requirement") == "NONE", "authorization_credential_requirement_invalid")
     require(authorization.get("credential_material_present") is False, "authorization_credential_material_forbidden")
+    require(authorization.get("route_admitted") is True, "authorization_route_admission_required")
     require(authorization.get("egress_authorized") is True, "authorization_egress_not_authorized")
     require(authorization.get("runtime_executed") is False, "authorization_may_not_claim_runtime_execution")
-    for field in ("binding_id", "route_id", "transport_id", "next_hop_transport_endpoint"):
+    require(authorization.get("payload_inspection_authority") is False, "authorization_payload_inspection_forbidden")
+    require(authorization.get("canonical_transition_authority") is False, "authorization_transition_authority_forbidden")
+    require(authorization.get("settlement_authority") is False, "authorization_settlement_authority_forbidden")
+    require(authorization.get("authority_effect") == "BOUNDED_RELAY_EGRESS_AUTHORIZATION", "authorization_authority_effect_invalid")
+    claimed_auth_hash = authorization.get("authorization_sha256")
+    auth_material = dict(authorization)
+    auth_material.pop("authorization_sha256", None)
+    require(claimed_auth_hash == sha_hex(auth_material), "authorization_hash_mismatch")
+
+    for field in ("binding_id", "route_receipt_hash", "route_candidate_hash", "route_id", "transport_id", "next_hop_transport_endpoint", "next_hop_identity_binding"):
         require(binding.get(field) == authorization.get(field), f"authorization_{field}_mismatch")
     payload_sha = hashlib.sha256(payload_raw).hexdigest()
     require(authorization.get("payload_sha256") == payload_sha, "authorization_payload_hash_mismatch")
