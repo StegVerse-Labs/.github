@@ -14,12 +14,13 @@
     "StegVerse-Labs/.github@2ea069abd466a1803dab31cd26f6d8c684f7dce6:resident-builder-refresh-propagation-merged-validated",
     "StegVerse-Labs/.github@9f0ac1265321fcf53eba96d05416e7685d555179:resident-runtime-input-materializer-merged-validated",
     "StegVerse-Labs/StegSocials@85f594a564045be6b0328dba4860415300cd7bbb:canonical-handoff-reconciled",
+    "StegVerse-Labs/StegSocials@ac53b3a949651bfb14816c88c362463816b7ffb3:runtime-input-materializer-parent-handoff-reconciled-validated",
     "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_ECOSYSTEM_EPHEMERAL_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegBrowser#4",
     "StegVerse-Labs/TVC@024a06397e6fc1b3a461c5d71f7bbc513843493c:validation-reconciliation-merged",
     "master-records/orchestration/tasks/MR-STEGSOCIALS-RECEIPT-CUSTODY-001.yaml"
   ],
-  "observed_at": "2026-09-12T00:52:00-05:00",
+  "observed_at": "2026-09-12T01:16:26-05:00",
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
     "lifecycle": "ACTIVE",
@@ -38,14 +39,14 @@
     "propagated": false
   },
   "metric_evidence": {
-    "lifecycle": "ACTIVE. Source is complete through the validated resident bounded-InTr consumer, dispatcher registration, resident source-refresh propagation, and authentic-relay-bound runtime-input materializer. Authentic resident pointer materialization, shared-listener admission, TV/TVC-SKAP session evidence, provider execution/destruction, KV readback, second bounded use/refusal proof, and Master Records reconstruction remain evidence predicates rather than a canonical stopping state.",
+    "lifecycle": "ACTIVE. Source is complete through the validated resident bounded-InTr consumer, dispatcher registration, resident source-refresh propagation, authentic-relay-bound runtime-input materializer, and reconciled StegSocials parent handoff. Authentic route/grant evidence, resident pointer materialization, shared-listener admission, TV/TVC-SKAP session evidence, provider execution/destruction, KV readback, second bounded use/refusal proof, and Master Records reconstruction remain evidence predicates rather than a canonical stopping state.",
     "archive_ready": "Authentic event execution and downstream custody evidence remain incomplete.",
-    "unassigned_work": "Remaining work has explicit owners across the existing resident relay/materializer/dispatcher/Universal InTr listener, TV/TVC-SKAP, StegBrowser/provider execution, Site CAS/DEVICE_KV, and Master Records reconstruction paths.",
+    "unassigned_work": "Remaining work has explicit owners across the existing TVC execution-grant/relay lane, resident relay/materializer/dispatcher/Universal InTr listener, TV/TVC-SKAP, StegBrowser/provider execution, Site CAS/DEVICE_KV, and Master Records reconstruction paths.",
     "chat_owned_counts": "No implementation, validation, integration, observation, or credential work is exclusively owned by this chat thread.",
-    "canonical_owner_installed": "The StegSocials native StegBrowser handoff, organization bounded-InTr route handoff, validated runtime-input materializer, task record, and COSV projection provide durable ownership.",
+    "canonical_owner_installed": "The reconciled StegSocials native StegBrowser handoff, organization bounded-InTr route handoff, validated runtime-input materializer, task record, and COSV projection provide durable ownership.",
     "thread_required": "Durable task, handoff, source, and registry records are sufficient for continuation without this thread.",
     "blocker_count": "Four unresolved evidence conditions remain in the canonical task record: authentic bounded Socials InTr execution, authentic TV/TVC-SKAP social session receipt, authentic platform publication plus terminal session destruction, and authentic two-post bounded-group/KV custody evidence.",
-    "evidence_complete": "No authentic INGRESS_ADMITTED plus TV/TVC-SKAP plus native StegBrowser publication/session-destruction-to-KV-to-Master-Records chain has been observed. The authorized remote-device connector returned no devices during this continuation, so no runtime evidence was synthesized or claimed.",
+    "evidence_complete": "No authentic route/grant-to-INGRESS_ADMITTED plus TV/TVC-SKAP plus native StegBrowser publication/session-destruction-to-KV-to-Master-Records chain has been observed. The authorized remote-device connector returned no devices during this continuation, so no runtime evidence was synthesized or claimed.",
     "activated": "Merged and validated source through the runtime-input materializer does not establish native governed runtime activation until authentic resident receipts exist.",
     "propagated": "No downstream activation propagation is claimed until authentic native governed release and custody evidence exist."
   },
