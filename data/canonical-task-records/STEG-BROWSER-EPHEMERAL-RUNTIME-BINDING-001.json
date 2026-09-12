@@ -18,6 +18,8 @@
     "StegVerse-Labs/Site/docs/APP_STORE_CONNECT_SKAP_IPHONE_INGRESS_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_STEGBROWSER_PUBLICATION_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_STEGBROWSER_LINKEDIN_PUBLICATION_MIRROR_HANDOFF.md",
+    "docs/TASK_REGISTRY_ANTI_COLLISION_AGGREGATION_MIRROR_HANDOFF.md",
+    "docs/milestones/STEGBROWSER_FIRST_EPHEMERAL_STEGOS_NODE_2026-09-09.md",
     "StegVerse-Labs/.github@9776ceba4877f8c213af534176f277c28ec58d39",
     "StegVerse-Labs/.github@5eba3974ff9c141aab74e616742e959ecdbd2ded",
     "StegVerse-Labs/.github@4179a3e630c25a1430decd6f072866e6c6fc3798",
@@ -187,9 +189,75 @@
     "deployment_required": true,
     "current_observation_required": true
   },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "SELECTED",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": [
+          "docs/milestones/STEGBROWSER_FIRST_EPHEMERAL_STEGOS_NODE_2026-09-09.md",
+          "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_IOS_RESIDENT_RENDEZVOUS_MIRROR_HANDOFF.md",
+          "StegVerse-Labs/StegOS/docs/STEGBROWSER_IOS_RESIDENT_APP_TARGET_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "SUITABLE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": [
+          "StegVerse-Labs/StegOS/docs/STEGBROWSER_IOS_RESIDENT_APP_TARGET_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "SUITABLE",
+        "limitation_class": "NONE",
+        "evidence_refs": [
+          "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_ECOSYSTEM_EPHEMERAL_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "SUITABLE",
+        "limitation_class": "NONE",
+        "evidence_refs": [
+          "StegVerse-Labs/Site/docs/APP_STORE_CONNECT_SKAP_IPHONE_INGRESS_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "SUITABLE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": [
+          "docs/TASK_REGISTRY_ANTI_COLLISION_AGGREGATION_MIRROR_HANDOFF.md",
+          "docs/milestones/STEGBROWSER_FIRST_EPHEMERAL_STEGOS_NODE_2026-09-09.md"
+        ]
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": []
+      }
+    ],
+    "selected_substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  },
   "runtime_resolution": {
-    "current_executor": "The portable resident refresh+dispatch path is source-complete for stegbrowser_tvc_source_promotion after merged #1461, #1465, #1487, #1533, #1556, and #1579. An authentic sovereign resident or admitted Remote Computer ephemeral StegOS Node may execute it only from an already-local current .github source tree. A complete StegBrowser portable-dispatch receipt requires the dedicated consumption receipt for the pinned TVC SHA, a staged outcome of STAGED, ALREADY_STAGED, or RESTAGED_EXACT_SOURCE, and exact equality between that dedicated receipt and the current exact-selector resident-request-dispatch consumer result with attempted=true and returncode=0. HANDOFF_READY remains authentic but incomplete. Authentic source-promotion consumption, TVC materialization/restart, live Apple owner ingress, current-iPhone signing, TestFlight upload/install, and same-device discovery remain unobserved.",
-    "authority_basis": "GitHub Actions validates and transports evidence only. TV/TVC remains credential authority and Interlock/InTr remains transition authority. Authentic portable dispatch evidence must retain source_revision_head_kind=GIT_HEAD, an exact lowercase 40-hex source_git_head, exact selector stegbrowser_tvc_source_promotion, exact one-consumer dispatch evidence, the current dispatcher outcome with attempted=true and returncode=0, the identity-valid dedicated StegBrowser consumption receipt, proof that target_consumption_matches_current_dispatch_result=true, and the dedicated receipt canonical SHA-256 commitment together. The dedicated receipt must bind task STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001, pinned TVC SHA aef6b6f5dc99d2a531718ca475d20858ae8e68a6, zero credential material, zero network source fetch, and a staged outcome of STAGED, ALREADY_STAGED, or RESTAGED_EXACT_SOURCE. HANDOFF_READY cannot establish complete dispatch evidence. Source/CI state does not prove runtime execution. Signing private key material must originate, remain, and be destroyed inside the current-iPhone ephemeral signing executor.",
+    "current_executor": "The portable resident refresh+dispatch path is source-complete for stegbrowser_tvc_source_promotion after merged #1461, #1465, #1487, #1533, #1556, and #1579. The selected execution substrate is the retained StegBrowser/StegOS resident node. Additional temporary capacity may participate only when it materializes as the same canonical StegBrowser/StegOS node class and is admitted as ADMITTED-EPHEMERAL-STEGOS-NODE through the existing Interlock/InTr protocol. Remote Computer is transport/discovery only and is not a separate execution substrate, authority, durable machine dependency, or completion predicate. A complete StegBrowser portable-dispatch receipt requires the dedicated consumption receipt for the pinned TVC SHA, a staged outcome of STAGED, ALREADY_STAGED, or RESTAGED_EXACT_SOURCE, and exact equality between that dedicated receipt and the current exact-selector resident-request-dispatch consumer result with attempted=true and returncode=0. HANDOFF_READY remains authentic but incomplete. Authentic source-promotion consumption, TVC materialization/restart, live Apple owner ingress, current-iPhone signing, TestFlight upload/install, and same-device discovery remain unobserved.",
+    "authority_basis": "GitHub Actions validates and transports evidence only. Task Registry substrate selection grants no execution authority. Interlock/InTr remains transition/admission authority, WorkerCoordinator remains claim/fence authority, TV/TVC remains credential authority, and Master Records remains observed-reality/reconstruction authority. Remote Computer transport presence or absence has authority_effect=NONE; an empty inventory is EVIDENCE_REACHABILITY only and cannot establish substrate unsuitability or an external-device requirement. Authentic portable dispatch evidence must retain source_revision_head_kind=GIT_HEAD, an exact lowercase 40-hex source_git_head, exact selector stegbrowser_tvc_source_promotion, exact one-consumer dispatch evidence, the current dispatcher outcome with attempted=true and returncode=0, the identity-valid dedicated StegBrowser consumption receipt, proof that target_consumption_matches_current_dispatch_result=true, and the dedicated receipt canonical SHA-256 commitment together. The dedicated receipt must bind task STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001, pinned TVC SHA aef6b6f5dc99d2a531718ca475d20858ae8e68a6, zero credential material, zero network source fetch, and a staged outcome of STAGED, ALREADY_STAGED, or RESTAGED_EXACT_SOURCE. HANDOFF_READY cannot establish complete dispatch evidence. Source/CI state does not prove runtime execution. Signing private key material must originate, remain, and be destroyed inside the current-iPhone ephemeral signing executor.",
     "unattended_runtime": false
   },
   "worker_claim": {
@@ -198,7 +266,7 @@
     "fence_ref": null,
     "projection_only": true
   },
-  "human_action_ref": "Apple Developer membership is already observed active through 2027-09-09. No GitHub Apple secrets should be added. Owner action becomes necessary only when authentic current-iPhone TVC/SKAP ingress is ready for the real App Store Connect key and when Apple account configuration requires App Group/app-record actions not covered by the API. A second user-operated Mac is not an acceptable completion path; a Remote Computer may be used only as admitted ephemeral StegOS capacity and not as a durable user-operated prerequisite.",
+  "human_action_ref": "Apple Developer membership is already observed active through 2027-09-09. No GitHub Apple secrets should be added. Owner action becomes necessary only when authentic current-iPhone TVC/SKAP ingress is ready for the real App Store Connect key and when Apple account configuration requires App Group/app-record actions not covered by the API. A second user-operated Mac or other durable second user-operated machine is not an acceptable completion path. Capacity discovered through Remote Computer transport may be used only after it materializes as an admitted ephemeral StegBrowser/StegOS Node under the existing Interlock/InTr protocol; transport availability alone is not a task-state predicate.",
   "completion": {
     "claimed": false,
     "validated": true,
