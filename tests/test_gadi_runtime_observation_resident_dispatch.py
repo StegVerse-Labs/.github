@@ -16,8 +16,9 @@ DISPATCHER = importlib.util.module_from_spec(DISPATCHER_SPEC)
 assert DISPATCHER_SPEC and DISPATCHER_SPEC.loader
 DISPATCHER_SPEC.loader.exec_module(DISPATCHER)
 
+CONSUMER_PATH = ROOT / "workers" / "gadi_runtime_observation_request_consumer.py"
 CONSUMER_SPEC = importlib.util.spec_from_file_location(
-    "gadi_runtime_observation_consumer", ROOT / "scripts" / "consume_gadi_runtime_observation_request.py"
+    "gadi_runtime_observation_consumer", CONSUMER_PATH
 )
 CONSUMER = importlib.util.module_from_spec(CONSUMER_SPEC)
 assert CONSUMER_SPEC and CONSUMER_SPEC.loader
@@ -27,7 +28,7 @@ CONSUMER_SPEC.loader.exec_module(CONSUMER)
 class GADIRuntimeObservationResidentDispatchTests(unittest.TestCase):
     def test_consumer_registered_exactly_once(self) -> None:
         matches = [row for row in DISPATCHER.CONSUMERS if row[0] == "gadi_runtime_observation"]
-        self.assertEqual(matches, [("gadi_runtime_observation", "scripts/consume_gadi_runtime_observation_request.py")])
+        self.assertEqual(matches, [("gadi_runtime_observation", "workers/gadi_runtime_observation_request_consumer.py")])
 
     def test_static_request_is_non_authorizing(self) -> None:
         request = json.loads((ROOT / CONSUMER.REQUEST_REL).read_text(encoding="utf-8"))
@@ -66,7 +67,7 @@ class GADIRuntimeObservationResidentDispatchTests(unittest.TestCase):
         self.assertFalse(receipt["listener_created_by_consumer"])
 
     def test_observation_consumer_does_not_call_raw_post_claim_consumer(self) -> None:
-        text = (ROOT / "scripts" / "consume_gadi_runtime_observation_request.py").read_text(encoding="utf-8")
+        text = CONSUMER_PATH.read_text(encoding="utf-8")
         self.assertNotIn("consume-gadi-resident-execution.py", text)
         self.assertIn("dispatch_gadi_resident_execution.py", text)
 
