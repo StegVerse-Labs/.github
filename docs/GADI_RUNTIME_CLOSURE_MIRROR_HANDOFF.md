@@ -6,36 +6,34 @@ Goal Task ID: `GADI-RUNTIME-CLOSURE-001`
 Parent Goal: `GADI-001`
 COSV ID: `10100000100000`
 Canonical issue: `StegVerse-Labs/.github#1603`
-Status: `ACTIVE / SOURCE-REACHABILITY-COMPLETE / PORTABLE-DISPATCH-SELECTOR-REPAIR-OPEN / AUTHENTIC-RUNTIME-EVIDENCE-PENDING`
+Status: `ACTIVE / SOURCE-REACHABILITY-COMPLETE / PORTABLE-DISPATCH-SELECTOR-MERGED / AUTHENTIC-RUNTIME-EVIDENCE-PENDING`
 
 ## Purpose
 
 This successor goal owns the remaining authentic runtime proof after `GADI-001` completed its source-level implementation trajectory and reached its 20-prompt coordination ceiling. It does not reopen source design that is already merged.
 
-## Canonical starting point
+## Canonical source state
 
-Merged source-level current-device reachability already exists through the retained StegBrowser/StegOS resident substrate and the existing resident local refresh/dispatcher. The source chain includes retained discovery observation, current-iPhone persisted receipt readback, runtime-subject propagation, GADI runtime binding materialization, pre-claim observation dispatch, the existing Governance/InTr path, native StegOS command materialization/bridge, WorkerCoordinator claim/fence path, resident defensive consumer, and Continuity reconstruction verifier.
+Current-device source reachability is merged through the retained StegBrowser/StegOS resident substrate and existing resident local refresh/dispatcher. The source chain includes retained discovery observation, current-iPhone persisted receipt readback, runtime-subject propagation, GADI runtime binding materialization, pre-claim observation dispatch, the existing Governance/InTr path, native StegOS command materialization/bridge, WorkerCoordinator claim/fence path, resident defensive consumer, and Continuity reconstruction verifier.
 
-No authentic `receipts/sovereign-host/gadi-runtime-observation-request-consumption.latest.json` artifact was present in the canonical repository at successor creation. Source or CI success must not be promoted into runtime evidence.
+PR `StegVerse-Labs/.github#1630` merged at `ac5c59f6226ecfe7696496b7e64f23ee9d4dee0c`. Exact-head runs for organization-control, Cross-Framework Current-Basis resident request validation, Heartbeat validation, and the deterministic repository suite all passed before merge. The merge closes the portable exact-selector defect: `gadi_runtime_observation` is now admitted by `scripts/refresh_and_dispatch_resident_requests.py` on `main`.
 
-## Portable exact-dispatch repair
+This is source reachability only. It does not prove that the current iPhone resident refreshed or visited the GADI request.
 
-Continuation inspection found one concrete addressability seam. The generic resident dispatcher already registers `gadi_runtime_observation`, and the sovereign local source refresh already carries both `workers/` and `control/resident-execution-request.d/`. However, `scripts/refresh_and_dispatch_resident_requests.py` did not admit `gadi_runtime_observation` in `ALLOWED_TARGET_CONSUMERS`, so exact portable refresh+dispatch could reject GADI before visiting the existing consumer.
+## Current authentic evidence boundary
 
-PR `StegVerse-Labs/.github#1630` is the current canonical repair, reapplied on top of current main after earlier attempts #1608 and #1614 were superseded by unrelated main advancement. It adds only the existing selector admission and regression coverage. It creates no new resident, scheduler, listener, heartbeat, WorkerCoordinator, claim/fence plane, InTr authority, credential route, hosted fallback, or execution authority.
-
-Required source assertions are:
+Canonical `receipts/sovereign-host/` still contains only the existing HIL receipts. The following expected resident-cycle evidence is not observed there:
 
 ```text
-gadi_runtime_observation is registered in the generic dispatcher
-gadi_runtime_observation is admitted by the exact portable selector
-workers/ is carried by local source refresh
-control/resident-execution-request.d/ is carried by local source refresh
-dispatch_resident_execution_requests.py is carried by local source refresh
-refresh_and_dispatch_resident_requests.py is carried by local source refresh
+receipts/sovereign-host/worker-source-refresh.latest.json
+receipts/sovereign-host/resident-request-dispatch.latest.json
+receipts/sovereign-host/hb-machine-continuation.latest.json
+receipts/sovereign-host/gadi-runtime-observation-request-consumption.latest.json
 ```
 
-This source repair does not prove that the current iPhone refreshed or visited the request. Authentic runtime evidence remains mandatory.
+`run_worker_runtime.py` already contains the required native behavior: when `STEGVERSE_HEARTBEAT_SOURCE_ROOT` identifies an already-local canonical checkout, static worker source is refreshed every 100 logical ticks, and the generic resident request dispatcher is visited every 100 logical ticks. Those actions remain non-authorizing; WorkerCoordinator, Interlock/InTr, and TV/TVC retain their existing authority partitions.
+
+Therefore the current unresolved boundary is authentic resident-cycle observation/source refresh on the retained same-device node, not another GADI routing implementation gap.
 
 ## Required authentic closure sequence
 
@@ -43,6 +41,9 @@ This source repair does not prove that the current iPhone refreshed or visited t
 CURRENT RETAINED STEGBROWSER/STEGOS NATIVE DISCOVERY
 -> CURRENT READ-ONLY PERSISTED CURRENT-IPHONE DISCOVERY RECEIPT FOR SAME NODE
 -> CURRENT RESIDENT-PRESENCE + SUPERVISION SUBJECT OBSERVATION FOR SAME NODE
+-> CURRENT LOCAL SOURCE REFRESH OBSERVATION
+-> CURRENT RESIDENT REQUEST DISPATCH OBSERVATION
+-> GADI RUNTIME OBSERVATION CONSUMPTION RECEIPT
 -> CURRENT GADI RUNTIME BINDING
 -> CURRENT THREAT / BOUNDARY OBSERVATIONS
 -> CURRENT VERIFIED EXTERNAL-EVIDENCE BINDING
@@ -68,16 +69,17 @@ No second heartbeat, resident service, scheduler, listener, activation page, hos
 
 ## Immediate continuation
 
-1. Validate and merge PR #1630 only if its exact-head repository checks pass against current main.
-2. Observe authentic resident local-source refresh and exact dispatch for `gadi_runtime_observation`.
-3. Require exact same-node retained discovery, persisted current-iPhone receipt readback, and current resident presence/liveness/supervision/freshness before accepting runtime binding.
-4. Continue only through the already-merged Governance/InTr -> native command -> controlled output -> WorkerCoordinator -> resident-consumption chain.
-5. Preserve fail-closed evidence when any runtime predicate is absent; do not synthesize or infer it from source/CI.
-6. After authentic execution, require effect observation, adaptive reassessment, termination, full receipt-chain custody, and exact Continuity/Master Records reconstruction before claiming completion.
+1. Observe an authentic retained-node local source refresh from the current canonical checkout.
+2. Observe the native generic resident-request dispatch on that same runtime.
+3. Require `gadi-runtime-observation-request-consumption.latest.json` from that authentic visit before accepting any GADI runtime progression.
+4. Require exact same-node retained discovery, current-iPhone persisted receipt readback, and current resident presence/liveness/supervision/freshness before accepting runtime binding.
+5. Continue only through the already-merged Governance/InTr -> native command -> controlled output -> WorkerCoordinator -> resident-consumption chain.
+6. Preserve fail-closed evidence when any runtime predicate is absent; do not synthesize or infer it from source/CI.
+7. After authentic execution, require effect observation, adaptive reassessment, termination, full receipt-chain custody, and exact Continuity/Master Records reconstruction before claiming completion.
 
 ## README impact
 
-README semantics were reviewed during this repair. Existing sections already state that portable resident dispatch does not grant execution authority, runtime-presence is observation only, canonical work ingress does not grant execution authority, and authentic downstream evidence is required. No semantic README change is required.
+README semantics were reviewed. Existing sections already state that portable resident dispatch does not grant execution authority, runtime-presence is observation only, canonical work ingress does not grant execution authority, and authentic downstream evidence is required. No semantic README change is required.
 
 ## Manual work
 
