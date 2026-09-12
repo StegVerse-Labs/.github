@@ -60,16 +60,27 @@ def write_json(path: Path, value: dict) -> None:
     path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
-def authentic_env(runtime: Path, *, endpoint: str = "http://127.0.0.1:43119/intr/materialization", corrupt_hash: bool = False) -> dict[str, str]:
+def authentic_env(runtime: Path, *, endpoint: str = "http://127.0.0.1:43119/intr/materialization", corrupt_hash: bool = False, transition_authority: bool = False) -> dict[str, str]:
     payload = runtime / "runtime-state/stegsocials/received.json"
     write_json(payload, received_record())
     raw = payload.read_bytes()
-    binding = {
-        "schema": MOD.BINDING_SCHEMA,
+    common = {
         "binding_id": "BINDING-1",
+        "route_receipt_hash": "a" * 64,
+        "route_candidate_hash": "b" * 64,
         "route_id": "ROUTE-1",
         "transport_id": "INTR-1",
         "next_hop_transport_endpoint": endpoint,
+        "next_hop_identity_binding": "NODE-LOCAL-INTR",
+    }
+    binding = {
+        "schema": MOD.BINDING_SCHEMA,
+        **common,
+        "route_admitted": True,
+        "egress_authorized": False,
+        "runtime_executed": False,
+        "credential_authority": "TV/TVC",
+        "credential_material_present": False,
     }
     authorization = {
         "schema": MOD.AUTH_SCHEMA,
@@ -77,16 +88,20 @@ def authentic_env(runtime: Path, *, endpoint: str = "http://127.0.0.1:43119/intr
         "authorization_id": "RELAY-EGRESS-AUTH-1",
         "issuer_authority": "TV/TVC",
         "credential_authority": "TV/TVC",
+        "credential_requirement": "NONE",
         "credential_material_present": False,
+        "route_admitted": True,
         "egress_authorized": True,
         "runtime_executed": False,
-        "binding_id": "BINDING-1",
-        "route_id": "ROUTE-1",
-        "transport_id": "INTR-1",
-        "next_hop_transport_endpoint": endpoint,
+        "payload_inspection_authority": False,
+        "canonical_transition_authority": transition_authority,
+        "settlement_authority": False,
+        "authority_effect": "BOUNDED_RELAY_EGRESS_AUTHORIZATION",
+        **common,
         "payload_sha256": "0" * 64 if corrupt_hash else hashlib.sha256(raw).hexdigest(),
         "payload_size": len(raw),
     }
+    authorization["authorization_sha256"] = MOD.sha_hex(authorization)
     binding_path = runtime / "relay/binding.json"
     auth_path = runtime / "relay/authorization.json"
     write_json(binding_path, binding)
@@ -131,6 +146,12 @@ class StegSocialsBoundedIntrInputMaterializerTests(unittest.TestCase):
             runtime = Path(td)
             with self.assertRaisesRegex(RuntimeError, "ingress_url_must_be_loopback"):
                 MOD.materialize(runtime, env=authentic_env(runtime, endpoint="https://example.com/intr/materialization"))
+
+    def test_transition_authority_expansion_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            runtime = Path(td)
+            with self.assertRaisesRegex(RuntimeError, "authorization_transition_authority_forbidden"):
+                MOD.materialize(runtime, env=authentic_env(runtime, transition_authority=True))
 
 
 if __name__ == "__main__":
