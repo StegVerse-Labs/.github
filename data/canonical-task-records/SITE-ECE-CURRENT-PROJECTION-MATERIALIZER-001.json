@@ -1,0 +1,18 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SITE-ECE-CURRENT-PROJECTION-MATERIALIZER-001",
+  "correlation_id": "SITE-ECE-CURRENT-PROJECTION-MATERIALIZER-001",
+  "root_correlation_id": "ECOSYSTEM-CONTINUITY-EVALUATOR-001",
+  "parent_task_id": "ECOSYSTEM-CONTINUITY-EVALUATOR-001",
+  "goal": "Materialize only an exact retained Site-safe ECE projection into the served Site data namespace after validating its resident cycle receipt and SHA-256, without calculating continuity or granting publication authority.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "cosv_task_vector": "71000000102000",
+  "repository": "StegVerse-Labs/Site",
+  "canonical_issue": 1577,
+  "handoff_projection_refs": ["StegVerse-Labs/.github:docs/SITE_ECE_CURRENT_PROJECTION_MATERIALIZER_MIRROR_HANDOFF.md"],
+  "targets": {"repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/Site", "StegVerse-Labs/StegVerse-Healer"], "components": ["site-current-projection-materializer", "resident-cycle-projection-binding", "site-served-data-namespace"]},
+  "authority_model": {"materializer_authority": "NONE_COPY_ONLY", "continuity_interpretation_owner": "ECOSYSTEM-CONTINUITY-EVALUATOR-001", "publication_authority": "EXISTING_SITE_RUNTIME_ONLY", "github_runtime_authority": "NONE", "source_repository_writeback_allowed": false},
+  "remaining_predicates": ["SITE_MATERIALIZER_SOURCE_VALIDATED", "HEALER_CYCLE_MATERIALIZER_BINDING_SOURCE_VALIDATED", "AUTHENTIC_SITE_SAFE_PROJECTION_MATERIALIZED", "SITE_LIVE_CONTINUITY_PROJECTION_OBSERVED"],
+  "completion": {"claimed": false, "validated": false, "activation_proof_complete": false}
+}
