@@ -17,16 +17,25 @@
     "SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005"
   ],
   "classification": {
-    "chatgpt_task_registry_exclusivity": "NOT_PROVEN",
-    "non_chatgpt_ai_task_registry_denial": "NOT_PROVEN",
+    "task_registry_ai_entry_surface_inventory": "PARTIAL_SOURCE_INVENTORY_RUNTIME_REACHABILITY_NOT_PROVEN",
+    "chatgpt_task_registry_exclusivity": "PARTIAL_SOURCE_DECLARATION_GATE_WRAPPER_ONLY_RUNTIME_IDENTITY_NOT_PROVEN",
+    "non_chatgpt_ai_task_registry_denial": "PARTIAL_SOURCE_DECLARATION_GATE_WRAPPER_ONLY",
     "common_ai_decision_sandbox_region": "NOT_PROVEN",
     "external_framework_llm_adapter_sdk_only": "PARTIAL",
     "external_evaluator_sdk_manifest_only": "PASS_SOURCE_LEVEL_RUNTIME_NOT_PROVEN"
   },
+  "source_evidence": [
+    "data/task-registry-ai-ingress-policy.json",
+    "data/task-registry-ai-entry-surface-inventory.json",
+    "scripts/evaluate_task_registry_ai_session_checkin.py",
+    "tests/test_task_registry_ai_session_ingress.py"
+  ],
   "remaining_predicates": [
-    "TASK_REGISTRY_AI_ENTRY_SURFACES_INVENTORIED",
-    "CHATGPT_ONLY_TASK_REGISTRY_ENTRY_ENFORCED",
-    "NON_CHATGPT_AI_TASK_REGISTRY_DENIAL_ENFORCED",
+    "TASK_REGISTRY_AI_ENTRY_SURFACES_FULLY_INVENTORIED",
+    "CHATGPT_ONLY_TASK_REGISTRY_ENTRY_ENFORCED_WITH_AUTHENTIC_ORIGIN",
+    "GENERAL_TASK_REGISTRY_CHECKIN_NOT_EXTERNALLY_AI_REACHABLE",
+    "SESSION_RETURN_AND_CLOSE_AI_POLICY_ENFORCED",
+    "NON_CHATGPT_AI_TASK_REGISTRY_DENIAL_RUNTIME_ENFORCED",
     "COMMON_AI_DECISION_SANDBOX_REGION_DEFINED",
     "COMMON_AI_DECISION_SANDBOX_RUNTIME_ENFORCED",
     "LLM_ADAPTER_FRAMEWORK_MODEL_INGRESS_EXCLUSIVE",
