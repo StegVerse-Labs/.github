@@ -13,6 +13,7 @@
   "handoff_projection_refs": [
     "StegVerse-Labs/.github:docs/ECOSYSTEM_CONTINUITY_EVALUATOR_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github:docs/ECOSYSTEM_CONTINUITY_REUSABLE_SCHEDULE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github:docs/SDK_ECOSYSTEM_DIAGNOSTIC_PROCESSOR_MIRROR_HANDOFF.md",
     "StegVerse-Labs/Site:docs/ECOSYSTEM_CONTINUITY_SITE_PROJECTION_MIRROR_HANDOFF.md",
     "StegVerse-Labs/Site:docs/ECOSYSTEM_CONTINUITY_PANEL_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegVerse-Healer:docs/ECOSYSTEM_CONTINUITY_HEALER_INTAKE_MIRROR_HANDOFF.md",
@@ -21,7 +22,7 @@
   ],
   "targets": {
     "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/Site", "StegVerse-Labs/StegVerse-Healer", "master-records/orchestration", "StegVerse-org/StegVerse-SDK"],
-    "components": ["ece-registry", "ece-evaluator", "ece-findings", "site-continuity-projection", "site-continuity-panel", "healer-finding-intake", "master-records-evaluation-custody", "periodic-healer-reusable-schedule"]
+    "components": ["ece-registry", "ece-evaluator", "ece-findings", "site-continuity-projection", "site-continuity-panel", "healer-finding-intake", "master-records-evaluation-custody", "periodic-healer-reusable-schedule", "sdk-ecosystem-diagnostic-processor"]
   },
   "core_source_state": {
     "pull_request": 1525,
@@ -85,6 +86,19 @@
       "cadence": "HOURLY_UTC",
       "implemented_validated": true,
       "authentic_execution_claimed": false
+    },
+    "sdk_diagnostic_processor": {
+      "child_task_id": "SDK-ECOSYSTEM-DIAGNOSTIC-PROCESSOR-001",
+      "child_cosv": "71000000101000",
+      "coordination_pull_request": 1551,
+      "coordination_exact_head": "d2dcd0804984f93ee03cc88afabba356f296705e",
+      "coordination_merge": "e63a532f7125f7898dbd03127938e2f9f746e9e7",
+      "sdk_pull_request": 219,
+      "sdk_exact_head": "19f573c54c39298e266caa4fe63d7706c9d09d34",
+      "sdk_merge": "50fa9ca306ada6f75fb928281e2bf495ebb08ce8",
+      "source_merged_validated": true,
+      "periodic_bridge_installed": false,
+      "authentic_execution_claimed": false
     }
   },
   "latest_runtime_observation": {
@@ -95,6 +109,7 @@
   },
   "authority_model": {
     "diagnostic_authority": "OBSERVATION_CLASSIFICATION_ONLY",
+    "sdk_diagnostic_transport_authority": "NONE_DIAGNOSTIC_ONLY",
     "repair_dispatch_owner": "StegVerse-Labs/StegVerse-Healer",
     "governed_transition_authority": "Interlock/InTr",
     "credential_authority": "TV/TVC",
@@ -104,6 +119,9 @@
     "second_scheduler_allowed": false
   },
   "remaining_predicates": [
+    "HEALER_PERIODIC_ECE_USES_SDK_ECOSYSTEM_DIAGNOSTIC",
+    "SDK_DIAGNOSTIC_RESULT_EXACT_BYTES_BOUND_IN_ECE_CUSTODY_CHAIN",
+    "AUTHENTIC_SDK_DIAGNOSTIC_REQUEST_RESULT_OBSERVED",
     "AUTHENTIC_HEALER_REUSABLE_ECE_SLOT_CONSUMED",
     "AUTHENTIC_RETAINED_ECE_EVALUATION_OBSERVED",
     "MASTER_RECORDS_AUTHENTIC_ECE_CUSTODY_RECONSTRUCTION_OBSERVED",
