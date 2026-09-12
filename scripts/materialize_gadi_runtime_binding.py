@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
 """Materialize a non-authorizing GADI runtime-binding observation.
 
-This projector reuses the canonical HB runtime-presence receipt. It does not create a
-runtime, lease, claim/fence, InTr admission, credential, or execution authority. A
-binding is emitted only when the current runtime-presence receipt names a concrete
-runtime_root and resident.node_id and its referenced supervision receipt explicitly
-identifies the canonical carrier + WorkerCoordinator runtime.
+This projector reuses the canonical HB runtime-presence receipt and the validated
+retained StegBrowser/StegOS discovery observation. It does not create a runtime,
+lease, claim/fence, InTr admission, credential, or execution authority. A binding
+is emitted only when the current runtime-presence receipt names the same canonical
+SV-NODE subject already observed by the retained-node discovery projector and its
+referenced supervision receipt identifies the canonical carrier + WorkerCoordinator.
 """
 from __future__ import annotations
 
 import argparse
 import hashlib
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -19,9 +21,12 @@ TASK_ID = "GADI-RESIDENT-EXECUTION-001"
 PARENT_TASK_ID = "GADI-001"
 PROFILE_ID = "runtime-node:gadi-resident-execution-001"
 PRESENCE_REL = Path("receipts/sovereign-host/runtime-presence.latest.json")
+DISCOVERY_REL = Path("state/gadi-resident-execution/retained-node-discovery.json")
 OUTPUT_REL = Path("state/gadi-resident-execution/runtime-binding.json")
+DISCOVERY_SCHEMA = "stegverse.gadi-retained-node-discovery-observation/v1"
 CANONICAL_CARRIER_RUNTIME = "heartbeat_runtime.engine_v13.HeartbeatRuntime"
 CANONICAL_WORKER_RUNTIME = "heartbeat_runtime.worker_runtime.WorkerCoordinator"
+NODE_RE = re.compile(r"^SV-NODE-[0-9a-f]{24}$")
 
 
 def load(path: Path) -> dict[str, Any]:
@@ -54,7 +59,39 @@ def nonempty(value: Any) -> bool:
 def materialize(runtime_root: Path) -> dict[str, Any]:
     runtime = runtime_root.expanduser().resolve()
     presence_path = runtime / PRESENCE_REL
+    discovery_path = runtime / DISCOVERY_REL
     blockers: list[str] = []
+
+    if not discovery_path.is_file():
+        blockers.append("RETAINED_NODE_DISCOVERY_OBSERVATION_MISSING")
+        discovery: dict[str, Any] = {}
+    else:
+        try:
+            discovery = load(discovery_path)
+        except Exception:
+            discovery = {}
+            blockers.append("RETAINED_NODE_DISCOVERY_OBSERVATION_INVALID_JSON")
+
+    discovered_node = discovery.get("node_ref")
+    if discovery:
+        if discovery.get("schema") != DISCOVERY_SCHEMA:
+            blockers.append("RETAINED_NODE_DISCOVERY_SCHEMA_MISMATCH")
+        if discovery.get("task_id") != TASK_ID or discovery.get("parent_task_id") != PARENT_TASK_ID:
+            blockers.append("RETAINED_NODE_DISCOVERY_TASK_MISMATCH")
+        if discovery.get("state") != "CURRENT_RETAINED_NODE_DISCOVERY_OBSERVED":
+            blockers.append("RETAINED_NODE_DISCOVERY_NOT_CURRENT")
+        if not isinstance(discovered_node, str) or NODE_RE.fullmatch(discovered_node) is None:
+            blockers.append("RETAINED_NODE_DISCOVERY_NODE_INVALID")
+        if discovery.get("runtime_presence_observed") is not False:
+            blockers.append("DISCOVERY_RUNTIME_PRESENCE_AUTHORITY_DRIFT")
+        if discovery.get("runtime_supervision_observed") is not False:
+            blockers.append("DISCOVERY_RUNTIME_SUPERVISION_AUTHORITY_DRIFT")
+        if discovery.get("runtime_subject_bound") is not False:
+            blockers.append("DISCOVERY_RUNTIME_BINDING_AUTHORITY_DRIFT")
+        if discovery.get("execution_authority_granted") is not False:
+            blockers.append("DISCOVERY_EXECUTION_AUTHORITY_DRIFT")
+        if discovery.get("authority_effect") != "NONE_OBSERVATION_ONLY":
+            blockers.append("DISCOVERY_AUTHORITY_EFFECT_INVALID")
 
     if not presence_path.is_file():
         blockers.append("RUNTIME_PRESENCE_RECEIPT_MISSING")
@@ -70,6 +107,7 @@ def materialize(runtime_root: Path) -> dict[str, Any]:
     heartbeat = presence.get("heartbeat_reference") if isinstance(presence.get("heartbeat_reference"), dict) else {}
     progress = presence.get("governed_progress") if isinstance(presence.get("governed_progress"), dict) else {}
     authority = presence.get("authority") if isinstance(presence.get("authority"), dict) else {}
+    resident_node = resident.get("node_id")
 
     if presence and presence.get("schema") != "stegverse.hb-runtime-presence-resident-observability/v1":
         blockers.append("RUNTIME_PRESENCE_SCHEMA_MISMATCH")
@@ -81,8 +119,12 @@ def materialize(runtime_root: Path) -> dict[str, Any]:
         blockers.append("PRESENT_WORKER_RUNTIME_NOT_OBSERVED")
     if resident.get("worker_cycle_fresh") is not True:
         blockers.append("WORKER_CYCLE_NOT_FRESH")
-    if not nonempty(resident.get("node_id")):
+    if not nonempty(resident_node):
         blockers.append("RESIDENT_NODE_ID_MISSING")
+    elif NODE_RE.fullmatch(str(resident_node)) is None:
+        blockers.append("RESIDENT_NODE_ID_NOT_CANONICAL_STEGBROWSER_NODE")
+    if nonempty(resident_node) and isinstance(discovered_node, str) and resident_node != discovered_node:
+        blockers.append("DISCOVERED_NODE_RUNTIME_SUBJECT_MISMATCH")
     if heartbeat.get("heartbeat_grants_authority") is not False:
         blockers.append("HEARTBEAT_AUTHORITY_BOUNDARY_INVALID")
     if progress.get("runtime_signal_is_execution_receipt") is not False:
@@ -142,7 +184,10 @@ def materialize(runtime_root: Path) -> dict[str, Any]:
             "state": "RUNTIME_BINDING_UNOBSERVED_FAIL_CLOSED",
             "runtime_binding_ref": None,
             "runtime_root": str(runtime),
-            "node_id": resident.get("node_id"),
+            "node_id": resident_node,
+            "discovered_node_ref": discovered_node,
+            "source_discovery_ref": str(DISCOVERY_REL),
+            "source_discovery_sha256": digest(discovery_path) if discovery_path.is_file() else None,
             "source_presence_ref": str(PRESENCE_REL),
             "source_presence_sha256": digest(presence_path) if presence_path.is_file() else None,
             "blockers": sorted(set(blockers)),
@@ -162,9 +207,11 @@ def materialize(runtime_root: Path) -> dict[str, Any]:
         "parent_task_id": PARENT_TASK_ID,
         "profile_id": PROFILE_ID,
         "runtime_root": str(runtime),
-        "node_id": str(resident["node_id"]),
+        "node_id": str(resident_node),
+        "discovered_node_ref": str(discovered_node),
         "canonical_carrier_runtime": CANONICAL_CARRIER_RUNTIME,
         "canonical_worker_runtime": CANONICAL_WORKER_RUNTIME,
+        "source_discovery_sha256": digest(discovery_path),
         "source_presence_sha256": digest(presence_path),
         "source_supervision_sha256": digest(supervision_path) if supervision_path is not None else None,
     }
@@ -174,8 +221,11 @@ def materialize(runtime_root: Path) -> dict[str, Any]:
         **core,
         "state": "CURRENT_RUNTIME_SUBJECT_BOUND",
         "runtime_binding_ref": f"runtime://gadi/{binding_hash}",
+        "source_discovery_ref": str(DISCOVERY_REL),
         "source_presence_ref": str(PRESENCE_REL),
         "source_supervision_ref": str(supervision_path.relative_to(runtime)) if supervision_path is not None else None,
+        "retained_node_discovery_observed": True,
+        "discovered_node_matches_runtime_subject": True,
         "runtime_alive_observed": True,
         "present_worker_runtime_observed": True,
         "worker_cycle_fresh": True,
