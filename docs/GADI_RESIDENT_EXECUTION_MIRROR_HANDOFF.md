@@ -1,13 +1,13 @@
 # GADI Resident Execution Mirror Handoff
 
-Updated: 2026-09-11
+Updated: 2026-09-12
 Repository: `StegVerse-Labs/.github`
 Goal ID: `GADI-001`
 Task ID: `GADI-RESIDENT-EXECUTION-001`
 Parent task: `GADI-001`
 COSV ID: `10100000100000`
 Canonical issue: `StegVerse-Labs/.github#1239`
-Status: `ACTIVE / SOURCE-CHAIN-MERGED / RETAINED-STEGBROWSER-STEGOS-SUBSTRATE-SELECTED / PROVIDER-VERIFICATION-BINDING-MATERIALIZER-MERGED / GADI-RETAINED-DISCOVERY-OBSERVER-MERGED / RUNTIME-PRESENCE-RENDEZVOUS-SUBJECT-PROPAGATION-MERGED / CURRENT-RUNTIME-DISCOVERY-EVIDENCE-PENDING / AUTHENTIC-RESIDENT-EXECUTION-PENDING`
+Status: `ACTIVE / SOURCE-CHAIN-MERGED / RETAINED-STEGBROWSER-STEGOS-SUBSTRATE-SELECTED / PROVIDER-VERIFICATION-BINDING-MATERIALIZER-MERGED / GADI-RETAINED-DISCOVERY-OBSERVER-MERGED / RUNTIME-PRESENCE-RENDEZVOUS-SUBJECT-PROPAGATION-MERGED / CURRENT-IPHONE-RECEIPT-READ-SURFACE-MERGED / CURRENT-RUNTIME-DISCOVERY-EVIDENCE-PENDING / AUTHENTIC-RESIDENT-EXECUTION-PENDING`
 
 ## Current canonical state
 
@@ -50,6 +50,50 @@ authority_effect = NONE_DISCOVERY_ONLY
 There is no hosted fallback and no new listener/page/protocol. The Site KV wrapper is not used. GADI readiness requires current retained discovery and exact node equality with the stronger current runtime-binding subject before WorkerCoordinator may be visited.
 
 Source/CI validation is not current discovery evidence.
+
+## Current-iPhone discovery receipt read surface — merged
+
+StegOS PR #350 merged as:
+
+```text
+40ecd6417a953975d2382722880f3dbcc11fa96e
+```
+
+Its exact pre-merge head `fca07189a53dcf98d960921ade2260fefd86f41c` passed StegOS CI, GADI authorized-adversarial validation, GADI capability-discovery validation, GADI native defensive-control-plane validation, GADI native boundary-defense validation, GADI handoff-reconciliation validation, iOS Device Package Validation, and iOS Apple Toolchain Validation. The Apple run compiled StegOS Mobile and the embedded extensions successfully without signing.
+
+The existing StegOSMobile app already persists current-iPhone retained-discovery observations to:
+
+```text
+stegos-stegbrowser-current-iphone-rendezvous-receipts.jsonl
+```
+
+Before #350 that app-local receipt had no canonical read path through the selected bounded native listener. #350 closes only that source-level reachability gap by extending the existing `StegBrowserNativeResidentRendezvousListener` on `127.0.0.1:8000` with:
+
+```text
+GET /api/resident-rendezvous/v1/evidence/current-iphone-discovery?target_node_ref=SV-NODE-<24 lowercase hex>
+```
+
+The route is GET-only. It reads the latest already-persisted receipt and fails closed unless it matches the exact requested/retained node plus the established current-device/non-authority invariants:
+
+```text
+schema = stegos.stegbrowser.current-iphone-rendezvous-observation/v1
+state = LOCAL_DISCOVERY_OBSERVED
+execution_surface = CURRENT_USER_IPHONE
+node_origin = STEGBROWSER_RESIDENT
+heartbeat_grants_authority = false
+intr_admission_observed = false
+workercoordinator_claim_observed = false
+canonical_request_consumption_observed = false
+provider_session_observed = false
+publication_observed = false
+credential_authority = TV/TVC
+github_token_runtime_authority = NONE
+authority_effect = NONE_COMPONENT_EVIDENCE_ONLY
+```
+
+The fetch wrapper itself is explicitly `NONE_EVIDENCE_READ_ONLY`. No POST/mutation route, second listener, page, runtime, scheduler, WorkerCoordinator, claim/fence plane, InTr authority, credential route, remote device, or second user-operated machine was added.
+
+This merged source path does not prove that the current iPhone is presently running the listener or that an authentic receipt can presently be read. Runtime truth remains pending direct current-device observation.
 
 ## Runtime-presence retained-node subject propagation — merged
 
@@ -112,12 +156,13 @@ Correct sequence:
 
 ```text
 current retained-node discovery
+-> read-only current-iPhone persisted discovery receipt for same node
 -> exact same-node current runtime presence/supervision
 -> materialize_gadi_runtime_binding.py
 -> CURRENT_RUNTIME_SUBJECT_BOUND
 ```
 
-Discovery or node identity alone never satisfies runtime binding.
+Discovery, receipt presence, or node identity alone never satisfies runtime binding.
 
 ## Provider-verification source boundary — merged
 
@@ -155,12 +200,14 @@ StegOS #346 provider-evidence verification binding materializer
 .github #1541 retained StegBrowser/StegOS substrate reconciliation
 .github #1555 retained native discovery observer + readiness subject match
 .github #1562 retained rendezvous node -> shared runtime-presence subject propagation
+StegOS #350 current-iPhone persisted discovery receipt -> existing loopback read surface
 ```
 
 ## Canonical execution sequence
 
 ```text
 CURRENT RETAINED STEGBROWSER/STEGOS NATIVE DISCOVERY
+-> CURRENT READ-ONLY PERSISTED CURRENT-IPHONE DISCOVERY RECEIPT FOR SAME NODE
 -> CURRENT RESIDENT-PRESENCE + SUPERVISION SUBJECT OBSERVATION FOR SAME NODE
 -> CURRENT GADI RUNTIME BINDING
 -> CURRENT THREAT / BOUNDARY OBSERVATIONS
@@ -193,6 +240,7 @@ Still unobserved for GADI:
 
 ```text
 CURRENT_RETAINED_STEGBROWSER_STEGOS_NODE_DISCOVERY
+CURRENT_RETAINED_STEGBROWSER_STEGOS_CURRENT_IPHONE_RECEIPT_READBACK
 CURRENT_GADI_RUNTIME_PRESENCE_SUBJECT
 CURRENT_GADI_RUNTIME_BINDING
 CURRENT_GADI_BOUNDARY_INTERACTION
@@ -218,9 +266,10 @@ The authorized connected-device surface was empty during the latest inspection. 
 ## Immediate continuation
 
 1. On the actual current-device sovereign runtime, let #1555 observe the existing localhost retained-node discovery; do not create another listener/page/protocol or use the KV wrapper.
-2. Require canonical runtime-presence/self-heal evidence to project that same retained `SV-NODE-*` identity via merged #1562 while also satisfying current liveness/supervision/freshness predicates.
-3. Run the existing GADI runtime-binding projector only after both observations agree.
-4. Continue through the already-merged external-evidence, Governance/InTr, command, controlled-output, readiness, WorkerCoordinator, resident-consumption, reassessment/termination, Continuity, and Master Records chain.
+2. Through merged StegOS #350, read the already-persisted current-iPhone discovery receipt for that exact retained `SV-NODE-*`; treat `NO_EVIDENCE` or listener unreachability as an observation requiring continuation, not authority to synthesize evidence.
+3. Require canonical runtime-presence/self-heal evidence to project that same retained node via merged #1562 while also satisfying current liveness/supervision/freshness predicates.
+4. Run the existing GADI runtime-binding projector only after the current discovery, receipt readback, and runtime-presence observations agree on the exact node.
+5. Continue through the already-merged external-evidence, Governance/InTr, command, controlled-output, readiness, WorkerCoordinator, resident-consumption, reassessment/termination, Continuity, and Master Records chain.
 
 ## Collision boundary
 
