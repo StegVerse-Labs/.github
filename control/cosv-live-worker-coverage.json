@@ -3,13 +3,11 @@
   "repository": "StegVerse-Labs/.github",
   "projection_basis": "effective aggregate-plus-shard COSV index intersected with current global-plus-fragment worker registry",
   "unique_task_ids_global_plus_fragments": 93,
-  "canonically_indexed_task_ids": 85,
+  "canonically_indexed_task_ids": 86,
   "completed_only_historical_unvectorized_task_count": 6,
   "superseded_historical_unvectorized_task_count": 1,
-  "active_unvectorized_unique_task_ids": 1,
-  "active_worker_task_ids_missing_canonical_cosv": [
-    "PA-001-ECOSYSTEM-RUNTIME-ENFORCEMENT-001"
-  ],
+  "active_unvectorized_unique_task_ids": 0,
+  "active_worker_task_ids_missing_canonical_cosv": [],
   "terminal_historical_unvectorized_task_ids": [
     "HEARTBEAT-INDEPENDENT-OSCILLATOR-LIVE-009",
     "RECOVER-SHWP-ECOSYSTEM-CHAT-INFERENCE-001-ORPHAN-HB28",
@@ -21,7 +19,7 @@
   "superseded_historical_unvectorized_task_ids": ["STEGFIN-CONTINUITY-CARRIER-007"],
   "organization_active_task_ids": 14,
   "organization_active_unvectorized_task_ids": 0,
-  "total_active_unvectorized_unique_task_ids": 1,
+  "total_active_unvectorized_unique_task_ids": 0,
   "source_projection_complete": true,
   "runtime_activation_claimed": false,
   "credential_authority": "TV/TVC",
