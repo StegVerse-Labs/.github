@@ -11,12 +11,17 @@ import argparse
 import hashlib
 import json
 import os
+import sys
 from pathlib import Path
 from typing import Any, Mapping
 from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
-import submit_erl_active_research_intr_binding as legacy
+SCRIPTS = Path(__file__).resolve().parent
+if str(SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS))
+
+import submit_erl_active_research_intr_binding as legacy  # noqa: E402
 
 TASK_ID = legacy.TASK_ID
 INPUT_SCHEMA = "stegverse.erl-active-research-intr-resident-local-input/v1"
