@@ -18,15 +18,17 @@
     "control/task-vectors/GADI-RESIDENT-EXECUTION-001.json",
     "StegVerse-002/micro-node-runtime/micro_node/gadi_resident_consumer.py",
     "StegVerse-Labs/StegOS/docs/STEGBROWSER_RETAINED_NODE_BOOTSTRAP_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_IOS_RESIDENT_RENDEZVOUS_MIRROR_HANDOFF.md"
+    "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_IOS_RESIDENT_RENDEZVOUS_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegOS#346"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs", "StegVerse-002"],
     "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegOS", "StegVerse-Labs/StegBrowser", "StegVerse-002/micro-node-runtime"],
-    "components": ["gadi-resident-execution", "stegbrowser-retained-resident-node", "stegos-current-device-node", "workercoordinator-claim-fence", "intr-bound-command", "runtime-binding", "subject-bound-effect-evidence"]
+    "components": ["gadi-resident-execution", "stegbrowser-retained-resident-node", "stegos-current-device-node", "provider-evidence-verification-binding", "workercoordinator-claim-fence", "intr-bound-command", "runtime-binding", "subject-bound-effect-evidence"]
   },
   "dependencies": [
     {"dependency_id":"DEP-GADI-RESIDENT-CONSUMER-SOURCE","kind":"IMPLEMENTATION","state":"RESOLVED_SOURCE_COMPLETE_VALIDATED_MERGED","ref":"StegVerse-002/micro-node-runtime#90","disposition":"REUSE_MERGED_CONSUMER"},
+    {"dependency_id":"DEP-GADI-PROVIDER-VERIFICATION-BINDING-MATERIALIZER","kind":"IMPLEMENTATION","state":"RESOLVED_SOURCE_COMPLETE_VALIDATED_MERGED","ref":"StegVerse-Labs/StegOS#346","disposition":"REUSE_MERGED_EVIDENCE_ONLY_BINDING_MATERIALIZER"},
     {"dependency_id":"DEP-GADI-INTR-ADMISSION","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"GADI-001","disposition":"REQUIRE_CURRENT_INTR_DECISION_REF"},
     {"dependency_id":"DEP-GADI-WORKERCOORDINATOR-CLAIM","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"STEGVERSE-CANONICAL-WORK-COORDINATION-001","disposition":"REQUIRE_CURRENT_CLAIM_AND_FENCE"},
     {"dependency_id":"DEP-GADI-RUNTIME-BINDING","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"StegVerse-Labs/StegOS;StegVerse-Labs/StegBrowser","disposition":"REQUIRE_EXACT_CURRENT_RETAINED_STEGBROWSER_STEGOS_RUNTIME_BINDING"},
