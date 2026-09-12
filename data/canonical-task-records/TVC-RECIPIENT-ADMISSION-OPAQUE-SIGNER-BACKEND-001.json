@@ -20,6 +20,8 @@
     "StegVerse-Labs/stegfin-governance/stegwallet/platform_recipient_admission_signer.py",
     "StegVerse-Labs/stegfin-governance/stegwallet/authenticated_recipient_admission_intr_transport.py",
     "StegVerse-Labs/stegfin-governance/docs/TVC_PLATFORM_OPAQUE_SIGNER_BACKEND_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegOS/stegos/kv_skap_verified_local_operation.py",
+    "StegVerse-Labs/StegOS/docs/KV_SKAP_VERIFIED_LOCAL_OPERATION_BINDING_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegOS/mobile/ios/StegOSMobile/TVCRecipientKeyCandidate.swift",
     "StegVerse-Labs/StegOS/docs/TVC_RECIPIENT_ADMISSION_AUTHORITY_KEY_CANDIDATE_MIRROR_HANDOFF.md",
     "StegVerse-Labs/TVC/scripts/tvc_recipient_capability_admission.py",
@@ -27,7 +29,8 @@
     "StegVerse-Labs/TVC/docs/TVC_RECIPIENT_ADMISSION_VAULT_AGENT_CONSOLIDATION_MIRROR_HANDOFF.md"
   ],
   "blockers": [
-    "KV_SKAP_BACKED_VERIFICATION_AND_INTR_ADMISSION_NOT_YET_BOUND_TO_INTERCHANGEABLE_STEGOS_NODE_OPERATION",
+    "VAULT_AGENT_PLATFORM_SIGN_REQUEST_NOT_YET_BOUND_THROUGH_KV_SKAP_VERIFIED_LOCAL_OPERATION_CONTRACT",
+    "ELIGIBLE_NODE_LOCAL_P256_AUTHORITY_CAPABILITY_NOT_YET_CONNECTED_TO_VERIFIED_OPERATION_BINDING",
     "PLATFORM_SIGNER_BACKEND_NOT_YET_INJECTED_INTO_PRODUCTION_VAULT_AGENT_LIFECYCLE",
     "PRODUCTION_AUTHORITY_KEY_MATERIALIZATION_NOT_YET_OBSERVED",
     "MATCHING_PUBLIC_JWK_BINDING_NOT_YET_OBSERVED"
@@ -35,6 +38,7 @@
   "expected_evidence_predicates": [
     "KV_SKAP_USER_VERIFICATION_PRESERVED_AS_SOLE_USER_VERIFIER",
     "STEGOS_NODE_REMAINS_INTERCHANGEABLE_TRANSPORT_NODE",
+    "KV_SKAP_VERIFICATION_AND_INTR_ADMISSION_BOUND_TO_EXACT_LOCAL_OPERATION",
     "TVC_ADMISSION_AUTHORITY_BACKEND_BOUND_TO_EXISTING_VAULT_AGENT",
     "TVC_PRODUCTION_RECIPIENT_ADMISSION_SIGNING_CUSTODY_OBSERVED",
     "TVC_RECIPIENT_ADMISSION_PUBLIC_TRUST_ANCHOR_BOUND",
@@ -67,6 +71,13 @@
     "signed_intr_transport_required_as_user_verifier": false,
     "signed_intr_transport_grants_signing_authority": false,
     "signed_intr_transport_owns_network_route": false,
+    "kv_skap_verified_local_operation_binding_merged": true,
+    "kv_skap_verified_local_operation_binding_merge": "StegVerse-Labs/StegOS@d39477a0a175c175266fe31fe0a2862323895ec9",
+    "kv_skap_verified_local_operation_binding_ci": "34721268779",
+    "kv_skap_binding_consumes_opaque_verification_provenance_only": true,
+    "kv_skap_binding_requires_current_intr_admission": true,
+    "kv_skap_binding_rejects_node_or_device_pinning": true,
+    "kv_skap_binding_requires_one_time_replay_consumption": true,
     "node_local_operation_may_consume_kv_skap_verification": true,
     "node_local_operation_may_create_user_verification": false,
     "platform_backend_injected_in_production_launcher": false,
@@ -88,8 +99,8 @@
     "hosted_execution_fallback": false
   },
   "allowed_next_transitions": [
-    "BIND_KV_SKAP_VERIFICATION_AND_INTR_ADMISSION_TO_INTERCHANGEABLE_STEGOS_NODE_OPERATION",
-    "ENFORCE_EXACT_LOCAL_CAPABILITY_MESSAGE_NONCE_FRESHNESS_AND_REPLAY_BINDINGS",
+    "ADAPT_VAULT_AGENT_PLATFORM_SIGN_REQUEST_TO_KV_SKAP_VERIFIED_LOCAL_OPERATION_BINDING",
+    "CONNECT_VERIFIED_LOCAL_OPERATION_BINDING_TO_ELIGIBLE_NODE_OPAQUE_P256_AUTHORITY_CAPABILITY",
     "INJECT_PLATFORM_SIGNER_BACKEND_INTO_EXISTING_VAULT_AGENT_LIFECYCLE",
     "PROJECT_MATCHING_PUBLIC_JWK_ONLY",
     "OBSERVE_AUTHENTIC_PRODUCTION_MATERIALIZATION"
