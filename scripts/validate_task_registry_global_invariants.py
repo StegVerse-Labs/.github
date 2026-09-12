@@ -11,11 +11,16 @@ EXPECTED = {
     "user_verification_authority": "KV/SKAP Vault",
     "user_verification_authority_exclusive": True,
     "stegos_device_role": "INTERCHANGEABLE_TRANSPORT_NODE",
+    "device_verification_policy": "NONE_PROHIBITED",
+    "device_verification_process": "NONE_PROHIBITED",
+    "device_attestation_gate": "NONE_PROHIBITED",
+    "physical_device_identity_gate": "NONE_PROHIBITED",
     "device_user_verifier_authority": "NONE",
     "node_user_verifier_authority": "NONE",
     "transport_user_verifier_authority": "NONE",
     "local_key_user_verifier_authority": "NONE",
     "secure_enclave_user_verifier_authority": "NONE",
+    "execution_surface_connectivity_authority": "NONE_OBSERVATION_ONLY",
 }
 
 FORBIDDEN_TRUE_KEYS = {
@@ -25,6 +30,17 @@ FORBIDDEN_TRUE_KEYS = {
     "channel_identity_is_user_verifier",
     "secure_enclave_is_user_verifier",
     "local_key_possession_is_user_verification",
+    "device_verification_required",
+    "device_attestation_required",
+    "physical_device_identity_required",
+    "pinned_device_required",
+}
+
+FORBIDDEN_AUTHORIZED_DEVICE_KEYS = {
+    "authorized_remote_devices",
+    "authorized_devices",
+    "device_authorized",
+    "device_verified",
 }
 
 
@@ -49,12 +65,17 @@ def validate_record(path: Path) -> None:
     for location, key, value in walk(record):
         if key in FORBIDDEN_TRUE_KEYS and value is True:
             fail(f"{path.name}: {location}=true contradicts global verifier invariant")
+        if key in FORBIDDEN_AUTHORIZED_DEVICE_KEYS:
+            fail(f"{path.name}: {location} uses prohibited device authorization/verification semantics")
         if key in {"user_verification_authority", "user_verifier_authority", "user_verification_source"}:
             if value != "KV/SKAP Vault":
                 fail(f"{path.name}: {location} must be KV/SKAP Vault")
         if key in {"device_user_verifier_authority", "node_user_verifier_authority", "transport_user_verifier_authority"}:
             if value != "NONE":
                 fail(f"{path.name}: {location} must be NONE")
+        if key in {"device_verification_policy", "device_verification_process", "device_attestation_gate", "physical_device_identity_gate"}:
+            if value != "NONE_PROHIBITED":
+                fail(f"{path.name}: {location} must be NONE_PROHIBITED")
 
 
 def main() -> None:
@@ -67,6 +88,15 @@ def main() -> None:
     for key, expected in EXPECTED.items():
         if invariants.get(key) != expected:
             fail(f"global invariant {key} mismatch")
+    prohibitions = set(policy.get("prohibitions") or [])
+    required_prohibitions = {
+        "NO_DEVICE_VERIFICATION_POLICY_OR_PROCESS",
+        "NO_DEVICE_ATTESTATION_OR_PHYSICAL_DEVICE_IDENTITY_GATE",
+        "NO_CONNECTOR_DEVICE_LIST_AS_AUTHORIZATION_OR_VERIFICATION",
+    }
+    missing = sorted(required_prohibitions - prohibitions)
+    if missing:
+        fail("global invariant missing device-verification prohibitions: " + ", ".join(missing))
     if policy.get("authority_effect") != "NONE_REGISTRY_INVARIANT_ONLY":
         fail("global invariant authority effect mismatch")
     for path in sorted(RECORDS.glob("*.json")):
