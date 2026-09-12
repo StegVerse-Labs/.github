@@ -2,11 +2,11 @@
 """Visit the GADI runtime only when current non-claim evidence is ready.
 
 This wrapper does not create InTr admission, runtime authority, actuator evidence, or a
-WorkerCoordinator claim. It first refreshes the non-authorizing GADI runtime-binding
-observation from canonical runtime-presence evidence, then locally resolves/validates
-the three non-claim source classes. Only when those exact inputs are coherent and the
-separated carrier reference already exists does it invoke the canonical targeted
-WorkerCoordinator entry point, which remains the sole claim/fence authority.
+WorkerCoordinator claim. It first observes the existing same-device retained-resident
+discovery contract, then refreshes the non-authorizing GADI runtime-binding observation
+from canonical runtime-presence evidence. Only when discovery and the stronger runtime
+subject agree, and all remaining non-claim inputs are coherent, may it invoke the
+canonical targeted WorkerCoordinator entry point.
 """
 from __future__ import annotations
 
@@ -24,6 +24,8 @@ SOURCE_DIR = Path("state/gadi-resident-execution/source")
 COMMAND = SOURCE_DIR / "stegos-command.json"
 INTR = SOURCE_DIR / "intr-admission.json"
 ACTUATOR = SOURCE_DIR / "actuator-observation.json"
+DISCOVERY = Path("state/gadi-resident-execution/retained-resident-discovery.json")
+DISCOVERY_OBSERVER = Path("scripts/observe_gadi_retained_resident_discovery.py")
 BINDING = Path("state/gadi-resident-execution/runtime-binding.json")
 BINDING_PROJECTOR = Path("scripts/materialize_gadi_runtime_binding.py")
 CARRIER = Path("control/heartbeat-carrier-runtime-state.json")
@@ -73,6 +75,26 @@ def readiness(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -
     runtime = runtime_root.resolve()
     blockers: list[str] = []
 
+    discovery_observer = runtime / DISCOVERY_OBSERVER
+    if not discovery_observer.is_file():
+        discovery_observer = source / DISCOVERY_OBSERVER
+    discovery_observation: dict[str, Any] | None = None
+    if not discovery_observer.is_file():
+        blockers.append("RETAINED_RESIDENT_DISCOVERY_OBSERVER_NOT_MATERIALIZED")
+    else:
+        completed = runner(
+            [sys.executable, str(discovery_observer), "--runtime-root", str(runtime)],
+            cwd=runtime, capture_output=True, text=True, check=False, timeout=30,
+        )
+        discovery_observation = parse_last_json(completed.stdout)
+        if (
+            completed.returncode != 0
+            or not isinstance(discovery_observation, dict)
+            or discovery_observation.get("state") != "CURRENT_RETAINED_RESIDENT_DISCOVERY_OBSERVED"
+            or not nonempty(discovery_observation.get("target_node_ref"))
+        ):
+            blockers.append("CURRENT_RETAINED_RESIDENT_DISCOVERY_NOT_OBSERVED")
+
     binding_projector = runtime / BINDING_PROJECTOR
     if not binding_projector.is_file():
         binding_projector = source / BINDING_PROJECTOR
@@ -92,6 +114,15 @@ def readiness(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -
             or not nonempty(binding_observation.get("runtime_binding_ref"))
         ):
             blockers.append("CURRENT_RUNTIME_SUBJECT_BINDING_NOT_OBSERVED")
+
+    if (
+        isinstance(discovery_observation, dict)
+        and discovery_observation.get("state") == "CURRENT_RETAINED_RESIDENT_DISCOVERY_OBSERVED"
+        and isinstance(binding_observation, dict)
+        and binding_observation.get("state") == "CURRENT_RUNTIME_SUBJECT_BOUND"
+        and discovery_observation.get("target_node_ref") != binding_observation.get("node_id")
+    ):
+        blockers.append("DISCOVERY_RUNTIME_SUBJECT_MISMATCH")
 
     resolver = runtime / "scripts/resolve_gadi_resident_runtime_sources.py"
     if not resolver.is_file():
@@ -158,6 +189,7 @@ def readiness(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -
         "state": "NONCLAIM_RUNTIME_EVIDENCE_READY" if not blockers else "NONCLAIM_RUNTIME_EVIDENCE_PENDING",
         "ready": not blockers,
         "blockers": blockers,
+        "retained_resident_discovery_observation": discovery_observation,
         "runtime_binding_observation": binding_observation,
         "source_resolution": resolution,
         "separated_carrier_reference_present": carrier_present,
