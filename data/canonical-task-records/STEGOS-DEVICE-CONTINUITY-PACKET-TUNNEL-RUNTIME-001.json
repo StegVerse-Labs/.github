@@ -1,0 +1,153 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "STEGOS-DEVICE-CONTINUITY-PACKET-TUNNEL-RUNTIME-001",
+  "correlation_id": "STEGOS-DEVICE-CONTINUITY-PACKET-TUNNEL-RUNTIME-001",
+  "root_correlation_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+  "parent_task_id": "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+  "goal": "Complete the StegOS-owned packet-tunnel runtime lane for browser-independent same-node continuity by validating the host activation source repair and then observing DeviceContinuityPacketTunnel activation, persistence while another app/browser is foregrounded, and bounded 127.0.0.1:8766 reachability, while reusing established iOS delivery infrastructure and preserving KV/SKAP Vault as the sole user-verification dependency.",
+  "coordination_state": "IN_PROGRESS",
+  "source_refs": [
+    "StegVerse-Labs/StegOS#351",
+    "StegVerse-Labs/StegOS/docs/STEGOS_DEVICE_CONTINUITY_CARRIER_TARGET_INTEGRATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegOS/mobile/ios/StegOSMobile/DeviceContinuityCarrierController.swift",
+    "StegVerse-Labs/StegOS/mobile/ios/DeviceContinuityPacketTunnel/PacketTunnelProvider.swift",
+    "docs/TASK_REGISTRY_KV_SKAP_VERIFIER_NODE_INVARIANT_MIRROR_HANDOFF.md",
+    "data/task-registry-global-invariants.json"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": ["StegVerse-Labs/StegOS", "StegVerse-Labs/.github"],
+    "components": [
+      "DeviceContinuityPacketTunnel",
+      "DeviceContinuityCarrierController",
+      "same-node-continuity-transport",
+      "packet-tunnel-runtime-observation"
+    ]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-PACKET-TUNNEL-XCODE-TARGET-INTEGRATION",
+      "kind": "EVIDENCE",
+      "state": "RESOLVED",
+      "ref": "StegVerse-Labs/StegOS#354"
+    },
+    {
+      "dependency_id": "DEP-PACKET-TUNNEL-HOST-ACTIVATION-SOURCE",
+      "kind": "EVIDENCE",
+      "state": "UNRESOLVED",
+      "ref": "StegVerse-Labs/StegOS#363"
+    }
+  ],
+  "blockers": [
+    {
+      "blocker_id": "PACKET_TUNNEL_RUNTIME_NOT_YET_OBSERVED",
+      "dependency_id": "DEP-PACKET-TUNNEL-HOST-ACTIVATION-SOURCE",
+      "reason": "Carrier-specific runtime activation, foreground-app persistence, and 127.0.0.1:8766 reachability are not yet authentically observed; generic signing/provisioning is inherited and is not a new blocker."
+    }
+  ],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+    "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+    "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+    "KV-CONNECTION-REVALIDATION-WORKER-001"
+  ],
+  "existing_evidence_refs": [
+    "StegVerse-Labs/StegOS#352",
+    "StegVerse-Labs/StegOS#353",
+    "StegVerse-Labs/StegOS#354",
+    "StegVerse-Labs/StegOS#355",
+    "StegVerse-Labs/StegOS#363",
+    "StegVerse-Labs/StegOS/docs/STEGOS_DEVICE_CONTINUITY_CARRIER_TARGET_INTEGRATION_MIRROR_HANDOFF.md"
+  ],
+  "expected_evidence_predicates": [
+    "HOST_ACTIVATION_SOURCE_VALIDATED",
+    "AUTHENTIC_PACKET_TUNNEL_ACTIVATION_OBSERVED",
+    "AUTHENTIC_CROSS_APP_PERSISTENCE_OBSERVED",
+    "AUTHENTIC_LOOPBACK_8766_REACHABILITY_OBSERVED"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["ios_packet_tunnel_provider", "bounded_loopback_transport", "runtime_observation"],
+    "environment": "STEGOS_NODE",
+    "direction": "LOCAL_SAME_NODE",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "runtime_resolution": null,
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "UNSUITABLE",
+        "limitation_class": "PLATFORM",
+        "evidence_refs": ["iOS NetworkExtension execution requires the native StegOS app substrate"]
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "SELECTED",
+        "limitation_class": "NONE",
+        "evidence_refs": ["StegVerse-Labs/StegOS#351", "StegVerse-Labs/StegOS#354", "StegVerse-Labs/StegOS#363"]
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "UNSUITABLE",
+        "limitation_class": "PLATFORM",
+        "evidence_refs": ["Browser execution cannot host NEPacketTunnelProvider"]
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "UNSUITABLE",
+        "limitation_class": "PLATFORM",
+        "evidence_refs": ["Service worker cannot host NEPacketTunnelProvider"]
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": ["Second user-operated device is prohibited and unnecessary"]
+      }
+    ],
+    "selected_substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "human_action_ref": null,
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": null
+  },
+  "allowed_next_transitions": ["INGRESS_ADMITTED"],
+  "handoff_projection_refs": [
+    "StegVerse-Labs/StegOS/docs/STEGOS_DEVICE_CONTINUITY_CARRIER_TARGET_INTEGRATION_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "master_records_reality_authority": true,
+    "interlock_intr_required_for_governed_ingress_egress": true
+  }
+}
