@@ -1,9 +1,22 @@
 {
   "artifact_type": "stegverse.session_build_preflight_contract",
-  "schema_version": "1.2.0",
+  "schema_version": "1.3.0",
   "status": "ACTIVE_SOURCE_CONTRACT",
   "entrypoint": "scripts/session_build_preflight.py",
   "stegindex_gate": "scripts/stegindex_preflight_gate.py",
+  "canonical_policy_context": {
+    "registry": "control/canonical-policy-context-registry.json",
+    "required_before_state_interpretation": true,
+    "required_before_blocker_derivation": true,
+    "required_before_remediation_proposal": true,
+    "required_before_new_work": true,
+    "task_record_field": "canonical_policy_refs",
+    "fail_closed_disposition": "STOP_AT_CANONICAL_POLICY_DEPENDENCY",
+    "human_policy_restatement_required": false,
+    "runtime_truth_inferred": false,
+    "execution_admission_inferred": false,
+    "authority_effect": "NONE_PREWORK_INTERPRETATION_ONLY"
+  },
   "cross_task_coordination": {
     "resolver": "StegVerse-Labs/StegIndex/scripts/resolve_cross_task_coordination.py",
     "base_ledger": "control/cross-task-coordination.json",
@@ -51,6 +64,11 @@
       "task_creation_permitted": false,
       "exit_code": 2
     },
+    "CANONICAL_POLICY_CONTEXT_INCOMPLETE": {
+      "disposition": "STOP_AT_CANONICAL_POLICY_DEPENDENCY",
+      "task_creation_permitted": false,
+      "exit_code": 2
+    },
     "EXACT_BLOCKER_ONLY": {
       "disposition": "STOP_AT_EXACT_DEPENDENCY",
       "task_creation_permitted": false,
@@ -63,6 +81,9 @@
     }
   },
   "invariants": [
+    "canonical architecture and lifecycle policy context is resolved before session interpretation",
+    "canonically resolvable policy must not be re-taught by human prompt",
+    "missing canonical policy context is an exact dependency and never permission to invent semantics",
     "new task creation is prohibited when an existing capability should be reused",
     "new task creation is prohibited when machine continuation is already available",
     "new task creation is prohibited while indexed truth requires reconciliation",
@@ -71,9 +92,10 @@
     "material repository behavior changes require the affected repository README in the same change set",
     "a no-README-update determination requires explicit nonmaterial rationale and supporting evidence",
     "cross-task coordination projection does not itself prove runtime truth or execution readiness",
+    "canonical policy context does not prove runtime truth or execution readiness",
     "README completeness does not grant execution authority or prove runtime truth",
     "generic runtime-evidence blockers are not terminal preflight outcomes",
-    "StegIndex, cross-task coordination, README completeness review, and this entrypoint grant no execution authority"
+    "StegIndex, canonical policy context, cross-task coordination, README completeness review, and this entrypoint grant no execution authority"
   ],
   "authority_effect": "NONE_PREWORK_DECISION_ONLY",
   "network_fetch_performed": false,
