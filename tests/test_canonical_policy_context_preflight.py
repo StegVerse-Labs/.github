@@ -1,5 +1,6 @@
 import importlib.util
 import json
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -67,6 +68,30 @@ class CanonicalPolicyContextPreflightTests(unittest.TestCase):
                 temp_parent.rmdir()
             except OSError:
                 pass
+
+    def test_external_repo_policy_ref_resolves_from_repo_roots_map(self):
+        old = os.environ.get("STEGVERSE_REPO_ROOTS_JSON")
+        try:
+            with tempfile.TemporaryDirectory() as tmp:
+                repo_root = Path(tmp)
+                (repo_root / "STEGHEALTH_MIRROR_HANDOFF.md").write_text("canonical", encoding="utf-8")
+                os.environ["STEGVERSE_REPO_ROOTS_JSON"] = json.dumps({
+                    "StegVerse-Labs/StegHealth": str(repo_root)
+                })
+                context, complete = preflight.resolve_canonical_policy_context(
+                    task_id=None,
+                    explicit_refs=["StegVerse-Labs/StegHealth:STEGHEALTH_MIRROR_HANDOFF.md"],
+                )
+                self.assertTrue(complete)
+                external = [row for row in context["policy_refs"] if row["source"] == "EXPLICIT"]
+                self.assertEqual(len(external), 1)
+                self.assertTrue(external[0]["resolved"])
+                self.assertEqual(external[0]["local_path"], str(repo_root / "STEGHEALTH_MIRROR_HANDOFF.md"))
+        finally:
+            if old is None:
+                os.environ.pop("STEGVERSE_REPO_ROOTS_JSON", None)
+            else:
+                os.environ["STEGVERSE_REPO_ROOTS_JSON"] = old
 
 
 if __name__ == "__main__":
