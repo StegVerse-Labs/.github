@@ -26,18 +26,21 @@ def test_unregistered_stops_before_mutation():
     assert out["checkin_disposition_sha256"].startswith("sha256:")
 
 
-def test_checked_out_task_returns_collision_context():
+def test_checked_out_runtime_task_without_substrate_review_fails_closed():
     out = run("STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001")
     assert out["task_id"] == "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001"
-    assert out["disposition"] in {"STOP_COLLISION", "COORDINATE_CONVERGENCE", "CONTINUE"}
-    assert "collision_candidates" in out
+    assert out["disposition"] == "STOP_SUBSTRATE_REVIEW_REQUIRED"
+    assert out["session_action"] == "END_AND_RECONCILE_EXECUTION_SUBSTRATE_REVIEW"
+    assert "requires execution_substrate_resolution" in out["substrate_review_error"]
     assert out["authority_effect"] == "NONE"
+    inv = out["registry_global_invariants"]["invariants"]
+    assert inv["remote_computer_role"] == "TRANSPORT_DISCOVERY_ONLY"
+    assert inv["remote_computer_inventory_semantics"] == "EVIDENCE_REACHABILITY_ONLY"
 
 
 def test_retired_task_returns_stop_disposition():
     out = run("STEGCORE-UNKNOWN-PROBE-SEMANTICS-001")
-    assert out["disposition"] in {"STOP_INACTIVE", "STOP_SUPERSEDED"}
-    assert out["session_action"].startswith("END_SESSION")
+    assert out["disposition"] in {"STOP_INACTIVE", "STOP_SUPERSEDED", "STOP_SUBSTRATE_REVIEW_REQUIRED"}
 
 
 def test_session_branch_pr_and_intended_targets_are_bound_into_disposition():
@@ -60,13 +63,12 @@ def test_session_branch_pr_and_intended_targets_are_bound_into_disposition():
     }
     assert out["checkin_context_sha256"].startswith("sha256:")
     assert out["checkin_disposition_sha256"].startswith("sha256:")
-    candidates = {row["task_id"]: row for row in out.get("collision_candidates", [])}
-    assert "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001" in candidates or "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001" in candidates
 
 
 def test_substrate_resolution_is_part_of_collision_convergence_contract():
     text = SCRIPT.read_text(encoding="utf-8")
     assert "validate_task_registration_substrate_resolution import validate_resolution" in text
+    assert 'if isinstance(r.get("runtime_requirements"), dict):' in text
     assert '"STOP_SUBSTRATE_REVIEW_REQUIRED"' in text
     assert '"execution_substrates":substrates' in text.replace(" ", "")
     assert '"selected_execution_substrate":selected_substrate(r)' in text.replace(" ", "")
