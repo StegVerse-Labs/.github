@@ -1,0 +1,9 @@
+{
+  "schema": "stegverse.cosv-task-vector-index-entry/v1",
+  "task_id": "GADI-RUNTIME-CLOSURE-001",
+  "repository": "StegVerse-Labs/.github",
+  "registry_ref": "data/canonical-task-records/GADI-RUNTIME-CLOSURE-001.json",
+  "source_state_vector_ref": "control/task-vectors/GADI-RUNTIME-CLOSURE-001.json",
+  "cosv_task_vector": "10100000100000",
+  "handoff_ref": "docs/GADI_RUNTIME_CLOSURE_MIRROR_HANDOFF.md"
+}
