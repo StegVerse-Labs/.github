@@ -1,0 +1,59 @@
+{
+  "schema": "stegverse.canonical-policy-context-registry/v1",
+  "status": "ACTIVE_SOURCE_POLICY_CONTEXT",
+  "canonical_owner_task": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "authority_effect": "NONE_PREWORK_INTERPRETATION_ONLY",
+  "purpose": "Require StegVerse session/build pre-work to resolve already-canonical architecture and lifecycle semantics before interpreting task state, deriving a blocker, proposing remediation, or creating new work.",
+  "required_global_sources": [
+    {
+      "ref": "data/task-coordination-policy.json",
+      "required": true,
+      "purpose": "Canonical task lifecycle, ephemeral-runner, authority, continuity, Master Records, and session-continuation invariants."
+    },
+    {
+      "ref": "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
+      "required": true,
+      "purpose": "Canonical cross-task evidence, subject-binding, adjacency, collision, and evidence-gap semantics."
+    }
+  ],
+  "task_policy_refs": {
+    "canonical_task_record_field": "canonical_policy_refs",
+    "handoff_policy_refs_allowed": true,
+    "missing_declared_ref_fails_closed": true,
+    "undeclared_domain_policy_may_not_be_invented": true
+  },
+  "session_preflight": {
+    "required_before_state_interpretation": true,
+    "required_before_blocker_derivation": true,
+    "required_before_remediation_proposal": true,
+    "required_before_new_task_creation": true,
+    "fail_closed_disposition": "STOP_AT_CANONICAL_POLICY_DEPENDENCY",
+    "runtime_truth_inferred": false,
+    "execution_authority_inferred": false,
+    "transition_authority_inferred": false,
+    "credential_authority_inferred": false
+  },
+  "interpretation_guards": [
+    "CANONICAL_POLICY_CONTEXT_PRECEDES_SESSION_INFERENCE",
+    "CANONICALLY_RESOLVABLE_POLICY_MUST_NOT_BE_RETAUGHT_BY_HUMAN_PROMPT",
+    "EPHEMERAL_OR_EXPIRING_RUNTIME_STATE_MUST_NOT_BE_RECLASSIFIED_AS_FAILURE_WITHOUT_CANONICAL_LIFECYCLE_EVIDENCE",
+    "ABSENCE_STALENESS_EXPIRY_DEVICE_WORKER_HEARTBEAT_AUTHORITY_AND_CUSTODY_TERMS_MUST_USE_CANONICAL_SEMANTICS",
+    "MISSING_POLICY_CONTEXT_IS_AN_EXACT_DEPENDENCY_NOT_PERMISSION_TO_INVENT_SEMANTICS",
+    "POLICY_CONTEXT_DOES_NOT_PROVE_RUNTIME_TRUTH_OR_GRANT_AUTHORITY"
+  ],
+  "known_global_invariants_resolved_from_task_coordination_policy": [
+    "CANONICALLY_RESOLVABLE_TASK_DOCUMENTATION_IS_NOT_REPEATED_IN_PROMPTS",
+    "RUNNERS_EXPIRE_BEFORE_RECORDING_CONTINUITY",
+    "EPHEMERAL_CAPABILITY_DOES_NOT_MEAN_EPHEMERAL_ACCOUNTABILITY",
+    "TASK_REGISTRY_DOES_NOT_MINT_EXECUTION_AUTHORITY",
+    "WORKERCOORDINATOR_OWNS_EXECUTION_CLAIM_AND_FENCE",
+    "MASTER_RECORDS_OWNS_OBSERVED_REALITY_AND_RECONSTRUCTION",
+    "MISSING_EVIDENCE_IS_NOT_PROOF_OF_NON_OCCURRENCE"
+  ],
+  "nonclaims": [
+    "POLICY_CONTEXT_RESOLUTION_DOES_NOT_CREATE_RUNTIME_STATE",
+    "POLICY_CONTEXT_RESOLUTION_DOES_NOT_CREATE_OR_RENEW_CLAIMS_OR_FENCES",
+    "POLICY_CONTEXT_RESOLUTION_DOES_NOT_AUTHORIZE_INTERLOCK_INTR_TRANSITIONS",
+    "POLICY_CONTEXT_RESOLUTION_DOES_NOT_AUTHORIZE_CREDENTIALS_ROUTES_PUBLICATION_OR_CUSTODY"
+  ]
+}

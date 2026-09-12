@@ -320,3 +320,27 @@ control/resident-execution-request.d/consume-erl-active-research-intr-runtime-bi
 control/resident-execution-request.d/consume-erl-active-research-intr-submission.py
 docs/SS_ERL_ACTIVE_RESEARCH_INTR_RUNTIME_BINDING_MIRROR_HANDOFF.md
 ```
+
+---
+
+## Canonical Policy Context Preflight
+
+StegVerse session/build pre-work must resolve already-canonical architecture and lifecycle policy **before** it interprets task state, derives a blocker, proposes remediation, or creates new work. The machine must not require a human to restate policy that is already canonically resolvable.
+
+The policy-context registry is:
+
+```text
+control/canonical-policy-context-registry.json
+```
+
+and the canonical pre-work entrypoint remains:
+
+```text
+scripts/session_build_preflight.py
+```
+
+Every preflight loads the global task-coordination and cross-task policy context. When a canonical task record declares `canonical_policy_refs`, those sources are loaded automatically. Cross-repository refs may resolve through already-materialized repository roots in `STEGVERSE_REPO_ROOTS_JSON`; no network source fetch is introduced.
+
+If a required policy source cannot be resolved, preflight fails closed as `STOP_AT_CANONICAL_POLICY_DEPENDENCY`. Missing policy is an exact source dependency, not permission for a session to invent new lifecycle, authority, device, worker, HeartBeat, custody, or failure semantics. Policy resolution itself grants no execution, claim/fence, Interlock/InTr transition, TV/TVC credential, route, custody, publication, or runtime-truth authority.
+
+This gate consumes existing canonical invariants—including ephemeral runner lifetime, durable accountability, Master Records reconstruction, and prompt-continuation rules—rather than redefining them. Scoped documentation is maintained at `docs/CANONICAL_POLICY_CONTEXT_PREFLIGHT_MIRROR_HANDOFF.md`.
