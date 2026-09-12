@@ -18,9 +18,9 @@ Bind the already-merged ERL active-research Universal InTr intent to the existin
 
 ## Canonical owner and path
 
-Existing terminal owner remains `SHWP-DEVICE-KV-INTR-OBSERVATION-001` through the shared `workers/universal_intr_profiled_ingress.py`, `scripts/consume_device_kv_intr_materialization_request.py`, and downstream owner `StegVerse-Labs/continuity-vault-kit#79`. TV/TVC remains credential authority; GitHub runtime authority is `NONE`.
+Existing terminal owner remains `SHWP-DEVICE-KV-INTR-OBSERVATION-001` through the shared `workers/universal_intr_profiled_ingress.py`, `scripts/consume_device_kv_intr_materialization_request.py`, and downstream owner `StegVerse-Labs/continuity-vault-kit#79`. TV/TVC remains credential authority for transitions that require credentials; GitHub runtime authority is `NONE`.
 
-Canonical path:
+Canonical logical path:
 
 ```text
 EXTERNAL_SYSTEM
@@ -35,42 +35,62 @@ One operation identity, one packet identity, one exact acquisition-envelope payl
 
 - PR #1424 merged at `b89a1ec010fc8d94ef770d900cb8244c11afe363` after organization-control, Heartbeat validation, and deterministic-suite PASS. It added the ERL shared-ingress profile, route installer, DEVICE_KV prior-lineage preservation, and tests.
 - PR #1444 merged at `0bcfba4a7a99b1fc2b641580e805543a320a9f80` after the same three exact-head validation classes PASS. It added bounded resident source preparation.
-- PR #1468 merged at `233992aead73e054f9ded66d62af29b0980107a8` from exact head `ceab2ab090ca8d8edd813400180b12d25df1c873` after organization-control, Heartbeat validation, and deterministic-suite PASS. It added the canonical resident request, binding-materialization consumer, resident request wiring installer, resident-source copy wiring, and deterministic tests. Binding/envelope sidecars remain write-once while status evidence is an atomic latest projection so `INPUT_NOT_MATERIALIZED` can legitimately advance later.
-- PR #1476 merged at `af0fcb239956e9744fdd4129bb454655efd54243` from exact head `5fb90e43675b5fdefe403171bea668727d3bf1d8` after organization-control, Heartbeat/repository validation, deterministic-suite diagnostics, and DeepSeek resident validation all passed. It added the bounded loopback-only ERL Universal InTr submitter, existing-dispatcher submission consumer, resident-source copy wiring, digest normalization from bare SHA-256 to `sha256:` URI, canonical `unittest` regression coverage, and README runtime-interface documentation.
+- PR #1468 merged at `233992aead73e054f9ded66d62af29b0980107a8` from exact head `ceab2ab090ca8d8edd813400180b12d25df1c873` after organization-control, Heartbeat validation, and deterministic-suite PASS. It added the canonical resident request, binding-materialization consumer, resident request wiring installer, resident-source copy wiring, and deterministic tests.
+- PR #1476 merged at `af0fcb239956e9744fdd4129bb454655efd54243` from exact head `5fb90e43675b5fdefe403171bea668727d3bf1d8` after organization-control, Heartbeat/repository validation, deterministic-suite diagnostics, and DeepSeek resident validation all passed. It added the bounded loopback ERL submitter, existing-dispatcher submission consumer, resident-source copy wiring, digest normalization, canonical `unittest` regression coverage, and README runtime-interface documentation.
 - PR #1546 merged at `83a1b090ab850bf347c30f1818279064102d87d9` after exact-head control-plane validation PASS. It reconciled the canonical task record so already-completed implementation/validation steps are no longer listed as future transitions; completion and activation remain false.
-- PR #1554 merged at `aaf663112db68b031019c0e9ea274ff6bb9382d2` from exact head `b2b9591deda89e2aa5f7f3618329c1da8f889ba9` after both validation lanes, deterministic-suite diagnostics, and DeepSeek resident validation passed. It added resident submission-input materialization from an existing ERL binding plus explicit loopback-ingress and pre-existing TVC relay-authorization references, existing-dispatcher integration, deterministic `unittest` coverage, README documentation, and fail-closed non-loopback handling.
+- PR #1554 merged at `aaf663112db68b031019c0e9ea274ff6bb9382d2` from exact head `b2b9591deda89e2aa5f7f3618329c1da8f889ba9` after both validation lanes, deterministic-suite diagnostics, and DeepSeek resident validation passed. It added submission-input materialization and exposed the transport-origin dependency that is corrected below.
+- PR #1568 merged at `ebac65426065a78863c6613fcd3f9c63ecb0e67e` after exact-head validation PASS. It reconciled the handoff after #1554 without claiming runtime evidence.
 
-Merged source does not prove resident execution, TVC authorization, any authentic InTr hop, terminal KV receipt, or provider replay.
+Merged source does not prove resident execution, any authentic InTr hop, terminal KV receipt, or provider replay.
 
-## Merged local shared-InTr submission contract
+## Transport-origin correction
 
-- `scripts/submit_erl_active_research_intr_binding.py`
-  - accepts only a runtime-local ERL binding sidecar;
-  - requires a loopback-only `http://127.0.0.1|localhost|::1/.../intr/materialization` endpoint;
-  - requires an already-issued `TVC_RELAY_EGRESS` authorization identifier and never creates one;
-  - POSTs the exact canonical binding bytes with the shared Universal InTr transport headers;
-  - rejects hosted execution and any non-loopback endpoint;
-  - validates only the authentic ERL profile response from the shared listener;
-  - accepts exactly two verified upstream `FORWARDED` receipts and requires their lineage to bind the projected terminal `DEVICE_SYSTEM -> KV` request;
-  - records `terminal_runtime_receipt_present=false` and never fabricates hop 3 or replays the provider operation.
-- `scripts/materialize_erl_active_research_intr_submission_input.py`
-  - consumes only the existing resident binding-consumption receipt and binding sidecar;
-  - requires explicit `STEGVERSE_UNIVERSAL_INTR_INGRESS_URL` and the existing opaque `STEGVERSE_TVC_RELAY_AUTHORIZATION_ID`;
-  - validates the ingress as loopback-only HTTP `/intr/materialization` and intentionally does not hard-code port `8788` because the shared listener may bind an ephemeral port;
-  - never creates or discovers a listener, never creates TVC authorization, and never authorizes provider replay;
-  - atomically materializes `runtime-state/erl-active-research/intr-submission-input.json` only when both required references already exist.
-- `control/resident-execution-request.d/consume-erl-active-research-intr-submission.py`
-  - invokes the input materializer when the bounded submission input is absent;
-  - returns a non-authorizing wait state when binding, ingress, or TVC authorization is unavailable;
-  - delegates to the bounded submitter through the existing resident dispatcher only after the input is materialized.
-- `scripts/install_erl_resident_request_wiring.py`
-  - registers the local submission consumer in the existing dispatcher;
-  - propagates the input materializer and submitter with existing native resident source;
-  - permits only the required explicit ERL source, loopback ingress, and TVC relay-authorization references through the existing scrubbed dispatcher environment;
-  - creates no second listener, dispatcher, runtime, scheduler, heartbeat, claim/fence path, credential issuer, or provider operation.
+Investigation on 2026-09-12 established that the prior ERL submitter incorrectly used `TVC_RELAY_EGRESS` as the transport origin for a resident-local loopback handoff.
+
+Canonical TVC source `docs/SOVEREIGN_RELAY_EGRESS_AUTHORIZATION_MIRROR_HANDOFF.md` defines sovereign relay EGRESS authorization as exact-scope and single-use, bound to a real admitted relay route, exact opaque payload hash/size, and a live TVC execution grant. TVC also records `live_egress_authorization: false`. That authorization class is therefore neither presently available nor semantically appropriate for the ERL resident-local loopback handoff.
+
+The shared HIL transport validator independently confirms the distinction: `TVC_RELAY_EGRESS` requires an authorization identifier because it represents a governed sovereign relay, while local transport origins must not claim a TVC relay authorization.
+
+Current correction branch: `ss-erl-resident-local-origin-001`.
+
+Implemented correction:
+
+- `workers/erl_active_research_transport.py`
+  - defines ERL-only transport origin `STEGOS_RESIDENT_LOCAL`;
+  - requires `InTr`, JSON, exact raw-body SHA-256, and no authorization header;
+  - is invoked only after the shared listener identifies an ERL active-research binding;
+  - does not become a generic HIL origin and grants no authority.
 - `scripts/install_erl_active_research_universal_intr_route.py`
-  - normalizes the shared transport validator's bare 64-hex payload digest into the `sha256:` URI required by the ERL profile;
-  - upgrades both fresh and already-installed legacy ERL route source fail-closed.
+  - migrates fresh or already-installed ERL route source from HIL relay-header validation to the ERL-specific resident-local validator;
+  - leaves non-ERL routes on their existing validators unchanged.
+- `scripts/materialize_erl_active_research_intr_resident_local_input.py`
+  - consumes the already-materialized binding receipt and requires only the explicit authentic loopback ingress URL;
+  - creates no TVC authorization and carries none in the input;
+  - records `transport_origin=STEGOS_RESIDENT_LOCAL` and `transport_credential_required=false`.
+- `scripts/submit_erl_active_research_intr_binding_local.py`
+  - reuses the already-validated ERL binding and profile-admission validators;
+  - sends exact binding bytes with `X-StegVerse-Transport-Origin: STEGOS_RESIDENT_LOCAL`;
+  - emits no `X-StegVerse-Authorization-Id` header;
+  - rejects any resident-local input that contains a TVC relay authorization field.
+- `control/resident-execution-request.d/consume-erl-active-research-intr-submission.py`
+  - selects the resident-local materializer and resident-local submitter as the active ERL resident path.
+- `scripts/install_erl_resident_request_wiring.py`
+  - propagates the resident-local transport validator/materializer/submitter through the existing resident source path;
+  - requires only `STEGVERSE_UNIVERSAL_INTR_INGRESS_URL` for ERL local submission;
+  - creates no second listener, runtime, scheduler, heartbeat, WorkerCoordinator, claim/fence path, credential issuer, or provider operation.
+
+The legacy relay submitter/materializer remain source history but are no longer selected by the active ERL resident dispatcher. Their existence does not authorize relay use.
+
+## Merged profile / terminal contract retained
+
+The ERL profile still:
+
+- validates the deterministic ERL binding, exact acquisition-envelope hash, and full logical boundary path;
+- emits hop 1 only after the exact binding reaches and passes the authentic shared STEGOS_ECOSYSTEM ingress;
+- emits hop 2 when the same packet is projected into the existing device-materialization path;
+- projects only the terminal `DEVICE_SYSTEM -> KV` request to `StegVerse-Labs/continuity-vault-kit#79`;
+- preserves exact operation ID, packet ID, payload hash, and prior-receipt lineage;
+- never fabricates hop 3 and never replays the provider operation.
 
 ## Existing proof that must not be repeated
 
@@ -82,14 +102,15 @@ Merged source does not prove resident execution, TVC authorization, any authenti
 
 ## Remaining work
 
-1. On the authentic sovereign resident source, apply and verify `scripts/prepare_erl_active_research_intr_runtime_source.py`.
-2. Materialize the existing local ERL source/dispatch inputs and deterministic binding/envelope through the existing resident dispatcher.
-3. Observe an authentic loopback shared-ingress URL and already-issued TVC relay authorization reference; let the existing submission consumer materialize the bounded input automatically.
-4. Observe one authentic shared-ingress ERL response, preserving authentic hop 1 and hop 2 receipts and the projected terminal request.
-5. Let the existing DEVICE_KV owner execute the terminal bytes and preserve authentic hop 3 with exact prior-receipt continuity.
-6. Verify the complete three-receipt chain with the merged ERL consumer and bind terminal transport proof to the pre-existing provider readback evidence without provider replay.
-7. Reconcile the parent ERL handoff with exact receipt hashes and final proof class.
+1. Validate and merge the resident-local transport-origin correction only if exact-head repository checks and README impact pass.
+2. On the authentic sovereign resident source, apply and verify `scripts/prepare_erl_active_research_intr_runtime_source.py` so the route migration and new resident-local sources are materialized.
+3. Materialize the existing local ERL source/dispatch inputs and deterministic binding/envelope through the existing resident dispatcher.
+4. Observe the authentic shared loopback ingress URL; let the existing submission consumer materialize the resident-local input automatically without relay authorization.
+5. Observe one authentic shared-ingress ERL response, preserving authentic hop 1 and hop 2 receipts and the projected terminal request.
+6. Let the existing DEVICE_KV owner execute the terminal bytes and preserve authentic hop 3 with exact prior-receipt continuity.
+7. Verify the complete three-receipt chain and bind terminal transport proof to the pre-existing provider readback evidence without provider replay.
+8. Reconcile the parent ERL handoff with exact receipt hashes and final proof class.
 
 ## Current state
 
-`PROFILE_SOURCE_PREPARATION_RESIDENT_BINDING_LOOPBACK_SUBMISSION_AND_SUBMISSION_INPUT_MATERIALIZATION_MERGED_AND_VALIDATED / AUTHENTIC_RESIDENT_SOURCE_MATERIALIZATION_NOT_YET_OBSERVED / AUTHENTIC_TVC_RELAY_AUTHORIZATION_NOT_YET_OBSERVED / AUTHENTIC_THREE_HOP_TRAVERSAL_NOT_YET_OBSERVED`
+`PROFILE_SOURCE_PREPARATION_RESIDENT_BINDING_LOOPBACK_SUBMISSION_AND_INPUT_MATERIALIZATION_MERGED / RESIDENT_LOCAL_TRANSPORT_ORIGIN_CORRECTION_IMPLEMENTED_ON_BRANCH / AUTHENTIC_RESIDENT_SOURCE_MATERIALIZATION_NOT_YET_OBSERVED / AUTHENTIC_SHARED_LOOPBACK_INGRESS_NOT_YET_OBSERVED / AUTHENTIC_THREE_HOP_TRAVERSAL_NOT_YET_OBSERVED`
