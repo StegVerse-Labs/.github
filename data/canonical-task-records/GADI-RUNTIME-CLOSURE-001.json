@@ -1,0 +1,63 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "GADI-RUNTIME-CLOSURE-001",
+  "correlation_id": "GADI-RUNTIME-CLOSURE-001",
+  "root_correlation_id": "GADI-001",
+  "parent_task_id": "GADI-001",
+  "goal": "Close GADI with authentic same-device resident runtime evidence only: current retained-node discovery and current-iPhone receipt readback, exact same-node runtime presence/binding, current Governance/InTr admission, WorkerCoordinator claim/fence, controlled preauthorized defensive execution, effect observation, adaptive reassessment, termination after threat end, full receipt-chain custody, and exact Continuity/Master Records reconstruction.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CLAIMED_INTEGRATION",
+  "cosv_task_vector": "10100000100000",
+  "source_refs": [
+    "docs/GADI_RUNTIME_CLOSURE_MIRROR_HANDOFF.md",
+    "docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
+    "data/canonical-task-records/GADI-001.json",
+    "data/canonical-task-records/GADI-RESIDENT-EXECUTION-001.json",
+    "StegVerse-Labs/.github#1603"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs", "StegVerse-002"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegOS", "StegVerse-Labs/StegBrowser", "StegVerse-Labs/StegCore", "StegVerse-Labs/Continuity", "StegVerse-Labs/TV", "StegVerse-Labs/TVC", "StegVerse-002/micro-node-runtime"],
+    "components": ["gadi-runtime-observation", "same-device-runtime-binding", "intr-defensive-admission", "workercoordinator-claim-fence", "controlled-defensive-execution", "effect-reassessment-termination", "continuity-master-records-reconstruction"]
+  },
+  "dependencies": [
+    {"dependency_id":"DEP-GADI-CURRENT-DEVICE-OBSERVATION","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md","disposition":"REQUIRE_AUTHENTIC_RETAINED_DISCOVERY_AND_CURRENT_IPHONE_RECEIPT_READBACK_FOR_EXACT_NODE"},
+    {"dependency_id":"DEP-GADI-RUNTIME-BINDING","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"GADI-RESIDENT-EXECUTION-001","disposition":"REQUIRE_CURRENT_SAME_NODE_PRESENCE_LIVENESS_SUPERVISION_FRESHNESS_AND_BINDING"},
+    {"dependency_id":"DEP-GADI-INTR-ADMISSION","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"GADI-001","disposition":"REQUIRE_CURRENT_LOCAL_CANONICAL_INTR_ADMISSION"},
+    {"dependency_id":"DEP-GADI-WORKERCOORDINATOR-CLAIM","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"STEGVERSE-CANONICAL-WORK-COORDINATION-001","disposition":"REQUIRE_CURRENT_CLAIM_AND_FENCE"},
+    {"dependency_id":"DEP-GADI-CONTINUITY-MASTER-RECORDS","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"StegVerse-Labs/Continuity","disposition":"REQUIRE_FULL_RECEIPT_CHAIN_CUSTODY_AND_EXACT_RECONSTRUCTION"}
+  ],
+  "blockers": [],
+  "adjacent_task_refs": ["GADI-001", "GADI-RESIDENT-EXECUTION-001", "SV-DN1-INTR-RUNTIME-001", "STEGVERSE-CANONICAL-WORK-COORDINATION-001"],
+  "expected_evidence_predicates": [
+    "CURRENT_RETAINED_STEGBROWSER_STEGOS_NODE_DISCOVERY_OBSERVED",
+    "CURRENT_RETAINED_STEGBROWSER_STEGOS_CURRENT_IPHONE_RECEIPT_READBACK_OBSERVED",
+    "CURRENT_GADI_RUNTIME_PRESENCE_SUBJECT_OBSERVED",
+    "CURRENT_GADI_RUNTIME_BINDING_OBSERVED",
+    "AUTHENTIC_INTR_DEFENSIVE_ADMISSION_OBSERVED",
+    "AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+    "AUTHENTIC_RESIDENT_DEFENSIVE_ACTION_OBSERVED",
+    "EXTERNAL_SAFE_STATE_EFFECT_OBSERVED",
+    "ADAPTIVE_REASSESSMENT_AFTER_ADVERSARY_STRATEGY_CHANGE_OBSERVED",
+    "INTERVENTION_TERMINATION_AFTER_THREAT_END_OBSERVED",
+    "FULL_INTERVENTION_RECEIPT_CHAIN_VALID",
+    "AUTHENTIC_MASTER_RECORDS_RECONCILIATION_OBSERVED",
+    "EXACT_CONFRONTATION_RECONSTRUCTION_VALID",
+    "GADI_RUNTIME_CLOSURE_COMPLETE"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["gadi_runtime_observation", "gadi_resident_defensive_execution", "closed_loop_reassessment", "exact_reconstruction"],
+    "environment": "CURRENT_USER_IPHONE_RETAINED_STEGBROWSER_STEGOS_RESIDENT_WITH_CONTROLLED_EXTERNAL_TEST_SURFACE",
+    "direction": "INTERNAL_AND_PREAUTHORIZED_EXTERNAL_DEFENSIVE",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "runtime_resolution": null,
+  "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
+  "human_action_ref": null,
+  "completion": {"claimed":false,"validated":false,"activation_proof_complete":false},
+  "allowed_next_transitions": ["INGRESS_ADMITTED"],
+  "handoff_projection_refs": ["docs/GADI_RUNTIME_CLOSURE_MIRROR_HANDOFF.md", "docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"],
+  "authority_model": {"task_registry_mints_execution_authority":false,"source_state_proves_execution":false,"worker_claim_authority":"WORKERCOORDINATOR","interlock_intr_required_for_governed_ingress_egress":true,"credential_authority":"TV_TVC","request_grants_execution_authority":false}
+}
