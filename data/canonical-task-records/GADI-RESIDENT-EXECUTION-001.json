@@ -16,23 +16,26 @@
     "control/worker-registry.d/gadi-resident-execution-001.json",
     "control/process-worker-adapters.d/gadi-resident-execution-001.json",
     "control/task-vectors/GADI-RESIDENT-EXECUTION-001.json",
-    "StegVerse-002/micro-node-runtime/micro_node/gadi_resident_consumer.py"
+    "StegVerse-002/micro-node-runtime/micro_node/gadi_resident_consumer.py",
+    "StegVerse-Labs/StegOS/docs/STEGBROWSER_RETAINED_NODE_BOOTSTRAP_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_IOS_RESIDENT_RENDEZVOUS_MIRROR_HANDOFF.md"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs", "StegVerse-002"],
-    "repositories": ["StegVerse-Labs/.github", "StegVerse-002/micro-node-runtime"],
-    "components": ["gadi-resident-execution", "workercoordinator-claim-fence", "intr-bound-command", "runtime-binding", "subject-bound-effect-evidence"]
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegOS", "StegVerse-Labs/StegBrowser", "StegVerse-002/micro-node-runtime"],
+    "components": ["gadi-resident-execution", "stegbrowser-retained-resident-node", "stegos-current-device-node", "workercoordinator-claim-fence", "intr-bound-command", "runtime-binding", "subject-bound-effect-evidence"]
   },
   "dependencies": [
     {"dependency_id":"DEP-GADI-RESIDENT-CONSUMER-SOURCE","kind":"IMPLEMENTATION","state":"RESOLVED_SOURCE_COMPLETE_VALIDATED_MERGED","ref":"StegVerse-002/micro-node-runtime#90","disposition":"REUSE_MERGED_CONSUMER"},
     {"dependency_id":"DEP-GADI-INTR-ADMISSION","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"GADI-001","disposition":"REQUIRE_CURRENT_INTR_DECISION_REF"},
     {"dependency_id":"DEP-GADI-WORKERCOORDINATOR-CLAIM","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"STEGVERSE-CANONICAL-WORK-COORDINATION-001","disposition":"REQUIRE_CURRENT_CLAIM_AND_FENCE"},
-    {"dependency_id":"DEP-GADI-RUNTIME-BINDING","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"StegVerse-002/micro-node-runtime","disposition":"REQUIRE_EXACT_CURRENT_RUNTIME_BINDING"},
+    {"dependency_id":"DEP-GADI-RUNTIME-BINDING","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"StegVerse-Labs/StegOS;StegVerse-Labs/StegBrowser","disposition":"REQUIRE_EXACT_CURRENT_RETAINED_STEGBROWSER_STEGOS_RUNTIME_BINDING"},
     {"dependency_id":"DEP-GADI-PREAUTHORIZED-ACTUATOR","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"StegVerse-Labs/TV;StegVerse-Labs/TVC","disposition":"REQUIRE_CONTROLLED_PREAUTHORIZED_ACTUATOR_RESULT"}
   ],
   "blockers": [],
-  "adjacent_task_refs": ["GADI-001", "TVC-CAPABILITY-RUNTIME-002", "STEGVERSE-CANONICAL-WORK-COORDINATION-001"],
+  "adjacent_task_refs": ["GADI-001", "TVC-CAPABILITY-RUNTIME-002", "STEGVERSE-CANONICAL-WORK-COORDINATION-001", "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001", "STEGOS-NODE-MANIFOLD-001"],
   "expected_evidence_predicates": [
+    "CURRENT_RETAINED_STEGBROWSER_STEGOS_NODE_DISCOVERY_OBSERVED",
     "CURRENT_GADI_COMMAND_ADMITTED_AND_RUNTIME_BOUND",
     "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
     "CONTROL_SURFACE_TARGET_AND_SUBJECT_BINDING_MATCH",
@@ -42,12 +45,68 @@
     "NO_PARALLEL_RUNTIME_SCHEDULER_HEARTBEAT_OR_CREDENTIAL_PATH"
   ],
   "runtime_requirements": {
-    "capabilities": ["gadi_resident_defensive_execution"],
-    "environment": "SOVEREIGN_RESIDENT_WITH_CONTROLLED_EXTERNAL_TEST_SURFACE",
+    "capabilities": ["gadi_resident_defensive_execution", "retained_stegbrowser_resident_node", "same_device_stegos_runtime_binding"],
+    "environment": "CURRENT_USER_IPHONE_RETAINED_STEGBROWSER_STEGOS_RESIDENT_WITH_CONTROLLED_EXTERNAL_TEST_SURFACE",
     "direction": "INTERNAL_AND_PREAUTHORIZED_EXTERNAL_DEFENSIVE",
     "mutation_required": true,
     "deployment_required": false,
     "current_observation_required": true
+  },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "SELECTED",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": [
+          "StegVerse-Labs/StegOS/docs/STEGBROWSER_RETAINED_NODE_BOOTSTRAP_MIRROR_HANDOFF.md",
+          "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_IOS_RESIDENT_RENDEZVOUS_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "SUITABLE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": ["StegVerse-Labs/StegOS/docs/STEGBROWSER_RETAINED_NODE_BOOTSTRAP_MIRROR_HANDOFF.md"]
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "SUITABLE",
+        "limitation_class": "NONE",
+        "evidence_refs": ["StegVerse-Labs/StegBrowser/docs/STEGBROWSER_ECOSYSTEM_EPHEMERAL_MIRROR_HANDOFF.md"]
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "SUITABLE",
+        "limitation_class": "NONE",
+        "evidence_refs": ["StegVerse-Labs/StegOS/docs/STEGBROWSER_RETAINED_NODE_BOOTSTRAP_MIRROR_HANDOFF.md"]
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": []
+      }
+    ],
+    "selected_substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
   },
   "runtime_resolution": null,
   "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
