@@ -22,6 +22,8 @@ CONSUMER_ANCHOR = '    ("stegos_kv_intr_chain", "scripts/consume_stegos_kv_intr_
 ENV_ROWS = (
     '    "STEGVERSE_ERL_ROOT",\n',
     '    "STEGVERSE_ERL_ACTIVE_RESEARCH_DISPATCH_PATH",\n',
+    '    "STEGVERSE_UNIVERSAL_INTR_INGRESS_URL",\n',
+    '    "STEGVERSE_TVC_RELAY_AUTHORIZATION_ID",\n',
 )
 ENV_ANCHOR = '    "STEGVERSE_GOOGLE_DRIVE_CLIENT_ID", "STEGVERSE_OWNER_BINDING_DIGEST", "STEGVERSE_STEGFIN_SOURCE_ROOT",\n'
 COPY_ROWS = (
@@ -29,6 +31,7 @@ COPY_ROWS = (
     '    "scripts/install_erl_active_research_universal_intr_route.py",\n',
     '    "scripts/install_erl_device_kv_prior_lineage.py",\n',
     '    "scripts/install_erl_resident_request_wiring.py",\n',
+    '    "scripts/materialize_erl_active_research_intr_submission_input.py",\n',
     '    "scripts/submit_erl_active_research_intr_binding.py",\n',
 )
 COPY_ANCHOR = '    "scripts/consume_stegos_kv_intr_chain_request.py",\n'
@@ -37,6 +40,7 @@ REQUIRED_ROWS = (
     '        target_root / "scripts" / "install_erl_active_research_universal_intr_route.py",\n',
     '        target_root / "scripts" / "install_erl_device_kv_prior_lineage.py",\n',
     '        target_root / "scripts" / "install_erl_resident_request_wiring.py",\n',
+    '        target_root / "scripts" / "materialize_erl_active_research_intr_submission_input.py",\n',
     '        target_root / "scripts" / "submit_erl_active_research_intr_binding.py",\n',
 )
 REQUIRED_ANCHOR = '        target_root / "scripts" / "consume_stegos_kv_intr_chain_request.py",\n'
