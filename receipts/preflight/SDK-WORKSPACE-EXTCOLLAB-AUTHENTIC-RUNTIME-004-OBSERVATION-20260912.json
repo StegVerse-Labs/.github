@@ -1,0 +1,34 @@
+{
+  "schema": "stegverse.runtime-observation-preflight/v1",
+  "task_id": "SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004",
+  "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "cosv_task_vector": "71000000100110",
+  "observed_at": "2026-09-12T03:25:00Z",
+  "authority_effect": "NONE_OBSERVATION_ONLY",
+  "observation": {
+    "authorized_remote_device_count": 0,
+    "retained_drive_reseal_receipt_matches": 0,
+    "retained_drive_listener_receipt_matches": 0,
+    "github_authentic_runtime_presence_receipt_observed": false,
+    "github_authentic_reseal_receipt_observed": false,
+    "github_authentic_listener_receipt_observed": false
+  },
+  "resolver_boundary": {
+    "profile_id": "canonical-resident-substrate-v1",
+    "static_source_compatibility": "PROVEN",
+    "current_observation_state": "DECLARED_ONLY",
+    "remaining_rejection_reason": "CURRENT_OBSERVATION_REQUIRED:DECLARED_ONLY"
+  },
+  "canonical_presence_producer": "heartbeat_runtime/runtime_presence_projection.py",
+  "canonical_presence_output": "receipts/sovereign-host/runtime-presence.latest.json",
+  "cross_task_reuse_authorized": false,
+  "cross_task_reuse_reason": "Exact runtime_root, resident.node_id, and canonical WorkerCoordinator subject binding is still required before presence evidence may be reused across consumers.",
+  "runtime_execution_claimed": false,
+  "custody_claimed": false,
+  "callback_reachability_claimed": false,
+  "owner_present_consent_claimed": false,
+  "provider_probe_claimed": false,
+  "downstream_propagation_claimed": false,
+  "public_distribution_claimed": false,
+  "manual_user_action_required": false
+}
