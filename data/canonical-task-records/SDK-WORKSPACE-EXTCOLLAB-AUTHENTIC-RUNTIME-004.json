@@ -4,7 +4,7 @@
   "correlation_id": "SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004",
   "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
   "parent_task_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
-  "goal": "Complete the authentic sovereign-resident external-collaboration runtime proof chain from resident reseal/listener consumption through target custody, sovereign callback reachability, owner-present consent, provider probe, SDK predicate re-evaluation, MIR reporting, Master Records reconstruction, one-current-device proof, and downstream/public distribution evidence without creating a hosted fallback or duplicate authority path.",
+  "goal": "Complete the authentic sovereign-resident external-collaboration runtime proof chain from resident reseal/listener consumption through target custody, sovereign callback reachability, owner-present consent, provider probe, SDK predicate re-evaluation, MIR reporting, Master Records reconstruction, one-current-device proof, and downstream/public distribution evidence without creating a hosted fallback, duplicate authority path, device-local user verifier, or node-bound user identity authority.",
   "coordination_state": "ACTIVE",
   "checkout_state": "UNCLAIMED",
   "cosv_task_vector": "71000000100110",
@@ -67,6 +67,8 @@
     "StegVerse-Labs/.github:commit/cc53257c7e57347d2481dd4fd680aed9b8cf2f6d",
     "StegVerse-Labs/.github:pull/1565",
     "StegVerse-Labs/.github:commit/d369cf3651bd0d485add4d03e740b91d58a3c839",
+    "StegVerse-Labs/.github:pull/1627",
+    "StegVerse-Labs/.github:commit/b27114d812c8ee9c9584ebe9a99cef4fa2297cfb",
     "StegVerse-Labs/.github:receipts/preflight/SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004-OBSERVATION-20260912.json"
   ],
   "resolver_repair": {
@@ -79,6 +81,20 @@
     "standalone_id_mismatch_fail_closed": true,
     "discovery_mutation_required": false,
     "merged_validated": true
+  },
+  "global_identity_invariant_alignment": {
+    "source": "data/task-registry-global-invariants.json",
+    "merge_evidence": "StegVerse-Labs/.github@b27114d812c8ee9c9584ebe9a99cef4fa2297cfb",
+    "user_verification_authority": "KV/SKAP Vault",
+    "user_verification_authority_exclusive": true,
+    "stegos_device_role": "INTERCHANGEABLE_TRANSPORT_NODE",
+    "device_user_verifier_authority": "NONE",
+    "node_user_verifier_authority": "NONE",
+    "transport_user_verifier_authority": "NONE",
+    "runtime_subject_binding_is_user_verification": false,
+    "resident_node_id_is_user_identity": false,
+    "resident_node_id_is_authority_source": false,
+    "resident_node_id_use": "RUNTIME_INSTANCE_CORRELATION_AND_EVIDENCE_SUBJECT_ONLY"
   },
   "runtime_source_compatibility": {
     "profile_id": "canonical-resident-substrate-v1",
@@ -107,13 +123,19 @@
       "merged_validated": true
     },
     "cross_task_reuse_authorized": false,
-    "required_subject_binding": ["runtime_root", "resident.node_id", "canonical_workercoordinator_identity"]
+    "required_subject_binding": ["runtime_root", "resident.node_id", "canonical_workercoordinator_identity"],
+    "subject_binding_purpose": "DISTINGUISH_AUTHENTIC_RUNTIME_INSTANCE_EVIDENCE",
+    "subject_binding_confers_user_identity": false,
+    "subject_binding_confers_user_verification_authority": false,
+    "subject_binding_confers_execution_authority": false
   },
   "source_state": {
     "portable_exact_dispatch_merged": true,
     "service_gateway_three_route_source_merged": true,
     "resolver_repair_merged_validated": true,
     "retained_rendezvous_node_subject_projection_merged_validated": true,
+    "kv_skap_user_verifier_global_invariant_merged": true,
+    "interchangeable_stegos_node_global_invariant_merged": true,
     "resident_reseal_consumption_receipt_observed": false,
     "resident_consent_listener_consumption_receipt_observed": false,
     "retained_drive_receipts_observed": false,
@@ -140,6 +162,11 @@
     "task_registry_mints_execution_authority": false,
     "worker_claim_authority": "WORKERCOORDINATOR",
     "credential_authority": "TV/TVC",
+    "user_verification_authority": "KV/SKAP Vault",
+    "user_verification_authority_exclusive": true,
+    "stegos_device_role": "INTERCHANGEABLE_TRANSPORT_NODE",
+    "device_user_verifier_authority": "NONE",
+    "node_user_verifier_authority": "NONE",
     "interlock_intr_required_for_governed_ingress_egress": true,
     "master_records_reality_authority": true,
     "gateway_owner": "StegVerse-org/LLM-adapter#72",
@@ -166,7 +193,9 @@
     "deployment_required": false,
     "current_observation_required": true,
     "already_local_source_required": true,
-    "second_user_operated_device_required": false
+    "second_user_operated_device_required": false,
+    "user_verification_source": "KV/SKAP Vault",
+    "device_local_user_verifier_allowed": false
   },
   "runtime_resolution": "UNRESOLVED_NO_CURRENT_AUTHORIZED_DEVICE",
   "worker_claim": {
@@ -191,6 +220,6 @@
     "material_function_change": false,
     "readme_updated_in_change_set": false,
     "readme_path": "README.md",
-    "no_readme_update_reason": "Registry reconciliation to merged observation-only subject projection and current negative runtime evidence; no public runtime capability or behavior change."
+    "no_readme_update_reason": "Registry reconciliation to the already-merged global KV/SKAP user-verifier and interchangeable-Ste gOS-node invariant; no public runtime capability or behavior change."
   }
 }
