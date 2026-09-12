@@ -7,13 +7,13 @@ Task ID: `GADI-RESIDENT-EXECUTION-001`
 Parent task: `GADI-001`
 COSV ID: `10100000100000`
 Canonical issue: `StegVerse-Labs/.github#1239`
-Status: `ACTIVE / SOURCE-CHAIN-MERGED / RETAINED-STEGBROWSER-STEGOS-SUBSTRATE-SELECTED / PROVIDER-VERIFICATION-BINDING-MATERIALIZER-MERGED / NATIVE-DISCOVERY-CONTRACT-REUSED / CURRENT-RUNTIME-DISCOVERY-EVIDENCE-PENDING / AUTHENTIC-RESIDENT-EXECUTION-PENDING`
+Status: `ACTIVE / SOURCE-CHAIN-MERGED / RETAINED-STEGBROWSER-STEGOS-SUBSTRATE-SELECTED / PROVIDER-VERIFICATION-BINDING-MATERIALIZER-MERGED / NATIVE-DISCOVERY-CONTRACT-REUSED / GADI-RETAINED-DISCOVERY-OBSERVER-IN-VALIDATION / CURRENT-RUNTIME-DISCOVERY-EVIDENCE-PENDING / AUTHENTIC-RESIDENT-EXECUTION-PENDING`
 
 ## Current canonical state
 
 `GADI-001` remains ACTIVE and not superseded. Authentic current resident execution remains unobserved.
 
-Task Registry substrate sorting is now explicit for `GADI-RESIDENT-EXECUTION-001`:
+Task Registry substrate sorting remains:
 
 ```text
 SELECTED: STEG-BROWSER-RETAINED-RESIDENT-NODE
@@ -55,11 +55,46 @@ discovery_grants_authority = false
 authority_effect = NONE_DISCOVERY_ONLY
 ```
 
-Both the StegBrowser transport-neutral core and the compiled StegOSMobile loopback listener implement this same discovery shape. It contains no GADI/KV task identity and grants no execution, claim/fence, credential, admission, or transition authority.
+Both the StegBrowser transport-neutral core and compiled StegOSMobile loopback listener implement this same shape. It contains no GADI/KV task identity and grants no execution, claim/fence, credential, admission, transition, or runtime-binding authority.
 
-The Site `assets/kv-ui/resident-rendezvous-client.js` wrapper is different: its validator intentionally binds the generic discovery response to the KV request `RESIDENT-EXEC-STEGOS-KV-INTR-CHAIN-003`. That KV wrapper is not a GADI request/submission surface and must not be reused as GADI execution evidence. GADI may reuse the underlying native task-agnostic discovery observation only.
+The Site `assets/kv-ui/resident-rendezvous-client.js` wrapper intentionally binds the generic discovery response to KV request `RESIDENT-EXEC-STEGOS-KV-INTR-CHAIN-003`. That wrapper is not a GADI request/submission surface and must not be reused as GADI execution evidence.
 
-A discovery response proves only retained-node availability and identity. It does not by itself establish the stronger GADI runtime binding.
+## GADI retained discovery observer — in validation
+
+Branch: `gadi-retained-resident-discovery-observer-001`
+
+New local-only observer:
+
+```text
+scripts/observe_gadi_retained_resident_discovery.py
+```
+
+It probes only the already-existing same-device localhost contract:
+
+```text
+http://127.0.0.1:8000/api/resident-rendezvous/v1/discovery
+http://localhost:8000/api/resident-rendezvous/v1/discovery
+```
+
+It has no hosted fallback, creates no listener/page/protocol, and does not use the KV request wrapper. A successful observation must contain the exact canonical discovery fields and a canonical `SV-NODE-<24 lowercase hex>` node reference. The observer preserves the exact response SHA-256 and writes only:
+
+```text
+state/gadi-resident-execution/retained-resident-discovery.json
+schema = stegverse.gadi-retained-resident-discovery-observation/v1
+state = CURRENT_RETAINED_RESIDENT_DISCOVERY_OBSERVED
+authority_effect = NONE_DISCOVERY_ONLY
+```
+
+If neither localhost endpoint is reachable it writes `RETAINED_RESIDENT_DISCOVERY_UNOBSERVED_FAIL_CLOSED`; absence remains reachability evidence only.
+
+`run_gadi_targeted_runtime_if_ready.py` now invokes this observer before the existing runtime-binding projector. WorkerCoordinator remains unreachable unless both:
+
+1. current native retained-node discovery is observed; and
+2. the stronger current runtime-binding observation exists for the exact same node subject.
+
+If `target_node_ref != runtime_binding.node_id`, readiness fails with `DISCOVERY_RUNTIME_SUBJECT_MISMATCH`.
+
+This closes the source gap behind canonical predicate `CURRENT_RETAINED_STEGBROWSER_STEGOS_NODE_DISCOVERY_OBSERVED` without promoting discovery into runtime liveness or authority.
 
 ## GADI runtime-binding boundary
 
@@ -79,42 +114,30 @@ credential authority TV/TVC
 GitHub runtime authority NONE
 ```
 
-Therefore the correct sequence is:
+Correct sequence:
 
 ```text
 native retained-node discovery
+-> exact discovery subject match
 -> current resident presence/supervision observation for that subject
 -> materialize_gadi_runtime_binding.py
 -> CURRENT_RUNTIME_SUBJECT_BOUND
 ```
 
-Do not promote discovery alone into `CURRENT_RUNTIME_SUBJECT_BOUND`.
+Discovery alone never satisfies `CURRENT_RUNTIME_SUBJECT_BOUND`.
 
 ## Provider-verification source boundary — merged
 
-StegOS PR #346 merged at:
+StegOS PR #346 merged at `4b29ea35ee27d9327da87231ca516475dcee6cd8` after exact head `f76a99be9dcfabc5abe1af24896dd5be4c204c12` passed StegOS CI run `34668002777`.
 
-```text
-4b29ea35ee27d9327da87231ca516475dcee6cd8
-```
-
-Validated exact head:
-
-```text
-f76a99be9dcfabc5abe1af24896dd5be4c204c12
-StegOS CI 34668002777 — SUCCESS
-```
-
-PR #346 adds the evidence-only `stegos/provider_evidence_verification.py` materializer. It emits the existing StegCore #207 schema only when four independently supplied verification inputs agree with the exact external-evidence envelope:
+PR #346 adds evidence-only `stegos/provider_evidence_verification.py`, which emits the existing StegCore #207 schema only when four independently supplied verification inputs agree with the exact external-evidence envelope:
 
 1. accepted signature verification from the existing verifier framework;
 2. independent provider authorization + authorized scope;
 3. independent evidence-chain verification;
 4. independent freshness verification.
 
-The materializer does not authorize providers, perform cryptographic verification by itself, create chain truth, decide freshness, mint credentials, perform InTr/Governance admission, or grant execution authority. The envelope cannot self-assert any of those predicates.
-
-Source gap status:
+The materializer does not authorize providers, perform cryptographic verification by itself, create chain truth, decide freshness, mint credentials, perform InTr/Governance admission, or grant execution authority.
 
 ```text
 StegCore #207 verified-binding consumer: MERGED
@@ -123,8 +146,6 @@ StegOS #346 independent binding materializer: MERGED
 current authentic provider/signature/chain/freshness inputs: NOT OBSERVED
 current GADI verified-external-evidence binding: NOT OBSERVED
 ```
-
-The remaining provider-verification condition is therefore runtime evidence, not missing materializer source.
 
 ## Existing merged GADI execution chain
 
@@ -156,7 +177,7 @@ StegOS #346 independent provider-evidence verification binding materializer
 
 ```text
 CURRENT RETAINED STEGBROWSER/STEGOS NATIVE DISCOVERY
--> CURRENT RESIDENT-PRESENCE + SUPERVISION SUBJECT OBSERVATION
+-> CURRENT RESIDENT-PRESENCE + SUPERVISION SUBJECT OBSERVATION FOR SAME NODE
 -> CURRENT GADI RUNTIME BINDING
 -> CURRENT THREAT / BOUNDARY OBSERVATIONS
 -> CURRENT GADI-SCOPED EXTERNAL-EVIDENCE ENVELOPE
@@ -208,20 +229,18 @@ CURRENT_GADI_WORKERCOORDINATOR_CLAIM_FENCE
 CURRENT_GADI_RESIDENT_CONSUMPTION
 ```
 
-A repository/tooling DNS failure while probing the public endpoint is not resident evidence and is not a runtime failure. It must not be converted into a device requirement.
+Source/CI success for this observer does not satisfy the first predicate. Only a current response from the actual retained resident does.
 
 ## Immediate continuation
 
-1. Observe the existing StegBrowser/StegOS native retained-node discovery contract; do not create a new page/listener/protocol.
-2. Do not use the Site KV request wrapper as a GADI submission surface.
-3. If native discovery is observed, correlate its exact `SV-NODE-*` subject with current resident presence/supervision evidence.
+1. Validate and merge the retained-discovery observer only if exact-head organization-control, deterministic-suite, and Heartbeat lanes pass.
+2. On the sovereign runtime, let the existing readiness path observe the native localhost retained-node discovery; do not create a page/listener/protocol or use the KV wrapper.
+3. Correlate the exact discovered `SV-NODE-*` with current resident presence/supervision evidence; mismatch fails closed.
 4. Run the existing GADI runtime-binding projector only after that stronger current presence evidence exists.
-5. Obtain current threat/boundary observations and the GADI-scoped external-evidence envelope after subject binding.
-6. Use StegOS #345 + #346 only with independently sourced signature/provider/chain/freshness evidence; do not infer any predicate from the envelope itself.
-7. Continue through existing StegCore facts -> PENDING request -> InTr/Governance admission -> StegOS native command.
-8. Observe only the controlled pre-authorized software test-surface effect.
-9. Let non-claim readiness complete before a fresh WorkerCoordinator claim/fence.
-10. Require exact materialization/preflight, newly changed resident-consumption evidence, reassessment/termination, Continuity custody, Master Records reconciliation, and exact reconstruction.
+5. Continue with current threat/boundary observations and independently verified GADI external evidence through the existing merged chain.
+6. Observe only the controlled pre-authorized software test-surface effect.
+7. Let non-claim readiness complete before a fresh WorkerCoordinator claim/fence.
+8. Require exact materialization/preflight, newly changed resident-consumption evidence, reassessment/termination, Continuity custody, Master Records reconciliation, and exact reconstruction.
 
 ## Collision boundary
 
