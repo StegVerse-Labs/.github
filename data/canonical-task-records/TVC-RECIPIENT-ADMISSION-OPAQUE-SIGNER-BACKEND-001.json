@@ -16,6 +16,8 @@
   "source_refs": [
     "StegVerse-Labs/stegfin-governance/stegwallet/recipient_admission_signing.py",
     "StegVerse-Labs/stegfin-governance/stegwallet/vault_agent_service.py",
+    "StegVerse-Labs/stegfin-governance/stegwallet/platform_recipient_admission_signer.py",
+    "StegVerse-Labs/stegfin-governance/docs/TVC_PLATFORM_OPAQUE_SIGNER_BACKEND_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegOS/mobile/ios/StegOSMobile/TVCRecipientKeyCandidate.swift",
     "StegVerse-Labs/StegOS/docs/TVC_RECIPIENT_ADMISSION_AUTHORITY_KEY_CANDIDATE_MIRROR_HANDOFF.md",
     "StegVerse-Labs/TVC/scripts/tvc_recipient_capability_admission.py",
@@ -23,7 +25,8 @@
     "StegVerse-Labs/TVC/docs/TVC_RECIPIENT_ADMISSION_VAULT_AGENT_CONSOLIDATION_MIRROR_HANDOFF.md"
   ],
   "blockers": [
-    "AUTHENTICATED_VAULT_AGENT_TO_SECURE_ENCLAVE_SIGNING_BRIDGE_NOT_YET_IMPLEMENTED",
+    "INDEPENDENTLY_AUTHENTICATED_PLATFORM_TRANSPORT_NOT_YET_IMPLEMENTED",
+    "PLATFORM_SIGNER_BACKEND_NOT_YET_INJECTED_INTO_PRODUCTION_VAULT_AGENT_LIFECYCLE",
     "PRODUCTION_AUTHORITY_KEY_MATERIALIZATION_NOT_YET_OBSERVED",
     "MATCHING_PUBLIC_JWK_BINDING_NOT_YET_OBSERVED"
   ],
@@ -45,7 +48,13 @@
     "tvc_vault_agent_caller_merge": "StegVerse-Labs/TVC@5edf023aa7d45e1f525dd1bb556d25cacd35ae74",
     "legacy_second_signer_socket_rejected": true,
     "worker_invocation_validated_before_signer_call": true,
-    "separate_tvc_authority_backend_bound_to_vault_agent": false,
+    "platform_opaque_signer_backend_adapter_merged": true,
+    "platform_opaque_signer_backend_merge": "StegVerse-Labs/stegfin-governance@6a42422d1faf2449f18f98efcd6b0c61bd0bb733",
+    "platform_backend_owns_transport": false,
+    "platform_backend_requires_independent_transport_authentication": true,
+    "existing_intr_ingress_is_sufficient_signing_authentication": false,
+    "existing_execution_grant_is_device_verifiable_cryptographic_identity": false,
+    "platform_backend_injected_in_production_launcher": false,
     "recipient_secure_enclave_key_is_eligible_authority_key": false,
     "production_backend_materialized": false,
     "public_trust_anchor_bound": false
@@ -60,7 +69,8 @@
     "hosted_execution_fallback": false
   },
   "allowed_next_transitions": [
-    "BIND_PLATFORM_SIGNER_BACKEND_TO_EXISTING_VAULT_AGENT_PROCESS",
+    "IMPLEMENT_INDEPENDENTLY_AUTHENTICATED_PLATFORM_TRANSPORT",
+    "INJECT_PLATFORM_SIGNER_BACKEND_INTO_EXISTING_VAULT_AGENT_LIFECYCLE",
     "PROJECT_MATCHING_PUBLIC_JWK_ONLY",
     "OBSERVE_AUTHENTIC_PRODUCTION_MATERIALIZATION"
   ],
