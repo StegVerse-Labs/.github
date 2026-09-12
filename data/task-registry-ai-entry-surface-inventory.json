@@ -1,0 +1,58 @@
+{
+  "schema": "stegverse.task-registry-ai-entry-surface-inventory/v1",
+  "goal_task_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+  "observed_at": "2026-09-12",
+  "classification": "PARTIAL_SOURCE_INVENTORY_RUNTIME_REACHABILITY_NOT_PROVEN",
+  "surfaces": [
+    {
+      "path": "scripts/evaluate_task_registry_ai_session_checkin.py",
+      "role": "AI_OR_INTERACTIVE_SESSION_COORDINATION_GATE",
+      "actor_identity_gate": "SOURCE_DECLARATION_FAIL_CLOSED",
+      "non_chatgpt_ai_denial": "PASS_SOURCE_LEVEL",
+      "runtime_identity_attestation": "NOT_PROVEN"
+    },
+    {
+      "path": "scripts/evaluate_task_registry_collision_checkin.py",
+      "role": "CANONICAL_GENERAL_TASK_REGISTRY_CHECKIN",
+      "actor_identity_gate": "NONE_OBSERVED",
+      "non_chatgpt_ai_denial": "NOT_PROVEN",
+      "runtime_identity_attestation": "NOT_PROVEN",
+      "risk": "DIRECT_INVOCATION_CAN_BYPASS_AI_SESSION_WRAPPER_IF_EXPOSED_TO_AI"
+    },
+    {
+      "path": "scripts/record_task_registry_session_return.py",
+      "role": "SESSION_RETURN_EVENT_ENTRYPOINT",
+      "actor_identity_gate": "NONE_OBSERVED",
+      "non_chatgpt_ai_denial": "NOT_PROVEN",
+      "runtime_identity_attestation": "NOT_PROVEN"
+    },
+    {
+      "path": "scripts/materialize_task_session_close.py",
+      "role": "SESSION_CLOSE_COORDINATION_MATERIALIZATION",
+      "actor_identity_gate": "NOT_YET_INVENTORIED_IN_DETAIL",
+      "non_chatgpt_ai_denial": "NOT_PROVEN",
+      "runtime_identity_attestation": "NOT_PROVEN"
+    },
+    {
+      "path": "scripts/install_and_run_canonical_work_event_bootstrap.py",
+      "role": "INTERNAL_CANONICAL_WORK_PREFLIGHT_CONSUMER",
+      "actor_identity_gate": "NON_AI_INTERNAL_PATH_EXPECTED",
+      "non_chatgpt_ai_denial": "NOT_APPLICABLE_UNLESS_EXTERNALLY_EXPOSED",
+      "runtime_identity_attestation": "NOT_PROVEN"
+    }
+  ],
+  "conclusions": {
+    "task_registry_ai_entry_surfaces_inventoried": "PARTIAL",
+    "chatgpt_only_task_registry_entry_enforced": "PARTIAL_WRAPPER_ONLY",
+    "non_chatgpt_ai_task_registry_denial_enforced": "PARTIAL_WRAPPER_ONLY",
+    "direct_general_checkin_bypass_closed": false,
+    "runtime_identity_attestation_proven": false
+  },
+  "next_required_remediation": [
+    "CLASSIFY_EVERY_CALLER_OF_GENERAL_CHECKIN_AS_AI_SESSION_HUMAN_OR_NON_AI_INTERNAL",
+    "ROUTE_ALL_AI_SESSION_CALLERS_THROUGH_AI_SESSION_GATE",
+    "PREVENT_EXTERNAL_AI_REACHABILITY_TO_GENERAL_CHECKIN",
+    "APPLY_EQUIVALENT_ACTOR_POLICY_TO_SESSION_RETURN_AND_CLOSE_SURFACES",
+    "ADD_RUNTIME_IDENTITY_ORIGIN_EVIDENCE_BEFORE_CLAIMING_CHATGPT_EXCLUSIVITY"
+  ]
+}

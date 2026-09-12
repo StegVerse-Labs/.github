@@ -1,0 +1,34 @@
+{
+  "schema": "stegverse.task-registry-ai-ingress-policy/v1",
+  "goal_task_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+  "status": "SOURCE_DECLARATION_GATE_ACTIVE_RUNTIME_IDENTITY_ATTESTATION_NOT_PROVEN",
+  "scope": "SESSION_BEARING_TASK_REGISTRY_COORDINATION_CHECKIN",
+  "allowed_actor_kinds": [
+    "CHATGPT_SESSION",
+    "HUMAN_OPERATOR",
+    "NON_AI_SYSTEM_COORDINATOR"
+  ],
+  "denied_ai_actor_kinds": [
+    "NON_CHATGPT_AI",
+    "AI_MODEL",
+    "AI_AGENT",
+    "EXTERNAL_MODEL"
+  ],
+  "invariants": {
+    "chatgpt_is_only_ai_actor_kind_permitted": true,
+    "human_operator_permitted": true,
+    "non_ai_system_coordinator_permitted": true,
+    "missing_actor_kind_fails_closed_for_session_checkin": true,
+    "unrecognized_actor_kind_fails_closed_for_session_checkin": true,
+    "declaration_is_identity_attestation": false,
+    "runtime_identity_attestation_proven": false,
+    "task_registry_grants_execution_authority": false
+  },
+  "authority": {
+    "task_registry": "COORDINATION_WORK_CONTROL_ONLY",
+    "workercoordinator": "CLAIM_FENCE",
+    "interlock_intr": "TRANSITION_ADMISSION",
+    "tv_tvc": "CREDENTIAL_AUTHORITY",
+    "github_actions": "VALIDATION_EVIDENCE_TRANSPORT_ONLY"
+  }
+}
