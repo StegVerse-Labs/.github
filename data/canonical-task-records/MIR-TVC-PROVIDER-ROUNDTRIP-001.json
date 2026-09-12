@@ -1,0 +1,100 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
+  "correlation_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
+  "root_correlation_id": "MIR-STEGVERSE-HISTORICAL-ACCOUNTING-RUN-002",
+  "parent_task_id": "MIR-STEGVERSE-HISTORICAL-ACCOUNTING-RUN-002",
+  "goal": "Use the existing TV/TVC non-exportable provider-operation broker for MIR Run 2 historical accounting, preserving MIR historical-custody authority, StegVerse governance authority, exact request/body/test bindings, and fail-closed credential isolation without creating a second transport or runtime.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "50000000100000",
+  "owners": {
+    "credential_and_provider_broker_owner": "StegVerse-Labs/TVC",
+    "governance_and_delta_owner": "StegVerse-org/StegVerse-SDK",
+    "historical_accounting_owner": "MIR",
+    "transition_owner": "Interlock/InTr"
+  },
+  "source_refs": [
+    "StegVerse-Labs/TVC#412",
+    "StegVerse-Labs/TVC#415",
+    "StegVerse-Labs/TVC/config/provider_operation_profiles.json",
+    "StegVerse-Labs/TVC/tvc_mir_provider_profile.py",
+    "StegVerse-Labs/TVC/tvc_provider_operation_broker.py",
+    "StegVerse-Labs/TVC/docs/MIR_TVC_PROVIDER_ROUNDTRIP_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK#217",
+    "https://mirregistry.com/api",
+    "https://mirregistry.com/changelog"
+  ],
+  "current_truth": {
+    "mir_profile_branch_materialized": true,
+    "mir_specific_validator_branch_materialized": true,
+    "canonical_broker_dispatch_branch_materialized": true,
+    "broker_level_tests_branch_materialized": true,
+    "dedicated_mir_ci_branch_materialized": true,
+    "read_standing_source_admitted": true,
+    "policy_evaluate_source_forbidden": true,
+    "public_mir_fixed_event_vocabulary_rule_verified": true,
+    "public_mir_ai_event_strings_verified": true,
+    "run2_transition_to_mir_event_semantic_mapping_verified": false,
+    "mir_event_type_allowlist_materialized": false,
+    "tvc_pr_415_merged": false,
+    "authentic_tvc_mir_provider_session_observed": false,
+    "authentic_mir_submit_event_observed": false,
+    "authentic_mir_response_observed": false,
+    "sdk_run2_delta_observed": false
+  },
+  "authority_invariants": {
+    "credential_authority": "TV/TVC",
+    "mir_historical_accounting_authority": "MIR",
+    "governance_authority": "STEGVERSE",
+    "transition_authority": "Interlock/InTr",
+    "consumer_credential_access": false,
+    "github_actions_credential_access": false,
+    "github_runtime_authority": "NONE",
+    "alternate_mir_transport_allowed": false,
+    "policy_evaluate_admitted": false
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-MIR-EVENT-SEMANTIC-MAPPING",
+      "kind": "AUTHORITATIVE_PROVIDER_CONTRACT",
+      "state": "PENDING",
+      "ref": "https://mirregistry.com/api",
+      "disposition": "MAP_ONLY_RUN2_TRANSITIONS_WITH_SEMANTICS_SUPPORTED_BY_AUTHORITATIVE_MIR_EVENT_REFERENCE; KEEP_SUBMIT_EVENT_FAIL_CLOSED_UNTIL_MAPPING_IS_VERIFIED"
+    },
+    {
+      "dependency_id": "DEP-MIR-TVC-AUTHENTIC-RUNTIME",
+      "kind": "RUNTIME_EVIDENCE",
+      "state": "PENDING",
+      "ref": "StegVerse-Labs/TVC/docs/MIR_TVC_PROVIDER_ROUNDTRIP_MIRROR_HANDOFF.md",
+      "disposition": "REQUIRE_ADMITTED_TV_TVC_SESSION_AND_AUTHENTIC_MIR_PROVIDER_RECEIPTS; CI_IS_NOT_RUNTIME"
+    }
+  ],
+  "expected_evidence_predicates": [
+    "MIR_PROFILE_REGISTERED_IN_CANONICAL_TVC_PROVIDER_REGISTRY",
+    "CANONICAL_PROVIDER_BROKER_DISPATCHES_TO_MIR_VALIDATOR",
+    "MIR_STANDING_REQUEST_BOUND_AND_ADMITTED",
+    "MIR_SUBMIT_EVENT_FAILS_CLOSED_WITHOUT_VERIFIED_EVENT_MAPPING",
+    "MIR_POLICY_EVALUATE_FORBIDDEN",
+    "MIR_CREDENTIAL_NOT_EXPORTED",
+    "MIR_BODY_AND_LEASE_MUTATION_FAIL_CLOSED",
+    "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED",
+    "AUTHENTIC_MIR_RESULT_RECEIPT_RETAINED"
+  ],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "source_implemented": false,
+    "source_validated": false,
+    "runtime_observed": false
+  },
+  "allowed_next_transitions": [
+    "VALIDATE_AND_MERGE_SOURCE_PR",
+    "VERIFY_RUN2_MIR_EVENT_SEMANTIC_MAPPING",
+    "OBSERVE_AUTHENTIC_PROVIDER_SESSION",
+    "EXECUTE_AUTHENTIC_MIR_OPERATION"
+  ],
+  "handoff_projection_refs": [
+    "StegVerse-Labs/TVC/docs/MIR_TVC_PROVIDER_ROUNDTRIP_MIRROR_HANDOFF.md"
+  ]
+}
