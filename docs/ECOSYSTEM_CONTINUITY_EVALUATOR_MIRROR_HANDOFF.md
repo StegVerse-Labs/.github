@@ -7,7 +7,7 @@ Goal Task ID: ECOSYSTEM-CONTINUITY-EVALUATOR-001
 COSV: 71000000100111
 Repository: StegVerse-Labs/.github
 Canonical issue: #1524
-Status: ACTIVE / TRUSTWORTHY SOURCE+PANEL CHAIN MERGED+VALIDATED / AUTHENTIC PERIODIC RUNTIME EVIDENCE PENDING
+Status: ACTIVE / TRUSTWORTHY SOURCE+PANEL+SDK DIAGNOSTIC CHAIN MERGED+VALIDATED / PERIODIC SDK BRIDGE+AUTHENTIC RUNTIME EVIDENCE PENDING
 Authority effect: NONE_DIAGNOSTIC_ONLY
 Repair owner: StegVerse-Labs/StegVerse-Healer
 GitHub runtime authority: NONE
@@ -16,11 +16,11 @@ Credential authority: TV/TVC
 
 ## Purpose
 
-Build a trustworthy periodic ecosystem continuity system: ECE evaluates retained evidence, Master Records retains and reconstructs exact evaluation bytes, Site projects only safe read-only state, Healer consumes actionable findings without rewriting continuity truth, and recovery exists only after a later independent ECE PASS observation.
+Build a trustworthy periodic ecosystem continuity system: manifested diagnostic tests enter through the SDK, ECE interprets retained diagnostic observations as continuity state, Master Records retains/reconstructs exact evidence, Site projects only safe read-only state, Healer consumes actionable findings without rewriting continuity truth, and recovery exists only after a later independent ECE PASS observation.
 
 ## Core invariant
 
-A continuity finding describes observed ecosystem state. It never grants authority to change that state. A repair receipt describes attempted or completed remediation. It never proves recovery. Recovery exists only when a later continuity evaluation independently observes the required predicate PASS with acceptable evidence/freshness.
+A diagnostic result describes an observation and grants no repair or transition authority. A continuity finding describes observed ecosystem state and grants no authority to change that state. A repair receipt describes attempted/completed remediation and never proves recovery. Recovery exists only when a later continuity evaluation independently observes the required predicate PASS with acceptable evidence/freshness.
 
 ## Merged and validated source chain
 
@@ -44,7 +44,7 @@ Non-PASS findings receive an immutable snapshot hash and Healer state `DETECTED`
 
 Site PR #1241 merged at `8214d3c28522c0af98276ce5cbd2c591cd4a4f3e` from exact head `dec3b3040576e8bd91e7ef01cd5222fb896ebef2`; validation runs `34653841821`, `34653841962`, and `34653841899` PASS. Its claim was terminalized by PR #1242 at `f1da3ced486460c6e897b7ff969ef8d8a94cb0ed` after runs `34654163349`, `34654163404`, and `34654163335` PASS.
 
-The safe projection excludes raw evidence locators, free-form detail, remediation class, credentials, private KV paths, callback material, and sensitive infrastructure identifiers. Invalid/missing/authorizing input fails closed to `INDETERMINATE`.
+The projection excludes raw evidence locators, free-form detail, remediation class, credentials, private KV paths, callback material, and sensitive infrastructure identifiers. Invalid/missing/authorizing input fails closed to `INDETERMINATE`.
 
 ### Master Records exact-byte custody/reconstruction
 
@@ -73,29 +73,57 @@ Node IndexedDB Schema Migration regression lane: 34655632758 PASS
 
 Its claim was terminalized by Site PR #1249 at `a389511dbbd27ad5b633cef6c30a78824b914776` from exact head `2eff5724efcdf66009083487fe7e821104948668`, with Heartbeat `34655772537`, Handoff Orchestrator `34655772501`, and Site Bootstrap `34655772534` PASS.
 
-`ecosystem-continuity.html` is projection-only. `assets/ecosystem-continuity-panel.js` attempts a no-store same-origin read of `data/ecosystem-continuity/current.json`. That current-state file was deliberately **not** created by source work. Missing, malformed, wrong-schema, authorizing, source-unavailable, or unsafe input renders `UNAVAILABLE`; the consumer does not use local/session storage as a stale-green fallback and does not read raw ECE evidence/detail fields.
+`ecosystem-continuity.html` is projection-only. `assets/ecosystem-continuity-panel.js` requests `data/ecosystem-continuity/current.json` with no-store semantics. That current-state file is deliberately absent until authentic retained Site-safe projection bytes are materialized; missing/invalid input renders `UNAVAILABLE`.
 
-Source merge therefore creates the display capability without manufacturing continuity evidence. The Site panel is not claimed live with authentic continuity data.
+### SDK ecosystem diagnostic processor
+
+Child Task `SDK-ECOSYSTEM-DIAGNOSTIC-PROCESSOR-001` / COSV `71000000101000` was registered by `.github` PR #1551, merged at `e63a532f7125f7898dbd03127938e2f9f746e9e7` from exact head `d2dcd0804984f93ee03cc88afabba356f296705e`.
+
+```text
+Heartbeat Worker Project: 34670501691 PASS
+Deterministic Repository Suite: 34670501791 PASS
+Organization Control: 34670501716 PASS
+```
+
+SDK PR #219 merged at `50fa9ca306ada6f75fb928281e2bf495ebb08ce8` from exact head `19f573c54c39298e266caa4fe63d7706c9d09d34`; all 13 exact-head SDK validation lanes PASS, including Manifest Builder `34670488339`, Evaluator Manifest `34670488333`, External Framework Public Submission `34670488297`, Package Artifact `34670488313`, and Output-Boundary `34670488212`.
+
+Installed contract:
+
+```text
+processing.capability = ecosystem_diagnostic
+route_id = stegverse.route.ecosystem-diagnostic.v1
+request schema = stegverse.ecosystem-diagnostic-request.v1
+result schema = stegverse.ecosystem-diagnostic-result.v1
+runtime binding = stegverse.ecosystem_diagnostic_runtime.execute_manifest
+CLI = stegverse-diagnostic --manifest <manifest.json>
+mutation_permitted = false
+authority_effect = NONE_DIAGNOSTIC_ONLY
+continuity_state_present = false
+```
+
+Manifest Builder supports `--process ecosystem_diagnostic --processor-request ...` using the same universal `stegverse.ingress-manifest.v1`. Missing diagnostic observations remain `NOT_OBSERVED`; pre-registered evidence assertions without evidence refs fail closed to `PROBE_REQUIRED`; backed observation state/evidence is preserved without the SDK calculating continuity.
 
 ## Latest runtime observation
 
-Re-observed after the panel work:
+Latest re-observation before this SDK source tranche:
 
 ```text
 authorized Remote Desktop devices: 0
 connected Drive ECE artifacts: none found
 authentic resident reusable ECE slot: NOT OBSERVED
+authentic SDK diagnostic request/result: NOT OBSERVED
 authentic retained ECE evaluation: NOT OBSERVED
 authentic Master Records ECE custody/reconstruction: NOT OBSERVED
 Healer live ECE finding intake: NOT OBSERVED
 Site-safe current projection bytes: NOT OBSERVED
 ```
 
-No CI, merge, page source, scheduler configuration, or empty search result is being promoted to runtime proof.
+No CI, merge, package artifact, scheduler configuration, or empty search result is being promoted to runtime proof.
 
 ## Authority roles
 
-- ECE: observation, correlation, classification, evidence binding, continuity derivation only.
+- SDK `ecosystem_diagnostic`: manifested diagnostic transport/result standardization only; no continuity or repair authority.
+- ECE: dependency-aware continuity interpretation, evidence binding, and continuity derivation only.
 - Master Records: retained reality/custody and reconstruction authority.
 - Site: read-only safe projection and display only.
 - StegVerse-Healer: scheduler/finding-intake/repair-dispatch owner; dispatch does not prove recovery.
@@ -113,6 +141,10 @@ Master Records custody/reconstruction source: MERGED / EXACT VALIDATION PASS
 Reusable ECE identity/runner source: MERGED / EXACT VALIDATION PASS
 Hourly Healer ECE schedule + cycle source: MERGED / EXACT VALIDATION PASS
 Site continuity panel source: MERGED / EXACT VALIDATION PASS / CLAIM TERMINALIZED
+SDK ecosystem_diagnostic schemas/route/runtime/builder/CLI: MERGED / EXACT VALIDATION PASS
+Healer periodic ECE -> SDK diagnostic bridge: NOT IMPLEMENTED
+Exact SDK diagnostic-result bytes bound into ECE/Master Records chain: NOT PROVEN
+Authentic SDK diagnostic request/result: NOT OBSERVED
 Authentic resident ECE schedule slot consumed: NOT OBSERVED
 Authentic retained ECE evaluation: NOT OBSERVED
 Authentic Master Records ECE custody/reconstruction: NOT OBSERVED
@@ -124,13 +156,19 @@ Independent repair -> later ECE recovery verification: NOT PROVEN
 
 ## Exact next sequence
 
-1. Observe the existing authorized resident Healer reusable scheduler and require one authentic `RT-ECOSYSTEM-CONTINUITY-EVALUATION-001` invocation receipt.
-2. Require the linked `cycle.latest.json`, exact evaluation artifact, exact Master Records custody/reconstruction evidence, Healer intake, and Site-safe projection under the same resident runtime.
-3. If no authentic observation bundle exists, accept an honest `AT_RISK`/`NOT_OBSERVED` baseline rather than manufacturing PASS evidence.
-4. Materialize only the exact retained Site-safe projection bytes to `data/ecosystem-continuity/current.json` through a separately evidenced bounded path.
-5. Verify the user-facing `ecosystem-continuity.html` page renders those exact bytes; source merge or page reachability alone is not live continuity proof.
-6. Feed actionable non-PASS findings into existing authorized Healer repair dispatch paths only.
-7. Prove recovery only after a later independently retained ECE evaluation observes the repaired predicate PASS with acceptable freshness/evidence.
-8. Add authentic component probes incrementally while preserving the evaluation -> custody/reconstruction -> intake/projection chain.
-9. Site root `README.md` still needs a patch-safe index entry for the new continuity page; do not replace or truncate the large README merely to satisfy documentation bookkeeping.
-10. `.github` root README integration remains represented by `README_ECE_SECTION.md` until a patch-safe edit can merge it without clobbering unrelated content.
+1. In the next fresh implementation tranche, modify the existing Healer periodic ECE cycle so it builds an SDK `ecosystem_diagnostic` manifest from the registered ECE predicates plus the current authentic resident observation bundle.
+2. Execute that manifest through the installed SDK diagnostic processor and retain the exact SDK diagnostic-result bytes/hash under the resident ECE cycle.
+3. Transform only SDK result observations into the ECE observation bundle; SDK diagnostic output must never supply or override `continuity_state`.
+4. Bind SDK diagnostic-result identity/hash into the ECE evaluation and Master Records custody/reconstruction chain.
+5. Preserve an honest `NOT_OBSERVED` baseline when authentic observation packets are absent.
+6. Observe one authentic resident SDK diagnostic request/result and the linked ECE cycle before claiming the diagnostic lane operational.
+7. Materialize only exact retained Site-safe projection bytes to `data/ecosystem-continuity/current.json`, then verify `ecosystem-continuity.html` renders them.
+8. Feed actionable non-PASS findings through existing authorized Healer repair-dispatch paths only.
+9. Prove recovery only after a later independently retained ECE evaluation observes repaired predicates PASS with acceptable freshness/evidence.
+10. Add authentic component probe adapters incrementally without changing this authority chain.
+
+## Documentation maintenance
+
+- SDK root README still contains older prose saying governance is the only installed processor; perform a patch-safe update in the next SDK documentation tranche.
+- Site root README still needs a patch-safe index entry for the continuity page.
+- `.github` root README ECE integration remains represented by `README_ECE_SECTION.md` until a patch-safe edit can merge without clobbering unrelated content.
