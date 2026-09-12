@@ -5,7 +5,7 @@
   "invariants": {
     "user_verification_authority": "KV/SKAP Vault",
     "user_verification_authority_exclusive": true,
-    "stegos_device_role": "INTERCHANGEABLE_TRANSPORT_EXECUTION_NODE",
+    "stegos_device_role": "INTERCHANGEABLE_TRANSPORT_NODE",
     "device_verification_policy": "NONE_PROHIBITED",
     "device_verification_process": "NONE_PROHIBITED",
     "device_attestation_gate": "NONE_PROHIBITED",
@@ -24,7 +24,7 @@
   },
   "semantics": {
     "kv_skap_vault": "Maintains the verifier for the user and is the sole source of user-verification state.",
-    "stegos_device": "An interchangeable StegOS transport/execution node. Device identity, node identity, transport channel identity, local key possession, and local hardware do not establish user-verifier authority and are not verification gates.",
+    "stegos_device": "An interchangeable StegOS transport node that may carry or execute bounded work. Device identity, node identity, transport channel identity, local key possession, and local hardware do not establish user-verifier authority and are not verification gates.",
     "node_local_capability": "A node may expose and invoke locally available capabilities after applicable KV/SKAP-backed user-verification state and Interlock/InTr admission are bound to the exact operation. Local execution does not make the node the user verifier.",
     "transport_integrity": "A transport may preserve integrity, freshness, routing, replay protection, and evidence bindings without becoming a user verifier or trust root for the user.",
     "execution_surface_observation": "Connector or runtime observations such as reachable, connected, alive, local, or unavailable describe execution-surface availability only. They never mean authorized, verified, trusted, user-verified, or authority-bearing.",
