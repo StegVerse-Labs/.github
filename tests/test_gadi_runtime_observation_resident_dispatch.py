@@ -39,9 +39,12 @@ class GADIRuntimeObservationResidentDispatchTests(unittest.TestCase):
         self.assertFalse(request["second_machine_required"])
         self.assertTrue(request["workercoordinator_may_be_visited_only_after_nonclaim_readiness"])
 
-    def test_consumer_invokes_only_claimless_gadi_dispatcher(self) -> None:
+    def test_consumer_reuses_existing_local_source_and_claimless_gadi_dispatcher(self) -> None:
         with TemporaryDirectory() as temporary:
             runtime = Path(temporary)
+            request_target = runtime / CONSUMER.REQUEST_REL
+            request_target.parent.mkdir(parents=True, exist_ok=True)
+            request_target.write_text((ROOT / CONSUMER.REQUEST_REL).read_text(encoding="utf-8"), encoding="utf-8")
             calls = []
 
             def runner(command, **kwargs):
@@ -57,14 +60,29 @@ class GADIRuntimeObservationResidentDispatchTests(unittest.TestCase):
                     stderr="",
                 )
 
-            receipt = CONSUMER.consume(ROOT, runtime, runner=runner)
+            receipt = CONSUMER.consume(
+                runtime,
+                runtime,
+                runner=runner,
+                env={"STEGVERSE_HEARTBEAT_SOURCE_ROOT": str(ROOT)},
+            )
         self.assertEqual(len(calls), 1)
-        self.assertIn("dispatch_gadi_resident_execution.py", " ".join(str(x) for x in calls[0]))
+        self.assertEqual(Path(calls[0][1]), ROOT / "scripts" / "dispatch_gadi_resident_execution.py")
+        self.assertEqual(calls[0][calls[0].index("--source-root") + 1], str(ROOT))
+        self.assertEqual(calls[0][calls[0].index("--runtime-root") + 1], str(runtime.resolve()))
+        self.assertEqual(receipt["canonical_local_source_root"], str(ROOT))
+        self.assertFalse(receipt["network_source_fetch_performed"])
         self.assertEqual(receipt["state"], "OBSERVATION_ATTEMPT_RECORDED")
         self.assertEqual(receipt["dispatcher_state"], "NONCLAIM_RUNTIME_EVIDENCE_PENDING")
         self.assertFalse(receipt["claim_or_fence_created_by_consumer"])
         self.assertFalse(receipt["runtime_created_by_consumer"])
         self.assertFalse(receipt["listener_created_by_consumer"])
+
+    def test_missing_existing_local_gadi_source_fails_closed(self) -> None:
+        with TemporaryDirectory() as temporary:
+            runtime = Path(temporary)
+            with self.assertRaisesRegex(RuntimeError, "claimless GADI dispatcher unavailable"):
+                CONSUMER.resolve_source_root(runtime, env={})
 
     def test_observation_consumer_does_not_call_raw_post_claim_consumer(self) -> None:
         text = CONSUMER_PATH.read_text(encoding="utf-8")
