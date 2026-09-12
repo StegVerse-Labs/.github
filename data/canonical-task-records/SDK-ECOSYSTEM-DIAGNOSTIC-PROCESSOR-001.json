@@ -11,11 +11,46 @@
   "repository": "StegVerse-org/StegVerse-SDK",
   "canonical_issue": 1545,
   "handoff_projection_refs": [
-    "StegVerse-Labs/.github:docs/SDK_ECOSYSTEM_DIAGNOSTIC_PROCESSOR_MIRROR_HANDOFF.md"
+    "StegVerse-Labs/.github:docs/SDK_ECOSYSTEM_DIAGNOSTIC_PROCESSOR_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:ECOSYSTEM_DIAGNOSTIC_PROCESSOR_MIRROR_HANDOFF.md"
   ],
   "targets": {
     "repositories": ["StegVerse-org/StegVerse-SDK", "StegVerse-Labs/.github", "StegVerse-Labs/StegVerse-Healer"],
     "components": ["sdk-processor-registry", "sdk-manifest-builder", "sdk-route-resolution", "sdk-ecosystem-diagnostic-runtime", "ece-sdk-diagnostic-bridge"]
+  },
+  "source_state": {
+    "coordination_pull_request": 1551,
+    "coordination_exact_head": "d2dcd0804984f93ee03cc88afabba356f296705e",
+    "coordination_merge": "e63a532f7125f7898dbd03127938e2f9f746e9e7",
+    "coordination_validation_runs": {
+      "heartbeat": 34670501691,
+      "deterministic_suite": 34670501791,
+      "organization_control": 34670501716
+    },
+    "sdk_pull_request": 219,
+    "sdk_exact_head": "19f573c54c39298e266caa4fe63d7706c9d09d34",
+    "sdk_merge": "50fa9ca306ada6f75fb928281e2bf495ebb08ce8",
+    "sdk_validation_runs": {
+      "mcp_source": 34670488331,
+      "manifest_builder": 34670488339,
+      "portable_package": 34670488380,
+      "external_framework_submission": 34670488297,
+      "portable_release_index": 34670488334,
+      "connect_llm": 34670488353,
+      "evaluator_contract_console": 34670488636,
+      "production_manifold_governance": 34670488263,
+      "release_dependency_alignment": 34670488338,
+      "evaluator_manifest": 34670488333,
+      "communication_edge_demo": 34670488287,
+      "package_artifact": 34670488313,
+      "output_boundary": 34670488212
+    },
+    "schemas_installed": true,
+    "route_installed": true,
+    "manifest_builder_binding_installed": true,
+    "runtime_handler_source_validated": true,
+    "cli_installed_in_source": true,
+    "authentic_runtime_execution_claimed": false
   },
   "authority_model": {
     "processor_authority": "NONE_DIAGNOSTIC_ONLY",
@@ -28,11 +63,8 @@
     "diagnostic_mutation_allowed_v1": false
   },
   "remaining_predicates": [
-    "SDK_ECOSYSTEM_DIAGNOSTIC_SCHEMAS_INSTALLED",
-    "SDK_ECOSYSTEM_DIAGNOSTIC_ROUTE_INSTALLED",
-    "SDK_MANIFEST_BUILDER_DIAGNOSTIC_BINDING_INSTALLED",
-    "SDK_DIAGNOSTIC_RUNTIME_HANDLER_VALIDATED",
     "ECE_PERIODIC_PATH_CONSUMES_SDK_DIAGNOSTIC_RESULT",
+    "SDK_DIAGNOSTIC_RESULT_EXACT_BYTES_BOUND_IN_ECE_CUSTODY_CHAIN",
     "AUTHENTIC_SDK_DIAGNOSTIC_REQUEST_RESULT_OBSERVED"
   ],
   "completion": {"claimed": false, "validated": false, "activation_proof_complete": false}
