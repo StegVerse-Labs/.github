@@ -61,6 +61,12 @@
     "StegVerse-Labs/.github:commit/329b65cf5f50883001ee90c7ee03120c67a7375d",
     "StegVerse-Labs/.github:pull/1547",
     "StegVerse-Labs/.github:commit/e9da6d0fe35390eba3344905c478ba92aa41de32",
+    "StegVerse-Labs/.github:pull/1552",
+    "StegVerse-Labs/.github:commit/c2db600e3d2811302e63e193bde6e564e708ea2a",
+    "StegVerse-Labs/.github:pull/1562",
+    "StegVerse-Labs/.github:commit/cc53257c7e57347d2481dd4fd680aed9b8cf2f6d",
+    "StegVerse-Labs/.github:pull/1565",
+    "StegVerse-Labs/.github:commit/d369cf3651bd0d485add4d03e740b91d58a3c839",
     "StegVerse-Labs/.github:receipts/preflight/SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004-OBSERVATION-20260912.json"
   ],
   "resolver_repair": {
@@ -91,6 +97,15 @@
   "runtime_presence_reuse": {
     "canonical_producer": "heartbeat_runtime/runtime_presence_projection.py",
     "canonical_output": "receipts/sovereign-host/runtime-presence.latest.json",
+    "retained_rendezvous_node_projection": {
+      "pull_request": 1562,
+      "merge_commit": "cc53257c7e57347d2481dd4fd680aed9b8cf2f6d",
+      "validation_runs": [34670772330, 34670772342, 34670772383],
+      "canonical_pattern": "SV-NODE-<24 lowercase hex>",
+      "resident_node_id_projection_supported": true,
+      "rendezvous_identity_is_liveness_signal": false,
+      "merged_validated": true
+    },
     "cross_task_reuse_authorized": false,
     "required_subject_binding": ["runtime_root", "resident.node_id", "canonical_workercoordinator_identity"]
   },
@@ -98,6 +113,7 @@
     "portable_exact_dispatch_merged": true,
     "service_gateway_three_route_source_merged": true,
     "resolver_repair_merged_validated": true,
+    "retained_rendezvous_node_subject_projection_merged_validated": true,
     "resident_reseal_consumption_receipt_observed": false,
     "resident_consent_listener_consumption_receipt_observed": false,
     "retained_drive_receipts_observed": false,
@@ -175,6 +191,6 @@
     "material_function_change": false,
     "readme_updated_in_change_set": false,
     "readme_path": "README.md",
-    "no_readme_update_reason": "Registry reconciliation to already-merged non-authorizing observation evidence; no public runtime capability or behavior change."
+    "no_readme_update_reason": "Registry reconciliation to merged observation-only subject projection and current negative runtime evidence; no public runtime capability or behavior change."
   }
 }
