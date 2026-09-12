@@ -41,6 +41,7 @@ SOURCE_DEPENDENCIES = (
     Path("scripts/materialize_erl_active_research_intr_resident_local_input.py"),
     Path("scripts/submit_erl_active_research_intr_binding.py"),
     Path("scripts/submit_erl_active_research_intr_binding_local.py"),
+    Path("workers/erl_active_research_transport.py"),
 )
 
 
