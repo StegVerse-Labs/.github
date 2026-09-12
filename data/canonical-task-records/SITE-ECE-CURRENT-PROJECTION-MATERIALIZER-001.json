@@ -44,12 +44,17 @@
   "authority_model": {
     "materializer_authority": "NONE_COPY_ONLY",
     "continuity_interpretation_owner": "ECOSYSTEM-CONTINUITY-EVALUATOR-001",
+    "user_verification_authority": "KV/SKAP Vault",
+    "device_verification_policy": "NONE_PROHIBITED",
+    "device_or_node_user_verifier_authority": "NONE",
+    "execution_surface_connectivity_authority": "NONE_OBSERVATION_ONLY",
     "publication_authority": "EXISTING_SITE_RUNTIME_ONLY",
     "github_runtime_authority": "NONE",
     "source_repository_writeback_allowed": false
   },
   "latest_runtime_observation": {
-    "authorized_remote_devices": 0,
+    "remote_execution_connector_surfaces_observed": 0,
+    "remote_execution_connector_observation_authority_effect": "NONE_CONNECTIVITY_OBSERVATION_ONLY",
     "connected_drive_materialization_artifacts_found": false,
     "authentic_site_safe_projection_materialized": false,
     "site_live_continuity_projection_observed": false
