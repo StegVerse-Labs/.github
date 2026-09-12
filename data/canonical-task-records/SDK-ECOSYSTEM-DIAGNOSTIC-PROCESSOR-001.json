@@ -1,0 +1,39 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-ECOSYSTEM-DIAGNOSTIC-PROCESSOR-001",
+  "correlation_id": "SDK-ECOSYSTEM-DIAGNOSTIC-PROCESSOR-001",
+  "root_correlation_id": "ECOSYSTEM-CONTINUITY-EVALUATOR-001",
+  "parent_task_id": "ECOSYSTEM-CONTINUITY-EVALUATOR-001",
+  "goal": "Install ecosystem_diagnostic as a first-class non-authorizing StegVerse SDK processing capability whose evidence-bound diagnostic result artifacts feed the Ecosystem Continuity Evaluator without replacing continuity interpretation or remediation authority.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "cosv_task_vector": "71000000101000",
+  "repository": "StegVerse-org/StegVerse-SDK",
+  "canonical_issue": 1545,
+  "handoff_projection_refs": [
+    "StegVerse-Labs/.github:docs/SDK_ECOSYSTEM_DIAGNOSTIC_PROCESSOR_MIRROR_HANDOFF.md"
+  ],
+  "targets": {
+    "repositories": ["StegVerse-org/StegVerse-SDK", "StegVerse-Labs/.github", "StegVerse-Labs/StegVerse-Healer"],
+    "components": ["sdk-processor-registry", "sdk-manifest-builder", "sdk-route-resolution", "sdk-ecosystem-diagnostic-runtime", "ece-sdk-diagnostic-bridge"]
+  },
+  "authority_model": {
+    "processor_authority": "NONE_DIAGNOSTIC_ONLY",
+    "continuity_interpretation_owner": "ECOSYSTEM-CONTINUITY-EVALUATOR-001",
+    "repair_dispatch_owner": "StegVerse-Labs/StegVerse-Healer",
+    "governed_transition_authority": "Interlock/InTr",
+    "credential_authority": "TV/TVC",
+    "github_runtime_authority": "NONE",
+    "processor_selection_grants_authority": false,
+    "diagnostic_mutation_allowed_v1": false
+  },
+  "remaining_predicates": [
+    "SDK_ECOSYSTEM_DIAGNOSTIC_SCHEMAS_INSTALLED",
+    "SDK_ECOSYSTEM_DIAGNOSTIC_ROUTE_INSTALLED",
+    "SDK_MANIFEST_BUILDER_DIAGNOSTIC_BINDING_INSTALLED",
+    "SDK_DIAGNOSTIC_RUNTIME_HANDLER_VALIDATED",
+    "ECE_PERIODIC_PATH_CONSUMES_SDK_DIAGNOSTIC_RESULT",
+    "AUTHENTIC_SDK_DIAGNOSTIC_REQUEST_RESULT_OBSERVED"
+  ],
+  "completion": {"claimed": false, "validated": false, "activation_proof_complete": false}
+}
