@@ -67,19 +67,35 @@ This repair changes no task identity, selector, runtime, scheduler, dispatcher, 
 
 ## Task Registry staged-consumption reconciliation
 
-The canonical Task Registry record previously described the portable path only through #1487 and required source Git HEAD + exact selector evidence without explicitly carrying the stronger #1533/#1556 dedicated-consumption semantics.
+PR #1566 reconciled the canonical Task Registry with #1533/#1556 and merged at `ed75c02e8f2809b58538156c0abc7caf9eb1e95d` after exact-head organization-control, Heartbeat, and complete deterministic-suite validation passed.
 
-PR #1566 reconciled that canonical consistency gap and merged at `ed75c02e8f2809b58538156c0abc7caf9eb1e95d` after exact-head organization-control, Heartbeat, and complete deterministic-suite validation passed.
+The canonical record now requires `STEGBROWSER_TVC_DEDICATED_CONSUMPTION_STAGED_OUTCOME_OBSERVED`, binds the identity-valid dedicated receipt and canonical SHA-256 alongside source HEAD, exact selector, and one-consumer dispatch evidence, and recognizes only `STAGED`, `ALREADY_STAGED`, or `RESTAGED_EXACT_SOURCE` as complete StegBrowser consumption evidence.
 
-The canonical record now:
+## Current-dispatch binding repair
 
-- carries #1533 (`48b0027320c92f7a9cb8d0f86ee00d696e331497`) and #1556 (`5a206b31613629497feb5d12a810bcf3e368ae39`) in source/evidence lineage;
-- requires `STEGBROWSER_TVC_DEDICATED_CONSUMPTION_STAGED_OUTCOME_OBSERVED` as expected evidence;
-- requires a complete portable-dispatch proof to bind the identity-valid dedicated receipt and its canonical SHA-256 alongside source HEAD, exact selector, and one-consumer dispatch evidence;
-- records that only `STAGED`, `ALREADY_STAGED`, or `RESTAGED_EXACT_SOURCE` establish complete StegBrowser consumption evidence;
-- records `HANDOFF_READY` as authentic but incomplete because the exact StegBrowser request does not occupy the private-source slot.
+Post-#1566 inspection found one remaining replay gap in `scripts/refresh_and_dispatch_resident_requests.py`.
 
-This remains a canonical consistency repair only. Coordination state, checkout state, blockers, completion truth, `allowed_next_transitions`, WorkerCoordinator authority, Interlock/InTr authority, and runtime claims remain unchanged.
+The generic resident dispatcher already embeds the exact current consumer machine result in:
+
+```text
+receipts/sovereign-host/resident-request-dispatch.latest.json
+  outcomes[0].consumer = stegbrowser_tvc_source_promotion
+  outcomes[0].attempted = true
+  outcomes[0].returncode = 0
+  outcomes[0].result = <current consumer result>
+```
+
+The portable bridge, however, validated the separately persisted dedicated receipt without proving that it was identical to that current dispatch result. A stale prior dedicated receipt with otherwise-valid task/SHA/outcome fields could therefore satisfy the bridge after a later dispatcher success.
+
+The current repair fails closed unless the dedicated receipt exactly equals the current exact-selector dispatch outcome result. The persisted bridge evidence now records:
+
+```text
+target_consumption_matches_current_dispatch_result = true
+```
+
+as a mandatory condition of `REFRESH_AND_DISPATCH_COMPLETE` for `stegbrowser_tvc_source_promotion`. A deterministic regression preserves a prior valid receipt while emitting a different current dispatcher result and requires `REFRESH_COMPLETE_DISPATCH_INCOMPLETE`.
+
+This repair adds no executor, listener, scheduler, heartbeat, credential path, source transport, transition authority, WorkerCoordinator authority, or machine dependency. Runtime execution remains unobserved pending authentic resident capacity.
 
 ## Authentic runtime evidence
 
@@ -119,18 +135,20 @@ GitHub Actions remains validation/evidence transport only. TV/TVC remains creden
 
 ## Remaining sequence
 
-1. When an authorized sovereign resident or admitted Remote Computer ephemeral Node is reachable, verify its local `.github` source contains #1556 and #1566 or a later compatible main.
-2. Execute the existing refresh+dispatch bridge for exactly `stegbrowser_tvc_source_promotion`; only a receipt proving the exact request is actually staged may produce `REFRESH_AND_DISPATCH_COMPLETE`.
-3. Observe exact TVC materialization, transient promotion, same-service restart, and simultaneous `8765/8775`.
-4. Observe Apple recipient/liveness/InTr `OWNER_INGRESS_READY`.
-5. Resolve the external Apple Terms/account gate, create the Team API key, and seal it from the current iPhone into SKAP without export.
-6. Complete authentic Device -> KV -> SKAP custody, TVC Apple operations, same-device IPA signing, Build Upload, TestFlight installation, and resident discovery.
-7. Continue native StegSocials publication/readback only after working-instance proof.
+1. Validate and merge the current-dispatch dedicated-consumption binding repair.
+2. Reconcile the canonical Task Registry with the merged current-dispatch binding requirement.
+3. When an authorized sovereign resident or admitted Remote Computer ephemeral Node is reachable, verify its local `.github` source contains the merged current-dispatch repair and canonical reconciliation or a later compatible main.
+4. Execute the existing refresh+dispatch bridge for exactly `stegbrowser_tvc_source_promotion`; complete evidence must bind current local source HEAD, exact selector, current dispatcher result, and identical dedicated staged-consumption receipt.
+5. Observe exact TVC materialization, transient promotion, same-service restart, and simultaneous `8765/8775`.
+6. Observe Apple recipient/liveness/InTr `OWNER_INGRESS_READY`.
+7. Resolve the external Apple Terms/account gate, create the Team API key, and seal it from the current iPhone into SKAP without export.
+8. Complete authentic Device -> KV -> SKAP custody, TVC Apple operations, same-device IPA signing, Build Upload, TestFlight installation, and resident discovery.
+9. Continue native StegSocials publication/readback only after working-instance proof.
 
 ## README disposition
 
-Repository `README.md` remains accurate for Canonical Work and authority separation. The #1566 reconciliation only aligns the canonical task record with already-merged StegBrowser evidence semantics and requires no repository-wide README text change.
+Repository `README.md` remains accurate for Canonical Work and authority separation. The current-dispatch binding is task-specific evidence semantics and requires no repository-wide README text change.
 
 ## Current state
 
-`ACTIVE_NOT_SUPERSEDED / TASK_REGISTRY_RUNTIME_EVIDENCE_CONTRACT_RECONCILED_1522 / DEDICATED_CONSUMPTION_EVIDENCE_BINDING_MERGED_VALIDATED_1533 / HANDOFF_READY_FAIL_CLOSED_REPAIR_MERGED_VALIDATED_1556 / TASK_REGISTRY_STAGED_CONSUMPTION_SEMANTICS_RECONCILED_1566 / REMOTE_COMPUTER_CURRENTLY_UNAVAILABLE / AUTHENTIC_RESIDENT_SOURCE_REVISION_NOT_OBSERVED / AUTHENTIC_RESIDENT_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / AUTHENTIC_TVC_MATERIALIZATION_AND_RESTART_NOT_OBSERVED / LIVE_APPLE_OWNER_INGRESS_READY_NOT_OBSERVED / AUTHENTIC_CURRENT_IPHONE_INSTALL_LISTENER_DISCOVERY_PENDING`
+`ACTIVE_NOT_SUPERSEDED / TASK_REGISTRY_RUNTIME_EVIDENCE_CONTRACT_RECONCILED_1522 / DEDICATED_CONSUMPTION_EVIDENCE_BINDING_MERGED_VALIDATED_1533 / HANDOFF_READY_FAIL_CLOSED_REPAIR_MERGED_VALIDATED_1556 / TASK_REGISTRY_STAGED_CONSUMPTION_SEMANTICS_RECONCILED_1566 / CURRENT_DISPATCH_DEDICATED_CONSUMPTION_BINDING_IMPLEMENTED_VALIDATION_PENDING / REMOTE_COMPUTER_CURRENTLY_UNAVAILABLE / AUTHENTIC_RESIDENT_SOURCE_REVISION_NOT_OBSERVED / AUTHENTIC_RESIDENT_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / AUTHENTIC_TVC_MATERIALIZATION_AND_RESTART_NOT_OBSERVED / LIVE_APPLE_OWNER_INGRESS_READY_NOT_OBSERVED / AUTHENTIC_CURRENT_IPHONE_INSTALL_LISTENER_DISCOVERY_PENDING`

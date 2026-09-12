@@ -151,13 +151,26 @@ def persist_sv_dn1_browser_locator(runtime: Path, safe_env: Mapping[str, str], t
     return True
 
 
-def stegbrowser_consumption_evidence(runtime: Path, target_consumer: str) -> tuple[dict[str, Any] | None, str | None, bool]:
+def stegbrowser_consumption_evidence(
+    runtime: Path,
+    target_consumer: str,
+    dispatch_receipt: Mapping[str, Any] | None,
+) -> tuple[dict[str, Any] | None, str | None, bool, bool]:
     if target_consumer != STEG_BROWSER_TVC_CONSUMER:
-        return None, None, True
+        return None, None, True, True
     path = runtime / STEG_BROWSER_TVC_CONSUMPTION_REL
     if not path.is_file():
-        return None, None, False
+        return None, None, False, False
     receipt = load_json(path)
+    outcomes = dispatch_receipt.get("outcomes") if isinstance(dispatch_receipt, Mapping) else None
+    current_result = None
+    if isinstance(outcomes, list) and len(outcomes) == 1 and isinstance(outcomes[0], Mapping):
+        row = outcomes[0]
+        if row.get("consumer") == STEG_BROWSER_TVC_CONSUMER and row.get("attempted") is True and row.get("returncode") == 0:
+            result = row.get("result")
+            if isinstance(result, Mapping):
+                current_result = dict(result)
+    current_dispatch_match = current_result == receipt
     valid = (
         receipt.get("schema") == "stegverse.stegbrowser-tvc-source-promotion-request-consumption/v1"
         and receipt.get("state") == "ATTEMPT_RECORDED"
@@ -166,8 +179,9 @@ def stegbrowser_consumption_evidence(runtime: Path, target_consumer: str) -> tup
         and receipt.get("outcome") in STEG_BROWSER_TVC_ALLOWED_OUTCOMES
         and receipt.get("credential_material_present") is False
         and receipt.get("network_source_fetch_performed") is False
+        and current_dispatch_match
     )
-    return receipt, json_sha256(receipt), bool(valid)
+    return receipt, json_sha256(receipt), bool(valid), bool(current_dispatch_match)
 
 
 def refresh_and_dispatch(
@@ -211,7 +225,9 @@ def refresh_and_dispatch(
         and dispatch_receipt.get("selected_consumers") == [target_consumer]
         and dispatch_receipt.get("consumer_count") == 1
     )
-    target_consumption_receipt, target_consumption_sha256, target_consumption_valid = stegbrowser_consumption_evidence(runtime, target_consumer)
+    target_consumption_receipt, target_consumption_sha256, target_consumption_valid, target_consumption_matches_current_dispatch = stegbrowser_consumption_evidence(
+        runtime, target_consumer, dispatch_receipt
+    )
     target_consumption_required = target_consumer == STEG_BROWSER_TVC_CONSUMER
     state = "REFRESH_AND_DISPATCH_COMPLETE" if (
         completed.returncode == 0
@@ -232,6 +248,7 @@ def refresh_and_dispatch(
         "target_consumption_evidence_required": target_consumption_required,
         "target_consumption_receipt_path": str(STEG_BROWSER_TVC_CONSUMPTION_REL) if target_consumption_required else None,
         "target_consumption_receipt_observed": target_consumption_receipt is not None,
+        "target_consumption_matches_current_dispatch_result": bool(target_consumption_matches_current_dispatch),
         "exact_target_consumption_evidence_observed": bool(target_consumption_valid),
         "target_consumption_receipt_sha256": target_consumption_sha256,
         "target_consumption_receipt": target_consumption_receipt,
