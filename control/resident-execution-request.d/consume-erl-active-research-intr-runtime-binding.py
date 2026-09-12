@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """Consume the bounded ERL active-research resident request without inventing transport.
 
-The consumer validates the canonical resident request, verifies that the merged ERL
-runtime source transforms are installed, and, when the local ERL source/dispatch are
-available, materializes the exact deterministic binding and acquisition envelope into
-write-once resident-local sidecars. It does not submit the binding to InTr and does not
-fabricate any hop receipt or provider operation.
+The consumer validates the canonical resident request, self-materializes only the
+exact ERL source dependencies from an already-local canonical source root, applies
+and verifies the idempotent resident-source preparation, and, when the local ERL
+source/dispatch are available, materializes the exact deterministic binding and
+acquisition envelope into write-once resident-local sidecars. It performs no
+network source fetch, transport submission, hop-receipt fabrication, or provider
+operation.
 """
 from __future__ import annotations
 
@@ -30,6 +32,16 @@ OWNER_TASK = "SHWP-DEVICE-KV-INTR-OBSERVATION-001"
 OWNER_REF = "StegVerse-Labs/continuity-vault-kit#79"
 HOSTED = ("GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "VERCEL_ENV", "CF_PAGES", "CLOUDFLARE_WORKERS")
 FORBIDDEN = ("GITHUB_TOKEN", "GH_TOKEN", "GITHUB_PAT", "GITHUB_PERSONAL_ACCESS_TOKEN", "ACTIONS_RUNTIME_TOKEN", "ACTIONS_ID_TOKEN_REQUEST_TOKEN")
+SOURCE_DEPENDENCIES = (
+    Path("scripts/install_sovereign_heartbeat_service.py"),
+    Path("scripts/prepare_erl_active_research_intr_runtime_source.py"),
+    Path("scripts/install_erl_active_research_universal_intr_route.py"),
+    Path("scripts/install_erl_device_kv_prior_lineage.py"),
+    Path("scripts/install_erl_resident_request_wiring.py"),
+    Path("scripts/materialize_erl_active_research_intr_resident_local_input.py"),
+    Path("scripts/submit_erl_active_research_intr_binding.py"),
+    Path("scripts/submit_erl_active_research_intr_binding_local.py"),
+)
 
 
 def truthy(value: str | None) -> bool:
@@ -43,6 +55,10 @@ def canonical(value: Any) -> bytes:
 def sha_uri(value: Any) -> str:
     raw = value if isinstance(value, bytes) else canonical(value)
     return "sha256:" + hashlib.sha256(raw).hexdigest()
+
+
+def file_sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def load(path: Path) -> dict[str, Any]:
@@ -72,6 +88,56 @@ def write_latest(path: Path, value: Mapping[str, Any]) -> None:
     os.replace(tmp, path)
     if path.read_text(encoding="utf-8") != rendered:
         raise RuntimeError(f"latest_readback_mismatch:{path}")
+
+
+def atomic_copy_exact(source: Path, target: Path) -> bool:
+    raw = source.read_bytes()
+    expected = hashlib.sha256(raw).hexdigest()
+    if target.is_file() and file_sha256(target) == expected:
+        return False
+    target.parent.mkdir(parents=True, exist_ok=True)
+    tmp = target.with_name("." + target.name + ".erl-source.tmp")
+    tmp.write_bytes(raw)
+    if file_sha256(tmp) != expected:
+        tmp.unlink(missing_ok=True)
+        raise RuntimeError(f"source_dependency_temp_readback_mismatch:{target}")
+    os.replace(tmp, target)
+    if file_sha256(target) != expected:
+        raise RuntimeError(f"source_dependency_readback_mismatch:{target}")
+    return True
+
+
+def materialize_source_dependencies(source_root: Path, runtime_root: Path) -> dict[str, Any]:
+    source = source_root.expanduser().resolve()
+    runtime = runtime_root.expanduser().resolve()
+    if not source.is_dir():
+        raise RuntimeError("canonical_local_source_root_missing")
+    copied: list[str] = []
+    verified: list[str] = []
+    digests: dict[str, str] = {}
+    for rel in SOURCE_DEPENDENCIES:
+        src = source / rel
+        if not src.is_file():
+            raise RuntimeError(f"canonical_local_source_dependency_missing:{rel.as_posix()}")
+        dst = runtime / rel
+        if source == runtime:
+            verified.append(rel.as_posix())
+        elif atomic_copy_exact(src, dst):
+            copied.append(rel.as_posix())
+        else:
+            verified.append(rel.as_posix())
+        if not dst.is_file() or file_sha256(dst) != file_sha256(src):
+            raise RuntimeError(f"source_dependency_parity_failed:{rel.as_posix()}")
+        digests[rel.as_posix()] = "sha256:" + file_sha256(dst)
+    return {
+        "source_root": str(source),
+        "runtime_root": str(runtime),
+        "copied": copied,
+        "verified": verified,
+        "digests": digests,
+        "network_source_fetch_attempted": False,
+        "authority_effect": "NONE_LOCAL_SOURCE_MATERIALIZATION_ONLY",
+    }
 
 
 def validate_request(request: Mapping[str, Any]) -> None:
@@ -123,6 +189,16 @@ def safe_env(source: Mapping[str, str] | None = None) -> dict[str, str]:
     return values
 
 
+def run_prep(prep: Path, runtime: Path, values: Mapping[str, str], *, runner=subprocess.run) -> tuple[bool, str]:
+    applied = runner([sys.executable, str(prep)], cwd=runtime, capture_output=True, text=True, check=False, env=dict(values), timeout=120)
+    if applied.returncode != 0:
+        return False, (applied.stderr or applied.stdout).strip()
+    checked = runner([sys.executable, str(prep), "--check"], cwd=runtime, capture_output=True, text=True, check=False, env=dict(values), timeout=120)
+    if checked.returncode != 0:
+        return False, (checked.stderr or checked.stdout).strip()
+    return True, (checked.stdout or applied.stdout).strip()
+
+
 def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
     runtime = runtime_root.expanduser().resolve()
     request_path = runtime / REQUEST_REL
@@ -131,16 +207,19 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     request = load(request_path)
     validate_request(request)
     values = safe_env(env)
+    source_materialization = materialize_source_dependencies(source_root, runtime)
     prep = runtime / PREP
     if not prep.is_file():
-        raise RuntimeError("ERL resident source preparation entrypoint missing")
-    checked = runner([sys.executable, str(prep), "--check"], cwd=runtime, capture_output=True, text=True, check=False, env=values, timeout=120)
-    if checked.returncode != 0:
+        raise RuntimeError("ERL resident source preparation entrypoint missing after local source materialization")
+    prepared, prep_detail = run_prep(prep, runtime, values, runner=runner)
+    if not prepared:
         receipt = {
             "schema":"stegverse.erl-active-research.resident-consumption/v1","state":"SOURCE_PREPARATION_REQUIRED",
             "request_id":request["request_id"],"task_id":TASK_ID,"cosv_task_vector":COSV,
             "runtime_execution_attempted":False,"transport_submission_attempted":False,"provider_operation_attempted":False,
-            "source_preparation_check_passed":False,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE",
+            "source_dependencies_materialized":True,"source_materialization":source_materialization,
+            "source_preparation_applied":True,"source_preparation_check_passed":False,"source_preparation_detail":prep_detail,
+            "network_source_fetch_attempted":False,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE",
             "heartbeat_grants_execution_authority":False,"second_machine_required":False,"authority_effect":"NONE_WAIT_STATE"
         }
         write_latest(runtime / RECEIPT_REL, receipt)
@@ -152,8 +231,10 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
             "schema":"stegverse.erl-active-research.resident-consumption/v1","state":"INPUT_NOT_MATERIALIZED",
             "request_id":request["request_id"],"task_id":TASK_ID,"cosv_task_vector":COSV,
             "runtime_execution_attempted":False,"transport_submission_attempted":False,"provider_operation_attempted":False,
-            "source_preparation_check_passed":True,"missing_inputs":[name for name,val in (("STEGVERSE_ERL_ROOT",erl_root_raw),("STEGVERSE_ERL_ACTIVE_RESEARCH_DISPATCH_PATH",dispatch_raw)) if not val],
-            "credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","heartbeat_grants_execution_authority":False,
+            "source_dependencies_materialized":True,"source_materialization":source_materialization,
+            "source_preparation_applied":True,"source_preparation_check_passed":True,
+            "missing_inputs":[name for name,val in (("STEGVERSE_ERL_ROOT",erl_root_raw),("STEGVERSE_ERL_ACTIVE_RESEARCH_DISPATCH_PATH",dispatch_raw)) if not val],
+            "network_source_fetch_attempted":False,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","heartbeat_grants_execution_authority":False,
             "second_machine_required":False,"authority_effect":"NONE_WAIT_STATE"
         }
         write_latest(runtime / RECEIPT_REL, receipt)
@@ -192,8 +273,9 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         "group_id":request["erl_group_id"],"source_id":source_id,"binding_ref":binding_rel.as_posix(),"envelope_ref":envelope_rel.as_posix(),
         "binding_hash":binding.get("binding_hash"),"payload_hash":mat.get("payload_hash"),"packet_id":mat.get("packet_id"),"operation_id":mat.get("operation_id"),
         "runtime_execution_attempted":False,"transport_submission_attempted":False,"provider_operation_attempted":False,
-        "runtime_receipts_present":False,"source_preparation_check_passed":True,"credential_authority":"TV/TVC",
-        "github_token_runtime_authority":"NONE","heartbeat_grants_execution_authority":False,"second_machine_required":False,
+        "runtime_receipts_present":False,"source_dependencies_materialized":True,"source_materialization":source_materialization,
+        "source_preparation_applied":True,"source_preparation_check_passed":True,"network_source_fetch_attempted":False,
+        "credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","heartbeat_grants_execution_authority":False,"second_machine_required":False,
         "authority_effect":"NONE_BINDING_MATERIALIZATION_ONLY"
     }
     write_latest(runtime / RECEIPT_REL, receipt)
