@@ -58,6 +58,17 @@ class ERLLocalSourceSelfMaterializationTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "canonical_local_source_dependency_missing"):
                 mod.materialize_source_dependencies(source, runtime)
 
+    def test_binding_consumer_rejects_source_runtime_alias(self):
+        mod = load(
+            "control/resident-execution-request.d/consume-erl-active-research-intr-runtime-binding.py",
+            "erl_binding_source_alias",
+        )
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            populate(root, mod.SOURCE_DEPENDENCIES)
+            with self.assertRaisesRegex(RuntimeError, "must_be_distinct"):
+                mod.materialize_source_dependencies(root, root)
+
     def test_submission_consumer_is_independently_source_complete(self):
         mod = load(
             "control/resident-execution-request.d/consume-erl-active-research-intr-submission.py",
@@ -73,6 +84,17 @@ class ERLLocalSourceSelfMaterializationTests(unittest.TestCase):
             self.assertTrue((runtime / mod.SUBMITTER).is_file())
             self.assertTrue((runtime / mod.MATERIALIZER).is_file())
             self.assertTrue((runtime / mod.PREP).is_file())
+
+    def test_submission_consumer_rejects_source_runtime_alias(self):
+        mod = load(
+            "control/resident-execution-request.d/consume-erl-active-research-intr-submission.py",
+            "erl_submission_source_alias",
+        )
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            populate(root, mod.SOURCE_DEPENDENCIES)
+            with self.assertRaisesRegex(RuntimeError, "must_be_distinct"):
+                mod.materialize_source_dependencies(root, root)
 
     def test_prepare_runs_apply_then_check(self):
         binding = load(
