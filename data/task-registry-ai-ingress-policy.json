@@ -2,7 +2,12 @@
   "schema": "stegverse.task-registry-ai-ingress-policy/v1",
   "goal_task_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
   "status": "SOURCE_DECLARATION_GATE_ACTIVE_RUNTIME_IDENTITY_ATTESTATION_NOT_PROVEN",
-  "scope": "SESSION_BEARING_TASK_REGISTRY_COORDINATION_CHECKIN",
+  "scope": "SESSION_BEARING_TASK_REGISTRY_COORDINATION_LIFECYCLE",
+  "covered_surfaces": [
+    "scripts/evaluate_task_registry_ai_session_checkin.py",
+    "scripts/record_task_registry_session_return.py",
+    "scripts/materialize_task_session_close.py"
+  ],
   "allowed_actor_kinds": [
     "CHATGPT_SESSION",
     "HUMAN_OPERATOR",
@@ -18,8 +23,10 @@
     "chatgpt_is_only_ai_actor_kind_permitted": true,
     "human_operator_permitted": true,
     "non_ai_system_coordinator_permitted": true,
-    "missing_actor_kind_fails_closed_for_session_checkin": true,
-    "unrecognized_actor_kind_fails_closed_for_session_checkin": true,
+    "missing_actor_kind_fails_closed_for_session_lifecycle": true,
+    "unrecognized_actor_kind_fails_closed_for_session_lifecycle": true,
+    "session_return_must_preserve_actor_kind": true,
+    "session_close_must_preserve_actor_kind": true,
     "declaration_is_identity_attestation": false,
     "runtime_identity_attestation_proven": false,
     "task_registry_grants_execution_authority": false

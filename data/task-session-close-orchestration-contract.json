@@ -2,11 +2,13 @@
   "schema": "stegverse.task-session-close-orchestration/v1",
   "status": "ACTIVE",
   "parent_policy": "data/task-coordination-policy.json#session_close_contract",
+  "ai_ingress_policy": "data/task-registry-ai-ingress-policy.json",
   "session_close_coordinator": "scripts/materialize_task_session_close.py",
   "return_recorder": "scripts/record_task_registry_session_return.py",
   "required_inputs": [
     "task_id",
     "session_id",
+    "actor_kind",
     "exact_task_registry_disposition"
   ],
   "optional_context": [
@@ -26,13 +28,16 @@
     "receipt_schema": "stegverse.task-registry-session-return-receipt/v1",
     "coordinator_output_schema": "stegverse.task-session-close/v1",
     "session_relinquished_only_after_hash_linked_return_event": true,
-    "failed_return_recording_blocks_footer_handoff_close": true
+    "failed_return_recording_blocks_footer_handoff_close": true,
+    "actor_kind_must_match_return_receipt": true
   },
   "ordering": [
     "MATERIALIZE_CANONICAL_SESSION_CONTINUITY",
     "VALIDATE_EXACT_TASK_REGISTRY_DISPOSITION",
+    "VALIDATE_SESSION_ACTOR_KIND",
     "APPEND_HASH_LINKED_RETURN_EVENT",
     "VERIFY_RETURN_EVENT_SHA256",
+    "VERIFY_RETURN_ACTOR_KIND",
     "ADMIT_FOOTER_OR_HANDOFF_EMISSION",
     "EMIT_NON_AUTHORIZING_SESSION_CLOSE_RECEIPT"
   ],
@@ -41,8 +46,12 @@
     "VOLUNTARY_SESSION_RETURN_MUST_BE_RETAINED_FOR_RECENT_COLLISION_WINDOWS",
     "RETURN_EVENT_MUST_BIND_EXACT_TASK_AND_SESSION_IDENTITY",
     "RETURN_EVENT_MUST_BIND_EXACT_REGISTRY_DISPOSITION",
+    "RETURN_EVENT_MUST_BIND_ADMITTED_ACTOR_KIND",
+    "NON_CHATGPT_AI_SESSION_RETURN_MUST_FAIL_CLOSED",
+    "CHATGPT_SESSION_RETURN_REQUIRES_GATED_CHECKIN_DISPOSITION",
     "FOOTER_HANDOFF_EMISSION_REQUIRES_HASH_LINKED_RETURN_RECEIPT",
     "RETURN_EVENT_GRANTS_NO_EXECUTION_OR_TRANSITION_AUTHORITY",
+    "RUNTIME_IDENTITY_ATTESTATION_NOT_INFERRED_FROM_ACTOR_DECLARATION",
     "NO_SECOND_COLLISION_ENGINE"
   ],
   "authority_effect": "NONE"
