@@ -2,18 +2,24 @@
   "schema": "stegverse.canonical-task-record/v1",
   "task_id": "MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001",
   "correlation_id": "MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001",
-  "goal": "Create and finalize an independent technical and operational guide for StegVerse <-> MIR connection establishment using the designated Universal Interlock/InTr transport as the only permitted communication medium, with source-native payload preservation, TV/TVC credential custody where required, canonical SDK manifest ingress after return admission, correlation, retry, evidence, and authentic round-trip verification.",
+  "goal": "Create and finalize an independent technical and operational guide for StegVerse <-> MIR connection establishment using the designated Universal Interlock/InTr transport as the only permitted communication medium, with source-native payload preservation, TV/TVC credential custody where required, canonical SDK manifest ingress after return admission, complete manifest lifecycle through Publisher and governed southbound egress, correlation, retry, evidence, and authentic round-trip verification.",
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT",
   "cosv_task_vector": "50000000100000",
   "owners": {
     "documentation_and_public_connection_surface": "StegVerse-Labs/Site",
     "processing_ingress_owner": "StegVerse-org/StegVerse-SDK",
+    "presentation_evidence_owner": "GCAT-BCAT-Engine/Publisher",
     "transition_owner": "Interlock/InTr",
     "credential_owner": "TV/TVC",
     "mir_history_or_accounting_owner": "MIR",
     "stegverse_governance_owner": "STEGVERSE"
   },
+  "canonical_architecture_refs": [
+    "docs/CANONICAL_SOUTHBOUND_COMMUNICATION_LIFECYCLE.md",
+    "data/canonical-southbound-communication-lifecycle.json",
+    "StegVerse-Labs/Site/docs/MIR_CONNECTION_ROUNDTRIP_TECHNICAL_GUIDE_MIRROR_HANDOFF.md"
+  ],
   "current_truth": {
     "independent_goal_established": true,
     "handoff_created": true,
@@ -28,6 +34,11 @@
     "qualifying_stegverse_return_ingress_observed": false,
     "canonical_sdk_manifest_ingress_required_before_stegverse_processing": true,
     "source_identity_may_not_select_processing_semantics": true,
+    "complete_manifest_includes_publisher_when_presentation_or_evaluator_evidence_required": true,
+    "southbound_communication_remains_governed_through_egress": true,
+    "llm_adapter_is_final_stegverse_side_transition_for_framework_paths": true,
+    "far_side_interlock_intr_transition_is_terminal_communication_transition": true,
+    "publisher_to_sdk_to_initiator_runtime_binding_observed": false,
     "documentation_completion_blocked_on_authentic_roundtrip": true
   },
   "authority_invariants": {
@@ -37,6 +48,8 @@
     "credential_authority": "TV/TVC",
     "mir_history_or_accounting_authority": "MIR",
     "stegverse_governance_authority": "STEGVERSE",
+    "publisher_authority": "MANIFEST_DECLARED_PRESENTATION_EVIDENCE_ASSEMBLY_ONLY",
+    "llm_adapter_authority": "PROTOCOL_FRAMING_AND_APPLICABLE_FINAL_STEGVERSE_SIDE_EGRESS_TRANSITION_ONLY",
     "github_runtime_authority": "NONE",
     "heartbeat_authority": "OBSERVABILITY_ONLY"
   },
@@ -58,6 +71,11 @@
     "CANONICAL_SDK_MANIFEST_INGRESS_PRECEDES_STEGVERSE_PROCESSOR_SELECTION",
     "MANIFEST_CAPABILITY_ROUTE_SELECTS_PROCESSING",
     "SOURCE_IDENTITY_DOES_NOT_SELECT_PROCESSING",
+    "PUBLISHER_IS_DECLARED_IN_COMPLETE_MANIFEST_WHEN_PRESENTATION_OR_EVALUATOR_EVIDENCE_REQUIRED",
+    "SDK_RETURN_ASSEMBLY_BINDS_PUBLISHER_OUTPUT_TO_ORIGINAL_REQUEST_AND_INITIATOR",
+    "APPLICABLE_FINAL_STEGVERSE_SIDE_EGRESS_TRANSITION_OBSERVED",
+    "FRAMEWORK_PATH_LLM_ADAPTER_TRANSITION_PRECEDES_INTERLOCK_INTR_EGRESS",
+    "FAR_SIDE_INTERLOCK_INTR_FINAL_TRANSITION_OBSERVED",
     "TV_TVC_CREDENTIAL_BOUNDARY_DOCUMENTED",
     "ROUNDTRIP_CORRELATION_AND_RECONSTRUCTION_OBSERVED_WHEN_REQUESTED",
     "DOCUMENTATION_RECONCILED_TO_RUNTIME_EVIDENCE"
@@ -78,6 +96,10 @@
     "ADMIT_RETURN_THROUGH_CANONICAL_SDK_MANIFEST_INGRESS",
     "EXECUTE_MANIFEST_SELECTED_PROCESSING",
     "PERFORM_DELTA_AND_RECONSTRUCTION_WHEN_MANIFEST_REQUESTS_IT",
+    "EXECUTE_MANIFEST_DECLARED_PUBLISHER_STAGE",
+    "RETURN_PUBLISHER_PACKAGE_THROUGH_SDK_BOUND_TO_INITIATOR",
+    "EXECUTE_APPLICABLE_FINAL_STEGVERSE_SIDE_EGRESS_TRANSITION",
+    "OBSERVE_FAR_SIDE_INTERLOCK_INTR_FINAL_TRANSITION",
     "RECONCILE_GUIDE_AGAINST_RUNTIME_EVIDENCE",
     "COMPLETE_DOCUMENTATION_AFTER_RUNTIME_PROOF"
   ],
