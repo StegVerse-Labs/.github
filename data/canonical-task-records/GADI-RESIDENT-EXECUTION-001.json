@@ -17,21 +17,24 @@
     "control/process-worker-adapters.d/gadi-resident-execution-001.json",
     "control/task-vectors/GADI-RESIDENT-EXECUTION-001.json",
     "scripts/observe_gadi_retained_resident_discovery.py",
+    "scripts/observe_gadi_current_iphone_discovery_receipt.py",
     "scripts/materialize_gadi_runtime_binding.py",
     "scripts/run_gadi_targeted_runtime_if_ready.py",
     "StegVerse-002/micro-node-runtime/micro_node/gadi_resident_consumer.py",
     "StegVerse-Labs/StegOS/docs/STEGBROWSER_RETAINED_NODE_BOOTSTRAP_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_IOS_RESIDENT_RENDEZVOUS_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/StegOS#346"
+    "StegVerse-Labs/StegOS#346",
+    "StegVerse-Labs/StegOS#350"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs", "StegVerse-002"],
     "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegOS", "StegVerse-Labs/StegBrowser", "StegVerse-002/micro-node-runtime"],
-    "components": ["gadi-resident-execution", "stegbrowser-retained-resident-node", "stegos-current-device-node", "retained-resident-discovery-observer", "provider-evidence-verification-binding", "workercoordinator-claim-fence", "intr-bound-command", "runtime-binding", "subject-bound-effect-evidence"]
+    "components": ["gadi-resident-execution", "stegbrowser-retained-resident-node", "stegos-current-device-node", "retained-resident-discovery-observer", "current-iphone-discovery-receipt-observer", "provider-evidence-verification-binding", "workercoordinator-claim-fence", "intr-bound-command", "runtime-binding", "subject-bound-effect-evidence"]
   },
   "dependencies": [
     {"dependency_id":"DEP-GADI-RESIDENT-CONSUMER-SOURCE","kind":"IMPLEMENTATION","state":"RESOLVED_SOURCE_COMPLETE_VALIDATED_MERGED","ref":"StegVerse-002/micro-node-runtime#90","disposition":"REUSE_MERGED_CONSUMER"},
     {"dependency_id":"DEP-GADI-PROVIDER-VERIFICATION-BINDING-MATERIALIZER","kind":"IMPLEMENTATION","state":"RESOLVED_SOURCE_COMPLETE_VALIDATED_MERGED","ref":"StegVerse-Labs/StegOS#346","disposition":"REUSE_MERGED_EVIDENCE_ONLY_BINDING_MATERIALIZER"},
+    {"dependency_id":"DEP-GADI-CURRENT-IPHONE-RECEIPT-READBACK","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"StegVerse-Labs/StegOS#350","disposition":"REQUIRE_CURRENT_READ_ONLY_PERSISTED_DISCOVERY_RECEIPT_FOR_EXACT_RETAINED_NODE"},
     {"dependency_id":"DEP-GADI-INTR-ADMISSION","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"GADI-001","disposition":"REQUIRE_CURRENT_INTR_DECISION_REF"},
     {"dependency_id":"DEP-GADI-WORKERCOORDINATOR-CLAIM","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"STEGVERSE-CANONICAL-WORK-COORDINATION-001","disposition":"REQUIRE_CURRENT_CLAIM_AND_FENCE"},
     {"dependency_id":"DEP-GADI-RUNTIME-BINDING","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"StegVerse-Labs/StegOS;StegVerse-Labs/StegBrowser","disposition":"REQUIRE_EXACT_CURRENT_RETAINED_STEGBROWSER_STEGOS_RUNTIME_BINDING"},
@@ -41,6 +44,7 @@
   "adjacent_task_refs": ["GADI-001", "TVC-CAPABILITY-RUNTIME-002", "STEGVERSE-CANONICAL-WORK-COORDINATION-001", "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001", "STEGOS-NODE-MANIFOLD-001"],
   "expected_evidence_predicates": [
     "CURRENT_RETAINED_STEGBROWSER_STEGOS_NODE_DISCOVERY_OBSERVED",
+    "CURRENT_RETAINED_STEGBROWSER_STEGOS_CURRENT_IPHONE_RECEIPT_READBACK_OBSERVED",
     "CURRENT_GADI_COMMAND_ADMITTED_AND_RUNTIME_BOUND",
     "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
     "CONTROL_SURFACE_TARGET_AND_SUBJECT_BINDING_MATCH",
