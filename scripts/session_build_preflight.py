@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Canonical StegVerse session/build pre-work entrypoint backed by StegIndex and cross-task coordination."""
+"""Canonical StegVerse session/build pre-work entrypoint backed by StegIndex, coordination, and canonical policy context."""
 
 import argparse
 import json
@@ -12,7 +12,10 @@ ROOT = Path(__file__).resolve().parents[1]
 GATE = ROOT / "scripts" / "stegindex_preflight_gate.py"
 COORDINATION_LEDGER = ROOT / "control" / "cross-task-coordination.json"
 COORDINATION_FRAGMENTS = ROOT / "control" / "cross-task-coordination.d"
+POLICY_CONTEXT_REGISTRY = ROOT / "control" / "canonical-policy-context-registry.json"
+CANONICAL_TASK_RECORDS = ROOT / "data" / "canonical-task-records"
 EXPECTED_COORDINATION_AUTHORITY = "NONE_INDEX_PROJECTION_ONLY"
+EXPECTED_POLICY_AUTHORITY = "NONE_PREWORK_INTERPRETATION_ONLY"
 
 EXIT_READY = 0
 EXIT_EXACT_DEPENDENCY = 2
@@ -66,6 +69,92 @@ def run_coordination_projection(stegindex_root: str | None, *, task_id: str | No
         "runtime_truth_inferred": False,
         "authority_effect": "NONE",
     }
+
+
+def _local_policy_path(ref: str) -> Path | None:
+    value = str(ref or "").strip()
+    if not value:
+        return None
+    if ":" in value and not value.startswith(("./", "../")):
+        repo, _, path = value.partition(":")
+        if "/" in repo and path:
+            if repo == "StegVerse-Labs/.github":
+                return ROOT / path
+            return None
+    return ROOT / value
+
+
+def resolve_canonical_policy_context(*, task_id: str | None, explicit_refs: list[str]) -> tuple[dict, bool]:
+    """Resolve canonical interpretation policy before session inference; never infer runtime truth or authority."""
+    if not POLICY_CONTEXT_REGISTRY.is_file():
+        return {
+            "state": "POLICY_CONTEXT_REGISTRY_UNAVAILABLE",
+            "resolved": False,
+            "exact_dependency": str(POLICY_CONTEXT_REGISTRY),
+            "authority_effect": "NONE",
+        }, False
+
+    registry = json.loads(POLICY_CONTEXT_REGISTRY.read_text(encoding="utf-8"))
+    if registry.get("authority_effect") != EXPECTED_POLICY_AUTHORITY:
+        raise RuntimeError("canonical policy context authority invariant violation")
+
+    refs: list[dict] = []
+    unresolved: list[str] = []
+    for row in registry.get("required_global_sources", []):
+        ref = str(row.get("ref") or "").strip()
+        if not ref:
+            continue
+        refs.append({"ref": ref, "source": "GLOBAL_REQUIRED", "required": bool(row.get("required", True))})
+
+    task_record_ref = None
+    if task_id:
+        candidate = CANONICAL_TASK_RECORDS / f"{task_id}.json"
+        if candidate.is_file():
+            task_record_ref = str(candidate.relative_to(ROOT))
+            record = json.loads(candidate.read_text(encoding="utf-8"))
+            for ref in record.get("canonical_policy_refs", []):
+                refs.append({"ref": str(ref), "source": "CANONICAL_TASK_RECORD", "required": True})
+
+    for ref in explicit_refs:
+        value = str(ref or "").strip()
+        if value:
+            refs.append({"ref": value, "source": "EXPLICIT", "required": True})
+
+    deduped: list[dict] = []
+    seen: set[str] = set()
+    for row in refs:
+        ref = row["ref"]
+        if ref in seen:
+            continue
+        seen.add(ref)
+        local = _local_policy_path(ref)
+        exists = bool(local and local.is_file())
+        resolved = exists
+        if row.get("required") and not resolved:
+            unresolved.append(ref)
+        deduped.append({
+            **row,
+            "local_path": str(local.relative_to(ROOT)) if local and local.is_file() else None,
+            "resolved": resolved,
+        })
+
+    complete = not unresolved
+    return {
+        "state": "RESOLVED" if complete else "CANONICAL_POLICY_DEPENDENCY_UNRESOLVED",
+        "resolved": complete,
+        "registry_ref": str(POLICY_CONTEXT_REGISTRY.relative_to(ROOT)),
+        "task_record_ref": task_record_ref,
+        "policy_refs": deduped,
+        "unresolved_policy_refs": unresolved,
+        "interpretation_guards": registry.get("interpretation_guards", []),
+        "known_global_invariants": registry.get("known_global_invariants_resolved_from_task_coordination_policy", []),
+        "human_policy_restatement_required": False,
+        "runtime_truth_inferred": False,
+        "execution_authority_inferred": False,
+        "transition_authority_inferred": False,
+        "credential_authority_inferred": False,
+        "authority_effect": "NONE",
+    }, complete
 
 
 def evaluate_readme_impact(*, required: bool, material: str | None, readme_updated: bool, readme_path: str | None, no_update_reason: str | None, evidence_refs: list[str]) -> tuple[dict, bool]:
@@ -162,6 +251,7 @@ def main():
     parser.add_argument("--contribution-class")
     parser.add_argument("--coordination-task-id")
     parser.add_argument("--coordination-predicate-id")
+    parser.add_argument("--canonical-policy-ref", action="append", default=[], help="Additional already-canonical policy source that must be resolvable before interpretation.")
     parser.add_argument("--readme-impact-required", action="store_true", help="Declare that this pre-work request may produce functional mutation and therefore requires README-impact completeness review.")
     parser.add_argument("--material-function-change", choices=("true", "false"))
     parser.add_argument("--readme-updated-in-change-set", action="store_true")
@@ -178,6 +268,10 @@ def main():
 
     preflight = run_preflight(args.goal, args.stegindex_root, args.contribution_class)
     coordination = run_coordination_projection(args.stegindex_root, task_id=args.coordination_task_id, predicate_id=args.coordination_predicate_id)
+    policy_context, policy_context_complete = resolve_canonical_policy_context(
+        task_id=args.coordination_task_id,
+        explicit_refs=args.canonical_policy_ref,
+    )
     disposition, exit_code, task_creation_permitted = decide(preflight, coordination)
     readme_impact, readme_impact_complete = evaluate_readme_impact(
         required=args.readme_impact_required,
@@ -194,6 +288,10 @@ def main():
         evidence_refs=args.behavioral_parity_evidence_ref,
         authorized_delta_refs=args.authorized_behavior_delta_ref,
     )
+    if not policy_context_complete:
+        disposition = "STOP_AT_CANONICAL_POLICY_DEPENDENCY"
+        exit_code = EXIT_EXACT_DEPENDENCY
+        task_creation_permitted = False
     if args.readme_impact_required and not readme_impact_complete:
         disposition = "STOP_AT_README_IMPACT_DEPENDENCY"
         exit_code = EXIT_EXACT_DEPENDENCY
@@ -210,10 +308,14 @@ def main():
         "task_creation_permitted": task_creation_permitted,
         "preflight": preflight,
         "cross_task_coordination": coordination,
+        "canonical_policy_context": policy_context,
+        "canonical_policy_context_complete": policy_context_complete,
+        "human_policy_restatement_required": False,
         "readme_impact": readme_impact,
         "readme_impact_complete": readme_impact_complete,
         "behavioral_parity": behavioral_parity,
         "behavioral_parity_complete": behavioral_parity_complete,
+        "canonical_policy_context_required_before_state_interpretation": True,
         "coordination_required_before_new_work": True,
         "readme_impact_required_before_functional_mutation": True,
         "behavioral_parity_required_for_migration_or_replacement": True,
