@@ -16,9 +16,11 @@
     "StegVerse-Labs/.github/handoffs/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json",
     "StegVerse-Labs/.github/workers/universal_intr_profiled_ingress.py",
     "StegVerse-Labs/.github/workers/erl_active_research_intr_profile.py",
+    "StegVerse-Labs/.github/workers/erl_active_research_transport.py",
     "StegVerse-Labs/.github/scripts/consume_device_kv_intr_materialization_request.py",
     "StegVerse-Labs/.github/scripts/prepare_erl_active_research_intr_runtime_source.py",
-    "StegVerse-Labs/.github/scripts/submit_erl_active_research_intr_binding.py",
+    "StegVerse-Labs/.github/scripts/materialize_erl_active_research_intr_resident_local_input.py",
+    "StegVerse-Labs/.github/scripts/submit_erl_active_research_intr_binding_local.py",
     "StegVerse-Labs/.github/control/resident-execution-request.d/erl-active-research-intr-runtime-binding-001.json",
     "StegVerse-Labs/.github/control/resident-execution-request.d/consume-erl-active-research-intr-runtime-binding.py",
     "StegVerse-Labs/.github/control/resident-execution-request.d/consume-erl-active-research-intr-submission.py",
@@ -34,6 +36,8 @@
     ],
     "components": [
       "erl-active-research-intr-profile",
+      "erl-active-research-resident-local-transport",
+      "erl-exact-local-source-self-materialization",
       "universal-intr-profiled-ingress",
       "device-kv-intr-materialization",
       "authentic-three-hop-receipt-chain"
@@ -62,6 +66,8 @@
   ],
   "expected_evidence_predicates": [
     "ERL_ACTIVE_RESEARCH_PROFILE_BOUND_TO_EXISTING_RESIDENT_OWNER",
+    "ERL_RESIDENT_LOCAL_TRANSPORT_REQUIRES_NO_RELAY_AUTHORIZATION",
+    "ERL_EXACT_LOCAL_SOURCE_SELF_MATERIALIZATION_AVAILABLE",
     "NO_SECOND_RUNTIME_OWNER_CREATED",
     "FULL_CANONICAL_BOUNDARY_PATH_PRESERVED",
     "EXACT_ENVELOPE_HASH_BOUND_AT_ALL_THREE_HOPS",
@@ -73,6 +79,7 @@
     "capabilities": [
       "universal_intr_profiled_ingress",
       "resident_targeted_execution",
+      "exact_local_source_self_materialization",
       "device_kv_intr_observation",
       "durable_receipt_readback"
     ],
@@ -84,7 +91,7 @@
   },
   "runtime_resolution": {
     "current_executor": "SHWP-DEVICE-KV-INTR-OBSERVATION-001 via existing profiled Universal InTr ingress and resident refresh/execute bridge",
-    "authority_basis": "existing independent task control plus contemporaneous Interlock/InTr transition authority; TV/TVC credential authority unchanged",
+    "authority_basis": "existing independent task control plus contemporaneous Interlock/InTr transition authority; ERL resident-local transport has credential requirement NONE and TV/TVC credential authority remains unchanged for transitions that require credentials",
     "unattended_runtime": false
   },
   "worker_claim": {
@@ -102,7 +109,7 @@
   },
   "allowed_next_transitions": [
     "MATERIALIZE_AND_VERIFY_AUTHENTIC_RESIDENT_ERL_SOURCE",
-    "OBSERVE_EXISTING_TVC_RELAY_AUTHORIZATION",
+    "OBSERVE_AUTHENTIC_SHARED_LOOPBACK_INGRESS",
     "EXECUTE_AUTHENTIC_ERL_THREE_HOP_TRAVERSAL",
     "VERIFY_THREE_HOP_CHAIN_AND_BIND_TERMINAL_KV_PROOF",
     "RECONCILE_PARENT_HANDOFF"

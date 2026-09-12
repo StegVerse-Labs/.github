@@ -19,8 +19,8 @@ def load(rel: str, name: str):
 
 
 class ERLActiveResearchInTrSubmissionTests(unittest.TestCase):
-    def test_submission_input_rejects_non_loopback(self):
-        mod = load("scripts/submit_erl_active_research_intr_binding.py", "erl_submit_loopback")
+    def test_resident_local_submission_input_rejects_non_loopback(self):
+        mod = load("scripts/submit_erl_active_research_intr_binding_local.py", "erl_submit_loopback")
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
             binding = root / "binding.json"
@@ -31,8 +31,9 @@ class ERLActiveResearchInTrSubmissionTests(unittest.TestCase):
                 "task_id": mod.TASK_ID,
                 "binding_ref": "binding.json",
                 "ingress_url": "https://example.com/intr/materialization",
-                "tvc_relay_authorization_id": "TVC-AUTH-EXISTING",
-                "transport_origin": "TVC_RELAY_EGRESS",
+                "transport_origin": mod.TRANSPORT_ORIGIN,
+                "transport_credential_required": False,
+                "credential_authority": "TV/TVC",
                 "request_grants_execution_authority": False,
                 "provider_operation_authorized": False,
                 "authority_effect": "NONE_INPUT_ONLY",
@@ -41,8 +42,8 @@ class ERLActiveResearchInTrSubmissionTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "loopback"):
                 mod.validate_input(value, root)
 
-    def test_post_exact_uses_tvc_relay_headers_only(self):
-        mod = load("scripts/submit_erl_active_research_intr_binding.py", "erl_submit_headers")
+    def test_post_exact_uses_resident_local_headers_without_tvc_authorization(self):
+        mod = load("scripts/submit_erl_active_research_intr_binding_local.py", "erl_submit_headers")
         captured = {}
 
         class Response:
@@ -65,12 +66,11 @@ class ERLActiveResearchInTrSubmissionTests(unittest.TestCase):
         mod.post_exact(
             {"schema": "x"},
             "http://127.0.0.1:7777/intr/materialization",
-            "TVC-AUTH-EXISTING",
             opener=opener,
         )
         self.assertEqual(captured["headers"]["x-stegverse-transport"], "InTr")
-        self.assertEqual(captured["headers"]["x-stegverse-transport-origin"], "TVC_RELAY_EGRESS")
-        self.assertEqual(captured["headers"]["x-stegverse-authorization-id"], "TVC-AUTH-EXISTING")
+        self.assertEqual(captured["headers"]["x-stegverse-transport-origin"], mod.TRANSPORT_ORIGIN)
+        self.assertNotIn("x-stegverse-authorization-id", captured["headers"])
         self.assertEqual(len(captured["headers"]["x-stegverse-payload-sha256"]), 64)
 
     def test_profile_admission_requires_two_verified_upstream_hops(self):
@@ -129,20 +129,21 @@ class ERLActiveResearchInTrSubmissionTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "lineage"):
             mod.validate_admission(bad, request, binding)
 
-    def test_route_installer_normalizes_payload_hash_uri(self):
+    def test_route_installer_migrates_relay_validator_to_resident_local_validator(self):
         mod = load("scripts/install_erl_active_research_universal_intr_route.py", "erl_route_normalize")
         source = (
             mod.IMPORT_BLOCK
             + 'def x():\n    pass\n'
             + 'def profile():\n    return {"profiles": ["HIL:Ingress", "SV002:PublicObservation", "ERL:ActiveResearch"],}\n'
             + 'ThreadingHTTPServer\n'
-            + mod.OLD_ERL_ROUTE
+            + mod.LEGACY_RELAY_ROUTE
         )
         transformed = mod.transform(source)
-        self.assertIn('transport_payload_sha256="sha256:"+', transformed)
-        self.assertNotIn(mod.OLD_ERL_ROUTE, transformed)
+        self.assertIn(mod.TRANSPORT_IMPORT, transformed)
+        self.assertIn(mod.PROFILE_HASH_EXPR, transformed)
+        self.assertNotIn(mod.LEGACY_RELAY_HASH_EXPR, transformed)
 
-    def test_request_wiring_registers_submission_consumer_and_submitter_copy(self):
+    def test_request_wiring_registers_local_submission_sources(self):
         mod = load("scripts/install_erl_resident_request_wiring.py", "erl_wiring_submission")
         dispatcher = (
             'NONSECRET_ENV = (\n    "STEGVERSE_GOOGLE_DRIVE_CLIENT_ID", "STEGVERSE_OWNER_BINDING_DIGEST", "STEGVERSE_STEGFIN_SOURCE_ROOT",\n)\n'
@@ -150,12 +151,16 @@ class ERLActiveResearchInTrSubmissionTests(unittest.TestCase):
         )
         out = mod.transform_dispatcher(dispatcher)
         self.assertIn("erl_active_research_intr_submission", out)
+        self.assertIn("STEGVERSE_UNIVERSAL_INTR_INGRESS_URL", out)
+        self.assertNotIn("STEGVERSE_TVC_RELAY_AUTHORIZATION_ID", out)
         materializer = (
             'COPY_FILES = (\n    "scripts/consume_stegos_kv_intr_chain_request.py",\n)\n'
             'required = (\n        target_root / "scripts" / "consume_stegos_kv_intr_chain_request.py",\n)\n'
         )
         mout = mod.transform_materializer(materializer)
-        self.assertIn("submit_erl_active_research_intr_binding.py", mout)
+        self.assertIn("submit_erl_active_research_intr_binding_local.py", mout)
+        self.assertIn("materialize_erl_active_research_intr_resident_local_input.py", mout)
+        self.assertIn("erl_active_research_transport.py", mout)
 
 
 if __name__ == "__main__":

@@ -293,21 +293,30 @@ Canonical dependency `TVC-IOS-OPAQUE-RECIPIENT-CAPABILITY-001` now has validated
 
 The active-research ERL lane reuses the existing resident dispatcher and the existing shared `workers/universal_intr_profiled_ingress.py` listener. It does not create a second resident runtime, listener, scheduler, heartbeat, WorkerCoordinator, credential path, or provider-operation path.
 
-The bounded local submitter accepts only a resident-local ERL binding sidecar and a loopback `http://127.0.0.1`, `localhost`, or `::1` Universal InTr materialization endpoint. Submission through `TVC_RELAY_EGRESS` requires an already-issued TVC relay authorization identifier; the submitter cannot mint, infer, or replace that authorization. TV/TVC remains credential authority, Interlock/InTr remains transition authority, and GitHub runtime authority remains `NONE`.
+The active ERL resident loopback path uses the ERL-specific transport origin `STEGOS_RESIDENT_LOCAL`. That transport origin describes carriage of an already-materialized resident ERL binding to the existing loopback shared listener; it does **not** replace or rewrite the logical evidence path `EXTERNAL_SYSTEM -> STEGOS_ECOSYSTEM -> DEVICE_SYSTEM -> KV`. The resident-local hop has credential requirement `NONE`, emits no `X-StegVerse-Authorization-Id`, and rejects any attempt to claim a TVC relay authorization. TV/TVC remains credential authority for transitions that actually require credentials; Interlock/InTr remains transition authority; GitHub runtime authority remains `NONE`.
 
-When the resident ERL binding already exists but `runtime-state/erl-active-research/intr-submission-input.json` does not, the existing ERL submission consumer may materialize that bounded input locally from the binding reference plus two explicit resident references: `STEGVERSE_UNIVERSAL_INTR_INGRESS_URL` and the pre-existing opaque `STEGVERSE_TVC_RELAY_AUTHORIZATION_ID`. Missing references remain a non-authorizing wait state. The materializer requires the ingress URL to be loopback HTTP at `/intr/materialization`, binds the exact input hash, and cannot discover or start a listener, create TVC authorization, grant execution authority, or authorize provider replay.
+`TVC_RELAY_EGRESS` is not a generic local-ingress credential. It is reserved for the separate sovereign-relay path whose TVC authorization is exact-scope and single-use against a real admitted relay route, exact opaque payload hash/size, and live execution grant. The legacy ERL relay submitter/materializer remain source history but are no longer selected by the active ERL resident dispatcher.
 
-A successful shared-listener profile response may preserve the first two verified upstream hop receipts for `EXTERNAL_SYSTEM -> STEGOS_ECOSYSTEM -> DEVICE_SYSTEM` and project the terminal `DEVICE_SYSTEM -> KV` request to the existing `SHWP-DEVICE-KV-INTR-OBSERVATION-001` / `StegVerse-Labs/continuity-vault-kit#79` owner. The submitter never fabricates the terminal KV receipt and explicitly forbids provider-operation replay. The complete three-hop chain is proven only after the existing DEVICE_KV owner executes the exact terminal bytes and the resulting receipt preserves prior-receipt continuity.
+A retained resident does not depend on generic source refresh knowing every ERL script. Each ERL binding/submission consumer can self-materialize only its exact allow-listed ERL source dependencies from the already-local canonical source root, atomically repair byte drift, verify SHA-256 parity, and then apply and `--check` the idempotent ERL source preparation. Canonical source and runtime roots must be distinct. This convergence performs no clone/fetch/pull/network source transport, creates no authority, and does not itself prove runtime traversal.
 
-Source implementation, deterministic tests, GitHub validation, or merge status do not prove authentic resident source materialization, TVC authorization, InTr traversal, or terminal KV receipt. Those remain runtime-evidence predicates.
+When the resident ERL binding already exists but `runtime-state/erl-active-research/intr-submission-input.json` does not, the existing ERL submission consumer materializes the bounded resident-local input from the binding reference plus the explicit `STEGVERSE_UNIVERSAL_INTR_INGRESS_URL`. Missing ingress remains a non-authorizing wait state. The materializer requires loopback HTTP at `/intr/materialization`, binds the exact input hash, and cannot discover or start a listener, create a credential, grant execution authority, or authorize provider replay.
+
+The ERL-only transport validator requires `InTr`, JSON, the exact raw-body SHA-256, `X-StegVerse-Transport-Origin: STEGOS_RESIDENT_LOCAL`, and absence of a relay authorization header. The installed ERL route uses that validator only after identifying an ERL active-research binding; non-ERL profiles retain their existing transport-origin and authorization rules.
+
+A successful authentic shared-listener profile response may preserve the first two verified upstream hop receipts for `EXTERNAL_SYSTEM -> STEGOS_ECOSYSTEM -> DEVICE_SYSTEM` and project the terminal `DEVICE_SYSTEM -> KV` request to the existing `SHWP-DEVICE-KV-INTR-OBSERVATION-001` / `StegVerse-Labs/continuity-vault-kit#79` owner. The submitter never fabricates the terminal KV receipt and explicitly forbids provider-operation replay. The complete three-hop chain is proven only after the existing DEVICE_KV owner executes the exact terminal bytes and the resulting receipt preserves prior-receipt continuity.
+
+Source implementation, deterministic tests, GitHub validation, or merge status do not prove authentic resident source materialization, a bound shared loopback ingress, InTr traversal, or terminal KV receipt. Those remain runtime-evidence predicates.
 
 Canonical source for this lane includes:
 
 ```text
 workers/erl_active_research_intr_profile.py
-scripts/materialize_erl_active_research_intr_submission_input.py
-scripts/submit_erl_active_research_intr_binding.py
+workers/erl_active_research_transport.py
+scripts/materialize_erl_active_research_intr_resident_local_input.py
+scripts/submit_erl_active_research_intr_binding_local.py
 scripts/install_erl_active_research_universal_intr_route.py
 scripts/install_erl_resident_request_wiring.py
+control/resident-execution-request.d/consume-erl-active-research-intr-runtime-binding.py
+control/resident-execution-request.d/consume-erl-active-research-intr-submission.py
 docs/SS_ERL_ACTIVE_RESEARCH_INTR_RUNTIME_BINDING_MIRROR_HANDOFF.md
 ```
