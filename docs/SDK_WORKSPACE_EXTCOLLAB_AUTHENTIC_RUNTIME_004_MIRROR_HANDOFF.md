@@ -5,7 +5,7 @@ Repository: `StegVerse-Labs/.github`
 Goal Task ID: `SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004`
 Parent Goal Task ID: `SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003`
 COSV: `71000000100110`
-Status: `ACTIVE / RESOLVER REPAIR MERGED + VALIDATED / SOURCE COMPATIBILITY PINNED / AUTHENTIC RESIDENT OBSERVATION REQUIRED`
+Status: `ACTIVE / RESOLVER REPAIR MERGED + VALIDATED / SOURCE COMPATIBILITY PINNED / RETAINED-NODE SUBJECT PROPAGATION MERGED / AUTHENTIC RESIDENT OBSERVATION REQUIRED`
 
 ## Purpose
 
@@ -17,11 +17,13 @@ Task Registry is coordination only. WorkerCoordinator owns claim/fence authority
 
 ## Reconciled merged source state
 
-The existing source chain remains merged and validated through `.github` #1393, SDK #196, `.github` #1402, LLM-adapter #332, SDK #199, `.github` #1415, TVC #403, SDK #201, `.github` #1427, `.github` #1460, `.github` #1478, and `.github` #1485.
+The existing source chain remains merged and validated through `.github` #1393, SDK #196, `.github` #1402, LLM-adapter #332, SDK #199, `.github` #1415, TVC #403, SDK #201, `.github` #1427, `.github` #1460, `.github` #1478, `.github` #1485, `.github` #1547, `.github` #1552, and shared runtime-presence subject propagation `.github` #1562.
 
 PR #1460 merged at `3bc8898655d344ba12f47bb4120e38f2ac1ded6e` from exact head `a926d04e563fa6f89920bd608a2ff359b272ca13`. Exact-head validation passed in all three required lanes: Deterministic Repository Suite `34615578871`, Organization Control `34615578937`, and Heartbeat Worker Project validation `34615578890`.
 
 PR #1485 merged at `329b65cf5f50883001ee90c7ee03120c67a7375d` from exact head `9b5d5c8e25f0a53ff208827bf8881edc5e84df52`. Exact-head validation passed in Deterministic Repository Suite `34635461458`, Heartbeat Worker Project `34635461437`, and Organization Control `34635461393`.
+
+PR #1562 merged at `cc53257c7e57347d2481dd4fd680aed9b8cf2f6d` from exact head `a9264f70f94c647932f3c5662468b9f6e972294b`. Exact-head validation passed in Deterministic Repository Suite `34670772330`, Organization Control `34670772342`, and Heartbeat Worker Project `34670772383`.
 
 The merged resolver repair falls back to the exact standalone canonical task record when the aggregate registry has no row, fails closed on duplicate aggregate identities and standalone record-ID mismatch, and aligns `resident_request_dispatch` discovery with `mutation_required=false`. Mutation/execution authority remains with WorkerCoordinator + Interlock/InTr; no runtime authority is created.
 
@@ -40,6 +42,10 @@ There is no remaining known source-side capability/environment/direction/mutatio
 ## Canonical runtime-presence reuse boundary
 
 The sole canonical presence producer remains `heartbeat_runtime/runtime_presence_projection.py`, with output `receipts/sovereign-host/runtime-presence.latest.json`. Do not create another liveness/presence probe.
+
+PR #1562 improves that existing producer's subject projection without changing liveness semantics. Existing `node_id` remains first priority, `sovereign_node` remains second priority, and a preserved `resident_rendezvous_node_ref` may now populate `resident.node_id` only when it matches canonical `SV-NODE-<24 lowercase hex>`. The projection also records `resident.node_identity_source`. Malformed rendezvous references remain unusable, and the rendezvous field is not itself a liveness signal.
+
+This means exact retained-node identity is no longer structurally lost when authentic runtime-presence/self-heal evidence already carries the selected StegBrowser/StegOS rendezvous node. It does **not** create a current observation, prove a resident online, or authorize this task to reuse another consumer's presence evidence.
 
 Cross-task reuse remains intentionally unauthorized until authentic evidence binds the exact runtime subject:
 
@@ -60,6 +66,8 @@ At `2026-09-12T03:25:00Z`, this continuation rechecked available evidence channe
 - retained Google Drive exact listener receipt matches: zero;
 - GitHub repository search: no authentic committed `runtime-presence.latest.json`, reseal receipt, or listener receipt; only source/documentation/reference surfaces were found.
 
+A fresh continuation recheck after merged #1562 again found zero authorized remote devices and zero exact retained-Drive matches for both required receipts. Repository search still found no authentic committed `runtime-presence.latest.json`; #1562 changes what subject identity can be projected *when* authentic presence exists, not whether such presence currently exists.
+
 Therefore runtime resolution remains unresolved solely at the authentic-current-observation boundary. No resident execution, target custody/readback, listener health, CMC-029 live TLS adoption, sovereign callback reachability, Google consent, provider probe, MIR, Master Records reconstruction, one-device completion, downstream propagation, or public distribution is claimed.
 
 Expected resident receipts remain:
@@ -78,6 +86,7 @@ resolver standalone-record fallback: MERGED / VALIDATED
 successor dispatcher discovery mutation semantic: MERGED / VALIDATED
 static resolver source compatibility: PROVEN
 canonical runtime-presence producer: EXISTING / REUSE REQUIRED
+retained rendezvous node -> resident.node_id projection: MERGED / VALIDATED
 cross-task presence subject binding: NOT YET ADMISSIBLE
 remaining resolver condition: CURRENT_OBSERVATION_REQUIRED:DECLARED_ONLY
 resident reseal receipt: NOT OBSERVED
@@ -99,7 +108,7 @@ public distributions complete: FALSE
 ## Exact next sequence
 
 1. Recheck the existing authorized resident connection and current runtime observation. No additional resolver/source remediation is presently indicated.
-2. If authentic `runtime-presence.latest.json` appears, require exact runtime subject binding before using it for this task; do not infer reuse from profile identity alone.
+2. If authentic `runtime-presence.latest.json` appears, require exact `runtime_root` plus projected `resident.node_id`/WorkerCoordinator subject binding before using it for this task; the merged #1562 rendezvous fallback may supply `resident.node_id` only from a canonical retained `SV-NODE-*` already carried by authentic runtime evidence.
 3. When the existing resident is present and resolves lawfully, exact-dispatch only `sdk_workspace_external_collab_client_secret_reseal` and `sdk_workspace_external_collab_consent_listener` from already-local canonical source.
 4. Accept only authentic reseal `TARGET_ALREADY_PRESENT`, `COMPLETED`, or exact `BLOCKED`; validate custody/readback without overwrite.
 5. Accept only authentic listener `SERVICE_ALREADY_HEALTHY`, `COMPLETED` with `loopback_health_verified=true`, or exact `BLOCKED`; remediate only the exact resident prerequisite if blocked.
@@ -110,7 +119,7 @@ public distributions complete: FALSE
 
 ## README review
 
-Root `README.md` remains accurate. This change records a fresh non-authorizing observation and clarifies existing runtime-presence reuse boundaries; it introduces no public capability or runtime behavior change.
+Root `README.md` remains accurate. This change reconciles a shared observation-only subject-projection improvement and fresh negative evidence; it introduces no new public capability, execution authority, or runtime activation claim.
 
 ## Human action
 
