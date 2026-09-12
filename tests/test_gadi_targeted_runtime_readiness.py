@@ -56,6 +56,17 @@ class GADITargetedRuntimeReadinessTests(unittest.TestCase):
             stderr="",
         )
 
+    def receipt_success(self, node: str = CURRENT_NODE) -> SimpleNamespace:
+        return SimpleNamespace(
+            returncode=0,
+            stdout=json.dumps({
+                "state": "CURRENT_RETAINED_RESIDENT_CURRENT_IPHONE_RECEIPT_READBACK_OBSERVED",
+                "target_node_ref": node,
+                "authority_effect": "NONE_EVIDENCE_READ_ONLY",
+            }) + "\n",
+            stderr="",
+        )
+
     def binding_success(self, node: str = CURRENT_NODE) -> SimpleNamespace:
         return SimpleNamespace(
             returncode=0,
@@ -79,6 +90,8 @@ class GADITargetedRuntimeReadinessTests(unittest.TestCase):
         command_text = " ".join(str(item) for item in command)
         if "observe_gadi_retained_resident_discovery.py" in command_text:
             return self.discovery_success()
+        if "observe_gadi_current_iphone_discovery_receipt.py" in command_text:
+            return self.receipt_success()
         if "materialize_gadi_runtime_binding.py" in command_text:
             return self.binding_success()
         if "resolve_gadi_resident_runtime_sources.py" in command_text:
@@ -95,7 +108,7 @@ class GADITargetedRuntimeReadinessTests(unittest.TestCase):
         self.assertIn("INTR_SOURCE_MISSING", result["blockers"])
         self.assertIn("ACTUATOR_SOURCE_MISSING", result["blockers"])
 
-    def test_missing_retained_discovery_never_visits_workercoordinator(self) -> None:
+    def test_missing_retained_discovery_never_visits_receipt_binding_or_workercoordinator(self) -> None:
         with TemporaryDirectory() as temporary:
             runtime = Path(temporary)
             seed_nonclaim(runtime)
@@ -107,8 +120,10 @@ class GADITargetedRuntimeReadinessTests(unittest.TestCase):
                         "state": "RETAINED_RESIDENT_DISCOVERY_UNOBSERVED_FAIL_CLOSED",
                         "target_node_ref": None,
                     }) + "\n", stderr="")
+                if "observe_gadi_current_iphone_discovery_receipt.py" in command_text:
+                    raise AssertionError("receipt observer must not run without current discovery")
                 if "materialize_gadi_runtime_binding.py" in command_text:
-                    return self.binding_success()
+                    raise AssertionError("runtime binding must not run without current receipt readback")
                 if "resolve_gadi_resident_runtime_sources.py" in command_text:
                     return self.resolver_success()
                 if "run_worker_runtime.py" in command_text:
@@ -117,9 +132,11 @@ class GADITargetedRuntimeReadinessTests(unittest.TestCase):
 
             result = module.execute(ROOT, runtime, runner=runner)
         self.assertIn("CURRENT_RETAINED_RESIDENT_DISCOVERY_NOT_OBSERVED", result["blockers"])
+        self.assertIn("CURRENT_RETAINED_RESIDENT_CURRENT_IPHONE_RECEIPT_NOT_OBSERVED", result["blockers"])
+        self.assertIn("CURRENT_RUNTIME_SUBJECT_BINDING_NOT_OBSERVED", result["blockers"])
         self.assertFalse(result["targeted_execution_attempted"])
 
-    def test_discovery_subject_must_match_current_runtime_subject(self) -> None:
+    def test_missing_current_iphone_receipt_never_materializes_runtime_binding(self) -> None:
         with TemporaryDirectory() as temporary:
             runtime = Path(temporary)
             seed_nonclaim(runtime)
@@ -127,7 +144,37 @@ class GADITargetedRuntimeReadinessTests(unittest.TestCase):
             def runner(command, **kwargs):
                 command_text = " ".join(str(item) for item in command)
                 if "observe_gadi_retained_resident_discovery.py" in command_text:
-                    return self.discovery_success("SV-NODE-aaaaaaaaaaaaaaaaaaaaaaaa")
+                    return self.discovery_success()
+                if "observe_gadi_current_iphone_discovery_receipt.py" in command_text:
+                    return SimpleNamespace(returncode=2, stdout=json.dumps({
+                        "state": "CURRENT_IPHONE_RECEIPT_READBACK_UNOBSERVED_FAIL_CLOSED",
+                        "target_node_ref": CURRENT_NODE,
+                    }) + "\n", stderr="")
+                if "materialize_gadi_runtime_binding.py" in command_text:
+                    raise AssertionError("runtime binding must not run without current receipt readback")
+                if "resolve_gadi_resident_runtime_sources.py" in command_text:
+                    return self.resolver_success()
+                if "run_worker_runtime.py" in command_text:
+                    raise AssertionError("WorkerCoordinator must not be visited")
+                raise AssertionError(command)
+
+            result = module.execute(ROOT, runtime, runner=runner)
+        self.assertIn("CURRENT_RETAINED_RESIDENT_CURRENT_IPHONE_RECEIPT_NOT_OBSERVED", result["blockers"])
+        self.assertIn("CURRENT_RUNTIME_SUBJECT_BINDING_NOT_OBSERVED", result["blockers"])
+        self.assertFalse(result["targeted_execution_attempted"])
+
+    def test_discovery_and_receipt_subject_must_match_current_runtime_subject(self) -> None:
+        retained = "SV-NODE-aaaaaaaaaaaaaaaaaaaaaaaa"
+        with TemporaryDirectory() as temporary:
+            runtime = Path(temporary)
+            seed_nonclaim(runtime)
+
+            def runner(command, **kwargs):
+                command_text = " ".join(str(item) for item in command)
+                if "observe_gadi_retained_resident_discovery.py" in command_text:
+                    return self.discovery_success(retained)
+                if "observe_gadi_current_iphone_discovery_receipt.py" in command_text:
+                    return self.receipt_success(retained)
                 if "materialize_gadi_runtime_binding.py" in command_text:
                     return self.binding_success(CURRENT_NODE)
                 if "resolve_gadi_resident_runtime_sources.py" in command_text:
@@ -138,6 +185,7 @@ class GADITargetedRuntimeReadinessTests(unittest.TestCase):
 
             result = module.execute(ROOT, runtime, runner=runner)
         self.assertIn("DISCOVERY_RUNTIME_SUBJECT_MISMATCH", result["blockers"])
+        self.assertIn("CURRENT_IPHONE_RECEIPT_RUNTIME_SUBJECT_MISMATCH", result["blockers"])
         self.assertFalse(result["targeted_execution_attempted"])
 
     def test_command_binding_must_match_current_runtime_subject(self) -> None:
@@ -158,6 +206,8 @@ class GADITargetedRuntimeReadinessTests(unittest.TestCase):
                 command_text = " ".join(str(item) for item in command)
                 if "observe_gadi_retained_resident_discovery.py" in command_text:
                     return self.discovery_success()
+                if "observe_gadi_current_iphone_discovery_receipt.py" in command_text:
+                    return self.receipt_success()
                 if "materialize_gadi_runtime_binding.py" in command_text:
                     return SimpleNamespace(
                         returncode=2,
@@ -185,6 +235,8 @@ class GADITargetedRuntimeReadinessTests(unittest.TestCase):
                 command_text = " ".join(str(item) for item in command)
                 if "observe_gadi_retained_resident_discovery.py" in command_text:
                     return self.discovery_success()
+                if "observe_gadi_current_iphone_discovery_receipt.py" in command_text:
+                    return self.receipt_success()
                 if "materialize_gadi_runtime_binding.py" in command_text:
                     return self.binding_success()
                 if "resolve_gadi_resident_runtime_sources.py" in command_text:
@@ -209,6 +261,8 @@ class GADITargetedRuntimeReadinessTests(unittest.TestCase):
                 command_text = " ".join(str(item) for item in command)
                 if "observe_gadi_retained_resident_discovery.py" in command_text:
                     return self.discovery_success()
+                if "observe_gadi_current_iphone_discovery_receipt.py" in command_text:
+                    return self.receipt_success()
                 if "materialize_gadi_runtime_binding.py" in command_text:
                     return self.binding_success()
                 if "resolve_gadi_resident_runtime_sources.py" in command_text:

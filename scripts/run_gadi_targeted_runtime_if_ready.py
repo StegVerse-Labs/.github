@@ -3,10 +3,11 @@
 
 This wrapper does not create InTr admission, runtime authority, actuator evidence, or a
 WorkerCoordinator claim. It first observes the existing same-device retained-resident
-discovery contract, then refreshes the non-authorizing GADI runtime-binding observation
-from canonical runtime-presence evidence. Only when discovery and the stronger runtime
-subject agree, and all remaining non-claim inputs are coherent, may it invoke the
-canonical targeted WorkerCoordinator entry point.
+discovery contract, then reads the already-persisted current-iPhone discovery receipt
+for that exact node through the existing loopback listener, and only then refreshes the
+non-authorizing GADI runtime-binding observation from canonical runtime-presence
+evidence. WorkerCoordinator may be visited only when all three current observations
+agree on the same retained subject and the remaining non-claim inputs are coherent.
 """
 from __future__ import annotations
 
@@ -26,6 +27,8 @@ INTR = SOURCE_DIR / "intr-admission.json"
 ACTUATOR = SOURCE_DIR / "actuator-observation.json"
 DISCOVERY = Path("state/gadi-resident-execution/retained-resident-discovery.json")
 DISCOVERY_OBSERVER = Path("scripts/observe_gadi_retained_resident_discovery.py")
+CURRENT_IPHONE_RECEIPT = Path("state/gadi-resident-execution/current-iphone-discovery-receipt-readback.json")
+CURRENT_IPHONE_RECEIPT_OBSERVER = Path("scripts/observe_gadi_current_iphone_discovery_receipt.py")
 BINDING = Path("state/gadi-resident-execution/runtime-binding.json")
 BINDING_PROJECTOR = Path("scripts/materialize_gadi_runtime_binding.py")
 CARRIER = Path("control/heartbeat-carrier-runtime-state.json")
@@ -95,13 +98,51 @@ def readiness(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -
         ):
             blockers.append("CURRENT_RETAINED_RESIDENT_DISCOVERY_NOT_OBSERVED")
 
+    receipt_observer = runtime / CURRENT_IPHONE_RECEIPT_OBSERVER
+    if not receipt_observer.is_file():
+        receipt_observer = source / CURRENT_IPHONE_RECEIPT_OBSERVER
+    receipt_observation: dict[str, Any] | None = None
+    discovered_node = discovery_observation.get("target_node_ref") if isinstance(discovery_observation, dict) else None
+    discovery_current = (
+        isinstance(discovery_observation, dict)
+        and discovery_observation.get("state") == "CURRENT_RETAINED_RESIDENT_DISCOVERY_OBSERVED"
+        and nonempty(discovered_node)
+    )
+    if not receipt_observer.is_file():
+        blockers.append("CURRENT_IPHONE_RECEIPT_OBSERVER_NOT_MATERIALIZED")
+    elif discovery_current:
+        completed = runner(
+            [
+                sys.executable, str(receipt_observer),
+                "--runtime-root", str(runtime),
+                "--node-ref", str(discovered_node),
+            ],
+            cwd=runtime, capture_output=True, text=True, check=False, timeout=30,
+        )
+        receipt_observation = parse_last_json(completed.stdout)
+        if (
+            completed.returncode != 0
+            or not isinstance(receipt_observation, dict)
+            or receipt_observation.get("state") != "CURRENT_RETAINED_RESIDENT_CURRENT_IPHONE_RECEIPT_READBACK_OBSERVED"
+            or receipt_observation.get("target_node_ref") != discovered_node
+        ):
+            blockers.append("CURRENT_RETAINED_RESIDENT_CURRENT_IPHONE_RECEIPT_NOT_OBSERVED")
+    else:
+        blockers.append("CURRENT_RETAINED_RESIDENT_CURRENT_IPHONE_RECEIPT_NOT_OBSERVED")
+
+    receipt_current = (
+        isinstance(receipt_observation, dict)
+        and receipt_observation.get("state") == "CURRENT_RETAINED_RESIDENT_CURRENT_IPHONE_RECEIPT_READBACK_OBSERVED"
+        and receipt_observation.get("target_node_ref") == discovered_node
+    )
+
     binding_projector = runtime / BINDING_PROJECTOR
     if not binding_projector.is_file():
         binding_projector = source / BINDING_PROJECTOR
     binding_observation: dict[str, Any] | None = None
     if not binding_projector.is_file():
         blockers.append("RUNTIME_BINDING_PROJECTOR_NOT_MATERIALIZED")
-    else:
+    elif receipt_current:
         completed = runner(
             [sys.executable, str(binding_projector), "--runtime-root", str(runtime)],
             cwd=runtime, capture_output=True, text=True, check=False, timeout=120,
@@ -114,15 +155,31 @@ def readiness(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -
             or not nonempty(binding_observation.get("runtime_binding_ref"))
         ):
             blockers.append("CURRENT_RUNTIME_SUBJECT_BINDING_NOT_OBSERVED")
+    else:
+        blockers.append("CURRENT_RUNTIME_SUBJECT_BINDING_NOT_OBSERVED")
 
     if (
-        isinstance(discovery_observation, dict)
-        and discovery_observation.get("state") == "CURRENT_RETAINED_RESIDENT_DISCOVERY_OBSERVED"
+        discovery_current
+        and receipt_current
+        and discovery_observation.get("target_node_ref") != receipt_observation.get("target_node_ref")
+    ):
+        blockers.append("DISCOVERY_CURRENT_IPHONE_RECEIPT_SUBJECT_MISMATCH")
+
+    if (
+        discovery_current
         and isinstance(binding_observation, dict)
         and binding_observation.get("state") == "CURRENT_RUNTIME_SUBJECT_BOUND"
         and discovery_observation.get("target_node_ref") != binding_observation.get("node_id")
     ):
         blockers.append("DISCOVERY_RUNTIME_SUBJECT_MISMATCH")
+
+    if (
+        receipt_current
+        and isinstance(binding_observation, dict)
+        and binding_observation.get("state") == "CURRENT_RUNTIME_SUBJECT_BOUND"
+        and receipt_observation.get("target_node_ref") != binding_observation.get("node_id")
+    ):
+        blockers.append("CURRENT_IPHONE_RECEIPT_RUNTIME_SUBJECT_MISMATCH")
 
     resolver = runtime / "scripts/resolve_gadi_resident_runtime_sources.py"
     if not resolver.is_file():
@@ -190,6 +247,7 @@ def readiness(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -
         "ready": not blockers,
         "blockers": blockers,
         "retained_resident_discovery_observation": discovery_observation,
+        "current_iphone_discovery_receipt_readback": receipt_observation,
         "runtime_binding_observation": binding_observation,
         "source_resolution": resolution,
         "separated_carrier_reference_present": carrier_present,
