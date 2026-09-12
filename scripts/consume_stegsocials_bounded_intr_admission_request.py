@@ -188,7 +188,7 @@ def consume(source_root: Path, runtime_root: Path, input_path: Path, *, opener=u
         if input_materialization.get("input_materialized") is not True:
             return {
                 "schema": RECEIPT_SCHEMA,
-                "state": input_materialization.get("state", "INPUT_NOT_MATERIALIZED"),
+                "state": "INPUT_NOT_MATERIALIZED",
                 "task_id": TASK_ID,
                 "input_ref": str(pointer),
                 "input_materialization": input_materialization,
