@@ -10,16 +10,17 @@
   "cosv_task_vector": "50000000102000",
   "owners": {
     "credential_authority": "TV/TVC",
-    "implementation_owner": "StegVerse-Labs/stegfin-governance + StegVerse-Labs/TVC",
+    "implementation_owner": "StegVerse-Labs/stegfin-governance + StegVerse-Labs/TVC + StegVerse-Labs/StegOS",
     "consumer": "TVC-RECIPIENT-ADMISSION-SIGNING-CUSTODY-001"
   },
   "source_refs": [
     "StegVerse-Labs/stegfin-governance/stegwallet/recipient_admission_signing.py",
     "StegVerse-Labs/stegfin-governance/stegwallet/vault_agent_service.py",
-    "StegVerse-Labs/StegOS/mobile/ios/StegOSMobile/TVCRecipientKeyCandidate.swift"
+    "StegVerse-Labs/StegOS/mobile/ios/StegOSMobile/TVCRecipientKeyCandidate.swift",
+    "StegVerse-Labs/StegOS/docs/TVC_RECIPIENT_ADMISSION_AUTHORITY_KEY_CANDIDATE_MIRROR_HANDOFF.md"
   ],
   "blockers": [
-    "NO_SEPARATE_TVC_ADMISSION_AUTHORITY_NON_EXPORTABLE_SIGNER_BACKEND_OBSERVED",
+    "AUTHENTICATED_VAULT_AGENT_TO_SECURE_ENCLAVE_SIGNING_BRIDGE_NOT_YET_IMPLEMENTED",
     "PRODUCTION_AUTHORITY_KEY_MATERIALIZATION_NOT_YET_OBSERVED",
     "MATCHING_PUBLIC_JWK_BINDING_NOT_YET_OBSERVED"
   ],
@@ -34,7 +35,10 @@
   "current_truth": {
     "opaque_signing_protocol_merged": true,
     "existing_vault_agent_dispatch_integration_merged": true,
-    "separate_tvc_authority_backend_found_in_source_search": false,
+    "role_separated_secure_enclave_authority_candidate_source_merged": true,
+    "role_separated_secure_enclave_authority_candidate_merge": "StegVerse-Labs/StegOS@e81b981c1218fca2031a43207afd0a419ff1263d",
+    "authority_candidate_signing_reachable": false,
+    "separate_tvc_authority_backend_bound_to_vault_agent": false,
     "recipient_secure_enclave_key_is_eligible_authority_key": false,
     "production_backend_materialized": false,
     "public_trust_anchor_bound": false
@@ -49,8 +53,7 @@
     "hosted_execution_fallback": false
   },
   "allowed_next_transitions": [
-    "IDENTIFY_ELIGIBLE_EXISTING_NON_EXPORTABLE_BACKEND",
-    "IMPLEMENT_SMALLEST_TVC_OWNED_BACKEND_ADAPTER_IF_NONE_EXISTS",
+    "DEFINE_AUTHENTICATED_NON_PUBLIC_SIGN_REQUEST_BRIDGE",
     "BIND_BACKEND_TO_EXISTING_VAULT_AGENT_PROCESS",
     "PROJECT_MATCHING_PUBLIC_JWK_ONLY",
     "OBSERVE_AUTHENTIC_PRODUCTION_MATERIALIZATION"
