@@ -11,7 +11,8 @@
   "repository": "StegVerse-Labs/.github",
   "canonical_issue": 1607,
   "handoff_projection_refs": [
-    "StegVerse-Labs/.github:docs/SDK_ELYRIA_INTR_ADAPTER_MIRROR_HANDOFF.md"
+    "StegVerse-Labs/.github:docs/SDK_ELYRIA_INTR_ADAPTER_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:docs/ELYRIA_INTR_ADAPTER_MIRROR_HANDOFF.md"
   ],
   "targets": {
     "repositories": [
@@ -60,13 +61,37 @@
     "strict_adapter_pattern_ref": "StegVerse-org/StegVerse-SDK:stegverse/llm_adapter_bridge.py",
     "external_packet_preservation_ref": "StegVerse-org/StegVerse-SDK:ADAPTER_SYSTEM_BOUNDARY_FIXTURE_MIRROR_HANDOFF.md"
   },
+  "coordination_evidence": {
+    "registration_pr": 1609,
+    "registration_exact_head": "43652521bff2d66326752c72bc05e84d4fe932c5",
+    "registration_merge": "42288fc5fece4d836e057b2675f041b99fb58d2a",
+    "registration_validation_runs": [34709126129, 34709126149, 34709126282]
+  },
+  "sdk_source_evidence": {
+    "pull_request": 222,
+    "exact_head": "aeb07d41d83c2a6ae5d84d1a2d8db5cbdc4f540b",
+    "merge_commit": "41f7c18eaed260d36492e0dd0bcae9c232fb3c77",
+    "validation_workflow": "SDK Package Artifact Validation (Non-Authorizing)",
+    "validation_run": 34709179523,
+    "framework_translation_step_passed": true,
+    "existing_validation_reused": true,
+    "new_workflow_created": false
+  },
   "source_state": {
     "canonical_handoff_created": true,
     "reusable_external_adapter_identity_resolved": true,
     "existing_intr_protocol_reused": true,
     "duplicate_protocol_required": false,
-    "elyria_framework_binding_implemented": false,
-    "elyria_framework_binding_validated": false,
+    "elyria_framework_binding_implemented": true,
+    "elyria_framework_binding_validated": true,
+    "request_translation_bound": true,
+    "response_translation_bound": true,
+    "transition_run_identity_preserved": true,
+    "elyria_verdict_non_authorizing": true,
+    "receipt_replay_nobind_evidence_preserved": true,
+    "route_closure_assertion_distinguished_from_stegverse_observation": true,
+    "fail_closed_identity_schema_tests_passed": true,
+    "readme_reviewed_generic_contract_remains_current": true,
     "authentic_external_round_trip_observed": false,
     "production_veritas_substrate_interop_claimed": false
   },
@@ -81,19 +106,12 @@
     "github_runtime_authority": "NONE"
   },
   "remaining_predicates": [
-    "ELYRIA_REQUEST_TRANSLATION_BOUND",
-    "ELYRIA_RESPONSE_TRANSLATION_BOUND",
-    "TRANSITION_AND_RUN_IDENTITY_PRESERVED",
-    "ELYRIA_VERDICT_REMAINS_NON_AUTHORIZING",
-    "ELYRIA_RECEIPT_REPLAY_NOBIND_EVIDENCE_PRESERVED",
-    "ROUTE_CLOSURE_ASSERTION_DISTINGUISHED_FROM_STEGVERSE_OBSERVATION",
-    "FAIL_CLOSED_IDENTITY_AND_SCHEMA_TESTS_PASS",
-    "README_AND_HANDOFF_CURRENT",
     "AUTHENTIC_TWO_WAY_PUBLIC_ELYRIA_TRANSPORT_EVIDENCE_OBSERVED"
   ],
   "completion": {
     "claimed": false,
     "validated": false,
+    "source_implementation_validated": true,
     "activation_proof_complete": false
   }
 }
