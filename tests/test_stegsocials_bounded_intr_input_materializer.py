@@ -114,11 +114,12 @@ def authentic_env(runtime: Path, *, endpoint: str = "http://127.0.0.1:43119/intr
 
 
 class StegSocialsBoundedIntrInputMaterializerTests(unittest.TestCase):
-    def test_missing_relay_artifacts_is_non_authorizing_wait(self) -> None:
+    def test_missing_relay_artifacts_is_non_authorizing_wait_even_in_hosted_validation(self) -> None:
         with tempfile.TemporaryDirectory() as td:
-            result = MOD.materialize(Path(td), env={})
+            result = MOD.materialize(Path(td), env={"GITHUB_ACTIONS": "true"})
         self.assertEqual(result["state"], "AUTHENTIC_RELAY_INPUT_NOT_MATERIALIZED")
         self.assertFalse(result["input_materialized"])
+        self.assertFalse(result["hosted_execution_attempted"])
         self.assertEqual(result["authority_effect"], "NONE_WAIT_STATE")
 
     def test_exact_relay_artifacts_materialize_hash_bound_pointer(self) -> None:
@@ -134,6 +135,14 @@ class StegSocialsBoundedIntrInputMaterializerTests(unittest.TestCase):
         self.assertEqual(pointer["transport_origin"], "TVC_RELAY_EGRESS")
         self.assertEqual(pointer["tvc_relay_authorization_id"], "RELAY-EGRESS-AUTH-1")
         self.assertEqual(pointer["authority_effect"], "NONE_INPUT_ONLY")
+
+    def test_hosted_environment_with_materialized_relay_artifacts_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            runtime = Path(td)
+            env = authentic_env(runtime)
+            env["GITHUB_ACTIONS"] = "true"
+            with self.assertRaisesRegex(RuntimeError, "hosted_environment_forbidden"):
+                MOD.materialize(runtime, env=env)
 
     def test_payload_hash_drift_fails_closed(self) -> None:
         with tempfile.TemporaryDirectory() as td:
