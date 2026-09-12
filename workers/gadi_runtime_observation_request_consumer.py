@@ -3,18 +3,20 @@
 
 This consumer creates no claim, fence, admission, credential, runtime, listener, or
 execution authority. It validates one static observation request and invokes the
-already-merged claimless GADI dispatcher entry point. That dispatcher may visit the
-existing WorkerCoordinator only after current retained discovery, current-iPhone
-receipt readback, runtime binding, and all remaining non-claim evidence are coherent.
+already-merged claimless GADI dispatcher from the existing already-local canonical
+source checkout. That dispatcher may visit the existing WorkerCoordinator only after
+current retained discovery, current-iPhone receipt readback, runtime binding, and all
+remaining non-claim evidence are coherent.
 """
 from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 
 ROOT = Path(__file__).resolve().parents[1]
 REQUEST_REL = Path("control/resident-execution-request.d/gadi-runtime-observation-001.json")
@@ -79,23 +81,38 @@ def validate_request(value: dict[str, Any]) -> None:
         raise RuntimeError("GADI runtime-observation request contract mismatch")
 
 
-def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -> dict[str, Any]:
-    source = source_root.expanduser().resolve()
+def resolve_source_root(runtime: Path, env: Mapping[str, str] | None = None) -> Path:
+    values = os.environ if env is None else env
+    raw = str(values.get("STEGVERSE_HEARTBEAT_SOURCE_ROOT") or "").strip()
+    candidates: list[Path] = []
+    if raw:
+        candidates.append(Path(raw).expanduser().resolve())
+    candidates.append(runtime)
+    for candidate in candidates:
+        if (candidate / DISPATCHER_REL).is_file():
+            return candidate
+    raise RuntimeError("claimless GADI dispatcher unavailable in existing local source/runtime")
+
+
+def consume(
+    source_root: Path,
+    runtime_root: Path,
+    *,
+    runner=subprocess.run,
+    env: Mapping[str, str] | None = None,
+) -> dict[str, Any]:
     runtime = runtime_root.expanduser().resolve()
+    provided_source = source_root.expanduser().resolve()
     request_path = runtime / REQUEST_REL
     if not request_path.is_file():
-        request_path = source / REQUEST_REL
+        request_path = provided_source / REQUEST_REL
     if not request_path.is_file():
         raise RuntimeError("GADI runtime-observation request not materialized")
     request = load_json(request_path)
     validate_request(request)
 
-    dispatcher = runtime / DISPATCHER_REL
-    if not dispatcher.is_file():
-        dispatcher = source / DISPATCHER_REL
-    if not dispatcher.is_file():
-        raise RuntimeError("claimless GADI dispatcher not materialized")
-
+    source = resolve_source_root(runtime, env)
+    dispatcher = source / DISPATCHER_REL
     completed = runner(
         [sys.executable, str(dispatcher), "--source-root", str(source), "--runtime-root", str(runtime)],
         cwd=runtime,
@@ -114,6 +131,8 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -> 
         "parent_task_id": PARENT_TASK_ID,
         "request_id": REQUEST_ID,
         "state": "OBSERVATION_ATTEMPT_RECORDED",
+        "canonical_local_source_root": str(source),
+        "network_source_fetch_performed": False,
         "dispatcher_returncode": completed.returncode,
         "dispatcher_state": result.get("state"),
         "dispatcher_result": result,
@@ -149,6 +168,7 @@ def main() -> int:
             "error": str(exc),
             "request_granted_authority": False,
             "claim_or_fence_created_by_consumer": False,
+            "network_source_fetch_performed": False,
             "authority_effect": "NONE_FAIL_CLOSED",
         }
         write_json(args.runtime_root.expanduser().resolve() / RECEIPT_REL, receipt)
