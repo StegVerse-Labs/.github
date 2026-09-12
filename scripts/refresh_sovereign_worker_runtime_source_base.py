@@ -77,6 +77,7 @@ STATIC_FILES = (
     Path("scripts/continue_stegverse001_evidence_chain.py"),
     Path("scripts/dispatch_resident_execution_requests.py"),
     Path("scripts/consume_stegsocials_bounded_intr_admission_request.py"),
+    Path("scripts/build_stegsocials_bounded_intr_materialization.py"),
     Path("scripts/build_runtime_profile_map.py"),
     Path("scripts/run_global_runtime_evidence_convergence.py"),
     Path("scripts/run_global_runtime_node_profile_convergence.py"),
