@@ -3,9 +3,9 @@
 
 This consumer is non-authorizing. It never creates participant approval, InTr
 admission, TV/TVC authorization, SKAP/session authority, provider authority,
-publication evidence, or KV evidence. It requires an already-local input pointer
-that names the exact RECEIVED record and an existing loopback Universal InTr
-listener plus an already-issued TVC relay authorization identifier.
+publication evidence, or KV evidence. If its hash-bound runtime input pointer is
+absent, it may invoke the resident non-authorizing input materializer, which can
+only bind already-materialized authentic relay artifacts.
 """
 from __future__ import annotations
 
@@ -13,7 +13,6 @@ import argparse
 import hashlib
 import importlib.util
 import json
-import sys
 from pathlib import Path
 from typing import Any, Mapping
 from urllib.parse import urlparse
@@ -54,14 +53,32 @@ def write_atomic(path: Path, value: Mapping[str, Any]) -> None:
     tmp.replace(path)
 
 
-def load_builder(source_root: Path):
-    path = source_root / "scripts/build_stegsocials_bounded_intr_materialization.py"
-    require(path.is_file(), "stegsocials_materialization_builder_missing")
-    spec = importlib.util.spec_from_file_location("stegsocials_materialization_builder", path)
-    require(spec is not None and spec.loader is not None, "stegsocials_materialization_builder_load_failed")
+def load_module(source_root: Path, rel: str, name: str, missing_reason: str):
+    path = source_root / rel
+    require(path.is_file(), missing_reason)
+    spec = importlib.util.spec_from_file_location(name, path)
+    require(spec is not None and spec.loader is not None, f"{name}_load_failed")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
+
+def load_builder(source_root: Path):
+    return load_module(
+        source_root,
+        "scripts/build_stegsocials_bounded_intr_materialization.py",
+        "stegsocials_materialization_builder",
+        "stegsocials_materialization_builder_missing",
+    )
+
+
+def load_input_materializer(source_root: Path):
+    return load_module(
+        source_root,
+        "scripts/materialize_stegsocials_bounded_intr_admission_input.py",
+        "stegsocials_input_materializer",
+        "stegsocials_input_materializer_missing",
+    )
 
 
 def validate_input(value: Mapping[str, Any], runtime_root: Path) -> tuple[Path, str, str]:
@@ -93,6 +110,7 @@ def validate_input(value: Mapping[str, Any], runtime_root: Path) -> tuple[Path, 
     require(parsed.scheme == "http", "ingress_url_must_be_loopback_http")
     require((parsed.hostname or "").lower() in {"127.0.0.1", "localhost", "::1"}, "ingress_url_must_be_loopback")
     require(parsed.path == "/intr/materialization", "ingress_url_path_invalid")
+    require(parsed.username is None and parsed.password is None, "ingress_url_credentials_forbidden")
     authorization_id = value.get("tvc_relay_authorization_id")
     require(isinstance(authorization_id, str) and authorization_id.strip(), "tvc_relay_authorization_id_required")
     return received, ingress_url, authorization_id
@@ -163,15 +181,20 @@ def consume(source_root: Path, runtime_root: Path, input_path: Path, *, opener=u
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
     pointer = input_path if input_path.is_absolute() else runtime / input_path
+    input_materialization = None
     if not pointer.is_file():
-        return {
-            "schema": RECEIPT_SCHEMA,
-            "state": "INPUT_NOT_MATERIALIZED",
-            "task_id": TASK_ID,
-            "input_ref": str(pointer),
-            "runtime_execution_attempted": False,
-            "authority_effect": "NONE_WAITING_FOR_AUTHENTIC_INPUT",
-        }
+        materializer = load_input_materializer(source)
+        input_materialization = materializer.materialize(runtime)
+        if input_materialization.get("input_materialized") is not True:
+            return {
+                "schema": RECEIPT_SCHEMA,
+                "state": "INPUT_NOT_MATERIALIZED",
+                "task_id": TASK_ID,
+                "input_ref": str(pointer),
+                "input_materialization": input_materialization,
+                "runtime_execution_attempted": False,
+                "authority_effect": "NONE_WAITING_FOR_AUTHENTIC_INPUT",
+            }
     input_value = load_json(pointer)
     received, ingress_url, authorization_id = validate_input(input_value, runtime)
     input_hash = str(input_value["input_hash"])
@@ -190,6 +213,7 @@ def consume(source_root: Path, runtime_root: Path, input_path: Path, *, opener=u
         "task_id": TASK_ID,
         "input_hash": input_hash,
         "input_ref": str(pointer),
+        "input_materialization": input_materialization,
         "received_record_ref": str(received),
         "received_record_hash": sha_uri(load_json(received)),
         "materialization_id": request_value["materialization_id"],
