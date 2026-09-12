@@ -7,7 +7,7 @@ Updated: 2026-09-11
 - Parent handoff: `StegVerse-Labs/StegSocials/docs/STEGSOCIALS_NATIVE_STEGBROWSER_TRANSPORT_MIRROR_HANDOFF.md`
 - Organization boundary owner: `StegVerse-Labs/.github`
 - Status: `ACTIVE`
-- Source state: `RESIDENT_CONSUMER_REFRESH_PROPAGATION_MERGED_VALIDATED_RUNTIME_INPUT_PENDING`
+- Source state: `RESIDENT_CONSUMER_AND_BUILDER_REFRESH_PROPAGATION_MERGED_VALIDATED_RUNTIME_INPUT_PENDING`
 
 ## Purpose
 
@@ -24,6 +24,8 @@ Close the source seam from the already-merged StegSocials canonical `stegverse.u
 `.github` PR #1482 merged canonical reconciliation at `d55af379c89e6bdf3cf15a4d3ac5584c0c0b4798` after organization control, deterministic repository suite, and Heartbeat passed on exact head `5c7cb4379dae7d4921c0e7d2902628d4fef774a5`.
 
 `.github` PR #1496 merged the resident source-refresh propagation repair at `d6cb21f360d99d3c15d7d6b58cbed678353aad4b`. Exact head `d6aa7f2116458063b8a8120fb4614ad0f04ada79` passed Workspace DEVICE_KV validation, SDK WorkSpace reseal resident validation, organization control, deterministic repository suite, and Heartbeat. Both `refresh_sovereign_worker_runtime_source.py` and its base variant now materialize `consume_stegsocials_bounded_intr_admission_request.py` into an already-local resident runtime.
+
+`.github` PR #1557 merged the consumer dependency propagation repair at `2ea069abd466a1803dab31cd26f6d8c684f7dce6`. Exact head `599f47a22ff827b3281184f4f04d15e9e16dc359` passed organization control run `34670560789`, Heartbeat run `34670560415`, SDK WorkSpace reseal resident validation run `34670560538`, Workspace DEVICE_KV validation run `34670560362`, and deterministic repository suite run `34670560434`. Both resident refresh variants now materialize `scripts/build_stegsocials_bounded_intr_materialization.py` together with the registered Socials consumer.
 
 The merged route, consumer, dispatcher registration, and source-refresh propagation remain non-authorizing. Source and CI do not prove authentic admission. Only an actual invocation of the existing shared sovereign listener may emit `stegverse.stegsocials-bounded-intr-materialization-ingress/v1` with `state=INGRESS_ADMITTED`.
 
@@ -59,9 +61,11 @@ Deterministic coverage at `tests/test_stegsocials_bounded_intr_resident_dispatch
 
 ## Resident source-refresh propagation
 
-Post-merge inspection found that `scripts/refresh_sovereign_worker_runtime_source.py` copied the registered dispatcher into an already-materialized resident runtime but did not include `scripts/consume_stegsocials_bounded_intr_admission_request.py` in its explicit `STATIC_FILES` set. A normal local source refresh could therefore update the dispatcher while leaving the Socials consumer absent or stale, producing `CONSUMER_NOT_MATERIALIZED` even though source registration was correct.
+Post-merge inspection first found that `scripts/refresh_sovereign_worker_runtime_source.py` copied the registered dispatcher into an already-materialized resident runtime but did not include `scripts/consume_stegsocials_bounded_intr_admission_request.py` in its explicit `STATIC_FILES` set. PR #1496 repaired that consumer propagation gap.
 
-PR #1496 repaired this by adding the Socials consumer to both the canonical refresh module and `refresh_sovereign_worker_runtime_source_base.py`, with deterministic regression coverage in `tests/test_stegsocials_consumer_source_refresh.py`. This remains source propagation only: no runtime receipt, input pointer, InTr admission, provider action, credential material, or authority is created by the repair.
+A second dependency audit then confirmed that `run_worker_runtime.py` invokes the resident dispatcher with `--source-root` and `--runtime-root` both bound to the resident runtime root. The Socials consumer dynamically loads `scripts/build_stegsocials_bounded_intr_materialization.py` from that source root. Before #1557, a refreshed resident runtime could therefore contain the consumer but still fail closed with `stegsocials_materialization_builder_missing` because its builder had not been copied.
+
+PR #1557 repaired the dependency seam by adding the builder to both canonical and base refresh `STATIC_FILES` sets and extending `tests/test_stegsocials_consumer_source_refresh.py` to require consumer and builder propagation together. This remains source propagation only: no runtime receipt, input pointer, InTr admission, provider action, credential material, KV mutation, or authority is created by the repair.
 
 Root `README.md` was re-reviewed. Its existing bounded StegSocials Universal InTr section remains semantically correct, so no README text change is required for this propagation-only repair.
 
@@ -81,6 +85,7 @@ resident consumer may manufacture TVC authorization: false
 resident consumer may start a second listener: false
 resident dispatcher registration grants authority: false
 source refresh propagation grants authority: false
+consumer dependency propagation grants authority: false
 INPUT_NOT_MATERIALIZED authorizes execution: false
 InTr admission grants provider/publication authority: false
 TV/TVC remains credential authority: true
