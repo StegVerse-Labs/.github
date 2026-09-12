@@ -37,6 +37,7 @@
     "components": [
       "erl-active-research-intr-profile",
       "erl-active-research-resident-local-transport",
+      "erl-exact-local-source-self-materialization",
       "universal-intr-profiled-ingress",
       "device-kv-intr-materialization",
       "authentic-three-hop-receipt-chain"
@@ -66,6 +67,7 @@
   "expected_evidence_predicates": [
     "ERL_ACTIVE_RESEARCH_PROFILE_BOUND_TO_EXISTING_RESIDENT_OWNER",
     "ERL_RESIDENT_LOCAL_TRANSPORT_REQUIRES_NO_RELAY_AUTHORIZATION",
+    "ERL_EXACT_LOCAL_SOURCE_SELF_MATERIALIZATION_AVAILABLE",
     "NO_SECOND_RUNTIME_OWNER_CREATED",
     "FULL_CANONICAL_BOUNDARY_PATH_PRESERVED",
     "EXACT_ENVELOPE_HASH_BOUND_AT_ALL_THREE_HOPS",
@@ -77,6 +79,7 @@
     "capabilities": [
       "universal_intr_profiled_ingress",
       "resident_targeted_execution",
+      "exact_local_source_self_materialization",
       "device_kv_intr_observation",
       "durable_receipt_readback"
     ],
