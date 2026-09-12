@@ -40,13 +40,14 @@ class CanonicalPolicyContextPreflightTests(unittest.TestCase):
 
     def test_task_declared_policy_refs_are_automatically_loaded(self):
         original_records = preflight.CANONICAL_TASK_RECORDS
+        temp_parent = ROOT / ".tmp-policy-context-tests"
+        temp_parent.mkdir(exist_ok=True)
         try:
-            with tempfile.TemporaryDirectory() as tmp:
+            with tempfile.TemporaryDirectory(dir=temp_parent) as tmp:
                 records = Path(tmp)
-                policy = ROOT / "data" / "task-coordination-policy.json"
                 record = {
                     "task_id": "TEST-POLICY-TASK",
-                    "canonical_policy_refs": ["data/task-coordination-policy.json"],
+                    "canonical_policy_refs": ["management/session-build-preflight-contract.json"],
                 }
                 (records / "TEST-POLICY-TASK.json").write_text(json.dumps(record), encoding="utf-8")
                 preflight.CANONICAL_TASK_RECORDS = records
@@ -54,12 +55,18 @@ class CanonicalPolicyContextPreflightTests(unittest.TestCase):
                     task_id="TEST-POLICY-TASK",
                     explicit_refs=[],
                 )
-            self.assertTrue(complete)
-            self.assertEqual(context["task_record_ref"], None)
-            task_rows = [row for row in context["policy_refs"] if row["source"] == "CANONICAL_TASK_RECORD"]
-            self.assertEqual(len(task_rows), 0)
+                self.assertTrue(complete)
+                self.assertTrue(context["task_record_ref"].endswith("TEST-POLICY-TASK.json"))
+                task_rows = [row for row in context["policy_refs"] if row["source"] == "CANONICAL_TASK_RECORD"]
+                self.assertEqual(len(task_rows), 1)
+                self.assertEqual(task_rows[0]["ref"], "management/session-build-preflight-contract.json")
+                self.assertTrue(task_rows[0]["resolved"])
         finally:
             preflight.CANONICAL_TASK_RECORDS = original_records
+            try:
+                temp_parent.rmdir()
+            except OSError:
+                pass
 
 
 if __name__ == "__main__":
