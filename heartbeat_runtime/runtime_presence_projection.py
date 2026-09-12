@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -10,6 +11,7 @@ OBSERVATION_ONLY_MODE = "CARRIER_REFERENCE_ONLY_NO_TASK_EXECUTION"
 DEFAULT_WORKER_FRESHNESS_WINDOW_SECONDS = 60.0
 CANONICAL_CARRIER_RUNTIME = "heartbeat_runtime.engine_v13.HeartbeatRuntime"
 CANONICAL_WORKER_RUNTIME = "heartbeat_runtime.worker_runtime.WorkerCoordinator"
+CANONICAL_RETAINED_NODE_REF = re.compile(r"^SV-NODE-[0-9a-f]{24}$")
 
 
 def _load(path: Path) -> dict[str, Any] | None:
@@ -48,6 +50,27 @@ def _parse_timestamp(value: Any) -> datetime | None:
     if parsed.tzinfo is None:
         parsed = parsed.replace(tzinfo=timezone.utc)
     return parsed.astimezone(timezone.utc)
+
+
+def _runtime_node_subject(runtime_evidence: dict[str, Any]) -> tuple[str | None, str | None]:
+    """Return the observed node subject without promoting malformed rendezvous identity.
+
+    Existing activation compatibility may use arbitrary historical node_id/sovereign_node
+    values. The retained StegBrowser/StegOS rendezvous identity is newer and has a strict
+    canonical shape, so it is accepted only as SV-NODE-<24 lowercase hex>.
+    """
+    node_id = runtime_evidence.get("node_id")
+    if isinstance(node_id, str) and node_id.strip():
+        return node_id.strip(), "node_id"
+    sovereign_node = runtime_evidence.get("sovereign_node")
+    if isinstance(sovereign_node, str) and sovereign_node.strip():
+        return sovereign_node.strip(), "sovereign_node"
+    rendezvous_node = runtime_evidence.get("resident_rendezvous_node_ref")
+    if isinstance(rendezvous_node, str):
+        rendezvous_node = rendezvous_node.strip()
+        if CANONICAL_RETAINED_NODE_REF.fullmatch(rendezvous_node):
+            return rendezvous_node, "resident_rendezvous_node_ref"
+    return None, None
 
 
 def _activation_runtime_alive(activation: dict[str, Any]) -> tuple[bool, str]:
@@ -148,6 +171,8 @@ def project(
         runtime_evidence_path = activation_path if activation else self_heal_path
         runtime_evidence = activation if activation else self_heal
 
+    resident_node_id, resident_node_identity_source = _runtime_node_subject(runtime_evidence)
+
     task_capable = (
         worker.get("schema") == "stegverse.worker-runtime-state/v1"
         and worker.get("observation_mode") != OBSERVATION_ONLY_MODE
@@ -191,7 +216,8 @@ def project(
         "schema": "stegverse.hb-runtime-presence-resident-observability/v1",
         "runtime_root": str(root),
         "resident": {
-            "node_id": runtime_evidence.get("node_id") or runtime_evidence.get("sovereign_node") or None,
+            "node_id": resident_node_id,
+            "node_identity_source": resident_node_identity_source,
             "runtime_alive_observed": runtime_alive,
             "activation_evidence_observed": bool(activation),
             "self_heal_supervision_evidence_observed": bool(self_heal),
