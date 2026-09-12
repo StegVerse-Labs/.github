@@ -13,6 +13,7 @@ from task_registry_checkin_event_history import (  # noqa: E402
     append_event,
     recent_collision_candidates,
 )
+from validate_task_registration_substrate_resolution import validate_resolution  # noqa: E402
 
 
 def load_records():
@@ -61,6 +62,14 @@ def clean_context(req):
     return out
 
 
+def selected_substrate(record):
+    resolution = record.get("execution_substrate_resolution")
+    if not isinstance(resolution, dict):
+        return None
+    selected = resolution.get("selected_substrate_id")
+    return str(selected).strip() if isinstance(selected, str) and selected.strip() else None
+
+
 def overlap(a, b, request_context=None):
     at, bt = a.get("targets") or {}, b.get("targets") or {}
     a_repos = set(at.get("repositories") or [])
@@ -74,7 +83,10 @@ def overlap(a, b, request_context=None):
     comps = sorted(a_comps & set(bt.get("components") or []))
     lineage = bool({a.get("task_id"), a.get("parent_task_id"), a.get("root_correlation_id")} & {b.get("task_id"), b.get("parent_task_id"), b.get("root_correlation_id")})
     adjacent = b.get("task_id") in (a.get("adjacent_task_refs") or []) or a.get("task_id") in (b.get("adjacent_task_refs") or [])
-    return repos, comps, lineage, adjacent
+    a_substrate = selected_substrate(a)
+    b_substrate = selected_substrate(b)
+    substrates = [a_substrate] if a_substrate and a_substrate == b_substrate else []
+    return repos, comps, lineage, adjacent, substrates
 
 
 def event_ledger_path() -> Path:
@@ -155,6 +167,21 @@ def main():
         emit({"schema":"stegverse.task-registry-checkin-disposition/v1","task_id":tid,"disposition":"STOP_NOT_REGISTERED","session_action":"END_OR_REGISTER_BEFORE_MUTATION","authority_effect":"NONE"}, context)
         return
 
+    if "execution_substrate_resolution" in r:
+        try:
+            validate_resolution(r)
+        except Exception as exc:
+            emit({
+                "schema":"stegverse.task-registry-checkin-disposition/v1",
+                "task_id":tid,
+                "task_handoff":handoff(r),
+                "disposition":"STOP_SUBSTRATE_REVIEW_REQUIRED",
+                "session_action":"END_AND_RECONCILE_EXECUTION_SUBSTRATE_REVIEW",
+                "substrate_review_error":str(exc),
+                "authority_effect":"NONE",
+            }, context)
+            return
+
     state = str(r.get("coordination_state") or "").upper()
     checkout = str(r.get("checkout_state") or "").upper()
     continuation = r.get("continuation_task_id")
@@ -170,9 +197,22 @@ def main():
         oc = str(o.get("checkout_state") or "").upper()
         if os not in ACTIVEISH and oc not in ACTIVEISH and oc != "CHECKED_OUT":
             continue
-        repos, comps, lineage, adjacent = overlap(r, o, context)
-        if repos or comps or lineage or adjacent:
-            collisions.append({"task_id":oid,"handoff":handoff(o),"coordination_state":os,"checkout_state":oc,"overlap":{"repositories":repos,"components":comps,"lineage":lineage,"adjacent":adjacent},"source":"CANONICAL_TASK_RECORD"})
+        repos, comps, lineage, adjacent, substrates = overlap(r, o, context)
+        if repos or comps or lineage or adjacent or substrates:
+            collisions.append({
+                "task_id":oid,
+                "handoff":handoff(o),
+                "coordination_state":os,
+                "checkout_state":oc,
+                "overlap":{
+                    "repositories":repos,
+                    "components":comps,
+                    "lineage":lineage,
+                    "adjacent":adjacent,
+                    "execution_substrates":substrates,
+                },
+                "source":"CANONICAL_TASK_RECORD",
+            })
 
     recent = recent_events_for(tid, r, context)
     known = {(c["task_id"], "CANONICAL_TASK_RECORD") for c in collisions}
@@ -185,7 +225,18 @@ def main():
     hard=[c for c in collisions if c.get("source") == "CANONICAL_TASK_RECORD" and c.get("checkout_state")=="CHECKED_OUT" and (c["overlap"]["components"] or c["overlap"]["lineage"])]
     disposition = "STOP_COLLISION" if hard else ("COORDINATE_CONVERGENCE" if collisions else "CONTINUE")
     action = "END_SESSION_AND_CONTINUE_IN_RETURNED_COLLISION_OWNER" if hard else ("COORDINATE_BEFORE_MUTATION" if collisions else "CONTINUE_CURRENT_TASK")
-    emit({"schema":"stegverse.task-registry-checkin-disposition/v1","task_id":tid,"task_handoff":handoff(r),"disposition":disposition,"session_action":action,"collision_candidates":collisions,"hard_collision_task_ids":[c["task_id"] for c in hard],"recent_event_window_seconds":1800,"authority_effect":"NONE"}, context)
+    emit({
+        "schema":"stegverse.task-registry-checkin-disposition/v1",
+        "task_id":tid,
+        "task_handoff":handoff(r),
+        "selected_execution_substrate":selected_substrate(r),
+        "disposition":disposition,
+        "session_action":action,
+        "collision_candidates":collisions,
+        "hard_collision_task_ids":[c["task_id"] for c in hard],
+        "recent_event_window_seconds":1800,
+        "authority_effect":"NONE",
+    }, context)
 
 if __name__ == "__main__":
     main()
