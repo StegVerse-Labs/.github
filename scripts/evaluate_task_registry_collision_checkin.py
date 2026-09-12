@@ -6,6 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 RECORDS = ROOT / "data" / "canonical-task-records"
+GLOBAL_INVARIANTS = ROOT / "data" / "task-registry-global-invariants.json"
 ACTIVEISH = {"ACTIVE", "CHECKED_OUT", "CLAIMED_INTEGRATION", "HANDOFF_READY_RUNTIME_PROOF_PENDING", "BLOCKED_RUNTIME_ACTIVATION"}
 sys.path.insert(0, str(ROOT / "scripts"))
 from task_registry_checkin_event_history import (  # noqa: E402
@@ -27,6 +28,15 @@ def load_records():
         if tid:
             out[tid] = r
     return out
+
+
+def load_global_invariants():
+    policy = json.loads(GLOBAL_INVARIANTS.read_text(encoding="utf-8"))
+    if policy.get("schema") != "stegverse.task-registry-global-invariants/v1":
+        raise SystemExit("task registry global invariant schema mismatch")
+    if policy.get("applies_to") != "ALL_CANONICAL_TASKS_EXISTING_AND_NEW":
+        raise SystemExit("task registry global invariant scope mismatch")
+    return policy
 
 
 def handoff(r):
@@ -144,6 +154,7 @@ def record_event(envelope, context, event_type):
 
 def emit(payload, request_context):
     envelope = dict(payload)
+    envelope["registry_global_invariants"] = load_global_invariants()
     envelope["checkin_context"] = request_context
     envelope["checkin_context_sha256"] = stable_hash(request_context)
     envelope["checkin_disposition_sha256"] = stable_hash({k: v for k, v in envelope.items() if k != "checkin_disposition_sha256"})

@@ -108,6 +108,12 @@ def main() -> None:
     )
 
     subprocess.run(
+        [sys.executable, str(ROOT / "scripts" / "validate_task_registry_global_invariants.py")],
+        cwd=ROOT,
+        check=True,
+    )
+
+    subprocess.run(
         [sys.executable, str(ROOT / "scripts" / "validate_cosv_ecosystem_adoption.py")],
         cwd=ROOT,
         check=True,
@@ -140,6 +146,7 @@ def main() -> None:
                 "control_repository_claimable": False,
                 "dependency_cycles": False,
                 "task_registration_substrate_resolution": True,
+                "task_registry_global_verifier_node_invariants": True,
                 "repository_operational_state": True,
             },
             sort_keys=True,
