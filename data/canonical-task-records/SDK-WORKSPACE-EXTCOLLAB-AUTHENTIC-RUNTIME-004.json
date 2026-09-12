@@ -88,6 +88,12 @@
     "candidate_count_until_authentic_observation": 0,
     "authority_effect": "NONE_DISCOVERY_ONLY"
   },
+  "runtime_presence_reuse": {
+    "canonical_producer": "heartbeat_runtime/runtime_presence_projection.py",
+    "canonical_output": "receipts/sovereign-host/runtime-presence.latest.json",
+    "cross_task_reuse_authorized": false,
+    "required_subject_binding": ["runtime_root", "resident.node_id", "canonical_workercoordinator_identity"]
+  },
   "source_state": {
     "portable_exact_dispatch_merged": true,
     "service_gateway_three_route_source_merged": true,
@@ -146,7 +152,7 @@
     "already_local_source_required": true,
     "second_user_operated_device_required": false
   },
-  "runtime_resolution": null,
+  "runtime_resolution": "UNRESOLVED_NO_CURRENT_AUTHORIZED_DEVICE",
   "worker_claim": {
     "authority": "WORKERCOORDINATOR",
     "claim_ref": null,
@@ -163,7 +169,7 @@
     "github_authentic_reseal_receipt_observed": false,
     "github_authentic_listener_receipt_observed": false,
     "disposition": "ACTIVE_WAIT_FOR_EXISTING_AUTHORIZED_RESIDENT_RECONNECTION",
-    "authority_effect": "NONE"
+    "authority_effect": "NONE_OBSERVATION_ONLY"
   },
   "readme_impact": {
     "material_function_change": false,
