@@ -64,6 +64,16 @@ def test_session_branch_pr_and_intended_targets_are_bound_into_disposition():
     assert "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001" in candidates or "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001" in candidates
 
 
+def test_substrate_resolution_is_part_of_collision_convergence_contract():
+    text = SCRIPT.read_text(encoding="utf-8")
+    assert "validate_task_registration_substrate_resolution import validate_resolution" in text
+    assert '"STOP_SUBSTRATE_REVIEW_REQUIRED"' in text
+    assert '"execution_substrates":substrates' in text.replace(" ", "")
+    assert '"selected_execution_substrate":selected_substrate(r)' in text.replace(" ", "")
+    hard_line = next(line for line in text.splitlines() if line.strip().startswith("hard=["))
+    assert 'execution_substrates' not in hard_line
+
+
 def test_canonical_work_bootstrap_requires_registry_preflight_before_route_mutation():
     text = BOOTSTRAP.read_text(encoding="utf-8")
     assert 'COLLISION_EVALUATOR_REL = Path("scripts/evaluate_task_registry_collision_checkin.py")' in text
