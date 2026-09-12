@@ -5,17 +5,23 @@
   "vector": "71000000101000",
   "evidence_refs": [
     "StegVerse-Labs/.github:docs/SDK_ECOSYSTEM_DIAGNOSTIC_PROCESSOR_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/.github:issue/1545"
+    "StegVerse-Labs/.github:issue/1545",
+    "StegVerse-Labs/.github:pull/1551",
+    "StegVerse-Labs/.github:commit/e63a532f7125f7898dbd03127938e2f9f746e9e7",
+    "StegVerse-org/StegVerse-SDK:pull/219",
+    "StegVerse-org/StegVerse-SDK:commit/50fa9ca306ada6f75fb928281e2bf495ebb08ce8"
   ],
-  "observed_at": "2026-09-12T03:25:23Z",
+  "observed_at": "2026-09-12T03:35:00Z",
   "exact_metrics": {
     "lifecycle": "ACTIVE",
     "parent_task_id": "ECOSYSTEM-CONTINUITY-EVALUATOR-001",
-    "sdk_ecosystem_diagnostic_schemas_installed": false,
-    "sdk_ecosystem_diagnostic_route_installed": false,
-    "sdk_manifest_builder_diagnostic_binding_installed": false,
-    "sdk_diagnostic_runtime_handler_validated": false,
+    "sdk_ecosystem_diagnostic_schemas_installed": true,
+    "sdk_ecosystem_diagnostic_route_installed": true,
+    "sdk_manifest_builder_diagnostic_binding_installed": true,
+    "sdk_diagnostic_runtime_handler_validated": true,
+    "sdk_diagnostic_cli_installed": true,
     "ece_periodic_sdk_diagnostic_bridge_installed": false,
+    "sdk_diagnostic_result_bound_in_ece_custody_chain": false,
     "authentic_sdk_diagnostic_request_result_observed": false,
     "github_runtime_authority": "NONE",
     "diagnostic_mutation_allowed_v1": false
