@@ -1,0 +1,37 @@
+{
+  "schema": "stegverse.task-registry-global-invariants/v1",
+  "invariant_set_id": "TASK-REGISTRY-KV-SKAP-VERIFIER-NODE-INVARIANT-001",
+  "applies_to": "ALL_CANONICAL_TASKS_EXISTING_AND_NEW",
+  "invariants": {
+    "user_verification_authority": "KV/SKAP Vault",
+    "user_verification_authority_exclusive": true,
+    "stegos_device_role": "INTERCHANGEABLE_TRANSPORT_NODE",
+    "device_user_verifier_authority": "NONE",
+    "node_user_verifier_authority": "NONE",
+    "transport_user_verifier_authority": "NONE",
+    "local_key_user_verifier_authority": "NONE",
+    "secure_enclave_user_verifier_authority": "NONE",
+    "github_user_verifier_authority": "NONE",
+    "heartbeat_user_verifier_authority": "NONE",
+    "model_user_verifier_authority": "NONE",
+    "transition_authority": "Interlock/InTr",
+    "credential_authority": "TV/TVC"
+  },
+  "semantics": {
+    "kv_skap_vault": "Maintains the verifier for the user and is the sole source of user-verification state.",
+    "stegos_device": "An interchangeable StegOS transport node. Device identity, node identity, transport channel identity, local key possession, and local hardware do not establish user-verifier authority.",
+    "node_local_capability": "A node may expose and invoke locally available non-exportable capabilities after applicable KV/SKAP-backed verification state and Interlock/InTr admission are bound to the exact operation. Local enforcement does not make the node the user verifier.",
+    "transport_integrity": "A transport may preserve integrity, freshness, routing, replay protection, and evidence bindings without becoming a user verifier or trust root for the user.",
+    "device_interchangeability": "Replacing one eligible StegOS device/node with another does not change the user's verifier. Only the available local capability endpoint and resulting evidence may change."
+  },
+  "prohibitions": [
+    "NO_SECONDARY_USER_VERIFIER_OUTSIDE_KV_SKAP_VAULT",
+    "NO_DEVICE_OR_NODE_AS_USER_VERIFIER",
+    "NO_TRANSPORT_CHANNEL_AS_USER_VERIFIER",
+    "NO_LOCAL_KEY_POSSESSION_AS_USER_VERIFICATION",
+    "NO_SECURE_ENCLAVE_PRESENCE_AS_USER_VERIFICATION",
+    "NO_GITHUB_HEARTBEAT_OR_MODEL_AS_USER_VERIFIER",
+    "NO_DEVICE_PINNING_AS_USER_VERIFICATION_AUTHORITY"
+  ],
+  "authority_effect": "NONE_REGISTRY_INVARIANT_ONLY"
+}
