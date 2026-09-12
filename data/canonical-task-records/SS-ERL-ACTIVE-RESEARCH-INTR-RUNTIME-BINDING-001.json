@@ -15,7 +15,13 @@
     "StegVerse-Labs/.github/docs/SS_ERL_ACTIVE_RESEARCH_INTR_RUNTIME_BINDING_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github/handoffs/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json",
     "StegVerse-Labs/.github/workers/universal_intr_profiled_ingress.py",
+    "StegVerse-Labs/.github/workers/erl_active_research_intr_profile.py",
     "StegVerse-Labs/.github/scripts/consume_device_kv_intr_materialization_request.py",
+    "StegVerse-Labs/.github/scripts/prepare_erl_active_research_intr_runtime_source.py",
+    "StegVerse-Labs/.github/scripts/submit_erl_active_research_intr_binding.py",
+    "StegVerse-Labs/.github/control/resident-execution-request.d/erl-active-research-intr-runtime-binding-001.json",
+    "StegVerse-Labs/.github/control/resident-execution-request.d/consume-erl-active-research-intr-runtime-binding.py",
+    "StegVerse-Labs/.github/control/resident-execution-request.d/consume-erl-active-research-intr-submission.py",
     "StegVerse-Labs/StegOS/stegos/universal_intr_transport.py"
   ],
   "targets": {
@@ -95,9 +101,10 @@
     "activation_proof_complete": false
   },
   "allowed_next_transitions": [
-    "IMPLEMENT_ERL_PROFILE_ON_EXISTING_UNIVERSAL_INTR_INGRESS",
-    "VALIDATE_EXACT_HEAD",
+    "MATERIALIZE_AND_VERIFY_AUTHENTIC_RESIDENT_ERL_SOURCE",
+    "OBSERVE_EXISTING_TVC_RELAY_AUTHORIZATION",
     "EXECUTE_AUTHENTIC_ERL_THREE_HOP_TRAVERSAL",
+    "VERIFY_THREE_HOP_CHAIN_AND_BIND_TERMINAL_KV_PROOF",
     "RECONCILE_PARENT_HANDOFF"
   ],
   "handoff_projection_refs": [
