@@ -71,6 +71,23 @@ def run_coordination_projection(stegindex_root: str | None, *, task_id: str | No
     }
 
 
+def _repo_roots() -> dict[str, Path]:
+    raw = str(os.environ.get("STEGVERSE_REPO_ROOTS_JSON") or "").strip()
+    if not raw:
+        return {}
+    try:
+        payload = json.loads(raw)
+    except json.JSONDecodeError:
+        return {}
+    if not isinstance(payload, dict):
+        return {}
+    roots: dict[str, Path] = {}
+    for key, value in payload.items():
+        if isinstance(key, str) and isinstance(value, str) and value.strip():
+            roots[key] = Path(value).expanduser().resolve()
+    return roots
+
+
 def _local_policy_path(ref: str) -> Path | None:
     value = str(ref or "").strip()
     if not value:
@@ -80,8 +97,18 @@ def _local_policy_path(ref: str) -> Path | None:
         if "/" in repo and path:
             if repo == "StegVerse-Labs/.github":
                 return ROOT / path
-            return None
+            repo_root = _repo_roots().get(repo)
+            return repo_root / path if repo_root else None
     return ROOT / value
+
+
+def _display_policy_path(path: Path | None) -> str | None:
+    if not path or not path.is_file():
+        return None
+    try:
+        return str(path.relative_to(ROOT))
+    except ValueError:
+        return str(path)
 
 
 def resolve_canonical_policy_context(*, task_id: str | None, explicit_refs: list[str]) -> tuple[dict, bool]:
@@ -110,7 +137,7 @@ def resolve_canonical_policy_context(*, task_id: str | None, explicit_refs: list
     if task_id:
         candidate = CANONICAL_TASK_RECORDS / f"{task_id}.json"
         if candidate.is_file():
-            task_record_ref = str(candidate.relative_to(ROOT))
+            task_record_ref = _display_policy_path(candidate)
             record = json.loads(candidate.read_text(encoding="utf-8"))
             for ref in record.get("canonical_policy_refs", []):
                 refs.append({"ref": str(ref), "source": "CANONICAL_TASK_RECORD", "required": True})
@@ -128,13 +155,12 @@ def resolve_canonical_policy_context(*, task_id: str | None, explicit_refs: list
             continue
         seen.add(ref)
         local = _local_policy_path(ref)
-        exists = bool(local and local.is_file())
-        resolved = exists
+        resolved = bool(local and local.is_file())
         if row.get("required") and not resolved:
             unresolved.append(ref)
         deduped.append({
             **row,
-            "local_path": str(local.relative_to(ROOT)) if local and local.is_file() else None,
+            "local_path": _display_policy_path(local),
             "resolved": resolved,
         })
 
