@@ -9,9 +9,11 @@
     "StegVerse-Labs/.github:pull/1551",
     "StegVerse-Labs/.github:commit/e63a532f7125f7898dbd03127938e2f9f746e9e7",
     "StegVerse-org/StegVerse-SDK:pull/219",
-    "StegVerse-org/StegVerse-SDK:commit/50fa9ca306ada6f75fb928281e2bf495ebb08ce8"
+    "StegVerse-org/StegVerse-SDK:commit/50fa9ca306ada6f75fb928281e2bf495ebb08ce8",
+    "StegVerse-Labs/StegVerse-Healer:pull/65",
+    "StegVerse-Labs/StegVerse-Healer:commit/5e3313f344315437539973e55a6b64273abe24a1"
   ],
-  "observed_at": "2026-09-12T03:35:00Z",
+  "observed_at": "2026-09-12T05:55:00Z",
   "exact_metrics": {
     "lifecycle": "ACTIVE",
     "parent_task_id": "ECOSYSTEM-CONTINUITY-EVALUATOR-001",
@@ -20,9 +22,10 @@
     "sdk_manifest_builder_diagnostic_binding_installed": true,
     "sdk_diagnostic_runtime_handler_validated": true,
     "sdk_diagnostic_cli_installed": true,
-    "ece_periodic_sdk_diagnostic_bridge_installed": false,
-    "sdk_diagnostic_result_bound_in_ece_custody_chain": false,
+    "ece_periodic_sdk_diagnostic_bridge_source_validated": true,
+    "sdk_diagnostic_result_exact_byte_binding_source_validated": true,
     "authentic_sdk_diagnostic_request_result_observed": false,
+    "authentic_sdk_diagnostic_result_bound_in_ece_custody_chain": false,
     "github_runtime_authority": "NONE",
     "diagnostic_mutation_allowed_v1": false
   },
