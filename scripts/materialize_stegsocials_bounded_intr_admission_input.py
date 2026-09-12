@@ -146,7 +146,6 @@ def validate_binding_authorization(binding: Mapping[str, Any], authorization: Ma
 
 def materialize(runtime_root: Path, *, env: Mapping[str, str] | None = None) -> dict[str, Any]:
     values = dict(os.environ if env is None else env)
-    require(not any(truthy(values.get(name)) for name in HOSTED), "hosted_environment_forbidden")
     runtime = runtime_root.expanduser().resolve()
     binding_path = resolve_file(values, BINDING_ENV)
     authorization_path = resolve_file(values, AUTH_ENV)
@@ -161,8 +160,10 @@ def materialize(runtime_root: Path, *, env: Mapping[str, str] | None = None) -> 
             "input_materialized": False,
             "tvc_authorization_created": False,
             "listener_created": False,
+            "hosted_execution_attempted": False,
             "authority_effect": "NONE_WAIT_STATE",
         }
+    require(not any(truthy(values.get(name)) for name in HOSTED), "hosted_environment_forbidden")
     assert binding_path is not None and authorization_path is not None and payload_path is not None
     payload_resolved = payload_path.resolve()
     require(runtime in payload_resolved.parents, "received_record_must_be_runtime_local")
