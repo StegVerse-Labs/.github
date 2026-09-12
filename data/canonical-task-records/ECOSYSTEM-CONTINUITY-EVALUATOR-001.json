@@ -97,19 +97,24 @@
       "sdk_exact_head": "19f573c54c39298e266caa4fe63d7706c9d09d34",
       "sdk_merge": "50fa9ca306ada6f75fb928281e2bf495ebb08ce8",
       "source_merged_validated": true,
-      "periodic_bridge_installed": false,
+      "periodic_bridge_installed": true,
       "authentic_execution_claimed": false
     }
   },
   "latest_runtime_observation": {
-    "observed_at": "2026-09-11",
-    "authorized_remote_devices": 0,
+    "observed_at": "2026-09-12",
+    "remote_execution_connector_surfaces_observed": 0,
+    "remote_execution_connector_observation_authority_effect": "NONE_CONNECTIVITY_OBSERVATION_ONLY",
     "connected_drive_ece_artifacts_found": false,
     "runtime_execution_claimed": false
   },
   "authority_model": {
     "diagnostic_authority": "OBSERVATION_CLASSIFICATION_ONLY",
     "sdk_diagnostic_transport_authority": "NONE_DIAGNOSTIC_ONLY",
+    "user_verification_authority": "KV/SKAP Vault",
+    "device_verification_policy": "NONE_PROHIBITED",
+    "device_or_node_user_verifier_authority": "NONE",
+    "execution_surface_connectivity_authority": "NONE_OBSERVATION_ONLY",
     "repair_dispatch_owner": "StegVerse-Labs/StegVerse-Healer",
     "governed_transition_authority": "Interlock/InTr",
     "credential_authority": "TV/TVC",
@@ -119,8 +124,6 @@
     "second_scheduler_allowed": false
   },
   "remaining_predicates": [
-    "HEALER_PERIODIC_ECE_USES_SDK_ECOSYSTEM_DIAGNOSTIC",
-    "SDK_DIAGNOSTIC_RESULT_EXACT_BYTES_BOUND_IN_ECE_CUSTODY_CHAIN",
     "AUTHENTIC_SDK_DIAGNOSTIC_REQUEST_RESULT_OBSERVED",
     "AUTHENTIC_HEALER_REUSABLE_ECE_SLOT_CONSUMED",
     "AUTHENTIC_RETAINED_ECE_EVALUATION_OBSERVED",
