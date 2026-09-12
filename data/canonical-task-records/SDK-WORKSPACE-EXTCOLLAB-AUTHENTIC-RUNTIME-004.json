@@ -54,7 +54,10 @@
     "StegVerse-Labs/.github:pull/1415",
     "StegVerse-Labs/.github:commit/4af1b801a193a3c9ace7c6327ef010fd40915b15",
     "StegVerse-Labs/.github:pull/1460",
-    "StegVerse-Labs/.github:commit/3bc8898655d344ba12f47bb4120e38f2ac1ded6e"
+    "StegVerse-Labs/.github:commit/3bc8898655d344ba12f47bb4120e38f2ac1ded6e",
+    "StegVerse-Labs/.github:pull/1485",
+    "StegVerse-Labs/.github:commit/329b65cf5f50883001ee90c7ee03120c67a7375d",
+    "StegVerse-Labs/.github:receipts/preflight/SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004-OBSERVATION-20260912.json"
   ],
   "resolver_repair": {
     "pull_request": 1460,
@@ -80,6 +83,12 @@
     "source_side_mismatch_remaining": false,
     "candidate_count_until_authentic_observation": 0,
     "authority_effect": "NONE_DISCOVERY_ONLY"
+  },
+  "runtime_presence_reuse": {
+    "canonical_producer": "heartbeat_runtime/runtime_presence_projection.py",
+    "canonical_output": "receipts/sovereign-host/runtime-presence.latest.json",
+    "cross_task_reuse_authorized": false,
+    "required_subject_binding": ["runtime_root", "resident.node_id", "canonical_workercoordinator_identity"]
   },
   "source_state": {
     "portable_exact_dispatch_merged": true,
@@ -139,7 +148,7 @@
     "already_local_source_required": true,
     "second_user_operated_device_required": false
   },
-  "runtime_resolution": null,
+  "runtime_resolution": "UNRESOLVED_NO_CURRENT_AUTHORIZED_DEVICE",
   "worker_claim": {
     "authority": "WORKERCOORDINATOR",
     "claim_ref": null,
@@ -147,12 +156,15 @@
     "projection_only": true
   },
   "latest_runtime_observation": {
-    "observed_at": "2026-09-11T18:46:00Z",
+    "observed_at": "2026-09-12T03:25:00Z",
     "authorized_remote_device_count": 0,
     "retained_drive_reseal_receipt_matches": 0,
     "retained_drive_listener_receipt_matches": 0,
+    "github_authentic_runtime_presence_receipt_observed": false,
+    "github_authentic_reseal_receipt_observed": false,
+    "github_authentic_listener_receipt_observed": false,
     "disposition": "ACTIVE_WAIT_FOR_EXISTING_AUTHORIZED_RESIDENT_RECONNECTION",
-    "authority_effect": "NONE"
+    "authority_effect": "NONE_OBSERVATION_ONLY"
   },
   "readme_impact": {
     "material_function_change": false,
