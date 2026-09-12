@@ -5,7 +5,8 @@ The consumer is independently source-complete for selected-subset dispatch: it
 may copy only its exact ERL source dependencies from the already-local canonical
 source root, verify byte/hash parity, and apply/check the idempotent ERL source
 preparation before delegating to the resident-local input materializer/submitter.
-It performs no network source fetch and grants no authority.
+It persists reconstruction-grade non-authorizing dispatch evidence and performs
+no network source fetch or authority grant.
 """
 from __future__ import annotations
 
@@ -16,11 +17,13 @@ import os
 import subprocess
 import sys
 from pathlib import Path
+from typing import Mapping, Any
 
 SUBMITTER = Path("scripts/submit_erl_active_research_intr_binding_local.py")
 MATERIALIZER = Path("scripts/materialize_erl_active_research_intr_resident_local_input.py")
 PREP = Path("scripts/prepare_erl_active_research_intr_runtime_source.py")
 INPUT_REL = Path("runtime-state/erl-active-research/intr-submission-input.json")
+RECEIPT_REL = Path("receipts/sovereign-host/erl-active-research-intr-submission-dispatch.latest.json")
 SOURCE_DEPENDENCIES = (
     Path("scripts/install_sovereign_heartbeat_service.py"),
     Path("scripts/prepare_erl_active_research_intr_runtime_source.py"),
@@ -49,6 +52,22 @@ def file_sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def write_latest(path: Path, value: Mapping[str, Any]) -> None:
+    rendered = json.dumps(dict(value), indent=2, sort_keys=True) + "\n"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name("." + path.name + ".tmp")
+    tmp.write_text(rendered, encoding="utf-8")
+    os.replace(tmp, path)
+    if path.read_text(encoding="utf-8") != rendered:
+        raise RuntimeError(f"dispatch_receipt_readback_mismatch:{path}")
+
+
+def persist(runtime: Path, value: Mapping[str, Any]) -> dict:
+    result = dict(value)
+    write_latest(runtime / RECEIPT_REL, result)
+    return result
+
+
 def atomic_copy_exact(source: Path, target: Path) -> bool:
     raw = source.read_bytes()
     expected = hashlib.sha256(raw).hexdigest()
@@ -75,6 +94,7 @@ def materialize_source_dependencies(source_root: Path, runtime_root: Path) -> di
         raise RuntimeError("source_root_and_runtime_root_must_be_distinct")
     copied: list[str] = []
     verified: list[str] = []
+    digests: dict[str, str] = {}
     for rel in SOURCE_DEPENDENCIES:
         src = source / rel
         if not src.is_file():
@@ -84,11 +104,16 @@ def materialize_source_dependencies(source_root: Path, runtime_root: Path) -> di
             copied.append(rel.as_posix())
         else:
             verified.append(rel.as_posix())
-        if not dst.is_file() or file_sha256(dst) != file_sha256(src):
+        source_digest = file_sha256(src)
+        if not dst.is_file() or file_sha256(dst) != source_digest:
             raise RuntimeError(f"source_dependency_parity_failed:{rel.as_posix()}")
+        digests[rel.as_posix()] = "sha256:" + source_digest
     return {
+        "source_root": str(source),
+        "runtime_root": str(runtime),
         "copied": copied,
         "verified": verified,
+        "digests": digests,
         "network_source_fetch_attempted": False,
         "authority_effect": "NONE_LOCAL_SOURCE_MATERIALIZATION_ONLY",
     }
@@ -117,13 +142,17 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -> 
     submitter = runtime / SUBMITTER
     materializer = runtime / MATERIALIZER
     if not prep.is_file() or not submitter.is_file() or not materializer.is_file():
-        return {
+        return persist(runtime, {
             "schema": "stegverse.erl-active-research-intr-submission-dispatch/v1",
             "state": "SOURCE_NOT_MATERIALIZED",
             "source_materialization": source_materialization,
+            "source_preparation_applied": False,
+            "source_preparation_check_passed": False,
             "runtime_execution_attempted": False,
+            "transport_submission_attempted": False,
+            "provider_operation_attempted": False,
             "authority_effect": "NONE_WAIT_STATE",
-        }
+        })
     run_prep(prep, runtime, runner=runner)
     input_path = runtime / INPUT_REL
     input_materialization = None
@@ -134,7 +163,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -> 
             runner=runner,
         )
         if input_materialization.get("input_materialized") is not True:
-            return {
+            return persist(runtime, {
                 "schema": "stegverse.erl-active-research-intr-submission-dispatch/v1",
                 "state": input_materialization.get("state"),
                 "source_materialization": source_materialization,
@@ -145,24 +174,26 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run) -> 
                 "transport_submission_attempted": False,
                 "provider_operation_attempted": False,
                 "authority_effect": "NONE_WAIT_STATE",
-            }
+            })
     result = run_json(
         [sys.executable, str(submitter), "--runtime-root", str(runtime), "--input", str(INPUT_REL)],
         runtime,
         runner=runner,
     )
-    return {
+    return persist(runtime, {
         "schema": "stegverse.erl-active-research-intr-submission-dispatch/v1",
         "state": result.get("state"),
         "source_materialization": source_materialization,
         "source_preparation_applied": True,
         "source_preparation_check_passed": True,
+        "input_ref": INPUT_REL.as_posix(),
         "input_materialization": input_materialization,
         "submission_result": result,
         "runtime_execution_attempted": result.get("transport_submission_attempted") is True,
+        "transport_submission_attempted": result.get("transport_submission_attempted") is True,
         "provider_operation_attempted": False,
         "authority_effect": "NONE_DISPATCH_ONLY" if result.get("transport_submission_attempted") is not True else "INGRESS_SUBMISSION_DELEGATED_ONLY",
-    }
+    })
 
 
 def main() -> int:

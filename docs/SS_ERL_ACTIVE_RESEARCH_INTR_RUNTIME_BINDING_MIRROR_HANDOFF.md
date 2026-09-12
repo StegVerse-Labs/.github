@@ -64,7 +64,7 @@ Merged correction:
   - migrates fresh or already-installed ERL route source from HIL relay-header validation to the ERL-specific resident-local validator;
   - leaves non-ERL routes on their existing validators unchanged.
 - `scripts/materialize_erl_active_research_intr_resident_local_input.py`
-  - consumes the already-materialized binding receipt and requires only the explicit authentic loopback ingress URL;
+  - consumes the already-materialized ERL binding receipt and requires only the explicit authentic loopback ingress URL;
   - creates no TVC authorization and carries none in the input;
   - records `transport_origin=STEGOS_RESIDENT_LOCAL` and `transport_credential_required=false`.
 - `scripts/submit_erl_active_research_intr_binding_local.py`
@@ -125,6 +125,20 @@ The merged verifier now fails closed unless:
 
 This hardening creates no runtime evidence and grants no execution, transition, claim/fence, credential, provider, or completion authority. It exists so a future authentic resident traversal can be independently proven from exact bytes rather than trusted hash fields.
 
+## Pending submission-dispatch reconstruction evidence hardening
+
+The independently dispatchable ERL submission consumer previously verified exact copied bytes but retained less reconstruction evidence than the binding consumer and returned its dispatch result only on stdout. The pending hardening makes the submission lane evidence-equivalent without creating another execution surface.
+
+Pending behavior:
+
+- persist canonical source root and runtime root used for local source convergence;
+- retain a SHA-256 digest for every exact allow-listed ERL dependency after source/runtime parity verification;
+- persist all wait-state and post-submission dispatch results to `receipts/sovereign-host/erl-active-research-intr-submission-dispatch.latest.json` with atomic readback;
+- retain the exact resident-local submission input reference together with the nested materialization/submission evidence;
+- preserve `provider_operation_attempted=false` and keep all source/dispatch evidence explicitly non-authorizing.
+
+This change does not prove a resident visit, shared-ingress traversal, hop receipt, DEVICE_KV execution, or provider operation. Its purpose is to ensure the first authentic resident run can be reconstructed from durable exact source and dispatch evidence.
+
 ## Existing proof that must not be repeated
 
 - ERL PR #154 active-research dispatch merged.
@@ -135,14 +149,15 @@ This hardening creates no runtime evidence and grants no execution, transition, 
 
 ## Remaining work
 
-1. On an authentic sovereign resident visit, let the existing ERL consumer self-materialize and verify its exact local source dependencies and apply/check resident preparation; preserve the resulting non-authorizing source-materialization evidence.
-2. Materialize the existing local ERL source/dispatch inputs and deterministic binding/envelope through the existing resident dispatcher.
-3. Observe the authentic shared loopback ingress URL; let the existing submission consumer materialize the resident-local input automatically without relay authorization.
-4. Observe one authentic shared-ingress ERL response, preserving authentic hop 1 and hop 2 receipts and the projected terminal request.
-5. Let the existing DEVICE_KV owner execute the terminal bytes and preserve authentic hop 3 with exact prior-receipt continuity.
-6. Verify the complete three-receipt chain and bind terminal transport proof to the pre-existing provider readback evidence without provider replay.
-7. Reconcile the parent ERL handoff with exact receipt hashes and final proof class.
+1. Validate and merge submission-dispatch reconstruction evidence hardening without adding a second runtime or authority path.
+2. On an authentic sovereign resident visit, let the existing ERL consumer self-materialize and verify its exact local source dependencies and apply/check resident preparation; preserve the resulting non-authorizing source-materialization evidence.
+3. Materialize the existing local ERL source/dispatch inputs and deterministic binding/envelope through the existing resident dispatcher.
+4. Observe the authentic shared loopback ingress URL; let the existing submission consumer materialize the resident-local input automatically without relay authorization.
+5. Observe one authentic shared-ingress ERL response, preserving authentic hop 1 and hop 2 receipts and the projected terminal request.
+6. Let the existing DEVICE_KV owner execute the terminal bytes and preserve authentic hop 3 with exact prior-receipt continuity.
+7. Verify the complete three-receipt chain and bind terminal transport proof to the pre-existing provider readback evidence without provider replay.
+8. Reconcile the parent ERL handoff with exact receipt hashes and final proof class.
 
 ## Current state
 
-`PROFILE_SOURCE_PREPARATION_RESIDENT_BINDING_LOOPBACK_SUBMISSION_AND_INPUT_MATERIALIZATION_MERGED / RESIDENT_LOCAL_TRANSPORT_ORIGIN_AND_EXACT_LOCAL_SOURCE_CONVERGENCE_MERGED_AND_VALIDATED / EXACT_BYTE_PROOF_VERIFIER_HARDENING_MERGED_AND_VALIDATED / AUTHENTIC_RESIDENT_SOURCE_MATERIALIZATION_NOT_YET_OBSERVED / AUTHENTIC_SHARED_LOOPBACK_INGRESS_NOT_YET_OBSERVED / AUTHENTIC_THREE_HOP_TRAVERSAL_NOT_YET_OBSERVED`
+`PROFILE_SOURCE_PREPARATION_RESIDENT_BINDING_LOOPBACK_SUBMISSION_AND_INPUT_MATERIALIZATION_MERGED / RESIDENT_LOCAL_TRANSPORT_ORIGIN_AND_EXACT_LOCAL_SOURCE_CONVERGENCE_MERGED_AND_VALIDATED / EXACT_BYTE_PROOF_VERIFIER_HARDENING_MERGED_AND_VALIDATED / SUBMISSION_DISPATCH_RECONSTRUCTION_EVIDENCE_HARDENING_PENDING_VALIDATION / AUTHENTIC_RESIDENT_SOURCE_MATERIALIZATION_NOT_YET_OBSERVED / AUTHENTIC_SHARED_LOOPBACK_INGRESS_NOT_YET_OBSERVED / AUTHENTIC_THREE_HOP_TRAVERSAL_NOT_YET_OBSERVED`
