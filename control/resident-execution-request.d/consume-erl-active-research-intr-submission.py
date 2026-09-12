@@ -2,7 +2,7 @@
 """Invoke the bounded resident-local ERL loopback InTr submitter from the existing dispatcher.
 
 The consumer is independently source-complete for selected-subset dispatch: it
-may copy only its exact ERL script dependencies from the already-local canonical
+may copy only its exact ERL source dependencies from the already-local canonical
 source root, verify byte/hash parity, and apply/check the idempotent ERL source
 preparation before delegating to the resident-local input materializer/submitter.
 It performs no network source fetch and grants no authority.
@@ -30,6 +30,7 @@ SOURCE_DEPENDENCIES = (
     Path("scripts/materialize_erl_active_research_intr_resident_local_input.py"),
     Path("scripts/submit_erl_active_research_intr_binding.py"),
     Path("scripts/submit_erl_active_research_intr_binding_local.py"),
+    Path("workers/erl_active_research_transport.py"),
 )
 
 
