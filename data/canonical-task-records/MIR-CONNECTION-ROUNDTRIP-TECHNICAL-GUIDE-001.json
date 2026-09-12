@@ -2,9 +2,9 @@
   "schema": "stegverse.canonical-task-record/v1",
   "task_id": "MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001",
   "correlation_id": "MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001",
-  "goal": "Create an independent technical and operational guide for StegVerse <-> MIR connection establishment, bidirectional Universal Interlock/InTr transport, source-native artifact preservation, TV/TVC credential brokerage where required, correlation, retry, evidence, and round-trip verification without depending on any individual test or experiment.",
-  "coordination_state": "COMPLETE",
-  "checkout_state": "RELEASED",
+  "goal": "Create and finalize an independent technical and operational guide for StegVerse <-> MIR connection establishment, bidirectional Universal Interlock/InTr transport, source-native artifact preservation, TV/TVC credential brokerage where required, correlation, retry, evidence, and round-trip verification without depending on any individual test or experiment. Final documentation completion requires one authentic MIR-evaluated end-to-end round trip proving the documented procedure against runtime evidence.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
   "cosv_task_vector": "50000000100000",
   "owners": {
     "documentation_and_public_connection_surface": "StegVerse-Labs/Site",
@@ -24,7 +24,8 @@
     "StegVerse-Labs/Site/docs/MIR_CONNECTION_AND_ROUNDTRIP_TECHNICAL_GUIDE.md",
     "StegVerse-Labs/Site/docs/INTERLOCK_INTR_CONNECTION_GUIDE.md",
     "StegVerse-Labs/Site/docs/MIR_INTR_SDK_RETURN_PROFILE_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/TVC/docs/MIR_TVC_PROVIDER_ROUNDTRIP_MIRROR_HANDOFF.md"
+    "StegVerse-Labs/TVC/docs/MIR_TVC_PROVIDER_ROUNDTRIP_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK#217"
   ],
   "current_truth": {
     "independent_goal_established": true,
@@ -41,7 +42,9 @@
     "guide_discoverable_from_main": true,
     "stable_documentation_index_merged": true,
     "merged_handoff_reconciled": true,
-    "live_mir_roundtrip_claimed": false
+    "authentic_mir_roundtrip_observed": false,
+    "authentic_mir_data_evaluation_observed": false,
+    "documentation_completion_blocked_on_authentic_roundtrip": true
   },
   "authority_invariants": {
     "credential_authority": "TV/TVC",
@@ -60,7 +63,8 @@
     "discoverability_site_handoff_orchestrator": 34708049941,
     "discoverability_site_bootstrap_validate": 34708049975,
     "discoverability_ecosystem_heartbeat_orchestration": 34708049948,
-    "result": "SUCCESS"
+    "source_result": "SUCCESS",
+    "runtime_result": "PENDING_AUTHENTIC_MIR_ROUNDTRIP"
   },
   "expected_evidence_predicates": [
     "INDEPENDENT_GUIDE_EXISTS_OUTSIDE_EXPERIMENT",
@@ -70,19 +74,27 @@
     "TV_TVC_CREDENTIAL_BOUNDARY_DOCUMENTED",
     "ROUNDTRIP_VERIFICATION_STATE_MODEL_DOCUMENTED",
     "RETRY_MUTATION_STALE_RESPONSE_FAIL_CLOSED_DOCUMENTED",
-    "GUIDE_MERGED_AND_DISCOVERABLE"
+    "GUIDE_MERGED_AND_DISCOVERABLE",
+    "AUTHENTIC_STEGVERSE_TO_MIR_HANDOFF_OBSERVED",
+    "AUTHENTIC_MIR_DATA_EVALUATION_ARTIFACT_RETAINED",
+    "AUTHENTIC_MIR_RETURN_CORRELATED_AND_ADMITTED",
+    "SDK_DELTA_AND_RECONSTRUCTION_OBSERVED",
+    "DOCUMENTATION_RECONCILED_TO_RUNTIME_EVIDENCE"
   ],
   "completion": {
-    "claimed": true,
-    "validated": true,
+    "claimed": false,
+    "validated": false,
     "source_implemented": true,
     "source_validated": true,
     "runtime_observed": false,
-    "runtime_observation_required_for_this_documentation_task": false
+    "runtime_observation_required_for_this_documentation_task": true
   },
   "allowed_next_transitions": [
-    "REFERENCE_GUIDE_FROM_MIR_RUNTIME_TASKS",
-    "EXECUTE_RUNTIME_WORK_UNDER_SEPARATE_TASK_LINEAGE"
+    "EXECUTE_AUTHENTIC_MIR_ROUNDTRIP",
+    "RETAIN_MIR_NATIVE_EVALUATION_ARTIFACT",
+    "VERIFY_RETURN_AND_SDK_DELTA",
+    "RECONCILE_GUIDE_AGAINST_RUNTIME_EVIDENCE",
+    "COMPLETE_DOCUMENTATION_AFTER_RUNTIME_PROOF"
   ],
   "handoff_projection_refs": [
     "StegVerse-Labs/Site/docs/MIR_CONNECTION_ROUNDTRIP_TECHNICAL_GUIDE_MIRROR_HANDOFF.md"
