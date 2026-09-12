@@ -10,6 +10,7 @@ on:
       - 'checks/**'
       - 'scripts/validate_workflow_surface_hygiene.py'
       - 'scripts/validate_org_control_plane.py'
+      - 'scripts/validate_task_registration_substrate_resolution.py'
       - 'scripts/validate_handoff_execution_ownership.py'
       - 'scripts/validate_admissible_existence_control_plane.py'
       - 'scripts/validate_heartbeat_carrier_contract.py'
@@ -31,6 +32,7 @@ on:
       - 'docs/STEGVERSE_001_EVIDENCE_CHAIN_MIRROR_HANDOFF.md'
       - 'docs/ORG_CONTROL_PLANE_STATE.md'
       - 'tools/validate_active_worker_states.py'
+      - 'tests/test_task_registration_substrate_resolution.py'
       - 'tests/test_stegverse001_evidence_chain_continuation_worker.py'
       - 'tests/test_stegverse001_rendezvous_evidence_transport.py'
       - 'tests/test_heartbeat_runtime_separation.py'
@@ -44,6 +46,7 @@ on:
     paths:
       - 'README.md'
       - 'control/**'
+      - 'data/canonical-task-records/**'
       - 'events/**'
       - 'schemas/**'
       - 'tasks/**'
@@ -92,6 +95,8 @@ jobs:
 
       - name: Validate control-plane invariants
         run: python scripts/validate_org_control_plane.py
+      - name: Test task registration substrate sorting invariant
+        run: python -m unittest tests.test_task_registration_substrate_resolution -v
       - name: Validate active-worker ownership invariant
         run: python tools/validate_active_worker_states.py
       - name: Validate handoff execution ownership partitions
