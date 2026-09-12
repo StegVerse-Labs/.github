@@ -19,23 +19,39 @@ device_role: INTERCHANGEABLE_STEGOS_TRANSPORT_NODE
 
 KV/SKAP Vault is the sole user verifier. StegOS devices are interchangeable transport/execution nodes. Device identity, node identity, transport identity, Secure Enclave presence, local key possession, GitHub, HeartBeat, or model output cannot become user-verifier authority.
 
-TVC credential/capability admission and Interlock/InTr transition admission remain distinct. A TVC-signed capability admission may name `transitionAuthority=Interlock/InTr`, but its own source explicitly does not grant Interlock/InTr transition authority and cannot substitute for an authentic InTr admission receipt.
+TVC credential/capability admission and Interlock/InTr transition admission remain distinct. A TVC-signed capability admission may name `transitionAuthority=Interlock/InTr`, but cannot substitute for an authentic InTr admission receipt.
 
-## Current truth
+## Current source truth
 
-- Opaque vault-agent signing protocol, existing `/run/stegverse/vault-agent.sock` dispatch, TVC caller consolidation, and the role-separated non-exportable P-256 authority-key candidate are merged.
-- `PlatformOpaqueRecipientAdmissionSigner` remains merged at `6a42422d1faf2449f18f98efcd6b0c61bd0bb733`.
-- StegOS PR #358 merged the platform-neutral KV/SKAP + InTr local-operation binder at `d39477a0a175c175266fe31fe0a2862323895ec9` after StegOS CI `34721268779` passed.
-- `stegfin-governance` PR #104 merged `KVSKAPAdmittedNodePlatformTransport` at `1e592bd6c385e79411ac72229ae9fd12a70411c9` after iOS first-passkey `34721416782`, Governance `34721416818`, and StegWallet governance `34721416838` passed.
-- TVC PR #419 merged provider-neutral already-verified KV/SKAP provenance projection at `4c78f8653b8a5899350479d57c58e936b50e023a` after TVC Recipient Capability Validation `34721637270` passed. It performs no WebAuthn, creates no verification, and exposes no verification material.
-- `.github` PR #1633 merged the dedicated recipient-admission signing Universal InTr source route at `08178861cfa144ce032d9399d50c56a77bd1a74b` after organization-control `34721877459`, deterministic suite `34721877447`, and Heartbeat `34721877451` passed.
-- That source reuses the existing Universal InTr listener. `build_tvc_recipient_admission_sign_intr_request.py` can only build a `NONE_REQUEST_ONLY` request. `tvc_recipient_admission_sign_intr_ingress.py`, when invoked by the shared listener, can emit one write-once `INGRESS_ADMITTED` receipt with `authority_effect=INGRESS_TRANSITION_ONLY`, exact platform-request/key/JWK/message/nonce bindings, and no runtime execution or user verification.
-- The route installer is idempotent and fail-closed and creates no second listener. Source merge/installability does not prove the route is installed in an authentic resident runtime or that an authentic receipt exists.
-- `stegfin-governance` PR #105 merged `UniversalInTrCurrentAdmissionProvider` at `0980ca24f3acc4ed9a26cd24e433276d37c72911` after Governance `34721959961`, iOS first-passkey `34721960023`, and StegWallet governance `34721959977` passed.
-- The current-InTr provider is read/projection-only. It requires the exact materialization request + payload + `INGRESS_ADMITTED` receipt, recomputes all hashes/bindings, enforces a bounded freshness window, rejects runtime-execution/user-verification creation, and projects only `admissionRef`/`admissionSHA256` into the generic provider shape.
-- The current-InTr provider explicitly rejects a signed TVC recipient-capability admission substituted for the InTr ingress receipt.
-- Current applicable KV/SKAP record selection/runtime provider binding remains unresolved. Authentic Universal InTr runtime route installation and an exact current receipt evidence source remain unobserved.
-- Canonical Runtime interchangeable-node carrier binding, local P-256 authority invocation, production vault-agent launcher injection, authority-key materialization, public-JWK trust-anchor binding, and fresh signed-admission runtime evidence remain unobserved.
+The existing source chain is now complete through the node-local signing primitive:
+
+```text
+PlatformOpaqueRecipientAdmissionSigner
+  -> KVSKAPAdmittedNodePlatformTransport
+  -> already-verified KV/SKAP provenance + current InTr admission
+  -> interchangeable StegOS node operation bundle
+  -> kv_skap_verified_local_operation + one-time replay protection
+  -> existing NodeEventExecutionBroker capability adapter
+  -> injected opaque P-256 authority capability
+  -> native role-separated Secure Enclave authority signer
+```
+
+Merged evidence:
+
+- Opaque vault-agent signing protocol and the existing `/run/stegverse/vault-agent.sock` dispatch are merged; no second signer socket or credential path is authorized.
+- `PlatformOpaqueRecipientAdmissionSigner` remains merged at `StegVerse-Labs/stegfin-governance@6a42422d1faf2449f18f98efcd6b0c61bd0bb733`.
+- StegOS role-separated non-exportable P-256 authority-key candidate remains merged at `e81b981c1218fca2031a43207afd0a419ff1263d`.
+- StegOS PR #358 merged the platform-neutral KV/SKAP + InTr local-operation binder at `d39477a0a175c175266fe31fe0a2862323895ec9`; StegOS CI `34721268779` passed.
+- `stegfin-governance` source already contains `KVSKAPAdmittedNodePlatformTransport`; canonical provenance remains the earlier merged owner recorded in the task (`1e592bd6c385e79411ac72229ae9fd12a70411c9`). This session also validated the same architecture-aligned transport shape through PR #106; no duplicate authority is inferred from that later compatible merge.
+- TVC provider-neutral already-verified KV/SKAP provenance projection remains merged at `4c78f8653b8a5899350479d57c58e936b50e023a`.
+- The dedicated recipient-admission signing Universal InTr source route remains merged in `.github` at `08178861cfa144ce032d9399d50c56a77bd1a74b`; source installability does not prove resident route installation or a live receipt.
+- `UniversalInTrCurrentAdmissionProvider` remains merged at `0980ca24f3acc4ed9a26cd24e433276d37c72911`; it is read/projection-only and requires an exact fresh `INGRESS_ADMITTED` receipt.
+- StegOS PR #359 merged `TVCRecipientAdmissionNodeCapability` at `8b3b83532b26333570369884a270481f48aeaeef`. It reuses the existing `NodeEventExecutionBroker`, consumes the canonical local-operation binder, validates exact key/JWK/message bindings, and invokes an injected opaque P-256 capability. It performs no user verification, creates no runtime lifecycle, and selects no permanent device.
+- A current-main Device Continuity wording/test drift exposed by PRs #359/#360 was repaired separately in StegOS PR #361 at `622ab94a7698eacec4993985e870d8f12158baf8`; StegOS CI `34722527570` passed. That repair changes no authority or runtime semantics.
+- StegOS PR #360 merged the native bound authority signer at `ad05e62f0d84549e511b6ebd047bb8091a3b0ce7`. Exact head `2e6010a3ff6c4775abb12e783097e67427ff1c4e` passed StegOS CI `34722630460`, iOS Apple Toolchain Validation `34722630468`, and iOS Device Package Validation `34722630448`.
+- The native signer lives in the already-compiled `TVCAuthenticatedRecipientCapability.swift`. It consumes only an already-successful KV/SKAP+InTr bound operation plus the exact original platform sign request, rechecks key ID/public-JWK/message/nonce/time equality, re-derives the role-separated authority Secure Enclave key identity, and calls `SecKeyCreateSignature(.ecdsaSignatureMessageX962SHA256)` only for that exact message.
+- No `SIGN_RECIPIENT_ADMISSION` or `MATERIALIZE_AUTHORITY_KEY` public deep-link action was added. The public recipient-capability URL path remains unrelated to authority signing.
+- The native signer returns no private-key material, does not reuse the recipient key, performs no user verification, and keeps device/node/transport verifier authority at `NONE`.
 
 ## Source-complete portions
 
@@ -47,42 +63,57 @@ KV/SKAP sole-user-verifier invariant
 provider-neutral already-verified KV/SKAP provenance projection
 platform-neutral KV/SKAP + InTr node-local operation binding
 vault-agent platform request -> KV/SKAP/InTr/interchangeable-node transport adaptation
-Universal InTr signing-operation request builder
-shared-listener signing-operation ingress adapter
-write-once exact-bound InTr admission receipt schema
-idempotent shared-listener route installer
+Universal InTr signing-operation request builder + shared-listener ingress source
 fresh exact InTr receipt -> CurrentInTrAdmissionProvider projection
-explicit rejection of TVC capability admission as InTr transition evidence
-no user verification performed by node/transport/projectors
+existing NodeEventExecutionBroker recipient-admission capability adapter
+exact bound-operation replay/key/JWK/message checks
+native role-separated Secure Enclave bound signing primitive
+no user verification performed by node/transport/projectors/native signer
+no permanent device pin
+no public authority-signing deep link
 no duplicate listener or signer daemon
 ```
 
-These source merges do not prove current production user-verification state, runtime route installation, authentic current InTr receipt availability, node carriage, local P-256 invocation, production key materialization, public trust-anchor binding, or signing.
+These source merges do not prove current production user-verification state, authentic resident Universal InTr receipt availability, actual broker-to-native device interop, vault-agent launcher injection, production authority-key materialization, public trust-anchor binding, or a production signature.
 
 ## Exact remaining problem
 
-The generic and source-level InTr path now exists without authority conflation. Remaining work is concrete runtime binding:
+The remaining work is runtime/integration binding rather than a new verifier or a new signing algorithm:
 
 ```text
-current applicable KV/SKAP owner-verification + admitted receipt
-  -> provenance projector
-  -> runtime KVSKAPVerificationProvenanceProvider
+current applicable KV/SKAP owner-verification record
+  -> concrete read-only KVSKAPVerificationProvenanceProvider
 
 exact platform sign request
-  -> Universal InTr request
-  -> authentic existing shared Universal InTr listener
+  -> authentic installed shared Universal InTr route
   -> current write-once INGRESS_ADMITTED receipt
-  -> read-only CurrentInTrAdmissionEvidenceSource
+  -> concrete CurrentInTrAdmissionEvidenceSource
   -> UniversalInTrCurrentAdmissionProvider
 
 both current artifacts
   -> KVSKAPAdmittedNodePlatformTransport
-  -> existing Canonical Runtime interchangeable-node carrier
-  -> kv_skap_verified_local_operation + one-time replay protector
-  -> eligible local opaque role-separated P-256 authority capability
+  -> concrete InterchangeableStegOSNodeCarrier
+  -> existing NodeEventExecutionBroker capability tvc_recipient_admission_authority_sign
+  -> generic OpaqueP256AuthorityCapability
+  -> native TVCRecipientAdmissionBoundOperationSigner on any eligible StegOS node
+  -> signature response
+  -> existing /run/stegverse/vault-agent.sock
 ```
 
-No component may select a durable trusted device or create a second verifier. Source availability must not be promoted into runtime receipt evidence.
+The generic Python opaque-capability interface and native Swift signer are both source-complete, but their concrete device-local interop binding is not yet observed or claimed. No component may select a durable trusted device or create a second verifier.
+
+## Remaining blockers
+
+```text
+CURRENT_KV_SKAP_VERIFICATION_RECORD_SELECTION_AND_RUNTIME_PROVIDER_BINDING_NOT_YET_IMPLEMENTED
+CURRENT_INTR_ADMISSION_RUNTIME_ROUTE_INSTALLATION_AND_EXACT_RECEIPT_EVIDENCE_SOURCE_NOT_YET_OBSERVED
+INTERCHANGEABLE_STEGOS_NODE_CARRIER_NOT_YET_BOUND_TO_EXISTING_NODE_EVENT_EXECUTION_BROKER_RUNTIME
+GENERIC_NODE_OPAQUE_P256_CAPABILITY_NOT_YET_BOUND_TO_NATIVE_STEGOS_AUTHORITY_SIGNER
+PLATFORM_SIGNER_BACKEND_NOT_YET_INJECTED_INTO_PRODUCTION_VAULT_AGENT_LIFECYCLE
+PRODUCTION_AUTHORITY_KEY_MATERIALIZATION_NOT_YET_OBSERVED
+MATCHING_PUBLIC_JWK_BINDING_NOT_YET_OBSERVED
+FRESH_WORKERCOORDINATOR_BOUND_PRODUCTION_SIGNATURE_NOT_YET_OBSERVED
+```
 
 ## Invariants
 
@@ -105,18 +136,17 @@ public trust anchor contains public material only
 
 ## Next
 
-1. Bind current applicable KV/SKAP record selection to a concrete read-only runtime provenance provider; reject arbitrary historical SKAP receipts.
-2. Bind `CurrentInTrAdmissionEvidenceSource` to the existing Universal InTr runtime receipt/payload/request locations for the exact platform request hash; do not synthesize receipt state.
-3. Reuse the existing Canonical Runtime/node-event path for `InterchangeableStegOSNodeCarrier`, with no durable device pin.
-4. Feed exact current KV/SKAP + InTr state through `kv_skap_verified_local_operation` and one-time replay protection.
-5. Connect successful local-operation binding to the eligible node-local opaque P-256 authority capability.
-6. Inject the completed backend into the existing vault-agent launcher only when all concrete bindings are fail-closed and available.
-7. Materialize one production authority key on an eligible node, project only public JWK/key ID, bind the trust anchor, and observe one fresh WorkerCoordinator-bound signed admission.
+1. Bind current applicable KV/SKAP record selection to the concrete read-only runtime provenance provider; reject arbitrary historical SKAP receipts.
+2. Bind the current-InTr evidence source to authentic existing Universal InTr resident receipt/request/payload state for the exact sign request; do not synthesize admission.
+3. Implement the concrete `InterchangeableStegOSNodeCarrier` on the existing Canonical Runtime / NodeEventExecutionBroker path with no device pinning.
+4. Bind the generic `OpaqueP256AuthorityCapability` to the native `TVCRecipientAdmissionBoundOperationSigner` on whichever eligible StegOS node carries the capability.
+5. Inject `PlatformOpaqueRecipientAdmissionSigner` into the existing vault-agent launcher only when those concrete runtime bindings fail closed.
+6. Materialize one production authority key on an eligible node, project only public JWK/key ID, bind the trust anchor, and observe one fresh WorkerCoordinator-bound signed admission.
 
 ## README review
 
-Organization, StegOS, stegfin-governance, and TVC README/handoff authority topology was reviewed. These slices reuse existing shared Universal InTr and KV/SKAP authority ownership and do not require a broad README topology rewrite.
+StegOS README was reviewed. One task-specific paragraph still describes the authority candidate as entirely non-signing-reachable. That wording is now stale because PR #360 source-implements an internal KV/SKAP+InTr-bound signing path, while the public deep link remains non-signing. The connector available in this session cannot safely apply a partial patch to the large README without whole-file replacement, so this documentation mismatch is explicitly retained as reconciliation debt rather than falsely claimed updated. The applicable task handoffs and canonical record carry the correct current architecture.
 
 ## Manual work
 
-None. Production private-key, credential, assertion, biometric, or authenticator material must not be placed in GitHub, CI, chat, Drive, ordinary KV, logs, screenshots, or model output.
+None. Production private-key, credential, assertion, biometric, authenticator, or user-verification material must not be placed in GitHub, CI, chat, Drive, ordinary KV, logs, screenshots, or model output.
