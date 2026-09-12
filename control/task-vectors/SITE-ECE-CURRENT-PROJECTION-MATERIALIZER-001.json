@@ -3,9 +3,30 @@
   "profile": "task.v1",
   "level": "task",
   "vector": "71000000102000",
-  "evidence_refs": ["StegVerse-Labs/.github:docs/SITE_ECE_CURRENT_PROJECTION_MATERIALIZER_MIRROR_HANDOFF.md", "StegVerse-Labs/.github:issue/1577"],
-  "observed_at": "2026-09-12T06:05:26Z",
-  "exact_metrics": {"lifecycle": "ACTIVE", "parent_task_id": "ECOSYSTEM-CONTINUITY-EVALUATOR-001", "site_materializer_source_validated": false, "healer_cycle_materializer_binding_source_validated": false, "authentic_site_safe_projection_materialized": false, "site_live_continuity_projection_observed": false, "github_runtime_authority": "NONE"},
+  "evidence_refs": [
+    "StegVerse-Labs/.github:docs/SITE_ECE_CURRENT_PROJECTION_MATERIALIZER_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github:issue/1577",
+    "StegVerse-Labs/.github:pull/1581",
+    "StegVerse-Labs/.github:commit/a72868cbf61982298e8526b3a6009653eb13b2e5",
+    "StegVerse-Labs/Site:pull/1275",
+    "StegVerse-Labs/Site:commit/76f914cac2fc725141e1704ec50a20020d7124ee",
+    "StegVerse-Labs/Site:pull/1276",
+    "StegVerse-Labs/Site:commit/808a5ccb6c3d77f7ec16f1b8bbe90900b9ddf332",
+    "StegVerse-Labs/StegVerse-Healer:pull/66",
+    "StegVerse-Labs/StegVerse-Healer:commit/be8ed7e5fb5f18602a6519b31aa4080bfd8cdf1b"
+  ],
+  "observed_at": "2026-09-12T06:15:00Z",
+  "exact_metrics": {
+    "lifecycle": "ACTIVE",
+    "parent_task_id": "ECOSYSTEM-CONTINUITY-EVALUATOR-001",
+    "site_materializer_source_validated": true,
+    "healer_cycle_materializer_binding_source_validated": true,
+    "authentic_site_safe_projection_materialized": false,
+    "site_live_continuity_projection_observed": false,
+    "authorized_remote_device_count": 0,
+    "connected_drive_materialization_artifact_matches": 0,
+    "github_runtime_authority": "NONE"
+  },
   "authority_effect": "NONE",
   "canonical_owner_ref": "StegVerse-Labs/.github:data/canonical-task-records/SITE-ECE-CURRENT-PROJECTION-MATERIALIZER-001.json"
 }

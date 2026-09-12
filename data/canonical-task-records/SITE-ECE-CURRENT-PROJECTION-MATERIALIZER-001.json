@@ -10,9 +10,53 @@
   "cosv_task_vector": "71000000102000",
   "repository": "StegVerse-Labs/Site",
   "canonical_issue": 1577,
-  "handoff_projection_refs": ["StegVerse-Labs/.github:docs/SITE_ECE_CURRENT_PROJECTION_MATERIALIZER_MIRROR_HANDOFF.md"],
-  "targets": {"repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/Site", "StegVerse-Labs/StegVerse-Healer"], "components": ["site-current-projection-materializer", "resident-cycle-projection-binding", "site-served-data-namespace"]},
-  "authority_model": {"materializer_authority": "NONE_COPY_ONLY", "continuity_interpretation_owner": "ECOSYSTEM-CONTINUITY-EVALUATOR-001", "publication_authority": "EXISTING_SITE_RUNTIME_ONLY", "github_runtime_authority": "NONE", "source_repository_writeback_allowed": false},
-  "remaining_predicates": ["SITE_MATERIALIZER_SOURCE_VALIDATED", "HEALER_CYCLE_MATERIALIZER_BINDING_SOURCE_VALIDATED", "AUTHENTIC_SITE_SAFE_PROJECTION_MATERIALIZED", "SITE_LIVE_CONTINUITY_PROJECTION_OBSERVED"],
+  "handoff_projection_refs": [
+    "StegVerse-Labs/.github:docs/SITE_ECE_CURRENT_PROJECTION_MATERIALIZER_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site:docs/ECOSYSTEM_CONTINUITY_CURRENT_MATERIALIZER_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegVerse-Healer:docs/ECOSYSTEM_CONTINUITY_SITE_MATERIALIZER_BINDING_MIRROR_HANDOFF.md"
+  ],
+  "targets": {
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/Site", "StegVerse-Labs/StegVerse-Healer"],
+    "components": ["site-current-projection-materializer", "resident-cycle-projection-binding", "site-served-data-namespace"]
+  },
+  "source_state": {
+    "registration_pull_request": 1581,
+    "registration_exact_head": "32a13eeef92da2723b448f40b2582495fbd5e4ef",
+    "registration_merge": "a72868cbf61982298e8526b3a6009653eb13b2e5",
+    "registration_validation_runs": {"heartbeat": 34677323438, "deterministic_suite": 34677323346, "organization_control": 34677323338},
+    "site_pull_request": 1275,
+    "site_exact_head": "4019ac3711a82933dfbcdc1bf12d1e4d422b53c5",
+    "site_merge": "76f914cac2fc725141e1704ec50a20020d7124ee",
+    "site_validation_runs": {"heartbeat": 34677359459, "handoff_orchestrator": 34677359423, "site_bootstrap": 34677359421},
+    "site_claim_terminalization_pull_request": 1276,
+    "site_claim_terminalization_exact_head": "21f3f1ce456789a8db55efd9017ed4f0e7539a72",
+    "site_claim_terminalization_merge": "808a5ccb6c3d77f7ec16f1b8bbe90900b9ddf332",
+    "site_claim_terminalization_validation_runs": {"heartbeat": 34677412153, "handoff_orchestrator": 34677412156, "site_bootstrap": 34677412172},
+    "healer_binding_pull_request": 66,
+    "healer_binding_exact_head": "1aee2eae26ab8dfb67e675ae6fa4ea219821f5a9",
+    "healer_binding_merge": "be8ed7e5fb5f18602a6519b31aa4080bfd8cdf1b",
+    "healer_binding_validation_run": 34677527923,
+    "site_materializer_source_validated": true,
+    "healer_cycle_materializer_binding_source_validated": true,
+    "authentic_materialization_claimed": false,
+    "live_site_projection_claimed": false
+  },
+  "authority_model": {
+    "materializer_authority": "NONE_COPY_ONLY",
+    "continuity_interpretation_owner": "ECOSYSTEM-CONTINUITY-EVALUATOR-001",
+    "publication_authority": "EXISTING_SITE_RUNTIME_ONLY",
+    "github_runtime_authority": "NONE",
+    "source_repository_writeback_allowed": false
+  },
+  "latest_runtime_observation": {
+    "authorized_remote_devices": 0,
+    "connected_drive_materialization_artifacts_found": false,
+    "authentic_site_safe_projection_materialized": false,
+    "site_live_continuity_projection_observed": false
+  },
+  "remaining_predicates": [
+    "AUTHENTIC_SITE_SAFE_PROJECTION_MATERIALIZED",
+    "SITE_LIVE_CONTINUITY_PROJECTION_OBSERVED"
+  ],
   "completion": {"claimed": false, "validated": false, "activation_proof_complete": false}
 }
