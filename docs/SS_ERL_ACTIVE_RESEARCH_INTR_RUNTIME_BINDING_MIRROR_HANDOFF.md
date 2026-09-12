@@ -51,7 +51,7 @@ Canonical TVC source `docs/SOVEREIGN_RELAY_EGRESS_AUTHORIZATION_MIRROR_HANDOFF.m
 
 The shared HIL transport validator independently confirms the distinction: `TVC_RELAY_EGRESS` requires an authorization identifier because it represents a governed sovereign relay, while local transport origins must not claim a TVC relay authorization.
 
-Current correction branch: `ss-erl-resident-local-origin-001`.
+Current correction branch: `ss-erl-resident-local-origin-001` / PR #1585.
 
 Implemented correction:
 
@@ -81,6 +81,24 @@ Implemented correction:
 
 The legacy relay submitter/materializer remain source history but are no longer selected by the active ERL resident dispatcher. Their existence does not authorize relay use.
 
+## Retained-resident exact local source convergence
+
+Inspection of `scripts/refresh_sovereign_worker_runtime_source.py` showed that retained-runtime refresh already propagates the `workers/` tree and `control/resident-execution-request.d/` consumers, but does not generically copy every ERL `scripts/...` dependency. A refreshed resident could therefore receive the ERL consumer while still lacking one or more exact scripts that consumer invokes.
+
+PR #1585 closes that gap without widening generic refresh:
+
+- both the binding and submission consumers carry the same exact allow-list of ERL source dependencies;
+- dependencies are copied only from the already-local canonical source root to a distinct resident runtime root;
+- missing dependencies fail closed;
+- target drift is atomically repaired and SHA-256 parity is verified after every copy;
+- canonical source and runtime roots are forbidden from aliasing, preventing mutation of the canonical checkout;
+- no clone, fetch, pull, network source transport, credential acquisition, or repository mutation occurs;
+- the binding consumer applies `scripts/prepare_erl_active_research_intr_runtime_source.py` and immediately verifies the idempotent `--check` state before building the deterministic binding;
+- the submission consumer performs the same local-source convergence/preparation independently so selected-subset dispatch does not depend on a prior binding-consumer visit;
+- this source convergence grants no execution, claim/fence, credential, Interlock/InTr transition, provider, or completion authority and does not itself prove authentic traversal.
+
+Deterministic regression coverage verifies exact allow-list materialization, drift repair, missing-dependency fail-closed behavior, independent submission-lane source completeness, source/runtime root separation, and preparation apply-then-check ordering.
+
 ## Merged profile / terminal contract retained
 
 The ERL profile still:
@@ -102,8 +120,8 @@ The ERL profile still:
 
 ## Remaining work
 
-1. Validate and merge the resident-local transport-origin correction only if exact-head repository checks and README impact pass.
-2. On the authentic sovereign resident source, apply and verify `scripts/prepare_erl_active_research_intr_runtime_source.py` so the route migration and new resident-local sources are materialized.
+1. Validate and merge PR #1585 only if final exact-head repository checks pass with the README and canonical handoff/task projection included.
+2. On an authentic sovereign resident visit, let the existing ERL consumer self-materialize and verify its exact local source dependencies and apply/check resident preparation; preserve the resulting non-authorizing source-materialization evidence.
 3. Materialize the existing local ERL source/dispatch inputs and deterministic binding/envelope through the existing resident dispatcher.
 4. Observe the authentic shared loopback ingress URL; let the existing submission consumer materialize the resident-local input automatically without relay authorization.
 5. Observe one authentic shared-ingress ERL response, preserving authentic hop 1 and hop 2 receipts and the projected terminal request.
@@ -113,4 +131,4 @@ The ERL profile still:
 
 ## Current state
 
-`PROFILE_SOURCE_PREPARATION_RESIDENT_BINDING_LOOPBACK_SUBMISSION_AND_INPUT_MATERIALIZATION_MERGED / RESIDENT_LOCAL_TRANSPORT_ORIGIN_CORRECTION_IMPLEMENTED_ON_BRANCH / AUTHENTIC_RESIDENT_SOURCE_MATERIALIZATION_NOT_YET_OBSERVED / AUTHENTIC_SHARED_LOOPBACK_INGRESS_NOT_YET_OBSERVED / AUTHENTIC_THREE_HOP_TRAVERSAL_NOT_YET_OBSERVED`
+`PROFILE_SOURCE_PREPARATION_RESIDENT_BINDING_LOOPBACK_SUBMISSION_AND_INPUT_MATERIALIZATION_MERGED / RESIDENT_LOCAL_TRANSPORT_ORIGIN_AND_EXACT_LOCAL_SOURCE_CONVERGENCE_IMPLEMENTED_ON_PR_1585 / AUTHENTIC_RESIDENT_SOURCE_MATERIALIZATION_NOT_YET_OBSERVED / AUTHENTIC_SHARED_LOOPBACK_INGRESS_NOT_YET_OBSERVED / AUTHENTIC_THREE_HOP_TRAVERSAL_NOT_YET_OBSERVED`
