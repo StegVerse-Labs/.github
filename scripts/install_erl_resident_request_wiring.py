@@ -34,6 +34,7 @@ COPY_ROWS = (
     '    "scripts/submit_erl_active_research_intr_binding.py",\n',
     '    "scripts/submit_erl_active_research_intr_binding_local.py",\n',
     '    "workers/erl_active_research_transport.py",\n',
+    '    "workers/erl_device_kv_terminal.py",\n',
 )
 COPY_ANCHOR = '    "scripts/consume_stegos_kv_intr_chain_request.py",\n'
 REQUIRED_ROWS = (
@@ -45,6 +46,7 @@ REQUIRED_ROWS = (
     '        target_root / "scripts" / "submit_erl_active_research_intr_binding.py",\n',
     '        target_root / "scripts" / "submit_erl_active_research_intr_binding_local.py",\n',
     '        target_root / "workers" / "erl_active_research_transport.py",\n',
+    '        target_root / "workers" / "erl_device_kv_terminal.py",\n',
 )
 REQUIRED_ANCHOR = '        target_root / "scripts" / "consume_stegos_kv_intr_chain_request.py",\n'
 

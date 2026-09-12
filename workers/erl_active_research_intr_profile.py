@@ -118,12 +118,7 @@ def admit(*, runtime_root: Path, payload: Mapping[str, Any], transport_payload_s
     envelope, intent, request = validate_binding(payload)
     require(isinstance(transport_payload_sha256, str) and transport_payload_sha256.startswith("sha256:"), "erl_transport_payload_hash_invalid")
 
-    # Hop 1 is only emitted after the exact binding bytes have reached and passed
-    # validation at the shared STEGOS_ECOSYSTEM ingress.
     hop1 = _receipt(intent=intent, hop_index=1, prior=intent.get("prior_transport_receipt_hash"), boundary_identity_ref="resident://universal-intr-profiled-ingress", transition_state="FORWARDED")
-
-    # Hop 2 represents the same admitted packet being handed from the shared
-    # ecosystem ingress to the existing device-materialization path.
     hop2 = _receipt(intent=intent, hop_index=2, prior=hop1["receipt_hash"], boundary_identity_ref="resident://device-system-materialization", transition_state="FORWARDED")
 
     terminal_body = {
@@ -132,7 +127,7 @@ def admit(*, runtime_root: Path, payload: Mapping[str, Any], transport_payload_s
         "state": "QUEUED_FOR_EVENT_EPHEMERAL_MATERIALIZATION",
         "transport_schema": INTENT_SCHEMA,
         "transport_protocol": "InTr",
-        "transport_intent_hash": request["transport_intent_hash"],
+        "transport_intent_hash": sha_uri(intent),
         "operation_id": intent["operation_id"],
         "packet_id": intent["packet_id"],
         "payload_hash": intent["payload_hash"],
@@ -143,6 +138,7 @@ def admit(*, runtime_root: Path, payload: Mapping[str, Any], transport_payload_s
         "prior_transport_receipt_hash": hop2["receipt_hash"],
         "erl_full_path": FULL_PATH,
         "erl_upstream_receipt_hashes": [hop1["receipt_hash"], hop2["receipt_hash"]],
+        "erl_transport_intent": intent,
         "event_triggered": True,
         "always_on_receiver_required": False,
         "second_user_device_required": False,
