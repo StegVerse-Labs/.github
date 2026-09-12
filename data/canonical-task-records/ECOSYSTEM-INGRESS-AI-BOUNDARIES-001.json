@@ -1,0 +1,55 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+  "correlation_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+  "root_correlation_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+  "parent_task_id": null,
+  "goal": "Define, validate, and enforce StegVerse ecosystem ingress topology and AI-access boundaries: ChatGPT-only Task Registry coordination entry; future non-ChatGPT AI isolated to a sandboxed AI decision-processing region; external frameworks/models through LLM Adapter -> SDK only; external evaluators through SDK manifested ingress only; reject direct internal bypasses.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": null,
+  "repository": "StegVerse-Labs/.github",
+  "issue_ref": "StegVerse-Labs/.github#1620",
+  "handoff_projection_refs": [
+    "StegVerse-Labs/.github:docs/ECOSYSTEM_INGRESS_AI_BOUNDARIES_MIRROR_HANDOFF.md"
+  ],
+  "adjacent_task_refs": [
+    "SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005"
+  ],
+  "classification": {
+    "chatgpt_task_registry_exclusivity": "NOT_PROVEN",
+    "non_chatgpt_ai_task_registry_denial": "NOT_PROVEN",
+    "common_ai_decision_sandbox_region": "NOT_PROVEN",
+    "external_framework_llm_adapter_sdk_only": "PARTIAL",
+    "external_evaluator_sdk_manifest_only": "PASS_SOURCE_LEVEL_RUNTIME_NOT_PROVEN"
+  },
+  "remaining_predicates": [
+    "TASK_REGISTRY_AI_ENTRY_SURFACES_INVENTORIED",
+    "CHATGPT_ONLY_TASK_REGISTRY_ENTRY_ENFORCED",
+    "NON_CHATGPT_AI_TASK_REGISTRY_DENIAL_ENFORCED",
+    "COMMON_AI_DECISION_SANDBOX_REGION_DEFINED",
+    "COMMON_AI_DECISION_SANDBOX_RUNTIME_ENFORCED",
+    "LLM_ADAPTER_FRAMEWORK_MODEL_INGRESS_EXCLUSIVE",
+    "LLM_ADAPTER_DELEGATES_TO_CANONICAL_SDK_MANIFEST_INGRESS",
+    "EXTERNAL_EVALUATOR_SDK_ONLY_INGRESS_ENFORCED",
+    "DIRECT_INTERNAL_BYPASS_REJECTED",
+    "COORDINATION_PROCESSING_EXECUTION_BOUNDARIES_PROVEN",
+    "REPRESENTATIVE_RUNTIME_BOUNDARY_EVIDENCE_OBSERVED"
+  ],
+  "authority_model": {
+    "task_registry_role": "COORDINATION_WORK_CONTROL_ONLY",
+    "chatgpt_downstream_execution_authority": false,
+    "non_chatgpt_ai_task_registry_access": false,
+    "llm_adapter_role": "EXTERNAL_FRAMEWORK_MODEL_PROTOCOL_INGRESS",
+    "sdk_role": "CANONICAL_MANIFEST_PROCESSING_INGRESS_AND_EXTERNAL_EVALUATOR_INGRESS",
+    "credential_authority": "TV/TVC",
+    "interlock_intr_execution_authority": false,
+    "github_runtime_authority": "NONE",
+    "heartbeat_execution_authority": false
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "runtime_observed": false
+  }
+}
