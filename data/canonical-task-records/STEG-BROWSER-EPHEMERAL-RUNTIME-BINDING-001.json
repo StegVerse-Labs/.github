@@ -26,6 +26,7 @@
     "StegVerse-Labs/.github@1d0077224da888301639031545bc818264b0dadb",
     "StegVerse-Labs/.github@48b0027320c92f7a9cb8d0f86ee00d696e331497",
     "StegVerse-Labs/.github@5a206b31613629497feb5d12a810bcf3e368ae39",
+    "StegVerse-Labs/.github@b6c8a2bf1f0e91c24afa21b2e8d710f60da3b455",
     "StegVerse-Labs/TVC@15f01fd9e4c472982cc2212c86aecb9ea90e5b49",
     "StegVerse-Labs/StegOS@790ee065c491822f2c6bf06e77214e99245afd8f",
     "StegVerse-Labs/StegOS@de38c04accc6196923058db79ccf88db25d85ee6",
@@ -124,6 +125,7 @@
     "StegVerse-Labs/.github@1d0077224da888301639031545bc818264b0dadb",
     "StegVerse-Labs/.github@48b0027320c92f7a9cb8d0f86ee00d696e331497",
     "StegVerse-Labs/.github@5a206b31613629497feb5d12a810bcf3e368ae39",
+    "StegVerse-Labs/.github@b6c8a2bf1f0e91c24afa21b2e8d710f60da3b455",
     "StegVerse-Labs/TVC/actions/runs/34350815902",
     "StegVerse-Labs/TVC/actions/runs/34351285862",
     "StegVerse-Labs/TVC/actions/runs/34352933939",
@@ -160,6 +162,7 @@
     "WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
     "RESIDENT_REFRESH_DISPATCH_SOURCE_GIT_HEAD_AND_EXACT_SELECTOR_OBSERVED",
     "STEGBROWSER_TVC_DEDICATED_CONSUMPTION_STAGED_OUTCOME_OBSERVED",
+    "STEGBROWSER_TVC_DEDICATED_CONSUMPTION_CURRENT_DISPATCH_BOUND_OBSERVED",
     "AUTHENTIC_FACEBOOK_PUBLICATION_CREATED",
     "AUTHENTIC_LINKEDIN_PUBLICATION_CREATED",
     "PUBLICATION_RECEIPT_CUSTODY_COMPLETE"
@@ -185,8 +188,8 @@
     "current_observation_required": true
   },
   "runtime_resolution": {
-    "current_executor": "The portable resident refresh+dispatch path is source-complete for stegbrowser_tvc_source_promotion after merged #1461, #1465, #1487, #1533, and #1556. An authentic sovereign resident or admitted Remote Computer ephemeral StegOS Node may execute it only from an already-local current .github source tree. A complete StegBrowser portable-dispatch receipt additionally requires the dedicated consumption receipt for the pinned TVC SHA and an outcome proving the exact private-source request is staged: STAGED, ALREADY_STAGED, or RESTAGED_EXACT_SOURCE. HANDOFF_READY remains an authentic observation but is incomplete because the StegBrowser request does not occupy the private-source slot. Authentic source-promotion consumption, TVC materialization/restart, live Apple owner ingress, current-iPhone signing, TestFlight upload/install, and same-device discovery remain unobserved.",
-    "authority_basis": "GitHub Actions validates and transports evidence only. TV/TVC remains credential authority and Interlock/InTr remains transition authority. Authentic portable dispatch evidence must retain source_revision_head_kind=GIT_HEAD, an exact lowercase 40-hex source_git_head, exact selector stegbrowser_tvc_source_promotion, exact one-consumer dispatch evidence, the identity-valid dedicated StegBrowser consumption receipt, and its canonical SHA-256 commitment together. The dedicated receipt must bind task STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001, pinned TVC SHA aef6b6f5dc99d2a531718ca475d20858ae8e68a6, zero credential material, zero network source fetch, and a staged outcome of STAGED, ALREADY_STAGED, or RESTAGED_EXACT_SOURCE. HANDOFF_READY cannot establish complete dispatch evidence. Source/CI state does not prove runtime execution. Signing private key material must originate, remain, and be destroyed inside the current-iPhone ephemeral signing executor.",
+    "current_executor": "The portable resident refresh+dispatch path is source-complete for stegbrowser_tvc_source_promotion after merged #1461, #1465, #1487, #1533, #1556, and #1579. An authentic sovereign resident or admitted Remote Computer ephemeral StegOS Node may execute it only from an already-local current .github source tree. A complete StegBrowser portable-dispatch receipt requires the dedicated consumption receipt for the pinned TVC SHA, a staged outcome of STAGED, ALREADY_STAGED, or RESTAGED_EXACT_SOURCE, and exact equality between that dedicated receipt and the current exact-selector resident-request-dispatch consumer result with attempted=true and returncode=0. HANDOFF_READY remains authentic but incomplete. Authentic source-promotion consumption, TVC materialization/restart, live Apple owner ingress, current-iPhone signing, TestFlight upload/install, and same-device discovery remain unobserved.",
+    "authority_basis": "GitHub Actions validates and transports evidence only. TV/TVC remains credential authority and Interlock/InTr remains transition authority. Authentic portable dispatch evidence must retain source_revision_head_kind=GIT_HEAD, an exact lowercase 40-hex source_git_head, exact selector stegbrowser_tvc_source_promotion, exact one-consumer dispatch evidence, the current dispatcher outcome with attempted=true and returncode=0, the identity-valid dedicated StegBrowser consumption receipt, proof that target_consumption_matches_current_dispatch_result=true, and the dedicated receipt canonical SHA-256 commitment together. The dedicated receipt must bind task STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001, pinned TVC SHA aef6b6f5dc99d2a531718ca475d20858ae8e68a6, zero credential material, zero network source fetch, and a staged outcome of STAGED, ALREADY_STAGED, or RESTAGED_EXACT_SOURCE. HANDOFF_READY cannot establish complete dispatch evidence. Source/CI state does not prove runtime execution. Signing private key material must originate, remain, and be destroyed inside the current-iPhone ephemeral signing executor.",
     "unattended_runtime": false
   },
   "worker_claim": {
