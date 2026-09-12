@@ -19,19 +19,21 @@ github_runtime_authority: NONE
 - `stegfin-governance` PR #100 merged the private-key-free opaque recipient-admission signing protocol at `c16d80b9b310add94565dfc40104fc49a889e9c3` after exact-head Governance, StegWallet governance, and iOS first-passkey validation passed.
 - `stegfin-governance` PR #101 merged existing-vault-agent dispatch integration at `ed6a97dd9ae988323373b9310ab411f0da82e6d3` after exact-head Governance, StegWallet governance, iOS first-passkey, and external-collaboration broker validations passed.
 - `.github` PR #1589 passed fresh exact-head Heartbeat `34709100860`, deterministic repository suite `34709100853`, and organization-control `34709100935`, then squash-merged at `90bec60daaa295757bbb5166afe68d9d31634786`; this child is canonical Task Registry truth.
-- The signer operation remains an operation of the existing `VaultAgentService`; no second signer daemon/socket owner is required or authorized.
-- The current `stegwallet/container_vault_agent.py` production launcher still constructs `VaultAgentService(args.socket, store)` without a recipient-admission signer. Therefore the merged opaque signer interface is fail-closed but not yet production-reachable.
-- StegOS PR #356 created the first role-separated Secure Enclave authority-key candidate source. After an unrelated stale Device Continuity test was reconciled separately in StegOS PR #357 (`312a7c494d7f7e3e42d0c85f13c281a3daad9603`), PR #356 exact head `7a6c35b204233dc6a5460288f5a2ce5a7aee62a1` passed StegOS CI `34713849035`, iOS Apple Toolchain Validation `34713849131`, iOS Device Package Validation `34713849084`, and GADI native boundary defense validation `34713849085`, then squash-merged at `e81b981c1218fca2031a43207afd0a419ff1263d`.
-- The merged StegOS authority candidate reuses only established Apple Secure Enclave P-256 mechanics. It uses application tag `org.stegverse.stegos.tvc.recipient-admission-authority.p256`, derives a public `tvc://authority-key/p256/...` identity, exposes only public JWK/digest/key ID plus an opaque Secure Enclave handle, and explicitly records `privateKeyExported=false`, `recipientKeyReused=false`, `signingReachable=false`, and `authorityEffect=NONE_AUTHORITY_KEY_CANDIDATE_ONLY`.
+- StegOS PR #356 created the role-separated Secure Enclave authority-key candidate source. After an unrelated stale Device Continuity test was reconciled separately in StegOS PR #357 (`312a7c494d7f7e3e42d0c85f13c281a3daad9603`), PR #356 exact head `7a6c35b204233dc6a5460288f5a2ce5a7aee62a1` passed StegOS CI `34713849035`, iOS Apple Toolchain Validation `34713849131`, iOS Device Package Validation `34713849084`, and GADI native boundary defense validation `34713849085`, then squash-merged at `e81b981c1218fca2031a43207afd0a419ff1263d`.
+- The merged StegOS authority candidate uses application tag `org.stegverse.stegos.tvc.recipient-admission-authority.p256`, derives a public `tvc://authority-key/p256/...` identity, exposes only public JWK/digest/key ID plus an opaque Secure Enclave handle, and explicitly records `privateKeyExported=false`, `recipientKeyReused=false`, `signingReachable=false`, and `authorityEffect=NONE_AUTHORITY_KEY_CANDIDATE_ONLY`.
 - The existing recipient key remains separate at tag `org.stegverse.stegos.tvc.skap.browser-recipient.coinbase.p256` and cannot satisfy the authority role.
-- No authority-signing public URL action was added. The existing `stegverse://tvc-recipient-capability` envelope is shape/callback bounded but is not sufficient cryptographic authentication for arbitrary authority signing, so exposing `sign(message)` through it would create a signing oracle.
-- StegOS also already contains `TVCAuthenticatedRecipientCapabilityAdapter`, which verifies a signed TVC admission against an exact P-256 authority public JWK, `tvc://authority-key/p256/...` identity, bounded lifetime, WorkerCoordinator fence, and authority-separation fields. This is useful downstream verification evidence, but it cannot authenticate a request to the same authority signer without circularly assuming an authority signature that the signer itself is being asked to produce.
-- No authenticated resident device is connected through the available remote-device surface, so actual production authority-key materialization, same-device backend binding, and fresh production signing remain unobserved.
-- Authentic production authority-key custody, matching public JWK binding, and fresh production signed admission therefore remain unobserved.
+- TVC PR #418 consolidated the caller side onto the existing vault-agent boundary. Exact head `e91560722284d8e36a339d6909fe7ae65c4c395f` passed Recipient Admission Signing Custody Validation `34714208673` and squash-merged at `5edf023aa7d45e1f525dd1bb556d25cacd35ae74`.
+- TVC's signed-admission issuer still validates exact WorkerCoordinator task/claim/fence freshness and handoff authority before it invokes the signing callable. That independently establishes the caller-side work predicate without requiring a prior signature from the same authority key.
+- `scripts/tvc_recipient_admission_resident_signer.py` now accepts only `/run/stegverse/vault-agent.sock`, emits the exact `stegverse.vault.agent.recipient_admission_sign_request.v1` / `recipient_admission_sign` contract, verifies the returned signature against the separately materialized public JWK, and explicitly rejects the legacy `/run/stegverse/tv-tvc-credentials/recipient-admission-signer.sock` path.
+- The signer operation therefore has one caller-side credential boundary and no second signer socket. The remaining backend problem is wholly behind the existing `VaultAgentService` operation.
+- The current `stegwallet/container_vault_agent.py` production launcher still constructs `VaultAgentService(args.socket, store)` without a recipient-admission signer. Therefore the merged opaque signer interface remains fail-closed but not yet production-reachable.
+- No authority-signing public URL action exists in StegOS. The existing `stegverse://tvc-recipient-capability` envelope remains insufficient authentication for arbitrary authority signing, so no signing oracle has been introduced.
+- StegOS `TVCAuthenticatedRecipientCapabilityAdapter` verifies a completed signed admission downstream, but it cannot authenticate a request to the same authority signer without circularly requiring the authority signature being requested.
+- No authenticated resident device is connected through the available remote-device surface, so actual production authority-key materialization, platform-backend binding, matching public trust-anchor binding, and fresh production signing remain unobserved.
 
 ## Exact remaining problem
 
-Bind the now-source-canonical purpose-specific Secure Enclave authority primitive to the existing `OpaqueRecipientAdmissionSigner` operation through one authenticated, non-public same-lifecycle bridge that does not require a prior signature from the same authority key and does not create a second signer daemon, credential socket, or alternate authority.
+Bind one eligible non-exportable platform signer backend to the existing `VaultAgentService` `OpaqueRecipientAdmissionSigner` interface so the canonical `/run/stegverse/vault-agent.sock` request can reach the distinct authority key without creating another signer daemon/socket, exposing a public signing oracle, or reusing the recipient key.
 
 The final backend surface remains exactly:
 
@@ -42,27 +44,30 @@ sign(message bytes) -> DER ECDSA P-256/SHA-256 signature
 
 It must not expose private-key bytes, PEM, private JWK `d`, seed, scalar, exportable PKCS#8, or a secret-store string representation.
 
-## Source-complete role separation
+## Source-complete caller and role separation
 
-The role-separation portion is now source-implemented and Apple-toolchain validated:
+The following portions are now source-implemented and validated:
 
 ```text
 recipient key tag != authority key tag
 recipient key ID namespace != tvc://authority-key/p256/<id>
-recipient admission/liveness semantics != authority signing semantics
 recipient candidate may never satisfy OpaqueRecipientAdmissionSigner
-only public authority JWK/key ID may cross the custody boundary
-private authority key remains non-exportable inside Secure Enclave
+private authority key candidate remains non-exportable inside Secure Enclave
 public deep-link signing is absent
+TVC validates WorkerCoordinator task/claim/fence before signer invocation
+TVC caller uses only /run/stegverse/vault-agent.sock
+legacy second recipient-admission signer socket is rejected
+vault-agent response is checked for purpose, key ID, algorithm, no private material, no GitHub/model signing authority
+returned signature is verified against the public JWK
 ```
 
-The candidate is still deliberately non-authorizing and non-signing-reachable. Source merge is not production key materialization.
+These source merges do not prove production key materialization or production signing.
 
-## Authentication constraint for the bridge
+## Backend authentication constraint
 
-The existing authenticated-recipient verifier cannot simply be reused backwards. It verifies a TVC signature produced by the authority key. Requiring that same signature to authenticate a request asking the authority key to sign would be circular and would not establish a bootstrap trust path.
+The caller-side TVC work predicate is independently checked before the signing callable is invoked, but the platform backend still needs a trustworthy same-lifecycle binding from the existing vault agent to the actual non-exportable authority primitive. The backend must not treat callback allowlisting, unsigned deep links, GitHub workflow identity, model output, heartbeat state, or recipient-key possession as authority-signing authorization.
 
-The bridge therefore must consume an independently authentic existing admission/claim/fence or same-lifecycle local authority signal already owned by TV/TVC / Interlock/InTr. It must fail closed if that independent authentication cannot be demonstrated. A callback allowlist, unsigned deep-link envelope, GitHub workflow identity, model output, heartbeat state, or recipient-key proof of possession is not sufficient signing authorization.
+If the Secure Enclave candidate is used, the bridge must preserve the exact authority key ID, distinguish it from the recipient key, and expose only the two opaque signer operations to the vault agent. Any cross-process or cross-surface transport used solely to reach the platform primitive must remain an implementation detail of the existing vault-agent signer backend, not a second credential/signing authority or independently callable public signer.
 
 ## Invariants
 
@@ -81,12 +86,12 @@ no circular same-key authentication of a signing request
 
 ## Next
 
-1. Inventory the existing TV/TVC / Interlock/InTr resident operation surfaces for an independently authenticated, non-public request that can authorize the exact `recipient_admission_sign` operation without requiring a signature from the same authority key.
-2. Implement only the smallest adapter needed to translate that already-authenticated request into the existing `OpaqueRecipientAdmissionSigner` call; do not create a second signer daemon/socket owner.
-3. Bind the adapter to the distinct Secure Enclave authority key identity and fail closed on key-ID mismatch, missing platform primitive, missing independent authorization, or any recipient-key substitution.
+1. Inventory existing resident/local Interlock/InTr transport surfaces that can be reused internally by a vault-agent platform backend to reach the role-separated Secure Enclave authority primitive without becoming a second signing authority.
+2. Implement the smallest `OpaqueRecipientAdmissionSigner` backend adapter behind the existing `VaultAgentService`; fail closed on missing platform primitive, exact key-ID mismatch, unavailable authenticated transport, or recipient-key substitution.
+3. Wire the backend into the existing vault-agent launcher lifecycle without a second daemon/socket owner.
 4. Materialize one production authority key under TV/TVC control on an authenticated eligible resident and project only its public P-256 JWK/key ID.
 5. Bind the matching public JWK as the recipient-admission trust anchor without private material.
-6. Observe authentic runtime custody and issue one fresh WorkerCoordinator-fence/lease-bound admission through the merged TVC adapter.
+6. Observe authentic runtime custody and issue one fresh WorkerCoordinator-fence/lease-bound admission through `/run/stegverse/vault-agent.sock`.
 7. Return to `TVC-IOS-OPAQUE-RECIPIENT-CAPABILITY-001` only after the signed admission is authentically observed.
 
 ## Manual work
