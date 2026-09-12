@@ -1,0 +1,36 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "PA-001-ECOSYSTEM-RUNTIME-ENFORCEMENT-001",
+  "tasks": [
+    {
+      "archive_eligible": false,
+      "archive_reason_codes": [
+        "ECOSYSTEM_RUNTIME_ENFORCEMENT_NOT_YET_PROVEN"
+      ],
+      "authorized_policy_version": "pa001-ecosystem-runtime-enforcement-v0.1",
+      "block_ref": null,
+      "claim_id": null,
+      "cost_basis_ref": null,
+      "evidence_refs": [
+        "StegVerse-Labs/StegCore#208",
+        "StegVerse-Labs/StegCore#209",
+        "StegVerse-Labs/StegCore:docs/PA001_ECOSYSTEM_RUNTIME_ENFORCEMENT_MIRROR_HANDOFF.md"
+      ],
+      "executor_binding": "UNBOUND",
+      "external_entity_job_ref": null,
+      "goal_id": "PA-001-ECOSYSTEM-RUNTIME-ENFORCEMENT-001",
+      "handoff_ref": "StegVerse-Labs/StegCore:docs/PA001_ECOSYSTEM_RUNTIME_ENFORCEMENT_MIRROR_HANDOFF.md",
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": "StegVerse-Labs/StegCore:docs/PA001_ECOSYSTEM_RUNTIME_ENFORCEMENT_MIRROR_HANDOFF.md",
+      "lease": null,
+      "state": "HANDOFF_READY",
+      "task_id": "PA-001-ECOSYSTEM-RUNTIME-ENFORCEMENT-001",
+      "worker_id": null,
+      "worker_instance_id": null
+    }
+  ],
+  "workers": [],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false
+}
