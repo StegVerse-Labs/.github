@@ -38,22 +38,21 @@ One operation identity, one packet identity, one exact acquisition-envelope payl
 - PR #1468 merged at `233992aead73e054f9ded66d62af29b0980107a8` from exact head `ceab2ab090ca8d8edd813400180b12d25df1c873` after organization-control, Heartbeat validation, and deterministic-suite PASS. It added the canonical resident request, binding-materialization consumer, resident request wiring installer, resident-source copy wiring, and deterministic tests.
 - PR #1476 merged at `af0fcb239956e9744fdd4129bb454655efd54243` from exact head `5fb90e43675b5fdefe403171bea668727d3bf1d8` after organization-control, Heartbeat/repository validation, deterministic-suite diagnostics, and DeepSeek resident validation all passed. It added the bounded loopback ERL submitter, existing-dispatcher submission consumer, resident-source copy wiring, digest normalization, canonical `unittest` regression coverage, and README runtime-interface documentation.
 - PR #1546 merged at `83a1b090ab850bf347c30f1818279064102d87d9` after exact-head control-plane validation PASS. It reconciled the canonical task record so already-completed implementation/validation steps are no longer listed as future transitions; completion and activation remain false.
-- PR #1554 merged at `aaf663112db68b031019c0e9ea274ff6bb9382d2` from exact head `b2b9591deda89e2aa5f7f3618329c1da8f889ba9` after both validation lanes, deterministic-suite diagnostics, and DeepSeek resident validation passed. It added submission-input materialization and exposed the transport-origin dependency that is corrected below.
+- PR #1554 merged at `aaf663112db68b031019c0e9ea274ff6bb9382d2` from exact head `b2b9591deda89e2aa5f7f3618329c1da8f889ba9` after both validation lanes, deterministic-suite diagnostics, and DeepSeek resident validation passed. It added submission-input materialization and exposed the transport-origin dependency corrected later.
 - PR #1568 merged at `ebac65426065a78863c6613fcd3f9c63ecb0e67e` after exact-head validation PASS. It reconciled the handoff after #1554 without claiming runtime evidence.
+- PR #1585 merged at `fd1d7b3f3d42c6bb2fe1bb59838121f45ace5a55` from exact head `fb2a7ffc212f6bd5a68cd3030954f6e3da6c9089` after both validation lanes, full Heartbeat/repository validation, deterministic-suite diagnostics, and DeepSeek resident validation all passed. It corrected ERL loopback carriage to the credentialless `STEGOS_RESIDENT_LOCAL` transport origin, removed the active dependency on sovereign-relay authorization, added exact retained-resident local-source convergence, tests, README documentation, and canonical Task Registry reconciliation.
 
-Merged source does not prove resident execution, any authentic InTr hop, terminal KV receipt, or provider replay.
+Merged source does not prove resident execution, authentic shared-ingress observation, any authentic InTr hop, terminal KV receipt, or provider replay.
 
-## Transport-origin correction
+## Resident-local transport correction
 
-Investigation on 2026-09-12 established that the prior ERL submitter incorrectly used `TVC_RELAY_EGRESS` as the transport origin for a resident-local loopback handoff.
+Investigation on 2026-09-12 established that the earlier ERL submitter incorrectly used `TVC_RELAY_EGRESS` as the transport origin for a resident-local loopback handoff.
 
 Canonical TVC source `docs/SOVEREIGN_RELAY_EGRESS_AUTHORIZATION_MIRROR_HANDOFF.md` defines sovereign relay EGRESS authorization as exact-scope and single-use, bound to a real admitted relay route, exact opaque payload hash/size, and a live TVC execution grant. TVC also records `live_egress_authorization: false`. That authorization class is therefore neither presently available nor semantically appropriate for the ERL resident-local loopback handoff.
 
 The shared HIL transport validator independently confirms the distinction: `TVC_RELAY_EGRESS` requires an authorization identifier because it represents a governed sovereign relay, while local transport origins must not claim a TVC relay authorization.
 
-Current correction branch: `ss-erl-resident-local-origin-001` / PR #1585.
-
-Implemented correction:
+Merged correction:
 
 - `workers/erl_active_research_transport.py`
   - defines ERL-only transport origin `STEGOS_RESIDENT_LOCAL`;
@@ -85,7 +84,7 @@ The legacy relay submitter/materializer remain source history but are no longer 
 
 Inspection of `scripts/refresh_sovereign_worker_runtime_source.py` showed that retained-runtime refresh already propagates the `workers/` tree and `control/resident-execution-request.d/` consumers, but does not generically copy every ERL `scripts/...` dependency. A refreshed resident could therefore receive the ERL consumer while still lacking one or more exact scripts that consumer invokes.
 
-PR #1585 closes that gap without widening generic refresh:
+Merged #1585 closes that gap without widening generic refresh:
 
 - both the binding and submission consumers carry the same exact allow-list of ERL source dependencies;
 - dependencies are copied only from the already-local canonical source root to a distinct resident runtime root;
@@ -120,15 +119,14 @@ The ERL profile still:
 
 ## Remaining work
 
-1. Validate and merge PR #1585 only if final exact-head repository checks pass with the README and canonical handoff/task projection included.
-2. On an authentic sovereign resident visit, let the existing ERL consumer self-materialize and verify its exact local source dependencies and apply/check resident preparation; preserve the resulting non-authorizing source-materialization evidence.
-3. Materialize the existing local ERL source/dispatch inputs and deterministic binding/envelope through the existing resident dispatcher.
-4. Observe the authentic shared loopback ingress URL; let the existing submission consumer materialize the resident-local input automatically without relay authorization.
-5. Observe one authentic shared-ingress ERL response, preserving authentic hop 1 and hop 2 receipts and the projected terminal request.
-6. Let the existing DEVICE_KV owner execute the terminal bytes and preserve authentic hop 3 with exact prior-receipt continuity.
-7. Verify the complete three-receipt chain and bind terminal transport proof to the pre-existing provider readback evidence without provider replay.
-8. Reconcile the parent ERL handoff with exact receipt hashes and final proof class.
+1. On an authentic sovereign resident visit, let the existing ERL consumer self-materialize and verify its exact local source dependencies and apply/check resident preparation; preserve the resulting non-authorizing source-materialization evidence.
+2. Materialize the existing local ERL source/dispatch inputs and deterministic binding/envelope through the existing resident dispatcher.
+3. Observe the authentic shared loopback ingress URL; let the existing submission consumer materialize the resident-local input automatically without relay authorization.
+4. Observe one authentic shared-ingress ERL response, preserving authentic hop 1 and hop 2 receipts and the projected terminal request.
+5. Let the existing DEVICE_KV owner execute the terminal bytes and preserve authentic hop 3 with exact prior-receipt continuity.
+6. Verify the complete three-receipt chain and bind terminal transport proof to the pre-existing provider readback evidence without provider replay.
+7. Reconcile the parent ERL handoff with exact receipt hashes and final proof class.
 
 ## Current state
 
-`PROFILE_SOURCE_PREPARATION_RESIDENT_BINDING_LOOPBACK_SUBMISSION_AND_INPUT_MATERIALIZATION_MERGED / RESIDENT_LOCAL_TRANSPORT_ORIGIN_AND_EXACT_LOCAL_SOURCE_CONVERGENCE_IMPLEMENTED_ON_PR_1585 / AUTHENTIC_RESIDENT_SOURCE_MATERIALIZATION_NOT_YET_OBSERVED / AUTHENTIC_SHARED_LOOPBACK_INGRESS_NOT_YET_OBSERVED / AUTHENTIC_THREE_HOP_TRAVERSAL_NOT_YET_OBSERVED`
+`PROFILE_SOURCE_PREPARATION_RESIDENT_BINDING_LOOPBACK_SUBMISSION_AND_INPUT_MATERIALIZATION_MERGED / RESIDENT_LOCAL_TRANSPORT_ORIGIN_AND_EXACT_LOCAL_SOURCE_CONVERGENCE_MERGED_AND_VALIDATED / AUTHENTIC_RESIDENT_SOURCE_MATERIALIZATION_NOT_YET_OBSERVED / AUTHENTIC_SHARED_LOOPBACK_INGRESS_NOT_YET_OBSERVED / AUTHENTIC_THREE_HOP_TRAVERSAL_NOT_YET_OBSERVED`
