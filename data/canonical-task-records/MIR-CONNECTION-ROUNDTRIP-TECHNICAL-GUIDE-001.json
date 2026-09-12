@@ -3,8 +3,8 @@
   "task_id": "MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001",
   "correlation_id": "MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001",
   "goal": "Create an independent technical and operational guide for StegVerse <-> MIR connection establishment, bidirectional Universal Interlock/InTr transport, source-native artifact preservation, TV/TVC credential brokerage where required, correlation, retry, evidence, and round-trip verification without depending on any individual test or experiment.",
-  "coordination_state": "ACTIVE",
-  "checkout_state": "CHECKED_OUT",
+  "coordination_state": "COMPLETE",
+  "checkout_state": "RELEASED",
   "cosv_task_vector": "50000000100000",
   "owners": {
     "documentation_and_public_connection_surface": "StegVerse-Labs/Site",
@@ -15,6 +15,11 @@
   },
   "source_refs": [
     "StegVerse-Labs/Site#1277",
+    "StegVerse-Labs/Site#1278",
+    "StegVerse-Labs/Site#1279",
+    "StegVerse-Labs/Site@383dadb8cfa5b86012ecfbf7ea6026a8ce80b4e3",
+    "StegVerse-Labs/Site@ae82feb80a87165e1c58ae936c305958c1545d3a",
+    "StegVerse-Labs/Site/docs/MIR_CONNECTION_DOCUMENTATION_INDEX.md",
     "StegVerse-Labs/Site/docs/MIR_CONNECTION_ROUNDTRIP_TECHNICAL_GUIDE_MIRROR_HANDOFF.md",
     "StegVerse-Labs/Site/docs/MIR_CONNECTION_AND_ROUNDTRIP_TECHNICAL_GUIDE.md",
     "StegVerse-Labs/Site/docs/INTERLOCK_INTR_CONNECTION_GUIDE.md",
@@ -32,8 +37,11 @@
     "tvtvc_credential_boundary_documented": true,
     "roundtrip_state_model_documented": true,
     "retry_and_fail_closed_behavior_documented": true,
-    "site_pr_merged": false,
-    "guide_discoverable_from_main": false
+    "site_pr_merged": true,
+    "guide_discoverable_from_main": true,
+    "stable_documentation_index_merged": true,
+    "merged_handoff_reconciled": true,
+    "live_mir_roundtrip_claimed": false
   },
   "authority_invariants": {
     "credential_authority": "TV/TVC",
@@ -42,6 +50,17 @@
     "github_runtime_authority": "NONE",
     "heartbeat_authority": "NONE_CARRIER_ONLY",
     "alternate_transport_required": false
+  },
+  "validation_evidence": {
+    "primary_guide_validated_head": "ee3cf14289d0204a5e3f489331b1db936502e5ad",
+    "primary_guide_site_handoff_orchestrator": 34707793691,
+    "primary_guide_site_bootstrap_validate": 34707793605,
+    "primary_guide_ecosystem_heartbeat_orchestration": 34707793607,
+    "discoverability_validated_head": "61b794560ec98c713f6f3ed9e11f7a2334a84840",
+    "discoverability_site_handoff_orchestrator": 34708049941,
+    "discoverability_site_bootstrap_validate": 34708049975,
+    "discoverability_ecosystem_heartbeat_orchestration": 34708049948,
+    "result": "SUCCESS"
   },
   "expected_evidence_predicates": [
     "INDEPENDENT_GUIDE_EXISTS_OUTSIDE_EXPERIMENT",
@@ -54,18 +73,16 @@
     "GUIDE_MERGED_AND_DISCOVERABLE"
   ],
   "completion": {
-    "claimed": false,
-    "validated": false,
+    "claimed": true,
+    "validated": true,
     "source_implemented": true,
-    "source_validated": false,
-    "runtime_observed": false
+    "source_validated": true,
+    "runtime_observed": false,
+    "runtime_observation_required_for_this_documentation_task": false
   },
   "allowed_next_transitions": [
-    "OPEN_SITE_DOCUMENTATION_PR",
-    "VALIDATE_SITE_DOCUMENTATION",
-    "MERGE_SITE_GUIDE",
-    "UPDATE_DISCOVERABILITY_LINKS",
-    "RECONCILE_CANONICAL_TASK_RECORD"
+    "REFERENCE_GUIDE_FROM_MIR_RUNTIME_TASKS",
+    "EXECUTE_RUNTIME_WORK_UNDER_SEPARATE_TASK_LINEAGE"
   ],
   "handoff_projection_refs": [
     "StegVerse-Labs/Site/docs/MIR_CONNECTION_ROUNDTRIP_TECHNICAL_GUIDE_MIRROR_HANDOFF.md"
