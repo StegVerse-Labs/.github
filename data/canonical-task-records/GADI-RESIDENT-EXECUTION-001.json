@@ -10,6 +10,7 @@
   "cosv_task_vector": "10100000100000",
   "source_refs": [
     "docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
+    "docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md",
     "handoffs/GADI-RESIDENT-EXECUTION-001.json",
     "control/resident-execution-request.d/gadi-resident-execution-001.json",
     "control/resident-execution-request.d/consume-gadi-resident-execution.py",
@@ -17,6 +18,7 @@
     "control/process-worker-adapters.d/gadi-resident-execution-001.json",
     "control/task-vectors/GADI-RESIDENT-EXECUTION-001.json",
     "scripts/observe_gadi_retained_resident_discovery.py",
+    "scripts/materialize_gadi_retained_node_discovery.py",
     "scripts/materialize_gadi_runtime_binding.py",
     "scripts/run_gadi_targeted_runtime_if_ready.py",
     "StegVerse-002/micro-node-runtime/micro_node/gadi_resident_consumer.py",
@@ -32,9 +34,10 @@
   "dependencies": [
     {"dependency_id":"DEP-GADI-RESIDENT-CONSUMER-SOURCE","kind":"IMPLEMENTATION","state":"RESOLVED_SOURCE_COMPLETE_VALIDATED_MERGED","ref":"StegVerse-002/micro-node-runtime#90","disposition":"REUSE_MERGED_CONSUMER"},
     {"dependency_id":"DEP-GADI-PROVIDER-VERIFICATION-BINDING-MATERIALIZER","kind":"IMPLEMENTATION","state":"RESOLVED_SOURCE_COMPLETE_VALIDATED_MERGED","ref":"StegVerse-Labs/StegOS#346","disposition":"REUSE_MERGED_EVIDENCE_ONLY_BINDING_MATERIALIZER"},
+    {"dependency_id":"DEP-GADI-CURRENT-IPHONE-RETAINED-RUNTIME","kind":"RUNTIME_EVIDENCE","state":"SOURCE_AND_UNSIGNED_PACKAGE_READY_CURRENT_DEVICE_PROOF_PENDING","ref":"STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001","disposition":"REQUIRE_AUTHENTIC_CURRENT_IPHONE_SIGNED_INSTALLATION_AND_RETAINED_RENDEZVOUS_DISCOVERY_FROM_THE_EXISTING_STEGBROWSER_STEGOS_RUNTIME_LANE; THIS_DEPENDENCY_GRANTS_NO_GADI_EXECUTION_AUTHORITY"},
     {"dependency_id":"DEP-GADI-INTR-ADMISSION","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"GADI-001","disposition":"REQUIRE_CURRENT_INTR_DECISION_REF"},
     {"dependency_id":"DEP-GADI-WORKERCOORDINATOR-CLAIM","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"STEGVERSE-CANONICAL-WORK-COORDINATION-001","disposition":"REQUIRE_CURRENT_CLAIM_AND_FENCE"},
-    {"dependency_id":"DEP-GADI-RUNTIME-BINDING","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"StegVerse-Labs/StegOS;StegVerse-Labs/StegBrowser","disposition":"REQUIRE_EXACT_CURRENT_RETAINED_STEGBROWSER_STEGOS_RUNTIME_BINDING"},
+    {"dependency_id":"DEP-GADI-RUNTIME-BINDING","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"StegVerse-Labs/StegOS;StegVerse-Labs/StegBrowser","disposition":"REQUIRE_EXACT_CURRENT_RETAINED_STEGBROWSER_STEGOS_RUNTIME_BINDING_AFTER_CURRENT_IPHONE_RETAINED_RUNTIME_EVIDENCE_EXISTS"},
     {"dependency_id":"DEP-GADI-PREAUTHORIZED-ACTUATOR","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"StegVerse-Labs/TV;StegVerse-Labs/TVC","disposition":"REQUIRE_CONTROLLED_PREAUTHORIZED_ACTUATOR_RESULT"}
   ],
   "blockers": [],
@@ -71,8 +74,9 @@
       {
         "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
         "disposition": "SELECTED",
-        "limitation_class": "EVIDENCE_REACHABILITY",
+        "limitation_class": "DEPENDENCY_RUNTIME_EVIDENCE",
         "evidence_refs": [
+          "docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md",
           "StegVerse-Labs/StegOS/docs/STEGBROWSER_RETAINED_NODE_BOOTSTRAP_MIRROR_HANDOFF.md",
           "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_IOS_RESIDENT_RENDEZVOUS_MIRROR_HANDOFF.md"
         ]
@@ -80,8 +84,8 @@
       {
         "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
         "disposition": "SUITABLE",
-        "limitation_class": "EVIDENCE_REACHABILITY",
-        "evidence_refs": ["StegVerse-Labs/StegOS/docs/STEGBROWSER_RETAINED_NODE_BOOTSTRAP_MIRROR_HANDOFF.md"]
+        "limitation_class": "DEPENDENCY_RUNTIME_EVIDENCE",
+        "evidence_refs": ["docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md", "StegVerse-Labs/StegOS/docs/STEGBROWSER_RETAINED_NODE_BOOTSTRAP_MIRROR_HANDOFF.md"]
       },
       {
         "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
@@ -113,7 +117,17 @@
     "second_user_operated_device_allowed": false,
     "authority_effect": "NONE"
   },
-  "runtime_resolution": null,
+  "runtime_resolution": {
+    "current_state": "SELECTED_SOURCE_VALID_CURRENT_IPHONE_RUNTIME_EVIDENCE_PENDING",
+    "identity_substrate": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+    "task_runtime_dependency": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+    "dependency_state": "SOURCE_AND_UNSIGNED_PACKAGE_READY_CURRENT_DEVICE_PROOF_PENDING",
+    "required_before_gadi_binding": ["CURRENT_IPHONE_SIGNED_INSTALLATION_OBSERVED", "CURRENT_IPHONE_RESIDENT_RENDEZVOUS_AVAILABLE"],
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "dependency_grants_gadi_execution_authority": false,
+    "authority_effect": "NONE_DEPENDENCY_DECLARATION_ONLY"
+  },
   "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
   "human_action_ref": null,
   "completion": {"claimed":false,"validated":false,"resident_execution_observed":false},
