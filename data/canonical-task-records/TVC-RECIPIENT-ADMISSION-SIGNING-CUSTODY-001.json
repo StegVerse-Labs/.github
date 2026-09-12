@@ -15,7 +15,10 @@
   },
   "source_refs": [
     "docs/TVC_RECIPIENT_ADMISSION_SIGNING_CUSTODY_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/TVC/scripts/stegos_ios_recipient_authenticated_adoption.py"
+    "StegVerse-Labs/TVC/scripts/stegos_ios_recipient_authenticated_adoption.py",
+    "StegVerse-Labs/TVC/scripts/tvc_recipient_capability_admission.py",
+    "StegVerse-Labs/TVC/scripts/tvc_recipient_admission_resident_signer.py",
+    "StegVerse-Labs/TVC/.github/workflows/recipient-admission-signing-custody-validation.yml"
   ],
   "blockers": [
     "TVC_PRODUCTION_RECIPIENT_ADMISSION_SIGNING_CUSTODY_NOT_YET_OBSERVED",
@@ -32,8 +35,15 @@
   "current_truth": {
     "tvc_408_authenticated_adoption_merged": true,
     "stegos_343_authenticated_verifier_merged": true,
-    "test_only_ephemeral_signer_exists": true,
-    "production_secure_custody_primitive_found_in_tvc_source_search": false,
+    "opaque_resident_signer_source_merged": true,
+    "opaque_resident_signer_source_validated": true,
+    "opaque_resident_signer_merge_sha": "f7124a2f0a60a3474a1f8868fb3b03e8821c1e38",
+    "opaque_resident_signer_validation_run": 34670427194,
+    "private_key_input_surface_absent": true,
+    "public_trust_anchor_projection_source_complete": true,
+    "returned_signature_verified_locally": true,
+    "wrong_signature_fails_closed": true,
+    "private_jwk_fails_closed": true,
     "production_signing_custody_observed": false,
     "public_trust_anchor_bound": false,
     "production_signed_admission_observed": false
@@ -47,16 +57,16 @@
     "hosted_execution_fallback": false
   },
   "allowed_next_transitions": [
-    "IMPLEMENT_OR_BIND_TVC_OWNED_NON_EXPORTABLE_SIGNING_CUSTODY",
+    "OBSERVE_AUTHENTIC_TVC_CONTROLLED_OPAQUE_SIGNER_MATERIALIZATION",
     "BIND_MATCHING_PUBLIC_JWK_TRUST_ANCHOR",
-    "VALIDATE_WITH_NON_PRODUCTION_TEST_VECTORS",
-    "OBSERVE_AUTHENTIC_TVC_CONTROLLED_PRODUCTION_MATERIALIZATION",
     "ISSUE_FRESH_BOUND_SIGNED_RECIPIENT_ADMISSION"
   ],
   "completion": {
     "claimed": false,
     "validated": false,
-    "runtime_observed": false
+    "runtime_observed": false,
+    "source_implemented": true,
+    "source_validated": true
   },
   "handoff_projection_refs": [
     "docs/TVC_RECIPIENT_ADMISSION_SIGNING_CUSTODY_MIRROR_HANDOFF.md"

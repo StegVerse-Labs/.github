@@ -15,20 +15,23 @@ transition_authority: Interlock/InTr
 github_runtime_authority: NONE
 hosted_runtime_fallback: NONE
 second_user_operated_device_required: false
+source_implementation_complete: true
+source_validation_complete: true
+authentic_runtime_complete: false
 ```
 
 ## Goal
 
 Close the remaining authentic authority boundary required by TVC #408 and StegOS #343: establish TVC-controlled production custody for the P-256 recipient-admission signing key, derive and bind the matching public JWK trust anchor, then permit issuance of a fresh WorkerCoordinator-fence/lease-bound `stegverse.tvc.recipient-capability-admission/v1` without exporting private-key bytes or granting GitHub/CI/model authority.
 
-## Current truth
+## Current merged source state
 
 - TVC #408 merged at `8aa8eb084c3348e2565f81ca5d2e27044a5a4421`; validation run `34613199534` succeeded.
 - StegOS #343 merged at `0f3980ae29273b4dd131e6831034f11b7cde0df3`; StegOS CI `34613115673`, iOS Device Package `34613115670`, and Apple Toolchain `34613115687` succeeded.
-- Runtime-facing recipient adoption now fails closed on unsigned, stale/tampered, wrong-anchor, or incorrectly bound admission.
-- Production TVC admission-signing private-key custody has not been authentically observed.
-- The matching canonical public JWK trust anchor has not been authentically bound/distributed.
-- No fresh production signed admission, physical current-iPhone Secure Enclave adoption, Gateway/TVC pair, four-hop InTr roundtrip, or exact SKAP/KV readback is claimed.
+- TVC #410 merged at `f7124a2f0a60a3474a1f8868fb3b03e8821c1e38` after exact-head signer validation run `34670427194` succeeded.
+- TVC now contains `scripts/tvc_recipient_admission_resident_signer.py`, which binds the existing signed-admission contract to an opaque resident signing boundary rather than a private-key path.
+- The adapter requires a protected local UNIX signing socket, accepts a public P-256 JWK only, verifies each returned signature locally, rejects private JWK input, rejects wrong signatures, and projects only public trust-anchor material.
+- Source/CI do not prove an authentic production signer exists behind that socket.
 
 ## Authority invariants
 
@@ -50,7 +53,21 @@ Interlock/InTr
   -> transition admission only
 ```
 
-## Required authentic predicates
+The merged signer adapter does not accept private-key bytes, private JWK, seed/scalar material, or a production private-key path. The authentic signer may be backed by a TVC-controlled non-exportable local provider, but its private key remains outside GitHub, CI, chat, repository state, ordinary KV, logs, screenshots, and model-visible state.
+
+## Source predicates now closed
+
+```text
+OPAQUE_SIGNER_CLIENT_SOURCE_IMPLEMENTED
+PRIVATE_KEY_INPUT_SURFACE_ABSENT
+PUBLIC_TRUST_ANCHOR_PROJECTION_IMPLEMENTED
+RETURNED_SIGNATURE_VERIFIED_LOCALLY
+WRONG_SIGNATURE_FAILS_CLOSED
+PRIVATE_JWK_FAILS_CLOSED
+SOURCE_VALIDATION_SUCCESS
+```
+
+## Authentic predicates still open
 
 ```text
 TVC_PRODUCTION_RECIPIENT_ADMISSION_SIGNING_CUSTODY_OBSERVED
@@ -64,15 +81,15 @@ Only after those predicates are satisfied may `TVC-IOS-OPAQUE-RECIPIENT-CAPABILI
 
 ## Next
 
-1. Inspect existing TVC credential/key-custody primitives for an eligible production non-exportable signing-key owner; reuse one if it preserves the authority invariants.
-2. If no eligible primitive exists, implement the smallest TVC-owned secure-custody adapter without creating key material in GitHub/CI or ordinary repository state.
-3. Bind the matching public JWK as the canonical verification anchor for TVC #408 / StegOS #343.
-4. Validate source behavior with non-production test vectors only.
-5. Require authentic TVC-controlled runtime materialization before issuing a production signed admission.
+1. Materialize or observe an authentic TVC-controlled opaque/non-exportable production signer at the merged resident boundary outside GitHub/CI.
+2. Project that signer's matching public P-256 JWK through the merged public trust-anchor artifact.
+3. Retain evidence that private signing-key bytes were never exported and that GitHub/CI/model have no signing authority.
+4. Issue one fresh admission bound to the exact WorkerCoordinator claim/fence and bounded lease.
+5. Return control to `TVC-IOS-OPAQUE-RECIPIENT-CAPABILITY-001` for current-iPhone Secure Enclave challenge/adoption, then to the parent roundtrip for Gateway/TVC input pairing and four-hop proof.
 
 ## README
 
-The `.github` README must be reviewed with this task. No README claim should imply production signing custody or runtime completion without evidence.
+The TVC README was reviewed for authority consistency; no production runtime completion is claimed. The `.github` README remains unchanged because the organization-level authority model did not change.
 
 ## Manual work
 
