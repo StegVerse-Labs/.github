@@ -1,0 +1,99 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-ELYRIA-INTR-ADAPTER-001",
+  "correlation_id": "SDK-ELYRIA-INTR-ADAPTER-001",
+  "root_correlation_id": "SDK-ELYRIA-INTR-ADAPTER-001",
+  "parent_task_id": null,
+  "goal": "Derive and validate the Elyria/Veritas-Aegis framework-side translation for the existing StegVerse SDK + Interlock/InTr governed communication path without duplicating internal protocol, transport, transition authority, receipts, runtime dispatch, credential, or custody machinery.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "cosv_task_vector": "71000000100112",
+  "repository": "StegVerse-Labs/.github",
+  "canonical_issue": 1607,
+  "handoff_projection_refs": [
+    "StegVerse-Labs/.github:docs/SDK_ELYRIA_INTR_ADAPTER_MIRROR_HANDOFF.md"
+  ],
+  "targets": {
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-org/StegVerse-SDK"
+    ],
+    "components": [
+      "reusable-external-adapter",
+      "elyria-framework-codec",
+      "sdk-generalized-evaluator-path",
+      "foreign-framework-evidence-normalization"
+    ]
+  },
+  "reusable_task": {
+    "reusable_task_id": "RT-EXTERNAL-ADAPTER-ESTABLISH-001",
+    "reuse_required": true,
+    "authority_effect": "NONE_TRANSLATION_ONLY",
+    "parameters": {
+      "endpoint_identity": "Elyria Admission Runtime public framework surface",
+      "endpoint_protocol": "HTTP/JSON public movement assessment + receipt/replay/no-bind evidence",
+      "intr_protocol_ref": "StegVerse SDK generalized evaluator path / stegverse.ingress-manifest.v1 / existing Interlock-InTr governed ingress-egress",
+      "operations": [
+        "movement_assessment",
+        "receipt_preservation",
+        "replay_observation",
+        "no_bind_evidence_preservation"
+      ],
+      "error_mapping": [
+        "identity_mismatch->FAIL_CLOSED",
+        "unsupported_verdict->FAIL_CLOSED",
+        "malformed_evidence->FAIL_CLOSED",
+        "authority_escalation->FAIL_CLOSED"
+      ],
+      "evidence_mapping": [
+        "elyria_verdict->foreign_framework_observation",
+        "elyria_receipt->foreign_receipt_evidence",
+        "elyria_replay->foreign_replay_observation",
+        "elyria_no_bind->foreign_closure_claim_evidence"
+      ]
+    }
+  },
+  "protocol_reuse": {
+    "new_intr_protocol_required": false,
+    "formal_testing_route_ref": "StegVerse-org/StegVerse-SDK:docs/FORMAL_TESTING_ROUTE.md",
+    "generic_manifest_contract_ref": "StegVerse-org/StegVerse-SDK:docs/GENERIC_MANIFEST_PROCESSING_CONTRACT.md",
+    "strict_adapter_pattern_ref": "StegVerse-org/StegVerse-SDK:stegverse/llm_adapter_bridge.py",
+    "external_packet_preservation_ref": "StegVerse-org/StegVerse-SDK:ADAPTER_SYSTEM_BOUNDARY_FIXTURE_MIRROR_HANDOFF.md"
+  },
+  "source_state": {
+    "canonical_handoff_created": true,
+    "reusable_external_adapter_identity_resolved": true,
+    "existing_intr_protocol_reused": true,
+    "duplicate_protocol_required": false,
+    "elyria_framework_binding_implemented": false,
+    "elyria_framework_binding_validated": false,
+    "authentic_external_round_trip_observed": false,
+    "production_veritas_substrate_interop_claimed": false
+  },
+  "authority_model": {
+    "task_registry_authority": "COORDINATION_ONLY",
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "governed_transition_authority": "INTERLOCK_INTR",
+    "credential_authority": "TV/TVC",
+    "observed_reality_authority": "MASTER_RECORDS",
+    "elyria_adapter_authority": "NONE_TRANSLATION_ONLY",
+    "elyria_verdict_is_stegverse_authority": false,
+    "github_runtime_authority": "NONE"
+  },
+  "remaining_predicates": [
+    "ELYRIA_REQUEST_TRANSLATION_BOUND",
+    "ELYRIA_RESPONSE_TRANSLATION_BOUND",
+    "TRANSITION_AND_RUN_IDENTITY_PRESERVED",
+    "ELYRIA_VERDICT_REMAINS_NON_AUTHORIZING",
+    "ELYRIA_RECEIPT_REPLAY_NOBIND_EVIDENCE_PRESERVED",
+    "ROUTE_CLOSURE_ASSERTION_DISTINGUISHED_FROM_STEGVERSE_OBSERVATION",
+    "FAIL_CLOSED_IDENTITY_AND_SCHEMA_TESTS_PASS",
+    "README_AND_HANDOFF_CURRENT",
+    "AUTHENTIC_TWO_WAY_PUBLIC_ELYRIA_TRANSPORT_EVIDENCE_OBSERVED"
+  ],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "activation_proof_complete": false
+  }
+}
