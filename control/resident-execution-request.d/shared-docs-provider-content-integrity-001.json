@@ -1,0 +1,26 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "state": "REQUESTED",
+  "task_id": "SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001",
+  "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
+  "selector": "shared_docs_provider_content_integrity",
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "second_machine_required": false,
+  "credential_material_allowed": false,
+  "provider_mutation_allowed": false,
+  "request_granted_authority": false,
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "provider_request": {
+    "schema": "stegverse.tvc.external-collaboration-google-drive-content-integrity-request/v1",
+    "request_id": "shared-docs-content-integrity-20260912-001",
+    "binding_id": "wsprobe_shared_docs_provider_freeze_001_1uTDq29Q5gEmnqY18u8JCRPlUBGkCYqOE",
+    "provider_file_id": "1uTDq29Q5gEmnqY18u8JCRPlUBGkCYqOE",
+    "probe_reason": "Shared Docs provider-freeze exact-byte content-integrity observation for the accessible downloadable StegVerse file Global_Interlock_InTr_Node_Test.txt; evidence-only read, no mutation.",
+    "content_profile": "google-drive.downloaded-bytes.v1",
+    "read_only": true,
+    "provider_mutation_allowed": false
+  }
+}
