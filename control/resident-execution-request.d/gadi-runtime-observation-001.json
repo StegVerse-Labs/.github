@@ -1,0 +1,23 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-OBSERVE-GADI-RUNTIME-001",
+  "state": "REQUESTED",
+  "task_id": "GADI-RESIDENT-EXECUTION-001",
+  "parent_task_id": "GADI-001",
+  "mode": "GADI_RUNTIME_OBSERVATION",
+  "entrypoint": "scripts/dispatch_gadi_resident_execution.py",
+  "observation_steps": [
+    "CURRENT_RETAINED_STEGBROWSER_STEGOS_NODE_DISCOVERY",
+    "CURRENT_RETAINED_STEGBROWSER_STEGOS_CURRENT_IPHONE_RECEIPT_READBACK",
+    "CURRENT_GADI_RUNTIME_BINDING"
+  ],
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "request_granted_authority": false,
+  "network_source_fetch_allowed": false,
+  "second_machine_required": false,
+  "workercoordinator_may_be_visited_only_after_nonclaim_readiness": true,
+  "authority_effect": "NONE_REQUEST_ONLY"
+}
