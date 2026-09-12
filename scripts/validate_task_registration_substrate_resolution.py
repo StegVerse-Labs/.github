@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -84,8 +85,7 @@ def validate_resolution(record: dict) -> None:
     if not isinstance(external_required, bool):
         fail(f"{task_id}: external_device_required must be boolean")
     if external_required:
-        prior = reviews[:-1]
-        for row in prior:
+        for row in reviews[:-1]:
             if row.get("disposition") not in {"UNSUITABLE", "NOT_APPLICABLE"}:
                 fail(f"{task_id}: external device cannot be required before all single-device substrates are exhausted")
             if row.get("limitation_class") == "EVIDENCE_REACHABILITY":
@@ -111,6 +111,31 @@ def added_task_records(base_ref: str) -> list[Path]:
     return out
 
 
+def github_pr_base_ref() -> str | None:
+    event_path = str(os.environ.get("GITHUB_EVENT_PATH") or "").strip()
+    if not event_path:
+        return None
+    path = Path(event_path)
+    if not path.exists():
+        return None
+    event = json.loads(path.read_text(encoding="utf-8"))
+    pr = event.get("pull_request")
+    if not isinstance(pr, dict):
+        return None
+    base_sha = str(((pr.get("base") or {}).get("sha") or "")).strip()
+    if not base_sha:
+        return None
+    probe = subprocess.run(["git", "cat-file", "-e", f"{base_sha}^{{commit}}"], cwd=ROOT)
+    if probe.returncode != 0:
+        subprocess.run(
+            ["git", "fetch", "--depth=1", "origin", base_sha],
+            cwd=ROOT,
+            check=True,
+            env={k: v for k, v in os.environ.items() if k not in {"GITHUB_TOKEN", "GH_TOKEN"}},
+        )
+    return base_sha
+
+
 def validate_path(path: Path) -> None:
     record = json.loads(path.read_text(encoding="utf-8"))
     validate_resolution(record)
@@ -123,8 +148,9 @@ def main() -> None:
     args = parser.parse_args()
 
     paths = [Path(p).resolve() for p in args.record]
-    if args.base_ref:
-        paths.extend(added_task_records(args.base_ref))
+    base_ref = args.base_ref or github_pr_base_ref()
+    if base_ref:
+        paths.extend(added_task_records(base_ref))
     if not paths:
         print("TASK_REGISTRATION_SUBSTRATE_RESOLUTION_NO_NEW_RECORDS")
         return
