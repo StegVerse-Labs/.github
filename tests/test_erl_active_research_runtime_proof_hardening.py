@@ -22,6 +22,37 @@ def fixture(mod):
         "packet_id": "INTR-0123456789abcdef01234567",
         "payload_hash": "sha256:" + "a" * 64,
     }
+    original_intent = {
+        "schema": "stegverse.universal-intr-transport/v1",
+        "protocol": "InTr",
+        "operation_id": request["operation_id"],
+        "packet_id": request["packet_id"],
+        "payload_hash": request["payload_hash"],
+        "prior_transport_receipt_hash": None,
+        "source": {"boundary": "EXTERNAL_SYSTEM", "subsystem": "ERL:ActiveResearchExternalSource"},
+        "destination": {"boundary": "KV", "subsystem": "KnowledgeVault:ERL"},
+        "boundary_path": mod.FULL_PATH,
+        "interlock_required": True,
+        "transport_semantics": {
+            "event_triggered": True,
+            "always_on_receiver_required": False,
+            "second_user_device_required": False,
+            "receiver_unavailable_disposition": "DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION",
+            "exact_packet_transport_retry_allowed": True,
+            "blind_consequence_retry_allowed": False,
+        },
+        "authority": {
+            "authority_transfer": False,
+            "transport_grants_execution_authority": False,
+            "credential_authority": "TV/TVC",
+        },
+        "receipt_chain": {
+            "required": True,
+            "receipt_schema": "stegverse.intr.hop_receipt/v1",
+            "payload_plaintext_in_receipts": False,
+            "prior_hash_required_after_first_hop": True,
+        },
+    }
     operation_hash = mod.sha_uri(
         {
             "operation_id": request["operation_id"],
@@ -59,7 +90,7 @@ def fixture(mod):
         "state": "QUEUED_FOR_EVENT_EPHEMERAL_MATERIALIZATION",
         "transport_schema": "stegverse.universal-intr-transport/v1",
         "transport_protocol": "InTr",
-        "transport_intent_hash": "sha256:" + "b" * 64,
+        "transport_intent_hash": mod.sha_uri(original_intent),
         "operation_id": request["operation_id"],
         "packet_id": request["packet_id"],
         "payload_hash": request["payload_hash"],
@@ -70,6 +101,7 @@ def fixture(mod):
         "prior_transport_receipt_hash": hop2["receipt_hash"],
         "erl_full_path": mod.FULL_PATH,
         "erl_upstream_receipt_hashes": [hop1["receipt_hash"], hop2["receipt_hash"]],
+        "erl_transport_intent": original_intent,
         "event_triggered": True,
         "always_on_receiver_required": False,
         "second_user_device_required": False,
@@ -94,13 +126,14 @@ def fixture(mod):
 
 
 class ERLRuntimeProofHardeningTests(unittest.TestCase):
-    def test_recomputes_hop_and_terminal_hashes(self):
+    def test_recomputes_hop_terminal_and_original_intent_hashes(self):
         mod = load()
         request, response = fixture(mod)
         result = mod.verify_admission_proof(response, request)
         self.assertEqual(result["proof_verification"], "VERIFIED")
         self.assertEqual(result["upstream_receipt_hashes"], [r["receipt_hash"] for r in response["hop_receipts"]])
         self.assertEqual(result["terminal_request_hash"], response["terminal_materialization_request"]["request_hash"])
+        self.assertEqual(result["terminal_transport_intent_hash"], response["terminal_materialization_request"]["transport_intent_hash"])
         self.assertEqual(result["ingress_response_hash"], mod.sha_uri(response))
 
     def test_rejects_tampered_hop_receipt_hash(self):
@@ -115,6 +148,14 @@ class ERLRuntimeProofHardeningTests(unittest.TestCase):
         request, response = fixture(mod)
         response["terminal_materialization_request"]["request_hash"] = "sha256:" + "e" * 64
         with self.assertRaisesRegex(RuntimeError, "terminal_request_hash_mismatch"):
+            mod.verify_admission_proof(response, request)
+
+    def test_rejects_reminted_terminal_intent_identity(self):
+        mod = load()
+        request, response = fixture(mod)
+        terminal = response["terminal_materialization_request"]
+        terminal["erl_transport_intent"]["packet_id"] = "INTR-ffffffffffffffffffffffff"
+        with self.assertRaisesRegex(RuntimeError, "original_intent_hash_mismatch|original_intent_identity_mismatch"):
             mod.verify_admission_proof(response, request)
 
 
