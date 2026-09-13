@@ -9,7 +9,9 @@
     "runtime_root"
   ],
   "runner_templates": [
-    "scripts/refresh_sovereign_worker_runtime_source.py"
+    "scripts/refresh_sovereign_worker_runtime_source_reusable.py",
+    "scripts/refresh_sovereign_worker_runtime_source.py",
+    "scripts/run_reusable_task_scheduler.py"
   ],
   "recording_levels": [
     "operation",
@@ -25,5 +27,5 @@
     "NO_CREDENTIAL_AUTHORITY_ACQUIRED"
   ],
   "authority_effect": "NONE_LOCAL_SOURCE_REFRESH",
-  "reuse_instructions": "Trigger once through the canonical reusable-task lifecycle. Runtime availability is an execution boundary of this reusable task, not a task-specific prerequisite to be reimplemented by consumers. Reuse scripts/refresh_sovereign_worker_runtime_source.py; do not create another source refresher, runtime owner, scheduler, credential route, or source transport."
+  "reuse_instructions": "Trigger once through the canonical reusable-task lifecycle. Runtime availability is an execution boundary of this reusable task, not a task-specific prerequisite to be reimplemented by consumers. The reusable adapter delegates to scripts/refresh_sovereign_worker_runtime_source.py and additionally guarantees materialization of the neutral reusable scheduler runner and contract needed by downstream reusable scheduling. Do not create another source refresher, runtime owner, scheduler, credential route, or source transport."
 }
