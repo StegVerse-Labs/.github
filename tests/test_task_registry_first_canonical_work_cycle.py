@@ -13,10 +13,12 @@ assert spec.loader is not None
 spec.loader.exec_module(module)
 
 
-def record(task_id, *, checkout="CHECKED_OUT", state="PROPOSED", human_action=None):
+def record(task_id, *, checkout="CHECKED_OUT", state="PROPOSED", human_action=None, root_goal=None):
     return {
         "schema": "stegverse.canonical-task-record/v1",
         "task_id": task_id,
+        "correlation_id": task_id,
+        "root_correlation_id": root_goal or task_id,
         "coordination_state": state,
         "checkout_state": checkout,
         "allowed_next_transitions": ["INGRESS_ADMITTED"],
@@ -57,6 +59,14 @@ class TaskRegistryFirstCanonicalWorkCycleTests(unittest.TestCase):
             rows = module.load_candidates(root, {"A-001"})
             self.assertEqual([r["task_id"] for r in rows], ["B-001"])
 
+    def test_goal_scope_excludes_other_root_goals(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "A-001.json").write_text(json.dumps(record("A-001", root_goal="GOAL-A")), encoding="utf-8")
+            (root / "B-001.json").write_text(json.dumps(record("B-001", root_goal="GOAL-B")), encoding="utf-8")
+            rows = module.load_candidates(root, goal_task_id="GOAL-A")
+            self.assertEqual([r["task_id"] for r in rows], ["A-001"])
+
     def test_selection_skips_collision_and_uses_existing_continue_disposition(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -70,6 +80,50 @@ class TaskRegistryFirstCanonicalWorkCycleTests(unittest.TestCase):
                 selected, considered = module.select_task(root)
             self.assertEqual(selected["task_id"], "B-001")
             self.assertEqual([row["disposition"] for row in considered], ["STOP_COLLISION", "CONTINUE"])
+
+    def test_goal_completion_requires_claimed_and_validated(self):
+        self.assertTrue(module.goal_completion_validated({"completion": {"claimed": True, "validated": True}}))
+        self.assertFalse(module.goal_completion_validated({"completion": {"claimed": True, "validated": False}}))
+        self.assertFalse(module.goal_completion_validated({"completion": {"claimed": False, "validated": True}}))
+
+    def test_completion_notice_contains_only_task_block_header_before_summary(self):
+        header = {
+            "goal_task_id": "GOAL-001",
+            "handoff_task_id": "docs/GOAL_MIRROR_HANDOFF.md",
+            "cosv_id": "10100000100000",
+            "session_prompt_count": 6,
+            "goal_prompt_count": "6/20",
+            "status": "ACTIVE",
+        }
+        notification = {
+            "notification_repository": "StegVerse-Labs/.github",
+            "notification_assignee": "StegVerse",
+            "summary_included": False,
+            "manual_work_included": False,
+            "credential_authority": "TV/TVC",
+            "email_delivery": "GITHUB_NOTIFICATION_EMAIL_SUBJECT_TO_ACCOUNT_NOTIFICATION_SETTINGS",
+        }
+        request = module.build_completion_notification_request(
+            "GOAL-001",
+            header,
+            notification,
+            {"task_id": "GOAL-001", "coordination_state": "COMPLETED", "completion": {"claimed": True, "validated": True}},
+        )
+        self.assertEqual(request["body_line_count"], 6)
+        self.assertEqual(request["body"].splitlines(), [
+            "Goal Task ID: GOAL-001;",
+            "Handoff Task ID: docs/GOAL_MIRROR_HANDOFF.md;",
+            "COSV ID: 10100000100000;",
+            "Session Prompt Count: 6;",
+            "Goal Prompt Count: 6/20.",
+            "STATUS: INACTIVE.",
+        ])
+        self.assertNotIn("Summary of work", request["body"])
+        self.assertNotIn("Manual Work", request["body"])
+        self.assertTrue(request["stop_autonomous_progression"])
+        self.assertFalse(request["select_successor_before_notification"])
+        self.assertEqual(request["credential_authority"], "TV/TVC")
+        self.assertEqual(request["github_actions_runtime_authority"], "NONE")
 
     def test_selection_does_not_mint_claim_or_transition_authority(self):
         text = SCRIPT.read_text(encoding="utf-8")
