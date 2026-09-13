@@ -1,11 +1,22 @@
 from __future__ import annotations
 
+import importlib.util
 import json
+import tempfile
 import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 TASK_ID = "SITE-PUBLICATION-INTR-CONSUMER-001"
+
+
+def load_worker():
+    path = ROOT / "workers/site_publication_intr_consumer_worker.py"
+    spec = importlib.util.spec_from_file_location("site_publication_worker_test", path)
+    module = importlib.util.module_from_spec(spec)
+    assert spec and spec.loader
+    spec.loader.exec_module(module)
+    return module
 
 
 class SitePublicationWorkerRegistrationTests(unittest.TestCase):
@@ -41,6 +52,63 @@ class SitePublicationWorkerRegistrationTests(unittest.TestCase):
         self.assertIn("return 3", source)
         self.assertIn("SITE_PUBLICATION_EVENT_CANDIDATE_VALIDATED", source)
         self.assertNotIn("final_publication_transition_admitted\": True", source)
+
+    def test_worker_resolves_exact_materialization_from_local_admitted_ingress(self) -> None:
+        mod = load_worker()
+        materialization_id = "INTR-MAT-0e1ba4786b0ea8a00e1f166e"
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td).resolve()
+            queue = root / "intr-materialization" / f"{materialization_id}.json"
+            queue.parent.mkdir(parents=True)
+            queue.write_text(json.dumps({"materialization_id": materialization_id}) + "\n")
+            latest = root / mod.INGRESS_LATEST
+            latest.parent.mkdir(parents=True)
+            latest.write_text(json.dumps({
+                "schema": mod.INGRESS_SCHEMA,
+                "state": mod.INGRESS_STATE,
+                "materialization_id": materialization_id,
+                "queue_ref": str(queue),
+                "exact_request_validated": True,
+                "write_once_persisted": True,
+                "request_grants_execution_authority": False,
+                "claim_or_fence_minted": False,
+                "authority_effect": "NONE_INGRESS_CANDIDATE_ONLY",
+            }) + "\n")
+            resolved, source = mod.resolve_admitted_materialization(root)
+            self.assertEqual(resolved, materialization_id)
+            self.assertEqual(source, "LOCAL_ADMITTED_INGRESS_RECEIPT")
+            resolved, source = mod.resolve_admitted_materialization(root, materialization_id)
+            self.assertEqual(resolved, materialization_id)
+            self.assertEqual(source, "LOCAL_ADMITTED_INGRESS_RECEIPT")
+
+    def test_worker_fails_closed_on_explicit_binding_conflict_or_missing_queue(self) -> None:
+        mod = load_worker()
+        materialization_id = "INTR-MAT-0e1ba4786b0ea8a00e1f166e"
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td).resolve()
+            queue = root / "intr-materialization" / f"{materialization_id}.json"
+            queue.parent.mkdir(parents=True)
+            queue.write_text(json.dumps({"materialization_id": materialization_id}) + "\n")
+            latest = root / mod.INGRESS_LATEST
+            latest.parent.mkdir(parents=True)
+            latest.write_text(json.dumps({
+                "schema": mod.INGRESS_SCHEMA,
+                "state": mod.INGRESS_STATE,
+                "materialization_id": materialization_id,
+                "queue_ref": str(queue),
+                "exact_request_validated": True,
+                "write_once_persisted": True,
+                "request_grants_execution_authority": False,
+                "claim_or_fence_minted": False,
+                "authority_effect": "NONE_INGRESS_CANDIDATE_ONLY",
+            }) + "\n")
+            resolved, source = mod.resolve_admitted_materialization(root, "INTR-MAT-aaaaaaaaaaaaaaaaaaaaaaaa")
+            self.assertIsNone(resolved)
+            self.assertEqual(source, "EXPLICIT_MATERIALIZATION_BINDING_CONFLICT")
+            queue.unlink()
+            resolved, source = mod.resolve_admitted_materialization(root)
+            self.assertIsNone(resolved)
+            self.assertEqual(source, "ADMITTED_INGRESS_QUEUE_BINDING_INVALID")
 
 
 if __name__ == "__main__":
