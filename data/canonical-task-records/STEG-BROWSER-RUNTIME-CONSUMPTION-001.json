@@ -25,7 +25,7 @@
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
-    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/TVC"],
+    "repositories": ["StegVerse-Labs/TVC"],
     "components": [
       "stegbrowser-canonical-work-runtime-consumption",
       "stegbrowser-tvc-source-promotion-runtime",
@@ -84,10 +84,7 @@
   "blockers": [],
   "systemic_incident_ref": null,
   "adjacent_task_refs": [
-    "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
-    "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001",
-    "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
-    "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+    "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001"
   ],
   "expected_evidence_predicates": [
     "TASK_REGISTRY_CHECKIN_CONTINUE_OBSERVED",
