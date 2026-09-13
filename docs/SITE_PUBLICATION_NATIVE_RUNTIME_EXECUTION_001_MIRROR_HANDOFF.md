@@ -17,11 +17,13 @@ Own only the genuinely remaining authentic native-runtime and publication-eviden
 
 - `.github` PR #1398 merged at `7444aefbdd2c644c46ae105192af4a524ef02172` after exact-head Heartbeat `34615815337`, Deterministic Repository Suite `34615815364`, and Organization Control `34615815476` passed.
 - Canonical Site source boundary: `StegVerse-Labs/Site@bc1ee7257ebc64f77dab3f0b746bb3a86a279b6c`.
-- Exact admitted materialization: `INTR-MAT-0e1ba4786b0ea8a00e1f166e`.
+- Exact source-lineage materialization: `INTR-MAT-0e1ba4786b0ea8a00e1f166e`.
 - Packet: `INTR-58dec5416bd4358190c11372`.
 - Manifest: `sha256:e6bc47580f25296df61d16dfe5a74f3f49fec0dda018c813696195c960e77f09`.
 - Parent post-merge handoff reconciliation PR #1483 passed exact-head Heartbeat `34635435820`, Organization Control `34635435835`, and Deterministic Repository Suite `34635435815`, then squash-merged at `4ab13a252eed668f1d828c08bd998b00b54e3c43`.
 - Parent `KV-CONNECTION-REVALIDATION-WORKER-001` is retired for prompt-budget continuation; unresolved native-runtime/publication predicates are transferred here.
+
+These source facts do not prove authentic resident ingress, WorkerCoordinator execution, publication, or public equivalence.
 
 ## Reusable source-refresh correction
 
@@ -33,13 +35,28 @@ A consuming Goal Task invokes this reusable task with its already-local `source_
 
 Generic reusable-task scheduling is owned by `RT-REUSABLE-TASK-SCHEDULER-001`, with contract `data/reusable-task-scheduler-contract.json` and runner `scripts/run_reusable_task_scheduler.py`. Healer is a consumer/carrier of that capability, not its canonical generic owner.
 
-The neutral scheduler now owns due selection, hourly slot identity, bounded retry/backoff, success idempotency, reusable-child invocation, and preservation of authentic child boundary receipts. `.github` PR #1762 exact head `d385fe83087f0096ff48a4690cac541dd93098dd` passed Organization Control `34780694559`, Deterministic Repository Suite `34780694565`, and Heartbeat `34780694531`, then merged at `5b66fe7d6281c92445b9a67881eda666e865c13d`.
+The neutral scheduler owns due selection, hourly slot identity, bounded retry/backoff, success idempotency, reusable-child invocation, and preservation of authentic child boundary receipts. `.github` PR #1762 exact head `d385fe83087f0096ff48a4690cac541dd93098dd` passed Organization Control `34780694559`, Deterministic Repository Suite `34780694565`, and Heartbeat `34780694531`, then merged at `5b66fe7d6281c92445b9a67881eda666e865c13d`.
 
 Healer was migrated from generic scheduler owner to consumer/carrier in StegVerse-Healer PR #68. Exact head `d095c27cb9ce42da21b0c77eece515e243ef180a` passed Test Readiness `34780841650` and merged at `0084ac3af5db9c29b4c3e74660751b9954317530`.
 
 StegVerse-Healer PR #69 then bound `RT-SOVEREIGN-SOURCE-REFRESH-001` to this Goal Task (`SITE-PUBLICATION-NATIVE-RUNTIME-EXECUTION-001`, COSV `50000000102000`) as a carrier configuration for the neutral scheduler. Exact head `78f26ed6fc3a5e3bfde8f610ad6c36c023183b3e` passed Test Readiness `34780907582` and merged at `1a2bac1a61f97819182a701d91fc91f61f9b0f1e`.
 
 This carrier binding is orchestration support only. Healer is not a runtime authority or scheduling authority. The neutral scheduler remains non-authorizing, and source-refresh scheduling does not prove source refresh or any downstream runtime state.
+
+## Admitted materialization binding
+
+Authentic Universal InTr ingress persists both:
+
+```text
+receipts/sovereign-network/site-publication-intr-ingress.latest.json
+intr-materialization/<materialization_id>.json
+```
+
+`SITE-PUBLICATION-INTR-CONSUMER-001` resolves the opaque materialization id from that local write-once admitted-ingress evidence. The receipt must be `INGRESS_ADMITTED_CANDIDATE_ONLY`, exact-request validated, write-once persisted, non-authorizing, and bound to the exact queued request under the same runtime root.
+
+`STEGVERSE_SITE_PUBLICATION_MATERIALIZATION_ID` is only an optional correlation input. When present, it must equal the locally admitted materialization id; a mismatch fails closed. The environment value cannot substitute for authentic ingress evidence and cannot grant execution, claim/fence, or transition authority.
+
+This supersedes the former manual environment-binding step as the candidate identity source of truth.
 
 ## Authority boundaries
 
@@ -52,19 +69,23 @@ This carrier binding is orchestration support only. Healer is not a runtime auth
 - User verification authority: KV/SKAP Vault only.
 - Hosted-provider runtime: prohibited/not required.
 - Second user-operated device: prohibited/not required.
+- No device-verification policy/process or device-identity user-verification step exists.
 - Do not synthesize, upgrade, or infer runtime/publication evidence from source, scheduling, carrier configuration, or CI state.
 
 ## Required evidence chain
 
 1. Consume an authentic neutral-scheduler invocation of `RT-SOVEREIGN-SOURCE-REFRESH-001` for this Goal Task, including the reusable child receipt.
-2. Require an authentic source-refresh completion receipt before dependent runtime work advances; a neutral-scheduler/child boundary receipt preserves the unresolved state without device discovery or alternate scheduler creation.
-3. Target `SITE-PUBLICATION-INTR-CONSUMER-001` through the existing WorkerCoordinator so checkout/admission mints a fresh independent claim and fencing generation.
-4. Bind only `STEGVERSE_SITE_PUBLICATION_MATERIALIZATION_ID=INTR-MAT-0e1ba4786b0ea8a00e1f166e` for that fenced invocation.
-5. Retain the authentic candidate-validation receipt and fencing generation.
+2. Require an authentic source-refresh completion receipt before dependent runtime work advances; a neutral-scheduler/child boundary receipt preserves unresolved state without device discovery or alternate scheduler creation.
+3. Require authentic Universal InTr Site-publication ingress to persist the exact candidate receipt and write-once queue entry under the resident runtime root.
+4. Allow the existing WorkerCoordinator to discover `SITE-PUBLICATION-INTR-CONSUMER-001`; checkout/admission must mint a fresh independent claim and fencing generation.
+5. The worker resolves the exact materialization from local admitted-ingress evidence and retains candidate-validation evidence for that same fencing generation.
 6. Execute one authentic bounded `EVENT_EPHEMERAL` publication lease through the canonical StegOS/InTr runtime owner.
 7. Independently observe `/intr/profile`, exact HTTP byte/path hashes, candidate evidence export, and lease closure.
-8. Separately admit the final publication transition.
-9. Only after the preceding predicates pass, prove canonical-domain DNS/TLS recovery and public content equivalence.
+8. Separately admit the final publication transition through Interlock/InTr.
+9. Retain publication evidence through Master Records custody/reconstruction.
+10. Only after the preceding predicates pass, prove canonical-domain DNS/TLS recovery and public-content equivalence when applicable.
+
+No preceding receipt grants the authority required by a later step.
 
 ## Predicates currently false
 
@@ -82,8 +103,8 @@ DNS/TLS recovery proven = false
 
 ## Activation
 
-Activation condition is satisfied by merged, exact-head-green parent reconciliation PR #1483. This successor is ACTIVE. Reusable-task registration, neutral scheduling, Healer carrier execution, or source binding does not mint runtime authority, claim/fence state, credentials, publication state, or proof.
+Activation condition is satisfied by merged, exact-head-green parent reconciliation PR #1483. This successor is ACTIVE. Reusable-task registration, neutral scheduling, Healer carrier execution, source binding, or admitted-ingress candidate evidence does not mint runtime authority, claim/fence state, credentials, publication state, or proof.
 
 ## Next action
 
-Do not perform connected-device discovery as a prerequisite. Observe/consume the next authentic neutral-scheduler + `RT-SOVEREIGN-SOURCE-REFRESH-001` receipt produced by the existing resident carrier path. If the child source-refresh receipt satisfies the reusable source-refresh completion predicates, advance directly to fresh WorkerCoordinator claim/fence for `SITE-PUBLICATION-INTR-CONSUMER-001`. If the child records a real execution/resource boundary, retain that exact boundary and continue independent admissible work without creating another scheduler, refresher, hosted fallback, or second-device path.
+Do not perform connected-device discovery as a prerequisite. Validate and merge the admitted-ingress binding repair, then consume the next authentic neutral-scheduler + `RT-SOVEREIGN-SOURCE-REFRESH-001` receipt from the existing carrier path. After authentic source refresh and authentic Site-publication ingress are present, continue directly through the already-registered WorkerCoordinator child. Retain any real execution/resource boundary exactly; do not create another scheduler, refresher, hosted fallback, manual materialization binding, or second-device path.
