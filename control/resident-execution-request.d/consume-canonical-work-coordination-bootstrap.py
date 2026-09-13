@@ -7,6 +7,11 @@ older than the request, install a task-specific fallback shard from the same
 already-local canonical source. This prevents stale resident source projection
 from turning a newly registered task into a permanent NO_REQUEST / task-not-found
 condition without overwriting resident registry state.
+
+After the explicit request set is visited, this same existing resident consumer
+returns to the canonical Task Registry and attempts one bounded registry-first
+Canonical Work cycle. No second dispatcher, scheduler, WorkerCoordinator, listener,
+heartbeat, credential path, or runtime authority is created.
 """
 from __future__ import annotations
 
@@ -22,6 +27,9 @@ from typing import Any, Mapping
 
 TARGET_MODE = "CANONICAL_WORK_EVENT_BOOTSTRAP"
 TARGET_ENTRYPOINT = Path("scripts/install_and_run_canonical_work_event_bootstrap.py")
+TASK_REGISTRY_CYCLE_ENTRYPOINT = Path("scripts/run_task_registry_canonical_work_cycle.py")
+TASK_RECORDS_REL = Path("data/canonical-task-records")
+TASK_REGISTRY_CYCLE_RECEIPT = Path("receipts/sovereign-host/task-registry-canonical-work-cycle.latest.json")
 DEFAULT_SPEC = {
     "request_rel": Path("control/resident-execution-request.d/canonical-work-coordination-bootstrap-001.json"),
     "consumption_rel": Path("receipts/sovereign-host/canonical-work-coordination-bootstrap-request-consumption.latest.json"),
@@ -91,6 +99,10 @@ REQUEST_SPECS = (
 MATERIALIZE = (
     Path("scripts/install_and_run_canonical_work_event_bootstrap.py"),
     Path("scripts/run_canonical_work_event_bootstrap.py"),
+    Path("scripts/run_task_registry_canonical_work_cycle.py"),
+    Path("scripts/evaluate_task_registry_collision_checkin.py"),
+    Path("scripts/task_registry_checkin_event_history.py"),
+    Path("scripts/validate_task_registration_substrate_resolution.py"),
     Path("scripts/install_canonical_work_universal_intr_route.py"),
     Path("scripts/build_canonical_work_intr_request.py"),
     Path("scripts/apply_admitted_canonical_work_projection.py"),
@@ -101,6 +113,8 @@ MATERIALIZE = (
     Path("scripts/consume_admitted_dependency_resolution.py"),
     Path("workers/canonical_work_intr_ingress.py"),
     Path("control/canonical-work-runtime-profile.json"),
+    Path("data/task-registry-global-invariants.json"),
+    Path("data/task-registry-general-checkin-caller-policy.json"),
 )
 PRESERVE_IF_PRESENT = (
     Path("data/canonical-task-registry.json"),
@@ -186,7 +200,7 @@ def clean_env(source: Mapping[str, str] | None = None) -> dict[str, str]:
     return env
 
 
-def parse_json_object(stdout: str) -> dict[str, Any] | None:
+def parse_json_schema(stdout: str, schema: str) -> dict[str, Any] | None:
     decoder = json.JSONDecoder()
     for index, char in enumerate(stdout):
         if char != "{":
@@ -195,9 +209,13 @@ def parse_json_object(stdout: str) -> dict[str, Any] | None:
             value, _ = decoder.raw_decode(stdout[index:])
         except Exception:
             continue
-        if isinstance(value, dict) and value.get("schema") == "stegverse.canonical-work-event-bootstrap-receipt/v1":
+        if isinstance(value, dict) and value.get("schema") == schema:
             return value
     return None
+
+
+def parse_json_object(stdout: str) -> dict[str, Any] | None:
+    return parse_json_schema(stdout, "stegverse.canonical-work-event-bootstrap-receipt/v1")
 
 
 def atomic_json(path: Path, value: Mapping[str, Any]) -> None:
@@ -232,6 +250,29 @@ def materialize(source: Path, runtime: Path) -> list[dict[str, Any]]:
             copied = copy_exact(src, dst)
             copied["path"] = rel.as_posix()
             rows.append(copied)
+    return rows
+
+
+def materialize_registry_task_shards(source: Path, runtime: Path) -> list[dict[str, Any]]:
+    source_dir = source / TASK_RECORDS_REL
+    runtime_dir = runtime / TASK_RECORDS_REL
+    require(source_dir.is_dir(), "canonical source task-record directory missing")
+    runtime_dir.mkdir(parents=True, exist_ok=True)
+    rows: list[dict[str, Any]] = []
+    for src in sorted(source_dir.glob("*.json")):
+        dst = runtime_dir / src.name
+        if dst.is_file():
+            rows.append({
+                "path": (TASK_RECORDS_REL / src.name).as_posix(),
+                "sha256": sha256(dst),
+                "exact_copy": False,
+                "preserved_existing_runtime_projection": True,
+                "source_sha256": sha256(src),
+            })
+            continue
+        copied = copy_exact(src, dst)
+        copied["path"] = (TASK_RECORDS_REL / src.name).as_posix()
+        rows.append(copied)
     return rows
 
 
@@ -342,6 +383,49 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     return consume_for_spec(source_root, runtime_root, DEFAULT_SPEC, runner=runner, env=env)
 
 
+def run_registry_cycle(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
+    source = source_root.expanduser().resolve()
+    runtime = runtime_root.expanduser().resolve()
+    materialized = materialize(source, runtime)
+    task_shards = materialize_registry_task_shards(source, runtime)
+    entrypoint = runtime / TASK_REGISTRY_CYCLE_ENTRYPOINT
+    safe_env = clean_env(env)
+    cycle_runtime = runtime / "runtime/task-registry-canonical-work-cycle"
+    command = [sys.executable, str(entrypoint), "--runtime-root", str(cycle_runtime)]
+    for spec in REQUEST_SPECS:
+        command.extend(["--exclude-task-id", spec["task_id"]])
+    completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=safe_env, timeout=1200)
+    result = parse_json_schema(completed.stdout, "stegverse.task-registry-canonical-work-cycle/v1")
+    accepted_states = {"DELEGATED_TO_EXISTING_CANONICAL_WORK_PATH", "NO_ADMISSIBLE_NONCOLLIDING_TASK"}
+    completed_ok = bool(completed.returncode == 0 and isinstance(result, dict) and result.get("state") in accepted_states)
+    receipt = {
+        "schema": "stegverse.resident-task-registry-canonical-work-cycle-consumption/v1",
+        "state": "COMPLETED" if completed_ok else "ATTEMPT_RECORDED",
+        "start_point": "CANONICAL_TASK_REGISTRY",
+        "entrypoint": str(TASK_REGISTRY_CYCLE_ENTRYPOINT),
+        "command": command,
+        "returncode": completed.returncode,
+        "result": result,
+        "source_materialization": materialized,
+        "task_registry_shard_projection": task_shards,
+        "task_registry_shard_projection_count": len(task_shards),
+        "existing_runtime_task_shards_preserved": all(row.get("preserved_existing_runtime_projection") is True or row.get("exact_copy") is True for row in task_shards),
+        "explicit_request_task_ids_excluded": sorted(spec["task_id"] for spec in REQUEST_SPECS),
+        "second_dispatcher_created": False,
+        "second_scheduler_created": False,
+        "claim_or_fence_minted": False,
+        "network_source_fetch_performed": False,
+        "credential_material_present": False,
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": "NONE",
+        "heartbeat_grants_execution_authority": False,
+        "second_machine_required": False,
+        "authority_effect": "NONE_REGISTRY_SELECTION_AND_DELEGATION_EVIDENCE_ONLY",
+    }
+    atomic_json(runtime / TASK_REGISTRY_CYCLE_RECEIPT, receipt)
+    return receipt
+
+
 def consume_all(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
     outcomes: list[dict[str, Any]] = []
     for spec in REQUEST_SPECS:
@@ -349,13 +433,27 @@ def consume_all(source_root: Path, runtime_root: Path, *, runner=subprocess.run,
             outcomes.append(consume_for_spec(source_root, runtime_root, spec, runner=runner, env=env))
         except Exception as exc:
             outcomes.append({"schema": "stegverse.canonical-work-bootstrap-request-consumption/v1", "state": "REQUEST_CONSUMPTION_EXCEPTION", "task_id": spec["task_id"], "error_type": type(exc).__name__, "error": str(exc), "authority_effect": "NONE_FAIL_CLOSED"})
+    try:
+        registry_cycle = run_registry_cycle(source_root, runtime_root, runner=runner, env=env)
+    except Exception as exc:
+        registry_cycle = {
+            "schema": "stegverse.resident-task-registry-canonical-work-cycle-consumption/v1",
+            "state": "REGISTRY_CYCLE_EXCEPTION",
+            "error_type": type(exc).__name__,
+            "error": str(exc),
+            "authority_effect": "NONE_FAIL_CLOSED",
+        }
     acceptable = {"ALREADY_CONSUMED", "COMPLETED", "ATTEMPT_RECORDED"}
     all_acceptable = all(row.get("state") in acceptable for row in outcomes)
+    registry_acceptable = registry_cycle.get("state") in {"COMPLETED", "ATTEMPT_RECORDED"}
     return {
         "schema": "stegverse.canonical-work-bootstrap-request-set-consumption/v1",
-        "state": "COMPLETED" if all_acceptable else "ATTEMPT_RECORDED",
+        "state": "COMPLETED" if all_acceptable and registry_cycle.get("state") == "COMPLETED" else "ATTEMPT_RECORDED",
         "request_count": len(REQUEST_SPECS),
         "outcomes": outcomes,
+        "task_registry_cycle": registry_cycle,
+        "task_registry_cycle_attempted": True,
+        "task_registry_cycle_result_acceptable": registry_acceptable,
         "later_request_attempts_blocked_by_earlier_failure": False,
         "network_source_fetch_performed": False,
         "credential_authority": "TV/TVC",
