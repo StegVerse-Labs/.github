@@ -121,6 +121,22 @@ existing admitted StegVerse Independent Task Control surface
 -> Runtime Profile Map lifecycle continues only after authentic INGRESS_ADMITTED
 ```
 
+## Runtime-adoption predicate contract
+
+`PRED-ENTITY-AUTONOMOUS-PROGRESSION-RUNTIME-ADOPTED` remains unsatisfied until one current Goal chain authentically demonstrates all of the following together:
+
+```text
+machine_owned_transition_selected=true
+current_governance_decision_observed=true
+human_approval_checkpoint_inserted=false
+execution_or_denial_receipt_retained=true
+next_state_reconstructed=true
+returned_task_cosv_handoff_state_reingested=true
+human_reentry_for_intermediate_ids=false
+```
+
+These are required completion predicates, not claims about the Goal-prompt-20 attempt.
+
 ## Current completion state
 
 `PRED-ENTITY-AUTONOMOUS-PROGRESSION-RUNTIME-ADOPTED` remains unsatisfied. No actual `INGRESS_ADMITTED`, retained DENY, fresh parent G25+ execution, or Runtime Profile Map lifecycle execution occurred in this Goal-prompt-20 attempt.
