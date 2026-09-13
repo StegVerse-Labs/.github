@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 POLICY = ROOT / "data" / "task-registry-ai-ingress-policy.json"
 CANONICAL_CHECKIN = ROOT / "scripts" / "evaluate_task_registry_collision_checkin.py"
 COMPONENT_ID = "RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010"
+CALLER_SURFACE = "AI_SESSION_GATE"
 
 
 def emit(task_id: str, disposition: str, action: str, actor_kind: str | None, reason: str) -> None:
@@ -23,6 +24,7 @@ def emit(task_id: str, disposition: str, action: str, actor_kind: str | None, re
         "reason": reason,
         "authority_effect": "NONE",
         "source_policy": "data/task-registry-ai-ingress-policy.json",
+        "caller_surface": CALLER_SURFACE,
         "runtime_identity_attestation_proven": False,
     }, sort_keys=True))
 
@@ -56,6 +58,7 @@ def main() -> None:
         return
 
     request = dict(request)
+    request["caller_surface"] = CALLER_SURFACE
     request["checkin_context"] = dict(context)
     request["checkin_context"]["actor_kind"] = actor_kind
     request["checkin_context"]["reusable_component_id"] = COMPONENT_ID
@@ -71,10 +74,14 @@ def main() -> None:
         return
 
     payload = json.loads(result.stdout)
+    if payload.get("caller_surface") != CALLER_SURFACE:
+        emit(task_id, "STOP_CALLER_SURFACE_MISMATCH", "END_SESSION", actor_kind, "canonical_checkin_did_not_preserve_ai_session_gate_surface")
+        return
     payload["ai_session_ingress"] = {
         "actor_kind": actor_kind,
         "reusable_component_id": COMPONENT_ID,
         "source_policy": "data/task-registry-ai-ingress-policy.json",
+        "caller_surface": CALLER_SURFACE,
         "chatgpt_is_only_permitted_ai_kind": True,
         "runtime_identity_attestation_proven": False,
         "authority_effect": "NONE"
