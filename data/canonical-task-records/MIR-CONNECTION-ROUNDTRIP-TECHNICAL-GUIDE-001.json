@@ -18,7 +18,8 @@
   "canonical_architecture_refs": [
     "docs/CANONICAL_SOUTHBOUND_COMMUNICATION_LIFECYCLE.md",
     "data/canonical-southbound-communication-lifecycle.json",
-    "StegVerse-Labs/Site/docs/MIR_CONNECTION_ROUNDTRIP_TECHNICAL_GUIDE_MIRROR_HANDOFF.md"
+    "StegVerse-Labs/Site/docs/MIR_CONNECTION_ROUNDTRIP_TECHNICAL_GUIDE_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK@d3140a04e7405fe117c9808734d23a1027e68ead"
   ],
   "current_truth": {
     "independent_goal_established": true,
@@ -27,6 +28,11 @@
     "designated_intr_only_communication_required": true,
     "alternate_communication_medium_allowed": false,
     "email_document_attempt_qualifies_as_runtime_evidence": false,
+    "canonical_southbound_task_registry_contract_merged": true,
+    "site_mir_southbound_guide_merged": true,
+    "sdk_complete_manifest_source_contract_merged": true,
+    "sdk_completion_block_supports_publisher_and_egress": true,
+    "sdk_legacy_v1_without_completion_not_classified_complete_communication": true,
     "qualifying_outbound_intr_materialization_observed": false,
     "qualifying_mir_ingress_receipt_observed": false,
     "authentic_mir_data_evaluation_observed": false,
@@ -39,7 +45,27 @@
     "llm_adapter_is_final_stegverse_side_transition_for_framework_paths": true,
     "far_side_interlock_intr_transition_is_terminal_communication_transition": true,
     "publisher_to_sdk_to_initiator_runtime_binding_observed": false,
+    "final_stegverse_side_egress_transition_observed": false,
+    "far_side_interlock_intr_transition_observed": false,
     "documentation_completion_blocked_on_authentic_roundtrip": true
+  },
+  "source_validation_evidence": {
+    "task_registry_southbound_merge": "c20bd3002b3d46549d56350bf3a3f4c280097384",
+    "site_mir_guide_merge": "efd9eb244a6a56baa2d6c3c93effa11bc4cd773b",
+    "sdk_complete_manifest_merge": "d3140a04e7405fe117c9808734d23a1027e68ead",
+    "sdk_validated_head": "9e5999bd9a80420e582299994733c46a51094ca5",
+    "sdk_exact_head_workflows": [
+      "Evaluator Contract Console Validation #121 SUCCESS",
+      "External Framework Public Submission Validation #42 SUCCESS",
+      "External Collaboration Authentic Runtime Proof Contract Validation #18 SUCCESS",
+      "Manifest Builder Source Validation #134 SUCCESS",
+      "WorkSpace Active Probe Validation #24 SUCCESS",
+      "Evaluator Manifest Source Validation #163 SUCCESS",
+      "Shared Docs Provider Freeze Integration Validation #6 SUCCESS",
+      "SDK Package Artifact Validation #184 SUCCESS",
+      "Shared Docs Multiparty Freeze Validation #6 SUCCESS"
+    ],
+    "source_merge_does_not_prove_runtime": true
   },
   "authority_invariants": {
     "communication_transport": "DESIGNATED_INTERLOCK_INTR_ONLY",
@@ -74,6 +100,7 @@
     "SDK_RETURN_ASSEMBLY_BINDS_PUBLISHER_OUTPUT_TO_ORIGINAL_REQUEST_AND_INITIATOR",
     "APPLICABLE_FINAL_STEGVERSE_SIDE_EGRESS_TRANSITION_OBSERVED",
     "FRAMEWORK_PATH_LLM_ADAPTER_TRANSITION_PRECEDES_INTERLOCK_INTR_EGRESS",
+    "AUTHENTIC_INTERLOCK_INTR_EGRESS_OBSERVED",
     "FAR_SIDE_INTERLOCK_INTR_FINAL_TRANSITION_OBSERVED",
     "TV_TVC_CREDENTIAL_BOUNDARY_DOCUMENTED",
     "ROUNDTRIP_CORRELATION_AND_RECONSTRUCTION_OBSERVED_WHEN_REQUESTED",
@@ -83,7 +110,7 @@
     "claimed": false,
     "validated": false,
     "source_implemented": true,
-    "source_validated": false,
+    "source_validated": true,
     "runtime_observed": false,
     "runtime_observation_required_for_this_documentation_task": true
   },
@@ -98,6 +125,7 @@
     "EXECUTE_MANIFEST_DECLARED_PUBLISHER_STAGE",
     "RETURN_PUBLISHER_PACKAGE_THROUGH_SDK_BOUND_TO_INITIATOR",
     "EXECUTE_APPLICABLE_FINAL_STEGVERSE_SIDE_EGRESS_TRANSITION",
+    "OBSERVE_INTERLOCK_INTR_EGRESS",
     "OBSERVE_FAR_SIDE_INTERLOCK_INTR_FINAL_TRANSITION",
     "RECONCILE_GUIDE_AGAINST_RUNTIME_EVIDENCE",
     "COMPLETE_DOCUMENTATION_AFTER_RUNTIME_PROOF"
