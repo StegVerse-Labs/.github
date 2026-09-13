@@ -11,6 +11,45 @@ OUTPUT_REL = Path("receipts/sovereign-host/kv-bound-ephemeral-browser-projection
 EVALUATOR_REL = Path("scripts/evaluate_indexed_event_reuse.py")
 BUILDER_REL = Path("scripts/build_kv_evidence_reuse_input.py")
 
+DELTA_OWNERS = {
+    "CURRENT_RETAINED_IPHONE_ROUTE_OBSERVED": {
+        "component": "RTC-EVIDENCE-REPLAY-REUSE-011",
+        "canonical_owner": "StegOS retained StegBrowser current-iPhone discovery/readback surfaces",
+        "existing_surface": "loopback discovery + current-iPhone receipt readback",
+        "normal_resident_cycle_can_advance": True,
+        "user_verification_required": False,
+    },
+    "CURRENT_KV_INTR_STATE_APPLICABLE": {
+        "component": "RTC-INTERLOCK-INTR-TRANSPORT-008",
+        "canonical_owner": "Interlock/InTr + existing StegOS/KV resident chain",
+        "resident_consumer": "stegos_kv_intr_chain",
+        "normal_resident_cycle_can_advance": True,
+        "user_verification_required": False,
+    },
+    "TESTFLIGHT_SIGNED_IPA_VERIFIED": {
+        "component": "ephemeral execution materialization / terminal cleanup",
+        "canonical_owner": "StegOS current-iPhone signing executor with TV/TVC provider operations",
+        "existing_surface": "frozen current-iPhone TestFlight bootstrap/signing executor",
+        "normal_resident_cycle_can_advance": False,
+        "user_verification_required": False,
+    },
+    "TVC_NATIVE_BUILD_UPLOAD_OBSERVED": {
+        "component": "RTC-ROUNDTRIP-003 + RTC-STEGVERSE-EGRESS-007",
+        "canonical_owner": "TV/TVC App Store Connect provider/release path",
+        "resident_consumer": "stegbrowser_tvc_source_promotion",
+        "normal_resident_cycle_can_advance": True,
+        "provider_credential_required_when_operation_reaches_provider": True,
+        "user_verification_required": False,
+    },
+    "TESTFLIGHT_INSTALL_LAUNCH_OBSERVED": {
+        "component": "RTC-FARSIDE-FINAL-009",
+        "canonical_owner": "Apple TestFlight far-side state + existing current-iPhone StegOS/StegBrowser observer",
+        "normal_resident_cycle_can_advance": False,
+        "requires_prior_build_upload": True,
+        "user_verification_required": False,
+    },
+}
+
 
 def _load_module(path: Path, name: str):
     spec = importlib.util.spec_from_file_location(name, path)
@@ -19,6 +58,17 @@ def _load_module(path: Path, name: str):
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
+
+def delta_plan(missing):
+    return [
+        {"predicate": predicate, **DELTA_OWNERS.get(predicate, {
+            "canonical_owner": "UNRESOLVED_CANONICAL_OWNER",
+            "normal_resident_cycle_can_advance": False,
+            "user_verification_required": False,
+        })}
+        for predicate in missing or []
+    ]
 
 
 def consume(source_root: Path, runtime_root: Path):
@@ -51,6 +101,8 @@ def consume(source_root: Path, runtime_root: Path):
     result["task_id"] = "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001"
     result["input_source"] = input_source
     result["input_derived_automatically"] = input_source == "AUTOMATIC_CANONICAL_AND_RESIDENT_EVIDENCE"
+    result["missing_delta_plan"] = delta_plan(result.get("missing_delta"))
+    result["normal_resident_cycle_advances_machine_owned_deltas"] = True
     result["credential_authority"] = "TV/TVC"
     result["github_token_runtime_authority"] = "NONE"
     result["request_granted_authority"] = False
