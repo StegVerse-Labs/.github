@@ -1,6 +1,6 @@
 # SDK WorkSpace External-Collaboration Component Model Mirror Handoff
 
-Updated: 2026-09-12
+Updated: 2026-09-13
 Goal Task ID: `SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004`
 Canonical runtime handoff: `docs/SDK_WORKSPACE_EXTCOLLAB_AUTHENTIC_RUNTIME_004_MIRROR_HANDOFF.md`
 COSV: `71000000100110`
@@ -18,14 +18,17 @@ Applying the canonical decomposition policy activates all ten listed signals for
 - Runtime observation -> reuse the existing canonical runtime-presence producer and resident connection surface -> expected evidence: authentic current subject-bound presence.
 - Manifest intake/binding -> reuse `RTC-MANIFEST-001` -> output: task/COSV-bound invocation context.
 - Execution materialization -> reuse `data/reusable-task-ephemeral-construct-contract.json` -> WorkerCoordinator retains claim/fence authority; bounded execution must emit authentic boundary/completion evidence.
-- Governed movement -> reuse `RTC-INTERLOCK-INTR-TRANSPORT-008` -> Interlock/InTr owns transition/admission authority; repeat as required.
-- Governed request/response cycles -> reuse `RTC-ROUNDTRIP-003` -> five declared instances for this Goal Task; each requires its own evidence and does not authorize the next.
+- Governed movement -> reuse `RTC-INTERLOCK-INTR-TRANSPORT-008` -> Interlock/InTr owns transition/admission authority; repeat only when the applicable route requires governed movement.
+- Governed request/response cycles -> reuse `RTC-ROUNDTRIP-003` for the actual request/response stages: resident reseal, resident listener, sovereign callback, and authoritative provider probe. Each requires its own evidence and does not authorize the next.
+- Owner-present provider consent/session -> reuse the existing canonical credential/session path. This is not a generic transport round trip. KV/SKAP Vault remains the sole user-verification authority and TV/TVC retains provider/session authority.
 - Evidence validation -> reuse existing canonical validators -> source/CI/static compatibility never upgrades runtime evidence.
 - Custody/reconstruction -> reuse `RTC-EVIDENCE-CUSTODY-004` -> Master Records owns observed reality, custody, and reconstruction.
 - SDK return assembly -> reuse `RTC-SDK-RETURN-006` when the validated return is required.
 - Publication/distribution -> reuse `RTC-PUBLISHER-005` only after applicable release authority exists.
-- Final local/far-side transition -> reuse `RTC-STEGVERSE-EGRESS-007` and `RTC-FARSIDE-FINAL-009` only when distribution requires them.
+- Final local/far-side transition -> reuse `RTC-STEGVERSE-EGRESS-007`, `RTC-INTERLOCK-INTR-TRANSPORT-008`, and `RTC-FARSIDE-FINAL-009` only when the specific downstream target requires them. The maximal chain is not mandatory for every target.
 - Provider/session handling -> reuse the existing TV/TVC path; KV/SKAP Vault remains the sole user-verification authority.
+
+Applicability reconciliation: `docs/SDK_WORKSPACE_EXTCOLLAB_COMPONENT_APPLICABILITY_RECONCILIATION.md`.
 
 ## Reuse outcome
 
@@ -47,9 +50,16 @@ The canonical Goal Task predicates are unchanged. Current runtime state remains 
 
 PR #1652 exact head `075b1e71d0ebe3591899db03d570da79eed5e916` passed Organization Control `34730323940`, Deterministic Repository Suite `34730323942`, and Heartbeat Worker Project `34730323876`, then merged at `b9f8e5153aa1651f2d7f043fb902eacb7c113ed9`.
 
+## Session reconciliation
+
+- Existing Goal Task and COSV preserved.
+- Existing reusable components and canonical owners reused; no new reusable component instantiated.
+- PR #1578 closed unmerged as obsolete duplicate orchestration because normal ephemeral worker/WorkerCoordinator absence must not be treated as a persistent-runtime/self-heal requirement.
+- Runtime truth remains in the runtime handoff and is not upgraded by source/component reconciliation.
+
 ## Next admissible work
 
-Resolve authentic current resident presence through the existing runtime-observation owner. Only after subject-bound current presence exists should this Goal Task compose the existing bounded execution, Interlock/InTr transport, and governed round-trip components required for the two resident operations. Stop at any real authority/evidence/external/human boundary and preserve exact receipts.
+Resolve authentic current resident presence through the existing runtime-observation owner. Only after subject-bound current presence exists should this Goal Task compose the existing bounded execution, Interlock/InTr transport, and governed-round-trip components required for the two resident operations. Stop at any real authority/evidence/external/human boundary and preserve exact receipts.
 
 ## Human action
 
