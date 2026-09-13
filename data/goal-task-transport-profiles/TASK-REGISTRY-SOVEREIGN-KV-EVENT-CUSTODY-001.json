@@ -4,20 +4,19 @@
   "component_contract": "data/reusable-transport-component-contract.json",
   "component_model": "data/reusable-task-component-model.json",
   "decomposition_policy": "data/reusable-task-component-decomposition-policy.json",
+  "evidence_validation_contract": "data/reusable-evidence-validation-component-contract.json",
   "cosv_binding": "NOT_ESTABLISHED_IN_CANONICAL_TASK_RECORD",
   "transport_requirements": {
     "complete_manifest": true,
     "governed_processing": true,
-    "required_round_trips": [
-      "admitted_provider_write",
-      "exact_event_hash_readback"
-    ],
+    "required_round_trips": ["admitted_provider_write", "exact_event_hash_readback"],
     "evidence_custody_reconstruction": true,
     "publisher_projection": false,
     "sdk_return_assembly": false,
     "stegverse_final_egress_transition": true,
     "interlock_intr_transport": true,
-    "far_side_final_transition": true
+    "far_side_final_transition": true,
+    "current_applicable_verification_selection": true
   },
   "selected_components": [
     "RTC-MANIFEST-001",
@@ -26,19 +25,18 @@
     "RTC-EVIDENCE-CUSTODY-004",
     "RTC-STEGVERSE-EGRESS-007",
     "RTC-INTERLOCK-INTR-TRANSPORT-008",
-    "RTC-FARSIDE-FINAL-009"
+    "RTC-FARSIDE-FINAL-009",
+    "RTC-EVIDENCE-CURRENT-SELECTOR-010"
   ],
   "existing_non_transport_component_owners": {
-    "execution_materialization": "EXISTING_RUNTIME_OWNERS_ONLY; data/reusable-task-ephemeral-construct-contract.json WHEN THEIR DECLARED RUNNER PATH REQUIRES IT",
+    "execution_materialization": "EXISTING_RUNTIME_OWNERS_ONLY",
     "credential_session": "TV/TVC WITH KV/SKAP VAULT AS SOLE USER-VERIFICATION AUTHORITY",
+    "current_verification_selection": "RTC-EVIDENCE-CURRENT-SELECTOR-010",
     "provider_adapter": "StegVerse-Labs/continuity-vault-kit/runtime/task_registry_event_sovereign_kv_binding.py",
     "runtime_intake": "data/task-registry-sovereign-kv-runtime-intake-contract.json",
     "task_specific_projection": "scripts/project_task_registry_event_to_sovereign_kv.py",
-    "evidence_validation": "EXISTING FAIL-CLOSED EXACT EVENT HASH READBACK VALIDATION",
-    "runtime_execution": [
-      "KV-CONNECTION-REVALIDATION-WORKER-001",
-      "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001"
-    ],
+    "evidence_validation": "EXISTING FAIL-CLOSED EXACT EVENT HASH READBACK VALIDATION PLUS RTC-EVIDENCE-CURRENT-SELECTOR-010",
+    "runtime_execution": ["KV-CONNECTION-REVALIDATION-WORKER-001", "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001"],
     "observed_reality_reconstruction": "Master Records"
   },
   "task_specific_completion_predicates": [
@@ -46,19 +44,21 @@
     "AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_WHERE_EXECUTION_OWNER_REQUIRES_IT",
     "AUTHENTIC_INTERLOCK_INTR_ADMISSION_FOR_PROVIDER_WRITE",
     "AUTHENTIC_TV_TVC_AND_SKAP_SESSION_EVIDENCE_REQUIRED_BY_PROVIDER_PATH",
+    "CURRENT_APPLICABLE_KV_SKAP_VERIFICATION_RECORD_SELECTED_WHEN_REQUIRED",
     "AUTHENTIC_PROVIDER_WRITE_EXECUTED_WITH_OBJECT_REF_EQUAL_TO_EVENT_SHA256",
     "EXACT_STORED_EVENT_SHA256_READBACK_EQUALS_CANONICAL_EVENT_SHA256",
     "TASK_REGISTRY_SOVEREIGN_KV_PROJECTION_RECEIPT_ACCEPTED",
-    "MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION_OBSERVED_WHERE REQUIRED_FOR_TERMINAL_COMPLETION"
+    "MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION_OBSERVED_WHERE_REQUIRED_FOR_TERMINAL_COMPLETION"
   ],
   "superseded_bespoke_orchestration": [
     "HANDOFF_LINEAR_STEP_SEQUENCE_AS_PRIMARY_ARCHITECTURE",
     "ANY_NEW_TASK_SPECIFIC_PROVIDER_EXECUTOR",
     "ANY_DUPLICATE_INTERLOCK_INTR_TRANSPORT_IMPLEMENTATION",
     "ANY_DUPLICATE_CREDENTIAL_OR_SESSION_HANDLER",
+    "ANY_TASK_SPECIFIC_CURRENT_VERIFICATION_SELECTOR",
     "ANY_DUPLICATE_CUSTODY_RECONSTRUCTION_PIPELINE"
   ],
-  "composition_rule": "The Goal Task remains the goal owner and consumes only the selected reusable components. The runtime-intake and Task Registry-to-provider bindings are task-specific parameterization/translators, not replacement runtime authorities. Component reuse mints no authority and source or CI evidence cannot satisfy runtime predicates.",
+  "composition_rule": "The Goal Task remains the goal owner and consumes only selected reusable components. RTC-EVIDENCE-CURRENT-SELECTOR-010 selects current already-verified evidence and grants no authority. Source or CI evidence cannot satisfy runtime predicates.",
   "authority_invariants": {
     "task_registry": "COORDINATION_ONLY",
     "claim_fence": "WorkerCoordinator",
