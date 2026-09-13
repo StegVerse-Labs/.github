@@ -8,56 +8,26 @@
   "coordination_state": "ACTIVE",
   "checkout_state": "CLAIMED_INTEGRATION",
   "cosv_task_vector": "10100000100000",
-  "source_refs": [
-    "docs/GADI_RUNTIME_CLOSURE_MIRROR_HANDOFF.md",
-    "docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
-    "data/canonical-task-records/GADI-001.json",
-    "data/canonical-task-records/GADI-RESIDENT-EXECUTION-001.json",
-    "StegVerse-Labs/.github#1603"
-  ],
-  "targets": {
-    "organizations": ["StegVerse-Labs", "StegVerse-002"],
-    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegOS", "StegVerse-Labs/StegBrowser", "StegVerse-Labs/StegCore", "StegVerse-Labs/Continuity", "StegVerse-Labs/TV", "StegVerse-Labs/TVC", "StegVerse-002/micro-node-runtime"],
-    "components": ["gadi-runtime-observation", "same-device-runtime-binding", "intr-defensive-admission", "workercoordinator-claim-fence", "controlled-defensive-execution", "effect-reassessment-termination", "continuity-master-records-reconstruction"]
-  },
+  "source_refs": ["docs/GADI_RUNTIME_CLOSURE_MIRROR_HANDOFF.md","docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md","data/canonical-task-records/GADI-001.json","data/canonical-task-records/GADI-RESIDENT-EXECUTION-001.json","data/reusable-task-component-model.json","data/reusable-task-component-decomposition-policy.json","data/reusable-task-component-evaluations/GADI-RUNTIME-CLOSURE-001.json","data/goal-task-transport-profiles/GADI-RUNTIME-CLOSURE-001.json","data/reusable-task-components/RTC-RESIDENT-RENDEZVOUS-010.json","StegVerse-Labs/.github#1603"],
+  "targets": {"organizations":["StegVerse-Labs","StegVerse-002"],"repositories":["StegVerse-Labs/.github","StegVerse-Labs/StegOS","StegVerse-Labs/StegBrowser","StegVerse-Labs/StegCore","StegVerse-Labs/Continuity","StegVerse-Labs/TV","StegVerse-Labs/TVC","StegVerse-002/micro-node-runtime"],"components":["gadi-runtime-observation","same-device-runtime-binding","intr-defensive-admission","workercoordinator-claim-fence","controlled-defensive-execution","effect-reassessment-termination","continuity-master-records-reconstruction"]},
+  "reusable_component_model": {"model_ref":"data/reusable-task-component-model.json","decomposition_evaluation_ref":"data/reusable-task-component-evaluations/GADI-RUNTIME-CLOSURE-001.json","transport_profile_ref":"data/goal-task-transport-profiles/GADI-RUNTIME-CLOSURE-001.json","selected_components":["RTC-GOVERNED-PROCESSING-002","RTC-RESIDENT-RENDEZVOUS-010","RTC-ROUNDTRIP-003","RTC-EVIDENCE-CUSTODY-004","RTC-STEGVERSE-EGRESS-007","RTC-INTERLOCK-INTR-TRANSPORT-008","RTC-FARSIDE-FINAL-009"],"task_identity_preserved":true,"component_reuse_mints_authority":false},
   "dependencies": [
     {"dependency_id":"DEP-GADI-CURRENT-DEVICE-OBSERVATION","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md","disposition":"REQUIRE_AUTHENTIC_RETAINED_DISCOVERY_AND_CURRENT_IPHONE_RECEIPT_READBACK_FOR_EXACT_NODE"},
     {"dependency_id":"DEP-GADI-RUNTIME-BINDING","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"GADI-RESIDENT-EXECUTION-001","disposition":"REQUIRE_CURRENT_SAME_NODE_PRESENCE_LIVENESS_SUPERVISION_FRESHNESS_AND_BINDING"},
     {"dependency_id":"DEP-GADI-INTR-ADMISSION","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"GADI-001","disposition":"REQUIRE_CURRENT_LOCAL_CANONICAL_INTR_ADMISSION"},
     {"dependency_id":"DEP-GADI-WORKERCOORDINATOR-CLAIM","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"STEGVERSE-CANONICAL-WORK-COORDINATION-001","disposition":"REQUIRE_CURRENT_CLAIM_AND_FENCE"},
-    {"dependency_id":"DEP-GADI-CONTINUITY-MASTER-RECORDS","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"StegVerse-Labs/Continuity","disposition":"REQUIRE_FULL_RECEIPT_CHAIN_CUSTODY_AND_EXACT_RECONSTRUCTION"}
+    {"dependency_id":"DEP-GADI-CONTINUITY-MASTER-RECORDS","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"StegVerse-Labs/Continuity","disposition":"REQUIRE_FULL_RECEIPT_CHAIN_CUSTODY_AND_EXACT_RECONSTRUCTION"},
+    {"dependency_id":"DEP-GADI-RESIDENT-RENDEZVOUS","kind":"REUSABLE_COMPONENT_RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"data/reusable-task-components/RTC-RESIDENT-RENDEZVOUS-010.json","disposition":"USE_ONLY_IF_LOCAL_RESIDENT_DELIVERY_IS_NOT_AUTHENTICALLY_AVAILABLE; REQUIRE_REAL_DELIVERY_AND_ACK_EVIDENCE"}
   ],
   "blockers": [],
-  "adjacent_task_refs": ["GADI-001", "GADI-RESIDENT-EXECUTION-001", "SV-DN1-INTR-RUNTIME-001", "STEGVERSE-CANONICAL-WORK-COORDINATION-001"],
-  "expected_evidence_predicates": [
-    "CURRENT_RETAINED_STEGBROWSER_STEGOS_NODE_DISCOVERY_OBSERVED",
-    "CURRENT_RETAINED_STEGBROWSER_STEGOS_CURRENT_IPHONE_RECEIPT_READBACK_OBSERVED",
-    "CURRENT_GADI_RUNTIME_PRESENCE_SUBJECT_OBSERVED",
-    "CURRENT_GADI_RUNTIME_BINDING_OBSERVED",
-    "AUTHENTIC_INTR_DEFENSIVE_ADMISSION_OBSERVED",
-    "AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
-    "AUTHENTIC_RESIDENT_DEFENSIVE_ACTION_OBSERVED",
-    "EXTERNAL_SAFE_STATE_EFFECT_OBSERVED",
-    "ADAPTIVE_REASSESSMENT_AFTER_ADVERSARY_STRATEGY_CHANGE_OBSERVED",
-    "INTERVENTION_TERMINATION_AFTER_THREAT_END_OBSERVED",
-    "FULL_INTERVENTION_RECEIPT_CHAIN_VALID",
-    "AUTHENTIC_MASTER_RECORDS_RECONCILIATION_OBSERVED",
-    "EXACT_CONFRONTATION_RECONSTRUCTION_VALID",
-    "GADI_RUNTIME_CLOSURE_COMPLETE"
-  ],
-  "runtime_requirements": {
-    "capabilities": ["gadi_runtime_observation", "gadi_resident_defensive_execution", "closed_loop_reassessment", "exact_reconstruction"],
-    "environment": "CURRENT_USER_IPHONE_RETAINED_STEGBROWSER_STEGOS_RESIDENT_WITH_CONTROLLED_EXTERNAL_TEST_SURFACE",
-    "direction": "INTERNAL_AND_PREAUTHORIZED_EXTERNAL_DEFENSIVE",
-    "mutation_required": true,
-    "deployment_required": false,
-    "current_observation_required": true
-  },
+  "adjacent_task_refs": ["GADI-001","GADI-RESIDENT-EXECUTION-001","SV-DN1-INTR-RUNTIME-001","STEGVERSE-CANONICAL-WORK-COORDINATION-001"],
+  "expected_evidence_predicates": ["CURRENT_RETAINED_STEGBROWSER_STEGOS_NODE_DISCOVERY_OBSERVED","CURRENT_RETAINED_STEGBROWSER_STEGOS_CURRENT_IPHONE_RECEIPT_READBACK_OBSERVED","CURRENT_GADI_RUNTIME_PRESENCE_SUBJECT_OBSERVED","CURRENT_GADI_RUNTIME_BINDING_OBSERVED","AUTHENTIC_INTR_DEFENSIVE_ADMISSION_OBSERVED","AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED","AUTHENTIC_RESIDENT_DEFENSIVE_ACTION_OBSERVED","EXTERNAL_SAFE_STATE_EFFECT_OBSERVED","ADAPTIVE_REASSESSMENT_AFTER_ADVERSARY_STRATEGY_CHANGE_OBSERVED","INTERVENTION_TERMINATION_AFTER_THREAT_END_OBSERVED","FULL_INTERVENTION_RECEIPT_CHAIN_VALID","AUTHENTIC_MASTER_RECORDS_RECONCILIATION_OBSERVED","EXACT_CONFRONTATION_RECONSTRUCTION_VALID","GADI_RUNTIME_CLOSURE_COMPLETE"],
+  "runtime_requirements": {"capabilities":["gadi_runtime_observation","gadi_resident_defensive_execution","closed_loop_reassessment","exact_reconstruction"],"environment":"CURRENT_USER_IPHONE_RETAINED_STEGBROWSER_STEGOS_RESIDENT_WITH_CONTROLLED_EXTERNAL_TEST_SURFACE","direction":"INTERNAL_AND_PREAUTHORIZED_EXTERNAL_DEFENSIVE","mutation_required":true,"deployment_required":false,"current_observation_required":true},
   "runtime_resolution": null,
   "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
   "human_action_ref": null,
   "completion": {"claimed":false,"validated":false,"activation_proof_complete":false},
   "allowed_next_transitions": ["INGRESS_ADMITTED"],
-  "handoff_projection_refs": ["docs/GADI_RUNTIME_CLOSURE_MIRROR_HANDOFF.md", "docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"],
-  "authority_model": {"task_registry_mints_execution_authority":false,"source_state_proves_execution":false,"worker_claim_authority":"WORKERCOORDINATOR","interlock_intr_required_for_governed_ingress_egress":true,"credential_authority":"TV_TVC","request_grants_execution_authority":false}
+  "handoff_projection_refs": ["docs/GADI_RUNTIME_CLOSURE_MIRROR_HANDOFF.md","docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md","docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md"],
+  "authority_model": {"task_registry_mints_execution_authority":false,"source_state_proves_execution":false,"worker_claim_authority":"WORKERCOORDINATOR","interlock_intr_required_for_governed_ingress_egress":true,"credential_authority":"TV_TVC","user_verification_authority":"KV_SKAP_VAULT","stegos_device_role":"INTERCHANGEABLE_TRANSPORT_NODE","request_grants_execution_authority":false}
 }
