@@ -19,6 +19,7 @@ DEFAULT_PATHS = (
     "control/resident-execution-request.d/stegos-sovereign-relay-return-path-001.json",
     "control/resident-execution-request.d/healer-sovereign-scheduler-001.json",
     "scripts/build_control_plane_source_package.py",
+    "scripts/build_control_plane_source_package_reusable.py",
     "scripts/refresh_sovereign_worker_runtime_source.py",
     "scripts/install_sovereign_worker_source_refresh_service.py",
     "scripts/dispatch_resident_execution_requests.py",
@@ -27,6 +28,7 @@ DEFAULT_PATHS = (
     "scripts/consume_healer_sovereign_scheduler_request.py",
     "source-bundles/reusable-task-registry.d/RT-SOVEREIGN-SOURCE-REFRESH-001.json",
     "source-bundles/reusable-task-registry.d/RT-REUSABLE-TASK-SCHEDULER-001.json",
+    "source-bundles/reusable-task-registry.d/RT-CONTROL-PLANE-SOURCE-PACKAGE-001.json",
 )
 
 
