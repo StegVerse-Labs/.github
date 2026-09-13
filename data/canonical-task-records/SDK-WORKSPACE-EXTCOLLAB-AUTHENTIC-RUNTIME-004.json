@@ -4,7 +4,7 @@
   "correlation_id": "SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004",
   "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
   "parent_task_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
-  "goal": "Complete the authentic sovereign-resident external-collaboration runtime proof chain from resident reseal/listener consumption through target custody, sovereign callback reachability, owner-present consent, provider probe, SDK predicate re-evaluation, MIR reporting, Master Records reconstruction, one-current-device proof, and downstream/public distribution evidence without creating a hosted fallback, duplicate authority path, device-local user verifier, or node-bound user identity authority.",
+  "goal": "Complete the authentic sovereign-resident external-collaboration runtime proof chain from established-Node reseal/listener consumption through target custody, sovereign callback reachability, owner-present consent, provider probe, SDK predicate re-evaluation, MIR reporting, Master Records reconstruction, established-Node end-to-end proof, and downstream/public distribution evidence without creating a hosted fallback, duplicate authority path, physical-device identity gate, device-local user verifier, or node-bound user identity authority.",
   "coordination_state": "ACTIVE",
   "checkout_state": "UNCLAIMED",
   "cosv_task_vector": "71000000100110",
@@ -21,7 +21,7 @@
   "targets": {
     "organizations": ["StegVerse-Labs", "StegVerse-org"],
     "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/TVC", "StegVerse-org/LLM-adapter", "StegVerse-org/StegVerse-SDK", "StegVerse-Labs/Site", "StegVerse-Labs/admissibility-wiki"],
-    "components": ["resident-reseal-consumption", "resident-consent-listener-consumption", "external-collaboration-client-secret-custody", "sovereign-service-gateway", "owner-present-google-consent", "external-provider-file-probe", "sdk-active-probe", "mir-reporting", "master-records-reconstruction", "one-current-device-proof", "downstream-propagation", "public-distribution"]
+    "components": ["resident-reseal-consumption", "resident-consent-listener-consumption", "external-collaboration-client-secret-custody", "sovereign-service-gateway", "owner-present-google-consent", "external-provider-file-probe", "sdk-active-probe", "mir-reporting", "master-records-reconstruction", "established-node-end-to-end-proof", "downstream-propagation", "public-distribution"]
   },
   "component_model_projection": {
     "model": "data/reusable-task-component-model.json",
@@ -32,7 +32,8 @@
     "goal_identity_preserved": true,
     "cosv_identity_preserved": true,
     "componentization_mints_authority": false,
-    "runtime_predicates_changed": false,
+    "runtime_predicates_changed": true,
+    "runtime_predicate_change_reason": "ONE_CURRENT_DEVICE_END_TO_END_PROVEN superseded by ESTABLISHED_NODE_END_TO_END_PROVEN because global invariants make eligible StegOS devices interchangeable and prohibit physical-device identity gates.",
     "runtime_handoff_remains_runtime_truth": true
   },
   "existing_evidence_refs": [
@@ -78,14 +79,17 @@
     "StegVerse-Labs/.github:commit/0eeff82400ac697dd53814fa0e960459ae79cf21",
     "StegVerse-Labs/.github:pull/1713",
     "StegVerse-Labs/.github:commit/4496e00c90b5e18ab7ae53f0e3d4508d95ec6f46",
+    "StegVerse-Labs/.github:pull/1726",
+    "StegVerse-Labs/.github:commit/27aa700a2c64eaee62a2ec1a4780f2ca1575e7cc",
+    "StegVerse-Labs/.github:data/task-registry-global-invariants.json",
     "StegVerse-Labs/.github:README.md",
     "StegVerse-Labs/.github:docs/SDK_WORKSPACE_EXTCOLLAB_COMPONENT_MODEL_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github:docs/REUSABLE_TASK_EPHEMERAL_CONSTRUCT_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github:docs/WORKERCOORDINATOR_PORTABLE_IPHONE_EXECUTION_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github:docs/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/.github:receipts/preflight/sv002-current-iphone-portable-consumer-20260905.json",
     "StegVerse-Labs/.github:receipts/preflight/SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004-OBSERVATION-20260912.json",
-    "StegVerse-Labs/.github:receipts/preflight/SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004-RUNTIME-SURFACE-CORRECTION-20260913.json"
+    "StegVerse-Labs/.github:receipts/preflight/SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004-RUNTIME-SURFACE-CORRECTION-20260913.json",
+    "StegVerse-Labs/.github:receipts/preflight/SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004-NODE-KV-CONTINUITY-CORRECTION-20260913.json"
   ],
   "latest_reconciliation": {
     "initial_reconciliation_pr": 1706,
@@ -96,6 +100,8 @@
     "restoration_exact_head": "0d9bd4b58fe8d7389992b702f55fb5da4b852667",
     "restoration_validation_runs": [34737951023, 34737951022, 34737951018],
     "restoration_merge_commit": "4496e00c90b5e18ab7ae53f0e3d4508d95ec6f46",
+    "remote_device_correction_pr": 1726,
+    "remote_device_correction_merge": "27aa700a2c64eaee62a2ec1a4780f2ca1575e7cc",
     "runtime_completion_claimed": false
   },
   "parallel_path_reconciliation": {
@@ -108,22 +114,25 @@
     "goal_identity_preserved": true
   },
   "resolver_repair": {"pull_request": 1460, "exact_head": "a926d04e563fa6f89920bd608a2ff359b272ca13", "merge_commit": "3bc8898655d344ba12f47bb4120e38f2ac1ded6e", "validation_runs": [34615578871, 34615578937, 34615578890], "standalone_task_record_fallback": true, "duplicate_identity_fail_closed": true, "standalone_id_mismatch_fail_closed": true, "discovery_mutation_required": false, "merged_validated": true},
-  "global_identity_invariant_alignment": {"source": "data/task-registry-global-invariants.json", "merge_evidence": "StegVerse-Labs/.github@b27114d812c8ee9c9584ebe9a99cef4fa2297cfb", "user_verification_authority": "KV/SKAP Vault", "user_verification_authority_exclusive": true, "stegos_device_role": "INTERCHANGEABLE_TRANSPORT_NODE", "device_user_verifier_authority": "NONE", "node_user_verifier_authority": "NONE", "transport_user_verifier_authority": "NONE", "runtime_subject_binding_is_user_verification": false, "resident_node_id_is_user_identity": false, "resident_node_id_is_authority_source": false, "resident_node_id_use": "RUNTIME_INSTANCE_CORRELATION_AND_EVIDENCE_SUBJECT_ONLY"},
-  "runtime_source_compatibility": {"profile_id": "canonical-resident-substrate-v1", "capability": "resident_request_dispatch", "capability_satisfied": true, "environment_satisfied": true, "direction_satisfied": true, "mutation_constraint_satisfied": true, "deployment_constraint_satisfied": true, "current_observation_state": "TASK_BOUND_NATIVE_IPHONE_EXECUTION_EVIDENCE_NOT_OBSERVED", "remaining_rejection_reason": "TASK_BOUND_NATIVE_IPHONE_EXECUTION_EVIDENCE_NOT_OBSERVED", "source_side_mismatch_remaining": false, "candidate_count_until_authentic_observation": 0, "authority_effect": "NONE_DISCOVERY_ONLY"},
+  "global_identity_invariant_alignment": {"source": "data/task-registry-global-invariants.json", "merge_evidence": "StegVerse-Labs/.github@b27114d812c8ee9c9584ebe9a99cef4fa2297cfb", "user_verification_authority": "KV/SKAP Vault", "user_verification_authority_exclusive": true, "stegos_device_role": "INTERCHANGEABLE_TRANSPORT_NODE", "device_verification_policy": "NONE_PROHIBITED", "physical_device_identity_gate": "NONE_PROHIBITED", "device_user_verifier_authority": "NONE", "node_user_verifier_authority": "NONE", "transport_user_verifier_authority": "NONE", "runtime_subject_binding_is_user_verification": false, "resident_node_id_is_user_identity": false, "resident_node_id_is_authority_source": false, "resident_node_id_use": "RUNTIME_INSTANCE_CORRELATION_AND_EVIDENCE_SUBJECT_ONLY"},
+  "runtime_source_compatibility": {"profile_id": "canonical-resident-substrate-v1", "capability": "resident_request_dispatch", "capability_satisfied": true, "environment_satisfied": true, "direction_satisfied": true, "mutation_constraint_satisfied": true, "deployment_constraint_satisfied": true, "current_observation_state": "TASK_BOUND_ESTABLISHED_NODE_EXECUTION_EVIDENCE_NOT_OBSERVED", "remaining_rejection_reason": "TASK_BOUND_ESTABLISHED_NODE_EXECUTION_EVIDENCE_NOT_OBSERVED", "source_side_mismatch_remaining": false, "candidate_count_until_authentic_observation": 0, "authority_effect": "NONE_DISCOVERY_ONLY"},
   "runtime_surface_binding": {
-    "selected_execution_surface": "CURRENT_USER_IPHONE",
-    "portable_workercoordinator_surface_exists": true,
-    "stegos_bounded_subordinate_execution_surface_exists": true,
+    "eligible_execution_surface": "ANY_SUPPORTED_STEGOS_CAPABLE_DEVICE",
+    "established_node_required": true,
+    "node_may_be_established_or_recovered_on_any_eligible_device": true,
+    "specific_physical_device_required": false,
+    "specific_iphone_required": false,
+    "physical_device_identity_gate": "NONE_PROHIBITED",
     "remote_device_connector_applicable": false,
     "connected_resident_device_required": false,
     "second_user_operated_device_required": false,
     "always_on_external_host_required": false,
-    "generic_stegverse_ios_device_local_execution_previously_proven": true,
-    "generic_execution_does_not_satisfy_this_task": true,
-    "architecture_evidence_refs": ["docs/WORKERCOORDINATOR_PORTABLE_IPHONE_EXECUTION_MIRROR_HANDOFF.md", "receipts/preflight/sv002-current-iphone-portable-consumer-20260905.json", "docs/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_MIRROR_HANDOFF.md"],
+    "kv_skap_continuity_binding_required_when_operation_requires_user_or_secret_state": true,
+    "device_identity_is_execution_metadata_only": true,
+    "architecture_evidence_refs": ["data/task-registry-global-invariants.json", "docs/WORKERCOORDINATOR_PORTABLE_IPHONE_EXECUTION_MIRROR_HANDOFF.md", "docs/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_MIRROR_HANDOFF.md"],
     "authority_effect": "NONE_SURFACE_BINDING_ONLY"
   },
-  "runtime_presence_reuse": {"canonical_producer": "heartbeat_runtime/runtime_presence_projection.py", "canonical_output": "receipts/sovereign-host/runtime-presence.latest.json", "retained_rendezvous_node_projection": {"pull_request": 1562, "merge_commit": "cc53257c7e57347d2481dd4fd680aed9b8cf2f6d", "validation_runs": [34670772330, 34670772342, 34670772383], "canonical_pattern": "SV-NODE-<24 lowercase hex>", "resident_node_id_projection_supported": true, "rendezvous_identity_is_liveness_signal": false, "merged_validated": true}, "cross_task_reuse_authorized": false, "required_subject_binding": ["task_id", "cosv_task_vector", "canonical_workercoordinator_identity", "current_user_iphone_execution_receipt"], "subject_binding_purpose": "DISTINGUISH_AUTHENTIC_TASK_BOUND_CURRENT_IPHONE_RUNTIME_EVIDENCE", "subject_binding_confers_user_identity": false, "subject_binding_confers_user_verification_authority": false, "subject_binding_confers_execution_authority": false},
+  "runtime_presence_reuse": {"canonical_producer": "heartbeat_runtime/runtime_presence_projection.py", "canonical_output": "receipts/sovereign-host/runtime-presence.latest.json", "retained_rendezvous_node_projection": {"pull_request": 1562, "merge_commit": "cc53257c7e57347d2481dd4fd680aed9b8cf2f6d", "validation_runs": [34670772330, 34670772342, 34670772383], "canonical_pattern": "SV-NODE-<24 lowercase hex>", "resident_node_id_projection_supported": true, "rendezvous_identity_is_liveness_signal": false, "merged_validated": true}, "cross_task_reuse_authorized": false, "required_subject_binding": ["task_id", "cosv_task_vector", "resident.node_id", "canonical_workercoordinator_identity", "applicable_kv_skap_continuity_ref"], "subject_binding_purpose": "DISTINGUISH_AUTHENTIC_TASK_BOUND_ESTABLISHED_NODE_EXECUTION_AND_APPLICABLE_CONTINUITY_STATE", "subject_binding_confers_user_identity": false, "subject_binding_confers_user_verification_authority": false, "subject_binding_confers_execution_authority": false},
   "reusable_lifecycle_source_state": {
     "reusable_task_id": "RT-ECOSYSTEM-CONTINUITY-EVALUATION-001",
     "github_roundtrip_merge": "c35a12fdf1fa32b7890e923cf0889bb0ba570010",
@@ -138,15 +147,15 @@
     "same_invocation_lifecycle_chain_observed": false,
     "utc_hour_slot_satisfaction_observed": false
   },
-  "source_state": {"portable_exact_dispatch_merged": true, "service_gateway_three_route_source_merged": true, "resolver_repair_merged_validated": true, "retained_rendezvous_node_subject_projection_merged_validated": true, "kv_skap_user_verifier_global_invariant_merged": true, "interchangeable_stegos_node_global_invariant_merged": true, "reusable_task_component_model_source_validated": true, "reusable_lifecycle_source_complete": true, "healer_scheduler_terminal_compatibility_merged": true, "current_user_iphone_execution_surface_selected": true, "remote_device_connector_applicable": false, "resident_reseal_consumption_receipt_observed": false, "resident_consent_listener_consumption_receipt_observed": false, "retained_drive_receipts_observed": false, "sovereign_callback_reachability_proven": false, "github_runtime_authority": "NONE", "hosted_execution_fallback": false},
-  "remaining_predicates": ["AUTHENTIC_POST_MERGE_RESIDENT_LIFECYCLE_INVOCATION_OBSERVED", "SAME_INVOCATION_REUSABLE_LIFECYCLE_CHAIN_PROVEN", "UTC_HOUR_SLOT_SATISFACTION_WITHOUT_DUPLICATE_EXECUTION_PROVEN", "RESIDENT_RESEAL_CONSUMPTION_RECEIPT_OBSERVED", "RESIDENT_CONSENT_LISTENER_CONSUMPTION_RECEIPT_OBSERVED", "EXTERNAL_COLLAB_CLIENT_SECRET_CUSTODY_PROVEN", "SOVEREIGN_CALLBACK_REACHABILITY_PROVEN", "OWNER_PRESENT_GOOGLE_CONSENT_PROVEN", "AUTHORITATIVE_PROVIDER_FILE_PROBE_PROVEN", "SDK_ACTIVE_PROBE_COMPLETE_PREDICATE_REEVALUATION_PROVEN", "MIR_TRANSITION_REPORTING_PROVEN", "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_PROVEN", "ONE_CURRENT_DEVICE_END_TO_END_PROVEN", "DOWNSTREAM_PROPAGATION_COMPLETE", "PUBLIC_DISTRIBUTIONS_COMPLETE"],
+  "source_state": {"portable_exact_dispatch_merged": true, "service_gateway_three_route_source_merged": true, "resolver_repair_merged_validated": true, "retained_rendezvous_node_subject_projection_merged_validated": true, "kv_skap_user_verifier_global_invariant_merged": true, "interchangeable_stegos_node_global_invariant_merged": true, "reusable_task_component_model_source_validated": true, "reusable_lifecycle_source_complete": true, "healer_scheduler_terminal_compatibility_merged": true, "established_node_model_reconciled": true, "physical_device_identity_gate": "NONE_PROHIBITED", "specific_iphone_requirement": false, "remote_device_connector_applicable": false, "resident_reseal_consumption_receipt_observed": false, "resident_consent_listener_consumption_receipt_observed": false, "retained_drive_receipts_observed": false, "sovereign_callback_reachability_proven": false, "github_runtime_authority": "NONE", "hosted_execution_fallback": false},
+  "remaining_predicates": ["AUTHENTIC_POST_MERGE_RESIDENT_LIFECYCLE_INVOCATION_OBSERVED", "SAME_INVOCATION_REUSABLE_LIFECYCLE_CHAIN_PROVEN", "UTC_HOUR_SLOT_SATISFACTION_WITHOUT_DUPLICATE_EXECUTION_PROVEN", "RESIDENT_RESEAL_CONSUMPTION_RECEIPT_OBSERVED", "RESIDENT_CONSENT_LISTENER_CONSUMPTION_RECEIPT_OBSERVED", "EXTERNAL_COLLAB_CLIENT_SECRET_CUSTODY_PROVEN", "SOVEREIGN_CALLBACK_REACHABILITY_PROVEN", "OWNER_PRESENT_GOOGLE_CONSENT_PROVEN", "AUTHORITATIVE_PROVIDER_FILE_PROBE_PROVEN", "SDK_ACTIVE_PROBE_COMPLETE_PREDICATE_REEVALUATION_PROVEN", "MIR_TRANSITION_REPORTING_PROVEN", "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_PROVEN", "ESTABLISHED_NODE_END_TO_END_PROVEN", "DOWNSTREAM_PROPAGATION_COMPLETE", "PUBLIC_DISTRIBUTIONS_COMPLETE"],
   "authority_model": {"task_registry_mints_execution_authority": false, "worker_claim_authority": "WORKERCOORDINATOR", "credential_authority": "TV/TVC", "user_verification_authority": "KV/SKAP Vault", "user_verification_authority_exclusive": true, "stegos_device_role": "INTERCHANGEABLE_TRANSPORT_NODE", "device_user_verifier_authority": "NONE", "node_user_verifier_authority": "NONE", "interlock_intr_required_for_governed_ingress_egress": true, "master_records_reality_authority": true, "gateway_owner": "StegVerse-org/LLM-adapter#72", "github_runtime_authority": "NONE", "hosted_execution_fallback": false, "second_user_operated_device_required": false},
   "completion": {"claimed": false, "validated": false, "activation_proof_complete": false},
   "activation_condition_status": "SATISFIED",
   "activation_evidence": {"parent_task_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003", "parent_goal_prompt_count": 20, "activation_basis": "PARENT_GOAL_PROMPT_COUNT_REACHES_20"},
-  "runtime_requirements": {"capabilities": ["resident_request_dispatch"], "environment": "SOVEREIGN_RESIDENT", "direction": "INTERNAL", "mutation_required": false, "deployment_required": false, "current_observation_required": true, "already_local_source_required": true, "selected_execution_surface": "CURRENT_USER_IPHONE", "remote_device_connector_required": false, "connected_resident_device_required": false, "second_user_operated_device_required": false, "always_on_external_host_required": false, "user_verification_source": "KV/SKAP Vault", "device_local_user_verifier_allowed": false},
-  "runtime_resolution": "TASK_BOUND_NATIVE_IPHONE_EXECUTION_EVIDENCE_NOT_OBSERVED",
+  "runtime_requirements": {"capabilities": ["resident_request_dispatch"], "environment": "SOVEREIGN_RESIDENT", "direction": "INTERNAL", "mutation_required": false, "deployment_required": false, "current_observation_required": true, "already_local_source_required": true, "eligible_execution_surface": "ANY_SUPPORTED_STEGOS_CAPABLE_DEVICE", "established_node_required": true, "specific_physical_device_required": false, "specific_iphone_required": false, "physical_device_identity_gate": "NONE_PROHIBITED", "remote_device_connector_required": false, "connected_resident_device_required": false, "second_user_operated_device_required": false, "always_on_external_host_required": false, "user_verification_source": "KV/SKAP Vault", "kv_skap_continuity_binding_required_when_applicable": true, "device_local_user_verifier_allowed": false},
+  "runtime_resolution": "TASK_BOUND_ESTABLISHED_NODE_EXECUTION_EVIDENCE_NOT_OBSERVED",
   "worker_claim": {"authority": "WORKERCOORDINATOR", "claim_ref": null, "fence_ref": null, "projection_only": true},
-  "latest_runtime_observation": {"observed_at": "2026-09-13T05:00:00Z", "evidence_ref": "receipts/preflight/SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004-RUNTIME-SURFACE-CORRECTION-20260913.json", "execution_surface": "CURRENT_USER_IPHONE", "remote_device_connector_applicable": false, "task_bound_native_execution_observed": false, "repository_retained_entropy_complete_invocation_matches": 0, "retained_drive_reseal_receipt_matches": 0, "retained_drive_listener_receipt_matches": 0, "authentic_post_merge_reusable_lifecycle_observed": false, "disposition": "ACTIVE_WAIT_FOR_TASK_BOUND_NATIVE_IPHONE_EXECUTION_EVIDENCE_AND_POST_MERGE_INVOCATION", "authority_effect": "NONE_OBSERVATION_ONLY"},
-  "readme_impact": {"material_function_change": false, "readme_updated_in_change_set": false, "readme_path": "README.md", "no_readme_update_reason": "Task-specific runtime-surface correction only; existing README already establishes current-user iPhone execution and reusable component semantics.", "evidence_refs": ["README.md", "data/reusable-task-component-model.json", "docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md", "docs/WORKERCOORDINATOR_PORTABLE_IPHONE_EXECUTION_MIRROR_HANDOFF.md"]}
+  "latest_runtime_observation": {"observed_at": "2026-09-13T15:21:00Z", "evidence_ref": "receipts/preflight/SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004-NODE-KV-CONTINUITY-CORRECTION-20260913.json", "eligible_execution_surface": "ANY_SUPPORTED_STEGOS_CAPABLE_DEVICE", "established_node_required": true, "specific_physical_device_required": false, "task_bound_established_node_execution_observed": false, "applicable_kv_skap_continuity_binding_observed": false, "retained_drive_reseal_receipt_matches": 0, "retained_drive_listener_receipt_matches": 0, "authentic_post_merge_reusable_lifecycle_observed": false, "disposition": "ACTIVE_WAIT_FOR_TASK_BOUND_ESTABLISHED_NODE_EXECUTION_EVIDENCE_AND_APPLICABLE_KV_SKAP_CONTINUITY", "authority_effect": "NONE_OBSERVATION_ONLY"},
+  "readme_impact": {"material_function_change": false, "readme_updated_in_change_set": false, "readme_path": "README.md", "no_readme_update_reason": "Task-specific projection is being brought into alignment with existing global invariants that already define device interchangeability, Node non-authority semantics, and KV/SKAP user-verification exclusivity.", "evidence_refs": ["README.md", "data/task-registry-global-invariants.json", "data/reusable-task-component-model.json", "docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md"]}
 }
