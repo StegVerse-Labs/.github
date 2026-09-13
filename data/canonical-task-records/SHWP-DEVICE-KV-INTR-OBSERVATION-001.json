@@ -1,0 +1,82 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
+  "correlation_id": "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
+  "root_correlation_id": "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
+  "parent_task_id": null,
+  "goal": "Execute the existing canonical DEVICE_SYSTEM <-> KV Universal InTr observation owner on an admitted event, preserving exact transport/readback evidence without creating a second runtime owner or authority path.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "HANDOFF_READY_RUNTIME_PROOF_PENDING",
+  "cosv_task_vector": "50000000101000",
+  "source_refs": [
+    "handoffs/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json",
+    "control/worker-registry.d/device-kv-intr-observation-001.json",
+    "control/task-vectors/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json",
+    "control/portable-workercoordinator-packages/device-kv-intr-observation.json",
+    "workers/device_kv_intr_observation_worker.py",
+    "workers/universal_intr_profiled_ingress.py",
+    "scripts/consume_device_kv_intr_materialization_request.py",
+    "docs/WORKERCOORDINATOR_PORTABLE_IPHONE_EXECUTION_MIRROR_HANDOFF.md",
+    "docs/DEVICE_KV_INTR_SOVEREIGN_OBSERVATION_MIRROR_HANDOFF.md"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": [],
+    "components": [
+      "runtime_observation:SHWP-DEVICE-KV-INTR-OBSERVATION-001"
+    ]
+  },
+  "dependencies": [],
+  "blockers": [],
+  "adjacent_task_refs": [
+    "SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001"
+  ],
+  "expected_evidence_predicates": [
+    "CURRENT_USER_IPHONE_PORTABLE_WORKERCOORDINATOR_CHECKOUT_OBSERVED",
+    "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+    "VERIFIED_DEVICE_KV_EVENT_MATERIALIZATION_OR_OPTIONAL_STRONGER_RELAY_PROOF",
+    "EXACT_DEVICE_KV_TRANSPORT_AND_READBACK_OBSERVED",
+    "NO_SECOND_RUNTIME_OWNER_CREATED",
+    "NO_DEVICE_USER_VERIFICATION_AUTHORITY_CREATED"
+  ],
+  "runtime_resolution": {
+    "current_executor": "CURRENT_USER_IPHONE portable WorkerCoordinator -> device-kv-intr-observation-worker",
+    "unresolved_classification": "TASK_BOUND_NATIVE_IPHONE_CHECKOUT_AND_EXECUTION_EVIDENCE_NOT_OBSERVED",
+    "remote_device_connector_classification": "NOT_APPLICABLE",
+    "authority_basis": "Existing independent task-control admission plus fresh WorkerCoordinator claim/fence; Interlock/InTr remains transition authority; TV/TVC remains credential authority",
+    "unattended_runtime": false
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "human_action_ref": null,
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": "handoffs/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json",
+    "activation_proof_complete": false
+  },
+  "allowed_next_transitions": [
+    "TASK_REGISTRY_CONTINUE",
+    "WORKERCOORDINATOR_PORTABLE_CHECKOUT",
+    "TARGETED_CURRENT_IPHONE_EXECUTION",
+    "VERIFY_RUNTIME_OBSERVATION"
+  ],
+  "handoff_projection_refs": [
+    "handoffs/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json",
+    "docs/DEVICE_KV_INTR_SOVEREIGN_OBSERVATION_MIRROR_HANDOFF.md",
+    "docs/WORKERCOORDINATOR_PORTABLE_IPHONE_EXECUTION_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "interlock_intr_transition_authority": true,
+    "credential_authority": "TV/TVC",
+    "kv_skap_user_verification_authority": true,
+    "device_user_verification_authority": "NONE",
+    "github_runtime_authority": "NONE"
+  }
+}
