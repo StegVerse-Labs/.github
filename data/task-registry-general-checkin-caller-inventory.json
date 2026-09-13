@@ -1,0 +1,29 @@
+{
+  "schema": "stegverse.task-registry-general-checkin-caller-inventory/v1",
+  "goal_task_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+  "general_evaluator": "scripts/evaluate_task_registry_collision_checkin.py",
+  "production_callers": [
+    {
+      "path": "scripts/evaluate_task_registry_ai_session_checkin.py",
+      "classification": "AI_SESSION_GATED_COMPONENT_010",
+      "role": "delegates admitted session coordination through RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010",
+      "external_ai_direct_reachability": "NOT_DIRECT_VIA_THIS_CALLER",
+      "authentic_origin_attestation": "NOT_PROVEN"
+    },
+    {
+      "path": "scripts/install_and_run_canonical_work_event_bootstrap.py",
+      "classification": "NON_AI_INTERNAL_CANONICAL_WORK_PREFLIGHT",
+      "role": "internal Canonical Work collision/check-in preflight",
+      "external_ai_reachability": "NOT_PROVEN"
+    }
+  ],
+  "non_production_reference_classes": ["tests", "documentation", "canonical task records", "source inventories"],
+  "conclusions": {
+    "production_callers_source_inventoried": "PASS_SOURCE_LEVEL",
+    "ai_session_route_gated_by_component_010": "PASS_SOURCE_LEVEL",
+    "general_evaluator_external_ai_reachability": "NOT_PROVEN",
+    "authentic_chatgpt_origin": "NOT_PROVEN",
+    "runtime_non_chatgpt_ai_denial": "NOT_PROVEN"
+  },
+  "authority_effect": "NONE_COORDINATION_ONLY"
+}
