@@ -31,7 +31,7 @@ def test_sdk_extcollab_binds_to_established_node_not_physical_device():
     assert binding["established_node_required"] is True
     assert binding["specific_physical_device_required"] is False
     assert binding["specific_iphone_required"] is False
-    assert binding["physical_device_identity_gate"] is False
+    assert binding["physical_device_identity_gate"] == "NONE_PROHIBITED"
     assert binding["remote_device_connector_applicable"] is False
     assert binding["node_may_be_established_or_recovered_on_any_eligible_device"] is True
     assert binding["device_identity_is_execution_metadata_only"] is True
@@ -40,7 +40,7 @@ def test_sdk_extcollab_binds_to_established_node_not_physical_device():
     assert requirements["established_node_required"] is True
     assert requirements["specific_physical_device_required"] is False
     assert requirements["specific_iphone_required"] is False
-    assert requirements["physical_device_identity_gate"] is False
+    assert requirements["physical_device_identity_gate"] == "NONE_PROHIBITED"
     assert requirements["user_verification_source"] == "KV/SKAP Vault"
 
     assert record["runtime_resolution"] == "TASK_BOUND_ESTABLISHED_NODE_EXECUTION_EVIDENCE_NOT_OBSERVED"
@@ -51,13 +51,14 @@ def test_sdk_extcollab_binds_to_established_node_not_physical_device():
     assert metrics["eligible_execution_surface"] == "ANY_SUPPORTED_STEGOS_CAPABLE_DEVICE"
     assert metrics["established_node_required"] is True
     assert metrics["specific_iphone_required"] is False
-    assert metrics["physical_device_identity_gate"] is False
+    assert metrics["physical_device_identity_gate"] == "NONE_PROHIBITED"
     assert metrics["runtime_resolution"] == "TASK_BOUND_ESTABLISHED_NODE_EXECUTION_EVIDENCE_NOT_OBSERVED"
     assert "one_current_device_end_to_end_proven" not in metrics
     assert metrics["established_node_end_to_end_proven"] is False
 
     assert correction["execution_model"]["established_node_required"] is True
     assert correction["execution_model"]["specific_iphone_required"] is False
+    assert correction["execution_model"]["physical_device_identity_gate"] == "NONE_PROHIBITED"
     assert correction["continuity_model"]["user_verification_authority"] == "KV/SKAP Vault"
     assert correction["predicate_reconciliation"]["replacement"] == "ESTABLISHED_NODE_END_TO_END_PROVEN"
 
