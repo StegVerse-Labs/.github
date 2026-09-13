@@ -1,0 +1,40 @@
+{
+  "schema": "stegverse.current-evidence-reuse-requirements/v1",
+  "task_id": "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001",
+  "cosv_task_vector": "50000010100000",
+  "evidence_reuse_component": "RTC-EVIDENCE-REPLAY-REUSE-011",
+  "current_verification_selector": "RTC-EVIDENCE-CURRENT-SELECTOR-010",
+  "node_connectivity_policy": "REUSE_ESTABLISHED_CURRENT_ROUTE_WHEN_REPLAY_RECONSTRUCTION_AND_CURRENT_REQUIREMENTS_MATCH",
+  "required_predicates": [
+    "CURRENT_IPHONE_RUNTIME_AUTHENTIC",
+    "AUTHENTIC_TASK_2026_0011_CLAIM_AND_FENCE_OBSERVED",
+    "CURRENT_KV_INTR_STATE_APPLICABLE",
+    "TESTFLIGHT_SIGNED_IPA_VERIFIED",
+    "TVC_NATIVE_BUILD_UPLOAD_OBSERVED",
+    "TESTFLIGHT_INSTALL_LAUNCH_OBSERVED"
+  ],
+  "historically_reusable_predicates": [
+    "CURRENT_IPHONE_RUNTIME_AUTHENTIC",
+    "AUTHENTIC_TASK_2026_0011_CLAIM_AND_FENCE_OBSERVED"
+  ],
+  "must_be_current_for_this_execution": [
+    "CURRENT_KV_INTR_STATE_APPLICABLE",
+    "TESTFLIGHT_SIGNED_IPA_VERIFIED",
+    "TVC_NATIVE_BUILD_UPLOAD_OBSERVED",
+    "TESTFLIGHT_INSTALL_LAUNCH_OBSERVED"
+  ],
+  "accepted_historical_evidence_refs": [
+    "StegOS/docs/STEGOS_DEVICE_TASK_CONTROL_MIRROR_HANDOFF.md:IPHONE_FRESH_RUNTIME_REPEATABILITY_ACCEPTED",
+    "evidence/physical/hil-esrl-lease-open-a6756c54da15f09cd6a3dbb201375891803f6589fd644db4c545be39ebe41b92.json",
+    "AUTHENTIC_CURRENT_IPHONE_ALLOCATOR:TASK-2026-0011:G7:FENCE7:CLAIM_GRANT_OBSERVED"
+  ],
+  "automatic_behavior": {
+    "after_established_node_connectivity": "EVALUATE_INDEXED_EVIDENCE_WITHOUT_USER_INTERACTION",
+    "if_reuse_accepted": "MARK_COVERED_PREDICATES_FROM_INDEXED_EVIDENCE_AND_CONTINUE",
+    "if_delta_required": "DISPATCH_ONLY_MISSING_DELTA_TO_EXISTING_CANONICAL_OWNERS",
+    "if_fail_closed": "RETAIN_EXACT_FAILURE_AND_DO_NOT_SYNTHESIZE_OR_RERUN_SUFFICIENT_STAGES",
+    "second_user_operated_device_required": false,
+    "device_verification_introduced": false
+  },
+  "authority_effect": "NONE_REQUIREMENTS_PROJECTION_ONLY"
+}
