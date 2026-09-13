@@ -1,11 +1,11 @@
 # StegOS Device Continuity Packet Tunnel — Reusable Task Component Model Handoff
 
-Updated: 2026-09-12
+Updated: 2026-09-13
 Goal Task: `STEGOS-DEVICE-CONTINUITY-PACKET-TUNNEL-RUNTIME-001`
 COSV: `NOT ESTABLISHED`
 Parent Goal: `SHWP-HIL-SOVEREIGN-RECEIVER-001`
 Runtime truth handoff: `StegVerse-Labs/StegOS/docs/STEGOS_DEVICE_CONTINUITY_CARRIER_TARGET_INTEGRATION_MIRROR_HANDOFF.md`
-Status: `ACTIVE / COMPONENT MODEL RECONCILED / RUNTIME EVIDENCE PENDING`
+Status: `ACTIVE / COMPONENT MODEL RECONCILED / SUBJECT-BOUND OBSERVATION CONFIGURED / RUNTIME EVIDENCE PENDING`
 
 ## Identity reconciliation
 
@@ -17,96 +17,43 @@ The parent HIL Goal remains adjacent/parent context only. The packet-tunnel goal
 
 ## Decomposition result
 
-The deterministic decomposition signals for this goal are:
-
-- repeated subflow;
-- multiple authority crossings;
-- handoff sequence growth;
-- independent reusability;
-- optional subprocess applicability across other Goal Tasks;
-- independently provable evidence predicates.
-
-Weighted score: `19`.
-
-Disposition:
-
-`STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION`
-
-This stops new bespoke orchestration, not the Goal Task. The goal continues by composing existing reusable/canonical owners.
+The deterministic decomposition score remains `19` with disposition `STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION`. This stops new bespoke orchestration, not the Goal Task. The goal continues by composing existing reusable/canonical owners.
 
 ## Selected reusable components
 
-### 1. Governed local capability admission
+### Governed local capability admission
 
-Component: `RTC-INTERLOCK-INTR-TRANSPORT-008`
-Family: governed ingress / governed transport
-Existing: yes
-Canonical authority owner: Interlock/InTr
+Component: `RTC-INTERLOCK-INTR-TRANSPORT-008`. Interlock/InTr remains the governed admission/transition authority. Inputs are the current Goal Task identity, exact packet-tunnel activation operation, applicable KV/SKAP-backed user-verification state, and any applicable WorkerCoordinator claim/fence held by the canonical owner. Component reuse grants no authority and fails closed when an admission prerequisite is absent.
 
-Inputs:
-- current Goal Task identity;
-- exact packet-tunnel activation operation;
-- applicable KV/SKAP-backed user-verification state;
-- applicable WorkerCoordinator claim/fence projection held by the canonical owner.
+### Authentic runtime observation
 
-Outputs:
-- governed admission/transition receipt, or a fail-closed result.
+Component/owner: `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001`. Measurement machinery is non-authorizing; Master Records remains observed-reality custody/reconstruction authority.
 
-Preconditions:
-- exact operation binding;
-- no device-local or Secure-Enclave user-verification semantics;
-- reuse of the existing Interlock/InTr path rather than a task-specific adapter.
+The runtime observation is now explicitly subject-bound as follows:
 
-Expected evidence:
-- authentic admission/transition evidence only when the activation operation is executed.
-
-Cardinality:
-- once per distinct activation operation or governed re-entry.
-
-Failure semantics:
-- fail closed, preserve failure evidence, and re-enter only after the actual missing admission prerequisite is satisfied.
-
-This component is required for the state-changing activation operation. Component reuse itself grants no authority.
-
-### 2. Authentic runtime observation
-
-Component/owner: `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001`
-Family: runtime observation
-Existing: yes
-Measurement machinery: non-authorizing
-Observed-reality authority: Master Records
-
-Task parameters:
-- substrate: `STEGOS-CURRENT-DEVICE-NODE`;
 - runtime subject: `DeviceContinuityPacketTunnel`;
-- bounded endpoint: `127.0.0.1:8766`;
-- persistence condition: carrier remains available while another app/browser is foregrounded.
+- provider bundle: `org.stegverse.stegosmobile.devicecontinuity`;
+- substrate: `STEGOS-CURRENT-DEVICE-NODE`;
+- exact probe: `GET http://127.0.0.1:8766/api/device-continuity/v1/status`;
+- expected schema: `stegos.device_continuity_recovery_transport.v1`;
+- accepted live states: `AVAILABLE_NO_ENVELOPE` or `AVAILABLE_WITH_ADMITTED_ENVELOPE`;
+- persistence test: observe the exact endpoint, foreground another browser/app container on the same StegOS Node, then observe the same endpoint again.
 
-Outputs:
-- authentic packet-tunnel activation observation;
-- authentic cross-app persistence observation;
-- authentic loopback reachability observation;
-- or the exact first observed failure without upgrading evidence class.
+This binding consumes the already-existing packet-tunnel status surface; it does not create another runtime probe, listener, daemon, observer, WorkerCoordinator, scheduler, or transport.
 
-Preconditions:
-- `HOST_ACTIVATION_SOURCE_VALIDATED`;
-- current StegOS Node capability is actually available;
-- source, CI, merge, static compatibility, or start-request acceptance is not substituted for runtime evidence.
+## Cross-task runtime-presence correction
 
-Expected evidence:
-- `AUTHENTIC_PACKET_TUNNEL_ACTIVATION_OBSERVED`;
-- `AUTHENTIC_CROSS_APP_PERSISTENCE_OBSERVED`;
-- `AUTHENTIC_LOOPBACK_8766_REACHABILITY_OBSERVED`.
+Canonical cross-task runtime-presence evidence is subject-bound and may not be treated as generic proof that arbitrary work executed. Therefore:
 
-Cardinality:
-- repeatable by explicit measurement invocation; remediation results must be re-observed.
+- generic WorkerCoordinator/runtime-presence evidence cannot satisfy this Goal Task's packet-tunnel predicates;
+- HeartBeat liveness/freshness evidence cannot satisfy them;
+- the existing frozen 18-lane global convergence receipt cannot substitute for a `DeviceContinuityPacketTunnel` observation;
+- source, CI, merge, static compatibility, or a host start request cannot satisfy runtime predicates;
+- `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001` is reused only as the canonical observation owner for this exact subject and interface.
 
-Failure semantics:
-- retain the exact first failure; remediation is separate from the observation result and may not convert a failed observation into success without a new authentic observation.
+The correction was also recorded on `StegVerse-Labs/StegOS#351` as issue comment `5651261469` after a prior attempt to create a separate observer artifact was safety-gated. No runtime state was inferred from that failed source mutation.
 
 ## Task-specific configuration retained
-
-The following are task-specific configuration, not new reusable orchestration components:
 
 - `DeviceContinuityCarrierController` host activation binding;
 - `DeviceContinuityPacketTunnel` `NEPacketTunnelProvider` target;
@@ -119,7 +66,7 @@ The validated host activation implementation remains historical/source evidence 
 
 The maximal reusable transport chain is not mandatory here. This Goal Task does not require manifest intake, generic governed processing, provider/framework round trips, Publisher projection, SDK return assembly, a separate final egress stage, far-side final transition, provider credential/session issuance, publication/release, or terminal cleanup/entropy recovery.
 
-`RTC-EVIDENCE-CUSTODY-004` is not introduced as a separate mandatory chain stage for Goal completion. Master Records remains the observed-reality/custody/reconstruction authority for authentic evidence that is produced; component composition does not add an unrelated end-to-end custody workflow predicate.
+`RTC-EVIDENCE-CUSTODY-004` is not introduced as a separate mandatory chain stage for Goal completion. Master Records remains the observed-reality/custody/reconstruction authority for authentic evidence that is produced.
 
 ## Duplicate orchestration retired/prohibited
 
@@ -128,6 +75,7 @@ Do not add or extend:
 - task-specific generic iOS signing/provisioning revalidation;
 - a second packet-tunnel runtime observer parallel to canonical runtime observation machinery;
 - a task-specific Interlock/InTr adapter duplicating the reusable governed transport/admission component;
+- generic runtime-presence or HeartBeat evidence as packet-tunnel execution proof;
 - a second WorkerCoordinator, scheduler, credential route, KV/SKAP verifier, or Master Records substitute.
 
 Historical source and validation evidence is preserved.
@@ -146,26 +94,33 @@ Historical source and validation evidence is preserved.
 
 ## Completion predicates
 
-Preserved Goal Task predicates:
-
 1. `HOST_ACTIVATION_SOURCE_VALIDATED` — satisfied by StegOS PR #363 and exact-head validation.
 2. `AUTHENTIC_PACKET_TUNNEL_ACTIVATION_OBSERVED` — pending.
 3. `AUTHENTIC_CROSS_APP_PERSISTENCE_OBSERVED` — pending.
 4. `AUTHENTIC_LOOPBACK_8766_REACHABILITY_OBSERVED` — pending.
 
-Componentization adds no synthetic completion evidence and changes none of these completion semantics.
+Subject-binding configuration adds no synthetic completion evidence and changes none of these completion semantics.
 
-## Source/runtime classification of prior session work
+## Source/runtime classification
 
 - Xcode packet-tunnel target integration: Goal-specific source configuration, validated source evidence.
 - Host activation seam: Goal-specific configuration, validated source evidence.
 - KV/SKAP-only verifier semantics: canonical global invariant reuse.
 - Current-device StegOS substrate selection: runtime-resolution configuration, not runtime observation.
+- Exact status endpoint binding: Goal-specific observation configuration reusing the canonical runtime-observation owner; not runtime evidence.
 - Generic signing/provisioning discussion: inherited infrastructure; duplicate task-specific revalidation is superseded/prohibited.
 - Packet-tunnel activation/persistence/loopback state: authentic runtime observation still pending.
 
+## Validation reconciliation
+
+PR `#1754` first validated at head `ebf9c6bbf8fae0a9f06d5cdcb76f601f44c26922`. Organization-control validation passed, while the deterministic suite reported four StegBrowser ingress assertions expecting `STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001` to remain `PROPOSED`. Those failures were unrelated to this Goal Task and matched a concurrent canonical transition of that StegBrowser parent to `SUPERSEDED` with successor `STEG-BROWSER-RUNTIME-CONSUMPTION-001`.
+
+Main subsequently merged the canonical test repair at `c16263e0700a8d2e4d2188198193cc0e1375a1da`. This packet-tunnel branch was rebased onto that exact main state before reapplying only the three packet-tunnel subject-binding artifacts. During rebase, `runtime_resolution` was also restored to `null`; source-only endpoint parameters are carried separately as `runtime_observation_configuration`, preventing source configuration from being mistaken for authentic runtime resolution.
+
+The prior failed validation is retained as provenance and does not establish a packet-tunnel source defect or any runtime outcome.
+
 ## Next admissible work
 
-Do not add another task-specific observer or activation adapter. Parameterize the existing governed admission and runtime-observation owners for this Goal Task. The next authentic work is the governed activation/measurement attempt on the selected StegOS Node, followed by exact classification of activation, cross-app persistence, and `127.0.0.1:8766` reachability.
+Use the existing governed admission path for the actual state-changing activation operation, then invoke the existing observation owner against the exact `DeviceContinuityPacketTunnel` status endpoint. Record the exact first runtime outcome. If activation succeeds, foreground another browser/app container on the same StegOS Node and re-observe the same endpoint to test persistence. Do not substitute generic resident presence, source validation, or HeartBeat evidence.
 
 No second user-operated device is required or permitted. No device verification is introduced.

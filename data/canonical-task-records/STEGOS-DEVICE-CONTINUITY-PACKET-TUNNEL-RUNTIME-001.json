@@ -55,7 +55,7 @@
     {
       "blocker_id": "PACKET_TUNNEL_RUNTIME_NOT_YET_OBSERVED",
       "dependency_id": "DEP-PACKET-TUNNEL-GOVERNED-RUNTIME-OBSERVATION",
-      "reason": "Carrier-specific governed runtime activation, foreground-app persistence, and 127.0.0.1:8766 reachability are not yet authentically observed. Source validation is complete; generic signing/provisioning is inherited and is not a new blocker."
+      "reason": "Carrier-specific governed runtime activation, foreground-app persistence, and exact subject-bound 127.0.0.1:8766 status reachability are not yet authentically observed. Source validation and observation configuration are complete; generic signing/provisioning, generic runtime presence, HeartBeat, source, and CI are not substitutes."
     }
   ],
   "systemic_incident_ref": null,
@@ -92,6 +92,7 @@
     "StegVerse-Labs/StegOS#363",
     "StegVerse-Labs/StegOS@67dc40e8b78ed8566d598a2aa87b52536a534878",
     "StegVerse-Labs/StegOS/docs/STEGOS_DEVICE_CONTINUITY_CARRIER_TARGET_INTEGRATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegOS#351-comment-5651261469",
     "StegVerse-Labs/.github@b9f8e5153aa1651f2d7f043fb902eacb7c113ed9"
   ],
   "expected_evidence_predicates": [
@@ -117,6 +118,24 @@
     "current_observation_required": true
   },
   "runtime_resolution": null,
+  "runtime_observation_configuration": {
+    "state": "SUBJECT_BOUND_OBSERVATION_CONFIGURED_RUNTIME_NOT_YET_OBSERVED",
+    "activation_owner": "RTC-INTERLOCK-INTR-TRANSPORT-008 / Interlock/InTr",
+    "observation_owner": "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001",
+    "observed_reality_owner": "Master Records",
+    "runtime_subject": "DeviceContinuityPacketTunnel",
+    "provider_bundle": "org.stegverse.stegosmobile.devicecontinuity",
+    "endpoint": "http://127.0.0.1:8766/api/device-continuity/v1/status",
+    "method": "GET",
+    "expected_schema": "stegos.device_continuity_recovery_transport.v1",
+    "accepted_live_states": ["AVAILABLE_NO_ENVELOPE", "AVAILABLE_WITH_ADMITTED_ENVELOPE"],
+    "persistence_test": "observe exact endpoint before and after foregrounding another browser/app container on the same StegOS Node",
+    "generic_runtime_presence_may_substitute": false,
+    "heartbeat_may_substitute": false,
+    "source_ci_may_substitute": false,
+    "cross_task_presence_reuse_requires_exact_subject_binding": true,
+    "authority_effect": "NONE_CONFIGURATION_ONLY"
+  },
   "execution_substrate_resolution": {
     "schema": "stegverse.execution-substrate-resolution/v1",
     "review_order": [
