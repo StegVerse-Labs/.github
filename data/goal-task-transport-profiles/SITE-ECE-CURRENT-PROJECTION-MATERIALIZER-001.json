@@ -18,7 +18,20 @@
     "RTC-EVIDENCE-CUSTODY-004",
     "RTC-PUBLISHER-005"
   ],
-  "composition_rule": "Use only the selected reusable components. ECE-specific validation and Site exact-byte copy behavior remain Goal Task bindings. Omitted transport components are not required.",
+  "component_bindings": {
+    "RTC-EVIDENCE-CUSTODY-004": {
+      "canonical_owner": "Master Records",
+      "upstream_task": "ECOSYSTEM-CONTINUITY-EVALUATOR-001"
+    },
+    "RTC-PUBLISHER-005": {
+      "canonical_execution_owner_task": "SITE-PUBLICATION-NATIVE-RUNTIME-EXECUTION-001",
+      "canonical_execution_owner_cosv": "50000000102000",
+      "ece_binding": "StegVerse-Labs/Site:scripts/materialize_ecosystem_continuity_current.py",
+      "source_repository_writeback": false,
+      "publication_evidence_required": true
+    }
+  },
+  "composition_rule": "Use only the selected reusable components. ECE-specific validation and Site exact-byte copy behavior remain Goal Task bindings. RTC-PUBLISHER-005 reuses SITE-PUBLICATION-NATIVE-RUNTIME-EXECUTION-001 as the existing sovereign publication execution owner; do not create a second served-root runtime or use GitHub source writeback as publication.",
   "authority_invariants": {
     "user_verification": "KV/SKAP Vault",
     "claim_fence": "WorkerCoordinator",
