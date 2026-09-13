@@ -18,9 +18,62 @@
   "canonical_architecture_refs": [
     "docs/CANONICAL_SOUTHBOUND_COMMUNICATION_LIFECYCLE.md",
     "data/canonical-southbound-communication-lifecycle.json",
+    "data/reusable-task-component-model.json",
+    "data/reusable-task-component-decomposition-policy.json",
+    "data/reusable-transport-component-contract.json",
+    "data/goal-task-transport-profiles/MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001.json",
     "StegVerse-Labs/Site/docs/MIR_CONNECTION_ROUNDTRIP_TECHNICAL_GUIDE_MIRROR_HANDOFF.md",
-    "StegVerse-org/StegVerse-SDK@d3140a04e7405fe117c9808734d23a1027e68ead"
+    "StegVerse-org/StegVerse-SDK@d3140a04e7405fe117c9808734d23a1027e68ead",
+    "StegVerse-org/StegVerse-SDK@6a1dd2c05425f61c9b7264abf26731dba27d583b",
+    "StegVerse-org/LLM-adapter@7c7c43a0171360ce7ed4cc2873b29686147845ae"
   ],
+  "reusable_component_reconciliation": {
+    "model_merge": "b9f8e5153aa1651f2d7f043fb902eacb7c113ed9",
+    "goal_task_identity_preserved": true,
+    "new_goal_task_required": false,
+    "decomposition_score": 28,
+    "decomposition_decision": "STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION",
+    "profile_ref": "data/goal-task-transport-profiles/MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001.json",
+    "selected_transport_components": [
+      "RTC-MANIFEST-001",
+      "RTC-GOVERNED-PROCESSING-002",
+      "RTC-ROUNDTRIP-003",
+      "RTC-EVIDENCE-CUSTODY-004",
+      "RTC-PUBLISHER-005",
+      "RTC-SDK-RETURN-006",
+      "RTC-STEGVERSE-EGRESS-007",
+      "RTC-INTERLOCK-INTR-TRANSPORT-008",
+      "RTC-FARSIDE-FINAL-009"
+    ],
+    "required_round_trips": [
+      "mir_historical_accounting_round_trip"
+    ],
+    "required_intr_transport_occurrences": [
+      "stegverse_to_mir_outbound",
+      "mir_to_stegverse_return",
+      "stegverse_to_original_initiator_egress"
+    ],
+    "existing_components_reused": {
+      "manifest_intake_binding": "RTC-MANIFEST-001 / StegVerse-SDK",
+      "governed_processing": "RTC-GOVERNED-PROCESSING-002 / manifest-selected processor",
+      "mir_round_trip": "RTC-ROUNDTRIP-003 + RTC-INTERLOCK-INTR-TRANSPORT-008",
+      "custody_reconstruction": "RTC-EVIDENCE-CUSTODY-004 / Master Records",
+      "publisher_projection": "RTC-PUBLISHER-005 / GCAT-BCAT-Engine/Publisher",
+      "sdk_return_assembly": "RTC-SDK-RETURN-006 / StegVerse-SDK publisher_return_binding @ 6a1dd2c05425f61c9b7264abf26731dba27d583b",
+      "final_stegverse_egress": "RTC-STEGVERSE-EGRESS-007 / LLM Adapter framework implementation @ 7c7c43a0171360ce7ed4cc2873b29686147845ae with Interlock/InTr transition authority",
+      "transport": "RTC-INTERLOCK-INTR-TRANSPORT-008 / Interlock/InTr",
+      "far_side_final": "RTC-FARSIDE-FINAL-009 / far-side Interlock/InTr transition"
+    },
+    "new_reusable_component_candidates": [
+      "callback_correlation: exact response-to/original-request correlation remains a candidate-only reusable family until a canonical standalone component contract is materialized"
+    ],
+    "duplicate_orchestration_superseded": [
+      "MIR-specific Publisher-to-SDK return assembly",
+      "MIR-specific generic framework final-egress transport orchestration",
+      "MIR-specific duplicate InTr materialization/transport logic"
+    ],
+    "authority_effect": "NONE_COORDINATION_ONLY"
+  },
   "current_truth": {
     "independent_goal_established": true,
     "handoff_created": true,
@@ -32,6 +85,13 @@
     "site_mir_southbound_guide_merged": true,
     "sdk_complete_manifest_source_contract_merged": true,
     "sdk_completion_block_supports_publisher_and_egress": true,
+    "sdk_publisher_return_binding_merged": true,
+    "sdk_publisher_return_binding_merge": "6a1dd2c05425f61c9b7264abf26731dba27d583b",
+    "llm_adapter_generic_southbound_return_source_pr": "StegVerse-org/LLM-adapter#333",
+    "llm_adapter_generic_southbound_return_merged": true,
+    "llm_adapter_generic_southbound_return_merge": "7c7c43a0171360ce7ed4cc2873b29686147845ae",
+    "reusable_task_component_model_reconciled": true,
+    "reusable_task_component_profile_materialized": true,
     "sdk_legacy_v1_without_completion_not_classified_complete_communication": true,
     "qualifying_outbound_intr_materialization_observed": false,
     "qualifying_mir_ingress_receipt_observed": false,
@@ -53,21 +113,25 @@
     "task_registry_southbound_merge": "c20bd3002b3d46549d56350bf3a3f4c280097384",
     "site_mir_guide_merge": "efd9eb244a6a56baa2d6c3c93effa11bc4cd773b",
     "sdk_complete_manifest_merge": "d3140a04e7405fe117c9808734d23a1027e68ead",
-    "sdk_validated_head": "9e5999bd9a80420e582299994733c46a51094ca5",
-    "sdk_exact_head_workflows": [
-      "Evaluator Contract Console Validation #121 SUCCESS",
-      "External Framework Public Submission Validation #42 SUCCESS",
-      "External Collaboration Authentic Runtime Proof Contract Validation #18 SUCCESS",
-      "Manifest Builder Source Validation #134 SUCCESS",
-      "WorkSpace Active Probe Validation #24 SUCCESS",
-      "Evaluator Manifest Source Validation #163 SUCCESS",
-      "Shared Docs Provider Freeze Integration Validation #6 SUCCESS",
-      "SDK Package Artifact Validation #184 SUCCESS",
-      "Shared Docs Multiparty Freeze Validation #6 SUCCESS"
+    "sdk_publisher_return_binding_merge": "6a1dd2c05425f61c9b7264abf26731dba27d583b",
+    "reusable_task_component_model_merge": "b9f8e5153aa1651f2d7f043fb902eacb7c113ed9",
+    "llm_adapter_reusable_egress_merge": "7c7c43a0171360ce7ed4cc2873b29686147845ae",
+    "sdk_publisher_return_binding_validation": [
+      "Publisher SDK Return Binding Validation #1 SUCCESS",
+      "SDK Package Artifact Validation #186 SUCCESS"
+    ],
+    "llm_adapter_reusable_egress_validation": [
+      "Work Mutation Safety - Non-Authorizing #55 SUCCESS",
+      "Southbound SDK Return Validation #9 SUCCESS",
+      "validate #3470 SUCCESS"
     ],
     "source_merge_does_not_prove_runtime": true
   },
   "authority_invariants": {
+    "task_registry": "COORDINATION_ONLY",
+    "worker_claim_fence_authority": "WorkerCoordinator",
+    "user_verification_authority": "KV/SKAP Vault",
+    "device_role": "INTERCHANGEABLE_STEGOS_TRANSPORT_NODE_NOT_USER_VERIFIER",
     "communication_transport": "DESIGNATED_INTERLOCK_INTR_ONLY",
     "processing_semantics_authority": "ADMITTED_MANIFEST_CAPABILITY_AND_BOUND_ROUTE",
     "source_identity_processor_selection_authority": "NONE",
@@ -76,8 +140,9 @@
     "stegverse_governance_authority": "STEGVERSE",
     "publisher_authority": "MANIFEST_DECLARED_PRESENTATION_EVIDENCE_ASSEMBLY_ONLY",
     "llm_adapter_authority": "PROTOCOL_FRAMING_AND_APPLICABLE_FINAL_STEGVERSE_SIDE_EGRESS_TRANSITION_ONLY",
+    "master_records_authority": "OBSERVED_REALITY_CUSTODY_RECONSTRUCTION",
     "github_runtime_authority": "NONE",
-    "heartbeat_authority": "OBSERVABILITY_ONLY"
+    "heartbeat_authority": "SYNCHRONIZATION_TIMING_FRESHNESS_LIVENESS_STATE_CORRELATION_OBSERVABILITY_ONLY"
   },
   "superseded_nonqualifying_evidence": {
     "google_doc_or_pdf_transfer": "NON_QUALIFYING_OUT_OF_BAND",
@@ -96,6 +161,7 @@
     "CANONICAL_SDK_MANIFEST_INGRESS_PRECEDES_STEGVERSE_PROCESSOR_SELECTION",
     "MANIFEST_CAPABILITY_ROUTE_SELECTS_PROCESSING",
     "SOURCE_IDENTITY_DOES_NOT_SELECT_PROCESSING",
+    "MASTER_RECORDS_CUSTODY_READBACK_RECONSTRUCTION_OBSERVED_WHEN_REQUESTED",
     "PUBLISHER_IS_DECLARED_IN_COMPLETE_MANIFEST_WHEN_PRESENTATION_OR_EVALUATOR_EVIDENCE_REQUIRED",
     "SDK_RETURN_ASSEMBLY_BINDS_PUBLISHER_OUTPUT_TO_ORIGINAL_REQUEST_AND_INITIATOR",
     "APPLICABLE_FINAL_STEGVERSE_SIDE_EGRESS_TRANSITION_OBSERVED",
@@ -112,21 +178,22 @@
     "source_implemented": true,
     "source_validated": true,
     "runtime_observed": false,
-    "runtime_observation_required_for_this_documentation_task": true
+    "runtime_observation_required_for_this_documentation_task": true,
+    "component_reuse_does_not_satisfy_runtime_predicates": true
   },
   "allowed_next_transitions": [
-    "EXECUTE_OUTBOUND_PACKET_THROUGH_DESIGNATED_INTR_PROFILE",
+    "VALIDATE_AND_MERGE_REUSABLE_COMPONENT_RECONCILIATION",
+    "EXECUTE_OUTBOUND_PACKET_THROUGH_REUSED_RTC_INTERLOCK_INTR_TRANSPORT",
     "RETAIN_AUTHENTIC_MIR_INGRESS_AND_EVALUATION_EVIDENCE",
-    "EXECUTE_MIR_NATIVE_RETURN_THROUGH_DESIGNATED_INTR_RETURN_PROFILE",
+    "EXECUTE_MIR_NATIVE_RETURN_THROUGH_REUSED_RTC_INTERLOCK_INTR_TRANSPORT",
     "VALIDATE_STEGVERSE_RETURN_INTR_INGRESS",
-    "ADMIT_RETURN_THROUGH_CANONICAL_SDK_MANIFEST_INGRESS",
-    "EXECUTE_MANIFEST_SELECTED_PROCESSING",
-    "PERFORM_DELTA_AND_RECONSTRUCTION_WHEN_MANIFEST_REQUESTS_IT",
-    "EXECUTE_MANIFEST_DECLARED_PUBLISHER_STAGE",
-    "RETURN_PUBLISHER_PACKAGE_THROUGH_SDK_BOUND_TO_INITIATOR",
-    "EXECUTE_APPLICABLE_FINAL_STEGVERSE_SIDE_EGRESS_TRANSITION",
-    "OBSERVE_INTERLOCK_INTR_EGRESS",
-    "OBSERVE_FAR_SIDE_INTERLOCK_INTR_FINAL_TRANSITION",
+    "ADMIT_RETURN_THROUGH_REUSED_RTC_MANIFEST_AND_GOVERNED_PROCESSING_COMPONENTS",
+    "RETAIN_RTC_EVIDENCE_CUSTODY_RECONSTRUCTION_WHEN_REQUESTED",
+    "EXECUTE_REUSED_RTC_PUBLISHER_STAGE",
+    "EXECUTE_REUSED_RTC_SDK_RETURN_ASSEMBLY",
+    "EXECUTE_REUSED_RTC_STEGVERSE_FINAL_EGRESS_TRANSITION",
+    "OBSERVE_REUSED_RTC_INTERLOCK_INTR_EGRESS",
+    "OBSERVE_REUSED_RTC_FARSIDE_FINAL_TRANSITION",
     "RECONCILE_GUIDE_AGAINST_RUNTIME_EVIDENCE",
     "COMPLETE_DOCUMENTATION_AFTER_RUNTIME_PROOF"
   ],
