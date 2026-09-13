@@ -1,0 +1,20 @@
+{
+  "schema": "stegverse.reusable-task-componentization-evaluation/v1",
+  "task_id": "SITE-NODE-IDB-SCHEMA-MIGRATION-001",
+  "cosv_task_vector": "40000100100000",
+  "score": 21,
+  "active_signals": [
+    "repeated_subflow",
+    "multiple_authority_crossings",
+    "cross_repository_or_org_spread",
+    "handoff_sequence_growth",
+    "independent_reusability",
+    "optional_subflow_present",
+    "independent_evidence_predicate"
+  ],
+  "decision": "STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION",
+  "must_search_existing_components": true,
+  "componentization_required": true,
+  "must_stop_scope_growth": true,
+  "authority_effect": "NONE_COORDINATION_ONLY"
+}

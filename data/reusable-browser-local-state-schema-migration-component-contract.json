@@ -1,0 +1,57 @@
+{
+  "schema": "stegverse.reusable-task-component-contract/v1",
+  "component_id": "RTC-BROWSER-LOCAL-STATE-SCHEMA-MIGRATION-V1",
+  "family": "failure_remediation_classification",
+  "model_ref": "data/reusable-task-component-model.json",
+  "decomposition_policy_ref": "data/reusable-task-component-decomposition-policy.json",
+  "capability_provided": "Additively migrate a browser-local persistent-state schema while preserving named continuity records and preventing lower-version or partial openers from stranding the store set.",
+  "inputs": [
+    "database_name",
+    "canonical_schema_version",
+    "canonical_store_set",
+    "legacy_schema_shapes",
+    "continuity_records_to_preserve",
+    "runtime_opener_inventory"
+  ],
+  "outputs": [
+    "migration_implementation_binding",
+    "aligned_runtime_opener_binding",
+    "preservation_validation_result",
+    "idempotent_reopen_validation_result"
+  ],
+  "preconditions": [
+    "legacy_shapes_are_explicit",
+    "canonical_schema_owner_is_defined",
+    "preserved_records_are_named_and_testable",
+    "destructive_storage_reset_is_not_required"
+  ],
+  "expected_evidence": [
+    "legacy_to_current_migration_pass",
+    "malformed_intermediate_to_current_migration_pass",
+    "current_to_current_reopen_pass",
+    "continuity_record_exact_identity_preserved",
+    "all_runtime_openers_aligned"
+  ],
+  "authority_owner": "CANONICAL_RUNTIME_OWNER_OF_THE_PERSISTENT_STATE",
+  "authority_effect": "NONE_COMPONENT_DOES_NOT_AUTHORIZE_EXECUTION_OR_USER_VERIFICATION",
+  "execution_role": "StegOS/browser runtime may execute an already-admitted migration but is not a user verifier or transition authority.",
+  "failure_classes": [
+    "missing_required_store",
+    "version_error_from_lower_fixed_opener",
+    "partial_upgrade_stranded_schema",
+    "continuity_record_loss_or_mutation",
+    "non_idempotent_current_reopen"
+  ],
+  "retry_or_reentry_semantics": "FAIL_CLOSED; repair source or opener alignment first; preserve existing storage; retry authentic runtime only after exact-source validation and required propagation observation.",
+  "version_or_schema_binding": "component/v1",
+  "authority_invariants": {
+    "task_registry": "COORDINATION_ONLY",
+    "worker_claim_fence": "WorkerCoordinator",
+    "user_verification": "KV/SKAP Vault only",
+    "governed_transition": "Interlock/InTr",
+    "credential_provider_release": "TV/TVC",
+    "observed_reality_custody": "Master Records",
+    "heartbeat": "OBSERVABILITY_ONLY",
+    "github_runtime_authority": "NONE"
+  }
+}
