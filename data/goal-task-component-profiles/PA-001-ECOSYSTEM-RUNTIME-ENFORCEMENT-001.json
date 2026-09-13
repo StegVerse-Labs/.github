@@ -1,0 +1,156 @@
+{
+  "schema": "stegverse.goal-task-component-profile/v1",
+  "task_id": "PA-001-ECOSYSTEM-RUNTIME-ENFORCEMENT-001",
+  "cosv_task_vector": "50000000114000",
+  "model": "data/reusable-task-component-model.json",
+  "decomposition_policy": "data/reusable-task-component-decomposition-policy.json",
+  "decomposition_evaluation": {
+    "score": 30,
+    "decision": "STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION",
+    "active_signals": [
+      "repeated_subflow",
+      "multiple_authority_crossings",
+      "multiple_round_trips",
+      "cross_repository_or_org_spread",
+      "task_specific_adapter_duplicates_generic_work",
+      "handoff_sequence_growth",
+      "failure_path_branching",
+      "independent_reusability",
+      "optional_subflow_present",
+      "independent_evidence_predicate"
+    ],
+    "authority_effect": "NONE_COORDINATION_ONLY"
+  },
+  "selected_components": [
+    {
+      "component_id": "RTC-GOVERNED-PROCESSING-002",
+      "family": "governed_processing",
+      "capability_provided": "present_state_admissibility_and_bounded_governed_processing",
+      "existing": true,
+      "canonical_implementation_or_owner": "StegVerse-Labs/StegCore: src/stegcore/commit_governance.py + canonical StegGate execution composition",
+      "inputs": ["candidate", "exact target binding", "current authority state", "evaluation instant", "current evidence/freshness state", "capability surface"],
+      "outputs": ["ALLOW|DENY|FAIL_CLOSED present-state result", "commit/coherence receipt", "bounded execution result when independently authorized"],
+      "preconditions": ["candidate/admissibility already formed", "present target/time/authority evidence supplied", "no implicit continuity of historical authorization"],
+      "authority_owner": "Interlock/InTr for governed transition; StegCore implements canonical evaluation without minting transition authority",
+      "authority_effect": "NONE_COMPONENT_REUSE_DOES_NOT_MINT_AUTHORITY",
+      "expected_evidence": ["present_state_disposition", "present_state_checks", "present_state_reasons", "commit_state_hash", "coherence_receipt_hash"],
+      "repeatability_cardinality": "ONCE_PER_CONSEQUENCE_COMMIT_ATTEMPT; repeat only for a new governed attempt",
+      "failure_remediation_semantics": "DENY for explicit stale/revoked/expired/mismatched state; FAIL_CLOSED for materially unestablished state; preserve exact reason and re-enter only with new evidence/state",
+      "requirement": "REQUIRED",
+      "version_or_schema_binding": "stegverse.reusable-transport-component-contract/v1 + StegCore present-state contract"
+    },
+    {
+      "component_id": "RTC-INTERLOCK-INTR-TRANSPORT-008",
+      "family": "transport",
+      "capability_provided": "governed_packet_movement_and_transition_receipts",
+      "existing": true,
+      "canonical_implementation_or_owner": "Interlock/InTr via StegOS Universal InTr reusable backbone",
+      "inputs": ["exact request/return packet bytes", "boundary identities", "profile binding", "prior receipt identity"],
+      "outputs": ["ingress/egress transition receipt", "validated receipt-chain extension"],
+      "preconditions": ["governed transition applicable", "exact bytes bound", "receiver/boundary available or canonical durable materialization path used"],
+      "authority_owner": "Interlock/InTr",
+      "authority_effect": "NONE_COMPONENT_REUSE_DOES_NOT_MINT_AUTHORITY",
+      "expected_evidence": ["authentic request InTr receipt", "authentic return InTr receipt when return evidence is required"],
+      "repeatability_cardinality": "TWICE_FOR_REFERENCE_PROOF: governance request ingress and consequence-evidence return; additional repetition only when declared by the Goal Task",
+      "failure_remediation_semantics": "fail closed on incomplete/tampered receipt chain; retry exact packet only under canonical transport semantics; never blind-retry consequence",
+      "requirement": "REQUIRED",
+      "version_or_schema_binding": "stegverse.reusable-transport-component-contract/v1"
+    },
+    {
+      "component_id": "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001",
+      "family": "runtime_observation",
+      "capability_provided": "authentic_resident_runtime_observation_without_source_to_runtime_evidence_upgrade",
+      "existing": true,
+      "canonical_implementation_or_owner": "existing sovereign WorkerCoordinator/resident request execution and runtime observation lanes; observed-reality custody remains Master Records",
+      "inputs": ["PA-001 resident proof request", "locally materialized StegCore source", "existing SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001 execution owner"],
+      "outputs": ["claim/fence observation", "resident execution observation", "exact first failure or terminal receipt"],
+      "preconditions": ["source merged/validated", "canonical resident worker source present", "WorkerCoordinator independently admits and claims work"],
+      "authority_owner": "WorkerCoordinator for claim/fence; Master Records for observed-reality custody/reconstruction",
+      "authority_effect": "NONE_OBSERVATION_ONLY",
+      "expected_evidence": ["authentic WorkerCoordinator claim/fence", "authentic resident present-state enforcement receipt", "resident execution/non-execution disposition"],
+      "repeatability_cardinality": "REPEATABLE_BY_NEW_GOVERNED_RUNTIME_ATTEMPT; no synthetic retry success",
+      "failure_remediation_semantics": "record exact boundary/failure and remediate the responsible component; runtime observation itself does not mutate authority",
+      "requirement": "REQUIRED",
+      "version_or_schema_binding": "existing resident execution contracts"
+    },
+    {
+      "component_id": "RTC-EVIDENCE-CUSTODY-004",
+      "family": "custody_reconstruction",
+      "capability_provided": "evidence_capture_custody_readback_and_reconstruction",
+      "existing": true,
+      "canonical_implementation_or_owner": "Master Records",
+      "inputs": ["resident execution receipt", "present-state evidence", "request/return InTr lineage", "consequence evidence"],
+      "outputs": ["custody acknowledgement", "same-execution reconstruction result", "durable observed-reality record"],
+      "preconditions": ["authentic evidence exists", "hash/lineage validation passes", "no source or CI substitution"],
+      "authority_owner": "Master Records",
+      "authority_effect": "NONE_CUSTODY_ONLY",
+      "expected_evidence": ["destination custody accepted", "same-execution present-state decision reconstructed", "receipt/commit-state hash verified"],
+      "repeatability_cardinality": "ONCE_PER_DISTINCT_AUTHENTIC_EVIDENCE_SET; validation may be repeated without re-executing consequence",
+      "failure_remediation_semantics": "reject tampered/incomplete evidence; preserve failure; reacquire missing authentic evidence rather than synthesize custody",
+      "requirement": "REQUIRED",
+      "version_or_schema_binding": "stegverse.reusable-transport-component-contract/v1"
+    }
+  ],
+  "task_specific_configuration": [
+    "PA-001 present-tense authority/time/target/evidence predicates",
+    "StegVerse-Labs/StegCore#208 goal ownership",
+    "StegVerse-Labs/StegCore#211 resident-reference integration continuation",
+    "existing SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001 resident proof owner",
+    "target-native ecosystem propagation required only after resident enforcement proof"
+  ],
+  "not_selected": [
+    "RTC-MANIFEST-001 as a new mandatory stage: existing Governance request/candidate binding already provides the required manifest/candidate identity",
+    "RTC-ROUNDTRIP-003 as a separate provider/framework round trip: the required request/return movements are already represented by repeated RTC-INTERLOCK-INTR-TRANSPORT-008",
+    "RTC-PUBLISHER-005 before resident proof",
+    "RTC-SDK-RETURN-006",
+    "RTC-STEGVERSE-EGRESS-007 as an extra stage beyond the existing governed consequence/transport composition",
+    "RTC-FARSIDE-FINAL-009 except where a later propagation target independently requires it",
+    "credential_session component: no new provider session is required for the bounded reference proof; TV/TVC authority remains mandatory if credentials become applicable",
+    "terminal cleanup/entropy recovery until authentic evidence is durably reconstructed"
+  ],
+  "goal_specific_completion_predicates_preserved": [
+    "canonical commit state reconstructably binds authority and temporal state",
+    "exact resident commit path consumes present-state contract",
+    "negative controls cover revoked/stale authority, changed target, expired temporal condition, missing material state, and stale evidence",
+    "authentic resident present-state enforcement receipt exists",
+    "same-execution reconstruction reproduces the resident decision without repeating the consequence",
+    "applicable downstream targets have target-native propagation evidence or named durable continuation",
+    "README and canonical handoffs are current",
+    "no duplicate execution, credential, publication, user-verification, or transition authority introduced"
+  ],
+  "satisfied_predicates": [
+    "canonical source present-state evaluator merged and hosted-validated",
+    "source negative controls and deterministic source reconstruction merged",
+    "existing resident reference owner identified; no duplicate resident executor required"
+  ],
+  "remaining_predicates": [
+    "bind existing Universal Governance consequence path to shared present-state evaluator with explicit target/time state",
+    "validate and merge PR #211 successor source",
+    "authentic WorkerCoordinator claim/fence observed for resident proof",
+    "authentic resident present-state enforcement receipt observed",
+    "authentic request/return InTr evidence observed where applicable",
+    "Master Records custody and same-execution reconstruction observed",
+    "target-native ecosystem propagation evidence or durable continuation recorded"
+  ],
+  "authority_invariants": {
+    "task_registry": "COORDINATION_ONLY",
+    "worker_claim_fence": "WorkerCoordinator",
+    "user_verification": "KV/SKAP Vault",
+    "stegos_device_role": "INTERCHANGEABLE_TRANSPORT_EXECUTION_NODE_NOT_USER_VERIFIER",
+    "credential_provider_release": "TV/TVC",
+    "governed_transition": "Interlock/InTr",
+    "observed_reality_custody_reconstruction": "Master Records",
+    "heartbeat": "TIMING_FRESHNESS_CORRELATION_OBSERVABILITY_ONLY",
+    "github_runtime_authority": "NONE"
+  },
+  "goal_identity_preserved": true,
+  "new_goal_task_required": false,
+  "new_reusable_component_required": false,
+  "duplicate_orchestration_to_retire": [
+    "any PA-001-specific transport wrapper duplicating Universal InTr",
+    "any second resident scheduler/worker duplicating SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001",
+    "any consequence-path present-state validator duplicating StegCore evaluate_present_state()",
+    "any task-specific custody/reconstruction path duplicating Master Records",
+    "any device-local user verification or device identity promotion"
+  ]
+}
