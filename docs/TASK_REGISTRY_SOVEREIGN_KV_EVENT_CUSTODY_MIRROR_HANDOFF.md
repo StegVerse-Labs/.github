@@ -4,13 +4,13 @@ Goal Task ID: `TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001`
 Parent: `TASK-REGISTRY-SESSION-RETURN-ORCHESTRATION-001`
 Canonical issue: `StegVerse-Labs/.github#1423`
 COSV: not established in the canonical task record
-Status: `ACTIVE / CHECKED_OUT / SOURCE INTEGRATION MERGED / REUSABLE COMPONENT COMPOSITION DECLARED / AUTHENTIC ADMITTED WRITE + EXACT READBACK PENDING`
+Status: `ACTIVE / CHECKED_OUT / SOURCE INTEGRATION MERGED / REUSABLE COMPONENT COMPOSITION MERGED / CURRENT VERIFICATION SELECTOR BOUND / AUTHENTIC ADMITTED WRITE + EXACT READBACK PENDING`
 
 ## Objective
 
-Project canonical hash-linked Task Registry session events into provider-neutral StegVerse sovereign KV custody while preserving exact event hashes, collision semantics, and existing authority boundaries.
+Project canonical hash-linked Task Registry session events into provider-neutral StegVerse sovereign KV custody while preserving exact event hashes, predecessor ordering, collision semantics, and authority boundaries.
 
-The Goal Task remains valid. Reusable Task Component Model reconciliation changes how the process is composed; it does not rename, restart, duplicate, or close the Goal Task.
+The Goal Task remains valid. Reusable component composition changes how the process is expressed; it does not rename, restart, duplicate, or close the Goal Task.
 
 ## Canonical source state
 
@@ -18,69 +18,55 @@ The Goal Task remains valid. Reusable Task Component Model reconciliation change
 - `continuity-vault-kit` PR #211 merged at `700dba383c3c15f0bc98542729f10cf09dc27306`.
 - `.github` PR #1452 merged at `daf123b00462ff824dc4cb0beff6972d7eeea5b2`, binding runtime execution to existing owners instead of creating a provider executor.
 - `.github` PR #1470 merged at `2798059fc750a64e1cc3a716c00e3c58ede9f67f`, adding the non-authorizing runtime intake contract.
-- `.github` PR #1490 merged at `59e32449715fef07e82fd395d22b6112197da6f7` after exact-head Deterministic Repository Suite `34635583389`, Heartbeat Worker Project `34635583403`, and organization-control `34635583406` all passed.
-- `.github` PR #1484 merged at `782e5a26c7cc41a3253ad3648e7e7ea17ea767b0`, superseding the conflicted #1467 coordination path and registering `TVC-RECIPIENT-ADMISSION-SIGNING-CUSTODY-001` as an adjacent dependency of the Device/KV/SKAP owner.
-- PR #1495 remained open and exact-head green at `949d5906327183f7fd0c21429a11ea34f09e77b8`, but its branch predates the canonical Reusable Task Component Model. Its useful coordination corrections are carried forward here instead of extending that stale branch.
+- `.github` PR #1490 merged at `59e32449715fef07e82fd395d22b6112197da6f7` after all three required exact-head validation lanes passed.
+- `.github` PR #1484 merged at `782e5a26c7cc41a3253ad3648e7e7ea17ea767b0`, registering the adjacent recipient-admission signing-custody dependency.
+- `.github` PR #1671 merged at `64c388bdd374adcc81bec50ec21d4987624e5362`, reconciling this Goal Task to the canonical Reusable Task Component Model after exact-head organization-control `34730890300`, deterministic-suite `34730890327`, and Heartbeat `34730890315` all passed.
+- stale PR #1495 is closed unmerged as superseded by #1671; its useful coordination corrections are preserved in current canonical source.
 
-The `.github` bridge preserves exact `event_sha256` / predecessor lineage. The `continuity-vault-kit` binding remains the task-specific translator into the existing provider-neutral storage operation contract. Neither is a runtime authority.
+The `.github` projection bridge preserves exact `event_sha256` and predecessor lineage. The continuity-vault-kit binding remains the task-specific translator into the existing provider-neutral storage-operation path. Neither owns runtime authority.
 
-## Reusable Task Component Model reconciliation
+## Reusable component composition
 
 Canonical model: `data/reusable-task-component-model.json`
-Decomposition policy: `data/reusable-task-component-decomposition-policy.json`
 Transport contract: `data/reusable-transport-component-contract.json`
+Evidence-validation contract: `data/reusable-evidence-validation-component-contract.json`
 Goal profile: `data/goal-task-transport-profiles/TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001.json`
 
-This flow crosses multiple repositories and authority owners, contains repeated governed request/response evidence, has independently provable stages, and previously presented a growing linear handoff. It therefore satisfies the policy's `13+` stop-scope-growth condition and must be represented as reusable components before more bespoke orchestration is added.
+Required components:
 
-No new reusable component is required.
+| Component | Owner / implementation | Purpose | Evidence / precondition | Cardinality |
+| --- | --- | --- | --- | --- |
+| `RTC-MANIFEST-001` | reusable transport contract + runtime intake | bind one live Task Registry event, exact hash/predecessor, provider/KV target | exact manifest/input binding | once |
+| `RTC-GOVERNED-PROCESSING-002` | existing runtime owners + Interlock/InTr | bounded governed processing of the provider operation | authentic applicable admission | once |
+| `RTC-ROUNDTRIP-003` | existing provider path | provider WRITE, then exact stored-event readback | chained authentic request/response receipts | twice |
+| `RTC-EVIDENCE-CUSTODY-004` | Master Records | terminal custody and reconstruction | accepted authentic component evidence | once terminally |
+| `RTC-STEGVERSE-EGRESS-007` | Interlock/InTr | governed local egress candidate | contemporaneous transition evidence | as required |
+| `RTC-INTERLOCK-INTR-TRANSPORT-008` | Interlock/InTr | governed packet movement | authentic ingress/egress receipts | repeatable |
+| `RTC-FARSIDE-FINAL-009` | existing provider execution owner | actual far-side provider WRITE | authentic provider execution receipt | once for target write |
+| `RTC-EVIDENCE-CURRENT-SELECTOR-010` | KV/SKAP verification domain + TV/TVC admitted-receipt semantics | select exactly one current applicable already-verified KV/SKAP record for this operation | CURRENT_VERIFIED binding, exact context/digest match, exactly one candidate | when provider/session path requires current user-verification evidence |
 
-### Required component map
+`RTC-EVIDENCE-CURRENT-SELECTOR-010` is non-authorizing. It creates no verification, performs no device verification, returns no raw secrets, does not select latest-by-time, and may retry only when authoritative current binding or candidates change.
 
-| Component | Existing owner / implementation | Inputs | Outputs | Preconditions | Expected evidence | Cardinality | Requirement |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| `RTC-MANIFEST-001` Manifest Intake and Binding | reusable transport contract + existing runtime intake contract | live canonical Task Registry event, exact event hash/predecessor, target KV/provider parameters | manifest-bound invocation inputs | canonical event, task identity, required evidence declared | exact input/hash binding | once | required |
-| `RTC-GOVERNED-PROCESSING-002` Governed Processing | existing runtime owners; Interlock/InTr for state transitions | bound provider-write intent | bounded governed processing result | required execution owner and applicable admission path present | governed processing/admission evidence | once | required |
-| `RTC-ROUNDTRIP-003` Governed Round Trip | existing provider path | provider WRITE request; later exact readback request | provider result and readback result | applicable admission/session state | chained request/response evidence | twice: admitted provider write + exact hash readback | required/repeatable |
-| `RTC-EVIDENCE-CUSTODY-004` Evidence Custody and Reconstruction | Master Records | accepted runtime receipts and exact readback evidence | durable observed-reality custody/reconstruction | authentic component evidence exists | Master Records custody/reconstruction evidence | once terminally | required |
-| `RTC-STEGVERSE-EGRESS-007` StegVerse-side Final Egress Transition | Interlock/InTr | admitted local provider-operation candidate | egress candidate | contemporaneous transition decision | egress transition receipt | as required by provider path | required |
-| `RTC-INTERLOCK-INTR-TRANSPORT-008` Interlock/InTr Transport | Interlock/InTr | governed provider packets | governed packet movement / transition receipts | exact transition admission | authentic ingress/egress transport evidence | repeatable | required |
-| `RTC-FARSIDE-FINAL-009` Far-side Final Transition | existing provider execution owner | admitted provider WRITE | stored provider object / operation result | provider/session prerequisites satisfied | authentic provider execution receipt | once for target write | required |
+Not selected: `RTC-PUBLISHER-005` and `RTC-SDK-RETURN-006`; this Goal Task neither publishes a public artifact nor assembles an SDK response.
 
-Not selected: `RTC-PUBLISHER-005` and `RTC-SDK-RETURN-006`. This Goal Task does not publish a public artifact or assemble an SDK response.
+## Existing owners reused
 
-## Existing non-transport components reused
+- provider execution/admission lineage: `KV-CONNECTION-REVALIDATION-WORKER-001`;
+- Device/KV/SKAP/InTr lineage: `STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001` until a successor is canonical on `main`;
+- candidate runtime successor: `STEGOS-DEVICE-KV-SKAP-AUTHENTIC-RUNTIME-002`, tracked by issue #1500 and source PR #1519;
+- credential/provider release: TV/TVC;
+- sole user-verification authority: KV/SKAP Vault;
+- custody/reconstruction: Master Records;
+- provider translator: `StegVerse-Labs/continuity-vault-kit/runtime/task_registry_event_sovereign_kv_binding.py`;
+- exact-hash acceptance: `scripts/project_task_registry_event_to_sovereign_kv.py`.
 
-- Runtime/execution materialization: existing runtime owners only; use the reusable task-ephemeral construct contract only where their declared runner path requires it. No second runner plane is created.
-- Credential/provider release: TV/TVC.
-- User verification: KV/SKAP Vault only.
-- Provider adapter: `StegVerse-Labs/continuity-vault-kit/runtime/task_registry_event_sovereign_kv_binding.py` remains a task-specific translator into the reusable provider/transport path.
-- Task Registry projection: `scripts/project_task_registry_event_to_sovereign_kv.py` remains task-specific exact-hash acceptance logic.
-- Evidence validation: retain the existing fail-closed exact-event-hash validator; do not duplicate it in transport machinery.
-- Observed reality/custody/reconstruction: Master Records.
+PR #1519 exact head `a3c66f7a0a17ca941be72cc63f2cb9d11134b686` passed organization-control `34637852384`, deterministic-suite `34637852390`, and Heartbeat `34637852446`, but the PR remains unmerged/noncanonical on current `main`. This Goal Task therefore does not replace its canonical dependency with the successor yet.
 
-## Duplicate orchestration retired or superseded
+## Duplicate orchestration prohibited
 
-The prior six-step handoff sequence is preserved as historical/runtime intent but is no longer the primary architecture representation. It is superseded conceptually by the selected reusable components plus task-specific parameters and completion predicates.
+Do not add a task-specific provider executor, duplicate Interlock/InTr transport, duplicate credential/session handler, task-specific current-verification selector, duplicate custody/reconstruction path, device-local user verifier, or second user-operated device requirement.
 
-Do not add:
-
-- a task-specific provider executor;
-- duplicate Interlock/InTr transport;
-- duplicate credential/session resolution;
-- duplicate custody/reconstruction machinery;
-- device-local user verification;
-- a second user-operated device requirement.
-
-Historical evidence and provenance remain intact.
-
-## Existing execution owners and dependencies
-
-- `KV-CONNECTION-REVALIDATION-WORKER-001`: existing provider execution/admission lineage. Remaining independent native publication work may have successor ownership, but this Goal Task does not inherit or recreate that publication work.
-- `STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001`: existing Device/KV/SKAP/InTr evidence lineage.
-- `TVC-RECIPIENT-ADMISSION-SIGNING-CUSTODY-001`: adjacent credential-path dependency registered by merged PR #1484.
-- `TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001`: source event-history dependency.
-- `TASK-REGISTRY-SESSION-RETURN-ORCHESTRATION-001`: parent Goal Task.
+Historical source and evidence remain provenance; componentization does not upgrade them into runtime evidence.
 
 ## Authority invariants
 
@@ -89,43 +75,44 @@ Historical evidence and provenance remain intact.
 - Interlock/InTr: governed state-transition/admission authority.
 - TV/TVC: credential/provider/release authority.
 - KV/SKAP Vault: sole user-verification authority.
-- StegOS devices: interchangeable transport/execution nodes, never user verifiers or user-identity authorities.
+- StegOS devices: interchangeable transport/execution nodes, never user verifiers.
 - Master Records: observed-reality custody/reconstruction.
-- HeartBeat: synchronization, timing, freshness, liveness, correlation, and observability only.
+- HeartBeat: timing, freshness, liveness, correlation, observability only.
 - GitHub: source/evidence coordination only; runtime authority `NONE`.
 
-Runtime subject binding, node identity, Secure Enclave identity, transport identity, and device identity do not become user-verification authority.
+Runtime subject, node, Secure Enclave, transport, or device identity never becomes user-verification authority.
 
-## Current runtime/evidence state
+## Runtime/evidence state
 
-Source integration and runtime-intake source are complete. Componentization does not upgrade evidence. No authentic provider WRITE plus exact Task Registry event-hash readback is established by the currently checked canonical evidence.
+Fresh canonical source search still finds the sovereign-KV projection receipt schema only in source/contracts/tests/handoffs, not an authentic runtime receipt. No authentic provider WRITE plus exact Task Registry event-hash readback has been established. Component reuse and green CI do not change that evidence class.
 
 Current first unresolved predicate:
 
 `AUTHENTIC_ADMITTED_PROVIDER_WRITE_AND_EXACT_EVENT_HASH_READBACK_FROM_SOVEREIGN_KV`
 
-## Goal-specific completion predicates after componentization
+## Goal-specific completion predicates
 
 1. one live canonical `stegverse.task-registry-checkin-event/v1` is bound with exact `event_sha256` and predecessor lineage;
-2. any execution-owner-required WorkerCoordinator claim/fence is authentic;
+2. required WorkerCoordinator claim/fence is authentic;
 3. Interlock/InTr authentically admits the exact provider WRITE transition;
-4. applicable TV/TVC + KV/SKAP session evidence is authentic and preserves authority separation;
-5. the existing provider owner executes the WRITE with `object_ref` equal to the canonical event hash;
-6. exact stored-event SHA-256 readback equals the canonical event hash;
-7. `stegverse.task-registry-sovereign-kv-projection-receipt/v1` is accepted by the existing fail-closed projection logic;
-8. required Master Records custody/reconstruction is authentically observed before terminal completion is claimed.
+4. applicable TV/TVC + KV/SKAP evidence is authentic;
+5. where current verification selection is required, `RTC-EVIDENCE-CURRENT-SELECTOR-010` selects exactly one matching CURRENT_VERIFIED record without minting authority;
+6. existing provider owner executes WRITE with `object_ref` equal to canonical event hash;
+7. exact stored-event SHA-256 readback equals canonical event hash;
+8. `stegverse.task-registry-sovereign-kv-projection-receipt/v1` is accepted by the existing fail-closed projection logic;
+9. required Master Records custody/reconstruction is authentically observed before terminal completion.
 
 ## Next admissible work
 
-1. validate and merge this component-composition reconciliation only if exact-head required repository lanes are green;
-2. retire/supersede stale PR #1495 after the replacement reconciliation is accepted;
-3. re-observe the existing provider and Device/KV/SKAP owners for authentic component evidence;
-4. if authentic admitted provider WRITE evidence exists, consume it through the existing component composition and require exact hash readback;
-5. do not create a duplicate executor, transport path, credential handler, or synthetic receipt if the runtime boundary remains unsatisfied.
+1. merge the current-selector binding only after exact-head required repository validation is green;
+2. continue observing the canonical existing runtime owners for an authentic admitted provider WRITE;
+3. if the Device/KV/SKAP successor becomes canonical, rebind this Goal Task to that canonical owner instead of the retired predecessor lineage;
+4. on authentic WRITE evidence, perform the second `RTC-ROUNDTRIP-003` exact-hash readback and pass the existing fail-closed projection validator;
+5. require Master Records custody/reconstruction before any terminal completion claim.
 
 ## README
 
-Repository README was reviewed against the canonical Reusable Task Component Model. The model already owns the repository-level architecture projection; this consumer reconciliation does not materially change repository function, so no duplicate README prose is added.
+README was reviewed. The canonical Reusable Task Component Model and evidence-validation family already define the repository-level architecture; this consumer binding does not materially change repository function, so no additional README prose is required.
 
 ## Manual work
 
