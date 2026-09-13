@@ -4,59 +4,57 @@
   "correlation_id": "SS-EVIDENCE-STANDARD-IPHONE-FLOW-001",
   "root_correlation_id": "SS-EVIDENCE-COMPARISON-001",
   "parent_task_id": "SS-EVIDENCE-COMPARISON-001",
-  "goal": "Execute and evidence the authentic current-iPhone StegSocials standard preparation/save/readback flow without conflating it with premium social publication authority.",
-  "coordination_state": "INACTIVE",
+  "goal": "Historical device-bound formulation of the StegSocials standard preparation/save/readback evidence step; superseded because StegVerse user verification and authority are KV/SKAP-based and devices are interchangeable transport nodes.",
+  "coordination_state": "SUPERSEDED",
   "checkout_state": "UNCLAIMED",
   "cosv_task_vector": "40000100100000",
   "source_refs": [
     "docs/SS_EVIDENCE_STANDARD_IPHONE_FLOW_MIRROR_HANDOFF.md",
+    "docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md",
     "data/canonical-task-records/SS-EVIDENCE-COMPARISON-001.json",
+    "data/canonical-task-records/SS-EVIDENCE-STANDARD-KV-FLOW-001.json",
     "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_ERL_ASSISTED_DRAFTING_MIRROR_HANDOFF.md"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
     "repositories": ["StegVerse-Labs/StegSocials", "StegVerse-Labs/.github"],
-    "components": ["current-iphone-standard-flow", "personal-kv-draft-save", "exact-content-readback", "standard-flow-receipt"]
+    "components": ["historical-device-bound-standard-flow"]
   },
-  "dependencies": [
-    {"dependency_id":"DEP-SS-STANDARD-KV","kind":"STORAGE","state":"AVAILABLE","ref":"KnowledgeVault"}
-  ],
+  "dependencies": [],
   "blockers": [],
   "systemic_incident_ref": null,
-  "adjacent_task_refs": ["SS-EVIDENCE-COMPARISON-001", "SS-KV-SKAP-SOCIAL-RELEASE-001"],
+  "adjacent_task_refs": ["SS-EVIDENCE-COMPARISON-001", "SS-EVIDENCE-STANDARD-KV-FLOW-001"],
   "existing_evidence_refs": [
-    "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_ERL_ASSISTED_DRAFTING_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/StegSocials@41f1eae88f12d461df6a72fbb3edce90966c0fd9:completed-erl-kv-proof-consumed"
+    "docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md",
+    "StegVerse-Labs/StegSocials@6011cda524a05d965b9752ffd84198f6a41bff4e:device-verification-removed"
   ],
   "expected_evidence_predicates": [
-    "AUTHENTIC_CURRENT_IPHONE_STANDARD_FLOW_EXECUTED",
-    "PERSONAL_KV_STANDARD_DRAFT_WRITE_OBSERVED",
-    "EXACT_CONTENT_READBACK_MATCHES_SAVED_CONTENT",
-    "STANDARD_FLOW_RECEIPT_RETAINED",
-    "PREMIUM_PUBLICATION_AUTHORITY_NOT_INFERRED"
+    "SUPERSEDED_BY_SS_EVIDENCE_STANDARD_KV_FLOW_001",
+    "DEVICE_VERIFICATION_NOT_REQUIRED",
+    "DEVICE_ATTESTATION_NOT_REQUIRED",
+    "DEVICE_IDENTITY_NOT_AUTHORITY",
+    "KV_SKAP_IS_USER_VERIFICATION_AUTHORITY_SOURCE"
   ],
   "runtime_requirements": {
-    "capabilities": ["current_iphone_interaction", "kv_write", "exact_byte_readback", "receipt_emission"],
-    "environment": "CURRENT_IPHONE_PLUS_PERSONAL_KV",
-    "direction": "PREPARATION_TO_PRIVATE_SAVE_TO_READBACK",
-    "mutation_required": true,
+    "capabilities": [],
+    "environment": null,
+    "direction": null,
+    "mutation_required": false,
     "deployment_required": false,
-    "current_observation_required": true
+    "current_observation_required": false
   },
-  "runtime_resolution": {
-    "current_executor": "current-session-plus-current-iphone-interaction",
-    "authority_basis": "user-authorized current-iPhone action plus canonical task/COSV pointer",
-    "unattended_runtime": false
-  },
-  "worker_claim": {"authority":"NONE","claim_ref":null,"fence_ref":null,"projection_only":false},
-  "human_action_ref": "Authentic current-iPhone interaction is required only for the exact standard preparation/save/readback action when execution reaches that evidence step.",
-  "completion": {"claimed":false,"validated":false,"reconciliation_ref":null,"activation_proof_complete":false},
-  "allowed_next_transitions": ["CLAIM_STANDARD_IPHONE_FLOW", "EXECUTE_AUTHENTIC_CURRENT_IPHONE_STANDARD_FLOW"],
-  "handoff_projection_refs": ["docs/SS_EVIDENCE_STANDARD_IPHONE_FLOW_MIRROR_HANDOFF.md"],
+  "worker_claim": {"authority":"NONE","claim_ref":null,"fence_ref":null,"projection_only":true},
+  "human_action_ref": null,
+  "completion": {"claimed":false,"validated":false,"reconciliation_ref":"docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md","activation_proof_complete":false},
+  "allowed_next_transitions": ["USE_SS_EVIDENCE_STANDARD_KV_FLOW_001"],
+  "handoff_projection_refs": ["docs/SS_EVIDENCE_STANDARD_IPHONE_FLOW_MIRROR_HANDOFF.md", "docs/SS_EVIDENCE_STANDARD_KV_FLOW_MIRROR_HANDOFF.md"],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "source_state_proves_execution": false,
     "premium_publication_authority_separate": true,
-    "exact_current_iphone_evidence_required": true
+    "device_verification_required": false,
+    "device_attestation_required": false,
+    "devices_are_interchangeable_transport_nodes": true,
+    "user_verification_authority_source": "KV_SKAP"
   }
 }

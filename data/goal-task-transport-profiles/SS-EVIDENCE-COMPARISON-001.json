@@ -1,0 +1,68 @@
+{
+  "schema": "stegverse.goal-task-transport-profile/v1",
+  "task_id": "SS-EVIDENCE-COMPARISON-001",
+  "cosv_task_vector": "40000100100000",
+  "component_contract": "data/reusable-transport-component-contract.json",
+  "transport_requirements": {
+    "complete_manifest": false,
+    "governed_processing": false,
+    "required_round_trips": [
+      "standard_kv_save_exact_readback"
+    ],
+    "evidence_custody_reconstruction": true,
+    "publisher_projection": false,
+    "sdk_return_assembly": false,
+    "stegverse_final_egress_transition": false,
+    "interlock_intr_transport": true,
+    "far_side_final_transition": false
+  },
+  "selected_components": [
+    "RTC-ROUNDTRIP-003",
+    "RTC-EVIDENCE-CUSTODY-004",
+    "RTC-INTERLOCK-INTR-TRANSPORT-008"
+  ],
+  "composition_rule": "The Goal Task consumes only the reusable components required for the remaining standard KV evidence path. Premium automated/scheduled provider publication remains the separate SS-KV-SKAP-SOCIAL-RELEASE-001 Goal Task and therefore does not force Publisher, SDK return, StegVerse final egress, or far-side-final components into this task.",
+  "task_specific_bindings": {
+    "RTC-ROUNDTRIP-003": {
+      "input": "canonical StegSocials preparation bundle plus intended personal-KV draft path and exact content bytes",
+      "output": "KV admission plus exact stored-byte readback bound to path/hash/size",
+      "preconditions": ["KV_SKAP_USER_VERIFICATION_AUTHORITY_AVAILABLE", "CANONICAL_PREPARATION_BUNDLE_VALID"],
+      "expected_evidence": ["KV_PUBLICATION_WRITE_IS_FAIL_CLOSED_IDEMPOTENT_AND_READBACK_VERIFIED"],
+      "repeatability": "ONE_REQUIRED_STANDARD_KV_SAVE_READBACK_CYCLE; retry only after classified failure without upgrading evidence"
+    },
+    "RTC-EVIDENCE-CUSTODY-004": {
+      "input": "verified standard-flow evidence object and existing ERL/provider receipt chain references",
+      "output": "retained evidence/readback/reconstruction references without publication or device-identity inference",
+      "preconditions": ["EXACT_CONTENT_READBACK_MATCHES_SAVED_CONTENT"],
+      "expected_evidence": ["ERL_NATIVE_AND_PROVIDER_OPERATION_RECEIPTS_MASTER_RECORDS_RECONSTRUCTION_PASS", "REAL_LIVE_PUBLICATION_TO_KV_AND_MASTER_RECORDS_RECONSTRUCTION_PASS"],
+      "repeatability": "per independently custodial evidence object; historical custody evidence is reused and not replayed"
+    },
+    "RTC-INTERLOCK-INTR-TRANSPORT-008": {
+      "input": "exact bounded KV transition candidate",
+      "output": "governed admission/transport receipt for the exact transition",
+      "preconditions": ["WORKERCOORDINATOR_CLAIM_FENCE_WHEN_MACHINE_EXECUTION_APPLIES", "KV_SKAP_USER_VERIFICATION_AUTHORITY_PRESERVED"],
+      "expected_evidence": ["AUTHENTIC_INTERLOCK_INTR_ADMISSION_FOR_EXACT_KV_TRANSITION"],
+      "repeatability": "repeat only for distinct governed transitions; prior receipt never authorizes a later transition"
+    }
+  },
+  "non_transport_reuse": {
+    "user_verification": "KV/SKAP Vault existing authority; not a reusable transport component",
+    "evidence_validation": "StegVerse-Labs/StegSocials scripts/validate_standard_flow_evidence_export.py and merged PR #48 verifier",
+    "custody_reconstruction": "master-records/orchestration existing ERL/StegSocials custody and reconstruction implementations",
+    "runtime_observation": "existing canonical runtime/transport observation owners; no new runtime observer",
+    "credential_session": "NOT_APPLICABLE_TO_STANDARD_MANUAL_LANE; TV/TVC remains owner for separate provider/release work",
+    "terminal_cleanup_entropy_recovery": "NOT_REQUIRED_FOR_THIS_STANDARD_MANUAL_FLOW_UNLESS_A_BOUNDED_EPHEMERAL_RUNNER_IS_MATERIALIZED"
+  },
+  "authority_invariants": {
+    "task_registry": "COORDINATION_ONLY",
+    "claim_fence": "WorkerCoordinator",
+    "user_verification": "KV/SKAP Vault",
+    "device_role": "INTERCHANGEABLE_STEGOS_TRANSPORT_NODE",
+    "device_verification": "PROHIBITED",
+    "transition": "Interlock/InTr",
+    "credential_provider_release": "TV/TVC",
+    "reality_reconstruction": "Master Records",
+    "heartbeat": "TIMING_FRESHNESS_LIVENESS_CORRELATION_OBSERVABILITY_ONLY",
+    "github_runtime_authority": "NONE"
+  }
+}
