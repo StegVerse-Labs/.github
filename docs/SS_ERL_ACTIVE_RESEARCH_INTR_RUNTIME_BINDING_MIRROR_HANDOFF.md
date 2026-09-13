@@ -26,6 +26,8 @@ Those changes establish that Task Registry is coordination-only and is not a run
 ## Device-confirmation prohibition
 
 ```text
+present surface label: CURRENT_USER_IPHONE
+surface label semantics: INFORMATIONAL_ONLY
 device confirmation required: false
 device discovery required: false
 device presence probe required: false
@@ -35,7 +37,9 @@ second user-operated device required: false
 execution-surface identity mints authority: false
 ```
 
-A continuation session MUST NOT discover, confirm, enumerate, poll for, wait for, authorize, identify, or require an iPhone, connected device, resident device, Remote Desktop Commander device, or second machine.
+A continuation session MUST NOT attempt to discover, confirm, authorize, identify, probe, enumerate, poll for, wait for, or require an iPhone, connected device, resident device, Remote Desktop Commander device, or second machine.
+
+Do **not** poll for, wait for, or require any remotely connected resident device.
 
 Absence of a connected-device result is not a blocker, readiness state, failure state, or evidence predicate.
 
@@ -68,6 +72,8 @@ No new scheduler, WorkerCoordinator, listener, transport owner, credential path,
 
 ## Runtime evidence disposition
 
+`TASK_BOUND_PORTABLE_EXECUTION_EVIDENCE_NOT_OBSERVED`
+
 Authentic task-bound execution, shared loopback admission, hop 1/hop 2/hop 3, exact terminal KV byte readback, provider-proof binding for that runtime chain, and Master Records custody/reconstruction have not been observed. No runtime completion is claimed.
 
 Those remaining predicates are genuinely separable from the completed source-binding correction and are now owned by `SS-ERL-AUTHENTIC-INTR-EXECUTION-EVIDENCE-002`.
@@ -76,4 +82,4 @@ Do not extend this predecessor Goal Task with additional qualifying prompts. Con
 
 ## Current state
 
-`SOURCE_CORRECTION_VALIDATED_AND_MERGED / TASK_REGISTRY_RUNTIME_GATE_REMOVED / DEVICE_CONFIRMATION_DISCOVERY_PRESENCE_PROBING_PROHIBITED / SHORTEST_EXISTING_ERL_INTR_DEVICE_KV_PATH_RESTORED / PROMPT_CEILING_REACHED / REMAINING_AUTHENTIC_RUNTIME_EVIDENCE_TRANSFERRED_TO_SS-ERL-AUTHENTIC-INTR-EXECUTION-EVIDENCE-002`
+`SOURCE_CORRECTION_VALIDATED_AND_MERGED / TASK_REGISTRY_RUNTIME_GATE_REMOVED / DEVICE_CONFIRMATION_DISCOVERY_PRESENCE_PROBING_PROHIBITED / SHORTEST_EXISTING_ERL_INTR_DEVICE_KV_PATH_RESTORED / TASK_BOUND_PORTABLE_EXECUTION_EVIDENCE_NOT_OBSERVED / PROMPT_CEILING_REACHED / REMAINING_AUTHENTIC_RUNTIME_EVIDENCE_TRANSFERRED_TO_SS-ERL-AUTHENTIC-INTR-EXECUTION-EVIDENCE-002`
