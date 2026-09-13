@@ -1,0 +1,28 @@
+name: Source Mutation Preflight Guard
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  source-mutation-preflight-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run guard regression tests
+        run: python -m pytest -q tests/test_source_mutation_preflight_guard.py
+
+      - name: Require pre-mutation canonical preflight receipt
+        run: python scripts/validate_source_mutation_preflight.py --base-ref "${GITHUB_BASE_REF}"
