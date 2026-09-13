@@ -23,6 +23,8 @@ Make every reusable task a durable identity whose invocation-specific parameters
 - `StegVerse-Labs/StegScholar:papers/rtg-gtg-tt/cross-layer-contract.md`
 - `master-records/orchestration:scripts/ingest_reusable_task_lifecycle.py`
 - `master-records/orchestration:scripts/reconstruct_reusable_task_lifecycle.py`
+- `StegVerse-Labs/StegVerse-Healer:app/reusable_task_scheduler.py`
+- `StegVerse-Labs/StegVerse-Healer:docs/ECOSYSTEM_CONTINUITY_PERIODIC_CYCLE_MIRROR_HANDOFF.md`
 
 ## Durable / ephemeral invariant
 
@@ -77,7 +79,7 @@ When a reusable identity has no executable runner declaration, the trigger is st
 
 The existing `RT-ECOSYSTEM-CONTINUITY-EVALUATION-001` identity is the first real ecosystem workload bound to this result shape. Its existing runner delegates to the Healer ECE cycle. A reusable result is written only when that cycle returns `state=COMPLETE`; blocked/failed cycles emit no standardized completion result.
 
-That ECE cycle already performs SDK diagnostic processing, ECE evaluation, exact evaluation-byte custody/reconstruction through its existing Master Records path, Healer intake, and Site-safe projection. The reusable lifecycle binding does not replace any of those owners or reinterpret a failed cycle.
+That ECE cycle performs SDK diagnostic processing, ECE evaluation, exact evaluation-byte custody/reconstruction through its existing Master Records path, Healer intake, and Site-safe projection. The reusable lifecycle binding does not replace any of those owners or reinterpret a failed cycle.
 
 ## Invocation lifecycle
 
@@ -103,6 +105,7 @@ durable reusable identity
 -> exact request-byte reconstruction
 -> source verifies exact reconstructed bytes + destination record
 -> entropy recovery
+-> scheduler records the UTC-hour slot satisfied
 ```
 
 ## Residual recording construct
@@ -144,7 +147,24 @@ Entropy recovery displaces only the residual non-executing construct. It does no
 
 The existing local-only WorkerCoordinator source refresher carries the reusable-task registry, construct contract, constructor, and trigger explicitly. The lifecycle closure, Master Records roundtrip adapter, and entropy finalizer live under `workers/`, which that same refresher already propagates recursively. No second source-distribution plane is introduced.
 
-The ECE resident runtime already requires `master-records/orchestration` in its local repository-root map. Missing local source continues to fail closed; the lifecycle performs no GitHub/network fetch during resident execution.
+The ECE resident runtime requires `master-records/orchestration` in its local repository-root map. Missing local source continues to fail closed; the lifecycle performs no GitHub/network fetch during resident execution.
+
+The Healer workflow is contract validation only: hosted production scheduling and hosted production dispatch are `NONE`; the production scheduler/execution carrier is the single StegVerse resident heartbeat. Therefore a GitHub workflow run is not a substitute for authentic resident lifecycle evidence.
+
+## Scheduler terminal semantics
+
+The existing Healer scheduler originally recognized only `AUTOMATABLE_STEPS_EXHAUSTED` as a successful reusable-task slot state. That remains the successful terminal for bounded reusable tasks that stop after ordinary automatable work/evidence reconciliation.
+
+The complete ephemeral lifecycle has a stronger terminal state: `ENTROPY_RECOVERY_RECORDED`. Failing to recognize it would cause a successfully completed lifecycle to be treated as retryable and could repeat the same UTC-hour operation.
+
+StegVerse-Healer PR #67 therefore makes both states idempotency terminals:
+
+```text
+AUTOMATABLE_STEPS_EXHAUSTED
+ENTROPY_RECOVERY_RECORDED
+```
+
+`BOUNDARY_RECORDED`, `FAILED`, missing receipts, and other nonterminal states remain unsatisfied and retain the existing bounded retry semantics.
 
 ## Authority boundaries
 
@@ -155,6 +175,7 @@ The ECE resident runtime already requires `master-records/orchestration` in its 
 - Master Records: observed reality / custody / reconstruction
 - COSV: compact state projection
 - Trigger driver: non-authorizing dependency orchestration
+- Healer scheduler: scheduling only; successful-state recognition does not mint execution or completion evidence
 - GitHub token runtime authority: `NONE`
 
 ## Work completed
@@ -163,14 +184,23 @@ The ECE resident runtime already requires `master-records/orchestration` in its 
 - `master-records/core-lite` PR #39 merged a separately validated reference implementation of independent lifecycle custody at `be0d08d73c96f50308991793327522dc01304657`.
 - `master-records/orchestration` PR #93 merged the actual ECE-resident lifecycle ingest/reconstruction destination at `3507c5116ad9741f368bea0c563023f25729ac75`; its focused reusable lifecycle custody validation passed before merge.
 - `.github` PR #1694 merged the resident Master Records roundtrip integration at `c35a12fdf1fa32b7890e923cf0889bb0ba570010` after exact-head Organization Control `34735304336`, Deterministic Repository Suite `34735304388`, and Heartbeat Worker Project `34735304350` all passed.
+- `.github` PR #1696 merged the runtime-only remainder reconciliation at `57cc26b1c76c68c07c673012b1ae93c5c0fea59e` after exact-head Organization Control `34735381200`, Deterministic Repository Suite `34735381206`, and Heartbeat Worker Project `34735381218` all passed.
+- StegVerse-Healer PR #67 merged scheduler terminal-state compatibility at `c2bea205411397c7ad7bb5fc6ad5f8c81c007f1c`; exact-head Test Readiness run `34735804770` passed.
 - The reusable trigger now advances from authentic standardized runner evidence through runner expiry, residual recording, destination-owned Master Records custody/reconstruction, exact reconstructed-request byte equality, and entropy recovery when the existing local runtime dependencies are present.
-- Existing runners without standardized completion evidence still stop at evidence reconciliation; missing/rejected Master Records runtime source still stops at the exact destination boundary.
-- The existing Healer reusable-task schedule already enables `RT-ECOSYSTEM-CONTINUITY-EVALUATION-001` hourly with bounded retries; no new scheduler was added.
+- The existing Healer reusable-task schedule already enables `RT-ECOSYSTEM-CONTINUITY-EVALUATION-001` hourly with bounded retries, recognizes entropy-complete execution as successful, and adds no second scheduler.
+
+## Current runtime/evidence state
+
+- No connector-visible resident device is currently available.
+- No repository-retained post-merge invocation was found for `RT-ECOSYSTEM-CONTINUITY-EVALUATION-001` carrying `ENTROPY_RECOVERY_RECORDED`.
+- GitHub Actions validation cannot substitute for the resident heartbeat carrier and does not prove local source materialization or execution.
+- No authentic same-invocation manifest -> runner result -> expiry -> residual -> Master Records lifecycle custody/reconstruction -> entropy chain is therefore claimed yet.
 
 ## Work remaining to satisfy the goal
 
-1. Observe one authentic post-merge `RT-ECOSYSTEM-CONTINUITY-EVALUATION-001` resident/sandbox invocation executed by the existing ecosystem scheduler.
-2. Retain, from that same invocation, the manifest, trigger receipt, standardized runner result, runner-expiry receipt, residual-recording artifact, Master Records source request, destination custody record, exact reconstructed request bytes, and entropy-recovery receipt.
-3. Verify that retained chain has no inferred, substituted, or cross-invocation links.
+1. Observe the resident heartbeat with local source roots materializing the merged lifecycle-compatible `.github`, StegVerse-Healer, SDK/Site dependencies, and `master-records/orchestration` source required by the existing ECE lane.
+2. Observe one authentic post-merge `RT-ECOSYSTEM-CONTINUITY-EVALUATION-001` resident/sandbox UTC-hour invocation executed by the existing ecosystem scheduler.
+3. Retain, from that same invocation, the manifest, trigger receipt, standardized runner result, runner-expiry receipt, residual-recording artifact, Master Records source request, destination custody record, exact reconstructed request bytes, entropy-recovery receipt, and scheduler slot state.
+4. Verify that the retained chain has no inferred, substituted, or cross-invocation links and that the scheduler recognizes `ENTROPY_RECOVERY_RECORDED` as slot-satisfying without a duplicate same-slot execution.
 
-No additional source implementation is presently identified for this lifecycle. Quantitative performance/load assessment should be repeated only after the remaining runtime artifacts exist.
+No additional source implementation is presently identified for this lifecycle. Quantitative performance/load assessment should be repeated only after the remaining authentic runtime artifacts exist.
