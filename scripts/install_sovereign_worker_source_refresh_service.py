@@ -62,7 +62,12 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path, source_
     packages = (source_package_root or default_source_package_root()).expanduser().resolve()
     if source == runtime:
         raise ValueError("source and runtime roots must be distinct")
-    refresh_script = runtime / "scripts/refresh_sovereign_worker_runtime_source.py"
+    # The watcher is triggered by canonical-source changes. Invoke the refresh
+    # implementation from that already-local canonical source rather than asking
+    # a potentially stale resident runtime to refresh itself with its stale copy.
+    # This grants no transport or execution authority; it only removes a stale-self
+    # bootstrap dependency at the source->runtime projection boundary.
+    refresh_script = source / "scripts/refresh_sovereign_worker_runtime_source.py"
     request_dispatcher = runtime / "scripts/dispatch_resident_execution_requests.py"
     hil_materialization_consumer = runtime / "scripts/consume_hil_intr_materialization_request.py"
     safe_local_bindings = {}
@@ -135,9 +140,6 @@ def render_units(*, source_root: Path, runtime_root: Path, python: Path, source_
         "",
     ])
     combined = service + "\n" + path_unit
-    # Split these markers so raw-source guards do not mistake the guard itself
-    # for an executable transport/credential path. The reconstructed values are
-    # still the exact strings forbidden in generated unit text.
     forbidden = (
         "GITHUB" + "_TOKEN",
         "GH" + "_TOKEN",
@@ -168,13 +170,8 @@ def install(
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
     packages = (source_package_root or default_source_package_root()).expanduser().resolve()
-    # Immediate local refresh is the one-time bridge from a stale materialization.
     refresh_receipt = refresh(source, runtime)
 
-    # Do not leave newly materialized resident requests waiting for a later
-    # filesystem event. Immediately visit the generic dispatcher after the
-    # refresh. Request-specific consumers remain independently fail-closed and
-    # non-authorizing.
     immediate_dispatch = {
         "attempted": False,
         "state": "DISPATCHER_NOT_MATERIALIZED",
@@ -263,6 +260,8 @@ def install(
         "activation_results": results,
         "activated": activate,
         "filesystem_event_driven": True,
+        "canonical_source_refresh_entrypoint": str(source / "scripts/refresh_sovereign_worker_runtime_source.py"),
+        "runtime_copy_required_to_refresh": False,
         "intr_materialization_event_driven": True,
         "intr_materialization_watch": str(runtime / "intr-materialization"),
         "source_package_event_driven": True,
