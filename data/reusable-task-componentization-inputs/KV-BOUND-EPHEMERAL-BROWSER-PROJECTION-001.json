@@ -1,0 +1,27 @@
+{
+  "schema": "stegverse.reusable-task-componentization-input/v1",
+  "task_id": "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001",
+  "cosv_task_vector": "50000010100000",
+  "signals": {
+    "repeated_subflow": true,
+    "multiple_authority_crossings": true,
+    "multiple_round_trips": true,
+    "cross_repository_or_org_spread": true,
+    "task_specific_adapter_duplicates_generic_work": true,
+    "handoff_sequence_growth": true,
+    "failure_path_branching": true,
+    "independent_reusability": true,
+    "optional_subflow_present": true,
+    "independent_evidence_predicate": true
+  },
+  "evidence_basis": [
+    "Current goal spans .github, Site, StegOS, continuity-vault-kit, and TVC-owned provider operations",
+    "Execution crosses WorkerCoordinator claim/fence, KV/SKAP user-verification, Interlock/InTr governed transition, TV/TVC credential/provider/release, and Master Records custody/reconstruction owners",
+    "The TestFlight path contains repeated TVC provider-operation request/response cycles whose exact count depends on provider reconciliation state",
+    "Same-device recovery, frozen bootstrap, provider translation, signing, Build Upload/TestFlight release, runtime observation, and final reconstruction have independently provable evidence predicates",
+    "The Site same-device wrapper and current-iPhone provider client compose generic governed-ingress, transport, credential/session, and provider-operation behavior and must not grow into independent orchestration owners",
+    "Conditional resident-KV installation receipt recovery is an optional remediation subflow and must not be forced into successful normal executions",
+    "Historical public publication and exact source projection are already satisfied evidence stages and must not be replayed as runtime work"
+  ],
+  "authority_effect": "NONE_COORDINATION_ONLY"
+}

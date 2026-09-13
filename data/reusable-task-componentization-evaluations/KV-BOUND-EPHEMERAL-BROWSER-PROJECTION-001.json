@@ -1,0 +1,23 @@
+{
+  "schema": "stegverse.reusable-task-componentization-evaluation/v1",
+  "task_id": "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001",
+  "cosv_task_vector": "50000010100000",
+  "score": 30,
+  "active_signals": [
+    "repeated_subflow",
+    "multiple_authority_crossings",
+    "multiple_round_trips",
+    "cross_repository_or_org_spread",
+    "task_specific_adapter_duplicates_generic_work",
+    "handoff_sequence_growth",
+    "failure_path_branching",
+    "independent_reusability",
+    "optional_subflow_present",
+    "independent_evidence_predicate"
+  ],
+  "decision": "STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION",
+  "must_search_existing_components": true,
+  "componentization_required": true,
+  "must_stop_scope_growth": true,
+  "authority_effect": "NONE_COORDINATION_ONLY"
+}

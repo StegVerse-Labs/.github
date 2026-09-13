@@ -8,7 +8,31 @@
   "coordination_state": "ACTIVE",
   "checkout_state": "CLAIMED_INTEGRATION",
   "cosv_task_vector": "50000010100000",
+  "component_model_projection": {
+    "model": "data/reusable-task-component-model.json",
+    "decomposition_policy": "data/reusable-task-component-decomposition-policy.json",
+    "decomposition_input": "data/reusable-task-componentization-inputs/KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001.json",
+    "decomposition_evaluation": "data/reusable-task-componentization-evaluations/KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001.json",
+    "goal_component_profile": "data/goal-task-component-profiles/KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001.json",
+    "transport_family": "data/reusable-transport-component-contract.json",
+    "goal_transport_profile": "data/goal-task-transport-profiles/KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001.json",
+    "goal_identity_preserved": true,
+    "cosv_identity_preserved": true,
+    "decomposition_score": 30,
+    "decomposition_decision": "STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION",
+    "componentization_mints_authority": false,
+    "runtime_handoff_remains_runtime_truth": true,
+    "runtime_predicates_completed_by_source_reuse": false
+  },
   "source_refs": [
+    "StegVerse-Labs/.github#1652@b9f8e5153aa1651f2d7f043fb902eacb7c113ed9",
+    "data/reusable-task-component-model.json",
+    "data/reusable-task-component-decomposition-policy.json",
+    "data/reusable-task-ephemeral-construct-contract.json",
+    "data/reusable-transport-component-contract.json",
+    "data/goal-task-component-profiles/KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001.json",
+    "data/goal-task-transport-profiles/KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001.json",
+    "docs/KV_BOUND_EPHEMERAL_BROWSER_PROJECTION_COMPONENT_MODEL_MIRROR_HANDOFF.md",
     "docs/KV_BOUND_EPHEMERAL_BROWSER_PROJECTION_MIRROR_HANDOFF.md",
     "StegVerse-Labs/continuity-vault-kit@47c363611210b7501cbb50abce768cfe0911057f",
     "StegVerse-Labs/StegOS@19e2ea02a16bd703767aafcd47e71f5ec5efe3cf",
@@ -22,8 +46,19 @@
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
-    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/continuity-vault-kit", "StegVerse-Labs/StegOS", "StegVerse-Labs/Site"],
-    "components": ["kv-state-transition-continuity", "ephemeral-browser-projection", "current-iphone-kv-testflight-bootstrap", "same-device-kv-recovery", "testflight-materialization"]
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/continuity-vault-kit", "StegVerse-Labs/StegOS", "StegVerse-Labs/Site", "StegVerse-Labs/TVC"],
+    "components": [
+      "RTC-MANIFEST-001",
+      "RTC-ROUNDTRIP-003",
+      "RTC-EVIDENCE-CUSTODY-004",
+      "RTC-INTERLOCK-INTR-TRANSPORT-008",
+      "RTC-FARSIDE-FINAL-009",
+      "execution_materialization:reusable-task-ephemeral-construct-contract",
+      "governed_ingress:existing-device-kv",
+      "framework_provider_adapter:current-iphone-tvc-provider-client",
+      "evidence_validation:canonical-existing-validators",
+      "runtime_observation:current-iphone-plus-tvc"
+    ]
   },
   "dependencies": [
     {
@@ -44,7 +79,7 @@
       "dependency_id": "DEP-COMPLETE-KV-GATED-SITE-PROJECTION",
       "kind": "SOURCE_PROJECTION_PREDICATE",
       "state": "SATISFIED_MERGED_PUBLIC_EXACT",
-      "ref": "StegVerse-Labs/Site#1236@841ab0298741fd5152c9cf88211468c3b86093d3",
+      "ref": "StegVerse-Labs/Site#1236@841ab0298741fd5152c9cf88211468c3f38128846d",
       "disposition": "Frozen StegOS bootstrap/signing chain is merged and exact public publication is proven by run 34616154322."
     },
     {
@@ -55,11 +90,18 @@
       "disposition": "Same-device wrapper derives CURRENT_IPHONE_TESTFLIGHT_SIGNING projection through the existing Device-KV/InTr materializer and passes it in memory to the frozen TASK-0011 bootstrap. Exact-head Bootstrap Validate run 34635756191, Heartbeat run 34635756202, and Handoff Orchestrator run 34635756331 passed; public publication run 34635855832 passed. No runtime proof is inferred."
     },
     {
+      "dependency_id": "DEP-REUSABLE-TASK-COMPONENT-MODEL",
+      "kind": "SOURCE_ARCHITECTURE",
+      "state": "AVAILABLE",
+      "ref": "StegVerse-Labs/.github#1652@b9f8e5153aa1651f2d7f043fb902eacb7c113ed9",
+      "disposition": "COMPOSE_EXISTING_COMPONENTS_AND_STOP_BESPOKE_SCOPE_GROWTH"
+    },
+    {
       "dependency_id": "DEP-TESTFLIGHT-CURRENT-IPHONE-RUNTIME",
       "kind": "PHYSICAL_RUNTIME_PREDICATE",
       "state": "ACTIVE_CURRENT_IPHONE_EXECUTION_REQUIRED",
       "ref": "https://stegverse.org/task0011-same-device-kv-recovery.html",
-      "disposition": "On the established current iPhone, use the public same-device wrapper. No pre-existing projection JSON is required. The wrapper must obtain authentic Device-KV/InTr admission, require KV_INSTALLATION_VERIFIED, derive the exact projection in memory, and then invoke the frozen bootstrap. Preserve the exact result or fail-closed message. If the specific failure is resident KV installation not verified, the canonical installation receipt recovery path remains available but is not bypassed or synthesized."
+      "disposition": "Continue through the existing reusable-component composition on the established current iPhone. Preserve the exact result or fail-closed message. Source/component reuse does not prove runtime execution."
     }
   ],
   "blockers": [],
@@ -71,17 +113,19 @@
     "StegVerse-Labs/Site#1236:MERGED:841ab0298741fd5152c9cf88211468c3b86093d3",
     "StegVerse-Labs/Site:RUN34616154322:PUBLIC_EXACT_PUBLICATION_PASS",
     "StegVerse-Labs/Site#1237:MERGED:b847d4e408571efb9ff511f1facbc3f38128846d",
-    "StegVerse-Labs/Site:RUN34635855832:SAME_DEVICE_RECOVERY_PUBLICATION_PASS"
+    "StegVerse-Labs/Site:RUN34635855832:SAME_DEVICE_RECOVERY_PUBLICATION_PASS",
+    "StegVerse-Labs/.github#1652:MERGED:b9f8e5153aa1651f2d7f043fb902eacb7c113ed9"
   ],
   "expected_evidence_predicates": [
     "AUTHENTIC_TASK_2026_0011_CLAIM_AND_FENCE_OBSERVED",
     "COMPLETE_KV_GATED_SITE_BOOTSTRAP_PROJECTED",
     "PUBLIC_SAME_DEVICE_KV_RECOVERY_OBSERVED",
     "TESTFLIGHT_CURRENT_IPHONE_RUNTIME_OBSERVED",
+    "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_OBSERVED",
     "GLOBAL_MEASUREMENT_HANDOFF_RETURNED_TO_AUTHENTIC_EXECUTION"
   ],
   "runtime_requirements": {
-    "capabilities": ["kv_state_transition_continuity", "current_iphone_kv_testflight_bootstrap", "same_device_kv_recovery", "testflight_materialization"],
+    "capabilities": ["reusable_component_composition", "kv_state_transition_continuity", "current_iphone_kv_testflight_bootstrap", "same_device_kv_recovery", "testflight_materialization", "master_records_custody_reconstruction"],
     "environment": "CURRENT_IPHONE_KV_BOUND_STEGOS_STEGBROWSER",
     "direction": "INTERNAL",
     "mutation_required": true,
@@ -92,7 +136,7 @@
     "entrypoint": "https://stegverse.org/task0011-same-device-kv-recovery.html",
     "same_run_remediation_allowed": true,
     "automatic_retry_after_first_failure": false,
-    "latest_state": "SAME_DEVICE_KV_RECOVERY_PUBLIC_CURRENT_IPHONE_RUNTIME_PENDING",
+    "latest_state": "REUSABLE_COMPONENT_MODEL_RECONCILED_SOURCE_PENDING_VALIDATION_CURRENT_IPHONE_RUNTIME_PENDING",
     "next_runtime_surface": "AUTHENTIC_CURRENT_IPHONE_SAFARI:SAME_DEVICE_KV_RECOVERY"
   },
   "worker_claim": {
@@ -107,17 +151,33 @@
     "validated": false,
     "activation_proof_complete": false
   },
-  "allowed_next_transitions": ["TESTFLIGHT_CURRENT_IPHONE_RUNTIME_OBSERVED"],
-  "handoff_projection_refs": ["docs/KV_BOUND_EPHEMERAL_BROWSER_PROJECTION_MIRROR_HANDOFF.md"],
+  "allowed_next_transitions": [
+    "VALIDATE_AND_MERGE_REUSABLE_COMPONENT_RECONCILIATION",
+    "EXECUTE_CURRENT_IPHONE_VIA_REUSABLE_COMPONENT_COMPOSITION",
+    "CLASSIFY_AUTHENTIC_FAILURE_BY_OWNING_COMPONENT",
+    "OBSERVE_TESTFLIGHT_CURRENT_IPHONE_RUNTIME",
+    "SUBMIT_AUTHENTIC_EVIDENCE_TO_MASTER_RECORDS_AND_CONFIRM_RECONSTRUCTION",
+    "RETURN_TO_FROZEN_GLOBAL_MEASUREMENT"
+  ],
+  "handoff_projection_refs": [
+    "docs/KV_BOUND_EPHEMERAL_BROWSER_PROJECTION_MIRROR_HANDOFF.md",
+    "docs/KV_BOUND_EPHEMERAL_BROWSER_PROJECTION_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+    "docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+    "docs/REUSABLE_GOAL_TASK_TRANSPORT_COMPONENTS_MIRROR_HANDOFF.md",
+    "data/goal-task-component-profiles/KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001.json",
+    "data/goal-task-transport-profiles/KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001.json"
+  ],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "source_state_proves_execution": false,
     "hb_grants_execution_authority": false,
-    "worker_claim_authority": "WORKERCOORDINATOR",
+    "worker_claim_authority": "WorkerCoordinator",
     "credential_authority": "TV/TVC",
     "master_records_reality_authority": true,
     "interlock_intr_required_for_governed_ingress_egress": true,
     "kv_is_private_state_transition_continuity_boundary": true,
+    "kv_skap_sole_user_verification_authority": true,
+    "device_user_verification_authority": "NONE",
     "retroactive_claim_scope_widening_allowed": false
   }
 }
