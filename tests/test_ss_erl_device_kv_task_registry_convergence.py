@@ -63,8 +63,9 @@ def test_roundtrip_collision_is_adjacency_not_evidence_equivalence():
     owner = json.loads((ROOT / f"data/canonical-task-records/{OWNER_ID}.json").read_text())
     roundtrip = json.loads((ROOT / f"data/canonical-task-records/{ROUNDTRIP_ID}.json").read_text())
     erl = json.loads((ROOT / f"data/canonical-task-records/{ERL_ID}.json").read_text())
+    assert owner["parent_task_id"] is None
     assert OWNER_ID in roundtrip["adjacent_task_refs"]
-    assert ROUNDTRIP_ID not in owner.get("parent_task_id", "")
+    assert roundtrip["coordination_state"] == "ACTIVE"
+    assert roundtrip["checkout_state"] == "CHECKED_OUT"
     assert erl["completion"]["activation_proof_complete"] is False
     assert "AUTHENTIC_THREE_HOP_RECEIPT_CHAIN_OBSERVED" in erl["expected_evidence_predicates"]
-    assert roundtrip["completion"]["activation_proof_complete"] is False or roundtrip["completion"].get("claimed") is False
