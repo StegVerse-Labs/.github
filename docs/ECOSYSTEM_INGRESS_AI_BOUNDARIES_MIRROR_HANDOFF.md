@@ -18,48 +18,33 @@ Canonical model merged through `.github` PR #1652 at merge commit `b9f8e5153aa16
 
 This Goal Task scores `26` under `data/reusable-task-component-decomposition-policy.json`, yielding `STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION`.
 
-Active decomposition signals:
-
-- repeated subflow;
-- multiple authority crossings;
-- cross-repository or organization spread;
-- task-specific adapter duplication risk;
-- growing handoff sequence;
-- independent reusability;
-- optional subflows;
-- independently provable evidence predicates.
-
-Canonical component profile:
-
-`data/goal-task-component-profiles/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json`
+Canonical component profile: `data/goal-task-component-profiles/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json`.
 
 ## Required component composition
 
 ### `RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010` — REQUIRED
 
-New reusable component extracted from the prior task-specific Task Registry AI/session gate work. Canonical contract: `data/reusable-ai-ingress-component-contract.json`.
+Reusable non-authorizing component extracted from the prior task-specific Task Registry AI/session gate work. Canonical contract: `data/reusable-ai-ingress-component-contract.json`.
 
 Inputs: task ID, session ID, actor kind, check-in context or exact Task Registry disposition.
 
-Outputs: fail-closed coordination admission/stop disposition, actor-bound return receipt, actor-bound session-close receipt.
+Outputs: fail-closed coordination disposition, actor-bound return receipt, actor-bound session-close receipt.
 
-Owner/effect: Task Registry coordination policy only; `NONE_COORDINATION_ONLY`. It does not grant claim/fence, credential, transition, execution, user-verification, or custody authority.
+Authority: Task Registry coordination policy only; `NONE_COORDINATION_ONLY`. It grants no WorkerCoordinator claim/fence, credential, Interlock/InTr transition, execution, user-verification, or custody authority.
 
-Expected evidence: source-level missing/unknown actor denial, non-ChatGPT AI denial, ChatGPT gated-checkin continuity across return/close, plus separately classified authentic runtime-origin evidence.
-
-Repeatability: every applicable session check-in/return/close lifecycle.
+Evidence: source actor classification, source-level non-ChatGPT AI denial, ChatGPT gated-checkin continuity, and separately classified authentic runtime-origin evidence.
 
 ### `RTC-MANIFEST-001` — REQUIRED FOR EXTERNAL EVALUATOR ROUTE
 
 Existing transport-family component reused from `data/reusable-transport-component-contract.json` and canonical SDK manifest ingress. External evaluators submit manifested data through SDK; direct Core-Lite/StegCore/StegGate/internal-processor injection remains forbidden.
 
-### `LLM-ADAPTER-CANONICAL-SDK-DELEGATION` — REQUIRED FOR EXTERNAL FRAMEWORK/MODEL ROUTE
+### `RT-EXTERNAL-ADAPTER-ESTABLISH-001` — REQUIRED FOR EXTERNAL FRAMEWORK/MODEL ROUTE
 
-Existing canonical owner is partial: `StegVerse-org/LLM-adapter` plus canonical SDK ingress. The adapter translates external framework/model protocol into the canonical SDK manifested route; it must not duplicate SDK validation, generic transport, evidence custody, or downstream processor-selection logic.
+Existing reusable capability from `data/reusable-task-registry.json`. It owns endpoint-specific external-side protocol translation with authority effect `NONE_TRANSLATION_ONLY`. For this Goal Task it is parameterized for the LLM Adapter -> canonical SDK manifest route. It must reuse any existing adapter surface before deriving a non-duplicate endpoint translation and must not duplicate SDK validation, generic transport, credential/session handling, custody/reconstruction, or downstream processor-selection logic.
 
 ### `RTC-NONCHATGPT-AI-DECISION-SANDBOX-011` — REQUIRED BEFORE ADDITIONAL AI SUPPORT
 
-Genuinely reusable capability identified by this goal and registered in `data/reusable-ai-ingress-component-contract.json`. It is not yet implemented. It represents the common sandboxed AI decision-processing region with Task Registry reachability denied. Its component status does not prove source or runtime isolation.
+Genuinely reusable capability identified by this Goal Task and registered in `data/reusable-ai-ingress-component-contract.json`. It is not yet implemented. It represents a common sandboxed AI decision-processing region with Task Registry reachability denied. Component registration alone proves neither source isolation nor runtime isolation.
 
 ### `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001` — REQUIRED FOR RUNTIME COMPLETION
 
@@ -67,11 +52,11 @@ Existing canonical runtime observation capability. Master Records remains observ
 
 ## Conditional components
 
-- `RTC-INTERLOCK-INTR-TRANSPORT-008`: only when a representative boundary test actually requests a governed state transition. Authority owner: Interlock/InTr.
+- `RTC-INTERLOCK-INTR-TRANSPORT-008`: only when a representative interface test actually requests a governed state transition. Authority owner: Interlock/InTr.
 - `RTC-EVIDENCE-CUSTODY-004`: only when selected runtime/provider evidence requires canonical custody/readback/reconstruction. Authority owner: Master Records.
-- TV/TVC credential/session capability: only when the selected representative runtime route actually requires credential/provider/release issuance.
+- TV/TVC credential/session capability: only when the selected runtime route actually requires credential/provider/release issuance.
 
-Publisher, mandatory SDK-return assembly, mandatory StegVerse final egress, far-side final transition, and terminal cleanup are not forced into this Goal Task merely because they exist in maximal transport composition.
+Publisher, mandatory SDK-return assembly, mandatory StegVerse final egress, far-side final transition, and terminal cleanup are not forced into this Goal Task merely because they exist in the maximal transport composition.
 
 ## Authority invariants
 
@@ -87,27 +72,11 @@ Publisher, mandatory SDK-return assembly, mandatory StegVerse final egress, far-
 
 ## Open-session work reclassification
 
-### Reusable component implementation
+The previous PR #1624 session-return/session-close actor-gating work is being reconstituted on current `main` as `RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010`, preserving #1624 as provenance rather than merging its stale bespoke branch.
 
-The previous PR #1624 session-return/session-close actor-gating work is being reconstituted on current `main` as `RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010`, preserving the original PR as provenance rather than merging its stale bespoke branch.
+Goal-specific configuration remains: ChatGPT is the only AI actor kind admitted to Task Registry coordination surfaces; future non-ChatGPT AI belongs in component 011; external frameworks/models use the existing reusable external-adapter capability toward canonical SDK ingress; external evaluators use SDK manifested ingress directly.
 
-### Goal-specific configuration
-
-- ChatGPT is the only AI actor kind admitted to Task Registry coordination surfaces.
-- Future non-ChatGPT AI belongs in `RTC-NONCHATGPT-AI-DECISION-SANDBOX-011` and not Task Registry.
-- External framework/model route is LLM Adapter -> canonical SDK manifest ingress.
-- External evaluator route is SDK manifested ingress directly.
-
-### Goal-specific evidence predicates
-
-The original completion predicates remain unchanged and independently provable. Component source completion does not close runtime predicates.
-
-### Duplicate orchestration to retire/supersede
-
-- PR #1624 as an independently evolving task-specific session-return/session-close orchestration branch after equivalent logic is validated under `RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010` on current `main`.
-- Any new task-specific Task Registry AI/session actor gate parallel to component 010.
-- Any parallel AI decision sandbox implementation outside component 011.
-- Any LLM Adapter code that reimplements SDK manifest validation, generic transport, custody/reconstruction, or processor-selection semantics.
+Duplicate orchestration to retire or supersede after replacement validation: independent evolution of PR #1624, any parallel Task Registry AI/session actor gate, any parallel AI sandbox outside component 011, and any LLM Adapter logic that reimplements existing adapter, SDK, transport, custody, credential, or processor-selection capabilities.
 
 Historical commits, PRs, CI evidence, and provenance are preserved.
 
@@ -117,7 +86,7 @@ Registration PR #1621 merged as `42a4f9aa78c86608a90c328b1429e234024c1bd6`.
 
 Source-gate PR #1623 passed exact-head organization-control `34715826621`, deterministic suite `34715826818`, and Heartbeat `34715826744`, then merged as `0b4be7f07ed57cb72055aa6e2264813e16159d53`.
 
-PR #1624 previously passed exact-head validation at `465f974b6f046a272b62cc6bf9891ffe6df3665d` but became stale/diverged as `main` advanced. Its source logic is provenance only until reconstituted component work validates on current `main`.
+PR #1624 passed its historical exact-head validation at `465f974b6f046a272b62cc6bf9891ffe6df3665d` but became stale/diverged as `main` advanced. Its logic is provenance only until the componentized replacement validates on current `main`.
 
 ## Runtime/evidence state
 
@@ -128,8 +97,9 @@ No authentic runtime evidence upgrade is claimed by componentization.
 - non-ChatGPT AI runtime Task Registry denial: `NOT_PROVEN`;
 - common AI decision sandbox runtime isolation: `NOT_PROVEN`;
 - LLM Adapter -> SDK runtime exclusivity: `NOT_PROVEN`;
-- representative evaluator SDK-only runtime ingress: `NOT_PROVEN`;
-- resident execution/provider execution/callback/custody-readback/Master Records reconstruction: not inferred from source or CI and remain independently required only where the selected representative test route calls for them.
+- representative evaluator SDK-only runtime ingress: `NOT_PROVEN`.
+
+Resident execution, provider execution, callbacks, custody/readback, and Master Records reconstruction remain separately evidence-gated wherever the selected representative test route requires them.
 
 ## Remaining Goal Task predicates
 
@@ -147,11 +117,16 @@ No authentic runtime evidence upgrade is claimed by componentization.
 - `COORDINATION_PROCESSING_EXECUTION_BOUNDARIES_PROVEN`
 - `REPRESENTATIVE_RUNTIME_BOUNDARY_EVIDENCE_OBSERVED`
 
+## README impact
+
+The new `ai_ingress_coordination` component family materially extends the model projection. Root `README.md` must be updated in the same replacement change set before documentation completeness or merge readiness is claimed. `docs/README_IMPACT_ECOSYSTEM_AI_COMPONENT_RECONCILIATION.md` records that outstanding condition but is not a substitute for the README mutation.
+
 ## Next admissible work
 
-1. Validate and merge the component-model reconciliation branch on exact-head green evidence.
-2. Supersede/close stale PR #1624 only after the reconstituted component logic is present in the replacement PR and provenance is referenced.
-3. Complete caller inventory of the general Task Registry collision/check-in evaluator; bind AI-capable callers to component 010 or prove external AI reachability impossible.
-4. Materialize component 011 source contract/enforcement without enabling non-ChatGPT AI runtime access prematurely.
-5. Validate LLM Adapter -> SDK exclusivity using the canonical adapter owner and existing SDK manifest component rather than creating a duplicate adapter stack.
-6. Use canonical runtime observation for representative boundary evidence; do not synthesize runtime success.
+1. Complete the root README projection for the newly materialized AI-ingress component family.
+2. Validate the replacement component-model branch on exact-head repository lanes.
+3. Supersede/close stale PR #1624 only after the replacement PR exists and preserves its provenance.
+4. Complete caller inventory of the general Task Registry collision/check-in evaluator; bind AI-capable callers to component 010 or prove external AI reachability impossible.
+5. Materialize component 011 source enforcement without enabling additional AI runtime access prematurely.
+6. Parameterize `RT-EXTERNAL-ADAPTER-ESTABLISH-001` against the current LLM Adapter source and canonical SDK route; do not create a duplicate adapter stack.
+7. Use canonical runtime observation for representative interface evidence; do not synthesize runtime success.
