@@ -1,0 +1,30 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "SHARED-DOCS-PROVIDER-CONTENT-INTEGRITY-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:shared-docs-provider-content-integrity-v1",
+      "authority_ref": "handoffs/SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001.json#authority",
+      "capabilities": [
+        "runtime_observation",
+        "bounded_process_execution",
+        "provider_content_integrity_observation"
+      ],
+      "command": ["python", "workers/shared_docs_provider_content_integrity_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "HOME",
+        "STEGVERSE_TVC_ROOT",
+        "STEGTV_PROVIDER_OPERATION_VAULT_BROKER_SOCKET"
+      ],
+      "notes": [
+        "Reuses the merged Shared Docs provider content-integrity consumer inside the canonical WorkerCoordinator fenced process adapter.",
+        "TV/TVC remains credential and provider-operation authority; no provider mutation is admitted.",
+        "No static resident dispatcher, scheduler, user-verification surface, or transition authority is created."
+      ],
+      "timeout_seconds": 1200,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
