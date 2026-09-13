@@ -10,16 +10,30 @@
       "resident_client_secret_reseal",
       "resident_consent_listener",
       "sovereign_callback",
-      "owner_present_provider_consent",
       "authoritative_provider_file_probe"
     ],
+    "owner_present_provider_consent_is_transport_round_trip": false,
+    "owner_present_provider_consent_component": "credential_session / KV-SKAP verification + TV-TVC provider-session authority",
     "evidence_custody_reconstruction": true,
     "publisher_projection": true,
     "sdk_return_assembly": true,
-    "stegverse_final_egress_transition": true,
-    "interlock_intr_transport": true,
-    "far_side_final_transition": true
+    "stegverse_final_egress_transition": "CONDITIONAL_PER_DISTRIBUTION_TARGET",
+    "interlock_intr_transport": "CONDITIONAL_PER_GOVERNED_TARGET_TRANSITION",
+    "far_side_final_transition": "CONDITIONAL_PER_DISTRIBUTION_TARGET"
   },
+  "selected_required_components": [
+    "RTC-MANIFEST-001",
+    "RTC-GOVERNED-PROCESSING-002",
+    "RTC-ROUNDTRIP-003",
+    "RTC-EVIDENCE-CUSTODY-004",
+    "RTC-PUBLISHER-005",
+    "RTC-SDK-RETURN-006"
+  ],
+  "selected_conditional_components": [
+    "RTC-STEGVERSE-EGRESS-007",
+    "RTC-INTERLOCK-INTR-TRANSPORT-008",
+    "RTC-FARSIDE-FINAL-009"
+  ],
   "selected_components": [
     "RTC-MANIFEST-001",
     "RTC-GOVERNED-PROCESSING-002",
@@ -31,7 +45,19 @@
     "RTC-INTERLOCK-INTR-TRANSPORT-008",
     "RTC-FARSIDE-FINAL-009"
   ],
-  "composition_rule": "The Goal Task consumes only the selected reusable transport components. Component selection does not mint authority and does not make omitted components mandatory for unrelated Goal Tasks.",
+  "component_applicability": {
+    "RTC-MANIFEST-001": "REQUIRED",
+    "RTC-GOVERNED-PROCESSING-002": "REQUIRED",
+    "RTC-ROUNDTRIP-003": "REQUIRED_REPEATABLE_WITH_DECLARED_ROUND_TRIP_PARAMETER",
+    "RTC-EVIDENCE-CUSTODY-004": "REQUIRED_REPEATABLE_AT_INDEPENDENT_EVIDENCE_STAGES",
+    "RTC-PUBLISHER-005": "REQUIRED_FOR_GOAL_DOWNSTREAM_PUBLIC_DISTRIBUTION_PREDICATES",
+    "RTC-SDK-RETURN-006": "REQUIRED_FOR_SDK_REEVALUATION",
+    "RTC-STEGVERSE-EGRESS-007": "CONDITIONAL_PER_TARGET",
+    "RTC-INTERLOCK-INTR-TRANSPORT-008": "CONDITIONAL_PER_GOVERNED_TARGET_TRANSITION",
+    "RTC-FARSIDE-FINAL-009": "CONDITIONAL_PER_TARGET"
+  },
+  "maximal_chain_is_mandatory_for_every_target": false,
+  "composition_rule": "The Goal Task consumes only the components applicable to the current subprocess/target. Repeatable components are parameterized per declared round trip. Owner-present consent is not modeled as a generic transport round trip. The final egress/InTr/far-side trio is invoked only for targets whose canonical route requires it. Component selection does not mint authority.",
   "authority_invariants": {
     "user_verification": "KV/SKAP Vault",
     "device_role": "INTERCHANGEABLE_STEGOS_TRANSPORT_NODE",
