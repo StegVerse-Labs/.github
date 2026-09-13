@@ -1,0 +1,63 @@
+{
+  "schema": "stegverse.node-kv-continuity-correction/v1",
+  "task_id": "SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004",
+  "cosv_task_vector": "71000000100110",
+  "recorded_at": "2026-09-13T15:21:00Z",
+  "authority_effect": "NONE_COORDINATION_AND_OBSERVATION_CORRECTION_ONLY",
+  "canonical_invariant_source": "data/task-registry-global-invariants.json",
+  "supersedes_as_current_goal_gate": {
+    "prior_classification": "TASK_BOUND_NATIVE_IPHONE_EXECUTION_EVIDENCE_NOT_OBSERVED",
+    "replacement_classification": "TASK_BOUND_ESTABLISHED_NODE_EXECUTION_EVIDENCE_NOT_OBSERVED",
+    "historical_device_execution_metadata_preserved": true,
+    "reason": "Eligible StegOS devices are interchangeable transport/execution surfaces. Physical-device identity is not a verification or completion gate. The Goal binds to an established/recovered Node, applicable KV/SKAP continuity, and exact governed task evidence."
+  },
+  "execution_model": {
+    "eligible_physical_device": "ANY_SUPPORTED_STEGOS_CAPABLE_DEVICE",
+    "established_node_required": true,
+    "specific_iphone_required": false,
+    "specific_physical_device_required": false,
+    "physical_device_identity_gate": false,
+    "remote_device_connector_required": false,
+    "second_user_operated_device_required": false,
+    "always_on_external_host_required": false,
+    "node_identity_role": "RUNTIME_INSTANCE_CORRELATION_AND_EVIDENCE_SUBJECT_ONLY",
+    "node_identity_confers_user_identity": false,
+    "node_identity_confers_user_verification_authority": false,
+    "node_identity_confers_execution_authority": false,
+    "device_identity_is_execution_metadata_only": true
+  },
+  "continuity_model": {
+    "user_verification_authority": "KV/SKAP Vault",
+    "user_verification_authority_exclusive": true,
+    "kv_skap_continuity_binding_required_when_operation_requires_user_or_secret_state": true,
+    "reseal_operation_requires_existing_custody_state": true,
+    "provider_or_storage_possession_confers_plaintext_authority": false,
+    "provider_or_storage_possession_confers_use_authority": false
+  },
+  "predicate_reconciliation": {
+    "superseded": "ONE_CURRENT_DEVICE_END_TO_END_PROVEN",
+    "replacement": "ESTABLISHED_NODE_END_TO_END_PROVEN",
+    "goal_identity_changed": false,
+    "cosv_changed": false,
+    "historical_parent_predicate_preserved_as_provenance": true
+  },
+  "runtime_truth": {
+    "this_task_workercoordinator_checkout_observed": false,
+    "this_task_intr_admission_observed": false,
+    "this_task_established_node_execution_observed": false,
+    "applicable_kv_skap_continuity_binding_observed": false,
+    "authentic_post_merge_lifecycle_invocation_observed": false,
+    "same_invocation_lifecycle_chain_proven": false,
+    "resident_reseal_receipt_observed": false,
+    "resident_listener_receipt_observed": false,
+    "completion_claimed": false
+  },
+  "nonclaims": [
+    "NODE_ESTABLISHMENT_DOES_NOT_GRANT_USER_VERIFICATION_AUTHORITY",
+    "NODE_IDENTITY_DOES_NOT_GRANT_EXECUTION_OR_TRANSITION_AUTHORITY",
+    "KV_SKAP_CONTINUITY_DOES_NOT_REPLACE_WORKERCOORDINATOR_OR_INTR_AUTHORITY",
+    "HISTORICAL_DEVICE_EXECUTION_DOES_NOT_PROVE_THIS_TASK_EXECUTED",
+    "SOURCE_OR_CI_DOES_NOT_PROVE_RUNTIME_EXECUTION",
+    "THIS_CORRECTION_MINTS_NO_WORKERCOORDINATOR_INTR_TV_TVC_KV_SKAP_OR_MASTER_RECORDS_AUTHORITY"
+  ]
+}
