@@ -36,8 +36,7 @@
     "KV-CONNECTION-REVALIDATION-WORKER-001",
     "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
     "STEGOS-NODE-MANIFOLD-001",
-    "TVC-RECIPIENT-ADMISSION-SIGNING-CUSTODY-001",
-    "STEGOS-DEVICE-KV-SKAP-AUTHENTIC-RUNTIME-002"
+    "TVC-RECIPIENT-ADMISSION-SIGNING-CUSTODY-001"
   ],
   "reusable_task_component_composition": {
     "model": "data/reusable-task-component-model.json",
@@ -76,13 +75,15 @@
     "REQUIRED_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION_OBSERVED"
   ],
   "runtime_owner_transition_observation": {
-    "candidate_successor": "STEGOS-DEVICE-KV-SKAP-AUTHENTIC-RUNTIME-002",
-    "canonical_issue": "StegVerse-Labs/.github#1500",
-    "source_pr": "StegVerse-Labs/.github#1519",
-    "source_pr_exact_head": "a3c66f7a0a17ca941be72cc63f2cb9d11134b686",
-    "source_pr_exact_head_validation": "ALL_THREE_REQUIRED_LANES_PASS",
+    "canonical_owner": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+    "superseded_candidate_successor": "STEGOS-DEVICE-KV-SKAP-AUTHENTIC-RUNTIME-002",
+    "superseded_issue": "StegVerse-Labs/.github#1500",
+    "superseded_pr": "StegVerse-Labs/.github#1519",
+    "superseded_pr_exact_head": "a3c66f7a0a17ca941be72cc63f2cb9d11134b686",
+    "superseded_pr_exact_head_validation": "ALL_THREE_REQUIRED_LANES_PASS",
     "canonical_dependency_replaced": false,
-    "reason": "PR #1519 remains unmerged on current main; this Goal Task does not promote an open-PR successor into canonical dependency truth"
+    "disposition": "SUPERSEDED_PROMPT_CEILING_ONLY_SUCCESSOR",
+    "reason": "Canonical reusable-task decomposition policy prohibits splitting merely to reset prompt count. Remaining runtime evidence is not a genuinely independent Goal and stays with STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001."
   },
   "first_unresolved_predicate": "AUTHENTIC_ADMITTED_PROVIDER_WRITE_AND_EXACT_EVENT_HASH_READBACK_FROM_SOVEREIGN_KV",
   "authority": {

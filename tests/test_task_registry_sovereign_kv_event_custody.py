@@ -5,6 +5,8 @@ ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "project_task_registry_event_to_sovereign_kv.py"
 CONTRACT = ROOT / "data" / "task-registry-sovereign-kv-event-custody-contract.json"
 PROFILE = ROOT / "data" / "goal-task-transport-profiles" / "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001.json"
+TASK_RECORD = ROOT / "data" / "canonical-task-records" / "TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001.json"
+DECOMPOSITION_POLICY = ROOT / "data" / "reusable-task-component-decomposition-policy.json"
 EVIDENCE_COMPONENTS = ROOT / "data" / "reusable-evidence-validation-component-contract.json"
 
 
@@ -43,3 +45,16 @@ def test_goal_profile_reuses_current_verification_selector_without_minting_autho
     assert selector["invariants"]["creates_user_verification"] is False
     assert selector["invariants"]["device_identity_is_user_verification"] is False
     assert selector["invariants"]["secret_material_output"] is False
+
+
+def test_prompt_ceiling_successor_does_not_replace_canonical_runtime_owner():
+    record = json.loads(TASK_RECORD.read_text(encoding="utf-8"))
+    policy = json.loads(DECOMPOSITION_POLICY.read_text(encoding="utf-8"))
+    transition = record["runtime_owner_transition_observation"]
+
+    assert "reset_prompt_count" in policy["component_split_rule"]["do_not_split_merely_to"]
+    assert "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001" in record["dependencies"]
+    assert "STEGOS-DEVICE-KV-SKAP-AUTHENTIC-RUNTIME-002" not in record["adjacent_task_refs"]
+    assert transition["canonical_owner"] == "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001"
+    assert transition["disposition"] == "SUPERSEDED_PROMPT_CEILING_ONLY_SUCCESSOR"
+    assert transition["canonical_dependency_replaced"] is False
