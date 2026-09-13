@@ -1,0 +1,38 @@
+{
+  "schema": "stegverse.goal-task-transport-profile/v1",
+  "task_id": "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001",
+  "cosv_task_vector": "10100000100000",
+  "component_contract": "data/reusable-transport-component-contract.json",
+  "transport_requirements": {
+    "complete_manifest": true,
+    "governed_processing": true,
+    "required_round_trips": [
+      "tvc_gmail_search_observation",
+      "tvc_gmail_archive_consequence"
+    ],
+    "evidence_custody_reconstruction": true,
+    "publisher_projection": false,
+    "sdk_return_assembly": false,
+    "stegverse_final_egress_transition": false,
+    "interlock_intr_transport": true,
+    "far_side_final_transition": false
+  },
+  "selected_components": [
+    "RTC-MANIFEST-001",
+    "RTC-GOVERNED-PROCESSING-002",
+    "RTC-ROUNDTRIP-003",
+    "RTC-EVIDENCE-CUSTODY-004",
+    "RTC-INTERLOCK-INTR-TRANSPORT-008"
+  ],
+  "composition_rule": "Compose only the reusable transport components required for the native-email Goal Task. Gmail search and Gmail archive are separately evidenced round trips; publication, SDK return assembly, final StegVerse egress, and far-side final transition are not required by this Goal Task.",
+  "authority_invariants": {
+    "user_verification": "KV/SKAP Vault",
+    "device_role": "INTERCHANGEABLE_STEGOS_TRANSPORT_NODE",
+    "claim_fence": "WorkerCoordinator",
+    "transition": "Interlock/InTr",
+    "credential_provider_release": "TV/TVC",
+    "reality_reconstruction": "Master Records",
+    "heartbeat": "TIMING_FRESHNESS_CORRELATION_CARRIAGE_ONLY",
+    "github_runtime_authority": "NONE"
+  }
+}
