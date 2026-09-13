@@ -1,6 +1,6 @@
 # Site Publication Native Runtime Execution Mirror Handoff
 
-Updated: 2026-09-12
+Updated: 2026-09-13
 Repository: `StegVerse-Labs/.github`
 Canonical issue: `#1486`
 Goal Task ID: `SITE-PUBLICATION-NATIVE-RUNTIME-EXECUTION-001`
@@ -22,15 +22,22 @@ Own only the genuinely remaining authentic native-runtime and publication-eviden
 - Manifest: `sha256:e6bc47580f25296df61d16dfe5a74f3f49fec0dda018c813696195c960e77f09`.
 - Parent post-merge handoff reconciliation PR #1483 passed exact-head Heartbeat `34635435820`, Organization Control `34635435835`, and Deterministic Repository Suite `34635435815`, then squash-merged at `4ab13a252eed668f1d828c08bd998b00b54e3c43`.
 - PR #1494 recorded the 2026-09-11T13:53:12-05:00 zero-device observation, passed Organization Control `34635855425`, Deterministic Repository Suite `34635855445`, and Heartbeat `34635855400`, and merged at `6a846b80ffa6313628795421301644b0067edf63`.
-- PR #1549 later passed Heartbeat `34670439646`, Organization Control `34670439067`, and Deterministic Repository Suite `34670439050`, but became non-mergeable from base drift and was closed unmerged; its non-authorizing evidence is carried forward here from current `main`.
 - Parent `KV-CONNECTION-REVALIDATION-WORKER-001` is retired for prompt-budget continuation; unresolved native-runtime/publication predicates are transferred here.
+
+## Reusable source-refresh correction
+
+Source refresh is a demonstrated shared capability and is not a task-specific resident-availability gate. The canonical reusable identity is `RT-SOVEREIGN-SOURCE-REFRESH-001`, which consumes `RTC-SOVEREIGN-SOURCE-REFRESH-010` and the existing `scripts/refresh_sovereign_worker_runtime_source.py` implementation through `scripts/trigger_reusable_task.py`.
+
+A consuming Goal Task triggers this reusable task with its already-local `source_root` and existing `runtime_root`. The reusable lifecycle advances until authentic completion or an actual execution/resource boundary and records that boundary. The Goal Task does not first poll for a connected device as a prerequisite to deciding whether source refresh may be invoked.
 
 ## Authority boundaries
 
 - GitHub runtime authority: `NONE`.
+- Reusable task/component orchestration: non-authorizing.
 - Worker claim/fence authority: existing `WorkerCoordinator` only.
 - Transition authority: Interlock/InTr.
 - Credential authority: TV/TVC.
+- User verification authority: KV/SKAP Vault only.
 - Hosted-provider runtime: prohibited/not required.
 - Render dependency: prohibited/not required.
 - Second user-operated device: prohibited/not required.
@@ -38,8 +45,8 @@ Own only the genuinely remaining authentic native-runtime and publication-eviden
 
 ## Required evidence chain
 
-1. Observe the authorized native resident runtime surface reconnect.
-2. Refresh already-local merged `.github` source through the existing local-only sovereign source-refresh path; no network-source fallback.
+1. Trigger `RT-SOVEREIGN-SOURCE-REFRESH-001` with the already-local canonical source root and existing sovereign runtime root; consume its authentic completion or boundary receipt.
+2. Require an authentic source-refresh completion receipt before dependent runtime work advances; a reusable-task boundary receipt preserves the blocked state without inventing another prerequisite or runtime owner.
 3. Target `SITE-PUBLICATION-INTR-CONSUMER-001` through the existing WorkerCoordinator so checkout/admission mints a fresh independent claim and fencing generation.
 4. Bind only `STEGVERSE_SITE_PUBLICATION_MATERIALIZATION_ID=INTR-MAT-0e1ba4786b0ea8a00e1f166e` for that fenced invocation.
 5. Retain the authentic candidate-validation receipt and fencing generation.
@@ -48,13 +55,9 @@ Own only the genuinely remaining authentic native-runtime and publication-eviden
 8. Separately admit the final publication transition.
 9. Only after the preceding predicates pass, prove canonical-domain DNS/TLS recovery and public content equivalence.
 
-## Latest native-runtime observation
+## Prior native-runtime observations
 
-At `2026-09-12T00:54:00-05:00`, the authorized remote runtime connector again returned an empty device list (`0` connected devices). Earlier observations at `2026-09-11T13:53:12-05:00` and `2026-09-11T22:27:28-05:00` also returned `0` connected devices. Fresh connected-Drive searches made during the prior observation found no retained match for exact materialization `INTR-MAT-0e1ba4786b0ea8a00e1f166e` or packet `INTR-58dec5416bd4358190c11372`.
-
-These are non-authorizing observations only. They do not prove source refresh, checkout, claim/fence, worker execution, lease execution, publication, reachability, or DNS/TLS state. No hosted substitute or second user-operated device is introduced.
-
-Disposition: remain `ACTIVE` and wait for the existing authorized native resident runtime surface to reconnect; then resume at step 2 of the required evidence chain using already-local source.
+Historical authorized remote-runtime observations returned `0` connected devices. Those observations remain valid non-authorizing evidence of those observation moments only. They do not define the source-refresh invocation contract and are no longer treated as a prerequisite step before invoking the reusable source-refresh task.
 
 ## Predicates currently false
 
@@ -72,12 +75,12 @@ DNS/TLS recovery proven = false
 
 ## Activation
 
-Activation condition is satisfied by merged, exact-head-green parent reconciliation PR #1483. This successor is now ACTIVE. The transfer changes only coordination ownership; it does not mint runtime authority, claim/fence state, credentials, publication state, or proof.
+Activation condition is satisfied by merged, exact-head-green parent reconciliation PR #1483. This successor is ACTIVE. Reusable-task registration or invocation does not mint runtime authority, claim/fence state, credentials, publication state, or proof.
 
 ## README maintenance
 
-Root `README.md` was reviewed in the parent lane and requires no wording change for this transfer because no new public capability or runtime owner is introduced.
+Root `README.md` does not require a task-specific publication wording change for this correction; the repository-wide reusable-task architecture already defines bounded reusable identities and non-authorizing orchestration.
 
 ## Next action
 
-At the next authentic authorized native-runtime observation, execute the required evidence chain beginning with already-local source refresh and a fresh WorkerCoordinator claim/fence. Until those receipts exist, all runtime/publication predicates remain false.
+Invoke `RT-SOVEREIGN-SOURCE-REFRESH-001` for this Goal Task. If it completes authentically, consume its source-refresh receipt and continue to fresh WorkerCoordinator claim/fence. If it reaches a real runtime/resource boundary, retain that reusable-task boundary receipt and keep dependent predicates false while independent work continues.

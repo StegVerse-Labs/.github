@@ -1,6 +1,6 @@
 # Site Publication Native Runtime Component Model Mirror Handoff
 
-Updated: 2026-09-12
+Updated: 2026-09-13
 Repository: `StegVerse-Labs/.github`
 Goal Task ID: `SITE-PUBLICATION-NATIVE-RUNTIME-EXECUTION-001`
 COSV: `50000000102000`
@@ -18,23 +18,30 @@ The canonical evaluator signals for this task are repeated subflow, multiple aut
 ## Selected reusable composition
 
 ```text
-RTC-SOVEREIGN-SOURCE-REFRESH-010
+RT-SOVEREIGN-SOURCE-REFRESH-001
+  -> RTC-SOVEREIGN-SOURCE-REFRESH-010
 -> GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001
 -> WorkerCoordinator fresh claim/fence authority invocation
 -> RTC-GOVERNED-PROCESSING-002
 -> REUSABLE-TASK-EPHEMERAL-CONSTRUCT-V1
 -> RTC-PUBLISHER-005
 -> RTC-STEGVERSE-EGRESS-007
--> RTC-INTERLOCK-INTR-TRANSPORT-008 (repeatable: bounded publication transition + final publication transition)
+-> RTC-INTERLOCK-INTR-TRANSPORT-008 (repeatable)
 -> GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001 (publication observation)
 -> RTC-EVIDENCE-CUSTODY-004
 ```
 
-The exact materialization, packet, manifest, child worker registration, and publication-specific `/intr/profile` plus byte/path equivalence checks remain Goal Task-specific configuration. They are not new generic orchestration owners.
+The exact materialization, packet, manifest, child worker registration, and publication-specific `/intr/profile` plus byte/path equivalence checks remain Goal Task-specific configuration.
 
-## New reusable component
+## Source-refresh reusable-task correction
 
-`RTC-SOVEREIGN-SOURCE-REFRESH-010` is a reusable wrapper around the already-existing `scripts/refresh_sovereign_worker_runtime_source.py`. It creates no new source transport, runtime owner, credential path, claim authority, or transition authority. It only standardizes stable inputs/outputs/evidence for the already-shared local refresh operation.
+`RTC-SOVEREIGN-SOURCE-REFRESH-010` is now consumed through durable reusable identity `RT-SOVEREIGN-SOURCE-REFRESH-001`, defined in `source-bundles/reusable-task-registry.d/RT-SOVEREIGN-SOURCE-REFRESH-001.json` and executed through the existing reusable-task constructor/trigger lifecycle.
+
+The reusable task reuses `scripts/refresh_sovereign_worker_runtime_source.py`; it creates no new source transport, runtime owner, scheduler, credential route, claim authority, or transition authority.
+
+Resident/runtime availability is an execution boundary handled by the reusable-task lifecycle. It is **not** a Goal Task-specific prerequisite that this task should manually rediscover by polling for a connected device before source-refresh invocation. A reusable invocation advances until authentic completion or the exact real boundary and records the resulting receipt chain.
+
+Registry shard discovery is additive and fail-closed: `data/reusable-task-registry.json` remains canonical baseline identity source, while `source-bundles/reusable-task-registry.d/*.json` adds independently resolvable identities and duplicate identities across the two surfaces are rejected.
 
 ## Existing components reused
 
@@ -46,15 +53,16 @@ The exact materialization, packet, manifest, child worker registration, and publ
 - Governed transport/admission: `RTC-INTERLOCK-INTR-TRANSPORT-008`.
 - Evidence custody/reconstruction: `RTC-EVIDENCE-CUSTODY-004` with Master Records.
 
-Not selected: fresh manifest intake, generic provider/framework round trip, SDK return assembly, and far-side final transition. TV/TVC credential/session issuance remains conditional on the canonical publication runtime actually requiring it.
+Not selected: fresh manifest intake, generic provider/framework round trip, SDK return assembly, and far-side final transition. TV/TVC credential/session issuance remains conditional on the publication runtime actually requiring it.
 
 ## Authority separation
 
 - Task Registry: coordination only.
+- Reusable task identities/components: non-authorizing composition and bounded orchestration only.
 - WorkerCoordinator: fresh claim/fence authority.
 - Interlock/InTr: state-transition/admission authority.
 - TV/TVC: credential/provider/release authority when required.
-- KV/SKAP Vault: sole user-verification authority; this task currently selects no user-verification step.
+- KV/SKAP Vault: sole user-verification authority.
 - StegOS devices: interchangeable transport/execution nodes, never user verifiers.
 - Master Records: observed-reality custody/readback/reconstruction.
 - HeartBeat: timing, freshness, liveness, correlation, and observability only.
@@ -74,14 +82,12 @@ FINAL_PUBLICATION_TRANSITION_ADMITTED
 DNS_TLS_RECOVERY_PROVEN
 ```
 
-All remain false. Componentization does not promote any runtime evidence class.
-
-Required component evidence for evidence-chain closure is separately tracked as Master Records publication-evidence custody acceptance and reconstruction confirmation. This does not replace or synthesize any Goal Task runtime predicate.
+All remain false until authentic evidence exists. Reusable-task registration or source validation does not promote them.
 
 ## Duplicate orchestration superseded
 
-Do not add a task-specific source refresher, runtime observer, generic InTr transport/admission adapter, hosted runtime fallback, or second user-operated-device path. The existing child worker remains task-specific configuration atop reusable components; historical source and evidence remain preserved.
+Do not add a task-specific connected-device gate before source refresh, source refresher, runtime observer, generic InTr transport/admission adapter, hosted runtime fallback, or second user-operated-device path.
 
 ## Next admissible work
 
-Observe an authentic authorized resident reconnect. Then invoke `RTC-SOVEREIGN-SOURCE-REFRESH-010` against already-local canonical source, obtain a fresh WorkerCoordinator claim/fence for `SITE-PUBLICATION-INTR-CONSUMER-001`, bind only `INTR-MAT-0e1ba4786b0ea8a00e1f166e`, and continue through the selected components one independently evidenced transition at a time.
+Trigger `RT-SOVEREIGN-SOURCE-REFRESH-001` for this Goal Task with the already-local canonical source root and existing sovereign runtime root. Consume its authentic completion or boundary receipt. Only after an authentic source-refresh completion receipt exists may dependent WorkerCoordinator claim/fence and exact-materialization processing advance.

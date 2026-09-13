@@ -1,0 +1,29 @@
+{
+  "reusable_task_id": "RT-SOVEREIGN-SOURCE-REFRESH-001",
+  "name": "Sovereign Resident Source Refresh",
+  "purpose": "Invoke the already-proven local-only sovereign WorkerCoordinator source refresh as a reusable task, preserving mutable runtime state and emitting authentic refresh or boundary evidence without creating a new runtime owner.",
+  "trigger": "a consuming Goal Task requires already-local canonical source to be refreshed into its existing sovereign resident runtime",
+  "scope": "one already-local canonical source root and one existing sovereign runtime root",
+  "parameter_keys": [
+    "source_root",
+    "runtime_root"
+  ],
+  "runner_templates": [
+    "scripts/refresh_sovereign_worker_runtime_source.py"
+  ],
+  "recording_levels": [
+    "operation",
+    "task",
+    "goal",
+    "component",
+    "master_records"
+  ],
+  "completion_predicates": [
+    "AUTHENTIC_LOCAL_SOURCE_REFRESH_RECEIPT_OBSERVED",
+    "MUTABLE_RUNTIME_STATE_PRESERVED",
+    "NO_NETWORK_SOURCE_FETCH_PERFORMED",
+    "NO_CREDENTIAL_AUTHORITY_ACQUIRED"
+  ],
+  "authority_effect": "NONE_LOCAL_SOURCE_REFRESH",
+  "reuse_instructions": "Trigger once through the canonical reusable-task lifecycle. Runtime availability is an execution boundary of this reusable task, not a task-specific prerequisite to be reimplemented by consumers. Reuse scripts/refresh_sovereign_worker_runtime_source.py; do not create another source refresher, runtime owner, scheduler, credential route, or source transport."
+}

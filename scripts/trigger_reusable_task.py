@@ -18,10 +18,12 @@ from workers import reusable_task_lifecycle as lifecycle
 from workers import reusable_task_master_records_roundtrip as master_records_roundtrip
 
 REGISTRY = ROOT / "data" / "reusable-task-registry.json"
+REGISTRY_SHARDS = ROOT / "source-bundles" / "reusable-task-registry.d"
 CONSTRUCTOR = ROOT / "scripts" / "materialize_reusable_task_construct.py"
 DEFAULT_RECEIPT_DIR = ROOT / "receipts" / "reusable-task"
 NATIVE_EMAIL_PRIMARY = "scripts/consume_native_email_action_monitor_request.py"
 NATIVE_EMAIL_KV_RUNNER = ROOT / "scripts" / "consume_native_email_action_monitor_request_kv.py"
+SOURCE_REFRESH_PRIMARY = "scripts/refresh_sovereign_worker_runtime_source.py"
 
 BOUNDARY_COMPLETE = "COMPLETION_PREDICATES_REQUIRE_EVIDENCE_RECONCILIATION"
 BOUNDARY_NO_RUNNER = "NO_EXECUTABLE_RUNNER_DECLARED"
@@ -34,6 +36,22 @@ def load_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def load_registry() -> dict[str, Any]:
+    registry = load_json(REGISTRY)
+    tasks = list(registry.get("tasks", []))
+    if REGISTRY_SHARDS.is_dir():
+        for path in sorted(REGISTRY_SHARDS.glob("*.json")):
+            shard = load_json(path)
+            if not isinstance(shard, dict) or not shard.get("reusable_task_id"):
+                raise SystemExit(f"invalid reusable task registry shard: {path}")
+            tasks.append(shard)
+    identities = [x.get("reusable_task_id") for x in tasks if isinstance(x, dict)]
+    duplicates = sorted({x for x in identities if x and identities.count(x) > 1})
+    if duplicates:
+        raise SystemExit("duplicate reusable task identities across registry surfaces: " + ",".join(duplicates))
+    return {**registry, "tasks": tasks}
+
+
 def load_constructor():
     spec = importlib.util.spec_from_file_location("reusable_task_constructor", CONSTRUCTOR)
     if spec is None or spec.loader is None:
@@ -44,7 +62,7 @@ def load_constructor():
 
 
 def resolve_definition(reusable_task_id: str) -> dict[str, Any]:
-    registry = load_json(REGISTRY)
+    registry = load_registry()
     matches = [x for x in registry.get("tasks", []) if x.get("reusable_task_id") == reusable_task_id]
     if len(matches) != 1:
         raise SystemExit(f"reusable task identity must resolve exactly once: {reusable_task_id}")
@@ -81,16 +99,49 @@ def build_runner_command(primary_ref: str, primary_runner: Path, parameters: dic
             raise SystemExit("RT-NATIVE-EMAIL-ACTION-MONITOR-001 KV-enforcing runner is not materialized")
         effective_runner = NATIVE_EMAIL_KV_RUNNER
     command = [sys.executable, str(effective_runner)]
-    if primary_ref == NATIVE_EMAIL_PRIMARY:
+    if primary_ref in {NATIVE_EMAIL_PRIMARY, SOURCE_REFRESH_PRIMARY}:
         runtime_raw = str(parameters.get("runtime_root") or "").strip()
         if not runtime_raw:
-            raise SystemExit("RT-NATIVE-EMAIL-ACTION-MONITOR-001 requires parameters.runtime_root")
+            raise SystemExit(f"{primary_ref} reusable invocation requires parameters.runtime_root")
         source_raw = str(parameters.get("source_root") or ROOT).strip()
         command.extend([
             "--source-root", str(Path(source_raw).expanduser().resolve()),
             "--runtime-root", str(Path(runtime_raw).expanduser().resolve()),
         ])
     return command
+
+
+def write_source_refresh_result(*, completed: subprocess.CompletedProcess[str], result_path: Path, args: argparse.Namespace, manifest: dict[str, Any], completion_predicates: list[str]) -> None:
+    if args.reusable_task_id != "RT-SOVEREIGN-SOURCE-REFRESH-001" or completed.returncode != 0:
+        return
+    lines = [line.strip() for line in completed.stdout.splitlines() if line.strip()]
+    if not lines:
+        return
+    try:
+        refresh_receipt = json.loads(lines[-1])
+    except json.JSONDecodeError:
+        return
+    if not isinstance(refresh_receipt, dict) or refresh_receipt.get("schema") != "stegverse.sovereign-worker-runtime-source-refresh/v1":
+        return
+    required = {
+        "mutable_runtime_state_preserved": True,
+        "network_fetch_performed": False,
+        "credential_read_or_acquired": False,
+        "authority_effect": "NONE_LOCAL_SOURCE_REFRESH",
+    }
+    if any(refresh_receipt.get(key) != value for key, value in required.items()):
+        return
+    write_json(result_path, {
+        "schema": lifecycle.RUNNER_RESULT_SCHEMA,
+        "invocation_id": args.invocation_id,
+        "reusable_task_id": args.reusable_task_id,
+        "manifest_hash": manifest["manifest_hash"],
+        "completion_predicates_satisfied": completion_predicates,
+        "runtime_observed": True,
+        "completion_evidence_observed": True,
+        "source_refresh_receipt": refresh_receipt,
+        "authority_effect": "NONE",
+    })
 
 
 def main() -> None:
@@ -189,6 +240,8 @@ def main() -> None:
         write_json(receipt_path, receipt)
         print(json.dumps(receipt, indent=2, sort_keys=True))
         return
+
+    write_source_refresh_result(completed=completed, result_path=result_path, args=args, manifest=manifest, completion_predicates=completion_predicates)
 
     if not result_path.is_file():
         receipt["state"] = "AUTOMATABLE_STEPS_EXHAUSTED"
