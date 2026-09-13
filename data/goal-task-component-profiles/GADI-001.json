@@ -7,7 +7,7 @@
   "runtime_handoff_ref": "docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
   "composition_handoff_ref": "docs/GADI_REUSABLE_TASK_COMPONENT_COMPOSITION_MIRROR_HANDOFF.md",
   "componentization_evaluation": {
-    "score": 25,
+    "score": 22,
     "decision": "STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION",
     "active_signals": [
       "repeated_subflow",
@@ -27,12 +27,7 @@
       "family": "runtime_observation",
       "existing": true,
       "canonical_owner": "existing StegBrowser/StegOS resident discovery plus canonical HB runtime-presence projection",
-      "implementation_refs": [
-        "scripts/observe_gadi_retained_resident_discovery.py",
-        "scripts/materialize_gadi_runtime_binding.py",
-        "workers/gadi_runtime_observation_request_consumer.py",
-        "StegVerse-Labs/StegOS#350"
-      ],
+      "implementation_refs": ["scripts/observe_gadi_retained_resident_discovery.py", "scripts/materialize_gadi_runtime_binding.py", "workers/gadi_runtime_observation_request_consumer.py", "StegVerse-Labs/StegOS#350"],
       "inputs": ["retained StegBrowser node", "read-only current-iPhone discovery receipt", "runtime-presence receipt", "supervision evidence"],
       "outputs": ["CURRENT_RETAINED_NODE_DISCOVERY_OBSERVED", "CURRENT_RUNTIME_SUBJECT_BOUND"],
       "preconditions": ["same-device substrate selected", "canonical SV-NODE subject", "no second device requirement"],
@@ -139,33 +134,9 @@
       "requirement": "REQUIRED"
     }
   ],
-  "not_required_components": [
-    "RTC-PUBLISHER-005",
-    "RTC-SDK-RETURN-006",
-    "RTC-STEGVERSE-EGRESS-007",
-    "RTC-FARSIDE-FINAL-009",
-    "KV/SKAP user verification"
-  ],
-  "superseded_task_specific_orchestration": [
-    "Any new GADI-specific runtime discovery/listener/scheduler path",
-    "Any new GADI-specific generic InTr transport implementation",
-    "Any new GADI-specific evidence custody/reconstruction pipeline",
-    "Any new GADI-specific provider/signature/chain/freshness validator duplicating merged verification sources"
-  ],
-  "goal_specific_completion_predicates_preserved": [
-    "MANIFESTED_GOVERNED_DEFENDER_IDENTITY_OBSERVED",
-    "AUTHENTIC_INTR_DEFENSIVE_ADMISSION_OBSERVED",
-    "PREAUTHORIZED_DEFENSIVE_CAPABILITY_BINDING_OBSERVED",
-    "AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
-    "AUTHENTIC_RESIDENT_DEFENSIVE_ACTION_OBSERVED",
-    "EXTERNAL_SAFE_STATE_EFFECT_OBSERVED",
-    "ADAPTIVE_REASSESSMENT_AFTER_ADVERSARY_STRATEGY_CHANGE_OBSERVED",
-    "INTERVENTION_TERMINATION_AFTER_THREAT_END_OBSERVED",
-    "FULL_INTERVENTION_RECEIPT_CHAIN_VALID",
-    "EXACT_CONFRONTATION_RECONSTRUCTION_VALID",
-    "AUTHENTIC_MASTER_RECORDS_RECONCILIATION_OBSERVED",
-    "GADI_001_ACTIVATION_PROOF_COMPLETE"
-  ],
+  "not_required_components": ["RTC-PUBLISHER-005", "RTC-SDK-RETURN-006", "RTC-STEGVERSE-EGRESS-007", "RTC-FARSIDE-FINAL-009", "KV/SKAP user verification"],
+  "superseded_task_specific_orchestration": ["Any new GADI-specific runtime discovery/listener/scheduler path", "Any new GADI-specific generic InTr transport implementation", "Any new GADI-specific evidence custody/reconstruction pipeline", "Any new GADI-specific provider/signature/chain/freshness validator duplicating merged verification sources"],
+  "goal_specific_completion_predicates_preserved": ["MANIFESTED_GOVERNED_DEFENDER_IDENTITY_OBSERVED", "AUTHENTIC_INTR_DEFENSIVE_ADMISSION_OBSERVED", "PREAUTHORIZED_DEFENSIVE_CAPABILITY_BINDING_OBSERVED", "AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED", "AUTHENTIC_RESIDENT_DEFENSIVE_ACTION_OBSERVED", "EXTERNAL_SAFE_STATE_EFFECT_OBSERVED", "ADAPTIVE_REASSESSMENT_AFTER_ADVERSARY_STRATEGY_CHANGE_OBSERVED", "INTERVENTION_TERMINATION_AFTER_THREAT_END_OBSERVED", "FULL_INTERVENTION_RECEIPT_CHAIN_VALID", "EXACT_CONFRONTATION_RECONSTRUCTION_VALID", "AUTHENTIC_MASTER_RECORDS_RECONCILIATION_OBSERVED", "GADI_001_ACTIVATION_PROOF_COMPLETE"],
   "authority_invariants": {
     "task_registry": "COORDINATION_ONLY",
     "worker_claim_fence": "WorkerCoordinator",
