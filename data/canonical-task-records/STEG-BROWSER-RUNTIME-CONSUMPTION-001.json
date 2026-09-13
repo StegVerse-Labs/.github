@@ -15,11 +15,13 @@
     "docs/GLOBAL_RUNTIME_EVIDENCE_CLOSURE_MIRROR_HANDOFF.md",
     "scripts/install_and_run_canonical_work_event_bootstrap.py",
     "scripts/evaluate_task_registry_collision_checkin.py",
-    "control/resident-execution-request.d/canonical-work-stegbrowser-ephemeral-runtime-binding-001.json",
+    "control/resident-execution-request.d/canonical-work-stegbrowser-runtime-consumption-001.json",
     "control/resident-execution-request.d/stegbrowser-tvc-source-promotion-001.json",
     "control/resident-execution-request.d/consume-stegbrowser-tvc-source-promotion.py",
     "control/source-bindings/stegbrowser-tvc-runtime-observer.json",
-    "StegVerse-Labs/.github@982018aa44a3eb110379d2c8900f55587378a485",
+    "tests/test_stegbrowser_runtime_consumption_checkin.py",
+    "StegVerse-Labs/.github#1781",
+    "StegVerse-Labs/.github@d75ddb18ffb51f3131f3bde54fc9582f57991471",
     "StegVerse-Labs/TVC@aef6b6f5dc99d2a531718ca475d20858ae8e68a6",
     "StegVerse-Labs/TVC@4c78f8653b8a5899350479d57c58e936b50e023a"
   ],
@@ -41,15 +43,15 @@
     {
       "dependency_id": "DEP-STEGBROWSER-RUNTIME-PREFLIGHT-CONVERGENCE",
       "kind": "COORDINATION",
-      "state": "UNRESOLVED",
-      "ref": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001;GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
-      "disposition": "REQUIRE_EXACT_TASK_REGISTRY_CHECKIN_CONTINUE; IF COORDINATE_CONVERGENCE, RECONCILE THROUGH RETURNED CANONICAL OWNER AND RECHECK WITHOUT BYPASS"
+      "state": "RESOLVED",
+      "ref": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001;GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001;StegVerse-Labs/.github#1781",
+      "disposition": "EXACT_CANONICAL_TASK_REGISTRY_CHECKIN_RETURNED_CONTINUE_THROUGH_ADMITTED_INTERNAL_CANONICAL_WORK_BOOTSTRAP_SURFACE_AT_VALIDATED_HEAD_1297D981; THIS_RESOLVES_COORDINATION_PREFLIGHT_ONLY_AND_DOES_NOT_CLAIM_RUNTIME_CONSUMPTION"
     },
     {
       "dependency_id": "DEP-STEGBROWSER-RUNTIME-CANONICAL-WORK-CONSUMPTION",
       "kind": "RUNTIME_EVIDENCE",
       "state": "UNRESOLVED",
-      "ref": "receipts/sovereign-host/canonical-work-stegbrowser-ephemeral-runtime-binding-request-consumption.latest.json",
+      "ref": "receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json",
       "disposition": "REQUIRE_AUTHENTIC_RESIDENT_CONSUMPTION"
     },
     {
