@@ -1,0 +1,21 @@
+{
+  "schema": "stegverse.goal-task-transport-profile/v1",
+  "task_id": "SS-KV-SKAP-SOCIAL-RELEASE-001",
+  "cosv_task_vector": "60000000102000",
+  "component_contract": "data/reusable-transport-component-contract.json",
+  "transport_requirements": {
+    "complete_manifest": true,
+    "governed_processing": true,
+    "required_round_trips": ["bounded_social_intr_admission","tv_tvc_execution_grant_and_relay_authorization","tv_tvc_skap_session_materialization","provider_publication_and_result","device_kv_expected_etag_commit_and_readback"],
+    "evidence_custody_reconstruction": true,
+    "publisher_projection": true,
+    "sdk_return_assembly": false,
+    "stegverse_final_egress_transition": true,
+    "interlock_intr_transport": true,
+    "far_side_final_transition": true
+  },
+  "selected_components": ["RTC-MANIFEST-001","RTC-GOVERNED-PROCESSING-002","RTC-ROUNDTRIP-003","RTC-EVIDENCE-CUSTODY-004","RTC-PUBLISHER-005","RTC-STEGVERSE-EGRESS-007","RTC-INTERLOCK-INTR-TRANSPORT-008","RTC-FARSIDE-FINAL-009"],
+  "omitted_components": {"RTC-SDK-RETURN-006": "No SDK return assembly is part of this Goal Task."},
+  "authority_invariants": {"task_registry":"COORDINATION_ONLY","claim_fence":"WorkerCoordinator","user_verification":"KV/SKAP Vault","device_role":"INTERCHANGEABLE_STEGOS_TRANSPORT_NODE","transition":"Interlock/InTr","credential_provider_release":"TV/TVC","reality_reconstruction":"Master Records","heartbeat":"OBSERVABILITY_ONLY","github_runtime_authority":"NONE"},
+  "composition_rule": "Reuse selected components only; repeated components execute only at declared crossings; reuse grants no authority and does not satisfy runtime predicates."
+}
