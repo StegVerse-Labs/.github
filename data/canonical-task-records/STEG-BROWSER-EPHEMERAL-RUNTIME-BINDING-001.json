@@ -26,6 +26,7 @@
     "data/reusable-transport-component-contract.json",
     "data/reusable-task-ephemeral-construct-contract.json",
     "data/goal-task-transport-profiles/STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001.json",
+    "control/source-bindings/stegbrowser-tvc-runtime-observer.json",
     "StegVerse-Labs/.github@9776ceba4877f8c213af534176f277c28ec58d39",
     "StegVerse-Labs/.github@5eba3974ff9c141aab74e616742e959ecdbd2ded",
     "StegVerse-Labs/.github@4179a3e630c25a1430decd6f072866e6c6fc3798",
@@ -36,7 +37,9 @@
     "StegVerse-Labs/.github@5a206b31613629497feb5d12a810bcf3e368ae39",
     "StegVerse-Labs/.github@b6c8a2bf1f0e91c24afa21b2e8d710f60da3b455",
     "StegVerse-Labs/.github@b9f8e5153aa1651f2d7f043fb902eacb7c113ed9",
+    "StegVerse-Labs/.github@3ec50b61c2dddf2303abd0d66ef0520a2c3d7c21",
     "StegVerse-Labs/TVC@15f01fd9e4c472982cc2212c86aecb9ea90e5b49",
+    "StegVerse-Labs/TVC@4c78f8653b8a5899350479d57c58e936b50e023a",
     "StegVerse-Labs/StegOS@790ee065c491822f2c6bf06e77214e99245afd8f",
     "StegVerse-Labs/StegOS@de38c04accc6196923058db79ccf88db25d85ee6",
     "StegVerse-Labs/StegOS@ea22296e9bbae7605b241ec86c4e15deac8dc937",
@@ -88,6 +91,11 @@
       "RTC-FARSIDE-FINAL-009"
     ],
     "omitted_transport_components": ["RTC-SDK-RETURN-006"],
+    "runtime_observer_source_binding": "control/source-bindings/stegbrowser-tvc-runtime-observer.json",
+    "runtime_observer_exact_sha": "4c78f8653b8a5899350479d57c58e936b50e023a",
+    "primary_runtime_source_pin": "aef6b6f5dc99d2a531718ca475d20858ae8e68a6",
+    "observer_source_revision_separate": true,
+    "source_alignment_status": "SEPARATE_IMMUTABLE_OBSERVER_BINDING_APPLIED",
     "goal_identity_preserved": true,
     "cosv_identity_preserved": true,
     "componentization_mints_authority": false,
@@ -123,7 +131,7 @@
       "kind": "CREDENTIAL_RUNTIME",
       "state": "SOURCE_COMPLETE_RUNTIME_EVIDENCE_PENDING",
       "ref": "StegVerse-Labs/TVC/docs/APP_STORE_CONNECT_TV_TVC_SKAP_MIRROR_HANDOFF.md",
-      "disposition": "TVC APP STORE CONNECT CREDENTIAL CLASS, SKAP RESOLVER, RECIPIENT PROJECTION, INTR ROUTE CONTRACT, PROVIDER OPERATION BOUNDARY, NATIVE BUILD UPLOAD, EXACT-SOURCE MATERIALIZATION PROMOTION, AND PRIMARY-RUNTIME REBIND SOURCE ARE MERGED. AUTHENTIC RESIDENT SOURCE-PROMOTION CONSUMPTION, TVC MATERIALIZATION/RESTART, SIMULTANEOUS 8765/8775 LISTENERS, APPLE RECIPIENT/LIVENESS/ROUTE, REAL SKAP CUSTODY, AND LIVE PROVIDER EXECUTION REMAIN UNOBSERVED."
+      "disposition": "TVC APP STORE CONNECT CREDENTIAL CLASS, SKAP RESOLVER, RECIPIENT PROJECTION, INTR ROUTE CONTRACT, PROVIDER OPERATION BOUNDARY, NATIVE BUILD UPLOAD, EXACT-SOURCE MATERIALIZATION PROMOTION, PRIMARY-RUNTIME REBIND SOURCE, AND THE SEPARATELY IMMUTABLE-BOUND POST-RESTART OBSERVER ARE MERGED. AUTHENTIC RESIDENT SOURCE-PROMOTION CONSUMPTION, TVC MATERIALIZATION/RESTART, SIMULTANEOUS 8765/8775 LISTENERS, APPLE RECIPIENT/LIVENESS/ROUTE, REAL SKAP CUSTODY, AND LIVE PROVIDER EXECUTION REMAIN UNOBSERVED."
     },
     {
       "dependency_id": "DEP-STEGBROWSER-STEGSOCIALS-CALLER",
@@ -149,7 +157,7 @@
     {
       "blocker_id": "APPLE-TVC-SKAP-RUNTIME-EVIDENCE",
       "state": "NOT_OBSERVED",
-      "release_condition": "Authentic resident source-promotion consumption materializes and promotes the pinned TVC source, simultaneous primary 8765 and SKAP 8775 listeners are observed, the exact Apple recipient/liveness/InTr route reaches OWNER_INGRESS_READY, and the owner's real App Store Connect credential is sealed into SKAP through current-iPhone ingress without credential export."
+      "release_condition": "Authentic resident source-promotion consumption materializes and promotes the pinned TVC source, simultaneous primary 8765 and SKAP 8775 listeners are observed, the separately immutable-bound observer records the exact runtime observation, the Apple recipient/liveness/InTr route reaches OWNER_INGRESS_READY, and the owner's real App Store Connect credential is sealed into SKAP through current-iPhone ingress without credential export."
     }
   ],
   "systemic_incident_ref": null,
@@ -165,6 +173,8 @@
     "StegVerse-Labs/.github@5a206b31613629497feb5d12a810bcf3e368ae39",
     "StegVerse-Labs/.github@b6c8a2bf1f0e91c24afa21b2e8d710f60da3b455",
     "StegVerse-Labs/.github@b9f8e5153aa1651f2d7f043fb902eacb7c113ed9",
+    "StegVerse-Labs/.github@3ec50b61c2dddf2303abd0d66ef0520a2c3d7c21",
+    "control/source-bindings/stegbrowser-tvc-runtime-observer.json",
     "StegVerse-Labs/TVC/actions/runs/34350815902",
     "StegVerse-Labs/TVC/actions/runs/34351285862",
     "StegVerse-Labs/TVC/actions/runs/34352933939",
@@ -293,8 +303,8 @@
     "authority_effect": "NONE"
   },
   "runtime_resolution": {
-    "current_executor": "The portable resident refresh+dispatch path is source-complete for stegbrowser_tvc_source_promotion after merged #1461, #1465, #1487, #1533, #1556, and #1579. The selected execution substrate is the retained StegBrowser/StegOS resident node. Additional temporary capacity may participate only when it materializes as the same canonical StegBrowser/StegOS node class and is admitted as ADMITTED-EPHEMERAL-STEGOS-NODE through the existing Interlock/InTr protocol. Remote Computer is transport/discovery only and is not a separate execution substrate, authority, durable machine dependency, or completion predicate. A complete StegBrowser portable-dispatch receipt requires the dedicated consumption receipt for the pinned TVC SHA, a staged outcome of STAGED, ALREADY_STAGED, or RESTAGED_EXACT_SOURCE, and exact equality between that dedicated receipt and the current exact-selector resident-request-dispatch consumer result with attempted=true and returncode=0. HANDOFF_READY remains authentic but incomplete. Authentic source-promotion consumption, TVC materialization/restart, live Apple owner ingress, current-iPhone signing, TestFlight upload/install, and same-device discovery remain unobserved.",
-    "authority_basis": "GitHub Actions validates and transports evidence only. Task Registry substrate selection grants no execution authority. Interlock/InTr remains transition/admission authority, WorkerCoordinator remains claim/fence authority, TV/TVC remains credential authority, and Master Records remains observed-reality/reconstruction authority. Remote Computer transport presence or absence has authority_effect=NONE; an empty inventory is EVIDENCE_REACHABILITY only and cannot establish substrate unsuitability or an external-device requirement. Authentic portable dispatch evidence must retain source_revision_head_kind=GIT_HEAD, an exact lowercase 40-hex source_git_head, exact selector stegbrowser_tvc_source_promotion, exact one-consumer dispatch evidence, the current dispatcher outcome with attempted=true and returncode=0, the identity-valid dedicated StegBrowser consumption receipt, proof that target_consumption_matches_current_dispatch_result=true, and the dedicated receipt canonical SHA-256 commitment together. The dedicated receipt must bind task STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001, pinned TVC SHA aef6b6f5dc99d2a531718ca475d20858ae8e68a6, zero credential material, zero network source fetch, and a staged outcome of STAGED, ALREADY_STAGED, or RESTAGED_EXACT_SOURCE. HANDOFF_READY cannot establish complete dispatch evidence. Source/CI state does not prove runtime execution. Signing private key material must originate, remain, and be destroyed inside the current-iPhone ephemeral signing executor.",
+    "current_executor": "The portable resident refresh+dispatch path is source-complete for stegbrowser_tvc_source_promotion after merged #1461, #1465, #1487, #1533, #1556, and #1579. The selected execution substrate is the retained StegBrowser/StegOS resident node. Additional temporary capacity may participate only when it materializes as the same canonical StegBrowser/StegOS node class and is admitted as ADMITTED-EPHEMERAL-STEGOS-NODE through the existing Interlock/InTr protocol. Remote Computer is transport/discovery only and is not a separate execution substrate, authority, durable machine dependency, or completion predicate. The primary runtime promotion remains pinned to immutable TVC aef6b6f5dc99d2a531718ca475d20858ae8e68a6. The reusable post-restart observer is separately source-bound through RTC-MANIFEST-001 to immutable TVC 4c78f8653b8a5899350479d57c58e936b50e023a and remains observation-only. A complete StegBrowser portable-dispatch receipt requires the dedicated consumption receipt for the primary runtime pin, a staged outcome of STAGED, ALREADY_STAGED, or RESTAGED_EXACT_SOURCE, and exact equality between that dedicated receipt and the current exact-selector resident-request-dispatch consumer result with attempted=true and returncode=0. HANDOFF_READY remains authentic but incomplete. Authentic source-promotion consumption, TVC materialization/restart, live Apple owner ingress, observer runtime receipt, current-iPhone signing, TestFlight upload/install, and same-device discovery remain unobserved.",
+    "authority_basis": "GitHub Actions validates and transports evidence only. Task Registry substrate selection and reusable source binding grant no execution authority. Interlock/InTr remains transition/admission authority, WorkerCoordinator remains claim/fence authority, TV/TVC remains credential authority, and Master Records remains observed-reality/reconstruction authority. Remote Computer transport presence or absence has authority_effect=NONE; an empty inventory is EVIDENCE_REACHABILITY only and cannot establish substrate unsuitability or an external-device requirement. Authentic portable dispatch evidence must retain source_revision_head_kind=GIT_HEAD, an exact lowercase 40-hex source_git_head, exact selector stegbrowser_tvc_source_promotion, exact one-consumer dispatch evidence, the current dispatcher outcome with attempted=true and returncode=0, the identity-valid dedicated StegBrowser consumption receipt, proof that target_consumption_matches_current_dispatch_result=true, and the dedicated receipt canonical SHA-256 commitment together. The dedicated receipt must bind task STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001, primary runtime TVC SHA aef6b6f5dc99d2a531718ca475d20858ae8e68a6, zero credential material, zero network source fetch, and a staged outcome of STAGED, ALREADY_STAGED, or RESTAGED_EXACT_SOURCE. The later observer must independently bind exact TVC SHA 4c78f8653b8a5899350479d57c58e936b50e023a through control/source-bindings/stegbrowser-tvc-runtime-observer.json; observer source binding does not prove observer execution. HANDOFF_READY cannot establish complete dispatch evidence. Source/CI state does not prove runtime execution. Signing private key material must originate, remain, and be destroyed inside the current-iPhone ephemeral signing executor.",
     "unattended_runtime": false
   },
   "worker_claim": {
