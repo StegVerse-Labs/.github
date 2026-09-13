@@ -1,0 +1,46 @@
+{
+  "schema": "stegverse.runtime-surface-correction/v1",
+  "task_id": "SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004",
+  "cosv_task_vector": "71000000100110",
+  "recorded_at": "2026-09-13T05:00:00Z",
+  "authority_effect": "NONE_COORDINATION_AND_OBSERVATION_CORRECTION_ONLY",
+  "supersedes_as_current_gate": {
+    "predicate": "AUTHORIZED_REMOTE_DEVICE_CONNECTOR_PRESENT",
+    "classification": "NOT_APPLICABLE",
+    "historical_observations_preserved": true,
+    "reason": "This Goal Task executes through the canonical CURRENT_USER_IPHONE portable WorkerCoordinator/StegOS path; no remotely connected resident device, second user-operated device, or always-on external host is part of the architecture."
+  },
+  "canonical_execution_surface": {
+    "surface": "CURRENT_USER_IPHONE",
+    "workercoordinator_authority": "StegVerse-Labs/.github WorkerCoordinator",
+    "stegos_role": "ATOMIC_PERSISTENCE_AND_BOUNDED_SUBORDINATE_EXECUTION_ADAPTER",
+    "remote_device_connector_required": false,
+    "connected_resident_device_required": false,
+    "second_user_operated_device_required": false,
+    "always_on_external_host_required": false,
+    "github_runtime_authority": "NONE"
+  },
+  "architecture_evidence": [
+    "docs/WORKERCOORDINATOR_PORTABLE_IPHONE_EXECUTION_MIRROR_HANDOFF.md",
+    "receipts/preflight/sv002-current-iphone-portable-consumer-20260905.json",
+    "docs/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_MIRROR_HANDOFF.md"
+  ],
+  "runtime_truth": {
+    "generic_stegverse_ios_device_local_execution_previously_proven": true,
+    "this_task_workercoordinator_checkout_observed": false,
+    "this_task_intr_admission_observed": false,
+    "this_task_native_stegos_execution_observed": false,
+    "authentic_post_merge_lifecycle_invocation_observed": false,
+    "same_invocation_lifecycle_chain_proven": false,
+    "resident_reseal_receipt_observed": false,
+    "resident_listener_receipt_observed": false,
+    "completion_claimed": false
+  },
+  "current_unresolved_classification": "TASK_BOUND_NATIVE_IPHONE_EXECUTION_EVIDENCE_NOT_OBSERVED",
+  "nonclaims": [
+    "ARCHITECTURE_SURFACE_EXISTENCE_DOES_NOT_PROVE_THIS_TASK_EXECUTED",
+    "HISTORICAL_IOS_EXECUTION_DOES_NOT_PROVE_THIS_TASK_EXECUTED",
+    "SOURCE_OR_CI_DOES_NOT_PROVE_RUNTIME_EXECUTION",
+    "THIS_CORRECTION_MINTS_NO_WORKERCOORDINATOR_INTR_TV_TVC_OR_MASTER_RECORDS_AUTHORITY"
+  ]
+}
