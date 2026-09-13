@@ -26,12 +26,14 @@
     "CANONICAL_SOURCE_PRECEDES_LOCAL_INTERPRETATION_ALREADY_CANONICAL",
     "SESSION_BUILD_PREFLIGHT_ALREADY_FAILS_CLOSED_WHEN_INVOKED",
     "DIRECT_GITHUB_SOURCE_MUTATION_IS_NOT_CURRENTLY_COUPLED_TO_PREFLIGHT_PROOF",
-    "STEGOS_DEVICE_KV_SKAP_ROUNDTRIP_001_LACKS_TASK_SPECIFIC_CANONICAL_POLICY_REFS"
+    "STEGOS_DEVICE_KV_SKAP_ROUNDTRIP_001_LACKS_TASK_SPECIFIC_CANONICAL_POLICY_REFS",
+    "WORKFLOW_PROLIFERATION_POLICY_REQUIRES_REUSE_OF_STABLE_ORGANIZATION_VALIDATOR"
   ],
   "authorized_mutation_scope": [
     "scripts/validate_source_mutation_preflight.py",
     "tests/test_source_mutation_preflight_guard.py",
     ".github/workflows/source-mutation-preflight-guard.yml",
+    ".github/workflows/org-control-plane-validate.yml",
     "control/canonical-policy-context-registry.json",
     "management/session-build-preflight-contract.json",
     "docs/CANONICAL_INVARIANT_INGRESS_LOCK_MIRROR_HANDOFF.md",
