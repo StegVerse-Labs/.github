@@ -1,0 +1,200 @@
+{
+  "schema": "stegverse.cross-task-coordination-fragment/v1",
+  "fragment_id": "SS-ERL-DEVICE-KV-CONVERGENCE-001",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "predicates": [
+    {
+      "predicate_id": "PRED-ERL-DEVICE-KV-OWNER-REGISTERED-001",
+      "semantic_predicate_id": "canonical_task_registered",
+      "subject_binding": {
+        "task_id": "SHWP-DEVICE-KV-INTR-OBSERVATION-001"
+      },
+      "state": "SATISFIED",
+      "description": "The pre-existing DEVICE_KV observation owner is now represented in canonical Task Registry under its existing task ID and COSV; registration grants no execution authority.",
+      "authoritative_producer": "StegVerse-Labs/.github Task Registry source/control plane",
+      "required_schema": "stegverse.canonical-task-record/v1",
+      "required_scope": "canonical registration of existing DEVICE_KV runtime owner",
+      "required_execution_instance": "SOURCE_COORDINATION_ONLY",
+      "max_age_seconds": null,
+      "required_fields": ["task_id", "cosv_task_vector", "coordination_state", "checkout_state"],
+      "required_field_values": {
+        "task_id": "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
+        "cosv_task_vector": "50000000101000",
+        "coordination_state": "ACTIVE",
+        "checkout_state": "HANDOFF_READY_RUNTIME_PROOF_PENDING"
+      },
+      "expected_output_ref": "data/canonical-task-records/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json",
+      "consumers": ["SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001"],
+      "canonical_source_refs": [
+        "data/canonical-task-records/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json",
+        "control/portable-workercoordinator-packages/device-kv-intr-observation.json",
+        "docs/SS_ERL_DEVICE_KV_TASK_REGISTRY_CONVERGENCE_MIRROR_HANDOFF.md"
+      ]
+    },
+    {
+      "predicate_id": "PRED-ROUNDTRIP-CONCRETE-DEVICE-KV-WORKERCLAIM-001",
+      "semantic_predicate_id": "workercoordinator_claim_fence_observed",
+      "subject_binding": {
+        "task_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+        "runtime_owner_task_id": "SHWP-DEVICE-KV-INTR-OBSERVATION-001"
+      },
+      "state": "UNKNOWN",
+      "description": "A concrete current WorkerCoordinator claim ID and fencing token for the DEVICE_KV owner, bound to the checked-out roundtrip execution instance, has been authentically observed. Task Registry checkout state alone does not satisfy this predicate.",
+      "authoritative_producer": "WorkerCoordinator",
+      "required_schema": "stegverse.workercoordinator-portable-checkout-receipt/v1",
+      "required_scope": "current DEVICE_KV owner claim/fence bound to the roundtrip execution instance",
+      "required_execution_instance": null,
+      "max_age_seconds": null,
+      "required_fields": ["task_id", "claim_id", "fencing_token", "authority_effect"],
+      "required_field_values": {
+        "task_id": "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
+        "authority_effect": "CANONICAL_WORKERCOORDINATOR_CLAIM_FENCE"
+      },
+      "expected_output_ref": null,
+      "consumers": [
+        "SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001",
+        "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001"
+      ],
+      "canonical_source_refs": [
+        "data/canonical-task-records/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json",
+        "control/worker-registry.json",
+        "workercoordinator/portable_checkout.js"
+      ]
+    },
+    {
+      "predicate_id": "PRED-ERL-NARROW-DEVICE-KV-CONVERGENCE-RESOLVED-001",
+      "semantic_predicate_id": "cross_task_owner_reuse_resolved",
+      "subject_binding": {
+        "consumer_task_id": "SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001",
+        "runtime_owner_task_id": "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
+        "adjacent_checked_out_task_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+        "required_erl_terminal_transition": "DEVICE_SYSTEM_TO_KV"
+      },
+      "state": "UNSATISFIED",
+      "description": "Cross-task coordination has established a non-competing path for ERL's narrower DEVICE_SYSTEM->KV evidence requirement without inheriting the broader roundtrip's TVC/SKAP predicates and without competing for an active WorkerCoordinator claim/fence.",
+      "authoritative_producer": "canonical cross-task coordination resolver + Task Registry",
+      "required_schema": "stegverse.task-registry-checkin-disposition/v1",
+      "required_scope": "ERL reuse of existing DEVICE_KV owner under current checked-out adjacency",
+      "required_execution_instance": null,
+      "max_age_seconds": null,
+      "required_fields": ["task_id", "disposition", "authority_effect"],
+      "required_field_values": {
+        "task_id": "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
+        "disposition": "CONTINUE",
+        "authority_effect": "NONE"
+      },
+      "expected_output_ref": null,
+      "consumers": ["SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001"],
+      "canonical_source_refs": [
+        "scripts/evaluate_task_registry_collision_checkin.py",
+        "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
+        "docs/SS_ERL_DEVICE_KV_TASK_REGISTRY_CONVERGENCE_MIRROR_HANDOFF.md"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "evidence_id": "EVID-ERL-DEVICE-KV-OWNER-REGISTERED-001",
+      "predicate_id": "PRED-ERL-DEVICE-KV-OWNER-REGISTERED-001",
+      "subject_binding": {
+        "task_id": "SHWP-DEVICE-KV-INTR-OBSERVATION-001"
+      },
+      "producer": "StegVerse-Labs/.github",
+      "ref": "data/canonical-task-records/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json",
+      "schema": "stegverse.canonical-task-record/v1",
+      "scope": "source coordination",
+      "execution_instance": "SOURCE_COORDINATION_ONLY",
+      "observed_at": "2026-09-13",
+      "fields": {
+        "task_id": "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
+        "cosv_task_vector": "50000000101000",
+        "runtime_execution_observed": false
+      },
+      "authority_effect": "EVIDENCE_ONLY"
+    },
+    {
+      "evidence_id": "EVID-ROUNDTRIP-CHECKOUT-WITHOUT-CONCRETE-DEVICE-KV-CLAIM-001",
+      "predicate_id": "PRED-ROUNDTRIP-CONCRETE-DEVICE-KV-WORKERCLAIM-001",
+      "subject_binding": {
+        "task_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+        "runtime_owner_task_id": "SHWP-DEVICE-KV-INTR-OBSERVATION-001"
+      },
+      "producer": "StegVerse-Labs/.github Task Registry source",
+      "ref": "data/canonical-task-records/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json",
+      "schema": "stegverse.canonical-task-record/v1",
+      "scope": "coordination-state observation only",
+      "execution_instance": "SOURCE_COORDINATION_ONLY",
+      "observed_at": "2026-09-13",
+      "fields": {
+        "coordination_state": "ACTIVE",
+        "checkout_state": "CHECKED_OUT",
+        "concrete_claim_id_observed": false,
+        "concrete_fencing_token_observed": false
+      },
+      "authority_effect": "EVIDENCE_ONLY"
+    }
+  ],
+  "gaps": [
+    {
+      "predicate_id": "PRED-ROUNDTRIP-CONCRETE-DEVICE-KV-WORKERCLAIM-001",
+      "subject_binding": {
+        "task_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+        "runtime_owner_task_id": "SHWP-DEVICE-KV-INTR-OBSERVATION-001"
+      },
+      "existing_evidence_refs": [
+        "data/canonical-task-records/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json",
+        "docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md"
+      ],
+      "rejected_because": [
+        "TASK_REGISTRY_CHECKED_OUT_STATE_IS_NOT_A_CONCRETE_WORKERCOORDINATOR_CLAIM",
+        "NO_CURRENT_CLAIM_ID_AND_FENCING_TOKEN_INSTANCE_OBSERVED_FOR_DEVICE_KV_OWNER"
+      ],
+      "missing_observation": "Current WorkerCoordinator claim/fence evidence for SHWP-DEVICE-KV-INTR-OBSERVATION-001 if the checked-out roundtrip actually owns that runtime task.",
+      "required_producer": "WorkerCoordinator",
+      "required_output_ref": null,
+      "required_schema": "stegverse.workercoordinator-portable-checkout-receipt/v1",
+      "required_fields": ["task_id", "claim_id", "fencing_token", "authority_effect"],
+      "required_field_values": {
+        "task_id": "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
+        "authority_effect": "CANONICAL_WORKERCOORDINATOR_CLAIM_FENCE"
+      },
+      "required_freshness": "CURRENT_EXECUTION_INSTANCE",
+      "collision_refs": ["STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001"],
+      "action_without_collision": "Do not infer claim ownership from Task Registry checkout state. Resolve current WorkerCoordinator ownership through the canonical coordination/claim parity surfaces."
+    },
+    {
+      "predicate_id": "PRED-ERL-NARROW-DEVICE-KV-CONVERGENCE-RESOLVED-001",
+      "subject_binding": {
+        "consumer_task_id": "SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001",
+        "runtime_owner_task_id": "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
+        "adjacent_checked_out_task_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+        "required_erl_terminal_transition": "DEVICE_SYSTEM_TO_KV"
+      },
+      "existing_evidence_refs": [
+        "docs/SS_ERL_DEVICE_KV_TASK_REGISTRY_CONVERGENCE_MIRROR_HANDOFF.md",
+        "data/canonical-task-records/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json",
+        "data/canonical-task-records/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json",
+        "data/canonical-task-records/SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001.json"
+      ],
+      "rejected_because": [
+        "TASK_REGISTRY_CURRENTLY_RETURNS_COORDINATE_CONVERGENCE",
+        "NO_CANONICAL_NON_COMPETING_OWNER_REUSE_RESOLUTION_RECORDED",
+        "ERL_MUST_NOT_INHERIT_UNRELATED_TVC_SKAP_ROUNDTRIP_PREDICATES",
+        "ERL_MUST_NOT_MINT_A_COMPETING_WORKERCOORDINATOR_CLAIM"
+      ],
+      "missing_observation": "A canonical convergence resolution that distinguishes the ERL DEVICE_SYSTEM->KV subject from the broader checked-out Device/KV/SKAP roundtrip while preserving claim/fence exclusivity.",
+      "required_producer": "canonical cross-task coordination resolver + Task Registry",
+      "required_output_ref": null,
+      "required_schema": "stegverse.task-registry-checkin-disposition/v1",
+      "required_fields": ["task_id", "disposition", "authority_effect"],
+      "required_field_values": {
+        "task_id": "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
+        "disposition": "CONTINUE",
+        "authority_effect": "NONE"
+      },
+      "required_freshness": "AFTER_CURRENT_COLLISION_RECONCILIATION",
+      "collision_refs": ["STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001"],
+      "action_without_collision": "After canonical convergence resolves the adjacency and no concrete competing DEVICE_KV claim exists, perform the existing portable WorkerCoordinator checkout. Do not bypass Task Registry."
+    }
+  ]
+}
