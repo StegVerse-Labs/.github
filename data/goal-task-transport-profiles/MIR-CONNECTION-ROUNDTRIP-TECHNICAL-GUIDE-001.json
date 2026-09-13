@@ -1,0 +1,200 @@
+{
+  "schema": "stegverse.goal-task-transport-profile/v1",
+  "task_id": "MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001",
+  "cosv_task_vector": "50000000100000",
+  "component_model": "data/reusable-task-component-model.json",
+  "decomposition_policy": "data/reusable-task-component-decomposition-policy.json",
+  "component_contract": "data/reusable-transport-component-contract.json",
+  "decomposition_evaluation": {
+    "active_signals": [
+      "repeated_subflow",
+      "multiple_authority_crossings",
+      "multiple_round_trips",
+      "cross_repository_or_org_spread",
+      "task_specific_adapter_duplicates_generic_work",
+      "handoff_sequence_growth",
+      "independent_reusability",
+      "optional_subflow_present",
+      "independent_evidence_predicate"
+    ],
+    "score": 28,
+    "decision": "STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION",
+    "authority_effect": "NONE_COORDINATION_ONLY"
+  },
+  "transport_requirements": {
+    "complete_manifest": true,
+    "governed_processing": true,
+    "required_round_trips": [
+      "mir_historical_accounting_round_trip"
+    ],
+    "interlock_intr_transport_occurrences": [
+      "stegverse_to_mir_outbound",
+      "mir_to_stegverse_return",
+      "stegverse_to_original_initiator_egress"
+    ],
+    "evidence_custody_reconstruction": true,
+    "publisher_projection": true,
+    "sdk_return_assembly": true,
+    "stegverse_final_egress_transition": true,
+    "interlock_intr_transport": true,
+    "far_side_final_transition": true
+  },
+  "selected_components": [
+    "RTC-MANIFEST-001",
+    "RTC-GOVERNED-PROCESSING-002",
+    "RTC-ROUNDTRIP-003",
+    "RTC-EVIDENCE-CUSTODY-004",
+    "RTC-PUBLISHER-005",
+    "RTC-SDK-RETURN-006",
+    "RTC-STEGVERSE-EGRESS-007",
+    "RTC-INTERLOCK-INTR-TRANSPORT-008",
+    "RTC-FARSIDE-FINAL-009"
+  ],
+  "component_parameters": {
+    "RTC-MANIFEST-001": {
+      "inputs": ["original initiating request", "complete communication manifest", "COSV binding"],
+      "outputs": ["validated complete manifest", "declared required evidence", "task/COSV binding"],
+      "preconditions": ["canonical task identity resolved", "manifest bytes available"],
+      "expected_evidence": ["manifest validation receipt", "manifest hash", "task/COSV correlation"],
+      "authority_owner": "NONE_COMPONENT; canonical SDK validates structure and declared processing",
+      "cardinality": "ONCE_PER_COMPLETE_MANIFEST",
+      "requirement": "REQUIRED"
+    },
+    "RTC-GOVERNED-PROCESSING-002": {
+      "inputs": ["admitted manifest", "processing.capability", "processing.route_id"],
+      "outputs": ["manifest-selected processor result", "processor receipts"],
+      "preconditions": ["installed admissible route", "applicable Interlock/InTr admission"],
+      "expected_evidence": ["route resolution", "processor receipt", "no source-identity routing substitution"],
+      "authority_owner": "StegVerse processor with Interlock/InTr transition authority where applicable",
+      "cardinality": "AS_DECLARED_BY_MANIFEST",
+      "requirement": "REQUIRED"
+    },
+    "RTC-ROUNDTRIP-003": {
+      "inputs": ["bounded MIR request payload", "outbound correlation binding"],
+      "outputs": ["MIR-native historical/accounting response", "extended receipt chain"],
+      "preconditions": ["designated InTr transport available", "TV/TVC material when authenticated operation requires it"],
+      "expected_evidence": ["outbound InTr receipt", "MIR ingress/evaluation evidence", "MIR return receipt", "exact request/response correlation"],
+      "authority_owner": "Interlock/InTr for transition; MIR for historical/accounting semantics; TV/TVC for credentials",
+      "cardinality": "ONE_DECLARED_MIR_ROUND_TRIP; component is repeatable for other tasks",
+      "requirement": "REQUIRED"
+    },
+    "RTC-EVIDENCE-CUSTODY-004": {
+      "inputs": ["authentic receipts", "source-native MIR result", "processor evidence"],
+      "outputs": ["custody reference", "readback", "reconstruction when requested"],
+      "preconditions": ["authentic evidence exists"],
+      "expected_evidence": ["Master Records custody", "readback", "reconstruction receipt when requested"],
+      "authority_owner": "Master Records",
+      "cardinality": "AS_EVIDENCE_IS_OBSERVED",
+      "requirement": "REQUIRED"
+    },
+    "RTC-PUBLISHER-005": {
+      "inputs": ["authentic retained evidence", "manifest-declared presentation/evaluator requirement"],
+      "outputs": ["Publisher artifact-return"],
+      "preconditions": ["presentation/evaluator evidence declared", "retained evidence available"],
+      "expected_evidence": ["Publisher artifact hashes", "rendering receipt", "non-authorizing return object"],
+      "authority_owner": "Publisher presentation/evidence assembly only",
+      "cardinality": "ONCE_WHEN_DECLARED",
+      "requirement": "REQUIRED_FOR_THIS_GOAL_COMPLETE_MANIFEST; OPTIONAL_GLOBALLY"
+    },
+    "RTC-SDK-RETURN-006": {
+      "inputs": ["Publisher artifact-return", "original manifest receipt", "initiator", "return projection", "declared egress surface"],
+      "outputs": ["stegverse.sdk.publisher-return-binding/v1", "READY_FOR_FINAL_STEGVERSE_EGRESS_TRANSITION"],
+      "preconditions": ["exact Publisher artifact verified", "complete manifest binding available"],
+      "expected_evidence": ["exact-byte Publisher verification", "deterministic SDK return binding"],
+      "authority_owner": "SDK return assembly only; no transition authority",
+      "cardinality": "ONCE_PER_COMPLETED_PUBLISHER_RETURN",
+      "requirement": "REQUIRED"
+    },
+    "RTC-STEGVERSE-EGRESS-007": {
+      "inputs": ["SDK return binding", "manifest-declared caller-path egress surface"],
+      "outputs": ["final StegVerse-side egress candidate"],
+      "preconditions": ["SDK return binding ready", "egress surface declared"],
+      "expected_evidence": ["final StegVerse-side transition receipt/candidate", "exact return hash preserved"],
+      "authority_owner": "Interlock/InTr for state transition; LLM Adapter is protocol/framing surface for framework paths",
+      "cardinality": "ONCE_PER_FINAL_RETURN",
+      "requirement": "REQUIRED"
+    },
+    "RTC-INTERLOCK-INTR-TRANSPORT-008": {
+      "inputs": ["governed packet/transition candidate", "required credentials where applicable"],
+      "outputs": ["ingress/egress transition receipt", "governed packet movement"],
+      "preconditions": ["valid transport profile", "applicable authority/credential predicates satisfied"],
+      "expected_evidence": ["authentic InTr admission/materialization/egress receipt bound to exact bytes"],
+      "authority_owner": "Interlock/InTr; TV/TVC only for credential material",
+      "cardinality": "THREE_DECLARED_OCCURRENCES_FOR_THIS_GOAL",
+      "requirement": "REQUIRED_REPEATABLE"
+    },
+    "RTC-FARSIDE-FINAL-009": {
+      "inputs": ["authentic InTr egress", "original initiator binding"],
+      "outputs": ["far-side receive/final transition", "caller-side receipt"],
+      "preconditions": ["authentic egress exists"],
+      "expected_evidence": ["far-side transition receipt bound to same manifest/request lineage"],
+      "authority_owner": "far-side Interlock/InTr transition authority",
+      "cardinality": "ONCE_PER_TERMINAL_DELIVERY",
+      "requirement": "REQUIRED_FOR_THIS_GOAL; OPTIONAL_GLOBALLY"
+    }
+  },
+  "non_transport_dependencies": {
+    "runtime_observation": {
+      "canonical_owner": "existing resident runtime + HeartBeat observability only",
+      "authority_effect": "NONE_FROM_COMPONENT_MODEL",
+      "required_evidence": ["resident execution/liveness/freshness where runtime path requires it"]
+    },
+    "worker_claim_fence": {
+      "canonical_owner": "WorkerCoordinator",
+      "required_evidence": ["claim/fence when execution requires worker ownership"]
+    },
+    "credential_session": {
+      "canonical_owner": "TV/TVC",
+      "required_evidence": ["authentic credential/session issuance or use receipt when required"]
+    },
+    "framework_provider_translation": {
+      "canonical_owner": "StegVerse-org/LLM-adapter for framework paths",
+      "rule": "translation/framing only; reuse RTC-STEGVERSE-EGRESS-007 and RTC-INTERLOCK-INTR-TRANSPORT-008 rather than duplicating transport"
+    },
+    "user_verification": {
+      "canonical_owner": "KV/SKAP Vault",
+      "device_role": "INTERCHANGEABLE_STEGOS_TRANSPORT_NODE",
+      "device_verification_created": false
+    }
+  },
+  "superseded_task_specific_orchestration": [
+    "Any MIR-specific reimplementation of generic Publisher-to-SDK return binding is superseded by RTC-SDK-RETURN-006 and StegVerse-SDK publisher_return_binding.",
+    "Any MIR-specific generic framework final-egress adapter is superseded by RTC-STEGVERSE-EGRESS-007 plus the reusable LLM Adapter southbound SDK return implementation once merged.",
+    "Any MIR-specific duplicate InTr transport/materialization logic must bind to RTC-INTERLOCK-INTR-TRANSPORT-008 instead of creating a parallel transport path."
+  ],
+  "new_reusable_component_candidates": [
+    {
+      "family": "callback_correlation",
+      "status": "CANDIDATE_ONLY_NOT_YET_MATERIALIZED",
+      "reason": "Exact response-to/original-request correlation is independently reusable and appears across external framework/provider round trips, but no canonical standalone component contract was found during this reconciliation.",
+      "rule": "Do not create a new Goal Task solely for this candidate; continue using exact correlation fields within RTC-ROUNDTRIP-003 until a canonical callback-correlation component is materialized."
+    }
+  ],
+  "remaining_goal_specific_predicates": [
+    "authentic StegVerse outbound InTr materialization to MIR",
+    "authentic MIR-facing ingress receipt",
+    "authentic MIR historical/accounting evaluation over admitted payload",
+    "authentic MIR-native return through designated InTr",
+    "authentic StegVerse return InTr ingress",
+    "manifest-selected StegVerse processing receipt",
+    "Master Records custody/readback/reconstruction when requested",
+    "authentic Publisher execution when declared",
+    "authentic SDK runtime return binding",
+    "authentic final StegVerse-side egress transition",
+    "authentic InTr egress",
+    "authentic far-side final transition/caller receipt",
+    "documentation reconciled to exact observed runtime"
+  ],
+  "composition_rule": "This Goal Task remains the goal/evidence owner. Reusable components provide capability contracts only, mint no authority, may repeat as declared, and do not prove runtime merely because source is merged or CI is green.",
+  "authority_invariants": {
+    "task_registry": "COORDINATION_ONLY",
+    "user_verification": "KV/SKAP Vault",
+    "device_role": "INTERCHANGEABLE_STEGOS_TRANSPORT_NODE",
+    "claim_fence": "WorkerCoordinator",
+    "transition": "Interlock/InTr",
+    "credential_provider_release": "TV/TVC",
+    "reality_reconstruction": "Master Records",
+    "heartbeat": "TIMING_FRESHNESS_LIVENESS_STATE_CORRELATION_OBSERVABILITY_ONLY",
+    "github_runtime_authority": "NONE"
+  }
+}
