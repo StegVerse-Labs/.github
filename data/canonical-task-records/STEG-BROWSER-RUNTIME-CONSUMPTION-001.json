@@ -1,0 +1,135 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
+  "correlation_id": "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
+  "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+  "parent_task_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+  "goal": "Observe and complete the authentic StegBrowser runtime-consumption path from canonical Task Registry convergence through Canonical Work resident consumption, WorkerCoordinator claim/fence, Interlock/InTr admission, exact stegbrowser_tvc_source_promotion consumption, pinned TVC materialization/restart, immutable observer execution, and OWNER_INGRESS_READY without creating parallel orchestration, credential authority, or a second user-operated device.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "40000100100000",
+  "source_refs": [
+    "docs/STEGBROWSER_RUNTIME_CONSUMPTION_MIRROR_HANDOFF.md",
+    "docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md",
+    "docs/TASK_REGISTRY_ANTI_COLLISION_AGGREGATION_MIRROR_HANDOFF.md",
+    "docs/GLOBAL_RUNTIME_EVIDENCE_CLOSURE_MIRROR_HANDOFF.md",
+    "scripts/install_and_run_canonical_work_event_bootstrap.py",
+    "scripts/evaluate_task_registry_collision_checkin.py",
+    "control/resident-execution-request.d/canonical-work-stegbrowser-ephemeral-runtime-binding-001.json",
+    "control/resident-execution-request.d/stegbrowser-tvc-source-promotion-001.json",
+    "control/resident-execution-request.d/consume-stegbrowser-tvc-source-promotion.py",
+    "control/source-bindings/stegbrowser-tvc-runtime-observer.json",
+    "StegVerse-Labs/.github@982018aa44a3eb110379d2c8900f55587378a485",
+    "StegVerse-Labs/TVC@aef6b6f5dc99d2a531718ca475d20858ae8e68a6",
+    "StegVerse-Labs/TVC@4c78f8653b8a5899350479d57c58e936b50e023a"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/TVC"],
+    "components": [
+      "stegbrowser-canonical-work-runtime-consumption",
+      "stegbrowser-tvc-source-promotion-runtime",
+      "workercoordinator-claim-fence",
+      "intr-runtime-admission",
+      "tvc-primary-runtime-materialization",
+      "tvc-primary-runtime-restart",
+      "tvc-skap-runtime-observation",
+      "apple-owner-ingress-readiness"
+    ]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-STEGBROWSER-RUNTIME-PREFLIGHT-CONVERGENCE",
+      "kind": "COORDINATION",
+      "state": "UNRESOLVED",
+      "ref": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001;GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+      "disposition": "REQUIRE_EXACT_TASK_REGISTRY_CHECKIN_CONTINUE; IF COORDINATE_CONVERGENCE, RECONCILE THROUGH RETURNED CANONICAL OWNER AND RECHECK WITHOUT BYPASS"
+    },
+    {
+      "dependency_id": "DEP-STEGBROWSER-RUNTIME-CANONICAL-WORK-CONSUMPTION",
+      "kind": "RUNTIME_EVIDENCE",
+      "state": "UNRESOLVED",
+      "ref": "receipts/sovereign-host/canonical-work-stegbrowser-ephemeral-runtime-binding-request-consumption.latest.json",
+      "disposition": "REQUIRE_AUTHENTIC_RESIDENT_CONSUMPTION"
+    },
+    {
+      "dependency_id": "DEP-STEGBROWSER-RUNTIME-WORKERCOORDINATOR",
+      "kind": "RUNTIME_EVIDENCE",
+      "state": "UNRESOLVED",
+      "ref": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+      "disposition": "REQUIRE_CURRENT_WORKERCOORDINATOR_CLAIM_AND_FENCE"
+    },
+    {
+      "dependency_id": "DEP-STEGBROWSER-RUNTIME-INTR",
+      "kind": "GOVERNED_RUNTIME_ADMISSION",
+      "state": "READY_FOR_INGRESS",
+      "ref": "docs/UNIVERSAL_WORK_INTERLOCK_MIRROR_HANDOFF.md",
+      "disposition": "USE_EXISTING_CANONICAL_WORK_INTERLOCK_INTR_INGRESS"
+    },
+    {
+      "dependency_id": "DEP-STEGBROWSER-RUNTIME-TVC-PROMOTION",
+      "kind": "RUNTIME_EVIDENCE",
+      "state": "UNRESOLVED",
+      "ref": "receipts/sovereign-host/stegbrowser-tvc-source-promotion-request-consumption.latest.json",
+      "disposition": "REQUIRE_CURRENT_DISPATCH_BOUND_STAGED_CONSUMPTION_FOR_AEF6B6F5"
+    },
+    {
+      "dependency_id": "DEP-STEGBROWSER-RUNTIME-OWNER-INGRESS",
+      "kind": "RUNTIME_EVIDENCE",
+      "state": "UNRESOLVED",
+      "ref": "control/source-bindings/stegbrowser-tvc-runtime-observer.json",
+      "disposition": "REQUIRE_IMMUTABLE_OBSERVER_4C78F865_TO_REPORT_OWNER_INGRESS_READY_OBSERVED"
+    }
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+    "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+    "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001",
+    "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+    "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+  ],
+  "expected_evidence_predicates": [
+    "TASK_REGISTRY_CHECKIN_CONTINUE_OBSERVED",
+    "CANONICAL_WORK_RESIDENT_CONSUMPTION_OBSERVED",
+    "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+    "INTR_ADMISSION_OBSERVED",
+    "STEGBROWSER_TVC_SOURCE_PROMOTION_CONSUMPTION_OBSERVED",
+    "PINNED_TVC_AEF6B6F5_MATERIALIZED_AND_PRIMARY_RUNTIME_RESTARTED",
+    "IMMUTABLE_OBSERVER_4C78F865_EXECUTED",
+    "SIMULTANEOUS_TVC_8765_SKAP_8775_OBSERVED",
+    "OWNER_INGRESS_READY_OBSERVED",
+    "NO_PARALLEL_SCHEDULER_DISPATCHER_CREDENTIAL_PATH_OR_SECOND_DEVICE"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["canonical_work_ingress", "resident_runtime_consumption", "workercoordinator_claim_fence", "interlock_intr_admission", "tvc_exact_source_promotion", "tvc_runtime_observation"],
+    "environment": "STEG_BROWSER_RETAINED_RESIDENT_OR_ADMITTED_EPHEMERAL_STEGOS_RUNTIME",
+    "direction": "INTERNAL",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": ["STEG-BROWSER-RETAINED-RESIDENT-NODE", "STEGOS-CURRENT-DEVICE-NODE", "STEG-BROWSER-EPHEMERAL-LEASE", "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER", "ADMITTED-EPHEMERAL-STEGOS-NODE", "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"],
+    "reviews": [
+      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"SELECTED","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"SUITABLE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"SUITABLE","limitation_class":"NONE","evidence_refs":["data/reusable-task-ephemeral-construct-contract.json"]},
+      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"SUITABLE","limitation_class":"NONE","evidence_refs":["docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"SUITABLE","limitation_class":"NONE","evidence_refs":["data/reusable-task-ephemeral-construct-contract.json"]},
+      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":[]}
+    ],
+    "selected_substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  },
+  "runtime_resolution": null,
+  "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
+  "human_action_ref": null,
+  "completion": {"claimed":false,"validated":false,"runtime_consumption_observed":false,"owner_ingress_ready_observed":false},
+  "allowed_next_transitions": ["INGRESS_ADMITTED"],
+  "handoff_projection_refs": ["docs/STEGBROWSER_RUNTIME_CONSUMPTION_MIRROR_HANDOFF.md"],
+  "authority_model": {"task_registry_mints_execution_authority":false,"source_state_proves_execution":false,"worker_claim_authority":"WORKERCOORDINATOR","interlock_intr_required_for_governed_ingress_egress":true,"credential_authority":"TV/TVC","master_records_reality_authority":true,"github_runtime_authority":"NONE"}
+}
