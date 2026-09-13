@@ -1,0 +1,28 @@
+{
+  "schema": "stegverse.preflight/v1",
+  "preflight_id": "ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-CANONICAL-WORK-INGRESS-001",
+  "goal_task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "task_id": "ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001",
+  "issue": "StegVerse-Labs/.github#1766",
+  "state": "SOURCE_STAGED_VALIDATION_REQUIRED",
+  "existing_task_reused": true,
+  "new_autonomy_model_created": false,
+  "new_scheduler_created": false,
+  "new_workercoordinator_created": false,
+  "new_heartbeat_created": false,
+  "new_credential_path_created": false,
+  "second_user_operated_machine_required": false,
+  "connected_device_discovery_required": false,
+  "canonical_work_consumer_reused": "canonical_work_coordination",
+  "resident_request": "control/resident-execution-request.d/canonical-work-entity-autonomous-governed-progression-runtime-adoption-001.json",
+  "canonical_task_shard": "data/canonical-task-records/ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001.json",
+  "handoff": "docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_RUNTIME_ADOPTION_MIRROR_HANDOFF.md",
+  "readme_impact": {
+    "material_function_change": false,
+    "readme_update_required": false,
+    "reason": "README already documents autonomous governed entity progression and generalized Canonical Work task ingress; this change stages the existing documented runtime-adoption task through that existing generalized consumer without changing semantics."
+  },
+  "runtime_claimed": false,
+  "runtime_adoption_predicate": "PRED-ENTITY-AUTONOMOUS-PROGRESSION-RUNTIME-ADOPTED",
+  "authority_effect": "NONE_SOURCE_PREFLIGHT_ONLY"
+}
