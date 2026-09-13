@@ -24,7 +24,8 @@
     "SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005"
   ],
   "classification": {
-    "reusable_task_component_reconciliation": "SOURCE_RECONCILIATION_ACTIVE_VALIDATION_PENDING",
+    "reusable_task_component_reconciliation": "SOURCE_RECONCILIATION_DOCUMENTATION_COMPLETE_EXACT_HEAD_VALIDATION_PENDING",
+    "readme_impact": "COMPLETE_IN_CHANGE_SET_PENDING_EXACT_HEAD_VALIDATION",
     "task_registry_ai_entry_surface_inventory": "PARTIAL_SOURCE_INVENTORY_RUNTIME_REACHABILITY_NOT_PROVEN",
     "chatgpt_task_registry_exclusivity": "PARTIAL_REUSABLE_SESSION_ACTOR_GATE_RUNTIME_IDENTITY_NOT_PROVEN",
     "non_chatgpt_ai_task_registry_denial": "PARTIAL_REUSABLE_SESSION_ACTOR_GATE_SOURCE_LEVEL",
@@ -34,6 +35,8 @@
     "external_evaluator_sdk_manifest_only": "PASS_SOURCE_LEVEL_RUNTIME_NOT_PROVEN"
   },
   "source_evidence": [
+    "README.md",
+    "docs/README_IMPACT_ECOSYSTEM_AI_COMPONENT_RECONCILIATION.md",
     "data/task-registry-ai-ingress-policy.json",
     "data/task-registry-ai-entry-surface-inventory.json",
     "data/task-session-close-orchestration-contract.json",
