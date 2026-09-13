@@ -1,0 +1,30 @@
+{
+  "schema": "stegverse.reusable-task-component-reconciliation/v1",
+  "task_id": "SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004",
+  "cosv_task_vector": "71000000100110",
+  "component_model_merge": "b9f8e5153aa1651f2d7f043fb902eacb7c113ed9",
+  "evaluator": "scripts/evaluate_reusable_task_componentization.py",
+  "signals": {
+    "repeated_subflow": true,
+    "multiple_authority_crossings": true,
+    "multiple_round_trips": true,
+    "cross_repository_or_org_spread": true,
+    "task_specific_adapter_duplicates_generic_work": true,
+    "handoff_sequence_growth": true,
+    "failure_path_branching": true,
+    "independent_reusability": true,
+    "optional_subflow_present": true,
+    "independent_evidence_predicate": true
+  },
+  "score": 30,
+  "decision": "STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION",
+  "reconciliation_disposition": "COMPONENTIZATION_REQUIRED_AND_APPLIED",
+  "goal_identity_preserved": true,
+  "new_goal_task_created": false,
+  "new_reusable_component_created": false,
+  "existing_components_reused": true,
+  "obsolete_parallel_pr_closed": 1578,
+  "runtime_truth_changed": false,
+  "runtime_evidence_upgraded": false,
+  "authority_effect": "NONE_COORDINATION_ONLY"
+}
