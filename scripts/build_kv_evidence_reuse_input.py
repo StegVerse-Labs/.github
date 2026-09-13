@@ -3,6 +3,7 @@ from __future__ import annotations
 import importlib.util
 import json
 import re
+import sys
 from pathlib import Path
 
 TASK_ID = "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001"
@@ -24,12 +25,23 @@ def load(path):
 
 
 def _module(path: Path, name: str):
-    spec = importlib.util.spec_from_file_location(name, path)
-    if spec is None or spec.loader is None:
-        raise RuntimeError(f"module unavailable: {path}")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
+    repository_root = str(path.resolve().parents[1])
+    added = repository_root not in sys.path
+    if added:
+        sys.path.insert(0, repository_root)
+    try:
+        spec = importlib.util.spec_from_file_location(name, path)
+        if spec is None or spec.loader is None:
+            raise RuntimeError(f"module unavailable: {path}")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+    finally:
+        if added:
+            try:
+                sys.path.remove(repository_root)
+            except ValueError:
+                pass
 
 
 def current_retained_iphone_route(source: Path):
