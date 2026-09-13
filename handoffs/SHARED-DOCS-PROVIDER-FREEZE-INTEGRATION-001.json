@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001",
   "created_at": "2026-09-12T22:00:00-05:00",
-  "updated_at": "2026-09-12T22:00:00-05:00",
+  "updated_at": "2026-09-12T22:12:00-05:00",
   "state": "HANDOFF_READY_MACHINE_OWNED",
   "goal": {
     "goal_id": "SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001",
@@ -38,6 +38,7 @@
     "repository": "StegVerse-Labs/.github",
     "source_refs": [
       "data/canonical-task-records/SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001.json",
+      "data/canonical-task-records/SHARED-DOCS-MULTIPARTY-FREEZE-001.json",
       "control/resident-execution-request.d/shared-docs-provider-content-integrity-001.json",
       "control/resident-execution-request.d/consume-shared-docs-provider-content-integrity.py",
       "workers/shared_docs_provider_content_integrity_worker.py"
@@ -45,6 +46,8 @@
     "parent_task_id": "SHARED-DOCS-MULTIPARTY-FREEZE-001",
     "derivation_reason": "Bind the existing Goal Task to the canonical WorkerCoordinator path after Reusable Task Component reconciliation; this does not create a new Goal Task or provider execution plane.",
     "canonical_owner_ref": "data/canonical-task-records/SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001.json",
+    "canonical_lineage_key": "shared-docs:provider-freeze-integration:content-integrity-observation",
+    "derivation_depth": 1,
     "worker_registry_ref": "control/worker-registry.d/shared-docs-provider-content-integrity-001.json",
     "worker_id": "shared-docs-provider-content-integrity-worker",
     "adapter_ref": "process:shared-docs-provider-content-integrity-v1",
