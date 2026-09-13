@@ -153,7 +153,19 @@ The terminal behavior is independently defined now: once the Goal Task completio
 
 ## Runtime completion predicate
 
-`PRED-ENTITY-AUTONOMOUS-PROGRESSION-RUNTIME-ADOPTED` remains unsatisfied until a current goal chain produces evidence for all required progression predicates and, when the Goal Task completes, demonstrates:
+`PRED-ENTITY-AUTONOMOUS-PROGRESSION-RUNTIME-ADOPTED` remains unsatisfied until a current goal chain first demonstrates the already-established progression predicates:
+
+```text
+machine_owned_transition_selected=true
+current_governance_decision_observed=true
+human_approval_checkpoint_inserted=false
+execution_or_denial_receipt_retained=true
+next_state_reconstructed=true
+returned_task_cosv_handoff_state_reingested=true
+human_reentry_for_intermediate_ids=false
+```
+
+When the current Goal Task then reaches validated completion, the same goal chain must additionally demonstrate:
 
 ```text
 goal_task_completion_claimed=true
@@ -165,6 +177,8 @@ completion_notification_body_line_count=6
 summary_included=false
 manual_work_included=false
 ```
+
+The new terminal predicates extend the existing runtime-adoption predicate; they do not replace the existing progression predicates.
 
 Authentic external notification completion additionally requires the admitted TV/TVC GitHub provider operation to create the GitHub event and retain its provider receipt.
 
@@ -184,6 +198,7 @@ Authentic external notification completion additionally requires the admitted TV
 - no duplicate same-cycle registry selection of explicit-request tasks;
 - no selection of the progression-controller task as product work;
 - no `Summary of work` or `Manual Work` in the completion notice;
+- no claim that source/CI/merge proves runtime execution;
 - no claim that source/CI/merge/request emission proves GitHub provider execution.
 
 ## README impact
