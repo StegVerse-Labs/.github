@@ -11,6 +11,13 @@
   "source_refs": [
     "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_NATIVE_STEGBROWSER_TRANSPORT_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegSocials/tasks/SS-KV-SKAP-SOCIAL-RELEASE-001.yaml",
+    "data/reusable-task-component-model.json",
+    "data/reusable-task-component-decomposition-policy.json",
+    "data/reusable-transport-component-contract.json",
+    "data/reusable-task-ephemeral-construct-contract.json",
+    "data/goal-task-transport-profiles/SS-KV-SKAP-SOCIAL-RELEASE-001.json",
+    "data/reusable-task-component-evaluations/SS-KV-SKAP-SOCIAL-RELEASE-001.result.json",
+    "docs/STEGSOCIALS_REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegSocials@3139c290df6279db517fe564398a9ea606df4be4",
     "StegVerse-Labs/StegSocials@59f4ef16f60ee8494eb08b41845a95fcc266ab2c",
     "StegVerse-Labs/StegSocials@b0922b21abeb95c43751675a2c596b962a1e0bd6",
@@ -133,6 +140,22 @@
     "fence_ref": "bounded group envelope plus canonical Universal Work Interlock RECEIVED record plus authentic InTr admission receipt plus TV/TVC-SKAP session receipt plus verified provider publication/destruction plus existing Site CAS atomic use-state",
     "projection_only": false
   },
+  "componentization": {
+    "model_ref": "data/reusable-task-component-model.json",
+    "decomposition_policy_ref": "data/reusable-task-component-decomposition-policy.json",
+    "evaluation_ref": "data/reusable-task-component-evaluations/SS-KV-SKAP-SOCIAL-RELEASE-001.result.json",
+    "evaluation_score": 25,
+    "decision": "STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION",
+    "transport_profile_ref": "data/goal-task-transport-profiles/SS-KV-SKAP-SOCIAL-RELEASE-001.json",
+    "component_handoff_ref": "docs/STEGSOCIALS_REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+    "runtime_handoff_remains_runtime_truth": true,
+    "selected_transport_components": ["RTC-MANIFEST-001","RTC-GOVERNED-PROCESSING-002","RTC-ROUNDTRIP-003","RTC-EVIDENCE-CUSTODY-004","RTC-PUBLISHER-005","RTC-STEGVERSE-EGRESS-007","RTC-INTERLOCK-INTR-TRANSPORT-008","RTC-FARSIDE-FINAL-009"],
+    "omitted_transport_components": ["RTC-SDK-RETURN-006"],
+    "execution_materialization_ref": "data/reusable-task-ephemeral-construct-contract.json",
+    "callback_correlation_status": "REUSABLE_COMPONENT_CANDIDATE_CURRENT_TASK_BINDING_REMAINS_EXISTING_RECONCILER",
+    "new_goal_task_created": false,
+    "authority_effect": "NONE_COORDINATION_ONLY"
+  },
   "human_action_ref": "Participant action is required to create/revoke a bounded group or when a provider requires an unavoidable interactive authentication step; individual in-scope posts do not require renewed approval.",
   "completion": {
     "claimed": false,
@@ -146,6 +169,7 @@
     "bounded_event_publication_bridge_source_complete": true,
     "bounded_execution_evidence_reconciler_source_complete": true,
     "bounded_execution_to_site_cas_projection_source_complete": true,
+    "reusable_component_reconciliation_source_complete": true,
     "authentic_social_event_execution_observed": false,
     "authentic_two_post_group_observed": false,
     "reconciliation_ref": "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_NATIVE_STEGBROWSER_TRANSPORT_MIRROR_HANDOFF.md"
@@ -162,6 +186,7 @@
   ],
   "handoff_projection_refs": [
     "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_NATIVE_STEGBROWSER_TRANSPORT_MIRROR_HANDOFF.md",
+    "docs/STEGSOCIALS_REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md",
     "StegVerse-Labs/Site/docs/STEGSOCIALS_BOUNDED_GROUP_RUNTIME_PROOF_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegOS/docs/UNIVERSAL_INTERLOCK_PROTOCOL_MIRROR_HANDOFF.md",
     "master-records/orchestration/docs/MASTER_RECORDS_MIRROR_HANDOFF.md"
@@ -169,6 +194,9 @@
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "source_state_proves_execution": false,
+    "workercoordinator_owns_claim_fence_authority": true,
+    "kv_skap_vault_is_sole_user_verification_authority": true,
+    "stegos_devices_are_interchangeable_transport_execution_nodes_not_user_verifiers": true,
     "pre_admission_intr_intent_mints_execution_authority": false,
     "pre_admission_intr_intent_may_claim_runtime_receipts": false,
     "universal_interlock_received_record_mints_execution_authority": false,
