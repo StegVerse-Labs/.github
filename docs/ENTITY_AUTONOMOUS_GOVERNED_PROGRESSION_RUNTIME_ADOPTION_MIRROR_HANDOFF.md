@@ -112,7 +112,9 @@ The expected resident registry-cycle receipt remains:
 receipts/sovereign-host/task-registry-canonical-work-cycle.latest.json
 ```
 
-No authentic transition is claimed by PR #1777 or by this staged repair. The corrected next progression is:
+No authentic transition is claimed by PR #1777 or by this staged repair. `source/CI/merge proves runtime execution: false`.
+
+The corrected next progression is:
 
 ```text
 existing resident canonical_work_coordination executes current merged source
