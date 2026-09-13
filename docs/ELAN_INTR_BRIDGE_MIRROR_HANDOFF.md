@@ -18,11 +18,11 @@ The bridge must support:
 1. intake of ELAN-originated or ELAN-shaped evidence through a deterministic transport envelope;
 2. explicit source identity and provenance without claiming a live ELAN runtime unless observed;
 3. separation of observable facts, human assertions, inferred interpretations, and unresolved ambiguities;
-4. an interpretation-candidate set that may preserve multiple plausible trajectories;
-5. consequence comparison before any ambiguous semantic interpretation is admitted as governed state;
+4. an interpretation-candidate set that may preserve multiple plausible trajectories during resolution;
+5. progressive elimination of materially plausible alternatives with retained reasons;
 6. a resolution state of either `SINGLE_SURVIVING_INTERPRETATION` or `UNRESOLVED_INTERPRETATION_SET`;
-7. escalation for additional evidence or human clarification when materially divergent consequences remain;
-8. InTr handoff only after the contract's admission conditions are satisfied;
+7. consequence comparison across surviving candidates as diagnostic evidence, without allowing consequence equivalence to substitute for semantic resolution;
+8. `READY_FOR_INTR_ADMISSION` only after exactly one materially plausible interpretation survives;
 9. receipts sufficient for replay and reconstruction of bridge processing.
 
 ## Architectural invariant
@@ -30,6 +30,8 @@ The bridge must support:
 Semantic resolution should come from eliminating alternatives, not merely preferring one among them.
 
 Neither model interpretation nor human interpretation becomes truth solely by assertion. Human clarification is additional evidence that may eliminate alternatives; it does not automatically terminate the resolution process.
+
+Multiple surviving interpretations remain unresolved even when their currently projected consequences are equivalent. Consequence equivalence is diagnostic evidence, not semantic resolution.
 
 ## Bridge layers
 
@@ -53,7 +55,8 @@ No higher interoperability class may be claimed from evidence belonging to a low
 - `TRANSPORT_ENVELOPE_SCHEMA_VALIDATED`
 - `FACT_ASSERTION_INFERENCE_BOUNDARIES_EXPLICIT`
 - `MULTI_INTERPRETATION_STATE_SUPPORTED`
-- `CONSEQUENCE_DIVERGENCE_ESCALATES_BEFORE_ADMISSION`
+- `SINGLE_SURVIVING_INTERPRETATION_REQUIRED_FOR_ADMISSION`
+- `CONSEQUENCE_RELATION_RETAINED_AS_DIAGNOSTIC_EVIDENCE`
 - `INTR_ADMISSION_BOUNDARY_EXPLICIT`
 - `REPLAY_RECONSTRUCTION_RECEIPTS_DEFINED`
 - `SDK_REFERENCE_IMPLEMENTATION_VALIDATED`
@@ -63,7 +66,7 @@ No higher interoperability class may be claimed from evidence belonging to a low
 
 Canonical coordination work is open in `StegVerse-Labs/.github#1729` on branch `elan-intr-bridge-contract-001`.
 
-Reference implementation work is open in `StegVerse-org/StegVerse-SDK#232` on branch `elan-intr-bridge-001` at head `1787466bb96abf297dd4bfb8017330a095b4c330`.
+Reference implementation work is open in `StegVerse-org/StegVerse-SDK#232` on branch `elan-intr-bridge-001`.
 
 The SDK PR adds:
 
@@ -72,9 +75,9 @@ The SDK PR adds:
 - `stegverse_sdk/elan_intr_bridge.py`;
 - `tests/test_elan_intr_bridge.py`.
 
-The bridge now distinguishes four interoperability classes, separates facts/assertions/interpretation candidates, requires explicit elimination reasons, preserves unresolved interpretation sets, and applies a consequence-divergence gate. A single surviving candidate or consequence-equivalent surviving candidates can produce `READY_FOR_INTR_ADMISSION`; consequence-divergent surviving candidates produce `RESOLUTION_REQUIRED`. The reference evaluator never grants InTr transition authority.
+The semantic-resolution rule has been tightened from the initial draft. The bridge now returns `READY_FOR_INTR_ADMISSION` only when exactly one candidate survives. Two or more surviving candidates return `RESOLUTION_REQUIRED` even when all surviving candidates currently map to the same consequence class. The receipt separately records consequence equivalence or divergence so consequence analysis remains available without becoming a shortcut around semantic resolution. The reference evaluator never grants InTr transition authority.
 
-No GitHub Actions workflow run had appeared yet for SDK head `1787466bb96abf297dd4bfb8017330a095b4c330` at the latest check, so validation and merge are not claimed.
+SDK implementation updates were committed through `3dc3671511530390f56419ae93b9d7bcd4fa5a6e` after code, test, and contract changes. GitHub Actions validation for that exact head has not yet been observed, so validation and merge are not claimed.
 
 README projection remains to be updated before task completion.
 
