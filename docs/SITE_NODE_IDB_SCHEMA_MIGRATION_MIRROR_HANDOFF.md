@@ -7,13 +7,13 @@ Status: `ACTIVE / CLAIMED_INTEGRATION`
 
 ## Trigger
 
-Authentic current-iPhone execution after the iOS synchronous picker repair produced an independent DEVICE_KV directory-readback failure:
+The original authentic failure was observed on an iPhone after the iOS synchronous picker repair and produced an independent DEVICE_KV directory-readback failure:
 
 ```text
 Failed to execute 'transaction' on 'IDBDatabase': One of the specified object stores was not found.
 ```
 
-The same screen still exposed the registered-Node resident action, so registration/Receipt #1 continuity remained readable. The repair therefore had to preserve the existing browser-local Node identity while repairing the shared `stegos-node-v1` schema.
+That device reference is historical evidence provenance only. Under the canonical StegVerse device-role invariant, compatible StegOS devices are interchangeable execution/transport nodes and no device identity is a user-verification authority. The same screen still exposed the registered-Node resident action, so registration/Receipt #1 continuity remained readable. The repair therefore had to preserve browser-local continuity records while repairing the shared `stegos-node-v1` schema.
 
 ## Canonical repair
 
@@ -51,20 +51,22 @@ NETWORK_ACTIVATION_CLAIMED=false
 
 The non-authorizing observation receipt was uploaded as artifact `stegos-node-public-observation-34617268914-1`, artifact ID `10270802544`, digest `sha256:023a1af3e71b1591574cccdd576e8b5991e440206617e79bfd22b351c231c2f4`.
 
-This satisfies the task predicate `LIVE_SOURCE_PROPAGATION_OBSERVED_BEFORE_IPHONE_RETRY`. It does not establish repaired physical-device execution.
+This satisfies `LIVE_SOURCE_PROPAGATION_OBSERVED_BEFORE_RUNTIME_REOBSERVATION`. It does not establish authentic execution of the repaired browser-local state.
 
 ## Current next transition
 
-`REQUEST_SINGLE_CURRENT_IPHONE_RETRY`
+`REQUEST_AUTHENTIC_INTERCHANGEABLE_NODE_RUNTIME_REOBSERVATION`
 
-Exactly one current-iPhone ERL retry is now permitted. Preserve existing Safari/site storage and the existing Node registration/Receipt #1. Do not clear storage or re-register the Node.
+No named device is required. Any compatible interchangeable StegOS browser execution node may satisfy the remaining runtime predicate by authentically opening a qualifying browser-local continuity state under the merged repair and demonstrating that the missing-object-store failure is absent while required continuity records remain preserved.
 
-The retry should open the current ERL directory, reload once, tap `Import owner-controlled files` once, and report the resulting state. If the native Files sheet opens, select the intended OpenAI ERL Markdown artifact and wait for canonical admission/readback before preparing a post.
+A device/node identity remains execution/transport context only and cannot substitute for KV/SKAP user verification.
 
 ## Remaining completion predicate
 
-This task remains ACTIVE until authentic current-iPhone execution demonstrates the repaired database state. Source/CI/live-site observation cannot substitute for that device-local result.
+`AUTHENTIC_INTERCHANGEABLE_NODE_RUNTIME_NO_MISSING_OBJECT_STORE_FAILURE`
 
-No ERL admission, exact ERL readback, StegSocials draft save/readback, or evidence export is claimed yet.
+The Goal Task remains ACTIVE until authentic compatible-node runtime evidence demonstrates the repaired database state. Source, CI, and public-source observation cannot substitute for authentic runtime execution. The evidence is not tied to the device on which the original defect was observed.
+
+After the repair is confirmed, control returns to `SS-EVIDENCE-COMPARISON-001` for the parent ERL standard flow. No ERL admission, exact ERL readback, StegSocials draft save/readback, or evidence export is claimed by this handoff.
 
 Issue: `StegVerse-Labs/Site#1233`
