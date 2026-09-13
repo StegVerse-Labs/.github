@@ -14,8 +14,10 @@
       "evidence_refs": [
         "StegVerse-Labs/StegCore#208",
         "StegVerse-Labs/StegCore#209",
+        "StegVerse-Labs/StegCore#211",
         "StegVerse-Labs/StegCore:docs/PA001_ECOSYSTEM_RUNTIME_ENFORCEMENT_MIRROR_HANDOFF.md",
-        "docs/PA001_ECOSYSTEM_RUNTIME_ENFORCEMENT_MIRROR_HANDOFF.md"
+        "docs/PA001_ECOSYSTEM_RUNTIME_ENFORCEMENT_MIRROR_HANDOFF.md",
+        "data/goal-task-component-profiles/PA-001-ECOSYSTEM-RUNTIME-ENFORCEMENT-001.json"
       ],
       "executor_binding": "UNBOUND",
       "external_entity_job_ref": null,
