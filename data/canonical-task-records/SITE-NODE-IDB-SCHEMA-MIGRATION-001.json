@@ -4,7 +4,7 @@
   "correlation_id": "SITE-NODE-IDB-SCHEMA-MIGRATION-001",
   "root_correlation_id": "SS-EVIDENCE-COMPARISON-001",
   "parent_task_id": "SS-EVIDENCE-COMPARISON-001",
-  "goal": "Repair the current-iPhone Site Node IndexedDB schema so the shared stegos-node-v1 database preserves registration and Receipt #1 while guaranteeing the canonical meta, receipts, and intr_outbox stores required by DEVICE_KV runtime admission.",
+  "goal": "Repair the Site Node IndexedDB schema so the shared stegos-node-v1 database preserves registration and Receipt #1 while guaranteeing the canonical meta, receipts, and intr_outbox stores required by DEVICE_KV runtime admission.",
   "coordination_state": "ACTIVE",
   "checkout_state": "CLAIMED_INTEGRATION",
   "cosv_task_vector": "40000100100000",
@@ -27,14 +27,14 @@
       "kind": "RUNTIME_EVIDENCE",
       "state": "AVAILABLE",
       "ref": "StegVerse-Labs/Site/issues/1233",
-      "disposition": "USE_CURRENT_IPHONE_MISSING_OBJECT_STORE_OBSERVATION_AS_REPAIR_TRIGGER_ONLY"
+      "disposition": "USE_AUTHENTIC_MISSING_OBJECT_STORE_OBSERVATION_AS_REPAIR_TRIGGER_ONLY; ORIGINAL_DEVICE_IS_PROVENANCE_NOT_A_COMPLETION_CONSTRAINT"
     },
     {
       "dependency_id": "DEP-SITE-IDB-LIVE-PROPAGATION",
       "kind": "PUBLIC_SOURCE_OBSERVATION",
       "state": "SATISFIED",
       "ref": "StegVerse-Labs/Site/actions/runs/34617268914",
-      "disposition": "LIVE_SOURCE_PROPAGATION_OBSERVED; SINGLE_CURRENT_IPHONE_RETRY_NOW_PERMITTED"
+      "disposition": "LIVE_SOURCE_PROPAGATION_OBSERVED; AUTHENTIC_RUNTIME_REOBSERVATION_MAY_USE_ANY_COMPATIBLE_INTERCHANGEABLE_STEGOS_NODE"
     }
   ],
   "blockers": [],
@@ -56,20 +56,20 @@
     "ALL_RUNTIME_OPENERS_ALIGNED_TO_CANONICAL_NODE_DB_VERSION",
     "SITE_VALIDATION_PASS",
     "README_AND_HANDOFF_RECONCILED",
-    "LIVE_SOURCE_PROPAGATION_OBSERVED_BEFORE_IPHONE_RETRY",
-    "AUTHENTIC_CURRENT_IPHONE_RETRY_NO_MISSING_OBJECT_STORE_FAILURE"
+    "LIVE_SOURCE_PROPAGATION_OBSERVED_BEFORE_RUNTIME_REOBSERVATION",
+    "AUTHENTIC_INTERCHANGEABLE_NODE_RUNTIME_NO_MISSING_OBJECT_STORE_FAILURE"
   ],
   "runtime_requirements": {
     "capabilities": ["indexeddb_schema_migration", "device_kv_query", "node_continuity"],
-    "environment": "CURRENT_USER_IPHONE_SITE_ORIGIN",
+    "environment": "ANY_COMPATIBLE_INTERCHANGEABLE_STEGOS_BROWSER_NODE_SITE_ORIGIN",
     "direction": "PRESERVE_NODE_IDENTITY_THEN_RESTORE_DEVICE_KV_ADMISSION",
     "mutation_required": true,
     "deployment_required": true,
     "current_observation_required": true
   },
   "runtime_resolution": {
-    "current_executor": "current-user-iphone-next",
-    "authority_basis": "canonical task/COSV plus merged Site repair plus non-authorizing live-source observation",
+    "current_executor": "ANY_COMPATIBLE_INTERCHANGEABLE_STEGOS_NODE",
+    "authority_basis": "canonical task/COSV plus merged Site repair plus non-authorizing live-source observation; StegOS node identity grants no user-verification authority",
     "unattended_runtime": false
   },
   "worker_claim": {
@@ -78,7 +78,7 @@
     "fence_ref": null,
     "projection_only": false
   },
-  "human_action_ref": "Exactly one current-iPhone ERL retry is now permitted after merge and live-source propagation. Preserve Safari/site storage and existing Node registration/Receipt #1; do not clear storage or re-register.",
+  "human_action_ref": "No device-specific human action is required. Authentic runtime evidence may be produced by any compatible interchangeable StegOS execution node; device/node identity grants no user-verification authority.",
   "completion": {
     "claimed": false,
     "validated": true,
@@ -86,7 +86,7 @@
     "activation_proof_complete": false
   },
   "allowed_next_transitions": [
-    "REQUEST_SINGLE_CURRENT_IPHONE_RETRY",
+    "REQUEST_AUTHENTIC_INTERCHANGEABLE_NODE_RUNTIME_REOBSERVATION",
     "OBSERVE_REPAIRED_DEVICE_KV_DIRECTORY_READBACK",
     "RETURN_TO_SS_EVIDENCE_COMPARISON_STANDARD_FLOW_IF_REPAIR_CONFIRMED"
   ],

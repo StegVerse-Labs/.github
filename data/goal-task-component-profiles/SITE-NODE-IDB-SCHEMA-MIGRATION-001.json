@@ -61,25 +61,26 @@
       "inputs": ["merged exact source SHA", "public Site URL"],
       "outputs": ["non-authorizing live-source observation receipt"],
       "authority_owner": "HeartBeat/observation surfaces only; no transition authority",
-      "expected_evidence": ["LIVE_SOURCE_PROPAGATION_OBSERVED_BEFORE_IPHONE_RETRY"]
+      "expected_evidence": ["LIVE_SOURCE_PROPAGATION_OBSERVED_BEFORE_RUNTIME_REOBSERVATION"]
     },
     {
       "component_id": "AUTHENTIC-CURRENT-DEVICE-RUNTIME-REENTRY",
       "requirement": "REQUIRED",
       "exists": true,
-      "owner_ref": "current-user-iPhone Site runtime using merged Site implementation",
-      "inputs": ["preserved Safari/site storage", "existing Node registration", "Receipt #1", "merged and propagated schema migration"],
-      "outputs": ["authentic device-local retry observation"],
+      "legacy_label_note": "Component ID is retained for continuity only; it does not constrain the runtime to a named device or create a device authority class.",
+      "owner_ref": "any compatible interchangeable StegOS browser execution node using the merged Site implementation",
+      "inputs": ["qualifying browser-local continuity state", "preserved Node registration and Receipt #1 when present", "merged and propagated schema migration"],
+      "outputs": ["authentic interchangeable-node runtime re-observation"],
       "authority_owner": "StegOS execution node; no user-verification authority",
-      "expected_evidence": ["AUTHENTIC_CURRENT_IPHONE_RETRY_NO_MISSING_OBJECT_STORE_FAILURE"],
-      "cardinality": "exactly_one_retry_after_live_propagation"
+      "expected_evidence": ["AUTHENTIC_INTERCHANGEABLE_NODE_RUNTIME_NO_MISSING_OBJECT_STORE_FAILURE"],
+      "cardinality": "one_authentic_runtime_reobservation_after_live_propagation"
     },
     {
       "component_id": "CANONICAL-GOVERNED-INGRESS",
       "requirement": "CONDITIONAL_AFTER_REPAIR_CONFIRMED",
       "exists": true,
       "owner_ref": "Interlock/InTr",
-      "inputs": ["selected ERL artifact", "valid current-device runtime state"],
+      "inputs": ["selected ERL artifact", "valid compatible-node runtime state"],
       "outputs": ["governed ERL admission result/receipt when invoked"],
       "authority_owner": "Interlock/InTr",
       "expected_evidence": ["INGRESS_ADMISSION_RECEIPT_IF_PARENT_FLOW_CONTINUES"]
@@ -94,11 +95,11 @@
     },
     {
       "component_id": "TV-TVC-CREDENTIAL-PROVIDER-RELEASE",
-      "requirement": "NOT_APPLICABLE_TO_DEVICE_LOCAL_RETRY",
+      "requirement": "NOT_APPLICABLE_TO_RUNTIME_LOCAL_REOBSERVATION",
       "exists": true,
       "owner_ref": "TV/TVC",
       "authority_owner": "TV/TVC",
-      "reason": "No provider credential/session issuance is required for the browser-local schema repair retry."
+      "reason": "No provider credential/session issuance is required for the browser-local schema repair re-observation."
     },
     {
       "component_id": "MASTER-RECORDS-CUSTODY-RECONSTRUCTION",
@@ -112,12 +113,13 @@
   "supersession": {
     "retire_duplicate_task_specific_orchestration": [
       "Any future bespoke schema-migration/opener-alignment sequence equivalent to RTC-BROWSER-LOCAL-STATE-SCHEMA-MIGRATION-V1",
-      "Any task-specific live-propagation probe duplicating the existing StegOS Node Public Observation owner"
+      "Any task-specific live-propagation probe duplicating the existing StegOS Node Public Observation owner",
+      "Any named-device completion requirement for authentic schema-repair runtime evidence"
     ],
     "historical_evidence_preserved": true
   },
   "remaining_goal_task_specific_predicates": [
-    "AUTHENTIC_CURRENT_IPHONE_RETRY_NO_MISSING_OBJECT_STORE_FAILURE"
+    "AUTHENTIC_INTERCHANGEABLE_NODE_RUNTIME_NO_MISSING_OBJECT_STORE_FAILURE"
   ],
-  "next_admissible_work": "REQUEST_SINGLE_CURRENT_IPHONE_RETRY"
+  "next_admissible_work": "REQUEST_AUTHENTIC_INTERCHANGEABLE_NODE_RUNTIME_REOBSERVATION"
 }
