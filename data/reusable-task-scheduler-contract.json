@@ -1,0 +1,20 @@
+{
+  "schema": "stegverse.reusable-task-scheduler-contract/v1",
+  "scheduler_reusable_task_id": "RT-REUSABLE-TASK-SCHEDULER-001",
+  "schedule_schema": "stegverse.reusable-task-schedule/v1",
+  "runner": "scripts/run_reusable_task_scheduler.py",
+  "trigger": "scripts/trigger_reusable_task.py",
+  "authority_effect": "NONE_SCHEDULING_ONLY",
+  "invariants": {
+    "neutral_owner": true,
+    "healer_is_consumer_not_owner": true,
+    "self_scheduling_prohibited": true,
+    "github_runtime_authority": "NONE",
+    "worker_claim_fence_authority": "WorkerCoordinator",
+    "transition_authority": "Interlock/InTr",
+    "credential_authority": "TV/TVC",
+    "user_verification_authority": "KV/SKAP Vault",
+    "child_boundary_receipts_are_preserved": true,
+    "child_boundary_does_not_become_scheduler_failure": true
+  }
+}
