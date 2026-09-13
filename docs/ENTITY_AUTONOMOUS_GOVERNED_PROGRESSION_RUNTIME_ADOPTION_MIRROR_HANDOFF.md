@@ -6,7 +6,7 @@ Parent Goal: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`
 Parent COSV: `10100000100000`
 Runtime-adoption task: `ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001`
 Issue: `#1766`
-State: `GOAL_TERMINAL_STOP_REPAIR_PRIORITY_AND_TVC_PROVIDER_SOURCE_MERGED / AUTHENTIC_RUNTIME_CYCLE_PENDING`
+State: `TASK_REGISTRY_DISCOVERY_CANONICALIZATION_STAGED / AUTHENTIC_RUNTIME_CYCLE_PENDING`
 Authority effect: `NONE`
 
 ## Canonical progression
@@ -46,8 +46,37 @@ There is no second scheduler, no second WorkerCoordinator, no second heartbeat/o
 - PR #1773 merged at `306eaf033cf2ddec1c5f964090c95977b3c08b5e`: existing resident `canonical_work_coordination` returns to Task Registry selection after explicit requests.
 - PR #1774 merged at `712a72c38a7968e746af54ca058dd1eedfa55170`: handoff synchronization.
 - PR #1775 merged at `c7278a6e9cb1819df7360dfb4ee789495984ea5c`: Goal-scoped repair/remediation/canonicalization-first selection, completion-first terminal stop, exact six-line completion-notification request, README/contract/tests.
+- PR #1776 merged at `f5810e7a608ab62b6ad0e7eeaedd6988ca1eb0db`: records merged TVC Goal-completion provider source and current parent continuation state.
 
-PR #1775 exact head `87d992458349388ca689fd1ef181f69bfa1119d0` passed organization control, deterministic repository suite, heartbeat-worker, and resident validation before merge.
+## Current canonicalization repair
+
+Re-reading current merged source exposed a contradiction in the registry-first implementation: `scripts/run_task_registry_canonical_work_cycle.py` described the canonical Task Registry as the work-discovery starting point, but `load_candidates()` enumerated `data/canonical-task-records/*.json` instead of `data/canonical-task-registry.json`.
+
+That allowed a task that exists canonically in the Task Registry but has no separate shard to disappear from autonomous selection. `STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001` is an observed example: it exists in the canonical Task Registry, remains `PROPOSED`, allows `INGRESS_ADMITTED`, and has no projected WorkerCoordinator claim/fence, while no matching `data/canonical-task-records/STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001.json` shard exists.
+
+Branch `task-registry-discovery-canonicalization-001` repairs this without new scheduling or authority machinery:
+
+```text
+canonical-task-registry.json tasks
+-> Goal scope
+-> optional matching canonical-task-record shard enrichment
+-> registry values remain authoritative on overlapping fields
+-> machine-ingress eligibility
+-> repair/remediation/canonicalization priority
+-> existing Task Registry collision check
+-> exact CONTINUE only
+-> existing Canonical Work / Interlock-InTr bootstrap
+```
+
+A shard-only task is no longer discoverable work. A registry-only task remains discoverable. A stale shard cannot override canonical registry coordination state. Identity mismatches between registry and shard fail closed.
+
+This repair changes no authority split and does not itself establish `INGRESS_ADMITTED` or any other runtime transition.
+
+### README completeness determination
+
+`README.md` already states the intended behavior: the existing canonical Task Registry is the work-discovery starting point and Goal-scoped repair/remediation/canonicalization work is prioritized before ordinary work. This change repairs implementation to conform to that already-documented contract and introduces no new externally meaningful behavior, interface, authority, prerequisite, evidence meaning, or failure class.
+
+**README impact: NO README CHANGE REQUIRED.**
 
 ## Completion notification contract
 
@@ -77,35 +106,13 @@ GitHub Actions credential/runtime authority: NONE
 
 GitHub email delivery remains subject to the account's GitHub notification settings.
 
-## TVC provider source now merged
+## TVC provider source merged
 
 TVC PR #425 merged at `755a59737340f5f35ebd4d3ddf5d78145728dce6`.
 
-It adds the bounded Goal-completion GitHub provider adapter and resident credential binding:
-
-```text
-scripts/tvc_github_goal_completion_notification.py
-scripts/run_goal_completion_github_notification_resident_service.py
-deploy/systemd/stegtvc-goal-completion-github-notification.service
-deploy/systemd/stegtvc-goal-completion-github-notification.path
-docs/GITHUB_GOAL_COMPLETION_NOTIFICATION_PROVIDER_MIRROR_HANDOFF.md
-```
-
-The service reuses the already-canonical TV/TVC resident GitHub credential only through:
-
-```text
-LoadCredential=TVC_EPHEMERAL_GITHUB_TOKEN:/run/stegverse/tv-tvc-credentials/TVC_EPHEMERAL_GITHUB_TOKEN
-```
+It adds the bounded Goal-completion GitHub provider adapter and resident credential binding. The service reuses the already-canonical TV/TVC resident GitHub credential only through systemd `LoadCredential=TVC_EPHEMERAL_GITHUB_TOKEN:/run/stegverse/tv-tvc-credentials/TVC_EPHEMERAL_GITHUB_TOKEN`.
 
 No new credential class, generic GitHub mutation surface, Gmail SEND substitute, consumer token, or GitHub Actions credential authority was introduced. Provider failure retains the request for retry. The request is archived only after a successful GitHub issue-creation response. The persisted result is credential-free.
-
-Exact TVC branch head `2b0a22600a8867f4d12d0a8dc2f7bfac18b61876` passed:
-
-```text
-Validate GitHub Goal Completion Notification Adapter: run 34784719800 SUCCESS
-TVC Credential Model Consistency Validation: run 34784719791 SUCCESS
-External Collaboration Google Drive Consent HTTP Validation: run 34784719813 SUCCESS
-```
 
 These are source/validation/merge facts only. They do not establish resident installation, credential presence, request consumption, GitHub issue creation, or email delivery.
 
@@ -117,11 +124,11 @@ The expected resident registry-cycle receipt remains:
 receipts/sovereign-host/task-registry-canonical-work-cycle.latest.json
 ```
 
-No qualifying authentic resident-cycle receipt has yet been established for this trajectory. The source/provider-adapter gap is now removed. The first unsatisfied state progression is therefore:
+No qualifying authentic resident-cycle receipt has yet been established for this trajectory. The first unsatisfied state progression remains:
 
 ```text
 existing resident canonical_work_coordination consumer executes current merged source
--> Task Registry cycle materializes
+-> Task Registry cycle materializes from canonical registry identities
 -> Goal completion checked first
 -> if incomplete, repair-priority candidate selection occurs
 -> collision disposition == CONTINUE
@@ -169,16 +176,16 @@ Authentic notification completion additionally requires the TVC resident provide
 
 ## Remaining machine work
 
-1. Observe/execute the existing resident `canonical_work_coordination` consumer against current merged source.
-2. Retain the authentic registry-cycle consumption receipt.
-3. Confirm completion-first evaluation and repair-priority selection on real registered Goal-scoped work.
-4. Require exact Task Registry `CONTINUE` before delegation.
-5. Observe the selected task cross existing Canonical Work / Interlock-InTr and produce the actual governed state transition or retained DENY.
-6. Retain execution/DENY evidence and reconstruct/re-ingest current state.
-7. Continue within the same Goal until completion is both claimed and validated.
-8. At completion, stop before successor selection and retain the exact six-line notification request.
-9. Observe TVC resident provider execution create the GitHub completion issue and retain its sanitized provider receipt.
-10. Only then claim authentic autonomous Goal completion notification behavior.
+1. Validate and merge the Task Registry discovery canonicalization repair if exact-head checks pass.
+2. Execute the existing `canonical_work_coordination` consumer against merged source.
+3. Retain the authentic registry-cycle consumption receipt and confirm registry-only canonical tasks are not omitted.
+4. Confirm completion-first evaluation and repair-priority selection on real registered Goal-scoped work.
+5. Require exact Task Registry `CONTINUE` before delegation.
+6. Observe the selected task cross existing Canonical Work / Interlock-InTr and produce the actual governed state transition or retained DENY.
+7. Retain execution/DENY evidence and reconstruct/re-ingest current state.
+8. Continue within the same Goal until completion is both claimed and validated.
+9. At completion, stop before successor selection and retain the exact six-line notification request.
+10. Observe TVC resident provider execution create the GitHub completion issue and retain its sanitized provider receipt.
 
 ## Human action
 
