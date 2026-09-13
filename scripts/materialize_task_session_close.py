@@ -9,12 +9,14 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 RETURN_RECORDER = ROOT / "scripts" / "record_task_registry_session_return.py"
+COMPONENT_ID = "RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010"
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--task-id", required=True)
     parser.add_argument("--session-id", required=True)
+    parser.add_argument("--actor-kind", required=True)
     parser.add_argument("--repository")
     parser.add_argument("--branch")
     parser.add_argument("--pull-request", type=int)
@@ -39,6 +41,7 @@ def main() -> int:
         str(RETURN_RECORDER),
         "--task-id", args.task_id,
         "--session-id", args.session_id,
+        "--actor-kind", args.actor_kind,
         "--event-type", args.event_type,
     ]
     optional = {
@@ -66,15 +69,22 @@ def main() -> int:
     return_event_sha256 = return_receipt.get("event_sha256")
     if not isinstance(return_event_sha256, str) or not return_event_sha256.startswith("sha256:"):
         raise SystemExit("session return receipt missing canonical event hash")
+    if return_receipt.get("actor_kind") != str(args.actor_kind).strip().upper():
+        raise SystemExit("session return receipt actor mismatch")
+    if return_receipt.get("reusable_component_id") != COMPONENT_ID:
+        raise SystemExit("session return receipt reusable component mismatch")
 
     print(json.dumps({
         "schema": "stegverse.task-session-close/v1",
         "task_id": args.task_id,
         "session_id": args.session_id,
+        "actor_kind": return_receipt["actor_kind"],
+        "reusable_component_id": COMPONENT_ID,
         "return_receipt": return_receipt,
         "continuity_materialized": True,
         "footer_handoff_emission_admissible": True,
         "required_pre_footer_return_event_sha256": return_event_sha256,
+        "runtime_identity_attestation_proven": False,
         "authority_effect": "NONE",
     }, sort_keys=True))
     return 0
