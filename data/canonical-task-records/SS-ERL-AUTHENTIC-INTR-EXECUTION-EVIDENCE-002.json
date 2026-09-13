@@ -13,6 +13,7 @@
     "StegVerse-Labs/.github#1743@8dc0cb6bcad609fb2a70a51a7b5c66b3b3fab752",
     "docs/SS_ERL_ACTIVE_RESEARCH_INTR_RUNTIME_BINDING_MIRROR_HANDOFF.md",
     "docs/SS_ERL_AUTHENTIC_INTR_EXECUTION_EVIDENCE_MIRROR_HANDOFF.md",
+    "docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md",
     "control/portable-workercoordinator-packages/device-kv-intr-observation.json",
     "workers/universal_intr_profiled_ingress.py",
     "scripts/submit_erl_active_research_intr_binding_local.py",
@@ -81,6 +82,14 @@
     "NO_SYNTHETIC_RECEIPT_PROMOTED_TO_RUNTIME_EVIDENCE"
   ],
   "runtime_requirements": {
+    "capabilities": [
+      "canonical_portable_execution",
+      "exact_local_source_self_materialization",
+      "universal_intr_profiled_ingress",
+      "three_repeated_interlock_intr_adjacent_transitions",
+      "durable_terminal_kv_readback",
+      "master_records_custody_reconstruction"
+    ],
     "environment": "CANONICAL_PORTABLE_STEGOS_PLUS_KV",
     "direction": "EXTERNAL_SYSTEM_TO_STEGOS_ECOSYSTEM_TO_DEVICE_SYSTEM_TO_KV",
     "mutation_required": true,
@@ -93,6 +102,62 @@
     "remote_device_connector_required": false,
     "second_user_operated_device_required": false,
     "always_on_external_host_required": false
+  },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "SUITABLE",
+        "limitation_class": "NONE",
+        "evidence_refs": ["docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md"]
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "SUITABLE",
+        "limitation_class": "NONE",
+        "evidence_refs": ["docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md"]
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "SUITABLE",
+        "limitation_class": "NONE",
+        "evidence_refs": ["docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md"]
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "SUITABLE",
+        "limitation_class": "PLATFORM",
+        "evidence_refs": ["docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md"]
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "SELECTED",
+        "limitation_class": "NONE",
+        "evidence_refs": [
+          "docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md",
+          "docs/SS_ERL_AUTHENTIC_INTR_EXECUTION_EVIDENCE_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": []
+      }
+    ],
+    "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
   },
   "runtime_resolution": {
     "current_executor": "canonical portable WorkerCoordinator/StegOS execution path -> SHWP-DEVICE-KV-INTR-OBSERVATION-001 -> shared Universal InTr ingress -> DEVICE_KV",
