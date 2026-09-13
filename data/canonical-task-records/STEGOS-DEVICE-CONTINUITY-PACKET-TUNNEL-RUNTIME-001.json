@@ -12,7 +12,12 @@
     "StegVerse-Labs/StegOS/mobile/ios/StegOSMobile/DeviceContinuityCarrierController.swift",
     "StegVerse-Labs/StegOS/mobile/ios/DeviceContinuityPacketTunnel/PacketTunnelProvider.swift",
     "docs/TASK_REGISTRY_KV_SKAP_VERIFIER_NODE_INVARIANT_MIRROR_HANDOFF.md",
-    "data/task-registry-global-invariants.json"
+    "data/task-registry-global-invariants.json",
+    "data/reusable-task-component-model.json",
+    "data/reusable-task-component-decomposition-policy.json",
+    "data/reusable-transport-component-contract.json",
+    "data/goal-task-component-profiles/STEGOS-DEVICE-CONTINUITY-PACKET-TUNNEL-RUNTIME-001.json",
+    "docs/STEGOS_DEVICE_CONTINUITY_PACKET_TUNNEL_COMPONENT_MODEL_MIRROR_HANDOFF.md"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
@@ -20,6 +25,8 @@
     "components": [
       "DeviceContinuityPacketTunnel",
       "DeviceContinuityCarrierController",
+      "RTC-INTERLOCK-INTR-TRANSPORT-008",
+      "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001",
       "same-node-continuity-transport",
       "packet-tunnel-runtime-observation"
     ]
@@ -34,30 +41,58 @@
     {
       "dependency_id": "DEP-PACKET-TUNNEL-HOST-ACTIVATION-SOURCE",
       "kind": "EVIDENCE",
-      "state": "UNRESOLVED",
+      "state": "RESOLVED",
       "ref": "StegVerse-Labs/StegOS#363"
+    },
+    {
+      "dependency_id": "DEP-PACKET-TUNNEL-GOVERNED-RUNTIME-OBSERVATION",
+      "kind": "RUNTIME_PREDICATE",
+      "state": "UNRESOLVED",
+      "ref": "data/goal-task-component-profiles/STEGOS-DEVICE-CONTINUITY-PACKET-TUNNEL-RUNTIME-001.json"
     }
   ],
   "blockers": [
     {
       "blocker_id": "PACKET_TUNNEL_RUNTIME_NOT_YET_OBSERVED",
-      "dependency_id": "DEP-PACKET-TUNNEL-HOST-ACTIVATION-SOURCE",
-      "reason": "Carrier-specific runtime activation, foreground-app persistence, and 127.0.0.1:8766 reachability are not yet authentically observed; generic signing/provisioning is inherited and is not a new blocker."
+      "dependency_id": "DEP-PACKET-TUNNEL-GOVERNED-RUNTIME-OBSERVATION",
+      "reason": "Carrier-specific governed runtime activation, foreground-app persistence, and 127.0.0.1:8766 reachability are not yet authentically observed. Source validation is complete; generic signing/provisioning is inherited and is not a new blocker."
     }
   ],
   "systemic_incident_ref": null,
   "adjacent_task_refs": [
     "SHWP-HIL-SOVEREIGN-RECEIVER-001",
     "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
-    "KV-CONNECTION-REVALIDATION-WORKER-001"
+    "KV-CONNECTION-REVALIDATION-WORKER-001",
+    "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001"
   ],
+  "component_model_projection": {
+    "model": "data/reusable-task-component-model.json",
+    "decomposition_policy": "data/reusable-task-component-decomposition-policy.json",
+    "component_profile": "data/goal-task-component-profiles/STEGOS-DEVICE-CONTINUITY-PACKET-TUNNEL-RUNTIME-001.json",
+    "component_handoff": "docs/STEGOS_DEVICE_CONTINUITY_PACKET_TUNNEL_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+    "decomposition_score": 19,
+    "decomposition_decision": "STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION",
+    "selected_reusable_components": [
+      "RTC-INTERLOCK-INTR-TRANSPORT-008",
+      "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001"
+    ],
+    "goal_identity_preserved": true,
+    "cosv_identity_preserved": true,
+    "componentization_mints_authority": false,
+    "runtime_predicates_changed": false,
+    "runtime_handoff_remains_runtime_truth": true,
+    "new_goal_task_required": false,
+    "new_reusable_component_required": false
+  },
   "existing_evidence_refs": [
     "StegVerse-Labs/StegOS#352",
     "StegVerse-Labs/StegOS#353",
     "StegVerse-Labs/StegOS#354",
     "StegVerse-Labs/StegOS#355",
     "StegVerse-Labs/StegOS#363",
-    "StegVerse-Labs/StegOS/docs/STEGOS_DEVICE_CONTINUITY_CARRIER_TARGET_INTEGRATION_MIRROR_HANDOFF.md"
+    "StegVerse-Labs/StegOS@67dc40e8b78ed8566d598a2aa87b52536a534878",
+    "StegVerse-Labs/StegOS/docs/STEGOS_DEVICE_CONTINUITY_CARRIER_TARGET_INTEGRATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github@b9f8e5153aa1651f2d7f043fb902eacb7c113ed9"
   ],
   "expected_evidence_predicates": [
     "HOST_ACTIVATION_SOURCE_VALIDATED",
@@ -65,8 +100,16 @@
     "AUTHENTIC_CROSS_APP_PERSISTENCE_OBSERVED",
     "AUTHENTIC_LOOPBACK_8766_REACHABILITY_OBSERVED"
   ],
+  "satisfied_evidence_predicates": [
+    "HOST_ACTIVATION_SOURCE_VALIDATED"
+  ],
+  "remaining_evidence_predicates": [
+    "AUTHENTIC_PACKET_TUNNEL_ACTIVATION_OBSERVED",
+    "AUTHENTIC_CROSS_APP_PERSISTENCE_OBSERVED",
+    "AUTHENTIC_LOOPBACK_8766_REACHABILITY_OBSERVED"
+  ],
   "runtime_requirements": {
-    "capabilities": ["ios_packet_tunnel_provider", "bounded_loopback_transport", "runtime_observation"],
+    "capabilities": ["ios_packet_tunnel_provider", "bounded_loopback_transport", "runtime_observation", "governed_local_capability_admission"],
     "environment": "STEGOS_NODE",
     "direction": "LOCAL_SAME_NODE",
     "mutation_required": true,
@@ -141,13 +184,20 @@
   },
   "allowed_next_transitions": ["INGRESS_ADMITTED"],
   "handoff_projection_refs": [
-    "StegVerse-Labs/StegOS/docs/STEGOS_DEVICE_CONTINUITY_CARRIER_TARGET_INTEGRATION_MIRROR_HANDOFF.md"
+    "StegVerse-Labs/StegOS/docs/STEGOS_DEVICE_CONTINUITY_CARRIER_TARGET_INTEGRATION_MIRROR_HANDOFF.md",
+    "docs/STEGOS_DEVICE_CONTINUITY_PACKET_TUNNEL_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+    "docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md"
   ],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "source_state_proves_execution": false,
     "worker_claim_authority": "WORKERCOORDINATOR",
+    "user_verification_authority": "KV/SKAP Vault",
+    "device_user_verifier_authority": "NONE",
+    "credential_provider_release_authority": "TV/TVC",
     "master_records_reality_authority": true,
+    "heartbeat_execution_authority": false,
+    "github_runtime_authority": "NONE",
     "interlock_intr_required_for_governed_ingress_egress": true
   }
 }
