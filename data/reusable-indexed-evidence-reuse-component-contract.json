@@ -1,0 +1,54 @@
+{
+  "schema": "stegverse.reusable-evidence-validation-extension/v1",
+  "model": "Reusable Task Component Model",
+  "family": "evidence_validation",
+  "component_id": "RTC-EVIDENCE-REPLAY-REUSE-011",
+  "name": "Indexed Evidence Replay and Reuse Reconciler",
+  "capability_provided": "determine_indexed_evidence_reuse_or_exact_delta",
+  "canonical_implementation": "scripts/evaluate_indexed_event_reuse.py",
+  "inputs": {
+    "indexed_event": "canonically indexed prior event with qualified evidence class, replay/reconstruction result, and observed predicates",
+    "current_requirements": "current verification plus ecosystem predicates required by the consuming Goal Task",
+    "node_context": "already-established node connectivity/route context; transport only"
+  },
+  "outputs": {
+    "state": "REUSE_ACCEPTED, DELTA_REQUIRED, FAIL_CLOSED, or WAITING_FOR_ESTABLISHED_NODE_CONNECTIVITY",
+    "missing_delta": "only currently required predicates not proven by replay/reconstruction",
+    "failures": "fail-closed replay/reconstruction or route mismatch classifications"
+  },
+  "preconditions": [
+    "indexed_event_is_canonically_indexed",
+    "evidence_class_is_qualified",
+    "replay_and_reconstruction_are_available",
+    "current_requirement_set_is_available"
+  ],
+  "authority_owner": "NONE_VALIDATION_ONLY",
+  "authority_effect": "NONE_VALIDATION_ONLY",
+  "expected_evidence": [
+    "indexed_event_ref",
+    "qualified_evidence_class",
+    "replay_state",
+    "reconstruction_state",
+    "current_requirement_set",
+    "reuse_or_delta_decision"
+  ],
+  "repeatability": "DETERMINISTIC_FOR_IDENTICAL_INDEXED_EVENT_AND_CURRENT_REQUIREMENTS",
+  "failure_remediation": "Never rerun a sufficient path. If replay/reconstruction is valid but incomplete for current requirements, emit only the exact missing delta for existing canonical owners. If replay/reconstruction fails, fail closed without upgrading evidence.",
+  "invariants": {
+    "historical_evidence_mints_authority": false,
+    "device_or_node_identity_is_user_verification": false,
+    "established_node_connectivity_is_transport_only": true,
+    "user_interaction_required_after_established_node_connectivity": false,
+    "sufficient_indexed_event_is_reused": true,
+    "sufficient_path_is_not_rerun": true,
+    "delta_is_minimal": true
+  },
+  "authority_separation": {
+    "claim_fence": "WorkerCoordinator",
+    "governed_transition": "Interlock/InTr",
+    "credential_provider_release": "TV/TVC",
+    "user_verification": "KV/SKAP Vault",
+    "custody_reconstruction": "Master Records",
+    "github_runtime_authority": "NONE"
+  }
+}
