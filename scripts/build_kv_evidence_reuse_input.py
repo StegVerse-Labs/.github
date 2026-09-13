@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -14,6 +15,7 @@ SV001 = Path("control/portable-workercoordinator-packages/sv001-bounded-autonomy
 CURRENT = Path("runtime-state/kv-bound-ephemeral-browser-projection/current-observations.json")
 DISCOVERY = Path("scripts/observe_gadi_retained_resident_discovery.py")
 IPHONE_READBACK = Path("scripts/observe_gadi_current_iphone_discovery_receipt.py")
+KV_INTR_CONSUMER = Path("scripts/consume_stegos_kv_intr_chain_request.py")
 SHA_URI = re.compile(r"^sha256:[0-9a-f]{64}$")
 
 
@@ -83,6 +85,15 @@ def current_retained_iphone_route(source: Path):
     return {"connectivity_state": "UNRESOLVED", "authority_effect": "NONE_EVIDENCE_READ_ONLY"}
 
 
+def current_kv_intr_observed(source: Path, runtime: Path) -> bool:
+    try:
+        consumer = _module(source / KV_INTR_CONSUMER, "kv_intr_terminal_validator")
+        step = next(row for row in consumer.STEPS if row[0] == consumer.DEVICE_KV_TASK_ID)
+        return bool(consumer.terminal(runtime, step, dict(os.environ)))
+    except Exception:
+        return False
+
+
 def build_payload(source_root: Path, runtime_root: Path):
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
@@ -133,6 +144,8 @@ def build_payload(source_root: Path, runtime_root: Path):
     current_predicates = set(current.get("observed_predicates") or [])
     if route.get("connectivity_state") == "ESTABLISHED":
         current_predicates.add("CURRENT_RETAINED_IPHONE_ROUTE_OBSERVED")
+    if current_kv_intr_observed(source, runtime):
+        current_predicates.add("CURRENT_KV_INTR_STATE_APPLICABLE")
     current["observed_predicates"] = sorted(current_predicates)
     current["retained_iphone_route"] = route
 
