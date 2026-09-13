@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.entity-autonomous-governed-progression-contract/v1",
-  "updated_at": "2026-09-07T10:14:00-05:00",
+  "updated_at": "2026-09-13T16:34:00-05:00",
   "owner_repository": "StegVerse-Labs/.github",
   "handoff": "docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_MIRROR_HANDOFF.md",
   "authority_effect": "NONE_POLICY_ONLY",
@@ -13,7 +13,7 @@
       "GOAL"
     ],
     "ecosystem_resolves_execution_until": [
-      "TERMINAL_GOVERNED_GOAL_STATE_REACHED",
+      "GOAL_TASK_COMPLETION_VALIDATED",
       "GENUINE_HUMAN_REVIEW_OR_AUTHORITY_BOUNDARY"
     ],
     "human_must_represent_intermediate_task_ids": false,
@@ -27,9 +27,35 @@
     "prior_receipt_can_authorize_next_transition": false,
     "human_approval_default": false
   },
+  "work_selection_priority": {
+    "scope": "CURRENT_ROOT_GOAL_TASK_ONLY",
+    "first_priority_classes": [
+      "ECOSYSTEM_REPAIR",
+      "ECOSYSTEM_REMEDIATION",
+      "ECOSYSTEM_CANONICALIZATION",
+      "ECOSYSTEM_RECONCILIATION",
+      "REGRESSION_REPAIR"
+    ],
+    "semantic_fallback_tokens": [
+      "REPAIR",
+      "REMEDIAT",
+      "CANONICALIZ",
+      "RECONCIL",
+      "CORRECTION",
+      "REGRESSION",
+      "FIX"
+    ],
+    "generic_canonical_term_alone_is_priority_signal": false,
+    "priority_over_checkout_state": true,
+    "collision_and_governance_checks_still_required": true,
+    "authority_effect": "NONE_SELECTION_ORDER_ONLY"
+  },
   "machine_transition_loop": [
     "OBSERVE_CURRENT_CANONICAL_STATE",
-    "SELECT_HIGHEST_PRIORITY_UNBLOCKED_NONDUPLICATE_GOAL",
+    "CHECK_CURRENT_GOAL_TASK_COMPLETION_BEFORE_SELECTING_MORE_WORK",
+    "IF_GOAL_TASK_COMPLETION_VALIDATED_STOP_AND_REQUEST_GITHUB_COMPLETION_NOTIFICATION",
+    "PRIORITIZE_GOAL_SCOPED_ECOSYSTEM_REPAIR_REMEDIATION_CANONICALIZATION_WORK",
+    "SELECT_HIGHEST_PRIORITY_UNBLOCKED_NONDUPLICATE_GOAL_SCOPED_WORK",
     "PROPOSE_EXACT_NEXT_TRANSITION",
     "EVALUATE_CURRENT_INTERLOCK_GOVERNANCE",
     "CONSULT_TV_TVC_IF_CREDENTIAL_AUTHORITY_REQUIRED",
@@ -40,7 +66,7 @@
     "RECONSTRUCT_CURRENT_STATE",
     "REINGEST_RETURNED_TASK_COSV_HANDOFF_AND_COMPLETION_STATE",
     "RESOLVE_DUPLICATES_DEPENDENCIES_COLLISIONS_AND_PARALLEL_GROUPS",
-    "CONTINUE_WITHOUT_HUMAN_APPROVAL_IF_NEXT_TRANSITION_IS_MACHINE_OWNED"
+    "CONTINUE_WITHOUT_HUMAN_APPROVAL_IF_NEXT_TRANSITION_IS_MACHINE_OWNED_AND_GOAL_NOT_COMPLETE"
   ],
   "goal_resolution_continuation": {
     "enabled": true,
@@ -48,6 +74,9 @@
     "minimum_iterations_before_periodic_report": 5,
     "report_earlier_on_terminal_goal": true,
     "report_earlier_on_human_review_required": true,
+    "terminal_goal_condition": "GOAL_TASK_COMPLETION_CLAIMED_AND_VALIDATED",
+    "retirement_is_required_before_terminal_stop": false,
+    "successor_selection_before_terminal_notification": false,
     "automatic_reingestion": {
       "task_ids": true,
       "cosv_task_vectors": true,
@@ -64,12 +93,15 @@
       "VERIFY_TASK_ID_COSV_VECTOR_BINDING_WHEN_PRESENT",
       "RESOLVE_APPLICABLE_MIRROR_HANDOFFS",
       "RECONCILE_MASTER_RECORDS_EVIDENCE",
+      "CHECK_GOAL_TASK_COMPLETION_CLAIM_AND_VALIDATION",
+      "IF_COMPLETE_STOP_AND_REQUEST_GITHUB_COMPLETION_NOTIFICATION",
       "RESOLVE_WORKERCOORDINATOR_CLAIM_FENCE",
       "CLASSIFY_AS_CONTINUATION_SUCCESSOR_DEPENDENCY_ADJACENT_OR_NEW",
       "DEDUPLICATE_EQUIVALENT_WORK",
       "RESOLVE_REPOSITORY_RUNTIME_AUTHORITY_AND_EVIDENCE_COLLISIONS",
       "REGROUP_PARALLEL_CAPABLE_WORK",
-      "SELECT_NEXT_ADMISSIBLE_NON_DUPLICATE_WORK"
+      "PRIORITIZE_ECOSYSTEM_REPAIR_REMEDIATION_CANONICALIZATION",
+      "SELECT_NEXT_ADMISSIBLE_NON_DUPLICATE_GOAL_SCOPED_WORK"
     ],
     "intermediate_state_is_internal_orchestration": [
       "UNCHANGED_TASK_ID",
@@ -83,7 +115,29 @@
     ],
     "periodic_report_does_not_stop_machine_owned_work": true,
     "no_second_scheduler_or_coordinator": true,
-    "evaluator_ref": "scripts/evaluate_goal_resolution_continuation.py"
+    "evaluator_ref": "scripts/evaluate_goal_resolution_continuation.py",
+    "resident_goal_stop_ref": "scripts/run_task_registry_canonical_work_cycle.py"
+  },
+  "goal_completion_notification": {
+    "required": true,
+    "trigger": "GOAL_TASK_COMPLETION_CLAIMED_AND_VALIDATED",
+    "provider": "GITHUB",
+    "operation": "CREATE_GOAL_COMPLETION_NOTIFICATION_ISSUE",
+    "credential_authority": "TV/TVC",
+    "github_actions_runtime_authority": "NONE",
+    "body_exact_fields": [
+      "Goal Task ID",
+      "Handoff Task ID",
+      "COSV ID",
+      "Session Prompt Count",
+      "Goal Prompt Count",
+      "STATUS"
+    ],
+    "include_summary_of_work": false,
+    "include_manual_work": false,
+    "terminal_status_default": "INACTIVE",
+    "retired_status_when_already_retired": "RETIRED",
+    "email_delivery_semantics": "GITHUB_NOTIFICATION_EMAIL_SUBJECT_TO_ACCOUNT_NOTIFICATION_SETTINGS"
   },
   "human_authority_classes": [
     "HUMAN_ONLY",
@@ -94,11 +148,11 @@
   "human_interaction_queue_scope": "TRUE_HUMAN_DEVICE_MUTATIONS_ONLY",
   "human_interaction_queue_must_not_schedule_machine_runtime": true,
   "stop_conditions": [
+    "GOAL_TASK_COMPLETION_CLAIMED_AND_VALIDATED",
     "DENY_WITH_NO_ADMISSIBLE_REPAIR_OR_ALTERNATE",
     "EXACT_NEXT_TRANSITION_REQUIRES_HUMAN_AUTHORITY_CLASS",
     "REQUIRED_RECEIVER_GENUINELY_UNAVAILABLE_WITH_NO_ADMITTED_LOCAL_MATERIALIZATION",
-    "CURRENT_STATE_INVARIANT_UNRECONSTRUCTABLE",
-    "TERMINAL_GOVERNED_GOAL_STATE_REACHED"
+    "CURRENT_STATE_INVARIANT_UNRECONSTRUCTABLE"
   ],
   "invalid_stop_conditions": [
     "ASK_USER_TO_APPROVE_NEXT_MACHINE_TRANSITIONS",
@@ -107,7 +161,8 @@
     "ASK_USER_TO_REPRESENT_RETURNED_HANDOFF",
     "REPORT_INTERVAL_REACHED_SO_STOP_EXECUTION",
     "WAIT_FOR_RECEIPTS_WITHOUT_EXECUTABLE_WORK",
-    "HUMAN_UI_CONTROL_EXISTS_SO_HUMAN_MUST_EXECUTE"
+    "HUMAN_UI_CONTROL_EXISTS_SO_HUMAN_MUST_EXECUTE",
+    "RETIREMENT_NOT_YET_PERFORMED_AFTER_VALIDATED_GOAL_COMPLETION"
   ],
   "canonical_substrate": {
     "hb": "REFERENCE_FRESHNESS_CORRELATION_CARRIAGE_ONLY",
