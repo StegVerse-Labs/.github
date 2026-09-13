@@ -18,6 +18,7 @@
     "decomposition_policy": "data/reusable-task-component-decomposition-policy.json",
     "evaluator": "scripts/evaluate_reusable_task_componentization.py",
     "transport_family": "data/reusable-transport-component-contract.json",
+    "evidence_validation_family": "data/reusable-evidence-validation-component-contract.json",
     "goal_transport_profile": "data/goal-task-transport-profiles/TVC-RECIPIENT-ADMISSION-OPAQUE-SIGNER-BACKEND-001.json",
     "execution_materialization_contract": "data/reusable-task-ephemeral-construct-contract.json",
     "component_handoff": "docs/TVC_RECIPIENT_ADMISSION_OPAQUE_SIGNER_COMPONENT_MODEL_MIRROR_HANDOFF.md",
@@ -27,6 +28,9 @@
       "RTC-ROUNDTRIP-003",
       "RTC-EVIDENCE-CUSTODY-004",
       "RTC-INTERLOCK-INTR-TRANSPORT-008"
+    ],
+    "selected_evidence_validation_components": [
+      "RTC-EVIDENCE-CURRENT-SELECTOR-010"
     ],
     "omitted_optional_or_non_applicable_transport_components": [
       "RTC-PUBLISHER-005",
@@ -62,9 +66,11 @@
     "data/reusable-task-component-model.json",
     "data/reusable-task-component-decomposition-policy.json",
     "data/reusable-transport-component-contract.json",
+    "data/reusable-evidence-validation-component-contract.json",
     "data/reusable-task-ephemeral-construct-contract.json",
     "data/goal-task-transport-profiles/TVC-RECIPIENT-ADMISSION-OPAQUE-SIGNER-BACKEND-001.json",
     "docs/TVC_RECIPIENT_ADMISSION_OPAQUE_SIGNER_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+    "docs/REUSABLE_EVIDENCE_VALIDATION_COMPONENTS_MIRROR_HANDOFF.md",
     "StegVerse-Labs/stegfin-governance/stegwallet/platform_recipient_admission_signer.py",
     "StegVerse-Labs/stegfin-governance/stegwallet/kv_skap_admitted_node_platform_transport.py",
     "StegVerse-Labs/stegfin-governance/stegwallet/current_intr_admission_provider.py",
@@ -78,13 +84,15 @@
     "StegVerse-Labs/StegOS/docs/TVC_RECIPIENT_ADMISSION_CANONICAL_NODE_CARRIER_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegOS/docs/TVC_RECIPIENT_ADMISSION_BOUND_OPERATION_SIGNING_MIRROR_HANDOFF.md",
     "StegVerse-Labs/TVC/tools/project_kv_skap_user_verification_provenance.py",
+    "StegVerse-Labs/TVC/tools/select_current_kv_skap_verification_record.py",
+    "StegVerse-Labs/TVC/docs/CURRENT_KV_SKAP_VERIFICATION_SELECTOR_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github/scripts/build_tvc_recipient_admission_sign_intr_request.py",
     "StegVerse-Labs/.github/workers/tvc_recipient_admission_sign_intr_ingress.py",
     "StegVerse-Labs/.github/scripts/install_tvc_recipient_admission_sign_universal_intr_route.py",
     "docs/TVC_RECIPIENT_ADMISSION_SIGN_INTR_ROUTE_MIRROR_HANDOFF.md"
   ],
   "blockers": [
-    "CURRENT_KV_SKAP_VERIFICATION_RECORD_SELECTION_AND_RUNTIME_PROVIDER_BINDING_NOT_YET_IMPLEMENTED",
+    "CURRENT_KV_SKAP_VERIFICATION_BINDING_SOURCE_NOT_YET_OBSERVED",
     "CURRENT_INTR_ADMISSION_RUNTIME_ROUTE_INSTALLATION_AND_EXACT_RECEIPT_EVIDENCE_SOURCE_NOT_YET_OBSERVED",
     "GENERIC_NODE_OPAQUE_P256_CAPABILITY_NOT_YET_BOUND_TO_NATIVE_STEGOS_AUTHORITY_SIGNER",
     "PLATFORM_SIGNER_BACKEND_NOT_YET_INJECTED_INTO_PRODUCTION_VAULT_AGENT_LIFECYCLE",
@@ -97,6 +105,8 @@
     "KV_SKAP_USER_VERIFICATION_PRESERVED_AS_SOLE_USER_VERIFIER",
     "STEGOS_NODE_REMAINS_INTERCHANGEABLE_TRANSPORT_NODE",
     "KV_SKAP_VERIFICATION_PROVENANCE_PROJECTED_WITHOUT_NEW_VERIFIER",
+    "CURRENT_KV_SKAP_BINDING_AUTHENTICALLY_OBSERVED",
+    "CURRENT_KV_SKAP_RECORD_SELECTED_BY_REUSABLE_COMPONENT",
     "EXACT_PLATFORM_SIGN_REQUEST_ADMITTED_BY_UNIVERSAL_INTR",
     "CURRENT_INTR_ADMISSION_PROJECTED_FROM_AUTHENTIC_WRITE_ONCE_RECEIPT",
     "KV_SKAP_VERIFICATION_AND_INTR_ADMISSION_BOUND_TO_EXACT_LOCAL_OPERATION",
@@ -132,6 +142,16 @@
     "kv_skap_admitted_node_platform_transport_merge": "StegVerse-Labs/stegfin-governance@1e592bd6c385e79411ac72229ae9fd12a70411c9",
     "kv_skap_user_verification_provenance_projector_merged": true,
     "kv_skap_user_verification_provenance_projector_merge": "StegVerse-Labs/TVC@4c78f8653b8a5899350479d57c58e936b50e023a",
+    "reusable_current_verification_selector_component_merged": true,
+    "reusable_current_verification_selector_component_merge": "StegVerse-Labs/.github@f7132f32ce27a628f9c379f6d585a01d8b0e90dc",
+    "reusable_current_verification_selector_component_id": "RTC-EVIDENCE-CURRENT-SELECTOR-010",
+    "current_kv_skap_verification_selector_implementation_merged": true,
+    "current_kv_skap_verification_selector_implementation_merge": "StegVerse-Labs/TVC@b029e0d880d3f133b96cdedced915cea8df47532",
+    "current_kv_skap_verification_selector_validation": "34731405250",
+    "current_kv_skap_verification_selector_creates_verification": false,
+    "current_kv_skap_verification_selector_uses_latest_by_time": false,
+    "current_kv_skap_verification_selector_returns_raw_source_record": false,
+    "current_kv_skap_verification_binding_source_observed": false,
     "tvc_recipient_admission_sign_universal_intr_route_source_merged": true,
     "tvc_recipient_admission_sign_universal_intr_route_merge": "StegVerse-Labs/.github@08178861cfa144ce032d9399d50c56a77bd1a74b",
     "universal_intr_route_starts_second_listener": false,
@@ -196,7 +216,7 @@
     "second_user_operated_device_required": false
   },
   "allowed_next_transitions": [
-    "BIND_CURRENT_KV_SKAP_VERIFICATION_RECORD_SELECTION_TO_EXISTING_PROVENANCE_PROVIDER",
+    "OBSERVE_AUTHENTIC_CURRENT_KV_SKAP_VERIFICATION_BINDING_SOURCE",
     "BIND_CURRENT_INTR_EVIDENCE_SOURCE_TO_EXISTING_UNIVERSAL_INTR_RUNTIME_COMPONENT",
     "BIND_GENERIC_NODE_OPAQUE_P256_CAPABILITY_TO_NATIVE_STEGOS_AUTHORITY_SIGNER_WITHIN_EXISTING_ELIGIBLE_EXECUTION_CONTEXT",
     "INJECT_COMPONENTIZED_PLATFORM_SIGNER_BACKEND_INTO_EXISTING_VAULT_AGENT_LIFECYCLE",
@@ -214,6 +234,7 @@
     "docs/TVC_RECIPIENT_ADMISSION_OPAQUE_SIGNER_BACKEND_MIRROR_HANDOFF.md",
     "docs/TVC_RECIPIENT_ADMISSION_OPAQUE_SIGNER_COMPONENT_MODEL_MIRROR_HANDOFF.md",
     "docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md",
-    "docs/REUSABLE_GOAL_TASK_TRANSPORT_COMPONENTS_MIRROR_HANDOFF.md"
+    "docs/REUSABLE_GOAL_TASK_TRANSPORT_COMPONENTS_MIRROR_HANDOFF.md",
+    "docs/REUSABLE_EVIDENCE_VALIDATION_COMPONENTS_MIRROR_HANDOFF.md"
   ]
 }
