@@ -13,8 +13,58 @@
     "implementation_owner": "StegVerse-Labs/stegfin-governance + StegVerse-Labs/TVC + StegVerse-Labs/StegOS + StegVerse-Labs/.github",
     "consumer": "TVC-RECIPIENT-ADMISSION-SIGNING-CUSTODY-001"
   },
+  "component_model_projection": {
+    "model": "data/reusable-task-component-model.json",
+    "decomposition_policy": "data/reusable-task-component-decomposition-policy.json",
+    "evaluator": "scripts/evaluate_reusable_task_componentization.py",
+    "transport_family": "data/reusable-transport-component-contract.json",
+    "goal_transport_profile": "data/goal-task-transport-profiles/TVC-RECIPIENT-ADMISSION-OPAQUE-SIGNER-BACKEND-001.json",
+    "execution_materialization_contract": "data/reusable-task-ephemeral-construct-contract.json",
+    "component_handoff": "docs/TVC_RECIPIENT_ADMISSION_OPAQUE_SIGNER_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+    "selected_transport_components": [
+      "RTC-MANIFEST-001",
+      "RTC-GOVERNED-PROCESSING-002",
+      "RTC-ROUNDTRIP-003",
+      "RTC-EVIDENCE-CUSTODY-004",
+      "RTC-INTERLOCK-INTR-TRANSPORT-008"
+    ],
+    "omitted_optional_or_non_applicable_transport_components": [
+      "RTC-PUBLISHER-005",
+      "RTC-SDK-RETURN-006",
+      "RTC-STEGVERSE-EGRESS-007",
+      "RTC-FARSIDE-FINAL-009"
+    ],
+    "goal_identity_preserved": true,
+    "cosv_identity_preserved": true,
+    "componentization_mints_authority": false,
+    "runtime_predicates_changed": false,
+    "runtime_handoff_remains_runtime_truth": true
+  },
+  "componentization_evaluation": {
+    "score": 27,
+    "decision": "STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION",
+    "active_signals": [
+      "repeated_subflow",
+      "multiple_authority_crossings",
+      "multiple_round_trips",
+      "cross_repository_or_org_spread",
+      "task_specific_adapter_duplicates_generic_work",
+      "handoff_sequence_growth",
+      "failure_path_branching",
+      "independent_reusability",
+      "independent_evidence_predicate"
+    ],
+    "optional_subflow_present": false,
+    "authority_effect": "NONE_COORDINATION_ONLY"
+  },
   "source_refs": [
     "data/task-registry-global-invariants.json",
+    "data/reusable-task-component-model.json",
+    "data/reusable-task-component-decomposition-policy.json",
+    "data/reusable-transport-component-contract.json",
+    "data/reusable-task-ephemeral-construct-contract.json",
+    "data/goal-task-transport-profiles/TVC-RECIPIENT-ADMISSION-OPAQUE-SIGNER-BACKEND-001.json",
+    "docs/TVC_RECIPIENT_ADMISSION_OPAQUE_SIGNER_COMPONENT_MODEL_MIRROR_HANDOFF.md",
     "StegVerse-Labs/stegfin-governance/stegwallet/platform_recipient_admission_signer.py",
     "StegVerse-Labs/stegfin-governance/stegwallet/kv_skap_admitted_node_platform_transport.py",
     "StegVerse-Labs/stegfin-governance/stegwallet/current_intr_admission_provider.py",
@@ -40,7 +90,8 @@
     "PLATFORM_SIGNER_BACKEND_NOT_YET_INJECTED_INTO_PRODUCTION_VAULT_AGENT_LIFECYCLE",
     "PRODUCTION_AUTHORITY_KEY_MATERIALIZATION_NOT_YET_OBSERVED",
     "MATCHING_PUBLIC_JWK_BINDING_NOT_YET_OBSERVED",
-    "FRESH_WORKERCOORDINATOR_BOUND_PRODUCTION_SIGNATURE_NOT_YET_OBSERVED"
+    "FRESH_WORKERCOORDINATOR_BOUND_PRODUCTION_SIGNATURE_NOT_YET_OBSERVED",
+    "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_NOT_YET_OBSERVED"
   ],
   "expected_evidence_predicates": [
     "KV_SKAP_USER_VERIFICATION_PRESERVED_AS_SOLE_USER_VERIFIER",
@@ -55,6 +106,7 @@
     "TVC_ADMISSION_AUTHORITY_BACKEND_BOUND_TO_EXISTING_VAULT_AGENT",
     "TVC_PRODUCTION_RECIPIENT_ADMISSION_SIGNING_CUSTODY_OBSERVED",
     "TVC_RECIPIENT_ADMISSION_PUBLIC_TRUST_ANCHOR_BOUND",
+    "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_CONFIRMED",
     "PRIVATE_SIGNING_KEY_BYTES_NEVER_EXPORTED",
     "RECIPIENT_SECURE_ENCLAVE_KEY_NOT_REPURPOSED_AS_AUTHORITY_KEY",
     "NO_SECOND_SIGNER_DAEMON_OR_CREDENTIAL_PATH"
@@ -116,32 +168,42 @@
     "node_local_operation_may_create_user_verification": false,
     "public_loopback_or_deep_link_signing_service_authorized": false,
     "stegos_readme_authority_candidate_paragraph_requires_reconciliation": true,
+    "reusable_task_component_model_canonical_merge": "StegVerse-Labs/.github@b9f8e5153aa1651f2d7f043fb902eacb7c113ed9",
+    "reusable_component_profile_projected": true,
+    "duplicate_task_specific_orchestration_growth_stopped": true,
     "platform_backend_injected_in_production_launcher": false,
     "production_backend_materialized": false,
     "public_trust_anchor_bound": false,
-    "fresh_production_signature_observed": false
+    "fresh_production_signature_observed": false,
+    "master_records_reconstruction_observed": false
   },
   "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "worker_claim_authority": "WorkerCoordinator",
     "user_verification_authority": "KV/SKAP Vault",
     "device_user_verifier_authority": "NONE",
     "node_user_verifier_authority": "NONE",
     "transport_user_verifier_authority": "NONE",
     "credential_authority": "TV/TVC",
     "transition_authority": "Interlock/InTr",
+    "master_records_reality_authority": true,
+    "heartbeat_authority": "OBSERVABILITY_ONLY",
     "github_runtime_authority": "NONE",
     "github_ci_model_may_create_production_signing_key": false,
     "recipient_key_may_be_promoted_to_authority_key": false,
     "alternate_credential_path_authorized": false,
-    "hosted_execution_fallback": false
+    "hosted_execution_fallback": false,
+    "second_user_operated_device_required": false
   },
   "allowed_next_transitions": [
-    "BIND_CURRENT_KV_SKAP_VERIFICATION_RECORD_SELECTION_TO_RUNTIME_PROVIDER",
-    "BIND_CURRENT_INTR_EVIDENCE_SOURCE_TO_EXISTING_UNIVERSAL_INTR_RUNTIME",
-    "BIND_GENERIC_NODE_OPAQUE_P256_CAPABILITY_TO_NATIVE_STEGOS_AUTHORITY_SIGNER_WITHIN_ELIGIBLE_EXECUTION_CONTEXT",
-    "INJECT_PLATFORM_SIGNER_BACKEND_INTO_EXISTING_VAULT_AGENT_LIFECYCLE",
+    "BIND_CURRENT_KV_SKAP_VERIFICATION_RECORD_SELECTION_TO_EXISTING_PROVENANCE_PROVIDER",
+    "BIND_CURRENT_INTR_EVIDENCE_SOURCE_TO_EXISTING_UNIVERSAL_INTR_RUNTIME_COMPONENT",
+    "BIND_GENERIC_NODE_OPAQUE_P256_CAPABILITY_TO_NATIVE_STEGOS_AUTHORITY_SIGNER_WITHIN_EXISTING_ELIGIBLE_EXECUTION_CONTEXT",
+    "INJECT_COMPONENTIZED_PLATFORM_SIGNER_BACKEND_INTO_EXISTING_VAULT_AGENT_LIFECYCLE",
     "RECONCILE_STEGOS_README_BOUND_SIGNING_STATE",
     "PROJECT_MATCHING_PUBLIC_JWK_ONLY",
-    "OBSERVE_AUTHENTIC_PRODUCTION_MATERIALIZATION"
+    "OBSERVE_AUTHENTIC_PRODUCTION_MATERIALIZATION",
+    "SUBMIT_AUTHENTIC_SIGNING_EVIDENCE_TO_MASTER_RECORDS_RECONSTRUCTION"
   ],
   "completion": {
     "claimed": false,
@@ -149,6 +211,9 @@
     "runtime_observed": false
   },
   "handoff_projection_refs": [
-    "docs/TVC_RECIPIENT_ADMISSION_OPAQUE_SIGNER_BACKEND_MIRROR_HANDOFF.md"
+    "docs/TVC_RECIPIENT_ADMISSION_OPAQUE_SIGNER_BACKEND_MIRROR_HANDOFF.md",
+    "docs/TVC_RECIPIENT_ADMISSION_OPAQUE_SIGNER_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+    "docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+    "docs/REUSABLE_GOAL_TASK_TRANSPORT_COMPONENTS_MIRROR_HANDOFF.md"
   ]
 }
