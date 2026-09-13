@@ -1,0 +1,151 @@
+{
+  "schema": "stegverse.goal-task-component-profile/v1",
+  "task_id": "SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001",
+  "cosv_task_vector": "71000000100110",
+  "reusable_task_component_model_ref": "data/reusable-task-component-model.json",
+  "decomposition_policy_ref": "data/reusable-task-component-decomposition-policy.json",
+  "composition": [
+    {
+      "component": "RTC-MANIFEST-001",
+      "capability": "exact provider observation request manifest and task/COSV binding",
+      "state": "EXISTING_REUSABLE_COMPONENT",
+      "canonical_owner": "Reusable Transport Component family",
+      "implementation_refs": ["data/reusable-transport-component-contract.json"],
+      "inputs": ["task_id", "cosv_task_vector", "provider_file_id", "binding_id", "content_profile", "probe_reason", "read_only posture"],
+      "outputs": ["validated bound provider observation request"],
+      "preconditions": ["task identity resolved", "real provider resource selected", "no credential material in request"],
+      "authority_owner": "NONE_COMPONENT_NON_AUTHORIZING",
+      "expected_evidence": ["request manifest digest", "task/COSV binding", "provider target binding"],
+      "cardinality": "ONCE_PER_PROVIDER_OBSERVATION_INVOCATION",
+      "failure_semantics": ["fail closed on malformed manifest", "fail closed on credential-bearing request"],
+      "requirement": "REQUIRED"
+    },
+    {
+      "component": "CANONICAL_RUNTIME_OBSERVATION",
+      "capability": "resident execution visitation and observation",
+      "state": "EXISTING_CANONICAL_OWNER",
+      "canonical_owner": "existing sovereign resident dispatcher/runtime observation surface",
+      "implementation_refs": ["scripts/dispatch_resident_execution_requests.py"],
+      "inputs": ["validated resident request", "materialized TVC runtime", "resident runtime root"],
+      "outputs": ["resident visitation/result receipt"],
+      "preconditions": ["resident execution surface materialized", "hosted execution prohibited"],
+      "authority_owner": "WorkerCoordinator for claim/fence when applicable; runtime component itself non-authorizing",
+      "expected_evidence": ["authentic resident execution receipt"],
+      "cardinality": "ONE_OR_MORE_ATTEMPTS_UNTIL_AUTHENTIC_TERMINAL_OBSERVATION",
+      "failure_semantics": ["INPUT_NOT_MATERIALIZED", "runtime unavailable", "claim/fence unavailable when required"],
+      "requirement": "REQUIRED"
+    },
+    {
+      "component": "CANONICAL_TV_TVC_PROVIDER_CONTENT_INTEGRITY",
+      "capability": "bounded read-only provider content-integrity observation",
+      "state": "EXISTING_CANONICAL_IMPLEMENTATION_REUSED",
+      "canonical_owner": "TV/TVC",
+      "implementation_refs": ["StegVerse-Labs/TVC:tvc_external_collab_google_drive_content_integrity_runtime.py", "StegVerse-Labs/TVC:scripts/tvc_issue_external_collab_google_drive_content_integrity_lease.py", "StegVerse-Labs/stegfin-governance:stegwallet/external_collab_google_drive_probe.py"],
+      "inputs": ["provider_file_id", "binding_id", "probe_reason", "google-drive.downloaded-bytes.v1"],
+      "outputs": ["provider_version_id", "provider_content_sha256", "content_profile", "secret-free use/lease evidence"],
+      "preconditions": ["TV/TVC provider credential/session available", "ordinary downloadable provider resource", "provider version stable across bounded read"],
+      "authority_owner": "TV/TVC",
+      "expected_evidence": ["purpose-bound lease receipt", "provider operation result", "exact downloaded-byte SHA-256", "provider version"],
+      "cardinality": "REPEATABLE_PER_PROVIDER_REVISION_OBSERVATION",
+      "failure_semantics": ["CONTENT_DIGEST_UNAVAILABLE", "credential/session unavailable", "provider version changed during read", "provider operation refused"],
+      "requirement": "REQUIRED"
+    },
+    {
+      "component": "RTC-ROUNDTRIP-003",
+      "capability": "provider request/response round trip with chained evidence",
+      "state": "EXISTING_REUSABLE_COMPONENT",
+      "canonical_owner": "Reusable Transport Component family with TV/TVC provider authority preserved",
+      "implementation_refs": ["data/reusable-transport-component-contract.json"],
+      "inputs": ["bound content-integrity request"],
+      "outputs": ["secret-free provider observation result", "round-trip evidence refs"],
+      "preconditions": ["provider session admitted by TV/TVC"],
+      "authority_owner": "TV/TVC for provider operation",
+      "expected_evidence": ["provider operation receipt", "request/result correlation"],
+      "cardinality": "ONE_REQUIRED_PROVIDER_ROUND_TRIP_PER_OBSERVED_REVISION",
+      "failure_semantics": ["provider unavailable", "session unavailable", "result contract mismatch"],
+      "requirement": "REQUIRED"
+    },
+    {
+      "component": "RTC-SDK-RETURN-006",
+      "capability": "normalize provider evidence for Shared Docs freeze intake",
+      "state": "EXISTING_REUSABLE_COMPONENT",
+      "canonical_owner": "SDK return assembly",
+      "implementation_refs": ["StegVerse-org/StegVerse-SDK:stegverse/tvc_provider_probe_bridge.py", "StegVerse-org/StegVerse-SDK:stegverse/shared_docs_provider_freeze.py"],
+      "inputs": ["provider_file_id", "provider_version_id", "provider_content_sha256", "content_profile", "evidence refs"],
+      "outputs": ["normalized provider observation", "freeze-binding candidate"],
+      "preconditions": ["authentic provider result exists", "exact SHA-256 present"],
+      "authority_owner": "NONE_NORMALIZATION_ONLY",
+      "expected_evidence": ["normalized result with exact provider version and content digest"],
+      "cardinality": "ONCE_PER_AUTHENTIC_PROVIDER_OBSERVATION",
+      "failure_semantics": ["reject missing version", "reject missing exact digest", "reject authority drift"],
+      "requirement": "REQUIRED"
+    },
+    {
+      "component": "RTC-EVIDENCE-CUSTODY-004",
+      "capability": "durable evidence custody/readback/reconstruction",
+      "state": "EXISTING_REUSABLE_COMPONENT",
+      "canonical_owner": "Master Records",
+      "implementation_refs": ["data/reusable-transport-component-contract.json"],
+      "inputs": ["provider observation evidence", "freeze-binding evidence", "transition evidence when applicable"],
+      "outputs": ["custody acceptance", "readback", "reconstruction evidence"],
+      "preconditions": ["authentic evidence exists"],
+      "authority_owner": "Master Records",
+      "expected_evidence": ["Master Records custody and reconstruction receipt"],
+      "cardinality": "AT_REQUIRED_RECORDING_BOUNDARY",
+      "failure_semantics": ["custody unavailable", "reconstruction incomplete"],
+      "requirement": "REQUIRED_FOR_COMPLETION_EVIDENCE"
+    },
+    {
+      "component": "RTC-INTERLOCK-INTR-TRANSPORT-008",
+      "capability": "governed transition for an admitted provider-observed edit that creates a successor Shared Docs revision",
+      "state": "EXISTING_REUSABLE_COMPONENT",
+      "canonical_owner": "Interlock/InTr",
+      "implementation_refs": ["data/reusable-transport-component-contract.json"],
+      "inputs": ["provider-observed edit candidate", "current immutable revision binding", "transition context"],
+      "outputs": ["admitted successor-revision transition receipt or refusal"],
+      "preconditions": ["provider edit observed", "transition candidate constructed", "required authority/evidence present"],
+      "authority_owner": "Interlock/InTr",
+      "expected_evidence": ["authentic InTr admission/transition receipt"],
+      "cardinality": "ZERO_OR_MORE; ONLY WHEN AN EDIT REQUIRES A STATE TRANSITION",
+      "failure_semantics": ["admission denied", "stale revision", "transition evidence unavailable"],
+      "requirement": "CONDITIONAL"
+    }
+  ],
+  "task_specific_configuration": [
+    "logical Shared Docs document/revision/review-epoch binding",
+    "selected provider file ID for the current observation invocation",
+    "freeze-state projection policy",
+    "successor-revision semantics"
+  ],
+  "superseded_or_bounded_bespoke_logic": [
+    {
+      "ref": "control/resident-execution-request.d/consume-shared-docs-provider-content-integrity.py",
+      "classification": "TASK_SPECIFIC_TRANSLATOR_COMPATIBILITY_SHIM",
+      "rule": "Do not extend this file into a parallel scheduler, credential runtime, provider runtime, evidence validator, or transition engine. Reuse the canonical resident dispatcher, TV/TVC provider-content-integrity runtime, SDK return normalization, Interlock/InTr, and Master Records owners instead."
+    }
+  ],
+  "new_reusable_components": [],
+  "authority_invariants": {
+    "task_registry": "COORDINATION_ONLY",
+    "worker_claim_fence": "WorkerCoordinator",
+    "user_verification": "KV/SKAP Vault",
+    "device_role": "INTERCHANGEABLE_STEGOS_TRANSPORT_EXECUTION_NODE_NOT_USER_VERIFIER",
+    "credential_provider_release": "TV/TVC",
+    "governed_transition": "Interlock/InTr",
+    "observed_reality_custody_reconstruction": "Master Records",
+    "heartbeat": "TIMING_FRESHNESS_LIVENESS_CORRELATION_OBSERVABILITY_ONLY",
+    "github_runtime_authority": "NONE"
+  },
+  "goal_specific_remaining_predicates": [
+    "PROVIDER_DOCUMENT_ID_BOUND_TO_LOGICAL_DOCUMENT",
+    "PROVIDER_VERSION_BOUND_TO_IMMUTABLE_REVISION",
+    "PROVIDER_CONTENT_DIGEST_BOUND_TO_FREEZE_REVISION",
+    "FREEZE_METADATA_PROJECTION_DOES_NOT_MUTATE_REVIEWED_BYTES",
+    "ADMITTED_EDIT_CREATES_SUCCESSOR_REVISION",
+    "STALE_PROVIDER_REVISION_FREEZE_REJECTED",
+    "PRIOR_FROZEN_PROVIDER_REVISION_PROVENANCE_PRESERVED",
+    "PROVIDER_MUTATION_AUTHORITY_REMAINS_TV_TVC",
+    "GOVERNED_TRANSITION_AUTHORITY_REMAINS_INTERLOCK_INTR",
+    "ONE_CURRENT_DEVICE_OPERATION_PRESERVED"
+  ]
+}
