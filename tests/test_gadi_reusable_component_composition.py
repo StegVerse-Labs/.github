@@ -15,7 +15,7 @@ class GadiReusableComponentCompositionTests(unittest.TestCase):
         self.assertEqual(task["coordination_state"], "ACTIVE")
         self.assertFalse(task["completion"]["claimed"])
         self.assertEqual(task["authority_model"]["worker_claim_authority"], "WORKERCOORDINATOR")
-        self.assertEqual(task["authority_model"]["user_verification_authority"], "KV_SKAP_VAULT")
+        self.assertEqual(task["authority_model"]["user_verification_authority"], "KV/SKAP Vault")
         self.assertEqual(task["authority_model"]["stegos_device_role"], "INTERCHANGEABLE_TRANSPORT_NODE")
 
     def test_selected_components(self):
