@@ -3,7 +3,23 @@
   "status": "ACTIVE_SOURCE_POLICY_CONTEXT",
   "canonical_owner_task": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
   "authority_effect": "NONE_PREWORK_INTERPRETATION_ONLY",
-  "purpose": "Require StegVerse session/build pre-work to resolve already-canonical architecture and lifecycle semantics before interpreting task state, deriving a blocker, proposing remediation, or creating new work.",
+  "purpose": "Require every StegVerse session/build/task-interpretation ingress to resolve already-canonical architecture and lifecycle semantics before interpreting task state, deriving a blocker, proposing remediation, creating new work, or mutating source.",
+  "ingress_scope": {
+    "applies_to": [
+      "NEW_SESSION_ENTRY",
+      "TASK_OR_COSV_CONTINUATION",
+      "BUILD_OR_IMPLEMENTATION_PREWORK",
+      "HANDOFF_RECONCILIATION",
+      "REMEDIATION_PROPOSAL",
+      "SOURCE_MUTATION_PROPOSAL",
+      "REUSABLE_COMPONENT_DECOMPOSITION"
+    ],
+    "must_resolve_before_local_interpretation": true,
+    "must_resolve_before_source_mutation": true,
+    "must_resolve_before_new_task_or_component_creation": true,
+    "runtime_packet_validation_authority_changed": false,
+    "interlock_intr_authority_changed": false
+  },
   "required_global_sources": [
     {
       "ref": "data/task-coordination-policy.json",
@@ -14,6 +30,11 @@
       "ref": "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
       "required": true,
       "purpose": "Canonical cross-task evidence, subject-binding, adjacency, collision, and evidence-gap semantics."
+    },
+    {
+      "ref": "data/reusable-task-component-model.json",
+      "required": true,
+      "purpose": "Canonical reusable-component composition and authority-separation invariants, including interchangeable StegOS device role and KV/SKAP user-verification ownership."
     }
   ],
   "task_policy_refs": {
@@ -27,14 +48,38 @@
     "required_before_blocker_derivation": true,
     "required_before_remediation_proposal": true,
     "required_before_new_task_creation": true,
+    "required_before_source_mutation": true,
+    "required_before_architecture_reinterpretation": true,
     "fail_closed_disposition": "STOP_AT_CANONICAL_POLICY_DEPENDENCY",
     "runtime_truth_inferred": false,
     "execution_authority_inferred": false,
     "transition_authority_inferred": false,
     "credential_authority_inferred": false
   },
+  "canonical_invariant_lock": {
+    "enabled": true,
+    "canonical_source_precedes_local_reasoning": true,
+    "task_specific_wording_may_parameterize_but_not_redefine_canonical_invariant": true,
+    "task_specific_runtime_subject_does_not_create_new_architectural_role": true,
+    "conflicting_local_interpretation_is_invalid": true,
+    "existing_canonical_invariant_must_be_reused_not_recreated": true,
+    "restatement_of_existing_invariant_is_not_new_work": true,
+    "restatement_alone_must_not_create_pr_task_component_handoff_or_policy_artifact": true,
+    "new_role_authority_identity_class_or_execution_owner_requires_proof_canonical_model_lacks_equivalent": true,
+    "human_correction_matching_existing_canonical_truth_requires_no_source_mutation": true,
+    "failure_disposition": "REUSE_CANONICAL_TRUTH_OR_STOP_AT_EXACT_CANONICAL_DEPENDENCY"
+  },
   "interpretation_guards": [
     "CANONICAL_POLICY_CONTEXT_PRECEDES_SESSION_INFERENCE",
+    "CANONICAL_SOURCE_PRECEDES_LOCAL_INTERPRETATION",
+    "TASK_SPECIFIC_WORDING_MAY_PARAMETERIZE_BUT_NOT_REDEFINE_CANONICAL_INVARIANT",
+    "TASK_SPECIFIC_RUNTIME_SUBJECT_DOES_NOT_CREATE_NEW_ARCHITECTURAL_ROLE",
+    "CONFLICTING_LOCAL_INTERPRETATION_IS_INVALID",
+    "EXISTING_CANONICAL_INVARIANT_MUST_BE_REUSED_NOT_RECREATED",
+    "RESTATEMENT_OF_EXISTING_INVARIANT_IS_NOT_NEW_WORK",
+    "NO_PR_TASK_COMPONENT_HANDOFF_OR_POLICY_MUTATION_MERELY_TO_RESTATE_EXISTING_CANONICAL_TRUTH",
+    "NEW_ROLE_AUTHORITY_IDENTITY_CLASS_OR_EXECUTION_OWNER_REQUIRES_PROOF_CANONICAL_MODEL_LACKS_EQUIVALENT",
+    "HUMAN_CORRECTION_MATCHING_EXISTING_CANONICAL_TRUTH_REQUIRES_NO_SOURCE_MUTATION",
     "CANONICALLY_RESOLVABLE_POLICY_MUST_NOT_BE_RETAUGHT_BY_HUMAN_PROMPT",
     "EPHEMERAL_OR_EXPIRING_RUNTIME_STATE_MUST_NOT_BE_RECLASSIFIED_AS_FAILURE_WITHOUT_CANONICAL_LIFECYCLE_EVIDENCE",
     "ABSENCE_STALENESS_EXPIRY_DEVICE_WORKER_HEARTBEAT_AUTHORITY_AND_CUSTODY_TERMS_MUST_USE_CANONICAL_SEMANTICS",
@@ -49,6 +94,12 @@
     "WORKERCOORDINATOR_OWNS_EXECUTION_CLAIM_AND_FENCE",
     "MASTER_RECORDS_OWNS_OBSERVED_REALITY_AND_RECONSTRUCTION",
     "MISSING_EVIDENCE_IS_NOT_PROOF_OF_NON_OCCURRENCE"
+  ],
+  "known_global_invariants_resolved_from_reusable_task_component_model": [
+    "STEGOS_DEVICE_ROLE_IS_INTERCHANGEABLE_TRANSPORT_NODE",
+    "KV_SKAP_VAULT_IS_SOLE_USER_VERIFICATION_AUTHORITY",
+    "COMPONENT_REUSE_MINTS_NO_AUTHORITY",
+    "UNUSED_COMPONENTS_MUST_NOT_BE_FORCED"
   ],
   "nonclaims": [
     "POLICY_CONTEXT_RESOLUTION_DOES_NOT_CREATE_RUNTIME_STATE",
