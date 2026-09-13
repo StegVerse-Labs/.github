@@ -130,6 +130,22 @@ This stops additional bespoke orchestration only. It does not stop the Goal Task
 - Status: existing reusable component; not applicable.
 - Reason: this Goal Task does not return a result through the SDK.
 
+## Runtime-observation component binding
+
+The Reusable Task Component Model already classifies `runtime_observation` as an existing canonical-owner component family. For this Goal, the concrete post-restart implementation is the TVC observation-only surface merged by TVC PR #413:
+
+```text
+StegVerse-Labs/TVC/scripts/observe_app_store_connect_skap_runtime.py
+receipt: /var/lib/stegverse/skap/browser-recipient/apple/receipts/runtime-observation-latest.json
+terminal observation: OWNER_INGRESS_READY_OBSERVED
+```
+
+This is a reusable runtime-observation component, not a new Goal Task and not a new execution plane. It reads existing Apple activation/liveness/public-config/InTr-route evidence and probes only the already-existing loopback listeners `127.0.0.1:8765` and `127.0.0.1:8775`. It creates no listener, scheduler, dispatcher, provider operation, credential path, or authority.
+
+The observer's source revision must remain reconstructible with the exact TVC execution source. The current StegBrowser resident request still pins pre-observer TVC commit `aef6b6f5dc99d2a531718ca475d20858ae8e68a6`, while the observer exists only in later TVC source. The resulting `EXACT_TVC_SOURCE_PIN_OBSERVER_ALIGNMENT_PENDING` condition is therefore Goal-specific manifest/source binding under `RTC-MANIFEST-001`; it does not justify another observer component or another Goal Task.
+
+Preferred continuation is one immutable later TVC source coordinate containing the already-existing promotion/restart path, the canonical recipient-signing path, and this observer. If the executable source coordinate cannot be changed through the currently authorized mutation surface, the task remains incomplete at source binding rather than routing around that control.
+
 ## Session-work classification
 
 Work already completed in this session is reconciled as follows:
@@ -139,6 +155,7 @@ Work already completed in this session is reconciled as follows:
 - PR #1644 global enforcement: reusable Task Registry process/invariant applied to existing and future runtime-capable tasks.
 - `stegbrowser_tvc_source_promotion` exact dispatch path and dedicated receipt binding: existing governed-processing/evidence-validation implementation; do not extend with another task-specific dispatcher.
 - TVC source materialization/restart path: existing execution-materialization/provider-runtime implementation; reuse it.
+- TVC #413 post-restart App Store Connect SKAP observer: existing canonical runtime-observation family implementation; reuse it and retain its observation receipt independently.
 - Apple SKAP and App Store Connect path: existing TV/TVC credential/session/provider implementation; reuse it.
 - Facebook/LinkedIn publication callers: existing Publisher/provider-specific implementations; reuse them.
 - publication custody/readback: existing Master Records custody/reconstruction responsibility; reuse it.
@@ -148,7 +165,7 @@ No historical evidence is deleted. No completed source work is upgraded to authe
 
 ## Duplicate orchestration disposition
 
-Do not add another task-specific scheduler, resident dispatcher, TVC promotion bridge, credential resolver, provider session manager, publication transport, custody writer, or Remote Computer execution class for this Goal.
+Do not add another task-specific scheduler, resident dispatcher, TVC promotion bridge, runtime observer, credential resolver, provider session manager, publication transport, custody writer, or Remote Computer execution class for this Goal.
 
 The historical ordered handoff remains useful as runtime truth, but architecture is now represented as component composition. Any future generic adapter/transport/correlation implementation must first be reconciled against these reusable owners.
 
@@ -158,12 +175,13 @@ No currently merged task-specific implementation is deleted in this reconciliati
 
 Component reuse does not satisfy these predicates. Authentic evidence is still required for:
 
+- exact TVC source pin / runtime-observer source alignment;
 - resident source revision at execution;
 - Canonical Work/resident consumption and exact `stegbrowser_tvc_source_promotion` dispatch;
 - dedicated current-dispatch-bound TVC consumption receipt;
 - pinned TVC materialization and same-primary-runtime restart;
 - simultaneous `8765/8775` observation;
-- Apple `OWNER_INGRESS_READY`;
+- Apple `OWNER_INGRESS_READY` / `OWNER_INGRESS_READY_OBSERVED`;
 - real KV/SKAP-backed Apple credential custody/session;
 - current-iPhone cryptographic signing;
 - TVC Build Upload and TestFlight installation;
@@ -181,6 +199,6 @@ No authentic runtime predicate advances through this componentization. Source co
 
 ## Next admissible work
 
-After this component projection is merged and validated, continue the same Goal Task at its first missing authentic evidence boundary. Use existing Canonical Work/resident processing and `stegbrowser_tvc_source_promotion`; do not add new orchestration. Once authentic execution reaches later stages, invoke only the reusable components required for that stage and preserve independent evidence boundaries.
+Continue the same Goal Task at its first missing source/evidence boundary. Reconcile the immutable TVC manifest/source coordinate with the existing runtime-observation component through an authorized mutation surface before authentic dispatch is treated as the canonical continuation. Do not add new orchestration or a second observer. Once the exact source binding is aligned, use existing Canonical Work/resident processing and `stegbrowser_tvc_source_promotion`, then consume only the reusable components required by each later stage while preserving independent evidence boundaries.
 
 Manual work: none.
