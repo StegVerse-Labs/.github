@@ -20,6 +20,12 @@
   },
   "goal_task_remains_valid": true,
   "new_goal_task_required": false,
+  "device_role_invariant": {
+    "all_devices": "INTERCHANGEABLE_EXECUTION_TRANSPORT_NODES",
+    "user_verification_authority": "KV/SKAP Vault only",
+    "device_identity_user_verification_effect": "NONE",
+    "current_iphone_selection_semantics": "TASK_SPECIFIC_EVIDENCE_CONTINUITY_TARGET_ONLY; NOT_A_SPECIAL_DEVICE_CLASS; NOT_A_VERIFIER"
+  },
   "components": [
     {
       "component_id": "RTC-BROWSER-LOCAL-STATE-SCHEMA-MIGRATION-V1",
@@ -64,13 +70,18 @@
       "expected_evidence": ["LIVE_SOURCE_PROPAGATION_OBSERVED_BEFORE_IPHONE_RETRY"]
     },
     {
-      "component_id": "AUTHENTIC-CURRENT-DEVICE-RUNTIME-REENTRY",
+      "component_id": "AUTHENTIC-INTERCHANGEABLE-DEVICE-RUNTIME-REENTRY",
       "requirement": "REQUIRED",
       "exists": true,
-      "owner_ref": "current-user-iPhone Site runtime using merged Site implementation",
-      "inputs": ["preserved Safari/site storage", "existing Node registration", "Receipt #1", "merged and propagated schema migration"],
-      "outputs": ["authentic device-local retry observation"],
-      "authority_owner": "StegOS execution node; no user-verification authority",
+      "owner_ref": "StegOS interchangeable execution/transport node using merged Site implementation",
+      "task_parameters": {
+        "selected_observation_node": "current-user-iPhone",
+        "selection_reason": "same authentic environment where the missing-object-store failure was observed",
+        "selection_authority_effect": "NONE"
+      },
+      "inputs": ["preserved browser/site storage for selected node", "existing Node registration", "Receipt #1", "merged and propagated schema migration"],
+      "outputs": ["authentic node-local retry observation"],
+      "authority_owner": "StegOS node execution/transport role only; no user-verification authority",
       "expected_evidence": ["AUTHENTIC_CURRENT_IPHONE_RETRY_NO_MISSING_OBJECT_STORE_FAILURE"],
       "cardinality": "exactly_one_retry_after_live_propagation"
     },
@@ -79,7 +90,7 @@
       "requirement": "CONDITIONAL_AFTER_REPAIR_CONFIRMED",
       "exists": true,
       "owner_ref": "Interlock/InTr",
-      "inputs": ["selected ERL artifact", "valid current-device runtime state"],
+      "inputs": ["selected ERL artifact", "valid runtime state from any interchangeable StegOS node"],
       "outputs": ["governed ERL admission result/receipt when invoked"],
       "authority_owner": "Interlock/InTr",
       "expected_evidence": ["INGRESS_ADMISSION_RECEIPT_IF_PARENT_FLOW_CONTINUES"]
@@ -90,7 +101,7 @@
       "exists": true,
       "owner_ref": "KV/SKAP Vault",
       "authority_owner": "KV/SKAP Vault",
-      "reason": "No device-local or transport identity may substitute for user verification, and this repair task does not require a new user-verification event."
+      "reason": "All devices are interchangeable execution/transport nodes. No device-local, transport, node, Secure Enclave, or runtime identity may substitute for KV/SKAP user verification, and this repair task does not require a new user-verification event."
     },
     {
       "component_id": "TV-TVC-CREDENTIAL-PROVIDER-RELEASE",
