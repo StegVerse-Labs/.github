@@ -6,9 +6,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 RECORDS = ROOT / "data" / "canonical-task-records"
+REGISTRY = ROOT / "data" / "canonical-task-registry.json"
 GLOBAL_INVARIANTS = ROOT / "data" / "task-registry-global-invariants.json"
 CALLER_POLICY = ROOT / "data" / "task-registry-general-checkin-caller-policy.json"
 ACTIVEISH = {"ACTIVE", "CHECKED_OUT", "CLAIMED_INTEGRATION", "HANDOFF_READY_RUNTIME_PROOF_PENDING", "BLOCKED_RUNTIME_ACTIVATION"}
+PROGRESSION_CONTROLLER_TASK_ID = "ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001"
 sys.path.insert(0, str(ROOT / "scripts"))
 from task_registry_checkin_event_history import (
     DEFAULT_LEDGER,
@@ -18,16 +20,42 @@ from task_registry_checkin_event_history import (
 from validate_task_registration_substrate_resolution import validate_resolution
 
 
+def _load_object(path: Path):
+    value = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(value, dict):
+        raise ValueError(f"expected JSON object: {path}")
+    return value
+
+
 def load_records():
+    """Resolve canonical identities from the Task Registry; shards only enrich."""
+    registry = _load_object(REGISTRY)
+    rows = registry.get("tasks")
+    if not isinstance(rows, list):
+        raise ValueError("canonical Task Registry tasks must be a list")
     out = {}
-    for p in RECORDS.glob("*.json"):
-        try:
-            r = json.loads(p.read_text())
-        except Exception:
-            continue
-        tid = str(r.get("task_id") or "").strip()
-        if tid:
-            out[tid] = r
+    for raw in rows:
+        if not isinstance(raw, dict):
+            raise ValueError("canonical Task Registry task rows must be objects")
+        tid = str(raw.get("task_id") or "").strip()
+        if not tid:
+            raise ValueError("canonical Task Registry task row missing task_id")
+        if tid in out:
+            raise ValueError(f"duplicate canonical Task Registry task: {tid}")
+        projected = dict(raw)
+        shard_path = RECORDS / f"{tid}.json"
+        if shard_path.is_file():
+            shard = _load_object(shard_path)
+            if shard.get("task_id") != tid:
+                raise ValueError(f"canonical task shard identity mismatch: {tid}")
+            for identity_key in ("correlation_id", "root_correlation_id", "parent_task_id"):
+                registry_value = raw.get(identity_key)
+                shard_value = shard.get(identity_key)
+                if registry_value is not None and shard_value is not None and registry_value != shard_value:
+                    raise ValueError(f"canonical task shard {identity_key} mismatch: {tid}")
+            for key, value in shard.items():
+                projected.setdefault(key, value)
+        out[tid] = projected
     return out
 
 
@@ -124,6 +152,21 @@ def overlap(a, b, request_context=None):
     return repos, comps, lineage, adjacent, substrates
 
 
+def progression_controller_for_same_goal(candidate, other):
+    if other.get("task_id") != PROGRESSION_CONTROLLER_TASK_ID:
+        return False
+    candidate_root = str(candidate.get("root_correlation_id") or candidate.get("correlation_id") or candidate.get("task_id") or "")
+    controller_root = str(other.get("root_correlation_id") or "")
+    claim = other.get("worker_claim") or {}
+    authority = other.get("authority_model") or {}
+    return (
+        bool(candidate_root)
+        and candidate_root == controller_root
+        and claim.get("projection_only") is True
+        and authority.get("task_registry_mints_execution_authority") is False
+    )
+
+
 def event_ledger_path() -> Path:
     configured = str(os.environ.get("STEGVERSE_TASK_REGISTRY_EVENT_LEDGER") or "").strip()
     return Path(configured).expanduser().resolve() if configured else DEFAULT_LEDGER
@@ -143,11 +186,8 @@ def recent_events_for(tid, task_record, context):
     else:
         now = datetime.now(timezone.utc)
     return recent_collision_candidates(
-        event_ledger_path(),
-        now=now,
-        task_id=tid,
-        repositories=sorted(repositories),
-        components=sorted(components),
+        event_ledger_path(), now=now, task_id=tid,
+        repositories=sorted(repositories), components=sorted(components),
     )
 
 
@@ -231,8 +271,12 @@ def main():
         return
 
     collisions=[]
+    controller_exclusions=[]
     for oid, o in records.items():
         if oid == tid:
+            continue
+        if progression_controller_for_same_goal(r, o):
+            controller_exclusions.append(oid)
             continue
         os = str(o.get("coordination_state") or "").upper()
         oc = str(o.get("checkout_state") or "").upper()
@@ -252,18 +296,18 @@ def main():
                     "adjacent":adjacent,
                     "execution_substrates":substrates,
                 },
-                "source":"CANONICAL_TASK_RECORD",
+                "source":"CANONICAL_TASK_REGISTRY",
             })
 
     recent = recent_events_for(tid, r, context)
-    known = {(c["task_id"], "CANONICAL_TASK_RECORD") for c in collisions}
+    known = {(c["task_id"], "CANONICAL_TASK_REGISTRY") for c in collisions}
     for row in recent:
         marker = (row["task_id"], "RECENT_EVENT_HISTORY")
         if marker not in known:
             collisions.append(row)
             known.add(marker)
 
-    hard=[c for c in collisions if c.get("source") == "CANONICAL_TASK_RECORD" and c.get("checkout_state")=="CHECKED_OUT" and (c["overlap"]["components"] or c["overlap"]["lineage"])]
+    hard=[c for c in collisions if c.get("source") == "CANONICAL_TASK_REGISTRY" and c.get("checkout_state")=="CHECKED_OUT" and (c["overlap"]["components"] or c["overlap"]["lineage"])]
     disposition = "STOP_COLLISION" if hard else ("COORDINATE_CONVERGENCE" if collisions else "CONTINUE")
     action = "END_SESSION_AND_CONTINUE_IN_RETURNED_COLLISION_OWNER" if hard else ("COORDINATE_BEFORE_MUTATION" if collisions else "CONTINUE_CURRENT_TASK")
     emit({
@@ -271,6 +315,10 @@ def main():
         "task_id":tid,
         "task_handoff":handoff(r),
         "selected_execution_substrate":selected_substrate(r),
+        "registry_identity_source":"CANONICAL_TASK_REGISTRY",
+        "task_record_shards_are_optional_enrichment_only":True,
+        "same_goal_progression_controller_collision_excluded":bool(controller_exclusions),
+        "excluded_progression_controller_task_ids":controller_exclusions,
         "disposition":disposition,
         "session_action":action,
         "collision_candidates":collisions,
