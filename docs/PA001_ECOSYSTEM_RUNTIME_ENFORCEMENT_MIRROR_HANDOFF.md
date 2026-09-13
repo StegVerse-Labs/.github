@@ -7,11 +7,12 @@ goal_id: PA-001-ECOSYSTEM-RUNTIME-ENFORCEMENT-001
 cosv_task_vector: 50000000114000
 canonical_owner: StegVerse-Labs/StegCore
 owner_issue: StegVerse-Labs/StegCore#208
-source_merge: 2acf466e7d445d67ad9b3472f64568e33641d054
-current_successor_pr: StegVerse-Labs/StegCore#211
+base_source_merge: 2acf466e7d445d67ad9b3472f64568e33641d054
+resident_component_binding_pr: StegVerse-Labs/StegCore#211 MERGED
+resident_component_binding_merge: 7370434bab0ac405077025017f46bb0f38a38c8f
 state: ACTIVE
 registry_state: HANDOFF_READY
-runtime_claim: SOURCE_PRESENT_STATE_ENFORCEMENT_MERGED_RESIDENT_PROOF_PENDING
+runtime_claim: SOURCE_PRESENT_STATE_ENFORCEMENT_AND_RESIDENT_PATH_BINDING_MERGED_RUNTIME_PROOF_PENDING
 credential_authority: TV/TVC
 transition_authority: Interlock/InTr
 github_runtime_authority: NONE
@@ -24,22 +25,20 @@ Organization-control-plane projection for the canonical StegCore PA-001 ecosyste
 
 ## Reusable Task Component Model reconciliation
 
-The canonical Reusable Task Component Model and decomposition policy apply to this Goal Task. Deterministic signal evaluation for the current process scores 30 and requires stopping further task-specific orchestration growth before additional bespoke machinery is added.
-
-The Goal Task identity remains valid and is preserved. No independent Goal Task is created by componentization.
+The canonical Reusable Task Component Model and decomposition policy apply to this Goal Task. The current process scores 30 and therefore prohibits further bespoke orchestration growth. The Goal Task identity and COSV remain unchanged; no new Goal Task is created by componentization.
 
 Canonical composition profile:
 
 `data/goal-task-component-profiles/PA-001-ECOSYSTEM-RUNTIME-ENFORCEMENT-001.json`
 
-Selected reusable capabilities are only those actually required:
+Required components only:
 
-1. `RTC-GOVERNED-PROCESSING-002` — reuse canonical StegCore present-state/admissibility/commit processing. Do not create another present-state validator.
-2. `RTC-INTERLOCK-INTR-TRANSPORT-008` — reuse Universal InTr for the governed request and, where required by the resident reference proof, the consequence-evidence return. Do not create PA-001-specific transport.
-3. `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001` — reuse the existing resident WorkerCoordinator/runtime-observation path. The existing `SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001` owner is the resident reference execution surface; do not create a second scheduler or worker.
-4. `RTC-EVIDENCE-CUSTODY-004` — reuse Master Records custody/readback/reconstruction. Do not create task-local evidence custody.
+1. `RTC-GOVERNED-PROCESSING-002` — canonical StegCore present-state/admissibility/commit processing via the shared `evaluate_present_state()` path.
+2. `RTC-INTERLOCK-INTR-TRANSPORT-008` — existing Universal InTr request/return transport where the resident proof requires each transition.
+3. `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001` — existing resident WorkerCoordinator/runtime-observation machinery; `SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001` remains the resident proof owner.
+4. `RTC-EVIDENCE-CUSTODY-004` — Master Records custody/readback/reconstruction.
 
-Not selected as mandatory stages for this proof: a new manifest stage, separate provider/framework round-trip component, SDK return assembly, Publisher projection before resident proof, an extra StegVerse egress layer, far-side final transition except where a later propagation target independently requires it, or a new credential/session component. TV/TVC remains credential authority if credentials become applicable.
+No PA-001-specific transport wrapper, second scheduler/worker, second present-state evaluator, task-local custody system, device-local user verification, or device/transport identity promotion is admissible.
 
 ## Authority separation
 
@@ -55,45 +54,41 @@ HeartBeat = synchronization/timing/freshness/liveness/correlation/observability 
 GitHub = source/evidence coordination only; runtime authority NONE
 ```
 
-Runtime subject binding, node identity, Secure Enclave identity, transport identity, and device identity do not become user-verification authority.
+## Source truth
 
-## Current source truth
+PR #209 merged the shared present-state enforcement contract at `2acf466e7d445d67ad9b3472f64568e33641d054`.
 
-PR #209 is merged at `2acf466e7d445d67ad9b3472f64568e33641d054`. The merged source centralizes present-state evaluation in StegCore, requires explicit authority/target/time/evidence state, preserves DENY versus FAIL_CLOSED semantics, binds commit state into receipts, and includes deterministic source reconstruction tests.
+PR #211 then rebound the existing Universal Governance consequence path to that reusable contract instead of creating a task-specific validator. Its exact head `5a4ec401528bf5ed0076c0c6082f1799d6c302ed` passed `Universal Governance Connector Runtime` run `34730850454` with `SUCCESS` and was squash-merged as `7370434bab0ac405077025017f46bb0f38a38c8f`.
 
-Draft successor PR #211 continues the same Goal Task. Its admissible scope is now constrained by the reusable component profile: it may bind the existing Universal Governance consequence path to the already-merged `evaluate_present_state()` capability and parameterize explicit target/time state, but it must not implement another transport, scheduler, custody path, credential authority, or present-state evaluator.
+The merged resident-path source now requires explicit target binding, bounded/current authority state, and evidence-current state before low-level coherence. Target mismatch and expired authority deny before the runner; indeterminate evidence freshness fails closed. The sovereign reference runner supplies exact target/time state and preserves present-state disposition/checks/reasons/evaluation instant in its reference receipt.
+
+This is source/CI/merge evidence only. It does not establish resident execution.
 
 ## Runtime/evidence truth
 
-Authentic resident enforcement is not yet proven. Source merge, CI, deterministic tests, component selection, and static compatibility do not establish:
+Still unobserved for this Goal Task:
 
-- WorkerCoordinator claim/fence for this resident proof;
-- authentic resident present-state enforcement execution/non-execution;
-- authentic request/return InTr receipts for the reference proof where applicable;
-- Master Records custody/readback;
-- same-execution resident reconstruction;
-- downstream target-native propagation.
+- authentic WorkerCoordinator claim/fence for the resident reference proof;
+- authentic resident present-state enforcement receipt;
+- authentic request/return InTr receipts where applicable;
+- Master Records custody/readback of the resident evidence;
+- same-execution resident reconstruction without repeating the consequence;
+- target-native ecosystem propagation.
 
 No evidence class is upgraded from source or CI.
 
 ## Remaining Goal Task-specific completion predicates
 
-1. Existing Universal Governance consequence path consumes the shared present-state evaluator with exact target/time authority state.
-2. Successor source is exact-head validated and merged without creating duplicate orchestration.
-3. Authentic WorkerCoordinator claim/fence is observed for the resident reference proof.
-4. Authentic resident present-state decision receipt is observed; stale/revoked authority, changed target, expired temporal state, missing material state, and stale evidence cannot silently ALLOW.
-5. Required request/return InTr transitions are authentically observed and receipt-linked.
-6. Master Records accepts custody and reconstructs the same resident decision from retained evidence without repeating the consequence.
-7. Applicable ecosystem targets receive target-native propagation evidence or a named durable machine-owned continuation where enforcement is outside their authority domain.
-8. README/handoffs remain current and no duplicate execution, credential, publication, transition, custody, or user-verification authority is introduced.
-
-## Duplicate orchestration retired/superseded
-
-Do not extend any PA-001-specific generic transport wrapper, second resident scheduler/worker, consequence-local present-state validator, task-specific custody/reconstruction path, or device-local user-verification mechanism. Historical evidence remains preserved; only future orchestration is rebound to canonical components.
+1. Authentic WorkerCoordinator claim/fence is observed for `SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001` consuming the merged StegCore source.
+2. Authentic resident receipt proves the present-state contract at the consequence boundary.
+3. Required request/return InTr transitions are authentically observed and receipt-linked.
+4. Master Records accepts custody and reconstructs the same resident decision from retained evidence without repeating the consequence.
+5. Applicable ecosystem targets receive target-native propagation evidence or a named durable machine-owned continuation where runtime enforcement lies outside their authority domain.
+6. README/handoffs remain current and no duplicate execution, credential, publication, transition, custody, or user-verification authority is introduced.
 
 ## Next executable work
 
-Continue PR #211 by reusing `StegCore.evaluate_present_state()` inside the existing Universal Governance consequence execution path, bind explicit target/time state into the existing execution request/evidence, extend the existing tests and sovereign reference runner, and run exact-head CI. After merge, invoke only the existing resident WorkerCoordinator/reference owner and preserve authentic runtime + Master Records reconstruction evidence.
+Use only the existing resident execution owner and current merged source. Attempt the canonical WorkerCoordinator/reference execution path. If an authorized sovereign runtime is reachable, preserve its exact claim/fence, resident receipt, InTr lineage, and Master Records custody/reconstruction results. If runtime reachability is absent, record that exact observation; do not synthesize or replace it with GitHub evidence.
 
 ## Manual work
 
