@@ -11,9 +11,11 @@ import subprocess
 import sys
 from typing import Any
 
-import reusable_task_lifecycle as lifecycle
-
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+from workers import reusable_task_lifecycle as lifecycle
+
 REGISTRY = ROOT / "data" / "reusable-task-registry.json"
 CONSTRUCTOR = ROOT / "scripts" / "materialize_reusable_task_construct.py"
 DEFAULT_RECEIPT_DIR = ROOT / "receipts" / "reusable-task"
