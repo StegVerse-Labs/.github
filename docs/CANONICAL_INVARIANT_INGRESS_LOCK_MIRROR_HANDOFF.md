@@ -5,7 +5,7 @@ Canonical owner: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`
 Registry: `control/canonical-policy-context-registry.json`
 Entrypoint: `scripts/session_build_preflight.py`
 Mutation guard: `scripts/validate_source_mutation_preflight.py`
-Workflow: `.github/workflows/source-mutation-preflight-guard.yml`
+Validation surface: `.github/workflows/org-control-plane-validate.yml`
 Authority effect: `NONE_PREWORK_INTERPRETATION_ONLY`
 
 ## Purpose
@@ -49,7 +49,7 @@ This lock changes interpretation discipline only. It does not modify Interlock/I
 
 ## Repository-side mutation enforcement
 
-The session/build preflight is no longer sufficient merely as a callable helper because a caller can otherwise bypass it and invoke a repository mutation directly. Source-changing pull requests in this repository now have an independent repository-side guard.
+The session/build preflight is not sufficient merely as a callable helper because a caller can otherwise bypass it and invoke a repository mutation directly. Source-changing pull requests therefore reuse the existing stable organization-control validation surface to enforce the preflight result before merge.
 
 A protected mutation must carry a changed `receipts/preflight/*.json` receipt that:
 
@@ -74,11 +74,13 @@ Regression coverage:
 tests/test_source_mutation_preflight_guard.py
 ```
 
-Pull-request workflow:
+Existing stable validation surface:
 
 ```text
-.github/workflows/source-mutation-preflight-guard.yml
+.github/workflows/org-control-plane-validate.yml
 ```
+
+No additional workflow/dispatcher is created. The repository's workflow-proliferation invariant remains intact.
 
 This enforcement is merge-time completeness only. It does not make GitHub an execution, transition, governance, credential, custody, or runtime authority.
 
@@ -87,6 +89,12 @@ This enforcement is merge-time completeness only. It does not make GitHub an exe
 Task-specific architecture that is not globally applicable must be declared through `canonical_policy_refs` on the canonical task record. Those refs become fail-closed dependencies of the existing preflight rather than relying on a human to restate them in chat.
 
 `STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001` now declares its canonical Device/KV/SKAP handoff plus the KnowledgeVault privacy/state-transition and device-backed-capability handoffs as task policy refs. This means future preflight for that task must resolve the KV state-transition semantics before local implementation reasoning.
+
+## Hard repository bypass condition
+
+Repository validation can reject a noncompliant pull request, but it cannot by itself prevent a caller with direct write permission from writing to an unprotected `main` branch. The final fail-closed condition therefore requires the repository's branch/ruleset configuration to require pull requests and the organization-control validation check for `main`, with direct bypass disabled for ordinary writers.
+
+That repository setting changes no StegVerse runtime authority. It only makes the source-mutation completeness guard unavoidable at the GitHub repository boundary.
 
 ## Current validation state
 
