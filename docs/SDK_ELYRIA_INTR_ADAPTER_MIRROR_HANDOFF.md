@@ -4,72 +4,87 @@ Updated: 2026-09-12
 Repository: `StegVerse-Labs/.github`
 Goal Task ID: `SDK-ELYRIA-INTR-ADAPTER-001`
 COSV: `71000000100112`
-Status: `ACTIVE / FRAMEWORK-SIDE ADAPTER DERIVATION STARTED`
+Status: `ACTIVE / COMPONENTIZED / SOURCE AND HANDOFFS CURRENT / AUTHENTIC PUBLIC ROUND TRIP UNOBSERVED`
 
-## Purpose
+## Canonical Goal Task identity
 
-Derive the Elyria/Veritas-Aegis framework-side translation required to communicate with the already-established StegVerse SDK + Interlock/InTr governed path. This task must reuse the existing generalized evaluator/manifest, processor routing, governed ingress/egress, receipt, MIR, and Master Records processes. It must not create a new StegVerse protocol, transition authority, transport authority, receipt system, runtime dispatcher, scheduler, credential route, or custody system.
+The Goal Task remains `SDK-ELYRIA-INTR-ADAPTER-001`; no restart, rename, successor, or prompt-count reset is justified. Canonical issue remains `#1607`. The task remains ACTIVE because authentic two-way public Elyria transport evidence has not been observed.
 
-## Reusable-task basis
+## Reusable Task Component Model reconciliation
 
-Canonical reusable identity:
-
-```text
-RT-EXTERNAL-ADAPTER-ESTABLISH-001
-```
-
-Its rule applies directly: the adapter is the endpoint-specific translation layer on the external side of an established Interlock/InTr boundary and has `NONE_TRANSLATION_ONLY` authority effect.
-
-No `RT-INTR-PROTOCOL-ESTABLISH-001` derivation is presently required because the existing generalized evaluator path already provides the normalized StegVerse side:
+Canonical model and policy:
 
 ```text
-external framework/test harness
--> stegverse.ingress-manifest.v1 / SDK 0B generalized evaluator surface
--> existing processor/route resolution
--> existing Interlock/InTr governed ingress
--> published processing capability
--> existing governed return
--> SDK result / retained evidence
+data/reusable-task-component-model.json
+data/reusable-task-component-decomposition-policy.json
+scripts/evaluate_reusable_task_componentization.py
 ```
 
-Canonical reusable internal references:
-
-- `StegVerse-org/StegVerse-SDK:docs/FORMAL_TESTING_ROUTE.md`
-- `StegVerse-org/StegVerse-SDK:docs/GENERIC_MANIFEST_PROCESSING_CONTRACT.md`
-- `StegVerse-org/StegVerse-SDK:stegverse/llm_adapter_bridge.py` as a strict identity/authority-preserving adapter pattern
-- `StegVerse-org/StegVerse-SDK:ADAPTER_SYSTEM_BOUNDARY_FIXTURE_MIRROR_HANDOFF.md` as a direct external-packet preservation pattern
-- `StegVerse-Labs/.github:data/reusable-task-registry.json#RT-EXTERNAL-ADAPTER-ESTABLISH-001`
-
-## Novel scope only
-
-The only new implementation surface is the Elyria framework side:
-
-1. translate a normalized/manifested StegVerse external-framework request into the public Elyria Admission Runtime movement shape;
-2. preserve transition/run/source identity across the call;
-3. normalize Elyria `ADMIT`, `HOLD`, `REFUSE`, and `NO_PROVABLE_ADMISSION` as foreign framework observations, never as InTr authority;
-4. preserve Elyria receipt, replay, no-bind, route-closure, and downstream-effect evidence without promoting asserted fields into StegVerse-observed fact;
-5. fail closed on identity mismatch, unsupported verdict, malformed evidence, or attempted authority escalation;
-6. return the normalized foreign-evidence result through the existing StegVerse governed return path.
-
-## Elyria public evidence boundary
-
-Publicly inspectable Elyria surfaces support movement assessment, receipts, replay, and no-bind evidence. Public material does not expose the private production Veritas substrate. Therefore this task may prove public-framework protocol compatibility and bounded conformance only; it must not claim production Veritas substrate interoperability, route closure, or production enforcement without authentic evidence.
-
-## Authority boundary
+Goal-specific component profile:
 
 ```text
-Task Registry              = coordination only
-WorkerCoordinator           = claim/fence authority
-Interlock/InTr              = governed transition authority
-TV/TVC                      = credential/provider/release authority
-Master Records              = observed reality / reconstruction authority
-Elyria/VA adapter           = NONE_TRANSLATION_ONLY
-Elyria verdict              = foreign observation, never StegVerse admission authority
-Elyria no-bind/closure data = foreign claim/evidence, not automatically verified closure
-GitHub                      = source/validation evidence only; no runtime authority
+data/goal-task-component-profiles/SDK-ELYRIA-INTR-ADAPTER-001.json
 ```
 
-## Initial acceptance predicates
+The decomposition score is `25`: task-specific orchestration growth must stop and reusable composition must be used. This changes composition, not Goal Task identity or authority.
+
+Selected components:
+
+```text
+RT-EXTERNAL-ADAPTER-ESTABLISH-001  Elyria endpoint translation only
+RTC-MANIFEST-001                   manifest intake/binding
+RTC-GOVERNED-PROCESSING-002       existing governed processing path
+RTC-ROUNDTRIP-003                  public Elyria request/response cycle
+RTC-EVIDENCE-CUSTODY-004           evidence custody/readback/reconstruction
+RTC-SDK-RETURN-006                 normalized return assembly
+RTC-STEGVERSE-EGRESS-007           governed StegVerse-side egress
+RTC-INTERLOCK-INTR-TRANSPORT-008   governed packet movement and return
+```
+
+Not selected: `RTC-PUBLISHER-005`, `RTC-FARSIDE-FINAL-009`, recurring endpoint monitoring, a new credential/session path, or device-local user verification. Replay and no-bind observations may reuse the round-trip component conditionally; they are not forced into the minimal completion path.
+
+## Source state and validation
+
+Framework-specific source is merged in `StegVerse-org/StegVerse-SDK` PR `#222`:
+
+```text
+final head: aeb07d41d83c2a6ae5d84d1a2d8db5cbdc4f540b
+merge commit: 41f7c18eaed260d36492e0dd0bcae9c232fb3c77
+exact-head validation run: 34709179523
+conclusion: SUCCESS
+```
+
+The SDK handoff was reconciled to the component model in PR `#225`:
+
+```text
+head: 4ed637c34c684463b8617e4d1c5fb3ae71666936
+exact-head validation run: 34730774011
+conclusion: SUCCESS
+merge commit: 5ecb19944019af4bf2432b0a1dad3bda04f9019c
+```
+
+The SDK root README already states the generic external-framework manifested processing and governed-interlock model, so no task-specific README mutation was needed. The repository handoff is now current.
+
+## Authority separation
+
+```text
+Task Registry       = coordination only
+WorkerCoordinator   = claim/fence authority
+Interlock/InTr      = governed admission/state-transition authority
+TV/TVC              = credential/provider/release authority
+KV/SKAP Vault       = user-verification authority
+StegOS devices      = interchangeable transport/execution nodes, not user verifiers
+Master Records      = observed-reality custody/reconstruction
+HeartBeat           = timing/freshness/liveness/correlation/observability only
+GitHub              = source/evidence coordination only
+Elyria adapter      = NONE_TRANSLATION_ONLY
+```
+
+Elyria verdicts, signatures, replay observations, no-bind material, and route-closure assertions remain foreign observations; they do not become StegVerse authority.
+
+## Predicate state
+
+Satisfied:
 
 ```text
 EXISTING_STEGVERSE_GOVERNED_PATH_REUSED
@@ -82,30 +97,28 @@ ELYRIA_RECEIPT_REPLAY_NOBIND_EVIDENCE_PRESERVED
 ROUTE_CLOSURE_ASSERTION_DISTINGUISHED_FROM_STEGVERSE_OBSERVATION
 FAIL_CLOSED_IDENTITY_AND_SCHEMA_TESTS_PASS
 README_AND_HANDOFF_CURRENT
-AUTHENTIC_TWO_WAY_PUBLIC_ELYRIA_TRANSPORT_EVIDENCE_NOT_CLAIMED_UNTIL_OBSERVED
 ```
 
-## Immediate implementation sequence
-
-1. Reuse the existing SDK adapter bridge pattern rather than creating a new transport stack.
-2. Add only the Elyria public-framework codec/binding and framework-specific fixtures/tests in `StegVerse-org/StegVerse-SDK`.
-3. Keep transport dependency-injected so source validation can run without inventing hosted runtime authority.
-4. Exercise deterministic fake-transport fixtures first for request/response/error semantics.
-5. Add authentic public Elyria round-trip evidence only when an actual external endpoint execution is observed; source tests alone must not claim it.
-6. Maintain the SDK README and this handoff with exact evidence.
-
-## Current proof boundary
+Remaining Goal Task-specific predicate:
 
 ```text
-reusable external-adapter identity: FOUND / REUSE REQUIRED
-generalized evaluator ingress: EXISTING
-processor/route resolution: EXISTING
-Interlock/InTr governed ingress/egress: EXISTING / REUSE REQUIRED
-strict adapter identity/authority pattern: EXISTING
-Elyria framework-side binding: NOT YET IMPLEMENTED
-authentic Elyria round trip: NOT YET OBSERVED
-production Veritas substrate interoperability: NOT CLAIMED
+AUTHENTIC_TWO_WAY_PUBLIC_ELYRIA_TRANSPORT_EVIDENCE_OBSERVED
 ```
+
+Source construction, CI, injected transport, merge state, and component reuse do not satisfy that remaining predicate.
+
+## Duplicate orchestration retired/superseded
+
+Do not extend task-specific implementations for generic transport, Interlock/InTr protocol, receipt/custody/reconstruction, callback/correlation, recurring monitoring, or device-local verification. Historical source and CI evidence remains provenance. Superseded coordination PR `#1613` was closed without deleting its evidence lineage.
+
+## Next admissible work
+
+1. Use the component profile to resolve a genuinely reachable public Elyria assessment endpoint.
+2. Execute one authentic governed request/response cycle through the existing Interlock/InTr transport path.
+3. Preserve exact task/run correlation and foreign response semantics.
+4. Record authentic evidence through Master Records custody/readback.
+5. Mark the final predicate satisfied only after authentic evidence exists.
+6. Do not claim private production Veritas interoperability, publication, or a far-side final transition without evidence.
 
 ## Manual work
 
