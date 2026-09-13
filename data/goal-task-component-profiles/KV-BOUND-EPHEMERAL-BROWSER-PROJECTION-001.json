@@ -12,10 +12,30 @@
   "historical_runtime_reuse": {
     "current_iphone_runtime_authentic": true,
     "reuse_requires_replay_and_reconstruction_against_current_requirements": true,
+    "legacy_stegnode_web_identity_remains_historical_provenance": true,
+    "current_ecosystem_continuity_identity": "RETAINED_SV_NODE_PLUS_APPEND_ONLY_HB_LINEAGE",
     "user_reverification_after_established_node_connectivity": false
+  },
+  "automatic_current_evidence": {
+    "current_route_predicate": "CURRENT_RETAINED_IPHONE_ROUTE_OBSERVED",
+    "route_sources": ["existing loopback resident discovery", "existing integrity-validated current-iPhone discovery receipt"],
+    "current_kv_intr_predicate": "CURRENT_KV_INTR_STATE_APPLICABLE",
+    "kv_intr_validator": "scripts/consume_stegos_kv_intr_chain_request.py:terminal(DEVICE_KV)",
+    "historical_events_may_not_satisfy_current_only_predicates": true,
+    "normal_resident_cycle_rechecks_automatically": true,
+    "user_interaction_required": false,
+    "device_user_verification_authority": "NONE"
+  },
+  "remaining_delta_ownership": {
+    "CURRENT_RETAINED_IPHONE_ROUTE_OBSERVED": "RTC-EVIDENCE-REPLAY-REUSE-011 / existing StegOS loopback discovery-readback",
+    "CURRENT_KV_INTR_STATE_APPLICABLE": "RTC-INTERLOCK-INTR-TRANSPORT-008 / stegos_kv_intr_chain",
+    "TESTFLIGHT_SIGNED_IPA_VERIFIED": "StegOS current-iPhone signing executor + TV/TVC provider operations",
+    "TVC_NATIVE_BUILD_UPLOAD_OBSERVED": "TV/TVC App Store Connect provider/release path; reuse STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001 owner",
+    "TESTFLIGHT_INSTALL_LAUNCH_OBSERVED": "RTC-FARSIDE-FINAL-009 + current-iPhone StegOS/StegBrowser observation"
   },
   "evidence_reuse_requirements": "data/current-evidence-reuse-requirements/KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001.json",
   "resident_reconciliation_request": "control/resident-execution-request.d/kv-evidence-reconcile-001.json",
+  "resident_reconciliation_consumer": "control/resident-execution-request.d/consume-kv-evidence-reconcile.py",
   "new_goal_task_required": false,
   "new_reusable_component_required": true,
   "componentization_mints_authority": false
