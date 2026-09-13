@@ -53,6 +53,16 @@ The non-authorizing observation receipt was uploaded as artifact `stegos-node-pu
 
 This satisfies `LIVE_SOURCE_PROPAGATION_OBSERVED_BEFORE_RUNTIME_REOBSERVATION`. It does not establish authentic execution of the repaired browser-local state.
 
+## StegBrowser runtime-observation binding
+
+StegBrowser PR `StegVerse-Labs/StegBrowser#35` binds the repository's existing Playwright-capable runtime to reusable component `RTC-BROWSER-LOCAL-STATE-SCHEMA-MIGRATION-V1` for this Goal Task.
+
+The initial implementation head `6dabe45d051a68c8a87e336dec6662092327068b` passed Validate run `34736996551`. The task-specific README was then reconciled on the same PR branch at head `ad470c01a33136abb3fca3c54188de3fea5966b7`; exact-head Validate run `34737855784` is the current validation lane for that README-reconciled head.
+
+PR #35 remains open and mergeable. A direct squash-merge attempt from the current ChatGPT tool surface was safety-gated, and repository auto-merge is disabled. No merge is claimed. This is a source-integration condition for the observation binding, not the Goal Task completion predicate.
+
+The binding remains non-authorizing source-level runtime-observation plumbing. Even after merge, it cannot substitute for authentic browser-local runtime evidence.
+
 ## Current next transition
 
 `REQUEST_AUTHENTIC_INTERCHANGEABLE_NODE_RUNTIME_REOBSERVATION`
