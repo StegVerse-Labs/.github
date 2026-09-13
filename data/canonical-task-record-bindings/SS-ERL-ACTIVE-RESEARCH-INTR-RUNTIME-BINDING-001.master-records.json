@@ -1,0 +1,31 @@
+{
+  "schema": "stegverse.canonical-task-record-binding/v1",
+  "task_id": "SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001",
+  "cosv_task_vector": "40000100100000",
+  "canonical_task_record": "data/canonical-task-records/SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001.json",
+  "binding": "data/goal-task-component-bindings/SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001.master-records.json",
+  "component_id": "RTC-EVIDENCE-CUSTODY-004",
+  "dependency_id": "DEP-ERL-MASTER-RECORDS-INTR-CUSTODY",
+  "dependency_kind": "REUSABLE_CUSTODY_RECONSTRUCTION_IMPLEMENTATION",
+  "dependency_state": "AVAILABLE_SOURCE_ONLY_RUNTIME_EVIDENCE_PENDING",
+  "canonical_owner": "Master Records",
+  "implementation_repository": "master-records/orchestration",
+  "implementation_merge_commit": "560863ff192f4437911a8d748984d06566c120c7",
+  "implementation_pull_request": 94,
+  "goal_binding_merge_commit": "68b43a93931b8957a54c1fe7882b2402980a1813",
+  "goal_binding_pull_request": 1725,
+  "source_validation": {
+    "master_records_runtime_evidence_validation_run": 34739395592,
+    "goal_binding_organization_control_run": 34739543851,
+    "goal_binding_deterministic_diagnostics_run": 34739543847,
+    "goal_binding_heartbeat_repository_run": 34739543839,
+    "all_passed": true
+  },
+  "runtime_truth_ref": "docs/SS_ERL_ACTIVE_RESEARCH_INTR_RUNTIME_BINDING_MIRROR_HANDOFF.md",
+  "component_binding_handoff": "docs/SS_ERL_MASTER_RECORDS_COMPONENT_BINDING_MIRROR_HANDOFF.md",
+  "runtime_predicates_completed": false,
+  "master_records_custody_reconstruction_observed": false,
+  "provider_operation_reexecution_authorized": false,
+  "github_runtime_authority": "NONE",
+  "authority_effect": "NONE_COORDINATION_PROJECTION_ONLY"
+}
