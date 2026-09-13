@@ -26,6 +26,9 @@ EXPECTED = {
     "remote_computer_is_distinct_execution_substrate": False,
     "remote_computer_is_machine_dependency": False,
     "remote_computer_is_completion_predicate": False,
+    "remote_computer_discovery_default": "PROHIBITED",
+    "remote_computer_discovery_requires_explicit_task_predicate": True,
+    "remote_computer_discovery_may_be_inferred_from_substrate_review": False,
     "ephemeral_capacity_runtime_class": "ADMITTED-EPHEMERAL-STEGOS-NODE",
     "ephemeral_capacity_requires_intr_admission": True,
     "evidence_reachability_may_establish_substrate_unsuitable": False,
@@ -115,6 +118,12 @@ def validate_record(path: Path) -> None:
             fail(f"{path.name}: {location} must be TRANSPORT_DISCOVERY_ONLY")
         if key == "remote_computer_inventory_semantics" and value != "EVIDENCE_REACHABILITY_ONLY":
             fail(f"{path.name}: {location} must be EVIDENCE_REACHABILITY_ONLY")
+        if key == "remote_computer_discovery_default" and value != "PROHIBITED":
+            fail(f"{path.name}: {location} must be PROHIBITED")
+        if key == "remote_computer_discovery_requires_explicit_task_predicate" and value is not True:
+            fail(f"{path.name}: {location} must be true")
+        if key == "remote_computer_discovery_may_be_inferred_from_substrate_review" and value is not False:
+            fail(f"{path.name}: {location} must be false")
         if key == "second_user_operated_device_allowed" and value is not False:
             fail(f"{path.name}: {location} must be false")
         if key == "execution_substrate_selection_authority_effect" and value != "NONE":
@@ -143,6 +152,8 @@ def main() -> None:
         "NO_DEVICE_VERIFICATION_POLICY_OR_PROCESS",
         "NO_DEVICE_ATTESTATION_OR_PHYSICAL_DEVICE_IDENTITY_GATE",
         "NO_CONNECTOR_DEVICE_LIST_AS_AUTHORIZATION_OR_VERIFICATION",
+        "NO_ROUTINE_REMOTE_COMPUTER_OR_CONNECTED_DEVICE_DISCOVERY",
+        "NO_SUBSTRATE_REVIEW_IMPLICIT_REMOTE_COMPUTER_QUERY",
         "NO_REMOTE_COMPUTER_AS_DISTINCT_EXECUTION_AUTHORITY",
         "NO_REMOTE_COMPUTER_AVAILABILITY_AS_TASK_STATE",
         "NO_REMOTE_COMPUTER_INVENTORY_AS_SUBSTRATE_UNSUITABILITY",
@@ -161,6 +172,12 @@ def main() -> None:
     missing = sorted(required_prohibitions - prohibitions)
     if missing:
         fail("global invariant missing required prohibitions: " + ", ".join(missing))
+    semantics = policy.get("semantics") or {}
+    discovery_semantics = semantics.get("remote_computer_discovery", "")
+    if "MUST NOT query or enumerate" not in discovery_semantics:
+        fail("global invariant must explicitly prohibit routine Remote Computer/device enumeration")
+    if "explicit task-scoped predicate" not in discovery_semantics:
+        fail("global invariant must require an explicit task-scoped predicate before Remote Computer discovery")
     if policy.get("authority_effect") != "NONE_REGISTRY_INVARIANT_ONLY":
         fail("global invariant authority effect mismatch")
     for path in sorted(RECORDS.glob("*.json")):
