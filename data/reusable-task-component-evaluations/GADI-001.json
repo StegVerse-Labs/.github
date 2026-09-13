@@ -2,7 +2,7 @@
   "schema": "stegverse.reusable-task-componentization-evaluation/v1",
   "task_id": "GADI-001",
   "cosv_task_vector": "10100000100000",
-  "score": 25,
+  "score": 22,
   "active_signals": [
     "repeated_subflow",
     "multiple_authority_crossings",
