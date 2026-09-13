@@ -2,154 +2,132 @@
 
 Updated: 2026-09-12
 Goal Task ID: `ECOSYSTEM-INGRESS-AI-BOUNDARIES-001`
+COSV: `NOT ESTABLISHED`
 Issue: `StegVerse-Labs/.github#1620`
-Status: `ACTIVE / ARCHITECTURAL VALIDATION + ENFORCEMENT`
+Status: `ACTIVE / REUSABLE COMPONENT RECONCILIATION + ENFORCEMENT`
 
-## Goal
+## Goal identity
 
-Define, validate, and enforce the StegVerse ecosystem ingress topology and AI-access boundaries independently from generic manifest-processing semantics.
+The existing Goal Task remains canonical and valid. Componentization does not rename, restart, split, or complete the Goal Task. The task owns ecosystem ingress topology and AI-access-boundary completion semantics; reusable components provide capabilities only.
 
-## Registration closure
+Adjacent Goal Task: `SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005`, which owns downstream processor-selection semantics after canonical SDK admission.
 
-Registration PR `StegVerse-Labs/.github#1621` passed exact-head validation on `96ce02fbdc1b2edfb735b07324a8cb5583a4956f`:
+## Reusable Task Component Model reconciliation
 
-- organization-control run `34715605044` — PASS;
-- Heartbeat validation run `34715605065` — PASS;
-- deterministic repository suite run `34715605059` — PASS.
+Canonical model merged through `.github` PR #1652 at merge commit `b9f8e5153aa1651f2d7f043fb902eacb7c113ed9`.
 
-PR #1621 was squash-merged as `42a4f9aa78c86608a90c328b1429e234024c1bd6`.
+This Goal Task scores `26` under `data/reusable-task-component-decomposition-policy.json`, yielding `STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION`.
 
-## Target topology under validation
+Canonical component profile: `data/goal-task-component-profiles/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json`.
 
-1. ChatGPT/session coordination enters the Task Registry coordination area only and has no downstream execution authority by virtue of session presence.
-2. ChatGPT is the only AI permitted to enter the Task Registry area.
-3. Future non-ChatGPT AI support coalesces into a common AI decision-processing region protected by sandbox enforcement and cannot enter Task Registry coordination surfaces.
-4. External frameworks/models enter through the LLM Adapter and then canonical SDK manifest ingress only.
-5. External evaluators/testers enter the SDK directly and submit manifested data packets only.
-6. Direct evaluator injection into Core-Lite, StegCore, StegGate, internal processors, or custody surfaces is forbidden.
-7. Downstream of canonical SDK ingress, processing semantics remain controlled by the separate manifest-processing invariant task `SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005`.
+## Required component composition
 
-## Source evidence added after registration merge
+### `RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010` — REQUIRED
 
-The first source-enforcement slice materializes:
+Reusable non-authorizing component extracted from the prior task-specific Task Registry AI/session gate work. Canonical contract: `data/reusable-ai-ingress-component-contract.json`.
 
-- `data/task-registry-ai-ingress-policy.json` — exact actor-kind policy for session-bearing Task Registry AI/interactive ingress;
-- `scripts/evaluate_task_registry_ai_session_checkin.py` — fail-closed wrapper that rejects missing actor identity, explicit non-ChatGPT AI kinds, and unknown actor kinds before delegating to the canonical Task Registry collision/check-in evaluator;
-- `tests/test_task_registry_ai_session_ingress.py` — tests missing-identity denial, non-ChatGPT AI denial, unknown-kind denial, ChatGPT pass-through, authority ceiling, and runtime-attestation nonclaim;
-- `data/task-registry-ai-entry-surface-inventory.json` — first explicit entry-surface inventory and bypass classification.
+Inputs: task ID, session ID, actor kind, check-in context or exact Task Registry disposition.
 
-The source policy allows `CHATGPT_SESSION`, `HUMAN_OPERATOR`, and `NON_AI_SYSTEM_COORDINATOR`; among AI actor kinds, only `CHATGPT_SESSION` is admitted. This is a declaration gate, not cryptographic/provider identity attestation. No runtime identity proof is claimed.
+Outputs: fail-closed coordination disposition, actor-bound return receipt, actor-bound session-close receipt.
 
-## Entry-surface inventory — current classification
+Authority: Task Registry coordination policy only; `NONE_COORDINATION_ONLY`. It grants no WorkerCoordinator claim/fence, credential, Interlock/InTr transition, execution, user-verification, or custody authority.
 
-### `scripts/evaluate_task_registry_ai_session_checkin.py`
+Evidence: source actor classification, source-level non-ChatGPT AI denial, ChatGPT gated-checkin continuity, and separately classified authentic runtime-origin evidence.
 
-`PARTIAL / PASS_SOURCE_LEVEL_FOR_DECLARED_ACTOR_KIND`
+### `RTC-MANIFEST-001` — REQUIRED FOR EXTERNAL EVALUATOR ROUTE
 
-The wrapper fails closed for missing actor identity and denies explicit non-ChatGPT AI actor kinds before canonical check-in. It does not prove that a caller declaring `CHATGPT_SESSION` is authentically ChatGPT.
+Existing transport-family component reused from `data/reusable-transport-component-contract.json` and canonical SDK manifest ingress. External evaluators submit manifested data through SDK; direct Core-Lite/StegCore/StegGate/internal-processor injection remains forbidden.
 
-### `scripts/evaluate_task_registry_collision_checkin.py`
+### `RT-EXTERNAL-ADAPTER-ESTABLISH-001` — REQUIRED FOR EXTERNAL FRAMEWORK/MODEL ROUTE
 
-`NOT_PROVEN / POTENTIAL_BYPASS_IF_AI_REACHABLE`
+Existing reusable capability from `data/reusable-task-registry.json`. It owns endpoint-specific external-side protocol translation with authority effect `NONE_TRANSLATION_ONLY`. For this Goal Task it is parameterized for the LLM Adapter -> canonical SDK manifest route. It must reuse any existing adapter surface before deriving a non-duplicate endpoint translation and must not duplicate SDK validation, generic transport, credential/session handling, custody/reconstruction, or downstream processor-selection logic.
 
-This remains the canonical general Task Registry check-in evaluator and currently has no observed actor-identity gate. It is legitimate for internal/non-AI coordination use, but ChatGPT-only AI exclusivity is not proven until all callers are classified and external AI reachability to this general entrypoint is closed or constrained.
+### `RTC-NONCHATGPT-AI-DECISION-SANDBOX-011` — REQUIRED BEFORE ADDITIONAL AI SUPPORT
 
-### `scripts/record_task_registry_session_return.py`
+Genuinely reusable capability identified by this Goal Task and registered in `data/reusable-ai-ingress-component-contract.json`. It is not yet implemented. It represents a common sandboxed AI decision-processing region with Task Registry reachability denied. Component registration alone proves neither source isolation nor runtime isolation.
 
-`NOT_PROVEN`
+### `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001` — REQUIRED FOR RUNTIME COMPLETION
 
-This session-return entrypoint has not yet been shown to apply equivalent AI actor policy.
+Existing canonical runtime observation capability. Master Records remains observed-reality custody/reconstruction authority. Source, CI, merge state, and component reuse cannot upgrade runtime evidence.
 
-### `scripts/materialize_task_session_close.py`
+## Conditional components
 
-`NOT_PROVEN`
+- `RTC-INTERLOCK-INTR-TRANSPORT-008`: only when a representative interface test actually requests a governed state transition. Authority owner: Interlock/InTr.
+- `RTC-EVIDENCE-CUSTODY-004`: only when selected runtime/provider evidence requires canonical custody/readback/reconstruction. Authority owner: Master Records.
+- TV/TVC credential/session capability: only when the selected runtime route actually requires credential/provider/release issuance.
 
-Detailed caller/actor-path inventory remains required.
+Publisher, mandatory SDK-return assembly, mandatory StegVerse final egress, far-side final transition, and terminal cleanup are not forced into this Goal Task merely because they exist in the maximal transport composition.
 
-### `scripts/install_and_run_canonical_work_event_bootstrap.py`
+## Authority invariants
 
-`INTERNAL PATH / AI REACHABILITY NOT PROVEN`
+- Task Registry: coordination only.
+- WorkerCoordinator: claim/fence authority.
+- Interlock/InTr: governed state-transition/admission authority.
+- TV/TVC: credential/provider/release authority.
+- KV/SKAP Vault: sole user-verification authority.
+- StegOS devices: interchangeable transport/execution nodes, never user-verification authority.
+- Master Records: observed-reality custody/reconstruction.
+- HeartBeat: synchronization, timing, freshness, liveness, state correlation, and observability only.
+- GitHub/GitHub Actions: source/evidence coordination and validation only; runtime authority `NONE`.
 
-This consumes the canonical collision evaluator as internal Canonical Work preflight. It is not classified as AI ingress merely because it touches Task Registry state.
+## Open-session work reclassification
 
-## Evidence already observed outside Task Registry source gate
+The previous PR #1624 session-return/session-close actor-gating work has been reconstituted on current `main` as `RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010`; #1624 is closed unmerged and retained as provenance.
 
-### Evaluator boundary — strong source evidence
+Goal-specific configuration remains: ChatGPT is the only AI actor kind admitted to Task Registry coordination surfaces; future non-ChatGPT AI belongs in component 011; external frameworks/models use the existing reusable external-adapter capability toward canonical SDK ingress; external evaluators use SDK manifested ingress directly.
 
-The SDK evaluator handoff explicitly requires:
+Duplicate orchestration retired or superseded: independent evolution of PR #1624, any parallel Task Registry AI/session actor gate, any parallel AI sandbox outside component 011, and any LLM Adapter logic that reimplements existing adapter, SDK, transport, custody, credential, or processor-selection capabilities.
 
-```text
-external evaluator
--> StegVerse SDK manifested submission / normalization / binding
--> Core-Lite manifested route carrier
--> StegCore / canonical StegGate
--> Master Records custody
--> governed result returned through the manifested route
-```
+Historical commits, PRs, CI evidence, and provenance are preserved.
 
-It explicitly treats direct evaluator submission/injection to Core-Lite, StegCore, or StegGate as unauthorized and an SDK-bypass path as a boundary violation.
+## Source state
 
-### External framework boundary — partial
+Registration PR #1621 merged as `42a4f9aa78c86608a90c328b1429e234024c1bd6`.
 
-SDK generic manifested ingress exists, but LLM Adapter -> canonical SDK generic route delegation remains only partial evidence for this goal. The adjacent manifest-invariant goal owns processor-selection remediation after canonical SDK ingress.
+Source-gate PR #1623 passed exact-head organization-control `34715826621`, deterministic suite `34715826818`, and Heartbeat `34715826744`, then merged as `0b4be7f07ed57cb72055aa6e2264813e16159d53`.
 
-### Common AI decision-processing region / sandbox — not yet materialized as a proven enforcement region
+PR #1624 passed its historical exact-head validation at `465f974b6f046a272b62cc6bf9891ffe6df3665d`, became stale/diverged as `main` advanced, and is now closed unmerged. Its preserved source history informed reusable component 010.
 
-No repository evidence observed yet is sufficient to claim the future non-ChatGPT AI convergence/sandbox boundary exists as an enforced runtime architecture.
+Replacement PR #1678 passed exact-head validation at earlier head `3d383b36b49cf1b2cb627a4c0778e1cde316def1`: deterministic `34731022536`, organization-control `34731022545`, and Heartbeat `34731022614` all succeeded.
 
-## Current classification
+Root `README.md` projection is now complete in the replacement change set beginning with commit `245a9be38b720e8914e85417196eec4f97100289`. It documents the `ai_ingress_coordination` family, component 010, component 011, authority ceilings, runtime-evidence nonclaims, and selectable rather than mandatory component composition. `docs/README_IMPACT_ECOSYSTEM_AI_COMPONENT_RECONCILIATION.md` records the projection as `COMPLETE_IN_CHANGE_SET_PENDING_EXACT_HEAD_VALIDATION`.
 
-- Task Registry AI entry-surface inventory: `PARTIAL_SOURCE_INVENTORY_RUNTIME_REACHABILITY_NOT_PROVEN`.
-- ChatGPT-only Task Registry exclusivity: `PARTIAL_SOURCE_DECLARATION_GATE_WRAPPER_ONLY_RUNTIME_IDENTITY_NOT_PROVEN`.
-- Non-ChatGPT AI Task Registry denial: `PARTIAL_SOURCE_DECLARATION_GATE_WRAPPER_ONLY`.
-- Common AI decision-processing/sandbox region: `NOT_PROVEN`.
-- External framework/model -> LLM Adapter -> SDK exclusivity: `PARTIAL`.
-- External evaluator/tester -> SDK manifested ingress exclusivity: `PASS_SOURCE_LEVEL_RUNTIME_NOT_PROVEN`.
+Fresh exact-head repository validation is required after the README/task-record/handoff updates before PR #1678 may be promoted or merged.
 
-## Completion predicates
+## Runtime/evidence state
 
-- exact Task Registry AI ingress policy defined;
-- every AI/session-capable Task Registry entry surface inventoried;
-- all AI session callers routed through the fail-closed AI session gate;
-- direct AI reachability to the general Task Registry check-in evaluator prevented or proven impossible;
-- ChatGPT-only Task Registry entry backed by authentic origin/identity evidence, not declaration alone;
-- non-ChatGPT AI denial/fail-closed behavior proven at runtime;
-- common AI decision-processing region defined and sandboxed before additional AI support is activated;
-- LLM Adapter is the exclusive framework/model ingress before SDK;
-- LLM Adapter delegates into canonical SDK manifest ingress rather than direct processor selection;
-- evaluator-facing SDK is the exclusive external evaluator ingress;
-- direct evaluator/internal bypass paths rejected;
-- coordination ingress, processing ingress, and execution authority remain distinct;
-- representative runtime evidence exists for each enforced boundary;
-- no completion claim from documentation/source construction alone.
+No authentic runtime evidence upgrade is claimed by componentization or README completion.
 
-## Authority boundaries
+- authentic ChatGPT origin/identity attestation: `NOT_PROVEN`;
+- direct external-AI reachability to general `evaluate_task_registry_collision_checkin.py`: `NOT_PROVEN`;
+- non-ChatGPT AI runtime Task Registry denial: `NOT_PROVEN`;
+- common AI decision sandbox runtime isolation: `NOT_PROVEN`;
+- LLM Adapter -> SDK runtime exclusivity: `NOT_PROVEN`;
+- representative evaluator SDK-only runtime ingress: `NOT_PROVEN`.
 
-- Task Registry: coordination/work-control surface, not general data-processing ingress.
-- ChatGPT/session: coordination client only at Task Registry boundary.
-- Future non-ChatGPT AI: AI decision-processing region only; Task Registry access forbidden.
-- LLM Adapter: external framework/model protocol ingress only; downstream processing via SDK.
-- SDK: external evaluator manifested-data ingress and canonical processing ingress.
-- Interlock/InTr: transition transport/admission, not ingress-policy authority.
-- TV/TVC: credential authority.
-- GitHub Actions: validation/evidence transport only; runtime authority NONE.
-- Heartbeat: observability only.
+Resident execution, provider execution, callbacks, custody/readback, and Master Records reconstruction remain separately evidence-gated wherever the selected representative test route requires them.
 
-## README completeness review
+## Remaining Goal Task predicates
 
-The root README already documents Canonical Work Task Registry ingress, the Task Registry/WorkerCoordinator/TV-TVC/Interlock-InTr/Master Records authority split, and that session presence does not grant execution authority. This slice adds a scoped source declaration gate and inventory without changing those public authority semantics. No root README text change is required for this source-only slice; any future externally reachable AI ingress surface or runtime identity mechanism is MATERIAL and must update the README in the same change set.
+- `TASK_REGISTRY_AI_ENTRY_SURFACES_FULLY_INVENTORIED`
+- `CHATGPT_ONLY_TASK_REGISTRY_ENTRY_ENFORCED_WITH_AUTHENTIC_ORIGIN`
+- `GENERAL_TASK_REGISTRY_CHECKIN_NOT_EXTERNALLY_AI_REACHABLE`
+- `SESSION_RETURN_AND_CLOSE_AI_POLICY_ENFORCED`
+- `NON_CHATGPT_AI_TASK_REGISTRY_DENIAL_RUNTIME_ENFORCED`
+- `COMMON_AI_DECISION_SANDBOX_REGION_DEFINED`
+- `COMMON_AI_DECISION_SANDBOX_RUNTIME_ENFORCED`
+- `LLM_ADAPTER_FRAMEWORK_MODEL_INGRESS_EXCLUSIVE`
+- `LLM_ADAPTER_DELEGATES_TO_CANONICAL_SDK_MANIFEST_INGRESS`
+- `EXTERNAL_EVALUATOR_SDK_ONLY_INGRESS_ENFORCED`
+- `DIRECT_INTERNAL_BYPASS_REJECTED`
+- `COORDINATION_PROCESSING_EXECUTION_BOUNDARIES_PROVEN`
+- `REPRESENTATIVE_RUNTIME_BOUNDARY_EVIDENCE_OBSERVED`
 
-## Separation from adjacent goal
+## Next admissible work
 
-`SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005` owns what determines processing after SDK manifest admission.
-
-`ECOSYSTEM-INGRESS-AI-BOUNDARIES-001` owns who may enter through which ecosystem boundary and which alternate/bypass paths must be impossible.
-
-## Next continuation
-
-1. Validate the source-gate branch and merge only on exact-head green evidence.
-2. Enumerate every caller of `evaluate_task_registry_collision_checkin.py`, `record_task_registry_session_return.py`, and `materialize_task_session_close.py` and classify each as ChatGPT AI session, human, or non-AI internal coordinator.
-3. Route every AI-capable caller through `evaluate_task_registry_ai_session_checkin.py` or enforce equivalent policy at the shared boundary.
-4. Define authentic origin/identity evidence required before `CHATGPT_SESSION` can be trusted at runtime.
-5. Define the common non-ChatGPT AI decision-processing/sandbox region before enabling additional AI support.
-6. Continue LLM Adapter -> SDK exclusivity and evaluator bypass validation without conflating that work with downstream processor-selection invariants.
+1. Obtain fresh exact-head validation for PR #1678 after README/task-record/handoff completion.
+2. Promote and merge #1678 only if the new exact head is unchanged and all required lanes pass.
+3. Complete caller inventory of the general Task Registry collision/check-in evaluator; bind AI-capable callers to component 010 or prove external AI reachability impossible.
+4. Materialize component 011 source enforcement without enabling additional AI runtime access prematurely.
+5. Parameterize `RT-EXTERNAL-ADAPTER-ESTABLISH-001` against the current LLM Adapter source and canonical SDK route; do not create a duplicate adapter stack.
+6. Use canonical runtime observation for representative interface evidence; do not synthesize runtime success.

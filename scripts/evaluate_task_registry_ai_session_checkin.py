@@ -9,6 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 POLICY = ROOT / "data" / "task-registry-ai-ingress-policy.json"
 CANONICAL_CHECKIN = ROOT / "scripts" / "evaluate_task_registry_collision_checkin.py"
+COMPONENT_ID = "RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010"
 
 
 def emit(task_id: str, disposition: str, action: str, actor_kind: str | None, reason: str) -> None:
@@ -16,6 +17,7 @@ def emit(task_id: str, disposition: str, action: str, actor_kind: str | None, re
         "schema": "stegverse.task-registry-ai-session-ingress-disposition/v1",
         "task_id": task_id,
         "actor_kind": actor_kind,
+        "reusable_component_id": COMPONENT_ID,
         "disposition": disposition,
         "session_action": action,
         "reason": reason,
@@ -56,6 +58,7 @@ def main() -> None:
     request = dict(request)
     request["checkin_context"] = dict(context)
     request["checkin_context"]["actor_kind"] = actor_kind
+    request["checkin_context"]["reusable_component_id"] = COMPONENT_ID
     result = subprocess.run(
         [sys.executable, str(CANONICAL_CHECKIN)],
         input=json.dumps(request),
@@ -70,6 +73,7 @@ def main() -> None:
     payload = json.loads(result.stdout)
     payload["ai_session_ingress"] = {
         "actor_kind": actor_kind,
+        "reusable_component_id": COMPONENT_ID,
         "source_policy": "data/task-registry-ai-ingress-policy.json",
         "chatgpt_is_only_permitted_ai_kind": True,
         "runtime_identity_attestation_proven": False,

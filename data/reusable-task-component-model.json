@@ -7,6 +7,7 @@
     "sovereign_source_refresh": "data/reusable-sovereign-source-refresh-component-contract.json",
     "runtime_observation": "CANONICAL_EXISTING_OWNER",
     "governed_ingress": "CANONICAL_EXISTING_OWNER",
+    "ai_ingress_coordination": "data/reusable-ai-ingress-component-contract.json",
     "execution_materialization": "data/reusable-task-ephemeral-construct-contract.json",
     "credential_session": "CANONICAL_EXISTING_OWNER",
     "evidence_validation": "data/reusable-evidence-validation-component-contract.json",

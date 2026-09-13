@@ -187,7 +187,13 @@ Componentization is evaluated at Goal Task creation and again when scope changes
 
 Reusable Task Components do not mint authority and do not replace canonical owners. Task Registry remains coordination only; WorkerCoordinator retains claim/fence authority; KV/SKAP Vault remains sole user-verification authority; StegOS devices remain interchangeable transport nodes; TV/TVC retains credential/provider/release authority; Interlock/InTr retains governed transition authority; Master Records retains custody/reconstruction authority; HeartBeat remains observability/timing/freshness/correlation only; GitHub has no runtime authority.
 
-Transport is the first materialized component family. Its full manifest -> governed processing -> round trips -> evidence/custody/reconstruction -> Publisher -> SDK return -> governed egress -> Interlock/InTr -> far-side final transition sequence is a maximal composition, not a mandatory pipeline. Each consuming Goal Task selects only the components it actually requires.
+Transport and AI-ingress coordination are materialized reusable component families. The transport family provides the selectable manifest/governed-processing/round-trip/evidence/return/egress composition, while `ai_ingress_coordination` provides non-authorizing Task Registry session actor classification and future non-ChatGPT AI isolation contracts. A Goal Task composes only the families and components it actually requires; neither family grants the next authority-bearing step.
+
+For Task Registry AI/session coordination, `RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010` is the reusable fail-closed source gate across applicable check-in/return/close lifecycle operations. It permits ChatGPT as the only AI actor kind at that coordination surface while preserving human and non-AI system coordinator paths. The actor declaration is not authentic origin attestation, and Task Registry coordination never grants WorkerCoordinator claim/fence, Interlock/InTr transition, TV/TVC credential, KV/SKAP user-verification, execution, or Master Records custody authority.
+
+`RTC-NONCHATGPT-AI-DECISION-SANDBOX-011` is the reusable capability definition for future non-ChatGPT AI decision processing outside Task Registry coordination. Registration or source construction does not prove sandbox enforcement or runtime isolation; those remain independent evidence predicates before additional AI support can be considered active.
+
+The complete transport manifest -> governed processing -> round trips -> evidence/custody/reconstruction -> Publisher -> SDK return -> governed egress -> Interlock/InTr -> far-side final transition sequence remains a maximal composition, not a universal pipeline.
 
 Canonical model and decomposition sources:
 
@@ -197,6 +203,7 @@ data/reusable-task-component-decomposition-policy.json
 scripts/evaluate_reusable_task_componentization.py
 docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md
 data/reusable-transport-component-contract.json
+data/reusable-ai-ingress-component-contract.json
 ```
 
 ### Reusable task ephemeral constructs and entropy recovery

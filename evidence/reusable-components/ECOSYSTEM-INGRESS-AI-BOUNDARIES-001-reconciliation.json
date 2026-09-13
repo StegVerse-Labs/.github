@@ -1,0 +1,27 @@
+{
+  "schema": "stegverse.reusable-task-component-reconciliation-evidence/v1",
+  "task_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+  "cosv_task_vector": null,
+  "model_merge": "b9f8e5153aa1651f2d7f043fb902eacb7c113ed9",
+  "decomposition_score": 26,
+  "decision": "STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION",
+  "reused_components": [
+    "RTC-MANIFEST-001",
+    "RT-EXTERNAL-ADAPTER-ESTABLISH-001",
+    "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001"
+  ],
+  "new_reusable_components": [
+    "RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010",
+    "RTC-NONCHATGPT-AI-DECISION-SANDBOX-011"
+  ],
+  "conditional_components": [
+    "RTC-INTERLOCK-INTR-TRANSPORT-008",
+    "RTC-EVIDENCE-CUSTODY-004",
+    "TV/TVC credential-session capability"
+  ],
+  "superseded_duplicate_source": [
+    "StegVerse-Labs/.github#1624 once replacement component PR validates and merges"
+  ],
+  "runtime_evidence_upgraded": false,
+  "authority_effect": "NONE_COORDINATION_ONLY"
+}
