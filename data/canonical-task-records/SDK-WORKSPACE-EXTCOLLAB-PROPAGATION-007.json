@@ -1,0 +1,18 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-WORKSPACE-EXTCOLLAB-PROPAGATION-007",
+  "correlation_id": "SDK-WORKSPACE-EXTCOLLAB-PROPAGATION-007",
+  "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "parent_task_id": "SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004",
+  "goal": "Complete downstream propagation and public-distribution evidence after provider roundtrip completion.",
+  "coordination_state": "INACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "cosv_task_vector": null,
+  "repository": "StegVerse-Labs/.github",
+  "activation_condition": "SDK-WORKSPACE-EXTCOLLAB-PROVIDER-ROUNDTRIP-006_COMPLETE",
+  "activation_condition_status": "UNSATISFIED",
+  "dependencies": ["SDK-WORKSPACE-EXTCOLLAB-PROVIDER-ROUNDTRIP-006"],
+  "remaining_predicates": ["DOWNSTREAM_PROPAGATION_COMPLETE", "PUBLIC_DISTRIBUTIONS_COMPLETE"],
+  "handoff_projection_refs": ["StegVerse-Labs/.github:docs/SDK_WORKSPACE_EXTCOLLAB_PROPAGATION_007_MIRROR_HANDOFF.md"],
+  "completion": {"claimed": false, "validated": false}
+}
