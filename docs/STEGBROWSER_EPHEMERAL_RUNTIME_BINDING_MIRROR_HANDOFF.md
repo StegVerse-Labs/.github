@@ -1,6 +1,6 @@
 # StegBrowser Ephemeral Runtime Binding Mirror Handoff
 
-Updated: 2026-09-12
+Updated: 2026-09-13
 
 ## Task pointer
 
@@ -243,23 +243,44 @@ Master Records custody/reconstruction:        NOT OBSERVED
 
 GitHub Actions remains validation/evidence transport only. TV/TVC remains credential/provider authority; Interlock/InTr remains transition authority; WorkerCoordinator remains claim/fence authority; KV/SKAP Vault remains sole user-verification authority; Master Records remains runtime-reality/provenance authority.
 
+## Runtime preflight convergence boundary discovered 2026-09-13
+
+The first runtime boundary is more specific than merely waiting for a consumption receipt. The existing Canonical Work wrapper performs `scripts/evaluate_task_registry_collision_checkin.py` before any route mutation and proceeds only when the exact disposition is `CONTINUE`. `COORDINATE_CONVERGENCE` and every `STOP_*` disposition fail closed before Canonical Work can reach Interlock/InTr.
+
+Current canonical coordination state contains active convergence work that overlaps this Goal. In particular, `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001` is `ACTIVE / CLAIMED_INTEGRATION`, targets `StegVerse-Labs/.github`, explicitly lists this Goal as adjacent, and is the canonical owner of the shared retained-runtime evidence convergence lane. Under the anti-collision contract, repository/component/lineage/adjacency/substrate overlap can therefore produce `COORDINATE_CONVERGENCE`; this is intentional coordination behavior, not evidence that a second runtime, scheduler, dispatcher, or device is needed.
+
+The remediation path is:
+
+```text
+Task Registry exact check-in for this Goal
+-> if CONTINUE: proceed with the existing Canonical Work bootstrap
+-> if COORDINATE_CONVERGENCE: reconcile with the returned canonical collision/convergence owner(s), preserving this Goal identity
+-> require a subsequent exact check-in that returns CONTINUE before mutation
+-> only then run Canonical Work -> WorkerCoordinator claim/fence review -> Interlock/InTr admission -> exact stegbrowser_tvc_source_promotion consumption
+```
+
+Do not bypass or weaken the fail-closed preflight. Do not reinterpret `COORDINATE_CONVERGENCE` as runtime unavailability. Do not create a StegBrowser-specific collision engine. The general coordination behavior remains owned by `TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001`; the global runtime convergence lane remains owned by `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001`.
+
+This discovery does not establish that an authentic resident check-in has already returned `COORDINATE_CONVERGENCE`; no runtime execution is claimed. It establishes from current source and canonical registry state that registry convergence is a required pre-mutation condition that must be observed and resolved before a successful Canonical Work consumption receipt can exist.
+
 ## Remaining sequence
 
-1. Observe authentic Canonical Work/resident consumption for this Goal on an eligible retained or admitted ephemeral StegBrowser/StegOS execution substrate.
-2. Require applicable WorkerCoordinator claim/fence and Interlock/InTr admission; no component source receipt substitutes for either authority.
-3. Execute the existing exact-selector governed-processing path for `stegbrowser_tvc_source_promotion` and require current-dispatch-bound dedicated consumption evidence for primary runtime TVC SHA `aef6b6f5dc99d2a531718ca475d20858ae8e68a6`.
-4. Observe exact TVC materialization, transient promotion, and same-primary-runtime restart.
-5. Invoke the separately immutable-bound observation component from TVC `4c78f8653b8a5899350479d57c58e936b50e023a` and require its authentic runtime observation receipt plus simultaneous `8765/8775` and same-runtime Apple-route bindings.
-6. Require `OWNER_INGRESS_READY_OBSERVED` before owner credential ingress.
-7. When owner ingress is authentically ready, seal the real App Store Connect credential from the current iPhone into SKAP without export; do not use GitHub secrets or device-local user verification.
-8. Complete current-iPhone signing, TVC Build Upload, TestFlight installation, and same-device resident discovery with authentic receipts.
-9. Execute Facebook and LinkedIn publication/readback as independent reusable Publisher/round-trip branches only after working-instance proof.
-10. Submit required authentic evidence for Master Records custody/reconstruction, then perform terminal cleanup/entropy recovery only where the reusable construct contract permits it.
+1. Perform the exact canonical Task Registry check-in for this Goal on the authentic retained/admitted execution substrate. Require `CONTINUE`; if the observed disposition is `COORDINATE_CONVERGENCE`, reconcile through the returned canonical convergence owner(s) and repeat check-in rather than adding bespoke orchestration.
+2. Observe authentic Canonical Work/resident consumption for this Goal on an eligible retained or admitted ephemeral StegBrowser/StegOS execution substrate.
+3. Require applicable WorkerCoordinator claim/fence and Interlock/InTr admission; no component source receipt substitutes for either authority.
+4. Execute the existing exact-selector governed-processing path for `stegbrowser_tvc_source_promotion` and require current-dispatch-bound dedicated consumption evidence for primary runtime TVC SHA `aef6b6f5dc99d2a531718ca475d20858ae8e68a6`.
+5. Observe exact TVC materialization, transient promotion, and same-primary-runtime restart.
+6. Invoke the separately immutable-bound observation component from TVC `4c78f8653b8a5899350479d57c58e936b50e023a` and require its authentic runtime observation receipt plus simultaneous `8765/8775` and same-runtime Apple-route bindings.
+7. Require `OWNER_INGRESS_READY_OBSERVED` before owner credential ingress.
+8. When owner ingress is authentically ready, seal the real App Store Connect credential from the current iPhone into SKAP without export; do not use GitHub secrets or device-local user verification.
+9. Complete current-iPhone signing, TVC Build Upload, TestFlight installation, and same-device resident discovery with authentic receipts.
+10. Execute Facebook and LinkedIn publication/readback as independent reusable Publisher/round-trip branches only after working-instance proof.
+11. Submit required authentic evidence for Master Records custody/reconstruction, then perform terminal cleanup/entropy recovery only where the reusable construct contract permits it.
 
 ## README disposition
 
-Repository `README.md` already contains the Reusable Task Component Model projection and remains accurate for Canonical Work and authority separation. No repository-wide README mutation is required by this task-record/handoff reconciliation.
+Repository `README.md` already contains the Reusable Task Component Model projection and authority separation. This update narrows the runtime preflight condition without changing repository-wide architecture, so no README mutation is required by this reconciliation.
 
 ## Current state
 
-`ACTIVE_NOT_SUPERSEDED / REUSABLE_COMPONENT_MODEL_RECONCILED / CANONICAL_EXECUTION_SUBSTRATE_MODEL_RESTORED / RETAINED_STEGBROWSER_STEGOS_NODE_SELECTED / ADMITTED_EPHEMERAL_STEGOS_NODE_CAPACITY_ALLOWED / REMOTE_COMPUTER_TRANSPORT_NOT_TASK_STATE / SECOND_USER_OPERATED_DEVICE_NOT_ALLOWED / PRIMARY_RUNTIME_TVC_SOURCE_PIN_PRESERVED_AEF6B6F5 / OBSERVER_IMMUTABLE_SOURCE_BOUND_4C78F865 / EXACT_TVC_SOURCE_PIN_OBSERVER_ALIGNMENT_SATISFIED / TASK_REGISTRY_RUNTIME_EVIDENCE_CONTRACT_RECONCILED_1522 / DEDICATED_CONSUMPTION_EVIDENCE_BINDING_MERGED_VALIDATED_1533 / HANDOFF_READY_FAIL_CLOSED_REPAIR_MERGED_VALIDATED_1556 / TASK_REGISTRY_STAGED_CONSUMPTION_SEMANTICS_RECONCILED_1566 / CURRENT_DISPATCH_DEDICATED_CONSUMPTION_BINDING_MERGED_VALIDATED_1579 / TASK_REGISTRY_CURRENT_DISPATCH_BINDING_RECONCILED_1590 / TVC_AUTOMATIC_POST_READ_PROMOTION_RECONCILED_411 / TVC_POST_RESTART_OBSERVER_MERGED_VALIDATED_413 / AUTHENTIC_CANONICAL_WORK_CONSUMPTION_NOT_OBSERVED / AUTHENTIC_RESIDENT_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / AUTHENTIC_TVC_MATERIALIZATION_AND_RESTART_NOT_OBSERVED / AUTHENTIC_TVC_RUNTIME_OBSERVATION_NOT_OBSERVED / LIVE_APPLE_OWNER_INGRESS_READY_NOT_OBSERVED / AUTHENTIC_CURRENT_IPHONE_INSTALL_LISTENER_DISCOVERY_PENDING`
+`ACTIVE_NOT_SUPERSEDED / REUSABLE_COMPONENT_MODEL_RECONCILED / CANONICAL_EXECUTION_SUBSTRATE_MODEL_RESTORED / RETAINED_STEGBROWSER_STEGOS_NODE_SELECTED / ADMITTED_EPHEMERAL_STEGOS_NODE_CAPACITY_ALLOWED / REMOTE_COMPUTER_TRANSPORT_NOT_TASK_STATE / SECOND_USER_OPERATED_DEVICE_NOT_ALLOWED / PRIMARY_RUNTIME_TVC_SOURCE_PIN_PRESERVED_AEF6B6F5 / OBSERVER_IMMUTABLE_SOURCE_BOUND_4C78F865 / EXACT_TVC_SOURCE_PIN_OBSERVER_ALIGNMENT_SATISFIED / TASK_REGISTRY_RUNTIME_EVIDENCE_CONTRACT_RECONCILED_1522 / DEDICATED_CONSUMPTION_EVIDENCE_BINDING_MERGED_VALIDATED_1533 / HANDOFF_READY_FAIL_CLOSED_REPAIR_MERGED_VALIDATED_1556 / TASK_REGISTRY_STAGED_CONSUMPTION_SEMANTICS_RECONCILED_1566 / CURRENT_DISPATCH_DEDICATED_CONSUMPTION_BINDING_MERGED_VALIDATED_1579 / TASK_REGISTRY_CURRENT_DISPATCH_BINDING_RECONCILED_1590 / TVC_AUTOMATIC_POST_READ_PROMOTION_RECONCILED_411 / TVC_POST_RESTART_OBSERVER_MERGED_VALIDATED_413 / TASK_REGISTRY_PREFLIGHT_CONTINUE_REQUIRED_BEFORE_MUTATION / CONVERGENCE_OWNER_RECONCILIATION_REQUIRED_IF_COORDINATE_CONVERGENCE_OBSERVED / AUTHENTIC_CANONICAL_WORK_CONSUMPTION_NOT_OBSERVED / AUTHENTIC_RESIDENT_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / AUTHENTIC_TVC_MATERIALIZATION_AND_RESTART_NOT_OBSERVED / AUTHENTIC_TVC_RUNTIME_OBSERVATION_NOT_OBSERVED / LIVE_APPLE_OWNER_INGRESS_READY_NOT_OBSERVED / AUTHENTIC_CURRENT_IPHONE_INSTALL_LISTENER_DISCOVERY_PENDING`
