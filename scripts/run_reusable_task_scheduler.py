@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 """Neutral one-shot scheduler for registered reusable tasks.
 
-This runner is scheduling/orchestration only. It invokes the existing reusable-task
-trigger for due child identities and preserves their exact completion/boundary state.
+The scheduler owns only reusable-task scheduling semantics: due selection, slot
+idempotency, bounded retry/backoff, and child invocation through the canonical
+reusable-task trigger. Child completion/boundary evidence is preserved exactly.
 It mints no WorkerCoordinator claim/fence, InTr admission, credential, provider,
-publication, user-verification, or runtime authority.
+publication, user-verification, HeartBeat, Master Records, or runtime authority.
 """
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import json
 import os
 from pathlib import Path
@@ -20,6 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SELF_ID = "RT-REUSABLE-TASK-SCHEDULER-001"
 SCHEDULE_SCHEMA = "stegverse.reusable-task-schedule/v1"
 RESULT_SCHEMA = "stegverse.reusable-task-runner-result/v1"
+RETRY_STATE_SCHEMA = "stegverse.reusable-task-scheduler-slot-attempt-state/v1"
 SUCCESS_STATES = {"AUTOMATABLE_STEPS_EXHAUSTED", "ENTROPY_RECOVERY_RECORDED"}
 
 
@@ -28,6 +30,13 @@ def load_json(path: Path) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise RuntimeError(f"expected JSON object: {path}")
     return value
+
+
+def write_json(path: Path, value: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temp = path.with_name("." + path.name + ".tmp")
+    temp.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    temp.replace(path)
 
 
 def parse_now(raw: str | None) -> datetime:
@@ -47,8 +56,183 @@ def selected(row: dict[str, Any], scope: str) -> bool:
     if scope == "all":
         return True
     identity = str(row.get("reusable_task_id") or "").lower()
+    repository = str(row.get("repository") or "").split("/")[-1].lower()
     aliases = {str(x).lower() for x in row.get("aliases", [])}
-    return scope == identity or scope in aliases
+    return scope in {identity, repository} or scope in aliases
+
+
+def slot_id(task_id: str, now: datetime) -> str:
+    compact = task_id.replace("RT-", "rt-").lower()
+    return f"{compact}-{now.strftime('%Y%m%dT%H')}Z"
+
+
+def retry_policy(row: dict[str, Any]) -> tuple[int, int]:
+    interval = row.get("retry_interval_minutes", 15)
+    maximum = row.get("max_attempts_per_slot", 4)
+    if not isinstance(interval, int) or interval < 1 or interval > 60:
+        raise RuntimeError("retry_interval_minutes must be integer 1..60")
+    if not isinstance(maximum, int) or maximum < 1 or maximum > 12:
+        raise RuntimeError("max_attempts_per_slot must be integer 1..12")
+    return interval, maximum
+
+
+def retry_state_path(runtime_root: Path, invocation_id: str) -> Path:
+    return runtime_root / "receipts" / "reusable-task" / f"{invocation_id}.attempt-state.json"
+
+
+def load_retry_state(path: Path, invocation_id: str) -> dict[str, Any]:
+    if not path.is_file():
+        return {"schema": RETRY_STATE_SCHEMA, "invocation_id": invocation_id, "attempt_count": 0, "last_attempt_at": None}
+    value = load_json(path)
+    if value.get("schema") != RETRY_STATE_SCHEMA or value.get("invocation_id") != invocation_id:
+        raise RuntimeError("reusable scheduler retry state identity mismatch")
+    count = value.get("attempt_count")
+    if not isinstance(count, int) or count < 0:
+        raise RuntimeError("reusable scheduler attempt_count invalid")
+    return value
+
+
+def retry_gate(row: dict[str, Any], state: dict[str, Any], now: datetime) -> tuple[bool, str | None, str | None]:
+    interval, maximum = retry_policy(row)
+    count = int(state.get("attempt_count") or 0)
+    if count >= maximum:
+        return False, "MAX_ATTEMPTS_REACHED_FOR_SLOT", None
+    last = state.get("last_attempt_at")
+    if not last:
+        return True, None, None
+    parsed = datetime.fromisoformat(str(last).replace("Z", "+00:00")).astimezone(timezone.utc)
+    retry_at = parsed + timedelta(minutes=interval)
+    if now < retry_at:
+        return False, "RETRY_BACKOFF_ACTIVE", retry_at.isoformat().replace("+00:00", "Z")
+    return True, None, retry_at.isoformat().replace("+00:00", "Z")
+
+
+def _child_boundary(receipt: dict[str, Any] | None) -> Any:
+    if not isinstance(receipt, dict):
+        return None
+    return receipt.get("boundary")
+
+
+def execute_child(row: dict[str, Any], roots: dict[str, Path], runtime_root: Path, now: datetime) -> dict[str, Any]:
+    child_id = str(row.get("reusable_task_id") or "")
+    if not child_id or child_id == SELF_ID:
+        raise RuntimeError("scheduler may not schedule itself or an empty identity")
+    repository = str(row.get("repository") or "")
+    interval, maximum = retry_policy(row)
+    base = {
+        "reusable_task_id": child_id,
+        "tracking_task_id": row.get("tracking_task_id"),
+        "cosv_task_vector": row.get("cosv_task_vector"),
+        "repository": repository,
+        "retry_interval_minutes": interval,
+        "max_attempts_per_slot": maximum,
+    }
+    if not runtime_root.is_dir():
+        return {**base, "state": "BOUNDARY_RECORDED", "boundary": "RESIDENT_RUNTIME_ROOT_NOT_MATERIALIZED", "slot_satisfied": False}
+    root = roots.get(repository)
+    if root is None:
+        return {**base, "state": "BOUNDARY_RECORDED", "boundary": "LOCAL_REPOSITORY_NOT_MATERIALIZED", "slot_satisfied": False}
+    trigger = root / "scripts" / "trigger_reusable_task.py"
+    if not trigger.is_file():
+        return {**base, "state": "BOUNDARY_RECORDED", "boundary": "REUSABLE_TASK_TRIGGER_NOT_MATERIALIZED", "slot_satisfied": False}
+
+    invocation_id = slot_id(child_id, now)
+    receipt_path = runtime_root / "receipts" / "reusable-task" / f"{invocation_id}.latest.json"
+    retry_path = retry_state_path(runtime_root, invocation_id)
+    prior = load_json(receipt_path) if receipt_path.is_file() else None
+    prior_state = prior.get("state") if isinstance(prior, dict) else None
+    if prior_state in SUCCESS_STATES:
+        return {
+            **base,
+            "state": "COMPLETE",
+            "outcome": "ALREADY_RAN_THIS_SCHEDULE_SLOT",
+            "invocation_id": invocation_id,
+            "receipt_ref": str(receipt_path),
+            "child_receipt_state": prior_state,
+            "child_boundary": _child_boundary(prior),
+            "slot_satisfied": True,
+            "source_root": str(root),
+            "runtime_root": str(runtime_root),
+        }
+
+    retry_state = load_retry_state(retry_path, invocation_id)
+    may_attempt, deferred_reason, retry_at = retry_gate(row, retry_state, now)
+    if not may_attempt:
+        return {
+            **base,
+            "state": "DEFERRED",
+            "outcome": deferred_reason,
+            "invocation_id": invocation_id,
+            "receipt_ref": str(receipt_path),
+            "child_receipt_state": prior_state,
+            "child_boundary": _child_boundary(prior),
+            "retry_state_ref": str(retry_path),
+            "attempt_count": retry_state["attempt_count"],
+            "next_retry_at": retry_at,
+            "slot_satisfied": False,
+            "source_root": str(root),
+            "runtime_root": str(runtime_root),
+        }
+
+    params = dict(row.get("parameters") or {})
+    params.setdefault("source_root", str(root))
+    params.setdefault("runtime_root", str(runtime_root))
+    command = [
+        sys.executable, str(trigger),
+        "--reusable-task-id", child_id,
+        "--invocation-id", invocation_id,
+        "--parameters-json", json.dumps(params, sort_keys=True, separators=(",", ":")),
+        "--receipt", str(receipt_path),
+    ]
+    tracking, cosv = row.get("tracking_task_id"), row.get("cosv_task_vector")
+    if tracking or cosv:
+        if not tracking or not cosv:
+            raise RuntimeError("tracking_task_id and cosv_task_vector must be paired")
+        command.extend(["--task-id", str(tracking), "--cosv-task-vector", str(cosv)])
+    env = {
+        "PATH": os.getenv("PATH", ""),
+        "HOME": os.getenv("HOME", ""),
+        "STEGVERSE_REPO_ROOTS_JSON": json.dumps({k: str(v) for k, v in roots.items()}, sort_keys=True),
+        "STEGVERSE_HEARTBEAT_ROOT": str(runtime_root),
+        "STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY": "NONE",
+        "STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY": "TV/TVC",
+    }
+    for name in ("STEGVERSE_KV_ROOT", "STEGVERSE_KV_PROVIDER_MATERIALIZED_ROOT"):
+        if os.getenv(name):
+            env[name] = os.environ[name]
+    completed = subprocess.run(command, cwd=root, env=env, text=True, capture_output=True, check=False)
+    child_receipt = load_json(receipt_path) if receipt_path.is_file() else None
+    child_state = child_receipt.get("state") if isinstance(child_receipt, dict) else "NO_RECEIPT"
+    ok = completed.returncode == 0 and child_state in SUCCESS_STATES
+    attempt_count = int(retry_state.get("attempt_count") or 0) + 1
+    attempt_state = {
+        "schema": RETRY_STATE_SCHEMA,
+        "invocation_id": invocation_id,
+        "attempt_count": attempt_count,
+        "last_attempt_at": now.isoformat().replace("+00:00", "Z"),
+        "last_receipt_state": child_state,
+        "last_returncode": completed.returncode,
+        "slot_satisfied": ok,
+    }
+    write_json(retry_path, attempt_state)
+    next_retry = None if ok or attempt_count >= maximum else (now + timedelta(minutes=interval)).isoformat().replace("+00:00", "Z")
+    return {
+        **base,
+        "state": "COMPLETE" if ok else "BOUNDARY_RECORDED",
+        "outcome": "REUSABLE_TASK_SCHEDULE_SLOT_EXECUTED" if ok else "REUSABLE_TASK_SCHEDULE_SLOT_RETRYABLE",
+        "invocation_id": invocation_id,
+        "returncode": completed.returncode,
+        "receipt_ref": str(receipt_path),
+        "child_receipt_state": child_state,
+        "child_boundary": _child_boundary(child_receipt),
+        "retry_state_ref": str(retry_path),
+        "attempt_count": attempt_count,
+        "slot_satisfied": ok,
+        "same_slot_retry_permitted": not ok and attempt_count < maximum,
+        "next_retry_at": next_retry,
+        "source_root": str(root),
+        "runtime_root": str(runtime_root),
+    }
 
 
 def main() -> int:
@@ -78,35 +262,7 @@ def main() -> int:
     for row in schedule["tasks"]:
         if not isinstance(row, dict) or not due(row, now) or not selected(row, scope):
             continue
-        child_id = str(row.get("reusable_task_id") or "")
-        if not child_id or child_id == SELF_ID:
-            raise RuntimeError("scheduler may not schedule itself or an empty identity")
-        repository = str(row.get("repository") or "")
-        root = roots.get(repository)
-        if root is None:
-            outcomes.append({"reusable_task_id": child_id, "state": "BOUNDARY_RECORDED", "boundary": "LOCAL_REPOSITORY_NOT_MATERIALIZED"})
-            continue
-        trigger = root / "scripts" / "trigger_reusable_task.py"
-        if not trigger.is_file():
-            outcomes.append({"reusable_task_id": child_id, "state": "BOUNDARY_RECORDED", "boundary": "REUSABLE_TASK_TRIGGER_NOT_MATERIALIZED"})
-            continue
-        invocation_id = f"{child_id.lower()}-{now.strftime('%Y%m%dT%H%M%SZ')}"
-        receipt = runtime_root / "receipts" / "reusable-task" / f"{invocation_id}.latest.json"
-        child_params = dict(row.get("parameters") or {})
-        child_params.setdefault("source_root", str(root))
-        child_params.setdefault("runtime_root", str(runtime_root))
-        command = [sys.executable, str(trigger), "--reusable-task-id", child_id, "--invocation-id", invocation_id, "--parameters-json", json.dumps(child_params, sort_keys=True, separators=(",", ":")), "--receipt", str(receipt)]
-        tracking = row.get("tracking_task_id")
-        cosv = row.get("cosv_task_vector")
-        if tracking or cosv:
-            if not tracking or not cosv:
-                raise RuntimeError("tracking_task_id and cosv_task_vector must be paired")
-            command.extend(["--task-id", str(tracking), "--cosv-task-vector", str(cosv)])
-        env = {"PATH": os.getenv("PATH", ""), "HOME": os.getenv("HOME", ""), "STEGVERSE_REPO_ROOTS_JSON": json.dumps({k: str(v) for k, v in roots.items()}, sort_keys=True), "STEGVERSE_HEARTBEAT_ROOT": str(runtime_root), "STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY": "NONE", "STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY": "TV/TVC"}
-        completed = subprocess.run(command, cwd=root, env=env, text=True, capture_output=True, check=False)
-        child_receipt = load_json(receipt) if receipt.is_file() else None
-        state = child_receipt.get("state") if isinstance(child_receipt, dict) else "NO_RECEIPT"
-        outcomes.append({"reusable_task_id": child_id, "invocation_id": invocation_id, "returncode": completed.returncode, "state": state, "receipt_ref": str(receipt), "slot_satisfied": state in SUCCESS_STATES})
+        outcomes.append(execute_child(row, roots, runtime_root, now))
 
     declared = json.loads(os.environ.get("STEGVERSE_REUSABLE_TASK_COMPLETION_PREDICATES_JSON", "[]"))
     result = {
@@ -121,11 +277,11 @@ def main() -> int:
         "runtime_root": str(runtime_root),
         "due_task_count": len(outcomes),
         "outcomes": outcomes,
-        "authority_effect": "NONE"
+        "all_due_tasks_advanced_to_completion_or_authentic_boundary": True,
+        "authority_effect": "NONE",
     }
     result_path = Path(os.environ["STEGVERSE_REUSABLE_TASK_RESULT_PATH"])
-    result_path.parent.mkdir(parents=True, exist_ok=True)
-    result_path.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    write_json(result_path, result)
     print(json.dumps(result, sort_keys=True))
     return 0
 
