@@ -1,0 +1,54 @@
+{
+  "schema": "stegverse.goal-task-transport-profile/v1",
+  "task_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+  "cosv_task_vector": "40000100100000",
+  "component_contract": "data/reusable-transport-component-contract.json",
+  "transport_requirements": {
+    "complete_manifest": true,
+    "governed_processing": true,
+    "required_round_trips": [
+      "resident_tvc_source_promotion_and_runtime_rebind",
+      "apple_skap_credential_and_provider_operation",
+      "facebook_publication_and_readback",
+      "linkedin_publication_and_readback"
+    ],
+    "evidence_custody_reconstruction": true,
+    "publisher_projection": true,
+    "sdk_return_assembly": false,
+    "stegverse_final_egress_transition": true,
+    "interlock_intr_transport": true,
+    "far_side_final_transition": true
+  },
+  "selected_components": [
+    "RTC-MANIFEST-001",
+    "RTC-GOVERNED-PROCESSING-002",
+    "RTC-ROUNDTRIP-003",
+    "RTC-EVIDENCE-CUSTODY-004",
+    "RTC-PUBLISHER-005",
+    "RTC-STEGVERSE-EGRESS-007",
+    "RTC-INTERLOCK-INTR-TRANSPORT-008",
+    "RTC-FARSIDE-FINAL-009"
+  ],
+  "omitted_components": [
+    {
+      "component_id": "RTC-SDK-RETURN-006",
+      "reason": "This Goal Task does not return a result through the SDK. Provider/publication receipts remain Goal-specific evidence and Master Records inputs."
+    }
+  ],
+  "repeatability": {
+    "RTC-ROUNDTRIP-003": 4,
+    "RTC-INTERLOCK-INTR-TRANSPORT-008": "REPEAT_WHERE_EACH_DECLARED_GOVERNED_TRANSITION_REQUIRES_IT"
+  },
+  "composition_rule": "Compose only the selected reusable transport components. The historical handoff sequence is not itself a mandatory monolithic pipeline. Repeated round trips and governed transports remain separately evidenced and do not confer authority on subsequent components.",
+  "authority_invariants": {
+    "task_registry": "COORDINATION_ONLY",
+    "user_verification": "KV/SKAP Vault",
+    "device_role": "INTERCHANGEABLE_STEGOS_TRANSPORT_EXECUTION_NODE",
+    "claim_fence": "WorkerCoordinator",
+    "transition": "Interlock/InTr",
+    "credential_provider_release": "TV/TVC",
+    "reality_reconstruction": "Master Records",
+    "heartbeat": "OBSERVABILITY_ONLY",
+    "github_runtime_authority": "NONE"
+  }
+}
