@@ -8,7 +8,28 @@
   "coordination_state": "ACTIVE",
   "checkout_state": "CLAIMED_INTEGRATION",
   "cosv_task_vector": "40000100100000",
+  "component_model_projection": {
+    "model": "data/reusable-task-component-model.json",
+    "decomposition_policy": "data/reusable-task-component-decomposition-policy.json",
+    "decomposition_input": "data/reusable-task-componentization-inputs/SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001.json",
+    "decomposition_evaluation": "data/reusable-task-componentization-evaluations/SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001.json",
+    "goal_component_profile": "data/goal-task-component-profiles/SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001.json",
+    "transport_family": "data/reusable-transport-component-contract.json",
+    "goal_transport_profile": "data/goal-task-transport-profiles/SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001.json",
+    "goal_identity_preserved": true,
+    "cosv_identity_preserved": true,
+    "decomposition_score": 28,
+    "decomposition_decision": "STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION",
+    "componentization_mints_authority": false,
+    "runtime_handoff_remains_runtime_truth": true,
+    "runtime_predicates_completed_by_source_reuse": false
+  },
   "source_refs": [
+    "StegVerse-Labs/.github/data/reusable-task-component-model.json",
+    "StegVerse-Labs/.github/data/reusable-task-component-decomposition-policy.json",
+    "StegVerse-Labs/.github/data/reusable-transport-component-contract.json",
+    "StegVerse-Labs/.github/data/goal-task-component-profiles/SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001.json",
+    "StegVerse-Labs/.github/data/goal-task-transport-profiles/SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001.json",
     "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/ERL_KV_STORAGE_MIRROR_HANDOFF.md",
     "StegVerse-Labs/Executive_Rhetoric_Ledger/scripts/build_active_research_intr_binding.py",
     "StegVerse-Labs/Executive_Rhetoric_Ledger/scripts/consume_active_research_acquisition.py",
@@ -20,6 +41,7 @@
     "StegVerse-Labs/.github/workers/erl_active_research_intr_profile.py",
     "StegVerse-Labs/.github/workers/erl_active_research_transport.py",
     "StegVerse-Labs/.github/workers/erl_device_kv_terminal.py",
+    "StegVerse-Labs/.github/workers/device_kv_intr_observation_worker.py",
     "StegVerse-Labs/.github/scripts/consume_device_kv_intr_materialization_request.py",
     "StegVerse-Labs/.github/scripts/install_erl_device_kv_prior_lineage.py",
     "StegVerse-Labs/.github/scripts/prepare_erl_active_research_intr_runtime_source.py",
@@ -39,14 +61,14 @@
       "StegVerse-Labs/continuity-vault-kit"
     ],
     "components": [
-      "erl-active-research-intr-profile",
-      "erl-active-research-resident-local-transport",
-      "erl-exact-local-source-self-materialization",
-      "erl-terminal-full-intent-identity-continuity",
-      "erl-existing-provider-proof-binding",
-      "universal-intr-profiled-ingress",
-      "device-kv-intr-materialization",
-      "authentic-three-hop-receipt-chain"
+      "RTC-MANIFEST-001",
+      "RTC-EVIDENCE-CUSTODY-004",
+      "RTC-INTERLOCK-INTR-TRANSPORT-008:x3",
+      "RTC-FARSIDE-FINAL-009",
+      "execution_materialization:reusable-task-ephemeral-construct-contract",
+      "runtime_observation:SHWP-DEVICE-KV-INTR-OBSERVATION-001",
+      "governed_ingress:universal-intr-profiled-ingress",
+      "evidence_validation:canonical-existing-validators"
     ]
   },
   "dependencies": [
@@ -63,6 +85,13 @@
       "state": "AVAILABLE",
       "ref": "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
       "disposition": "REUSE_EXISTING_PROFILED_INGRESS_CONSUMER_WORKERCOORDINATOR_AND_CVK_OWNER"
+    },
+    {
+      "dependency_id": "DEP-ERL-REUSABLE-COMPONENT-MODEL",
+      "kind": "SOURCE_ARCHITECTURE",
+      "state": "AVAILABLE",
+      "ref": "StegVerse-Labs/.github#1652@b9f8e5153aa1651f2d7f043fb902eacb7c113ed9",
+      "disposition": "COMPOSE_EXISTING_COMPONENTS_AND_STOP_BESPOKE_SCOPE_GROWTH"
     }
   ],
   "blockers": [],
@@ -81,17 +110,19 @@
     "EXACT_ENVELOPE_HASH_BOUND_AT_ALL_THREE_HOPS",
     "AUTHENTIC_THREE_HOP_RECEIPT_CHAIN_OBSERVED",
     "TERMINAL_KV_RECEIPT_BOUND_TO_EXISTING_PROVIDER_READBACK_PROOF",
+    "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_OBSERVED",
     "NO_SYNTHETIC_RECEIPT_PROMOTED_TO_RUNTIME_EVIDENCE"
   ],
   "runtime_requirements": {
     "capabilities": [
-      "universal_intr_profiled_ingress",
       "resident_targeted_execution",
       "exact_local_source_self_materialization",
+      "universal_intr_profiled_ingress",
+      "three_repeated_interlock_intr_adjacent_transitions",
       "exact_terminal_full_intent_identity_continuity",
+      "durable_terminal_kv_readback",
       "existing_provider_proof_binding",
-      "device_kv_intr_observation",
-      "durable_receipt_readback"
+      "master_records_custody_reconstruction"
     ],
     "environment": "SOVEREIGN_RESIDENT_STEGOS_PLUS_KV",
     "direction": "EXTERNAL_SYSTEM_TO_STEGOS_ECOSYSTEM_TO_DEVICE_SYSTEM_TO_KV",
@@ -101,7 +132,7 @@
   },
   "runtime_resolution": {
     "current_executor": "SHWP-DEVICE-KV-INTR-OBSERVATION-001 via existing profiled Universal InTr ingress and resident refresh/execute bridge",
-    "authority_basis": "existing independent task control plus contemporaneous Interlock/InTr transition authority; ERL resident-local transport has credential requirement NONE and TV/TVC credential authority remains unchanged for transitions that require credentials",
+    "authority_basis": "WorkerCoordinator claim/fence plus contemporaneous Interlock/InTr transition authority; ERL resident-local transport credential requirement NONE; TV/TVC remains credential/provider/release authority for transitions that separately require it; Master Records owns observed-reality custody/reconstruction",
     "unattended_runtime": false
   },
   "worker_claim": {
@@ -120,12 +151,17 @@
   "allowed_next_transitions": [
     "MATERIALIZE_AND_VERIFY_AUTHENTIC_RESIDENT_ERL_SOURCE",
     "OBSERVE_AUTHENTIC_SHARED_LOOPBACK_INGRESS",
-    "EXECUTE_AUTHENTIC_ERL_THREE_HOP_TRAVERSAL",
+    "EXECUTE_AUTHENTIC_ERL_THREE_HOP_TRAVERSAL_VIA_REUSABLE_TRANSPORT_COMPONENTS",
     "VERIFY_THREE_HOP_CHAIN_AND_BIND_TERMINAL_KV_PROOF",
+    "SUBMIT_AUTHENTIC_EVIDENCE_TO_MASTER_RECORDS_AND_CONFIRM_RECONSTRUCTION",
     "RECONCILE_PARENT_HANDOFF"
   ],
   "handoff_projection_refs": [
     "docs/SS_ERL_ACTIVE_RESEARCH_INTR_RUNTIME_BINDING_MIRROR_HANDOFF.md",
+    "docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+    "docs/REUSABLE_GOAL_TASK_TRANSPORT_COMPONENTS_MIRROR_HANDOFF.md",
+    "data/goal-task-component-profiles/SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001.json",
+    "data/goal-task-transport-profiles/SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001.json",
     "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/ERL_KV_STORAGE_MIRROR_HANDOFF.md"
   ],
   "authority_model": {
@@ -134,7 +170,10 @@
     "heartbeat_grants_execution_authority": false,
     "workercoordinator_remains_claim_fence_authority": true,
     "interlock_intr_remains_transition_authority": true,
-    "tvc_remains_credential_authority": true,
+    "tvc_remains_credential_provider_release_authority": true,
+    "kv_skap_remains_sole_user_verification_authority": true,
+    "device_user_verification_authority": "NONE",
+    "master_records_remains_custody_reconstruction_authority": true,
     "github_runtime_authority": "NONE",
     "provider_operation_reexecution_authorized": false
   }
