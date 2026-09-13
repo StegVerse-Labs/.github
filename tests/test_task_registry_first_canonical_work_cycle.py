@@ -13,12 +13,13 @@ assert spec.loader is not None
 spec.loader.exec_module(module)
 
 
-def record(task_id, *, checkout="CHECKED_OUT", state="PROPOSED", human_action=None, root_goal=None):
-    return {
+def record(task_id, *, checkout="CHECKED_OUT", state="PROPOSED", human_action=None, root_goal=None, goal=None, priority=None):
+    row = {
         "schema": "stegverse.canonical-task-record/v1",
         "task_id": task_id,
         "correlation_id": task_id,
         "root_correlation_id": root_goal or task_id,
+        "goal": goal or "ordinary goal work",
         "coordination_state": state,
         "checkout_state": checkout,
         "allowed_next_transitions": ["INGRESS_ADMITTED"],
@@ -27,6 +28,9 @@ def record(task_id, *, checkout="CHECKED_OUT", state="PROPOSED", human_action=No
         "worker_claim": {"authority": "WORKERCOORDINATOR", "claim_ref": None, "fence_ref": None, "projection_only": True},
         "authority_model": {"task_registry_mints_execution_authority": False, "interlock_intr_required_for_governed_ingress_egress": True},
     }
+    if priority is not None:
+        row["work_priority_class"] = priority
+    return row
 
 
 class TaskRegistryFirstCanonicalWorkCycleTests(unittest.TestCase):
@@ -43,13 +47,34 @@ class TaskRegistryFirstCanonicalWorkCycleTests(unittest.TestCase):
         self.assertFalse(module.machine_ingress_candidate(record("A-001"), {"A-001"}))
         self.assertTrue(module.machine_ingress_candidate(record("B-001"), {"A-001"}))
 
-    def test_checked_out_candidates_sort_before_unclaimed_candidates(self):
+    def test_checked_out_candidates_sort_before_unclaimed_candidates_within_same_priority_class(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             (root / "B-001.json").write_text(json.dumps(record("B-001", checkout="UNCLAIMED")), encoding="utf-8")
             (root / "A-001.json").write_text(json.dumps(record("A-001")), encoding="utf-8")
             rows = module.load_candidates(root)
             self.assertEqual([r["task_id"] for r in rows], ["A-001", "B-001"])
+
+    def test_repair_work_precedes_ordinary_checked_out_work(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "A-FEATURE-001.json").write_text(json.dumps(record("A-FEATURE-001", checkout="CHECKED_OUT", goal="add a new feature")), encoding="utf-8")
+            (root / "Z-REPAIR-001.json").write_text(json.dumps(record("Z-REPAIR-001", checkout="UNCLAIMED", goal="repair ecosystem state")), encoding="utf-8")
+            rows = module.load_candidates(root)
+            self.assertEqual([r["task_id"] for r in rows], ["Z-REPAIR-001", "A-FEATURE-001"])
+            self.assertNotEqual(module.ecosystem_priority_class(rows[0]), "ORDINARY_GOAL_WORK")
+
+    def test_explicit_canonicalization_priority_class_precedes_ordinary_work(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "A-ORDINARY-001.json").write_text(json.dumps(record("A-ORDINARY-001")), encoding="utf-8")
+            (root / "Z-NORMALIZE-001.json").write_text(json.dumps(record("Z-NORMALIZE-001", checkout="UNCLAIMED", priority="ECOSYSTEM_CANONICALIZATION")), encoding="utf-8")
+            rows = module.load_candidates(root)
+            self.assertEqual([r["task_id"] for r in rows], ["Z-NORMALIZE-001", "A-ORDINARY-001"])
+
+    def test_generic_canonical_word_does_not_make_ordinary_work_repair_priority(self):
+        ordinary = record("CANONICAL-WORK-FEATURE-001", goal="use canonical work for a new product capability")
+        self.assertEqual(module.ecosystem_priority_class(ordinary), "ORDINARY_GOAL_WORK")
 
     def test_excluded_task_is_absent_from_sorted_candidates(self):
         with tempfile.TemporaryDirectory() as tmp:
