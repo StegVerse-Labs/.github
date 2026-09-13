@@ -1,0 +1,17 @@
+{
+  "reusable_task_id": "RT-REUSABLE-TASK-SCHEDULER-001",
+  "name": "Reusable Task Scheduler",
+  "purpose": "Evaluate one neutral reusable-task schedule and advance each due reusable identity through the canonical reusable-task trigger until completion or its first authentic boundary, without acquiring execution, transition, credential, or provider authority.",
+  "trigger": "a resident scheduling carrier invokes one bounded reusable-task scheduling cycle",
+  "scope": "one schedule document, one resident runtime root, and already-local repository roots",
+  "parameter_keys": ["schedule_path", "runtime_root", "repo_roots_json", "now_utc", "scope"],
+  "runner_templates": ["scripts/run_reusable_task_scheduler.py"],
+  "recording_levels": ["operation", "task", "goal", "system", "master_records"],
+  "completion_predicates": [
+    "REUSABLE_TASK_SCHEDULE_EVALUATED",
+    "ALL_DUE_REUSABLE_TASKS_ADVANCED_TO_COMPLETION_OR_AUTHENTIC_BOUNDARY",
+    "NO_SCHEDULER_AUTHORITY_ESCALATION"
+  ],
+  "authority_effect": "NONE_SCHEDULING_ONLY",
+  "reuse_instructions": "This is the neutral scheduling capability. Healer and other systems may consume it but do not own its semantics. Invoke only already-registered reusable task identities, never schedule RT-REUSABLE-TASK-SCHEDULER-001 from itself, preserve child receipts exactly, and do not create WorkerCoordinator claims/fences, InTr admissions, credentials, provider authority, or runtime authority."
+}
