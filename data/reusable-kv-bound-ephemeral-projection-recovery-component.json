@@ -1,0 +1,83 @@
+{
+  "schema": "stegverse.reusable-task-component/v1",
+  "component_id": "RTC-KV-EPHEMERAL-PROJECTION-RECOVERY-010",
+  "name": "KV-Bound Ephemeral Projection Recovery",
+  "family": "failure_remediation_classification",
+  "status": "SOURCE_CONTRACT_ACTIVE_RUNTIME_EVIDENCE_TASK_BOUND",
+  "capability_provided": [
+    "purpose_bound_kv_projection_materialization",
+    "resident_kv_installation_verification",
+    "conditional_existing_installation_receipt_recovery",
+    "in_memory_projection_delivery",
+    "fail_closed_error_classification"
+  ],
+  "inputs": [
+    "purpose",
+    "existing_device_kv_intr_protocol_ref",
+    "projection_schema_ref",
+    "consumer_callback_ref",
+    "optional_owner_selected_canonical_installation_receipt"
+  ],
+  "outputs": [
+    "validated_ephemeral_projection_context_or_fail_closed",
+    "device_kv_ingress_evidence_ref",
+    "kv_installation_verification_evidence_ref",
+    "browser_capability_observation_ref",
+    "conditional_recovery_evidence_ref"
+  ],
+  "preconditions": [
+    "registered StegOS transport node available",
+    "existing Device-KV Interlock/InTr path available",
+    "purpose and projection schema bound before invocation",
+    "KV/SKAP Vault remains sole user-verification authority",
+    "consumer callback accepts the validated projection without inheriting component authority"
+  ],
+  "canonical_implementation_owner": "StegVerse-Labs/Site existing Device-KV projection/recovery surfaces, parameterized by consuming Goal Task",
+  "authority_owner": {
+    "user_verification": "KV/SKAP Vault",
+    "governed_transition": "Interlock/InTr",
+    "credential_provider_release": "TV/TVC when downstream consumer requires provider operation",
+    "claim_fence": "WorkerCoordinator when task execution requires claim/fence",
+    "component": "NONE"
+  },
+  "authority_effect": "NONE_PROJECTION_AND_REMEDIATION_ONLY",
+  "expected_evidence": [
+    "authentic Device-KV InTr ingress admission",
+    "KV_INSTALLATION_VERIFIED",
+    "purpose-bound projection schema validation",
+    "required browser capability observation",
+    "no browser persistence of projection state",
+    "exact fail-closed classification when recovery cannot proceed"
+  ],
+  "repeatability": "ONCE_PER_PURPOSE_BOUND_INVOCATION_WITH_CONDITIONAL_SINGLE_RECOVERY_REENTRY",
+  "failure_classes": [
+    "DEVICE_KV_PATH_UNAVAILABLE",
+    "RESIDENT_KV_INSTALLATION_NOT_VERIFIED",
+    "CANONICAL_INSTALLATION_RECEIPT_UNAVAILABLE_OR_INVALID",
+    "PROJECTION_SCHEMA_OR_COMMITMENT_INVALID",
+    "BROWSER_CAPABILITY_NOT_OBSERVED",
+    "CONSUMER_CALLBACK_FAILURE"
+  ],
+  "retry_or_reentry_semantics": "Fail closed. Automatic generic retry is prohibited. If and only if resident KV installation is not verified, an owner-selected canonical installation receipt may be admitted through the existing Device-KV path and the same purpose-bound projection may be retried. Other failures return exact evidence to the consuming Goal Task.",
+  "version_or_schema_binding": [
+    "stegos.kv-bound-ephemeral-projection-context/v1",
+    "stegverse.device-kv-intr-materialization-ingress/v1",
+    "stegverse.kv.installation-status-projection/v1"
+  ],
+  "invariants": [
+    "component does not mint InTr authority",
+    "component does not mint claim or fence",
+    "component does not acquire credentials",
+    "component does not create device-local user verification",
+    "device identity and transport identity are not user-verification authority",
+    "canonical installation receipt is never synthesized",
+    "projection remains ephemeral and non-authorizing",
+    "GitHub and HeartBeat have no runtime authority"
+  ],
+  "initial_consumer": {
+    "task_id": "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001",
+    "cosv_task_vector": "50000010100000",
+    "purpose": "CURRENT_IPHONE_TESTFLIGHT_SIGNING",
+    "consumer_callback_ref": "StegVerse-Labs/Site:stegos-bootstrap/current-iphone-testflight-bootstrap.js#executeStaticCurrentIphoneTestflightBootstrap"
+  }
+}
