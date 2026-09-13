@@ -16,13 +16,15 @@
     "data/reusable-task-component-model.json",
     "data/reusable-task-component-decomposition-policy.json",
     "data/reusable-transport-component-contract.json",
+    "data/reusable-evidence-validation-component-contract.json",
+    "docs/REUSABLE_EVIDENCE_VALIDATION_COMPONENTS_MIRROR_HANDOFF.md",
     "StegVerse-Labs/continuity-vault-kit#211",
     "StegVerse-Labs/continuity-vault-kit/runtime/task_registry_event_sovereign_kv_binding.py"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
     "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegOS", "StegVerse-Labs/continuity-vault-kit"],
-    "components": ["task-registry", "session-event-history", "sovereign-kv", "interlock-intr", "provider-adapter", "custody-projection", "runtime-intake", "reusable-task-component-composition"]
+    "components": ["task-registry", "session-event-history", "sovereign-kv", "interlock-intr", "provider-adapter", "custody-projection", "runtime-intake", "reusable-task-component-composition", "current-verification-evidence-selection"]
   },
   "dependencies": [
     "TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001",
@@ -34,7 +36,8 @@
     "KV-CONNECTION-REVALIDATION-WORKER-001",
     "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
     "STEGOS-NODE-MANIFOLD-001",
-    "TVC-RECIPIENT-ADMISSION-SIGNING-CUSTODY-001"
+    "TVC-RECIPIENT-ADMISSION-SIGNING-CUSTODY-001",
+    "STEGOS-DEVICE-KV-SKAP-AUTHENTIC-RUNTIME-002"
   ],
   "reusable_task_component_composition": {
     "model": "data/reusable-task-component-model.json",
@@ -46,12 +49,14 @@
       "RTC-EVIDENCE-CUSTODY-004",
       "RTC-STEGVERSE-EGRESS-007",
       "RTC-INTERLOCK-INTR-TRANSPORT-008",
-      "RTC-FARSIDE-FINAL-009"
+      "RTC-FARSIDE-FINAL-009",
+      "RTC-EVIDENCE-CURRENT-SELECTOR-010"
     ],
     "round_trip_instances": ["admitted_provider_write", "exact_event_hash_readback"],
+    "current_verification_selection": "RTC-EVIDENCE-CURRENT-SELECTOR-010",
     "omitted_optional_components": ["RTC-PUBLISHER-005", "RTC-SDK-RETURN-006"],
     "new_reusable_component_required": false,
-    "duplicate_orchestration_disposition": "SUPERSEDE_LINEAR_HANDOFF_AS_PRIMARY_ARCHITECTURE; REUSE_EXISTING_RUNTIME_CREDENTIAL_TRANSPORT_AND_RECONSTRUCTION_OWNERS"
+    "duplicate_orchestration_disposition": "SUPERSEDE_LINEAR_HANDOFF_AS_PRIMARY_ARCHITECTURE; REUSE_EXISTING_RUNTIME_CREDENTIAL_TRANSPORT_CURRENT_EVIDENCE_SELECTOR_AND_RECONSTRUCTION_OWNERS"
   },
   "completed_source_integration": [
     "GITHUB_PROVIDER_NEUTRAL_EVENT_CUSTODY_BRIDGE",
@@ -59,15 +64,26 @@
     "EXACT_EVENT_HASH_OBJECT_BINDING",
     "FAIL_CLOSED_EXACT_HASH_READBACK_VALIDATOR",
     "RUNTIME_INTAKE_CONTRACT_BOUND_TO_EXISTING_EXECUTION_OWNERS",
-    "REUSABLE_TASK_COMPONENT_PROFILE_BOUND"
+    "REUSABLE_TASK_COMPONENT_PROFILE_BOUND",
+    "CURRENT_APPLICABLE_VERIFICATION_SELECTOR_BOUND"
   ],
   "goal_specific_completion_predicates": [
     "LIVE_CANONICAL_TASK_REGISTRY_EVENT_WITH_EXACT_HASH_LINEAGE",
+    "CURRENT_APPLICABLE_KV_SKAP_VERIFICATION_RECORD_SELECTED_WHEN_REQUIRED",
     "AUTHENTIC_PROVIDER_WRITE_ADMITTED_AND_EXECUTED_BY_EXISTING_OWNER",
     "EXACT_STORED_EVENT_HASH_READBACK_MATCHES_CANONICAL_EVENT_HASH",
     "TASK_REGISTRY_SOVEREIGN_KV_PROJECTION_RECEIPT_ACCEPTED",
     "REQUIRED_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION_OBSERVED"
   ],
+  "runtime_owner_transition_observation": {
+    "candidate_successor": "STEGOS-DEVICE-KV-SKAP-AUTHENTIC-RUNTIME-002",
+    "canonical_issue": "StegVerse-Labs/.github#1500",
+    "source_pr": "StegVerse-Labs/.github#1519",
+    "source_pr_exact_head": "a3c66f7a0a17ca941be72cc63f2cb9d11134b686",
+    "source_pr_exact_head_validation": "ALL_THREE_REQUIRED_LANES_PASS",
+    "canonical_dependency_replaced": false,
+    "reason": "PR #1519 remains unmerged/noncanonical on current main; this Goal Task must not promote a successor solely from an open PR"
+  },
   "first_unresolved_predicate": "AUTHENTIC_ADMITTED_PROVIDER_WRITE_AND_EXACT_EVENT_HASH_READBACK_FROM_SOVEREIGN_KV",
   "authority": {
     "task_registry": "COORDINATION_ONLY",
