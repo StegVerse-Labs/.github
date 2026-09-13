@@ -64,7 +64,24 @@ No higher interoperability class may be claimed from evidence belonging to a low
 
 ## Current state
 
-Canonical task registration and bridge implementation are being created. No live ELAN runtime connection is claimed. Existing Run 2 evidence proves StegVerse-side ELAN-shaped SDK processing only.
+Canonical coordination work is open in `StegVerse-Labs/.github#1729` on branch `elan-intr-bridge-contract-001`.
+
+Reference implementation work is open in `StegVerse-org/StegVerse-SDK#232` on branch `elan-intr-bridge-001` at head `1787466bb96abf297dd4bfb8017330a095b4c330`.
+
+The SDK PR adds:
+
+- `docs/ELAN_INTR_BRIDGE_CONTRACT.md`;
+- `schemas/elan-intr-bridge-envelope.schema.json`;
+- `stegverse_sdk/elan_intr_bridge.py`;
+- `tests/test_elan_intr_bridge.py`.
+
+The bridge now distinguishes four interoperability classes, separates facts/assertions/interpretation candidates, requires explicit elimination reasons, preserves unresolved interpretation sets, and applies a consequence-divergence gate. A single surviving candidate or consequence-equivalent surviving candidates can produce `READY_FOR_INTR_ADMISSION`; consequence-divergent surviving candidates produce `RESOLUTION_REQUIRED`. The reference evaluator never grants InTr transition authority.
+
+No GitHub Actions workflow run had appeared yet for SDK head `1787466bb96abf297dd4bfb8017330a095b4c330` at the latest check, so validation and merge are not claimed.
+
+README projection remains to be updated before task completion.
+
+No live ELAN runtime connection is claimed. Existing Run 2 evidence proves StegVerse-side ELAN-shaped SDK processing only.
 
 ## Non-claims
 
