@@ -53,27 +53,31 @@ class SitePublicationWorkerRegistrationTests(unittest.TestCase):
         self.assertIn("SITE_PUBLICATION_EVENT_CANDIDATE_VALIDATED", source)
         self.assertNotIn("final_publication_transition_admitted\": True", source)
 
+    def _write_admitted_fixture(self, mod, root: Path, *, authority_effect: str = "NONE_INGRESS_CANDIDATE_ONLY"):
+        materialization_id = "INTR-MAT-0e1ba4786b0ea8a00e1f166e"
+        queue = root / "intr-materialization" / f"{materialization_id}.json"
+        queue.parent.mkdir(parents=True)
+        queue.write_text(json.dumps({"materialization_id": materialization_id}) + "\n")
+        latest = root / mod.INGRESS_LATEST
+        latest.parent.mkdir(parents=True)
+        latest.write_text(json.dumps({
+            "schema": mod.INGRESS_SCHEMA,
+            "state": mod.INGRESS_STATE,
+            "materialization_id": materialization_id,
+            "queue_ref": str(queue),
+            "exact_request_validated": True,
+            "write_once_persisted": True,
+            "request_grants_execution_authority": False,
+            "claim_or_fence_minted": False,
+            "authority_effect": authority_effect,
+        }) + "\n")
+        return materialization_id, queue
+
     def test_worker_resolves_exact_materialization_from_local_admitted_ingress(self) -> None:
         mod = load_worker()
-        materialization_id = "INTR-MAT-0e1ba4786b0ea8a00e1f166e"
         with tempfile.TemporaryDirectory() as td:
             root = Path(td).resolve()
-            queue = root / "intr-materialization" / f"{materialization_id}.json"
-            queue.parent.mkdir(parents=True)
-            queue.write_text(json.dumps({"materialization_id": materialization_id}) + "\n")
-            latest = root / mod.INGRESS_LATEST
-            latest.parent.mkdir(parents=True)
-            latest.write_text(json.dumps({
-                "schema": mod.INGRESS_SCHEMA,
-                "state": mod.INGRESS_STATE,
-                "materialization_id": materialization_id,
-                "queue_ref": str(queue),
-                "exact_request_validated": True,
-                "write_once_persisted": True,
-                "request_grants_execution_authority": False,
-                "claim_or_fence_minted": False,
-                "authority_effect": "NONE_INGRESS_CANDIDATE_ONLY",
-            }) + "\n")
+            materialization_id, _ = self._write_admitted_fixture(mod, root)
             resolved, source = mod.resolve_admitted_materialization(root)
             self.assertEqual(resolved, materialization_id)
             self.assertEqual(source, "LOCAL_ADMITTED_INGRESS_RECEIPT")
@@ -83,25 +87,9 @@ class SitePublicationWorkerRegistrationTests(unittest.TestCase):
 
     def test_worker_fails_closed_on_explicit_binding_conflict_or_missing_queue(self) -> None:
         mod = load_worker()
-        materialization_id = "INTR-MAT-0e1ba4786b0ea8a00e1f166e"
         with tempfile.TemporaryDirectory() as td:
             root = Path(td).resolve()
-            queue = root / "intr-materialization" / f"{materialization_id}.json"
-            queue.parent.mkdir(parents=True)
-            queue.write_text(json.dumps({"materialization_id": materialization_id}) + "\n")
-            latest = root / mod.INGRESS_LATEST
-            latest.parent.mkdir(parents=True)
-            latest.write_text(json.dumps({
-                "schema": mod.INGRESS_SCHEMA,
-                "state": mod.INGRESS_STATE,
-                "materialization_id": materialization_id,
-                "queue_ref": str(queue),
-                "exact_request_validated": True,
-                "write_once_persisted": True,
-                "request_grants_execution_authority": False,
-                "claim_or_fence_minted": False,
-                "authority_effect": "NONE_INGRESS_CANDIDATE_ONLY",
-            }) + "\n")
+            _, queue = self._write_admitted_fixture(mod, root)
             resolved, source = mod.resolve_admitted_materialization(root, "INTR-MAT-aaaaaaaaaaaaaaaaaaaaaaaa")
             self.assertIsNone(resolved)
             self.assertEqual(source, "EXPLICIT_MATERIALIZATION_BINDING_CONFLICT")
@@ -109,6 +97,15 @@ class SitePublicationWorkerRegistrationTests(unittest.TestCase):
             resolved, source = mod.resolve_admitted_materialization(root)
             self.assertIsNone(resolved)
             self.assertEqual(source, "ADMITTED_INGRESS_QUEUE_BINDING_INVALID")
+
+    def test_worker_rejects_ingress_receipt_with_authorizing_effect(self) -> None:
+        mod = load_worker()
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td).resolve()
+            self._write_admitted_fixture(mod, root, authority_effect="EXECUTION_AUTHORITY")
+            resolved, source = mod.resolve_admitted_materialization(root)
+            self.assertIsNone(resolved)
+            self.assertEqual(source, "ADMITTED_INGRESS_RECEIPT_NOT_ELIGIBLE")
 
 
 if __name__ == "__main__":
