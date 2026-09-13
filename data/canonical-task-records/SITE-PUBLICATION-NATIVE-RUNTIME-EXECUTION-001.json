@@ -87,7 +87,9 @@
     "StegVerse-Labs/StegVerse-Healer:pull/68",
     "StegVerse-Labs/StegVerse-Healer:commit/0084ac3af5db9c29b4c3e74660751b9954317530",
     "StegVerse-Labs/StegVerse-Healer:pull/69",
-    "StegVerse-Labs/StegVerse-Healer:commit/1a2bac1a61f97819182a701d91fc91f61f9b0f1e"
+    "StegVerse-Labs/StegVerse-Healer:commit/1a2bac1a61f97819182a701d91fc91f61f9b0f1e",
+    "StegVerse-Labs/.github:pull/1767",
+    "StegVerse-Labs/.github:commit/1d10dd97475c910de83847f7e5344e387dd81cf7"
   ],
   "source_state": {
     "worker_registration_merged_validated": true,
@@ -99,7 +101,15 @@
     "neutral_reusable_task_scheduler_retry_semantics_merged_validated": true,
     "healer_migrated_to_scheduler_consumer_carrier": true,
     "site_source_refresh_neutral_schedule_binding_merged_validated": true,
-    "admitted_materialization_binding_source_candidate": true,
+    "admitted_materialization_binding_pull_request": 1767,
+    "admitted_materialization_binding_exact_head": "de86af37d00172cff393b1ccc2aaca527e2edb27",
+    "admitted_materialization_binding_validation_runs": {
+      "deterministic_suite": 34781655303,
+      "organization_control": 34781655347,
+      "heartbeat": 34781655362
+    },
+    "admitted_materialization_binding_merge": "1d10dd97475c910de83847f7e5344e387dd81cf7",
+    "admitted_materialization_binding_merged_validated": true,
     "manual_materialization_env_source_of_truth_retired": true,
     "explicit_materialization_env_role": "OPTIONAL_CORRELATION_MUST_MATCH_LOCAL_ADMITTED_INGRESS",
     "neutral_reusable_task_scheduler_runtime_proven": false,
@@ -180,6 +190,6 @@
     "material_function_change": false,
     "readme_updated_in_change_set": false,
     "readme_path": "README.md",
-    "no_readme_update_reason": "This repair replaces a task-specific manual materialization binding with fail-closed reuse of the already-canonical local InTr ingress evidence; it does not alter the public Site publication capability or promote runtime evidence."
+    "no_readme_update_reason": "This reconciliation records the merged fail-closed admitted-InTr materialization binding; it changes no public Site capability and promotes no runtime evidence."
   }
 }
