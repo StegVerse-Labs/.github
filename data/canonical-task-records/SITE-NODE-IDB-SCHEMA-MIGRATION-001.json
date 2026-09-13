@@ -50,9 +50,9 @@
     {
       "dependency_id": "DEP-SITE-IDB-AUTHENTIC-RUNTIME-LANE",
       "kind": "RUNTIME_EXECUTION_PATH",
-      "state": "IN_VALIDATION",
+      "state": "MERGE_READY",
       "ref": "StegVerse-Labs/StegBrowser/pull/36",
-      "disposition": "FAIL_CLOSED_WORKFLOW_SEPARATES_GITHUB_HOSTED_PREFLIGHT_FROM_SELF_HOSTED_STEGOS_BROWSER_NODE_EVIDENCE; CURRENT_REMOTE_DESKTOP_DEVICE_INVENTORY_EMPTY"
+      "disposition": "EXACT_HEAD_88ac7d87950c3f5671f97a4b0f08a613661c445f_VALIDATED_BY_RUN_34738049472; WORKFLOW_FAILS_CLOSED_BETWEEN_GITHUB_PREFLIGHT_AND_SELF_HOSTED_STEGOS_BROWSER_NODE_EVIDENCE; MERGE_MUTATION_SAFETY_GATED; CURRENT_REMOTE_DESKTOP_DEVICE_INVENTORY_EMPTY"
     }
   ],
   "blockers": [],
@@ -110,11 +110,11 @@
   "completion": {
     "claimed": false,
     "validated": true,
-    "reconciliation_ref": "StegVerse-Labs/Site@a3bd73f0ced551738f37a6222b3ca933c3433fdf + StegVerse-Labs/Site/actions/runs/34617268914 + StegVerse-Labs/StegBrowser@0dd96a39ccc17a9eb0361e1eb975ad6dc542d87e",
+    "reconciliation_ref": "StegVerse-Labs/Site@a3bd73f0ced551738f37a6222b3ca933c3433fdf + StegVerse-Labs/Site/actions/runs/34617268914 + StegVerse-Labs/StegBrowser@0dd96a39ccc17a9eb0361e1eb975ad6dc542d87e + StegVerse-Labs/StegBrowser/actions/runs/34738049472",
     "activation_proof_complete": false
   },
   "allowed_next_transitions": [
-    "VALIDATE_AND_MERGE_STEGBROWSER_RUNTIME_EVIDENCE_LANE",
+    "MERGE_STEGBROWSER_RUNTIME_EVIDENCE_LANE",
     "EXECUTE_AUTHENTIC_STEGOS_BROWSER_NODE_RUNTIME_OBSERVATION",
     "OBSERVE_REPAIRED_DEVICE_KV_DIRECTORY_READBACK",
     "RETURN_TO_SS_EVIDENCE_COMPARISON_STANDARD_FLOW_IF_REPAIR_CONFIRMED"
