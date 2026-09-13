@@ -35,6 +35,11 @@
       "ref": "data/reusable-task-component-model.json",
       "required": true,
       "purpose": "Canonical reusable-component composition and authority-separation invariants, including interchangeable StegOS device role and KV/SKAP user-verification ownership."
+    },
+    {
+      "ref": "docs/CANONICAL_INVARIANT_INGRESS_LOCK_MIRROR_HANDOFF.md",
+      "required": true,
+      "purpose": "Mandatory canonical-source-first interpretation lock for every session/build/task interpretation ingress and source-mutation proposal."
     }
   ],
   "task_policy_refs": {
