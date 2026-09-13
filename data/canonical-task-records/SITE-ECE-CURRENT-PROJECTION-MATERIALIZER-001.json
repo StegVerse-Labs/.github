@@ -13,6 +13,7 @@
   "handoff_projection_refs": [
     "StegVerse-Labs/.github:docs/SITE_ECE_CURRENT_PROJECTION_MATERIALIZER_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github:docs/SITE_ECE_CURRENT_PROJECTION_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github:docs/SITE_ECE_PUBLICATION_BINDING_1767_RECONCILIATION.md",
     "StegVerse-Labs/.github:docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github:docs/REUSABLE_GOAL_TASK_TRANSPORT_COMPONENTS_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github:docs/SITE_PUBLICATION_NATIVE_RUNTIME_COMPONENT_MODEL_MIRROR_HANDOFF.md",
@@ -46,6 +47,17 @@
     "healer_binding_exact_head": "1aee2eae26ab8dfb67e675ae6fa4ea219821f5a9",
     "healer_binding_merge": "be8ed7e5fb5f18602a6519b31aa4080bfd8cdf1b",
     "healer_binding_validation_run": 34677527923,
+    "publication_owner_binding_pull_request": 1708,
+    "publication_owner_binding_merge": "61280371c91a18397d5a8a833895e0afe58ad33f",
+    "publication_admitted_ingress_repair_pull_request": 1767,
+    "publication_admitted_ingress_repair_exact_head": "de86af37d00172cff393b1ccc2aaca527e2edb27",
+    "publication_admitted_ingress_repair_validation_runs": {
+      "deterministic_suite": 34781655303,
+      "organization_control": 34781655347,
+      "heartbeat": 34781655362
+    },
+    "publication_admitted_ingress_repair_merge": "1d10dd97475c910de83847f7e5344e387dd81cf7",
+    "publication_admitted_ingress_repair_merged_validated": true,
     "site_materializer_source_validated": true,
     "healer_cycle_materializer_binding_source_validated": true,
     "authentic_materialization_claimed": false,
@@ -78,7 +90,11 @@
     "custody_owner": "Master Records",
     "publication_owner_task": "SITE-PUBLICATION-NATIVE-RUNTIME-EXECUTION-001",
     "publication_owner_cosv": "50000000102000",
-    "publication_component": "RTC-PUBLISHER-005"
+    "publication_worker_task": "SITE-PUBLICATION-INTR-CONSUMER-001",
+    "publication_source_refresh_reusable_task": "RT-SOVEREIGN-SOURCE-REFRESH-001",
+    "publication_scheduler_reusable_task": "RT-REUSABLE-TASK-SCHEDULER-001",
+    "publication_component": "RTC-PUBLISHER-005",
+    "publication_candidate_identity_source": "LOCAL_ADMITTED_UNIVERSAL_INTR_EVIDENCE"
   },
   "authority_model": {
     "materializer_authority": "NONE_COPY_ONLY",
@@ -88,15 +104,18 @@
     "device_or_node_user_verifier_authority": "NONE",
     "execution_surface_connectivity_authority": "NONE_OBSERVATION_ONLY",
     "publication_execution_owner": "SITE-PUBLICATION-NATIVE-RUNTIME-EXECUTION-001",
+    "publication_worker_claim_authority": "WorkerCoordinator",
+    "publication_transition_authority": "Interlock/InTr",
     "github_runtime_authority": "NONE",
     "source_repository_writeback_allowed": false
   },
   "latest_runtime_observation": {
-    "remote_execution_connector_surfaces_observed": 0,
-    "remote_execution_connector_observation_authority_effect": "NONE_CONNECTIVITY_OBSERVATION_ONLY",
-    "connected_drive_materialization_artifacts_found": false,
+    "connected_drive_scheduler_source_refresh_artifacts_found": false,
+    "connected_drive_publication_ingress_artifacts_found": false,
     "authentic_site_safe_projection_materialized": false,
-    "site_live_continuity_projection_observed": false
+    "site_live_continuity_projection_observed": false,
+    "homepage_reachability_observed_separately": true,
+    "homepage_reachability_satisfies_continuity_projection_predicate": false
   },
   "remaining_predicates": [
     "AUTHENTIC_SITE_SAFE_PROJECTION_MATERIALIZED",
