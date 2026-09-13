@@ -21,6 +21,7 @@ RECORDS = ROOT / "data" / "canonical-task-records"
 CHECKIN = ROOT / "scripts" / "evaluate_task_registry_collision_checkin.py"
 BOOTSTRAP = ROOT / "scripts" / "install_and_run_canonical_work_event_bootstrap.py"
 CALLER_SURFACE = "INTERNAL_CANONICAL_WORK_BOOTSTRAP"
+PROGRESSION_CONTROLLER_TASK_ID = "ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001"
 
 
 def load(path: Path) -> dict[str, Any]:
@@ -30,7 +31,11 @@ def load(path: Path) -> dict[str, Any]:
     return value
 
 
-def machine_ingress_candidate(record: dict[str, Any]) -> bool:
+def machine_ingress_candidate(record: dict[str, Any], excluded_task_ids: set[str] | None = None) -> bool:
+    task_id = str(record.get("task_id") or "")
+    excluded = excluded_task_ids or set()
+    if task_id == PROGRESSION_CONTROLLER_TASK_ID or task_id in excluded:
+        return False
     if record.get("coordination_state") != "PROPOSED":
         return False
     if record.get("checkout_state") in {"SUPERSEDED", "COMPLETED", "RETIRED"}:
@@ -54,7 +59,7 @@ def machine_ingress_candidate(record: dict[str, Any]) -> bool:
     return True
 
 
-def load_candidates(records_dir: Path = RECORDS) -> list[dict[str, Any]]:
+def load_candidates(records_dir: Path = RECORDS, excluded_task_ids: set[str] | None = None) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     seen: set[str] = set()
     for path in sorted(records_dir.glob("*.json")):
@@ -65,7 +70,7 @@ def load_candidates(records_dir: Path = RECORDS) -> list[dict[str, Any]]:
         if task_id in seen:
             raise RuntimeError(f"duplicate canonical task record: {task_id}")
         seen.add(task_id)
-        if machine_ingress_candidate(record):
+        if machine_ingress_candidate(record, excluded_task_ids):
             rows.append(record)
     rows.sort(key=lambda row: (0 if row.get("checkout_state") == "CHECKED_OUT" else 1, str(row["task_id"])))
     return rows
@@ -90,9 +95,9 @@ def collision_check(task_id: str) -> dict[str, Any]:
     return result
 
 
-def select_task(records_dir: Path = RECORDS) -> tuple[dict[str, Any] | None, list[dict[str, Any]]]:
+def select_task(records_dir: Path = RECORDS, excluded_task_ids: set[str] | None = None) -> tuple[dict[str, Any] | None, list[dict[str, Any]]]:
     considered: list[dict[str, Any]] = []
-    for record in load_candidates(records_dir):
+    for record in load_candidates(records_dir, excluded_task_ids):
         task_id = str(record["task_id"])
         checkin = collision_check(task_id)
         considered.append({
@@ -110,14 +115,18 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--runtime-root", type=Path)
     parser.add_argument("--select-only", action="store_true")
+    parser.add_argument("--exclude-task-id", action="append", default=[])
     args = parser.parse_args()
+    excluded_task_ids = {str(task_id).strip() for task_id in args.exclude_task_id if str(task_id).strip()}
 
-    selected, considered = select_task()
+    selected, considered = select_task(excluded_task_ids=excluded_task_ids)
     receipt: dict[str, Any] = {
         "schema": "stegverse.task-registry-canonical-work-cycle/v1",
         "start_point": "CANONICAL_TASK_REGISTRY",
+        "progression_controller_excluded_from_work_selection": True,
+        "explicit_request_task_ids_excluded": sorted(excluded_task_ids),
         "selected_task_id": selected.get("task_id") if selected else None,
-        "candidate_count": len(load_candidates()),
+        "candidate_count": len(load_candidates(excluded_task_ids=excluded_task_ids)),
         "considered": considered,
         "workercoordinator_claim_or_fence_minted": False,
         "interlock_intr_transition_authority_preserved": True,

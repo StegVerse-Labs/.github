@@ -33,6 +33,14 @@ class TaskRegistryFirstCanonicalWorkCycleTests(unittest.TestCase):
         self.assertFalse(module.machine_ingress_candidate(record("A-001", state="INGRESS_ADMITTED")))
         self.assertFalse(module.machine_ingress_candidate(record("A-001", human_action="USER_ONLY")))
 
+    def test_progression_controller_is_not_selected_as_product_work(self):
+        controller = record(module.PROGRESSION_CONTROLLER_TASK_ID)
+        self.assertFalse(module.machine_ingress_candidate(controller))
+
+    def test_explicit_request_task_can_be_excluded_from_registry_pool(self):
+        self.assertFalse(module.machine_ingress_candidate(record("A-001"), {"A-001"}))
+        self.assertTrue(module.machine_ingress_candidate(record("B-001"), {"A-001"}))
+
     def test_checked_out_candidates_sort_before_unclaimed_candidates(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -40,6 +48,14 @@ class TaskRegistryFirstCanonicalWorkCycleTests(unittest.TestCase):
             (root / "A-001.json").write_text(json.dumps(record("A-001")), encoding="utf-8")
             rows = module.load_candidates(root)
             self.assertEqual([r["task_id"] for r in rows], ["A-001", "B-001"])
+
+    def test_excluded_task_is_absent_from_sorted_candidates(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "A-001.json").write_text(json.dumps(record("A-001")), encoding="utf-8")
+            (root / "B-001.json").write_text(json.dumps(record("B-001")), encoding="utf-8")
+            rows = module.load_candidates(root, {"A-001"})
+            self.assertEqual([r["task_id"] for r in rows], ["B-001"])
 
     def test_selection_skips_collision_and_uses_existing_continue_disposition(self):
         with tempfile.TemporaryDirectory() as tmp:

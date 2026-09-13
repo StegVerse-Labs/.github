@@ -6,7 +6,7 @@ Parent Goal: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`
 Parent COSV: `10100000100000`
 Runtime-adoption task: `ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001`
 Issue: `#1766`
-State: `TASK_REGISTRY_FIRST_SELECTION_SOURCE_STAGED / AUTHENTIC_RUNTIME_ADOPTION_PENDING`
+State: `TASK_REGISTRY_FIRST_RESIDENT_LOOP_SOURCE_STAGED / AUTHENTIC_RUNTIME_ADOPTION_PENDING`
 Authority effect: `NONE`
 
 ## Purpose
@@ -55,34 +55,48 @@ human idea / query / goal
 -> continuation without human re-presentation
 ```
 
-## Previously merged source evidence
+## Merged source evidence
 
-PR `#1768` merged to `main` at `1d7d49b3e440ab4393d0df8bc4de7fb29975d3b9`.
+PR `#1768` merged to `main` at `1d7d49b3e440ab4393d0df8bc4de7fb29975d3b9`, staging the existing runtime-adoption identity through Canonical Work.
 
-Merged source surfaces include:
+PR `#1771` merged to `main` at `5548599dacd1b073b7c50c57caf9a80bf9771466`, making the existing Task Registry the deterministic work-discovery start point through `scripts/run_task_registry_canonical_work_cycle.py`.
 
-- `data/canonical-task-records/ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001.json`;
-- `control/resident-execution-request.d/canonical-work-entity-autonomous-governed-progression-runtime-adoption-001.json`;
-- `control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py` registration via `AUTONOMOUS_PROGRESSION_SPEC`;
-- `tests/test_entity_autonomous_progression_canonical_work_ingress.py`;
-- `receipts/preflight/ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-CANONICAL-WORK-INGRESS-001.json`.
+PR #1771 passed exact-head organization-control validation, deterministic repository validation, and heartbeat-worker validation before merge. This is source/CI evidence only and does not establish runtime adoption.
 
-The initial exact-head validation exposed a missing mandatory `execution_substrate_resolution` in the new runtime-capable task registration. That registration defect was repaired without weakening the validator. Exact repair head `63d0ad8472fb8b5c0984b720e0758ddf0722c90c` passed organization control-plane validation, deterministic repository validation, and heartbeat-worker validation.
+## Current resident-loop continuation
 
-Those artifacts remain valid source/CI evidence, but they are no longer treated as the autonomous work-discovery starting point.
+Branch `task-registry-resident-loop-001` binds the registry-first selector back into the existing resident `canonical_work_coordination` consumer rather than creating a new resident dispatcher or scheduler.
 
-## Registry-first source continuation
+Current source changes:
 
-Branch `task-registry-first-autonomous-progression-001` adds:
+- the existing resident Canonical Work consumer materializes `scripts/run_task_registry_canonical_work_cycle.py` and the existing Task Registry check-in dependencies into the already-selected resident runtime;
+- missing canonical task shards are projected from already-local source while existing resident task shards are preserved rather than overwritten;
+- after the explicit Canonical Work request set is visited, the same consumer attempts one bounded Task Registry cycle;
+- explicit-request task IDs are excluded from the registry-selected pool so source-side `PROPOSED` state cannot cause duplicate ingress immediately after explicit request consumption;
+- `ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001` is excluded from product-work selection because it is the progression controller, not a product-work candidate;
+- the selected remaining task must still receive the existing general Task Registry `CONTINUE` disposition before delegation;
+- delegation reuses `scripts/install_and_run_canonical_work_event_bootstrap.py` and therefore the existing Canonical Work / Interlock-InTr path;
+- failures are retained as bounded evidence and do not mint authority or bypass collision/governance rules.
 
-- `scripts/run_task_registry_canonical_work_cycle.py`;
-- `tests/test_task_registry_first_canonical_work_cycle.py`.
+No second dispatcher, scheduler, WorkerCoordinator, listener, heartbeat, credential path, or runtime authority is introduced.
 
-The new cycle reads existing canonical task shards, filters only existing machine-owned runtime-capable records that are currently `PROPOSED` and permit `INGRESS_ADMITTED`, excludes tasks requiring human action, preserves the existing WorkerCoordinator/Interlock-InTr authority model, and invokes the existing general Task Registry collision check-in for each candidate.
+## Duplicate-ingress prevention
 
-Only a candidate receiving the existing `CONTINUE` disposition may be delegated to `scripts/install_and_run_canonical_work_event_bootstrap.py`. `STOP_*` and `COORDINATE_CONVERGENCE` candidates are not bypassed. Checked-out candidates are considered before unclaimed candidates, with stable task-ID ordering inside each class. This is deterministic selection only; it grants no authority.
+The resident explicit-request set and the registry-selected pool are intentionally distinct for the same cycle.
 
-The script can run `--select-only` for non-mutating selection evidence or, when provided a runtime root, delegate the selected task into the already-existing Canonical Work path. It creates no scheduler, dispatcher, WorkerCoordinator, listener, heartbeat, credential path, or second runtime.
+```text
+explicit request task
+-> existing explicit request consumer
+-> excluded from same-cycle registry-selected pool
+
+other registered machine-owned task
+-> Task Registry eligibility
+-> collision/check-in
+-> CONTINUE only
+-> existing Canonical Work bootstrap
+```
+
+This prevents the source-side canonical record remaining `PROPOSED` from being misread as permission to immediately duplicate an already-attempted explicit ingress. The exclusion is selection hygiene only; it does not mutate task state or grant authority.
 
 ## Authentic progression
 
@@ -130,18 +144,20 @@ Source staging, CI, merge, registry selection, request-file presence, or HeartBe
 - no second user-operated machine;
 - no parallel self-build task registry or queue;
 - no hand-authored request as the canonical work-discovery source;
+- no duplicate same-cycle registry selection of explicit-request tasks;
+- no selection of the progression-controller task as product work;
 - no human checkpoint inserted merely because an intermediate Task/COSV/handoff changes;
 - no claim that source/CI/merge proves runtime execution.
 
 ## README impact
 
-The current README already states that the Task Registry is work-intent/coordination truth and that autonomous progression selects the next admissible nonduplicate task. This continuation resolves the implementation trajectory to match those already-documented semantics; no contradictory new authority or runtime model is introduced.
+`README.md` was reviewed against this continuation. Its current Autonomous Governed Entity Progression and Canonical Work task-ingress sections already state the required semantics: next-admissible nonduplicate task selection, Task Registry as work-intent/coordination truth, WorkerCoordinator claim/fence authority, Interlock/InTr transition authority, and no second scheduler/WorkerCoordinator. No semantic README change is required for this bounded resident binding; the README remains current.
 
 ## Remaining machine work
 
-1. validate and merge the Task Registry-first selector source;
-2. bind the selector into the existing resident Canonical Work progression path without creating a second dispatcher or scheduler;
-3. observe one existing registry task receive exact `CONTINUE` collision disposition and authentic `INGRESS_ADMITTED` evidence;
+1. validate and merge the resident Task Registry return-loop source;
+2. observe the existing resident `canonical_work_coordination` consumer materialize the registry selector and task-shard view;
+3. observe one non-explicit existing registry task receive exact `CONTINUE` collision disposition and authentic `INGRESS_ADMITTED` evidence;
 4. observe WorkerCoordinator claim/fence where applicable;
 5. observe current governance and execution or retained DENY;
 6. reconstruct state and return to the Task Registry;
