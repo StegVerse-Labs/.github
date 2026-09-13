@@ -24,12 +24,14 @@ def test_existing_device_kv_owner_is_registered_without_runtime_upgrade():
     assert record["completion"]["validated"] is False
     assert record["completion"]["activation_proof_complete"] is False
     assert record["authority_model"]["task_registry_mints_execution_authority"] is False
+    assert record["authority_model"]["task_registry_is_runtime_precondition"] is False
     assert record["authority_model"]["worker_claim_authority"] == "WORKERCOORDINATOR"
     assert record["authority_model"]["device_user_verification_authority"] == "NONE"
     assert record["authority_model"]["github_runtime_authority"] == "NONE"
+    assert "TASK_REGISTRY_CONTINUE" not in record["allowed_next_transitions"]
 
 
-def test_task_registry_exposes_current_convergence_instead_of_minting_continue(tmp_path):
+def test_task_registry_exposes_current_convergence_without_runtime_authority(tmp_path):
     env = dict(os.environ)
     env["STEGVERSE_TASK_REGISTRY_EVENT_LEDGER"] = str(tmp_path / "events.jsonl")
     payload = {
@@ -69,3 +71,19 @@ def test_roundtrip_collision_is_adjacency_not_evidence_equivalence():
     assert roundtrip["checkout_state"] == "CHECKED_OUT"
     assert erl["completion"]["activation_proof_complete"] is False
     assert "AUTHENTIC_THREE_HOP_RECEIPT_CHAIN_OBSERVED" in erl["expected_evidence_predicates"]
+
+
+def test_shortest_existing_erl_runtime_path_does_not_consume_task_registry_disposition():
+    submitter = (ROOT / "scripts/submit_erl_active_research_intr_binding_local.py").read_text()
+    consumer = (ROOT / "scripts/consume_device_kv_intr_materialization_request_base.py").read_text()
+
+    assert 'TRANSPORT_ORIGIN = "STEGOS_RESIDENT_LOCAL"' in submitter
+    assert '"transport_credential_required": False' in submitter
+    assert '"tvc_relay_authorization_id" not in value' in submitter
+    assert 'parsed.path == "/intr/materialization"' in submitter
+
+    assert 'TARGET_TASK = "SHWP-DEVICE-KV-INTR-OBSERVATION-001"' in consumer
+    assert '"request_grants_execution_authority":False' in consumer.replace(" ", "")
+    assert '"claim_or_fence_minted_by_consumer":False' in consumer.replace(" ", "")
+    assert 'TARGET_ENTRYPOINT = "scripts/refresh_and_execute_resident_task.py"' in consumer
+    assert "TASK_REGISTRY_CONTINUE" not in consumer

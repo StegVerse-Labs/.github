@@ -7,84 +7,59 @@ COSV: `40000100100000`
 Runtime truth remains: `docs/SS_ERL_ACTIVE_RESEARCH_INTR_RUNTIME_BINDING_MIRROR_HANDOFF.md`
 Authority effect: `NONE_COORDINATION_ONLY`
 
-## Discovery
+## Subtraction-first reconciliation
 
-The portable DEVICE_KV owner package is merged and source-ready through `.github` PR #1735 at `b1530b9dd531c848cc80d6c482ae015653fdd539`.
+The prior version of this handoff incorrectly promoted a Task Registry `CONTINUE` disposition into a runtime prerequisite before the existing DEVICE_KV owner could be used by the ERL trajectory.
 
-Portable checkout requires a Task Registry disposition with:
+That requirement is removed.
 
-```text
-schema = stegverse.task-registry-checkin-disposition/v1
-task_id = SHWP-DEVICE-KV-INTR-OBSERVATION-001
-disposition = CONTINUE
-authority_effect = NONE
-```
-
-WorkerCoordinator remains the only claim/fence authority after that coordination-only gate.
-
-Before this reconciliation, `SHWP-DEVICE-KV-INTR-OBSERVATION-001` existed in the worker registry, executable handoff, task vector, process adapter, and portable package but did not have a canonical record under `data/canonical-task-records/`. The generic Task Registry evaluator would therefore return `STOP_NOT_REGISTERED`.
-
-This reconciliation registers that **existing owner** under the same task ID and COSV `50000000101000`. It does not create a new Goal Task, worker, scheduler, authority path, or runtime owner.
-
-## Current convergence collision
-
-After registration, immediate portable checkout is still not admissible.
-
-`STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001` is currently:
+Canonical executable source already establishes the shorter path:
 
 ```text
-coordination_state = ACTIVE
-checkout_state = CHECKED_OUT
+ERL resident-local manifest/binding
+-> shared loopback Universal InTr ingress
+-> hop 1
+-> hop 2
+-> terminal DEVICE_SYSTEM -> KV materialization request
+-> scripts/consume_device_kv_intr_materialization_request.py
+-> existing SHWP-DEVICE-KV-INTR-OBSERVATION-001 WorkerCoordinator task execution
+-> exact terminal KV readback/evidence
 ```
 
-and canonically names `SHWP-DEVICE-KV-INTR-OBSERVATION-001` as an adjacent task.
+The resident-local ERL submitter explicitly uses `STEGOS_RESIDENT_LOCAL`, requires no transport credential, and forbids a TVC relay authorization identifier. The DEVICE_KV consumer receives a non-authorizing admitted materialization event and invokes the already-existing bounded WorkerCoordinator task path. WorkerCoordinator remains responsible for claim/fence admission inside that path.
 
-The roundtrip Goal is broader:
+## Task Registry role
 
-```text
-DEVICE_SYSTEM -> KV -> SKAP_VAULT -> KV -> DEVICE_SYSTEM
-```
+The Task Registry record for `SHWP-DEVICE-KV-INTR-OBSERVATION-001` remains useful for coordination, discovery, collision visibility, and fresh-state reconciliation. It does not grant runtime authority and is not an additional runtime gate.
 
-The ERL Goal requires only its own three-hop path ending at KV:
+A `COORDINATE_CONVERGENCE` result involving `STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001` therefore means only that adjacent work exists. It does not make the broader SKAP roundtrip task's prerequisites part of the narrower ERL completion path and does not prohibit the ERL event from reaching the existing DEVICE_KV owner through its canonical admitted-event execution path.
 
-```text
-EXTERNAL_SYSTEM -> STEGOS_ECOSYSTEM -> DEVICE_SYSTEM -> KV
-```
+No adjacency is deleted, no competing WorkerCoordinator is created, and no claim/fence is minted by Task Registry.
 
-The roundtrip task is currently waiting on authentic current-iPhone TVC/SKAP prerequisites that are not ERL completion predicates. ERL therefore MUST NOT inherit those predicates merely because both trajectories touch DEVICE/KV.
+## Authority invariants
 
-However, because the roundtrip task is already checked out and adjacency is canonical, this session also MUST NOT force Task Registry `CONTINUE`, weaken collision detection, delete the adjacency, or mint a competing WorkerCoordinator claim/fence for the DEVICE_KV owner.
+- Task Registry: coordination only; not a runtime precondition.
+- WorkerCoordinator: sole claim/fence authority for the bounded DEVICE_KV task.
+- Interlock/InTr: transition/admission authority.
+- TV/TVC: credential/provider/release authority when a transition actually requires credentials; the ERL resident-local transport leg does not.
+- KV/SKAP Vault: sole user-verification authority.
+- GitHub: source/evidence coordination only; runtime authority `NONE`.
+- Remote-device enumeration: `NOT_APPLICABLE`.
+- Second user-operated device: prohibited/not required.
+- Provider replay: unauthorized.
 
-## Correct current disposition
-
-The correct coordination state is:
+## Current disposition
 
 ```text
 DEVICE_KV_OWNER_REGISTERED_IN_TASK_REGISTRY
 PORTABLE_DEVICE_KV_PACKAGE_MERGED
 CURRENT_USER_IPHONE_SURFACE_MERGED
-ACTIVE_ADJACENT_DEVICE_KV_SKAP_ROUNDTRIP_CHECKOUT_OBSERVED
-TASK_REGISTRY_CONTINUE_NOT_YET_ADMISSIBLE
-COORDINATE_CONVERGENCE_REQUIRED
+ADJACENT_DEVICE_KV_SKAP_ROUNDTRIP_VISIBLE_FOR_COORDINATION
+TASK_REGISTRY_RUNTIME_GATE = NONE
+SHORTEST_EXISTING_ERL_EVENT_PATH_RESTORED
+AUTHENTIC_CURRENT_IPHONE_EXECUTION_EVIDENCE_NOT_YET_OBSERVED
 ```
-
-This is a coordination result only. It does not prove execution of either Goal Task.
-
-## Authority invariants
-
-- Task Registry remains coordination-only and cannot mint execution authority.
-- WorkerCoordinator remains claim/fence authority.
-- Interlock/InTr remains transition/admission authority.
-- TV/TVC remains credential/provider/release authority.
-- KV/SKAP Vault remains sole user-verification authority.
-- StegOS/current-iPhone identity is not user-verification authority.
-- GitHub runtime authority remains `NONE`.
-- Provider replay remains unauthorized.
-- Remote-device enumeration remains `NOT_APPLICABLE`.
-- A second user-operated device remains prohibited.
 
 ## Next admissible work
 
-Resolve the canonical adjacency through existing cross-task coordination before portable checkout. The resolution must preserve the already-checked-out roundtrip owner, prove whether ERL can consume a narrower DEVICE_KV evidence-producing step without competing for the roundtrip claim/fence, and express any remaining subject-bound evidence delta precisely.
-
-Until that coordination resolves to a Task Registry `CONTINUE` disposition for `SHWP-DEVICE-KV-INTR-OBSERVATION-001`, do not invoke portable WorkerCoordinator checkout for this ERL trajectory.
+Use the existing ERL resident-local input/materialization path directly. Observe the shared loopback InTr admission, the two upstream receipts, the terminal DEVICE_KV materialization event, the existing WorkerCoordinator-owned terminal execution, exact KV byte readback, and then Master Records custody/reconstruction. Do not add another scheduler, Task Registry gate, transport credential, remote-device dependency, runtime owner, or coordination layer.

@@ -43,7 +43,7 @@
     "current_executor": "CURRENT_USER_IPHONE portable WorkerCoordinator -> device-kv-intr-observation-worker",
     "unresolved_classification": "TASK_BOUND_NATIVE_IPHONE_CHECKOUT_AND_EXECUTION_EVIDENCE_NOT_OBSERVED",
     "remote_device_connector_classification": "NOT_APPLICABLE",
-    "authority_basis": "Existing independent task-control admission plus fresh WorkerCoordinator claim/fence; Interlock/InTr remains transition authority; TV/TVC remains credential authority",
+    "authority_basis": "An admitted DEVICE_KV materialization event may invoke the existing owner directly; WorkerCoordinator performs its own claim/fence admission inside the existing execution path. Task Registry remains coordination-only and is not an additional runtime precondition. Interlock/InTr remains transition authority; TV/TVC remains credential authority.",
     "unattended_runtime": false
   },
   "worker_claim": {
@@ -60,7 +60,6 @@
     "activation_proof_complete": false
   },
   "allowed_next_transitions": [
-    "TASK_REGISTRY_CONTINUE",
     "WORKERCOORDINATOR_PORTABLE_CHECKOUT",
     "TARGETED_CURRENT_IPHONE_EXECUTION",
     "VERIFY_RUNTIME_OBSERVATION"
@@ -72,6 +71,7 @@
   ],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
+    "task_registry_is_runtime_precondition": false,
     "worker_claim_authority": "WORKERCOORDINATOR",
     "interlock_intr_transition_authority": true,
     "credential_authority": "TV/TVC",
