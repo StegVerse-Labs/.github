@@ -5,7 +5,7 @@ Repository: `StegVerse-Labs/.github`
 Goal Task ID: `SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004`
 Parent Goal Task ID: `SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003`
 COSV: `71000000100110`
-Status: `ACTIVE / NODE + KV CONTINUITY RECONCILED / RTC-RESIDENT-RENDEZVOUS-010 SELECTED / CONSUMER REGISTRATION PENDING`
+Status: `ACTIVE / RTC-RESIDENT-RENDEZVOUS-010 SOURCE MERGED + VALIDATED / AUTHENTIC TASK-BOUND NODE EXECUTION EVIDENCE REQUIRED`
 
 ## Purpose and identity
 
@@ -59,7 +59,7 @@ Task Registry coordinates only. WorkerCoordinator owns claim/fence. Interlock/In
 
 The Reusable Task Component Model merged through PR #1652 at `b9f8e5153aa1651f2d7f043fb902eacb7c113ed9`.
 
-The Goal transport profile now explicitly selects `RTC-RESIDENT-RENDEZVOUS-010` for only these two resident-delivery round trips:
+The Goal transport profile selects `RTC-RESIDENT-RENDEZVOUS-010` only for these two resident-delivery round trips:
 
 - `resident_client_secret_reseal`
 - `resident_consent_listener`
@@ -70,18 +70,33 @@ The rest of the Goal continues through `RTC-MANIFEST-001`, reusable bounded exec
 
 No new reusable component is required.
 
-## Reusable-component registration gap
+## Resident-rendezvous source completion
 
-Fresh canonical inspection exposed the exact next source gap rather than a runtime/device gap:
+The previously identified consumer-registration gap is source-complete and validated on both canonical owners.
 
-- the lower-level canonical resident dispatcher already registers `sdk_workspace_external_collab_client_secret_reseal` and `sdk_workspace_external_collab_consent_listener`;
-- `RTC-RESIDENT-RENDEZVOUS-010` exists and is the correct established-Node delivery component;
-- but the current rendezvous component implementation and Service Gateway profile currently register only `stegos_kv_intr_chain` and `gadi_runtime_observation`;
-- therefore the two external-collaboration resident consumers cannot yet traverse the existing rendezvous path.
+Resident side (`StegVerse-Labs/.github`):
 
-The resident request files and lower-level consumer receipts retain parent/root operation provenance under `SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003`. That provenance is not to be blindly rewritten. Active-Goal correlation must be carried by the selected manifest/rendezvous/component composition and resulting task/COSV/Node/KV evidence chain.
+- PR #1756 merged at `8770a4007e72f7d407b37b9675916d2121c7c1b2`;
+- Organization Control run `34779449112` PASS;
+- Deterministic Repository Suite run `34779449080` PASS;
+- Heartbeat Worker Project run `34779449072` PASS;
+- exact request validation is registered for `sdk_workspace_external_collab_client_secret_reseal` and `sdk_workspace_external_collab_consent_listener`;
+- existing lower-level resident consumers remain authoritative for their operation-specific request shape and execution result;
+- reseal terminals `COMPLETED` and `TARGET_ALREADY_PRESENT` map to terminal rendezvous completion; listener terminals `COMPLETED` and `SERVICE_ALREADY_HEALTHY` map to terminal rendezvous completion; `BLOCKED` remains fail-closed;
+- listener non-secret configuration survives the rendezvous environment sanitizer without introducing credential-bearing transport.
 
-The next source change is therefore an extension of `RTC-RESIDENT-RENDEZVOUS-010`, not a new transport, runtime, device binding, or duplicate task-specific dispatcher.
+Service Gateway side (`StegVerse-org/LLM-adapter`):
+
+- PR #337 merged at `ded63a597140a27f39469b77f8ad0e04b1fc4eef`;
+- Work Mutation Safety run `34779030889` PASS;
+- validation run `34779030902` PASS;
+- both exact resident request shapes are admitted through the existing Service Gateway rendezvous owner;
+- active-Goal submission uses `transport-correlation:sha256:<64>` correlation rather than device or Node identity as user verification;
+- Gateway authority remains `NONE`.
+
+The resident request files and lower-level consumer receipts retain parent/root operation provenance under `SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003`. That provenance remains correct. Active-Goal correlation is carried by manifest/rendezvous/component composition and the task/COSV/Node/KV evidence chain.
+
+Source merge and CI validation do not prove a resident has received, admitted, or executed either request.
 
 ## Current runtime/evidence state
 
@@ -93,7 +108,7 @@ specific-iPhone requirement: NOT_APPLICABLE
 remote connected-device requirement: NOT_APPLICABLE
 KV/SKAP-backed operation state: REQUIRED WHEN THE OPERATION REQUIRES USER/SECRET CONTINUITY
 RTC-RESIDENT-RENDEZVOUS-010 selected for resident delivery: YES
-external-collab rendezvous consumer registration: NOT YET SOURCE-COMPLETE
+external-collab rendezvous consumer registration: SOURCE MERGED + VALIDATED
 task-bound established-Node execution: NOT OBSERVED
 WorkerCoordinator claim/fence for this execution: NOT OBSERVED
 Interlock/InTr admission for this execution: NOT OBSERVED
@@ -102,7 +117,7 @@ resident consent-listener consumption receipt: NOT OBSERVED
 external-collaboration target custody/readback: NOT PROVEN
 ```
 
-Component selection and source construction do not upgrade runtime evidence.
+The unresolved condition is now authentic runtime evidence, not consumer registration or physical-device connectivity.
 
 ## Remaining Goal predicates
 
@@ -126,22 +141,21 @@ Component selection and source construction do not upgrade runtime evidence.
 
 ## Next admissible work
 
-Extend the existing `RTC-RESIDENT-RENDEZVOUS-010` implementation and the existing Service Gateway resident-rendezvous profile to admit exactly:
+Proceed through the existing established-Node runtime path. For an authentic Goal-bound invocation:
 
-```text
-sdk_workspace_external_collab_client_secret_reseal
-sdk_workspace_external_collab_consent_listener
-```
+1. bind Goal Task `SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004` and COSV `71000000100110` in the applicable manifest/invocation context;
+2. establish or recover an eligible StegVerse Node without treating its physical device identity as verification;
+3. bind applicable KV/SKAP continuity for the reseal operation;
+4. obtain WorkerCoordinator claim/fence where required and Interlock/InTr admission for the exact governed operation;
+5. deliver the exact bounded reseal/listener request through `RTC-RESIDENT-RENDEZVOUS-010`;
+6. retain exact resident consumption and rendezvous acknowledgement evidence;
+7. advance custody/readback and callback reachability only from authentic resulting evidence.
 
-Reuse each consumer's existing exact `stegverse.resident-execution-request/v1` validation contract and exact request digest. Do not generalize the rendezvous into arbitrary task/command transport. Preserve target Node identity as routing/correlation only.
-
-After that source is merged and validated, an established Node may receive the two bounded requests through the reusable rendezvous component. For reseal, applicable KV/SKAP custody state remains required. WorkerCoordinator and Interlock/InTr remain independently required where applicable. Only authentic resulting receipts may advance runtime predicates.
-
-Do not initiate provider consent before upstream predicates are authentic. Do not create device verification, a second user-operated-device requirement, a new scheduler, or a new runtime authority plane.
+Do not initiate provider consent before custody and sovereign callback reachability are authentically proven. Do not create device verification, a second user-operated-device requirement, a new scheduler, or a new runtime authority plane.
 
 ## README review
 
-No README change is required at this stage. This is a Goal-specific selection of an already-canonical reusable component and does not create a new public product capability.
+No README change is required. This remains a bounded extension and use of an already-canonical reusable transport component; the authority model and public capability description are unchanged.
 
 ## Human action
 

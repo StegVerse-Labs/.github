@@ -3,9 +3,15 @@
   "component_id": "RTC-RESIDENT-RENDEZVOUS-010",
   "family": "transport",
   "name": "Resident Request Rendezvous",
-  "status": "SOURCE_IMPLEMENTED_VALIDATION_PENDING",
+  "status": "SOURCE_IMPLEMENTED_VALIDATED",
   "canonical_implementation": "scripts/consume_resident_rendezvous.py",
-  "registered_consumers": ["stegos_kv_intr_chain", "gadi_runtime_observation"],
+  "gateway_implementation": "StegVerse-org/LLM-adapter:llm_adapter/resident_rendezvous_api.py",
+  "registered_consumers": [
+    "stegos_kv_intr_chain",
+    "gadi_runtime_observation",
+    "sdk_workspace_external_collab_client_secret_reseal",
+    "sdk_workspace_external_collab_consent_listener"
+  ],
   "capability_provided": ["bounded_resident_request_delivery","target_node_routing","request_digest_binding","delivery_acknowledgement","transport_only_correlation"],
   "inputs": ["canonical resident request","registered resident consumer selector","target StegOS node reference","request digest","bounded expiry"],
   "outputs": ["resident request materialization observation","dispatch correlation reference","delivery acknowledgement","transport receipt"],
@@ -18,5 +24,23 @@
   "failure_classes": ["NO_REACHABLE_RESIDENT_TRANSPORT","TARGET_NODE_UNAVAILABLE","CONSUMER_NOT_REGISTERED","REQUEST_DIGEST_MISMATCH","REQUEST_EXPIRED","CONSUMER_VALIDATION_FAIL_CLOSED","ACK_NOT_OBSERVED"],
   "retry_or_reentry_semantics": "Retry only with the same exact inner request or a canonically superseding request; retries mint no authority and preserve digest/correlation lineage.",
   "version_or_schema_binding": ["stegverse.resident-rendezvous.request/v1","stegverse.resident-execution-request/v1"],
+  "validation_evidence": {
+    "resident_side": {
+      "repository": "StegVerse-Labs/.github",
+      "pull_request": 1756,
+      "commit": "8770a4007e72f7d407b37b9675916d2121c7c1b2",
+      "organization_control_run": 34779449112,
+      "deterministic_suite_run": 34779449080,
+      "heartbeat_validation_run": 34779449072
+    },
+    "gateway_side": {
+      "repository": "StegVerse-org/LLM-adapter",
+      "pull_request": 337,
+      "commit": "ded63a597140a27f39469b77f8ad0e04b1fc4eef",
+      "work_mutation_safety_run": 34779030889,
+      "validation_run": 34779030902
+    },
+    "runtime_execution_claimed": false
+  },
   "anti_invariants": ["must_not_verify_user_from_device_identity","must_not_mint_claim_or_fence","must_not_admit_InTr_transition","must_not_issue_credentials","must_not_fetch_source_code_from_network","must_not_replace_consumer_specific_exact_request_validation"]
 }
