@@ -1,0 +1,15 @@
+{
+  "schema": "stegverse.goal-task-component-profile/v1",
+  "task_id": "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001",
+  "cosv_task_vector": "50000010100000",
+  "goal_identity_preserved": true,
+  "component_model": "data/reusable-task-component-model.json",
+  "decomposition_input": "data/reusable-task-componentization-inputs/KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001.json",
+  "decomposition_evaluation": "data/reusable-task-componentization-evaluations/KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001.json",
+  "runtime_handoff": "docs/KV_BOUND_EPHEMERAL_BROWSER_PROJECTION_MIRROR_HANDOFF.md",
+  "selected_components": ["RTC-MANIFEST-001", "RTC-ROUNDTRIP-003", "RTC-EVIDENCE-CUSTODY-004", "RTC-INTERLOCK-INTR-TRANSPORT-008", "RTC-FARSIDE-FINAL-009"],
+  "goal_predicates": ["TESTFLIGHT_CURRENT_IPHONE_RUNTIME_OBSERVED", "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_OBSERVED", "GLOBAL_MEASUREMENT_HANDOFF_RETURNED_TO_AUTHENTIC_EXECUTION"],
+  "new_goal_task_required": false,
+  "new_reusable_component_required": false,
+  "componentization_mints_authority": false
+}
