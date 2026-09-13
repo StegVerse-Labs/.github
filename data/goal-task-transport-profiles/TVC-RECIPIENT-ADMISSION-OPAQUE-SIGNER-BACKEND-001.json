@@ -1,0 +1,71 @@
+{
+  "schema": "stegverse.goal-task-transport-profile/v1",
+  "task_id": "TVC-RECIPIENT-ADMISSION-OPAQUE-SIGNER-BACKEND-001",
+  "cosv_task_vector": "50000000102000",
+  "component_contract": "data/reusable-transport-component-contract.json",
+  "transport_requirements": {
+    "complete_manifest": true,
+    "governed_processing": true,
+    "required_round_trips": [
+      "recipient_admission_signature_round_trip"
+    ],
+    "evidence_custody_reconstruction": true,
+    "publisher_projection": false,
+    "sdk_return_assembly": false,
+    "stegverse_final_egress_transition": false,
+    "interlock_intr_transport": true,
+    "far_side_final_transition": false
+  },
+  "selected_components": [
+    "RTC-MANIFEST-001",
+    "RTC-GOVERNED-PROCESSING-002",
+    "RTC-ROUNDTRIP-003",
+    "RTC-EVIDENCE-CUSTODY-004",
+    "RTC-INTERLOCK-INTR-TRANSPORT-008"
+  ],
+  "component_parameters": {
+    "RTC-MANIFEST-001": {
+      "manifest_role": "exact recipient-admission platform sign request plus task/COSV/evidence binding"
+    },
+    "RTC-GOVERNED-PROCESSING-002": {
+      "processing_path": "KV/SKAP provenance + current InTr admission + canonical node-event execution + TV/TVC opaque signing"
+    },
+    "RTC-ROUNDTRIP-003": {
+      "repeat_count": 1,
+      "round_trips": ["recipient_admission_signature_round_trip"]
+    },
+    "RTC-EVIDENCE-CUSTODY-004": {
+      "required_evidence": [
+        "current KV/SKAP verification provenance",
+        "current InTr admission",
+        "WorkerCoordinator claim/fence",
+        "canonical runtime/node execution receipt",
+        "public JWK/key ID projection",
+        "fresh signed-admission evidence",
+        "Master Records custody/reconstruction"
+      ]
+    },
+    "RTC-INTERLOCK-INTR-TRANSPORT-008": {
+      "required_transitions": ["recipient_admission_sign_request_ingress"],
+      "repeat_count": 1
+    }
+  },
+  "omitted_components": {
+    "RTC-PUBLISHER-005": "No publication/distribution operation belongs to this Goal Task.",
+    "RTC-SDK-RETURN-006": "The consumer is the existing vault-agent OpaqueRecipientAdmissionSigner, not an SDK return surface.",
+    "RTC-STEGVERSE-EGRESS-007": "No separate final StegVerse-side egress transition is required by this signer Goal Task.",
+    "RTC-FARSIDE-FINAL-009": "No independently governed far-side final transition is part of signer completion."
+  },
+  "authority_invariants": {
+    "task_registry": "COORDINATION_ONLY",
+    "claim_fence": "WorkerCoordinator",
+    "user_verification": "KV/SKAP Vault",
+    "device_role": "INTERCHANGEABLE_STEGOS_TRANSPORT_NODE",
+    "credential_signing": "TV/TVC",
+    "transition": "Interlock/InTr",
+    "reality_reconstruction": "Master Records",
+    "heartbeat": "OBSERVABILITY_ONLY",
+    "github_runtime_authority": "NONE"
+  },
+  "composition_rule": "Only the selected reusable transport components are required. Source/CI/component reuse does not satisfy authentic runtime evidence predicates and does not mint authority."
+}
