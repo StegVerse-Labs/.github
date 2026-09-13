@@ -1,0 +1,102 @@
+{
+  "schema": "stegverse.goal-task-transport-profile/v1",
+  "task_id": "SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001",
+  "cosv_task_vector": "40000100100000",
+  "component_contract": "data/reusable-transport-component-contract.json",
+  "transport_requirements": {
+    "complete_manifest": true,
+    "governed_processing": false,
+    "required_round_trips": [],
+    "evidence_custody_reconstruction": true,
+    "publisher_projection": false,
+    "sdk_return_assembly": false,
+    "stegverse_final_egress_transition": false,
+    "interlock_intr_transport": true,
+    "required_interlock_intr_transitions": [
+      "EXTERNAL_SYSTEM->STEGOS_ECOSYSTEM",
+      "STEGOS_ECOSYSTEM->DEVICE_SYSTEM",
+      "DEVICE_SYSTEM->KV"
+    ],
+    "far_side_final_transition": true
+  },
+  "selected_components": [
+    "RTC-MANIFEST-001",
+    "RTC-EVIDENCE-CUSTODY-004",
+    "RTC-INTERLOCK-INTR-TRANSPORT-008",
+    "RTC-FARSIDE-FINAL-009"
+  ],
+  "component_instances": [
+    {
+      "component_id": "RTC-MANIFEST-001",
+      "instance_id": "ERL-ACTIVE-RESEARCH-BINDING",
+      "inputs": ["active_research_dispatch", "group_id", "source_id", "payload_ref"],
+      "outputs": ["acquisition_envelope", "full_path_transport_intent", "materialization_request", "binding_hash"],
+      "preconditions": ["canonical ERL dispatch present", "source identity selected"],
+      "expected_evidence": ["deterministic binding hash", "exact acquisition-envelope hash"],
+      "authority_owner": "NONE_NON_AUTHORIZING_BINDING",
+      "authority_effect": "NONE"
+    },
+    {
+      "component_id": "RTC-INTERLOCK-INTR-TRANSPORT-008",
+      "instance_id": "ERL-HOP-1-EXTERNAL-TO-STEGOS",
+      "inputs": ["full_path_transport_intent", "exact_acquisition_envelope"],
+      "outputs": ["hop_1_receipt"],
+      "preconditions": ["authentic shared Universal InTr ingress available"],
+      "expected_evidence": ["VERIFIED EXTERNAL_SYSTEM->STEGOS_ECOSYSTEM hop receipt"],
+      "authority_owner": "Interlock/InTr",
+      "authority_effect": "NONE_COMPONENT"
+    },
+    {
+      "component_id": "RTC-INTERLOCK-INTR-TRANSPORT-008",
+      "instance_id": "ERL-HOP-2-STEGOS-TO-DEVICE",
+      "inputs": ["full_path_transport_intent", "hop_1_receipt"],
+      "outputs": ["hop_2_receipt", "terminal_materialization_request"],
+      "preconditions": ["hop 1 verified", "existing resident device-materialization path available"],
+      "expected_evidence": ["VERIFIED STEGOS_ECOSYSTEM->DEVICE_SYSTEM hop receipt", "terminal request bound to hop 2"],
+      "authority_owner": "Interlock/InTr",
+      "authority_effect": "NONE_COMPONENT"
+    },
+    {
+      "component_id": "RTC-INTERLOCK-INTR-TRANSPORT-008",
+      "instance_id": "ERL-HOP-3-DEVICE-TO-KV",
+      "inputs": ["full_path_transport_intent", "exact_acquisition_envelope", "hop_1_receipt", "hop_2_receipt"],
+      "outputs": ["hop_3_receipt", "terminal_kv_exact_byte_readback"],
+      "preconditions": ["existing SHWP-DEVICE-KV-INTR-OBSERVATION-001 owner admitted under WorkerCoordinator claim/fence", "terminal request exact identity verified"],
+      "expected_evidence": ["VERIFIED DEVICE_SYSTEM->KV hop receipt", "exact KV byte readback", "complete three-hop chain validation"],
+      "authority_owner": "Interlock/InTr",
+      "authority_effect": "NONE_COMPONENT"
+    },
+    {
+      "component_id": "RTC-FARSIDE-FINAL-009",
+      "instance_id": "ERL-KV-FINAL-RECEIVE",
+      "inputs": ["hop_3_receipt", "exact_acquisition_envelope"],
+      "outputs": ["terminal_kv_receive_evidence"],
+      "preconditions": ["DEVICE_SYSTEM->KV transition admitted and exact bytes received"],
+      "expected_evidence": ["terminal KV receive/readback evidence"],
+      "authority_owner": "Interlock/InTr",
+      "authority_effect": "NONE_COMPONENT"
+    },
+    {
+      "component_id": "RTC-EVIDENCE-CUSTODY-004",
+      "instance_id": "ERL-THREE-HOP-RECONSTRUCTION",
+      "inputs": ["binding evidence", "hop_1_receipt", "hop_2_receipt", "hop_3_receipt", "terminal_kv_exact_byte_readback", "existing_provider_proof_binding"],
+      "outputs": ["Master Records custody acceptance", "same-execution reconstruction evidence", "final proof references"],
+      "preconditions": ["all required authentic evidence exists", "provider operation is not replayed"],
+      "expected_evidence": ["Master Records custody receipt", "Master Records reconstruction confirmation"],
+      "authority_owner": "Master Records",
+      "authority_effect": "NONE_COMPONENT"
+    }
+  ],
+  "composition_rule": "The Goal Task consumes only manifest binding, three repeated Interlock/InTr adjacent-hop instances, terminal KV receive, and evidence custody/reconstruction. Governed processing, governed round trips, Publisher, SDK return, and StegVerse-side egress are not required for this Goal Task and must not be forced into the composition.",
+  "authority_invariants": {
+    "user_verification": "KV/SKAP Vault",
+    "device_role": "INTERCHANGEABLE_STEGOS_TRANSPORT_NODE",
+    "device_user_verification_authority": "NONE",
+    "claim_fence": "WorkerCoordinator",
+    "transition": "Interlock/InTr",
+    "credential_provider_release": "TV/TVC",
+    "reality_reconstruction": "Master Records",
+    "heartbeat": "TIMING_FRESHNESS_CORRELATION_CARRIAGE_ONLY",
+    "github_runtime_authority": "NONE"
+  }
+}

@@ -2,31 +2,74 @@
 
 Updated: 2026-09-12
 
-## Goal Task ID
+## Canonical identity
 
-`SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001`
+- Goal Task ID: `SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001`
+- Parent Goal Task: `SS-EVIDENCE-COMPARISON-001`
+- COSV: `40000100100000`
+- Status: `ACTIVE / CLAIMED_INTEGRATION`
+- Completion claimed: `false`
+- Completion validated: `false`
+- Activation proof complete: `false`
 
-Parent goal: `SS-EVIDENCE-COMPARISON-001`
+The Goal Task remains valid and is not renamed, restarted, duplicated, or closed by componentization.
 
-COSV: `40000100100000`
+## Reusable Task Component Model reconciliation
 
-Status: `ACTIVE / CLAIMED_INTEGRATION`
+Canonical model source is `StegVerse-Labs/.github` PR #1652 at merge commit `b9f8e5153aa1651f2d7f043fb902eacb7c113ed9`.
 
-## Purpose
+This Goal Task now binds to:
 
-Bind ERL active research to the existing sovereign Universal InTr resident execution owner and obtain one authentic, reconstructable three-hop `EXTERNAL_SYSTEM -> STEGOS_ECOSYSTEM -> DEVICE_SYSTEM -> KV` receipt chain without creating a second runtime owner, listener, scheduler, heartbeat, credential path, provider operation, or synthetic receipt.
+- `data/reusable-task-component-model.json`
+- `data/reusable-task-component-decomposition-policy.json`
+- `data/reusable-transport-component-contract.json`
+- `data/reusable-task-ephemeral-construct-contract.json`
+- `data/goal-task-component-profiles/SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001.json`
+- `data/goal-task-transport-profiles/SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001.json`
+
+The deterministic decomposition evaluation score is `28`, disposition `STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION`. This changes composition, not Goal Task identity or runtime truth.
+
+## Selected reusable composition
+
+Only components actually required by this goal are selected.
+
+1. `execution_materialization` family through the existing reusable ephemeral-construct contract and resident request/dispatcher surfaces. It materializes exact already-local source, deterministic ERL binding, and submission-dispatch state. It is non-authorizing; WorkerCoordinator retains claim/fence authority.
+2. `governed_ingress` through the existing shared `workers/universal_intr_profiled_ingress.py`, parameterized by the ERL active-research profile. Interlock/InTr remains transition authority.
+3. `RTC-MANIFEST-001` for deterministic binding of the ERL dispatch/source identity, acquisition envelope, full-path intent, required evidence, and task/COSV continuity.
+4. `RTC-INTERLOCK-INTR-TRANSPORT-008` repeated exactly three times for `EXTERNAL_SYSTEM -> STEGOS_ECOSYSTEM`, `STEGOS_ECOSYSTEM -> DEVICE_SYSTEM`, and `DEVICE_SYSTEM -> KV`.
+5. `RTC-FARSIDE-FINAL-009` for the terminal KV receive/readback event.
+6. `evidence_validation` through the already-existing ERL submission verifier, StegOS canonical receipt-chain validator, and ERL provider-proof binding verifier. Validation grants no authority.
+7. `RTC-EVIDENCE-CUSTODY-004` with canonical owner Master Records for final custody and same-execution reconstruction.
+8. `runtime_observation` through existing owner `SHWP-DEVICE-KV-INTR-OBSERVATION-001` and the existing WorkerCoordinator-governed resident execution surface.
+
+Not selected because this Goal Task does not require them: governed processing, `RTC-ROUNDTRIP-003`, Publisher, SDK Return Assembly, StegVerse-side final egress, callback correlation, release propagation, or provider execution.
+
+Credential/session handling is not an active component for this resident-local path because `STEGOS_RESIDENT_LOCAL` requires no relay authorization. TV/TVC remains the canonical credential/provider/release authority for any separately credentialed transition. No device verification exists or is introduced; KV/SKAP Vault remains sole user-verification authority and StegOS devices remain interchangeable transport/execution nodes.
+
+## Task-specific surfaces reclassified under reusable components
+
+The following source remains for retained-runtime compatibility and task-specific parameterization, but must no longer grow as independent orchestration:
+
+- `scripts/submit_erl_active_research_intr_binding_local.py`: task-specific ingress/validation adapter under governed ingress + `RTC-INTERLOCK-INTR-TRANSPORT-008`.
+- `workers/erl_device_kv_terminal.py`: task-specific terminal adapter inside the existing DEVICE_KV owner under `RTC-INTERLOCK-INTR-TRANSPORT-008` + `RTC-FARSIDE-FINAL-009`.
+- `scripts/install_erl_device_kv_prior_lineage.py`: retained-runtime compatibility migration only, not a runtime owner.
+- resident binding/submission consumers: parameterization of the existing reusable execution-materialization family, not independent schedulers or execution owners.
+
+Historical source and evidence are preserved. No duplicate runtime, listener, scheduler, WorkerCoordinator, credential path, heartbeat, provider operation, or user-verification path is created.
 
 ## Canonical owner and authority model
 
-Terminal owner remains `SHWP-DEVICE-KV-INTR-OBSERVATION-001` through the shared `workers/universal_intr_profiled_ingress.py`, the existing DEVICE_KV materialization path, and downstream owner `StegVerse-Labs/continuity-vault-kit#79`.
+- Task Registry: coordination only.
+- WorkerCoordinator: claim/fence authority.
+- Interlock/InTr: governed state-transition and packet-movement authority.
+- TV/TVC: credential/provider/release authority.
+- KV/SKAP Vault: sole user-verification authority.
+- StegOS devices: interchangeable transport/execution nodes; user-verification authority `NONE`.
+- Master Records: observed-reality custody and reconstruction authority.
+- HeartBeat: synchronization, timing, freshness, liveness, state correlation, carriage, and observability only.
+- GitHub: source/evidence coordination only; runtime authority `NONE`.
 
-- Interlock/InTr remains transition authority.
-- TV/TVC remains credential authority where credentials are required.
-- HeartBeat remains timing/reference/carriage/observability only.
-- GitHub runtime authority is `NONE`.
-- Provider-operation replay remains unauthorized.
-
-## Canonical path invariants
+## Canonical path and task-specific predicates
 
 ```text
 EXTERNAL_SYSTEM
@@ -35,66 +78,55 @@ EXTERNAL_SYSTEM
 -> KV
 ```
 
-All three authentic receipts must preserve one exact operation identity, packet identity, acquisition-envelope payload hash, and prior-receipt chain. Hop 1 and hop 2 are `FORWARDED`; hop 3 is `RECEIVED`. Receipt hashes must recompute from canonical receipt bodies, payload plaintext is forbidden in receipts, and transport cannot transfer authority.
+The remaining Goal Task-specific proof requires one exact operation identity, packet identity, acquisition-envelope payload hash, and prior-receipt chain across all three authentic adjacent transitions. Hop 1 and hop 2 are `FORWARDED`; hop 3 is `RECEIVED`.
 
-## Merged implementation evidence
+Task-specific predicates retained after componentization:
 
-- #1424 `b89a1ec010fc8d94ef770d900cb8244c11afe363`: shared-ingress ERL profile, terminal projection, prior-lineage migration, tests.
-- #1444 `0bcfba4a7a99b1fc2b641580e805543a320a9f80`: bounded resident source preparation.
-- #1468 `233992aead73e054f9ded66d62af29b0980107a8`: resident request, binding consumer, source wiring.
-- #1476 `af0fcb239956e9744fdd4129bb454655efd54243`: bounded loopback submitter and dispatcher integration.
-- #1546 `83a1b090ab850bf347c30f1818279064102d87d9`: canonical Task Registry reconciliation.
-- #1554 `aaf663112db68b031019c0e9ea274ff6bb9382d2`: submission-input materialization.
-- #1568 `ebac65426065a78863c6613fcd3f9c63ecb0e67e`: post-merge reconciliation.
-- #1585 `fd1d7b3f3d42c6bb2fe1bb59838121f45ace5a55`: corrected active carriage to credentialless `STEGOS_RESIDENT_LOCAL`; removed inappropriate relay-authorization dependency; added exact retained-runtime local-source convergence.
-- #1605 `c6434d85a89a0cc283bdfc1262411152ecf6ae13`: exact recomputation of hop-1/hop-2 receipt hashes, terminal request hash, and complete shared-ingress-response hash before evidence promotion.
-- #1645 `e6fa3c2de5c89c1668d91b5815dbc71a1969b860`: durable submission-dispatch reconstruction evidence with exact source/runtime roots and per-dependency SHA-256 digests.
-- #1648 `8a1ffeeb223a3d6125caebafd22cfbd8fc58f34d`: corrected the terminal DEVICE_KV path so ERL no longer remints a new controlled-observation packet for hop 3. Exact-head organization control, full Heartbeat/repository validation including the deterministic suite, and deterministic diagnostics all passed before merge.
-- Executive_Rhetoric_Ledger #158 `f827ffe1f46294c89b073b34fbe491b31254596f`: machine-readable projection of the already-observed provider write/readback plus a fail-closed acquisition-envelope/source-identity binding verifier. Its repository validation passed before merge.
+- authentic current resident source materialization/preparation observed;
+- authentic shared loopback ingress observed;
+- authentic hop 1 observed;
+- authentic hop 2 observed;
+- authentic hop 3 observed under the existing DEVICE_KV owner and WorkerCoordinator claim/fence;
+- exact envelope bytes durably read back at KV;
+- complete three-hop chain independently validates from exact receipt bodies;
+- terminal KV proof binds to the already-authentic provider readback through the merged non-authorizing provider-proof binding verifier;
+- Master Records accepts custody and confirms same-execution reconstruction;
+- no synthetic receipt, provider replay, second runtime owner, second user-operated device, or device/user-verification substitution occurs.
 
-## Terminal identity continuity correction — merged #1648
+## Merged source state
 
-Inspection after #1645 found a real runtime-proof blocker. The pre-existing DEVICE_KV event path preserved the ERL hop-2 prior hash but then called the generic `device-kv` connector to create a fresh `kv.interlock.request.v1`, which necessarily minted a new operation ID, packet ID, and payload hash. That could never satisfy this task's three-hop identity invariant.
+Key merged source evidence remains:
 
-Merged #1648 corrects the existing owner instead of adding another transport:
+- #1585 `fd1d7b3f3d42c6bb2fe1bb59838121f45ace5a55`: resident-local transport correction and exact retained-source convergence.
+- #1605 `c6434d85a89a0cc283bdfc1262411152ecf6ae13`: exact upstream receipt/request proof hardening.
+- #1645 `e6fa3c2de5c89c1668d91b5815dbc71a1969b860`: durable submission-dispatch reconstruction evidence.
+- #1648 `8a1ffeeb223a3d6125caebafd22cfbd8fc58f34d`: terminal full-intent identity continuity correction and exact KV byte-readback path.
+- Executive_Rhetoric_Ledger #158 `f827ffe1f46294c89b073b34fbe491b31254596f`: machine-readable projection of the already-authentic provider write/readback plus fail-closed source-identity binding verifier.
+- Reusable Task Component Model #1652 `b9f8e5153aa1651f2d7f043fb902eacb7c113ed9`: canonical component model and decomposition policy.
 
-- `workers/erl_active_research_intr_profile.py` carries the exact original full-path `erl_transport_intent` into the terminal materialization request and hash-binds that intent.
-- `scripts/submit_erl_active_research_intr_binding_local.py` rejects any terminal projection whose original intent, intent hash, operation ID, packet ID, payload hash, path, or upstream receipt chain diverges.
-- `workers/erl_device_kv_terminal.py` is a bounded helper invoked only inside the existing DEVICE_KV owner. It loads the already-materialized canonical acquisition envelope, verifies its hash against the original intent, transports the exact canonical envelope bytes over deployment-local ephemeral loopback carriage, durably reads those exact bytes back at KV, emits hop index 3 from the original full-path intent, and validates the complete three-hop receipt chain.
-- `scripts/install_erl_device_kv_prior_lineage.py` upgrades retained workers to this exact-identity path while leaving non-ERL DEVICE_KV behavior unchanged.
-- `scripts/install_erl_resident_request_wiring.py` and the submission consumer propagate/materialize the new helper through the already-existing resident source mechanism.
-- Regression coverage verifies migration idempotence, original-intent preservation, hop-3 `DEVICE_SYSTEM -> KV` identity, exact canonical byte transport/readback, and absence of provider replay.
+Source/CI/merge evidence proves source construction and compatibility only. It does not prove resident execution or authentic component completion.
 
-This merged source proves corrected implementation and deterministic validation only. It does not prove that an authentic sovereign resident has executed the path.
+## Runtime truth
 
-## Existing provider proof and deterministic binding — do not replay
+Latest authorized resident-device discovery in this session returned no connected device. Therefore none of the following is claimed observed: current resident source materialization, shared-loopback ingress, WorkerCoordinator claim/fence for this execution, hop 1/2/3 runtime receipts, terminal KV readback for this execution, Master Records custody/reconstruction, or final end-to-end completion.
 
-The active-research source is `ERL-CYBER-CISA-IRAN-2025-JOINT-FACT-SHEET`. Existing canonical ERL evidence records an authentic Google Drive provider write plus independent exact-byte readback:
+The existing provider proof remains authentic and must not be replayed:
 
-- parent folder `google-drive:folder:147zp4--w_dnf_cOJzC0nKGZrWtwB2M6n`
-- artifact folder `google-drive:folder:1osZ9dvIHmYI58t7PoopRVI6UbrPLxxIG`
-- file `google-drive:file:1KKBS1drUFVh-czLpmg5koRgDs4YMf-gG`
-- filename `ERL-CYBER-CISA-IRAN-2025-JOINT-FACT-SHEET.capture.txt`
-- size `1015`
+- source ID `ERL-CYBER-CISA-IRAN-2025-JOINT-FACT-SHEET`
+- provider file `google-drive:file:1KKBS1drUFVh-czLpmg5koRgDs4YMf-gG`
+- exact size `1015`
 - SHA-256 `94470c58db24e544c3edfcd390cca395375a348879ec3c53451ba517ff917763`
 
-ERL #158 now projects that already-observed evidence into:
+## Next admissible work
 
-- `evidence/active-research/ERL-CYBER-CISA-IRAN-2025-JOINT-FACT-SHEET.provider-readback-proof.json`
-- `scripts/verify_active_research_provider_proof_binding.py`
-
-The projection explicitly states that it creates no new provider evidence, proves no Universal InTr traversal, and authorizes no provider replay. The verifier binds acquisition-envelope `source_id`, `source_url`, and storage lane to the existing provider proof and returns only a non-authorizing evidence-binding result.
-
-## Remaining work
-
-1. On an authentic sovereign resident visit, self-materialize/verify the exact ERL source dependencies and apply/check resident preparation.
-2. Materialize the existing active-research dispatch inputs, exact acquisition envelope, and deterministic runtime binding through the existing resident dispatcher.
-3. Observe the authentic shared loopback ingress URL and submit via `STEGOS_RESIDENT_LOCAL` without relay authorization.
-4. Preserve authentic hop 1 and hop 2 plus the hash-bound terminal materialization request.
-5. Let the existing DEVICE_KV owner execute the corrected ERL terminal helper and produce authentic hop 3 from the original full-path intent with exact envelope byte readback at KV.
-6. Verify the complete authentic three-receipt chain, then run the merged non-authorizing provider-proof binding verifier against the exact traversed acquisition envelope; do not replay the provider operation.
-7. Reconcile the parent ERL handoff with exact receipt hashes, terminal KV readback, provider-proof binding hash, and final proof class.
+1. Validate and merge this component-model reconciliation.
+2. Recheck the authorized resident runtime.
+3. When a resident is available, invoke the existing execution-materialization family through the retained resident dispatcher; do not extend bespoke orchestration.
+4. Consume the three declared `RTC-INTERLOCK-INTR-TRANSPORT-008` instances through the existing governed ingress/DEVICE_KV owner, preserving exact identity.
+5. Validate the exact three-hop chain and existing provider-proof binding.
+6. Submit the resulting authentic evidence to `RTC-EVIDENCE-CUSTODY-004` / Master Records and require custody plus reconstruction evidence.
+7. Reconcile the parent handoff only after those authentic predicates are observed.
 
 ## Current state
 
-`PROFILE_SOURCE_PREPARATION_RESIDENT_BINDING_LOOPBACK_SUBMISSION_AND_INPUT_MATERIALIZATION_MERGED / RESIDENT_LOCAL_TRANSPORT_ORIGIN_AND_EXACT_LOCAL_SOURCE_CONVERGENCE_MERGED_AND_VALIDATED / EXACT_BYTE_PROOF_VERIFIER_HARDENING_MERGED_AND_VALIDATED / SUBMISSION_DISPATCH_RECONSTRUCTION_EVIDENCE_HARDENING_MERGED_AND_VALIDATED / TERMINAL_FULL_INTENT_IDENTITY_CONTINUITY_CORRECTED_AND_VALIDATED / EXISTING_PROVIDER_PROOF_MACHINE_READABLE_PROJECTION_AND_BINDING_VERIFIER_MERGED_AND_VALIDATED / AUTHENTIC_RESIDENT_SOURCE_MATERIALIZATION_NOT_YET_OBSERVED / AUTHENTIC_SHARED_LOOPBACK_INGRESS_NOT_YET_OBSERVED / AUTHENTIC_THREE_HOP_TRAVERSAL_NOT_YET_OBSERVED`
+`REUSABLE_COMPONENT_MODEL_RECONCILED_SOURCE_PENDING_VALIDATION / GOAL_IDENTITY_AND_COSV_PRESERVED / BESPOKE_ORCHESTRATION_SCOPE_FROZEN / EXISTING_TRANSPORT_RUNTIME_AND_VALIDATORS_REBOUND_AS_COMPONENT_IMPLEMENTATIONS / AUTHENTIC_RESIDENT_SOURCE_MATERIALIZATION_NOT_YET_OBSERVED / AUTHENTIC_SHARED_LOOPBACK_INGRESS_NOT_YET_OBSERVED / AUTHENTIC_THREE_HOP_TRAVERSAL_NOT_YET_OBSERVED / MASTER_RECORDS_CUSTODY_RECONSTRUCTION_NOT_YET_OBSERVED`

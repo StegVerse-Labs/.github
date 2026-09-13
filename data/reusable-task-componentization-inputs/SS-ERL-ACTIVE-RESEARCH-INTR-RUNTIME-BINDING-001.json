@@ -1,0 +1,26 @@
+{
+  "schema": "stegverse.reusable-task-componentization-input/v1",
+  "task_id": "SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001",
+  "cosv_task_vector": "40000100100000",
+  "signals": {
+    "repeated_subflow": true,
+    "multiple_authority_crossings": true,
+    "multiple_round_trips": false,
+    "cross_repository_or_org_spread": true,
+    "task_specific_adapter_duplicates_generic_work": true,
+    "handoff_sequence_growth": true,
+    "failure_path_branching": true,
+    "independent_reusability": true,
+    "optional_subflow_present": true,
+    "independent_evidence_predicate": true
+  },
+  "evidence_basis": [
+    "Four-repository composition across .github, Executive_Rhetoric_Ledger, StegOS, and continuity-vault-kit",
+    "Three separately evidenced adjacent Interlock/InTr transitions",
+    "Retained-runtime source materialization and shared-ingress runtime observation",
+    "Task-specific submission and terminal adapters overlapping the canonical reusable transport family",
+    "Independent source, ingress, hop-chain, terminal readback, provider-proof binding, and final reconstruction predicates",
+    "Multiple fail-closed remediation states for source materialization, ingress availability, terminal execution, evidence verification, and custody reconstruction"
+  ],
+  "authority_effect": "NONE_COORDINATION_ONLY"
+}
