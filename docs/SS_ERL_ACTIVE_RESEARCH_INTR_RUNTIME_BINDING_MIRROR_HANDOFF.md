@@ -57,6 +57,8 @@ GitHub runtime authority: NONE
 
 Historical connected-device enumeration has no gating meaning for this Goal.
 
+Do **not** poll for, wait for, or require any remotely connected resident device.
+
 ## Shortest existing runtime path
 
 ```text
