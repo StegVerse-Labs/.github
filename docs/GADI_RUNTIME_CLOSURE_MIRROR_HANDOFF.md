@@ -1,18 +1,18 @@
 # GADI Runtime Closure Mirror Handoff
 
-Updated: 2026-09-12
+Updated: 2026-09-13
 Repository: `StegVerse-Labs/.github`
 Goal Task ID: `GADI-RUNTIME-CLOSURE-001`
 Parent Goal: `GADI-001`
 COSV ID: `10100000100000`
 Canonical issue: `StegVerse-Labs/.github#1603`
-Status: `ACTIVE / SOURCE-REACHABILITY-COMPLETE / REUSABLE-COMPONENT-RECONCILED / AUTHENTIC-RUNTIME-EVIDENCE-PENDING`
+Status: `ACTIVE / SOURCE-REACHABILITY-COMPLETE / REUSABLE-RENDEZVOUS-SOURCE-COMPLETE / AUTHENTIC-RUNTIME-EVIDENCE-PENDING`
 
 ## Canonical identity and runtime truth
 
 The Goal Task remains `GADI-RUNTIME-CLOSURE-001`; componentization does not rename, restart, supersede, or close it. Coordination remains `ACTIVE / CLAIMED_INTEGRATION`; completion remains unclaimed and unvalidated.
 
-PR #1630 merged the portable GADI selector repair at `ac5c59f6226ecfe7696496b7e64f23ee9d4dee0c`. Main admits `gadi_runtime_observation` through the existing portable selector. No authentic `worker-source-refresh.latest.json`, `resident-request-dispatch.latest.json`, `hb-machine-continuation.latest.json`, or `gadi-runtime-observation-request-consumption.latest.json` has been observed, and the authorized resident-device connector last exposed no reachable device. Source/CI/component reuse must not upgrade that runtime evidence class.
+PR #1630 merged the portable GADI selector repair at `ac5c59f6226ecfe7696496b7e64f23ee9d4dee0c`. Main admits `gadi_runtime_observation` through the existing portable selector. No authentic `worker-source-refresh.latest.json`, `resident-request-dispatch.latest.json`, `hb-machine-continuation.latest.json`, or `gadi-runtime-observation-request-consumption.latest.json` has been observed. Source/CI/component reuse must not upgrade that runtime evidence class.
 
 ## Reusable Task Component Model reconciliation
 
@@ -23,30 +23,54 @@ Transport profile: `data/goal-task-transport-profiles/GADI-RUNTIME-CLOSURE-001.j
 
 The decomposition score is 25, requiring componentization before more bespoke orchestration. GADI remains the Goal Task/evidence owner.
 
+## RTC-RESIDENT-RENDEZVOUS-010 source materialization
+
+The reusable resident rendezvous is now source-complete across the existing owners without creating a GADI-specific network adapter:
+
+- `.github` resident-side registered-consumer implementation merged through PR #1724 at `cbbc9bc5...`;
+- `StegVerse-org/LLM-adapter` Service Gateway reusable consumer profiles merged through PR #335 at `c120a2d1...`;
+- `StegVerse-Labs/Site` browser producer GADI profile merged through PR #1290 at `f36deba49ba5aa30f74e4219c73e5cdcb970f565`;
+- Site exact-head validation passed, including canonical ST-017 execution of the GADI browser profile test;
+- Site integration claim was terminalized through PR #1291 after validation.
+
+The exact inner request remains `RESIDENT-OBSERVE-GADI-RUNTIME-001`. GADI uses digest-derived `transport-correlation:sha256:<digest>` rather than Node Receipt #1 as user verification. KV/SKAP Vault remains sole user-verification authority; node identity remains routing only.
+
+These merges prove source composition only. They do not prove that a durable Service Gateway rendezvous is deployed, that discovery returns `AVAILABLE`, that the current iPhone resident is polling, that a request was stored/delivered, or that an acknowledgement or GADI consumption receipt exists.
+
+## Current runtime transport boundary
+
+The LLM-adapter resident rendezvous runtime requires both `STEGVERSE_RESIDENT_RENDEZVOUS_ENABLED=true` and a durable `STEGVERSE_RESIDENT_RENDEZVOUS_ROOT`. StegDeploy source config enables these on the sovereign gateway path, but the canonical resident-rendezvous handoff still records production deployment/activation/observation as open. Source/CI without a durable production root is explicitly non-proving.
+
+The historical StegGate quick-tunnel registry is not current evidence. Current StegCore source explicitly states that GitHub-hosted heartbeat workflows are compatibility validation only; resident StegVerse workers own runtime execution and public rendezvous materialization. The Site stable-domain StegGate worker currently proxies only StegGate health/capabilities/self-test/evaluate routes and does not itself expose the resident-rendezvous API.
+
+Therefore the first unresolved transport predicate is now:
+
+`CURRENT_DURABLE_SERVICE_GATEWAY_RESIDENT_RENDEZVOUS_RUNTIME_OBSERVED`
+
+followed by:
+
+`CURRENT_GADI_DISCOVERY_AVAILABLE -> REQUEST_STORED -> RESIDENT_FETCH -> GADI_CONSUMPTION -> CORRELATED_ACK`
+
+No packet is claimed sent through the reusable rendezvous until those runtime surfaces are authentically observed.
+
 ## Component map
 
-- Runtime observation — existing canonical GADI/runtime owners; required; input retained discovery/current-iPhone readback/runtime subject; output current same-node binding; authority effect NONE; evidence current discovery/readback/presence/freshness/binding receipts; fail closed on missing/stale/mismatch.
-- `RTC-RESIDENT-RENDEZVOUS-010` — newly identified reusable resident-request transport; conditional when local resident delivery is not authentically available; input exact canonical resident request + registered consumer + target-node routing ref + digest + expiry; output delivery observation + dispatch correlation + ACK; authority NONE; consumer-specific validator remains authoritative; node identity is routing only.
-- `RTC-GOVERNED-PROCESSING-002` — existing reusable governed-processing capability; required; consumes runtime binding plus threat/evidence/plan; does not mint transition/claim authority.
-- `RTC-ROUNDTRIP-003` — repeatable; required only for controlled action/effect observation, adaptive reassessment, and termination confirmation.
-- `RTC-INTERLOCK-INTR-TRANSPORT-008` — required for governed ingress/egress; Interlock/InTr is authority owner; missing admission/transition receipt fails closed.
-- `RTC-STEGVERSE-EGRESS-007` — required when the controlled action crosses the local StegVerse state boundary; Interlock/InTr-owned transition.
-- `RTC-FARSIDE-FINAL-009` — conditional on the controlled external test surface requiring a far-side final transition.
-- `RTC-EVIDENCE-CUSTODY-004` — required; Master Records owns custody/readback/reconstruction; no completion without authentic reconstruction.
+- Runtime observation — existing canonical GADI/runtime owners; required; current same-node discovery/readback/presence/freshness/binding evidence only.
+- `RTC-RESIDENT-RENDEZVOUS-010` — source-complete; runtime-evidence-pending; conditional when local resident delivery is not authentically available; authority NONE.
+- `RTC-GOVERNED-PROCESSING-002` — required; non-final processing only.
+- `RTC-ROUNDTRIP-003` — required for controlled action/effect/reassessment/termination observations.
+- `RTC-INTERLOCK-INTR-TRANSPORT-008` — required; Interlock/InTr owns admission/transition.
+- `RTC-STEGVERSE-EGRESS-007` — required when action crosses the local StegVerse state boundary.
+- `RTC-FARSIDE-FINAL-009` — conditional on the external controlled test surface.
+- `RTC-EVIDENCE-CUSTODY-004` — required; Master Records owns custody/readback/reconstruction.
 
-Not selected: `RTC-MANIFEST-001` because GADI already has an exact canonical resident request; `RTC-PUBLISHER-005` because publication is not a predicate; `RTC-SDK-RETURN-006` because SDK return assembly is not a predicate.
+Not selected: `RTC-MANIFEST-001`, `RTC-PUBLISHER-005`, `RTC-SDK-RETURN-006`.
 
 ## Authority invariants
 
 Task Registry: coordination only. WorkerCoordinator: claim/fence. Interlock/InTr: governed admission/transition. TV/TVC: credential/provider/release. KV/SKAP Vault: sole user verification. StegOS devices: interchangeable transport/execution nodes, never user verifiers. Master Records: observed-reality custody/reconstruction. HeartBeat: timing/freshness/liveness/state correlation/observability only. GitHub: no runtime authority.
 
 No runtime subject, node identity, Secure Enclave identity, transport identity, or device identity may become user-verification authority.
-
-## Duplicate orchestration disposition
-
-Do not create or extend a GADI-specific network rendezvous adapter. The existing hard-coded `stegos_kv_intr_chain` rendezvous is evidence of a reusable capability and is to be generalized at the reusable transport owner. Historical PRs #1608/#1614 are provenance only; #1630 is merged source truth.
-
-The current Site rendezvous client also binds submission to Node Receipt #1 provenance. Under the Reusable Task Component Model, any such node identity may be used only as routing/provenance metadata and must not become user verification or execution authority. The reusable component must preserve zero transport authority and exact inner-request validation.
 
 ## Remaining Goal Task-specific predicates
 
@@ -66,13 +90,22 @@ The current Site rendezvous client also binds submission to Node Receipt #1 prov
 
 ## Next admissible work
 
-Materialize `RTC-RESIDENT-RENDEZVOUS-010` by refactoring/extending the existing resident rendezvous into a registered-consumer transport without weakening consumer-specific validators. Preserve the exact inner request/digest, no network source-code fetch, no credential-bearing transport envelope, node routing without user verification, zero transport authority, and correlated delivery/ACK evidence. Then use it for the already-armed GADI request if local resident delivery is still unavailable.
+Do not add another rendezvous implementation. Resolve the current authentic runtime surface in this order:
+
+1. observe an existing durable Service Gateway instance with resident rendezvous enabled and durable storage;
+2. observe a current resident poll/advertisement for `consumer=gadi_runtime_observation`;
+3. require discovery `AVAILABLE` for exactly one canonical routing node;
+4. submit the exact canonical GADI request once, with digest-derived transport correlation and no blind retry;
+5. require resident fetch/materialization, `gadi-runtime-observation-request-consumption.latest.json`, and a correlated bounded acknowledgement;
+6. then continue same-node runtime binding -> InTr admission -> WorkerCoordinator claim/fence -> controlled action/effect/reassessment/termination -> Master Records reconstruction.
+
+If local authentic resident delivery becomes observable before rendezvous activation, use the local path instead; the rendezvous is conditional, not mandatory.
 
 No second user-operated device is required. No device verification is permitted.
 
 ## README impact
 
-PR #1652 already projects the Reusable Task Component Model and canonical authority separation into the root README; no additional README semantic change is required for this GADI binding.
+No additional README semantic change is required for this reconciliation.
 
 ## Manual work
 
