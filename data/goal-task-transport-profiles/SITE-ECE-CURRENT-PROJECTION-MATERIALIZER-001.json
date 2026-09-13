@@ -1,0 +1,30 @@
+{
+  "schema": "stegverse.goal-task-transport-profile/v1",
+  "task_id": "SITE-ECE-CURRENT-PROJECTION-MATERIALIZER-001",
+  "cosv_task_vector": "71000000102000",
+  "component_contract": "data/reusable-transport-component-contract.json",
+  "transport_requirements": {
+    "complete_manifest": false,
+    "governed_processing": false,
+    "required_round_trips": [],
+    "evidence_custody_reconstruction": true,
+    "publisher_projection": true,
+    "sdk_return_assembly": false,
+    "stegverse_final_egress_transition": false,
+    "interlock_intr_transport": false,
+    "far_side_final_transition": false
+  },
+  "selected_components": [
+    "RTC-EVIDENCE-CUSTODY-004",
+    "RTC-PUBLISHER-005"
+  ],
+  "composition_rule": "Use only the selected reusable components. ECE-specific validation and Site exact-byte copy behavior remain Goal Task bindings. Omitted transport components are not required.",
+  "authority_invariants": {
+    "user_verification": "KV/SKAP Vault",
+    "claim_fence": "WorkerCoordinator",
+    "transition": "Interlock/InTr",
+    "credential_provider_release": "TV/TVC",
+    "reality_reconstruction": "Master Records",
+    "github_runtime_authority": "NONE"
+  }
+}
