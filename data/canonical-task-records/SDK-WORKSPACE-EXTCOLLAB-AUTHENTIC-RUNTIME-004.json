@@ -74,11 +74,35 @@
     "StegVerse-Labs/StegVerse-Healer:commit/c2bea205411397c7ad7bb5fc6ad5f8c81c007f1c",
     "StegVerse-Labs/.github:pull/1698",
     "StegVerse-Labs/.github:commit/de0039f301483ecf5a9178369bd8e8a3e7386a0a",
+    "StegVerse-Labs/.github:pull/1706",
+    "StegVerse-Labs/.github:commit/0eeff82400ac697dd53814fa0e960459ae79cf21",
+    "StegVerse-Labs/.github:pull/1713",
+    "StegVerse-Labs/.github:commit/4496e00c90b5e18ab7ae53f0e3d4508d95ec6f46",
     "StegVerse-Labs/.github:README.md",
     "StegVerse-Labs/.github:docs/SDK_WORKSPACE_EXTCOLLAB_COMPONENT_MODEL_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github:docs/REUSABLE_TASK_EPHEMERAL_CONSTRUCT_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github:receipts/preflight/SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004-OBSERVATION-20260912.json"
   ],
+  "latest_reconciliation": {
+    "initial_reconciliation_pr": 1706,
+    "initial_exact_head": "67e21e777563d0c1f8e72b4817a766f49ff54e55",
+    "initial_validation_runs": [34737081784, 34737081787, 34737081832],
+    "initial_merge_commit": "0eeff82400ac697dd53814fa0e960459ae79cf21",
+    "restoration_pr": 1713,
+    "restoration_exact_head": "0d9bd4b58fe8d7389992b702f55fb5da4b852667",
+    "restoration_validation_runs": [34737951023, 34737951022, 34737951018],
+    "restoration_merge_commit": "4496e00c90b5e18ab7ae53f0e3d4508d95ec6f46",
+    "runtime_completion_claimed": false
+  },
+  "parallel_path_reconciliation": {
+    "prompt_cap_split_pr": 1718,
+    "prompt_cap_split_state": "CLOSED_UNMERGED_POLICY_CONFLICT",
+    "stale_task_record_pr": 1716,
+    "stale_task_record_state": "CLOSED_UNMERGED_SUPERSEDED",
+    "stale_component_prs": [1668, 1672],
+    "stale_component_state": "CLOSED_UNMERGED_SUPERSEDED",
+    "goal_identity_preserved": true
+  },
   "resolver_repair": {"pull_request": 1460, "exact_head": "a926d04e563fa6f89920bd608a2ff359b272ca13", "merge_commit": "3bc8898655d344ba12f47bb4120e38f2ac1ded6e", "validation_runs": [34615578871, 34615578937, 34615578890], "standalone_task_record_fallback": true, "duplicate_identity_fail_closed": true, "standalone_id_mismatch_fail_closed": true, "discovery_mutation_required": false, "merged_validated": true},
   "global_identity_invariant_alignment": {"source": "data/task-registry-global-invariants.json", "merge_evidence": "StegVerse-Labs/.github@b27114d812c8ee9c9584ebe9a99cef4fa2297cfb", "user_verification_authority": "KV/SKAP Vault", "user_verification_authority_exclusive": true, "stegos_device_role": "INTERCHANGEABLE_TRANSPORT_NODE", "device_user_verifier_authority": "NONE", "node_user_verifier_authority": "NONE", "transport_user_verifier_authority": "NONE", "runtime_subject_binding_is_user_verification": false, "resident_node_id_is_user_identity": false, "resident_node_id_is_authority_source": false, "resident_node_id_use": "RUNTIME_INSTANCE_CORRELATION_AND_EVIDENCE_SUBJECT_ONLY"},
   "runtime_source_compatibility": {"profile_id": "canonical-resident-substrate-v1", "capability": "resident_request_dispatch", "capability_satisfied": true, "environment_satisfied": true, "direction_satisfied": true, "mutation_constraint_satisfied": true, "deployment_constraint_satisfied": true, "current_observation_state": "DECLARED_ONLY", "remaining_rejection_reason": "CURRENT_OBSERVATION_REQUIRED:DECLARED_ONLY", "source_side_mismatch_remaining": false, "candidate_count_until_authentic_observation": 0, "authority_effect": "NONE_DISCOVERY_ONLY"},
@@ -106,6 +130,6 @@
   "runtime_requirements": {"capabilities": ["resident_request_dispatch"], "environment": "SOVEREIGN_RESIDENT", "direction": "INTERNAL", "mutation_required": false, "deployment_required": false, "current_observation_required": true, "already_local_source_required": true, "second_user_operated_device_required": false, "user_verification_source": "KV/SKAP Vault", "device_local_user_verifier_allowed": false},
   "runtime_resolution": "UNRESOLVED_NO_CURRENT_AUTHORIZED_DEVICE",
   "worker_claim": {"authority": "WORKERCOORDINATOR", "claim_ref": null, "fence_ref": null, "projection_only": true},
-  "latest_runtime_observation": {"observed_at": "2026-09-13T04:03:00Z", "evidence_ref": "AUTHORIZED_REMOTE_DEVICE_CONNECTOR_OBSERVATION", "authorized_remote_device_count": 0, "repository_retained_entropy_complete_invocation_matches": 0, "github_authentic_runtime_presence_receipt_observed": false, "authentic_post_merge_reusable_lifecycle_observed": false, "disposition": "ACTIVE_WAIT_FOR_EXISTING_AUTHORIZED_RESIDENT_RECONNECTION_AND_POST_MERGE_INVOCATION", "authority_effect": "NONE_OBSERVATION_ONLY"},
+  "latest_runtime_observation": {"observed_at": "2026-09-13T04:54:00Z", "evidence_ref": "AUTHORIZED_REMOTE_DEVICE_CONNECTOR_AND_RETAINED_EVIDENCE_OBSERVATION", "authorized_remote_device_count": 0, "repository_retained_entropy_complete_invocation_matches": 0, "retained_drive_reseal_receipt_matches": 0, "retained_drive_listener_receipt_matches": 0, "github_authentic_runtime_presence_receipt_observed": false, "authentic_post_merge_reusable_lifecycle_observed": false, "disposition": "ACTIVE_WAIT_FOR_EXISTING_AUTHORIZED_RESIDENT_RECONNECTION_AND_POST_MERGE_INVOCATION", "authority_effect": "NONE_OBSERVATION_ONLY"},
   "readme_impact": {"material_function_change": false, "readme_updated_in_change_set": false, "readme_path": "README.md", "no_readme_update_reason": "Runtime/source evidence reconciliation only; existing README already projects the reusable component model and no new product-facing capability is introduced.", "evidence_refs": ["README.md", "data/reusable-task-component-model.json", "docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md", "docs/REUSABLE_TASK_EPHEMERAL_CONSTRUCT_MIRROR_HANDOFF.md"]}
 }
