@@ -1,0 +1,48 @@
+{
+  "schema": "stegverse.goal-task-component-binding/v1",
+  "task_id": "SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001",
+  "cosv_task_vector": "40000100100000",
+  "component_id": "RTC-EVIDENCE-CUSTODY-004",
+  "family": "custody_reconstruction",
+  "canonical_owner": "Master Records",
+  "implementation_repository": "master-records/orchestration",
+  "implementation_merge_commit": "560863ff192f4437911a8d748984d06566c120c7",
+  "implementation_pull_request": 94,
+  "interfaces": {
+    "input_schema": "schemas/universal-intr-receipt-chain-evidence.schema.json",
+    "importer": "scripts/import_universal_intr_receipt_chain.py",
+    "reconstructor": "scripts/reconstruct_universal_intr_receipt_chain.py",
+    "regression_tests": "scripts/test_universal_intr_receipt_chain_custody.py"
+  },
+  "validation": {
+    "exact_head": "3ce674a6f4cc9fa5323e27e236a2bfabf4f0a46e",
+    "runtime_evidence_validation_run": 34739395592,
+    "runtime_evidence_validation_conclusion": "success",
+    "all_observed_companion_workflows_passed": true,
+    "runtime_evidence_for_this_goal_proven": false
+  },
+  "inputs": [
+    "complete authentic Universal InTr receipt chain",
+    "exact terminal byte readback",
+    "task/COSV identity",
+    "optional related evidence references including the already-existing provider-proof binding"
+  ],
+  "outputs": [
+    "append-only custody receipt",
+    "deterministic reconstruction result",
+    "durable source/custody/terminal-receipt/readback hashes"
+  ],
+  "preconditions": [
+    "AUTHENTIC_THREE_HOP_RECEIPT_CHAIN_OBSERVED",
+    "TERMINAL_EXACT_BYTES_READBACK_VERIFIED",
+    "NO_SYNTHETIC_RECEIPT_PROMOTED_TO_RUNTIME_EVIDENCE"
+  ],
+  "authority_owner": "Master Records",
+  "authority_effect": "NONE_CUSTODY_AND_RECONSTRUCTION_ONLY",
+  "provider_operation_reexecution_authorized": false,
+  "device_user_verification_authority": "NONE",
+  "user_verification_authority": "KV/SKAP Vault",
+  "task_completion_effect": "NONE_UNTIL_AUTHENTIC_CUSTODY_AND_RECONSTRUCTION_EVIDENCE_IS_OBSERVED",
+  "failure_remediation": "Fail closed on incomplete, tampered, non-adjacent, hash-inconsistent, synthetic, or readback-inconsistent evidence; repair or authentically produce the missing upstream evidence at its canonical owner and retry custody without replaying provider or transport consequences.",
+  "cardinality": "ONE_FINAL_CUSTODY_RECONSTRUCTION_FOR_THIS_GOAL_UNLESS_A_DISTINCT_AUTHENTIC_CORRECTION_EVIDENCE_OBJECT_REQUIRES_REENTRY"
+}
