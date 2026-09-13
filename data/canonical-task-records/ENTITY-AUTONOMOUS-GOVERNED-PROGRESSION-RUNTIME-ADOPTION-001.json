@@ -86,8 +86,8 @@
     "goal_task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
     "handoff_task_id": "docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_RUNTIME_ADOPTION_MIRROR_HANDOFF.md",
     "cosv_id": "10100000100000",
-    "session_prompt_count": 15,
-    "goal_prompt_count": "15/20",
+    "session_prompt_count": 20,
+    "goal_prompt_count": "20/20",
     "status": "ACTIVE"
   },
   "goal_completion_notification": {
