@@ -6,89 +6,52 @@ Parent Goal: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`
 Parent COSV: `10100000100000`
 Runtime-adoption task: `ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001`
 Issue: `#1766`
-State: `GOAL_TERMINAL_STOP_AND_REPAIR_PRIORITY_SOURCE_STAGED / AUTHENTIC_RUNTIME_CYCLE_PENDING`
+State: `GOAL_TERMINAL_STOP_REPAIR_PRIORITY_AND_TVC_PROVIDER_SOURCE_MERGED / AUTHENTIC_RUNTIME_CYCLE_PENDING`
 Authority effect: `NONE`
 
-## Purpose
+## Canonical progression
 
-Make the already-canonical autonomous governed progression contract operate from the existing canonical Task Registry so StegVerse can advance its own already-registered machine-owned work without repeated human orchestration, while stopping at validated Goal Task completion rather than flowing into unrelated or successor work.
+The existing canonical Task Registry is the work-discovery starting point. Within the current root Goal Task, admissible ecosystem repair/remediation/reconciliation/canonicalization work ranks before ordinary feature/expansion work. Collision checks remain mandatory and selection grants no authority.
 
-This handoff is subordinate to `docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_MIRROR_HANDOFF.md` and `docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md`. It does not create a new autonomy model, scheduler, heartbeat, WorkerCoordinator, credential authority, task registry, runtime, or connected-device prerequisite.
-
-## Canonical starting point and first terminal boundary
-
-The **existing canonical Task Registry is the work-discovery starting point**.
-
-The first terminal boundary for one autonomous goal chain is now explicit:
+The first terminal boundary for one autonomous goal chain is:
 
 ```text
-current Goal Task completion.claimed == true
-AND
-current Goal Task completion.validated == true
-=> STOP current autonomous goal progression
-=> select no successor or adjacent work under that goal cycle
-=> emit one GitHub completion-notification request
+Goal Task completion.claimed == true
+AND Goal Task completion.validated == true
+=> stop current goal progression
+=> select no successor/adjacent work in that goal cycle
+=> emit the Goal completion GitHub notification request
 ```
 
-Retirement is archival lifecycle state and is not required before this stop. Time may affect observations and freshness, but elapsed time never substitutes for the validated state transition.
+Retirement is archival and is not required before this stop. Time may affect observation/freshness but does not substitute for a state transition.
 
-The authority split remains unchanged:
+Authority remains separated:
 
 ```text
-Task Registry = work intent / coordination truth
-WorkerCoordinator = claim / fence authority
+Task Registry = coordination/work-intent truth
+WorkerCoordinator = claim/fence authority
 Interlock/InTr = governed transition authority
 TV/TVC = credential/provider authority
-Master Records = observed reality / reconstruction authority
-HeartBeat = timing / observability only
+Master Records = observed-reality/reconstruction authority
+HeartBeat = timing/observability only
+GitHub Actions runtime authority = NONE
 ```
 
-## Goal-scoped selection priority
+There is no second scheduler, no second WorkerCoordinator, no second heartbeat/oscillator, and no connected-device discovery prerequisite. No second user-operated machine is permitted.
 
-Within the current root Goal Task, the first-priority admissible work is work that repairs, remediates, reconciles, corrects, regression-fixes, or canonicalizes the StegVerse ecosystem.
+## Merged `.github` source
 
-Priority order is therefore:
+- PR #1768 merged at `1d7d49b3e440ab4393d0df8bc4de7fb29975d3b9`: runtime-adoption identity through Canonical Work.
+- PR #1771 merged at `5548599dacd1b073b7c50c57caf9a80bf9771466`: Task Registry first selection.
+- PR #1773 merged at `306eaf033cf2ddec1c5f964090c95977b3c08b5e`: existing resident `canonical_work_coordination` returns to Task Registry selection after explicit requests.
+- PR #1774 merged at `712a72c38a7968e746af54ca058dd1eedfa55170`: handoff synchronization.
+- PR #1775 merged at `c7278a6e9cb1819df7360dfb4ee789495984ea5c`: Goal-scoped repair/remediation/canonicalization-first selection, completion-first terminal stop, exact six-line completion-notification request, README/contract/tests.
 
-```text
-1. Goal-scoped ecosystem repair / remediation / canonicalization / reconciliation work
-2. other Goal-scoped admissible machine-owned work
-```
-
-This priority applies **before checkout-state ordering**. An unclaimed repair task may therefore outrank an already-checked-out ordinary feature/expansion task. Within the same priority class, existing checkout-state ordering remains intact.
-
-Canonical selection may use an explicit `work_priority_class` where present. In its absence, the selector uses bounded semantic signals from the task identity, goal/problem/constraint text, and source/handoff references. Generic use of the word `canonical` alone does not make a task repair-priority; the signal must indicate canonicalization/reconciliation/correction work.
-
-This is selection order only. It grants no WorkerCoordinator claim/fence, Interlock/InTr transition, TV/TVC credential, execution, or Master Records authority. Collision checks and current governance remain mandatory.
-
-## Goal-scoped progression
-
-The corrected progression is:
-
-```text
-human idea / query / goal
--> governed canonicalization into existing Task Registry state
--> Task Registry candidate discovery scoped to current root Goal Task
--> CHECK CURRENT GOAL TASK COMPLETION FIRST
-   -> if completion claimed + validated: STOP + completion notification
-   -> otherwise: rank ecosystem repair/remediation/canonicalization work first
--> Task Registry collision/check-in
--> WorkerCoordinator claim/fence when independently admitted
--> current Interlock/InTr governance
--> execution or retained DENY
--> durable evidence
--> Master Records/state reconstruction
--> return to Task Registry
--> repeat completion-first + repair-priority selection
--> continuation without human re-presentation
-```
-
-No next task may be selected between validated Goal Task completion and the completion notification request.
+PR #1775 exact head `87d992458349388ca689fd1ef181f69bfa1119d0` passed organization control, deterministic repository suite, heartbeat-worker, and resident validation before merge.
 
 ## Completion notification contract
 
-The completion notice is a GitHub notification event. Provider execution remains TV/TVC-owned; GitHub Actions has no runtime mutation or credential authority.
-
-The issue body contains **exactly six task-block lines** and nothing after `STATUS`:
+The GitHub completion issue body contains exactly:
 
 ```text
 Goal Task ID: <value>;
@@ -99,18 +62,9 @@ Goal Prompt Count: <value>/20.
 STATUS: INACTIVE.
 ```
 
-If the Goal Task is already canonically retired when the notification is built, `STATUS` is `RETIRED` instead of `INACTIVE`.
+`STATUS: RETIRED.` is used only if already canonically retired. `Summary of work`, `Manual Work`, credentials, and extra prose are prohibited.
 
-The notice must not include:
-
-- `Summary of work`;
-- `Manual Work`;
-- extra prose in the issue body;
-- credentials or provider secrets.
-
-The progression-controller task carries the latest Goal Task header projection so autonomous completion can preserve the last known Session Prompt Count and Goal Prompt Count without inventing or resetting them. The terminal notifier validates the Goal Task identity and changes only the terminal STATUS field.
-
-The requested provider operation is:
+Requested operation:
 
 ```text
 provider: GITHUB
@@ -118,47 +72,44 @@ operation: CREATE_GOAL_COMPLETION_NOTIFICATION_ISSUE
 repository: StegVerse-Labs/.github
 assignee: StegVerse
 credential authority: TV/TVC
-GitHub Actions runtime authority: NONE
+GitHub Actions credential/runtime authority: NONE
 ```
 
-GitHub email delivery is subject to the account's GitHub notification settings. The StegVerse contract guarantees creation of the GitHub notification event once the admitted provider operation executes; it cannot override GitHub account-level email preferences.
+GitHub email delivery remains subject to the account's GitHub notification settings.
 
-## Merged source evidence before this correction
+## TVC provider source now merged
 
-PR `#1768` merged at `1d7d49b3e440ab4393d0df8bc4de7fb29975d3b9`, staging the runtime-adoption identity through Canonical Work.
+TVC PR #425 merged at `755a59737340f5f35ebd4d3ddf5d78145728dce6`.
 
-PR `#1771` merged at `5548599dacd1b073b7c50c57caf9a80bf9771466`, making the existing Task Registry the deterministic work-discovery start point.
+It adds the bounded Goal-completion GitHub provider adapter and resident credential binding:
 
-PR `#1773` merged at `306eaf033cf2ddec1c5f964090c95977b3c08b5e`, binding the selector into the existing resident `canonical_work_coordination` consumer. Exact head `a6eda781e6775f1c5d1ef213c0d4eadc9db40ed4` passed organization-control validation `34782786153`, heartbeat-worker validation `34782786203`, and deterministic repository suite `34782786216`.
+```text
+scripts/tvc_github_goal_completion_notification.py
+scripts/run_goal_completion_github_notification_resident_service.py
+deploy/systemd/stegtvc-goal-completion-github-notification.service
+deploy/systemd/stegtvc-goal-completion-github-notification.path
+docs/GITHUB_GOAL_COMPLETION_NOTIFICATION_PROVIDER_MIRROR_HANDOFF.md
+```
 
-PR `#1774` merged at `712a72c38a7968e746af54ca058dd1eedfa55170`, synchronizing the handoff after the resident return loop merged.
+The service reuses the already-canonical TV/TVC resident GitHub credential only through:
 
-These are source/CI/merge facts only and do not establish authentic resident execution.
+```text
+LoadCredential=TVC_EPHEMERAL_GITHUB_TOKEN:/run/stegverse/tv-tvc-credentials/TVC_EPHEMERAL_GITHUB_TOKEN
+```
 
-## Current source continuation
+No new credential class, generic GitHub mutation surface, Gmail SEND substitute, consumer token, or GitHub Actions credential authority was introduced. Provider failure retains the request for retry. The request is archived only after a successful GitHub issue-creation response. The persisted result is credential-free.
 
-Branch `goal-terminal-stop-notification-001` currently stages:
+Exact TVC branch head `2b0a22600a8867f4d12d0a8dc2f7bfac18b61876` passed:
 
-- goal-scoping in `scripts/run_task_registry_canonical_work_cycle.py`;
-- ecosystem repair/remediation/canonicalization priority before ordinary work and before checkout-state ordering;
-- a completion check before any registry candidate selection;
-- terminal `continue_machine_work=false` behavior when the current Goal Task completion is claimed and validated;
-- no successor selection before notification;
-- a TV/TVC-bound GitHub completion-notification request;
-- exact six-line body generation through `STATUS` only;
-- latest task-block header projection on `ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001`;
-- contract updates in `control/entity-autonomous-governed-progression-contract.json`;
-- deterministic tests covering repair priority, goal scoping, completion validation, terminal stop, and notice-body exclusion of Summary/Manual Work.
+```text
+Validate GitHub Goal Completion Notification Adapter: run 34784719800 SUCCESS
+TVC Credential Model Consistency Validation: run 34784719791 SUCCESS
+External Collaboration Google Drive Consent HTTP Validation: run 34784719813 SUCCESS
+```
 
-## Current provider transport finding
+These are source/validation/merge facts only. They do not establish resident installation, credential presence, request consumption, GitHub issue creation, or email delivery.
 
-TVC already has the canonical `/v1/provider-operation` boundary and dedicated exact provider-operation patterns. The exact existing Gmail route explicitly does **not** admit SEND, so Gmail is not used to simulate this requirement.
-
-Current repository search did not establish an already-admitted TV/TVC GitHub issue-mutation provider. Therefore source may emit the exact secret-free GitHub notification request, but authentic GitHub issue creation must not be claimed until an admitted TV/TVC GitHub provider operation consumes that request and returns a provider receipt.
-
-This is a bounded missing provider adapter, not a reason to add a second scheduler, broker, credential authority, or hosted GitHub-token path.
-
-## Current runtime evidence state
+## Current runtime state
 
 The expected resident registry-cycle receipt remains:
 
@@ -166,13 +117,26 @@ The expected resident registry-cycle receipt remains:
 receipts/sovereign-host/task-registry-canonical-work-cycle.latest.json
 ```
 
-No qualifying repository-visible authentic resident-cycle receipt has yet been established from this trajectory. The first unsatisfied state progression remains authentic resident execution through Canonical Work/Interlock-InTr.
+No qualifying authentic resident-cycle receipt has yet been established for this trajectory. The source/provider-adapter gap is now removed. The first unsatisfied state progression is therefore:
 
-The terminal behavior is independently defined now: once the Goal Task completion claim becomes both claimed and validated, the registry cycle must stop before selecting another task and emit the completion-notification request.
+```text
+existing resident canonical_work_coordination consumer executes current merged source
+-> Task Registry cycle materializes
+-> Goal completion checked first
+-> if incomplete, repair-priority candidate selection occurs
+-> collision disposition == CONTINUE
+-> existing Canonical Work path receives the selected task
+-> current Interlock/InTr governance produces the actual state transition or retained DENY
+-> execution/DENY receipt retained
+-> state reconstructed
+-> returned Task/COSV/handoff state re-ingested
+```
 
-## Runtime completion predicate
+No vague waiting-for-runtime-evidence condition substitutes for this sequence. The missing fact is the state transition itself.
 
-`PRED-ENTITY-AUTONOMOUS-PROGRESSION-RUNTIME-ADOPTED` remains unsatisfied until a current goal chain first demonstrates the already-established progression predicates:
+## Runtime-adoption completion predicate
+
+`PRED-ENTITY-AUTONOMOUS-PROGRESSION-RUNTIME-ADOPTED` remains unsatisfied until a current goal chain demonstrates:
 
 ```text
 machine_owned_transition_selected=true
@@ -184,9 +148,9 @@ returned_task_cosv_handoff_state_reingested=true
 human_reentry_for_intermediate_ids=false
 ```
 
-The selected machine-owned work must also demonstrate that repair/remediation/canonicalization priority was applied when such an admissible Goal-scoped candidate existed.
+When an admissible Goal-scoped repair/remediation/canonicalization task exists, that class must be selected before ordinary goal work.
 
-When the current Goal Task then reaches validated completion, the same goal chain must additionally demonstrate:
+At validated Goal completion the same chain must additionally demonstrate:
 
 ```text
 goal_task_completion_claimed=true
@@ -199,46 +163,22 @@ summary_included=false
 manual_work_included=false
 ```
 
-The new terminal and selection-order predicates extend the existing runtime-adoption predicate; they do not replace the existing progression predicates.
+Authentic notification completion additionally requires the TVC resident provider execution to return and retain the sanitized GitHub issue/provider receipt.
 
-Authentic external notification completion additionally requires the admitted TV/TVC GitHub provider operation to create the GitHub event and retain its provider receipt.
-
-## Explicit prohibitions
-
-- no continuation beyond validated Goal Task completion in the same goal cycle;
-- no successor selection before the completion notification request;
-- no ordinary feature/expansion task outranking an admissible Goal-scoped ecosystem repair/remediation/canonicalization task solely because it is already checked out;
-- no second scheduler;
-- no second WorkerCoordinator;
-- no second heartbeat/oscillator;
-- no GitHub Actions runtime or credential authority;
-- no replacement TV/TVC credential authority;
-- no connected-device discovery prerequisite;
-- no second user-operated machine;
-- no parallel self-build task registry or queue;
-- no hand-authored request as canonical work-discovery source;
-- no duplicate same-cycle registry selection of explicit-request tasks;
-- no selection of the progression-controller task as product work;
-- no `Summary of work` or `Manual Work` in the completion notice;
-- no claim that source/CI/merge proves runtime execution;
-- no claim that source/CI/merge/request emission proves GitHub provider execution.
-
-## README impact
-
-**MATERIAL.** The README must describe both the completion-first stop and the new repair/remediation/canonicalization-first selection rule because both change externally meaningful autonomous work-selection semantics.
+`source/CI/merge proves runtime execution: false`.
 
 ## Remaining machine work
 
-1. validate this goal-terminal-stop and repair-priority implementation against the deterministic repository suite;
-2. reconcile README wording with both selection-order rules;
-3. merge the `.github` source when exact-head validation is green;
-4. implement or bind the smallest admitted TV/TVC GitHub issue-notification provider operation if no existing provider route resolves during reconciliation;
-5. observe the existing resident `canonical_work_coordination` consumer execute the goal-scoped registry loop;
-6. observe repair/remediation/canonicalization work win when an admissible candidate exists;
-7. observe one task progress authentically through Canonical Work / Interlock-InTr and reconstruct state;
-8. at validated Goal Task completion, observe terminal stop before next-task selection;
-9. retain the exact six-line GitHub notification request and provider execution receipt;
-10. only then claim authentic goal-terminal notification behavior.
+1. Observe/execute the existing resident `canonical_work_coordination` consumer against current merged source.
+2. Retain the authentic registry-cycle consumption receipt.
+3. Confirm completion-first evaluation and repair-priority selection on real registered Goal-scoped work.
+4. Require exact Task Registry `CONTINUE` before delegation.
+5. Observe the selected task cross existing Canonical Work / Interlock-InTr and produce the actual governed state transition or retained DENY.
+6. Retain execution/DENY evidence and reconstruct/re-ingest current state.
+7. Continue within the same Goal until completion is both claimed and validated.
+8. At completion, stop before successor selection and retain the exact six-line notification request.
+9. Observe TVC resident provider execution create the GitHub completion issue and retain its sanitized provider receipt.
+10. Only then claim authentic autonomous Goal completion notification behavior.
 
 ## Human action
 

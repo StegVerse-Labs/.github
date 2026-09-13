@@ -17,11 +17,12 @@
     "scripts/evaluate_goal_resolution_continuation.py",
     "control/resident-execution-request.d/canonical-work-entity-autonomous-governed-progression-runtime-adoption-001.json",
     "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py",
-    "scripts/dispatch_resident_execution_requests.py"
+    "scripts/dispatch_resident_execution_requests.py",
+    "StegVerse-Labs/TVC@755a59737340f5f35ebd4d3ddf5d78145728dce6"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
-    "repositories": ["StegVerse-Labs/.github"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/TVC"],
     "components": [
       "entity-autonomous-governed-progression",
       "canonical-work-coordination",
@@ -29,7 +30,8 @@
       "resident-request-dispatch",
       "workercoordinator-claim-fence",
       "interlock-intr-admission",
-      "master-records-reconstruction"
+      "master-records-reconstruction",
+      "goal-completion-github-notification-provider"
     ]
   },
   "dependencies": [
@@ -44,6 +46,12 @@
       "kind": "SOURCE_PREDICATE",
       "state": "RESOLVED",
       "ref": "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md"
+    },
+    {
+      "dependency_id": "DEP-GOAL-COMPLETION-GITHUB-NOTIFICATION-PROVIDER-SOURCE",
+      "kind": "SOURCE_PREDICATE",
+      "state": "RESOLVED",
+      "ref": "StegVerse-Labs/TVC@755a59737340f5f35ebd4d3ddf5d78145728dce6"
     },
     {
       "dependency_id": "DEP-ENTITY-AUTONOMOUS-PROGRESSION-RUNTIME-ADOPTION",
@@ -155,8 +163,8 @@
     "goal_task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
     "handoff_task_id": "docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_RUNTIME_ADOPTION_MIRROR_HANDOFF.md",
     "cosv_id": "10100000100000",
-    "session_prompt_count": 7,
-    "goal_prompt_count": "7/20",
+    "session_prompt_count": 10,
+    "goal_prompt_count": "10/20",
     "status": "ACTIVE"
   },
   "goal_completion_notification": {
@@ -177,6 +185,8 @@
     "manual_work_included": false,
     "credential_authority": "TV/TVC",
     "github_actions_runtime_authority": "NONE",
+    "provider_source_state": "MERGED_VALIDATED_SOURCE_ONLY",
+    "provider_source_ref": "StegVerse-Labs/TVC@755a59737340f5f35ebd4d3ddf5d78145728dce6",
     "email_delivery": "GITHUB_NOTIFICATION_EMAIL_SUBJECT_TO_ACCOUNT_NOTIFICATION_SETTINGS"
   },
   "allowed_next_transitions": ["INGRESS_ADMITTED"],
