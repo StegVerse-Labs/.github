@@ -1,13 +1,11 @@
 from __future__ import annotations
 
 import importlib.util
-import json
 from pathlib import Path
-import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-MODULE_PATH = ROOT / "scripts" / "reusable_task_lifecycle.py"
+MODULE_PATH = ROOT / "workers" / "reusable_task_lifecycle.py"
 
 
 def load_module():
@@ -28,7 +26,7 @@ class ReusableTaskLifecycleTests(unittest.TestCase):
             "task_id": "TASK-X",
             "cosv_task_vector": "10100000100000",
             "manifest_hash": "a" * 64,
-            "recording_levels": ["task", "goal", "master_records"],
+            "recording": {"levels": ["task", "goal", "master_records"]},
         }
         self.result = {
             "schema": self.m.RUNNER_RESULT_SCHEMA,
