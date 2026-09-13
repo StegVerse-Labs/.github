@@ -5,6 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 TASK_ID = "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001"
+CONTINUATION_TASK_ID = "STEG-BROWSER-RUNTIME-CONSUMPTION-001"
 COSV = "40000100100000"
 REQUEST = ROOT / "control" / "resident-execution-request.d" / "canonical-work-stegbrowser-ephemeral-runtime-binding-001.json"
 CONSUMER = ROOT / "control" / "resident-execution-request.d" / "consume-canonical-work-coordination-bootstrap.py"
@@ -30,11 +31,12 @@ class StegBrowserCanonicalWorkResidentRequestTests(unittest.TestCase):
         self.assertFalse(request["network_source_fetch_allowed"])
         self.assertFalse(request["second_machine_required"])
 
-    def test_task_shard_is_pre_ingress_eligible(self):
+    def test_task_shard_is_superseded_to_runtime_consumption_successor(self):
         task = json.loads(TASK_SHARD.read_text(encoding="utf-8"))
         self.assertEqual(task["task_id"], TASK_ID)
-        self.assertEqual(task["coordination_state"], "PROPOSED")
-        self.assertEqual(task["allowed_next_transitions"], ["INGRESS_ADMITTED"])
+        self.assertEqual(task["coordination_state"], "SUPERSEDED")
+        self.assertEqual(task["checkout_state"], "SUPERSEDED")
+        self.assertEqual(task["continuation_task_id"], CONTINUATION_TASK_ID)
         self.assertIsNone(task["worker_claim"]["claim_ref"])
         self.assertIsNone(task["worker_claim"]["fence_ref"])
         self.assertFalse(task["authority_model"]["task_registry_mints_execution_authority"])

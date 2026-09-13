@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "data" / "canonical-task-registry.json"
 SHARDS = ROOT / "data" / "canonical-task-records"
 TASK_ID = "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001"
+CONTINUATION_TASK_ID = "STEG-BROWSER-RUNTIME-CONSUMPTION-001"
 
 
 def load_module(name: str, path: Path):
@@ -26,21 +27,20 @@ projection = load_module("canonical_work_projection", ROOT / "scripts" / "apply_
 
 
 class ShardedCanonicalWorkIngressTests(unittest.TestCase):
-    def test_stegbrowser_resolves_from_canonical_shard(self):
+    def test_stegbrowser_parent_resolves_from_canonical_shard_as_superseded(self):
         task, source = builder.resolve_task(task_id=TASK_ID, registry=REGISTRY, registry_shards=SHARDS)
         self.assertEqual(task["task_id"], TASK_ID)
         self.assertTrue(source.startswith("SHARDED_REGISTRY:"), source)
-        self.assertEqual(task["coordination_state"], "PROPOSED")
-        self.assertEqual(task["allowed_next_transitions"], ["INGRESS_ADMITTED"])
+        self.assertEqual(task["coordination_state"], "SUPERSEDED")
+        self.assertEqual(task["checkout_state"], "SUPERSEDED")
+        self.assertEqual(task["continuation_task_id"], CONTINUATION_TASK_ID)
 
-    def test_stegbrowser_is_ingress_eligible_through_generic_bootstrap(self):
-        task = bootstrap.validate_target_task(registry=REGISTRY, registry_shards=SHARDS, task_id=TASK_ID)
-        self.assertEqual(task["worker_claim"]["authority"], "WORKERCOORDINATOR")
-        self.assertTrue(task["worker_claim"]["projection_only"])
-        self.assertIsNone(task["worker_claim"]["claim_ref"])
-        self.assertIsNone(task["worker_claim"]["fence_ref"])
+    def test_stegbrowser_superseded_parent_is_not_reingress_eligible(self):
+        with self.assertRaises(SystemExit) as ctx:
+            bootstrap.validate_target_task(registry=REGISTRY, registry_shards=SHARDS, task_id=TASK_ID)
+        self.assertIn("canonical_task_not_proposed_for_ingress", str(ctx.exception))
 
-    def test_sharded_post_ingress_projection_updates_task_record_shape(self):
+    def test_superseded_parent_rejects_post_ingress_projection(self):
         registry = json.loads(REGISTRY.read_text(encoding="utf-8"))
         materialization_id = "INTR-MAT-test-sharded-browser"
         request_hash = "sha256:" + "a" * 64
@@ -72,18 +72,14 @@ class ShardedCanonicalWorkIngressTests(unittest.TestCase):
             "ingress_receipt_ref": ingress_ref,
             "consumption_receipt_ref": consumption_ref,
         }
-        source_kind, projected, shard_path = projection.project(
-            registry,
-            ingress,
-            consumption,
-            task_shards=SHARDS,
-        )
-        self.assertEqual(source_kind, "SHARDED_REGISTRY")
-        self.assertIsNotNone(shard_path)
-        self.assertEqual(projected["task_id"], TASK_ID)
-        self.assertEqual(projected["coordination_state"], "INGRESS_ADMITTED")
-        self.assertEqual(projected["runtime_refs"]["materialization_id"], materialization_id)
-        self.assertEqual(projected["allowed_next_transitions"], ["CLAIMABLE", "RECONCILIATION_REQUIRED"])
+        with self.assertRaises(SystemExit) as ctx:
+            projection.project(
+                registry,
+                ingress,
+                consumption,
+                task_shards=SHARDS,
+            )
+        self.assertIn("current task state is not ingress-projectable", str(ctx.exception))
 
     def test_unknown_task_still_fails_closed(self):
         with self.assertRaises(SystemExit):

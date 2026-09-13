@@ -15,6 +15,8 @@ The parent Goal reached a clean source/component completion point: reusable-comp
 
 This successor is therefore not a counter reset and does not create a second execution path. It reuses the existing Canonical Work, WorkerCoordinator, Interlock/InTr, resident dispatcher, exact TVC source-promotion consumer, primary runtime, SKAP ingress, and immutable observer components.
 
+The parent task record is now canonically `SUPERSEDED` with `continuation_task_id=STEG-BROWSER-RUNTIME-CONSUMPTION-001`. Regression tests must therefore fail closed if any path attempts to re-admit or re-project the superseded parent as `PROPOSED`. The historical parent resident request remains source evidence only and does not make the superseded parent ingress-eligible again.
+
 ## First unresolved predicate
 
 `TASK_REGISTRY_CHECKIN_CONTINUE_OBSERVED`
@@ -96,8 +98,12 @@ Credential ingress, current-iPhone signing/TestFlight, social publication/readba
 
 ## README disposition
 
-The repository README already documents Canonical Work ingress, autonomous continuation, COSV task-pointer continuation, and the Reusable Task Component Model. This successor narrows ownership of an existing runtime stage and does not change repository-wide architecture; no README text change is required.
+The repository README already documents Canonical Work ingress, autonomous continuation, COSV task-pointer continuation, and the Reusable Task Component Model. This successor narrows ownership of an existing runtime stage and does not change repository-wide architecture; README was re-reviewed during the superseded-parent regression repair and no semantic text change is required.
+
+## Validation regression repair
+
+PR `#1746` correctly superseded `STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001` to this successor but left two deterministic test modules asserting that the parent remained `PROPOSED`. The repair updates those tests to assert the canonical `SUPERSEDED` lineage and to require generic bootstrap/projection to reject re-ingress of the parent. This is validation alignment only; it grants no runtime authority and proves no runtime consumption.
 
 ## Current state
 
-`ACTIVE / CHECKED_OUT / SOURCE_COMPONENT_PARENT_COMPLETE / AUTHENTIC_RUNTIME_CONSUMPTION_NOT_OBSERVED / TASK_REGISTRY_CONTINUE_NOT_OBSERVED / WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED / INTR_ADMISSION_NOT_OBSERVED / TVC_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / TVC_PRIMARY_RUNTIME_RESTART_NOT_OBSERVED / IMMUTABLE_OBSERVER_EXECUTION_NOT_OBSERVED / OWNER_INGRESS_READY_NOT_OBSERVED`
+`ACTIVE / CHECKED_OUT / SOURCE_COMPONENT_PARENT_SUPERSEDED_TO_THIS_SUCCESSOR / SUPERSEDED_PARENT_REINGRESS_PROHIBITED / AUTHENTIC_RUNTIME_CONSUMPTION_NOT_OBSERVED / TASK_REGISTRY_CONTINUE_NOT_OBSERVED / WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED / INTR_ADMISSION_NOT_OBSERVED / TVC_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / TVC_PRIMARY_RUNTIME_RESTART_NOT_OBSERVED / IMMUTABLE_OBSERVER_EXECUTION_NOT_OBSERVED / OWNER_INGRESS_READY_NOT_OBSERVED`
