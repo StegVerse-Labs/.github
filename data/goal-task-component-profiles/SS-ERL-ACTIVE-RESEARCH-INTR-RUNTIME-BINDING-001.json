@@ -1,0 +1,146 @@
+{
+  "schema": "stegverse.goal-task-component-profile/v1",
+  "task_id": "SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001",
+  "cosv_task_vector": "40000100100000",
+  "goal_identity_preserved": true,
+  "component_model": "data/reusable-task-component-model.json",
+  "decomposition_policy": "data/reusable-task-component-decomposition-policy.json",
+  "decomposition_input": "data/reusable-task-componentization-inputs/SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001.json",
+  "decomposition_evaluation": "data/reusable-task-componentization-evaluations/SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001.json",
+  "transport_profile": "data/goal-task-transport-profiles/SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001.json",
+  "runtime_handoff": "docs/SS_ERL_ACTIVE_RESEARCH_INTR_RUNTIME_BINDING_MIRROR_HANDOFF.md",
+  "family_bindings": [
+    {
+      "family": "execution_materialization",
+      "existing_contract": "data/reusable-task-ephemeral-construct-contract.json",
+      "canonical_implementation": [
+        "control/resident-execution-request.d/erl-active-research-intr-runtime-binding-001.json",
+        "control/resident-execution-request.d/consume-erl-active-research-intr-runtime-binding.py",
+        "control/resident-execution-request.d/consume-erl-active-research-intr-submission.py"
+      ],
+      "inputs": ["canonical task pointer", "already-local canonical source root", "ERL dispatch/source parameters"],
+      "outputs": ["resident-local exact source materialization", "deterministic binding", "submission dispatch state"],
+      "preconditions": ["authentic sovereign resident visit", "existing resident dispatcher"],
+      "authority_owner": "WorkerCoordinator for claim/fence; component itself non-authorizing",
+      "expected_evidence": ["source dependency digest map", "preparation apply/check evidence", "binding-consumption receipt", "submission-dispatch receipt"],
+      "failure_remediation": "fail closed at missing source, preparation, or runtime-input boundary; retry through the same resident dispatcher after the missing predicate is satisfied",
+      "cardinality": "ONE_INVOCATION_FOR_THIS_GOAL_UNLESS_AUTHENTIC_REENTRY_IS_REQUIRED"
+    },
+    {
+      "family": "runtime_observation",
+      "existing_owner": "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
+      "canonical_implementation": "workers/device_kv_intr_observation_worker.py",
+      "inputs": ["admitted terminal materialization", "WorkerCoordinator claim/fence", "current resident runtime"],
+      "outputs": ["terminal runtime observation", "durable transport/readback evidence"],
+      "preconditions": ["current resident runtime exists", "claim/fence is authentic"],
+      "authority_owner": "WorkerCoordinator",
+      "expected_evidence": ["current-runtime worker receipt", "claim/fence-bound execution evidence"],
+      "failure_remediation": "remain blocked without manufacturing current-runtime evidence",
+      "cardinality": "ONE_AUTHENTIC_CURRENT_EXECUTION"
+    },
+    {
+      "family": "governed_ingress",
+      "existing_owner": "workers/universal_intr_profiled_ingress.py",
+      "canonical_implementation": "shared Universal InTr profiled ingress with ERL profile parameterization",
+      "inputs": ["exact ERL binding bytes", "STEGOS_RESIDENT_LOCAL transport headers"],
+      "outputs": ["hop 1", "hop 2", "terminal materialization request"],
+      "preconditions": ["shared loopback ingress authentically present"],
+      "authority_owner": "Interlock/InTr",
+      "expected_evidence": ["profile admission evidence", "exact response hash", "two canonical hop receipts"],
+      "failure_remediation": "fail closed and reuse same ingress after authentic readiness returns",
+      "cardinality": "ONE_ADMISSION"
+    },
+    {
+      "family": "transport",
+      "existing_contract": "data/reusable-transport-component-contract.json",
+      "profile": "data/goal-task-transport-profiles/SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001.json",
+      "inputs": ["full-path intent", "exact acquisition envelope", "prior receipt lineage"],
+      "outputs": ["three authentic adjacent-hop receipts", "terminal KV receive/readback"],
+      "preconditions": ["component-specific adjacent transition predicates"],
+      "authority_owner": "Interlock/InTr",
+      "expected_evidence": ["one canonical receipt per adjacent hop", "same packet/operation/payload identity", "exact byte readback"],
+      "failure_remediation": "retry or reenter only the failed component instance when its preconditions are restored; never blind-retry consequences",
+      "cardinality": "RTC-INTERLOCK-INTR-TRANSPORT-008 REPEATED THREE TIMES"
+    },
+    {
+      "family": "evidence_validation",
+      "existing_owner": "canonical source validators",
+      "canonical_implementation": [
+        "scripts/submit_erl_active_research_intr_binding_local.py",
+        "StegVerse-Labs/StegOS/stegos/universal_intr_transport.py",
+        "StegVerse-Labs/Executive_Rhetoric_Ledger/scripts/verify_active_research_provider_proof_binding.py"
+      ],
+      "inputs": ["exact receipt bodies", "full-path intent", "terminal readback", "existing provider proof"],
+      "outputs": ["hash/lineage validation", "provider-proof binding result"],
+      "preconditions": ["authentic evidence exists"],
+      "authority_owner": "NONE_VALIDATION_ONLY",
+      "expected_evidence": ["recomputed receipt hashes", "complete chain validation", "non-authorizing provider-proof binding"],
+      "failure_remediation": "reject mismatched evidence; never repair by inference or synthetic receipt creation",
+      "cardinality": "AFTER_EACH_APPLICABLE_EVIDENCE_STAGE_AND_FINAL_CHAIN"
+    },
+    {
+      "family": "custody_reconstruction",
+      "existing_component": "RTC-EVIDENCE-CUSTODY-004",
+      "canonical_owner": "Master Records",
+      "inputs": ["three-hop chain", "terminal KV exact-byte readback", "provider-proof binding result", "source/dispatch reconstruction evidence"],
+      "outputs": ["custody acceptance", "same-execution reconstruction confirmation", "durable final evidence refs"],
+      "preconditions": ["required authentic component evidence complete"],
+      "authority_owner": "Master Records",
+      "expected_evidence": ["Master Records custody receipt", "Master Records reconstruction confirmation"],
+      "failure_remediation": "retain residual evidence construct and retry custody/reconstruction without replaying transport or provider operation unless separately authorized",
+      "cardinality": "ONE_FINAL_RECONSTRUCTION_FOR_COMPLETION"
+    }
+  ],
+  "not_applicable_families": {
+    "credential_session": "Resident-local ERL transport requires no relay authorization; TV/TVC remains credential authority if a future separately governed transition requires credentials.",
+    "framework_provider_adapter": "No provider execution occurs in this goal; existing provider evidence is only bound, never replayed.",
+    "callback_correlation": "No callback cycle is required.",
+    "release_propagation": "No publication or release transition is part of this goal.",
+    "publisher_projection": "Not selected.",
+    "sdk_return_assembly": "Not selected."
+  },
+  "conditional_families": {
+    "terminal_cleanup_entropy_recovery": "Applicable only after required Master Records custody/reconstruction and any residual recording obligations complete. It is not a prerequisite for obtaining the three-hop proof itself."
+  },
+  "task_specific_configuration": [
+    "ERL source_id/group_id and acquisition-envelope schema",
+    "three-hop EXTERNAL_SYSTEM->STEGOS_ECOSYSTEM->DEVICE_SYSTEM->KV topology",
+    "existing CISA/Iran provider-proof reference",
+    "completion predicate requiring the terminal KV proof to bind to that existing provider proof"
+  ],
+  "superseded_as_orchestration_owners": [
+    {
+      "path": "scripts/submit_erl_active_research_intr_binding_local.py",
+      "new_role": "TASK_SPECIFIC_ADAPTER_AND_EVIDENCE_VALIDATOR_FOR_REUSABLE_GOVERNED_INGRESS_AND_RTC_INTERLOCK_INTR_TRANSPORT",
+      "delete_now": false,
+      "reason": "Retained runtime compatibility and historical provenance; no further generic transport orchestration may be added here."
+    },
+    {
+      "path": "workers/erl_device_kv_terminal.py",
+      "new_role": "TASK_SPECIFIC_PARAMETER_ADAPTER_INSIDE_EXISTING_DEVICE_KV_OWNER_FOR_RTC_INTERLOCK_INTR_TRANSPORT_AND_RTC_FARSIDE_FINAL",
+      "delete_now": false,
+      "reason": "Required by already-merged retained-runtime migration; it is not an independent reusable transport owner."
+    },
+    {
+      "path": "scripts/install_erl_device_kv_prior_lineage.py",
+      "new_role": "RETAINED_RUNTIME_COMPATIBILITY_MIGRATION_ONLY",
+      "delete_now": false,
+      "reason": "Preserves source convergence for retained residents; historical migration must not become a parallel runtime."
+    }
+  ],
+  "authority_invariants": {
+    "task_registry": "COORDINATION_ONLY",
+    "worker_claim_fence": "WorkerCoordinator",
+    "governed_transition": "Interlock/InTr",
+    "credential_provider_release": "TV/TVC",
+    "user_verification": "KV/SKAP Vault",
+    "device_role": "INTERCHANGEABLE_TRANSPORT_EXECUTION_NODE",
+    "device_user_verification_authority": "NONE",
+    "master_records": "OBSERVED_REALITY_CUSTODY_AND_RECONSTRUCTION",
+    "heartbeat": "SYNCHRONIZATION_TIMING_FRESHNESS_LIVENESS_CORRELATION_OBSERVABILITY_ONLY",
+    "github_runtime_authority": "NONE"
+  },
+  "runtime_predicates_changed": false,
+  "new_goal_task_required": false,
+  "componentization_mints_authority": false
+}
