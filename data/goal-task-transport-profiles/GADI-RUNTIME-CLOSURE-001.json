@@ -1,0 +1,22 @@
+{
+  "schema": "stegverse.goal-task-transport-profile/v1",
+  "task_id": "GADI-RUNTIME-CLOSURE-001",
+  "cosv_task_vector": "10100000100000",
+  "component_contract": "data/reusable-transport-component-contract.json",
+  "additional_component_refs": ["data/reusable-task-components/RTC-RESIDENT-RENDEZVOUS-010.json"],
+  "transport_requirements": {
+    "complete_manifest": false,
+    "governed_processing": true,
+    "resident_request_rendezvous": "CONDITIONAL_WHEN_LOCAL_RESIDENT_DELIVERY_NOT_ALREADY_OBSERVED",
+    "required_round_trips": ["controlled_defensive_action_effect_observation","adaptive_reassessment_after_strategy_change","termination_confirmation_after_threat_end"],
+    "evidence_custody_reconstruction": true,
+    "publisher_projection": false,
+    "sdk_return_assembly": false,
+    "stegverse_final_egress_transition": true,
+    "interlock_intr_transport": true,
+    "far_side_final_transition": "CONDITIONAL_ON_EXTERNAL_TEST_SURFACE"
+  },
+  "selected_components": ["RTC-GOVERNED-PROCESSING-002","RTC-RESIDENT-RENDEZVOUS-010","RTC-ROUNDTRIP-003","RTC-EVIDENCE-CUSTODY-004","RTC-STEGVERSE-EGRESS-007","RTC-INTERLOCK-INTR-TRANSPORT-008","RTC-FARSIDE-FINAL-009"],
+  "omitted_components": {"RTC-MANIFEST-001":"already-canonical exact resident request","RTC-PUBLISHER-005":"no publication predicate","RTC-SDK-RETURN-006":"no SDK return predicate"},
+  "authority_invariants": {"task_registry":"COORDINATION_ONLY","user_verification":"KV/SKAP Vault","device_role":"INTERCHANGEABLE_STEGOS_TRANSPORT_NODE","claim_fence":"WorkerCoordinator","transition":"Interlock/InTr","credential_provider_release":"TV/TVC","reality_reconstruction":"Master Records","heartbeat":"OBSERVABILITY_TIMING_FRESHNESS_ONLY","github_runtime_authority":"NONE"}
+}
