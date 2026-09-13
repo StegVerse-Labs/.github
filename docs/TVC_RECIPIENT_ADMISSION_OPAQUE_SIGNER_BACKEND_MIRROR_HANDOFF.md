@@ -46,6 +46,12 @@ RTC-EVIDENCE-CUSTODY-004
 RTC-INTERLOCK-INTR-TRANSPORT-008 x1: recipient_admission_sign_request_ingress
 ```
 
+Selected reusable evidence-validation component:
+
+```text
+RTC-EVIDENCE-CURRENT-SELECTOR-010: Current Applicable Verification Record Selector
+```
+
 Not selected because they are not signer completion requirements:
 
 ```text
@@ -82,6 +88,9 @@ Merged evidence:
 - StegOS PR #358 merged the KV/SKAP + InTr local-operation binder at `d39477a0a175c175266fe31fe0a2862323895ec9`; StegOS CI `34721268779` passed.
 - The canonical `KVSKAPAdmittedNodePlatformTransport` source remains recorded at `StegVerse-Labs/stegfin-governance@1e592bd6c385e79411ac72229ae9fd12a70411c9`. Under the component model this is retained as task-specific composition/configuration over existing reusable transport/evidence owners; it must not grow into a second generic transport plane.
 - TVC already-verified KV/SKAP provenance projection remains merged at `4c78f8653b8a5899350479d57c58e936b50e023a` and is reused rather than reimplemented.
+- `.github` PR #1680 merged reusable evidence-validation component `RTC-EVIDENCE-CURRENT-SELECTOR-010` at `f7132f32ce27a628f9c379f6d585a01d8b0e90dc`. It requires an explicit authoritative current binding and never creates verification or falls back to latest-by-time selection.
+- TVC PR #420 merged the concrete selector implementation at `b029e0d880d3f133b96cdedced915cea8df47532` after exact-head `TVC Recipient Capability Validation` run `34731405250` passed. It matches exact task/COSV/purpose, binding hash/freshness, owner-authorization digest, and admission-receipt digest, delegates verification semantics to the existing provenance projector, and returns only non-secret provenance/reference/digest evidence. It does not author the current binding.
+- No authentic runtime source for `stegverse.kv-skap.current-verification-binding/v1` has been observed. Therefore the selector source is complete, while current user-verification applicability for this Goal Task remains unproven.
 - The recipient-admission signing Universal InTr source route remains merged in `.github` at `08178861cfa144ce032d9399d50c56a77bd1a74b`. It is the existing reusable InTr transport/governed-ingress owner for this sign-request class. Source installability does not prove authentic resident route installation or a current receipt.
 - `UniversalInTrCurrentAdmissionProvider` remains merged at `0980ca24f3acc4ed9a26cd24e433276d37c72911`; it requires an exact fresh `INGRESS_ADMITTED` receipt and is projection-only.
 - StegOS PR #359 merged `TVCRecipientAdmissionNodeCapability` at `8b3b83532b26333570369884a270481f48aeaeef`. It reuses the existing `NodeEventExecutionBroker`, validates the canonical local-operation binding, and invokes an injected opaque P-256 capability without performing user verification or selecting a permanent device.
@@ -99,6 +108,7 @@ single existing vault-agent caller path
 role-separated non-exportable P-256 authority-key candidate
 KV/SKAP sole-user-verifier invariant
 already-verified KV/SKAP provenance projection
+reusable current-verification selector contract and implementation
 platform-neutral KV/SKAP + InTr local-operation binding
 vault-agent platform request -> admitted interchangeable-node bundle
 Universal InTr signing-operation ingress source + current-admission projector
@@ -109,20 +119,22 @@ exact retained-node/materialization/open-lease binding
 replay/key/JWK/message/nonce/freshness checks
 native role-separated Secure Enclave bound signing primitive
 reusable transport/component composition projection
-no user verification performed by node/transport/projectors/native signer
+no user verification performed by node/transport/projectors/selector/native signer
+no latest-by-time current-record heuristic
 no permanent device pin
 no public authority-signing deep link or loopback signing service
 no duplicate listener, runtime, generic transport plane, or signer daemon
 ```
 
-These source merges and reusable-component bindings do not prove current production user-verification state, live Universal InTr receipt availability, generic-to-native device-local interop, production vault-agent launcher injection, production authority-key materialization, public trust-anchor binding, Master Records reconstruction, or a production signature.
+These source merges and reusable-component bindings do not prove current production user-verification state, an authentic current KV/SKAP binding, live Universal InTr receipt availability, generic-to-native device-local interop, production vault-agent launcher injection, production authority-key materialization, public trust-anchor binding, Master Records reconstruction, or a production signature.
 
 ## Exact remaining problem
 
 ```text
-current applicable KV/SKAP owner-verification record
+authentic current KV/SKAP verification binding
+  -> RTC-EVIDENCE-CURRENT-SELECTOR-010
   -> existing provenance projector
-  -> missing canonical current-record selector/provider binding
+  -> current non-secret verification provenance
 
 exact platform sign request
   -> existing reusable RTC-INTERLOCK-INTR-TRANSPORT-008 / Universal InTr route
@@ -145,12 +157,12 @@ both current artifacts
 
 The remaining native interop must not become a public signing oracle. The current InTr receipt is not itself a cryptographic bearer credential, so a public loopback/deep-link endpoint that trusts a supplied receipt object is not admissible. The binding must occur inside an eligible StegOS execution context or another already-authorized native process relationship without creating a second verifier or alternate credential path.
 
-The current-record selector is a real unresolved dependency. Do not choose an arbitrary historical or merely latest SKAP receipt and call it current user verification. The selector must be canonical, context-bound, and feed the already-existing provenance projector/provider rather than creating a new verification mechanism.
+The selector no longer blocks source construction. The real KV/SKAP boundary is now observation of an authentic current binding emitted by the authoritative verification domain. Do not manufacture this binding from repository order, timestamps, device identity, transport identity, or arbitrary historical SKAP receipts.
 
 ## Remaining blockers
 
 ```text
-CURRENT_KV_SKAP_VERIFICATION_RECORD_SELECTION_AND_RUNTIME_PROVIDER_BINDING_NOT_YET_IMPLEMENTED
+CURRENT_KV_SKAP_VERIFICATION_BINDING_SOURCE_NOT_YET_OBSERVED
 CURRENT_INTR_ADMISSION_RUNTIME_ROUTE_INSTALLATION_AND_EXACT_RECEIPT_EVIDENCE_SOURCE_NOT_YET_OBSERVED
 GENERIC_NODE_OPAQUE_P256_CAPABILITY_NOT_YET_BOUND_TO_NATIVE_STEGOS_AUTHORITY_SIGNER
 PLATFORM_SIGNER_BACKEND_NOT_YET_INJECTED_INTO_PRODUCTION_VAULT_AGENT_LIFECYCLE
@@ -185,7 +197,7 @@ public trust anchor contains public material only
 
 ## Next
 
-1. Reuse the existing KV/SKAP provenance component and bind only the missing canonical current-record selector/provider; reject arbitrary historical or latest-only selection semantics.
+1. Observe and bind an authentic current `stegverse.kv-skap.current-verification-binding/v1` source from the KV/SKAP verification domain; do not synthesize it.
 2. Reuse the existing Universal InTr component and bind the current-InTr evidence source to authentic existing resident request/payload/receipt locations; do not synthesize admission or add another listener.
 3. Reuse the existing canonical ephemeral runtime/broker component and bind the generic `OpaqueP256AuthorityCapability` to `TVCRecipientAdmissionBoundOperationSigner` only inside an eligible StegOS native execution context; do not expose signing on the public recipient URL or loopback continuity HTTP carrier.
 4. Inject `PlatformOpaqueRecipientAdmissionSigner` into the existing vault-agent launcher only when the componentized providers and native capability binding fail closed.
@@ -195,7 +207,7 @@ public trust anchor contains public material only
 
 StegOS README was reviewed. One task-specific paragraph still describes the authority candidate as entirely non-signing-reachable. That wording is stale because PR #360 source-implements an internal KV/SKAP+InTr-bound signing path, while public signing remains unavailable. This remains explicit documentation debt and is covered by the reusable README-validation requirement; do not treat stale prose as runtime truth.
 
-The `.github` root README already carries the canonical Reusable Task Component Model projection from PR #1652. This reconciliation does not materially change the `.github` repository-wide component-model function, so no additional root README architecture mutation is required by this task-specific projection.
+The `.github` root README already carries the canonical Reusable Task Component Model projection from PR #1652. The evidence-validation family materialized by PR #1680 preserves the existing component-model authority semantics and does not create a new runtime capability claim.
 
 ## Manual work
 
