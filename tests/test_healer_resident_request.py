@@ -53,6 +53,10 @@ class HealerResidentRequestTests(unittest.TestCase):
         (runtime / "scripts").mkdir()
         (runtime / consumer.TARGET_ENTRYPOINT).write_text("# resident placeholder\n", encoding="utf-8")
         (runtime / consumer.REQUEST_REL).write_text(json.dumps(self.request()), encoding="utf-8")
+        for rel in consumer.NEUTRAL_SCHEDULER_REQUIRED:
+            path = runtime / rel
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("{}\n" if path.suffix == ".json" else "# scheduler\n", encoding="utf-8")
         return td, source, runtime
 
     @staticmethod
@@ -76,7 +80,49 @@ class HealerResidentRequestTests(unittest.TestCase):
             self.assertEqual((runtime / consumer.REQUEST_REL).read_bytes(), (source / consumer.REQUEST_REL).read_bytes())
             self.assertEqual(result["request_materialization"]["state"], "EXACT_CANONICAL_REQUEST_MATERIALIZED")
             self.assertFalse(result["request_materialization"]["request_granted_authority"])
+            self.assertEqual(result["neutral_scheduler_materialization"]["state"], "NEUTRAL_SCHEDULER_ALREADY_MATERIALIZED")
             self.assertEqual(Path(captured["command"][1]), (source / consumer.TARGET_ENTRYPOINT).resolve())
+        finally:
+            td.cleanup()
+
+    def test_missing_neutral_scheduler_is_materialized_before_healer_execution(self):
+        td, source, runtime = self.roots()
+        try:
+            for rel in consumer.NEUTRAL_SCHEDULER_REQUIRED:
+                (runtime / rel).unlink()
+                source_path = source / rel
+                source_path.parent.mkdir(parents=True, exist_ok=True)
+                source_path.write_text("{}\n" if source_path.suffix == ".json" else "# canonical scheduler\n", encoding="utf-8")
+            adapter = source / consumer.REUSABLE_REFRESH_ENTRYPOINT
+            adapter.write_text("# canonical reusable refresh adapter\n", encoding="utf-8")
+            calls = []
+
+            def runner(command, **kwargs):
+                calls.append(command)
+                if Path(command[1]) == adapter.resolve():
+                    params = json.loads(kwargs["env"]["STEGVERSE_REUSABLE_TASK_PARAMETERS_JSON"])
+                    self.assertEqual(Path(params["source_root"]), source.resolve())
+                    self.assertEqual(Path(params["runtime_root"]), runtime.resolve())
+                    for rel in consumer.NEUTRAL_SCHEDULER_REQUIRED:
+                        target = runtime / rel
+                        target.parent.mkdir(parents=True, exist_ok=True)
+                        target.write_bytes((source / rel).read_bytes())
+                    return Completed({
+                        "schema": "stegverse.sovereign-worker-runtime-source-refresh/v1",
+                        "network_fetch_performed": False,
+                        "credential_read_or_acquired": False,
+                        "mutable_runtime_state_preserved": True,
+                    })
+                return self.completed_cycle()
+
+            result = consumer.consume(source, runtime, runner=runner, env={"PATH": "/usr/bin"})
+            self.assertEqual(result["state"], "CYCLE_COMPLETED")
+            self.assertEqual(result["neutral_scheduler_materialization"]["state"], "NEUTRAL_SCHEDULER_MATERIALIZED_FROM_LOCAL_CANONICAL_SOURCE")
+            self.assertTrue(result["neutral_scheduler_materialization"]["attempted"])
+            self.assertEqual(result["neutral_scheduler_materialization"]["missing_after"], [])
+            self.assertEqual(len(calls), 2)
+            self.assertEqual(Path(calls[0][1]), adapter.resolve())
+            self.assertEqual(Path(calls[1][1]), (source / consumer.TARGET_ENTRYPOINT).resolve())
         finally:
             td.cleanup()
 
