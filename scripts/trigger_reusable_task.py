@@ -1,14 +1,5 @@
 #!/usr/bin/env python3
-"""Trigger one reusable task and advance it automatically until a real boundary.
-
-This driver is orchestration only. It never creates a scheduler, mints a
-WorkerCoordinator claim/fence, bypasses Interlock/InTr, acquires credentials,
-invents execution evidence, or writes observed reality on behalf of Master
-Records. It materializes the canonical invocation manifest and invokes only the
-primary existing runner entrypoint already declared by the reusable-task
-registry. Remaining runner templates are materialization dependencies, not an
-ordered command list, preventing duplicate execution of nested runners.
-"""
+"""Trigger one reusable task and advance it automatically until a real boundary."""
 from __future__ import annotations
 
 import argparse
@@ -19,6 +10,8 @@ from pathlib import Path
 import subprocess
 import sys
 from typing import Any
+
+import reusable_task_lifecycle as lifecycle
 
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "data" / "reusable-task-registry.json"
@@ -31,6 +24,7 @@ BOUNDARY_COMPLETE = "COMPLETION_PREDICATES_REQUIRE_EVIDENCE_RECONCILIATION"
 BOUNDARY_NO_RUNNER = "NO_EXECUTABLE_RUNNER_DECLARED"
 BOUNDARY_MISSING_RUNNER = "DECLARED_RUNNER_NOT_MATERIALIZED"
 BOUNDARY_RUNNER_FAILED = "DECLARED_RUNNER_STOPPED_BEFORE_COMPLETION"
+BOUNDARY_MASTER_RECORDS = "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_REQUIRED"
 
 
 def load_json(path: Path) -> Any:
@@ -115,11 +109,18 @@ def main() -> None:
 
     receipt_path = Path(args.receipt) if args.receipt else DEFAULT_RECEIPT_DIR / f"{args.invocation_id}.latest.json"
     manifest_path = receipt_path.with_name(f"{args.invocation_id}.manifest.json")
+    result_path = receipt_path.with_name(f"{args.invocation_id}.runner-result.json")
+    expiry_path = receipt_path.with_name(f"{args.invocation_id}.runner-expiry.json")
+    residual_path = receipt_path.with_name(f"{args.invocation_id}.residual-recording.json")
+    custody_request_path = receipt_path.with_name(f"{args.invocation_id}.master-records-request.json")
     write_json(manifest_path, manifest)
 
     runners = definition.get("runner_templates", [])
     if not isinstance(runners, list):
         raise SystemExit("runner_templates must be a list")
+    completion_predicates = definition.get("completion_predicates", [])
+    if not isinstance(completion_predicates, list):
+        raise SystemExit("completion_predicates must be a list")
 
     receipt: dict[str, Any] = {
         "schema": "stegverse.reusable-task-trigger-receipt/v1",
@@ -131,7 +132,7 @@ def main() -> None:
         "trigger_accepted": True,
         "automation_mode": "ADVANCE_UNTIL_COMPLETION_OR_GOVERNED_BOUNDARY",
         "automatic_steps_attempted": [],
-        "completion_predicates": definition.get("completion_predicates", []),
+        "completion_predicates": completion_predicates,
         "completion_claimed": False,
         "authority_effect": "NONE_ORCHESTRATION_ONLY",
         "authority": manifest["authority"],
@@ -142,7 +143,7 @@ def main() -> None:
         receipt["state"] = "BOUNDARY_RECORDED"
         receipt["boundary"] = {
             "kind": BOUNDARY_NO_RUNNER,
-            "reason": "Reusable identity has no executable runner entrypoint. Trigger is recorded, but completion cannot be fabricated.",
+            "reason": "Reusable identity has no executable runner entrypoint.",
             "manual_intermediate_coordination_required": False,
             "required_next_binding": "DECLARE_OR_REUSE_AN_EXISTING_MACHINE_EXECUTABLE_RUNNER_ENTRYPOINT",
         }
@@ -181,6 +182,8 @@ def main() -> None:
     env["STEGVERSE_REUSABLE_TASK_INVOCATION_ID"] = args.invocation_id
     env["STEGVERSE_REUSABLE_TASK_ID"] = args.reusable_task_id
     env["STEGVERSE_REUSABLE_TASK_PARAMETERS_JSON"] = args.parameters_json
+    env["STEGVERSE_REUSABLE_TASK_RESULT_PATH"] = str(result_path)
+    env["STEGVERSE_REUSABLE_TASK_COMPLETION_PREDICATES_JSON"] = json.dumps(completion_predicates, separators=(",", ":"))
     if args.task_id:
         env["STEGVERSE_REUSABLE_TASK_TRACKING_TASK_ID"] = args.task_id
         env["STEGVERSE_REUSABLE_TASK_TRACKING_COSV"] = args.cosv_task_vector or ""
@@ -208,19 +211,69 @@ def main() -> None:
             "kind": BOUNDARY_RUNNER_FAILED,
             "runner_ref": receipt["effective_runner_ref"],
             "returncode": completed.returncode,
-            "reason": "Primary declared runner stopped before completion. The trigger driver does not bypass or reinterpret that runner's authority/failure semantics.",
+            "reason": "Primary declared runner stopped before completion.",
             "manual_intermediate_coordination_required": False,
         }
         receipt["continuation"] = "RESOLVE_RECORDED_RUNNER_BOUNDARY_THEN_RETRIGGER_OR_CONTINUE_INDEPENDENT_WORK"
-    else:
+        write_json(receipt_path, receipt)
+        print(json.dumps(receipt, indent=2, sort_keys=True))
+        return
+
+    if not result_path.is_file():
         receipt["state"] = "AUTOMATABLE_STEPS_EXHAUSTED"
         receipt["boundary"] = {
             "kind": BOUNDARY_COMPLETE,
-            "reason": "Primary declared runner returned successfully. Completion remains evidence-driven; exit zero cannot manufacture completion predicates or Master Records custody.",
+            "reason": "Primary runner returned successfully without standardized completion evidence.",
             "manual_intermediate_coordination_required": False,
         }
         receipt["continuation"] = "RECONCILE_DECLARED_COMPLETION_EVIDENCE_AND_CONTINUE_DEPENDENT_WORK_WHEN_SATISFIED"
+        write_json(receipt_path, receipt)
+        print(json.dumps(receipt, indent=2, sort_keys=True))
+        return
 
+    result = lifecycle.load_json(result_path)
+    lifecycle.validate_runner_result(
+        result,
+        invocation_id=args.invocation_id,
+        reusable_task_id=args.reusable_task_id,
+        manifest_hash=manifest["manifest_hash"],
+        completion_predicates=completion_predicates,
+    )
+    expiry = lifecycle.build_runner_expiry(
+        invocation_id=args.invocation_id,
+        reusable_task_id=args.reusable_task_id,
+        manifest_hash=manifest["manifest_hash"],
+        runner_ref=receipt["effective_runner_ref"],
+        returncode=completed.returncode,
+        result=result,
+    )
+    residual = lifecycle.build_residual_recording(
+        manifest=manifest,
+        runner_result=result,
+        runner_expiry=expiry,
+    )
+    write_json(expiry_path, expiry)
+    write_json(residual_path, residual)
+    receipt["state"] = "RUNTIME_EVIDENCE_RECONCILED"
+    receipt["boundary"] = {
+        "kind": BOUNDARY_MASTER_RECORDS,
+        "reason": "Runner completion evidence and expiry were observed; independent Master Records custody and reconstruction are required before entropy recovery.",
+        "manual_intermediate_coordination_required": False,
+    }
+    receipt["runner_result_ref"] = str(result_path)
+    receipt["runner_expiry_ref"] = str(expiry_path)
+    receipt["residual_recording_ref"] = str(residual_path)
+    receipt["continuation"] = "SUBMIT_EXACT_CUSTODY_REQUEST_TO_MASTER_RECORDS_THEN_FINALIZE_ENTROPY_AFTER_DESTINATION_RECONSTRUCTION"
+    write_json(receipt_path, receipt)
+    custody_request = lifecycle.build_custody_request(
+        manifest=manifest,
+        trigger_receipt=receipt,
+        runner_result=result,
+        runner_expiry=expiry,
+        residual_recording=residual,
+    )
+    write_json(custody_request_path, custody_request)
+    receipt["master_records_custody_request_ref"] = str(custody_request_path)
     write_json(receipt_path, receipt)
     print(json.dumps(receipt, indent=2, sort_keys=True))
 
