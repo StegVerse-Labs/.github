@@ -47,6 +47,8 @@
     "component_handoff": "docs/SITE_PUBLICATION_NATIVE_RUNTIME_COMPONENT_MODEL_MIRROR_HANDOFF.md",
     "transport_family": "data/reusable-transport-component-contract.json",
     "source_refresh_family": "data/reusable-sovereign-source-refresh-component-contract.json",
+    "source_refresh_reusable_task_id": "RT-SOVEREIGN-SOURCE-REFRESH-001",
+    "source_refresh_reusable_task_definition": "source-bundles/reusable-task-registry.d/RT-SOVEREIGN-SOURCE-REFRESH-001.json",
     "ephemeral_execution_family": "data/reusable-task-ephemeral-construct-contract.json",
     "evaluator": "scripts/evaluate_reusable_task_componentization.py",
     "decomposition_score": 21,
@@ -55,7 +57,8 @@
     "cosv_identity_preserved": true,
     "componentization_mints_authority": false,
     "goal_runtime_predicates_changed": false,
-    "runtime_handoff_remains_runtime_truth": true
+    "runtime_handoff_remains_runtime_truth": true,
+    "task_specific_resident_availability_gate_retired": true
   },
   "existing_evidence_refs": [
     "StegVerse-Labs/.github:pull/1398",
@@ -72,6 +75,7 @@
     "parent_reconciliation_merged_validated": true,
     "reusable_task_component_model_available": true,
     "component_profile_bound": true,
+    "source_refresh_reusable_task_registered": true,
     "exact_materialization_id": "INTR-MAT-0e1ba4786b0ea8a00e1f166e",
     "exact_packet_id": "INTR-58dec5416bd4358190c11372",
     "artifact_manifest_sha256": "sha256:e6bc47580f25296df61d16dfe5a74f3f49fec0dda018c813696195c960e77f09",
@@ -104,6 +108,7 @@
   ],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
+    "reusable_task_or_component_mints_execution_authority": false,
     "worker_claim_authority": "WORKERCOORDINATOR",
     "credential_authority": "TV/TVC",
     "user_verification_authority": "KV/SKAP Vault",
@@ -134,7 +139,7 @@
     "user_verification_source": "KV/SKAP Vault",
     "device_local_user_verifier_allowed": false
   },
-  "runtime_resolution": null,
+  "runtime_resolution": "SOURCE_REFRESH_EXECUTION_BOUNDARY_DELEGATED_TO_RT-SOVEREIGN-SOURCE-REFRESH-001",
   "worker_claim": {
     "authority": "WORKERCOORDINATOR",
     "claim_ref": null,
@@ -145,6 +150,6 @@
     "material_function_change": false,
     "readme_updated_in_change_set": false,
     "readme_path": "README.md",
-    "no_readme_update_reason": "This reconciliation composes existing runtime/publication functions and wraps the already-existing local source-refresh implementation; no new runtime owner or public capability is introduced."
+    "no_readme_update_reason": "This correction binds an already-existing source-refresh implementation to the repository's existing reusable-task architecture; it does not create a new runtime owner or public capability."
   }
 }
