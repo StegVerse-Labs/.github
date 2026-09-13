@@ -7,6 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 RECORDS = ROOT / "data" / "canonical-task-records"
 GLOBAL_INVARIANTS = ROOT / "data" / "task-registry-global-invariants.json"
+CALLER_POLICY = ROOT / "data" / "task-registry-general-checkin-caller-policy.json"
 ACTIVEISH = {"ACTIVE", "CHECKED_OUT", "CLAIMED_INTEGRATION", "HANDOFF_READY_RUNTIME_PROOF_PENDING", "BLOCKED_RUNTIME_ACTIVATION"}
 sys.path.insert(0, str(ROOT / "scripts"))
 from task_registry_checkin_event_history import (
@@ -39,6 +40,28 @@ def load_global_invariants():
     return policy
 
 
+def load_caller_policy():
+    policy = json.loads(CALLER_POLICY.read_text(encoding="utf-8"))
+    if policy.get("schema") != "stegverse.task-registry-general-checkin-caller-policy/v1":
+        raise SystemExit("task registry general check-in caller policy schema mismatch")
+    return policy
+
+
+def resolve_caller_surface(req: dict) -> str:
+    policy = load_caller_policy()
+    declared = str(req.get("caller_surface") or "").strip().upper()
+    admitted = set((policy.get("admitted_production_caller_surfaces") or {}).keys())
+    if declared in admitted:
+        return declared
+    if not declared and os.environ.get("PYTEST_CURRENT_TEST"):
+        return str((policy.get("test_harness") or {}).get("surface") or "TEST_HARNESS").strip().upper()
+    if declared == str((policy.get("test_harness") or {}).get("surface") or "TEST_HARNESS").strip().upper() and os.environ.get("PYTEST_CURRENT_TEST"):
+        return declared
+    if not declared:
+        raise SystemExit("caller_surface required for general Task Registry check-in")
+    raise SystemExit(f"caller_surface not admitted by general check-in policy: {declared}")
+
+
 def handoff(r):
     refs = r.get("handoff_projection_refs") or r.get("source_refs") or []
     for x in refs:
@@ -52,7 +75,7 @@ def stable_hash(value):
     return "sha256:" + hashlib.sha256(raw).hexdigest()
 
 
-def clean_context(req):
+def clean_context(req, caller_surface):
     context = req.get("checkin_context") or {}
     if not isinstance(context, dict):
         raise SystemExit("checkin_context must be an object")
@@ -69,6 +92,8 @@ def clean_context(req):
             if not isinstance(value, list) or not all(isinstance(x, str) and x.strip() for x in value):
                 raise SystemExit(f"checkin_context.{key} must be a string array")
             out[key] = sorted(set(x.strip() for x in value))
+    out["caller_surface"] = caller_surface
+    out["caller_surface_attestation_proven"] = False
     return out
 
 
@@ -135,6 +160,8 @@ def event_context(context):
         "first_unresolved_predicate": context.get("first_unresolved_predicate"),
         "repositories": context.get("repositories_under_mutation") or [],
         "components": context.get("components_under_mutation") or [],
+        "caller_surface": context.get("caller_surface"),
+        "caller_surface_attestation_proven": False,
     }
 
 
@@ -156,6 +183,8 @@ def emit(payload, request_context):
     envelope = dict(payload)
     envelope["registry_global_invariants"] = load_global_invariants()
     envelope["checkin_context"] = request_context
+    envelope["caller_surface"] = request_context.get("caller_surface")
+    envelope["caller_surface_attestation_proven"] = False
     envelope["checkin_context_sha256"] = stable_hash(request_context)
     envelope["checkin_disposition_sha256"] = stable_hash({k: v for k, v in envelope.items() if k != "checkin_disposition_sha256"})
     checkin = record_event(envelope, request_context, "CHECK_IN")
@@ -170,8 +199,9 @@ def emit(payload, request_context):
 
 def main():
     req = json.load(sys.stdin)
+    caller_surface = resolve_caller_surface(req)
     tid = str(req.get("task_id") or "").strip()
-    context = clean_context(req)
+    context = clean_context(req, caller_surface)
     records = load_records()
     r = records.get(tid)
     if not r:

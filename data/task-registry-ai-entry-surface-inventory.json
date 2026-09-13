@@ -4,16 +4,18 @@
   "observed_at": "2026-09-12",
   "reusable_component_id": "RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010",
   "caller_inventory_ref": "data/task-registry-general-checkin-caller-inventory.json",
-  "classification": "PASS_SOURCE_LEVEL_CALLER_INVENTORY_RUNTIME_REACHABILITY_NOT_PROVEN",
+  "caller_policy_ref": "data/task-registry-general-checkin-caller-policy.json",
+  "classification": "PASS_SOURCE_LEVEL_CALLER_INVENTORY_AND_SURFACE_GATE_RUNTIME_REACHABILITY_NOT_PROVEN",
   "surfaces": [
     {
       "path": "scripts/evaluate_task_registry_ai_session_checkin.py",
       "component_binding": "RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010",
+      "caller_surface": "AI_SESSION_GATE",
       "classification": "SOURCE_DECLARATION_FAIL_CLOSED_RUNTIME_IDENTITY_NOT_PROVEN"
     },
     {
       "path": "scripts/evaluate_task_registry_collision_checkin.py",
-      "classification": "GENERAL_CHECKIN_PRODUCTION_CALLERS_INVENTORIED_EXTERNAL_AI_REACHABILITY_NOT_PROVEN"
+      "classification": "GENERAL_CHECKIN_FAILS_CLOSED_WITHOUT_ADMITTED_CALLER_SURFACE_RUNTIME_EXTERNAL_REACHABILITY_NOT_PROVEN"
     },
     {
       "path": "scripts/record_task_registry_session_return.py",
@@ -27,20 +29,24 @@
     },
     {
       "path": "scripts/install_and_run_canonical_work_event_bootstrap.py",
-      "classification": "NON_AI_INTERNAL_CANONICAL_WORK_PREFLIGHT_EXTERNAL_AI_REACHABILITY_NOT_PROVEN"
+      "caller_surface": "INTERNAL_CANONICAL_WORK_BOOTSTRAP",
+      "classification": "NON_AI_INTERNAL_CANONICAL_WORK_PREFLIGHT_SOURCE_SURFACE_BOUND_RUNTIME_EXTERNAL_REACHABILITY_NOT_PROVEN"
     }
   ],
   "conclusions": {
     "task_registry_ai_entry_surfaces_inventoried": "PASS_SOURCE_LEVEL",
     "general_checkin_production_callers_inventoried": "PASS_SOURCE_LEVEL",
+    "general_checkin_missing_or_unknown_caller_surface": "FAIL_CLOSED_SOURCE_LEVEL_VALIDATION_PENDING",
     "ai_session_route_gated_by_component_010": "PASS_SOURCE_LEVEL",
     "session_actor_gate_componentized": true,
     "session_return_close_source_gate": "MERGED_SOURCE_VALIDATED",
+    "caller_surface_declaration_is_authentic_origin_attestation": false,
     "general_checkin_external_ai_reachability": "NOT_PROVEN",
     "runtime_identity_attestation_proven": false
   },
   "next_required_remediation": [
-    "PROVE_OR_PREVENT_EXTERNAL_AI_REACHABILITY_TO_GENERAL_CHECKIN",
+    "VALIDATE_AND_MERGE_GENERAL_CHECKIN_CALLER_SURFACE_GATE",
+    "PROVE_OR_PREVENT_RUNTIME_EXTERNAL_AI_REACHABILITY_TO_GENERAL_CHECKIN",
     "ADD_AUTHENTIC_RUNTIME_ORIGIN_EVIDENCE"
   ]
 }
