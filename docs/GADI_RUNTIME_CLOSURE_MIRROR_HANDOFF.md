@@ -6,7 +6,7 @@ Goal Task ID: `GADI-RUNTIME-CLOSURE-001`
 Parent Goal: `GADI-001`
 COSV ID: `10100000100000`
 Canonical issue: `StegVerse-Labs/.github#1603`
-Status: `ACTIVE / SOURCE-REACHABILITY-COMPLETE / REUSABLE-RENDEZVOUS-SOURCE-COMPLETE / AUTHENTIC-RUNTIME-EVIDENCE-PENDING`
+Status: `ACTIVE / SOURCE-REACHABILITY-COMPLETE / REUSABLE-RENDEZVOUS-SOURCE-COMPLETE / CANONICAL-RESIDENT-CARRIER-BOUND / AUTHENTIC-RUNTIME-EVIDENCE-PENDING`
 
 ## Canonical identity and runtime truth
 
@@ -43,7 +43,7 @@ The LLM-adapter resident rendezvous runtime requires both `STEGVERSE_RESIDENT_RE
 
 The historical StegGate quick-tunnel registry is not current evidence. Current StegCore source explicitly states that GitHub-hosted heartbeat workflows are compatibility validation only; resident StegVerse workers own runtime execution and public rendezvous materialization. The Site stable-domain StegGate worker currently proxies only StegGate health/capabilities/self-test/evaluate routes and does not itself expose the resident-rendezvous API.
 
-Therefore the first unresolved transport predicate is now:
+Therefore the first unresolved transport predicate remains:
 
 `CURRENT_DURABLE_SERVICE_GATEWAY_RESIDENT_RENDEZVOUS_RUNTIME_OBSERVED`
 
@@ -53,9 +53,20 @@ followed by:
 
 No packet is claimed sent through the reusable rendezvous until those runtime surfaces are authentically observed.
 
+## Canonical resident carrier binding
+
+GADI does not own and must not create another runtime carrier, scheduler, resident executor, or hosted production dependency. The existing canonical sovereign carrier is the HeartBeat-separated native `WorkerCoordinator` path already defined by `docs/CANONICAL_RESIDENT_CARRIER_MIRROR_HANDOFF.md` and `handoffs/SHWP-DURABLE-RUNTIME-ACTIVATION.json`.
+
+That durable-runtime handoff is already release-complete for downstream admission and explicitly classifies the historical G18/fence18 projection as stale housekeeping only. G18 terminalization, another physical machine, or a continuously connected external device may not gate GADI. The current reusable carrier observation remains runtime-unproven: `SHWP-SV002-ORG-RUNTIME-ACTIVATION-001` is still `REQUESTED`, and the expected authentic `receipts/sovereign-host/sv002-org-runtime-activation.latest.json` terminal receipt is absent from canonical `main`.
+
+For GADI, this carrier evidence is not a new completion predicate and does not confer authority. It is the existing sovereign observation surface through which durable Gateway/runtime presence may be established. GADI must reuse it rather than inventing an alternate carrier.
+
+Third-party process hosts, GitHub Actions, and compatibility deployment providers cannot satisfy sovereign resident proof and are excluded from GADI runtime-carrier reasoning, fallback, or completion evidence. The native StegDeploy launcher itself rejects hosted-runtime environments and records `third_party_runtime_required=false`; local readiness still does not prove a public production route.
+
 ## Component map
 
 - Runtime observation — existing canonical GADI/runtime owners; required; current same-node discovery/readback/presence/freshness/binding evidence only.
+- Canonical resident carrier — existing HeartBeat-separated native WorkerCoordinator; reused, not owned by GADI; runtime evidence pending; no G18 downstream gate.
 - `RTC-RESIDENT-RENDEZVOUS-010` — source-complete; runtime-evidence-pending; conditional when local resident delivery is not authentically available; authority NONE.
 - `RTC-GOVERNED-PROCESSING-002` — required; non-final processing only.
 - `RTC-ROUNDTRIP-003` — required for controlled action/effect/reassessment/termination observations.
@@ -90,22 +101,23 @@ No runtime subject, node identity, Secure Enclave identity, transport identity, 
 
 ## Next admissible work
 
-Do not add another rendezvous implementation. Resolve the current authentic runtime surface in this order:
+Do not add another rendezvous implementation or runtime carrier. Resolve the current authentic runtime surface through the existing sovereign carrier in this order:
 
-1. observe an existing durable Service Gateway instance with resident rendezvous enabled and durable storage;
-2. observe a current resident poll/advertisement for `consumer=gadi_runtime_observation`;
-3. require discovery `AVAILABLE` for exactly one canonical routing node;
-4. submit the exact canonical GADI request once, with digest-derived transport correlation and no blind retry;
-5. require resident fetch/materialization, `gadi-runtime-observation-request-consumption.latest.json`, and a correlated bounded acknowledgement;
-6. then continue same-node runtime binding -> InTr admission -> WorkerCoordinator claim/fence -> controlled action/effect/reassessment/termination -> Master Records reconstruction.
+1. observe the existing HeartBeat-separated native WorkerCoordinator carrier through authentic resident dispatch/runtime receipts; do not wait on stale G18 housekeeping and do not use a hosted provider substitute;
+2. from that existing carrier, observe a durable Service Gateway instance with resident rendezvous enabled and durable storage;
+3. observe a current resident poll/advertisement for `consumer=gadi_runtime_observation`;
+4. require discovery `AVAILABLE` for exactly one canonical routing node;
+5. submit the exact canonical GADI request once, with digest-derived transport correlation and no blind retry;
+6. require resident fetch/materialization, `gadi-runtime-observation-request-consumption.latest.json`, and a correlated bounded acknowledgement;
+7. then continue same-node runtime binding -> InTr admission -> WorkerCoordinator claim/fence -> controlled action/effect/reassessment/termination -> Master Records reconstruction.
 
 If local authentic resident delivery becomes observable before rendezvous activation, use the local path instead; the rendezvous is conditional, not mandatory.
 
-No second user-operated device is required. No device verification is permitted.
+No second user-operated device is required. No connected-device discovery is a prerequisite. No device verification is permitted.
 
 ## README impact
 
-No additional README semantic change is required for this reconciliation.
+README semantics were reviewed for this reconciliation. No README change is required because the canonical resident-carrier and authority boundaries are already repository-wide contracts; this change only binds GADI to the existing carrier.
 
 ## Manual work
 
