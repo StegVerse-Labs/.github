@@ -1,0 +1,25 @@
+{
+  "schema": "stegverse.task-registry-general-checkin-caller-policy/v1",
+  "goal_task_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
+  "general_evaluator": "scripts/evaluate_task_registry_collision_checkin.py",
+  "admitted_production_caller_surfaces": {
+    "AI_SESSION_GATE": {
+      "path": "scripts/evaluate_task_registry_ai_session_checkin.py",
+      "component_id": "RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010",
+      "classification": "AI_SESSION_COORDINATION_GATE"
+    },
+    "INTERNAL_CANONICAL_WORK_BOOTSTRAP": {
+      "path": "scripts/install_and_run_canonical_work_event_bootstrap.py",
+      "classification": "NON_AI_INTERNAL_CANONICAL_WORK_PREFLIGHT"
+    }
+  },
+  "test_harness": {
+    "surface": "TEST_HARNESS",
+    "only_when_pytest_environment_present": true,
+    "production_authority": "NONE"
+  },
+  "missing_or_unknown_surface": "FAIL_CLOSED",
+  "declaration_is_authentic_origin_attestation": false,
+  "runtime_external_ai_reachability_proven_absent": false,
+  "authority_effect": "NONE_COORDINATION_ONLY"
+}
