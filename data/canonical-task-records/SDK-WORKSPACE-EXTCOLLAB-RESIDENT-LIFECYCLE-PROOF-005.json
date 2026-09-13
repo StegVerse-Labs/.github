@@ -1,0 +1,26 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-WORKSPACE-EXTCOLLAB-RESIDENT-LIFECYCLE-PROOF-005",
+  "correlation_id": "SDK-WORKSPACE-EXTCOLLAB-RESIDENT-LIFECYCLE-PROOF-005",
+  "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "parent_task_id": "SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004",
+  "goal": "Prove one authentic post-merge sovereign resident lifecycle invocation end to end through same-invocation manifest, runner result, expiry, residual, Master Records custody/reconstruction, entropy recovery, UTC-hour slot satisfaction, and resident reseal/listener consumption without duplicate same-slot execution.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "cosv_task_vector": null,
+  "repository": "StegVerse-Labs/.github",
+  "activation_condition": "PARENT_GOAL_PROMPT_COUNT_REACHES_20",
+  "activation_condition_status": "SATISFIED",
+  "dependencies": [],
+  "remaining_predicates": [
+    "AUTHENTIC_POST_MERGE_RESIDENT_LIFECYCLE_INVOCATION_OBSERVED",
+    "SAME_INVOCATION_REUSABLE_LIFECYCLE_CHAIN_PROVEN",
+    "UTC_HOUR_SLOT_SATISFACTION_WITHOUT_DUPLICATE_EXECUTION_PROVEN",
+    "RESIDENT_RESEAL_CONSUMPTION_RECEIPT_OBSERVED",
+    "RESIDENT_CONSENT_LISTENER_CONSUMPTION_RECEIPT_OBSERVED",
+    "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_PROVEN"
+  ],
+  "handoff_projection_refs": ["StegVerse-Labs/.github:docs/SDK_WORKSPACE_EXTCOLLAB_RESIDENT_LIFECYCLE_PROOF_005_MIRROR_HANDOFF.md"],
+  "completion": {"claimed": false, "validated": false, "activation_proof_complete": false},
+  "authority_model": {"github_runtime_authority": "NONE", "worker_claim_authority": "WORKERCOORDINATOR", "user_verification_authority": "KV/SKAP Vault", "interlock_intr_required_for_governed_ingress_egress": true, "second_user_operated_device_required": false}
+}
