@@ -1,51 +1,51 @@
 # Site Publication InTr Consumer Mirror Handoff
 
-Updated: 2026-09-11
+Updated: 2026-09-13
 Repository: `StegVerse-Labs/.github`
 Issue: #1372
 Task: `SITE-PUBLICATION-INTR-CONSUMER-001`
-Parent Goal Task ID: `KV-CONNECTION-REVALIDATION-WORKER-001`
-Parent Site lane: `SITE-497-THIRD-PARTY-DEPENDENCY-ERADICATION`
+Parent runtime Goal Task: `SITE-PUBLICATION-NATIVE-RUNTIME-EXECUTION-001`
+Parent ECE consumer: `SITE-ECE-CURRENT-PROJECTION-MATERIALIZER-001`
 COSV: `50000000102000`
-Canonical Site source boundary: `StegVerse-Labs/Site@bc1ee7257ebc64f77dab3f0b746bb3a86a279b6c`
-Consumer source merge: `.github@e89a65307248a69e057bc07dac07a5ca98bc4677` (PR #1373)
-Runtime-ingress integration merge: `.github@3cead1c10329f5df2577b36259f68180e43d52c2` (PR #1381)
-WorkerCoordinator registration merge: `.github@7444aefbdd2c644c46ae105192af4a524ef02172` (PR #1398)
+State: `HANDOFF_READY / MACHINE OWNER INSTALLED / AUTHENTIC CLAIM+LEASE EVIDENCE PENDING`
 
 ## Purpose
 
-Consume the exact Site publication materialization request already produced by the merged Site adapter without creating a new runtime owner or conflating queue admission with publication success.
+Consume the exact Site publication materialization request already admitted by the shared Universal InTr ingress, under a fresh WorkerCoordinator claim/fence, without creating a new listener, runtime owner, publication authority, or user-verification path.
 
-Canonical input:
+Canonical operation:
 
 ```text
 operation_id = SITE_PUBLICATION_EVENT
 destination = STEGOS_ECOSYSTEM / StegOS:SitePublicationRuntime
 downstream_owner_ref = StegVerse-Labs/StegOS:canonical-runtime-lane
-request schema = stegverse.universal-intr-materialization-request/v1
 request state = QUEUED_FOR_EVENT_EPHEMERAL_MATERIALIZATION
 runtime class = EVENT_EPHEMERAL
 ```
 
-## Merged source
+## Canonical source history
 
-PR #1373 merged the strict candidate consumer. PR #1381 merged the Site publication adapter and fail-closed shared Universal InTr route installer. PR #1398 merged the independently claimable WorkerCoordinator task after all required exact-head suites passed.
+- PR #1373 merged the strict candidate consumer.
+- PR #1381 merged the Site publication adapter and shared Universal InTr route integration.
+- PR #1398 merged the independently claimable WorkerCoordinator child at `7444aefbdd2c644c46ae105192af4a524ef02172` after Heartbeat `34615815337`, Deterministic Repository Suite `34615815364`, and Organization Control `34615815476` passed.
+- Reusable Task Component reconciliation later bound the parent runtime Goal to existing reusable source-refresh, governed processing, publication, InTr transport, runtime observation, and Master Records custody components rather than adding bespoke orchestration.
 
-Merged registration surfaces include:
+Machine-owned registration surfaces:
 
-- `workers/site_publication_intr_consumer_worker.py`
-- `control/worker-registry.d/site-publication-intr-consumer-001.json`
-- `control/process-worker-adapters.d/site-publication-intr-consumer-001.json`
-- `cost-basis/worker-runtime/site-publication-intr-consumer.json`
-- `control/task-vectors/SITE-PUBLICATION-INTR-CONSUMER-001.json`
-- `handoffs/SITE-PUBLICATION-INTR-CONSUMER-001.json`
-- `tests/test_site_publication_intr_worker_registration.py`
+```text
+workers/site_publication_intr_consumer_worker.py
+workers/site_publication_intr_ingress.py
+control/worker-registry.d/site-publication-intr-consumer-001.json
+control/process-worker-adapters.d/site-publication-intr-consumer-001.json
+control/task-vectors/SITE-PUBLICATION-INTR-CONSUMER-001.json
+handoffs/SITE-PUBLICATION-INTR-CONSUMER-001.json
+```
 
-`workers/` is already copied wholesale by `scripts/refresh_sovereign_worker_runtime_source.py`; no second listener or source-refresh owner was introduced.
+`workers/`, task-vector fragments, worker-registry fragments, adapter fragments, and related control surfaces are propagated through the existing local-only sovereign source-refresh component. No second source-refresh owner is created.
 
-## WorkerCoordinator state
+## WorkerCoordinator state and authority
 
-The child remains deliberately unclaimed in repository source:
+Repository source remains intentionally unclaimed:
 
 ```text
 state = HANDOFF_READY
@@ -56,27 +56,13 @@ fresh_fence_required = true
 minimum_fencing_token_exclusive = 0
 ```
 
-The zero floor requires checkout to mint a nonzero fresh generation; it does not hard-code or reuse any historical task fence. The worker refuses invocation without a real `claim_id` and integer fencing token. It accepts only `STEGVERSE_SITE_PUBLICATION_MATERIALIZATION_ID`, and the process adapter allowlists only that opaque identifier.
+Only WorkerCoordinator may create the fresh claim/fence. The InTr materialization request and ingress receipt do not mint claim/fence or execution authority. Interlock/InTr remains transition/admission authority. TV/TVC remains credential/provider/release authority. KV/SKAP Vault remains the sole user-verification authority. GitHub runtime authority is `NONE`.
 
-The parent goal registry independently remains `HANDOFF_READY`, unclaimed, and unleased with COSV `50000000102000`; its own minimum fencing-token floor remains greater than 22 and is not reusable by this child.
+There is no device-verification policy, device identity gate, connected-device prerequisite, or second-user-device requirement in this lane.
 
-## Heartbeat validation repair and PR #1398 merge
+## Exact admitted materialization evidence
 
-The earlier exact head `aef2740e9f0bb57241d78ec5d7898e8c6a436a92` passed Organization Control and the Deterministic Repository Suite but failed Heartbeat Worker Project run `34566974758` at the later carrier-only/non-mutating dry-run proof.
-
-Commit `041a929253ca058138d3ab2d0c8f3e6bdae1854a` changed only CI transport of the dry-run JSON: the projection is written to a temporary file and parsed from that file instead of being transported as one command-line argument. Repository before/after hashes and every carrier non-authority/projection assertion were preserved.
-
-Final PR head `ff07cd41a6042245f88f2ac9a48712d15c82d6cf` passed all three required suites:
-
-- Heartbeat Worker Project run `34615815337`, including the formerly failing carrier-only/non-mutating proof.
-- Deterministic Repository Suite run `34615815364`.
-- Organization Control run `34615815476`.
-
-PR #1398 then merged at `7444aefbdd2c644c46ae105192af4a524ef02172`.
-
-## Exact admitted Site materialization
-
-Canonical Site source `bc1ee7257ebc64f77dab3f0b746bb3a86a279b6c` passed Site 497 Publication Observation Contract run `34553032100`. Its deterministic request evidence identifies:
+Existing source-validation lineage identifies:
 
 ```text
 artifact_manifest_sha256 = sha256:e6bc47580f25296df61d16dfe5a74f3f49fec0dda018c813696195c960e77f09
@@ -86,44 +72,61 @@ materialization_state = QUEUED_FOR_EVENT_EPHEMERAL_MATERIALIZATION
 runtime_class = EVENT_EPHEMERAL
 ```
 
-That same validation evidence explicitly records that the request grants no execution authority and that authentic event-ephemeral publication exchange, independent publication observation, DNS mutation, TLS recovery, and public-content equivalence were not observed/claimed.
+Those source artifacts do not prove resident ingress or publication. Authentic execution requires the resident Universal InTr ingress to persist a write-once `stegverse.site-publication-intr-ingress/v1` receipt plus the exact queued request under the same runtime root.
 
-The exact materialization id above is therefore the only currently evidenced value eligible to bind to `STEGVERSE_SITE_PUBLICATION_MATERIALIZATION_ID` for the next fresh fenced invocation. Binding the id alone is not runtime or publication proof.
+## Materialization binding rule
 
-## Runtime access condition
+The worker no longer treats an out-of-band environment value as sufficient evidence of the admitted materialization.
 
-The authorized native remote-runtime surface was queried after PR #1398 merged and reported no connected device. Therefore no sovereign source refresh, WorkerCoordinator checkout, claim, fence, worker invocation, publication lease, or native receipt is claimed from this continuation.
-
-The existing runtime path remains authoritative and requires no hosted substitute. On the next authentic native runtime visit, the sequence is:
-
-1. Refresh already-local merged `.github` source through the existing local-only sovereign source-refresh path; no network-source fallback.
-2. Run the existing WorkerCoordinator targeted execution path for `SITE-PUBLICATION-INTR-CONSUMER-001` so checkout/admission mints a fresh independent claim/fence.
-3. Bind `STEGVERSE_SITE_PUBLICATION_MATERIALIZATION_ID=INTR-MAT-0e1ba4786b0ea8a00e1f166e` only for that fenced process invocation.
-4. Retain the candidate-validation receipt and fencing generation.
-5. Execute one authentic bounded `EVENT_EPHEMERAL` publication lease through the canonical StegOS/InTr runtime owner.
-6. Independently observe `/intr/profile`, exact HTTP byte/path hashes, candidate evidence export, and lease closure.
-7. Separately admit final publication transition before any DNS/TLS recovery claim.
-
-## Runtime/publication predicates still false
+For a fenced invocation, the worker resolves the opaque materialization id from:
 
 ```text
-sovereign source refresh observed after #1398 = false
-fresh WorkerCoordinator claim/fence observed = false
-runtime worker execution observed = false
-bounded EVENT_EPHEMERAL lease execution observed = false
-public HTTPS /intr/profile observed = false
-exact HTTP byte/path equivalence observed = false
-lease closure observed = false
-final publication transition admitted = false
-DNS/TLS recovery proven = false
+receipts/sovereign-network/site-publication-intr-ingress.latest.json
+-> exact write-once queue_ref
+-> intr-materialization/<materialization_id>.json
 ```
 
-Persistent Node continuity remains required. Persistent host, always-on receiver, second user-operated device, hosted-provider runtime, and Render remain prohibited/not required.
+The ingress receipt must be `INGRESS_ADMITTED_CANDIDATE_ONLY`, must record `exact_request_validated=true`, `write_once_persisted=true`, `request_grants_execution_authority=false`, `claim_or_fence_minted=false`, and `authority_effect=NONE_INGRESS_CANDIDATE_ONLY`. The queue reference must resolve exactly to the same runtime root and the queued request must carry the same materialization id.
 
-## README maintenance
+`STEGVERSE_SITE_PUBLICATION_MATERIALIZATION_ID` remains an optional opaque correlation binding because the process adapter already allowlists it. If supplied, it must equal the locally admitted materialization id. A mismatch fails closed. The environment value never substitutes for the admitted ingress receipt.
 
-Root README was re-reviewed for this child lane after PR #1398. No provider/runtime wording change is required; the existing provider-neutral and no-required-third-party-runtime boundary remains correct.
+This removes the previous manual env-binding step as a source of truth while preserving the existing authority separation: authentic InTr ingress identifies the candidate; WorkerCoordinator separately supplies claim/fence authority.
+
+## Runtime sequence
+
+```text
+already-local source refresh through RT-SOVEREIGN-SOURCE-REFRESH-001 / existing refresh implementation
+-> resident Universal InTr ingress retains exact Site publication candidate
+-> WorkerCoordinator discovers SITE-PUBLICATION-INTR-CONSUMER-001 from worker-registry.d
+-> fresh independent claim/fence
+-> worker resolves exact materialization from local admitted-ingress evidence
+-> candidate validation receipt retained
+-> bounded EVENT_EPHEMERAL Site publication lease
+-> independent /intr/profile + exact HTTP byte/path observation
+-> lease closure
+-> final Interlock/InTr publication transition admission
+-> Master Records publication evidence custody/reconstruction
+-> conditional DNS/TLS recovery proof when applicable
+```
+
+The neutral reusable scheduler may advance reusable source refresh when scheduling is required, but scheduling itself is not a Goal completion predicate and grants no authority.
+
+## Runtime/publication predicates still false until authentic evidence
+
+```text
+SOVEREIGN_SOURCE_REFRESH_OBSERVED
+FRESH_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED
+RUNTIME_WORKER_EXECUTION_OBSERVED
+BOUNDED_EVENT_EPHEMERAL_LEASE_EXECUTION_OBSERVED
+PUBLIC_HTTPS_INTR_PROFILE_OBSERVED
+EXACT_HTTP_BYTE_PATH_EQUIVALENCE_OBSERVED
+LEASE_CLOSURE_OBSERVED
+FINAL_PUBLICATION_TRANSITION_ADMITTED
+DNS_TLS_RECOVERY_PROVEN
+```
+
+Source merge, CI, registration, scheduler definition, user-observed homepage reachability, or a materialization identifier alone does not satisfy these predicates.
 
 ## Current continuation
 
-The repository registration and CI repair phase is complete. The next evidence-producing phase is authentic native source refresh + fresh WorkerCoordinator claim/fence + exact-materialization candidate validation. Until a native runtime surface is connected and those receipts exist, the task remains active and all runtime/publication predicates above remain false.
+Validate and merge the admitted-ingress binding repair. Then advance the already-existing reusable source-refresh / WorkerCoordinator / Site publication component chain and retain authentic receipts. The ECE materializer consumes this publication owner; it must not create a second served-root runtime or source-repository publication path.
