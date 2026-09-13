@@ -5,13 +5,13 @@ Updated: 2026-09-13
 Goal Task: `SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001`
 COSV: `40000100100000`
 Runtime truth remains: `docs/SS_ERL_ACTIVE_RESEARCH_INTR_RUNTIME_BINDING_MIRROR_HANDOFF.md`
-Status: `SOURCE BINDING PROPOSED / RUNTIME EVIDENCE UNCHANGED`
+Status: `SOURCE BINDING MERGED AND VALIDATED / RUNTIME EVIDENCE UNCHANGED`
 
 ## Decision
 
 The Goal Task continues unchanged. No successor Goal Task is created.
 
-`RTC-EVIDENCE-CUSTODY-004` is now bound to the generic Master Records Universal InTr receipt-chain custody implementation merged in `master-records/orchestration` PR #94 at `560863ff192f4437911a8d748984d06566c120c7`.
+`RTC-EVIDENCE-CUSTODY-004` is bound to the generic Master Records Universal InTr receipt-chain custody implementation merged in `master-records/orchestration` PR #94 at `560863ff192f4437911a8d748984d06566c120c7`.
 
 The reusable implementation is provider-neutral and task-neutral:
 
@@ -20,11 +20,21 @@ The reusable implementation is provider-neutral and task-neutral:
 - `scripts/reconstruct_universal_intr_receipt_chain.py`
 - `scripts/test_universal_intr_receipt_chain_custody.py`
 
-Exact source head `3ce674a6f4cc9fa5323e27e236a2bfabf4f0a46e` passed Master Records Runtime Evidence Validation run `34739395592`; all observed companion workflows also passed before merge.
+Exact Master Records source head `3ce674a6f4cc9fa5323e27e236a2bfabf4f0a46e` passed Runtime Evidence Validation run `34739395592`; all observed companion workflows also passed before merge.
+
+Goal-specific binding source merged in `StegVerse-Labs/.github` PR #1725 at `68b43a93931b8957a54c1fe7882b2402980a1813` from exact head `bb9f3931f76322b31c7108c381a137dd3cbdd03b` after:
+
+- organization-control run `34739543851`: PASS;
+- deterministic diagnostics run `34739543847`: PASS;
+- Heartbeat/repository validation run `34739543839`: PASS, including the complete deterministic repository suite.
+
+The canonical binding artifact is:
+
+`data/goal-task-component-bindings/SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001.master-records.json`
 
 ## ERL parameters
 
-The ERL Goal Task will supply only task-specific evidence parameters after authentic execution exists:
+The ERL Goal Task supplies only task-specific evidence parameters after authentic execution exists:
 
 - task/COSV identity;
 - one complete authentic three-hop Universal InTr chain;
@@ -61,14 +71,16 @@ This binding changes no authority.
 
 ## Evidence discipline
 
-The Master Records merge proves reusable source compatibility only. It does not prove this ERL Goal Task has executed, reached InTr ingress, produced any authentic hop, completed terminal readback, or entered Master Records custody.
+The Master Records merge and Goal-specific binding prove reusable source compatibility only. They do not prove this ERL Goal Task has executed, reached InTr ingress, produced any authentic hop, completed terminal readback, or entered Master Records custody.
 
 `MASTER_RECORDS_CUSTODY_RECONSTRUCTION_OBSERVED` remains false until a destination-owned custody receipt and reconstruction confirmation exist for this Goal Task's authentic chain.
 
+Latest authorized resident-device discovery in this continuation returned `[]`.
+
 ## Next admissible work
 
-1. Validate and merge this source binding.
-2. Recheck the authorized sovereign resident execution surface.
-3. When authentic resident execution is available, use the already-selected execution-materialization, governed-ingress, and three `RTC-INTERLOCK-INTR-TRANSPORT-008` instances.
-4. Validate the complete chain and terminal provider-proof binding without replay.
-5. Submit that authentic evidence object to the merged Master Records reusable custody interface and require reconstruction confirmation.
+1. Keep the runtime handoff as runtime truth and the binding artifact/handoff as source architecture truth.
+2. When authentic resident execution is available, use the already-selected execution-materialization, governed-ingress, and three `RTC-INTERLOCK-INTR-TRANSPORT-008` instances.
+3. Validate the complete chain and terminal provider-proof binding without replay.
+4. Submit that authentic evidence object to the merged Master Records reusable custody interface and require reconstruction confirmation.
+5. Reconcile the parent handoff only after those authentic predicates are observed.
