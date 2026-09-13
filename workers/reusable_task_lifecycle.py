@@ -103,7 +103,7 @@ def build_custody_request(*, manifest: dict[str, Any], trigger_receipt: dict[str
         "invocation_id": manifest["invocation_id"],
         "reusable_task_id": manifest["reusable_task_id"],
         "manifest_hash": manifest["manifest_hash"],
-        "destination": "master-records/core-lite",
+        "destination": "master-records/orchestration",
         "custody_requested": True,
         "reconstruction_requested": True,
         "destination_custody_accepted": False,
