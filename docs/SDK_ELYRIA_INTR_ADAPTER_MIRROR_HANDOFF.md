@@ -4,7 +4,7 @@ Updated: 2026-09-12
 Repository: `StegVerse-Labs/.github`
 Goal Task ID: `SDK-ELYRIA-INTR-ADAPTER-001`
 COSV: `71000000100112`
-Status: `ACTIVE / COMPONENTIZED / SOURCE MERGED AND VALIDATED / AUTHENTIC PUBLIC ROUND TRIP UNOBSERVED`
+Status: `ACTIVE / COMPONENTIZED / SOURCE AND HANDOFFS CURRENT / AUTHENTIC PUBLIC ROUND TRIP UNOBSERVED`
 
 ## Canonical Goal Task identity
 
@@ -26,7 +26,7 @@ Goal-specific component profile:
 data/goal-task-component-profiles/SDK-ELYRIA-INTR-ADAPTER-001.json
 ```
 
-The decomposition evaluation score is `25`, which requires task-specific scope growth to stop and reusable composition to be used instead. This does not close or replace the Goal Task.
+The decomposition score is `25`: task-specific orchestration growth must stop and reusable composition must be used. This changes composition, not Goal Task identity or authority.
 
 Selected components:
 
@@ -41,21 +41,11 @@ RTC-STEGVERSE-EGRESS-007           governed StegVerse-side egress
 RTC-INTERLOCK-INTR-TRANSPORT-008   governed packet movement and return
 ```
 
-Not selected because this Goal Task does not require them:
+Not selected: `RTC-PUBLISHER-005`, `RTC-FARSIDE-FINAL-009`, recurring endpoint monitoring, a new credential/session path, or device-local user verification. Replay and no-bind observations may reuse the round-trip component conditionally; they are not forced into the minimal completion path.
 
-```text
-RTC-PUBLISHER-005
-RTC-FARSIDE-FINAL-009
-RT-EXTERNAL-ENDPOINT-MONITOR-001
-new credential/session orchestration
-device-local user verification
-```
+## Source state and validation
 
-Replay and no-bind observations may reuse `RTC-ROUNDTRIP-003` conditionally if exercised, but they are not forced into the minimal completion path.
-
-## Source state
-
-The framework-specific source is complete and merged in `StegVerse-org/StegVerse-SDK` PR `#222`:
+Framework-specific source is merged in `StegVerse-org/StegVerse-SDK` PR `#222`:
 
 ```text
 final head: aeb07d41d83c2a6ae5d84d1a2d8db5cbdc4f540b
@@ -64,9 +54,16 @@ exact-head validation run: 34709179523
 conclusion: SUCCESS
 ```
 
-The adapter preserves exact Elyria movement/receipt/replay/no-bind material as foreign evidence, preserves transition/run identity, and fails closed on identity/schema/evidence mismatch. No new StegVerse protocol or generic transport stack was created.
+The SDK handoff was reconciled to the component model in PR `#225`:
 
-The SDK task handoff reconciliation is tracked in `StegVerse-org/StegVerse-SDK#225`. Until that documentation-only PR is merged, `README_AND_HANDOFF_CURRENT` remains open here.
+```text
+head: 4ed637c34c684463b8617e4d1c5fb3ae71666936
+exact-head validation run: 34730774011
+conclusion: SUCCESS
+merge commit: 5ecb19944019af4bf2432b0a1dad3bda04f9019c
+```
+
+The SDK root README already states the generic external-framework manifested processing and governed-interlock model, so no task-specific README mutation was needed. The repository handoff is now current.
 
 ## Authority separation
 
@@ -85,9 +82,9 @@ Elyria adapter      = NONE_TRANSLATION_ONLY
 
 Elyria verdicts, signatures, replay observations, no-bind material, and route-closure assertions remain foreign observations; they do not become StegVerse authority.
 
-## Goal-specific predicate state
+## Predicate state
 
-Satisfied by merged source and exact-head validation:
+Satisfied:
 
 ```text
 EXISTING_STEGVERSE_GOVERNED_PATH_REUSED
@@ -99,28 +96,28 @@ ELYRIA_VERDICT_REMAINS_NON_AUTHORIZING
 ELYRIA_RECEIPT_REPLAY_NOBIND_EVIDENCE_PRESERVED
 ROUTE_CLOSURE_ASSERTION_DISTINGUISHED_FROM_STEGVERSE_OBSERVATION
 FAIL_CLOSED_IDENTITY_AND_SCHEMA_TESTS_PASS
+README_AND_HANDOFF_CURRENT
 ```
 
-Remaining:
+Remaining Goal Task-specific predicate:
 
 ```text
-README_AND_HANDOFF_CURRENT
 AUTHENTIC_TWO_WAY_PUBLIC_ELYRIA_TRANSPORT_EVIDENCE_OBSERVED
 ```
 
-The final runtime/evidence predicate cannot be satisfied by source construction, CI, injected transport, or merge state.
+Source construction, CI, injected transport, merge state, and component reuse do not satisfy that remaining predicate.
 
 ## Duplicate orchestration retired/superseded
 
-Do not extend task-specific implementations for generic transport, Interlock/InTr protocol, receipt/custody/reconstruction, callback/correlation, recurring monitoring, or device-local verification. Existing historical evidence remains provenance.
+Do not extend task-specific implementations for generic transport, Interlock/InTr protocol, receipt/custody/reconstruction, callback/correlation, recurring monitoring, or device-local verification. Historical source and CI evidence remains provenance. Superseded coordination PR `#1613` was closed without deleting its evidence lineage.
 
 ## Next admissible work
 
-1. Finish the documentation-only SDK handoff reconciliation.
-2. Use the component profile to resolve a genuinely reachable public Elyria assessment endpoint.
-3. Execute one authentic governed request/response cycle through the existing Interlock/InTr transport path.
-4. Preserve exact task/run correlation and foreign response semantics.
-5. Record authentic evidence through Master Records custody/readback.
+1. Use the component profile to resolve a genuinely reachable public Elyria assessment endpoint.
+2. Execute one authentic governed request/response cycle through the existing Interlock/InTr transport path.
+3. Preserve exact task/run correlation and foreign response semantics.
+4. Record authentic evidence through Master Records custody/readback.
+5. Mark the final predicate satisfied only after authentic evidence exists.
 6. Do not claim private production Veritas interoperability, publication, or a far-side final transition without evidence.
 
 ## Manual work
