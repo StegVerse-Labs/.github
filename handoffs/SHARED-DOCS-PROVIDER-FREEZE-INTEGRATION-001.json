@@ -1,0 +1,113 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001",
+  "created_at": "2026-09-12T22:00:00-05:00",
+  "updated_at": "2026-09-12T22:14:00-05:00",
+  "state": "HANDOFF_READY_MACHINE_OWNED",
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:shared-docs-provider-freeze-integration:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "data/canonical-task-records/SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001.json",
+      "StegVerse-org/StegVerse-SDK:docs/SHARED_DOCS_PROVIDER_FREEZE_INTEGRATION_MIRROR_HANDOFF.md"
+    ],
+    "admissibility_evidence_refs": [
+      "handoffs/SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001.json",
+      "control/resident-execution-request.d/shared-docs-provider-content-integrity-001.json"
+    ],
+    "integration_evidence_refs": [
+      "workers/shared_docs_provider_content_integrity_worker.py",
+      "control/worker-registry.d/shared-docs-provider-content-integrity-001.json",
+      "control/process-worker-adapters.d/shared-docs-provider-content-integrity-001.json"
+    ],
+    "activation_proof_ref": null,
+    "blockers": ["AUTHENTIC_PROVIDER_OBSERVATION_NOT_YET_OBSERVED"],
+    "continuation_owner": "shared-docs-provider-content-integrity-worker",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "integrates_capability",
+    "target_phase": "ACTIVATED"
+  },
+  "goal": {
+    "goal_id": "SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001",
+    "objective": "Execute the already-merged exact read-only Shared Docs provider content-integrity observation through canonical WorkerCoordinator and TV/TVC, retaining secret-free document/version/content-digest evidence without provider mutation or authority transfer.",
+    "success_predicates": ["provider document id equals the exact registered target", "provider version is authentically observed", "provider content digest uses google-drive.downloaded-bytes.v1", "provider mutation performed is false", "credential authority remains TV/TVC"],
+    "failure_predicates": ["hosted execution surface", "missing WorkerCoordinator claim/fence", "missing TVC content-integrity runtime", "provider result contract mismatch", "credential material export", "provider mutation or authority transfer"],
+    "authority_ceiling": ["read-only provider evidence observation", "bounded local process execution", "no user verification", "no provider mutation", "no Interlock/InTr transition", "no publication"],
+    "successor_policy": "NONE",
+    "max_successor_depth": 0
+  },
+  "task": {
+    "task_id": "SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "data/canonical-task-records/SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001.json",
+      "data/canonical-task-records/SHARED-DOCS-MULTIPARTY-FREEZE-001.json",
+      "control/resident-execution-request.d/shared-docs-provider-content-integrity-001.json",
+      "control/resident-execution-request.d/consume-shared-docs-provider-content-integrity.py",
+      "workers/shared_docs_provider_content_integrity_worker.py"
+    ],
+    "parent_task_id": "SHARED-DOCS-MULTIPARTY-FREEZE-001",
+    "derivation_reason": "Bind the existing Goal Task to the canonical WorkerCoordinator path after Reusable Task Component reconciliation; this does not create a new Goal Task or provider execution plane.",
+    "canonical_owner_ref": "data/canonical-task-records/SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001.json",
+    "canonical_lineage_key": "shared-docs:provider-freeze-integration:content-integrity-observation",
+    "derivation_depth": 1,
+    "worker_registry_ref": "control/worker-registry.d/shared-docs-provider-content-integrity-001.json",
+    "worker_id": "shared-docs-provider-content-integrity-worker",
+    "adapter_ref": "process:shared-docs-provider-content-integrity-v1",
+    "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
+    "manual_execution_allowed": false,
+    "manual_allowed_role": "observation",
+    "priority": "runtime-evidence"
+  },
+  "authority": {
+    "authority_source": "canonical Goal Task plus WorkerCoordinator claim/fence",
+    "heartbeat_grants_execution_authority": false,
+    "policy_version": "shared-docs-provider-content-integrity-v1",
+    "credential_authority": "TV/TVC",
+    "provider_operation_authority": "TV/TVC",
+    "transition_authority": "Interlock/InTr",
+    "user_verification_authority": "KV/SKAP Vault",
+    "github_token_required": false,
+    "github_token_runtime_authority": "NONE",
+    "provider_secret_export_allowed": false,
+    "provider_mutation_allowed": false,
+    "execution_authority_created": false
+  },
+  "execution": {
+    "required_capabilities": ["runtime_observation", "bounded_process_execution", "provider_content_integrity_observation"],
+    "required_local_locators": ["STEGVERSE_TVC_ROOT"],
+    "locator_semantics": "NON_SECRET_ALREADY_MATERIALIZED_LOCAL_SOURCE_PATHS_ONLY",
+    "worker": "workers/shared_docs_provider_content_integrity_worker.py",
+    "allowed_paths": ["receipts/sovereign-host/shared-docs-provider-content-integrity.latest.json"],
+    "allowed_services": ["local TV/TVC vault broker"],
+    "max_actions": 1,
+    "max_retries": 64,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 64,
+    "rate_class": "shared_docs_provider_content_integrity",
+    "hosted_execution_allowed": false
+  },
+  "activation": {
+    "carrier": "heartbeat",
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "data/canonical-task-records/SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001.json",
+    "recheck_trigger": "each admitted carrier reference while authentic provider observation remains incomplete",
+    "checkout_policy": "fenced_atomic_checkout"
+  },
+  "continuity": {
+    "master_records_required": true,
+    "result_receipt": "receipts/sovereign-host/shared-docs-provider-content-integrity.latest.json",
+    "source_task_reconciliation": "data/canonical-task-records/SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001.json",
+    "source_handoff_reconciliation": "StegVerse-org/StegVerse-SDK:docs/SHARED_DOCS_PROVIDER_FREEZE_INTEGRATION_MIRROR_HANDOFF.md"
+  },
+  "completion": {
+    "next_authorized_action": "Canonical WorkerCoordinator may claim and fence this task on an eligible sovereign resident with TVC and the local vault broker available, then execute one exact read-only provider observation. Source merge or CI is not runtime evidence.",
+    "terminal_when": ["authentic provider version observed", "authentic google-drive.downloaded-bytes.v1 SHA-256 observed", "provider mutation performed=false", "credential authority=TV/TVC"],
+    "release_condition": "Secret-free provider observation receipt exists and is subsequently normalized/custodied through the already-selected reusable components, or a machine-observed retry state remains current."
+  },
+  "source_state_vector_ref": "control/task-vectors/SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001.json",
+  "machine_readable_state": {"cosv": {"profile": "task.v1", "canonical_profile_ref": "management/COSV_PROFILE_V1.json", "notation": "L R U I V G O C M T B E A P", "width": 14, "vector": "71000000100110", "vector_state": "EMITTED", "authority_effect": "NONE"}}
+}

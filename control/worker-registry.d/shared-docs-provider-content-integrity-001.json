@@ -1,0 +1,65 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "SHARED-DOCS-PROVIDER-CONTENT-INTEGRITY-001",
+  "tasks": [
+    {
+      "task_id": "SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001",
+      "goal_id": "SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001",
+      "state": "HANDOFF_READY",
+      "claim_id": null,
+      "archive_eligible": false,
+      "archive_reason_codes": [],
+      "executor_binding": "AUTHORIZED",
+      "authorized_policy_version": "shared-docs-provider-content-integrity-v1",
+      "handoff_ref": "handoffs/SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001.json",
+      "block_ref": "data/canonical-task-records/SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001.json#runtime_resolution",
+      "cost_basis_ref": "cost-basis/worker-runtime/shared-docs-provider-content-integrity.json",
+      "evidence_refs": [
+        "handoffs/SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001.json",
+        "workers/shared_docs_provider_content_integrity_worker.py",
+        "control/process-worker-adapters.d/shared-docs-provider-content-integrity-001.json",
+        "control/resident-execution-request.d/shared-docs-provider-content-integrity-001.json",
+        "control/resident-execution-request.d/consume-shared-docs-provider-content-integrity.py"
+      ],
+      "admissible_existence": {
+        "capability_id": "stegverse:capability:shared-docs-provider-freeze-integration:v1",
+        "capability_version": "1.0.0",
+        "phase": "ADMISSIBLE",
+        "standing_evidence_refs": [
+          "data/canonical-task-records/SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001.json",
+          "StegVerse-org/StegVerse-SDK:docs/SHARED_DOCS_PROVIDER_FREEZE_INTEGRATION_MIRROR_HANDOFF.md"
+        ],
+        "admissibility_evidence_refs": [
+          "handoffs/SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001.json",
+          "control/resident-execution-request.d/shared-docs-provider-content-integrity-001.json"
+        ],
+        "integration_evidence_refs": [
+          "workers/shared_docs_provider_content_integrity_worker.py",
+          "control/process-worker-adapters.d/shared-docs-provider-content-integrity-001.json"
+        ],
+        "activation_proof_ref": null,
+        "blockers": ["AUTHENTIC_PROVIDER_OBSERVATION_NOT_YET_OBSERVED"],
+        "continuation_owner": "shared-docs-provider-content-integrity-worker",
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": false,
+        "temporal_class": "current",
+        "task_relationship": "integrates_capability",
+        "target_phase": "ACTIVATED"
+      },
+      "external_entity_job_ref": null,
+      "heartbeat_timing": null,
+      "last_checkpoint_ref": "data/canonical-task-records/SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001.json",
+      "lease": null,
+      "worker_id": null,
+      "worker_instance_id": null,
+      "source_state_vector_ref": "control/task-vectors/SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001.json",
+      "machine_readable_state": {"cosv": {"profile": "task.v1", "canonical_profile_ref": "management/COSV_PROFILE_V1.json", "notation": "L R U I V G O C M T B E A P", "width": 14, "vector": "71000000100110", "vector_state": "EMITTED", "authority_effect": "NONE"}}
+    }
+  ],
+  "workers": [{"worker_id": "shared-docs-provider-content-integrity-worker", "status": "AVAILABLE", "executor_type": "repository_worker", "adapter_ref": "process:shared-docs-provider-content-integrity-v1", "authority_source": "handoffs/SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001.json#authority", "capabilities": ["runtime_observation", "bounded_process_execution", "provider_content_integrity_observation"], "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1", "last_seen_at": null}],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "github_token_required": false,
+  "credential_authority": "TV/TVC",
+  "provider_mutation_allowed": false,
+  "priority": "runtime-evidence"
+}

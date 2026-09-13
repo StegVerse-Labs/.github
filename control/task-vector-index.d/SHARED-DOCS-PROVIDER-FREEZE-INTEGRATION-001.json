@@ -1,0 +1,11 @@
+{
+  "schema": "stegverse.cosv-task-vector-index-entry/v1",
+  "task_id": "SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001",
+  "repository": "StegVerse-Labs/.github",
+  "registry_ref": "data/canonical-task-records/SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001.json",
+  "source_state_vector_ref": "control/task-vectors/SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001.json",
+  "vector": "71000000100110",
+  "vector_state": "EMITTED",
+  "profile": "task.v1",
+  "authority_effect": "NONE"
+}
