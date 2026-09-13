@@ -8,14 +8,25 @@ from pathlib import Path
 
 from workers import control_plane_source_package as controlpkg
 
+# Bootstrap-critical control-plane delta. Keep this set sufficient to recover a
+# stale resident into the current autonomous refresh -> scheduler path without
+# requiring the stale runtime to already contain the repair that refreshes it.
 DEFAULT_PATHS = (
     "workers/control_plane_source_package.py",
     "workers/hil_intr_profiled_ingress.py",
     "workers/stegos_sovereign_relay_return_path_request_consumer.py",
     "handoffs/SHWP-STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001.json",
     "control/resident-execution-request.d/stegos-sovereign-relay-return-path-001.json",
+    "control/resident-execution-request.d/healer-sovereign-scheduler-001.json",
+    "scripts/build_control_plane_source_package.py",
+    "scripts/refresh_sovereign_worker_runtime_source.py",
+    "scripts/install_sovereign_worker_source_refresh_service.py",
     "scripts/dispatch_resident_execution_requests.py",
+    "scripts/refresh_and_dispatch_resident_requests.py",
     "scripts/refresh_and_execute_resident_task.py",
+    "scripts/consume_healer_sovereign_scheduler_request.py",
+    "source-bundles/reusable-task-registry.d/RT-SOVEREIGN-SOURCE-REFRESH-001.json",
+    "source-bundles/reusable-task-registry.d/RT-REUSABLE-TASK-SCHEDULER-001.json",
 )
 
 
