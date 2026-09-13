@@ -5,83 +5,82 @@ Repository: `StegVerse-Labs/.github`
 Goal Task ID: `SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004`
 Parent Goal Task ID: `SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003`
 COSV: `71000000100110`
-Status: `ACTIVE / CURRENT-IPHONE RUNTIME SURFACE RECONCILED / TASK-BOUND NATIVE EXECUTION EVIDENCE REQUIRED`
+Status: `ACTIVE / NODE + KV CONTINUITY RECONCILED / TASK-BOUND NODE EXECUTION EVIDENCE REQUIRED`
 
 ## Purpose and identity
 
-This remains the canonical runtime-evidence handoff for the active Goal Task. Goal identity, COSV, authority boundaries, reusable-component composition, and completion predicates are preserved.
+This remains the canonical runtime-evidence handoff for the active Goal Task. Goal identity, COSV, authority separation, reusable-component composition, and evidence-class discipline are preserved.
 
-The Goal Task is not split merely because a prompt-count ceiling was reached. Serial resident-lifecycle, provider-roundtrip, and propagation stages remain reusable component composition plus Goal-specific evidence predicates unless genuinely independent Goal semantics are established.
+## Canonical device / Node / KV model
 
-## Authority boundary
+`data/task-registry-global-invariants.json` is controlling for this distinction:
 
-Task Registry coordinates only. WorkerCoordinator owns claim/fence. Interlock/InTr owns governed transition/admission. TV/TVC owns provider/release authority. KV/SKAP Vault is the sole user-verification authority. StegOS devices are interchangeable transport/execution nodes and are not user verifiers or identity authorities. Master Records owns observed reality, custody, and reconstruction. HeartBeat owns timing/freshness/liveness/correlation/observability only. GitHub has no runtime authority.
+- StegOS devices are `INTERCHANGEABLE_TRANSPORT_NODE` surfaces;
+- physical-device identity, device attestation, connector inventory, or device connectivity are not verification or task-completion gates;
+- replacing one eligible device/node with another does not change the user verifier;
+- Node identity is runtime/evidence correlation only and does not confer user identity or authority;
+- KV/SKAP Vault is the sole user-verification authority;
+- a Node may invoke local capabilities only after applicable KV/SKAP-backed user-verification state and Interlock/InTr admission are bound to the exact operation.
 
-Runtime subject binding is evidence correlation only. It grants no user verification or execution authority.
+Accordingly, the Goal Task is **not bound to an iPhone, another physical device, a Remote Desktop connection, or any persistent device identity**.
 
-## Runtime-surface correction
-
-The earlier use of an `authorized remote-device connector` as a gating runtime predicate for this Goal Task is superseded.
-
-There is no requirement for a connected resident device, Remote Desktop device, second user-operated device, or always-on external host. Connector enumeration is `NOT_APPLICABLE` to task admission and completion for this Goal Task and MUST NOT be used to classify the task as waiting for resident reconnection.
-
-The canonical execution surface is the already-existing portable WorkerCoordinator/StegOS current-device path:
+The execution prerequisite is:
 
 ```text
-portable execution surface: CURRENT_USER_IPHONE
-WorkerCoordinator authority: canonical .github WorkerCoordinator
-StegOS role: atomic persistence + bounded subordinate execution adapter
-second user-operated device required: false
-always-on external host required: false
-remote-device connector required: false
-GitHub runtime authority: NONE
+an eligible StegOS-capable device
+-> establish or recover a StegVerse Node
+-> bind applicable KV/SKAP-backed continuity/user-verification state
+-> WorkerCoordinator claim/fence when required
+-> Interlock/InTr admission for the exact governed operation
+-> bounded execution
+-> authentic task-bound receipts
 ```
 
-Canonical architecture evidence:
+The physical device on which that Node is materialized is execution metadata only. It may change without changing Goal identity, user-verification authority, or completion semantics.
 
-- `docs/WORKERCOORDINATOR_PORTABLE_IPHONE_EXECUTION_MIRROR_HANDOFF.md` establishes `CURRENT_USER_IPHONE`, no second user-operated device, and no always-on external host.
-- `receipts/preflight/sv002-current-iphone-portable-consumer-20260905.json` establishes that the portable execution surface exists and must be reused/extended rather than creating another runtime-presence predicate.
-- `docs/HB_RUNTIME_PRESENCE_RESIDENT_OBSERVABILITY_MIRROR_HANDOFF.md` records authentic historical StegVerse iOS device-local execution and explicitly states that the remaining blocker for a consumer is not generic runtime absence or a second machine, but exact task-bound admission/execution evidence through the existing device-local path.
+## Superseded runtime-surface framings
 
-These architecture facts do **not** prove this Goal Task executed. This Goal still requires its own current, task/COSV-bound WorkerCoordinator/InTr/StegOS receipts.
+Two earlier framings are retained only as provenance:
+
+1. `UNRESOLVED_NO_CURRENT_AUTHORIZED_DEVICE` / remote resident reconnection — invalid because no connected resident device is required.
+2. `CURRENT_USER_IPHONE` as the selected Goal execution surface — too specific because the hardware is interchangeable once the Node is established/recovered.
+
+Historical receipts may truthfully record that a particular execution happened on an iPhone. That fact must never become a prerequisite for this Goal Task.
+
+Current classification:
+
+`TASK_BOUND_ESTABLISHED_NODE_EXECUTION_EVIDENCE_NOT_OBSERVED`
+
+## Authority separation
+
+Task Registry coordinates only. WorkerCoordinator owns claim/fence. Interlock/InTr owns governed transition/admission. TV/TVC owns credential/provider/release authority. KV/SKAP Vault is the sole user-verification authority and continuity source for applicable user state. StegOS devices are interchangeable execution/transport surfaces. Node identity is correlation only. Master Records owns observed reality/custody/reconstruction. HeartBeat owns timing/freshness/liveness/correlation/observability only. GitHub has no runtime authority.
 
 ## Reusable component composition
 
 The Reusable Task Component Model merged through PR #1652 at `b9f8e5153aa1651f2d7f043fb902eacb7c113ed9`. This Goal continues through the existing runtime-observation owner, `RTC-MANIFEST-001`, reusable ephemeral execution materialization, repeatable `RTC-INTERLOCK-INTR-TRANSPORT-008`, repeatable `RTC-ROUNDTRIP-003`, existing TV/TVC provider/session handling, existing evidence validators, `RTC-EVIDENCE-CUSTODY-004`, `RTC-SDK-RETURN-006` when required, and conditional Publisher/egress/far-side components only when their predicates are reached.
 
-No new reusable component is required. Do not create another runtime probe, generic InTr transport, round-trip adapter, scheduler, device-verification gate, or remote-device dependency.
-
-## Reusable lifecycle source state
-
-The reusable lifecycle implementation remains source-complete for the current proof stage:
-
-- `.github` PR #1694 -> `c35a12fdf1fa32b7890e923cf0889bb0ba570010`.
-- `.github` PR #1696 -> `57cc26b1c76c68c07c673012b1ae93c5c0fea59e`.
-- `StegVerse-Healer` PR #67 -> `c2bea205411397c7ad7bb5fc6ad5f8c81c007f1c`.
-- `.github` PR #1698 -> `de0039f301483ecf5a9178369bd8e8a3e7386a0a`.
-
-`RT-ECOSYSTEM-CONTINUITY-EVALUATION-001` remains the existing production scheduling path. GitHub Actions are source/contract validation only and are not production runtime evidence.
+No new reusable component is required. Device selection is not a reusable authority-bearing component. The established Node consumes the already-existing component chain.
 
 ## Current runtime/evidence state
 
-The prior zero-device connector observations remain historical provenance only; they have no current gating meaning.
-
-Current unresolved runtime state is:
+The task-specific source path remains available, but authentic execution of this Goal has not been observed.
 
 ```text
-runtime execution surface: CURRENT_USER_IPHONE
+eligible physical device requirement: ANY SUPPORTED STEGOS-CAPABLE DEVICE
+established/recovered Node required: YES
+physical-device identity gate: PROHIBITED
+specific-iPhone requirement: NOT_APPLICABLE
 remote connected-device requirement: NOT_APPLICABLE
-generic iOS device-local runtime capability: previously proven for StegVerse
-task-bound post-merge lifecycle invocation: NOT OBSERVED
-same-invocation reusable lifecycle chain: NOT OBSERVED
+KV/SKAP-backed operation state: REQUIRED WHEN THE OPERATION REQUIRES USER/SECRET CONTINUITY
+task-bound established-Node execution: NOT OBSERVED
+WorkerCoordinator claim/fence for this execution: NOT OBSERVED
+Interlock/InTr admission for this execution: NOT OBSERVED
 resident reseal consumption receipt: NOT OBSERVED
 resident consent-listener consumption receipt: NOT OBSERVED
-retained exact reseal/listener receipts: NOT OBSERVED
+external-collaboration target custody/readback: NOT PROVEN
 ```
 
-Accordingly the correct unresolved classification is `TASK_BOUND_NATIVE_IPHONE_EXECUTION_EVIDENCE_NOT_OBSERVED`, not `UNRESOLVED_NO_CURRENT_AUTHORIZED_DEVICE`.
-
-No resident execution for this Goal, InTr admission, WorkerCoordinator claim/fence, provider operation, callback, target custody/readback, Master Records reconstruction, publication, far-side transition, or end-to-end completion is claimed.
+The absence of those task-bound receipts is the unresolved evidence condition. The identity or model of the physical device is irrelevant.
 
 ## Remaining Goal predicates
 
@@ -97,21 +96,23 @@ No resident execution for this Goal, InTr admission, WorkerCoordinator claim/fen
 - `SDK_ACTIVE_PROBE_COMPLETE_PREDICATE_REEVALUATION_PROVEN`
 - `MIR_TRANSITION_REPORTING_PROVEN`
 - `MASTER_RECORDS_CUSTODY_RECONSTRUCTION_PROVEN`
-- `ONE_CURRENT_DEVICE_END_TO_END_PROVEN`
+- `ESTABLISHED_NODE_END_TO_END_PROVEN`
 - `DOWNSTREAM_PROPAGATION_COMPLETE`
 - `PUBLIC_DISTRIBUTIONS_COMPLETE`
 
+`ONE_CURRENT_DEVICE_END_TO_END_PROVEN` is superseded for this active Goal because hardware identity is not a completion semantic. Historical parent records retain the old wording as provenance only.
+
 ## Next admissible work
 
-Bind this existing Goal Task/COSV and its already-local request sources to the canonical `CURRENT_USER_IPHONE` portable WorkerCoordinator/StegOS execution surface. Do not wait for, poll for, or require any remotely connected resident device.
+Bind the existing Goal Task/COSV and already-local external-collaboration requests to the canonical **established-Node** execution path. Reuse whatever eligible StegOS-capable device is materializing the Node; do not select or pin hardware as part of admission.
 
-Accept only authentic task-bound receipts for WorkerCoordinator checkout/claim/fence where applicable, InTr admission where applicable, native StegOS execution, the post-merge reusable lifecycle invocation/chain, and the exact reseal/listener operations. Preserve exact receipts and continue component-by-component until a real authority, external-resource, evidence, or human boundary is reached.
+For the reseal operation, resolve the applicable KV/SKAP custody state and preserve the existing rule that provider/storage possession does not itself confer plaintext/use authority. For both reseal and listener work, require the exact WorkerCoordinator and Interlock/InTr transitions that apply, execute through the established Node, and retain the resulting task-bound receipts.
 
-Do not initiate provider consent before upstream predicates are authentic. Do not manually publish. Do not create a second runtime, scheduler, adapter, connected-device requirement, second user-operated-device requirement, or device verification gate.
+Continue component-by-component until a real authority, evidence, provider, or human boundary is reached. Do not wait for a connected device. Do not require an iPhone specifically. Do not create device verification, a second user-operated-device requirement, or a new runtime authority plane.
 
 ## README review
 
-The root README already defines current-user iPhone machine-governed execution and the Reusable Task Component Model. This task-specific correction introduces no new product-facing capability, so no README change is required.
+No README change is required. The global invariant already defines device interchangeability, KV/SKAP user-verification exclusivity, Node non-authority semantics, and prohibition of physical-device identity gates.
 
 ## Human action
 
