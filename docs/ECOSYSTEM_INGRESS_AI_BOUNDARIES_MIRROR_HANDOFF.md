@@ -72,11 +72,11 @@ Publisher, mandatory SDK-return assembly, mandatory StegVerse final egress, far-
 
 ## Open-session work reclassification
 
-The previous PR #1624 session-return/session-close actor-gating work is being reconstituted on current `main` as `RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010`, preserving #1624 as provenance rather than merging its stale bespoke branch.
+The previous PR #1624 session-return/session-close actor-gating work has been reconstituted on current `main` as `RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010`; #1624 is closed unmerged and retained as provenance.
 
 Goal-specific configuration remains: ChatGPT is the only AI actor kind admitted to Task Registry coordination surfaces; future non-ChatGPT AI belongs in component 011; external frameworks/models use the existing reusable external-adapter capability toward canonical SDK ingress; external evaluators use SDK manifested ingress directly.
 
-Duplicate orchestration to retire or supersede after replacement validation: independent evolution of PR #1624, any parallel Task Registry AI/session actor gate, any parallel AI sandbox outside component 011, and any LLM Adapter logic that reimplements existing adapter, SDK, transport, custody, credential, or processor-selection capabilities.
+Duplicate orchestration retired or superseded: independent evolution of PR #1624, any parallel Task Registry AI/session actor gate, any parallel AI sandbox outside component 011, and any LLM Adapter logic that reimplements existing adapter, SDK, transport, custody, credential, or processor-selection capabilities.
 
 Historical commits, PRs, CI evidence, and provenance are preserved.
 
@@ -86,11 +86,17 @@ Registration PR #1621 merged as `42a4f9aa78c86608a90c328b1429e234024c1bd6`.
 
 Source-gate PR #1623 passed exact-head organization-control `34715826621`, deterministic suite `34715826818`, and Heartbeat `34715826744`, then merged as `0b4be7f07ed57cb72055aa6e2264813e16159d53`.
 
-PR #1624 passed its historical exact-head validation at `465f974b6f046a272b62cc6bf9891ffe6df3665d` but became stale/diverged as `main` advanced. Its logic is provenance only until the componentized replacement validates on current `main`.
+PR #1624 passed its historical exact-head validation at `465f974b6f046a272b62cc6bf9891ffe6df3665d`, became stale/diverged as `main` advanced, and is now closed unmerged. Its preserved source history informed reusable component 010.
+
+Replacement PR #1678 passed exact-head validation at earlier head `3d383b36b49cf1b2cb627a4c0778e1cde316def1`: deterministic `34731022536`, organization-control `34731022545`, and Heartbeat `34731022614` all succeeded.
+
+Root `README.md` projection is now complete in the replacement change set beginning with commit `245a9be38b720e8914e85417196eec4f97100289`. It documents the `ai_ingress_coordination` family, component 010, component 011, authority ceilings, runtime-evidence nonclaims, and selectable rather than mandatory component composition. `docs/README_IMPACT_ECOSYSTEM_AI_COMPONENT_RECONCILIATION.md` records the projection as `COMPLETE_IN_CHANGE_SET_PENDING_EXACT_HEAD_VALIDATION`.
+
+Fresh exact-head repository validation is required after the README/task-record/handoff updates before PR #1678 may be promoted or merged.
 
 ## Runtime/evidence state
 
-No authentic runtime evidence upgrade is claimed by componentization.
+No authentic runtime evidence upgrade is claimed by componentization or README completion.
 
 - authentic ChatGPT origin/identity attestation: `NOT_PROVEN`;
 - direct external-AI reachability to general `evaluate_task_registry_collision_checkin.py`: `NOT_PROVEN`;
@@ -117,16 +123,11 @@ Resident execution, provider execution, callbacks, custody/readback, and Master 
 - `COORDINATION_PROCESSING_EXECUTION_BOUNDARIES_PROVEN`
 - `REPRESENTATIVE_RUNTIME_BOUNDARY_EVIDENCE_OBSERVED`
 
-## README impact
-
-The new `ai_ingress_coordination` component family materially extends the model projection. Root `README.md` must be updated in the same replacement change set before documentation completeness or merge readiness is claimed. `docs/README_IMPACT_ECOSYSTEM_AI_COMPONENT_RECONCILIATION.md` records that outstanding condition but is not a substitute for the README mutation.
-
 ## Next admissible work
 
-1. Complete the root README projection for the newly materialized AI-ingress component family.
-2. Validate the replacement component-model branch on exact-head repository lanes.
-3. Supersede/close stale PR #1624 only after the replacement PR exists and preserves its provenance.
-4. Complete caller inventory of the general Task Registry collision/check-in evaluator; bind AI-capable callers to component 010 or prove external AI reachability impossible.
-5. Materialize component 011 source enforcement without enabling additional AI runtime access prematurely.
-6. Parameterize `RT-EXTERNAL-ADAPTER-ESTABLISH-001` against the current LLM Adapter source and canonical SDK route; do not create a duplicate adapter stack.
-7. Use canonical runtime observation for representative interface evidence; do not synthesize runtime success.
+1. Obtain fresh exact-head validation for PR #1678 after README/task-record/handoff completion.
+2. Promote and merge #1678 only if the new exact head is unchanged and all required lanes pass.
+3. Complete caller inventory of the general Task Registry collision/check-in evaluator; bind AI-capable callers to component 010 or prove external AI reachability impossible.
+4. Materialize component 011 source enforcement without enabling additional AI runtime access prematurely.
+5. Parameterize `RT-EXTERNAL-ADAPTER-ESTABLISH-001` against the current LLM Adapter source and canonical SDK route; do not create a duplicate adapter stack.
+6. Use canonical runtime observation for representative interface evidence; do not synthesize runtime success.
