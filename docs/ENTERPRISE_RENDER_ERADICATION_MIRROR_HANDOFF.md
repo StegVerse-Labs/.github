@@ -64,6 +64,37 @@ Confirmed current provider-specific references exist in at least:
 
 Search inventory must distinguish provider references from the ordinary verb/function `render`.
 
+## Current source-remediation state — 2026-09-13
+
+Canonical enterprise/device correction:
+
+- `.github` PR `#1704` merged at `570cefbd41df264948665b8d8f511560dc25d1e0` after Organization Control Plane, Heartbeat Worker, and Deterministic Repository Suite validation passed.
+- The merged contract makes remote-device connector availability optional and explicitly rejects zero connected devices as a runtime blocker.
+
+Repository cleanup projections:
+
+- `StegVerse-Labs/TVC#421`: current branch removes hosted-fallback and remote-device prerequisite assumptions; exact-head validation remains pending/unobserved.
+- `StegVerse-Labs/StegCore#212`: provider-specific live-service placement text removed on branch; exact-head repository validation remains unobserved.
+- `StegVerse-org/LLM-adapter#334`: active HIL workboard provider targets removed; exact head `b0468a2e6d350fd9b1d6a080bb16cc08dfb9c002` passed repository `validate` and Work Mutation Safety. PR remains unmerged.
+- legacy `StegVerse-org/LLM-adapter#23` provider-host Blueprint PR is closed as superseded and must not be revived.
+- `StegVerse-org/StegVerse-SDK#230`: hard-coded StegCore provider origin removed; explicit admitted runtime origin is required. Exact head `23d6cd76eb15c6bbc292ff2f938154b6b43c1270` passed SDK Package Artifact Validation. PR remains unmerged.
+- `StegVerse-Labs/Site#1288`: provider-bound demo/debug targets removed and generic external-host guard retained. Active claim is bound to branch `remove-render-provider`; latest claim repair commit `02a7ae5b8a3af64c3435887b04ce03ef1b2ab9d7` is under exact-head Site validation. No PASS claim until Bootstrap/Handoff/Heartbeat all complete successfully.
+- `StegVerse-Labs/StegVerse-SCW#45`: provider-specific UI host heuristic, StegTalk API fallback, config-seeder example, environment-template provider defaults/hooks, and supercheck diagnostic target have been removed on branch `remove-render-provider`; current head requires fresh CI after the latest edits. `api/routes/ops.py` and diagnostic surfaces still contain active provider-specific references and remain open remediation.
+- `StegVerse-Labs/StegSports-CFP#2`: ticket API hosted fallback removed; exact-head Test Readiness passed. Dashboard hosted fallback remains a residual and the PR is not enterprise-clean yet.
+- `StegVerse-Labs/StegPay#4`: retired standalone provider-specific deployment instructions removed; no exact-head validation observed yet and provider config residue still requires search/remediation.
+- `StegVerse-Labs/Continuity#16`: legacy provider-specific continuity configuration removed from the edited README; no exact-head validation observed yet and broader residue search remains required.
+
+Direct PR merge attempts for some otherwise mergeable cleanup PRs were blocked by the connected mutation safety layer. Those PRs must remain classified as source-validated/unmerged where applicable; no merge is inferred.
+
+## Remaining active remediation
+
+1. Complete Site exact-head coordination validation after the existing-claim repair; do not create a duplicate claim.
+2. Remove remaining SCW provider deploy-hook/config/default URL surfaces, especially `api/routes/ops.py` and diagnostics.
+3. Remove StegSports dashboard hosted fallback.
+4. Search/clean active provider configuration in StegPay, Continuity, TVC, Site, LLM Adapter status/work surfaces, and other discovered repositories.
+5. Enumerate retained historical-provenance references separately from active dependencies.
+6. Re-run enterprise search after current-tree removals and require repository validation before completion.
+
 ## Completion predicates
 
 1. No current default-branch executable code contains Render provider API calls, service URLs, deployment hooks, provider secret names, or fallback-runtime selection.
