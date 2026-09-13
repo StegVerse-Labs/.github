@@ -1,0 +1,31 @@
+{
+  "reusable_task_id": "RT-CONTROL-PLANE-SOURCE-PACKAGE-001",
+  "name": "Control-Plane Source Package Build",
+  "purpose": "Build and retain one exact content-addressed stegverse.control-plane source package from already-local canonical source so an existing governed transport can carry it without recreating source packaging per Goal Task.",
+  "trigger": "canonical control-plane source is current and a consumer requires a portable exact source delta for an existing sovereign runtime",
+  "scope": "one already-local canonical .github source root and one existing runtime outbox",
+  "parameter_keys": [
+    "source_root",
+    "runtime_root"
+  ],
+  "runner_templates": [
+    "scripts/build_control_plane_source_package_reusable.py",
+    "scripts/build_control_plane_source_package.py"
+  ],
+  "recording_levels": [
+    "operation",
+    "task",
+    "goal",
+    "component",
+    "master_records"
+  ],
+  "completion_predicates": [
+    "CONTROL_PLANE_SOURCE_PACKAGE_BUILT_VERIFIED",
+    "CONTENT_ADDRESSED_PACKAGE_RETAINED",
+    "NO_NETWORK_SOURCE_FETCH_PERFORMED",
+    "NO_CREDENTIAL_MATERIAL_INCLUDED",
+    "NO_RELAY_OR_TRANSITION_AUTHORITY_MINTED"
+  ],
+  "authority_effect": "NONE_SOURCE_PACKAGE_BUILD_ONLY",
+  "reuse_instructions": "Run only after or alongside the canonical reusable source-refresh lifecycle. The output is an exact content-addressed source package and does not authorize or execute transport. Consumers requiring movement must bind the package to existing RTC-INTERLOCK-INTR-TRANSPORT-008 / TVC relay authority rather than creating another sender, credential path, scheduler, or runtime."
+}
