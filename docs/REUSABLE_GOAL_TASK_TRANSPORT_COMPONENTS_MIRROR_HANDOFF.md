@@ -3,11 +3,14 @@
 Updated: 2026-09-12
 Consuming Goal Task: `SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004`
 COSV: `71000000100110`
-Status: `ACTIVE / SOURCE COMPONENTIZATION PROPOSED / VALIDATION PENDING`
+Parent model: `data/reusable-task-component-model.json`
+Model handoff: `docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md`
+Decomposition policy: `data/reusable-task-component-decomposition-policy.json`
+Status: `ACTIVE / TRANSPORT COMPONENT FAMILY PROPOSED / VALIDATION PENDING`
 
 ## Decision
 
-The transport architecture is not one mandatory monolithic pipeline. It is a reusable component library composed from the transport needs declared by the consuming canonical Goal Task.
+Transport is one reusable component family under the Reusable Task Component Model. It is not a mandatory monolithic pipeline and it is not the parent architecture for unrelated process families.
 
 The previously expressed end-to-end sequence:
 
@@ -23,9 +26,9 @@ Complete manifest
 -> far-side final transition
 ```
 
-is now treated as the **maximal composition**, not the minimum path every task must implement.
+is the **maximal transport composition** for tasks that require every listed capability, not the minimum path every Goal Task must implement.
 
-## Canonical reusable components
+## Canonical reusable transport components
 
 1. `RTC-MANIFEST-001` — Manifest Intake and Binding
 2. `RTC-GOVERNED-PROCESSING-002` — Governed Processing
@@ -45,7 +48,7 @@ data/reusable-transport-component-contract.json
 
 ## Goal Task consumption rule
 
-Each canonical Goal Task that needs data transport declares a `transport_requirements` projection and selects only the reusable components required to satisfy that goal.
+Each canonical Goal Task that needs data transport declares a `transport_requirements` projection and selects only the reusable transport components required to satisfy that goal.
 
 Examples:
 
@@ -68,7 +71,15 @@ The current Goal Task profile is:
 data/goal-task-transport-profiles/SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004.json
 ```
 
-It selects the maximal composition because this goal includes external collaboration, required resident/provider round trips, SDK return, public distribution, governed egress, and a far-side transition.
+It selects the maximal transport composition because this goal includes external collaboration, required resident/provider round trips, SDK return, public distribution, governed egress, and a far-side transition.
+
+## Relationship to the parent component model
+
+The parent Reusable Task Component Model is responsible for deciding **when** repeated orchestration should become reusable capability components and for preserving the cross-family interface rules. This transport handoff is responsible only for the transport-family composition semantics.
+
+Transport must therefore be reused alongside other component families rather than absorbing them. Runtime observation, credential/session handling, framework/provider translation, release propagation, evidence validation, terminal cleanup, and similar concerns remain independent component families or existing canonical owners unless the parent model explicitly maps them into transport.
+
+The decomposition evaluator may require reuse or decomposition when a Goal Task accumulates repeated subflows, multiple authority crossings, multiple round trips, optional subprocesses, independently verifiable evidence, or duplicated generic adapter work. Such a decision changes implementation composition, not Goal Task identity, COSV continuity, or authority.
 
 ## Authority invariants
 
@@ -110,11 +121,11 @@ This projection is coordination/source architecture only. It does not claim that
 
 ## Validation still required
 
-The source componentization must pass the repository's deterministic validation lanes before merge. Runtime proof remains separately governed by the active task's existing authentic-observation predicates.
+The parent model, transport family, Goal Task profile, decomposition evaluator, README projection, and handoff integration must pass the repository's deterministic validation lanes before merge. Runtime proof remains separately governed by the active task's authentic-observation predicates.
 
 ## README impact
 
-The root README requires a concise architecture note pointing to the reusable component contract once the change is merged. No runtime capability claim should be added.
+The root README must describe the parent Reusable Task Component Model and identify transport as one family beneath it. No runtime capability claim should be added.
 
 ## Human action
 
