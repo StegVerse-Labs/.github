@@ -12,13 +12,15 @@
     "control/canonical-policy-context-registry.json",
     "docs/CANONICAL_INVARIANT_INGRESS_LOCK_MIRROR_HANDOFF.md",
     "docs/CANONICAL_POLICY_CONTEXT_PREFLIGHT_MIRROR_HANDOFF.md",
+    "management/session-build-preflight-contract.json",
     "data/task-coordination-policy.json",
     "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
     "data/reusable-task-component-model.json",
     "data/canonical-task-registry.json",
     "data/canonical-task-records/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json",
     "docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/continuity-vault-kit:docs/KV_PRIVACY_STATE_TRANSITION_CONTINUITY.md"
+    "StegVerse-Labs/continuity-vault-kit:docs/KV_PRIVACY_STATE_TRANSITION_CONTINUITY.md",
+    "StegVerse-Labs/continuity-vault-kit:KV_DEVICE_BACKED_CAPABILITIES_MIRROR_HANDOFF.md"
   ],
   "reconciliation_findings": [
     "CANONICAL_SOURCE_PRECEDES_LOCAL_INTERPRETATION_ALREADY_CANONICAL",
@@ -31,6 +33,7 @@
     "tests/test_source_mutation_preflight_guard.py",
     ".github/workflows/source-mutation-preflight-guard.yml",
     "control/canonical-policy-context-registry.json",
+    "management/session-build-preflight-contract.json",
     "docs/CANONICAL_INVARIANT_INGRESS_LOCK_MIRROR_HANDOFF.md",
     "README.md",
     "data/canonical-task-records/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json"
