@@ -7,36 +7,27 @@ Updated: 2026-09-13
 - Goal Task ID: `SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001`
 - Parent Goal Task: `SS-EVIDENCE-COMPARISON-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CLAIMED_INTEGRATION`
-- Completion claimed: `false`
-- Completion validated: `false`
-- Activation proof complete: `false`
+- Prompt ceiling reached: `20/20`
+- Source correction: `MERGED / VALIDATED`
+- Runtime evidence completion: `TRANSFERRED TO SUCCESSOR`
+- Successor Goal Task ID: `SS-ERL-AUTHENTIC-INTR-EXECUTION-EVIDENCE-002`
+- Successor handoff: `docs/SS_ERL_AUTHENTIC_INTR_EXECUTION_EVIDENCE_MIRROR_HANDOFF.md`
 
-The Goal Task remains valid and is not renamed, restarted, duplicated, or closed.
+## Validated source closure
 
-## Subtraction-first correction
+The subtraction-first correction is complete at source level.
 
-The recent Task Registry convergence layer incorrectly turned coordination visibility into a runtime prerequisite. That gate is not present in the executable ERL path and is removed from the Goal's completion trajectory.
+PR `#1739` merged as `4ca1d9241b231ee021ba6c7a50e95783c556966e` after exact-head `f8ecbb4c9dc5eeb12ab18f1e3fa1babe58afaef5` passed Organization Control `34776797547`, Deterministic Repository Suite `34776797652`, and Heartbeat `34776797671`.
 
-Task Registry remains coordination-only. It may surface adjacent work, including `STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001`, but adjacency does not import the broader SKAP roundtrip predicates into this narrower ERL path and does not grant or withhold WorkerCoordinator authority.
+PR `#1743` merged as `8dc0cb6bcad609fb2a70a51a7b5c66b3b3fab752` after exact-head `4b56231b53cbcb7f023c802fd9562714744ae6fc` passed Organization Control `34778399503`, Deterministic Repository Suite `34778399509`, and Heartbeat `34778399506`.
 
-The active ERL resident-local submitter already:
-
-- uses `STEGOS_RESIDENT_LOCAL`;
-- requires no transport credential;
-- forbids a TVC relay authorization identifier;
-- posts the exact binding to the shared loopback `/intr/materialization` ingress;
-- verifies the first two Universal InTr hop receipts and terminal materialization request.
-
-The existing DEVICE_KV consumer already receives that non-authorizing terminal event and invokes the existing `SHWP-DEVICE-KV-INTR-OBSERVATION-001` WorkerCoordinator task path. WorkerCoordinator performs its own claim/fence admission inside the existing execution path. No separate Task Registry `CONTINUE` disposition is required as a runtime precondition.
+Those changes establish that Task Registry is coordination-only and is not a runtime prerequisite for the existing ERL -> shared Universal InTr -> DEVICE_KV path. They also eliminate the remaining inference that `CURRENT_USER_IPHONE` is a device discovery, confirmation, presence, identity, authorization, user-verification, or admission predicate.
 
 ## Device-confirmation prohibition
 
-`CURRENT_USER_IPHONE` is only the label for the presently used local portable execution surface. It is **not** a runtime identity, discovery target, presence predicate, authorization predicate, user-verification predicate, or admission predicate.
-
-For this Goal Task:
-
 ```text
+present surface label: CURRENT_USER_IPHONE
+surface label semantics: INFORMATIONAL_ONLY
 device confirmation required: false
 device discovery required: false
 device presence probe required: false
@@ -46,121 +37,49 @@ second user-operated device required: false
 execution-surface identity mints authority: false
 ```
 
-A continuation session MUST NOT attempt to discover, confirm, authorize, identify, probe, enumerate, poll for, wait for, or require an iPhone, connected device, resident device, Remote Desktop Commander device, or any second machine before continuing the canonical runtime path.
-
-The absence of any device-discovery result is not a blocker, failure state, readiness state, or evidence predicate for this task.
-
-Historical connected-device enumeration is provenance only and has no gating meaning.
+A continuation session MUST NOT attempt to discover, confirm, authorize, identify, probe, enumerate, poll for, wait for, or require an iPhone, connected device, resident device, Remote Desktop Commander device, or second machine.
 
 Do **not** poll for, wait for, or require any remotely connected resident device.
 
-## Reusable component composition
+Absence of a connected-device result is not a blocker, readiness state, failure state, or evidence predicate.
 
-Canonical composition remains:
-
-1. reusable execution materialization;
-2. shared Universal InTr governed ingress;
-3. `RTC-MANIFEST-001`;
-4. `RTC-INTERLOCK-INTR-TRANSPORT-008` repeated exactly three times;
-5. `RTC-FARSIDE-FINAL-009` for terminal KV receive/readback;
-6. existing evidence validators;
-7. `RTC-EVIDENCE-CUSTODY-004` / Master Records;
-8. existing `SHWP-DEVICE-KV-INTR-OBSERVATION-001` runtime-observation owner.
-
-No new scheduler, WorkerCoordinator, listener, credential path, provider operation, heartbeat authority, runtime plane, or user-verification path is created.
-
-## Canonical execution surface
-
-```text
-execution path: canonical portable WorkerCoordinator/StegOS path
-present surface label: CURRENT_USER_IPHONE
-surface label semantics: INFORMATIONAL_ONLY
-GitHub runtime authority: NONE
-```
-
-The portable path is the executable contract. The physical-device label is not a precondition to using that path.
-
-## Shortest existing runtime path
+## Preserved shortest path
 
 ```text
 ERL resident-local manifest/binding
 -> shared loopback Universal InTr ingress
 -> EXTERNAL_SYSTEM -> STEGOS_ECOSYSTEM
 -> STEGOS_ECOSYSTEM -> DEVICE_SYSTEM
--> terminal DEVICE_SYSTEM -> KV materialization request
+-> DEVICE_SYSTEM -> KV terminal materialization request
 -> scripts/consume_device_kv_intr_materialization_request.py
 -> existing SHWP-DEVICE-KV-INTR-OBSERVATION-001 WorkerCoordinator execution
 -> exact terminal KV readback/evidence
 -> Master Records custody/reconstruction
 ```
 
-All three InTr hops must preserve one operation ID, packet ID, acquisition-envelope payload hash, and prior-receipt lineage. The terminal KV leg must durably read back the exact acquisition-envelope bytes.
+No new scheduler, WorkerCoordinator, listener, transport owner, credential path, provider operation, heartbeat authority, runtime plane, remote-device dependency, or user-verification path is required or permitted as a substitute.
 
 ## Authority model
 
-- Task Registry: coordination only; not a runtime precondition.
+- Task Registry: coordination only; no execution authority and no runtime gate.
 - WorkerCoordinator: claim/fence authority.
 - Interlock/InTr: governed transition/admission authority.
-- TV/TVC: credential/provider/release authority when credentials are actually required; ERL resident-local transport requires none.
+- TV/TVC: credential/provider/release authority when separately required.
 - KV/SKAP Vault: sole user-verification authority.
-- StegOS devices: interchangeable transport/execution nodes; no user-verification authority and no device-confirmation authority.
 - Master Records: observed-reality custody/reconstruction authority.
 - HeartBeat: synchronization/timing/freshness/liveness/correlation/observability only.
 - GitHub: source/evidence coordination only; runtime authority `NONE`.
 
-## Existing provider proof
+## Runtime evidence disposition
 
-The authentic provider proof is fixed and MUST NOT be replayed:
+`TASK_BOUND_PORTABLE_EXECUTION_EVIDENCE_NOT_OBSERVED`
 
-- source ID `ERL-CYBER-CISA-IRAN-2025-JOINT-FACT-SHEET`;
-- provider file `google-drive:file:1KKBS1drUFVh-czLpmg5koRgDs4YMf-gG`;
-- exact size `1015`;
-- SHA-256 `94470c58db24e544c3edfcd390cca395375a348879ec3c53451ba517ff917763`.
+Authentic task-bound execution, shared loopback admission, hop 1/hop 2/hop 3, exact terminal KV byte readback, provider-proof binding for that runtime chain, and Master Records custody/reconstruction have not been observed. No runtime completion is claimed.
 
-## Current runtime/evidence state
+Those remaining predicates are genuinely separable from the completed source-binding correction and are now owned by `SS-ERL-AUTHENTIC-INTR-EXECUTION-EVIDENCE-002`.
 
-```text
-canonical portable execution path: SOURCE AVAILABLE
-present surface label: CURRENT_USER_IPHONE
-surface confirmation predicate: NONE
-Task Registry runtime gate: NONE
-portable DEVICE_KV owner package: SOURCE MATERIALIZED
-ERL task-bound portable materialization/execution: NOT OBSERVED
-shared loopback ingress for this invocation: NOT OBSERVED
-hop 1: NOT OBSERVED
-hop 2: NOT OBSERVED
-hop 3 / terminal DEVICE_KV execution: NOT OBSERVED
-terminal exact-byte KV readback: NOT OBSERVED
-Master Records custody/reconstruction: NOT OBSERVED
-```
-
-The unresolved class is `TASK_BOUND_PORTABLE_EXECUTION_EVIDENCE_NOT_OBSERVED`.
-
-No authentic task-bound portable execution, InTr admission, hop receipt, terminal KV readback, Master Records custody/reconstruction, or end-to-end completion is claimed.
-
-## Remaining completion predicates
-
-- `ERL_CANONICAL_PORTABLE_EXECUTION_PATH_BOUND`;
-- `ERL_TASK_BOUND_PORTABLE_EXECUTION_EVIDENCE_OBSERVED`;
-- authentic shared local loopback ingress;
-- authentic hop 1 / hop 2 / hop 3;
-- exact operation/packet/payload/prior-receipt continuity;
-- exact terminal KV byte readback;
-- complete three-hop chain validation;
-- terminal KV proof bound to the existing provider readback without provider replay;
-- Master Records custody acceptance and reconstruction confirmation;
-- no device confirmation, discovery, presence probe, synthetic receipt, second runtime owner, remote-device dependency, second user-operated device, or device/user-verification substitution.
-
-## Next admissible work
-
-1. Use the existing resident-local ERL materialization/submission path directly; do not insert Task Registry or device-confirmation gates.
-2. Observe authentic shared loopback InTr admission and hop 1/hop 2 receipts.
-3. Let the admitted terminal materialization event invoke the existing DEVICE_KV consumer and WorkerCoordinator-owned terminal task path.
-4. Observe hop 3 and exact terminal KV byte readback.
-5. Validate the full chain and bind it to the already-existing provider proof without replay.
-6. Submit the authentic chain to the merged Master Records custody interface and require reconstruction confirmation.
-7. Reconcile the parent handoff only after those authentic predicates are observed.
+Do not extend this predecessor Goal Task with additional qualifying prompts. Continue only under the successor Goal Task and its canonical handoff.
 
 ## Current state
 
-`CANONICAL_PORTABLE_RUNTIME_PATH_RECONCILED / CURRENT_USER_IPHONE_LABEL_INFORMATIONAL_ONLY / DEVICE_CONFIRMATION_DISCOVERY_PRESENCE_PROBING_PROHIBITED / TASK_REGISTRY_RUNTIME_GATE_REMOVED / SHORTEST_EXISTING_ERL_INTR_DEVICE_KV_PATH_RESTORED / REMOTE_DEVICE_CONNECTOR_NOT_APPLICABLE / REUSABLE_COMPONENT_COMPOSITION_PRESERVED / MASTER_RECORDS_BINDING_MERGED / AUTHENTIC_THREE_HOP_TRAVERSAL_NOT_YET_OBSERVED / MASTER_RECORDS_CUSTODY_RECONSTRUCTION_NOT_YET_OBSERVED`
+`SOURCE_CORRECTION_VALIDATED_AND_MERGED / TASK_REGISTRY_RUNTIME_GATE_REMOVED / DEVICE_CONFIRMATION_DISCOVERY_PRESENCE_PROBING_PROHIBITED / SHORTEST_EXISTING_ERL_INTR_DEVICE_KV_PATH_RESTORED / TASK_BOUND_PORTABLE_EXECUTION_EVIDENCE_NOT_OBSERVED / PROMPT_CEILING_REACHED / REMAINING_AUTHENTIC_RUNTIME_EVIDENCE_TRANSFERRED_TO_SS-ERL-AUTHENTIC-INTR-EXECUTION-EVIDENCE-002`
