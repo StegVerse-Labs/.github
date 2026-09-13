@@ -75,6 +75,77 @@ GADI_EXPECTED = {
     "authority_effect": "NONE_REQUEST_ONLY",
 }
 
+RESEAL_CONSUMER = "sdk_workspace_external_collab_client_secret_reseal"
+RESEAL_REQUEST_PATH = Path("control/resident-execution-request.d/sdk-workspace-external-collab-client-secret-reseal-001.json")
+RESEAL_CHAIN_RECEIPT = Path("receipts/sovereign-host/sdk-workspace-external-collab-client-secret-reseal.latest.json")
+RESEAL_REQUEST_ID = "RESIDENT-EXEC-SDK-WORKSPACE-EXTCOLLAB-CLIENT-SECRET-RESEAL-001"
+RESEAL_EXPECTED = {
+    "schema": RESIDENT_SCHEMA,
+    "request_id": RESEAL_REQUEST_ID,
+    "state": "REQUESTED",
+    "task_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+    "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
+    "selector": RESEAL_CONSUMER,
+    "credential_authority": "TV/TVC",
+    "github_token_required": False,
+    "github_token_runtime_authority": "NONE",
+    "heartbeat_grants_execution_authority": False,
+    "second_machine_required": False,
+    "network_source_fetch_allowed": False,
+    "credential_material_allowed": False,
+    "request_granted_authority": False,
+    "tvc_root_locator_required": True,
+    "tvc_reseal_script": "scripts/reseal_google_drive_external_collaboration_client_secret.py",
+    "expected_tvc_reseal_script_git_blob": "fba3f668e08dba300cd994e85b3c70872fc1f8e6",
+    "source_custody_receipt": "/var/lib/stegverse/skap/resident-sealed/google-drive-client-secret/custody-receipt.json",
+    "target_custody_receipt": "/var/lib/stegverse/skap/resident-sealed/google-drive-external-collaboration-client-secret/custody-receipt.json",
+    "resident_seal_activation_receipt": "/var/lib/stegverse/skap/resident-sealed/recipient-key.latest.json",
+    "resident_private_key": "/run/stegverse/tv-tvc-credentials/SKAP_RESIDENT_SEAL_P256_PRIVATE.pem",
+    "target_purpose": "google_drive.external_collaboration.client_secret",
+    "personal_kv_source_purpose": "google_drive.personal_kv.client_secret",
+    "target_existing_policy": "VALIDATE_PRESENCE_DO_NOT_OVERWRITE",
+    "execution_requires_root": True,
+    "authority_effect": "NONE_REQUEST_ONLY",
+    "note": "One-time resident request to materialize the already-authorized external-collaboration Google OAuth client-secret ciphertext purpose from existing Personal-KV ciphertext using merged TVC PR #397. The request carries no credential material and grants no provider/runtime/governance authority.",
+}
+
+LISTENER_CONSUMER = "sdk_workspace_external_collab_consent_listener"
+LISTENER_REQUEST_PATH = Path("control/resident-execution-request.d/sdk-workspace-external-collab-consent-listener-001.json")
+LISTENER_CHAIN_RECEIPT = Path("receipts/sovereign-host/sdk-workspace-external-collab-consent-listener.latest.json")
+LISTENER_REQUEST_ID = "RESIDENT-EXEC-SDK-WORKSPACE-EXTCOLLAB-CONSENT-LISTENER-001"
+LISTENER_EXPECTED = {
+    "schema": RESIDENT_SCHEMA,
+    "state": "REQUESTED",
+    "request_id": LISTENER_REQUEST_ID,
+    "task_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+    "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
+    "selector": LISTENER_CONSUMER,
+    "credential_authority": "TV/TVC",
+    "github_token_required": False,
+    "github_token_runtime_authority": "NONE",
+    "heartbeat_grants_execution_authority": False,
+    "second_machine_required": False,
+    "network_source_fetch_allowed": False,
+    "credential_material_allowed": False,
+    "request_granted_authority": False,
+    "execution_requires_root": True,
+    "tvc_root_locator_required": True,
+    "tvc_installer": "scripts/install_external_collab_google_drive_consent_service.py",
+    "expected_tvc_installer_git_blob": "dae00dbec1a79d611a3184e185e04e6f29110348",
+    "loopback_health_url": "http://127.0.0.1:8786/tvc/external-collaboration/google-drive/consent/health",
+    "expected_client_secret_purpose": "google_drive.external_collaboration.client_secret",
+    "required_nonsecret_environment": [
+        "STEGVERSE_GOOGLE_DRIVE_CLIENT_ID",
+        "STEGVERSE_OWNER_BINDING_DIGEST",
+        "STEGVERSE_STEGFIN_SOURCE_ROOT",
+    ],
+    "public_https_binding_allowed": False,
+    "google_owner_consent_allowed": False,
+    "provider_contact_allowed": False,
+    "gateway_authority": False,
+    "authority_effect": "NONE_REQUEST_ONLY",
+}
+
 CONSUMER_PROFILES: dict[str, dict[str, Any]] = {
     CONSUMER: {
         "request_path": REQUEST_PATH,
@@ -87,6 +158,18 @@ CONSUMER_PROFILES: dict[str, dict[str, Any]] = {
         "chain_receipt": GADI_CHAIN_RECEIPT,
         "current_request_id": GADI_REQUEST_ID,
         "validation": "exact_gadi",
+    },
+    RESEAL_CONSUMER: {
+        "request_path": RESEAL_REQUEST_PATH,
+        "chain_receipt": RESEAL_CHAIN_RECEIPT,
+        "current_request_id": RESEAL_REQUEST_ID,
+        "validation": "exact_sdk_extcollab_reseal",
+    },
+    LISTENER_CONSUMER: {
+        "request_path": LISTENER_REQUEST_PATH,
+        "chain_receipt": LISTENER_CHAIN_RECEIPT,
+        "current_request_id": LISTENER_REQUEST_ID,
+        "validation": "exact_sdk_extcollab_listener",
     },
 }
 
@@ -201,12 +284,20 @@ def validate_resident_request(value: Any, *, consumer: str = CONSUMER) -> dict[s
         raise ResidentRendezvousConsumerError("resident request must be an object")
     _reject_forbidden_fields(value)
     profile = _profile(consumer)
+    rendered = dict(value)
     if profile["validation"] == "stegos_kv_intr_chain":
         return _validate_stegos_kv_request(value)
     if profile["validation"] == "exact_gadi":
-        rendered = dict(value)
         if rendered != GADI_EXPECTED:
             raise ResidentRendezvousConsumerError("GADI runtime-observation request contract mismatch")
+        return rendered
+    if profile["validation"] == "exact_sdk_extcollab_reseal":
+        if rendered != RESEAL_EXPECTED:
+            raise ResidentRendezvousConsumerError("SDK external-collaboration reseal request contract mismatch")
+        return rendered
+    if profile["validation"] == "exact_sdk_extcollab_listener":
+        if rendered != LISTENER_EXPECTED:
+            raise ResidentRendezvousConsumerError("SDK external-collaboration consent-listener request contract mismatch")
         return rendered
     raise ResidentRendezvousConsumerError("resident rendezvous validation profile unsupported")
 
@@ -268,6 +359,8 @@ def safe_env(source: Mapping[str, str] | None = None) -> dict[str, str]:
         "STEGVERSE_HEARTBEAT_ROOT", "STEGVERSE_HEARTBEAT_SOURCE_ROOT",
         "STEGVERSE_SOVEREIGN_NODE", "STEGVERSE_STEGOS_ROOT",
         "STEGVERSE_KV_SOURCE_ROOT", "STEGVERSE_KV_ROOT", "STEGVERSE_RELAY_RUNTIME_BASE",
+        "STEGVERSE_GOOGLE_DRIVE_CLIENT_ID", "STEGVERSE_OWNER_BINDING_DIGEST",
+        "STEGVERSE_STEGFIN_SOURCE_ROOT", "STEGVERSE_TVC_ROOT",
     )
     env = {name: values[name] for name in allowed if values.get(name)}
     env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"] = "TV/TVC"
@@ -429,6 +522,18 @@ def _consumer_outcome(consumer: str, chain: Mapping[str, Any]) -> tuple[str, boo
             return "BLOCKED", False
         if state == "OBSERVATION_ATTEMPT_RECORDED":
             return "ATTEMPT_RECORDED", False
+        return "ATTEMPT_RECORDED", False
+    if consumer == RESEAL_CONSUMER:
+        if state in {"COMPLETED", "TARGET_ALREADY_PRESENT"}:
+            return "COMPLETED", True
+        if state == "BLOCKED":
+            return "BLOCKED", False
+        return "ATTEMPT_RECORDED", False
+    if consumer == LISTENER_CONSUMER:
+        if state in {"COMPLETED", "SERVICE_ALREADY_HEALTHY"}:
+            return "COMPLETED", True
+        if state == "BLOCKED":
+            return "BLOCKED", False
         return "ATTEMPT_RECORDED", False
     return "ATTEMPT_RECORDED", False
 
