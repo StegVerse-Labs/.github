@@ -1,0 +1,60 @@
+{
+  "schema": "stegverse.reusable-sovereign-source-refresh-component/v1",
+  "component_id": "RTC-SOVEREIGN-SOURCE-REFRESH-010",
+  "model": "Reusable Task Component Model",
+  "parent_model_ref": "data/reusable-task-component-model.json",
+  "decomposition_policy_ref": "data/reusable-task-component-decomposition-policy.json",
+  "capability_provided": "refresh already-local canonical static WorkerCoordinator source into an authorized sovereign resident runtime without copying mutable runtime state or acquiring authority",
+  "canonical_implementation": "scripts/refresh_sovereign_worker_runtime_source.py",
+  "inputs": [
+    "already_local_canonical_source_root",
+    "sovereign_runtime_root"
+  ],
+  "outputs": [
+    "stegverse.sovereign-worker-runtime-source-refresh/v1 receipt",
+    "source_git_head",
+    "copied_static_paths",
+    "copied_file_count",
+    "worker_runtime_sha256"
+  ],
+  "preconditions": [
+    "source_root_and_runtime_root_are_distinct",
+    "canonical_source_is_complete",
+    "source_is_already_local",
+    "no_network_source_fallback",
+    "authorized_sovereign_runtime_surface_is_available"
+  ],
+  "expected_evidence": [
+    "worker-source-refresh.latest.json",
+    "mutable_runtime_state_preserved=true",
+    "network_fetch_performed=false",
+    "source_repository_mutated=false",
+    "credential_read_or_acquired=false",
+    "authority_effect=NONE_LOCAL_SOURCE_REFRESH"
+  ],
+  "authority_owner": "NONE_COMPONENT_IS_NON_AUTHORIZING",
+  "authority_effect": "NONE_LOCAL_SOURCE_REFRESH",
+  "authority_boundaries": {
+    "worker_claim_fence": "WorkerCoordinator",
+    "governed_transition": "Interlock/InTr",
+    "credential_provider_release": "TV/TVC",
+    "user_verification": "KV/SKAP Vault",
+    "observed_reality_custody_reconstruction": "Master Records",
+    "github_runtime_authority": "NONE"
+  },
+  "failure_classes": [
+    "AUTHORIZED_RUNTIME_UNAVAILABLE",
+    "SOURCE_NOT_ALREADY_LOCAL",
+    "CANONICAL_SOURCE_INCOMPLETE",
+    "SOURCE_RUNTIME_ROOT_COLLISION",
+    "REFRESH_ALREADY_IN_PROGRESS",
+    "STATIC_COPY_FAILURE"
+  ],
+  "retry_or_reentry_semantics": "FAIL_CLOSED; preserve existing mutable runtime state; retry only after the actual prerequisite or copy failure is resolved; never infer refresh success from source or CI state",
+  "repeatability_cardinality": "REPEATABLE_PER_AUTHENTIC_RUNTIME_VISIT_OR_SOURCE_HEAD_CHANGE",
+  "version_or_schema_binding": "stegverse.sovereign-worker-runtime-source-refresh/v1",
+  "historical_implementation_reuse": true,
+  "creates_new_runtime_owner": false,
+  "creates_new_source_transport": false,
+  "creates_new_credential_path": false
+}

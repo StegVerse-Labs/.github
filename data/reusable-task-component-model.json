@@ -4,6 +4,7 @@
   "purpose": "Allow canonical Goal Tasks to declare required capabilities and deterministically compose reusable, authority-preserving task components instead of embedding large task-specific orchestration chains.",
   "component_families": {
     "transport": "data/reusable-transport-component-contract.json",
+    "sovereign_source_refresh": "data/reusable-sovereign-source-refresh-component-contract.json",
     "runtime_observation": "CANONICAL_EXISTING_OWNER",
     "governed_ingress": "CANONICAL_EXISTING_OWNER",
     "execution_materialization": "data/reusable-task-ephemeral-construct-contract.json",

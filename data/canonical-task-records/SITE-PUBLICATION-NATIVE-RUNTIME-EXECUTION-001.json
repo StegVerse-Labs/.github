@@ -21,7 +21,9 @@
   },
   "handoff_projection_refs": [
     "StegVerse-Labs/.github:docs/SITE_PUBLICATION_NATIVE_RUNTIME_EXECUTION_001_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/.github:docs/SITE_PUBLICATION_INTR_CONSUMER_MIRROR_HANDOFF.md"
+    "StegVerse-Labs/.github:docs/SITE_PUBLICATION_NATIVE_RUNTIME_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github:docs/SITE_PUBLICATION_INTR_CONSUMER_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github:docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
@@ -38,17 +40,38 @@
       "dns-tls-recovery-proof"
     ]
   },
+  "component_model_projection": {
+    "model": "data/reusable-task-component-model.json",
+    "decomposition_policy": "data/reusable-task-component-decomposition-policy.json",
+    "goal_component_profile": "data/goal-task-component-profiles/SITE-PUBLICATION-NATIVE-RUNTIME-EXECUTION-001.json",
+    "component_handoff": "docs/SITE_PUBLICATION_NATIVE_RUNTIME_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+    "transport_family": "data/reusable-transport-component-contract.json",
+    "source_refresh_family": "data/reusable-sovereign-source-refresh-component-contract.json",
+    "ephemeral_execution_family": "data/reusable-task-ephemeral-construct-contract.json",
+    "evaluator": "scripts/evaluate_reusable_task_componentization.py",
+    "decomposition_score": 21,
+    "decision": "STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION",
+    "goal_identity_preserved": true,
+    "cosv_identity_preserved": true,
+    "componentization_mints_authority": false,
+    "goal_runtime_predicates_changed": false,
+    "runtime_handoff_remains_runtime_truth": true
+  },
   "existing_evidence_refs": [
     "StegVerse-Labs/.github:pull/1398",
     "StegVerse-Labs/.github:commit/7444aefbdd2c644c46ae105192af4a524ef02172",
     "StegVerse-Labs/Site:commit/bc1ee7257ebc64f77dab3f0b746bb3a86a279b6c",
     "StegVerse-Labs/.github:issue/1486",
     "StegVerse-Labs/.github:pull/1483",
-    "StegVerse-Labs/.github:commit/4ab13a252eed668f1d828c08bd998b00b54e3c43"
+    "StegVerse-Labs/.github:commit/4ab13a252eed668f1d828c08bd998b00b54e3c43",
+    "StegVerse-Labs/.github:pull/1652",
+    "StegVerse-Labs/.github:commit/b9f8e5153aa1651f2d7f043fb902eacb7c113ed9"
   ],
   "source_state": {
     "worker_registration_merged_validated": true,
     "parent_reconciliation_merged_validated": true,
+    "reusable_task_component_model_available": true,
+    "component_profile_bound": true,
     "exact_materialization_id": "INTR-MAT-0e1ba4786b0ea8a00e1f166e",
     "exact_packet_id": "INTR-58dec5416bd4358190c11372",
     "artifact_manifest_sha256": "sha256:e6bc47580f25296df61d16dfe5a74f3f49fec0dda018c813696195c960e77f09",
@@ -75,11 +98,20 @@
     "FINAL_PUBLICATION_TRANSITION_ADMITTED",
     "DNS_TLS_RECOVERY_PROVEN"
   ],
+  "required_component_evidence": [
+    "MASTER_RECORDS_PUBLICATION_EVIDENCE_CUSTODY_ACCEPTED",
+    "MASTER_RECORDS_PUBLICATION_EVIDENCE_RECONSTRUCTION_CONFIRMED"
+  ],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "worker_claim_authority": "WORKERCOORDINATOR",
     "credential_authority": "TV/TVC",
+    "user_verification_authority": "KV/SKAP Vault",
+    "user_verification_authority_exclusive": true,
+    "stegos_device_role": "INTERCHANGEABLE_TRANSPORT_EXECUTION_NODE_NOT_USER_VERIFIER",
     "interlock_intr_required_for_governed_ingress_egress": true,
+    "master_records_reality_authority": true,
+    "heartbeat_authority": "NONE_OBSERVABILITY_ONLY",
     "github_runtime_authority": "NONE",
     "hosted_execution_fallback": false,
     "render_dependency_required": false,
@@ -98,7 +130,9 @@
     "deployment_required": false,
     "current_observation_required": true,
     "already_local_source_required": true,
-    "second_user_operated_device_required": false
+    "second_user_operated_device_required": false,
+    "user_verification_source": "KV/SKAP Vault",
+    "device_local_user_verifier_allowed": false
   },
   "runtime_resolution": null,
   "worker_claim": {
@@ -111,6 +145,6 @@
     "material_function_change": false,
     "readme_updated_in_change_set": false,
     "readme_path": "README.md",
-    "no_readme_update_reason": "Prompt-budget succession and runtime-evidence ownership only; no new public capability or runtime owner is introduced."
+    "no_readme_update_reason": "This reconciliation composes existing runtime/publication functions and wraps the already-existing local source-refresh implementation; no new runtime owner or public capability is introduced."
   }
 }
