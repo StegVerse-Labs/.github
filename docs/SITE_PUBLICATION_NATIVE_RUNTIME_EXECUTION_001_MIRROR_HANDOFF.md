@@ -31,6 +31,10 @@ Source refresh is a demonstrated shared capability and is not a task-specific re
 
 A consuming Goal Task invokes this reusable task with its already-local `source_root` and existing `runtime_root`. The reusable lifecycle advances until authentic completion or an actual execution/resource boundary and records that boundary. The Goal Task does not first poll for a connected device as a prerequisite.
 
+The neutral scheduler/carrier migration exposed one concrete materialization defect: the existing source refresh copied `scripts/trigger_reusable_task.py` plus reusable-task registry shards but did not materialize `scripts/run_reusable_task_scheduler.py` or `data/reusable-task-scheduler-contract.json` into resident static source. `.github` PR #1782 repaired that gap with `scripts/refresh_sovereign_worker_runtime_source_reusable.py`, a thin adapter that extends only the proven refresher's static-file set and delegates to the same canonical `refresh()` implementation. Exact head `35f5d2f2295849cdee9bd6d01e2006f356bbf060` passed Organization Control `34787496629`, Deterministic Repository Suite `34787496630`, and Heartbeat `34787496613`, then squash-merged at `8c2b40da6e7b1cc2508a5c741567a3825e0eb0f6`.
+
+The adapter is not a second refresher or runtime owner. `RT-SOVEREIGN-SOURCE-REFRESH-001` now uses the adapter as its primary reusable runner while retaining the original refresher and neutral scheduler runner as declared dependencies. Source/CI validation still does not prove that resident refresh has executed.
+
 ## Neutral reusable scheduling
 
 Generic reusable-task scheduling is owned by `RT-REUSABLE-TASK-SCHEDULER-001`, with contract `data/reusable-task-scheduler-contract.json` and runner `scripts/run_reusable_task_scheduler.py`. Healer is a consumer/carrier of that capability, not its canonical generic owner.
@@ -56,7 +60,7 @@ intr-materialization/<materialization_id>.json
 
 `STEGVERSE_SITE_PUBLICATION_MATERIALIZATION_ID` is only an optional correlation input. When present, it must equal the locally admitted materialization id; a mismatch fails closed. The environment value cannot substitute for authentic ingress evidence and cannot grant execution, claim/fence, or transition authority.
 
-This supersedes the former manual environment-binding step as the candidate identity source of truth.
+This supersedes the former manual environment-binding step as the candidate identity source of truth. `.github` PR #1767 merged this source binding at `1d10dd97475c910de83847f7e5344e387dd81cf7` after exact-head Deterministic `34781655303`, Organization Control `34781655347`, and Heartbeat `34781655362` passed.
 
 ## Authority boundaries
 
@@ -74,7 +78,7 @@ This supersedes the former manual environment-binding step as the candidate iden
 
 ## Required evidence chain
 
-1. Consume an authentic neutral-scheduler invocation of `RT-SOVEREIGN-SOURCE-REFRESH-001` for this Goal Task, including the reusable child receipt.
+1. Consume an authentic neutral-scheduler invocation of `RT-SOVEREIGN-SOURCE-REFRESH-001` for this Goal Task, including the reusable child receipt from the scheduler-materialized resident source.
 2. Require an authentic source-refresh completion receipt before dependent runtime work advances; a neutral-scheduler/child boundary receipt preserves unresolved state without device discovery or alternate scheduler creation.
 3. Require authentic Universal InTr Site-publication ingress to persist the exact candidate receipt and write-once queue entry under the resident runtime root.
 4. Allow the existing WorkerCoordinator to discover `SITE-PUBLICATION-INTR-CONSUMER-001`; checkout/admission must mint a fresh independent claim and fencing generation.
@@ -103,8 +107,8 @@ DNS/TLS recovery proven = false
 
 ## Activation
 
-Activation condition is satisfied by merged, exact-head-green parent reconciliation PR #1483. This successor is ACTIVE. Reusable-task registration, neutral scheduling, Healer carrier execution, source binding, or admitted-ingress candidate evidence does not mint runtime authority, claim/fence state, credentials, publication state, or proof.
+Activation condition is satisfied by merged, exact-head-green parent reconciliation PR #1483. This successor is ACTIVE. Reusable-task registration, neutral scheduling, Healer carrier execution, source binding, admitted-ingress candidate evidence, or scheduler-materialization source repair does not mint runtime authority, claim/fence state, credentials, publication state, or proof.
 
 ## Next action
 
-Do not perform connected-device discovery as a prerequisite. Validate and merge the admitted-ingress binding repair, then consume the next authentic neutral-scheduler + `RT-SOVEREIGN-SOURCE-REFRESH-001` receipt from the existing carrier path. After authentic source refresh and authentic Site-publication ingress are present, continue directly through the already-registered WorkerCoordinator child. Retain any real execution/resource boundary exactly; do not create another scheduler, refresher, hosted fallback, manual materialization binding, or second-device path.
+Do not perform connected-device discovery as a prerequisite. The source path is now repaired through PR #1782 and the admitted-ingress source binding is merged through PR #1767. Consume the next authentic neutral-scheduler + `RT-SOVEREIGN-SOURCE-REFRESH-001` receipt from the existing carrier path. If it completes, proceed directly to authentic admitted Site-publication ingress and the already-registered WorkerCoordinator child. If it records a real execution/resource boundary, retain that boundary exactly and remediate only that boundary. Do not create another scheduler, refresher, hosted fallback, manual materialization binding, or second-device path.
