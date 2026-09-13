@@ -1,0 +1,20 @@
+{
+  "schema": "stegverse.reusable-task-component/v1",
+  "component_id": "RTC-RESIDENT-RENDEZVOUS-010",
+  "family": "transport",
+  "name": "Resident Request Rendezvous",
+  "status": "CANDIDATE_FOR_CANONICAL_REUSE",
+  "capability_provided": ["bounded_resident_request_delivery","target_node_routing","request_digest_binding","delivery_acknowledgement","transport_only_correlation"],
+  "inputs": ["canonical resident request","registered resident consumer selector","target StegOS node reference","request digest","bounded expiry"],
+  "outputs": ["resident request materialization observation","dispatch correlation reference","delivery acknowledgement","transport receipt"],
+  "preconditions": ["consumer already registered in canonical resident dispatcher","consumer-specific exact request validator remains authoritative for request shape","target node is routing only","no credential-bearing fields in transport envelope","network source-code fetch remains prohibited"],
+  "authority_owner": "NONE_TRANSPORT_ONLY",
+  "authority_effect": "NONE",
+  "canonical_authority_dependencies": {"user_verification":"KV/SKAP Vault","claim_fence":"WorkerCoordinator","transition_admission":"Interlock/InTr","credential_provider_release":"TV/TVC","custody_reconstruction":"Master Records"},
+  "expected_evidence": ["request envelope hash","target-node delivery observation","consumer-specific consumption receipt","ACK correlated to exact request digest"],
+  "repeatability": "REPEATABLE_PER_BOUNDED_REQUEST",
+  "failure_classes": ["NO_REACHABLE_RESIDENT_TRANSPORT","TARGET_NODE_UNAVAILABLE","CONSUMER_NOT_REGISTERED","REQUEST_DIGEST_MISMATCH","REQUEST_EXPIRED","CONSUMER_VALIDATION_FAIL_CLOSED","ACK_NOT_OBSERVED"],
+  "retry_or_reentry_semantics": "Retry only with the same exact inner request or a canonically superseding request; retries mint no authority and preserve digest/correlation lineage.",
+  "version_or_schema_binding": ["stegverse.resident-rendezvous.request/v1","stegverse.resident-execution-request/v1"],
+  "anti_invariants": ["must_not_verify_user_from_device_identity","must_not_mint_claim_or_fence","must_not_admit_InTr_transition","must_not_issue_credentials","must_not_fetch_source_code_from_network","must_not_replace_consumer_specific_exact_request_validation"]
+}

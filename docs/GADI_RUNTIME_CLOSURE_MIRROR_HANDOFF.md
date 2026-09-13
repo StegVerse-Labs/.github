@@ -6,79 +6,74 @@ Goal Task ID: `GADI-RUNTIME-CLOSURE-001`
 Parent Goal: `GADI-001`
 COSV ID: `10100000100000`
 Canonical issue: `StegVerse-Labs/.github#1603`
-Status: `ACTIVE / SOURCE-REACHABILITY-COMPLETE / PORTABLE-DISPATCH-SELECTOR-REPAIR-OPEN / AUTHENTIC-RUNTIME-EVIDENCE-PENDING`
+Status: `ACTIVE / SOURCE-REACHABILITY-COMPLETE / REUSABLE-COMPONENT-RECONCILED / AUTHENTIC-RUNTIME-EVIDENCE-PENDING`
 
-## Purpose
+## Canonical identity and runtime truth
 
-This successor goal owns the remaining authentic runtime proof after `GADI-001` completed its source-level implementation trajectory and reached its 20-prompt coordination ceiling. It does not reopen source design that is already merged.
+The Goal Task remains `GADI-RUNTIME-CLOSURE-001`; componentization does not rename, restart, supersede, or close it. Coordination remains `ACTIVE / CLAIMED_INTEGRATION`; completion remains unclaimed and unvalidated.
 
-## Canonical starting point
+PR #1630 merged the portable GADI selector repair at `ac5c59f6226ecfe7696496b7e64f23ee9d4dee0c`. Main admits `gadi_runtime_observation` through the existing portable selector. No authentic `worker-source-refresh.latest.json`, `resident-request-dispatch.latest.json`, `hb-machine-continuation.latest.json`, or `gadi-runtime-observation-request-consumption.latest.json` has been observed, and the authorized resident-device connector last exposed no reachable device. Source/CI/component reuse must not upgrade that runtime evidence class.
 
-Merged source-level current-device reachability already exists through the retained StegBrowser/StegOS resident substrate and the existing resident local refresh/dispatcher. The source chain includes retained discovery observation, current-iPhone persisted receipt readback, runtime-subject propagation, GADI runtime binding materialization, pre-claim observation dispatch, the existing Governance/InTr path, native StegOS command materialization/bridge, WorkerCoordinator claim/fence path, resident defensive consumer, and Continuity reconstruction verifier.
+## Reusable Task Component Model reconciliation
 
-No authentic `receipts/sovereign-host/gadi-runtime-observation-request-consumption.latest.json` artifact was present in the canonical repository at successor creation. Source or CI success must not be promoted into runtime evidence.
+Canonical model: `data/reusable-task-component-model.json`
+Decomposition policy: `data/reusable-task-component-decomposition-policy.json`
+Evaluation: `data/reusable-task-component-evaluations/GADI-RUNTIME-CLOSURE-001.json`
+Transport profile: `data/goal-task-transport-profiles/GADI-RUNTIME-CLOSURE-001.json`
 
-## Portable exact-dispatch repair
+The decomposition score is 25, requiring componentization before more bespoke orchestration. GADI remains the Goal Task/evidence owner.
 
-Continuation inspection found one concrete addressability seam. The generic resident dispatcher already registers `gadi_runtime_observation`, and the sovereign local source refresh already carries both `workers/` and `control/resident-execution-request.d/`. However, `scripts/refresh_and_dispatch_resident_requests.py` did not admit `gadi_runtime_observation` in `ALLOWED_TARGET_CONSUMERS`, so exact portable refresh+dispatch could reject GADI before visiting the existing consumer.
+## Component map
 
-PR `StegVerse-Labs/.github#1630` is the current canonical repair, reapplied on top of current main after earlier attempts #1608 and #1614 were superseded by unrelated main advancement. It adds only the existing selector admission and regression coverage. It creates no new resident, scheduler, listener, heartbeat, WorkerCoordinator, claim/fence plane, InTr authority, credential route, hosted fallback, or execution authority.
+- Runtime observation — existing canonical GADI/runtime owners; required; input retained discovery/current-iPhone readback/runtime subject; output current same-node binding; authority effect NONE; evidence current discovery/readback/presence/freshness/binding receipts; fail closed on missing/stale/mismatch.
+- `RTC-RESIDENT-RENDEZVOUS-010` — newly identified reusable resident-request transport; conditional when local resident delivery is not authentically available; input exact canonical resident request + registered consumer + target-node routing ref + digest + expiry; output delivery observation + dispatch correlation + ACK; authority NONE; consumer-specific validator remains authoritative; node identity is routing only.
+- `RTC-GOVERNED-PROCESSING-002` — existing reusable governed-processing capability; required; consumes runtime binding plus threat/evidence/plan; does not mint transition/claim authority.
+- `RTC-ROUNDTRIP-003` — repeatable; required only for controlled action/effect observation, adaptive reassessment, and termination confirmation.
+- `RTC-INTERLOCK-INTR-TRANSPORT-008` — required for governed ingress/egress; Interlock/InTr is authority owner; missing admission/transition receipt fails closed.
+- `RTC-STEGVERSE-EGRESS-007` — required when the controlled action crosses the local StegVerse state boundary; Interlock/InTr-owned transition.
+- `RTC-FARSIDE-FINAL-009` — conditional on the controlled external test surface requiring a far-side final transition.
+- `RTC-EVIDENCE-CUSTODY-004` — required; Master Records owns custody/readback/reconstruction; no completion without authentic reconstruction.
 
-Required source assertions are:
-
-```text
-gadi_runtime_observation is registered in the generic dispatcher
-gadi_runtime_observation is admitted by the exact portable selector
-workers/ is carried by local source refresh
-control/resident-execution-request.d/ is carried by local source refresh
-dispatch_resident_execution_requests.py is carried by local source refresh
-refresh_and_dispatch_resident_requests.py is carried by local source refresh
-```
-
-This source repair does not prove that the current iPhone refreshed or visited the request. Authentic runtime evidence remains mandatory.
-
-## Required authentic closure sequence
-
-```text
-CURRENT RETAINED STEGBROWSER/STEGOS NATIVE DISCOVERY
--> CURRENT READ-ONLY PERSISTED CURRENT-IPHONE DISCOVERY RECEIPT FOR SAME NODE
--> CURRENT RESIDENT-PRESENCE + SUPERVISION SUBJECT OBSERVATION FOR SAME NODE
--> CURRENT GADI RUNTIME BINDING
--> CURRENT THREAT / BOUNDARY OBSERVATIONS
--> CURRENT VERIFIED EXTERNAL-EVIDENCE BINDING
--> CURRENT PRE-ADMISSION NATIVE DEFENSE PLAN
--> CURRENT GOVERNANCE FACTS + PENDING INTERVENTION REQUEST
--> LOCAL CANONICAL INTR ADMISSION
--> NATIVE STEGOS COMMAND BOUND TO EXACT RUNTIME SUBJECT
--> CONTROLLED PREAUTHORIZED OUTPUT OBSERVATION
--> TARGETED WORKERCOORDINATOR CLAIM/FENCE
--> RESIDENT CONSUMPTION
--> EFFECT OBSERVATION
--> ADAPTIVE REASSESSMENT
--> TERMINATION AFTER THREAT END
--> FULL RECEIPT CHAIN
--> CONTINUITY / MASTER RECORDS CUSTODY AND EXACT RECONSTRUCTION
-```
+Not selected: `RTC-MANIFEST-001` because GADI already has an exact canonical resident request; `RTC-PUBLISHER-005` because publication is not a predicate; `RTC-SDK-RETURN-006` because SDK return assembly is not a predicate.
 
 ## Authority invariants
 
-WorkerCoordinator remains sole claim/fence authority. Interlock/InTr remains transition/admission authority. TV/TVC remains credential authority. HB/runtime-presence remains observation/reference only. GitHub validation remains non-authorizing. Master Records remains custody/reconstruction authority.
+Task Registry: coordination only. WorkerCoordinator: claim/fence. Interlock/InTr: governed admission/transition. TV/TVC: credential/provider/release. KV/SKAP Vault: sole user verification. StegOS devices: interchangeable transport/execution nodes, never user verifiers. Master Records: observed-reality custody/reconstruction. HeartBeat: timing/freshness/liveness/state correlation/observability only. GitHub: no runtime authority.
 
-No second heartbeat, resident service, scheduler, listener, activation page, hosted rendezvous route, WorkerCoordinator, InTr authority, credential route, evidence-provider authority, actuator implementation, or Master Records custody path may be created.
+No runtime subject, node identity, Secure Enclave identity, transport identity, or device identity may become user-verification authority.
 
-## Immediate continuation
+## Duplicate orchestration disposition
 
-1. Validate and merge PR #1630 only if its exact-head repository checks pass against current main.
-2. Observe authentic resident local-source refresh and exact dispatch for `gadi_runtime_observation`.
-3. Require exact same-node retained discovery, persisted current-iPhone receipt readback, and current resident presence/liveness/supervision/freshness before accepting runtime binding.
-4. Continue only through the already-merged Governance/InTr -> native command -> controlled output -> WorkerCoordinator -> resident-consumption chain.
-5. Preserve fail-closed evidence when any runtime predicate is absent; do not synthesize or infer it from source/CI.
-6. After authentic execution, require effect observation, adaptive reassessment, termination, full receipt-chain custody, and exact Continuity/Master Records reconstruction before claiming completion.
+Do not create or extend a GADI-specific network rendezvous adapter. The existing hard-coded `stegos_kv_intr_chain` rendezvous is evidence of a reusable capability and is to be generalized at the reusable transport owner. Historical PRs #1608/#1614 are provenance only; #1630 is merged source truth.
+
+The current Site rendezvous client also binds submission to Node Receipt #1 provenance. Under the Reusable Task Component Model, any such node identity may be used only as routing/provenance metadata and must not become user verification or execution authority. The reusable component must preserve zero transport authority and exact inner-request validation.
+
+## Remaining Goal Task-specific predicates
+
+1. Current retained StegBrowser/StegOS node discovery observed.
+2. Current persisted current-iPhone receipt readback observed for the same node.
+3. Current same-node presence/liveness/supervision/freshness and GADI runtime binding observed.
+4. Authentic GADI resident request delivery/consumption observed through local delivery or reusable rendezvous as applicable.
+5. Authentic Interlock/InTr defensive admission observed.
+6. Authentic WorkerCoordinator claim/fence observed.
+7. Authentic resident defensive action observed.
+8. External safe-state effect observed.
+9. Adaptive reassessment after strategy change observed.
+10. Termination after threat end observed.
+11. Full intervention receipt chain valid.
+12. Authentic Master Records reconciliation and exact confrontation reconstruction observed.
+13. Only then may `GADI_RUNTIME_CLOSURE_COMPLETE` be claimed.
+
+## Next admissible work
+
+Materialize `RTC-RESIDENT-RENDEZVOUS-010` by refactoring/extending the existing resident rendezvous into a registered-consumer transport without weakening consumer-specific validators. Preserve the exact inner request/digest, no network source-code fetch, no credential-bearing transport envelope, node routing without user verification, zero transport authority, and correlated delivery/ACK evidence. Then use it for the already-armed GADI request if local resident delivery is still unavailable.
+
+No second user-operated device is required. No device verification is permitted.
 
 ## README impact
 
-README semantics were reviewed during this repair. Existing sections already state that portable resident dispatch does not grant execution authority, runtime-presence is observation only, canonical work ingress does not grant execution authority, and authentic downstream evidence is required. No semantic README change is required.
+PR #1652 already projects the Reusable Task Component Model and canonical authority separation into the root README; no additional README semantic change is required for this GADI binding.
 
 ## Manual work
 
-None. User action is not required unless authentic same-device observation proves a specific human-owned prerequisite that cannot be repaired or progressed through the existing governed runtime.
+None.
