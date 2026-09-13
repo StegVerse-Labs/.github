@@ -1,9 +1,11 @@
 # Canonical Invariant Ingress Lock Mirror Handoff
 
-Updated: 2026-09-12
+Updated: 2026-09-13
 Canonical owner: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`
 Registry: `control/canonical-policy-context-registry.json`
 Entrypoint: `scripts/session_build_preflight.py`
+Mutation guard: `scripts/validate_source_mutation_preflight.py`
+Workflow: `.github/workflows/source-mutation-preflight-guard.yml`
 Authority effect: `NONE_PREWORK_INTERPRETATION_ONLY`
 
 ## Purpose
@@ -44,3 +46,48 @@ If the registry or a required source cannot be resolved, the existing fail-close
 `STOP_AT_CANONICAL_POLICY_DEPENDENCY`
 
 This lock changes interpretation discipline only. It does not modify Interlock/InTr packet admission or any runtime authority owner.
+
+## Repository-side mutation enforcement
+
+The session/build preflight is no longer sufficient merely as a callable helper because a caller can otherwise bypass it and invoke a repository mutation directly. Source-changing pull requests in this repository now have an independent repository-side guard.
+
+A protected mutation must carry a changed `receipts/preflight/*.json` receipt that:
+
+- names an existing canonical Goal Task;
+- binds the exact PR merge-base commit;
+- records a mutation-admissible preflight state;
+- lists every globally required canonical policy source plus the Goal Task's declared `canonical_policy_refs`;
+- explicitly scopes the files that may be mutated; and
+- was committed before the first protected mutation commit.
+
+The guard rejects a receipt introduced in the same commit as the protected mutation. This prevents documentation from being read or a receipt from being manufactured only after implementation has already begun.
+
+Canonical validator:
+
+```text
+scripts/validate_source_mutation_preflight.py
+```
+
+Regression coverage:
+
+```text
+tests/test_source_mutation_preflight_guard.py
+```
+
+Pull-request workflow:
+
+```text
+.github/workflows/source-mutation-preflight-guard.yml
+```
+
+This enforcement is merge-time completeness only. It does not make GitHub an execution, transition, governance, credential, custody, or runtime authority.
+
+## Task-specific domain policy binding
+
+Task-specific architecture that is not globally applicable must be declared through `canonical_policy_refs` on the canonical task record. Those refs become fail-closed dependencies of the existing preflight rather than relying on a human to restate them in chat.
+
+`STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001` now declares its canonical Device/KV/SKAP handoff plus the KnowledgeVault privacy/state-transition and device-backed-capability handoffs as task policy refs. This means future preflight for that task must resolve the KV state-transition semantics before local implementation reasoning.
+
+## Current validation state
+
+Source implementation is present on branch `enforce-canonical-preflight-before-mutation-001`. Exact-head CI and merge evidence are still required. No runtime or authority claim is created by this source change.
