@@ -18,24 +18,25 @@
     "data/reusable-transport-component-contract.json",
     "data/goal-task-component-profiles/STEGOS-DEVICE-CONTINUITY-PACKET-TUNNEL-RUNTIME-001.json",
     "docs/STEGOS_DEVICE_CONTINUITY_PACKET_TUNNEL_COMPONENT_MODEL_MIRROR_HANDOFF.md",
-    "data/canonical-task-records/KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001.json"
+    "data/canonical-task-records/KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001.json",
+    "tasks/TASK-2026-0012.json"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
-    "repositories": ["StegVerse-Labs/StegOS", "StegVerse-Labs/.github"],
+    "repositories": ["StegVerse-Labs/StegOS", "StegVerse-Labs/.github", "StegVerse-Labs/Site"],
     "components": ["DeviceContinuityPacketTunnel", "DeviceContinuityCarrierController", "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001", "same-node-continuity-transport", "packet-tunnel-runtime-observation"]
   },
   "dependencies": [
     {"dependency_id": "DEP-PACKET-TUNNEL-XCODE-TARGET-INTEGRATION", "kind": "EVIDENCE", "state": "RESOLVED", "ref": "StegVerse-Labs/StegOS#354"},
     {"dependency_id": "DEP-PACKET-TUNNEL-HOST-ACTIVATION-SOURCE", "kind": "EVIDENCE", "state": "RESOLVED", "ref": "StegVerse-Labs/StegOS#363"},
-    {"dependency_id": "DEP-PACKET-TUNNEL-CARRIER-CAPABLE-DELIVERY", "kind": "PHYSICAL_RUNTIME_PREDICATE", "state": "UNRESOLVED", "ref": "data/canonical-task-records/KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001.json", "disposition": "Reuse the existing current-iPhone KV-bound TestFlight delivery owner. The currently cited StegOS delivery baseline 19e2ea02a16bd703767aafcd47e71f5ec5efe3cf predates the packet-tunnel host-activation merge 67dc40e8b78ed8566d598a2aa87b52536a534878 by 87 commits. A delivered/installed build used for this Goal Task must bind to StegOS source 67dc40e8b78ed8566d598a2aa87b52536a534878 or a descendant; completing an older TestFlight bootstrap cannot satisfy carrier runtime observation."},
+    {"dependency_id": "DEP-PACKET-TUNNEL-CARRIER-CAPABLE-DELIVERY", "kind": "PHYSICAL_RUNTIME_PREDICATE", "state": "QUEUED_CANONICAL_SUCCESSOR", "ref": "tasks/TASK-2026-0012.json", "disposition": "Reuse the existing KV-bound current-iPhone TestFlight delivery architecture through a fresh allocator successor. Frozen TASK-2026-0011 may not be widened. Its actual Site-served unsigned IPA declares StegOS source 32115e32d701e783af2c2659a900e4bc90460fd2, and direct repository comparison shows that source diverges from the carrier-capable 67dc40e8b78ed8566d598a2aa87b52536a534878 lineage. TASK-2026-0012 therefore requires the regenerated unsigned IPA source commit to equal 67dc40e8b78ed8566d598a2aa87b52536a534878 or a descendant before this Goal Task may attribute runtime observations to the packet-tunnel implementation."},
     {"dependency_id": "DEP-PACKET-TUNNEL-SUBJECT-BOUND-RUNTIME-OBSERVATION", "kind": "RUNTIME_PREDICATE", "state": "UNRESOLVED", "ref": "data/goal-task-component-profiles/STEGOS-DEVICE-CONTINUITY-PACKET-TUNNEL-RUNTIME-001.json"}
   ],
   "blockers": [
-    {"blocker_id": "PACKET_TUNNEL_RUNTIME_NOT_YET_OBSERVED", "dependency_id": "DEP-PACKET-TUNNEL-SUBJECT-BOUND-RUNTIME-OBSERVATION", "reason": "Carrier activation, foreground-app persistence, and exact subject-bound 127.0.0.1:8766 status reachability are not yet authentically observed. Before those observations can be attributed to this implementation, the existing current-iPhone delivery owner must materialize a build from StegOS source 67dc40e8b78ed8566d598a2aa87b52536a534878 or a descendant. Packet-tunnel start/stop is a local transport lifecycle with authority_effect NONE, not a StegVerse state transition; no Interlock/InTr admission is required merely to start or observe this carrier. Interlock/InTr remains required for any admitted recovery-envelope movement or other governed StegVerse transition."}
+    {"blocker_id": "PACKET_TUNNEL_RUNTIME_NOT_YET_OBSERVED", "dependency_id": "DEP-PACKET-TUNNEL-SUBJECT-BOUND-RUNTIME-OBSERVATION", "reason": "Carrier activation, foreground-app persistence, and exact subject-bound 127.0.0.1:8766 status reachability are not yet authentically observed. The frozen TASK-2026-0011 package cannot satisfy these predicates because its actual unsigned IPA source is not on the carrier-capable source lineage. TASK-2026-0012 is the fresh allocator successor for regenerating/projecting a carrier-capable package. Packet-tunnel start/stop remains a local transport lifecycle with authority_effect NONE; Interlock/InTr is required only for actual governed StegVerse transitions."}
   ],
   "systemic_incident_ref": null,
-  "adjacent_task_refs": ["SHWP-HIL-SOVEREIGN-RECEIVER-001", "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001", "KV-CONNECTION-REVALIDATION-WORKER-001", "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001", "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001"],
+  "adjacent_task_refs": ["SHWP-HIL-SOVEREIGN-RECEIVER-001", "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001", "KV-CONNECTION-REVALIDATION-WORKER-001", "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001", "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001", "TASK-2026-0012"],
   "component_model_projection": {
     "model": "data/reusable-task-component-model.json",
     "decomposition_policy": "data/reusable-task-component-decomposition-policy.json",
@@ -64,7 +65,9 @@
     "StegVerse-Labs/StegOS#351-comment-5651261469",
     "StegVerse-Labs/.github@00ab112f9d0628553d6186e120469a12d7458c4c",
     "StegVerse-Labs/.github@56e191abfa0f8e8c6ff00c69c985be24b7c1df7f",
-    "StegVerse-Labs/StegOS:COMPARE:19e2ea02a16bd703767aafcd47e71f5ec5efe3cf...67dc40e8b78ed8566d598a2aa87b52536a534878:AHEAD_BY_87"
+    "StegVerse-Labs/.github@a7ebdd39574711b4533456ee56951b745b671e43",
+    "StegVerse-Labs/Site:UNSIGNED_IPA_SOURCE:32115e32d701e783af2c2659a900e4bc90460fd2",
+    "StegVerse-Labs/StegOS:COMPARE:32115e32d701e783af2c2659a900e4bc90460fd2...67dc40e8b78ed8566d598a2aa87b52536a534878:DIVERGED"
   ],
   "expected_evidence_predicates": ["HOST_ACTIVATION_SOURCE_VALIDATED", "AUTHENTIC_PACKET_TUNNEL_ACTIVATION_OBSERVED", "AUTHENTIC_CROSS_APP_PERSISTENCE_OBSERVED", "AUTHENTIC_LOOPBACK_8766_REACHABILITY_OBSERVED"],
   "satisfied_evidence_predicates": ["HOST_ACTIVATION_SOURCE_VALIDATED"],
@@ -77,7 +80,8 @@
     "deployment_required": true,
     "current_observation_required": true,
     "required_installed_source_floor": "StegVerse-Labs/StegOS@67dc40e8b78ed8566d598a2aa87b52536a534878",
-    "delivery_owner_task_id": "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001"
+    "delivery_owner_task_id": "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001",
+    "delivery_allocator_successor_task_id": "TASK-2026-0012"
   },
   "runtime_resolution": null,
   "runtime_observation_configuration": {
@@ -96,8 +100,9 @@
     "accepted_live_states": ["AVAILABLE_NO_ENVELOPE", "AVAILABLE_WITH_ADMITTED_ENVELOPE"],
     "persistence_test": "observe exact endpoint before and after foregrounding another browser/app container on the same StegOS Node",
     "required_installed_source_floor": "StegVerse-Labs/StegOS@67dc40e8b78ed8566d598a2aa87b52536a534878",
-    "delivery_owner_task_id": "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001",
-    "older_delivery_baseline_may_substitute": false,
+    "delivery_allocator_successor_task_id": "TASK-2026-0012",
+    "old_task0011_unsigned_ipa_source_commit": "32115e32d701e783af2c2659a900e4bc90460fd2",
+    "older_or_divergent_delivery_may_substitute": false,
     "generic_runtime_presence_may_substitute": false,
     "heartbeat_may_substitute": false,
     "source_ci_may_substitute": false,

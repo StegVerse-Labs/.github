@@ -74,6 +74,26 @@
       if(mandatory.length!==1||!mandatory[0].repository||mandatory[0].repository.full_name!=="StegVerse-Labs/Site"){fail("portable allocator task repository floor mismatch");}
       if(dependencySurfaces(mandatory[0]).indexOf(surface)===-1){fail("portable allocator task dependency surface floor mismatch");}
     }
+    if(ids==="TASK-2026-0012"){
+      var exact12={
+        allocator_git_blob_sha:"0bc3b2f302ff30fbf0c73e86bf9bf958e2d7c06b",
+        task_0012_git_blob_sha:"9c521a97803f3ed353c86640bb77d135952b3310",
+        claims_git_blob_sha:"9e7eaf9cb1319dd570714a0c1806d7173a7ba7ff",
+        queue_git_blob_sha:"6cab961c8750495dab36d1a523980516b1ac3a5e"
+      };
+      Object.keys(exact12).forEach(function(k){if(source[k]!==exact12[k]){fail("source binding mismatch: "+k);}});
+      if(pkg.tasks.length!==1){fail("TASK-2026-0012 successor package must contain exactly one task");}
+      var task12=pkg.tasks[0];
+      validateTaskFloor(task12,"2026-09-13T23:40:00Z","site:current-iphone-kv-testflight-static-bootstrap");
+      var successor=task12.source_successor||{};
+      if(task12.supersedes!=="TASK-2026-0011"){fail("TASK-2026-0012 predecessor mismatch");}
+      if(!task12.predecessor_provenance||task12.predecessor_provenance.allocator_task!=="TASK-2026-0011"||task12.predecessor_provenance.allocator_generation!==7||task12.predecessor_provenance.allocator_fence!==7||task12.predecessor_provenance.reactivation_or_scope_widening_allowed!==false){fail("TASK-2026-0012 frozen predecessor provenance mismatch");}
+      if(successor.repository!=="StegVerse-Labs/StegOS"||successor.source_identity_requirement!=="CARRIER_CAPABLE_SOURCE_FLOOR"||successor.source_floor_commit!=="67dc40e8b78ed8566d598a2aa87b52536a534878"||successor.actual_source_commit!==null||successor.actual_source_commit_must_equal_or_descend_from_floor!==true){fail("TASK-2026-0012 carrier-capable source floor mismatch");}
+      if(!task12.evidence_constraints||task12.evidence_constraints.old_task0011_unsigned_ipa_source_commit!=="32115e32d701e783af2c2659a900e4bc90460fd2"||task12.evidence_constraints.old_package_may_satisfy_packet_tunnel_runtime!==false||task12.evidence_constraints.metadata_only_refresh_allowed!==false){fail("TASK-2026-0012 old package exclusion mismatch");}
+      if(pkg.claims_state.schema!=="stegverse.org-claims/v1"||pkg.queue_state.schema!=="stegverse.org-queue/v1"){fail("portable allocator predecessor state schema mismatch");}
+      if(pkg.claims_state.generation!==2||!Array.isArray(pkg.claims_state.claims)||pkg.claims_state.claims.length!==0){fail("portable allocator predecessor claim state mismatch");}
+      return pkg;
+    }
     if(ids==="TASK-2026-0011"){
       var exact11={
         allocator_git_blob_sha:"7c0105c8529b682c24a94b39ba31a8ca574c3717",

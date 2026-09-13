@@ -1,0 +1,83 @@
+{
+  "schema": "stegverse.org-task/v0.2",
+  "task_id": "TASK-2026-0012",
+  "organization": "StegVerse-Labs",
+  "goal": "Refresh the existing current-iPhone KV-bound StegOS TestFlight package from a carrier-capable StegOS source lineage so DeviceContinuityPacketTunnel can be authentically observed, without widening or rewriting the frozen TASK-2026-0011 generation-7/fence-7 claim.",
+  "status": "queued",
+  "requested_at": "2026-09-13T23:40:00Z",
+  "priority_class": "release",
+  "requirements": {
+    "mandatory": [
+      {
+        "repository": {"host": "github.com", "owner": "StegVerse-Labs", "name": "Site", "full_name": "StegVerse-Labs/Site", "default_branch": "main"},
+        "mode": "scoped_exclusive",
+        "preemptible": true,
+        "scope": {
+          "paths": [
+            "stegos-bootstrap/StegOSMobile-unsigned-device.ipa",
+            "stegos-bootstrap/StegOSMobile-unsigned-device-manifest.json",
+            "stegos-bootstrap/current-iphone-unsigned-ipa-materializer.js",
+            "stegos-bootstrap/current-iphone-kv-testflight.html",
+            "stegos-bootstrap/current-iphone-kv-testflight-bootstrap.js",
+            "docs/CURRENT_IPHONE_KV_TESTFLIGHT_STATIC_BOOTSTRAP_MIRROR_HANDOFF.md",
+            "data/tasks/SITE-CURRENT-IPHONE-KV-TESTFLIGHT-STATIC-BOOTSTRAP.json",
+            "data/task0012-product-source-transport.request.json"
+          ],
+          "contracts": ["stegos.kv-bound-ephemeral-projection-context/v1"],
+          "release_surfaces": ["site:current-iphone-kv-testflight-static-bootstrap"],
+          "capabilities": ["current-iphone-kv-testflight-entry", "kv-bound-ephemeral-projection-gate", "carrier-capable-stegos-unsigned-ipa"],
+          "workflows": [],
+          "dependency_surfaces": ["site:current-iphone-kv-testflight-static-bootstrap"]
+        }
+      }
+    ],
+    "optional": []
+  },
+  "dependencies": [],
+  "workspace": {"branch": "claim/current-iphone-kv-testflight-carrier-capable-r1", "merge_target": "main", "direct_push_allowed": false, "pull_request_required": true},
+  "supersedes": "TASK-2026-0011",
+  "predecessor_provenance": {
+    "allocator_task": "TASK-2026-0011",
+    "allocator_generation": 7,
+    "allocator_fence": 7,
+    "reactivation_or_scope_widening_allowed": false,
+    "disposition": "FROZEN_TASK0011_PACKAGE_RETAINED_AS_PROVENANCE; SUCCESSOR_REQUIRED_BECAUSE_ACTUAL_UNSIGNED_IPA_SOURCE_32115E32_DIVERGES_FROM_CARRIER_CAPABLE_SOURCE_LINEAGE"
+  },
+  "source_successor": {
+    "repository": "StegVerse-Labs/StegOS",
+    "source_identity_requirement": "CARRIER_CAPABLE_SOURCE_FLOOR",
+    "source_floor_commit": "67dc40e8b78ed8566d598a2aa87b52536a534878",
+    "actual_source_commit": null,
+    "actual_source_commit_must_equal_or_descend_from_floor": true,
+    "entry_source": "mobile/web-bootstrap/current-iphone-testflight.html",
+    "bootstrap_source": "mobile/web-bootstrap/current-iphone-testflight-bootstrap.js",
+    "unsigned_ipa_source": "mobile/web-bootstrap/StegOSMobile-unsigned-device.ipa",
+    "unsigned_ipa_manifest_source": "mobile/web-bootstrap/StegOSMobile-unsigned-device-manifest.json",
+    "unsigned_ipa_materializer_source": "mobile/web-bootstrap/current-iphone-unsigned-ipa-materializer.js",
+    "kv_validator_source": "mobile/web-bootstrap/kv-bound-ephemeral-projection-context.js",
+    "kv_file_loader_source": "mobile/web-bootstrap/kv-projection-file-loader.js",
+    "shared_static_predecessor_task": "TASK-2026-0011",
+    "unsigned_ipa_sha256": null,
+    "unsigned_ipa_bytes": null
+  },
+  "destination_issue": "StegVerse-Labs/Site#1220",
+  "authority": {
+    "heartbeat_grants_claim_authority": false,
+    "workercoordinator_authority_owner": "StegVerse-Labs/.github WorkerCoordinator",
+    "credential_authority": "TV/TVC",
+    "user_verification_authority": "KV/SKAP Vault",
+    "device_user_verification_authority": "NONE",
+    "github_token_runtime_authority": "NONE",
+    "site_mutation_authority_before_fresh_claim": false,
+    "runtime_execution_inferred": false,
+    "second_user_operated_device_required": false,
+    "render_fallback_allowed": false
+  },
+  "evidence_constraints": {
+    "old_task0011_unsigned_ipa_source_commit": "32115e32d701e783af2c2659a900e4bc90460fd2",
+    "old_task0011_unsigned_ipa_sha256": "557d559082bdefca5fcc69c86f342d8cc035c2d803d154de5ed45b5677f80c35",
+    "old_package_may_satisfy_packet_tunnel_runtime": false,
+    "metadata_only_refresh_allowed": false,
+    "source_or_ci_may_satisfy_runtime_observation": false
+  }
+}
