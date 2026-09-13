@@ -15,8 +15,8 @@ TASK_ID = "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001"
 MODE = "TVC_EXACT_SOURCE_PROMOTION_REQUEST"
 ENTRYPOINT = "control/resident-execution-request.d/consume-stegbrowser-tvc-source-promotion.py"
 SOURCE_REPOSITORY = "StegVerse-Labs/TVC"
-TARGET_SHA = "4c78f8653b8a5899350479d57c58e936b50e023a"
-MATERIALIZATION_ID = "stegbrowser-tvc-runtime-4c78f865"
+TARGET_SHA = "aef6b6f5dc99d2a531718ca475d20858ae8e68a6"
+MATERIALIZATION_ID = "stegbrowser-tvc-runtime-aef6b6f5"
 
 
 def _load(path: Path) -> dict[str, Any]:
