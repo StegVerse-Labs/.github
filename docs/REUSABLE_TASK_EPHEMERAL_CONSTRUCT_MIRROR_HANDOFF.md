@@ -15,11 +15,14 @@ Make every reusable task a durable identity whose invocation-specific parameters
 - `scripts/trigger_reusable_task.py`
 - `scripts/run_ecosystem_continuity_reusable_task.py`
 - `workers/reusable_task_lifecycle.py`
+- `workers/reusable_task_master_records_roundtrip.py`
 - `workers/finalize_reusable_task_entropy.py`
 - `scripts/refresh_sovereign_worker_runtime_source.py`
 - `data/task-coordination-policy.json`
 - `management/COSV_PROFILE_V1.json`
 - `StegVerse-Labs/StegScholar:papers/rtg-gtg-tt/cross-layer-contract.md`
+- `master-records/orchestration:scripts/ingest_reusable_task_lifecycle.py`
+- `master-records/orchestration:scripts/reconstruct_reusable_task_lifecycle.py`
 
 ## Durable / ephemeral invariant
 
@@ -55,8 +58,13 @@ valid reusable-task trigger
 -> observe runner process return / expiry
 -> create non-executing residual recording construct
 -> create source-only Master Records custody/reconstruction request
--> stop for independent destination custody/reconstruction
--> after an authentic Master Records destination record is returned, finalize entropy recovery
+-> if existing local master-records/orchestration source is available:
+     invoke destination-owned custody ingestion
+     invoke destination-owned reconstruction
+     require reconstructed request bytes == source request bytes
+     validate returned destination custody record
+     emit entropy-recovery receipt
+-> otherwise stop at the exact Master Records runtime/source boundary
 ```
 
 The automation driver does not create a scheduler, WorkerCoordinator, claim/fence path, credential route, InTr authority, provider authority, or Master Records authority. Exit code zero alone remains insufficient. Existing reusable runners that do not emit the standardized result continue to stop at `COMPLETION_PREDICATES_REQUIRE_EVIDENCE_RECONCILIATION`.
@@ -90,7 +98,10 @@ durable reusable identity
 -> residual non-executing recording construct
 -> required scoped recording
 -> source custody/reconstruction request
--> independent Master Records validation + destination record
+-> existing local master-records/orchestration destination ingestion
+-> independent Master Records custody record
+-> exact request-byte reconstruction
+-> source verifies exact reconstructed bytes + destination record
 -> entropy recovery
 ```
 
@@ -98,17 +109,23 @@ durable reusable identity
 
 After runner expiry, the remaining construct has no original execution purpose and no provider-operation, credential-acquisition, claim/fence, self-extension, or transition authority. It preserves invocation identity and manifest binding, carries the receipt chain and required recording levels, and remains until independent Master Records custody/reconstruction is returned.
 
-## Master Records boundary
+## Master Records integration
 
-The source request schema is `stegverse.reusable-task-master-records-custody-request/v1`. The source side must leave destination acceptance and acknowledgement false.
+The runtime destination is the already-required and already-local `master-records/orchestration` repository used by the ECE sandbox. No new Master Records runtime root is introduced.
 
-The corresponding independent destination validator is developed in `master-records/core-lite` and returns `master-records.reusable-task-lifecycle-custody/v1` only after validating the exact manifest, trigger, runner-result, runner-expiry, residual-recording, hashes, completion predicates, recording coverage, and non-authority fields.
+The source request schema is `stegverse.reusable-task-master-records-custody-request/v1`. The source side leaves destination acceptance and acknowledgement false.
+
+`workers/reusable_task_master_records_roundtrip.py` does not validate on behalf of Master Records and does not mint destination state. It resolves the already-local `master-records/orchestration` root from `STEGVERSE_REPO_ROOTS_JSON`, invokes the destination-owned ingest and reconstruction scripts, and verifies that reconstructed request bytes exactly equal the source request bytes before returning the destination record to the lifecycle verifier.
+
+The destination scripts independently validate the exact manifest, trigger, runner-result, runner-expiry, residual-recording, hashes, completion predicates, recording coverage, and non-authority fields before retaining exact source bytes and emitting `master-records.reusable-task-lifecycle-custody/v1`.
 
 Source request != destination custody acceptance. Matching hashes != truth. The `.github` lifecycle cannot self-mint the Master Records record.
 
+The separately merged `master-records/core-lite` PR #39 remains a validated reference implementation of the same custody contract; it is not a new ECE runtime dependency.
+
 ## Entropy recovery
 
-`workers/finalize_reusable_task_entropy.py` accepts the independent Master Records destination record and emits entropy recovery only after verifying:
+Entropy recovery is emitted only after:
 
 - runner expiry;
 - required recording-level coverage;
@@ -117,14 +134,17 @@ Source request != destination custody acceptance. Matching hashes != truth. The 
 - destination custody acceptance;
 - destination acknowledgement;
 - independent validation;
-- reconstruction confirmation; and
+- reconstruction confirmation;
+- exact reconstructed request-byte equality; and
 - absence of execution/runtime/publication authority escalation.
 
 Entropy recovery displaces only the residual non-executing construct. It does not delete required evidence or Master Records history and does not reactivate the original runner.
 
 ## Resident propagation
 
-The existing local-only WorkerCoordinator source refresher carries the reusable-task registry, construct contract, constructor, and trigger explicitly. The lifecycle closure implementation and entropy finalizer live under `workers/`, which that same refresher already propagates recursively. No second source-distribution plane is introduced.
+The existing local-only WorkerCoordinator source refresher carries the reusable-task registry, construct contract, constructor, and trigger explicitly. The lifecycle closure, Master Records roundtrip adapter, and entropy finalizer live under `workers/`, which that same refresher already propagates recursively. No second source-distribution plane is introduced.
+
+The ECE resident runtime already requires `master-records/orchestration` in its local repository-root map. Missing local source continues to fail closed; the lifecycle performs no GitHub/network fetch during resident execution.
 
 ## Authority boundaries
 
@@ -137,25 +157,21 @@ The existing local-only WorkerCoordinator source refresher carries the reusable-
 - Trigger driver: non-authorizing dependency orchestration
 - GitHub token runtime authority: `NONE`
 
-## Work completed in the current source change
+## Work completed
 
-- Added standardized manifest-bound runner-result validation.
-- Added runner process-return/expiry receipt construction.
-- Added residual non-executing recording construction.
-- Added source-only Master Records custody/reconstruction request construction.
-- Added independent Master Records destination-record verification and entropy finalization.
-- Bound the existing ECE reusable runner to emit the standardized result only after its real underlying ECE cycle returns `COMPLETE`.
-- Preserved the previous evidence-reconciliation boundary for runners that do not emit standardized completion evidence.
-- Kept lifecycle closure code on the already-propagated resident `workers/` source surface.
+- PR #1690 merged the standardized manifest-bound runner result, runner expiry, residual recording, source custody request, entropy verifier/finalizer, and ECE reusable-result binding into `.github` at `46686bb4e83f2788cacc614594a875c175e0b78b` after Organization Control, Deterministic, and Heartbeat exact-head validation passed.
+- `master-records/core-lite` PR #39 merged a separately validated reference implementation of independent lifecycle custody at `be0d08d73c96f50308991793327522dc01304657`.
+- The follow-up source now binds the generic lifecycle to the actual existing ECE runtime Master Records owner: `master-records/orchestration`.
+- Added a resident-propagated roundtrip adapter that reuses the existing repository-root map and verifies destination reconstruction byte-for-byte.
+- Extended the reusable trigger so an authentic standardized result can continue through machine-admissible Master Records custody/reconstruction and entropy recovery without manual intermediate coordination.
+- Preserved the previous evidence-reconciliation boundary for reusable runners that do not emit standardized completion evidence.
 
 ## Work remaining to satisfy the goal
 
-1. Validate and merge the `.github` lifecycle closure source and the independent `master-records/core-lite` custody validator.
-2. Have the ecosystem execute one authentic `RT-ECOSYSTEM-CONTINUITY-EVALUATION-001` invocation through its existing resident/sandbox path.
-3. Retain the manifest, trigger, standardized runner result, runner-expiry receipt, and residual-recording artifact from that same invocation.
-4. Deliver that invocation's exact source custody request to Master Records through the ecosystem's existing custody transport.
-5. Observe the independently minted Master Records destination custody/reconstruction record for the same request/evidence hashes.
-6. Feed that destination record to the resident entropy finalizer and retain the resulting entropy-recovery receipt.
-7. Reconstruct the complete receipt chain without inferred links.
+1. Validate and merge the new `master-records/orchestration` lifecycle ingest/reconstruction source.
+2. Validate and merge the `.github` resident roundtrip integration.
+3. Allow the existing hourly Healer scheduler to execute one authentic `RT-ECOSYSTEM-CONTINUITY-EVALUATION-001` resident/sandbox invocation using the merged sources.
+4. Retain, from that same invocation, the manifest, trigger receipt, standardized runner result, runner-expiry receipt, residual-recording artifact, Master Records source request, destination custody record, exact reconstructed request bytes, and entropy-recovery receipt.
+5. Verify the retained chain has no inferred or substituted links.
 
-Until those remaining items are performed, the task still lacks the runtime information required for quantitative performance/load assessment.
+Quantitative performance/load assessment should be repeated only after those runtime artifacts exist.

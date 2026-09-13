@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 from workers import reusable_task_lifecycle as lifecycle
+from workers import reusable_task_master_records_roundtrip as master_records_roundtrip
 
 REGISTRY = ROOT / "data" / "reusable-task-registry.json"
 CONSTRUCTOR = ROOT / "scripts" / "materialize_reusable_task_construct.py"
@@ -115,6 +116,7 @@ def main() -> None:
     expiry_path = receipt_path.with_name(f"{args.invocation_id}.runner-expiry.json")
     residual_path = receipt_path.with_name(f"{args.invocation_id}.residual-recording.json")
     custody_request_path = receipt_path.with_name(f"{args.invocation_id}.master-records-request.json")
+    entropy_path = receipt_path.with_name(f"{args.invocation_id}.entropy-recovery.json")
     write_json(manifest_path, manifest)
 
     runners = definition.get("runner_templates", [])
@@ -143,12 +145,7 @@ def main() -> None:
 
     if not runners:
         receipt["state"] = "BOUNDARY_RECORDED"
-        receipt["boundary"] = {
-            "kind": BOUNDARY_NO_RUNNER,
-            "reason": "Reusable identity has no executable runner entrypoint.",
-            "manual_intermediate_coordination_required": False,
-            "required_next_binding": "DECLARE_OR_REUSE_AN_EXISTING_MACHINE_EXECUTABLE_RUNNER_ENTRYPOINT",
-        }
+        receipt["boundary"] = {"kind": BOUNDARY_NO_RUNNER, "reason": "Reusable identity has no executable runner entrypoint.", "manual_intermediate_coordination_required": False, "required_next_binding": "DECLARE_OR_REUSE_AN_EXISTING_MACHINE_EXECUTABLE_RUNNER_ENTRYPOINT"}
         receipt["continuation"] = "AUTOMATION_STOPS_HERE_UNTIL_EXECUTABLE_BINDING_EXISTS"
         write_json(receipt_path, receipt)
         print(json.dumps(receipt, indent=2, sort_keys=True))
@@ -158,12 +155,7 @@ def main() -> None:
     for ref in runner_refs:
         if not safe_runner_path(ref).is_file():
             receipt["state"] = "BOUNDARY_RECORDED"
-            receipt["boundary"] = {
-                "kind": BOUNDARY_MISSING_RUNNER,
-                "runner_ref": ref,
-                "reason": "A declared runner dependency is not present in the materialized runtime source.",
-                "manual_intermediate_coordination_required": False,
-            }
+            receipt["boundary"] = {"kind": BOUNDARY_MISSING_RUNNER, "runner_ref": ref, "reason": "A declared runner dependency is not present in the materialized runtime source.", "manual_intermediate_coordination_required": False}
             receipt["continuation"] = "MATERIALIZE_DECLARED_RUNNER_DEPENDENCY_THEN_RETRIGGER"
             write_json(receipt_path, receipt)
             print(json.dumps(receipt, indent=2, sort_keys=True))
@@ -172,11 +164,7 @@ def main() -> None:
     primary_ref = runner_refs[0]
     primary_runner = safe_runner_path(primary_ref)
     receipt["primary_runner_ref"] = primary_ref
-    receipt["effective_runner_ref"] = (
-        "scripts/consume_native_email_action_monitor_request_kv.py"
-        if primary_ref == NATIVE_EMAIL_PRIMARY
-        else primary_ref
-    )
+    receipt["effective_runner_ref"] = "scripts/consume_native_email_action_monitor_request_kv.py" if primary_ref == NATIVE_EMAIL_PRIMARY else primary_ref
     receipt["runner_dependency_refs"] = runner_refs[1:]
 
     env = os.environ.copy()
@@ -191,31 +179,12 @@ def main() -> None:
         env["STEGVERSE_REUSABLE_TASK_TRACKING_COSV"] = args.cosv_task_vector or ""
 
     command = build_runner_command(primary_ref, primary_runner, parameters)
-    completed = subprocess.run(
-        command,
-        cwd=ROOT,
-        env=env,
-        text=True,
-        capture_output=True,
-        check=False,
-    )
-    receipt["automatic_steps_attempted"].append({
-        "runner_ref": receipt["effective_runner_ref"],
-        "command": command,
-        "returncode": completed.returncode,
-        "stdout_tail": completed.stdout[-4000:],
-        "stderr_tail": completed.stderr[-4000:],
-    })
+    completed = subprocess.run(command, cwd=ROOT, env=env, text=True, capture_output=True, check=False)
+    receipt["automatic_steps_attempted"].append({"runner_ref": receipt["effective_runner_ref"], "command": command, "returncode": completed.returncode, "stdout_tail": completed.stdout[-4000:], "stderr_tail": completed.stderr[-4000:]})
 
     if completed.returncode != 0:
         receipt["state"] = "BOUNDARY_RECORDED"
-        receipt["boundary"] = {
-            "kind": BOUNDARY_RUNNER_FAILED,
-            "runner_ref": receipt["effective_runner_ref"],
-            "returncode": completed.returncode,
-            "reason": "Primary declared runner stopped before completion.",
-            "manual_intermediate_coordination_required": False,
-        }
+        receipt["boundary"] = {"kind": BOUNDARY_RUNNER_FAILED, "runner_ref": receipt["effective_runner_ref"], "returncode": completed.returncode, "reason": "Primary declared runner stopped before completion.", "manual_intermediate_coordination_required": False}
         receipt["continuation"] = "RESOLVE_RECORDED_RUNNER_BOUNDARY_THEN_RETRIGGER_OR_CONTINUE_INDEPENDENT_WORK"
         write_json(receipt_path, receipt)
         print(json.dumps(receipt, indent=2, sort_keys=True))
@@ -223,59 +192,50 @@ def main() -> None:
 
     if not result_path.is_file():
         receipt["state"] = "AUTOMATABLE_STEPS_EXHAUSTED"
-        receipt["boundary"] = {
-            "kind": BOUNDARY_COMPLETE,
-            "reason": "Primary runner returned successfully without standardized completion evidence.",
-            "manual_intermediate_coordination_required": False,
-        }
+        receipt["boundary"] = {"kind": BOUNDARY_COMPLETE, "reason": "Primary runner returned successfully without standardized completion evidence.", "manual_intermediate_coordination_required": False}
         receipt["continuation"] = "RECONCILE_DECLARED_COMPLETION_EVIDENCE_AND_CONTINUE_DEPENDENT_WORK_WHEN_SATISFIED"
         write_json(receipt_path, receipt)
         print(json.dumps(receipt, indent=2, sort_keys=True))
         return
 
     result = lifecycle.load_json(result_path)
-    lifecycle.validate_runner_result(
-        result,
-        invocation_id=args.invocation_id,
-        reusable_task_id=args.reusable_task_id,
-        manifest_hash=manifest["manifest_hash"],
-        completion_predicates=completion_predicates,
-    )
-    expiry = lifecycle.build_runner_expiry(
-        invocation_id=args.invocation_id,
-        reusable_task_id=args.reusable_task_id,
-        manifest_hash=manifest["manifest_hash"],
-        runner_ref=receipt["effective_runner_ref"],
-        returncode=completed.returncode,
-        result=result,
-    )
-    residual = lifecycle.build_residual_recording(
-        manifest=manifest,
-        runner_result=result,
-        runner_expiry=expiry,
-    )
+    lifecycle.validate_runner_result(result, invocation_id=args.invocation_id, reusable_task_id=args.reusable_task_id, manifest_hash=manifest["manifest_hash"], completion_predicates=completion_predicates)
+    expiry = lifecycle.build_runner_expiry(invocation_id=args.invocation_id, reusable_task_id=args.reusable_task_id, manifest_hash=manifest["manifest_hash"], runner_ref=receipt["effective_runner_ref"], returncode=completed.returncode, result=result)
+    residual = lifecycle.build_residual_recording(manifest=manifest, runner_result=result, runner_expiry=expiry)
     write_json(expiry_path, expiry)
     write_json(residual_path, residual)
+
     receipt["state"] = "RUNTIME_EVIDENCE_RECONCILED"
-    receipt["boundary"] = {
-        "kind": BOUNDARY_MASTER_RECORDS,
-        "reason": "Runner completion evidence and expiry were observed; independent Master Records custody and reconstruction are required before entropy recovery.",
-        "manual_intermediate_coordination_required": False,
-    }
+    receipt["boundary"] = {"kind": BOUNDARY_MASTER_RECORDS, "reason": "Independent Master Records custody and reconstruction are the next required machine-admissible step.", "manual_intermediate_coordination_required": False}
     receipt["runner_result_ref"] = str(result_path)
     receipt["runner_expiry_ref"] = str(expiry_path)
     receipt["residual_recording_ref"] = str(residual_path)
-    receipt["continuation"] = "SUBMIT_EXACT_CUSTODY_REQUEST_TO_MASTER_RECORDS_THEN_FINALIZE_ENTROPY_AFTER_DESTINATION_RECONSTRUCTION"
+    receipt["continuation"] = "RUN_MASTER_RECORDS_CUSTODY_RECONSTRUCTION"
     write_json(receipt_path, receipt)
-    custody_request = lifecycle.build_custody_request(
-        manifest=manifest,
-        trigger_receipt=receipt,
-        runner_result=result,
-        runner_expiry=expiry,
-        residual_recording=residual,
-    )
+
+    custody_request = lifecycle.build_custody_request(manifest=manifest, trigger_receipt=receipt, runner_result=result, runner_expiry=expiry, residual_recording=residual)
     write_json(custody_request_path, custody_request)
     receipt["master_records_custody_request_ref"] = str(custody_request_path)
+
+    roundtrip = master_records_roundtrip.execute(custody_request_path)
+    receipt["automatic_steps_attempted"].append({"step":"MASTER_RECORDS_CUSTODY_RECONSTRUCTION","state":roundtrip.get("state"),"reason":roundtrip.get("reason"),"authority_effect":roundtrip.get("authority_effect")})
+    if roundtrip.get("state") != "RETURNED" or not isinstance(roundtrip.get("record"), dict):
+        receipt["state"] = "BOUNDARY_RECORDED"
+        receipt["boundary"] = {"kind": BOUNDARY_MASTER_RECORDS, "reason": roundtrip.get("reason") or "Master Records custody/reconstruction did not return a destination record.", "manual_intermediate_coordination_required": False}
+        receipt["continuation"] = "RETRY_AFTER_MASTER_RECORDS_RUNTIME_BINDING_OR_DESTINATION_SOURCE_IS_AVAILABLE"
+        write_json(receipt_path, receipt)
+        print(json.dumps(receipt, indent=2, sort_keys=True))
+        return
+
+    custody_record = roundtrip["record"]
+    entropy = lifecycle.build_entropy_recovery(manifest=manifest, runner_expiry=expiry, residual_recording=residual, custody_request=custody_request, custody_record=custody_record)
+    write_json(entropy_path, entropy)
+    receipt["state"] = "ENTROPY_RECOVERY_RECORDED"
+    receipt["boundary"] = None
+    receipt["master_records_custody_ref"] = roundtrip.get("custody_ref")
+    receipt["master_records_reconstructed_request_ref"] = roundtrip.get("reconstructed_ref")
+    receipt["entropy_recovery_ref"] = str(entropy_path)
+    receipt["continuation"] = "NONE_FOR_THIS_INVOCATION"
     write_json(receipt_path, receipt)
     print(json.dumps(receipt, indent=2, sort_keys=True))
 
