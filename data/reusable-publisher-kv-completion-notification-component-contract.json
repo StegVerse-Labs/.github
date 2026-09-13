@@ -4,7 +4,7 @@
   "reusable_task_id": "RT-PUBLISHER-KV-COMPLETION-NOTIFY-001",
   "family": "release_propagation",
   "name": "Publisher KV Publication and GitHub Completion Notification",
-  "capability_provided": "publish_finished_documentation_into_kv_then_emit_github_completion_notification_with_kv_files_link_and_task_block",
+  "capability_provided": "publish_finished_documentation_into_kv_then_emit_github_completion_notification_with_kv_files_link_and_task_block_and_track_resulting_github_email_in_kv",
   "inputs": [
     "completed_goal_task_identity",
     "finished_publisher_documentation_artifacts",
@@ -20,7 +20,8 @@
     "kv_publication_receipt",
     "kv_file_manifest",
     "kv_link",
-    "github_completion_notification_request"
+    "github_completion_notification_request",
+    "kv_github_email_tracking_record"
   ],
   "preconditions": [
     "publisher_documentation_complete_and_hash_bound",
@@ -28,7 +29,8 @@
     "current_Interlock_InTr_admission_required_for_KV_write",
     "KV_SKAP_Vault_remains_sole_user_verification_authority",
     "TV_TVC_required_for_GitHub_provider_operation",
-    "github_notification_must_not_emit_before_successful_KV_write_receipt"
+    "github_notification_must_not_emit_before_successful_KV_write_receipt",
+    "KV_email_monitor_runtime_state_must_be_observed_before_claiming_email_tracking_complete"
   ],
   "execution_order": [
     "PUBLISHER_FINISHED_ARTIFACTS_BOUND",
@@ -36,7 +38,9 @@
     "INTERLOCK_INTR_KV_WRITE_ADMITTED",
     "KV_FILES_WRITTEN_AND_READBACK_VERIFIED",
     "KV_PUBLICATION_RECEIPT_RETAINED",
-    "GITHUB_COMPLETION_NOTIFICATION_REQUESTED"
+    "GITHUB_COMPLETION_NOTIFICATION_REQUESTED",
+    "KV_EMAIL_MONITOR_OBSERVES_GITHUB_EMAIL",
+    "KV_GITHUB_EMAIL_TRACKING_RECORD_RETAINED"
   ],
   "notification_contract": {
     "provider": "GITHUB",
@@ -57,6 +61,34 @@
     "kv_link": "stable resolvable link/reference returned by the successful KV publication step",
     "email_delivery": "GITHUB_NOTIFICATION_EMAIL_SUBJECT_TO_ACCOUNT_NOTIFICATION_SETTINGS"
   },
+  "kv_email_monitor_contract": {
+    "monitor_owner": "KV",
+    "monitor_runtime_state": "MUST_BE_AUTHENTICALLY_OBSERVED; source configuration alone does not prove ACTIVE",
+    "provider_scope": "GITHUB",
+    "tracking_scope": [
+      "ERROR",
+      "FAILURE",
+      "NON_ERROR",
+      "NON_FAILURE",
+      "SUCCESS",
+      "COMPLETION",
+      "INFORMATIONAL"
+    ],
+    "required_behavior": "GitHub emails that are not errors or failures must still be retained/indexed for task and publication tracking rather than discarded as non-actionable",
+    "completion_email_binding": [
+      "goal_task_id",
+      "handoff_task_id",
+      "cosv_id",
+      "status",
+      "kv_file_manifest",
+      "kv_link",
+      "github_message_or_thread_identity",
+      "received_at_or_provider_timestamp"
+    ],
+    "tracking_record_semantics": "observational/indexing only; email receipt or classification does not authorize a state transition",
+    "duplicate_semantics": "deduplicate by stable provider message identity when available; otherwise use normalized immutable email digest plus account scope",
+    "retention_semantics": "retain non-error/non-failure GitHub emails needed to reconstruct completion/publication history"
+  },
   "expected_evidence": [
     "PUBLISHER_FINAL_ARTIFACT_SET_HASH_BOUND",
     "KV_WRITE_INTR_ADMISSION_RECEIPT",
@@ -64,12 +96,16 @@
     "KV_PUBLICATION_RECEIPT_RETAINED",
     "KV_FILE_MANIFEST_RETAINED",
     "KV_LINK_RETAINED",
-    "GITHUB_COMPLETION_NOTIFICATION_PROVIDER_RECEIPT"
+    "GITHUB_COMPLETION_NOTIFICATION_PROVIDER_RECEIPT",
+    "KV_EMAIL_MONITOR_ACTIVE_OBSERVED",
+    "GITHUB_COMPLETION_EMAIL_OBSERVED_BY_KV",
+    "KV_GITHUB_EMAIL_TRACKING_RECORD_RETAINED"
   ],
   "authority_owner": {
     "publisher_rendering": "Publisher",
     "governed_state_transition": "Interlock/InTr",
     "user_verification": "KV/SKAP Vault",
+    "email_observation_and_tracking": "KV",
     "provider_credential_and_GitHub_mutation": "TV/TVC",
     "observed_reality_custody_reconstruction": "Master Records",
     "coordination": "Task Registry"
@@ -82,20 +118,25 @@
     "KV_WRITE_READBACK_MISMATCH",
     "KV_LINK_UNAVAILABLE",
     "GITHUB_NOTIFICATION_PROVIDER_DENIED",
-    "GITHUB_NOTIFICATION_NOT_DELIVERED_BY_ACCOUNT_SETTINGS"
+    "GITHUB_NOTIFICATION_NOT_DELIVERED_BY_ACCOUNT_SETTINGS",
+    "KV_EMAIL_MONITOR_NOT_OBSERVED_ACTIVE",
+    "GITHUB_COMPLETION_EMAIL_NOT_OBSERVED",
+    "KV_GITHUB_EMAIL_TRACKING_BINDING_MISMATCH"
   ],
   "retry_or_reentry_semantics": {
     "kv_write": "idempotent_per_goal_task_artifact_digest_and_target_KV_path",
     "github_notification": "emit_once_after_verified_KV_publication_receipt; retry provider delivery without rewriting KV when the same publication receipt is retained",
-    "never": "do not send completion notification before verified KV publication"
+    "kv_email_tracking": "email-monitor retries must not resend the GitHub notification; reobserve/reindex the same provider message idempotently",
+    "never": "do not send completion notification before verified KV publication and do not claim email tracking complete without an observed KV email-monitor receipt"
   },
   "version_or_schema_binding": [
     "stegverse.reusable-task-component-contract/v1",
     "stegverse.publisher-kv-publication-request/v1",
     "stegverse.publisher-kv-publication-receipt/v1",
-    "stegverse.goal-task-completion-github-notification-request/v2"
+    "stegverse.goal-task-completion-github-notification-request/v2",
+    "stegverse.kv-github-email-tracking-record/v1"
   ],
-  "repeatability_cardinality": "optional reusable terminal component; at most once per completed Goal Task publication set unless a new artifact revision is explicitly declared",
+  "repeatability_cardinality": "optional reusable terminal component; at most once per completed Goal Task publication set unless a new artifact revision is explicitly declared; email tracking may reobserve idempotently",
   "required": false,
   "github_actions_runtime_authority": "NONE",
   "second_user_operated_device_required": false,
