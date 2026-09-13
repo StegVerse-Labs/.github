@@ -179,6 +179,26 @@ Authority is a role/property, not a boundary.
 
 Use **boundary** only for an actual limit, interface, containment edge, trust separation, consequence limit, or explicit transition/admission/reconciliation condition that constrains progression. Do not use `runtime boundary` or `authority boundary` as shorthand for the runtime or authority itself.
 
+### Reusable Task Component Model
+
+The **Reusable Task Component Model** decomposes repeated task-specific orchestration into reusable, non-authorizing capability components before scope ambiguity prevents progress. A canonical Goal Task retains its Task ID, COSV continuity, completion predicates, and evidence requirements; it declares the capabilities it needs and composes only those reusable components.
+
+Componentization is evaluated at Goal Task creation and again when scope changes. The decomposition policy watches for repeated subflows, multiple authority crossings, repeated round trips, cross-repository spread, duplicated generic adapter work, growing handoff sequences, branching remediation, independently reusable subprocesses, optional subprocesses, and independently provable evidence. When those signals exceed the defined threshold, the process requires component reuse/extraction before more task-specific orchestration is added unless an explicit justified exception applies.
+
+Reusable Task Components do not mint authority and do not replace canonical owners. Task Registry remains coordination only; WorkerCoordinator retains claim/fence authority; KV/SKAP Vault remains sole user-verification authority; StegOS devices remain interchangeable transport nodes; TV/TVC retains credential/provider/release authority; Interlock/InTr retains governed transition authority; Master Records retains custody/reconstruction authority; HeartBeat remains observability/timing/freshness/correlation only; GitHub has no runtime authority.
+
+Transport is the first materialized component family. Its full manifest -> governed processing -> round trips -> evidence/custody/reconstruction -> Publisher -> SDK return -> governed egress -> Interlock/InTr -> far-side final transition sequence is a maximal composition, not a mandatory pipeline. Each consuming Goal Task selects only the components it actually requires.
+
+Canonical model and decomposition sources:
+
+```text
+data/reusable-task-component-model.json
+data/reusable-task-component-decomposition-policy.json
+scripts/evaluate_reusable_task_componentization.py
+docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md
+data/reusable-transport-component-contract.json
+```
+
 ### Reusable task ephemeral constructs and entropy recovery
 
 Reusable tasks are durable identities, not permanently running task implementations. Each invocation binds invocation-specific parameters and derives the exact RTG -> GTG -> TT construct needed for that invocation from the canonical cross-layer definitions. The resulting manifest binds the reusable identity, parameters, optional tracked task ID + COSV vector, derived construct, runner plan, authority ceiling, dependencies, expected evidence, recording levels, expiry conditions, and entropy-recovery conditions.
