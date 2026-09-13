@@ -9,6 +9,7 @@ PROFILE = ROOT / "data/goal-task-component-profiles/GADI-001.json"
 EVALUATION = ROOT / "data/reusable-task-component-evaluations/GADI-001.json"
 MODEL = ROOT / "data/reusable-task-component-model.json"
 TRANSPORT = ROOT / "data/reusable-transport-component-contract.json"
+CLOSURE = ROOT / "data/canonical-task-records/GADI-RUNTIME-CLOSURE-001.json"
 
 
 class GADIReusableTaskComponentProfileTests(unittest.TestCase):
@@ -21,10 +22,20 @@ class GADIReusableTaskComponentProfileTests(unittest.TestCase):
         self.assertEqual(profile["task_id"], "GADI-001")
         self.assertEqual(profile["cosv_task_vector"], "10100000100000")
         self.assertEqual(evaluation["task_id"], "GADI-001")
-        self.assertGreaterEqual(evaluation["score"], 13)
+        self.assertEqual(evaluation["score"], 22)
         self.assertTrue(evaluation["componentization_required"])
         self.assertTrue(evaluation["must_stop_scope_growth"])
         self.assertEqual(evaluation["authority_effect"], "NONE_COORDINATION_ONLY")
+
+    def test_prompt_count_successor_is_not_independent_goal(self) -> None:
+        closure = self.load(CLOSURE)
+        self.assertEqual(closure["task_id"], "GADI-RUNTIME-CLOSURE-001")
+        self.assertEqual(closure["parent_task_id"], "GADI-001")
+        self.assertEqual(closure["root_correlation_id"], "GADI-001")
+        self.assertEqual(closure["coordination_state"], "SUPERSEDED")
+        self.assertFalse(closure["completion"]["claimed"])
+        self.assertEqual(closure["allowed_next_transitions"], [])
+        self.assertIn("data/goal-task-component-profiles/GADI-001.json", closure["source_refs"])
 
     def test_selected_reusable_transport_components_exist(self) -> None:
         profile = self.load(PROFILE)
