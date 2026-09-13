@@ -1,0 +1,48 @@
+{
+  "identity": "StegVerse-Labs/.github:task:SS-ERL-AUTHENTIC-INTR-EXECUTION-EVIDENCE-002",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "40000100100000",
+  "evidence_refs": [
+    "data/canonical-task-records/SS-ERL-AUTHENTIC-INTR-EXECUTION-EVIDENCE-002.json",
+    "docs/SS_ERL_AUTHENTIC_INTR_EXECUTION_EVIDENCE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github#1739@4ca1d9241b231ee021ba6c7a50e95783c556966e",
+    "StegVerse-Labs/.github#1743@8dc0cb6bcad609fb2a70a51a7b5c66b3b3fab752",
+    "control/portable-workercoordinator-packages/device-kv-intr-observation.json",
+    "workers/universal_intr_profiled_ingress.py",
+    "scripts/submit_erl_active_research_intr_binding_local.py",
+    "scripts/consume_device_kv_intr_materialization_request.py"
+  ],
+  "observed_at": "2026-09-13T14:50:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "ACTIVE",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 1,
+    "chat_owned_integration": 1,
+    "chat_owned_observation": 1,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false,
+    "device_confirmation_required": false,
+    "device_discovery_required": false,
+    "device_presence_probe_required": false,
+    "remote_device_connector_required": false
+  },
+  "metric_evidence": {
+    "lifecycle": "Source correction is merged and validated; this successor owns only authentic ERL three-hop execution, exact terminal KV readback, and Master Records evidence closure.",
+    "archive_ready": "Authentic task-bound Universal InTr and terminal evidence are not yet observed.",
+    "canonical_owner_installed": "The existing SHWP-DEVICE-KV-INTR-OBSERVATION-001 WorkerCoordinator-owned path is reused; no second owner is created.",
+    "blocker_count": "No source blocker is asserted. Remaining conditions are runtime evidence predicates with explicit execution paths.",
+    "evidence_complete": "False until the authentic three-hop chain, exact-byte KV readback, provider-proof binding, and Master Records reconstruction are observed.",
+    "activated": "False until authentic runtime evidence exists.",
+    "propagated": "Not applicable before evidence closure."
+  },
+  "authority_effect": "NONE"
+}
