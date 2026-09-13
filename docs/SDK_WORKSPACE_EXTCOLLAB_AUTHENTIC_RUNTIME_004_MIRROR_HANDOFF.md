@@ -34,6 +34,18 @@ The reusable lifecycle implementation is source-complete for the current runtime
 
 The existing `RT-ECOSYSTEM-CONTINUITY-EVALUATION-001` hourly schedule remains the single production scheduling path. GitHub Actions remain contract/validation transport only and are not production runtime evidence.
 
+## Post-merge canonical reconciliation
+
+`.github` PR #1706 was validated at exact head `67e21e777563d0c1f8e72b4817a766f49ff54e55` and merged to `main` as `0eeff82400ac697dd53814fa0e960459ae79cf21`.
+
+Validation evidence on the exact head:
+
+- Organization Control run `34737081784`: success.
+- Deterministic Repository Suite run `34737081787`: success.
+- Heartbeat Worker Project run `34737081832`: success.
+
+PR #1706 reconciled the canonical task record and this handoff with the already merged reusable-lifecycle work and the latest runtime observation. That merge changes canonical coordination/evidence state only; it does not create resident execution evidence or satisfy any authentic runtime predicate.
+
 ## Current source/runtime boundary
 
 Static source compatibility remains proven for `canonical-resident-substrate-v1` with `resident_request_dispatch`, `SOVEREIGN_RESIDENT`, `INTERNAL`, no mutation requirement, and no deployment requirement.
@@ -48,6 +60,7 @@ Source/component architecture: merged and validated.
 Reusable lifecycle source through entropy recovery: merged and validated.
 Healer scheduler terminal compatibility: merged and validated.
 Duplicate same-slot retry defect: repaired in merged source.
+Canonical reconciliation through PR #1706: merged and validated.
 Runtime-observation component: existing and reused; current connector-visible resident absent.
 Authentic post-merge `RT-ECOSYSTEM-CONTINUITY-EVALUATION-001` invocation: not observed.
 Same-invocation manifest -> runner result -> expiry -> residual -> Master Records custody/reconstruction -> entropy chain: not observed.
