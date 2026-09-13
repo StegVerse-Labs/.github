@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.entity-autonomous-governed-progression-contract/v1",
-  "updated_at": "2026-09-13T16:20:00-05:00",
+  "updated_at": "2026-09-13T16:34:00-05:00",
   "owner_repository": "StegVerse-Labs/.github",
   "handoff": "docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_MIRROR_HANDOFF.md",
   "authority_effect": "NONE_POLICY_ONLY",
@@ -27,10 +27,34 @@
     "prior_receipt_can_authorize_next_transition": false,
     "human_approval_default": false
   },
+  "work_selection_priority": {
+    "scope": "CURRENT_ROOT_GOAL_TASK_ONLY",
+    "first_priority_classes": [
+      "ECOSYSTEM_REPAIR",
+      "ECOSYSTEM_REMEDIATION",
+      "ECOSYSTEM_CANONICALIZATION",
+      "ECOSYSTEM_RECONCILIATION",
+      "REGRESSION_REPAIR"
+    ],
+    "semantic_fallback_tokens": [
+      "REPAIR",
+      "REMEDIAT",
+      "CANONICALIZ",
+      "RECONCIL",
+      "CORRECTION",
+      "REGRESSION",
+      "FIX"
+    ],
+    "generic_canonical_term_alone_is_priority_signal": false,
+    "priority_over_checkout_state": true,
+    "collision_and_governance_checks_still_required": true,
+    "authority_effect": "NONE_SELECTION_ORDER_ONLY"
+  },
   "machine_transition_loop": [
     "OBSERVE_CURRENT_CANONICAL_STATE",
     "CHECK_CURRENT_GOAL_TASK_COMPLETION_BEFORE_SELECTING_MORE_WORK",
     "IF_GOAL_TASK_COMPLETION_VALIDATED_STOP_AND_REQUEST_GITHUB_COMPLETION_NOTIFICATION",
+    "PRIORITIZE_GOAL_SCOPED_ECOSYSTEM_REPAIR_REMEDIATION_CANONICALIZATION_WORK",
     "SELECT_HIGHEST_PRIORITY_UNBLOCKED_NONDUPLICATE_GOAL_SCOPED_WORK",
     "PROPOSE_EXACT_NEXT_TRANSITION",
     "EVALUATE_CURRENT_INTERLOCK_GOVERNANCE",
@@ -76,6 +100,7 @@
       "DEDUPLICATE_EQUIVALENT_WORK",
       "RESOLVE_REPOSITORY_RUNTIME_AUTHORITY_AND_EVIDENCE_COLLISIONS",
       "REGROUP_PARALLEL_CAPABLE_WORK",
+      "PRIORITIZE_ECOSYSTEM_REPAIR_REMEDIATION_CANONICALIZATION",
       "SELECT_NEXT_ADMISSIBLE_NON_DUPLICATE_GOAL_SCOPED_WORK"
     ],
     "intermediate_state_is_internal_orchestration": [
