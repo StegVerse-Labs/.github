@@ -1,0 +1,18 @@
+{
+  "schema": "stegverse.rtc-manifest-source-binding/v1",
+  "task_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+  "cosv_task_vector": "40000100100000",
+  "component_id": "RTC-MANIFEST-001",
+  "binding_id": "stegbrowser-tvc-runtime-observer",
+  "component_role": "RUNTIME_OBSERVATION_EVIDENCE_ONLY",
+  "source_repository": "StegVerse-Labs/TVC",
+  "reference_mode": "IMMUTABLE_COMMIT",
+  "exact_sha": "4c78f8653b8a5899350479d57c58e936b50e023a",
+  "entrypoint": "scripts/observe_app_store_connect_skap_runtime.py",
+  "primary_runtime_source_pin_preserved": "aef6b6f5dc99d2a531718ca475d20858ae8e68a6",
+  "observer_source_revision_separate": true,
+  "authority_effect": "NONE_SOURCE_BINDING_ONLY",
+  "runtime_execution_granted": false,
+  "transition_authority_granted": false,
+  "credential_authority_granted": false
+}
