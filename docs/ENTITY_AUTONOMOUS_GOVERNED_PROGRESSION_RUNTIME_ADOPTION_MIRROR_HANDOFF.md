@@ -3,9 +3,10 @@
 Updated: 2026-09-13
 Repository: `StegVerse-Labs/.github`
 Parent Goal: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`
+Parent COSV: `10100000100000`
 Runtime-adoption task: `ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001`
 Issue: `#1766`
-State: `SOURCE_INGRESS_STAGING_IN_PROGRESS / AUTHENTIC_RUNTIME_ADOPTION_PENDING`
+State: `SOURCE_INGRESS_MERGED_CI_VALIDATED / AUTHENTIC_RUNTIME_ADOPTION_PENDING`
 Authority effect: `NONE`
 
 ## Purpose
@@ -33,22 +34,33 @@ human idea / query / goal
 -> continuation without human re-presentation
 ```
 
-This work therefore reuses the existing runtime-adoption identity instead of creating a duplicate self-build architecture.
+This work reuses the existing runtime-adoption identity instead of creating a duplicate self-build architecture.
 
-## Source changes in this continuation
+## Merged source evidence
 
-The following source staging is being added on branch `stegverse-self-build-runtime-adoption-001`:
+PR `#1768` merged to `main` at `1d7d49b3e440ab4393d0df8bc4de7fb29975d3b9`.
 
-- canonical task shard: `data/canonical-task-records/ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001.json`;
-- explicit resident Canonical Work request: `control/resident-execution-request.d/canonical-work-entity-autonomous-governed-progression-runtime-adoption-001.json`;
-- registration in the existing generalized `canonical_work_coordination` request consumer;
-- deterministic tests proving the new request uses the existing Canonical Work path and does not create another scheduler/runtime/credential/device dependency.
+Merged source surfaces:
 
-## Required runtime behavior
+- `data/canonical-task-records/ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001.json`;
+- `control/resident-execution-request.d/canonical-work-entity-autonomous-governed-progression-runtime-adoption-001.json`;
+- `control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py` registration via `AUTONOMOUS_PROGRESSION_SPEC`;
+- `tests/test_entity_autonomous_progression_canonical_work_ingress.py`;
+- `receipts/preflight/ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-CANONICAL-WORK-INGRESS-001.json`.
 
-The existing resident dispatcher must visit the ordinary `canonical_work_coordination` selector. The generalized consumer must then independently visit this request and use the existing `install_and_run_canonical_work_event_bootstrap.py` path.
+The initial exact-head validation exposed a missing mandatory `execution_substrate_resolution` in the new runtime-capable task registration. That registration defect was repaired without weakening the validator. Exact repair head `63d0ad8472fb8b5c0984b720e0758ddf0722c90c` then passed:
 
-Authentic progression remains:
+- organization control-plane validation run `34781803096`;
+- deterministic repository suite run `34781803151`;
+- heartbeat-worker validation run `34781803347`.
+
+These are source/CI evidence only and do not establish runtime adoption.
+
+## Runtime path now staged on main
+
+The existing resident dispatcher must visit the ordinary `canonical_work_coordination` selector. The generalized consumer can now independently visit this exact request and use the existing `install_and_run_canonical_work_event_bootstrap.py` path.
+
+Authentic progression is:
 
 ```text
 REQUESTED task
@@ -64,11 +76,17 @@ REQUESTED task
 -> next admissible machine-owned transition
 ```
 
+Expected first task-specific request-consumption evidence:
+
+```text
+receipts/sovereign-host/canonical-work-entity-autonomous-governed-progression-runtime-adoption-request-consumption.latest.json
+```
+
+The expected evidence must originate from the authentic existing runtime path. It may not be synthesized from source state, CI, merge state, heartbeat progression, or chat narration.
+
 ## Runtime completion predicate
 
-Source staging, CI, PR merge, dispatcher registration, request-file presence, or heartbeat progression are not runtime adoption.
-
-Runtime adoption requires one current goal chain to produce evidence for all of:
+`PRED-ENTITY-AUTONOMOUS-PROGRESSION-RUNTIME-ADOPTED` remains unsatisfied until one current goal chain produces evidence for all of:
 
 ```text
 machine_owned_transition_selected=true
@@ -96,14 +114,16 @@ human_reentry_for_intermediate_ids=false
 
 No README change is required for this bounded source addition. The repository README already documents autonomous governed entity progression, Canonical Work task ingress, per-transition governance, automatic machine-owned continuation, and the human-only stop boundary. This change stages the existing documented behavior through the existing generalized Canonical Work request set; it does not change those semantics.
 
-## Remaining work
+## Remaining machine work
 
-1. finish request-consumer registration and deterministic source tests;
-2. merge the source staging only if repository validation passes;
-3. allow the existing resident dispatcher/WorkerCoordinator/InTr path to consume the request;
-4. retain authentic runtime adoption receipts and reconstruction evidence;
-5. continue machine-owned StegVerse work from returned canonical state without human re-presentation;
-6. update this handoff with exact source and runtime evidence.
+1. existing resident dispatcher visits `canonical_work_coordination` and consumes the newly merged exact request;
+2. retain authentic task-specific request-consumption and Canonical Work / Interlock-InTr ingress evidence;
+3. WorkerCoordinator admits and claims/fences the task under current state where applicable;
+4. the entity progression consumer selects the next machine-owned StegVerse transition;
+5. current governance admits or denies it;
+6. retain execution/DENY evidence, reconstruct next state, and re-ingest returned Task/COSV/handoff state automatically;
+7. continue the next admissible machine-owned transition without human re-presentation;
+8. update this handoff with the exact authentic runtime evidence and only then satisfy the runtime-adoption predicate.
 
 ## Human action
 
