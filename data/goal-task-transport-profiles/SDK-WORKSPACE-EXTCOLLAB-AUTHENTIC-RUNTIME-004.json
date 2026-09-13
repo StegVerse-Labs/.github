@@ -3,6 +3,23 @@
   "task_id": "SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004",
   "cosv_task_vector": "71000000100110",
   "component_contract": "data/reusable-transport-component-contract.json",
+  "decomposition_evaluation": {
+    "score": 30,
+    "decision": "STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION",
+    "active_signals": [
+      "repeated_subflow",
+      "multiple_authority_crossings",
+      "multiple_round_trips",
+      "cross_repository_or_org_spread",
+      "task_specific_adapter_duplicates_generic_work",
+      "handoff_sequence_growth",
+      "failure_path_branching",
+      "independent_reusability",
+      "optional_subflow_present",
+      "independent_evidence_predicate"
+    ],
+    "authority_effect": "NONE_COORDINATION_ONLY"
+  },
   "transport_requirements": {
     "complete_manifest": true,
     "governed_processing": true,
@@ -14,30 +31,185 @@
       "authoritative_provider_file_probe"
     ],
     "evidence_custody_reconstruction": true,
-    "publisher_projection": true,
-    "sdk_return_assembly": true,
-    "stegverse_final_egress_transition": true,
+    "publisher_projection": "CONDITIONAL_ON_PUBLIC_DISTRIBUTION_STAGE",
+    "sdk_return_assembly": "CONDITIONAL_ON_VALIDATED_RETURN_STAGE",
+    "stegverse_final_egress_transition": "CONDITIONAL_ON_DISTRIBUTION_EGRESS_STAGE",
     "interlock_intr_transport": true,
-    "far_side_final_transition": true
+    "far_side_final_transition": "CONDITIONAL_ON_FAR_SIDE_DISTRIBUTION_STAGE"
   },
   "selected_components": [
     "RTC-MANIFEST-001",
     "RTC-GOVERNED-PROCESSING-002",
     "RTC-ROUNDTRIP-003",
     "RTC-EVIDENCE-CUSTODY-004",
-    "RTC-PUBLISHER-005",
+    "RTC-INTERLOCK-INTR-TRANSPORT-008"
+  ],
+  "conditional_components": [
     "RTC-SDK-RETURN-006",
+    "RTC-PUBLISHER-005",
     "RTC-STEGVERSE-EGRESS-007",
-    "RTC-INTERLOCK-INTR-TRANSPORT-008",
     "RTC-FARSIDE-FINAL-009"
   ],
-  "composition_rule": "The Goal Task consumes only the selected reusable transport components. Component selection does not mint authority and does not make omitted components mandatory for unrelated Goal Tasks.",
+  "component_bindings": [
+    {
+      "component": "runtime_observation",
+      "status": "EXISTING_CANONICAL_OWNER_REUSED",
+      "implementation_owner": "heartbeat_runtime/runtime_presence_projection.py",
+      "inputs": ["runtime_root", "resident.node_id", "canonical_workercoordinator_identity"],
+      "outputs": ["subject_bound_current_runtime_presence"],
+      "preconditions": ["existing_authorized_resident_connected"],
+      "authority_owner": "HeartBeat observability only",
+      "expected_evidence": ["receipts/sovereign-host/runtime-presence.latest.json"],
+      "cardinality": "REPEATABLE_OBSERVATION",
+      "failure_semantics": "NO_CURRENT_OBSERVATION_FAILS_CLOSED_WITHOUT_MINTING_AUTHORITY",
+      "applicability": "REQUIRED"
+    },
+    {
+      "component": "RTC-MANIFEST-001",
+      "status": "EXISTS_REUSED",
+      "inputs": ["complete_manifest", "task_id", "cosv_task_vector", "required_evidence_declaration"],
+      "outputs": ["validated_task_bound_manifest_context"],
+      "preconditions": ["task_identity_matches", "cosv_binding_matches_when_present"],
+      "authority_owner": "Task Registry coordination only",
+      "expected_evidence": ["manifest_validation_result", "task_cosv_binding"],
+      "cardinality": "ONCE_PER_INVOCATION",
+      "failure_semantics": "INVALID_OR_INCOMPLETE_MANIFEST_FAILS_CLOSED",
+      "applicability": "REQUIRED"
+    },
+    {
+      "component": "execution_materialization",
+      "status": "EXISTING_CANONICAL_CONTRACT_REUSED",
+      "implementation_owner": "data/reusable-task-ephemeral-construct-contract.json",
+      "inputs": ["validated_manifest_context", "already_local_canonical_source", "runtime_subject"],
+      "outputs": ["bounded_execution_candidate", "execution_boundary_receipt"],
+      "preconditions": ["authentic_current_runtime_presence", "WorkerCoordinator_claim_fence_when_execution_occurs"],
+      "authority_owner": "WorkerCoordinator claim/fence; Interlock/InTr for governed transitions",
+      "expected_evidence": ["claim_fence_receipt", "bounded_execution_receipt_or_exact_blocked_receipt"],
+      "cardinality": "REPEATABLE_FOR_DECLARED_RESIDENT_OPERATIONS",
+      "failure_semantics": "BLOCK_ON_EXACT_RUNTIME_OR_AUTHORITY_PREREQUISITE; NO_HOSTED_FALLBACK",
+      "applicability": "REQUIRED_AFTER_CURRENT_RUNTIME_PRESENCE"
+    },
+    {
+      "component": "RTC-INTERLOCK-INTR-TRANSPORT-008",
+      "status": "EXISTS_REUSED",
+      "inputs": ["governed_packet_or_transition_candidate", "declared_route_binding"],
+      "outputs": ["ingress_or_egress_transition_receipt", "transport_receipt"],
+      "preconditions": ["applicable_Interlock_InTr_admission_predicates"],
+      "authority_owner": "Interlock/InTr",
+      "expected_evidence": ["authentic_transition_receipt"],
+      "cardinality": "REPEATABLE_AS_REQUIRED_BY_DECLARED_FLOW",
+      "failure_semantics": "DENY_OR_EXACT_BLOCK_PRESERVED; NO_BYPASS",
+      "applicability": "REQUIRED_WHEN_GOVERNED_MOVEMENT_OCCURS"
+    },
+    {
+      "component": "RTC-ROUNDTRIP-003",
+      "status": "EXISTS_REUSED",
+      "inputs": ["request_payload", "correlation_context", "authority_scoped_route"],
+      "outputs": ["response_payload", "receipt_chain_extension"],
+      "preconditions": ["upstream_component_evidence_authentic", "route_authority_satisfied"],
+      "authority_owner": "Authority remains with the owner of each crossed boundary",
+      "expected_evidence": ["request_receipt", "response_receipt", "correlation_evidence"],
+      "cardinality": "FIVE_DECLARED_INSTANCES",
+      "instances": ["resident_client_secret_reseal", "resident_consent_listener", "sovereign_callback", "owner_present_provider_consent", "authoritative_provider_file_probe"],
+      "failure_semantics": "EACH_INSTANCE_FAILS_OR_RETRIES_INDEPENDENTLY; NO_INSTANCE_AUTHORIZES_THE_NEXT",
+      "applicability": "REQUIRED_BY_DECLARED_INSTANCE"
+    },
+    {
+      "component": "credential_session",
+      "status": "EXISTING_CANONICAL_OWNER_REUSED",
+      "implementation_owner": "TV/TVC provider/session path",
+      "inputs": ["eligible_provider_request", "KV_SKAP_user_verification_when_required"],
+      "outputs": ["credential_or_session_result", "provider_authority_receipt"],
+      "preconditions": ["upstream_custody_and_callback_predicates", "owner_present_action_when_required"],
+      "authority_owner": "TV/TVC; KV/SKAP Vault sole user-verification authority",
+      "expected_evidence": ["credential_session_receipt", "user_verification_evidence_from_KV_SKAP_only"],
+      "cardinality": "CONDITIONAL_PER_PROVIDER_OPERATION",
+      "failure_semantics": "NO_DEVICE_LOCAL_USER_VERIFICATION; DENIAL_OR_BLOCK_PRESERVED",
+      "applicability": "CONDITIONAL"
+    },
+    {
+      "component": "evidence_validation",
+      "status": "EXISTING_CANONICAL_VALIDATORS_REUSED",
+      "inputs": ["component_receipts", "expected_schema_and_subject_binding"],
+      "outputs": ["validated_evidence_class", "rejection_reason_when_invalid"],
+      "preconditions": ["evidence_present"],
+      "authority_owner": "Non-authorizing validation; source/CI does not upgrade runtime evidence",
+      "expected_evidence": ["validation_result"],
+      "cardinality": "PER_EVIDENCE_BOUNDARY",
+      "failure_semantics": "INVALID_OR_MISSING_EVIDENCE_REMAINS_UNPROVEN",
+      "applicability": "REQUIRED"
+    },
+    {
+      "component": "RTC-EVIDENCE-CUSTODY-004",
+      "status": "EXISTS_REUSED",
+      "inputs": ["validated_authentic_evidence", "subject_and_correlation_refs"],
+      "outputs": ["custody_receipt", "readback_result", "reconstruction_result"],
+      "preconditions": ["authentic_evidence_exists"],
+      "authority_owner": "Master Records",
+      "expected_evidence": ["custody_readback_reconstruction_receipts"],
+      "cardinality": "REPEATABLE_PER_CUSTODY_STAGE",
+      "failure_semantics": "NO_RECONSTRUCTION_CLAIM_WITHOUT_CUSTODIED_EVIDENCE",
+      "applicability": "REQUIRED"
+    },
+    {
+      "component": "RTC-SDK-RETURN-006",
+      "status": "EXISTS_REUSED",
+      "inputs": ["validated_governance_and_transition_results", "requested_return_projection"],
+      "outputs": ["normalized_sdk_result", "evidence_refs"],
+      "preconditions": ["validated_return_stage_reached"],
+      "authority_owner": "NON_AUTHORIZING_ASSEMBLY",
+      "expected_evidence": ["return_assembly_evidence"],
+      "cardinality": "ONCE_WHEN_RETURN_REQUIRED",
+      "failure_semantics": "NO_RETURN_COMPLETION_CLAIM_WITH_MISSING_REQUIRED_EVIDENCE",
+      "applicability": "CONDITIONAL"
+    },
+    {
+      "component": "RTC-PUBLISHER-005",
+      "status": "EXISTS_REUSED",
+      "inputs": ["authorized_publication_candidate", "release_authority_evidence"],
+      "outputs": ["publication_or_distribution_projection"],
+      "preconditions": ["TV_TVC_release_authority_granted", "applicable_upstream_evidence_complete"],
+      "authority_owner": "TV/TVC release authority; component itself non-authorizing",
+      "expected_evidence": ["publication_receipt"],
+      "cardinality": "ONLY_WHEN_PUBLIC_DISTRIBUTION_STAGE_REACHED",
+      "failure_semantics": "NO_MANUAL_PUBLICATION_AS_AUTHORITY_SUBSTITUTE",
+      "applicability": "CONDITIONAL"
+    },
+    {
+      "component": "RTC-STEGVERSE-EGRESS-007",
+      "status": "EXISTS_REUSED",
+      "inputs": ["authorized_distribution_payload"],
+      "outputs": ["egress_candidate", "final_local_transition_receipt"],
+      "preconditions": ["distribution_egress_stage_reached"],
+      "authority_owner": "Interlock/InTr",
+      "expected_evidence": ["final_local_transition_receipt"],
+      "cardinality": "ONLY_WHEN_EGRESS_REQUIRED",
+      "failure_semantics": "DENY_OR_BLOCK_PRESERVED",
+      "applicability": "CONDITIONAL"
+    },
+    {
+      "component": "RTC-FARSIDE-FINAL-009",
+      "status": "EXISTS_REUSED",
+      "inputs": ["admitted_far_side_payload", "correlation_context"],
+      "outputs": ["far_side_receive_receipt", "far_side_final_transition_receipt"],
+      "preconditions": ["far_side_distribution_stage_reached", "applicable_transition_authority_satisfied"],
+      "authority_owner": "Far-side transition authority as governed by Interlock/InTr",
+      "expected_evidence": ["far_side_receipt"],
+      "cardinality": "ONLY_WHEN_FAR_SIDE_COMPLETION_REQUIRED",
+      "failure_semantics": "NO_END_TO_END_COMPLETION_WITHOUT_FAR_SIDE_RECEIPT_WHEN_APPLICABLE",
+      "applicability": "CONDITIONAL"
+    }
+  ],
+  "composition_rule": "Compose only the reusable components required at the current stage. Conditional components remain selected capability options for this Goal Task but MUST NOT execute or become prerequisite gates before their declared applicability condition is reached. Component reuse does not mint authority.",
   "authority_invariants": {
+    "task_registry": "COORDINATION_ONLY",
+    "heartbeat": "TIMING_FRESHNESS_LIVENESS_CORRELATION_OBSERVABILITY_ONLY",
     "user_verification": "KV/SKAP Vault",
-    "device_role": "INTERCHANGEABLE_STEGOS_TRANSPORT_NODE",
+    "device_role": "INTERCHANGEABLE_STEGOS_TRANSPORT_EXECUTION_NODE_NOT_USER_VERIFIER",
     "claim_fence": "WorkerCoordinator",
     "transition": "Interlock/InTr",
     "credential_provider_release": "TV/TVC",
-    "reality_reconstruction": "Master Records"
+    "reality_reconstruction": "Master Records",
+    "github_runtime_authority": "NONE"
   }
 }
