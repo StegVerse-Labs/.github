@@ -30,6 +30,30 @@ The active ERL resident-local submitter already:
 
 The existing DEVICE_KV consumer already receives that non-authorizing terminal event and invokes the existing `SHWP-DEVICE-KV-INTR-OBSERVATION-001` WorkerCoordinator task path. WorkerCoordinator performs its own claim/fence admission inside the existing execution path. No separate Task Registry `CONTINUE` disposition is required as a runtime precondition.
 
+## Device-confirmation prohibition
+
+`CURRENT_USER_IPHONE` is only the label for the presently used local portable execution surface. It is **not** a runtime identity, discovery target, presence predicate, authorization predicate, user-verification predicate, or admission predicate.
+
+For this Goal Task:
+
+```text
+device confirmation required: false
+device discovery required: false
+device presence probe required: false
+device identity gate: PROHIBITED
+remote connected-device requirement: NOT_APPLICABLE
+second user-operated device required: false
+execution-surface identity mints authority: false
+```
+
+A continuation session MUST NOT attempt to discover, confirm, authorize, identify, probe, enumerate, poll for, wait for, or require an iPhone, connected device, resident device, Remote Desktop Commander device, or any second machine before continuing the canonical runtime path.
+
+The absence of any device-discovery result is not a blocker, failure state, readiness state, or evidence predicate for this task.
+
+Historical connected-device enumeration is provenance only and has no gating meaning.
+
+Do **not** poll for, wait for, or require any remotely connected resident device.
+
 ## Reusable component composition
 
 Canonical composition remains:
@@ -48,16 +72,13 @@ No new scheduler, WorkerCoordinator, listener, credential path, provider operati
 ## Canonical execution surface
 
 ```text
-execution surface: CURRENT_USER_IPHONE
-remote connected-device requirement: NOT_APPLICABLE
-second user-operated device required: false
-always-on external host required: false
+execution path: canonical portable WorkerCoordinator/StegOS path
+present surface label: CURRENT_USER_IPHONE
+surface label semantics: INFORMATIONAL_ONLY
 GitHub runtime authority: NONE
 ```
 
-Historical connected-device enumeration has no gating meaning for this Goal.
-
-Do **not** poll for, wait for, or require any remotely connected resident device.
+The portable path is the executable contract. The physical-device label is not a precondition to using that path.
 
 ## Shortest existing runtime path
 
@@ -82,7 +103,7 @@ All three InTr hops must preserve one operation ID, packet ID, acquisition-envel
 - Interlock/InTr: governed transition/admission authority.
 - TV/TVC: credential/provider/release authority when credentials are actually required; ERL resident-local transport requires none.
 - KV/SKAP Vault: sole user-verification authority.
-- StegOS devices: interchangeable transport/execution nodes; no user-verification authority.
+- StegOS devices: interchangeable transport/execution nodes; no user-verification authority and no device-confirmation authority.
 - Master Records: observed-reality custody/reconstruction authority.
 - HeartBeat: synchronization/timing/freshness/liveness/correlation/observability only.
 - GitHub: source/evidence coordination only; runtime authority `NONE`.
@@ -99,10 +120,12 @@ The authentic provider proof is fixed and MUST NOT be replayed:
 ## Current runtime/evidence state
 
 ```text
-execution surface: CURRENT_USER_IPHONE
+canonical portable execution path: SOURCE AVAILABLE
+present surface label: CURRENT_USER_IPHONE
+surface confirmation predicate: NONE
 Task Registry runtime gate: NONE
 portable DEVICE_KV owner package: SOURCE MATERIALIZED
-current-iPhone ERL materialization/execution: NOT OBSERVED
+ERL task-bound portable materialization/execution: NOT OBSERVED
 shared loopback ingress for this invocation: NOT OBSERVED
 hop 1: NOT OBSERVED
 hop 2: NOT OBSERVED
@@ -111,26 +134,26 @@ terminal exact-byte KV readback: NOT OBSERVED
 Master Records custody/reconstruction: NOT OBSERVED
 ```
 
-The unresolved class remains `TASK_BOUND_NATIVE_IPHONE_EXECUTION_EVIDENCE_NOT_OBSERVED`.
+The unresolved class is `TASK_BOUND_PORTABLE_EXECUTION_EVIDENCE_NOT_OBSERVED`.
 
-No authentic current-iPhone execution, InTr admission, hop receipt, terminal KV readback, Master Records custody/reconstruction, or end-to-end completion is claimed.
+No authentic task-bound portable execution, InTr admission, hop receipt, terminal KV readback, Master Records custody/reconstruction, or end-to-end completion is claimed.
 
 ## Remaining completion predicates
 
-- `ERL_CURRENT_USER_IPHONE_PORTABLE_EXECUTION_SURFACE_BOUND`;
-- `ERL_TASK_BOUND_NATIVE_IPHONE_EXECUTION_EVIDENCE_OBSERVED`;
-- authentic shared current-device loopback ingress;
+- `ERL_CANONICAL_PORTABLE_EXECUTION_PATH_BOUND`;
+- `ERL_TASK_BOUND_PORTABLE_EXECUTION_EVIDENCE_OBSERVED`;
+- authentic shared local loopback ingress;
 - authentic hop 1 / hop 2 / hop 3;
 - exact operation/packet/payload/prior-receipt continuity;
 - exact terminal KV byte readback;
 - complete three-hop chain validation;
 - terminal KV proof bound to the existing provider readback without provider replay;
 - Master Records custody acceptance and reconstruction confirmation;
-- no synthetic receipt, second runtime owner, remote-device dependency, second user-operated device, or device/user-verification substitution.
+- no device confirmation, discovery, presence probe, synthetic receipt, second runtime owner, remote-device dependency, second user-operated device, or device/user-verification substitution.
 
 ## Next admissible work
 
-1. Use the existing resident-local ERL materialization/submission path directly; do not insert another Task Registry gate.
+1. Use the existing resident-local ERL materialization/submission path directly; do not insert Task Registry or device-confirmation gates.
 2. Observe authentic shared loopback InTr admission and hop 1/hop 2 receipts.
 3. Let the admitted terminal materialization event invoke the existing DEVICE_KV consumer and WorkerCoordinator-owned terminal task path.
 4. Observe hop 3 and exact terminal KV byte readback.
@@ -140,4 +163,4 @@ No authentic current-iPhone execution, InTr admission, hop receipt, terminal KV 
 
 ## Current state
 
-`CURRENT_IPHONE_RUNTIME_SURFACE_RECONCILED / TASK_REGISTRY_RUNTIME_GATE_REMOVED / SHORTEST_EXISTING_ERL_INTR_DEVICE_KV_PATH_RESTORED / REMOTE_DEVICE_CONNECTOR_NOT_APPLICABLE / REUSABLE_COMPONENT_COMPOSITION_PRESERVED / MASTER_RECORDS_BINDING_MERGED / AUTHENTIC_THREE_HOP_TRAVERSAL_NOT_YET_OBSERVED / MASTER_RECORDS_CUSTODY_RECONSTRUCTION_NOT_YET_OBSERVED`
+`CANONICAL_PORTABLE_RUNTIME_PATH_RECONCILED / CURRENT_USER_IPHONE_LABEL_INFORMATIONAL_ONLY / DEVICE_CONFIRMATION_DISCOVERY_PRESENCE_PROBING_PROHIBITED / TASK_REGISTRY_RUNTIME_GATE_REMOVED / SHORTEST_EXISTING_ERL_INTR_DEVICE_KV_PATH_RESTORED / REMOTE_DEVICE_CONNECTOR_NOT_APPLICABLE / REUSABLE_COMPONENT_COMPOSITION_PRESERVED / MASTER_RECORDS_BINDING_MERGED / AUTHENTIC_THREE_HOP_TRAVERSAL_NOT_YET_OBSERVED / MASTER_RECORDS_CUSTODY_RECONSTRUCTION_NOT_YET_OBSERVED`
