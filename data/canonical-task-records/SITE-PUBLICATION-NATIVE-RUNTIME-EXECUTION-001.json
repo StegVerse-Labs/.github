@@ -89,7 +89,9 @@
     "StegVerse-Labs/StegVerse-Healer:pull/69",
     "StegVerse-Labs/StegVerse-Healer:commit/1a2bac1a61f97819182a701d91fc91f61f9b0f1e",
     "StegVerse-Labs/.github:pull/1767",
-    "StegVerse-Labs/.github:commit/1d10dd97475c910de83847f7e5344e387dd81cf7"
+    "StegVerse-Labs/.github:commit/1d10dd97475c910de83847f7e5344e387dd81cf7",
+    "StegVerse-Labs/.github:pull/1782",
+    "StegVerse-Labs/.github:commit/8c2b40da6e7b1cc2508a5c741567a3825e0eb0f6"
   ],
   "source_state": {
     "worker_registration_merged_validated": true,
@@ -101,6 +103,15 @@
     "neutral_reusable_task_scheduler_retry_semantics_merged_validated": true,
     "healer_migrated_to_scheduler_consumer_carrier": true,
     "site_source_refresh_neutral_schedule_binding_merged_validated": true,
+    "source_refresh_scheduler_materialization_pull_request": 1782,
+    "source_refresh_scheduler_materialization_exact_head": "35f5d2f2295849cdee9bd6d01e2006f356bbf060",
+    "source_refresh_scheduler_materialization_validation_runs": {
+      "organization_control": 34787496629,
+      "deterministic_suite": 34787496630,
+      "heartbeat": 34787496613
+    },
+    "source_refresh_scheduler_materialization_merge": "8c2b40da6e7b1cc2508a5c741567a3825e0eb0f6",
+    "source_refresh_scheduler_materialization_merged_validated": true,
     "admitted_materialization_binding_pull_request": 1767,
     "admitted_materialization_binding_exact_head": "de86af37d00172cff393b1ccc2aaca527e2edb27",
     "admitted_materialization_binding_validation_runs": {
@@ -179,7 +190,7 @@
     "user_verification_source": "KV/SKAP Vault",
     "device_local_user_verifier_allowed": false
   },
-  "runtime_resolution": "SOURCE_REFRESH_EXECUTION_OWNED_BY_RT-SOVEREIGN-SOURCE-REFRESH-001; REUSABLE_SCHEDULING_OWNED_BY_RT-REUSABLE-TASK-SCHEDULER-001; HEALER_IS_ONE_CARRIER_CONSUMER; SITE_PUBLICATION_CANDIDATE_ID_RESOLVED_FROM_LOCAL_ADMITTED_INTR_EVIDENCE; NEXT_EVIDENCE_IS_AUTHENTIC_SCHEDULER_CHILD_RECEIPT_NOT_DEVICE_DISCOVERY",
+  "runtime_resolution": "SOURCE_REFRESH_EXECUTION_OWNED_BY_RT-SOVEREIGN-SOURCE-REFRESH-001_WITH_NEUTRAL_SCHEDULER_MATERIALIZATION_REPAIRED; REUSABLE_SCHEDULING_OWNED_BY_RT-REUSABLE-TASK-SCHEDULER-001; HEALER_IS_ONE_CARRIER_CONSUMER; SITE_PUBLICATION_CANDIDATE_ID_RESOLVED_FROM_LOCAL_ADMITTED_INTR_EVIDENCE; NEXT_EVIDENCE_IS_AUTHENTIC_SCHEDULER_CHILD_RECEIPT_NOT_DEVICE_DISCOVERY",
   "worker_claim": {
     "authority": "WORKERCOORDINATOR",
     "claim_ref": null,
@@ -190,6 +201,6 @@
     "material_function_change": false,
     "readme_updated_in_change_set": false,
     "readme_path": "README.md",
-    "no_readme_update_reason": "This reconciliation records the merged fail-closed admitted-InTr materialization binding; it changes no public Site capability and promotes no runtime evidence."
+    "no_readme_update_reason": "This reconciliation records the merged reusable source-refresh scheduler-materialization repair and admitted-InTr binding while promoting no runtime evidence or public Site capability."
   }
 }
