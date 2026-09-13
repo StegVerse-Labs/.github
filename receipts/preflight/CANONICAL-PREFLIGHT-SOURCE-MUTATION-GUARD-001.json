@@ -1,0 +1,45 @@
+{
+  "schema": "stegverse.session-build-preflight-receipt/v1",
+  "preflight_id": "CANONICAL-PREFLIGHT-SOURCE-MUTATION-GUARD-001",
+  "goal_task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "cosv_id": "10100000100000",
+  "state": "PASS_FUNCTIONAL_MUTATION_ADMISSIBLE",
+  "repository": "StegVerse-Labs/.github",
+  "base_commit": "1be423f22d33f478e1d54e87151110f6a758d30f",
+  "observed_at": "2026-09-13T11:10:00-05:00",
+  "purpose": "Harden the existing canonical-policy preflight so source-changing work cannot silently bypass canonical documentation reconciliation.",
+  "canonical_sources_resolved": [
+    "control/canonical-policy-context-registry.json",
+    "docs/CANONICAL_INVARIANT_INGRESS_LOCK_MIRROR_HANDOFF.md",
+    "docs/CANONICAL_POLICY_CONTEXT_PREFLIGHT_MIRROR_HANDOFF.md",
+    "data/task-coordination-policy.json",
+    "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md",
+    "data/reusable-task-component-model.json",
+    "data/canonical-task-registry.json",
+    "data/canonical-task-records/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json",
+    "docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/continuity-vault-kit:docs/KV_PRIVACY_STATE_TRANSITION_CONTINUITY.md"
+  ],
+  "reconciliation_findings": [
+    "CANONICAL_SOURCE_PRECEDES_LOCAL_INTERPRETATION_ALREADY_CANONICAL",
+    "SESSION_BUILD_PREFLIGHT_ALREADY_FAILS_CLOSED_WHEN_INVOKED",
+    "DIRECT_GITHUB_SOURCE_MUTATION_IS_NOT_CURRENTLY_COUPLED_TO_PREFLIGHT_PROOF",
+    "STEGOS_DEVICE_KV_SKAP_ROUNDTRIP_001_LACKS_TASK_SPECIFIC_CANONICAL_POLICY_REFS"
+  ],
+  "authorized_mutation_scope": [
+    "scripts/validate_source_mutation_preflight.py",
+    "tests/test_source_mutation_preflight_guard.py",
+    ".github/workflows/source-mutation-preflight-guard.yml",
+    "control/canonical-policy-context-registry.json",
+    "docs/CANONICAL_INVARIANT_INGRESS_LOCK_MIRROR_HANDOFF.md",
+    "README.md",
+    "data/canonical-task-records/STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001.json"
+  ],
+  "preflight_completed_before_source_mutation": true,
+  "task_creation_required": false,
+  "authority_effect": "NONE_PREWORK_INTERPRETATION_ONLY",
+  "runtime_truth_inferred": false,
+  "execution_authority_inferred": false,
+  "transition_authority_inferred": false,
+  "credential_authority_inferred": false
+}
