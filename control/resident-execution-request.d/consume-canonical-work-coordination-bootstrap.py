@@ -157,6 +157,41 @@ def stable_hash(value: Any) -> str:
     return hashlib.sha256(raw).hexdigest()
 
 
+def source_complete(root: Path) -> bool:
+    return (
+        (root / "data/canonical-task-registry.json").is_file()
+        and (root / TASK_RECORDS_REL).is_dir()
+        and all((root / rel).is_file() for rel in MATERIALIZE)
+    )
+
+
+def resolve_local_canonical_source(
+    source_root: Path,
+    runtime_root: Path,
+    env: Mapping[str, str] | None = None,
+) -> Path:
+    """Resolve only an already-local canonical source tree.
+
+    Native WorkerCoordinator dispatch normally passes the resident runtime as both
+    source and runtime root. The worker service already propagates the non-secret
+    STEGVERSE_HEARTBEAT_SOURCE_ROOT locator for local source refresh. Reuse that
+    locator when the runtime copy does not contain the full Canonical Work source
+    set; never fetch source from the network and never treat the locator as authority.
+    """
+    source = source_root.expanduser().resolve()
+    runtime = runtime_root.expanduser().resolve()
+    if source_complete(source):
+        return source
+
+    values = dict(os.environ if env is None else env)
+    raw = str(values.get("STEGVERSE_HEARTBEAT_SOURCE_ROOT") or "").strip()
+    require(raw, "canonical work local source incomplete and STEGVERSE_HEARTBEAT_SOURCE_ROOT is not set")
+    candidate = Path(raw).expanduser().resolve()
+    require(candidate != runtime or source_complete(candidate), "canonical work runtime root is not a complete canonical source tree")
+    require(source_complete(candidate), f"canonical work local source locator incomplete:{candidate}")
+    return candidate
+
+
 def validate_spec(spec: Mapping[str, Any]) -> None:
     for key in ("request_rel", "consumption_rel", "bootstrap_runtime_rel", "task_id"):
         require(key in spec, f"canonical work consumer spec missing {key}")
@@ -322,8 +357,8 @@ def ensure_task_identity_materialized(source: Path, runtime: Path, task_id: str)
 
 def consume_for_spec(source_root: Path, runtime_root: Path, spec: Mapping[str, Any], *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
     validate_spec(spec)
-    source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
+    source = resolve_local_canonical_source(source_root, runtime, env)
     request_materialization = ensure_request_materialized(source, runtime, spec)
     request_path = runtime / spec["request_rel"]
     request = load_json(request_path)
@@ -354,6 +389,7 @@ def consume_for_spec(source_root: Path, runtime_root: Path, spec: Mapping[str, A
         "request_sha256": request_hash,
         "task_id": spec["task_id"],
         "entrypoint": str(TARGET_ENTRYPOINT),
+        "resolved_local_source_root": str(source),
         "request_self_materialization": request_materialization,
         "task_identity_materialization": task_identity,
         "source_materialization": materialized,
@@ -384,8 +420,8 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
 
 
 def run_registry_cycle(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
-    source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
+    source = resolve_local_canonical_source(source_root, runtime, env)
     materialized = materialize(source, runtime)
     task_shards = materialize_registry_task_shards(source, runtime)
     entrypoint = runtime / TASK_REGISTRY_CYCLE_ENTRYPOINT
@@ -403,6 +439,7 @@ def run_registry_cycle(source_root: Path, runtime_root: Path, *, runner=subproce
         "state": "COMPLETED" if completed_ok else "ATTEMPT_RECORDED",
         "start_point": "CANONICAL_TASK_REGISTRY",
         "entrypoint": str(TASK_REGISTRY_CYCLE_ENTRYPOINT),
+        "resolved_local_source_root": str(source),
         "command": command,
         "returncode": completed.returncode,
         "result": result,
