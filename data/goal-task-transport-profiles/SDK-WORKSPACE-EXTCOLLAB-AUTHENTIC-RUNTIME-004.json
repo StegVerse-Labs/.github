@@ -6,6 +6,16 @@
   "transport_requirements": {
     "complete_manifest": true,
     "governed_processing": true,
+    "resident_rendezvous": {
+      "required": true,
+      "component": "RTC-RESIDENT-RENDEZVOUS-010",
+      "required_for_round_trips": [
+        "resident_client_secret_reseal",
+        "resident_consent_listener"
+      ],
+      "consumer_registration_required": true,
+      "target_node_role": "ROUTING_ONLY_NOT_USER_VERIFICATION"
+    },
     "required_round_trips": [
       "resident_client_secret_reseal",
       "resident_consent_listener",
@@ -23,6 +33,7 @@
   "selected_components": [
     "RTC-MANIFEST-001",
     "RTC-GOVERNED-PROCESSING-002",
+    "RTC-RESIDENT-RENDEZVOUS-010",
     "RTC-ROUNDTRIP-003",
     "RTC-EVIDENCE-CUSTODY-004",
     "RTC-PUBLISHER-005",
@@ -31,10 +42,11 @@
     "RTC-INTERLOCK-INTR-TRANSPORT-008",
     "RTC-FARSIDE-FINAL-009"
   ],
-  "composition_rule": "The Goal Task consumes only the selected reusable transport components. Component selection does not mint authority and does not make omitted components mandatory for unrelated Goal Tasks.",
+  "composition_rule": "The Goal Task consumes only the selected reusable transport components. RTC-RESIDENT-RENDEZVOUS-010 is selected only for the established-Node delivery of the resident reseal and consent-listener requests. Component selection does not mint authority and does not make omitted components mandatory for unrelated Goal Tasks.",
   "authority_invariants": {
     "user_verification": "KV/SKAP Vault",
     "device_role": "INTERCHANGEABLE_STEGOS_TRANSPORT_NODE",
+    "node_role": "RUNTIME_INSTANCE_CORRELATION_AND_ROUTING_ONLY",
     "claim_fence": "WorkerCoordinator",
     "transition": "Interlock/InTr",
     "credential_provider_release": "TV/TVC",
