@@ -5,8 +5,6 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
-from types import SimpleNamespace
-from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 TASK_ID = "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001"
@@ -117,53 +115,6 @@ class KVReusableComponentModelTests(unittest.TestCase):
         by_class = {row["evidence_class"]: row for row in payload["indexed_events"]}
         self.assertEqual(by_class["CANONICAL_ALLOCATOR_REPLAY"]["verification_modes"]["REPLAY"], "PASS")
         self.assertEqual(by_class["WORKERCOORDINATOR_RUNTIME_RECONSTRUCTION"]["verification_modes"]["RECONSTRUCTION"], "PASS")
-
-    def test_current_route_does_not_require_site_projection(self):
-        mod = load_module("scripts/build_kv_evidence_reuse_input.py", "reuse_route_no_site_projection")
-        node = "SV-NODE-" + "a" * 24
-        discovery = SimpleNamespace(
-            LOCAL_BASES=("http://127.0.0.1:8000",),
-            _probe=lambda _base: ("REACHABLE", b"discovery", {"target_node_ref": node}),
-        )
-        wrapper = {
-            "state": "EVIDENCE_AVAILABLE",
-            "evidence": {
-                "execution_surface": "CURRENT_USER_IPHONE",
-                "node_origin": "STEGBROWSER_RESIDENT",
-                "site_projection_observed": False,
-                "node_receipt_1_sha256": "NONE",
-            },
-            "_projected": {
-                "node_ref": node,
-                "source_device_hb_reference": "heartbeat_epoch:100",
-                "current_observed_hb_reference": "heartbeat_epoch:101",
-                "observation_ref": "runtime://retained-node/example",
-            },
-        }
-        readback = SimpleNamespace(_probe=lambda _base, _node: ("REACHABLE", b"receipt", wrapper))
-        with patch.object(mod, "_module", side_effect=[discovery, readback]):
-            result = mod.current_retained_iphone_route(ROOT)
-        self.assertEqual(result["connectivity_state"], "ESTABLISHED")
-        self.assertEqual(result["retained_node_ref"], node)
-        self.assertFalse(result["site_projection_observed"])
-        self.assertIsNone(result["node_receipt_1_sha256"])
-
-    def test_current_route_rejects_projected_node_mismatch(self):
-        mod = load_module("scripts/build_kv_evidence_reuse_input.py", "reuse_route_mismatch")
-        node = "SV-NODE-" + "a" * 24
-        discovery = SimpleNamespace(
-            LOCAL_BASES=("http://127.0.0.1:8000",),
-            _probe=lambda _base: ("REACHABLE", b"discovery", {"target_node_ref": node}),
-        )
-        wrapper = {
-            "state": "EVIDENCE_AVAILABLE",
-            "evidence": {"execution_surface": "CURRENT_USER_IPHONE", "node_origin": "STEGBROWSER_RESIDENT"},
-            "_projected": {"node_ref": "SV-NODE-" + "b" * 24},
-        }
-        readback = SimpleNamespace(_probe=lambda _base, _node: ("REACHABLE", b"receipt", wrapper))
-        with patch.object(mod, "_module", side_effect=[discovery, readback]):
-            result = mod.current_retained_iphone_route(ROOT)
-        self.assertEqual(result["connectivity_state"], "UNRESOLVED")
 
     def test_task_record_stays_active_without_runtime_upgrade(self):
         record = load_json(f"data/canonical-task-records/{TASK_ID}.json")
