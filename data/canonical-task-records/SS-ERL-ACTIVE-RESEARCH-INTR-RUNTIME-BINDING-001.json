@@ -17,7 +17,9 @@
     "StegVerse-Labs/.github/workers/universal_intr_profiled_ingress.py",
     "StegVerse-Labs/.github/workers/erl_active_research_intr_profile.py",
     "StegVerse-Labs/.github/workers/erl_active_research_transport.py",
+    "StegVerse-Labs/.github/workers/erl_device_kv_terminal.py",
     "StegVerse-Labs/.github/scripts/consume_device_kv_intr_materialization_request.py",
+    "StegVerse-Labs/.github/scripts/install_erl_device_kv_prior_lineage.py",
     "StegVerse-Labs/.github/scripts/prepare_erl_active_research_intr_runtime_source.py",
     "StegVerse-Labs/.github/scripts/materialize_erl_active_research_intr_resident_local_input.py",
     "StegVerse-Labs/.github/scripts/submit_erl_active_research_intr_binding_local.py",
@@ -38,6 +40,7 @@
       "erl-active-research-intr-profile",
       "erl-active-research-resident-local-transport",
       "erl-exact-local-source-self-materialization",
+      "erl-terminal-full-intent-identity-continuity",
       "universal-intr-profiled-ingress",
       "device-kv-intr-materialization",
       "authentic-three-hop-receipt-chain"
@@ -68,6 +71,7 @@
     "ERL_ACTIVE_RESEARCH_PROFILE_BOUND_TO_EXISTING_RESIDENT_OWNER",
     "ERL_RESIDENT_LOCAL_TRANSPORT_REQUIRES_NO_RELAY_AUTHORIZATION",
     "ERL_EXACT_LOCAL_SOURCE_SELF_MATERIALIZATION_AVAILABLE",
+    "ERL_TERMINAL_HOP_REUSES_ORIGINAL_FULL_PATH_INTENT",
     "NO_SECOND_RUNTIME_OWNER_CREATED",
     "FULL_CANONICAL_BOUNDARY_PATH_PRESERVED",
     "EXACT_ENVELOPE_HASH_BOUND_AT_ALL_THREE_HOPS",
@@ -80,6 +84,7 @@
       "universal_intr_profiled_ingress",
       "resident_targeted_execution",
       "exact_local_source_self_materialization",
+      "exact_terminal_full_intent_identity_continuity",
       "device_kv_intr_observation",
       "durable_receipt_readback"
     ],
