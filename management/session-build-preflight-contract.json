@@ -1,6 +1,6 @@
 {
   "artifact_type": "stegverse.session_build_preflight_contract",
-  "schema_version": "1.3.0",
+  "schema_version": "1.4.0",
   "status": "ACTIVE_SOURCE_CONTRACT",
   "entrypoint": "scripts/session_build_preflight.py",
   "stegindex_gate": "scripts/stegindex_preflight_gate.py",
@@ -10,12 +10,28 @@
     "required_before_blocker_derivation": true,
     "required_before_remediation_proposal": true,
     "required_before_new_work": true,
+    "required_before_source_mutation": true,
     "task_record_field": "canonical_policy_refs",
     "fail_closed_disposition": "STOP_AT_CANONICAL_POLICY_DEPENDENCY",
     "human_policy_restatement_required": false,
     "runtime_truth_inferred": false,
     "execution_admission_inferred": false,
     "authority_effect": "NONE_PREWORK_INTERPRETATION_ONLY"
+  },
+  "source_mutation_enforcement": {
+    "validator": "scripts/validate_source_mutation_preflight.py",
+    "workflow": ".github/workflows/source-mutation-preflight-guard.yml",
+    "receipt_glob": "receipts/preflight/*.json",
+    "receipt_schema": "stegverse.session-build-preflight-receipt/v1",
+    "receipt_must_bind_pr_merge_base": true,
+    "receipt_must_name_canonical_goal_task": true,
+    "receipt_must_cover_global_policy_refs": true,
+    "receipt_must_cover_task_canonical_policy_refs": true,
+    "receipt_must_scope_protected_mutation_paths": true,
+    "receipt_must_precede_first_protected_mutation_commit": true,
+    "same_commit_receipt_and_first_mutation_allowed": false,
+    "missing_or_late_receipt_disposition": "STOP_AT_CANONICAL_POLICY_DEPENDENCY",
+    "authority_effect": "NONE_MERGE_COMPLETENESS_ONLY"
   },
   "cross_task_coordination": {
     "resolver": "StegVerse-Labs/StegIndex/scripts/resolve_cross_task_coordination.py",
@@ -84,6 +100,8 @@
     "canonical architecture and lifecycle policy context is resolved before session interpretation",
     "canonically resolvable policy must not be re-taught by human prompt",
     "missing canonical policy context is an exact dependency and never permission to invent semantics",
+    "protected source mutation requires a task-bound preflight receipt committed before the first protected mutation",
+    "a receipt created in the same commit as the first protected mutation is too late and fails closed",
     "new task creation is prohibited when an existing capability should be reused",
     "new task creation is prohibited when machine continuation is already available",
     "new task creation is prohibited while indexed truth requires reconciliation",
@@ -95,7 +113,7 @@
     "canonical policy context does not prove runtime truth or execution readiness",
     "README completeness does not grant execution authority or prove runtime truth",
     "generic runtime-evidence blockers are not terminal preflight outcomes",
-    "StegIndex, canonical policy context, cross-task coordination, README completeness review, and this entrypoint grant no execution authority"
+    "StegIndex, canonical policy context, cross-task coordination, README completeness review, source-mutation guard, and this entrypoint grant no execution authority"
   ],
   "authority_effect": "NONE_PREWORK_DECISION_ONLY",
   "network_fetch_performed": false,
