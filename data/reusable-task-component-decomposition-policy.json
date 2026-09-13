@@ -1,0 +1,74 @@
+{
+  "schema": "stegverse.reusable-task-component-decomposition-policy/v1",
+  "name": "Reusable Task Component Decomposition Process",
+  "purpose": "Detect emerging orchestration ambiguity early and require extraction or reuse of reusable task components before progress is impeded.",
+  "evaluation_points": [
+    "goal_task_creation",
+    "goal_task_scope_change",
+    "new_repository_added",
+    "new_authority_owner_added",
+    "new_external_framework_or_provider_added",
+    "new_round_trip_added",
+    "new_runtime_or_transport_path_added",
+    "new_failure_remediation_path_added",
+    "handoff_update",
+    "before_successor_task_creation",
+    "before_prompt_count_10",
+    "before_release_ready_classification"
+  ],
+  "signals": {
+    "repeated_subflow": {"weight": 4, "description": "Equivalent process appears in two or more Goal Tasks, repositories, providers, frameworks, or runtime paths."},
+    "multiple_authority_crossings": {"weight": 3, "description": "The process crosses three or more canonical authority owners or contains repeated authority transitions."},
+    "multiple_round_trips": {"weight": 2, "description": "The process requires two or more independently evidenced request/response or ingress/egress cycles."},
+    "cross_repository_or_org_spread": {"weight": 2, "description": "The process coordinates implementation across three or more repositories or more than one organization."},
+    "task_specific_adapter_duplicates_generic_work": {"weight": 5, "description": "A new adapter repeats transport, correlation, evidence, credential-session, runtime-resolution, or return-assembly work already present elsewhere."},
+    "handoff_sequence_growth": {"weight": 2, "description": "The canonical handoff contains a long ordered execution sequence whose steps have independent inputs, outputs, owners, or evidence."},
+    "failure_path_branching": {"weight": 2, "description": "Three or more distinct failure/remediation branches are embedded inside one process."},
+    "independent_reusability": {"weight": 4, "description": "A sub-process has a stable contract and useful meaning independent of the current Goal Task."},
+    "optional_subflow_present": {"weight": 3, "description": "A sub-process is required by some consumers but irrelevant to others."},
+    "independent_evidence_predicate": {"weight": 3, "description": "A sub-process produces evidence that can be validated independently of the parent flow."}
+  },
+  "decision": {
+    "score_0_4": "KEEP_COMPOSED_AND_REEVALUATE_AT_NEXT_EVALUATION_POINT",
+    "score_5_8": "SEARCH_EXISTING_REUSABLE_COMPONENTS_AND_RECORD_REUSE_ANALYSIS",
+    "score_9_12": "COMPONENTIZATION_REQUIRED_UNLESS_EXPLICIT_NON_REUSE_JUSTIFICATION_EXISTS",
+    "score_13_plus": "STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION"
+  },
+  "automatic_process": [
+    "inventory_subflows",
+    "normalize_each_subflow_as_inputs_outputs_preconditions_evidence_authority_failure_semantics",
+    "search_reusable_task_component_model_and_existing_canonical_owners",
+    "reuse_exact_component_when_available",
+    "extend_existing_component_when capability-compatible and authority-preserving",
+    "create_new_reusable_component_candidate only when genuinely novel",
+    "replace task-specific implementation sequence with component references plus task-specific parameters",
+    "preserve Goal Task identity COSV and completion predicates",
+    "update canonical handoff and README architecture projection",
+    "validate component interfaces and original Goal Task composition",
+    "continue task execution without creating a human checkpoint"
+  ],
+  "component_split_rule": {
+    "split_when": [
+      "subflow_has_independent_contract",
+      "subflow_has_independent_evidence",
+      "subflow_has_distinct_authority_owner_or_transition",
+      "subflow_is_optional_for_some_consumers",
+      "subflow_repeats_with_different_parameters",
+      "subflow_already_exists_in_another_task"
+    ],
+    "do_not_split_merely_to": [
+      "reset_prompt_count",
+      "create_more_task_ids",
+      "hide_unresolved_runtime_evidence",
+      "move_failure_to_another_repository",
+      "avoid_current_authority_or_validation_requirements"
+    ]
+  },
+  "result": {
+    "task_remains_goal_owner": true,
+    "components_are_capabilities_not_new_goals_by_default": true,
+    "new_goal_task_required_only_for_genuinely_separable_remaining_work": true,
+    "automatic_componentization_grants_execution_authority": false,
+    "human_approval_checkpoint_created": false
+  }
+}
