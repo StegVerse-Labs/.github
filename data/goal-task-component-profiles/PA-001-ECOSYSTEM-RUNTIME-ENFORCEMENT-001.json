@@ -94,7 +94,7 @@
   "task_specific_configuration": [
     "PA-001 present-tense authority/time/target/evidence predicates",
     "StegVerse-Labs/StegCore#208 goal ownership",
-    "StegVerse-Labs/StegCore#211 resident-reference integration continuation",
+    "StegVerse-Labs/StegCore#211 merged resident-reference source binding",
     "existing SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001 resident proof owner",
     "target-native ecosystem propagation required only after resident enforcement proof"
   ],
@@ -121,11 +121,11 @@
   "satisfied_predicates": [
     "canonical source present-state evaluator merged and hosted-validated",
     "source negative controls and deterministic source reconstruction merged",
-    "existing resident reference owner identified; no duplicate resident executor required"
+    "existing resident reference owner identified; no duplicate resident executor required",
+    "existing Universal Governance consequence path bound to shared present-state evaluator with explicit target/time state",
+    "PR #211 exact-head Universal Governance Connector Runtime validation succeeded and source merged as 7370434bab0ac405077025017f46bb0f38a38c8f"
   ],
   "remaining_predicates": [
-    "bind existing Universal Governance consequence path to shared present-state evaluator with explicit target/time state",
-    "validate and merge PR #211 successor source",
     "authentic WorkerCoordinator claim/fence observed for resident proof",
     "authentic resident present-state enforcement receipt observed",
     "authentic request/return InTr evidence observed where applicable",
