@@ -1,0 +1,43 @@
+{
+  "schema": "stegverse.goal-task-transport-profile/v1",
+  "task_id": "SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004",
+  "cosv_task_vector": "71000000100110",
+  "component_contract": "data/reusable-transport-component-contract.json",
+  "transport_requirements": {
+    "complete_manifest": true,
+    "governed_processing": true,
+    "required_round_trips": [
+      "resident_client_secret_reseal",
+      "resident_consent_listener",
+      "sovereign_callback",
+      "owner_present_provider_consent",
+      "authoritative_provider_file_probe"
+    ],
+    "evidence_custody_reconstruction": true,
+    "publisher_projection": true,
+    "sdk_return_assembly": true,
+    "stegverse_final_egress_transition": true,
+    "interlock_intr_transport": true,
+    "far_side_final_transition": true
+  },
+  "selected_components": [
+    "RTC-MANIFEST-001",
+    "RTC-GOVERNED-PROCESSING-002",
+    "RTC-ROUNDTRIP-003",
+    "RTC-EVIDENCE-CUSTODY-004",
+    "RTC-PUBLISHER-005",
+    "RTC-SDK-RETURN-006",
+    "RTC-STEGVERSE-EGRESS-007",
+    "RTC-INTERLOCK-INTR-TRANSPORT-008",
+    "RTC-FARSIDE-FINAL-009"
+  ],
+  "composition_rule": "The Goal Task consumes only the selected reusable transport components. Component selection does not mint authority and does not make omitted components mandatory for unrelated Goal Tasks.",
+  "authority_invariants": {
+    "user_verification": "KV/SKAP Vault",
+    "device_role": "INTERCHANGEABLE_STEGOS_TRANSPORT_NODE",
+    "claim_fence": "WorkerCoordinator",
+    "transition": "Interlock/InTr",
+    "credential_provider_release": "TV/TVC",
+    "reality_reconstruction": "Master Records"
+  }
+}
