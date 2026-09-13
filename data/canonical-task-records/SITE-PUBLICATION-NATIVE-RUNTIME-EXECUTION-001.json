@@ -23,7 +23,8 @@
     "StegVerse-Labs/.github:docs/SITE_PUBLICATION_NATIVE_RUNTIME_EXECUTION_001_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github:docs/SITE_PUBLICATION_NATIVE_RUNTIME_COMPONENT_MODEL_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github:docs/SITE_PUBLICATION_INTR_CONSUMER_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/.github:docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md"
+    "StegVerse-Labs/.github:docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github:docs/REUSABLE_TASK_SCHEDULER_MIRROR_HANDOFF.md"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
@@ -49,6 +50,11 @@
     "source_refresh_family": "data/reusable-sovereign-source-refresh-component-contract.json",
     "source_refresh_reusable_task_id": "RT-SOVEREIGN-SOURCE-REFRESH-001",
     "source_refresh_reusable_task_definition": "source-bundles/reusable-task-registry.d/RT-SOVEREIGN-SOURCE-REFRESH-001.json",
+    "reusable_task_scheduler_id": "RT-REUSABLE-TASK-SCHEDULER-001",
+    "reusable_task_scheduler_definition": "source-bundles/reusable-task-registry.d/RT-REUSABLE-TASK-SCHEDULER-001.json",
+    "reusable_task_scheduler_contract": "data/reusable-task-scheduler-contract.json",
+    "reusable_task_scheduler_handoff": "docs/REUSABLE_TASK_SCHEDULER_MIRROR_HANDOFF.md",
+    "scheduler_requirement": "CONDITIONAL_ORCHESTRATION_SUPPORT_NOT_GOAL_COMPLETION_PREDICATE",
     "ephemeral_execution_family": "data/reusable-task-ephemeral-construct-contract.json",
     "evaluator": "scripts/evaluate_reusable_task_componentization.py",
     "decomposition_score": 21,
@@ -76,6 +82,8 @@
     "reusable_task_component_model_available": true,
     "component_profile_bound": true,
     "source_refresh_reusable_task_registered": true,
+    "neutral_reusable_task_scheduler_source_defined": true,
+    "neutral_reusable_task_scheduler_runtime_proven": false,
     "exact_materialization_id": "INTR-MAT-0e1ba4786b0ea8a00e1f166e",
     "exact_packet_id": "INTR-58dec5416bd4358190c11372",
     "artifact_manifest_sha256": "sha256:e6bc47580f25296df61d16dfe5a74f3f49fec0dda018c813696195c960e77f09",
@@ -109,6 +117,7 @@
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "reusable_task_or_component_mints_execution_authority": false,
+    "reusable_scheduler_mints_execution_authority": false,
     "worker_claim_authority": "WORKERCOORDINATOR",
     "credential_authority": "TV/TVC",
     "user_verification_authority": "KV/SKAP Vault",
@@ -139,7 +148,7 @@
     "user_verification_source": "KV/SKAP Vault",
     "device_local_user_verifier_allowed": false
   },
-  "runtime_resolution": "SOURCE_REFRESH_EXECUTION_BOUNDARY_DELEGATED_TO_RT-SOVEREIGN-SOURCE-REFRESH-001",
+  "runtime_resolution": "SOURCE_REFRESH_EXECUTION_BOUNDARY_DELEGATED_TO_RT-SOVEREIGN-SOURCE-REFRESH-001; REUSABLE_SCHEDULING_DELEGATED_TO_RT-REUSABLE-TASK-SCHEDULER-001_WHEN_SCHEDULING_IS_REQUIRED",
   "worker_claim": {
     "authority": "WORKERCOORDINATOR",
     "claim_ref": null,
@@ -150,6 +159,6 @@
     "material_function_change": false,
     "readme_updated_in_change_set": false,
     "readme_path": "README.md",
-    "no_readme_update_reason": "This correction binds an already-existing source-refresh implementation to the repository's existing reusable-task architecture; it does not create a new runtime owner or public capability."
+    "no_readme_update_reason": "The current Goal Task only consumes the neutral reusable scheduler as conditional orchestration support; its publication behavior and public capability surface are unchanged. The scheduler itself is documented in its canonical contract and mirror handoff."
   }
 }
