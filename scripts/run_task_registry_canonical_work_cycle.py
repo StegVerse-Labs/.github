@@ -3,10 +3,12 @@
 
 The Task Registry is the work-discovery starting point. This script does not create
 new task identity, mint WorkerCoordinator claim/fence authority, grant credentials,
-or authorize a transition. It filters existing canonical task records, prioritizes
-StegVerse ecosystem repair/remediation/canonicalization work inside the current root
-Goal Task, runs the existing Task Registry collision check-in, and only then delegates
-one selected registered task to the existing Canonical Work / Interlock-InTr bootstrap.
+or authorize a transition. It enumerates canonical Task Registry rows, optionally
+enriches them from matching task-record shards without allowing a shard to override
+registry truth, prioritizes StegVerse ecosystem repair/remediation/canonicalization
+work inside the current root Goal Task, runs the existing Task Registry collision
+check-in, and only then delegates one selected registered task to the existing
+Canonical Work / Interlock-InTr bootstrap.
 
 Goal-bounded progression stops before any further task selection once the current
 Goal Task has a canonically validated completion claim. That terminal event emits
@@ -78,15 +80,53 @@ def progression_context(records_dir: Path = RECORDS) -> tuple[str, dict[str, Any
     return goal_task_id, header, notification
 
 
-def canonical_goal_record(goal_task_id: str, registry_path: Path = REGISTRY) -> dict[str, Any]:
+def canonical_registry_rows(registry_path: Path = REGISTRY) -> list[dict[str, Any]]:
     registry = load(registry_path)
     rows = registry.get("tasks")
     if not isinstance(rows, list):
         raise RuntimeError("canonical Task Registry tasks must be a list")
-    matches = [row for row in rows if isinstance(row, dict) and row.get("task_id") == goal_task_id]
+    result: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for raw in rows:
+        if not isinstance(raw, dict):
+            raise RuntimeError("canonical Task Registry task rows must be objects")
+        task_id = str(raw.get("task_id") or "").strip()
+        if not task_id:
+            raise RuntimeError("canonical Task Registry task row missing task_id")
+        if task_id in seen:
+            raise RuntimeError(f"duplicate canonical Task Registry task: {task_id}")
+        seen.add(task_id)
+        result.append(dict(raw))
+    return result
+
+
+def canonical_goal_record(goal_task_id: str, registry_path: Path = REGISTRY) -> dict[str, Any]:
+    matches = [row for row in canonical_registry_rows(registry_path) if row.get("task_id") == goal_task_id]
     if len(matches) != 1:
         raise RuntimeError("Goal Task must resolve exactly once in canonical Task Registry")
     return matches[0]
+
+
+def registry_candidate_projection(registry_record: dict[str, Any], records_dir: Path = RECORDS) -> dict[str, Any]:
+    """Enrich one registry row without allowing a shard to rewrite registry truth."""
+    task_id = str(registry_record.get("task_id") or "").strip()
+    if not task_id:
+        raise RuntimeError("registry candidate missing task_id")
+    projected = dict(registry_record)
+    shard_path = records_dir / f"{task_id}.json"
+    if not shard_path.is_file():
+        return projected
+    shard = load(shard_path)
+    if shard.get("task_id") != task_id:
+        raise RuntimeError(f"canonical task shard identity mismatch: {task_id}")
+    for identity_key in ("correlation_id", "root_correlation_id", "parent_task_id"):
+        registry_value = registry_record.get(identity_key)
+        shard_value = shard.get(identity_key)
+        if registry_value is not None and shard_value is not None and registry_value != shard_value:
+            raise RuntimeError(f"canonical task shard {identity_key} mismatch: {task_id}")
+    for key, value in shard.items():
+        projected.setdefault(key, value)
+    return projected
 
 
 def goal_completion_validated(goal_record: dict[str, Any]) -> bool:
@@ -183,7 +223,6 @@ def ecosystem_priority_class(record: dict[str, Any]) -> str:
     explicit = str(record.get("work_priority_class") or "").strip().upper()
     if explicit in REPAIR_PRIORITY_CLASSES:
         return explicit
-
     searchable_parts: list[str] = [
         str(record.get("task_id") or ""),
         str(record.get("goal") or ""),
@@ -206,19 +245,19 @@ def candidate_sort_key(record: dict[str, Any]) -> tuple[int, int, str]:
     return repair_first, checkout_rank, str(record["task_id"])
 
 
-def load_candidates(records_dir: Path = RECORDS, excluded_task_ids: set[str] | None = None, goal_task_id: str | None = None) -> list[dict[str, Any]]:
+def load_candidates(
+    records_dir: Path = RECORDS,
+    excluded_task_ids: set[str] | None = None,
+    goal_task_id: str | None = None,
+    registry_path: Path = REGISTRY,
+) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
-    seen: set[str] = set()
-    for path in sorted(records_dir.glob("*.json")):
-        record = load(path)
-        task_id = str(record.get("task_id") or "").strip()
-        if not task_id:
-            raise RuntimeError(f"canonical task record missing task_id: {path}")
-        if task_id in seen:
-            raise RuntimeError(f"duplicate canonical task record: {task_id}")
-        seen.add(task_id)
-        if goal_task_id and str(record.get("root_correlation_id") or record.get("correlation_id") or task_id) != goal_task_id:
+    for registry_record in canonical_registry_rows(registry_path):
+        task_id = str(registry_record["task_id"])
+        root_id = str(registry_record.get("root_correlation_id") or registry_record.get("correlation_id") or task_id)
+        if goal_task_id and root_id != goal_task_id:
             continue
+        record = registry_candidate_projection(registry_record, records_dir)
         if machine_ingress_candidate(record, excluded_task_ids):
             rows.append(record)
     rows.sort(key=candidate_sort_key)
@@ -244,9 +283,14 @@ def collision_check(task_id: str) -> dict[str, Any]:
     return result
 
 
-def select_task(records_dir: Path = RECORDS, excluded_task_ids: set[str] | None = None, goal_task_id: str | None = None) -> tuple[dict[str, Any] | None, list[dict[str, Any]]]:
+def select_task(
+    records_dir: Path = RECORDS,
+    excluded_task_ids: set[str] | None = None,
+    goal_task_id: str | None = None,
+    registry_path: Path = REGISTRY,
+) -> tuple[dict[str, Any] | None, list[dict[str, Any]]]:
     considered: list[dict[str, Any]] = []
-    for record in load_candidates(records_dir, excluded_task_ids, goal_task_id):
+    for record in load_candidates(records_dir, excluded_task_ids, goal_task_id, registry_path):
         task_id = str(record["task_id"])
         checkin = collision_check(task_id)
         considered.append({
@@ -297,16 +341,19 @@ def main() -> int:
         return 0
 
     selected, considered = select_task(excluded_task_ids=excluded_task_ids, goal_task_id=goal_task_id)
+    candidates = load_candidates(excluded_task_ids=excluded_task_ids, goal_task_id=goal_task_id)
     receipt: dict[str, Any] = {
         "schema": "stegverse.task-registry-canonical-work-cycle/v1",
         "start_point": "CANONICAL_TASK_REGISTRY",
+        "candidate_identity_source": "CANONICAL_TASK_REGISTRY",
+        "task_record_shards_are_optional_enrichment_only": True,
         "goal_task_id": goal_task_id,
         "goal_completion_validated": False,
         "selection_priority_rule": "ECOSYSTEM_REPAIR_REMEDIATION_CANONICALIZATION_FIRST",
         "progression_controller_excluded_from_work_selection": True,
         "explicit_request_task_ids_excluded": sorted(excluded_task_ids),
         "selected_task_id": selected.get("task_id") if selected else None,
-        "candidate_count": len(load_candidates(excluded_task_ids=excluded_task_ids, goal_task_id=goal_task_id)),
+        "candidate_count": len(candidates),
         "considered": considered,
         "workercoordinator_claim_or_fence_minted": False,
         "interlock_intr_transition_authority_preserved": True,
