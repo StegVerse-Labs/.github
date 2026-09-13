@@ -30,6 +30,7 @@ def test_current_selector_exposes_component_interface_and_authority_boundary():
     assert invariants["device_identity_is_user_verification"] is False
     assert invariants["transport_identity_is_user_verification"] is False
     assert invariants["receipt_selection_mints_authority"] is False
+    assert invariants["raw_selected_record_output"] is False
     assert invariants["secret_material_output"] is False
 
 
@@ -53,4 +54,4 @@ def test_handoff_preserves_runtime_boundary():
     assert "KV/SKAP Vault remains the sole user-verification authority" in text
     assert "does not synthesize a current binding" in text
     assert "CURRENT_BINDING_MISSING" in text
-    assert "Source merge and CI therefore do not satisfy" in text
+    assert "Source merge and CI do not satisfy" in text
