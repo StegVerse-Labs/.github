@@ -1,0 +1,43 @@
+{
+  "identity": "StegVerse-Labs/.github:task:STEG-BROWSER-RUNTIME-CONSUMPTION-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "40000100100000",
+  "evidence_refs": [
+    "data/canonical-task-records/STEG-BROWSER-RUNTIME-CONSUMPTION-001.json",
+    "docs/STEGBROWSER_RUNTIME_CONSUMPTION_MIRROR_HANDOFF.md",
+    "docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github@982018aa44a3eb110379d2c8900f55587378a485"
+  ],
+  "observed_at": "2026-09-13T14:07:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "CHECKED_OUT",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 1,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "Successor owns authentic runtime consumption through OWNER_INGRESS_READY while reusing the parent's merged source/component path.",
+    "archive_ready": "Authentic Task Registry CONTINUE, Canonical Work consumption, WorkerCoordinator claim/fence, InTr admission, TVC promotion/restart, immutable observer execution, and OWNER_INGRESS_READY remain unobserved.",
+    "unassigned_work": "All work is assigned to existing canonical coordination/runtime owners; no new orchestration class is required.",
+    "chat_owned_counts": "Current session performs canonical coordination/source updates only; runtime proof remains machine-generated.",
+    "canonical_owner_installed": "Canonical task record, COSV vector, and handoff are registered in this change set.",
+    "thread_required": "Repository state is sufficient for continuation after validation/merge.",
+    "blocker_count": "Unresolved items are progression predicates with explicit remediation paths, not terminal blockers.",
+    "evidence_complete": "Runtime evidence is not yet complete.",
+    "activated": "False until authentic runtime consumption and OWNER_INGRESS_READY are observed.",
+    "propagated": "Not applicable until later release/propagation stages."
+  },
+  "authority_effect": "NONE"
+}
