@@ -24,9 +24,13 @@ def consume(source_root: Path, runtime_root: Path):
     spec.loader.exec_module(module)
     input_path = runtime / INPUT_REL
     payload = json.loads(input_path.read_text(encoding="utf-8")) if input_path.exists() else {"node_context": {}}
-    result = module.evaluate(payload)
-    result = dict(result)
+    decision = dict(module.evaluate(payload))
+    decision_state = decision.get("state")
+    result = dict(decision)
     result.setdefault("schema", "stegverse.indexed-evidence-reuse-decision/v1")
+    result["reuse_decision_state"] = decision_state
+    if decision_state == "FAIL_CLOSED":
+        result["state"] = "EVIDENCE_REUSE_FAIL_CLOSED"
     result["task_id"] = "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001"
     result["credential_authority"] = "TV/TVC"
     result["github_token_runtime_authority"] = "NONE"
@@ -45,7 +49,7 @@ def main() -> int:
     args = parser.parse_args()
     result = consume(args.source_root, args.runtime_root)
     print(json.dumps(result, sort_keys=True))
-    return 0
+    return 0 if result.get("state") != "EVIDENCE_REUSE_FAIL_CLOSED" else 1
 
 
 if __name__ == "__main__":
