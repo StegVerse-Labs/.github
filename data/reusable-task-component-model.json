@@ -1,0 +1,62 @@
+{
+  "schema": "stegverse.reusable-task-component-model/v1",
+  "name": "Reusable Task Component Model",
+  "purpose": "Allow canonical Goal Tasks to declare required capabilities and deterministically compose reusable, authority-preserving task components instead of embedding large task-specific orchestration chains.",
+  "component_families": {
+    "transport": "data/reusable-transport-component-contract.json",
+    "runtime_observation": "CANONICAL_EXISTING_OWNER",
+    "governed_ingress": "CANONICAL_EXISTING_OWNER",
+    "execution_materialization": "data/reusable-task-ephemeral-construct-contract.json",
+    "credential_session": "CANONICAL_EXISTING_OWNER",
+    "evidence_validation": "CANONICAL_EXISTING_OWNER",
+    "custody_reconstruction": "CANONICAL_EXISTING_OWNER",
+    "framework_provider_adapter": "TASK_SPECIFIC_TRANSLATOR_PLUS_REUSABLE_PROTOCOL_COMPONENT",
+    "callback_correlation": "REUSABLE_COMPONENT_CANDIDATE",
+    "release_propagation": "REUSABLE_COMPONENT_CANDIDATE",
+    "failure_remediation_classification": "REUSABLE_COMPONENT_CANDIDATE",
+    "terminal_cleanup_entropy_recovery": "data/reusable-task-ephemeral-construct-contract.json"
+  },
+  "goal_task_contract": {
+    "goal_task_declares_requirements": true,
+    "composition_is_derived": true,
+    "component_order_is_governed": true,
+    "components_may_repeat": true,
+    "components_may_be_optional": true,
+    "unused_components_must_not_be_forced": true,
+    "missing_required_component": "FAIL_CLOSED",
+    "component_reuse_mints_authority": false
+  },
+  "component_interface_minimum": [
+    "component_id",
+    "capability_provided",
+    "inputs",
+    "outputs",
+    "preconditions",
+    "expected_evidence",
+    "authority_owner",
+    "authority_effect",
+    "failure_classes",
+    "retry_or_reentry_semantics",
+    "version_or_schema_binding"
+  ],
+  "composition_invariants": {
+    "task_registry": "COORDINATION_ONLY",
+    "worker_claim_fence": "WorkerCoordinator",
+    "user_verification": "KV/SKAP Vault",
+    "stegos_device_role": "INTERCHANGEABLE_TRANSPORT_NODE",
+    "credential_provider_release": "TV/TVC",
+    "governed_transition": "Interlock/InTr",
+    "observed_reality_custody_reconstruction": "Master Records",
+    "heartbeat": "TIMING_FRESHNESS_CORRELATION_CARRIAGE_ONLY",
+    "github_runtime_authority": "NONE"
+  },
+  "anti_patterns": [
+    "goal_task_reimplements_existing_component",
+    "component_combines_multiple_independent_authority_owners_without_explicit_interfaces",
+    "component_receipt_treated_as_authority_for_later_component",
+    "task_specific_adapter_duplicates_generic_transport",
+    "one_component_becomes_permanent_scheduler_or_hidden_runtime",
+    "device_or_transport_identity_becomes_user_verifier",
+    "optional_component_is_forced_into_unrelated_tasks"
+  ]
+}
