@@ -14,7 +14,7 @@
     "custody_reconstruction": "CANONICAL_EXISTING_OWNER",
     "framework_provider_adapter": "TASK_SPECIFIC_TRANSLATOR_PLUS_REUSABLE_PROTOCOL_COMPONENT",
     "callback_correlation": "REUSABLE_COMPONENT_CANDIDATE",
-    "release_propagation": "REUSABLE_COMPONENT_CANDIDATE",
+    "release_propagation": "data/reusable-publisher-kv-completion-notification-component-contract.json",
     "failure_remediation_classification": "REUSABLE_COMPONENT_CANDIDATE",
     "terminal_cleanup_entropy_recovery": "data/reusable-task-ephemeral-construct-contract.json"
   },
