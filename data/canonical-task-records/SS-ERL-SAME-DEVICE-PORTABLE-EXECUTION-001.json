@@ -1,0 +1,68 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SS-ERL-SAME-DEVICE-PORTABLE-EXECUTION-001",
+  "correlation_id": "SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001",
+  "root_correlation_id": "SS-EVIDENCE-COMPARISON-001",
+  "parent_task_id": "SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001",
+  "goal": "Expose the existing ERL resident-local manifest-to-InTr-to-DEVICE_KV path through the existing StegOS same-device service-worker execution surface without adding a runtime plane, authority source, device-confirmation gate, or second-machine dependency.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CLAIMED_INTEGRATION",
+  "cosv_task_vector": "40000100100000",
+  "goal_task": false,
+  "parent_goal_identity_preserved": true,
+  "runtime_authority_minted": false,
+  "source_refs": [
+    "docs/SS_ERL_SAME_DEVICE_PORTABLE_EXECUTION_MIRROR_HANDOFF.md",
+    "docs/SS_ERL_ACTIVE_RESEARCH_INTR_RUNTIME_BINDING_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegOS/mobile/web-bootstrap/service-worker.js",
+    "StegVerse-Labs/.github/scripts/submit_erl_active_research_intr_binding_local.py",
+    "StegVerse-Labs/.github/scripts/consume_device_kv_intr_materialization_request.py",
+    "StegVerse-Labs/.github/workercoordinator/portable_checkout.js"
+  ],
+  "runtime_requirements": {
+    "execution_path": "EXISTING_STEGOS_SAME_DEVICE_SERVICE_WORKER",
+    "physical_surface_label_semantics": "INFORMATIONAL_ONLY",
+    "device_discovery_required": false,
+    "device_confirmation_required": false,
+    "device_presence_probe_required": false,
+    "device_identity_gate": "PROHIBITED",
+    "remote_device_connector_required": false,
+    "second_user_operated_device_required": false,
+    "always_on_external_host_required": false,
+    "github_runtime_authority": "NONE"
+  },
+  "authority_model": {
+    "task_registry": "COORDINATION_ONLY",
+    "worker_claim_fence": "WorkerCoordinator",
+    "governed_transition": "Interlock/InTr",
+    "credential_provider_release": "TV/TVC",
+    "user_verification": "KV/SKAP Vault",
+    "stegos": "PORTABLE_EXECUTION_SUBSTRATE_ONLY",
+    "master_records": "OBSERVED_REALITY_CUSTODY_AND_RECONSTRUCTION",
+    "heartbeat": "OBSERVABILITY_ONLY",
+    "github_runtime_authority": "NONE"
+  },
+  "expected_evidence_predicates": [
+    "EXISTING_STEGOS_SERVICE_WORKER_REUSED",
+    "ERL_SAME_DEVICE_ROUTE_SOURCE_BOUND",
+    "PARENT_TASK_COSV_EXACT_MATCH_REQUIRED",
+    "DEVICE_CONFIRMATION_DISCOVERY_PRESENCE_GATING_ABSENT",
+    "EXISTING_PORTABLE_WORKERCOORDINATOR_LINEAGE_REUSED",
+    "ERL_OPERATION_PACKET_PAYLOAD_LINEAGE_PRESERVED",
+    "TERMINAL_DEVICE_KV_OWNER_SEMANTICS_REUSED",
+    "EXISTING_HASH_LINKED_DEVICE_JOURNAL_REUSED",
+    "NO_SECOND_RUNTIME_PLANE_CREATED",
+    "STEGOS_EXACT_HEAD_VALIDATION_SUCCESS",
+    "SOURCE_IMPLEMENTATION_MERGED"
+  ],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "activation_proof_complete": false,
+    "runtime_completion_belongs_to_parent": true
+  },
+  "handoff_projection_refs": [
+    "docs/SS_ERL_SAME_DEVICE_PORTABLE_EXECUTION_MIRROR_HANDOFF.md",
+    "docs/SS_ERL_ACTIVE_RESEARCH_INTR_RUNTIME_BINDING_MIRROR_HANDOFF.md"
+  ]
+}
