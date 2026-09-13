@@ -59,7 +59,7 @@ StegBrowser PR `StegVerse-Labs/StegBrowser#35` binds the repository's existing P
 
 The initial implementation head `6dabe45d051a68c8a87e336dec6662092327068b` passed Validate run `34736996551`. The task-specific README was then reconciled on the same PR branch at head `ad470c01a33136abb3fca3c54188de3fea5966b7`, and exact-head Validate run `34737855784` completed successfully.
 
-PR #35 was squash-merged to StegBrowser `main` at `0dd96a39ccc17a9eb0361e1eb975ad6dc542d87e` after the successful exact-head validation. The binding is therefore integrated in canonical source.
+PR #35 was squash-merged to StegBrowser `main` at `0dd96a39ccc17a9eb0361e1eb975ad6dc542d87e` after the successful exact-head validation. Post-merge `main` Validate run `34737881539` also completed successfully for that exact merge commit. The binding is therefore integrated and validated in canonical source.
 
 The binding remains non-authorizing source-level runtime-observation plumbing. Merge and CI do not substitute for authentic browser-local runtime evidence and do not satisfy the Goal Task completion predicate.
 
