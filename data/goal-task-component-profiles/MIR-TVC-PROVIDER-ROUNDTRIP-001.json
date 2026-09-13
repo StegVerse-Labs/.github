@@ -1,0 +1,47 @@
+{
+  "schema": "stegverse.goal-task-component-profile/v1",
+  "task_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
+  "cosv_task_vector": "50000000100000",
+  "decomposition_evaluation": {
+    "score": 25,
+    "decision": "STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION"
+  },
+  "selected_components": [
+    "RT-EXTERNAL-ADAPTER-ESTABLISH-001",
+    "RTC-ROUNDTRIP-003",
+    "RTC-INTERLOCK-INTR-TRANSPORT-008",
+    "TVC-PROVIDER-OPERATION-BROKER-003",
+    "TVC-CAPABILITY-RUNTIME-002"
+  ],
+  "build_test_counterpart": {
+    "mode": "STEGOS_NODE_MIRROR",
+    "node_label": "MIR NODE MIRROR",
+    "external_system_profile": "MIR",
+    "runtime_adapter": "StegVerse-Labs/StegOS:stegos/sovereign_local_event_runtime.py",
+    "runtime_class": "EVENT_EPHEMERAL",
+    "rendezvous_requirement": "NOT_REQUIRED",
+    "requires_other_machine": false,
+    "component_binding": [
+      "RT-EXTERNAL-ADAPTER-ESTABLISH-001",
+      "RTC-ROUNDTRIP-003",
+      "RTC-INTERLOCK-INTR-TRANSPORT-008"
+    ],
+    "substitution_rule": "AUTHENTIC_MIR_REPLACES_ONLY_FAR_SIDE_COUNTERPART_WITHOUT_STEGVERSE_CHOREOGRAPHY_CHANGE",
+    "evidence_class": "AUTHENTIC_NODE_MIRROR_RUNTIME_WHEN_EXECUTED"
+  },
+  "remaining_predicates": [
+    "MIR_NODE_MIRROR_ROUNDTRIP_EXECUTED",
+    "MIR_NODE_MIRROR_RETURN_ADMITTED_TO_SDK",
+    "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED",
+    "AUTHENTIC_MIR_RESULT_RECEIPT_RETAINED"
+  ],
+  "predicate_classes": {
+    "MIR_NODE_MIRROR_ROUNDTRIP_EXECUTED": "BUILD_TEST_RUNTIME",
+    "MIR_NODE_MIRROR_RETURN_ADMITTED_TO_SDK": "BUILD_TEST_RUNTIME",
+    "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED": "AUTHENTIC_EXTERNAL_ENDPOINT",
+    "AUTHENTIC_MIR_RESULT_RECEIPT_RETAINED": "AUTHENTIC_EXTERNAL_ENDPOINT"
+  },
+  "goal_identity_preserved": true,
+  "new_goal_task_required": false,
+  "new_reusable_component_required": false
+}
