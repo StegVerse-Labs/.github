@@ -1,10 +1,20 @@
 from __future__ import annotations
 
+import importlib.util
 import json
 from pathlib import Path
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def load_lifecycle():
+    path = ROOT / "workers/reusable_task_lifecycle.py"
+    spec = importlib.util.spec_from_file_location("reusable_lifecycle_binding", path)
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
 
 
 class ReusableTaskLifecycleRuntimeBindingTests(unittest.TestCase):
@@ -22,17 +32,27 @@ class ReusableTaskLifecycleRuntimeBindingTests(unittest.TestCase):
         self.assertIn('value.get("state") != "COMPLETE"', source)
         self.assertIn("stegverse.reusable-task-runner-result/v1", source)
 
-    def test_trigger_retains_old_boundary_without_standard_result(self):
+    def test_trigger_retains_old_boundary_without_standard_result_and_advances_master_records_when_available(self):
         source = (ROOT / "scripts/trigger_reusable_task.py").read_text(encoding="utf-8")
         self.assertIn("if not result_path.is_file()", source)
         self.assertIn("COMPLETION_PREDICATES_REQUIRE_EVIDENCE_RECONCILIATION", source)
         self.assertIn("MASTER_RECORDS_CUSTODY_RECONSTRUCTION_REQUIRED", source)
-        self.assertIn("workers import reusable_task_lifecycle", source)
+        self.assertIn("reusable_task_master_records_roundtrip", source)
+        self.assertIn("ENTROPY_RECOVERY_RECORDED", source)
+        self.assertIn("NONE_FOR_THIS_INVOCATION", source)
+
+    def test_custody_request_targets_existing_ece_master_records_root(self):
+        lifecycle = load_lifecycle()
+        manifest = {"invocation_id":"i","reusable_task_id":"r","manifest_hash":"a"*64}
+        request = lifecycle.build_custody_request(manifest=manifest, trigger_receipt={}, runner_result={}, runner_expiry={}, residual_recording={})
+        self.assertEqual(request["destination"], "master-records/orchestration")
+        self.assertFalse(request["destination_custody_accepted"])
 
     def test_lifecycle_workers_are_on_existing_resident_propagation_surface(self):
         refresh = (ROOT / "scripts/refresh_sovereign_worker_runtime_source.py").read_text(encoding="utf-8")
         self.assertIn('Path("workers")', refresh)
         self.assertTrue((ROOT / "workers/reusable_task_lifecycle.py").is_file())
+        self.assertTrue((ROOT / "workers/reusable_task_master_records_roundtrip.py").is_file())
         self.assertTrue((ROOT / "workers/finalize_reusable_task_entropy.py").is_file())
 
 
