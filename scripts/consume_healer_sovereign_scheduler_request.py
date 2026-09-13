@@ -37,6 +37,10 @@ def stable_hash(value: Any) -> str:
     return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()).hexdigest()
 
 
+def file_sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
 def clean_env(source: dict[str, str] | None = None) -> dict[str, str]:
     values = dict(os.environ if source is None else source)
     env = {key: values[key] for key in NONSECRET_ENV if values.get(key)}
@@ -83,14 +87,7 @@ def parse_last_json(stdout: str) -> dict[str, Any] | None:
 
 
 def resolve_source_root(source_root: Path, runtime_root: Path, values: dict[str, str]) -> tuple[Path | None, str]:
-    """Keep canonical source distinct from mutable resident runtime.
-
-    The continuous WorkerCoordinator dispatcher historically supplies its own
-    resident root for both dispatcher arguments. The sovereign service already
-    carries STEGVERSE_HEARTBEAT_SOURCE_ROOT, so the Healer refresh bridge consumes
-    that non-secret local source locator when source/runtime would otherwise
-    collapse. No network checkout is attempted here.
-    """
+    """Keep canonical source distinct from mutable resident runtime."""
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
     if source != runtime:
@@ -110,18 +107,61 @@ def resolve_source_root(source_root: Path, runtime_root: Path, values: dict[str,
     return candidate, "STEGVERSE_HEARTBEAT_SOURCE_ROOT"
 
 
+def synchronize_standing_request(source: Path, runtime: Path) -> dict[str, Any]:
+    """Exact-sync the non-authorizing standing request from already-local source.
+
+    This is source transport only. The request cannot mint a claim, fence, credential,
+    transition, publication state, or user-verification authority.
+    """
+    canonical = source / REQUEST_REL
+    if not canonical.is_file():
+        raise RuntimeError(f"canonical Healer standing request missing: {canonical}")
+    canonical_doc = load_json(canonical)
+    validate_request(canonical_doc)
+    canonical_bytes = canonical.read_bytes()
+    canonical_hash = hashlib.sha256(canonical_bytes).hexdigest()
+
+    resident = runtime / REQUEST_REL
+    previous_hash = file_sha256(resident) if resident.is_file() else None
+    copied = previous_hash != canonical_hash
+    if copied:
+        resident.parent.mkdir(parents=True, exist_ok=True)
+        tmp = resident.with_name("." + resident.name + ".tmp")
+        tmp.write_bytes(canonical_bytes)
+        os.replace(tmp, resident)
+    if not resident.is_file() or resident.read_bytes() != canonical_bytes:
+        raise RuntimeError("Healer standing request exact-byte materialization failed")
+    validate_request(load_json(resident))
+    return {
+        "state": "EXACT_CANONICAL_REQUEST_MATERIALIZED" if copied else "EXACT_CANONICAL_REQUEST_ALREADY_PRESENT",
+        "request_ref": REQUEST_REL.as_posix(),
+        "sha256": canonical_hash,
+        "copied": copied,
+        "request_granted_authority": False,
+        "authority_effect": "NONE_SOURCE_TRANSPORT_ONLY",
+    }
+
+
 def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env: dict[str, str] | None = None) -> dict[str, Any]:
     values = dict(os.environ if env is None else env)
     runtime = runtime_root.expanduser().resolve()
     source, source_resolution = resolve_source_root(source_root, runtime_root, values)
-    request_path = runtime / REQUEST_REL
-    if not request_path.is_file():
-        return {"schema": "stegverse.healer-resident-request-consumption/v1", "state": "NO_REQUEST", "runtime_execution_attempted": False, "standing_request": True, "authority_effect": "NONE"}
 
-    request = load_json(request_path)
-    validate_request(request)
-    request_hash = stable_hash(request)
     if source is None:
+        request_path = runtime / REQUEST_REL
+        if not request_path.is_file():
+            return {
+                "schema": "stegverse.healer-resident-request-consumption/v1",
+                "state": "NO_REQUEST",
+                "runtime_execution_attempted": False,
+                "standing_request": True,
+                "source_resolution": source_resolution,
+                "retry_allowed": True,
+                "authority_effect": "NONE",
+            }
+        request = load_json(request_path)
+        validate_request(request)
+        request_hash = stable_hash(request)
         receipt = {
             "schema": "stegverse.healer-resident-request-consumption/v1",
             "state": "ATTEMPT_RECORDED",
@@ -153,9 +193,18 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         return receipt
 
-    entrypoint = runtime / TARGET_ENTRYPOINT
+    request_materialization = synchronize_standing_request(source, runtime)
+    request_path = runtime / REQUEST_REL
+    request = load_json(request_path)
+    validate_request(request)
+    request_hash = stable_hash(request)
+
+    # Execute the canonical source refresh bridge directly. Requiring a stale
+    # runtime to already contain the current refresh bridge would recreate the
+    # same source-refresh circularity this standing request exists to break.
+    entrypoint = source / TARGET_ENTRYPOINT
     if not entrypoint.is_file():
-        raise RuntimeError(f"Healer resident execution entrypoint missing: {entrypoint}")
+        raise RuntimeError(f"canonical Healer resident execution entrypoint missing: {entrypoint}")
 
     command = [sys.executable, str(entrypoint), "--source-root", str(source), "--runtime-root", str(runtime), "--task-id", TARGET_TASK]
     completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=clean_env(values), timeout=1200)
@@ -171,6 +220,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         "state": "CYCLE_COMPLETED" if cycle_completed else "ATTEMPT_RECORDED",
         "request_id": request["request_id"],
         "request_sha256": request_hash,
+        "request_materialization": request_materialization,
         "task_id": TARGET_TASK,
         "mode": TARGET_MODE,
         "standing_request": True,
@@ -179,6 +229,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         "runtime_root": str(runtime),
         "source_resolution": source_resolution,
         "source_runtime_separated": source != runtime,
+        "canonical_refresh_entrypoint": str(entrypoint),
         "command": command,
         "execution_returncode": completed.returncode,
         "execution_result_observed": isinstance(result, dict),
