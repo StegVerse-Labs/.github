@@ -40,7 +40,31 @@
     "transition_authority": "Interlock/InTr",
     "worker_claim_authority": "WorkerCoordinator",
     "credential_authority": "TV/TVC",
-    "runtime_reality_authority": "Master Records"
+    "runtime_reality_authority": "Master Records",
+    "completion_language_requires_evidence_class": true,
+    "unqualified_complete_or_completed_prohibited": true,
+    "stronger_completion_class_inference_prohibited": true,
+    "completion_claim_requires_evidence_refs": true,
+    "validated_completion_requires_claimed_completion": true,
+    "terminal_complete_default_evidence_class": "END_TO_END",
+    "completion_evidence_classes": [
+      "SOURCE_IMPLEMENTED",
+      "MERGED",
+      "CI_VALIDATED",
+      "SANDBOX_RUNTIME_OBSERVED",
+      "EXTERNAL_PROVIDER_OBSERVED",
+      "MASTER_RECORDS_RECONSTRUCTED",
+      "END_TO_END"
+    ],
+    "completion_evidence_strength_order": [
+      "SOURCE_IMPLEMENTED",
+      "MERGED",
+      "CI_VALIDATED",
+      "SANDBOX_RUNTIME_OBSERVED",
+      "EXTERNAL_PROVIDER_OBSERVED",
+      "MASTER_RECORDS_RECONSTRUCTED",
+      "END_TO_END"
+    ]
   },
   "semantics": {
     "kv_skap_vault": "Maintains the verifier for the user and is the sole source of user-verification state.",
@@ -51,7 +75,9 @@
     "device_interchangeability": "Replacing one eligible StegOS device/node with another does not change the user's verifier. Only available local capability endpoints and resulting execution evidence may change.",
     "remote_computer_transport": "Remote Computer is a transport/discovery surface only. Capacity discovered through it may execute only after materializing as the canonical StegBrowser/StegOS node class and being admitted as ADMITTED-EPHEMERAL-STEGOS-NODE through Interlock/InTr.",
     "ephemeral_substrate": "Temporary compute is not a separate authority or durable machine dependency. Presence or connectivity grants no execution, transition, WorkerCoordinator claim/fence, credential, custody, publication, or completion authority.",
-    "runtime_substrate_order": "Runtime-capable tasks must evaluate the canonical single-device-first substrate order before any remote/external-device last resort. EVIDENCE_REACHABILITY may remain pending but cannot establish UNSUITABLE or create an external-device requirement."
+    "runtime_substrate_order": "Runtime-capable tasks must evaluate the canonical single-device-first substrate order before any remote/external-device last resort. EVIDENCE_REACHABILITY may remain pending but cannot establish UNSUITABLE or create an external-device requirement.",
+    "completion_evidence_class": "Every affirmative completion statement must identify the exact evidence class proven. Source implementation, merge, CI validation, sandbox runtime observation, external/provider observation, Master Records reconstruction, and end-to-end completion are distinct states and may not be collapsed.",
+    "completion_promotion": "A stronger evidence class may be asserted only from evidence native to that class. Lower classes never imply higher classes. User-facing unqualified complete/completed is prohibited unless END_TO_END is explicitly proven for the declared Goal Task terminal predicates."
   },
   "prohibitions": [
     "NO_SECONDARY_USER_VERIFIER_OUTSIDE_KV_SKAP_VAULT",
@@ -69,7 +95,14 @@
     "NO_REMOTE_COMPUTER_INVENTORY_AS_SUBSTRATE_UNSUITABILITY",
     "NO_REMOTE_COMPUTER_AS_SECOND_MACHINE_REQUIREMENT",
     "NO_EPHEMERAL_CAPACITY_EXECUTION_BEFORE_INTERLOCK_INTR_ADMISSION",
-    "NO_EVIDENCE_REACHABILITY_GAP_AS_EXTERNAL_DEVICE_REQUIREMENT"
+    "NO_EVIDENCE_REACHABILITY_GAP_AS_EXTERNAL_DEVICE_REQUIREMENT",
+    "NO_UNQUALIFIED_COMPLETE_OR_COMPLETED_STATUS",
+    "NO_SOURCE_IMPLEMENTED_AS_RUNTIME_COMPLETE",
+    "NO_MERGED_AS_RUNTIME_COMPLETE",
+    "NO_CI_VALIDATED_AS_RUNTIME_COMPLETE",
+    "NO_RUNTIME_OBSERVED_AS_MASTER_RECORDS_RECONSTRUCTED",
+    "NO_PROVIDER_OBSERVED_AS_END_TO_END_COMPLETE",
+    "NO_STRONGER_COMPLETION_CLASS_WITHOUT_NATIVE_EVIDENCE"
   ],
   "authority_effect": "NONE_REGISTRY_INVARIANT_ONLY"
 }
