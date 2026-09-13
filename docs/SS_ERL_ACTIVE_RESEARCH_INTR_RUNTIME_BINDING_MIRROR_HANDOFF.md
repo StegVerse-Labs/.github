@@ -51,6 +51,8 @@ The governing portable authority contract is `docs/WORKERCOORDINATOR_PORTABLE_IP
 
 Historical zero-device connector observations remain provenance only and have no gating meaning.
 
+Do **not** poll for, wait for, or require any remotely connected resident device.
+
 ## Portable DEVICE_KV owner package
 
 This source trajectory adds the missing canonical portable package for the already-existing terminal runtime owner:
