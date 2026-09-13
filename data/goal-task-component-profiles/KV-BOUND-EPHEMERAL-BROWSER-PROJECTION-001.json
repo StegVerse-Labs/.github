@@ -7,9 +7,16 @@
   "decomposition_input": "data/reusable-task-componentization-inputs/KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001.json",
   "decomposition_evaluation": "data/reusable-task-componentization-evaluations/KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001.json",
   "runtime_handoff": "docs/KV_BOUND_EPHEMERAL_BROWSER_PROJECTION_MIRROR_HANDOFF.md",
-  "selected_components": ["RTC-MANIFEST-001", "RTC-ROUNDTRIP-003", "RTC-EVIDENCE-CUSTODY-004", "RTC-INTERLOCK-INTR-TRANSPORT-008", "RTC-FARSIDE-FINAL-009"],
-  "goal_predicates": ["TESTFLIGHT_CURRENT_IPHONE_RUNTIME_OBSERVED", "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_OBSERVED", "GLOBAL_MEASUREMENT_HANDOFF_RETURNED_TO_AUTHENTIC_EXECUTION"],
+  "selected_components": ["RTC-MANIFEST-001", "RTC-ROUNDTRIP-003", "RTC-EVIDENCE-CUSTODY-004", "RTC-INTERLOCK-INTR-TRANSPORT-008", "RTC-FARSIDE-FINAL-009", "RTC-EVIDENCE-CURRENT-SELECTOR-010", "RTC-EVIDENCE-REPLAY-REUSE-011"],
+  "goal_predicates": ["TESTFLIGHT_SIGNING_PROVIDER_RELEASE_INSTALL_OBSERVED", "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_OBSERVED", "GLOBAL_MEASUREMENT_HANDOFF_RETURNED_TO_AUTHENTIC_EXECUTION"],
+  "historical_runtime_reuse": {
+    "current_iphone_runtime_authentic": true,
+    "reuse_requires_replay_and_reconstruction_against_current_requirements": true,
+    "user_reverification_after_established_node_connectivity": false
+  },
+  "evidence_reuse_requirements": "data/current-evidence-reuse-requirements/KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001.json",
+  "resident_reconciliation_request": "control/resident-execution-request.d/kv-evidence-reconcile-001.json",
   "new_goal_task_required": false,
-  "new_reusable_component_required": false,
+  "new_reusable_component_required": true,
   "componentization_mints_authority": false
 }
