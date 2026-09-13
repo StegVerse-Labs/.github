@@ -4,7 +4,7 @@
   "correlation_id": "SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001",
   "root_correlation_id": "SS-EVIDENCE-COMPARISON-001",
   "parent_task_id": "SS-EVIDENCE-COMPARISON-001",
-  "goal": "Bind ERL active-research Universal InTr transport to the existing sovereign current-iPhone execution owner and preserve one authentic three-hop EXTERNAL_SYSTEM -> STEGOS_ECOSYSTEM -> DEVICE_SYSTEM -> KV receipt chain without fabricating transport evidence.",
+  "goal": "Bind ERL active-research Universal InTr transport to the existing sovereign portable execution owner and preserve one authentic three-hop EXTERNAL_SYSTEM -> STEGOS_ECOSYSTEM -> DEVICE_SYSTEM -> KV receipt chain without fabricating transport evidence.",
   "coordination_state": "ACTIVE",
   "checkout_state": "CLAIMED_INTEGRATION",
   "cosv_task_vector": "40000100100000",
@@ -26,6 +26,11 @@
     "componentization_mints_authority": false,
     "runtime_handoff_remains_runtime_truth": true,
     "runtime_predicates_completed_by_source_reuse": false,
+    "device_confirmation_required": false,
+    "device_discovery_required": false,
+    "device_presence_probe_required": false,
+    "device_identity_gate": "PROHIBITED",
+    "surface_identity_mints_authority": false,
     "remote_device_connector_required": false,
     "remote_device_connector_classification": "NOT_APPLICABLE"
   },
@@ -83,7 +88,7 @@
       "RTC-FARSIDE-FINAL-009",
       "execution_materialization:reusable-task-ephemeral-construct-contract",
       "runtime_observation:SHWP-DEVICE-KV-INTR-OBSERVATION-001",
-      "portable_execution:CURRENT_USER_IPHONE",
+      "portable_execution:CURRENT_USER_IPHONE_LABEL_ONLY",
       "portable_workercoordinator_package:SHWP-DEVICE-KV-INTR-OBSERVATION-001",
       "governed_ingress:universal-intr-profiled-ingress",
       "evidence_validation:canonical-existing-validators"
@@ -102,14 +107,14 @@
       "kind": "RUNTIME_OWNER",
       "state": "AVAILABLE",
       "ref": "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
-      "disposition": "REUSE_EXISTING_PROFILED_INGRESS_CONSUMER_WORKERCOORDINATOR_AND_CVK_OWNER_ON_CURRENT_USER_IPHONE_PORTABLE_EXECUTION_SURFACE"
+      "disposition": "REUSE_EXISTING_PROFILED_INGRESS_CONSUMER_WORKERCOORDINATOR_AND_CVK_OWNER_ON_CANONICAL_PORTABLE_EXECUTION_PATH"
     },
     {
-      "dependency_id": "DEP-ERL-CURRENT-IPHONE-PORTABLE-EXECUTION",
+      "dependency_id": "DEP-ERL-PORTABLE-EXECUTION",
       "kind": "EXECUTION_SURFACE",
       "state": "AVAILABLE_SOURCE_ONLY_TASK_BOUND_EXECUTION_EVIDENCE_PENDING",
       "ref": "control/portable-workercoordinator-packages/device-kv-intr-observation.json",
-      "disposition": "REUSE_CURRENT_USER_IPHONE_PORTABLE_WORKERCOORDINATOR_STEGOS_PATH_WITH_EXISTING_DEVICE_KV_OWNER;_REMOTE_DEVICE_ENUMERATION_NOT_APPLICABLE"
+      "disposition": "REUSE_CANONICAL_PORTABLE_WORKERCOORDINATOR_STEGOS_PATH_WITH_EXISTING_DEVICE_KV_OWNER;_CURRENT_USER_IPHONE_IS_A_SURFACE_LABEL_ONLY;_DEVICE_CONFIRMATION_DISCOVERY_PRESENCE_PROBING_AND_REMOTE_DEVICE_ENUMERATION_ARE_NOT_APPLICABLE"
     },
     {
       "dependency_id": "DEP-ERL-REUSABLE-COMPONENT-MODEL",
@@ -136,12 +141,15 @@
     "ERL_ACTIVE_RESEARCH_PROFILE_BOUND_TO_EXISTING_RESIDENT_OWNER",
     "ERL_RESIDENT_LOCAL_TRANSPORT_REQUIRES_NO_RELAY_AUTHORIZATION",
     "ERL_EXACT_LOCAL_SOURCE_SELF_MATERIALIZATION_AVAILABLE",
-    "ERL_CURRENT_USER_IPHONE_PORTABLE_EXECUTION_SURFACE_BOUND",
-    "DEVICE_KV_CURRENT_IPHONE_PORTABLE_PACKAGE_AVAILABLE",
-    "ERL_TASK_BOUND_NATIVE_IPHONE_EXECUTION_EVIDENCE_OBSERVED",
+    "ERL_CANONICAL_PORTABLE_EXECUTION_PATH_BOUND",
+    "DEVICE_KV_PORTABLE_PACKAGE_AVAILABLE",
+    "ERL_TASK_BOUND_PORTABLE_EXECUTION_EVIDENCE_OBSERVED",
     "ERL_TERMINAL_HOP_REUSES_ORIGINAL_FULL_PATH_INTENT",
     "EXISTING_PROVIDER_PROOF_PROJECTED_WITHOUT_REEXECUTION",
     "NO_SECOND_RUNTIME_OWNER_CREATED",
+    "NO_DEVICE_CONFIRMATION_REQUIREMENT",
+    "NO_DEVICE_DISCOVERY_REQUIREMENT",
+    "NO_DEVICE_PRESENCE_PROBE_REQUIREMENT",
     "NO_REMOTE_DEVICE_CONNECTOR_REQUIREMENT",
     "FULL_CANONICAL_BOUNDARY_PATH_PRESERVED",
     "EXACT_ENVELOPE_HASH_BOUND_AT_ALL_THREE_HOPS",
@@ -152,7 +160,7 @@
   ],
   "runtime_requirements": {
     "capabilities": [
-      "current_user_iphone_portable_execution",
+      "canonical_portable_execution",
       "task_cosv_bound_workercoordinator_claim_fence",
       "exact_local_source_self_materialization",
       "universal_intr_profiled_ingress",
@@ -162,20 +170,28 @@
       "existing_provider_proof_binding",
       "master_records_custody_reconstruction"
     ],
-    "environment": "CURRENT_USER_IPHONE_STEGOS_PLUS_KV",
+    "environment": "CANONICAL_PORTABLE_STEGOS_PLUS_KV",
+    "current_surface_label": "CURRENT_USER_IPHONE",
+    "current_surface_label_semantics": "INFORMATIONAL_ONLY_NOT_AN_IDENTITY_OR_ADMISSION_PREDICATE",
     "direction": "EXTERNAL_SYSTEM_TO_STEGOS_ECOSYSTEM_TO_DEVICE_SYSTEM_TO_KV",
     "mutation_required": true,
     "deployment_required": false,
     "current_observation_required": true,
+    "device_confirmation_required": false,
+    "device_discovery_required": false,
+    "device_presence_probe_required": false,
+    "device_identity_gate": "PROHIBITED",
     "remote_device_connector_required": false,
     "second_user_operated_device_required": false,
     "always_on_external_host_required": false
   },
   "runtime_resolution": {
-    "current_executor": "CURRENT_USER_IPHONE portable WorkerCoordinator/StegOS execution surface -> portable package SHWP-DEVICE-KV-INTR-OBSERVATION-001 -> existing profiled Universal InTr ingress and DEVICE_KV owner",
-    "unresolved_classification": "TASK_BOUND_NATIVE_IPHONE_EXECUTION_EVIDENCE_NOT_OBSERVED",
+    "current_executor": "canonical portable WorkerCoordinator/StegOS execution path -> portable package SHWP-DEVICE-KV-INTR-OBSERVATION-001 -> existing profiled Universal InTr ingress and DEVICE_KV owner",
+    "current_surface_label": "CURRENT_USER_IPHONE",
+    "current_surface_confirmation_required": false,
+    "unresolved_classification": "TASK_BOUND_PORTABLE_EXECUTION_EVIDENCE_NOT_OBSERVED",
     "remote_device_connector_classification": "NOT_APPLICABLE",
-    "authority_basis": "WorkerCoordinator claim/fence plus contemporaneous Interlock/InTr transition authority on the canonical portable current-iPhone execution surface; ERL resident-local transport credential requirement NONE; TV/TVC remains credential/provider/release authority for transitions that separately require it; Master Records owns observed-reality custody/reconstruction",
+    "authority_basis": "WorkerCoordinator claim/fence plus contemporaneous Interlock/InTr transition authority on the canonical portable execution path; ERL resident-local transport credential requirement NONE; TV/TVC remains credential/provider/release authority for transitions that separately require it; Master Records owns observed-reality custody/reconstruction; execution-surface identity itself grants no authority and is not a precondition",
     "unattended_runtime": false
   },
   "worker_claim": {
@@ -192,10 +208,10 @@
     "activation_proof_complete": false
   },
   "allowed_next_transitions": [
-    "CHECKOUT_EXISTING_DEVICE_KV_OWNER_ON_CURRENT_IPHONE",
-    "BIND_AND_INVOKE_AUTHENTIC_CURRENT_IPHONE_ERL_EXECUTION",
-    "MATERIALIZE_AND_VERIFY_AUTHENTIC_CURRENT_IPHONE_ERL_SOURCE",
-    "OBSERVE_AUTHENTIC_SHARED_CURRENT_DEVICE_LOOPBACK_INGRESS",
+    "USE_EXISTING_DEVICE_KV_OWNER_ON_CANONICAL_PORTABLE_PATH",
+    "BIND_AND_INVOKE_AUTHENTIC_ERL_EXECUTION",
+    "MATERIALIZE_AND_VERIFY_AUTHENTIC_ERL_SOURCE",
+    "OBSERVE_AUTHENTIC_SHARED_LOCAL_LOOPBACK_INGRESS",
     "EXECUTE_AUTHENTIC_ERL_THREE_HOP_TRAVERSAL_VIA_REUSABLE_TRANSPORT_COMPONENTS",
     "VERIFY_THREE_HOP_CHAIN_AND_BIND_TERMINAL_KV_PROOF",
     "SUBMIT_AUTHENTIC_EVIDENCE_TO_MASTER_RECORDS_AND_CONFIRM_RECONSTRUCTION",
@@ -221,9 +237,14 @@
     "interlock_intr_remains_transition_authority": true,
     "tvc_remains_credential_provider_release_authority": true,
     "kv_skap_remains_sole_user_verification_authority": true,
+    "device_confirmation_authority": "NONE",
+    "device_confirmation_required": false,
+    "device_discovery_required": false,
+    "device_presence_probe_required": false,
     "device_user_verification_authority": "NONE",
     "runtime_subject_binding_is_user_verification": false,
     "current_user_iphone_identity_is_user_verification": false,
+    "execution_surface_identity_is_runtime_admission": false,
     "master_records_remains_custody_reconstruction_authority": true,
     "github_runtime_authority": "NONE",
     "provider_operation_reexecution_authorized": false
