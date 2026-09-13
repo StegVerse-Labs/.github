@@ -1,0 +1,31 @@
+{
+  "schema": "stegverse.goal-task-transport-profile/v1",
+  "task_id": "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001",
+  "cosv_task_vector": "50000010100000",
+  "component_contract": "data/reusable-transport-component-contract.json",
+  "transport_requirements": {
+    "complete_manifest": true,
+    "governed_processing": false,
+    "required_round_trips": ["EXISTING_TVC_SEQUENCE"],
+    "evidence_custody_reconstruction": true,
+    "publisher_projection": false,
+    "sdk_return_assembly": false,
+    "stegverse_final_egress_transition": false,
+    "interlock_intr_transport": true,
+    "required_interlock_intr_transitions": ["DEVICE_SYSTEM->KV", "CURRENT_IPHONE_CLIENT->TVC"],
+    "far_side_final_transition": true
+  },
+  "selected_components": ["RTC-MANIFEST-001", "RTC-ROUNDTRIP-003", "RTC-EVIDENCE-CUSTODY-004", "RTC-INTERLOCK-INTR-TRANSPORT-008", "RTC-FARSIDE-FINAL-009"],
+  "repeatability": {
+    "RTC-ROUNDTRIP-003": "REPEAT_AS_REQUIRED_BY_EXISTING_TVC_SEQUENCE",
+    "RTC-INTERLOCK-INTR-TRANSPORT-008": "ONE_DEVICE_KV_INSTANCE_PLUS_REPEATED_CLIENT_TVC_INSTANCES"
+  },
+  "authority_owners": {
+    "RTC-INTERLOCK-INTR-TRANSPORT-008": "Interlock/InTr",
+    "RTC-ROUNDTRIP-003": "TV/TVC for the existing external operation; component non-authorizing",
+    "RTC-EVIDENCE-CUSTODY-004": "Master Records",
+    "RTC-FARSIDE-FINAL-009": "TV/TVC for the existing release action; component non-authorizing"
+  },
+  "composition_rule": "Select only the transport components needed by this Goal Task; completed publication is historical evidence and is not replayed.",
+  "componentization_mints_authority": false
+}
