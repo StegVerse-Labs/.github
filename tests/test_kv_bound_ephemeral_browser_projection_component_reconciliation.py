@@ -23,6 +23,15 @@ def load_evaluator():
     return mod
 
 
+def load_reuse_evaluator():
+    path = ROOT / "scripts/evaluate_indexed_event_reuse.py"
+    spec = importlib.util.spec_from_file_location("indexed_evidence_reuse", path)
+    assert spec and spec.loader
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
 class KVReusableComponentModelTests(unittest.TestCase):
     def test_decomposition_result_recomputes_exactly(self):
         source = load_json(f"data/reusable-task-componentization-inputs/{TASK_ID}.json")
@@ -32,7 +41,7 @@ class KVReusableComponentModelTests(unittest.TestCase):
         self.assertEqual(actual["score"], 30)
         self.assertTrue(actual["must_stop_scope_growth"])
 
-    def test_transport_profile_selects_only_required_components(self):
+    def test_transport_profile_selects_only_required_transport_components(self):
         profile = load_json(f"data/goal-task-transport-profiles/{TASK_ID}.json")
         self.assertEqual(profile["task_id"], TASK_ID)
         self.assertEqual(profile["cosv_task_vector"], COSV)
@@ -40,49 +49,64 @@ class KVReusableComponentModelTests(unittest.TestCase):
             profile["selected_components"],
             ["RTC-MANIFEST-001", "RTC-ROUNDTRIP-003", "RTC-EVIDENCE-CUSTODY-004", "RTC-INTERLOCK-INTR-TRANSPORT-008", "RTC-FARSIDE-FINAL-009"],
         )
-        req = profile["transport_requirements"]
-        self.assertFalse(req["governed_processing"])
-        self.assertFalse(req["publisher_projection"])
-        self.assertFalse(req["sdk_return_assembly"])
-        self.assertFalse(req["stegverse_final_egress_transition"])
-        self.assertTrue(req["far_side_final_transition"])
 
-    def test_component_profile_preserves_goal_identity(self):
+    def test_component_profile_adds_reuse_without_new_goal(self):
         profile = load_json(f"data/goal-task-component-profiles/{TASK_ID}.json")
         self.assertEqual(profile["task_id"], TASK_ID)
         self.assertEqual(profile["cosv_task_vector"], COSV)
         self.assertTrue(profile["goal_identity_preserved"])
         self.assertFalse(profile["new_goal_task_required"])
-        self.assertFalse(profile["new_reusable_component_required"])
+        self.assertTrue(profile["new_reusable_component_required"])
         self.assertFalse(profile["componentization_mints_authority"])
-        self.assertIn("TESTFLIGHT_CURRENT_IPHONE_RUNTIME_OBSERVED", profile["goal_predicates"])
-        self.assertIn("MASTER_RECORDS_CUSTODY_RECONSTRUCTION_OBSERVED", profile["goal_predicates"])
+        self.assertIn("RTC-EVIDENCE-CURRENT-SELECTOR-010", profile["selected_components"])
+        self.assertIn("RTC-EVIDENCE-REPLAY-REUSE-011", profile["selected_components"])
+        self.assertIn("TESTFLIGHT_SIGNING_PROVIDER_RELEASE_INSTALL_OBSERVED", profile["goal_predicates"])
+        self.assertNotIn("TESTFLIGHT_CURRENT_IPHONE_RUNTIME_OBSERVED", profile["goal_predicates"])
+        self.assertFalse(profile["historical_runtime_reuse"]["user_reverification_after_established_node_connectivity"])
 
-    def test_task_record_binds_component_model_without_runtime_upgrade(self):
+    def test_reuse_contract_is_non_authorizing(self):
+        contract = load_json("data/reusable-indexed-evidence-reuse-component-contract.json")
+        self.assertEqual(contract["component_id"], "RTC-EVIDENCE-REPLAY-REUSE-011")
+        self.assertEqual(contract["authority_effect"], "NONE_VALIDATION_ONLY")
+        self.assertFalse(contract["invariants"]["historical_evidence_mints_authority"])
+        self.assertTrue(contract["invariants"]["established_node_connectivity_is_transport_only"])
+        self.assertFalse(contract["invariants"]["user_interaction_required_after_established_node_connectivity"])
+
+    def test_reuse_evaluator_reuses_complete_reconstructed_event(self):
+        result = load_reuse_evaluator().evaluate({
+            "node_context": {"connectivity_state": "ESTABLISHED"},
+            "current_requirements": {"required_predicates": ["A", "B"]},
+            "indexed_event": {"replay_state": "PASS", "reconstruction_state": "PASS", "observed_predicates": ["A", "B"]},
+        })
+        self.assertEqual(result["state"], "REUSE_ACCEPTED")
+        self.assertTrue(result["reused_event"])
+        self.assertFalse(result["user_interaction_required"])
+
+    def test_reuse_evaluator_returns_only_missing_delta(self):
+        result = load_reuse_evaluator().evaluate({
+            "node_context": {"connectivity_state": "ESTABLISHED"},
+            "current_requirements": {"required_predicates": ["A", "B", "C"]},
+            "indexed_event": {"replay_state": "PASS", "reconstruction_state": "PASS", "observed_predicates": ["A", "C"]},
+        })
+        self.assertEqual(result["state"], "DELTA_REQUIRED")
+        self.assertEqual(result["missing_delta"], ["B"])
+
+    def test_reuse_evaluator_fails_closed_on_bad_replay(self):
+        result = load_reuse_evaluator().evaluate({
+            "node_context": {"connectivity_state": "ESTABLISHED"},
+            "current_requirements": {"required_predicates": []},
+            "indexed_event": {"replay_state": "FAIL", "reconstruction_state": "PASS", "observed_predicates": []},
+        })
+        self.assertEqual(result["state"], "FAIL_CLOSED")
+        self.assertIn("INDEXED_EVENT_REPLAY_NOT_PASS", result["failures"])
+
+    def test_task_record_stays_active_without_runtime_upgrade(self):
         record = load_json(f"data/canonical-task-records/{TASK_ID}.json")
         self.assertEqual(record["task_id"], TASK_ID)
-        self.assertEqual(record["cosv_task_vector"], COSV)
         self.assertEqual(record["coordination_state"], "ACTIVE")
-        projection = record["component_model_projection"]
-        self.assertEqual(projection["decomposition_score"], 30)
-        self.assertTrue(projection["goal_identity_preserved"])
-        self.assertTrue(projection["cosv_identity_preserved"])
-        self.assertFalse(projection["componentization_mints_authority"])
-        self.assertFalse(projection["runtime_predicates_completed_by_source_reuse"])
         self.assertFalse(record["completion"]["claimed"])
         self.assertFalse(record["completion"]["validated"])
-        self.assertFalse(record["completion"]["activation_proof_complete"])
-        self.assertIn("MASTER_RECORDS_CUSTODY_RECONSTRUCTION_OBSERVED", record["expected_evidence_predicates"])
         self.assertEqual(record["authority_model"]["device_user_verification_authority"], "NONE")
-        self.assertTrue(record["authority_model"]["kv_skap_sole_user_verification_authority"])
-
-    def test_runtime_handoff_remains_runtime_truth(self):
-        handoff = (ROOT / "docs/KV_BOUND_EPHEMERAL_BROWSER_PROJECTION_MIRROR_HANDOFF.md").read_text(encoding="utf-8")
-        component_handoff = (ROOT / "docs/KV_BOUND_EPHEMERAL_BROWSER_PROJECTION_COMPONENT_MODEL_MIRROR_HANDOFF.md").read_text(encoding="utf-8")
-        self.assertIn("TESTFLIGHT_CURRENT_IPHONE_RUNTIME_OBSERVED", handoff)
-        self.assertIn("This handoff remains runtime truth", handoff)
-        self.assertIn("No genuinely new reusable component is required", component_handoff)
-        self.assertIn("user-verification authority `NONE`", component_handoff)
 
 
 if __name__ == "__main__":

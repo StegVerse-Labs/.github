@@ -1,0 +1,14 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-KV-EVIDENCE-RECONCILE-001",
+  "state": "REQUESTED",
+  "task_id": "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001",
+  "mode": "INDEXED_EVIDENCE_REPLAY_RECONCILIATION",
+  "entrypoint": "control/resident-execution-request.d/consume-kv-evidence-reconcile.py",
+  "required_runtime_input": "runtime-state/kv-bound-ephemeral-browser-projection/indexed-evidence-reuse-input.json",
+  "required_output": "receipts/sovereign-host/kv-bound-ephemeral-browser-projection-evidence-reuse.latest.json",
+  "user_interaction_required_after_established_node_connectivity": false,
+  "request_granted_authority": false,
+  "second_machine_required": false,
+  "authority_effect": "NONE_REQUEST_ONLY"
+}
