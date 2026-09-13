@@ -25,11 +25,34 @@ def find_task(registry: dict[str, Any], task_id: str) -> dict[str, Any]:
     return matches[0]
 
 
-def build_projection(task: dict[str, Any]) -> dict[str, Any]:
+def resolve_component_profile(task: dict[str, Any], root: Path) -> dict[str, Any] | None:
+    task_id = str(task.get("task_id") or "")
+    if not task_id:
+        return None
+    path = root / "data" / "goal-task-component-profiles" / f"{task_id}.json"
+    if not path.is_file():
+        return None
+    value = load(path)
+    return value if value.get("task_id") == task_id else None
+
+
+def resolved_human_action_ref(task: dict[str, Any], component_profile: dict[str, Any] | None) -> str | None:
+    action = task.get("human_action_ref")
+    if not component_profile:
+        return action
+    historical = component_profile.get("historical_runtime_reuse") or {}
+    resident_request = component_profile.get("resident_reconciliation_request")
+    if historical.get("user_reverification_after_established_node_connectivity") is False and resident_request:
+        return None
+    return action
+
+
+def build_projection(task: dict[str, Any], component_profile: dict[str, Any] | None = None) -> dict[str, Any]:
     unresolved_dependencies = [
         dep for dep in task.get("dependencies", [])
         if dep.get("state") in {"UNKNOWN", "UNRESOLVED"}
     ]
+    human_action = resolved_human_action_ref(task, component_profile)
     return {
         "schema": "stegverse.canonical-task-handoff-projection/v1",
         "task_id": task.get("task_id"),
@@ -41,10 +64,12 @@ def build_projection(task: dict[str, Any]) -> dict[str, Any]:
         "blockers": task.get("blockers", []),
         "unresolved_dependencies": unresolved_dependencies,
         "systemic_incident_ref": task.get("systemic_incident_ref"),
-        "human_action_ref": task.get("human_action_ref"),
+        "human_action_ref": human_action,
+        "human_action_resolution": "SUPPRESSED_BY_AUTOMATIC_RESIDENT_RECONCILIATION" if task.get("human_action_ref") and human_action is None else "CANONICAL_TASK_RECORD",
+        "resident_reconciliation_request": (component_profile or {}).get("resident_reconciliation_request"),
         "adjacent_task_refs": task.get("adjacent_task_refs", []),
         "existing_evidence_refs": task.get("existing_evidence_refs", []),
-        "expected_evidence_predicates": task.get("expected_evidence_predicates", []),
+        "expected_evidence_predicates": (component_profile or {}).get("goal_predicates") or task.get("expected_evidence_predicates", []),
         "completion": task.get("completion", {}),
         "next_admissible_transition_candidates": task.get("allowed_next_transitions", []),
         "source_refs": task.get("source_refs", []),
@@ -113,8 +138,10 @@ def main() -> int:
     parser.add_argument("--output")
     args = parser.parse_args()
 
+    root = Path(args.registry).resolve().parent.parent
     task = find_task(load(Path(args.registry)), args.task_id)
-    projection = build_projection(task)
+    profile = resolve_component_profile(task, root)
+    projection = build_projection(task, profile)
     text = (json.dumps(projection, indent=2, sort_keys=True) + "\n") if args.format == "json" else as_markdown(projection)
 
     if args.output:
