@@ -2,99 +2,91 @@
 
 Updated: 2026-09-12
 Repository: `StegVerse-Labs/.github`
-Consuming Goal Task: `SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004`
-COSV: `71000000100110`
-Status: `ACTIVE / SOURCE MODEL PROPOSED / VALIDATION PENDING`
+Canonical PR: `#1652`
+Canonical merge: `b9f8e5153aa1651f2d7f043fb902eacb7c113ed9`
+Status: `CANONICAL / MERGED / EXACT-HEAD VALIDATED`
 
 ## Purpose
 
 The Reusable Task Component Model converts repeated StegVerse orchestration subflows into reusable, authority-preserving capability components that canonical Goal Tasks compose from declared requirements. The owning Goal Task remains the goal and evidence owner; reusable components are capabilities, not automatically new Goal Tasks.
 
-Canonical model:
+Canonical sources:
 
 ```text
 data/reusable-task-component-model.json
-```
-
-Canonical decomposition policy:
-
-```text
 data/reusable-task-component-decomposition-policy.json
-```
-
-Deterministic non-authorizing evaluator:
-
-```text
 scripts/evaluate_reusable_task_componentization.py
 ```
 
-## Composition rule
-
-A Goal Task declares the capabilities it requires. Composition derives only the necessary reusable components, preserves governed order, allows repeatable components where the task declares repeated transitions or round trips, and does not force optional components into unrelated tasks.
-
-Every reusable component must expose a stable interface including its capability, inputs, outputs, preconditions, expected evidence, authority owner/effect, failure classes, retry/reentry semantics, and version/schema binding.
-
-A missing required component fails closed. Reusing a component never mints execution, user-verification, credential, transition, custody, publication, or completion authority.
-
-## Automatic decomposition process
-
-The decomposition policy is evaluated when a task is created or materially expanded and again at key continuation points. Signals include repeated subflows, multiple authority crossings, multiple round trips, repository or organization spread, duplicated generic adapter work, growing handoff sequences, branching remediation paths, independently reusable subprocesses, optional subprocesses, and independently verifiable evidence predicates.
-
-The deterministic score yields four dispositions:
-
-```text
-0-4   KEEP_COMPOSED_AND_REEVALUATE_AT_NEXT_EVALUATION_POINT
-5-8   SEARCH_EXISTING_REUSABLE_COMPONENTS_AND_RECORD_REUSE_ANALYSIS
-9-12  COMPONENTIZATION_REQUIRED_UNLESS_EXPLICIT_NON_REUSE_JUSTIFICATION_EXISTS
-13+   STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION
-```
-
-Stopping task-specific scope growth does not stop the Goal Task. It requires the session to reuse, extend, or create the appropriate reusable component and then continue the same goal under its existing identity and COSV continuity.
+The decomposition policy is evaluated at task creation and at scope/authority/repository/round-trip/handoff/release evaluation points. At score `13+`, task-specific scope growth stops until reusable component reuse/extraction is performed. Goal Task identity, COSV continuity, prompt counts, authority, and authentic evidence requirements remain unchanged.
 
 ## Component families
 
-The initial model recognizes reusable families for transport, runtime observation, governed ingress, execution materialization, credential/session handling, evidence validation, custody/reconstruction, framework/provider translation, callback correlation, release/propagation, failure-remediation classification, and terminal cleanup/entropy recovery.
+Canonical families include transport, runtime observation, governed ingress, execution materialization, credential/session handling, evidence validation, custody/reconstruction, framework/provider translation, callback correlation, release/propagation, failure-remediation classification, and terminal cleanup/entropy recovery.
 
-The first materialized family is transport:
+Transport is the first materialized family:
 
 ```text
 data/reusable-transport-component-contract.json
 docs/REUSABLE_GOAL_TASK_TRANSPORT_COMPONENTS_MIRROR_HANDOFF.md
 ```
 
-`SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004` consumes that family through:
+Execution materialization and terminal cleanup reuse:
 
 ```text
-data/goal-task-transport-profiles/SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004.json
+data/reusable-task-ephemeral-construct-contract.json
 ```
 
-## Authority invariants
+Existing canonical owners remain valid reusable capability owners where the model says `CANONICAL_EXISTING_OWNER`; no duplicate component implementation is required merely to rename an existing capability.
 
-The model preserves existing separation:
+## Authority invariants
 
 - Task Registry: coordination only.
 - WorkerCoordinator: claim/fence authority.
 - KV/SKAP Vault: sole user-verification authority.
-- StegOS devices: interchangeable transport nodes.
+- StegOS devices: interchangeable transport/execution nodes, not user verifiers.
 - TV/TVC: credential/provider/release authority.
-- Interlock/InTr: governed transition authority.
-- Master Records: observed reality, custody, and reconstruction authority.
-- HeartBeat: timing/freshness/correlation/carriage only.
-- GitHub: no runtime authority.
+- Interlock/InTr: governed transition/admission authority.
+- Master Records: observed reality, custody, and reconstruction.
+- HeartBeat: synchronization/timing/freshness/liveness/correlation/observability only.
+- GitHub: source/evidence coordination only; no runtime authority.
 
-A receipt from one component proves only the event/observation represented by that receipt. It does not authorize the next component.
+A component receipt proves only the event represented by that receipt and never authorizes a later component. Runtime subject, node, transport, device, or Secure Enclave identity must not be promoted into user-verification authority.
 
-## Goal Task and prompt-count rule
+## Canonical merge validation
 
-Componentization is not a mechanism for resetting prompt counters or manufacturing new Goal Task IDs. The existing Goal Task continues unless remaining work is genuinely separable. A new Goal Task is appropriate only for independently ownable work with its own completion predicates and canonical continuation path.
+PR #1652 exact head `075b1e71d0ebe3591899db03d570da79eed5e916` completed successfully in:
 
-## Validation boundary
+```text
+Organization Control: 34730323940 PASS
+Deterministic Repository Suite: 34730323942 PASS
+Heartbeat Worker Project: 34730323876 PASS
+validate-deepseek-resident: 34730323965 PASS
+```
 
-This change is source/process architecture. It does not prove an authentic resident runtime, provider operation, transition, publication, custody event, or end-to-end execution. The model and its first transport-family composition must pass the repository's existing deterministic validation lanes before merge.
+PR #1652 then merged at `b9f8e5153aa1651f2d7f043fb902eacb7c113ed9`.
+
+These results prove source/process architecture only. They do not prove resident execution, provider operations, transitions, custody, publication, far-side receipt, cleanup, or end-to-end completion.
+
+## Current consuming Goal Task
+
+`SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004` remains an active consumer under COSV `71000000100110`. Its runtime evidence truth remains in:
+
+```text
+docs/SDK_WORKSPACE_EXTCOLLAB_AUTHENTIC_RUNTIME_004_MIRROR_HANDOFF.md
+```
+
+Its component composition is in:
+
+```text
+docs/SDK_WORKSPACE_EXTCOLLAB_COMPONENT_MODEL_MIRROR_HANDOFF.md
+data/goal-task-component-profiles/SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004.json
+data/goal-task-transport-profiles/SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004.json
+```
 
 ## README impact
 
-The root README must describe this model because it changes how future canonical Goal Tasks are expected to compose reusable capabilities and when growing orchestration must be decomposed.
+The root README projection required by this architecture was merged by #1652. No additional README change is required solely to reconcile this handoff's stale pre-merge status.
 
 ## Human action
 
