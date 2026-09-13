@@ -5,8 +5,8 @@
   "root_correlation_id": "SS-EVIDENCE-COMPARISON-001",
   "parent_task_id": "SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001",
   "goal": "Expose the existing ERL resident-local manifest-to-InTr-to-DEVICE_KV path through the existing StegOS same-device service-worker execution surface without adding a runtime plane, authority source, device-confirmation gate, or second-machine dependency.",
-  "coordination_state": "ACTIVE",
-  "checkout_state": "CLAIMED_INTEGRATION",
+  "coordination_state": "COMPLETED",
+  "checkout_state": "SOURCE_COMPONENT_TERMINAL",
   "cosv_task_vector": "40000100100000",
   "goal_task": false,
   "parent_goal_identity_preserved": true,
@@ -14,13 +14,17 @@
   "source_refs": [
     "docs/SS_ERL_SAME_DEVICE_PORTABLE_EXECUTION_MIRROR_HANDOFF.md",
     "docs/SS_ERL_ACTIVE_RESEARCH_INTR_RUNTIME_BINDING_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegOS#370@3efbcf7852c2a0082b157683599ce8b4f1938d6d",
     "StegVerse-Labs/StegOS/mobile/web-bootstrap/service-worker.js",
+    "StegVerse-Labs/StegOS/mobile/web-bootstrap/erl-active-research-resident-task-extension.js",
+    "StegVerse-Labs/StegOS/mobile/web-bootstrap/workercoordinator-portable-device-kv.json",
+    "StegVerse-Labs/StegOS/mobile/web-bootstrap/site-browser-intr-connectors.js",
     "StegVerse-Labs/.github/scripts/submit_erl_active_research_intr_binding_local.py",
     "StegVerse-Labs/.github/scripts/consume_device_kv_intr_materialization_request.py",
     "StegVerse-Labs/.github/workercoordinator/portable_checkout.js"
   ],
   "runtime_requirements": {
-    "execution_path": "EXISTING_STEGOS_SAME_DEVICE_SERVICE_WORKER",
+    "execution_path": "EXISTING_STEGOS_RESIDENT_TASK_SERVICE_WORKER",
     "physical_surface_label_semantics": "INFORMATIONAL_ONLY",
     "device_discovery_required": false,
     "device_confirmation_required": false,
@@ -42,24 +46,40 @@
     "heartbeat": "OBSERVABILITY_ONLY",
     "github_runtime_authority": "NONE"
   },
+  "source_completion_evidence": {
+    "stegos_issue": 369,
+    "stegos_pull_request": 370,
+    "validated_head": "e7e25761be40264c1f79b6184645cdbb3cc73ac9",
+    "validation_workflow": "StegOS CI",
+    "validation_run_id": 34781051648,
+    "validation_result": "SUCCESS",
+    "merge_commit": "3efbcf7852c2a0082b157683599ce8b4f1938d6d",
+    "existing_resident_task_route_reused": true,
+    "new_route_created": false,
+    "new_listener_created": false,
+    "canonical_device_kv_store": "stegverse-device-local-intr-v1/kv_files",
+    "generated_intr_connector_exact_blob_reused": true
+  },
   "expected_evidence_predicates": [
     "EXISTING_STEGOS_SERVICE_WORKER_REUSED",
-    "ERL_SAME_DEVICE_ROUTE_SOURCE_BOUND",
+    "EXISTING_RESIDENT_TASK_ROUTE_REUSED",
     "PARENT_TASK_COSV_EXACT_MATCH_REQUIRED",
     "DEVICE_CONFIRMATION_DISCOVERY_PRESENCE_GATING_ABSENT",
     "EXISTING_PORTABLE_WORKERCOORDINATOR_LINEAGE_REUSED",
     "ERL_OPERATION_PACKET_PAYLOAD_LINEAGE_PRESERVED",
     "TERMINAL_DEVICE_KV_OWNER_SEMANTICS_REUSED",
-    "EXISTING_HASH_LINKED_DEVICE_JOURNAL_REUSED",
+    "CANONICAL_DEVICE_KV_EXACT_READBACK_SUBSTRATE_REUSED",
+    "EXISTING_HASH_LINKED_DEVICE_JOURNAL_REUSED_FOR_EVIDENCE_ONLY",
     "NO_SECOND_RUNTIME_PLANE_CREATED",
     "STEGOS_EXACT_HEAD_VALIDATION_SUCCESS",
     "SOURCE_IMPLEMENTATION_MERGED"
   ],
   "completion": {
-    "claimed": false,
-    "validated": false,
+    "claimed": true,
+    "validated": true,
     "activation_proof_complete": false,
-    "runtime_completion_belongs_to_parent": true
+    "runtime_completion_belongs_to_parent": true,
+    "source_component_complete": true
   },
   "handoff_projection_refs": [
     "docs/SS_ERL_SAME_DEVICE_PORTABLE_EXECUTION_MIRROR_HANDOFF.md",
