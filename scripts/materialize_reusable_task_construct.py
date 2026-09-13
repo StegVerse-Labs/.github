@@ -17,12 +17,29 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "data" / "reusable-task-registry.json"
+REGISTRY_SHARDS = ROOT / "source-bundles" / "reusable-task-registry.d"
 COSV_INDEX = ROOT / "control" / "task-vector-index.json"
 CONTRACT = ROOT / "data" / "reusable-task-ephemeral-construct-contract.json"
 
 
 def load_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def load_registry() -> dict[str, Any]:
+    registry = load_json(REGISTRY)
+    tasks = list(registry.get("tasks", []))
+    if REGISTRY_SHARDS.is_dir():
+        for path in sorted(REGISTRY_SHARDS.glob("*.json")):
+            shard = load_json(path)
+            if not isinstance(shard, dict) or not shard.get("reusable_task_id"):
+                raise SystemExit(f"invalid reusable task registry shard: {path}")
+            tasks.append(shard)
+    identities = [x.get("reusable_task_id") for x in tasks if isinstance(x, dict)]
+    duplicates = sorted({x for x in identities if x and identities.count(x) > 1})
+    if duplicates:
+        raise SystemExit("duplicate reusable task identities across registry surfaces: " + ",".join(duplicates))
+    return {**registry, "tasks": tasks}
 
 
 def canonical_bytes(value: Any) -> bytes:
@@ -86,7 +103,7 @@ def derive_construct(definition: dict[str, Any], parameters: dict[str, Any], tas
 
 
 def build_manifest(args: argparse.Namespace) -> dict[str, Any]:
-    registry = load_json(REGISTRY)
+    registry = load_registry()
     index = load_json(COSV_INDEX)
     contract = load_json(CONTRACT)
     definition = resolve_reusable_task(registry, args.reusable_task_id)
@@ -149,6 +166,7 @@ def build_manifest(args: argparse.Namespace) -> dict[str, Any]:
         },
         "source_refs": [
             "data/reusable-task-registry.json",
+            "source-bundles/reusable-task-registry.d",
             "data/reusable-task-ephemeral-construct-contract.json",
             "scripts/trigger_reusable_task.py",
             "management/COSV_PROFILE_V1.json",
