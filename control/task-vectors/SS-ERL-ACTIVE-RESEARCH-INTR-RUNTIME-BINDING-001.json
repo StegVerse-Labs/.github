@@ -6,12 +6,13 @@
   "evidence_refs": [
     "data/canonical-task-records/SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001.json",
     "docs/SS_ERL_ACTIVE_RESEARCH_INTR_RUNTIME_BINDING_MIRROR_HANDOFF.md",
+    "control/portable-workercoordinator-packages/device-kv-intr-observation.json",
     "handoffs/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json",
     "workers/universal_intr_profiled_ingress.py",
     "scripts/consume_device_kv_intr_materialization_request.py",
     "StegVerse-Labs/Executive_Rhetoric_Ledger@bfb76a068717ff0aaf96c32af97ebcc43324149f:erl-active-research-runtime-binding-merged"
   ],
-  "observed_at": "2026-09-11T04:41:00Z",
+  "observed_at": "2026-09-13T10:58:00-05:00",
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
     "lifecycle": "CLAIMED_INTEGRATION",
@@ -30,15 +31,15 @@
     "propagated": false
   },
   "metric_evidence": {
-    "lifecycle": "The actual existing resident DEVICE_SYSTEM -> KV owner is identified and the bounded successor runtime-binding task is registered; ERL profile implementation and authentic three-hop execution remain.",
-    "archive_ready": "Authentic three-hop runtime receipts have not yet been observed.",
-    "unassigned_work": "Current integration session owns the bounded successor implementation trajectory.",
+    "lifecycle": "The existing DEVICE_SYSTEM -> KV owner is identified, the Goal Task is bound to CURRENT_USER_IPHONE portable WorkerCoordinator execution, and a source package for the canonical DEVICE_KV owner is materialized; authentic task-bound checkout and three-hop execution remain.",
+    "archive_ready": "Authentic current-iPhone task-bound checkout and three-hop runtime receipts have not yet been observed.",
+    "unassigned_work": "Current integration session owns the bounded current-iPhone source-binding trajectory.",
     "chat_owned_counts": "One bounded implementation/integration trajectory is active; no credential or observation authority is claimed.",
-    "canonical_owner_installed": "The successor record and handoff point to the existing SHWP-DEVICE-KV-INTR-OBSERVATION-001 resident owner and CVK downstream owner.",
-    "thread_required": "Canonical task, COSV vector, and handoff are sufficient for continuation without chat-only state.",
-    "blocker_count": "No canonical blocker; the next condition is implementation and authentic resident execution.",
-    "evidence_complete": "Provider persistence/readback is already complete under the parent, but Universal InTr runtime transport evidence is incomplete.",
-    "activated": "False until one authentic three-hop ERL acquisition traversal is observed.",
+    "canonical_owner_installed": "The Goal Task record and handoff point to the existing SHWP-DEVICE-KV-INTR-OBSERVATION-001 owner, the canonical portable WorkerCoordinator contract, the current-iPhone package, and the CVK downstream owner.",
+    "thread_required": "Canonical task, COSV vector, handoff, component profile, portable package, and source bindings are sufficient for continuation without chat-only state.",
+    "blocker_count": "No canonical source blocker; the next condition is authentic task-bound current-iPhone checkout/execution evidence.",
+    "evidence_complete": "Provider persistence/readback is already complete under the parent, but current-iPhone WorkerCoordinator checkout and Universal InTr runtime transport evidence are incomplete.",
+    "activated": "False until one authentic current-iPhone ERL acquisition traversal is observed.",
     "propagated": "Not applicable before runtime activation evidence exists."
   },
   "authority_effect": "NONE"
