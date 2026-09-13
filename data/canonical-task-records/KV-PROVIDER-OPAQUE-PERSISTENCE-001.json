@@ -1,0 +1,67 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "KV-PROVIDER-OPAQUE-PERSISTENCE-001",
+  "correlation_id": "KV-PROVIDER-OPAQUE-PERSISTENCE-001",
+  "root_correlation_id": "KV-CONNECTION-REVALIDATION-WORKER-001",
+  "parent_task_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+  "goal": "Close the provider-independent persisted-object confidentiality gap for KnowledgeVault materialization so storage-provider possession alone cannot yield plaintext access, decryption capability, use authority, or transition authority; preserve existing SKAP TV/TVC custody and current-iPhone non-exportable-key boundaries without creating a second authority stack.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "50000000102000",
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/continuity-vault-kit", "StegVerse-Labs/StegOS", "StegVerse-Labs/TVC", "StegVerse-Labs/Site"],
+    "components": ["kv-provider-opaque-persisted-object", "provider-independent-confidentiality", "non-exportable-key-binding", "fail-closed-readback", "authority-separation"]
+  },
+  "dependencies": ["STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001", "TVC-IOS-OPAQUE-RECIPIENT-CAPABILITY-001"],
+  "existing_evidence_refs": [
+    "StegVerse-Labs/TV/policies/external_secret_processing_authority_policy.json",
+    "StegVerse-Labs/continuity-vault-kit/docs/KV_PRIVACY_STATE_TRANSITION_CONTINUITY.md",
+    "StegVerse-Labs/TVC/scripts/resolve_skap_browser_ingress.py",
+    "StegVerse-Labs/TVC/tools/coinbase_skap_custody_resolver.py"
+  ],
+  "expected_evidence_predicates": [
+    "KV_PERSISTED_OBJECTS_ARE_PROVIDER_OPAQUE_BY_CRYPTOGRAPHIC_CONSTRUCTION",
+    "STORAGE_PROVIDER_POSSESSION_DOES_NOT_CONFER_PLAINTEXT_ACCESS",
+    "STORAGE_PROVIDER_POSSESSION_DOES_NOT_CONFER_DECRYPTION_CAPABILITY",
+    "STORAGE_PROVIDER_POSSESSION_DOES_NOT_CONFER_USE_OR_TRANSITION_AUTHORITY",
+    "KV_DECRYPTION_REQUIRES_ADMITTED_NON_EXPORTABLE_OR_EQUIVALENT_PROTECTED_KEY_OPERATION",
+    "KV_OBJECT_BINDINGS_ARE_AUTHENTICATED_AND_TAMPER_EVIDENT",
+    "PLAINTEXT_IS_NOT_PERSISTED_IN_PROVIDER_MATERIALIZATION",
+    "KEY_MATERIAL_IS_NOT_PERSISTED_WITH_PROVIDER_OBJECTS",
+    "EXACT_READBACK_FAILS_CLOSED_ON_KEY_BINDING_OR_OBJECT_TAMPER",
+    "SKAP_TV_TVC_CREDENTIAL_AUTHORITY_REMAINS_UNCHANGED",
+    "NO_HOSTED_RUNTIME_FALLBACK_USED",
+    "NO_SECOND_USER_OPERATED_DEVICE_REQUIRED"
+  ],
+  "blockers": [
+    "KV_PROVIDER_OPAQUE_PERSISTED_OBJECT_IMPLEMENTATION_NOT_YET_EVIDENCED",
+    "KV_PROVIDER_OPAQUE_EXACT_READBACK_NOT_YET_EVIDENCED"
+  ],
+  "allowed_next_transitions": [
+    "DEFINE_PROVIDER_INDEPENDENT_KV_PERSISTED_OBJECT_CONTRACT",
+    "IMPLEMENT_REUSABLE_KV_ENVELOPE_AND_FAIL_CLOSED_RESOLVER",
+    "BIND_TO_CURRENT_PROTECTED_KEY_CAPABILITY_WITHOUT_KEY_EXPORT",
+    "ADD_NEGATIVE_TESTS_FOR_PROVIDER_POSSESSION_AND_TAMPER",
+    "VALIDATE_EXACT_READBACK_AND_AUTHORITY_SEPARATION",
+    "RETURN_VERIFIED_COMPONENT_TO_PARENT_ROUNDTRIP"
+  ],
+  "authority_model": {
+    "storage_provider_is_plaintext_authority": false,
+    "storage_provider_is_decryption_authority": false,
+    "storage_provider_is_transition_authority": false,
+    "interlock_intr_required_for_governed_use": true,
+    "tv_tvc_credential_authority_unchanged": true,
+    "github_runtime_authority": "NONE",
+    "hosted_execution_fallback": false
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "canonical_requirement_recovered": true,
+    "skap_provider_blindness_evidenced_in_source": true,
+    "kv_provider_blindness_evidenced_in_source": false,
+    "runtime_proof_complete": false,
+    "reconciliation_ref": "docs/KV_PROVIDER_OPAQUE_PERSISTENCE_MIRROR_HANDOFF.md"
+  }
+}
