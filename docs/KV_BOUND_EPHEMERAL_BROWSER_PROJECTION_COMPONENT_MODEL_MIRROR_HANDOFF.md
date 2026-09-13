@@ -5,61 +5,128 @@ Updated: 2026-09-12
 Goal Task ID: `KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001`
 COSV: `50000010100000`
 Runtime handoff: `docs/KV_BOUND_EPHEMERAL_BROWSER_PROJECTION_MIRROR_HANDOFF.md`
-Status: `ACTIVE / GOAL IDENTITY PRESERVED / COMPONENTIZATION REQUIRED / RUNTIME TRUTH UNCHANGED`
+Status: `ACTIVE / GOAL IDENTITY PRESERVED / COMPONENTIZATION MERGED AND VALIDATED / RUNTIME TRUTH UNCHANGED`
 
-## Canonical model
+## Canonical model and merge state
 
-The Goal Task is reconciled against the Reusable Task Component Model merged through `.github` PR #1652 at `b9f8e5153aa1651f2d7f043fb902eacb7c113ed9`.
+The Reusable Task Component Model is canonical through `.github` PR #1652 at merge commit `b9f8e5153aa1651f2d7f043fb902eacb7c113ed9`.
+
+This Goal Task's reconciliation merged through `.github` PR #1679 at merge commit:
+
+```text
+f76bc12fcb516e68f3acf9ec5b6252e526478bbe
+```
+
+Exact reconciliation head:
+
+```text
+d66c8832de479b33473cdfd447d1bf0efa9b1689
+```
+
+Exact-head validation passed before merge:
+
+```text
+organization control                 34731043513 PASS
+deterministic repository suite       34731043374 PASS
+Heartbeat/repository validation      34731043427 PASS
+```
 
 Deterministic decomposition score: `30`.
 Disposition: `STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION`.
 
-This changes composition, not Goal Task identity, COSV continuity, or runtime evidence.
+This changes implementation composition only. It does not restart, rename, duplicate, close, or complete the Goal Task, and it does not change COSV continuity or runtime truth.
 
-## Selected reusable composition
+## Goal Task -> reusable components -> owners -> evidence
 
-Only capabilities actually required by this goal are selected:
+Only capabilities actually required by this goal are selected.
 
-1. `execution_materialization` through the existing reusable ephemeral-construct contract and frozen current-iPhone Site surfaces.
-2. `governed_ingress` through the existing Device->KV Interlock/InTr path used by same-device recovery.
-3. `RTC-MANIFEST-001` for task/COSV/source/evidence binding.
-4. `RTC-INTERLOCK-INTR-TRANSPORT-008` for Device->KV and the existing current-iPhone->TVC governed path; the latter may repeat with the required TVC sequence.
-5. `RTC-ROUNDTRIP-003` repeated only as required by the existing TVC sequence.
-6. `credential_session` through the existing TV/TVC-owned session/custody implementation; no new session owner is introduced.
-7. `framework_provider_adapter` through the existing current-iPhone TVC adapter as task-specific translation only.
-8. `evidence_validation` through the existing Site and TVC validators.
-9. `runtime_observation` through authentic current-iPhone observation plus the existing TVC runtime observer.
-10. `RTC-FARSIDE-FINAL-009` for the final TestFlight release/install transition.
-11. `RTC-EVIDENCE-CUSTODY-004` with Master Records as observed-reality custody/reconstruction owner.
+### Execution materialization
 
-Not selected as new active work: Publisher projection, SDK return assembly, separate governed-processing stage, callback-correlation plane, or a new general release-propagation component. Public Site publication is already satisfied evidence and must not be replayed as runtime work.
+Existing reusable family: `data/reusable-task-ephemeral-construct-contract.json`.
+
+Task-specific inputs are TASK-2026-0011 G7/fence7 continuity, current-device KV state, and the frozen Site TestFlight source commitments. The existing same-device wrapper and frozen bootstrap consume these inputs; they are composition surfaces, not new reusable orchestration owners.
+
+Expected evidence is the authentic KV projection/admission result, exact source validation, and an authentic signing result or exact fail-closed result. WorkerCoordinator retains claim/fence authority; this family is non-authorizing.
+
+### Governed ingress and transport
+
+Existing canonical owner: Interlock/InTr.
+
+`RTC-INTERLOCK-INTR-TRANSPORT-008` is selected for the Device->KV transition and reused for the already-established current-iPhone->TVC governed path as required by the existing TVC sequence.
+
+Inputs are purpose-bound requests and prior component evidence. Outputs are governed transition/transport receipts. Failure remains local to the failed component instance and may be re-entered only after its precondition is restored.
+
+### Manifest binding
+
+Existing component: `RTC-MANIFEST-001`.
+
+It binds Goal Task/COSV, TASK-2026-0011 G7/fence7 lineage, frozen source identity, and required evidence declarations. It grants no authority.
+
+### Provider round trips and credential/session handling
+
+Existing transport component: repeatable `RTC-ROUNDTRIP-003`.
+Existing credential/provider/release owner: TV/TVC.
+Existing task-specific translator: the current-iPhone TVC provider client under the established provider-operation protocol.
+
+The number of provider round trips is determined by the existing TVC reconciliation sequence; no maximal chain is forced when fewer operations are sufficient. Each round trip requires its own correlated authentic result. The translator does not inherit TV/TVC or Interlock/InTr authority and must not grow generic credential, transport, retry, or release orchestration.
+
+### Evidence validation
+
+Existing Site/TVC validators are reused for purpose/schema parity, frozen-byte/hash checks, provider-result correlation, signing-result checks, and runtime-result classification. Validation grants no authority and may not upgrade source/CI/publication evidence into runtime evidence.
+
+### Far-side final transition
+
+Existing component: `RTC-FARSIDE-FINAL-009`, selected only for the final TestFlight release/install transition. TV/TVC remains release authority. A component receipt does not authorize the following runtime observation.
+
+### Runtime observation
+
+Existing owners/surfaces are reused: authentic established-current-iPhone observation and the existing TVC runtime observation owner. Runtime observation is evidence only and does not mint authority.
+
+### Evidence custody and reconstruction
+
+Existing component: `RTC-EVIDENCE-CUSTODY-004`.
+Canonical owner: Master Records.
+
+Inputs are the authentic claim/fence, KV admission/projection evidence, provider-operation chain, signing/release evidence, and same-device runtime observation. Completion requires Master Records custody acceptance and same-execution reconstruction confirmation.
+
+## Components intentionally not selected
+
+- separate governed-processing stage;
+- Publisher projection;
+- SDK return assembly;
+- unrelated StegVerse final-egress transition;
+- asynchronous callback-correlation plane;
+- new general release-propagation component.
+
+Public Site product and same-device-wrapper propagation are already satisfied historical evidence and are not replayed as active runtime components.
 
 ## Existing components reused
 
-- `data/reusable-task-ephemeral-construct-contract.json`
-- `data/reusable-transport-component-contract.json`
-- existing Device->KV Interlock/InTr implementation
-- existing TVC provider runtime and TVC-owned session/custody path
-- existing current-iPhone TVC translation adapter
-- existing Site projection/source/result validators
-- existing TVC runtime observation owner
-- Master Records custody/reconstruction
+- `data/reusable-task-ephemeral-construct-contract.json`;
+- `data/reusable-transport-component-contract.json`;
+- existing Device->KV Interlock/InTr implementation;
+- existing current-iPhone->TVC governed path;
+- existing TV/TVC provider runtime and TV/TVC-owned credential/session/release path;
+- existing current-iPhone TVC translation adapter;
+- existing Site/TVC evidence validators;
+- existing TVC runtime observer;
+- Master Records custody/reconstruction.
 
 No genuinely new reusable component is required by this Goal Task.
 
-## Bespoke orchestration reclassification
+## Bespoke orchestration superseded as ownership
 
-Historical source and evidence remain preserved. These task-specific surfaces must not grow into generic orchestration owners:
+Historical source and evidence remain preserved. These task-specific surfaces are configuration/provenance surfaces and must not grow into generic orchestration owners:
 
-- `StegVerse-Labs/Site:task0011-same-device-kv-recovery.html` -> task-specific composition/rendezvous surface;
+- `StegVerse-Labs/Site:task0011-same-device-kv-recovery.html` -> same-device task composition/rendezvous;
 - `StegVerse-Labs/Site:stegos-bootstrap/current-iphone-testflight-bootstrap.js` -> frozen task-specific execution composition;
-- `StegVerse-Labs/Site:stegos-bootstrap/current-iphone-tvc-provider-client.js` -> task-specific translator under the existing governed TVC protocol;
-- `StegVerse-Labs/Site:stegos-bootstrap/current-iphone-testflight.html` -> historical file-selection entrypoint, superseded as the normal runtime-resolution path by same-device recovery;
-- retired TASK-2026-0011 one-shot binary relay -> historical exact-byte transport evidence only, not a reusable runtime.
+- `StegVerse-Labs/Site:stegos-bootstrap/current-iphone-tvc-provider-client.js` -> provider-specific translation under the existing governed TVC protocol;
+- `StegVerse-Labs/Site:stegos-bootstrap/current-iphone-testflight.html` -> historical saved-file entrypoint, superseded as the normal runtime-resolution surface by same-device recovery;
+- retired TASK-2026-0011 one-shot binary relay -> historical exact-byte transport evidence only.
 
 No historical evidence is deleted.
 
-## Authority model
+## Authority invariants
 
 - Task Registry: coordination only.
 - WorkerCoordinator: claim/fence authority.
@@ -71,57 +138,23 @@ No historical evidence is deleted.
 - HeartBeat: synchronization, timing, freshness, liveness, state correlation, and observability only.
 - GitHub: source/evidence coordination only; runtime authority `NONE`.
 
-## Session work classification
-
-Reusable component implementation:
-- none newly created; canonical existing components are reused.
-
-Goal-specific configuration:
-- TASK-2026-0011 G7/fence7 binding;
-- current-iPhone TestFlight projection purpose;
-- frozen source/product commitments;
-- same-device execution requirement.
-
-Goal-specific evidence predicates already satisfied:
-- authentic TASK-2026-0011 G7/fence7 allocation;
-- exact frozen Site product merge/publication;
-- same-device recovery merge/publication.
-
-Canonical authority invocation:
-- WorkerCoordinator claim/fence remains retained evidence;
-- future governed transition and TVC release operations remain pending authentic invocation.
-
-Runtime observation:
-- `TESTFLIGHT_CURRENT_IPHONE_RUNTIME_OBSERVED` remains unresolved.
-
-Duplicate/obsolete orchestration:
-- retired one-shot binary relay;
-- saved-file selection flow superseded as normal path by same-device recovery;
-- task-specific wrapper/bootstrap/adapter are retained only as parameterized composition surfaces.
-
-Unresolved dependency:
-- authentic current-iPhone execution through the existing component composition.
-
-Genuinely novel capability:
-- none.
-
 ## Remaining Goal Task predicates
 
-Componentization does not complete them. The Goal Task still requires authentic evidence for:
+Componentization does not complete them. Authentic evidence remains required for:
 
 - current-iPhone same-device execution;
 - Device->KV InTr admission and verified KV state for this execution;
-- successful bounded TVC sequence for this execution;
+- the bounded TV/TVC provider/release sequence actually required by this execution;
 - final TestFlight release/install observation;
 - retained same-device StegOS/StegBrowser runtime observation;
 - Master Records custody acceptance and same-execution reconstruction;
-- return to the frozen global runtime measurement with authentic evidence only.
+- return to the frozen global runtime measurement using authentic evidence only.
 
 ## Next admissible work
 
-Do not add new task-specific transport, session, adapter, retry, or evidence-custody machinery.
+The reconciliation itself is merged and source-validated. Normal Goal Task execution resumes through the existing public same-device runtime surface. Any authentic fail-closed result must be classified to the owning reusable component and remediated there; do not create parallel task-specific transport, session, adapter, retry, runtime, or custody machinery.
 
-Continue through the existing public same-device runtime surface and classify any authentic fail-closed result by the owning reusable component. Repair only that owner/component when machine-admissible. Do not synthesize runtime evidence, require a second user-operated device, or introduce device-local user verification.
+Do not synthesize evidence, require a second user-operated device, or introduce device-local user verification.
 
 ## README impact
 
