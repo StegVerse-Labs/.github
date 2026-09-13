@@ -1,0 +1,115 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+  "correlation_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+  "root_correlation_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+  "parent_task_id": null,
+  "goal": "Implement and verify the StegVerse side of the bilaterally frozen MIR x StegVerse Separation-of-Powers Evidence Contract v0.3 while preserving strict separation among MIR historical custody, StegVerse governance authority, and bounded cryptographic provenance.",
+  "coordination_state": "ACTIVE",
+  "source_refs": [
+    "docs/contracts/MIR_STEGVERSE_SEPARATION_OF_POWERS_EVIDENCE_CONTRACT_v0.3.md",
+    "docs/MIR_STEGVERSE_SEPARATION_OF_POWERS_EVIDENCE_CONTRACT_MIRROR_HANDOFF.md",
+    "evidence/mir-stegverse-v0.3-bilateral-freeze-2026-09-10.md"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/StegCore",
+      "StegVerse-org/StegVerse-SDK",
+      "master-records/orchestration"
+    ],
+    "components": [
+      "mir-evidence-contract",
+      "verdict-free-evidence-intake",
+      "mir-reference-custody-boundary",
+      "proof-verification",
+      "freshness-policy",
+      "witness-policy",
+      "governance-decision-provenance"
+    ]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "MIR-V03-STANDING-EXTENSIONS",
+      "kind": "EXTERNAL_IMPLEMENTATION",
+      "state": "UNRESOLVED",
+      "ref": "POST /v1/policy/standing"
+    },
+    {
+      "dependency_id": "MIR-INCLUSION-PROOF-SURFACE",
+      "kind": "EXTERNAL_IMPLEMENTATION",
+      "state": "UNRESOLVED",
+      "ref": "contract section 12.5"
+    },
+    {
+      "dependency_id": "MIR-WITNESS-ATTESTATION-SURFACE",
+      "kind": "EXTERNAL_IMPLEMENTATION",
+      "state": "UNRESOLVED",
+      "ref": "contract section 12.6"
+    }
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+    "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003"
+  ],
+  "existing_evidence_refs": [
+    "evidence/mir-stegverse-v0.3-bilateral-freeze-2026-09-10.md",
+    "StegVerse-Labs/Standing-Proof-Engine/SPE_MIRROR_HANDOFF.md"
+  ],
+  "expected_evidence_predicates": [
+    "MIR_EVIDENCE_SURFACE_VERDICT_FREE",
+    "ENTITY_REF_OPAQUE",
+    "CHECKPOINT_SELECTOR_MISMATCH_FAILS_AS_EVIDENCE_STATE",
+    "PROOF_STATUS_NOT_OVERCLAIMED",
+    "MIR_HISTORY_NOT_REPLICATED_IN_STEGVERSE",
+    "MIR_REFERENCE_SCHEMA_VALID",
+    "GOVERNANCE_DECISION_SEPARATELY_RETAINED",
+    "FRESHNESS_OWNED_BY_STEGVERSE",
+    "UNKNOWN_LEAF_SCHEME_HARD_FAILS",
+    "SCHEME_BOUND_AUDIT_PATH_FOLD_VALID",
+    "CHECKPOINT_TIP_CANONICALIZATION_VALID",
+    "WITNESS_POLICY_SEPARATE_FROM_MIR",
+    "PROOF_FAILURE_REMAINS_EVIDENCE_STATE",
+    "V3_THREE_IMPLEMENTATION_CONFORMANCE_FIXTURE_REPRODUCED"
+  ],
+  "runtime_requirements": {
+    "capabilities": [
+      "canonical_artifact_validation",
+      "cryptographic_verification",
+      "governed_evidence_intake"
+    ],
+    "environment": "SOVEREIGN_RESIDENT",
+    "direction": "INTERNAL_AND_EXTERNAL_EVIDENCE",
+    "mutation_required": false,
+    "deployment_required": false,
+    "current_observation_required": false
+  },
+  "runtime_resolution": null,
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "human_action_ref": null,
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": null
+  },
+  "allowed_next_transitions": ["INGRESS_ADMITTED"],
+  "handoff_projection_refs": [
+    "docs/MIR_STEGVERSE_SEPARATION_OF_POWERS_EVIDENCE_CONTRACT_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "mir_historical_custody_authority": true,
+    "stegverse_governance_authority": true,
+    "provenance_transfers_custody_authority": false,
+    "provenance_transfers_governance_authority": false,
+    "stegverse_may_replicate_mir_history": false,
+    "mir_may_emit_governance_verdict_on_evidence_surface": false,
+    "interlock_intr_required_for_governed_ingress_egress": true
+  }
+}
