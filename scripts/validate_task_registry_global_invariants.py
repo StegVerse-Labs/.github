@@ -31,11 +31,16 @@ EXPECTED = {
     "evidence_reachability_may_establish_substrate_unsuitable": False,
     "second_user_operated_device_allowed": False,
     "execution_substrate_selection_authority_effect": "NONE",
+    "completion_evidence_contract_version": "v1",
     "completion_language_requires_evidence_class": True,
     "unqualified_complete_or_completed_prohibited": True,
     "stronger_completion_class_inference_prohibited": True,
     "completion_claim_requires_evidence_refs": True,
     "validated_completion_requires_claimed_completion": True,
+    "new_or_reconciled_completion_requires_contract_version": True,
+    "legacy_unqualified_completion_authority": "NONE_NON_AUTHORITATIVE_PROVENANCE_ONLY",
+    "legacy_unqualified_completion_may_support_user_facing_complete": False,
+    "legacy_unqualified_completion_may_satisfy_terminal_predicate": False,
 }
 
 COMPLETION_CLASSES = [
@@ -89,20 +94,61 @@ def walk(value, path=""):
             yield from walk(v, f"{path}[{i}]")
 
 
+def completion_reportability(record: dict) -> dict[str, object]:
+    completion = record.get("completion")
+    if not isinstance(completion, dict):
+        return {"reportable_complete": False, "state": "NO_COMPLETION_CLAIM"}
+    claimed = completion.get("claimed") is True
+    validated = completion.get("validated") is True
+    evidence_class = completion.get("evidence_class")
+    contract_version = completion.get("evidence_contract_version") or record.get("completion_evidence_contract_version")
+    if not (claimed or validated):
+        return {"reportable_complete": False, "state": "NOT_CLAIMED"}
+    if contract_version != "v1" or evidence_class not in COMPLETION_RANK:
+        return {
+            "reportable_complete": False,
+            "state": "LEGACY_UNQUALIFIED_NON_AUTHORITATIVE",
+            "authority": "NONE_NON_AUTHORITATIVE_PROVENANCE_ONLY",
+        }
+    terminal_class = completion.get("terminal_evidence_class")
+    if terminal_class is not None and terminal_class in COMPLETION_RANK:
+        satisfied = COMPLETION_RANK[evidence_class] >= COMPLETION_RANK[terminal_class]
+    else:
+        satisfied = evidence_class == "END_TO_END"
+    return {
+        "reportable_complete": satisfied,
+        "state": "QUALIFIED_TERMINAL_SATISFIED" if satisfied else "QUALIFIED_PARTIAL_EVIDENCE",
+        "evidence_class": evidence_class,
+        "terminal_evidence_class": terminal_class,
+    }
+
+
 def validate_completion(path: Path, record: dict) -> None:
     completion = record.get("completion")
     if not isinstance(completion, dict):
         return
     claimed = completion.get("claimed") is True
     validated = completion.get("validated") is True
-    evidence_class = completion.get("evidence_class")
-    terminal_class = completion.get("terminal_evidence_class")
-    evidence_refs = completion.get("evidence_refs")
-
     if validated and not claimed:
         fail(f"{path.name}: completion.validated=true requires completion.claimed=true")
     if not (claimed or validated):
         return
+
+    evidence_class = completion.get("evidence_class")
+    terminal_class = completion.get("terminal_evidence_class")
+    evidence_refs = completion.get("evidence_refs")
+    contract_version = completion.get("evidence_contract_version") or record.get("completion_evidence_contract_version")
+    contract_engaged = contract_version == "v1" or any(
+        key in completion for key in ("evidence_class", "terminal_evidence_class", "evidence_refs", "end_to_end_complete")
+    )
+
+    if not contract_engaged:
+        # Historical provenance is allowed to remain in place, but it is not
+        # authoritative for promotion, terminal predicates, or user-facing
+        # complete/completed reporting. completion_reportability() enforces that.
+        return
+    if contract_version != "v1":
+        fail(f"{path.name}: reconciled completion claim requires evidence contract version v1")
     if evidence_class not in COMPLETION_RANK:
         fail(f"{path.name}: affirmative completion requires explicit completion.evidence_class")
     if not isinstance(evidence_refs, list) or not evidence_refs or not all(isinstance(x, str) and x for x in evidence_refs):
@@ -177,15 +223,22 @@ def main() -> None:
         "NO_RUNTIME_OBSERVED_AS_MASTER_RECORDS_RECONSTRUCTED",
         "NO_PROVIDER_OBSERVED_AS_END_TO_END_COMPLETE",
         "NO_STRONGER_COMPLETION_CLASS_WITHOUT_NATIVE_EVIDENCE",
+        "NO_LEGACY_UNQUALIFIED_COMPLETION_AS_CURRENT_TERMINAL_PROOF",
     }
     missing = sorted(required_prohibitions - prohibitions)
     if missing:
         fail("global invariant missing required prohibitions: " + ", ".join(missing))
     if policy.get("authority_effect") != "NONE_REGISTRY_INVARIANT_ONLY":
         fail("global invariant authority effect mismatch")
+
+    legacy = 0
     for path in sorted(RECORDS.glob("*.json")):
         validate_record(path)
+        record = json.loads(path.read_text(encoding="utf-8"))
+        if completion_reportability(record).get("state") == "LEGACY_UNQUALIFIED_NON_AUTHORITATIVE":
+            legacy += 1
     print("TASK_REGISTRY_GLOBAL_INVARIANTS_PASS")
+    print(f"LEGACY_UNQUALIFIED_COMPLETION_NON_AUTHORITATIVE_COUNT={legacy}")
 
 if __name__ == "__main__":
     main()
