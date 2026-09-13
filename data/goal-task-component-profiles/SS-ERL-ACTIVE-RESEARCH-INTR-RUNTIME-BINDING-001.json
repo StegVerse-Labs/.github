@@ -9,6 +9,14 @@
   "decomposition_evaluation": "data/reusable-task-componentization-evaluations/SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001.json",
   "transport_profile": "data/goal-task-transport-profiles/SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001.json",
   "runtime_handoff": "docs/SS_ERL_ACTIVE_RESEARCH_INTR_RUNTIME_BINDING_MIRROR_HANDOFF.md",
+  "runtime_surface": {
+    "execution_surface": "CURRENT_USER_IPHONE",
+    "portable_workercoordinator_contract": "docs/WORKERCOORDINATOR_PORTABLE_IPHONE_EXECUTION_MIRROR_HANDOFF.md",
+    "remote_device_connector_required": false,
+    "remote_device_connector_classification": "NOT_APPLICABLE",
+    "second_user_operated_device_required": false,
+    "always_on_external_host_required": false
+  },
   "family_bindings": [
     {
       "family": "execution_materialization",
@@ -18,25 +26,25 @@
         "control/resident-execution-request.d/consume-erl-active-research-intr-runtime-binding.py",
         "control/resident-execution-request.d/consume-erl-active-research-intr-submission.py"
       ],
-      "inputs": ["canonical task pointer", "already-local canonical source root", "ERL dispatch/source parameters"],
-      "outputs": ["resident-local exact source materialization", "deterministic binding", "submission dispatch state"],
-      "preconditions": ["authentic sovereign resident visit", "existing resident dispatcher"],
+      "inputs": ["canonical task pointer", "already-local canonical source root", "ERL dispatch/source parameters", "current-iPhone portable WorkerCoordinator task binding"],
+      "outputs": ["current-iPhone exact source materialization", "deterministic binding", "submission dispatch state"],
+      "preconditions": ["CURRENT_USER_IPHONE portable execution surface", "authentic task/COSV-bound WorkerCoordinator checkout/claim/fence where applicable", "existing portable dispatcher/materialization path"],
       "authority_owner": "WorkerCoordinator for claim/fence; component itself non-authorizing",
-      "expected_evidence": ["source dependency digest map", "preparation apply/check evidence", "binding-consumption receipt", "submission-dispatch receipt"],
-      "failure_remediation": "fail closed at missing source, preparation, or runtime-input boundary; retry through the same resident dispatcher after the missing predicate is satisfied",
+      "expected_evidence": ["portable WorkerCoordinator task-bound receipt where applicable", "source dependency digest map", "preparation apply/check evidence", "binding-consumption receipt", "submission-dispatch receipt"],
+      "failure_remediation": "fail closed at missing task-bound portable admission, source, preparation, or runtime-input boundary; retry through the same CURRENT_USER_IPHONE portable path after the missing predicate is satisfied; never wait for or require remote-device enumeration",
       "cardinality": "ONE_INVOCATION_FOR_THIS_GOAL_UNLESS_AUTHENTIC_REENTRY_IS_REQUIRED"
     },
     {
       "family": "runtime_observation",
       "existing_owner": "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
       "canonical_implementation": "workers/device_kv_intr_observation_worker.py",
-      "inputs": ["admitted terminal materialization", "WorkerCoordinator claim/fence", "current resident runtime"],
+      "inputs": ["admitted terminal materialization", "WorkerCoordinator claim/fence", "CURRENT_USER_IPHONE task-bound native execution"],
       "outputs": ["terminal runtime observation", "durable transport/readback evidence"],
-      "preconditions": ["current resident runtime exists", "claim/fence is authentic"],
+      "preconditions": ["current-iPhone portable runtime surface available", "claim/fence is authentic where applicable", "exact task/COSV native execution occurs"],
       "authority_owner": "WorkerCoordinator",
-      "expected_evidence": ["current-runtime worker receipt", "claim/fence-bound execution evidence"],
-      "failure_remediation": "remain blocked without manufacturing current-runtime evidence",
-      "cardinality": "ONE_AUTHENTIC_CURRENT_EXECUTION"
+      "expected_evidence": ["current-iPhone task-bound worker/native execution receipt", "claim/fence-bound execution evidence"],
+      "failure_remediation": "remain incomplete without manufacturing task-bound native iPhone execution evidence; remote-device connector absence is not a blocker or runtime-state classifier",
+      "cardinality": "ONE_AUTHENTIC_CURRENT_IPHONE_EXECUTION"
     },
     {
       "family": "governed_ingress",
@@ -44,10 +52,10 @@
       "canonical_implementation": "shared Universal InTr profiled ingress with ERL profile parameterization",
       "inputs": ["exact ERL binding bytes", "STEGOS_RESIDENT_LOCAL transport headers"],
       "outputs": ["hop 1", "hop 2", "terminal materialization request"],
-      "preconditions": ["shared loopback ingress authentically present"],
+      "preconditions": ["shared current-device loopback ingress authentically present"],
       "authority_owner": "Interlock/InTr",
       "expected_evidence": ["profile admission evidence", "exact response hash", "two canonical hop receipts"],
-      "failure_remediation": "fail closed and reuse same ingress after authentic readiness returns",
+      "failure_remediation": "fail closed and reuse the same current-device ingress after authentic readiness returns",
       "cardinality": "ONE_ADMISSION"
     },
     {
@@ -92,12 +100,13 @@
     }
   ],
   "not_applicable_families": {
-    "credential_session": "Resident-local ERL transport requires no relay authorization; TV/TVC remains credential authority if a future separately governed transition requires credentials.",
+    "credential_session": "Current-iPhone resident-local ERL transport requires no relay authorization; TV/TVC remains credential authority if a future separately governed transition requires credentials.",
     "framework_provider_adapter": "No provider execution occurs in this goal; existing provider evidence is only bound, never replayed.",
     "callback_correlation": "No callback cycle is required.",
     "release_propagation": "No publication or release transition is part of this goal.",
     "publisher_projection": "Not selected.",
-    "sdk_return_assembly": "Not selected."
+    "sdk_return_assembly": "Not selected.",
+    "remote_device_connector": "NOT_APPLICABLE: this Goal Task executes on CURRENT_USER_IPHONE and must not poll for, wait for, or require any remotely connected resident device."
   },
   "conditional_families": {
     "terminal_cleanup_entropy_recovery": "Applicable only after required Master Records custody/reconstruction and any residual recording obligations complete. It is not a prerequisite for obtaining the three-hop proof itself."
@@ -105,6 +114,7 @@
   "task_specific_configuration": [
     "ERL source_id/group_id and acquisition-envelope schema",
     "three-hop EXTERNAL_SYSTEM->STEGOS_ECOSYSTEM->DEVICE_SYSTEM->KV topology",
+    "CURRENT_USER_IPHONE portable WorkerCoordinator/StegOS execution surface",
     "existing CISA/Iran provider-proof reference",
     "completion predicate requiring the terminal KV proof to bind to that existing provider proof"
   ],
@@ -125,7 +135,7 @@
       "path": "scripts/install_erl_device_kv_prior_lineage.py",
       "new_role": "RETAINED_RUNTIME_COMPATIBILITY_MIGRATION_ONLY",
       "delete_now": false,
-      "reason": "Preserves source convergence for retained residents; historical migration must not become a parallel runtime."
+      "reason": "Preserves source convergence for retained current-device runtime; historical migration must not become a parallel runtime."
     }
   ],
   "authority_invariants": {
