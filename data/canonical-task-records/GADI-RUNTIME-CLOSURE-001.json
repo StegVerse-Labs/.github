@@ -29,5 +29,5 @@
   "completion": {"claimed":false,"validated":false,"activation_proof_complete":false},
   "allowed_next_transitions": ["INGRESS_ADMITTED"],
   "handoff_projection_refs": ["docs/GADI_RUNTIME_CLOSURE_MIRROR_HANDOFF.md","docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md","docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md"],
-  "authority_model": {"task_registry_mints_execution_authority":false,"source_state_proves_execution":false,"worker_claim_authority":"WORKERCOORDINATOR","interlock_intr_required_for_governed_ingress_egress":true,"credential_authority":"TV_TVC","user_verification_authority":"KV_SKAP_VAULT","stegos_device_role":"INTERCHANGEABLE_TRANSPORT_NODE","request_grants_execution_authority":false}
+  "authority_model": {"task_registry_mints_execution_authority":false,"source_state_proves_execution":false,"worker_claim_authority":"WORKERCOORDINATOR","interlock_intr_required_for_governed_ingress_egress":true,"credential_authority":"TV_TVC","user_verification_authority":"KV/SKAP Vault","stegos_device_role":"INTERCHANGEABLE_TRANSPORT_NODE","request_grants_execution_authority":false}
 }
