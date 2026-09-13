@@ -1,0 +1,68 @@
+{
+  "schema": "stegverse.reusable-evidence-validation-component-contract/v1",
+  "model": "Reusable Task Component Model",
+  "parent_model_ref": "data/reusable-task-component-model.json",
+  "purpose": "Reusable non-authorizing evidence-validation components for selecting and validating current applicable evidence without creating the underlying authority state.",
+  "components": [
+    {
+      "component_id": "RTC-EVIDENCE-CURRENT-SELECTOR-010",
+      "name": "Current Applicable Verification Record Selector",
+      "capability_provided": "select_current_applicable_verification_record",
+      "inputs": {
+        "current_binding": "non-secret KV/SKAP current-verification binding projected by the authoritative verification domain",
+        "candidate_records": "zero or more already-admitted owner-authorization plus admission-receipt pairs evaluated only inside the selector",
+        "operation_context": "task/COSV/purpose/context against which current applicability is evaluated"
+      },
+      "outputs": {
+        "verification_provenance": "existing non-secret KV/SKAP verification provenance projection for the exactly selected candidate",
+        "selected_record_ref": "opaque reference derived from exact selected source digests; raw owner authorization and receipt are not returned",
+        "selection_evidence": "non-secret exact digest bindings and decision metadata"
+      },
+      "preconditions": [
+        "current_binding_state_is_CURRENT_VERIFIED",
+        "current_binding_user_verification_authority_is_KV_SKAP_VAULT",
+        "current_binding_matches_operation_task_cosv_and_purpose_when_declared",
+        "current_binding_not_expired",
+        "candidate_owner_authorization_is_already_verified",
+        "candidate_admission_receipt_is_ADMITTED_and_TV_TVC_bound",
+        "candidate_pair_exactly_matches_current_binding_digests",
+        "exactly_one_candidate_matches"
+      ],
+      "expected_evidence": [
+        "current_binding_digest",
+        "selected_owner_authorization_digest",
+        "selected_admission_receipt_digest",
+        "operation_context_digest",
+        "selector_decision_digest"
+      ],
+      "authority_owner": "KV/SKAP Vault for user-verification state; TV/TVC for admitted credential-receipt semantics",
+      "authority_effect": "NONE_EVIDENCE_SELECTION_ONLY",
+      "failure_classes": [
+        "CURRENT_BINDING_MISSING",
+        "CURRENT_BINDING_EXPIRED",
+        "CURRENT_BINDING_CONTEXT_MISMATCH",
+        "NO_MATCHING_CANDIDATE",
+        "AMBIGUOUS_MULTIPLE_MATCHES",
+        "CANDIDATE_NOT_VERIFIED",
+        "CANDIDATE_NOT_ADMITTED",
+        "DIGEST_MISMATCH",
+        "AUTHORITY_DRIFT"
+      ],
+      "retry_or_reentry_semantics": "Deterministic for identical inputs. Retry only with a newly observed authoritative current binding or a changed candidate set; never fall back to latest-by-time selection.",
+      "version_or_schema_binding": [
+        "stegverse.kv-skap.current-verification-binding/v1",
+        "stegverse.kv-skap.user-verification-provenance/v1"
+      ],
+      "invariants": {
+        "creates_user_verification": false,
+        "performs_webauthn": false,
+        "selects_latest_by_timestamp": false,
+        "device_identity_is_user_verification": false,
+        "transport_identity_is_user_verification": false,
+        "receipt_selection_mints_authority": false,
+        "raw_selected_record_output": false,
+        "secret_material_output": false
+      }
+    }
+  ]
+}
