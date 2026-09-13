@@ -21,6 +21,7 @@
   },
   "handoff_projection_refs": [
     "StegVerse-Labs/.github:docs/SITE_PUBLICATION_NATIVE_RUNTIME_EXECUTION_001_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github:docs/SITE_PUBLICATION_NATIVE_RUNTIME_COMPONENT_MODEL_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github:docs/SITE_PUBLICATION_INTR_CONSUMER_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github:docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md"
   ],
@@ -43,6 +44,7 @@
     "model": "data/reusable-task-component-model.json",
     "decomposition_policy": "data/reusable-task-component-decomposition-policy.json",
     "goal_component_profile": "data/goal-task-component-profiles/SITE-PUBLICATION-NATIVE-RUNTIME-EXECUTION-001.json",
+    "component_handoff": "docs/SITE_PUBLICATION_NATIVE_RUNTIME_COMPONENT_MODEL_MIRROR_HANDOFF.md",
     "transport_family": "data/reusable-transport-component-contract.json",
     "source_refresh_family": "data/reusable-sovereign-source-refresh-component-contract.json",
     "ephemeral_execution_family": "data/reusable-task-ephemeral-construct-contract.json",
