@@ -23,7 +23,7 @@ The bridge must support:
 6. a resolution state of either `SINGLE_SURVIVING_INTERPRETATION` or `UNRESOLVED_INTERPRETATION_SET`;
 7. escalation for additional evidence or human clarification when materially divergent consequences remain;
 8. InTr handoff only after the contract's admission conditions are satisfied;
-9. receipts sufficient for replay, reconstruction, and Run 3.x experiment analysis.
+9. receipts sufficient for replay and reconstruction of bridge processing.
 
 ## Architectural invariant
 
@@ -37,16 +37,13 @@ Neither model interpretation nor human interpretation becomes truth solely by as
 
 The transport envelope MUST NOT itself grant governance, execution, publication, custody, or transition authority.
 
-## Run 3.x relation
+## Independence from Run 3
 
-Run 3.x formulation is being developed in parallel. The bridge contract is intended to provide the stable implementation boundary required before Run 3.x claims direct interoperability.
+Run 3 is independent of machine-to-machine interoperability and is not gated by, dependent on, or defined by this bridge task.
 
-Run 3.x must distinguish at least:
+`ELAN-INTR-BRIDGE-001` may proceed in parallel with Run 3 formulation and execution, but neither establishes completion of the other. Run 3 may remain human-mediated or use any separately agreed experimental exchange method. Conversely, completion of the bridge does not imply any Run 3 result.
 
-- human-mediated evidence exchange;
-- ELAN-shaped SDK submission;
-- authentic ELAN runtime submission, if later observed;
-- direct bidirectional runtime interoperability, if later observed.
+If a future Run 3 or later experiment happens to use this bridge, its evidence must record the transport class actually observed, but use of the bridge is optional rather than a prerequisite.
 
 No higher interoperability class may be claimed from evidence belonging to a lower class.
 
@@ -91,4 +88,5 @@ This task does not claim:
 - ELAN credentials or authentication;
 - a bidirectional ELAN runtime session;
 - direct machine-to-machine interoperability until independently observed;
-- that Run 3.x experimental semantics are finalized.
+- dependency, gating, or completion authority over Run 3;
+- that Run 3 experimental semantics are finalized.
