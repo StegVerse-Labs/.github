@@ -161,17 +161,16 @@ The ECE resident runtime already requires `master-records/orchestration` in its 
 
 - PR #1690 merged the standardized manifest-bound runner result, runner expiry, residual recording, source custody request, entropy verifier/finalizer, and ECE reusable-result binding into `.github` at `46686bb4e83f2788cacc614594a875c175e0b78b` after Organization Control, Deterministic, and Heartbeat exact-head validation passed.
 - `master-records/core-lite` PR #39 merged a separately validated reference implementation of independent lifecycle custody at `be0d08d73c96f50308991793327522dc01304657`.
-- The follow-up source now binds the generic lifecycle to the actual existing ECE runtime Master Records owner: `master-records/orchestration`.
-- Added a resident-propagated roundtrip adapter that reuses the existing repository-root map and verifies destination reconstruction byte-for-byte.
-- Extended the reusable trigger so an authentic standardized result can continue through machine-admissible Master Records custody/reconstruction and entropy recovery without manual intermediate coordination.
-- Preserved the previous evidence-reconciliation boundary for reusable runners that do not emit standardized completion evidence.
+- `master-records/orchestration` PR #93 merged the actual ECE-resident lifecycle ingest/reconstruction destination at `3507c5116ad9741f368bea0c563023f25729ac75`; its focused reusable lifecycle custody validation passed before merge.
+- `.github` PR #1694 merged the resident Master Records roundtrip integration at `c35a12fdf1fa32b7890e923cf0889bb0ba570010` after exact-head Organization Control `34735304336`, Deterministic Repository Suite `34735304388`, and Heartbeat Worker Project `34735304350` all passed.
+- The reusable trigger now advances from authentic standardized runner evidence through runner expiry, residual recording, destination-owned Master Records custody/reconstruction, exact reconstructed-request byte equality, and entropy recovery when the existing local runtime dependencies are present.
+- Existing runners without standardized completion evidence still stop at evidence reconciliation; missing/rejected Master Records runtime source still stops at the exact destination boundary.
+- The existing Healer reusable-task schedule already enables `RT-ECOSYSTEM-CONTINUITY-EVALUATION-001` hourly with bounded retries; no new scheduler was added.
 
 ## Work remaining to satisfy the goal
 
-1. Validate and merge the new `master-records/orchestration` lifecycle ingest/reconstruction source.
-2. Validate and merge the `.github` resident roundtrip integration.
-3. Allow the existing hourly Healer scheduler to execute one authentic `RT-ECOSYSTEM-CONTINUITY-EVALUATION-001` resident/sandbox invocation using the merged sources.
-4. Retain, from that same invocation, the manifest, trigger receipt, standardized runner result, runner-expiry receipt, residual-recording artifact, Master Records source request, destination custody record, exact reconstructed request bytes, and entropy-recovery receipt.
-5. Verify the retained chain has no inferred or substituted links.
+1. Observe one authentic post-merge `RT-ECOSYSTEM-CONTINUITY-EVALUATION-001` resident/sandbox invocation executed by the existing ecosystem scheduler.
+2. Retain, from that same invocation, the manifest, trigger receipt, standardized runner result, runner-expiry receipt, residual-recording artifact, Master Records source request, destination custody record, exact reconstructed request bytes, and entropy-recovery receipt.
+3. Verify that retained chain has no inferred, substituted, or cross-invocation links.
 
-Quantitative performance/load assessment should be repeated only after those runtime artifacts exist.
+No additional source implementation is presently identified for this lifecycle. Quantitative performance/load assessment should be repeated only after the remaining runtime artifacts exist.
