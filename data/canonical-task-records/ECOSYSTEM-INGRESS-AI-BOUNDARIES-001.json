@@ -10,35 +10,30 @@
   "cosv_task_vector": null,
   "repository": "StegVerse-Labs/.github",
   "issue_ref": "StegVerse-Labs/.github#1620",
-  "handoff_projection_refs": [
-    "StegVerse-Labs/.github:docs/ECOSYSTEM_INGRESS_AI_BOUNDARIES_MIRROR_HANDOFF.md"
-  ],
+  "handoff_projection_refs": ["StegVerse-Labs/.github:docs/ECOSYSTEM_INGRESS_AI_BOUNDARIES_MIRROR_HANDOFF.md"],
   "component_model_projection_ref": "data/goal-task-component-profiles/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json",
-  "reusable_component_refs": [
-    "data/reusable-task-component-model.json",
-    "data/reusable-task-component-decomposition-policy.json",
-    "data/reusable-ai-ingress-component-contract.json",
-    "data/reusable-transport-component-contract.json"
-  ],
-  "adjacent_task_refs": [
-    "SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005"
-  ],
+  "reusable_component_refs": ["data/reusable-task-component-model.json", "data/reusable-task-component-decomposition-policy.json", "data/reusable-ai-ingress-component-contract.json", "data/reusable-transport-component-contract.json"],
+  "adjacent_task_refs": ["SDK-GENERIC-MANIFEST-ECOSYSTEM-INVARIANT-005"],
   "classification": {
-    "reusable_task_component_reconciliation": "SOURCE_RECONCILIATION_DOCUMENTATION_COMPLETE_EXACT_HEAD_VALIDATION_PENDING",
-    "readme_impact": "COMPLETE_IN_CHANGE_SET_PENDING_EXACT_HEAD_VALIDATION",
-    "task_registry_ai_entry_surface_inventory": "PARTIAL_SOURCE_INVENTORY_RUNTIME_REACHABILITY_NOT_PROVEN",
+    "reusable_task_component_reconciliation": "MERGED_SOURCE_VALIDATED_PR_1678",
+    "readme_impact": "COMPLETE_VALIDATED",
+    "task_registry_ai_entry_surface_inventory": "PASS_SOURCE_LEVEL_CALLER_INVENTORY_RUNTIME_REACHABILITY_NOT_PROVEN",
     "chatgpt_task_registry_exclusivity": "PARTIAL_REUSABLE_SESSION_ACTOR_GATE_RUNTIME_IDENTITY_NOT_PROVEN",
-    "non_chatgpt_ai_task_registry_denial": "PARTIAL_REUSABLE_SESSION_ACTOR_GATE_SOURCE_LEVEL",
-    "task_registry_session_return_close_ai_policy": "RECONSTITUTED_AS_RTC_TASK_REGISTRY_SESSION_ACTOR_GATE_010_VALIDATION_PENDING",
+    "non_chatgpt_ai_task_registry_denial": "PARTIAL_REUSABLE_SESSION_ACTOR_GATE_SOURCE_LEVEL_RUNTIME_NOT_PROVEN",
+    "task_registry_session_return_close_ai_policy": "PASS_SOURCE_LEVEL_COMPONENT_010_RUNTIME_IDENTITY_NOT_PROVEN",
+    "general_task_registry_checkin_external_ai_reachability": "NOT_PROVEN",
     "common_ai_decision_sandbox_region": "REUSABLE_COMPONENT_IDENTIFIED_NOT_IMPLEMENTED",
     "external_framework_llm_adapter_sdk_only": "PARTIAL",
     "external_evaluator_sdk_manifest_only": "PASS_SOURCE_LEVEL_RUNTIME_NOT_PROVEN"
   },
   "source_evidence": [
+    "StegVerse-Labs/.github#1678",
+    "StegVerse-Labs/.github@069fe51538acfa4c29b0512262ea8ab2e155cae6",
     "README.md",
     "docs/README_IMPACT_ECOSYSTEM_AI_COMPONENT_RECONCILIATION.md",
     "data/task-registry-ai-ingress-policy.json",
     "data/task-registry-ai-entry-surface-inventory.json",
+    "data/task-registry-general-checkin-caller-inventory.json",
     "data/task-session-close-orchestration-contract.json",
     "data/goal-task-component-profiles/ECOSYSTEM-INGRESS-AI-BOUNDARIES-001.json",
     "data/reusable-ai-ingress-component-contract.json",
@@ -49,11 +44,13 @@
     "tests/test_task_registry_session_return_recorder.py",
     "tests/test_task_registry_session_close_orchestration.py"
   ],
+  "satisfied_source_predicates": [
+    "TASK_REGISTRY_AI_ENTRY_SURFACES_FULLY_INVENTORIED_SOURCE_LEVEL",
+    "SESSION_RETURN_AND_CLOSE_AI_POLICY_ENFORCED_SOURCE_LEVEL"
+  ],
   "remaining_predicates": [
-    "TASK_REGISTRY_AI_ENTRY_SURFACES_FULLY_INVENTORIED",
     "CHATGPT_ONLY_TASK_REGISTRY_ENTRY_ENFORCED_WITH_AUTHENTIC_ORIGIN",
     "GENERAL_TASK_REGISTRY_CHECKIN_NOT_EXTERNALLY_AI_REACHABLE",
-    "SESSION_RETURN_AND_CLOSE_AI_POLICY_ENFORCED",
     "NON_CHATGPT_AI_TASK_REGISTRY_DENIAL_RUNTIME_ENFORCED",
     "COMMON_AI_DECISION_SANDBOX_REGION_DEFINED",
     "COMMON_AI_DECISION_SANDBOX_RUNTIME_ENFORCED",
@@ -91,9 +88,5 @@
     "github_runtime_authority": "NONE",
     "heartbeat_execution_authority": false
   },
-  "completion": {
-    "claimed": false,
-    "validated": false,
-    "runtime_observed": false
-  }
+  "completion": {"claimed": false, "validated": false, "runtime_observed": false}
 }

@@ -3,7 +3,8 @@
   "goal_task_id": "ECOSYSTEM-INGRESS-AI-BOUNDARIES-001",
   "observed_at": "2026-09-12",
   "reusable_component_id": "RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010",
-  "classification": "PARTIAL_SOURCE_INVENTORY_RUNTIME_REACHABILITY_NOT_PROVEN",
+  "caller_inventory_ref": "data/task-registry-general-checkin-caller-inventory.json",
+  "classification": "PASS_SOURCE_LEVEL_CALLER_INVENTORY_RUNTIME_REACHABILITY_NOT_PROVEN",
   "surfaces": [
     {
       "path": "scripts/evaluate_task_registry_ai_session_checkin.py",
@@ -12,7 +13,7 @@
     },
     {
       "path": "scripts/evaluate_task_registry_collision_checkin.py",
-      "classification": "GENERAL_CHECKIN_EXTERNAL_AI_REACHABILITY_NOT_PROVEN"
+      "classification": "GENERAL_CHECKIN_PRODUCTION_CALLERS_INVENTORIED_EXTERNAL_AI_REACHABILITY_NOT_PROVEN"
     },
     {
       "path": "scripts/record_task_registry_session_return.py",
@@ -26,19 +27,19 @@
     },
     {
       "path": "scripts/install_and_run_canonical_work_event_bootstrap.py",
-      "classification": "INTERNAL_CANONICAL_WORK_PATH_AI_REACHABILITY_NOT_PROVEN"
+      "classification": "NON_AI_INTERNAL_CANONICAL_WORK_PREFLIGHT_EXTERNAL_AI_REACHABILITY_NOT_PROVEN"
     }
   ],
   "conclusions": {
-    "task_registry_ai_entry_surfaces_inventoried": "PARTIAL",
+    "task_registry_ai_entry_surfaces_inventoried": "PASS_SOURCE_LEVEL",
+    "general_checkin_production_callers_inventoried": "PASS_SOURCE_LEVEL",
+    "ai_session_route_gated_by_component_010": "PASS_SOURCE_LEVEL",
     "session_actor_gate_componentized": true,
-    "session_return_close_source_gate": "IMPLEMENTED_VALIDATION_PENDING",
+    "session_return_close_source_gate": "MERGED_SOURCE_VALIDATED",
     "general_checkin_external_ai_reachability": "NOT_PROVEN",
     "runtime_identity_attestation_proven": false
   },
   "next_required_remediation": [
-    "CLASSIFY_EVERY_GENERAL_CHECKIN_CALLER",
-    "ROUTE_AI_SESSION_CALLERS_THROUGH_COMPONENT_010",
     "PROVE_OR_PREVENT_EXTERNAL_AI_REACHABILITY_TO_GENERAL_CHECKIN",
     "ADD_AUTHENTIC_RUNTIME_ORIGIN_EVIDENCE"
   ]
