@@ -12,12 +12,21 @@
   "canonical_issue": 1577,
   "handoff_projection_refs": [
     "StegVerse-Labs/.github:docs/SITE_ECE_CURRENT_PROJECTION_MATERIALIZER_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github:docs/SITE_ECE_CURRENT_PROJECTION_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github:docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github:docs/REUSABLE_GOAL_TASK_TRANSPORT_COMPONENTS_MIRROR_HANDOFF.md",
     "StegVerse-Labs/Site:docs/ECOSYSTEM_CONTINUITY_CURRENT_MATERIALIZER_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegVerse-Healer:docs/ECOSYSTEM_CONTINUITY_SITE_MATERIALIZER_BINDING_MIRROR_HANDOFF.md"
   ],
   "targets": {
     "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/Site", "StegVerse-Labs/StegVerse-Healer"],
-    "components": ["site-current-projection-materializer", "resident-cycle-projection-binding", "site-served-data-namespace"]
+    "components": [
+      "RTC-EVIDENCE-CUSTODY-004",
+      "RTC-PUBLISHER-005",
+      "canonical-runtime-observation",
+      "site-current-projection-materializer-binding",
+      "site-served-data-namespace"
+    ]
   },
   "source_state": {
     "registration_pull_request": 1581,
@@ -40,6 +49,33 @@
     "healer_cycle_materializer_binding_source_validated": true,
     "authentic_materialization_claimed": false,
     "live_site_projection_claimed": false
+  },
+  "component_model_projection": {
+    "model": "data/reusable-task-component-model.json",
+    "decomposition_policy": "data/reusable-task-component-decomposition-policy.json",
+    "decomposition_input": "data/reusable-task-component-evaluations/SITE-ECE-CURRENT-PROJECTION-MATERIALIZER-001.input.json",
+    "decomposition_result": "data/reusable-task-component-evaluations/SITE-ECE-CURRENT-PROJECTION-MATERIALIZER-001.result.json",
+    "decomposition_score": 19,
+    "decomposition_decision": "STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION",
+    "transport_family": "data/reusable-transport-component-contract.json",
+    "goal_transport_profile": "data/goal-task-transport-profiles/SITE-ECE-CURRENT-PROJECTION-MATERIALIZER-001.json",
+    "architecture_handoff": "docs/SITE_ECE_CURRENT_PROJECTION_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+    "selected_reusable_components": ["RTC-EVIDENCE-CUSTODY-004", "RTC-PUBLISHER-005"],
+    "runtime_observation_family": "CANONICAL_EXISTING_OWNER",
+    "new_reusable_component_required": false,
+    "goal_identity_preserved": true,
+    "cosv_identity_preserved": true,
+    "componentization_mints_authority": false,
+    "runtime_predicates_changed": false,
+    "runtime_handoff_remains_runtime_truth": true,
+    "readme_change_required": false
+  },
+  "dependencies": {
+    "parent_goal_task": "ECOSYSTEM-CONTINUITY-EVALUATOR-001",
+    "upstream_diagnostic_task": "SDK-ECOSYSTEM-DIAGNOSTIC-PROCESSOR-001",
+    "reusable_parent_cycle": "RT-ECOSYSTEM-CONTINUITY-EVALUATION-001",
+    "custody_owner": "Master Records",
+    "publication_owner": "EXISTING_SITE_RUNTIME_ONLY"
   },
   "authority_model": {
     "materializer_authority": "NONE_COPY_ONLY",
