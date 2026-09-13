@@ -1,11 +1,32 @@
 {
   "identity": "StegVerse-Labs/.github:task:SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001",
   "profile": "task.v1",
+  "level": "task",
   "task_id": "SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001",
   "vector": "71000000100110",
   "parent_task_id": "SHARED-DOCS-MULTIPARTY-FREEZE-001",
   "evidence_refs": [
+    "data/canonical-task-records/SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001.json",
     "StegVerse-org/StegVerse-SDK:docs/SHARED_DOCS_PROVIDER_FREEZE_INTEGRATION_MIRROR_HANDOFF.md",
     "StegVerse-org/StegVerse-SDK:commit/d505e937dd9f5e531c56427d7477e026789e4769"
-  ]
+  ],
+  "observed_at": "2026-09-13T03:11:42Z",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "COMPLETE",
+    "archive_ready": true,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": true,
+    "activated": true,
+    "propagated": false
+  },
+  "authority_effect": "NONE"
 }
