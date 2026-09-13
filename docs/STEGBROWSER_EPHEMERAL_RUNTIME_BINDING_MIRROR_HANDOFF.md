@@ -10,7 +10,9 @@ Updated: 2026-09-12
 
 ## Current objective
 
-The Goal remains ACTIVE and not superseded. The immediate target is authentic resident consumption of `stegbrowser_tvc_source_promotion`, followed by exact TVC materialization, same-primary-runtime restart, simultaneous `8765/8775`, Apple `OWNER_INGRESS_READY`, current-iPhone SKAP custody, signing, TestFlight installation, and resident discovery.
+The Goal remains ACTIVE and not superseded. The immediate target remains authentic resident consumption of `stegbrowser_tvc_source_promotion`, exact TVC materialization, same-primary-runtime restart, simultaneous `8765/8775`, Apple `OWNER_INGRESS_READY`, current-iPhone SKAP custody, signing, TestFlight installation, and resident discovery.
+
+Before authentic resident dispatch, the immutable TVC source coordinate must be reconciled with the newer post-restart observation component described below so the exact-source execution and evidence paths do not diverge.
 
 ## Canonical execution-substrate model
 
@@ -50,7 +52,7 @@ Canonical Work StegBrowser ingress
 -> existing resident dispatcher
 -> exact TVC promotion consumer
 -> private-source handoff
--> TVC aef6b6f5dc99d2a531718ca475d20858ae8e68a6
+-> current request pin: TVC aef6b6f5dc99d2a531718ca475d20858ae8e68a6
 -> transient post-read promotion
 -> same stegtvc-primary-runtime.service restart
 -> 127.0.0.1:8765 + 127.0.0.1:8775
@@ -58,6 +60,80 @@ Canonical Work StegBrowser ingress
 ```
 
 Relevant merged source/evidence-contract work includes `.github` #1461, #1465, #1487, #1522, #1533, #1556, #1566, #1579, and #1590, plus TVC #386/#387.
+
+TVC subsequently advanced the same parent trajectory:
+
+```text
+TVC #411  merge bb648278c1947cb4234c7cd985e27f8166c7a45d
+  reconciles automatic private-source read -> post-read promotion -> same-primary-runtime restart wiring
+
+TVC #413  merge 040b6b4837bd827205537a2b77d254f09bd0db83
+  adds bounded post-restart App Store Connect SKAP runtime observation
+
+TVC #418  merge 5edf023aa7d45e1f525dd1bb556d25cacd35ae74
+  consolidates recipient-admission signing onto the canonical vault-agent path
+
+TVC #419  merge 4c78f8653b8a5899350479d57c58e936b50e023a
+  is the current verified TVC main observed during this reconciliation
+```
+
+The current TVC source at `4c78f8653b8a5899350479d57c58e936b50e023a` still contains the private-source `ExecStartPost` promotion hook and the #413 runtime observer.
+
+## Post-restart observation component
+
+TVC #413 provides the observation-only component:
+
+```text
+scripts/observe_app_store_connect_skap_runtime.py
+```
+
+It consumes the already-existing Apple activation, liveness, public-config, and InTr-route evidence and probes only:
+
+```text
+127.0.0.1:8765  canonical TVC primary runtime
+127.0.0.1:8775  existing shared SKAP ingress
+```
+
+It creates no listener, runtime, scheduler, dispatcher, provider operation, credential path, or transition. Its retained receipt is:
+
+```text
+/var/lib/stegverse/skap/browser-recipient/apple/receipts/runtime-observation-latest.json
+```
+
+The terminal observation is:
+
+```text
+OWNER_INGRESS_READY_OBSERVED
+```
+
+only when both loopback listeners are live in the same observation and the activation/liveness/public-route evidence binds the same runtime instance and recipient, the route is `ROUTE_LIVE`, the public config is owner-ingress ready, and the route receipt hash matches.
+
+This component is reusable evidence/observation only. It does not replace Interlock/InTr admission, WorkerCoordinator claim/fence, TV/TVC credential authority, or the authentic execution receipts preceding it.
+
+## Exact-source pin alignment predicate
+
+The canonical `.github` resident request and consumer still pin:
+
+```text
+aef6b6f5dc99d2a531718ca475d20858ae8e68a6
+```
+
+That immutable coordinate predates TVC #413 and therefore cannot by itself contain the new runtime-observation component. Current TVC `4c78f8653b8a5899350479d57c58e936b50e023a` contains #413 and the later canonical vault-agent recipient-signing corrections.
+
+A source-coordinate rebind was prepared in this session, but the repository connector rejected the executable request mutation through its safety gate. No alternate write path was used to bypass that control, and no rebind is claimed.
+
+Therefore the immediate source-management predicate is:
+
+```text
+EXACT_TVC_SOURCE_PIN_OBSERVER_ALIGNMENT_PENDING
+```
+
+Before authentic dispatch is treated as the canonical continuation, an authorized source mutation path must either:
+
+1. rebind the existing immutable StegBrowser TVC request/consumer/portable evidence contract to a later exact TVC commit containing the required promotion + observer + current recipient-signing chain; or
+2. explicitly source-bind the observer as a separate reusable evidence component while preserving the original primary-runtime source pin and recording the observer source revision separately.
+
+The preferred architecture is a single later immutable TVC source coordinate so execution and reconstruction remain one exact-source chain. No moving `main` substitution is accepted at runtime.
 
 ## Dedicated-consumption and current-dispatch semantics
 
@@ -88,7 +164,7 @@ target_consumption_matches_current_dispatch_result = true
 dedicated consumption receipt canonical SHA-256 is retained
 ```
 
-The dedicated receipt must bind task `STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001`, pinned TVC SHA `aef6b6f5dc99d2a531718ca475d20858ae8e68a6`, zero credential material, zero network source fetch, and one of the three staged outcomes above.
+The dedicated receipt must bind task `STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001`, the exact admitted TVC source coordinate, zero credential material, zero network source fetch, and one of the three staged outcomes above.
 
 PR #1579 merged at `b6c8a2bf1f0e91c24afa21b2e8d710f60da3b455` after Cross-Framework resident-request validation, organization-control validation, complete deterministic repository suite, and Heartbeat validation all passed.
 
@@ -104,7 +180,7 @@ The canonical record now:
 - requires the dedicated receipt to equal that current dispatcher result;
 - requires `target_consumption_matches_current_dispatch_result=true` together with the dedicated receipt canonical SHA-256.
 
-This reconciliation changes no coordination state, checkout state, blockers, completion truth, `allowed_next_transitions`, WorkerCoordinator authority, Interlock/InTr authority, runtime, scheduler, listener, credential path, or machine requirement.
+The Task Registry still carries the older TVC pin and must be reconciled only after the executable source-coordinate decision above is actually applied. This handoff does not mutate Task Registry truth ahead of executable source.
 
 ## Authentic runtime evidence
 
@@ -122,6 +198,7 @@ receipts/sovereign-host/resident-refresh-dispatch.latest.json
 receipts/sovereign-host/resident-request-dispatch.latest.json
 /var/lib/stegverse/tvc/primary-runtime-source-promotion/dispatch-latest.json
 /var/lib/stegverse/tvc/primary-runtime-source-promotion/latest.json
+/var/lib/stegverse/skap/browser-recipient/apple/receipts/runtime-observation-latest.json
 ```
 
 No authentic admitted StegBrowser/StegOS execution instance has yet produced the required receipts. A connector inventory observation may help discover eligible ephemeral capacity, but connector availability is not itself a task-state predicate. Therefore these remain unclaimed:
@@ -135,6 +212,7 @@ transient promotion:                         NOT OBSERVED
 primary-runtime restart:                     NOT OBSERVED
 simultaneous 8765/8775:                      NOT OBSERVED
 Apple OWNER_INGRESS_READY:                   NOT OBSERVED
+runtime observation receipt:                 NOT OBSERVED
 real Apple SKAP custody:                     NOT OBSERVED
 current-iPhone signing/TestFlight:           NOT OBSERVED
 resident discovery:                          NOT OBSERVED
@@ -144,19 +222,21 @@ GitHub Actions remains validation/evidence transport only. TV/TVC remains creden
 
 ## Remaining sequence
 
-1. Observe or discover an eligible instance of the existing StegBrowser/StegOS execution substrate. If temporary capacity is surfaced through Remote Computer transport, classify it as an `ADMITTED-EPHEMERAL-STEGOS-NODE` and require normal Interlock/InTr admission before execution.
-2. Verify the admitted execution instance uses local `.github` source containing #1579 and #1590 or a later compatible main.
-3. Execute the existing refresh+dispatch bridge for exactly `stegbrowser_tvc_source_promotion`; complete evidence must bind current local source HEAD, exact selector, current dispatcher result, identical dedicated staged-consumption receipt, and canonical dedicated-receipt SHA-256.
-4. Observe exact TVC materialization, transient promotion, same-service restart, and simultaneous `8765/8775`.
-5. Observe Apple recipient/liveness/InTr `OWNER_INGRESS_READY`.
-6. Resolve the external Apple Terms/account gate, create the Team API key, and seal it from the current iPhone into SKAP without export.
-7. Complete authentic Device -> KV -> SKAP custody, TVC Apple operations, same-device IPA signing, Build Upload, TestFlight installation, and resident discovery.
-8. Continue native StegSocials publication/readback only after working-instance proof.
+1. Reconcile the immutable TVC source coordinate with the merged #413 observer and current recipient-signing chain through an authorized source mutation path; do not substitute moving `main` at runtime.
+2. Reconcile the Task Registry and this handoff to that exact applied coordinate.
+3. Observe or discover an eligible instance of the existing StegBrowser/StegOS execution substrate. If temporary capacity is surfaced through Remote Computer transport, classify it as an `ADMITTED-EPHEMERAL-STEGOS-NODE` and require normal Interlock/InTr admission before execution.
+4. Verify the admitted execution instance uses local `.github` source containing #1579/#1590 and the applied source-pin reconciliation or a later compatible main.
+5. Execute the existing refresh+dispatch bridge for exactly `stegbrowser_tvc_source_promotion`; complete evidence must bind current local source HEAD, exact selector, current dispatcher result, identical dedicated staged-consumption receipt, exact TVC source coordinate, and canonical dedicated-receipt SHA-256.
+6. Observe exact TVC materialization, transient promotion, and same-service restart.
+7. Execute the bounded TVC post-restart observation component and require `OWNER_INGRESS_READY_OBSERVED`, including simultaneous `8765/8775` plus same-runtime Apple route evidence.
+8. Resolve the external Apple Terms/account gate, create the Team API key, and seal it from the current iPhone into SKAP without export.
+9. Complete authentic Device -> KV -> SKAP custody, TVC Apple operations, same-device IPA signing, Build Upload, TestFlight installation, and resident discovery.
+10. Continue native StegSocials publication/readback only after working-instance proof.
 
 ## README disposition
 
-Repository `README.md` remains accurate for Canonical Work and authority separation. This reconciliation restores the already-established execution-substrate semantics to the task-specific canonical surfaces and requires no repository-wide README change.
+Repository `README.md` remains accurate for Canonical Work and authority separation. TVC `README.md` was previously reviewed for #411/#413 and already distinguishes same-primary-runtime source restart from authentic host proof. No repository-wide README mutation is required by this reconciliation.
 
 ## Current state
 
-`ACTIVE_NOT_SUPERSEDED / CANONICAL_EXECUTION_SUBSTRATE_MODEL_RESTORED / RETAINED_STEGBROWSER_STEGOS_NODE_SELECTED / ADMITTED_EPHEMERAL_STEGOS_NODE_CAPACITY_ALLOWED / REMOTE_COMPUTER_TRANSPORT_NOT_TASK_STATE / SECOND_USER_OPERATED_DEVICE_NOT_ALLOWED / TASK_REGISTRY_RUNTIME_EVIDENCE_CONTRACT_RECONCILED_1522 / DEDICATED_CONSUMPTION_EVIDENCE_BINDING_MERGED_VALIDATED_1533 / HANDOFF_READY_FAIL_CLOSED_REPAIR_MERGED_VALIDATED_1556 / TASK_REGISTRY_STAGED_CONSUMPTION_SEMANTICS_RECONCILED_1566 / CURRENT_DISPATCH_DEDICATED_CONSUMPTION_BINDING_MERGED_VALIDATED_1579 / TASK_REGISTRY_CURRENT_DISPATCH_BINDING_RECONCILED_1590 / AUTHENTIC_RESIDENT_SOURCE_REVISION_NOT_OBSERVED / AUTHENTIC_RESIDENT_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / AUTHENTIC_TVC_MATERIALIZATION_AND_RESTART_NOT_OBSERVED / LIVE_APPLE_OWNER_INGRESS_READY_NOT_OBSERVED / AUTHENTIC_CURRENT_IPHONE_INSTALL_LISTENER_DISCOVERY_PENDING`
+`ACTIVE_NOT_SUPERSEDED / CANONICAL_EXECUTION_SUBSTRATE_MODEL_RESTORED / RETAINED_STEGBROWSER_STEGOS_NODE_SELECTED / ADMITTED_EPHEMERAL_STEGOS_NODE_CAPACITY_ALLOWED / REMOTE_COMPUTER_TRANSPORT_NOT_TASK_STATE / SECOND_USER_OPERATED_DEVICE_NOT_ALLOWED / TASK_REGISTRY_RUNTIME_EVIDENCE_CONTRACT_RECONCILED_1522 / DEDICATED_CONSUMPTION_EVIDENCE_BINDING_MERGED_VALIDATED_1533 / HANDOFF_READY_FAIL_CLOSED_REPAIR_MERGED_VALIDATED_1556 / TASK_REGISTRY_STAGED_CONSUMPTION_SEMANTICS_RECONCILED_1566 / CURRENT_DISPATCH_DEDICATED_CONSUMPTION_BINDING_MERGED_VALIDATED_1579 / TASK_REGISTRY_CURRENT_DISPATCH_BINDING_RECONCILED_1590 / TVC_AUTOMATIC_POST_READ_PROMOTION_RECONCILED_411 / TVC_POST_RESTART_OBSERVER_MERGED_VALIDATED_413 / EXACT_TVC_SOURCE_PIN_OBSERVER_ALIGNMENT_PENDING / AUTHENTIC_RESIDENT_SOURCE_REVISION_NOT_OBSERVED / AUTHENTIC_RESIDENT_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / AUTHENTIC_TVC_MATERIALIZATION_AND_RESTART_NOT_OBSERVED / LIVE_APPLE_OWNER_INGRESS_READY_NOT_OBSERVED / AUTHENTIC_CURRENT_IPHONE_INSTALL_LISTENER_DISCOVERY_PENDING`
