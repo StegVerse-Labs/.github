@@ -7,60 +7,50 @@ Updated: 2026-09-13
 - Goal Task ID: `STEG-BROWSER-RUNTIME-CONSUMPTION-001`
 - Parent Goal Task ID: `STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001`
 - COSV vector: `40000100100000`
-- Canonical record: `data/canonical-task-records/STEG-BROWSER-RUNTIME-CONSUMPTION-001.json`
+- Canonical record shard: `data/canonical-task-records/STEG-BROWSER-RUNTIME-CONSUMPTION-001.json`
+- Canonical registry identity source: `data/canonical-task-registry.json`
 
 ## Why this successor exists
 
-The parent Goal reached a clean source/component completion point: reusable-component reconciliation, primary TVC source pinning, immutable observer binding, dedicated consumption semantics, and runtime-preflight diagnosis are all merged and validated. The remaining work has independent completion semantics: authentic runtime consumption and admission through `OWNER_INGRESS_READY`.
+The parent Goal reached a clean source/component completion point: reusable-component reconciliation, primary TVC source pinning, immutable observer binding, dedicated consumption semantics, and runtime-preflight diagnosis are merged and validated. The remaining work has independent completion semantics: authentic runtime consumption and admission through `OWNER_INGRESS_READY`.
 
-This successor is therefore not a counter reset and does not create a second execution path. It reuses the existing Canonical Work, WorkerCoordinator, Interlock/InTr, resident dispatcher, exact TVC source-promotion consumer, primary runtime, SKAP ingress, and immutable observer components.
+This successor reuses the existing Canonical Work, WorkerCoordinator, Interlock/InTr, resident dispatcher, exact TVC source-promotion consumer, primary runtime, SKAP ingress, and immutable observer components. It does not create a second execution path.
 
-The parent task record is now canonically `SUPERSEDED` with `continuation_task_id=STEG-BROWSER-RUNTIME-CONSUMPTION-001`. Regression tests must therefore fail closed if any path attempts to re-admit or re-project the superseded parent as `PROPOSED`. The historical parent resident request remains source evidence only and does not make the superseded parent ingress-eligible again.
+The parent task is canonically `SUPERSEDED` with `continuation_task_id=STEG-BROWSER-RUNTIME-CONSUMPTION-001`. The historical parent request and receipt remain provenance only and cannot satisfy successor ingress or consumption.
 
-## First unresolved predicate
+## Coordination preflight completed
 
-`TASK_REGISTRY_CHECKIN_CONTINUE_OBSERVED`
+PR `#1781` merged at `d75ddb18ffb51f3131f3bde54fc9582f57991471` after exact-head deterministic suite `34787453203`, organization-control `34787453261`, and Heartbeat validation `34787453228` all completed successfully.
 
-The existing Canonical Work wrapper performs the general Task Registry collision check before route mutation and proceeds only on exact `CONTINUE`. `COORDINATE_CONVERGENCE` and `STOP_*` remain fail-closed.
-
-Known convergence owners are:
-
-- `TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001` for registry collision/convergence semantics;
-- `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001` for shared retained-runtime evidence convergence.
-
-Do not bypass either owner and do not create a StegBrowser-specific collision engine.
-
-## Successor resident-ingress repair
-
-During continuation, canonical reconciliation exposed that source still staged and consumed `canonical-work-stegbrowser-ephemeral-runtime-binding-001.json`, whose task is now `SUPERSEDED`, while no resident request existed for `STEG-BROWSER-RUNTIME-CONSUMPTION-001`. The generic bootstrap also classified only the superseded parent as the StegBrowser convergence task.
-
-Branch `stegbrowser-runtime-consumption-ingress-repair-001` repairs that source mismatch without creating a scheduler, dispatcher, runtime, credential path, or execution authority:
+The regression invokes the existing `scripts/evaluate_task_registry_collision_checkin.py` through the already-admitted `INTERNAL_CANONICAL_WORK_BOOTSTRAP` caller surface for this exact successor and requires:
 
 ```text
-control/resident-execution-request.d/canonical-work-stegbrowser-runtime-consumption-001.json
-  -> task_id = STEG-BROWSER-RUNTIME-CONSUMPTION-001
-  -> COSV = 40000100100000
-  -> mode = CANONICAL_WORK_EVENT_BOOTSTRAP
-  -> authority_effect = NONE_REQUEST_ONLY
-  -> second_machine_required = false
-
-consume-canonical-work-coordination-bootstrap.py
-  -> active StegBrowser request spec now targets the successor
-  -> successor task shard is preserved/materialized through the existing generic path
-  -> superseded parent request is no longer the active StegBrowser request in REQUEST_SPECS
-
-install_and_run_canonical_work_event_bootstrap.py
-  -> successor joins the existing StegBrowser/global convergence set
-  -> collision preflight remains mandatory and unchanged
+registry_identity_source = CANONICAL_TASK_REGISTRY
+selected_execution_substrate = STEG-BROWSER-RETAINED-RESIDENT-NODE
+disposition = CONTINUE
+session_action = CONTINUE_CURRENT_TASK
+hard_collision_task_ids = []
+authority_effect = NONE
 ```
 
-This repairs source eligibility only. It does not prove an authentic successor check-in, resident consumption, WorkerCoordinator claim/fence, Interlock/InTr admission, TVC promotion, observer execution, listener liveness, or owner-ingress readiness.
+This closes only `TASK_REGISTRY_CHECKIN_CONTINUE_OBSERVED`. It is coordination evidence, not a runtime transition, WorkerCoordinator claim, Interlock/InTr admission, resident execution, TVC promotion, or owner-ingress observation.
+
+## First unresolved runtime predicate
+
+`CANONICAL_WORK_RESIDENT_CONSUMPTION_OBSERVED`
+
+Required successor receipt:
+
+```text
+receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json
+```
+
+Repository search after the merged check-in validation found only the handoff, consumer declaration, and regression references to that path; no successor consumption receipt was present. Therefore resident consumption remains unobserved.
 
 ## Existing runtime chain to reuse
 
 ```text
-Task Registry exact check-in
--> CONTINUE
+Task Registry exact check-in -> CONTINUE   [coordination predicate observed]
 -> existing Canonical Work bootstrap
 -> authentic Canonical Work resident consumption
 -> WorkerCoordinator claim/fence
@@ -75,7 +65,31 @@ Task Registry exact check-in
 -> OWNER_INGRESS_READY_OBSERVED
 ```
 
-## Required evidence
+## Successor resident-ingress source already merged
+
+PR `#1763` repaired the canonical resident-ingress pointer from the superseded parent to this successor. The merged source now includes:
+
+```text
+control/resident-execution-request.d/canonical-work-stegbrowser-runtime-consumption-001.json
+  -> task_id = STEG-BROWSER-RUNTIME-CONSUMPTION-001
+  -> COSV = 40000100100000
+  -> mode = CANONICAL_WORK_EVENT_BOOTSTRAP
+  -> authority_effect = NONE_REQUEST_ONLY
+  -> second_machine_required = false
+
+consume-canonical-work-coordination-bootstrap.py
+  -> active StegBrowser request targets this successor
+  -> successor task shard is preserved/materialized through the existing generic path
+  -> superseded parent request is not the active StegBrowser request
+
+install_and_run_canonical_work_event_bootstrap.py
+  -> successor participates in the existing StegBrowser/global convergence path
+  -> collision preflight remains mandatory
+```
+
+PR `#1781` then proved that the current canonical collision preflight returns `CONTINUE` for this successor on current source.
+
+## Required runtime evidence
 
 The runtime path must authentically produce or bind:
 
@@ -105,13 +119,15 @@ Source state, CI, heartbeat progression, repository merges, task registration, o
 - HeartBeat: observability/timing/freshness/correlation only.
 - GitHub: validation/evidence transport only; runtime authority NONE.
 
-Selected substrate remains `STEG-BROWSER-RETAINED-RESIDENT-NODE`. Current-device and admitted ephemeral StegOS capacity remain valid reuse options. `REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT` is not selected, and no second user-operated device is allowed.
+Selected substrate remains `STEG-BROWSER-RETAINED-RESIDENT-NODE`. Current-device, StegBrowser ephemeral lease, same-device Site Safari service worker, and admitted ephemeral StegOS capacity remain declared reusable alternatives where canonical admission permits them. `REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT` is not selected, no connected-device discovery is a prerequisite, and no second user-operated device is allowed.
+
+The reusable ephemeral construct contract requires applicable admission before runner materialization, preserves Interlock/InTr as transition authority, forbids duplicate scheduler/worker/runtime planes, and requires chained runtime receipts. An ephemeral fallback therefore cannot be declared authentic merely because code can execute in an unrelated container or CI job.
 
 ## Completion predicate
 
 This Goal is complete only when authentic evidence establishes all of:
 
-1. exact Task Registry check-in returned `CONTINUE` for this successor after any required convergence reconciliation;
+1. exact Task Registry check-in returned `CONTINUE` for this successor after any required convergence reconciliation — **observed and regression-protected**;
 2. Canonical Work resident consumption occurred;
 3. current WorkerCoordinator claim/fence was observed;
 4. Interlock/InTr admission occurred;
@@ -120,18 +136,14 @@ This Goal is complete only when authentic evidence establishes all of:
 7. immutable observer `4c78f8653b8a5899350479d57c58e936b50e023a` executed;
 8. TVC 8765 and SKAP 8775 were observed simultaneously for the same runtime/recipient binding;
 9. `OWNER_INGRESS_READY_OBSERVED` was authentically retained;
-10. no parallel scheduler, dispatcher, credential path, or second user-operated device was introduced.
+10. no parallel scheduler, dispatcher, credential path, connected-device prerequisite, or second user-operated device was introduced.
 
 Credential ingress, current-iPhone signing/TestFlight, social publication/readback, and final Master Records custody remain later independent continuation stages and are not silently claimed by this runtime-consumption Goal.
 
 ## README disposition
 
-The repository README already documents Canonical Work ingress, autonomous continuation, COSV task-pointer continuation, and the Reusable Task Component Model. The successor ingress repair changes only which canonical StegBrowser task the existing generic consumer stages; README was re-reviewed and no semantic text change is required.
-
-## Validation regression repair
-
-PR `#1746` correctly superseded `STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001` to this successor but left two deterministic test modules asserting that the parent remained `PROPOSED`. Those assertions were repaired to enforce `SUPERSEDED` lineage. The successor resident-ingress repair adds further regression coverage requiring the active consumer and convergence bootstrap to target `STEG-BROWSER-RUNTIME-CONSUMPTION-001` rather than the superseded parent.
+The repository README already documents Canonical Work ingress, autonomous continuation, COSV task-pointer continuation, the Reusable Task Component Model, and authority separation. The work in this handoff changes task-specific evidence state only; no README semantic change is required.
 
 ## Current state
 
-`ACTIVE / CHECKED_OUT / SOURCE_COMPONENT_PARENT_SUPERSEDED_TO_THIS_SUCCESSOR / SUCCESSOR_RESIDENT_INGRESS_REPAIR_BRANCH_PREPARED / SUPERSEDED_PARENT_REINGRESS_PROHIBITED / AUTHENTIC_RUNTIME_CONSUMPTION_NOT_OBSERVED / TASK_REGISTRY_CONTINUE_NOT_OBSERVED / WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED / INTR_ADMISSION_NOT_OBSERVED / TVC_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / TVC_PRIMARY_RUNTIME_RESTART_NOT_OBSERVED / IMMUTABLE_OBSERVER_EXECUTION_NOT_OBSERVED / OWNER_INGRESS_READY_NOT_OBSERVED`
+`ACTIVE / CHECKED_OUT / TASK_REGISTRY_CHECKIN_CONTINUE_OBSERVED / SUCCESSOR_RESIDENT_INGRESS_SOURCE_MERGED / CANONICAL_WORK_RESIDENT_CONSUMPTION_NOT_OBSERVED / WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED / INTR_ADMISSION_NOT_OBSERVED / TVC_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / TVC_PRIMARY_RUNTIME_RESTART_NOT_OBSERVED / IMMUTABLE_OBSERVER_EXECUTION_NOT_OBSERVED / OWNER_INGRESS_READY_NOT_OBSERVED / NO_CONNECTED_DEVICE_PREREQUISITE / NO_SECOND_USER_OPERATED_DEVICE`
