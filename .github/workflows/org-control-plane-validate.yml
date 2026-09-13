@@ -1,5 +1,6 @@
 # Broad source directories are intentionally excluded from automatic main-branch
-# validation when specialized validators already cover them. PR coverage remains broad.
+# validation when specialized validators already cover them. Pull requests always
+# enter the canonical pre-mutation guard; the existing control-plane checks then run.
 name: Validate organization control plane - No GitHub Token Authority
 
 on:
@@ -15,6 +16,7 @@ on:
       - 'scripts/validate_admissible_existence_control_plane.py'
       - 'scripts/validate_heartbeat_carrier_contract.py'
       - 'scripts/validate_heartbeat_runtime_separation.py'
+      - 'scripts/validate_source_mutation_preflight.py'
       - 'scripts/continue_stegverse001_evidence_chain.py'
       - 'scripts/check_org_operational_observer.py'
       - 'scripts/check_org_repository_inventory.py'
@@ -33,6 +35,7 @@ on:
       - 'docs/ORG_CONTROL_PLANE_STATE.md'
       - 'tools/validate_active_worker_states.py'
       - 'tests/test_task_registration_substrate_resolution.py'
+      - 'tests/test_source_mutation_preflight_guard.py'
       - 'tests/test_stegverse001_evidence_chain_continuation_worker.py'
       - 'tests/test_stegverse001_rendezvous_evidence_transport.py'
       - 'tests/test_heartbeat_runtime_separation.py'
@@ -43,21 +46,6 @@ on:
       - 'tests/test_archive_readiness.py'
       - '.github/workflows/org-control-plane-validate.yml'
   pull_request:
-    paths:
-      - 'README.md'
-      - 'control/**'
-      - 'data/canonical-task-records/**'
-      - 'events/**'
-      - 'schemas/**'
-      - 'tasks/**'
-      - 'scripts/**'
-      - 'checks/**'
-      - 'heartbeat_runtime/**'
-      - 'tools/validate_active_worker_states.py'
-      - 'tests/**'
-      - 'handoffs/**'
-      - 'docs/**'
-      - '.github/workflows/org-control-plane-validate.yml'
   workflow_dispatch:
 
 permissions: {}
@@ -73,6 +61,8 @@ jobs:
       - name: Anonymous public checkout without GitHub credential token
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_BASE_REF: ${{ github.base_ref }}
+          PR_HEAD_REF: ${{ github.head_ref }}
         run: |
           set -euo pipefail
           test -z "${GITHUB_TOKEN:-}"
@@ -81,14 +71,23 @@ jobs:
           git init .
           git remote add origin https://github.com/StegVerse-Labs/.github.git
           if [ -n "${PR_NUMBER:-}" ]; then
-            env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "refs/pull/${PR_NUMBER}/merge"
+            env -u GITHUB_TOKEN -u GH_TOKEN git fetch origin "refs/pull/${PR_NUMBER}/merge" "${PR_BASE_REF}" "${PR_HEAD_REF}"
+            git checkout --detach FETCH_HEAD
           else
             env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "${GITHUB_SHA}"
+            git checkout --detach FETCH_HEAD
           fi
-          git checkout --detach FETCH_HEAD
           mkdir -p /tmp/stegverse-ci-bin
           ln -sf "$(command -v python3)" /tmp/stegverse-ci-bin/python
           echo /tmp/stegverse-ci-bin >> "$GITHUB_PATH"
+
+      - name: Test canonical source-mutation preflight guard
+        if: ${{ github.event_name == 'pull_request' }}
+        run: python -m unittest tests.test_source_mutation_preflight_guard -v
+
+      - name: Require canonical preflight receipt before protected mutation
+        if: ${{ github.event_name == 'pull_request' }}
+        run: python scripts/validate_source_mutation_preflight.py --base-ref "${GITHUB_BASE_REF}"
 
       - name: Fail closed on unregistered workflow proliferation
         run: python scripts/validate_workflow_surface_hygiene.py
