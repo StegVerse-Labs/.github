@@ -31,26 +31,33 @@ A consuming Goal Task invokes this reusable task with its already-local `source_
 
 ## Neutral reusable scheduling
 
-Generic reusable-task scheduling is owned by `RT-REUSABLE-TASK-SCHEDULER-001`, with contract `data/reusable-task-scheduler-contract.json` and runner `scripts/run_reusable_task_scheduler.py`. Healer is a consumer/example of that capability, not its canonical generic owner.
+Generic reusable-task scheduling is owned by `RT-REUSABLE-TASK-SCHEDULER-001`, with contract `data/reusable-task-scheduler-contract.json` and runner `scripts/run_reusable_task_scheduler.py`. Healer is a consumer/carrier of that capability, not its canonical generic owner.
 
-This scheduler is conditional orchestration support for this Goal Task, not a new completion predicate. It may visit `RT-SOVEREIGN-SOURCE-REFRESH-001` when a schedule/carrier selects that invocation, but scheduling does not prove source refresh or any downstream runtime state.
+The neutral scheduler now owns due selection, hourly slot identity, bounded retry/backoff, success idempotency, reusable-child invocation, and preservation of authentic child boundary receipts. `.github` PR #1762 exact head `d385fe83087f0096ff48a4690cac541dd93098dd` passed Organization Control `34780694559`, Deterministic Repository Suite `34780694565`, and Heartbeat `34780694531`, then merged at `5b66fe7d6281c92445b9a67881eda666e865c13d`.
+
+Healer was migrated from generic scheduler owner to consumer/carrier in StegVerse-Healer PR #68. Exact head `d095c27cb9ce42da21b0c77eece515e243ef180a` passed Test Readiness `34780841650` and merged at `0084ac3af5db9c29b4c3e74660751b9954317530`.
+
+StegVerse-Healer PR #69 then bound `RT-SOVEREIGN-SOURCE-REFRESH-001` to this Goal Task (`SITE-PUBLICATION-NATIVE-RUNTIME-EXECUTION-001`, COSV `50000000102000`) as a carrier configuration for the neutral scheduler. Exact head `78f26ed6fc3a5e3bfde8f610ad6c36c023183b3e` passed Test Readiness `34780907582` and merged at `1a2bac1a61f97819182a701d91fc91f61f9b0f1e`.
+
+This carrier binding is orchestration support only. Healer is not a runtime authority or scheduling authority. The neutral scheduler remains non-authorizing, and source-refresh scheduling does not prove source refresh or any downstream runtime state.
 
 ## Authority boundaries
 
 - GitHub runtime authority: `NONE`.
 - Reusable task/component/scheduler orchestration: non-authorizing.
+- Healer role for reusable scheduling: carrier/consumer only.
 - Worker claim/fence authority: existing `WorkerCoordinator` only.
 - Transition authority: Interlock/InTr.
 - Credential authority: TV/TVC.
 - User verification authority: KV/SKAP Vault only.
 - Hosted-provider runtime: prohibited/not required.
 - Second user-operated device: prohibited/not required.
-- Do not synthesize, upgrade, or infer runtime/publication evidence from source, scheduling, or CI state.
+- Do not synthesize, upgrade, or infer runtime/publication evidence from source, scheduling, carrier configuration, or CI state.
 
 ## Required evidence chain
 
-1. Invoke `RT-SOVEREIGN-SOURCE-REFRESH-001` with the already-local canonical source root and existing sovereign runtime root; consume its authentic completion or boundary receipt.
-2. Require an authentic source-refresh completion receipt before dependent runtime work advances.
+1. Consume an authentic neutral-scheduler invocation of `RT-SOVEREIGN-SOURCE-REFRESH-001` for this Goal Task, including the reusable child receipt.
+2. Require an authentic source-refresh completion receipt before dependent runtime work advances; a neutral-scheduler/child boundary receipt preserves the unresolved state without device discovery or alternate scheduler creation.
 3. Target `SITE-PUBLICATION-INTR-CONSUMER-001` through the existing WorkerCoordinator so checkout/admission mints a fresh independent claim and fencing generation.
 4. Bind only `STEGVERSE_SITE_PUBLICATION_MATERIALIZATION_ID=INTR-MAT-0e1ba4786b0ea8a00e1f166e` for that fenced invocation.
 5. Retain the authentic candidate-validation receipt and fencing generation.
@@ -75,8 +82,8 @@ DNS/TLS recovery proven = false
 
 ## Activation
 
-Activation condition is satisfied by merged, exact-head-green parent reconciliation PR #1483. This successor is ACTIVE. Reusable-task registration, scheduling, or invocation does not mint runtime authority, claim/fence state, credentials, publication state, or proof.
+Activation condition is satisfied by merged, exact-head-green parent reconciliation PR #1483. This successor is ACTIVE. Reusable-task registration, neutral scheduling, Healer carrier execution, or source binding does not mint runtime authority, claim/fence state, credentials, publication state, or proof.
 
 ## Next action
 
-Complete validation of `RT-REUSABLE-TASK-SCHEDULER-001` as the neutral scheduling owner and migrate generic consumers away from owning duplicate scheduling semantics. For this Goal Task, continue to require an authentic `RT-SOVEREIGN-SOURCE-REFRESH-001` completion receipt before fresh WorkerCoordinator claim/fence and all dependent publication evidence.
+Do not perform connected-device discovery as a prerequisite. Observe/consume the next authentic neutral-scheduler + `RT-SOVEREIGN-SOURCE-REFRESH-001` receipt produced by the existing resident carrier path. If the child source-refresh receipt satisfies the reusable source-refresh completion predicates, advance directly to fresh WorkerCoordinator claim/fence for `SITE-PUBLICATION-INTR-CONSUMER-001`. If the child records a real execution/resource boundary, retain that exact boundary and continue independent admissible work without creating another scheduler, refresher, hosted fallback, or second-device path.
