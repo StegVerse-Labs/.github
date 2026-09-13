@@ -18,6 +18,7 @@
     "goal_transport_profile": "data/goal-task-transport-profiles/SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001.json",
     "master_records_component_binding": "data/goal-task-component-bindings/SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001.master-records.json",
     "portable_execution_contract": "docs/WORKERCOORDINATOR_PORTABLE_IPHONE_EXECUTION_MIRROR_HANDOFF.md",
+    "portable_device_kv_package": "control/portable-workercoordinator-packages/device-kv-intr-observation.json",
     "goal_identity_preserved": true,
     "cosv_identity_preserved": true,
     "decomposition_score": 28,
@@ -36,6 +37,7 @@
     "StegVerse-Labs/.github/data/goal-task-transport-profiles/SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001.json",
     "StegVerse-Labs/.github/data/goal-task-component-bindings/SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001.master-records.json",
     "StegVerse-Labs/.github/docs/WORKERCOORDINATOR_PORTABLE_IPHONE_EXECUTION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github/control/portable-workercoordinator-packages/device-kv-intr-observation.json",
     "StegVerse-Labs/.github/docs/SS_ERL_MASTER_RECORDS_COMPONENT_BINDING_MIRROR_HANDOFF.md",
     "master-records/orchestration#94@560863ff192f4437911a8d748984d06566c120c7",
     "master-records/orchestration/schemas/universal-intr-receipt-chain-evidence.schema.json",
@@ -48,6 +50,8 @@
     "StegVerse-Labs/Executive_Rhetoric_Ledger/scripts/verify_active_research_provider_proof_binding.py",
     "StegVerse-Labs/.github/docs/SS_ERL_ACTIVE_RESEARCH_INTR_RUNTIME_BINDING_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github/handoffs/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json",
+    "StegVerse-Labs/.github/control/worker-registry.d/device-kv-intr-observation-001.json",
+    "StegVerse-Labs/.github/control/task-vectors/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json",
     "StegVerse-Labs/.github/workers/universal_intr_profiled_ingress.py",
     "StegVerse-Labs/.github/workers/erl_active_research_intr_profile.py",
     "StegVerse-Labs/.github/workers/erl_active_research_transport.py",
@@ -80,6 +84,7 @@
       "execution_materialization:reusable-task-ephemeral-construct-contract",
       "runtime_observation:SHWP-DEVICE-KV-INTR-OBSERVATION-001",
       "portable_execution:CURRENT_USER_IPHONE",
+      "portable_workercoordinator_package:SHWP-DEVICE-KV-INTR-OBSERVATION-001",
       "governed_ingress:universal-intr-profiled-ingress",
       "evidence_validation:canonical-existing-validators"
     ]
@@ -103,8 +108,8 @@
       "dependency_id": "DEP-ERL-CURRENT-IPHONE-PORTABLE-EXECUTION",
       "kind": "EXECUTION_SURFACE",
       "state": "AVAILABLE_SOURCE_ONLY_TASK_BOUND_EXECUTION_EVIDENCE_PENDING",
-      "ref": "docs/WORKERCOORDINATOR_PORTABLE_IPHONE_EXECUTION_MIRROR_HANDOFF.md",
-      "disposition": "REUSE_CURRENT_USER_IPHONE_PORTABLE_WORKERCOORDINATOR_STEGOS_PATH;_REMOTE_DEVICE_ENUMERATION_NOT_APPLICABLE"
+      "ref": "control/portable-workercoordinator-packages/device-kv-intr-observation.json",
+      "disposition": "REUSE_CURRENT_USER_IPHONE_PORTABLE_WORKERCOORDINATOR_STEGOS_PATH_WITH_EXISTING_DEVICE_KV_OWNER;_REMOTE_DEVICE_ENUMERATION_NOT_APPLICABLE"
     },
     {
       "dependency_id": "DEP-ERL-REUSABLE-COMPONENT-MODEL",
@@ -132,6 +137,7 @@
     "ERL_RESIDENT_LOCAL_TRANSPORT_REQUIRES_NO_RELAY_AUTHORIZATION",
     "ERL_EXACT_LOCAL_SOURCE_SELF_MATERIALIZATION_AVAILABLE",
     "ERL_CURRENT_USER_IPHONE_PORTABLE_EXECUTION_SURFACE_BOUND",
+    "DEVICE_KV_CURRENT_IPHONE_PORTABLE_PACKAGE_AVAILABLE",
     "ERL_TASK_BOUND_NATIVE_IPHONE_EXECUTION_EVIDENCE_OBSERVED",
     "ERL_TERMINAL_HOP_REUSES_ORIGINAL_FULL_PATH_INTENT",
     "EXISTING_PROVIDER_PROOF_PROJECTED_WITHOUT_REEXECUTION",
@@ -166,7 +172,7 @@
     "always_on_external_host_required": false
   },
   "runtime_resolution": {
-    "current_executor": "CURRENT_USER_IPHONE portable WorkerCoordinator/StegOS execution surface -> SHWP-DEVICE-KV-INTR-OBSERVATION-001 via existing profiled Universal InTr ingress",
+    "current_executor": "CURRENT_USER_IPHONE portable WorkerCoordinator/StegOS execution surface -> portable package SHWP-DEVICE-KV-INTR-OBSERVATION-001 -> existing profiled Universal InTr ingress and DEVICE_KV owner",
     "unresolved_classification": "TASK_BOUND_NATIVE_IPHONE_EXECUTION_EVIDENCE_NOT_OBSERVED",
     "remote_device_connector_classification": "NOT_APPLICABLE",
     "authority_basis": "WorkerCoordinator claim/fence plus contemporaneous Interlock/InTr transition authority on the canonical portable current-iPhone execution surface; ERL resident-local transport credential requirement NONE; TV/TVC remains credential/provider/release authority for transitions that separately require it; Master Records owns observed-reality custody/reconstruction",
@@ -186,6 +192,7 @@
     "activation_proof_complete": false
   },
   "allowed_next_transitions": [
+    "CHECKOUT_EXISTING_DEVICE_KV_OWNER_ON_CURRENT_IPHONE",
     "BIND_AND_INVOKE_AUTHENTIC_CURRENT_IPHONE_ERL_EXECUTION",
     "MATERIALIZE_AND_VERIFY_AUTHENTIC_CURRENT_IPHONE_ERL_SOURCE",
     "OBSERVE_AUTHENTIC_SHARED_CURRENT_DEVICE_LOOPBACK_INGRESS",
@@ -203,6 +210,7 @@
     "data/goal-task-component-profiles/SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001.json",
     "data/goal-task-transport-profiles/SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001.json",
     "data/goal-task-component-bindings/SS-ERL-ACTIVE-RESEARCH-INTR-RUNTIME-BINDING-001.master-records.json",
+    "control/portable-workercoordinator-packages/device-kv-intr-observation.json",
     "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/ERL_KV_STORAGE_MIRROR_HANDOFF.md"
   ],
   "authority_model": {
