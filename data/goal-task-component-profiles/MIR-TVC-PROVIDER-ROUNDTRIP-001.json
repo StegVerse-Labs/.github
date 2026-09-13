@@ -1,0 +1,23 @@
+{
+  "schema": "stegverse.goal-task-component-profile/v1",
+  "task_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
+  "cosv_task_vector": "50000000100000",
+  "decomposition_evaluation": {
+    "score": 25,
+    "decision": "STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION"
+  },
+  "selected_components": [
+    "RT-EXTERNAL-ADAPTER-ESTABLISH-001",
+    "RTC-ROUNDTRIP-003",
+    "RTC-INTERLOCK-INTR-TRANSPORT-008",
+    "TVC-PROVIDER-OPERATION-BROKER-003",
+    "TVC-CAPABILITY-RUNTIME-002"
+  ],
+  "remaining_predicates": [
+    "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED",
+    "AUTHENTIC_MIR_RESULT_RECEIPT_RETAINED"
+  ],
+  "goal_identity_preserved": true,
+  "new_goal_task_required": false,
+  "new_reusable_component_required": false
+}
