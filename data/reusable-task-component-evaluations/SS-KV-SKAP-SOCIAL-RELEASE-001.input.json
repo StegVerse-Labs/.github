@@ -1,0 +1,16 @@
+{
+  "task_id": "SS-KV-SKAP-SOCIAL-RELEASE-001",
+  "cosv_task_vector": "60000000102000",
+  "signals": {
+    "repeated_subflow": true,
+    "multiple_authority_crossings": true,
+    "multiple_round_trips": true,
+    "cross_repository_or_org_spread": true,
+    "task_specific_adapter_duplicates_generic_work": false,
+    "handoff_sequence_growth": true,
+    "failure_path_branching": true,
+    "independent_reusability": true,
+    "optional_subflow_present": true,
+    "independent_evidence_predicate": true
+  }
+}
