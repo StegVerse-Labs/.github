@@ -15,6 +15,7 @@
     "StegVerse-Labs/.github:docs/SITE_ECE_CURRENT_PROJECTION_COMPONENT_MODEL_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github:docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github:docs/REUSABLE_GOAL_TASK_TRANSPORT_COMPONENTS_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github:docs/SITE_PUBLICATION_NATIVE_RUNTIME_COMPONENT_MODEL_MIRROR_HANDOFF.md",
     "StegVerse-Labs/Site:docs/ECOSYSTEM_CONTINUITY_CURRENT_MATERIALIZER_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegVerse-Healer:docs/ECOSYSTEM_CONTINUITY_SITE_MATERIALIZER_BINDING_MIRROR_HANDOFF.md"
   ],
@@ -75,7 +76,9 @@
     "upstream_diagnostic_task": "SDK-ECOSYSTEM-DIAGNOSTIC-PROCESSOR-001",
     "reusable_parent_cycle": "RT-ECOSYSTEM-CONTINUITY-EVALUATION-001",
     "custody_owner": "Master Records",
-    "publication_owner": "EXISTING_SITE_RUNTIME_ONLY"
+    "publication_owner_task": "SITE-PUBLICATION-NATIVE-RUNTIME-EXECUTION-001",
+    "publication_owner_cosv": "50000000102000",
+    "publication_component": "RTC-PUBLISHER-005"
   },
   "authority_model": {
     "materializer_authority": "NONE_COPY_ONLY",
@@ -84,7 +87,7 @@
     "device_verification_policy": "NONE_PROHIBITED",
     "device_or_node_user_verifier_authority": "NONE",
     "execution_surface_connectivity_authority": "NONE_OBSERVATION_ONLY",
-    "publication_authority": "EXISTING_SITE_RUNTIME_ONLY",
+    "publication_execution_owner": "SITE-PUBLICATION-NATIVE-RUNTIME-EXECUTION-001",
     "github_runtime_authority": "NONE",
     "source_repository_writeback_allowed": false
   },
