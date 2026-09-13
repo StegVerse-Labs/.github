@@ -13,7 +13,8 @@
     "docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
     "data/canonical-task-records/GADI-001.json",
     "data/canonical-task-records/GADI-RESIDENT-EXECUTION-001.json",
-    "StegVerse-Labs/.github#1603"
+    "StegVerse-Labs/.github#1603",
+    "StegVerse-Labs/.github#1630"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs", "StegVerse-002"],
@@ -53,7 +54,14 @@
     "deployment_required": false,
     "current_observation_required": true
   },
-  "runtime_resolution": null,
+  "runtime_resolution": {
+    "source_reachability_complete": true,
+    "portable_dispatch_selector_repair": "MERGED_VALIDATED_PR_1630",
+    "authentic_runtime_evidence_observed": false,
+    "next_required_evidence": "AUTHENTIC_GADI_RUNTIME_OBSERVATION_REQUEST_CONSUMPTION",
+    "source_or_ci_proves_runtime_execution": false,
+    "authority_effect": "NONE_RECONCILIATION_ONLY"
+  },
   "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
   "human_action_ref": null,
   "completion": {"claimed":false,"validated":false,"activation_proof_complete":false},
