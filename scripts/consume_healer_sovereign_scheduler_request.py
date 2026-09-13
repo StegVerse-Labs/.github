@@ -17,6 +17,11 @@ CONSUMPTION_REL = Path("receipts/sovereign-host/healer-sovereign-scheduler-reque
 TARGET_TASK = "SHWP-HEALER-SOVEREIGN-SCHEDULER-001"
 TARGET_MODE = "TARGETED_INDEPENDENT_TASK_CONTROL"
 TARGET_ENTRYPOINT = "scripts/refresh_and_execute_resident_task.py"
+REUSABLE_REFRESH_ENTRYPOINT = Path("scripts/refresh_sovereign_worker_runtime_source_reusable.py")
+NEUTRAL_SCHEDULER_REQUIRED = (
+    Path("scripts/run_reusable_task_scheduler.py"),
+    Path("data/reusable-task-scheduler-contract.json"),
+)
 NONSECRET_ENV = {
     "PATH", "HOME", "LANG", "LC_ALL", "XDG_STATE_HOME", "XDG_CONFIG_HOME", "LOCALAPPDATA",
     "STEGVERSE_SOVEREIGN_NODE", "STEGVERSE_HEARTBEAT_ROOT", "STEGVERSE_HEARTBEAT_SOURCE_ROOT",
@@ -142,6 +147,73 @@ def synchronize_standing_request(source: Path, runtime: Path) -> dict[str, Any]:
     }
 
 
+def ensure_neutral_scheduler_materialized(
+    source: Path,
+    runtime: Path,
+    *,
+    runner=subprocess.run,
+    values: dict[str, str] | None = None,
+) -> dict[str, Any]:
+    """Break the stale-runtime bootstrap loop before Healer delegates scheduling.
+
+    The canonical resident worker refreshes this consumer before dispatch. If the
+    resident runtime does not yet contain the neutral scheduler artifacts, invoke
+    the already-registered reusable source-refresh adapter directly from the
+    already-local canonical source. This grants no execution or transition authority.
+    """
+    missing_before = [rel.as_posix() for rel in NEUTRAL_SCHEDULER_REQUIRED if not (runtime / rel).is_file()]
+    if not missing_before:
+        return {
+            "state": "NEUTRAL_SCHEDULER_ALREADY_MATERIALIZED",
+            "attempted": False,
+            "required_paths": [rel.as_posix() for rel in NEUTRAL_SCHEDULER_REQUIRED],
+            "missing_before": [],
+            "network_source_fetch_performed": False,
+            "credential_read_or_acquired": False,
+            "authority_effect": "NONE_SOURCE_MATERIALIZATION_ONLY",
+        }
+
+    adapter = source / REUSABLE_REFRESH_ENTRYPOINT
+    if not adapter.is_file():
+        raise RuntimeError(f"canonical reusable source-refresh adapter missing: {adapter}")
+    env = clean_env(values)
+    env["STEGVERSE_REUSABLE_TASK_PARAMETERS_JSON"] = json.dumps(
+        {"source_root": str(source), "runtime_root": str(runtime)},
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+    completed = runner(
+        [sys.executable, str(adapter)],
+        cwd=source,
+        capture_output=True,
+        text=True,
+        check=False,
+        env=env,
+        timeout=300,
+    )
+    refresh_receipt = parse_last_json(completed.stdout)
+    missing_after = [rel.as_posix() for rel in NEUTRAL_SCHEDULER_REQUIRED if not (runtime / rel).is_file()]
+    if completed.returncode != 0 or missing_after:
+        raise RuntimeError("neutral reusable scheduler bootstrap materialization failed")
+    if not isinstance(refresh_receipt, dict) or refresh_receipt.get("schema") != "stegverse.sovereign-worker-runtime-source-refresh/v1":
+        raise RuntimeError("neutral scheduler bootstrap did not emit canonical source-refresh receipt")
+    if refresh_receipt.get("network_fetch_performed") is not False or refresh_receipt.get("credential_read_or_acquired") is not False:
+        raise RuntimeError("neutral scheduler bootstrap violated local-only source-refresh boundary")
+    return {
+        "state": "NEUTRAL_SCHEDULER_MATERIALIZED_FROM_LOCAL_CANONICAL_SOURCE",
+        "attempted": True,
+        "adapter_ref": REUSABLE_REFRESH_ENTRYPOINT.as_posix(),
+        "required_paths": [rel.as_posix() for rel in NEUTRAL_SCHEDULER_REQUIRED],
+        "missing_before": missing_before,
+        "missing_after": missing_after,
+        "returncode": completed.returncode,
+        "refresh_receipt": refresh_receipt,
+        "network_source_fetch_performed": False,
+        "credential_read_or_acquired": False,
+        "authority_effect": "NONE_SOURCE_MATERIALIZATION_ONLY",
+    }
+
+
 def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env: dict[str, str] | None = None) -> dict[str, Any]:
     values = dict(os.environ if env is None else env)
     runtime = runtime_root.expanduser().resolve()
@@ -194,6 +266,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         return receipt
 
     request_materialization = synchronize_standing_request(source, runtime)
+    scheduler_materialization = ensure_neutral_scheduler_materialized(source, runtime, runner=runner, values=values)
     request_path = runtime / REQUEST_REL
     request = load_json(request_path)
     validate_request(request)
@@ -221,6 +294,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         "request_id": request["request_id"],
         "request_sha256": request_hash,
         "request_materialization": request_materialization,
+        "neutral_scheduler_materialization": scheduler_materialization,
         "task_id": TARGET_TASK,
         "mode": TARGET_MODE,
         "standing_request": True,
