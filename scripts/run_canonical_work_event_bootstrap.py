@@ -135,9 +135,7 @@ def wait_for_consumption(*, runtime: Path, materialization_id: str, timeout_seco
     raise SystemExit("FAIL_CLOSED: canonical_work_consumption_receipt_timeout")
 
 
-def project_registry(*, task_id: str, registry: Path, registry_shards: Path, ingress_path: Path, consumption_path: Path, runtime: Path) -> Path:
-    output = runtime / "projections" / "canonical-task.after-ingress.json"
-    output.parent.mkdir(parents=True, exist_ok=True)
+def persist_registry(*, task_id: str, registry: Path, registry_shards: Path, ingress_path: Path, consumption_path: Path) -> Path:
     subprocess.run(
         [
             sys.executable,
@@ -150,19 +148,21 @@ def project_registry(*, task_id: str, registry: Path, registry_shards: Path, ing
             str(ingress_path),
             "--consumption-receipt",
             str(consumption_path),
-            "--output",
-            str(output),
+            "--apply",
         ],
         cwd=str(ROOT),
         check=True,
     )
-    projected = load(output)
-    if projected.get("task_id") == task_id:
-        require(projected.get("coordination_state") == "INGRESS_ADMITTED", "post_ingress_shard_projection_invalid")
-    else:
-        tasks = [task for task in projected.get("tasks", []) if task.get("task_id") == task_id]
-        require(len(tasks) == 1 and tasks[0].get("coordination_state") == "INGRESS_ADMITTED", "post_ingress_registry_projection_invalid")
-    return output
+    registry_value = load(registry)
+    matches = [task for task in registry_value.get("tasks", []) if task.get("task_id") == task_id]
+    if matches:
+        require(len(matches) == 1 and matches[0].get("coordination_state") == "INGRESS_ADMITTED", "persisted_post_ingress_registry_invalid")
+        return registry
+    shard = registry_shards / f"{task_id}.json"
+    require(shard.is_file(), "persisted_post_ingress_task_shard_missing")
+    projected = load(shard)
+    require(projected.get("task_id") == task_id and projected.get("coordination_state") == "INGRESS_ADMITTED", "persisted_post_ingress_shard_invalid")
+    return shard
 
 
 def main() -> int:
@@ -195,13 +195,12 @@ def main() -> int:
     ingress_path = runtime / "receipts" / "sovereign-network" / "canonical-work-intr-ingress" / f"{materialization_id}.json"
     require(ingress_path.is_file(), "write_once_ingress_receipt_missing")
     consumption_path = wait_for_consumption(runtime=runtime, materialization_id=materialization_id, timeout_seconds=args.consumer_timeout_seconds)
-    projection_path = project_registry(
+    persisted_registry_path = persist_registry(
         task_id=args.task_id,
         registry=registry,
         registry_shards=registry_shards,
         ingress_path=ingress_path,
         consumption_path=consumption_path,
-        runtime=runtime,
     )
 
     receipt = {
@@ -213,7 +212,9 @@ def main() -> int:
         "request_ref": str(request_path),
         "ingress_receipt_ref": str(ingress_path),
         "consumption_receipt_ref": str(consumption_path),
-        "proposed_registry_projection_ref": str(projection_path),
+        "proposed_registry_projection_ref": str(persisted_registry_path),
+        "persisted_registry_ref": str(persisted_registry_path),
+        "resident_registry_state_persisted": True,
         "heartbeat_carrier_present": request.get("carrier_binding") is not None,
         "heartbeat_carrier_grants_authority": False,
         "oscillator_advanced_by_bootstrap": False,
