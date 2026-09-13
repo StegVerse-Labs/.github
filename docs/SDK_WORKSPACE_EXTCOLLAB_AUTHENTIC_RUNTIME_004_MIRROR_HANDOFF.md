@@ -5,7 +5,7 @@ Repository: `StegVerse-Labs/.github`
 Goal Task ID: `SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004`
 Parent Goal Task ID: `SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003`
 COSV: `71000000100110`
-Status: `ACTIVE / RESOLVER REPAIR MERGED + VALIDATED / SOURCE COMPATIBILITY PINNED / KV-SKAP USER-VERIFIER + INTERCHANGEABLE-STEGOS-NODE INVARIANT ALIGNED / AUTHENTIC RESIDENT OBSERVATION REQUIRED`
+Status: `ACTIVE / RESOLVER REPAIR MERGED + VALIDATED / SOURCE COMPATIBILITY PINNED / KV-SKAP USER-VERIFIER + INTERCHANGEABLE-STEGOS-NODE INVARIANT ALIGNED + TASK RECONCILIATION MERGED / AUTHENTIC RESIDENT OBSERVATION REQUIRED`
 
 ## Purpose
 
@@ -19,7 +19,7 @@ StegOS devices are interchangeable transport nodes. A device, node identifier, t
 
 ## Reconciled merged source state
 
-The existing source chain remains merged and validated through `.github` #1393, SDK #196, `.github` #1402, LLM-adapter #332, SDK #199, `.github` #1415, TVC #403, SDK #201, `.github` #1427, `.github` #1460, `.github` #1478, `.github` #1485, `.github` #1547, `.github` #1552, shared runtime-presence subject propagation `.github` #1562, and global KV/SKAP-verifier/interchangeable-node invariant `.github` #1627.
+The existing source chain remains merged and validated through `.github` #1393, SDK #196, `.github` #1402, LLM-adapter #332, SDK #199, `.github` #1415, TVC #403, SDK #201, `.github` #1427, `.github` #1460, `.github` #1478, `.github` #1485, `.github` #1547, `.github` #1552, shared runtime-presence subject propagation `.github` #1562, global KV/SKAP-verifier/interchangeable-node invariant `.github` #1627, and this task's explicit invariant reconciliation `.github` #1638.
 
 PR #1460 merged at `3bc8898655d344ba12f47bb4120e38f2ac1ded6e` from exact head `a926d04e563fa6f89920bd608a2ff359b272ca13`. Exact-head validation passed in all three required lanes: Deterministic Repository Suite `34615578871`, Organization Control `34615578937`, and Heartbeat Worker Project validation `34615578890`.
 
@@ -28,6 +28,8 @@ PR #1485 merged at `329b65cf5f50883001ee90c7ee03120c67a7375d` from exact head `9
 PR #1562 merged at `cc53257c7e57347d2481dd4fd680aed9b8cf2f6d` from exact head `a9264f70f94c647932f3c5662468b9f6e972294b`. Exact-head validation passed in Deterministic Repository Suite `34670772330`, Organization Control `34670772342`, and Heartbeat Worker Project `34670772383`.
 
 PR #1627 merged at `b27114d812c8ee9c9584ebe9a99cef4fa2297cfb` and established the ecosystem-wide invariant used here: KV/SKAP Vault is the sole user verifier, while StegOS devices are interchangeable transport nodes with no independent device/node/transport user-verifier authority.
+
+PR #1638 merged at `bb347453922b822b31f10c0141e0a0066b794d71` from exact head `7322e23a96d775fbed016fcc169b8bdb164e5ef6`. All required exact-head lanes passed: Deterministic Repository Suite `34722296236`, Organization Control `34722296239`, and Heartbeat Worker Project validation `34722296246`. This merge makes the verifier/node invariant explicit in this task without turning runtime subject binding into user identity, user verification, or execution authority.
 
 The merged resolver repair falls back to the exact standalone canonical task record when the aggregate registry has no row, fails closed on duplicate aggregate identities and standalone record-ID mismatch, and aligns `resident_request_dispatch` discovery with `mutation_required=false`. Mutation/execution authority remains with WorkerCoordinator + Interlock/InTr; no runtime authority is created.
 
@@ -80,16 +82,17 @@ A profile-level or WorkerCoordinator-class match alone must not allow one runtim
 
 ## Fresh authentic observation
 
-At `2026-09-12T03:25:00Z`, this continuation rechecked available evidence channels and recorded the non-authorizing observation at `receipts/preflight/SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004-OBSERVATION-20260912.json`:
+The durable observation at `2026-09-12T03:25:00Z` remains recorded at `receipts/preflight/SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004-OBSERVATION-20260912.json` with zero authorized remote devices, zero retained Drive matches for either required receipt, and no authentic committed runtime-presence/reseal/listener receipt.
+
+After PR #1638 merged, this continuation rechecked the currently available authentic evidence channels again:
 
 - authorized remote-resident connector: zero devices;
 - retained Google Drive exact reseal receipt matches: zero;
-- retained Google Drive exact listener receipt matches: zero;
-- GitHub repository search: no authentic committed `runtime-presence.latest.json`, reseal receipt, or listener receipt; only source/documentation/reference surfaces were found.
+- retained Google Drive exact listener receipt matches: zero.
 
-A fresh continuation recheck after merged #1562 again found zero authorized remote devices and zero exact retained-Drive matches for both required receipts. Repository search still found no authentic committed `runtime-presence.latest.json`; #1562 changes what subject identity can be projected *when* authentic presence exists, not whether such presence currently exists.
+That post-merge recheck does not create a new runtime receipt and does not alter the resolver state. Runtime resolution therefore remains `UNRESOLVED_NO_CURRENT_AUTHORIZED_DEVICE`, with the exact remaining source-resolution boundary `CURRENT_OBSERVATION_REQUIRED:DECLARED_ONLY`.
 
-Therefore runtime resolution remains unresolved solely at the authentic-current-observation boundary. No resident execution, target custody/readback, listener health, CMC-029 live TLS adoption, sovereign callback reachability, Google consent, provider probe, MIR, Master Records reconstruction, one-device completion, downstream propagation, or public distribution is claimed.
+No resident execution, target custody/readback, listener health, CMC-029 live TLS adoption, sovereign callback reachability, Google consent, provider probe, MIR, Master Records reconstruction, one-device completion, downstream propagation, or public distribution is claimed.
 
 Expected resident receipts remain:
 
@@ -108,6 +111,7 @@ successor dispatcher discovery mutation semantic: MERGED / VALIDATED
 static resolver source compatibility: PROVEN
 KV/SKAP sole user-verifier invariant: MERGED / ENFORCED GLOBALLY
 interchangeable StegOS node invariant: MERGED / ENFORCED GLOBALLY
+task-specific verifier/node reconciliation #1638: MERGED / VALIDATED
 canonical runtime-presence producer: EXISTING / REUSE REQUIRED
 retained rendezvous node -> resident.node_id projection: MERGED / VALIDATED
 resident.node_id authority role: EVIDENCE SUBJECT ONLY / NOT USER VERIFIER
@@ -143,7 +147,7 @@ public distributions complete: FALSE
 
 ## README review
 
-Root `README.md` remains accurate. This change reconciles the already-merged global KV/SKAP user-verifier/interchangeable-node invariant into this task's runtime-evidence semantics; it introduces no new public capability, execution authority, or runtime activation claim.
+Root `README.md` remains accurate. The current change records already-merged verifier/node semantics, exact #1638 validation/merge evidence, and a fresh negative runtime recheck; it introduces no new public capability, execution authority, or runtime activation claim.
 
 ## Human action
 
