@@ -70,6 +70,12 @@ GLOBAL_MEASUREMENT_SPEC = {
     "bootstrap_runtime_rel": Path("runtime/canonical-work-global-runtime-evidence-measurement"),
     "task_id": "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001",
 }
+AUTONOMOUS_PROGRESSION_SPEC = {
+    "request_rel": Path("control/resident-execution-request.d/canonical-work-entity-autonomous-governed-progression-runtime-adoption-001.json"),
+    "consumption_rel": Path("receipts/sovereign-host/canonical-work-entity-autonomous-governed-progression-runtime-adoption-request-consumption.latest.json"),
+    "bootstrap_runtime_rel": Path("runtime/canonical-work-entity-autonomous-governed-progression-runtime-adoption"),
+    "task_id": "ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001",
+}
 REQUEST_SPECS = (
     DEFAULT_SPEC,
     QUANTUM_SPEC,
@@ -79,6 +85,7 @@ REQUEST_SPECS = (
     CRYPTO_LIVE_AUTO_SPEC,
     STEGBROWSER_RUNTIME_CONSUMPTION_SPEC,
     GLOBAL_MEASUREMENT_SPEC,
+    AUTONOMOUS_PROGRESSION_SPEC,
 )
 
 MATERIALIZE = (
