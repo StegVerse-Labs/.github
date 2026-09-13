@@ -1,0 +1,133 @@
+{
+  "schema": "stegverse.goal-task-component-profile/v1",
+  "task_id": "SS-EVIDENCE-COMPARISON-001",
+  "cosv_task_vector": "40000100100000",
+  "goal_identity_preserved": true,
+  "component_model": "data/reusable-task-component-model.json",
+  "decomposition_policy": "data/reusable-task-component-decomposition-policy.json",
+  "decomposition_input": "data/reusable-task-componentization-inputs/SS-EVIDENCE-COMPARISON-001.json",
+  "decomposition_evaluation": "data/reusable-task-componentization-evaluations/SS-EVIDENCE-COMPARISON-001.json",
+  "transport_profile": "data/goal-task-transport-profiles/SS-EVIDENCE-COMPARISON-001.json",
+  "runtime_handoff": "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_ERL_ASSISTED_DRAFTING_MIRROR_HANDOFF.md",
+  "family_bindings": [
+    {
+      "family": "transport",
+      "existing_contract": "data/reusable-transport-component-contract.json",
+      "profile": "data/goal-task-transport-profiles/SS-EVIDENCE-COMPARISON-001.json",
+      "inputs": ["canonical preparation bundle", "canonical personal-KV path", "exact draft bytes", "prior evidence references"],
+      "outputs": ["governed KV transition receipt", "exact stored-byte readback", "receipt-chain extension"],
+      "preconditions": ["KV/SKAP user-verification authority preserved", "exact task/COSV binding", "canonical preparation bundle valid"],
+      "authority_owner": "Interlock/InTr for governed transitions; reusable transport component itself non-authorizing",
+      "expected_evidence": ["exact path/hash/size binding", "authentic transition/admission receipt", "exact stored-byte readback"],
+      "failure_remediation": "retry or reenter only the failed transition after its exact preconditions are restored; prior receipts never authorize later transitions",
+      "cardinality": "ONE_REQUIRED_STANDARD_KV_SAVE_READBACK_ROUND_TRIP; additional repeats only for distinct exact transitions"
+    },
+    {
+      "family": "evidence_validation",
+      "existing_owner": "StegVerse-Labs/StegSocials",
+      "canonical_implementation": ["scripts/validate_standard_flow_evidence_export.py", "merged PR #48 no-device-verification verifier", "adapters/kv/erl_provider_readback.py"],
+      "inputs": ["standard-flow evidence JSON", "KV admission/readback bindings", "ERL/provider proof references where applicable"],
+      "outputs": ["fail-closed validation result", "exact evidence-class classification"],
+      "preconditions": ["authentic evidence object exists"],
+      "authority_owner": "NONE_VALIDATION_ONLY",
+      "expected_evidence": ["verifier PASS only for exact canonical bindings", "no provider/device/user-authority inference"],
+      "failure_remediation": "reject missing or mismatched evidence; never repair by inference, device identity, or synthetic receipt creation",
+      "cardinality": "ONCE_PER_EVIDENCE_OBJECT; repeatable for a new exact object"
+    },
+    {
+      "family": "custody_reconstruction",
+      "existing_component": "RTC-EVIDENCE-CUSTODY-004",
+      "canonical_owner": "Master Records",
+      "canonical_implementation": ["master-records/orchestration/scripts/import_erl_kv_receipts.py", "master-records/orchestration/scripts/reconstruct_erl_kv_receipt_chain.py", "MR-STEGSOCIALS-RECEIPT-CUSTODY-001"],
+      "inputs": ["authentic evidence chain", "exact readback evidence", "publication record only when that separate predicate is actually applicable"],
+      "outputs": ["custody acceptance", "reconstruction result", "durable evidence references"],
+      "preconditions": ["required authentic evidence exists at its original evidence class"],
+      "authority_owner": "Master Records",
+      "expected_evidence": ["custody receipt", "reconstruction PASS only when exact required evidence is present"],
+      "failure_remediation": "retain incomplete state without replaying or upgrading upstream evidence; retry custody/reconstruction after the missing authentic evidence exists",
+      "cardinality": "PER_INDEPENDENT_CUSTODIAL_EVIDENCE_OBJECT; existing authentic ERL custody is reused, not replayed"
+    },
+    {
+      "family": "governed_ingress",
+      "existing_owner": "Interlock/InTr",
+      "canonical_implementation": "existing canonical KV/Universal InTr admission path",
+      "inputs": ["exact KV state-transition candidate"],
+      "outputs": ["authentic exact-transition admission/decision receipt"],
+      "preconditions": ["exact payload/subject/path binding", "WorkerCoordinator claim/fence when machine-owned execution applies"],
+      "authority_owner": "Interlock/InTr",
+      "expected_evidence": ["authentic admission for the exact transition"],
+      "failure_remediation": "remain incomplete on missing/denied/mismatched admission; do not create a replacement authority path",
+      "cardinality": "PER_GOVERNED_STATE_CROSSING"
+    },
+    {
+      "family": "runtime_observation",
+      "existing_owner": "existing canonical StegOS/KV runtime observation owners",
+      "inputs": ["exact task/runtime subject and authentic executed transition"],
+      "outputs": ["runtime observation only"],
+      "preconditions": ["an eligible StegOS transport/execution node actually executes the relevant work"],
+      "authority_owner": "NONE_OBSERVATION_ONLY",
+      "expected_evidence": ["authentic execution/readback observation if execution occurs"],
+      "failure_remediation": "absence remains absence; no device identity or user-verification inference",
+      "cardinality": "CONDITIONAL_PER_AUTHENTIC_RUNTIME_EVENT"
+    }
+  ],
+  "not_applicable_families": {
+    "credential_session": "Not required by the current standard/manual lane. TV/TVC remains the canonical owner for the separate automated/provider-release Goal Task.",
+    "framework_provider_adapter": "No new provider/framework adapter is required for the current standard/manual evidence path; existing ERL/provider readback adapters are reused.",
+    "callback_correlation": "No callback cycle is required for the standard/manual KV evidence path.",
+    "release_propagation": "Automated provider release is outside this Goal Task's current standard/manual lane and remains under SS-KV-SKAP-SOCIAL-RELEASE-001.",
+    "publisher_projection": "RTC-PUBLISHER-005 is not selected for the current standard/manual lane.",
+    "sdk_return_assembly": "RTC-SDK-RETURN-006 is not selected.",
+    "stegverse_final_egress": "RTC-STEGVERSE-EGRESS-007 is not selected for the current standard/manual lane.",
+    "far_side_final_transition": "RTC-FARSIDE-FINAL-009 is not selected for the current standard/manual lane."
+  },
+  "conditional_families": {
+    "execution_materialization": "Reuse the canonical reusable-task ephemeral construct only if machine-side bounded execution must be materialized; do not create a new runtime merely to execute the manual/standard path.",
+    "terminal_cleanup_entropy_recovery": "Applicable only if an invocation-specific ephemeral runner was actually materialized and only after its required recording/custody predicates complete."
+  },
+  "task_specific_configuration": [
+    "StegSocials preparation/evidence schemas and exact personal-KV draft path",
+    "claim-to-evidence comparison semantics and ERL reference boundary",
+    "standard-flow evidence-object shape",
+    "root Goal Task completion predicates that remain distinct from the separate premium provider-release Goal Task"
+  ],
+  "superseded_as_orchestration_owners": [
+    {
+      "path": "SS-EVIDENCE-STANDARD-IPHONE-FLOW-001",
+      "new_role": "HISTORICAL_SUPERSEDED_DEVICE_BOUND_FORMULATION",
+      "delete_now": false,
+      "reason": "Historical provenance is preserved, but device identity/verification/attestation is prohibited and cannot remain an orchestration or authority requirement."
+    },
+    {
+      "path": "Site standard-flow evidence exporter",
+      "new_role": "TASK_SPECIFIC_EVIDENCE_OBJECT_CONSTRUCTION_OVER_REUSABLE_KV_ROUNDTRIP_AND_EVIDENCE_VALIDATION",
+      "delete_now": false,
+      "reason": "Retain task-specific presentation/schema shaping, but do not extend it into duplicate transport, InTr, custody, credential, or publication orchestration."
+    },
+    {
+      "path": "StegSocials standard-flow verifier",
+      "new_role": "REUSABLE_EVIDENCE_VALIDATOR_FOR_THIS_EVIDENCE_CLASS",
+      "delete_now": false,
+      "reason": "Merged PR #48 is retained as the canonical fail-closed evidence validator; it is not a device verifier or transport owner."
+    }
+  ],
+  "authority_invariants": {
+    "task_registry": "COORDINATION_ONLY",
+    "worker_claim_fence": "WorkerCoordinator",
+    "governed_transition": "Interlock/InTr",
+    "credential_provider_release": "TV/TVC",
+    "user_verification": "KV/SKAP Vault",
+    "device_role": "INTERCHANGEABLE_TRANSPORT_EXECUTION_NODE",
+    "device_user_verification_authority": "NONE",
+    "device_verification": "PROHIBITED",
+    "device_attestation_user_authority": "NONE",
+    "runtime_subject_binding_is_user_verification": false,
+    "secure_enclave_identity_is_user_verification": false,
+    "master_records": "OBSERVED_REALITY_CUSTODY_AND_RECONSTRUCTION",
+    "heartbeat": "SYNCHRONIZATION_TIMING_FRESHNESS_LIVENESS_CORRELATION_OBSERVABILITY_ONLY",
+    "github_runtime_authority": "NONE"
+  },
+  "runtime_predicates_changed": false,
+  "new_goal_task_required": false,
+  "componentization_mints_authority": false
+}

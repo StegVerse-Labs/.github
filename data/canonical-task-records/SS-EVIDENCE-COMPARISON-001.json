@@ -14,7 +14,9 @@
     "StegVerse-Labs/StegSocials/tasks/SS-EVIDENCE-COMPARISON-001.yaml",
     "KnowledgeVault/MYKV_MIRROR_HANDOFF.md",
     "master-records/orchestration/contracts/stegsocials-evidence-context-source-schemas.yaml",
-    "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/ERL_KV_STORAGE_MIRROR_HANDOFF.md"
+    "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/ERL_KV_STORAGE_MIRROR_HANDOFF.md",
+    "docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md",
+    "docs/SS_EVIDENCE_STANDARD_KV_FLOW_MIRROR_HANDOFF.md"
   ],
   "targets": {
     "organizations": [
@@ -51,7 +53,9 @@
       "stegsocials-erl-artifact-custody-reference",
       "erl-kv-provider-operation-receipt-schema",
       "erl-kv-authentic-provider-operation",
-      "erl-kv-native-and-provider-receipt-custody"
+      "erl-kv-native-and-provider-receipt-custody",
+      "standard-kv-flow-evidence",
+      "kv-skap-user-authority-boundary"
     ]
   },
   "dependencies": [
@@ -98,7 +102,9 @@
     "SS-KV-SKAP-SOCIAL-RELEASE-001",
     "MYKV-PERSONAL-DATA-BACKUP-001",
     "MR-STEGSOCIALS-RECEIPT-CUSTODY-001",
-    "SS-ERL-KV-PROPAGATION-VERIFICATION-001"
+    "SS-ERL-KV-PROPAGATION-VERIFICATION-001",
+    "SS-EVIDENCE-STANDARD-KV-FLOW-001",
+    "SS-EVIDENCE-STANDARD-IPHONE-FLOW-001"
   ],
   "existing_evidence_refs": [
     "StegVerse-Labs/StegSocials/docs/EVIDENCE_CONTEXT_KV_MODEL.md",
@@ -151,7 +157,9 @@
     "master-records/orchestration@1c565c160d1a25b408e130402b5da52e855a8169:authentic-erl-receipt-custody=PASS",
     "master-records/orchestration@3e1bc4f2f98bde1932261c2ce96ca42fa9952a19:terminal-custody-handoff=PASS",
     "StegVerse-Labs/Executive_Rhetoric_Ledger@722a11cf2ada6205a31e3678d489254fb736e8f7:erl-kv-integration-complete",
-    "StegVerse-Labs/StegSocials@41f1eae88f12d461df6a72fbb3edce90966c0fd9:completed-erl-kv-proof-consumed"
+    "StegVerse-Labs/StegSocials@41f1eae88f12d461df6a72fbb3edce90966c0fd9:completed-erl-kv-proof-consumed",
+    "StegVerse-Labs/StegSocials@6011cda524a05d965b9752ffd84198f6a41bff4e:no-device-verification-standard-flow-verifier=PASS",
+    "docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md"
   ],
   "expected_evidence_predicates": [
     "SOURCE_POST_METADATA_SCHEMA_VALID",
@@ -174,7 +182,11 @@
     "STEGSOCIALS_STABLE_ERL_ARTIFACT_AND_MASTER_RECORDS_CUSTODY_REFERENCES_PRESENT",
     "ERL_NATIVE_WRITER_PROVIDER_UPLOAD_AND_EXACT_READBACK_PASS",
     "ERL_PROVIDER_OPERATION_RECEIPT_RETAINED",
-    "ERL_NATIVE_AND_PROVIDER_OPERATION_RECEIPTS_MASTER_RECORDS_RECONSTRUCTION_PASS"
+    "ERL_NATIVE_AND_PROVIDER_OPERATION_RECEIPTS_MASTER_RECORDS_RECONSTRUCTION_PASS",
+    "DEVICE_VERIFICATION_NOT_REQUIRED",
+    "DEVICE_ATTESTATION_NOT_REQUIRED",
+    "TRANSPORT_NODE_NOT_IDENTITY_OR_AUTHORITY_ROOT",
+    "KV_SKAP_USER_VERIFICATION_AUTHORITY_PRESERVED"
   ],
   "runtime_requirements": {
     "capabilities": [
@@ -195,7 +207,7 @@
   },
   "runtime_resolution": {
     "current_executor": "current-session-repository-and-kv-orchestration",
-    "authority_basis": "canonical task/COSV plus user-authorized GitHub and KV access",
+    "authority_basis": "canonical task/COSV plus user-authorized GitHub and KV access; user verification/authority remains KV/SKAP and is not device-bound",
     "unattended_runtime": false
   },
   "worker_claim": {
@@ -204,7 +216,7 @@
     "fence_ref": null,
     "projection_only": false
   },
-  "human_action_ref": "Authentic current-iPhone preparation/save/readback is remaining evidence collection for the standard lane; provider/account authorization is required only when a real live premium publication is attempted.",
+  "human_action_ref": "Authentic KV preparation/save/readback remains the standard-lane evidence step and may occur on any eligible StegOS transport node; no device identity, verification, or attestation is required. Provider/account authorization is required only when a real live premium publication is attempted.",
   "completion": {
     "claimed": false,
     "validated": true,
@@ -212,7 +224,7 @@
     "activation_proof_complete": false
   },
   "allowed_next_transitions": [
-    "EXECUTE_AUTHENTIC_CURRENT_IPHONE_STANDARD_FLOW",
+    "EXECUTE_AUTHENTIC_STANDARD_KV_FLOW",
     "CONTINUE_SEPARATE_PREMIUM_PUBLICATION_TASK",
     "OBSERVE_PROPAGATION_VERIFICATION_TASK"
   ],
@@ -223,7 +235,9 @@
     "master-records/orchestration/docs/MASTER_RECORDS_MIRROR_HANDOFF.md",
     "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/ERL_KV_STORAGE_MIRROR_HANDOFF.md",
     "master-records/orchestration/docs/ERL_KV_RECEIPT_CUSTODY_MIRROR_HANDOFF.md",
-    "docs/SS_ERL_KV_PROPAGATION_VERIFICATION_MIRROR_HANDOFF.md"
+    "docs/SS_ERL_KV_PROPAGATION_VERIFICATION_MIRROR_HANDOFF.md",
+    "docs/SS_EVIDENCE_STANDARD_KV_FLOW_MIRROR_HANDOFF.md",
+    "docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md"
   ],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
@@ -233,17 +247,24 @@
     "acquired_evidence_and_publication_records_are_distinct": true,
     "provider_resource_identity_is_not_operation_receipt": true,
     "live_provider_publication_authority_remains_separate": true,
-    "master_records_owns_receipt_custody_not_publication": true
+    "master_records_owns_receipt_custody_not_publication": true,
+    "device_verification_required": false,
+    "device_attestation_required": false,
+    "devices_are_interchangeable_transport_nodes": true,
+    "user_verification_authority_source": "KV_SKAP",
+    "transition_authority_source": "INTERLOCK_INTR"
   },
   "readme_impact": {
-    "material_function_change": false,
+    "material_function_change": true,
     "readme_updated_in_change_set": true,
     "readme_path": "README.md",
     "no_readme_update_reason": null,
     "evidence_refs": [
       "StegVerse-Labs/.github/README.md",
       "StegVerse-Labs/.github/data/canonical-task-records/SS-EVIDENCE-COMPARISON-001.json",
-      "docs/SS_ERL_KV_PROPAGATION_VERIFICATION_MIRROR_HANDOFF.md"
+      "docs/SS_ERL_KV_PROPAGATION_VERIFICATION_MIRROR_HANDOFF.md",
+      "docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md",
+      "docs/SS_EVIDENCE_STANDARD_KV_FLOW_MIRROR_HANDOFF.md"
     ]
   }
 }

@@ -1,0 +1,26 @@
+{
+  "schema": "stegverse.reusable-task-componentization-input/v1",
+  "task_id": "SS-EVIDENCE-COMPARISON-001",
+  "cosv_task_vector": "40000100100000",
+  "signals": {
+    "repeated_subflow": true,
+    "multiple_authority_crossings": true,
+    "multiple_round_trips": true,
+    "cross_repository_or_org_spread": true,
+    "task_specific_adapter_duplicates_generic_work": true,
+    "handoff_sequence_growth": true,
+    "failure_path_branching": true,
+    "independent_reusability": true,
+    "optional_subflow_present": true,
+    "independent_evidence_predicate": true
+  },
+  "evidence_basis": [
+    "Root Goal Task spans .github, StegSocials, Executive_Rhetoric_Ledger, KnowledgeVault, and Master Records responsibilities.",
+    "The flow contains repeated KV write/readback, provider-resource readback, receipt validation, and custody/reconstruction stages with independent evidence.",
+    "The standard/manual lane and premium provider-publication lane have different completion semantics, and the premium lane is already a separate Goal Task.",
+    "Historical task-specific orchestration overlaps reusable governed round-trip, Interlock/InTr transport, evidence validation, and custody/reconstruction capabilities.",
+    "The handoff sequence has accumulated multiple source, runtime, provider, evidence, and remediation stages that can be reasoned about independently.",
+    "Device-bound wording created an ambiguity path now superseded by the canonical KV/SKAP verifier and interchangeable StegOS transport-node invariant."
+  ],
+  "authority_effect": "NONE_COORDINATION_ONLY"
+}
