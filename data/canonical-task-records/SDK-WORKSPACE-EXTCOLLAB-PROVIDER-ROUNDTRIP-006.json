@@ -1,0 +1,27 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-WORKSPACE-EXTCOLLAB-PROVIDER-ROUNDTRIP-006",
+  "correlation_id": "SDK-WORKSPACE-EXTCOLLAB-PROVIDER-ROUNDTRIP-006",
+  "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "parent_task_id": "SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004",
+  "goal": "After authentic resident lifecycle proof, complete external-collaboration secret custody, sovereign callback reachability, owner-present provider consent, authoritative provider file probe, SDK active-probe predicate re-evaluation, MIR transition reporting, and one-current-device roundtrip proof.",
+  "coordination_state": "INACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "cosv_task_vector": null,
+  "repository": "StegVerse-Labs/.github",
+  "activation_condition": "SDK-WORKSPACE-EXTCOLLAB-RESIDENT-LIFECYCLE-PROOF-005_COMPLETE",
+  "activation_condition_status": "UNSATISFIED",
+  "dependencies": ["SDK-WORKSPACE-EXTCOLLAB-RESIDENT-LIFECYCLE-PROOF-005"],
+  "remaining_predicates": [
+    "EXTERNAL_COLLAB_CLIENT_SECRET_CUSTODY_PROVEN",
+    "SOVEREIGN_CALLBACK_REACHABILITY_PROVEN",
+    "OWNER_PRESENT_GOOGLE_CONSENT_PROVEN",
+    "AUTHORITATIVE_PROVIDER_FILE_PROBE_PROVEN",
+    "SDK_ACTIVE_PROBE_COMPLETE_PREDICATE_REEVALUATION_PROVEN",
+    "MIR_TRANSITION_REPORTING_PROVEN",
+    "ONE_CURRENT_DEVICE_END_TO_END_PROVEN"
+  ],
+  "handoff_projection_refs": ["StegVerse-Labs/.github:docs/SDK_WORKSPACE_EXTCOLLAB_PROVIDER_ROUNDTRIP_006_MIRROR_HANDOFF.md"],
+  "completion": {"claimed": false, "validated": false, "activation_proof_complete": false},
+  "authority_model": {"github_runtime_authority": "NONE", "credential_authority": "TV/TVC", "user_verification_authority": "KV/SKAP Vault", "interlock_intr_required_for_governed_ingress_egress": true, "second_user_operated_device_required": false}
+}
