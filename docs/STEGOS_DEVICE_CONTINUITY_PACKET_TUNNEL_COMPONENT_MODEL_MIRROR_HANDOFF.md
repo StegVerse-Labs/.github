@@ -111,6 +111,14 @@ Subject-binding configuration adds no synthetic completion evidence and changes 
 - Generic signing/provisioning discussion: inherited infrastructure; duplicate task-specific revalidation is superseded/prohibited.
 - Packet-tunnel activation/persistence/loopback state: authentic runtime observation still pending.
 
+## Validation reconciliation
+
+PR `#1754` first validated at head `ebf9c6bbf8fae0a9f06d5cdcb76f601f44c26922`. Organization-control validation passed, while the deterministic suite reported four StegBrowser ingress assertions expecting `STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001` to remain `PROPOSED`. Those failures were unrelated to this Goal Task and matched a concurrent canonical transition of that StegBrowser parent to `SUPERSEDED` with successor `STEG-BROWSER-RUNTIME-CONSUMPTION-001`.
+
+Main subsequently merged the canonical test repair at `c16263e0700a8d2e4d2188198193cc0e1375a1da`. This packet-tunnel branch was rebased onto that exact main state before reapplying only the three packet-tunnel subject-binding artifacts. During rebase, `runtime_resolution` was also restored to `null`; source-only endpoint parameters are carried separately as `runtime_observation_configuration`, preventing source configuration from being mistaken for authentic runtime resolution.
+
+The prior failed validation is retained as provenance and does not establish a packet-tunnel source defect or any runtime outcome.
+
 ## Next admissible work
 
 Use the existing governed admission path for the actual state-changing activation operation, then invoke the existing observation owner against the exact `DeviceContinuityPacketTunnel` status endpoint. Record the exact first runtime outcome. If activation succeeds, foreground another browser/app container on the same StegOS Node and re-observe the same endpoint to test persistence. Do not substitute generic resident presence, source validation, or HeartBeat evidence.
