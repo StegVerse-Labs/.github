@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CONSUMER = ROOT / "control/resident-execution-request.d/consume-stegbrowser-tvc-source-promotion.py"
 REQUEST = ROOT / "control/resident-execution-request.d/stegbrowser-tvc-source-promotion-001.json"
 REFRESH_DISPATCH = ROOT / "scripts/refresh_and_dispatch_resident_requests.py"
-TARGET_SHA = "aef6b6f5dc99d2a531718ca475d20858ae8e68a6"
+TARGET_SHA = "4c78f8653b8a5899350479d57c58e936b50e023a"
 
 spec = importlib.util.spec_from_file_location("stegbrowser_tvc_source_promotion", CONSUMER)
 mod = importlib.util.module_from_spec(spec)
@@ -32,7 +32,7 @@ def test_request_is_exact_parent_task_and_immutable_tvc_pin():
     assert value["source_repository"] == "StegVerse-Labs/TVC"
     assert value["reference_mode"] == "IMMUTABLE_COMMIT"
     assert value["exact_sha"] == TARGET_SHA
-    assert value["materialization_id"] == "stegbrowser-tvc-runtime-aef6b6f5"
+    assert value["materialization_id"] == "stegbrowser-tvc-runtime-4c78f865"
     assert value["github_token_required"] is False
     assert value["network_source_fetch_allowed"] is False
     assert value["second_machine_required"] is False
@@ -58,7 +58,7 @@ def test_consumer_stages_exact_private_source_request(tmp_path: Path):
         "reference_mode": "IMMUTABLE_COMMIT",
         "exact_ref": "commit:" + TARGET_SHA,
         "exact_sha": TARGET_SHA,
-        "materialization_id": "stegbrowser-tvc-runtime-aef6b6f5",
+        "materialization_id": "stegbrowser-tvc-runtime-4c78f865",
         "ttl_seconds": 900,
     }
 
@@ -126,15 +126,28 @@ def test_portable_dispatch_preserves_exact_source_git_head_and_selection(tmp_pat
 
     def fake_runner(command, **_kwargs):
         assert command[-2:] == ["--only-consumer", "stegbrowser_tvc_source_promotion"]
+        current = {
+            "schema": "stegverse.stegbrowser-tvc-source-promotion-request-consumption/v1",
+            "state": "ATTEMPT_RECORDED",
+            "outcome": "STAGED",
+            "task_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+            "exact_sha": TARGET_SHA,
+            "credential_material_present": False,
+            "network_source_fetch_performed": False,
+        }
         receipt = {
             "state": "DISPATCH_COMPLETE",
             "selection_scope": "EXACT_SELECTOR",
             "selected_consumers": ["stegbrowser_tvc_source_promotion"],
             "consumer_count": 1,
+            "outcomes": [{"consumer":"stegbrowser_tvc_source_promotion","attempted":True,"returncode":0,"result":current}],
         }
         path = runtime / bridge.DISPATCH_RECEIPT_REL
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(receipt))
+        consumption_path = runtime / bridge.STEG_BROWSER_TVC_CONSUMPTION_REL
+        consumption_path.parent.mkdir(parents=True, exist_ok=True)
+        consumption_path.write_text(json.dumps(current))
         return SimpleNamespace(returncode=0)
 
     monkeypatch.setattr(bridge, "refresh", fake_refresh)
