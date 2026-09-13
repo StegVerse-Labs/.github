@@ -1,0 +1,31 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "shared_docs_provider_content_integrity",
+  "sample_count": 0,
+  "hb_estimate": {
+    "expected_completion_beats": 1,
+    "expected_idle_beats": 1,
+    "expiry_candidate_beats": 64,
+    "confidence": "LOW"
+  },
+  "cost_estimate": {
+    "compute_units": 1,
+    "token_units": 0,
+    "storage_bytes": 65536,
+    "network_bytes": null,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_recovery_units": 1
+  },
+  "evidence_refs": [
+    "handoffs/SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001.json",
+    "workers/shared_docs_provider_content_integrity_worker.py",
+    "control/process-worker-adapters.d/shared-docs-provider-content-integrity-001.json"
+  ],
+  "notes": [
+    "Estimate only; no authentic resident/provider execution sample is claimed yet.",
+    "TV/TVC remains credential/provider authority and provider mutation is prohibited.",
+    "Heartbeat timing is not execution authority."
+  ]
+}
