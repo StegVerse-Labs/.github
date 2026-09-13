@@ -41,11 +41,16 @@
     "worker_claim_authority": "WorkerCoordinator",
     "credential_authority": "TV/TVC",
     "runtime_reality_authority": "Master Records",
+    "completion_evidence_contract_version": "v1",
     "completion_language_requires_evidence_class": true,
     "unqualified_complete_or_completed_prohibited": true,
     "stronger_completion_class_inference_prohibited": true,
     "completion_claim_requires_evidence_refs": true,
     "validated_completion_requires_claimed_completion": true,
+    "new_or_reconciled_completion_requires_contract_version": true,
+    "legacy_unqualified_completion_authority": "NONE_NON_AUTHORITATIVE_PROVENANCE_ONLY",
+    "legacy_unqualified_completion_may_support_user_facing_complete": false,
+    "legacy_unqualified_completion_may_satisfy_terminal_predicate": false,
     "terminal_complete_default_evidence_class": "END_TO_END",
     "completion_evidence_classes": [
       "SOURCE_IMPLEMENTED",
@@ -77,7 +82,8 @@
     "ephemeral_substrate": "Temporary compute is not a separate authority or durable machine dependency. Presence or connectivity grants no execution, transition, WorkerCoordinator claim/fence, credential, custody, publication, or completion authority.",
     "runtime_substrate_order": "Runtime-capable tasks must evaluate the canonical single-device-first substrate order before any remote/external-device last resort. EVIDENCE_REACHABILITY may remain pending but cannot establish UNSUITABLE or create an external-device requirement.",
     "completion_evidence_class": "Every affirmative completion statement must identify the exact evidence class proven. Source implementation, merge, CI validation, sandbox runtime observation, external/provider observation, Master Records reconstruction, and end-to-end completion are distinct states and may not be collapsed.",
-    "completion_promotion": "A stronger evidence class may be asserted only from evidence native to that class. Lower classes never imply higher classes. User-facing unqualified complete/completed is prohibited unless END_TO_END is explicitly proven for the declared Goal Task terminal predicates."
+    "completion_promotion": "A stronger evidence class may be asserted only from evidence native to that class. Lower classes never imply higher classes. User-facing unqualified complete/completed is prohibited unless the declared terminal evidence class is explicitly satisfied.",
+    "legacy_completion": "Historical completion claims that predate this contract may remain as provenance, but without an explicit evidence class and evidence references they are non-authoritative. They may not satisfy terminal predicates, promote task state, or support user-facing complete/completed language until reconciled under completion evidence contract v1."
   },
   "prohibitions": [
     "NO_SECONDARY_USER_VERIFIER_OUTSIDE_KV_SKAP_VAULT",
@@ -102,7 +108,8 @@
     "NO_CI_VALIDATED_AS_RUNTIME_COMPLETE",
     "NO_RUNTIME_OBSERVED_AS_MASTER_RECORDS_RECONSTRUCTED",
     "NO_PROVIDER_OBSERVED_AS_END_TO_END_COMPLETE",
-    "NO_STRONGER_COMPLETION_CLASS_WITHOUT_NATIVE_EVIDENCE"
+    "NO_STRONGER_COMPLETION_CLASS_WITHOUT_NATIVE_EVIDENCE",
+    "NO_LEGACY_UNQUALIFIED_COMPLETION_AS_CURRENT_TERMINAL_PROOF"
   ],
   "authority_effect": "NONE_REGISTRY_INVARIANT_ONLY"
 }
