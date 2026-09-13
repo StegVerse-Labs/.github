@@ -3,7 +3,7 @@
 Updated: 2026-09-13
 Repository: `StegVerse-Labs/.github`
 Reusable Task ID: `RT-REUSABLE-TASK-SCHEDULER-001`
-Status: `SOURCE IMPLEMENTED / RUNTIME EVIDENCE PENDING`
+Status: `SOURCE MERGED / RUNTIME EVIDENCE PENDING`
 
 ## Purpose
 
@@ -16,6 +16,12 @@ Provide one neutral reusable scheduling capability for all registered reusable t
 - `scripts/run_reusable_task_scheduler.py`
 - `scripts/trigger_reusable_task.py`
 - `tests/test_neutral_reusable_task_scheduler.py`
+
+## Merged source evidence
+
+PR #1748 exact head `c5763b714c26004636026e1dd32bdbe8cfa40665` passed Organization Control `34778911267`, Deterministic Repository Suite `34778911254`, and Heartbeat `34778911249`, then squash-merged at `035f2694e142d07a763c217311c6a558f034f3de`.
+
+Stale-base PR #1745 was closed unmerged after its own exact head passed the same three validation classes. No runtime evidence is inferred from either validation set.
 
 ## Semantics
 
@@ -40,8 +46,8 @@ The existing Healer reusable-task scheduling code is evidence that the schedulin
 
 ## Runtime evidence
 
-Source implementation and CI validation do not prove resident scheduling execution. Authentic runtime evidence requires a manifest-bound invocation of `RT-REUSABLE-TASK-SCHEDULER-001`, its standardized runner result, retained child trigger/boundary receipts, and the ordinary reusable-task lifecycle custody/reconstruction chain where applicable.
+Source implementation, merge state, and CI validation do not prove resident scheduling execution. Authentic runtime evidence requires a manifest-bound invocation of `RT-REUSABLE-TASK-SCHEDULER-001`, its standardized runner result, retained child trigger/boundary receipts, and the ordinary reusable-task lifecycle custody/reconstruction chain where applicable.
 
 ## Next admissible work
 
-Validate and merge this neutral scheduler source. Then migrate consumers such as Healer to invoke this reusable identity rather than owning duplicate generic scheduling logic. No dependent Goal Task runtime predicate may be promoted from that source migration alone.
+Migrate consumers such as Healer to invoke this reusable identity rather than owning duplicate generic scheduling logic. Separately, retain authentic runtime evidence when the neutral scheduler is invoked on a sovereign resident surface. No dependent Goal Task runtime predicate may be promoted from source migration alone.
