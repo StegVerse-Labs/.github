@@ -99,6 +99,9 @@
     "neutral_reusable_task_scheduler_retry_semantics_merged_validated": true,
     "healer_migrated_to_scheduler_consumer_carrier": true,
     "site_source_refresh_neutral_schedule_binding_merged_validated": true,
+    "admitted_materialization_binding_source_candidate": true,
+    "manual_materialization_env_source_of_truth_retired": true,
+    "explicit_materialization_env_role": "OPTIONAL_CORRELATION_MUST_MATCH_LOCAL_ADMITTED_INGRESS",
     "neutral_reusable_task_scheduler_runtime_proven": false,
     "site_source_refresh_neutral_schedule_runtime_observed": false,
     "exact_materialization_id": "INTR-MAT-0e1ba4786b0ea8a00e1f166e",
@@ -166,7 +169,7 @@
     "user_verification_source": "KV/SKAP Vault",
     "device_local_user_verifier_allowed": false
   },
-  "runtime_resolution": "SOURCE_REFRESH_EXECUTION_OWNED_BY_RT-SOVEREIGN-SOURCE-REFRESH-001; REUSABLE_SCHEDULING_OWNED_BY_RT-REUSABLE-TASK-SCHEDULER-001; HEALER_IS_ONE_CARRIER_CONSUMER; NEXT_EVIDENCE_IS_AUTHENTIC_SCHEDULER_CHILD_RECEIPT_NOT_DEVICE_DISCOVERY",
+  "runtime_resolution": "SOURCE_REFRESH_EXECUTION_OWNED_BY_RT-SOVEREIGN-SOURCE-REFRESH-001; REUSABLE_SCHEDULING_OWNED_BY_RT-REUSABLE-TASK-SCHEDULER-001; HEALER_IS_ONE_CARRIER_CONSUMER; SITE_PUBLICATION_CANDIDATE_ID_RESOLVED_FROM_LOCAL_ADMITTED_INTR_EVIDENCE; NEXT_EVIDENCE_IS_AUTHENTIC_SCHEDULER_CHILD_RECEIPT_NOT_DEVICE_DISCOVERY",
   "worker_claim": {
     "authority": "WORKERCOORDINATOR",
     "claim_ref": null,
@@ -177,6 +180,6 @@
     "material_function_change": false,
     "readme_updated_in_change_set": false,
     "readme_path": "README.md",
-    "no_readme_update_reason": "This reconciliation records neutral scheduler ownership, Healer carrier migration, and the Site source-refresh schedule binding; it does not alter the public Site publication capability or promote runtime evidence."
+    "no_readme_update_reason": "This repair replaces a task-specific manual materialization binding with fail-closed reuse of the already-canonical local InTr ingress evidence; it does not alter the public Site publication capability or promote runtime evidence."
   }
 }
