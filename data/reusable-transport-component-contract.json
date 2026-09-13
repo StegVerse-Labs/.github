@@ -1,0 +1,107 @@
+{
+  "schema": "stegverse.reusable-transport-component-contract/v1",
+  "purpose": "Decompose governed data transport into reusable non-authorizing components selected by the consuming canonical Goal Task instead of requiring every task to implement one monolithic end-to-end chain.",
+  "selection_rule": {
+    "selector": "goal_task.transport_requirements",
+    "task_identity_required": true,
+    "cosv_binding_required_when_present": true,
+    "compose_only_required_components": true,
+    "preserve_component_order": true,
+    "component_reuse_mints_authority": false,
+    "missing_required_component": "FAIL_CLOSED"
+  },
+  "components": [
+    {
+      "id": "RTC-MANIFEST-001",
+      "name": "Manifest Intake and Binding",
+      "provides": ["complete_manifest_validation", "task_cosv_binding", "payload_classification", "required_evidence_declaration"],
+      "authority_effect": "NONE"
+    },
+    {
+      "id": "RTC-GOVERNED-PROCESSING-002",
+      "name": "Governed Processing",
+      "provides": ["route_to_declared_processing_path", "governance_processing", "bounded_execution_result"],
+      "authority_rule": "Every state-changing step requires its applicable current authority; prior receipts do not authorize later steps."
+    },
+    {
+      "id": "RTC-ROUNDTRIP-003",
+      "name": "Governed Round Trip",
+      "provides": ["intermediate_request_response_cycle", "provider_or_framework_round_trip", "receipt_chain_extension"],
+      "repeatable": true,
+      "repeat_count_source": "goal_task.transport_requirements.required_round_trips",
+      "authority_effect": "NONE_BEYOND_EACH_UNDERLYING_TRANSITION"
+    },
+    {
+      "id": "RTC-EVIDENCE-CUSTODY-004",
+      "name": "Evidence Custody and Reconstruction",
+      "provides": ["evidence_capture", "custody", "readback", "reconstruction"],
+      "canonical_owner": "Master Records",
+      "authority_effect": "OBSERVED_REALITY_ONLY"
+    },
+    {
+      "id": "RTC-PUBLISHER-005",
+      "name": "Publisher Projection",
+      "provides": ["authorized_publication_or_distribution_projection"],
+      "optional": true,
+      "selection_condition": "Goal Task requires publication/distribution",
+      "authority_rule": "Publisher may execute only after applicable TV/TVC/provider/release authority exists."
+    },
+    {
+      "id": "RTC-SDK-RETURN-006",
+      "name": "SDK Return Assembly",
+      "provides": ["normalized_result", "governance_artifact_projection", "requested_state_transition_projection", "evidence_refs"],
+      "optional": true,
+      "selection_condition": "Goal Task entered through or returns through SDK"
+    },
+    {
+      "id": "RTC-STEGVERSE-EGRESS-007",
+      "name": "StegVerse-side Final Egress Transition",
+      "provides": ["final_local_state_transition", "egress_candidate"],
+      "authority_owner": "Interlock/InTr",
+      "authority_effect": "CURRENT_TRANSITION_ONLY"
+    },
+    {
+      "id": "RTC-INTERLOCK-INTR-TRANSPORT-008",
+      "name": "Interlock/InTr Transport",
+      "provides": ["governed_packet_movement", "ingress_transition", "egress_transition", "transport_receipt"],
+      "repeatable": true,
+      "authority_owner": "Interlock/InTr",
+      "authority_effect": "CURRENT_TRANSITION_ONLY"
+    },
+    {
+      "id": "RTC-FARSIDE-FINAL-009",
+      "name": "Far-side Final Transition",
+      "provides": ["far_side_receive", "far_side_final_state_transition", "far_side_receipt"],
+      "optional": true,
+      "selection_condition": "Goal Task crosses into an external framework/provider/system",
+      "authority_rule": "Far-side transition remains subject to the far-side applicable authority and cannot be inferred from StegVerse egress."
+    }
+  ],
+  "canonical_order": [
+    "RTC-MANIFEST-001",
+    "RTC-GOVERNED-PROCESSING-002",
+    "RTC-ROUNDTRIP-003",
+    "RTC-EVIDENCE-CUSTODY-004",
+    "RTC-PUBLISHER-005",
+    "RTC-SDK-RETURN-006",
+    "RTC-STEGVERSE-EGRESS-007",
+    "RTC-INTERLOCK-INTR-TRANSPORT-008",
+    "RTC-FARSIDE-FINAL-009"
+  ],
+  "composition_examples": {
+    "internal_governed_processing_only": ["RTC-MANIFEST-001", "RTC-GOVERNED-PROCESSING-002", "RTC-EVIDENCE-CUSTODY-004"],
+    "sdk_external_framework_round_trip": ["RTC-MANIFEST-001", "RTC-GOVERNED-PROCESSING-002", "RTC-ROUNDTRIP-003", "RTC-EVIDENCE-CUSTODY-004", "RTC-SDK-RETURN-006", "RTC-STEGVERSE-EGRESS-007", "RTC-INTERLOCK-INTR-TRANSPORT-008", "RTC-FARSIDE-FINAL-009"],
+    "publication_path": ["RTC-MANIFEST-001", "RTC-GOVERNED-PROCESSING-002", "RTC-EVIDENCE-CUSTODY-004", "RTC-PUBLISHER-005", "RTC-STEGVERSE-EGRESS-007", "RTC-INTERLOCK-INTR-TRANSPORT-008", "RTC-FARSIDE-FINAL-009"]
+  },
+  "invariants": {
+    "task_registry_role": "COORDINATION_ONLY",
+    "worker_claim_authority": "WorkerCoordinator",
+    "user_verification_authority": "KV/SKAP Vault",
+    "stegos_device_role": "INTERCHANGEABLE_TRANSPORT_NODE",
+    "credential_provider_release_authority": "TV/TVC",
+    "transition_authority": "Interlock/InTr",
+    "observed_reality_reconstruction_authority": "Master Records",
+    "heartBeat_authority_effect": "NONE",
+    "github_runtime_authority": "NONE"
+  }
+}
