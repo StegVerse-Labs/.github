@@ -1,0 +1,13 @@
+{
+  "identity": "StegVerse-Labs/.github:task:KV-PROVIDER-OPAQUE-PERSISTENCE-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000102000",
+  "evidence_refs": [
+    "data/canonical-task-records/KV-PROVIDER-OPAQUE-PERSISTENCE-001.json",
+    "control/worker-registry.d/kv-provider-opaque-persistence-001.json",
+    "docs/KV_PROVIDER_OPAQUE_PERSISTENCE_MIRROR_HANDOFF.md"
+  ],
+  "parent_task_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+  "status": "ACTIVE"
+}
