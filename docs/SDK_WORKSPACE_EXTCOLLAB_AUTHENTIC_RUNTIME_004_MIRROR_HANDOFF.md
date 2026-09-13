@@ -1,11 +1,11 @@
 # SDK WorkSpace External-Collaboration Authentic Runtime 004 Mirror Handoff
 
-Updated: 2026-09-12
+Updated: 2026-09-13
 Repository: `StegVerse-Labs/.github`
 Goal Task ID: `SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004`
 Parent Goal Task ID: `SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003`
 COSV: `71000000100110`
-Status: `ACTIVE / REUSABLE COMPONENT MODEL RECONCILED / AUTHENTIC CURRENT RESIDENT OBSERVATION REQUIRED`
+Status: `ACTIVE / REUSABLE LIFECYCLE SOURCE COMPLETE / AUTHENTIC POST-MERGE RESIDENT INVOCATION REQUIRED`
 
 ## Purpose and identity
 
@@ -19,62 +19,56 @@ Runtime subject binding (`runtime_root`, `resident.node_id` when available, Work
 
 ## Reusable Task Component Model reconciliation
 
-The canonical Reusable Task Component Model merged in PR #1652 at `b9f8e5153aa1651f2d7f043fb902eacb7c113ed9`. Exact head `075b1e71d0ebe3591899db03d570da79eed5e916` passed Organization Control `34730323940`, Deterministic Repository Suite `34730323942`, and Heartbeat Worker Project `34730323876`.
-
-The Goal Task now continues through selected reusable components rather than extending the prior long bespoke orchestration sequence:
-
-1. existing runtime-observation owner;
-2. `RTC-MANIFEST-001` for task/COSV invocation binding;
-3. existing reusable execution-materialization contract for bounded resident work;
-4. repeatable `RTC-INTERLOCK-INTR-TRANSPORT-008` for governed movement;
-5. repeatable `RTC-ROUNDTRIP-003` for the declared request/response stages;
-6. existing TV/TVC provider/session path with KV/SKAP-only user verification when applicable;
-7. existing evidence validators;
-8. `RTC-EVIDENCE-CUSTODY-004` for Master Records custody/reconstruction;
-9. `RTC-SDK-RETURN-006` when return assembly is required;
-10. conditional `RTC-PUBLISHER-005`, `RTC-STEGVERSE-EGRESS-007`, and `RTC-FARSIDE-FINAL-009` only when release/distribution predicates are actually reached.
+The canonical Reusable Task Component Model merged in PR #1652 at `b9f8e5153aa1651f2d7f043fb902eacb7c113ed9`. The Goal Task continues through the existing runtime-observation owner, `RTC-MANIFEST-001`, the existing bounded execution-materialization contract, repeatable `RTC-INTERLOCK-INTR-TRANSPORT-008`, repeatable `RTC-ROUNDTRIP-003`, the existing TV/TVC provider/session path, existing evidence validators, `RTC-EVIDENCE-CUSTODY-004`, `RTC-SDK-RETURN-006` when required, and conditional publisher/egress/far-side components only when their predicates are actually reached.
 
 No new reusable component is required for this Goal Task at present. Do not recreate runtime probing, generic Interlock/InTr transport, generic round-trip correlation, Master Records reconstruction, release orchestration, or device-local verification task-locally.
+
+## Reusable ephemeral lifecycle work now merged
+
+The reusable lifecycle implementation is source-complete for the current runtime proof boundary:
+
+- `.github` PR #1694 merged resident Master Records lifecycle roundtrip integration at `c35a12fdf1fa32b7890e923cf0889bb0ba570010`.
+- `.github` PR #1696 merged runtime-only remainder reconciliation at `57cc26b1c76c68c07c673012b1ae93c5c0fea59e`.
+- `StegVerse-Healer` PR #67 merged scheduler terminal-state compatibility at `c2bea205411397c7ad7bb5fc6ad5f8c81c007f1c`; its Test Readiness validation passed. The scheduler now treats both `AUTOMATABLE_STEPS_EXHAUSTED` and `ENTROPY_RECOVERY_RECORDED` as successful slot terminals, preventing a fully completed ephemeral lifecycle from being retried in the same UTC-hour slot.
+- `.github` PR #1698 merged canonical lifecycle reconciliation at `de0039f301483ecf5a9178369bd8e8a3e7386a0a` after the required repository validation lanes passed.
+
+The existing `RT-ECOSYSTEM-CONTINUITY-EVALUATION-001` hourly schedule remains the single production scheduling path. GitHub Actions remain contract/validation transport only and are not production runtime evidence.
 
 ## Current source/runtime boundary
 
 Static source compatibility remains proven for `canonical-resident-substrate-v1` with `resident_request_dispatch`, `SOVEREIGN_RESIDENT`, `INTERNAL`, no mutation requirement, and no deployment requirement.
 
-The remaining resolver condition is still:
+The remaining resolver condition is now narrower than the earlier source gap: resident materialization and one authentic post-merge invocation must be observed. The authorized remote-device connector was checked again on 2026-09-13 and returned zero devices. Repository search also found no retained post-merge `RT-ECOSYSTEM-CONTINUITY-EVALUATION-001` invocation carrying `ENTROPY_RECOVERY_RECORDED`.
 
-`CURRENT_OBSERVATION_REQUIRED:DECLARED_ONLY`
-
-PR #1638 previously reconciled the KV/SKAP sole-user-verifier and interchangeable-node invariant and merged at `bb347453922b822b31f10c0141e0a0066b794d71` after its three required validation lanes passed.
-
-A fresh post-#1652 observation in this continuation found:
-
-- authorized resident-device connector: zero devices;
-- retained Drive reseal-receipt matches: zero;
-- retained Drive listener-receipt matches: zero.
-
-Therefore no authentic current runtime presence is available for this Goal Task. No resident execution, InTr admission, WorkerCoordinator claim/fence, provider operation, callback, custody/readback, Master Records reconstruction, publication, far-side transition, or end-to-end completion is claimed.
+Therefore no authentic current runtime presence or lifecycle completion is claimed. No resident execution, InTr admission, WorkerCoordinator claim/fence, provider operation, callback, custody/readback, Master Records reconstruction, publication, far-side transition, or end-to-end completion may be inferred from the merged source alone.
 
 ## Current proof boundary
 
 Source/component architecture: merged and validated.
-Reusable transport family: merged and selected.
-Runtime-observation component: existing and reused; current observation absent.
-Remaining runtime resolver boundary: `CURRENT_OBSERVATION_REQUIRED:DECLARED_ONLY`.
+Reusable lifecycle source through entropy recovery: merged and validated.
+Healer scheduler terminal compatibility: merged and validated.
+Duplicate same-slot retry defect: repaired in merged source.
+Runtime-observation component: existing and reused; current connector-visible resident absent.
+Authentic post-merge `RT-ECOSYSTEM-CONTINUITY-EVALUATION-001` invocation: not observed.
+Same-invocation manifest -> runner result -> expiry -> residual -> Master Records custody/reconstruction -> entropy chain: not observed.
+UTC-hour slot satisfaction from authentic resident execution: not observed.
 Resident reseal consumption: not observed.
 Resident listener consumption: not observed.
-Target custody/readback: not proven.
+Target custody/readback: not proven for this Goal Task.
 Sovereign callback reachability: not proven.
 Owner-present provider consent: not proven.
 Authoritative provider probe: not proven.
 SDK complete-predicate re-evaluation: not proven.
 MIR reporting: not proven.
-Master Records reconstruction: not proven.
 One-current-device end-to-end: not proven.
 Downstream propagation: incomplete.
 Public distribution: incomplete.
 
 ## Goal-specific remaining predicates
 
+- `AUTHENTIC_POST_MERGE_RESIDENT_LIFECYCLE_INVOCATION_OBSERVED`
+- `SAME_INVOCATION_REUSABLE_LIFECYCLE_CHAIN_PROVEN`
+- `UTC_HOUR_SLOT_SATISFACTION_WITHOUT_DUPLICATE_EXECUTION_PROVEN`
 - `RESIDENT_RESEAL_CONSUMPTION_RECEIPT_OBSERVED`
 - `RESIDENT_CONSENT_LISTENER_CONSUMPTION_RECEIPT_OBSERVED`
 - `EXTERNAL_COLLAB_CLIENT_SECRET_CUSTODY_PROVEN`
@@ -88,17 +82,17 @@ Public distribution: incomplete.
 - `DOWNSTREAM_PROPAGATION_COMPLETE`
 - `PUBLIC_DISTRIBUTIONS_COMPLETE`
 
-Componentization changes none of these evidence requirements.
+The lifecycle additions do not weaken or substitute any existing Goal Task predicate.
 
 ## Next admissible work
 
-Re-invoke only the existing runtime-observation component. If an authentic current resident appears and binds the exact runtime subject, compose the existing bounded execution-materialization, Interlock/InTr transport, and governed-round-trip components for the two resident operations. Accept only authentic completion/already-satisfied/exact-blocked receipts. Stop at a real authority/evidence/external/human boundary and continue any independent component work that remains admissible.
+Observe the existing resident heartbeat after local materialization of the merged `.github` and `StegVerse-Healer` sources. Accept only one authentic post-merge `RT-ECOSYSTEM-CONTINUITY-EVALUATION-001` UTC-hour invocation and retain the complete same-invocation manifest, trigger/runner result, expiry, residual, Master Records custody and exact reconstruction, entropy-recovery, and slot-satisfaction evidence. Verify that no second same-slot invocation occurs after `ENTROPY_RECOVERY_RECORDED`.
 
-Do not initiate provider consent before its upstream predicates are authentic. Do not manually publish. Do not create a second runtime probe, duplicate adapter, duplicate scheduler, second user-operated-device requirement, or device verification gate.
+If that chain becomes authentic, continue with the existing bounded execution-materialization, Interlock/InTr transport, governed round-trip, provider/session, SDK return, MIR, and downstream/public-distribution components as their predicates become admissible. Do not initiate provider consent before its upstream predicates are authentic. Do not manually publish. Do not create a second runtime probe, duplicate adapter, duplicate scheduler, second user-operated-device requirement, or device verification gate.
 
 ## README review
 
-The root README already contains the merged Reusable Task Component Model projection from PR #1652. This runtime-handoff reconciliation changes no product-facing capability.
+The root README already projects the Reusable Task Component Model. This reconciliation records source/evidence state and does not introduce a new product-facing capability, so no additional README text is required in this change.
 
 ## Human action
 
