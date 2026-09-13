@@ -1,0 +1,153 @@
+{
+  "schema": "stegverse.goal-task-component-composition/v1",
+  "goal_task_id": "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001",
+  "cosv_task_vector": "50000010100000",
+  "status": "ACTIVE_RUNTIME_EVIDENCE_PENDING",
+  "decomposition_evaluation": {
+    "signals": {
+      "repeated_subflow": true,
+      "multiple_authority_crossings": true,
+      "multiple_round_trips": true,
+      "cross_repository_or_org_spread": true,
+      "task_specific_adapter_duplicates_generic_work": true,
+      "handoff_sequence_growth": true,
+      "failure_path_branching": false,
+      "independent_reusability": true,
+      "optional_subflow_present": true,
+      "independent_evidence_predicate": true
+    },
+    "score": 28,
+    "decision": "STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION"
+  },
+  "components": [
+    {
+      "component_id": "RTC-INTERLOCK-INTR-TRANSPORT-008",
+      "name": "Interlock/InTr Transport",
+      "existing": true,
+      "canonical_owner": "Interlock/InTr",
+      "requirement": "REQUIRED_REPEATABLE",
+      "cardinality": "one or more as demanded by authentic Device-KV and downstream governed transitions",
+      "inputs": ["purpose-bound request", "exact payload binding", "existing Node/Interlock context"],
+      "outputs": ["governed ingress/egress receipt", "transport evidence"],
+      "preconditions": ["existing protocol resolved", "no duplicate transition authority"],
+      "expected_evidence": ["authentic InTr admission/transition receipt"],
+      "failure_remediation": "FAIL_CLOSED_RETURN_EXACT_BOUNDARY"
+    },
+    {
+      "component_id": "RTC-KV-EPHEMERAL-PROJECTION-RECOVERY-010",
+      "name": "KV-Bound Ephemeral Projection Recovery",
+      "existing": true,
+      "canonical_owner": "StegVerse-Labs/Site existing Device-KV projection/recovery surfaces",
+      "requirement": "REQUIRED_WITH_CONDITIONAL_RECOVERY",
+      "cardinality": "one purpose-bound invocation; one conditional receipt-recovery reentry",
+      "inputs": ["CURRENT_IPHONE_TESTFLIGHT_SIGNING", "Device-KV InTr protocol", "projection schema", "frozen bootstrap callback"],
+      "outputs": ["validated in-memory projection or exact FAIL_CLOSED", "projection evidence refs"],
+      "preconditions": ["KV/SKAP Vault verification boundary preserved", "registered transport node", "existing Device-KV path"],
+      "expected_evidence": ["INGRESS_ADMITTED", "KV_INSTALLATION_VERIFIED", "OBSERVED_COMPATIBLE browser capabilities", "validated projection commitments"],
+      "failure_remediation": "Only RESIDENT_KV_INSTALLATION_NOT_VERIFIED may invoke canonical installation-receipt recovery; all other failures stop"
+    },
+    {
+      "component_id": "GOAL-FROZEN-TESTFLIGHT-BOOTSTRAP-CONFIG",
+      "name": "Frozen Current-iPhone TestFlight Bootstrap Configuration",
+      "existing": true,
+      "canonical_owner": "StegVerse-Labs/StegOS source projected exactly through StegVerse-Labs/Site",
+      "requirement": "REQUIRED_GOAL_CONFIGURATION_NOT_NEW_REUSABLE_AUTHORITY",
+      "cardinality": "one per accepted projection",
+      "inputs": ["validated projection context", "frozen unsigned IPA", "frozen WASM signer", "TVC provider route"],
+      "outputs": ["signed IPA result or exact signing/provider failure"],
+      "preconditions": ["projection validated first", "frozen source identities preserved"],
+      "expected_evidence": ["signing receipt", "exact source hashes", "no source drift"],
+      "failure_remediation": "return exact downstream failure; do not mutate frozen product bytes"
+    },
+    {
+      "component_id": "CANONICAL-CREDENTIAL-SESSION-OWNER",
+      "name": "Credential/Provider Session",
+      "existing": true,
+      "canonical_owner": "TV/TVC",
+      "requirement": "REQUIRED_DOWNSTREAM",
+      "cardinality": "as required by signing/upload provider operation",
+      "inputs": ["admitted signing request", "provider operation parameters"],
+      "outputs": ["credential/session/provider evidence", "signed/uploaded provider result"],
+      "preconditions": ["no credential acquisition outside TV/TVC"],
+      "expected_evidence": ["authentic TV/TVC credential/session issuance or exact denial", "provider execution evidence"],
+      "failure_remediation": "FAIL_CLOSED_AT_TV_TVC_BOUNDARY"
+    },
+    {
+      "component_id": "CANONICAL-RUNTIME-OBSERVATION-OWNER",
+      "name": "Runtime Observation",
+      "existing": true,
+      "canonical_owner": "StegOS runtime evidence surfaces with HeartBeat observability only",
+      "requirement": "REQUIRED",
+      "cardinality": "until task-specific runtime predicates are authentically observed",
+      "inputs": ["same-device execution results", "provider/TestFlight results", "runtime state"],
+      "outputs": ["runtime evidence references"],
+      "preconditions": ["source/CI/publication not substituted for runtime"],
+      "expected_evidence": ["resident execution", "same-device runtime presence", "retained StegOS/StegBrowser evidence"],
+      "failure_remediation": "record current evidence boundary without promotion"
+    },
+    {
+      "component_id": "RTC-EVIDENCE-CUSTODY-004",
+      "name": "Evidence Custody and Reconstruction",
+      "existing": true,
+      "canonical_owner": "Master Records",
+      "requirement": "CONDITIONAL_TERMINAL",
+      "cardinality": "once task completion evidence is available and custody is required by parent/global measurement",
+      "inputs": ["authentic chained task evidence"],
+      "outputs": ["custody/readback/reconstruction evidence"],
+      "preconditions": ["authentic evidence exists"],
+      "expected_evidence": ["Master Records custody acceptance", "reconstruction confirmation"],
+      "failure_remediation": "retain evidence and stop completion promotion"
+    },
+    {
+      "component_id": "RT-CANONICAL-STATE-RECONCILIATION-001",
+      "name": "Canonical State Reconciliation",
+      "existing": true,
+      "canonical_owner": "StegVerse-Labs/.github reusable task registry",
+      "requirement": "REQUIRED_AT_HANDOFF",
+      "cardinality": "after material state change",
+      "inputs": ["task record", "handoffs", "evidence refs", "authority projections"],
+      "outputs": ["reconciled canonical coordination state"],
+      "preconditions": ["does not overwrite authority domains"],
+      "expected_evidence": ["canonical surfaces agree with current observed evidence"],
+      "failure_remediation": "record contradiction explicitly"
+    }
+  ],
+  "not_applicable_components": [
+    "RTC-SDK-RETURN-006",
+    "RTC-FARSIDE-FINAL-009",
+    "framework_provider_adapter unless TV/TVC exposes a new provider profile requiring translation"
+  ],
+  "superseded_bespoke_orchestration": [
+    {
+      "surface": "task-specific saved projection-file hunt/selection as the normal execution path",
+      "disposition": "SUPERSEDED_BY_RTC_KV_EPHEMERAL_PROJECTION_RECOVERY_010",
+      "historical_evidence_preserved": true
+    },
+    {
+      "surface": "future task-specific copies of same-device KV installation verification/recovery/projection derivation",
+      "disposition": "PROHIBITED_REUSE_COMPONENT_INSTEAD",
+      "historical_evidence_preserved": true
+    }
+  ],
+  "remaining_goal_specific_predicates": [
+    "AUTHENTIC_CURRENT_IPHONE_DEVICE_KV_INTR_ADMISSION_OBSERVED_FOR_CURRENT_INVOCATION",
+    "KV_INSTALLATION_VERIFIED_FOR_CURRENT_INVOCATION",
+    "CURRENT_IPHONE_TESTFLIGHT_SIGNING_PROJECTION_ACCEPTED_IN_MEMORY",
+    "AUTHENTIC_TV_TVC_SIGNING_AND_PROVIDER_EXECUTION_OBSERVED",
+    "TESTFLIGHT_BUILD_UPLOAD_AND_INSTALL_EVIDENCE_OBSERVED_WHERE_APPLICABLE",
+    "RETAINED_STEGOS_STEGBROWSER_SAME_DEVICE_RUNTIME_EVIDENCE_OBSERVED",
+    "GLOBAL_MEASUREMENT_HANDOFF_RETURNED_TO_AUTHENTIC_EXECUTION",
+    "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_WHEN_PARENT_COMPLETION_REQUIRES_IT"
+  ],
+  "authority_invariants": {
+    "task_registry": "COORDINATION_ONLY",
+    "worker_claim_fence": "WorkerCoordinator",
+    "governed_transition": "Interlock/InTr",
+    "credential_provider_release": "TV/TVC",
+    "user_verification": "KV/SKAP Vault",
+    "stegos_device_role": "INTERCHANGEABLE_TRANSPORT_EXECUTION_NODE_NOT_USER_VERIFIER",
+    "observed_reality_custody_reconstruction": "Master Records",
+    "heartbeat": "OBSERVABILITY_ONLY",
+    "github_runtime_authority": "NONE"
+  }
+}
