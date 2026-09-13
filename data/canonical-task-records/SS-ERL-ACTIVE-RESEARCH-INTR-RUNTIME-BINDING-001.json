@@ -12,6 +12,8 @@
     "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/ERL_KV_STORAGE_MIRROR_HANDOFF.md",
     "StegVerse-Labs/Executive_Rhetoric_Ledger/scripts/build_active_research_intr_binding.py",
     "StegVerse-Labs/Executive_Rhetoric_Ledger/scripts/consume_active_research_acquisition.py",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger/evidence/active-research/ERL-CYBER-CISA-IRAN-2025-JOINT-FACT-SHEET.provider-readback-proof.json",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger/scripts/verify_active_research_provider_proof_binding.py",
     "StegVerse-Labs/.github/docs/SS_ERL_ACTIVE_RESEARCH_INTR_RUNTIME_BINDING_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github/handoffs/SHWP-DEVICE-KV-INTR-OBSERVATION-001.json",
     "StegVerse-Labs/.github/workers/universal_intr_profiled_ingress.py",
@@ -41,6 +43,7 @@
       "erl-active-research-resident-local-transport",
       "erl-exact-local-source-self-materialization",
       "erl-terminal-full-intent-identity-continuity",
+      "erl-existing-provider-proof-binding",
       "universal-intr-profiled-ingress",
       "device-kv-intr-materialization",
       "authentic-three-hop-receipt-chain"
@@ -72,6 +75,7 @@
     "ERL_RESIDENT_LOCAL_TRANSPORT_REQUIRES_NO_RELAY_AUTHORIZATION",
     "ERL_EXACT_LOCAL_SOURCE_SELF_MATERIALIZATION_AVAILABLE",
     "ERL_TERMINAL_HOP_REUSES_ORIGINAL_FULL_PATH_INTENT",
+    "EXISTING_PROVIDER_PROOF_PROJECTED_WITHOUT_REEXECUTION",
     "NO_SECOND_RUNTIME_OWNER_CREATED",
     "FULL_CANONICAL_BOUNDARY_PATH_PRESERVED",
     "EXACT_ENVELOPE_HASH_BOUND_AT_ALL_THREE_HOPS",
@@ -85,6 +89,7 @@
       "resident_targeted_execution",
       "exact_local_source_self_materialization",
       "exact_terminal_full_intent_identity_continuity",
+      "existing_provider_proof_binding",
       "device_kv_intr_observation",
       "durable_receipt_readback"
     ],
