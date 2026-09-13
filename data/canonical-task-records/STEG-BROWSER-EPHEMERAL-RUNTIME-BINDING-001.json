@@ -4,9 +4,11 @@
   "correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
   "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
   "parent_task_id": null,
+  "continuation_task_id": "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
+  "supersession_reason": "Source/component parent reached its decomposition boundary; authentic runtime-consumption completion semantics continue under STEG-BROWSER-RUNTIME-CONSUMPTION-001.",
   "goal": "Bind StegBrowser to an ecosystem-ephemeral browser execution substrate that consumes bounded leases, retrieves admitted public and credentialed surfaces, performs approved social publication actions, retains only admitted evidence commitments and receipts, and destroys session state after use.",
-  "coordination_state": "PROPOSED",
-  "checkout_state": "CLAIMED_INTEGRATION",
+  "coordination_state": "SUPERSEDED",
+  "checkout_state": "SUPERSEDED",
   "cosv_task_vector": "40000100100000",
   "source_refs": [
     "StegVerse-Labs/StegBrowser/docs/STEGBROWSER_ECOSYSTEM_EPHEMERAL_MIRROR_HANDOFF.md",
@@ -161,7 +163,7 @@
     }
   ],
   "systemic_incident_ref": null,
-  "adjacent_task_refs": ["SS-EVIDENCE-COMPARISON-001", "SS-KV-SKAP-SOCIAL-RELEASE-001"],
+  "adjacent_task_refs": ["SS-EVIDENCE-COMPARISON-001", "SS-KV-SKAP-SOCIAL-RELEASE-001", "STEG-BROWSER-RUNTIME-CONSUMPTION-001"],
   "existing_evidence_refs": [
     "StegVerse-Labs/.github@9776ceba4877f8c213af534176f277c28ec58d39",
     "StegVerse-Labs/.github@5eba3974ff9c141aab74e616742e959ecdbd2ded",
@@ -327,7 +329,8 @@
     "StegVerse-Labs/StegOS/docs/STEGBROWSER_IOS_RESIDENT_APP_TARGET_MIRROR_HANDOFF.md",
     "StegVerse-Labs/TVC/docs/APP_STORE_CONNECT_TV_TVC_SKAP_MIRROR_HANDOFF.md",
     "docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md",
-    "docs/STEGBROWSER_REUSABLE_COMPONENT_MODEL_MIRROR_HANDOFF.md"
+    "docs/STEGBROWSER_REUSABLE_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+    "docs/STEGBROWSER_RUNTIME_CONSUMPTION_MIRROR_HANDOFF.md"
   ],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
