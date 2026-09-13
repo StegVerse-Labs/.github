@@ -4,10 +4,11 @@
   "cosv_task_vector": "50000010100000",
   "evidence_reuse_component": "RTC-EVIDENCE-REPLAY-REUSE-011",
   "current_verification_selector": "RTC-EVIDENCE-CURRENT-SELECTOR-010",
-  "node_connectivity_policy": "REUSE_ESTABLISHED_CURRENT_ROUTE_WHEN_REPLAY_RECONSTRUCTION_AND_CURRENT_REQUIREMENTS_MATCH",
+  "node_connectivity_policy": "REUSE_HISTORICAL_EVIDENCE_WHEN_REPLAY_RECONSTRUCTION_MATCH_CURRENT_REQUIREMENTS_AND_OBSERVE_CURRENT_RETAINED_IPHONE_ROUTE_AUTOMATICALLY",
   "required_predicates": [
     "CURRENT_IPHONE_RUNTIME_AUTHENTIC",
     "AUTHENTIC_TASK_2026_0011_CLAIM_AND_FENCE_OBSERVED",
+    "CURRENT_RETAINED_IPHONE_ROUTE_OBSERVED",
     "CURRENT_KV_INTR_STATE_APPLICABLE",
     "TESTFLIGHT_SIGNED_IPA_VERIFIED",
     "TVC_NATIVE_BUILD_UPLOAD_OBSERVED",
@@ -18,6 +19,7 @@
     "AUTHENTIC_TASK_2026_0011_CLAIM_AND_FENCE_OBSERVED"
   ],
   "must_be_current_for_this_execution": [
+    "CURRENT_RETAINED_IPHONE_ROUTE_OBSERVED",
     "CURRENT_KV_INTR_STATE_APPLICABLE",
     "TESTFLIGHT_SIGNED_IPA_VERIFIED",
     "TVC_NATIVE_BUILD_UPLOAD_OBSERVED",
@@ -28,6 +30,15 @@
     "evidence/physical/hil-esrl-lease-open-a6756c54da15f09cd6a3dbb201375891803f6589fd644db4c545be39ebe41b92.json",
     "AUTHENTIC_CURRENT_IPHONE_ALLOCATOR:TASK-2026-0011:G7:FENCE7:CLAIM_GRANT_OBSERVED"
   ],
+  "current_route_evidence": {
+    "discovery_surface": "GET_LOOPBACK:/api/resident-rendezvous/v1/discovery",
+    "current_iphone_receipt_surface": "GET_LOOPBACK:/api/resident-rendezvous/v1/evidence/current-iphone-discovery?target_node_ref=<SV-NODE>",
+    "required_execution_surface": "CURRENT_USER_IPHONE",
+    "required_node_origin": "STEGBROWSER_RESIDENT",
+    "require_receipt_1_projection": true,
+    "old_web_bootstrap_node_equality_required": false,
+    "reason": "CURRENT_ECOSYSTEM_CONTINUITY_IDENTITY_IS_RETAINED_SV_NODE_PLUS_APPEND_ONLY_HB_LINEAGE; LEGACY_STEGNODE_WEB_ID_REMAINS_HISTORICAL_PROVENANCE"
+  },
   "automatic_behavior": {
     "after_established_node_connectivity": "EVALUATE_INDEXED_EVIDENCE_WITHOUT_USER_INTERACTION",
     "if_reuse_accepted": "MARK_COVERED_PREDICATES_FROM_INDEXED_EVIDENCE_AND_CONTINUE",
