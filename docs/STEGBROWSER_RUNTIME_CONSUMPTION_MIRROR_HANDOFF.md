@@ -23,12 +23,12 @@ The parent task record is now canonically `SUPERSEDED` with `continuation_task_i
 
 The existing Canonical Work wrapper performs the general Task Registry collision check before route mutation and proceeds only on exact `CONTINUE`. `COORDINATE_CONVERGENCE` and `STOP_*` remain fail-closed.
 
-Known convergence owners are:
+Known convergence owners remain dependencies, not collision resources:
 
-- `TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001` for registry collision/convergence semantics;
-- `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001` for shared retained-runtime evidence convergence.
+- `TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001` owns registry collision/convergence semantics;
+- `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001` owns shared retained-runtime evidence convergence.
 
-Do not bypass either owner and do not create a StegBrowser-specific collision engine.
+The successor registration originally also placed those coordination owners in `adjacent_task_refs` and included `StegVerse-Labs/.github` in its runtime target repositories. Because the canonical evaluator treats adjacency and repository overlap as convergence signals, that metadata made exact `CONTINUE` structurally unreachable even after the actual parent collision was repaired. The successor now keeps those owners in `dependencies` while narrowing collision targets to the TVC runtime resources it can actually consume or mutate. This does not bypass either owner or weaken collision protection; it removes coordination metadata that incorrectly masqueraded as a mutable collision surface.
 
 ## Existing runtime chain to reuse
 
@@ -98,7 +98,7 @@ Credential ingress, current-iPhone signing/TestFlight, social publication/readba
 
 ## README disposition
 
-The repository README already documents Canonical Work ingress, autonomous continuation, COSV task-pointer continuation, and the Reusable Task Component Model. This successor narrows ownership of an existing runtime stage and does not change repository-wide architecture; README was re-reviewed during the superseded-parent regression repair and no semantic text change is required.
+The repository README already documents Canonical Work ingress, autonomous continuation, COSV task-pointer continuation, and the Reusable Task Component Model. This successor narrows ownership of an existing runtime stage and does not change repository-wide architecture; README was re-reviewed and no semantic text change is required.
 
 ## Validation regression repair
 
@@ -106,4 +106,4 @@ PR `#1746` correctly superseded `STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001` to 
 
 ## Current state
 
-`ACTIVE / CHECKED_OUT / SOURCE_COMPONENT_PARENT_SUPERSEDED_TO_THIS_SUCCESSOR / SUPERSEDED_PARENT_REINGRESS_PROHIBITED / AUTHENTIC_RUNTIME_CONSUMPTION_NOT_OBSERVED / TASK_REGISTRY_CONTINUE_NOT_OBSERVED / WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED / INTR_ADMISSION_NOT_OBSERVED / TVC_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / TVC_PRIMARY_RUNTIME_RESTART_NOT_OBSERVED / IMMUTABLE_OBSERVER_EXECUTION_NOT_OBSERVED / OWNER_INGRESS_READY_NOT_OBSERVED`
+`ACTIVE / CHECKED_OUT / SOURCE_COMPONENT_PARENT_SUPERSEDED_TO_THIS_SUCCESSOR / SUPERSEDED_PARENT_REINGRESS_PROHIBITED / COLLISION_METADATA_NARROWED_TO_ACTUAL_RUNTIME_TARGETS / AUTHENTIC_RUNTIME_CONSUMPTION_NOT_OBSERVED / TASK_REGISTRY_CONTINUE_NOT_OBSERVED / WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED / INTR_ADMISSION_NOT_OBSERVED / TVC_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / TVC_PRIMARY_RUNTIME_RESTART_NOT_OBSERVED / IMMUTABLE_OBSERVER_EXECUTION_NOT_OBSERVED / OWNER_INGRESS_READY_NOT_OBSERVED`
