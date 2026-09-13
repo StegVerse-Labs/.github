@@ -16,7 +16,7 @@
     "established_node_required": true,
     "specific_iphone_required": false,
     "specific_physical_device_required": false,
-    "physical_device_identity_gate": false,
+    "physical_device_identity_gate": "NONE_PROHIBITED",
     "remote_device_connector_required": false,
     "second_user_operated_device_required": false,
     "always_on_external_host_required": false,
