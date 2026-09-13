@@ -21,6 +21,7 @@ RECORDS = ROOT / "data" / "canonical-task-records"
 CHECKIN = ROOT / "scripts" / "evaluate_task_registry_collision_checkin.py"
 BOOTSTRAP = ROOT / "scripts" / "install_and_run_canonical_work_event_bootstrap.py"
 CALLER_SURFACE = "INTERNAL_CANONICAL_WORK_BOOTSTRAP"
+PROGRESSION_CONTROLLER_TASK_ID = "ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001"
 
 
 def load(path: Path) -> dict[str, Any]:
@@ -31,6 +32,8 @@ def load(path: Path) -> dict[str, Any]:
 
 
 def machine_ingress_candidate(record: dict[str, Any]) -> bool:
+    if record.get("task_id") == PROGRESSION_CONTROLLER_TASK_ID:
+        return False
     if record.get("coordination_state") != "PROPOSED":
         return False
     if record.get("checkout_state") in {"SUPERSEDED", "COMPLETED", "RETIRED"}:
@@ -116,6 +119,7 @@ def main() -> int:
     receipt: dict[str, Any] = {
         "schema": "stegverse.task-registry-canonical-work-cycle/v1",
         "start_point": "CANONICAL_TASK_REGISTRY",
+        "progression_controller_excluded_from_work_selection": True,
         "selected_task_id": selected.get("task_id") if selected else None,
         "candidate_count": len(load_candidates()),
         "considered": considered,
