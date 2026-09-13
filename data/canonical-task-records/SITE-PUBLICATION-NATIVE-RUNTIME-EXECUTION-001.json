@@ -74,7 +74,8 @@
     "StegVerse-Labs/.github:pull/1483",
     "StegVerse-Labs/.github:commit/4ab13a252eed668f1d828c08bd998b00b54e3c43",
     "StegVerse-Labs/.github:pull/1652",
-    "StegVerse-Labs/.github:commit/b9f8e5153aa1651f2d7f043fb902eacb7c113ed9"
+    "StegVerse-Labs/.github:commit/b9f8e5153aa1651f2d7f043fb902eacb7c113ed9",
+    "StegVerse-Labs/.github:pull/1765"
   ],
   "source_state": {
     "worker_registration_merged_validated": true,
@@ -84,6 +85,11 @@
     "source_refresh_reusable_task_registered": true,
     "neutral_reusable_task_scheduler_source_defined": true,
     "neutral_reusable_task_scheduler_runtime_proven": false,
+    "admitted_materialization_binding_repair_pull_request": 1765,
+    "admitted_materialization_binding_repair_exact_head": "3063ce63e7e0146cdd1a32c79f9b9993ed7b24ab",
+    "admitted_materialization_binding_source_repaired": true,
+    "manual_materialization_env_source_of_truth_retired": true,
+    "explicit_materialization_env_role": "OPTIONAL_CORRELATION_MUST_MATCH_LOCAL_ADMITTED_INGRESS",
     "exact_materialization_id": "INTR-MAT-0e1ba4786b0ea8a00e1f166e",
     "exact_packet_id": "INTR-58dec5416bd4358190c11372",
     "artifact_manifest_sha256": "sha256:e6bc47580f25296df61d16dfe5a74f3f49fec0dda018c813696195c960e77f09",
@@ -148,7 +154,7 @@
     "user_verification_source": "KV/SKAP Vault",
     "device_local_user_verifier_allowed": false
   },
-  "runtime_resolution": "SOURCE_REFRESH_EXECUTION_BOUNDARY_DELEGATED_TO_RT-SOVEREIGN-SOURCE-REFRESH-001; REUSABLE_SCHEDULING_DELEGATED_TO_RT-REUSABLE-TASK-SCHEDULER-001_WHEN_SCHEDULING_IS_REQUIRED",
+  "runtime_resolution": "SOURCE_REFRESH_EXECUTION_BOUNDARY_DELEGATED_TO_RT-SOVEREIGN-SOURCE-REFRESH-001; REUSABLE_SCHEDULING_DELEGATED_TO_RT-REUSABLE-TASK-SCHEDULER-001_WHEN_SCHEDULING_IS_REQUIRED; SITE_PUBLICATION_CANDIDATE_ID_RESOLVED_FROM_LOCAL_ADMITTED_INTR_EVIDENCE",
   "worker_claim": {
     "authority": "WORKERCOORDINATOR",
     "claim_ref": null,
@@ -159,6 +165,6 @@
     "material_function_change": false,
     "readme_updated_in_change_set": false,
     "readme_path": "README.md",
-    "no_readme_update_reason": "The current Goal Task only consumes the neutral reusable scheduler as conditional orchestration support; its publication behavior and public capability surface are unchanged. The scheduler itself is documented in its canonical contract and mirror handoff."
+    "no_readme_update_reason": "The repair removes an out-of-band task-specific binding step and reuses the already-canonical local InTr ingress receipt as candidate identity evidence; no new public capability, authority owner, runtime, or user-facing function is introduced."
   }
 }
