@@ -28,9 +28,11 @@
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
-    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/Site", "StegVerse-Labs/StegOS"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/Site", "StegVerse-Labs/StegOS", "StegVerse-Labs/StegVerse-Healer"],
     "components": [
       "sovereign-source-refresh",
+      "neutral-reusable-task-scheduler",
+      "healer-carrier-consumer",
       "workercoordinator-claim-fence",
       "site-publication-candidate-validation",
       "event-ephemeral-publication-lease",
@@ -55,6 +57,8 @@
     "reusable_task_scheduler_contract": "data/reusable-task-scheduler-contract.json",
     "reusable_task_scheduler_handoff": "docs/REUSABLE_TASK_SCHEDULER_MIRROR_HANDOFF.md",
     "scheduler_requirement": "CONDITIONAL_ORCHESTRATION_SUPPORT_NOT_GOAL_COMPLETION_PREDICATE",
+    "healer_role": "CONSUMER_CARRIER_ONLY_NOT_SCHEDULER_OWNER",
+    "healer_source_refresh_schedule_binding": "StegVerse-Labs/StegVerse-Healer:data/reusable_task_schedule.json",
     "ephemeral_execution_family": "data/reusable-task-ephemeral-construct-contract.json",
     "evaluator": "scripts/evaluate_reusable_task_componentization.py",
     "decomposition_score": 21,
@@ -64,7 +68,8 @@
     "componentization_mints_authority": false,
     "goal_runtime_predicates_changed": false,
     "runtime_handoff_remains_runtime_truth": true,
-    "task_specific_resident_availability_gate_retired": true
+    "task_specific_resident_availability_gate_retired": true,
+    "connected_device_discovery_required_before_source_refresh": false
   },
   "existing_evidence_refs": [
     "StegVerse-Labs/.github:pull/1398",
@@ -74,7 +79,15 @@
     "StegVerse-Labs/.github:pull/1483",
     "StegVerse-Labs/.github:commit/4ab13a252eed668f1d828c08bd998b00b54e3c43",
     "StegVerse-Labs/.github:pull/1652",
-    "StegVerse-Labs/.github:commit/b9f8e5153aa1651f2d7f043fb902eacb7c113ed9"
+    "StegVerse-Labs/.github:commit/b9f8e5153aa1651f2d7f043fb902eacb7c113ed9",
+    "StegVerse-Labs/.github:pull/1748",
+    "StegVerse-Labs/.github:commit/035f2694e142d07a763c217311c6a558f034f3de",
+    "StegVerse-Labs/.github:pull/1762",
+    "StegVerse-Labs/.github:commit/5b66fe7d6281c92445b9a67881eda666e865c13d",
+    "StegVerse-Labs/StegVerse-Healer:pull/68",
+    "StegVerse-Labs/StegVerse-Healer:commit/0084ac3af5db9c29b4c3e74660751b9954317530",
+    "StegVerse-Labs/StegVerse-Healer:pull/69",
+    "StegVerse-Labs/StegVerse-Healer:commit/1a2bac1a61f97819182a701d91fc91f61f9b0f1e"
   ],
   "source_state": {
     "worker_registration_merged_validated": true,
@@ -83,7 +96,11 @@
     "component_profile_bound": true,
     "source_refresh_reusable_task_registered": true,
     "neutral_reusable_task_scheduler_source_defined": true,
+    "neutral_reusable_task_scheduler_retry_semantics_merged_validated": true,
+    "healer_migrated_to_scheduler_consumer_carrier": true,
+    "site_source_refresh_neutral_schedule_binding_merged_validated": true,
     "neutral_reusable_task_scheduler_runtime_proven": false,
+    "site_source_refresh_neutral_schedule_runtime_observed": false,
     "exact_materialization_id": "INTR-MAT-0e1ba4786b0ea8a00e1f166e",
     "exact_packet_id": "INTR-58dec5416bd4358190c11372",
     "artifact_manifest_sha256": "sha256:e6bc47580f25296df61d16dfe5a74f3f49fec0dda018c813696195c960e77f09",
@@ -118,6 +135,7 @@
     "task_registry_mints_execution_authority": false,
     "reusable_task_or_component_mints_execution_authority": false,
     "reusable_scheduler_mints_execution_authority": false,
+    "healer_carrier_mints_execution_authority": false,
     "worker_claim_authority": "WORKERCOORDINATOR",
     "credential_authority": "TV/TVC",
     "user_verification_authority": "KV/SKAP Vault",
@@ -148,7 +166,7 @@
     "user_verification_source": "KV/SKAP Vault",
     "device_local_user_verifier_allowed": false
   },
-  "runtime_resolution": "SOURCE_REFRESH_EXECUTION_BOUNDARY_DELEGATED_TO_RT-SOVEREIGN-SOURCE-REFRESH-001; REUSABLE_SCHEDULING_DELEGATED_TO_RT-REUSABLE-TASK-SCHEDULER-001_WHEN_SCHEDULING_IS_REQUIRED",
+  "runtime_resolution": "SOURCE_REFRESH_EXECUTION_OWNED_BY_RT-SOVEREIGN-SOURCE-REFRESH-001; REUSABLE_SCHEDULING_OWNED_BY_RT-REUSABLE-TASK-SCHEDULER-001; HEALER_IS_ONE_CARRIER_CONSUMER; NEXT_EVIDENCE_IS_AUTHENTIC_SCHEDULER_CHILD_RECEIPT_NOT_DEVICE_DISCOVERY",
   "worker_claim": {
     "authority": "WORKERCOORDINATOR",
     "claim_ref": null,
@@ -159,6 +177,6 @@
     "material_function_change": false,
     "readme_updated_in_change_set": false,
     "readme_path": "README.md",
-    "no_readme_update_reason": "The current Goal Task only consumes the neutral reusable scheduler as conditional orchestration support; its publication behavior and public capability surface are unchanged. The scheduler itself is documented in its canonical contract and mirror handoff."
+    "no_readme_update_reason": "This reconciliation records neutral scheduler ownership, Healer carrier migration, and the Site source-refresh schedule binding; it does not alter the public Site publication capability or promote runtime evidence."
   }
 }
