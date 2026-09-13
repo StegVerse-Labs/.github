@@ -20,7 +20,8 @@
   },
   "source_mutation_enforcement": {
     "validator": "scripts/validate_source_mutation_preflight.py",
-    "workflow": ".github/workflows/source-mutation-preflight-guard.yml",
+    "workflow": ".github/workflows/org-control-plane-validate.yml",
+    "workflow_role": "EXISTING_STABLE_ORGANIZATION_VALIDATION_DISPATCHER",
     "receipt_glob": "receipts/preflight/*.json",
     "receipt_schema": "stegverse.session-build-preflight-receipt/v1",
     "receipt_must_bind_pr_merge_base": true,
