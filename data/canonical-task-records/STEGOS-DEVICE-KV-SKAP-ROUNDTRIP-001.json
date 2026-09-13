@@ -8,6 +8,11 @@
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT",
   "cosv_task_vector": "50000000102000",
+  "canonical_policy_refs": [
+    "docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/continuity-vault-kit:docs/KV_PRIVACY_STATE_TRANSITION_CONTINUITY.md",
+    "StegVerse-Labs/continuity-vault-kit:KV_DEVICE_BACKED_CAPABILITIES_MIRROR_HANDOFF.md"
+  ],
   "source_refs": [
     "docs/DEVICE_KV_SKAP_ROUNDTRIP_MIRROR_HANDOFF.md",
     "workers/run_device_kv_skap_roundtrip_worker.py",
