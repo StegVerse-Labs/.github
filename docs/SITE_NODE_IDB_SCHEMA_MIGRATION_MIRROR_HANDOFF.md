@@ -57,11 +57,11 @@ This satisfies `LIVE_SOURCE_PROPAGATION_OBSERVED_BEFORE_RUNTIME_REOBSERVATION`. 
 
 StegBrowser PR `StegVerse-Labs/StegBrowser#35` binds the repository's existing Playwright-capable runtime to reusable component `RTC-BROWSER-LOCAL-STATE-SCHEMA-MIGRATION-V1` for this Goal Task.
 
-The initial implementation head `6dabe45d051a68c8a87e336dec6662092327068b` passed Validate run `34736996551`. The task-specific README was then reconciled on the same PR branch at head `ad470c01a33136abb3fca3c54188de3fea5966b7`; exact-head Validate run `34737855784` is the current validation lane for that README-reconciled head.
+The initial implementation head `6dabe45d051a68c8a87e336dec6662092327068b` passed Validate run `34736996551`. The task-specific README was then reconciled on the same PR branch at head `ad470c01a33136abb3fca3c54188de3fea5966b7`, and exact-head Validate run `34737855784` completed successfully.
 
-PR #35 remains open and mergeable. A direct squash-merge attempt from the current ChatGPT tool surface was safety-gated, and repository auto-merge is disabled. No merge is claimed. This is a source-integration condition for the observation binding, not the Goal Task completion predicate.
+PR #35 was squash-merged to StegBrowser `main` at `0dd96a39ccc17a9eb0361e1eb975ad6dc542d87e` after the successful exact-head validation. The binding is therefore integrated in canonical source.
 
-The binding remains non-authorizing source-level runtime-observation plumbing. Even after merge, it cannot substitute for authentic browser-local runtime evidence.
+The binding remains non-authorizing source-level runtime-observation plumbing. Merge and CI do not substitute for authentic browser-local runtime evidence and do not satisfy the Goal Task completion predicate.
 
 ## Current next transition
 
