@@ -6,7 +6,7 @@ Parent Goal: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`
 Parent COSV: `10100000100000`
 Runtime-adoption task: `ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001`
 Issue: `#1766`
-State: `TASK_REGISTRY_FIRST_RESIDENT_LOOP_SOURCE_STAGED / AUTHENTIC_RUNTIME_ADOPTION_PENDING`
+State: `TASK_REGISTRY_FIRST_RESIDENT_LOOP_MERGED_CI_VALIDATED / AUTHENTIC_RUNTIME_CYCLE_PENDING`
 Authority effect: `NONE`
 
 ## Purpose
@@ -61,24 +61,48 @@ PR `#1768` merged to `main` at `1d7d49b3e440ab4393d0df8bc4de7fb29975d3b9`, stagi
 
 PR `#1771` merged to `main` at `5548599dacd1b073b7c50c57caf9a80bf9771466`, making the existing Task Registry the deterministic work-discovery start point through `scripts/run_task_registry_canonical_work_cycle.py`.
 
-PR #1771 passed exact-head organization-control validation, deterministic repository validation, and heartbeat-worker validation before merge. This is source/CI evidence only and does not establish runtime adoption.
+PR `#1773` merged to `main` at `306eaf033cf2ddec1c5f964090c95977b3c08b5e`, binding that selector into the existing resident `canonical_work_coordination` consumer. Exact head `a6eda781e6775f1c5d1ef213c0d4eadc9db40ed4` passed:
 
-## Current resident-loop continuation
+- organization-control validation run `34782786153`;
+- heartbeat-worker validation run `34782786203`;
+- deterministic repository suite run `34782786216`.
 
-Branch `task-registry-resident-loop-001` binds the registry-first selector back into the existing resident `canonical_work_coordination` consumer rather than creating a new resident dispatcher or scheduler.
+These are source/CI/merge facts only and do not establish authentic resident execution.
 
-Current source changes:
+## Resident Task Registry return loop now on main
 
-- the existing resident Canonical Work consumer materializes `scripts/run_task_registry_canonical_work_cycle.py` and the existing Task Registry check-in dependencies into the already-selected resident runtime;
-- missing canonical task shards are projected from already-local source while existing resident task shards are preserved rather than overwritten;
-- after the explicit Canonical Work request set is visited, the same consumer attempts one bounded Task Registry cycle;
-- explicit-request task IDs are excluded from the registry-selected pool so source-side `PROPOSED` state cannot cause duplicate ingress immediately after explicit request consumption;
-- `ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001` is excluded from product-work selection because it is the progression controller, not a product-work candidate;
-- the selected remaining task must still receive the existing general Task Registry `CONTINUE` disposition before delegation;
-- delegation reuses `scripts/install_and_run_canonical_work_event_bootstrap.py` and therefore the existing Canonical Work / Interlock-InTr path;
-- failures are retained as bounded evidence and do not mint authority or bypass collision/governance rules.
+The merged resident consumer now:
 
-No second dispatcher, scheduler, WorkerCoordinator, listener, heartbeat, credential path, or runtime authority is introduced.
+- preserves the existing explicit Canonical Work request set;
+- materializes `scripts/run_task_registry_canonical_work_cycle.py` and the existing Task Registry check-in dependencies into the same already-selected resident runtime;
+- projects missing canonical task shards from already-local source while preserving existing resident task shards rather than overwriting them;
+- attempts one bounded Task Registry cycle after explicit requests are visited;
+- excludes explicit-request task IDs from the same-cycle registry-selected pool so source-side `PROPOSED` state cannot cause duplicate ingress;
+- excludes `ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001` from product-work selection because it is the progression controller;
+- requires the existing Task Registry `CONTINUE` collision/check-in disposition before delegation;
+- delegates through the existing `scripts/install_and_run_canonical_work_event_bootstrap.py` path;
+- retains failures as evidence without minting authority or bypassing governance.
+
+No second dispatcher, scheduler, WorkerCoordinator, listener, heartbeat, credential path, runtime authority, connected-device discovery prerequisite, or second machine was added.
+
+## Current runtime evidence state
+
+The canonical repository-visible receipt path expected from the newly merged resident registry cycle is:
+
+```text
+receipts/sovereign-host/task-registry-canonical-work-cycle.latest.json
+```
+
+A current `main` lookup after PR #1773 merged returned `404 Not Found`. Therefore no repository-visible authentic resident-cycle receipt is currently available from that path. This absence does **not** prove that no resident process exists; it establishes only that the required cycle evidence has not been materialized into the repository-visible evidence surface checked here.
+
+The first unsatisfied transition is therefore no longer source binding. It is:
+
+```text
+existing resident canonical_work_coordination consumer runs
+-> registry cycle receipt materializes
+-> non-explicit registered task receives exact CONTINUE
+-> authentic Canonical Work / Interlock-InTr ingress emits INGRESS_ADMITTED evidence
+```
 
 ## Duplicate-ingress prevention
 
@@ -155,8 +179,8 @@ Source staging, CI, merge, registry selection, request-file presence, or HeartBe
 
 ## Remaining machine work
 
-1. validate and merge the resident Task Registry return-loop source;
-2. observe the existing resident `canonical_work_coordination` consumer materialize the registry selector and task-shard view;
+1. observe the existing resident `canonical_work_coordination` consumer execute the merged registry-return loop;
+2. retain `receipts/sovereign-host/task-registry-canonical-work-cycle.latest.json` or the canonical equivalent authentic resident-cycle evidence;
 3. observe one non-explicit existing registry task receive exact `CONTINUE` collision disposition and authentic `INGRESS_ADMITTED` evidence;
 4. observe WorkerCoordinator claim/fence where applicable;
 5. observe current governance and execution or retained DENY;
