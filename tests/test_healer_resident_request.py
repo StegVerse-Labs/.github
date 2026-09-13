@@ -47,11 +47,49 @@ class HealerResidentRequestTests(unittest.TestCase):
         runtime.mkdir()
         (source / "scripts").mkdir()
         (source / consumer.TARGET_ENTRYPOINT).write_text("# canonical source placeholder\n", encoding="utf-8")
+        (source / consumer.REQUEST_REL).parent.mkdir(parents=True)
+        (source / consumer.REQUEST_REL).write_text(json.dumps(self.request()), encoding="utf-8")
         (runtime / "control/resident-execution-request.d").mkdir(parents=True)
         (runtime / "scripts").mkdir()
         (runtime / consumer.TARGET_ENTRYPOINT).write_text("# resident placeholder\n", encoding="utf-8")
         (runtime / consumer.REQUEST_REL).write_text(json.dumps(self.request()), encoding="utf-8")
         return td, source, runtime
+
+    @staticmethod
+    def completed_cycle():
+        return Completed({
+            "schema": "stegverse.resident-refresh-targeted-execution/v2",
+            "execution_result": {"state": "HANDOFF_READY", "transition_id": "HEALER_SOVEREIGN_SCHEDULER_COMPLETED"},
+        })
+
+    def test_missing_runtime_request_self_materializes_from_canonical_source(self):
+        td, source, runtime = self.roots()
+        try:
+            (runtime / consumer.REQUEST_REL).unlink()
+            captured = {}
+            def runner(command, **kwargs):
+                captured["command"] = command
+                return self.completed_cycle()
+            result = consumer.consume(source, runtime, runner=runner, env={"PATH": "/usr/bin"})
+            self.assertEqual(result["state"], "CYCLE_COMPLETED")
+            self.assertTrue((runtime / consumer.REQUEST_REL).is_file())
+            self.assertEqual((runtime / consumer.REQUEST_REL).read_bytes(), (source / consumer.REQUEST_REL).read_bytes())
+            self.assertEqual(result["request_materialization"]["state"], "EXACT_CANONICAL_REQUEST_MATERIALIZED")
+            self.assertFalse(result["request_materialization"]["request_granted_authority"])
+            self.assertEqual(Path(captured["command"][1]), (source / consumer.TARGET_ENTRYPOINT).resolve())
+        finally:
+            td.cleanup()
+
+    def test_stale_runtime_request_is_replaced_by_exact_canonical_bytes(self):
+        td, source, runtime = self.roots()
+        try:
+            (runtime / consumer.REQUEST_REL).write_text('{"stale":true}\n', encoding="utf-8")
+            result = consumer.consume(source, runtime, runner=lambda *args, **kwargs: self.completed_cycle(), env={"PATH": "/usr/bin"})
+            self.assertEqual(result["state"], "CYCLE_COMPLETED")
+            self.assertEqual((runtime / consumer.REQUEST_REL).read_bytes(), (source / consumer.REQUEST_REL).read_bytes())
+            self.assertTrue(result["request_materialization"]["copied"])
+        finally:
+            td.cleanup()
 
     def test_blocked_scheduler_attempt_remains_retryable(self):
         td, source, runtime = self.roots()
@@ -74,10 +112,7 @@ class HealerResidentRequestTests(unittest.TestCase):
             calls = {"count": 0}
             def runner(*args, **kwargs):
                 calls["count"] += 1
-                return Completed({
-                    "schema": "stegverse.resident-refresh-targeted-execution/v2",
-                    "execution_result": {"state": "HANDOFF_READY", "transition_id": "HEALER_SOVEREIGN_SCHEDULER_COMPLETED"},
-                })
+                return self.completed_cycle()
             first = consumer.consume(source, runtime, runner=runner, env={"PATH": "/usr/bin"})
             second = consumer.consume(source, runtime, runner=runner, env={"PATH": "/usr/bin"})
             self.assertEqual(first["state"], "CYCLE_COMPLETED")
@@ -96,10 +131,7 @@ class HealerResidentRequestTests(unittest.TestCase):
             captured = {}
             def runner(command, **kwargs):
                 captured["command"] = command
-                return Completed({
-                    "schema": "stegverse.resident-refresh-targeted-execution/v2",
-                    "execution_result": {"state": "HANDOFF_READY", "transition_id": "HEALER_SOVEREIGN_SCHEDULER_COMPLETED"},
-                })
+                return self.completed_cycle()
             result = consumer.consume(
                 runtime,
                 runtime,
@@ -110,6 +142,7 @@ class HealerResidentRequestTests(unittest.TestCase):
             self.assertEqual(Path(result["source_root"]), source.resolve())
             self.assertEqual(Path(result["runtime_root"]), runtime.resolve())
             self.assertTrue(result["source_runtime_separated"])
+            self.assertEqual(Path(captured["command"][1]), (source / consumer.TARGET_ENTRYPOINT).resolve())
             self.assertIn(str(source.resolve()), captured["command"])
             self.assertIn(str(runtime.resolve()), captured["command"])
         finally:
