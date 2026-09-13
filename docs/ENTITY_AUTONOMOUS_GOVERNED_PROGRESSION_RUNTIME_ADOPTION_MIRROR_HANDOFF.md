@@ -6,7 +6,7 @@ Parent Goal: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`
 Parent COSV: `10100000100000`
 Runtime-adoption task: `ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001`
 Issue: `#1766`
-State: `GOAL_TERMINAL_STOP_AND_NOTIFICATION_SOURCE_STAGED / AUTHENTIC_RUNTIME_CYCLE_PENDING`
+State: `GOAL_TERMINAL_STOP_AND_REPAIR_PRIORITY_SOURCE_STAGED / AUTHENTIC_RUNTIME_CYCLE_PENDING`
 Authority effect: `NONE`
 
 ## Purpose
@@ -43,6 +43,23 @@ Master Records = observed reality / reconstruction authority
 HeartBeat = timing / observability only
 ```
 
+## Goal-scoped selection priority
+
+Within the current root Goal Task, the first-priority admissible work is work that repairs, remediates, reconciles, corrects, regression-fixes, or canonicalizes the StegVerse ecosystem.
+
+Priority order is therefore:
+
+```text
+1. Goal-scoped ecosystem repair / remediation / canonicalization / reconciliation work
+2. other Goal-scoped admissible machine-owned work
+```
+
+This priority applies **before checkout-state ordering**. An unclaimed repair task may therefore outrank an already-checked-out ordinary feature/expansion task. Within the same priority class, existing checkout-state ordering remains intact.
+
+Canonical selection may use an explicit `work_priority_class` where present. In its absence, the selector uses bounded semantic signals from the task identity, goal/problem/constraint text, and source/handoff references. Generic use of the word `canonical` alone does not make a task repair-priority; the signal must indicate canonicalization/reconciliation/correction work.
+
+This is selection order only. It grants no WorkerCoordinator claim/fence, Interlock/InTr transition, TV/TVC credential, execution, or Master Records authority. Collision checks and current governance remain mandatory.
+
 ## Goal-scoped progression
 
 The corrected progression is:
@@ -51,6 +68,9 @@ The corrected progression is:
 human idea / query / goal
 -> governed canonicalization into existing Task Registry state
 -> Task Registry candidate discovery scoped to current root Goal Task
+-> CHECK CURRENT GOAL TASK COMPLETION FIRST
+   -> if completion claimed + validated: STOP + completion notification
+   -> otherwise: rank ecosystem repair/remediation/canonicalization work first
 -> Task Registry collision/check-in
 -> WorkerCoordinator claim/fence when independently admitted
 -> current Interlock/InTr governance
@@ -58,9 +78,7 @@ human idea / query / goal
 -> durable evidence
 -> Master Records/state reconstruction
 -> return to Task Registry
--> CHECK CURRENT GOAL TASK COMPLETION FIRST
-   -> if completion claimed + validated: STOP + completion notification
-   -> otherwise: select next admissible nonduplicate task under same Goal Task
+-> repeat completion-first + repair-priority selection
 -> continuation without human re-presentation
 ```
 
@@ -122,6 +140,7 @@ These are source/CI/merge facts only and do not establish authentic resident exe
 Branch `goal-terminal-stop-notification-001` currently stages:
 
 - goal-scoping in `scripts/run_task_registry_canonical_work_cycle.py`;
+- ecosystem repair/remediation/canonicalization priority before ordinary work and before checkout-state ordering;
 - a completion check before any registry candidate selection;
 - terminal `continue_machine_work=false` behavior when the current Goal Task completion is claimed and validated;
 - no successor selection before notification;
@@ -129,7 +148,7 @@ Branch `goal-terminal-stop-notification-001` currently stages:
 - exact six-line body generation through `STATUS` only;
 - latest task-block header projection on `ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001`;
 - contract updates in `control/entity-autonomous-governed-progression-contract.json`;
-- deterministic tests covering goal scoping, completion validation, terminal stop, and notice-body exclusion of Summary/Manual Work.
+- deterministic tests covering repair priority, goal scoping, completion validation, terminal stop, and notice-body exclusion of Summary/Manual Work.
 
 ## Current provider transport finding
 
@@ -165,6 +184,8 @@ returned_task_cosv_handoff_state_reingested=true
 human_reentry_for_intermediate_ids=false
 ```
 
+The selected machine-owned work must also demonstrate that repair/remediation/canonicalization priority was applied when such an admissible Goal-scoped candidate existed.
+
 When the current Goal Task then reaches validated completion, the same goal chain must additionally demonstrate:
 
 ```text
@@ -178,7 +199,7 @@ summary_included=false
 manual_work_included=false
 ```
 
-The new terminal predicates extend the existing runtime-adoption predicate; they do not replace the existing progression predicates.
+The new terminal and selection-order predicates extend the existing runtime-adoption predicate; they do not replace the existing progression predicates.
 
 Authentic external notification completion additionally requires the admitted TV/TVC GitHub provider operation to create the GitHub event and retain its provider receipt.
 
@@ -186,6 +207,7 @@ Authentic external notification completion additionally requires the admitted TV
 
 - no continuation beyond validated Goal Task completion in the same goal cycle;
 - no successor selection before the completion notification request;
+- no ordinary feature/expansion task outranking an admissible Goal-scoped ecosystem repair/remediation/canonicalization task solely because it is already checked out;
 - no second scheduler;
 - no second WorkerCoordinator;
 - no second heartbeat/oscillator;
@@ -203,19 +225,20 @@ Authentic external notification completion additionally requires the admitted TV
 
 ## README impact
 
-**MATERIAL.** The previous README wording says the runtime reconstructs state and selects the next admissible task, but did not explicitly state that validated current Goal Task completion is checked first and stops the goal chain before successor selection. The README must be reconciled before this source continuation is considered source-complete.
+**MATERIAL.** The README must describe both the completion-first stop and the new repair/remediation/canonicalization-first selection rule because both change externally meaningful autonomous work-selection semantics.
 
 ## Remaining machine work
 
-1. validate this goal-terminal-stop implementation against the deterministic repository suite;
-2. reconcile README wording with the completion-first rule;
+1. validate this goal-terminal-stop and repair-priority implementation against the deterministic repository suite;
+2. reconcile README wording with both selection-order rules;
 3. merge the `.github` source when exact-head validation is green;
 4. implement or bind the smallest admitted TV/TVC GitHub issue-notification provider operation if no existing provider route resolves during reconciliation;
 5. observe the existing resident `canonical_work_coordination` consumer execute the goal-scoped registry loop;
-6. observe one task progress authentically through Canonical Work / Interlock-InTr and reconstruct state;
-7. at validated Goal Task completion, observe terminal stop before next-task selection;
-8. retain the exact six-line GitHub notification request and provider execution receipt;
-9. only then claim authentic goal-terminal notification behavior.
+6. observe repair/remediation/canonicalization work win when an admissible candidate exists;
+7. observe one task progress authentically through Canonical Work / Interlock-InTr and reconstruct state;
+8. at validated Goal Task completion, observe terminal stop before next-task selection;
+9. retain the exact six-line GitHub notification request and provider execution receipt;
+10. only then claim authentic goal-terminal notification behavior.
 
 ## Human action
 
