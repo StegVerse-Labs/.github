@@ -13,13 +13,17 @@
     "StegVerse-Labs/Site/pull/1235",
     "StegVerse-Labs/Site@a3bd73f0ced551738f37a6222b3ca933c3433fdf",
     "StegVerse-Labs/Site/actions/runs/34617268914",
+    "StegVerse-Labs/StegBrowser/pull/35",
+    "StegVerse-Labs/StegBrowser@0dd96a39ccc17a9eb0361e1eb975ad6dc542d87e",
+    "StegVerse-Labs/StegBrowser/pull/36",
+    "StegVerse-Labs/StegBrowser@88ac7d87950c3f5671f97a4b0f08a613661c445f",
     "StegVerse-Labs/.github/docs/SITE_NODE_IDB_SCHEMA_MIGRATION_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegSocials/docs/STEGSOCIALS_ERL_ASSISTED_DRAFTING_MIRROR_HANDOFF.md"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
-    "repositories": ["StegVerse-Labs/Site", "StegVerse-Labs/.github", "StegVerse-Labs/StegSocials"],
-    "components": ["stegos-node-v1", "DEVICE_KV", "Node continuity", "IndexedDB schema migration", "ERL standard-flow admission"]
+    "repositories": ["StegVerse-Labs/Site", "StegVerse-Labs/StegBrowser", "StegVerse-Labs/.github", "StegVerse-Labs/StegSocials"],
+    "components": ["stegos-node-v1", "DEVICE_KV", "Node continuity", "IndexedDB schema migration", "StegBrowser runtime observation", "ERL standard-flow admission"]
   },
   "dependencies": [
     {
@@ -35,6 +39,20 @@
       "state": "SATISFIED",
       "ref": "StegVerse-Labs/Site/actions/runs/34617268914",
       "disposition": "LIVE_SOURCE_PROPAGATION_OBSERVED; AUTHENTIC_RUNTIME_REOBSERVATION_MAY_USE_ANY_COMPATIBLE_INTERCHANGEABLE_STEGOS_NODE"
+    },
+    {
+      "dependency_id": "DEP-SITE-IDB-RUNTIME-OBSERVATION-BINDING",
+      "kind": "RUNTIME_EVIDENCE_TRANSPORT",
+      "state": "INTEGRATED",
+      "ref": "StegVerse-Labs/StegBrowser@0dd96a39ccc17a9eb0361e1eb975ad6dc542d87e",
+      "disposition": "MERGED OBSERVER CAN EXERCISE LIVE SAME-ORIGIN V2_TO_V3 MIGRATION; SOURCE_OR_CI_EXECUTION_ALONE IS NON_AUTHORIZING"
+    },
+    {
+      "dependency_id": "DEP-SITE-IDB-AUTHENTIC-RUNTIME-LANE",
+      "kind": "RUNTIME_EXECUTION_PATH",
+      "state": "IN_VALIDATION",
+      "ref": "StegVerse-Labs/StegBrowser/pull/36",
+      "disposition": "FAIL_CLOSED_WORKFLOW_SEPARATES_GITHUB_HOSTED_PREFLIGHT_FROM_SELF_HOSTED_STEGOS_BROWSER_NODE_EVIDENCE; CURRENT_REMOTE_DESKTOP_DEVICE_INVENTORY_EMPTY"
     }
   ],
   "blockers": [],
@@ -44,7 +62,14 @@
     "StegVerse-Labs/Site/pull/1235",
     "StegVerse-Labs/Site@a3bd73f0ced551738f37a6222b3ca933c3433fdf",
     "StegVerse-Labs/Site/actions/runs/34617268914",
-    "StegVerse-Labs/Site/actions/artifacts/10270802544"
+    "StegVerse-Labs/Site/actions/artifacts/10270802544",
+    "StegVerse-Labs/StegBrowser/pull/35",
+    "StegVerse-Labs/StegBrowser/actions/runs/34737855784",
+    "StegVerse-Labs/StegBrowser@0dd96a39ccc17a9eb0361e1eb975ad6dc542d87e",
+    "StegVerse-Labs/StegBrowser/actions/runs/34737881539",
+    "StegVerse-Labs/StegBrowser/pull/36",
+    "StegVerse-Labs/StegBrowser@88ac7d87950c3f5671f97a4b0f08a613661c445f",
+    "StegVerse-Labs/StegBrowser/actions/runs/34738049472"
   ],
   "expected_evidence_predicates": [
     "CANONICAL_NODE_DB_SCHEMA_OWNER_DEFINED",
@@ -70,7 +95,10 @@
   "runtime_resolution": {
     "current_executor": "ANY_COMPATIBLE_INTERCHANGEABLE_STEGOS_NODE",
     "authority_basis": "canonical task/COSV plus merged Site repair plus non-authorizing live-source observation; StegOS node identity grants no user-verification authority",
-    "unattended_runtime": false
+    "unattended_runtime": false,
+    "prepared_execution_path": "StegVerse-Labs/StegBrowser/.github/workflows/indexeddb-migration-runtime-observation.yml",
+    "required_runner_labels": ["self-hosted", "stegos-browser-node"],
+    "current_remote_desktop_device_count": 0
   },
   "worker_claim": {
     "authority": "CURRENT_SESSION",
@@ -82,11 +110,12 @@
   "completion": {
     "claimed": false,
     "validated": true,
-    "reconciliation_ref": "StegVerse-Labs/Site@a3bd73f0ced551738f37a6222b3ca933c3433fdf + StegVerse-Labs/Site/actions/runs/34617268914",
+    "reconciliation_ref": "StegVerse-Labs/Site@a3bd73f0ced551738f37a6222b3ca933c3433fdf + StegVerse-Labs/Site/actions/runs/34617268914 + StegVerse-Labs/StegBrowser@0dd96a39ccc17a9eb0361e1eb975ad6dc542d87e",
     "activation_proof_complete": false
   },
   "allowed_next_transitions": [
-    "REQUEST_AUTHENTIC_INTERCHANGEABLE_NODE_RUNTIME_REOBSERVATION",
+    "VALIDATE_AND_MERGE_STEGBROWSER_RUNTIME_EVIDENCE_LANE",
+    "EXECUTE_AUTHENTIC_STEGOS_BROWSER_NODE_RUNTIME_OBSERVATION",
     "OBSERVE_REPAIRED_DEVICE_KV_DIRECTORY_READBACK",
     "RETURN_TO_SS_EVIDENCE_COMPARISON_STANDARD_FLOW_IF_REPAIR_CONFIRMED"
   ],
