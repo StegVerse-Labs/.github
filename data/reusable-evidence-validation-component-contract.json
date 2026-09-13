@@ -10,11 +10,12 @@
       "capability_provided": "select_current_applicable_verification_record",
       "inputs": {
         "current_binding": "non-secret KV/SKAP current-verification binding projected by the authoritative verification domain",
-        "candidate_records": "zero or more already-admitted owner-authorization plus admission-receipt pairs",
+        "candidate_records": "zero or more already-admitted owner-authorization plus admission-receipt pairs evaluated only inside the selector",
         "operation_context": "task/COSV/purpose/context against which current applicability is evaluated"
       },
       "outputs": {
-        "selected_record": "exactly one selected admitted owner-authorization/receipt pair or no output on failure",
+        "verification_provenance": "existing non-secret KV/SKAP verification provenance projection for the exactly selected candidate",
+        "selected_record_ref": "opaque reference derived from exact selected source digests; raw owner authorization and receipt are not returned",
         "selection_evidence": "non-secret exact digest bindings and decision metadata"
       },
       "preconditions": [
@@ -59,6 +60,7 @@
         "device_identity_is_user_verification": false,
         "transport_identity_is_user_verification": false,
         "receipt_selection_mints_authority": false,
+        "raw_selected_record_output": false,
         "secret_material_output": false
       }
     }
