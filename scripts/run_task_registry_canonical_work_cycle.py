@@ -3,9 +3,10 @@
 
 The Task Registry is the work-discovery starting point. This script does not create
 new task identity, mint WorkerCoordinator claim/fence authority, grant credentials,
-or authorize a transition. It filters existing canonical task records, runs the
-existing Task Registry collision check-in, and only then delegates one selected
-registered task to the existing Canonical Work / Interlock-InTr bootstrap.
+or authorize a transition. It filters existing canonical task records, prioritizes
+StegVerse ecosystem repair/remediation/canonicalization work inside the current root
+Goal Task, runs the existing Task Registry collision check-in, and only then delegates
+one selected registered task to the existing Canonical Work / Interlock-InTr bootstrap.
 
 Goal-bounded progression stops before any further task selection once the current
 Goal Task has a canonically validated completion claim. That terminal event emits
@@ -29,6 +30,22 @@ BOOTSTRAP = ROOT / "scripts" / "install_and_run_canonical_work_event_bootstrap.p
 CALLER_SURFACE = "INTERNAL_CANONICAL_WORK_BOOTSTRAP"
 PROGRESSION_CONTROLLER_TASK_ID = "ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001"
 NOTIFICATION_REL = Path("requests/tv-tvc/goal-task-completion-github-notification.latest.json")
+REPAIR_PRIORITY_CLASSES = {
+    "ECOSYSTEM_REPAIR",
+    "ECOSYSTEM_REMEDIATION",
+    "ECOSYSTEM_CANONICALIZATION",
+    "ECOSYSTEM_RECONCILIATION",
+    "REGRESSION_REPAIR",
+}
+REPAIR_PRIORITY_TOKENS = (
+    "REPAIR",
+    "REMEDIAT",
+    "CANONICALIZ",
+    "RECONCIL",
+    "CORRECTION",
+    "REGRESSION",
+    "FIX",
+)
 
 
 def load(path: Path) -> dict[str, Any]:
@@ -162,6 +179,33 @@ def machine_ingress_candidate(record: dict[str, Any], excluded_task_ids: set[str
     return True
 
 
+def ecosystem_priority_class(record: dict[str, Any]) -> str:
+    explicit = str(record.get("work_priority_class") or "").strip().upper()
+    if explicit in REPAIR_PRIORITY_CLASSES:
+        return explicit
+
+    searchable_parts: list[str] = [
+        str(record.get("task_id") or ""),
+        str(record.get("goal") or ""),
+        str(record.get("problem") or ""),
+        str(record.get("constraint") or ""),
+    ]
+    for key in ("source_refs", "handoff_projection_refs"):
+        values = record.get(key) or []
+        if isinstance(values, list):
+            searchable_parts.extend(str(value) for value in values)
+    searchable = " ".join(searchable_parts).upper()
+    if any(token in searchable for token in REPAIR_PRIORITY_TOKENS):
+        return "ECOSYSTEM_REPAIR_REMEDIATION_CANONICALIZATION"
+    return "ORDINARY_GOAL_WORK"
+
+
+def candidate_sort_key(record: dict[str, Any]) -> tuple[int, int, str]:
+    repair_first = 0 if ecosystem_priority_class(record) != "ORDINARY_GOAL_WORK" else 1
+    checkout_rank = 0 if record.get("checkout_state") == "CHECKED_OUT" else 1
+    return repair_first, checkout_rank, str(record["task_id"])
+
+
 def load_candidates(records_dir: Path = RECORDS, excluded_task_ids: set[str] | None = None, goal_task_id: str | None = None) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     seen: set[str] = set()
@@ -177,7 +221,7 @@ def load_candidates(records_dir: Path = RECORDS, excluded_task_ids: set[str] | N
             continue
         if machine_ingress_candidate(record, excluded_task_ids):
             rows.append(record)
-    rows.sort(key=lambda row: (0 if row.get("checkout_state") == "CHECKED_OUT" else 1, str(row["task_id"])))
+    rows.sort(key=candidate_sort_key)
     return rows
 
 
@@ -207,6 +251,7 @@ def select_task(records_dir: Path = RECORDS, excluded_task_ids: set[str] | None 
         checkin = collision_check(task_id)
         considered.append({
             "task_id": task_id,
+            "priority_class": ecosystem_priority_class(record),
             "checkout_state": record.get("checkout_state"),
             "disposition": checkin.get("disposition"),
             "collision_candidates": checkin.get("collision_candidates") or [],
@@ -257,6 +302,7 @@ def main() -> int:
         "start_point": "CANONICAL_TASK_REGISTRY",
         "goal_task_id": goal_task_id,
         "goal_completion_validated": False,
+        "selection_priority_rule": "ECOSYSTEM_REPAIR_REMEDIATION_CANONICALIZATION_FIRST",
         "progression_controller_excluded_from_work_selection": True,
         "explicit_request_task_ids_excluded": sorted(excluded_task_ids),
         "selected_task_id": selected.get("task_id") if selected else None,
