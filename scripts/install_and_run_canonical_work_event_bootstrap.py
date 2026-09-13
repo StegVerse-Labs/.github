@@ -47,6 +47,7 @@ GLOBAL_PROJECTION_REL = Path("control/runtime-partial-solution-projections/GLOBA
 GLOBAL_NODE_PROFILES_REL = Path("control/runtime-node-profiles.json")
 COLLISION_EVALUATOR_REL = Path("scripts/evaluate_task_registry_collision_checkin.py")
 COLLISION_SCHEMA = "stegverse.task-registry-checkin-disposition/v1"
+CALLER_SURFACE = "INTERNAL_CANONICAL_WORK_BOOTSTRAP"
 
 
 def run(command: list[str]) -> None:
@@ -60,7 +61,7 @@ def collision_preflight(task_id: str) -> dict:
     proc = subprocess.run(
         [sys.executable, str(evaluator)],
         cwd=str(ROOT),
-        input=json.dumps({"task_id": task_id}),
+        input=json.dumps({"task_id": task_id, "caller_surface": CALLER_SURFACE}),
         text=True,
         capture_output=True,
         check=True,
@@ -73,6 +74,10 @@ def collision_preflight(task_id: str) -> dict:
         raise RuntimeError("Task Registry collision disposition identity/schema mismatch")
     if result.get("authority_effect") != "NONE":
         raise RuntimeError("Task Registry collision disposition attempted authority effect")
+    if result.get("caller_surface") != CALLER_SURFACE:
+        raise RuntimeError("Task Registry collision disposition caller surface mismatch")
+    if result.get("caller_surface_attestation_proven") is not False:
+        raise RuntimeError("Task Registry collision disposition may not claim authentic caller attestation")
     disposition = str(result.get("disposition") or "")
     if disposition != "CONTINUE":
         raise RuntimeError("TASK_REGISTRY_CHECKIN:" + json.dumps(result, sort_keys=True, separators=(",", ":")))
