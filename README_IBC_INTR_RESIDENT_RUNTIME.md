@@ -1,13 +1,14 @@
 # IBC InTr Resident Runtime Consumer
 
-Updated: 2026-09-09
+Updated: 2026-09-12
 
 Goal Task ID: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`
 Handoff: `docs/IBC_INTR_RESIDENT_RUNTIME_MIRROR_HANDOFF.md`
+COSV ID: `10100000100000`
 
-This repository slice integrates the already-merged StegOS verified Cosmos Hub → Osmosis ACK ingress with the existing canonical sovereign resident WorkerCoordinator/dispatcher substrate.
+This repository slice carries the already-verified Cosmos Hub → Osmosis ACK evidence into the canonical StegVerse resident execution trajectory without creating a second scheduler, credential authority, runtime authority, or custody path.
 
-## Source
+## Canonical source
 
 ```text
 control/resident-execution-request.d/ibc-verified-intr-ack-resident-001.json
@@ -16,51 +17,75 @@ scripts/dispatch_resident_execution_requests.py
 tests/test_ibc_intr_resident_consumer.py
 ```
 
-The consumer requires:
+The historical sovereign-host consumer remains valid as a bounded resident transport implementation, but it is no longer the only practical execution path for this task. The current canonical delivery trajectory is the already-merged current-iPhone StegOSMobile/TestFlight path.
+
+## Current-iPhone source binding
+
+StegOS PR #299 merged the native IBC launch coordinator into the real `StegOSMobile` application launch path. The current TestFlight successor's unsigned IPA is built from a descendant source commit, so no separate IBC-specific IPA rebuild is required.
+
+Exact current product identity:
 
 ```text
-STEGVERSE_SOVEREIGN_NODE
-STEGVERSE_STEGOS_ROOT
+unsigned IPA sha256: 557d559082bdefca5fcc69c86f342d8cc035c2d803d154de5ed45b5677f80c35
+unsigned IPA bytes: 389564
+WASM signer sha256: 699dc3054788d779ba7920e332c661ef7eac001156f93ab7b1fe1b64ee5a4b93
+execution surface: CURRENT_USER_IPHONE
+signer class: SAME_DEVICE_BROWSER_WASM_IPA_SIGNER
+credential authority: TV/TVC
+App Store Connect credential custody: SKAP_SEALED_TV_TVC_OWNED
 ```
 
-`STEGVERSE_STEGOS_ROOT` must point to a locally materialized StegOS source tree that already contains the merged verified ACK evidence chain and resident-capable `scripts/materialize_verified_ibc_intr_ack.py`. Resident dispatch performs no GitHub or network source fetch.
+## Allocator lineage
 
-Without `STEGVERSE_SOVEREIGN_NODE`, the consumer returns `SOVEREIGN_NODE_MARKER_REQUIRED` and does not invoke the StegOS materializer. This prevents CI/source validation from manufacturing resident-runtime evidence.
+`TASK-2026-0010` generation 6 / fence 6 is retained predecessor provenance. The authentic same-device recovery page proved that receipt was already present and performed no allocator mutation.
 
-When all predicates are satisfied, the consumer invokes the StegOS materializer with:
+The current product owner trajectory has advanced to:
 
 ```text
---observation-class SOVEREIGN_RESIDENT_EXECUTED_CANONICAL_INTR_TRANSPORT_RECEIPT
---output <resident-runtime>/receipts/sovereign-host/ibc-verified-intr-ack-transport.latest.json
+canonical allocator task: TASK-2026-0011
+claim_registry_generation: 7
+fencing_token: 7
+claim state: CLAIM_GRANT_OBSERVED
+allocation state: ALLOCATION_COMPLETE
+journal replay: PASS
 ```
 
-A successful resident consumption receipt may establish only that the sovereign resident process consumed the retained verified external ACK evidence through the canonical `heterogeneous-interop` `ACKNOWLEDGE` transport source.
+Site has already merged and publicly published the exact frozen TASK-2026-0011 TestFlight product. The same-device KV recovery wrapper is also merged on Site main through PR #1237 at merge commit `b847d4e408571efb9ff511f1facbc3f38128846d`.
 
-It does not establish or mint:
+The wrapper derives the exact `CURRENT_IPHONE_TESTFLIGHT_SIGNING` projection in memory from the established current-iPhone Device→KV/InTr path, requires `KV_INSTALLATION_VERIFIED`, and passes that projection directly into the frozen TestFlight bootstrap. It does not synthesize projection commitments or require a saved projection JSON for the normal path.
+
+## Current unresolved runtime boundary
+
+Repository/source publication is no longer the first unresolved predicate. The next authentic evidence is same-device execution from the established current iPhone:
 
 ```text
-original IBC packet relay
-transition admission
-application execution
-WorkerCoordinator claim/fence
-credentials
-Master Records custody/reconstruction
+current-iPhone Device→KV projection materialization
+-> KV installation verification
+-> exact frozen TASK-2026-0011 bootstrap
+-> TVC RESOLVE_APP_RESOURCE_ID
+-> TVC provisioning material
+-> same-device WASM IPA signing
+-> exact signed-IPA verification
+-> TVC native Build Upload
+-> TestFlight processing/install
+-> native StegOSMobile launch
+-> Documents/ibc-verified-intr-ack-request-consumption.latest.json
 ```
 
-Those predicates remain separate and must be observed independently.
+Source, CI, merge, allocator recovery, publication, signing setup, or TestFlight upload alone do not prove IBC resident execution. Only authentic physical-iPhone launch and the resulting app-local receipt can advance the IBC resident-consumption predicate.
 
-## Runtime receipt
-
-The task-specific resident consumption receipt path is:
+## Authority boundary
 
 ```text
-receipts/sovereign-host/ibc-verified-intr-ack-request-consumption.latest.json
+Interlock/InTr: transition/admission authority
+WorkerCoordinator / canonical allocator: claim/fence authority
+KV: private continuity boundary
+TV/TVC: credential/provider/signing authority
+SKAP: sealed credential custody
+Site: public projection/rendezvous only
+GitHub Actions: validation/evidence transport only
+HB: carrier/observability only
+current iPhone: physical execution surface
 ```
 
-The inner canonical InTr transport artifact is retained at:
-
-```text
-receipts/sovereign-host/ibc-verified-intr-ack-transport.latest.json
-```
-
-Source, tests, CI, PR merge, or request registration do not satisfy the resident execution predicate. Only actual sovereign dispatcher consumption can produce the authentic runtime receipt.
+No second user-operated machine is required or admitted as the completion path.
