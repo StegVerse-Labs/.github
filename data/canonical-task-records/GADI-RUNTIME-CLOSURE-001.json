@@ -4,13 +4,16 @@
   "correlation_id": "GADI-RUNTIME-CLOSURE-001",
   "root_correlation_id": "GADI-001",
   "parent_task_id": "GADI-001",
-  "goal": "Close GADI with authentic same-device resident runtime evidence only: current retained-node discovery and current-iPhone receipt readback, exact same-node runtime presence/binding, current Governance/InTr admission, WorkerCoordinator claim/fence, controlled preauthorized defensive execution, effect observation, adaptive reassessment, termination after threat end, full receipt-chain custody, and exact Continuity/Master Records reconstruction.",
-  "coordination_state": "ACTIVE",
-  "checkout_state": "CLAIMED_INTEGRATION",
+  "goal": "Historical runtime-closure continuation for GADI. Under the canonical Reusable Task Component Model, the remaining authentic runtime-proof predicates are owned by GADI-001 through reusable component composition rather than an independent Goal created for prompt-count continuation.",
+  "coordination_state": "SUPERSEDED",
+  "checkout_state": "UNCLAIMED",
   "cosv_task_vector": "10100000100000",
   "source_refs": [
     "docs/GADI_RUNTIME_CLOSURE_MIRROR_HANDOFF.md",
     "docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
+    "docs/GADI_REUSABLE_TASK_COMPONENT_COMPOSITION_MIRROR_HANDOFF.md",
+    "data/goal-task-component-profiles/GADI-001.json",
+    "data/reusable-task-component-evaluations/GADI-001.json",
     "data/canonical-task-records/GADI-001.json",
     "data/canonical-task-records/GADI-RESIDENT-EXECUTION-001.json",
     "StegVerse-Labs/.github#1603"
@@ -21,11 +24,11 @@
     "components": ["gadi-runtime-observation", "same-device-runtime-binding", "intr-defensive-admission", "workercoordinator-claim-fence", "controlled-defensive-execution", "effect-reassessment-termination", "continuity-master-records-reconstruction"]
   },
   "dependencies": [
-    {"dependency_id":"DEP-GADI-CURRENT-DEVICE-OBSERVATION","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md","disposition":"REQUIRE_AUTHENTIC_RETAINED_DISCOVERY_AND_CURRENT_IPHONE_RECEIPT_READBACK_FOR_EXACT_NODE"},
-    {"dependency_id":"DEP-GADI-RUNTIME-BINDING","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"GADI-RESIDENT-EXECUTION-001","disposition":"REQUIRE_CURRENT_SAME_NODE_PRESENCE_LIVENESS_SUPERVISION_FRESHNESS_AND_BINDING"},
-    {"dependency_id":"DEP-GADI-INTR-ADMISSION","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"GADI-001","disposition":"REQUIRE_CURRENT_LOCAL_CANONICAL_INTR_ADMISSION"},
-    {"dependency_id":"DEP-GADI-WORKERCOORDINATOR-CLAIM","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"STEGVERSE-CANONICAL-WORK-COORDINATION-001","disposition":"REQUIRE_CURRENT_CLAIM_AND_FENCE"},
-    {"dependency_id":"DEP-GADI-CONTINUITY-MASTER-RECORDS","kind":"RUNTIME_EVIDENCE","state":"UNRESOLVED","ref":"StegVerse-Labs/Continuity","disposition":"REQUIRE_FULL_RECEIPT_CHAIN_CUSTODY_AND_EXACT_RECONSTRUCTION"}
+    {"dependency_id":"DEP-GADI-CURRENT-DEVICE-OBSERVATION","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"},
+    {"dependency_id":"DEP-GADI-RUNTIME-BINDING","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"GADI-RESIDENT-EXECUTION-001"},
+    {"dependency_id":"DEP-GADI-INTR-ADMISSION","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"GADI-001"},
+    {"dependency_id":"DEP-GADI-WORKERCOORDINATOR-CLAIM","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"STEGVERSE-CANONICAL-WORK-COORDINATION-001"},
+    {"dependency_id":"DEP-GADI-CONTINUITY-MASTER-RECORDS","kind":"EVIDENCE","state":"UNRESOLVED","ref":"StegVerse-Labs/Continuity"}
   ],
   "blockers": [],
   "adjacent_task_refs": ["GADI-001", "GADI-RESIDENT-EXECUTION-001", "SV-DN1-INTR-RUNTIME-001", "STEGVERSE-CANONICAL-WORK-COORDINATION-001"],
@@ -57,7 +60,7 @@
   "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
   "human_action_ref": null,
   "completion": {"claimed":false,"validated":false,"activation_proof_complete":false},
-  "allowed_next_transitions": ["INGRESS_ADMITTED"],
-  "handoff_projection_refs": ["docs/GADI_RUNTIME_CLOSURE_MIRROR_HANDOFF.md", "docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"],
+  "allowed_next_transitions": [],
+  "handoff_projection_refs": ["docs/GADI_RUNTIME_CLOSURE_MIRROR_HANDOFF.md", "docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md", "docs/GADI_REUSABLE_TASK_COMPONENT_COMPOSITION_MIRROR_HANDOFF.md"],
   "authority_model": {"task_registry_mints_execution_authority":false,"source_state_proves_execution":false,"worker_claim_authority":"WORKERCOORDINATOR","interlock_intr_required_for_governed_ingress_egress":true,"credential_authority":"TV_TVC","request_grants_execution_authority":false}
 }
