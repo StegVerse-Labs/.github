@@ -12,23 +12,6 @@
   },
   "selected_components": [
     {
-      "component_id": "RTC-INTERLOCK-INTR-TRANSPORT-008",
-      "family": "governed_ingress",
-      "capability_provided": "governed_local_capability_admission",
-      "existing": true,
-      "canonical_implementation_or_owner": "Interlock/InTr",
-      "inputs": ["task_id", "packet_tunnel_activation_operation", "KV/SKAP-backed user-verification state when applicable"],
-      "outputs": ["admission_transition_or_fail_closed_receipt"],
-      "preconditions": ["exact operation bound", "no device-local user verification", "applicable WorkerCoordinator claim/fence held by canonical owner"],
-      "authority_owner": "Interlock/InTr",
-      "authority_effect": "NONE_COMPONENT_REUSE_DOES_NOT_MINT_AUTHORITY",
-      "expected_evidence": ["authentic governed admission/transition receipt when the activation operation is executed"],
-      "repeatability_cardinality": "ONCE_PER_DISTINCT_ACTIVATION_OPERATION_OR_REENTRY",
-      "failure_remediation_semantics": "FAIL_CLOSED; preserve failure evidence; re-enter only after the actual admission prerequisite is satisfied",
-      "requirement": "REQUIRED_FOR_STATE_CHANGING_ACTIVATION",
-      "version_or_schema_binding": "stegverse.reusable-transport-component-contract/v1"
-    },
-    {
       "component_id": "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001",
       "family": "runtime_observation",
       "capability_provided": "authentic_current_runtime_observation_without_same-run_evidence_upgrade",
@@ -46,6 +29,13 @@
       "version_or_schema_binding": "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001"
     }
   ],
+  "conditional_components": [
+    {
+      "component_id": "RTC-INTERLOCK-INTR-TRANSPORT-008",
+      "condition": "ONLY_WHEN_A_RECOVERY_ENVELOPE_OR_OTHER_STEGVERSE_STATE_TRANSITION_IS_ACTUALLY_SUBMITTED",
+      "reason": "Starting or stopping the local iOS packet-tunnel transport has authority_effect NONE and is not itself a StegVerse admission/state transition. Interlock/InTr remains mandatory for admitted continuity-envelope movement and every actual governed StegVerse transition."
+    }
+  ],
   "subject_bound_observation": {
     "runtime_subject": "DeviceContinuityPacketTunnel",
     "provider_bundle": "org.stegverse.stegosmobile.devicecontinuity",
@@ -59,6 +49,7 @@
     "persistence_predicate": "AUTHENTIC_CROSS_APP_PERSISTENCE_OBSERVED",
     "reachability_predicate": "AUTHENTIC_LOOPBACK_8766_REACHABILITY_OBSERVED",
     "persistence_test": "observe exact endpoint before and after foregrounding another browser/app container on the same StegOS Node",
+    "transport_lifecycle_is_governed_state_transition": false,
     "generic_runtime_presence_may_substitute": false,
     "heartbeat_may_substitute": false,
     "source_ci_may_substitute": false,
@@ -68,7 +59,7 @@
     "authority_effect": "NONE_OBSERVATION_CONFIGURATION_ONLY"
   },
   "task_specific_configuration": ["DeviceContinuityCarrierController host activation binding", "DeviceContinuityPacketTunnel NEPacketTunnelProvider target", "provider bundle org.stegverse.stegosmobile.devicecontinuity", "bounded loopback endpoint 127.0.0.1:8766"],
-  "not_selected": ["RTC-MANIFEST-001", "RTC-GOVERNED-PROCESSING-002", "RTC-ROUNDTRIP-003", "RTC-EVIDENCE-CUSTODY-004 as a separate mandatory chain stage", "RTC-PUBLISHER-005", "RTC-SDK-RETURN-006", "RTC-STEGVERSE-EGRESS-007", "RTC-FARSIDE-FINAL-009", "credential_session component", "provider publication/release component", "terminal cleanup/entropy recovery component"],
+  "not_selected": ["RTC-INTERLOCK-INTR-TRANSPORT-008 for carrier start/status observation", "RTC-MANIFEST-001", "RTC-GOVERNED-PROCESSING-002", "RTC-ROUNDTRIP-003", "RTC-EVIDENCE-CUSTODY-004 as a separate mandatory chain stage", "RTC-PUBLISHER-005", "RTC-SDK-RETURN-006", "RTC-STEGVERSE-EGRESS-007", "RTC-FARSIDE-FINAL-009", "credential_session component", "provider publication/release component", "terminal cleanup/entropy recovery component"],
   "goal_specific_completion_predicates_preserved": ["HOST_ACTIVATION_SOURCE_VALIDATED", "AUTHENTIC_PACKET_TUNNEL_ACTIVATION_OBSERVED", "AUTHENTIC_CROSS_APP_PERSISTENCE_OBSERVED", "AUTHENTIC_LOOPBACK_8766_REACHABILITY_OBSERVED"],
   "satisfied_predicates": ["HOST_ACTIVATION_SOURCE_VALIDATED"],
   "remaining_predicates": ["AUTHENTIC_PACKET_TUNNEL_ACTIVATION_OBSERVED", "AUTHENTIC_CROSS_APP_PERSISTENCE_OBSERVED", "AUTHENTIC_LOOPBACK_8766_REACHABILITY_OBSERVED"],
@@ -86,5 +77,5 @@
   "goal_identity_preserved": true,
   "new_goal_task_required": false,
   "new_reusable_component_required": false,
-  "duplicate_orchestration_to_retire": ["any task-specific generic signing/provisioning revalidation", "any second packet-tunnel runtime observer parallel to canonical runtime observation machinery", "any task-specific Interlock/InTr adapter duplicating the existing reusable governed transport/admission component", "any use of generic runtime-presence or HeartBeat evidence as packet-tunnel execution proof"]
+  "duplicate_orchestration_to_retire": ["any task-specific generic signing/provisioning revalidation", "any second packet-tunnel runtime observer parallel to canonical runtime observation machinery", "any task-specific Interlock/InTr adapter or admission request for carrier start/status observation", "any use of generic runtime-presence or HeartBeat evidence as packet-tunnel execution proof"]
 }
