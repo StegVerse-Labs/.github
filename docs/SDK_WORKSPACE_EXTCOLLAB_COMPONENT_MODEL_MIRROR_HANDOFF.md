@@ -4,51 +4,53 @@ Updated: 2026-09-12
 Goal Task ID: `SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004`
 Canonical runtime handoff: `docs/SDK_WORKSPACE_EXTCOLLAB_AUTHENTIC_RUNTIME_004_MIRROR_HANDOFF.md`
 COSV: `71000000100110`
-PR: `StegVerse-Labs/.github#1652`
-Status: `ACTIVE / COMPONENT MODEL SOURCE VALIDATED / CANONICAL PROJECTION UPDATE PENDING`
+Model merge: `StegVerse-Labs/.github#1652` -> `b9f8e5153aa1651f2d7f043fb902eacb7c113ed9`
+Status: `ACTIVE / COMPONENT MODEL MERGED + VALIDATED / GOAL TASK RECONCILED`
 
-## Scope
+## Identity and decision
 
-This handoff records the source-architecture decomposition added for the active Goal Task without replacing its canonical runtime-evidence handoff. Runtime truth, remaining authentic-observation predicates, and authority state remain owned by `docs/SDK_WORKSPACE_EXTCOLLAB_AUTHENTIC_RUNTIME_004_MIRROR_HANDOFF.md`.
+The existing Goal Task remains valid. Componentization does not rename, replace, close, or reset it.
 
-## Component model integration
+Applying the canonical decomposition policy activates all ten listed signals for this task and yields score `30`, which requires stopping further bespoke orchestration growth and expressing continuation through reusable components.
 
-The Goal Task now has a reusable component architecture on PR #1652:
+## Component map
 
-```text
-data/reusable-task-component-model.json
-data/reusable-task-component-decomposition-policy.json
-data/reusable-transport-component-contract.json
-data/goal-task-transport-profiles/SDK-WORKSPACE-EXTCOLLAB-AUTHENTIC-RUNTIME-004.json
-scripts/evaluate_reusable_task_componentization.py
-docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md
-docs/REUSABLE_GOAL_TASK_TRANSPORT_COMPONENTS_MIRROR_HANDOFF.md
-```
+- Runtime observation -> reuse the existing canonical runtime-presence producer and resident connection surface -> expected evidence: authentic current subject-bound presence.
+- Manifest intake/binding -> reuse `RTC-MANIFEST-001` -> output: task/COSV-bound invocation context.
+- Execution materialization -> reuse `data/reusable-task-ephemeral-construct-contract.json` -> WorkerCoordinator retains claim/fence authority; bounded execution must emit authentic boundary/completion evidence.
+- Governed movement -> reuse `RTC-INTERLOCK-INTR-TRANSPORT-008` -> Interlock/InTr owns transition/admission authority; repeat as required.
+- Governed request/response cycles -> reuse `RTC-ROUNDTRIP-003` -> five declared instances for this Goal Task; each requires its own evidence and does not authorize the next.
+- Evidence validation -> reuse existing canonical validators -> source/CI/static compatibility never upgrades runtime evidence.
+- Custody/reconstruction -> reuse `RTC-EVIDENCE-CUSTODY-004` -> Master Records owns observed reality, custody, and reconstruction.
+- SDK return assembly -> reuse `RTC-SDK-RETURN-006` when the validated return is required.
+- Publication/distribution -> reuse `RTC-PUBLISHER-005` only after applicable release authority exists.
+- Final local/far-side transition -> reuse `RTC-STEGVERSE-EGRESS-007` and `RTC-FARSIDE-FINAL-009` only when distribution requires them.
+- Provider/session handling -> reuse the existing TV/TVC path; KV/SKAP Vault remains the sole user-verification authority.
 
-The task remains one Goal Task. Componentization does not reset prompt count, split the Goal Task merely for bookkeeping, mint authority, or alter the existing authentic runtime-evidence predicates.
+## Reuse outcome
 
-## Validated exact head
+No new reusable component is required for this Goal Task at this time. The model-level candidate families for callback correlation, release propagation, and failure-remediation classification remain candidates rather than being duplicated task-locally. The current task can compose the behavior it needs from the existing components above.
 
-PR #1652 exact head `7bb7a0a485658a8579373d60b4152e42057f5d2a` passed all three required repository lanes:
+The long handoff-only bespoke execution chain is superseded as the primary architecture description. Historical source and evidence remain provenance. Do not create another runtime-presence probe, generic Interlock/InTr adapter, generic request/response transport, Master Records reconstruction path, or device-local verification gate.
 
-```text
-Validate organization control plane: 34729071443 PASS
-Heartbeat Worker Project validation: 34729071399 PASS
-Deterministic Repository Suite: 34729071502 PASS
-```
+## Authority invariants
 
-These are source-validation results only. They do not prove resident runtime execution, provider action, transition execution, publication, custody, or far-side completion.
+Task Registry coordinates only. WorkerCoordinator owns claim/fence. Interlock/InTr owns governed transition/admission. TV/TVC owns provider/release authority. KV/SKAP Vault is the sole user verifier. StegOS devices are interchangeable transport/execution nodes. Master Records owns observed reality/custody/reconstruction. HeartBeat is observability only. GitHub has no runtime authority.
 
-## Remaining source-integration condition
+Runtime subject binding is evidence correlation only.
 
-The repository README and the canonical runtime handoff still need the concise architecture projection required by repository policy. Full-file mutation through the current connector was rejected before GitHub write, so neither file is claimed updated.
+## Runtime and completion truth
 
-Do not merge PR #1652 until those canonical projections are present and a new exact head has passed the required validation lanes.
+The canonical Goal Task predicates are unchanged. Current runtime state remains `CURRENT_OBSERVATION_REQUIRED:DECLARED_ONLY`; component reuse, source merge, and CI do not prove runtime execution.
 
-## Runtime state
+## Validation
 
-This componentization does not change runtime state. The active Goal Task remains at the authentic-current-observation requirement recorded by its canonical runtime handoff.
+PR #1652 exact head `075b1e71d0ebe3591899db03d570da79eed5e916` passed Organization Control `34730323940`, Deterministic Repository Suite `34730323942`, and Heartbeat Worker Project `34730323876`, then merged at `b9f8e5153aa1651f2d7f043fb902eacb7c113ed9`.
+
+## Next admissible work
+
+Resolve authentic current resident presence through the existing runtime-observation owner. Only after subject-bound current presence exists should this Goal Task compose the existing bounded execution, Interlock/InTr transport, and governed round-trip components required for the two resident operations. Stop at any real authority/evidence/external/human boundary and preserve exact receipts.
 
 ## Human action
 
-None. Continue machine-side source reconciliation; no owner consent or provider action is requested by this componentization step.
+None.
