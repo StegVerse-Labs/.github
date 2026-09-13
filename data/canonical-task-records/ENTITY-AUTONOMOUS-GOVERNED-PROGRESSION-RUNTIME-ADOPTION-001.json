@@ -151,6 +151,34 @@
     "validated": false,
     "runtime_adoption_observed": false
   },
+  "latest_goal_task_block_header": {
+    "goal_task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+    "handoff_task_id": "docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_RUNTIME_ADOPTION_MIRROR_HANDOFF.md",
+    "cosv_id": "10100000100000",
+    "session_prompt_count": 6,
+    "goal_prompt_count": "6/20",
+    "status": "ACTIVE"
+  },
+  "goal_completion_notification": {
+    "terminal_stop_state": "COMPLETED_VALIDATED",
+    "notification_provider": "GITHUB",
+    "notification_operation": "CREATE_GOAL_COMPLETION_NOTIFICATION_ISSUE",
+    "notification_repository": "StegVerse-Labs/.github",
+    "notification_assignee": "StegVerse",
+    "notification_body_fields": [
+      "Goal Task ID",
+      "Handoff Task ID",
+      "COSV ID",
+      "Session Prompt Count",
+      "Goal Prompt Count",
+      "STATUS"
+    ],
+    "summary_included": false,
+    "manual_work_included": false,
+    "credential_authority": "TV/TVC",
+    "github_actions_runtime_authority": "NONE",
+    "email_delivery": "GITHUB_NOTIFICATION_EMAIL_SUBJECT_TO_ACCOUNT_NOTIFICATION_SETTINGS"
+  },
   "allowed_next_transitions": ["INGRESS_ADMITTED"],
   "handoff_projection_refs": [
     "docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_RUNTIME_ADOPTION_MIRROR_HANDOFF.md",
