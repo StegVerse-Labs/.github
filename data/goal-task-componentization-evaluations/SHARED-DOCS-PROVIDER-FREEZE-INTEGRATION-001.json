@@ -1,0 +1,37 @@
+{
+  "schema": "stegverse.reusable-task-componentization-evaluation/v1",
+  "task_id": "SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001",
+  "cosv_task_vector": "71000000100110",
+  "signals": {
+    "repeated_subflow": true,
+    "multiple_authority_crossings": true,
+    "multiple_round_trips": true,
+    "cross_repository_or_org_spread": true,
+    "task_specific_adapter_duplicates_generic_work": true,
+    "handoff_sequence_growth": true,
+    "failure_path_branching": true,
+    "independent_reusability": true,
+    "optional_subflow_present": true,
+    "independent_evidence_predicate": true
+  },
+  "score": 30,
+  "active_signals": [
+    "repeated_subflow",
+    "multiple_authority_crossings",
+    "multiple_round_trips",
+    "cross_repository_or_org_spread",
+    "task_specific_adapter_duplicates_generic_work",
+    "handoff_sequence_growth",
+    "failure_path_branching",
+    "independent_reusability",
+    "optional_subflow_present",
+    "independent_evidence_predicate"
+  ],
+  "decision": "STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION",
+  "must_search_existing_components": true,
+  "componentization_required": true,
+  "must_stop_scope_growth": true,
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "reconciliation_result": "Existing Goal Task and COSV preserved. Existing reusable transport components and canonical authority owners are reused. The merged Shared Docs resident content-integrity consumer is bounded to task-specific translation/compatibility only and must not grow into duplicate runtime, credential, provider, evidence, transition, or custody orchestration.",
+  "profile_ref": "data/goal-task-component-profiles/SHARED-DOCS-PROVIDER-FREEZE-INTEGRATION-001.json"
+}
