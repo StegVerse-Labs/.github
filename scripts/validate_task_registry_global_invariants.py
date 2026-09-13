@@ -31,6 +31,16 @@ EXPECTED = {
     "evidence_reachability_may_establish_substrate_unsuitable": False,
     "second_user_operated_device_allowed": False,
     "execution_substrate_selection_authority_effect": "NONE",
+    "completion_evidence_contract_version": "v1",
+    "completion_language_requires_evidence_class": True,
+    "unqualified_complete_or_completed_prohibited": True,
+    "stronger_completion_class_inference_prohibited": True,
+    "completion_claim_requires_evidence_refs": True,
+    "new_or_reconciled_completion_requires_contract_version": True,
+    "legacy_unqualified_completion_authority": "NONE_NON_AUTHORITATIVE_PROVENANCE_ONLY",
+    "legacy_unqualified_completion_may_support_user_facing_complete": False,
+    "legacy_unqualified_completion_may_satisfy_terminal_predicate": False,
+    "terminal_complete_default_evidence_class": "END_TO_END",
 }
 
 REVIEW_ORDER = [
@@ -123,6 +133,11 @@ def main() -> None:
             fail(f"global invariant {key} mismatch")
     if invariants.get("runtime_substrate_review_order") != REVIEW_ORDER:
         fail("global runtime substrate review order mismatch")
+    expected_classes = ["SOURCE_IMPLEMENTED","MERGED","CI_VALIDATED","SANDBOX_RUNTIME_OBSERVED","EXTERNAL_PROVIDER_OBSERVED","MASTER_RECORDS_RECONSTRUCTED","END_TO_END"]
+    if invariants.get("completion_evidence_classes") != expected_classes:
+        fail("global completion evidence classes mismatch")
+    if invariants.get("completion_evidence_strength_order") != expected_classes:
+        fail("global completion evidence strength order mismatch")
     prohibitions = set(policy.get("prohibitions") or [])
     required_prohibitions = {
         "NO_DEVICE_VERIFICATION_POLICY_OR_PROCESS",
@@ -134,6 +149,14 @@ def main() -> None:
         "NO_REMOTE_COMPUTER_AS_SECOND_MACHINE_REQUIREMENT",
         "NO_EPHEMERAL_CAPACITY_EXECUTION_BEFORE_INTERLOCK_INTR_ADMISSION",
         "NO_EVIDENCE_REACHABILITY_GAP_AS_EXTERNAL_DEVICE_REQUIREMENT",
+        "NO_UNQUALIFIED_COMPLETE_OR_COMPLETED_STATUS",
+        "NO_SOURCE_IMPLEMENTED_AS_RUNTIME_COMPLETE",
+        "NO_MERGED_AS_RUNTIME_COMPLETE",
+        "NO_CI_VALIDATED_AS_RUNTIME_COMPLETE",
+        "NO_RUNTIME_OBSERVED_AS_MASTER_RECORDS_RECONSTRUCTED",
+        "NO_PROVIDER_OBSERVED_AS_END_TO_END_COMPLETE",
+        "NO_STRONGER_COMPLETION_CLASS_WITHOUT_NATIVE_EVIDENCE",
+        "NO_LEGACY_UNQUALIFIED_COMPLETION_AS_CURRENT_TERMINAL_PROOF",
     }
     missing = sorted(required_prohibitions - prohibitions)
     if missing:
