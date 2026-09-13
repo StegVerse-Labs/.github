@@ -7,11 +7,7 @@ COSV task vector: `50000000106000`
 Source task owner: `StegVerse-Labs/crypto-bot`
 Related goals: `CRYPTO-MONEY-MANAGER-001`, `CRYPTO-LIVE-AUTO-001`
 Adjacent governed owners: `StegVerse-Labs/TVC#119`, `StegVerse-Labs/stegfin-governance#84`
-Status: `RESIDENT_INGRESS_SELF_MATERIALIZATION_REPAIR_MERGED / PORTABLE_DISPATCH_SELECTOR_REPAIR_STAGED / AUTHENTIC_INGRESS_PENDING`
-
-## Purpose
-
-Advance the existing machine-owned CryptoBot live-trading task through the canonical StegVerse Task Registry and generalized Canonical Work resident ingress path without creating a second runtime, scheduler, credential path, Coinbase provider path, or trading implementation.
+Status: `RESIDENT_INGRESS_SOURCE_REPAIRS_MERGED / AUTHENTIC_INGRESS_PENDING`
 
 ## Current canonical identity
 
@@ -19,65 +15,70 @@ Advance the existing machine-owned CryptoBot live-trading task through the canon
 - profile: `task.v1`
 - COSV vector: `50000000106000`
 - lifecycle: `MACHINE_OWNED`
-- source coordination state: `PROPOSED`
-- allowed next transition: `INGRESS_ADMITTED`
-- authentic resident consumption: not yet observed
+- canonical coordination state: `PROPOSED`
+- next canonical transition: `INGRESS_ADMITTED`
+- required runtime environment: `CURRENT_USER_IPHONE_AND_SOVEREIGN_RESIDENT`
 
-## Completed source repairs
+## Completed remediation
 
-PR #1263 merged at `8efdad0ac689dbd3692b6dac8e014f4c87bd5c9c` after all three exact-head validation workflows passed:
+### PR #1263 — resident request/task self-materialization
 
-- Validate organization control plane — SUCCESS;
-- Heartbeat Worker Project validation — SUCCESS;
-- Deterministic Repository Suite diagnostics — SUCCESS.
+Merged at `8efdad0ac689dbd3692b6dac8e014f4c87bd5c9c` after organization-control, Heartbeat Worker Project, and deterministic repository-suite validations all passed.
 
-That merge repaired two stale-resident ingress failure modes:
+It repaired:
 
-1. explicit Canonical Work requests are now exact-byte self-materialized from already-local canonical source before resident request validation, eliminating the prior permanent `NO_REQUEST` path;
-2. if an intentionally preserved resident monolithic registry predates the requested task, the consumer can materialize the exact task-specific canonical shard without overwriting the resident registry.
+- permanent `NO_REQUEST` caused by checking resident request presence before local source materialization;
+- stale preserved resident monolithic registry that predates `CRYPTO-LIVE-AUTO-001` by allowing exact task-specific fallback-shard materialization from already-local canonical source without replacing resident registry state.
 
-Focused regression coverage remains in `tests/test_crypto_live_auto_resident_ingress_repair.py`.
+Focused regression coverage: `tests/test_crypto_live_auto_resident_ingress_repair.py`.
 
-## Portable refresh/dispatch remediation — 2026-09-09
+### PR #1271 — portable exact-selector addressability
 
-Post-merge addressability inspection found a third concrete gap. The generic resident dispatcher already registers:
+Merged at `5d2a65279af3ad8f15e986943adc3038ee532548`.
 
-`canonical_work_coordination -> control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py`
+Exact-head validation evidence:
 
-but `scripts/refresh_and_dispatch_resident_requests.py` did not include `canonical_work_coordination` in its exact-selector allowlist. That meant the portable already-local `refresh -> exact targeted dispatch` bridge could not select the very Canonical Work consumer required to produce the CryptoBot ingress receipt.
+- Deterministic Repository Suite `34357571372` — SUCCESS;
+- Cross-Framework Current-Basis Resident Request Validation `34357571329` — SUCCESS;
+- Heartbeat Worker Project `34357571320` — SUCCESS;
+- Validate organization control plane `34357571323` — SUCCESS.
 
-The follow-up branch `fix/crypto-live-auto-preserve-resident-task-shard-20260909` now:
+This repair added `canonical_work_coordination` to `scripts/refresh_and_dispatch_resident_requests.py` so the already-local portable refresh/dispatch bridge can target the same Canonical Work consumer already registered by `scripts/dispatch_resident_execution_requests.py`.
 
-- adds `canonical_work_coordination` to `ALLOWED_TARGET_CONSUMERS` in `scripts/refresh_and_dispatch_resident_requests.py`;
-- preserves the historical default selector;
-- continues exact one-consumer selection with unrelated consumers excluded;
-- keeps network source fetch, credential acquisition, claim/fence creation, second-machine requirement, and hosted-runtime execution disabled;
-- adds `tests/test_crypto_live_auto_portable_dispatch_selector.py` to prove the portable bridge and generic dispatcher agree on the exact selector.
+Focused regression coverage: `tests/test_crypto_live_auto_portable_dispatch_selector.py`.
 
-README was reviewed. It already documents generalized Canonical Work task ingress, resident request dispatch, portable local source refresh/dispatch, and source-vs-runtime evidence separation. No duplicate CryptoBot-specific README section is required for this selector addition.
+The historical portable default remains unchanged and exact one-consumer selection remains enforced.
 
-## Canonical source and runtime chain
+README was reviewed after both repairs. Existing generalized Canonical Work ingress, resident dispatch, and portable local-source refresh documentation remains accurate; no duplicate CryptoBot-specific section is required.
 
-`canonical task ingress -> Master Records reconciliation -> WorkerCoordinator admission/claim/fence if independently admitted -> TVC current-iPhone/SKAP/provider evidence -> StegFin #84 bounded decision -> first max-$10 ETH-USD LIMIT/GTC post_only proof -> reconciliation -> next authenticated snapshot -> second bounded cycle -> repeat-loop proof`
+## Existing runtime path
 
-The staged request remains:
+The rootless resident source-refresh watcher already watches `control/resident-execution-request.d` and performs a generic resident request dispatch after local source refresh. The portable bridge now additionally supports exact targeted selection of `canonical_work_coordination`.
 
-`control/resident-execution-request.d/canonical-work-crypto-live-auto-001.json`
+Canonical chain remains:
 
-Expected authentic consumption evidence remains exactly:
+`canonical task ingress -> Master Records reconciliation -> WorkerCoordinator admission/claim/fence -> TVC current-iPhone/SKAP/provider evidence -> StegFin #84 bounded decision -> first max-$10 ETH-USD LIMIT/GTC post_only proof -> reconciliation -> next authenticated snapshot -> second bounded cycle -> repeat-loop proof`
 
-`receipts/sovereign-host/canonical-work-crypto-live-auto-request-consumption.latest.json`
+## Required authentic evidence
 
-No merge, CI result, staged request, COSV pointer, or hosted test may substitute for that receipt.
-
-## Exact next evidence action
-
-After the portable selector repair validates and merges, an already-running sovereign resident must refresh already-local source and dispatch exactly `canonical_work_coordination`. The required resulting artifact is:
+The exact runtime artifact still required is:
 
 `receipts/sovereign-host/canonical-work-crypto-live-auto-request-consumption.latest.json`
 
-Only after that authentic receipt exists may Master Records reconciliation and WorkerCoordinator admission advance. Coinbase interaction remains downstream under TVC #119 and StegFin #84.
+Current GitHub registry dependency `DEP-CRYPTO-CANONICAL-WORK-INGRESS` remains `UNRESOLVED`, and no authentic copy of that receipt is currently present in canonical source evidence.
+
+No merge, CI result, source request, COSV pointer, hosted workflow, or test receipt may substitute for this resident artifact.
+
+## Exact next action
+
+On an already-running sovereign resident after the merged source reaches the already-local canonical source projection:
+
+1. refresh resident static source from that already-local canonical source;
+2. dispatch exactly `canonical_work_coordination` or allow the existing source-refresh watcher to perform its generic request visit;
+3. require `receipts/sovereign-host/canonical-work-crypto-live-auto-request-consumption.latest.json` with completed Canonical Work ingress evidence;
+4. reconcile the resulting event into Master Records;
+5. only then advance WorkerCoordinator admission and the TVC/SKAP + StegFin bounded-live stages.
 
 ## Current completion boundary
 
-Source registration, COSV binding, request staging, structural preflight, and the stale-resident self-materialization repair are complete and merged. The portable targeted-dispatch selector repair is staged for validation. Authentic resident ingress, Master Records reconciliation, WorkerCoordinator admission, current-iPhone TVC/SKAP provider evidence, StegFin bounded approval, first bounded live order, reconciliation, and second-cycle proof remain outstanding.
+All currently identified GitHub/source-level resident-ingress defects for CryptoBot have been repaired, validated, and merged. Authentic sovereign resident consumption is still not observed. Master Records reconciliation, WorkerCoordinator admission, current-iPhone TVC/SKAP Coinbase evidence, StegFin bounded approval, first bounded live order, fill/fee reconciliation, next authenticated portfolio snapshot, and second-cycle proof remain outstanding.
