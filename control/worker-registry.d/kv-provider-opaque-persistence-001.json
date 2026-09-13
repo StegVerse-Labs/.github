@@ -1,0 +1,18 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "KV-PROVIDER-OPAQUE-PERSISTENCE-001",
+  "tasks": [
+    {
+      "task_id": "KV-PROVIDER-OPAQUE-PERSISTENCE-001",
+      "status": "ACTIVE",
+      "checkout_state": "CHECKED_OUT",
+      "cosv_id": "50000000102000",
+      "parent_task_id": "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001",
+      "canonical_record_ref": "data/canonical-task-records/KV-PROVIDER-OPAQUE-PERSISTENCE-001.json",
+      "handoff_ref": "docs/KV_PROVIDER_OPAQUE_PERSISTENCE_MIRROR_HANDOFF.md",
+      "archive_eligible": false,
+      "archive_reason_codes": ["KV_PROVIDER_OPAQUE_PERSISTED_OBJECT_IMPLEMENTATION_NOT_YET_EVIDENCED"],
+      "next_action": "Implement and validate provider-neutral cryptographic KV persisted-object protection with fail-closed exact readback."
+    }
+  ]
+}
