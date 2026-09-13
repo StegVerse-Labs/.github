@@ -1,0 +1,116 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001",
+  "correlation_id": "ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-001",
+  "root_correlation_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "parent_task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "goal": "Adopt the existing human-intent -> ecosystem-owned autonomous governed progression contract in the existing Canonical Work / WorkerCoordinator / Interlock-InTr runtime so StegVerse can select, govern, execute or retain DENY, reconstruct, re-ingest, and continue machine-owned StegVerse work without human re-presentation of intermediate Task/COSV/handoff identifiers.",
+  "coordination_state": "PROPOSED",
+  "checkout_state": "CHECKED_OUT",
+  "source_refs": [
+    "docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_MIRROR_HANDOFF.md",
+    "docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_RUNTIME_ADOPTION_MIRROR_HANDOFF.md",
+    "docs/CANONICAL_WORK_COORDINATION_SYSTEM_MIRROR_HANDOFF.md",
+    "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md",
+    "control/entity-autonomous-governed-progression-contract.json",
+    "control/cross-task-coordination.d/entity-autonomous-governed-progression-runtime-adoption.json",
+    "scripts/evaluate_goal_resolution_continuation.py",
+    "control/resident-execution-request.d/canonical-work-entity-autonomous-governed-progression-runtime-adoption-001.json",
+    "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py",
+    "scripts/dispatch_resident_execution_requests.py"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": ["StegVerse-Labs/.github"],
+    "components": [
+      "entity-autonomous-governed-progression",
+      "canonical-work-coordination",
+      "goal-resolution-continuation",
+      "resident-request-dispatch",
+      "workercoordinator-claim-fence",
+      "interlock-intr-admission",
+      "master-records-reconstruction"
+    ]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-ENTITY-AUTONOMOUS-PROGRESSION-SOURCE",
+      "kind": "SOURCE_PREDICATE",
+      "state": "RESOLVED",
+      "ref": "control/entity-autonomous-governed-progression-contract.json"
+    },
+    {
+      "dependency_id": "DEP-CANONICAL-WORK-COORDINATION-SOURCE",
+      "kind": "SOURCE_PREDICATE",
+      "state": "RESOLVED",
+      "ref": "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md"
+    },
+    {
+      "dependency_id": "DEP-ENTITY-AUTONOMOUS-PROGRESSION-RUNTIME-ADOPTION",
+      "kind": "RUNTIME_EVIDENCE",
+      "state": "UNRESOLVED",
+      "ref": "PRED-ENTITY-AUTONOMOUS-PROGRESSION-RUNTIME-ADOPTED",
+      "disposition": "USE_EXISTING_CANONICAL_WORK_WORKERCOORDINATOR_INTR_AND_ENTITY_CONSUMERS; NO_PARALLEL_RUNTIME"
+    }
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+    "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+    "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
+    "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001"
+  ],
+  "expected_evidence_predicates": [
+    "CANONICAL_WORK_RESIDENT_CONSUMPTION_OBSERVED",
+    "MACHINE_OWNED_TRANSITION_SELECTED",
+    "CURRENT_GOVERNANCE_DECISION_OBSERVED",
+    "HUMAN_APPROVAL_CHECKPOINT_INSERTED_FALSE",
+    "EXECUTION_OR_DENIAL_RECEIPT_RETAINED",
+    "NEXT_STATE_RECONSTRUCTED",
+    "RETURNED_TASK_COSV_HANDOFF_STATE_REINGESTED",
+    "HUMAN_REENTRY_FOR_INTERMEDIATE_IDS_FALSE"
+  ],
+  "runtime_requirements": {
+    "capabilities": [
+      "canonical_work_ingress",
+      "resident_runtime_consumption",
+      "workercoordinator_claim_fence",
+      "interlock_intr_admission",
+      "goal_resolution_continuation",
+      "canonical_state_reconstruction"
+    ],
+    "environment": "SOVEREIGN_RESIDENT_OR_ADMITTED_CURRENT_DEVICE_RUNTIME",
+    "direction": "INTERNAL",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "runtime_resolution": null,
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "human_action_ref": null,
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "runtime_adoption_observed": false
+  },
+  "allowed_next_transitions": ["INGRESS_ADMITTED"],
+  "handoff_projection_refs": [
+    "docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_RUNTIME_ADOPTION_MIRROR_HANDOFF.md",
+    "docs/ENTITY_AUTONOMOUS_GOVERNED_PROGRESSION_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "interlock_intr_required_for_governed_ingress_egress": true,
+    "credential_authority": "TV/TVC",
+    "master_records_reality_authority": true,
+    "github_runtime_authority": "NONE",
+    "human_reentry_required_for_machine_owned_continuation": false
+  }
+}
