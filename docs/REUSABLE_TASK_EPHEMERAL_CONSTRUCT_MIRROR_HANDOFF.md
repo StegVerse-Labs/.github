@@ -1,6 +1,6 @@
 # Reusable Task Ephemeral Construct Mirror Handoff
 
-Updated: 2026-09-07
+Updated: 2026-09-12
 
 ## Goal
 
@@ -13,6 +13,9 @@ Make every reusable task a durable identity whose invocation-specific parameters
 - `schemas/reusable-task-invocation-manifest.schema.json`
 - `scripts/materialize_reusable_task_construct.py`
 - `scripts/trigger_reusable_task.py`
+- `scripts/run_ecosystem_continuity_reusable_task.py`
+- `workers/reusable_task_lifecycle.py`
+- `workers/finalize_reusable_task_entropy.py`
 - `scripts/refresh_sovereign_worker_runtime_source.py`
 - `data/task-coordination-policy.json`
 - `management/COSV_PROFILE_V1.json`
@@ -45,17 +48,28 @@ valid reusable-task trigger
 -> resolve durable identity + parameters
 -> verify optional task_id/COSV binding
 -> bind RTG/GTG/TT + automation + runner manifest
--> automatically invoke declared existing runner steps in order
--> continue while the next step is machine-admissible
--> stop at completion or first real governed boundary
--> emit exact boundary/continuation receipt
+-> invoke the declared existing primary runner
+-> retain its exact return boundary
+-> if standardized manifest-bound completion evidence is absent: stop at evidence reconciliation
+-> if standardized completion evidence is present: validate every declared completion predicate
+-> observe runner process return / expiry
+-> create non-executing residual recording construct
+-> create source-only Master Records custody/reconstruction request
+-> stop for independent destination custody/reconstruction
+-> after an authentic Master Records destination record is returned, finalize entropy recovery
 ```
 
-The automation driver does not create a scheduler, WorkerCoordinator, claim/fence path, credential route, InTr authority, provider authority, or Master Records authority. A runner's success exit is not sufficient to manufacture completion; declared completion predicates remain evidence-driven.
+The automation driver does not create a scheduler, WorkerCoordinator, claim/fence path, credential route, InTr authority, provider authority, or Master Records authority. Exit code zero alone remains insufficient. Existing reusable runners that do not emit the standardized result continue to stop at `COMPLETION_PREDICATES_REQUIRE_EVIDENCE_RECONCILIATION`.
 
-When a reusable identity has no executable runner declaration, the trigger is still recorded but stops at `NO_EXECUTABLE_RUNNER_DECLARED`. That is now an explicit source-binding gap rather than a reason to manually coordinate otherwise automatable steps. Identities with declared runners advance automatically until those runners finish or surface their own boundary.
+When a reusable identity has no executable runner declaration, the trigger is still recorded but stops at `NO_EXECUTABLE_RUNNER_DECLARED`. Independent downstream or parallel work may continue while a reusable task is at a boundary. Work that depends on its required completion evidence must wait for that evidence.
 
-Independent downstream or parallel work may continue while a reusable task is at a boundary. Work that depends on its required completion evidence must wait for that evidence. This makes Time/dependency ordering explicit without allowing automation to manufacture Authority.
+## Standardized runner evidence
+
+`workers/reusable_task_lifecycle.py` recognizes `stegverse.reusable-task-runner-result/v1`. The result must bind the exact invocation ID, reusable-task ID, manifest hash, and the complete declared predicate set. It must state that runtime and completion evidence were observed and carry no authority effect.
+
+The existing `RT-ECOSYSTEM-CONTINUITY-EVALUATION-001` identity is the first real ecosystem workload bound to this result shape. Its existing runner delegates to the Healer ECE cycle. A reusable result is written only when that cycle returns `state=COMPLETE`; blocked/failed cycles emit no standardized completion result.
+
+That ECE cycle already performs SDK diagnostic processing, ECE evaluation, exact evaluation-byte custody/reconstruction through its existing Master Records path, Healer intake, and Site-safe projection. The reusable lifecycle binding does not replace any of those owners or reinterpret a failed cycle.
 
 ## Invocation lifecycle
 
@@ -70,72 +84,78 @@ durable reusable identity
 -> bind invocation + automation manifest
 -> trigger once
 -> applicable WorkerCoordinator + Interlock/InTr admission
--> automatically advance declared bounded runner(s)
--> completion OR exact governed boundary receipt
--> execution and chained receipts
--> runner expiry
--> residual non-executing TT/RTG/GTG recording construct when recording remains
--> required operation/task/goal/aggregate recording
--> Master Records custody + reconstruction
+-> automatically advance declared bounded runner
+-> exact runner result or exact governed boundary
+-> runner expiry observation
+-> residual non-executing recording construct
+-> required scoped recording
+-> source custody/reconstruction request
+-> independent Master Records validation + destination record
 -> entropy recovery
 ```
 
 ## Residual recording construct
 
-After runner expiry, the remaining construct has no original execution purpose and no provider-operation, credential-acquisition, claim/fence, self-extension, or transition authority. It may only preserve invocation identity and manifest binding, carry chained receipts, project required COSV/task state, perform required scoped recording, carry evidence into Master Records, and support reconstruction verification.
+After runner expiry, the remaining construct has no original execution purpose and no provider-operation, credential-acquisition, claim/fence, self-extension, or transition authority. It preserves invocation identity and manifest binding, carries the receipt chain and required recording levels, and remains until independent Master Records custody/reconstruction is returned.
+
+## Master Records boundary
+
+The source request schema is `stegverse.reusable-task-master-records-custody-request/v1`. The source side must leave destination acceptance and acknowledgement false.
+
+The corresponding independent destination validator is developed in `master-records/core-lite` and returns `master-records.reusable-task-lifecycle-custody/v1` only after validating the exact manifest, trigger, runner-result, runner-expiry, residual-recording, hashes, completion predicates, recording coverage, and non-authority fields.
+
+Source request != destination custody acceptance. Matching hashes != truth. The `.github` lifecycle cannot self-mint the Master Records record.
 
 ## Entropy recovery
 
-Entropy recovery is the final displacement of that residual non-executing construct after:
+`workers/finalize_reusable_task_entropy.py` accepts the independent Master Records destination record and emits entropy recovery only after verifying:
 
-- the runner has expired;
-- required recording levels are complete;
-- the required receipt chain is complete;
-- Master Records custody is accepted;
-- Master Records reconstruction is confirmed; and
-- no unrecorded successor/correction dependency still requires the residual construct.
+- runner expiry;
+- required recording-level coverage;
+- exact source-request hash binding;
+- exact evidence-bundle hash binding;
+- destination custody acceptance;
+- destination acknowledgement;
+- independent validation;
+- reconstruction confirmation; and
+- absence of execution/runtime/publication authority escalation.
 
-Entropy recovery never deletes required evidence or Master Records history and never reactivates the original runner.
-
-## Reusable identity families enrolled
-
-Generation 2 of `data/reusable-task-registry.json` puts maintenance and external-interaction work on the same identity model, including:
-
-- `RT-README-VALIDATION-001`
-- `RT-MIRROR-HANDOFF-VALIDATION-001`
-- `RT-STEGINDEX-VALIDATION-001`
-- `RT-NATIVE-EMAIL-ACTION-MONITOR-001`
-- `RT-CANONICAL-STATE-RECONCILIATION-001`
-- `RT-SESSION-CLOSEOUT-001`
-- `RT-INTR-PROTOCOL-ESTABLISH-001`
-- `RT-EXTERNAL-ADAPTER-ESTABLISH-001`
-- `RT-AI-ADAPTER-ESTABLISH-001`
-- `RT-EXTERNAL-ENDPOINT-MONITOR-001`
-- `RT-SOCIAL-PLATFORM-INTERACTION-001`
-
-Distinct same-goal work discovered during invocation must first be reconciled against existing canonical work. Only genuinely new work derives a new adjacent canonical task + COSV identity.
+Entropy recovery displaces only the residual non-executing construct. It does not delete required evidence or Master Records history and does not reactivate the original runner.
 
 ## Resident propagation
 
-The existing local-only WorkerCoordinator source refresher now carries the reusable-task registry, construct contract, deterministic constructor, and trigger driver into an already-materialized resident runtime. This is source propagation only: it performs no network fetch, credential acquisition, mutable-runtime-state replacement, claim/fence creation, or execution proof.
+The existing local-only WorkerCoordinator source refresher carries the reusable-task registry, construct contract, constructor, and trigger explicitly. The lifecycle closure implementation and entropy finalizer live under `workers/`, which that same refresher already propagates recursively. No second source-distribution plane is introduced.
 
 ## Authority boundaries
-
-Reusable identity, parameter binding, automation trigger, derived RTG/GTG/TT source envelopes, manifest hashes, runner invocation orchestration, and source validation grant no execution authority.
 
 - Task Registry: work intent / coordination
 - WorkerCoordinator: execution claim / fence
 - Interlock/InTr: governed transitions
 - TV/TVC: credential authority
-- Master Records: observed reality / reconstruction
+- Master Records: observed reality / custody / reconstruction
 - COSV: compact state projection
 - Trigger driver: non-authorizing dependency orchestration
 - GitHub token runtime authority: `NONE`
 
-## README impact
+## Work completed in the current source change
 
-`README.md` must be updated in the same change set because this materially changes reusable-task invocation from lifecycle-only construction to trigger-once bounded automation, including runtime propagation and failure/boundary semantics.
+- Added standardized manifest-bound runner-result validation.
+- Added runner process-return/expiry receipt construction.
+- Added residual non-executing recording construction.
+- Added source-only Master Records custody/reconstruction request construction.
+- Added independent Master Records destination-record verification and entropy finalization.
+- Bound the existing ECE reusable runner to emit the standardized result only after its real underlying ECE cycle returns `COMPLETE`.
+- Preserved the previous evidence-reconciliation boundary for runners that do not emit standardized completion evidence.
+- Kept lifecycle closure code on the already-propagated resident `workers/` source surface.
 
-## Current boundary
+## Work remaining to satisfy the goal
 
-The source contract, manifest schema, deterministic constructor, trigger driver, and resident source-refresh propagation are implemented. Authentic resident execution of a reusable invocation, component-produced trigger receipts, chained runtime receipts, completion-evidence reconciliation, residual-recording operation, Master Records custody/reconstruction, and observed entropy recovery remain runtime evidence boundaries and must not be inferred from source state.
+1. Validate and merge the `.github` lifecycle closure source and the independent `master-records/core-lite` custody validator.
+2. Have the ecosystem execute one authentic `RT-ECOSYSTEM-CONTINUITY-EVALUATION-001` invocation through its existing resident/sandbox path.
+3. Retain the manifest, trigger, standardized runner result, runner-expiry receipt, and residual-recording artifact from that same invocation.
+4. Deliver that invocation's exact source custody request to Master Records through the ecosystem's existing custody transport.
+5. Observe the independently minted Master Records destination custody/reconstruction record for the same request/evidence hashes.
+6. Feed that destination record to the resident entropy finalizer and retain the resulting entropy-recovery receipt.
+7. Reconstruct the complete receipt chain without inferred links.
+
+Until those remaining items are performed, the task still lacks the runtime information required for quantitative performance/load assessment.
