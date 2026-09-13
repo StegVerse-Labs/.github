@@ -1,0 +1,103 @@
+{
+  "schema": "stegverse.reusable-task-component-contract/v1",
+  "component_id": "RTC-PUBLISHER-KV-COMPLETION-NOTIFY-012",
+  "reusable_task_id": "RT-PUBLISHER-KV-COMPLETION-NOTIFY-001",
+  "family": "release_propagation",
+  "name": "Publisher KV Publication and GitHub Completion Notification",
+  "capability_provided": "publish_finished_documentation_into_kv_then_emit_github_completion_notification_with_kv_files_link_and_task_block",
+  "inputs": [
+    "completed_goal_task_identity",
+    "finished_publisher_documentation_artifacts",
+    "publisher_artifact_hashes",
+    "target_kv_identity_or_path",
+    "goal_task_id",
+    "handoff_task_id",
+    "cosv_id",
+    "terminal_status"
+  ],
+  "outputs": [
+    "kv_publication_request",
+    "kv_publication_receipt",
+    "kv_file_manifest",
+    "kv_link",
+    "github_completion_notification_request"
+  ],
+  "preconditions": [
+    "publisher_documentation_complete_and_hash_bound",
+    "goal_task_completion_claimed_and_validated",
+    "current_Interlock_InTr_admission_required_for_KV_write",
+    "KV_SKAP_Vault_remains_sole_user_verification_authority",
+    "TV_TVC_required_for_GitHub_provider_operation",
+    "github_notification_must_not_emit_before_successful_KV_write_receipt"
+  ],
+  "execution_order": [
+    "PUBLISHER_FINISHED_ARTIFACTS_BOUND",
+    "KV_WRITE_REQUESTED",
+    "INTERLOCK_INTR_KV_WRITE_ADMITTED",
+    "KV_FILES_WRITTEN_AND_READBACK_VERIFIED",
+    "KV_PUBLICATION_RECEIPT_RETAINED",
+    "GITHUB_COMPLETION_NOTIFICATION_REQUESTED"
+  ],
+  "notification_contract": {
+    "provider": "GITHUB",
+    "purpose": "trigger GitHub notification email according to account notification settings",
+    "subject_semantics": "Goal Task completed and Publisher documentation added to KV",
+    "body_sections": [
+      "Task Block",
+      "Files added to KV",
+      "KV Link"
+    ],
+    "task_block_required_fields": [
+      "Goal Task ID",
+      "Handoff Task ID",
+      "COSV ID",
+      "STATUS"
+    ],
+    "files_section": "exact file names or canonical KV object names written by Publisher",
+    "kv_link": "stable resolvable link/reference returned by the successful KV publication step",
+    "email_delivery": "GITHUB_NOTIFICATION_EMAIL_SUBJECT_TO_ACCOUNT_NOTIFICATION_SETTINGS"
+  },
+  "expected_evidence": [
+    "PUBLISHER_FINAL_ARTIFACT_SET_HASH_BOUND",
+    "KV_WRITE_INTR_ADMISSION_RECEIPT",
+    "KV_FILE_WRITE_READBACK_VERIFIED",
+    "KV_PUBLICATION_RECEIPT_RETAINED",
+    "KV_FILE_MANIFEST_RETAINED",
+    "KV_LINK_RETAINED",
+    "GITHUB_COMPLETION_NOTIFICATION_PROVIDER_RECEIPT"
+  ],
+  "authority_owner": {
+    "publisher_rendering": "Publisher",
+    "governed_state_transition": "Interlock/InTr",
+    "user_verification": "KV/SKAP Vault",
+    "provider_credential_and_GitHub_mutation": "TV/TVC",
+    "observed_reality_custody_reconstruction": "Master Records",
+    "coordination": "Task Registry"
+  },
+  "authority_effect": "NONE_COMPONENT_COMPOSITION_ONLY",
+  "failure_classes": [
+    "PUBLISHER_ARTIFACT_SET_INCOMPLETE",
+    "KV_TARGET_UNAVAILABLE",
+    "KV_WRITE_DENIED",
+    "KV_WRITE_READBACK_MISMATCH",
+    "KV_LINK_UNAVAILABLE",
+    "GITHUB_NOTIFICATION_PROVIDER_DENIED",
+    "GITHUB_NOTIFICATION_NOT_DELIVERED_BY_ACCOUNT_SETTINGS"
+  ],
+  "retry_or_reentry_semantics": {
+    "kv_write": "idempotent_per_goal_task_artifact_digest_and_target_KV_path",
+    "github_notification": "emit_once_after_verified_KV_publication_receipt; retry provider delivery without rewriting KV when the same publication receipt is retained",
+    "never": "do not send completion notification before verified KV publication"
+  },
+  "version_or_schema_binding": [
+    "stegverse.reusable-task-component-contract/v1",
+    "stegverse.publisher-kv-publication-request/v1",
+    "stegverse.publisher-kv-publication-receipt/v1",
+    "stegverse.goal-task-completion-github-notification-request/v2"
+  ],
+  "repeatability_cardinality": "optional reusable terminal component; at most once per completed Goal Task publication set unless a new artifact revision is explicitly declared",
+  "required": false,
+  "github_actions_runtime_authority": "NONE",
+  "second_user_operated_device_required": false,
+  "device_local_user_verification_allowed": false
+}
