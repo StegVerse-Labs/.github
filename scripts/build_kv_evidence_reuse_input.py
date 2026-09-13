@@ -59,20 +59,23 @@ def current_retained_iphone_route(source: Path):
             continue
         evidence = wrapper.get("evidence") or {}
         projected = wrapper.get("_projected") or {}
+        receipt1 = str(evidence.get("node_receipt_1_sha256") or "")
         if evidence.get("execution_surface") != "CURRENT_USER_IPHONE":
             continue
         if evidence.get("node_origin") != "STEGBROWSER_RESIDENT":
             continue
+        if evidence.get("site_projection_observed") is not True:
+            continue
+        if not SHA_URI.fullmatch(receipt1):
+            continue
         if projected.get("node_ref") != node_ref:
             continue
-        receipt1 = str(evidence.get("node_receipt_1_sha256") or "")
         return {
             "connectivity_state": "ESTABLISHED",
             "retained_node_ref": node_ref,
             "execution_surface": "CURRENT_USER_IPHONE",
             "node_origin": "STEGBROWSER_RESIDENT",
-            "site_projection_observed": evidence.get("site_projection_observed") is True,
-            "node_receipt_1_sha256": receipt1 if SHA_URI.fullmatch(receipt1) else None,
+            "node_receipt_1_sha256": receipt1,
             "source_device_hb_reference": projected.get("source_device_hb_reference"),
             "current_observed_hb_reference": projected.get("current_observed_hb_reference"),
             "retained_node_observation_ref": projected.get("observation_ref"),
