@@ -22,10 +22,16 @@
     "decomposition_decision": "STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION",
     "componentization_mints_authority": false,
     "runtime_handoff_remains_runtime_truth": true,
-    "runtime_predicates_completed_by_source_reuse": false
+    "runtime_predicates_completed_by_source_reuse": false,
+    "reconciliation_pr": 1679,
+    "reconciliation_exact_head": "d66c8832de479b33473cdfd447d1bf0efa9b1689",
+    "reconciliation_merge_commit": "f76bc12fcb516e68f3acf9ec5b6252e526478bbe",
+    "validation_runs": [34731043513, 34731043374, 34731043427],
+    "validation_state": "PASS"
   },
   "source_refs": [
     "StegVerse-Labs/.github#1652@b9f8e5153aa1651f2d7f043fb902eacb7c113ed9",
+    "StegVerse-Labs/.github#1679@f76bc12fcb516e68f3acf9ec5b6252e526478bbe",
     "data/reusable-task-component-model.json",
     "data/reusable-task-component-decomposition-policy.json",
     "data/reusable-task-ephemeral-construct-contract.json",
@@ -79,7 +85,7 @@
       "dependency_id": "DEP-COMPLETE-KV-GATED-SITE-PROJECTION",
       "kind": "SOURCE_PROJECTION_PREDICATE",
       "state": "SATISFIED_MERGED_PUBLIC_EXACT",
-      "ref": "StegVerse-Labs/Site#1236@841ab0298741fd5152c9cf88211468c3f38128846d",
+      "ref": "StegVerse-Labs/Site#1236@841ab0298741fd5152c9cf88211468c3b86093d3",
       "disposition": "Frozen StegOS bootstrap/signing chain is merged and exact public publication is proven by run 34616154322."
     },
     {
@@ -92,9 +98,9 @@
     {
       "dependency_id": "DEP-REUSABLE-TASK-COMPONENT-MODEL",
       "kind": "SOURCE_ARCHITECTURE",
-      "state": "AVAILABLE",
-      "ref": "StegVerse-Labs/.github#1652@b9f8e5153aa1651f2d7f043fb902eacb7c113ed9",
-      "disposition": "COMPOSE_EXISTING_COMPONENTS_AND_STOP_BESPOKE_SCOPE_GROWTH"
+      "state": "SATISFIED_MERGED_VALIDATED",
+      "ref": "StegVerse-Labs/.github#1679@f76bc12fcb516e68f3acf9ec5b6252e526478bbe",
+      "disposition": "EXISTING COMPONENTS COMPOSED; BESPOKE SCOPE GROWTH FROZEN; RUNTIME TRUTH UNCHANGED"
     },
     {
       "dependency_id": "DEP-TESTFLIGHT-CURRENT-IPHONE-RUNTIME",
@@ -114,7 +120,11 @@
     "StegVerse-Labs/Site:RUN34616154322:PUBLIC_EXACT_PUBLICATION_PASS",
     "StegVerse-Labs/Site#1237:MERGED:b847d4e408571efb9ff511f1facbc3f38128846d",
     "StegVerse-Labs/Site:RUN34635855832:SAME_DEVICE_RECOVERY_PUBLICATION_PASS",
-    "StegVerse-Labs/.github#1652:MERGED:b9f8e5153aa1651f2d7f043fb902eacb7c113ed9"
+    "StegVerse-Labs/.github#1652:MERGED:b9f8e5153aa1651f2d7f043fb902eacb7c113ed9",
+    "StegVerse-Labs/.github#1679:MERGED:f76bc12fcb516e68f3acf9ec5b6252e526478bbe",
+    "StegVerse-Labs/.github:RUN34731043513:PASS",
+    "StegVerse-Labs/.github:RUN34731043374:PASS",
+    "StegVerse-Labs/.github:RUN34731043427:PASS"
   ],
   "expected_evidence_predicates": [
     "AUTHENTIC_TASK_2026_0011_CLAIM_AND_FENCE_OBSERVED",
@@ -136,7 +146,7 @@
     "entrypoint": "https://stegverse.org/task0011-same-device-kv-recovery.html",
     "same_run_remediation_allowed": true,
     "automatic_retry_after_first_failure": false,
-    "latest_state": "REUSABLE_COMPONENT_MODEL_RECONCILED_SOURCE_PENDING_VALIDATION_CURRENT_IPHONE_RUNTIME_PENDING",
+    "latest_state": "REUSABLE_COMPONENT_RECONCILIATION_MERGED_VALIDATED_CURRENT_IPHONE_RUNTIME_PENDING",
     "next_runtime_surface": "AUTHENTIC_CURRENT_IPHONE_SAFARI:SAME_DEVICE_KV_RECOVERY"
   },
   "worker_claim": {
@@ -152,7 +162,6 @@
     "activation_proof_complete": false
   },
   "allowed_next_transitions": [
-    "VALIDATE_AND_MERGE_REUSABLE_COMPONENT_RECONCILIATION",
     "EXECUTE_CURRENT_IPHONE_VIA_REUSABLE_COMPONENT_COMPOSITION",
     "CLASSIFY_AUTHENTIC_FAILURE_BY_OWNING_COMPONENT",
     "OBSERVE_TESTFLIGHT_CURRENT_IPHONE_RUNTIME",
