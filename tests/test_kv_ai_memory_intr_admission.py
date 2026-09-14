@@ -72,6 +72,8 @@ def test_profile_admits_exact_packet_without_execution_authority(tmp_path):
     assert result["disposition"] == "ALLOW"
     assert result["packet_sha256"] == profile.packet_sha256(value)
     assert result["claim_or_fence_minted"] is False
+    assert result["provider_request_materialized"] is False
+    assert result["provider_ingress_admission_observed"] is False
     assert result["provider_execution_observed"] is False
     assert result["kv_writeback_observed"] is False
     assert result["receipt_hash"].startswith("sha256:")
@@ -134,6 +136,52 @@ def test_submitter_writes_only_returned_exact_admission(tmp_path):
     assert admission["disposition"] == "ALLOW"
     assert admission["packet_sha256"] == profile.packet_sha256(value)
     assert admission["receipt_hash"].startswith("sha256:")
+    assert admission["ingress_receipt"]["exact_packet_validated"] is True
+    assert admission["ingress_receipt"]["authority_effect"] == "NONE_INGRESS_ADMISSION_ONLY"
+
+
+def test_submitter_rejects_tampered_receipt_hash(tmp_path):
+    root = tmp_path / "state"
+    (root / "inputs").mkdir(parents=True)
+    value = packet()
+    (root / submitter.PACKET_REL).write_text(json.dumps(value), encoding="utf-8")
+
+    def opener(request: Request, *, timeout: float):
+        payload = json.loads(request.data.decode())
+        receipt = profile.admit(runtime_root=tmp_path / "ingress", payload=payload, transport_payload_sha256="sha256:" + "a" * 64)
+        receipt["receipt_hash"] = "sha256:" + "0" * 64
+        return 202, json.dumps(receipt).encode()
+
+    with pytest.raises(RuntimeError, match="receipt_hash_mismatch"):
+        submitter.submit(
+            root,
+            env={"HOME": str(tmp_path), "STEGVERSE_UNIVERSAL_INTR_INGRESS_URL": "http://127.0.0.1:7777/intr/materialization"},
+            opener=opener,
+        )
+    assert not (root / submitter.ADMISSION_REL).exists()
+
+
+def test_submitter_rejects_promoted_provider_execution_claim(tmp_path):
+    root = tmp_path / "state"
+    (root / "inputs").mkdir(parents=True)
+    value = packet()
+    (root / submitter.PACKET_REL).write_text(json.dumps(value), encoding="utf-8")
+
+    def opener(request: Request, *, timeout: float):
+        payload = json.loads(request.data.decode())
+        receipt = profile.admit(runtime_root=tmp_path / "ingress", payload=payload, transport_payload_sha256="sha256:" + "a" * 64)
+        receipt["provider_execution_observed"] = True
+        body = dict(receipt)
+        body.pop("receipt_hash")
+        receipt["receipt_hash"] = submitter.receipt_sha256(body)
+        return 202, json.dumps(receipt).encode()
+
+    with pytest.raises(RuntimeError, match="provider_execution_claim_forbidden"):
+        submitter.submit(
+            root,
+            env={"HOME": str(tmp_path), "STEGVERSE_UNIVERSAL_INTR_INGRESS_URL": "http://127.0.0.1:7777/intr/materialization"},
+            opener=opener,
+        )
 
 
 def test_submitter_waits_without_explicit_ingress(tmp_path):
@@ -145,10 +193,21 @@ def test_submitter_waits_without_explicit_ingress(tmp_path):
     assert result["admission_written"] is False
 
 
+def test_submitter_rejects_non_loopback_and_hosted(tmp_path):
+    root = tmp_path / "state"
+    (root / "inputs").mkdir(parents=True)
+    (root / submitter.PACKET_REL).write_text(json.dumps(packet()), encoding="utf-8")
+    with pytest.raises(RuntimeError, match="loopback"):
+        submitter.submit(root, env={"STEGVERSE_UNIVERSAL_INTR_INGRESS_URL": "https://example.com/intr/materialization"})
+    with pytest.raises(RuntimeError, match="hosted_environment_forbidden"):
+        submitter.submit(root, env={"CI": "true", "STEGVERSE_UNIVERSAL_INTR_INGRESS_URL": "http://127.0.0.1:7777/intr/materialization"})
+
+
 def test_route_installer_is_idempotent_and_reuses_shared_listener():
     source = (ROOT / "workers/universal_intr_profiled_ingress.py").read_text(encoding="utf-8")
     transformed = installer.transform(source)
     assert '"KV:AI-MemoryPacketAdmission"' in transformed
     assert "kv_ai_memory_intr.admit(" in transformed
     assert "ThreadingHTTPServer" in transformed
+    assert "X-StegVerse-Authorization-Id" not in (ROOT / "scripts/install_kv_ai_memory_universal_intr_route.py").read_text(encoding="utf-8")
     assert installer.transform(transformed) == transformed
