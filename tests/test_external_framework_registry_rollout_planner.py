@@ -50,6 +50,15 @@ def registry():
     }
 
 
+def qualified_endpoint(url="https://alpha.test/evaluate"):
+    return {
+        "runtime_endpoint_ref": url,
+        "endpoint_evidence_ref": "evidence/alpha-endpoint-observation.json",
+        "endpoint_observed_at": "2026-09-13T22:30:00-05:00",
+        "endpoint_evidence_class": "PUBLIC_ENDPOINT_OBSERVATION",
+    }
+
+
 def test_registry_sweep_classifies_each_framework_independently(tmp_path):
     module = load_planner()
     write_manifest(tmp_path, "alpha")
@@ -60,7 +69,7 @@ def test_registry_sweep_classifies_each_framework_independently(tmp_path):
         manifest_root=tmp_path,
         goal_task_id="MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001",
         cosv_task_vector="50000000100000",
-        endpoint_map={"alpha": "https://alpha.test/evaluate"},
+        endpoint_map={"bindings": {"alpha": qualified_endpoint()}},
     )
     assert result["framework_count"] == 3
     assert result["eligibility_counts"] == {
@@ -69,9 +78,36 @@ def test_registry_sweep_classifies_each_framework_independently(tmp_path):
         "SOURCE_ONLY": 1,
     }
     assert result["roundtrip_eligible_frameworks"] == ["alpha"]
+    assert result["endpoint_binding_counts"] == {
+        "EVIDENCE_QUALIFIED_ENDPOINT_BOUND": 1,
+        "UNBOUND_NO_RUNTIME_ENDPOINT_REF": 2,
+    }
+    assert result["endpoint_evidence_qualification_required"] is True
     assert result["fail_closed_scope"] == "PER_FRAMEWORK_INVOCATION"
     assert result["authority_effect"] == "NONE_COORDINATION_ONLY"
     assert result["transition_effect"] == "NONE_PLAN_ONLY"
+
+
+def test_bare_or_unqualified_endpoint_fails_closed(tmp_path):
+    module = load_planner()
+    for framework_id in ("alpha", "beta", "blocked"):
+        write_manifest(tmp_path, framework_id, source_version="official docs")
+    result = module.build_registry_plan(
+        registry=registry(),
+        manifest_root=tmp_path,
+        goal_task_id="MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001",
+        cosv_task_vector="50000000100000",
+        endpoint_map={
+            "alpha": "https://alpha.test/evaluate",
+            "beta": {"runtime_endpoint_ref": "https://beta.test/evaluate"},
+        },
+    )
+    rows = {row.get("framework_id"): row for row in result["plans"]}
+    assert rows["alpha"]["eligibility"] == "RUNTIME_ENDPOINT_UNAVAILABLE"
+    assert rows["alpha"]["endpoint_binding_state"] == "UNQUALIFIED_ENDPOINT_REJECTED"
+    assert rows["beta"]["eligibility"] == "RUNTIME_ENDPOINT_UNAVAILABLE"
+    assert rows["beta"]["endpoint_binding_state"] == "UNQUALIFIED_ENDPOINT_REJECTED"
+    assert result["roundtrip_eligible_frameworks"] == []
 
 
 def test_missing_manifest_fails_only_that_framework(tmp_path):
@@ -83,13 +119,42 @@ def test_missing_manifest_fails_only_that_framework(tmp_path):
         manifest_root=tmp_path,
         goal_task_id="MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001",
         cosv_task_vector="50000000100000",
-        endpoint_map={"alpha": "https://alpha.test/evaluate", "beta": "https://beta.test/evaluate"},
+        endpoint_map={
+            "bindings": {
+                "alpha": qualified_endpoint(),
+                "beta": qualified_endpoint("https://beta.test/evaluate"),
+            }
+        },
     )
     rows = {row.get("framework_id"): row for row in result["plans"]}
     assert rows["alpha"]["eligibility"] == "ROUNDTRIP_ELIGIBLE"
     assert rows["beta"]["eligibility"] == "REGISTRY_ENTRY_INVALID"
     assert "manifest" in rows["beta"]["reason"]
     assert rows["blocked"]["eligibility"] == "SOURCE_ONLY"
+
+
+def test_orphan_endpoint_evidence_fails_closed(tmp_path):
+    module = load_planner()
+    for framework_id in ("alpha", "beta", "blocked"):
+        write_manifest(tmp_path, framework_id, source_version="official docs")
+    result = module.build_registry_plan(
+        registry=registry(),
+        manifest_root=tmp_path,
+        goal_task_id="MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001",
+        cosv_task_vector="50000000100000",
+        endpoint_map={
+            "bindings": {
+                "alpha": {
+                    "endpoint_evidence_ref": "evidence/alpha.json",
+                    "endpoint_observed_at": "2026-09-13T22:30:00-05:00",
+                    "endpoint_evidence_class": "PUBLIC_ENDPOINT_OBSERVATION",
+                }
+            }
+        },
+    )
+    row = next(item for item in result["plans"] if item.get("framework_id") == "alpha")
+    assert row["eligibility"] == "RUNTIME_ENDPOINT_UNAVAILABLE"
+    assert row["endpoint_binding_state"] == "ORPHAN_ENDPOINT_EVIDENCE_REJECTED"
 
 
 def test_source_crosswalk_sweep_never_requires_runtime_endpoint(tmp_path):
