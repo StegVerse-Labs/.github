@@ -12,6 +12,42 @@ Updated: 2026-09-14
 - Status: `ACTIVE / CHECKED_OUT / NATIVE RESIDENT EVIDENCE PATH RECONCILED / AUTHENTIC RESIDENT HEALER RECEIPT PENDING`
 - External/second user-operated device required: `false`
 
+## Goal Stage Tracker
+
+Use this section as the shared progress tracker for this Goal. A stage advances only from authentic evidence appropriate to that stage; source/CI state is never promoted into runtime completion.
+
+- **Stage 1 — Establish the native resident execution/evidence path**
+  - **Task:** Ensure the Goal uses only the existing StegVerse-native chain: resident cycle -> standing Healer carrier -> neutral reusable scheduler -> `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` -> admitted ephemeral StegOS / Canonical Work -> retained resident receipts. Remove external connector and physical-device inventory from the execution decision.
+  - **Status:** `COMPLETE / RECONCILED`. PR #1812 established that remote-device discovery is not a runtime prerequisite; PR #1841 repaired autonomous ephemeral-to-resident evidence retention; canonical task/handoff now explicitly mark external connector and physical-device inventory as `NONE_NOT_APPLICABLE`.
+
+- **Stage 2 — Make exact resident receipt inspection deterministic**
+  - **Task:** Provide a non-authorizing verifier that classifies the exact existing resident receipt targets as `MISSING`, `INVALID`, or `VALID_BINDABLE` without creating runtime authority or a second execution path.
+  - **Status:** `COMPLETE / MERGED_VALIDATED`. `.github#1852` exact head `a6d0d6e33520a81b261018f36bb78ff5568d7fed` passed Organization Control `34873353094`, Deterministic Repository Suite `34873352920`, and Heartbeat `34873352943`, then merged. The verifier is available on `main`.
+
+- **Stage 3 — Observe the authentic resident Healer carrier receipt**
+  - **Task:** Observe the existing resident cycle producing and retaining `receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json` through StegVerse-native resident custody.
+  - **Status:** `PENDING`. Current exact defect: `AUTHENTIC_STEGVERSE_NATIVE_RESIDENT_HEALER_CARRIER_RECEIPT_NOT_YET_OBSERVED`. No authentic mirrored resident receipt has been found yet.
+
+- **Stage 4 — Bind the authentic resident custody root**
+  - **Task:** Read `execution_result.resident_custody_root_observation_retention` from the authentic Healer carrier receipt and bind `packet_ref`, `packet_relative_path`, `packet_sha256`, `retained_under_root`, `retained_under_root_source`, and `packet_state`. Accept the root only if the packet proves an authentic governed resident custody root.
+  - **Status:** `PENDING / WAITING_ON_STAGE_3`. `resident_custody_root_observed=false`; the retained-root pointer cannot be truthfully bound until Stage 3 produces the authentic receipt.
+
+- **Stage 5 — Classify the exact StegBrowser runtime receipts against that root**
+  - **Task:** Run `scripts/check_stegbrowser_runtime_consumption_receipts.py --runtime-root <authentic-root>` exactly once as a non-authorizing classifier, using only the root established in Stage 4.
+  - **Status:** `PENDING / WAITING_ON_STAGE_4`. The classifier is merged and ready, but `receipt_reachability_classified=false` because no authentic root is yet bound.
+
+- **Stage 6 — Bind valid runtime evidence into canonical task state**
+  - **Task:** For every `VALID_BINDABLE` receipt, bind exact path, SHA-256, state/outcome, task/COSV/subject lineage, and applicable WorkerCoordinator/InTr/TVC evidence into the canonical task evidence without inferring missing predicates.
+  - **Status:** `PENDING / WAITING_ON_STAGE_5`. `runtime_consumption_observed=false`; no valid authentic resident receipt set is currently available to bind.
+
+- **Stage 7 — Enter the single global measurement/convergence pass**
+  - **Task:** After authentic retained runtime evidence is bound, enter `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001` through existing Canonical Work ingress, freeze exactly one measurement run ID, execute `scripts/run_global_runtime_node_profile_convergence.py` exactly once in measurement-only mode, and retain `receipts/sovereign-host/global-runtime-node-profile-convergence.latest.json`.
+  - **Status:** `PENDING / NOT_ENTERED`. No measurement run ID is frozen and no authentic global convergence receipt is observed. This stage must not start before Stage 6 establishes authentic retained runtime evidence.
+
+- **Stage 8 — Reconstruct authoritative runtime truth and close the Goal**
+  - **Task:** Reconcile the exact subject-bound runtime evidence through Master Records, confirm all Goal completion predicates, fan evidence only to applicable shared-owner lanes, and close/retire the Goal only if the canonical terminal evidence class is satisfied.
+  - **Status:** `PENDING`. `master_records_reconstruction_observed=false`, `completion.claimed=false`, and `completion.validated=false`.
+
 ## Current truth
 
 The source-side packet/retention repairs remain merged and validated, but source state does not prove runtime execution.
