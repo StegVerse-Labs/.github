@@ -89,6 +89,14 @@ install_and_run_canonical_work_event_bootstrap.py
 
 PR `#1781` then proved that the current canonical collision preflight returns `CONTINUE` for this successor on current source.
 
+## WorkerCoordinator self-heal source continuity repaired
+
+PR `#1789` merged at `b04d928f039fa185519913fed8343e37319035bd` after exact-head deterministic suite `34791624607`, organization-control `34791624631`, and Heartbeat validation `34791624597` all completed successfully.
+
+The resident carrier already performs local supervision of WorkerCoordinator presence. A concrete source-continuity gap existed in that recovery path: the normal worker service receives `STEGVERSE_HEARTBEAT_SOURCE_ROOT`, but a later carrier-side worker repair could occur after that locator was no longer present in the carrier service environment. The repaired `scripts/run_heartbeat_runtime.py` now restores the non-secret canonical source locator from the native `receipts/sovereign-host/materialization.latest.json` receipt before invoking worker supervision when no explicit locator is already present. An explicitly configured locator remains authoritative.
+
+This repair means a self-healed WorkerCoordinator can retain the local canonical source locator required by the existing local-source refresh path and therefore discover current resident requests after recovery. It does not prove that WorkerCoordinator is presently running, that it has consumed this successor request, or that any later runtime predicate has occurred. HeartBeat remains non-authorizing; no scheduler, dispatcher, credential path, network source transport, connected-device prerequisite, or second user-operated device was introduced.
+
 ## Required runtime evidence
 
 The runtime path must authentically produce or bind:
@@ -146,4 +154,4 @@ The repository README already documents Canonical Work ingress, autonomous conti
 
 ## Current state
 
-`ACTIVE / CHECKED_OUT / TASK_REGISTRY_CHECKIN_CONTINUE_OBSERVED / SUCCESSOR_RESIDENT_INGRESS_SOURCE_MERGED / CANONICAL_WORK_RESIDENT_CONSUMPTION_NOT_OBSERVED / WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED / INTR_ADMISSION_NOT_OBSERVED / TVC_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / TVC_PRIMARY_RUNTIME_RESTART_NOT_OBSERVED / IMMUTABLE_OBSERVER_EXECUTION_NOT_OBSERVED / OWNER_INGRESS_READY_NOT_OBSERVED / NO_CONNECTED_DEVICE_PREREQUISITE / NO_SECOND_USER_OPERATED_DEVICE`
+`ACTIVE / CHECKED_OUT / TASK_REGISTRY_CHECKIN_CONTINUE_OBSERVED / SUCCESSOR_RESIDENT_INGRESS_SOURCE_MERGED / WORKER_SELF_HEAL_SOURCE_CONTINUITY_REPAIRED / CANONICAL_WORK_RESIDENT_CONSUMPTION_NOT_OBSERVED / WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED / INTR_ADMISSION_NOT_OBSERVED / TVC_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / TVC_PRIMARY_RUNTIME_RESTART_NOT_OBSERVED / IMMUTABLE_OBSERVER_EXECUTION_NOT_OBSERVED / OWNER_INGRESS_READY_NOT_OBSERVED / NO_CONNECTED_DEVICE_PREREQUISITE / NO_SECOND_USER_OPERATED_DEVICE`
