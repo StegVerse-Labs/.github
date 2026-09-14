@@ -5,106 +5,87 @@ Repository: StegVerse-Labs/.github
 Issue: #690
 Task: SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001
 COSV: 50000000114000
-State: FRESH_BINDING_SOURCE_MERGED_VALIDATED / RESIDENT_EXECUTION_PENDING
+State: FRESH_BINDING_SOURCE_MERGED_VALIDATED / RESIDENT_SOURCE_BINDING_REPAIRED / RESIDENT_EXECUTION_PENDING
 Credential authority: TV/TVC
-Execution authority: bounded target consequence only after independent target-authority validation
-GitHub token runtime authority: NONE
-Non-TV/TVC secret/token allowed: false
+GitHub runtime authority: NONE
 
 ## Goal
 
-Execute the merged Universal Governance architecture as an authentic sovereign-runtime **reference ENFORCED boundary** using already-local source only. This is a reference-boundary runtime proof and MUST NOT be reported as a real third-party external-system ENFORCED deployment.
+Observe the merged Universal Governance fresh-binding reference boundary on an authentic non-hosted sovereign resident, through the existing WorkerCoordinator owner chain only. Do not report source/CI validation as resident execution or real external-system activation.
+
+## Canonical source contract
+
+StegCore PR #217 merged the V0→V1 two-route fresh-binding experiment:
+
+```text
+required StegCore merge: 7cbef555608f7e154ae575dcbd5b4e65fbf0c85c
+validated head: 0ac4ec3e352a24b009b9dc0e6b85ff72d0d6a477
+Universal Governance Connector Runtime: 34896699738 SUCCESS
+Package Version Identity Validation: 34896699800 SUCCESS
+StegVerse 001/002 Validator: 34896699757 SUCCESS
+BCAT context: 34896699748 SKIPPED (private repository; credentialless anonymous-source contract)
+```
+
+The resident owner chain must bind the functional local StegCore source to these exact Git blob identities before execution:
+
+```text
+scripts/run_universal_governance_reference_boundary.py = c2e41385801498db23de2dc7d4ac0699b37e8abb
+src/stegcore/fresh_commit_binding.py = c0eb3c3e6f1a86c33ebc774576b42e389c3aa2bd
+src/stegcore/external_adapter_steggate_execution.py = 78acc068361aa0d2bae7e0c5eaecd693ee07722b
+src/stegcore/universal_governance_consequence_evidence.py = 5759f37d0f6b5b8ff092f63ce9f6c857ae6f6962
+```
+
+This content binding is used because an already-materialized sovereign source root may not retain Git metadata. It proves the runtime-critical source content matches the merged implementation; it grants no authority.
+
+## Existing resident owner chain
+
+```text
+request: control/resident-execution-request.d/universal-governance-enforced-reference-001.json
+existing adapter_ref: process:universal-governance-enforced-reference-v1
+adapter command: workers/universal_governance_enforced_reference_bound_worker.py
+base worker: workers/universal_governance_enforced_reference_worker.py
+entrypoint: scripts/refresh_and_execute_resident_task.py --task-id SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001
+resident dispatcher: scripts/dispatch_resident_execution_requests.py
+WorkerCoordinator: existing canonical claim/fence authority
+Interlock/InTr: current governed transition authority
+Master Records: independent custody/reconstruction authority
+```
+
+The bound worker is only a stricter wrapper around the existing worker. It does not create a new worker identity, adapter_ref, scheduler, dispatcher, listener, runtime, claim authority, governance authority, or credential authority.
 
 ## Required runtime chain
 
 ```text
-resident WorkerCoordinator claim/fence
- -> locally materialized StegCore source
- -> locally materialized Master Records source
- -> native reference action
- -> thin external governance adapter
- -> Universal InTr request
- -> Governance registered profile
- -> StegCore three-layer evaluation
- -> ALLOW / DENY / FAIL-CLOSED
- -> exact fresh commit binding
- -> deterministic StegGate target-authority + credential + capability + commit gate
- -> bounded target mutation
- -> consequence observation
+authentic non-hosted resident
+ -> exact already-local StegCore source-content binding
+ -> exact already-local master-records/core-lite source
+ -> ordinary WorkerCoordinator claim/fence
+ -> current Interlock/InTr admission
+ -> existing Universal Governance reference worker
+ -> V0/P0/E0 Governance ALLOW + binding
+ -> material V0→V1 fixture transition
+ -> stale canonical route DENY
+ -> stale alternate consequence route DENY
+ -> fresh V1/P1/E1 re-evaluation + binding
+ -> existing StegGate consequence gate
+ -> exactly one bounded consequence
+ -> execution-binding consumption
+ -> alternate replay DENY
  -> canonical consequence evidence
  -> Universal InTr return
- -> Master Records source projection
  -> independent Master Records custody validation
- -> resident receipt
+ -> authentic resident receipt
 ```
 
-## Source implementation and validation — 2026-09-14
+## Resident receipt requirements
 
-StegCore PR #217 replaced the old no-op bypass control with a genuine bounded two-route consequence experiment and merged after exact-head validation.
+Completion is permitted only when the local runner receipt schema is:
 
 ```text
-repository: StegVerse-Labs/StegCore
-pull_request: #217
-validated_head: 0ac4ec3e352a24b009b9dc0e6b85ff72d0d6a477
-merge_commit: 7cbef555608f7e154ae575dcbd5b4e65fbf0c85c
-Universal Governance Connector Runtime: run 34896699738 SUCCESS
-StegCore Package Version Identity Validation: run 34896699800 SUCCESS
-StegVerse 001/002 Validator: run 34896699757 SUCCESS
-BCAT required context: run 34896699748 SKIPPED because the repository is private under the credentialless anonymous-source BCAT contract
+stegcore.universal-governance-reference-boundary-receipt.v2
 ```
 
-The BCAT workflow now materializes `bcat-check` on pull requests. On a private repository it is explicitly skipped rather than absent. That skip is not BCAT validation evidence and grants no authority; the credentialless BCAT lane still validates only anonymously fetchable public source.
-
-The source experiment binds consequence-time execution to:
-
-```text
-state_version
-state_hash
-policy_epoch
-policy_hash
-evidence_bundle_hash
-execution_binding_id
-```
-
-The deterministic source sequence is:
-
-```text
-V0/P0/E0 binding + Governance ALLOW
- -> retained material fixture transition V0/P0/E0 -> V1/P1/E1
- -> stale canonical route DENY; executor not invoked
- -> stale alternate consequence route DENY; target unchanged
- -> exact candidate re-evaluated
- -> fresh V1/P1/E1 binding
- -> existing Governance + StegGate consequence path
- -> exactly one bounded target mutation
- -> consume execution_binding_id
- -> alternate replay DENY; mutation count remains one
- -> canonical consequence evidence
- -> Universal InTr return
- -> Master Records source projection
-```
-
-`stegcore.fresh_commit_binding` is a pure exact-state/single-use binding predicate. It is not policy, Governance authority, credential authority, WorkerCoordinator authority, Interlock/InTr authority, or consequence authority. Missing required observed state or missing consumption state fails closed; established drift or replay is denied.
-
-## Positive resident proof still required
-
-The authentic sovereign resident proof must demonstrate:
-
-- current WorkerCoordinator claim/fence for this exact task;
-- exact candidate hash survives native action -> Governance -> consequence;
-- request and return InTr chains complete;
-- target credential ID/hash/subject binding matches;
-- separate target authority reference matches;
-- stale pre-transition authorization cannot reach consequence;
-- the alternate consequence-capable route cannot bypass the same protected boundary;
-- fresh binding is required and consumed after one consequence;
-- target mutation occurs exactly once;
-- consequence observation is true;
-- consequence evidence is canonical-hash valid;
-- independent Master Records validation/custody completes;
-- no repository writeback or hosted execution authority occurs.
-
-The final resident receipt must establish, from authentic resident execution rather than source/CI fixtures:
+and the authentic resident evidence establishes all of:
 
 ```text
 reference_enforced_boundary_observed=true
@@ -114,130 +95,69 @@ stale_binding_rejected=true
 fresh_binding_required=true
 fresh_binding_single_use=true
 final_target_mutation_count=1
+master_records_custody_accepted=true
 real_external_system_enforced_activation=false
+credential_authority=TV/TVC
+github_token_used=false
+repository_writeback_performed=false
 ```
 
-## Source dependencies
+The retained resident receipt must also record the required StegCore merge identity and observed runtime-critical Git blob identities.
 
-Required already-local source roots:
+## Source materialization semantics
+
+Accepted already-local discovery remains provider-neutral:
 
 ```text
-StegVerse-Labs/StegCore
-master-records/core-lite
+STEGVERSE_STEGCORE_SOURCE_ROOT
+STEGVERSE_MASTER_RECORDS_SOURCE_ROOT
+STEGVERSE_REPO_ROOTS_JSON
+~/.stegverse/repos
+/var/lib/stegverse/source
+/srv/stegverse/repos
+/opt/stegverse/repos
 ```
 
-Source retrieval is separate authority. If exact local source is unavailable, return `HANDOFF_READY` with a source-materialization dependency; do not fetch from GitHub in the worker and do not fabricate receipts.
-
-## Bound-state custody
-
-All target mutation and produced runtime evidence remain inside the worker's bounded state root:
-
-```text
-target/**
-evidence/**
-receipts/**
-master-records/**
-```
+No network source fetch is authorized inside the worker. Missing or stale source returns `HANDOFF_READY / UNIVERSAL_GOVERNANCE_REFERENCE_SOURCE_MATERIALIZATION_PENDING`; it must not fall through to execution.
 
 ## Authority invariants
 
 ```text
 Governance ALLOW != target authority
 fresh binding ALLOW != target authority
+source fingerprint match != execution authority
 adapter != execution authority
-Interlock/InTr/HB != execution authority
+request dispatcher != execution authority
+heartbeat != execution authority
+Interlock/InTr != credential authority
 Master Records custody != execution authority
 GitHub Actions runtime authority = NONE
 credential authority = TV/TVC
 repository writeback = false
 Continuity minting = false
 publication authority = false
+real external-system activation authority = false
 ```
 
-Source/CI success MUST NOT be translated into resident WorkerCoordinator claim/fence, resident execution, sovereign reference-boundary observation, bypass observation on the resident, authentic Master Records custody, or real external-system activation.
-
-## Resident targeted execution seam
-
-The existing resident refresh/one-shot path is the canonical execution surface. No new scheduler or request format is introduced.
+## Current evidence
 
 ```text
-python scripts/refresh_and_execute_resident_task.py \
-  --task-id SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001
+FRESH_BINDING_SOURCE_IMPLEMENTED=true
+FRESH_BINDING_SOURCE_VALIDATED=true
+FRESH_BINDING_SOURCE_MERGED=true
+RESIDENT_SOURCE_BINDING_IMPLEMENTED=true (pending PR validation/merge at time of this update)
+RESIDENT_TARGETABLE=true
+RESIDENT_ADMITTED=false
+RESIDENT_EXECUTION_OBSERVED=false
+REFERENCE_ENFORCED_BOUNDARY_OBSERVED=false
+BYPASS_NEGATIVE_CONTROL_OBSERVED=false
+AUTHENTIC_MASTER_RECORDS_CUSTODY=false
+REAL_EXTERNAL_SYSTEM_ENFORCED_ACTIVATION=false
+COMPLETE=false
 ```
 
-Optional non-secret source locators forwarded by the refresh bridge are:
-
-```text
-STEGVERSE_STEGCORE_SOURCE_ROOT
-STEGVERSE_MASTER_RECORDS_SOURCE_ROOT
-```
-
-The targeted path still requires the existing separated carrier reference and exactly one independently admitted WorkerCoordinator task. Source refresh is not runtime execution.
-
-## Resident request dispatch integration
-
-```text
-request: control/resident-execution-request.d/universal-governance-enforced-reference-001.json
-consumer: scripts/consume_universal_governance_enforced_reference_request.py
-dispatch selector: universal_governance_enforced_reference
-execution target: SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001
-mode: TARGETED_INDEPENDENT_TASK_CONTROL
-request authority effect: NONE_REQUEST_ONLY
-```
-
-The consumer invokes only the existing `refresh_and_execute_resident_task.py --task-id` route. Completion requires the worker terminal transition plus bound-state evidence proving the fresh-binding reference boundary and independent Master Records custody while `real_external_system_enforced_activation=false`.
-
-## Resident source autodiscovery
-
-```text
-repository map: STEGVERSE_REPO_ROOTS_JSON
-accepted repositories:
-  StegVerse-Labs/StegCore
-  master-records/core-lite
-canonical local bases:
-  ~/.stegverse/repos
-  /var/lib/stegverse/source
-  /srv/stegverse/repos
-  /opt/stegverse/repos
-network fetch authority: NONE
-credential authority: TV/TVC
-```
-
-Explicit source locators remain supported. A mapped/canonical path is accepted only when all required source files are present. Malformed or incomplete mappings grant nothing and the worker remains HANDOFF_READY/source-pending.
-
-## Native autonomous request consumption
-
-The supervised resident WorkerCoordinator visits the canonical resident-request dispatcher every 100 worker-runtime logical ticks. The Universal Governance consumer is required in native materialization and uses the existing dispatcher/claim/fence path; no second listener, scheduler, heartbeat, oscillator, WorkerCoordinator, or runtime lane is authorized.
-
-```text
-native service: scripts/run_worker_runtime.py --continuous
-request dispatcher: scripts/dispatch_resident_execution_requests.py
-consumer: scripts/consume_universal_governance_enforced_reference_request.py
-manual one-shot required after service activation: false
-heartbeat grants execution authority: false
-request dispatcher grants execution authority: false
-WorkerCoordinator admission remains execution authority: true
-```
-
-## Current lifecycle
-
-```text
-BASE_SOURCE_IMPLEMENTED: true
-BASE_SOURCE_VALIDATED: true
-BASE_SOURCE_MERGED: true
-FRESH_BINDING_SOURCE_IMPLEMENTED: true
-FRESH_BINDING_SOURCE_VALIDATED: true
-FRESH_BINDING_SOURCE_MERGED: true
-RESIDENT_TARGETABLE: true
-RESIDENT_ADMITTED: false
-RESIDENT_EXECUTION_OBSERVED: false
-REFERENCE_ENFORCED_BOUNDARY_OBSERVED: false
-BYPASS_NEGATIVE_CONTROL_OBSERVED: false
-AUTHENTIC_MASTER_RECORDS_CUSTODY: false
-REAL_EXTERNAL_SYSTEM_ENFORCED_ACTIVATION: false
-COMPLETE: false
-```
+No connected resident device was observable through the authorized remote-execution connector during the 2026-09-14 continuation pass, and no repository-owned authentic resident receipt was found. Those observations do not change authority or create a second execution path.
 
 ## Next machine-owned transition
 
-Continue only through the existing `SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001` resident owner chain. Reconstruct current resident source/task state, obtain the ordinary WorkerCoordinator claim/fence and current Interlock/InTr admission, execute the now-merged fresh-binding reference runner from authentic local source, independently validate/custody its consequence evidence in Master Records, and retain the resident receipt. Do not infer any runtime predicate from the merged source or CI evidence.
+After this exact-source-binding repair is merged, continue only through the existing request/dispatcher/WorkerCoordinator path. On an authentic resident, materialize or reconstruct the already-authorized local source such that the four runtime-critical source blobs match the merged StegCore source; obtain a fresh WorkerCoordinator claim/fence and current Interlock/InTr admission; execute the existing adapter; independently validate/custody the returned consequence evidence in Master Records; retain `~/.stegverse/state/universal-governance-enforced-reference/receipts/latest.json`; and promote runtime predicates only from that retained authentic evidence.
