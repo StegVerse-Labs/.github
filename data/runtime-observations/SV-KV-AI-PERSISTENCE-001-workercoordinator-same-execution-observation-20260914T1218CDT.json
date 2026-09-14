@@ -1,0 +1,84 @@
+{
+  "schema": "stegverse.runtime-observation/v1",
+  "observation_id": "SV-KV-AI-PERSISTENCE-001-workercoordinator-same-execution-observation-20260914T1218CDT",
+  "task_id": "SV-KV-AI-PERSISTENCE-001",
+  "cosv_task_vector": "20111110110000",
+  "observed_at": "2026-09-14T12:18:00-05:00",
+  "repository": "StegVerse-Labs/.github",
+  "issue_ref": "StegVerse-Labs/.github#1848",
+  "source_binding_prerequisite": {
+    "commit_sha": "5ae0a764a4c33dba2b9d123218ee6b28411112ea",
+    "workflow_run_id": 34873224941,
+    "workflow_name": "Validate KV AI Memory Resident Binding",
+    "conclusion": "success",
+    "source_binding_validated": true,
+    "current_main_sha_after_prerequisite": "bc6b93e4b86fe0d924bafc912d6c368981dbdc96",
+    "current_main_combined_status": "pending",
+    "current_main_status_context_count": 0,
+    "current_head_validated": false,
+    "current_head_validation_reason": "Main advanced after the source-binding validation and the latest observed combined status reported pending with zero contexts."
+  },
+  "exact_tuple": {
+    "task_id": "SV-KV-AI-PERSISTENCE-001",
+    "cosv_task_vector": "20111110110000",
+    "request_id": "RESIDENT-EXEC-KV-AI-MEMORY-001",
+    "worker_id": "kv-ai-memory-resident-worker",
+    "adapter_ref": "process:kv-ai-memory-resident-v1",
+    "claim_fence_boundary_ref": "control/workercoordinator-claim-fence-boundaries/SV-KV-AI-PERSISTENCE-001.json",
+    "resident_execution_request_ref": "control/resident-execution-request.d/kv-ai-memory-resident-001.json",
+    "worker_registry_ref": "control/worker-registry.d/kv-ai-memory-resident-001.json",
+    "process_adapter_ref": "control/process-worker-adapters.d/kv-ai-memory-resident-001.json"
+  },
+  "surfaces_inspected": [
+    {
+      "surface": "control/worker-registry.d/kv-ai-memory-resident-001.json",
+      "result": "claim_id=null; worker_id=null; worker_instance_id=null; lease=null; fresh_fence_required=true"
+    },
+    {
+      "surface": "control/resident-execution-request.d/kv-ai-memory-resident-001.json",
+      "result": "request remains REQUESTED and carries exact task/vector/claim-fence boundary binding"
+    },
+    {
+      "surface": "control/process-worker-adapters.d/kv-ai-memory-resident-001.json",
+      "result": "adapter remains enabled and non-authorizing"
+    },
+    {
+      "surface": "receipts/sovereign-host/kv-ai-memory-resident-request-consumption.latest.json",
+      "result": "NOT_FOUND"
+    },
+    {
+      "surface": "receipts/sovereign-network/kv-ai-memory-intr.latest.json",
+      "result": "NOT_FOUND"
+    },
+    {
+      "surface": "repository_search",
+      "result": "No repository-visible authentic claim/fence or live KV_AI_MEMORY_PROVIDER_REQUEST_MATERIALIZED receipt found; results were documentation/test references only."
+    }
+  ],
+  "workercoordinator_claim_fence_observation": {
+    "authentic_claim_id_observed": false,
+    "claim_id": null,
+    "authentic_worker_instance_id_observed": false,
+    "worker_instance_id": null,
+    "authentic_lease_observed": false,
+    "lease": null,
+    "authentic_fresh_fence_observed": false,
+    "fresh_fence": null,
+    "same_execution_observed": false
+  },
+  "defect_classification": {
+    "defect_id": "RESIDENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVATION_NOT_TRANSPORTED_OR_NOT_CONSUMED",
+    "class": "RUNTIME_EVIDENCE_REACHABILITY_OR_CONSUMPTION_GAP",
+    "description": "The source-binding path is present and exact-source validated, but the repository-visible resident/WorkerCoordinator surfaces do not show that the existing authorized path consumed the request or emitted an authentic claim_id, worker_instance_id, lease, fresh fence, resident consumption receipt, or provider-request materialization receipt for the exact task/vector tuple.",
+    "next_required_remediation": "Inspect the owner-custodied resident heartbeat/WorkerCoordinator custody surface for the exact tuple, execute or observe the existing path without synthesizing private inputs, and transport only authentic receipt references back to repository-visible evidence. If the resident path returns BOUND_STATE_INPUT_NOT_READY, record that wait state without claiming claim/fence acquisition."
+  },
+  "nonclaims": [
+    "THIS_OBSERVATION_DOES_NOT_COMPLETE_SV_KV_AI_PERSISTENCE_001",
+    "THIS_OBSERVATION_DOES_NOT_MINT_A_WORKERCOORDINATOR_CLAIM_OR_FENCE",
+    "THIS_OBSERVATION_DOES_NOT_PROVE_PERSONAL_KV_INPUTS",
+    "THIS_OBSERVATION_DOES_NOT_PROVE_INTR_ADMISSION",
+    "THIS_OBSERVATION_DOES_NOT_PROVE_PROVIDER_EXECUTION",
+    "THIS_OBSERVATION_DOES_NOT_PROVE_KV_WRITEBACK_OR_MASTER_RECORDS_RECONSTRUCTION",
+    "THIS_OBSERVATION_DOES_NOT_PROVE_RUNTIME_EXECUTION"
+  ]
+}
