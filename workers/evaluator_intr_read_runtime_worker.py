@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fenced launcher for the evaluator READ_REVIEW Universal InTr runtime."""
+"""Fenced launcher for event-triggered evaluator READ_REVIEW Universal InTr calls."""
 from __future__ import annotations
 import json, os, ssl, subprocess, sys, time, urllib.request
 from pathlib import Path
@@ -60,9 +60,12 @@ def load_config()->dict[str,Any]:
         if not Path(str(c[k])).expanduser().is_dir(): raise RoutePending(f"local source/runtime root unavailable: {k}")
     return c
 
-def _service_paths(c: Mapping[str,Any])->tuple[Path,Path,Path]:
-    root=Path(str(c["runtime_root"])).expanduser().resolve()/ "receipts" / "sovereign-network" / "evaluator-intr"
-    return root/"receiver.pid", root/"receiver.log", root/"receiver.latest.json"
+def _receipt_root(c: Mapping[str,Any])->Path:
+    return Path(str(c["runtime_root"])).expanduser().resolve()/"receipts"/"sovereign-network"/"evaluator-intr"
+
+def _event_paths(c: Mapping[str,Any])->tuple[Path,Path]:
+    root=_receipt_root(c)
+    return root/"event-receiver.log", root/"event-receiver.latest.json"
 
 def _pid_alive(pid:int)->bool:
     if pid <= 1: return False
@@ -71,23 +74,26 @@ def _pid_alive(pid:int)->bool:
     except OSError:
         return False
 
-def _read_pid(path:Path)->int|None:
-    try:
-        value=int(path.read_text(encoding="utf-8").strip())
-        return value if _pid_alive(value) else None
-    except Exception:
-        return None
-
 def _round_trip_bundle(c: Mapping[str,Any])->dict[str,Any]|None:
-    root=Path(str(c["runtime_root"])).expanduser().resolve()/ "receipts" / "sovereign-network" / "evaluator-intr"
+    root=_receipt_root(c)
     if not root.is_dir(): return None
     for path in sorted(root.glob("*.json")):
-        if path.name=="receiver.latest.json": continue
+        if path.name in {"receiver.latest.json","event-receiver.latest.json"}: continue
         try: value=json.loads(path.read_text(encoding="utf-8"))
         except Exception: continue
         if isinstance(value,dict) and value.get("state")=="READ_REVIEW_ROUND_TRIP_FORWARDED":
             return {"path":str(path),"value":value}
     return None
+
+def _existing_callable(c: Mapping[str,Any])->dict[str,Any]|None:
+    _,latest=_event_paths(c)
+    if not latest.is_file(): return None
+    try: value=json.loads(latest.read_text(encoding="utf-8"))
+    except Exception: return None
+    pid=value.get("pid")
+    if value.get("state")!="CALLABLE" or not isinstance(pid,int) or not _pid_alive(pid): return None
+    if value.get("event_triggered") is not True or value.get("persistent_receiver") is not False: return None
+    return value
 
 def _readiness(c: Mapping[str,Any])->dict[str,Any]:
     host=str(c["host"]); port=int(c["port"])
@@ -97,64 +103,71 @@ def _readiness(c: Mapping[str,Any])->dict[str,Any]:
     with urllib.request.urlopen(f"{scheme}://127.0.0.1:{port}/intr/evaluator/readiness",timeout=2,context=context) as response:
         value=json.loads(response.read().decode("utf-8"))
     if response.status != 200 or value.get("state")!="READY" or value.get("transport")!="InTr":
-        raise RoutePending("evaluator receiver readiness not observed")
+        raise RoutePending("evaluator event receiver readiness not observed")
     if value.get("credential_authority")!="TV/TVC" or value.get("github_token_runtime_authority")!="NONE":
-        raise RuntimeError("evaluator receiver readiness authority drift")
+        raise RuntimeError("evaluator event receiver readiness authority drift")
     return value
 
-def ensure_receiver(c: Mapping[str,Any], server:Path)->dict[str,Any]:
+def ensure_callable(c: Mapping[str,Any], server:Path)->dict[str,Any]:
     observed=_round_trip_bundle(c)
     if observed is not None:
         return {
-            "schema":"stegverse.evaluator-intr-runtime-worker-completion/v2",
+            "schema":"stegverse.evaluator-intr-runtime-worker-completion/v3",
             "state":"COMPLETE",
             "transition_id":"EVALUATOR_INTR_READ_ROUND_TRIP_OBSERVED",
             "receipt_bundle_ref":observed["path"],
+            "event_triggered":True,
+            "always_on_application_receiver_required":False,
+            "persistent_receiver":False,
             "credential_authority":"TV/TVC",
             "github_token_used":False,
             "authority_effect":"NONE",
         }
 
-    pid_file,log_file,ready_file=_service_paths(c)
-    pid_file.parent.mkdir(parents=True,exist_ok=True)
-    pid=_read_pid(pid_file)
-    if pid is None:
-        cmd=[sys.executable,str(server),"--site-root",str(c["site_root"]),"--stegos-root",str(c["stegos_root"]),"--runtime-root",str(c["runtime_root"]),"--host",str(c["host"]),"--port",str(c["port"]),"--max-requests","0","--allowed-origin",str(c["allowed_origin"]),"--boundary-identity-ref",str(c["boundary_identity_ref"])]
-        if c.get("tls_cert"): cmd += ["--tls-cert",str(c["tls_cert"])]
-        if c.get("tls_key"): cmd += ["--tls-key",str(c["tls_key"])]
-        log=log_file.open("ab",buffering=0)
-        proc=subprocess.Popen(cmd,cwd=server.parent.parent,env={"PATH":os.getenv("PATH",""),"HOME":os.getenv("HOME",""),"STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY":"TV/TVC","STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY":"NONE"},stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,start_new_session=True,close_fds=True)
-        pid=proc.pid
-        pid_file.write_text(str(pid)+"\n",encoding="utf-8")
+    existing=_existing_callable(c)
+    if existing is not None:
+        _readiness(c)
+        return existing
+
+    log_file,latest_file=_event_paths(c)
+    log_file.parent.mkdir(parents=True,exist_ok=True)
+    cmd=[sys.executable,str(server),"--site-root",str(c["site_root"]),"--stegos-root",str(c["stegos_root"]),"--runtime-root",str(c["runtime_root"]),"--host",str(c["host"]),"--port",str(c["port"]),"--max-requests","1","--allowed-origin",str(c["allowed_origin"]),"--boundary-identity-ref",str(c["boundary_identity_ref"])]
+    if c.get("tls_cert"): cmd += ["--tls-cert",str(c["tls_cert"])]
+    if c.get("tls_key"): cmd += ["--tls-key",str(c["tls_key"])]
+    log=log_file.open("ab",buffering=0)
+    proc=subprocess.Popen(cmd,cwd=server.parent.parent,env={"PATH":os.getenv("PATH",""),"HOME":os.getenv("HOME",""),"STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY":"TV/TVC","STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY":"NONE"},stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,start_new_session=True,close_fds=True)
 
     readiness=None
     last=None
     for _ in range(40):
-        if not _pid_alive(pid):
-            raise RuntimeError("evaluator receiver exited before readiness")
+        if not _pid_alive(proc.pid):
+            raise RuntimeError("evaluator event receiver exited before callability")
         try:
             readiness=_readiness(c); break
         except Exception as exc:
             last=exc; time.sleep(0.1)
     if readiness is None:
-        raise RoutePending("evaluator receiver readiness unavailable: "+type(last).__name__)
+        raise RoutePending("evaluator event receiver callability unavailable: "+type(last).__name__)
 
     receipt={
-        "schema":"stegverse.evaluator-intr-resident-receiver-readiness/v1",
-        "state":"READY",
-        "transition_id":"EVALUATOR_INTR_RECEIVER_READY",
-        "pid":pid,
+        "schema":"stegverse.evaluator-intr-event-callability/v1",
+        "state":"CALLABLE",
+        "transition_id":"EVALUATOR_INTR_EVENT_RECEIVER_CALLABLE",
+        "pid":proc.pid,
         "host":c["host"],
         "port":c["port"],
         "readiness":readiness,
-        "persistent_receiver":True,
+        "event_triggered":True,
+        "max_requests":1,
+        "persistent_receiver":False,
+        "always_on_application_receiver_required":False,
         "round_trip_observed":False,
         "credential_authority":"TV/TVC",
         "github_token_runtime_authority":"NONE",
         "public_tls_terminated_by":c.get("public_tls_terminated_by"),
         "authority_effect":"NONE",
     }
-    ready_file.write_text(json.dumps(receipt,indent=2,sort_keys=True)+"\n",encoding="utf-8")
+    latest_file.write_text(json.dumps(receipt,indent=2,sort_keys=True)+"\n",encoding="utf-8")
     return receipt
 
 def execute(inv: Mapping[str,Any])->dict[str,Any]:
@@ -165,7 +178,7 @@ def execute(inv: Mapping[str,Any])->dict[str,Any]:
     node_path,_=find_node()
     config=load_config()
     server=Path(__file__).resolve().parents[1]/"scripts/serve_evaluator_intr_runtime.py"
-    result=ensure_receiver(config,server)
+    result=ensure_callable(config,server)
     result["task_id"]=TASK_ID
     result["worker_id"]=WORKER_ID
     result["claim_id"]=task.get("claim_id")
@@ -183,9 +196,9 @@ def main():
         result=execute(inv)
         if result.get("state")=="COMPLETE":
             print(json.dumps(response("COMPLETED","EVALUATOR_INTR_READ_ROUND_TRIP_OBSERVED",evidence_refs=[result.get("receipt_bundle_ref")],result=result),sort_keys=True)); return 0
-        print(json.dumps(response("ACTIVE","EVALUATOR_INTR_RECEIVER_READY",evidence_refs=[str(Path(str(load_config()["runtime_root"]))/ "receipts" / "sovereign-network" / "evaluator-intr" / "receiver.latest.json")],result=result),sort_keys=True)); return 0
+        print(json.dumps(response("ACTIVE","EVALUATOR_INTR_EVENT_RECEIVER_CALLABLE",evidence_refs=[str(_event_paths(load_config())[1])],result=result),sort_keys=True)); return 0
     except RoutePending as exc:
-        print(json.dumps(response("HANDOFF_READY","EVALUATOR_INTR_ROUTE_PENDING",blocker={"dependency_class":"SOVEREIGN_ROUTE_RUNTIME","problem_statement":str(exc),"solution_required":True,"may_remain_blocked":False,"machine_observable_release_condition":"declared node + local Site/StegOS roots + admitted evaluator route configuration/TLS identity exist","physical_additional_machine_required":False,"third_party_runtime_required":False,"github_token_required":False,"non_tv_tvc_secret_or_token_required":False,"human_action_required":False}),sort_keys=True)); return 0
+        print(json.dumps(response("HANDOFF_READY","EVALUATOR_INTR_ROUTE_PENDING",blocker={"dependency_class":"SOVEREIGN_ROUTE_RUNTIME","problem_statement":str(exc),"solution_required":True,"may_remain_blocked":False,"machine_observable_release_condition":"declared node + local Site/StegOS roots + admitted event-triggered evaluator route configuration/TLS identity exist","physical_additional_machine_required":False,"third_party_runtime_required":False,"github_token_required":False,"non_tv_tvc_secret_or_token_required":False,"human_action_required":False}),sort_keys=True)); return 0
     except Exception as exc:
         print(json.dumps(response("BLOCKED","EVALUATOR_INTR_RUNTIME_BLOCKED",error=str(exc)),sort_keys=True)); return 0
 
