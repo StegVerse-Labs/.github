@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Validate Publisher->KV return transport and create a non-mutating KV import candidate."""
+"""Validate Publisher return transport and dispatch the verified next-owner transition.
+
+The existing reverse InTr carrier is shared by ordinary KV Publisher returns and
+MIR returns addressed to StegVerse-SDK. Owner selection is already performed by
+the verified Publisher transition; this consumer preserves that selection and
+never grants transport, credential, governance, publication, or egress authority.
+"""
 from __future__ import annotations
 import argparse, hashlib, json, os, sys
 from pathlib import Path
@@ -10,11 +16,31 @@ REQUEST_DIR=Path("intr-materialization")
 INGRESS_DIR=Path("receipts/sovereign-network/kv-publisher-return-ingress")
 PAYLOAD_DIR=Path("intr-payloads/kv-publisher-return")
 RECEIPT_DIR=Path("receipts/sovereign-host/kv-publisher-return-import")
+SDK_RECEIPT_DIR=Path("receipts/sovereign-host/sdk-publisher-return-materialization")
+SDK_BINDING_DIR=Path("sdk-publisher-return-bindings")
 DESTINATION={"boundary":"KV","subsystem":"KnowledgeVault:DocumentImport"}
-DOWNSTREAM_OWNER="StegVerse-Labs/continuity-vault-kit"
+KV_DOWNSTREAM_OWNER="StegVerse-Labs/continuity-vault-kit"
+SDK_DOWNSTREAM_OWNER="StegVerse-org/StegVerse-SDK"
 RETURN_SCHEMA="stegverse.publisher.artifact-return/v1"
+MIR_ROUNDTRIP_BINDING_PROFILE="stegverse.publisher.mir-roundtrip-binding/v1"
+SDK_COMPLETION_CAPSULE_PROFILE="stegverse.sdk.downstream-completion-capsule/v1"
 HOSTED_ENV=("GITHUB_ACTIONS","RENDER","RENDER_SERVICE_ID","VERCEL","CF_PAGES","CLOUDFLARE_WORKERS")
 CREDENTIAL_ENV=("GITHUB_TOKEN","GH_TOKEN","STEGVERSE_GITHUB_TOKEN","ACTIONS_RUNTIME_TOKEN","ACTIONS_ID_TOKEN_REQUEST_TOKEN")
+POST_SDK_FALSE_FLAGS=("final_stegverse_side_egress_transition_observed","interlock_intr_egress_observed","far_side_transition_observed","authentic_external_mir_endpoint_substitution_observed","communication_complete")
+
+class _PublisherReturnOwnerMatcher:
+    """Compatibility matcher used by the existing universal-ingress discriminator.
+
+    It lets the already-installed Publisher-return ingress recognize both verified
+    next-owner states without introducing a second ingress endpoint or transport
+    plane. Request validation below still binds the exact owner string.
+    """
+    allowed=frozenset({KV_DOWNSTREAM_OWNER,SDK_DOWNSTREAM_OWNER})
+    def __eq__(self,other:object)->bool:return isinstance(other,str) and other in self.allowed
+    def __ne__(self,other:object)->bool:return not self.__eq__(other)
+    def __repr__(self)->str:return "PublisherReturnOwnerMatcher(KV|SDK)"
+
+DOWNSTREAM_OWNER=_PublisherReturnOwnerMatcher()
 
 class KVPublisherReturnError(ValueError): pass
 
@@ -47,7 +73,6 @@ def validate_request(request:dict[str,Any])->None:
       "transport_schema":"stegverse.universal-intr-transport/v1",
       "transport_protocol":"InTr",
       "destination":DESTINATION,
-      "downstream_owner_ref":DOWNSTREAM_OWNER,
       "event_triggered":True,
       "always_on_receiver_required":False,
       "second_user_device_required":False,
@@ -65,13 +90,15 @@ def validate_request(request:dict[str,Any])->None:
     }
     for key,value in expected.items():
         if request.get(key)!=value: raise KVPublisherReturnError("materialization_"+key+"_mismatch")
+    owner=request.get("downstream_owner_ref")
+    if owner not in {KV_DOWNSTREAM_OWNER,SDK_DOWNSTREAM_OWNER}:
+        raise KVPublisherReturnError("materialization_downstream_owner_ref_mismatch")
     if request.get("boundary_path")!=["STEGOS_ECOSYSTEM","DEVICE_SYSTEM","KV"]:
         raise KVPublisherReturnError("materialization_boundary_path_invalid")
     body=dict(request); claimed=body.pop("request_hash",None)
     if claimed!=sha(body): raise KVPublisherReturnError("materialization_request_hash_mismatch")
 
-def consume(runtime:Path,materialization_id:str)->dict[str,Any]:
-    request=load(runtime/REQUEST_DIR/f"{materialization_id}.json"); validate_request(request)
+def _verify_common_return_transport(runtime:Path,materialization_id:str,request:dict[str,Any])->tuple[bytes,dict[str,Any],list[dict[str,Any]],str]:
     ingress=load(runtime/INGRESS_DIR/f"{materialization_id}.json")
     if ingress.get("schema")!="stegverse.kv-publisher-return-materialization-ingress/v1" or ingress.get("state")!="INGRESS_ADMITTED":
         raise KVPublisherReturnError("return_ingress_not_admitted")
@@ -82,9 +109,7 @@ def consume(runtime:Path,materialization_id:str)->dict[str,Any]:
     receipts_path=runtime/PAYLOAD_DIR/f"{materialization_id}.receipts.json"
     if not raw_path.is_file() or not intent_path.is_file() or not receipts_path.is_file():
         raise KVPublisherReturnError("return_transport_sidecars_missing")
-    raw=raw_path.read_bytes()
-    intent=load(intent_path)
-    receipts=load(receipts_path)
+    raw=raw_path.read_bytes(); intent=load(intent_path); receipts=load(receipts_path)
     if sha(raw)!=request["payload_hash"]: raise KVPublisherReturnError("return_payload_hash_mismatch")
     if sha(intent)!=request["transport_intent_hash"]: raise KVPublisherReturnError("return_intent_hash_mismatch")
     if intent.get("packet_id")!=request["packet_id"] or intent.get("operation_id")!=request["operation_id"]:
@@ -96,12 +121,99 @@ def consume(runtime:Path,materialization_id:str)->dict[str,Any]:
     if not isinstance(receipts,list) or len(receipts)!=2:
         raise KVPublisherReturnError("return_receipt_chain_incomplete")
     stegos=source_root("STEGVERSE_STEGOS_ROOT","StegOS","stegos/universal_intr_transport.py")
-    kv=source_root("STEGVERSE_KV_SOURCE_ROOT","continuity-vault-kit","runtime/document_intr_transfer.py")
-    if stegos is None or kv is None: raise KVPublisherReturnError("local_source_materialization_required")
+    if stegos is None: raise KVPublisherReturnError("local_stegos_source_materialization_required")
     if str(stegos) not in sys.path: sys.path.insert(0,str(stegos))
-    if str(kv) not in sys.path: sys.path.insert(0,str(kv))
     from stegos.universal_intr_transport import validate_transport_intent, validate_receipt_chain
     validate_transport_intent(intent); validate_receipt_chain(intent,receipts)
+    terminal=receipts[-1].get("receipt_hash")
+    if not isinstance(terminal,str) or not terminal: raise KVPublisherReturnError("return_transport_terminal_receipt_missing")
+    return raw,intent,receipts,terminal
+
+def extract_sdk_materialization_inputs(returned:dict[str,Any])->tuple[dict[str,Any],str,dict[str,Any]]:
+    """Recover only continuity inputs already carried by the verified MIR return."""
+    if returned.get("schema")!=RETURN_SCHEMA: raise KVPublisherReturnError("Publisher return schema mismatch")
+    binding=returned.get("roundtrip_binding")
+    if not isinstance(binding,dict) or binding.get("profile")!=MIR_ROUNDTRIP_BINDING_PROFILE:
+        raise KVPublisherReturnError("SDK-owned return requires MIR roundtrip binding")
+    if binding.get("publisher_transition_observed") is not True:
+        raise KVPublisherReturnError("Publisher MIR transition not observed")
+    if binding.get("sdk_return_binding_observed") is not False:
+        raise KVPublisherReturnError("SDK return binding already promoted")
+    for field in POST_SDK_FALSE_FLAGS:
+        if binding.get(field) is not False:
+            raise KVPublisherReturnError("downstream predicate prematurely promoted:"+field)
+    if binding.get("authority_effect")!="NONE": raise KVPublisherReturnError("MIR binding authority effect invalid")
+    sdk_state=binding.get("sdk_processor_state")
+    if not isinstance(sdk_state,dict) or sdk_state.get("state")!="SDK_MANIFEST_SELECTED_PROCESSING_EXECUTED" or sdk_state.get("processor_result_observed") is not True:
+        raise KVPublisherReturnError("carried SDK processor state invalid")
+    manifest=sdk_state.get("manifest")
+    if not isinstance(manifest,dict): raise KVPublisherReturnError("original admitted manifest missing from SDK processor state")
+    processor_result=sdk_state.get("processor_result")
+    if not isinstance(processor_result,dict): raise KVPublisherReturnError("original SDK processor result missing")
+    receipt_id=str(processor_result.get("manifest_receipt_id") or "").strip()
+    if not receipt_id: raise KVPublisherReturnError("original manifest_receipt_id missing")
+    capsule=binding.get("downstream_completion_capsule")
+    if not isinstance(capsule,dict) or capsule.get("profile")!=SDK_COMPLETION_CAPSULE_PROFILE:
+        raise KVPublisherReturnError("original downstream completion capsule missing")
+    return manifest,receipt_id,capsule
+
+def _consume_sdk_owner(runtime:Path,materialization_id:str,request:dict[str,Any],raw:bytes,terminal:str)->dict[str,Any]:
+    try: returned=json.loads(raw.decode("utf-8"))
+    except Exception as exc: raise KVPublisherReturnError("Publisher return JSON invalid") from exc
+    manifest,manifest_receipt_id,capsule=extract_sdk_materialization_inputs(returned)
+    sdk=source_root("STEGVERSE_SDK_ROOT","StegVerse-SDK","stegverse/publisher_return_materialization.py")
+    if sdk is None: raise KVPublisherReturnError("local_StegVerse_SDK_source_materialization_required")
+    if str(sdk) not in sys.path: sys.path.insert(0,str(sdk))
+    from stegverse.publisher_return_materialization import materialize_publisher_return_binding
+    output_path=runtime/SDK_BINDING_DIR/f"{materialization_id}.json"
+    materialization=materialize_publisher_return_binding(
+        manifest=manifest,
+        manifest_receipt_id=manifest_receipt_id,
+        publisher_return_bytes=raw,
+        downstream_completion_capsule=capsule,
+        output_path=output_path,
+        overwrite=False,
+    )
+    if materialization.get("sdk_return_binding_observed") is not True:
+        raise KVPublisherReturnError("SDK return binding materialization not observed")
+    for field in ("final_stegverse_transition_observed","interlock_intr_egress_observed","far_side_transition_observed","authentic_external_mir_endpoint_substitution_observed","communication_complete"):
+        if materialization.get(field) is not False:
+            raise KVPublisherReturnError("SDK materialization promoted downstream predicate:"+field)
+    out=runtime/SDK_RECEIPT_DIR; out.mkdir(parents=True,exist_ok=True)
+    result={
+      "schema":"stegverse.sdk-publisher-return-intr-materialization-consumption/v1",
+      "state":"SDK_RETURN_BINDING_MATERIALIZED_READY_FOR_FINAL_STEGVERSE_EGRESS",
+      "materialization_id":materialization_id,
+      "request_hash":request["request_hash"],
+      "return_transport_observed":True,
+      "return_transport_terminal_receipt_hash":terminal,
+      "return_downstream_owner_ref":SDK_DOWNSTREAM_OWNER,
+      "manifest_receipt_id":manifest_receipt_id,
+      "sdk_return_binding_ref":str(output_path.relative_to(runtime)),
+      "sdk_return_binding_sha256":materialization["output_sha256"],
+      "sdk_return_binding_schema":materialization["binding_schema"],
+      "communication_state":materialization["communication_state"],
+      "sdk_return_binding_observed":True,
+      "final_stegverse_side_egress_transition_observed":False,
+      "interlock_intr_egress_observed":False,
+      "far_side_transition_observed":False,
+      "return_record_durably_recorded":False,
+      "final_allowed_transport_exit_transition_observed":False,
+      "successful_data_transport_round_trip_identified":False,
+      "authentic_external_mir_endpoint_substitution_observed":False,
+      "communication_complete":False,
+      "publication_authorized":False,
+      "release_authorized":False,
+      "execution_authorized":False,
+      "credential_authority":"TV/TVC",
+      "github_token_runtime_authority":"NONE",
+      "authority_effect":"NONE",
+    }
+    receipt_path=out/f"{materialization_id}.json"; receipt_path.write_text(json.dumps(result,indent=2,sort_keys=True)+"\n",encoding="utf-8")
+    latest=out/"latest.json"; latest.write_text(json.dumps(result,indent=2,sort_keys=True)+"\n",encoding="utf-8")
+    return result
+
+def _consume_kv_owner(runtime:Path,materialization_id:str,request:dict[str,Any],raw:bytes,terminal:str)->dict[str,Any]:
     try: returned=json.loads(raw.decode("utf-8"))
     except Exception as exc: raise KVPublisherReturnError("Publisher return JSON invalid") from exc
     if returned.get("schema")!=RETURN_SCHEMA: raise KVPublisherReturnError("Publisher return schema mismatch")
@@ -111,42 +223,44 @@ def consume(runtime:Path,materialization_id:str)->dict[str,Any]:
     bundle_path=bundle_root/f"{export_id}.json"
     if not bundle_path.is_file(): raise KVPublisherReturnError("private source export bundle unavailable")
     source_bundle=load(bundle_path)
+    kv=source_root("STEGVERSE_KV_SOURCE_ROOT","continuity-vault-kit","runtime/document_intr_transfer.py")
+    if kv is None: raise KVPublisherReturnError("local_KV_source_materialization_required")
+    if str(kv) not in sys.path: sys.path.insert(0,str(kv))
     from runtime.document_intr_transfer import validate_artifact_return, build_import_receipt
     candidate=validate_artifact_return(raw,source_bundle=source_bundle)
-    terminal=receipts[-1].get("receipt_hash")
     import_receipt=build_import_receipt(candidate,return_transport_terminal_receipt_hash=terminal)
-    out=runtime/RECEIPT_DIR
-    out.mkdir(parents=True,exist_ok=True)
-    candidate_path=out/f"{materialization_id}.candidate.json"
-    receipt_path=out/f"{materialization_id}.receipt.json"
+    out=runtime/RECEIPT_DIR; out.mkdir(parents=True,exist_ok=True)
+    candidate_path=out/f"{materialization_id}.candidate.json"; receipt_path=out/f"{materialization_id}.receipt.json"
     candidate_path.write_text(json.dumps(candidate,indent=2,sort_keys=True)+"\n",encoding="utf-8")
     receipt_path.write_text(json.dumps(import_receipt,indent=2,sort_keys=True)+"\n",encoding="utf-8")
     result={
       "schema":"stegverse.kv-publisher-return-materialization-consumption/v1",
       "state":"VALIDATED_IMPORT_CANDIDATE_NOT_COMMITTED",
-      "materialization_id":materialization_id,
-      "request_hash":request["request_hash"],
-      "return_transport_observed":True,
-      "return_transport_terminal_receipt_hash":terminal,
-      "source_export_id":candidate["source_export_id"],
-      "source_export_sha256":candidate["source_export_sha256"],
-      "candidate_ref":str(candidate_path.relative_to(runtime)),
-      "import_receipt_ref":str(receipt_path.relative_to(runtime)),
-      "canonical_kv_mutation_performed":False,
-      "publication_authorized":False,
-      "release_authorized":False,
-      "execution_authorized":False,
-      "credential_authority":"TV/TVC",
-      "github_token_runtime_authority":"NONE",
-      "authority_effect":"NONE",
+      "materialization_id":materialization_id,"request_hash":request["request_hash"],
+      "return_transport_observed":True,"return_transport_terminal_receipt_hash":terminal,
+      "return_downstream_owner_ref":KV_DOWNSTREAM_OWNER,
+      "source_export_id":candidate["source_export_id"],"source_export_sha256":candidate["source_export_sha256"],
+      "candidate_ref":str(candidate_path.relative_to(runtime)),"import_receipt_ref":str(receipt_path.relative_to(runtime)),
+      "canonical_kv_mutation_performed":False,"publication_authorized":False,"release_authorized":False,
+      "execution_authorized":False,"credential_authority":"TV/TVC","github_token_runtime_authority":"NONE","authority_effect":"NONE",
     }
     latest=out/"latest.json"; latest.write_text(json.dumps(result,indent=2,sort_keys=True)+"\n",encoding="utf-8")
     return result
+
+def consume(runtime:Path,materialization_id:str)->dict[str,Any]:
+    request=load(runtime/REQUEST_DIR/f"{materialization_id}.json"); validate_request(request)
+    raw,_intent,_receipts,terminal=_verify_common_return_transport(runtime,materialization_id,request)
+    owner=request["downstream_owner_ref"]
+    if owner==SDK_DOWNSTREAM_OWNER:
+        return _consume_sdk_owner(runtime,materialization_id,request,raw,terminal)
+    if owner==KV_DOWNSTREAM_OWNER:
+        return _consume_kv_owner(runtime,materialization_id,request,raw,terminal)
+    raise KVPublisherReturnError("unsupported Publisher return owner")
 
 def main()->int:
     parser=argparse.ArgumentParser(); parser.add_argument("--runtime-root",type=Path,required=True); parser.add_argument("--materialization-id",required=True); args=parser.parse_args()
     try: result=consume(args.runtime_root.expanduser().resolve(),args.materialization_id)
     except Exception as exc:
-        result={"schema":"stegverse.kv-publisher-return-materialization-consumption/v1","state":"BLOCKED","reason":str(exc),"return_transport_observed":False,"canonical_kv_mutation_performed":False,"authority_effect":"NONE"}
+        result={"schema":"stegverse.publisher-return-materialization-consumption/v1","state":"BLOCKED","reason":str(exc),"return_transport_observed":False,"sdk_return_binding_observed":False,"canonical_kv_mutation_performed":False,"authority_effect":"NONE"}
     print(json.dumps(result,sort_keys=True)); return 0
 if __name__=="__main__": raise SystemExit(main())
