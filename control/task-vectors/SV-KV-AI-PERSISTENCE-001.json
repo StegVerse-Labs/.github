@@ -1,7 +1,7 @@
 {
   "identity": "StegVerse-Labs/.github:task:SV-KV-AI-PERSISTENCE-001",
   "profile": "task.v1",
-  "level": "goal",
+  "level": "task",
   "vector": "20111110110000",
   "evidence_refs": [
     "data/canonical-task-records/SV-KV-AI-PERSISTENCE-001.json",
@@ -9,6 +9,7 @@
   ],
   "observed_at": "2026-09-13T21:03:00-05:00",
   "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
     "lifecycle": "CLAIMED_IMPLEMENTATION",
     "archive_ready": false,
     "unassigned_work": 1,
