@@ -2,12 +2,20 @@
   "schema": "stegverse.runtime-materialization-remediation-predicates/v1",
   "task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
   "parent_task_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+  "shared_runtime_evidence_owner_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
   "cosv_task_vector": "40000100100000",
   "remediated_defect": "RESIDENT_CUSTODY_ROOT_NOT_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001",
   "runtime_completion_claimed": false,
   "resident_root_observed": false,
   "dry_run_validation_only": true,
   "required_predicates": [
+    {
+      "predicate_id": "GLOBAL_RUNTIME_EVIDENCE_SHARED_OWNER_REUSED",
+      "kind": "COORDINATION_OWNER_BOUNDARY",
+      "required_state": "TRUE",
+      "evidence_ref": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001;control/runtime-node-profiles.json",
+      "authority_effect": "NONE_COORDINATION_ONLY"
+    },
     {
       "predicate_id": "HEALER_NEUTRAL_RT_STEGBROWSER_ROUTE_REUSED",
       "kind": "SOURCE_CONFIGURATION_BOUNDARY",
@@ -21,6 +29,13 @@
       "required_state": "TRUE",
       "evidence_ref": "StegVerse-Labs/StegVerse-Healer#81;b7d37a91fa464a716a85c0a8a28cffd6e5022fb6;actions:34880822258",
       "authority_effect": "NONE_SOURCE_ONLY"
+    },
+    {
+      "predicate_id": "NO_SECOND_RUNTIME_EVIDENCE_OWNER_ADDED",
+      "kind": "COORDINATION_OWNER_BOUNDARY",
+      "required_state": "TRUE",
+      "evidence_ref": "tools/validate_global_runtime_evidence_owner_binding.py",
+      "authority_effect": "NONE_SOURCE_VALIDATION_ONLY"
     },
     {
       "predicate_id": "NO_SECOND_SCHEDULER_OR_DISPATCHER_ADDED",
@@ -73,6 +88,7 @@
     }
   ],
   "prohibited_effects": [
+    "SECOND_RUNTIME_EVIDENCE_OWNER",
     "SECOND_SCHEDULER",
     "SECOND_DISPATCHER",
     "CREDENTIAL_ROUTE",
@@ -83,8 +99,9 @@
     "RUNTIME_COMPLETION_FROM_SOURCE_STATE"
   ],
   "closure_conditions": [
+    "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001 remains the single shared runtime-evidence owner",
     "existing Healer neutral route remains the only scheduling/invocation carrier",
-    "post-repair resident-root observation packet is the next runtime evidence surface",
+    "post-repair resident-root observation packet is the next StegBrowser runtime evidence surface",
     "dry-run validation remains non-authorizing",
     "return path to parent receipt classification is explicit",
     "no runtime completion is claimed without authentic retained resident evidence"

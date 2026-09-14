@@ -3,7 +3,7 @@
 Goal Task ID: `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001`
 Canonical issue: `StegVerse-Labs/.github#1260`
 COSV: `50000000100000`
-Status: `ACTIVE / TASK-0010 G6 RETAINED PROVENANCE / TASK-0011 V2 PUBLISHED / AUTHENTIC CURRENT-IPHONE G7 EVIDENCE NEXT`
+Status: `ACTIVE / SINGLE_SHARED_RUNTIME_EVIDENCE_OWNER_BOUND / ALL_18_LANES_EXPLICITLY_BOUND / TASK-0010 G6 RETAINED PROVENANCE / TASK-0011 V2 PUBLISHED / AUTHENTIC CURRENT-IPHONE G7 EVIDENCE NEXT`
 
 ## Canonical runtime model
 
@@ -20,6 +20,27 @@ retained StegOS node identity + source-device HB lineage
 ```
 
 HB is observability only. WorkerCoordinator/canonical allocator owns claim/fence authority. Interlock/InTr owns governed transition authority. TV/TVC owns credential/provider authority. Master Records owns observed-reality/reconstruction. GitHub Actions are validation/evidence transport only.
+
+## Shared runtime-evidence ownership invariant
+
+`GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001` is the single shared owner for ecosystem runtime-evidence convergence across all entries in `control/runtime-node-profiles.json`. A profiled lane owns only its exact first unresolved subject-bound predicate. It does not create or own another runtime-materialization umbrella, scheduler, dispatcher, credential route, runtime plane, MIR-specific transport, or second-device requirement.
+
+All 18 current runtime-node profiles now carry:
+
+```text
+shared_runtime_evidence_owner_task_id = GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001
+```
+
+The binding is coordination truth only. It does not prove resident presence, request consumption, WorkerCoordinator claim/fence, Interlock/InTr admission, provider/credential custody, component execution, Master Records reconstruction, or downstream propagation.
+
+The deterministic non-authorizing validator is:
+
+```text
+tools/validate_global_runtime_evidence_owner_binding.py
+tests/test_global_runtime_evidence_owner_binding.py
+```
+
+It requires exactly 18 unique profiled lanes, the same global owner on every profile, and rejects a profiled-lane runtime-materialization remediation that attempts to operate without the canonical global-owner dependency. `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001` is explicitly reconciled as a StegBrowser lane child: it preserves its post-repair Healer carrier observation/classification work while reusing this global convergence owner.
 
 ## Proven current-iPhone evidence
 
@@ -96,7 +117,7 @@ Do not repeat TASK-2026-0010 allocation. Do not clear IndexedDB, Safari site dat
 
 ## README impact
 
-`.github` root README was reviewed for this reconciliation. No repository-wide authority or workflow semantics changed; this update only advances the canonical operational handoff to already-merged Site evidence, so no README text change is required.
+`.github` root README was reviewed for this reconciliation. It already defines one shared resident Canonical Work ingress and explicitly prohibits creating a second dispatcher, WorkerCoordinator, scheduler, heartbeat, or oscillator for task-specific requests. This change makes the existing runtime-evidence ownership invariant deterministic in the canonical profile/validation layer without changing the public architecture contract, so no README text mutation is required.
 
 ## Manual work
 

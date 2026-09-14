@@ -8,6 +8,7 @@
   "coordination_state": "ACTIVE",
   "checkout_state": "CLAIMED_INTEGRATION",
   "cosv_task_vector": "50000000100000",
+  "shared_runtime_evidence_owner_for_profiled_lanes": true,
   "source_refs": [
     "docs/GLOBAL_RUNTIME_EVIDENCE_CLOSURE_MIRROR_HANDOFF.md",
     "docs/GLOBAL_RUNTIME_EVIDENCE_CONVERGENCE_MATRIX.md",
@@ -21,6 +22,8 @@
     "control/runtime-node-profiles.json",
     "control/runtime-profile-sources.json",
     "control/runtime-profile-map.json",
+    "tools/validate_global_runtime_evidence_owner_binding.py",
+    "tests/test_global_runtime_evidence_owner_binding.py",
     "scripts/build_runtime_profile_map.py",
     "scripts/run_global_runtime_evidence_convergence.py",
     "scripts/run_global_runtime_node_profile_convergence.py",
@@ -47,7 +50,8 @@
       "profile-bound-external-runtime-resolution",
       "exact-parent-rebind-resolution",
       "master-records-reconstruction",
-      "downstream-propagation-verification"
+      "downstream-propagation-verification",
+      "single-shared-runtime-evidence-owner-invariant"
     ]
   },
   "dependencies": [
@@ -69,16 +73,25 @@
   "blockers": [],
   "systemic_incident_ref": null,
   "adjacent_task_refs": [
+    "CRYPTO-LIVE-AUTO-001",
     "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+    "SV-DN1-SOVEREIGN-EXECUTION-CHAIN-001",
     "SHWP-ECOSYSTEM-CHAT-INFERENCE-001",
-    "STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001",
+    "VACP-SOVEREIGN-PROVIDER-REALIGNMENT-023",
+    "SHWP-DEVICE-KV-INTR-OBSERVATION-001",
+    "SHWP-STEGVERSE001-BOUNDED-AUTONOMY-RUNTIME-001",
+    "SHWP-SV002-PUBLIC-OBSERVATION-RUNTIME-001",
+    "DATA-CONTINUATION-STEGCLAW-P4",
+    "SHWP-ENDPOINT-FANOUT-SOVEREIGN-RUNTIME-001",
     "GADI-RESIDENT-EXECUTION-001",
     "GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001",
+    "SHWP-GLM53-SOVEREIGN-LANE-001",
+    "SV011-PHASE5-RESIDENT-BRIDGE-001",
     "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001",
+    "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001",
     "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
-    "VACP-SOVEREIGN-PROVIDER-REALIGNMENT-023",
-    "DATA-CONTINUATION-STEGCLAW-P4",
-    "DECISION-ENVELOPE-DE006"
+    "DECISION-ENVELOPE-DE006",
+    "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
   ],
   "existing_evidence_refs": [
     "control/runtime-observability-consumers",
@@ -97,6 +110,8 @@
   "expected_evidence_predicates": [
     "GLOBAL_CHILD_INVENTORY_CURRENT",
     "ALL_18_RUNTIME_LANES_HAVE_EXACT_HB32_RETAINED_STEGOS_NODE_PROFILE",
+    "ALL_18_RUNTIME_LANES_BOUND_TO_SINGLE_SHARED_RUNTIME_EVIDENCE_OWNER",
+    "DUPLICATE_RUNTIME_MATERIALIZATION_OWNER_REJECTED_FOR_PROFILED_LANES",
     "STEGBROWSER_RETAINED_NODE_PROFILE_SYNCHRONIZED_WITH_HB_RUNTIME_MAP",
     "RUNTIME_NODE_PROFILE_SOURCE_REFRESH_MATERIALIZED_IN_SOVEREIGN_ROOT",
     "GENERIC_UNWIRED_CHILD_RUNTIME_CLASSIFICATION_ELIMINATED",
@@ -124,9 +139,35 @@
     "deployment_required": false,
     "current_observation_required": true
   },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/GLOBAL_RUNTIME_EVIDENCE_CLOSURE_MIRROR_HANDOFF.md","control/runtime-node-profiles.json"]},
+      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/GLOBAL_RUNTIME_EVIDENCE_CLOSURE_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["control/runtime-node-profiles.json"]},
+      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/GLOBAL_RUNTIME_EVIDENCE_CLOSURE_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["control/runtime-node-profiles.json"]},
+      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":[]}
+    ],
+    "selected_substrate_id": null,
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  },
   "runtime_resolution": {
+    "shared_runtime_evidence_owner_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
     "profile_registry": "control/runtime-node-profiles.json",
     "profile_count": 18,
+    "duplicate_runtime_materialization_owner_for_profiled_lane_prohibited": true,
+    "binding_validator": "tools/validate_global_runtime_evidence_owner_binding.py",
     "hb_protocol": "HB32",
     "node_state_class": "RETAINED_STEGOS_NODE",
     "execution_session_class": "EPHEMERAL_OR_BOUNDED_RUNTIME_LEASE",
@@ -162,6 +203,7 @@
   "completion": {
     "claimed": false,
     "validated": false,
+    "shared_runtime_evidence_owner_binding_validated": false,
     "reconciliation_ref": "StegVerse-Labs/.github@c22f0f347bb91e77b81d78e6e5e9b9ce7eea7409",
     "activation_proof_complete": false
   },
