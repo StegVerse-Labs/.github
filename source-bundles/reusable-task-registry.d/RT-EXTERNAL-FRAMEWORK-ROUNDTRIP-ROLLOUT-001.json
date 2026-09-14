@@ -3,7 +3,7 @@
   "name": "External Framework Round-Trip Rollout",
   "purpose": "Apply the existing MIR-proven external-framework request/response pattern to one registry-selected external framework without creating framework-specific transport, custody, scheduler, execution, credential, or user-verification authority.",
   "trigger": "a consuming Goal Task requests an admissibility-wiki external framework to participate in a bounded StegVerse source-crosswalk or governed round trip",
-  "scope": "one external-framework registry entry, one bounded manifested operation, one exact counterpart provenance, and one exact transition/evidence lineage",
+  "scope": "one external-framework registry entry, one bounded manifested operation, one exact counterpart provenance, and one exact transition/evidence lineage; registry-wide planning is a non-executing convenience that emits independent per-framework invocation plans",
   "parameter_keys": [
     "goal_task_id",
     "cosv_task_vector",
@@ -39,8 +39,17 @@
   ],
   "runner_templates": [
     "scripts/resolve_external_framework_roundtrip_rollout.py",
+    "scripts/plan_external_framework_registry_rollout.py",
     "scripts/trigger_reusable_task.py"
   ],
+  "registry_sweep_contract": {
+    "effect": "NONE_PLAN_ONLY",
+    "unit_of_execution": "INDEPENDENT_PER_FRAMEWORK_INVOCATION",
+    "fail_closed_scope": "PER_FRAMEWORK_INVOCATION",
+    "does_not_create_goal_tasks": true,
+    "does_not_execute_external_calls": true,
+    "does_not_promote_registry_metadata_to_authority": true
+  },
   "recording_levels": [
     "operation",
     "task",
@@ -68,5 +77,5 @@
     "MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001",
     "SDK-ELYRIA-INTR-ADAPTER-001"
   ],
-  "reuse_instructions": "Resolve exactly one external-framework entry from the canonical admissibility-wiki registry. Reuse the existing external-adapter and RTC component contracts. A source-blocked or runtime-unavailable framework emits its exact fail-closed eligibility state and stops only that invocation; unrelated framework invocations continue independently. Mirror or build/test counterpart execution must retain its explicit provenance and must not be relabeled as non-runtime merely because authentic endpoint substitution remains pending. Do not mint per-framework WorkerCoordinator, Interlock/InTr, SDK-return, custody, publisher, credential, scheduler, or user-verification implementations."
+  "reuse_instructions": "Resolve exactly one external-framework entry from the canonical admissibility-wiki registry for each invocation. The registry sweep helper may classify all entries in one deterministic plan, but every row remains an independent bounded invocation and the sweep itself performs no transition. Reuse the existing external-adapter and RTC component contracts. A source-blocked or runtime-unavailable framework emits its exact fail-closed eligibility state and stops only that invocation; unrelated framework invocations continue independently. Mirror or build/test counterpart execution must retain its explicit provenance and must not be relabeled as non-runtime merely because authentic endpoint substitution remains pending. Do not mint per-framework WorkerCoordinator, Interlock/InTr, SDK-return, custody, publisher, credential, scheduler, user-verification implementations, or Goal Tasks when the reusable invocation is sufficient."
 }
