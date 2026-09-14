@@ -5,7 +5,7 @@ Repository: `StegVerse-Labs/.github`
 Target runtime path: `StegVerse-Labs/StegAgents` -> `StegVerse-Labs/StegCore/InTr`
 Goal Task ID: `STEGAGENTS-GOVERNED-RUNTIME-001`
 COSV: `71000000101001`
-Status: `ACTIVE / RUNTIME PROFILE RESOLUTION CURRENT / ROUTING READY / TARGETED WORKERCOORDINATOR BRIDGE MERGED+VALIDATED / AUTHENTIC RUNTIME PROOF PENDING`
+Status: `ACTIVE / RUNTIME PROFILE RESOLUTION CURRENT / ROUTING READY / TARGETED WORKERCOORDINATOR BRIDGE MERGED+VALIDATED / PORTABLE EXACT-SELECTOR REPAIR STAGED / AUTHENTIC RUNTIME PROOF PENDING`
 
 ## Canonical state
 
@@ -44,7 +44,7 @@ control/resident-execution-request.d/stegagents-governed-runtime-targeted-001.js
 scripts/consume_stegagents_governed_runtime_targeted_request.py
 ```
 
-The existing resident dispatcher now exposes selector `stegagents_governed_runtime_targeted`, and the existing sovereign source-refresh paths carry the targeted consumer and request into a resident runtime. The consumer validates the exact task/COSV pair, rejects hosted execution, strips provider/API/GitHub credential material, preserves `credential_authority=TV/TVC`, requires `github_token_runtime_authority=NONE`, and delegates only to the existing:
+The existing resident dispatcher exposes selector `stegagents_governed_runtime_targeted`, and the sovereign source-refresh paths carry the targeted consumer and request into a resident runtime. The consumer validates the exact task/COSV pair, rejects hosted execution, strips provider/API/GitHub credential material, preserves `credential_authority=TV/TVC`, requires `github_token_runtime_authority=NONE`, and delegates only to:
 
 ```text
 scripts/refresh_and_execute_resident_task.py \
@@ -53,6 +53,22 @@ scripts/refresh_and_execute_resident_task.py \
 ```
 
 That bridge grants no claim/fence or transition authority; the existing WorkerCoordinator remains the only claim/fence authority.
+
+## Portable exact-selector remediation
+
+Post-merge execution-path inspection found one additional reachability defect. The generic resident dispatcher already registered `stegagents_governed_runtime_targeted`, and sovereign source refresh already propagated the consumer and resident-request directory, but `scripts/refresh_and_dispatch_resident_requests.py` omitted that selector from `ALLOWED_TARGET_CONSUMERS`.
+
+That meant an already-existing sovereign resident using the portable local `refresh -> exact targeted dispatch` bridge would fail before invoking the registered StegAgents consumer. This is a source-addressability defect, not permission to create a replacement runtime.
+
+The staged repair adds only the existing selector:
+
+```text
+stegagents_governed_runtime_targeted
+```
+
+to the portable bridge allowlist and extends `tests/test_stegagents_governed_runtime_targeted_resident_bridge.py` to require agreement among the generic dispatcher, sovereign source refresh, portable exact-selector bridge, targeted consumer, task/COSV binding, and authority ceiling.
+
+No second dispatcher, scheduler, WorkerCoordinator, runtime profile, agent registry, InTr implementation, credential route, provider route, network source fetch, hosted runtime, or second-device dependency is introduced. The portable bridge remains non-authorizing and still delegates to the same existing consumer and WorkerCoordinator path.
 
 ## #1838 validation and repository-wide repairs
 
@@ -113,9 +129,9 @@ receipts/sovereign-host/stegagents-governed-runtime/<claim_id>.json
 receipts/sovereign-host/stegagents-governed-runtime.latest.json
 ```
 
-## Current authentic runtime observation after #1838 merge
+## Current authentic runtime observation
 
-Merged main contains the targeted request/consumer and dispatcher/source-refresh binding. The repository-visible WorkerCoordinator fragment still reports:
+Current repository-visible WorkerCoordinator state remains:
 
 ```text
 state = HANDOFF_READY
@@ -125,11 +141,13 @@ worker_id = null
 worker_instance_id = null
 ```
 
-Neither expected runtime receipt is repository-visible. The authorized remote resident connector also reports no connected resident device in this session. That observation is reachability evidence only and creates no second-device requirement.
+The targeted resident request remains `REQUESTED`. Neither expected runtime receipt is repository-visible. The authorized remote resident connector reports no connected resident device in this session. That is reachability evidence only and does not establish a second-device requirement.
 
-Therefore no authentic targeted request consumption, fresh WorkerCoordinator claim/fence, StegCore/InTr runtime disposition, governed proposal return, provider operation, or Master Records reconstruction is currently claimed.
+Therefore no authentic targeted request consumption, fresh WorkerCoordinator claim/fence, StegCore/InTr runtime disposition, governed proposal return, provider operation, or Master Records reconstruction is claimed.
 
 ## First unresolved predicate
+
+Until the portable selector repair is merged and an authentic resident consumes the request, the continuous runtime predicate remains:
 
 ```text
 AUTHENTIC_TARGETED_RESIDENT_REQUEST_CONSUMPTION_AND_CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED
@@ -138,7 +156,8 @@ AUTHENTIC_TARGETED_RESIDENT_REQUEST_CONSUMPTION_AND_CURRENT_WORKERCOORDINATOR_CL
 ## Next machine-owned execution
 
 ```text
-existing sovereign resident source refresh
+existing sovereign resident local source refresh
+-> refresh_and_dispatch_resident_requests.py --only-consumer steagents_governed_runtime_targeted
 -> existing resident dispatcher visits steagents_governed_runtime_targeted
 -> targeted consumer verifies task/COSV and authority ceiling
 -> existing refresh_and_execute_resident_task.py
@@ -158,7 +177,7 @@ The goal remains ACTIVE until this authentic chain exists. No human-authority ch
 
 ## README decision
 
-No StegAgents-specific README section is required because #1838 binds one task to established targeted WorkerCoordinator execution semantics. The repository-wide README truncation encountered during validation was repaired because it was an unrelated current-main regression affecting canonical invariants.
+No root README content change is required for this task-specific selector repair. The repository README already documents the existing targeted execution and exact task/COSV pointer semantics; this change does not alter those semantics, authority roles, or runtime class. The canonical task record carries the explicit non-material README determination and evidence refs.
 
 ## Manual work
 
