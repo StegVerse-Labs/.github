@@ -45,7 +45,13 @@
     "task_registry": "COORDINATION_ONLY",
     "worker_claim_fence": "WorkerCoordinator",
     "user_verification": "KV/SKAP Vault",
-    "stegos_device_role": "INTERCHANGEABLE_TRANSPORT_NODE",
+    "stegos_device_role": "INTERCHANGEABLE_ACCESS_AND_TRANSPORT_ENDPOINT",
+    "specific_device_identity_continuity_authority": "NONE",
+    "specific_device_identity_runtime_completion_authority": "NONE",
+    "specific_os_browser_local_state_continuity_authority": "NONE",
+    "kv_provider_access": "PROVIDER_NEUTRAL_AND_DEVICE_INDEPENDENT",
+    "replacement_device_reconstruction": "REQUIRED_FROM_KV_PLUS_CANONICAL_RETAINED_EVIDENCE",
+    "legacy_current_iphone_same_device_labels": "NON_NORMATIVE_IMPLEMENTATION_OR_HISTORICAL_LABELS_ONLY",
     "credential_provider_release": "TV/TVC",
     "governed_transition": "Interlock/InTr",
     "observed_reality_custody_reconstruction": "Master Records",
@@ -59,6 +65,12 @@
     "task_specific_adapter_duplicates_generic_transport",
     "one_component_becomes_permanent_scheduler_or_hidden_runtime",
     "device_or_transport_identity_becomes_user_verifier",
+    "specific_user_device_becomes_continuity_root",
+    "specific_user_device_becomes_runtime_completion_prerequisite",
+    "specific_os_or_browser_state_becomes_required_continuation_state",
+    "provider_identity_is_coupled_to_client_device_identity",
+    "same_device_instruction_is_used_as_architectural_requirement",
+    "legacy_current_iphone_symbol_is_reinterpreted_as_current_architecture",
     "optional_component_is_forced_into_unrelated_tasks"
   ]
 }

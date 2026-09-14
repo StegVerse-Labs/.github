@@ -1,0 +1,56 @@
+{
+  "schema": "stegverse.device-replaceability-invariant/v1",
+  "status": "ACTIVE_CANONICAL_INVARIANT",
+  "canonical_owner_task": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "applies_to": [
+    "ALL_STEGVERSE_TASKS",
+    "ALL_RUNTIME_EVIDENCE_TASKS",
+    "ALL_KV_MYKV_FLOWS",
+    "ALL_DEVICE_BROWSER_OS_SURFACES",
+    "ALL_PROVIDER_BACKED_CONTINUITY_FLOWS"
+  ],
+  "invariant": {
+    "user_operated_device_role": "INTERCHANGEABLE_ACCESS_AND_TRANSPORT_ENDPOINT",
+    "specific_device_identity_may_be_continuity_root": false,
+    "specific_device_identity_may_be_runtime_completion_prerequisite": false,
+    "specific_os_or_browser_may_be_continuity_prerequisite": false,
+    "browser_local_state_may_be_sole_continuity_custodian": false,
+    "service_worker_state_may_be_sole_continuity_custodian": false,
+    "indexeddb_state_may_be_sole_continuity_custodian": false,
+    "provider_storage_must_be_accessed_through_provider_neutral_kv_contract": true,
+    "replacement_device_must_be_able_to_reconstruct_from_canonical_kv_and_receipts": true,
+    "already_authentic_transitions_must_not_be_replayed_only_because_device_changed": true,
+    "device_local_crypto_allowed_only_when_ephemeral_and_reconstructible": true,
+    "device_change_must_not_require_new_goal_task_runtime_owner_or_authority_plane": true
+  },
+  "prohibited_normative_semantics": [
+    "ESTABLISHED_CURRENT_IPHONE_AS_REQUIRED_EXECUTION_SUBSTRATE",
+    "CURRENT_IPHONE_AS_REQUIRED_CONTINUITY_IDENTITY",
+    "DO_NOT_SWITCH_DEVICES_AS_ARCHITECTURAL_REQUIREMENT",
+    "PRESERVE_SAFARI_OR_INDEXEDDB_AS_CANONICAL_CONTINUITY_REQUIREMENT",
+    "SAME_DEVICE_AS_REQUIRED_RUNTIME_COMPLETION_PREDICATE",
+    "IOS_SPECIFIC_PROVIDER_ACCESS_AS_KV_CONTINUITY_REQUIREMENT"
+  ],
+  "legacy_label_rule": {
+    "allowed": true,
+    "scope": "HISTORICAL_EVIDENCE_OR_IMPLEMENTATION_SYMBOL_ONLY",
+    "must_not_create_requirement": true,
+    "must_be_interpreted_as": "NON_NORMATIVE_LEGACY_LABEL",
+    "examples": [
+      "CURRENT_IPHONE_*",
+      "current-iphone-*",
+      "same-device-*",
+      "ESTABLISHED_CURRENT_IPHONE"
+    ]
+  },
+  "continuity_authorities": {
+    "kv_user_continuity": "KV/SKAP_VAULT",
+    "governed_transition": "Interlock/InTr",
+    "execution_claim_fence": "WorkerCoordinator",
+    "credential_provider_release": "TV/TVC",
+    "observed_reality_reconstruction": "Master Records",
+    "device": "NO_AUTHORITY_INTERCHANGEABLE_ENDPOINT"
+  },
+  "failure_disposition": "REJECT_DEVICE_BOUND_INTERPRETATION_AND_REBIND_TO_PROVIDER_NEUTRAL_KV_PLUS_CANONICAL_RECEIPTS",
+  "authority_effect": "NONE_POLICY_ONLY"
+}

@@ -1,6 +1,6 @@
 {
   "artifact_type": "stegverse.session_build_preflight_contract",
-  "schema_version": "1.3.0",
+  "schema_version": "1.4.0",
   "status": "ACTIVE_SOURCE_CONTRACT",
   "entrypoint": "scripts/session_build_preflight.py",
   "stegindex_gate": "scripts/stegindex_preflight_gate.py",
@@ -10,8 +10,15 @@
     "required_before_blocker_derivation": true,
     "required_before_remediation_proposal": true,
     "required_before_new_work": true,
+    "required_before_device_or_runtime_substrate_selection": true,
+    "required_before_kv_provider_reasoning": true,
+    "required_device_policy_refs": [
+      "control/device-replaceability-invariant.json",
+      "docs/DEVICE_REPLACEABILITY_INVARIANT_MIRROR_HANDOFF.md"
+    ],
     "task_record_field": "canonical_policy_refs",
     "fail_closed_disposition": "STOP_AT_CANONICAL_POLICY_DEPENDENCY",
+    "device_bound_interpretation_disposition": "DEVICE_BOUND_INTERPRETATION_INVALID",
     "human_policy_restatement_required": false,
     "runtime_truth_inferred": false,
     "execution_admission_inferred": false,
@@ -69,6 +76,11 @@
       "task_creation_permitted": false,
       "exit_code": 2
     },
+    "DEVICE_BOUND_INTERPRETATION": {
+      "disposition": "DEVICE_BOUND_INTERPRETATION_INVALID",
+      "task_creation_permitted": false,
+      "exit_code": 2
+    },
     "EXACT_BLOCKER_ONLY": {
       "disposition": "STOP_AT_EXACT_DEPENDENCY",
       "task_creation_permitted": false,
@@ -84,6 +96,11 @@
     "canonical architecture and lifecycle policy context is resolved before session interpretation",
     "canonically resolvable policy must not be re-taught by human prompt",
     "missing canonical policy context is an exact dependency and never permission to invent semantics",
+    "user-operated devices are interchangeable access/transport endpoints",
+    "specific device, OS, browser, service-worker, IndexedDB, or browser-local state must not become continuity or runtime-completion prerequisites",
+    "KV/MyKV provider identity remains independent of client-device identity",
+    "replacement devices continue from provider-neutral KV plus retained canonical evidence without replaying already-authentic transitions solely because the device changed",
+    "CURRENT_IPHONE and same-device labels are non-normative historical/implementation labels only",
     "new task creation is prohibited when an existing capability should be reused",
     "new task creation is prohibited when machine continuation is already available",
     "new task creation is prohibited while indexed truth requires reconciliation",

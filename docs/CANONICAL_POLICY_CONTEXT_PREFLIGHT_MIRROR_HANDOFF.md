@@ -1,21 +1,19 @@
 # Canonical Policy Context Preflight Mirror Handoff
 
-Updated: 2026-09-12
+Updated: 2026-09-14
 Repository: `StegVerse-Labs/.github`
 Canonical owner goal: `STEGVERSE-CANONICAL-WORK-COORDINATION-001`
 Parent: `docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md`
-Status: `SOURCE_IMPLEMENTED / VALIDATION_PENDING`
+Status: `SOURCE_IMPLEMENTED / DEVICE-REPLACEABILITY REQUIRED / VALIDATION PENDING`
 Authority effect: `NONE_PREWORK_INTERPRETATION_ONLY`
 
-## Problem
+## Purpose
 
-StegVerse already has canonical architecture, lifecycle, authority, custody, and task-continuity policy, but the session/build preflight previously consulted StegIndex and cross-task coordination without requiring those policy semantics to be loaded before the session interpreted task state.
+Every StegVerse session/build/task interpretation must resolve canonical policy before deriving task state, blockers, remediation, runtime substrate, KV provider behavior, or new work.
 
-That allowed repeated cross-session semantic drift: a session could correctly discover an existing task/evidence relationship and still misinterpret canonical terms such as worker expiry, ephemeral-node lifetime, absence, staleness, device/node role, HeartBeat role, authority, verifier/custody, or remediation ownership. The human then had to restate already-canonical policy.
+This exists to prevent local task wording from silently redefining canonical architecture.
 
-## Repair
-
-The existing `scripts/session_build_preflight.py` now resolves canonical policy context before state interpretation, blocker derivation, remediation proposal, or new work creation.
+## Required global policy context
 
 Canonical registry:
 
@@ -23,95 +21,82 @@ Canonical registry:
 control/canonical-policy-context-registry.json
 ```
 
-Required global sources currently include:
+Required global sources include at minimum:
 
 ```text
 data/task-coordination-policy.json
 docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md
+data/reusable-task-component-model.json
+control/device-replaceability-invariant.json
+docs/DEVICE_REPLACEABILITY_INVARIANT_MIRROR_HANDOFF.md
+docs/CANONICAL_INVARIANT_INGRESS_LOCK_MIRROR_HANDOFF.md
 ```
 
-When a canonical task record contains:
+Task-declared `canonical_policy_refs` are additionally mandatory.
 
-```json
-"canonical_policy_refs": ["..."]
-```
+## Device-replaceability preflight rule
 
-the preflight automatically resolves those refs as well. Cross-repository refs use the existing `STEGVERSE_REPO_ROOTS_JSON` materialized-repository map and use the form:
+Before any device/runtime/KV reasoning, preflight must resolve the global invariant that user-operated devices are interchangeable access/transport endpoints.
+
+The following local interpretations are invalid even when an active task or historical handoff contains those words:
+
+- one particular iPhone is required to continue the task;
+- `CURRENT_IPHONE_*` is a current architectural identity;
+- `same-device` is a required completion predicate;
+- Safari, IndexedDB, service-worker state, or browser-local node state is canonical continuity;
+- Google Drive/iCloud/provider-backed KV identity is coupled to whichever device is currently accessing it;
+- changing devices requires replay of already-authentic transitions solely because the device changed.
+
+Strings such as `CURRENT_IPHONE_*`, `current-iphone-*`, `same-device-*`, and `ESTABLISHED_CURRENT_IPHONE` may remain in immutable evidence and implementation symbols only as `NON_NORMATIVE_LEGACY_LABELS_ONLY`.
+
+If local task wording conflicts with the replaceability invariant, preflight disposition is:
 
 ```text
-StegVerse-Labs/StegHealth:STEGHEALTH_MIRROR_HANDOFF.md
-StegVerse-Labs/StegDB:STEGDB_MIRROR_HANDOFF.md
+DEVICE_BOUND_INTERPRETATION_INVALID
 ```
 
-No network fetch is introduced.
+The continuation must be rebound to provider-neutral KV/MyKV plus retained canonical evidence rather than asking the human to preserve a device.
 
 ## Fail-closed behavior
 
-If a required canonical policy ref cannot be resolved, preflight returns:
+If a required canonical policy ref cannot be resolved:
 
 ```text
 STOP_AT_CANONICAL_POLICY_DEPENDENCY
 ```
 
-The missing policy is an exact machine dependency. It is not permission to infer replacement semantics and it does not require the human to re-explain the policy in chat.
-
-## Canonical invariants already reused
-
-The global task-coordination policy already carries relevant standing invariants including:
-
-```text
-CANONICALLY_RESOLVABLE_TASK_DOCUMENTATION_IS_NOT_REPEATED_IN_PROMPTS
-RUNNERS_EXPIRE_BEFORE_RECORDING_CONTINUITY
-EPHEMERAL_CAPABILITY_DOES_NOT_MEAN_EPHEMERAL_ACCOUNTABILITY
-TASK_REGISTRY_DOES_NOT_MINT_EXECUTION_AUTHORITY
-WORKERCOORDINATOR_OWNS_EXECUTION_CLAIM_AND_FENCE
-MASTER_RECORDS_OWNS_OBSERVED_REALITY_AND_RECONSTRUCTION
-MISSING_EVIDENCE_IS_NOT_PROOF_OF_NON_OCCURRENCE
-```
-
-The new gate does not redefine those policies; it makes session/build pre-work consume them.
+Missing policy is an exact dependency and never permission to infer replacement semantics.
 
 ## Authority boundary
 
-Policy-context resolution:
+Policy-context resolution does not prove runtime truth, renew claims/fences, authorize Interlock/InTr transitions, grant TV/TVC credentials, grant custody, or create a runtime.
 
-- does not prove runtime truth;
-- does not create or renew a worker/WorkerCoordinator;
-- does not create claim/fence authority;
-- does not grant Interlock/InTr transition authority;
-- does not grant TV/TVC credential authority;
-- does not grant route, publication, custody, receiving, or release authority;
-- does not create a second coordinator or governance layer.
-
-It only constrains interpretation and task creation to already-canonical semantics.
+It constrains interpretation only.
 
 ## Validation
 
-Regression coverage:
+Regression coverage now includes:
 
 ```text
 tests/test_canonical_policy_context_preflight.py
+tests/test_device_replaceability_invariant.py
+scripts/validate_device_replaceability_invariant.py
 ```
 
-The tests require:
+The device validator requires:
 
-1. global canonical policy sources resolve automatically;
-2. known ephemeral/accountability invariants are surfaced without human restatement;
-3. a missing required policy ref fails closed;
-4. task-declared `canonical_policy_refs` are auto-loaded;
-5. cross-repository canonical refs resolve through `STEGVERSE_REPO_ROOTS_JSON`.
-
-Exact-head CI evidence is pending.
+1. no specific device continuity authority;
+2. no specific device runtime-completion prerequisite;
+3. provider-neutral KV/device independence;
+4. replacement-device reconstruction from KV plus retained evidence;
+5. the global runtime closure task to use `TESTFLIGHT_AUTHORIZED_USER_DEVICE_RUNTIME_OBSERVED` rather than a device-specific current predicate;
+6. legacy current-iPhone/same-device labels to be explicitly non-normative.
 
 ## Adoption
 
-Existing tasks without `canonical_policy_refs` still receive the global policy context. Task/domain owners should add task-specific refs only where additional canonical domain semantics are required. Once declared, those refs become mandatory preflight dependencies and cannot be silently ignored.
+All tasks receive the global policy context even when they do not declare task-specific policy refs. Therefore a task-specific handoff cannot lawfully reintroduce a device-bound prerequisite by omission.
 
-The intended steady state is that a new session needs only the task/COSV continuation pointer; canonical policy, handoff, evidence, and lifecycle semantics are resolved by the system rather than re-entered by the human.
-
-## README impact
-
-Material. This changes session/build pre-work behavior by adding a new fail-closed interpretation gate. Root `README.md` must document the policy-context requirement in the same change set before merge.
+The intended steady state is that the human supplies only task intent/observations; canonical device, authority, continuity, and provider semantics are resolved by the system and do not have to be restated in chat.
 
 ## Manual work
 
