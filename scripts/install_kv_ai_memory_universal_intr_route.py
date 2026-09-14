@@ -7,7 +7,8 @@ from pathlib import Path
 
 PROFILE_IMPORT = 'from workers import kv_ai_memory_intr_profile as kv_ai_memory_intr  # noqa: E402\n'
 TRANSPORT_IMPORT = 'from workers import kv_ai_memory_intr_transport as kv_ai_memory_intr_transport  # noqa: E402\n'
-IMPORT_ANCHOR = 'from workers import erl_active_research_intr_profile as erl_active_research  # noqa: E402\n'
+ERL_IMPORT_ANCHOR = 'from workers import erl_active_research_intr_profile as erl_active_research  # noqa: E402\n'
+SV002_IMPORT_ANCHOR = '''from workers.sv002_intr_materialization_consumer import (  # noqa: E402\n    DESTINATION as SV002_DESTINATION,\n    DOWNSTREAM_OWNER as SV002_OWNER,\n    scrubbed_env as sv002_scrubbed_env,\n    validate_request as validate_sv002_request,\n)\n'''
 PROFILE_TOKEN = '"KV:AI-MemoryPacketAdmission"'
 ROUTE_ANCHOR = 'hil.admit_materialization(runtime_root=self.server.runtime_root, body=body, headers=self.headers)'
 ROUTE = 'kv_ai_memory_intr.admit(runtime_root=self.server.runtime_root, payload=payload, transport_payload_sha256=kv_ai_memory_intr_transport.validate_headers(self.headers, body)["payload_sha256_uri"]) if kv_ai_memory_intr.is_kv_ai_memory_submission(payload) else ' + ROUTE_ANCHOR
@@ -21,8 +22,11 @@ def require(ok: bool, reason: str) -> None:
 def transform(source: str) -> str:
     result = source
     if PROFILE_IMPORT not in result:
-        require(IMPORT_ANCHOR in result, "shared ERL import anchor missing")
-        result = result.replace(IMPORT_ANCHOR, IMPORT_ANCHOR + PROFILE_IMPORT + TRANSPORT_IMPORT, 1)
+        if ERL_IMPORT_ANCHOR in result:
+            result = result.replace(ERL_IMPORT_ANCHOR, ERL_IMPORT_ANCHOR + PROFILE_IMPORT + TRANSPORT_IMPORT, 1)
+        else:
+            require(SV002_IMPORT_ANCHOR in result, "shared Universal InTr import anchor drift")
+            result = result.replace(SV002_IMPORT_ANCHOR, SV002_IMPORT_ANCHOR + PROFILE_IMPORT + TRANSPORT_IMPORT, 1)
     elif TRANSPORT_IMPORT not in result:
         result = result.replace(PROFILE_IMPORT, PROFILE_IMPORT + TRANSPORT_IMPORT, 1)
 
