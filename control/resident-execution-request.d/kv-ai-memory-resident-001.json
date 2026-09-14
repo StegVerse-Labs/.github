@@ -11,11 +11,17 @@
   "github_token_runtime_authority": "NONE",
   "heartbeat_grants_execution_authority": false,
   "second_machine_required": false,
+  "device_confirmation_required": false,
+  "device_discovery_required": false,
+  "device_presence_probe_required": false,
+  "remote_connected_device_required": false,
+  "remote_desktop_commander_required": false,
+  "absence_of_connected_device_is_blocker": false,
   "network_source_fetch_allowed": false,
   "request_granted_authority": false,
   "provider_credential_material_allowed": false,
   "private_content_in_request": false,
   "bound_state_root": "~/.stegverse/state/kv-ai-memory-resident",
   "authority_effect": "NONE_REQUEST_ONLY",
-  "note": "When the fenced resident-local KV memory packet, exact admission artifact, and provider request input are present, ask the existing WorkerCoordinator to materialize the exact ProviderRequest. This request carries no private content and grants no claim, fence, InTr, credential, provider, KV-write, or activation authority."
+  "note": "When the fenced resident-local KV memory packet, exact admission artifact, and provider request input are present, ask the existing WorkerCoordinator to materialize the exact ProviderRequest. This request carries no private content and grants no claim, fence, InTr, credential, provider, KV-write, or activation authority. Device discovery, device-presence proof, Remote Desktop Commander availability, and second-machine presence are not prerequisites or runtime evidence."
 }
