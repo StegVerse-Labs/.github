@@ -1,6 +1,6 @@
 # KV AI Memory Resident Execution Mirror Handoff
 
-Status: ACTIVE / SOURCE-BINDING-IN-PROGRESS / LIVE-RUNTIME-PROOF-OPEN
+Status: ACTIVE / RESIDENT-PROVIDERREQUEST-BINDING-VALIDATED / BOUND-STATE-INPUT-PENDING / LIVE-INTR-PROOF-OPEN
 Goal Task ID: `SV-KV-AI-PERSISTENCE-001`
 COSV task.v1: `20111110110000`
 Repository: `StegVerse-Labs/.github`
@@ -26,39 +26,106 @@ custody/reconstruction: Master Records
 heartbeat: carrier/reference only
 ```
 
-This handoff does not authorize execution. Repository source, CI, request files, dispatcher registration, or successful local validation cannot substitute for an authentic claim/fence or Interlock/InTr receipt.
+This handoff does not authorize execution. Repository source, CI, request files, dispatcher registration, or successful validation cannot substitute for an authentic claim/fence or Interlock/InTr receipt.
 
-## Bounded resident composition target
+## Implemented resident binding
+
+The source binding is now materialized:
+
+- executable handoff: `handoffs/SV-KV-AI-PERSISTENCE-001.json`;
+- WorkerCoordinator registry: `control/worker-registry.d/kv-ai-memory-resident-001.json`;
+- fenced ProcessWorkerAdapter: `control/process-worker-adapters.d/kv-ai-memory-resident-001.json`;
+- resident request: `control/resident-execution-request.d/kv-ai-memory-resident-001.json`;
+- request consumer: `scripts/consume_kv_ai_memory_resident_request.py`;
+- worker: `workers/kv_ai_memory_resident_worker.py`;
+- generic dispatcher selector: `kv_ai_memory` in `scripts/dispatch_resident_execution_requests.py`;
+- deterministic validation: `tests/test_kv_ai_memory_resident_binding.py`;
+- hosted validation: `.github/workflows/validate-kv-ai-memory-resident.yml`.
+
+The LLM-adapter now also supplies `scripts/materialize_kv_memory_provider_request.py`, which consumes only resident-local packet/admission/request-input files and emits one deterministic provider-neutral `ProviderRequest` plus hash. It does not perform provider execution or decide admission.
+
+## Fenced private-state contract
+
+Private state is outside repository content at:
+
+```text
+~/.stegverse/state/kv-ai-memory-resident/
+  inputs/context-packet.json
+  inputs/memory-packet-admission.json
+  inputs/provider-request-input.json
+  materialized/provider-request.json
+  receipts/provider-request-materialization.json
+```
+
+`ProcessWorkerAdapter` exposes only a sandbox mirror of that bound-state root to the fenced worker. The consumer checks only whether the three input paths exist; it deliberately does not read their bytes. Therefore a missing packet/admission/request input returns `BOUND_STATE_INPUT_NOT_READY` without consuming the request or attempting WorkerCoordinator execution.
+
+Repository state receives no private memory packet, prompt, materialized ProviderRequest, token, API key, or provider credential.
+
+## Bounded resident composition
 
 ```text
 resident-local Personal-KV context packet
 + exact memory-packet InTr ALLOW receipt
 + resident-local user/model request material
--> validate exact packet + admission
--> materialize canonical ProviderRequest with KV provenance
--> preserve exact ProviderRequest hash
--> hand the request to the existing provider ingress path
--> preserve provider ingress / TVC operation / response / egress evidence
--> optional memory write proposal
--> target-KV admission and exact readback
+-> non-authorizing resident request consumer
+-> existing WorkerCoordinator fresh claim/fence
+-> fenced ProcessWorkerAdapter bound-state mirror
+-> LLM-adapter exact ProviderRequest materializer
+-> provider-request hash + bound-state receipt
+-> HANDOFF_READY for existing provider ingress continuation
 ```
 
-Private KV contents and user prompts must remain resident-local. No private memory payload, prompt, credential, token, or provider secret belongs in the GitHub resident request object.
+The current worker intentionally stops at `KV_AI_MEMORY_PROVIDER_REQUEST_MATERIALIZED`. Its receipt fixes all of the following false until independently observed:
 
-## Source implementation plan
+```text
+provider_ingress_admission_observed=false
+provider_execution_observed=false
+provider_egress_admission_observed=false
+kv_writeback_observed=false
+credential_material_present=false
+worker_claim_or_fence_minted=false
+```
 
-1. Add an LLM-adapter materializer that consumes resident-local packet/admission/message files and emits one exact canonical `ProviderRequest` plus hash.
-2. Add a non-authorizing `.github` resident request consumer that resolves already-local KV/LLM roots and invokes that materializer.
-3. Register that consumer with the existing generic resident dispatcher.
-4. Preserve exactly-once request-consumption semantics and reject hosted execution.
-5. Stop at `PROVIDER_REQUEST_MATERIALIZED` unless an already-admitted existing provider executor is available in the same resident runtime. Do not fabricate ingress, TVC, provider, egress, custody, writeback, or activation evidence.
+That prevents source materialization from being misrepresented as live AI consumption or KV mutation.
+
+## Hosted validation
+
+LLM-adapter materializer head `920fedd13a182636c80a30fc10d9482ee21de57a`:
+
+- run `34803228613` / job `103849905207` — SUCCESS;
+- run `34803228620` / job `103849906564` — SUCCESS.
+
+The dedicated `.github` resident-binding workflow run `34803483965` / job `103850649371` completed SUCCESS. It passed:
+
+- `pytest -q tests/test_kv_ai_memory_resident_binding.py`;
+- Python compilation for the resident worker, request consumer, and generic dispatcher.
+
+The tests prove bounded source behavior only: clean waiting with absent private inputs, bound-state-only materialization, non-authorizing runtime flags, dispatcher registration, and registry/handoff/adapter authority invariants.
+
+## Next executable boundary
+
+The source binding no longer needs another runtime owner or another request transport. The next authentic transition is:
+
+```text
+resident-local exact Personal-KV packet exists
++ authentic memory-packet InTr ALLOW artifact exists
++ resident-local provider request input exists
+-> existing `kv_ai_memory` dispatcher consumer
+-> current WorkerCoordinator fenced execution
+-> exact ProviderRequest materialized in bound state
+-> existing provider ingress InTr / TVC / response / egress path
+```
+
+After provider response evidence exists, the already-built KV memory write proposal must traverse target-KV admission and exact-byte readback before persistent memory writeback is claimed.
+
+No runtime receipt may be synthesized from repository source, CI, a fixture, or a model response.
 
 ## Completion evidence
 
-Source completion for this resident binding requires deterministic tests and hosted validation of the request consumer/materializer. Live goal completion additionally requires authentic same-execution evidence for:
+Live goal completion still requires authentic same-execution evidence for:
 
 - exact memory packet admission;
-- exact ProviderRequest materialization;
+- exact ProviderRequest materialization under current WorkerCoordinator claim/fence;
 - provider request ingress ALLOW;
 - TV/TVC provider execution where applicable;
 - provider response and egress ALLOW;
@@ -71,8 +138,11 @@ Source completion for this resident binding requires deterministic tests and hos
 canonical task: IN_PROGRESS
 KV memory source: VALIDATED
 LLM memory bridge: VALIDATED
-resident memory binding: SOURCE IMPLEMENTATION IN PROGRESS
+LLM resident materializer: VALIDATED
+resident WorkerCoordinator binding: VALIDATED
+resident private-input state: NOT OBSERVED
 live memory packet admission: NOT OBSERVED
+live ProviderRequest materialization: NOT OBSERVED
 live model consumption: NOT OBSERVED
 live KV writeback/readback: NOT OBSERVED
 activated: false
