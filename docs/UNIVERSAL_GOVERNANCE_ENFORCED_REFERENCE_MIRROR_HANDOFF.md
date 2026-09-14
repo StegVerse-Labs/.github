@@ -1,11 +1,11 @@
 # Universal Governance ENFORCED Reference Boundary Mirror Handoff
 
-Updated: 2026-08-31
+Updated: 2026-09-14
 Repository: StegVerse-Labs/.github
 Issue: #690
 Branch: feature/universal-governance-enforced-reference
 Task: SHWP-UNIVERSAL-GOVERNANCE-ENFORCED-REFERENCE-001
-State: SOURCE_MERGED_VALIDATED / RESIDENT_EXECUTION_PENDING
+State: SOURCE_MERGED_VALIDATED / FRESH_BINDING_SOURCE_PR_OPEN / RESIDENT_EXECUTION_PENDING
 Credential authority: TV/TVC
 Execution authority: bounded target consequence only after independent target-authority validation
 GitHub token runtime authority: NONE
@@ -29,6 +29,7 @@ resident WorkerCoordinator claim
  -> Governance registered profile
  -> StegCore three-layer evaluation
  -> ALLOW / DENY / FAIL-CLOSED
+ -> exact fresh commit binding when required
  -> deterministic StegGate target-authority + credential + capability + commit gate
  -> bounded target mutation
  -> consequence observation
@@ -57,7 +58,9 @@ The positive lane must demonstrate:
 
 A direct/ungoverned bypass attempt against the bounded target must remain unable to produce the authorized mutation/evidence state.
 
-The final receipt must state both:
+The final resident receipt must prove the actual reference boundary on the sovereign resident. Source/CI fixtures may validate software semantics but cannot set resident observation predicates.
+
+Required resident completion fields remain:
 
 ```text
 reference_enforced_boundary_observed=true
@@ -93,6 +96,7 @@ master-records/**
 
 ```text
 Governance ALLOW != target authority
+fresh binding ALLOW != target authority
 adapter != execution authority
 Interlock/InTr/HB != execution authority
 Master Records custody != execution authority
@@ -106,16 +110,76 @@ publication authority = false
 ## Lifecycle
 
 ```text
-IMPLEMENTED: true
-VALIDATED: true
-MERGED: true
+BASE_SOURCE_IMPLEMENTED: true
+BASE_SOURCE_VALIDATED: true
+BASE_SOURCE_MERGED: true
+FRESH_BINDING_SOURCE_IMPLEMENTED: true
+FRESH_BINDING_SOURCE_VALIDATED: pending StegCore PR #217 exact-head CI
+FRESH_BINDING_SOURCE_MERGED: false
 RESIDENT_ADMITTED: false
+RESIDENT_EXECUTION_OBSERVED: false
 REFERENCE_ENFORCED_BOUNDARY_OBSERVED: false
 BYPASS_NEGATIVE_CONTROL_OBSERVED: false
 REAL_EXTERNAL_SYSTEM_ENFORCED_ACTIVATION: false
 COMPLETE: false
 ```
 
+## Fresh-binding two-route source strengthening — 2026-09-14
+
+The prior reference runner's `bypass_attempt()` only compared a target snapshot to itself and therefore did not exercise a genuine alternate consequence-capable route. StegCore PR #217 replaces that weak source negative control with a bounded two-route experiment while preserving the existing authority chain.
+
+Source PR:
+
+```text
+repository: StegVerse-Labs/StegCore
+pull_request: #217
+head: feature/universal-governance-fresh-binding
+exact head at opening: 9ec5459d318b04123ea18181f165efbd9d722e3c
+validation: PENDING
+merge: false
+```
+
+The source experiment binds consequence-time execution to:
+
+```text
+state_version
+state_hash
+policy_epoch
+policy_hash
+evidence_bundle_hash
+execution_binding_id
+```
+
+The experiment sequence is:
+
+```text
+V0/P0/E0 binding + Governance ALLOW
+ -> retained material state transition V0/P0/E0 -> V1/P1/E1
+ -> stale canonical route DENY; executor not invoked
+ -> stale alternate consequence route DENY; target unchanged
+ -> exact candidate re-evaluated
+ -> fresh V1/P1/E1 binding
+ -> existing Governance + StegGate consequence path
+ -> exactly one bounded target mutation
+ -> consume execution_binding_id
+ -> alternate replay DENY; target mutation count remains one
+ -> canonical consequence evidence
+ -> Universal InTr return
+ -> Master Records source projection
+```
+
+The reusable `stegcore.fresh_commit_binding` component is a pure exact-state and single-use-binding predicate. It grants no Governance, credential, Interlock/InTr, WorkerCoordinator, or consequence authority. Missing observed binding state or missing consumption state fails closed; established drift or replay is denied.
+
+Source/CI completion of PR #217 may establish only deterministic software behavior. It MUST NOT be translated into any of these claims without authentic runtime evidence:
+
+```text
+resident WorkerCoordinator claim/fence
+resident execution observed
+reference ENFORCED boundary observed on sovereign resident
+bypass negative control observed on sovereign resident
+Master Records destination custody for authentic resident evidence
+real external-system ENFORCED activation
+```
 
 ## Resident targeted execution seam — issue #702
 
@@ -141,14 +205,13 @@ Current lifecycle remains:
 
 ```text
 SOURCE_IMPLEMENTED: true
-SOURCE_VALIDATED: true
-SOURCE_MERGED: true
+SOURCE_VALIDATED: true for base source; fresh-binding PR pending
+SOURCE_MERGED: true for base source; fresh-binding PR not merged
 RESIDENT_TARGETABLE: true
 RESIDENT_EXECUTION_OBSERVED: false
 REFERENCE_ENFORCED_BOUNDARY_OBSERVED: false
 REAL_EXTERNAL_SYSTEM_ENFORCED_ACTIVATION: false
 ```
-
 
 ## Resident request dispatch integration
 
@@ -180,7 +243,6 @@ REFERENCE_ENFORCED_BOUNDARY_OBSERVED: false
 REAL_EXTERNAL_SYSTEM_ENFORCED_ACTIVATION: false
 ```
 
-
 ## Resident source autodiscovery
 
 The reference worker now consumes the same non-secret local repository-map model used by the broader resident stack.
@@ -202,7 +264,6 @@ credential authority: TV/TVC
 Explicit source locators remain supported, but are no longer the only way an already-materialized resident source bundle can satisfy the worker. A mapped/canonical path is accepted only when all required source files are actually present. Malformed or incomplete mappings grant nothing and the worker remains HANDOFF_READY/source-pending.
 
 This closes a source-discovery seam only. Authentic resident execution, reference-boundary observation, and real external-system activation remain separately unobserved.
-
 
 ## Native autonomous request consumption
 
