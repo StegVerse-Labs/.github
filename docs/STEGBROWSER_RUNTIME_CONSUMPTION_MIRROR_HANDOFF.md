@@ -116,6 +116,14 @@ The merged source adds the bounded current-iPhone TestFlight build-upload proces
 
 This merge is therefore recorded as source continuity only. The first unresolved runtime predicate remains `CANONICAL_WORK_RESIDENT_CONSUMPTION_OBSERVED`.
 
+## Same-device Canonical Work root-InTr source merged
+
+Site PR `#1305` merged at `4a10b42d4bb2743205c774d3c667cefc7353a710` after exact source head `834fe457ab5b321d75a5e43fc01429566b366578` passed Site Bootstrap Validate, Site Handoff Orchestrator, Ecosystem Heartbeat Orchestration, MIR InTr SDK Return Profile, Validate StegOS Persistent Card UX, and Node IndexedDB Schema Migration.
+
+The merge reuses the single existing root-scoped Universal InTr service-worker lifecycle on the current iPhone, preserves the existing KV/HIL/Evaluator/Master Records profiles, and layers the exact `CanonicalWork:Ingress` profile plus a current-iPhone launcher for this Goal/COSV through the registered Node outbox and existing `STEGVERSE_INTR_LOCAL_TRIGGER` path. It does not create a second service worker, scheduler, WorkerCoordinator, credential path, or user-operated device.
+
+The source is deliberately fail-closed: the Site ingress does not mint WorkerCoordinator claim/fence authority and does not claim resident consumption. Source validation and merge therefore establish **capability availability only**, not `INGRESS_ADMITTED`, `CANONICAL_WORK_RESIDENT_CONSUMPTION_OBSERVED`, or StegVerse self-building runtime evidence. Authentic execution must occur in the registered current-iPhone runtime and retain the resulting admission/consumption evidence.
+
 ## Required runtime evidence
 
 The runtime path must authentically produce or bind:
@@ -174,4 +182,4 @@ The repository README already documents Canonical Work ingress, autonomous conti
 
 ## Current state
 
-`ACTIVE / CHECKED_OUT / TASK_REGISTRY_CHECKIN_CONTINUE_OBSERVED / EPHEMERAL_STEGOS_SELECTED / SUCCESSOR_RESIDENT_INGRESS_SOURCE_MERGED / WORKER_SELF_HEAL_SOURCE_CONTINUITY_REPAIRED / CURRENT_IPHONE_PROCESSING_OBSERVER_SOURCE_MERGED / CANONICAL_WORK_RESIDENT_CONSUMPTION_NOT_OBSERVED / WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED / INTR_ADMISSION_NOT_OBSERVED / TVC_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / TVC_PRIMARY_RUNTIME_RESTART_NOT_OBSERVED / IMMUTABLE_OBSERVER_EXECUTION_NOT_OBSERVED / OWNER_INGRESS_READY_NOT_OBSERVED / REMOTE_DEVICE_NOT_REQUIRED / NO_CONNECTED_DEVICE_PREREQUISITE / NO_SECOND_USER_OPERATED_DEVICE`
+`ACTIVE / CHECKED_OUT / TASK_REGISTRY_CHECKIN_CONTINUE_OBSERVED / EPHEMERAL_STEGOS_SELECTED / SUCCESSOR_RESIDENT_INGRESS_SOURCE_MERGED / WORKER_SELF_HEAL_SOURCE_CONTINUITY_REPAIRED / CURRENT_IPHONE_PROCESSING_OBSERVER_SOURCE_MERGED / SAME_DEVICE_CANONICAL_WORK_INTR_SOURCE_MERGED / CANONICAL_WORK_RESIDENT_CONSUMPTION_NOT_OBSERVED / WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED / INTR_ADMISSION_NOT_OBSERVED / TVC_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / TVC_PRIMARY_RUNTIME_RESTART_NOT_OBSERVED / IMMUTABLE_OBSERVER_EXECUTION_NOT_OBSERVED / OWNER_INGRESS_READY_NOT_OBSERVED / REMOTE_DEVICE_NOT_REQUIRED / NO_CONNECTED_DEVICE_PREREQUISITE / NO_SECOND_USER_OPERATED_DEVICE`
