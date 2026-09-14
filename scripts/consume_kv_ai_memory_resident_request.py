@@ -141,19 +141,28 @@ def attempt_memory_packet_admission(source: Path, *, runner=subprocess.run, env:
             "private_input_bytes_read_by_consumer": False,
             "authority_effect": "NONE_WAIT_STATE",
         }
-    installer = source / "scripts/install_kv_ai_memory_universal_intr_route.py"
+    preparer = source / "scripts/prepare_kv_ai_memory_intr_runtime_source.py"
     router = source / "workers/universal_intr_profiled_ingress.py"
     submitter = source / "scripts/submit_kv_ai_memory_packet_local.py"
-    for path in (installer, router, submitter):
+    for path in (preparer, router, submitter):
         if not path.is_file():
             raise RuntimeError(f"KV AI memory admission source missing: {path}")
     sanitized = clean_env(values)
-    install = runner([sys.executable, str(installer), "--router", str(router)], cwd=source, capture_output=True, text=True, check=False, env=sanitized, timeout=120)
-    if install.returncode != 0:
+    prepared = runner([sys.executable, str(preparer), "--source-root", str(source)], cwd=source, capture_output=True, text=True, check=False, env=sanitized, timeout=120)
+    if prepared.returncode != 0:
         return {
             "state": "ROUTE_PREPARATION_FAILED",
             "admission_attempted": False,
-            "route_preparation_returncode": install.returncode,
+            "route_preparation_returncode": prepared.returncode,
+            "private_input_bytes_read_by_consumer": False,
+            "authority_effect": "NONE_FAIL_CLOSED",
+        }
+    preparation = last_json(prepared.stdout)
+    if not isinstance(preparation, dict) or preparation.get("state") not in {"ROUTE_INSTALLED_LOCAL_SOURCE", "ROUTE_ALREADY_INSTALLED"}:
+        return {
+            "state": "ROUTE_PREPARATION_RESULT_INVALID",
+            "admission_attempted": False,
+            "route_preparation_returncode": prepared.returncode,
             "private_input_bytes_read_by_consumer": False,
             "authority_effect": "NONE_FAIL_CLOSED",
         }
@@ -163,6 +172,7 @@ def attempt_memory_packet_admission(source: Path, *, runner=subprocess.run, env:
     return {
         "state": result.get("state") if isinstance(result, dict) else "SUBMISSION_RESULT_UNREADABLE",
         "admission_attempted": True,
+        "route_preparation_state": preparation.get("state"),
         "submission_returncode": submitted.returncode,
         "admission_written": bool(isinstance(result, dict) and result.get("admission_written") is True),
         "receipt_hash": result.get("receipt_hash") if isinstance(result, dict) else None,
