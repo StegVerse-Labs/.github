@@ -108,6 +108,14 @@ The resident carrier already performs local supervision of WorkerCoordinator pre
 
 This repair means a self-healed WorkerCoordinator can retain the local canonical source locator required by the existing local-source refresh path and therefore discover current resident requests after recovery. It does not prove that WorkerCoordinator is presently running, that it has consumed this successor request, or that any later runtime predicate has occurred. HeartBeat remains non-authorizing; no scheduler, dispatcher, credential path, network source transport, connected-device prerequisite, or second user-operated device was introduced.
 
+## Current-iPhone processing observer source merged
+
+StegOS PR `#380` merged at `310c4e723fe98ad81931deef50dced8b43a0dae9`. Before merge, exact source head `d26c4bd6e238beec83e42bb377316092a876fc19` passed StegOS CI, Apple TVC Credential Boundary Validation, TVC TestFlight Upload Handoff Validation, and Current iPhone IPA Signing Executor Validation.
+
+The merged source adds the bounded current-iPhone TestFlight build-upload processing observer through the existing TVC `UPLOAD_TESTFLIGHT_BUILD` provider-operation boundary. It preserves TV/TVC credential authority, SKAP custody, single-device posture, and validation-only GitHub semantics. The source and its validation do **not** establish current Canonical Work resident consumption, WorkerCoordinator claim/fence, Interlock/InTr runtime admission, authentic TVC provider execution, Apple processing state, TestFlight availability, or `OWNER_INGRESS_READY`.
+
+This merge is therefore recorded as source continuity only. The first unresolved runtime predicate remains `CANONICAL_WORK_RESIDENT_CONSUMPTION_OBSERVED`.
+
 ## Required runtime evidence
 
 The runtime path must authentically produce or bind:
@@ -166,4 +174,4 @@ The repository README already documents Canonical Work ingress, autonomous conti
 
 ## Current state
 
-`ACTIVE / CHECKED_OUT / TASK_REGISTRY_CHECKIN_CONTINUE_OBSERVED / EPHEMERAL_STEGOS_SELECTED / SUCCESSOR_RESIDENT_INGRESS_SOURCE_MERGED / WORKER_SELF_HEAL_SOURCE_CONTINUITY_REPAIRED / CANONICAL_WORK_RESIDENT_CONSUMPTION_NOT_OBSERVED / WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED / INTR_ADMISSION_NOT_OBSERVED / TVC_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / TVC_PRIMARY_RUNTIME_RESTART_NOT_OBSERVED / IMMUTABLE_OBSERVER_EXECUTION_NOT_OBSERVED / OWNER_INGRESS_READY_NOT_OBSERVED / REMOTE_DEVICE_NOT_REQUIRED / NO_CONNECTED_DEVICE_PREREQUISITE / NO_SECOND_USER_OPERATED_DEVICE`
+`ACTIVE / CHECKED_OUT / TASK_REGISTRY_CHECKIN_CONTINUE_OBSERVED / EPHEMERAL_STEGOS_SELECTED / SUCCESSOR_RESIDENT_INGRESS_SOURCE_MERGED / WORKER_SELF_HEAL_SOURCE_CONTINUITY_REPAIRED / CURRENT_IPHONE_PROCESSING_OBSERVER_SOURCE_MERGED / CANONICAL_WORK_RESIDENT_CONSUMPTION_NOT_OBSERVED / WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED / INTR_ADMISSION_NOT_OBSERVED / TVC_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / TVC_PRIMARY_RUNTIME_RESTART_NOT_OBSERVED / IMMUTABLE_OBSERVER_EXECUTION_NOT_OBSERVED / OWNER_INGRESS_READY_NOT_OBSERVED / REMOTE_DEVICE_NOT_REQUIRED / NO_CONNECTED_DEVICE_PREREQUISITE / NO_SECOND_USER_OPERATED_DEVICE`
