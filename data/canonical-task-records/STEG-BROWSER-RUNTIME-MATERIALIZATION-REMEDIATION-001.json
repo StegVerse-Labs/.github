@@ -4,7 +4,7 @@
   "correlation_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
   "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
   "parent_task_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
-  "goal": "Recruit and authentically execute the existing reusable StegBrowser runtime-consumption task through the canonical StegVerse execution path, retain and classify its authentic runtime evidence, and use Healer only when an observed failure condition triggers a bounded remediation event.",
+  "goal": "Recruit and authentically execute the existing reusable StegBrowser runtime-consumption task through a governed invocation-bound runtime connection whose callable and refreshable variables are resolved by the state transition, retain and classify authentic runtime evidence, and use Healer only for an observed remediable failure.",
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT",
   "cosv_task_vector": "40000100100000",
@@ -15,16 +15,14 @@
     "docs/STEGBROWSER_RESIDENT_RECEIPT_TRANSPORT_MIRROR_HANDOFF.md",
     "data/canonical-task-records/STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001.json",
     "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
+    "source-bundles/reusable-task-registry.d/RT-SOVEREIGN-SOURCE-REFRESH-001.json",
     "scripts/run_stegbrowser_runtime_consumption_reusable.py",
     "scripts/check_stegbrowser_runtime_consumption_receipts.py",
     "StegVerse-Labs/.github#1812",
     "StegVerse-Labs/.github#1841",
     "StegVerse-Labs/.github#1852",
     "StegVerse-Labs/.github#1866",
-    "StegVerse-Labs/.github#1884",
-    "StegVerse-Labs/StegVerse-Healer#81",
-    "StegVerse-Labs/StegVerse-Healer#82",
-    "StegVerse-Labs/StegVerse-Healer#83"
+    "StegVerse-Labs/.github#1884"
   ],
   "dependencies": [
     {
@@ -37,8 +35,22 @@
       "dependency_id": "DEP-REUSABLE-STEG-BROWSER-RUNTIME-CONSUMPTION",
       "kind": "REUSABLE_TASK",
       "state": "REGISTERED_EXECUTION_UNOBSERVED",
-      "ref": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
-      "disposition": "This is the normal recruitable work unit for the Goal. It must execute through the canonical reusable-task architecture; Healer is not its normal carrier or prerequisite."
+      "ref": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001"
+    },
+    {
+      "dependency_id": "DEP-RUNTIME-CONNECTION-STATE-TRANSITION",
+      "kind": "GOVERNED_STATE_TRANSITION",
+      "state": "PENDING_AUTHENTIC_TRANSITION_EVIDENCE",
+      "ref": "INTERLOCK_INTR",
+      "variables": ["callable", "refreshable"],
+      "disposition": "callable and refreshable are invocation-bound variables of the governed transition that establishes the runtime connection. Neither value may be inferred from persistent source state."
+    },
+    {
+      "dependency_id": "DEP-SOVEREIGN-SOURCE-REFRESH",
+      "kind": "REUSABLE_TASK_SELECTED_BY_TRANSITION",
+      "state": "PENDING_TRANSITION_VARIABLE_RESOLUTION",
+      "ref": "RT-SOVEREIGN-SOURCE-REFRESH-001",
+      "selection_condition": "callable=true AND refreshable=true"
     },
     {
       "dependency_id": "DEP-CANONICAL-WORK-RUNTIME-INGRESS",
@@ -53,7 +65,7 @@
       "ref": "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED"
     },
     {
-      "dependency_id": "DEP-INTR-ADMISSION",
+      "dependency_id": "DEP-INTR-EXECUTION-ADMISSION",
       "kind": "RUNTIME_EVIDENCE_GATE",
       "state": "PENDING_AUTHENTIC_EXECUTION",
       "ref": "INTR_ADMISSION_OBSERVED"
@@ -62,32 +74,39 @@
       "dependency_id": "DEP-NATIVE-RECEIPT-TRANSPORT",
       "kind": "RUNTIME_EVIDENCE_TRANSPORT",
       "state": "VERIFIER_MERGED_RUNTIME_RECEIPT_UNOBSERVED",
-      "ref": "STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001",
-      "disposition": "PR 1852 verifier is merged and validated; it classifies authentic retained receipts after the normal reusable task executes."
+      "ref": "STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001"
     }
   ],
+  "runtime_connection_transition": {
+    "variables": {
+      "callable": "PENDING_AUTHENTIC_TRANSITION_EVIDENCE",
+      "refreshable": "PENDING_AUTHENTIC_TRANSITION_EVIDENCE"
+    },
+    "authority": "INTERLOCK_INTR",
+    "always_on_runtime_source_assumed": false,
+    "source_freshness_persistent_state": false,
+    "refresh_reusable_task_ref": "RT-SOVEREIGN-SOURCE-REFRESH-001",
+    "refresh_selection_condition": "callable=true AND refreshable=true",
+    "no_refresh_condition": "callable=true AND refreshable=false",
+    "non_callable_condition": "callable=false"
+  },
   "conditional_remediation": {
     "healer_role": "TRIGGERED_REMEDIATION_EVENT",
     "normal_execution_dependency": false,
-    "normal_reusable_task_carrier": false,
     "trigger_condition": "AN_OBSERVED_FAILURE_OR_BROKEN_CONDITION_REQUIRES_A_BOUNDED_REMEDY",
-    "effect": "APPLY_THE_AUTHORIZED_BOUNDED_REMEDY_TO_THE_OBSERVED_DEFECT_THEN_RETURN_CONTROL_TO_THE_CANONICAL_EXECUTION_PATH",
-    "completion_authority": "NONE",
-    "historical_repairs": [
-      "StegVerse-Labs/StegVerse-Healer#81",
-      "StegVerse-Labs/StegVerse-Healer#82",
-      "StegVerse-Labs/StegVerse-Healer#83"
-    ]
+    "completion_authority": "NONE"
   },
   "runtime_resolution": {
-    "normal_execution_chain": "recruit RT-STEGBROWSER-RUNTIME-CONSUMPTION-001 -> canonical reusable-task trigger/scheduler -> admitted StegOS execution -> Canonical Work -> WorkerCoordinator claim/fence -> Interlock/InTr admission -> StegBrowser runtime-consumption runner -> retained evidence -> receipt classifier -> Master Records",
-    "healer_branch": "only if an observed failure condition triggers remediation: failure observation -> Healer bounded remedy -> return to the interrupted canonical stage -> retry/continue only as authorized by that stage",
+    "normal_execution_chain": "recruit RT-STEGBROWSER-RUNTIME-CONSUMPTION-001 -> Interlock/InTr evaluates/admit callable+refreshable runtime-connection state -> if callable=true and refreshable=true invoke RT-SOVEREIGN-SOURCE-REFRESH-001 -> materialize invocation-bound runtime state -> Canonical Work -> WorkerCoordinator claim/fence -> Interlock/InTr execution admission -> StegBrowser runtime-consumption runner -> retained evidence -> receipt classifier -> Master Records",
+    "healer_branch": "observed remediable failure -> Healer bounded remedy -> return to interrupted GC stage",
     "external_connector_role": "NONE_NOT_APPLICABLE",
     "physical_device_inventory_role": "NONE_NOT_APPLICABLE",
     "github_actions_role": "VALIDATION_AND_EVIDENCE_TRANSPORT_ONLY"
   },
   "allowed_next_transitions": [
     "RECRUIT_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001",
+    "OBSERVE_RUNTIME_CONNECTION_TRANSITION_VARIABLES",
+    "INVOKE_RT_SOVEREIGN_SOURCE_REFRESH_IF_CALLABLE_AND_REFRESHABLE",
     "OBSERVE_AUTHENTIC_CANONICAL_WORK_CONSUMPTION",
     "OBSERVE_AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE",
     "OBSERVE_INTR_ADMISSION",
@@ -96,7 +115,10 @@
     "TRIGGER_HEALER_ONLY_FOR_OBSERVED_REMEDIABLE_FAILURE"
   ],
   "prohibited_transitions": [
-    "TREAT_HEALER_AS_NORMAL_REUSABLE_TASK_CARRIER",
+    "ASSUME_ALWAYS_ON_RUNTIME_SOURCE",
+    "ASSUME_REFRESH_ON_EVERY_INVOCATION_WITHOUT_TRANSITION_STATE",
+    "ASSUME_NO_REFRESH_WITHOUT_TRANSITION_STATE",
+    "INFER_CALLABLE_OR_REFRESHABLE_FROM_SOURCE_STATE",
     "TREAT_HEALER_AS_NORMAL_EXECUTION_PREREQUISITE",
     "TRIGGER_HEALER_WITHOUT_OBSERVED_FAILURE_CONDITION",
     "ADD_SECOND_RUNTIME_EVIDENCE_OWNER",
@@ -116,6 +138,9 @@
     "claimed": false,
     "validated": false,
     "reusable_task_registered": true,
+    "runtime_connection_transition_observed": false,
+    "callable_observed": false,
+    "refreshable_observed": false,
     "reusable_task_execution_observed": false,
     "canonical_work_consumption_observed": false,
     "workercoordinator_claim_fence_observed": false,
@@ -129,8 +154,8 @@
     "github_runtime_authority": "NONE",
     "healer_role": "TRIGGERED_REMEDIATION_ONLY",
     "reusable_task_path_required": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
+    "runtime_connection_transition_authority": "INTERLOCK_INTR",
     "worker_claim_authority": "WORKERCOORDINATOR",
-    "interlock_intr_required_for_governed_ingress_egress": true,
     "credential_authority": "TV/TVC",
     "user_verification_authority": "KV/SKAP Vault",
     "master_records_reality_authority": true,
