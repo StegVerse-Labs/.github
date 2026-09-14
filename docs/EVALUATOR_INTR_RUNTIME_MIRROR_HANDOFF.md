@@ -5,14 +5,13 @@ Repository: `StegVerse-Labs/.github`
 Goal Task ID: `EVALUATOR-INTR-READ-REVIEW-RUNTIME-431`
 Machine Task: `SHWP-EVALUATOR-INTR-READ-RUNTIME-001`
 Canonical owner: `StegVerse-Labs/.github#431`
-Repair branch: `fix/evaluator-intr-event-triggered-callable`
 Credential authority: `TV/TVC`
 GitHub runtime authority: `NONE`
 Authority effect: `NONE_READ_ONLY`
 
-## Current truth
+## Current canonical truth
 
-The canonical Universal InTr architecture is event-triggered and continuously callable. It does **not** require an always-on application receiver.
+The evaluator runtime is a machine-owned, event-triggered Universal InTr path. It does not depend on a ChatGPT Remote Desktop connection, connector-visible device, second user-operated device, persistent application receiver, or physical-device verification gate.
 
 Canonical invariants:
 
@@ -20,40 +19,39 @@ Canonical invariants:
 event_triggered = true
 always_on_application_receiver_required = false
 second_user_device_required = false
+remote_desktop_or_connector_device_required = false
+connector_visible_device_count_has_authority_effect = false
 receiver_unavailable_disposition = DURABLE_QUEUE_OR_EVENT_EPHEMERAL_MATERIALIZATION
 ```
 
-The prior machine-owned evaluator worker violated that lifecycle intent by overriding the evaluator server's bounded default with `--max-requests 0`, persisting a PID, and treating `EVALUATOR_INTR_RECEIVER_READY` as a long-lived prerequisite. That persistent-receiver lifecycle is retired as a generic evaluator/InTr prerequisite by this repair.
+The organization Task Registry and continuity policy establish that a connector reporting zero, one, or many reachable execution surfaces describes only that connector. It does not create runtime authorization, verification, trust, execution eligibility, or a required-device identity. Therefore all prior evaluator reasoning that waited for a connector-visible or remotely connected device is superseded and must not be repeated.
 
-## Repaired machine-owned lifecycle
+## Machine-owned lifecycle
 
-The repaired task performs:
+The canonical progression is:
 
 ```text
-admitted machine-owned invocation
--> validate fresh claim/fence and TV/TVC authority boundary
+existing resident carrier / retained authentic resident evidence
+-> WorkerCoordinator fresh claim/fence for the exact task
+-> current Interlock/InTr admission
 -> observe declared sovereign node + local Site/StegOS/runtime roots
 -> observe admitted evaluator route config
 -> if authentic prior round-trip receipt exists: terminalize
 -> otherwise materialize one bounded READ_REVIEW call surface
    scripts/serve_evaluator_intr_runtime.py --max-requests 1
--> confirm bounded call surface is callable
--> retain event-receiver.latest.json with:
-     event_triggered=true
-     persistent_receiver=false
-     always_on_application_receiver_required=false
--> one admitted READ_REVIEW request consumes that call surface
+-> exact request/manifest binding
 -> canonical InTr ingress RECEIVED receipt
+-> canonical evaluator projection
 -> canonical InTr egress FORWARDED receipt
--> retained write-once round-trip bundle
--> later invocation terminalizes on EVALUATOR_INTR_READ_ROUND_TRIP_OBSERVED
+-> egress prior_receipt_hash == exact ingress receipt_hash
+-> retained write-once EVALUATOR_INTR_READ_ROUND_TRIP_OBSERVED bundle
 ```
 
-A still-live one-request call surface may be reused to avoid binding a duplicate listener to the same route. It is not promoted into an always-on receiver and exits after the bounded request is consumed.
+A still-live one-request call surface may be reused to avoid a duplicate listener. It is not promoted into an always-on receiver and exits after its bounded request is consumed.
 
-## Existing functional evidence retained
+## Existing functional evidence
 
-A bounded live execution previously used an actual Chromium process, the shared Service Gateway adapter, the evaluator READ_REVIEW runtime, and canonical StegOS Universal InTr receipt generation. The retained evidence established:
+A prior bounded live execution used Chromium, the shared Service Gateway adapter, the evaluator READ_REVIEW runtime, and canonical StegOS Universal InTr receipt generation. Retained evidence established:
 
 ```text
 browser -> Gateway -> InTr -> evaluator -> egress: OBSERVED_BOUNDED_LIVE_EXECUTION
@@ -71,191 +69,120 @@ egress receipt_id: EVAL-OUT-097598820e03794bd150594c
 egress receipt_hash: sha256:14b15dd4f65e2be0ec0b045daf8a3b57c6d15453a739544057cccb19ecd04615
 ```
 
-That bounded live proof remains evidence that the READ_REVIEW function and receipt lineage can execute. It is not evidence that a permanently available service is required.
+This proves the READ_REVIEW function and receipt lineage can execute. It does not prove a fresh post-repair round trip and does not grant authority for a new transition.
 
-## Canonical reusable transport
+## Repaired evaluator lifecycle source
 
-Evaluator request/projection validation remains evaluator-specific. InTr packet construction and receipt semantics use the canonical StegOS profile:
-
-```text
-profile = evaluator-read-review
-source = DEVICE_SYSTEM / Site:EvaluatorReview
-destination = STEGOS_ECOSYSTEM / SDK:EvaluatorReviewIngress
-backbone = stegos.intr_backbone.CanonicalInTrConnector
-always_on_receiver_required = false
-second_user_device_required = false
-```
-
-The Site device-local Universal InTr service worker independently advertises `SDK:EvaluatorReviewIngress` through `/intr/profile` with `event_triggered=true` and `always_on_application_receiver_required=false`, and its evaluator path accepts canonical Node materialization triggers at `/intr/materialization`.
-
-## Repair source
-
-Changed on `fix/evaluator-intr-event-triggered-callable`:
+Merged source repair replaced the obsolete persistent-receiver lifecycle with bounded event-triggered callability:
 
 - `workers/evaluator_intr_read_runtime_worker.py`
-  - replaces `ensure_receiver()` persistent lifecycle with `ensure_callable()`;
-  - replaces `--max-requests 0` with `--max-requests 1`;
-  - replaces persistent readiness state with `EVALUATOR_INTR_EVENT_RECEIVER_CALLABLE`;
+  - uses bounded `ensure_callable()` semantics;
+  - invokes `scripts/serve_evaluator_intr_runtime.py --max-requests 1`;
   - records `event_triggered=true`;
   - records `persistent_receiver=false`;
   - records `always_on_application_receiver_required=false`;
-  - preserves terminalization only on authentic `EVALUATOR_INTR_READ_ROUND_TRIP_OBSERVED` evidence.
+  - terminalizes only on authentic `EVALUATOR_INTR_READ_ROUND_TRIP_OBSERVED` evidence.
 - `tests/test_evaluator_intr_read_runtime_worker.py`
   - protects one-request event materialization;
   - rejects regression to persistent receiver semantics;
-  - verifies an already-live bounded call surface is reused rather than creating a duplicate listener;
+  - verifies reuse of an already-live bounded call surface;
   - preserves hosted-runtime and credential fail-closed behavior.
 - `handoffs/SHWP-EVALUATOR-INTR-READ-RUNTIME-001.json`
-  - removes durable receiver readiness as a success predicate;
-  - makes bounded event-triggered callability the nonterminal state.
+  - keeps the task machine-owned and requires a fresh fence.
 
-## Validation requirements
+## Current Task Registry state
 
-The repair is valid only when exact-head tests establish all of the following:
-
-```text
-worker invocation claim/fence validation: PASS
-missing route remains machine-retryable: PASS
-public route without explicit TLS fails closed: PASS
-prior authentic round-trip terminalizes without new listener: PASS
-new evaluator call surface uses --max-requests 1: PASS
-event_triggered=true: PASS
-persistent_receiver=false: PASS
-always_on_application_receiver_required=false: PASS
-live bounded call surface is reused without duplicate listener: PASS
-hosted execution fails closed: PASS
-existing evaluator runtime/receipt tests remain green: PASS
-```
-
-Source, CI, merge, and a `CALLABLE` record do not by themselves prove a fresh production request traversed the route. Fresh runtime completion remains authentic receipt evidence only.
-
-## Post-repair observation attempt — 2026-09-14
-
-After merge `eb0f2687265c62a7e621dd22d10cd5da3c2bf591`, the canonical Task Registry and this handoff were re-read before attempting runtime execution.
-
-Observed canonical state:
-
-```text
-SHWP-EVALUATOR-INTR-READ-RUNTIME-001 = HANDOFF_READY
-worker status = AVAILABLE
-fresh runtime completion evidence = NOT OBSERVED
-fresh EVALUATOR_INTR_EVENT_RECEIVER_CALLABLE receipt = NOT OBSERVED
-fresh EVALUATOR_INTR_READ_ROUND_TRIP_OBSERVED receipt = NOT OBSERVED
-```
-
-An authorized remote-runtime execution attempt from the current session could not reach a resident device because the connected remote execution surface reported no available device. This is an **observation/execution-surface limitation**, not evidence that the StegVerse resident runtime is absent or broken. No CI, source, historical receipt, or connector error is promoted into runtime proof.
-
-The first exact unresolved goal predicate therefore remains:
-
-```text
-FRESH_AUTHENTIC_POST_REPAIR_READ_REVIEW_INVOCATION_OBSERVED = false
-```
-
-Required next authentic evidence is unchanged:
-
-```text
-one admitted post-repair READ_REVIEW invocation
--> event-triggered one-request call surface
--> exact request/manifest binding
--> ingress transition_state=RECEIVED
--> egress transition_state=FORWARDED
--> egress prior_receipt_hash == ingress receipt_hash
--> retained EVALUATOR_INTR_READ_ROUND_TRIP_OBSERVED bundle
-```
-
-No additional listener, runtime plane, scheduler, credential authority, or second user-operated device is authorized by this observation gap.
-
-## Existing carrier/bootstrap reconciliation — 2026-09-14
-
-The next execution-first pass verified that the evaluator lane itself is already wired into the existing resident carrier:
-
-```text
-control/resident-execution-request.d/evaluator-intr-read-runtime-001.json = REQUESTED
-scripts/bootstrap_sovereign_runtime.py carries evaluator consumer/materializer
-scripts/dispatch_resident_execution_requests.py routes evaluator_intr
-scripts/consume_evaluator_intr_resident_execution_request.py targets SHWP-EVALUATOR-INTR-READ-RUNTIME-001
-```
-
-No missing evaluator registration, dispatcher, listener, runtime plane, or credential path was found.
-
-The first concrete runtime predicate before evaluator claim/fence is the existing standing Healer scheduler carrier. Its canonical registry currently records:
-
-```text
-SHWP-HEALER-SOVEREIGN-SCHEDULER-001 = HANDOFF_READY
-claim_id = null
-heartbeat_timing = null
-last_seen_at = null
-worker status = AVAILABLE
-archive reason includes HEALER_NO_TOKEN_SOVEREIGN_SCHEDULER_NOT_YET_LIVE_PROVEN
-```
-
-The standing Healer request self-materialization source repair already exists and expressly preserves WorkerCoordinator claim/fence authority. Therefore no additional source implementation was authorized or necessary in this pass.
-
-The first failing runtime predicate is now classified as:
-
-```text
-EXISTING_HEALER_STANDING_CARRIER_FRESH_CLAIM_FENCE_OBSERVED = false
-```
-
-Bounded owner remains the already-existing `SHWP-HEALER-SOVEREIGN-SCHEDULER-001` carrier; this does not create a new evaluator dependency task or parallel remediation lane. Required evidence is one authentic resident scheduler cycle that produces its normal live scheduler receipt and then allows the existing evaluator standing request to proceed into its own fresh WorkerCoordinator claim/fence.
-
-The absence of an externally connected remote-control device is not the blocker classification and does not imply a second user-operated device requirement.
-
-## Fresh carrier observation — 2026-09-14 15:47 CDT
-
-The canonical evaluator registry, Healer scheduler registry, Healer executable handoff, and the connected remote execution surface were re-read in this session.
-
-Freshly observed state:
+As of this reconciliation:
 
 ```text
 SHWP-EVALUATOR-INTR-READ-RUNTIME-001 = HANDOFF_READY
 EVALUATOR claim_id = null
 EVALUATOR worker status = AVAILABLE
+EVALUATOR fresh_fence_required = true
+
 SHWP-HEALER-SOVEREIGN-SCHEDULER-001 = HANDOFF_READY
 HEALER claim_id = null
-HEALER heartbeat_timing = null
-HEALER last_seen_at = null
 HEALER worker status = AVAILABLE
-connected remote execution devices = 0
-fresh resident targeted-dispatch receipt = NOT OBSERVED
-fresh Healer request-consumption receipt = NOT OBSERVED
-fresh live Healer scheduler receipt = NOT OBSERVED
-fresh evaluator READ_REVIEW round trip = NOT OBSERVED
 ```
 
-No repository receipt directory or CI artifact is promoted into sovereign runtime proof. The remote connector reporting zero connected devices is still only an execution/observation-surface limitation; it does not authorize a second user-operated machine and does not change the canonical owner chain.
+These are coordination/admission states, not evidence of runtime absence.
 
-The bounded next solution path remains:
+The evaluator lane is already registered through the resident path:
 
 ```text
-existing resident runtime becomes observable through an authorized execution surface
--> existing Healer standing request receives targeted resident dispatch
--> WorkerCoordinator performs fresh claim/fence
--> authentic Healer scheduler cycle emits its normal live scheduler/request-consumption receipts
--> existing evaluator standing request proceeds
--> fresh evaluator WorkerCoordinator claim/fence
--> one bounded event-triggered READ_REVIEW invocation
--> exact request/manifest binding
--> ingress RECEIVED
--> egress FORWARDED
--> exact prior_receipt_hash lineage
--> retained EVALUATOR_INTR_READ_ROUND_TRIP_OBSERVED bundle
+control/resident-execution-request.d/evaluator-intr-read-runtime-001.json
+scripts/bootstrap_sovereign_runtime.py
+scripts/dispatch_resident_execution_requests.py
+scripts/consume_evaluator_intr_resident_execution_request.py
 ```
 
-Do not create a second scheduler, runtime plane, evaluator owner, credential authority, or GitHub-hosted execution substitute.
+No second dispatcher, scheduler, runtime plane, listener, credential path, remote-device bridge, or connector-specific carrier is required or authorized.
 
-## README disposition
+## Healer carrier reconciliation
 
-Root `README.md` was reviewed for this repair. It already documents the organization-owned Universal InTr ingress as event-triggered and describes event materialization through the shared profile. No repository-wide semantic rewrite is required; this repair removes the contradictory evaluator-specific persistent-receiver lifecycle so the task conforms to those existing README semantics.
+The existing `SHWP-HEALER-SOVEREIGN-SCHEDULER-001` owner remains the shared resident scheduling/invocation carrier. Source-side retained-root observation repair already exists in `StegVerse-Labs/StegVerse-Healer` and retains the packet at:
 
-## Remaining runtime predicate
+```text
+receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json
+```
 
-After merge, the task remains machine-owned and nonterminal until one authentic post-repair READ_REVIEW round trip is observed and retained:
+The shared remediation owner `.github#1866` classifies the current carrier-output condition as:
+
+```text
+HEALER_CARRIER_OUTPUT_NOT_ACCESSIBLE_AFTER_HEALER83
+```
+
+That classification is explicitly not evidence that a resident runtime is absent and is explicitly marked not source-side fixable. A second observer/exporter/runtime owner must not be created to compensate for an inaccessible observation surface.
+
+This evaluator goal may use any authentic retained resident/carrier evidence already produced by the existing machine-owned runtime. It must not wait for a ChatGPT connector-visible device and must not treat Remote Desktop as an execution prerequisite.
+
+## Fresh post-repair completion predicate
+
+The goal remains nonterminal until authentic post-repair evidence establishes:
 
 ```text
 EVALUATOR_INTR_READ_ROUND_TRIP_OBSERVED
 ```
 
-The immediate upstream release condition is now the existing Healer standing carrier producing a fresh authentic claim/fence cycle and scheduler receipt; after that, the evaluator standing request remains the same authorized owner for the READ_REVIEW invocation.
+Required exact evidence:
 
-No production activation, public WebPKI reachability, review/approval/freeze/execution authority, or Master Records custody is inferred from source validation.
+```text
+fresh WorkerCoordinator claim/fence for SHWP-EVALUATOR-INTR-READ-RUNTIME-001
+current applicable Interlock/InTr admission
+one bounded event-triggered READ_REVIEW invocation
+exact request/manifest binding
+ingress transition_state = RECEIVED
+egress transition_state = FORWARDED
+egress prior_receipt_hash = exact ingress receipt_hash
+retained write-once round-trip bundle
+```
+
+Source, CI, merge state, connector state, historical receipts, HeartBeat, and a `CALLABLE` record cannot substitute for this fresh evidence.
+
+## Superseded observation logic
+
+The following inference is retired:
+
+```text
+connected remote execution devices = 0
+therefore resident execution cannot proceed
+```
+
+Correct interpretation:
+
+```text
+connector-visible device count = connector-local observability only
+authority effect = NONE
+runtime-presence effect = NONE unless independently bound by authentic resident evidence
+execution prerequisite = false
+```
+
+Do not query or wait on Remote Desktop / connected-device state as a progression gate for this goal again.
+
+## README disposition
+
+Root `README.md` already defines HeartBeat as non-authorizing, machine-owned progression through WorkerCoordinator + Interlock/InTr, and connector/device identity as non-authoritative where applicable. No README semantic change is required by this correction.
+
+## Next exact action
+
+Reconcile the existing Task Registry, resident carrier outputs, canonical request-consumption receipts, WorkerCoordinator claim/fence state, and retained runtime evidence directly. If authentic Healer/resident evidence is present, bind it and advance the evaluator task through its own fresh claim/fence and bounded READ_REVIEW round trip. If no authentic resident evidence is present, classify the first missing retained-runtime predicate at its existing owner; do not use connector-visible device state as the blocker and do not create parallel runtime machinery.
