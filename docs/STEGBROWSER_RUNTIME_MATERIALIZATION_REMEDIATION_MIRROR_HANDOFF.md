@@ -9,161 +9,135 @@ Updated: 2026-09-14
 - Shared runtime-evidence owner: `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001`
 - Issue: `StegVerse-Labs/.github#1866`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / NATIVE RESIDENT EVIDENCE PATH RECONCILED / AUTHENTIC RESIDENT HEALER RECEIPT PENDING`
+- Status: `ACTIVE / CHECKED_OUT / REUSABLE-TASK-CENTERED STRUCTURE RECONCILED / AUTHENTIC RT-STEGBROWSER EXECUTION PENDING`
 - External/second user-operated device required: `false`
+
+## Healer semantic correction
+
+Healer is **not** the normal carrier, scheduler, recruiter, execution owner, or prerequisite for reusable-task execution.
+
+Healer is a **triggered remediation event**. It applies a bounded remedy only when an observed failure/broken condition satisfies the applicable remediation trigger. After the remedy, control returns to the canonical execution stage that was interrupted. Healer does not establish completion, authority, task state, or normal progression by itself.
+
+Historical Healer work (#81/#82/#83) remains valid as historical bounded repairs to previously observed defects. Those repairs do not make Healer part of the normal execution chain for this Goal.
 
 ## Goal Stage Tracker
 
-Use this section as the shared progress tracker for this Goal. A stage advances only from authentic evidence appropriate to that stage; source/CI state is never promoted into runtime completion.
+Use this as the shared progress tracker. A stage advances only from authentic evidence appropriate to that stage. Source/CI state does not prove runtime execution.
 
-- **Stage 1 — Establish the native resident execution/evidence path**
-  - **Task:** Ensure the Goal uses only the existing StegVerse-native chain: resident cycle -> standing Healer carrier -> neutral reusable scheduler -> `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` -> admitted ephemeral StegOS / Canonical Work -> retained resident receipts. Remove external connector and physical-device inventory from the execution decision.
-  - **Status:** `COMPLETE / RECONCILED`. PR #1812 established that remote-device discovery is not a runtime prerequisite; PR #1841 repaired autonomous ephemeral-to-resident evidence retention; canonical task/handoff now explicitly mark external connector and physical-device inventory as `NONE_NOT_APPLICABLE`.
+- **Stage 1 — Recruit the reusable StegBrowser runtime task**
+  - **Task:** Recruit `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` as the normal reusable work unit for Goal/COSV `40000100100000` through the existing reusable-task mechanism.
+  - **Status:** `REGISTERED / AUTHENTIC EXECUTION NOT YET OBSERVED`. The reusable task exists and its runner is bound; no authentic execution receipt is currently established.
 
-- **Stage 2 — Make exact resident receipt inspection deterministic**
-  - **Task:** Provide a non-authorizing verifier that classifies the exact existing resident receipt targets as `MISSING`, `INVALID`, or `VALID_BINDABLE` without creating runtime authority or a second execution path.
-  - **Status:** `COMPLETE / MERGED_VALIDATED`. `.github#1852` exact head `a6d0d6e33520a81b261018f36bb78ff5568d7fed` passed Organization Control `34873353094`, Deterministic Repository Suite `34873352920`, and Heartbeat `34873352943`, then merged. The verifier is available on `main`.
+- **Stage 2 — Materialize an admitted StegOS execution**
+  - **Task:** Materialize the reusable task on an eligible admitted StegOS execution substrate through the existing `SovereignLocalEventRuntimeAdapter` / reusable-task architecture. No named device or external connector is a prerequisite.
+  - **Status:** `SOURCE PATH READY / AUTHENTIC EXECUTION PENDING`.
 
-- **Stage 3 — Observe the authentic resident Healer carrier receipt**
-  - **Task:** Observe the existing resident cycle producing and retaining `receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json` through StegVerse-native resident custody.
-  - **Status:** `PENDING`. Current exact defect: `AUTHENTIC_STEGVERSE_NATIVE_RESIDENT_HEALER_CARRIER_RECEIPT_NOT_YET_OBSERVED`. No authentic mirrored resident receipt has been found yet.
+- **Stage 3 — Canonical Work ingress**
+  - **Task:** Stage only the runtime-local `PROPOSED` projection required by the reusable runner and enter the existing Canonical Work ingress path.
+  - **Status:** `PENDING AUTHENTIC RUNTIME EVIDENCE`. Required evidence includes authentic Canonical Work consumption and governed ingress state.
 
-- **Stage 4 — Bind the authentic resident custody root**
-  - **Task:** Read `execution_result.resident_custody_root_observation_retention` from the authentic Healer carrier receipt and bind `packet_ref`, `packet_relative_path`, `packet_sha256`, `retained_under_root`, `retained_under_root_source`, and `packet_state`. Accept the root only if the packet proves an authentic governed resident custody root.
-  - **Status:** `PENDING / WAITING_ON_STAGE_3`. `resident_custody_root_observed=false`; the retained-root pointer cannot be truthfully bound until Stage 3 produces the authentic receipt.
+- **Stage 4 — WorkerCoordinator claim/fence**
+  - **Task:** Allow the existing WorkerCoordinator to claim the exact task/COSV-bound work and produce the current authentic claim/fence lineage.
+  - **Status:** `PENDING`. `CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED=false`.
 
-- **Stage 5 — Classify the exact StegBrowser runtime receipts against that root**
-  - **Task:** Run `scripts/check_stegbrowser_runtime_consumption_receipts.py --runtime-root <authentic-root>` exactly once as a non-authorizing classifier, using only the root established in Stage 4.
-  - **Status:** `PENDING / WAITING_ON_STAGE_4`. The classifier is merged and ready, but `receipt_reachability_classified=false` because no authentic root is yet bound.
+- **Stage 5 — Interlock/InTr admission**
+  - **Task:** Pass the manifested execution through the existing Interlock/InTr transition path and observe authentic governed admission.
+  - **Status:** `PENDING`. `INTR_ADMISSION_OBSERVED=false`.
 
-- **Stage 6 — Bind valid runtime evidence into canonical task state**
-  - **Task:** For every `VALID_BINDABLE` receipt, bind exact path, SHA-256, state/outcome, task/COSV/subject lineage, and applicable WorkerCoordinator/InTr/TVC evidence into the canonical task evidence without inferring missing predicates.
-  - **Status:** `PENDING / WAITING_ON_STAGE_5`. `runtime_consumption_observed=false`; no valid authentic resident receipt set is currently available to bind.
+- **Stage 6 — Execute the StegBrowser runtime-consumption runner**
+  - **Task:** Execute `scripts/run_stegbrowser_runtime_consumption_reusable.py` under the admitted reusable-task invocation and observe authentic runtime consumption.
+  - **Status:** `PENDING / CURRENT FIRST RUNTIME EXECUTION BOUNDARY`. `runtime_consumption_observed=false`.
 
-- **Stage 7 — Enter the single global measurement/convergence pass**
-  - **Task:** After authentic retained runtime evidence is bound, enter `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001` through existing Canonical Work ingress, freeze exactly one measurement run ID, execute `scripts/run_global_runtime_node_profile_convergence.py` exactly once in measurement-only mode, and retain `receipts/sovereign-host/global-runtime-node-profile-convergence.latest.json`.
-  - **Status:** `PENDING / NOT_ENTERED`. No measurement run ID is frozen and no authentic global convergence receipt is observed. This stage must not start before Stage 6 establishes authentic retained runtime evidence.
+- **Stage 7 — Retain exact runtime evidence**
+  - **Task:** Retain authentic execution receipts byte-for-byte in the existing resident/evidence custody surface with exact SHA-256 and task/COSV lineage.
+  - **Status:** `PENDING AUTHENTIC INPUT`. The retention implementation exists, but authentic retained execution evidence is not yet established.
 
-- **Stage 8 — Reconstruct authoritative runtime truth and close the Goal**
-  - **Task:** Reconcile the exact subject-bound runtime evidence through Master Records, confirm all Goal completion predicates, fan evidence only to applicable shared-owner lanes, and close/retire the Goal only if the canonical terminal evidence class is satisfied.
-  - **Status:** `PENDING`. `master_records_reconstruction_observed=false`, `completion.claimed=false`, and `completion.validated=false`.
+- **Stage 8 — TVC/runtime continuation where required**
+  - **Task:** Invoke the existing StegBrowser TVC source-promotion/runtime continuation only after the required authentic predecessor evidence exists, preserving TV/TVC credential/provider authority.
+  - **Status:** `PENDING`.
 
-## Current truth
+- **Stage 9 — Immutable observer and owner-ingress evidence**
+  - **Task:** Execute the existing immutable observer/readiness path and observe the required `OWNER_INGRESS_READY_OBSERVED` and related runtime evidence where applicable.
+  - **Status:** `PENDING`.
 
-The source-side packet/retention repairs remain merged and validated, but source state does not prove runtime execution.
+- **Stage 10 — Classify and bind retained receipts**
+  - **Task:** Run the merged non-authorizing exact receipt verifier/classifier against the authentic retained runtime root and bind every `VALID_BINDABLE` receipt by path, SHA-256, outcome, task/COSV, claim/fence, and transition lineage.
+  - **Status:** `VERIFIER MERGED / AUTHENTIC INPUT PENDING`. `.github#1852` is merged and validated.
 
-- `StegVerse-Healer#81` added the task-bound non-authorizing `resident_custody_root_observation` packet surface.
-- `StegVerse-Healer#82` repaired resident-root bootstrap circularity through the existing local source-refresh path.
-- `StegVerse-Healer#83` retained the canonical packet at `receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json` under the observed resident root or existing materialization target.
-- `.github#1841` repaired autonomous evidence continuation from the admitted ephemeral StegOS execution back into the existing resident runtime.
-- `.github#1852` merged the non-authorizing exact resident receipt verifier from exact head `a6d0d6e33520a81b261018f36bb78ff5568d7fed` after Organization Control `34873353094`, Deterministic Repository Suite `34873352920`, and Heartbeat `34873352943` succeeded.
-- `.github#1884` merged the latest source-side classification without creating a second export mechanism.
+- **Stage 11 — Master Records reconstruction**
+  - **Task:** Reconstruct the exact subject-bound runtime chain through Master Records and preserve observed-reality/provenance authority there.
+  - **Status:** `PENDING`. `master_records_reconstruction_observed=false`.
 
-`scripts/consume_healer_sovereign_scheduler_request.py` writes:
+- **Stage 12 — Global runtime evidence measurement**
+  - **Task:** Only after authentic retained runtime evidence exists, enter `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001`, freeze one run ID, and execute the measurement-only convergence pass exactly once.
+  - **Status:** `PENDING / NOT ENTERED`.
 
-```text
-receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json
-```
+- **Stage 13 — Goal closure**
+  - **Task:** Verify all canonical completion predicates, propagate only applicable evidence to shared-owner lanes, and retire the Goal only from terminal authentic evidence.
+  - **Status:** `PENDING`. `completion.claimed=false`; `completion.validated=false`.
 
-and embeds:
+## Conditional Healer remediation branch
 
-```text
-execution_result.resident_custody_root_observation_retention
-```
+Healer is outside the normal stage sequence.
 
-including packet path, SHA-256, retained root, retained-root source, and packet state.
-
-## Correct execution/evidence model
-
-This task does **not** use or require an external desktop/device connector. External connector inventory is outside the production architecture for this Goal.
-
-The correct StegVerse-native chain is:
+If any stage produces an **observed broken condition** that has an authorized bounded remedy:
 
 ```text
-existing resident cycle
--> standing Healer resident carrier
--> neutral reusable scheduler
--> RT-STEGBROWSER-RUNTIME-CONSUMPTION-001
--> admitted ephemeral StegOS / Canonical Work
--> authentic execution receipts retained into the existing resident runtime
--> StegVerse-native resident custody surface
--> merged non-authorizing receipt verifier
--> bind retained-root pointer and exact receipt hashes
--> Master Records reconstruction where required
+observed failure/broken condition
+-> trigger Healer remediation event
+-> apply bounded remedy
+-> retain remediation evidence
+-> return to the interrupted canonical stage
+-> continue/retry only as allowed by that stage
 ```
 
-PR #1812 already established that zero remote-device discovery is not a blocker and selected `ADMITTED-EPHEMERAL-STEGOS-NODE` for the runtime-consumption path. PR #1841 then repaired the autonomous ephemeral-to-resident evidence retention seam. Therefore asking whether an external connector has a connected device is neither necessary nor relevant to this task.
+No Healer event should be triggered merely because a normal runtime predicate is pending. A pending predicate is not automatically a defect requiring Healer.
 
-## Canonical device / node invariant
-
-KV/SKAP Vault is the sole user-verification authority. Eligible StegOS devices are interchangeable execution/transport nodes. Physical-device identity, named-handset completion gates, device attestation as user verification, and connector inventory as task state are prohibited.
-
-Historical device-specific observations remain provenance only.
-
-## Reconciled adjacent receipt-transport state
-
-`STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001` was stale: it still described `.github#1852` as an open verifier requiring rebase. That was false. The canonical record and handoff now record #1852 as merged/validated and identify the first unresolved predicate as:
+## Normal execution/evidence model
 
 ```text
-AUTHENTIC_STEGVERSE_NATIVE_RESIDENT_RECEIPT_SURFACE_OBSERVED
+RT-STEGBROWSER-RUNTIME-CONSUMPTION-001 recruited
+-> reusable-task trigger / neutral scheduler
+-> admitted StegOS execution
+-> Canonical Work
+-> WorkerCoordinator claim/fence
+-> Interlock/InTr admission
+-> StegBrowser reusable runner
+-> retained runtime evidence
+-> TVC / immutable observer where applicable
+-> exact receipt classifier
+-> Master Records reconstruction
+-> global measurement
+-> Goal closure
 ```
 
-The verifier is ready. The missing input is authentic resident output, not a missing inspection tool.
+Healer is intentionally absent from this normal chain.
 
 ## Current exact defect
 
 ```text
-AUTHENTIC_STEGVERSE_NATIVE_RESIDENT_HEALER_CARRIER_RECEIPT_NOT_YET_OBSERVED
+AUTHENTIC_RT_STEGBROWSER_RUNTIME_CONSUMPTION_EXECUTION_NOT_YET_OBSERVED
 ```
 
-This is narrower and more accurate than the earlier `NOT_GITHUB_VISIBLE` wording. GitHub visibility is not the runtime predicate. The runtime predicate is whether the existing resident cycle has authentically produced and retained the required receipt under StegVerse-native custody.
-
-## Existing authorized output access path
-
-```text
-<resident-root>/receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json
-  -> execution_result
-  -> resident_custody_root_observation_retention
-  -> packet_ref / packet_relative_path / packet_sha256 / retained_under_root / retained_under_root_source / packet_state
-```
-
-Canonical retained packet:
-
-```text
-<resident-root>/receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json
-```
-
-## Exact next required execution
-
-Do not perform device discovery and do not invoke an external connector.
-
-Advance only through the existing StegVerse-native path:
-
-1. allow/observe the existing resident cycle consuming the standing Healer scheduler request;
-2. observe `healer-sovereign-scheduler-request-consumption.latest.json` in the retained resident custody surface;
-3. read `execution_result.resident_custody_root_observation_retention` and bind the exact packet path/hash/root/root-source/state;
-4. if packet state proves one authentic governed resident root, run the already-merged `scripts/check_stegbrowser_runtime_consumption_receipts.py --runtime-root <authentic-root>` exactly once as a non-authorizing classifier;
-5. bind any `VALID_BINDABLE` receipt hashes/outcomes into canonical task evidence;
-6. only after authentic retained runtime evidence exists, enter the global measurement child and freeze/execute its single measurement-only convergence pass.
-
-If the authentic resident receipt is missing or invalid, remediate only the exact StegVerse-native producer/retention/custody defect revealed by that observation. Do not create a second scheduler, dispatcher, transport, runtime, credential route, evidence owner, or device-dependent path.
+The first question is whether the registered reusable task has been authentically recruited/executed through the canonical runtime path. Do not substitute Healer receipts, source state, CI, connector reachability, or physical-device identity for that execution evidence.
 
 ## Authority invariants
 
 - Task Registry: coordination only.
+- Reusable task: bounded orchestration/work unit; no independent authority.
 - KV/SKAP Vault: sole user-verification authority.
-- StegOS devices: interchangeable transport/execution nodes.
-- Healer carrier / neutral reusable scheduler: scheduling and invocation transport only.
+- StegOS devices: interchangeable execution/transport nodes.
 - WorkerCoordinator: claim/fence authority.
 - Interlock/InTr: governed transition authority.
 - TV/TVC: credential/provider authority where applicable.
 - Master Records: observed-reality/reconstruction authority.
+- Healer: triggered bounded remediation event only; not normal execution carrier/prerequisite/authority.
 - GitHub/CI: source validation/evidence transport only; runtime authority `NONE`.
 - External connectors: `NONE_NOT_APPLICABLE` for this Goal.
 
 ## Current state
 
-`ACTIVE / CHECKED_OUT / NATIVE_RECEIPT_VERIFIER_MERGED / EXTERNAL_CONNECTOR_NOT_APPLICABLE / PHYSICAL_DEVICE_INVENTORY_NOT_APPLICABLE / AUTHENTIC_RESIDENT_HEALER_RECEIPT_NOT_YET_OBSERVED / RESIDENT_ROOT_NOT_AUTHENTICALLY_OBSERVED / RECEIPT_REACHABILITY_NOT_CLASSIFIED / RUNTIME_CONSUMPTION_NOT_CLAIMED`
+`ACTIVE / CHECKED_OUT / REUSABLE_TASK_REGISTERED / AUTHENTIC_REUSABLE_TASK_EXECUTION_NOT_OBSERVED / CANONICAL_WORK_RUNTIME_CONSUMPTION_NOT_OBSERVED / WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED / INTR_ADMISSION_NOT_OBSERVED / RECEIPT_CLASSIFIER_MERGED / MASTER_RECORDS_RECONSTRUCTION_NOT_OBSERVED / HEALER_TRIGGERED_REMEDIATION_ONLY / EXTERNAL_CONNECTOR_NOT_APPLICABLE / PHYSICAL_DEVICE_IDENTITY_GATE_PROHIBITED`
 
 ## Manual work
 
