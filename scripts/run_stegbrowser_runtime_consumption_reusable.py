@@ -69,8 +69,8 @@ def main() -> int:
     record = load_json(record_path)
     if record.get("task_id") != TASK_ID or record.get("cosv_task_vector") != COSV:
         fail("canonical_task_identity_mismatch")
-    if record.get("coordination_state") != "ACTIVE" or record.get("checkout_state") != "CHECKED_OUT":
-        fail("canonical_task_not_active_checked_out")
+    if record.get("coordination_state") != "PROPOSED" or record.get("checkout_state") != "CHECKED_OUT":
+        fail("canonical_task_not_proposed_checked_out")
     resolution = record.get("execution_substrate_resolution")
     if not isinstance(resolution, dict) or resolution.get("selected_substrate_id") != "ADMITTED-EPHEMERAL-STEGOS-NODE":
         fail("selected_ephemeral_stegos_substrate_required")
