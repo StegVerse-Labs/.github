@@ -1,0 +1,58 @@
+{
+  "schema": "stegverse.workercoordinator-claim-fence-boundary/v1",
+  "task_id": "SV-KV-AI-PERSISTENCE-001",
+  "cosv_task_vector": "20111110110000",
+  "recorded_at": "2026-09-14T12:10:00-05:00",
+  "repository": "StegVerse-Labs/.github",
+  "issue_ref": "StegVerse-Labs/.github#1848",
+  "resident_execution_request_ref": "control/resident-execution-request.d/kv-ai-memory-resident-001.json",
+  "worker_registry_ref": "control/worker-registry.d/kv-ai-memory-resident-001.json",
+  "process_adapter_ref": "control/process-worker-adapters.d/kv-ai-memory-resident-001.json",
+  "source_state_vector_ref": "control/task-vectors/SV-KV-AI-PERSISTENCE-001.json",
+  "task_vector_index_ref": "control/task-vector-index.json",
+  "resident_targeted_execution_bridge": "scripts/refresh_and_execute_resident_task.py --task-id SV-KV-AI-PERSISTENCE-001 --cosv-task-vector 20111110110000",
+  "binding": {
+    "exact_task_id_required": "SV-KV-AI-PERSISTENCE-001",
+    "exact_cosv_task_vector_required": "20111110110000",
+    "exact_request_id_required": "RESIDENT-EXEC-KV-AI-MEMORY-001",
+    "exact_worker_id_required": "kv-ai-memory-resident-worker",
+    "exact_adapter_ref_required": "process:kv-ai-memory-resident-v1",
+    "fail_closed_on_task_mismatch": true,
+    "fail_closed_on_cosv_vector_mismatch": true,
+    "fail_closed_on_request_mismatch": true,
+    "fail_closed_on_worker_registry_mismatch": true,
+    "fail_closed_on_adapter_mismatch": true,
+    "fail_closed_on_missing_fresh_fence": true
+  },
+  "authority": {
+    "task_registry_mints_execution_authority": false,
+    "runtime_profile_map_grants_authority": false,
+    "this_boundary_mints_claim_or_fence": false,
+    "github_actions_grants_execution_authority": false,
+    "workercoordinator_remains_claim_fence_authority": true,
+    "interlock_intr_remains_transition_authority": true,
+    "tv_tvc_remains_credential_authority": true,
+    "master_records_remains_reconstruction_authority": true,
+    "authority_effect": "NONE_SOURCE_BINDING_ONLY"
+  },
+  "preconditions_for_consumption": {
+    "required_private_bound_state_root": "~/.stegverse/state/kv-ai-memory-resident",
+    "required_private_inputs": [
+      "inputs/context-packet.json",
+      "inputs/memory-packet-admission.json",
+      "inputs/provider-request-input.json"
+    ],
+    "private_inputs_must_remain_out_of_github": true,
+    "consumer_must_return_bound_state_input_not_ready_if_missing": true,
+    "consumer_must_not_synthesize_defaults": true
+  },
+  "nonclaims": [
+    "THIS_BOUNDARY_DOES_NOT_COMPLETE_SV_KV_AI_PERSISTENCE_001",
+    "THIS_BOUNDARY_DOES_NOT_MINT_A_WORKERCOORDINATOR_CLAIM_OR_FENCE",
+    "THIS_BOUNDARY_DOES_NOT_PROVE_PERSONAL_KV_INPUTS",
+    "THIS_BOUNDARY_DOES_NOT_PROVE_INTR_ADMISSION",
+    "THIS_BOUNDARY_DOES_NOT_PROVE_PROVIDER_EXECUTION",
+    "THIS_BOUNDARY_DOES_NOT_PROVE_KV_WRITEBACK_OR_MASTER_RECORDS_RECONSTRUCTION",
+    "THIS_BOUNDARY_DOES_NOT_PROVE_RUNTIME_EXECUTION"
+  ]
+}
