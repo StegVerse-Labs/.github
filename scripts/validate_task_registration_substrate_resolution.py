@@ -95,9 +95,14 @@ def validate_resolution(record: dict) -> None:
             fail(f"{task_id}: external_device_required requires last-resort external substrate selection")
 
 
-def added_task_records(base_ref: str) -> list[Path]:
+def changed_task_records(base_ref: str) -> list[Path]:
+    """Return added or modified canonical task records for PR validation.
+
+    Existing task records can change substrate selection without being newly added,
+    so validating additions only leaves an unsafe conformance gap.
+    """
     proc = subprocess.run(
-        ["git", "diff", "--diff-filter=A", "--name-only", base_ref, "HEAD", "--", RECORD_PREFIX],
+        ["git", "diff", "--diff-filter=AM", "--name-only", base_ref, "HEAD", "--", RECORD_PREFIX],
         cwd=ROOT,
         text=True,
         capture_output=True,
@@ -150,9 +155,9 @@ def main() -> None:
     paths = [Path(p).resolve() for p in args.record]
     base_ref = args.base_ref or github_pr_base_ref()
     if base_ref:
-        paths.extend(added_task_records(base_ref))
+        paths.extend(changed_task_records(base_ref))
     if not paths:
-        print("TASK_REGISTRATION_SUBSTRATE_RESOLUTION_NO_NEW_RECORDS")
+        print("TASK_REGISTRATION_SUBSTRATE_RESOLUTION_NO_CHANGED_RECORDS")
         return
 
     failures = []
