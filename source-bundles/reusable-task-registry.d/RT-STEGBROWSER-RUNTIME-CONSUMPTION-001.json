@@ -2,7 +2,7 @@
   "reusable_task_id": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
   "name": "StegBrowser Runtime Consumption",
   "purpose": "Execute the existing StegBrowser Canonical Work runtime-consumption chain on an admitted ephemeral StegOS node without creating a duplicate runtime, scheduler, WorkerCoordinator, credential path, or device dependency.",
-  "trigger": "STEG-BROWSER-RUNTIME-CONSUMPTION-001 is PROPOSED/CHECKED_OUT and selected_execution_substrate is ADMITTED-EPHEMERAL-STEGOS-NODE",
+  "trigger": "STEG-BROWSER-RUNTIME-CONSUMPTION-001 is ACTIVE/CHECKED_OUT and selected_execution_substrate is ADMITTED-EPHEMERAL-STEGOS-NODE",
   "scope": "one manifest-bound invocation for STEG-BROWSER-RUNTIME-CONSUMPTION-001 / COSV 40000100100000",
   "parameter_keys": ["sovereign_source_root", "stegos_source_root", "runtime_base"],
   "runner_templates": ["scripts/run_stegbrowser_runtime_consumption_reusable.py"],
@@ -19,5 +19,5 @@
     "NO_PARALLEL_SCHEDULER_DISPATCHER_CREDENTIAL_PATH_OR_SECOND_DEVICE"
   ],
   "authority_effect": "NONE_ORCHESTRATION_ONLY",
-  "reuse_instructions": "Trigger once through scripts/trigger_reusable_task.py. The runner must reuse SovereignLocalEventRuntimeAdapter, the existing Canonical Work resident consumer, WorkerCoordinator, Interlock/InTr, exact stegbrowser_tvc_source_promotion consumer, TVC runtime/observer path, and Master Records lifecycle. It may stop only at a real authority/evidence/external-resource boundary and may not infer completion from source or CI. Canonical Work machine ingress requires the task coordination state to remain PROPOSED until authentic InTr admission projects INGRESS_ADMITTED."
+  "reuse_instructions": "Trigger once through scripts/trigger_reusable_task.py. The runner must reuse SovereignLocalEventRuntimeAdapter, the existing Canonical Work resident consumer, WorkerCoordinator, Interlock/InTr, exact stegbrowser_tvc_source_promotion consumer, TVC runtime/observer path, and Master Records lifecycle. It may stop only at a real authority/evidence/external-resource boundary and may not infer completion from source or CI. The source Goal remains ACTIVE/CHECKED_OUT; before the existing Canonical Work bootstrap runs, the runner must stage only a runtime-local PROPOSED ingress projection so the authentic InTr transition can produce INGRESS_ADMITTED without rewriting canonical source state."
 }
