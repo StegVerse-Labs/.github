@@ -165,6 +165,42 @@ one admitted post-repair READ_REVIEW invocation
 
 No additional listener, runtime plane, scheduler, credential authority, or second user-operated device is authorized by this observation gap.
 
+## Existing carrier/bootstrap reconciliation — 2026-09-14
+
+The next execution-first pass verified that the evaluator lane itself is already wired into the existing resident carrier:
+
+```text
+control/resident-execution-request.d/evaluator-intr-read-runtime-001.json = REQUESTED
+scripts/bootstrap_sovereign_runtime.py carries evaluator consumer/materializer
+scripts/dispatch_resident_execution_requests.py routes evaluator_intr
+scripts/consume_evaluator_intr_resident_execution_request.py targets SHWP-EVALUATOR-INTR-READ-RUNTIME-001
+```
+
+No missing evaluator registration, dispatcher, listener, runtime plane, or credential path was found.
+
+The first concrete runtime predicate before evaluator claim/fence is the existing standing Healer scheduler carrier. Its canonical registry currently records:
+
+```text
+SHWP-HEALER-SOVEREIGN-SCHEDULER-001 = HANDOFF_READY
+claim_id = null
+heartbeat_timing = null
+last_seen_at = null
+worker status = AVAILABLE
+archive reason includes HEALER_NO_TOKEN_SOVEREIGN_SCHEDULER_NOT_YET_LIVE_PROVEN
+```
+
+The standing Healer request self-materialization source repair already exists and expressly preserves WorkerCoordinator claim/fence authority. Therefore no additional source implementation was authorized or necessary in this pass.
+
+The first failing runtime predicate is now classified as:
+
+```text
+EXISTING_HEALER_STANDING_CARRIER_FRESH_CLAIM_FENCE_OBSERVED = false
+```
+
+Bounded owner remains the already-existing `SHWP-HEALER-SOVEREIGN-SCHEDULER-001` carrier; this does not create a new evaluator dependency task or parallel remediation lane. Required evidence is one authentic resident scheduler cycle that produces its normal live scheduler receipt and then allows the existing evaluator standing request to proceed into its own fresh WorkerCoordinator claim/fence.
+
+The absence of an externally connected remote-control device is not the blocker classification and does not imply a second user-operated device requirement.
+
 ## README disposition
 
 Root `README.md` was reviewed for this repair. It already documents the organization-owned Universal InTr ingress as event-triggered and describes event materialization through the shared profile. No repository-wide semantic rewrite is required; this repair removes the contradictory evaluator-specific persistent-receiver lifecycle so the task conforms to those existing README semantics.
@@ -176,5 +212,7 @@ After merge, the task remains machine-owned and nonterminal until one authentic 
 ```text
 EVALUATOR_INTR_READ_ROUND_TRIP_OBSERVED
 ```
+
+The immediate upstream release condition is now the existing Healer standing carrier producing a fresh authentic claim/fence cycle and scheduler receipt; after that, the evaluator standing request remains the same authorized owner for the READ_REVIEW invocation.
 
 No production activation, public WebPKI reachability, review/approval/freeze/execution authority, or Master Records custody is inferred from source validation.
