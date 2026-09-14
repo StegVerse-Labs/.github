@@ -1,0 +1,38 @@
+{
+  "schema": "stegverse.worker-runtime-cost-basis/v0.1",
+  "task_class": "kv_ai_memory_resident",
+  "sample_count": 0,
+  "hb_estimate": {
+    "expected_completion_beats": 1,
+    "expected_idle_beats": 0,
+    "expiry_candidate_beats": 16,
+    "confidence": "LOW"
+  },
+  "cost_estimate": {
+    "compute_units": 1,
+    "token_units": 0,
+    "storage_bytes": 1048576,
+    "network_bytes": 0,
+    "operator_seconds": 0,
+    "external_cost_usd": 0,
+    "latency_ms": null,
+    "failure_probability": null,
+    "expected_recovery_cost_usd": 0
+  },
+  "selection_guidance": {
+    "preferred_worker_classes": ["kv-ai-memory-resident-worker"],
+    "observed_efficiency_notes": [
+      "Initial bounded estimate only; used to make the existing WorkerCoordinator expiry-budget gate explicit for SV-KV-AI-PERSISTENCE-001.",
+      "This record does not grant execution authority, claim/fence authority, InTr authority, provider authority, KV mutation authority, or Master Records authority."
+    ],
+    "cost_never_overrides_admissibility": true
+  },
+  "evidence_refs": [
+    "docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
+    "handoffs/SV-KV-AI-PERSISTENCE-001.json",
+    "control/worker-registry.d/kv-ai-memory-resident-001.json",
+    "control/workercoordinator-claim-fence-boundaries/SV-KV-AI-PERSISTENCE-001.json",
+    "heartbeat_runtime/engine_v2.py#_expiry_budget",
+    "heartbeat_runtime/worker_runtime_legacy.py#_activate_from_trigger"
+  ]
+}
