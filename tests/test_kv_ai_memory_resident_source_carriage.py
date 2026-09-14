@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+"""Regression coverage for KV AI memory source carriage into resident runtime roots."""
+
 import importlib.util
 from pathlib import Path
 
