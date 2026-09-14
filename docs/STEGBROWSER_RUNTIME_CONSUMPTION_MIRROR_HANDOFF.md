@@ -1,6 +1,6 @@
 # StegBrowser Runtime Consumption Mirror Handoff
 
-Updated: 2026-09-13
+Updated: 2026-09-14
 
 ## Task pointer
 
@@ -22,11 +22,11 @@ The parent task is canonically `SUPERSEDED` with `continuation_task_id=STEG-BROW
 
 PR `#1781` merged at `d75ddb18ffb51f3131f3bde54fc9582f57991471` after exact-head deterministic suite `34787453203`, organization-control `34787453261`, and Heartbeat validation `34787453228` all completed successfully.
 
-The regression invokes the existing `scripts/evaluate_task_registry_collision_checkin.py` through the already-admitted `INTERNAL_CANONICAL_WORK_BOOTSTRAP` caller surface for this exact successor and requires:
+The regression invokes the existing `scripts/evaluate_task_registry_collision_checkin.py` through the already-admitted `INTERNAL_CANONICAL_WORK_BOOTSTRAP` caller surface for this exact successor and requires current canonical substrate selection plus:
 
 ```text
 registry_identity_source = CANONICAL_TASK_REGISTRY
-selected_execution_substrate = STEG-BROWSER-RETAINED-RESIDENT-NODE
+selected_execution_substrate = ADMITTED-EPHEMERAL-STEGOS-NODE
 disposition = CONTINUE
 session_action = CONTINUE_CURRENT_TASK
 hard_collision_task_ids = []
@@ -34,6 +34,16 @@ authority_effect = NONE
 ```
 
 This closes only `TASK_REGISTRY_CHECKIN_CONTINUE_OBSERVED`. It is coordination evidence, not a runtime transition, WorkerCoordinator claim, Interlock/InTr admission, resident execution, TVC promotion, or owner-ingress observation.
+
+## Ephemeral StegOS selection correction
+
+A zero-result remote-device discovery is not a blocker for this Goal and must not be used as one. Devices are interchangeable execution/transport nodes; no new device on the local network is required or expected for this work.
+
+The canonical selected execution substrate is now `ADMITTED-EPHEMERAL-STEGOS-NODE`. It reuses the existing ephemeral construct contract, Canonical Work ingress, WorkerCoordinator claim/fence authority, Interlock/InTr admission, TV/TVC authority, existing resident dispatcher, and existing evidence chain. It does not create a second device identity, second scheduler, second WorkerCoordinator, second credential path, or remote-computer dependency.
+
+`REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT` remains `NOT_APPLICABLE`. Remote Desktop/device discovery is not a completion predicate and is not a prerequisite for execution. A retained resident node or current-device node may still satisfy the same canonical node class if available, but their absence does not block event-ephemeral StegOS materialization after applicable admission.
+
+The reusable ephemeral contract remains fail-closed: admission precedes runner materialization; execution must preserve exact task/COSV/manifest binding; runtime receipts must be chained; Master Records custody/reconstruction precedes entropy recovery; and source/CI/container execution cannot be promoted into runtime evidence.
 
 ## First unresolved runtime predicate
 
@@ -52,9 +62,10 @@ Repository search after the merged check-in validation found only the handoff, c
 ```text
 Task Registry exact check-in -> CONTINUE   [coordination predicate observed]
 -> existing Canonical Work bootstrap
+-> applicable Interlock/InTr admission for ADMITTED-EPHEMERAL-STEGOS-NODE
+-> ephemeral StegOS runner materialization
 -> authentic Canonical Work resident consumption
 -> WorkerCoordinator claim/fence
--> Interlock/InTr admission
 -> exact selector stegbrowser_tvc_source_promotion
 -> dedicated current-dispatch-bound consumption receipt
 -> primary TVC source aef6b6f5dc99d2a531718ca475d20858ae8e68a6 materialization
@@ -87,7 +98,7 @@ install_and_run_canonical_work_event_bootstrap.py
   -> collision preflight remains mandatory
 ```
 
-PR `#1781` then proved that the current canonical collision preflight returns `CONTINUE` for this successor on current source.
+PR `#1781` then proved that the canonical collision preflight returns `CONTINUE` for this successor. The selected substrate has since been corrected from retained-node preference to admitted ephemeral StegOS without changing the Goal Task ID, COSV, authority model, or completion predicates.
 
 ## WorkerCoordinator self-heal source continuity repaired
 
@@ -123,20 +134,21 @@ Source state, CI, heartbeat progression, repository merges, task registration, o
 - Interlock/InTr: admission/transition authority.
 - TV/TVC: credential/provider authority.
 - KV/SKAP Vault: user-verification/custody path where applicable.
+- StegOS devices/nodes: interchangeable execution/transport nodes, never user-verification authority.
 - Master Records: observed-reality/provenance authority.
 - HeartBeat: observability/timing/freshness/correlation only.
 - GitHub: validation/evidence transport only; runtime authority NONE.
 
-Selected substrate remains `STEG-BROWSER-RETAINED-RESIDENT-NODE`. Current-device, StegBrowser ephemeral lease, same-device Site Safari service worker, and admitted ephemeral StegOS capacity remain declared reusable alternatives where canonical admission permits them. `REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT` is not selected, no connected-device discovery is a prerequisite, and no second user-operated device is allowed.
+Selected substrate is `ADMITTED-EPHEMERAL-STEGOS-NODE`. Current-device StegOS, StegBrowser ephemeral lease, same-device Site Safari service worker, and retained resident capacity remain reusable members of the same architecture where canonical admission permits them. `REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT` is not selected and is not applicable to this execution path. No connected-device discovery is a prerequisite, and no second user-operated device is allowed.
 
-The reusable ephemeral construct contract requires applicable admission before runner materialization, preserves Interlock/InTr as transition authority, forbids duplicate scheduler/worker/runtime planes, and requires chained runtime receipts. An ephemeral fallback therefore cannot be declared authentic merely because code can execute in an unrelated container or CI job.
+The reusable ephemeral construct contract requires applicable admission before runner materialization, preserves Interlock/InTr as transition authority, forbids duplicate scheduler/worker/runtime planes, and requires chained runtime receipts. An ephemeral runner therefore cannot be declared authentic merely because code can execute in an unrelated container or CI job.
 
 ## Completion predicate
 
 This Goal is complete only when authentic evidence establishes all of:
 
 1. exact Task Registry check-in returned `CONTINUE` for this successor after any required convergence reconciliation — **observed and regression-protected**;
-2. Canonical Work resident consumption occurred;
+2. Canonical Work resident consumption occurred on an admitted interchangeable StegOS/StegBrowser node class;
 3. current WorkerCoordinator claim/fence was observed;
 4. Interlock/InTr admission occurred;
 5. exact `stegbrowser_tvc_source_promotion` consumption produced a current-dispatch-bound successful staged result;
@@ -150,8 +162,8 @@ Credential ingress, current-iPhone signing/TestFlight, social publication/readba
 
 ## README disposition
 
-The repository README already documents Canonical Work ingress, autonomous continuation, COSV task-pointer continuation, the Reusable Task Component Model, and authority separation. The work in this handoff changes task-specific evidence state only; no README semantic change is required.
+The repository README already documents Canonical Work ingress, autonomous continuation, COSV task-pointer continuation, the Reusable Task Component Model, and authority separation. The work in this handoff changes task-specific substrate/evidence state only; no README semantic change is required.
 
 ## Current state
 
-`ACTIVE / CHECKED_OUT / TASK_REGISTRY_CHECKIN_CONTINUE_OBSERVED / SUCCESSOR_RESIDENT_INGRESS_SOURCE_MERGED / WORKER_SELF_HEAL_SOURCE_CONTINUITY_REPAIRED / CANONICAL_WORK_RESIDENT_CONSUMPTION_NOT_OBSERVED / WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED / INTR_ADMISSION_NOT_OBSERVED / TVC_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / TVC_PRIMARY_RUNTIME_RESTART_NOT_OBSERVED / IMMUTABLE_OBSERVER_EXECUTION_NOT_OBSERVED / OWNER_INGRESS_READY_NOT_OBSERVED / NO_CONNECTED_DEVICE_PREREQUISITE / NO_SECOND_USER_OPERATED_DEVICE`
+`ACTIVE / CHECKED_OUT / TASK_REGISTRY_CHECKIN_CONTINUE_OBSERVED / EPHEMERAL_STEGOS_SELECTED / SUCCESSOR_RESIDENT_INGRESS_SOURCE_MERGED / WORKER_SELF_HEAL_SOURCE_CONTINUITY_REPAIRED / CANONICAL_WORK_RESIDENT_CONSUMPTION_NOT_OBSERVED / WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED / INTR_ADMISSION_NOT_OBSERVED / TVC_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / TVC_PRIMARY_RUNTIME_RESTART_NOT_OBSERVED / IMMUTABLE_OBSERVER_EXECUTION_NOT_OBSERVED / OWNER_INGRESS_READY_NOT_OBSERVED / REMOTE_DEVICE_NOT_REQUIRED / NO_CONNECTED_DEVICE_PREREQUISITE / NO_SECOND_USER_OPERATED_DEVICE`
