@@ -3,8 +3,32 @@
   "request_id": "RESIDENT-EXEC-KV-AI-MEMORY-001",
   "state": "REQUESTED",
   "task_id": "SV-KV-AI-PERSISTENCE-001",
+  "cosv_task_vector": "20111110110000",
   "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
   "entrypoint": "scripts/refresh_and_execute_resident_task.py",
+  "entrypoint_arguments": [
+    "--task-id",
+    "SV-KV-AI-PERSISTENCE-001",
+    "--cosv-task-vector",
+    "20111110110000"
+  ],
+  "claim_fence_boundary_ref": "control/workercoordinator-claim-fence-boundaries/SV-KV-AI-PERSISTENCE-001.json",
+  "source_state_vector_ref": "control/task-vectors/SV-KV-AI-PERSISTENCE-001.json",
+  "worker_registry_ref": "control/worker-registry.d/kv-ai-memory-resident-001.json",
+  "process_adapter_ref": "control/process-worker-adapters.d/kv-ai-memory-resident-001.json",
+  "fail_closed_requirements": {
+    "exact_task_id_required": "SV-KV-AI-PERSISTENCE-001",
+    "exact_cosv_task_vector_required": "20111110110000",
+    "exact_request_id_required": "RESIDENT-EXEC-KV-AI-MEMORY-001",
+    "exact_worker_id_required": "kv-ai-memory-resident-worker",
+    "exact_adapter_ref_required": "process:kv-ai-memory-resident-v1",
+    "fail_closed_on_task_mismatch": true,
+    "fail_closed_on_cosv_vector_mismatch": true,
+    "fail_closed_on_request_mismatch": true,
+    "fail_closed_on_worker_registry_mismatch": true,
+    "fail_closed_on_adapter_mismatch": true,
+    "fail_closed_on_missing_fresh_fence": true
+  },
   "fresh_fence_minimum_exclusive": 0,
   "credential_authority": "TV/TVC",
   "github_token_required": false,
@@ -22,6 +46,11 @@
   "provider_credential_material_allowed": false,
   "private_content_in_request": false,
   "bound_state_root": "~/.stegverse/state/kv-ai-memory-resident",
+  "required_bound_state_inputs": [
+    "inputs/context-packet.json",
+    "inputs/memory-packet-admission.json",
+    "inputs/provider-request-input.json"
+  ],
   "authority_effect": "NONE_REQUEST_ONLY",
-  "note": "When the fenced resident-local KV memory packet, exact admission artifact, and provider request input are present, ask the existing WorkerCoordinator to materialize the exact ProviderRequest. This request carries no private content and grants no claim, fence, InTr, credential, provider, KV-write, or activation authority. Device discovery, device-presence proof, Remote Desktop Commander availability, and second-machine presence are not prerequisites or runtime evidence."
+  "note": "When the fenced resident-local KV memory packet, exact admission artifact, and provider request input are present, ask the existing WorkerCoordinator to materialize the exact ProviderRequest. This request now also carries the exact task.v1 COSV vector and claim/fence boundary reference so the resident path can fail closed on task, vector, request, worker registry, or adapter mismatch. It carries no private content and grants no claim, fence, InTr, credential, provider, KV-write, or activation authority. Device discovery, device-presence proof, Remote Desktop Commander availability, and second-machine presence are not prerequisites or runtime evidence."
 }
