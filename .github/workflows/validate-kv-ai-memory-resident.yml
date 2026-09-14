@@ -6,24 +6,34 @@ on:
       - 'docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md'
       - 'handoffs/SV-KV-AI-PERSISTENCE-001.json'
       - 'workers/kv_ai_memory_resident_worker.py'
+      - 'workers/kv_ai_memory_intr_profile.py'
+      - 'workers/kv_ai_memory_intr_transport.py'
+      - 'scripts/install_kv_ai_memory_universal_intr_route.py'
+      - 'scripts/submit_kv_ai_memory_packet_local.py'
       - 'scripts/consume_kv_ai_memory_resident_request.py'
       - 'scripts/dispatch_resident_execution_requests.py'
       - 'control/worker-registry.d/kv-ai-memory-resident-001.json'
       - 'control/process-worker-adapters.d/kv-ai-memory-resident-001.json'
       - 'control/resident-execution-request.d/kv-ai-memory-resident-001.json'
       - 'tests/test_kv_ai_memory_resident_binding.py'
+      - 'tests/test_kv_ai_memory_intr_admission.py'
       - '.github/workflows/validate-kv-ai-memory-resident.yml'
   pull_request:
     paths:
       - 'docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md'
       - 'handoffs/SV-KV-AI-PERSISTENCE-001.json'
       - 'workers/kv_ai_memory_resident_worker.py'
+      - 'workers/kv_ai_memory_intr_profile.py'
+      - 'workers/kv_ai_memory_intr_transport.py'
+      - 'scripts/install_kv_ai_memory_universal_intr_route.py'
+      - 'scripts/submit_kv_ai_memory_packet_local.py'
       - 'scripts/consume_kv_ai_memory_resident_request.py'
       - 'scripts/dispatch_resident_execution_requests.py'
       - 'control/worker-registry.d/kv-ai-memory-resident-001.json'
       - 'control/process-worker-adapters.d/kv-ai-memory-resident-001.json'
       - 'control/resident-execution-request.d/kv-ai-memory-resident-001.json'
       - 'tests/test_kv_ai_memory_resident_binding.py'
+      - 'tests/test_kv_ai_memory_intr_admission.py'
 
 permissions:
   contents: read
@@ -40,5 +50,5 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install --upgrade pip pytest
-      - run: pytest -q tests/test_kv_ai_memory_resident_binding.py
-      - run: python -m py_compile workers/kv_ai_memory_resident_worker.py scripts/consume_kv_ai_memory_resident_request.py scripts/dispatch_resident_execution_requests.py
+      - run: pytest -q tests/test_kv_ai_memory_resident_binding.py tests/test_kv_ai_memory_intr_admission.py
+      - run: python -m py_compile workers/kv_ai_memory_resident_worker.py workers/kv_ai_memory_intr_profile.py workers/kv_ai_memory_intr_transport.py scripts/install_kv_ai_memory_universal_intr_route.py scripts/submit_kv_ai_memory_packet_local.py scripts/consume_kv_ai_memory_resident_request.py scripts/dispatch_resident_execution_requests.py
