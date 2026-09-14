@@ -12,6 +12,7 @@
   "canonical_handoff": "StegVerse-Labs/Site/docs/MIR_ROUNDTRIP_EGRESS_AUTHENTICITY_MIRROR_HANDOFF.md",
   "owners": {
     "coordination_and_parent_guide_owner": "StegVerse-Labs/Site",
+    "sdk_return_materialization_owner": "StegVerse-org/StegVerse-SDK",
     "final_stegverse_framework_egress_owner": "StegVerse-org/LLM-adapter",
     "transition_transport_owner": "Interlock/InTr",
     "credential_owner": "TV/TVC where required",
@@ -32,7 +33,13 @@
     "sdk_return_predecessor_merge": "b4927ed277c4993662f9e7e4ffd717f677ad5459",
     "sdk_return_source_validated": true,
     "sdk_return_runtime_observed": false,
+    "sdk_return_materialization_issue": "StegVerse-org/StegVerse-SDK#244",
+    "sdk_return_materialization_pr": "StegVerse-org/StegVerse-SDK#245",
+    "sdk_return_materialization_source_merge": "d7f57428cb817c5f308b7cd545bfac29ca0a817c",
+    "sdk_return_materialization_source_validated": true,
+    "authentic_predecessor_sdk_return_input_observed": false,
     "llm_adapter_reusable_egress_source_merge": "7c7c43a0171360ce7ed4cc2873b29686147845ae",
+    "llm_adapter_reusable_egress_handoff_reconciliation_merge": "ed7c50e496e2b8c20c62774696647f596e4de2cf",
     "llm_adapter_reusable_egress_runtime_observed_for_this_roundtrip": false,
     "interlock_intr_egress_observed": false,
     "far_side_transition_observed": false,
@@ -42,6 +49,7 @@
   "authority_invariants": {
     "task_registry": "COORDINATION_ONLY",
     "github_runtime_authority": "NONE",
+    "sdk_materialization_authority": "EXACT_BYTE_RETENTION_ONLY",
     "llm_adapter_authority": "PROTOCOL_FRAMING_AND_FINAL_STEGVERSE_SIDE_FRAMEWORK_TRANSITION_ONLY",
     "interlock_intr_authority": "EGRESS_ADMISSION_AND_STATE_TRANSITION",
     "credential_authority": "TV/TVC where required",
@@ -51,6 +59,7 @@
   "completion": {
     "claimed": false,
     "validated": false,
+    "authentic_predecessor_sdk_return_input_observed": false,
     "final_stegverse_side_egress_transition_observed": false,
     "interlock_intr_egress_observed": false,
     "far_side_transition_observed": false,
@@ -58,8 +67,7 @@
     "communication_complete": false
   },
   "allowed_next_transitions": [
-    "RECONCILE_REUSED_RTC_STEGVERSE_EGRESS_007_HANDOFF",
-    "MATERIALIZE_EXACT_SDK_RETURN_INPUT_WITHOUT_FABRICATING_AUTHENTIC_MIR_PROVENANCE",
+    "OBSERVE_OR_MATERIALIZE_AUTHENTIC_PREDECESSOR_SDK_RETURN_INPUT_THROUGH_EXISTING_AUTHORIZED_CARRIER",
     "EXECUTE_OR_CLASSIFY_REUSED_RTC_STEGVERSE_EGRESS_007",
     "OBSERVE_AUTHENTIC_RTC_INTERLOCK_INTR_TRANSPORT_008",
     "OBSERVE_AUTHENTIC_RTC_FARSIDE_FINAL_009",
