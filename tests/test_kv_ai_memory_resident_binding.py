@@ -61,6 +61,17 @@ def setup_roots(tmp_path: Path, monkeypatch):
     return state, llm
 
 
+def stage_consumer_inputs(home: Path, *, admission: bool = False) -> Path:
+    root = home / consumer.BOUND_STATE_REL
+    inputs = root / "inputs"
+    inputs.mkdir(parents=True, exist_ok=True)
+    (inputs / "context-packet.json").write_text("{}\n", encoding="utf-8")
+    (inputs / "provider-request-input.json").write_text("{}\n", encoding="utf-8")
+    if admission:
+        (inputs / "memory-packet-admission.json").write_text("{}\n", encoding="utf-8")
+    return root
+
+
 def test_worker_waits_without_private_bound_state_inputs(tmp_path, monkeypatch):
     setup_roots(tmp_path, monkeypatch)
     result = worker.run(invocation())
@@ -111,6 +122,63 @@ def test_consumer_does_not_attempt_worker_until_inputs_exist(tmp_path, monkeypat
     assert result["state"] == "BOUND_STATE_INPUT_NOT_READY"
     assert result["private_input_bytes_read"] is False
     assert result["runtime_execution_attempted"] is False
+
+
+def test_consumer_waits_without_explicit_intr_ingress_when_packet_is_staged(tmp_path):
+    runtime = tmp_path / "runtime"
+    request_target = runtime / consumer.REQUEST_REL
+    request_target.parent.mkdir(parents=True)
+    request_target.write_text((ROOT / consumer.REQUEST_REL).read_text(encoding="utf-8"), encoding="utf-8")
+    home = tmp_path / "home"
+    stage_consumer_inputs(home)
+
+    def forbidden_runner(*args, **kwargs):
+        raise AssertionError("runner must not be called without explicit shared ingress")
+
+    result = consumer.consume(ROOT, runtime, runner=forbidden_runner, env={"HOME": str(home), "PATH": "/usr/bin"})
+    assert result["state"] == "BOUND_STATE_INPUT_NOT_READY"
+    assert result["missing_input_refs"] == ["inputs/memory-packet-admission.json"]
+    assert result["admission_attempt"]["state"] == "INGRESS_NOT_READY"
+    assert result["admission_attempt"]["admission_attempted"] is False
+    assert result["private_input_bytes_read"] is False
+
+
+def test_admission_attempt_prepares_route_and_accepts_only_submitter_evidence(tmp_path):
+    home = tmp_path / "home"
+    stage_root = stage_consumer_inputs(home)
+    env = {
+        "HOME": str(home),
+        "PATH": "/usr/bin",
+        "STEGVERSE_UNIVERSAL_INTR_INGRESS_URL": "http://127.0.0.1:7777/intr/materialization",
+    }
+    calls = []
+
+    def fake_runner(command, **kwargs):
+        calls.append(command)
+        if "install_kv_ai_memory_universal_intr_route.py" in command[1]:
+            return SimpleNamespace(returncode=0, stdout="INSTALLED\n", stderr="")
+        if "submit_kv_ai_memory_packet_local.py" in command[1]:
+            admission = {
+                "schema": "stegverse.kv.ai-memory-intr-admission/v1",
+                "disposition": "ALLOW",
+                "packet_id": "KVMEM-fixture",
+                "packet_sha256": "a" * 64,
+                "receipt_hash": "sha256:" + "b" * 64,
+                "authority_effect": "NONE_ADMISSION_EVIDENCE_ONLY",
+            }
+            target = stage_root / consumer.ADMISSION_INPUT
+            target.write_text(json.dumps(admission) + "\n", encoding="utf-8")
+            out = {"state": "AUTHENTIC_INGRESS_ADMISSION_WRITTEN", "admission_written": True, "receipt_hash": admission["receipt_hash"]}
+            return SimpleNamespace(returncode=0, stdout=json.dumps(out) + "\n", stderr="")
+        raise AssertionError(command)
+
+    result = consumer.attempt_memory_packet_admission(ROOT, runner=fake_runner, env=env)
+    assert result["state"] == "AUTHENTIC_INGRESS_ADMISSION_WRITTEN"
+    assert result["admission_attempted"] is True
+    assert result["admission_written"] is True
+    assert result["private_input_bytes_read_by_consumer"] is False
+    assert len(calls) == 2
+    assert (stage_root / consumer.ADMISSION_INPUT).is_file()
 
 
 def test_dispatcher_registers_wait_state_and_selector():
