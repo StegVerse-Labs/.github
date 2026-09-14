@@ -29,6 +29,10 @@
     "endpoint_provenance_predicate": "authentic external MIR endpoint substitution without choreography redesign",
     "prompt_counter_reset_only": false
   },
+  "state_transition_invariant": {
+    "every_process_step_is_a_state_transition": true,
+    "completed_upstream_state_may_not_be_rewritten_by_downstream_failure": true
+  },
   "current_truth": {
     "sdk_return_predecessor_merge": "b4927ed277c4993662f9e7e4ffd717f677ad5459",
     "sdk_return_source_validated": true,
@@ -37,6 +41,12 @@
     "sdk_return_materialization_pr": "StegVerse-org/StegVerse-SDK#245",
     "sdk_return_materialization_source_merge": "d7f57428cb817c5f308b7cd545bfac29ca0a817c",
     "sdk_return_materialization_source_validated": true,
+    "publisher_return_carrier_routing_issue": "StegVerse-Labs/.github#1900",
+    "publisher_return_carrier_routing_pr": "StegVerse-Labs/.github#1902",
+    "publisher_return_carrier_routing_merge": "bf8a726da8688bcfbf625b82a388ae8c79080666",
+    "publisher_return_carrier_routing_source_validated": true,
+    "publisher_mir_return_routes_to_sdk_owner": true,
+    "ordinary_publisher_return_routes_to_kv_owner": true,
     "authentic_predecessor_sdk_return_input_observed": false,
     "llm_adapter_reusable_egress_source_merge": "7c7c43a0171360ce7ed4cc2873b29686147845ae",
     "llm_adapter_reusable_egress_handoff_reconciliation_merge": "ed7c50e496e2b8c20c62774696647f596e4de2cf",
@@ -44,12 +54,14 @@
     "interlock_intr_egress_observed": false,
     "far_side_transition_observed": false,
     "authentic_external_mir_endpoint_substitution_observed": false,
+    "successful_data_transport_round_trip_identified": false,
     "communication_complete": false
   },
   "authority_invariants": {
     "task_registry": "COORDINATION_ONLY",
     "github_runtime_authority": "NONE",
     "sdk_materialization_authority": "EXACT_BYTE_RETENTION_ONLY",
+    "publisher_return_routing_authority": "NEXT_OWNER_SELECTION_ONLY_AFTER_VERIFIED_RETURN",
     "llm_adapter_authority": "PROTOCOL_FRAMING_AND_FINAL_STEGVERSE_SIDE_FRAMEWORK_TRANSITION_ONLY",
     "interlock_intr_authority": "EGRESS_ADMISSION_AND_STATE_TRANSITION",
     "credential_authority": "TV/TVC where required",
@@ -63,6 +75,9 @@
     "final_stegverse_side_egress_transition_observed": false,
     "interlock_intr_egress_observed": false,
     "far_side_transition_observed": false,
+    "return_record_durably_recorded": false,
+    "final_allowed_transport_exit_transition_observed": false,
+    "successful_data_transport_round_trip_identified": false,
     "authentic_external_mir_endpoint_substitution_observed": false,
     "communication_complete": false
   },
@@ -71,6 +86,9 @@
     "EXECUTE_OR_CLASSIFY_REUSED_RTC_STEGVERSE_EGRESS_007",
     "OBSERVE_AUTHENTIC_RTC_INTERLOCK_INTR_TRANSPORT_008",
     "OBSERVE_AUTHENTIC_RTC_FARSIDE_FINAL_009",
+    "RECEIVE_AND_DURABLY_RECORD_GOVERNED_RETURN",
+    "OBSERVE_FINAL_ALLOWED_TRANSPORT_EXIT_TRANSITION",
+    "IDENTIFY_SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIP",
     "SUBSTITUTE_AUTHENTIC_EXTERNAL_MIR_ENDPOINT_WITHOUT_REDESIGN",
     "RECONCILE_EXHAUSTED_PARENT_GUIDE_FROM_SUPPORTED_EVIDENCE"
   ]

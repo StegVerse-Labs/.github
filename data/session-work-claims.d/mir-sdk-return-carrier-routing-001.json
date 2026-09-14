@@ -3,9 +3,11 @@
   "claim_id": "mir-sdk-return-carrier-routing-001",
   "goal_task_id": "MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001",
   "cosv_id": "50000000100000",
-  "state": "CLAIMED_FOR_INTEGRATION",
+  "state": "RELEASED_AFTER_MERGE",
   "role": "RUNTIME_CARRIER_SOURCE_REPAIR",
   "branch": "mir-sdk-return-carrier-routing-001",
+  "merged_pr": "StegVerse-Labs/.github#1902",
+  "merged_commit": "bf8a726da8688bcfbf625b82a388ae8c79080666",
   "claimed_paths": [
     "scripts/consume_publisher_intr_materialization_request.py",
     "scripts/materialize_gadi_retained_node_discovery.py",
