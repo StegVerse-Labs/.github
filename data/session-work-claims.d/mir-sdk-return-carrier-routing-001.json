@@ -8,6 +8,7 @@
   "branch": "mir-sdk-return-carrier-routing-001",
   "claimed_paths": [
     "scripts/consume_publisher_intr_materialization_request.py",
+    "scripts/observe_gadi_current_iphone_discovery_receipt.py",
     "tests/test_publisher_intr_materialization.py",
     "docs/MIR_SDK_RETURN_CARRIER_ROUTING_MIRROR_HANDOFF.md",
     "data/session-work-claims.d/mir-sdk-return-carrier-routing-001.json"
