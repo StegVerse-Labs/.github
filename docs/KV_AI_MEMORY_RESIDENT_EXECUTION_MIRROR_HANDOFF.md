@@ -1,6 +1,6 @@
 # KV AI Memory Resident Execution Mirror Handoff
 
-Status: ACTIVE / MEMORY-PACKET-INTR-SOURCE-PATH-VALIDATED / RESIDENT-PROVIDERREQUEST-BINDING-VALIDATED / LIVE-INTR-PROOF-OPEN
+Status: ACTIVE / RESIDENT-SOURCE-CARRIAGE-VALIDATED / MEMORY-PACKET-INTR-SOURCE-PATH-VALIDATED / RESIDENT-PROVIDERREQUEST-BINDING-VALIDATED / LIVE-INTR-PROOF-OPEN
 Goal Task ID: `SV-KV-AI-PERSISTENCE-001`
 COSV task.v1: `20111110110000`
 Repository: `StegVerse-Labs/.github`
@@ -25,7 +25,7 @@ custody/reconstruction: Master Records
 heartbeat: carrier/reference/observation only
 ```
 
-Repository state, source preparation, CI, fixtures, or route installation never substitute for an authentic InTr receipt, WorkerCoordinator claim/fence, provider operation, model response, or KV write receipt.
+Repository state, source preparation, CI, fixtures, route installation, or source carriage never substitute for an authentic InTr receipt, WorkerCoordinator claim/fence, provider operation, model response, or KV write receipt.
 
 ## Resident runtime surface invariant
 
@@ -56,6 +56,28 @@ Runtime verification comes from authentic InTr admission/transition evidence, Wo
 ```
 
 Private packet, prompt, and provider-request bytes remain outside GitHub. The resident request consumer tests readiness and invokes bounded subprocesses; it does not read the private packet itself.
+
+## Resident source carriage repair
+
+The dispatcher already registered selector `kv_ai_memory`, but resident source materialization and local WorkerCoordinator source refresh originally omitted the task-specific KV-memory scripts because `scripts/` is allow-listed rather than copied wholesale. A resident could therefore receive the canonical request/selector while lacking the executable consumer path.
+
+The carriage repair now requires both resident source paths to carry:
+
+- `scripts/consume_kv_ai_memory_resident_request.py`;
+- `scripts/prepare_kv_ai_memory_intr_runtime_source.py`;
+- `scripts/install_kv_ai_memory_universal_intr_route.py`;
+- `scripts/submit_kv_ai_memory_packet_local.py`.
+
+Canonical repair surfaces:
+
+- `scripts/install_sovereign_heartbeat_service.py` — fresh resident materialization copies and requires all four files;
+- `scripts/refresh_sovereign_worker_runtime_source.py` — already-local source refresh copies all four files without network source fetch;
+- `tests/test_kv_ai_memory_resident_source_carriage.py` — regression contract;
+- `.github/workflows/validate-kv-ai-memory-resident.yml` — task-specific hosted validation.
+
+The historical `install_sovereign_heartbeat_service_base.py` remains an intentionally preserved prior/base implementation and is not promoted into the current KV-memory carriage path.
+
+This repair creates no new runtime, scheduler, listener, WorkerCoordinator, credential path, or execution authority. It only makes the already-registered KV-memory resident consumer executable after normal resident materialization or local static-source refresh.
 
 ## Shared Universal InTr packet admission
 
@@ -134,15 +156,21 @@ Previously validated:
 
 - LLM bridge/materializer: runs `34803228613`, `34803228620` — SUCCESS;
 - original resident binding: run `34803483965` — SUCCESS;
-- initial shared memory-packet admission source: run `34804928451` — SUCCESS.
+- initial shared memory-packet admission source: run `34804928451` — SUCCESS;
+- no-device/RDC runtime-surface correction: runs `34812254218`, `34812316750` — SUCCESS.
 
-Hardening and source-preparation validation:
+Hardening, source preparation, and resident source carriage:
 
 - run `34805361433` / job `103856079710` — SUCCESS; exact returned receipt hash validation, anti-authority checks, packet admission tests, resident binding tests, and compilation passed;
 - run `34805426026` / job `103856264389` — SUCCESS; canonical runtime-source preparation tests and compilation passed;
-- run `34805510953` / job `103856506912` — SUCCESS; resident consumer convergence on the canonical source-preparation wrapper, fail-closed preparation-result checks, packet-admission tests, resident binding tests, and compilation passed.
+- run `34805510953` / job `103856506912` — SUCCESS; resident consumer convergence on the canonical source-preparation wrapper, fail-closed preparation-result checks, packet-admission tests, resident binding tests, and compilation passed;
+- run `34812669655` exposed a brittle dispatcher test whose expected failing selector was hard-coded to `g18`; the actual non-starvation behavior remained intact after `kv_ai_memory` became an earlier registered selector;
+- run `34812755561` / job `103877180585` — SUCCESS after repairing that test to validate selector-order-independent non-starvation;
+- run `34812879650` / job `103877535634` — SUCCESS; KV-specific resident source-carriage regression plus the complete KV-memory resident tests and Python compilation passed.
 
-Hosted validation proves source behavior only. It does not prove that the current sovereign resident has private staged inputs, that the shared listener is bound, that a live packet ALLOW occurred, or that WorkerCoordinator/provider/model/writeback execution happened.
+Hosted validation proves source behavior only. It does not prove that a current sovereign resident refreshed these bytes, that private staged inputs exist, that the shared listener is bound, that a live packet ALLOW occurred, or that WorkerCoordinator/provider/model/writeback execution happened.
+
+README impact determination: no semantic README update is required for this repair because the existing README already names this consumer, resident request, WorkerCoordinator lane, and private-state flow as canonical. The defect was that installer/refresher source carriage did not conform to that documented behavior; this change restores implementation parity without changing the public authority or workflow semantics.
 
 ## Next authentic evidence boundary
 
@@ -163,6 +191,7 @@ After that, the already-validated resident lane can attempt WorkerCoordinator Pr
 ```text
 canonical task: IN_PROGRESS
 KV memory source: VALIDATED
+resident KV-memory source carriage: VALIDATED
 packet admission profile/transport: VALIDATED
 canonical local route preparation: VALIDATED
 canonical local packet submitter: VALIDATED
