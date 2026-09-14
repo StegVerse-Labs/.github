@@ -10,6 +10,7 @@
   "cosv_task_vector": "40000100100000",
   "source_refs": [
     "docs/STEGBROWSER_RUNTIME_CONSUMPTION_MIRROR_HANDOFF.md",
+    "docs/STEGBROWSER_RUNTIME_CONSUMPTION_ROOT_PROFILE_REPAIR_MIRROR_HANDOFF.md",
     "docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md",
     "docs/TASK_REGISTRY_ANTI_COLLISION_AGGREGATION_MIRROR_HANDOFF.md",
     "docs/GLOBAL_RUNTIME_EVIDENCE_CLOSURE_MIRROR_HANDOFF.md",
@@ -30,6 +31,10 @@
     "StegVerse-Labs/StegOS@310c4e723fe98ad81931deef50dced8b43a0dae9",
     "StegVerse-Labs/Site#1305",
     "StegVerse-Labs/Site@4a10b42d4bb2743205c774d3c667cefc7353a710",
+    "StegVerse-Labs/Site#1310",
+    "StegVerse-Labs/Site@3a067ff48845044a8be42b42061929c1b7489651",
+    "StegVerse-Labs/Site#1311",
+    "StegVerse-Labs/Site@5f6c663b1294bb9f7cc8083c78c574b293e5ddf7",
     "StegVerse-Labs/TVC@aef6b6f5dc99d2a531718ca475d20858ae8e68a6",
     "StegVerse-Labs/TVC@4c78f8653b8a5899350479d57c58e936b50e023a"
   ],
@@ -40,6 +45,7 @@
       "stegbrowser-canonical-work-runtime-consumption",
       "current-iphone-testflight-processing-observer",
       "same-device-canonical-work-intr-ingress",
+      "kv-entrypoint-intr-launcher",
       "stegbrowser-tvc-source-promotion-runtime",
       "workercoordinator-claim-fence",
       "intr-runtime-admission",
@@ -142,6 +148,6 @@
   "human_action_ref": null,
   "completion": {"claimed":false,"validated":false,"runtime_consumption_observed":false,"owner_ingress_ready_observed":false},
   "allowed_next_transitions": ["INGRESS_ADMITTED"],
-  "handoff_projection_refs": ["docs/STEGBROWSER_RUNTIME_CONSUMPTION_MIRROR_HANDOFF.md"],
+  "handoff_projection_refs": ["docs/STEGBROWSER_RUNTIME_CONSUMPTION_MIRROR_HANDOFF.md", "docs/STEGBROWSER_RUNTIME_CONSUMPTION_ROOT_PROFILE_REPAIR_MIRROR_HANDOFF.md"],
   "authority_model": {"task_registry_mints_execution_authority":false,"source_state_proves_execution":false,"worker_claim_authority":"WORKERCOORDINATOR","interlock_intr_required_for_governed_ingress_egress":true,"credential_authority":"TV/TVC","master_records_reality_authority":true,"github_runtime_authority":"NONE"}
 }
