@@ -1,0 +1,22 @@
+{
+  "reusable_task_id": "RT-STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001",
+  "name": "StegOS AI Pre-Execution Runtime Proof",
+  "purpose": "Reuse the established event-ephemeral StegOS Node, Canonical Work, WorkerCoordinator, Interlock/InTr, and evidence boundaries to run the bounded AI pre-execution ALLOW/DENY/BYPASS test without creating a duplicate runtime, scheduler, credential path, or transport authority.",
+  "trigger": "STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001 is ACTIVE/CHECKED_OUT and selected_execution_substrate is ADMITTED-EPHEMERAL-STEGOS-NODE",
+  "scope": "one manifest-bound invocation for STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001 / COSV 40000100100000",
+  "parameter_keys": ["sovereign_source_root", "stegos_source_root", "runtime_base"],
+  "runner_templates": ["scripts/run_stegos_ai_preexecution_runtime_proof_reusable.py"],
+  "recording_levels": ["operation", "task", "goal", "component", "system", "master_records"],
+  "completion_predicates": [
+    "EPHEMERAL_STEGOS_NODE_MATERIALIZED_AND_VERIFIED",
+    "CANONICAL_WORK_INTR_ADMISSION_OBSERVED",
+    "ALLOW_TARGET_STATE_CHANGED",
+    "DENY_TARGET_STATE_UNCHANGED",
+    "BYPASS_TARGET_STATE_UNCHANGED",
+    "MODEL_OUTPUT_AUTHORITY_REMAINS_NONE",
+    "TV_TVC_CREDENTIAL_AUTHORITY_PRESERVED",
+    "NO_SECOND_RUNTIME_SCHEDULER_OR_CREDENTIAL_PATH"
+  ],
+  "authority_effect": "NONE_ORCHESTRATION_ONLY",
+  "reuse_instructions": "Trigger once through scripts/trigger_reusable_task.py. Reuse the existing SovereignLocalEventRuntimeAdapter, reusable ephemeral construct lifecycle, Canonical Work resident consumer, WorkerCoordinator boundary, Interlock/InTr transition path, and StegOS pre-execution network test. Stage only a runtime-local PROPOSED task projection before Canonical Work ingress. Do not rewrite canonical source state, mint a claim/fence, create a second scheduler/runtime/credential path, or treat CI/test-runtime execution as authentic external-AI proof. Stop at the authentic-AI evidence boundary after the reusable test-runtime predicates are observed."
+}
