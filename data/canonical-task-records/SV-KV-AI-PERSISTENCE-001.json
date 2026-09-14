@@ -95,6 +95,25 @@
     "MACHINE_KV_CROSS_PROVIDER_RECONSTRUCTION_OBSERVED",
     "HB_OBSERVATION_BOUND_TO_VERIFIED_KV_RECEIPTS_WITHOUT_STATE_AUTHORITY"
   ],
+  "runtime_requirements": {
+    "capabilities": ["kv_context_selection", "provenance_binding", "private_resident_input_staging", "autonomous_real_personal_kv_private_input_staging", "resident_kv_memory_source_carriage", "resident_native_event_triggered_shared_intr_bootstrap", "portable_targeted_kv_ai_memory_dispatch", "universal_intr_endpoint_environment_carriage", "memory_packet_runtime_source_preparation", "memory_packet_shared_intr_submission", "memory_packet_intr_admission", "fenced_worker_execution", "llm_provider_request_bridge", "provider_request_intr_admission", "ai_context_delivery", "memory_write_proposal", "evidence_gated_kv_writeback", "kv_writeback_readback", "machine_kv_reconstruction", "hb_receipt_observation_binding"],
+    "environment": "OWNER_CONTROLLED_KV_WITH_GOVERNED_AI_CONSUMER_AND_PROVIDER_NEUTRAL_RECONSTRUCTION",
+    "direction": "MULTI_CLASS_KV_PERSISTENCE_WITH_PERSONAL_KV_AI_ROUNDTRIP",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true,
+    "runtime_surface_policy": {
+      "current_device_label_informational_only": true,
+      "device_confirmation_required": false,
+      "device_discovery_required": false,
+      "device_presence_probe_required": false,
+      "remote_connected_device_required": false,
+      "remote_desktop_commander_required": false,
+      "second_user_operated_device_required": false,
+      "device_identity_mints_authority": false,
+      "absence_of_connected_device_is_blocker": false
+    }
+  },
   "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
   "completion": {"claimed":false,"validated":false,"reconciliation_ref":null},
   "allowed_next_transitions": ["TRANSFERRED"],
