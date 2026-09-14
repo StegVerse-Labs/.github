@@ -6,7 +6,9 @@ provider-request input exist but the admission is absent, it may invoke the
 resident-local shared-InTr submitter as a separate process. Only an authentic
 returned ingress receipt may create the admission file; otherwise the consumer
 remains in a wait state. Once all inputs exist it delegates to the existing
-WorkerCoordinator path.
+WorkerCoordinator path. Device discovery, connected-device presence, Remote
+Desktop Commander availability, and second-machine presence are not runtime
+prerequisites or evidence predicates.
 """
 from __future__ import annotations
 
@@ -63,6 +65,12 @@ def validate_request(request: dict[str, Any]) -> None:
         "github_token_runtime_authority": "NONE",
         "heartbeat_grants_execution_authority": False,
         "second_machine_required": False,
+        "device_confirmation_required": False,
+        "device_discovery_required": False,
+        "device_presence_probe_required": False,
+        "remote_connected_device_required": False,
+        "remote_desktop_commander_required": False,
+        "absence_of_connected_device_is_blocker": False,
         "network_source_fetch_allowed": False,
         "request_granted_authority": False,
         "provider_credential_material_allowed": False,
