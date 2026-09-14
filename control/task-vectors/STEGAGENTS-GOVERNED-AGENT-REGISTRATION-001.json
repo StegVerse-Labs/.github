@@ -8,14 +8,15 @@
     "data/canonical-task-records/STEGAGENTS-GOVERNED-AGENT-REGISTRATION-001.json",
     "docs/STEGAGENTS_GOVERNED_AGENT_REGISTRATION_MIRROR_HANDOFF.md",
     "data/canonical-task-records/STEGCORE-STEGAGENTS-ACTIVATION-SEQUENCE-001.json",
-    "StegVerse-Labs/StegAgents/agents/registry.yml",
-    "StegVerse-Labs/StegAgents/registry/stegagents-stegcore.handshake.activation.json"
+    "StegVerse-Labs/StegAgents@b768eeeb0ceca14fcfd50ce665cd6c0885e2774f:agents/governed/CodeRepair-001.manifest.json",
+    "StegVerse-Labs/StegAgents@b768eeeb0ceca14fcfd50ce665cd6c0885e2774f:agents/registry.yml",
+    "StegVerse-Labs/StegAgents@b639c2674959e3be9fb7a70caa33115c694af764:docs/STEGAGENTS_GOVERNED_AGENT_REGISTRATION_MIRROR_HANDOFF.md"
   ],
-  "observed_at": "2026-09-14T14:00:00Z",
+  "observed_at": "2026-09-14T14:18:00Z",
   "exact_metrics": {
-    "lifecycle": "UNCLAIMED",
-    "archive_ready": false,
-    "unassigned_work": 1,
+    "lifecycle": "COMPLETED",
+    "archive_ready": true,
+    "unassigned_work": 0,
     "chat_owned_implementation": 0,
     "chat_owned_validation": 0,
     "chat_owned_integration": 0,
@@ -24,7 +25,7 @@
     "canonical_owner_installed": true,
     "thread_required": false,
     "blocker_count": 0,
-    "evidence_complete": false,
+    "evidence_complete": true,
     "activated": false,
     "propagated": false
   },
