@@ -16,16 +16,21 @@
     "scripts/install_and_run_canonical_work_event_bootstrap.py",
     "scripts/evaluate_task_registry_collision_checkin.py",
     "scripts/run_heartbeat_runtime.py",
+    "scripts/run_stegbrowser_runtime_consumption_reusable.py",
+    "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
     "control/resident-execution-request.d/canonical-work-stegbrowser-runtime-consumption-001.json",
     "control/resident-execution-request.d/stegbrowser-tvc-source-promotion-001.json",
     "control/resident-execution-request.d/consume-stegbrowser-tvc-source-promotion.py",
     "control/source-bindings/stegbrowser-tvc-runtime-observer.json",
     "tests/test_stegbrowser_runtime_consumption_checkin.py",
+    "tests/test_stegbrowser_runtime_consumption_reusable_binding.py",
     "tests/test_carrier_selfheal_source_root_continuity.py",
     "StegVerse-Labs/.github#1781",
     "StegVerse-Labs/.github@d75ddb18ffb51f3131f3bde54fc9582f57991471",
     "StegVerse-Labs/.github#1789",
     "StegVerse-Labs/.github@b04d928f039fa185519913fed8343e37319035bd",
+    "StegVerse-Labs/.github#1831",
+    "StegVerse-Labs/.github@6f1b08ee786c8f72395cfa5d393397bcdb7404c5",
     "StegVerse-Labs/StegOS#380",
     "StegVerse-Labs/StegOS@310c4e723fe98ad81931deef50dced8b43a0dae9",
     "StegVerse-Labs/Site#1305",
@@ -38,6 +43,7 @@
     "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegOS", "StegVerse-Labs/Site", "StegVerse-Labs/TVC"],
     "components": [
       "stegbrowser-canonical-work-runtime-consumption",
+      "stegbrowser-reusable-ephemeral-runner",
       "current-iphone-testflight-processing-observer",
       "same-device-canonical-work-intr-ingress",
       "stegbrowser-tvc-source-promotion-runtime",
@@ -56,6 +62,13 @@
       "state": "RESOLVED",
       "ref": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001;GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001;StegVerse-Labs/.github#1781",
       "disposition": "EXACT_CANONICAL_TASK_REGISTRY_CHECKIN_RETURNED_CONTINUE_THROUGH_ADMITTED_INTERNAL_CANONICAL_WORK_BOOTSTRAP_SURFACE_AT_VALIDATED_HEAD_1297D981; THIS_RESOLVES_COORDINATION_PREFLIGHT_ONLY_AND_DOES_NOT_CLAIM_RUNTIME_CONSUMPTION"
+    },
+    {
+      "dependency_id": "DEP-STEGBROWSER-RUNTIME-REUSABLE-EPHEMERAL-RUNNER",
+      "kind": "SOURCE_BINDING",
+      "state": "RESOLVED",
+      "ref": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001;StegVerse-Labs/.github#1831;StegVerse-Labs/.github@6f1b08ee786c8f72395cfa5d393397bcdb7404c5",
+      "disposition": "EXECUTABLE_REUSABLE_RUNNER_BOUND_TO_ADMITTED_EPHEMERAL_STEGOS_NODE; SOURCE_BINDING_ONLY_DOES_NOT_CLAIM_RUNTIME_EXECUTION"
     },
     {
       "dependency_id": "DEP-STEGBROWSER-RUNTIME-CANONICAL-WORK-CONSUMPTION",
@@ -129,7 +142,7 @@
       {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"SUITABLE","limitation_class":"NONE","evidence_refs":["docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md"]},
       {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"SUITABLE","limitation_class":"NONE","evidence_refs":["data/reusable-task-ephemeral-construct-contract.json"]},
       {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"SUITABLE","limitation_class":"NONE","evidence_refs":["docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"SELECTED","limitation_class":"NONE","evidence_refs":["data/reusable-task-ephemeral-construct-contract.json","docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"SELECTED","limitation_class":"NONE","evidence_refs":["data/reusable-task-ephemeral-construct-contract.json","docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md","source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json"]},
       {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":[]}
     ],
     "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
