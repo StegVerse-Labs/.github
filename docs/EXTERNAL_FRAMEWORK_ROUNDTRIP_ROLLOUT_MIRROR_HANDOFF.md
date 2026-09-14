@@ -1,6 +1,6 @@
 # External Framework Round-Trip Rollout Mirror Handoff
 
-Updated: 2026-09-13
+Updated: 2026-09-14
 
 Parent Goal Task ID: `MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001`
 Parent COSV: `50000000100000`
@@ -8,74 +8,38 @@ Canonical parent issue: `StegVerse-Labs/Site#1277`
 Canonical parent handoff: `StegVerse-Labs/Site/docs/MIR_CONNECTION_ROUNDTRIP_TECHNICAL_GUIDE_MIRROR_HANDOFF.md`
 Tracking issue: `StegVerse-Labs/.github#1800` (source-completion issue closed)
 Reusable Task ID: `RT-EXTERNAL-FRAMEWORK-ROUNDTRIP-ROLLOUT-001`
-Base source merge: `49692b2fe410053fc1b0b83a7d27c39fca887d27`
-Elyria conformance merge: `204ae5c26520a33418a805da702a627640a85017`
-Source-completion handoff merge: `1cd03b9e1b1b07c9324091f3af99265c78e53c68`
-Status: `SOURCE COMPLETE / REGISTRY-WIDE PLAN GENERATOR STAGED / EXACT-HEAD VALIDATION PENDING`
+Status: `SOURCE COMPLETE / REGISTRY-WIDE PLANNER MERGED / EVIDENCE-QUALIFIED ENDPOINT ENFORCEMENT MERGED / RUNTIME INVOCATIONS REMAIN EVIDENCE-GATED`
 
 ## Purpose
 
-Convert the already-generalized MIR external connection/round-trip architecture into one registry-driven reusable task that can be invoked for external frameworks represented in the canonical `StegVerse-Labs/admissibility-wiki` external-framework registry.
+Use one registry-driven reusable round-trip task for external frameworks represented in the canonical `StegVerse-Labs/admissibility-wiki` external-framework registry. This surface must not create one Goal Task, transport stack, scheduler, WorkerCoordinator, credential route, custody implementation, user-verification mechanism, or runtime plane per framework.
 
-The current parent MIR handoff remains authoritative for MIR-specific transition truth and completion. This reusable task generalizes framework selection and composition without creating a new execution, transition, credential, publication, custody, scheduler, WorkerCoordinator, user-verification, or runtime authority.
+The parent MIR handoff remains authoritative for MIR-specific runtime transition truth. This handoff owns only reusable framework-resolution/planning source state.
 
 ## Reused component composition
 
 Required reusable components:
 
-- `RT-EXTERNAL-ADAPTER-ESTABLISH-001`
-- `RTC-MANIFEST-001`
-- `RTC-GOVERNED-PROCESSING-002`
-- `RTC-ROUNDTRIP-003`
-- `RTC-EVIDENCE-CUSTODY-004`
-- `RTC-SDK-RETURN-006`
-- `RTC-STEGVERSE-EGRESS-007`
-- `RTC-INTERLOCK-INTR-TRANSPORT-008`
-
-Conditional components:
-
-- `RTC-PUBLISHER-005` only where the framework/consumer contract requires publication/presentation evidence;
-- `RTC-FARSIDE-FINAL-009` only where the foreign system exposes a distinct final-state transition that must be observed separately from the round-trip response.
-
-MIR is the reference transition profile. `SDK-ELYRIA-INTR-ADAPTER-001` is the first non-MIR conformance profile and selects exactly the eight required components while correctly leaving Publisher and far-side-final conditional.
-
-## Runtime truth and provenance
-
-The rollout preserves the canonical MIR rule:
-
-> executed transitions are runtime truth at their recorded provenance.
-
-A bounded external-framework mirror/build-test execution is a real executed transition with its recorded counterpart provenance. It is not equivalent to authentic external endpoint substitution. Source, CI, or merge state alone does not prove an unexecuted transition.
-
-## Invocation model
-
-One invocation binds exactly one framework registry entry and one bounded operation to:
-
 ```text
-goal_task_id
-cosv_task_vector
-framework_registry_ref
-framework_id
-framework_version_or_revision
-operation_class
-runtime_endpoint_ref
-source_evidence_ref
-counterpart_provenance
+RT-EXTERNAL-ADAPTER-ESTABLISH-001
+RTC-MANIFEST-001
+RTC-GOVERNED-PROCESSING-002
+RTC-ROUNDTRIP-003
+RTC-EVIDENCE-CUSTODY-004
+RTC-SDK-RETURN-006
+RTC-STEGVERSE-EGRESS-007
+RTC-INTERLOCK-INTR-TRANSPORT-008
 ```
 
-The invocation preserves exact task/run/framework identity across manifested intake, governed processing, outbound InTr movement, foreign response, return movement, SDK return assembly, optional Publisher projection, egress, and Master Records custody/reconstruction.
+Conditional components remain `RTC-PUBLISHER-005` and `RTC-FARSIDE-FINAL-009` only where the consuming contract requires them. MIR is the reference profile; `SDK-ELYRIA-INTR-ADAPTER-001` is the first non-MIR conformance profile and does not create a second transport or Goal.
 
-`runtime_endpoint_ref` is an invocation input, not registry authority. Supplying it makes a sourced framework eligible to attempt a round trip; it does not prove endpoint authenticity, availability, transition admission, or success.
+## Runtime truth
 
-## Canonical admissibility-wiki registry semantics
+Executed transitions are runtime truth only at their recorded provenance. Source, CI, merge state, framework metadata, endpoint metadata, or a generated plan cannot prove an unexecuted transition or authentic foreign endpoint substitution.
 
-The current registry schema is `0.4`. Registry entries provide `framework_id`, status, manifest path, source reference, and bounded testbench state. Framework manifests bind source/version/boundary, claims/non-claims, transition mapping, SPE/ecosystem overlap, fail-closed conditions, and explicit authority boundaries.
+## Invocation and eligibility
 
-The resolver consumes a local exact registry snapshot plus the exact selected manifest. It does not fetch external URLs or infer execution authority from compatibility metadata.
-
-## Fail-closed framework eligibility
-
-Every selected framework is classified into exactly one state:
+Each invocation binds one canonical framework identity and operation to the existing reusable task. Eligibility remains one of:
 
 ```text
 ROUNDTRIP_ELIGIBLE
@@ -86,60 +50,75 @@ UNSUPPORTED_OPERATION_CLASS
 REGISTRY_ENTRY_INVALID
 ```
 
-A source-blocked or runtime-unavailable framework stops only that invocation. It does not authorize substitute endpoints, synthetic foreign responses, hosted fallback, or a new transport stack, and it does not block unrelated framework entries.
+The registry-wide planner fails closed per framework invocation and never creates shared batch runtime state.
+
+A runtime endpoint can make a sourced runtime-roundtrip invocation eligible only when the endpoint binding contains all of:
+
+```text
+runtime_endpoint_ref
+endpoint_evidence_ref
+endpoint_observed_at
+endpoint_evidence_class
+```
+
+Bare endpoint strings, endpoint-only objects, orphan evidence, and malformed bindings fail closed. Documentation/source URLs may not be inferred as runtime endpoints. Endpoint evidence still does not prove authenticity, availability, authorization, admission, execution, or return success.
 
 ## Source and validation history
 
-`.github` PR `#1801` added the reusable-task registry shard, deterministic resolver, bounded tests, and this handoff. Exact head `8f280eb3377faabf1be84c5aec726d63ba036a5c` passed Organization Control `34797138353`, Deterministic Repository Suite `34797138357`, and Heartbeat Worker Project validation `34797138326`, then squash-merged as `49692b2fe410053fc1b0b83a7d27c39fca887d27`.
+```text
+.github#1801
+  exact head: 8f280eb3377faabf1be84c5aec726d63ba036a5c
+  org control: 34797138353 SUCCESS
+  deterministic suite: 34797138357 SUCCESS
+  heartbeat validation: 34797138326 SUCCESS
+  merge: 49692b2fe410053fc1b0b83a7d27c39fca887d27
 
-`.github` PR `#1803` proved the non-MIR abstraction against `SDK-ELYRIA-INTR-ADAPTER-001`. Exact head `044eb8ffab71c27494a57a4f770bbb426846d50e` passed Organization Control `34797282370`, Deterministic Repository Suite `34797282389`, and Heartbeat Worker Project validation `34797282383`, then squash-merged as `204ae5c26520a33418a805da702a627640a85017`.
+.github#1803
+  exact head: 044eb8ffab71c27494a57a4f770bbb426846d50e
+  org control: 34797282370 SUCCESS
+  deterministic suite: 34797282389 SUCCESS
+  heartbeat validation: 34797282383 SUCCESS
+  merge: 204ae5c26520a33418a805da702a627640a85017
 
-`.github` PR `#1804` reconciled source completion and merged as `1cd03b9e1b1b07c9324091f3af99265c78e53c68` after Organization Control `34797389863`, Deterministic Repository Suite `34797389873`, and Heartbeat `34797389860` passed.
+.github#1804
+  org control: 34797389863 SUCCESS
+  deterministic suite: 34797389873 SUCCESS
+  heartbeat validation: 34797389860 SUCCESS
+  merge: 1cd03b9e1b1b07c9324091f3af99265c78e53c68
 
-The Elyria conformance proof requires no new Goal Task, no new reusable component, no duplicate Interlock/InTr protocol, and no GitHub runtime authority. It does not satisfy Elyria's separate authentic public two-way transport predicate.
+.github#1805 — registry-wide planner
+  exact head: 07ddf0f43b31fc83d159c0e805eb78089f9de6d0
+  merge: 126e1e5833b93febd5aae13529b60cfa2712b6f9
 
-## Registry-wide planning continuation
+.github#1811 — evidence-qualified endpoint enforcement in planner
+  exact head: e39e9c4641d5d3a4f89f5d5268cc9dc28c79b3e0
+  org control: 34813982926 SUCCESS
+  deterministic suite: 34813982664 SUCCESS
+  heartbeat validation: 34813982738 SUCCESS
+  merge: ebdaab4d7b35e9b46f37bd2d187a4d4aff31622c
+```
 
-The next reusable step is staged on branch `external-framework-rollout-registry-sweep` without creating another Goal Task or another transport component.
-
-`script/plan_external_framework_registry_rollout.py` is intentionally represented by the repository path `scripts/plan_external_framework_registry_rollout.py`. It consumes one exact local snapshot of the admissibility-wiki registry, its local manifest tree, and an optional explicit endpoint map. It emits one deterministic aggregate report containing an independent invocation plan for every registry entry.
-
-The sweep has `NONE_PLAN_ONLY` transition effect. It does not contact external endpoints. It does not create a shared batch execution state. Each output row remains a normal bounded invocation of `RT-EXTERNAL-FRAMEWORK-ROUNDTRIP-ROLLOUT-001`, so an invalid/source-blocked/runtime-unavailable framework fails closed without blocking other framework rows.
-
-The staged tests cover mixed eligibility in one registry, missing-manifest isolation, source-blocked isolation, runtime-endpoint absence, one eligible endpoint-bearing framework, and translation-only sweeps that do not require endpoints.
-
-This is the intended mechanism for reducing framework proliferation: one reusable task identity, one registry sweep for planning, and independent framework invocations only when a consuming Goal actually needs a transition.
-
-## README review
-
-The `.github` root `README.md` already documents the Reusable Task Model, Reusable Task Component Model, bounded invocation semantics, authority separation, and reuse-over-bespoke-orchestration rule. The registry sweep remains a plan-only runner under that existing model, so no root README mutation is required.
+The corresponding admissibility-wiki binding registry and evidence-qualified endpoint contract are merged. Its live endpoint overlay remains intentionally empty until current independently observed endpoints map to exact canonical framework identities.
 
 ## Authority separation
 
-- Task Registry: coordination only.
-- WorkerCoordinator: claim/fence authority.
-- Interlock/InTr: governed admission/state-transition authority.
-- TV/TVC: credential/provider/release authority.
-- KV/SKAP Vault: sole user-verification authority.
-- Master Records: observed-reality custody/reconstruction authority.
-- External framework adapters: translation only; foreign verdicts/receipts never become StegVerse authority.
-- GitHub/source/CI: source/evidence coordination only; runtime authority `NONE`.
+Task Registry is coordination only; WorkerCoordinator owns claim/fence; Interlock/InTr owns governed transition admission; TV/TVC owns credential/provider authority; KV/SKAP Vault owns user verification; Master Records owns observed-reality custody/reconstruction; GitHub/source/CI has runtime authority `NONE`.
 
 ## No-duplication rule
 
-This reusable task must not create or own a second InTr transport/protocol, SDK return implementation, Publisher implementation, custody system, scheduler/resident executor, WorkerCoordinator, credential route, device/user-verification mechanism, or per-framework Goal Task when a reusable invocation is sufficient.
+Do not create a second InTr implementation, SDK return implementation, Publisher implementation, custody system, scheduler/resident executor, WorkerCoordinator, credential route, device/user-verification mechanism, or per-framework Goal Task when this reusable invocation model is sufficient.
 
 ## Completion boundary
 
-The base reusable rollout source is complete and merged. This continuation is complete only when the registry-wide planner, its reusable-task registry declaration, tests, and this handoff pass exact-head repository validation and merge. Runtime/transition completion remains invocation-specific; the registry sweep itself can never satisfy a runtime transition predicate.
+Reusable rollout source completion is satisfied. The registry-wide planner and endpoint-evidence qualification are merged and validated. Runtime/transition completion remains invocation-specific and cannot be satisfied by this handoff or by generated plans.
 
 ## Next admissible work
 
-1. Run exact-head repository validation for branch `external-framework-rollout-registry-sweep`.
-2. If green, merge the registry-wide plan generator without creating a new Goal Task.
-3. Materialize a current admissibility-wiki registry sweep from an exact local snapshot and use the report to choose independently actionable framework invocations.
-4. Preserve `SOURCE_ONLY`, `RUNTIME_ENDPOINT_UNAVAILABLE`, and invalid states as explicit managed outcomes rather than spawning repair sessions for every entry.
-5. Continue the parent MIR Goal independently through retained-return delivery and downstream manifest-selected processing/egress/final transitions.
+1. Consume exact admissibility-wiki registry snapshots through the merged planner.
+2. Preserve explicit `SOURCE_ONLY`, `TRANSLATION_ONLY`, `RUNTIME_ENDPOINT_UNAVAILABLE`, and invalid dispositions independently.
+3. Keep runtime-roundtrip eligibility fail-closed until an exact framework identity has an evidence-qualified current endpoint binding.
+4. Advance only eligible invocations through the existing Interlock/InTr-governed reusable component composition.
+5. Continue the parent MIR Goal independently through retained-return delivery and downstream manifest-selected processing, return binding, egress, and final transitions.
 
 ## Manual work
 
