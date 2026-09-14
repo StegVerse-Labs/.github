@@ -15,7 +15,7 @@
       ],
       "command": [
         "python",
-        "workers/universal_governance_enforced_reference_worker.py"
+        "workers/universal_governance_enforced_reference_bound_worker.py"
       ],
       "cwd": ".",
       "enabled": true,
@@ -35,9 +35,10 @@
       "type": "process_json_bound_state_v0.1",
       "notes": [
         "Consumes already-materialized local source only; no remote checkout.",
+        "Exact fresh-binding source content must match StegCore merge 7cbef555608f7e154ae575dcbd5b4e65fbf0c85c before execution.",
         "Target mutation is confined to bound state and is not repository mutation.",
         "Reference proof must retain real_external_system_enforced_activation=false.",
-        "Missing source returns HANDOFF_READY."
+        "Missing or stale source returns HANDOFF_READY."
       ]
     }
   ]
