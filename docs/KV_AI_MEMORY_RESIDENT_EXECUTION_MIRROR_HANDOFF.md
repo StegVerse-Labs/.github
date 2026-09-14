@@ -27,6 +27,23 @@ heartbeat: carrier/reference/observation only
 
 Repository state, source preparation, CI, fixtures, or route installation never substitute for an authentic InTr receipt, WorkerCoordinator claim/fence, provider operation, model response, or KV write receipt.
 
+## Resident runtime surface invariant
+
+`CURRENT_USER_IPHONE` or any equivalent current-device label is informational only. This Goal Task must not discover, enumerate, poll for, confirm, authorize, identify, wait for, or require a physical iPhone, Remote Desktop Commander device, remotely connected resident device, or second user-operated machine before attempting the existing resident-local path.
+
+```text
+device confirmation required: false
+device discovery required: false
+device presence probe required: false
+remote connected-device requirement: NOT_APPLICABLE
+Remote Desktop Commander requirement: NOT_APPLICABLE
+second user-operated device required: false
+absence of connected-device result is blocker: false
+device/runtime-surface identity mints authority: false
+```
+
+Runtime verification comes from authentic InTr admission/transition evidence, WorkerCoordinator claim/fence evidence where applicable, exact provider-request/result lineage, exact KV readback, and Master Records custody/reconstruction. A connected-device listing, process-presence listing, RDC result, or current-device identity is neither a prerequisite nor completion evidence.
+
 ## Canonical private bound state
 
 ```text
@@ -129,7 +146,7 @@ Hosted validation proves source behavior only. It does not prove that the curren
 
 ## Next authentic evidence boundary
 
-The first unresolved predicate is now operational rather than architectural:
+The first unresolved predicate is operational rather than architectural and is not gated by device discovery or RDC availability:
 
 ```text
 real staged Personal-KV packet
@@ -139,7 +156,7 @@ real staged Personal-KV packet
 -> memory-packet-admission.json
 ```
 
-After that, the already-validated resident lane can attempt WorkerCoordinator ProviderRequest materialization. No receipt may be synthesized from CI, source, fixtures, or model output.
+After that, the already-validated resident lane can attempt WorkerCoordinator ProviderRequest materialization. No receipt may be synthesized from CI, source, fixtures, model output, device identity, or connected-device presence.
 
 ## Current truth
 
@@ -152,6 +169,7 @@ canonical local packet submitter: VALIDATED
 resident autonomous admission orchestration: VALIDATED
 resident WorkerCoordinator binding: VALIDATED
 LLM ProviderRequest bridge/materializer: VALIDATED
+device discovery/presence/RDC gate: PROHIBITED
 real private resident packet/input state: NOT OBSERVED
 live shared-listener packet ALLOW: NOT OBSERVED
 live WorkerCoordinator ProviderRequest materialization: NOT OBSERVED
