@@ -2,6 +2,8 @@
 """Consume the non-authorizing KV AI memory resident execution request.
 
 The consumer never reads private packet/prompt bytes itself. When the packet and
+provider-request input are absent, it may invoke the resident-native Personal-KV
+private stager against real user-custodied files. When the packet and
 provider-request input exist but the admission is absent, it may invoke the
 resident-local shared-InTr submitter as a separate process. Only an authentic
 returned ingress receipt may create the admission file; otherwise the consumer
@@ -14,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib.util
 import json
 import os
 import subprocess
@@ -33,7 +36,15 @@ ADMISSION_INPUT = Path("inputs/memory-packet-admission.json")
 PROVIDER_INPUT = Path("inputs/provider-request-input.json")
 REQUIRED_INPUTS = (PACKET_INPUT, ADMISSION_INPUT, PROVIDER_INPUT)
 HOSTED_ENV = ("GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "VERCEL_ENV", "CF_PAGES", "CLOUDFLARE_WORKERS")
-NONSECRET_ENV = ("PATH", "HOME", "LANG", "LC_ALL", "XDG_STATE_HOME", "XDG_CONFIG_HOME", "LOCALAPPDATA", "STEGVERSE_SOVEREIGN_NODE", "STEGVERSE_HEARTBEAT_ROOT", "STEGVERSE_HEARTBEAT_SOURCE_ROOT", "STEGVERSE_LLM_ADAPTER_ROOT", "STEGVERSE_UNIVERSAL_INTR_INGRESS_URL")
+NONSECRET_ENV = (
+    "PATH", "HOME", "LANG", "LC_ALL", "XDG_STATE_HOME", "XDG_CONFIG_HOME", "LOCALAPPDATA",
+    "STEGVERSE_SOVEREIGN_NODE", "STEGVERSE_HEARTBEAT_ROOT", "STEGVERSE_HEARTBEAT_SOURCE_ROOT",
+    "STEGVERSE_LLM_ADAPTER_ROOT", "STEGVERSE_UNIVERSAL_INTR_INGRESS_URL",
+    "STEGVERSE_KV_SOURCE_ROOT", "STEGVERSE_KV_ROOT", "STEGVERSE_KV_PROVIDER_BINDING_PATH",
+    "STEGVERSE_KV_PROVIDER_MATERIALIZED_ROOT", "STEGVERSE_TVC_PROVIDER_MATERIALIZATION_RESULT_FILE",
+    "STEGVERSE_KV_AI_CONTEXT_REQUEST_PATH", "STEGVERSE_KV_AI_CONTEXT_ENTRIES_PATH",
+    "STEGVERSE_KV_AI_PROVIDER_REQUEST_INPUT_PATH",
+)
 FORBIDDEN_ENV = ("GITHUB_TOKEN", "GH_TOKEN", "GITHUB_PAT", "ACTIONS_RUNTIME_TOKEN", "OPENAI_API_KEY", "ANTHROPIC_API_KEY", "DEEPSEEK_API_KEY", "ZAI_API_KEY", "KIMI_API_KEY", "PRIVATE_KEY", "SEED", "MNEMONIC")
 
 
@@ -112,6 +123,11 @@ def input_readiness(env: Mapping[str, str] | None = None) -> tuple[bool, list[st
     return not missing, missing
 
 
+def packet_provider_inputs_ready(env: Mapping[str, str] | None = None) -> bool:
+    root = bound_state_root(env)
+    return (root / PACKET_INPUT).is_file() and (root / PROVIDER_INPUT).is_file()
+
+
 def admission_inputs_ready(env: Mapping[str, str] | None = None) -> bool:
     root = bound_state_root(env)
     return (root / PACKET_INPUT).is_file() and (root / PROVIDER_INPUT).is_file() and not (root / ADMISSION_INPUT).is_file()
@@ -137,6 +153,43 @@ def last_json(stdout: str) -> dict[str, Any] | None:
         if isinstance(value, dict):
             return value
     return None
+
+
+def attempt_personal_kv_private_staging(source: Path, runtime: Path, *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
+    """Bridge the generic selector into the resident-native real Personal-KV stager.
+
+    This does not synthesize packet, prompt, provider, admission, credential, claim,
+    fence, writeback, or activation evidence. It only reuses the event-bootstrap
+    stager helper so selector-based dispatch can reach the same private staging
+    wait/advance states as the preferred event-bootstrap command.
+    """
+    bootstrap_path = source / "workers/kv_ai_memory_intr_event_bootstrap.py"
+    if not bootstrap_path.is_file():
+        return {
+            "state": "PERSONAL_KV_EVENT_BOOTSTRAP_SOURCE_NOT_READY",
+            "private_content_exported_to_repository": False,
+            "authority_effect": "NONE_WAIT_STATE",
+        }
+    spec = importlib.util.spec_from_file_location("kv_ai_memory_intr_event_bootstrap_for_consumer", bootstrap_path)
+    if not spec or not spec.loader:
+        return {
+            "state": "PERSONAL_KV_EVENT_BOOTSTRAP_SOURCE_NOT_READY",
+            "private_content_exported_to_repository": False,
+            "authority_effect": "NONE_WAIT_STATE",
+        }
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    result = module.stage_from_personal_kv(source, runtime, runner=runner, env=clean_env(env))
+    if not isinstance(result, dict):
+        return {
+            "state": "PERSONAL_KV_PRIVATE_STAGING_RESULT_INVALID",
+            "private_content_exported_to_repository": False,
+            "authority_effect": "NONE_FAIL_CLOSED",
+        }
+    result = dict(result)
+    result.setdefault("private_content_exported_to_repository", False)
+    result.setdefault("authority_effect", "NONE_PRIVATE_STAGING_ONLY" if result.get("state") == "PERSONAL_KV_PRIVATE_INPUTS_STAGED" else "NONE_WAIT_STATE")
+    return result
 
 
 def attempt_memory_packet_admission(source: Path, *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
@@ -201,6 +254,10 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     if previously_consumed(runtime, request, request_hash):
         return {"schema": "stegverse.kv-ai-memory.resident-request-consumption/v1", "state": "ALREADY_CONSUMED", "request_id": request["request_id"], "request_sha256": request_hash, "runtime_execution_attempted": False, "authority_effect": "NONE"}
 
+    private_staging_attempt = None
+    if not packet_provider_inputs_ready(env):
+        private_staging_attempt = attempt_personal_kv_private_staging(source, runtime, runner=runner, env=env)
+
     admission_attempt = None
     if admission_inputs_ready(env):
         admission_attempt = attempt_memory_packet_admission(source, runner=runner, env=env)
@@ -213,6 +270,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
             "request_id": request["request_id"],
             "request_sha256": request_hash,
             "missing_input_refs": missing,
+            "private_staging_attempt": private_staging_attempt,
             "admission_attempt": admission_attempt,
             "private_input_bytes_read": False,
             "runtime_execution_attempted": False,
@@ -247,6 +305,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         "execution_result": result,
         "bridge_contract_valid": valid,
         "runtime_execution_attempted": True,
+        "private_staging_attempt": private_staging_attempt,
         "admission_attempt": admission_attempt,
         "private_input_bytes_read_by_consumer": False,
         "request_granted_authority": False,
