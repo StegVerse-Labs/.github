@@ -15,7 +15,7 @@ def run_checkin():
         "caller_surface": CALLER_SURFACE,
         "checkin_context": {
             "repository": "StegVerse-Labs/.github",
-            "branch": "stegbrowser-runtime-consumption-checkin-001",
+            "branch": "stegbrowser-ephemeral-stegos-selection",
             "first_unresolved_predicate": "TASK_REGISTRY_CHECKIN_CONTINUE_OBSERVED",
         },
     }
@@ -36,7 +36,7 @@ def test_stegbrowser_runtime_consumption_exact_registry_checkin_is_continue():
     assert out["caller_surface"] == CALLER_SURFACE
     assert out["registry_identity_source"] == "CANONICAL_TASK_REGISTRY"
     assert out["authority_effect"] == "NONE"
-    assert out["selected_execution_substrate"] == "STEG-BROWSER-RETAINED-RESIDENT-NODE"
+    assert out["selected_execution_substrate"] == "ADMITTED-EPHEMERAL-STEGOS-NODE"
     assert out["disposition"] == "CONTINUE", json.dumps(out, sort_keys=True)
     assert out["session_action"] == "CONTINUE_CURRENT_TASK"
     assert out["hard_collision_task_ids"] == []
