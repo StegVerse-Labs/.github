@@ -111,6 +111,7 @@ CONSUMERS = (
     ("sv011_phase5_source_materialization", "scripts/consume_sv011_phase5_source_materialization_request.py"),
     ("sv011_phase5", "scripts/consume_sv011_phase5_resident_execution_request.py"),
     ("glm53_sovereign_lane", "scripts/consume_glm53_sovereign_lane_request.py"),
+    ("stegagents_governed_runtime_targeted", "scripts/consume_stegagents_governed_runtime_targeted_request.py"),
     ("deepseek_intr_runtime", "control/resident-execution-request.d/consume-deepseek-intr-runtime.py"),
     ("erl_ai_economic_transparency_review", "scripts/consume_erl_ai_economic_transparency_review_request.py"),
     ("org_claim_allocator", "scripts/consume_org_claim_allocator_request.py"),

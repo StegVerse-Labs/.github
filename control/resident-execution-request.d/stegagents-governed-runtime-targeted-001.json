@@ -1,0 +1,22 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-EXEC-STEGAGENTS-GOVERNED-RUNTIME-TARGETED-001",
+  "state": "REQUESTED",
+  "task_id": "STEGAGENTS-GOVERNED-RUNTIME-001",
+  "cosv_profile": "task.v1",
+  "cosv_task_vector": "71000000101001",
+  "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
+  "entrypoint": "scripts/refresh_and_execute_resident_task.py",
+  "argv": ["--task-id", "STEGAGENTS-GOVERNED-RUNTIME-001", "--cosv-task-vector", "71000000101001"],
+  "fresh_fence_minimum_exclusive": 0,
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "second_machine_required": false,
+  "network_source_fetch_allowed": false,
+  "request_granted_authority": false,
+  "provider_credential_material_allowed": false,
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "note": "After canonical runtime routing readiness, ask the existing WorkerCoordinator to review and execute the already-admitted governed CodeRepair-001 runtime task. This request grants no claim, fence, InTr, provider, credential, heartbeat, or runtime authority."
+}
