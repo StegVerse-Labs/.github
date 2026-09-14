@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SV-KV-AI-PERSISTENCE-001",
   "created_at": "2026-09-14T03:40:00Z",
-  "updated_at": "2026-09-14T04:18:00Z",
+  "updated_at": "2026-09-14T05:00:00Z",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "SV-KV-AI-PERSISTENCE-001",
@@ -19,7 +19,7 @@
       "Source preparation, CI, a fixture, or repository state is represented as authentic memory-packet admission or live model consumption.",
       "A returned admission overclaims provider request materialization, provider ingress, provider execution, KV writeback, credential material, claim/fence creation, HeartBeat execution authority, or request execution authority.",
       "The worker or submitter mints TV/TVC provider authority, KV mutation authority, or model authority.",
-      "A hosted runner or second user-operated machine becomes the sovereign execution requirement."
+      "A hosted runner, connected-device discovery, Remote Desktop Commander, device-presence proof, or second user-operated machine becomes a sovereign execution requirement."
     ],
     "authority_ceiling": [
       "resident-local Personal-KV packet submission to existing shared Universal InTr",
@@ -60,7 +60,7 @@
   "authority": {
     "authority_source": "SV-KV-AI-PERSISTENCE-001 canonical task registry + existing WorkerCoordinator task-control boundary + existing shared Universal InTr listener",
     "authority_domain": "INDEPENDENT_TASK_CONTROL",
-    "policy_version": "kv-ai-memory-resident-v0.2",
+    "policy_version": "kv-ai-memory-resident-v0.3",
     "heartbeat_grants_execution_authority": false,
     "fresh_fence_required": true,
     "minimum_fencing_token_exclusive": 0,
@@ -88,14 +88,25 @@
     "rate_class": "kv_ai_memory_resident",
     "hosted_execution_allowed": false,
     "bound_state_root": "~/.stegverse/state/kv-ai-memory-resident",
-    "bound_state_allowed_paths": ["inputs/**", "materialized/**", "receipts/**"]
+    "bound_state_allowed_paths": ["inputs/**", "materialized/**", "receipts/**"],
+    "runtime_surface_policy": {
+      "current_device_label_informational_only": true,
+      "device_confirmation_required": false,
+      "device_discovery_required": false,
+      "device_presence_probe_required": false,
+      "remote_connected_device_required": false,
+      "remote_desktop_commander_required": false,
+      "second_user_operated_device_required": false,
+      "absence_of_connected_device_is_blocker": false,
+      "device_identity_mints_authority": false
+    }
   },
   "completion": {
     "source_implementation_state": "SOURCE_COMPLETE_FOR_PACKET_ADMISSION_THROUGH_PROVIDER_REQUEST_MATERIALIZATION",
     "runtime_activation_state": "PENDING_AUTHENTIC_MEMORY_PACKET_AND_PROVIDER_CHAIN",
     "runtime_observation_claimed": false,
     "terminal_evidence": "authentic same-execution memory-packet InTr ALLOW + WorkerCoordinator ProviderRequest materialization + provider ingress/TVC/response/egress evidence + KV writeback/readback evidence",
-    "next_authorized_action": "When resident-local packet and provider input exist and the shared loopback Universal InTr listener is available, allow the existing consumer to normalize local listener source, submit the exact packet, validate the returned ALLOW, stage admission evidence, and only then continue through existing WorkerCoordinator execution.",
+    "next_authorized_action": "When resident-local packet and provider input exist and the shared loopback Universal InTr listener is available, allow the existing consumer to normalize local listener source, submit the exact packet, validate the returned ALLOW, stage admission evidence, and only then continue through existing WorkerCoordinator execution. Do not insert device discovery, device-presence, Remote Desktop Commander, or second-machine gates.",
     "targeted_command": "python scripts/consume_kv_ai_memory_resident_request.py --runtime-root <resident-runtime-root>"
   },
   "activation": {
