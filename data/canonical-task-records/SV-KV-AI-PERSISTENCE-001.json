@@ -97,7 +97,18 @@
     "direction": "MULTI_CLASS_KV_PERSISTENCE_WITH_PERSONAL_KV_AI_ROUNDTRIP",
     "mutation_required": true,
     "deployment_required": false,
-    "current_observation_required": true
+    "current_observation_required": true,
+    "runtime_surface_policy": {
+      "current_device_label_informational_only": true,
+      "device_confirmation_required": false,
+      "device_discovery_required": false,
+      "device_presence_probe_required": false,
+      "remote_connected_device_required": false,
+      "remote_desktop_commander_required": false,
+      "second_user_operated_device_required": false,
+      "device_identity_mints_authority": false,
+      "absence_of_connected_device_is_blocker": false
+    }
   },
   "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
   "completion": {"claimed":false,"validated":false,"reconciliation_ref":null},
