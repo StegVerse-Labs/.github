@@ -5,6 +5,8 @@ on:
     paths:
       - 'README.md'
       - 'data/task-coordination-policy.json'
+      - 'control/canonical-policy-context-registry.json'
+      - 'scripts/session_build_preflight.py'
       - 'data/canonical-task-records/SV-KV-AI-PERSISTENCE-001.json'
       - 'data/canonical-task-records/SV-KV-AI-RUNTIME-EVIDENCE-001.json'
       - 'docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md'
@@ -37,6 +39,8 @@ on:
     paths:
       - 'README.md'
       - 'data/task-coordination-policy.json'
+      - 'control/canonical-policy-context-registry.json'
+      - 'scripts/session_build_preflight.py'
       - 'data/canonical-task-records/SV-KV-AI-PERSISTENCE-001.json'
       - 'data/canonical-task-records/SV-KV-AI-RUNTIME-EVIDENCE-001.json'
       - 'docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md'
