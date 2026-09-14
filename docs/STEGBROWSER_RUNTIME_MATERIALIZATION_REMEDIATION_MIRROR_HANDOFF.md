@@ -9,7 +9,7 @@ Updated: 2026-09-14
 - Shared runtime-evidence owner: `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001`
 - Issue: `StegVerse-Labs/.github#1866`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / POST-REPAIR CARRIER PACKET NOT OBSERVED`
+- Status: `ACTIVE / CHECKED_OUT / RECEIPT CLASSIFIER GATED BY MISSING AUTHENTIC ROOT`
 - External/second user-operated device required: `false`
 
 ## Current truth
@@ -19,6 +19,7 @@ The current source-side repairs are merged and validated, but source repair does
 - `StegVerse-Healer#81` added the task-bound non-authorizing `resident_custody_root_observation` packet surface.
 - `StegVerse-Healer#82` repaired the resident-root bootstrap circularity by allowing the existing canonical resident-root path to be used as a non-authorizing materialization target only when existing `RT-SOVEREIGN-SOURCE-REFRESH-001` is enabled, then re-running root discovery after delegation.
 - `.github#1870` reconciled that Healer #82 source repair into this lane.
+- `.github#1871` classified the available post-repair packet evidence and recorded that no authentic post-repair Healer carrier packet was observed.
 
 No authentic retained post-#82 Healer carrier packet was observed through the available evidence in this pass. The latest issue evidence still states that no authentic post-#82 Healer resident carrier packet is observed and the connected resident list remains empty.
 
@@ -35,13 +36,53 @@ Supporting classification packet:
 data/runtime-materialization-remediation/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.post-repair-packet-classification.json
 ```
 
+## Receipt reachability gate classification — 2026-09-14
+
+The requested receipt-reachability classification is gated because the required precondition is not satisfied:
+
+```text
+resident_custody_root_observation.state == RESIDENT_CUSTODY_ROOT_OBSERVED = false
+```
+
+No exact authentic resident root path is available. Therefore `scripts/check_stegbrowser_runtime_consumption_receipts.py --runtime-root <authentic-root>` was not run. Running it against a repository checkout, synthetic path, CI workspace, or guessed path would be invalid.
+
+Supporting gate packet:
+
+```text
+data/runtime-materialization-remediation/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.receipt-reachability-gated-classification.json
+```
+
+The following receipt paths remain unclassified until an authentic root is observed:
+
+```text
+<resident-root>/receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json
+<resident-root>/receipts/sovereign-host/stegbrowser-runtime-consumption-evidence-custody.latest.json
+<resident-root>/receipts/sovereign-host/stegbrowser-tvc-source-promotion-request-consumption.latest.json
+<resident-root>/var/lib/stegverse/skap/browser-recipient/apple/receipts/runtime-observation-latest.json
+/var/lib/stegverse/skap/browser-recipient/apple/receipts/runtime-observation-latest.json
+Master Records custody/reconstruction pointer bound to the same resident execution subject
+```
+
+Current gated classifier defect:
+
+```text
+RECEIPT_REACHABILITY_CLASSIFIER_GATED_BY_POST_REPAIR_HEALER_CARRIER_PACKET_NOT_OBSERVED
+```
+
+This does not create a second remediation owner. The bounded remediation owner remains:
+
+```text
+StegVerse-Labs/.github#1866
+```
+
 Inspected surfaces:
 
 - `StegVerse-Labs/.github#1866`
 - parent `StegVerse-Labs/.github#1860`
 - merged `.github#1868`
 - merged `.github#1870`
-- current `.github@c4d2fc83c879fb0f2fdd61b3e4d0dae697bfedee`
+- merged `.github#1871`
+- current `.github@eb0f2687265c62a7e621dd22d10cd5da3c2bf591`
 - `StegVerse-Labs/StegVerse-Healer#81`
 - `StegVerse-Labs/StegVerse-Healer#82`
 - `StegVerse-Labs/StegVerse-Healer:app/reusable_task_scheduler.py`
@@ -95,7 +136,7 @@ If the packet remains not observed, invalid, stale, or ambiguous, bind that spec
 
 ## Current state
 
-`ACTIVE / CHECKED_OUT / HEALER_ROOT_BOOTSTRAP_CIRCULARITY_SOURCE_REPAIR_MERGED / POST_REPAIR_HEALER_CARRIER_PACKET_NOT_OBSERVED / RESIDENT_ROOT_NOT_AUTHENTICALLY_OBSERVED / RUNTIME_CONSUMPTION_NOT_CLAIMED / NO_SECOND_USER_OPERATED_DEVICE`
+`ACTIVE / CHECKED_OUT / HEALER_ROOT_BOOTSTRAP_CIRCULARITY_SOURCE_REPAIR_MERGED / POST_REPAIR_HEALER_CARRIER_PACKET_NOT_OBSERVED / RECEIPT_REACHABILITY_CLASSIFIER_GATED_BY_MISSING_AUTHENTIC_ROOT / RESIDENT_ROOT_NOT_AUTHENTICALLY_OBSERVED / RUNTIME_CONSUMPTION_NOT_CLAIMED / NO_SECOND_USER_OPERATED_DEVICE`
 
 ## Manual work
 
