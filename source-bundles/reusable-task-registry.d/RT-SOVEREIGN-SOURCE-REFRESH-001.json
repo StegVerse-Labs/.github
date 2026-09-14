@@ -1,9 +1,9 @@
 {
   "reusable_task_id": "RT-SOVEREIGN-SOURCE-REFRESH-001",
   "name": "Sovereign Resident Source Refresh",
-  "purpose": "Invoke the already-proven local-only sovereign WorkerCoordinator source refresh as a reusable task, preserving mutable runtime state and emitting authentic refresh or boundary evidence without creating a new runtime owner.",
-  "trigger": "a consuming Goal Task requires already-local canonical source to be refreshed into its existing sovereign resident runtime",
-  "scope": "one already-local canonical source root and one existing sovereign runtime root",
+  "purpose": "Refresh the already-local canonical sovereign WorkerCoordinator/runtime source at the beginning of every callable runtime invocation, preserving mutable runtime state and emitting authentic refresh or boundary evidence without creating an always-on runtime source or a new runtime owner.",
+  "trigger": "every invocation of a consuming callable sovereign runtime before that runtime is used",
+  "scope": "one invocation-bound already-local canonical source root refreshed into one invocation-bound sovereign runtime root",
   "parameter_keys": [
     "source_root",
     "runtime_root"
@@ -27,5 +27,5 @@
     "NO_CREDENTIAL_AUTHORITY_ACQUIRED"
   ],
   "authority_effect": "NONE_LOCAL_SOURCE_REFRESH",
-  "reuse_instructions": "Trigger once through the canonical reusable-task lifecycle. Runtime availability is an execution boundary of this reusable task, not a task-specific prerequisite to be reimplemented by consumers. The reusable adapter delegates to scripts/refresh_sovereign_worker_runtime_source.py and additionally guarantees materialization of the neutral reusable scheduler runner and contract needed by downstream reusable scheduling. Do not create another source refresher, runtime owner, scheduler, credential route, or source transport."
+  "reuse_instructions": "Invoke this reusable task for every callable runtime use before downstream runtime work. Do not treat runtime source freshness as persistent or always-on state. The reusable adapter delegates to scripts/refresh_sovereign_worker_runtime_source.py and additionally guarantees materialization of the neutral reusable scheduler runner and contract needed by downstream reusable scheduling. Runtime availability is an execution boundary of the invocation, not a standing source-state prerequisite. Do not create another source refresher, runtime owner, scheduler, credential route, or source transport."
 }
