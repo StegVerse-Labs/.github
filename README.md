@@ -109,6 +109,37 @@ A newly registered canonical task may be present as an exact `data/canonical-tas
 
 The dedicated `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001` request uses this same Canonical Work consumer and shared Interlock/InTr ingress. Once its ordinary `PROPOSED -> INGRESS_ADMITTED` bootstrap succeeds, the existing bootstrap wrapper invokes the already-implemented global runtime-node-profile convergence visitor in measurement-only mode. That measurement path freezes one run identity and forbids same-run remediation or automatic retry after a lane's first failure; it does not create a second dispatcher, listener, runtime, scheduler, WorkerCoordinator, heartbeat, or authority source.
 
+### Fenced Personal-KV AI memory resident execution
+
+Canonical Goal Task `SV-KV-AI-PERSISTENCE-001` reuses the existing resident dispatcher and WorkerCoordinator rather than creating a memory-specific scheduler or runtime owner. Its selector is `kv_ai_memory`; the resident request carries no private memory, prompt, credential, token, or provider-secret content.
+
+Private working state lives under a fenced bound-state root:
+
+```text
+~/.stegverse/state/kv-ai-memory-resident/
+  inputs/context-packet.json
+  inputs/memory-packet-admission.json
+  inputs/provider-request-input.json
+  materialized/provider-request.json
+  receipts/provider-request-materialization.json
+```
+
+The request consumer checks only whether the required private input paths exist. If they do not, it returns `BOUND_STATE_INPUT_NOT_READY` without consuming the request or attempting WorkerCoordinator execution. When they do exist, the existing WorkerCoordinator must still mint the current claim/fence before `ProcessWorkerAdapter` exposes a sandbox mirror of that state to `workers/kv_ai_memory_resident_worker.py`.
+
+The worker delegates exact provider-request construction to the already-local `StegVerse-org/LLM-adapter` materializer and stops at `HANDOFF_READY / KV_AI_MEMORY_PROVIDER_REQUEST_MATERIALIZED`. That state proves no provider ingress, TV/TVC provider operation, model execution, provider egress, KV writeback, activation, or model authority. Those remain separate governed transitions and evidence predicates.
+
+Canonical source for the resident lane:
+
+```text
+docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md
+handoffs/SV-KV-AI-PERSISTENCE-001.json
+control/worker-registry.d/kv-ai-memory-resident-001.json
+control/process-worker-adapters.d/kv-ai-memory-resident-001.json
+control/resident-execution-request.d/kv-ai-memory-resident-001.json
+scripts/consume_kv_ai_memory_resident_request.py
+workers/kv_ai_memory_resident_worker.py
+```
+
 ### Bounded StegSocials Universal InTr ingress
 
 Bounded StegSocials social publication reuses the same organization-owned, event-triggered Universal InTr listener rather than creating a separate social runtime or admission service. StegSocials first emits a secret-free `stegverse.universal-work-interlock/v1` `INGRESS/RECEIVED` record for one already-authorized bounded use. The `.github` organization owner binds that exact record into the existing `stegverse.universal-intr-materialization-request/v1` transport shape and routes it through the shared `workers/universal_intr_profiled_ingress.py` listener under the `StegSocials:BoundedSocialIngress` profile.
@@ -312,7 +343,6 @@ README completeness is evidence-only. It grants no execution, claim, fence, leas
 Machine-preflight receipts are retained as historical evidence even when a later canonical correction changes whether their result is currently admissible. Consumers that need **current** preflight meaning must resolve the receipt through `scripts/resolve_machine_preflight_receipt.py` rather than reading a retained `state=PASS` in isolation.
 
 A sibling `<receipt>.supersession.json` is accepted only when it targets that exact receipt, uses `stegverse.preflight-supersession/v1`, retains a `NONE*` authority effect, and explicitly forbids runtime-truth and execution-admission inference. A valid supersession preserves the historical result but makes `current_admissible=false` with the successor disposition. Malformed, mismatched, or authority-escalating supersession state fails closed. Supersession resolution grants no execution, claim, fence, transition, credential, routing, custody, publication, or runtime authority.
-
 
 ### Current-iPhone TVC opaque recipient capability
 
