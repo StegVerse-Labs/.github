@@ -4,10 +4,13 @@
   "correlation_id": "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001",
   "root_correlation_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
   "parent_task_id": "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001",
-  "goal": "Complete the current-iPhone KV-bound ephemeral TestFlight bootstrap with authentic KV projection, canonical successor claim/fence, TV/TVC signing/upload, retained StegOS/StegBrowser evidence, and return to one frozen global runtime measurement.",
+  "goal": "Complete the KV-bound ephemeral release/bootstrap flow with authentic KV projection, canonical successor claim/fence, TV/TVC signing/upload where applicable, retained StegOS/StegBrowser evidence, and return to one frozen global runtime measurement without binding completion to a physical device.",
   "coordination_state": "ACTIVE",
   "checkout_state": "CLAIMED_INTEGRATION",
   "cosv_task_vector": "50000010100000",
+  "global_invariant_ref": "data/task-registry-global-invariants.json",
+  "device_interchangeability_enforced": true,
+  "physical_device_identity_gate": "NONE_PROHIBITED",
   "component_model_projection": {
     "model": "data/reusable-task-component-model.json",
     "decomposition_policy": "data/reusable-task-component-decomposition-policy.json",
@@ -71,23 +74,23 @@
       "binary_release_execution:tvc-native-testflight-byte-ingress",
       "same_execution_handoff:stegos-signed-ipa-to-tvc",
       "evidence_validation:canonical-existing-validators",
-      "runtime_observation:current-iphone-plus-tvc"
+      "runtime_observation:eligible-stegos-plus-tvc"
     ]
   },
   "dependencies": [
     {
       "dependency_id": "DEP-AUTHENTIC-KV-PROJECTION",
-      "kind": "PHYSICAL_RUNTIME_PREDICATE",
+      "kind": "RUNTIME_EVIDENCE_PROVENANCE",
       "state": "SATISFIED_EXACT_FILE_VALIDATED",
       "ref": "AUTHENTIC_CURRENT_IPHONE_SAFARI:EXACT_KV_PROJECTION_ARTIFACTS",
-      "disposition": "Two authentic projection artifacts were previously accepted; missing local file availability no longer blocks normal execution because the public same-device recovery wrapper derives the exact projection in memory through existing Device-KV/InTr state."
+      "disposition": "Two authentic projection artifacts were previously accepted. They remain historical evidence only; physical-device identity is not a future execution gate."
     },
     {
       "dependency_id": "DEP-TASK-2026-0011-KV-GATED-SUCCESSOR",
       "kind": "CANONICAL_ALLOCATION_PREDICATE",
       "state": "SATISFIED_AUTHENTIC_G7_FENCE7",
-      "ref": "AUTHENTIC_CURRENT_IPHONE_ALLOCATOR:TASK-2026-0011:G7:FENCE7",
-      "disposition": "TASK-2026-0011 selected by canonical allocator; ALLOCATION_COMPLETE; CLAIM_GRANT_OBSERVED; journal replay PASS."
+      "ref": "TASK-2026-0011:G7:FENCE7",
+      "disposition": "TASK-2026-0011 selected by canonical allocator; ALLOCATION_COMPLETE; CLAIM_GRANT_OBSERVED; journal replay PASS. Historical physical-device metadata is provenance only."
     },
     {
       "dependency_id": "DEP-COMPLETE-KV-GATED-SITE-PROJECTION",
@@ -101,7 +104,7 @@
       "kind": "SOURCE_PROJECTION_PREDICATE",
       "state": "SATISFIED_MERGED_PUBLIC",
       "ref": "StegVerse-Labs/Site#1237@b847d4e408571efb9ff511f1facbc3f38128846d",
-      "disposition": "Same-device wrapper derives CURRENT_IPHONE_TESTFLIGHT_SIGNING projection through the existing Device-KV/InTr materializer and passes it in memory to the TASK-0011 bootstrap. Exact-head validation and public publication passed. No runtime proof is inferred."
+      "disposition": "The published same-device wrapper remains a reusable implementation surface and historical path. It does not pin the Goal to a physical device or establish runtime proof."
     },
     {
       "dependency_id": "DEP-REUSABLE-TASK-COMPONENT-MODEL",
@@ -115,35 +118,35 @@
       "kind": "SOURCE_COMPOSITION_PREDICATE",
       "state": "SATISFIED_MERGED_VALIDATED",
       "ref": "StegVerse-Labs/TVC#424@80db8f1e90168a54e4d44f6b7c3b0ce014c2ebba",
-      "disposition": "The secret-free current-iPhone App Store Connect request is composed through the existing TVC short-lived capability lease, canonical broker boundary, current Apple SKAP custody resolver, and callback-only provider executor. Source validation passed; no provider/runtime execution is inferred."
+      "disposition": "The secret-free App Store Connect request composition through TVC remains valid source evidence; historical current-iPhone wording names the implementation surface only and grants no device authority."
     },
     {
       "dependency_id": "DEP-TVC-NATIVE-TESTFLIGHT-BYTE-INGRESS",
       "kind": "SOURCE_COMPOSITION_PREDICATE",
       "state": "SATISFIED_MERGED_VALIDATED",
       "ref": "StegVerse-Labs/TVC#428@46878481c23efd9b7d2cd17fc9f701616e687b22",
-      "disposition": "The existing current-iPhone TVC surface now accepts the secret-free TestFlight descriptor plus exact signed IPA bytes in one bounded execution, revalidates hash/size/bundle/app bindings, resolves current purpose-bound SKAP custody, and invokes the existing native Build Upload transaction without persisting IPA bytes or changing authority."
+      "disposition": "The existing TVC surface accepts the secret-free TestFlight descriptor plus exact signed IPA bytes in one bounded execution, revalidates bindings, resolves purpose-bound SKAP custody, and invokes the existing native Build Upload transaction without changing authority."
     },
     {
       "dependency_id": "DEP-STEGOS-SAME-EXECUTION-NATIVE-UPLOAD",
       "kind": "SOURCE_COMPOSITION_PREDICATE",
       "state": "SATISFIED_MERGED_VALIDATED",
       "ref": "StegVerse-Labs/StegOS#379@c064c7542e113703a9fd0efe9eb08106de956937",
-      "disposition": "The current-iPhone bootstrap now retains the verified signed IPA in the same invocation, builds the existing secret-free TVC upload descriptor, streams the bytes to TVC with credentials omitted, and accepts only the exact native Build Upload result/receipt. Source success is TVC_NATIVE_BUILD_UPLOAD_COMMITTED; this is not an observed runtime transition."
+      "disposition": "The existing bootstrap retains the verified signed IPA in the same invocation and hands it to TVC. Source success is TVC_NATIVE_BUILD_UPLOAD_COMMITTED; this is not observed runtime evidence and does not create a physical-device gate."
     },
     {
       "dependency_id": "DEP-SITE-NATIVE-UPLOAD-PROJECTION",
       "kind": "SOURCE_PROJECTION_PREDICATE",
       "state": "SATISFIED_MERGED_PUBLIC_EXACT",
       "ref": "StegVerse-Labs/Site#1299@6c1f267b49ab6e36618a2eccc8afceaf4544fbe0",
-      "disposition": "Site projects the canonical native-upload bootstrap/request/byte-ingress assets. Credential-free live publication proof run 34791777867 passed and explicitly recorded TASK0011_RUNTIME_PROOF_EFFECT=NONE. Handoff reconciliation and claim terminalization completed in Site #1302 and #1303."
+      "disposition": "Site projects the canonical native-upload assets. Public proof run 34791777867 records TASK0011_RUNTIME_PROOF_EFFECT=NONE."
     },
     {
-      "dependency_id": "DEP-TESTFLIGHT-CURRENT-IPHONE-RUNTIME",
-      "kind": "PHYSICAL_RUNTIME_PREDICATE",
-      "state": "ACTIVE_CURRENT_IPHONE_EXECUTION_REQUIRED",
-      "ref": "https://stegverse.org/task0011-same-device-kv-recovery.html",
-      "disposition": "All known machine-owned source composition and public projection for same-execution signing/native Build Upload are satisfied. The remaining predicate requires authentic execution on the established current iPhone and preservation of the exact state transition or fail-closed result; source, CI, merge, and publication do not satisfy it."
+      "dependency_id": "DEP-AUTHENTIC-ADMITTED-STEGOS-RUNTIME",
+      "kind": "RUNTIME_PREDICATE",
+      "state": "PENDING_AUTHENTIC_RETAINED_RUNTIME",
+      "ref": "AUTHENTIC_RETAINED_STEGOS_STEGBROWSER_RUNTIME_OBSERVED",
+      "disposition": "All known machine-owned source composition is satisfied. The remaining runtime predicate may be satisfied on any eligible admitted StegOS execution surface after KV/SKAP continuity where applicable, exact WorkerCoordinator claim/fence lineage, and Interlock/InTr admission are bound. Physical-device identity and current-iPhone TestFlight observation are not prerequisites."
     }
   ],
   "blockers": [],
@@ -174,26 +177,28 @@
     "COMPLETE_KV_GATED_SITE_BOOTSTRAP_PROJECTED",
     "PUBLIC_SAME_DEVICE_KV_RECOVERY_OBSERVED",
     "NATIVE_TVC_BUILD_UPLOAD_SOURCE_COMPOSED_PUBLIC",
-    "TESTFLIGHT_CURRENT_IPHONE_RUNTIME_OBSERVED",
+    "AUTHENTIC_RETAINED_STEGOS_STEGBROWSER_RUNTIME_OBSERVED",
     "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_OBSERVED",
     "GLOBAL_MEASUREMENT_HANDOFF_RETURNED_TO_AUTHENTIC_EXECUTION"
   ],
   "runtime_requirements": {
-    "capabilities": ["reusable_component_composition", "kv_state_transition_continuity", "current_iphone_kv_testflight_bootstrap", "same_device_kv_recovery", "same_execution_tvc_native_build_upload", "testflight_materialization", "master_records_custody_reconstruction"],
-    "environment": "CURRENT_IPHONE_KV_BOUND_STEGOS_STEGBROWSER",
+    "capabilities": ["reusable_component_composition", "kv_state_transition_continuity", "eligible_stegos_runtime", "same_device_kv_recovery", "same_execution_tvc_native_build_upload", "testflight_materialization_where_applicable", "master_records_custody_reconstruction"],
+    "environment": "SOVEREIGN_RESIDENT_OR_ADMITTED_EPHEMERAL_STEGOS_NODE",
     "direction": "INTERNAL",
     "mutation_required": true,
     "deployment_required": true,
-    "current_observation_required": true
+    "current_observation_required": true,
+    "physical_device_identity_required": false
   },
   "runtime_resolution": {
-    "entrypoint": "https://stegverse.org/task0011-same-device-kv-recovery.html",
+    "entrypoint": "FIRST_REACHABLE_ELIGIBLE_STEGOS_SURFACE_IN_CANONICAL_SUBSTRATE_ORDER",
     "same_run_remediation_allowed": true,
     "automatic_retry_after_first_failure": false,
-    "latest_state": "NATIVE_TVC_BUILD_UPLOAD_SOURCE_COMPOSED_PUBLIC_CURRENT_IPHONE_RUNTIME_PENDING",
-    "next_runtime_surface": "AUTHENTIC_CURRENT_IPHONE_SAFARI:SAME_DEVICE_KV_RECOVERY",
+    "latest_state": "SOURCE_COMPOSITION_COMPLETE_AUTHENTIC_ADMITTED_STEGOS_RUNTIME_PENDING",
+    "next_runtime_surface": "ELIGIBLE_ADMITTED_STEGOS_EXECUTION_SURFACE",
     "source_success_state": "TVC_NATIVE_BUILD_UPLOAD_COMMITTED",
-    "source_declared_next_boundary": "TESTFLIGHT_PROCESSING_INSTALL_OBSERVATION"
+    "source_declared_next_boundary": "TESTFLIGHT_PROCESSING_INSTALL_OBSERVATION",
+    "physical_device_gate": "NONE_PROHIBITED"
   },
   "worker_claim": {
     "authority": "WORKERCOORDINATOR",
@@ -201,17 +206,17 @@
     "fence_ref": "FENCE7",
     "projection_only": false
   },
-  "human_action_ref": "CURRENT_IPHONE_OPEN_PUBLIC_SAME_DEVICE_KV_RECOVERY_AND_TAP_USE_THIS_IPHONES_KV_AND_PREPARE_IPA",
+  "human_action_ref": null,
   "completion": {
     "claimed": false,
     "validated": false,
     "activation_proof_complete": false
   },
   "allowed_next_transitions": [
-    "EXECUTE_CURRENT_IPHONE_VIA_REUSABLE_COMPONENT_COMPOSITION",
+    "EXECUTE_VIA_REUSABLE_COMPONENT_COMPOSITION_ON_ELIGIBLE_ADMITTED_STEGOS_SURFACE",
     "CLASSIFY_AUTHENTIC_FAILURE_BY_OWNING_COMPONENT",
-    "OBSERVE_TVC_NATIVE_BUILD_UPLOAD_COMMITTED",
-    "OBSERVE_TESTFLIGHT_CURRENT_IPHONE_RUNTIME",
+    "OBSERVE_TVC_NATIVE_BUILD_UPLOAD_COMMITTED_WHERE_APPLICABLE",
+    "OBSERVE_AUTHENTIC_RETAINED_STEGOS_STEGBROWSER_RUNTIME",
     "SUBMIT_AUTHENTIC_EVIDENCE_TO_MASTER_RECORDS_AND_CONFIRM_RECONSTRUCTION",
     "RETURN_TO_FROZEN_GLOBAL_MEASUREMENT"
   ],
@@ -234,6 +239,7 @@
     "kv_is_private_state_transition_continuity_boundary": true,
     "kv_skap_sole_user_verification_authority": true,
     "device_user_verification_authority": "NONE",
+    "physical_device_identity_grants_authority": false,
     "retroactive_claim_scope_widening_allowed": false
   }
 }
