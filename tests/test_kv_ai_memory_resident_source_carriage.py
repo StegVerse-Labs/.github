@@ -5,6 +5,8 @@ from __future__ import annotations
 import importlib.util
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -19,6 +21,7 @@ def load(name: str, path: str):
 installer = load("install_sovereign_heartbeat_service", "scripts/install_sovereign_heartbeat_service.py")
 refresher = load("refresh_sovereign_worker_runtime_source", "scripts/refresh_sovereign_worker_runtime_source.py")
 portable = load("refresh_and_dispatch_resident_requests", "scripts/refresh_and_dispatch_resident_requests.py")
+event_bootstrap = load("run_kv_ai_memory_intr_event_bootstrap", "scripts/run_kv_ai_memory_intr_event_bootstrap.py")
 
 REQUIRED = {
     "scripts/consume_kv_ai_memory_resident_request.py",
@@ -79,3 +82,31 @@ def test_native_worker_service_carries_nonsecret_universal_intr_endpoint():
         },
     )
     assert "STEGVERSE_UNIVERSAL_INTR_INGRESS_URL" in rendered["safe_local_worker_bindings"]
+
+
+def test_event_bootstrap_waits_without_starting_listener_when_private_inputs_missing(tmp_path):
+    result = event_bootstrap.run_cycle(
+        ROOT,
+        tmp_path / "runtime",
+        env={"HOME": str(tmp_path), "PATH": "/usr/bin"},
+    )
+    assert result["state"] == "BOUND_STATE_INPUT_NOT_READY"
+    assert result["shared_listener_started"] is False
+    assert result["runtime_execution_attempted"] is False
+    assert result["private_input_bytes_read_by_bootstrap"] is False
+
+
+def test_event_bootstrap_rejects_hosted_execution(tmp_path):
+    with pytest.raises(RuntimeError, match="hosted environment"):
+        event_bootstrap.run_cycle(
+            ROOT,
+            tmp_path / "runtime",
+            env={"HOME": str(tmp_path), "PATH": "/usr/bin", "CI": "true"},
+        )
+
+
+def test_event_bootstrap_reuses_shared_listener_implementation():
+    source = (ROOT / "scripts/run_kv_ai_memory_intr_event_bootstrap.py").read_text(encoding="utf-8")
+    assert 'importlib.import_module("workers.universal_intr_profiled_ingress")' in source
+    assert 'shared.Server(("127.0.0.1", 0), runtime, 1)' in source
+    assert '"second_listener_implementation_created": False' in source
