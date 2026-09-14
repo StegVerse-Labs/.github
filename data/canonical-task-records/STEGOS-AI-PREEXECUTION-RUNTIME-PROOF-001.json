@@ -82,6 +82,55 @@
   },
   "execution_substrate_resolution": {
     "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "SUITABLE",
+        "limitation_class": "NONE",
+        "evidence_refs": ["docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md"]
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "SUITABLE",
+        "limitation_class": "NONE",
+        "evidence_refs": ["StegVerse-Labs/StegOS#384"]
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "SUITABLE",
+        "limitation_class": "NONE",
+        "evidence_refs": ["data/reusable-task-ephemeral-construct-contract.json"]
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "SUITABLE",
+        "limitation_class": "PLATFORM",
+        "evidence_refs": ["docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md"]
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "SELECTED",
+        "limitation_class": "NONE",
+        "evidence_refs": [
+          "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
+          "StegVerse-Labs/StegOS@ef15c92b24c37e2031e13586741952e0305b520a"
+        ]
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": []
+      }
+    ],
     "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
     "external_device_required": false,
     "second_user_operated_device_allowed": false,
