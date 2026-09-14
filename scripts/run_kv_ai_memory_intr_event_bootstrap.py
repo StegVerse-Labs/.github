@@ -8,6 +8,13 @@ from pathlib import Path
 
 from workers.kv_ai_memory_intr_event_bootstrap import ROOT, run_cycle
 
+NON_ERROR_WAIT_STATES = {
+    "BOUND_STATE_INPUT_NOT_READY",
+    "PERSONAL_KV_ROOT_NOT_READY",
+    "PERSONAL_KV_AI_MEMORY_INPUTS_NOT_FOUND",
+    "PERSONAL_KV_STAGER_SOURCE_NOT_READY",
+}
+
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run one resident-local KV AI memory cycle on the existing shared Universal InTr listener.")
@@ -16,7 +23,7 @@ def main() -> int:
     args = parser.parse_args()
     result = run_cycle(args.source_root, args.runtime_root)
     print(json.dumps(result, sort_keys=True))
-    return 0 if result["state"] in {"BOUND_STATE_INPUT_NOT_READY", "EVENT_CYCLE_COMPLETED"} else 1
+    return 0 if result["state"] == "EVENT_CYCLE_COMPLETED" or result["state"] in NON_ERROR_WAIT_STATES else 1
 
 
 if __name__ == "__main__":
