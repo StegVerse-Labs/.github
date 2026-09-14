@@ -4,91 +4,74 @@
   "correlation_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
   "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
   "parent_task_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
-  "remediates_defect": "RESIDENT_CUSTODY_ROOT_NOT_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001",
-  "goal": "Observe the post-repair Healer carrier resident-root packet for the StegBrowser lane and, only if it authenticates a resident root, return to exact receipt classification.",
+  "goal": "Observe the authentic resident Healer carrier output pointer and classify retained StegBrowser receipt reachability only after an authentic resident root is proven.",
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT",
   "cosv_task_vector": "40000100100000",
   "shared_runtime_evidence_owner_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
-  "current_exact_defect": "HEALER_CARRIER_OUTPUT_NOT_ACCESSIBLE_AFTER_HEALER83",
+  "current_exact_defect": "RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND",
   "source_refs": [
     "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md",
-    "data/runtime-materialization-remediation/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.predicates.json",
     "data/runtime-materialization-remediation/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.post-repair-packet-classification.json",
-    "docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md",
-    "data/canonical-task-records/STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001.json",
+    "scripts/consume_healer_sovereign_scheduler_request.py",
     "scripts/check_stegbrowser_runtime_consumption_receipts.py",
     "StegVerse-Labs/.github#1866",
     "StegVerse-Labs/.github#1860",
-    "StegVerse-Labs/.github#1870",
-    "StegVerse-Labs/.github#1878",
-    "StegVerse-Labs/.github#1879",
-    "StegVerse-Labs/StegVerse-Healer#81",
-    "StegVerse-Labs/StegVerse-Healer#82",
+    "StegVerse-Labs/.github#1884",
+    "StegVerse-Labs/.github@301147aed13c9bd3fe637225db91f9ca2c378864",
     "StegVerse-Labs/StegVerse-Healer#83",
-    "StegVerse-Labs/StegVerse-Healer#84",
-    "StegVerse-Labs/StegVerse-Healer@898d8362192419a0811d45651ea6085112015e10",
-    "actions:34887384781",
-    "actions:34887434142",
-    "StegVerse-Labs/.github#1866 comment 5669789846",
-    "StegVerse-Labs/.github#1866 comment 5669829082",
-    "StegVerse-Labs/StegVerse-Healer#84 comment 5669913989"
+    "StegVerse-Labs/StegVerse-Healer@898d8362192419a0811d45651ea6085112015e10"
   ],
   "dependencies": [
     {
       "dependency_id": "DEP-GLOBAL-RUNTIME-EVIDENCE-CLOSURE",
       "kind": "SHARED_RUNTIME_EVIDENCE_OWNER",
       "state": "BOUND_SHARED_OWNER",
-      "ref": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
-      "disposition": "REUSE_GLOBAL_RUNTIME_EVIDENCE_CONVERGENCE_SUBSTRATE; THIS_TASK_OWNS_ONLY_STEGBROWSER_SUBJECT_BOUND_POST_REPAIR_OBSERVATION"
+      "ref": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001"
     },
     {
-      "dependency_id": "DEP-HEALER-RETAINED-ROOT-OBSERVATION-PACKET",
-      "kind": "SOURCE_REPAIR_CONTEXT",
-      "state": "RESOLVED_SOURCE_ONLY",
-      "ref": "StegVerse-Labs/StegVerse-Healer#83;StegVerse-Labs/StegVerse-Healer@898d8362192419a0811d45651ea6085112015e10;actions:34887384781;actions:34887434142",
-      "disposition": "EXISTING_HEALER_CARRIER_RETAINS_RESIDENT_CUSTODY_ROOT_OBSERVATION_PACKET_AT_RECEIPTS_SOVEREIGN_HOST_STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_LATEST_JSON; STILL_NOT_RUNTIME_PROOF_UNTIL OBSERVED IN AUTHENTIC RESIDENT OR MATERIALIZATION TARGET STATE"
-    },
-    {
-      "dependency_id": "DEP-HEALER84-DUPLICATE-PATH",
-      "kind": "SOURCE_REPAIR_CANDIDATE",
-      "state": "CLOSED_NOT_MERGED_CONFLICTING_DUPLICATE_PATH",
-      "ref": "StegVerse-Labs/StegVerse-Healer#84;head ccb1e0d41fdf8fe1ae99e14a6e47a694cb574c57",
-      "disposition": "HEALER84_CONFLICTING_DUPLICATE_RETENTION_PATH_NOT_MERGED; divergent receipts/healer path not adopted"
-    },
-    {
-      "dependency_id": "DEP-POST-HEALER83-CARRIER-OUTPUT-ACCESSIBILITY",
+      "dependency_id": "DEP-HEALER-CARRIER-OUTPUT-POINTER",
       "kind": "RUNTIME_EVIDENCE_GATE",
-      "state": "UNRESOLVED_CARRIER_OUTPUT_NOT_ACCESSIBLE_IN_AVAILABLE_AUTHENTIC_RESIDENT_EVIDENCE",
-      "ref": "receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json",
-      "disposition": "HEALER_CARRIER_OUTPUT_NOT_ACCESSIBLE_AFTER_HEALER83"
+      "state": "RUNTIME_BOUND_NOT_GITHUB_VISIBLE",
+      "ref": "receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json",
+      "disposition": "RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND"
+    },
+    {
+      "dependency_id": "DEP-CANONICAL-ROOT-OBSERVATION-PACKET",
+      "kind": "RUNTIME_EVIDENCE_GATE",
+      "state": "PENDING_AUTHENTIC_RESIDENT_POINTER_OBSERVATION",
+      "ref": "receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json"
     },
     {
       "dependency_id": "DEP-RETURN-TO-PARENT-CLASSIFIER",
       "kind": "CONTINUATION",
       "state": "PENDING_AUTHENTIC_ROOT",
-      "ref": "scripts/check_stegbrowser_runtime_consumption_receipts.py --runtime-root <authentic-root>",
-      "disposition": "RUN_ONLY_AFTER_RETAINED_POST_HEALER83_PACKET_OBSERVES_EXACTLY_ONE_AUTHENTIC_RESIDENT_ROOT"
+      "ref": "scripts/check_stegbrowser_runtime_consumption_receipts.py --runtime-root <authentic-root>"
     }
   ],
   "observations": [
     {
       "observed_at": "2026-09-14",
-      "classification": "HEALER_RETAINED_RESIDENT_ROOT_OBSERVATION_PACKET_SOURCE_REPAIR_MERGED",
-      "healer_pr": "StegVerse-Labs/StegVerse-Healer#83",
-      "healer_merge": "898d8362192419a0811d45651ea6085112015e10",
-      "validation_runs": ["34887384781", "34887434142"],
-      "retained_packet_relative_path": "receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json",
-      "runtime_completion_claimed": false,
-      "authority_effect": "NONE_SOURCE_REPAIR_ONLY"
+      "classification": "PR1884_MERGED",
+      "merge_sha": "301147aed13c9bd3fe637225db91f9ca2c378864",
+      "exact_head": "ccee7fca36760675d85ddf2382df83b1274d475b",
+      "validation_runs": ["34890469313", "34890470215", "34890469964"],
+      "authority_effect": "NONE_SOURCE_CLASSIFICATION_ONLY"
     },
     {
       "observed_at": "2026-09-14",
-      "classification": "HEALER_CARRIER_OUTPUT_NOT_ACCESSIBLE_AFTER_HEALER83",
-      "predicate": "POST_REPAIR_HEALER_CARRIER_PACKET_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001",
-      "predicate_satisfied": false,
-      "retained_packet_relative_path": "receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json",
-      "basis": "Schedule/source-refresh are enabled and source retention path is merged; no accessible authentic resident/materialization-target carrier output at the canonical packet path was observed.",
+      "classification": "RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND",
+      "resident_carrier_consumption_relative_path": "receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json",
+      "embedded_pointer_path": "execution_result.resident_custody_root_observation_retention",
+      "embedded_fields": [
+        "packet_ref",
+        "packet_relative_path",
+        "packet_sha256",
+        "retained_under_root",
+        "retained_under_root_source",
+        "packet_state"
+      ],
+      "post_repair_packet_observed": false,
       "resident_custody_root_observed": false,
       "receipt_reachability_classified": false,
       "runtime_completion_claimed": false,
@@ -96,9 +79,9 @@
     }
   ],
   "allowed_next_transitions": [
-    "OBSERVE_AUTHENTIC_HEALER_CARRIER_PACKET_OUTPUT",
+    "OBSERVE_AUTHENTIC_RESIDENT_HEALER_CARRIER_CONSUMPTION_RECEIPT",
+    "BIND_EMBEDDED_RETAINED_PACKET_POINTER",
     "CLASSIFY_RECEIPT_REACHABILITY_IF_ROOT_OBSERVED",
-    "BIND_NEXT_RUNTIME_DEFECT_IF_PACKET_STILL_BOUNDARY",
     "RETURN_TO_RESIDENT_CUSTODY_ROOT_OBSERVATION"
   ],
   "prohibited_transitions": [
@@ -117,13 +100,6 @@
   "completion": {
     "claimed": false,
     "validated": false,
-    "shared_runtime_evidence_owner_bound": true,
-    "runtime_materialization_remediation_path_bound": true,
-    "healer_packet_source_repair_resolved_source_only": true,
-    "healer_root_bootstrap_circularity_repair_resolved_source_only": true,
-    "healer_retained_packet_repair_resolved_source_only": true,
-    "healer84_duplicate_retention_path_closed_unmerged": true,
-    "post_repair_packet_observation_pending": true,
     "post_repair_packet_observed": false,
     "retained_root_observation_packet_observed": false,
     "resident_custody_root_observed": false,
@@ -133,10 +109,6 @@
     "master_records_reconstruction_observed": false
   },
   "authority_model": {
-    "shared_runtime_evidence_owner": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
-    "lane_task_may_create_runtime_evidence_owner": false,
-    "task_registry_mints_execution_authority": false,
-    "source_state_proves_execution": false,
     "github_runtime_authority": "NONE",
     "healer_carrier_authority": "SCHEDULING_AND_INVOCATION_TRANSPORT_ONLY",
     "neutral_reusable_task_path_required": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
