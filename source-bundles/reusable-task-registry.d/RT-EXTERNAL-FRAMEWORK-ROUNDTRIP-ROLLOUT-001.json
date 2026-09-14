@@ -1,0 +1,72 @@
+{
+  "reusable_task_id": "RT-EXTERNAL-FRAMEWORK-ROUNDTRIP-ROLLOUT-001",
+  "name": "External Framework Round-Trip Rollout",
+  "purpose": "Apply the existing MIR-proven external-framework request/response pattern to one registry-selected external framework without creating framework-specific transport, custody, scheduler, execution, credential, or user-verification authority.",
+  "trigger": "a consuming Goal Task requests an admissibility-wiki external framework to participate in a bounded StegVerse source-crosswalk or governed round trip",
+  "scope": "one external-framework registry entry, one bounded manifested operation, one exact counterpart provenance, and one exact transition/evidence lineage",
+  "parameter_keys": [
+    "goal_task_id",
+    "cosv_task_vector",
+    "framework_registry_ref",
+    "framework_id",
+    "framework_version_or_revision",
+    "operation_class",
+    "runtime_endpoint_ref",
+    "source_evidence_ref",
+    "counterpart_provenance"
+  ],
+  "selected_components": [
+    "RT-EXTERNAL-ADAPTER-ESTABLISH-001",
+    "RTC-MANIFEST-001",
+    "RTC-GOVERNED-PROCESSING-002",
+    "RTC-ROUNDTRIP-003",
+    "RTC-EVIDENCE-CUSTODY-004",
+    "RTC-SDK-RETURN-006",
+    "RTC-STEGVERSE-EGRESS-007",
+    "RTC-INTERLOCK-INTR-TRANSPORT-008"
+  ],
+  "conditional_components": [
+    "RTC-PUBLISHER-005",
+    "RTC-FARSIDE-FINAL-009"
+  ],
+  "framework_eligibility_states": [
+    "ROUNDTRIP_ELIGIBLE",
+    "SOURCE_ONLY",
+    "TRANSLATION_ONLY",
+    "RUNTIME_ENDPOINT_UNAVAILABLE",
+    "UNSUPPORTED_OPERATION_CLASS",
+    "REGISTRY_ENTRY_INVALID"
+  ],
+  "runner_templates": [
+    "scripts/resolve_external_framework_roundtrip_rollout.py",
+    "scripts/trigger_reusable_task.py"
+  ],
+  "recording_levels": [
+    "operation",
+    "task",
+    "goal",
+    "component",
+    "master_records"
+  ],
+  "completion_predicates": [
+    "FRAMEWORK_REGISTRY_ENTRY_RESOLVED_EXACTLY_ONCE",
+    "FRAMEWORK_SOURCE_AND_VERSION_BOUND",
+    "COUNTERPART_PROVENANCE_EXPLICIT",
+    "EXTERNAL_ADAPTER_TRANSLATION_BOUND",
+    "MANIFESTED_REQUEST_BOUND_TO_GOAL_AND_RUN",
+    "GOVERNED_INTR_REQUEST_EGRESS_TRANSITION_RETAINED_WHEN_EXECUTED",
+    "FOREIGN_FRAMEWORK_RESPONSE_PRESERVED_AS_NON_AUTHORIZING_OBSERVATION",
+    "GOVERNED_INTR_RETURN_TRANSITION_RETAINED_WHEN_EXECUTED",
+    "SDK_RETURN_CORRELATION_PRESERVED",
+    "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_RETAINED_WHEN_EXECUTED_OR_REQUESTED",
+    "FAIL_CLOSED_CLASSIFICATION_PRESERVED_WHEN_INVOCATION_INELIGIBLE",
+    "NO_DUPLICATE_TRANSPORT_OR_AUTHORITY_PLANE_CREATED"
+  ],
+  "authority_effect": "NONE_ORCHESTRATION_COMPOSITION_ONLY",
+  "runtime_truth_rule": "Executed transitions are runtime truth at their recorded provenance, including bounded mirror/build-test provenance. Source, CI, or merge state alone does not prove an unexecuted transition.",
+  "reference_profiles": [
+    "MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001",
+    "SDK-ELYRIA-INTR-ADAPTER-001"
+  ],
+  "reuse_instructions": "Resolve exactly one external-framework entry from the canonical admissibility-wiki registry. Reuse the existing external-adapter and RTC component contracts. A source-blocked or runtime-unavailable framework emits its exact fail-closed eligibility state and stops only that invocation; unrelated framework invocations continue independently. Mirror or build/test counterpart execution must retain its explicit provenance and must not be relabeled as non-runtime merely because authentic endpoint substitution remains pending. Do not mint per-framework WorkerCoordinator, Interlock/InTr, SDK-return, custody, publisher, credential, scheduler, or user-verification implementations."
+}
