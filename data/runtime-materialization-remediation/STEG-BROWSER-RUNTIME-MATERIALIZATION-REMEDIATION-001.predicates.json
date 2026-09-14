@@ -5,6 +5,8 @@
   "shared_runtime_evidence_owner_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
   "cosv_task_vector": "40000100100000",
   "remediated_defect": "RESIDENT_CUSTODY_ROOT_NOT_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001",
+  "latest_classification": "POST_REPAIR_HEALER_CARRIER_PACKET_NOT_OBSERVED",
+  "latest_next_defect": "POST_REPAIR_HEALER_CARRIER_PACKET_NOT_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001",
   "runtime_completion_claimed": false,
   "resident_root_observed": false,
   "dry_run_validation_only": true,
@@ -31,10 +33,33 @@
       "authority_effect": "NONE_SOURCE_ONLY"
     },
     {
+      "predicate_id": "HEALER_RESIDENT_ROOT_BOOTSTRAP_CIRCULARITY_SOURCE_REPAIR_MERGED",
+      "kind": "SOURCE_REPAIR_CONTEXT",
+      "required_state": "TRUE",
+      "evidence_ref": "StegVerse-Labs/StegVerse-Healer#82;2415e0bdf83bcd5ff116a388cf4c570874593e6b;actions:34884261376",
+      "authority_effect": "NONE_SOURCE_ONLY"
+    },
+    {
+      "predicate_id": "POST_REPAIR_PACKET_OBSERVATION_REQUIRED",
+      "kind": "RUNTIME_EVIDENCE_GATE",
+      "required_state": "PENDING_RUNTIME_OBSERVATION",
+      "observed_state": "NOT_OBSERVED_IN_AVAILABLE_EVIDENCE",
+      "evidence_ref": "resident_custody_root_observation packet emitted by existing Healer carrier",
+      "latest_classification_ref": "data/runtime-materialization-remediation/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.post-repair-packet-classification.json",
+      "authority_effect": "NONE_GATE_ONLY"
+    },
+    {
+      "predicate_id": "CLASSIFIER_RUN_REMAINS_GATED_BY_AUTHENTIC_RUNTIME_ROOT",
+      "kind": "CLASSIFIER_GATE",
+      "required_state": "TRUE",
+      "evidence_ref": "scripts/check_stegbrowser_runtime_consumption_receipts.py requires --runtime-root and remains non-authorizing",
+      "authority_effect": "NONE_CLASSIFICATION_ONLY"
+    },
+    {
       "predicate_id": "NO_SECOND_RUNTIME_EVIDENCE_OWNER_ADDED",
       "kind": "COORDINATION_OWNER_BOUNDARY",
       "required_state": "TRUE",
-      "evidence_ref": "tools/validate_global_runtime_evidence_owner_binding.py",
+      "evidence_ref": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001 remains shared owner",
       "authority_effect": "NONE_SOURCE_VALIDATION_ONLY"
     },
     {
@@ -59,27 +84,6 @@
       "authority_effect": "NONE_SOURCE_VALIDATION_ONLY"
     },
     {
-      "predicate_id": "RESIDENT_ROOT_OBSERVATION_SURFACE_DEFINED",
-      "kind": "MATERIALIZATION_CONTRACT",
-      "required_state": "TRUE",
-      "evidence_ref": "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md#required-materialization-surface",
-      "authority_effect": "NONE_CONTRACT_ONLY"
-    },
-    {
-      "predicate_id": "POST_REPAIR_PACKET_OBSERVATION_REQUIRED",
-      "kind": "RUNTIME_EVIDENCE_GATE",
-      "required_state": "PENDING_RUNTIME_OBSERVATION",
-      "evidence_ref": "resident_custody_root_observation packet emitted by existing Healer carrier",
-      "authority_effect": "NONE_GATE_ONLY"
-    },
-    {
-      "predicate_id": "CLASSIFIER_RUN_REMAINS_GATED_BY_AUTHENTIC_RUNTIME_ROOT",
-      "kind": "CLASSIFIER_GATE",
-      "required_state": "TRUE",
-      "evidence_ref": "scripts/check_stegbrowser_runtime_consumption_receipts.py requires --runtime-root and remains non-authorizing",
-      "authority_effect": "NONE_CLASSIFICATION_ONLY"
-    },
-    {
       "predicate_id": "RETURN_PATH_TO_PARENT_RECEIPT_CLASSIFICATION_DEFINED",
       "kind": "CONTINUATION_CONTRACT",
       "required_state": "TRUE",
@@ -101,7 +105,7 @@
   "closure_conditions": [
     "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001 remains the single shared runtime-evidence owner",
     "existing Healer neutral route remains the only scheduling/invocation carrier",
-    "post-repair resident-root observation packet is the next StegBrowser runtime evidence surface",
+    "post-repair resident-root observation packet is observed from the authentic existing Healer carrier output or its non-observation is bound as the exact next runtime defect",
     "dry-run validation remains non-authorizing",
     "return path to parent receipt classification is explicit",
     "no runtime completion is claimed without authentic retained resident evidence"
