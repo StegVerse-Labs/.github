@@ -45,6 +45,35 @@ class StegBrowserTransportBoundaryContractTests(unittest.TestCase):
         )
         self.assertIs(boundary["packet_arrival_time_extended_because_lifecycle_is_round_trip"], False)
 
+    def test_internal_transition_groups_do_not_multiply_round_trip_lifecycle(self):
+        contract = load_json(CONTRACT)
+        boundary = contract["transport_boundary_contract"]
+        round_trip = component_by_id(contract, "RTC-ROUNDTRIP-003")
+        profile = load_json(PROFILE)
+        requirements = profile["transport_requirements"]
+        semantics = profile["round_trip_lifecycle_semantics"]
+
+        self.assertIs(boundary["one_round_trip_lifecycle_may_contain_multiple_internal_transition_groups"], True)
+        self.assertIs(boundary["internal_transition_groups_do_not_imply_additional_round_trip_lifecycles"], True)
+        self.assertIs(round_trip["internal_transition_groups_increment_repeat_count"], False)
+        self.assertEqual(requirements["governed_round_trip_lifecycle_count"], 1)
+        self.assertEqual(
+            requirements["required_round_trips"],
+            ["stegbrowser_runtime_consumption_governed_round_trip"],
+        )
+        self.assertEqual(
+            requirements["round_trip_internal_transition_groups"],
+            [
+                "canonical_work_ingress_and_resident_consumption",
+                "tvc_source_promotion_and_runtime_observation",
+            ],
+        )
+        self.assertEqual(profile["repeatability"]["RTC-ROUNDTRIP-003"], 1)
+        self.assertEqual(semantics["lifecycle_count"], 1)
+        self.assertEqual(semantics["internal_transition_group_count"], 2)
+        self.assertIs(semantics["internal_transition_groups_are_separate_round_trip_goals"], False)
+        self.assertIs(semantics["internal_transition_groups_increment_round_trip_repeat_count"], False)
+
     def test_master_records_custody_is_post_transport_and_cannot_negate_transport_success(self):
         contract = load_json(CONTRACT)
         custody = component_by_id(contract, "RTC-EVIDENCE-CUSTODY-004")
