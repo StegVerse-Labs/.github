@@ -1,0 +1,23 @@
+{
+  "reusable_task_id": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
+  "name": "StegBrowser Runtime Consumption",
+  "purpose": "Execute the existing StegBrowser Canonical Work runtime-consumption chain on an admitted ephemeral StegOS node without creating a duplicate runtime, scheduler, WorkerCoordinator, credential path, or device dependency.",
+  "trigger": "STEG-BROWSER-RUNTIME-CONSUMPTION-001 is ACTIVE/CHECKED_OUT and selected_execution_substrate is ADMITTED-EPHEMERAL-STEGOS-NODE",
+  "scope": "one manifest-bound invocation for STEG-BROWSER-RUNTIME-CONSUMPTION-001 / COSV 40000100100000",
+  "parameter_keys": ["sovereign_source_root", "stegos_source_root", "runtime_base"],
+  "runner_templates": ["scripts/run_stegbrowser_runtime_consumption_reusable.py"],
+  "recording_levels": ["operation", "task", "goal", "component", "system", "master_records"],
+  "completion_predicates": [
+    "CANONICAL_WORK_RESIDENT_CONSUMPTION_OBSERVED",
+    "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+    "INTR_ADMISSION_OBSERVED",
+    "STEGBROWSER_TVC_SOURCE_PROMOTION_CONSUMPTION_OBSERVED",
+    "PINNED_TVC_AEF6B6F5_MATERIALIZED_AND_PRIMARY_RUNTIME_RESTARTED",
+    "IMMUTABLE_OBSERVER_4C78F865_EXECUTED",
+    "SIMULTANEOUS_TVC_8765_SKAP_8775_OBSERVED",
+    "OWNER_INGRESS_READY_OBSERVED",
+    "NO_PARALLEL_SCHEDULER_DISPATCHER_CREDENTIAL_PATH_OR_SECOND_DEVICE"
+  ],
+  "authority_effect": "NONE_ORCHESTRATION_ONLY",
+  "reuse_instructions": "Trigger once through scripts/trigger_reusable_task.py. The runner must reuse SovereignLocalEventRuntimeAdapter, the existing Canonical Work resident consumer, WorkerCoordinator, Interlock/InTr, exact stegbrowser_tvc_source_promotion consumer, TVC runtime/observer path, and Master Records lifecycle. It may stop only at a real authority/evidence/external-resource boundary and may not infer completion from source or CI."
+}

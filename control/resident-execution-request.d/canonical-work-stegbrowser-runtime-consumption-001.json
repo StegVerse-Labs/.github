@@ -9,6 +9,19 @@
   "cosv_binding_required_before_execution": true,
   "mode": "CANONICAL_WORK_EVENT_BOOTSTRAP",
   "entrypoint": "scripts/install_and_run_canonical_work_event_bootstrap.py",
+  "reusable_task_binding": {
+    "reusable_task_id": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
+    "trigger_driver": "scripts/trigger_reusable_task.py",
+    "runner": "scripts/run_stegbrowser_runtime_consumption_reusable.py",
+    "selected_execution_substrate": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+    "automatic_advancement_required": true,
+    "manual_device_prerequisite": false,
+    "path_parameters": {
+      "sovereign_source_root": "STEGVERSE_HEARTBEAT_SOURCE_ROOT_OR_CURRENT_CANONICAL_SOURCE",
+      "stegos_source_root": "STEGVERSE_STEGOS_SOURCE_ROOT_OR_SIBLING_STEGOS",
+      "runtime_base": "STEGVERSE_EPHEMERAL_RUNTIME_BASE_OR_XDG_STATE_HOME"
+    }
+  },
   "credential_authority": "TV/TVC",
   "github_token_required": false,
   "github_token_runtime_authority": "NONE",
