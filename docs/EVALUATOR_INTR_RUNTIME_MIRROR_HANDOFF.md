@@ -129,6 +129,42 @@ existing evaluator runtime/receipt tests remain green: PASS
 
 Source, CI, merge, and a `CALLABLE` record do not by themselves prove a fresh production request traversed the route. Fresh runtime completion remains authentic receipt evidence only.
 
+## Post-repair observation attempt — 2026-09-14
+
+After merge `eb0f2687265c62a7e621dd22d10cd5da3c2bf591`, the canonical Task Registry and this handoff were re-read before attempting runtime execution.
+
+Observed canonical state:
+
+```text
+SHWP-EVALUATOR-INTR-READ-RUNTIME-001 = HANDOFF_READY
+worker status = AVAILABLE
+fresh runtime completion evidence = NOT OBSERVED
+fresh EVALUATOR_INTR_EVENT_RECEIVER_CALLABLE receipt = NOT OBSERVED
+fresh EVALUATOR_INTR_READ_ROUND_TRIP_OBSERVED receipt = NOT OBSERVED
+```
+
+An authorized remote-runtime execution attempt from the current session could not reach a resident device because the connected remote execution surface reported no available device. This is an **observation/execution-surface limitation**, not evidence that the StegVerse resident runtime is absent or broken. No CI, source, historical receipt, or connector error is promoted into runtime proof.
+
+The first exact unresolved goal predicate therefore remains:
+
+```text
+FRESH_AUTHENTIC_POST_REPAIR_READ_REVIEW_INVOCATION_OBSERVED = false
+```
+
+Required next authentic evidence is unchanged:
+
+```text
+one admitted post-repair READ_REVIEW invocation
+-> event-triggered one-request call surface
+-> exact request/manifest binding
+-> ingress transition_state=RECEIVED
+-> egress transition_state=FORWARDED
+-> egress prior_receipt_hash == ingress receipt_hash
+-> retained EVALUATOR_INTR_READ_ROUND_TRIP_OBSERVED bundle
+```
+
+No additional listener, runtime plane, scheduler, credential authority, or second user-operated device is authorized by this observation gap.
+
 ## README disposition
 
 Root `README.md` was reviewed for this repair. It already documents the organization-owned Universal InTr ingress as event-triggered and describes event materialization through the shared profile. No repository-wide semantic rewrite is required; this repair removes the contradictory evaluator-specific persistent-receiver lifecycle so the task conforms to those existing README semantics.
