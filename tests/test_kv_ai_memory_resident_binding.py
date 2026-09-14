@@ -143,7 +143,7 @@ def test_consumer_waits_without_explicit_intr_ingress_when_packet_is_staged(tmp_
     assert result["private_input_bytes_read"] is False
 
 
-def test_admission_attempt_prepares_route_and_accepts_only_submitter_evidence(tmp_path):
+def test_admission_attempt_uses_canonical_source_preparer_and_accepts_only_submitter_evidence(tmp_path):
     home = tmp_path / "home"
     stage_root = stage_consumer_inputs(home)
     env = {
@@ -155,8 +155,9 @@ def test_admission_attempt_prepares_route_and_accepts_only_submitter_evidence(tm
 
     def fake_runner(command, **kwargs):
         calls.append(command)
-        if "install_kv_ai_memory_universal_intr_route.py" in command[1]:
-            return SimpleNamespace(returncode=0, stdout="INSTALLED\n", stderr="")
+        if "prepare_kv_ai_memory_intr_runtime_source.py" in command[1]:
+            out = {"state": "ROUTE_INSTALLED_LOCAL_SOURCE", "authority_effect": "NONE_SOURCE_PREPARATION_ONLY"}
+            return SimpleNamespace(returncode=0, stdout=json.dumps(out) + "\n", stderr="")
         if "submit_kv_ai_memory_packet_local.py" in command[1]:
             admission = {
                 "schema": "stegverse.kv.ai-memory-intr-admission/v1",
@@ -174,11 +175,32 @@ def test_admission_attempt_prepares_route_and_accepts_only_submitter_evidence(tm
 
     result = consumer.attempt_memory_packet_admission(ROOT, runner=fake_runner, env=env)
     assert result["state"] == "AUTHENTIC_INGRESS_ADMISSION_WRITTEN"
+    assert result["route_preparation_state"] == "ROUTE_INSTALLED_LOCAL_SOURCE"
     assert result["admission_attempted"] is True
     assert result["admission_written"] is True
     assert result["private_input_bytes_read_by_consumer"] is False
     assert len(calls) == 2
+    assert "prepare_kv_ai_memory_intr_runtime_source.py" in calls[0][1]
     assert (stage_root / consumer.ADMISSION_INPUT).is_file()
+
+
+def test_admission_attempt_fails_closed_on_invalid_preparation_result(tmp_path):
+    home = tmp_path / "home"
+    stage_consumer_inputs(home)
+    env = {
+        "HOME": str(home),
+        "PATH": "/usr/bin",
+        "STEGVERSE_UNIVERSAL_INTR_INGRESS_URL": "http://127.0.0.1:7777/intr/materialization",
+    }
+
+    def fake_runner(command, **kwargs):
+        if "prepare_kv_ai_memory_intr_runtime_source.py" in command[1]:
+            return SimpleNamespace(returncode=0, stdout=json.dumps({"state": "UNEXPECTED"}) + "\n", stderr="")
+        raise AssertionError("submitter must not run after invalid preparation result")
+
+    result = consumer.attempt_memory_packet_admission(ROOT, runner=fake_runner, env=env)
+    assert result["state"] == "ROUTE_PREPARATION_RESULT_INVALID"
+    assert result["admission_attempted"] is False
 
 
 def test_dispatcher_registers_wait_state_and_selector():
