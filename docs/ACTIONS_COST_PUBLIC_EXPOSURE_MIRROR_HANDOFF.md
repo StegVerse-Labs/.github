@@ -1,6 +1,6 @@
 # Actions Cost + Public Exposure Mirror Handoff
 
-Status: ACTIVE / PUBLIC-READINESS-SCRUB-PRS-OPEN / CONSERVATION-PATCH-PR-OPEN  
+Status: ACTIVE / PUBLIC-VISIBILITY-VERIFIED / CONSERVATION-PATCH-PR-OPEN  
 Goal Task ID: `SV-ACTIONS-COST-PUBLIC-EXPOSURE-001`  
 COSV task.v1: `21111100110000`  
 Repository: `StegVerse-Labs/.github`  
@@ -12,13 +12,13 @@ Reduce GitHub Actions minute burn across the StegVerse ecosystem, stop duplicate
 
 ## Authority boundary
 
-GitHub Actions remains validation/evidence transport only. Hosted CI must not claim runtime execution, credential authority, wallet authority, TV/TVC authority, Interlock/InTr admission, WorkerCoordinator claim/fence, or Master Records custody. This task may patch workflow conservation controls, create review artifacts, and open non-destructive PRs. It must not change repository visibility; visibility changes are `OWNER_EXPLICIT_CONSENT` / `USER_ONLY`.
+GitHub Actions remains validation and evidence transport only. Hosted CI must not claim runtime execution, credential authority, wallet authority, TV/TVC authority, Interlock/InTr admission, WorkerCoordinator claim/fence, or Master Records custody. This task may patch workflow conservation controls, create review artifacts, and open non-destructive PRs. Repository visibility changes are `OWNER_EXPLICIT_CONSENT` / `USER_ONLY`; the owner performed the visibility changes outside this assistant.
 
 ## Current inventory basis
 
 The connected GitHub repository inventory exposed administrative/write access to repositories across `Admissible-Existence`, `AdmittedCode`, `Data-Continuation`, `GCAT-BCAT-Engine`, `master-records`, `StegGhost`, `StegVerse-002`, and `StegVerse-Labs` during the 2026-09-14 sweep.
 
-The immediate operational incident is month-to-date Actions use at 42,938 of 50,000 included minutes as seen by the owner screenshot, combined with repeated failure notifications for `.github`, `Site`, `TV`, `TVC`, `StegOS`, `Governance`, Admissible-Existence repositories, and GCAT-BCAT-Engine repositories.
+The immediate operational incident was month-to-date Actions use at 42,938 of 50,000 included minutes as seen by the owner screenshot, combined with repeated failure notifications for `.github`, `Site`, `TV`, `TVC`, `StegOS`, `Governance`, Admissible-Existence repositories, and GCAT-BCAT-Engine repositories.
 
 ## Applied Actions conservation patch set
 
@@ -55,6 +55,19 @@ PRIVATE PERSONAL CONFIDENTIAL INTERNAL TODO FIXME HACK secret credential
 
 Result: no matching search results returned for these six candidate repositories in the bounded scan.
 
+## Public visibility verification — 2026-09-14T15:18Z
+
+Live GitHub repository metadata was checked after the owner completed visibility changes. All six active make-public candidate repositories now report `visibility: public` and `archived: false`:
+
+```text
+StegVerse-Labs/Governance — public
+StegVerse-Labs/hybrid-collab-bridge — public
+StegVerse-Labs/SCW — public
+StegVerse-Labs/StegVerse-SCW — public
+Admissible-Existence/standing-proof-formalism — public
+Data-Continuation/formalisms — public
+```
+
 ## Active public-readiness PRs
 
 ```text
@@ -90,24 +103,13 @@ Data-Continuation/formalisms#2
   state: OPEN
 ```
 
-## Make-public candidates under active readiness work
-
-```text
-StegVerse-Labs/Governance
-StegVerse-Labs/hybrid-collab-bridge
-StegVerse-Labs/SCW
-StegVerse-Labs/StegVerse-SCW
-Admissible-Existence/standing-proof-formalism
-Data-Continuation/formalisms
-```
-
 ## Repositories still not public-ready
 
 Do not make these public in the current state without targeted review: `TVC`, `TV`, `Continuity`, `StegOS`, `micro-node-runtime`, `StegProfile`, `StegGuardian`, `entity-sandbox-runner`, telemetry/orchestration repos, private GCAT/BCAT core-full/core-addons/core-master/Marketplace/Gemstone_IV, and any repo that carries KV, SKAP, resident runtime, credential, receipt, custody, personal-state, patent-private, or unpublished implementation details.
 
 ## Best fixes by workflow class
 
-1. Add root-level workflow `concurrency` with `${{ github.repository }}-${{ github.workflow }}-${{ github.ref }}` or tighter workflow-specific group and `cancel-in-progress: true` for every push/PR validation workflow.
+1. Add root-level workflow `concurrency` with `${{ github.repository }}-${{ github.workflow }}-${{{{ github.ref }}}}` or tighter workflow-specific group and `cancel-in-progress: true` for every push/PR validation workflow.
 2. Keep `workflow_dispatch` available for diagnostics, but stop broad automatic triggers while failures are unresolved.
 3. Convert recurring non-authoritative observation/audit/dispatch workflows to manual-only or move them to the existing Healer scheduler when they are not release gates.
 4. Add path filters to push and pull_request triggers; avoid `on: push` across entire repos unless it is a real release gate.
@@ -122,8 +124,9 @@ canonical task: IN_PROGRESS
 workflow conservation patch branch: CREATED
 .github low-risk workflow concurrency patches: APPLIED
 public-readiness candidate PRs: OPEN_IN_6_REPOS
-repository visibility mutations: NOT PERFORMED
+repository visibility mutations: OWNER_COMPLETED_OUTSIDE_ASSISTANT
+six candidate repositories visibility: PUBLIC_VERIFIED
 full ecosystem workflow scan: STARTED_NOT_COMPLETE
-public-safe classification: INITIAL_CONSERVATIVE
+public-safe classification: SIX_CANDIDATES_PUBLIC_VERIFIED_REST_CONSERVATIVE
 Actions cost reduction: NOT VALIDATED UNTIL PR_MERGED_AND_NEXT_RUN_OBSERVED
 ```
