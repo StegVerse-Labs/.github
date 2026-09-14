@@ -4,12 +4,13 @@
   "state": "HANDOFF_READY_MACHINE_OWNED",
   "goal": {
     "goal_id": "EVALUATOR-INTR-READ-REVIEW-RUNTIME-431",
-    "objective": "Maintain one durable sovereign READ_REVIEW Interlock/InTr loopback receiver behind the shared Service Gateway, preserve exact ingress/egress receipt lineage, and terminalize only after an authentic round trip without creating review, freeze, execution, credential, custody, or GitHub runtime authority.",
+    "objective": "Keep evaluator READ_REVIEW Interlock/InTr continuously callable through bounded event-triggered materialization, preserve exact ingress/egress receipt lineage, and terminalize only after an authentic round trip without requiring an always-on application receiver or creating review, freeze, execution, credential, custody, or GitHub runtime authority.",
     "success_predicates": [
       "declared sovereign StegVerse node observed",
       "local Site and StegOS source roots observed",
       "admitted route config observed",
-      "durable loopback READ_REVIEW receiver readiness observed",
+      "event-triggered one-request READ_REVIEW call surface materialized",
+      "always_on_application_receiver_required=false",
       "one exact READ_REVIEW request received",
       "canonical ingress RECEIVED receipt persisted",
       "canonical egress FORWARDED receipt persisted",
@@ -19,13 +20,14 @@
       "hosted runtime selected",
       "GitHub/non-TV-TVC credential present",
       "unbound manifest returned",
-      "public listener lacks explicit TLS material",
+      "public event call surface lacks explicit TLS material",
+      "persistent receiver required as a generic InTr prerequisite",
       "receipt lineage invalid"
     ],
     "authority_ceiling": [
       "bounded_process_execution",
       "runtime_observation",
-      "read_only_interlock_intr_listener",
+      "read_only_event_triggered_interlock_intr_call",
       "no review/freeze/execution authority",
       "no repository writeback",
       "no credential authority"
@@ -38,8 +40,9 @@
     "repository": "StegVerse-Labs/.github",
     "source_refs": [
       "docs/EVALUATOR_INTR_RUNTIME_MIRROR_HANDOFF.md",
+      "workers/evaluator_intr_read_runtime_worker.py",
       "scripts/serve_evaluator_intr_runtime.py",
-      "StegVerse-Labs/Site#643",
+      "StegVerse-Labs/Site/docs/INTERLOCK_INTR_CONNECTION_GUIDE.md",
       "StegVerse-Labs/StegOS#94",
       "StegVerse-org/StegVerse-SDK#96"
     ],
@@ -91,13 +94,16 @@
     "rate_class": "evaluator_intr_read_review",
     "hosted_execution_allowed": false,
     "route_config": "~/.stegverse/config/evaluator-intr-runtime.json",
-    "remote_checkout_allowed": false
+    "remote_checkout_allowed": false,
+    "event_triggered": true,
+    "always_on_application_receiver_required": false,
+    "max_requests_per_materialized_call_surface": 1
   },
   "activation": {
     "carrier": "independent_task_control",
     "executor_binding": "AUTHORIZED",
     "authorization_ref": "docs/EVALUATOR_INTR_RUNTIME_MIRROR_HANDOFF.md",
-    "recheck_trigger": "each admitted independent task-control opportunity until receiver readiness exists and then until one authentic READ_REVIEW round trip exists",
+    "recheck_trigger": "each admitted independent task-control opportunity until an event-triggered one-request call surface is materialized and after each consumed call until one authentic READ_REVIEW round trip exists",
     "checkout_policy": "fenced_atomic_checkout",
     "authority_domain": "INDEPENDENT_TASK_CONTROL",
     "heartbeat_reference_only": true,
@@ -112,14 +118,14 @@
     "repository_persistence_requires_separate_admission": true
   },
   "completion": {
-    "next_authorized_action": "First ensure the durable loopback receiver is READY behind the shared Service Gateway. Do not terminalize on readiness. After the first authentic read round trip, bind the receipt bundle into the Site manifest/receipt UI and separately advance authenticated review/approval/freeze/execution authorities.",
+    "next_authorized_action": "Materialize the bounded event-triggered READ_REVIEW call surface when invoked. Do not require a permanently resident evaluator receiver. After the first authentic read round trip, bind the receipt bundle into the Site manifest/receipt UI and separately advance authenticated review/approval/freeze/execution authorities.",
     "terminal_when": [
       "EVALUATOR_INTR_READ_ROUND_TRIP_OBSERVED",
       "authentic ingress receipt observed",
       "authentic egress receipt observed"
     ],
-    "nonterminal_ready_state": "EVALUATOR_INTR_RECEIVER_READY",
-    "readiness_receipt": "~/.stegverse/runtime/receipts/sovereign-network/evaluator-intr/receiver.latest.json"
+    "nonterminal_callable_state": "EVALUATOR_INTR_EVENT_RECEIVER_CALLABLE",
+    "callability_receipt": "~/.stegverse/runtime/receipts/sovereign-network/evaluator-intr/event-receiver.latest.json"
   },
   "source_state_vector_ref": "control/task-vectors/SHWP-EVALUATOR-INTR-READ-RUNTIME-001.json"
 }

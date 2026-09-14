@@ -55,12 +55,15 @@ class EvaluatorInTrReadRuntimeWorkerTests(unittest.TestCase):
             bundle=receipt_root/"observed.json"
             bundle.write_text(json.dumps({"state":"READ_REVIEW_ROUND_TRIP_FORWARDED"})+"\n",encoding="utf-8")
             config={"runtime_root":str(runtime)}
-            result=mod.ensure_receiver(config,base/"server.py")
+            result=mod.ensure_callable(config,base/"server.py")
             self.assertEqual(result["state"],"COMPLETE")
             self.assertEqual(result["transition_id"],"EVALUATOR_INTR_READ_ROUND_TRIP_OBSERVED")
             self.assertEqual(result["receipt_bundle_ref"],str(bundle))
+            self.assertTrue(result["event_triggered"])
+            self.assertFalse(result["persistent_receiver"])
+            self.assertFalse(result["always_on_application_receiver_required"])
 
-    def test_receiver_start_returns_ready_without_claiming_round_trip(self):
+    def test_event_receiver_start_returns_callable_not_persistent(self):
         with tempfile.TemporaryDirectory() as td:
             base=Path(td)
             runtime=base/"runtime"; runtime.mkdir()
@@ -78,14 +81,38 @@ class EvaluatorInTrReadRuntimeWorkerTests(unittest.TestCase):
                  mock.patch.object(mod,"_readiness",return_value={
                      "state":"READY","transport":"InTr","credential_authority":"TV/TVC","github_token_runtime_authority":"NONE"
                  }):
-                result=mod.ensure_receiver(config,server)
-            self.assertEqual(result["state"],"READY")
-            self.assertEqual(result["transition_id"],"EVALUATOR_INTR_RECEIVER_READY")
+                result=mod.ensure_callable(config,server)
+            self.assertEqual(result["state"],"CALLABLE")
+            self.assertEqual(result["transition_id"],"EVALUATOR_INTR_EVENT_RECEIVER_CALLABLE")
+            self.assertTrue(result["event_triggered"])
+            self.assertEqual(result["max_requests"],1)
+            self.assertFalse(result["persistent_receiver"])
+            self.assertFalse(result["always_on_application_receiver_required"])
             self.assertFalse(result["round_trip_observed"])
-            self.assertTrue(result["persistent_receiver"])
             args=popen.call_args.args[0]
             self.assertIn("--max-requests",args)
-            self.assertIn("0",args)
+            self.assertEqual(args[args.index("--max-requests")+1],"1")
+            self.assertNotIn("0",args[args.index("--max-requests"):args.index("--max-requests")+2])
+
+    def test_existing_live_event_receiver_is_reused_without_second_listener(self):
+        with tempfile.TemporaryDirectory() as td:
+            base=Path(td)
+            runtime=base/"runtime"; runtime.mkdir()
+            root=runtime/"receipts/sovereign-network/evaluator-intr"; root.mkdir(parents=True)
+            latest=root/"event-receiver.latest.json"
+            latest.write_text(json.dumps({
+                "schema":"stegverse.evaluator-intr-event-callability/v1","state":"CALLABLE",
+                "transition_id":"EVALUATOR_INTR_EVENT_RECEIVER_CALLABLE","pid":4242,
+                "event_triggered":True,"persistent_receiver":False,
+                "always_on_application_receiver_required":False
+            })+"\n",encoding="utf-8")
+            config={"runtime_root":str(runtime),"host":"127.0.0.1","port":8765}
+            with mock.patch.object(mod,"_pid_alive",return_value=True), \
+                 mock.patch.object(mod,"_readiness",return_value={"state":"READY"}), \
+                 mock.patch.object(mod.subprocess,"Popen") as popen:
+                result=mod.ensure_callable(config,base/"server.py")
+            self.assertEqual(result["state"],"CALLABLE")
+            popen.assert_not_called()
 
     def test_hosted_execution_fails_closed(self):
         inv=self.invocation()
