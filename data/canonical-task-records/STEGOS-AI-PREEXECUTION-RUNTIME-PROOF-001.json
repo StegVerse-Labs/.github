@@ -14,19 +14,24 @@
     "StegVerse-Labs/StegOS:docs/AI_PREEXECUTION_GOVERNANCE_TEST_MIRROR_HANDOFF.md",
     "docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md",
     "data/reusable-task-ephemeral-construct-contract.json",
-    "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
-    "evidence/ai-preexecution/STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001.ai-proposal.json"
+    "source-bundles/reusable-task-registry.d/RT-STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001.json",
+    "evidence/ai-preexecution/STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001.ai-proposal.json",
+    "StegVerse-Labs/StegVerse-Healer#85",
+    "StegVerse-Labs/StegVerse-Healer@7ced5154d6d5244e419e1f4c19fb48c4a53c440a",
+    "StegVerse-Labs/StegVerse-Healer:docs/STEGOS_AI_PREEXECUTION_RUNTIME_PROOF_CARRIER_BINDING_MIRROR_HANDOFF.md",
+    "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
-    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegOS"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegOS", "StegVerse-Labs/StegVerse-Healer"],
     "components": [
       "RTC-MANIFEST-001",
       "RTC-GOVERNED-PROCESSING-002",
       "RTC-INTERLOCK-INTR-TRANSPORT-008",
       "execution_materialization:data/reusable-task-ephemeral-construct-contract.json",
       "RTC-FARSIDE-FINAL-009",
-      "RTC-EVIDENCE-CUSTODY-004"
+      "RTC-EVIDENCE-CUSTODY-004",
+      "resident-neutral-reusable-task-carrier-binding"
     ]
   },
   "dependencies": [
@@ -47,11 +52,27 @@
       "kind": "RUNTIME_EVIDENCE",
       "state": "PROPOSAL_PRESERVED_RUNTIME_OBSERVATION_PENDING",
       "ref": "evidence/ai-preexecution/STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001.ai-proposal.json"
+    },
+    {
+      "dependency_id": "DEP-AI-PREEXECUTION-HEALER-CARRIER-BINDING",
+      "kind": "RUNTIME_REACHABILITY_SOURCE_BINDING",
+      "state": "RESOLVED_SOURCE_ONLY",
+      "ref": "StegVerse-Labs/StegVerse-Healer#85;StegVerse-Labs/StegVerse-Healer@7ced5154d6d5244e419e1f4c19fb48c4a53c440a;actions:34891751182",
+      "disposition": "EXISTING_NEUTRAL_REUSABLE_TASK_SCHEDULER_NOW_CARRIES_RT_STEGOS_AI_PREEXECUTION_RUNTIME_PROOF_001; NO_SECOND_SCHEDULER_RUNTIME_CREDENTIAL_PATH_REMOTE_DESKTOP_OR_SECOND_USER_DEVICE"
+    },
+    {
+      "dependency_id": "DEP-AI-PREEXECUTION-AUTHENTIC-CURRENT-DEVICE-RUNTIME",
+      "kind": "RUNTIME_EVIDENCE_GATE",
+      "state": "UNRESOLVED_CURRENT_IPHONE_EXECUTION",
+      "ref": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001;TASK-2026-0011:G7:FENCE7",
+      "disposition": "FIRST_UNRESOLVED_REACHABILITY_PREDICATE_TESTFLIGHT_CURRENT_IPHONE_RUNTIME_OBSERVED; ALL_KNOWN_MACHINE_OWNED_SOURCE_COMPOSITION_PREREQUISITES_SATISFIED"
     }
   ],
   "blockers": [],
   "adjacent_task_refs": [
     "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
+    "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+    "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
     "SS-ERL-AUTHENTIC-INTR-EXECUTION-EVIDENCE-002",
     "STEGOS-ESRL-001"
   ],
@@ -74,7 +95,7 @@
       "bounded_loopback_network_consequence",
       "target_state_readback"
     ],
-    "environment": "ADMITTED_EPHEMERAL_STEGOS_NODE",
+    "environment": "ADMITTED-EPHEMERAL-STEGOS-NODE",
     "direction": "AI_PROPOSAL_TO_STEGOS_GOVERNANCE_TO_NETWORK_TARGET",
     "mutation_required": true,
     "deployment_required": false,
@@ -121,7 +142,7 @@
         "disposition": "SELECTED",
         "limitation_class": "NONE",
         "evidence_refs": [
-          "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
+          "source-bundles/reusable-task-registry.d/RT-STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001.json",
           "StegVerse-Labs/StegOS@ef15c92b24c37e2031e13586741952e0305b520a"
         ]
       },
@@ -138,8 +159,12 @@
     "authority_effect": "NONE"
   },
   "runtime_resolution": {
-    "current_executor": "reusable event-ephemeral StegOS Node -> Canonical Work -> Interlock/InTr -> StegOS pre-execution network test",
-    "unresolved_classification": "AI_PROPOSAL_PRESERVED_ADMITTED_RUNTIME_CONSUMPTION_NOT_OBSERVED",
+    "current_executor": "standing Healer resident carrier -> RT-REUSABLE-TASK-SCHEDULER-001 -> RT-STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001 -> event-ephemeral StegOS Node -> Canonical Work -> Interlock/InTr -> StegOS pre-execution network test",
+    "unresolved_classification": "HEALER_CARRIER_BOUND_CURRENT_IPHONE_RUNTIME_EXECUTION_NOT_OBSERVED",
+    "reachability_source_binding": "RESOLVED_HEALER_85",
+    "shared_runtime_evidence_owner_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+    "current_first_unresolved_reachability_predicate": "TESTFLIGHT_CURRENT_IPHONE_RUNTIME_OBSERVED",
+    "next_admissible_transition": "INGRESS_ADMITTED",
     "proposal_evidence_ref": "evidence/ai-preexecution/STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001.ai-proposal.json",
     "proposal_sha256": "cf92a45b7bb147fc320f2cc472e1f3fcf7148a2b914a8772a1a9bdb4f8771fbb"
   },
@@ -149,11 +174,12 @@
     "fence_ref": null,
     "projection_only": false
   },
-  "human_action_ref": null,
+  "human_action_ref": "https://stegverse.org/task0011-same-device-kv-recovery.html",
   "completion": {
     "claimed": false,
     "validated": false,
     "activation_proof_complete": false,
+    "carrier_binding_repaired_source_only": true,
     "reconciliation_ref": "docs/STEGOS_AI_PREEXECUTION_RUNTIME_PROOF_MIRROR_HANDOFF.md"
   },
   "allowed_next_transitions": [
@@ -165,10 +191,13 @@
   ],
   "handoff_projection_refs": [
     "docs/STEGOS_AI_PREEXECUTION_RUNTIME_PROOF_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/StegOS:docs/AI_PREEXECUTION_GOVERNANCE_TEST_MIRROR_HANDOFF.md"
+    "StegVerse-Labs/StegOS:docs/AI_PREEXECUTION_GOVERNANCE_TEST_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegVerse-Healer:docs/STEGOS_AI_PREEXECUTION_RUNTIME_PROOF_CARRIER_BINDING_MIRROR_HANDOFF.md"
   ],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
+    "healer_carrier_authority": "SCHEDULING_AND_INVOCATION_TRANSPORT_ONLY",
+    "neutral_reusable_scheduler_authority": "NONE_SCHEDULING_ONLY",
     "workercoordinator_remains_claim_fence_authority": true,
     "interlock_intr_remains_transition_authority": true,
     "tvc_remains_credential_provider_release_authority": true,
