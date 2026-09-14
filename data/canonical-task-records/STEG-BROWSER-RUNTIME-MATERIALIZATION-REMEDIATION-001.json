@@ -4,17 +4,21 @@
   "correlation_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
   "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
   "parent_task_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
-  "goal": "Observe the authentic resident Healer carrier output pointer and classify retained StegBrowser receipt reachability only after an authentic resident root is proven.",
+  "goal": "Observe the authentic resident Healer carrier output pointer through StegVerse-native resident custody, then classify retained StegBrowser receipt reachability only after an authentic resident root is proven.",
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT",
   "cosv_task_vector": "40000100100000",
   "shared_runtime_evidence_owner_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
-  "current_exact_defect": "RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND",
+  "current_exact_defect": "AUTHENTIC_STEGVERSE_NATIVE_RESIDENT_HEALER_CARRIER_RECEIPT_NOT_YET_OBSERVED",
   "source_refs": [
     "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md",
+    "docs/STEGBROWSER_RESIDENT_RECEIPT_TRANSPORT_MIRROR_HANDOFF.md",
+    "data/canonical-task-records/STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001.json",
     "data/runtime-materialization-remediation/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.post-repair-packet-classification.json",
     "scripts/consume_healer_sovereign_scheduler_request.py",
     "scripts/check_stegbrowser_runtime_consumption_receipts.py",
+    "StegVerse-Labs/.github#1841",
+    "StegVerse-Labs/.github#1852",
     "StegVerse-Labs/.github#1866",
     "StegVerse-Labs/.github#1860",
     "StegVerse-Labs/.github#1884",
@@ -30,11 +34,18 @@
       "ref": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001"
     },
     {
+      "dependency_id": "DEP-NATIVE-RECEIPT-TRANSPORT",
+      "kind": "RUNTIME_EVIDENCE_TRANSPORT",
+      "state": "VERIFIER_MERGED_RUNTIME_RECEIPT_UNOBSERVED",
+      "ref": "STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001",
+      "disposition": "PR 1852 verifier is merged and validated. The remaining input is authentic output of the existing StegVerse resident cycle, not external connector or physical-device discovery."
+    },
+    {
       "dependency_id": "DEP-HEALER-CARRIER-OUTPUT-POINTER",
       "kind": "RUNTIME_EVIDENCE_GATE",
-      "state": "RUNTIME_BOUND_NOT_GITHUB_VISIBLE",
+      "state": "PENDING_AUTHENTIC_NATIVE_RESIDENT_RECEIPT",
       "ref": "receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json",
-      "disposition": "RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND"
+      "disposition": "The existing resident consumer writes this receipt and embeds execution_result.resident_custody_root_observation_retention. Observe it through StegVerse-native resident custody."
     },
     {
       "dependency_id": "DEP-CANONICAL-ROOT-OBSERVATION-PACKET",
@@ -60,17 +71,13 @@
     },
     {
       "observed_at": "2026-09-14",
-      "classification": "RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND",
+      "classification": "NATIVE_RESIDENT_EVIDENCE_PATH_RECONCILED",
       "resident_carrier_consumption_relative_path": "receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json",
       "embedded_pointer_path": "execution_result.resident_custody_root_observation_retention",
-      "embedded_fields": [
-        "packet_ref",
-        "packet_relative_path",
-        "packet_sha256",
-        "retained_under_root",
-        "retained_under_root_source",
-        "packet_state"
-      ],
+      "embedded_fields": ["packet_ref", "packet_relative_path", "packet_sha256", "retained_under_root", "retained_under_root_source", "packet_state"],
+      "receipt_verifier_ref": "StegVerse-Labs/.github#1852@a6d0d6e33520a81b261018f36bb78ff5568d7fed",
+      "external_connector_applicable": false,
+      "physical_device_inventory_applicable": false,
       "post_repair_packet_observed": false,
       "resident_custody_root_observed": false,
       "receipt_reachability_classified": false,
@@ -78,6 +85,13 @@
       "authority_effect": "NONE_CLASSIFICATION_ONLY"
     }
   ],
+  "runtime_resolution": {
+    "producer_chain": "existing resident cycle -> standing Healer carrier -> neutral reusable scheduler -> RT-STEGBROWSER-RUNTIME-CONSUMPTION-001 -> admitted ephemeral StegOS/Canonical Work -> retained resident receipts",
+    "observation_chain": "StegVerse-native resident custody -> merged non-authorizing receipt verifier -> bind embedded retained-root pointer -> exact receipt classifier -> Master Records where required",
+    "external_connector_role": "NONE_NOT_APPLICABLE",
+    "physical_device_inventory_role": "NONE_NOT_APPLICABLE",
+    "github_actions_role": "VALIDATION_AND_EVIDENCE_TRANSPORT_ONLY"
+  },
   "allowed_next_transitions": [
     "OBSERVE_AUTHENTIC_RESIDENT_HEALER_CARRIER_CONSUMPTION_RECEIPT",
     "BIND_EMBEDDED_RETAINED_PACKET_POINTER",
@@ -95,11 +109,14 @@
     "ADD_PROVIDER_AUTHORITY",
     "ADD_WORKERCOORDINATOR_BYPASS",
     "REQUIRE_SECOND_USER_OPERATED_DEVICE",
+    "USE_EXTERNAL_DEVICE_CONNECTOR_AS_RUNTIME_GATE",
+    "USE_PHYSICAL_DEVICE_INVENTORY_AS_RUNTIME_GATE",
     "CLAIM_RUNTIME_COMPLETION_FROM_SOURCE_STATE"
   ],
   "completion": {
     "claimed": false,
     "validated": false,
+    "native_receipt_verifier_merged": true,
     "post_repair_packet_observed": false,
     "retained_root_observation_packet_observed": false,
     "resident_custody_root_observed": false,
@@ -110,6 +127,7 @@
   },
   "authority_model": {
     "github_runtime_authority": "NONE",
+    "external_connector_runtime_authority": "NONE_NOT_APPLICABLE",
     "healer_carrier_authority": "SCHEDULING_AND_INVOCATION_TRANSPORT_ONLY",
     "neutral_reusable_task_path_required": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
     "worker_claim_authority": "WORKERCOORDINATOR",
