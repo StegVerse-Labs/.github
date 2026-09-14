@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Validate existing StegOSMobile retained-node discovery evidence for GADI.
+"""Validate existing StegBrowser/StegOS retained-node discovery evidence for GADI.
 
-This projector is observation-only. It never creates runtime presence, supervision,
-WorkerCoordinator claim/fence, InTr admission, credentials, leases, or execution
-authority, and it must never emit CURRENT_RUNTIME_SUBJECT_BOUND.
+This projector is observation-only. It validates exact node lineage, receipt/envelope
+commitments, and authority boundaries. Physical-device identity is provenance only and
+never a verification or completion gate. The historical current-iPhone receipt schema
+remains accepted for backward-compatible evidence replay.
 """
 from __future__ import annotations
 
@@ -18,7 +19,9 @@ TASK_ID = "GADI-RESIDENT-EXECUTION-001"
 PARENT_TASK_ID = "GADI-001"
 SOURCE_TASK_ID = "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001"
 SOURCE_COSV = "40000100100000"
-SOURCE_SCHEMA = "stegos.stegbrowser.current-iphone-rendezvous-observation/v1"
+LEGACY_SOURCE_SCHEMA = "stegos.stegbrowser.current-iphone-rendezvous-observation/v1"
+GENERIC_SOURCE_SCHEMA = "stegos.stegbrowser.resident-rendezvous-observation/v1"
+SOURCE_SCHEMAS = {LEGACY_SOURCE_SCHEMA, GENERIC_SOURCE_SCHEMA}
 DISCOVERY_SCHEMA = "stegverse.resident-rendezvous.discovery/v1"
 OUTPUT_SCHEMA = "stegverse.gadi-retained-node-discovery-observation/v1"
 NODE_RE = re.compile(r"^SV-NODE-[0-9a-f]{24}$")
@@ -54,11 +57,21 @@ def load_latest_jsonl(path: Path) -> dict[str, Any]:
 
 
 def project(receipt: Mapping[str, Any]) -> dict[str, Any]:
-    _require(receipt.get("schema") == SOURCE_SCHEMA, "source discovery receipt schema mismatch")
+    _require(receipt.get("schema") in SOURCE_SCHEMAS, "source discovery receipt schema mismatch")
     _require(receipt.get("state") == "LOCAL_DISCOVERY_OBSERVED", "source discovery state mismatch")
     _require(receipt.get("task_id") == SOURCE_TASK_ID, "source discovery task mismatch")
     _require(receipt.get("cosv") == SOURCE_COSV, "source discovery COSV mismatch")
-    _require(receipt.get("execution_surface") == "CURRENT_USER_IPHONE", "source execution surface mismatch")
+
+    execution_surface = receipt.get("execution_surface")
+    _require(
+        execution_surface is None or (isinstance(execution_surface, str) and bool(execution_surface.strip())),
+        "source execution surface metadata invalid",
+    )
+    _require(
+        receipt.get("device_user_verification_authority", "NONE") == "NONE",
+        "device may not become user-verification authority",
+    )
+
     node_ref = receipt.get("node_ref")
     _require(isinstance(node_ref, str) and NODE_RE.fullmatch(node_ref) is not None, "canonical retained node ref required")
     _require(receipt.get("node_origin") == "STEGBROWSER_RESIDENT", "retained node origin mismatch")
@@ -111,6 +124,8 @@ def project(receipt: Mapping[str, Any]) -> dict[str, Any]:
         "node_ref": node_ref,
         "source_task_id": SOURCE_TASK_ID,
         "source_cosv": SOURCE_COSV,
+        "source_schema": receipt.get("schema"),
+        "source_execution_surface": execution_surface,
         "source_receipt_sha256": receipt_sha,
         "source_envelope_sha256": envelope_sha,
         "retained_node_state_generation": generation,
@@ -125,7 +140,6 @@ def project(receipt: Mapping[str, Any]) -> dict[str, Any]:
         "schema": OUTPUT_SCHEMA,
         **core,
         "state": "CURRENT_RETAINED_NODE_DISCOVERY_OBSERVED",
-        "observation_ref": observation_ref,
         "runtime_presence_observed": False,
         "runtime_supervision_observed": False,
         "runtime_subject_bound": False,
@@ -136,6 +150,7 @@ def project(receipt: Mapping[str, Any]) -> dict[str, Any]:
         "runtime_lease_granted": False,
         "execution_authority_granted": False,
         "heartbeat_grants_execution_authority": False,
+        "physical_device_identity_grants_authority": False,
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": "NONE",
         "authority_effect": "NONE_OBSERVATION_ONLY",
