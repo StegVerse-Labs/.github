@@ -1,0 +1,101 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SV-KV-AI-WORKERCOORDINATOR-ADMISSION-001",
+  "correlation_id": "SV-KV-AI-WORKERCOORDINATOR-ADMISSION-001",
+  "root_correlation_id": "SV-KV-AI-PERSISTENCE-001",
+  "parent_task_id": "SV-KV-AI-PERSISTENCE-001",
+  "adjacent_to": ["SV-KV-AI-PERSISTENCE-001"],
+  "goal": "Persist the non-authorizing runtime-routing projection needed for WorkerCoordinator admission review for SV-KV-AI-PERSISTENCE-001, then acquire or record the fresh WorkerCoordinator claim/fence status without claiming Interlock/InTr admission, provider/model execution, KV writeback, or Master Records reconstruction.",
+  "coordination_state": "IN_PROGRESS",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "20111110120000",
+    "authority_effect": "NONE_COORDINATION_ONLY"
+  },
+  "source_refs": [
+    "data/canonical-task-records/SV-KV-AI-PERSISTENCE-001.json",
+    "docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
+    "handoffs/SV-KV-AI-PERSISTENCE-001.json",
+    "control/runtime-profile-map.json",
+    "scripts/evaluate_task_runtime_routing_readiness.py",
+    "control/worker-registry.d/kv-ai-memory-resident-001.json"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": ["StegVerse-Labs/.github"],
+    "components": [
+      "TASK_RUNTIME_ROUTING_READINESS",
+      "RUNTIME_RESOLUTION_PROJECTION",
+      "WORKERCOORDINATOR_ADMISSION_REVIEW",
+      "FRESH_CLAIM_FENCE_STATUS"
+    ]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-PARENT-KV-AI-PERSISTENCE-ACTIVE",
+      "kind": "COORDINATION",
+      "state": "RESOLVED",
+      "ref": "data/canonical-task-records/SV-KV-AI-PERSISTENCE-001.json"
+    },
+    {
+      "dependency_id": "DEP-KV-AI-RUNTIME-ROUTING-PROFILE",
+      "kind": "CAPABILITY",
+      "state": "RESOLVED",
+      "ref": "control/runtime-profile-map.json#profiles[kv-ai-memory-resident-routing-v1]"
+    },
+    {
+      "dependency_id": "DEP-WORKERCOORDINATOR-CLAIM-FENCE",
+      "kind": "RUNTIME_PREDICATE",
+      "state": "UNRESOLVED",
+      "ref": "fresh WorkerCoordinator claim_id, worker_instance_id, lease, and fence for this exact admission review"
+    }
+  ],
+  "blockers": [],
+  "existing_evidence_refs": [
+    "StegVerse-Labs/.github:actions/run/34865915900",
+    "docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"
+  ],
+  "expected_evidence_predicates": [
+    "CANONICAL_ADJACENT_TASK_REGISTERED",
+    "RUNTIME_RESOLUTION_PROJECTION_PERSISTED_OR_RECONSTRUCTABLE",
+    "WORKERCOORDINATOR_ADMISSION_REVIEW_REQUESTED_OR_STATUS_RECORDED",
+    "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED_OR_NONAUTHORIZING_WAIT_STATE_RECORDED",
+    "NO_RUNTIME_EVIDENCE_OVERCLAIMED"
+  ],
+  "runtime_requirements": {
+    "capabilities": [
+      "runtime_profile_discovery",
+      "task_registry_reconciliation",
+      "worker_claim_projection",
+      "workercoordinator_runtime"
+    ],
+    "environment": "SOVEREIGN_RESIDENT_AND_SOURCE_VALIDATION",
+    "direction": "INTERNAL",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "runtime_resolution_grants_execution_authority": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "interlock_intr_required_for_governed_ingress_egress": true,
+    "master_records_reality_authority": true
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "terminal_when": [
+      "The runtime_resolution projection for SV-KV-AI-PERSISTENCE-001 is persisted or deterministically reconstructable from the current runtime-profile-map generation.",
+      "A WorkerCoordinator admission review request/status exists for the exact parent task and candidate profile.",
+      "A fresh WorkerCoordinator claim/fence is authentically observed, or a named non-authorizing wait state records why claim/fence acquisition did not occur."
+    ]
+  },
+  "nonclaims": [
+    "THIS_ADJACENT_TASK_DOES_NOT_COMPLETE_SV_KV_AI_PERSISTENCE_001",
+    "THIS_ADJACENT_TASK_DOES_NOT_PROVE_PERSONAL_KV_INPUTS",
+    "THIS_ADJACENT_TASK_DOES_NOT_PROVE_INTR_ADMISSION",
+    "THIS_ADJACENT_TASK_DOES_NOT_PROVE_PROVIDER_EXECUTION",
+    "THIS_ADJACENT_TASK_DOES_NOT_PROVE_KV_WRITEBACK_OR_MASTER_RECORDS_RECONSTRUCTION"
+  ]
+}
