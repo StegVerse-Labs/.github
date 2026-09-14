@@ -1,0 +1,65 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "MIR-SDK-RETURN-ASSEMBLY-CONTINUITY-001",
+  "correlation_id": "MIR-SDK-RETURN-ASSEMBLY-CONTINUITY-001",
+  "parent_task_id": "MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001",
+  "goal": "Complete the reusable SDK Publisher-return assembly transition by requiring exact Publisher PR #71 MIR round-trip continuity against the independently retained original SDK downstream completion capsule, without claiming downstream egress, authentic external MIR substitution, release, deployment, or communication completion.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "50000000100000",
+  "canonical_issue": "StegVerse-Labs/.github#1888",
+  "canonical_handoff": "StegVerse-org/StegVerse-SDK/docs/MIR_SDK_RETURN_ASSEMBLY_CONTINUITY_MIRROR_HANDOFF.md",
+  "owners": {
+    "sdk_return_assembly_owner": "StegVerse-org/StegVerse-SDK",
+    "publisher_source_owner": "GCAT-BCAT-Engine/Publisher",
+    "parent_documentation_owner": "StegVerse-Labs/Site",
+    "next_egress_owner": "manifest-declared final StegVerse-side egress surface / Interlock/InTr"
+  },
+  "decomposition": {
+    "reason": "Parent Goal Task reached Goal Prompt Count 20/20 with a genuinely separable reusable RTC-SDK-RETURN-006 transition still incomplete.",
+    "reusable_component": "RTC-SDK-RETURN-006",
+    "stable_input_contract": "original admitted manifest + original stegverse.sdk.downstream-completion-capsule/v1 + exact canonical stegverse.publisher.artifact-return/v1 bytes",
+    "stable_output_contract": "stegverse.sdk.publisher-return-binding/v1 ready for final StegVerse-side egress",
+    "independent_evidence_predicate": "exact Publisher MIR roundtrip_binding continuity validated fail closed against original manifest/capsule",
+    "prompt_counter_reset_only": false
+  },
+  "current_truth": {
+    "parent_sdk_completion_capsule_merge": "233632c35b0093166c16bdc660aa08e4ee1fe95a",
+    "publisher_roundtrip_binding_merge": "40018e94a04e794e35dd499b4adc4296edb4b34c",
+    "publisher_roundtrip_binding_profile": "stegverse.publisher.mir-roundtrip-binding/v1",
+    "sdk_return_binding_profile": "stegverse.sdk.publisher-return-binding/v1",
+    "successor_issue_created": true,
+    "successor_handoff_created_on_sdk_branch": true,
+    "sdk_patch_in_progress": true,
+    "sdk_return_binding_source_merged": false,
+    "sdk_return_binding_source_validated": false,
+    "final_stegverse_side_egress_transition_observed": false,
+    "interlock_intr_egress_observed": false,
+    "far_side_transition_observed": false,
+    "authentic_external_mir_endpoint_substitution_observed": false,
+    "communication_complete": false
+  },
+  "authority_invariants": {
+    "task_registry": "COORDINATION_ONLY",
+    "sdk_return_assembly_authority_effect": "NONE",
+    "publisher_authority": "PRESENTATION_EVIDENCE_ASSEMBLY_ONLY",
+    "transition_authority": "Interlock/InTr where applicable",
+    "credential_authority": "TV/TVC where required",
+    "github_runtime_authority": "NONE"
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "source_implemented": false,
+    "source_validated": false,
+    "source_merged": false,
+    "runtime_observed": false
+  },
+  "allowed_next_transitions": [
+    "PATCH_SDK_PUBLISHER_RETURN_CONTINUITY",
+    "VALIDATE_FAIL_CLOSED_SDK_RETURN_ASSEMBLY",
+    "MERGE_BOUNDED_SDK_RETURN_ASSEMBLY_PR_IF_EXACT_HEAD_GREEN",
+    "RECONCILE_PARENT_HANDOFF_AND_TASK_RECORD",
+    "HAND_BACK_TO_RTC_STEGVERSE_EGRESS_007"
+  ]
+}
