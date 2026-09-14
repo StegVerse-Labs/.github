@@ -4,7 +4,9 @@
   "correlation_id": "SV-KV-AI-WORKERCOORDINATOR-ADMISSION-001",
   "root_correlation_id": "SV-KV-AI-PERSISTENCE-001",
   "parent_task_id": "SV-KV-AI-PERSISTENCE-001",
-  "adjacent_to": ["SV-KV-AI-PERSISTENCE-001"],
+  "adjacent_to": [
+    "SV-KV-AI-PERSISTENCE-001"
+  ],
   "goal": "Persist the non-authorizing runtime-routing projection needed for WorkerCoordinator admission review for SV-KV-AI-PERSISTENCE-001, then acquire or record the fresh WorkerCoordinator claim/fence status without claiming Interlock/InTr admission, provider/model execution, KV writeback, or Master Records reconstruction.",
   "coordination_state": "IN_PROGRESS",
   "cosv": {
@@ -18,16 +20,22 @@
     "handoffs/SV-KV-AI-PERSISTENCE-001.json",
     "control/runtime-profile-map.json",
     "scripts/evaluate_task_runtime_routing_readiness.py",
-    "control/worker-registry.d/kv-ai-memory-resident-001.json"
+    "control/worker-registry.d/kv-ai-memory-resident-001.json",
+    "data/workercoordinator-admission/SV-KV-AI-WORKERCOORDINATOR-ADMISSION-001.json"
   ],
   "targets": {
-    "organizations": ["StegVerse-Labs"],
-    "repositories": ["StegVerse-Labs/.github"],
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github"
+    ],
     "components": [
       "TASK_RUNTIME_ROUTING_READINESS",
       "RUNTIME_RESOLUTION_PROJECTION",
       "WORKERCOORDINATOR_ADMISSION_REVIEW",
-      "FRESH_CLAIM_FENCE_STATUS"
+      "FRESH_CLAIM_FENCE_STATUS",
+      "VALIDATION_WAIT_STATE"
     ]
   },
   "dependencies": [
@@ -46,22 +54,116 @@
     {
       "dependency_id": "DEP-WORKERCOORDINATOR-CLAIM-FENCE",
       "kind": "RUNTIME_PREDICATE",
-      "state": "UNRESOLVED",
-      "ref": "fresh WorkerCoordinator claim_id, worker_instance_id, lease, and fence for this exact admission review"
+      "state": "WAIT_STATE_RECORDED",
+      "ref": "data/workercoordinator-admission/SV-KV-AI-WORKERCOORDINATOR-ADMISSION-001.json#workercoordinator_admission_review",
+      "wait_state": "WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED",
+      "fresh_claim_fence_observed": false,
+      "blocks_parent_runtime_completion": true
+    },
+    {
+      "dependency_id": "DEP-REPOSITORY-VALIDATION",
+      "kind": "EVIDENCE",
+      "state": "WAIT_STATE_RECORDED",
+      "ref": "data/workercoordinator-admission/SV-KV-AI-WORKERCOORDINATOR-ADMISSION-001.json#repository_validation",
+      "wait_state": "GITHUB_STATUS_CHECKS_ABSENT_OR_PENDING",
+      "validated": false,
+      "blocks_adjacent_task_completion": true
     }
   ],
   "blockers": [],
+  "runtime_resolution": {
+    "schema": "stegverse.task-runtime-routing-readiness/v1#runtime_resolution",
+    "source": "control/runtime-profile-map.json#generation=2",
+    "map_generation": 2,
+    "candidate_profile_ids": [
+      "kv-ai-memory-resident-routing-v1"
+    ],
+    "candidate_count": 1,
+    "projection_only": true,
+    "selection_grants_authority": false,
+    "workercoordinator_admission_still_required": true,
+    "interlock_intr_transition_admission_still_required": true,
+    "master_records_reconciliation_still_required": true,
+    "authority_effect": "NONE_ROUTING_CANDIDATE_PROJECTION_ONLY"
+  },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": [
+          "control/canonical-resident-carrier-contract.json"
+        ]
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": []
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "PLATFORM",
+        "evidence_refs": []
+      }
+    ],
+    "selected_substrate_id": null,
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  },
+  "workercoordinator_admission_status_ref": "data/workercoordinator-admission/SV-KV-AI-WORKERCOORDINATOR-ADMISSION-001.json",
   "existing_evidence_refs": [
     "StegVerse-Labs/.github:actions/run/34865915900",
-    "docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"
+    "docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
+    "data/workercoordinator-admission/SV-KV-AI-WORKERCOORDINATOR-ADMISSION-001.json",
+    "https://api.github.com/repos/StegVerse-Labs/.github/commits/892c6838b37081b8975c2785b517631d4ba66246/status"
   ],
   "expected_evidence_predicates": [
     "CANONICAL_ADJACENT_TASK_REGISTERED",
     "RUNTIME_RESOLUTION_PROJECTION_PERSISTED_OR_RECONSTRUCTABLE",
     "WORKERCOORDINATOR_ADMISSION_REVIEW_REQUESTED_OR_STATUS_RECORDED",
     "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED_OR_NONAUTHORIZING_WAIT_STATE_RECORDED",
-    "NO_RUNTIME_EVIDENCE_OVERCLAIMED"
+    "NO_RUNTIME_EVIDENCE_OVERCLAIMED",
+    "REPOSITORY_VALIDATION_PASSED_OR_WAIT_STATE_RECORDED"
   ],
+  "predicate_status": {
+    "CANONICAL_ADJACENT_TASK_REGISTERED": "SATISFIED_SOURCE_VISIBLE",
+    "RUNTIME_RESOLUTION_PROJECTION_PERSISTED_OR_RECONSTRUCTABLE": "SATISFIED_SOURCE_VISIBLE",
+    "WORKERCOORDINATOR_ADMISSION_REVIEW_REQUESTED_OR_STATUS_RECORDED": "SATISFIED_SOURCE_VISIBLE",
+    "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED_OR_NONAUTHORIZING_WAIT_STATE_RECORDED": "SATISFIED_BY_NONAUTHORIZING_WAIT_STATE_ONLY",
+    "NO_RUNTIME_EVIDENCE_OVERCLAIMED": "SATISFIED_SOURCE_VISIBLE",
+    "REPOSITORY_VALIDATION_PASSED_OR_WAIT_STATE_RECORDED": "SATISFIED_BY_WAIT_STATE_ONLY"
+  },
   "runtime_requirements": {
     "capabilities": [
       "runtime_profile_discovery",
@@ -75,29 +177,6 @@
     "deployment_required": false,
     "current_observation_required": true
   },
-  "execution_substrate_resolution": {
-    "schema": "stegverse.execution-substrate-resolution/v1",
-    "review_order": [
-      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
-      "STEGOS-CURRENT-DEVICE-NODE",
-      "STEG-BROWSER-EPHEMERAL-LEASE",
-      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
-      "ADMITTED-EPHEMERAL-STEGOS-NODE",
-      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
-    ],
-    "reviews": [
-      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["control/canonical-resident-carrier-contract.json"]},
-      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":[]},
-      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":[]},
-      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":[]},
-      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":[]},
-      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"PLATFORM","evidence_refs":[]}
-    ],
-    "selected_substrate_id": null,
-    "external_device_required": false,
-    "second_user_operated_device_allowed": false,
-    "authority_effect": "NONE"
-  },
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "runtime_resolution_grants_execution_authority": false,
@@ -108,10 +187,13 @@
   "completion": {
     "claimed": false,
     "validated": false,
+    "source_predicates_satisfied": true,
+    "validation_status": "GITHUB_STATUS_CHECKS_ABSENT_OR_PENDING",
     "terminal_when": [
       "The runtime_resolution projection for SV-KV-AI-PERSISTENCE-001 is persisted or deterministically reconstructable from the current runtime-profile-map generation.",
       "A WorkerCoordinator admission review request/status exists for the exact parent task and candidate profile.",
-      "A fresh WorkerCoordinator claim/fence is authentically observed, or a named non-authorizing wait state records why claim/fence acquisition did not occur."
+      "A fresh WorkerCoordinator claim/fence is authentically observed, or a named non-authorizing wait state records why claim/fence acquisition did not occur.",
+      "Repository validation/status evidence exists and supports the recorded source changes."
     ]
   },
   "nonclaims": [
@@ -119,6 +201,8 @@
     "THIS_ADJACENT_TASK_DOES_NOT_PROVE_PERSONAL_KV_INPUTS",
     "THIS_ADJACENT_TASK_DOES_NOT_PROVE_INTR_ADMISSION",
     "THIS_ADJACENT_TASK_DOES_NOT_PROVE_PROVIDER_EXECUTION",
-    "THIS_ADJACENT_TASK_DOES_NOT_PROVE_KV_WRITEBACK_OR_MASTER_RECORDS_RECONSTRUCTION"
+    "THIS_ADJACENT_TASK_DOES_NOT_PROVE_KV_WRITEBACK_OR_MASTER_RECORDS_RECONSTRUCTION",
+    "THIS_ADJACENT_TASK_DOES_NOT_MINT_A_WORKERCOORDINATOR_CLAIM_OR_FENCE",
+    "THIS_ADJACENT_TASK_DOES_NOT_CLAIM_REPOSITORY_VALIDATION_WHILE_STATUS_CHECKS_ARE_ABSENT_OR_PENDING"
   ]
 }
