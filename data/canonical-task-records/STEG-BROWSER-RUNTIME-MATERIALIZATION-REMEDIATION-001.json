@@ -5,12 +5,16 @@
   "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
   "parent_task_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
   "remediates_defect": "RESIDENT_CUSTODY_ROOT_NOT_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001",
-  "goal": "Bind the single runtime-materialization remediation path for the existing Healer resident scheduler carrier and neutral RT-STEGBROWSER-RUNTIME-CONSUMPTION-001 route, using the source-only Healer resident-root observation packet repair as context and requiring post-repair packet observation before any runtime proof is claimed.",
+  "goal": "Advance the StegBrowser-specific post-repair Healer carrier observation and exact resident-root/receipt classification as a lane child of GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001, without creating or owning a second runtime-materialization substrate.",
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT",
   "cosv_task_vector": "40000100100000",
+  "shared_runtime_evidence_owner_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
   "source_refs": [
     "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md",
+    "docs/GLOBAL_RUNTIME_EVIDENCE_CLOSURE_MIRROR_HANDOFF.md",
+    "docs/GLOBAL_RUNTIME_EVIDENCE_CONVERGENCE_MATRIX.md",
+    "control/runtime-node-profiles.json",
     "data/runtime-materialization-remediation/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.predicates.json",
     "data/canonical-task-records/STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001.json",
     "docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md",
@@ -27,7 +31,7 @@
     "organizations": ["StegVerse-Labs"],
     "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegVerse-Healer"],
     "components": [
-      "healer-neutral-reusable-scheduler-carrier",
+      "stegbrowser-lane-post-repair-carrier-observation",
       "rt-stegbrowser-runtime-consumption-001",
       "resident-custody-root-observation-packet",
       "non-authorizing-runtime-root-classifier-gate",
@@ -35,6 +39,13 @@
     ]
   },
   "dependencies": [
+    {
+      "dependency_id": "DEP-GLOBAL-RUNTIME-EVIDENCE-CLOSURE",
+      "kind": "SHARED_RUNTIME_EVIDENCE_OWNER",
+      "state": "BOUND_SHARED_OWNER",
+      "ref": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001;docs/GLOBAL_RUNTIME_EVIDENCE_CLOSURE_MIRROR_HANDOFF.md;control/runtime-node-profiles.json",
+      "disposition": "REUSE_GLOBAL_RUNTIME_EVIDENCE_CONVERGENCE_SUBSTRATE; THIS_TASK_OWNS_ONLY_STEGBROWSER_SUBJECT_BOUND_POST_REPAIR_OBSERVATION"
+    },
     {
       "dependency_id": "DEP-PARENT-ROOT-CLASSIFICATION",
       "kind": "RUNTIME_EVIDENCE_CLASSIFICATION",
@@ -81,6 +92,14 @@
       "next_runtime_observation": "POST_REPAIR_HEALER_CARRIER_PACKET_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001",
       "runtime_completion_claimed": false,
       "authority_effect": "NONE_REMEDIATION_PATH_BINDING_ONLY"
+    },
+    {
+      "observed_at": "2026-09-14",
+      "classification": "LANE_CHILD_BOUND_TO_GLOBAL_RUNTIME_EVIDENCE_OWNER",
+      "shared_owner_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+      "lane_scope": "STEGBROWSER_SUBJECT_BOUND_POST_REPAIR_OBSERVATION_ONLY",
+      "runtime_completion_claimed": false,
+      "authority_effect": "NONE_COORDINATION_BINDING_ONLY"
     }
   ],
   "blockers": [],
@@ -91,6 +110,7 @@
     "RETURN_TO_RESIDENT_CUSTODY_ROOT_OBSERVATION"
   ],
   "prohibited_transitions": [
+    "ADD_SECOND_RUNTIME_EVIDENCE_OWNER",
     "ADD_SECOND_SCHEDULER",
     "ADD_SECOND_DISPATCHER",
     "ADD_CREDENTIAL_ROUTE",
@@ -104,6 +124,7 @@
   "completion": {
     "claimed": false,
     "validated": false,
+    "shared_runtime_evidence_owner_bound": true,
     "runtime_materialization_remediation_path_bound": true,
     "healer_packet_source_repair_resolved_source_only": true,
     "post_repair_packet_observation_pending": true,
@@ -114,6 +135,8 @@
     "master_records_reconstruction_observed": false
   },
   "authority_model": {
+    "shared_runtime_evidence_owner": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+    "lane_task_may_create_runtime_evidence_owner": false,
     "task_registry_mints_execution_authority": false,
     "source_state_proves_execution": false,
     "github_runtime_authority": "NONE",
