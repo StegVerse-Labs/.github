@@ -37,6 +37,16 @@
       "purpose": "Canonical reusable-component composition and authority-separation invariants, including interchangeable StegOS device role and KV/SKAP user-verification ownership."
     },
     {
+      "ref": "control/device-replaceability-invariant.json",
+      "required": true,
+      "purpose": "Globally prohibit specific-device, OS, browser, Safari, service-worker, IndexedDB, or same-device continuity/runtime prerequisites; require provider-neutral KV/MyKV continuity and reconstructible any-device continuation."
+    },
+    {
+      "ref": "docs/DEVICE_REPLACEABILITY_INVARIANT_MIRROR_HANDOFF.md",
+      "required": true,
+      "purpose": "Human-readable canonical interpretation of the replaceable-device invariant and legacy CURRENT_IPHONE/same-device label handling."
+    },
+    {
       "ref": "docs/CANONICAL_INVARIANT_INGRESS_LOCK_MIRROR_HANDOFF.md",
       "required": true,
       "purpose": "Mandatory canonical-source-first interpretation lock for every session/build/task interpretation ingress and source-mutation proposal."
@@ -55,6 +65,8 @@
     "required_before_new_task_creation": true,
     "required_before_source_mutation": true,
     "required_before_architecture_reinterpretation": true,
+    "required_before_device_or_runtime_substrate_selection": true,
+    "required_before_kv_provider_reasoning": true,
     "fail_closed_disposition": "STOP_AT_CANONICAL_POLICY_DEPENDENCY",
     "runtime_truth_inferred": false,
     "execution_authority_inferred": false,
@@ -72,6 +84,9 @@
     "restatement_alone_must_not_create_pr_task_component_handoff_or_policy_artifact": true,
     "new_role_authority_identity_class_or_execution_owner_requires_proof_canonical_model_lacks_equivalent": true,
     "human_correction_matching_existing_canonical_truth_requires_no_source_mutation": true,
+    "specific_user_device_may_not_be_promoted_to_continuity_or_runtime_owner": true,
+    "legacy_current_iphone_or_same_device_labels_are_non_normative": true,
+    "provider_identity_and_device_identity_must_remain_independent": true,
     "failure_disposition": "REUSE_CANONICAL_TRUTH_OR_STOP_AT_EXACT_CANONICAL_DEPENDENCY"
   },
   "interpretation_guards": [
@@ -89,7 +104,12 @@
     "EPHEMERAL_OR_EXPIRING_RUNTIME_STATE_MUST_NOT_BE_RECLASSIFIED_AS_FAILURE_WITHOUT_CANONICAL_LIFECYCLE_EVIDENCE",
     "ABSENCE_STALENESS_EXPIRY_DEVICE_WORKER_HEARTBEAT_AUTHORITY_AND_CUSTODY_TERMS_MUST_USE_CANONICAL_SEMANTICS",
     "MISSING_POLICY_CONTEXT_IS_AN_EXACT_DEPENDENCY_NOT_PERMISSION_TO_INVENT_SEMANTICS",
-    "POLICY_CONTEXT_DOES_NOT_PROVE_RUNTIME_TRUTH_OR_GRANT_AUTHORITY"
+    "POLICY_CONTEXT_DOES_NOT_PROVE_RUNTIME_TRUTH_OR_GRANT_AUTHORITY",
+    "USER_DEVICE_IS_INTERCHANGEABLE_ACCESS_TRANSPORT_ENDPOINT",
+    "SPECIFIC_DEVICE_OS_BROWSER_OR_BROWSER_LOCAL_STATE_MUST_NOT_BECOME_CONTINUITY_PREREQUISITE",
+    "CURRENT_IPHONE_AND_SAME_DEVICE_LABELS_ARE_NON_NORMATIVE_LEGACY_LABELS_ONLY",
+    "KV_PROVIDER_IDENTITY_IS_INDEPENDENT_OF_CLIENT_DEVICE_IDENTITY",
+    "REPLACEMENT_DEVICE_CONTINUES_FROM_PROVIDER_NEUTRAL_KV_AND_CANONICAL_RECEIPTS_WITHOUT_REPLAYING_AUTHENTIC_TRANSITIONS"
   ],
   "known_global_invariants_resolved_from_task_coordination_policy": [
     "CANONICALLY_RESOLVABLE_TASK_DOCUMENTATION_IS_NOT_REPEATED_IN_PROMPTS",
@@ -105,6 +125,13 @@
     "KV_SKAP_VAULT_IS_SOLE_USER_VERIFICATION_AUTHORITY",
     "COMPONENT_REUSE_MINTS_NO_AUTHORITY",
     "UNUSED_COMPONENTS_MUST_NOT_BE_FORCED"
+  ],
+  "known_global_invariants_resolved_from_device_replaceability": [
+    "USER_DEVICE_IS_INTERCHANGEABLE_ACCESS_TRANSPORT_ENDPOINT",
+    "NO_SPECIFIC_DEVICE_OS_BROWSER_OR_LOCAL_BROWSER_STATE_MAY_OWN_CONTINUITY",
+    "PROVIDER_NEUTRAL_MYKV_CONTINUITY_SURVIVES_DEVICE_REPLACEMENT",
+    "CURRENT_IPHONE_AND_SAME_DEVICE_TERMS_ARE_LEGACY_LABELS_NOT_ARCHITECTURAL_REQUIREMENTS",
+    "DEVICE_REPLACEMENT_DOES_NOT_INVALIDATE_AUTHENTIC_RETAINED_TRANSITIONS"
   ],
   "nonclaims": [
     "POLICY_CONTEXT_RESOLUTION_DOES_NOT_CREATE_RUNTIME_STATE",
