@@ -66,12 +66,12 @@
       "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
     ],
     "reviews": [
-      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"CURRENT_RUNTIME_REACHABILITY","evidence_refs":["control/canonical-resident-carrier-contract.json"]},
-      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"CURRENT_RUNTIME_REACHABILITY","evidence_refs":[]},
-      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"PENDING_EVIDENCE","limitation_class":"CURRENT_RUNTIME_REACHABILITY","evidence_refs":[]},
-      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"PENDING_EVIDENCE","limitation_class":"CURRENT_RUNTIME_REACHABILITY","evidence_refs":[]},
-      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"CURRENT_RUNTIME_REACHABILITY","evidence_refs":[]},
-      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_SELECTED","limitation_class":"LAST_RESORT_AND_NO_SECOND_USER_OPERATED_DEVICE","evidence_refs":[]}
+      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["control/canonical-resident-carrier-contract.json"]},
+      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":[]},
+      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":[]},
+      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":[]},
+      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":[]},
+      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"PLATFORM","evidence_refs":[]}
     ],
     "selected_substrate_id": null,
     "external_device_required": false,
