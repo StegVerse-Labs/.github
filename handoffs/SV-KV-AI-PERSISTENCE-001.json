@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SV-KV-AI-PERSISTENCE-001",
   "created_at": "2026-09-14T03:40:00Z",
-  "updated_at": "2026-09-14T06:26:00Z",
+  "updated_at": "2026-09-14T06:34:00Z",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "SV-KV-AI-PERSISTENCE-001",
@@ -22,6 +22,7 @@
       "A hosted runner, connected-device discovery, Remote Desktop Commander, device-presence proof, or second user-operated machine becomes a sovereign execution requirement."
     ],
     "authority_ceiling": [
+      "event-triggered instantiation of the existing shared Universal InTr Server on loopback for one request",
       "resident-local Personal-KV packet submission to existing shared Universal InTr",
       "validated admission evidence staging only after authentic listener response",
       "resident-local Personal-KV memory packet to ProviderRequest materialization only",
@@ -48,6 +49,8 @@
       "docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
       "workers/kv_ai_memory_intr_profile.py",
       "workers/kv_ai_memory_intr_transport.py",
+      "workers/kv_ai_memory_intr_event_bootstrap.py",
+      "scripts/run_kv_ai_memory_intr_event_bootstrap.py",
       "scripts/install_kv_ai_memory_universal_intr_route.py",
       "scripts/prepare_kv_ai_memory_intr_runtime_source.py",
       "scripts/submit_kv_ai_memory_packet_local.py",
@@ -62,7 +65,7 @@
   "authority": {
     "authority_source": "SV-KV-AI-PERSISTENCE-001 canonical task registry + existing WorkerCoordinator task-control boundary + existing shared Universal InTr listener",
     "authority_domain": "INDEPENDENT_TASK_CONTROL",
-    "policy_version": "kv-ai-memory-resident-v0.4",
+    "policy_version": "kv-ai-memory-resident-v0.5",
     "heartbeat_grants_execution_authority": false,
     "fresh_fence_required": true,
     "minimum_fencing_token_exclusive": 0,
@@ -76,6 +79,7 @@
     "required_capabilities": [
       "resident_local_source_preparation",
       "resident_kv_memory_source_carriage",
+      "resident_native_event_triggered_shared_intr_bootstrap",
       "portable_targeted_kv_ai_memory_dispatch",
       "universal_intr_endpoint_environment_carriage",
       "shared_universal_intr_memory_packet_submission",
@@ -107,7 +111,7 @@
     }
   },
   "completion": {
-    "source_implementation_state": "SOURCE_COMPLETE_FOR_PORTABLE_TARGETED_PACKET_ADMISSION_THROUGH_PROVIDER_REQUEST_MATERIALIZATION",
+    "source_implementation_state": "SOURCE_COMPLETE_FOR_EVENT_TRIGGERED_PACKET_ADMISSION_THROUGH_PROVIDER_REQUEST_MATERIALIZATION",
     "runtime_activation_state": "PENDING_AUTHENTIC_MEMORY_PACKET_AND_PROVIDER_CHAIN",
     "runtime_observation_claimed": false,
     "terminal_when": [
@@ -116,8 +120,8 @@
       "Provider ingress, TV/TVC authorization, provider response/egress, and evidence-gated KV writeback/readback receipts are all authentically observed and bound to the same execution lineage."
     ],
     "terminal_evidence": "authentic same-execution memory-packet InTr ALLOW + WorkerCoordinator ProviderRequest materialization + provider ingress/TVC/response/egress evidence + KV writeback/readback evidence",
-    "next_authorized_action": "Use the existing portable resident bridge to refresh already-local source and dispatch exactly kv_ai_memory. If resident-local packet and provider input exist and the shared loopback Universal InTr listener is available, the consumer may normalize local listener source, submit the exact packet, validate the returned ALLOW, stage admission evidence, and only then continue through existing WorkerCoordinator execution. Do not insert device discovery, device-presence, Remote Desktop Commander, or second-machine gates.",
-    "targeted_command": "python scripts/refresh_and_dispatch_resident_requests.py --source-root <canonical-local-source-root> --runtime-root <resident-runtime-root> --only-consumer kv_ai_memory"
+    "next_authorized_action": "Run the resident-native KV AI memory event bootstrap. It must first observe the real fenced packet and provider-request input, reuse workers.universal_intr_profiled_ingress.Server on loopback with an ephemeral port for exactly one request, supply that URL only to the existing consumer, validate any returned ALLOW, stage admission evidence, and only then continue through existing WorkerCoordinator execution. Missing private inputs remain a non-authorizing wait state. Do not insert device discovery, device-presence, Remote Desktop Commander, or second-machine gates.",
+    "targeted_command": "python scripts/run_kv_ai_memory_intr_event_bootstrap.py --source-root <canonical-local-source-root> --runtime-root <resident-runtime-root>"
   },
   "activation": {
     "authority_domain": "INDEPENDENT_TASK_CONTROL",
@@ -125,9 +129,12 @@
     "carrier_trigger_required": false,
     "targeted_execution": {
       "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
-      "entrypoint": "scripts/refresh_and_dispatch_resident_requests.py",
-      "selector": "kv_ai_memory",
-      "requires_existing_separated_carrier_reference": true,
+      "entrypoint": "scripts/run_kv_ai_memory_intr_event_bootstrap.py",
+      "resident_native_implementation": "workers/kv_ai_memory_intr_event_bootstrap.py",
+      "shared_listener_implementation": "workers/universal_intr_profiled_ingress.Server",
+      "listener_scope": "LOOPBACK_EPHEMERAL_ONE_REQUEST",
+      "second_listener_implementation_created": false,
+      "requires_preconfigured_ingress_url": false,
       "unrelated_worker_execution": false,
       "broad_orphan_reconciliation": false,
       "heartbeat_grants_execution_authority": false,
