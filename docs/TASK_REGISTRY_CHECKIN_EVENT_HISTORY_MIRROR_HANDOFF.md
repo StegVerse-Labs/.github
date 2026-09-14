@@ -3,8 +3,9 @@
 Goal Task ID: `TASK-REGISTRY-CHECKIN-EVENT-HISTORY-001`
 Parent Goal: `TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001`
 Canonical issue: `StegVerse-Labs/.github#1387`
-PR: `StegVerse-Labs/.github#1390`
-Status: `ACTIVE / CHECKED_OUT / HASH-LINKED EVENT LEDGER IMPLEMENTED / RECENT-WINDOW EVALUATOR INTEGRATION IMPLEMENTED / CANONICAL SESSION RETURN RECORDER IMPLEMENTED / STOP DISPOSITIONS AUTO-CLOSE / EXACT-HEAD VALIDATION PENDING`
+Implementation PR: `StegVerse-Labs/.github#1390`
+Merge commit: `0e2c9b94e4ffc224a2b3cfc1ac25bef36bb6eeb5`
+Status: `ACTIVE / CHECKED_OUT / HASH-LINKED EVENT LEDGER MERGED_VALIDATED / RECENT-WINDOW EVALUATOR INTEGRATION MERGED_VALIDATED / CANONICAL SESSION RETURN RECORDER MERGED_VALIDATED / STOP DISPOSITIONS AUTO-CLOSE`
 
 ## Objective
 
@@ -16,7 +17,7 @@ Parent PR `StegVerse-Labs/.github#1344` merged at `a1b6043348354072af59b9e169645
 
 This child consumes that existing evaluator and disposition contract. It does not create a second collision engine.
 
-## Implemented source
+## Merged implementation
 
 - `schemas/task-registry-checkin-event.v1.schema.json`
 - `scripts/task_registry_checkin_event_history.py`
@@ -25,6 +26,8 @@ This child consumes that existing evaluator and disposition contract. It does no
 - `tests/test_task_registry_checkin_event_history.py`
 - `tests/test_task_registry_recent_event_collision_integration.py`
 - `tests/test_task_registry_session_return_recorder.py`
+
+PR #1390 merged on 2026-09-11 as `0e2c9b94e4ffc224a2b3cfc1ac25bef36bb6eeb5`. The branch's final validated head carried the automatic STOP closure and recent-return integration. Source/validation merge evidence does not grant execution authority.
 
 ## Event contract
 
@@ -42,9 +45,9 @@ Recent history augments canonical task-record collision evidence. It cannot crea
 
 ## Evaluator integration
 
-`evaluate_task_registry_collision_checkin.py` now reads canonical task records, computes current-record collisions, reads qualifying recent returned/stopped events, appends `source=RECENT_EVENT_HISTORY` candidates, returns `COORDINATE_CONVERGENCE` when recent overlap exists absent a harder current checkout collision, records the arriving session's `CHECK_IN`, and returns `checkin_event_sha256`.
+`evaluate_task_registry_collision_checkin.py` reads canonical task records, computes current-record collisions, reads qualifying recent returned/stopped events, appends `source=RECENT_EVENT_HISTORY` candidates, returns `COORDINATE_CONVERGENCE` when recent overlap exists absent a harder current checkout collision, records the arriving session's `CHECK_IN`, and returns `checkin_event_sha256`.
 
-When the resulting disposition begins with `STOP_`, the evaluator immediately appends a same-session `STOPPED` event through the same hash chain and returns `stopped_event_sha256`. Therefore a rejected/superseded/inactive/unregistered session cannot leave a dangling latest `CHECK_IN` after the registry has already instructed it to end.
+When the resulting disposition begins with `STOP_`, the evaluator immediately appends a same-session `STOPPED` event through the same hash chain and returns `stopped_event_sha256`. Therefore a rejected/superseded/inactive/unregistered session cannot leave a dangling latest `CHECK_IN` after the registry has instructed it to end.
 
 The check-in/stop events are recorded before downstream Canonical Work source mutation or portable WorkerCoordinator claim issuance, preserving the parent ordering contract.
 
@@ -52,21 +55,11 @@ The check-in/stop events are recorded before downstream Canonical Work source mu
 
 `scripts/record_task_registry_session_return.py` is the bounded normal-session/task relinquish entrypoint. It accepts only `CHECK_OUT`, `RETURNED`, or `STOPPED`, requires the exact Task Registry disposition object on stdin, validates exact task identity and `authority_effect=NONE`, appends through the same hash-linked ledger, and emits `stegverse.task-registry-session-return-receipt/v1` containing event/predecessor hashes with no authority effect.
 
-No prior general-purpose session/task relinquish executable was found in the canonical registry scripts. The worker-return observation contract concerns execution-history return to Master Records, which is a different boundary and should not be overloaded with ChatGPT/session coordination state. This child therefore establishes the registry-owned coordination return entrypoint explicitly.
+The worker-return observation contract concerns execution-history return to Master Records, which is a different boundary and is not overloaded with ChatGPT/session coordination state.
 
-## Validation evidence
+## Validation and merge evidence
 
-Implementation head `0ef65b20f64afc36b7f73f5813d938416903afe0` passed:
-
-- Deterministic Repository Suite run `34563433154`;
-- Validate organization control plane run `34563433104`;
-- Heartbeat Worker Project validation run `34563433138`.
-
-The branch has advanced with automatic `STOP_*` session closure and its integration test; fresh exact-head validation is required before merge.
-
-## Tests
-
-Deterministic tests cover hash-linked append/reload, recent returned overlap, 30-minute expiry, latest-session-state replacement, tamper/hash failure, evaluator consumption of recent returned evidence, evaluator current `CHECK_IN`, canonical voluntary return recording, wrong-task rejection before ledger mutation, and automatic `CHECK_IN -> STOPPED` closure for rejected sessions.
+Implementation PR #1390 is merged. Historical exact-head validation for the implementation passed the deterministic repository suite, organization-control validation, and Heartbeat validation before merge. The authoritative merge commit is `0e2c9b94e4ffc224a2b3cfc1ac25bef36bb6eeb5`.
 
 ## Authority invariants
 
@@ -74,14 +67,14 @@ Task Registry event history is coordination evidence only. WorkerCoordinator rem
 
 ## Remaining
 
-1. obtain exact-head validation after automatic STOP closure and repair any regression;
-2. merge PR #1390 when required validation is green;
-3. after merge, bind voluntary session-return invocation into the product/session orchestration surface that emits the task handoff/footer, without changing ledger/evaluator semantics;
-4. evaluate projection of the event ledger into StegVerse sovereign KV custody without changing collision semantics.
+1. keep the merged event ledger/evaluator semantics as the single Task Registry collision-history implementation;
+2. use `TASK-REGISTRY-SESSION-RETURN-ORCHESTRATION-001` for product/session footer-close gating rather than adding another return mechanism;
+3. continue the existing `TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001` lane for sovereign KV event custody without changing collision semantics;
+4. converge future user/browser action-surface collision work into the parent anti-collision goal instead of creating a second collision engine.
 
 ## README impact review
 
-The root README already documents Task Registry resolution, cross-task collision coordination, and Canonical Work pre-admission semantics. This child adds durable recent-session evidence beneath that existing protocol rather than changing its user-level authority model. The canonical handoff is the direct functional reference for the new ledger/window mechanism; no root README rewrite is required for this merge.
+The root README already documents Task Registry resolution, cross-task collision coordination, and Canonical Work pre-admission semantics. This child adds durable recent-session evidence beneath that existing protocol rather than changing its user-level authority model; no root README rewrite is required.
 
 ## Manual work
 

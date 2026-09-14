@@ -5,7 +5,8 @@
   "goal": "Project the canonical hash-linked Task Registry session event history into provider-neutral StegVerse sovereign KV custody without changing collision semantics or authority boundaries.",
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT",
-  "cosv_task_vector": null,
+  "cosv_task_vector": "50000000100000",
+  "source_state_vector_ref": "control/task-vectors/TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001.json",
   "source_refs": [
     "docs/TASK_REGISTRY_SOVEREIGN_KV_EVENT_CUSTODY_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github#1423",
@@ -64,7 +65,8 @@
     "FAIL_CLOSED_EXACT_HASH_READBACK_VALIDATOR",
     "RUNTIME_INTAKE_CONTRACT_BOUND_TO_EXISTING_EXECUTION_OWNERS",
     "REUSABLE_TASK_COMPONENT_PROFILE_BOUND",
-    "CURRENT_APPLICABLE_VERIFICATION_SELECTOR_BOUND"
+    "CURRENT_APPLICABLE_VERIFICATION_SELECTOR_BOUND",
+    "COSV_TASK_VECTOR_EMITTED_AND_INDEXED"
   ],
   "goal_specific_completion_predicates": [
     "LIVE_CANONICAL_TASK_REGISTRY_EVENT_WITH_EXACT_HASH_LINEAGE",
