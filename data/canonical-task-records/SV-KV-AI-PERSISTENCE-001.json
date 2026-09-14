@@ -5,13 +5,13 @@
   "root_correlation_id": "SV-KV-AI-PERSISTENCE-001",
   "parent_task_id": null,
   "goal": "Make KnowledgeVault the governed persistent memory substrate for Personal Assistant AI, Organizational AI, StegVerse AI, and machine execution agents, beginning with deterministic bounded AI context packets and non-authorizing memory write proposals for Personal KV/Auri continuity.",
-  "coordination_state": "TRANSFERRED",
-  "transfer": {
-    "transferred_at": "2026-09-14T14:12:00Z",
-    "reason": "Source-side KV AI memory persistence capabilities are validated, but parent completion requires authentic runtime evidence that was not observed in this execution surface. The remaining predicates form a single ordered runtime proof chain and are transferred to the minimal successor task.",
-    "successor_task_id": "SV-KV-AI-RUNTIME-EVIDENCE-001",
-    "successor_handoff": "docs/KV_AI_MEMORY_RUNTIME_EVIDENCE_MIRROR_HANDOFF.md",
-    "successor_cosv_task_v1": "20111110110001"
+  "coordination_state": "IN_PROGRESS",
+  "reconciliation": {
+    "reconciled_at": "2026-09-14T14:20:00Z",
+    "reason": "Task Registry documentation says unresolved runtime constraints are metadata, not operational stop states, and duplicate successor creation is prohibited when the work is already canonically tracked. The remaining runtime evidence predicates were already part of this parent task and therefore stay here.",
+    "supersedes_transfer_commit": "d6b7d72eb443787aa827f6b57d35c09268b07576",
+    "superseded_successor_task_id": "SV-KV-AI-RUNTIME-EVIDENCE-001",
+    "successor_disposition": "RETIRED_DUPLICATE_COORDINATION"
   },
   "source_refs": [
     "StegVerse-Labs/continuity-vault-kit/KV_AI_PERSISTENCE_CLASSES_MIRROR_HANDOFF.md",
@@ -40,10 +40,7 @@
     "StegVerse-Labs/.github/tests/test_kv_ai_memory_resident_source_carriage.py",
     "StegVerse-Labs/.github/docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github/handoffs/SV-KV-AI-PERSISTENCE-001.json",
-    "StegVerse-Labs/.github/workers/kv_ai_memory_resident_worker.py",
-    "StegVerse-Labs/.github/docs/KV_AI_MEMORY_RUNTIME_EVIDENCE_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/.github/data/canonical-task-records/SV-KV-AI-RUNTIME-EVIDENCE-001.json",
-    "StegVerse-Labs/.github/handoffs/SV-KV-AI-RUNTIME-EVIDENCE-001.json"
+    "StegVerse-Labs/.github/workers/kv_ai_memory_resident_worker.py"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs", "StegVerse-org"],
@@ -66,28 +63,26 @@
     {"dependency_id":"DEP-LLM-PROVIDER-REQUEST-BRIDGE","kind":"CAPABILITY","state":"RESOLVED","ref":"StegVerse-org/LLM-adapter/docs/KV_AI_MEMORY_CONTEXT_BRIDGE_MIRROR_HANDOFF.md"},
     {"dependency_id":"DEP-RESIDENT-FENCED-PROVIDER-REQUEST-MATERIALIZATION","kind":"CAPABILITY","state":"RESOLVED","ref":"StegVerse-Labs/.github/docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"},
     {"dependency_id":"DEP-PERSONAL-KV-EVIDENCE-GATED-WRITEBACK","kind":"CAPABILITY","state":"RESOLVED","ref":"StegVerse-Labs/continuity-vault-kit/runtime/kv_ai_memory_writeback_store.py"},
-    {"dependency_id":"DEP-LIVE-RUNTIME-EVIDENCE-ROUNDTRIP","kind":"SUCCESSOR","state":"TRANSFERRED","ref":"SV-KV-AI-RUNTIME-EVIDENCE-001"}
+    {"dependency_id":"DEP-LIVE-INTR-ADMISSION","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"Authentic shared-listener memory-packet admission plus downstream Interlock/InTr receipt chain"},
+    {"dependency_id":"DEP-LIVE-WORKERCOORDINATOR-PROVIDERREQUEST","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"Fresh WorkerCoordinator claim/fence and KV_AI_MEMORY_PROVIDER_REQUEST_MATERIALIZED receipt"},
+    {"dependency_id":"DEP-LIVE-PROVIDER-MODEL-CHAIN","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"External provider ingress, model response, and egress evidence through governed LLM path"},
+    {"dependency_id":"DEP-LIVE-KV-WRITEBACK-READBACK","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"Evidence-gated Personal-KV writeback plus exact readback and reconstruction"},
+    {"dependency_id":"DEP-MACHINE-KV-CROSS-PROVIDER-RECONSTRUCTION-EVIDENCE","kind":"EVIDENCE","state":"UNRESOLVED","ref":"Authentic Machine-KV source+target provider observations with exact manifest and InTr receipt continuity"},
+    {"dependency_id":"DEP-HB-KV-RECEIPT-OBSERVATION-EVIDENCE","kind":"EVIDENCE","state":"UNRESOLVED","ref":"Authentic HeartBeat observation bound to an already-verified KV transition receipt hash"}
   ],
   "blockers": [],
-  "successor_task_refs": ["SV-KV-AI-RUNTIME-EVIDENCE-001"],
+  "superseded_duplicate_task_refs": ["SV-KV-AI-RUNTIME-EVIDENCE-001"],
   "existing_evidence_refs": [
-    "StegVerse-Labs/continuity-vault-kit:actions/run/34798372339",
-    "StegVerse-org/LLM-adapter:actions/run/34803228613",
-    "StegVerse-org/LLM-adapter:actions/run/34803228620",
-    "StegVerse-Labs/.github:actions/run/34803483965",
     "StegVerse-Labs/.github:actions/run/34852946218",
     "StegVerse-Labs/.github:actions/run/34853568742",
-    "StegVerse-Labs/.github/docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/.github/docs/KV_AI_MEMORY_RUNTIME_EVIDENCE_MIRROR_HANDOFF.md"
+    "StegVerse-Labs/.github:actions/run/34854120617",
+    "StegVerse-Labs/.github/docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"
   ],
   "expected_evidence_predicates": [
     "CANONICAL_TASK_REGISTERED",
     "SOURCE_CAPABILITIES_VALIDATED",
     "NO_DEVICE_DISCOVERY_OR_RDC_RUNTIME_GATE_VALIDATED",
     "NO_SOURCE_ONLY_EVIDENCE_PROMOTED",
-    "RUNTIME_EVIDENCE_CHAIN_TRANSFERRED_TO_SUCCESSOR"
-  ],
-  "runtime_evidence_remaining_in_successor": [
     "LIVE_MEMORY_PACKET_INTR_ADMISSION_RECEIPT_OBSERVED",
     "LIVE_RESIDENT_PROVIDER_REQUEST_MATERIALIZATION_OBSERVED",
     "LIVE_EXTERNAL_PROVIDER_INGRESS_RESPONSE_EGRESS_CHAIN_OBSERVED",
@@ -116,13 +111,7 @@
   },
   "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
   "completion": {"claimed":false,"validated":false,"reconciliation_ref":null},
-  "allowed_next_transitions": ["TRANSFERRED"],
-  "handoff_projection_refs": [
-    "StegVerse-Labs/continuity-vault-kit/KV_AI_PERSISTENCE_CLASSES_MIRROR_HANDOFF.md",
-    "StegVerse-org/LLM-adapter/docs/KV_AI_MEMORY_CONTEXT_BRIDGE_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/.github/docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/.github/docs/KV_AI_MEMORY_RUNTIME_EVIDENCE_MIRROR_HANDOFF.md"
-  ],
+  "allowed_next_transitions": ["COMPLETION_CLAIMED", "DEFERRED"],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "source_state_proves_execution": false,
