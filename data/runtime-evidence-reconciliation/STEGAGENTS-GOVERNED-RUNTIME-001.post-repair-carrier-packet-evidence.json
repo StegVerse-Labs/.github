@@ -1,0 +1,53 @@
+{
+  "schema": "stegverse.stegagents-governed-runtime-post-repair-carrier-evidence/v1",
+  "task_id": "STEGAGENTS-GOVERNED-RUNTIME-001",
+  "cosv_task_vector": "71000000101001",
+  "observed_at": "2026-09-14T19:18:00Z",
+  "classification": "AUTHENTIC_RESIDENT_CUSTODY_ROOT_NOT_OBSERVED",
+  "requested_chain_predicate": "AUTHENTIC_TARGETED_RESIDENT_REQUEST_CONSUMPTION_OBSERVED",
+  "requested_chain_predicate_satisfied": false,
+  "underlying_runtime_prerequisite": "AUTHENTIC_RESIDENT_CUSTODY_ROOT_OBSERVED",
+  "underlying_runtime_prerequisite_satisfied": false,
+  "post_repair_packet_predicate": "POST_REPAIR_HEALER_CARRIER_PACKET_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001",
+  "post_repair_packet_predicate_satisfied": false,
+  "post_repair_packet_classification": "POST_REPAIR_HEALER_CARRIER_PACKET_NOT_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001",
+  "canonical_evidence_refs": [
+    "StegVerse-Labs/.github#1866",
+    "StegVerse-Labs/.github#1871",
+    "StegVerse-Labs/.github#1260",
+    "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md",
+    "data/runtime-materialization-remediation/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.post-repair-packet-classification.json",
+    "docs/GLOBAL_RUNTIME_EVIDENCE_CLOSURE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegVerse-Healer#82",
+    "StegVerse-Labs/StegVerse-Healer@2415e0bdf83bcd5ff116a388cf4c570874593e6b",
+    "actions:34884261376"
+  ],
+  "inspected_runtime_receipt_targets": [
+    "<resident-root>/receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json",
+    "<resident-root>/receipts/sovereign-host/stegagents-governed-runtime-targeted-request-consumption.latest.json"
+  ],
+  "safe_continuation": {
+    "may_continue_to_workercoordinator": false,
+    "reason": "No authentic resident custody root or StegAgents targeted resident-consumption receipt is observed; WorkerCoordinator claim/fence cannot be inferred from source, CI, schedule, or request existence.",
+    "single_first_unresolved_predicate": "AUTHENTIC_RESIDENT_CUSTODY_ROOT_OBSERVED",
+    "next_machine_owned_remediation": "Bind the next authentic existing Healer resident scheduler carrier output under STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001; if its resident_custody_root_observation remains absent, invalid, stale, or ambiguous, classify that exact packet/root state without creating another runtime owner."
+  },
+  "authority_model": {
+    "github_ci_runtime_authority": "NONE",
+    "source_state_proves_execution": false,
+    "task_registry_mints_execution_authority": false,
+    "workercoordinator_delegation_substitutes_for_tv_warrant": false,
+    "canonical_task_identity_substitutes_for_policy_bundle": false,
+    "provider_credentials_visible_to_stegagents": false,
+    "execution_authority": false,
+    "self_authorization_allowed": false,
+    "proposal_only_required": true
+  },
+  "runtime_completion_claimed": false,
+  "targeted_request_consumption_claimed": false,
+  "resident_custody_root_claimed": false,
+  "workercoordinator_claim_fence_claimed": false,
+  "tv_warrant_or_policy_verified": false,
+  "master_records_custody_claimed": false,
+  "manual_work": "None."
+}
