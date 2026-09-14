@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SV-KV-AI-PERSISTENCE-001",
   "created_at": "2026-09-14T03:40:00Z",
-  "updated_at": "2026-09-14T06:34:00Z",
+  "updated_at": "2026-09-14T13:42:00Z",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "SV-KV-AI-PERSISTENCE-001",
@@ -23,6 +23,7 @@
     ],
     "authority_ceiling": [
       "event-triggered instantiation of the existing shared Universal InTr Server on loopback for one request",
+      "secret-free Personal-KV root resolution and private input staging from real user-custodied files",
       "resident-local Personal-KV packet submission to existing shared Universal InTr",
       "validated admission evidence staging only after authentic listener response",
       "resident-local Personal-KV memory packet to ProviderRequest materialization only",
@@ -57,7 +58,9 @@
       "scripts/consume_kv_ai_memory_resident_request.py",
       "scripts/refresh_and_dispatch_resident_requests.py",
       "scripts/install_sovereign_heartbeat_service.py",
+      "scripts/materialize_personal_kv_provider_root.py",
       "workers/kv_ai_memory_resident_worker.py",
+      "StegVerse-Labs/continuity-vault-kit/scripts/stage_kv_ai_memory_resident_inputs.py",
       "StegVerse-Labs/continuity-vault-kit/KV_AI_PERSISTENCE_CLASSES_MIRROR_HANDOFF.md",
       "StegVerse-org/LLM-adapter/docs/KV_AI_MEMORY_CONTEXT_BRIDGE_MIRROR_HANDOFF.md"
     ]
@@ -65,7 +68,7 @@
   "authority": {
     "authority_source": "SV-KV-AI-PERSISTENCE-001 canonical task registry + existing WorkerCoordinator task-control boundary + existing shared Universal InTr listener",
     "authority_domain": "INDEPENDENT_TASK_CONTROL",
-    "policy_version": "kv-ai-memory-resident-v0.5",
+    "policy_version": "kv-ai-memory-resident-v0.6",
     "heartbeat_grants_execution_authority": false,
     "fresh_fence_required": true,
     "minimum_fencing_token_exclusive": 0,
@@ -79,6 +82,8 @@
     "required_capabilities": [
       "resident_local_source_preparation",
       "resident_kv_memory_source_carriage",
+      "personal_kv_root_resolution",
+      "autonomous_real_personal_kv_private_input_staging",
       "resident_native_event_triggered_shared_intr_bootstrap",
       "portable_targeted_kv_ai_memory_dispatch",
       "universal_intr_endpoint_environment_carriage",
@@ -90,7 +95,7 @@
     ],
     "allowed_paths": ["receipts/kv-ai-memory/**"],
     "allowed_services": [],
-    "max_actions": 6,
+    "max_actions": 8,
     "max_retries": 3,
     "external_cost_ceiling_usd": 0,
     "runtime_window_beats": 16,
@@ -98,6 +103,12 @@
     "hosted_execution_allowed": false,
     "bound_state_root": "~/.stegverse/state/kv-ai-memory-resident",
     "bound_state_allowed_paths": ["inputs/**", "materialized/**", "receipts/**"],
+    "personal_kv_input_contract": {
+      "default_root": "_System/AI/Memory/Inputs",
+      "required_files": ["context-request.json", "context-entries.json", "provider-request-input.json"],
+      "missing_files_state": "PERSONAL_KV_AI_MEMORY_INPUTS_NOT_FOUND",
+      "default_content_may_be_synthesized": false
+    },
     "runtime_surface_policy": {
       "current_device_label_informational_only": true,
       "device_confirmation_required": false,
@@ -111,7 +122,7 @@
     }
   },
   "completion": {
-    "source_implementation_state": "SOURCE_COMPLETE_FOR_EVENT_TRIGGERED_PACKET_ADMISSION_THROUGH_PROVIDER_REQUEST_MATERIALIZATION",
+    "source_implementation_state": "SOURCE_COMPLETE_FOR_AUTONOMOUS_REAL_PERSONAL_KV_STAGING_THROUGH_PROVIDER_REQUEST_MATERIALIZATION",
     "runtime_activation_state": "PENDING_AUTHENTIC_MEMORY_PACKET_AND_PROVIDER_CHAIN",
     "runtime_observation_claimed": false,
     "terminal_when": [
@@ -120,7 +131,7 @@
       "Provider ingress, TV/TVC authorization, provider response/egress, and evidence-gated KV writeback/readback receipts are all authentically observed and bound to the same execution lineage."
     ],
     "terminal_evidence": "authentic same-execution memory-packet InTr ALLOW + WorkerCoordinator ProviderRequest materialization + provider ingress/TVC/response/egress evidence + KV writeback/readback evidence",
-    "next_authorized_action": "Run the resident-native KV AI memory event bootstrap. It must first observe the real fenced packet and provider-request input, reuse workers.universal_intr_profiled_ingress.Server on loopback with an ephemeral port for exactly one request, supply that URL only to the existing consumer, validate any returned ALLOW, stage admission evidence, and only then continue through existing WorkerCoordinator execution. Missing private inputs remain a non-authorizing wait state. Do not insert device discovery, device-presence, Remote Desktop Commander, or second-machine gates.",
+    "next_authorized_action": "Run the resident-native KV AI memory event bootstrap. If fenced packet/provider input are absent, it may resolve the real Personal-KV root through the existing secret-free resolver and stage only real user-custodied context-request.json, context-entries.json, and provider-request-input.json from _System/AI/Memory/Inputs (or explicit local path overrides) using the existing CVK stager. Missing root or files remain named non-authorizing wait states. Once real inputs exist, reuse workers.universal_intr_profiled_ingress.Server on loopback with an ephemeral port for exactly one request; validate any returned ALLOW; stage admission evidence; and only then continue through existing WorkerCoordinator execution. Do not synthesize private memory/provider settings and do not insert device gates.",
     "targeted_command": "python scripts/run_kv_ai_memory_intr_event_bootstrap.py --source-root <canonical-local-source-root> --runtime-root <resident-runtime-root>"
   },
   "activation": {
@@ -135,6 +146,7 @@
       "listener_scope": "LOOPBACK_EPHEMERAL_ONE_REQUEST",
       "second_listener_implementation_created": false,
       "requires_preconfigured_ingress_url": false,
+      "autonomous_private_staging_from_personal_kv": true,
       "unrelated_worker_execution": false,
       "broad_orphan_reconciliation": false,
       "heartbeat_grants_execution_authority": false,
