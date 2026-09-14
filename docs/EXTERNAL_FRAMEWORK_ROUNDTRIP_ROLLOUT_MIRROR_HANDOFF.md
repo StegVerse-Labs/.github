@@ -8,7 +8,7 @@ Canonical parent issue: `StegVerse-Labs/Site#1277`
 Canonical parent handoff: `StegVerse-Labs/Site/docs/MIR_CONNECTION_ROUNDTRIP_TECHNICAL_GUIDE_MIRROR_HANDOFF.md`
 Tracking issue: `StegVerse-Labs/.github#1800`
 Reusable Task ID: `RT-EXTERNAL-FRAMEWORK-ROUNDTRIP-ROLLOUT-001`
-Status: `SOURCE CONTRACT + DETERMINISTIC RESOLVER STAGED / VALIDATION PENDING`
+Status: `SOURCE CONTRACT + DETERMINISTIC RESOLVER STAGED / EXACT-HEAD VALIDATION RE-RUN PENDING AFTER HANDOFF RECONCILIATION`
 
 ## Purpose
 
@@ -113,6 +113,20 @@ The resolver deterministically:
 6. emits plan-only authority/effect fields set to `NONE`;
 7. preserves the MIR transition-truth rule.
 
+## Exact-head validation history
+
+PR #1801 head `c9117f2504b27e30f81fe40e9e6f8a9c17a1bd0f` passed all three governing repository workflows before this handoff-only reconciliation:
+
+- Organization Control run `34797033077`: `SUCCESS`;
+- Deterministic Repository Suite run `34797033084`: `SUCCESS`;
+- Heartbeat Worker Project validation run `34797033075`: `SUCCESS`.
+
+Because this handoff reconciliation changes the PR head, those runs are retained as historical source-validation evidence only. The new exact head must pass the same governing checks before the PR is made ready or merged.
+
+## README review
+
+The `.github` root `README.md` already documents the Reusable Task Model, Reusable Task Component Model, bounded invocation semantics, authority separation, and the rule that repeated behavior should use reusable identities/components instead of parallel bespoke implementations. This change instantiates those existing repository-wide semantics and does not alter the public control-plane model. No root README mutation is required for this change.
+
 ## Authority separation
 
 - Task Registry: coordination only.
@@ -154,7 +168,7 @@ Runtime/transition completion is invocation-specific. An executed mirror transit
 
 ## Current next action
 
-Run exact-head repository validation on PR #1801. If source validation passes, reconcile README impact and add the minimum parent-MIR cross-reference needed to make this reusable identity discoverable without changing the parent Goal identity. Then make the PR non-draft and merge only with exact-head evidence.
+Wait for the new exact head of PR #1801 to pass Organization Control, Deterministic Repository Suite, and Heartbeat validation. Then update the canonical Site MIR handoff with a bounded cross-reference to this reusable rollout identity, keeping MIR Goal identity and transition predicates unchanged. Make PR #1801 ready and merge only after current exact-head evidence remains green.
 
 ## Manual work
 
