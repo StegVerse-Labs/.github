@@ -11,6 +11,7 @@
     "StegVerse-Labs/continuity-vault-kit/specs/kv-ai-persistence-classes.v1.json",
     "StegVerse-Labs/continuity-vault-kit/specs/kv-ai-memory-substrate.v1.json",
     "StegVerse-Labs/continuity-vault-kit/runtime/kv_ai_memory_substrate.py",
+    "StegVerse-Labs/continuity-vault-kit/runtime/kv_ai_memory_writeback_store.py",
     "StegVerse-Labs/continuity-vault-kit/scripts/stage_kv_ai_memory_resident_inputs.py",
     "StegVerse-Labs/continuity-vault-kit/docs/KV_AI_MEMORY_SUBSTRATE.md",
     "StegVerse-org/LLM-adapter/llm_adapter/kv_memory_context_bridge.py",
@@ -23,7 +24,7 @@
   "targets": {
     "organizations": ["StegVerse-Labs", "StegVerse-org"],
     "repositories": ["StegVerse-Labs/continuity-vault-kit", "StegVerse-Labs/.github", "StegVerse-org/LLM-adapter"],
-    "components": ["PERSONAL_KV", "ORGANIZATIONAL_KV", "STEGVERSE_KV", "MACHINE_KV", "AI_CONTEXT_PACKET", "AI_MEMORY_WRITE_PROPOSAL", "PRIVATE_RESIDENT_INPUT_STAGING", "LLM_PROVIDER_REQUEST_MEMORY_BRIDGE", "FENCED_RESIDENT_PROVIDER_REQUEST_MATERIALIZATION", "INTERLOCK_INTR_ADMISSION"]
+    "components": ["PERSONAL_KV", "ORGANIZATIONAL_KV", "STEGVERSE_KV", "MACHINE_KV", "AI_CONTEXT_PACKET", "AI_MEMORY_WRITE_PROPOSAL", "PRIVATE_RESIDENT_INPUT_STAGING", "LLM_PROVIDER_REQUEST_MEMORY_BRIDGE", "FENCED_RESIDENT_PROVIDER_REQUEST_MATERIALIZATION", "EVIDENCE_GATED_KV_WRITEBACK_READBACK", "INTERLOCK_INTR_ADMISSION"]
   },
   "dependencies": [
     {
@@ -45,6 +46,12 @@
       "ref": "StegVerse-Labs/.github/docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"
     },
     {
+      "dependency_id": "DEP-PERSONAL-KV-EVIDENCE-GATED-WRITEBACK",
+      "kind": "CAPABILITY",
+      "state": "RESOLVED",
+      "ref": "StegVerse-Labs/continuity-vault-kit/runtime/kv_ai_memory_writeback_store.py"
+    },
+    {
       "dependency_id": "DEP-LIVE-INTR-ADMISSION",
       "kind": "RUNTIME_PREDICATE",
       "state": "UNRESOLVED",
@@ -60,6 +67,7 @@
     "StegVerse-org/LLM-adapter:actions/run/34803228613",
     "StegVerse-org/LLM-adapter:actions/run/34803228620",
     "StegVerse-Labs/.github:actions/run/34803483965",
+    "StegVerse-Labs/continuity-vault-kit:actions/run/34803817371",
     "StegVerse-Labs/continuity-vault-kit/KV_AI_PERSISTENCE_CLASSES_MIRROR_HANDOFF.md",
     "StegVerse-org/LLM-adapter/docs/KV_AI_MEMORY_CONTEXT_BRIDGE_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github/docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"
@@ -72,6 +80,7 @@
     "PRIVATE_RESIDENT_INPUT_STAGING_VALIDATED",
     "LLM_PROVIDER_REQUEST_MEMORY_BRIDGE_VALIDATED",
     "RESIDENT_FENCED_PROVIDER_REQUEST_MATERIALIZATION_VALIDATED",
+    "EVIDENCE_GATED_KV_WRITEBACK_READBACK_SOURCE_VALIDATED",
     "HOSTED_VALIDATION_OBSERVED",
     "LIVE_MEMORY_PACKET_INTR_ADMISSION_RECEIPT_OBSERVED",
     "LIVE_RESIDENT_PROVIDER_REQUEST_MATERIALIZATION_OBSERVED",
@@ -79,7 +88,7 @@
     "LIVE_KV_WRITEBACK_READBACK_OBSERVED_BEFORE_ACTIVATION"
   ],
   "runtime_requirements": {
-    "capabilities": ["kv_context_selection", "provenance_binding", "private_resident_input_staging", "memory_packet_intr_admission", "fenced_worker_execution", "llm_provider_request_bridge", "provider_request_intr_admission", "ai_context_delivery", "memory_write_proposal", "kv_writeback_readback"],
+    "capabilities": ["kv_context_selection", "provenance_binding", "private_resident_input_staging", "memory_packet_intr_admission", "fenced_worker_execution", "llm_provider_request_bridge", "provider_request_intr_admission", "ai_context_delivery", "memory_write_proposal", "evidence_gated_kv_writeback", "kv_writeback_readback"],
     "environment": "OWNER_CONTROLLED_KV_WITH_GOVERNED_EXTERNAL_AI_CONSUMER",
     "direction": "PERSONAL_KV_TO_AI_CONTEXT_AND_AI_TO_PERSONAL_KV_PROPOSAL",
     "mutation_required": true,
