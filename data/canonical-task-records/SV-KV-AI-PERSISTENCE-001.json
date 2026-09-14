@@ -117,6 +117,22 @@
     "MACHINE_KV_CROSS_PROVIDER_RECONSTRUCTION_OBSERVED",
     "HB_OBSERVATION_BOUND_TO_VERIFIED_KV_RECEIPTS_WITHOUT_STATE_AUTHORITY"
   ],
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": ["STEG-BROWSER-RETAINED-RESIDENT-NODE", "STEGOS-CURRENT-DEVICE-NODE", "STEG-BROWSER-EPHEMERAL-LEASE", "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER", "ADMITTED-EPHEMERAL-STEGOS-NODE", "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"],
+    "authority_effect": "NONE",
+    "second_user_operated_device_allowed": false,
+    "external_device_required": false,
+    "selected_substrate_id": null,
+    "reviews": [
+      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md","StegVerse-Labs/.github#1848"]},
+      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md","control/runtime-profile-map.json"]},
+      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"AUTHORITY","evidence_refs":["docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md","data/canonical-task-records/SV-KV-AI-PERSISTENCE-001.json"]},
+      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"]}
+    ]
+  },
   "runtime_requirements": {
     "capabilities": ["kv_context_selection", "provenance_binding", "private_resident_input_staging", "autonomous_real_personal_kv_private_input_staging", "resident_kv_memory_source_carriage", "resident_native_event_triggered_shared_intr_bootstrap", "portable_targeted_kv_ai_memory_dispatch", "universal_intr_endpoint_environment_carriage", "memory_packet_runtime_source_preparation", "memory_packet_shared_intr_submission", "memory_packet_intr_admission", "fenced_worker_execution", "workercoordinator_claim_fence_observation", "llm_provider_request_bridge", "provider_request_intr_admission", "ai_context_delivery", "memory_write_proposal", "evidence_gated_kv_writeback", "kv_writeback_readback", "machine_kv_reconstruction", "hb_receipt_observation_binding"],
     "environment": "OWNER_CONTROLLED_KV_WITH_GOVERNED_AI_CONSUMER_AND_PROVIDER_NEUTRAL_RECONSTRUCTION",
