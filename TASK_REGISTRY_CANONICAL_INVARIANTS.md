@@ -39,6 +39,21 @@ Publisher is part of the complete manifest when presentation/evaluator evidence 
 - Heartbeat: observability only.
 - GitHub Actions: no runtime authority.
 
+### Worker-claim field invariant
+
+When a canonical task record uses structured `worker_claim`, `worker_claim.authority` means the authority that may mint the execution claim/fence and therefore MUST be `WORKERCOORDINATOR`. A chat/session may be the current coordination holder or source-mutation actor, but `CURRENT_SESSION`, a model identity, repository identity, transport identity, or handoff reference must never be encoded as execution claim/fence authority.
+
+If no authentic WorkerCoordinator claim/fence has been observed, the canonical projection is:
+
+```text
+worker_claim.authority = WORKERCOORDINATOR
+worker_claim.claim_ref = null
+worker_claim.fence_ref = null
+worker_claim.projection_only = true
+```
+
+Session ownership/coordination provenance belongs in session/check-in history and coordination metadata. It does not become WorkerCoordinator authority merely because a session is actively editing source.
+
 ## Processing invariant
 
 Processing semantics are selected only from the admitted manifest through its declared capability and bound route. Source, provider, framework, adapter, transport, model, interface, or prior-result identity may supply provenance/policy evidence but may not independently select processing.
