@@ -72,6 +72,7 @@ resident WorkerCoordinator binding: VALIDATED
 LLM ProviderRequest bridge/materializer: VALIDATED
 generic kv_ai_memory selector to Personal-KV staging bridge: VALIDATED
 device discovery/presence/RDC gate: PROHIBITED
+runtime-routing readiness separates completion evidence predicates: VALIDATED
 ```
 
 Relevant successful validations include:
@@ -81,6 +82,8 @@ Relevant successful validations include:
 34853568742 — runtime evidence attempt boundary handoff update validation, SUCCESS
 34854120617 — transferred-record runtime surface policy restoration validation, SUCCESS
 34857654705 — canonical policy context guard validation, SUCCESS
+34860009803 — runtime evidence boundary attempt handoff validation, SUCCESS
+34864945125 — routing readiness source/workflow validation, SUCCESS
 ```
 
 Hosted validation proves source behavior only.
@@ -180,11 +183,53 @@ HB observation bound to verified KV receipts: NOT OBSERVED
 
 This is not completion and not proof of non-occurrence. It records only that the current chat/GitHub-accessible evidence surfaces did not expose the required owner-custodied runtime chain.
 
+## Runtime routing-readiness boundary — 2026-09-14T15:52Z
+
+Policy-first verification was completed before this routing boundary. The verified sources were:
+
+```text
+data/task-coordination-policy.json
+control/canonical-policy-context-registry.json
+control/runtime-profile-map.json
+scripts/evaluate_task_runtime_routing_readiness.py
+data/canonical-task-records/SV-KV-AI-PERSISTENCE-001.json
+docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md
+handoffs/SV-KV-AI-PERSISTENCE-001.json
+validate-kv-ai-memory-resident workflow run 34860009803
+```
+
+Routing repair applied:
+
+```text
+scripts/evaluate_task_runtime_routing_readiness.py now resolves standalone canonical task records when the aggregate registry lacks the task shard.
+control/runtime-profile-map.json generation 2 now declares kv-ai-memory-resident-routing-v1 as a non-authorizing routing profile for this task's explicit runtime requirements.
+tests/test_kv_ai_memory_runtime_surface_invariant.py now validates that unresolved live RUNTIME_PREDICATE/EVIDENCE dependencies block completion but do not block routing readiness.
+.github/workflows/validate-kv-ai-memory-resident.yml now triggers on runtime-profile-map and runtime-routing-readiness evaluator changes and compiles the evaluator.
+```
+
+Routing-readiness result:
+
+```text
+task source: STANDALONE_CANONICAL_TASK_RECORD
+candidate runtime profile: kv-ai-memory-resident-routing-v1
+routing_ready_for_workercoordinator_review: true
+disposition: ELIGIBLE_FOR_WORKERCOORDINATOR_ADMISSION_REVIEW_WITH_RUNTIME_RESOLUTION_PERSISTENCE_PENDING
+runtime_resolution persistence: pending
+execution authority granted: false
+claim/fence minted: false
+WorkerCoordinator admission still required: true
+Interlock/InTr transition admission still required: true
+Master Records reconciliation still required: true
+source/CI validation satisfies completion: false
+```
+
+This routing-readiness boundary does not complete the task, does not prove real Personal-KV inputs, does not prove live InTr admission, does not prove provider/model execution, does not prove KV writeback/readback, and does not create or replace a WorkerCoordinator claim/fence.
+
 Exact next admissible runtime remediation path:
 
 ```text
-1. Resolve the current runtime routing projection for SV-KV-AI-PERSISTENCE-001 against control/runtime-profile-map.json and the canonical Task Registry without treating the projection as authority.
-2. Acquire or reuse the appropriate WorkerCoordinator claim/fence through the existing WorkerCoordinator authority path; do not mint it in Task Registry, GitHub Actions, chat, or handoff prose.
+1. Persist the current runtime_resolution projection for SV-KV-AI-PERSISTENCE-001 against control/runtime-profile-map.json generation 2 if the active Task Registry/record writer requires stored projection before WorkerCoordinator review.
+2. Request/acquire a fresh WorkerCoordinator claim/fence through the existing WorkerCoordinator authority path for SV-KV-AI-PERSISTENCE-001; do not mint it in Task Registry, GitHub Actions, chat, or handoff prose.
 3. In the owner-custodied resident runtime only, execute:
    python scripts/run_kv_ai_memory_intr_event_bootstrap.py --source-root <canonical-local-source-root> --runtime-root <resident-runtime-root>
 4. If the real Personal-KV root is unavailable, record PERSONAL_KV_ROOT_NOT_READY as a non-authorizing runtime wait state on this active task.
