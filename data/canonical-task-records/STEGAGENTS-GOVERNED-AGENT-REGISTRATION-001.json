@@ -1,0 +1,95 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "STEGAGENTS-GOVERNED-AGENT-REGISTRATION-001",
+  "correlation_id": "STEGAGENTS-GOVERNED-AGENT-REGISTRATION-001",
+  "root_correlation_id": "STEGAGENTS-GOVERNED-AGENT-REGISTRATION-001",
+  "parent_task_id": "STEGCORE-STEGAGENTS-ACTIVATION-SEQUENCE-001",
+  "goal": "Establish the first governed-agent manifest and registration flow in StegVerse-Labs/StegAgents by reusing the existing agents/registry.yml surface, binding registrations to the activated StegCore 001/002 baseline and handshake_ready dependency, and preserving proposal-only/no-self-authority semantics.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "repository": "StegVerse-Labs/StegAgents",
+  "handoff": "docs/STEGAGENTS_GOVERNED_AGENT_REGISTRATION_MIRROR_HANDOFF.md",
+  "cosv": {"profile": "task.v1", "vector": "71000000100110"},
+  "cosv_task_vector": "71000000100110",
+  "source_refs": [
+    "StegVerse-Labs/StegAgents/agents/registry.yml",
+    "StegVerse-Labs/StegAgents/stegagents_manifest.json",
+    "StegVerse-Labs/StegAgents/docs/STEGAGENTS_ENTITY_INTEGRATION_CONTRACT.md",
+    "StegVerse-Labs/StegAgents/docs/STEGAGENTS_STEGCORE_HANDSHAKE_FINAL_PROMOTION_RUNBOOK.md",
+    "StegVerse-Labs/StegAgents/registry/stegagents-stegcore.handshake.activation.json",
+    "data/canonical-task-records/STEGCORE-STEGAGENTS-ACTIVATION-SEQUENCE-001.json"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": ["StegVerse-Labs/StegAgents"],
+    "components": [
+      "governed-agent-manifest-schema",
+      "governed-agent-manifest",
+      "governed-agent-registration-validator",
+      "agents-registry-governed-registration",
+      "governed-agent-registration-ci",
+      "governed-agent-registration-handoff"
+    ]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-STEGAGENTS-STEGCORE-BASELINE",
+      "kind": "GOVERNANCE_BASELINE",
+      "state": "ACTIVATED",
+      "ref": "StegVerse-Labs/StegCore@60c1e12d80decbafffbdda25b04c392a7735d13e:registry/stegverse-001-002.activation.json",
+      "disposition": "REUSE_EXACT_ACTIVATED_BASELINE"
+    },
+    {
+      "dependency_id": "DEP-STEGAGENTS-HANDSHAKE",
+      "kind": "INTEGRATION_GATE",
+      "state": "HANDSHAKE_READY",
+      "ref": "StegVerse-Labs/StegAgents@a7fbc77081330d074b0202c70a4fa835f04e7f39:registry/stegagents-stegcore.handshake.activation.json",
+      "disposition": "REUSE_EXACT_HANDSHAKE_READY_EVIDENCE"
+    }
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": ["STEGCORE-STEGAGENTS-ACTIVATION-SEQUENCE-001"],
+  "expected_evidence_predicates": [
+    "CANONICAL_TASK_REGISTERED_BEFORE_SOURCE_MUTATION",
+    "COLLISION_CHECK_PERMITS_STEGAGENTS_REGISTRATION_MUTATION",
+    "FIRST_GOVERNED_AGENT_MANIFEST_SCHEMA_VALID",
+    "FIRST_GOVERNED_AGENT_MANIFEST_BINDS_EXISTING_AGENT_REGISTRY_IDENTITY",
+    "STEGCORE_BASELINE_ACTIVATED_EVIDENCE_BOUND",
+    "STEGAGENTS_HANDSHAKE_READY_EVIDENCE_BOUND",
+    "AGENT_CANNOT_SELF_GRANT_EXECUTION_AUTHORITY",
+    "AGENT_OUTPUT_REMAINS_PROPOSAL_ONLY_UNTIL_CANONICAL_GOVERNANCE_DISPOSITION",
+    "TV_TVC_PROVIDER_CREDENTIAL_AUTHORITY_PRESERVED",
+    "INTR_TRANSITION_AUTHORITY_PRESERVED",
+    "EXACT_HEAD_VALIDATION_PASS",
+    "MERGED_MAIN_REVALIDATION_PASS"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["manifest_validation", "agent_registration", "dependency_evidence_binding"],
+    "environment": "STEGAGENTS_SOURCE_AND_CI",
+    "direction": "MANIFEST_TO_REGISTRY_TO_GOVERNANCE_HANDOFF",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": false
+  },
+  "runtime_resolution": {
+    "current_executor": "source_and_ci_only",
+    "authority_basis": "GitHub source/evidence coordination only; no runtime execution authority",
+    "unattended_runtime": false
+  },
+  "worker_claim": {
+    "authority": "NONE_UNCLAIMED",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "human_action_ref": null,
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": null,
+    "activation_proof_complete": false
+  },
+  "allowed_next_transitions": ["COLLISION_CHECK", "SOURCE_IMPLEMENTATION", "VALIDATION", "MERGE", "RETIRE_ON_COMPLETE"],
+  "github_runtime_authority": "NONE"
+}
