@@ -14,60 +14,44 @@ Updated: 2026-09-14
 
 ## Why this exists
 
-`STEG-BROWSER-AUTHENTIC-RUNTIME-RECEIPT-OBSERVATION-001` reached the Goal Prompt Count `20/20` boundary with canonical source/configuration state verified, but no authentic resident custody root or retained StegBrowser runtime-consumption receipt was observed. The next separable defect is not another source repair. It is the absence of an authenticated resident-root observation that can be classified by the existing non-authorizing receipt reachability verifier.
+`STEG-BROWSER-AUTHENTIC-RUNTIME-RECEIPT-OBSERVATION-001` reached the Goal Prompt Count `20/20` boundary with canonical source/configuration state verified, but no authentic resident custody root or retained StegBrowser runtime-consumption receipt was observed. The next separable defect is the absence of an authenticated resident-root observation that can be classified by the existing non-authorizing receipt reachability verifier.
 
 ## Current inherited evidence
 
 - `.github#1857` remains the parent authentic-runtime-receipt observation issue.
 - Parent handoff: `docs/STEGBROWSER_AUTHENTIC_RUNTIME_RECEIPT_OBSERVATION_MIRROR_HANDOFF.md`.
 - Parent first unresolved predicate: `CANONICAL_WORK_RESIDENT_CONSUMPTION_OBSERVED`.
-- Required retained receipt remains:
-
-```text
-receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json
-```
-
+- Required retained receipt remains `receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json`.
 - `StegVerse-Healer` schedule binding already enables `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` hourly through the existing neutral scheduler carrier with no second scheduler or second user-operated device.
-- Latest referenced Healer main push run `34873584233` was `Test Readiness`, head `41740a6468f7d801b1cad492352c9fc77941fb92`, conclusion `success`, artifacts `0`. It is validation-only and does not prove runtime consumption.
 - `.github#1862` merged the successor handoff and task record as commit `b7d0ebd5de207c3db0989d0017ebc759304cad11` without claiming runtime completion.
 - `.github#1863` later merged `STEGAGENTS-GOVERNED-RUNTIME-001` binding to this same resident-root owner as commit `afa6ec5defc24a920b2dc5e9d3d46cbe24e79549`; that PR explicitly left all runtime substrates pending because no authentic resident custody root was observable.
+- `StegVerse-Healer#81` merged as `b7d37a91fa464a716a85c0a8a28cffd6e5022fb6` after exact-head Test Readiness run `34880822258` passed for head `44f69f236f90bc000446ad15cc082cef244f5284`.
 
-## Current classification — 2026-09-14
+## Prompt 2/20 repair — Healer resident-root observation packet
 
-Classification transition: `OBSERVE_RESIDENT_CUSTODY_ROOT -> BIND_NEXT_DEFECT`
+Classification transition: `BIND_RUNTIME_MATERIALIZATION_REMEDIATION -> OBSERVE_RESIDENT_CUSTODY_ROOT`
 
-Inspected surfaces:
-
-- Task registry record: `data/canonical-task-records/STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001.json` on `main`.
-- Handoff: `docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md` on `main`.
-- Issue evidence: `StegVerse-Labs/.github#1860` comments through the canonical binding and active-continuation notes.
-- Merge evidence: `.github#1862` merged as `b7d0ebd5de207c3db0989d0017ebc759304cad11`; `.github#1863` merged as `afa6ec5defc24a920b2dc5e9d3d46cbe24e79549`.
-- Healer schedule binding: `StegVerse-Labs/StegVerse-Healer:data/reusable_task_schedule.json` still contains enabled hourly `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` source configuration.
-- Healer carrier source: `StegVerse-Labs/StegVerse-Healer:app/reusable_task_scheduler.py` can discover `STEGVERSE_HEARTBEAT_ROOT` or canonical local runtime candidates only when the resident root is available to that execution environment.
-- Required repository-content receipt probes:
-  - `StegVerse-Labs/.github:receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json` -> not present in repository contents.
-  - `StegVerse-Labs/StegVerse-Healer:receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json` -> not present in repository contents.
-- Classifier source: `scripts/check_stegbrowser_runtime_consumption_receipts.py` remains non-authorizing and requires an explicit `--runtime-root`; no authentic runtime root path was available, so it was not run against a synthetic checkout.
-
-Observed result:
+Implemented source-side repair:
 
 ```text
-RESIDENT_CUSTODY_ROOT_NOT_OBSERVED
+StegVerse-Labs/StegVerse-Healer#81
+StegVerse-Labs/StegVerse-Healer@b7d37a91fa464a716a85c0a8a28cffd6e5022fb6
 ```
 
-Reason:
+The existing Healer neutral reusable-task carrier now emits a structured, non-authorizing `resident_custody_root_observation` packet. The packet is task-bound to `STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001`, COSV-bound to `40000100100000`, and reports observed/missing/invalid/ambiguous resident-root state from the existing `STEGVERSE_HEARTBEAT_ROOT` / canonical local runtime discovery path.
 
-No authentic current resident custody root path, retained runtime marker, retained resident receipt, Master Records pointer, owner-ingress receipt, or exact runtime-root evidence was observed through the available canonical evidence surfaces. GitHub issue/PR/source/CI state remains context only and cannot satisfy `RESIDENT_CUSTODY_ROOT_AUTHENTICALLY_OBSERVED_FOR_STEGBROWSER`.
+The packet preserves:
 
-Next exact defect:
+- GitHub runtime authority: `NONE`.
+- Credential authority: `TV/TVC`.
+- Healer role: `SCHEDULING_AND_INVOCATION_TRANSPORT_ONLY`.
+- No second scheduler.
+- No dispatcher or runtime-plane creation.
+- No WorkerCoordinator bypass.
+- No provider authority.
+- No second user-operated device.
 
-```text
-RESIDENT_CUSTODY_ROOT_NOT_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001
-```
-
-Required next bounded remediation:
-
-Create or continue a runtime-materialization task that causes the existing Healer resident scheduler carrier and neutral `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` path to expose an authentic resident-root observation surface, without adding another scheduler, dispatcher, credential path, GitHub authority path, runtime plane, MIR-specific transport, or second user-operated device.
+This repair does not authenticate a current resident root by itself. It only ensures the next authentic Healer carrier cycle can expose the exact root-observation classification needed by this goal.
 
 ## First unresolved predicate
 
@@ -75,14 +59,16 @@ Create or continue a runtime-materialization task that causes the existing Heale
 RESIDENT_CUSTODY_ROOT_AUTHENTICALLY_OBSERVED_FOR_STEGBROWSER
 ```
 
-## Required observation surface
+## Required next observation surface
 
-A current resident custody root must be observed by retained runtime marker/receipt evidence. The observation must not rely on GitHub source state, PR merge state, workflow success, workflow artifact presence, or a synthetic local checkout.
-
-Candidate exact receipt path after root observation:
+Observe the post-merge Healer carrier output from the existing resident path and bind its `resident_custody_root_observation` packet. If the packet state is `RESIDENT_CUSTODY_ROOT_OBSERVED`, run the existing non-authorizing classifier against that exact root and classify:
 
 ```text
 <resident-root>/receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json
+<resident-root>/receipts/sovereign-host/stegbrowser-runtime-consumption-evidence-custody.latest.json
+<resident-root>/receipts/sovereign-host/stegbrowser-tvc-source-promotion-request-consumption.latest.json
+<resident-root>/var/lib/stegverse/skap/browser-recipient/apple/receipts/runtime-observation-latest.json
+/var/lib/stegverse/skap/browser-recipient/apple/receipts/runtime-observation-latest.json
 ```
 
 The `.github` verifier remains non-authorizing:
@@ -100,7 +86,8 @@ Task Registry CONTINUE
 -> STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001
 -> standing Healer resident scheduler carrier
 -> neutral RT-STEGBROWSER-RUNTIME-CONSUMPTION-001
--> observed resident custody root
+-> emitted resident_custody_root_observation packet
+-> observed resident custody root, if packet state proves it
 -> non-authorizing exact receipt reachability classification
 -> parent predicate CANONICAL_WORK_RESIDENT_CONSUMPTION_OBSERVED when retained receipt is present
 -> WorkerCoordinator claim/fence evidence
@@ -116,7 +103,7 @@ Task Registry CONTINUE
 1. Reuse only the existing Healer resident scheduler carrier and neutral `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` path.
 2. Do not introduce a StegBrowser-specific scheduler, dispatcher, transport, credential route, GitHub authority path, runtime plane, or second user-operated device.
 3. Treat source/configuration, CI success, PR merge state, and GitHub artifacts as non-authorizing context only.
-4. If no resident root is observed, record `RESIDENT_CUSTODY_ROOT_NOT_OBSERVED` as the next exact defect.
+4. If no resident root is observed, bind the emitted packet state as the next exact defect.
 5. If multiple roots are observed, record `RESIDENT_CUSTODY_ROOT_AMBIGUOUS` with exact paths/evidence refs.
 6. If a root is observed but required receipt paths are missing or invalid, record the exact missing/invalid paths and keep the parent completion predicate unresolved.
 7. If the required retained receipt is valid/bindable, return to the parent completion chain and continue with WorkerCoordinator, Interlock/InTr, TVC, observer, and Master Records evidence checks.
@@ -140,7 +127,7 @@ This task does not by itself complete the full parent runtime-consumption chain 
 
 ## Current state
 
-`ACTIVE / CHECKED_OUT / DECOMPOSED_FROM_STEGBROWSER_AUTHENTIC_RUNTIME_RECEIPT_OBSERVATION_AT_PROMPT_20 / RESIDENT_CUSTODY_ROOT_NOT_OBSERVED / RESIDENT_CUSTODY_ROOT_NOT_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001 / CANONICAL_WORK_RECEIPT_NOT_CLASSIFIED / RUNTIME_CONSUMPTION_NOT_CLAIMED / REMOTE_DEVICE_NOT_REQUIRED / NO_SECOND_USER_OPERATED_DEVICE`
+`ACTIVE / CHECKED_OUT / HEALER_RESIDENT_ROOT_OBSERVATION_PACKET_REPAIR_MERGED / RESIDENT_CUSTODY_ROOT_NOT_YET_OBSERVED_AFTER_REPAIR / CANONICAL_WORK_RECEIPT_NOT_CLASSIFIED / RUNTIME_CONSUMPTION_NOT_CLAIMED / REMOTE_DEVICE_NOT_REQUIRED / NO_SECOND_USER_OPERATED_DEVICE`
 
 ## Manual work
 
