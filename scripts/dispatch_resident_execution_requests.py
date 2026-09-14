@@ -82,6 +82,7 @@ NONSECRET_ENV = (
 )
 CONSUMERS = (
     ("ecosystem_chat", "scripts/consume_resident_execution_request.py"),
+    ("kv_ai_memory", "scripts/consume_kv_ai_memory_resident_request.py"),
     ("g18", "scripts/consume_g18_resident_execution_request.py"),
     ("hil", "scripts/consume_hil_resident_execution_request.py"),
     ("evaluator_intr", "scripts/consume_evaluator_intr_resident_execution_request.py"),
@@ -252,7 +253,7 @@ def dispatch(source_root: Path, runtime_root: Path, *, runner=subprocess.run, en
         "NO_REQUEST", "ALREADY_CONSUMED", "ALREADY_TERMINAL", "WAITING_FOR_CUSTODY_PACKAGE", "WAITING_FOR_MASTER_RECORDS_CUSTODY", "WAITING_FOR_RECONCILIATION", "WAITING_FOR_TRANSITION_READINESS",
         "MASTER_RECORDS_LOCAL_ROOT_NOT_MATERIALIZED", "MASTER_RECORDS_CUSTODY_CONSUMER_NOT_MATERIALIZED", "MASTER_RECORDS_PROJECTOR_NOT_MATERIALIZED", "ATTEMPT_RECORDED", "COMPLETED", "MANIFOLD_VISIT_RECORDED",
         "SOVEREIGN_NODE_MARKER_REQUIRED", "RESIDENT_INTR_ACK_CONSUMED", "RETURN_PATH_VERIFIED", "SERVICE_ALREADY_HEALTHY", "INPUT_NOT_MATERIALIZED", "OBSERVATION_ATTEMPT_RECORDED",
-        "WAITING_FOR_ESTABLISHED_NODE_CONNECTIVITY", "REUSE_ACCEPTED", "DELTA_REQUIRED",
+        "WAITING_FOR_ESTABLISHED_NODE_CONNECTIVITY", "REUSE_ACCEPTED", "DELTA_REQUIRED", "BOUND_STATE_INPUT_NOT_READY",
     }
     request_failures = [row["consumer"] for row in outcomes if row["state"] not in accepted_wait_states]
     receipt = {
