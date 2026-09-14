@@ -18,6 +18,7 @@ def load(name: str, path: str):
 
 installer = load("install_sovereign_heartbeat_service", "scripts/install_sovereign_heartbeat_service.py")
 refresher = load("refresh_sovereign_worker_runtime_source", "scripts/refresh_sovereign_worker_runtime_source.py")
+portable = load("refresh_and_dispatch_resident_requests", "scripts/refresh_and_dispatch_resident_requests.py")
 
 REQUIRED = {
     "scripts/consume_kv_ai_memory_resident_request.py",
@@ -47,3 +48,34 @@ def test_materializer_requires_kv_ai_memory_execution_source_after_copy():
     source = (ROOT / "scripts/install_sovereign_heartbeat_service.py").read_text(encoding="utf-8")
     for rel in required_source:
         assert f'target_root / "{rel.split("/")[0]}" / "{rel.split("/")[1]}"' in source
+
+
+def test_portable_targeted_dispatch_admits_kv_ai_memory():
+    assert "kv_ai_memory" in portable.ALLOWED_TARGET_CONSUMERS
+
+
+def test_portable_dispatch_forwards_nonsecret_universal_intr_endpoint():
+    endpoint = "http://127.0.0.1:7777/intr/materialization"
+    safe = portable.clean_exec_env({
+        "PATH": "/usr/bin",
+        "HOME": "/home/stegverse",
+        "STEGVERSE_UNIVERSAL_INTR_INGRESS_URL": endpoint,
+    })
+    assert safe["STEGVERSE_UNIVERSAL_INTR_INGRESS_URL"] == endpoint
+    assert safe["STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY"] == "NONE"
+    assert safe["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"] == "TV/TVC"
+
+
+def test_native_worker_service_carries_nonsecret_universal_intr_endpoint():
+    endpoint = "http://127.0.0.1:7777/intr/materialization"
+    assert "STEGVERSE_UNIVERSAL_INTR_INGRESS_URL" in installer.WORKER_SAFE_LOCAL_BINDINGS
+    rendered = installer.materialize_service(
+        ROOT,
+        system="linux",
+        env={
+            "HOME": "/home/stegverse",
+            "XDG_CONFIG_HOME": "/tmp/stegverse-kv-ai-memory-test-config",
+            "STEGVERSE_UNIVERSAL_INTR_INGRESS_URL": endpoint,
+        },
+    )
+    assert "STEGVERSE_UNIVERSAL_INTR_INGRESS_URL" in rendered["safe_local_worker_bindings"]
