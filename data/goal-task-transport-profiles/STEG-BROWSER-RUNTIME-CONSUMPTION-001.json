@@ -17,13 +17,37 @@
     "interlock_intr_transport": true,
     "far_side_final_transition": false
   },
+  "transport_phase_components": [
+    "RTC-MANIFEST-001",
+    "RTC-GOVERNED-PROCESSING-002",
+    "RTC-ROUNDTRIP-003",
+    "RTC-INTERLOCK-INTR-TRANSPORT-008"
+  ],
+  "post_transport_components": [
+    "RTC-EVIDENCE-CUSTODY-004"
+  ],
   "selected_components": [
     "RTC-MANIFEST-001",
     "RTC-GOVERNED-PROCESSING-002",
     "RTC-ROUNDTRIP-003",
-    "RTC-EVIDENCE-CUSTODY-004",
-    "RTC-INTERLOCK-INTR-TRANSPORT-008"
+    "RTC-INTERLOCK-INTR-TRANSPORT-008",
+    "RTC-EVIDENCE-CUSTODY-004"
   ],
+  "transport_terminal_contract": {
+    "return_packet_required": true,
+    "return_record_received_required": true,
+    "return_record_durably_recorded_required": true,
+    "final_allowed_transport_exit_transition_required": true,
+    "terminal_predicate": "SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIP_IDENTIFIED",
+    "master_records_reconstruction_required_to_set_terminal_predicate": false,
+    "post_transport_failure_negates_terminal_predicate": false
+  },
+  "invocation_transition_variables": {
+    "callable": "RESOLVED_PER_INVOCATION_BY_INTERLOCK_INTR",
+    "refreshable": "RESOLVED_PER_INVOCATION_BY_INTERLOCK_INTR",
+    "source_refresh_task": "RT-SOVEREIGN-SOURCE-REFRESH-001",
+    "source_refresh_selection_condition": "callable=true AND refreshable=true"
+  },
   "omitted_components": [
     {
       "component_id": "RTC-PUBLISHER-005",
@@ -54,7 +78,12 @@
     "materialize_only_after_applicable_admission": true,
     "ephemeral_construct_contract": "data/reusable-task-ephemeral-construct-contract.json"
   },
-  "composition_rule": "Reuse the existing Canonical Work, WorkerCoordinator, Interlock/InTr, resident dispatcher, exact TVC source-promotion consumer, runtime observer and evidence-custody components. Do not create a second scheduler, WorkerCoordinator, runtime plane, credential path, transport authority, per-defect task, or per-device identity requirement.",
+  "composition_rule": "Resolve invocation-bound state first. Reuse Canonical Work, WorkerCoordinator, Interlock/InTr, resident dispatcher, exact TVC source-promotion consumer, runtime observer and evidence-custody components. Governed transport completes at the final allowed Interlock/InTr transport-exit transition after the return record is received and durably recorded. RTC-EVIDENCE-CUSTODY-004 then runs only as post-transport custody/reconstruction and cannot prove or negate transport success. Do not create a second scheduler, WorkerCoordinator, runtime plane, credential path, transport authority, per-defect task, or per-device identity requirement.",
+  "failure_ownership": {
+    "before_transport_entry": "PRE_TRANSPORT_OWNING_DOMAIN",
+    "inside_transport_through_final_exit": "TRANSPORT_OR_EXACT_IN_LANE_OWNER",
+    "after_successful_transport_exit": "POST_TRANSPORT_OWNING_DOMAIN_NOT_TRANSPORT"
+  },
   "authority_invariants": {
     "task_registry": "COORDINATION_ONLY",
     "user_verification": "KV/SKAP Vault",
@@ -63,6 +92,7 @@
     "transition": "Interlock/InTr",
     "credential_provider_release": "TV/TVC",
     "reality_reconstruction": "Master Records",
+    "master_records_transport_success_authority": "NONE",
     "heartbeat": "OBSERVABILITY_ONLY",
     "github_runtime_authority": "NONE"
   },
