@@ -1,0 +1,21 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-EXEC-KV-AI-MEMORY-001",
+  "state": "REQUESTED",
+  "task_id": "SV-KV-AI-PERSISTENCE-001",
+  "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
+  "entrypoint": "scripts/refresh_and_execute_resident_task.py",
+  "fresh_fence_minimum_exclusive": 0,
+  "credential_authority": "TV/TVC",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "second_machine_required": false,
+  "network_source_fetch_allowed": false,
+  "request_granted_authority": false,
+  "provider_credential_material_allowed": false,
+  "private_content_in_request": false,
+  "bound_state_root": "~/.stegverse/state/kv-ai-memory-resident",
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "note": "When the fenced resident-local KV memory packet, exact admission artifact, and provider request input are present, ask the existing WorkerCoordinator to materialize the exact ProviderRequest. This request carries no private content and grants no claim, fence, InTr, credential, provider, KV-write, or activation authority."
+}
