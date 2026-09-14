@@ -80,6 +80,7 @@ Relevant successful validations include:
 34852946218 — generic selector staging bridge repair validation, SUCCESS
 34853568742 — runtime evidence attempt boundary handoff update validation, SUCCESS
 34854120617 — transferred-record runtime surface policy restoration validation, SUCCESS
+34857654705 — canonical policy context guard validation, SUCCESS
 ```
 
 Hosted validation proves source behavior only.
@@ -124,6 +125,76 @@ KV writeback/readback: NOT OBSERVED
 ```
 
 No synthetic receipt was created, and no hosted source run was promoted to runtime evidence.
+
+## Runtime evidence boundary attempt — 2026-09-14T15:05Z
+
+Policy-first verification was completed before this attempt. The verified policy sources were:
+
+```text
+data/canonical-task-records/SV-KV-AI-PERSISTENCE-001.json
+data/task-coordination-policy.json
+control/canonical-policy-context-registry.json
+control/runtime-profile-map.json
+scripts/evaluate_task_runtime_routing_readiness.py
+docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md
+handoffs/SV-KV-AI-PERSISTENCE-001.json
+```
+
+The current policy boundary remains:
+
+```text
+unresolved runtime constraints: metadata on active parent task
+runtime missing: resolve against canonical runtime profile/routing readiness before escalation
+Task Registry: coordination only, no execution authority
+runtime profile map: projection only, no execution authority
+routing readiness: WorkerCoordinator review gate only, no claim/fence
+source validation / GitHub Actions / chat probe / RDC / device presence: not runtime evidence
+```
+
+Authentic evidence surfaces checked in this attempt:
+
+```text
+receipts/sovereign-network/kv-ai-memory-intr.latest.json: NOT FOUND
+receipts/sovereign-host/kv-ai-memory-resident-request-consumption.latest.json: NOT FOUND
+repository search for KV_AI_MEMORY_PROVIDER_REQUEST_MATERIALIZED / memory-packet-admission / provider-request-materialization / LIVE_KV_WRITEBACK_READBACK: NO LIVE RECEIPT RESULT
+multi-repository search across .github, continuity-vault-kit, and LLM-adapter: only documentation/test references observed; no live runtime receipt chain observed
+```
+
+Observed boundary:
+
+```text
+real Personal-KV root: NOT OBSERVED
+real _System/AI/Memory/Inputs/context-request.json: NOT OBSERVED
+real _System/AI/Memory/Inputs/context-entries.json: NOT OBSERVED
+real _System/AI/Memory/Inputs/provider-request-input.json: NOT OBSERVED
+fenced resident staging from real Personal-KV inputs: NOT OBSERVED
+shared Universal InTr exact-packet ALLOW: NOT OBSERVED
+memory-packet-admission.json: NOT OBSERVED
+fresh WorkerCoordinator claim/fence: NOT OBSERVED
+KV_AI_MEMORY_PROVIDER_REQUEST_MATERIALIZED live receipt: NOT OBSERVED
+governed provider/model ingress-response-egress chain: NOT OBSERVED
+evidence-gated KV writeback/readback: NOT OBSERVED
+Master Records reconstruction binding: NOT OBSERVED
+HB observation bound to verified KV receipts: NOT OBSERVED
+```
+
+This is not completion and not proof of non-occurrence. It records only that the current chat/GitHub-accessible evidence surfaces did not expose the required owner-custodied runtime chain.
+
+Exact next admissible runtime remediation path:
+
+```text
+1. Resolve the current runtime routing projection for SV-KV-AI-PERSISTENCE-001 against control/runtime-profile-map.json and the canonical Task Registry without treating the projection as authority.
+2. Acquire or reuse the appropriate WorkerCoordinator claim/fence through the existing WorkerCoordinator authority path; do not mint it in Task Registry, GitHub Actions, chat, or handoff prose.
+3. In the owner-custodied resident runtime only, execute:
+   python scripts/run_kv_ai_memory_intr_event_bootstrap.py --source-root <canonical-local-source-root> --runtime-root <resident-runtime-root>
+4. If the real Personal-KV root is unavailable, record PERSONAL_KV_ROOT_NOT_READY as a non-authorizing runtime wait state on this active task.
+5. If any required real _System/AI/Memory/Inputs file is unavailable, record PERSONAL_KV_AI_MEMORY_INPUTS_NOT_FOUND as a non-authorizing runtime wait state on this active task.
+6. If real inputs exist, stage only those real inputs into the fenced resident bound-state root; do not synthesize defaults or export private content to GitHub.
+7. Submit the exact packet to the existing shared Universal InTr listener on loopback and accept only an authentic exact-packet ALLOW before writing memory-packet-admission.json.
+8. Continue to ProviderRequest materialization only after the authentic admission file exists and a fresh WorkerCoordinator claim/fence is observed.
+9. Continue to provider/model ingress-response-egress only through the governed TV/TVC/LLM-adapter path.
+10. Complete only after evidence-gated Personal-KV writeback/readback and Master Records reconstruction bind to the same receipt chain; otherwise keep SV-KV-AI-PERSISTENCE-001 ACTIVE / IN_PROGRESS with unresolved runtime predicates as metadata.
+```
 
 ## Preferred execution paths
 
