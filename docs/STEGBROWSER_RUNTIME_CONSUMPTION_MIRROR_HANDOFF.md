@@ -44,6 +44,7 @@ No second scheduler, WorkerCoordinator, runtime plane, credential path, device i
 - `.github#1834` / `5ca9abf473ac1cfeb07efa23f397321cad07b3e5`: runtime-local `PROPOSED` ingress projection while canonical Goal remains `ACTIVE / CHECKED_OUT`.
 - `StegVerse-Healer#73` / `22683b8583c30f5ba8c720eaad999e3a13a23d9e`: existing standing Healer / neutral reusable scheduler carrier binding, hourly eligible with bounded 15-minute retries.
 - `.github#1841` / `892c6838b37081b8975c2785b517631d4ba66246`: autonomous resident evidence-continuation bridge.
+- `.github#1842` / `544cd40ed6393cd9dad3af3a413779e9946445b5`: canonical handoff reconciliation after autonomous resident bridge merge.
 - `Site#1305` / `4a10b42d4bb2743205c774d3c667cefc7353a710`: same-device root Universal InTr / Canonical Work capability.
 - `Site#1310` / `3a067ff48845044a8be42b42061929c1b7489651`: repair for authentic current-iPhone `root InTr profile HTTP 404` negative runtime result.
 
@@ -77,6 +78,14 @@ The merged runner now:
 - then continues to the existing immutable observer boundary and fails closed if terminal runtime observation has not yet occurred.
 
 The repair creates no second scheduler, dispatcher, WorkerCoordinator, runtime authority, credential path, or device requirement. Exact-byte retention does not rewrite or reinterpret authentic receipts. CI and merge establish the machine-executable continuation path only; they do not establish runtime completion.
+
+## 2026-09-14 runtime-wait reconciliation
+
+A follow-up reconciliation read the canonical task record and this canonical handoff from `StegVerse-Labs/.github` after `.github#1841` and `.github#1842` merged. The task record still declares `coordination_state: ACTIVE`, `checkout_state: CHECKED_OUT`, `completion.claimed: false`, `completion.validated: false`, and `runtime_consumption_observed: false`; its unresolved runtime evidence dependencies remain Canonical Work resident consumption, WorkerCoordinator claim/fence, TVC source promotion, and owner ingress.
+
+The latest observed `StegVerse-Healer` main run for commit `22683b8583c30f5ba8c720eaad999e3a13a23d9e` was `Test Readiness` run `34870000268`, completed successfully, with no uploaded artifacts. That is scheduler-carrier/source-readiness evidence only. It does not contain the retained resident receipt and does not satisfy `CANONICAL_WORK_RESIDENT_CONSUMPTION_OBSERVED`.
+
+The reusable runner on main still enforces the correct fail-closed boundary: it exits unless the resident runtime contains the Canonical Work consumption receipt, the InTr bootstrap receipt, the TVC source-promotion receipt, and the owner-ingress runtime observation. No new source defect was identified in this reconciliation; the next admissible transition is to wait for or inspect the existing resident scheduler's next authentic execution cycle and then bind the resulting receipts into the task record only if they are present and valid.
 
 ## First unresolved authentic predicate
 
@@ -125,7 +134,7 @@ Complete only when authentic evidence establishes successor Canonical Work consu
 
 ## Current state
 
-`ACTIVE / CHECKED_OUT / TASK_REGISTRY_CHECKIN_CONTINUE_OBSERVED / EPHEMERAL_STEGOS_SELECTED / REUSABLE_EPHEMERAL_RUNNER_BINDING_MERGED / RUNTIME_LOCAL_PREINGRESS_PROJECTION_REPAIR_MERGED / EXISTING_HEALER_NEUTRAL_SCHEDULER_CARRIER_BOUND / AUTONOMOUS_RESIDENT_EVIDENCE_CONTINUATION_REPAIR_MERGED / CANONICAL_WORK_RESIDENT_CONSUMPTION_NOT_OBSERVED / WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED / TVC_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / OWNER_INGRESS_READY_NOT_OBSERVED / REMOTE_DEVICE_NOT_REQUIRED / NO_SECOND_USER_OPERATED_DEVICE`
+`ACTIVE / CHECKED_OUT / TASK_REGISTRY_CHECKIN_CONTINUE_OBSERVED / EPHEMERAL_STEGOS_SELECTED / REUSABLE_EPHEMERAL_RUNNER_BINDING_MERGED / RUNTIME_LOCAL_PREINGRESS_PROJECTION_REPAIR_MERGED / EXISTING_HEALER_NEUTRAL_SCHEDULER_CARRIER_BOUND / AUTONOMOUS_RESIDENT_EVIDENCE_CONTINUATION_REPAIR_MERGED / RUNTIME_WAIT_RECONCILED / CANONICAL_WORK_RESIDENT_CONSUMPTION_NOT_OBSERVED / WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED / TVC_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / OWNER_INGRESS_READY_NOT_OBSERVED / REMOTE_DEVICE_NOT_REQUIRED / NO_SECOND_USER_OPERATED_DEVICE`
 
 ## Manual work
 
