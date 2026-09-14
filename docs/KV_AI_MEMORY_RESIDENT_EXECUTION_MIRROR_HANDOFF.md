@@ -1,6 +1,6 @@
 # KV AI Memory Resident Execution Mirror Handoff
 
-Status: ACTIVE / RESIDENT-SOURCE-CARRIAGE-VALIDATED / MEMORY-PACKET-INTR-SOURCE-PATH-VALIDATED / RESIDENT-PROVIDERREQUEST-BINDING-VALIDATED / LIVE-INTR-PROOF-OPEN
+Status: ACTIVE / PORTABLE-TARGETED-DISPATCH-VALIDATED / RESIDENT-SOURCE-CARRIAGE-VALIDATED / MEMORY-PACKET-INTR-SOURCE-PATH-VALIDATED / RESIDENT-PROVIDERREQUEST-BINDING-VALIDATED / LIVE-INTR-PROOF-OPEN
 Goal Task ID: `SV-KV-AI-PERSISTENCE-001`
 COSV task.v1: `20111110110000`
 Repository: `StegVerse-Labs/.github`
@@ -25,7 +25,7 @@ custody/reconstruction: Master Records
 heartbeat: carrier/reference/observation only
 ```
 
-Repository state, source preparation, CI, fixtures, route installation, or source carriage never substitute for an authentic InTr receipt, WorkerCoordinator claim/fence, provider operation, model response, or KV write receipt.
+Repository state, source preparation, CI, fixtures, route installation, source carriage, or targeted-dispatch registration never substitute for an authentic InTr receipt, WorkerCoordinator claim/fence, provider operation, model response, or KV write receipt.
 
 ## Resident runtime surface invariant
 
@@ -78,6 +78,28 @@ Canonical repair surfaces:
 The historical `install_sovereign_heartbeat_service_base.py` remains an intentionally preserved prior/base implementation and is not promoted into the current KV-memory carriage path.
 
 This repair creates no new runtime, scheduler, listener, WorkerCoordinator, credential path, or execution authority. It only makes the already-registered KV-memory resident consumer executable after normal resident materialization or local static-source refresh.
+
+## Portable targeted resident dispatch
+
+After source carriage was repaired, a second source/control gap remained: `scripts/refresh_and_dispatch_resident_requests.py` could not select `kv_ai_memory`, even though the generic dispatcher already registered it. The same portable bridge also stripped `STEGVERSE_UNIVERSAL_INTR_INGRESS_URL`, and the native worker-service safe-binding allowlist did not carry that explicit non-secret listener endpoint into the resident worker process.
+
+The current path now requires:
+
+- `kv_ai_memory` in `ALLOWED_TARGET_CONSUMERS` for exact targeted portable dispatch;
+- `STEGVERSE_UNIVERSAL_INTR_INGRESS_URL` in the portable bridge `NONSECRET_FORWARD` allowlist;
+- `STEGVERSE_UNIVERSAL_INTR_INGRESS_URL` in `install_sovereign_heartbeat_service.py::WORKER_SAFE_LOCAL_BINDINGS` so the normal native worker sweep can reach the same resident-local listener endpoint;
+- regression coverage proving both endpoint-carriage paths while preserving GitHub-token authority `NONE` and TV/TVC credential authority.
+
+Canonical targeted command:
+
+```text
+python scripts/refresh_and_dispatch_resident_requests.py \
+  --source-root <canonical-local-source-root> \
+  --runtime-root <resident-runtime-root> \
+  --only-consumer kv_ai_memory
+```
+
+This bridge refreshes already-local static source and selects exactly one registered consumer. It does not perform network source fetch, mint claims/fences, grant InTr authority, grant credential authority, start a second scheduler, or substitute for the authentic listener response.
 
 ## Shared Universal InTr packet admission
 
@@ -146,6 +168,7 @@ Existing resident execution surfaces remain canonical:
 - `control/resident-execution-request.d/kv-ai-memory-resident-001.json`;
 - `workers/kv_ai_memory_resident_worker.py`;
 - dispatcher selector `kv_ai_memory`;
+- portable targeted selector `kv_ai_memory`;
 - LLM-adapter `scripts/materialize_kv_memory_provider_request.py`.
 
 The worker stops at `KV_AI_MEMORY_PROVIDER_REQUEST_MATERIALIZED`. It does not claim provider ingress ALLOW, provider execution, model response, egress ALLOW, or KV writeback.
@@ -159,25 +182,27 @@ Previously validated:
 - initial shared memory-packet admission source: run `34804928451` — SUCCESS;
 - no-device/RDC runtime-surface correction: runs `34812254218`, `34812316750` — SUCCESS.
 
-Hardening, source preparation, and resident source carriage:
+Hardening, source preparation, source carriage, and targeted dispatch:
 
 - run `34805361433` / job `103856079710` — SUCCESS; exact returned receipt hash validation, anti-authority checks, packet admission tests, resident binding tests, and compilation passed;
 - run `34805426026` / job `103856264389` — SUCCESS; canonical runtime-source preparation tests and compilation passed;
 - run `34805510953` / job `103856506912` — SUCCESS; resident consumer convergence on the canonical source-preparation wrapper, fail-closed preparation-result checks, packet-admission tests, resident binding tests, and compilation passed;
 - run `34812669655` exposed a brittle dispatcher test whose expected failing selector was hard-coded to `g18`; the actual non-starvation behavior remained intact after `kv_ai_memory` became an earlier registered selector;
 - run `34812755561` / job `103877180585` — SUCCESS after repairing that test to validate selector-order-independent non-starvation;
-- run `34812879650` / job `103877535634` — SUCCESS; KV-specific resident source-carriage regression plus the complete KV-memory resident tests and Python compilation passed.
+- run `34812879650` / job `103877535634` — SUCCESS; KV-specific resident source-carriage regression plus the complete KV-memory resident tests and Python compilation passed;
+- run `34813405596` / job `103879033600` — SUCCESS; portable exact `kv_ai_memory` selection, portable Universal InTr endpoint forwarding, native worker-service endpoint carriage, complete KV-memory resident tests, and compilation passed.
 
 Hosted validation proves source behavior only. It does not prove that a current sovereign resident refreshed these bytes, that private staged inputs exist, that the shared listener is bound, that a live packet ALLOW occurred, or that WorkerCoordinator/provider/model/writeback execution happened.
 
-README impact determination: no semantic README update is required for this repair because the existing README already names this consumer, resident request, WorkerCoordinator lane, and private-state flow as canonical. The defect was that installer/refresher source carriage did not conform to that documented behavior; this change restores implementation parity without changing the public authority or workflow semantics.
+README impact determination: no semantic README update is required for this repair because the existing README already names this consumer, resident request, WorkerCoordinator lane, and private-state flow as canonical. The defect was source/control addressability and endpoint carriage; the repair restores implementation parity without changing the public authority model.
 
 ## Next authentic evidence boundary
 
 The first unresolved predicate is operational rather than architectural and is not gated by device discovery or RDC availability:
 
 ```text
-real staged Personal-KV packet
+portable refresh + exact kv_ai_memory dispatch
++ real staged Personal-KV packet
 + real provider-request input
 + current shared loopback Universal InTr listener
 -> returned exact packet ALLOW
@@ -192,6 +217,8 @@ After that, the already-validated resident lane can attempt WorkerCoordinator Pr
 canonical task: IN_PROGRESS
 KV memory source: VALIDATED
 resident KV-memory source carriage: VALIDATED
+portable targeted kv_ai_memory dispatch: VALIDATED
+Universal InTr endpoint environment carriage: VALIDATED
 packet admission profile/transport: VALIDATED
 canonical local route preparation: VALIDATED
 canonical local packet submitter: VALIDATED
