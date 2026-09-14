@@ -1,0 +1,11 @@
+{
+  "schema": "stegverse.cosv-task-vector-index-entry/v1",
+  "task_id": "SV-KV-AI-PERSISTENCE-001",
+  "repository": "StegVerse-Labs/.github",
+  "registry_ref": "data/canonical-task-records/SV-KV-AI-PERSISTENCE-001.json",
+  "source_state_vector_ref": "control/task-vectors/SV-KV-AI-PERSISTENCE-001.json",
+  "vector": "20111110110000",
+  "vector_state": "EMITTED",
+  "profile": "task.v1",
+  "authority_effect": "NONE"
+}
