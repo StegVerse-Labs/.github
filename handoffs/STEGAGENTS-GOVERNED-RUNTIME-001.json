@@ -131,6 +131,34 @@
       "canonical_task_reconciled=true"
     ]
   },
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:stegagents-governed-coderepair-roundtrip:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": ["docs/STEGAGENTS_GOVERNED_RUNTIME_MIRROR_HANDOFF.md"],
+    "admissibility_evidence_refs": [
+      "control/admissible-existence-retrospective-conformance.d/stegagents-governed-runtime-001.json",
+      "handoffs/STEGAGENTS-GOVERNED-RUNTIME-001.json"
+    ],
+    "integration_evidence_refs": [
+      "workers/stegagents_governed_runtime_worker.py",
+      "control/process-worker-adapters.d/stegagents-governed-runtime-001.json",
+      "control/worker-registry.d/stegagents-governed-runtime-001.json"
+    ],
+    "activation_proof_ref": null,
+    "blockers": [
+      "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED",
+      "CURRENT_STEGCORE_INTR_DISPOSITION_NOT_OBSERVED",
+      "CURRENT_GOVERNED_PROPOSAL_RETURN_NOT_OBSERVED",
+      "CURRENT_MASTER_RECORDS_RECONSTRUCTION_NOT_OBSERVED"
+    ],
+    "continuation_owner": "stegagents-governed-runtime-worker",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "integrates_capability",
+    "target_phase": "ACTIVATED"
+  },
   "block": {
     "block_reason": "Fresh resident WorkerCoordinator claim/fence and downstream authentic governed roundtrip have not yet been observed.",
     "dependency": "existing sovereign resident WorkerCoordinator + already-local StegAgents/SDK/StegCore/Master Records source roots",
