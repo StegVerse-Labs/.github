@@ -139,6 +139,7 @@ def project(receipt: Mapping[str, Any]) -> dict[str, Any]:
     return {
         "schema": OUTPUT_SCHEMA,
         **core,
+        "observation_ref": observation_ref,
         "state": "CURRENT_RETAINED_NODE_DISCOVERY_OBSERVED",
         "runtime_presence_observed": False,
         "runtime_supervision_observed": False,

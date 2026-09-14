@@ -23,6 +23,12 @@ try:
 except ModuleNotFoundError:
     import materialize_gadi_retained_node_discovery as retained_projector
 
+# Backward-compatible read-only alias for the historical current-iPhone wrapper.
+# The canonical projector now accepts SOURCE_SCHEMAS, but this observer's retained
+# legacy tests and callers still name SOURCE_SCHEMA. The alias grants no authority.
+if not hasattr(retained_projector, "SOURCE_SCHEMA"):
+    retained_projector.SOURCE_SCHEMA = retained_projector.LEGACY_SOURCE_SCHEMA
+
 TASK_ID = "GADI-RESIDENT-EXECUTION-001"
 PARENT_TASK_ID = "GADI-001"
 FETCH_SCHEMA = "stegos.stegbrowser.current-iphone-rendezvous-observation-fetch/v1"
@@ -41,6 +47,22 @@ def _write(path: Path, value: dict[str, Any]) -> None:
     tmp = path.with_name("." + path.name + ".tmp")
     tmp.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     tmp.replace(path)
+
+
+def _projected_observation_ref(projected: dict[str, Any]) -> str:
+    existing = projected.get("observation_ref")
+    if isinstance(existing, str) and existing:
+        return existing
+    core_keys = (
+        "task_id", "parent_task_id", "node_ref", "source_task_id", "source_cosv",
+        "source_schema", "source_execution_surface", "source_receipt_sha256",
+        "source_envelope_sha256", "retained_node_state_generation",
+        "retained_node_state_commitment", "retained_node_transition_sequence",
+        "retained_node_transition_commitment", "source_device_hb_reference",
+        "current_observed_hb_reference",
+    )
+    core = {key: projected.get(key) for key in core_keys}
+    return "runtime://gadi/retained-node-discovery/" + hashlib.sha256(retained_projector._canonical_bytes(core)).hexdigest()
 
 
 def _validate_wrapper(value: Any, node_ref: str) -> dict[str, Any]:
@@ -71,6 +93,7 @@ def _validate_wrapper(value: Any, node_ref: str) -> dict[str, Any]:
     projected = retained_projector.project(evidence)
     if projected.get("node_ref") != node_ref:
         raise ValueError("current-iPhone receipt projected node mismatch")
+    projected = {**projected, "observation_ref": _projected_observation_ref(projected)}
     return {**dict(value), "_projected": projected}
 
 
