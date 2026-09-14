@@ -1,0 +1,96 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "STEGAGENTS-GOVERNED-RUNTIME-001",
+  "correlation_id": "STEGAGENTS-GOVERNED-RUNTIME-001",
+  "root_correlation_id": "STEGAGENTS-GOVERNED-RUNTIME-001",
+  "parent_task_id": "STEGAGENTS-GOVERNED-AGENT-REGISTRATION-001",
+  "goal": "Activate and prove the first governed StegAgents runtime path for the already-registered CodeRepair-001 governed manifest through the existing WorkerCoordinator, StegCore/InTr, optional TV/TVC provider route, and Master Records evidence chain without creating duplicate authority or runtime surfaces.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "repository": "StegVerse-Labs/.github",
+  "handoff": "docs/STEGAGENTS_GOVERNED_RUNTIME_MIRROR_HANDOFF.md",
+  "cosv": {"profile": "task.v1", "vector": "71000000101001"},
+  "cosv_task_vector": "71000000101001",
+  "source_refs": [
+    "data/canonical-task-records/STEGAGENTS-GOVERNED-AGENT-REGISTRATION-001.json",
+    "docs/STEGAGENTS_GOVERNED_AGENT_REGISTRATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegAgents@b768eeeb0ceca14fcfd50ce665cd6c0885e2774f:agents/governed/CodeRepair-001.manifest.json",
+    "StegVerse-Labs/StegAgents@b639c2674959e3be9fb7a70caa33115c694af764:docs/STEGAGENTS_GOVERNED_AGENT_REGISTRATION_MIRROR_HANDOFF.md",
+    "control/worker-registry.json",
+    "scripts/evaluate_task_registry_collision_checkin.py",
+    "scripts/install_and_run_canonical_work_event_bootstrap.py"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs", "master-records"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegAgents", "StegVerse-Labs/StegCore", "master-records/orchestration"],
+    "components": ["CodeRepair-001 governed runtime", "WorkerCoordinator claim-fence", "StegCore/InTr governed ingress", "TV/TVC provider route if required", "Master Records runtime reconstruction"]
+  },
+  "dependencies": [
+    {"dependency_id":"DEP-GOVERNED-AGENT-REGISTRATION","kind":"SOURCE_PREDECESSOR","state":"RESOLVED","ref":"STEGAGENTS-GOVERNED-AGENT-REGISTRATION-001","disposition":"REUSE_RETIRED_COMPLETED_PREDECESSOR"},
+    {"dependency_id":"DEP-STEGCORE-BASELINE","kind":"GOVERNANCE_BASELINE","state":"ACTIVATED","ref":"StegVerse-Labs/StegCore@60c1e12d80decbafffbdda25b04c392a7735d13e:registry/stegverse-001-002.activation.json"},
+    {"dependency_id":"DEP-STEGAGENTS-HANDSHAKE","kind":"INTEGRATION_GATE","state":"HANDSHAKE_READY","ref":"StegVerse-Labs/StegAgents@a7fbc77081330d074b0202c70a4fa835f04e7f39:registry/stegagents-stegcore.handshake.activation.json"}
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": ["STEGAGENTS-GOVERNED-AGENT-REGISTRATION-001", "STEGVERSE-CANONICAL-WORK-COORDINATION-001"],
+  "expected_evidence_predicates": [
+    "AUTHENTIC_CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+    "AUTHENTIC_CODEREPAIR_GOVERNED_REQUEST_IDENTITY_OBSERVED",
+    "AUTHENTIC_STEGCORE_INTR_INGRESS_DISPOSITION_OBSERVED",
+    "PROPOSAL_ONLY_TRUE_PRESERVED",
+    "EXECUTION_AUTHORITY_FALSE_PRESERVED",
+    "SELF_AUTHORIZATION_FALSE_PRESERVED",
+    "AUTHENTIC_TV_TVC_PROVIDER_OPERATION_OBSERVED_IF_REQUIRED",
+    "PROVIDER_CREDENTIALS_NOT_VISIBLE_TO_STEGAGENTS",
+    "AUTHENTIC_GOVERNED_PROPOSAL_RESULT_OBSERVED",
+    "AUTHENTIC_MASTER_RECORDS_RECONSTRUCTION_OBSERVED",
+    "EXACT_HEAD_VALIDATION_PASS",
+    "MERGED_MAIN_REVALIDATION_PASS"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["task_registry_reconciliation", "worker_claim_projection", "intr_task_admission", "bounded_process_execution", "canonical_artifact_validation", "master_records_reconciliation"],
+    "environment": "SOVEREIGN_RESIDENT",
+    "direction": "INTERNAL_AND_OPTIONAL_PROVIDER",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["control/canonical-resident-carrier-contract.json"]},
+      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":[]},
+      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":[]},
+      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":[]},
+      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":[]},
+      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"PLATFORM","evidence_refs":[]}
+    ],
+    "selected_substrate_id": null,
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  },
+  "runtime_resolution": null,
+  "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
+  "human_action_ref": null,
+  "completion": {"claimed":false,"validated":false,"reconciliation_ref":null,"activation_proof_complete":false},
+  "allowed_next_transitions": ["INGRESS_ADMITTED"],
+  "handoff_projection_refs": ["docs/STEGAGENTS_GOVERNED_RUNTIME_MIRROR_HANDOFF.md"],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "master_records_reality_authority": true,
+    "interlock_intr_required_for_governed_ingress_egress": true,
+    "provider_credential_authority": "TV/TVC",
+    "github_runtime_authority": "NONE"
+  }
+}

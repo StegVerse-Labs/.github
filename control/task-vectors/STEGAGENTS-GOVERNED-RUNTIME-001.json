@@ -1,0 +1,31 @@
+{
+  "schema": "stegverse.cosv-task-vector/v1",
+  "task_id": "STEGAGENTS-GOVERNED-RUNTIME-001",
+  "vector": "71000000101001",
+  "level": "task",
+  "repository": "StegVerse-Labs/.github",
+  "symbol_order": "LRUIVGOCMTBEAP",
+  "evidence_refs": [
+    "data/canonical-task-records/STEGAGENTS-GOVERNED-RUNTIME-001.json",
+    "docs/STEGAGENTS_GOVERNED_RUNTIME_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegAgents@b768eeeb0ceca14fcfd50ce665cd6c0885e2774f:agents/governed/CodeRepair-001.manifest.json"
+  ],
+  "observed_at": "2026-09-14T14:36:00Z",
+  "exact_metrics": {
+    "lifecycle": "UNCLAIMED",
+    "archive_ready": false,
+    "unassigned_work": 1,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "authority_effect": "NONE"
+}
