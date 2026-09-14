@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import os
 from pathlib import Path
 import tempfile
@@ -25,6 +26,14 @@ carrier = importlib.util.module_from_spec(CARRIER_SPEC)
 CARRIER_SPEC.loader.exec_module(carrier)
 
 
+def _materialize_with_recorded_source(runtime: Path, source: Path) -> None:
+    installer.materialize(ROOT, runtime)
+    receipt_path = runtime / carrier.MATERIALIZATION_RECEIPT
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    receipt["source_root"] = str(source.resolve())
+    receipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
 class CarrierSelfHealSourceRootContinuityTests(unittest.TestCase):
     def test_carrier_recovers_canonical_source_locator_for_worker_self_heal(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -32,7 +41,7 @@ class CarrierSelfHealSourceRootContinuityTests(unittest.TestCase):
             runtime = base / "heartbeat"
             source = base / "canonical-source"
             source.mkdir()
-            installer.materialize(source, runtime)
+            _materialize_with_recorded_source(runtime, source)
 
             with mock.patch.dict(os.environ, {}, clear=True):
                 recovered = carrier._restore_local_source_root(runtime)
@@ -50,7 +59,7 @@ class CarrierSelfHealSourceRootContinuityTests(unittest.TestCase):
             env_source = base / "service-source"
             receipt_source.mkdir()
             env_source.mkdir()
-            installer.materialize(receipt_source, runtime)
+            _materialize_with_recorded_source(runtime, receipt_source)
 
             with mock.patch.dict(
                 os.environ,
