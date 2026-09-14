@@ -18,7 +18,9 @@
     "StegVerse-Labs/.github#1857",
     "StegVerse-Labs/.github#1862",
     "StegVerse-Labs/.github#1863",
-    "StegVerse-Labs/StegVerse-Healer@main"
+    "StegVerse-Labs/StegVerse-Healer#75",
+    "StegVerse-Labs/StegVerse-Healer#81",
+    "StegVerse-Labs/StegVerse-Healer@b7d37a91fa464a716a85c0a8a28cffd6e5022fb6"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
@@ -40,23 +42,34 @@
       "transition": "OBSERVE_RESIDENT_CUSTODY_ROOT_TO_BIND_NEXT_DEFECT",
       "classification": "RESIDENT_CUSTODY_ROOT_NOT_OBSERVED",
       "next_defect": "RESIDENT_CUSTODY_ROOT_NOT_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001",
-      "inspected_refs": [
-        "StegVerse-Labs/.github#1860",
-        "StegVerse-Labs/.github#1862",
-        "StegVerse-Labs/.github#1863",
-        "StegVerse-Labs/.github@afa6ec5defc24a920b2dc5e9d3d46cbe24e79549",
-        "StegVerse-Labs/StegVerse-Healer:data/reusable_task_schedule.json",
-        "StegVerse-Labs/StegVerse-Healer:app/reusable_task_scheduler.py",
-        "StegVerse-Labs/.github:scripts/check_stegbrowser_runtime_consumption_receipts.py"
-      ],
       "required_receipt": "receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json",
       "classifier_run": false,
       "classifier_not_run_reason": "NO_AUTHENTIC_RESIDENT_RUNTIME_ROOT_PATH_OBSERVED; verifier requires explicit --runtime-root and must not run against synthetic checkout",
-      "github_repository_receipt_probe": {
-        "StegVerse-Labs/.github": "NOT_PRESENT_IN_REPOSITORY_CONTENTS_CONTEXT_ONLY",
-        "StegVerse-Labs/StegVerse-Healer": "NOT_PRESENT_IN_REPOSITORY_CONTENTS_CONTEXT_ONLY"
-      },
       "authority_effect": "NONE_CLASSIFICATION_ONLY",
+      "runtime_completion_claimed": false
+    },
+    {
+      "observed_at": "2026-09-14",
+      "transition": "BIND_RUNTIME_MATERIALIZATION_REMEDIATION_TO_OBSERVE_RESIDENT_CUSTODY_ROOT",
+      "classification": "SOURCE_REPAIR_MERGED_FOR_RESIDENT_ROOT_OBSERVATION_SURFACING",
+      "healer_issue": "StegVerse-Labs/StegVerse-Healer#75",
+      "healer_pr": "StegVerse-Labs/StegVerse-Healer#81",
+      "exact_head": "44f69f236f90bc000446ad15cc082cef244f5284",
+      "validation": {
+        "workflow": "Test Readiness",
+        "run_id": "34880822258",
+        "conclusion": "success"
+      },
+      "merge_commit": "b7d37a91fa464a716a85c0a8a28cffd6e5022fb6",
+      "emitted_packet": "resident_custody_root_observation",
+      "packet_schema": "stegverse.healer.resident-custody-root-observation/v1",
+      "packet_states": [
+        "RESIDENT_CUSTODY_ROOT_OBSERVED",
+        "RESIDENT_CUSTODY_ROOT_NOT_OBSERVED",
+        "RESIDENT_CUSTODY_ROOT_INVALID",
+        "RESIDENT_CUSTODY_ROOT_AMBIGUOUS"
+      ],
+      "authority_effect": "NONE_OBSERVATION_SURFACING_ONLY",
       "runtime_completion_claimed": false
     }
   ],
@@ -76,18 +89,25 @@
       "disposition": "RT_STEGBROWSER_RUNTIME_CONSUMPTION_ENABLED_HOURLY_BUT_NOT_RUNTIME_PROOF"
     },
     {
+      "dependency_id": "DEP-HEALER-RESIDENT-ROOT-OBSERVATION-PACKET",
+      "kind": "SOURCE_REPAIR",
+      "state": "RESOLVED_SOURCE_ONLY",
+      "ref": "StegVerse-Labs/StegVerse-Healer#81;StegVerse-Labs/StegVerse-Healer@b7d37a91fa464a716a85c0a8a28cffd6e5022fb6;actions:34880822258",
+      "disposition": "EXISTING_HEALER_CARRIER_NOW_EMITS_TASK_BOUND_NON_AUTHORIZING_RESIDENT_CUSTODY_ROOT_OBSERVATION_PACKET"
+    },
+    {
       "dependency_id": "DEP-RESIDENT-CUSTODY-ROOT-OBSERVATION",
       "kind": "RUNTIME_EVIDENCE",
-      "state": "UNRESOLVED",
-      "ref": "STEGVERSE_HEARTBEAT_ROOT_OR_CANONICAL_LOCAL_RUNTIME_DISCOVERY",
-      "disposition": "RESIDENT_CUSTODY_ROOT_NOT_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001"
+      "state": "PENDING_POST_REPAIR_CARRIER_OBSERVATION",
+      "ref": "resident_custody_root_observation",
+      "disposition": "OBSERVE_POST_MERGE_HEALER_CARRIER_OUTPUT_AND_BIND_PACKET_STATE"
     },
     {
       "dependency_id": "DEP-CANONICAL-WORK-RECEIPT-REACHABILITY",
       "kind": "RUNTIME_EVIDENCE_CLASSIFICATION",
       "state": "PENDING_RESIDENT_ROOT",
       "ref": "receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json",
-      "disposition": "CLASSIFIER_NOT_RUN_BECAUSE_NO_AUTHENTIC_RESIDENT_ROOT_WAS_OBSERVED"
+      "disposition": "RUN_NON_AUTHORIZING_EXACT_RECEIPT_CLASSIFIER_ONLY_AFTER_PACKET_OBSERVES_AUTHENTIC_RESIDENT_ROOT"
     },
     {
       "dependency_id": "DEP-FULL-PARENT-PREDICATES",
@@ -98,7 +118,7 @@
     }
   ],
   "blockers": [],
-  "allowed_next_transitions": ["BIND_RUNTIME_MATERIALIZATION_REMEDIATION", "OBSERVE_RESIDENT_CUSTODY_ROOT", "CLASSIFY_RECEIPT_REACHABILITY"],
+  "allowed_next_transitions": ["OBSERVE_POST_REPAIR_HEALER_CARRIER_PACKET", "CLASSIFY_RECEIPT_REACHABILITY", "BIND_NEXT_RUNTIME_DEFECT"],
   "handoff_projection_refs": ["docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md"],
   "completion": {
     "claimed": false,
