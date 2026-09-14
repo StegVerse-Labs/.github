@@ -1,22 +1,23 @@
 # KV AI Memory Resident Execution Mirror Handoff
 
-Status: ACTIVE / PORTABLE-TARGETED-DISPATCH-VALIDATED / RESIDENT-SOURCE-CARRIAGE-VALIDATED / MEMORY-PACKET-INTR-SOURCE-PATH-VALIDATED / RESIDENT-PROVIDERREQUEST-BINDING-VALIDATED / LIVE-INTR-PROOF-OPEN
-Goal Task ID: `SV-KV-AI-PERSISTENCE-001`
-COSV task.v1: `20111110110000`
-Repository: `StegVerse-Labs/.github`
-Canonical task record: `data/canonical-task-records/SV-KV-AI-PERSISTENCE-001.json`
-Parent KV handoff: `StegVerse-Labs/continuity-vault-kit/KV_AI_PERSISTENCE_CLASSES_MIRROR_HANDOFF.md`
+Status: ACTIVE / EVENT-TRIGGERED-SHARED-INTR-BOOTSTRAP-VALIDATED / PORTABLE-TARGETED-DISPATCH-VALIDATED / RESIDENT-SOURCE-CARRIAGE-VALIDATED / RESIDENT-PROVIDERREQUEST-BINDING-VALIDATED / LIVE-INTR-PROOF-OPEN  
+Goal Task ID: `SV-KV-AI-PERSISTENCE-001`  
+COSV task.v1: `20111110110000`  
+Repository: `StegVerse-Labs/.github`  
+Canonical task record: `data/canonical-task-records/SV-KV-AI-PERSISTENCE-001.json`  
+Executable handoff: `handoffs/SV-KV-AI-PERSISTENCE-001.json`  
+Parent KV handoff: `StegVerse-Labs/continuity-vault-kit/KV_AI_PERSISTENCE_CLASSES_MIRROR_HANDOFF.md`  
 LLM bridge handoff: `StegVerse-org/LLM-adapter/docs/KV_AI_MEMORY_CONTEXT_BRIDGE_MIRROR_HANDOFF.md`
 
 ## Goal
 
-Bind Personal-KV continuity memory into the existing sovereign resident/WorkerCoordinator execution family without creating another scheduler, runtime owner, credential path, admission authority, model authority, or private-content repository path.
+Bind Personal-KV continuity memory into the existing sovereign resident/WorkerCoordinator execution family without creating another scheduler, runtime owner, credential path, admission authority, model authority, private-content repository path, or device-discovery prerequisite.
 
-## Authority reuse
+## Authority boundary
 
 ```text
 private continuity source: continuity-vault-kit
-memory-packet transport/admission: existing shared Universal InTr listener
+memory-packet admission: existing shared Universal InTr implementation
 resident work ownership: existing WorkerCoordinator claim/fence
 provider request/response admission: existing external LLM InTr path
 credential/provider operation: TV/TVC only
@@ -25,11 +26,11 @@ custody/reconstruction: Master Records
 heartbeat: carrier/reference/observation only
 ```
 
-Repository state, source preparation, CI, fixtures, route installation, source carriage, or targeted-dispatch registration never substitute for an authentic InTr receipt, WorkerCoordinator claim/fence, provider operation, model response, or KV write receipt.
+Repository state, source preparation, CI, fixtures, route installation, source carriage, event-bootstrap source, or targeted-dispatch registration never substitute for an authentic InTr receipt, WorkerCoordinator claim/fence, provider operation, model response, or KV write receipt.
 
-## Resident runtime surface invariant
+## Resident runtime-surface invariant
 
-`CURRENT_USER_IPHONE` or any equivalent current-device label is informational only. This Goal Task must not discover, enumerate, poll for, confirm, authorize, identify, wait for, or require a physical iPhone, Remote Desktop Commander device, remotely connected resident device, or second user-operated machine before attempting the existing resident-local path.
+`CURRENT_USER_IPHONE` and equivalent device labels are informational only. This task must not discover, enumerate, poll for, confirm, authorize, identify, wait for, or require a physical iPhone, Remote Desktop Commander device, remotely connected device, or second user-operated machine.
 
 ```text
 device confirmation required: false
@@ -42,7 +43,7 @@ absence of connected-device result is blocker: false
 device/runtime-surface identity mints authority: false
 ```
 
-Runtime verification comes from authentic InTr admission/transition evidence, WorkerCoordinator claim/fence evidence where applicable, exact provider-request/result lineage, exact KV readback, and Master Records custody/reconstruction. A connected-device listing, process-presence listing, RDC result, or current-device identity is neither a prerequisite nor completion evidence.
+Runtime verification comes from authentic InTr admission/transition evidence, WorkerCoordinator claim/fence evidence where applicable, exact provider-request/result lineage, exact KV readback, and Master Records custody/reconstruction.
 
 ## Canonical private bound state
 
@@ -55,42 +56,61 @@ Runtime verification comes from authentic InTr admission/transition evidence, Wo
   receipts/provider-request-materialization.json
 ```
 
-Private packet, prompt, and provider-request bytes remain outside GitHub. The resident request consumer tests readiness and invokes bounded subprocesses; it does not read the private packet itself.
+Private packet, prompt, and provider-request bytes remain outside GitHub.
 
-## Resident source carriage repair
+## Source carriage
 
-The dispatcher already registered selector `kv_ai_memory`, but resident source materialization and local WorkerCoordinator source refresh originally omitted the task-specific KV-memory scripts because `scripts/` is allow-listed rather than copied wholesale. A resident could therefore receive the canonical request/selector while lacking the executable consumer path.
-
-The carriage repair now requires both resident source paths to carry:
+The generic resident dispatcher already registers selector `kv_ai_memory`. The resident runtime materializer and local WorkerCoordinator source refresher now also carry the required task-specific scripts:
 
 - `scripts/consume_kv_ai_memory_resident_request.py`;
 - `scripts/prepare_kv_ai_memory_intr_runtime_source.py`;
 - `scripts/install_kv_ai_memory_universal_intr_route.py`;
 - `scripts/submit_kv_ai_memory_packet_local.py`.
 
-Canonical repair surfaces:
+The resident-native event bootstrap implementation is `workers/kv_ai_memory_intr_event_bootstrap.py`. Because `workers/` is copied wholesale by both canonical resident materialization and static-source refresh, the preferred bootstrap itself is resident-carried without adding another script allow-list dependency. `scripts/run_kv_ai_memory_intr_event_bootstrap.py` is a thin CLI wrapper.
 
-- `scripts/install_sovereign_heartbeat_service.py` — fresh resident materialization copies and requires all four files;
-- `scripts/refresh_sovereign_worker_runtime_source.py` — already-local source refresh copies all four files without network source fetch;
-- `tests/test_kv_ai_memory_resident_source_carriage.py` — regression contract;
-- `.github/workflows/validate-kv-ai-memory-resident.yml` — task-specific hosted validation.
+## Event-triggered shared Universal InTr bootstrap
 
-The historical `install_sovereign_heartbeat_service_base.py` remains an intentionally preserved prior/base implementation and is not promoted into the current KV-memory carriage path.
+The shared ingress implementation uses loopback and defaults to an ephemeral port. A static listener URL is therefore not a canonical runtime identity and is no longer required by the preferred KV-memory path.
 
-This repair creates no new runtime, scheduler, listener, WorkerCoordinator, credential path, or execution authority. It only makes the already-registered KV-memory resident consumer executable after normal resident materialization or local static-source refresh.
+The validated bootstrap reuses the same pattern already established by CanonicalWork:
 
-## Portable targeted resident dispatch
+```text
+real fenced context-packet.json + provider-request-input.json
+-> normalize already-local shared Universal InTr source
+-> instantiate workers.universal_intr_profiled_ingress.Server((127.0.0.1, 0), runtime, 1)
+-> receive OS-selected loopback port
+-> pass exact one-request /intr/materialization URL only to existing KV-memory consumer
+-> existing submitter sends exact packet bytes
+-> shared listener returns ALLOW or reject
+-> listener closes after one request
+-> ALLOW only: memory-packet-admission.json exists
+-> existing WorkerCoordinator claim/fence
+-> fenced ProviderRequest materialization
+```
 
-After source carriage was repaired, a second source/control gap remained: `scripts/refresh_and_dispatch_resident_requests.py` could not select `kv_ai_memory`, even though the generic dispatcher already registered it. The same portable bridge also stripped `STEGVERSE_UNIVERSAL_INTR_INGRESS_URL`, and the native worker-service safe-binding allowlist did not carry that explicit non-secret listener endpoint into the resident worker process.
+The bootstrap:
 
-The current path now requires:
+- creates no second listener implementation;
+- creates no scheduler or WorkerCoordinator;
+- does not read private packet/prompt bytes itself;
+- rejects hosted execution;
+- does not mint InTr decisions, claims/fences, credentials, provider authority, KV-write authority, or activation authority;
+- does not require a preconfigured `STEGVERSE_UNIVERSAL_INTR_INGRESS_URL`.
 
-- `kv_ai_memory` in `ALLOWED_TARGET_CONSUMERS` for exact targeted portable dispatch;
-- `STEGVERSE_UNIVERSAL_INTR_INGRESS_URL` in the portable bridge `NONSECRET_FORWARD` allowlist;
-- `STEGVERSE_UNIVERSAL_INTR_INGRESS_URL` in `install_sovereign_heartbeat_service.py::WORKER_SAFE_LOCAL_BINDINGS` so the normal native worker sweep can reach the same resident-local listener endpoint;
-- regression coverage proving both endpoint-carriage paths while preserving GitHub-token authority `NONE` and TV/TVC credential authority.
+Preferred command:
 
-Canonical targeted command:
+```text
+python scripts/run_kv_ai_memory_intr_event_bootstrap.py \
+  --source-root <canonical-local-source-root> \
+  --runtime-root <resident-runtime-root>
+```
+
+When private packet/provider inputs are absent, the bootstrap returns `BOUND_STATE_INPUT_NOT_READY` without starting the listener. That is a non-authorizing wait state, not a device or human blocker.
+
+## Alternate exact-target resident bridge
+
+The existing portable bridge remains valid:
 
 ```text
 python scripts/refresh_and_dispatch_resident_requests.py \
@@ -99,23 +119,11 @@ python scripts/refresh_and_dispatch_resident_requests.py \
   --only-consumer kv_ai_memory
 ```
 
-This bridge refreshes already-local static source and selects exactly one registered consumer. It does not perform network source fetch, mint claims/fences, grant InTr authority, grant credential authority, start a second scheduler, or substitute for the authentic listener response.
+It now admits `kv_ai_memory` and forwards an explicitly supplied non-secret `STEGVERSE_UNIVERSAL_INTR_INGRESS_URL`. The native worker-service environment also preserves that non-secret binding. This is an alternate path when a shared listener URL already exists; it is not required by the preferred event-triggered path.
 
-## Shared Universal InTr packet admission
+## Packet admission contract
 
-Canonical source surfaces:
-
-- `workers/kv_ai_memory_intr_profile.py` — exact Personal-KV memory packet validation and non-authorizing admission receipt;
-- `workers/kv_ai_memory_intr_transport.py` — resident-local transport header/hash validation;
-- `scripts/install_kv_ai_memory_universal_intr_route.py` — idempotent transform for the existing shared listener;
-- `scripts/prepare_kv_ai_memory_intr_runtime_source.py` — canonical runtime-source preparation wrapper;
-- `scripts/submit_kv_ai_memory_packet_local.py` — private staged-packet submitter and exact returned-receipt validator;
-- `scripts/consume_kv_ai_memory_resident_request.py` — autonomous wait/admit/continue orchestration;
-- `tests/test_kv_ai_memory_intr_admission.py`;
-- `tests/test_prepare_kv_ai_memory_intr_runtime_source.py`;
-- `tests/test_kv_ai_memory_resident_binding.py`.
-
-The resident-local submission contract is:
+The resident-local submission remains:
 
 ```text
 HTTP loopback only
@@ -126,90 +134,57 @@ X-StegVerse-Payload-SHA256 = exact raw-body SHA-256
 X-StegVerse-Authorization-Id = absent
 ```
 
-The shared listener admission must bind the exact `packet_id`, canonical `packet_sha256`, exact packet validation, and a self-consistent `sha256:` receipt hash. The canonical submitter additionally rejects any returned receipt that claims provider request materialization, provider ingress, provider execution, KV writeback, credential material, claim/fence creation, HeartBeat execution authority, or request execution authority at this boundary.
+The shared listener admission must bind the exact `packet_id`, canonical `packet_sha256`, exact packet validation, and self-consistent `sha256:` receipt hash. The submitter rejects returned evidence that prematurely claims ProviderRequest materialization, provider ingress/execution, KV writeback, credentials, claim/fence creation, HeartBeat execution authority, or request execution authority.
 
-Only a successfully validated listener receipt may populate `inputs/memory-packet-admission.json`. Missing listener configuration, an unreachable/rejecting listener, malformed evidence, tampered receipt hash, or promoted authority claims remain fail-closed/wait states.
+Only a successfully validated listener receipt may populate `inputs/memory-packet-admission.json`.
 
-## Canonical resident progression
+## ProviderRequest boundary
 
-When `context-packet.json` and `provider-request-input.json` exist while `memory-packet-admission.json` is absent, the consumer may:
-
-1. require an explicit `STEGVERSE_UNIVERSAL_INTR_INGRESS_URL`;
-2. run `prepare_kv_ai_memory_intr_runtime_source.py` against already-local resident source;
-3. require a valid preparation result (`ROUTE_INSTALLED_LOCAL_SOURCE` or `ROUTE_ALREADY_INSTALLED`);
-4. invoke `submit_kv_ai_memory_packet_local.py` against the private bound-state root;
-5. recheck bound-state readiness;
-6. continue to existing WorkerCoordinator execution only if the authentic admission artifact now exists.
-
-The preparation wrapper only normalizes local source. It does not start a listener, create a transport event, admit a packet, mint a claim/fence, execute a provider, or mutate KV.
-
-```text
-real Personal-KV readable state
--> private context packet + provider request input
--> local source normalization for existing shared Universal InTr listener
--> exact resident-local packet submission
--> authentic shared-listener ALLOW
--> private admission artifact
--> existing WorkerCoordinator fresh claim/fence
--> fenced LLM ProviderRequest materialization
--> existing provider ingress / TVC / response / egress chain
--> optional non-authorizing memory write proposal
--> authentic target-KV admission
--> exact-byte KV readback receipt
-```
-
-## Resident ProviderRequest binding
-
-Existing resident execution surfaces remain canonical:
+Canonical surfaces remain:
 
 - `handoffs/SV-KV-AI-PERSISTENCE-001.json`;
 - `control/worker-registry.d/kv-ai-memory-resident-001.json`;
 - `control/process-worker-adapters.d/kv-ai-memory-resident-001.json`;
 - `control/resident-execution-request.d/kv-ai-memory-resident-001.json`;
 - `workers/kv_ai_memory_resident_worker.py`;
-- dispatcher selector `kv_ai_memory`;
-- portable targeted selector `kv_ai_memory`;
 - LLM-adapter `scripts/materialize_kv_memory_provider_request.py`.
 
 The worker stops at `KV_AI_MEMORY_PROVIDER_REQUEST_MATERIALIZED`. It does not claim provider ingress ALLOW, provider execution, model response, egress ALLOW, or KV writeback.
 
-## Hosted validation
+## Hosted source validation
 
-Previously validated:
+Relevant successful runs:
 
-- LLM bridge/materializer: runs `34803228613`, `34803228620` — SUCCESS;
-- original resident binding: run `34803483965` — SUCCESS;
-- initial shared memory-packet admission source: run `34804928451` — SUCCESS;
-- no-device/RDC runtime-surface correction: runs `34812254218`, `34812316750` — SUCCESS.
+- `34803228613`, `34803228620` — LLM bridge/materializer;
+- `34803483965` — original resident binding;
+- `34804928451` — initial shared packet-admission source;
+- `34805361433` — exact admission receipt hash and anti-authority hardening;
+- `34805426026` — local route preparation;
+- `34805510953` — resident admission orchestration;
+- `34812254218`, `34812316750` — no-device/RDC runtime invariant;
+- `34812755561` — dispatcher non-starvation regression repair;
+- `34812879650` — resident source carriage;
+- `34813405596` — portable `kv_ai_memory` selection and endpoint carriage;
+- `34813739207` — first event-triggered shared-listener bootstrap validation;
+- `34813923637` — resident-native bootstrap/carriage validation;
+- `34814058310` — canonical Task Registry reconciliation validation.
 
-Hardening, source preparation, source carriage, and targeted dispatch:
+Hosted validation proves source behavior only. It does not prove a current sovereign resident has private inputs or that a live packet/provider/KV round trip occurred.
 
-- run `34805361433` / job `103856079710` — SUCCESS; exact returned receipt hash validation, anti-authority checks, packet admission tests, resident binding tests, and compilation passed;
-- run `34805426026` / job `103856264389` — SUCCESS; canonical runtime-source preparation tests and compilation passed;
-- run `34805510953` / job `103856506912` — SUCCESS; resident consumer convergence on the canonical source-preparation wrapper, fail-closed preparation-result checks, packet-admission tests, resident binding tests, and compilation passed;
-- run `34812669655` exposed a brittle dispatcher test whose expected failing selector was hard-coded to `g18`; the actual non-starvation behavior remained intact after `kv_ai_memory` became an earlier registered selector;
-- run `34812755561` / job `103877180585` — SUCCESS after repairing that test to validate selector-order-independent non-starvation;
-- run `34812879650` / job `103877535634` — SUCCESS; KV-specific resident source-carriage regression plus the complete KV-memory resident tests and Python compilation passed;
-- run `34813405596` / job `103879033600` — SUCCESS; portable exact `kv_ai_memory` selection, portable Universal InTr endpoint forwarding, native worker-service endpoint carriage, complete KV-memory resident tests, and compilation passed.
-
-Hosted validation proves source behavior only. It does not prove that a current sovereign resident refreshed these bytes, that private staged inputs exist, that the shared listener is bound, that a live packet ALLOW occurred, or that WorkerCoordinator/provider/model/writeback execution happened.
-
-README impact determination: no semantic README update is required for this repair because the existing README already names this consumer, resident request, WorkerCoordinator lane, and private-state flow as canonical. The defect was source/control addressability and endpoint carriage; the repair restores implementation parity without changing the public authority model.
+README impact: the existing top-level README already identifies the fenced KV-memory resident state and canonical consumer/WorkerCoordinator lane. This refinement changes how the existing shared listener is instantiated for one event, not the public authority model, so no broad README rewrite is required.
 
 ## Next authentic evidence boundary
 
-The first unresolved predicate is operational rather than architectural and is not gated by device discovery or RDC availability:
-
 ```text
-portable refresh + exact kv_ai_memory dispatch
-+ real staged Personal-KV packet
-+ real provider-request input
-+ current shared loopback Universal InTr listener
--> returned exact packet ALLOW
+real fenced Personal-KV packet + provider input
+-> resident-native event bootstrap
+-> authentic shared-listener exact-packet ALLOW
 -> memory-packet-admission.json
+-> fresh WorkerCoordinator claim/fence
+-> authentic ProviderRequest materialization
 ```
 
-After that, the already-validated resident lane can attempt WorkerCoordinator ProviderRequest materialization. No receipt may be synthesized from CI, source, fixtures, model output, device identity, or connected-device presence.
+No receipt may be synthesized from CI, source, fixtures, device identity, or connected-device presence.
 
 ## Current truth
 
@@ -217,12 +192,12 @@ After that, the already-validated resident lane can attempt WorkerCoordinator Pr
 canonical task: IN_PROGRESS
 KV memory source: VALIDATED
 resident KV-memory source carriage: VALIDATED
+resident-native event-triggered shared InTr bootstrap: VALIDATED
 portable targeted kv_ai_memory dispatch: VALIDATED
 Universal InTr endpoint environment carriage: VALIDATED
 packet admission profile/transport: VALIDATED
 canonical local route preparation: VALIDATED
 canonical local packet submitter: VALIDATED
-resident autonomous admission orchestration: VALIDATED
 resident WorkerCoordinator binding: VALIDATED
 LLM ProviderRequest bridge/materializer: VALIDATED
 device discovery/presence/RDC gate: PROHIBITED
