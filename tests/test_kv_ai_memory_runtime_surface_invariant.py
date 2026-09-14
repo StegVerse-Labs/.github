@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import subprocess
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -177,3 +179,56 @@ def test_kv_runtime_evidence_gaps_remain_on_parent_task_until_authentic_completi
     assert successor["coordination_state"] == "RETIRED"
     assert successor["retirement"]["canonical_continuation_task_id"] == "SV-KV-AI-PERSISTENCE-001"
     assert successor["authority_model"]["retired_duplicate_grants_authority"] is False
+
+
+def test_kv_runtime_profile_map_declares_non_authorizing_routing_profile():
+    parent = load_json("data/canonical-task-records/SV-KV-AI-PERSISTENCE-001.json")
+    runtime_map = load_json("control/runtime-profile-map.json")
+    profiles = {profile["profile_id"]: profile for profile in runtime_map["profiles"]}
+    profile = profiles["kv-ai-memory-resident-routing-v1"]
+
+    assert runtime_map["authority"]["map_grants_execution_authority"] is False
+    assert runtime_map["authority"]["capability_match_grants_authority"] is False
+    assert profile["observed"]["state"] == "DECLARED_ONLY"
+    assert profile["authority"]["match_grants_authority"] is False
+    assert profile["authority"]["claim_fence_authority"] == "WORKERCOORDINATOR"
+    assert profile["authority"]["ingress_egress_authority"] == "INTERLOCK_INTR"
+    assert profile["authority"]["observed_reality_authority"] == "MASTER_RECORDS"
+    assert profile["declared"]["environment_classes"] == [parent["runtime_requirements"]["environment"]]
+    assert profile["declared"]["directions"] == [parent["runtime_requirements"]["direction"]]
+    assert set(parent["runtime_requirements"]["capabilities"]).issubset(set(profile["declared"]["capabilities"]))
+    assert "KV_AI_MEMORY_ROUTING_PROFILE_DOES_NOT_PROVE_PERSONAL_KV_INPUTS_OR_LIVE_INTR_ADMISSION" in runtime_map["nonclaims"]
+    assert "KV_AI_MEMORY_ROUTING_PROFILE_DOES_NOT_PROVE_PROVIDER_EXECUTION_OR_KV_WRITEBACK" in runtime_map["nonclaims"]
+
+
+def test_kv_runtime_routing_readiness_reaches_workercoordinator_review_without_completion_evidence():
+    proc = subprocess.run(
+        [sys.executable, "scripts/evaluate_task_runtime_routing_readiness.py", "SV-KV-AI-PERSISTENCE-001"],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    result = json.loads(proc.stdout)
+
+    assert result["task_id"] == "SV-KV-AI-PERSISTENCE-001"
+    assert result["task_source"] == "STANDALONE_CANONICAL_TASK_RECORD"
+    assert result["routing_ready_for_workercoordinator_review"] is True
+    assert result["disposition"] == "ELIGIBLE_FOR_WORKERCOORDINATOR_ADMISSION_REVIEW_WITH_RUNTIME_RESOLUTION_PERSISTENCE_PENDING"
+    assert result["execution_authority_granted"] is False
+    assert result["claim_or_fence_minted"] is False
+    assert result["workercoordinator_admission_still_required"] is True
+    assert result["interlock_intr_transition_admission_still_required"] is True
+    assert result["master_records_reconciliation_still_required"] is True
+    assert result["source_or_ci_validation_satisfies_completion"] is False
+
+    predicates = result["predicates"]
+    assert predicates["compatible_runtime_candidate_exists"]["candidate_profile_ids"] == ["kv-ai-memory-resident-routing-v1"]
+    assert predicates["route_blocking_dependencies_resolved"]["satisfied"] is True
+    assert predicates["route_blocking_dependencies_resolved"]["unresolved_route_blocking_dependency_ids"] == []
+    assert predicates["completion_evidence_predicates_pending"]["satisfied"] is False
+    assert predicates["completion_evidence_predicates_pending"]["blocks_routing_readiness"] is False
+    assert predicates["completion_evidence_predicates_pending"]["blocks_completion"] is True
+    assert "DEP-LIVE-INTR-ADMISSION" in predicates["completion_evidence_predicates_pending"]["unresolved_completion_dependency_ids"]
+    assert predicates["runtime_resolution_current"]["projection_persistence_required"] is True
+    assert result["authority_effect"] == "NONE_ROUTING_READINESS_ONLY"
