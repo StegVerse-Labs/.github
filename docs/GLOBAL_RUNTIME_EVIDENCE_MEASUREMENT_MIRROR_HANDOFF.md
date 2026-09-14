@@ -4,11 +4,11 @@ Goal Task ID: `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001`
 Parent Goal: `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001`
 COSV: `50000010100000`
 Canonical issue: `StegVerse-Labs/.github#1294`
-Status: `ACTIVE / INGRESS SOURCE REPAIRED / TASK-0011 G7 FENCE7 AUTHENTIC / SAME-DEVICE NATIVE TESTFLIGHT PATH PUBLIC / CURRENT-IPHONE RUNTIME PENDING / MEASUREMENT LOOP NOT ENTERED`
+Status: `ACTIVE / INGRESS SOURCE REPAIRED / TASK-0011 G7 FENCE7 AUTHENTIC / INTERCHANGEABLE-STEGOS RUNTIME PENDING / MEASUREMENT LOOP NOT ENTERED`
 
 ## Purpose
 
-Execute exactly one authentic current-device/sovereign-resident measurement-only global runtime profile convergence cycle, preserving the frozen run baseline, exact first-failure observations, and before/after retained-node/HB/transition evidence without same-run remediation.
+Execute exactly one authentic admitted StegOS/resident measurement-only global runtime profile convergence cycle, preserving the frozen run baseline, exact first-failure observations, and before/after retained-node/HB/transition evidence without same-run remediation.
 
 ## Measurement invariants
 
@@ -18,17 +18,22 @@ Execute exactly one authentic current-device/sovereign-resident measurement-only
 - `measurement_only=true`;
 - `same_run_remediation_allowed=false`;
 - `automatic_retry_after_first_failure=false`;
-- do not substitute GitHub Actions, source merge, public publication, or static build evidence for authentic current-device execution.
+- do not substitute GitHub Actions, source merge, public publication, or static build evidence for authentic admitted runtime execution;
+- do not require or pin execution to any named physical device.
+
+## Device / node invariant
+
+`data/task-registry-global-invariants.json` applies to this Goal. StegOS-capable devices are interchangeable transport/execution nodes, physical-device identity gates are prohibited, and KV/SKAP Vault is the sole user-verification authority.
+
+Historical `current iPhone`, `CURRENT_IPHONE_TESTFLIGHT_SIGNING`, and same-device execution evidence remains provenance for the surfaces where that work was implemented or observed. Those labels are not Goal-level prerequisites and must not block execution on another eligible StegOS surface.
 
 ## Historical ingress repair
 
-The first measurement attempt never entered the convergence loop. PR `StegVerse-Labs/.github#1296` repaired the canonical request registration, task-shard fallback, `PROPOSED -> INGRESS_ADMITTED` lifecycle, and dedicated measurement trigger. No second dispatcher, scheduler, listener, WorkerCoordinator, heartbeat, or hosted runtime was introduced.
+The first measurement attempt never entered the convergence loop. PR `StegVerse-Labs/.github#1296` repaired canonical request registration, task-shard fallback, `PROPOSED -> INGRESS_ADMITTED` lifecycle, and the dedicated measurement trigger. No second dispatcher, scheduler, listener, WorkerCoordinator, heartbeat, or hosted runtime was introduced.
 
-## Reconciliation to current runtime truth
+## Authentic allocation already established
 
-The former handoff stopped at `PRE_LOOP_AUTHENTIC_SOURCE_DEVICE_RESIDENT_NOT_MATERIALIZED` and `CURRENT_IPHONE_SIGNER_WASM_NOT_MATERIALIZED_IN_SERVED_BOOTSTRAP_DISTRIBUTION`. Those source-distribution conditions are no longer current.
-
-Canonical child `KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001` now establishes:
+Canonical child `KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001` establishes:
 
 ```text
 TASK-2026-0011 allocation: AUTHENTIC
@@ -37,42 +42,33 @@ fencing_token: 7
 claim_observation: CLAIM_GRANT_OBSERVED
 allocator receipt: ALLOCATION_COMPLETE
 journal replay: PASS
-same-device recovery surface: PUBLIC
-TVC provider/session composition: MERGED
-TVC native TestFlight byte ingress: MERGED
-StegOS same-execution native upload caller: MERGED
-Site native-upload projection: PUBLIC EXACT
 ```
 
-Public current-device entrypoint:
-
-```text
-https://stegverse.org/task0011-same-device-kv-recovery.html
-```
-
-The authentic G7/fence7 claim advances the shared root but does not itself enter this measurement loop or prove any profiled lane executed.
+The physical device associated with historical allocation evidence is provenance only. The G7/fence7 claim lineage remains reusable subject binding and does not create a handset requirement.
 
 ## Current first unresolved prerequisite
 
 ```text
-TESTFLIGHT_CURRENT_IPHONE_RUNTIME_OBSERVED
+AUTHENTIC_RETAINED_STEGOS_STEGBROWSER_RUNTIME_OBSERVED
 ```
 
 Required sequence before the frozen measurement pass:
 
 ```text
-established current iPhone
--> existing Device->KV / Interlock-InTr admission
--> exact CURRENT_IPHONE_TESTFLIGHT_SIGNING projection
--> same-device signing + verification
--> TV/TVC provider custody and native Build Upload
--> TestFlight processing/install observation
+first reachable eligible StegOS execution surface in canonical substrate order
+-> KV/SKAP continuity bound to the exact operation
+-> TASK-2026-0011 G7/fence7 WorkerCoordinator lineage bound
+-> Interlock/InTr admission
+-> bounded TV/TVC provider custody only where the exact operation requires it
+-> authentic component execution
 -> retained StegOS/StegBrowser runtime observation
--> Master Records custody/reconstruction
--> materialize/visit canonical measurement request in that retained runtime
+-> Master Records custody/reconstruction where required
+-> materialize/visit canonical measurement request in that admitted runtime
 -> freeze one measurement run ID
 -> execute global runtime-node-profile convergence exactly once
 ```
+
+No TestFlight install on a specific iPhone is required before entering the global measurement loop. TestFlight remains relevant only to a lane whose exact subject-bound predicate genuinely requires that provider path.
 
 Current measurement evidence remains:
 
@@ -83,35 +79,26 @@ global convergence receipt: NOT OBSERVED
 convergence loop entered: NO
 ```
 
-Therefore no current-run stage failure may yet be assigned to any of the 18 profiled lanes.
+Therefore no current-run stage failure may yet be assigned to any profiled lane.
 
 ## Current fan-out boundary
 
-The shared root has authentically advanced through canonical G7/fence7 allocation, but task-local runtime evidence has not yet advanced. The pre-measurement classification is:
-
-```text
-category 1 - advanced automatically from shared runtime evidence: 0
-category 2 - ready for task-specific bounded execution now: 0
-category 3 - awaiting authentic current-device/runtime or later exact lane predicate: 18
-category 4 - terminal with exact receipt + Master Records + propagation: 0
-```
-
-This classification preserves each lane's exact existing first unresolved predicate. It is not a substitute for the authentic measurement receipt.
+The shared root has authentically advanced through canonical G7/fence7 allocation, but task-local runtime evidence has not yet advanced. After an eligible admitted runtime is observed, each profile can be measured against its exact first unresolved predicate without a physical-device gate.
 
 ## Next execution sequence
 
-1. On the established current iPhone, use the already-published same-device TASK-0011 surface.
-2. Preserve the exact success state or fail-closed state without clearing Safari/site/KV/node continuity.
-3. If execution reaches `TVC_NATIVE_BUILD_UPLOAD_COMMITTED`, continue to TestFlight processing/install observation.
-4. Observe retained same-device StegOS/StegBrowser continuity and reconstruct through Master Records.
-5. Only then run exactly one measurement-only convergence pass using the existing Canonical Work measurement child.
+1. Select the first reachable eligible StegOS execution surface using the canonical substrate review order.
+2. Bind applicable KV/SKAP continuity and exact TASK-2026-0011 G7/fence7 lineage.
+3. Require Interlock/InTr admission before execution.
+4. Observe retained StegOS/StegBrowser runtime evidence and reconstruct through Master Records where required.
+5. Run exactly one measurement-only convergence pass using the existing Canonical Work measurement child.
 6. Require a frozen run ID and `receipts/sovereign-host/global-runtime-node-profile-convergence.latest.json` before interpreting or dispatching lane-specific results.
 7. Fan authentic reusable evidence into each lane only under exact subject/task binding.
 
 ## README impact
 
-README already documents the canonical measurement child and shared resident ingress model. This update reconciles evidence state only and introduces no new runtime or authority semantics.
+README already documents the canonical measurement child and shared resident ingress model. The authoritative device-interchangeability rule is in `data/task-registry-global-invariants.json`; no additional README mutation is required.
 
 ## Manual work
 
-On the established current iPhone, open `https://stegverse.org/task0011-same-device-kv-recovery.html`, tap `Use This iPhone's KV and Prepare IPA`, and preserve the exact displayed result or exact fail-closed message. Do not clear Safari/site/KV/node continuity state and do not switch devices. If the page specifically reports `resident KV installation not verified`, use `Admit Existing KV Installation Receipt` only if canonical `_System/installation.receipt.json` is available.
+None. A named physical device is not a prerequisite. Continue on whichever eligible StegOS surface becomes reachable and admitted under the canonical authority chain.
