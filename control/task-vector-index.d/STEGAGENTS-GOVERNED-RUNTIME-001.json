@@ -1,0 +1,11 @@
+{
+  "schema": "stegverse.cosv-task-vector-index-entry/v1",
+  "task_id": "STEGAGENTS-GOVERNED-RUNTIME-001",
+  "repository": "StegVerse-Labs/.github",
+  "registry_ref": "control/worker-registry.d/stegagents-governed-runtime-001.json",
+  "source_state_vector_ref": "control/task-vectors/STEGAGENTS-GOVERNED-RUNTIME-001.json",
+  "vector": "71000000101001",
+  "vector_state": "EMITTED",
+  "profile": "task.v1",
+  "authority_effect": "NONE"
+}
