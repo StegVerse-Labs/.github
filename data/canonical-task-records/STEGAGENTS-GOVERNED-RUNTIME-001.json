@@ -15,10 +15,17 @@
     "data/canonical-task-records/STEGAGENTS-GOVERNED-AGENT-REGISTRATION-001.json",
     "docs/STEGAGENTS_GOVERNED_AGENT_REGISTRATION_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegAgents@b768eeeb0ceca14fcfd50ce665cd6c0885e2774f:agents/governed/CodeRepair-001.manifest.json",
+    "StegVerse-Labs/StegAgents@b4115293803fd1d3beaf0335baf4308b6e13052e:src/governed_coderepair_runtime.py",
     "StegVerse-Labs/StegAgents@b639c2674959e3be9fb7a70caa33115c694af764:docs/STEGAGENTS_GOVERNED_AGENT_REGISTRATION_MIRROR_HANDOFF.md",
+    "control/resident-execution-request.d/canonical-work-stegagents-governed-runtime-001.json",
+    "control/worker-registry.d/stegagents-governed-runtime-001.json",
+    "control/process-worker-adapters.d/stegagents-governed-runtime-001.json",
+    "handoffs/STEGAGENTS-GOVERNED-RUNTIME-001.json",
+    "workers/stegagents_governed_runtime_worker.py",
     "control/worker-registry.json",
     "scripts/evaluate_task_registry_collision_checkin.py",
-    "scripts/install_and_run_canonical_work_event_bootstrap.py"
+    "scripts/install_and_run_canonical_work_event_bootstrap.py",
+    "scripts/run_worker_runtime.py"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs", "master-records"],
