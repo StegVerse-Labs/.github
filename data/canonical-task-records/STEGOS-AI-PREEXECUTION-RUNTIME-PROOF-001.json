@@ -14,7 +14,8 @@
     "StegVerse-Labs/StegOS:docs/AI_PREEXECUTION_GOVERNANCE_TEST_MIRROR_HANDOFF.md",
     "docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md",
     "data/reusable-task-ephemeral-construct-contract.json",
-    "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json"
+    "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
+    "evidence/ai-preexecution/STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001.ai-proposal.json"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
@@ -44,8 +45,8 @@
     {
       "dependency_id": "DEP-AI-PREEXECUTION-AUTHENTIC-AI",
       "kind": "RUNTIME_EVIDENCE",
-      "state": "UNRESOLVED",
-      "ref": "StegVerse-Labs/StegOS#384"
+      "state": "PROPOSAL_PRESERVED_RUNTIME_OBSERVATION_PENDING",
+      "ref": "evidence/ai-preexecution/STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001.ai-proposal.json"
     }
   ],
   "blockers": [],
@@ -138,7 +139,9 @@
   },
   "runtime_resolution": {
     "current_executor": "reusable event-ephemeral StegOS Node -> Canonical Work -> Interlock/InTr -> StegOS pre-execution network test",
-    "unresolved_classification": "AUTHENTIC_AI_ORIGINATED_PROPOSAL_NOT_YET_OBSERVED"
+    "unresolved_classification": "AI_PROPOSAL_PRESERVED_ADMITTED_RUNTIME_CONSUMPTION_NOT_OBSERVED",
+    "proposal_evidence_ref": "evidence/ai-preexecution/STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001.ai-proposal.json",
+    "proposal_sha256": "cf92a45b7bb147fc320f2cc472e1f3fcf7148a2b914a8772a1a9bdb4f8771fbb"
   },
   "worker_claim": {
     "authority": "WORKERCOORDINATOR",
