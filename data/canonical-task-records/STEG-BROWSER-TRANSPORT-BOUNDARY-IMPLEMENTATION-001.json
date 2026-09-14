@@ -11,17 +11,21 @@
   "shared_runtime_evidence_owner_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
   "handoff_ref": "docs/STEGBROWSER_TRANSPORT_BOUNDARY_IMPLEMENTATION_MIRROR_HANDOFF.md",
   "implementation_branch": "stegbrowser-transport-boundary-contract",
-  "current_exact_defect": "TRANSPORT_TERMINAL_BOUNDARY_NOT_YET_VALIDATED_IN_SOURCE_AND_CI",
+  "current_exact_defect": "SOURCE_SEMANTICS_CORRECTED_CI_AND_MERGE_NOT_YET_VALIDATED",
   "scope": {
     "transport_contract_ref": "data/reusable-transport-component-contract.json",
     "stegbrowser_profile_ref": "data/goal-task-transport-profiles/STEG-BROWSER-RUNTIME-CONSUMPTION-001.json",
     "test_ref": "tests/test_stegbrowser_transport_boundary_contract.py",
-    "runtime_execution_claimed": false
+    "runtime_execution_claimed": false,
+    "governed_round_trip_lifecycle_count": 1,
+    "internal_transition_groups_are_additional_round_trip_goals": false
   },
   "completion_predicates": [
     "TRANSPORT_TERMINAL_CONTRACT_ENCODED",
     "RTC_EVIDENCE_CUSTODY_CLASSIFIED_POST_TRANSPORT",
     "STEGBROWSER_PROFILE_SPLITS_TRANSPORT_AND_POST_TRANSPORT_COMPONENTS",
+    "SINGLE_GOVERNED_ROUND_TRIP_LIFECYCLE_SEMANTICS_ENCODED",
+    "INTERNAL_TRANSITION_GROUPS_DO_NOT_INCREMENT_ROUND_TRIP_COUNT",
     "CALLABLE_REFRESHABLE_REMAIN_INVOCATION_BOUND",
     "POST_TRANSPORT_FAILURE_CANNOT_NEGATE_TRANSPORT_SUCCESS",
     "DETERMINISTIC_TESTS_PASS",
@@ -40,6 +44,7 @@
   "prohibited_transitions": [
     "REQUIRE_MASTER_RECORDS_TO_PROVE_TRANSPORT_SUCCESS",
     "RECLASSIFY_POST_TRANSPORT_FAILURE_AS_TRANSPORT_FAILURE",
+    "COUNT_INTERNAL_TRANSITION_GROUPS_AS_SEPARATE_ROUND_TRIP_LIFECYCLES",
     "ASSUME_ALWAYS_ON_RUNTIME_SOURCE",
     "INFER_CALLABLE_OR_REFRESHABLE_FROM_PERSISTENT_STATE",
     "TREAT_HEALER_AS_NORMAL_STAGE_OR_CARRIER",
