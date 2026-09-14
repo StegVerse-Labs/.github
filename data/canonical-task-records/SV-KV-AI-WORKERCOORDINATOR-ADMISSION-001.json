@@ -18,7 +18,8 @@
     "handoffs/SV-KV-AI-PERSISTENCE-001.json",
     "control/runtime-profile-map.json",
     "scripts/evaluate_task_runtime_routing_readiness.py",
-    "control/worker-registry.d/kv-ai-memory-resident-001.json"
+    "control/worker-registry.d/kv-ai-memory-resident-001.json",
+    "data/workercoordinator-admission/SV-KV-AI-WORKERCOORDINATOR-ADMISSION-001.json"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
@@ -41,19 +42,40 @@
       "dependency_id": "DEP-KV-AI-RUNTIME-ROUTING-PROFILE",
       "kind": "CAPABILITY",
       "state": "RESOLVED",
-      "ref": "control/runtime-profile-map.json#profiles[kv-ai-memory-resident-routing-v1]"
+      "ref": "control/runtime-profile-map.json#profiles[canonical-work-coordination-runtime-v1]"
     },
     {
       "dependency_id": "DEP-WORKERCOORDINATOR-CLAIM-FENCE",
       "kind": "RUNTIME_PREDICATE",
-      "state": "UNRESOLVED",
-      "ref": "fresh WorkerCoordinator claim_id, worker_instance_id, lease, and fence for this exact admission review"
+      "state": "WAIT_STATE_RECORDED",
+      "ref": "data/workercoordinator-admission/SV-KV-AI-WORKERCOORDINATOR-ADMISSION-001.json#workercoordinator_admission_review",
+      "wait_state": "WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED",
+      "fresh_claim_fence_observed": false,
+      "blocks_parent_runtime_completion": true
     }
   ],
   "blockers": [],
+  "runtime_resolution": {
+    "schema": "stegverse.task-runtime-routing-readiness/v1#runtime_resolution",
+    "source": "control/runtime-profile-map.json#generation=2",
+    "map_generation": 2,
+    "candidate_profile_ids": [
+      "canonical-work-coordination-runtime-v1"
+    ],
+    "candidate_count": 1,
+    "projection_only": true,
+    "selection_grants_authority": false,
+    "current_observation_required_for_completion": true,
+    "workercoordinator_admission_still_required": true,
+    "interlock_intr_transition_admission_still_required": true,
+    "master_records_reconciliation_still_required": true,
+    "authority_effect": "NONE_ROUTING_CANDIDATE_PROJECTION_ONLY"
+  },
+  "workercoordinator_admission_status_ref": "data/workercoordinator-admission/SV-KV-AI-WORKERCOORDINATOR-ADMISSION-001.json",
   "existing_evidence_refs": [
     "StegVerse-Labs/.github:actions/run/34865915900",
-    "docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"
+    "docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
+    "data/workercoordinator-admission/SV-KV-AI-WORKERCOORDINATOR-ADMISSION-001.json"
   ],
   "expected_evidence_predicates": [
     "CANONICAL_ADJACENT_TASK_REGISTERED",
@@ -62,6 +84,13 @@
     "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED_OR_NONAUTHORIZING_WAIT_STATE_RECORDED",
     "NO_RUNTIME_EVIDENCE_OVERCLAIMED"
   ],
+  "predicate_status": {
+    "CANONICAL_ADJACENT_TASK_REGISTERED": "SATISFIED_SOURCE_VISIBLE",
+    "RUNTIME_RESOLUTION_PROJECTION_PERSISTED_OR_RECONSTRUCTABLE": "SATISFIED_SOURCE_VISIBLE",
+    "WORKERCOORDINATOR_ADMISSION_REVIEW_REQUESTED_OR_STATUS_RECORDED": "SATISFIED_SOURCE_VISIBLE",
+    "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED_OR_NONAUTHORIZING_WAIT_STATE_RECORDED": "SATISFIED_BY_NONAUTHORIZING_WAIT_STATE_ONLY",
+    "NO_RUNTIME_EVIDENCE_OVERCLAIMED": "SATISFIED_SOURCE_VISIBLE"
+  },
   "runtime_requirements": {
     "capabilities": [
       "runtime_profile_discovery",
@@ -85,6 +114,8 @@
   "completion": {
     "claimed": false,
     "validated": false,
+    "source_predicates_satisfied": true,
+    "validation_status": "PENDING_NO_STATUS_CHECKS_OBSERVED",
     "terminal_when": [
       "The runtime_resolution projection for SV-KV-AI-PERSISTENCE-001 is persisted or deterministically reconstructable from the current runtime-profile-map generation.",
       "A WorkerCoordinator admission review request/status exists for the exact parent task and candidate profile.",
@@ -96,6 +127,7 @@
     "THIS_ADJACENT_TASK_DOES_NOT_PROVE_PERSONAL_KV_INPUTS",
     "THIS_ADJACENT_TASK_DOES_NOT_PROVE_INTR_ADMISSION",
     "THIS_ADJACENT_TASK_DOES_NOT_PROVE_PROVIDER_EXECUTION",
-    "THIS_ADJACENT_TASK_DOES_NOT_PROVE_KV_WRITEBACK_OR_MASTER_RECORDS_RECONSTRUCTION"
+    "THIS_ADJACENT_TASK_DOES_NOT_PROVE_KV_WRITEBACK_OR_MASTER_RECORDS_RECONSTRUCTION",
+    "THIS_ADJACENT_TASK_DOES_NOT_MINT_A_WORKERCOORDINATOR_CLAIM_OR_FENCE"
   ]
 }
