@@ -3,7 +3,7 @@
 Goal Task ID: `STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001`
 Parent: `STEGOS-SOVEREIGN-INFRASTRUCTURE-001`
 COSV: `40000100100000`
-State: `ACTIVE / CHECKED_OUT / AI_PROPOSAL_PRESERVED / HEALER_CARRIER_BOUND / CURRENT_IPHONE_RUNTIME_OBSERVATION_PENDING`
+State: `ACTIVE / CHECKED_OUT / AI_PROPOSAL_PRESERVED / HEALER_CARRIER_BOUND / CURRENT_IPHONE_SAME_DEVICE_PROJECTION_ADMITTED / BOOTSTRAP_STAGE_DIAGNOSTIC_PENDING`
 
 ## Reuse
 
@@ -52,21 +52,33 @@ authority_effect: NONE_PROPOSAL_ONLY
 
 This proves proposal production/preservation only. `AUTHENTIC_AI_ORIGINATED_PROPOSAL_OBSERVED` remains unsatisfied until an admitted runtime consumes the exact proposal through the governed path.
 
-## Current real reachability boundary
+## Authentic same-device current-iPhone observation — 2026-09-14
 
-After the Healer #85 source repair, the shared runtime-evidence owner `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001` establishes that all known machine-owned source composition and public projection prerequisites for the current-device runtime are satisfied. Its current first unresolved runtime predicate is:
+The established current iPhone executed the published TASK-2026-0011 same-device path after the Healer carrier source repair. The observed Site UI was:
 
 ```text
-TESTFLIGHT_CURRENT_IPHONE_RUNTIME_OBSERVED
+State: FAIL_CLOSED
+Save Projection JSON: available
+output: Load failed
 ```
 
-The authentic current-iPhone allocator state `TASK-2026-0011:G7:FENCE7` is retained, but the same-device runtime execution/observation has not yet been observed. The canonical next admissible transition is `INGRESS_ADMITTED` through the already-published TASK-2026-0011 same-device path on the established current iPhone.
+The Site entrypoint exposes `Save Projection JSON` only after `StegVerseKVTestFlightProjectionExport.materialize()` returns a projection context. The canonical Site handoff records that this projection is purpose-bound to `CURRENT_IPHONE_TESTFLIGHT_SIGNING`, has `entry_state=ADMITTED`, and browser capability state `OBSERVED_COMPATIBLE`. Therefore the prior same-device KV projection admission boundary was authentically crossed for this execution. This does not establish TestFlight processing, installation, the admitted ephemeral StegOS runtime proof predicates below, or goal completion.
 
-This is not a Remote Desktop requirement and does not require a second user-operated device. No further machine-owned source/configuration remediation is currently established before that runtime observation.
+The exact bootstrap stage was not identifiable from Safari's generic `Load failed` string. Site PR #1335 therefore added stage-bound fail-closed diagnostics to the existing bootstrap and materializers without changing frozen IPA/WASM bytes or authority. The predecessor KV write-once recovery claim was first terminalized through Site PR #1336. Site PR #1335 then passed exact-head validation at `7f2faae3c3f9277f7d159e2f5fe99258c3529d58` and merged as `1bbe02df02477966f339829bbb9cc4381e5494aa`.
 
-## Required runtime evidence
+Current narrow first unresolved predicate for the established same-device execution:
 
-Once the established same-device runtime transition executes, continue automatically through the existing path and retain:
+```text
+CURRENT_IPHONE_TESTFLIGHT_BOOTSTRAP_LOAD_STAGE_IDENTIFIED
+```
+
+At the global runtime-owner level, `TESTFLIGHT_CURRENT_IPHONE_RUNTIME_OBSERVED` remains unresolved because no TestFlight processing/install/resident-runtime completion evidence has been observed.
+
+## Required next evidence
+
+After the merged stage-bound diagnostic is publicly served, execute the same TASK-2026-0011 path once on the established current iPhone while preserving Safari/KV/IndexedDB/node continuity. Retain the exact stage-qualified success or fail-closed result. If that result identifies a machine-fixable owner, repair it in place and continue automatically.
+
+Only after the current-device bootstrap path reaches the already-declared runtime transition may this goal promote:
 
 1. `EPHEMERAL_STEGOS_NODE_MATERIALIZED_AND_VERIFIED`;
 2. exact WorkerCoordinator claim/fence evidence;
@@ -79,6 +91,6 @@ Once the established same-device runtime transition executes, continue automatic
 9. exact execution and target-state receipts; and
 10. Master Records custody/reconstruction.
 
-No runtime predicate is promoted by the Healer source repair. GitHub/CI/source state must not substitute for authentic runtime evidence.
+No StegOS runtime-proof predicate is promoted from Site source/CI/merge evidence. GitHub/CI/source state must not substitute for authentic runtime evidence.
 
 README disposition for `StegVerse-Labs/.github`: `NO_README_CHANGE_REQUIRED`; repository-wide authority semantics remain unchanged.
