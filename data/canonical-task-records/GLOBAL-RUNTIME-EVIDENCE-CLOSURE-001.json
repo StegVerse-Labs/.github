@@ -4,17 +4,22 @@
   "correlation_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
   "root_correlation_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
   "parent_task_id": null,
-  "goal": "Converge all StegVerse ecosystem capabilities that are source-implemented or integration-ready but still require authentic runtime execution evidence, custody/reconstruction, runtime-bound validation, or downstream propagation proof; bind every child to a retained HB32-synchronized StegOS runtime-node profile and resume each child from its exact first unresolved predicate instead of duplicating runtimes or collapsing failures into generic missing-selector states.",
+  "goal": "Converge all StegVerse ecosystem capabilities that are source-implemented or integration-ready but still require authentic runtime execution evidence, custody/reconstruction, runtime-bound validation, or downstream propagation proof; bind every child to the single shared runtime-evidence owner and resume each child from its exact first unresolved predicate without physical-device identity gates.",
   "coordination_state": "ACTIVE",
   "checkout_state": "CLAIMED_INTEGRATION",
   "cosv_task_vector": "50000000100000",
   "shared_runtime_evidence_owner_for_profiled_lanes": true,
+  "global_invariant_ref": "data/task-registry-global-invariants.json",
+  "device_interchangeability_enforced": true,
+  "physical_device_identity_gate": "NONE_PROHIBITED",
+  "user_verification_authority": "KV/SKAP Vault",
   "source_refs": [
     "docs/GLOBAL_RUNTIME_EVIDENCE_CLOSURE_MIRROR_HANDOFF.md",
     "docs/GLOBAL_RUNTIME_EVIDENCE_CONVERGENCE_MATRIX.md",
     "docs/GLOBAL_RUNTIME_EVIDENCE_MEASUREMENT_MIRROR_HANDOFF.md",
     "docs/KV_BOUND_EPHEMERAL_BROWSER_PROJECTION_MIRROR_HANDOFF.md",
     "data/canonical-task-records/KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001.json",
+    "data/task-registry-global-invariants.json",
     "control/runtime-node-profiles.json",
     "control/runtime-profile-sources.json",
     "control/runtime-profile-map.json",
@@ -27,13 +32,7 @@
     "scripts/refresh_sovereign_worker_runtime_source.py",
     "scripts/refresh_sovereign_worker_runtime_source_base.py",
     "StegVerse-Labs/.github#1260",
-    "StegVerse-Labs/.github#1294",
-    "StegVerse-Labs/Site#1236@841ab0298741fd5152c9cf88211468c3b86093d3",
-    "StegVerse-Labs/Site#1237@b847d4e408571efb9ff511f1facbc3f38128846d",
-    "StegVerse-Labs/TVC#424@80db8f1e90168a54e4d44f6b7c3b0ce014c2ebba",
-    "StegVerse-Labs/TVC#428@46878481c23efd9b7d2cd17fc9f701616e687b22",
-    "StegVerse-Labs/StegOS#379@c064c7542e113703a9fd0efe9eb08106de956937",
-    "StegVerse-Labs/Site#1299@6c1f267b49ab6e36618a2eccc8afceaf4544fbe0"
+    "StegVerse-Labs/.github#1294"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs", "StegVerse-org", "Data-Continuation", "Admissible-Existence"],
@@ -47,7 +46,7 @@
       "master-records-reconstruction",
       "downstream-propagation-verification",
       "single-shared-runtime-evidence-owner-invariant",
-      "current-iphone-authentic-runtime-root"
+      "interchangeable-stegos-runtime-root"
     ]
   },
   "dependencies": [
@@ -55,15 +54,15 @@
       "dependency_id": "DEP-TASK-2026-0011-CANONICAL-ALLOCATION",
       "kind": "AUTHENTIC_RUNTIME_ROOT_PREDICATE",
       "state": "SATISFIED_AUTHENTIC_G7_FENCE7",
-      "ref": "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001;AUTHENTIC_CURRENT_IPHONE_ALLOCATOR:TASK-2026-0011:G7:FENCE7",
-      "disposition": "TASK-2026-0011 selected by the retained current-iPhone canonical allocator with generation 7, fence 7, CLAIM_GRANT_OBSERVED, ALLOCATION_COMPLETE, and journal replay PASS. TASK-2026-0010 G6/fence6 remains immutable predecessor provenance."
+      "ref": "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001;TASK-2026-0011:G7:FENCE7",
+      "disposition": "TASK-2026-0011 has authentic generation 7 / fence 7 claim evidence. Historical physical-device metadata is provenance only and does not constrain future execution to that device."
     },
     {
       "dependency_id": "DEP-GLOBAL-RUNTIME-AUTHENTIC-RESIDENT-CYCLE",
       "kind": "RUNTIME_PREDICATE",
-      "state": "UNRESOLVED_CURRENT_IPHONE_EXECUTION",
-      "ref": "KV-BOUND-EPHEMERAL-BROWSER-PROJECTION-001;https://stegverse.org/task0011-same-device-kv-recovery.html",
-      "disposition": "All known machine-owned source composition and public projection prerequisites are satisfied. Current first unresolved global predicate is TESTFLIGHT_CURRENT_IPHONE_RUNTIME_OBSERVED; authentic same-device execution and retained StegOS/StegBrowser observation remain required."
+      "state": "PENDING_AUTHENTIC_ADMITTED_STEGOS_RUNTIME",
+      "ref": "AUTHENTIC_RETAINED_STEGOS_STEGBROWSER_RUNTIME_OBSERVED",
+      "disposition": "The next runtime evidence may come from any eligible StegOS execution/transport surface after KV/SKAP continuity, exact WorkerCoordinator claim/fence lineage, and Interlock/InTr admission are bound. No named physical device or current-iPhone TestFlight event is a global prerequisite."
     },
     {
       "dependency_id": "DEP-GLOBAL-RUNTIME-MEASUREMENT",
@@ -106,7 +105,7 @@
     "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
   ],
   "existing_evidence_refs": [
-    "AUTHENTIC_CURRENT_IPHONE_ALLOCATOR:TASK-2026-0011:G7:FENCE7:CLAIM_GRANT_OBSERVED:ALLOCATION_COMPLETE:JOURNAL_REPLAY_PASS",
+    "TASK-2026-0011:G7:FENCE7:CLAIM_GRANT_OBSERVED:ALLOCATION_COMPLETE:JOURNAL_REPLAY_PASS",
     "StegVerse-Labs/Site#1236:MERGED:841ab0298741fd5152c9cf88211468c3b86093d3",
     "StegVerse-Labs/Site#1237:MERGED:b847d4e408571efb9ff511f1facbc3f38128846d",
     "StegVerse-Labs/TVC#424:MERGED:80db8f1e90168a54e4d44f6b7c3b0ce014c2ebba",
@@ -118,7 +117,6 @@
     "GLOBAL_CHILD_INVENTORY_CURRENT",
     "ALL_18_RUNTIME_LANES_BOUND_TO_SINGLE_SHARED_RUNTIME_EVIDENCE_OWNER",
     "AUTHENTIC_TASK_2026_0011_G7_FENCE7_ALLOCATION_OBSERVED",
-    "TESTFLIGHT_CURRENT_IPHONE_RUNTIME_OBSERVED",
     "AUTHENTIC_RETAINED_STEGOS_STEGBROWSER_RUNTIME_OBSERVED",
     "MEASUREMENT_RUN_ID_FROZEN",
     "AUTHENTIC_RESIDENT_EXECUTION_OBSERVED_FOR_ELIGIBLE_CHILDREN",
@@ -127,7 +125,7 @@
   ],
   "runtime_requirements": {
     "capabilities": ["runtime_observation", "task_registry_reconciliation", "master_records_reconciliation", "bounded_process_execution", "runtime_profile_discovery", "retained_stegos_node_state", "hb_runtime_profile_sync", "exact_subject_binding", "resident_source_refresh"],
-    "environment": "SOVEREIGN_RESIDENT",
+    "environment": "SOVEREIGN_RESIDENT_OR_ADMITTED_EPHEMERAL_STEGOS_NODE",
     "direction": "INTERNAL",
     "mutation_required": true,
     "deployment_required": false,
@@ -138,13 +136,14 @@
     "review_order": ["STEG-BROWSER-RETAINED-RESIDENT-NODE", "STEGOS-CURRENT-DEVICE-NODE", "STEG-BROWSER-EPHEMERAL-LEASE", "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER", "ADMITTED-EPHEMERAL-STEGOS-NODE", "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"],
     "reviews": [
       {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/GLOBAL_RUNTIME_EVIDENCE_CLOSURE_MIRROR_HANDOFF.md","control/runtime-node-profiles.json"]},
-      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"SUITABLE","limitation_class":"NONE","evidence_refs":["AUTHENTIC_CURRENT_IPHONE_ALLOCATOR:TASK-2026-0011:G7:FENCE7","docs/KV_BOUND_EPHEMERAL_BROWSER_PROJECTION_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"ELIGIBLE_WHEN_ADMITTED","limitation_class":"NONE","evidence_refs":["data/task-registry-global-invariants.json"]},
       {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["control/runtime-node-profiles.json"]},
-      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"SUITABLE","limitation_class":"NONE","evidence_refs":["https://stegverse.org/task0011-same-device-kv-recovery.html"]},
-      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["control/runtime-node-profiles.json"]},
+      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"ELIGIBLE_WHEN_ADMITTED","limitation_class":"NONE","evidence_refs":["https://stegverse.org/task0011-same-device-kv-recovery.html"]},
+      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"ELIGIBLE_WHEN_ADMITTED","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["data/task-registry-global-invariants.json"]},
       {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":[]}
     ],
     "selected_substrate_id": null,
+    "physical_device_identity_required": false,
     "external_device_required": false,
     "second_user_operated_device_allowed": false,
     "authority_effect": "NONE"
@@ -157,17 +156,17 @@
     "profiled_convergence_runner": "scripts/run_global_runtime_node_profile_convergence.py",
     "profiled_receipt": "receipts/sovereign-host/global-runtime-node-profile-convergence.latest.json",
     "authentic_root_state": "TASK_2026_0011_G7_FENCE7_ALLOCATION_OBSERVED",
-    "current_first_unresolved_predicate": "TESTFLIGHT_CURRENT_IPHONE_RUNTIME_OBSERVED",
-    "public_same_device_entrypoint": "https://stegverse.org/task0011-same-device-kv-recovery.html",
+    "current_first_unresolved_predicate": "AUTHENTIC_RETAINED_STEGOS_STEGBROWSER_RUNTIME_OBSERVED",
+    "physical_device_gate": "NONE_PROHIBITED",
     "global_measurement_loop_entered": false,
     "source_profile_binding_proves_runtime": false,
     "source_refresh_proves_runtime": false,
-    "next_runtime_action": "Execute the already-published same-device TASK-2026-0011 path on the established current iPhone, preserve exact success/fail-closed evidence, then continue through TV/TVC, TestFlight install, retained StegOS/StegBrowser observation, Master Records reconstruction, and exactly one frozen measurement-only convergence pass."
+    "next_runtime_action": "Use the first reachable eligible StegOS execution surface in canonical substrate order; bind KV/SKAP continuity, TASK-2026-0011 G7/fence7 lineage, and Interlock/InTr admission; observe authentic retained runtime evidence; then perform Master Records reconstruction and exactly one frozen measurement-only convergence pass."
   },
-  "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":"AUTHENTIC_CURRENT_IPHONE_ALLOCATOR:TASK-2026-0011:FENCE7","projection_only":true},
-  "human_action_ref": "https://stegverse.org/task0011-same-device-kv-recovery.html",
+  "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":"TASK-2026-0011:FENCE7","projection_only":true},
+  "human_action_ref": null,
   "completion": {"claimed":false,"validated":false,"shared_runtime_evidence_owner_binding_validated":true,"authentic_g7_fence7_root_observed":true,"activation_proof_complete":false},
   "allowed_next_transitions": ["INGRESS_ADMITTED"],
   "handoff_projection_refs": ["docs/GLOBAL_RUNTIME_EVIDENCE_CLOSURE_MIRROR_HANDOFF.md", "docs/GLOBAL_RUNTIME_EVIDENCE_CONVERGENCE_MATRIX.md", "docs/GLOBAL_RUNTIME_EVIDENCE_MEASUREMENT_MIRROR_HANDOFF.md"],
-  "authority_model": {"task_registry_mints_execution_authority":false,"source_state_proves_execution":false,"runtime_profile_match_grants_execution_authority":false,"source_refresh_grants_execution_authority":false,"hb_grants_execution_authority":false,"worker_claim_authority":"WORKERCOORDINATOR","credential_authority":"TV/TVC","master_records_reality_authority":true,"interlock_intr_required_for_governed_ingress_egress":true}
+  "authority_model": {"task_registry_mints_execution_authority":false,"source_state_proves_execution":false,"runtime_profile_match_grants_execution_authority":false,"source_refresh_grants_execution_authority":false,"hb_grants_execution_authority":false,"physical_device_identity_grants_authority":false,"worker_claim_authority":"WORKERCOORDINATOR","credential_authority":"TV/TVC","master_records_reality_authority":true,"interlock_intr_required_for_governed_ingress_egress":true}
 }
