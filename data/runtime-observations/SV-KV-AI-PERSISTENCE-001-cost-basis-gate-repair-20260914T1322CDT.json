@@ -1,0 +1,71 @@
+{
+  "schema": "stegverse.runtime-observation/v1",
+  "task_id": "SV-KV-AI-PERSISTENCE-001",
+  "cosv_task_vector": "20111110110000",
+  "recorded_at": "2026-09-14T13:22:00-05:00",
+  "repository": "StegVerse-Labs/.github",
+  "issue_ref": "StegVerse-Labs/.github#1848",
+  "transition": "LOCALIZE_POST_REPAIR_RESIDENT_WORKERCOORDINATOR_EXECUTION_OR_RECEIPT_PROJECTION_GAP",
+  "prior_defect": "POST_REPAIR_RESIDENT_WORKERCOORDINATOR_EXECUTION_OR_RECEIPT_PROJECTION_NOT_OBSERVED",
+  "inspected_refs": [
+    "control/worker-registry.d/kv-ai-memory-resident-001.json",
+    "control/workercoordinator-claim-fence-boundaries/SV-KV-AI-PERSISTENCE-001.json",
+    "control/resident-execution-request.d/kv-ai-memory-resident-001.json",
+    "control/process-worker-adapters.d/kv-ai-memory-resident-001.json",
+    "handoffs/SV-KV-AI-PERSISTENCE-001.json",
+    "scripts/refresh_and_execute_resident_task.py",
+    "scripts/run_worker_runtime.py",
+    "heartbeat_runtime/admitted_worker_runtime.py",
+    "heartbeat_runtime/worker_runtime_legacy.py",
+    "heartbeat_runtime/engine_v2.py",
+    "heartbeat_runtime/worker_task_admission.py"
+  ],
+  "localized_seam": {
+    "classification": "EXPIRY_BASIS_UNAVAILABLE_BEFORE_WORKERCOORDINATOR_CLAIM_FENCE_BINDING",
+    "evidence": [
+      "heartbeat_runtime/worker_runtime_legacy.py::_activate_from_trigger calls _expiry_budget before claim_id, worker_instance_id, assignment_timer, and fencing_token are bound.",
+      "heartbeat_runtime/engine_v2.py::_expiry_budget returns None when task.cost_basis_ref is absent or unresolved.",
+      "control/worker-registry.d/kv-ai-memory-resident-001.json previously had cost_basis_ref null after the claim_state repair."
+    ],
+    "not_selected": {
+      "resident_targeted_execution_not_invoked": "NOT_PRIMARY_AFTER_SOURCE_TRACE",
+      "carrier_reference_missing": "NOT_PROVEN_BY_REPOSITORY_VISIBLE_SURFACE",
+      "registry_fragment_not_applied": "NOT_PRIMARY_BECAUSE_FRAGMENT_IS_PRESENT_AND_WOULD_APPLY_BY_TASK_FILTER",
+      "workercoordinator_admission_still_blocking_after_claim_state_repair": "NEXT_RUNTIME_ATTEMPT_REQUIRED",
+      "handoff_execution_authorization_mismatch": "NOT_PRIMARY; handoff activation.executor_binding is AUTHORIZED and authorization_ref is present",
+      "dependency_preclaim_reconstruction_gate": "NOT_PRIMARY_FROM_CURRENT_SOURCE_TRACE",
+      "process_adapter_not_selected": "NOT_PRIMARY_BEFORE_EXPIRY_BUDGET_GATE",
+      "worker_invocation_blocked_by_missing_bound_state_inputs": "DOWNSTREAM_AFTER_CLAIM_FENCE_BINDING",
+      "receipt_projection_not_exported": "STILL_UNOBSERVED_BUT NOT FIRST SOURCE_GATE"
+    }
+  },
+  "source_repair": {
+    "cost_basis_record_commit": "aa339e5131193735d1ea2bb9d8f92d06ef7625f9",
+    "cost_basis_ref": "cost-basis/worker-runtime/kv-ai-memory-resident.json",
+    "registry_binding_commit": "c9f0ee11c7a15bca8f829c9d4b79285b158ba867",
+    "registry_content_sha": "69240b8a20548a67ef0ec6a2f00b0f5908605e44",
+    "effect": "NON_AUTHORIZING_SOURCE_REPAIR_ONLY"
+  },
+  "validation_observation": {
+    "head_sha": "c9f0ee11c7a15bca8f829c9d4b79285b158ba867",
+    "workflow_runs_for_head": 0,
+    "combined_status_state": "pending",
+    "combined_status_total_count": 0,
+    "validated": false,
+    "validation_status": "GITHUB_STATUS_CHECKS_ABSENT_OR_PENDING"
+  },
+  "remaining_next_defect": "RESIDENT_WORKERCOORDINATOR_RUNTIME_ATTEMPT_OR_RECEIPT_NOT_OBSERVED_AFTER_COST_BASIS_GATE_REPAIR",
+  "closure_condition": "Run or observe the existing authorized resident WorkerCoordinator path for exact tuple SV-KV-AI-PERSISTENCE-001 + 20111110110000 + RESIDENT-EXEC-KV-AI-MEMORY-001 + kv-ai-memory-resident-worker + process:kv-ai-memory-resident-v1 and retain repository-visible evidence showing either ADMIT then claim_id/worker_instance_id/lease/fresh fence, or the next fail-closed admission reason emitted by worker-task-admission/WorkerCoordinator.",
+  "nonclaims": [
+    "NO_WORKERCOORDINATOR_CLAIM_OR_FENCE_OBSERVED",
+    "NO_RESIDENT_TARGETED_EXECUTION_RECEIPT_OBSERVED",
+    "NO_PERSONAL_KV_INPUT_OBSERVED",
+    "NO_INTR_ADMISSION_OBSERVED",
+    "NO_PROVIDER_EXECUTION_OBSERVED",
+    "NO_KV_WRITEBACK_READBACK_OBSERVED",
+    "NO_MASTER_RECORDS_RECONSTRUCTION_OBSERVED",
+    "NO_RUNTIME_COMPLETION_CLAIMED",
+    "NO_RELEASE_CLAIMED"
+  ],
+  "authority_effect": "NONE_CLASSIFICATION_AND_SOURCE_REPAIR_ONLY"
+}
