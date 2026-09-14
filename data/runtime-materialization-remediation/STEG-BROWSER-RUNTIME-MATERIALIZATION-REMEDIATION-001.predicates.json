@@ -1,0 +1,85 @@
+{
+  "schema": "stegverse.runtime-materialization-remediation-predicates/v1",
+  "task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+  "parent_task_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+  "cosv_task_vector": "40000100100000",
+  "remediated_defect": "RESIDENT_CUSTODY_ROOT_NOT_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001",
+  "runtime_completion_claimed": false,
+  "resident_root_observed": false,
+  "dry_run_validation_only": true,
+  "required_predicates": [
+    {
+      "predicate_id": "HEALER_NEUTRAL_RT_STEGBROWSER_ROUTE_REUSED",
+      "kind": "SOURCE_CONFIGURATION_BOUNDARY",
+      "required_state": "TRUE",
+      "evidence_ref": "StegVerse-Labs/StegVerse-Healer:data/reusable_task_schedule.json:RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
+      "authority_effect": "NONE_CONTEXT_ONLY"
+    },
+    {
+      "predicate_id": "NO_SECOND_SCHEDULER_OR_DISPATCHER_ADDED",
+      "kind": "AUTHORITY_BOUNDARY",
+      "required_state": "TRUE",
+      "evidence_ref": "repository diff must not add scheduler/dispatcher runtime authority",
+      "authority_effect": "NONE_SOURCE_VALIDATION_ONLY"
+    },
+    {
+      "predicate_id": "NO_GITHUB_RUNTIME_AUTHORITY_ADDED",
+      "kind": "AUTHORITY_BOUNDARY",
+      "required_state": "TRUE",
+      "evidence_ref": "github_token_runtime_authority == NONE; workflow validation is non-authorizing",
+      "authority_effect": "NONE_SOURCE_VALIDATION_ONLY"
+    },
+    {
+      "predicate_id": "NO_SECOND_USER_OPERATED_DEVICE_REQUIRED",
+      "kind": "DEVICE_BOUNDARY",
+      "required_state": "TRUE",
+      "evidence_ref": "second_user_operated_device_required == false",
+      "authority_effect": "NONE_SOURCE_VALIDATION_ONLY"
+    },
+    {
+      "predicate_id": "RESIDENT_ROOT_OBSERVATION_SURFACE_DEFINED",
+      "kind": "MATERIALIZATION_CONTRACT",
+      "required_state": "TRUE",
+      "evidence_ref": "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md#required-materialization-surface",
+      "authority_effect": "NONE_CONTRACT_ONLY"
+    },
+    {
+      "predicate_id": "NON_AUTHORIZING_DRY_RUN_VALIDATION_DEFINED",
+      "kind": "VALIDATION_CONTRACT",
+      "required_state": "TRUE",
+      "evidence_ref": "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md#dry-run--non-authorizing-validation",
+      "authority_effect": "NONE_DRY_RUN_ONLY"
+    },
+    {
+      "predicate_id": "CLASSIFIER_RUN_REMAINS_GATED_BY_AUTHENTIC_RUNTIME_ROOT",
+      "kind": "CLASSIFIER_GATE",
+      "required_state": "TRUE",
+      "evidence_ref": "scripts/check_stegbrowser_runtime_consumption_receipts.py requires --runtime-root and remains non-authorizing",
+      "authority_effect": "NONE_CLASSIFICATION_ONLY"
+    },
+    {
+      "predicate_id": "RETURN_PATH_TO_PARENT_RECEIPT_CLASSIFICATION_DEFINED",
+      "kind": "CONTINUATION_CONTRACT",
+      "required_state": "TRUE",
+      "evidence_ref": "return to STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001 after authentic resident root exists",
+      "authority_effect": "NONE_COORDINATION_ONLY"
+    }
+  ],
+  "prohibited_effects": [
+    "SECOND_SCHEDULER",
+    "SECOND_DISPATCHER",
+    "CREDENTIAL_ROUTE",
+    "GITHUB_RUNTIME_AUTHORITY",
+    "NEW_RUNTIME_PLANE",
+    "MIR_SPECIFIC_TRANSPORT",
+    "SECOND_USER_OPERATED_DEVICE",
+    "RUNTIME_COMPLETION_FROM_SOURCE_STATE"
+  ],
+  "closure_conditions": [
+    "existing Healer neutral route remains the only scheduling/invocation carrier",
+    "resident-root observation surface is explicitly defined",
+    "dry-run validation remains non-authorizing",
+    "return path to parent receipt classification is explicit",
+    "no runtime completion is claimed without authentic retained resident evidence"
+  ]
+}
