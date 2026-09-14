@@ -31,3 +31,5 @@ That test-runtime result is not the final claim. Issue `StegVerse-Labs/StegOS#38
 ## No new authority
 
 No second scheduler, runtime plane, WorkerCoordinator, credential path, InTr authority, or device prerequisite is introduced. GitHub remains source/evidence coordination only.
+
+README disposition: `NO_README_CHANGE_REQUIRED`. This task adds a task-specific reusable binding and runner; it does not change repository-wide Task Registry, WorkerCoordinator, Interlock/InTr, credential, or runtime semantics already documented in the root README.
