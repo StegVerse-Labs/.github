@@ -5,7 +5,7 @@ Repository: `StegVerse-Labs/.github`
 Target runtime path: `StegVerse-Labs/StegAgents` -> `StegVerse-Labs/StegCore/InTr`
 Goal Task ID: `STEGAGENTS-GOVERNED-RUNTIME-001`
 COSV: `71000000101001`
-Status: `ACTIVE / ROUTING READY / RESIDENT PATH + WARRANT-POLICY GATE MERGED+VALIDATED / RESIDENT ROOT OBSERVATION OWNED BY EXISTING TASK / AUTHENTIC RUNTIME PROOF PENDING`
+Status: `ACTIVE / ROUTING READY / RESIDENT PATH + WARRANT-POLICY GATE MERGED+VALIDATED / POST-ATTEMPT RECONCILED / TARGETED CONSUMPTION NOT OBSERVED / AUTHENTIC RUNTIME PROOF PENDING`
 
 ## Canonical state
 
@@ -18,6 +18,8 @@ Status: `ACTIVE / ROUTING READY / RESIDENT PATH + WARRANT-POLICY GATE MERGED+VAL
 - StegAgents warrant/policy enforcement: `StegAgents#18` merged as `c82caae4c8c4cf82d40f352528269823d853f788`.
 - `.github` warrant/policy carriage + WorkerCoordinator binding: `#1856` merged as `82bf7600f47b2f339bdbc64b3bcdeac9e8b007c2`.
 - post-merge canonical reconciliation: `#1859` merged as `55888c7569340cf22a895ab874148e91b23f2e2a`.
+- resident-root binding: `.github#1863` merged as `afa6ec5defc24a920b2dc5e9d3d46cbe24e79549`.
+- newest resident-root classification: `.github#1864` merged as `e95af1cf5c2449480cdc1b4eba7003c3ba2d39f3`, classification `RESIDENT_CUSTODY_ROOT_NOT_OBSERVED`.
 
 ## Warrant/policy boundary
 
@@ -56,35 +58,53 @@ resident source refresh
 
 All known source selector, carriage, warrant-policy, and WorkerCoordinator binding defects on this path are merged and validated. GitHub/CI runtime authority remains `NONE`.
 
-## Current resident reachability reconciliation
+## Independent post-attempt reconciliation — 2026-09-14
 
-The authorized resident connector currently exposes no connected resident device. Repository-visible authentic StegAgents runtime receipts remain absent:
+The newest resident execution attempt was not assumed successful. Primary evidence was independently reconciled from current `main` and current runtime access.
+
+Observed primary evidence:
+
+- Canonical Task Registry remains `ACTIVE / UNCLAIMED` with completion `claimed=false`, `validated=false`, `activation_proof_complete=false`.
+- WorkerCoordinator fragment remains `HANDOFF_READY` with `claim_id=null`, `lease=null`, `worker_id=null`, and `worker_instance_id=null`.
+- Exact `CodeRepair-001` governed manifest at registration merge `b768eeeb0ceca14fcfd50ce665cd6c0885e2774f` has Git blob `061649a4b0b43c01f3009ed3e6c8c4829559fb5b`; its static invariants remain `proposal_only=true`, `execution_authority=false`, `self_authorization_allowed=false`, `warrant_required=true`, `policy_bundle_required=true`, transition authority `StegCore/InTr`, provider credential authority `TV/TVC`, observed-reality authority `Master Records`, and GitHub runtime authority `NONE`.
+- Expected targeted resident-consumption receipt is absent from repository-visible retained evidence:
+  `receipts/sovereign-host/stegagents-governed-runtime-targeted-request-consumption.latest.json`.
+- Expected claim-bound runtime receipt is absent from repository-visible retained evidence:
+  `receipts/sovereign-host/stegagents-governed-runtime.latest.json`.
+- Authorized resident connector currently exposes no connected resident device.
+- The existing resident-root owner `STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001` classified the current state through `.github#1864` as `RESIDENT_CUSTODY_ROOT_NOT_OBSERVED`; merge `e95af1cf5c2449480cdc1b4eba7003c3ba2d39f3` explicitly claims no runtime consumption, WorkerCoordinator claim/fence, Interlock/InTr admission, TVC promotion, owner ingress, or Master Records custody.
+
+Therefore none of the following runtime predicates is promoted from source/CI state:
 
 ```text
-receipts/sovereign-host/stegagents-governed-runtime-targeted-request-consumption.latest.json
-receipts/sovereign-host/stegagents-governed-runtime.latest.json
+AUTHENTIC_TARGETED_RESIDENT_REQUEST_CONSUMPTION_OBSERVED = false
+AUTHENTIC_CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED = false
+AUTHENTIC_TV_EXECUTION_WARRANT_VERIFIED = false
+PINNED_TV_POLICY_BUNDLE_VERIFIED = false
+AUTHENTIC_CODEREPAIR_GOVERNED_REQUEST_IDENTITY_OBSERVED = false
+AUTHENTIC_STEGCORE_INTR_INGRESS_DISPOSITION_OBSERVED = false
+AUTHENTIC_GOVERNED_PROPOSAL_RESULT_OBSERVED = false
+AUTHENTIC_MASTER_RECORDS_RECONSTRUCTION_OBSERVED = false
+WORKERCOORDINATOR_RECONCILIATION_EGRESS_COMPLETE = false
 ```
 
-Independent reconciliation found an already-active one-device-first canonical owner for the missing resident custody-root observation:
+No provider operation is observed and none is currently required for deterministic `CodeRepair-001`; absence of a provider operation is therefore not a failure condition. No evidence indicates provider credentials were exposed to StegAgents.
+
+GitHub/CI remains validation/evidence transport only with runtime authority `NONE`. No second runtime, scheduler, WorkerCoordinator, dispatcher, credential route, provider route, InTr implementation, or second user-operated device was introduced by this reconciliation.
+
+### First unresolved requested-chain predicate
 
 ```text
-Goal Task ID: STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001
-Issue: StegVerse-Labs/.github#1860
-Handoff: docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md
-State: ACTIVE / CHECKED_OUT
+AUTHENTIC_TARGETED_RESIDENT_REQUEST_CONSUMPTION_OBSERVED
 ```
 
-That task exists specifically to observe an authentic retained resident custody root and classify receipt reachability without creating a second scheduler, dispatcher, runtime plane, credential path, GitHub authority path, or second user-operated device. Its current first unresolved predicate is `RESIDENT_CUSTODY_ROOT_AUTHENTICALLY_OBSERVED_FOR_STEGBROWSER`.
-
-This StegAgents goal now reuses that existing owner for resident-root reachability instead of creating a duplicate task or runtime. No substrate is selected merely from source state; `STEG-BROWSER-RETAINED-RESIDENT-NODE` remains `PENDING_EVIDENCE` until authentic retained-root evidence exists.
-
-## Current first concrete machine-owned defect
+### Underlying first concrete runtime defect
 
 ```text
 AUTHENTIC_RESIDENT_CUSTODY_ROOT_OBSERVED
 ```
 
-This is now the earliest concrete prerequisite to `AUTHENTIC_TARGETED_RESIDENT_REQUEST_CONSUMPTION_OBSERVED`. Once the existing resident-root observation owner produces an authentic current custody root, this goal should immediately use the already-merged exact selector against that same resident path and continue to fresh WorkerCoordinator claim/fence, TV warrant/policy verification, StegCore/InTr disposition, proposal return, claim-bound receipt, and Master Records reconstruction.
+The requested chain cannot reach targeted consumption until the existing one-device resident-root lineage produces an authentic retained resident custody root. `.github#1864` is the newest canonical classification and must be treated as runtime-evidence absence, not as a successful execution attempt.
 
 ## Required authentic completion chain
 
@@ -94,24 +114,26 @@ This is now the earliest concrete prerequisite to `AUTHENTIC_TARGETED_RESIDENT_R
 4. authentic TV-issued execution warrant verified;
 5. pinned TV policy bundle verified;
 6. exact manifest blob `061649a4b0b43c01f3009ed3e6c8c4829559fb5b` verified;
-7. governed request identity continuous;
-8. `proposal_only=true`;
-9. `execution_authority=false`;
-10. `self_authorization_allowed=false`;
-11. authentic StegCore/InTr disposition;
-12. no unauthorized provider operation and no provider credentials visible to StegAgents;
-13. governed proposal returned without consequential execution;
-14. exact claim-bound receipt retained;
-15. Master Records custody `RECORDED` and same-run reconstruction with matching identities;
-16. WorkerCoordinator reconciliation/egress complete.
+7. actual StegAgents repository/commit binding verified;
+8. governed request identity continuous;
+9. `proposal_only=true`;
+10. `execution_authority=false`;
+11. `self_authorization_allowed=false`;
+12. authentic StegCore/InTr disposition;
+13. no unauthorized provider operation and no provider credentials visible to StegAgents;
+14. governed proposal returned without consequential execution;
+15. exact claim-bound receipt retained;
+16. Master Records custody `RECORDED` and same-run reconstruction with matching identities;
+17. WorkerCoordinator reconciliation/egress complete.
 
 ## Authority invariants
 
 - Task Registry: coordination only.
 - resident-root observation task: evidence reachability only.
-- WorkerCoordinator: claim/fence authority.
+- WorkerCoordinator: claim/fence authority; WorkerCoordinator delegation does not substitute for TV warrant evidence.
 - StegCore/InTr: governed transition/disposition authority.
 - TV/TVC: provider credential/provider-operation authority and source of authentic warrant/policy evidence where applicable.
+- canonical-task identity does not substitute for pinned TV policy-bundle evidence.
 - KV/SKAP Vault: user-verification authority where applicable.
 - Master Records: observed-reality custody/reconstruction authority.
 - GitHub/CI: source validation/evidence transport only; runtime authority `NONE`.
@@ -119,15 +141,15 @@ This is now the earliest concrete prerequisite to `AUTHENTIC_TARGETED_RESIDENT_R
 
 ## Retirement decision
 
-Retirement is not warranted. No authentic resident custody root, targeted request consumption, current claim/fence, warrant/policy verification, StegCore/InTr disposition, proposal return, claim-bound runtime receipt, Master Records reconstruction, or WorkerCoordinator egress has been observed.
+Retirement is not warranted. No authentic targeted resident request consumption, current claim/fence, warrant/policy verification, StegCore/InTr disposition, proposal return, claim-bound runtime receipt, Master Records reconstruction, or WorkerCoordinator egress has been observed.
 
 ## Next machine-owned action
 
-Reuse `STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001` / `.github#1860` to obtain an authentic current resident custody root through retained runtime marker/receipt evidence. Do not create another reachability task. As soon as the root is observed, execute the existing `stegagents_governed_runtime_targeted` selector against that resident path and continue the governed roundtrip fail-closed.
+Continue the existing `STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001` / `.github#1860` lineage from its current `.github#1864` classification. Materialize or observe an authentic existing resident custody root through the standing one-device runtime mechanisms only. Do not create another reachability task, scheduler, dispatcher, runtime plane, credential route, provider route, InTr implementation, or second-device dependency. Once an authentic root exists, immediately re-run the existing `stegagents_governed_runtime_targeted` selector on that same root and require the full fail-closed chain above.
 
 ## README decision
 
-No root README change is required. This reconciliation binds an existing runtime-evidence owner and changes no runtime capability or authority model.
+No root README change is required. This reconciliation records runtime evidence state and changes no runtime capability or authority model.
 
 ## Manual work
 
