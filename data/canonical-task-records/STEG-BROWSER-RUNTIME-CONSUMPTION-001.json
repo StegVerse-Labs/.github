@@ -26,14 +26,17 @@
     "StegVerse-Labs/.github@d75ddb18ffb51f3131f3bde54fc9582f57991471",
     "StegVerse-Labs/.github#1789",
     "StegVerse-Labs/.github@b04d928f039fa185519913fed8343e37319035bd",
+    "StegVerse-Labs/StegOS#380",
+    "StegVerse-Labs/StegOS@310c4e723fe98ad81931deef50dced8b43a0dae9",
     "StegVerse-Labs/TVC@aef6b6f5dc99d2a531718ca475d20858ae8e68a6",
     "StegVerse-Labs/TVC@4c78f8653b8a5899350479d57c58e936b50e023a"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
-    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/TVC"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegOS", "StegVerse-Labs/TVC"],
     "components": [
       "stegbrowser-canonical-work-runtime-consumption",
+      "current-iphone-testflight-processing-observer",
       "stegbrowser-tvc-source-promotion-runtime",
       "workercoordinator-claim-fence",
       "intr-runtime-admission",
