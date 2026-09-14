@@ -3,7 +3,8 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-TASK = "STEG-BROWSER-RUNTIME-CONSUMPTION-001"
+TASK = "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
+HISTORICAL_TASK = "STEG-BROWSER-RUNTIME-CONSUMPTION-001"
 COSV = "40000100100000"
 RUNNER = ROOT / "scripts/run_stegbrowser_runtime_consumption_reusable.py"
 
@@ -16,34 +17,32 @@ def load_runner():
     return module
 
 
-def test_reusable_binding_preserves_selected_ephemeral_substrate_and_authority():
+def test_reusable_binding_targets_active_remediation_without_reopening_historical_goal():
     shard = json.loads((ROOT / "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json").read_text())
     request = json.loads((ROOT / "control/resident-execution-request.d/canonical-work-stegbrowser-runtime-consumption-001.json").read_text())
-    record = json.loads((ROOT / "data/canonical-task-records" / f"{TASK}.json").read_text())
+    active = json.loads((ROOT / "data/canonical-task-records" / f"{TASK}.json").read_text())
+    historical = json.loads((ROOT / "data/canonical-task-records" / f"{HISTORICAL_TASK}.json").read_text())
     runner = RUNNER.read_text()
 
-    assert shard["reusable_task_id"] == "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001"
-    assert shard["runner_templates"] == ["scripts/run_stegbrowser_runtime_consumption_reusable.py"]
-    assert "runtime_root" in shard["parameter_keys"]
+    assert shard["active_tracking_task_id"] == TASK
+    assert shard["operation_lineage_task_id"] == HISTORICAL_TASK
     assert request["task_id"] == TASK
+    assert request["operation_lineage_task_id"] == HISTORICAL_TASK
     assert request["cosv_task_vector"] == COSV
     assert request["reusable_task_binding"]["selected_execution_substrate"] == "ADMITTED-EPHEMERAL-STEGOS-NODE"
     assert request["reusable_task_binding"]["manual_device_prerequisite"] is False
-    assert record["execution_substrate_resolution"]["selected_substrate_id"] == "ADMITTED-EPHEMERAL-STEGOS-NODE"
-    assert record["execution_substrate_resolution"]["external_device_required"] is False
-    assert record["execution_substrate_resolution"]["second_user_operated_device_allowed"] is False
-
+    assert request["reusable_task_binding"]["historical_task_reactivation_required"] is False
+    assert active["execution_substrate_resolution"]["selected_substrate_id"] == "ADMITTED-EPHEMERAL-STEGOS-NODE"
+    assert active["coordination_state"] == "ACTIVE"
+    assert historical["coordination_state"] == "RETIRED"
+    assert 'TASK_ID = "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"' in runner
+    assert 'OPERATION_LINEAGE_TASK_ID = "STEG-BROWSER-RUNTIME-CONSUMPTION-001"' in runner
     assert "SovereignLocalEventRuntimeAdapter" in runner
-    assert "consume-canonical-work-coordination-bootstrap.py" in runner
-    assert "consume-stegbrowser-tvc-source-promotion.py" in runner
-    assert "retain_exact_ephemeral_evidence" in runner
-    assert 'p.get("runtime_root")' in runner
+    assert "install_and_run_canonical_work_event_bootstrap.py" in runner
     assert "stage_runtime_ingress_projection" in runner
     assert 'projected_record["coordination_state"] = "PROPOSED"' in runner
-    assert "STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY" in runner
-    assert "STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY" in runner
-    assert "OWNER_INGRESS_READY_OBSERVED" in runner
-    assert "stegbrowser-tvc-source-promotion-request-consumption.latest.json" in runner
+    assert "AUTHENTIC_INTR_INGRESS_OBSERVED" in runner
+    assert "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED" in runner
     assert "GITHUB_TOKEN" not in runner
 
 
@@ -83,55 +82,23 @@ def test_runtime_ingress_projection_preserves_canonical_active_state(tmp_path):
     assert projected_row["coordination_state"] == "PROPOSED"
     assert runtime_record["runtime_ingress_projection"]["source_mutated"] is False
     assert runtime_record["runtime_ingress_projection"]["claim_or_fence_minted"] is False
+    assert runtime_record["runtime_ingress_projection"]["operation_lineage_task_id"] == HISTORICAL_TASK
     assert projection["authority_effect"] == "NONE_RUNTIME_PROJECTION_ONLY"
 
 
-def test_exact_ephemeral_evidence_is_retained_in_existing_resident_runtime(tmp_path):
+def test_bootstrap_evidence_retention_is_exact_and_non_authorizing(tmp_path):
     module = load_runner()
     ephemeral = tmp_path / "ephemeral"
     resident = tmp_path / "resident"
-    consumption = ephemeral / module.CONSUMPTION_RECEIPT
-    bootstrap = ephemeral / "runtime/canonical-work/receipts/bootstrap.json"
-    consumption.parent.mkdir(parents=True, exist_ok=True)
+    bootstrap = ephemeral / module.BOOTSTRAP_RECEIPT_REL
     bootstrap.parent.mkdir(parents=True, exist_ok=True)
-    consumption.write_bytes(b'{"state":"COMPLETED","task_id":"STEG-BROWSER-RUNTIME-CONSUMPTION-001"}\n')
-    bootstrap.write_bytes(b'{"state":"INGRESS_CONSUMPTION_AND_PROJECTION_OBSERVED"}\n')
+    bootstrap.write_bytes((json.dumps({"state": "INGRESS_CONSUMPTION_AND_PROJECTION_OBSERVED", "task_id": TASK}) + "\n").encode())
 
-    custody = module.retain_exact_ephemeral_evidence(ephemeral, resident, consumption, bootstrap)
+    custody = module.retain_bootstrap_evidence(ephemeral, resident, bootstrap)
 
-    assert (resident / module.CONSUMPTION_RECEIPT).read_bytes() == consumption.read_bytes()
-    assert (resident / "runtime/canonical-work/receipts/bootstrap.json").read_bytes() == bootstrap.read_bytes()
-    assert custody["state"] == "EXACT_EPHEMERAL_EVIDENCE_RETAINED_IN_EXISTING_RESIDENT_RUNTIME"
-    assert custody["source_receipt_mutated"] is False
+    assert (resident / module.BOOTSTRAP_RECEIPT_REL).read_bytes() == bootstrap.read_bytes()
+    assert custody["state"] == "AUTHENTIC_INTR_INGRESS_EVIDENCE_RETAINED_IN_EXISTING_RESIDENT_RUNTIME"
+    assert custody["task_id"] == TASK
+    assert custody["operation_lineage_task_id"] == HISTORICAL_TASK
     assert custody["claim_or_fence_minted"] is False
     assert custody["github_token_runtime_authority"] == "NONE"
-
-
-def test_tvc_continuation_reuses_existing_consumer_and_validates_exact_sha(tmp_path, monkeypatch):
-    module = load_runner()
-    source = tmp_path / "source"
-    resident = tmp_path / "resident"
-    consumer = source / module.TVC_CONSUMER
-    consumer.parent.mkdir(parents=True, exist_ok=True)
-    consumer.write_text("# existing consumer\n", encoding="utf-8")
-    receipt_path = resident / module.TVC_RECEIPT
-
-    def fake_run(command, **kwargs):
-        receipt_path.parent.mkdir(parents=True, exist_ok=True)
-        receipt_path.write_text(json.dumps({
-            "state": "ATTEMPT_RECORDED",
-            "outcome": "STAGED",
-            "exact_sha": module.TVC_TARGET_SHA,
-            "credential_material_present": False,
-            "network_source_fetch_performed": False,
-        }), encoding="utf-8")
-        class Completed:
-            returncode = 0
-            stdout = ""
-            stderr = ""
-        return Completed()
-
-    monkeypatch.setattr(module.subprocess, "run", fake_run)
-    receipt = module.dispatch_existing_tvc_promotion(source, resident)
-    assert receipt["outcome"] == "STAGED"
-    assert receipt["exact_sha"] == module.TVC_TARGET_SHA
