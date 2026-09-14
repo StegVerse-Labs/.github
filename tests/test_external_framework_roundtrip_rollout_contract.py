@@ -6,6 +6,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SHARD = ROOT / "source-bundles/reusable-task-registry.d/RT-EXTERNAL-FRAMEWORK-ROUNDTRIP-ROLLOUT-001.json"
 HANDOFF = ROOT / "docs/EXTERNAL_FRAMEWORK_ROUNDTRIP_ROLLOUT_MIRROR_HANDOFF.md"
 RESOLVER = ROOT / "scripts/resolve_external_framework_roundtrip_rollout.py"
+ELYRIA_PROFILE = ROOT / "data/goal-task-component-profiles/SDK-ELYRIA-INTR-ADAPTER-001.json"
 
 
 def load_shard():
@@ -102,6 +103,25 @@ def test_reference_profiles_cover_mir_and_non_mir_existing_consumer():
         "MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001",
         "SDK-ELYRIA-INTR-ADAPTER-001",
     ]
+
+
+def test_existing_elyria_profile_fits_rollout_without_new_transport_plane():
+    rollout = load_shard()
+    elyria = json.loads(ELYRIA_PROFILE.read_text(encoding="utf-8"))
+    rollout_required = set(rollout["selected_components"])
+    rollout_conditional = set(rollout["conditional_components"])
+    elyria_selected = {row["component_id"] for row in elyria["selected_components"]}
+
+    assert elyria["task_id"] == "SDK-ELYRIA-INTR-ADAPTER-001"
+    assert elyria_selected == rollout_required
+    assert "RTC-PUBLISHER-005" not in elyria_selected
+    assert "RTC-FARSIDE-FINAL-009" not in elyria_selected
+    assert {"RTC-PUBLISHER-005", "RTC-FARSIDE-FINAL-009"} <= rollout_conditional
+    assert elyria["new_reusable_component_required"] is False
+    assert elyria["new_goal_task_required"] is False
+    assert elyria["authority_invariants"]["governed_transition"] == "Interlock/InTr"
+    assert elyria["authority_invariants"]["github_runtime_authority"] == "NONE"
+    assert any("second Interlock/InTr protocol" in item for item in elyria["duplicate_orchestration_to_retire"])
 
 
 def test_source_blocked_registry_entry_stops_as_source_only():
