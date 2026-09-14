@@ -16,16 +16,16 @@ Updated: 2026-09-14
 
 ```text
 Task Registry CONTINUE
--> existing standing Healer resident scheduler carrier
--> existing neutral RT-REUSABLE-TASK-SCHEDULER-001
+-> standing Healer resident scheduler carrier
+-> neutral RT-REUSABLE-TASK-SCHEDULER-001
 -> RT-STEGBROWSER-RUNTIME-CONSUMPTION-001
--> existing SovereignLocalEventRuntimeAdapter
--> existing sovereign EVENT_EPHEMERAL carrier/worker runtime
--> runtime-local PROPOSED Canonical Work ingress projection
--> existing Interlock/InTr Canonical Work admission
+-> SovereignLocalEventRuntimeAdapter
+-> EVENT_EPHEMERAL StegOS runtime
+-> runtime-local PROPOSED Canonical Work projection
+-> Interlock/InTr admission
 -> authentic successor resident consumption
--> WorkerCoordinator claim/fence
--> exact stegbrowser_tvc_source_promotion consumption
+-> exact-byte custody into the existing resident runtime
+-> existing stegbrowser_tvc_source_promotion consumer
 -> pinned TVC aef6b6f5dc99d2a531718ca475d20858ae8e68a6 materialization/restart
 -> immutable observer 4c78f8653b8a5899350479d57c58e936b50e023a
 -> simultaneous 127.0.0.1:8765 + 127.0.0.1:8775
@@ -33,95 +33,61 @@ Task Registry CONTINUE
 -> Master Records custody/reconstruction
 ```
 
-No second scheduler, WorkerCoordinator, runtime plane, credential path, device identity, or provider authority may be introduced.
+No second scheduler, WorkerCoordinator, runtime plane, credential path, device identity, dispatcher, or provider authority may be introduced.
 
-## Reusable runner binding
+## Merged source continuity
 
-`.github#1831` merged as `6f1b08ee786c8f72395cfa5d393397bcdb7404c5`. Exact head `d806711eadba0325fbf300b89b6fc8e216b8d566` passed:
-
-```text
-Organization Control 34862161235 SUCCESS
-Deterministic Repository Suite 34862161192 SUCCESS
-Heartbeat Worker Project 34862161135 SUCCESS
-```
-
-It added `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001`, `scripts/run_stegbrowser_runtime_consumption_reusable.py`, and regression coverage while preserving GitHub runtime authority `NONE`.
-
-## Pre-ingress state defect repaired
-
-Authentic execution review exposed a source/runtime state mismatch: the canonical Goal is intentionally `ACTIVE / CHECKED_OUT`, while `scripts/run_canonical_work_event_bootstrap.py` correctly requires a `PROPOSED` runtime task before Interlock/InTr can emit `INGRESS_ADMITTED`. Passing the canonical `ACTIVE` projection directly into the bootstrap would therefore fail closed before ingress.
-
-`.github#1834` repaired that mismatch and merged as `5ca9abf473ac1cfeb07efa23f397321cad07b3e5`. Exact head `876591baeb70b3bc6f74c474c5cfa4b0ab404c42` passed:
-
-```text
-Organization Control 34866038662 SUCCESS
-Deterministic Repository Suite 34866038562 SUCCESS
-Heartbeat Worker Project 34866038452 SUCCESS
-```
-
-The runner now preserves canonical source state as `ACTIVE / CHECKED_OUT`, stages only a runtime-local `PROPOSED` projection, verifies the source was not mutated and no claim/fence was minted, then invokes the existing Canonical Work consumer. It additionally refuses later completion unless the authentic successor consumption receipt and Canonical Work bootstrap receipt prove the exact task and `INGRESS_CONSUMPTION_AND_PROJECTION_OBSERVED` state.
-
-This is a machine-actionable source repair only. CI/merge do not establish runtime execution.
-
-## Existing resident invocation surface bound
-
-Investigation of the existing resident/task-registry machinery identified an already-authorized invocation carrier rather than a need for another runtime path:
-
-```text
-control/resident-execution-request.d/healer-sovereign-scheduler-001.json
--> scripts/consume_healer_sovereign_scheduler_request.py
--> scripts/refresh_and_execute_resident_task.py
--> WorkerCoordinator fenced execution of SHWP-HEALER-SOVEREIGN-SCHEDULER-001
--> StegVerse-Healer app/reusable_task_scheduler.py
--> RT-REUSABLE-TASK-SCHEDULER-001
--> scripts/trigger_reusable_task.py
-```
-
-`StegVerse-Labs/StegVerse-Healer#73` bound `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` into that existing neutral scheduler carrier and squash-merged as `22683b8583c30f5ba8c720eaad999e3a13a23d9e` after exact head `605858f17509c81ee5e4fe32df1ea3b89d462aa9` passed Test Readiness run `34869940176`.
-
-The binding preserves:
-
-- Goal `STEG-BROWSER-RUNTIME-CONSUMPTION-001` / COSV `40000100100000`;
-- repository source `StegVerse-Labs/.github`;
-- selected execution substrate `ADMITTED-EPHEMERAL-STEGOS-NODE`;
-- existing neutral reusable scheduler ownership;
-- 15-minute bounded retry, max 4 attempts per UTC-hour slot;
-- Remote Desktop requirement `false`;
-- second user-operated device requirement `false`;
-- network source fetch allowed `false`.
-
-The Healer hosted workflow named `Healer Scheduler Contract Validation` explicitly records `Hosted production dispatch: NONE` and `Production scheduler/execution carrier: single StegVerse resident heartbeat`. Therefore hosted GitHub workflow execution is not an admissible substitute for the resident carrier and cannot satisfy this Goal's runtime predicates.
-
-The carrier binding is source/configuration evidence only. It removes the missing connection from the existing standing resident scheduler into the already-registered reusable task; it does not prove that a resident scheduler cycle has selected or executed the child slot.
-
-## Prior applicable source continuity
-
-- `.github#1763`: successor resident-ingress request/consumer path.
 - `.github#1781`: exact Task Registry `CONTINUE` preflight.
 - `.github#1789`: WorkerCoordinator self-heal source-root continuity.
-- `.github#1817`: substrate-order/modified-record validation repair.
-- `.github#1831`: reusable ephemeral runner binding.
-- `.github#1834`: runtime-local pre-ingress PROPOSED projection repair.
-- `StegVerse-Healer#73`: existing standing Healer / neutral reusable scheduler carrier binding.
-- `StegOS#380`: current-iPhone processing-observer source.
-- `Site#1305`: same-device root Universal InTr / `CanonicalWork:Ingress` capability.
+- `.github#1817`: substrate-order / modified-record validation repair.
+- `.github#1831` / `6f1b08ee786c8f72395cfa5d393397bcdb7404c5`: executable reusable runner binding.
+- `.github#1834` / `5ca9abf473ac1cfeb07efa23f397321cad07b3e5`: runtime-local `PROPOSED` ingress projection while canonical Goal remains `ACTIVE / CHECKED_OUT`.
+- `StegVerse-Healer#73` / `22683b8583c30f5ba8c720eaad999e3a13a23d9e`: existing standing Healer / neutral reusable scheduler carrier binding, hourly eligible with bounded 15-minute retries.
+- `Site#1305` / `4a10b42d4bb2743205c774d3c667cefc7353a710`: same-device root Universal InTr / Canonical Work capability.
+- `Site#1310` / `3a067ff48845044a8be42b42061929c1b7489651`: repair for authentic current-iPhone `root InTr profile HTTP 404` negative runtime result.
+
+These are source/configuration evidence only and do not substitute for authentic runtime receipts.
+
+## Autonomous resident continuation defect and repair
+
+The standing Healer carrier and neutral scheduler already select `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001`, so ChatGPT remote shell access is not part of the production path. Review of the reusable runner exposed the remaining deterministic continuation gap after an authentic ephemeral Canonical Work cycle:
+
+1. the runner produced/validated Canonical Work consumption inside the event-ephemeral StegOS runtime;
+2. the neutral scheduler already supplied the existing resident runtime as `parameters.runtime_root`, but the runner ignored it;
+3. the required successor consumption evidence therefore remained inside the ephemeral runtime instead of being retained under the existing resident sovereign-host custody path;
+4. the runner then looked for the TVC source-promotion receipt inside the ephemeral runtime instead of invoking the already-registered `stegbrowser_tvc_source_promotion` consumer against the resident runtime.
+
+Branch `fix-stegbrowser-autonomous-resident-evidence-bridge` repairs only that missing connection. The runner now:
+
+- consumes the neutral scheduler's existing `runtime_root` / `STEGVERSE_HEARTBEAT_ROOT` binding;
+- requires resident and event-ephemeral roots to be distinct;
+- copies the authentic Canonical Work successor consumption receipt and its bootstrap receipt byte-for-byte into the existing resident runtime only after the originals are observed and validated;
+- records a non-authorizing evidence-custody sidecar with SHA-256 provenance;
+- invokes the existing `control/resident-execution-request.d/consume-stegbrowser-tvc-source-promotion.py` consumer against that same resident runtime;
+- validates `STAGED`, `ALREADY_STAGED`, or `RESTAGED_EXACT_SOURCE` for exact TVC SHA `aef6b6f5dc99d2a531718ca475d20858ae8e68a6`;
+- then continues to the existing immutable observer boundary and fails closed if terminal runtime observation has not yet occurred.
+
+The repair does not create another scheduler, dispatcher, WorkerCoordinator, runtime authority, credential path, or device requirement. Exact-byte retention does not rewrite or reinterpret the authentic receipt.
+
+Validation is pending for this branch. Merge/source validation must not be promoted into runtime proof.
 
 ## First unresolved authentic predicate
 
 `CANONICAL_WORK_RESIDENT_CONSUMPTION_OBSERVED`
 
-Required receipt:
+Required retained receipt:
 
 ```text
 receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json
 ```
 
-No source, CI, merge, heartbeat, Task Registry projection, scheduler configuration, or connector-discovery result may substitute for this receipt.
+After the autonomous continuation repair is merged and consumed by the existing resident scheduler, the next eligible Healer cycle may produce this receipt without ChatGPT process access or user device action.
 
 ## Required later runtime evidence
 
 ```text
 receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json
+receipts/sovereign-host/stegbrowser-runtime-consumption-evidence-custody.latest.json
 receipts/sovereign-host/stegbrowser-tvc-source-promotion-request-consumption.latest.json
 receipts/sovereign-host/worker-source-refresh.latest.json
 receipts/sovereign-host/resident-refresh-dispatch.latest.json
@@ -136,27 +102,23 @@ Historical parent receipts remain provenance only.
 ## Authority invariants
 
 - Task Registry: coordination only.
-- Existing Healer carrier / neutral reusable scheduler: scheduling and invocation transport only.
+- Healer carrier / neutral reusable scheduler: scheduling and invocation transport only.
 - WorkerCoordinator: claim/fence authority.
 - Interlock/InTr: governed transition authority.
 - TV/TVC: credential/provider authority.
 - KV/SKAP Vault: user-verification/custody authority.
 - Master Records: observed-reality/reconstruction authority.
-- HeartBeat: observability/timing/freshness and resident carrier timing only; it does not mint transition authority.
-- GitHub/CI: validation/evidence transport only; runtime authority `NONE`.
+- HeartBeat: observability/timing/freshness and resident carrier timing only.
+- GitHub/CI: source validation/evidence transport only; runtime authority `NONE`.
 - StegOS nodes/devices: interchangeable execution/transport surfaces; no second user-operated device prerequisite.
 
 ## Completion predicate
 
-Complete only when authentic evidence establishes: successor Canonical Work consumption; current WorkerCoordinator claim/fence; InTr admission; current-dispatch-bound TVC source promotion; pinned TVC materialization/restart; immutable observer execution; simultaneous TVC 8765 + SKAP 8775; `OWNER_INGRESS_READY_OBSERVED`; and no parallel scheduler/dispatcher/credential/device path.
+Complete only when authentic evidence establishes successor Canonical Work consumption; current WorkerCoordinator claim/fence; InTr admission; current-dispatch-bound TVC source promotion; pinned TVC materialization/restart; immutable observer execution; simultaneous TVC 8765 + SKAP 8775; `OWNER_INGRESS_READY_OBSERVED`; Master Records custody/reconstruction; and no parallel scheduler/dispatcher/credential/device path.
 
 ## Current state
 
-`ACTIVE / CHECKED_OUT / TASK_REGISTRY_CHECKIN_CONTINUE_OBSERVED / EPHEMERAL_STEGOS_SELECTED / REUSABLE_EPHEMERAL_RUNNER_BINDING_MERGED / RUNTIME_LOCAL_PREINGRESS_PROJECTION_REPAIR_MERGED / EXISTING_HEALER_NEUTRAL_SCHEDULER_CARRIER_BOUND / CANONICAL_WORK_RESIDENT_CONSUMPTION_NOT_OBSERVED / WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED / INTR_ADMISSION_NOT_OBSERVED / TVC_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / TVC_PRIMARY_RUNTIME_RESTART_NOT_OBSERVED / IMMUTABLE_OBSERVER_EXECUTION_NOT_OBSERVED / OWNER_INGRESS_READY_NOT_OBSERVED / REMOTE_DEVICE_NOT_REQUIRED / NO_CONNECTED_DEVICE_PREREQUISITE / NO_SECOND_USER_OPERATED_DEVICE`
-
-## Current execution boundary
-
-The previously missing source/configuration connection into an authorized resident invocation surface is now repaired. The existing standing Healer resident scheduler is the production carrier; it is not a hosted GitHub workflow and it grants no new runtime authority. This chat session does not expose a command/API surface that can force that resident heartbeat cycle, so no resident child trigger or Canonical Work receipt can be authentically claimed from this session. The next admissible evidence is the resident scheduler/child trigger receipt followed by the exact Canonical Work successor receipt. This is an execution-surface access boundary, not a device prerequisite and not a request for manual user action.
+`ACTIVE / CHECKED_OUT / TASK_REGISTRY_CHECKIN_CONTINUE_OBSERVED / EPHEMERAL_STEGOS_SELECTED / REUSABLE_EPHEMERAL_RUNNER_BINDING_MERGED / RUNTIME_LOCAL_PREINGRESS_PROJECTION_REPAIR_MERGED / EXISTING_HEALER_NEUTRAL_SCHEDULER_CARRIER_BOUND / AUTONOMOUS_RESIDENT_EVIDENCE_CONTINUATION_REPAIR_IN_VALIDATION / CANONICAL_WORK_RESIDENT_CONSUMPTION_NOT_OBSERVED / WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED / TVC_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / OWNER_INGRESS_READY_NOT_OBSERVED / REMOTE_DEVICE_NOT_REQUIRED / NO_SECOND_USER_OPERATED_DEVICE`
 
 ## Manual work
 
