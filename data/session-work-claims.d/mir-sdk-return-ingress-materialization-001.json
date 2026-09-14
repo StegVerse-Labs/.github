@@ -1,0 +1,18 @@
+{
+  "schema": "stegverse.session-work-claim/v1",
+  "claim_id": "mir-sdk-return-ingress-materialization-001",
+  "goal_task_id": "MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001",
+  "cosv_id": "50000000100000",
+  "state": "CLAIMED_FOR_INTEGRATION",
+  "role": "RUNTIME_CARRIER_SOURCE_REPAIR",
+  "branch": "mir-sdk-return-ingress-materialization-001",
+  "claimed_paths": [
+    "workers/universal_intr_profiled_ingress.py",
+    "scripts/consume_sdk_publisher_return_materialization_request.py",
+    "tests/test_sdk_publisher_return_intr_materialization.py",
+    "docs/MIR_SDK_RETURN_INGRESS_MATERIALIZATION_MIRROR_HANDOFF.md",
+    "data/session-work-claims.d/mir-sdk-return-ingress-materialization-001.json"
+  ],
+  "authority_effect": "NONE",
+  "github_runtime_authority": "NONE"
+}
