@@ -1,0 +1,123 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+  "correlation_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+  "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+  "parent_task_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+  "remediates_defect": "RESIDENT_CUSTODY_ROOT_NOT_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001",
+  "goal": "Define the single bounded remediation path that causes the existing Healer resident scheduler carrier and neutral RT-STEGBROWSER-RUNTIME-CONSUMPTION-001 route to expose authentic resident-root observation evidence without adding a second scheduler, dispatcher, credential path, GitHub authority path, runtime plane, MIR-specific transport, or second user-operated device.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "40000100100000",
+  "source_refs": [
+    "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md",
+    "data/runtime-materialization-remediation/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.predicates.json",
+    "data/canonical-task-records/STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001.json",
+    "docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md",
+    "scripts/check_stegbrowser_runtime_consumption_receipts.py",
+    "StegVerse-Labs/.github#1866",
+    "StegVerse-Labs/.github#1860",
+    "StegVerse-Labs/.github#1864",
+    "StegVerse-Labs/StegVerse-Healer:data/reusable_task_schedule.json",
+    "StegVerse-Labs/StegVerse-Healer:app/reusable_task_scheduler.py"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegVerse-Healer"],
+    "components": [
+      "healer-neutral-reusable-scheduler-carrier",
+      "rt-stegbrowser-runtime-consumption-001",
+      "resident-runtime-custody-root-observation-surface",
+      "non-authorizing-runtime-root-classifier-gate",
+      "runtime-materialization-remediation-predicates"
+    ]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-PARENT-ROOT-CLASSIFICATION",
+      "kind": "RUNTIME_EVIDENCE_CLASSIFICATION",
+      "state": "RESOLVED_TO_DEFECT",
+      "ref": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001;StegVerse-Labs/.github#1860;StegVerse-Labs/.github#1864",
+      "disposition": "RESIDENT_CUSTODY_ROOT_NOT_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001"
+    },
+    {
+      "dependency_id": "DEP-HEALER-NEUTRAL-SCHEDULE-BINDING",
+      "kind": "SOURCE_CONFIGURATION_CONTEXT",
+      "state": "REQUIRED_REUSE_ONLY",
+      "ref": "StegVerse-Labs/StegVerse-Healer:data/reusable_task_schedule.json:RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
+      "disposition": "USE_EXISTING_NEUTRAL_REUSABLE_TASK_SCHEDULER_CARRIER_ONLY"
+    },
+    {
+      "dependency_id": "DEP-ROOT-OBSERVATION-SURFACE",
+      "kind": "MATERIALIZATION_CONTRACT",
+      "state": "DEFINED_BY_THIS_TASK",
+      "ref": "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md#required-materialization-surface",
+      "disposition": "MUST_EXPOSE_ACCEPTED_ROOT_OR_EXACT_BOUNDARY_REASON_WITHOUT_RUNTIME_AUTHORITY_CLAIM"
+    },
+    {
+      "dependency_id": "DEP-DRY-RUN-VALIDATION",
+      "kind": "NON_AUTHORIZING_VALIDATION",
+      "state": "DEFINED_BY_THIS_TASK",
+      "ref": "data/runtime-materialization-remediation/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.predicates.json",
+      "disposition": "VALIDATES_CONTRACT_AND_PROHIBITED_EFFECTS_ONLY"
+    },
+    {
+      "dependency_id": "DEP-RETURN-TO-PARENT-CLASSIFIER",
+      "kind": "CONTINUATION",
+      "state": "PENDING_AUTHENTIC_ROOT",
+      "ref": "scripts/check_stegbrowser_runtime_consumption_receipts.py --runtime-root <authentic-root>",
+      "disposition": "RUN_ONLY_AFTER_AUTHENTIC_RESIDENT_ROOT_IS_OBSERVED"
+    }
+  ],
+  "observations": [
+    {
+      "observed_at": "2026-09-14",
+      "classification_source": "StegVerse-Labs/.github#1864",
+      "classification": "RESIDENT_CUSTODY_ROOT_NOT_OBSERVED",
+      "successor_issue": "StegVerse-Labs/.github#1866",
+      "runtime_completion_claimed": false,
+      "authority_effect": "NONE_REMEDIATION_PATH_BINDING_ONLY"
+    }
+  ],
+  "blockers": [],
+  "allowed_next_transitions": [
+    "DEFINE_ROOT_OBSERVATION_SURFACE",
+    "VALIDATE_NON_AUTHORIZING_MATERIALIZATION_CONTRACT",
+    "RETURN_TO_RESIDENT_CUSTODY_ROOT_OBSERVATION"
+  ],
+  "prohibited_transitions": [
+    "ADD_SECOND_SCHEDULER",
+    "ADD_SECOND_DISPATCHER",
+    "ADD_CREDENTIAL_ROUTE",
+    "ADD_GITHUB_RUNTIME_AUTHORITY",
+    "ADD_RUNTIME_PLANE",
+    "ADD_MIR_SPECIFIC_TRANSPORT",
+    "REQUIRE_SECOND_USER_OPERATED_DEVICE",
+    "CLAIM_RUNTIME_COMPLETION_FROM_SOURCE_STATE"
+  ],
+  "handoff_projection_refs": ["docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md"],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "runtime_materialization_remediation_path_bound": true,
+    "resident_root_observation_surface_defined": true,
+    "dry_run_validation_predicates_defined": true,
+    "resident_custody_root_observed": false,
+    "receipt_reachability_classified": false,
+    "runtime_consumption_observed": false,
+    "owner_ingress_ready_observed": false,
+    "master_records_reconstruction_observed": false
+  },
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "github_runtime_authority": "NONE",
+    "healer_carrier_authority": "SCHEDULING_AND_INVOCATION_TRANSPORT_ONLY",
+    "neutral_reusable_task_path_required": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "interlock_intr_required_for_governed_ingress_egress": true,
+    "credential_authority": "TV/TVC",
+    "master_records_reality_authority": true,
+    "second_user_operated_device_required": false
+  }
+}
