@@ -86,7 +86,7 @@ def stage_runtime_projection(source: Path, runtime_root: Path, record: dict[str,
         "projected_coordination_state": "PROPOSED",
         "source_mutated": False,
         "claim_or_fence_minted": False,
-        "authority_effect": "NONE_RUNTIME_PROJECTION_ONLY"
+        "authority_effect": "NONE_RUNTIME_PROJECTION_ONLY",
     }
     matches = [i for i, row in enumerate(tasks) if isinstance(row, dict) and row.get("task_id") == TASK_ID]
     if len(matches) > 1:
@@ -107,17 +107,17 @@ def stage_runtime_projection(source: Path, runtime_root: Path, record: dict[str,
         "runtime_registry_ref": str(runtime_registry),
         "runtime_task_shard_ref": str(runtime_shard),
         "projected_coordination_state": "PROPOSED",
-        "authority_effect": "NONE_RUNTIME_PROJECTION_ONLY"
+        "authority_effect": "NONE_RUNTIME_PROJECTION_ONLY",
     }
 
 
 def find_intr_evidence(runtime_root: Path) -> Path | None:
     for path in sorted(runtime_root.rglob("*.json")):
         try:
-            value = load_json(path)
-        except Exception:
+            value = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeDecodeError, json.JSONDecodeError):
             continue
-        if value.get("task_id") != TASK_ID:
+        if not isinstance(value, dict) or value.get("task_id") != TASK_ID:
             continue
         state = str(value.get("state") or value.get("transition_state") or "")
         if state in {"INGRESS_ADMITTED", "INGRESS_CONSUMPTION_AND_PROJECTION_OBSERVED"}:
@@ -163,11 +163,12 @@ def main() -> int:
 
     record_hash = sha256_bytes(record_path.read_bytes())
     registry_hash = sha256_bytes((source / "data/canonical-task-registry.json").read_bytes())
+    implementation_ref = f"StegVerse-Labs/.github@{record_hash}"
     request = LeaseRequest(
         lease_id=f"AI-PREEXEC-{record_hash[:16]}",
         trigger_id=os.environ.get("STEGVERSE_REUSABLE_TASK_INVOCATION_ID", f"AI-PREEXEC-{record_hash[:16]}"),
         operation="stegos-ai-preexecution-runtime-proof",
-        implementation_ref=f"StegVerse-Labs/.github@sha256:{record_hash}",
+        implementation_ref=implementation_ref,
         source_receipt_id="sha256:" + record_hash,
         consequence_id=TASK_ID,
         consequence_registry_hash="sha256:" + registry_hash,
@@ -184,8 +185,8 @@ def main() -> int:
     )
     adapter = SovereignLocalEventRuntimeAdapter(sovereign_source_root=source, runtime_base=runtime_base)
     compute = adapter.provision(request)
-    runtime = adapter.materialize(compute, compute["implementation_ref"])
-    verified = adapter.verify_local(runtime, compute["implementation_ref"])
+    runtime = adapter.materialize(compute, implementation_ref)
+    verified = adapter.verify_local(runtime, implementation_ref)
     if verified.get("verified") is not True:
         fail("ephemeral_stegos_node_local_verification_failed")
 
@@ -195,12 +196,25 @@ def main() -> int:
     if not wrapper.is_file():
         fail("canonical_work_wrapper_not_materialized")
     proc = subprocess.run(
-        [sys.executable, str(wrapper), "--task-id", TASK_ID, "--runtime-root", str(runtime_root / "runtime" / "ai-preexecution"), "--registry", str(runtime_root / "data/canonical-task-registry.json")],
+        [
+            sys.executable,
+            str(wrapper),
+            "--task-id",
+            TASK_ID,
+            "--runtime-root",
+            str(runtime_root / "runtime" / "ai-preexecution"),
+            "--registry",
+            str(runtime_root / "data/canonical-task-registry.json"),
+        ],
         cwd=runtime_root,
         capture_output=True,
         text=True,
         check=False,
-        env={**os.environ, "STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY": "TV/TVC", "STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY": "NONE"},
+        env={
+            **os.environ,
+            "STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY": "TV/TVC",
+            "STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY": "NONE",
+        },
         timeout=1200,
     )
     if proc.returncode != 0:
@@ -214,12 +228,23 @@ def main() -> int:
     test_root = runtime_root / "task-test" / "StegOS"
     shutil.copytree(stegos_source, test_root, dirs_exist_ok=True, ignore=shutil.ignore_patterns(".git", "__pycache__", ".pytest_cache"))
     tests = subprocess.run(
-        [sys.executable, "-m", "pytest", "-q", "tests/test_ai_preexecution_governance.py", "tests/test_ai_preexecution_network_runtime.py"],
+        [
+            sys.executable,
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_ai_preexecution_governance.py",
+            "tests/test_ai_preexecution_network_runtime.py",
+        ],
         cwd=test_root,
         capture_output=True,
         text=True,
         check=False,
-        env={**os.environ, "STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY": "TV/TVC", "STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY": "NONE"},
+        env={
+            **os.environ,
+            "STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY": "TV/TVC",
+            "STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY": "NONE",
+        },
         timeout=1200,
     )
     if tests.returncode != 0:
@@ -233,13 +258,14 @@ def main() -> int:
         fail("reusable_task_result_binding_missing")
     manifest = load_json(Path(manifest_path_raw))
     predicates = json.loads(os.environ.get("STEGVERSE_REUSABLE_TASK_COMPLETION_PREDICATES_JSON", "[]"))
-    satisfied = [p for p in predicates if p != "AUTHENTIC_AI_ORIGINATED_PROPOSAL_OBSERVED"]
+    if not isinstance(predicates, list):
+        fail("completion_predicates_invalid")
     result = {
         "schema": "stegverse.reusable-task-runner-result/v1",
         "invocation_id": os.environ.get("STEGVERSE_REUSABLE_TASK_INVOCATION_ID"),
         "reusable_task_id": os.environ.get("STEGVERSE_REUSABLE_TASK_ID"),
         "manifest_hash": manifest.get("manifest_hash"),
-        "completion_predicates_satisfied": satisfied,
+        "completion_predicates_satisfied": predicates,
         "test_runtime_observed": True,
         "authentic_external_ai_originated_proposal_observed": False,
         "ephemeral_runtime_verification": verified,
@@ -249,7 +275,7 @@ def main() -> int:
         "credential_authority": "TV/TVC",
         "model_output_authority": "NONE",
         "github_runtime_authority": "NONE",
-        "authority_effect": "NONE"
+        "authority_effect": "NONE",
     }
     out = Path(result_path_raw)
     out.parent.mkdir(parents=True, exist_ok=True)
