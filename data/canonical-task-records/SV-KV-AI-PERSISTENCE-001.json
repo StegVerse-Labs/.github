@@ -8,9 +8,12 @@
   "coordination_state": "IN_PROGRESS",
   "source_refs": [
     "StegVerse-Labs/continuity-vault-kit/KV_AI_PERSISTENCE_CLASSES_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/continuity-vault-kit/docs/KV_AI_PERSISTENCE_LAYOUTS.md",
     "StegVerse-Labs/continuity-vault-kit/specs/kv-ai-persistence-classes.v1.json",
     "StegVerse-Labs/continuity-vault-kit/specs/kv-ai-persistence-layouts.v1.json",
     "StegVerse-Labs/continuity-vault-kit/specs/kv-cross-class-intr-transition-fixtures.v1.json",
+    "StegVerse-Labs/continuity-vault-kit/runtime/machine_kv_reconstruction.py",
+    "StegVerse-Labs/continuity-vault-kit/runtime/kv_heartbeat_receipt_observer.py",
     "StegVerse-Labs/continuity-vault-kit/specs/kv-ai-memory-substrate.v1.json",
     "StegVerse-Labs/continuity-vault-kit/runtime/kv_ai_memory_substrate.py",
     "StegVerse-Labs/continuity-vault-kit/runtime/kv_ai_memory_writeback_store.py",
@@ -26,63 +29,20 @@
   "targets": {
     "organizations": ["StegVerse-Labs", "StegVerse-org"],
     "repositories": ["StegVerse-Labs/continuity-vault-kit", "StegVerse-Labs/.github", "StegVerse-org/LLM-adapter"],
-    "components": ["PERSONAL_KV", "ORGANIZATIONAL_KV", "STEGVERSE_KV", "MACHINE_KV", "FOUR_CLASS_PERSISTENCE_LAYOUTS", "TWELVE_DIRECTED_CROSS_CLASS_INTR_FIXTURES", "AI_CONTEXT_PACKET", "AI_MEMORY_WRITE_PROPOSAL", "PRIVATE_RESIDENT_INPUT_STAGING", "LLM_PROVIDER_REQUEST_MEMORY_BRIDGE", "FENCED_RESIDENT_PROVIDER_REQUEST_MATERIALIZATION", "EVIDENCE_GATED_KV_WRITEBACK_READBACK", "INTERLOCK_INTR_ADMISSION"]
+    "components": ["PERSONAL_KV", "ORGANIZATIONAL_KV", "STEGVERSE_KV", "MACHINE_KV", "FOUR_CLASS_PERSISTENCE_LAYOUTS", "TWELVE_DIRECTED_CROSS_CLASS_INTR_FIXTURES", "MACHINE_KV_RECONSTRUCTION_VERIFIER", "HB_KV_RECEIPT_OBSERVER", "AI_CONTEXT_PACKET", "AI_MEMORY_WRITE_PROPOSAL", "PRIVATE_RESIDENT_INPUT_STAGING", "LLM_PROVIDER_REQUEST_MEMORY_BRIDGE", "FENCED_RESIDENT_PROVIDER_REQUEST_MATERIALIZATION", "EVIDENCE_GATED_KV_WRITEBACK_READBACK", "INTERLOCK_INTR_ADMISSION"]
   },
   "dependencies": [
-    {
-      "dependency_id": "DEP-KV-AI-PERSISTENCE-CLASSES",
-      "kind": "CAPABILITY",
-      "state": "RESOLVED",
-      "ref": "StegVerse-Labs/continuity-vault-kit/KV_AI_PERSISTENCE_CLASSES_MIRROR_HANDOFF.md"
-    },
-    {
-      "dependency_id": "DEP-FOUR-CLASS-PERSISTENCE-LAYOUTS",
-      "kind": "CAPABILITY",
-      "state": "RESOLVED",
-      "ref": "StegVerse-Labs/continuity-vault-kit/specs/kv-ai-persistence-layouts.v1.json"
-    },
-    {
-      "dependency_id": "DEP-CROSS-CLASS-INTR-MATRIX",
-      "kind": "CAPABILITY",
-      "state": "RESOLVED",
-      "ref": "StegVerse-Labs/continuity-vault-kit/specs/kv-cross-class-intr-transition-fixtures.v1.json"
-    },
-    {
-      "dependency_id": "DEP-LLM-PROVIDER-REQUEST-BRIDGE",
-      "kind": "CAPABILITY",
-      "state": "RESOLVED",
-      "ref": "StegVerse-org/LLM-adapter/docs/KV_AI_MEMORY_CONTEXT_BRIDGE_MIRROR_HANDOFF.md"
-    },
-    {
-      "dependency_id": "DEP-RESIDENT-FENCED-PROVIDER-REQUEST-MATERIALIZATION",
-      "kind": "CAPABILITY",
-      "state": "RESOLVED",
-      "ref": "StegVerse-Labs/.github/docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"
-    },
-    {
-      "dependency_id": "DEP-PERSONAL-KV-EVIDENCE-GATED-WRITEBACK",
-      "kind": "CAPABILITY",
-      "state": "RESOLVED",
-      "ref": "StegVerse-Labs/continuity-vault-kit/runtime/kv_ai_memory_writeback_store.py"
-    },
-    {
-      "dependency_id": "DEP-LIVE-INTR-ADMISSION",
-      "kind": "RUNTIME_PREDICATE",
-      "state": "UNRESOLVED",
-      "ref": "Interlock/InTr authentic runtime receipt chain"
-    },
-    {
-      "dependency_id": "DEP-MACHINE-KV-CROSS-PROVIDER-RECONSTRUCTION",
-      "kind": "EVIDENCE",
-      "state": "UNRESOLVED",
-      "ref": "Machine-KV provider-neutral reconstruction evidence"
-    },
-    {
-      "dependency_id": "DEP-HB-KV-RECEIPT-OBSERVATION-BINDING",
-      "kind": "CAPABILITY",
-      "state": "UNRESOLVED",
-      "ref": "Heartbeat observation binding to verified KV transition receipts"
-    }
+    {"dependency_id":"DEP-KV-AI-PERSISTENCE-CLASSES","kind":"CAPABILITY","state":"RESOLVED","ref":"StegVerse-Labs/continuity-vault-kit/KV_AI_PERSISTENCE_CLASSES_MIRROR_HANDOFF.md"},
+    {"dependency_id":"DEP-FOUR-CLASS-PERSISTENCE-LAYOUTS","kind":"CAPABILITY","state":"RESOLVED","ref":"StegVerse-Labs/continuity-vault-kit/specs/kv-ai-persistence-layouts.v1.json"},
+    {"dependency_id":"DEP-CROSS-CLASS-INTR-MATRIX","kind":"CAPABILITY","state":"RESOLVED","ref":"StegVerse-Labs/continuity-vault-kit/specs/kv-cross-class-intr-transition-fixtures.v1.json"},
+    {"dependency_id":"DEP-MACHINE-KV-RECONSTRUCTION-VERIFIER","kind":"CAPABILITY","state":"RESOLVED","ref":"StegVerse-Labs/continuity-vault-kit/runtime/machine_kv_reconstruction.py"},
+    {"dependency_id":"DEP-HB-KV-RECEIPT-OBSERVATION-BINDING","kind":"CAPABILITY","state":"RESOLVED","ref":"StegVerse-Labs/continuity-vault-kit/runtime/kv_heartbeat_receipt_observer.py"},
+    {"dependency_id":"DEP-LLM-PROVIDER-REQUEST-BRIDGE","kind":"CAPABILITY","state":"RESOLVED","ref":"StegVerse-org/LLM-adapter/docs/KV_AI_MEMORY_CONTEXT_BRIDGE_MIRROR_HANDOFF.md"},
+    {"dependency_id":"DEP-RESIDENT-FENCED-PROVIDER-REQUEST-MATERIALIZATION","kind":"CAPABILITY","state":"RESOLVED","ref":"StegVerse-Labs/.github/docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"},
+    {"dependency_id":"DEP-PERSONAL-KV-EVIDENCE-GATED-WRITEBACK","kind":"CAPABILITY","state":"RESOLVED","ref":"StegVerse-Labs/continuity-vault-kit/runtime/kv_ai_memory_writeback_store.py"},
+    {"dependency_id":"DEP-LIVE-INTR-ADMISSION","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"Interlock/InTr authentic runtime receipt chain"},
+    {"dependency_id":"DEP-MACHINE-KV-CROSS-PROVIDER-RECONSTRUCTION-EVIDENCE","kind":"EVIDENCE","state":"UNRESOLVED","ref":"Authentic Machine-KV source+target provider observations with exact manifest and InTr receipt continuity"},
+    {"dependency_id":"DEP-HB-KV-RECEIPT-OBSERVATION-EVIDENCE","kind":"EVIDENCE","state":"UNRESOLVED","ref":"Authentic HeartBeat observation bound to an already-verified KV transition receipt hash"}
   ],
   "blockers": [],
   "adjacent_task_refs": ["STEGVERSE-AI-INGRESS-CONVERGENCE-001", "SHWP-DEVICE-KV-INTR-OBSERVATION-001", "LLMA-EXTERNAL-LLM-CONVERGENCE-306", "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"],
@@ -97,6 +57,10 @@
     "StegVerse-Labs/continuity-vault-kit:actions/run/34804237690",
     "StegVerse-Labs/continuity-vault-kit:actions/run/34804237681",
     "StegVerse-Labs/continuity-vault-kit:actions/run/34804237711",
+    "StegVerse-Labs/continuity-vault-kit:actions/run/34804394797",
+    "StegVerse-Labs/continuity-vault-kit:actions/run/34804394870",
+    "StegVerse-Labs/continuity-vault-kit:actions/run/34804394755",
+    "StegVerse-Labs/continuity-vault-kit:actions/run/34804394746",
     "StegVerse-Labs/continuity-vault-kit/KV_AI_PERSISTENCE_CLASSES_MIRROR_HANDOFF.md",
     "StegVerse-org/LLM-adapter/docs/KV_AI_MEMORY_CONTEXT_BRIDGE_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github/docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"
@@ -105,6 +69,8 @@
     "CANONICAL_TASK_REGISTERED",
     "FOUR_KV_CLASS_LAYOUTS_VALIDATED",
     "ALL_DIRECTED_CROSS_CLASS_INTR_FIXTURES_VALIDATED",
+    "MACHINE_KV_RECONSTRUCTION_VERIFIER_SOURCE_VALIDATED",
+    "HB_KV_RECEIPT_OBSERVER_SOURCE_VALIDATED",
     "BOUNDED_AI_CONTEXT_PACKET_SOURCE_VALIDATED",
     "SECRET_AND_CROSS_AUTHORITY_CONTEXT_REJECTED",
     "MEMORY_WRITE_PROPOSAL_NON_AUTHORIZING",
@@ -128,17 +94,8 @@
     "deployment_required": false,
     "current_observation_required": true
   },
-  "worker_claim": {
-    "authority": "WORKERCOORDINATOR",
-    "claim_ref": null,
-    "fence_ref": null,
-    "projection_only": true
-  },
-  "completion": {
-    "claimed": false,
-    "validated": false,
-    "reconciliation_ref": null
-  },
+  "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
+  "completion": {"claimed":false,"validated":false,"reconciliation_ref":null},
   "allowed_next_transitions": ["COMPLETION_CLAIMED", "TRANSFERRED", "DEFERRED"],
   "handoff_projection_refs": [
     "StegVerse-Labs/continuity-vault-kit/KV_AI_PERSISTENCE_CLASSES_MIRROR_HANDOFF.md",
