@@ -11,14 +11,19 @@
     "StegVerse-Labs/continuity-vault-kit/specs/kv-ai-persistence-classes.v1.json",
     "StegVerse-Labs/continuity-vault-kit/specs/kv-ai-memory-substrate.v1.json",
     "StegVerse-Labs/continuity-vault-kit/runtime/kv_ai_memory_substrate.py",
+    "StegVerse-Labs/continuity-vault-kit/scripts/stage_kv_ai_memory_resident_inputs.py",
     "StegVerse-Labs/continuity-vault-kit/docs/KV_AI_MEMORY_SUBSTRATE.md",
     "StegVerse-org/LLM-adapter/llm_adapter/kv_memory_context_bridge.py",
-    "StegVerse-org/LLM-adapter/docs/KV_AI_MEMORY_CONTEXT_BRIDGE_MIRROR_HANDOFF.md"
+    "StegVerse-org/LLM-adapter/scripts/materialize_kv_memory_provider_request.py",
+    "StegVerse-org/LLM-adapter/docs/KV_AI_MEMORY_CONTEXT_BRIDGE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github/docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github/handoffs/SV-KV-AI-PERSISTENCE-001.json",
+    "StegVerse-Labs/.github/workers/kv_ai_memory_resident_worker.py"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs", "StegVerse-org"],
     "repositories": ["StegVerse-Labs/continuity-vault-kit", "StegVerse-Labs/.github", "StegVerse-org/LLM-adapter"],
-    "components": ["PERSONAL_KV", "ORGANIZATIONAL_KV", "STEGVERSE_KV", "MACHINE_KV", "AI_CONTEXT_PACKET", "AI_MEMORY_WRITE_PROPOSAL", "LLM_PROVIDER_REQUEST_MEMORY_BRIDGE", "INTERLOCK_INTR_ADMISSION"]
+    "components": ["PERSONAL_KV", "ORGANIZATIONAL_KV", "STEGVERSE_KV", "MACHINE_KV", "AI_CONTEXT_PACKET", "AI_MEMORY_WRITE_PROPOSAL", "PRIVATE_RESIDENT_INPUT_STAGING", "LLM_PROVIDER_REQUEST_MEMORY_BRIDGE", "FENCED_RESIDENT_PROVIDER_REQUEST_MATERIALIZATION", "INTERLOCK_INTR_ADMISSION"]
   },
   "dependencies": [
     {
@@ -34,6 +39,12 @@
       "ref": "StegVerse-org/LLM-adapter/docs/KV_AI_MEMORY_CONTEXT_BRIDGE_MIRROR_HANDOFF.md"
     },
     {
+      "dependency_id": "DEP-RESIDENT-FENCED-PROVIDER-REQUEST-MATERIALIZATION",
+      "kind": "CAPABILITY",
+      "state": "RESOLVED",
+      "ref": "StegVerse-Labs/.github/docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"
+    },
+    {
       "dependency_id": "DEP-LIVE-INTR-ADMISSION",
       "kind": "RUNTIME_PREDICATE",
       "state": "UNRESOLVED",
@@ -44,23 +55,31 @@
   "adjacent_task_refs": ["STEGVERSE-AI-INGRESS-CONVERGENCE-001", "SHWP-DEVICE-KV-INTR-OBSERVATION-001", "LLMA-EXTERNAL-LLM-CONVERGENCE-306", "SHWP-ECOSYSTEM-CHAT-INFERENCE-001"],
   "existing_evidence_refs": [
     "StegVerse-Labs/continuity-vault-kit:actions/run/34798372339",
+    "StegVerse-Labs/continuity-vault-kit:actions/run/34798372325",
+    "StegVerse-Labs/continuity-vault-kit:actions/run/34798372302",
+    "StegVerse-org/LLM-adapter:actions/run/34803228613",
+    "StegVerse-org/LLM-adapter:actions/run/34803228620",
+    "StegVerse-Labs/.github:actions/run/34803483965",
     "StegVerse-Labs/continuity-vault-kit/KV_AI_PERSISTENCE_CLASSES_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/continuity-vault-kit/tests/test_kv_ai_memory_substrate.py",
-    "StegVerse-org/LLM-adapter/tests/test_kv_memory_context_bridge.py"
+    "StegVerse-org/LLM-adapter/docs/KV_AI_MEMORY_CONTEXT_BRIDGE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github/docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"
   ],
   "expected_evidence_predicates": [
     "CANONICAL_TASK_REGISTERED",
     "BOUNDED_AI_CONTEXT_PACKET_SOURCE_VALIDATED",
     "SECRET_AND_CROSS_AUTHORITY_CONTEXT_REJECTED",
     "MEMORY_WRITE_PROPOSAL_NON_AUTHORIZING",
+    "PRIVATE_RESIDENT_INPUT_STAGING_VALIDATED",
     "LLM_PROVIDER_REQUEST_MEMORY_BRIDGE_VALIDATED",
+    "RESIDENT_FENCED_PROVIDER_REQUEST_MATERIALIZATION_VALIDATED",
     "HOSTED_VALIDATION_OBSERVED",
     "LIVE_MEMORY_PACKET_INTR_ADMISSION_RECEIPT_OBSERVED",
+    "LIVE_RESIDENT_PROVIDER_REQUEST_MATERIALIZATION_OBSERVED",
     "LIVE_EXTERNAL_PROVIDER_INGRESS_RESPONSE_EGRESS_CHAIN_OBSERVED",
     "LIVE_KV_WRITEBACK_READBACK_OBSERVED_BEFORE_ACTIVATION"
   ],
   "runtime_requirements": {
-    "capabilities": ["kv_context_selection", "provenance_binding", "memory_packet_intr_admission", "llm_provider_request_bridge", "provider_request_intr_admission", "ai_context_delivery", "memory_write_proposal", "kv_writeback_readback"],
+    "capabilities": ["kv_context_selection", "provenance_binding", "private_resident_input_staging", "memory_packet_intr_admission", "fenced_worker_execution", "llm_provider_request_bridge", "provider_request_intr_admission", "ai_context_delivery", "memory_write_proposal", "kv_writeback_readback"],
     "environment": "OWNER_CONTROLLED_KV_WITH_GOVERNED_EXTERNAL_AI_CONSUMER",
     "direction": "PERSONAL_KV_TO_AI_CONTEXT_AND_AI_TO_PERSONAL_KV_PROPOSAL",
     "mutation_required": true,
@@ -81,7 +100,8 @@
   "allowed_next_transitions": ["COMPLETION_CLAIMED", "TRANSFERRED", "DEFERRED"],
   "handoff_projection_refs": [
     "StegVerse-Labs/continuity-vault-kit/KV_AI_PERSISTENCE_CLASSES_MIRROR_HANDOFF.md",
-    "StegVerse-org/LLM-adapter/docs/KV_AI_MEMORY_CONTEXT_BRIDGE_MIRROR_HANDOFF.md"
+    "StegVerse-org/LLM-adapter/docs/KV_AI_MEMORY_CONTEXT_BRIDGE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github/docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"
   ],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
