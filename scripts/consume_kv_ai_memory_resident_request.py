@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """Consume the non-authorizing KV AI memory resident execution request.
 
-The consumer does not read private packet/prompt bytes. It only checks that the
-three expected resident-local bound-state input files exist, then delegates the
-canonical task to the existing refresh-and-execute WorkerCoordinator path.
+The consumer never reads private packet/prompt bytes itself. When the packet and
+provider-request input exist but the admission is absent, it may invoke the
+resident-local shared-InTr submitter as a separate process. Only an authentic
+returned ingress receipt may create the admission file; otherwise the consumer
+remains in a wait state. Once all inputs exist it delegates to the existing
+WorkerCoordinator path.
 """
 from __future__ import annotations
 
@@ -23,13 +26,12 @@ TARGET_TASK = "SV-KV-AI-PERSISTENCE-001"
 TARGET_MODE = "TARGETED_INDEPENDENT_TASK_CONTROL"
 TARGET_ENTRYPOINT = "scripts/refresh_and_execute_resident_task.py"
 BOUND_STATE_REL = Path(".stegverse/state/kv-ai-memory-resident")
-REQUIRED_INPUTS = (
-    Path("inputs/context-packet.json"),
-    Path("inputs/memory-packet-admission.json"),
-    Path("inputs/provider-request-input.json"),
-)
+PACKET_INPUT = Path("inputs/context-packet.json")
+ADMISSION_INPUT = Path("inputs/memory-packet-admission.json")
+PROVIDER_INPUT = Path("inputs/provider-request-input.json")
+REQUIRED_INPUTS = (PACKET_INPUT, ADMISSION_INPUT, PROVIDER_INPUT)
 HOSTED_ENV = ("GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "VERCEL_ENV", "CF_PAGES", "CLOUDFLARE_WORKERS")
-NONSECRET_ENV = ("PATH", "HOME", "LANG", "LC_ALL", "XDG_STATE_HOME", "XDG_CONFIG_HOME", "LOCALAPPDATA", "STEGVERSE_SOVEREIGN_NODE", "STEGVERSE_HEARTBEAT_ROOT", "STEGVERSE_HEARTBEAT_SOURCE_ROOT", "STEGVERSE_LLM_ADAPTER_ROOT")
+NONSECRET_ENV = ("PATH", "HOME", "LANG", "LC_ALL", "XDG_STATE_HOME", "XDG_CONFIG_HOME", "LOCALAPPDATA", "STEGVERSE_SOVEREIGN_NODE", "STEGVERSE_HEARTBEAT_ROOT", "STEGVERSE_HEARTBEAT_SOURCE_ROOT", "STEGVERSE_LLM_ADAPTER_ROOT", "STEGVERSE_UNIVERSAL_INTR_INGRESS_URL")
 FORBIDDEN_ENV = ("GITHUB_TOKEN", "GH_TOKEN", "GITHUB_PAT", "ACTIONS_RUNTIME_TOKEN", "OPENAI_API_KEY", "ANTHROPIC_API_KEY", "DEEPSEEK_API_KEY", "ZAI_API_KEY", "KIMI_API_KEY", "PRIVATE_KEY", "SEED", "MNEMONIC")
 
 
@@ -93,13 +95,18 @@ def bound_state_root(env: Mapping[str, str] | None = None) -> Path:
     home = str(values.get("HOME") or "").strip()
     if not home:
         raise RuntimeError("HOME required to resolve fenced KV AI memory bound state")
-    return (Path(home).expanduser().resolve() / BOUND_STATE_REL)
+    return Path(home).expanduser().resolve() / BOUND_STATE_REL
 
 
 def input_readiness(env: Mapping[str, str] | None = None) -> tuple[bool, list[str]]:
     root = bound_state_root(env)
     missing = [path.as_posix() for path in REQUIRED_INPUTS if not (root / path).is_file()]
     return not missing, missing
+
+
+def admission_inputs_ready(env: Mapping[str, str] | None = None) -> bool:
+    root = bound_state_root(env)
+    return (root / PACKET_INPUT).is_file() and (root / PROVIDER_INPUT).is_file() and not (root / ADMISSION_INPUT).is_file()
 
 
 def previously_consumed(runtime: Path, request: dict[str, Any], request_hash: str) -> bool:
@@ -124,6 +131,46 @@ def last_json(stdout: str) -> dict[str, Any] | None:
     return None
 
 
+def attempt_memory_packet_admission(source: Path, *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
+    values = dict(os.environ if env is None else env)
+    ingress_url = str(values.get("STEGVERSE_UNIVERSAL_INTR_INGRESS_URL") or "").strip()
+    if not ingress_url:
+        return {
+            "state": "INGRESS_NOT_READY",
+            "admission_attempted": False,
+            "private_input_bytes_read_by_consumer": False,
+            "authority_effect": "NONE_WAIT_STATE",
+        }
+    installer = source / "scripts/install_kv_ai_memory_universal_intr_route.py"
+    router = source / "workers/universal_intr_profiled_ingress.py"
+    submitter = source / "scripts/submit_kv_ai_memory_packet_local.py"
+    for path in (installer, router, submitter):
+        if not path.is_file():
+            raise RuntimeError(f"KV AI memory admission source missing: {path}")
+    sanitized = clean_env(values)
+    install = runner([sys.executable, str(installer), "--router", str(router)], cwd=source, capture_output=True, text=True, check=False, env=sanitized, timeout=120)
+    if install.returncode != 0:
+        return {
+            "state": "ROUTE_PREPARATION_FAILED",
+            "admission_attempted": False,
+            "route_preparation_returncode": install.returncode,
+            "private_input_bytes_read_by_consumer": False,
+            "authority_effect": "NONE_FAIL_CLOSED",
+        }
+    stage = bound_state_root(values)
+    submitted = runner([sys.executable, str(submitter), "--stage-root", str(stage)], cwd=source, capture_output=True, text=True, check=False, env=sanitized, timeout=30)
+    result = last_json(submitted.stdout)
+    return {
+        "state": result.get("state") if isinstance(result, dict) else "SUBMISSION_RESULT_UNREADABLE",
+        "admission_attempted": True,
+        "submission_returncode": submitted.returncode,
+        "admission_written": bool(isinstance(result, dict) and result.get("admission_written") is True),
+        "receipt_hash": result.get("receipt_hash") if isinstance(result, dict) else None,
+        "private_input_bytes_read_by_consumer": False,
+        "authority_effect": "NONE_ADMISSION_ATTEMPT_ONLY",
+    }
+
+
 def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
@@ -136,6 +183,10 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     if previously_consumed(runtime, request, request_hash):
         return {"schema": "stegverse.kv-ai-memory.resident-request-consumption/v1", "state": "ALREADY_CONSUMED", "request_id": request["request_id"], "request_sha256": request_hash, "runtime_execution_attempted": False, "authority_effect": "NONE"}
 
+    admission_attempt = None
+    if admission_inputs_ready(env):
+        admission_attempt = attempt_memory_packet_admission(source, runner=runner, env=env)
+
     ready, missing = input_readiness(env)
     if not ready:
         return {
@@ -144,6 +195,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
             "request_id": request["request_id"],
             "request_sha256": request_hash,
             "missing_input_refs": missing,
+            "admission_attempt": admission_attempt,
             "private_input_bytes_read": False,
             "runtime_execution_attempted": False,
             "request_granted_authority": False,
@@ -177,6 +229,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         "execution_result": result,
         "bridge_contract_valid": valid,
         "runtime_execution_attempted": True,
+        "admission_attempt": admission_attempt,
         "private_input_bytes_read_by_consumer": False,
         "request_granted_authority": False,
         "activation_claimed": False,
