@@ -84,6 +84,12 @@ AUTONOMOUS_PROGRESSION_SPEC = {
     "bootstrap_runtime_rel": Path("runtime/canonical-work-entity-autonomous-governed-progression-runtime-adoption"),
     "task_id": "ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001",
 }
+STEGAGENTS_GOVERNED_RUNTIME_SPEC = {
+    "request_rel": Path("control/resident-execution-request.d/canonical-work-stegagents-governed-runtime-001.json"),
+    "consumption_rel": Path("receipts/sovereign-host/canonical-work-stegagents-governed-runtime-request-consumption.latest.json"),
+    "bootstrap_runtime_rel": Path("runtime/canonical-work-stegagents-governed-runtime"),
+    "task_id": "STEGAGENTS-GOVERNED-RUNTIME-001",
+}
 REQUEST_SPECS = (
     DEFAULT_SPEC,
     QUANTUM_SPEC,
@@ -94,6 +100,7 @@ REQUEST_SPECS = (
     STEGBROWSER_RUNTIME_CONSUMPTION_SPEC,
     GLOBAL_MEASUREMENT_SPEC,
     AUTONOMOUS_PROGRESSION_SPEC,
+    STEGAGENTS_GOVERNED_RUNTIME_SPEC,
 )
 
 MATERIALIZE = (
@@ -170,19 +177,10 @@ def resolve_local_canonical_source(
     runtime_root: Path,
     env: Mapping[str, str] | None = None,
 ) -> Path:
-    """Resolve only an already-local canonical source tree.
-
-    Native WorkerCoordinator dispatch normally passes the resident runtime as both
-    source and runtime root. The worker service already propagates the non-secret
-    STEGVERSE_HEARTBEAT_SOURCE_ROOT locator for local source refresh. Reuse that
-    locator when the runtime copy does not contain the full Canonical Work source
-    set; never fetch source from the network and never treat the locator as authority.
-    """
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
     if source_complete(source):
         return source
-
     values = dict(os.environ if env is None else env)
     raw = str(values.get("STEGVERSE_HEARTBEAT_SOURCE_ROOT") or "").strip()
     require(raw, "canonical work local source incomplete and STEGVERSE_HEARTBEAT_SOURCE_ROOT is not set")
@@ -297,13 +295,7 @@ def materialize_registry_task_shards(source: Path, runtime: Path) -> list[dict[s
     for src in sorted(source_dir.glob("*.json")):
         dst = runtime_dir / src.name
         if dst.is_file():
-            rows.append({
-                "path": (TASK_RECORDS_REL / src.name).as_posix(),
-                "sha256": sha256(dst),
-                "exact_copy": False,
-                "preserved_existing_runtime_projection": True,
-                "source_sha256": sha256(src),
-            })
+            rows.append({"path": (TASK_RECORDS_REL / src.name).as_posix(), "sha256": sha256(dst), "exact_copy": False, "preserved_existing_runtime_projection": True, "source_sha256": sha256(src)})
             continue
         copied = copy_exact(src, dst)
         copied["path"] = (TASK_RECORDS_REL / src.name).as_posix()
@@ -344,15 +336,7 @@ def ensure_task_identity_materialized(source: Path, runtime: Path, task_id: str)
     shard = runtime / "data/canonical-task-records" / f"{task_id}.json"
     atomic_json(shard, source_task)
     require(load_json(shard).get("task_id") == task_id, "materialized task shard identity mismatch")
-    return {
-        "task_id": task_id,
-        "state": "SOURCE_TASK_SHARD_MATERIALIZED",
-        "materialized": True,
-        "registry_preserved": runtime_registry.is_file(),
-        "source_kind": source_kind,
-        "shard_ref": str(shard),
-        "sha256": sha256(shard),
-    }
+    return {"task_id": task_id, "state": "SOURCE_TASK_SHARD_MATERIALIZED", "materialized": True, "registry_preserved": runtime_registry.is_file(), "source_kind": source_kind, "shard_ref": str(shard), "sha256": sha256(shard)}
 
 
 def consume_for_spec(source_root: Path, runtime_root: Path, spec: Mapping[str, Any], *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
@@ -371,7 +355,6 @@ def consume_for_spec(source_root: Path, runtime_root: Path, spec: Mapping[str, A
             bootstrap_ref = previous.get("bootstrap_receipt_ref")
             if isinstance(bootstrap_ref, str) and Path(bootstrap_ref).is_file():
                 return {**previous, "state": "ALREADY_CONSUMED"}
-
     materialized = materialize(source, runtime)
     task_identity = ensure_task_identity_materialized(source, runtime, spec["task_id"])
     entrypoint = runtime / TARGET_ENTRYPOINT
@@ -473,13 +456,7 @@ def consume_all(source_root: Path, runtime_root: Path, *, runner=subprocess.run,
     try:
         registry_cycle = run_registry_cycle(source_root, runtime_root, runner=runner, env=env)
     except Exception as exc:
-        registry_cycle = {
-            "schema": "stegverse.resident-task-registry-canonical-work-cycle-consumption/v1",
-            "state": "REGISTRY_CYCLE_EXCEPTION",
-            "error_type": type(exc).__name__,
-            "error": str(exc),
-            "authority_effect": "NONE_FAIL_CLOSED",
-        }
+        registry_cycle = {"schema": "stegverse.resident-task-registry-canonical-work-cycle-consumption/v1", "state": "REGISTRY_CYCLE_EXCEPTION", "error_type": type(exc).__name__, "error": str(exc), "authority_effect": "NONE_FAIL_CLOSED"}
     acceptable = {"ALREADY_CONSUMED", "COMPLETED", "ATTEMPT_RECORDED"}
     all_acceptable = all(row.get("state") in acceptable for row in outcomes)
     registry_acceptable = registry_cycle.get("state") in {"COMPLETED", "ATTEMPT_RECORDED"}
