@@ -1,0 +1,50 @@
+{
+  "schema": "stegverse.executable-handoff/v1",
+  "task_id": "SV-KV-AI-RUNTIME-EVIDENCE-001",
+  "root_task_id": "SV-KV-AI-PERSISTENCE-001",
+  "cosv_task_v1": "20111110110001",
+  "state": "HANDOFF_READY",
+  "handoff_doc": "docs/KV_AI_MEMORY_RUNTIME_EVIDENCE_MIRROR_HANDOFF.md",
+  "source_task": "SV-KV-AI-PERSISTENCE-001",
+  "authorized_next_action": "Execute the authentic KV AI memory runtime evidence chain without synthesizing inputs or promoting source validation: resolve real Personal-KV inputs, stage fenced resident packet/provider inputs, admit exact packet through shared Universal InTr, observe memory-packet-admission.json, observe fresh WorkerCoordinator claim/fence and KV_AI_MEMORY_PROVIDER_REQUEST_MATERIALIZED, then continue through governed provider/model chain and evidence-gated KV writeback/readback.",
+  "preferred_commands": [
+    "python scripts/run_kv_ai_memory_intr_event_bootstrap.py --source-root <canonical-local-source-root> --runtime-root <resident-runtime-root>",
+    "python scripts/refresh_and_dispatch_resident_requests.py --source-root <canonical-local-source-root> --runtime-root <resident-runtime-root> --only-consumer kv_ai_memory"
+  ],
+  "required_observations": [
+    "real Personal-KV root observed without exporting private content",
+    "real _System/AI/Memory/Inputs/context-request.json observed",
+    "real _System/AI/Memory/Inputs/context-entries.json observed",
+    "real _System/AI/Memory/Inputs/provider-request-input.json observed",
+    "fenced context-packet.json staged under ~/.stegverse/state/kv-ai-memory-resident/inputs",
+    "fenced provider-request-input.json staged under ~/.stegverse/state/kv-ai-memory-resident/inputs",
+    "shared Universal InTr exact-packet ALLOW observed",
+    "memory-packet-admission.json observed",
+    "fresh WorkerCoordinator claim and fence observed",
+    "KV_AI_MEMORY_PROVIDER_REQUEST_MATERIALIZED observed",
+    "provider/model ingress-response-egress chain observed through the governed LLM path",
+    "Personal-KV writeback and exact readback observed",
+    "Master Records reconstruction bound to the receipt chain"
+  ],
+  "prohibited_substitutes": [
+    "synthetic Personal-KV input files",
+    "repository-only source validation as runtime evidence",
+    "CI success as runtime evidence",
+    "chat probe as runtime evidence",
+    "Remote Desktop Commander availability as a device gate",
+    "device discovery or second-user-operated-device requirement",
+    "fabricated InTr receipt",
+    "fabricated WorkerCoordinator claim/fence",
+    "fabricated provider/model response",
+    "fabricated KV writeback/readback"
+  ],
+  "completion_requires": [
+    "LIVE_MEMORY_PACKET_INTR_ALLOW_OBSERVED",
+    "MEMORY_PACKET_ADMISSION_FILE_OBSERVED",
+    "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+    "LIVE_RESIDENT_PROVIDER_REQUEST_MATERIALIZATION_OBSERVED",
+    "LIVE_EXTERNAL_PROVIDER_INGRESS_RESPONSE_EGRESS_CHAIN_OBSERVED",
+    "LIVE_KV_WRITEBACK_READBACK_OBSERVED",
+    "MASTER_RECORDS_RECONSTRUCTION_BOUND"
+  ]
+}
