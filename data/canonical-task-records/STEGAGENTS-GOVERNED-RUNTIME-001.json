@@ -23,6 +23,9 @@
     "handoffs/STEGAGENTS-GOVERNED-RUNTIME-001.json",
     "workers/stegagents_governed_runtime_worker.py",
     "control/worker-registry.json",
+    "control/runtime-profile-map.json",
+    "data/task-coordination-policy.json",
+    "scripts/evaluate_task_runtime_routing_readiness.py",
     "scripts/evaluate_task_registry_collision_checkin.py",
     "scripts/install_and_run_canonical_work_event_bootstrap.py",
     "scripts/run_worker_runtime.py"
@@ -41,6 +44,8 @@
   "systemic_incident_ref": null,
   "adjacent_task_refs": ["STEGAGENTS-GOVERNED-AGENT-REGISTRATION-001", "STEGVERSE-CANONICAL-WORK-COORDINATION-001"],
   "expected_evidence_predicates": [
+    "RUNTIME_PROFILE_RESOLUTION_CURRENT",
+    "ROUTING_READY_FOR_WORKERCOORDINATOR_REVIEW",
     "AUTHENTIC_CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
     "AUTHENTIC_CODEREPAIR_GOVERNED_REQUEST_IDENTITY_OBSERVED",
     "AUTHENTIC_STEGCORE_INTR_INGRESS_DISPOSITION_OBSERVED",
@@ -55,12 +60,12 @@
     "MERGED_MAIN_REVALIDATION_PASS"
   ],
   "runtime_requirements": {
-    "capabilities": ["task_registry_reconciliation", "worker_claim_projection", "intr_task_admission", "bounded_process_execution", "canonical_artifact_validation", "master_records_reconciliation"],
+    "capabilities": ["task_registry_reconciliation", "worker_claim_projection", "intr_task_admission", "canonical_artifact_validation", "master_records_reconciliation"],
     "environment": "SOVEREIGN_RESIDENT",
-    "direction": "INTERNAL_AND_OPTIONAL_PROVIDER",
+    "direction": "INTERNAL",
     "mutation_required": true,
     "deployment_required": false,
-    "current_observation_required": true
+    "current_observation_required": false
   },
   "execution_substrate_resolution": {
     "schema": "stegverse.execution-substrate-resolution/v1",
@@ -85,7 +90,14 @@
     "second_user_operated_device_allowed": false,
     "authority_effect": "NONE"
   },
-  "runtime_resolution": null,
+  "runtime_resolution": {
+    "map_ref": "control/runtime-profile-map.json",
+    "map_generation": 2,
+    "candidate_profile_ids": ["canonical-work-coordination-runtime-v1"],
+    "resolved_at": "2026-09-14T15:53:00Z",
+    "projection_only": true,
+    "selection_grants_authority": false
+  },
   "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
   "human_action_ref": null,
   "completion": {"claimed":false,"validated":false,"reconciliation_ref":null,"activation_proof_complete":false},
