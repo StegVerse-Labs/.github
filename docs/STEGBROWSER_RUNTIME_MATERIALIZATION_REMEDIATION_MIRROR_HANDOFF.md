@@ -9,7 +9,7 @@ Updated: 2026-09-14
 - Shared runtime-evidence owner: `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001`
 - Issue: `StegVerse-Labs/.github#1866`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / POST-REPAIR CARRIER PACKET NOT OBSERVED`
+- Status: `ACTIVE / CHECKED_OUT / HEALER RETAINED PACKET SOURCE REPAIR MERGED / POST-REPAIR CARRIER PACKET OBSERVATION STILL REQUIRED`
 - External/second user-operated device required: `false`
 
 ## Current truth
@@ -19,14 +19,16 @@ The current source-side repairs are merged and validated, but source repair does
 - `StegVerse-Healer#81` added the task-bound non-authorizing `resident_custody_root_observation` packet surface.
 - `StegVerse-Healer#82` repaired the resident-root bootstrap circularity by allowing the existing canonical resident-root path to be used as a non-authorizing materialization target only when existing `RT-SOVEREIGN-SOURCE-REFRESH-001` is enabled, then re-running root discovery after delegation.
 - `.github#1870` reconciled that Healer #82 source repair into this lane.
+- `StegVerse-Healer#83` repaired the exact post-#82 retention gap: the existing carrier now retains the `resident_custody_root_observation` packet to `receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json` under the observed resident runtime root, or under the existing non-authorizing materialization target when source refresh is enabled and no valid root is yet observed.
 
-No authentic retained post-#82 Healer carrier packet was observed through the available evidence in this pass. The latest issue evidence still states that no authentic post-#82 Healer resident carrier packet is observed and the connected resident list remains empty.
+No authentic retained post-#83 Healer carrier packet has yet been observed through runtime evidence in this handoff. The retained packet path is now source-available for the next authentic carrier cycle, but it is not itself runtime proof until observed from resident state.
 
 ## Current classification — 2026-09-14
 
 ```text
+HEALER_RETAINED_RESIDENT_ROOT_OBSERVATION_PACKET_SOURCE_REPAIR_MERGED
 POST_REPAIR_HEALER_CARRIER_PACKET_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001 = false
-POST_REPAIR_HEALER_CARRIER_PACKET_NOT_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001
+POST_REPAIR_HEALER_CARRIER_PACKET_OBSERVATION_STILL_REQUIRED
 ```
 
 Supporting classification packet:
@@ -35,51 +37,41 @@ Supporting classification packet:
 data/runtime-materialization-remediation/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.post-repair-packet-classification.json
 ```
 
-Inspected surfaces:
-
-- `StegVerse-Labs/.github#1866`
-- parent `StegVerse-Labs/.github#1860`
-- merged `.github#1868`
-- merged `.github#1870`
-- current `.github@c4d2fc83c879fb0f2fdd61b3e4d0dae697bfedee`
-- `StegVerse-Labs/StegVerse-Healer#81`
-- `StegVerse-Labs/StegVerse-Healer#82`
-- `StegVerse-Labs/StegVerse-Healer:app/reusable_task_scheduler.py`
-- `StegVerse-Labs/StegVerse-Healer` Test Readiness run `34884261376`, which had no artifacts available through GitHub
-- code search for `resident_custody_root_observation`, which found source/documentation references but no retained runtime packet
-
 ## First unresolved predicate
 
 ```text
 POST_REPAIR_HEALER_CARRIER_PACKET_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001
 ```
 
-## Exact next defect
+## Exact next required observation
+
+Observe the next authentic existing Healer resident scheduler carrier output after `StegVerse-Healer#83` merge `898d8362192419a0811d45651ea6085112015e10` and bind its retained packet:
 
 ```text
-POST_REPAIR_HEALER_CARRIER_PACKET_NOT_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001
+receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json
 ```
 
-## Required next action
+Do not substitute source code, CI success, workflow artifacts, issue comments, or a synthetic checkout for runtime proof.
 
-Observe the next authentic existing Healer resident scheduler carrier output after `StegVerse-Healer#82` and bind its retained `resident_custody_root_observation` packet state. Do not substitute source code, CI success, workflow artifacts, issue comments, or a synthetic checkout for runtime proof.
-
-If the retained packet state is `RESIDENT_CUSTODY_ROOT_OBSERVED`, retain:
+If the retained packet state is `RESIDENT_CUSTODY_ROOT_OBSERVED`, retain and bind:
 
 - exact resident root identity/path;
 - `resident_runtime_root_source`;
 - matched resident marker paths;
-- retained Healer carrier receipt identity/hash;
+- retained Healer carrier packet path/hash;
 - evidence that the path is resident runtime state rather than a repository checkout.
 
 Then run the existing non-authorizing classifier against that exact root and check:
 
 ```text
 <resident-root>/receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json
-<resident-root>/receipts/sovereign-host/stegagents-governed-runtime-targeted-request-consumption.latest.json
+<resident-root>/receipts/sovereign-host/stegbrowser-runtime-consumption-evidence-custody.latest.json
+<resident-root>/receipts/sovereign-host/stegbrowser-tvc-source-promotion-request-consumption.latest.json
+<resident-root>/var/lib/stegverse/skap/browser-recipient/apple/receipts/runtime-observation-latest.json
+/var/lib/stegverse/skap/browser-recipient/apple/receipts/runtime-observation-latest.json
 ```
 
-If the packet remains not observed, invalid, stale, or ambiguous, bind that specific packet state and continue through the shared runtime-evidence owner. Do not create another runtime-materialization owner.
+If the packet remains not observed, invalid, stale, or ambiguous, bind that specific packet state and continue through this same remediation owner. Do not create another runtime-materialization owner.
 
 ## Authority invariants
 
@@ -95,7 +87,7 @@ If the packet remains not observed, invalid, stale, or ambiguous, bind that spec
 
 ## Current state
 
-`ACTIVE / CHECKED_OUT / HEALER_ROOT_BOOTSTRAP_CIRCULARITY_SOURCE_REPAIR_MERGED / POST_REPAIR_HEALER_CARRIER_PACKET_NOT_OBSERVED / RESIDENT_ROOT_NOT_AUTHENTICALLY_OBSERVED / RUNTIME_CONSUMPTION_NOT_CLAIMED / NO_SECOND_USER_OPERATED_DEVICE`
+`ACTIVE / CHECKED_OUT / HEALER_ROOT_BOOTSTRAP_CIRCULARITY_SOURCE_REPAIR_MERGED / HEALER_RETAINED_PACKET_SOURCE_REPAIR_MERGED / POST_REPAIR_HEALER_CARRIER_PACKET_OBSERVATION_REQUIRED / RESIDENT_ROOT_NOT_AUTHENTICALLY_OBSERVED / RUNTIME_CONSUMPTION_NOT_CLAIMED / NO_SECOND_USER_OPERATED_DEVICE`
 
 ## Manual work
 

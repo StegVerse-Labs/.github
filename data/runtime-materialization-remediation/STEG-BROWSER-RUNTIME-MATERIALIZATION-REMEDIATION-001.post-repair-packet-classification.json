@@ -4,36 +4,42 @@
   "parent_task_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
   "cosv_task_vector": "40000100100000",
   "observed_at": "2026-09-14",
-  "classification": "POST_REPAIR_HEALER_CARRIER_PACKET_NOT_OBSERVED",
+  "classification": "HEALER_RETAINED_PACKET_SOURCE_REPAIR_MERGED_POST_RUNTIME_OBSERVATION_REQUIRED",
   "predicate": "POST_REPAIR_HEALER_CARRIER_PACKET_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001",
   "predicate_satisfied": false,
   "packet_name": "resident_custody_root_observation",
+  "retained_packet_relative_path": "receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json",
   "required_source_repair": {
     "healer_packet_repair_pr": "StegVerse-Labs/StegVerse-Healer#81",
     "healer_packet_repair_merge": "b7d37a91fa464a716a85c0a8a28cffd6e5022fb6",
     "healer_bootstrap_circularity_pr": "StegVerse-Labs/StegVerse-Healer#82",
-    "healer_bootstrap_circularity_merge": "2415e0bdf83bcd5ff116a388cf4c570874593e6b"
+    "healer_bootstrap_circularity_merge": "2415e0bdf83bcd5ff116a388cf4c570874593e6b",
+    "healer_retained_packet_repair_pr": "StegVerse-Labs/StegVerse-Healer#83",
+    "healer_retained_packet_repair_merge": "898d8362192419a0811d45651ea6085112015e10",
+    "healer_retained_packet_validation_run": "34887384781"
   },
   "inspected_refs": [
     "StegVerse-Labs/.github#1866",
     "StegVerse-Labs/.github#1860",
     "StegVerse-Labs/.github#1868",
     "StegVerse-Labs/.github#1870",
-    "StegVerse-Labs/.github@c4d2fc83c879fb0f2fdd61b3e4d0dae697bfedee",
+    "StegVerse-Labs/.github@35b150c0b723bd921fd0cf05f55f6291d4e80076",
     "StegVerse-Labs/StegVerse-Healer#81",
     "StegVerse-Labs/StegVerse-Healer#82",
+    "StegVerse-Labs/StegVerse-Healer#83",
     "StegVerse-Labs/StegVerse-Healer:app/reusable_task_scheduler.py",
-    "StegVerse-Labs/StegVerse-Healer:actions:34884261376"
+    "StegVerse-Labs/StegVerse-Healer:actions:34887384781"
   ],
   "evidence": {
-    "runtime_materialization_handoff_state": "AUTHENTIC_POST_REPAIR_CARRIER_OBSERVATION_PENDING",
-    "task_record_state": "PENDING_RUNTIME_OBSERVATION",
-    "issue_1866_latest_runtime_boundary": "no authentic post-#82 Healer resident carrier packet is yet observed; connected resident list remains empty",
-    "healer_pr_82_artifacts": "NONE_OBSERVED",
-    "github_code_search_result": "source_and_documentation_references_ONLY; no retained runtime packet located"
+    "runtime_materialization_handoff_state": "POST_HEALER83_AUTHENTIC_CARRIER_OBSERVATION_REQUIRED",
+    "task_record_state": "PENDING_POST_HEALER83_RUNTIME_OBSERVATION",
+    "healer_pr_83_source_repair": "retains resident_custody_root_observation at receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json under the observed resident runtime root or non-authorizing materialization target",
+    "healer_pr_83_validation": "Test Readiness 34887384781 success at exact head 31314bd431122bd6b0dd4a422b524beec536ded3",
+    "runtime_packet_observed_after_healer83": "NOT_OBSERVED_IN_THIS_SOURCE_RECONCILIATION",
+    "github_code_search_result": "source_and_documentation_references_ONLY; retained path source repair merged but no authentic resident-state packet observed yet"
   },
-  "next_defect": "POST_REPAIR_HEALER_CARRIER_PACKET_NOT_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001",
-  "next_required_action": "Observe the next authentic existing Healer resident scheduler carrier output after StegVerse-Healer#82 and bind the retained resident_custody_root_observation packet state, without creating another runtime owner or authority path.",
+  "next_defect": "POST_REPAIR_HEALER_CARRIER_PACKET_OBSERVATION_STILL_REQUIRED_AFTER_RETAINED_PACKET_SOURCE_REPAIR",
+  "next_required_action": "Observe the next authentic existing Healer resident scheduler carrier output after StegVerse-Healer#83 and bind the retained resident_custody_root_observation packet state from receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json, without creating another runtime owner or authority path.",
   "authority_effect": "NONE_CLASSIFICATION_ONLY",
   "runtime_completion_claimed": false,
   "request_consumption_claimed": false,
