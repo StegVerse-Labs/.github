@@ -33,7 +33,7 @@ Task Registry CONTINUE
 -> Master Records custody/reconstruction
 ```
 
-No second scheduler, WorkerCoordinator, runtime plane, credential path, device identity, dispatcher, or provider authority may be introduced.
+No second scheduler, WorkerCoordinator, runtime plane, credential path, device identity, dispatcher, provider authority, or second user-operated device may be introduced.
 
 ## Merged source continuity
 
@@ -49,10 +49,11 @@ No second scheduler, WorkerCoordinator, runtime plane, credential path, device i
 - `.github#1260` comment `5667705728`: umbrella runtime-evidence closure trail updated with the current StegBrowser first-unresolved predicate and receipt-inspection remediation path.
 - `.github#1851` / `253df7c4d80f4f9861e6aacff2512a257f27d3c3`: handoff reconciliation after `.github#1260` update; exact head `f59f0e48b1927361e135a54cdb1e55a16cd8bffe` passed Heartbeat `34872678062`, Deterministic Repository Suite `34872678067`, and Organization Control `34872678070`.
 - `StegVerse-Healer#74` / `41740a6468f7d801b1cad492352c9fc77941fb92`: repaired resident runtime discovery marker set so the existing neutral reusable scheduler carrier accepts StegBrowser resident request/source-promotion/retained-receipt markers, not only the legacy native-email request marker. Exact head `66b05e9b8e20f45cfd4021d415d979a7e1625b4e` passed Test Readiness `34873548610` before squash merge.
+- `.github#1852` / `f89e3160d5d1a9f2706b38a7c2e788f777b17a38`: merged non-authorizing exact resident receipt reachability verifier and regression tests. Exact head `a6d0d6e33520a81b261018f36bb78ff5568d7fed` passed Organization Control `34873353094`, Deterministic Repository Suite `34873352920`, and Heartbeat `34873352943` before squash merge. Umbrella issue `.github#1260` updated by comment `5667858973`.
 - `Site#1305` / `4a10b42d4bb2743205c774d3c667cefc7353a710`: same-device root Universal InTr / Canonical Work capability.
 - `Site#1310` / `3a067ff48845044a8be42b42061929c1b7489651`: repair for authentic current-iPhone `root InTr profile HTTP 404` negative runtime result.
 
-These are source/configuration evidence only and do not substitute for authentic runtime receipts.
+These are source/configuration/validation evidence only and do not substitute for authentic runtime receipts.
 
 ## Autonomous resident continuation repair merged
 
@@ -81,6 +82,22 @@ The native-email marker remains for existing reusable tasks. The new regression 
 
 This is source-side reachability repair only. It does not prove an authentic resident run occurred and does not satisfy completion.
 
+## 2026-09-14 exact resident receipt reachability verifier
+
+`.github#1852` added `scripts/check_stegbrowser_runtime_consumption_receipts.py` plus `tests/test_stegbrowser_runtime_receipt_reachability.py` and merged as `f89e3160d5d1a9f2706b38a7c2e788f777b17a38` after exact-head validation at `a6d0d6e33520a81b261018f36bb78ff5568d7fed`.
+
+The verifier is intentionally non-authorizing. It only inspects an existing resident custody root for the exact receipt paths required by this handoff and classifies the state as missing, invalid, or valid/bindable. It does not run a scheduler, consume a request, mint WorkerCoordinator claim/fence state, invoke TV/TVC, or promote GitHub/CI/source state into runtime proof.
+
+Validated exact-head checks before merge:
+
+```text
+Organization Control: 34873353094 success
+Deterministic Repository Suite: 34873352920 success
+Heartbeat: 34873352943 success
+```
+
+This repairs deterministic receipt reachability classification only. It does not prove an authentic resident run occurred and does not satisfy completion.
+
 ## First unresolved authentic predicate
 
 `CANONICAL_WORK_RESIDENT_CONSUMPTION_OBSERVED`
@@ -91,7 +108,7 @@ Required retained receipt:
 receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json
 ```
 
-The existing standing Healer carrier is configured to invoke the reusable task; the reusable runner is configured to retain authentic ephemeral Canonical Work evidence into resident custody and automatically continue into the existing TVC source-promotion consumer; and Healer resident root discovery now recognizes StegBrowser-specific resident markers. No ChatGPT command connector and no manual device action is part of this execution chain.
+The existing standing Healer carrier is configured to invoke the reusable task; the reusable runner is configured to retain authentic ephemeral Canonical Work evidence into resident custody and automatically continue into the existing TVC source-promotion consumer; Healer resident root discovery now recognizes StegBrowser-specific resident markers; and `.github#1852` now provides deterministic non-authorizing receipt reachability classification once authentic retained receipts exist. No ChatGPT command connector and no manual device action is part of this execution chain.
 
 ## Required later runtime evidence
 
@@ -128,7 +145,7 @@ Complete only when authentic evidence establishes successor Canonical Work consu
 
 ## Current state
 
-`ACTIVE / CHECKED_OUT / TASK_REGISTRY_CHECKIN_CONTINUE_OBSERVED / EPHEMERAL_STEGOS_SELECTED / REUSABLE_EPHEMERAL_RUNNER_BINDING_MERGED / RUNTIME_LOCAL_PREINGRESS_PROJECTION_REPAIR_MERGED / EXISTING_HEALER_NEUTRAL_SCHEDULER_CARRIER_BOUND / AUTONOMOUS_RESIDENT_EVIDENCE_CONTINUATION_REPAIR_MERGED / RUNTIME_WAIT_RECONCILED / PR_1846_MERGED / UMBRELLA_ISSUE_1260_RUNTIME_EVIDENCE_TRAIL_UPDATED / PR_1851_MERGED / HEALER_RUNTIME_ROOT_MARKER_DISCOVERY_REPAIRED / CANONICAL_WORK_RESIDENT_CONSUMPTION_NOT_OBSERVED / WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED / TVC_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / OWNER_INGRESS_READY_NOT_OBSERVED / REMOTE_DEVICE_NOT_REQUIRED / NO_SECOND_USER_OPERATED_DEVICE`
+`ACTIVE / CHECKED_OUT / TASK_REGISTRY_CHECKIN_CONTINUE_OBSERVED / EPHEMERAL_STEGOS_SELECTED / REUSABLE_EPHEMERAL_RUNNER_BINDING_MERGED / RUNTIME_LOCAL_PREINGRESS_PROJECTION_REPAIR_MERGED / EXISTING_HEALER_NEUTRAL_SCHEDULER_CARRIER_BOUND / AUTONOMOUS_RESIDENT_EVIDENCE_CONTINUATION_REPAIR_MERGED / RUNTIME_WAIT_RECONCILED / PR_1846_MERGED / UMBRELLA_ISSUE_1260_RUNTIME_EVIDENCE_TRAIL_UPDATED / PR_1851_MERGED / HEALER_RUNTIME_ROOT_MARKER_DISCOVERY_REPAIRED / PR_1852_MERGED / EXACT_RESIDENT_RECEIPT_REACHABILITY_VERIFIER_MERGED / CANONICAL_WORK_RESIDENT_CONSUMPTION_NOT_OBSERVED / WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED / TVC_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / OWNER_INGRESS_READY_NOT_OBSERVED / REMOTE_DEVICE_NOT_REQUIRED / NO_SECOND_USER_OPERATED_DEVICE`
 
 ## Manual work
 
