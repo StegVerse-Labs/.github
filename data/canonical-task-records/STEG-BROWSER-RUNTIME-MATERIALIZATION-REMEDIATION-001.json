@@ -5,26 +5,26 @@
   "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
   "parent_task_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
   "remediates_defect": "RESIDENT_CUSTODY_ROOT_NOT_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001",
-  "goal": "Advance the StegBrowser-specific post-repair Healer carrier observation and exact resident-root/receipt classification as a lane child of GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001, without creating or owning a second runtime-materialization substrate.",
+  "goal": "Observe the post-repair Healer carrier resident-root packet for the StegBrowser lane and, only if it authenticates a resident root, return to exact receipt classification.",
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT",
   "cosv_task_vector": "40000100100000",
   "shared_runtime_evidence_owner_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
   "source_refs": [
     "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md",
+    "data/runtime-materialization-remediation/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.predicates.json",
+    "data/runtime-materialization-remediation/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.post-repair-packet-classification.json",
     "docs/GLOBAL_RUNTIME_EVIDENCE_CLOSURE_MIRROR_HANDOFF.md",
     "docs/GLOBAL_RUNTIME_EVIDENCE_CONVERGENCE_MATRIX.md",
-    "control/runtime-node-profiles.json",
-    "data/runtime-materialization-remediation/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.predicates.json",
     "data/canonical-task-records/STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001.json",
     "docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md",
     "scripts/check_stegbrowser_runtime_consumption_receipts.py",
     "StegVerse-Labs/.github#1866",
     "StegVerse-Labs/.github#1860",
-    "StegVerse-Labs/.github#1864",
+    "StegVerse-Labs/.github#1868",
+    "StegVerse-Labs/.github#1870",
+    "StegVerse-Labs/.github@c4d2fc83c879fb0f2fdd61b3e4d0dae697bfedee",
     "StegVerse-Labs/StegVerse-Healer#81",
-    "StegVerse-Labs/StegVerse-Healer@b7d37a91fa464a716a85c0a8a28cffd6e5022fb6",
-    "actions:34880822258",
     "StegVerse-Labs/StegVerse-Healer#82",
     "StegVerse-Labs/StegVerse-Healer@2415e0bdf83bcd5ff116a388cf4c570874593e6b",
     "actions:34884261376"
@@ -45,7 +45,7 @@
       "dependency_id": "DEP-GLOBAL-RUNTIME-EVIDENCE-CLOSURE",
       "kind": "SHARED_RUNTIME_EVIDENCE_OWNER",
       "state": "BOUND_SHARED_OWNER",
-      "ref": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001;docs/GLOBAL_RUNTIME_EVIDENCE_CLOSURE_MIRROR_HANDOFF.md;control/runtime-node-profiles.json",
+      "ref": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
       "disposition": "REUSE_GLOBAL_RUNTIME_EVIDENCE_CONVERGENCE_SUBSTRATE; THIS_TASK_OWNS_ONLY_STEGBROWSER_SUBJECT_BOUND_POST_REPAIR_OBSERVATION"
     },
     {
@@ -67,21 +67,14 @@
       "kind": "SOURCE_REPAIR_CONTEXT",
       "state": "RESOLVED_SOURCE_ONLY",
       "ref": "StegVerse-Labs/StegVerse-Healer#82;StegVerse-Labs/StegVerse-Healer@2415e0bdf83bcd5ff116a388cf4c570874593e6b;actions:34884261376",
-      "disposition": "EXISTING_HEALER_CARRIER_CAN_PASS_CANONICAL_RESIDENT_ROOT_AS_NON_AUTHORIZING_MATERIALIZATION_TARGET_ONLY_WHEN_RT_SOVEREIGN_SOURCE_REFRESH_001_IS_ENABLED; POST_DELEGATION_ROOT_DISCOVERY_REMAINS_REQUIRED"
-    },
-    {
-      "dependency_id": "DEP-HEALER-NEUTRAL-SCHEDULE-BINDING",
-      "kind": "SOURCE_CONFIGURATION_CONTEXT",
-      "state": "REQUIRED_REUSE_ONLY",
-      "ref": "StegVerse-Labs/StegVerse-Healer:data/reusable_task_schedule.json:RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
-      "disposition": "USE_EXISTING_NEUTRAL_REUSABLE_TASK_SCHEDULER_CARRIER_ONLY"
+      "disposition": "EXISTING_HEALER_CARRIER_CAN_PASS_CANONICAL_RESIDENT_ROOT_AS_NON_AUTHORIZING_MATERIALIZATION_TARGET_ONLY_WHEN_RT_SOVEREIGN_SOURCE_REFRESH_001_IS_ENABLED; POST_DELEGATION_ROOT_DISCOVERY_REMAINS REQUIRED"
     },
     {
       "dependency_id": "DEP-POST-REPAIR-CARRIER-PACKET-OBSERVATION",
       "kind": "RUNTIME_EVIDENCE_GATE",
-      "state": "PENDING_RUNTIME_OBSERVATION",
+      "state": "UNRESOLVED_NOT_OBSERVED_IN_AVAILABLE_EVIDENCE",
       "ref": "resident_custody_root_observation",
-      "disposition": "OBSERVE_NEXT_AUTHENTIC_POST_HEALER82_CARRIER_PACKET_AND_BIND_POST_DELEGATION_PACKET_STATE"
+      "disposition": "POST_REPAIR_HEALER_CARRIER_PACKET_NOT_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001"
     },
     {
       "dependency_id": "DEP-RETURN-TO-PARENT-CLASSIFIER",
@@ -111,16 +104,18 @@
     },
     {
       "observed_at": "2026-09-14",
-      "classification": "LANE_CHILD_BOUND_TO_GLOBAL_RUNTIME_EVIDENCE_OWNER",
-      "shared_owner_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
-      "lane_scope": "STEGBROWSER_SUBJECT_BOUND_POST_REPAIR_OBSERVATION_ONLY",
+      "classification": "POST_REPAIR_HEALER_CARRIER_PACKET_NOT_OBSERVED",
+      "predicate": "POST_REPAIR_HEALER_CARRIER_PACKET_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001",
+      "predicate_satisfied": false,
+      "evidence_packet": "data/runtime-materialization-remediation/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.post-repair-packet-classification.json",
+      "next_defect": "POST_REPAIR_HEALER_CARRIER_PACKET_NOT_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001",
       "runtime_completion_claimed": false,
-      "authority_effect": "NONE_COORDINATION_BINDING_ONLY"
+      "authority_effect": "NONE_CLASSIFICATION_ONLY"
     }
   ],
   "blockers": [],
   "allowed_next_transitions": [
-    "OBSERVE_POST_REPAIR_HEALER_CARRIER_PACKET",
+    "OBSERVE_AUTHENTIC_HEALER_CARRIER_PACKET_OUTPUT",
     "CLASSIFY_RECEIPT_REACHABILITY_IF_ROOT_OBSERVED",
     "BIND_NEXT_RUNTIME_DEFECT_IF_PACKET_STILL_BOUNDARY",
     "RETURN_TO_RESIDENT_CUSTODY_ROOT_OBSERVATION"
@@ -145,6 +140,7 @@
     "healer_packet_source_repair_resolved_source_only": true,
     "healer_root_bootstrap_circularity_repair_resolved_source_only": true,
     "post_repair_packet_observation_pending": true,
+    "post_repair_packet_observed": false,
     "resident_custody_root_observed": false,
     "receipt_reachability_classified": false,
     "runtime_consumption_observed": false,
