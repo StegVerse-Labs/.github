@@ -29,6 +29,45 @@ receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-c
 
 - `StegVerse-Healer` schedule binding already enables `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` hourly through the existing neutral scheduler carrier with no second scheduler or second user-operated device.
 - Latest referenced Healer main push run `34873584233` was `Test Readiness`, head `41740a6468f7d801b1cad492352c9fc77941fb92`, conclusion `success`, artifacts `0`. It is validation-only and does not prove runtime consumption.
+- `.github#1862` merged the successor handoff and task record as commit `b7d0ebd5de207c3db0989d0017ebc759304cad11` without claiming runtime completion.
+- `.github#1863` later merged `STEGAGENTS-GOVERNED-RUNTIME-001` binding to this same resident-root owner as commit `afa6ec5defc24a920b2dc5e9d3d46cbe24e79549`; that PR explicitly left all runtime substrates pending because no authentic resident custody root was observable.
+
+## Current classification — 2026-09-14
+
+Classification transition: `OBSERVE_RESIDENT_CUSTODY_ROOT -> BIND_NEXT_DEFECT`
+
+Inspected surfaces:
+
+- Task registry record: `data/canonical-task-records/STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001.json` on `main`.
+- Handoff: `docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md` on `main`.
+- Issue evidence: `StegVerse-Labs/.github#1860` comments through the canonical binding and active-continuation notes.
+- Merge evidence: `.github#1862` merged as `b7d0ebd5de207c3db0989d0017ebc759304cad11`; `.github#1863` merged as `afa6ec5defc24a920b2dc5e9d3d46cbe24e79549`.
+- Healer schedule binding: `StegVerse-Labs/StegVerse-Healer:data/reusable_task_schedule.json` still contains enabled hourly `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` source configuration.
+- Healer carrier source: `StegVerse-Labs/StegVerse-Healer:app/reusable_task_scheduler.py` can discover `STEGVERSE_HEARTBEAT_ROOT` or canonical local runtime candidates only when the resident root is available to that execution environment.
+- Required repository-content receipt probes:
+  - `StegVerse-Labs/.github:receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json` -> not present in repository contents.
+  - `StegVerse-Labs/StegVerse-Healer:receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json` -> not present in repository contents.
+- Classifier source: `scripts/check_stegbrowser_runtime_consumption_receipts.py` remains non-authorizing and requires an explicit `--runtime-root`; no authentic runtime root path was available, so it was not run against a synthetic checkout.
+
+Observed result:
+
+```text
+RESIDENT_CUSTODY_ROOT_NOT_OBSERVED
+```
+
+Reason:
+
+No authentic current resident custody root path, retained runtime marker, retained resident receipt, Master Records pointer, owner-ingress receipt, or exact runtime-root evidence was observed through the available canonical evidence surfaces. GitHub issue/PR/source/CI state remains context only and cannot satisfy `RESIDENT_CUSTODY_ROOT_AUTHENTICALLY_OBSERVED_FOR_STEGBROWSER`.
+
+Next exact defect:
+
+```text
+RESIDENT_CUSTODY_ROOT_NOT_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001
+```
+
+Required next bounded remediation:
+
+Create or continue a runtime-materialization task that causes the existing Healer resident scheduler carrier and neutral `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` path to expose an authentic resident-root observation surface, without adding another scheduler, dispatcher, credential path, GitHub authority path, runtime plane, MIR-specific transport, or second user-operated device.
 
 ## First unresolved predicate
 
@@ -101,7 +140,7 @@ This task does not by itself complete the full parent runtime-consumption chain 
 
 ## Current state
 
-`ACTIVE / CHECKED_OUT / DECOMPOSED_FROM_STEGBROWSER_AUTHENTIC_RUNTIME_RECEIPT_OBSERVATION_AT_PROMPT_20 / RESIDENT_CUSTODY_ROOT_NOT_OBSERVED / CANONICAL_WORK_RECEIPT_NOT_CLASSIFIED / RUNTIME_CONSUMPTION_NOT_CLAIMED / REMOTE_DEVICE_NOT_REQUIRED / NO_SECOND_USER_OPERATED_DEVICE`
+`ACTIVE / CHECKED_OUT / DECOMPOSED_FROM_STEGBROWSER_AUTHENTIC_RUNTIME_RECEIPT_OBSERVATION_AT_PROMPT_20 / RESIDENT_CUSTODY_ROOT_NOT_OBSERVED / RESIDENT_CUSTODY_ROOT_NOT_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001 / CANONICAL_WORK_RECEIPT_NOT_CLASSIFIED / RUNTIME_CONSUMPTION_NOT_CLAIMED / REMOTE_DEVICE_NOT_REQUIRED / NO_SECOND_USER_OPERATED_DEVICE`
 
 ## Manual work
 
