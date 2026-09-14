@@ -45,6 +45,8 @@ No second scheduler, WorkerCoordinator, runtime plane, credential path, device i
 - `StegVerse-Healer#73` / `22683b8583c30f5ba8c720eaad999e3a13a23d9e`: existing standing Healer / neutral reusable scheduler carrier binding, hourly eligible with bounded 15-minute retries.
 - `.github#1841` / `892c6838b37081b8975c2785b517631d4ba66246`: autonomous resident evidence-continuation bridge.
 - `.github#1842` / `544cd40ed6393cd9dad3af3a413779e9946445b5`: canonical handoff reconciliation after autonomous resident bridge merge.
+- `.github#1846` / `242f2d4c014783100228cf21a298468ec712222c`: runtime-wait reconciliation; exact head `df512e1fab5b0168f4c2c2c069517b22e04b25aa` passed Organization Control `34871580408`, Heartbeat `34871580464`, and Deterministic Repository Suite `34871580529`.
+- `.github#1260` comment `5667705728`: umbrella runtime-evidence closure trail updated with the current StegBrowser first-unresolved predicate and receipt-inspection remediation path.
 - `Site#1305` / `4a10b42d4bb2743205c774d3c667cefc7353a710`: same-device root Universal InTr / Canonical Work capability.
 - `Site#1310` / `3a067ff48845044a8be42b42061929c1b7489651`: repair for authentic current-iPhone `root InTr profile HTTP 404` negative runtime result.
 
@@ -86,6 +88,20 @@ A follow-up reconciliation read the canonical task record and this canonical han
 The latest observed `StegVerse-Healer` main run for commit `22683b8583c30f5ba8c720eaad999e3a13a23d9e` was `Test Readiness` run `34870000268`, completed successfully, with no uploaded artifacts. That is scheduler-carrier/source-readiness evidence only. It does not contain the retained resident receipt and does not satisfy `CANONICAL_WORK_RESIDENT_CONSUMPTION_OBSERVED`.
 
 The reusable runner on main still enforces the correct fail-closed boundary: it exits unless the resident runtime contains the Canonical Work consumption receipt, the InTr bootstrap receipt, the TVC source-promotion receipt, and the owner-ingress runtime observation. No new source defect was identified in this reconciliation; the next admissible transition is to wait for or inspect the existing resident scheduler's next authentic execution cycle and then bind the resulting receipts into the task record only if they are present and valid.
+
+## 2026-09-14 PR #1846 merge and umbrella evidence trail
+
+`.github#1846` merged the runtime-wait reconciliation at `242f2d4c014783100228cf21a298468ec712222c`. Its exact head `df512e1fab5b0168f4c2c2c069517b22e04b25aa` passed:
+
+```text
+Validate organization control plane: 34871580408 SUCCESS
+Heartbeat Worker Project: 34871580464 SUCCESS
+Deterministic Repository Suite: 34871580529 SUCCESS
+```
+
+The current GitHub-observable Healer evidence remains `Test Readiness` run `34870000268`; its artifacts endpoint reports `total_count: 0`. The Healer `test-readiness.yml` workflow is validation-only. The `healer_scheduler.yml` workflow explicitly records hosted schedule `NONE`, hosted production dispatch `NONE`, GitHub token production authority `NONE`, credential/admission authority `TV/TVC`, and production scheduler/execution carrier `single StegVerse resident heartbeat`.
+
+Existing umbrella issue `.github#1260` was updated with comment `5667705728` instead of opening a duplicate runtime-evidence issue. The issue comment preserves the concrete remediation path: inspect the existing resident heartbeat/scheduler custody surface for the exact required receipts; bind only validated authentic receipts into the task record/handoff; otherwise keep `ACTIVE / CHECKED_OUT` and classify the next concrete defect as resident evidence reachability/transport from the standing Healer carrier.
 
 ## First unresolved authentic predicate
 
@@ -134,7 +150,7 @@ Complete only when authentic evidence establishes successor Canonical Work consu
 
 ## Current state
 
-`ACTIVE / CHECKED_OUT / TASK_REGISTRY_CHECKIN_CONTINUE_OBSERVED / EPHEMERAL_STEGOS_SELECTED / REUSABLE_EPHEMERAL_RUNNER_BINDING_MERGED / RUNTIME_LOCAL_PREINGRESS_PROJECTION_REPAIR_MERGED / EXISTING_HEALER_NEUTRAL_SCHEDULER_CARRIER_BOUND / AUTONOMOUS_RESIDENT_EVIDENCE_CONTINUATION_REPAIR_MERGED / RUNTIME_WAIT_RECONCILED / CANONICAL_WORK_RESIDENT_CONSUMPTION_NOT_OBSERVED / WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED / TVC_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / OWNER_INGRESS_READY_NOT_OBSERVED / REMOTE_DEVICE_NOT_REQUIRED / NO_SECOND_USER_OPERATED_DEVICE`
+`ACTIVE / CHECKED_OUT / TASK_REGISTRY_CHECKIN_CONTINUE_OBSERVED / EPHEMERAL_STEGOS_SELECTED / REUSABLE_EPHEMERAL_RUNNER_BINDING_MERGED / RUNTIME_LOCAL_PREINGRESS_PROJECTION_REPAIR_MERGED / EXISTING_HEALER_NEUTRAL_SCHEDULER_CARRIER_BOUND / AUTONOMOUS_RESIDENT_EVIDENCE_CONTINUATION_REPAIR_MERGED / RUNTIME_WAIT_RECONCILED / PR_1846_MERGED / UMBRELLA_ISSUE_1260_RUNTIME_EVIDENCE_TRAIL_UPDATED / CANONICAL_WORK_RESIDENT_CONSUMPTION_NOT_OBSERVED / WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED / TVC_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / OWNER_INGRESS_READY_NOT_OBSERVED / REMOTE_DEVICE_NOT_REQUIRED / NO_SECOND_USER_OPERATED_DEVICE`
 
 ## Manual work
 
