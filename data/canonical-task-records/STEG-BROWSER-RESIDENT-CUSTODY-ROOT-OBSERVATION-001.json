@@ -16,7 +16,9 @@
     "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
     "StegVerse-Labs/.github#1860",
     "StegVerse-Labs/.github#1857",
-    "StegVerse-Labs/StegVerse-Healer@41740a6468f7d801b1cad492352c9fc77941fb92"
+    "StegVerse-Labs/.github#1862",
+    "StegVerse-Labs/.github#1863",
+    "StegVerse-Labs/StegVerse-Healer@main"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
@@ -32,6 +34,32 @@
       "master-records-custody-reconstruction"
     ]
   },
+  "observations": [
+    {
+      "observed_at": "2026-09-14",
+      "transition": "OBSERVE_RESIDENT_CUSTODY_ROOT_TO_BIND_NEXT_DEFECT",
+      "classification": "RESIDENT_CUSTODY_ROOT_NOT_OBSERVED",
+      "next_defect": "RESIDENT_CUSTODY_ROOT_NOT_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001",
+      "inspected_refs": [
+        "StegVerse-Labs/.github#1860",
+        "StegVerse-Labs/.github#1862",
+        "StegVerse-Labs/.github#1863",
+        "StegVerse-Labs/.github@afa6ec5defc24a920b2dc5e9d3d46cbe24e79549",
+        "StegVerse-Labs/StegVerse-Healer:data/reusable_task_schedule.json",
+        "StegVerse-Labs/StegVerse-Healer:app/reusable_task_scheduler.py",
+        "StegVerse-Labs/.github:scripts/check_stegbrowser_runtime_consumption_receipts.py"
+      ],
+      "required_receipt": "receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json",
+      "classifier_run": false,
+      "classifier_not_run_reason": "NO_AUTHENTIC_RESIDENT_RUNTIME_ROOT_PATH_OBSERVED; verifier requires explicit --runtime-root and must not run against synthetic checkout",
+      "github_repository_receipt_probe": {
+        "StegVerse-Labs/.github": "NOT_PRESENT_IN_REPOSITORY_CONTENTS_CONTEXT_ONLY",
+        "StegVerse-Labs/StegVerse-Healer": "NOT_PRESENT_IN_REPOSITORY_CONTENTS_CONTEXT_ONLY"
+      },
+      "authority_effect": "NONE_CLASSIFICATION_ONLY",
+      "runtime_completion_claimed": false
+    }
+  ],
   "dependencies": [
     {
       "dependency_id": "DEP-PARENT-AUTHENTIC-RUNTIME-RECEIPT-OBSERVATION",
@@ -52,14 +80,14 @@
       "kind": "RUNTIME_EVIDENCE",
       "state": "UNRESOLVED",
       "ref": "STEGVERSE_HEARTBEAT_ROOT_OR_CANONICAL_LOCAL_RUNTIME_DISCOVERY",
-      "disposition": "REQUIRE_AUTHENTIC_CURRENT_RESIDENT_ROOT_WITH_RETAINED_RUNTIME_MARKER_OR_RECEIPT_EVIDENCE"
+      "disposition": "RESIDENT_CUSTODY_ROOT_NOT_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001"
     },
     {
       "dependency_id": "DEP-CANONICAL-WORK-RECEIPT-REACHABILITY",
       "kind": "RUNTIME_EVIDENCE_CLASSIFICATION",
       "state": "PENDING_RESIDENT_ROOT",
       "ref": "receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json",
-      "disposition": "RUN_NON_AUTHORIZING_EXACT_RECEIPT_CLASSIFIER_ONLY_AFTER_ROOT_OBSERVATION"
+      "disposition": "CLASSIFIER_NOT_RUN_BECAUSE_NO_AUTHENTIC_RESIDENT_ROOT_WAS_OBSERVED"
     },
     {
       "dependency_id": "DEP-FULL-PARENT-PREDICATES",
@@ -70,7 +98,7 @@
     }
   ],
   "blockers": [],
-  "allowed_next_transitions": ["OBSERVE_RESIDENT_CUSTODY_ROOT", "CLASSIFY_RECEIPT_REACHABILITY", "BIND_NEXT_DEFECT"],
+  "allowed_next_transitions": ["BIND_RUNTIME_MATERIALIZATION_REMEDIATION", "OBSERVE_RESIDENT_CUSTODY_ROOT", "CLASSIFY_RECEIPT_REACHABILITY"],
   "handoff_projection_refs": ["docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md"],
   "completion": {
     "claimed": false,
