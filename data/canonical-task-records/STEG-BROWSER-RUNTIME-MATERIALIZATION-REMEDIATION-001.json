@@ -22,10 +22,12 @@
     "StegVerse-Labs/.github#1866",
     "StegVerse-Labs/.github#1860",
     "StegVerse-Labs/.github#1864",
-    "StegVerse-Labs/StegVerse-Healer#75",
     "StegVerse-Labs/StegVerse-Healer#81",
     "StegVerse-Labs/StegVerse-Healer@b7d37a91fa464a716a85c0a8a28cffd6e5022fb6",
-    "actions:34880822258"
+    "actions:34880822258",
+    "StegVerse-Labs/StegVerse-Healer#82",
+    "StegVerse-Labs/StegVerse-Healer@2415e0bdf83bcd5ff116a388cf4c570874593e6b",
+    "actions:34884261376"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
@@ -58,7 +60,14 @@
       "kind": "SOURCE_REPAIR_CONTEXT",
       "state": "RESOLVED_SOURCE_ONLY",
       "ref": "StegVerse-Labs/StegVerse-Healer#81;StegVerse-Labs/StegVerse-Healer@b7d37a91fa464a716a85c0a8a28cffd6e5022fb6;actions:34880822258",
-      "disposition": "EXISTING_HEALER_CARRIER_NOW_EMITS_TASK_BOUND_NON_AUTHORIZING_RESIDENT_CUSTODY_ROOT_OBSERVATION_PACKET_BUT_RUNTIME_PACKET_OBSERVATION_REMAINS_PENDING"
+      "disposition": "EXISTING_HEALER_CARRIER_EMITS_TASK_BOUND_NON_AUTHORIZING_RESIDENT_CUSTODY_ROOT_OBSERVATION_PACKET"
+    },
+    {
+      "dependency_id": "DEP-HEALER-RESIDENT-ROOT-BOOTSTRAP-CIRCULARITY",
+      "kind": "SOURCE_REPAIR_CONTEXT",
+      "state": "RESOLVED_SOURCE_ONLY",
+      "ref": "StegVerse-Labs/StegVerse-Healer#82;StegVerse-Labs/StegVerse-Healer@2415e0bdf83bcd5ff116a388cf4c570874593e6b;actions:34884261376",
+      "disposition": "EXISTING_HEALER_CARRIER_CAN_PASS_CANONICAL_RESIDENT_ROOT_AS_NON_AUTHORIZING_MATERIALIZATION_TARGET_ONLY_WHEN_RT_SOVEREIGN_SOURCE_REFRESH_001_IS_ENABLED; POST_DELEGATION_ROOT_DISCOVERY_REMAINS_REQUIRED"
     },
     {
       "dependency_id": "DEP-HEALER-NEUTRAL-SCHEDULE-BINDING",
@@ -72,7 +81,7 @@
       "kind": "RUNTIME_EVIDENCE_GATE",
       "state": "PENDING_RUNTIME_OBSERVATION",
       "ref": "resident_custody_root_observation",
-      "disposition": "OBSERVE_POST_REPAIR_HEALER_CARRIER_PACKET_AND_BIND_PACKET_STATE"
+      "disposition": "OBSERVE_NEXT_AUTHENTIC_POST_HEALER82_CARRIER_PACKET_AND_BIND_POST_DELEGATION_PACKET_STATE"
     },
     {
       "dependency_id": "DEP-RETURN-TO-PARENT-CLASSIFIER",
@@ -87,11 +96,18 @@
       "observed_at": "2026-09-14",
       "classification_source": "StegVerse-Labs/.github#1864",
       "classification": "RESIDENT_CUSTODY_ROOT_NOT_OBSERVED",
-      "successor_issue": "StegVerse-Labs/.github#1866",
-      "healer_source_repair": "StegVerse-Labs/StegVerse-Healer#81;b7d37a91fa464a716a85c0a8a28cffd6e5022fb6;actions:34880822258",
       "next_runtime_observation": "POST_REPAIR_HEALER_CARRIER_PACKET_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001",
       "runtime_completion_claimed": false,
       "authority_effect": "NONE_REMEDIATION_PATH_BINDING_ONLY"
+    },
+    {
+      "observed_at": "2026-09-14",
+      "classification": "HEALER_RESIDENT_ROOT_BOOTSTRAP_CIRCULARITY_SOURCE_REPAIR_MERGED",
+      "healer_pr": "StegVerse-Labs/StegVerse-Healer#82",
+      "healer_merge": "2415e0bdf83bcd5ff116a388cf4c570874593e6b",
+      "validation_run": "34884261376",
+      "runtime_completion_claimed": false,
+      "authority_effect": "NONE_SOURCE_REPAIR_ONLY"
     },
     {
       "observed_at": "2026-09-14",
@@ -127,6 +143,7 @@
     "shared_runtime_evidence_owner_bound": true,
     "runtime_materialization_remediation_path_bound": true,
     "healer_packet_source_repair_resolved_source_only": true,
+    "healer_root_bootstrap_circularity_repair_resolved_source_only": true,
     "post_repair_packet_observation_pending": true,
     "resident_custody_root_observed": false,
     "receipt_reachability_classified": false,
