@@ -2,28 +2,30 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SV-KV-AI-PERSISTENCE-001",
   "created_at": "2026-09-14T03:40:00Z",
-  "updated_at": "2026-09-14T03:40:00Z",
+  "updated_at": "2026-09-14T04:18:00Z",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "SV-KV-AI-PERSISTENCE-001",
-    "objective": "Materialize one exact provider-neutral LLM request from an already-admitted Personal-KV memory packet inside fenced resident bound state, without exposing private memory to repository state or minting admission/provider/write authority.",
+    "objective": "Progress one real Personal-KV memory packet through the existing shared Universal InTr admission path and then materialize the exact provider-neutral LLM request inside fenced resident bound state, without exposing private memory to repository state or minting admission/provider/write authority.",
     "success_predicates": [
-      "Resident-local context packet, memory-packet ALLOW artifact, and provider request input exist only in fenced bound state.",
+      "Resident-local context packet and provider request input exist only in fenced bound state.",
+      "Existing shared Universal InTr returns an exact packet ALLOW that validates packet identity, canonical packet hash, and receipt hash before admission evidence is written.",
       "The existing LLM-adapter KV memory bridge validates exact packet/admission binding and emits one deterministic ProviderRequest hash.",
       "The materialized ProviderRequest remains inside fenced bound state and contains no provider credential material.",
-      "The worker records no provider ingress, provider execution, provider egress, KV writeback, activation, or authority claim.",
       "WorkerCoordinator fresh claim/fence semantics and ProcessWorkerAdapter mutation fencing remain authoritative."
     ],
     "failure_predicates": [
       "Private packet, prompt, or materialized ProviderRequest is written into GitHub repository state.",
-      "Repository source or CI is represented as authentic memory-packet admission or live model consumption.",
-      "The worker mints an InTr decision, TV/TVC provider operation, KV write, claim, fence, or model authority.",
-      "A hosted runner or second user-operated machine becomes the sovereign execution requirement.",
-      "Credential or token material appears in request input, bound-state output, evidence, or repository files."
+      "Source preparation, CI, a fixture, or repository state is represented as authentic memory-packet admission or live model consumption.",
+      "A returned admission overclaims provider request materialization, provider ingress, provider execution, KV writeback, credential material, claim/fence creation, HeartBeat execution authority, or request execution authority.",
+      "The worker or submitter mints TV/TVC provider authority, KV mutation authority, or model authority.",
+      "A hosted runner or second user-operated machine becomes the sovereign execution requirement."
     ],
     "authority_ceiling": [
+      "resident-local Personal-KV packet submission to existing shared Universal InTr",
+      "validated admission evidence staging only after authentic listener response",
       "resident-local Personal-KV memory packet to ProviderRequest materialization only",
-      "no Interlock/InTr admission authority",
+      "no Interlock/InTr decision authority",
       "no provider execution authority",
       "no credential authority",
       "no KV mutation authority",
@@ -39,20 +41,26 @@
     "canonical_lineage_key": "sv:kv-ai-memory-resident",
     "derivation_depth": 0,
     "priority": "release",
-    "operational_state": "REQUIRED_RESIDENT_PROVIDER_REQUEST_MATERIALIZATION_AND_LIVE_INTR_CONTINUATION",
+    "operational_state": "REQUIRED_LIVE_MEMORY_PACKET_INTR_ADMISSION_AND_PROVIDER_REQUEST_MATERIALIZATION",
     "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
     "fencing_token": null,
     "source_refs": [
       "docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
+      "workers/kv_ai_memory_intr_profile.py",
+      "workers/kv_ai_memory_intr_transport.py",
+      "scripts/install_kv_ai_memory_universal_intr_route.py",
+      "scripts/prepare_kv_ai_memory_intr_runtime_source.py",
+      "scripts/submit_kv_ai_memory_packet_local.py",
+      "scripts/consume_kv_ai_memory_resident_request.py",
       "workers/kv_ai_memory_resident_worker.py",
       "StegVerse-Labs/continuity-vault-kit/KV_AI_PERSISTENCE_CLASSES_MIRROR_HANDOFF.md",
       "StegVerse-org/LLM-adapter/docs/KV_AI_MEMORY_CONTEXT_BRIDGE_MIRROR_HANDOFF.md"
     ]
   },
   "authority": {
-    "authority_source": "SV-KV-AI-PERSISTENCE-001 canonical task registry + existing WorkerCoordinator task-control boundary",
+    "authority_source": "SV-KV-AI-PERSISTENCE-001 canonical task registry + existing WorkerCoordinator task-control boundary + existing shared Universal InTr listener",
     "authority_domain": "INDEPENDENT_TASK_CONTROL",
-    "policy_version": "kv-ai-memory-resident-v0.1",
+    "policy_version": "kv-ai-memory-resident-v0.2",
     "heartbeat_grants_execution_authority": false,
     "fresh_fence_required": true,
     "minimum_fencing_token_exclusive": 0,
@@ -64,34 +72,31 @@
   },
   "execution": {
     "required_capabilities": [
+      "resident_local_source_preparation",
+      "shared_universal_intr_memory_packet_submission",
+      "exact_admission_receipt_validation",
       "bounded_process_execution",
       "fenced_bound_state",
       "kv_ai_memory_provider_request_materialization"
     ],
-    "allowed_paths": [
-      "receipts/kv-ai-memory/**"
-    ],
+    "allowed_paths": ["receipts/kv-ai-memory/**"],
     "allowed_services": [],
-    "max_actions": 4,
+    "max_actions": 6,
     "max_retries": 3,
     "external_cost_ceiling_usd": 0,
     "runtime_window_beats": 16,
     "rate_class": "kv_ai_memory_resident",
     "hosted_execution_allowed": false,
     "bound_state_root": "~/.stegverse/state/kv-ai-memory-resident",
-    "bound_state_allowed_paths": [
-      "inputs/**",
-      "materialized/**",
-      "receipts/**"
-    ]
+    "bound_state_allowed_paths": ["inputs/**", "materialized/**", "receipts/**"]
   },
   "completion": {
-    "source_implementation_state": "IN_PROGRESS",
+    "source_implementation_state": "SOURCE_COMPLETE_FOR_PACKET_ADMISSION_THROUGH_PROVIDER_REQUEST_MATERIALIZATION",
     "runtime_activation_state": "PENDING_AUTHENTIC_MEMORY_PACKET_AND_PROVIDER_CHAIN",
     "runtime_observation_claimed": false,
-    "terminal_evidence": "authentic same-execution memory-packet InTr ALLOW + provider ingress/TVC/response/egress evidence + KV writeback/readback evidence",
-    "next_authorized_action": "When resident-local bound-state inputs exist, use the existing WorkerCoordinator to materialize the exact ProviderRequest; then continue only through already-existing external provider ingress/TVC/egress and target-KV admission paths.",
-    "targeted_command": "python scripts/refresh_and_execute_resident_task.py --task-id SV-KV-AI-PERSISTENCE-001"
+    "terminal_evidence": "authentic same-execution memory-packet InTr ALLOW + WorkerCoordinator ProviderRequest materialization + provider ingress/TVC/response/egress evidence + KV writeback/readback evidence",
+    "next_authorized_action": "When resident-local packet and provider input exist and the shared loopback Universal InTr listener is available, allow the existing consumer to normalize local listener source, submit the exact packet, validate the returned ALLOW, stage admission evidence, and only then continue through existing WorkerCoordinator execution.",
+    "targeted_command": "python scripts/consume_kv_ai_memory_resident_request.py --runtime-root <resident-runtime-root>"
   },
   "activation": {
     "authority_domain": "INDEPENDENT_TASK_CONTROL",
@@ -100,12 +105,6 @@
     "targeted_execution": {
       "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
       "entrypoint": "scripts/refresh_and_execute_resident_task.py",
-      "argv": [
-        "python",
-        "scripts/refresh_and_execute_resident_task.py",
-        "--task-id",
-        "SV-KV-AI-PERSISTENCE-001"
-      ],
       "requires_existing_separated_carrier_reference": true,
       "unrelated_worker_execution": false,
       "broad_orphan_reconciliation": false,
