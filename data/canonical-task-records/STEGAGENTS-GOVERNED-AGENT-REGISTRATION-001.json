@@ -5,8 +5,8 @@
   "root_correlation_id": "STEGAGENTS-GOVERNED-AGENT-REGISTRATION-001",
   "parent_task_id": "STEGCORE-STEGAGENTS-ACTIVATION-SEQUENCE-001",
   "goal": "Establish the first governed-agent manifest and registration flow in StegVerse-Labs/StegAgents by reusing the existing agents/registry.yml surface, binding registrations to the activated StegCore 001/002 baseline and handshake_ready dependency, and preserving proposal-only/no-self-authority semantics.",
-  "coordination_state": "ACTIVE",
-  "checkout_state": "UNCLAIMED",
+  "coordination_state": "RETIRED",
+  "checkout_state": "COMPLETED",
   "repository": "StegVerse-Labs/StegAgents",
   "handoff": "docs/STEGAGENTS_GOVERNED_AGENT_REGISTRATION_MIRROR_HANDOFF.md",
   "cosv": {"profile": "task.v1", "vector": "71000000100110"},
@@ -14,8 +14,10 @@
   "source_refs": [
     "StegVerse-Labs/StegAgents/agents/registry.yml",
     "StegVerse-Labs/StegAgents/stegagents_manifest.json",
-    "StegVerse-Labs/StegAgents/docs/STEGAGENTS_ENTITY_INTEGRATION_CONTRACT.md",
-    "StegVerse-Labs/StegAgents/docs/STEGAGENTS_STEGCORE_HANDSHAKE_FINAL_PROMOTION_RUNBOOK.md",
+    "StegVerse-Labs/StegAgents/docs/STEGAGENTS_GOVERNED_AGENT_REGISTRATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegAgents/agents/governed/CodeRepair-001.manifest.json",
+    "StegVerse-Labs/StegAgents/tools/validate_governed_agent_registration.py",
+    "StegVerse-Labs/StegAgents/tests/test_governed_agent_registration.py",
     "StegVerse-Labs/StegAgents/registry/stegagents-stegcore.handshake.activation.json",
     "data/canonical-task-records/STEGCORE-STEGAGENTS-ACTIVATION-SEQUENCE-001.json"
   ],
@@ -101,18 +103,51 @@
     "unattended_runtime": false
   },
   "worker_claim": {
-    "authority": "NONE_UNCLAIMED",
+    "authority": "NONE_SOURCE_TASK_COMPLETED",
     "claim_ref": null,
     "fence_ref": null,
     "projection_only": true
   },
   "human_action_ref": null,
   "completion": {
-    "claimed": false,
-    "validated": false,
-    "reconciliation_ref": null,
+    "claimed": true,
+    "validated": true,
+    "reconciliation_ref": "StegVerse-Labs/StegAgents@b768eeeb0ceca14fcfd50ce665cd6c0885e2774f",
     "activation_proof_complete": false
   },
-  "allowed_next_transitions": ["COLLISION_CHECK", "SOURCE_IMPLEMENTATION", "VALIDATION", "MERGE", "RETIRE_ON_COMPLETE"],
-  "github_runtime_authority": "NONE"
+  "completion_evidence": {
+    "canonical_registration_pr": 1815,
+    "canonical_registration_merge": "f5b47f1ce001d5a553cfbbf4e1b3fbf515a01827",
+    "canonical_registration_validation_runs": [34853112284, 34853112220, 34853112628],
+    "collision_check": {
+      "mode": "SOURCE_LEVEL_CANONICAL_RECORD_RECONSTRUCTION",
+      "disposition": "CONTINUE_EQUIVALENT_NO_ACTIVE_OVERLAPPING_OWNER",
+      "resident_receipt_observed": false,
+      "authority_effect": "NONE"
+    },
+    "source_pr": 13,
+    "source_merge": "b768eeeb0ceca14fcfd50ce665cd6c0885e2774f",
+    "source_exact_head": "0f6852e105a99f8389c6fdf629c390d642753e67",
+    "source_exact_head_validation_runs": [34853788789, 34853788799, 34853788803],
+    "merged_main_validation_runs": [34853932795, 34853932809, 34853932823],
+    "source_handoff_closure_pr": 15,
+    "source_handoff_closure_merge": "b639c2674959e3be9fb7a70caa33115c694af764",
+    "source_handoff_closure_validation_runs": [34854491772, 34854491839],
+    "first_governed_agent": "CodeRepair-001",
+    "registration_state": "REGISTERED_GOVERNED_PROPOSAL_ONLY",
+    "runtime_execution_claimed": false,
+    "monolithic_registry_projection": "STALE_REFRESH_ALLOWED_BY_CANONICAL_STALE_REGISTRY_RECOVERY_CONTRACT"
+  },
+  "allowed_next_transitions": [],
+  "continuation_task_id": null,
+  "github_runtime_authority": "NONE",
+  "readme_impact": {
+    "material_function_change": true,
+    "target_repository_readme_updated": true,
+    "target_repository_readme_path": "StegVerse-Labs/StegAgents/README.md",
+    "github_meta_readme_updated": false,
+    "no_github_meta_readme_update_reason": "Canonical task registration/closure does not change .github repository responsibilities."
+  },
+  "retired_terminal": true,
+  "retired_resurrection_review_only": true
 }
