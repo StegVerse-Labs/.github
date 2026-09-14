@@ -5,10 +5,11 @@
   "shared_runtime_evidence_owner_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
   "cosv_task_vector": "40000100100000",
   "remediated_defect": "RESIDENT_CUSTODY_ROOT_NOT_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001",
-  "latest_classification": "POST_REPAIR_HEALER_CARRIER_PACKET_NOT_OBSERVED",
-  "latest_next_defect": "POST_REPAIR_HEALER_CARRIER_PACKET_NOT_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001",
+  "latest_classification": "RECEIPT_REACHABILITY_CLASSIFIER_GATED_BY_MISSING_AUTHENTIC_RESIDENT_ROOT",
+  "latest_next_defect": "RECEIPT_REACHABILITY_CLASSIFIER_GATED_BY_POST_REPAIR_HEALER_CARRIER_PACKET_NOT_OBSERVED",
   "runtime_completion_claimed": false,
   "resident_root_observed": false,
+  "receipt_reachability_classified": false,
   "dry_run_validation_only": true,
   "required_predicates": [
     {
@@ -49,6 +50,15 @@
       "authority_effect": "NONE_GATE_ONLY"
     },
     {
+      "predicate_id": "RECEIPT_REACHABILITY_CLASSIFIER_GATED_BY_AUTHENTIC_ROOT",
+      "kind": "CLASSIFIER_GATE",
+      "required_state": "GATED_UNTIL_RESIDENT_CUSTODY_ROOT_OBSERVED",
+      "observed_state": "GATED_BY_POST_REPAIR_HEALER_CARRIER_PACKET_NOT_OBSERVED",
+      "evidence_ref": "data/runtime-materialization-remediation/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.receipt-reachability-gated-classification.json",
+      "classifier": "scripts/check_stegbrowser_runtime_consumption_receipts.py --runtime-root <authentic-root>",
+      "authority_effect": "NONE_CLASSIFICATION_GATE_ONLY"
+    },
+    {
       "predicate_id": "CLASSIFIER_RUN_REMAINS_GATED_BY_AUTHENTIC_RUNTIME_ROOT",
       "kind": "CLASSIFIER_GATE",
       "required_state": "TRUE",
@@ -59,7 +69,7 @@
       "predicate_id": "NO_SECOND_RUNTIME_EVIDENCE_OWNER_ADDED",
       "kind": "COORDINATION_OWNER_BOUNDARY",
       "required_state": "TRUE",
-      "evidence_ref": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001 remains shared owner",
+      "evidence_ref": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001 remains shared owner; StegVerse-Labs/.github#1866 remains this lane owner",
       "authority_effect": "NONE_SOURCE_VALIDATION_ONLY"
     },
     {
@@ -100,12 +110,14 @@
     "NEW_RUNTIME_PLANE",
     "MIR_SPECIFIC_TRANSPORT",
     "SECOND_USER_OPERATED_DEVICE",
-    "RUNTIME_COMPLETION_FROM_SOURCE_STATE"
+    "RUNTIME_COMPLETION_FROM_SOURCE_STATE",
+    "CLASSIFIER_RUN_AGAINST_SYNTHETIC_ROOT"
   ],
   "closure_conditions": [
     "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001 remains the single shared runtime-evidence owner",
     "existing Healer neutral route remains the only scheduling/invocation carrier",
     "post-repair resident-root observation packet is observed from the authentic existing Healer carrier output or its non-observation is bound as the exact next runtime defect",
+    "receipt reachability classifier remains gated until an exact authentic resident root is observed",
     "dry-run validation remains non-authorizing",
     "return path to parent receipt classification is explicit",
     "no runtime completion is claimed without authentic retained resident evidence"
