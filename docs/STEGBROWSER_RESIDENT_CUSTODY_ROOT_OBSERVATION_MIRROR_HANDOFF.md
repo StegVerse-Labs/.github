@@ -9,7 +9,9 @@ Updated: 2026-09-14
 - Issue: `StegVerse-Labs/.github#1860`
 - COSV: `40000100100000`
 - Canonical task record: `data/canonical-task-records/STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001.json`
-- Status: `ACTIVE / CHECKED_OUT`
+- Successor remediation: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001` / `StegVerse-Labs/.github#1866`
+- Successor handoff: `docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md`
+- Status: `ACTIVE / CHECKED_OUT / SUCCESSOR_REMEDIATION_BOUND`
 - External/second user-operated device required: `false`
 
 ## Why this exists
@@ -25,7 +27,9 @@ Updated: 2026-09-14
 - `StegVerse-Healer` schedule binding already enables `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` hourly through the existing neutral scheduler carrier with no second scheduler or second user-operated device.
 - `.github#1862` merged the successor handoff and task record as commit `b7d0ebd5de207c3db0989d0017ebc759304cad11` without claiming runtime completion.
 - `.github#1863` later merged `STEGAGENTS-GOVERNED-RUNTIME-001` binding to this same resident-root owner as commit `afa6ec5defc24a920b2dc5e9d3d46cbe24e79549`; that PR explicitly left all runtime substrates pending because no authentic resident custody root was observable.
+- `.github#1864` classified the available evidence as `RESIDENT_CUSTODY_ROOT_NOT_OBSERVED` and merged as `e95af1cf5c2449480cdc1b4eba7003c3ba2d39f3`.
 - `StegVerse-Healer#81` merged as `b7d37a91fa464a716a85c0a8a28cffd6e5022fb6` after exact-head Test Readiness run `34880822258` passed for head `44f69f236f90bc000446ad15cc082cef244f5284`.
+- `.github#1866` now owns the single bounded runtime-materialization remediation path for the remaining post-repair packet observation gate.
 
 ## Prompt 2/20 repair — Healer resident-root observation packet
 
@@ -52,6 +56,17 @@ The packet preserves:
 - No second user-operated device.
 
 This repair does not authenticate a current resident root by itself. It only ensures the next authentic Healer carrier cycle can expose the exact root-observation classification needed by this goal.
+
+## Prompt 4/20 remediation binding — runtime-materialization successor
+
+Because an authentic root remains unobserved after classification and because the source-only Healer packet repair still requires post-repair carrier observation, remediation is bound to exactly one successor:
+
+```text
+STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001
+StegVerse-Labs/.github#1866
+```
+
+The successor adds a canonical handoff, task record, and dry-run/non-authorizing evidence-predicate surface. It does not add a second scheduler, dispatcher, credential path, GitHub authority path, runtime plane, MIR-specific transport, or second user-operated device.
 
 ## First unresolved predicate
 
@@ -84,6 +99,7 @@ It may classify only an existing resident custody root as missing, invalid, or v
 ```text
 Task Registry CONTINUE
 -> STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001
+-> STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001 while root observation remains post-repair pending
 -> standing Healer resident scheduler carrier
 -> neutral RT-STEGBROWSER-RUNTIME-CONSUMPTION-001
 -> emitted resident_custody_root_observation packet
@@ -121,13 +137,13 @@ Task Registry CONTINUE
 
 ## Completion predicate
 
-Complete this successor only when a resident custody root is authentically observed and the StegBrowser retained receipt reachability state is classified with exact paths and evidence hashes, or when root absence/ambiguity/invalidity is bound to a further runtime-materialization remediation task with concrete evidence.
+Complete this successor only when a resident custody root is authentically observed and the StegBrowser retained receipt reachability state is classified with exact paths and evidence hashes, or when root absence/ambiguity/invalidity is bound to a further runtime-materialization remediation task with concrete evidence. `.github#1866` is now the single bounded remediation owner for the current post-repair packet observation gate.
 
 This task does not by itself complete the full parent runtime-consumption chain unless the parent predicates are also satisfied by authentic retained evidence.
 
 ## Current state
 
-`ACTIVE / CHECKED_OUT / HEALER_RESIDENT_ROOT_OBSERVATION_PACKET_REPAIR_MERGED / RESIDENT_CUSTODY_ROOT_NOT_YET_OBSERVED_AFTER_REPAIR / CANONICAL_WORK_RECEIPT_NOT_CLASSIFIED / RUNTIME_CONSUMPTION_NOT_CLAIMED / REMOTE_DEVICE_NOT_REQUIRED / NO_SECOND_USER_OPERATED_DEVICE`
+`ACTIVE / CHECKED_OUT / SUCCESSOR_REMEDIATION_BOUND / HEALER_RESIDENT_ROOT_OBSERVATION_PACKET_REPAIR_MERGED / POST_REPAIR_HEALER_CARRIER_PACKET_OBSERVATION_PENDING / CANONICAL_WORK_RECEIPT_NOT_CLASSIFIED / RUNTIME_CONSUMPTION_NOT_CLAIMED / REMOTE_DEVICE_NOT_REQUIRED / NO_SECOND_USER_OPERATED_DEVICE`
 
 ## Manual work
 
