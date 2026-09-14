@@ -43,12 +43,13 @@ No second scheduler, WorkerCoordinator, runtime plane, credential path, device i
 - `.github#1831` / `6f1b08ee786c8f72395cfa5d393397bcdb7404c5`: executable reusable runner binding.
 - `.github#1834` / `5ca9abf473ac1cfeb07efa23f397321cad07b3e5`: runtime-local `PROPOSED` ingress projection while canonical Goal remains `ACTIVE / CHECKED_OUT`.
 - `StegVerse-Healer#73` / `22683b8583c30f5ba8c720eaad999e3a13a23d9e`: existing standing Healer / neutral reusable scheduler carrier binding, hourly eligible with bounded 15-minute retries.
+- `.github#1841` / `892c6838b37081b8975c2785b517631d4ba66246`: autonomous resident evidence-continuation bridge.
 - `Site#1305` / `4a10b42d4bb2743205c774d3c667cefc7353a710`: same-device root Universal InTr / Canonical Work capability.
 - `Site#1310` / `3a067ff48845044a8be42b42061929c1b7489651`: repair for authentic current-iPhone `root InTr profile HTTP 404` negative runtime result.
 
 These are source/configuration evidence only and do not substitute for authentic runtime receipts.
 
-## Autonomous resident continuation defect and repair
+## Autonomous resident continuation repair merged
 
 The standing Healer carrier and neutral scheduler already select `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001`, so ChatGPT remote shell access is not part of the production path. Review of the reusable runner exposed the remaining deterministic continuation gap after an authentic ephemeral Canonical Work cycle:
 
@@ -57,7 +58,15 @@ The standing Healer carrier and neutral scheduler already select `RT-STEGBROWSER
 3. the required successor consumption evidence therefore remained inside the ephemeral runtime instead of being retained under the existing resident sovereign-host custody path;
 4. the runner then looked for the TVC source-promotion receipt inside the ephemeral runtime instead of invoking the already-registered `stegbrowser_tvc_source_promotion` consumer against the resident runtime.
 
-Branch `fix-stegbrowser-autonomous-resident-evidence-bridge` repairs only that missing connection. The runner now:
+`.github#1841` repaired that connection and squash-merged as `892c6838b37081b8975c2785b517631d4ba66246`. Exact head `c9858327c04e5fe0b9b05635b311c03170d0f4e6` passed:
+
+```text
+Validate organization control plane: 34870741138 SUCCESS
+Deterministic Repository Suite: 34870740996 SUCCESS
+Heartbeat Worker Project: 34870741294 SUCCESS
+```
+
+The merged runner now:
 
 - consumes the neutral scheduler's existing `runtime_root` / `STEGVERSE_HEARTBEAT_ROOT` binding;
 - requires resident and event-ephemeral roots to be distinct;
@@ -67,9 +76,7 @@ Branch `fix-stegbrowser-autonomous-resident-evidence-bridge` repairs only that m
 - validates `STAGED`, `ALREADY_STAGED`, or `RESTAGED_EXACT_SOURCE` for exact TVC SHA `aef6b6f5dc99d2a531718ca475d20858ae8e68a6`;
 - then continues to the existing immutable observer boundary and fails closed if terminal runtime observation has not yet occurred.
 
-The repair does not create another scheduler, dispatcher, WorkerCoordinator, runtime authority, credential path, or device requirement. Exact-byte retention does not rewrite or reinterpret the authentic receipt.
-
-Validation is pending for this branch. Merge/source validation must not be promoted into runtime proof.
+The repair creates no second scheduler, dispatcher, WorkerCoordinator, runtime authority, credential path, or device requirement. Exact-byte retention does not rewrite or reinterpret authentic receipts. CI and merge establish the machine-executable continuation path only; they do not establish runtime completion.
 
 ## First unresolved authentic predicate
 
@@ -81,7 +88,7 @@ Required retained receipt:
 receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json
 ```
 
-After the autonomous continuation repair is merged and consumed by the existing resident scheduler, the next eligible Healer cycle may produce this receipt without ChatGPT process access or user device action.
+The existing standing Healer carrier is now configured to invoke the reusable task and the reusable runner is now configured to retain its authentic ephemeral Canonical Work evidence into resident custody and automatically continue into the existing TVC source-promotion consumer. No ChatGPT command connector and no manual device action is part of this execution chain.
 
 ## Required later runtime evidence
 
@@ -118,7 +125,7 @@ Complete only when authentic evidence establishes successor Canonical Work consu
 
 ## Current state
 
-`ACTIVE / CHECKED_OUT / TASK_REGISTRY_CHECKIN_CONTINUE_OBSERVED / EPHEMERAL_STEGOS_SELECTED / REUSABLE_EPHEMERAL_RUNNER_BINDING_MERGED / RUNTIME_LOCAL_PREINGRESS_PROJECTION_REPAIR_MERGED / EXISTING_HEALER_NEUTRAL_SCHEDULER_CARRIER_BOUND / AUTONOMOUS_RESIDENT_EVIDENCE_CONTINUATION_REPAIR_IN_VALIDATION / CANONICAL_WORK_RESIDENT_CONSUMPTION_NOT_OBSERVED / WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED / TVC_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / OWNER_INGRESS_READY_NOT_OBSERVED / REMOTE_DEVICE_NOT_REQUIRED / NO_SECOND_USER_OPERATED_DEVICE`
+`ACTIVE / CHECKED_OUT / TASK_REGISTRY_CHECKIN_CONTINUE_OBSERVED / EPHEMERAL_STEGOS_SELECTED / REUSABLE_EPHEMERAL_RUNNER_BINDING_MERGED / RUNTIME_LOCAL_PREINGRESS_PROJECTION_REPAIR_MERGED / EXISTING_HEALER_NEUTRAL_SCHEDULER_CARRIER_BOUND / AUTONOMOUS_RESIDENT_EVIDENCE_CONTINUATION_REPAIR_MERGED / CANONICAL_WORK_RESIDENT_CONSUMPTION_NOT_OBSERVED / WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED / TVC_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / OWNER_INGRESS_READY_NOT_OBSERVED / REMOTE_DEVICE_NOT_REQUIRED / NO_SECOND_USER_OPERATED_DEVICE`
 
 ## Manual work
 
