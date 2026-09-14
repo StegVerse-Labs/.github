@@ -1,0 +1,87 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "ELAN-INTR-BRIDGE-001",
+  "correlation_id": "ELAN-INTR-BRIDGE-001",
+  "root_correlation_id": "ELAN-INTR-BRIDGE-001",
+  "parent_task_id": null,
+  "goal": "Build and validate a provider-neutral Interlock/InTr bridge for ELAN-originated evidence with deterministic transport, explicit provenance, semantic-resolution candidate preservation, progressive elimination to one surviving interpretation before admission, consequence analysis, and replay/reconstruction receipts, while Run 3 experimental formulation remains independent.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT_CURRENT_SESSION",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "71000000100110",
+    "source_state_vector_ref": "control/task-vectors/ELAN-INTR-BRIDGE-001.json",
+    "authority_effect": "NONE"
+  },
+  "source_refs": [
+    "docs/ELAN_INTR_BRIDGE_MIRROR_HANDOFF.md",
+    "control/task-vectors/ELAN-INTR-BRIDGE-001.json",
+    "ELAN-CUMULATIVE-PUBLICATION-001",
+    "StegVerse-org/StegVerse-SDK:scripts/run_elan_observed_silence_governance_test.py"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs", "StegVerse-org"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-org/StegVerse-SDK"],
+    "components": ["elan-transport-envelope", "semantic-resolution-manifold", "intr-admission-bridge", "consequence-analysis", "receipt-return"]
+  },
+  "dependencies": [
+    {"dependency_id":"DEP-ELAN-RUN2-EVIDENCE","kind":"EVIDENCE","state":"AVAILABLE_VALIDATED","ref":"ELAN-CUMULATIVE-PUBLICATION-001"},
+    {"dependency_id":"DEP-STEGVERSE-SDK-INTR-PATH","kind":"IMPLEMENTATION","state":"AVAILABLE","ref":"StegVerse-org/StegVerse-SDK"}
+  ],
+  "blockers": [],
+  "adjacent_task_refs": ["ELAN-CUMULATIVE-PUBLICATION-001", "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001", "SDK-COMPILED-STATE-GOVERNANCE-MATRIX-001"],
+  "expected_evidence_predicates": [
+    "BRIDGE_CONTRACT_CANONICAL",
+    "TRANSPORT_ENVELOPE_SCHEMA_VALIDATED",
+    "FACT_ASSERTION_INFERENCE_BOUNDARIES_EXPLICIT",
+    "MULTI_INTERPRETATION_STATE_SUPPORTED",
+    "SINGLE_SURVIVING_INTERPRETATION_REQUIRED_FOR_ADMISSION",
+    "CONSEQUENCE_RELATION_RETAINED_AS_DIAGNOSTIC_EVIDENCE",
+    "INTR_ADMISSION_BOUNDARY_EXPLICIT",
+    "REPLAY_RECONSTRUCTION_RECEIPTS_DEFINED",
+    "SDK_REFERENCE_IMPLEMENTATION_VALIDATED",
+    "README_AND_HANDOFF_CURRENT"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["github_repository_read", "github_pull_request_write", "github_actions_validation"],
+    "environment": "CURRENT_SESSION_GITHUB",
+    "direction": "ELAN_EVIDENCE_TO_INTR_ADMISSION",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": false
+  },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":[]},
+      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":[]},
+      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":[]},
+      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":[]},
+      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":[]},
+      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":[]}
+    ],
+    "selected_substrate_id": null,
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  },
+  "worker_claim": {"authority":"CURRENT_SESSION","claim_ref":"docs/ELAN_INTR_BRIDGE_MIRROR_HANDOFF.md","fence_ref":null,"projection_only":false},
+  "completion": {"claimed":false,"validated":false,"reconciliation_ref":null},
+  "allowed_next_transitions": ["IMPLEMENT_BRIDGE_CONTRACT", "VALIDATE_SCHEMA", "IMPLEMENT_SDK_REFERENCE", "VALIDATE_REFERENCE", "COMPLETE"],
+  "handoff_projection_refs": ["docs/ELAN_INTR_BRIDGE_MIRROR_HANDOFF.md"],
+  "authority_model": {
+    "transport_mints_governance_authority": false,
+    "semantic_preference_mints_resolution": false,
+    "human_assertion_is_automatically_truth": false,
+    "consequence_equivalence_mints_resolution": false,
+    "multiple_surviving_interpretations_may_be_admitted": false
+  }
+}
