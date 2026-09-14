@@ -23,6 +23,7 @@ def load(name: str, path: str):
 installer = load("install_sovereign_heartbeat_service", "scripts/install_sovereign_heartbeat_service.py")
 refresher = load("refresh_sovereign_worker_runtime_source", "scripts/refresh_sovereign_worker_runtime_source.py")
 portable = load("refresh_and_dispatch_resident_requests", "scripts/refresh_and_dispatch_resident_requests.py")
+consumer = load("consume_kv_ai_memory_resident_request", "scripts/consume_kv_ai_memory_resident_request.py")
 event_bootstrap = load("kv_ai_memory_intr_event_bootstrap", "workers/kv_ai_memory_intr_event_bootstrap.py")
 
 REQUIRED = {
@@ -59,6 +60,18 @@ def test_materializer_requires_kv_ai_memory_execution_source_after_copy():
 
 def test_portable_targeted_dispatch_admits_kv_ai_memory():
     assert "kv_ai_memory" in portable.ALLOWED_TARGET_CONSUMERS
+
+
+def test_generic_kv_ai_memory_consumer_bridges_to_autonomous_personal_kv_staging():
+    source = (ROOT / "scripts/consume_kv_ai_memory_resident_request.py").read_text(encoding="utf-8")
+    assert hasattr(consumer, "attempt_personal_kv_private_staging")
+    assert "stage_from_personal_kv" in source
+    assert "private_staging_attempt" in source
+    assert "packet_provider_inputs_ready" in source
+    assert "STEGVERSE_KV_SOURCE_ROOT" in source
+    assert "STEGVERSE_KV_ROOT" in source
+    assert "STEGVERSE_KV_AI_CONTEXT_REQUEST_PATH" in source
+    assert "private_content_exported_to_repository" in source
 
 
 def test_portable_dispatch_forwards_nonsecret_universal_intr_endpoint():
