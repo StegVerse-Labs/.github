@@ -1,0 +1,22 @@
+{
+  "schema": "stegverse.ai-originated-proposal-evidence/v1",
+  "goal_task_id": "STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001",
+  "cosv_task_vector": "40000100100000",
+  "origin_surface": "CURRENT_CHATGPT_SESSION",
+  "generated_at": "2026-09-14T11:49:00-05:00",
+  "proposal_sha256": "cf92a45b7bb147fc320f2cc472e1f3fcf7148a2b914a8772a1a9bdb4f8771fbb",
+  "proposal_canonical_json": "{\"authority_effect\":\"NONE_PROPOSAL_ONLY\",\"cosv_task_vector\":\"40000100100000\",\"goal_task_id\":\"STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001\",\"origin_class\":\"OPENAI_CHATGPT_MODEL_OUTPUT\",\"requested_action\":{\"capability\":\"RESTART_SERVICE\",\"payload\":{\"desired_state\":\"changed\"},\"route\":\"node://service-control\"},\"required_governance\":{\"credential_authority\":\"TV/TVC\",\"interlock_intr_admission_required\":true,\"model_output_grants_execution_authority\":false},\"schema\":\"stegverse.ai-originated-proposal/v1\"}",
+  "requested_action_summary": {
+    "capability": "RESTART_SERVICE",
+    "route": "node://service-control",
+    "payload": {
+      "desired_state": "changed"
+    }
+  },
+  "authority_effect": "NONE_PROPOSAL_ONLY",
+  "model_output_grants_execution_authority": false,
+  "runtime_ingress_observed": false,
+  "interlock_intr_decision_observed": false,
+  "target_state_change_observed": false,
+  "nonclaim": "This artifact proves only that an AI-originated proposal was produced and preserved exactly. It does not prove resident-runtime consumption, WorkerCoordinator claim/fence, Interlock/InTr admission, execution, target-state mutation, or goal completion."
+}
