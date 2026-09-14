@@ -84,6 +84,39 @@ def test_handoff_and_readme_do_not_make_rdc_or_device_presence_a_gate():
     assert "second machine required" not in kv_section.lower()
 
 
+def test_canonical_policy_context_registry_requires_resolution_before_mutation():
+    """Guard the exact failure class: local task-state interpretation before policy resolution."""
+    registry = load_json("control/canonical-policy-context-registry.json")
+
+    assert registry["authority_effect"] == "NONE_PREWORK_INTERPRETATION_ONLY"
+    assert registry["ingress_scope"]["must_resolve_before_local_interpretation"] is True
+    assert registry["ingress_scope"]["must_resolve_before_source_mutation"] is True
+    assert registry["ingress_scope"]["must_resolve_before_new_task_or_component_creation"] is True
+    assert registry["session_preflight"]["required_before_state_interpretation"] is True
+    assert registry["session_preflight"]["required_before_blocker_derivation"] is True
+    assert registry["session_preflight"]["required_before_remediation_proposal"] is True
+    assert registry["session_preflight"]["required_before_new_task_creation"] is True
+    assert registry["session_preflight"]["required_before_source_mutation"] is True
+    assert registry["session_preflight"]["fail_closed_disposition"] == "STOP_AT_CANONICAL_POLICY_DEPENDENCY"
+    assert registry["session_preflight"]["runtime_truth_inferred"] is False
+    assert registry["session_preflight"]["execution_authority_inferred"] is False
+    assert registry["session_preflight"]["transition_authority_inferred"] is False
+    assert registry["session_preflight"]["credential_authority_inferred"] is False
+
+    required_refs = {row["ref"] for row in registry["required_global_sources"] if row.get("required")}
+    assert "data/task-coordination-policy.json" in required_refs
+    assert "docs/CROSS_TASK_COORDINATION_MIRROR_HANDOFF.md" in required_refs
+    assert "data/reusable-task-component-model.json" in required_refs
+    assert "docs/CANONICAL_INVARIANT_INGRESS_LOCK_MIRROR_HANDOFF.md" in required_refs
+
+    guards = set(registry["interpretation_guards"])
+    assert "CANONICAL_POLICY_CONTEXT_PRECEDES_SESSION_INFERENCE" in guards
+    assert "CANONICAL_SOURCE_PRECEDES_LOCAL_INTERPRETATION" in guards
+    assert "CANONICALLY_RESOLVABLE_POLICY_MUST_NOT_BE_RETAUGHT_BY_HUMAN_PROMPT" in guards
+    assert "POLICY_CONTEXT_DOES_NOT_PROVE_RUNTIME_TRUTH_OR_GRANT_AUTHORITY" in guards
+    assert "MISSING_POLICY_CONTEXT_IS_AN_EXACT_DEPENDENCY_NOT_PERMISSION_TO_INVENT_SEMANTICS" in guards
+
+
 def test_task_coordination_policy_must_be_resolved_before_runtime_state_mutation():
     """Prevent a repeat of treating a runtime evidence gap as a transfer/stop state."""
     policy = load_json("data/task-coordination-policy.json")
