@@ -14,7 +14,8 @@
         "handoffs/SV-KV-AI-PERSISTENCE-001.json",
         "workers/kv_ai_memory_resident_worker.py",
         "StegVerse-Labs/continuity-vault-kit/KV_AI_PERSISTENCE_CLASSES_MIRROR_HANDOFF.md",
-        "StegVerse-org/LLM-adapter/docs/KV_AI_MEMORY_CONTEXT_BRIDGE_MIRROR_HANDOFF.md"
+        "StegVerse-org/LLM-adapter/docs/KV_AI_MEMORY_CONTEXT_BRIDGE_MIRROR_HANDOFF.md",
+        "control/workercoordinator-claim-fence-boundaries/SV-KV-AI-PERSISTENCE-001.json"
       ],
       "executor_binding": "AUTHORIZED",
       "external_entity_job_ref": null,
@@ -35,7 +36,8 @@
         "carrier_trigger_required": false,
         "fresh_fence_required": true,
         "minimum_fencing_token_exclusive": 0,
-        "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
+        "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+        "claim_state_repair_reason": "Align registry fragment with run_worker_runtime.py independent task-control activation gate; previous MACHINE_CLAIM_ON_EXECUTION value was descriptive but not accepted by the existing WorkerCoordinator implementation.",
         "admitted_predecessor_rule": "RESIDENT_BOUND_STATE_INPUTS_PRESENT_AND_EXISTING_KV_MEMORY_BRIDGE_SOURCE_VALIDATED",
         "event_materialization_grants_authority": false,
         "device_confirmation_required": false,
