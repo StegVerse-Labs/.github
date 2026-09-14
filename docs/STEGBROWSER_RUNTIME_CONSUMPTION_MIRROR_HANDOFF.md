@@ -16,6 +16,8 @@ Updated: 2026-09-14
 
 ```text
 Task Registry CONTINUE
+-> existing standing Healer resident scheduler carrier
+-> existing neutral RT-REUSABLE-TASK-SCHEDULER-001
 -> RT-STEGBROWSER-RUNTIME-CONSUMPTION-001
 -> existing SovereignLocalEventRuntimeAdapter
 -> existing sovereign EVENT_EPHEMERAL carrier/worker runtime
@@ -61,12 +63,46 @@ The runner now preserves canonical source state as `ACTIVE / CHECKED_OUT`, stage
 
 This is a machine-actionable source repair only. CI/merge do not establish runtime execution.
 
+## Existing resident invocation surface bound
+
+Investigation of the existing resident/task-registry machinery identified an already-authorized invocation carrier rather than a need for another runtime path:
+
+```text
+control/resident-execution-request.d/healer-sovereign-scheduler-001.json
+-> scripts/consume_healer_sovereign_scheduler_request.py
+-> scripts/refresh_and_execute_resident_task.py
+-> WorkerCoordinator fenced execution of SHWP-HEALER-SOVEREIGN-SCHEDULER-001
+-> StegVerse-Healer app/reusable_task_scheduler.py
+-> RT-REUSABLE-TASK-SCHEDULER-001
+-> scripts/trigger_reusable_task.py
+```
+
+`StegVerse-Labs/StegVerse-Healer#73` bound `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` into that existing neutral scheduler carrier and squash-merged as `22683b8583c30f5ba8c720eaad999e3a13a23d9e` after exact head `605858f17509c81ee5e4fe32df1ea3b89d462aa9` passed Test Readiness run `34869940176`.
+
+The binding preserves:
+
+- Goal `STEG-BROWSER-RUNTIME-CONSUMPTION-001` / COSV `40000100100000`;
+- repository source `StegVerse-Labs/.github`;
+- selected execution substrate `ADMITTED-EPHEMERAL-STEGOS-NODE`;
+- existing neutral reusable scheduler ownership;
+- 15-minute bounded retry, max 4 attempts per UTC-hour slot;
+- Remote Desktop requirement `false`;
+- second user-operated device requirement `false`;
+- network source fetch allowed `false`.
+
+The Healer hosted workflow named `Healer Scheduler Contract Validation` explicitly records `Hosted production dispatch: NONE` and `Production scheduler/execution carrier: single StegVerse resident heartbeat`. Therefore hosted GitHub workflow execution is not an admissible substitute for the resident carrier and cannot satisfy this Goal's runtime predicates.
+
+The carrier binding is source/configuration evidence only. It removes the missing connection from the existing standing resident scheduler into the already-registered reusable task; it does not prove that a resident scheduler cycle has selected or executed the child slot.
+
 ## Prior applicable source continuity
 
 - `.github#1763`: successor resident-ingress request/consumer path.
 - `.github#1781`: exact Task Registry `CONTINUE` preflight.
 - `.github#1789`: WorkerCoordinator self-heal source-root continuity.
 - `.github#1817`: substrate-order/modified-record validation repair.
+- `.github#1831`: reusable ephemeral runner binding.
+- `.github#1834`: runtime-local pre-ingress PROPOSED projection repair.
+- `StegVerse-Healer#73`: existing standing Healer / neutral reusable scheduler carrier binding.
 - `StegOS#380`: current-iPhone processing-observer source.
 - `Site#1305`: same-device root Universal InTr / `CanonicalWork:Ingress` capability.
 
@@ -80,7 +116,7 @@ Required receipt:
 receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json
 ```
 
-No source, CI, merge, heartbeat, Task Registry projection, or connector-discovery result may substitute for this receipt.
+No source, CI, merge, heartbeat, Task Registry projection, scheduler configuration, or connector-discovery result may substitute for this receipt.
 
 ## Required later runtime evidence
 
@@ -100,12 +136,13 @@ Historical parent receipts remain provenance only.
 ## Authority invariants
 
 - Task Registry: coordination only.
+- Existing Healer carrier / neutral reusable scheduler: scheduling and invocation transport only.
 - WorkerCoordinator: claim/fence authority.
 - Interlock/InTr: governed transition authority.
 - TV/TVC: credential/provider authority.
 - KV/SKAP Vault: user-verification/custody authority.
 - Master Records: observed-reality/reconstruction authority.
-- HeartBeat: observability/timing/freshness only.
+- HeartBeat: observability/timing/freshness and resident carrier timing only; it does not mint transition authority.
 - GitHub/CI: validation/evidence transport only; runtime authority `NONE`.
 - StegOS nodes/devices: interchangeable execution/transport surfaces; no second user-operated device prerequisite.
 
@@ -115,11 +152,11 @@ Complete only when authentic evidence establishes: successor Canonical Work cons
 
 ## Current state
 
-`ACTIVE / CHECKED_OUT / TASK_REGISTRY_CHECKIN_CONTINUE_OBSERVED / EPHEMERAL_STEGOS_SELECTED / REUSABLE_EPHEMERAL_RUNNER_BINDING_MERGED / RUNTIME_LOCAL_PREINGRESS_PROJECTION_REPAIR_MERGED / CANONICAL_WORK_RESIDENT_CONSUMPTION_NOT_OBSERVED / WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED / INTR_ADMISSION_NOT_OBSERVED / TVC_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / TVC_PRIMARY_RUNTIME_RESTART_NOT_OBSERVED / IMMUTABLE_OBSERVER_EXECUTION_NOT_OBSERVED / OWNER_INGRESS_READY_NOT_OBSERVED / REMOTE_DEVICE_NOT_REQUIRED / NO_CONNECTED_DEVICE_PREREQUISITE / NO_SECOND_USER_OPERATED_DEVICE`
+`ACTIVE / CHECKED_OUT / TASK_REGISTRY_CHECKIN_CONTINUE_OBSERVED / EPHEMERAL_STEGOS_SELECTED / REUSABLE_EPHEMERAL_RUNNER_BINDING_MERGED / RUNTIME_LOCAL_PREINGRESS_PROJECTION_REPAIR_MERGED / EXISTING_HEALER_NEUTRAL_SCHEDULER_CARRIER_BOUND / CANONICAL_WORK_RESIDENT_CONSUMPTION_NOT_OBSERVED / WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED / INTR_ADMISSION_NOT_OBSERVED / TVC_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / TVC_PRIMARY_RUNTIME_RESTART_NOT_OBSERVED / IMMUTABLE_OBSERVER_EXECUTION_NOT_OBSERVED / OWNER_INGRESS_READY_NOT_OBSERVED / REMOTE_DEVICE_NOT_REQUIRED / NO_CONNECTED_DEVICE_PREREQUISITE / NO_SECOND_USER_OPERATED_DEVICE`
 
 ## Current execution boundary
 
-The merged reusable runner is now source-runnable on an eligible sovereign execution surface. This chat session currently exposes no authenticated sovereign process-execution target through its command connector. That is a session-access boundary only; it is **not** a StegVerse device requirement, runtime-completion predicate, or request for another device.
+The previously missing source/configuration connection into an authorized resident invocation surface is now repaired. The existing standing Healer resident scheduler is the production carrier; it is not a hosted GitHub workflow and it grants no new runtime authority. This chat session does not expose a command/API surface that can force that resident heartbeat cycle, so no resident child trigger or Canonical Work receipt can be authentically claimed from this session. The next admissible evidence is the resident scheduler/child trigger receipt followed by the exact Canonical Work successor receipt. This is an execution-surface access boundary, not a device prerequisite and not a request for manual user action.
 
 ## Manual work
 
