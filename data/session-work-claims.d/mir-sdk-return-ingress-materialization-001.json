@@ -3,12 +3,13 @@
   "claim_id": "mir-sdk-return-ingress-materialization-001",
   "goal_task_id": "MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001",
   "cosv_id": "50000000100000",
-  "state": "CLAIMED_FOR_INTEGRATION",
+  "state": "RELEASED_COMPLETE",
   "role": "RUNTIME_CARRIER_SOURCE_REPAIR",
   "branch": "mir-sdk-return-ingress-materialization-001",
+  "pull_request": 1905,
+  "release_commit": "61d064229939d714bd85ba15fd7a6355f37d0647",
   "claimed_paths": [
-    "workers/universal_intr_profiled_ingress.py",
-    "scripts/consume_sdk_publisher_return_materialization_request.py",
+    "scripts/consume_kv_publisher_return_materialization_request.py",
     "tests/test_sdk_publisher_return_intr_materialization.py",
     "docs/MIR_SDK_RETURN_INGRESS_MATERIALIZATION_MIRROR_HANDOFF.md",
     "data/session-work-claims.d/mir-sdk-return-ingress-materialization-001.json"
