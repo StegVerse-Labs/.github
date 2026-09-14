@@ -1,0 +1,70 @@
+{
+  "schema": "stegverse.runtime-observation/v1",
+  "task_id": "SV-KV-AI-PERSISTENCE-001",
+  "cosv_task_vector": "20111110110000",
+  "observed_at": "2026-09-14T13:27:00-05:00",
+  "repository": "StegVerse-Labs/.github",
+  "issue_ref": "StegVerse-Labs/.github#1848",
+  "observation_class": "POST_COST_BASIS_CLAIM_FENCE_OBSERVATION",
+  "exact_tuple": {
+    "task_id": "SV-KV-AI-PERSISTENCE-001",
+    "cosv_task_vector": "20111110110000",
+    "request_id": "RESIDENT-EXEC-KV-AI-MEMORY-001",
+    "worker_id": "kv-ai-memory-resident-worker",
+    "adapter_ref": "process:kv-ai-memory-resident-v1"
+  },
+  "source_repairs_verified_present": {
+    "claim_state_aligned_with_workercoordinator_gate": true,
+    "cost_basis_ref_present": "cost-basis/worker-runtime/kv-ai-memory-resident.json",
+    "source_binding_sidecar_present": "control/workercoordinator-claim-fence-boundaries/SV-KV-AI-PERSISTENCE-001.json",
+    "resident_execution_request_present": "control/resident-execution-request.d/kv-ai-memory-resident-001.json"
+  },
+  "observed_worker_registry_fragment_projection": {
+    "task_state": "HANDOFF_READY",
+    "claim_id": null,
+    "worker_id": null,
+    "worker_instance_id": null,
+    "lease": null,
+    "fresh_fence_observed": false,
+    "cost_basis_ref": "cost-basis/worker-runtime/kv-ai-memory-resident.json"
+  },
+  "repository_visible_receipt_surfaces_checked": [
+    "receipts/sovereign-host/resident-targeted-execution.latest.json",
+    "receipts/sovereign-host/kv-ai-memory-resident-request-consumption.latest.json",
+    "events/master-records-worker-assignment.jsonl",
+    "control/worker-registry.json",
+    "control/worker-registry.d/kv-ai-memory-resident-001.json",
+    "repository code search for SV-KV-AI-PERSISTENCE-001 claim_id worker_instance_id fencing_token KV_AI_MEMORY_PROVIDER_REQUEST_MATERIALIZED"
+  ],
+  "repository_visible_receipt_result": {
+    "resident_targeted_execution_latest": "NOT_FOUND_IN_REPOSITORY_CONTENTS",
+    "kv_ai_memory_resident_request_consumption_latest": "NOT_FOUND_IN_REPOSITORY_CONTENTS",
+    "master_records_worker_assignment_log": "NOT_FOUND_IN_REPOSITORY_CONTENTS",
+    "code_search_live_claim_fence_or_provider_materialization": "NO_RESULTS",
+    "canonical_worker_registry_exact_task_projection": "NOT_OBSERVED_IN_FETCHED_REPOSITORY_VISIBLE_REGISTRY_CONTEXT"
+  },
+  "classification": "RESIDENT_WORKERCOORDINATOR_CYCLE_NOT_OBSERVED_OR_NOT_PROJECTED_AFTER_SOURCE_GATES_REPAIRED",
+  "first_missing_same_execution_predicate": "AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVATION",
+  "next_downstream_predicates_not_promoted": [
+    "REAL_PERSONAL_KV_ROOT_INPUT_FILES",
+    "SHARED_UNIVERSAL_INTR_ALLOW",
+    "MEMORY_PACKET_ADMISSION_JSON",
+    "KV_AI_MEMORY_PROVIDER_REQUEST_MATERIALIZED",
+    "GOVERNED_PROVIDER_MODEL_INGRESS_RESPONSE_EGRESS",
+    "EVIDENCE_GATED_KV_WRITEBACK_READBACK",
+    "MASTER_RECORDS_RECONSTRUCTION"
+  ],
+  "closure_condition": "Close issue #1848 only after the existing authorized resident WorkerCoordinator path produces repository-visible authentic claim_id, worker_instance_id, lease, and fresh fence evidence for the exact tuple, or after a canonical non-authorizing projection repair records why the existing resident output was not exported without minting authority or synthetic evidence.",
+  "nonclaims": [
+    "NO_CLAIM_FENCE_OBSERVED",
+    "NO_PERSONAL_KV_INPUT_OBSERVED",
+    "NO_INTR_ADMISSION_OBSERVED",
+    "NO_PROVIDER_EXECUTION_OBSERVED",
+    "NO_KV_WRITEBACK_READBACK_OBSERVED",
+    "NO_MASTER_RECORDS_RECONSTRUCTION_OBSERVED",
+    "NO_RUNTIME_COMPLETION_CLAIMED",
+    "NO_RELEASE_CLAIMED",
+    "NO_PARENT_COMPLETION_CLAIMED"
+  ],
+  "authority_effect": "NONE_OBSERVATION_ONLY"
+}
