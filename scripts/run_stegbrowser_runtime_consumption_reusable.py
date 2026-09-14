@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 import os
@@ -30,6 +31,13 @@ def load_json(path: Path) -> dict[str, Any]:
     return value
 
 
+def atomic_json(path: Path, value: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name("." + path.name + ".tmp")
+    tmp.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    tmp.replace(path)
+
+
 def params() -> dict[str, Any]:
     raw = os.environ.get("STEGVERSE_REUSABLE_TASK_PARAMETERS_JSON", "")
     if not raw:
@@ -54,6 +62,65 @@ def resolve_path(value: object, env_name: str, fallback: Path | None = None) -> 
 
 def sha256_bytes(raw: bytes) -> str:
     return hashlib.sha256(raw).hexdigest()
+
+
+def stage_runtime_ingress_projection(source: Path, runtime_root: Path, record: dict[str, Any]) -> dict[str, Any]:
+    """Stage only the runtime-local PROPOSED projection required by Canonical Work ingress.
+
+    The canonical Goal remains ACTIVE/CHECKED_OUT in source. Canonical Work's existing
+    ingress bootstrap correctly requires a PROPOSED task before Interlock/InTr can
+    emit INGRESS_ADMITTED. The resident consumer preserves an existing runtime
+    registry/shard, so this projection bridges those two state domains without
+    rewriting canonical source or minting execution authority.
+    """
+    if record.get("task_id") != TASK_ID or record.get("coordination_state") != "ACTIVE":
+        fail("runtime_ingress_projection_source_state_invalid")
+    if record.get("checkout_state") != "CHECKED_OUT":
+        fail("runtime_ingress_projection_checkout_state_invalid")
+    if "INGRESS_ADMITTED" not in (record.get("allowed_next_transitions") or []):
+        fail("runtime_ingress_projection_transition_not_allowed")
+    claim = record.get("worker_claim") or {}
+    if claim.get("authority") != "WORKERCOORDINATOR" or claim.get("claim_ref") is not None or claim.get("fence_ref") is not None:
+        fail("runtime_ingress_projection_claim_boundary_invalid")
+
+    registry_source = source / "data/canonical-task-registry.json"
+    registry = load_json(registry_source)
+    projected_registry = copy.deepcopy(registry)
+    tasks = projected_registry.get("tasks")
+    if not isinstance(tasks, list):
+        fail("canonical_registry_tasks_missing")
+    indexes = [index for index, row in enumerate(tasks) if isinstance(row, dict) and row.get("task_id") == TASK_ID]
+    if len(indexes) > 1:
+        fail("canonical_task_identity_duplicated_in_registry")
+
+    projected_record = copy.deepcopy(record)
+    projected_record["coordination_state"] = "PROPOSED"
+    projected_record["runtime_ingress_projection"] = {
+        "source_coordination_state": "ACTIVE",
+        "projected_coordination_state": "PROPOSED",
+        "source_mutated": False,
+        "claim_or_fence_minted": False,
+        "authority_effect": "NONE_RUNTIME_PROJECTION_ONLY",
+    }
+
+    if indexes:
+        projected_registry["tasks"][indexes[0]] = copy.deepcopy(projected_record)
+    runtime_registry = runtime_root / "data/canonical-task-registry.json"
+    runtime_shard = runtime_root / "data/canonical-task-records" / f"{TASK_ID}.json"
+    atomic_json(runtime_registry, projected_registry)
+    atomic_json(runtime_shard, projected_record)
+
+    if load_json(source / "data/canonical-task-records" / f"{TASK_ID}.json").get("coordination_state") != "ACTIVE":
+        fail("canonical_source_state_mutated_during_projection")
+    return {
+        "runtime_registry_ref": str(runtime_registry),
+        "runtime_task_shard_ref": str(runtime_shard),
+        "source_coordination_state": "ACTIVE",
+        "projected_coordination_state": "PROPOSED",
+        "source_mutated": False,
+        "claim_or_fence_minted": False,
+        "authority_effect": "NONE_RUNTIME_PROJECTION_ONLY",
+    }
 
 
 def main() -> int:
@@ -117,6 +184,7 @@ def main() -> int:
         fail("ephemeral_runtime_local_verification_failed")
 
     runtime_root = Path(str(runtime["runtime_root"]))
+    ingress_projection = stage_runtime_ingress_projection(source, runtime_root, record)
     consumer = runtime_root / CONSUMER
     if not consumer.is_file():
         fail("canonical_work_consumer_not_materialized")
@@ -136,6 +204,15 @@ def main() -> int:
     consumption = runtime_root / CONSUMPTION_RECEIPT
     if not consumption.is_file():
         fail("canonical_work_resident_consumption_receipt_not_observed")
+    consumption_value = load_json(consumption)
+    if consumption_value.get("state") != "COMPLETED" or consumption_value.get("task_id") != TASK_ID:
+        fail("canonical_work_resident_consumption_receipt_invalid")
+    bootstrap_ref = consumption_value.get("bootstrap_receipt_ref")
+    if not isinstance(bootstrap_ref, str) or not Path(bootstrap_ref).is_file():
+        fail("canonical_work_intr_bootstrap_receipt_missing")
+    bootstrap_value = load_json(Path(bootstrap_ref))
+    if bootstrap_value.get("state") != "INGRESS_CONSUMPTION_AND_PROJECTION_OBSERVED" or bootstrap_value.get("task_id") != TASK_ID:
+        fail("canonical_work_intr_admission_not_observed")
 
     result_path_raw = os.environ.get("STEGVERSE_REUSABLE_TASK_RESULT_PATH", "").strip()
     manifest_path_raw = os.environ.get("STEGVERSE_REUSABLE_TASK_MANIFEST", "").strip()
@@ -169,6 +246,8 @@ def main() -> int:
         "runtime_observed": True,
         "completion_evidence_observed": True,
         "canonical_work_consumption_receipt": str(consumption),
+        "canonical_work_intr_bootstrap_receipt": str(bootstrap_ref),
+        "runtime_ingress_projection": ingress_projection,
         "tvc_source_promotion_receipt": str(tvc),
         "runtime_observation_receipt": str(observer),
         "ephemeral_runtime_verification": verified,

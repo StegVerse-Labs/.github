@@ -19,5 +19,5 @@
     "NO_PARALLEL_SCHEDULER_DISPATCHER_CREDENTIAL_PATH_OR_SECOND_DEVICE"
   ],
   "authority_effect": "NONE_ORCHESTRATION_ONLY",
-  "reuse_instructions": "Trigger once through scripts/trigger_reusable_task.py. The runner must reuse SovereignLocalEventRuntimeAdapter, the existing Canonical Work resident consumer, WorkerCoordinator, Interlock/InTr, exact stegbrowser_tvc_source_promotion consumer, TVC runtime/observer path, and Master Records lifecycle. It may stop only at a real authority/evidence/external-resource boundary and may not infer completion from source or CI."
+  "reuse_instructions": "Trigger once through scripts/trigger_reusable_task.py. The runner must reuse SovereignLocalEventRuntimeAdapter, the existing Canonical Work resident consumer, WorkerCoordinator, Interlock/InTr, exact stegbrowser_tvc_source_promotion consumer, TVC runtime/observer path, and Master Records lifecycle. It may stop only at a real authority/evidence/external-resource boundary and may not infer completion from source or CI. The source Goal remains ACTIVE/CHECKED_OUT; before the existing Canonical Work bootstrap runs, the runner must stage only a runtime-local PROPOSED ingress projection so the authentic InTr transition can produce INGRESS_ADMITTED without rewriting canonical source state."
 }
