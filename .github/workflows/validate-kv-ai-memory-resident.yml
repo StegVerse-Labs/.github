@@ -4,9 +4,13 @@ on:
   push:
     paths:
       - 'README.md'
+      - 'data/task-coordination-policy.json'
       - 'data/canonical-task-records/SV-KV-AI-PERSISTENCE-001.json'
+      - 'data/canonical-task-records/SV-KV-AI-RUNTIME-EVIDENCE-001.json'
       - 'docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md'
+      - 'docs/KV_AI_MEMORY_RUNTIME_EVIDENCE_MIRROR_HANDOFF.md'
       - 'handoffs/SV-KV-AI-PERSISTENCE-001.json'
+      - 'handoffs/SV-KV-AI-RUNTIME-EVIDENCE-001.json'
       - 'workers/kv_ai_memory_resident_worker.py'
       - 'workers/kv_ai_memory_intr_profile.py'
       - 'workers/kv_ai_memory_intr_transport.py'
@@ -32,9 +36,13 @@ on:
   pull_request:
     paths:
       - 'README.md'
+      - 'data/task-coordination-policy.json'
       - 'data/canonical-task-records/SV-KV-AI-PERSISTENCE-001.json'
+      - 'data/canonical-task-records/SV-KV-AI-RUNTIME-EVIDENCE-001.json'
       - 'docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md'
+      - 'docs/KV_AI_MEMORY_RUNTIME_EVIDENCE_MIRROR_HANDOFF.md'
       - 'handoffs/SV-KV-AI-PERSISTENCE-001.json'
+      - 'handoffs/SV-KV-AI-RUNTIME-EVIDENCE-001.json'
       - 'workers/kv_ai_memory_resident_worker.py'
       - 'workers/kv_ai_memory_intr_profile.py'
       - 'workers/kv_ai_memory_intr_transport.py'
