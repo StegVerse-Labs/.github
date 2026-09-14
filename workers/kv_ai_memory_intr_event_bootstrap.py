@@ -198,6 +198,7 @@ def prepare_source(source: Path, *, runner=subprocess.run, env: Mapping[str, str
 def run_cycle(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
+    runtime.mkdir(parents=True, exist_ok=True)
     safe = clean_env(env)
     ready, missing = staged_input_state(safe)
     staging_result = None
@@ -222,7 +223,6 @@ def run_cycle(source_root: Path, runtime_root: Path, *, runner=subprocess.run, e
     importlib.invalidate_caches()
     shared = importlib.import_module("workers.universal_intr_profiled_ingress")
 
-    runtime.mkdir(parents=True, exist_ok=True)
     server = shared.Server(("127.0.0.1", 0), runtime, 1)
     host, port = server.server_address
     thread = threading.Thread(target=server.handle_request, daemon=True)
