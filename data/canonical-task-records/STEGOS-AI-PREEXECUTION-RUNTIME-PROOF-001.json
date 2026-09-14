@@ -1,0 +1,127 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001",
+  "correlation_id": "STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001",
+  "root_correlation_id": "STEGOS-SOVEREIGN-INFRASTRUCTURE-001",
+  "parent_task_id": "STEGOS-SOVEREIGN-INFRASTRUCTURE-001",
+  "goal": "Reuse the established event-ephemeral StegOS Node and Canonical Work Interlock/InTr path to validate the AI pre-execution ALLOW/DENY/BYPASS test on one admitted ephemeral StegOS runtime, then preserve the boundary to authentic AI-originated proof.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "40000100100000",
+  "source_refs": [
+    "StegVerse-Labs/StegOS#384",
+    "StegVerse-Labs/StegOS@ef15c92b24c37e2031e13586741952e0305b520a",
+    "StegVerse-Labs/StegOS:docs/AI_PREEXECUTION_GOVERNANCE_TEST_MIRROR_HANDOFF.md",
+    "docs/REUSABLE_TASK_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+    "data/reusable-task-ephemeral-construct-contract.json",
+    "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegOS"],
+    "components": [
+      "RTC-MANIFEST-001",
+      "RTC-GOVERNED-PROCESSING-002",
+      "RTC-INTERLOCK-INTR-TRANSPORT-008",
+      "execution_materialization:data/reusable-task-ephemeral-construct-contract.json",
+      "RTC-FARSIDE-FINAL-009",
+      "RTC-EVIDENCE-CUSTODY-004"
+    ]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-AI-PREEXECUTION-STEGOS-SOURCE",
+      "kind": "SOURCE_BINDING",
+      "state": "AVAILABLE_VALIDATED",
+      "ref": "StegVerse-Labs/StegOS@ef15c92b24c37e2031e13586741952e0305b520a"
+    },
+    {
+      "dependency_id": "DEP-AI-PREEXECUTION-EPHEMERAL-NODE",
+      "kind": "RUNTIME_SUBSTRATE",
+      "state": "AVAILABLE_REUSABLE_PATH",
+      "ref": "ADMITTED-EPHEMERAL-STEGOS-NODE"
+    },
+    {
+      "dependency_id": "DEP-AI-PREEXECUTION-AUTHENTIC-AI",
+      "kind": "RUNTIME_EVIDENCE",
+      "state": "UNRESOLVED",
+      "ref": "StegVerse-Labs/StegOS#384"
+    }
+  ],
+  "blockers": [],
+  "adjacent_task_refs": [
+    "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
+    "SS-ERL-AUTHENTIC-INTR-EXECUTION-EVIDENCE-002",
+    "STEGOS-ESRL-001"
+  ],
+  "expected_evidence_predicates": [
+    "EPHEMERAL_STEGOS_NODE_MATERIALIZED_AND_VERIFIED",
+    "CANONICAL_WORK_INTR_ADMISSION_OBSERVED",
+    "ALLOW_TARGET_STATE_CHANGED",
+    "DENY_TARGET_STATE_UNCHANGED",
+    "BYPASS_TARGET_STATE_UNCHANGED",
+    "MODEL_OUTPUT_AUTHORITY_REMAINS_NONE",
+    "TV_TVC_CREDENTIAL_AUTHORITY_PRESERVED",
+    "NO_SECOND_RUNTIME_SCHEDULER_OR_CREDENTIAL_PATH",
+    "AUTHENTIC_AI_ORIGINATED_PROPOSAL_OBSERVED"
+  ],
+  "runtime_requirements": {
+    "capabilities": [
+      "canonical_portable_execution",
+      "event_ephemeral_stegos_node",
+      "universal_intr_profiled_ingress",
+      "bounded_loopback_network_consequence",
+      "target_state_readback"
+    ],
+    "environment": "ADMITTED_EPHEMERAL_STEGOS_NODE",
+    "direction": "AI_PROPOSAL_TO_STEGOS_GOVERNANCE_TO_NETWORK_TARGET",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true,
+    "second_user_operated_device_required": false
+  },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  },
+  "runtime_resolution": {
+    "current_executor": "reusable event-ephemeral StegOS Node -> Canonical Work -> Interlock/InTr -> StegOS pre-execution network test",
+    "unresolved_classification": "AUTHENTIC_AI_ORIGINATED_PROPOSAL_NOT_YET_OBSERVED"
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": false
+  },
+  "human_action_ref": null,
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "activation_proof_complete": false,
+    "reconciliation_ref": "docs/STEGOS_AI_PREEXECUTION_RUNTIME_PROOF_MIRROR_HANDOFF.md"
+  },
+  "allowed_next_transitions": [
+    "INGRESS_ADMITTED",
+    "MATERIALIZE_EPHEMERAL_STEGOS_NODE",
+    "RUN_ALLOW_DENY_BYPASS_NETWORK_TEST",
+    "OBSERVE_AUTHENTIC_AI_PROPOSAL",
+    "SUBMIT_AUTHENTIC_EVIDENCE_TO_MASTER_RECORDS"
+  ],
+  "handoff_projection_refs": [
+    "docs/STEGOS_AI_PREEXECUTION_RUNTIME_PROOF_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegOS:docs/AI_PREEXECUTION_GOVERNANCE_TEST_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "workercoordinator_remains_claim_fence_authority": true,
+    "interlock_intr_remains_transition_authority": true,
+    "tvc_remains_credential_provider_release_authority": true,
+    "master_records_remains_custody_reconstruction_authority": true,
+    "model_output_grants_execution_authority": false,
+    "github_runtime_authority": "NONE"
+  }
+}
