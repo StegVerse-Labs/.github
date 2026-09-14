@@ -1,0 +1,39 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "SV-KV-AI-PERSISTENCE-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:kv-ai-memory-resident-v1",
+      "authority_ref": "handoffs/SV-KV-AI-PERSISTENCE-001.json#authority",
+      "capabilities": [
+        "bounded_process_execution",
+        "fenced_bound_state",
+        "kv_ai_memory_provider_request_materialization"
+      ],
+      "command": [
+        "python",
+        "workers/kv_ai_memory_resident_worker.py"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_LLM_ADAPTER_ROOT",
+        "HOME",
+        "PATH"
+      ],
+      "bound_state_root": "~/.stegverse/state/kv-ai-memory-resident",
+      "bound_state_allowed_paths": [
+        "inputs/**",
+        "materialized/**",
+        "receipts/**"
+      ],
+      "timeout_seconds": 180,
+      "type": "process_json_bound_state_v0.1",
+      "notes": [
+        "Private KV packet, memory-packet admission artifact, prompt/messages, and materialized ProviderRequest remain inside fenced bound state and are not repository content.",
+        "The worker reuses the already-local LLM-adapter materializer and does not perform network source fetch.",
+        "No provider credential, TV/TVC secret, GitHub token, InTr admission authority, provider execution authority, or KV mutation authority is granted by this adapter."
+      ]
+    }
+  ]
+}
