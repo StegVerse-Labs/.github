@@ -45,6 +45,10 @@ def packet_sha256(packet: Mapping[str, Any]) -> str:
     return hashlib.sha256(canonical(dict(packet))).hexdigest()
 
 
+def receipt_sha256(receipt_without_hash: Mapping[str, Any]) -> str:
+    return "sha256:" + hashlib.sha256(canonical(dict(receipt_without_hash))).hexdigest()
+
+
 def load_object(path: Path) -> dict[str, Any]:
     value = json.loads(path.read_text(encoding="utf-8"))
     require(isinstance(value, dict), f"object_required:{path}")
@@ -62,6 +66,32 @@ def validate_loopback(url: str) -> None:
 def _open(request: Request, *, timeout: float) -> tuple[int, bytes]:
     with urlopen(request, timeout=timeout) as response:  # noqa: S310 - loopback URL is validated
         return int(response.status), response.read()
+
+
+def validate_receipt(packet: Mapping[str, Any], receipt: Mapping[str, Any]) -> str:
+    packet_hash = packet_sha256(packet)
+    require(receipt.get("schema") == RECEIPT_SCHEMA, "ingress_receipt_schema_invalid")
+    require(receipt.get("state") == "INGRESS_ADMITTED" and receipt.get("disposition") == "ALLOW", "ingress_not_allowed")
+    require(receipt.get("task_id") == TASK_ID, "ingress_task_mismatch")
+    require(receipt.get("packet_id") == packet.get("packet_id"), "ingress_packet_id_mismatch")
+    require(receipt.get("packet_sha256") == packet_hash, "ingress_packet_hash_mismatch")
+    require(receipt.get("exact_packet_validated") is True, "ingress_exact_packet_validation_missing")
+    require(receipt.get("private_packet_persisted_by_ingress") is False, "ingress_private_packet_persistence_forbidden")
+    require(receipt.get("provider_request_materialized") is False, "ingress_provider_request_claim_forbidden")
+    require(receipt.get("provider_ingress_admission_observed") is False, "ingress_provider_admission_claim_forbidden")
+    require(receipt.get("provider_execution_observed") is False, "ingress_provider_execution_claim_forbidden")
+    require(receipt.get("kv_writeback_observed") is False, "ingress_writeback_claim_forbidden")
+    require(receipt.get("claim_or_fence_minted") is False, "ingress_claim_forbidden")
+    require(receipt.get("credential_material_present") is False, "ingress_credentials_forbidden")
+    require(receipt.get("heartbeat_grants_execution_authority") is False, "ingress_heartbeat_authority_forbidden")
+    require(receipt.get("request_grants_execution_authority") is False, "ingress_execution_authority_forbidden")
+    require(receipt.get("authority_effect") == "NONE_INGRESS_ADMISSION_ONLY", "ingress_authority_effect_invalid")
+    claimed = receipt.get("receipt_hash")
+    require(isinstance(claimed, str) and claimed.startswith("sha256:") and len(claimed) == 71, "ingress_receipt_hash_invalid")
+    body = dict(receipt)
+    body.pop("receipt_hash", None)
+    require(receipt_sha256(body) == claimed, "ingress_receipt_hash_mismatch")
+    return claimed
 
 
 def submit(stage_root: Path, *, env: Mapping[str, str] | None = None, opener=_open, timeout: float = 10.0) -> dict[str, Any]:
@@ -118,16 +148,7 @@ def submit(stage_root: Path, *, env: Mapping[str, str] | None = None, opener=_op
     require(status == 202, f"ingress_status_invalid:{status}")
     receipt = json.loads(raw.decode("utf-8"))
     require(isinstance(receipt, dict), "ingress_receipt_object_required")
-    require(receipt.get("schema") == RECEIPT_SCHEMA, "ingress_receipt_schema_invalid")
-    require(receipt.get("state") == "INGRESS_ADMITTED" and receipt.get("disposition") == "ALLOW", "ingress_not_allowed")
-    require(receipt.get("task_id") == TASK_ID, "ingress_task_mismatch")
-    require(receipt.get("packet_id") == packet.get("packet_id"), "ingress_packet_id_mismatch")
-    require(receipt.get("packet_sha256") == packet_hash, "ingress_packet_hash_mismatch")
-    receipt_hash = receipt.get("receipt_hash")
-    require(isinstance(receipt_hash, str) and receipt_hash.startswith("sha256:") and len(receipt_hash) == 71, "ingress_receipt_hash_invalid")
-    require(receipt.get("claim_or_fence_minted") is False, "ingress_claim_forbidden")
-    require(receipt.get("credential_material_present") is False, "ingress_credentials_forbidden")
-    require(receipt.get("request_grants_execution_authority") is False, "ingress_execution_authority_forbidden")
+    receipt_hash = validate_receipt(packet, receipt)
 
     admission = {
         "schema": RECEIPT_SCHEMA,
