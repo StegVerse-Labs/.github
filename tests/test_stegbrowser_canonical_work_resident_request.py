@@ -6,6 +6,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PARENT_TASK_ID = "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001"
 TASK_ID = "STEG-BROWSER-RUNTIME-CONSUMPTION-001"
+CONTINUATION_TASK_ID = "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001"
 COSV = "40000100100000"
 REQUEST = ROOT / "control" / "resident-execution-request.d" / "canonical-work-stegbrowser-runtime-consumption-001.json"
 CONSUMER = ROOT / "control" / "resident-execution-request.d" / "consume-canonical-work-coordination-bootstrap.py"
@@ -40,13 +41,15 @@ class StegBrowserCanonicalWorkResidentRequestTests(unittest.TestCase):
         self.assertEqual(parent["checkout_state"], "SUPERSEDED")
         self.assertEqual(parent["continuation_task_id"], TASK_ID)
 
-    def test_successor_task_shard_is_active_checked_out(self):
+    def test_runtime_consumption_task_is_retired_to_custody_root_successor(self):
         task = json.loads(TASK_SHARD.read_text(encoding="utf-8"))
         self.assertEqual(task["task_id"], TASK_ID)
         self.assertEqual(task["parent_task_id"], PARENT_TASK_ID)
-        self.assertEqual(task["coordination_state"], "ACTIVE")
-        self.assertEqual(task["checkout_state"], "CHECKED_OUT")
+        self.assertEqual(task["coordination_state"], "RETIRED")
+        self.assertEqual(task["checkout_state"], "DECOMPOSED_AT_PROMPT_LIMIT")
         self.assertEqual(task["cosv_task_vector"], COSV)
+        self.assertEqual(task["decomposition"]["canonical_successor_task_id"], CONTINUATION_TASK_ID)
+        self.assertEqual(task["prompt_budget"]["continuation_task_id"], CONTINUATION_TASK_ID)
         self.assertFalse(task["authority_model"]["task_registry_mints_execution_authority"])
         self.assertTrue(task["authority_model"]["interlock_intr_required_for_governed_ingress_egress"])
 
