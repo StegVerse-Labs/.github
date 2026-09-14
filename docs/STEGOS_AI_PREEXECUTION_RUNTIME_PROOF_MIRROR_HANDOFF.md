@@ -3,7 +3,13 @@
 Goal Task ID: `STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001`
 Parent: `STEGOS-SOVEREIGN-INFRASTRUCTURE-001`
 COSV: `40000100100000`
-State: `ACTIVE / CHECKED_OUT / AI_PROPOSAL_PRESERVED / HEALER_CARRIER_BOUND / CURRENT_IPHONE_SAME_DEVICE_PROJECTION_ADMITTED / BOOTSTRAP_STAGE_DIAGNOSTIC_PENDING`
+State: `ACTIVE / CHECKED_OUT / AI_PROPOSAL_PRESERVED / HEALER_CARRIER_BOUND / ADMITTED-EPHEMERAL-STEGOS-NODE SELECTED / AUTHENTIC RUNTIME CONSUMPTION PENDING`
+
+## Canonical device / verifier invariant
+
+`data/task-registry-global-invariants.json` applies. KV/SKAP Vault is the sole user-verification authority. Eligible StegOS devices are interchangeable execution/transport nodes. Physical-device identity, device attestation, connector inventory, and a named iPhone are prohibited as verification or completion gates.
+
+Historical current-iPhone observations below are provenance only. They may identify source/runtime defects observed on one execution surface, but they do not constrain this Goal to that physical device.
 
 ## Reuse
 
@@ -26,11 +32,11 @@ Selected reusable components remain `RTC-MANIFEST-001`, `RTC-GOVERNED-PROCESSING
 ## Validated source milestones
 
 - `.github` PR #1837 merged as `792d9b9a609320e6e6e5b6f78bb29b5389d3ec46` after organization-control, deterministic-suite, and heartbeat-worker validation succeeded.
-- The first exact reachability defect was then identified outside the reusable task itself: `StegVerse-Labs/StegVerse-Healer:data/reusable_task_schedule.json` had no row for `RT-STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001`, so the existing neutral scheduler/standing resident carrier had no schedule input that could invoke `scripts/trigger_reusable_task.py` for this goal.
+- The first exact reachability defect was then identified outside the reusable task itself: `StegVerse-Labs/StegVerse-Healer:data/reusable_task_schedule.json` had no row for `RT-STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001`.
 - `StegVerse-Labs/StegVerse-Healer#85` repaired that missing carrier binding and merged as `7ced5154d6d5244e419e1f4c19fb48c4a53c440a` after Test Readiness run `34891751182` succeeded at exact head `827963c02d634aeeae81f9493acf7d58ba6162ac`.
 - The repair reuses the existing neutral scheduler and resident carrier. It creates no second scheduler, runtime plane, WorkerCoordinator, credential path, InTr authority, Remote Desktop prerequisite, or second user-operated device.
 
-The Healer merge is source/configuration reachability evidence only. It does not prove the resident carrier has executed the new schedule row.
+The Healer merge is source/configuration reachability evidence only. It does not prove resident execution.
 
 ## Authentic AI proposal preserved
 
@@ -52,33 +58,23 @@ authority_effect: NONE_PROPOSAL_ONLY
 
 This proves proposal production/preservation only. `AUTHENTIC_AI_ORIGINATED_PROPOSAL_OBSERVED` remains unsatisfied until an admitted runtime consumes the exact proposal through the governed path.
 
-## Authentic same-device current-iPhone observation — 2026-09-14
+## Historical same-device observation — 2026-09-14
 
-The established current iPhone executed the published TASK-2026-0011 same-device path after the Healer carrier source repair. The observed Site UI was:
+One eligible iPhone execution surface previously crossed the same-device KV projection admission boundary and returned `FAIL_CLOSED / Load failed`. Site PRs #1335 and #1336 added diagnostics and terminalized the predecessor KV recovery claim. This evidence remains valid historical provenance and may guide diagnosis, but `CURRENT_IPHONE_TESTFLIGHT_BOOTSTRAP_LOAD_STAGE_IDENTIFIED` is not a Goal-level device gate.
 
-```text
-State: FAIL_CLOSED
-Save Projection JSON: available
-output: Load failed
-```
-
-The Site entrypoint exposes `Save Projection JSON` only after `StegVerseKVTestFlightProjectionExport.materialize()` returns a projection context. The canonical Site handoff records that this projection is purpose-bound to `CURRENT_IPHONE_TESTFLIGHT_SIGNING`, has `entry_state=ADMITTED`, and browser capability state `OBSERVED_COMPATIBLE`. Therefore the prior same-device KV projection admission boundary was authentically crossed for this execution. This does not establish TestFlight processing, installation, the admitted ephemeral StegOS runtime proof predicates below, or goal completion.
-
-The exact bootstrap stage was not identifiable from Safari's generic `Load failed` string. Site PR #1335 therefore added stage-bound fail-closed diagnostics to the existing bootstrap and materializers without changing frozen IPA/WASM bytes or authority. The predecessor KV write-once recovery claim was first terminalized through Site PR #1336. Site PR #1335 then passed exact-head validation at `7f2faae3c3f9277f7d159e2f5fe99258c3529d58` and merged as `1bbe02df02477966f339829bbb9cc4381e5494aa`.
-
-Current narrow first unresolved predicate for the established same-device execution:
+## Current first unresolved predicate
 
 ```text
-CURRENT_IPHONE_TESTFLIGHT_BOOTSTRAP_LOAD_STAGE_IDENTIFIED
+AUTHENTIC_ADMITTED_STEGOS_RUNTIME_CONSUMES_AI_PREEXECUTION_TASK
 ```
 
-At the global runtime-owner level, `TESTFLIGHT_CURRENT_IPHONE_RUNTIME_OBSERVED` remains unresolved because no TestFlight processing/install/resident-runtime completion evidence has been observed.
+The selected substrate remains `ADMITTED-EPHEMERAL-STEGOS-NODE`. The first reachable eligible StegOS surface in canonical substrate order may satisfy the runtime gate after exact KV/SKAP continuity where applicable, WorkerCoordinator claim/fence, and Interlock/InTr admission are bound.
 
 ## Required next evidence
 
-After the merged stage-bound diagnostic is publicly served, execute the same TASK-2026-0011 path once on the established current iPhone while preserving Safari/KV/IndexedDB/node continuity. Retain the exact stage-qualified success or fail-closed result. If that result identifies a machine-fixable owner, repair it in place and continue automatically.
+Use the existing neutral scheduler / Healer carrier path to materialize or reach an eligible admitted StegOS runtime without pinning to a named handset. Preserve the exact success or fail-closed evidence from that governed execution.
 
-Only after the current-device bootstrap path reaches the already-declared runtime transition may this goal promote:
+Only authentic runtime evidence may promote:
 
 1. `EPHEMERAL_STEGOS_NODE_MATERIALIZED_AND_VERIFIED`;
 2. exact WorkerCoordinator claim/fence evidence;
@@ -91,6 +87,10 @@ Only after the current-device bootstrap path reaches the already-declared runtim
 9. exact execution and target-state receipts; and
 10. Master Records custody/reconstruction.
 
-No StegOS runtime-proof predicate is promoted from Site source/CI/merge evidence. GitHub/CI/source state must not substitute for authentic runtime evidence.
+No StegOS runtime-proof predicate is promoted from Site/GitHub source, CI, merge, connector inventory, or physical-device identity.
 
-README disposition for `StegVerse-Labs/.github`: `NO_README_CHANGE_REQUIRED`; repository-wide authority semantics remain unchanged.
+README disposition for `StegVerse-Labs/.github`: root README reviewed; its registry-wide verifier/device model already matches this correction, so no additional README change is required.
+
+## Manual work
+
+None.
