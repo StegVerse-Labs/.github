@@ -201,6 +201,49 @@ Bounded owner remains the already-existing `SHWP-HEALER-SOVEREIGN-SCHEDULER-001`
 
 The absence of an externally connected remote-control device is not the blocker classification and does not imply a second user-operated device requirement.
 
+## Fresh carrier observation — 2026-09-14 15:47 CDT
+
+The canonical evaluator registry, Healer scheduler registry, Healer executable handoff, and the connected remote execution surface were re-read in this session.
+
+Freshly observed state:
+
+```text
+SHWP-EVALUATOR-INTR-READ-RUNTIME-001 = HANDOFF_READY
+EVALUATOR claim_id = null
+EVALUATOR worker status = AVAILABLE
+SHWP-HEALER-SOVEREIGN-SCHEDULER-001 = HANDOFF_READY
+HEALER claim_id = null
+HEALER heartbeat_timing = null
+HEALER last_seen_at = null
+HEALER worker status = AVAILABLE
+connected remote execution devices = 0
+fresh resident targeted-dispatch receipt = NOT OBSERVED
+fresh Healer request-consumption receipt = NOT OBSERVED
+fresh live Healer scheduler receipt = NOT OBSERVED
+fresh evaluator READ_REVIEW round trip = NOT OBSERVED
+```
+
+No repository receipt directory or CI artifact is promoted into sovereign runtime proof. The remote connector reporting zero connected devices is still only an execution/observation-surface limitation; it does not authorize a second user-operated machine and does not change the canonical owner chain.
+
+The bounded next solution path remains:
+
+```text
+existing resident runtime becomes observable through an authorized execution surface
+-> existing Healer standing request receives targeted resident dispatch
+-> WorkerCoordinator performs fresh claim/fence
+-> authentic Healer scheduler cycle emits its normal live scheduler/request-consumption receipts
+-> existing evaluator standing request proceeds
+-> fresh evaluator WorkerCoordinator claim/fence
+-> one bounded event-triggered READ_REVIEW invocation
+-> exact request/manifest binding
+-> ingress RECEIVED
+-> egress FORWARDED
+-> exact prior_receipt_hash lineage
+-> retained EVALUATOR_INTR_READ_ROUND_TRIP_OBSERVED bundle
+```
+
+Do not create a second scheduler, runtime plane, evaluator owner, credential authority, or GitHub-hosted execution substitute.
+
 ## README disposition
 
 Root `README.md` was reviewed for this repair. It already documents the organization-owned Universal InTr ingress as event-triggered and describes event materialization through the shared profile. No repository-wide semantic rewrite is required; this repair removes the contradictory evaluator-specific persistent-receiver lifecycle so the task conforms to those existing README semantics.
