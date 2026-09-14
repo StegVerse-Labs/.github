@@ -23,6 +23,12 @@ try:
 except ModuleNotFoundError:
     import materialize_gadi_retained_node_discovery as retained_projector
 
+# Backward-compatible read-only alias for the historical current-iPhone wrapper.
+# The canonical projector now accepts SOURCE_SCHEMAS, but this observer's retained
+# legacy tests and callers still name SOURCE_SCHEMA. The alias grants no authority.
+if not hasattr(retained_projector, "SOURCE_SCHEMA"):
+    retained_projector.SOURCE_SCHEMA = retained_projector.LEGACY_SOURCE_SCHEMA
+
 TASK_ID = "GADI-RESIDENT-EXECUTION-001"
 PARENT_TASK_ID = "GADI-001"
 FETCH_SCHEMA = "stegos.stegbrowser.current-iphone-rendezvous-observation-fetch/v1"
