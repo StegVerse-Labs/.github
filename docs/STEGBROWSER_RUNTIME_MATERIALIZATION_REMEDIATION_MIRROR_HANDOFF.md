@@ -9,89 +9,81 @@ Updated: 2026-09-14
 - Shared runtime-evidence owner: `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001`
 - Issue: `StegVerse-Labs/.github#1866`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / HEALER RETAINED PACKET SOURCE REPAIR MERGED / HEALER CARRIER OUTPUT NOT ACCESSIBLE AFTER HEALER83`
+- Status: `ACTIVE / CHECKED_OUT / RESIDENT CARRIER OUTPUT POINTER RUNTIME-BOUND BUT NOT GITHUB-VISIBLE`
 - External/second user-operated device required: `false`
 
 ## Current truth
 
-The source-side repairs are merged and validated, but source repair does not prove runtime execution.
+The source-side packet/retention repairs remain merged and validated, but source state does not prove runtime execution.
 
 - `StegVerse-Healer#81` added the task-bound non-authorizing `resident_custody_root_observation` packet surface.
-- `StegVerse-Healer#82` repaired the resident-root bootstrap circularity by allowing the existing canonical resident-root path to be used as a non-authorizing materialization target only when existing `RT-SOVEREIGN-SOURCE-REFRESH-001` is enabled, then re-running root discovery after delegation.
-- `.github#1870` reconciled that Healer #82 source repair into this lane.
-- `StegVerse-Healer#83` repaired the post-#82 retention gap: the existing carrier retains `resident_custody_root_observation` to `receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json` under the observed resident runtime root, or under the existing non-authorizing materialization target when source refresh is enabled and no valid root is yet observed.
-- `.github#1878` reconciled Healer #83 into this lane.
-- `.github#1879` bound `RETAINED_ROOT_OBSERVATION_PACKET_MISSING_AFTER_HEALER83` without claiming runtime completion.
-- `StegVerse-Healer#84` was evaluated and closed unmerged as `HEALER84_CONFLICTING_DUPLICATE_RETENTION_PATH_NOT_MERGED`; it proposed a divergent `receipts/healer/resident-custody-root-observation.latest.json` path while current `main` already contains the canonical Healer #83 retention path.
+- `StegVerse-Healer#82` repaired resident-root bootstrap circularity through the existing local source-refresh path.
+- `StegVerse-Healer#83` retained the canonical packet at `receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json` under the observed resident root or existing materialization target.
+- `.github#1879` bound the missing retained-packet observation state.
+- `.github#1884` merged as `301147aed13c9bd3fe637225db91f9ca2c378864` after exact-head validation, binding `HEALER_CARRIER_OUTPUT_NOT_ACCESSIBLE_AFTER_HEALER83` without a new code path.
 
-Prompt 8/9 inspection did not identify a remaining source-side defect in the existing Healer schedule or neutral reusable-task configuration. The existing Healer schedule includes `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` and `RT-SOVEREIGN-SOURCE-REFRESH-001` enabled hourly, and the Healer scheduler contract records hosted production dispatch as `NONE` with the production carrier as the single StegVerse resident heartbeat. The first exact remaining defect is therefore that no authentic post-Healer#83 resident carrier output is accessible for observation at the canonical retained packet path.
-
-## Current classification — 2026-09-14
+Prompt 11 traced the existing authorized access chain. `scripts/consume_healer_sovereign_scheduler_request.py` persists the resident Healer carrier consumption receipt at:
 
 ```text
-HEALER_RETAINED_RESIDENT_ROOT_OBSERVATION_PACKET_SOURCE_REPAIR_MERGED
-RETAINED_ROOT_OBSERVATION_PACKET_MISSING_AFTER_HEALER83
+receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json
+```
+
+That receipt embeds `execution_result` from the existing Healer scheduler invocation. The scheduler result already contains `resident_custody_root_observation_retention`, including the canonical retained packet path, packet SHA-256, retained root, retained-root source, and packet state. Therefore the retained packet pointer is not missing from source and does not require a second export mechanism.
+
+The first exact remaining defect is:
+
+```text
+RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND
+```
+
+This is a runtime-observation boundary, not a new source-side repair requirement. No current authentic resident copy of the Healer carrier consumption receipt or its embedded packet pointer is visible through GitHub/source/CI evidence. GitHub/source/CI remains non-authoritative for resident execution.
+
+## Existing authorized output access path
+
+```text
+<resident-root>/receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json
+  -> execution_result
+  -> resident_custody_root_observation_retention
+  -> packet_ref / packet_relative_path / packet_sha256 / retained_under_root / retained_under_root_source / packet_state
+```
+
+Canonical retained packet:
+
+```text
+<resident-root>/receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json
+```
+
+## Current classification
+
+```text
 HEALER_CARRIER_OUTPUT_NOT_ACCESSIBLE_AFTER_HEALER83
+RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND
 POST_REPAIR_HEALER_CARRIER_PACKET_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001 = false
-```
-
-Supporting classification packet:
-
-```text
-data/runtime-materialization-remediation/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.post-repair-packet-classification.json
-```
-
-## First unresolved predicate
-
-```text
-POST_REPAIR_HEALER_CARRIER_PACKET_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001
-```
-
-## Expected retained packet path
-
-```text
-receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json
+RESIDENT_CUSTODY_ROOT_AUTHENTICALLY_OBSERVED_FOR_STEGBROWSER = false
 ```
 
 ## Exact next required observation
 
-Observe the next authentic existing Healer resident scheduler carrier output after `StegVerse-Healer#83` merge `898d8362192419a0811d45651ea6085112015e10` and bind the retained packet state from resident runtime or materialization-target state, not from source, CI, workflow artifacts, issue comments, or a synthetic checkout.
+Observe the authentic resident copy of `receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json` through the already-authorized resident evidence surface. From its embedded `execution_result.resident_custody_root_observation_retention`, bind the exact packet path/hash/root/root-source/state.
 
-If the retained packet state is `RESIDENT_CUSTODY_ROOT_OBSERVED`, bind:
+If and only if the embedded packet state proves `RESIDENT_CUSTODY_ROOT_OBSERVED` for exactly one authentic resident root, run/read `scripts/check_stegbrowser_runtime_consumption_receipts.py --runtime-root <authentic-root>` only as a non-authorizing classifier.
 
-- exact resident root identity/path;
-- `resident_runtime_root_source`;
-- matched resident marker paths;
-- retained Healer carrier packet path/hash;
-- evidence that the path is authentic resident/materialization-target state rather than a repository checkout.
-
-Then run/read the existing non-authorizing classifier against that exact root only and check:
-
-```text
-<resident-root>/receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json
-<resident-root>/receipts/sovereign-host/stegbrowser-runtime-consumption-evidence-custody.latest.json
-<resident-root>/receipts/sovereign-host/stegbrowser-tvc-source-promotion-request-consumption.latest.json
-<resident-root>/var/lib/stegverse/skap/browser-recipient/apple/receipts/runtime-observation-latest.json
-/var/lib/stegverse/skap/browser-recipient/apple/receipts/runtime-observation-latest.json
-```
-
-If no accessible authentic carrier output is available, keep this same owner and bind `HEALER_CARRIER_OUTPUT_NOT_ACCESSIBLE_AFTER_HEALER83`. Do not create another runtime-materialization owner.
+Do not substitute source code, CI success, workflow artifacts, repository files, or issue comments for resident-state evidence.
 
 ## Authority invariants
 
 - Task Registry: coordination only.
 - Healer carrier / neutral reusable scheduler: scheduling and invocation transport only.
-- `RT-SOVEREIGN-SOURCE-REFRESH-001`: already-local static source materialization only.
 - WorkerCoordinator: claim/fence authority.
 - Interlock/InTr: governed transition authority.
 - TV/TVC: credential/provider authority.
 - Master Records: observed-reality/reconstruction authority.
 - GitHub/CI: source validation/evidence transport only; runtime authority `NONE`.
-- No second scheduler, dispatcher, credential path, GitHub authority path, runtime plane, MIR-specific transport, provider authority, WorkerCoordinator bypass, or second user-operated device is authorized.
+- No second scheduler, dispatcher, credential path, GitHub runtime authority path, runtime plane, MIR-specific transport, provider authority, WorkerCoordinator bypass, or second user-operated device is authorized.
 
 ## Current state
 
-`ACTIVE / CHECKED_OUT / HEALER_ROOT_BOOTSTRAP_CIRCULARITY_SOURCE_REPAIR_MERGED / HEALER_RETAINED_PACKET_SOURCE_REPAIR_MERGED / RETAINED_ROOT_OBSERVATION_PACKET_MISSING_AFTER_HEALER83 / HEALER_CARRIER_OUTPUT_NOT_ACCESSIBLE_AFTER_HEALER83 / RESIDENT_ROOT_NOT_AUTHENTICALLY_OBSERVED / RECEIPT_REACHABILITY_NOT_CLASSIFIED / RUNTIME_CONSUMPTION_NOT_CLAIMED / NO_SECOND_USER_OPERATED_DEVICE`
+`ACTIVE / CHECKED_OUT / RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND / RESIDENT_ROOT_NOT_AUTHENTICALLY_OBSERVED / RECEIPT_REACHABILITY_NOT_CLASSIFIED / RUNTIME_CONSUMPTION_NOT_CLAIMED / NO_SECOND_USER_OPERATED_DEVICE`
 
 ## Manual work
 
