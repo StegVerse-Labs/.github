@@ -5,90 +5,84 @@ Updated: 2026-09-14
 ## Task pointer
 
 - Goal Task ID: `STEG-BROWSER-RUNTIME-CONSUMPTION-001`
-- Parent Goal Task ID: `STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001`
-- COSV vector: `40000100100000`
+- Parent: `STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001`
+- COSV: `40000100100000`
 - Canonical task record: `data/canonical-task-records/STEG-BROWSER-RUNTIME-CONSUMPTION-001.json`
-- Canonical registry identity source: `data/canonical-task-registry.json`
+- Status: `ACTIVE / CHECKED_OUT`
+- Selected substrate: `ADMITTED-EPHEMERAL-STEGOS-NODE`
+- External/second user-operated device required: `false`
 
-## Canonical state
-
-`ACTIVE / CHECKED_OUT`.
-
-Selected execution substrate is `ADMITTED-EPHEMERAL-STEGOS-NODE`. `REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT` remains `NOT_APPLICABLE`; no external device and no second user-operated device are prerequisites. StegOS nodes are interchangeable execution/transport surfaces only; KV/SKAP Vault remains user-verification/custody authority.
-
-Task Registry check-in `CONTINUE` is already observed and regression-protected. It is coordination evidence only.
-
-## Existing runtime chain to reuse
+## Canonical continuation
 
 ```text
 Task Registry CONTINUE
--> reusable trigger RT-STEGBROWSER-RUNTIME-CONSUMPTION-001
+-> RT-STEGBROWSER-RUNTIME-CONSUMPTION-001
 -> existing SovereignLocalEventRuntimeAdapter
--> admitted EVENT_EPHEMERAL StegOS carrier/worker materialization
--> existing Canonical Work resident consumer
--> Interlock/InTr ingress/admission
+-> existing sovereign EVENT_EPHEMERAL carrier/worker runtime
+-> runtime-local PROPOSED Canonical Work ingress projection
+-> existing Interlock/InTr Canonical Work admission
+-> authentic successor resident consumption
 -> WorkerCoordinator claim/fence
--> authentic Canonical Work resident consumption
 -> exact stegbrowser_tvc_source_promotion consumption
 -> pinned TVC aef6b6f5dc99d2a531718ca475d20858ae8e68a6 materialization/restart
 -> immutable observer 4c78f8653b8a5899350479d57c58e936b50e023a
--> simultaneous 127.0.0.1:8765 and 127.0.0.1:8775 observation
+-> simultaneous 127.0.0.1:8765 + 127.0.0.1:8775
 -> OWNER_INGRESS_READY_OBSERVED
 -> Master Records custody/reconstruction
 ```
 
-No second runtime plane, scheduler, WorkerCoordinator, credential path, device identity, or provider authority may be introduced.
+No second scheduler, WorkerCoordinator, runtime plane, credential path, device identity, or provider authority may be introduced.
 
-## Reusable ephemeral runner binding merged
+## Reusable runner binding
 
-`.github` PR `#1831` merged as `6f1b08ee786c8f72395cfa5d393397bcdb7404c5` after exact head `d806711eadba0325fbf300b89b6fc8e216b8d566` passed:
-
-```text
-Validate organization control plane: 34862161235 SUCCESS
-Deterministic Repository Suite: 34862161192 SUCCESS
-Heartbeat Worker Project: 34862161135 SUCCESS
-```
-
-The merge adds:
+`.github#1831` merged as `6f1b08ee786c8f72395cfa5d393397bcdb7404c5`. Exact head `d806711eadba0325fbf300b89b6fc8e216b8d566` passed:
 
 ```text
-source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json
-scripts/run_stegbrowser_runtime_consumption_reusable.py
-tests/test_stegbrowser_runtime_consumption_reusable_binding.py
+Organization Control 34862161235 SUCCESS
+Deterministic Repository Suite 34862161192 SUCCESS
+Heartbeat Worker Project 34862161135 SUCCESS
 ```
 
-and binds the existing resident request to that reusable identity without changing its `CANONICAL_WORK_EVENT_BOOTSTRAP` semantics.
+It added `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001`, `scripts/run_stegbrowser_runtime_consumption_reusable.py`, and regression coverage while preserving GitHub runtime authority `NONE`.
 
-The runner reuses `SovereignLocalEventRuntimeAdapter`, requires `ADMITTED-EPHEMERAL-STEGOS-NODE`, materializes the existing sovereign carrier/worker runtime, invokes the existing `consume-canonical-work-coordination-bootstrap.py`, and fails closed unless authentic successor consumption/TVC/observer receipts are present. Standard reusable-task completion output is emitted only when the full declared runtime evidence chain is observed.
+## Pre-ingress state defect repaired
 
-This closes the prior source-level executable-runner binding gap. It does **not** itself prove runtime execution.
+Authentic execution review exposed a source/runtime state mismatch: the canonical Goal is intentionally `ACTIVE / CHECKED_OUT`, while `scripts/run_canonical_work_event_bootstrap.py` correctly requires a `PROPOSED` runtime task before Interlock/InTr can emit `INGRESS_ADMITTED`. Passing the canonical `ACTIVE` projection directly into the bootstrap would therefore fail closed before ingress.
 
-## Existing source continuity
+`.github#1834` repaired that mismatch and merged as `5ca9abf473ac1cfeb07efa23f397321cad07b3e5`. Exact head `876591baeb70b3bc6f74c474c5cfa4b0ab404c42` passed:
 
-Prior merged source remains applicable:
+```text
+Organization Control 34866038662 SUCCESS
+Deterministic Repository Suite 34866038562 SUCCESS
+Heartbeat Worker Project 34866038452 SUCCESS
+```
 
-- `.github#1763`: successor resident-ingress pointer and Canonical Work request path.
+The runner now preserves canonical source state as `ACTIVE / CHECKED_OUT`, stages only a runtime-local `PROPOSED` projection, verifies the source was not mutated and no claim/fence was minted, then invokes the existing Canonical Work consumer. It additionally refuses later completion unless the authentic successor consumption receipt and Canonical Work bootstrap receipt prove the exact task and `INGRESS_CONSUMPTION_AND_PROJECTION_OBSERVED` state.
+
+This is a machine-actionable source repair only. CI/merge do not establish runtime execution.
+
+## Prior applicable source continuity
+
+- `.github#1763`: successor resident-ingress request/consumer path.
 - `.github#1781`: exact Task Registry `CONTINUE` preflight.
 - `.github#1789`: WorkerCoordinator self-heal source-root continuity.
-- `.github#1817`: canonical substrate review-order and modified-record validation repair.
-- `StegOS#380`: current-iPhone processing-observer source continuity.
-- `Site#1305`: same-device root Universal InTr/CanonicalWork ingress capability.
+- `.github#1817`: substrate-order/modified-record validation repair.
+- `StegOS#380`: current-iPhone processing-observer source.
+- `Site#1305`: same-device root Universal InTr / `CanonicalWork:Ingress` capability.
 
-None of these source/CI merges substitute for authentic runtime receipts.
-
-## First unresolved runtime predicate
+## First unresolved authentic predicate
 
 `CANONICAL_WORK_RESIDENT_CONSUMPTION_OBSERVED`
 
-Required authentic successor receipt:
+Required receipt:
 
 ```text
 receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json
 ```
 
-The reusable binding now provides a machine-executable path to attempt this predicate on the selected ephemeral StegOS substrate. Until that runner is actually invoked on an eligible sovereign runtime and the receipt is observed, the Goal remains active.
+No source, CI, merge, heartbeat, Task Registry projection, or connector-discovery result may substitute for this receipt.
 
-## Required runtime evidence
+## Required later runtime evidence
 
 ```text
 receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json
@@ -101,40 +95,32 @@ receipts/sovereign-host/resident-request-dispatch.latest.json
 /var/lib/stegverse/skap/browser-recipient/apple/receipts/runtime-observation-latest.json
 ```
 
-Historical parent receipts are provenance only and cannot satisfy this successor.
+Historical parent receipts remain provenance only.
 
 ## Authority invariants
 
 - Task Registry: coordination only.
 - WorkerCoordinator: claim/fence authority.
-- Interlock/InTr: governed admission/state-transition authority.
+- Interlock/InTr: governed transition authority.
 - TV/TVC: credential/provider authority.
-- KV/SKAP Vault: user-verification/custody authority where applicable.
-- Master Records: observed-reality/provenance authority.
-- HeartBeat: timing/freshness/observability only.
-- GitHub/source/CI: runtime authority `NONE`.
-
-The reusable automation contract remains `TRIGGER_ONCE_ADVANCE_UNTIL_COMPLETION_OR_REAL_BOUNDARY`; manual coordination between machine-admissible internal steps is not required.
+- KV/SKAP Vault: user-verification/custody authority.
+- Master Records: observed-reality/reconstruction authority.
+- HeartBeat: observability/timing/freshness only.
+- GitHub/CI: validation/evidence transport only; runtime authority `NONE`.
+- StegOS nodes/devices: interchangeable execution/transport surfaces; no second user-operated device prerequisite.
 
 ## Completion predicate
 
-Complete only when authentic evidence establishes all of:
-
-1. Task Registry `CONTINUE` — observed;
-2. Canonical Work resident consumption;
-3. current WorkerCoordinator claim/fence;
-4. Interlock/InTr admission;
-5. current-dispatch-bound `stegbrowser_tvc_source_promotion` successful consumption;
-6. pinned TVC source materialized and the same primary runtime restarted;
-7. immutable observer executed;
-8. simultaneous TVC 8765 and SKAP 8775 observation for the same runtime/recipient binding;
-9. `OWNER_INGRESS_READY_OBSERVED` retained;
-10. no parallel scheduler/dispatcher/credential path or second user-operated device.
+Complete only when authentic evidence establishes: successor Canonical Work consumption; current WorkerCoordinator claim/fence; InTr admission; current-dispatch-bound TVC source promotion; pinned TVC materialization/restart; immutable observer execution; simultaneous TVC 8765 + SKAP 8775; `OWNER_INGRESS_READY_OBSERVED`; and no parallel scheduler/dispatcher/credential/device path.
 
 ## Current state
 
-`ACTIVE / CHECKED_OUT / TASK_REGISTRY_CHECKIN_CONTINUE_OBSERVED / EPHEMERAL_STEGOS_SELECTED / REUSABLE_EPHEMERAL_RUNNER_BINDING_MERGED / CANONICAL_WORK_RESIDENT_CONSUMPTION_NOT_OBSERVED / WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED / INTR_ADMISSION_NOT_OBSERVED / TVC_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / TVC_PRIMARY_RUNTIME_RESTART_NOT_OBSERVED / IMMUTABLE_OBSERVER_EXECUTION_NOT_OBSERVED / OWNER_INGRESS_READY_NOT_OBSERVED / REMOTE_DEVICE_NOT_REQUIRED / NO_CONNECTED_DEVICE_PREREQUISITE / NO_SECOND_USER_OPERATED_DEVICE`
+`ACTIVE / CHECKED_OUT / TASK_REGISTRY_CHECKIN_CONTINUE_OBSERVED / EPHEMERAL_STEGOS_SELECTED / REUSABLE_EPHEMERAL_RUNNER_BINDING_MERGED / RUNTIME_LOCAL_PREINGRESS_PROJECTION_REPAIR_MERGED / CANONICAL_WORK_RESIDENT_CONSUMPTION_NOT_OBSERVED / WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED / INTR_ADMISSION_NOT_OBSERVED / TVC_SOURCE_PROMOTION_CONSUMPTION_NOT_OBSERVED / TVC_PRIMARY_RUNTIME_RESTART_NOT_OBSERVED / IMMUTABLE_OBSERVER_EXECUTION_NOT_OBSERVED / OWNER_INGRESS_READY_NOT_OBSERVED / REMOTE_DEVICE_NOT_REQUIRED / NO_CONNECTED_DEVICE_PREREQUISITE / NO_SECOND_USER_OPERATED_DEVICE`
+
+## Current execution boundary
+
+The merged reusable runner is now source-runnable on an eligible sovereign execution surface. This chat session currently exposes no authenticated sovereign process-execution target through its command connector. That is a session-access boundary only; it is **not** a StegVerse device requirement, runtime-completion predicate, or request for another device.
 
 ## Manual work
 
-None for source/runtime binding. The next required action is machine execution of the merged reusable runner on an eligible sovereign resident execution surface; absence of a Remote Desktop connection is not itself a Goal blocker.
+None.
