@@ -1,6 +1,6 @@
 # KV AI Memory Resident Execution Mirror Handoff
 
-Status: ACTIVE / REAL-PERSONAL-KV-AUTO-STAGING-VALIDATED / EVENT-TRIGGERED-SHARED-INTR-BOOTSTRAP-VALIDATED / RESIDENT-PROVIDERREQUEST-BINDING-VALIDATED / LIVE-INTR-PROOF-OPEN  
+Status: ACTIVE / REAL-PERSONAL-KV-AUTO-STAGING-VALIDATED / EVENT-TRIGGERED-SHARED-INTR-BOOTSTRAP-VALIDATED / RESIDENT-PROVIDERREQUEST-BINDING-VALIDATED / GENERIC-SELECTOR-STAGING-BRIDGE-VALIDATED / LIVE-INTR-PROOF-OPEN  
 Goal Task ID: `SV-KV-AI-PERSISTENCE-001`  
 COSV task.v1: `20111110110000`  
 Repository: `StegVerse-Labs/.github`  
@@ -26,7 +26,7 @@ custody/reconstruction: Master Records
 heartbeat: carrier/reference/observation only
 ```
 
-Repository state, source preparation, CI, fixtures, route installation, source carriage, event-bootstrap source, or targeted-dispatch registration never substitute for an authentic InTr receipt, WorkerCoordinator claim/fence, provider operation, model response, or KV write receipt.
+Repository state, source preparation, CI, fixtures, route installation, source carriage, event-bootstrap source, targeted-dispatch registration, or generic-selector staging repair never substitute for an authentic InTr receipt, WorkerCoordinator claim/fence, provider operation, model response, or KV write receipt.
 
 ## Resident runtime-surface invariant
 
@@ -60,7 +60,7 @@ Private packet, prompt, and provider-request bytes remain outside GitHub.
 
 ## Autonomous real Personal-KV staging
 
-When the fenced packet/provider input are absent, the resident-native event bootstrap now attempts to resolve a real user-custodied Personal-KV root through the existing secret-free `materialize_personal_kv_provider_root.py` contract. It never invents a KV root, provider/model setting, prompt, or memory entry.
+When fenced packet/provider input are absent, the resident-native event bootstrap attempts to resolve a real user-custodied Personal-KV root through the existing secret-free `materialize_personal_kv_provider_root.py` contract. It never invents a KV root, provider/model setting, prompt, or memory entry.
 
 Default user-custodied input contract:
 
@@ -71,7 +71,7 @@ Default user-custodied input contract:
   provider-request-input.json
 ```
 
-Explicit local path overrides may be supplied by the existing non-secret environment bindings. If the real Personal-KV root is unavailable, the result is `PERSONAL_KV_ROOT_NOT_READY`. If the root exists but one or more required files are absent, the result is `PERSONAL_KV_AI_MEMORY_INPUTS_NOT_FOUND`. Neither state starts the InTr listener or claims runtime execution.
+Explicit local path overrides may be supplied by the existing non-secret environment bindings. If the real Personal-KV root is unavailable, the result is `PERSONAL_KV_ROOT_NOT_READY`. If the root exists but one or more required files are absent, the result is `PERSONAL_KV_AI_MEMORY_INPUTS_NOT_FOUND`. Neither state starts the InTr listener, claims runtime execution, or exports private content to GitHub.
 
 If all three files exist, the bootstrap invokes the already-validated CVK `stage_kv_ai_memory_resident_inputs.py` subprocess. That stager performs deterministic context selection, rejects secret/cross-authority inputs, writes only the fenced `context-packet.json` and `provider-request-input.json`, and never fabricates `memory-packet-admission.json`.
 
@@ -87,9 +87,32 @@ real Personal-KV root
 -> admission still absent
 ```
 
-## Source carriage
+## Source carriage and selector reconciliation
 
 The generic resident dispatcher registers selector `kv_ai_memory`. The resident runtime materializer and local WorkerCoordinator source refresher carry the task-specific consumer/preparer/submitter scripts. The resident-native event bootstrap lives under `workers/`, which both canonical resident carriage mechanisms copy wholesale.
+
+Repair committed on 2026-09-14:
+
+```text
+4ceed643ed1ed6939b10ae54152aa82dc0716955
+  scripts/consume_kv_ai_memory_resident_request.py
+  - adds attempt_personal_kv_private_staging()
+  - preserves non-secret KV root/source/input override bindings
+  - attempts real Personal-KV staging before admission only when packet/provider inputs are absent
+  - still does not read private packet bytes in the consumer
+  - still does not mint admission, claim/fence, provider, writeback, credential, or activation authority
+
+24d9b30cef273c6cd62a3974c8aaa34a59d50c1a
+  tests/test_kv_ai_memory_resident_source_carriage.py
+  - covers the generic selector staging bridge and non-secret KV bindings
+
+86cc4de0eec6d0bca2b61f799e2015222bd949c0
+  tests/test_kv_ai_memory_resident_binding.py
+  - aligns the wait-state regression with the autonomous staging resolver
+  - confirms WorkerCoordinator execution is still not attempted before required inputs exist
+```
+
+This reconciles the generic `kv_ai_memory` selector with the autonomous Personal-KV event-bootstrap path while preserving the preferred direct command.
 
 ## Event-triggered shared Universal InTr bootstrap
 
@@ -117,6 +140,15 @@ Preferred command:
 python scripts/run_kv_ai_memory_intr_event_bootstrap.py \
   --source-root <canonical-local-source-root> \
   --runtime-root <resident-runtime-root>
+```
+
+Selector path after the 2026-09-14 repair:
+
+```text
+python scripts/refresh_and_dispatch_resident_requests.py \
+  --source-root <canonical-local-source-root> \
+  --runtime-root <resident-runtime-root> \
+  --only-consumer kv_ai_memory
 ```
 
 ## Packet admission contract
@@ -149,22 +181,21 @@ Relevant successful runs include:
 - `34813405596` — portable targeted dispatch and endpoint carriage;
 - `34813739207`, `34813923637` — event-triggered resident-native bootstrap;
 - `34850830888` — autonomous real-Personal-KV staging tests and compilation after resolver-order repair;
-- `34851115037` — canonical Task Registry/executable-handoff reconciliation at exact head, SUCCESS.
+- `34851115037` — canonical Task Registry/executable-handoff reconciliation at exact head;
+- `34852946218` — generic selector staging bridge repair validation, SUCCESS.
 
 Hosted validation proves source behavior only.
 
 ## Current runtime observation — 2026-09-14
 
-An execution attempt from the current chat could not observe or mutate the resident-local fenced filesystem, so no authentic bootstrap invocation is claimed from that surface. This is **not** a device requirement, manual prerequisite, or Task Registry blocker; it is simply an unavailable runtime observation channel for this chat execution.
-
-Canonical repository evidence was then checked directly:
+Canonical repository evidence was checked directly in the prior handoff iteration:
 
 ```text
 receipts/sovereign-network/kv-ai-memory-intr.latest.json: NOT PRESENT
 receipts/sovereign-host/kv-ai-memory-resident-request-consumption.latest.json: NOT PRESENT
 ```
 
-Therefore the authentic outcome for this iteration is:
+Therefore the authentic runtime outcome remains:
 
 ```text
 real staged Personal-KV packet/input: NOT OBSERVED
@@ -181,7 +212,7 @@ No synthetic receipt was created and no hosted source run was promoted to runtim
 ```text
 real Personal-KV root + real _System/AI/Memory/Inputs files
 -> autonomous fenced staging
--> resident-native one-event shared InTr bootstrap
+-> resident-native one-event shared InTr bootstrap OR repaired generic kv_ai_memory selector
 -> authentic exact-packet ALLOW
 -> memory-packet-admission.json
 -> fresh WorkerCoordinator claim/fence
@@ -196,6 +227,7 @@ autonomous real Personal-KV private staging source: VALIDATED
 resident-native shared InTr bootstrap source: VALIDATED
 resident WorkerCoordinator binding: VALIDATED
 LLM ProviderRequest bridge/materializer: VALIDATED
+generic kv_ai_memory selector to Personal-KV staging bridge: VALIDATED
 device discovery/presence/RDC gate: PROHIBITED
 real private resident packet/input state: NOT OBSERVED
 live shared-listener packet ALLOW: NOT OBSERVED
