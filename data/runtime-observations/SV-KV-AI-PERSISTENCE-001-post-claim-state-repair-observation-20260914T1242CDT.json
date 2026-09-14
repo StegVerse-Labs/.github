@@ -1,0 +1,72 @@
+{
+  "schema": "stegverse.runtime-observation/v1",
+  "task_id": "SV-KV-AI-PERSISTENCE-001",
+  "cosv_task_vector": "20111110110000",
+  "recorded_at": "2026-09-14T12:42:00-05:00",
+  "repository": "StegVerse-Labs/.github",
+  "issue_ref": "StegVerse-Labs/.github#1848",
+  "observation_scope": "POST_CLAIM_STATE_REPAIR_AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVATION",
+  "current_main_sha_observed_before_scan": "b7d0ebd5de207c3db0989d0017ebc759304cad11",
+  "exact_tuple": {
+    "task_id": "SV-KV-AI-PERSISTENCE-001",
+    "cosv_task_vector": "20111110110000",
+    "request_id": "RESIDENT-EXEC-KV-AI-MEMORY-001",
+    "worker_id_required": "kv-ai-memory-resident-worker",
+    "adapter_ref_required": "process:kv-ai-memory-resident-v1"
+  },
+  "validated_source_repairs": [
+    {
+      "commit": "5ae0a764a4c33dba2b9d123218ee6b28411112ea",
+      "description": "resident request bound to exact COSV claim/fence boundary",
+      "workflow_run": "34873224941",
+      "workflow_conclusion": "success"
+    },
+    {
+      "commit": "0ade14675f0f89a2c846b7325fb081e4d15df504",
+      "description": "worker registry claim_state aligned to AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+      "workflow_run": "34875722826",
+      "workflow_conclusion": "success"
+    }
+  ],
+  "evidence_surfaces_checked": {
+    "worker_registry_ref": "control/worker-registry.d/kv-ai-memory-resident-001.json",
+    "resident_request_ref": "control/resident-execution-request.d/kv-ai-memory-resident-001.json",
+    "resident_targeted_execution_receipt": "receipts/sovereign-host/resident-targeted-execution.latest.json",
+    "resident_request_consumption_receipt": "receipts/sovereign-host/kv-ai-memory-resident-request-consumption.latest.json",
+    "kv_ai_memory_intr_receipt": "receipts/sovereign-network/kv-ai-memory-intr.latest.json",
+    "code_search_query": "SV-KV-AI-PERSISTENCE-001 claim_id worker_instance_id lease KV_AI_MEMORY_PROVIDER_REQUEST_MATERIALIZED resident-targeted-execution"
+  },
+  "observed_state": {
+    "worker_registry_claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM",
+    "worker_registry_task_state": "HANDOFF_READY",
+    "claim_id": null,
+    "worker_id": null,
+    "worker_instance_id": null,
+    "lease": null,
+    "fresh_fence_observed": false,
+    "resident_targeted_execution_receipt_observed": false,
+    "resident_request_consumption_receipt_observed": false,
+    "kv_ai_memory_intr_receipt_observed": false,
+    "provider_request_materialization_receipt_observed": false
+  },
+  "defect_classification": "POST_REPAIR_RESIDENT_WORKERCOORDINATOR_EXECUTION_OR_RECEIPT_PROJECTION_NOT_OBSERVED",
+  "defect_interpretation": {
+    "missing_resident_scheduler_consumption": "POSSIBLE_OR_NOT_OBSERVED",
+    "missing_workercoordinator_claim_mutation": "POSSIBLE_OR_NOT_OBSERVED",
+    "missing_registry_writeback": "POSSIBLE_OR_NOT_OBSERVED",
+    "missing_receipt_transport": "POSSIBLE_OR_NOT_OBSERVED",
+    "missing_bound_state_input_preflight": "POSSIBLE_DOWNSTREAM_BUT_NOT_YET_REACHED_BY_VISIBLE_EVIDENCE",
+    "missing_repository_visible_observation_projection": "OBSERVED_ABSENT"
+  },
+  "next_required_observation": "Run or observe the existing resident WorkerCoordinator targeted path for the exact tuple after the repaired registry is present in the resident runtime, then expose only authentic claim_id, worker_instance_id, lease, fresh fence, and receipt refs if produced.",
+  "nonclaims": [
+    "THIS_RECORD_DOES_NOT_COMPLETE_SV_KV_AI_PERSISTENCE_001",
+    "THIS_RECORD_DOES_NOT_MINT_OR_OBSERVE_A_WORKERCOORDINATOR_CLAIM_OR_FENCE",
+    "THIS_RECORD_DOES_NOT_PROVE_PERSONAL_KV_INPUTS",
+    "THIS_RECORD_DOES_NOT_PROVE_INTR_ADMISSION",
+    "THIS_RECORD_DOES_NOT_PROVE_PROVIDER_EXECUTION",
+    "THIS_RECORD_DOES_NOT_PROVE_KV_WRITEBACK_OR_MASTER_RECORDS_RECONSTRUCTION",
+    "THIS_RECORD_DOES_NOT_PROVE_RUNTIME_EXECUTION"
+  ],
+  "authority_effect": "NONE_OBSERVATION_RECORD_ONLY"
+}
