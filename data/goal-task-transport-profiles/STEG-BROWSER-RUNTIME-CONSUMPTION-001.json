@@ -1,0 +1,70 @@
+{
+  "schema": "stegverse.goal-task-transport-profile/v1",
+  "task_id": "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
+  "cosv_task_vector": "40000100100000",
+  "component_contract": "data/reusable-transport-component-contract.json",
+  "transport_requirements": {
+    "complete_manifest": true,
+    "governed_processing": true,
+    "required_round_trips": [
+      "canonical_work_ingress_and_resident_consumption",
+      "tvc_source_promotion_and_runtime_observation"
+    ],
+    "evidence_custody_reconstruction": true,
+    "publisher_projection": false,
+    "sdk_return_assembly": false,
+    "stegverse_final_egress_transition": false,
+    "interlock_intr_transport": true,
+    "far_side_final_transition": false
+  },
+  "selected_components": [
+    "RTC-MANIFEST-001",
+    "RTC-GOVERNED-PROCESSING-002",
+    "RTC-ROUNDTRIP-003",
+    "RTC-EVIDENCE-CUSTODY-004",
+    "RTC-INTERLOCK-INTR-TRANSPORT-008"
+  ],
+  "omitted_components": [
+    {
+      "component_id": "RTC-PUBLISHER-005",
+      "reason": "Publication is outside this runtime-consumption successor and remains a later independent continuation."
+    },
+    {
+      "component_id": "RTC-SDK-RETURN-006",
+      "reason": "This Goal does not return a result through the SDK."
+    },
+    {
+      "component_id": "RTC-STEGVERSE-EGRESS-007",
+      "reason": "Final StegVerse egress is outside OWNER_INGRESS_READY runtime-consumption closure."
+    },
+    {
+      "component_id": "RTC-FARSIDE-FINAL-009",
+      "reason": "No far-side final transition is part of this local StegBrowser/TVC runtime-consumption Goal."
+    }
+  ],
+  "repeatability": {
+    "RTC-ROUNDTRIP-003": 2,
+    "RTC-INTERLOCK-INTR-TRANSPORT-008": "REPEAT_WHERE_EACH_DECLARED_GOVERNED_TRANSITION_REQUIRES_IT"
+  },
+  "execution_substrate": {
+    "selected": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+    "interchangeable_node_semantics": true,
+    "remote_or_external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "materialize_only_after_applicable_admission": true,
+    "ephemeral_construct_contract": "data/reusable-task-ephemeral-construct-contract.json"
+  },
+  "composition_rule": "Reuse the existing Canonical Work, WorkerCoordinator, Interlock/InTr, resident dispatcher, exact TVC source-promotion consumer, runtime observer and evidence-custody components. Do not create a second scheduler, WorkerCoordinator, runtime plane, credential path, transport authority, per-defect task, or per-device identity requirement.",
+  "authority_invariants": {
+    "task_registry": "COORDINATION_ONLY",
+    "user_verification": "KV/SKAP Vault",
+    "device_role": "INTERCHANGEABLE_STEGOS_TRANSPORT_EXECUTION_NODE",
+    "claim_fence": "WorkerCoordinator",
+    "transition": "Interlock/InTr",
+    "credential_provider_release": "TV/TVC",
+    "reality_reconstruction": "Master Records",
+    "heartbeat": "OBSERVABILITY_ONLY",
+    "github_runtime_authority": "NONE"
+  },
+  "runtime_evidence_effect": "NONE_SOURCE_COMPOSITION_ONLY"
+}
