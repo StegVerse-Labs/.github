@@ -47,6 +47,17 @@ class TaskRegistrationSubstrateResolutionTests(unittest.TestCase):
         ]
         module.validate_resolution(record_with_resolution(reviews, module.REVIEW_ORDER[0]))
 
+    def test_ephemeral_stegos_can_be_selected_without_reordering_canonical_review(self):
+        reviews = [
+            review(module.REVIEW_ORDER[0], "SUITABLE", "EVIDENCE_REACHABILITY", ["evidence:reachability"]),
+            review(module.REVIEW_ORDER[1], "SUITABLE"),
+            review(module.REVIEW_ORDER[2], "SUITABLE"),
+            review(module.REVIEW_ORDER[3], "SUITABLE"),
+            review(module.REVIEW_ORDER[4], "SELECTED"),
+            review(module.REVIEW_ORDER[5], "NOT_APPLICABLE", "NOT_APPLICABLE"),
+        ]
+        module.validate_resolution(record_with_resolution(reviews, module.REVIEW_ORDER[4]))
+
     def test_runtime_task_without_resolution_fails_registration(self):
         with self.assertRaisesRegex(ValueError, "requires execution_substrate_resolution"):
             module.validate_resolution({"task_id": "X", "runtime_requirements": {"capabilities": []}})
@@ -81,6 +92,12 @@ class TaskRegistrationSubstrateResolutionTests(unittest.TestCase):
             review(module.REVIEW_ORDER[5], "SELECTED"),
         ]
         module.validate_resolution(record_with_resolution(reviews, module.REVIEW_ORDER[5], external=True))
+
+    def test_pr_validation_includes_modified_task_records(self):
+        source = SCRIPT.read_text(encoding="utf-8")
+        self.assertIn('"--diff-filter=AM"', source)
+        self.assertIn("changed_task_records", source)
+        self.assertNotIn("added_task_records(base_ref)", source)
 
     def test_non_runtime_task_is_grandfather_compatible(self):
         module.validate_resolution({"task_id": "DOCS-ONLY-001"})
