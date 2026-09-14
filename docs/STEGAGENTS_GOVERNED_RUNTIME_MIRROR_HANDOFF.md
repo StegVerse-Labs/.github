@@ -5,7 +5,7 @@ Repository: `StegVerse-Labs/.github`
 Target runtime path: `StegVerse-Labs/StegAgents` -> `StegVerse-Labs/StegCore/InTr`
 Goal Task ID: `STEGAGENTS-GOVERNED-RUNTIME-001`
 COSV: `71000000101001`
-Status: `ACTIVE / RUNTIME PROFILE RESOLUTION CURRENT / ROUTING READY / TARGETED WORKERCOORDINATOR BRIDGE STAGED / AUTHENTIC RUNTIME PROOF PENDING`
+Status: `ACTIVE / RUNTIME PROFILE RESOLUTION CURRENT / ROUTING READY / TARGETED WORKERCOORDINATOR BRIDGE MERGED+VALIDATED / AUTHENTIC RUNTIME PROOF PENDING`
 
 ## Canonical state
 
@@ -19,62 +19,32 @@ Status: `ACTIVE / RUNTIME PROFILE RESOLUTION CURRENT / ROUTING READY / TARGETED 
 - Canonical Work resident request/stale-registry remediation: `.github` PR `#1829`, merge `2fadbb9cde25557ccbcbb6ace49ef5301fba9441`.
 - WorkerCoordinator process-adapter binding: `.github` PR `#1830`, merge `e3fe9aa090acd46b9f82111299144c4092fee192`.
 - Runtime-profile/routing-order correction: `.github` PR `#1836`, merge `de0ad40f03e588dbf81de34b9fb6f63606987e21`.
+- targeted resident WorkerCoordinator bridge: `.github` PR `#1838`, merge `7d79f618052dd029730de582a7e7cd77c6551785`.
 
 ## Runtime-profile resolution and routing readiness
 
-Task Registry policy requires runtime requirements to resolve against the Canonical Runtime Profile Map before WorkerCoordinator admission review. The corrected requirements are:
+The task's persisted generation-2 Runtime Profile Map resolution remains:
 
 ```text
-capabilities:
-- task_registry_reconciliation
-- worker_claim_projection
-- intr_task_admission
-- canonical_artifact_validation
-- master_records_reconciliation
-environment: SOVEREIGN_RESIDENT
-direction: INTERNAL
-mutation_required: true
-deployment_required: false
-current_observation_required: false
+candidate_profile_ids = [canonical-work-coordination-runtime-v1]
+projection_only = true
+selection_grants_authority = false
 ```
 
-Against `control/runtime-profile-map.json` generation `2`, these resolve to exactly one routing profile:
-
-```text
-canonical-work-coordination-runtime-v1
-```
-
-The persisted runtime resolution is projection-only and grants no authority. Current routing disposition is:
-
-```text
-ELIGIBLE_FOR_WORKERCOORDINATOR_ADMISSION_REVIEW
-```
+Routing disposition remains `ELIGIBLE_FOR_WORKERCOORDINATOR_ADMISSION_REVIEW`. Runtime-profile matching grants no execution authority.
 
 ## Targeted WorkerCoordinator execution bridge
 
-Inspection after routing readiness found a source integration gap: the existing Canonical Work request can carry task ingress/materialization, but its registry-first cycle selects `PROPOSED` ingress candidates and does not invoke `run_worker_runtime.py` for this already-`ACTIVE` task. The task therefore had no resident bridge from routing readiness to the existing WorkerCoordinator admission review.
+PR `#1838` repaired the source integration gap between routing-ready ACTIVE task state and the existing WorkerCoordinator admission path. The repair reuses the established `TARGETED_INDEPENDENT_TASK_CONTROL` pattern and introduces no second dispatcher, WorkerCoordinator, scheduler, runtime profile, agent registry, InTr implementation, provider route, credential route, or runtime substrate.
 
-The remediation reuses the established targeted independent-task-control pattern already used elsewhere in the resident architecture. It introduces no second dispatcher, WorkerCoordinator, scheduler, runtime profile, agent registry, InTr implementation, provider route, credential route, or runtime substrate.
-
-New task-specific source surfaces:
+Merged task-specific surfaces:
 
 ```text
 control/resident-execution-request.d/stegagents-governed-runtime-targeted-001.json
 scripts/consume_stegagents_governed_runtime_targeted_request.py
 ```
 
-Existing shared surfaces reused:
-
-```text
-scripts/dispatch_resident_execution_requests.py
-scripts/refresh_sovereign_worker_runtime_source.py
-scripts/refresh_sovereign_worker_runtime_source_base.py
-scripts/refresh_and_execute_resident_task.py
-scripts/run_worker_runtime.py
-process:stegagents-governed-runtime-v1
-```
-
-The targeted request is `TARGETED_INDEPENDENT_TASK_CONTROL`, is bound to task `STEGAGENTS-GOVERNED-RUNTIME-001` and COSV `71000000101001`, requires a fresh fence greater than zero, and grants no authority. Its consumer rejects hosted execution, strips provider/API/GitHub credential material, preserves `credential_authority=TV/TVC`, requires `github_token_runtime_authority=NONE`, verifies the task/COSV pointer, and delegates only to:
+The existing resident dispatcher now exposes selector `stegagents_governed_runtime_targeted`, and the existing sovereign source-refresh paths carry the targeted consumer and request into a resident runtime. The consumer validates the exact task/COSV pair, rejects hosted execution, strips provider/API/GitHub credential material, preserves `credential_authority=TV/TVC`, requires `github_token_runtime_authority=NONE`, and delegates only to the existing:
 
 ```text
 scripts/refresh_and_execute_resident_task.py \
@@ -82,84 +52,113 @@ scripts/refresh_and_execute_resident_task.py \
   --cosv-task-vector 71000000101001
 ```
 
-That bridge does not mint a claim or fence. The existing WorkerCoordinator remains the only claim/fence authority.
+That bridge grants no claim/fence or transition authority; the existing WorkerCoordinator remains the only claim/fence authority.
 
-Expected targeted request-consumption receipt:
+## #1838 validation and repository-wide repairs
+
+Final exact head `091ca07862a1fe242411dad124b820794303f809` passed every triggered validation lane before merge, including:
 
 ```text
-receipts/sovereign-host/stegagents-governed-runtime-targeted-request-consumption.latest.json
+Organization Control                  34868715807 SUCCESS
+Heartbeat Worker Project              34868715702 SUCCESS
+Deterministic Repository Suite        34868715698 SUCCESS
+Cross-Framework Current-Basis         34868715795 SUCCESS
+validate-deepseek-resident             34868715779 SUCCESS
+KV AI Memory Resident Binding         34868715582 SUCCESS
+Workspace DEVICE_KV                   34868715644 SUCCESS
+SDK ExtCollab Consent Listener        34868715691 SUCCESS
+SDK ExtCollab Reseal                  34868715745 SUCCESS
 ```
 
-## Authority boundaries
+These are validation/evidence-transport results only and grant no runtime authority.
 
-Canonical authority remains:
+Two current-main conformance regressions encountered during validation were repaired without creating new task owners:
 
-- Task Registry: work intent and coordination only.
-- Runtime Profile Map: discovery/compatibility/routing projection only.
+1. commit `7cc024b69ab2925ec107de22ce76edc070c7c43d` had accidentally truncated the canonical README tail. The complete canonical repository-wide README invariants, including the Operational Observer Standard, were restored from the immediately preceding complete canonical state.
+2. existing adjacent task `SV-KV-AI-WORKERCOORDINATOR-ADMISSION-001` lacked the now-required `execution_substrate_resolution`; the minimum one-device-first non-authorizing substrate review was added with all local candidates still `PENDING_EVIDENCE`, no selected substrate, and external/second-device use false. No KV-AI runtime advancement was claimed.
+
+## Authority invariants
+
+- Task Registry: work intent/coordination only.
+- Runtime Profile Map: discovery/routing projection only.
 - WorkerCoordinator: execution claim/fence.
-- StegCore/InTr: governed ingress/disposition/state-transition authority.
-- TV/TVC: provider credential and provider-operation authority.
+- StegCore/InTr: governed transition/admission authority.
+- TV/TVC: provider credential/provider-operation authority.
 - KV/SKAP Vault: user-verification authority where applicable.
 - Master Records: observed-reality custody/reconstruction.
-- GitHub/CI: source validation and evidence transport only; runtime authority `NONE`.
+- GitHub/CI: source validation/evidence transport only; runtime authority `NONE`.
 
-`CodeRepair-001` is deterministic for this proof, so no provider operation is required. Any later provider-backed agent remains exclusively behind TV/TVC.
+The deterministic first CodeRepair proof requires no provider operation. Provider credentials must never become visible to StegAgents.
 
 ## Governed roundtrip contract
 
-After authentic targeted resident consumption, the existing WorkerCoordinator must independently admit the task and mint a fresh claim/fence. The task worker then:
+After authentic targeted resident consumption, the existing WorkerCoordinator must independently admit the task and mint a fresh claim/fence. The existing task worker must then:
 
-1. verifies the exact registered `CodeRepair-001` manifest blob `061649a4b0b43c01f3009ed3e6c8c4829559fb5b`;
-2. invokes the existing proposal-only StegAgents runtime;
-3. submits the proposal through the existing SDK/canonical StegCore/InTr route;
-4. requires an authentic governance disposition with continuous transaction identity;
-5. performs no direct consequential execution;
-6. performs no TV/TVC provider operation for this deterministic proof;
-7. retains exact claim-bound result evidence;
-8. requires Master Records custody and same-run reconstruction receipts;
-9. returns `COMPLETED` only when all authority and evidence predicates are continuous.
+1. verify the exact registered `CodeRepair-001` manifest blob `061649a4b0b43c01f3009ed3e6c8c4829559fb5b`;
+2. preserve `proposal_only=true`, `execution_authority=false`, and `self_authorization_allowed=false`;
+3. invoke the existing proposal-only StegAgents runtime;
+4. submit through the existing SDK/canonical StegCore/InTr route;
+5. retain the authentic governance disposition and continuous transaction identity;
+6. perform no direct consequential execution;
+7. perform no provider operation for this deterministic proof;
+8. retain exact claim-bound evidence;
+9. require Master Records custody and same-run reconstruction receipts;
+10. reconcile/egress through the existing WorkerCoordinator lifecycle.
 
-Expected successful governed-runtime receipts:
+Expected authentic evidence:
 
 ```text
+receipts/sovereign-host/stegagents-governed-runtime-targeted-request-consumption.latest.json
 receipts/sovereign-host/stegagents-governed-runtime/<claim_id>.json
 receipts/sovereign-host/stegagents-governed-runtime.latest.json
 ```
 
-## Current authentic runtime observation
+## Current authentic runtime observation after #1838 merge
 
-The authorized remote resident execution connector reports no connected device in the current session. Current repository-visible WorkerCoordinator state remains `HANDOFF_READY` with no authentic claim/fence, and no claim-bound governed-runtime receipt has been observed.
+Merged main contains the targeted request/consumer and dispatcher/source-refresh binding. The repository-visible WorkerCoordinator fragment still reports:
 
-Therefore no runtime execution, StegCore/InTr disposition, governed proposal return, provider operation, or Master Records reconstruction is claimed from the source remediation. GitHub source, PR merges, Actions validation, runtime-profile matching, and targeted request staging are all non-authorizing evidence surfaces.
+```text
+state = HANDOFF_READY
+claim_id = null
+lease = null
+worker_id = null
+worker_instance_id = null
+```
 
-## First unresolved predicate after source remediation
+Neither expected runtime receipt is repository-visible. The authorized remote resident connector also reports no connected resident device in this session. That observation is reachability evidence only and creates no second-device requirement.
+
+Therefore no authentic targeted request consumption, fresh WorkerCoordinator claim/fence, StegCore/InTr runtime disposition, governed proposal return, provider operation, or Master Records reconstruction is currently claimed.
+
+## First unresolved predicate
 
 ```text
 AUTHENTIC_TARGETED_RESIDENT_REQUEST_CONSUMPTION_AND_CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED
 ```
 
-Once the targeted bridge is merged and reaches an authentic sovereign resident cycle, the expected sequence is:
+## Next machine-owned execution
 
 ```text
-resident source refresh
+existing sovereign resident source refresh
 -> existing resident dispatcher visits steagents_governed_runtime_targeted
--> targeted request consumer verifies task/COSV and authority ceiling
--> refresh_and_execute_resident_task.py
+-> targeted consumer verifies task/COSV and authority ceiling
+-> existing refresh_and_execute_resident_task.py
 -> existing WorkerCoordinator admission review
 -> fresh claim/fence
 -> process:stegagents-governed-runtime-v1
 -> exact CodeRepair-001 manifest verification
 -> existing StegAgents proposal runtime
 -> existing SDK / canonical StegCore/InTr disposition
--> governed proposal returned with no consequential execution
+-> governed proposal return with no consequential execution
 -> Master Records custody + reconstruct_sovereign receipts
 -> claim-bound resident receipt
 -> canonical WorkerCoordinator reconciliation/egress
 ```
 
+The goal remains ACTIVE until this authentic chain exists. No human-authority checkpoint has been identified.
+
 ## README decision
 
-No README update is required. This binds one existing ACTIVE task to the already-documented targeted WorkerCoordinator execution pattern and existing dispatcher; it adds no new runtime class or authority plane.
+No StegAgents-specific README section is required because #1838 binds one task to established targeted WorkerCoordinator execution semantics. The repository-wide README truncation encountered during validation was repaired because it was an unrelated current-main regression affecting canonical invariants.
 
 ## Manual work
 
