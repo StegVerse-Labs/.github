@@ -1,0 +1,44 @@
+name: Validate KV AI Memory Resident Binding
+
+on:
+  push:
+    paths:
+      - 'docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md'
+      - 'handoffs/SV-KV-AI-PERSISTENCE-001.json'
+      - 'workers/kv_ai_memory_resident_worker.py'
+      - 'scripts/consume_kv_ai_memory_resident_request.py'
+      - 'scripts/dispatch_resident_execution_requests.py'
+      - 'control/worker-registry.d/kv-ai-memory-resident-001.json'
+      - 'control/process-worker-adapters.d/kv-ai-memory-resident-001.json'
+      - 'control/resident-execution-request.d/kv-ai-memory-resident-001.json'
+      - 'tests/test_kv_ai_memory_resident_binding.py'
+      - '.github/workflows/validate-kv-ai-memory-resident.yml'
+  pull_request:
+    paths:
+      - 'docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md'
+      - 'handoffs/SV-KV-AI-PERSISTENCE-001.json'
+      - 'workers/kv_ai_memory_resident_worker.py'
+      - 'scripts/consume_kv_ai_memory_resident_request.py'
+      - 'scripts/dispatch_resident_execution_requests.py'
+      - 'control/worker-registry.d/kv-ai-memory-resident-001.json'
+      - 'control/process-worker-adapters.d/kv-ai-memory-resident-001.json'
+      - 'control/resident-execution-request.d/kv-ai-memory-resident-001.json'
+      - 'tests/test_kv_ai_memory_resident_binding.py'
+
+permissions:
+  contents: read
+
+env:
+  PYTHONPATH: ${{ github.workspace }}
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip pytest
+      - run: pytest -q tests/test_kv_ai_memory_resident_binding.py
+      - run: python -m py_compile workers/kv_ai_memory_resident_worker.py scripts/consume_kv_ai_memory_resident_request.py scripts/dispatch_resident_execution_requests.py
