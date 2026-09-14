@@ -17,6 +17,7 @@
     "scripts/evaluate_task_registry_collision_checkin.py",
     "scripts/run_heartbeat_runtime.py",
     "scripts/run_stegbrowser_runtime_consumption_reusable.py",
+    "scripts/check_stegbrowser_runtime_consumption_receipts.py",
     "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
     "control/resident-execution-request.d/canonical-work-stegbrowser-runtime-consumption-001.json",
     "control/resident-execution-request.d/stegbrowser-tvc-source-promotion-001.json",
@@ -24,6 +25,7 @@
     "control/source-bindings/stegbrowser-tvc-runtime-observer.json",
     "tests/test_stegbrowser_runtime_consumption_checkin.py",
     "tests/test_stegbrowser_runtime_consumption_reusable_binding.py",
+    "tests/test_stegbrowser_runtime_receipt_reachability.py",
     "tests/test_carrier_selfheal_source_root_continuity.py",
     "StegVerse-Labs/.github#1781",
     "StegVerse-Labs/.github@d75ddb18ffb51f3131f3bde54fc9582f57991471",
@@ -31,6 +33,9 @@
     "StegVerse-Labs/.github@b04d928f039fa185519913fed8343e37319035bd",
     "StegVerse-Labs/.github#1831",
     "StegVerse-Labs/.github@6f1b08ee786c8f72395cfa5d393397bcdb7404c5",
+    "StegVerse-Labs/.github#1852",
+    "StegVerse-Labs/.github@f89e3160d5d1a9f2706b38a7c2e788f777b17a38",
+    "StegVerse-Labs/.github#1260-comment-5667858973",
     "StegVerse-Labs/StegOS#380",
     "StegVerse-Labs/StegOS@310c4e723fe98ad81931deef50dced8b43a0dae9",
     "StegVerse-Labs/Site#1305",
@@ -69,6 +74,13 @@
       "state": "RESOLVED",
       "ref": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001;StegVerse-Labs/.github#1831;StegVerse-Labs/.github@6f1b08ee786c8f72395cfa5d393397bcdb7404c5",
       "disposition": "EXECUTABLE_REUSABLE_RUNNER_BOUND_TO_ADMITTED_EPHEMERAL_STEGOS_NODE; SOURCE_BINDING_ONLY_DOES_NOT_CLAIM_RUNTIME_EXECUTION"
+    },
+    {
+      "dependency_id": "DEP-STEGBROWSER-RUNTIME-RECEIPT-REACHABILITY-VERIFIER",
+      "kind": "SOURCE_VALIDATION",
+      "state": "RESOLVED",
+      "ref": "StegVerse-Labs/.github#1852;StegVerse-Labs/.github@f89e3160d5d1a9f2706b38a7c2e788f777b17a38;actions:34873353094,34873352920,34873352943",
+      "disposition": "NON_AUTHORIZING_EXACT_RESIDENT_RECEIPT_REACHABILITY_VERIFIER_AND_REGRESSION_TESTS_MERGED; CLASSIFIES_MISSING_INVALID_OR_BINDABLE_RECEIPTS_ONLY; DOES_NOT_CLAIM_RUNTIME_CONSUMPTION_OR_WORKERCOORDINATOR_TVC_OWNER_INGRESS_PREDICATES"
     },
     {
       "dependency_id": "DEP-STEGBROWSER-RUNTIME-CANONICAL-WORK-CONSUMPTION",
