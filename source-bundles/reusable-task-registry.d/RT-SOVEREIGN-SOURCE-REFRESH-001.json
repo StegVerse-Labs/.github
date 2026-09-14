@@ -1,13 +1,22 @@
 {
   "reusable_task_id": "RT-SOVEREIGN-SOURCE-REFRESH-001",
   "name": "Sovereign Resident Source Refresh",
-  "purpose": "Refresh the already-local canonical sovereign WorkerCoordinator/runtime source at the beginning of every callable runtime invocation, preserving mutable runtime state and emitting authentic refresh or boundary evidence without creating an always-on runtime source or a new runtime owner.",
-  "trigger": "every invocation of a consuming callable sovereign runtime before that runtime is used",
-  "scope": "one invocation-bound already-local canonical source root refreshed into one invocation-bound sovereign runtime root",
+  "purpose": "Perform the already-proven local-only sovereign WorkerCoordinator/runtime source refresh when the governed state transition establishing a callable runtime connection resolves refreshable=true for that invocation, preserving mutable runtime state and emitting authentic refresh or boundary evidence without creating an always-on runtime source or a new runtime owner.",
+  "trigger": "the governed connection-establishment transition evaluates callable=true and refreshable=true for the invocation",
+  "scope": "one invocation-bound already-local canonical source root and one invocation-bound sovereign runtime connection",
   "parameter_keys": [
     "source_root",
-    "runtime_root"
+    "runtime_root",
+    "callable",
+    "refreshable",
+    "transition_ref"
   ],
+  "state_transition_variables": {
+    "callable": "whether the runtime connection may be instantiated/called for this transition",
+    "refreshable": "whether source refresh is required/permitted as part of establishing this invocation's runtime connection",
+    "evaluation_owner": "INTERLOCK_INTR_GOVERNED_TRANSITION",
+    "persistent_always_on_source_assumed": false
+  },
   "runner_templates": [
     "scripts/refresh_sovereign_worker_runtime_source_reusable.py",
     "scripts/refresh_sovereign_worker_runtime_source.py",
@@ -21,11 +30,13 @@
     "master_records"
   ],
   "completion_predicates": [
-    "AUTHENTIC_LOCAL_SOURCE_REFRESH_RECEIPT_OBSERVED",
+    "TRANSITION_VARIABLES_BOUND_TO_INVOCATION",
+    "AUTHENTIC_LOCAL_SOURCE_REFRESH_RECEIPT_OBSERVED_IF_REFRESHABLE_TRUE",
+    "NO_REFRESH_INFERRED_IF_REFRESHABLE_FALSE",
     "MUTABLE_RUNTIME_STATE_PRESERVED",
     "NO_NETWORK_SOURCE_FETCH_PERFORMED",
     "NO_CREDENTIAL_AUTHORITY_ACQUIRED"
   ],
   "authority_effect": "NONE_LOCAL_SOURCE_REFRESH",
-  "reuse_instructions": "Invoke this reusable task for every callable runtime use before downstream runtime work. Do not treat runtime source freshness as persistent or always-on state. The reusable adapter delegates to scripts/refresh_sovereign_worker_runtime_source.py and additionally guarantees materialization of the neutral reusable scheduler runner and contract needed by downstream reusable scheduling. Runtime availability is an execution boundary of the invocation, not a standing source-state prerequisite. Do not create another source refresher, runtime owner, scheduler, credential route, or source transport."
+  "reuse_instructions": "Do not model refresh as unconditional or conditional on persistent runtime-source freshness. callable and refreshable are invocation-bound variables of the governed state transition that establishes the runtime connection. If callable=false, this reusable task does not establish a callable runtime. If callable=true and refreshable=true, perform the local source refresh and retain authentic evidence. If callable=true and refreshable=false, do not invent a refresh requirement. Interlock/InTr remains the governed transition authority. Do not create another source refresher, runtime owner, scheduler, credential route, or source transport."
 }
