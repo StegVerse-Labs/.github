@@ -1,0 +1,41 @@
+{
+  "identity": "StegVerse-Labs/.github:task:STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "40000100100000",
+  "evidence_refs": [
+    "data/canonical-task-records/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json",
+    "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md",
+    "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json"
+  ],
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "CHECKED_OUT",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 1,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "Active remediation Goal owns continuation of the existing StegBrowser runtime-consumption capability without reopening the retired historical Goal.",
+    "archive_ready": "Authentic invocation-bound transition variables, WorkerCoordinator claim/fence, governed transport entry, return-record durability, and final transport-exit evidence remain pending.",
+    "unassigned_work": "Work remains assigned to existing canonical owners and reusable components.",
+    "chat_owned_counts": "This branch repairs source binding only; runtime proof remains machine-generated.",
+    "canonical_owner_installed": "Canonical remediation task record and handoff already exist.",
+    "thread_required": "Repository state is sufficient for source validation; runtime continuation requires an authentic resident execution surface.",
+    "blocker_count": "Conditions have explicit remediation paths and are not terminal blockers.",
+    "evidence_complete": "Runtime transport evidence is not yet complete.",
+    "activated": "False until authentic governed runtime transport evidence is observed.",
+    "propagated": "Not applicable before authentic runtime completion."
+  },
+  "authority_effect": "NONE"
+}
