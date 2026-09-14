@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SV-KV-AI-PERSISTENCE-001",
   "created_at": "2026-09-14T03:40:00Z",
-  "updated_at": "2026-09-14T03:40:00Z",
+  "updated_at": "2026-09-14T04:06:00Z",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "SV-KV-AI-PERSISTENCE-001",
@@ -132,5 +132,32 @@
       "repository_private_content_allowed": false,
       "authority_effect": "NONE_BOUND_STATE_ONLY"
     }
+  },
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:kv-ai-memory-provider-request-materialization:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
+      "StegVerse-Labs/continuity-vault-kit/KV_AI_PERSISTENCE_CLASSES_MIRROR_HANDOFF.md",
+      "StegVerse-org/LLM-adapter/docs/KV_AI_MEMORY_CONTEXT_BRIDGE_MIRROR_HANDOFF.md"
+    ],
+    "admissibility_evidence_refs": [
+      "workers/kv_ai_memory_resident_worker.py",
+      "scripts/consume_kv_ai_memory_resident_request.py",
+      "control/process-worker-adapters.d/kv-ai-memory-resident-001.json",
+      "control/resident-execution-request.d/kv-ai-memory-resident-001.json"
+    ],
+    "integration_evidence_refs": [],
+    "activation_proof_ref": null,
+    "blockers": [
+      "AUTHENTIC_KV_AI_MEMORY_SAME_EXECUTION_CHAIN_NOT_YET_OBSERVED"
+    ],
+    "continuation_owner": "kv-ai-memory-resident-worker + existing sovereign WorkerCoordinator",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "integrates_capability",
+    "target_phase": "ACTIVATED"
   }
 }
