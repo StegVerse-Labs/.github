@@ -1,0 +1,83 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SV-KV-AI-RUNTIME-EVIDENCE-001",
+  "correlation_id": "SV-KV-AI-RUNTIME-EVIDENCE-001",
+  "root_correlation_id": "SV-KV-AI-PERSISTENCE-001",
+  "parent_task_id": "SV-KV-AI-PERSISTENCE-001",
+  "cosv_task_v1": "20111110110001",
+  "goal": "Observe and bind the authentic runtime evidence chain for KV AI memory persistence after source capabilities are validated: real Personal-KV staged packet/provider inputs, shared Universal InTr memory-packet admission, WorkerCoordinator claim/fence, ProviderRequest materialization, provider/model ingress-response-egress chain, and evidence-gated KV writeback/readback.",
+  "coordination_state": "IN_PROGRESS",
+  "source_refs": [
+    "StegVerse-Labs/.github/docs/KV_AI_MEMORY_RUNTIME_EVIDENCE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github/handoffs/SV-KV-AI-RUNTIME-EVIDENCE-001.json",
+    "StegVerse-Labs/.github/docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github/scripts/run_kv_ai_memory_intr_event_bootstrap.py",
+    "StegVerse-Labs/.github/scripts/refresh_and_dispatch_resident_requests.py",
+    "StegVerse-Labs/.github/scripts/consume_kv_ai_memory_resident_request.py",
+    "StegVerse-Labs/.github/workers/kv_ai_memory_intr_event_bootstrap.py",
+    "StegVerse-Labs/.github/workers/kv_ai_memory_resident_worker.py",
+    "StegVerse-Labs/continuity-vault-kit/scripts/stage_kv_ai_memory_resident_inputs.py",
+    "StegVerse-Labs/continuity-vault-kit/runtime/kv_ai_memory_writeback_store.py",
+    "StegVerse-org/LLM-adapter/scripts/materialize_kv_memory_provider_request.py",
+    "StegVerse-org/LLM-adapter/docs/KV_AI_MEMORY_CONTEXT_BRIDGE_MIRROR_HANDOFF.md"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs", "StegVerse-org"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/continuity-vault-kit", "StegVerse-org/LLM-adapter"],
+    "components": [
+      "REAL_PERSONAL_KV_INPUTS",
+      "FENCED_RESIDENT_BOUND_STATE",
+      "MEMORY_PACKET_SHARED_INTR_ADMISSION",
+      "WORKERCOORDINATOR_CLAIM_FENCE",
+      "KV_AI_MEMORY_PROVIDER_REQUEST_MATERIALIZED",
+      "PROVIDER_MODEL_CHAIN",
+      "EVIDENCE_GATED_KV_WRITEBACK_READBACK",
+      "MASTER_RECORDS_RECONSTRUCTION"
+    ]
+  },
+  "dependencies": [
+    {"dependency_id":"DEP-SV-KV-AI-PERSISTENCE-SOURCE-CAPABILITIES","kind":"CAPABILITY","state":"RESOLVED","ref":"SV-KV-AI-PERSISTENCE-001 source validation and handoff"},
+    {"dependency_id":"DEP-LIVE-PERSONAL-KV-INPUTS","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"real Personal-KV root plus _System/AI/Memory/Inputs/context-request.json, context-entries.json, and provider-request-input.json"},
+    {"dependency_id":"DEP-LIVE-INTR-ADMISSION","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"authentic exact-packet shared Universal InTr ALLOW and memory-packet-admission.json"},
+    {"dependency_id":"DEP-LIVE-WORKERCOORDINATOR-PROVIDERREQUEST","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"fresh WorkerCoordinator claim/fence and KV_AI_MEMORY_PROVIDER_REQUEST_MATERIALIZED receipt"},
+    {"dependency_id":"DEP-LIVE-PROVIDER-MODEL-CHAIN","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"external provider ingress, model response, and egress evidence through the governed LLM path"},
+    {"dependency_id":"DEP-LIVE-KV-WRITEBACK-READBACK","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"evidence-gated Personal-KV writeback plus exact readback/reconstruction"}
+  ],
+  "blockers": [],
+  "expected_evidence_predicates": [
+    "REAL_PERSONAL_KV_INPUT_FILES_OBSERVED",
+    "FENCED_CONTEXT_PACKET_AND_PROVIDER_INPUT_STAGED",
+    "LIVE_MEMORY_PACKET_INTR_ALLOW_OBSERVED",
+    "MEMORY_PACKET_ADMISSION_FILE_OBSERVED",
+    "FRESH_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+    "LIVE_RESIDENT_PROVIDER_REQUEST_MATERIALIZATION_OBSERVED",
+    "LIVE_EXTERNAL_PROVIDER_INGRESS_RESPONSE_EGRESS_CHAIN_OBSERVED",
+    "LIVE_KV_WRITEBACK_READBACK_OBSERVED",
+    "MASTER_RECORDS_RECONSTRUCTION_BOUND",
+    "NO_SOURCE_ONLY_EVIDENCE_PROMOTED",
+    "NO_DEVICE_DISCOVERY_OR_RDC_GATE_USED"
+  ],
+  "runtime_requirements": {
+    "environment": "OWNER_CONTROLLED_KV_WITH_AUTHENTIC_RESIDENT_RUNTIME_ACCESS",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true,
+    "runtime_surface_policy": {
+      "device_confirmation_required": false,
+      "device_discovery_required": false,
+      "remote_desktop_commander_required": false,
+      "second_user_operated_device_required": false,
+      "absence_of_connected_device_is_blocker": false
+    }
+  },
+  "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
+  "completion": {"claimed":false,"validated":false,"reconciliation_ref":null},
+  "authority_model": {
+    "source_state_proves_execution": false,
+    "task_registry_mints_execution_authority": false,
+    "interlock_intr_required_for_governed_ingress_egress": true,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "tvc_credential_authority": true,
+    "master_records_reality_authority": true
+  }
+}
