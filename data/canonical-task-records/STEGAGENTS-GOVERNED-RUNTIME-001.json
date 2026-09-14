@@ -35,7 +35,10 @@
     "scripts/evaluate_task_registry_collision_checkin.py",
     "scripts/install_and_run_canonical_work_event_bootstrap.py",
     "scripts/refresh_and_execute_resident_task.py",
-    "scripts/run_worker_runtime.py"
+    "scripts/run_worker_runtime.py",
+    "data/canonical-task-records/STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001.json",
+    "docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github#1860"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs", "master-records"],
@@ -46,14 +49,16 @@
     {"dependency_id":"DEP-GOVERNED-AGENT-REGISTRATION","kind":"SOURCE_PREDECESSOR","state":"RESOLVED","ref":"STEGAGENTS-GOVERNED-AGENT-REGISTRATION-001","disposition":"REUSE_RETIRED_COMPLETED_PREDECESSOR"},
     {"dependency_id":"DEP-STEGCORE-BASELINE","kind":"GOVERNANCE_BASELINE","state":"ACTIVATED","ref":"StegVerse-Labs/StegCore@60c1e12d80decbafffbdda25b04c392a7735d13e:registry/stegverse-001-002.activation.json"},
     {"dependency_id":"DEP-STEGAGENTS-HANDSHAKE","kind":"INTEGRATION_GATE","state":"HANDSHAKE_READY","ref":"StegVerse-Labs/StegAgents@a7fbc77081330d074b0202c70a4fa835f04e7f39:registry/stegagents-stegcore.handshake.activation.json"},
-    {"dependency_id":"DEP-TV-WARRANT-POLICY","kind":"GOVERNANCE_ADMISSION_EVIDENCE","state":"PENDING_RUNTIME_EVIDENCE","ref":"StegVerse-Labs/StegAgents@c82caae4c8c4cf82d40f352528269823d853f788:src/warrant_verify.py","disposition":"REQUIRE_AUTHENTIC_TV_ISSUED_WARRANT_AND_PINNED_POLICY_BUNDLE"}
+    {"dependency_id":"DEP-TV-WARRANT-POLICY","kind":"GOVERNANCE_ADMISSION_EVIDENCE","state":"PENDING_RUNTIME_EVIDENCE","ref":"StegVerse-Labs/StegAgents@c82caae4c8c4cf82d40f352528269823d853f788:src/warrant_verify.py","disposition":"REQUIRE_AUTHENTIC_TV_ISSUED_WARRANT_AND_PINNED_POLICY_BUNDLE"},
+    {"dependency_id":"DEP-RESIDENT-CUSTODY-ROOT-OBSERVATION","kind":"RUNTIME_EVIDENCE_REACHABILITY","state":"ACTIVE_ADJACENT_OWNER","ref":"STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001;StegVerse-Labs/.github#1860","disposition":"REUSE_EXISTING_ONE_DEVICE_RESIDENT_ROOT_OBSERVATION_OWNER_BEFORE_STEGAGENTS_TARGETED_CONSUMPTION"}
   ],
   "blockers": [],
   "systemic_incident_ref": null,
-  "adjacent_task_refs": ["STEGAGENTS-GOVERNED-AGENT-REGISTRATION-001", "STEGVERSE-CANONICAL-WORK-COORDINATION-001"],
+  "adjacent_task_refs": ["STEGAGENTS-GOVERNED-AGENT-REGISTRATION-001", "STEGVERSE-CANONICAL-WORK-COORDINATION-001", "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001"],
   "expected_evidence_predicates": [
     "RUNTIME_PROFILE_RESOLUTION_CURRENT",
     "ROUTING_READY_FOR_WORKERCOORDINATOR_REVIEW",
+    "AUTHENTIC_RESIDENT_CUSTODY_ROOT_OBSERVED",
     "AUTHENTIC_TARGETED_RESIDENT_REQUEST_CONSUMPTION_OBSERVED",
     "AUTHENTIC_CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
     "AUTHENTIC_TV_EXECUTION_WARRANT_VERIFIED",
@@ -82,7 +87,7 @@
     "schema": "stegverse.execution-substrate-resolution/v1",
     "review_order": ["STEG-BROWSER-RETAINED-RESIDENT-NODE","STEGOS-CURRENT-DEVICE-NODE","STEG-BROWSER-EPHEMERAL-LEASE","SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","ADMITTED-EPHEMERAL-STEGOS-NODE","REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"],
     "reviews": [
-      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["control/canonical-resident-carrier-contract.json"]},
+      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["control/canonical-resident-carrier-contract.json","STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001","docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md","StegVerse-Labs/.github#1860"]},
       {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":[]},
       {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":[]},
       {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":[]},
@@ -90,6 +95,7 @@
       {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"PLATFORM","evidence_refs":[]}
     ],
     "selected_substrate_id": null,
+    "current_observation_required": false,
     "external_device_required": false,
     "second_user_operated_device_allowed": false,
     "authority_effect": "NONE"
@@ -98,13 +104,13 @@
   "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
   "human_action_ref": null,
   "completion": {"claimed":false,"validated":false,"reconciliation_ref":null,"activation_proof_complete":false},
-  "allowed_next_transitions": ["INGRESS_ADMITTED"],
+  "allowed_next_transitions": ["OBSERVE_RESIDENT_CUSTODY_ROOT", "INGRESS_ADMITTED"],
   "handoff_projection_refs": ["docs/STEGAGENTS_GOVERNED_RUNTIME_MIRROR_HANDOFF.md"],
   "authority_model": {"task_registry_mints_execution_authority":false,"source_state_proves_execution":false,"worker_claim_authority":"WORKERCOORDINATOR","master_records_reality_authority":true,"interlock_intr_required_for_governed_ingress_egress":true,"provider_credential_authority":"TV/TVC","github_runtime_authority":"NONE"},
   "readme_impact": {
     "material_function_change": false,
     "readme_updated_in_change_set": false,
-    "no_readme_update_reason": "The repository README already documents targeted task/COSV execution and separated authority semantics; this repair adds fail-closed enforcement of an already-registered StegAgents warrant/policy requirement rather than a new .github runtime capability.",
-    "evidence_refs": ["README.md#COSV-task-pointer-session-continuation","StegVerse-Labs/StegAgents@c82caae4c8c4cf82d40f352528269823d853f788:docs/STEGAGENTS_GOVERNED_RUNTIME_MIRROR_HANDOFF.md","docs/STEGAGENTS_GOVERNED_RUNTIME_MIRROR_HANDOFF.md"]
+    "no_readme_update_reason": "This change binds an existing resident-root observation owner to the current runtime evidence chain and creates no new runtime capability or authority surface.",
+    "evidence_refs": ["docs/STEGAGENTS_GOVERNED_RUNTIME_MIRROR_HANDOFF.md","docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md","StegVerse-Labs/.github#1860"]
   }
 }
