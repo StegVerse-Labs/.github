@@ -7,9 +7,11 @@ Updated: 2026-09-14
 - Goal Task ID: `STEG-BROWSER-TRANSPORT-BOUNDARY-IMPLEMENTATION-001`
 - Parent Goal: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / SOURCE SEMANTICS CORRECTED / CI AND MERGE NOT YET VALIDATED`
+- Status: `RETIRED / SOURCE IMPLEMENTATION VALIDATED AND MERGED / RUNTIME TRANSPORT SUCCESS UNCLAIMED`
 - Implementation branch: `stegbrowser-transport-boundary-contract`
 - Pull request: `StegVerse-Labs/.github#1901`
+- Validated head: `31d54991583c31e0fc7963e65a36ef69ccef3503`
+- Merge SHA: `cf99d01f12ca9a52ee4cc328dc2e41297d44a92a`
 
 ## Scope
 
@@ -36,7 +38,7 @@ The following are internal transition groups within that single lifecycle:
 
 They may contain multiple allowed Interlock/InTr state transitions and repeated uses of the transport component as required by the state graph, but they do **not** increment the `RTC-ROUNDTRIP-003` lifecycle count.
 
-Canonical profile semantics on branch `stegbrowser-transport-boundary-contract` are therefore:
+Canonical profile semantics now merged to `main` are:
 
 ```text
 governed_round_trip_lifecycle_count = 1
@@ -45,44 +47,54 @@ internal transition group count = 2
 internal transition groups are separate round-trip goals = false
 ```
 
-The reusable transport contract now distinguishes lifecycle repeat count from internal transition groups. Profiles may explicitly set `governed_round_trip_lifecycle_count` and `round_trip_internal_transition_groups`. Legacy `required_round_trips` length remains a compatibility fallback for profiles not yet migrated; it must not override an explicit lifecycle count.
+The reusable transport contract distinguishes lifecycle repeat count from internal transition groups. Profiles may explicitly set `governed_round_trip_lifecycle_count` and `round_trip_internal_transition_groups`. Legacy `required_round_trips` length remains a compatibility fallback for profiles not yet migrated; it must not override an explicit lifecycle count.
 
 ## Implementation set
 
 - `data/reusable-transport-component-contract.json`
-  - encode terminal transport boundary and success predicate;
-  - distinguish governed round-trip lifecycle count from internal transition groups;
-  - mark `RTC-EVIDENCE-CUSTODY-004` as post-transport and non-authorizing for transport success;
-  - preserve Interlock/InTr transport authority and Master Records reconstruction authority.
+  - terminal transport boundary and success predicate encoded;
+  - governed round-trip lifecycle count separated from internal transition groups;
+  - `RTC-EVIDENCE-CUSTODY-004` classified post-transport and non-authorizing for transport success;
+  - Interlock/InTr transport authority and Master Records reconstruction authority preserved.
 - `data/goal-task-transport-profiles/STEG-BROWSER-RUNTIME-CONSUMPTION-001.json`
-  - declare one governed round-trip lifecycle;
-  - classify the two named requirements as internal transition groups;
-  - set `RTC-ROUNDTRIP-003` repeatability to `1`;
-  - split `transport_phase_components` from `post_transport_components`;
-  - bind the terminal transport predicate;
-  - preserve invocation-bound callable/refreshable selection.
+  - one governed round-trip lifecycle declared;
+  - two named requirements classified as internal transition groups;
+  - `RTC-ROUNDTRIP-003` repeatability set to `1`;
+  - transport-phase and post-transport components split;
+  - terminal transport predicate bound;
+  - invocation-bound callable/refreshable selection preserved.
 - `tests/test_stegbrowser_transport_boundary_contract.py`
-  - deterministic assertions for the terminal boundary, failure ownership, Master Records separation, callable/refreshable semantics, and single-lifecycle/multiple-transition-group semantics.
+  - deterministic assertions cover terminal boundary, failure ownership, Master Records separation, callable/refreshable semantics, and single-lifecycle/multiple-transition-group semantics.
+
+## Validation and merge evidence
+
+PR #1901 exact validated head `31d54991583c31e0fc7963e65a36ef69ccef3503` passed all observed PR-head validation workflows:
+
+- organization control plane validation run `34910439727` — `success`;
+- deterministic repository suite run `34910439719` — `success`;
+- heartbeat validation run `34910439734` — `success`.
+
+An unrelated GADI helper divergence was removed from the branch before the final validation cycle so the PR no longer carried stale/non-task source. GitHub then reported the PR mergeable, and PR #1901 merged as `cf99d01f12ca9a52ee4cc328dc2e41297d44a92a`.
+
+These are source/CI/merge facts only. They do **not** establish an authentic governed runtime round trip and do not set `SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIP_IDENTIFIED=true` for any runtime instance.
 
 ## Completion predicates
 
-- `TRANSPORT_TERMINAL_CONTRACT_ENCODED`
-- `RTC_EVIDENCE_CUSTODY_CLASSIFIED_POST_TRANSPORT`
-- `STEGBROWSER_PROFILE_SPLITS_TRANSPORT_AND_POST_TRANSPORT_COMPONENTS`
-- `SINGLE_GOVERNED_ROUND_TRIP_LIFECYCLE_SEMANTICS_ENCODED`
-- `INTERNAL_TRANSITION_GROUPS_DO_NOT_INCREMENT_ROUND_TRIP_COUNT`
-- `CALLABLE_REFRESHABLE_REMAIN_INVOCATION_BOUND`
-- `POST_TRANSPORT_FAILURE_CANNOT_NEGATE_TRANSPORT_SUCCESS`
-- `DETERMINISTIC_TESTS_PASS`
-- `SOURCE_CHANGE_MERGED`
+- `TRANSPORT_TERMINAL_CONTRACT_ENCODED` — PASS
+- `RTC_EVIDENCE_CUSTODY_CLASSIFIED_POST_TRANSPORT` — PASS
+- `STEGBROWSER_PROFILE_SPLITS_TRANSPORT_AND_POST_TRANSPORT_COMPONENTS` — PASS
+- `SINGLE_GOVERNED_ROUND_TRIP_LIFECYCLE_SEMANTICS_ENCODED` — PASS
+- `INTERNAL_TRANSITION_GROUPS_DO_NOT_INCREMENT_ROUND_TRIP_COUNT` — PASS
+- `CALLABLE_REFRESHABLE_REMAIN_INVOCATION_BOUND` — PASS
+- `POST_TRANSPORT_FAILURE_CANNOT_NEGATE_TRANSPORT_SUCCESS` — PASS
+- `DETERMINISTIC_TESTS_PASS` — PASS
+- `SOURCE_CHANGE_MERGED` — PASS
 
 ## Current state
 
-The source semantics are implemented on branch `stegbrowser-transport-boundary-contract` through head `2952b36e8e562b3acbb26c5c9883ac5b2922653a`.
+This source-implementation Goal is complete and retired. The parent runtime Goal remains responsible for authentic runtime evidence. Runtime transport success remains unclaimed until the actual governed return packet is received, its return record durably recorded, and the final allowed Interlock/InTr transport-exit transition is authentically observed.
 
-PR #1901 is open and mergeable. No GitHub Actions run was observed yet for that exact head when last checked, so deterministic CI validation and merge remain unproven. Runtime transport success remains separately unclaimed.
-
-README was checked for task-specific `RTC-ROUNDTRIP-003` / `required_round_trips` repeat-count semantics; no stale task-specific wording was found that required a README content change for this correction.
+README was rechecked for task-specific `RTC-ROUNDTRIP-003` / `required_round_trips` repeat-count semantics. No stale task-specific wording exists that requires a README content mutation; the canonical source contract, profile, tests, task record, and this handoff carry the implementation semantics.
 
 ## Authority / failure boundaries
 
