@@ -79,7 +79,9 @@ class ResidentRequestDispatcherTests(unittest.TestCase):
                 len(calls),
                 len(mod.CONSUMERS) - len(PROTECTED_AWARENESS_CONSUMERS),
             )
-            self.assertIn("g18", receipt["request_failures"])
+            eligible = [name for name, _rel in mod.CONSUMERS if name not in PROTECTED_AWARENESS_CONSUMERS]
+            self.assertGreaterEqual(len(eligible), 3)
+            self.assertIn(eligible[1], receipt["request_failures"])
             self.assertFalse(receipt["request_failure_blocks_later_requests"])
             self.assertFalse(receipt["request_dispatch_grants_authority"])
             self.assertFalse(receipt["github_token_required"])
