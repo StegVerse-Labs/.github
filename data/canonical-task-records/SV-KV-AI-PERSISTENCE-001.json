@@ -40,12 +40,15 @@
     "StegVerse-Labs/.github/tests/test_kv_ai_memory_resident_source_carriage.py",
     "StegVerse-Labs/.github/docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github/handoffs/SV-KV-AI-PERSISTENCE-001.json",
-    "StegVerse-Labs/.github/workers/kv_ai_memory_resident_worker.py"
+    "StegVerse-Labs/.github/workers/kv_ai_memory_resident_worker.py",
+    "StegVerse-Labs/.github/docs/KV_AI_MEMORY_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVER.md",
+    "StegVerse-Labs/.github/scripts/evaluate_kv_ai_workercoordinator_claim_fence_observation.py",
+    "StegVerse-Labs/.github/tests/test_kv_ai_workercoordinator_claim_fence_observation.py"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs", "StegVerse-org"],
     "repositories": ["StegVerse-Labs/continuity-vault-kit", "StegVerse-Labs/.github", "StegVerse-org/LLM-adapter"],
-    "components": ["PERSONAL_KV", "ORGANIZATIONAL_KV", "STEGVERSE_KV", "MACHINE_KV", "AI_CONTEXT_PACKET", "AI_MEMORY_WRITE_PROPOSAL", "PRIVATE_RESIDENT_INPUT_STAGING", "AUTONOMOUS_REAL_PERSONAL_KV_PRIVATE_INPUT_STAGING", "MEMORY_PACKET_SHARED_INTR_SUBMISSION", "RESIDENT_NATIVE_EVENT_TRIGGERED_SHARED_INTR_BOOTSTRAP", "PORTABLE_TARGETED_KV_AI_MEMORY_DISPATCH", "LLM_PROVIDER_REQUEST_MEMORY_BRIDGE", "FENCED_RESIDENT_PROVIDER_REQUEST_MATERIALIZATION", "EVIDENCE_GATED_KV_WRITEBACK_READBACK", "INTERLOCK_INTR_ADMISSION"]
+    "components": ["PERSONAL_KV", "ORGANIZATIONAL_KV", "STEGVERSE_KV", "MACHINE_KV", "AI_CONTEXT_PACKET", "AI_MEMORY_WRITE_PROPOSAL", "PRIVATE_RESIDENT_INPUT_STAGING", "AUTONOMOUS_REAL_PERSONAL_KV_PRIVATE_INPUT_STAGING", "MEMORY_PACKET_SHARED_INTR_SUBMISSION", "RESIDENT_NATIVE_EVENT_TRIGGERED_SHARED_INTR_BOOTSTRAP", "PORTABLE_TARGETED_KV_AI_MEMORY_DISPATCH", "LLM_PROVIDER_REQUEST_MEMORY_BRIDGE", "FENCED_RESIDENT_PROVIDER_REQUEST_MATERIALIZATION", "EVIDENCE_GATED_KV_WRITEBACK_READBACK", "INTERLOCK_INTR_ADMISSION", "WORKERCOORDINATOR_CLAIM_FENCE_OBSERVER_SOURCE_ONLY"]
   },
   "dependencies": [
     {"dependency_id":"DEP-KV-AI-PERSISTENCE-CLASSES","kind":"CAPABILITY","state":"RESOLVED","ref":"StegVerse-Labs/continuity-vault-kit/KV_AI_PERSISTENCE_CLASSES_MIRROR_HANDOFF.md"},
@@ -63,6 +66,7 @@
     {"dependency_id":"DEP-LLM-PROVIDER-REQUEST-BRIDGE","kind":"CAPABILITY","state":"RESOLVED","ref":"StegVerse-org/LLM-adapter/docs/KV_AI_MEMORY_CONTEXT_BRIDGE_MIRROR_HANDOFF.md"},
     {"dependency_id":"DEP-RESIDENT-FENCED-PROVIDER-REQUEST-MATERIALIZATION","kind":"CAPABILITY","state":"RESOLVED","ref":"StegVerse-Labs/.github/docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"},
     {"dependency_id":"DEP-PERSONAL-KV-EVIDENCE-GATED-WRITEBACK","kind":"CAPABILITY","state":"RESOLVED","ref":"StegVerse-Labs/continuity-vault-kit/runtime/kv_ai_memory_writeback_store.py"},
+    {"dependency_id":"DEP-WORKERCOORDINATOR-CLAIM-FENCE-OBSERVER-SOURCE","kind":"CAPABILITY","state":"RESOLVED","ref":"StegVerse-Labs/.github#1872 / 7250fe0023734b47691c6f78de5f43e569dac0b1 / scripts/evaluate_kv_ai_workercoordinator_claim_fence_observation.py / docs/KV_AI_MEMORY_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVER.md","authority_effect":"NONE_OBSERVATION_ONLY","runtime_evidence_effect":"NONE_SOURCE_RECOGNIZER_ONLY"},
     {"dependency_id":"DEP-LIVE-INTR-ADMISSION","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"Authentic shared-listener memory-packet admission plus downstream Interlock/InTr receipt chain"},
     {"dependency_id":"DEP-LIVE-WORKERCOORDINATOR-PROVIDERREQUEST","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"Fresh WorkerCoordinator claim/fence and KV_AI_MEMORY_PROVIDER_REQUEST_MATERIALIZED receipt"},
     {"dependency_id":"DEP-LIVE-PROVIDER-MODEL-CHAIN","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"External provider ingress, model response, and egress evidence through governed LLM path"},
@@ -76,13 +80,36 @@
     "StegVerse-Labs/.github:actions/run/34852946218",
     "StegVerse-Labs/.github:actions/run/34853568742",
     "StegVerse-Labs/.github:actions/run/34854120617",
-    "StegVerse-Labs/.github/docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"
+    "StegVerse-Labs/.github/docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github:pull/1872",
+    "StegVerse-Labs/.github:commit/7250fe0023734b47691c6f78de5f43e569dac0b1",
+    "StegVerse-Labs/.github:actions/run/34886148292",
+    "StegVerse-Labs/.github:actions/run/34886148296",
+    "StegVerse-Labs/.github:actions/run/34886148379",
+    "StegVerse-Labs/.github:issue/1848#issuecomment-5669627710"
+  ],
+  "source_side_predicate_recognizers": [
+    {
+      "predicate": "AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVATION",
+      "status": "VALIDATED_SOURCE_ONLY",
+      "merged_pr": "StegVerse-Labs/.github#1872",
+      "merge_commit": "7250fe0023734b47691c6f78de5f43e569dac0b1",
+      "observer_script": "scripts/evaluate_kv_ai_workercoordinator_claim_fence_observation.py",
+      "observer_doc": "docs/KV_AI_MEMORY_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVER.md",
+      "observer_tests": "tests/test_kv_ai_workercoordinator_claim_fence_observation.py",
+      "owner_issue_comment": "StegVerse-Labs/.github#1848 comment 5669627710",
+      "authority_effect": "NONE_OBSERVATION_ONLY",
+      "runtime_evidence_effect": "NONE_SOURCE_RECOGNIZER_ONLY",
+      "completion_effect": "NONE",
+      "current_runtime_observation": "NOT_OBSERVED"
+    }
   ],
   "expected_evidence_predicates": [
     "CANONICAL_TASK_REGISTERED",
     "SOURCE_CAPABILITIES_VALIDATED",
     "NO_DEVICE_DISCOVERY_OR_RDC_RUNTIME_GATE_VALIDATED",
     "NO_SOURCE_ONLY_EVIDENCE_PROMOTED",
+    "AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVATION",
     "LIVE_MEMORY_PACKET_INTR_ADMISSION_RECEIPT_OBSERVED",
     "LIVE_RESIDENT_PROVIDER_REQUEST_MATERIALIZATION_OBSERVED",
     "LIVE_EXTERNAL_PROVIDER_INGRESS_RESPONSE_EGRESS_CHAIN_OBSERVED",
@@ -90,6 +117,22 @@
     "MACHINE_KV_CROSS_PROVIDER_RECONSTRUCTION_OBSERVED",
     "HB_OBSERVATION_BOUND_TO_VERIFIED_KV_RECEIPTS_WITHOUT_STATE_AUTHORITY"
   ],
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": ["STEG-BROWSER-RETAINED-RESIDENT-NODE", "STEGOS-CURRENT-DEVICE-NODE", "STEG-BROWSER-EPHEMERAL-LEASE", "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER", "ADMITTED-EPHEMERAL-STEGOS-NODE", "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"],
+    "authority_effect": "NONE",
+    "second_user_operated_device_allowed": false,
+    "external_device_required": false,
+    "selected_substrate_id": null,
+    "reviews": [
+      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md","StegVerse-Labs/.github#1848"]},
+      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md","control/runtime-profile-map.json"]},
+      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"AUTHORITY","evidence_refs":["docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md","data/canonical-task-records/SV-KV-AI-PERSISTENCE-001.json"]},
+      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"]}
+    ]
+  },
   "runtime_requirements": {
     "capabilities": ["kv_context_selection", "provenance_binding", "private_resident_input_staging", "autonomous_real_personal_kv_private_input_staging", "resident_kv_memory_source_carriage", "resident_native_event_triggered_shared_intr_bootstrap", "portable_targeted_kv_ai_memory_dispatch", "universal_intr_endpoint_environment_carriage", "memory_packet_runtime_source_preparation", "memory_packet_shared_intr_submission", "memory_packet_intr_admission", "fenced_worker_execution", "llm_provider_request_bridge", "provider_request_intr_admission", "ai_context_delivery", "memory_write_proposal", "evidence_gated_kv_writeback", "kv_writeback_readback", "machine_kv_reconstruction", "hb_receipt_observation_binding"],
     "environment": "OWNER_CONTROLLED_KV_WITH_GOVERNED_AI_CONSUMER_AND_PROVIDER_NEUTRAL_RECONSTRUCTION",
@@ -115,6 +158,7 @@
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "source_state_proves_execution": false,
+    "source_side_predicate_recognizer_mints_runtime_authority": false,
     "worker_claim_authority": "WORKERCOORDINATOR",
     "master_records_reality_authority": true,
     "interlock_intr_required_for_governed_ingress_egress": true
