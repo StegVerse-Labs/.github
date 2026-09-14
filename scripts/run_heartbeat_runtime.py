@@ -35,11 +35,40 @@ from scripts.repair_resident_worker_presence import ensure_worker_presence
 from scripts.run_worker_runtime import _read_registry, adapter_entries as _worker_adapter_entries, load_adapters
 
 CARRIER_STATE = Path("control/heartbeat-carrier-runtime-state.json")
+MATERIALIZATION_RECEIPT = Path("receipts/sovereign-host/materialization.latest.json")
 WORKER_SUPERVISION_INTERVAL_REFERENCES = 100
 
 
 def _adapter_entries(root: Path):
     return _worker_adapter_entries(root)
+
+
+def _restore_local_source_root(root: Path) -> str | None:
+    """Recover the non-secret canonical source locator for carrier-side worker repair.
+
+    Native installation already records the canonical source root in the local
+    materialization receipt. Carrier-side self-heal must preserve that locator even
+    when a service manager did not carry STEGVERSE_HEARTBEAT_SOURCE_ROOT into the
+    carrier environment. This restores a locator only; it grants no execution,
+    admission, credential, claim, fence, route, or transition authority.
+    """
+    existing = str(os.environ.get("STEGVERSE_HEARTBEAT_SOURCE_ROOT") or "").strip()
+    if existing:
+        return str(Path(existing).expanduser().resolve())
+
+    receipt_path = root / MATERIALIZATION_RECEIPT
+    try:
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+    raw = str(receipt.get("source_root") or "").strip() if isinstance(receipt, dict) else ""
+    if not raw:
+        return None
+    source_root = Path(raw).expanduser().resolve()
+    if source_root == root or not source_root.is_dir():
+        return None
+    os.environ["STEGVERSE_HEARTBEAT_SOURCE_ROOT"] = str(source_root)
+    return str(source_root)
 
 
 def _sleep_until(deadline_ns: int) -> None:
@@ -68,6 +97,7 @@ def main() -> int:
         raise SystemExit("continuous dry-run is unsupported")
 
     root = Path(args.root).resolve()
+    _restore_local_source_root(root)
     runtime = CarrierHeartbeatRuntime(root)
     running = True
 
