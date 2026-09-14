@@ -1,0 +1,54 @@
+{
+  "schema": "stegverse.goal-task-component-profile/v1",
+  "task_id": "STEGOS-AI-PREEXECUTION-RUNTIME-PROOF-001",
+  "cosv_task_vector": "40000100100000",
+  "selected_components": [
+    {
+      "component_id": "RTC-MANIFEST-001",
+      "required": true,
+      "authority_effect": "NONE"
+    },
+    {
+      "component_id": "RTC-GOVERNED-PROCESSING-002",
+      "required": true,
+      "authority_owner": "WorkerCoordinator + Interlock/InTr",
+      "authority_effect": "NONE_COMPONENT_ONLY"
+    },
+    {
+      "component_id": "RTC-INTERLOCK-INTR-TRANSPORT-008",
+      "required": true,
+      "repeatable": true,
+      "authority_owner": "Interlock/InTr"
+    },
+    {
+      "component_id": "REUSABLE-EPHEMERAL-CONSTRUCT",
+      "required": true,
+      "contract": "data/reusable-task-ephemeral-construct-contract.json",
+      "authority_effect": "NONE"
+    },
+    {
+      "component_id": "RTC-FARSIDE-FINAL-009",
+      "required": true,
+      "purpose": "independent target-state readback after ALLOW/DENY/BYPASS"
+    },
+    {
+      "component_id": "RTC-EVIDENCE-CUSTODY-004",
+      "required": true,
+      "authority_owner": "Master Records"
+    }
+  ],
+  "task_specific_configuration": [
+    "StegOS merged pre-execution ALLOW/DENY/BYPASS evaluator",
+    "StegOS merged loopback HTTP target consequence test",
+    "authentic AI-originated proposal remains a separate runtime evidence predicate"
+  ],
+  "invariants": {
+    "duplicate_runtime_allowed": false,
+    "duplicate_scheduler_allowed": false,
+    "duplicate_workercoordinator_allowed": false,
+    "duplicate_credential_path_allowed": false,
+    "model_output_authority": "NONE",
+    "credential_authority": "TV/TVC",
+    "github_runtime_authority": "NONE"
+  }
+}
