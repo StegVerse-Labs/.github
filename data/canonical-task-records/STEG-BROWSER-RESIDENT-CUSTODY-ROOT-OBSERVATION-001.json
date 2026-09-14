@@ -4,20 +4,25 @@
   "correlation_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
   "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
   "parent_task_id": "STEG-BROWSER-AUTHENTIC-RUNTIME-RECEIPT-OBSERVATION-001",
+  "successor_task_ids": ["STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"],
+  "successor_issue_refs": ["StegVerse-Labs/.github#1866"],
   "goal": "Observe an authentic resident custody root for the existing StegBrowser Canonical Work reusable task path and classify retained receipt reachability without introducing a parallel scheduler, dispatcher, credential authority, runtime plane, or second user-operated device.",
   "coordination_state": "ACTIVE",
-  "checkout_state": "CHECKED_OUT",
+  "checkout_state": "CHECKED_OUT_SUCCESSOR_REMEDIATION_BOUND",
   "cosv_task_vector": "40000100100000",
   "source_refs": [
     "docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md",
-    "docs/STEGBROWSER_AUTHENTIC_RUNTIME_RECEIPT_OBSERVATION_MIRROR_HANDOFF.md",
-    "data/canonical-task-records/STEG-BROWSER-AUTHENTIC-RUNTIME-RECEIPT-OBSERVATION-001.json",
+    "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md",
+    "data/canonical-task-records/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json",
+    "data/runtime-materialization-remediation/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.predicates.json",
     "scripts/check_stegbrowser_runtime_consumption_receipts.py",
     "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
     "StegVerse-Labs/.github#1860",
     "StegVerse-Labs/.github#1857",
     "StegVerse-Labs/.github#1862",
     "StegVerse-Labs/.github#1863",
+    "StegVerse-Labs/.github#1864",
+    "StegVerse-Labs/.github#1866",
     "StegVerse-Labs/StegVerse-Healer#75",
     "StegVerse-Labs/StegVerse-Healer#81",
     "StegVerse-Labs/StegVerse-Healer@b7d37a91fa464a716a85c0a8a28cffd6e5022fb6"
@@ -71,6 +76,17 @@
       ],
       "authority_effect": "NONE_OBSERVATION_SURFACING_ONLY",
       "runtime_completion_claimed": false
+    },
+    {
+      "observed_at": "2026-09-14",
+      "transition": "BIND_SINGLE_RUNTIME_MATERIALIZATION_REMEDIATION_SUCCESSOR",
+      "successor_task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+      "successor_issue": "StegVerse-Labs/.github#1866",
+      "successor_handoff": "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md",
+      "successor_task_record": "data/canonical-task-records/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json",
+      "successor_predicates": "data/runtime-materialization-remediation/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.predicates.json",
+      "authority_effect": "NONE_REMEDIATION_PATH_BINDING_ONLY",
+      "runtime_completion_claimed": false
     }
   ],
   "dependencies": [
@@ -110,6 +126,13 @@
       "disposition": "RUN_NON_AUTHORIZING_EXACT_RECEIPT_CLASSIFIER_ONLY_AFTER_PACKET_OBSERVES_AUTHENTIC_RESIDENT_ROOT"
     },
     {
+      "dependency_id": "DEP-RUNTIME-MATERIALIZATION-REMEDIATION-SUCCESSOR",
+      "kind": "SUCCESSOR_REMEDIATION",
+      "state": "BOUND",
+      "ref": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001;StegVerse-Labs/.github#1866",
+      "disposition": "SINGLE_SUCCESSOR_BOUND_FOR_POST_REPAIR_PACKET_OBSERVATION_AND_ROOT_MATERIALIZATION_REMEDIATION"
+    },
+    {
       "dependency_id": "DEP-FULL-PARENT-PREDICATES",
       "kind": "RUNTIME_EVIDENCE",
       "state": "NOT_STARTED_IN_SUCCESSOR",
@@ -118,8 +141,16 @@
     }
   ],
   "blockers": [],
-  "allowed_next_transitions": ["OBSERVE_POST_REPAIR_HEALER_CARRIER_PACKET", "CLASSIFY_RECEIPT_REACHABILITY", "BIND_NEXT_RUNTIME_DEFECT"],
-  "handoff_projection_refs": ["docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md"],
+  "allowed_next_transitions": [
+    "CONTINUE_IN_STEG_BROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_001",
+    "OBSERVE_POST_REPAIR_HEALER_CARRIER_PACKET",
+    "CLASSIFY_RECEIPT_REACHABILITY",
+    "BIND_NEXT_RUNTIME_DEFECT"
+  ],
+  "handoff_projection_refs": [
+    "docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md",
+    "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md"
+  ],
   "completion": {
     "claimed": false,
     "validated": false,
@@ -127,7 +158,8 @@
     "receipt_reachability_classified": false,
     "runtime_consumption_observed": false,
     "owner_ingress_ready_observed": false,
-    "master_records_reconstruction_observed": false
+    "master_records_reconstruction_observed": false,
+    "runtime_materialization_remediation_successor_bound": true
   },
   "authority_model": {
     "task_registry_mints_execution_authority": false,
