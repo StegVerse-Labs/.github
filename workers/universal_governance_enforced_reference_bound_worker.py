@@ -8,11 +8,20 @@ reported.
 from __future__ import annotations
 
 from hashlib import sha1
+import importlib.util
 import json
 from pathlib import Path
 import sys
 
-from workers import universal_governance_enforced_reference_worker as base
+HERE = Path(__file__).resolve().parent
+BASE_PATH = HERE / "universal_governance_enforced_reference_worker.py"
+SPEC = importlib.util.spec_from_file_location(
+    "universal_governance_enforced_reference_worker", BASE_PATH
+)
+if SPEC is None or SPEC.loader is None:
+    raise RuntimeError("unable to load existing Universal Governance resident worker")
+base = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(base)
 
 REQUIRED_STEGCORE_COMMIT = "7cbef555608f7e154ae575dcbd5b4e65fbf0c85c"
 EXPECTED_GIT_BLOBS = {
