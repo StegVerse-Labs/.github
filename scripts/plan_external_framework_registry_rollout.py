@@ -17,6 +17,11 @@ from typing import Any
 
 HERE = Path(__file__).resolve().parent
 RESOLVER_PATH = HERE / "resolve_external_framework_roundtrip_rollout.py"
+REQUIRED_ENDPOINT_EVIDENCE_FIELDS = (
+    "endpoint_evidence_ref",
+    "endpoint_observed_at",
+    "endpoint_evidence_class",
+)
 
 
 def _load(path: Path) -> Any:
@@ -31,15 +36,45 @@ def _resolver():
     return module
 
 
-def _endpoint_for(endpoint_map: dict[str, Any], framework_id: str) -> str | None:
-    value = endpoint_map.get(framework_id)
-    if isinstance(value, str) and value.strip():
-        return value.strip()
-    if isinstance(value, dict):
-        ref = value.get("runtime_endpoint_ref")
-        if isinstance(ref, str) and ref.strip():
-            return ref.strip()
-    return None
+def _endpoint_entries(endpoint_map: dict[str, Any]) -> dict[str, Any]:
+    bindings = endpoint_map.get("bindings")
+    if isinstance(bindings, dict):
+        return bindings
+    return endpoint_map
+
+
+def _endpoint_binding(endpoint_map: dict[str, Any], framework_id: str) -> tuple[str | None, str, str, dict[str, str | None]]:
+    value = _endpoint_entries(endpoint_map).get(framework_id)
+    empty_evidence = {field: None for field in REQUIRED_ENDPOINT_EVIDENCE_FIELDS}
+    if value is None:
+        return None, "UNBOUND_NO_RUNTIME_ENDPOINT_REF", "no explicit endpoint binding supplied", empty_evidence
+    if isinstance(value, str):
+        return None, "UNQUALIFIED_ENDPOINT_REJECTED", "bare endpoint string lacks required endpoint evidence metadata", empty_evidence
+    if not isinstance(value, dict):
+        return None, "INVALID_ENDPOINT_BINDING", "endpoint binding must be an object", empty_evidence
+
+    ref = value.get("runtime_endpoint_ref")
+    endpoint = ref.strip() if isinstance(ref, str) and ref.strip() else None
+    evidence: dict[str, str | None] = {}
+    for field in REQUIRED_ENDPOINT_EVIDENCE_FIELDS:
+        item = value.get(field)
+        evidence[field] = item.strip() if isinstance(item, str) and item.strip() else None
+
+    present_evidence = [field for field, item in evidence.items() if item]
+    if endpoint is None:
+        if present_evidence:
+            return None, "ORPHAN_ENDPOINT_EVIDENCE_REJECTED", "endpoint evidence supplied without runtime_endpoint_ref", evidence
+        return None, "UNBOUND_NO_RUNTIME_ENDPOINT_REF", "no explicit endpoint binding supplied", evidence
+
+    missing = [field for field, item in evidence.items() if not item]
+    if missing:
+        return (
+            None,
+            "UNQUALIFIED_ENDPOINT_REJECTED",
+            "runtime endpoint lacks required evidence metadata: " + ",".join(missing),
+            evidence,
+        )
+    return endpoint, "EVIDENCE_QUALIFIED_ENDPOINT_BOUND", "endpoint binding includes required evidence metadata", evidence
 
 
 def build_registry_plan(
@@ -85,6 +120,7 @@ def build_registry_plan(
             if candidate.is_file():
                 manifest = _load(candidate)
 
+        runtime_endpoint_ref, binding_state, binding_reason, endpoint_evidence = _endpoint_binding(endpoints, framework_id)
         plan = resolver.build_plan(
             registry=registry,
             manifest=manifest,
@@ -92,15 +128,19 @@ def build_registry_plan(
             goal_task_id=goal_task_id,
             cosv_task_vector=cosv_task_vector,
             operation_class=operation_class,
-            runtime_endpoint_ref=_endpoint_for(endpoints, framework_id),
+            runtime_endpoint_ref=runtime_endpoint_ref,
             source_evidence_ref=source_evidence_ref,
             counterpart_provenance=counterpart_provenance,
         )
+        plan["endpoint_binding_state"] = binding_state
+        plan["endpoint_binding_reason"] = binding_reason
+        plan.update(endpoint_evidence)
         if manifest is None and plan.get("eligibility") == "REGISTRY_ENTRY_INVALID":
             plan["reason"] = "canonical manifest is missing or unreadable at registry manifest_path"
         plans.append(plan)
 
     counts = Counter(str(plan.get("eligibility")) for plan in plans)
+    binding_counts = Counter(str(plan.get("endpoint_binding_state", "NOT_EVALUATED")) for plan in plans)
     return {
         "schema": "stegverse.external-framework-registry-rollout-plan/v1",
         "reusable_task_id": resolver.REUSABLE_TASK_ID,
@@ -111,10 +151,12 @@ def build_registry_plan(
         "counterpart_provenance": counterpart_provenance,
         "framework_count": len(plans),
         "eligibility_counts": dict(sorted(counts.items())),
+        "endpoint_binding_counts": dict(sorted(binding_counts.items())),
         "roundtrip_eligible_frameworks": [
             plan.get("framework_id") for plan in plans if plan.get("eligibility") == "ROUNDTRIP_ELIGIBLE"
         ],
         "independent_invocation_semantics": True,
+        "endpoint_evidence_qualification_required": True,
         "fail_closed_scope": "PER_FRAMEWORK_INVOCATION",
         "authority_effect": "NONE_COORDINATION_ONLY",
         "transition_effect": "NONE_PLAN_ONLY",
