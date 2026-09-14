@@ -3,6 +3,8 @@ name: Validate KV AI Memory Resident Binding
 on:
   push:
     paths:
+      - 'README.md'
+      - 'data/canonical-task-records/SV-KV-AI-PERSISTENCE-001.json'
       - 'docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md'
       - 'handoffs/SV-KV-AI-PERSISTENCE-001.json'
       - 'workers/kv_ai_memory_resident_worker.py'
@@ -19,9 +21,12 @@ on:
       - 'tests/test_kv_ai_memory_resident_binding.py'
       - 'tests/test_kv_ai_memory_intr_admission.py'
       - 'tests/test_prepare_kv_ai_memory_intr_runtime_source.py'
+      - 'tests/test_kv_ai_memory_runtime_surface_invariant.py'
       - '.github/workflows/validate-kv-ai-memory-resident.yml'
   pull_request:
     paths:
+      - 'README.md'
+      - 'data/canonical-task-records/SV-KV-AI-PERSISTENCE-001.json'
       - 'docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md'
       - 'handoffs/SV-KV-AI-PERSISTENCE-001.json'
       - 'workers/kv_ai_memory_resident_worker.py'
@@ -38,6 +43,7 @@ on:
       - 'tests/test_kv_ai_memory_resident_binding.py'
       - 'tests/test_kv_ai_memory_intr_admission.py'
       - 'tests/test_prepare_kv_ai_memory_intr_runtime_source.py'
+      - 'tests/test_kv_ai_memory_runtime_surface_invariant.py'
 
 permissions:
   contents: read
@@ -54,5 +60,5 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install --upgrade pip pytest
-      - run: pytest -q tests/test_kv_ai_memory_resident_binding.py tests/test_kv_ai_memory_intr_admission.py tests/test_prepare_kv_ai_memory_intr_runtime_source.py
+      - run: pytest -q tests/test_kv_ai_memory_resident_binding.py tests/test_kv_ai_memory_intr_admission.py tests/test_prepare_kv_ai_memory_intr_runtime_source.py tests/test_kv_ai_memory_runtime_surface_invariant.py
       - run: python -m py_compile workers/kv_ai_memory_resident_worker.py workers/kv_ai_memory_intr_profile.py workers/kv_ai_memory_intr_transport.py scripts/install_kv_ai_memory_universal_intr_route.py scripts/prepare_kv_ai_memory_intr_runtime_source.py scripts/submit_kv_ai_memory_packet_local.py scripts/consume_kv_ai_memory_resident_request.py scripts/dispatch_resident_execution_requests.py
