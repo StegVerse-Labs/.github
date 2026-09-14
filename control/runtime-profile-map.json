@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.runtime-profile-map/v1",
-  "generation": 1,
-  "status": "BOOTSTRAP_SOURCE_PROJECTION_RUNTIME_BUILD_PENDING",
+  "generation": 2,
+  "status": "KV_AI_MEMORY_ROUTING_PROFILE_PROJECTED_NO_AUTHORITY_GRANTED",
   "generated_at": null,
   "authority": {
     "map_grants_execution_authority": false,
@@ -97,6 +97,26 @@
       "task_selectors": ["canonical_work_coordination"],
       "authority": {"availability_grants_authority": false, "match_grants_authority": false, "claim_fence_authority": "WORKERCOORDINATOR", "credential_authority": "TV/TVC", "hb_grants_authority": false},
       "provenance": {"source_refs": ["control/canonical-work-runtime-profile.json", "docs/CANONICAL_WORK_COORDINATION_RUNTIME_MIRROR_HANDOFF.md"], "projection_method": "CANONICAL_WORK_BOOTSTRAP"}
+    },
+    {
+      "profile_id": "kv-ai-memory-resident-routing-v1",
+      "profile_class": "TASK_ROUTING_PROFILE",
+      "component": "KV AI Memory Resident Routing",
+      "repository": "StegVerse-Labs/.github",
+      "declared": {
+        "capabilities": ["kv_context_selection", "provenance_binding", "private_resident_input_staging", "autonomous_real_personal_kv_private_input_staging", "resident_kv_memory_source_carriage", "resident_native_event_triggered_shared_intr_bootstrap", "portable_targeted_kv_ai_memory_dispatch", "universal_intr_endpoint_environment_carriage", "memory_packet_runtime_source_preparation", "memory_packet_shared_intr_submission", "memory_packet_intr_admission", "fenced_worker_execution", "llm_provider_request_bridge", "provider_request_intr_admission", "ai_context_delivery", "memory_write_proposal", "evidence_gated_kv_writeback", "kv_writeback_readback", "machine_kv_reconstruction", "hb_receipt_observation_binding"],
+        "effect_class": "kv_ai_memory_routing_readiness",
+        "mutation_allowed": true,
+        "deployment_allowed": false,
+        "environment_classes": ["OWNER_CONTROLLED_KV_WITH_GOVERNED_AI_CONSUMER_AND_PROVIDER_NEUTRAL_RECONSTRUCTION"],
+        "directions": ["MULTI_CLASS_KV_PERSISTENCE_WITH_PERSONAL_KV_AI_ROUNDTRIP"]
+      },
+      "substrate": {"hb_protocol": "HB32", "worker_runtime": {"class": "WorkerCoordinator", "fresh_claim_fence_required": true}, "intr": {"authority_effect": "INTERLOCK_INTR_REQUIRED"}, "runtime_root": "SYMBOLIC_RESIDENT_RUNTIME_ROOT"},
+      "required_predicates": ["real_personal_kv_inputs_available", "shared_intr_listener_available", "fresh_workercoordinator_claim_fence", "master_records_reconstruction_binding"],
+      "observed": {"state": "DECLARED_ONLY", "observed_at": null, "predicate_map": {}, "evidence_refs": []},
+      "task_selectors": ["kv_ai_memory"],
+      "authority": {"availability_grants_authority": false, "match_grants_authority": false, "claim_fence_authority": "WORKERCOORDINATOR", "credential_authority": "TV/TVC", "ingress_egress_authority": "INTERLOCK_INTR", "observed_reality_authority": "MASTER_RECORDS", "hb_grants_authority": false},
+      "provenance": {"source_refs": ["data/canonical-task-records/SV-KV-AI-PERSISTENCE-001.json", "docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md", "handoffs/SV-KV-AI-PERSISTENCE-001.json", "workers/kv_ai_memory_intr_event_bootstrap.py", "scripts/run_kv_ai_memory_intr_event_bootstrap.py", "scripts/refresh_and_dispatch_resident_requests.py", "workers/kv_ai_memory_resident_worker.py"], "projection_method": "DECLARED_SOURCE_ROUTING_PROFILE_NO_RUNTIME_OBSERVATION"}
     }
   ],
   "nonclaims": [
@@ -106,6 +126,8 @@
     "CAPABILITY_MATCH_DOES_NOT_GRANT_TASK_ADMISSION",
     "HB32_OSCILLATOR_REFERENCE_DOES_NOT_GRANT_AUTHORITY",
     "MAP_DOES_NOT_MINT_WORKERCOORDINATOR_CLAIM_OR_FENCE",
-    "MAP_DOES_NOT_GRANT_CREDENTIAL_OR_DEPLOYMENT_AUTHORITY"
+    "MAP_DOES_NOT_GRANT_CREDENTIAL_OR_DEPLOYMENT_AUTHORITY",
+    "KV_AI_MEMORY_ROUTING_PROFILE_DOES_NOT_PROVE_PERSONAL_KV_INPUTS_OR_LIVE_INTR_ADMISSION",
+    "KV_AI_MEMORY_ROUTING_PROFILE_DOES_NOT_PROVE_PROVIDER_EXECUTION_OR_KV_WRITEBACK"
   ]
 }
