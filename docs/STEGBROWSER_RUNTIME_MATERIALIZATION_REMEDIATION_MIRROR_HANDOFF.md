@@ -62,6 +62,24 @@ POST_REPAIR_HEALER_CARRIER_PACKET_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTIO
 RESIDENT_CUSTODY_ROOT_AUTHENTICALLY_OBSERVED_FOR_STEGBROWSER = false
 ```
 
+## Prompt 12 execution-surface reconciliation
+
+The task registry and this handoff were re-read before continuing. The assistant-side authorized remote-filesystem surface currently reports no connected Desktop Commander device, so this chat cannot directly inspect the resident filesystem and must not fabricate resident evidence from GitHub/source/CI.
+
+This does not create a new runtime defect or authorize a second device. The shared owner `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001` already defines the current same-device entrypoint as:
+
+```text
+https://stegverse.org/task0011-same-device-kv-recovery.html
+```
+
+and its first unresolved global predicate as:
+
+```text
+TESTFLIGHT_CURRENT_IPHONE_RUNTIME_OBSERVED
+```
+
+The StegBrowser lane therefore remains bound to the existing same-iPhone runtime path. Once that path produces authentic resident evidence, observe the Healer carrier consumption receipt through the authorized resident evidence surface and continue with the classifier below. Do not create another scheduler, runtime plane, evidence owner, credential route, or second-device path.
+
 ## Exact next required observation
 
 Observe the authentic resident copy of `receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json` through the already-authorized resident evidence surface. From its embedded `execution_result.resident_custody_root_observation_retention`, bind the exact packet path/hash/root/root-source/state.
@@ -87,4 +105,4 @@ Do not substitute source code, CI success, workflow artifacts, repository files,
 
 ## Manual work
 
-None.
+On the established current iPhone, open `https://stegverse.org/task0011-same-device-kv-recovery.html`, tap `Use This iPhone's KV and Prepare IPA`, and preserve the exact displayed success state or fail-closed message. Do not clear Safari/site/KV/node continuity state and do not switch devices. If the page specifically reports `resident KV installation not verified`, use `Admit Existing KV Installation Receipt` only if the canonical `_System/installation.receipt.json` is available.
