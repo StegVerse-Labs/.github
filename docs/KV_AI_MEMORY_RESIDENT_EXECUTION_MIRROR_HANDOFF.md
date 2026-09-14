@@ -46,7 +46,7 @@ GitHub Actions: validation/evidence transport only
 HeartBeat: observation/correlation only
 ```
 
-Repository state, source preparation, CI, fixtures, route installation, source carriage, event-bootstrap source, targeted-dispatch registration, generic-selector staging repair, chat probe, unavailable remote runtime channel, or duplicate successor-task creation never substitute for authentic InTr receipt, WorkerCoordinator claim/fence, provider operation, model response, KV write receipt, or Master Records reconstruction.
+Repository state, source preparation, CI, fixtures, route installation, source carriage, event-bootstrap source, targeted-dispatch registration, generic-selector staging repair, chat probe, unavailable remote runtime channel, duplicate successor-task creation, or source-side predicate recognizer output never substitute for authentic InTr receipt, WorkerCoordinator claim/fence, provider operation, model response, KV write receipt, or Master Records reconstruction.
 
 ## Resident runtime-surface invariant
 
@@ -73,6 +73,7 @@ LLM ProviderRequest bridge/materializer: VALIDATED
 generic kv_ai_memory selector to Personal-KV staging bridge: VALIDATED
 device discovery/presence/RDC gate: PROHIBITED
 runtime-routing readiness separates completion evidence predicates: VALIDATED
+WorkerCoordinator claim/fence predicate recognizer source: VALIDATED_SOURCE_ONLY
 ```
 
 Relevant successful validations include:
@@ -85,6 +86,9 @@ Relevant successful validations include:
 34860009803 — runtime evidence boundary attempt handoff validation, SUCCESS
 34864945125 — routing readiness source/workflow validation, SUCCESS
 34865041916 — routing-readiness boundary handoff validation, SUCCESS
+34886148292 — PR #1872 deterministic repository suite for claim/fence observer, SUCCESS
+34886148296 — PR #1872 Heartbeat validation for claim/fence observer, SUCCESS
+34886148379 — PR #1872 organization-control validation for claim/fence observer, SUCCESS
 ```
 
 Hosted validation proves source behavior only.
@@ -304,6 +308,33 @@ Exact next admissible runtime remediation path:
 
 This attempt does not prove non-occurrence. It records only that current chat/GitHub-visible surfaces do not expose the required owner-custodied same-execution chain, and that completion is therefore not claimed.
 
+## WorkerCoordinator claim/fence observer source boundary — 2026-09-14T19:50Z
+
+PR `#1872` merged source commit `7250fe0023734b47691c6f78de5f43e569dac0b1` after exact-head validation of head `074d2260c5ed6296ada9617a615113ffcdd56019`.
+
+```text
+observer_script: scripts/evaluate_kv_ai_workercoordinator_claim_fence_observation.py
+observer_doc: docs/KV_AI_MEMORY_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVER.md
+observer_tests: tests/test_kv_ai_workercoordinator_claim_fence_observation.py
+owner_issue_comment: StegVerse-Labs/.github#1848 comment 5669627710
+authority_effect: NONE_OBSERVATION_ONLY
+runtime_evidence_effect: NONE_SOURCE_RECOGNIZER_ONLY
+completion_effect: NONE
+```
+
+This observer is a deterministic predicate recognizer only. It accepts an already-existing owner-custodied same-execution WorkerCoordinator claim/fence tuple only when the resident targeted execution receipt, WorkerCoordinator registry, assignment timer, and Master Records worker-assignment row all bind the same task, COSV vector, claim id, fencing token, worker id, and worker instance.
+
+It does not mint a WorkerCoordinator claim or fence, create a lease, create an assignment timer, authorize execution, authorize InTr admission, prove Personal-KV inputs, prove ProviderRequest materialization, prove provider/model ingress-response-egress, prove KV writeback/readback, prove Master Records reconstruction, deploy, release, or complete `SV-KV-AI-PERSISTENCE-001`.
+
+Post-merge repository-visible classification remains:
+
+```text
+receipts/sovereign-host/resident-targeted-execution.latest.json: NOT FOUND
+AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVATION: NOT OBSERVED
+```
+
+The next admissible step is to run the merged observer only against real owner-custodied resident runtime evidence surfaces. A missing or mismatched evidence surface must be recorded as `AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED`; it must not be replaced with a synthetic claim/fence or fixture.
+
 ## Preferred execution paths
 
 Direct resident-native bootstrap:
@@ -321,6 +352,13 @@ python scripts/refresh_and_dispatch_resident_requests.py \
   --source-root <canonical-local-source-root> \
   --runtime-root <resident-runtime-root> \
   --only-consumer kv_ai_memory
+```
+
+Observer-only claim/fence classifier:
+
+```text
+python scripts/evaluate_kv_ai_workercoordinator_claim_fence_observation.py \
+  --runtime-root <resident-runtime-root>
 ```
 
 ## Completion rule
