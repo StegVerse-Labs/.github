@@ -1,6 +1,6 @@
 # Actions Cost + Public Exposure Mirror Handoff
 
-Status: ACTIVE / ECOSYSTEM-INVENTORY-STARTED / CONSERVATION-PATCH-PR-OPEN / PUBLIC-EXPOSURE-REVIEW-INITIAL  
+Status: ACTIVE / PUBLIC-READINESS-SCRUB-PRS-OPEN / CONSERVATION-PATCH-PR-OPEN  
 Goal Task ID: `SV-ACTIONS-COST-PUBLIC-EXPOSURE-001`  
 COSV task.v1: `21111100110000`  
 Repository: `StegVerse-Labs/.github`  
@@ -8,11 +8,11 @@ Canonical task record: `data/canonical-task-records/SV-ACTIONS-COST-PUBLIC-EXPOS
 
 ## Goal
 
-Reduce GitHub Actions minute burn across the StegVerse ecosystem, stop duplicate or blind validation runs, and classify which repositories can safely be public without exposing StegVerse data that should remain private.
+Reduce GitHub Actions minute burn across the StegVerse ecosystem, stop duplicate or blind validation runs, and classify/prepare repositories that can safely become public without exposing StegVerse data that should remain private.
 
 ## Authority boundary
 
-GitHub Actions remains validation and evidence transport only. Hosted CI must not claim runtime execution, credential authority, wallet authority, TV/TVC authority, Interlock/InTr admission, WorkerCoordinator claim/fence, or Master Records custody. This task may patch workflow conservation controls, create review artifacts, and open non-destructive PRs. It must not change repository visibility; visibility changes are `OWNER_EXPLICIT_CONSENT` / `USER_ONLY`.
+GitHub Actions remains validation/evidence transport only. Hosted CI must not claim runtime execution, credential authority, wallet authority, TV/TVC authority, Interlock/InTr admission, WorkerCoordinator claim/fence, or Master Records custody. This task may patch workflow conservation controls, create review artifacts, and open non-destructive PRs. It must not change repository visibility; visibility changes are `OWNER_EXPLICIT_CONSENT` / `USER_ONLY`.
 
 ## Current inventory basis
 
@@ -20,8 +20,9 @@ The connected GitHub repository inventory exposed administrative/write access to
 
 The immediate operational incident is month-to-date Actions use at 42,938 of 50,000 included minutes as seen by the owner screenshot, combined with repeated failure notifications for `.github`, `Site`, `TV`, `TVC`, `StegOS`, `Governance`, Admissible-Existence repositories, and GCAT-BCAT-Engine repositories.
 
-## Applied patch set in PR branch
+## Applied Actions conservation patch set
 
+PR: `StegVerse-Labs/.github#1820`  
 Branch: `actions-conservation-sweep-20260914`
 
 Applied conservation controls in `StegVerse-Labs/.github`:
@@ -42,11 +43,67 @@ Applied conservation controls in `StegVerse-Labs/.github`:
 
 These are low-risk because they only cancel older duplicate in-progress validations for the same workflow/ref and do not weaken test commands or authority boundaries.
 
-## Existing conservation evidence found
+## Public-readiness scrub performed
 
-`StegVerse-Labs/StegVerse-Healer` already contains `app/actions_cost_reducer.py`, a deterministic analyzer for workflow schedule pressure, missing concurrency, unfiltered push/pull_request triggers, matrix fanout, artifact custody, and enforcement thresholds. The next repair should reuse this analyzer rather than inventing another cost model.
+The six make-public candidates were searched with bounded GitHub code search for:
 
-Some `.github` workflows already have appropriate `permissions: {}` and `concurrency: cancel-in-progress: true`, including `heartbeat-worker-project.yml` and `org-control-plane-validate.yml`.
+```text
+password token secret private_key api_key credential wallet seed mnemonic sk- OPENAI_API_KEY GITHUB_TOKEN
+Rigel Randolph Chelsie Rensley Ryori address phone ssn va claim veteran disability medical bank coinbase icloud personal-kv skap
+PRIVATE PERSONAL CONFIDENTIAL INTERNAL TODO FIXME HACK secret credential
+```
+
+Result: no matching search results returned for these six candidate repositories in the bounded scan.
+
+## Active public-readiness PRs
+
+```text
+StegVerse-Labs/Governance#43
+  branch: public-readiness-20260914
+  adds: docs/PUBLIC_READINESS.md
+  state: OPEN
+
+StegVerse-Labs/hybrid-collab-bridge#28
+  branch: public-readiness-20260914
+  adds: docs/PUBLIC_READINESS.md
+  state: OPEN
+  note: legacy bridge-openai.yml is already manual-only and fail-closed
+
+StegVerse-Labs/SCW#89
+  branch: public-readiness-20260914
+  adds: docs/PUBLIC_READINESS.md
+  state: OPEN
+
+StegVerse-Labs/StegVerse-SCW#46
+  branch: public-readiness-20260914
+  adds: docs/PUBLIC_READINESS.md
+  state: OPEN
+
+Admissible-Existence/standing-proof-formalism#4
+  branch: public-readiness-20260914
+  adds: docs/PUBLIC_READINESS.md
+  state: OPEN
+
+Data-Continuation/formalisms#2
+  branch: public-readiness-20260914
+  adds: docs/PUBLIC_READINESS.md
+  state: OPEN
+```
+
+## Make-public candidates under active readiness work
+
+```text
+StegVerse-Labs/Governance
+StegVerse-Labs/hybrid-collab-bridge
+StegVerse-Labs/SCW
+StegVerse-Labs/StegVerse-SCW
+Admissible-Existence/standing-proof-formalism
+Data-Continuation/formalisms
+```
+
+## Repositories still not public-ready
+
+Do not make these public in the current state without targeted review: `TVC`, `TV`, `Continuity`, `StegOS`, `micro-node-runtime`, `StegProfile`, `StegGuardian`, `entity-sandbox-runner`, telemetry/orchestration repos, private GCAT/BCAT core-full/core-addons/core-master/Marketplace/Gemstone_IV, and any repo that carries KV, SKAP, resident runtime, credential, receipt, custody, personal-state, patent-private, or unpublished implementation details.
 
 ## Best fixes by workflow class
 
@@ -58,144 +115,15 @@ Some `.github` workflows already have appropriate `permissions: {}` and `concurr
 6. Set default permissions to `{}` or `contents: read`; use write permissions only in the exact job that mutates repository state.
 7. Never rerun failed workflows blindly. Reruns require a named failure class, expected fix, and narrow validation target.
 
-## Initial public-safety classification
-
-Safe to keep public based on current visibility and role, subject to owner confirmation that public disclosure is intended:
-
-```text
-Admissible-Existence/.github
-Admissible-Existence/ECAT-ICAT
-Admissible-Existence/STCM
-Admissible-Existence/learning-transition-governance
-AdmittedCode/.github
-AdmittedCode/admissibility-receipt
-AdmittedCode/code-admit-gate
-AdmittedCode/coherency-scanner
-AdmittedCode/fleet-status
-AdmittedCode/provider-harness
-Data-Continuation/core-lite
-Data-Continuation/formalism-tests
-Data-Continuation/RTG-Tests
-GCAT-BCAT-Engine/Documentation
-GCAT-BCAT-Engine/Publisher
-GCAT-BCAT-Engine/StegSim
-GCAT-BCAT-Engine/Triage
-GCAT-BCAT-Engine/core-lite
-GCAT-BCAT-Engine/core-lite-prod
-GCAT-BCAT-Engine/workflows
-master-records/monitoring
-StegVerse-002/core-lite
-StegVerse-002/stegguardian-wiki
-StegVerse-Labs/3I-Atlas
-StegVerse-Labs/Epsteinality
-StegVerse-Labs/FREE-DOM
-StegVerse-Labs/Giuffre-ality
-StegVerse-Labs/Maxwellality
-StegVerse-Labs/Patents
-StegVerse-Labs/Site
-StegVerse-Labs/StegBiography
-StegVerse-Labs/StegVerse-Healer
-StegVerse-Labs/Trumpality
-```
-
-Private/internal repositories that should stay private until a secret/credential/private-state/personal-data/IP scrub passes:
-
-```text
-Admissible-Existence/AE
-Admissible-Existence/BC
-Admissible-Existence/CHF
-Admissible-Existence/CTA
-Admissible-Existence/DC
-Admissible-Existence/DaCo
-Admissible-Existence/Existence
-Admissible-Existence/FI
-Admissible-Existence/Fundamental-Invariants-of-Reality
-Admissible-Existence/GCAT-BCAT
-Admissible-Existence/GTG
-Admissible-Existence/HPS
-Admissible-Existence/IICT
-Admissible-Existence/IW
-Admissible-Existence/RE
-Admissible-Existence/RE-Reduction
-Admissible-Existence/RTG
-Admissible-Existence/SOL
-Admissible-Existence/TT
-Admissible-Existence/Triad
-Admissible-Existence/ae-validation-factory
-Admissible-Existence/ae-validation-research
-Admissible-Existence/core-lite
-Admissible-Existence/standing-proof-formalism
-Admissible-Existence/telemetry
-Admissible-Existence/tracker
-Admissible-Existence/validation-profile-registry
-Admissible-Existence/validator
-Data-Continuation/.github
-Data-Continuation/StegClaw
-Data-Continuation/formalisms
-Data-Continuation/products
-GCAT-BCAT-Engine/.github
-GCAT-BCAT-Engine/Gemstone_IV
-GCAT-BCAT-Engine/Marketplace
-GCAT-BCAT-Engine/WZ
-GCAT-BCAT-Engine/core-addons
-GCAT-BCAT-Engine/core-full
-GCAT-BCAT-Engine/core-master
-GCAT-BCAT-Engine/telemetry
-master-records/.github
-master-records/core-lite
-master-records/orchestration
-master-records/telemetry
-StegGhost/.github
-StegGhost/StegCGE
-StegGhost/automated_buildout
-StegGhost/entity-sandbox-runner
-StegGhost/ghost-pat-lab
-StegGhost/stegverse-sandbox
-StegGhost/telemetry
-StegVerse-002/.github
-StegVerse-002/StegGuardian
-StegVerse-002/StegProfile
-StegVerse-002/admissibility-gateway
-StegVerse-002/capability-registry
-StegVerse-002/legacy_core_lite
-StegVerse-002/micro-node-runtime
-StegVerse-Labs/Continuity
-StegVerse-Labs/Governance
-StegVerse-Labs/SCW
-StegVerse-Labs/StegVerse-SCW
-StegVerse-Labs/TVC
-StegVerse-Labs/TV
-StegVerse-Labs/hybrid-collab-bridge
-```
-
-Potentially public after scrub/review, not before:
-
-```text
-StegVerse-Labs/Governance
-StegVerse-Labs/hybrid-collab-bridge
-StegVerse-Labs/SCW
-StegVerse-Labs/StegVerse-SCW
-Admissible-Existence/standing-proof-formalism
-Data-Continuation/formalisms
-```
-
-Do not make these public in the current state without targeted review: `TVC`, `TV`, `Continuity`, `StegOS`, `micro-node-runtime`, `StegProfile`, `StegGuardian`, `entity-sandbox-runner`, telemetry/orchestration repos, private GCAT/BCAT core-full/core-addons/core-master/Marketplace/Gemstone_IV, and any repo that carries KV, SKAP, resident runtime, credential, receipt, custody, personal-state, patent-private, or unpublished implementation details.
-
-## Next bounded work
-
-1. Open PR for the `.github` conservation patch.
-2. Continue scanning `Site`, `TVC`, `TV`, `StegOS`, `Governance`, Admissible-Existence, and GCAT-BCAT-Engine workflow directories for missing concurrency, unfiltered triggers, high-frequency schedules, and duplicate validators.
-3. Use `StegVerse-Healer/app/actions_cost_reducer.py` as the canonical analyzer and add repo inventory input rather than running every validator.
-4. Patch only low-risk workflow controls automatically; leave visibility changes for owner action.
-
 ## Current truth
 
 ```text
 canonical task: IN_PROGRESS
 workflow conservation patch branch: CREATED
 .github low-risk workflow concurrency patches: APPLIED
+public-readiness candidate PRs: OPEN_IN_6_REPOS
 repository visibility mutations: NOT PERFORMED
 full ecosystem workflow scan: STARTED_NOT_COMPLETE
 public-safe classification: INITIAL_CONSERVATIVE
-Actions cost reduction: NOT VALIDATED UNTIL PR MERGED_AND_NEXT_RUN_OBSERVED
+Actions cost reduction: NOT VALIDATED UNTIL PR_MERGED_AND_NEXT_RUN_OBSERVED
 ```
