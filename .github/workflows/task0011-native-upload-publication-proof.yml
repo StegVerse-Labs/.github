@@ -1,0 +1,43 @@
+name: TASK-0011 Native TestFlight Upload Publication Proof
+
+on:
+  push:
+    branches:
+      - reconcile/task0011-native-upload-publication-proof
+    paths:
+      - '.github/workflows/task0011-native-upload-publication-proof.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  prove-publication:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch exact public projection without credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://stegverse.org/stegos-bootstrap'
+          curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 "$base/current-iphone-testflight-bootstrap.js" -o /tmp/bootstrap.js
+          curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 "$base/current-iphone-tvc-testflight-upload-request.js" -o /tmp/upload-request.js
+          curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 "$base/current-iphone-tvc-testflight-byte-ingress.js" -o /tmp/byte-ingress.js
+      - name: Require native Build Upload projection markers
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq 'executeCurrentIphoneTvcTestflightByteIngress' /tmp/bootstrap.js
+          grep -Fq 'TVC_NATIVE_BUILD_UPLOAD_COMMITTED' /tmp/bootstrap.js
+          grep -Fq 'TESTFLIGHT_PROCESSING_INSTALL_OBSERVATION' /tmp/bootstrap.js
+          grep -Fq 'provider_operation: "UPLOAD_TESTFLIGHT_BUILD"' /tmp/upload-request.js
+          grep -Fq 'artifact://stegos/current-iphone/' /tmp/upload-request.js
+          grep -Fq 'application/octet-stream' /tmp/byte-ingress.js
+          grep -Fq 'x-stegverse-provider-request' /tmp/byte-ingress.js
+          grep -Fq 'credentials: "omit"' /tmp/byte-ingress.js
+          grep -Fq 'artifact_persisted_by_tvc !== false' /tmp/byte-ingress.js
+          if grep -E 'ASC_(KEY_ID|ISSUER_ID|PRIVATE_KEY)|GITHUB_TOKEN|onrender\.com' /tmp/bootstrap.js /tmp/upload-request.js /tmp/byte-ingress.js; then
+            echo '::error::public projection contains prohibited credential/hosted marker'
+            exit 1
+          fi
+          echo 'TASK0011_NATIVE_TESTFLIGHT_UPLOAD_PUBLICATION=PASS'
+          echo 'TASK0011_RUNTIME_PROOF_EFFECT=NONE'
