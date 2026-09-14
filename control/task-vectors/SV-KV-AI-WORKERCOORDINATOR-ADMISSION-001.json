@@ -1,0 +1,18 @@
+{
+  "schema": "stegverse.cosv-task-vector/v0.1",
+  "profile": "task.v1",
+  "task_id": "SV-KV-AI-WORKERCOORDINATOR-ADMISSION-001",
+  "root_correlation_id": "SV-KV-AI-PERSISTENCE-001",
+  "vector": "20111110120000",
+  "notation": "L R U I V G O C M T B E A P",
+  "vector_state": "EMITTED",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "canonical_task_record_ref": "data/canonical-task-records/SV-KV-AI-WORKERCOORDINATOR-ADMISSION-001.json",
+  "handoff_ref": "docs/KV_AI_MEMORY_WORKERCOORDINATOR_ADMISSION_MIRROR_HANDOFF.md",
+  "parent_task_id": "SV-KV-AI-PERSISTENCE-001",
+  "nonclaims": [
+    "COSV_VECTOR_DOES_NOT_GRANT_EXECUTION_AUTHORITY",
+    "COSV_VECTOR_DOES_NOT_PROVE_WORKERCOORDINATOR_CLAIM",
+    "COSV_VECTOR_DOES_NOT_PROVE_INTR_ADMISSION_OR_RUNTIME_COMPLETION"
+  ]
+}
