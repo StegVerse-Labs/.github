@@ -1,0 +1,64 @@
+{
+  "schema": "stegverse.runtime-observation/v1",
+  "task_id": "SV-KV-AI-PERSISTENCE-001",
+  "cosv_task_vector": "20111110110000",
+  "recorded_at": "2026-09-14T13:31:00-05:00",
+  "repository": "StegVerse-Labs/.github",
+  "issue_ref": "StegVerse-Labs/.github#1848",
+  "observation_kind": "POST_PROJECTION_REPAIR_CLAIM_FENCE_OBSERVATION",
+  "exact_tuple": {
+    "task_id": "SV-KV-AI-PERSISTENCE-001",
+    "cosv_task_vector": "20111110110000",
+    "resident_execution_request_id": "RESIDENT-EXEC-KV-AI-MEMORY-001",
+    "worker_id": "kv-ai-memory-resident-worker",
+    "adapter_ref": "process:kv-ai-memory-resident-v1"
+  },
+  "inspected_refs": {
+    "main_commit_observed": "6ac600895f40008c2381055f72aefbbad70bbe77",
+    "worker_registry_fragment": "control/worker-registry.d/kv-ai-memory-resident-001.json",
+    "canonical_worker_registry": "control/worker-registry.json",
+    "assignment_log": "events/master-records-worker-assignment.jsonl",
+    "resident_targeted_execution_receipt": "receipts/sovereign-host/resident-targeted-execution.latest.json",
+    "resident_request_consumption_receipt": "receipts/sovereign-host/kv-ai-memory-resident-request-consumption.latest.json",
+    "intr_receipt": "receipts/sovereign-network/kv-ai-memory-intr.latest.json"
+  },
+  "source_gates_present": {
+    "claim_state_aligned": true,
+    "cost_basis_ref_present": true,
+    "claim_fence_boundary_present": true,
+    "resident_request_exact_bound": true
+  },
+  "observed_workercoordinator_claim_fence": {
+    "claim_id": null,
+    "worker_instance_id": null,
+    "lease_or_assignment_timer": null,
+    "fresh_fencing_token": null,
+    "assignment_record_ref": null,
+    "observed": false
+  },
+  "first_missing_same_execution_predicate": "AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVATION",
+  "defect_classification": "EXISTING_WORKERCOORDINATOR_CYCLE_OR_ASSIGNMENT_PROJECTION_NOT_REPOSITORY_VISIBLE_AFTER_SOURCE_GATES_REPAIRED",
+  "closure_condition": "Close issue #1848 only when the existing authorized WorkerCoordinator path produces repository-visible claim_id, worker_instance_id, lease_or_assignment_timer, fresh fencing_token, and assignment_record_ref for the exact tuple without GitHub minting claim/fence or synthesizing runtime inputs.",
+  "downstream_predicates_not_reached": [
+    "REAL_PERSONAL_KV_ROOT_INPUT_FILES",
+    "SHARED_UNIVERSAL_INTR_ALLOW",
+    "MEMORY_PACKET_ADMISSION_JSON",
+    "KV_AI_MEMORY_PROVIDER_REQUEST_MATERIALIZED",
+    "GOVERNED_PROVIDER_MODEL_INGRESS_RESPONSE_EGRESS",
+    "EVIDENCE_GATED_KV_WRITEBACK_READBACK",
+    "MASTER_RECORDS_RECONSTRUCTION"
+  ],
+  "nonclaims": [
+    "NO_WORKERCOORDINATOR_CLAIM_OBSERVED",
+    "NO_WORKER_INSTANCE_OBSERVED",
+    "NO_LEASE_OR_ASSIGNMENT_TIMER_OBSERVED",
+    "NO_FRESH_FENCE_OBSERVED",
+    "NO_PERSONAL_KV_INPUT_OBSERVED",
+    "NO_INTR_ADMISSION_OBSERVED",
+    "NO_PROVIDER_EXECUTION_OBSERVED",
+    "NO_KV_WRITEBACK_READBACK_OBSERVED",
+    "NO_MASTER_RECORDS_RECONSTRUCTION_OBSERVED",
+    "NO_RUNTIME_COMPLETION_CLAIMED"
+  ],
+  "authority_effect": "NONE_OBSERVATION_ONLY"
+}
