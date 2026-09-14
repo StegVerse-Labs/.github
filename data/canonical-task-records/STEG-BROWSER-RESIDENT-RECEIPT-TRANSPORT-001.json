@@ -1,0 +1,147 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001",
+  "correlation_id": "STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001",
+  "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+  "parent_task_id": "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
+  "goal": "Resolve the resident receipt reachability and transport lane for StegBrowser runtime consumption by inspecting exact existing resident custody targets, classifying them deterministically, and binding valid authentic receipts or capturing/remediating the next concrete reachability defect without claiming source or CI evidence as runtime proof.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "40000100100000",
+  "github_task_registry_issue": "StegVerse-Labs/.github#1854",
+  "source_refs": [
+    "docs/STEGBROWSER_RESIDENT_RECEIPT_TRANSPORT_MIRROR_HANDOFF.md",
+    "docs/STEGBROWSER_RUNTIME_CONSUMPTION_MIRROR_HANDOFF.md",
+    "data/canonical-task-records/STEG-BROWSER-RUNTIME-CONSUMPTION-001.json",
+    "StegVerse-Labs/.github#1260",
+    "StegVerse-Labs/.github#1846",
+    "StegVerse-Labs/.github#1851",
+    "StegVerse-Labs/.github#1852",
+    "StegVerse-Labs/.github#1854"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegOS", "StegVerse-Labs/Site", "StegVerse-Labs/TVC"],
+    "components": [
+      "resident-receipt-reachability",
+      "stegbrowser-canonical-work-runtime-consumption-receipt",
+      "stegbrowser-evidence-custody-sidecar",
+      "stegbrowser-tvc-source-promotion-receipt",
+      "browser-recipient-apple-runtime-observation",
+      "parent-task-record-binding",
+      "parent-handoff-binding"
+    ]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-PARENT-RUNTIME-CONSUMPTION-GOAL",
+      "kind": "PARENT_GOAL",
+      "state": "ACTIVE_CHECKED_OUT_RUNTIME_OPEN",
+      "ref": "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
+      "disposition": "PARENT_REACHED_PROMPT_COUNT_20_WITHOUT_AUTHENTIC_RUNTIME_COMPLETION; DO_NOT_MARK_COMPLETE_FROM_SOURCE_OR_CI"
+    },
+    {
+      "dependency_id": "DEP-RECEIPT-REACHABILITY-VERIFIER",
+      "kind": "SOURCE_VALIDATION",
+      "state": "OPEN_PR_VALIDATION_SUCCESS_REBASE_REQUIRED",
+      "ref": "StegVerse-Labs/.github#1852@a6d0d6e33520a81b261018f36bb78ff5568d7fed",
+      "disposition": "VERIFIER_CLASSIFIES_EXACT_RECEIPTS_AS_MISSING_INVALID_OR_VALID_BINDABLE; BASE_DRIFT_AGAINST_CURRENT_MAIN_REQUIRES_REFRESH_BEFORE_MERGE"
+    },
+    {
+      "dependency_id": "DEP-CANONICAL-WORK-RESIDENT-CONSUMPTION-RECEIPT",
+      "kind": "RUNTIME_EVIDENCE",
+      "state": "UNOBSERVED",
+      "ref": "receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json",
+      "disposition": "REQUIRE_AUTHENTIC_EXISTING_RESIDENT_CUSTODY_RECEIPT"
+    },
+    {
+      "dependency_id": "DEP-EVIDENCE-CUSTODY-SIDECAR",
+      "kind": "RUNTIME_EVIDENCE_TRANSPORT",
+      "state": "UNOBSERVED",
+      "ref": "receipts/sovereign-host/stegbrowser-runtime-consumption-evidence-custody.latest.json",
+      "disposition": "REQUIRE_SHA256_PROVENANCE_FOR_EXACT_BYTE_CUSTODY"
+    },
+    {
+      "dependency_id": "DEP-TVC-SOURCE-PROMOTION-RECEIPT",
+      "kind": "RUNTIME_EVIDENCE",
+      "state": "UNOBSERVED",
+      "ref": "receipts/sovereign-host/stegbrowser-tvc-source-promotion-request-consumption.latest.json",
+      "disposition": "REQUIRE_CURRENT_DISPATCH_BOUND_STAGED_CONSUMPTION_FOR_PINNED_TVC_SHA_AEF6B6F5"
+    },
+    {
+      "dependency_id": "DEP-OWNER-INGRESS-OBSERVATION",
+      "kind": "RUNTIME_EVIDENCE",
+      "state": "UNOBSERVED",
+      "ref": "/var/lib/stegverse/skap/browser-recipient/apple/receipts/runtime-observation-latest.json",
+      "disposition": "REQUIRE_OWNER_INGRESS_READY_OBSERVED_FROM_IMMUTABLE_OBSERVER_PATH"
+    }
+  ],
+  "blockers": [],
+  "systemic_incident_ref": "StegVerse-Labs/.github#1260",
+  "adjacent_task_refs": [
+    "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
+    "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+    "STEGVERSE-CANONICAL-WORK-COORDINATION-001"
+  ],
+  "expected_evidence_predicates": [
+    "EXACT_RESIDENT_RECEIPT_TARGETS_INSPECTED",
+    "RECEIPT_REACHABILITY_VERIFIER_MERGED_OR_EQUIVALENT_CURRENT_MAIN_VERIFIER_MERGED",
+    "CANONICAL_WORK_RESIDENT_CONSUMPTION_RECEIPT_CLASSIFIED",
+    "EVIDENCE_CUSTODY_SIDECAR_CLASSIFIED",
+    "TVC_SOURCE_PROMOTION_RECEIPT_CLASSIFIED",
+    "OWNER_INGRESS_RUNTIME_OBSERVATION_CLASSIFIED",
+    "VALID_BINDABLE_RECEIPTS_HASHED_AND_BOUND_OR_NEXT_REACHABILITY_DEFECT_REMEDIATED",
+    "NO_PARALLEL_SCHEDULER_DISPATCHER_CREDENTIAL_PATH_OR_SECOND_DEVICE"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["existing_resident_custody_inspection", "receipt_sha256_validation", "receipt_binding", "reachability_transport_repair"],
+    "environment": "EXISTING_STEGVERSE_RESIDENT_HEARTBEAT_SCHEDULER_CUSTODY_SURFACE",
+    "direction": "INTERNAL",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {"substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE", "disposition": "SELECTED", "limitation_class": "NONE", "evidence_refs": ["docs/STEGBROWSER_RUNTIME_CONSUMPTION_MIRROR_HANDOFF.md", "StegVerse-Labs/.github#1854"]},
+      {"substrate_id": "STEGOS-CURRENT-DEVICE-NODE", "disposition": "SUITABLE", "limitation_class": "NONE", "evidence_refs": ["docs/STEGBROWSER_RUNTIME_CONSUMPTION_MIRROR_HANDOFF.md"]},
+      {"substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE", "disposition": "SUITABLE", "limitation_class": "NONE", "evidence_refs": ["docs/STEGBROWSER_RUNTIME_CONSUMPTION_MIRROR_HANDOFF.md"]},
+      {"substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER", "disposition": "SUITABLE", "limitation_class": "NONE", "evidence_refs": ["StegVerse-Labs/Site#1305"]},
+      {"substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE", "disposition": "SUITABLE", "limitation_class": "NONE", "evidence_refs": ["source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json"]},
+      {"substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT", "disposition": "NOT_APPLICABLE", "limitation_class": "NOT_APPLICABLE", "evidence_refs": ["docs/STEGBROWSER_RESIDENT_RECEIPT_TRANSPORT_MIRROR_HANDOFF.md"]}
+    ],
+    "selected_substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "valid_receipts_bound": false,
+    "next_reachability_defect_remediated": false,
+    "parent_completion_claimed": false
+  },
+  "allowed_next_transitions": ["REFRESH_VERIFIER_PR", "MERGE_VERIFIER", "INSPECT_EXISTING_RESIDENT_RECEIPTS", "BIND_VALID_RECEIPTS", "REMEDIATE_REACHABILITY_DEFECT"],
+  "handoff_projection_refs": ["docs/STEGBROWSER_RESIDENT_RECEIPT_TRANSPORT_MIRROR_HANDOFF.md"],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "github_runtime_authority": "NONE",
+    "single_resident_carrier_required": true,
+    "second_user_operated_device_allowed": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "interlock_intr_required_for_governed_ingress_egress": true,
+    "credential_authority": "TV/TVC",
+    "master_records_reality_authority": true
+  }
+}
