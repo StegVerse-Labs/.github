@@ -1,0 +1,136 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-SV-KV-AI-PERSISTENCE-001",
+  "created_at": "2026-09-14T03:40:00Z",
+  "updated_at": "2026-09-14T03:40:00Z",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "SV-KV-AI-PERSISTENCE-001",
+    "objective": "Materialize one exact provider-neutral LLM request from an already-admitted Personal-KV memory packet inside fenced resident bound state, without exposing private memory to repository state or minting admission/provider/write authority.",
+    "success_predicates": [
+      "Resident-local context packet, memory-packet ALLOW artifact, and provider request input exist only in fenced bound state.",
+      "The existing LLM-adapter KV memory bridge validates exact packet/admission binding and emits one deterministic ProviderRequest hash.",
+      "The materialized ProviderRequest remains inside fenced bound state and contains no provider credential material.",
+      "The worker records no provider ingress, provider execution, provider egress, KV writeback, activation, or authority claim.",
+      "WorkerCoordinator fresh claim/fence semantics and ProcessWorkerAdapter mutation fencing remain authoritative."
+    ],
+    "failure_predicates": [
+      "Private packet, prompt, or materialized ProviderRequest is written into GitHub repository state.",
+      "Repository source or CI is represented as authentic memory-packet admission or live model consumption.",
+      "The worker mints an InTr decision, TV/TVC provider operation, KV write, claim, fence, or model authority.",
+      "A hosted runner or second user-operated machine becomes the sovereign execution requirement.",
+      "Credential or token material appears in request input, bound-state output, evidence, or repository files."
+    ],
+    "authority_ceiling": [
+      "resident-local Personal-KV memory packet to ProviderRequest materialization only",
+      "no Interlock/InTr admission authority",
+      "no provider execution authority",
+      "no credential authority",
+      "no KV mutation authority",
+      "no activation authority"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "SV-KV-AI-PERSISTENCE-001",
+    "repository": "StegVerse-Labs/.github",
+    "canonical_owner_ref": "docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
+    "canonical_lineage_key": "sv:kv-ai-memory-resident",
+    "derivation_depth": 0,
+    "priority": "release",
+    "operational_state": "REQUIRED_RESIDENT_PROVIDER_REQUEST_MATERIALIZATION_AND_LIVE_INTR_CONTINUATION",
+    "claim_state": "MACHINE_CLAIM_ON_EXECUTION",
+    "fencing_token": null,
+    "source_refs": [
+      "docs/KV_AI_MEMORY_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
+      "workers/kv_ai_memory_resident_worker.py",
+      "StegVerse-Labs/continuity-vault-kit/KV_AI_PERSISTENCE_CLASSES_MIRROR_HANDOFF.md",
+      "StegVerse-org/LLM-adapter/docs/KV_AI_MEMORY_CONTEXT_BRIDGE_MIRROR_HANDOFF.md"
+    ]
+  },
+  "authority": {
+    "authority_source": "SV-KV-AI-PERSISTENCE-001 canonical task registry + existing WorkerCoordinator task-control boundary",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "policy_version": "kv-ai-memory-resident-v0.1",
+    "heartbeat_grants_execution_authority": false,
+    "fresh_fence_required": true,
+    "minimum_fencing_token_exclusive": 0,
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "third_party_runtime_required": false,
+    "physical_additional_machine_required": false
+  },
+  "execution": {
+    "required_capabilities": [
+      "bounded_process_execution",
+      "fenced_bound_state",
+      "kv_ai_memory_provider_request_materialization"
+    ],
+    "allowed_paths": [
+      "receipts/kv-ai-memory/**"
+    ],
+    "allowed_services": [],
+    "max_actions": 4,
+    "max_retries": 3,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 16,
+    "rate_class": "kv_ai_memory_resident",
+    "hosted_execution_allowed": false,
+    "bound_state_root": "~/.stegverse/state/kv-ai-memory-resident",
+    "bound_state_allowed_paths": [
+      "inputs/**",
+      "materialized/**",
+      "receipts/**"
+    ]
+  },
+  "completion": {
+    "source_implementation_state": "IN_PROGRESS",
+    "runtime_activation_state": "PENDING_AUTHENTIC_MEMORY_PACKET_AND_PROVIDER_CHAIN",
+    "runtime_observation_claimed": false,
+    "terminal_evidence": "authentic same-execution memory-packet InTr ALLOW + provider ingress/TVC/response/egress evidence + KV writeback/readback evidence",
+    "next_authorized_action": "When resident-local bound-state inputs exist, use the existing WorkerCoordinator to materialize the exact ProviderRequest; then continue only through already-existing external provider ingress/TVC/egress and target-KV admission paths.",
+    "targeted_command": "python scripts/refresh_and_execute_resident_task.py --task-id SV-KV-AI-PERSISTENCE-001"
+  },
+  "activation": {
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "carrier": "heartbeat_reference_only",
+    "carrier_trigger_required": false,
+    "targeted_execution": {
+      "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
+      "entrypoint": "scripts/refresh_and_execute_resident_task.py",
+      "argv": [
+        "python",
+        "scripts/refresh_and_execute_resident_task.py",
+        "--task-id",
+        "SV-KV-AI-PERSISTENCE-001"
+      ],
+      "requires_existing_separated_carrier_reference": true,
+      "unrelated_worker_execution": false,
+      "broad_orphan_reconciliation": false,
+      "heartbeat_grants_execution_authority": false,
+      "credential_authority": "TV/TVC",
+      "github_token_runtime_authority": "NONE",
+      "authority_effect": "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY"
+    },
+    "executor_binding": "AUTHORIZED",
+    "authorization_ref": "SV-KV-AI-PERSISTENCE-001 canonical task registry + existing WorkerCoordinator",
+    "checkout_policy": "fenced_atomic_checkout",
+    "claim_generation_rule": "fresh WorkerCoordinator fencing generation; no historical claim/fence reuse",
+    "private_state_policy": {
+      "bound_state_root": "~/.stegverse/state/kv-ai-memory-resident",
+      "private_inputs": [
+        "inputs/context-packet.json",
+        "inputs/memory-packet-admission.json",
+        "inputs/provider-request-input.json"
+      ],
+      "private_outputs": [
+        "materialized/provider-request.json",
+        "receipts/provider-request-materialization.json"
+      ],
+      "repository_private_content_allowed": false,
+      "authority_effect": "NONE_BOUND_STATE_ONLY"
+    }
+  }
+}
