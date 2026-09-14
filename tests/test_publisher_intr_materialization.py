@@ -37,6 +37,21 @@ def request(payload: bytes):
     body["request_hash"]=sha(body)
     return body
 
+def mir_return(**overrides):
+    binding={
+      "profile":consumer.MIR_ROUNDTRIP_BINDING_PROFILE,
+      "publisher_transition_observed":True,
+      "sdk_return_binding_observed":False,
+      "final_stegverse_side_egress_transition_observed":False,
+      "interlock_intr_egress_observed":False,
+      "far_side_transition_observed":False,
+      "authentic_external_mir_endpoint_substitution_observed":False,
+      "communication_complete":False,
+      "authority_effect":"NONE",
+    }
+    binding.update(overrides)
+    return {"schema":consumer.RETURN_SCHEMA,"roundtrip_binding":binding}
+
 class PublisherInTrMaterializationTests(unittest.TestCase):
     def test_ingress_persists_exact_sidecars_before_dispatch(self):
         payload=b'{"authority_effect":"NONE","schema":"stegverse.publisher.artifact-transfer/v1"}'
@@ -113,16 +128,43 @@ class PublisherInTrMaterializationTests(unittest.TestCase):
                 dispatch.assert_not_called()
                 self.assertEqual(result["dispatch"]["consumer_result_state"],"ALREADY_RENDERED_RETURN_PACKET_PREPARED_NOT_TRANSPORTED")
 
+    def test_ordinary_return_stays_on_kv_owner(self):
+        result={"schema":consumer.RETURN_SCHEMA}
+        self.assertEqual(consumer.select_return_owner(result),consumer.KV_RETURN_OWNER)
+
+    def test_verified_mir_return_routes_to_sdk_owner(self):
+        result=mir_return()
+        self.assertEqual(consumer.select_return_owner(result),consumer.MIR_SDK_RETURN_OWNER)
+        for field in consumer.POST_PUBLISHER_FALSE_FLAGS:
+            self.assertFalse(result["roundtrip_binding"][field])
+
+    def test_mir_return_fails_closed_if_downstream_predicate_is_promoted(self):
+        with self.assertRaisesRegex(consumer.PublisherInTrConsumerError,"publisher_return_downstream_predicate_promoted:sdk_return_binding_observed"):
+            consumer.select_return_owner(mir_return(sdk_return_binding_observed=True))
+
+    def test_mir_return_fails_closed_if_authority_expands(self):
+        with self.assertRaisesRegex(consumer.PublisherInTrConsumerError,"publisher_return_authority_effect_invalid"):
+            consumer.select_return_owner(mir_return(authority_effect="GRANTED"))
+
+    def test_mir_return_fails_closed_without_observed_publisher_transition(self):
+        with self.assertRaisesRegex(consumer.PublisherInTrConsumerError,"publisher_return_transition_not_observed"):
+            consumer.select_return_owner(mir_return(publisher_transition_observed=False))
+
     def test_render_success_queues_reverse_materialization_source(self):
         source=(Path(__file__).resolve().parents[1]/"scripts/consume_publisher_intr_materialization_request.py").read_text()
         self.assertIn("build_materialization_request(response.intent",source)
+        self.assertIn("downstream_owner_ref=return_owner",source)
+        self.assertIn("select_return_owner(verified_return)",source)
         self.assertIn("build_carrier_binding(",source)
         self.assertIn('return_request["carrier_binding"]=carrier_binding',source)
         self.assertIn('return_request["request_hash"]=sha(return_request_body)',source)
-        self.assertIn('"return_carrier_binding_sha256":carrier_binding["binding_sha256"]',source)
+        self.assertIn('"return_downstream_owner_ref":return_owner',source)
         self.assertIn('"return_carrier_grants_authority":False',source)
+        self.assertIn('"sdk_return_binding_observed":False',source)
+        self.assertIn('"communication_complete":False',source)
         self.assertIn("RETURN_MATERIALIZATION_QUEUED_NOT_TRANSPORTED",source)
-        self.assertIn("StegVerse-Labs/continuity-vault-kit",source)
+        self.assertIn(consumer.KV_RETURN_OWNER,source)
+        self.assertIn(consumer.MIR_SDK_RETURN_OWNER,source)
 
 if __name__=="__main__":
     unittest.main()
