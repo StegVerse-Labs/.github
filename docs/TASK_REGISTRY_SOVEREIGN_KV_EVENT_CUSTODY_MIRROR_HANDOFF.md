@@ -3,8 +3,10 @@
 Goal Task ID: `TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001`
 Parent: `TASK-REGISTRY-SESSION-RETURN-ORCHESTRATION-001`
 Canonical issue: `StegVerse-Labs/.github#1423`
-COSV: not established
-Status: `ACTIVE / CHECKED_OUT / COMPONENT COMPOSITION MERGED / CURRENT EVIDENCE SELECTOR MERGED / RUNTIME WRITE + READBACK PENDING`
+COSV: `50000000100000`
+COSV source: `control/task-vectors/TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001.json`
+COSV index shard: `control/task-vector-index.d/TASK-REGISTRY-SOVEREIGN-KV-EVENT-CUSTODY-001.json`
+Status: `ACTIVE / CHECKED_OUT / COMPONENT COMPOSITION MERGED / CURRENT EVIDENCE SELECTOR MERGED / COSV EMITTED / RUNTIME WRITE + READBACK PENDING`
 
 ## Current state
 
@@ -12,6 +14,8 @@ PR #1671 merged the reusable-component composition at `64c388bdd374adcc81bec50ec
 PR #1714 merged `RTC-EVIDENCE-CURRENT-SELECTOR-010` at `00d4f3ab4ebd397090c2953de6f2c6155eafe6d5`; exact head `c6a21dea8d93ba129647058c022711cccd16344e` passed organization-control `34738000652`, deterministic-suite `34738000664`, and Heartbeat `34738000657`.
 
 Selected components remain `RTC-MANIFEST-001`, `RTC-GOVERNED-PROCESSING-002`, repeatable `RTC-ROUNDTRIP-003`, `RTC-EVIDENCE-CUSTODY-004`, `RTC-STEGVERSE-EGRESS-007`, repeatable `RTC-INTERLOCK-INTR-TRANSPORT-008`, `RTC-FARSIDE-FINAL-009`, and `RTC-EVIDENCE-CURRENT-SELECTOR-010`.
+
+The Task Registry consistency repair emits task.v1 COSV `50000000100000`, representing MACHINE_OWNED lifecycle, canonical owner installed, no asserted blocker, and incomplete runtime evidence. The vector is an operational index only and does not assert provider write, readback, admission, activation, custody, or completion.
 
 ## Runtime owner reconciliation
 
