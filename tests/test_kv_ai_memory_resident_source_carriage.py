@@ -21,7 +21,7 @@ def load(name: str, path: str):
 installer = load("install_sovereign_heartbeat_service", "scripts/install_sovereign_heartbeat_service.py")
 refresher = load("refresh_sovereign_worker_runtime_source", "scripts/refresh_sovereign_worker_runtime_source.py")
 portable = load("refresh_and_dispatch_resident_requests", "scripts/refresh_and_dispatch_resident_requests.py")
-event_bootstrap = load("run_kv_ai_memory_intr_event_bootstrap", "scripts/run_kv_ai_memory_intr_event_bootstrap.py")
+event_bootstrap = load("kv_ai_memory_intr_event_bootstrap", "workers/kv_ai_memory_intr_event_bootstrap.py")
 
 REQUIRED = {
     "scripts/consume_kv_ai_memory_resident_request.py",
@@ -34,22 +34,24 @@ REQUIRED = {
 def test_normal_runtime_materializer_carries_kv_ai_memory_execution_source():
     copied = set(installer.COPY_FILES)
     assert REQUIRED <= copied
+    assert "workers" in installer.COPY_DIRS
 
 
 def test_local_worker_source_refresh_carries_kv_ai_memory_execution_source():
     copied = {path.as_posix() for path in refresher.STATIC_FILES}
     assert REQUIRED <= copied
+    assert Path("workers") in refresher.STATIC_DIRS
+
+
+def test_resident_native_event_bootstrap_is_carried_wholesale():
+    assert (ROOT / "workers/kv_ai_memory_intr_event_bootstrap.py").is_file()
+    assert "workers" in installer.COPY_DIRS
+    assert Path("workers") in refresher.STATIC_DIRS
 
 
 def test_materializer_requires_kv_ai_memory_execution_source_after_copy():
-    required_source = {
-        "scripts/consume_kv_ai_memory_resident_request.py",
-        "scripts/prepare_kv_ai_memory_intr_runtime_source.py",
-        "scripts/install_kv_ai_memory_universal_intr_route.py",
-        "scripts/submit_kv_ai_memory_packet_local.py",
-    }
     source = (ROOT / "scripts/install_sovereign_heartbeat_service.py").read_text(encoding="utf-8")
-    for rel in required_source:
+    for rel in REQUIRED:
         assert f'target_root / "{rel.split("/")[0]}" / "{rel.split("/")[1]}"' in source
 
 
@@ -106,7 +108,12 @@ def test_event_bootstrap_rejects_hosted_execution(tmp_path):
 
 
 def test_event_bootstrap_reuses_shared_listener_implementation():
-    source = (ROOT / "scripts/run_kv_ai_memory_intr_event_bootstrap.py").read_text(encoding="utf-8")
+    source = (ROOT / "workers/kv_ai_memory_intr_event_bootstrap.py").read_text(encoding="utf-8")
     assert 'importlib.import_module("workers.universal_intr_profiled_ingress")' in source
     assert 'shared.Server(("127.0.0.1", 0), runtime, 1)' in source
     assert '"second_listener_implementation_created": False' in source
+
+
+def test_script_is_thin_wrapper_over_resident_native_bootstrap():
+    source = (ROOT / "scripts/run_kv_ai_memory_intr_event_bootstrap.py").read_text(encoding="utf-8")
+    assert "from workers.kv_ai_memory_intr_event_bootstrap import ROOT, run_cycle" in source
