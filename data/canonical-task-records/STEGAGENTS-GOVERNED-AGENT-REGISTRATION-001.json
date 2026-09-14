@@ -72,6 +72,29 @@
     "deployment_required": false,
     "current_observation_required": false
   },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "authority_effect": "NONE",
+    "second_user_operated_device_allowed": false,
+    "selected_substrate_id": null,
+    "external_device_required": false,
+    "reviews": [
+      {"substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE", "disposition": "NOT_APPLICABLE", "limitation_class": "NOT_APPLICABLE", "evidence_refs": []},
+      {"substrate_id": "STEGOS-CURRENT-DEVICE-NODE", "disposition": "NOT_APPLICABLE", "limitation_class": "NOT_APPLICABLE", "evidence_refs": []},
+      {"substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE", "disposition": "NOT_APPLICABLE", "limitation_class": "NOT_APPLICABLE", "evidence_refs": []},
+      {"substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER", "disposition": "NOT_APPLICABLE", "limitation_class": "NOT_APPLICABLE", "evidence_refs": []},
+      {"substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE", "disposition": "NOT_APPLICABLE", "limitation_class": "NOT_APPLICABLE", "evidence_refs": []},
+      {"substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT", "disposition": "NOT_APPLICABLE", "limitation_class": "NOT_APPLICABLE", "evidence_refs": []}
+    ]
+  },
   "runtime_resolution": {
     "current_executor": "source_and_ci_only",
     "authority_basis": "GitHub source/evidence coordination only; no runtime execution authority",
