@@ -8,7 +8,8 @@ Canonical parent issue: `StegVerse-Labs/Site#1277`
 Canonical parent handoff: `StegVerse-Labs/Site/docs/MIR_CONNECTION_ROUNDTRIP_TECHNICAL_GUIDE_MIRROR_HANDOFF.md`
 Tracking issue: `StegVerse-Labs/.github#1800`
 Reusable Task ID: `RT-EXTERNAL-FRAMEWORK-ROUNDTRIP-ROLLOUT-001`
-Status: `SOURCE CONTRACT + DETERMINISTIC RESOLVER STAGED / EXACT-HEAD VALIDATION RE-RUN PENDING AFTER HANDOFF RECONCILIATION`
+Base source merge: `49692b2fe410053fc1b0b83a7d27c39fca887d27`
+Status: `SOURCE CONTRACT + DETERMINISTIC RESOLVER MERGED / ELYRIA NON-MIR CONFORMANCE STAGED / EXACT-HEAD VALIDATION PENDING`
 
 ## Purpose
 
@@ -36,7 +37,7 @@ Conditional components:
 - `RTC-PUBLISHER-005` only where the framework/consumer contract requires publication/presentation evidence;
 - `RTC-FARSIDE-FINAL-009` only where the foreign system exposes a distinct final-state transition that must be observed separately from the round-trip response.
 
-MIR is the reference transition profile. `SDK-ELYRIA-INTR-ADAPTER-001` is the preferred non-MIR conformance profile because it already reuses the same core component families and preserves foreign verdicts as non-authorizing observations.
+MIR is the reference transition profile. `SDK-ELYRIA-INTR-ADAPTER-001` is the non-MIR conformance profile because it already reuses exactly the eight required core components while deliberately excluding Publisher and far-side-final semantics that its Goal does not require.
 
 ## Runtime truth and provenance
 
@@ -96,7 +97,9 @@ Examples:
 
 A non-runnable framework does not authorize substitute endpoints, synthetic foreign responses, hosted fallback, or a new transport stack. The invocation records its exact fail-closed state and terminates without blocking independent framework entries.
 
-## Source surfaces staged in PR #1801
+## Base source merge
+
+`.github` PR `#1801` added:
 
 - `source-bundles/reusable-task-registry.d/RT-EXTERNAL-FRAMEWORK-ROUNDTRIP-ROLLOUT-001.json`
 - `scripts/resolve_external_framework_roundtrip_rollout.py`
@@ -113,15 +116,28 @@ The resolver deterministically:
 6. emits plan-only authority/effect fields set to `NONE`;
 7. preserves the MIR transition-truth rule.
 
-## Exact-head validation history
+Exact head `8f280eb3377faabf1be84c5aec726d63ba036a5c` passed:
 
-PR #1801 head `c9117f2504b27e30f81fe40e9e6f8a9c17a1bd0f` passed all three governing repository workflows before this handoff-only reconciliation:
+- Organization Control run `34797138353`;
+- Deterministic Repository Suite run `34797138357`;
+- Heartbeat Worker Project validation run `34797138326`.
 
-- Organization Control run `34797033077`: `SUCCESS`;
-- Deterministic Repository Suite run `34797033084`: `SUCCESS`;
-- Heartbeat Worker Project validation run `34797033075`: `SUCCESS`.
+PR `#1801` then squash-merged as `49692b2fe410053fc1b0b83a7d27c39fca887d27`.
 
-Because this handoff reconciliation changes the PR head, those runs are retained as historical source-validation evidence only. The new exact head must pass the same governing checks before the PR is made ready or merged.
+## Elyria non-MIR conformance
+
+The current follow-up validates the abstraction against the existing `SDK-ELYRIA-INTR-ADAPTER-001` component profile instead of merely naming Elyria as a reference.
+
+The conformance assertion requires:
+
+- Elyria selects exactly the eight required rollout components;
+- Publisher and far-side-final remain conditional and unselected for Elyria because its Goal does not require those semantics;
+- Elyria requires no new Goal Task and no new reusable component;
+- Interlock/InTr remains the governed-transition owner;
+- GitHub runtime authority remains `NONE`;
+- Elyria's own duplicate-orchestration retirement rule continues to reject a second Interlock/InTr protocol/direct bypass.
+
+This proves source-level architectural fit only. It does not satisfy Elyria's separate authentic public two-way transport predicate.
 
 ## README review
 
@@ -156,19 +172,19 @@ This reusable task must not create or own a second:
 
 Source completion for this reusable task requires:
 
-1. reusable-task registry shard;
-2. deterministic framework-registry resolution and eligibility classification source;
-3. plan/invocation construction bound to framework/task/run identity;
-4. tests covering eligible, source-only, translation-only, runtime-unavailable, unsupported-operation and invalid-entry paths;
-5. conformance against MIR plus at least one non-MIR profile, preferably Elyria;
-6. README/handoff reconciliation;
-7. exact-head validation and merge.
+1. reusable-task registry shard — merged;
+2. deterministic framework-registry resolution and eligibility classification source — merged;
+3. plan/invocation construction bound to framework/task/run identity — merged;
+4. tests covering eligible, source-only, translation-only, runtime-unavailable, unsupported-operation and invalid-entry paths — merged;
+5. conformance against MIR plus at least one non-MIR profile — Elyria conformance staged in current follow-up;
+6. README/handoff reconciliation — complete, subject to current follow-up validation;
+7. exact-head validation and merge of the conformance follow-up — pending.
 
 Runtime/transition completion is invocation-specific. An executed mirror transition may satisfy the transition it actually caused at mirror provenance; authentic endpoint substitution and later downstream transitions remain separate predicates.
 
 ## Current next action
 
-Wait for the new exact head of PR #1801 to pass Organization Control, Deterministic Repository Suite, and Heartbeat validation. Then update the canonical Site MIR handoff with a bounded cross-reference to this reusable rollout identity, keeping MIR Goal identity and transition predicates unchanged. Make PR #1801 ready and merge only after current exact-head evidence remains green.
+Validate and merge the Elyria conformance follow-up. Then close the source-completion portion of `.github#1800` and use `RT-EXTERNAL-FRAMEWORK-ROUNDTRIP-ROLLOUT-001` for registry-selected framework invocations instead of creating per-framework transport implementations. The parent MIR Goal remains ACTIVE for its own remaining downstream transitions and authentic endpoint substitution.
 
 ## Manual work
 
