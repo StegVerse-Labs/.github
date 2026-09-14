@@ -5,18 +5,42 @@
   "decomposition_policy_ref": "data/reusable-task-component-decomposition-policy.json",
   "purpose": "Transport component family selected by canonical Goal Tasks that require governed data movement or return paths.",
   "selection_rule": {"selector":"goal_task.transport_requirements","task_identity_required":true,"cosv_binding_required_when_present":true,"compose_only_required_components":true,"preserve_component_order":true,"component_reuse_mints_authority":false,"missing_required_component":"FAIL_CLOSED"},
+  "transport_boundary_contract": {
+    "authority_owner": "Interlock/InTr",
+    "intermediate_transitions_may_execute_locally_at_authorized_endpoint_if_allowed": true,
+    "round_trip_requires_governed_return_packet": true,
+    "one_round_trip_lifecycle_may_contain_multiple_internal_transition_groups": true,
+    "internal_transition_groups_do_not_imply_additional_round_trip_lifecycles": true,
+    "return_record_must_be_received": true,
+    "return_record_must_be_durably_recorded": true,
+    "terminal_boundary": "FINAL_ALLOWED_INTR_STATE_TRANSITION_EXITING_TRANSPORT",
+    "terminal_predicate": "SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIP_IDENTIFIED",
+    "terminal_predicate_value_on_success": true,
+    "terminal_predicate_set_when": [
+      "GOVERNED_RETURN_PACKET_RECEIVED",
+      "RETURN_RECORD_DURABLY_RECORDED",
+      "FINAL_ALLOWED_TRANSPORT_EXIT_TRANSITION_OBSERVED"
+    ],
+    "packet_arrival_time_extended_because_lifecycle_is_round_trip": false,
+    "master_records_required_to_prove_transport_success": false,
+    "post_transport_failure_may_negate_transport_success": false,
+    "post_transport_domains": ["master_records_ingress","custody_reconstruction","mirroring","reconciliation","persistence","projection","measurement","publication","other_downstream_action"]
+  },
   "components": [
     {"id":"RTC-MANIFEST-001","name":"Manifest Intake and Binding","provides":["complete_manifest_validation","task_cosv_binding","payload_classification","required_evidence_declaration"],"authority_effect":"NONE"},
     {"id":"RTC-GOVERNED-PROCESSING-002","name":"Governed Processing","provides":["route_to_declared_processing_path","governance_processing","bounded_execution_result"]},
-    {"id":"RTC-ROUNDTRIP-003","name":"Governed Round Trip","provides":["intermediate_request_response_cycle","provider_or_framework_round_trip","receipt_chain_extension"],"repeatable":true,"repeat_count_source":"goal_task.transport_requirements.required_round_trips"},
-    {"id":"RTC-EVIDENCE-CUSTODY-004","name":"Evidence Custody and Reconstruction","provides":["evidence_capture","custody","readback","reconstruction"],"canonical_owner":"Master Records"},
+    {"id":"RTC-ROUNDTRIP-003","name":"Governed Round Trip","provides":["governed_round_trip_lifecycle","intermediate_request_response_cycle","provider_or_framework_round_trip","receipt_chain_extension","governed_return_packet","durable_return_record_correlation","internal_transition_group_correlation"],"repeatable":true,"repeat_count_source":"goal_task.transport_requirements.governed_round_trip_lifecycle_count when present; otherwise legacy required_round_trips length","internal_transition_groups_source":"goal_task.transport_requirements.round_trip_internal_transition_groups","internal_transition_groups_increment_repeat_count":false},
+    {"id":"RTC-EVIDENCE-CUSTODY-004","name":"Evidence Custody and Reconstruction","provides":["evidence_capture","custody","readback","reconstruction"],"canonical_owner":"Master Records","transport_phase":"POST_TRANSPORT","transport_success_authority":false},
     {"id":"RTC-PUBLISHER-005","name":"Publisher Projection","provides":["authorized_publication_or_distribution_projection"],"optional":true},
     {"id":"RTC-SDK-RETURN-006","name":"SDK Return Assembly","provides":["normalized_result","governance_artifact_projection","requested_state_transition_projection","evidence_refs"],"optional":true},
     {"id":"RTC-STEGVERSE-EGRESS-007","name":"StegVerse-side Final Egress Transition","provides":["final_local_state_transition","egress_candidate"],"authority_owner":"Interlock/InTr"},
-    {"id":"RTC-INTERLOCK-INTR-TRANSPORT-008","name":"Interlock/InTr Transport","provides":["governed_packet_movement","ingress_transition","egress_transition","transport_receipt"],"repeatable":true,"authority_owner":"Interlock/InTr"},
+    {"id":"RTC-INTERLOCK-INTR-TRANSPORT-008","name":"Interlock/InTr Transport","provides":["governed_packet_movement","ingress_transition","egress_transition","transport_receipt","final_allowed_transport_exit_transition"],"repeatable":true,"authority_owner":"Interlock/InTr"},
     {"id":"RTC-FARSIDE-FINAL-009","name":"Far-side Final Transition","provides":["far_side_receive","far_side_final_state_transition","far_side_receipt"],"optional":true},
     {"id":"RTC-RESIDENT-RENDEZVOUS-010","name":"Resident Request Rendezvous","provides":["bounded_resident_request_delivery","target_node_routing","request_digest_binding","delivery_acknowledgement","transport_only_correlation"],"repeatable":true,"optional":true,"authority_effect":"NONE","component_ref":"data/reusable-task-components/RTC-RESIDENT-RENDEZVOUS-010.json"}
   ],
   "canonical_order": ["RTC-MANIFEST-001","RTC-GOVERNED-PROCESSING-002","RTC-RESIDENT-RENDEZVOUS-010","RTC-ROUNDTRIP-003","RTC-EVIDENCE-CUSTODY-004","RTC-PUBLISHER-005","RTC-SDK-RETURN-006","RTC-STEGVERSE-EGRESS-007","RTC-INTERLOCK-INTR-TRANSPORT-008","RTC-FARSIDE-FINAL-009"],
-  "invariants": {"task_registry_role":"COORDINATION_ONLY","worker_claim_authority":"WorkerCoordinator","user_verification_authority":"KV/SKAP Vault","stegos_device_role":"INTERCHANGEABLE_TRANSPORT_NODE","credential_provider_release_authority":"TV/TVC","transition_authority":"Interlock/InTr","observed_reality_reconstruction_authority":"Master Records","github_runtime_authority":"NONE","resident_rendezvous_node_identity_role":"ROUTING_ONLY_NOT_USER_VERIFICATION"}
+  "phase_rule": "Goal profiles must classify selected components by transport phase. RTC-EVIDENCE-CUSTODY-004 is post-transport and must not be required to set SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIP_IDENTIFIED.",
+  "round_trip_lifecycle_rule": "A governed round-trip lifecycle may contain multiple named internal transition groups. Internal transition-group count does not imply or increment RTC-ROUNDTRIP-003 lifecycle repeat count. Profiles that need explicit disambiguation should set governed_round_trip_lifecycle_count and round_trip_internal_transition_groups; legacy required_round_trips remains a compatibility fallback for profiles not yet migrated.",
+  "failure_ownership_rule": "Failures after the final allowed Interlock/InTr transport-exit transition are owned by the exact downstream domain and must not be reclassified as transport failures.",
+  "invariants": {"task_registry_role":"COORDINATION_ONLY","worker_claim_authority":"WorkerCoordinator","user_verification_authority":"KV/SKAP Vault","stegos_device_role":"INTERCHANGEABLE_TRANSPORT_NODE","credential_provider_release_authority":"TV/TVC","transition_authority":"Interlock/InTr","observed_reality_reconstruction_authority":"Master Records","master_records_transport_success_authority":"NONE","github_runtime_authority":"NONE","resident_rendezvous_node_identity_role":"ROUTING_ONLY_NOT_USER_VERIFICATION"}
 }
