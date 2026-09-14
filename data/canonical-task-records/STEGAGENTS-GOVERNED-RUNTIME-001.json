@@ -95,6 +95,7 @@
       {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"PLATFORM","evidence_refs":[]}
     ],
     "selected_substrate_id": null,
+    "current_observation_required": false,
     "external_device_required": false,
     "second_user_operated_device_allowed": false,
     "authority_effect": "NONE"
