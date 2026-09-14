@@ -1,0 +1,76 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SV-KV-AI-PERSISTENCE-001",
+  "correlation_id": "SV-KV-AI-PERSISTENCE-001",
+  "root_correlation_id": "SV-KV-AI-PERSISTENCE-001",
+  "parent_task_id": null,
+  "goal": "Make KnowledgeVault the governed persistent memory substrate for Personal Assistant AI, Organizational AI, StegVerse AI, and machine execution agents, beginning with deterministic bounded AI context packets and non-authorizing memory write proposals for Personal KV/Auri continuity.",
+  "coordination_state": "IN_PROGRESS",
+  "source_refs": [
+    "StegVerse-Labs/continuity-vault-kit/KV_AI_PERSISTENCE_CLASSES_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/continuity-vault-kit/specs/kv-ai-persistence-classes.v1.json",
+    "StegVerse-Labs/continuity-vault-kit/schemas/kv-ai-persistence-classes.schema.json",
+    "StegVerse-Labs/continuity-vault-kit/docs/CONVERSATION_CONTINUITY_MVP_MIRROR_HANDOFF.md"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": ["StegVerse-Labs/continuity-vault-kit", "StegVerse-Labs/.github"],
+    "components": ["PERSONAL_KV", "ORGANIZATIONAL_KV", "STEGVERSE_KV", "MACHINE_KV", "AI_CONTEXT_PACKET", "AI_MEMORY_WRITE_PROPOSAL", "INTERLOCK_INTR_ADMISSION"]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-KV-AI-PERSISTENCE-CLASSES",
+      "kind": "CAPABILITY",
+      "state": "RESOLVED",
+      "ref": "StegVerse-Labs/continuity-vault-kit/KV_AI_PERSISTENCE_CLASSES_MIRROR_HANDOFF.md"
+    },
+    {
+      "dependency_id": "DEP-LIVE-INTR-ADMISSION",
+      "kind": "RUNTIME_PREDICATE",
+      "state": "UNRESOLVED",
+      "ref": "Interlock/InTr authentic runtime receipt chain"
+    }
+  ],
+  "blockers": [],
+  "adjacent_task_refs": ["STEGVERSE-AI-INGRESS-CONVERGENCE-001", "SHWP-DEVICE-KV-INTR-OBSERVATION-001"],
+  "existing_evidence_refs": [
+    "StegVerse-Labs/continuity-vault-kit/KV_AI_PERSISTENCE_CLASSES_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/continuity-vault-kit/tests/test_kv_ai_persistence_classes.py"
+  ],
+  "expected_evidence_predicates": [
+    "CANONICAL_TASK_REGISTERED",
+    "BOUNDED_AI_CONTEXT_PACKET_SOURCE_VALIDATED",
+    "SECRET_AND_CROSS_AUTHORITY_CONTEXT_REJECTED",
+    "MEMORY_WRITE_PROPOSAL_NON_AUTHORIZING",
+    "HOSTED_VALIDATION_OBSERVED",
+    "LIVE_INTR_ADMISSION_RECEIPT_OBSERVED_BEFORE_RUNTIME_ACTIVATION"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["kv_context_selection", "provenance_binding", "intr_admission", "ai_context_delivery", "memory_write_proposal"],
+    "environment": "OWNER_CONTROLLED_KV_WITH_EXTERNAL_AI_CONSUMER",
+    "direction": "KV_TO_AI_CONTEXT_AND_AI_TO_KV_PROPOSAL",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": null
+  },
+  "allowed_next_transitions": ["COMPLETION_CLAIMED", "TRANSFERRED", "DEFERRED"],
+  "handoff_projection_refs": ["StegVerse-Labs/continuity-vault-kit/KV_AI_PERSISTENCE_CLASSES_MIRROR_HANDOFF.md"],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "master_records_reality_authority": true,
+    "interlock_intr_required_for_governed_ingress_egress": true
+  }
+}
