@@ -13,11 +13,16 @@
         "PATH",
         "PYTHONPATH",
         "STEGVERSE_HEARTBEAT_ROOT",
-        "STEGVERSE_REPO_ROOTS_JSON"
+        "STEGVERSE_REPO_ROOTS_JSON",
+        "STEGVERSE_WARRANT_JSON",
+        "TV_POLICY_BUNDLE_SHA256",
+        "TV_WARRANT_ISSUER_PUBKEY_B64",
+        "TV_WARRANT_MAX_TTL_SECONDS"
       ],
       "notes": [
         "Consumes only an already-created WorkerCoordinator claim/fence for STEGAGENTS-GOVERNED-RUNTIME-001.",
         "Invokes the existing merged StegAgents governed CodeRepair runtime through already-local source roots.",
+        "Carries the existing StegAgents live-run warrant/policy verification inputs into the worker process; these are governance admission inputs, not provider credentials and not execution authority.",
         "Verifies the exact merged governed manifest blob before execution and retains proposal/governance/reconstruction evidence in the resident runtime.",
         "Creates no second WorkerCoordinator, scheduler, InTr implementation, provider route, credential path, agent registry, or consequential execution authority."
       ],

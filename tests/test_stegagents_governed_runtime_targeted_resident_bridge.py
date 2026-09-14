@@ -5,6 +5,12 @@ ROOT = Path(__file__).resolve().parents[1]
 TASK = "STEGAGENTS-GOVERNED-RUNTIME-001"
 COSV = "71000000101001"
 SELECTOR = "stegagents_governed_runtime_targeted"
+GOVERNANCE_ENV = (
+    "STEGVERSE_WARRANT_JSON",
+    "TV_POLICY_BUNDLE_SHA256",
+    "TV_WARRANT_ISSUER_PUBKEY_B64",
+    "TV_WARRANT_MAX_TTL_SECONDS",
+)
 
 
 def test_targeted_request_is_non_authorizing_and_exactly_bound():
@@ -36,3 +42,23 @@ def test_existing_dispatcher_source_refresh_and_portable_bridge_carry_targeted_s
     assert 'STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY' in consumer
     assert 'STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY' in consumer
     assert 'OPENAI_API_KEY' in consumer
+
+
+def test_governance_warrant_inputs_are_carried_end_to_end_without_becoming_provider_credentials():
+    portable = (ROOT / "scripts/refresh_and_dispatch_resident_requests.py").read_text()
+    dispatcher = (ROOT / "scripts/dispatch_resident_execution_requests.py").read_text()
+    consumer = (ROOT / "scripts/consume_stegagents_governed_runtime_targeted_request.py").read_text()
+    targeted = (ROOT / "scripts/refresh_and_execute_resident_task.py").read_text()
+    adapter = json.loads((ROOT / "control/process-worker-adapters.d/stegagents-governed-runtime-001.json").read_text())
+    worker = (ROOT / "workers/stegagents_governed_runtime_worker.py").read_text()
+    env_allowlist = adapter["adapters"][0]["env_allowlist"]
+    for name in GOVERNANCE_ENV:
+        assert name in portable
+        assert name in dispatcher
+        assert name in consumer
+        assert name in targeted
+        assert name in env_allowlist
+    assert 'warrant_policy_binding' in worker
+    assert 'warrant_verified' in worker
+    assert 'policy_bundle_verified' in worker
+    assert 'provider credential material exposed to StegAgents' in worker
