@@ -9,16 +9,41 @@
   "checkout_state": "CHECKED_OUT",
   "cosv_task_vector": "40000100100000",
   "shared_runtime_evidence_owner_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
-  "current_exact_defect": "SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIP_NOT_YET_AUTHENTICALLY_IDENTIFIED",
+  "current_exact_defect": "ACTIVE_REMEDIATION_REUSABLE_BINDING_SOURCE_REPAIR_PENDING_VALIDATION",
   "source_refs": [
     "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md",
     "docs/REUSABLE_GOAL_TASK_TRANSPORT_COMPONENTS_MIRROR_HANDOFF.md",
     "docs/STEGBROWSER_RESIDENT_RECEIPT_TRANSPORT_MIRROR_HANDOFF.md",
     "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
     "source-bundles/reusable-task-registry.d/RT-SOVEREIGN-SOURCE-REFRESH-001.json",
+    "control/resident-execution-request.d/canonical-work-stegbrowser-runtime-consumption-001.json",
+    "control/task-vectors/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json",
     "scripts/run_stegbrowser_runtime_consumption_reusable.py",
     "scripts/check_stegbrowser_runtime_consumption_receipts.py"
   ],
+  "runtime_requirements": {
+    "capabilities": ["canonical_portable_execution", "event_ephemeral_stegos_node", "universal_intr_profiled_ingress", "governed_round_trip_transport"],
+    "environment": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true,
+    "physical_device_identity_required": false,
+    "second_user_operated_device_required": false
+  },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "persistent_host_required": false,
+    "authority_effect": "NONE_SELECTION_ONLY"
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "projection_only": true,
+    "claim_ref": null,
+    "fence_ref": null
+  },
   "domains": {
     "governed_transport_loop": {
       "terminal_boundary": "FINAL_ALLOWED_INTR_STATE_TRANSITION_EXITING_TRANSPORT_AFTER_RETURN_RECORD_RECEIVED_AND_DURABLY_RECORDED",
@@ -31,24 +56,12 @@
     },
     "post_transport_processing": {
       "begins_after": "FINAL_ALLOWED_INTR_STATE_TRANSITION_EXITING_TRANSPORT",
-      "includes": [
-        "MASTER_RECORDS_INGRESS",
-        "MASTER_RECORDS_CUSTODY_RECONSTRUCTION",
-        "MIRRORING",
-        "CANONICAL_RECONCILIATION",
-        "PERSISTENCE",
-        "PROJECTION",
-        "GLOBAL_RUNTIME_EVIDENCE_MEASUREMENT",
-        "OTHER_DOWNSTREAM_ACTIONS"
-      ],
+      "includes": ["MASTER_RECORDS_INGRESS", "MASTER_RECORDS_CUSTODY_RECONSTRUCTION", "MIRRORING", "CANONICAL_RECONCILIATION", "PERSISTENCE", "PROJECTION", "GLOBAL_RUNTIME_EVIDENCE_MEASUREMENT", "OTHER_DOWNSTREAM_ACTIONS"],
       "failure_may_reclassify_completed_transport_as_failed": false
     }
   },
   "runtime_connection_transition": {
-    "variables": {
-      "callable": "PENDING_AUTHENTIC_TRANSITION_EVIDENCE",
-      "refreshable": "PENDING_AUTHENTIC_TRANSITION_EVIDENCE"
-    },
+    "variables": {"callable": "PENDING_AUTHENTIC_TRANSITION_EVIDENCE", "refreshable": "PENDING_AUTHENTIC_TRANSITION_EVIDENCE"},
     "authority": "INTERLOCK_INTR",
     "always_on_runtime_source_assumed": false,
     "source_freshness_persistent_state": false,
@@ -58,69 +71,16 @@
     "non_callable_condition": "callable=false"
   },
   "dependencies": [
-    {
-      "dependency_id": "DEP-REUSABLE-STEG-BROWSER-RUNTIME-CONSUMPTION",
-      "kind": "REUSABLE_TASK_CANDIDATE_SELECTED_BY_STATE",
-      "state": "REGISTERED_EXECUTION_UNOBSERVED",
-      "ref": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001"
-    },
-    {
-      "dependency_id": "DEP-RUNTIME-CONNECTION-STATE-TRANSITION",
-      "kind": "GOVERNED_STATE_TRANSITION",
-      "state": "PENDING_AUTHENTIC_TRANSITION_EVIDENCE",
-      "ref": "INTERLOCK_INTR",
-      "variables": ["callable", "refreshable"]
-    },
-    {
-      "dependency_id": "DEP-SOVEREIGN-SOURCE-REFRESH",
-      "kind": "REUSABLE_TASK_SELECTED_BY_TRANSITION",
-      "state": "PENDING_TRANSITION_VARIABLE_RESOLUTION",
-      "ref": "RT-SOVEREIGN-SOURCE-REFRESH-001",
-      "selection_condition": "callable=true AND refreshable=true"
-    },
-    {
-      "dependency_id": "DEP-INTR-PROTOCOL",
-      "kind": "REUSABLE_TASK_SELECTED_BY_TRANSITION",
-      "state": "USE_EXISTING_PROTOCOL_OR_SELECT_IF_UNRESOLVED",
-      "ref": "RT-INTR-PROTOCOL-ESTABLISH-001",
-      "selection_condition": "governed connection required AND no applicable existing InTr protocol resolves"
-    },
-    {
-      "dependency_id": "DEP-WORKERCOORDINATOR-CLAIM-FENCE",
-      "kind": "AUTHORITY_OWNED_PRE_TRANSPORT_EXECUTION_STATE",
-      "state": "PENDING_AUTHENTIC_EXECUTION",
-      "ref": "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED"
-    },
-    {
-      "dependency_id": "DEP-GOVERNED-ROUNDTRIP-COMPONENT",
-      "kind": "REUSABLE_TRANSPORT_COMPONENT",
-      "state": "PENDING_AUTHENTIC_TRANSPORT",
-      "ref": "RTC-ROUNDTRIP-003"
-    },
-    {
-      "dependency_id": "DEP-INTR-TRANSPORT-COMPONENT",
-      "kind": "REUSABLE_TRANSPORT_COMPONENT",
-      "state": "PENDING_AUTHENTIC_TRANSPORT",
-      "ref": "RTC-INTERLOCK-INTR-TRANSPORT-008"
-    },
-    {
-      "dependency_id": "DEP-TRANSPORT-TERMINAL-PREDICATE",
-      "kind": "TRANSPORT_TERMINAL_EVIDENCE_GATE",
-      "state": "PENDING_AUTHENTIC_OBSERVATION",
-      "ref": "SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIP_IDENTIFIED"
-    },
-    {
-      "dependency_id": "DEP-POST-TRANSPORT-CANONICAL-RECONCILIATION",
-      "kind": "POST_TRANSPORT_REUSABLE_TASK",
-      "state": "PENDING_TRANSPORT_TERMINAL_BOUNDARY",
-      "ref": "RT-CANONICAL-STATE-RECONCILIATION-001"
-    },
-    {
-      "dependency_id": "DEP-GLOBAL-RUNTIME-EVIDENCE-CLOSURE",
-      "kind": "POST_TRANSPORT_SHARED_RUNTIME_EVIDENCE_OWNER",
-      "state": "BOUND_SHARED_OWNER_NOT_TRANSPORT_PROOF",
-      "ref": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001"
-    }
+    {"dependency_id": "DEP-REUSABLE-STEG-BROWSER-RUNTIME-CONSUMPTION", "kind": "REUSABLE_TASK_CANDIDATE_SELECTED_BY_STATE", "state": "SOURCE_REBINDING_IN_VALIDATION", "ref": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001"},
+    {"dependency_id": "DEP-RUNTIME-CONNECTION-STATE-TRANSITION", "kind": "GOVERNED_STATE_TRANSITION", "state": "PENDING_AUTHENTIC_TRANSITION_EVIDENCE", "ref": "INTERLOCK_INTR", "variables": ["callable", "refreshable"]},
+    {"dependency_id": "DEP-SOVEREIGN-SOURCE-REFRESH", "kind": "REUSABLE_TASK_SELECTED_BY_TRANSITION", "state": "PENDING_TRANSITION_VARIABLE_RESOLUTION", "ref": "RT-SOVEREIGN-SOURCE-REFRESH-001", "selection_condition": "callable=true AND refreshable=true"},
+    {"dependency_id": "DEP-INTR-PROTOCOL", "kind": "REUSABLE_TASK_SELECTED_BY_TRANSITION", "state": "USE_EXISTING_PROTOCOL_OR_SELECT_IF_UNRESOLVED", "ref": "RT-INTR-PROTOCOL-ESTABLISH-001", "selection_condition": "governed connection required AND no applicable existing InTr protocol resolves"},
+    {"dependency_id": "DEP-WORKERCOORDINATOR-CLAIM-FENCE", "kind": "AUTHORITY_OWNED_PRE_TRANSPORT_EXECUTION_STATE", "state": "PENDING_AUTHENTIC_EXECUTION", "ref": "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED"},
+    {"dependency_id": "DEP-GOVERNED-ROUNDTRIP-COMPONENT", "kind": "REUSABLE_TRANSPORT_COMPONENT", "state": "PENDING_AUTHENTIC_TRANSPORT", "ref": "RTC-ROUNDTRIP-003"},
+    {"dependency_id": "DEP-INTR-TRANSPORT-COMPONENT", "kind": "REUSABLE_TRANSPORT_COMPONENT", "state": "PENDING_AUTHENTIC_TRANSPORT", "ref": "RTC-INTERLOCK-INTR-TRANSPORT-008"},
+    {"dependency_id": "DEP-TRANSPORT-TERMINAL-PREDICATE", "kind": "TRANSPORT_TERMINAL_EVIDENCE_GATE", "state": "PENDING_AUTHENTIC_OBSERVATION", "ref": "SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIP_IDENTIFIED"},
+    {"dependency_id": "DEP-POST-TRANSPORT-CANONICAL-RECONCILIATION", "kind": "POST_TRANSPORT_REUSABLE_TASK", "state": "PENDING_TRANSPORT_TERMINAL_BOUNDARY", "ref": "RT-CANONICAL-STATE-RECONCILIATION-001"},
+    {"dependency_id": "DEP-GLOBAL-RUNTIME-EVIDENCE-CLOSURE", "kind": "POST_TRANSPORT_SHARED_RUNTIME_EVIDENCE_OWNER", "state": "BOUND_SHARED_OWNER_NOT_TRANSPORT_PROOF", "ref": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001"}
   ],
   "transport_success_contract": {
     "intermediate_intr_transitions_local_at_authorized_endpoint_if_allowed": true,
@@ -150,6 +110,7 @@
     "completion_authority": "NONE"
   },
   "allowed_next_transitions": [
+    "INGRESS_ADMITTED",
     "OBSERVE_RUNTIME_CONNECTION_TRANSITION_VARIABLES",
     "SELECT_REUSABLE_CAPABILITIES_FROM_AUTHENTIC_STATE",
     "INVOKE_RT_SOVEREIGN_SOURCE_REFRESH_IF_SELECTED",
@@ -163,6 +124,7 @@
     "TRIGGER_HEALER_ONLY_FOR_OBSERVED_REMEDIABLE_FAILURE"
   ],
   "prohibited_transitions": [
+    "REACTIVATE_RETIRED_STEG_BROWSER_RUNTIME_CONSUMPTION_GOAL",
     "REQUIRE_MASTER_RECORDS_RECONSTRUCTION_TO_PROVE_TRANSPORT_SUCCESS",
     "RECLASSIFY_POST_TRANSPORT_FAILURE_AS_TRANSPORT_FAILURE",
     "EXTEND_PACKET_ARRIVAL_TIME_BEYOND_FINAL_TRANSPORT_BOUNDARY_BECAUSE_LIFECYCLE_IS_ROUND_TRIP",
@@ -170,16 +132,7 @@
     "INFER_CALLABLE_OR_REFRESHABLE_FROM_PERSISTENT_SOURCE_STATE",
     "TREAT_HEALER_AS_NORMAL_EXECUTION_PREREQUISITE_OR_STAGE_OWNER",
     "TRIGGER_HEALER_WITHOUT_OBSERVED_FAILURE_CONDITION",
-    "ADD_SECOND_RUNTIME_EVIDENCE_OWNER",
-    "ADD_SECOND_SCHEDULER",
-    "ADD_SECOND_DISPATCHER",
-    "ADD_CREDENTIAL_ROUTE",
-    "ADD_GITHUB_RUNTIME_AUTHORITY",
-    "ADD_RUNTIME_PLANE",
-    "ADD_PROVIDER_AUTHORITY",
-    "ADD_WORKERCOORDINATOR_BYPASS",
-    "REQUIRE_SECOND_USER_OPERATED_DEVICE",
-    "CLAIM_RUNTIME_COMPLETION_FROM_SOURCE_STATE"
+    "ADD_SECOND_RUNTIME_EVIDENCE_OWNER", "ADD_SECOND_SCHEDULER", "ADD_SECOND_DISPATCHER", "ADD_CREDENTIAL_ROUTE", "ADD_GITHUB_RUNTIME_AUTHORITY", "ADD_RUNTIME_PLANE", "ADD_PROVIDER_AUTHORITY", "ADD_WORKERCOORDINATOR_BYPASS", "REQUIRE_SECOND_USER_OPERATED_DEVICE", "CLAIM_RUNTIME_COMPLETION_FROM_SOURCE_STATE"
   ],
   "completion": {
     "claimed": false,
@@ -199,6 +152,8 @@
     "global_runtime_measurement_observed": false
   },
   "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "interlock_intr_required_for_governed_ingress_egress": true,
     "github_runtime_authority": "NONE",
     "healer_role": "TRIGGERED_REMEDIATION_ONLY",
     "runtime_connection_transition_authority": "INTERLOCK_INTR",
