@@ -21,6 +21,7 @@
     "control/resident-execution-request.d/stegagents-governed-runtime-targeted-001.json",
     "scripts/consume_stegagents_governed_runtime_targeted_request.py",
     "scripts/dispatch_resident_execution_requests.py",
+    "scripts/refresh_and_dispatch_resident_requests.py",
     "scripts/refresh_sovereign_worker_runtime_source.py",
     "control/worker-registry.d/stegagents-governed-runtime-001.json",
     "control/process-worker-adapters.d/stegagents-governed-runtime-001.json",
@@ -117,5 +118,15 @@
     "interlock_intr_required_for_governed_ingress_egress": true,
     "provider_credential_authority": "TV/TVC",
     "github_runtime_authority": "NONE"
+  },
+  "readme_impact": {
+    "material_function_change": false,
+    "readme_updated_in_change_set": false,
+    "no_readme_update_reason": "Portable exact-selector semantics and authority limits are already documented in the repository README; this repair only admits an already-registered task-specific consumer through that existing bridge.",
+    "evidence_refs": [
+      "README.md#COSV-task-pointer-session-continuation",
+      "scripts/refresh_and_dispatch_resident_requests.py",
+      "docs/STEGAGENTS_GOVERNED_RUNTIME_MIRROR_HANDOFF.md"
+    ]
   }
 }
