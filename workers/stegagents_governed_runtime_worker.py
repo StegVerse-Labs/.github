@@ -117,7 +117,25 @@ def build_request(task: Mapping[str, Any]) -> dict[str, Any]:
     }
 
 
-def retain_result(root: Path, task: Mapping[str, Any], request: Mapping[str, Any], result: Mapping[str, Any], manifest_blob_sha: str) -> Path:
+def validate_warrant_policy_binding(result: Mapping[str, Any]) -> dict[str, Any]:
+    binding = result.get("warrant_policy_binding")
+    require(isinstance(binding, Mapping), "warrant/policy verification binding missing")
+    require(binding.get("warrant_verified") is True, "TV warrant not verified")
+    require(binding.get("policy_bundle_verified") is True, "policy bundle not verified")
+    warrant_id = binding.get("warrant_id")
+    policy_sha = binding.get("policy_bundle_sha256")
+    payload_sha = binding.get("warrant_payload_sha256")
+    observed_repo = binding.get("observed_repository")
+    observed_commit = binding.get("observed_commit_sha")
+    require(isinstance(warrant_id, str) and warrant_id, "verified warrant_id missing")
+    require(isinstance(policy_sha, str) and len(policy_sha) == 64, "verified policy bundle SHA-256 missing")
+    require(isinstance(payload_sha, str) and len(payload_sha) == 64, "verified warrant payload SHA-256 missing")
+    require(observed_repo == STEGAGENTS_REPO, "warrant repository binding mismatch")
+    require(isinstance(observed_commit, str) and len(observed_commit) == 40, "warrant commit binding missing")
+    return dict(binding)
+
+
+def retain_result(root: Path, task: Mapping[str, Any], request: Mapping[str, Any], result: Mapping[str, Any], manifest_blob_sha: str, warrant_policy_binding: Mapping[str, Any]) -> Path:
     claim_id = str(task["claim_id"])
     receipt = {
         "schema": "stegverse.stegagents-governed-runtime-receipt/v1",
@@ -133,6 +151,7 @@ def retain_result(root: Path, task: Mapping[str, Any], request: Mapping[str, Any
             "source_registration_merge": REGISTERED_MANIFEST_SOURCE_MERGE,
             "exact_merged_manifest_verified": manifest_blob_sha == EXPECTED_MANIFEST_GIT_BLOB_SHA,
         },
+        "warrant_policy_binding": dict(warrant_policy_binding),
         "request": dict(request),
         "request_sha256": sha256_uri(request),
         "result": dict(result),
@@ -201,7 +220,8 @@ def run(invocation: Mapping[str, Any]) -> dict[str, Any]:
     require(result.get("self_authorization_allowed") is False, "agent self-authorization invariant violated")
     require(result.get("provider_operation_required") is False, "unexpected provider operation requirement")
     require(result.get("credential_authority") == "TV/TVC", "provider credential authority drift")
-    require(result.get("credential_material_present") is False, "credential material exposed to StegAgents")
+    require(result.get("credential_material_present") is False, "provider credential material exposed to StegAgents")
+    warrant_policy_binding = validate_warrant_policy_binding(result)
     governance = result.get("governance")
     require(isinstance(governance, Mapping), "governance result missing")
     require(governance.get("chain_verified") is True, "governance chain not verified")
@@ -213,7 +233,7 @@ def run(invocation: Mapping[str, Any]) -> dict[str, Any]:
     require(reconstruction.get("operation_transition_custody_status") == "RECORDED", "reconstruction custody missing")
     require(isinstance(reconstruction.get("operation_receipt_ids"), list) and bool(reconstruction.get("operation_receipt_ids")), "reconstruction receipts missing")
 
-    receipt = retain_result(runtime_root(), task, request, result, manifest_blob_sha)
+    receipt = retain_result(runtime_root(), task, request, result, manifest_blob_sha, warrant_policy_binding)
     return {
         "schema": "stegverse.worker-response/v0.1",
         "state": "COMPLETED",

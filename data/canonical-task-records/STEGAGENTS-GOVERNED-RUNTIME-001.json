@@ -4,7 +4,7 @@
   "correlation_id": "STEGAGENTS-GOVERNED-RUNTIME-001",
   "root_correlation_id": "STEGAGENTS-GOVERNED-RUNTIME-001",
   "parent_task_id": "STEGAGENTS-GOVERNED-AGENT-REGISTRATION-001",
-  "goal": "Activate and prove the first governed StegAgents runtime path for the already-registered CodeRepair-001 governed manifest through the existing WorkerCoordinator, StegCore/InTr, optional TV/TVC provider route, and Master Records evidence chain without creating duplicate authority or runtime surfaces.",
+  "goal": "Activate and prove the first governed StegAgents runtime path for the already-registered CodeRepair-001 governed manifest through the existing WorkerCoordinator, required TV warrant/policy verification, StegCore/InTr, optional TV/TVC provider route, and Master Records evidence chain without creating duplicate authority or runtime surfaces.",
   "coordination_state": "ACTIVE",
   "checkout_state": "UNCLAIMED",
   "repository": "StegVerse-Labs/.github",
@@ -15,8 +15,9 @@
     "data/canonical-task-records/STEGAGENTS-GOVERNED-AGENT-REGISTRATION-001.json",
     "docs/STEGAGENTS_GOVERNED_AGENT_REGISTRATION_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegAgents@b768eeeb0ceca14fcfd50ce665cd6c0885e2774f:agents/governed/CodeRepair-001.manifest.json",
-    "StegVerse-Labs/StegAgents@b4115293803fd1d3beaf0335baf4308b6e13052e:src/governed_coderepair_runtime.py",
-    "StegVerse-Labs/StegAgents@b639c2674959e3be9fb7a70caa33115c694af764:docs/STEGAGENTS_GOVERNED_AGENT_REGISTRATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegAgents@c82caae4c8c4cf82d40f352528269823d853f788:src/governed_coderepair_runtime.py",
+    "StegVerse-Labs/StegAgents@c82caae4c8c4cf82d40f352528269823d853f788:src/warrant_verify.py",
+    "StegVerse-Labs/StegAgents@c82caae4c8c4cf82d40f352528269823d853f788:docs/STEGAGENTS_GOVERNED_RUNTIME_MIRROR_HANDOFF.md",
     "control/resident-execution-request.d/canonical-work-stegagents-governed-runtime-001.json",
     "control/resident-execution-request.d/stegagents-governed-runtime-targeted-001.json",
     "scripts/consume_stegagents_governed_runtime_targeted_request.py",
@@ -39,12 +40,13 @@
   "targets": {
     "organizations": ["StegVerse-Labs", "master-records"],
     "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegAgents", "StegVerse-Labs/StegCore", "master-records/orchestration"],
-    "components": ["CodeRepair-001 governed runtime", "WorkerCoordinator claim-fence", "StegCore/InTr governed ingress", "TV/TVC provider route if required", "Master Records runtime reconstruction"]
+    "components": ["CodeRepair-001 governed runtime", "TV execution warrant + pinned policy bundle", "WorkerCoordinator claim-fence", "StegCore/InTr governed ingress", "TV/TVC provider route if required", "Master Records runtime reconstruction"]
   },
   "dependencies": [
     {"dependency_id":"DEP-GOVERNED-AGENT-REGISTRATION","kind":"SOURCE_PREDECESSOR","state":"RESOLVED","ref":"STEGAGENTS-GOVERNED-AGENT-REGISTRATION-001","disposition":"REUSE_RETIRED_COMPLETED_PREDECESSOR"},
     {"dependency_id":"DEP-STEGCORE-BASELINE","kind":"GOVERNANCE_BASELINE","state":"ACTIVATED","ref":"StegVerse-Labs/StegCore@60c1e12d80decbafffbdda25b04c392a7735d13e:registry/stegverse-001-002.activation.json"},
-    {"dependency_id":"DEP-STEGAGENTS-HANDSHAKE","kind":"INTEGRATION_GATE","state":"HANDSHAKE_READY","ref":"StegVerse-Labs/StegAgents@a7fbc77081330d074b0202c70a4fa835f04e7f39:registry/stegagents-stegcore.handshake.activation.json"}
+    {"dependency_id":"DEP-STEGAGENTS-HANDSHAKE","kind":"INTEGRATION_GATE","state":"HANDSHAKE_READY","ref":"StegVerse-Labs/StegAgents@a7fbc77081330d074b0202c70a4fa835f04e7f39:registry/stegagents-stegcore.handshake.activation.json"},
+    {"dependency_id":"DEP-TV-WARRANT-POLICY","kind":"GOVERNANCE_ADMISSION_EVIDENCE","state":"PENDING_RUNTIME_EVIDENCE","ref":"StegVerse-Labs/StegAgents@c82caae4c8c4cf82d40f352528269823d853f788:src/warrant_verify.py","disposition":"REQUIRE_AUTHENTIC_TV_ISSUED_WARRANT_AND_PINNED_POLICY_BUNDLE"}
   ],
   "blockers": [],
   "systemic_incident_ref": null,
@@ -54,6 +56,8 @@
     "ROUTING_READY_FOR_WORKERCOORDINATOR_REVIEW",
     "AUTHENTIC_TARGETED_RESIDENT_REQUEST_CONSUMPTION_OBSERVED",
     "AUTHENTIC_CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+    "AUTHENTIC_TV_EXECUTION_WARRANT_VERIFIED",
+    "PINNED_TV_POLICY_BUNDLE_VERIFIED",
     "AUTHENTIC_CODEREPAIR_GOVERNED_REQUEST_IDENTITY_OBSERVED",
     "AUTHENTIC_STEGCORE_INTR_INGRESS_DISPOSITION_OBSERVED",
     "PROPOSAL_ONLY_TRUE_PRESERVED",
@@ -76,14 +80,7 @@
   },
   "execution_substrate_resolution": {
     "schema": "stegverse.execution-substrate-resolution/v1",
-    "review_order": [
-      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
-      "STEGOS-CURRENT-DEVICE-NODE",
-      "STEG-BROWSER-EPHEMERAL-LEASE",
-      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
-      "ADMITTED-EPHEMERAL-STEGOS-NODE",
-      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
-    ],
+    "review_order": ["STEG-BROWSER-RETAINED-RESIDENT-NODE","STEGOS-CURRENT-DEVICE-NODE","STEG-BROWSER-EPHEMERAL-LEASE","SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","ADMITTED-EPHEMERAL-STEGOS-NODE","REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"],
     "reviews": [
       {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["control/canonical-resident-carrier-contract.json"]},
       {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":[]},
@@ -97,36 +94,17 @@
     "second_user_operated_device_allowed": false,
     "authority_effect": "NONE"
   },
-  "runtime_resolution": {
-    "map_ref": "control/runtime-profile-map.json",
-    "map_generation": 2,
-    "candidate_profile_ids": ["canonical-work-coordination-runtime-v1"],
-    "resolved_at": "2026-09-14T15:53:00Z",
-    "projection_only": true,
-    "selection_grants_authority": false
-  },
+  "runtime_resolution": {"map_ref":"control/runtime-profile-map.json","map_generation":2,"candidate_profile_ids":["canonical-work-coordination-runtime-v1"],"resolved_at":"2026-09-14T15:53:00Z","projection_only":true,"selection_grants_authority":false},
   "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
   "human_action_ref": null,
   "completion": {"claimed":false,"validated":false,"reconciliation_ref":null,"activation_proof_complete":false},
   "allowed_next_transitions": ["INGRESS_ADMITTED"],
   "handoff_projection_refs": ["docs/STEGAGENTS_GOVERNED_RUNTIME_MIRROR_HANDOFF.md"],
-  "authority_model": {
-    "task_registry_mints_execution_authority": false,
-    "source_state_proves_execution": false,
-    "worker_claim_authority": "WORKERCOORDINATOR",
-    "master_records_reality_authority": true,
-    "interlock_intr_required_for_governed_ingress_egress": true,
-    "provider_credential_authority": "TV/TVC",
-    "github_runtime_authority": "NONE"
-  },
+  "authority_model": {"task_registry_mints_execution_authority":false,"source_state_proves_execution":false,"worker_claim_authority":"WORKERCOORDINATOR","master_records_reality_authority":true,"interlock_intr_required_for_governed_ingress_egress":true,"provider_credential_authority":"TV/TVC","github_runtime_authority":"NONE"},
   "readme_impact": {
     "material_function_change": false,
     "readme_updated_in_change_set": false,
-    "no_readme_update_reason": "Portable exact-selector semantics and authority limits are already documented in the repository README; this repair only admits an already-registered task-specific consumer through that existing bridge.",
-    "evidence_refs": [
-      "README.md#COSV-task-pointer-session-continuation",
-      "scripts/refresh_and_dispatch_resident_requests.py",
-      "docs/STEGAGENTS_GOVERNED_RUNTIME_MIRROR_HANDOFF.md"
-    ]
+    "no_readme_update_reason": "The repository README already documents targeted task/COSV execution and separated authority semantics; this repair adds fail-closed enforcement of an already-registered StegAgents warrant/policy requirement rather than a new .github runtime capability.",
+    "evidence_refs": ["README.md#COSV-task-pointer-session-continuation","StegVerse-Labs/StegAgents@c82caae4c8c4cf82d40f352528269823d853f788:docs/STEGAGENTS_GOVERNED_RUNTIME_MIRROR_HANDOFF.md","docs/STEGAGENTS_GOVERNED_RUNTIME_MIRROR_HANDOFF.md"]
   }
 }
