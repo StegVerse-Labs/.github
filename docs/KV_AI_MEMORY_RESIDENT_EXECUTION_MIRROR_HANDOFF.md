@@ -26,7 +26,7 @@ custody/reconstruction: Master Records
 heartbeat: carrier/reference/observation only
 ```
 
-Repository state, source preparation, CI, fixtures, route installation, source carriage, event-bootstrap source, targeted-dispatch registration, or generic-selector staging repair never substitute for an authentic InTr receipt, WorkerCoordinator claim/fence, provider operation, model response, or KV write receipt.
+Repository state, source preparation, CI, fixtures, route installation, source carriage, event-bootstrap source, targeted-dispatch registration, generic-selector staging repair, chat probe, or unavailable remote runtime channel never substitute for an authentic InTr receipt, WorkerCoordinator claim/fence, provider operation, model response, or KV write receipt.
 
 ## Resident runtime-surface invariant
 
@@ -186,16 +186,28 @@ Relevant successful runs include:
 
 Hosted validation proves source behavior only.
 
-## Current runtime observation — 2026-09-14
+## Current runtime observation — 2026-09-14T14:05Z
 
-Canonical repository evidence was checked directly in the prior handoff iteration:
+Canonical Task Registry and this handoff were re-read before execution attempt. The Task Registry remains `IN_PROGRESS` with `DEP-LIVE-INTR-ADMISSION`, Machine-KV cross-provider reconstruction evidence, and HB observation evidence unresolved.
+
+Canonical repository evidence was checked directly again:
 
 ```text
 receipts/sovereign-network/kv-ai-memory-intr.latest.json: NOT PRESENT
 receipts/sovereign-host/kv-ai-memory-resident-request-consumption.latest.json: NOT PRESENT
 ```
 
-Therefore the authentic runtime outcome remains:
+A local runtime probe was attempted through the available Remote Desktop Commander execution surface only to observe whether this chat could invoke the existing local bootstrap against resident-local Personal-KV state. The result was:
+
+```text
+Remote Desktop Commander runtime surface: NO DEVICES AVAILABLE
+resident-local fenced filesystem observed: false
+resident-local fenced filesystem mutated: false
+```
+
+This result is **not** a device gate, not a manual prerequisite, not a Task Registry blocker, and not runtime evidence. It means this chat execution surface did not have an authorized local runtime channel from which to inspect `~/.stegverse/state/kv-ai-memory-resident`, resolve real Personal-KV inputs, or invoke `scripts/run_kv_ai_memory_intr_event_bootstrap.py` against owner-custodied state.
+
+Therefore the authentic runtime outcome for this iteration remains:
 
 ```text
 real staged Personal-KV packet/input: NOT OBSERVED
@@ -203,6 +215,8 @@ shared Universal InTr ALLOW: NOT OBSERVED
 memory-packet-admission.json: NOT OBSERVED
 WorkerCoordinator claim/fence for this execution: NOT OBSERVED
 KV_AI_MEMORY_PROVIDER_REQUEST_MATERIALIZED receipt: NOT OBSERVED
+provider/model chain: NOT OBSERVED
+KV writeback/readback: NOT OBSERVED
 ```
 
 No synthetic receipt was created and no hosted source run was promoted to runtime evidence.
