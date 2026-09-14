@@ -106,7 +106,7 @@ def test_worker_materializes_only_inside_bound_state(tmp_path, monkeypatch):
     assert receipt["worker_claim_or_fence_minted"] is False
 
 
-def test_consumer_does_not_attempt_worker_until_inputs_exist(tmp_path, monkeypatch):
+def test_consumer_staging_wait_state_does_not_attempt_worker_until_inputs_exist(tmp_path, monkeypatch):
     runtime = tmp_path / "runtime"
     request_target = runtime / consumer.REQUEST_REL
     request_target.parent.mkdir(parents=True)
@@ -114,14 +114,20 @@ def test_consumer_does_not_attempt_worker_until_inputs_exist(tmp_path, monkeypat
     home = tmp_path / "home"
     monkeypatch.setenv("HOME", str(home))
     monkeypatch.setenv("STEGVERSE_LLM_ADAPTER_ROOT", str(tmp_path / "llm"))
+    calls = []
 
-    def forbidden_runner(*args, **kwargs):
-        raise AssertionError("runner must not be called before private inputs exist")
+    def fake_runner(command, **kwargs):
+        calls.append(command)
+        assert "materialize_personal_kv_provider_root.py" in str(command[1])
+        return SimpleNamespace(returncode=1, stdout=json.dumps({"state": "KV_ROOT_NOT_RESOLVED"}) + "\n", stderr="resolution unavailable")
 
-    result = consumer.consume(ROOT, runtime, runner=forbidden_runner, env={"HOME": str(home), "PATH": "/usr/bin", "STEGVERSE_LLM_ADAPTER_ROOT": str(tmp_path / "llm")})
+    result = consumer.consume(ROOT, runtime, runner=fake_runner, env={"HOME": str(home), "PATH": "/usr/bin", "STEGVERSE_LLM_ADAPTER_ROOT": str(tmp_path / "llm")})
     assert result["state"] == "BOUND_STATE_INPUT_NOT_READY"
+    assert result["private_staging_attempt"]["state"] == "PERSONAL_KV_ROOT_NOT_READY"
+    assert result["private_staging_attempt"]["authority_effect"] == "NONE_WAIT_STATE"
     assert result["private_input_bytes_read"] is False
     assert result["runtime_execution_attempted"] is False
+    assert calls and all("refresh_and_execute_resident_task.py" not in str(call) for call in calls)
 
 
 def test_consumer_waits_without_explicit_intr_ingress_when_packet_is_staged(tmp_path):
