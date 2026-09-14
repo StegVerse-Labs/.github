@@ -2,7 +2,7 @@
   "schema": "stegverse.executable-handoff/v0.1",
   "handoff_id": "HANDOFF-SV-KV-AI-PERSISTENCE-001",
   "created_at": "2026-09-14T03:40:00Z",
-  "updated_at": "2026-09-14T05:00:00Z",
+  "updated_at": "2026-09-14T06:26:00Z",
   "state": "HANDOFF_READY",
   "goal": {
     "goal_id": "SV-KV-AI-PERSISTENCE-001",
@@ -52,6 +52,8 @@
       "scripts/prepare_kv_ai_memory_intr_runtime_source.py",
       "scripts/submit_kv_ai_memory_packet_local.py",
       "scripts/consume_kv_ai_memory_resident_request.py",
+      "scripts/refresh_and_dispatch_resident_requests.py",
+      "scripts/install_sovereign_heartbeat_service.py",
       "workers/kv_ai_memory_resident_worker.py",
       "StegVerse-Labs/continuity-vault-kit/KV_AI_PERSISTENCE_CLASSES_MIRROR_HANDOFF.md",
       "StegVerse-org/LLM-adapter/docs/KV_AI_MEMORY_CONTEXT_BRIDGE_MIRROR_HANDOFF.md"
@@ -60,7 +62,7 @@
   "authority": {
     "authority_source": "SV-KV-AI-PERSISTENCE-001 canonical task registry + existing WorkerCoordinator task-control boundary + existing shared Universal InTr listener",
     "authority_domain": "INDEPENDENT_TASK_CONTROL",
-    "policy_version": "kv-ai-memory-resident-v0.3",
+    "policy_version": "kv-ai-memory-resident-v0.4",
     "heartbeat_grants_execution_authority": false,
     "fresh_fence_required": true,
     "minimum_fencing_token_exclusive": 0,
@@ -73,6 +75,9 @@
   "execution": {
     "required_capabilities": [
       "resident_local_source_preparation",
+      "resident_kv_memory_source_carriage",
+      "portable_targeted_kv_ai_memory_dispatch",
+      "universal_intr_endpoint_environment_carriage",
       "shared_universal_intr_memory_packet_submission",
       "exact_admission_receipt_validation",
       "bounded_process_execution",
@@ -102,12 +107,12 @@
     }
   },
   "completion": {
-    "source_implementation_state": "SOURCE_COMPLETE_FOR_PACKET_ADMISSION_THROUGH_PROVIDER_REQUEST_MATERIALIZATION",
+    "source_implementation_state": "SOURCE_COMPLETE_FOR_PORTABLE_TARGETED_PACKET_ADMISSION_THROUGH_PROVIDER_REQUEST_MATERIALIZATION",
     "runtime_activation_state": "PENDING_AUTHENTIC_MEMORY_PACKET_AND_PROVIDER_CHAIN",
     "runtime_observation_claimed": false,
     "terminal_evidence": "authentic same-execution memory-packet InTr ALLOW + WorkerCoordinator ProviderRequest materialization + provider ingress/TVC/response/egress evidence + KV writeback/readback evidence",
-    "next_authorized_action": "When resident-local packet and provider input exist and the shared loopback Universal InTr listener is available, allow the existing consumer to normalize local listener source, submit the exact packet, validate the returned ALLOW, stage admission evidence, and only then continue through existing WorkerCoordinator execution. Do not insert device discovery, device-presence, Remote Desktop Commander, or second-machine gates.",
-    "targeted_command": "python scripts/consume_kv_ai_memory_resident_request.py --runtime-root <resident-runtime-root>"
+    "next_authorized_action": "Use the existing portable resident bridge to refresh already-local source and dispatch exactly kv_ai_memory. If resident-local packet and provider input exist and the shared loopback Universal InTr listener is available, the consumer may normalize local listener source, submit the exact packet, validate the returned ALLOW, stage admission evidence, and only then continue through existing WorkerCoordinator execution. Do not insert device discovery, device-presence, Remote Desktop Commander, or second-machine gates.",
+    "targeted_command": "python scripts/refresh_and_dispatch_resident_requests.py --source-root <canonical-local-source-root> --runtime-root <resident-runtime-root> --only-consumer kv_ai_memory"
   },
   "activation": {
     "authority_domain": "INDEPENDENT_TASK_CONTROL",
@@ -115,7 +120,8 @@
     "carrier_trigger_required": false,
     "targeted_execution": {
       "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
-      "entrypoint": "scripts/refresh_and_execute_resident_task.py",
+      "entrypoint": "scripts/refresh_and_dispatch_resident_requests.py",
+      "selector": "kv_ai_memory",
       "requires_existing_separated_carrier_reference": true,
       "unrelated_worker_execution": false,
       "broad_orphan_reconciliation": false,
