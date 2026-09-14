@@ -1,0 +1,48 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "STEG-BROWSER-TRANSPORT-BOUNDARY-IMPLEMENTATION-001",
+  "correlation_id": "STEG-BROWSER-TRANSPORT-BOUNDARY-IMPLEMENTATION-001",
+  "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+  "parent_task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+  "goal": "Implement and validate the governed transport terminal boundary for the StegBrowser runtime-consumption composition so SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIP_IDENTIFIED is established at the final allowed Interlock/InTr transport-exit transition after the governed return record is received and durably recorded, while all later custody/reconstruction failures remain post-transport.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "40000100100000",
+  "shared_runtime_evidence_owner_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+  "handoff_ref": "docs/STEGBROWSER_TRANSPORT_BOUNDARY_IMPLEMENTATION_MIRROR_HANDOFF.md",
+  "implementation_branch": "stegbrowser-transport-boundary-contract",
+  "current_exact_defect": "TRANSPORT_TERMINAL_BOUNDARY_NOT_YET_VALIDATED_IN_SOURCE_AND_CI",
+  "scope": {
+    "transport_contract_ref": "data/reusable-transport-component-contract.json",
+    "stegbrowser_profile_ref": "data/goal-task-transport-profiles/STEG-BROWSER-RUNTIME-CONSUMPTION-001.json",
+    "test_ref": "tests/test_stegbrowser_transport_boundary_contract.py",
+    "runtime_execution_claimed": false
+  },
+  "completion_predicates": [
+    "TRANSPORT_TERMINAL_CONTRACT_ENCODED",
+    "RTC_EVIDENCE_CUSTODY_CLASSIFIED_POST_TRANSPORT",
+    "STEGBROWSER_PROFILE_SPLITS_TRANSPORT_AND_POST_TRANSPORT_COMPONENTS",
+    "CALLABLE_REFRESHABLE_REMAIN_INVOCATION_BOUND",
+    "POST_TRANSPORT_FAILURE_CANNOT_NEGATE_TRANSPORT_SUCCESS",
+    "DETERMINISTIC_TESTS_PASS",
+    "SOURCE_CHANGE_MERGED"
+  ],
+  "authority_model": {
+    "worker_claim_authority": "WorkerCoordinator",
+    "transport_transition_authority": "Interlock/InTr",
+    "credential_authority": "TV/TVC",
+    "user_verification_authority": "KV/SKAP Vault",
+    "observed_reality_reconstruction_authority": "Master Records",
+    "master_records_transport_success_authority": "NONE",
+    "healer_role": "TRIGGERED_REMEDIATION_ONLY",
+    "github_runtime_authority": "NONE"
+  },
+  "prohibited_transitions": [
+    "REQUIRE_MASTER_RECORDS_TO_PROVE_TRANSPORT_SUCCESS",
+    "RECLASSIFY_POST_TRANSPORT_FAILURE_AS_TRANSPORT_FAILURE",
+    "ASSUME_ALWAYS_ON_RUNTIME_SOURCE",
+    "INFER_CALLABLE_OR_REFRESHABLE_FROM_PERSISTENT_STATE",
+    "TREAT_HEALER_AS_NORMAL_STAGE_OR_CARRIER",
+    "CLAIM_RUNTIME_TRANSPORT_SUCCESS_FROM_SOURCE_OR_CI"
+  ]
+}
