@@ -3,7 +3,9 @@ from __future__ import annotations
 """Regression coverage for KV AI memory source carriage into resident runtime roots."""
 
 import importlib.util
+import json
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -86,16 +88,86 @@ def test_native_worker_service_carries_nonsecret_universal_intr_endpoint():
     assert "STEGVERSE_UNIVERSAL_INTR_INGRESS_URL" in rendered["safe_local_worker_bindings"]
 
 
-def test_event_bootstrap_waits_without_starting_listener_when_private_inputs_missing(tmp_path):
+def test_event_bootstrap_reports_personal_kv_root_not_ready_without_inventing_inputs(tmp_path):
     result = event_bootstrap.run_cycle(
         ROOT,
         tmp_path / "runtime",
         env={"HOME": str(tmp_path), "PATH": "/usr/bin"},
     )
-    assert result["state"] == "BOUND_STATE_INPUT_NOT_READY"
+    assert result["state"] == "PERSONAL_KV_ROOT_NOT_READY"
     assert result["shared_listener_started"] is False
     assert result["runtime_execution_attempted"] is False
     assert result["private_input_bytes_read_by_bootstrap"] is False
+    assert result["private_staging_result"]["authority_effect"] == "NONE_WAIT_STATE"
+
+
+def test_real_personal_kv_root_without_ai_memory_files_is_named_wait_state(tmp_path):
+    kv_root = tmp_path / "personal-kv"
+    kv_root.mkdir()
+    result = event_bootstrap.run_cycle(
+        ROOT,
+        tmp_path / "runtime",
+        env={
+            "HOME": str(tmp_path),
+            "PATH": "/usr/bin",
+            "STEGVERSE_KV_ROOT": str(kv_root),
+        },
+    )
+    assert result["state"] == "PERSONAL_KV_AI_MEMORY_INPUTS_NOT_FOUND"
+    staging = result["private_staging_result"]
+    assert sorted(staging["missing_inputs"]) == ["context_entries", "context_request", "provider_request_input"]
+    assert staging["expected_relative_root"] == "_System/AI/Memory/Inputs"
+    assert staging["private_content_exported_to_repository"] is False
+    assert result["shared_listener_started"] is False
+
+
+def test_existing_real_local_input_files_advance_to_private_staging(tmp_path):
+    kv_root = tmp_path / "personal-kv"
+    inputs = kv_root / "_System/AI/Memory/Inputs"
+    inputs.mkdir(parents=True)
+    for name, value in {
+        "context-request.json": {"real": "request"},
+        "context-entries.json": [{"real": "entry"}],
+        "provider-request-input.json": {"real": "provider-input"},
+    }.items():
+        (inputs / name).write_text(json.dumps(value), encoding="utf-8")
+    kv_source = tmp_path / "kv-source"
+    stager = kv_source / "scripts/stage_kv_ai_memory_resident_inputs.py"
+    stager.parent.mkdir(parents=True)
+    stager.write_text("# local validated stager placeholder for runner interception\n", encoding="utf-8")
+
+    def fake_runner(command, **_kwargs):
+        assert "stage_kv_ai_memory_resident_inputs.py" in str(command[1])
+        assert str(inputs / "context-request.json") in command
+        assert str(inputs / "context-entries.json") in command
+        assert str(inputs / "provider-request-input.json") in command
+        return SimpleNamespace(
+            returncode=0,
+            stdout=json.dumps({
+                "state": "PRIVATE_INPUTS_STAGED_AWAITING_INTR_ADMISSION",
+                "packet_id": "PKT-REAL-LOCAL",
+                "selected_item_count": 2,
+                "memory_packet_admission_present": False,
+            }) + "\n",
+            stderr="",
+        )
+
+    result = event_bootstrap.stage_from_personal_kv(
+        ROOT,
+        tmp_path / "runtime",
+        runner=fake_runner,
+        env={
+            "HOME": str(tmp_path),
+            "PATH": "/usr/bin",
+            "STEGVERSE_KV_ROOT": str(kv_root),
+            "STEGVERSE_KV_SOURCE_ROOT": str(kv_source),
+        },
+    )
+    assert result["state"] == "PERSONAL_KV_PRIVATE_INPUTS_STAGED"
+    assert result["packet_id"] == "PKT-REAL-LOCAL"
+    assert result["selected_item_count"] == 2
+    assert result["memory_packet_admission_present"] is False
+    assert result["private_content_exported_to_repository"] is False
 
 
 def test_event_bootstrap_rejects_hosted_execution(tmp_path):
