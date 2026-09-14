@@ -7,6 +7,10 @@
     "complete_manifest": true,
     "governed_processing": true,
     "required_round_trips": [
+      "stegbrowser_runtime_consumption_governed_round_trip"
+    ],
+    "governed_round_trip_lifecycle_count": 1,
+    "round_trip_internal_transition_groups": [
       "canonical_work_ingress_and_resident_consumption",
       "tvc_source_promotion_and_runtime_observation"
     ],
@@ -67,8 +71,15 @@
     }
   ],
   "repeatability": {
-    "RTC-ROUNDTRIP-003": 2,
+    "RTC-ROUNDTRIP-003": 1,
     "RTC-INTERLOCK-INTR-TRANSPORT-008": "REPEAT_WHERE_EACH_DECLARED_GOVERNED_TRANSITION_REQUIRES_IT"
+  },
+  "round_trip_lifecycle_semantics": {
+    "lifecycle_count": 1,
+    "internal_transition_group_count": 2,
+    "internal_transition_groups_are_separate_round_trip_goals": false,
+    "internal_transition_groups_increment_round_trip_repeat_count": false,
+    "success_boundary": "FINAL_ALLOWED_INTR_STATE_TRANSITION_EXITING_TRANSPORT_AFTER_RETURN_RECORD_RECEIVED_AND_DURABLY_RECORDED"
   },
   "execution_substrate": {
     "selected": "ADMITTED-EPHEMERAL-STEGOS-NODE",
@@ -78,7 +89,7 @@
     "materialize_only_after_applicable_admission": true,
     "ephemeral_construct_contract": "data/reusable-task-ephemeral-construct-contract.json"
   },
-  "composition_rule": "Resolve invocation-bound state first. Reuse Canonical Work, WorkerCoordinator, Interlock/InTr, resident dispatcher, exact TVC source-promotion consumer, runtime observer and evidence-custody components. Governed transport completes at the final allowed Interlock/InTr transport-exit transition after the return record is received and durably recorded. RTC-EVIDENCE-CUSTODY-004 then runs only as post-transport custody/reconstruction and cannot prove or negate transport success. Do not create a second scheduler, WorkerCoordinator, runtime plane, credential path, transport authority, per-defect task, or per-device identity requirement.",
+  "composition_rule": "Resolve invocation-bound state first. Reuse Canonical Work, WorkerCoordinator, Interlock/InTr, resident dispatcher, exact TVC source-promotion consumer, runtime observer and evidence-custody components. This Goal has one governed round-trip lifecycle; canonical_work_ingress_and_resident_consumption and tvc_source_promotion_and_runtime_observation are internal transition groups within that lifecycle and do not imply additional RTC-ROUNDTRIP-003 repeats. Governed transport completes at the final allowed Interlock/InTr transport-exit transition after the return record is received and durably recorded. RTC-EVIDENCE-CUSTODY-004 then runs only as post-transport custody/reconstruction and cannot prove or negate transport success. Do not create a second scheduler, WorkerCoordinator, runtime plane, credential path, transport authority, per-defect task, or per-device identity requirement.",
   "failure_ownership": {
     "before_transport_entry": "PRE_TRANSPORT_OWNING_DOMAIN",
     "inside_transport_through_final_exit": "TRANSPORT_OR_EXACT_IN_LANE_OWNER",
