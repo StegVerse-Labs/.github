@@ -21,6 +21,10 @@ SOURCE_TASK_ID = "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001"
 SOURCE_COSV = "40000100100000"
 LEGACY_SOURCE_SCHEMA = "stegos.stegbrowser.current-iphone-rendezvous-observation/v1"
 GENERIC_SOURCE_SCHEMA = "stegos.stegbrowser.resident-rendezvous-observation/v1"
+# Backward-compatible public symbol for consumers/tests that predate multi-schema
+# replay support. The generic resident-rendezvous schema is the canonical default;
+# SOURCE_SCHEMAS remains the authoritative accepted-set validation surface.
+SOURCE_SCHEMA = GENERIC_SOURCE_SCHEMA
 SOURCE_SCHEMAS = {LEGACY_SOURCE_SCHEMA, GENERIC_SOURCE_SCHEMA}
 DISCOVERY_SCHEMA = "stegverse.resident-rendezvous.discovery/v1"
 OUTPUT_SCHEMA = "stegverse.gadi-retained-node-discovery-observation/v1"
