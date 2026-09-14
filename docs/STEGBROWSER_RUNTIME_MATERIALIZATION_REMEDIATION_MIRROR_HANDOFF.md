@@ -6,13 +6,21 @@ Updated: 2026-09-14
 
 - Goal Task ID: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`
 - Parent/remediates: `STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001`
+- Shared runtime-evidence owner: `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001`
+- Shared owner handoff: `docs/GLOBAL_RUNTIME_EVIDENCE_CLOSURE_MIRROR_HANDOFF.md`
 - Parent issue: `StegVerse-Labs/.github#1860`
 - Issue: `StegVerse-Labs/.github#1866`
 - COSV: `40000100100000`
 - Canonical task record: `data/canonical-task-records/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json`
 - Evidence predicates: `data/runtime-materialization-remediation/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.predicates.json`
-- Status: `ACTIVE / CHECKED_OUT`
+- Status: `ACTIVE / CHECKED_OUT / LANE_CHILD_OF_GLOBAL_RUNTIME_EVIDENCE_CLOSURE`
 - External/second user-operated device required: `false`
+
+## Ownership reconciliation
+
+This task is not a second owner for ecosystem runtime materialization. `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001` remains the single shared runtime-evidence convergence owner for all 18 profiled runtime lanes. This StegBrowser child owns only its exact subject-bound post-repair Healer carrier observation and resident-root/receipt classification predicate.
+
+The task must reuse the shared resident/runtime substrate and may not create another runtime umbrella, scheduler, dispatcher, credential route, GitHub runtime-authority path, runtime plane, MIR-specific transport, or second-device requirement. Source-side profile binding is coordination evidence only and does not prove runtime execution.
 
 ## Why this exists
 
@@ -48,7 +56,7 @@ POST_REPAIR_HEALER_CARRIER_PACKET_OBSERVED_FOR_RT_STEGBROWSER_RUNTIME_CONSUMPTIO
 
 ## Remediation objective
 
-Use the existing Healer resident scheduler carrier and neutral `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` path to expose the post-repair resident-custody-root observation packet. This task may add only deterministic source-side contracts, predicates, dry-run validation, and handoff bindings. It must not mint runtime proof.
+Use the existing Healer resident scheduler carrier and neutral `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` path to expose the post-repair resident-custody-root observation packet. This task may add only deterministic lane-specific source-side contracts, predicates, dry-run validation, and handoff bindings. It must not mint runtime proof or become a second runtime-materialization owner.
 
 ## Required materialization surface
 
@@ -58,7 +66,7 @@ The post-repair packet must make these facts observable without relying on GitHu
 2. Which exact resident-root candidate path was accepted or why no candidate was accepted.
 3. Whether the required retained StegBrowser receipt path exists under that root.
 4. Whether the existing non-authorizing classifier can run against that root.
-5. If no root exists, the exact boundary reason that must be remediated by the authorized resident carrier.
+5. If no root exists, the exact boundary reason that must be remediated through the shared `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001` convergence owner and authorized resident carrier.
 
 ## Required evidence predicates
 
@@ -67,8 +75,10 @@ See `data/runtime-materialization-remediation/STEG-BROWSER-RUNTIME-MATERIALIZATI
 Minimum predicates:
 
 ```text
+GLOBAL_RUNTIME_EVIDENCE_SHARED_OWNER_REUSED
 HEALER_NEUTRAL_RT_STEGBROWSER_ROUTE_REUSED
 HEALER_RESIDENT_ROOT_OBSERVATION_PACKET_SOURCE_REPAIR_MERGED
+NO_SECOND_RUNTIME_EVIDENCE_OWNER_ADDED
 NO_SECOND_SCHEDULER_OR_DISPATCHER_ADDED
 NO_GITHUB_RUNTIME_AUTHORITY_ADDED
 NO_SECOND_USER_OPERATED_DEVICE_REQUIRED
@@ -80,7 +90,7 @@ RETURN_PATH_TO_PARENT_RECEIPT_CLASSIFICATION_DEFINED
 
 ## Dry-run / non-authorizing validation
 
-Dry-run validation may prove only that the repository contains a deterministic remediation contract and that it does not introduce a second scheduler, dispatcher, credential path, GitHub authority path, runtime plane, MIR-specific transport, or second user-operated device. Dry-run validation may not claim:
+Dry-run validation may prove only that the repository contains a deterministic lane-specific remediation contract, that it is bound to the global shared runtime-evidence owner, and that it does not introduce a second owner, scheduler, dispatcher, credential path, GitHub authority path, runtime plane, MIR-specific transport, or second user-operated device. Dry-run validation may not claim:
 
 - resident runtime consumption,
 - `RESIDENT_CUSTODY_ROOT_AUTHENTICALLY_OBSERVED_FOR_STEGBROWSER`,
@@ -102,6 +112,7 @@ RETURN_TO_RESIDENT_CUSTODY_ROOT_OBSERVATION
 ## Prohibited transitions
 
 ```text
+ADD_SECOND_RUNTIME_EVIDENCE_OWNER
 ADD_SECOND_SCHEDULER
 ADD_SECOND_DISPATCHER
 ADD_CREDENTIAL_ROUTE
@@ -114,11 +125,15 @@ CLAIM_RUNTIME_COMPLETION_FROM_SOURCE_STATE
 
 ## Return path
 
-When the post-repair packet observes an authentic resident root, return to `STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001` / `.github#1860` and run `scripts/check_stegbrowser_runtime_consumption_receipts.py` against that root only as a non-authorizing classifier. If the retained receipts are valid/bindable, continue through the parent completion chain: WorkerCoordinator claim/fence, Interlock/InTr admission, TVC source promotion, pinned TVC materialization/restart, immutable observer execution, owner ingress readiness, and Master Records custody/reconstruction.
+When the post-repair packet observes an authentic resident root, return to `STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001` / `.github#1860` and run `scripts/check_stegbrowser_runtime_consumption_receipts.py` against that root only as a non-authorizing classifier. If the retained receipts are valid/bindable, continue through the global owner and parent completion chain: WorkerCoordinator claim/fence, Interlock/InTr admission, TVC source promotion, pinned TVC materialization/restart, immutable observer execution, owner ingress readiness, and Master Records custody/reconstruction.
 
 ## Current state
 
-`ACTIVE / CHECKED_OUT / SUCCESSOR_OF_STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION / HEALER_PACKET_SOURCE_REPAIR_RESOLVED_SOURCE_ONLY / POST_REPAIR_PACKET_OBSERVATION_PENDING / RESIDENT_ROOT_OBSERVATION_SURFACE_NOT_YET_RUNTIME_OBSERVED / RUNTIME_CONSUMPTION_NOT_CLAIMED / REMOTE_DEVICE_NOT_REQUIRED / NO_SECOND_USER_OPERATED_DEVICE`
+`ACTIVE / CHECKED_OUT / LANE_CHILD_OF_GLOBAL_RUNTIME_EVIDENCE_CLOSURE / SUCCESSOR_OF_STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION / HEALER_PACKET_SOURCE_REPAIR_RESOLVED_SOURCE_ONLY / POST_REPAIR_PACKET_OBSERVATION_PENDING / RESIDENT_ROOT_OBSERVATION_SURFACE_NOT_YET_RUNTIME_OBSERVED / RUNTIME_CONSUMPTION_NOT_CLAIMED / REMOTE_DEVICE_NOT_REQUIRED / NO_SECOND_USER_OPERATED_DEVICE`
+
+## README impact
+
+The root README already states that Canonical Work task ingress reuses the existing resident consumer and does not create a second dispatcher, WorkerCoordinator, scheduler, heartbeat, or oscillator. This reconciliation enforces that existing invariant at the runtime-evidence ownership layer and does not require a README mutation.
 
 ## Manual work
 
