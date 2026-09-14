@@ -4,25 +4,13 @@
 This wrapper is intended for an admitted StegVerse resident execution context.
 Before any route installation or task mutation, it performs a non-authorizing
 Task Registry collision check-in. Only CONTINUE may proceed automatically.
-COORDINATE_CONVERGENCE and every STOP_* disposition fail closed before mutation
-and return the exact registry disposition to the caller/session.
+COORDINATE_CONVERGENCE and every STOP_* disposition fail closed before mutation.
 
-It then performs only repository-local machine steps in sequence:
-
-1. apply/check the fail-closed CanonicalWork route transformation against the
-   existing shared Universal InTr router source;
-2. launch the bounded event bootstrap in a fresh Python process for one explicit
-   task that already exists in the canonical Task Registry; and
-3. when that task is StegBrowser, the Canonical Runtime Profile Map, or the
-   dedicated global runtime evidence measurement child, materialize and execute
-   the global runtime-node-profile convergence visitor through the already-existing
-   resident dispatcher and base convergence runner.
-
-It does not define or start a second heartbeat, oscillator, scheduler,
-WorkerCoordinator implementation, dispatcher, or ingress implementation. HB is
-observability only. The profile wrapper retains StegOS node identity/continuity
-across bounded execution sessions while session credentials/cookies/navigation
-state remain disposable.
+A newly registered task may reach a resident as an exact canonical task shard
+before that resident's monolithic Task Registry projection has refreshed. In that
+case this wrapper may refresh only the resident monolithic *projection* by adding
+the exact shard row before collision preflight. This does not create task identity,
+mint authority, or overwrite an existing task row.
 """
 from __future__ import annotations
 
@@ -58,6 +46,62 @@ CALLER_SURFACE = "INTERNAL_CANONICAL_WORK_BOOTSTRAP"
 
 def run(command: list[str]) -> None:
     subprocess.run(command, cwd=str(ROOT), check=True)
+
+
+def atomic_json(path: Path, value: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name("." + path.name + ".tmp")
+    tmp.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    tmp.replace(path)
+
+
+def refresh_registry_projection_from_shard(task_id: str, registry_path: Path) -> dict:
+    """Refresh a stale resident monolithic projection from one exact task shard.
+
+    The shard must already exist in the same canonical source/runtime tree. Existing
+    monolithic task rows are never replaced. The operation is idempotent and has no
+    authority effect; it only makes an already-registered identity visible to the
+    existing collision/bootstrap path.
+    """
+    registry = json.loads(registry_path.read_text(encoding="utf-8"))
+    if not isinstance(registry, dict) or not isinstance(registry.get("tasks"), list):
+        raise RuntimeError("canonical registry projection invalid")
+    matches = [row for row in registry["tasks"] if isinstance(row, dict) and row.get("task_id") == task_id]
+    if len(matches) > 1:
+        raise RuntimeError("canonical task identity duplicated in monolithic projection")
+    if matches:
+        return {"state": "MONOLITHIC_IDENTITY_PRESENT", "task_id": task_id, "projection_refreshed": False, "authority_effect": "NONE"}
+
+    shard_path = ROOT / "data" / "canonical-task-records" / f"{task_id}.json"
+    if not shard_path.is_file():
+        raise RuntimeError("canonical task identity absent from monolithic projection and exact shard")
+    shard = json.loads(shard_path.read_text(encoding="utf-8"))
+    if not isinstance(shard, dict) or shard.get("task_id") != task_id:
+        raise RuntimeError("canonical task shard identity mismatch")
+
+    projected = dict(registry)
+    projected["tasks"] = list(registry["tasks"]) + [shard]
+    projected["generation"] = int(registry.get("generation", 0)) + 1
+    projected["status"] = "STALE_REGISTRY_EXACT_SHARD_PROJECTION_REFRESHED"
+    nonclaims = list(projected.get("nonclaims") or [])
+    claim = "EXACT_SHARD_PROJECTION_REFRESH_DOES_NOT_CREATE_TASK_IDENTITY_OR_EXECUTION_AUTHORITY"
+    if claim not in nonclaims:
+        nonclaims.append(claim)
+    projected["nonclaims"] = nonclaims
+    atomic_json(registry_path, projected)
+
+    check = json.loads(registry_path.read_text(encoding="utf-8"))
+    post = [row for row in check.get("tasks", []) if isinstance(row, dict) and row.get("task_id") == task_id]
+    if len(post) != 1 or post[0] != shard:
+        raise RuntimeError("canonical task shard projection refresh verification failed")
+    return {
+        "state": "EXACT_SHARD_PROJECTED_INTO_MONOLITHIC_RUNTIME_REGISTRY",
+        "task_id": task_id,
+        "projection_refreshed": True,
+        "shard_ref": str(shard_path),
+        "registry_ref": str(registry_path),
+        "authority_effect": "NONE",
+    }
 
 
 def collision_preflight(task_id: str) -> dict:
@@ -115,12 +159,7 @@ def resolve_local_source_root() -> Path:
         candidates.append(Path(configured).expanduser().resolve())
     candidates.append(ROOT)
     for candidate in candidates:
-        required = (
-            GLOBAL_HELPER_REL,
-            GLOBAL_BASE_HELPER_REL,
-            GLOBAL_PROJECTION_REL,
-            GLOBAL_NODE_PROFILES_REL,
-        )
+        required = (GLOBAL_HELPER_REL, GLOBAL_BASE_HELPER_REL, GLOBAL_PROJECTION_REL, GLOBAL_NODE_PROFILES_REL)
         if all((candidate / rel).is_file() for rel in required):
             return candidate
     raise RuntimeError("already-local global runtime-node convergence source is not materialized")
@@ -134,14 +173,7 @@ def run_global_convergence_if_applicable(task_id: str) -> None:
     materialize_exact(source_root, GLOBAL_BASE_HELPER_REL)
     materialize_exact(source_root, GLOBAL_PROJECTION_REL)
     materialize_exact(source_root, GLOBAL_NODE_PROFILES_REL)
-    run([
-        sys.executable,
-        str(helper),
-        "--source-root",
-        str(source_root),
-        "--runtime-root",
-        str(ROOT),
-    ])
+    run([sys.executable, str(helper), "--source-root", str(source_root), "--runtime-root", str(ROOT)])
 
 
 def main() -> int:
@@ -153,26 +185,24 @@ def main() -> int:
     parser.add_argument("--without-carrier-binding", action="store_true")
     args = parser.parse_args()
 
+    registry_path = Path(args.registry).expanduser().resolve()
+    refresh = refresh_registry_projection_from_shard(args.task_id, registry_path)
+    print("TASK_REGISTRY_PROJECTION_REFRESH:" + json.dumps(refresh, sort_keys=True, separators=(",", ":")))
     checkin = collision_preflight(args.task_id)
     print("TASK_REGISTRY_CHECKIN:" + json.dumps(checkin, sort_keys=True, separators=(",", ":")))
 
     installer = str(ROOT / "scripts" / "install_canonical_work_universal_intr_route.py")
     bootstrap = str(ROOT / "scripts" / "run_canonical_work_event_bootstrap.py")
-
     run([sys.executable, installer])
     run([sys.executable, installer, "--check"])
 
     command = [
         sys.executable,
         bootstrap,
-        "--task-id",
-        args.task_id,
-        "--runtime-root",
-        str(Path(args.runtime_root).expanduser().resolve()),
-        "--registry",
-        str(Path(args.registry).expanduser().resolve()),
-        "--consumer-timeout-seconds",
-        str(args.consumer_timeout_seconds),
+        "--task-id", args.task_id,
+        "--runtime-root", str(Path(args.runtime_root).expanduser().resolve()),
+        "--registry", str(registry_path),
+        "--consumer-timeout-seconds", str(args.consumer_timeout_seconds),
     ]
     if args.without_carrier_binding:
         command.append("--without-carrier-binding")

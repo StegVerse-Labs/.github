@@ -40,10 +40,10 @@ def test_new_task_can_materialize_from_source_shard_when_monolithic_registry_is_
     (source / "data/canonical-task-records").mkdir(parents=True)
     (runtime / "data").mkdir(parents=True)
     (source / "data/canonical-task-registry.json").write_text(
-        json.dumps({"schema": "stegverse.canonical-task-registry/v1", "tasks": []}), encoding="utf-8"
+        json.dumps({"schema": "stegverse.canonical-task-registry/v1", "generation": 1, "tasks": []}), encoding="utf-8"
     )
     (runtime / "data/canonical-task-registry.json").write_text(
-        json.dumps({"schema": "stegverse.canonical-task-registry/v1", "tasks": []}), encoding="utf-8"
+        json.dumps({"schema": "stegverse.canonical-task-registry/v1", "generation": 1, "tasks": []}), encoding="utf-8"
     )
     source_task = json.loads(TASK.read_text(encoding="utf-8"))
     (source / "data/canonical-task-records/GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001.json").write_text(
@@ -54,6 +54,34 @@ def test_new_task_can_materialize_from_source_shard_when_monolithic_registry_is_
     assert result["source_kind"] == "SOURCE_TASK_SHARD"
     materialized = json.loads((runtime / "data/canonical-task-records/GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001.json").read_text(encoding="utf-8"))
     assert materialized["task_id"] == "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001"
+
+
+def test_bootstrap_refreshes_stale_monolithic_projection_from_exact_shard(tmp_path, monkeypatch):
+    installer = load(INSTALLER, "measurement_registry_refresh")
+    runtime = tmp_path / "runtime"
+    (runtime / "data/canonical-task-records").mkdir(parents=True)
+    registry = runtime / "data/canonical-task-registry.json"
+    registry.write_text(
+        json.dumps({"schema": "stegverse.canonical-task-registry/v1", "generation": 4, "tasks": [], "nonclaims": []}),
+        encoding="utf-8",
+    )
+    source_task = json.loads(TASK.read_text(encoding="utf-8"))
+    shard = runtime / "data/canonical-task-records/GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001.json"
+    shard.write_text(json.dumps(source_task), encoding="utf-8")
+    monkeypatch.setattr(installer, "ROOT", runtime)
+
+    result = installer.refresh_registry_projection_from_shard("GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001", registry)
+    assert result["state"] == "EXACT_SHARD_PROJECTED_INTO_MONOLITHIC_RUNTIME_REGISTRY"
+    assert result["authority_effect"] == "NONE"
+    refreshed = json.loads(registry.read_text(encoding="utf-8"))
+    matches = [row for row in refreshed["tasks"] if row.get("task_id") == "GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001"]
+    assert matches == [source_task]
+    assert refreshed["generation"] == 5
+    assert "EXACT_SHARD_PROJECTION_REFRESH_DOES_NOT_CREATE_TASK_IDENTITY_OR_EXECUTION_AUTHORITY" in refreshed["nonclaims"]
+
+    again = installer.refresh_registry_projection_from_shard("GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001", registry)
+    assert again["state"] == "MONOLITHIC_IDENTITY_PRESENT"
+    assert again["projection_refreshed"] is False
 
 
 def test_measurement_child_triggers_global_convergence_runner():
