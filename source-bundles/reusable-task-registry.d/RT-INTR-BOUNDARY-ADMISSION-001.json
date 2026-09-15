@@ -1,0 +1,15 @@
+{
+  "reusable_task_id": "RT-INTR-BOUNDARY-ADMISSION-001",
+  "name": "Interlock/InTr Boundary Admission",
+  "purpose": "Admit one manifest-bound ingress at an existing Interlock/InTr boundary by validating source, destination, operation, payload/envelope integrity, applicable standing, and exact boundary identity before any downstream transition is allowed.",
+  "trigger": "a governed operation reaches an existing Interlock/InTr ingress boundary",
+  "scope": "one ingress attempt on one existing organization/system boundary",
+  "parameter_keys": ["source_identity", "destination_identity", "operation", "manifest_or_envelope_ref", "payload_sha256", "standing_refs", "destination_profile"],
+  "composes": ["RT-INTR-PROTOCOL-ESTABLISH-001"],
+  "runner_templates": [],
+  "recording_levels": ["operation", "task", "goal", "component", "system", "master_records"],
+  "completion_predicates": ["EXACT_BOUNDARY_IDENTITY_RESOLVED", "MANIFEST_OR_ENVELOPE_BOUND", "PAYLOAD_INTEGRITY_VERIFIED", "APPLICABLE_STANDING_EVALUATED", "INGRESS_ALLOWED_OR_DENIED_EXPLICITLY", "ADMISSION_RECEIPT_RETAINED"],
+  "failure_semantics": ["MISSING_OR_MUTATED_BINDING_DENY", "UNKNOWN_DESTINATION_DENY", "INSUFFICIENT_STANDING_DENY", "NO_IMPLICIT_AUTHORITY_TRANSFER"],
+  "authority_effect": "NONE_ADMISSION_DECISION_ONLY",
+  "reuse_instructions": "Reuse the existing Interlock/InTr boundary and protocol. Do not create a listener, scheduler, credential authority, WorkerCoordinator, or provider-specific governance plane. Provider/framework adapters may translate into the normalized envelope but cannot replace admission authority."
+}
