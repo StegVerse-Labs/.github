@@ -8,10 +8,10 @@ Repository: `StegVerse-Labs/.github`
 - Goal Task ID: `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001`
 - Parent Goal: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / PR #1914 MERGED / NODE+INTERLOCK LEASE+A4 SOURCE REPAIR IMPLEMENTED / EXACT-HEAD VALIDATION PENDING / AUTHENTIC A1-A4 PENDING`
-- Prior source merge: PR `#1914`, merge commit `7337271028d1226e76af88b33765f38334159b23`
-- Current source-repair PR: `#1923`
-- Current branch: `fix/stegbrowser-node-interlock-lease-binding`
+- Status: `ACTIVE / CHECKED_OUT / NODE+INTERLOCK LEASE+A4 SOURCE MERGED+VALIDATED / AUTHENTIC A1-A4 EXECUTION PENDING`
+- Prior source merge: PR `#1914`, merge `7337271028d1226e76af88b33765f38334159b23`
+- Node/Interlock source repair: PR `#1923`, validated head `f7b6cb86b9fff9fbeb1817e45920acc2effc200f`, merge `0098bc793865fd1db835c400b502dad5f8a5e32d`
+- Validation runs: organization control `34970252692`; deterministic suite `34970252614`; Heartbeat validation `34970252669`
 
 ## Goal
 
@@ -28,39 +28,28 @@ manifest
 -> WorkerCoordinator claim/fence
 -> exact A4 Interlock/InTr ingress
 -> Round Trip 1
--> Master Records/mirror processing
+-> Master Records / mirror processing
 -> Round Trip 2
 -> ecosystem re-entry
 ```
 
-No external runtime/device/host discovery stage exists.
+There is no external runtime/device/host discovery stage, no waiting online runtime, no generic chat-session process host, and no second user-operated device prerequisite.
 
-## Current source implementation
+## Source state
 
-PR #1923 now implements the bounded Node/Interlock repair on its branch:
+PR #1923 is merged and exact-head validated. Source now:
 
-1. the runner requires an applicable registered StegVerse Node Receipt #1 through `node_genesis_receipt` / `STEGVERSE_NODE_GENESIS_RECEIPT`;
-2. Receipt #1 is validated with `StegOS/stegos/network_manifold.py::validate_node_genesis_receipt`;
-3. exact `node_id`, `interlock_id`, and `registration_receipt_sha256` are consumed from the validated receipt;
-4. `manifest_sha256 + node_id + interlock_id + registration_receipt_sha256 + Goal + COSV` are bound into the invocation lease/state identity;
-5. the resulting `lease_id + runtime_id + state_root_binding` are bound back to the same invocation identity;
-6. a durable `stegverse.stegbrowser-node-interlock-runtime-binding/v1` receipt is retained in both the EVENT_EPHEMERAL runtime and resident evidence roots;
-7. A4 loads that exact binding receipt and carries `manifest_sha256 + node_id + interlock_id + registration_receipt_sha256 + lease_id + runtime_id + state_root_binding` in the organization-local packet;
-8. the existing organization-local receipt must still verify exact payload hash + full packet hash and authentic WorkerCoordinator `claim_id + fencing_token` before A4 is accepted;
-9. the runner fails closed on a missing/invalid Receipt #1, manifest mismatch, incomplete Node/Interlock binding, lease/runtime mismatch, or incomplete A4 correlation.
+1. requires an applicable registered StegVerse Node Receipt #1 through `node_genesis_receipt` / `STEGVERSE_NODE_GENESIS_RECEIPT`;
+2. validates Receipt #1 with `StegOS/stegos/network_manifold.py::validate_node_genesis_receipt`;
+3. consumes exact `node_id`, `interlock_id`, and `registration_receipt_sha256`;
+4. binds `manifest_sha256 + node_id + interlock_id + registration_receipt_sha256 + Goal + COSV` into the invocation lease/state identity;
+5. binds resulting `lease_id + runtime_id + state_root_binding` back to the same invocation identity;
+6. retains `stegverse.stegbrowser-node-interlock-runtime-binding/v1` as durable evidence;
+7. carries exact manifest/Node/Interlock/registration/lease/runtime/state-root correlation into the A4 organization-local packet;
+8. requires exact packet/payload-hash verification plus authentic WorkerCoordinator `claim_id + fencing_token` before A4 can be accepted;
+9. fails closed on missing/mismatched Node, Interlock, manifest, lease, runtime, or A4 correlation.
 
-This source repair does not promote runtime predicates. It is pending exact-head validation and merge.
-
-## Existing reusable implementations reused
-
-No duplicate Node or Interlock implementation was created.
-
-- `StegOS/stegos/network_manifold.py::validate_node_genesis_receipt` is the canonical Receipt #1 validator reused by the runner.
-- `StegOS/stegos/sovereign_local_event_runtime.py::SovereignLocalEventRuntimeAdapter` remains the EVENT_EPHEMERAL compute/materializer/identity adapter.
-- `ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001` remains the bounded local A3/A4 execution boundary.
-- `workers/stegbrowser_manifest_intr_ingress.py` remains the StegBrowser A4 adapter and now requires exact Node/Interlock/lease/runtime correlation.
-
-Historical SV002/Site evidence remains architectural precedent only and does not promote current StegBrowser predicates.
+No runtime predicate was promoted by PR #1923, CI, source reconciliation, or historical SV002 evidence.
 
 ## Reusable-task synchronization
 
@@ -70,32 +59,19 @@ Canonical reusable owner:
 
 Current reusable source conformance:
 
-`NODE_INTERLOCK_BINDING_SOURCE_IMPLEMENTED_VALIDATION_PENDING`
+`NODE_INTERLOCK_BINDING_SOURCE_MERGED_VALIDATED_RUNTIME_EVIDENCE_PENDING`
 
-The same branch synchronizes:
-
-- reusable task definition;
-- resident execution request;
-- legacy materialization runner;
-- active wrapper/A3-A4 projection;
-- A4 ingress worker;
-- canonical continuation task record;
-- affected regression tests;
-- this handoff.
-
-Standing rule: every reusable architecture confirmation/correction must update the reusable task and affected request/test/profile consumers in the same change. No deferred cleanup pass.
+Standing rule: every reusable architecture confirmation or correction must update the reusable task and affected request/test/profile consumers in the same workstream. No deferred cleanup pass.
 
 ## Current Goal Chart
 
-### A0 — Manifest
+### A0 — Manifest/path contract
 
-Bind exact Goal/COSV and manifest-defined route. No endpoint or receiver discovery.
+Bind exact Goal/COSV and declared outbound endpoint, owned mirror receiver, Round Trip 1 recording target, mirror-processing boundary, Round Trip 2 endpoint, and ecosystem destination. No endpoint or receiver discovery.
 
 ### A1 — Registered Node binding
 
-Consume and validate applicable registered/profile-derived StegVerse Node Receipt #1.
-
-Source implementation now requires:
+Consume and validate the applicable registered/profile-derived StegVerse Node Receipt #1:
 
 ```text
 schema = stegos.node_handoff_receipt.v1
@@ -106,13 +82,13 @@ interlock_id = non-empty
 receipt_sha256 = valid
 ```
 
-Runtime terminal for this stage remains:
+Runtime predicate:
 
-`STEGVERSE_NODE_BOUND_TO_INVOCATION = true`
+`STEGVERSE_NODE_BOUND_TO_INVOCATION`
 
-### A2 — Interlock/InTr + invocation lease
+### A2 — Interlock/InTr + bounded lease
 
-Bind the validated Node's `interlock_id` to the exact manifest invocation. The lease/state identity is derived from:
+Bind the validated Node's Interlock to the exact manifest invocation. Lease/state identity binds:
 
 ```text
 manifest_sha256
@@ -124,7 +100,7 @@ COSV
 canonical task/registry hashes
 ```
 
-Runtime predicates remain:
+Runtime predicates:
 
 ```text
 INTERLOCK_BOUND_TO_NODE_AND_MANIFEST
@@ -132,9 +108,9 @@ INTR_MATERIALIZATION_ADMITTED
 INVOCATION_SCOPED_LEASE_ESTABLISHED
 ```
 
-### A2.2 — EVENT_EPHEMERAL runtime identity
+### A2.2 — EVENT_EPHEMERAL StegOS runtime identity
 
-Materialize through the existing `SovereignLocalEventRuntimeAdapter` with:
+Use existing `SovereignLocalEventRuntimeAdapter` with:
 
 ```text
 RuntimeClass.EVENT_EPHEMERAL
@@ -146,7 +122,7 @@ developer_machine_required = false
 
 Bind `lease_id + runtime_id + state_root_binding` back to the same manifest/Node/Interlock identity and retain the durable binding receipt.
 
-Runtime predicates remain:
+Runtime predicates:
 
 ```text
 EVENT_EPHEMERAL_STEGOS_RUNTIME_MATERIALIZED
@@ -155,11 +131,15 @@ EXECUTION_TIME_RUNTIME_IDENTITY_BOUND
 
 ### A3 — WorkerCoordinator
 
-Require authentic exact `claim_id + fencing_token` for this invocation from the existing organization-local boundary.
+Require authentic exact `claim_id + fencing_token` from the existing organization-local boundary for this invocation.
 
-### A4 — Interlock/InTr ingress
+Runtime predicate:
 
-Require exact durable ingress receipt whose verified packet is correlated to:
+`CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED`
+
+### A4 — Authentic Interlock/InTr ingress
+
+Require durable receipt whose verified packet is correlated to:
 
 ```text
 manifest_sha256
@@ -175,7 +155,14 @@ claim_id
 fencing_token
 ```
 
-Only then may transport proceed.
+Runtime predicates:
+
+```text
+ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED
+AUTHENTIC_INTR_INGRESS_OBSERVED
+```
+
+Only after authentic A1-A4 evidence may transport advance.
 
 ### Round Trip 1
 
@@ -188,52 +175,67 @@ StegVerse ecosystem
 -> Master Records recording
 ```
 
-Terminal predicate:
+Require:
 
-`SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED`
+```text
+GOVERNED_RETURN_PACKET_RECEIVED
+RECORDS_PACKET_DELIVERED_FOR_RECORDING
+RETURN_RECORD_DURABLY_RECORDED
+FIRST_FINAL_ALLOWED_INTR_EXIT_TRANSITION_OBSERVED
+SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED
+```
 
 ### Between trips
 
-Master Records recording/custody/reconstruction and declared mirror-boundary processing. No transport authority transfer.
+Master Records records/preserves/reconstructs and applicable processing advances to the declared owned mirror boundary. This does not transfer transport authority and cannot retroactively erase a verified Round Trip 1.
 
 ### Round Trip 2
 
 ```text
 owned mirror boundary
 -> Interlock/InTr re-entry
--> endpoint Interlock/InTr
--> final allowed ecosystem re-entry
+-> declared endpoint Interlock/InTr
+-> final allowed StegVerse ecosystem re-entry
 ```
 
-Terminal predicate:
+Require:
 
-`SUCCESSFUL_ECOSYSTEM_RETURN_ROUND_TRIP_IDENTIFIED`
+```text
+MIRROR_BOUNDARY_PROCESSING_COMPLETE
+MIRROR_BOUNDARY_INTR_REENTRY_OBSERVED
+ENDPOINT_INTERLOCK_INTR_CALLED
+ENDPOINT_INTERLOCK_INTR_ALLOWED
+ECOSYSTEM_REENTRY_FINAL_ALLOWED_TRANSITION_OBSERVED
+SUCCESSFUL_ECOSYSTEM_RETURN_ROUND_TRIP_IDENTIFIED
+```
 
-Composition terminal:
+Then and only then:
 
 `SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIPS_IDENTIFIED`
 
-## Current predicates
+## Current authentic predicates
 
 ```text
-MANIFEST_BOUND_TO_INVOCATION = source implementation present; authentic invocation confirmation pending
+MANIFEST_BOUND_TO_INVOCATION = source implementation present; runtime confirmation pending
 STEGBROWSER_ACTIVE_RESIDENT_REQUEST_DISPATCH_BINDING_VALID = true at source
-STEGVERSE_NODE_BOUND_TO_INVOCATION = false / source implementation pending validation+runtime evidence
-INTERLOCK_BOUND_TO_NODE_AND_MANIFEST = false / source implementation pending validation+runtime evidence
+STEGVERSE_NODE_BOUND_TO_INVOCATION = false / not authentically observed
+INTERLOCK_BOUND_TO_NODE_AND_MANIFEST = false / not authentically observed
 INTR_MATERIALIZATION_ADMITTED = false / not authentically observed
-INVOCATION_SCOPED_LEASE_ESTABLISHED = false / source implementation pending validation+runtime evidence
-EVENT_EPHEMERAL_STEGOS_RUNTIME_MATERIALIZED = false / not authentically observed for corrected path
-EXECUTION_TIME_RUNTIME_IDENTITY_BOUND = false / source implementation pending validation+runtime evidence
+INVOCATION_SCOPED_LEASE_ESTABLISHED = false / not authentically observed
+EVENT_EPHEMERAL_STEGOS_RUNTIME_MATERIALIZED = false / not authentically observed on corrected path
+EXECUTION_TIME_RUNTIME_IDENTITY_BOUND = false / not authentically observed
 CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED = false / not authentically observed
-ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED = false / source implementation pending validation+runtime evidence
+ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED = false / not authentically observed
 AUTHENTIC_INTR_INGRESS_OBSERVED = false / not authentically observed
 ```
 
-No runtime predicate is promoted from source implementation, historical evidence, CI, or GitHub state.
+Current exact defect:
 
-## Issue #1918
+`AUTHENTIC_NODE_INTERLOCK_LEASE_RUNTIME_A3_A4_EVIDENCE_NOT_YET_OBSERVED`
 
-Issue #1918 is the bounded Node/Interlock/lease/runtime/A4 source-binding defect. PR #1923 now contains the implementation repair; issue disposition remains open until exact-head validation and merge complete. Runtime closure is separate.
+## Issue #1918 disposition
+
+Issue #1918 represented the bounded source defect in Node/Interlock/lease/runtime/A4 correlation. PR #1923 fixes that source defect and is merged+validated. Issue #1918 may therefore close as source-complete; authentic runtime closure remains owned by this active Goal/handoff.
 
 ## Authority boundaries
 
@@ -244,12 +246,12 @@ Issue #1918 is the bounded Node/Interlock/lease/runtime/A4 source-binding defect
 - EVENT_EPHEMERAL StegOS runtime: compute/materialization surface only.
 - WorkerCoordinator: claim/fence authority.
 - TV/TVC: credential authority.
-- Master Records: custody/reconstruction authority; not transport-success authority.
+- Master Records: observed-reality custody/reconstruction authority; not transport-success authority.
 - GitHub/CI: source validation/evidence transport only; runtime authority `NONE`.
 
 ## Immediate continuation
 
-Run exact-head organization-control, deterministic repository suite, and Heartbeat validation for PR #1923. Repair only proven source-contract failures. Merge only a head where all required lanes pass. After merge, invoke the corrected path and promote A1/A2/A3/A4 only from authentic durable runtime evidence.
+Execute the corrected manifest-bound invocation using the applicable registered/profile-derived Node Receipt #1. Retain authentic A1-A4 durable evidence with exact manifest/Node/Interlock/registration/lease/runtime/claim/fence correlation. Advance to Round Trip 1 only if those predicates are authentically proven.
 
 ## Manual work
 
