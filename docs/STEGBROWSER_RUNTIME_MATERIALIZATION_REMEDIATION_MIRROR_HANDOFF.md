@@ -8,47 +8,83 @@ Updated: 2026-09-14
 - Parent/remediates: `STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001`
 - Shared runtime-evidence owner: `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / TWO-ROUND-TRIP MODEL MERGED+VALIDATED / INVOCATION-BOUND RUNTIME MATERIALIZATION REQUIRED / AUTHENTIC RUNTIME EVIDENCE PENDING`
+- Status: `ACTIVE / CHECKED_OUT / TWO-ROUND-TRIP MODEL MERGED+VALIDATED / MANIFEST-DEFINED OWNED PATH / INVOCATION-BOUND MATERIALIZATION REQUIRED / AUTHENTIC RUNTIME EVIDENCE PENDING`
 - External/second user-operated device required: `false`
 
-## Critical runtime-materialization invariant
+## Critical manifest-path invariant
 
-There is **no standing StegBrowser runtime device, resident surface, or endpoint expected to be online waiting for work**.
+Any governed Interlock/InTr data transport process leaving the ecosystem requires a manifest. The manifest is the route contract for that invocation.
 
-The execution surface is invocation-bound and callable. The selected substrate identifies what may be materialized for the invocation; it is not a persistent-online prerequisite.
+The manifest defines, before ecosystem egress:
 
-Therefore:
+- the outbound Interlock/InTr endpoint;
+- the receiver at the other end;
+- the declared processing/reflection behavior;
+- the return target for the first records/verification return;
+- the mirror-processing boundary that originates the second return;
+- the endpoint Interlock/InTr used on the ecosystem-return leg;
+- the final ecosystem destination.
+
+For this StegBrowser test, the path is owned by StegVerse. The far-end receiver is an owned mirror reflector. Therefore endpoint discovery, receiver discovery, and waiting for an externally available device are not part of this Goal.
 
 ```text
+MANIFEST_REQUIRED_BEFORE_ECOSYSTEM_EGRESS = true
+MANIFEST_IS_TRANSPORT_PATH_CONTRACT = true
+OUTBOUND_INTERLOCK_INTR_ENDPOINT_DECLARED_BY_MANIFEST = true
+FAR_END_RECEIVER_DECLARED_BY_MANIFEST = true
+FAR_END_RECEIVER_ROLE = OWNED_MIRROR_REFLECTOR
+MIRROR_PATH_IS_OWNED_DECLARED_PATH = true
+ENDPOINT_DISCOVERY_REQUIRED = false
+RECEIVER_DISCOVERY_REQUIRED = false
 WAIT_FOR_ONLINE_DEVICE = false
 STANDING_RESIDENT_SURFACE_REQUIRED = false
 PREEXISTING_RUNTIME_CONNECTION_REQUIRED = false
-SELECTED_SUBSTRATE_IS_ON_DEMAND_MATERIALIZATION_TARGET = true
-CALLABLE_AND_REFRESHABLE_ARE_INVOCATION_BOUND_INTR_VARIABLES = true
 ```
 
-Checking whether a device is already online is not a valid prerequisite, completion predicate, or reason to defer execution. A missing pre-existing device is not a runtime failure because no pre-existing device is expected.
+The governed path for this Goal is conceptually:
+
+```text
+STEGVERSE ECOSYSTEM EGRESS
+-> manifest-declared Interlock/InTr endpoint
+-> manifest-declared owned mirror receiver
+-> declared reflection return
+-> records packet returned for recording/verification
+-> Master Records recording / reconstruction / applicable processing
+-> mirror-processing boundary
+-> manifest-declared Interlock/InTr re-entry
+-> manifest-declared endpoint Interlock/InTr
+-> allowed ecosystem re-entry
+```
+
+Interlock/InTr does not discover this route. It evaluates/admit transitions on the route declared by the manifest. Runtime transition variables such as `callable` and `refreshable` therefore govern whether/how the declared path is instantiated for this invocation; they are not destination-discovery variables.
+
+No execution component may substitute an undeclared endpoint or receiver.
+
+## Runtime-materialization invariant
+
+There is no standing StegBrowser runtime device or endpoint expected to be online waiting for work. The manifest declares the path and the selected substrate identifies what may be materialized to execute that declared path.
 
 Correct progression is:
 
 ```text
-invoke active Goal/COSV
--> Interlock/InTr resolves invocation state
+bind complete manifest to active Goal/COSV
+-> validate declared endpoint + receiver + return path
+-> Interlock/InTr evaluates invocation state for the declared path
 -> resolve callable + refreshable
--> materialize/instantiate the admitted execution surface for this invocation
--> establish the invocation-bound runtime connection
--> continue governed execution
+-> materialize/instantiate admitted execution surface as needed
+-> establish invocation-bound connection to the manifest-declared path
+-> execute governed transport
 ```
 
-If `callable=true, refreshable=true`, refresh/materialize from current canonical local source as part of the invocation. If `callable=true, refreshable=false`, instantiate the allowed connection without inventing a refresh prerequisite. If `callable=false`, the invocation is not callable under that transition and must not be represented as executed.
+If `callable=true, refreshable=true`, refresh/materialize from current canonical source as part of the invocation. If `callable=true, refreshable=false`, instantiate the allowed connection without an invented refresh requirement. If `callable=false`, the declared invocation path is not callable under that transition and must not be represented as executed.
 
 ## Source validation state
 
-PR #1907 repaired binding of `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` to the active remediation Goal while preserving the retired historical runtime-consumption task as lineage only.
+PR #1907 repaired binding of `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` to the active remediation Goal while preserving the retired historical task as lineage only.
 
-PR #1908 corrected the StegBrowser data path to two governed Interlock/InTr round-trip phases.
+PR #1908 corrected the data path to two governed Interlock/InTr round-trip phases.
 
-Validated PR #1908 source evidence:
+Validated PR #1908 evidence:
 
 ```text
 validated head = 947c4c7d0f8b1547dff0c3e303a9dbf4d47860e8
@@ -58,23 +94,27 @@ heartbeat validation = 34914042368 PASS
 merge commit = 0fdac00dd761da61fbd6f2f0e9c5d60463b1b924
 ```
 
+A follow-on profile correction committed as `134d8b8f77bdd3996fab1f1fa704defaafd5ba09` makes the manifest-defined owned path explicit in `data/goal-task-transport-profiles/STEG-BROWSER-RUNTIME-CONSUMPTION-001.json`. That source correction does not claim runtime execution.
+
 GitHub/CI runtime authority remains `NONE`.
 
 ## Current exact runtime condition
 
 ```text
-AUTHENTIC_INVOCATION_BOUND_RUNTIME_MATERIALIZATION_AND_INTR_INGRESS_NOT_YET_OBSERVED
+AUTHENTIC_MANIFEST_BOUND_INVOCATION_AND_INTR_INGRESS_NOT_YET_OBSERVED
 ```
 
-This means the invocation has not yet produced authentic evidence of its own materialized execution surface and admitted Interlock/InTr ingress. It does **not** mean an already-running device must be found.
+The missing evidence is not endpoint discovery or device availability. The missing evidence is execution of the already-declared manifest path through authentic Interlock/InTr admission.
 
-## Round Trip 1 — return to records for verification
+## Round Trip 1 — manifest-defined mirror reflection to records verification
 
-The invocation enters governed Interlock/InTr transport and progresses through allowed state transitions. At the first final allowed Interlock/InTr exit transition, the correlated records packet returns to the recording surface.
+Round Trip 1 follows the manifest-declared outbound endpoint to the manifest-declared owned mirror receiver. The mirror performs the declared reflection behavior and the correlated records packet returns at the declared Interlock/InTr exit to the recording surface.
 
 Required authentic evidence:
 
 ```text
+MANIFEST_BOUND_TO_INVOCATION = true
+DECLARED_ENDPOINT_AND_RECEIVER_VALIDATED = true
 GOVERNED_RETURN_PACKET_RECEIVED = true
 RECORDS_PACKET_DELIVERED_FOR_RECORDING = true
 RETURN_RECORD_DURABLY_RECORDED = true
@@ -82,17 +122,17 @@ FIRST_FINAL_ALLOWED_INTR_EXIT_TRANSITION_OBSERVED = true
 SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED = true
 ```
 
-Master Records retains observed-reality/custody/reconstruction authority and does not become Interlock/InTr transport authority.
+Master Records records/custodies/reconstructs the returned state; it does not become transport authority.
 
-## Between Round Trips — processing to mirror boundary
+## Between Round Trips — process to declared mirror boundary
 
-After Round Trip 1 is recorded and verified, the recorded material may undergo custody/reconstruction, governed processing, reconciliation, and applicable mirror-boundary processing.
+After Round Trip 1 is recorded and verified, the returned material proceeds through the applicable record/reconstruction and processing path to the manifest-declared mirror boundary.
 
-A failure here does not retroactively erase an authentically completed Round Trip 1, but it prevents initiation or completion of Round Trip 2.
+A failure here does not erase a completed Round Trip 1, but it prevents initiation/completion of Round Trip 2.
 
-## Round Trip 2 — mirror-boundary return to ecosystem
+## Round Trip 2 — manifest-defined ecosystem return
 
-After mirror-boundary processing is complete, the mirror boundary initiates Interlock/InTr again. The governed return calls endpoint Interlock/InTr. If allowed, the endpoint transition returns the processed result into the ecosystem.
+The manifest-declared mirror-processing boundary initiates Interlock/InTr again. The governed return follows the manifest-declared endpoint Interlock/InTr and, if allowed, re-enters the declared ecosystem destination.
 
 Required authentic evidence:
 
@@ -113,29 +153,30 @@ SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIPS_IDENTIFIED = true
 
 ## Reusable transport composition
 
-- `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` — existing reusable execution capability selected for this Goal.
+- `RTC-MANIFEST-001` — validates/binds the complete transport manifest before ecosystem egress.
+- `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` — bounded execution capability for the active Goal/COSV.
 - `RT-SOVEREIGN-SOURCE-REFRESH-001` — selected iff admitted invocation resolves `callable=true AND refreshable=true`.
-- `RTC-ROUNDTRIP-003` — repeat count `2` for this StegBrowser composition.
-- `RTC-INTERLOCK-INTR-TRANSPORT-008` — repeat at required governed state crossings.
-- `RTC-EVIDENCE-CUSTODY-004` — recording/custody/reconstruction between round trips.
-- `RTC-STEGVERSE-EGRESS-007` — second governed egress from mirror-side processing boundary where applicable.
-- `RTC-FARSIDE-FINAL-009` — endpoint-side final receive/state transition for ecosystem re-entry where applicable.
+- `RTC-ROUNDTRIP-003` — repeat count `2` for the declared StegBrowser path.
+- `RTC-INTERLOCK-INTR-TRANSPORT-008` — governed transport at required crossings on both declared return lifecycles.
+- `RTC-EVIDENCE-CUSTODY-004` — recording/custody/reconstruction between returns.
+- `RTC-STEGVERSE-EGRESS-007` — applicable mirror-side second egress transition.
+- `RTC-FARSIDE-FINAL-009` — applicable endpoint-side final transition into the ecosystem.
 
 ## Corrected Goal Chart
 
-### A1 — Invoke and resolve invocation-bound state
+### A0 — Bind and validate manifest
 
-Invoke the active Goal/COSV through the existing reusable capability. Interlock/InTr resolves `callable`, `refreshable`, applicable protocol state, and allowed substrate materialization for this invocation.
+Bind the complete manifest to the active Goal/COSV before ecosystem egress. Validate the manifest-declared Interlock/InTr endpoint, owned mirror receiver, reflection behavior, recording return target, mirror-return origin, endpoint Interlock/InTr, and ecosystem destination.
 
-No online-device discovery stage exists.
+No endpoint/receiver discovery stage exists.
 
-### A2 — Materialize invocation-bound runtime surface
+### A1 — Resolve invocation-bound state for declared path
 
-Instantiate/materialize the admitted execution surface for this invocation.
+Interlock/InTr evaluates `callable`, `refreshable`, applicable protocol state, and allowed materialization for the manifest-declared path.
 
-- `callable=true, refreshable=true` -> run admitted source refresh/materialization and retain receipt.
-- `callable=true, refreshable=false` -> instantiate without invented refresh.
-- `callable=false` -> no runtime-execution representation.
+### A2 — Materialize invocation-bound execution surface
+
+Materialize only what the admitted transition permits. The execution surface exists to execute the declared manifest path; it does not choose the path.
 
 ### A3 — Establish WorkerCoordinator claim/fence
 
@@ -143,52 +184,49 @@ Require authentic claim/fence for the exact active Goal/COSV invocation.
 
 ### A4 — Enter governed Interlock/InTr transport
 
-Admit the manifested invocation through existing Canonical Work / Interlock-InTr surfaces and retain authentic ingress evidence.
+Admit the manifested invocation onto its declared route and retain authentic ingress evidence.
 
-### A5 — Execute allowed intermediate transitions
+### A5 — Follow manifest-declared path to owned mirror
 
-Authorized endpoint-local transitions may occur iff allowed.
+Execute only allowed transitions along the declared outbound endpoint/receiver path.
 
 ### A6 — Round Trip 1 return to recording
 
-Return the correlated records packet at the first final Interlock/InTr exit and deliver it to the recording surface.
+Receive the declared reflected records packet and deliver it through the declared return boundary to recording.
 
 ### A7 — Verify Round Trip 1
 
-Durably record the return record and identify `SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED=true` from authentic evidence.
+Durably record the return record and identify `SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED=true`.
 
-### B1 — Record/reconstruct/process toward mirror boundary
+### B1 — Record/reconstruct/process toward declared mirror boundary
 
-Master Records and exact downstream processing owners operate on the recorded material between the two governed round trips.
+Process the returned material to the mirror boundary declared by the manifest.
 
-### B2 — Reach mirror boundary
+### C1 — Initiate Round Trip 2 from declared mirror boundary
 
-Complete processing required to initiate ecosystem return.
+Re-enter Interlock/InTr on the manifest-defined return route.
 
-### C1 — Initiate Round Trip 2
+### C2 — Call declared endpoint Interlock/InTr
 
-From the mirror boundary, initiate the second governed Interlock/InTr return.
+The return reaches the endpoint declared by the manifest; the state transition occurs only iff allowed.
 
-### C2 — Call endpoint Interlock/InTr
+### C3 — Re-enter declared ecosystem destination
 
-The governed return reaches and calls endpoint Interlock/InTr; endpoint transition occurs only iff allowed.
-
-### C3 — Re-enter ecosystem
-
-Observe the final allowed endpoint transition placing the processed result back into the ecosystem and identify `SUCCESSFUL_ECOSYSTEM_RETURN_ROUND_TRIP_IDENTIFIED=true`.
+Observe final allowed ecosystem re-entry and identify `SUCCESSFUL_ECOSYSTEM_RETURN_ROUND_TRIP_IDENTIFIED=true`.
 
 ### C4 — Composition transport success
 
-Set `SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIPS_IDENTIFIED=true` only after authentic success evidence for both round trips.
+Set `SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIPS_IDENTIFIED=true` only after authentic success evidence for both declared round trips.
 
 ## Authority invariants
 
+- Manifest: path declaration/binding; no independent transition authority.
 - Task Registry: coordination only.
-- Reusable tasks/components: bounded work only; no independent authority.
+- Reusable tasks/components: bounded work only.
 - WorkerCoordinator: claim/fence authority.
-- Interlock/InTr: invocation-state, transition, and governed packet-movement authority.
+- Interlock/InTr: transition and governed packet-movement authority on the manifest-declared path.
 - TV/TVC: credential/provider authority.
-- KV/SKAP Vault: sole user-verification authority.
+- KV/SKAP Vault: user-verification authority.
 - Master Records: recording/custody/reconstruction authority between governed returns; not transport authority.
 - HeartBeat: observability/timing/freshness/correlation only.
 - Healer: triggered bounded remediation only.
