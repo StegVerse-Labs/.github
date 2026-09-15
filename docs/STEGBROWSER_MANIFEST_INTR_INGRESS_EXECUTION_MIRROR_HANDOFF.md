@@ -8,11 +8,11 @@ Repository: `StegVerse-Labs/.github`
 - Goal Task ID: `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001`
 - Parent Goal: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / A1-A4 SOURCE MERGED+VALIDATED / NATIVE SOURCE-PACKAGE REPAIR MERGED+VALIDATED / AUTHENTIC SOURCE-PACKAGE RELAY+RESIDENT LOCALIZATION+A1-A4 EXECUTION PENDING`
+- Status: `ACTIVE / CHECKED_OUT / A1-A4 SOURCE MERGED+VALIDATED / NATIVE SOURCE-PACKAGE REPAIR MERGED+VALIDATED / SOURCE-PACKAGE RELAY PROFILE REPAIR MERGED+VALIDATED / AUTHENTIC SOURCE-PACKAGE RELAY+RESIDENT LOCALIZATION+A1-A4 EXECUTION PENDING`
 - Node/Interlock source repair: PR `#1923`, validated head `f7b6cb86b9fff9fbeb1817e45920acc2effc200f`, merge `0098bc793865fd1db835c400b502dad5f8a5e32d`.
 - Single-path A1-A4 reconciliation: PR `#1929`, validated head `60e7246e326d32d17525d83783c38c5e21528ff0`, merge `a4c2d173aad04219795e44d2051703accd404c9c`.
 - Native source-package repair: PR `#1941`, validated head `7bd0527413aa22b54e079546bd5b5e16810d83dd`, merge `8eb3afd480b9670ab9e8c44c01825a2934d04289`.
-- PR #1941 exact-head validation: organization control `34984618386`, deterministic repository suite `34984618375`, Heartbeat validation `34984619006` — all SUCCESS.
+- Source-package relay profile repair: StegOS issue `#391`, PR `#392`, validated head `7fb5c4e2f8345c440c0fabe8408220529e1b7f7b`, merge `b04cfb473399ba31fc5e69cb1674823c17a7e549`, StegOS CI run `34988828837` SUCCESS.
 - Issue `#1918`: `CLOSED / SOURCE DEFECT COMPLETE`; authentic runtime evidence remains separate.
 
 ## Canonical path
@@ -56,6 +56,8 @@ The existing canonical localization mechanism is:
 RT-CONTROL-PLANE-SOURCE-PACKAGE-001
 -> exact content-addressed stegverse.control-plane package
 -> existing RTC-INTERLOCK-INTR-TRANSPORT-008 / TVC relay
+-> existing StegOS sovereign relay egress executor
+-> source-package profile adapter
 -> existing /intr/source-package ingress
 -> write-once source package retention
 -> materialize_into_source(STEGVERSE_HEARTBEAT_SOURCE_ROOT)
@@ -63,16 +65,17 @@ RT-CONTROL-PLANE-SOURCE-PACKAGE-001
 -> resident request dispatch
 ```
 
-PR #1941 repaired the only proven source-package defect: the default package omitted the one-shot StegBrowser request bytes introduced by commit `19935454...`. The first implementation attempt redundantly included the already-canonical A0-A4 runner chain and exact-head deterministic validation rejected the resulting ~951 KiB package against the existing 512 KiB relay envelope. The relay bound was preserved. The final validated repair carries only the actual new request delta while the runner/consumer path remains the previously merged/validated canonical source.
+PR #1941 repaired the package coverage defect by carrying the unchanged one-shot request without expanding the 512 KiB relay envelope.
 
-The source-package ingress contract requires the existing TVC relay origin and authorization ID, validates exact payload SHA-256, writes the content-addressed package once, and materializes it into the declared `STEGVERSE_HEARTBEAT_SOURCE_ROOT`. It explicitly does not mint claims/fences, grant execution authority, perform a network source fetch, or commit the later runtime transition.
+StegOS PR #392 repaired the next exact composition defect. The existing sovereign relay executor and generic HIL round-trip adapter used `application/octet-stream` and validated `stegverse.hil-intr-materialization-ingress/v1`, while `/intr/source-package` requires `application/json`, `X-StegVerse-Transport-Origin: TVC_RELAY_EGRESS`, and returns `stegverse.control-plane-source-package-ingress/v1`. PR #392 added only a profile adapter around the existing `execute_relay_egress()` implementation. It requires exact TVC authorization/payload binding, `SOURCE_MATERIALIZED_VERIFIED`, exact `source_identity`, `network_source_fetch_performed=false`, `claim_or_fence_minted=false`, TV/TVC credential authority, and GitHub runtime authority `NONE`. It does not create another transport, runtime, scheduler, dispatcher, receiver, endpoint, device path, credential path, or execution authority.
 
-PR #1941 proves source package construction/coverage only. It does not prove package relay, `/intr/source-package` admission, resident source materialization, source refresh, request dispatch, request consumption, or A0-A4 execution.
+No retained authentic invocation was found binding the built `RT-CONTROL-PLANE-SOURCE-PACKAGE-001` artifact through TVC bounded authorization into the merged StegOS source-package relay profile. Therefore source/CI/merge evidence does not prove relay or ingress.
 
 ## Current authentic predicates
 
 ```text
 SOURCE_PACKAGE_REPAIR_MERGED_VALIDATED = true
+SOURCE_PACKAGE_RELAY_PROFILE_REPAIR_MERGED_VALIDATED = true
 SOURCE_PACKAGE_RELAY_OBSERVED = false
 SOURCE_PACKAGE_INTR_INGRESS_OBSERVED = false
 RESIDENT_SOURCE_MATERIALIZATION_OBSERVED = false
@@ -94,7 +97,7 @@ ROUND_TRIP_1_STARTED = false
 
 Current exact condition:
 
-`CONTROL_PLANE_SOURCE_PACKAGE_RELAY_AND_RESIDENT_LOCALIZATION_NOT_YET_OBSERVED`
+`SOURCE_PACKAGE_BUILD_TO_TVC_AUTHORIZATION_AND_EXISTING_RELAY_EXECUTOR_INVOCATION_NOT_YET_BOUND_OR_OBSERVED`
 
 Source/CI/GitHub state cannot promote any runtime predicate.
 
@@ -113,11 +116,11 @@ Source/CI/GitHub state cannot promote any runtime predicate.
 
 ## Immediate continuation
 
-Use only the existing governed `RTC-INTERLOCK-INTR-TRANSPORT-008 / TVC` relay for the exact validated control-plane source package containing the unchanged nonce request. Do not create another request or transport. Retain the authentic `stegverse.control-plane-source-package-ingress/v1` receipt and require `SOURCE_MATERIALIZED_VERIFIED`; then require the next resident source-refresh receipt to show a source state containing the unchanged request, follow the same cycle through resident dispatch and canonical-work consumption, and only then verify/promote A0-A4 from same-invocation receipts.
+Trace the existing same-execution composition from the retained `RT-CONTROL-PLANE-SOURCE-PACKAGE-001` result into the already-existing TVC bounded relay authorization and the merged StegOS `execute_control_plane_source_package_relay()` adapter. If that producer-to-executor binding is absent, repair only that binding; do not add another transport or request. Then require an authentic `stegverse.control-plane-source-package-ingress/v1` receipt with `state=SOURCE_MATERIALIZED_VERIFIED`, exact source identity, exact authorization ID, and exact payload hash before advancing to worker-source-refresh, resident request dispatch, canonical-work consumption, and A0-A4.
 
 ## README review
 
-README reviewed for this bounded internal source-package coverage repair; no byte change required because public runtime/authority semantics did not change.
+README reviewed for the bounded profile adapter; no byte change required because public runtime/authority topology did not change.
 
 ## Manual work
 
