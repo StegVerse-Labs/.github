@@ -37,6 +37,23 @@ class ReusableControlPlaneSourcePackageTests(unittest.TestCase):
         self.assertFalse(package["credential_material_included"])
         self.assertEqual(package["authority_effect"], "NONE_SOURCE_TRANSPORT_ONLY")
 
+    def test_default_package_carries_exact_stegbrowser_native_invocation_chain(self) -> None:
+        package = builder.build(ROOT, builder.DEFAULT_PATHS)
+        paths = {row["path"] for row in package["manifest"]["files"]}
+        required = {
+            "control/resident-execution-request.d/canonical-work-stegbrowser-runtime-consumption-001.json",
+            "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py",
+            "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.legacy.py",
+            "control/transport-manifests/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json",
+            "scripts/run_stegbrowser_manifest_bound_runtime.py",
+            "scripts/run_stegbrowser_runtime_consumption_reusable.py",
+            "scripts/run_stegbrowser_runtime_consumption_reusable.legacy.py",
+            "workers/stegbrowser_manifest_intr_ingress.py",
+            "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
+            "data/canonical-task-records/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json",
+        }
+        self.assertTrue(required.issubset(paths), sorted(required - paths))
+
     def test_reusable_runner_retains_exact_content_addressed_package(self) -> None:
         with tempfile.TemporaryDirectory() as td:
             runtime = Path(td) / "runtime"
