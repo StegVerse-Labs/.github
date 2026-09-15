@@ -1,6 +1,6 @@
 # StegBrowser Manifest Interlock/InTr Ingress Execution Mirror Handoff
 
-Updated: 2026-09-14
+Updated: 2026-09-15
 Repository: `StegVerse-Labs/.github`
 
 ## Task pointer
@@ -8,27 +8,35 @@ Repository: `StegVerse-Labs/.github`
 - Goal Task ID: `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001`
 - Parent Goal: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / SOURCE REPAIR VALIDATED / MERGE PENDING / AUTHENTIC A3+A4 EXECUTION PENDING`
+- Status: `ACTIVE / CHECKED_OUT / SOURCE MERGED+VALIDATED / GC RECONCILED / AUTHENTIC A3+A4 EXECUTION PENDING`
+- Source merge: PR `#1914`, merge commit `7337271028d1226e76af88b33765f38334159b23`
 
 ## Goal
 
-Bind the existing StegBrowser manifest-bound resident request into the existing resident dispatcher and existing organization-local Interlock/InTr boundary, then execute the invocation-owned path through ephemeral StegOS materialization, WorkerCoordinator claim/fence, and authentic A4 Interlock/InTr ingress without introducing, discovering, waiting for, or checking any external runtime/device/host.
+Execute the manifest-defined StegBrowser path through the existing StegVerse-owned Node/Interlock/InTr materialization mechanism, materialize the invocation-owned EVENT_EPHEMERAL StegOS execution surface under the governed lease/binding, obtain authentic WorkerCoordinator claim/fence, retain verified A4 Interlock/InTr ingress evidence, and then continue the two governed round-trip transport lifecycle.
 
-## Canonical execution invariant
+## Corrected execution invariant
 
-There is no external runtime that connects to this Goal. The invocation itself instantiates the admitted execution surface.
+There is no external runtime that connects to this Goal. There is no host/device discovery stage and no generic process surface that must first be exposed to a chat session.
+
+Recovered prior StegVerse engineering evidence establishes the reusable architecture as:
 
 ```text
-canonical manifest
--> existing StegBrowser resident request
--> existing resident dispatcher
--> existing organization-local Interlock/InTr boundary
--> invocation-bound admitted EVENT_EPHEMERAL StegOS materialization
+manifest-defined request
+-> registered StegVerse Node / applicable node identity
+-> declared/bound Interlock
+-> InTr admission/materialization
+-> bounded execution lease/binding
+-> EVENT_EPHEMERAL runtime materialization
+-> execution-time runtime identity binding
 -> WorkerCoordinator claim/fence
--> authentic organization-local Interlock/InTr ingress receipt
--> A4 satisfied
--> governed round-trip lifecycle may proceed
+-> authentic Interlock/InTr ingress receipt
+-> governed transport
 ```
+
+For the prior SV002 browser-recovery validation lane, retained engineering evidence recorded a registered StegVerse Node, an Interlock identity, an explicit lease, an EVENT_EPHEMERAL browser runtime, principal execution, and same-execution Master Records reconstruction. This is reusable architectural evidence only; it is not StegBrowser runtime evidence and does not promote any current predicate.
+
+The organization-local execution surface verifies/binds execution-time identity and retains receipts. It is not modeled as a standing external shell, remote host, or prerequisite connection target.
 
 Forbidden prerequisites:
 
@@ -36,92 +44,157 @@ Forbidden prerequisites:
 - Remote Desktop/device-connectivity checks;
 - Render or another hosted carrier;
 - GitHub Actions as runtime authority;
-- endpoint/receiver discovery;
+- endpoint/receiver discovery when already declared by manifest;
+- generic chat-session process-host acquisition;
 - second user-operated machine.
 
-## Source repairs
+## Source state
 
-### D1 — stale Canonical Work request identity
+PR #1914 is merged. Its source work:
 
-Observed source mismatch: `control/resident-execution-request.d/canonical-work-stegbrowser-runtime-consumption-001.json` targets active Goal `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`, while the canonical consumer's StegBrowser request spec retained retired operation-lineage identity `STEG-BROWSER-RUNTIME-CONSUMPTION-001`.
+- preserves the existing Canonical Work resident consumer and public implementation/API contract;
+- binds the StegBrowser invocation owner to the active remediation Goal while preserving the retired runtime-consumption task as lineage only;
+- stages one exact StegBrowser organization-local ingress packet;
+- requires a durable organization-local receipt containing a valid WorkerCoordinator `claim_id` and `fencing_token` before A4 can be marked authentic;
+- preserves A3 before A4 ordering;
+- creates no second dispatcher, runtime, scheduler, WorkerCoordinator, or Interlock/InTr implementation.
 
-Repair implemented:
+GitHub/CI is source validation/evidence transport only and has runtime authority `NONE`.
 
-- preserve the existing Canonical Work resident consumer and public implementation/API contract;
-- overlay only the StegBrowser invocation owner to active `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`;
-- preserve `STEG-BROWSER-RUNTIME-CONSUMPTION-001` as operation lineage and canonical source-contract text;
-- preserve/materialize the active remediation task shard without creating a second dispatcher.
+## Revised Goal Chart
 
-### D2 — incorrect A3/A4 ordering in reusable runner
+### A0 — Bind exact manifest and route contract
 
-Observed source ordering attempted Canonical Work ingress projection before an authentic WorkerCoordinator claim/fence.
+Require exact Goal/COSV binding and declared route fields. The manifest defines the intended Interlock/InTr endpoint(s), owned mirror receiver, Round Trip 1 recording return, mirror boundary, Round Trip 2 return endpoint, and ecosystem destination. No endpoint/receiver discovery stage exists.
 
-Repair implemented:
+### A1 — Resolve the applicable registered StegVerse Node binding
 
-- use the already-merged manifest binding first;
-- materialize invocation-owned ephemeral StegOS;
-- stage one exact StegBrowser packet into `spool/organization-local-boundary/ingress` using existing `stegverse.organization-local-boundary.packet/v1`;
-- invoke existing `ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001` through existing `scripts/refresh_and_execute_resident_task.py`;
-- accept A3 only from the resulting durable organization-local receipt containing a valid WorkerCoordinator `claim_id` and `fencing_token`;
-- accept A4 only after exact packet/profile/hash verification of that receipt;
-- only then continue the StegBrowser Canonical Work/transport path.
+Resolve/reuse the applicable StegVerse Node identity/continuity anchor for this manifest invocation. This is not a search for an online machine and does not require a persistent external process.
 
-## Validation evidence
+Required evidence class: exact Node/profile/genesis-or-continuity binding appropriate to the invocation.
 
-Exact source-validation candidate `b530c27194aaa0d45e889e30fed910e0c8596bdc` passed all three required non-authorizing validation lanes before this handoff reconciliation:
+### A2 — Enter the Node -> Interlock -> InTr materialization path
 
-- organization-control run `34926414425`: `success`;
-- deterministic repository suite run `34926414434`: `success`;
-- Heartbeat validation run `34926414456`: `success`.
+Bind the manifest invocation to the declared/applicable Interlock and submit the governed InTr transition/materialization request.
 
-Because this handoff/task-record reconciliation changes the branch head, merge requires the same three validation lanes to pass again on the final exact head. No source/CI result is runtime evidence.
+Interlock/InTr remains transition authority. The request itself grants no authority.
 
-## Reuse owner
+### A2.1 — Materialize bounded lease/execution binding
 
-The required boundary executor already exists:
+If admitted, establish the bounded invocation lease/binding required for this execution. The lease is ephemeral and manifest/Goal/COSV-bound; it is not a standing host relationship.
 
-- `workers/organization_local_resident_boundary_executor.py`
-- `control/process-worker-adapters.d/organization-local-resident-boundary-executor-001.json`
-- `control/worker-registry.d/organization-local-resident-boundary-executor-001.json`
-- `scripts/refresh_and_execute_resident_task.py`
+### A2.2 — Materialize EVENT_EPHEMERAL StegOS runtime
 
-Do not create another runtime, dispatcher, scheduler, WorkerCoordinator, or Interlock/InTr implementation.
+Materialize the admitted EVENT_EPHEMERAL StegOS execution surface for this invocation. Bind the exact live runtime identity at execution time and retain its correlation to Node, Interlock, manifest, Goal, COSV, and lease/binding.
 
-The reusable pattern is demonstrated by `workers/stegclaw_p4_profiled_resident_execution.py`: construct exact organization-local ingress packet -> invoke existing boundary task -> verify claim/fence and durable receipt.
+No pre-existing running runtime is required.
 
-## Required predicates
+### A3 — WorkerCoordinator claim/fence
+
+Require authentic current WorkerCoordinator claim/fence for the exact invocation. Accept only durable evidence containing a valid `claim_id` and `fencing_token` with exact correlation.
+
+### A4 — Authentic Interlock/InTr ingress
+
+Enter the declared governed path and retain the authentic organization-local Interlock/InTr ingress receipt. Verify packet/profile/hash correlation plus Node/Interlock/lease/runtime/Goal/COSV correlation as applicable.
+
+Only after A3+A4 are authentically proven may transport advance.
+
+### A5 — Round Trip 1 outbound path
+
+Follow only manifest-declared allowed transitions to the owned mirror receiver/reflector.
+
+### A6 — Round Trip 1 return to records
+
+The reflected records packet returns through the first final allowed Interlock/InTr exit to the declared recording surface.
+
+### A7 — Verify Round Trip 1
+
+Require authentic evidence for:
 
 ```text
 MANIFEST_BOUND_TO_INVOCATION = true
-STEGBROWSER_ACTIVE_RESIDENT_REQUEST_DISPATCH_BINDING_VALID = true
-INVOCATION_OWNED_EPHEMERAL_STEGOS_MATERIALIZED = true
-CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED = true
-ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED = true
-AUTHENTIC_INTR_INGRESS_OBSERVED = true
+GOVERNED_RETURN_PACKET_RECEIVED = true
+RECORDS_PACKET_DELIVERED_FOR_RECORDING = true
+RETURN_RECORD_DURABLY_RECORDED = true
+FIRST_FINAL_ALLOWED_INTR_EXIT_TRANSITION_OBSERVED = true
+SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED = true
 ```
 
-Current predicate ownership:
+### B1 — Record / custody / reconstruct / process to mirror boundary
 
-- Source validation may establish the binding implementation is valid.
-- Source/CI/merge MUST NOT establish ephemeral materialization, WorkerCoordinator claim/fence, organization-local ingress receipt verification, or authentic A4 ingress.
-- A3/A4 remain pending until invocation-owned durable runtime evidence is observed.
+Master Records and applicable processing owners record/reconstruct/process the returned material toward the declared owned mirror boundary. Master Records remains custody/reconstruction authority, not transport authority. Completion/failure here does not retroactively erase a verified Round Trip 1.
+
+### C1 — Mirror boundary initiates Round Trip 2
+
+At the declared mirror boundary, initiate the second governed Interlock/InTr return according to the manifest.
+
+### C2 — Governed return through endpoint Interlock/InTr
+
+Traverse the declared return path and call the declared endpoint Interlock/InTr. Each transition occurs iff allowed.
+
+### C3 — Ecosystem re-entry
+
+Observe the final allowed transition into `STEGVERSE_ECOSYSTEM`.
+
+### C4 — Verify Round Trip 2 and composition
+
+Require:
+
+```text
+MIRROR_BOUNDARY_PROCESSING_COMPLETE = true
+MIRROR_BOUNDARY_INTR_REENTRY_OBSERVED = true
+ENDPOINT_INTERLOCK_INTR_CALLED = true
+ENDPOINT_INTERLOCK_INTR_ALLOWED = true
+ECOSYSTEM_REENTRY_FINAL_ALLOWED_TRANSITION_OBSERVED = true
+SUCCESSFUL_ECOSYSTEM_RETURN_ROUND_TRIP_IDENTIFIED = true
+```
+
+Then and only then:
+
+```text
+SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED = true
+AND
+SUCCESSFUL_ECOSYSTEM_RETURN_ROUND_TRIP_IDENTIFIED = true
+=>
+SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIPS_IDENTIFIED = true
+```
+
+## Current predicates
+
+```text
+MANIFEST_BOUND_TO_INVOCATION = source-bound / runtime confirmation pending
+STEGBROWSER_ACTIVE_RESIDENT_REQUEST_DISPATCH_BINDING_VALID = true at source
+NODE_INTERLOCK_INTR_LEASE_MATERIALIZATION_PATH_IDENTIFIED = architectural precedent recovered; StegBrowser invocation proof pending
+INVOCATION_OWNED_EPHEMERAL_STEGOS_MATERIALIZED = false / not authentically observed
+CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED = false / not authentically observed
+ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED = false / not authentically observed
+AUTHENTIC_INTR_INGRESS_OBSERVED = false / not authentically observed
+```
+
+No predicate is promoted from historical SV002 evidence, source inspection, GitHub merge, or CI.
+
+## Issue #1918 disposition guidance
+
+Issue #1918 was opened under the assumption that this chat session needed a generic organization-local process-execution surface exposed to it. The recovered Node -> Interlock -> InTr -> lease -> EVENT_EPHEMERAL materialization evidence makes that abstraction suspect.
+
+Do not close or treat #1918 as resolved solely from historical evidence. First trace the current StegBrowser equivalent of the proven materializer. If the invocation itself can enter that path, reframe/retire #1918 as a mistaken tooling abstraction. If a real missing binding remains, classify the exact source/runtime boundary and remediate only that bounded defect.
 
 ## Authority boundaries
 
 - Manifest: route declaration/binding only.
-- Resident request/dispatcher: non-authorizing invocation transport.
-- EVENT_EPHEMERAL StegOS materialization: compute surface only; authority effect `NONE`.
+- StegVerse Node: continuity/admission anchor as defined by applicable node contract; does not independently grant Interlock/InTr transition authority.
+- Lease/execution binding: bounded invocation scope only; no standing authority.
+- EVENT_EPHEMERAL StegOS runtime: compute surface only; authority effect `NONE` except any separately defined device-local execution effect explicitly evidenced by its own contract.
 - WorkerCoordinator: claim/fence authority.
 - Interlock/InTr: transition and governed packet-movement authority.
-- Organization-local boundary executor: bounded execution surface; does not mint transition authority.
+- Organization-local execution surface: execution-time identity verification/binding and bounded receipt-producing surface; does not mint transition authority.
 - TV/TVC: credential authority.
+- Master Records: observed-reality custody/reconstruction authority; not transport-success authority.
 - GitHub/CI: source validation/evidence transport only; runtime authority `NONE`.
 
-## Completion boundary
+## Immediate continuation
 
-Source completion requires corrected request/consumer identity binding, exact organization-local packet construction/verification, deterministic tests, all repository validation lanes PASS on the final exact head, and merge.
-
-Runtime completion for this Goal requires authentic retained evidence from the invocation-owned path proving WorkerCoordinator claim/fence plus verified organization-local Interlock/InTr ingress. Source/CI must not promote those predicates.
+Trace the exact current implementation equivalent of the historically proven `Node -> Interlock -> InTr -> lease -> EVENT_EPHEMERAL runtime materialization` entrypoint and compare it with the merged StegBrowser manifest-bound request. Reuse that path where predicates match. Do not introduce a generic external runtime/process host.
 
 ## Manual work
 
