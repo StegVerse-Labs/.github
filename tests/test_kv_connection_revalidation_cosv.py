@@ -7,7 +7,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 TASK_ID = "KV-CONNECTION-REVALIDATION-WORKER-001"
 VECTOR = "50000000102000"
-BLOCKERS = {
+VECTOR_BLOCKERS = {
+    "DEPLOYED_QUERY_SECRET_SAFE_INGRESS_AND_AUTHENTIC_GOOGLE_PROVIDER_EXECUTION_NOT_YET_OBSERVED",
+    "AUTHENTIC_DEVICE_KV_SKAP_ROUNDTRIP_AND_TERMINAL_READBACK_NOT_YET_OBSERVED",
+}
+REGISTRY_PROJECTION_BLOCKERS = {
     "SOVEREIGN_RUNTIME_NOT_YET_LIVE_PROVEN",
     "AUTHENTIC_CONFORMANCE_AND_PRIVATE_KV_READBACK_PROOFS_NOT_YET_OBSERVED",
 }
@@ -31,7 +35,7 @@ class KVConnectionRevalidationCOSVTests(unittest.TestCase):
         self.assertFalse(metrics["activated"])
         self.assertFalse(metrics["propagated"])
         blocker_text = self.vector["metric_evidence"]["blocker_count"]
-        for blocker in BLOCKERS:
+        for blocker in VECTOR_BLOCKERS:
             self.assertIn(blocker, blocker_text)
 
     def test_index_contains_exactly_one_matching_projection(self):
@@ -72,7 +76,7 @@ class KVConnectionRevalidationCOSVTests(unittest.TestCase):
         self.assertEqual(task["admissible_existence"]["credential_authority"], "TV/TVC")
         self.assertFalse(task["admissible_existence"]["github_token_runtime_authority"])
         projection = self.coverage["kv_connection_revalidation_cosv_projection"]
-        self.assertEqual(set(projection["blockers"]), BLOCKERS)
+        self.assertEqual(set(projection["blockers"]), REGISTRY_PROJECTION_BLOCKERS)
         self.assertFalse(projection["activation_proof_observed"])
         self.assertFalse(projection["evidence_complete"])
         self.assertEqual(projection["provider_operation_authority"], "NONE")
