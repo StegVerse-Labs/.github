@@ -6,21 +6,32 @@
   "parent_task_id": "MILLINGS-RTG-GTG-TT-COMPARISON-001",
   "goal": "Determine whether StegVerse governance gates require a first-class inspectable legitimacy record and falsification protocol covering standard provenance, evidence-rule provenance, evaluator standing/conflicts, execution-path control, challenge paths, and review independence without creating a new authority source.",
   "coordination_state": "ACTIVE",
-  "checkout_state": "UNCLAIMED",
-  "cosv_task_vector": "10100000100000",
+  "checkout_state": "CLAIMED_IMPLEMENTATION",
+  "cosv_task_vector": "40000100100000",
   "source_refs": [
     "docs/GATE_LEGITIMACY_INVARIANT_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegScholar:GATE_LEGITIMACY_INVARIANT_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegScholar:papers/external-frameworks/millings-method-refinement-disposition.md",
+    "StegVerse-Labs/StegScholar:papers/transition-table/gate-legitimacy-invariant.md",
+    "StegVerse-Labs/StegScholar:schemas/gate-legitimacy-record.schema.json",
+    "StegVerse-Labs/StegScholar:fixtures/gate-legitimacy/gate-legitimacy-cases.json",
+    "StegVerse-Labs/StegScholar:scripts/validate_gate_legitimacy.py",
     "data/canonical-task-records/MILLINGS-RTG-GTG-TT-COMPARISON-001.json"
   ],
   "targets": {"organizations":["StegVerse-Labs"],"repositories":["StegVerse-Labs/StegScholar","StegVerse-Labs/.github"],"components":["gate-legitimacy-record","gate-legitimacy-falsification"]},
   "dependencies": [],
   "blockers": [],
+  "collision_check": {
+    "checked_at": "2026-09-15T14:16:00-05:00",
+    "open_pr_collision_found": false,
+    "active_branch_collision_found": false,
+    "equivalent_implementation_found": false,
+    "disposition": "CLAIM_THIS_CHILD_ONLY"
+  },
   "adjacent_task_refs": ["ARCHITECTURE-NEUTRAL-ADMISSIBILITY-001","INDEPENDENT-REVIEW-PREDICATE-001"],
   "expected_evidence_predicates": ["GATE_LEGITIMACY_OBJECT_PROPOSED_OR_REJECTED_WITH_RATIONALE","STANDARD_PROVENANCE_CASES_VALIDATED","EVIDENCE_RULE_CONTROL_CASES_VALIDATED","EVALUATOR_CONFLICT_CASES_VALIDATED","EXECUTION_PATH_CONTROL_CASES_VALIDATED","AUTHORITY_NONINHERITANCE_PRESERVED"],
   "completion": {"claimed":false,"validated":false,"activation_proof_complete":false},
-  "allowed_next_transitions": ["CLAIMED_IMPLEMENTATION","CLAIMED_VALIDATION","CLAIMED_INTEGRATION"],
+  "allowed_next_transitions": ["CLAIMED_VALIDATION","CLAIMED_INTEGRATION","MERGED_INTO_CANONICAL_WORKSTREAM"],
   "handoff_projection_refs": [
     "docs/GATE_LEGITIMACY_INVARIANT_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegScholar:GATE_LEGITIMACY_INVARIANT_MIRROR_HANDOFF.md"
