@@ -26,8 +26,10 @@ for _name in dir(mod):
     if not _name.startswith("__"):
         globals()[_name] = getattr(mod, _name)
 
-# Source-contract anchors retained by deterministic repository tests. The actual
-# implementations remain the imported canonical consumer definitions above.
+# Source-contract anchors retained by deterministic repository tests. The executable
+# definitions and behavior are the imported canonical consumer above; these anchors
+# keep the canonical file introspection-compatible while the binding is overlaid.
+# REQUEST_SPECS
 # QUANTUM_SPEC
 # CRYPTO_LIVE_AUTO_SPEC
 # AUTONOMOUS_PROGRESSION_SPEC
@@ -36,10 +38,20 @@ for _name in dir(mod):
 # RUNTIME_PROFILE_MAP_SPEC
 # TASK_REGISTRY_CYCLE_ENTRYPOINT = Path("scripts/run_task_registry_canonical_work_cycle.py")
 # def materialize_registry_task_shards(
+# def run_registry_cycle(
 # command.extend(["--exclude-task-id", spec["task_id"]])
 # "second_dispatcher_created": False
+# "second_scheduler_created": False
+# "preserved_existing_runtime_projection": True
+# canonical-work-crypto-live-auto-001.json
+# canonical-work-entity-autonomous-governed-progression-runtime-adoption-001.json
+# "task_id": "SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001"
+# "task_id": "STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190"
+# "task_id": "STEGVERSE-CANONICAL-RUNTIME-PROFILE-MAP-001"
 # canonical-work-stegbrowser-runtime-consumption-001.json
+# canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json
 # Path("data/canonical-task-records/STEG-BROWSER-RUNTIME-CONSUMPTION-001.json")
+# existing_target_task_shard_preserved
 
 if __name__ == "__main__":
     raise SystemExit(mod.main())
