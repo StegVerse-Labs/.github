@@ -1,0 +1,109 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "STEGLEARN-YOUTUBE-EDUCATION-PARTNERSHIP-001",
+  "correlation_id": "STEGLEARN-YOUTUBE-EDUCATION-PARTNERSHIP-001",
+  "root_correlation_id": "STEGLEARN-YOUTUBE-EDUCATION-PARTNERSHIP-001",
+  "parent_task_id": null,
+  "goal": "Evaluate and pursue a bounded Google/YouTube education partnership path for StegLearn that can provide managed media infrastructure for N governed classrooms of one without building proprietary A/V infrastructure, while preserving StegLearn authority over curriculum, adaptation, learner evidence, admissibility, mastery state, and accepted learning receipts.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CLAIMED_INTEGRATION",
+  "cosv_task_vector": "40000100100000",
+  "source_refs": [
+    "docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md",
+    "data/canonical-task-records/STEGLEARN-YOUTUBE-EDUCATION-PARTNERSHIP-001.json",
+    "StegVerse-Labs/StegLearn:docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegLearn:STEGLEARN_MIRROR_HANDOFF.md",
+    "https://edu.google.com/resources/get-started/find-a-partner/become-a-partner/build/",
+    "https://edu.google.com/intl/ALL_in/contact/",
+    "https://support.google.com/youtube/answer/15503014",
+    "https://developers.google.com/youtube/v3/live/docs/liveBroadcasts",
+    "https://developers.google.com/youtube/v3/live/docs/liveChatMessages/streamList"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegLearn"],
+    "components": [
+      "youtube-player-for-education-partner-evaluation",
+      "google-for-education-partner-advantage-entry",
+      "classroom-of-one-media-capability-matrix",
+      "provider-neutral-learning-media-adapter",
+      "google-specialist-outreach-package"
+    ]
+  },
+  "dependencies": [],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": ["STEGLEARN-SITE-PUBLICATION-001"],
+  "expected_evidence_predicates": [
+    "CANONICAL_TASK_SHARD_REGISTERED",
+    "CANONICAL_MIRROR_HANDOFF_CURRENT",
+    "GOOGLE_FOR_EDUCATION_PARTNER_ENTRY_PATH_VERIFIED",
+    "PLAYER_FOR_EDUCATION_PUBLIC_CAPABILITIES_VERIFIED",
+    "YOUTUBE_LIVE_API_CAPABILITIES_VERIFIED",
+    "BIDIRECTIONAL_LEARNER_AV_GAP_EXPLICIT",
+    "MINIMUM_NEGOTIATED_CAPABILITY_SET_DEFINED",
+    "OUTREACH_PACKAGE_PREPARED_NOT_SENT",
+    "README_AND_REPOSITORY_HANDOFF_CURRENT",
+    "NO_PARTNERSHIP_OR_RUNTIME_CAPABILITY_FABRICATED"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["github_repository_read", "github_repository_write", "public_web_research"],
+    "environment": "CURRENT_SESSION_GITHUB_PLUS_PUBLIC_WEB",
+    "direction": "PUBLIC_PARTNER_EVIDENCE_TO_SOURCE_EVALUATION",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]}
+    ],
+    "selected_substrate_id": null,
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  },
+  "worker_claim": {
+    "authority": "CURRENT_SESSION",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": false
+  },
+  "human_action_ref": null,
+  "completion": {"claimed": false, "validated": false, "reconciliation_ref": null},
+  "allowed_next_transitions": [
+    "PROJECT_CANONICAL_HANDOFF",
+    "UPDATE_STEGLEARN_README_AND_HANDOFF",
+    "VALIDATE_SOURCE_PACKAGE",
+    "OWNER_AUTHORIZE_GOOGLE_OUTREACH"
+  ],
+  "handoff_projection_refs": ["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "partnership_claimed": false,
+    "outreach_sent": false,
+    "learner_data_transmission_authority": false,
+    "google_is_instructional_authority": false,
+    "steglearn_retains_curriculum_adaptation_evidence_mastery_authority": true
+  },
+  "readme_impact": {
+    "material_function_change": true,
+    "readme_updated_in_change_set": false,
+    "readme_path": "StegVerse-Labs/StegLearn:README.md"
+  }
+}
