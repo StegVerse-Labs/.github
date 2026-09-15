@@ -1,0 +1,12 @@
+{
+  "identity": "StegVerse-Labs/.github:task:KV-ICLOUD-AUTOMATED-UPGRADE-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "40000100100000",
+  "evidence_refs": [
+    "data/canonical-task-records/KV-ICLOUD-AUTOMATED-UPGRADE-001.json",
+    "StegVerse-Labs/continuity-vault-kit/KV_ICLOUD_AUTOMATED_UPGRADE_MIRROR_HANDOFF.md"
+  ],
+  "authority_effect": "NONE_COORDINATION_STATE_ONLY",
+  "observed_at": "2026-09-15T08:12:00-05:00"
+}
