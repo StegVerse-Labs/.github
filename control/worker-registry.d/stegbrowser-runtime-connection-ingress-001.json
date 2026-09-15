@@ -1,0 +1,56 @@
+{
+  "schema": "stegverse.worker-registry-fragment/v0.1",
+  "fragment_id": "STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001",
+  "tasks": [
+    {
+      "task_id": "STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001",
+      "goal_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+      "state": "HANDOFF_READY",
+      "claim_id": null,
+      "archive_eligible": false,
+      "archive_reason_codes": ["A1_A2_EVIDENCE_REQUIRED_BEFORE_CLAIM_ELIGIBILITY"],
+      "executor_binding": "AUTHORIZED",
+      "authorized_policy_version": "stegbrowser-runtime-connection-ingress-v1",
+      "handoff_ref": "handoffs/STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001.json",
+      "block_ref": "docs/STEGBROWSER_RUNTIME_CONNECTION_INGRESS_MIRROR_HANDOFF.md",
+      "cost_basis_ref": null,
+      "evidence_refs": [
+        "docs/STEGBROWSER_RUNTIME_CONNECTION_INGRESS_MIRROR_HANDOFF.md",
+        "control/resident-execution-request.d/stegbrowser-runtime-connection-ingress-001.json",
+        "scripts/consume_stegbrowser_runtime_connection_ingress_request.py",
+        "workers/stegbrowser_runtime_connection_ingress_worker.py",
+        "control/task-vectors/STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001.json"
+      ],
+      "admission": {
+        "authority_source": "handoffs/STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001.json#authority",
+        "authority_domain": "INDEPENDENT_TASK_CONTROL",
+        "heartbeat_reference_only": true,
+        "heartbeat_grants_execution_authority": false,
+        "carrier_trigger_required": false,
+        "fresh_fence_required": true,
+        "minimum_fencing_token_exclusive": 22,
+        "claim_state": "AWAITING_AUTHENTIC_A1_A2_TRANSITION_EVIDENCE",
+        "activation_predicate_ref": "receipts/sovereign-host/stegbrowser-runtime-connection-a1-a2.latest.json"
+      }
+    }
+  ],
+  "workers": [
+    {
+      "worker_id": "stegbrowser-runtime-connection-ingress-worker",
+      "status": "AVAILABLE",
+      "executor_type": "repository_worker",
+      "adapter_ref": "process:stegbrowser-runtime-connection-ingress-v1",
+      "authority_source": "handoffs/STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001.json#authority",
+      "capabilities": ["runtime_observation", "bounded_process_execution", "governed_intr_ingress"],
+      "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
+      "last_seen_at": null
+    }
+  ],
+  "authority_effect": "NONE_REGISTRATION_ONLY",
+  "github_token_required": false,
+  "credential_authority": "TV/TVC",
+  "non_tv_tvc_secret_or_token_allowed": false,
+  "second_user_operated_device_required": false,
+  "round_trip_1_payload_processing_authority": false,
+  "priority": "release"
+}
