@@ -16,28 +16,16 @@
     "build_test_counterpart_authority_effect": "NONE",
     "transition_owner": "Interlock/InTr"
   },
-  "source_refs": [
-    "StegVerse-Labs/TVC#412",
-    "StegVerse-Labs/TVC#415",
-    "StegVerse-Labs/TVC@85a42792d5a4e4d081ad7eead4995efbddd4d58d",
-    "StegVerse-Labs/TVC/config/provider_operation_profiles.json",
-    "StegVerse-Labs/TVC/tvc_mir_provider_profile.py",
-    "StegVerse-Labs/TVC/tvc_provider_operation_broker.py",
-    "StegVerse-Labs/TVC/docs/MIR_TVC_PROVIDER_ROUNDTRIP_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/StegOS#364",
-    "StegVerse-Labs/StegOS#365",
-    "StegVerse-Labs/StegOS/stegos/mir_node_mirror.py",
-    "StegVerse-Labs/StegOS/stegos/sovereign_local_event_runtime.py",
-    "StegVerse-Labs/StegOS/docs/MIR_NODE_MIRROR_RUN2_MIRROR_HANDOFF.md",
-    "StegVerse-org/StegVerse-SDK#217",
-    "StegVerse-Labs/Site/assets/mir-accounting-return-v1.js",
-    "https://mirregistry.com/api",
-    "https://mirregistry.com/changelog"
-  ],
   "component_model": {
     "model_ref": "data/reusable-task-component-model.json",
     "profile_ref": "data/goal-task-component-profiles/MIR-TVC-PROVIDER-ROUNDTRIP-001.json",
-    "selected_components": [
+    "protocol_tasks": [
+      "RT-INTR-BOUNDARY-ADMISSION-001",
+      "RT-INTR-GOVERNED-TRANSITION-001",
+      "RT-INTR-ROUNDTRIP-CORRELATION-001",
+      "RT-INTR-EVIDENCE-CUSTODY-001"
+    ],
+    "implementation_components": [
       "RT-EXTERNAL-ADAPTER-ESTABLISH-001",
       "RTC-ROUNDTRIP-003",
       "RTC-INTERLOCK-INTR-TRANSPORT-008",
@@ -57,28 +45,35 @@
   },
   "current_truth": {
     "mir_profile_merged": true,
-    "mir_specific_validator_merged": true,
-    "canonical_broker_dispatch_merged": true,
-    "broker_level_tests_merged": true,
-    "dedicated_mir_ci_merged": true,
-    "read_standing_source_admitted": true,
-    "policy_evaluate_source_forbidden": true,
-    "public_mir_fixed_event_vocabulary_rule_verified": true,
-    "public_mir_ai_event_strings_verified": true,
-    "run2_transition_to_mir_event_semantic_mapping_verified": false,
-    "mir_event_type_allowlist_materialized": false,
-    "tvc_pr_415_merged": true,
-    "tvc_pr_415_merge_sha": "85a42792d5a4e4d081ad7eead4995efbddd4d58d",
     "mir_node_mirror_source_implemented": true,
-    "mir_node_mirror_pr": "StegVerse-Labs/StegOS#365",
     "mir_node_mirror_source_validated": true,
-    "mir_node_mirror_merged": false,
-    "mir_node_mirror_runtime_observed": false,
-    "mir_node_mirror_sdk_return_observed": false,
+    "mir_node_mirror_merged": true,
+    "mir_node_mirror_runtime_observed": true,
+    "mir_node_mirror_sdk_return_observed": true,
+    "mir_profile_request_construction_observed": true,
+    "mir_event_ephemeral_lease_execution_observed": true,
+    "mir_request_intr_hop_observed": true,
+    "mir_bounded_processing_observed": true,
+    "external_framework_ingress_observed": true,
+    "mir_response_intr_hop_observed": true,
+    "mir_exact_return_packet_retained": true,
+    "stegverse_return_exit_observed": true,
+    "sdk_evaluator_review_ingress_observed": true,
+    "node_external_counterpart_return_admitted_observed": true,
     "authentic_tvc_mir_provider_session_observed": false,
     "authentic_mir_submit_event_observed": false,
     "authentic_mir_response_observed": false,
     "sdk_run2_delta_observed": false
+  },
+  "runtime_reconciliation_evidence": {
+    "provenance": "MIR_NODE_MIRROR_BUILD_TEST",
+    "canonical_site_handoff": "StegVerse-Labs/Site/docs/MIR_CONNECTION_ROUNDTRIP_TECHNICAL_GUIDE_MIRROR_HANDOFF.md",
+    "stegos_runtime_merge": "b52800a6cec226432c9cb8fec3f2e65abbd4b49c",
+    "site_return_continuity_merge": "419a77da87e77f832ea903723cbdbc7359fb6532",
+    "site_retained_packet_binding_merge": "26b501080f1c00fb4b3204d719619afa8a11acae",
+    "canonical_task_reconciliation_merge": "fe6be6d791520d8f11ebd0e413f99f241a03a84d",
+    "reusable_intr_binding_merge": "8ade8168e44b3b54bd3f24edfcc047397512a356",
+    "reconciliation_rule": "Existing executed MIR mirror transitions are mapped onto the reusable RT-INTR task decomposition because the reusable tasks name the same admission, governed transition, correlation, and custody behaviors; no duplicate runtime invocation is created."
   },
   "authority_invariants": {
     "credential_authority": "TV/TVC",
@@ -87,47 +82,11 @@
     "governance_authority": "STEGVERSE",
     "transition_authority": "Interlock/InTr",
     "user_verification_authority": "KV/SKAP Vault",
-    "consumer_credential_access": false,
-    "github_actions_credential_access": false,
     "github_runtime_authority": "NONE",
     "alternate_mir_transport_allowed": false,
-    "policy_evaluate_admitted": false,
     "second_user_operated_device_required": false
   },
-  "validation_evidence": {
-    "tvc_validated_head": "e0449ef3b48f0f4b89e1ff3560ef4c063ffc8d39",
-    "MIR_Provider_Roundtrip_Validation": 34677530432,
-    "TVC_Credential_Model_Consistency_Validation": 34677530384,
-    "App_Store_Connect_SKAP_Source_Validation": 34677530433,
-    "External_Collaboration_Google_Drive_Consent_HTTP_Validation": 34677530404,
-    "stegos_mir_node_mirror_validated_head": "cb30b8e682b4470dc2071e7de06cd144ae9d9561",
-    "stegos_mir_node_mirror_ci": 34736095964,
-    "result": "SOURCE_VALIDATION_SUCCESS_RUNTIME_UNOBSERVED"
-  },
-  "dependencies": [
-    {
-      "dependency_id": "DEP-MIR-EVENT-SEMANTIC-MAPPING",
-      "kind": "AUTHORITATIVE_PROVIDER_CONTRACT",
-      "state": "PENDING_CONDITIONAL",
-      "ref": "https://mirregistry.com/api",
-      "disposition": "MAP_ONLY_RUN2_TRANSITIONS_WITH_SEMANTICS_SUPPORTED_BY_AUTHORITATIVE_MIR_EVENT_REFERENCE; KEEP_SUBMIT_EVENT_FAIL_CLOSED_UNTIL_MAPPING_IS_VERIFIED; DOES_NOT_BLOCK_NODE_MIRROR_BUILD_TEST_ROUNDTRIP"
-    },
-    {
-      "dependency_id": "DEP-MIR-NODE-MIRROR-RUNTIME",
-      "kind": "BUILD_TEST_RUNTIME_EVIDENCE",
-      "state": "PENDING",
-      "ref": "StegVerse-Labs/StegOS/docs/MIR_NODE_MIRROR_RUN2_MIRROR_HANDOFF.md",
-      "disposition": "EXECUTE_CANONICAL_SAME_DEVICE_NODE_MIRROR_ROUNDTRIP_AND_RETAIN_INTR_SDK_RECEIPTS"
-    },
-    {
-      "dependency_id": "DEP-MIR-TVC-AUTHENTIC-RUNTIME",
-      "kind": "AUTHENTIC_EXTERNAL_ENDPOINT_EVIDENCE",
-      "state": "PENDING",
-      "ref": "StegVerse-Labs/TVC/docs/MIR_TVC_PROVIDER_ROUNDTRIP_MIRROR_HANDOFF.md",
-      "disposition": "LATER_SUBSTITUTE_AUTHENTIC_MIR_FAR_SIDE_AND_RETAIN_PROVIDER_RECEIPTS; CI_IS_NOT_RUNTIME"
-    }
-  ],
-  "expected_evidence_predicates": [
+  "satisfied_predicates": [
     "MIR_PROFILE_REGISTERED_IN_CANONICAL_TVC_PROVIDER_REGISTRY",
     "CANONICAL_PROVIDER_BROKER_DISPATCHES_TO_MIR_VALIDATOR",
     "MIR_STANDING_REQUEST_BOUND_AND_ADMITTED",
@@ -136,7 +95,9 @@
     "MIR_CREDENTIAL_NOT_EXPORTED",
     "MIR_BODY_AND_LEASE_MUTATION_FAIL_CLOSED",
     "MIR_NODE_MIRROR_ROUNDTRIP_EXECUTED",
-    "MIR_NODE_MIRROR_RETURN_ADMITTED_TO_SDK",
+    "MIR_NODE_MIRROR_RETURN_ADMITTED_TO_SDK"
+  ],
+  "remaining_predicates": [
     "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED",
     "AUTHENTIC_MIR_RESULT_RECEIPT_RETAINED"
   ],
@@ -145,13 +106,10 @@
     "validated": true,
     "source_implemented": true,
     "source_validated": true,
-    "build_test_runtime_observed": false,
+    "build_test_runtime_observed": true,
     "authentic_external_runtime_observed": false
   },
   "allowed_next_transitions": [
-    "INTEGRATE_MIR_NODE_MIRROR_SOURCE",
-    "EXECUTE_MIR_NODE_MIRROR_ROUNDTRIP",
-    "OBSERVE_MIR_NODE_MIRROR_SDK_RETURN",
     "VERIFY_RUN2_MIR_EVENT_SEMANTIC_MAPPING",
     "OBSERVE_AUTHENTIC_PROVIDER_SESSION",
     "EXECUTE_AUTHENTIC_MIR_OPERATION"
@@ -159,6 +117,7 @@
   "handoff_projection_refs": [
     "StegVerse-Labs/TVC/docs/MIR_TVC_PROVIDER_ROUNDTRIP_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegOS/docs/MIR_NODE_MIRROR_RUN2_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site/docs/MIR_CONNECTION_ROUNDTRIP_TECHNICAL_GUIDE_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github/docs/MIR_TVC_PROVIDER_ROUNDTRIP_COMPONENT_MODEL_MIRROR_HANDOFF.md"
   ]
 }

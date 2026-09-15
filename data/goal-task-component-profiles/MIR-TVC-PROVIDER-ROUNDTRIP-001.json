@@ -57,7 +57,7 @@
       "RTC-INTERLOCK-INTR-TRANSPORT-008"
     ],
     "substitution_rule": "AUTHENTIC_MIR_REPLACES_ONLY_FAR_SIDE_COUNTERPART_WITHOUT_STEGVERSE_CHOREOGRAPHY_CHANGE",
-    "evidence_class": "AUTHENTIC_NODE_MIRROR_RUNTIME_WHEN_EXECUTED"
+    "evidence_class": "MIR_NODE_MIRROR_BUILD_TEST_RUNTIME"
   },
   "source_validation_evidence": {
     "stegos_pr": 393,
@@ -69,9 +69,24 @@
     "mir_external_roundtrip_test": "PASS",
     "runtime_claim_from_ci": false
   },
-  "remaining_predicates": [
+  "runtime_reconciliation": {
+    "canonical_runtime_truth_source": "StegVerse-Labs/Site/docs/MIR_CONNECTION_ROUNDTRIP_TECHNICAL_GUIDE_MIRROR_HANDOFF.md",
+    "mir_node_mirror_roundtrip_executed": true,
+    "mir_node_mirror_return_admitted_to_sdk": true,
+    "event_ephemeral_lease_execution_observed": true,
+    "external_framework_ingress_observed": true,
+    "exact_return_packet_retained": true,
+    "stegverse_return_exit_observed": true,
+    "sdk_evaluator_review_ingress_observed": true,
+    "provenance": "MIR_NODE_MIRROR_BUILD_TEST",
+    "duplicate_reexecution_required": false,
+    "reason": "The reusable RT-INTR tasks name the same admission, transition, correlation, and custody behaviors already executed and retained in the canonical MIR mirror round-trip; reconciliation preserves those transitions instead of creating a second invocation."
+  },
+  "satisfied_predicates": [
     "MIR_NODE_MIRROR_ROUNDTRIP_EXECUTED",
-    "MIR_NODE_MIRROR_RETURN_ADMITTED_TO_SDK",
+    "MIR_NODE_MIRROR_RETURN_ADMITTED_TO_SDK"
+  ],
+  "remaining_predicates": [
     "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED",
     "AUTHENTIC_MIR_RESULT_RECEIPT_RETAINED"
   ],
