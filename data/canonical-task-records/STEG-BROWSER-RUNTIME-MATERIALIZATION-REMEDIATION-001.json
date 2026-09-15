@@ -4,37 +4,30 @@
   "correlation_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
   "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
   "parent_task_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
-  "goal": "Execute the StegBrowser invocation through a state-transition-selected reusable composition, identify successful governed Interlock/InTr data-transport round trip at the final allowed transport-exit transition after the return record is received and durably recorded, then process post-transport reconstruction/mirroring as separate downstream domains.",
+  "goal": "Execute the StegBrowser invocation through two governed Interlock/InTr round-trip phases: first return the correlated records packet at the Interlock/InTr exit for recording and verification; then, after record/mirror processing, initiate the mirror-boundary Interlock/InTr return, call endpoint Interlock/InTr, and re-enter the ecosystem.",
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT",
   "cosv_task_vector": "40000100100000",
   "shared_runtime_evidence_owner_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
   "current_exact_defect": "AUTHENTIC_RUNTIME_CONNECTION_TRANSITION_AND_INTR_INGRESS_NOT_YET_OBSERVED",
   "source_validation": {
-    "pull_request": 1907,
-    "validated_head": "53e017036ce0de4b732fbac44394709a15c3e89f",
-    "merge_commit": "4834e0a8787b11a6d01872e39ba82773f9bdeda4",
-    "organization_control_run": 34911735697,
-    "deterministic_suite_run": 34911735692,
-    "heartbeat_validation_run": 34911735696,
-    "all_validation_lanes_passed": true,
+    "previous_binding_repair_pull_request": 1907,
+    "previous_binding_repair_merge_commit": "4834e0a8787b11a6d01872e39ba82773f9bdeda4",
     "runtime_authority_effect": "NONE"
   },
   "source_refs": [
     "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md",
-    "docs/REUSABLE_GOAL_TASK_TRANSPORT_COMPONENTS_MIRROR_HANDOFF.md",
-    "docs/STEGBROWSER_RESIDENT_RECEIPT_TRANSPORT_MIRROR_HANDOFF.md",
+    "data/goal-task-transport-profiles/STEG-BROWSER-RUNTIME-CONSUMPTION-001.json",
+    "data/reusable-transport-component-contract.json",
     "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
     "source-bundles/reusable-task-registry.d/RT-SOVEREIGN-SOURCE-REFRESH-001.json",
     "control/resident-execution-request.d/canonical-work-stegbrowser-runtime-consumption-001.json",
-    "control/task-vectors/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json",
-    "scripts/run_stegbrowser_runtime_consumption_reusable.py",
-    "scripts/check_stegbrowser_runtime_consumption_receipts.py"
+    "scripts/run_stegbrowser_runtime_consumption_reusable.py"
   ],
   "runtime_requirements": {
     "capabilities": ["canonical_portable_execution", "event_ephemeral_stegos_node", "universal_intr_profiled_ingress", "governed_round_trip_transport"],
     "environment": "ADMITTED-EPHEMERAL-STEGOS-NODE",
-    "direction": "ACTIVE_REMEDIATION_TO_CANONICAL_WORK_TO_INTR_TRANSPORT_TO_RETURN_EXIT",
+    "governed_round_trip_lifecycle_count": 2,
     "mutation_required": true,
     "deployment_required": false,
     "current_observation_required": true,
@@ -70,135 +63,92 @@
     "claim_ref": null,
     "fence_ref": null
   },
-  "domains": {
-    "governed_transport_loop": {
-      "terminal_boundary": "FINAL_ALLOWED_INTR_STATE_TRANSITION_EXITING_TRANSPORT_AFTER_RETURN_RECORD_RECEIVED_AND_DURABLY_RECORDED",
-      "terminal_predicate": "SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIP_IDENTIFIED",
-      "terminal_predicate_state": false,
-      "master_records_required_to_prove_transport_success": false,
-      "intermediate_endpoint_transitions_may_be_local_if_allowed": true,
-      "return_packet_required_for_round_trip_lifecycle": true,
-      "packet_arrival_time_extended_after_final_boundary_due_to_round_trip": false
-    },
-    "post_transport_processing": {
-      "begins_after": "FINAL_ALLOWED_INTR_STATE_TRANSITION_EXITING_TRANSPORT",
-      "includes": ["MASTER_RECORDS_INGRESS", "MASTER_RECORDS_CUSTODY_RECONSTRUCTION", "MIRRORING", "CANONICAL_RECONCILIATION", "PERSISTENCE", "PROJECTION", "GLOBAL_RUNTIME_EVIDENCE_MEASUREMENT", "OTHER_DOWNSTREAM_ACTIONS"],
-      "failure_may_reclassify_completed_transport_as_failed": false
-    }
-  },
   "runtime_connection_transition": {
     "variables": {"callable": "PENDING_AUTHENTIC_TRANSITION_EVIDENCE", "refreshable": "PENDING_AUTHENTIC_TRANSITION_EVIDENCE"},
     "authority": "INTERLOCK_INTR",
     "always_on_runtime_source_assumed": false,
     "source_freshness_persistent_state": false,
     "refresh_reusable_task_ref": "RT-SOVEREIGN-SOURCE-REFRESH-001",
-    "refresh_selection_condition": "callable=true AND refreshable=true",
-    "no_refresh_condition": "callable=true AND refreshable=false",
-    "non_callable_condition": "callable=false"
+    "refresh_selection_condition": "callable=true AND refreshable=true"
+  },
+  "round_trip_model": {
+    "lifecycle_count": 2,
+    "round_trip_1_recording_verification": {
+      "entry": "GOVERNED_INTR_INGRESS",
+      "intermediate_transitions_may_be_endpoint_local_if_allowed": true,
+      "return": "CORRELATED_RECORDS_PACKET",
+      "exit": "FIRST_FINAL_ALLOWED_INTR_EXIT_TO_RECORDING",
+      "recording_surface": "MASTER_RECORDS_RECORDING_SURFACE",
+      "verification_evidence": ["GOVERNED_RETURN_PACKET_RECEIVED", "RECORDS_PACKET_DELIVERED_FOR_RECORDING", "RETURN_RECORD_DURABLY_RECORDED", "FIRST_FINAL_ALLOWED_INTR_EXIT_TRANSITION_OBSERVED"],
+      "terminal_predicate": "SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED"
+    },
+    "between_round_trips": {
+      "begins_at": "RECORDS_PACKET_DELIVERED_FOR_RECORDING",
+      "includes": ["RECORDING", "CUSTODY_RECONSTRUCTION", "PROCESSING", "MIRROR_BOUNDARY_PROCESSING"],
+      "master_records_authority": "OBSERVED_REALITY_CUSTODY_RECONSTRUCTION",
+      "transport_authority": "NONE",
+      "mirror_boundary_initiates_next_interlock_intr": true
+    },
+    "round_trip_2_ecosystem_return": {
+      "entry": "MIRROR_BOUNDARY_INTR_REENTRY",
+      "local_transition": "MIRROR_BOUNDARY_INTERLOCK_INTR_ALLOWED",
+      "endpoint_call": "ENDPOINT_INTERLOCK_INTR_CALLED",
+      "endpoint_transition": "ENDPOINT_INTERLOCK_INTR_ALLOWED",
+      "exit": "ECOSYSTEM_REENTRY_FINAL_ALLOWED_TRANSITION",
+      "terminal_predicate": "SUCCESSFUL_ECOSYSTEM_RETURN_ROUND_TRIP_IDENTIFIED"
+    },
+    "overall_terminal_predicate": "SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIPS_IDENTIFIED"
   },
   "dependencies": [
     {"dependency_id": "DEP-REUSABLE-STEG-BROWSER-RUNTIME-CONSUMPTION", "kind": "REUSABLE_TASK_CANDIDATE_SELECTED_BY_STATE", "state": "SOURCE_REBOUND_MERGED_VALIDATED_RUNTIME_UNOBSERVED", "ref": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001"},
-    {"dependency_id": "DEP-RUNTIME-CONNECTION-STATE-TRANSITION", "kind": "GOVERNED_STATE_TRANSITION", "state": "PENDING_AUTHENTIC_TRANSITION_EVIDENCE", "ref": "INTERLOCK_INTR", "variables": ["callable", "refreshable"]},
-    {"dependency_id": "DEP-SOVEREIGN-SOURCE-REFRESH", "kind": "REUSABLE_TASK_SELECTED_BY_TRANSITION", "state": "PENDING_TRANSITION_VARIABLE_RESOLUTION", "ref": "RT-SOVEREIGN-SOURCE-REFRESH-001", "selection_condition": "callable=true AND refreshable=true"},
-    {"dependency_id": "DEP-INTR-PROTOCOL", "kind": "REUSABLE_TASK_SELECTED_BY_TRANSITION", "state": "USE_EXISTING_PROTOCOL_OR_SELECT_IF_UNRESOLVED", "ref": "RT-INTR-PROTOCOL-ESTABLISH-001", "selection_condition": "governed connection required AND no applicable existing InTr protocol resolves"},
+    {"dependency_id": "DEP-RUNTIME-CONNECTION-STATE-TRANSITION", "kind": "GOVERNED_STATE_TRANSITION", "state": "PENDING_AUTHENTIC_TRANSITION_EVIDENCE", "ref": "INTERLOCK_INTR"},
     {"dependency_id": "DEP-WORKERCOORDINATOR-CLAIM-FENCE", "kind": "AUTHORITY_OWNED_PRE_TRANSPORT_EXECUTION_STATE", "state": "PENDING_AUTHENTIC_EXECUTION", "ref": "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED"},
-    {"dependency_id": "DEP-GOVERNED-ROUNDTRIP-COMPONENT", "kind": "REUSABLE_TRANSPORT_COMPONENT", "state": "PENDING_AUTHENTIC_TRANSPORT", "ref": "RTC-ROUNDTRIP-003"},
+    {"dependency_id": "DEP-GOVERNED-ROUNDTRIP-COMPONENT", "kind": "REUSABLE_TRANSPORT_COMPONENT", "state": "REPEAT_TWICE_FOR_DECLARED_LIFECYCLES", "ref": "RTC-ROUNDTRIP-003"},
     {"dependency_id": "DEP-INTR-TRANSPORT-COMPONENT", "kind": "REUSABLE_TRANSPORT_COMPONENT", "state": "PENDING_AUTHENTIC_TRANSPORT", "ref": "RTC-INTERLOCK-INTR-TRANSPORT-008"},
-    {"dependency_id": "DEP-TRANSPORT-TERMINAL-PREDICATE", "kind": "TRANSPORT_TERMINAL_EVIDENCE_GATE", "state": "PENDING_AUTHENTIC_OBSERVATION", "ref": "SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIP_IDENTIFIED"},
-    {"dependency_id": "DEP-POST-TRANSPORT-CANONICAL-RECONCILIATION", "kind": "POST_TRANSPORT_REUSABLE_TASK", "state": "PENDING_TRANSPORT_TERMINAL_BOUNDARY", "ref": "RT-CANONICAL-STATE-RECONCILIATION-001"},
-    {"dependency_id": "DEP-GLOBAL-RUNTIME-EVIDENCE-CLOSURE", "kind": "POST_TRANSPORT_SHARED_RUNTIME_EVIDENCE_OWNER", "state": "BOUND_SHARED_OWNER_NOT_TRANSPORT_PROOF", "ref": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001"}
+    {"dependency_id": "DEP-EVIDENCE-CUSTODY", "kind": "BETWEEN_ROUND_TRIPS_PROCESSING_COMPONENT", "state": "PENDING_ROUND_TRIP_1_RETURN", "ref": "RTC-EVIDENCE-CUSTODY-004"},
+    {"dependency_id": "DEP-STEGVERSE-EGRESS", "kind": "ROUND_TRIP_2_EGRESS_COMPONENT", "state": "PENDING_MIRROR_BOUNDARY_PROCESSING", "ref": "RTC-STEGVERSE-EGRESS-007"},
+    {"dependency_id": "DEP-FARSIDE-FINAL", "kind": "ROUND_TRIP_2_ENDPOINT_COMPONENT", "state": "PENDING_ROUND_TRIP_2", "ref": "RTC-FARSIDE-FINAL-009"}
   ],
-  "transport_success_contract": {
-    "intermediate_intr_transitions_local_at_authorized_endpoint_if_allowed": true,
-    "return_packet_completes_round_trip_lifecycle": true,
-    "return_record_must_be_received": true,
-    "return_record_must_be_durably_recorded": true,
-    "final_allowed_transport_exit_transition_required": true,
-    "success_predicate": "SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIP_IDENTIFIED",
-    "success_predicate_set_when": "RETURN_RECORD_RECEIVED_AND_DURABLY_RECORDED_AND_FINAL_ALLOWED_TRANSPORT_EXIT_TRANSITION_OBSERVED",
-    "master_records_reconstruction_required": false,
-    "post_transport_failure_negates_transport_success": false
-  },
-  "failure_ownership": {
-    "before_transport_entry": "OWNING_PRE_TRANSPORT_STATE_OR_AUTHORITY_DOMAIN",
-    "inside_transport_before_final_exit": "TRANSPORT_OR_EXACT_IN_LANE_AUTHORITY_COMPONENT_DOMAIN",
-    "at_final_required_transport_exit": "TRANSPORT_OR_INTERLOCK_INTR_TRANSITION_DOMAIN",
-    "after_successful_final_transport_exit": "POST_TRANSPORT_OWNING_DOMAIN_NOT_TRANSPORT",
-    "master_records_failure_after_transport": "MASTER_RECORDS_POST_TRANSPORT_FAILURE",
-    "mirror_reconciliation_persistence_projection_failure_after_transport": "EXACT_POST_TRANSPORT_DOMAIN_FAILURE"
-  },
-  "conditional_remediation": {
-    "healer_role": "TRIGGERED_REMEDIATION_EVENT",
-    "normal_execution_dependency": false,
-    "normal_stage_owner": false,
-    "normal_scheduler_or_carrier": false,
-    "trigger_condition": "AN_OBSERVED_FAILURE_OR_BROKEN_CONDITION_REQUIRES_A_BOUNDED_REMEDY",
-    "completion_authority": "NONE"
-  },
   "allowed_next_transitions": [
-    "INGRESS_ADMITTED",
     "OBSERVE_RUNTIME_CONNECTION_TRANSITION_VARIABLES",
-    "SELECT_REUSABLE_CAPABILITIES_FROM_AUTHENTIC_STATE",
-    "INVOKE_RT_SOVEREIGN_SOURCE_REFRESH_IF_SELECTED",
     "OBSERVE_CURRENT_WORKERCOORDINATOR_CLAIM_FENCE",
     "ENTER_GOVERNED_INTR_TRANSPORT",
-    "OBSERVE_REQUIRED_ALLOWED_INTERMEDIATE_TRANSITIONS",
-    "OBSERVE_GOVERNED_RETURN_PACKET_AND_DURABLE_RETURN_RECORD",
-    "OBSERVE_FINAL_ALLOWED_TRANSPORT_EXIT_TRANSITION",
-    "SET_SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIP_IDENTIFIED_TRUE_FROM_AUTHENTIC_TRANSPORT_EVIDENCE",
-    "BEGIN_POST_TRANSPORT_PROCESSING_WITHOUT_REOPENING_TRANSPORT",
-    "TRIGGER_HEALER_ONLY_FOR_OBSERVED_REMEDIABLE_FAILURE"
-  ],
-  "prohibited_transitions": [
-    "REACTIVATE_RETIRED_STEG_BROWSER_RUNTIME_CONSUMPTION_GOAL",
-    "REQUIRE_MASTER_RECORDS_RECONSTRUCTION_TO_PROVE_TRANSPORT_SUCCESS",
-    "RECLASSIFY_POST_TRANSPORT_FAILURE_AS_TRANSPORT_FAILURE",
-    "EXTEND_PACKET_ARRIVAL_TIME_BEYOND_FINAL_TRANSPORT_BOUNDARY_BECAUSE_LIFECYCLE_IS_ROUND_TRIP",
-    "ASSUME_ALWAYS_ON_RUNTIME_SOURCE",
-    "INFER_CALLABLE_OR_REFRESHABLE_FROM_PERSISTENT_SOURCE_STATE",
-    "TREAT_HEALER_AS_NORMAL_EXECUTION_PREREQUISITE_OR_STAGE_OWNER",
-    "TRIGGER_HEALER_WITHOUT_OBSERVED_FAILURE_CONDITION",
-    "ADD_SECOND_RUNTIME_EVIDENCE_OWNER",
-    "ADD_SECOND_SCHEDULER",
-    "ADD_SECOND_DISPATCHER",
-    "ADD_CREDENTIAL_ROUTE",
-    "ADD_GITHUB_RUNTIME_AUTHORITY",
-    "ADD_RUNTIME_PLANE",
-    "ADD_PROVIDER_AUTHORITY",
-    "ADD_WORKERCOORDINATOR_BYPASS",
-    "REQUIRE_SECOND_USER_OPERATED_DEVICE",
-    "CLAIM_RUNTIME_COMPLETION_FROM_SOURCE_STATE"
+    "OBSERVE_ROUND_TRIP_1_RETURN_TO_RECORDING",
+    "OBSERVE_RETURN_RECORD_DURABLY_RECORDED",
+    "SET_SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED_TRUE",
+    "PROCESS_RECORDED_STATE_TO_MIRROR_BOUNDARY",
+    "INITIATE_MIRROR_BOUNDARY_INTR_REENTRY",
+    "CALL_ENDPOINT_INTERLOCK_INTR",
+    "OBSERVE_ECOSYSTEM_REENTRY_FINAL_ALLOWED_TRANSITION",
+    "SET_SUCCESSFUL_ECOSYSTEM_RETURN_ROUND_TRIP_IDENTIFIED_TRUE",
+    "SET_SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIPS_IDENTIFIED_TRUE"
   ],
   "completion": {
     "claimed": false,
     "validated": false,
     "runtime_connection_transition_observed": false,
-    "callable_observed": false,
-    "refreshable_observed": false,
     "workercoordinator_claim_fence_observed": false,
-    "governed_transport_entry_observed": false,
-    "required_intermediate_transport_transitions_observed": false,
-    "governed_return_packet_received": false,
-    "governed_return_record_durably_recorded": false,
-    "final_allowed_transport_exit_transition_observed": false,
-    "successful_data_transport_round_trip_identified": false,
-    "post_transport_receipt_classification_observed": false,
-    "master_records_reconstruction_observed": false,
-    "global_runtime_measurement_observed": false
+    "round_trip_1_return_packet_received": false,
+    "round_trip_1_return_record_durably_recorded": false,
+    "successful_recording_verification_round_trip_identified": false,
+    "mirror_boundary_processing_observed": false,
+    "round_trip_2_mirror_intr_reentry_observed": false,
+    "round_trip_2_endpoint_intr_call_observed": false,
+    "round_trip_2_ecosystem_reentry_observed": false,
+    "successful_ecosystem_return_round_trip_identified": false,
+    "successful_data_transport_round_trips_identified": false
   },
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "source_state_proves_execution": false,
-    "interlock_intr_required_for_governed_ingress_egress": true,
-    "github_runtime_authority": "NONE",
-    "healer_role": "TRIGGERED_REMEDIATION_ONLY",
-    "runtime_connection_transition_authority": "INTERLOCK_INTR",
-    "transport_transition_and_packet_movement_authority": "INTERLOCK_INTR",
+    "interlock_intr_transition_authority": true,
     "worker_claim_authority": "WORKERCOORDINATOR",
     "credential_authority": "TV/TVC",
     "user_verification_authority": "KV/SKAP Vault",
     "master_records_reality_authority": true,
-    "master_records_transport_success_authority": false,
+    "master_records_transport_authority": false,
+    "heartbeat_role": "OBSERVABILITY_ONLY",
+    "github_runtime_authority": "NONE",
     "second_user_operated_device_required": false
   }
 }

@@ -7,9 +7,10 @@
     "complete_manifest": true,
     "governed_processing": true,
     "required_round_trips": [
-      "stegbrowser_runtime_consumption_governed_round_trip"
+      "records_packet_return_for_recording_and_verification",
+      "mirror_boundary_processed_return_to_ecosystem"
     ],
-    "governed_round_trip_lifecycle_count": 1,
+    "governed_round_trip_lifecycle_count": 2,
     "round_trip_internal_transition_groups": [
       "canonical_work_ingress_and_resident_consumption",
       "tvc_source_promotion_and_runtime_observation"
@@ -17,17 +18,19 @@
     "evidence_custody_reconstruction": true,
     "publisher_projection": false,
     "sdk_return_assembly": false,
-    "stegverse_final_egress_transition": false,
+    "stegverse_final_egress_transition": true,
     "interlock_intr_transport": true,
-    "far_side_final_transition": false
+    "far_side_final_transition": true
   },
   "transport_phase_components": [
     "RTC-MANIFEST-001",
     "RTC-GOVERNED-PROCESSING-002",
     "RTC-ROUNDTRIP-003",
-    "RTC-INTERLOCK-INTR-TRANSPORT-008"
+    "RTC-INTERLOCK-INTR-TRANSPORT-008",
+    "RTC-STEGVERSE-EGRESS-007",
+    "RTC-FARSIDE-FINAL-009"
   ],
-  "post_transport_components": [
+  "between_round_trip_processing_components": [
     "RTC-EVIDENCE-CUSTODY-004"
   ],
   "selected_components": [
@@ -35,16 +38,50 @@
     "RTC-GOVERNED-PROCESSING-002",
     "RTC-ROUNDTRIP-003",
     "RTC-INTERLOCK-INTR-TRANSPORT-008",
-    "RTC-EVIDENCE-CUSTODY-004"
+    "RTC-EVIDENCE-CUSTODY-004",
+    "RTC-STEGVERSE-EGRESS-007",
+    "RTC-FARSIDE-FINAL-009"
   ],
+  "round_trip_boundaries": {
+    "round_trip_1": {
+      "purpose": "Return the correlated records packet at the Interlock/InTr exit for recording and verification.",
+      "exit_transition": "FIRST_FINAL_ALLOWED_INTR_EXIT_TO_RECORDING",
+      "recording_target": "MASTER_RECORDS_RECORDING_SURFACE",
+      "success_requires": [
+        "GOVERNED_RETURN_PACKET_RECEIVED",
+        "RECORDS_PACKET_DELIVERED_FOR_RECORDING",
+        "RETURN_RECORD_DURABLY_RECORDED",
+        "FIRST_FINAL_ALLOWED_INTR_EXIT_TRANSITION_OBSERVED"
+      ]
+    },
+    "between_round_trips": {
+      "purpose": "Process the recorded material through the applicable record/reconstruction and mirror-boundary work before the ecosystem return is initiated.",
+      "transport_authority": "NONE",
+      "mirror_boundary_initiates_next_intr": true
+    },
+    "round_trip_2": {
+      "purpose": "After mirror-boundary processing, initiate Interlock/InTr, call the endpoint Interlock/InTr, and return the processed result into the ecosystem.",
+      "entry_transition": "MIRROR_BOUNDARY_INTR_REENTRY",
+      "endpoint_transition": "ENDPOINT_INTR_CALLED_AND_ALLOWED",
+      "terminal_transition": "ECOSYSTEM_REENTRY_FINAL_ALLOWED_TRANSITION",
+      "success_requires": [
+        "MIRROR_BOUNDARY_PROCESSING_COMPLETE",
+        "MIRROR_BOUNDARY_INTR_REENTRY_OBSERVED",
+        "ENDPOINT_INTR_CALLED_AND_ALLOWED",
+        "ECOSYSTEM_REENTRY_FINAL_ALLOWED_TRANSITION_OBSERVED"
+      ]
+    }
+  },
   "transport_terminal_contract": {
-    "return_packet_required": true,
-    "return_record_received_required": true,
-    "return_record_durably_recorded_required": true,
-    "final_allowed_transport_exit_transition_required": true,
-    "terminal_predicate": "SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIP_IDENTIFIED",
-    "master_records_reconstruction_required_to_set_terminal_predicate": false,
-    "post_transport_failure_negates_terminal_predicate": false
+    "round_trip_1_terminal_predicate": "SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED",
+    "round_trip_2_terminal_predicate": "SUCCESSFUL_ECOSYSTEM_RETURN_ROUND_TRIP_IDENTIFIED",
+    "overall_terminal_predicate": "SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIPS_IDENTIFIED",
+    "durable_recording_is_round_trip_1_verification_evidence": true,
+    "master_records_processing_is_between_round_trips": true,
+    "mirror_boundary_processing_precedes_round_trip_2": true,
+    "round_trip_2_reenters_interlock_intr": true,
+    "round_trip_2_calls_endpoint_interlock_intr": true,
+    "round_trip_2_enters_ecosystem": true
   },
   "invocation_transition_variables": {
     "callable": "RESOLVED_PER_INVOCATION_BY_INTERLOCK_INTR",
@@ -52,34 +89,18 @@
     "source_refresh_task": "RT-SOVEREIGN-SOURCE-REFRESH-001",
     "source_refresh_selection_condition": "callable=true AND refreshable=true"
   },
-  "omitted_components": [
-    {
-      "component_id": "RTC-PUBLISHER-005",
-      "reason": "Publication is outside this runtime-consumption successor and remains a later independent continuation."
-    },
-    {
-      "component_id": "RTC-SDK-RETURN-006",
-      "reason": "This Goal does not return a result through the SDK."
-    },
-    {
-      "component_id": "RTC-STEGVERSE-EGRESS-007",
-      "reason": "Final StegVerse egress is outside OWNER_INGRESS_READY runtime-consumption closure."
-    },
-    {
-      "component_id": "RTC-FARSIDE-FINAL-009",
-      "reason": "No far-side final transition is part of this local StegBrowser/TVC runtime-consumption Goal."
-    }
-  ],
   "repeatability": {
-    "RTC-ROUNDTRIP-003": 1,
+    "RTC-ROUNDTRIP-003": 2,
     "RTC-INTERLOCK-INTR-TRANSPORT-008": "REPEAT_WHERE_EACH_DECLARED_GOVERNED_TRANSITION_REQUIRES_IT"
   },
   "round_trip_lifecycle_semantics": {
-    "lifecycle_count": 1,
+    "lifecycle_count": 2,
+    "round_trip_1": "INTERLOCK_INTR_EXIT_RETURNS_RECORDS_PACKET_FOR_RECORDING_AND_VERIFICATION",
+    "between_round_trips": "RECORD_PROCESSING_AND_MIRROR_BOUNDARY_PROCESSING",
+    "round_trip_2": "MIRROR_BOUNDARY_INTR_REENTRY_TO_ENDPOINT_INTR_TO_ECOSYSTEM",
     "internal_transition_group_count": 2,
     "internal_transition_groups_are_separate_round_trip_goals": false,
-    "internal_transition_groups_increment_round_trip_repeat_count": false,
-    "success_boundary": "FINAL_ALLOWED_INTR_STATE_TRANSITION_EXITING_TRANSPORT_AFTER_RETURN_RECORD_RECEIVED_AND_DURABLY_RECORDED"
+    "internal_transition_groups_increment_round_trip_repeat_count": false
   },
   "execution_substrate": {
     "selected": "ADMITTED-EPHEMERAL-STEGOS-NODE",
@@ -89,11 +110,12 @@
     "materialize_only_after_applicable_admission": true,
     "ephemeral_construct_contract": "data/reusable-task-ephemeral-construct-contract.json"
   },
-  "composition_rule": "Resolve invocation-bound state first. Reuse Canonical Work, WorkerCoordinator, Interlock/InTr, resident dispatcher, exact TVC source-promotion consumer, runtime observer and evidence-custody components. This Goal has one governed round-trip lifecycle; canonical_work_ingress_and_resident_consumption and tvc_source_promotion_and_runtime_observation are internal transition groups within that lifecycle and do not imply additional RTC-ROUNDTRIP-003 repeats. Governed transport completes at the final allowed Interlock/InTr transport-exit transition after the return record is received and durably recorded. RTC-EVIDENCE-CUSTODY-004 then runs only as post-transport custody/reconstruction and cannot prove or negate transport success. Do not create a second scheduler, WorkerCoordinator, runtime plane, credential path, transport authority, per-defect task, or per-device identity requirement.",
+  "composition_rule": "Resolve invocation-bound state first. Round trip 1 ends when the Interlock/InTr exit returns the correlated records packet for durable recording and verification. Record/reconstruction and mirror-boundary processing then occur between round trips. The mirror boundary initiates round trip 2 by re-entering Interlock/InTr; the governed return calls the endpoint Interlock/InTr and completes at allowed ecosystem re-entry. RTC-ROUNDTRIP-003 is therefore selected twice for this composition. Internal transition groups do not themselves add round trips. Do not create a second scheduler, WorkerCoordinator, credential path, transport authority, runtime plane, or per-device identity requirement.",
   "failure_ownership": {
-    "before_transport_entry": "PRE_TRANSPORT_OWNING_DOMAIN",
-    "inside_transport_through_final_exit": "TRANSPORT_OR_EXACT_IN_LANE_OWNER",
-    "after_successful_transport_exit": "POST_TRANSPORT_OWNING_DOMAIN_NOT_TRANSPORT"
+    "round_trip_1_before_recording_exit": "TRANSPORT_OR_EXACT_IN_LANE_OWNER",
+    "recording_and_between_round_trip_processing": "MASTER_RECORDS_OR_EXACT_MIRROR_PROCESSING_OWNER",
+    "round_trip_2_after_mirror_intr_reentry": "TRANSPORT_OR_EXACT_IN_LANE_OWNER",
+    "after_ecosystem_reentry": "ECOSYSTEM_OWNING_DOMAIN"
   },
   "authority_invariants": {
     "task_registry": "COORDINATION_ONLY",
@@ -103,7 +125,6 @@
     "transition": "Interlock/InTr",
     "credential_provider_release": "TV/TVC",
     "reality_reconstruction": "Master Records",
-    "master_records_transport_success_authority": "NONE",
     "heartbeat": "OBSERVABILITY_ONLY",
     "github_runtime_authority": "NONE"
   },
