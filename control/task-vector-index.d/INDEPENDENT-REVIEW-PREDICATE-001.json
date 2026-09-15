@@ -4,6 +4,6 @@
   "repository": "StegVerse-Labs/.github",
   "registry_ref": "data/canonical-task-records/INDEPENDENT-REVIEW-PREDICATE-001.json",
   "source_state_vector_ref": "control/task-vectors/INDEPENDENT-REVIEW-PREDICATE-001.json",
-  "cosv_task_vector": "10100000100000",
+  "cosv_task_vector": "71000000100100",
   "handoff_ref": "docs/INDEPENDENT_REVIEW_PREDICATE_MIRROR_HANDOFF.md"
 }
