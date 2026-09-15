@@ -1,37 +1,79 @@
 # MIR TVC Provider Roundtrip — Reusable Task Component Reconciliation
 
-Updated: 2026-09-12
+Updated: 2026-09-15
 Goal Task ID: `MIR-TVC-PROVIDER-ROUNDTRIP-001`
 COSV: `50000000100000`
 Parent: `MIR-STEGVERSE-HISTORICAL-ACCOUNTING-RUN-002`
-Status: `ACTIVE / IDENTITY PRESERVED / SOURCE VALIDATED / NODE-MIRROR BUILD-TEST LANE BOUND / EXTERNAL ENDPOINT RUNTIME PENDING`
+Status: `ACTIVE / CHECKED_OUT / REUSABLE INTR DECOMPOSITION SOURCE-VALIDATED / BUILD-TEST RUNTIME EVIDENCE STILL PENDING / AUTHENTIC MIR ENDPOINT PENDING`
 
 ## Reconciliation result
 
-The Goal Task remains valid. No new Goal Task or reusable component is required. The decomposition score is 25, so further bespoke orchestration is prohibited; the remaining work is composed from existing reusable components and canonical owners.
+The Goal Task identity and COSV remain unchanged. No new Goal Task or reusable component is required.
 
-Selected composition:
+The MIR Node Mirror now uses the four reusable Interlock/InTr task identities as the default protocol decomposition:
 
-1. `RT-EXTERNAL-ADAPTER-ESTABLISH-001` — reuse the merged MIR-specific TVC profile/validator as endpoint translation only.
-2. `RTC-ROUNDTRIP-003` — reuse the canonical governed request/response cycle. During build/test the far-side counterpart is a StegOS Node instance labeled `MIR NODE MIRROR`; later the authentic MIR endpoint substitutes for that counterpart without changing StegVerse-side choreography.
-3. `RTC-INTERLOCK-INTR-TRANSPORT-008` — reuse the existing governed outbound/return transport and receipt path.
-4. `TVC-PROVIDER-OPERATION-BROKER-003` — reuse the existing TV/TVC non-exportable provider-operation/session owner for authentic external provider execution where credentials/session are required.
-5. `TVC-CAPABILITY-RUNTIME-002` — reuse the existing TVC runtime observer for provider-session/runtime evidence.
+1. `RT-INTR-BOUNDARY-ADMISSION-001` — bind and validate the exact manifest/envelope, payload integrity, destination, operation, and applicable standing before transition.
+2. `RT-INTR-GOVERNED-TRANSITION-001` — evaluate the admitted transition under applicable Transition Elements while keeping execution separate from authority effect.
+3. `RT-INTR-ROUNDTRIP-CORRELATION-001` — preserve request/response correlation, destination binding, exactly-once/replay semantics, manifest continuity, and transport/application-result separation.
+4. `RT-INTR-EVIDENCE-CUSTODY-001` — bind receipt-chain and artifact hashes and hand evidence to Master Records custody/reconstruction without giving custody transition authority.
 
-`RT-INTR-PROTOCOL-ESTABLISH-001` is not selected because an applicable protocol already exists. Publisher, SDK return assembly, replay/reconstruction, and full evidence-package projection are parent Goal Task stages and are not child component implementations.
+`RT-INTR-PROTOCOL-ESTABLISH-001` remains the protocol-definition root but is not invoked for this MIR flow because an applicable Interlock/InTr protocol already exists.
+
+## Implementation components retained
+
+The reusable RT-INTR identities are protocol decomposition. They do not replace the existing implementation components:
+
+- `RT-EXTERNAL-ADAPTER-ESTABLISH-001` — MIR endpoint/profile translation only.
+- `RTC-ROUNDTRIP-003` — governed request/response lifecycle implementation.
+- `RTC-INTERLOCK-INTR-TRANSPORT-008` — governed packet movement and transport receipts.
+- `TVC-PROVIDER-OPERATION-BROKER-003` — TV/TVC provider-operation/session owner for authentic external provider execution.
+- `TVC-CAPABILITY-RUNTIME-002` — provider-session/runtime observation.
+- `SovereignLocalEventRuntimeAdapter` — bounded same-device EVENT_EPHEMERAL MIR Node Mirror execution substrate.
+
+No bespoke MIR transport, second provider broker, second runtime lifecycle, parallel InTr authority, or second user-operated machine is introduced.
+
+## Canonical MIR Node Mirror source/test validation
+
+StegOS PR `#393` validated the MIR Node Mirror against this reusable decomposition at exact head:
+
+```text
+validated head: a29ed2dbc904e2c6648fe6a7cecf9a29351a2ef8
+StegOS CI run: 35001112081
+result: SUCCESS
+full suite: 1649 passed
+MIR external-roundtrip execution test: PASS
+merge SHA: 8ade8168e44b3b54bd3f24edfcc047397512a356
+```
+
+The external-roundtrip test exercises the existing canonical runtime lane and verifies:
+
+- exact MIR Run-2 manifest/hash binding;
+- `EXTERNAL_FRAMEWORK_INGRESS` receipt generation;
+- request/response correlation preservation;
+- original outbound manifest continuity;
+- bounded EVENT_EPHEMERAL mirror execution;
+- linked request/response receipt chain;
+- exact return-packet retention with hash and correlation binding;
+- evidence retention before lease release;
+- terminal lease closure;
+- `authority_effect=NONE`;
+- `requires_other_machine=false`.
+
+This is source/test validation of the reusable decomposition and implementation contract. GitHub Actions has no runtime authority and the CI result is not promoted to authentic MIR Node Mirror runtime evidence.
 
 ## Canonical external-roundtrip build/test binding
 
-The build/test path uses the same canonical external-roundtrip process required for external integrations:
-
 ```text
 StegVerse initiating component
--> Interlock/InTr
--> external-system StegOS Node Mirror
--> external-system contract behavior
--> return packet
--> Interlock/InTr
+-> RT-INTR-BOUNDARY-ADMISSION-001
+-> RT-INTR-GOVERNED-TRANSITION-001
+-> RTC-INTERLOCK-INTR-TRANSPORT-008
+-> MIR NODE MIRROR
+-> MIR-profile behavior
+-> RT-INTR-ROUNDTRIP-CORRELATION-001
+-> governed Interlock/InTr return
 -> StegVerse receiving component
+-> RT-INTR-EVIDENCE-CUSTODY-001
 ```
 
 For this task:
@@ -44,65 +86,43 @@ Run-2 bounded history
 -> SDK:EvaluatorReviewIngress
 ```
 
-The mirror uses the existing StegOS `SovereignLocalEventRuntimeAdapter` with `EVENT_EPHEMERAL / NOT_REQUIRED` rendezvous and `requires_other_machine=false`. This is a logical far-side test instance, not another physical machine and not another runtime lifecycle.
-
 Authentic MIR later replaces only the far-side counterpart:
 
 ```text
 MIR NODE MIRROR -> AUTHENTIC MIR
 ```
 
-while preserving the same StegVerse request, transport, correlation, return, SDK evaluation, replay/reconstruction, and Publisher contracts.
+The StegVerse-side admission, governed transition, transport, correlation, return, SDK evaluation, replay/reconstruction, evidence, and Publisher contracts remain unchanged.
 
 ## Evidence classes
 
-A real `MIR NODE MIRROR` execution is authentic runtime evidence for the build/test round trip. It must preserve actual WorkerCoordinator claim/fence evidence, admitted Interlock/InTr transitions, exact packet/receipt bindings, same-device StegOS runtime materialization, return ingress, and downstream SDK evidence. Source or CI cannot satisfy those predicates.
+Source/test validation now proves that the reusable RT-INTR decomposition is correctly represented by the MIR Node Mirror implementation and tests.
 
-Authentic external MIR execution remains a distinct endpoint-specific evidence class proving that the real external service performed the contracted far-side work. This distinction is endpoint provenance, not a claim that the mirror run is synthetic.
-
-Build/test runtime predicates:
+Build/test runtime predicates remain unsatisfied until authentic MIR Node Mirror execution produces retained runtime/Interlock/InTr/SDK evidence:
 
 - `MIR_NODE_MIRROR_ROUNDTRIP_EXECUTED`
 - `MIR_NODE_MIRROR_RETURN_ADMITTED_TO_SDK`
 
-Authentic external endpoint predicates:
+Authentic external endpoint predicates remain separately required:
 
 - `AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED`
 - `AUTHENTIC_MIR_RESULT_RECEIPT_RETAINED`
 
-## Current source truth
-
-Merged TVC PR #415 at `85a42792d5a4e4d081ad7eead4995efbddd4d58d` provides the MIR profile, validator, broker dispatch, tests, dedicated validation lane, and fail-closed policy boundary. Source/CI validation is complete. It does not prove runtime execution.
-
-StegOS issue #364 / PR #365 parameterizes the canonical external-roundtrip build/test pattern as `MIR NODE MIRROR` using the existing same-device `SovereignLocalEventRuntimeAdapter`; no new reusable component or physical-machine dependency is introduced.
-
-Satisfied child source predicates:
-
-- `MIR_PROFILE_REGISTERED_IN_CANONICAL_TVC_PROVIDER_REGISTRY`
-- `CANONICAL_PROVIDER_BROKER_DISPATCHES_TO_MIR_VALIDATOR`
-- `MIR_STANDING_REQUEST_BOUND_AND_ADMITTED`
-- `MIR_SUBMIT_EVENT_FAILS_CLOSED_WITHOUT_VERIFIED_EVENT_MAPPING`
-- `MIR_POLICY_EVALUATE_FORBIDDEN`
-- `MIR_CREDENTIAL_NOT_EXPORTED`
-- `MIR_BODY_AND_LEASE_MUTATION_FAIL_CLOSED`
-
-The event-semantic mapping dependency is conditional, not a blocker for the build/test mirror round trip or the required `READ_STANDING` round trip. `SUBMIT_EVENT` remains fail-closed unless a specific Run-2 transition is proven semantically equivalent to an authoritative MIR event type.
+No source, merge, CI, or mirror result may substitute for authentic external MIR endpoint evidence.
 
 ## Authority map
 
-Task Registry coordinates only. WorkerCoordinator owns claim/fence. Interlock/InTr owns governed transition/admission. TV/TVC owns provider/session authority. MIR owns its external historical-accounting behavior when the authentic endpoint is used. StegVerse owns governance. KV/SKAP Vault remains the sole user-verification authority. Master Records owns observed-reality custody/reconstruction. HeartBeat is observability only. GitHub has no runtime authority.
+Task Registry coordinates only. WorkerCoordinator owns claim/fence. Interlock/InTr owns governed transition/admission. TV/TVC owns provider/session authority. MIR owns external MIR behavior when the authentic endpoint is used. StegVerse owns governance. KV/SKAP Vault is sole user-verification authority. Master Records owns observed-reality custody/reconstruction. HeartBeat is observability only. GitHub has no runtime authority.
 
-`MIR NODE MIRROR` receives no new authority; it is the canonical build/test far-side counterpart instance for exercising the MIR contract profile.
+The MIR Node Mirror receives no governance, transition, credential, provider, user-verification, or external-MIR authority.
 
-## Duplicate orchestration retired/superseded
+## Default reuse rule derived from this validation
 
-Do not create a bespoke MIR transport, MIR-specific provider/session broker, parallel TVC runtime observer, task-specific generic round-trip engine, child-task Publisher/SDK/reconstruction chain, or a separate physical host solely to represent the external counterpart during build/test. Reuse the Node Mirror pattern and existing reusable components.
+For future governed connections, select only the reusable InTr tasks actually required by the exchange. Use the existing normalized protocol whenever it represents the endpoint without ambiguity. Derive an endpoint-specific adapter only for endpoint translation that cannot be represented by the normalized protocol; never move endpoint semantics into the governance boundary merely because an adapter is needed.
 
 ## Next admissible work
 
-1. Finish validating and integrating StegOS PR #365.
-2. Execute the MIR NODE MIRROR round trip through the existing same-device StegOS runtime + Interlock/InTr return path and retain authentic mirror runtime/SDK ingress evidence.
-3. Continue parent Run-2 delta/replay/reconstruction/Publisher stages from that returned accounting artifact.
-4. Later substitute authentic MIR as the far-side endpoint and collect the distinct provider-specific evidence without redesigning the StegVerse side.
-
-Do not infer any runtime predicate from source, CI, merge state, or static compatibility.
+1. Validate and merge this canonical `.github` reconciliation at exact head.
+2. Execute the MIR Node Mirror through the authentic same-device canonical runtime path and retain Interlock/InTr plus SDK return evidence.
+3. Reconcile the two build/test runtime predicates only from that retained runtime evidence.
+4. Later substitute authentic MIR as the far-side endpoint and satisfy the distinct provider-specific predicates without redesigning the StegVerse side.
