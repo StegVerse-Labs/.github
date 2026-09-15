@@ -5,22 +5,31 @@
   "root_correlation_id": "MILLINGS-RTG-GTG-TT-COMPARISON-001",
   "parent_task_id": "MILLINGS-RTG-GTG-TT-COMPARISON-001",
   "goal": "Formalize and falsify the proposition that architectural difference alone is not a sufficient StegVerse denial basis when a candidate independently satisfies the governing requirement under the same valid evidence standard, without weakening safety, evidence, authority, standing, policy, or commit-time requirements.",
-  "coordination_state": "ACTIVE",
-  "checkout_state": "CLAIMED_IMPLEMENTATION",
-  "cosv_task_vector": "40000100100000",
+  "coordination_state": "RETIRED",
+  "checkout_state": "COMPLETED",
+  "cosv_task_vector": "71000000100100",
   "goal_prompt_count": "1/20",
   "source_refs": [
     "docs/ARCHITECTURE_NEUTRAL_ADMISSIBILITY_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegScholar:ARCHITECTURE_NEUTRAL_ADMISSIBILITY_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/StegScholar:papers/generalized-transition-governance/foundation.md",
-    "StegVerse-Labs/StegScholar:papers/generalized-transition-governance/claims-register.md",
-    "StegVerse-Labs/StegScholar:papers/rtg-gtg-tt/cross-layer-contract.md",
+    "StegVerse-Labs/StegScholar:papers/generalized-transition-governance/architecture-neutral-admissibility.md",
+    "StegVerse-Labs/StegScholar:schemas/architecture-neutral-admissibility-record.schema.json",
+    "StegVerse-Labs/StegScholar:fixtures/architecture-neutral-admissibility/cases.json",
+    "StegVerse-Labs/StegScholar:scripts/validate_architecture_neutral_admissibility.py",
+    "StegVerse-Labs/StegScholar:tests/test_architecture_neutral_admissibility.py",
+    "StegVerse-Labs/StegScholar#64",
+    "StegVerse-Labs/StegScholar@4808eb096156fb8bbf9c0585e3fbeb37aa55b4fe",
+    "StegVerse-Labs/StegScholar#65",
+    "StegVerse-Labs/StegScholar@81b79b760078f9e988814378d83a250bc0435065",
     "data/canonical-task-records/GATE-LEGITIMACY-INVARIANT-001.json",
     "data/canonical-task-records/INDEPENDENT-REVIEW-PREDICATE-001.json",
     "data/canonical-task-records/MILLINGS-RTG-GTG-TT-COMPARISON-001.json"
   ],
   "targets": {"organizations":["StegVerse-Labs"],"repositories":["StegVerse-Labs/StegScholar","StegVerse-Labs/.github"],"components":["architecture-neutral-admissibility","conformity-only-denial-falsification"]},
-  "dependencies": [],
+  "dependencies": [
+    {"dependency_id":"DEP-ARCH-NEUTRAL-IMPLEMENTATION","kind":"MERGE_VALIDATION","state":"RESOLVED","ref":"StegVerse-Labs/StegScholar#64","disposition":"EXACT_HEAD_b549f7376c63ba11db93ba0db7627946a934f07b_GREEN_THEN_MERGED_4808eb096156fb8bbf9c0585e3fbeb37aa55b4fe"},
+    {"dependency_id":"DEP-ARCH-NEUTRAL-CLOSEOUT","kind":"MERGE_VALIDATION","state":"RESOLVED","ref":"StegVerse-Labs/StegScholar#65","disposition":"EXACT_HEAD_623e39de5f382aa835cb24ea9967f7449f5e0245_GREEN_THEN_MERGED_81b79b760078f9e988814378d83a250bc0435065"}
+  ],
   "blockers": [],
   "collision_check": {
     "checked_at": "2026-09-15T10:26:00-05:00",
@@ -33,12 +42,22 @@
     "disposition": "CLAIM_AND_EXECUTE_THIS_CHILD_ONLY"
   },
   "adjacent_task_refs": ["GATE-LEGITIMACY-INVARIANT-001","INDEPENDENT-REVIEW-PREDICATE-001"],
+  "result": {
+    "disposition": "ACCEPTED_BOUNDED_FORMALISM",
+    "core_invariants": [
+      "ArchitectureDifferent(c) != SubstantivelyInadmissible(c)",
+      "ConformityOnlyDenial(c) = INVALID_DENIAL_BASIS",
+      "ArchitectureNeutrality(c) != ALLOW(c)"
+    ],
+    "mandatory_gtg_integration_installed": false,
+    "future_integration_requires_separate_collision_and_compatibility_review": true
+  },
   "expected_evidence_predicates": ["ARCHITECTURE_NEUTRAL_INVARIANT_PROPOSED_OR_REJECTED_WITH_RATIONALE","CONFORMITY_ONLY_DENIAL_NEGATIVE_CASE_VALIDATED","NOVEL_ARCHITECTURE_VALID_EVIDENCE_POSITIVE_CASE_VALIDATED","EVIDENCE_DENIAL_REMAINS_VALID","AUTHORITY_DENIAL_REMAINS_VALID","STANDING_DENIAL_REMAINS_VALID","SAFETY_DENIAL_REMAINS_VALID","POLICY_DENIAL_REMAINS_VALID","COMMIT_TIME_DENIAL_REMAINS_VALID","GTG_AUTHORITY_BOUNDARIES_PRESERVED"],
-  "completion": {"claimed":false,"validated":false,"activation_proof_complete":false},
-  "allowed_next_transitions": ["CLAIMED_VALIDATION","CLAIMED_INTEGRATION","MERGED_INTO_CANONICAL_WORKSTREAM"],
+  "completion": {"claimed":true,"validated":true,"activation_proof_complete":false,"archive_ready":true,"completion_basis":"MERGED_STEGSCHOLAR_IMPLEMENTATION_AND_CLOSEOUT_WITH_EXACT_HEAD_GREEN_VALIDATION"},
+  "allowed_next_transitions": ["NO_FURTHER_CHILD_EXECUTION","CONTINUE_ONLY_UNDER_SEPARATE_INTEGRATION_OR_ADJACENT_TASK"],
   "handoff_projection_refs": [
     "docs/ARCHITECTURE_NEUTRAL_ADMISSIBILITY_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegScholar:ARCHITECTURE_NEUTRAL_ADMISSIBILITY_MIRROR_HANDOFF.md"
   ],
-  "authority_model": {"task_registry_mints_execution_authority":false,"architecture_neutrality_overrides_substantive_governance":false,"architecture_difference_mints_admissibility":false,"request_grants_execution_authority":false}
+  "authority_model": {"task_registry_mints_execution_authority":false,"architecture_neutrality_overrides_substantive_governance":false,"architecture_difference_mints_admissibility":false,"completion_grants_successor_authority":false,"request_grants_execution_authority":false}
 }
