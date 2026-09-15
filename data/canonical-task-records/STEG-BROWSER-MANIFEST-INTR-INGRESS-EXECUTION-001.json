@@ -4,11 +4,12 @@
   "correlation_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
   "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
   "parent_task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
-  "goal": "Execute the manifest-defined StegBrowser invocation through the existing registered StegVerse Node -> Interlock -> InTr -> bounded lease -> EVENT_EPHEMERAL StegOS path, bind execution-time runtime identity, obtain authentic WorkerCoordinator claim/fence, retain verified A4 Interlock/InTr ingress evidence, and then continue the two governed round trips.",
+  "goal": "Execute and evidence the single manifest-defined StegBrowser invocation through A1 Interlock/InTr state observation, validated registered StegVerse Node Receipt #1, A2 Node/Interlock binding, A2.1 bounded lease, A2.2 EVENT_EPHEMERAL StegOS materialization, A3 WorkerCoordinator claim/fence, and A4 exact Interlock/InTr ingress, then continue the declared two governed round trips only after authentic A1-A4 evidence.",
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT",
   "cosv_task_vector": "40000100100000",
   "handoff_ref": "docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md",
+  "a1_a4_child_task_id": "STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001",
   "operation_lineage_task_id": "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
   "current_exact_defect": "AUTHENTIC_NODE_INTERLOCK_LEASE_RUNTIME_A3_A4_EVIDENCE_NOT_YET_OBSERVED",
   "runtime_requirements": {
@@ -44,32 +45,40 @@
     "second_user_operated_device_allowed": false,
     "authority_effect": "NONE"
   },
+  "canonical_node_binding": {
+    "selector": "CANONICAL_REGISTERED_STEGVERSE_NODE_BINDING",
+    "selector_role": "SYMBOLIC_SELECTION_ONLY",
+    "concrete_path_parameter": "node_genesis_receipt",
+    "concrete_path_environment": "STEGVERSE_NODE_GENESIS_RECEIPT",
+    "receipt_schema": "stegos.node_handoff_receipt.v1",
+    "receipt_number": 1,
+    "plain_sovereign_node_declaration_may_be_promoted_to_receipt_1": false,
+    "external_runtime_device_host_discovery_allowed": false
+  },
   "implementation_trace": {
-    "manifest_binding": "IMPLEMENTED_MERGED_VALIDATED",
-    "registered_node_receipt_1_validation": "IMPLEMENTED_MERGED_VALIDATED_WITH_STEGOS_NETWORK_MANIFOLD_VALIDATOR",
-    "registered_node_consumed_by_stegbrowser_runner": true,
-    "interlock_id_consumed_by_stegbrowser_runner": true,
-    "bounded_lease_request": "IMPLEMENTED_MERGED_VALIDATED_WITH_MANIFEST_NODE_INTERLOCK_REGISTRATION_GOAL_COSV_BINDING",
-    "event_ephemeral_runtime_materialization": "IMPLEMENTED_MERGED_VALIDATED",
-    "execution_time_runtime_id": "IMPLEMENTED_MERGED_VALIDATED_AND_BOUND_BACK_TO_NODE_INTERLOCK_LEASE_MANIFEST",
-    "workercoordinator_claim_fence": "IMPLEMENTED_MERGED_VALIDATED_IN_EXISTING_ORGANIZATION_LOCAL_BOUNDARY",
-    "a4_exact_packet_verification": "IMPLEMENTED_MERGED_VALIDATED_WITH_NODE_INTERLOCK_LEASE_RUNTIME_CORRELATION",
-    "source_validation_state": "MERGED_VALIDATED_RUNTIME_EVIDENCE_PENDING"
+    "A1_connection_state_observer": "STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001_EXISTING_SHARED_INTR_PROFILE",
+    "A2_registered_node_interlock_binding": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001_CANONICAL_PATH",
+    "A2.1_bounded_lease_request": "EXISTING_STEGOS_EPHEMERAL_RUNTIME_LEASE",
+    "A2.2_event_ephemeral_runtime_materialization": "EXISTING_STEGOS_SOVEREIGN_LOCAL_EVENT_RUNTIME_ADAPTER",
+    "A3_workercoordinator_claim_fence": "EXISTING_ORGANIZATION_LOCAL_BOUNDARY",
+    "A4_exact_packet_verification": "EXISTING_WORKERS_STEGBROWSER_MANIFEST_INTR_INGRESS",
+    "direct_child_a4_worker_shortcut": false,
+    "duplicate_materializer": false,
+    "source_validation_state": "RECONCILIATION_VALIDATION_PENDING"
   },
   "source_validation": {
-    "pr": 1923,
-    "validated_head": "f7b6cb86b9fff9fbeb1817e45920acc2effc200f",
-    "merge_sha": "0098bc793865fd1db835c400b502dad5f8a5e32d",
-    "organization_control_run": 34970252692,
-    "deterministic_suite_run": 34970252614,
-    "heartbeat_validation_run": 34970252669,
-    "all_required_lanes_passed": true,
+    "prior_node_interlock_pr": 1923,
+    "prior_validated_head": "f7b6cb86b9fff9fbeb1817e45920acc2effc200f",
+    "prior_merge_sha": "0098bc793865fd1db835c400b502dad5f8a5e32d",
+    "prior_all_required_lanes_passed": true,
+    "reconciliation_branch": "stegbrowser-node-binding-canonical-reconcile",
+    "reconciliation_exact_head": "PENDING",
     "runtime_authority_effect": "NONE"
   },
-  "reusable_task_ref": "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
-  "reusable_task_sync_required": true,
   "completion": {
-    "resident_request_dispatch_binding_valid": true,
+    "source_merged_validated": true,
+    "a1_a4_duplicate_representation_reconciled": false,
+    "runtime_connection_transition_observed": false,
     "registered_stegverse_node_bound_to_invocation": false,
     "interlock_bound_to_node_and_manifest": false,
     "invocation_scoped_lease_bound_to_node_interlock": false,
@@ -77,8 +86,13 @@
     "execution_time_runtime_identity_bound": false,
     "workercoordinator_claim_fence_observed": false,
     "organization_local_intr_ingress_receipt_verified": false,
-    "authentic_intr_ingress_observed": false,
-    "source_merged_validated": true
+    "authentic_intr_ingress_observed": false
+  },
+  "issue_1918": {
+    "state": "CLOSED",
+    "state_reason": "COMPLETED_SOURCE_DEFECT",
+    "reopen_required": false,
+    "runtime_evidence_pending_is_separate_from_source_defect": true
   },
   "authority_model": {
     "node_authority_effect": "CONTINUITY_ADMISSION_ANCHOR_ONLY",
@@ -86,7 +100,7 @@
     "interlock_intr_transition_authority": true,
     "credential_authority": "TV/TVC",
     "github_runtime_authority": "NONE",
-    "resident_dispatcher_authority_effect": "NONE",
+    "a1_a4_child_authority_effect": "NONE_OBSERVATION_AND_COMPOSITION_ONLY",
     "organization_local_boundary_authority_effect": "NONE_BOUNDED_EXECUTION_SURFACE"
   }
 }

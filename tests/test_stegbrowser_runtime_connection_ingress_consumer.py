@@ -91,33 +91,38 @@ class StegBrowserRuntimeConnectionIngressConsumerTests(unittest.TestCase):
         self.assertFalse(result["round_trip_1_payload_processing_allowed_by_this_resolution"])
         self.assertFalse(result["second_user_operated_device_required"])
 
-    def test_a3_a4_reuses_existing_manifest_ingress_worker(self):
+    def test_a2_a4_delegate_to_existing_manifest_bound_reusable_runner(self):
         with tempfile.TemporaryDirectory() as td:
-            source = Path(td) / "source"
-            runtime = Path(td) / "runtime"
-            worker = source / module.MANIFEST_INGRESS_REL
-            worker.parent.mkdir(parents=True)
-            worker.write_text("# worker\n")
-            runtime.mkdir()
+            root = Path(td)
+            source = root / "source"
+            runtime = root / "runtime"
+            stegos = root / "StegOS"
+            runner = source / module.MANIFEST_RUNNER_REL
+            validator = stegos / "stegos/network_manifold.py"
+            node_receipt = root / "node-genesis-receipt.json"
+            runner.parent.mkdir(parents=True)
+            validator.parent.mkdir(parents=True)
+            runtime.mkdir(parents=True)
+            runner.write_text("# canonical manifest-bound runner\n")
+            validator.write_text("# canonical node validator\n")
+            node_receipt.write_text("{}\n")
             completed = type("Completed", (), {
                 "returncode": 0,
-                "stdout": json.dumps({
-                    "state": "AUTHENTIC_INTR_INGRESS_OBSERVED",
-                    "claim_id": "SHWP-ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001-G23",
-                    "fencing_token": 23,
-                    "workercoordinator_claim_fence_observed": True,
-                    "manifest_defined_path": True,
-                }) + "\n",
+                "stdout": "runner-ok\n",
                 "stderr": "",
             })()
-            with patch.object(module.subprocess, "run", return_value=completed) as run:
-                result = module.run_existing_manifest_ingress(source, runtime)
-            self.assertEqual(result["state"], "AUTHENTIC_INTR_INGRESS_OBSERVED")
-            self.assertEqual(result["fencing_token"], 23)
+            with patch.dict(module.os.environ, {"STEGVERSE_STEGOS_SOURCE_ROOT": str(stegos)}, clear=False):
+                with patch.object(module.subprocess, "run", return_value=completed) as run:
+                    result = module.run_canonical_node_bound_invocation(source, runtime, node_receipt)
+            self.assertEqual(result["runner_returncode"], 0)
             cmd = run.call_args.args[0]
-            self.assertEqual(Path(cmd[1]), worker)
-            self.assertIn("--source-root", cmd)
-            self.assertIn("--runtime-root", cmd)
+            self.assertEqual(Path(cmd[1]), runner)
+            env = run.call_args.kwargs["env"]
+            params = json.loads(env["STEGVERSE_REUSABLE_TASK_PARAMETERS_JSON"])
+            self.assertEqual(params["node_genesis_receipt"], str(node_receipt))
+            self.assertEqual(params["runtime_root"], str(runtime))
+            self.assertEqual(params["stegos_source_root"], str(stegos))
+            self.assertNotIn(str(source / module.MANIFEST_INGRESS_REL), cmd)
 
 
 if __name__ == "__main__":
