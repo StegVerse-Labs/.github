@@ -1,33 +1,128 @@
 {
-  "schema": "stegverse.cross-task-coordination/v1",
-  "coordination_id": "STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001",
-  "parent_task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
-  "child_task_id": "STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001",
-  "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
-  "cosv_task_vector": "40000100100000",
-  "scope": "GC_A1_THROUGH_A4_ONLY",
-  "first_unresolved_predicate": "RUNTIME_CONNECTION_TRANSITION_VARIABLES_OBSERVED",
-  "terminal_child_predicate": "INTR_ADMISSION_OBSERVED",
-  "handoff_after_terminal_predicate": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
-  "reusable_task_selection": {
-    "RT-SOVEREIGN-SOURCE-REFRESH-001": "callable=true AND refreshable=true",
-    "RT-INTR-PROTOCOL-ESTABLISH-001": "callable=true AND applicable_protocol_resolved=false"
-  },
-  "authority": {
-    "coordination": "TASK_REGISTRY",
-    "claim_fence": "WORKERCOORDINATOR",
-    "transition": "INTERLOCK_INTR",
-    "credential_provider": "TV/TVC",
-    "user_verification": "KV/SKAP Vault",
-    "observed_reality": "MASTER_RECORDS",
-    "github_runtime_authority": "NONE"
-  },
-  "invariants": {
-    "new_reusable_task_created": false,
-    "round_trip_1_payload_processing_owned_by_child": false,
-    "second_user_operated_device_required": false,
-    "healer_normal_stage_owner": false,
-    "pending_predicate_is_healer_trigger": false
-  },
-  "authority_effect": "NONE_COORDINATION_ONLY"
+  "schema": "stegverse.cross-task-coordination-fragment/v1",
+  "fragment_id": "STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "tasks": [
+    {
+      "task_id": "STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001",
+      "goal_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+      "state": "CHECKED_OUT",
+      "autonomous_augmentation": true,
+      "required_predicates": [
+        "PRED-STEG-BROWSER-RUNTIME-CONNECTION-TRANSITION-OBSERVED",
+        "PRED-STEG-BROWSER-WORKERCOORDINATOR-CLAIM-FENCE-OBSERVED",
+        "PRED-STEG-BROWSER-INTR-ADMISSION-OBSERVED"
+      ],
+      "mutation_scope": {
+        "repositories": ["StegVerse-Labs/.github"],
+        "paths": [
+          "data/canonical-task-records/STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001.json",
+          "control/task-vectors/STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001.json",
+          "scripts/resolve_stegbrowser_runtime_connection_transition.py",
+          "docs/STEGBROWSER_RUNTIME_CONNECTION_INGRESS_MIRROR_HANDOFF.md"
+        ],
+        "modules": ["stegbrowser-runtime-connection-ingress"],
+        "runtime_surfaces": ["existing WorkerCoordinator", "existing Interlock/InTr", "admitted ephemeral StegOS node"],
+        "evidence_responsibilities": [
+          "invocation-bound callable/refreshable state",
+          "matching reusable capability selection",
+          "WorkerCoordinator claim/fence",
+          "Interlock/InTr ingress"
+        ]
+      },
+      "expected_blast_radius": "GC A1 through A4 only. No Round Trip 1 payload processing, no new reusable task, no second scheduler/runtime, and no second user-operated device.",
+      "readme_impact_required": false,
+      "canonical_owner_refs": [
+        "docs/STEGBROWSER_RUNTIME_CONNECTION_INGRESS_MIRROR_HANDOFF.md",
+        "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md"
+      ]
+    }
+  ],
+  "predicates": [
+    {
+      "predicate_id": "PRED-STEG-BROWSER-RUNTIME-CONNECTION-TRANSITION-OBSERVED",
+      "semantic_predicate_id": "stegbrowser_runtime_connection_transition_variables_observed",
+      "subject_binding": {
+        "task_id": "STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001",
+        "cosv": "40000100100000",
+        "manifest_ref": "control/transport-manifests/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json"
+      },
+      "state": "UNSATISFIED",
+      "description": "Authentic Interlock/InTr observation must bind callable, refreshable, and applicable protocol state for this invocation.",
+      "authoritative_producer": "Interlock/InTr",
+      "required_schema": "stegverse.intr-runtime-connection-transition-observation/v1",
+      "required_scope": "manifest-bound runtime connection transition",
+      "required_execution_instance": null,
+      "max_age_seconds": null,
+      "required_fields": ["callable", "refreshable", "applicable_protocol_resolved", "authority_owner=Interlock/InTr"],
+      "expected_output_ref": "authentic runtime connection transition observation",
+      "consumers": ["STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001"],
+      "canonical_source_refs": [
+        "scripts/resolve_stegbrowser_runtime_connection_transition.py",
+        "docs/STEGBROWSER_RUNTIME_CONNECTION_INGRESS_MIRROR_HANDOFF.md"
+      ]
+    },
+    {
+      "predicate_id": "PRED-STEG-BROWSER-WORKERCOORDINATOR-CLAIM-FENCE-OBSERVED",
+      "semantic_predicate_id": "stegbrowser_workercoordinator_claim_fence_observed",
+      "subject_binding": {
+        "task_id": "STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001",
+        "cosv": "40000100100000"
+      },
+      "state": "UNSATISFIED",
+      "description": "WorkerCoordinator must issue and expose the current claim/fence for the exact child invocation.",
+      "authoritative_producer": "WorkerCoordinator",
+      "required_schema": null,
+      "required_scope": "child execution claim/fence",
+      "required_execution_instance": null,
+      "max_age_seconds": null,
+      "required_fields": ["claim_ref", "fence_ref"],
+      "expected_output_ref": "current WorkerCoordinator claim/fence evidence",
+      "consumers": ["STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001"],
+      "canonical_source_refs": ["data/canonical-task-records/STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001.json"]
+    },
+    {
+      "predicate_id": "PRED-STEG-BROWSER-INTR-ADMISSION-OBSERVED",
+      "semantic_predicate_id": "stegbrowser_intr_admission_observed",
+      "subject_binding": {
+        "task_id": "STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001",
+        "cosv": "40000100100000",
+        "transport_boundary": "A4"
+      },
+      "state": "UNSATISFIED",
+      "description": "Authentic Interlock/InTr ingress must be observed before handoff to Round Trip 1 runtime consumption.",
+      "authoritative_producer": "Interlock/InTr",
+      "required_schema": null,
+      "required_scope": "manifest-bound governed ingress",
+      "required_execution_instance": null,
+      "max_age_seconds": null,
+      "required_fields": ["INTR_ADMISSION_OBSERVED=true"],
+      "expected_output_ref": "authentic Interlock/InTr ingress receipt",
+      "consumers": ["STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001", "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001"],
+      "canonical_source_refs": ["docs/STEGBROWSER_RUNTIME_CONNECTION_INGRESS_MIRROR_HANDOFF.md"]
+    }
+  ],
+  "gaps": [
+    {
+      "predicate_id": "PRED-STEG-BROWSER-RUNTIME-CONNECTION-TRANSITION-OBSERVED",
+      "subject_binding": {
+        "task_id": "STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001",
+        "cosv": "40000100100000",
+        "manifest_ref": "control/transport-manifests/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json"
+      },
+      "existing_evidence_refs": [
+        "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md",
+        "control/transport-manifests/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json"
+      ],
+      "rejected_because": ["SOURCE_BINDING_DOES_NOT_PROVE_RUNTIME_CONNECTION_TRANSITION"],
+      "missing_observation": "Authentic Interlock/InTr transition evidence binding callable, refreshable, and applicable_protocol_resolved for the exact manifest-bound invocation.",
+      "required_producer": "Interlock/InTr",
+      "required_output_ref": "stegverse.intr-runtime-connection-transition-observation/v1",
+      "required_schema": "stegverse.intr-runtime-connection-transition-observation/v1",
+      "required_fields": ["callable", "refreshable", "applicable_protocol_resolved", "authority_owner=Interlock/InTr"],
+      "required_freshness": "current invocation",
+      "collision_refs": [],
+      "action_without_collision": "Use the existing Interlock/InTr and reusable-task infrastructure. Select RT-SOVEREIGN-SOURCE-REFRESH-001 only when callable=true and refreshable=true; select RT-INTR-PROTOCOL-ESTABLISH-001 only when callable=true and no applicable protocol resolves."
+    }
+  ]
 }
