@@ -2,7 +2,6 @@ import json
 import unittest
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "data" / "reusable-transport-component-contract.json"
 PROFILE = ROOT / "data" / "goal-task-transport-profiles" / "STEG-BROWSER-RUNTIME-CONSUMPTION-001.json"
@@ -17,103 +16,74 @@ def component_by_id(contract: dict, component_id: str) -> dict:
 
 
 class StegBrowserTransportBoundaryContractTests(unittest.TestCase):
-    def test_transport_terminal_predicate_is_owned_by_intr_boundary_not_master_records(self):
+    def test_round_trip_component_is_repeatable(self):
         contract = load_json(CONTRACT)
-        boundary = contract["transport_boundary_contract"]
-
-        self.assertEqual(boundary["authority_owner"], "Interlock/InTr")
-        self.assertEqual(boundary["terminal_boundary"], "FINAL_ALLOWED_INTR_STATE_TRANSITION_EXITING_TRANSPORT")
-        self.assertEqual(boundary["terminal_predicate"], "SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIP_IDENTIFIED")
-        self.assertIs(boundary["terminal_predicate_value_on_success"], True)
-        self.assertIs(boundary["master_records_required_to_prove_transport_success"], False)
-        self.assertEqual(contract["invariants"]["master_records_transport_success_authority"], "NONE")
-
-    def test_round_trip_success_requires_return_record_and_final_transport_exit(self):
-        contract = load_json(CONTRACT)
-        boundary = contract["transport_boundary_contract"]
-
-        self.assertIs(boundary["round_trip_requires_governed_return_packet"], True)
-        self.assertIs(boundary["return_record_must_be_received"], True)
-        self.assertIs(boundary["return_record_must_be_durably_recorded"], True)
-        self.assertEqual(
-            boundary["terminal_predicate_set_when"],
-            [
-                "GOVERNED_RETURN_PACKET_RECEIVED",
-                "RETURN_RECORD_DURABLY_RECORDED",
-                "FINAL_ALLOWED_TRANSPORT_EXIT_TRANSITION_OBSERVED",
-            ],
-        )
-        self.assertIs(boundary["packet_arrival_time_extended_because_lifecycle_is_round_trip"], False)
-
-    def test_internal_transition_groups_do_not_multiply_round_trip_lifecycle(self):
-        contract = load_json(CONTRACT)
-        boundary = contract["transport_boundary_contract"]
         round_trip = component_by_id(contract, "RTC-ROUNDTRIP-003")
-        profile = load_json(PROFILE)
-        requirements = profile["transport_requirements"]
-        semantics = profile["round_trip_lifecycle_semantics"]
+        self.assertIs(round_trip["repeatable"], True)
+        self.assertIn("governed_round_trip_lifecycle_count", round_trip["repeat_count_source"])
 
-        self.assertIs(boundary["one_round_trip_lifecycle_may_contain_multiple_internal_transition_groups"], True)
-        self.assertIs(boundary["internal_transition_groups_do_not_imply_additional_round_trip_lifecycles"], True)
-        self.assertIs(round_trip["internal_transition_groups_increment_repeat_count"], False)
-        self.assertEqual(requirements["governed_round_trip_lifecycle_count"], 1)
+    def test_stegbrowser_requires_two_distinct_governed_round_trips(self):
+        profile = load_json(PROFILE)
+        req = profile["transport_requirements"]
+        semantics = profile["round_trip_lifecycle_semantics"]
+        self.assertEqual(req["governed_round_trip_lifecycle_count"], 2)
         self.assertEqual(
-            requirements["required_round_trips"],
-            ["stegbrowser_runtime_consumption_governed_round_trip"],
-        )
-        self.assertEqual(
-            requirements["round_trip_internal_transition_groups"],
+            req["required_round_trips"],
             [
-                "canonical_work_ingress_and_resident_consumption",
-                "tvc_source_promotion_and_runtime_observation",
+                "records_packet_return_for_recording_and_verification",
+                "mirror_boundary_processed_return_to_ecosystem",
             ],
         )
-        self.assertEqual(profile["repeatability"]["RTC-ROUNDTRIP-003"], 1)
-        self.assertEqual(semantics["lifecycle_count"], 1)
+        self.assertEqual(profile["repeatability"]["RTC-ROUNDTRIP-003"], 2)
+        self.assertEqual(semantics["lifecycle_count"], 2)
+
+    def test_round_trip_1_returns_records_packet_for_recording_and_verification(self):
+        profile = load_json(PROFILE)
+        rt1 = profile["round_trip_boundaries"]["round_trip_1"]
+        self.assertEqual(rt1["exit_transition"], "FIRST_FINAL_ALLOWED_INTR_EXIT_TO_RECORDING")
+        self.assertEqual(rt1["recording_target"], "MASTER_RECORDS_RECORDING_SURFACE")
+        self.assertIn("RETURN_RECORD_DURABLY_RECORDED", rt1["success_requires"])
+        terminal = profile["transport_terminal_contract"]
+        self.assertEqual(
+            terminal["round_trip_1_terminal_predicate"],
+            "SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED",
+        )
+        self.assertIs(terminal["durable_recording_is_round_trip_1_verification_evidence"], True)
+
+    def test_master_records_processing_occurs_between_round_trips(self):
+        profile = load_json(PROFILE)
+        between = profile["round_trip_boundaries"]["between_round_trips"]
+        self.assertIn("RTC-EVIDENCE-CUSTODY-004", profile["between_round_trip_processing_components"])
+        self.assertIs(between["mirror_boundary_initiates_next_intr"], True)
+        self.assertEqual(between["transport_authority"], "NONE")
+
+    def test_round_trip_2_reenters_intr_calls_endpoint_and_reenters_ecosystem(self):
+        profile = load_json(PROFILE)
+        rt2 = profile["round_trip_boundaries"]["round_trip_2"]
+        self.assertEqual(rt2["entry_transition"], "MIRROR_BOUNDARY_INTR_REENTRY")
+        self.assertEqual(rt2["endpoint_transition"], "ENDPOINT_INTR_CALLED_AND_ALLOWED")
+        self.assertEqual(rt2["terminal_transition"], "ECOSYSTEM_REENTRY_FINAL_ALLOWED_TRANSITION")
+        terminal = profile["transport_terminal_contract"]
+        self.assertIs(terminal["round_trip_2_reenters_interlock_intr"], True)
+        self.assertIs(terminal["round_trip_2_calls_endpoint_interlock_intr"], True)
+        self.assertIs(terminal["round_trip_2_enters_ecosystem"], True)
+        self.assertEqual(
+            terminal["round_trip_2_terminal_predicate"],
+            "SUCCESSFUL_ECOSYSTEM_RETURN_ROUND_TRIP_IDENTIFIED",
+        )
+
+    def test_internal_transition_groups_do_not_create_the_two_round_trips(self):
+        profile = load_json(PROFILE)
+        semantics = profile["round_trip_lifecycle_semantics"]
         self.assertEqual(semantics["internal_transition_group_count"], 2)
         self.assertIs(semantics["internal_transition_groups_are_separate_round_trip_goals"], False)
         self.assertIs(semantics["internal_transition_groups_increment_round_trip_repeat_count"], False)
 
-    def test_master_records_custody_is_post_transport_and_cannot_negate_transport_success(self):
-        contract = load_json(CONTRACT)
-        custody = component_by_id(contract, "RTC-EVIDENCE-CUSTODY-004")
-
-        self.assertEqual(custody["canonical_owner"], "Master Records")
-        self.assertEqual(custody["transport_phase"], "POST_TRANSPORT")
-        self.assertIs(custody["transport_success_authority"], False)
-        self.assertIs(contract["transport_boundary_contract"]["post_transport_failure_may_negate_transport_success"], False)
-
-    def test_stegbrowser_profile_splits_transport_from_post_transport_processing(self):
-        profile = load_json(PROFILE)
-
-        self.assertIn("RTC-ROUNDTRIP-003", profile["transport_phase_components"])
-        self.assertIn("RTC-INTERLOCK-INTR-TRANSPORT-008", profile["transport_phase_components"])
-        self.assertNotIn("RTC-EVIDENCE-CUSTODY-004", profile["transport_phase_components"])
-        self.assertEqual(profile["post_transport_components"], ["RTC-EVIDENCE-CUSTODY-004"])
-
-        terminal = profile["transport_terminal_contract"]
-        self.assertEqual(terminal["terminal_predicate"], "SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIP_IDENTIFIED")
-        self.assertIs(terminal["return_record_received_required"], True)
-        self.assertIs(terminal["return_record_durably_recorded_required"], True)
-        self.assertIs(terminal["final_allowed_transport_exit_transition_required"], True)
-        self.assertIs(terminal["master_records_reconstruction_required_to_set_terminal_predicate"], False)
-        self.assertIs(terminal["post_transport_failure_negates_terminal_predicate"], False)
-
-    def test_callable_and_refreshable_remain_invocation_bound_transition_variables(self):
-        profile = load_json(PROFILE)
-        variables = profile["invocation_transition_variables"]
-
+    def test_callable_and_refreshable_remain_invocation_bound(self):
+        variables = load_json(PROFILE)["invocation_transition_variables"]
         self.assertEqual(variables["callable"], "RESOLVED_PER_INVOCATION_BY_INTERLOCK_INTR")
         self.assertEqual(variables["refreshable"], "RESOLVED_PER_INVOCATION_BY_INTERLOCK_INTR")
-        self.assertEqual(variables["source_refresh_task"], "RT-SOVEREIGN-SOURCE-REFRESH-001")
         self.assertEqual(variables["source_refresh_selection_condition"], "callable=true AND refreshable=true")
-
-    def test_post_transport_failure_ownership_does_not_reopen_transport(self):
-        profile = load_json(PROFILE)
-        ownership = profile["failure_ownership"]
-
-        self.assertEqual(ownership["inside_transport_through_final_exit"], "TRANSPORT_OR_EXACT_IN_LANE_OWNER")
-        self.assertEqual(ownership["after_successful_transport_exit"], "POST_TRANSPORT_OWNING_DOMAIN_NOT_TRANSPORT")
 
 
 if __name__ == "__main__":
