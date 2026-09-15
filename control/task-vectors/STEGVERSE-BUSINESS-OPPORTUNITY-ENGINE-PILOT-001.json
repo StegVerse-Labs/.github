@@ -1,0 +1,30 @@
+{
+  "identity": "StegVerse-Labs/.github:task:STEGVERSE-BUSINESS-OPPORTUNITY-ENGINE-PILOT-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "10100000110000",
+  "evidence_refs": [
+    "data/canonical-task-records/STEGVERSE-BUSINESS-OPPORTUNITY-ENGINE-PILOT-001.json",
+    "docs/STEGVERSE_BUSINESS_OPPORTUNITY_ENGINE_PILOT_001_MIRROR_HANDOFF.md",
+    "management/COSV_PROFILE_V1.json"
+  ],
+  "observed_at": "2026-09-15T12:35:00Z",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "UNCLAIMED",
+    "archive_ready": false,
+    "unassigned_work": 1,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": true,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "authority_effect": "NONE"
+}
