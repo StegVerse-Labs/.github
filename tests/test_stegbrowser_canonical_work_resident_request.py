@@ -6,6 +6,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PARENT_TASK_ID = "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001"
 TASK_ID = "STEG-BROWSER-RUNTIME-CONSUMPTION-001"
+ACTIVE_REMEDIATION_TASK_ID = "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
 CONTINUATION_TASK_ID = "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001"
 COSV = "40000100100000"
 REQUEST = ROOT / "control" / "resident-execution-request.d" / "canonical-work-stegbrowser-runtime-consumption-001.json"
@@ -19,10 +20,11 @@ class StegBrowserCanonicalWorkResidentRequestTests(unittest.TestCase):
     def test_successor_request_is_cosv_bound_and_non_authorizing(self):
         request = json.loads(REQUEST.read_text(encoding="utf-8"))
         self.assertEqual(request["request_id"], "RESIDENT-EXEC-CANONICAL-WORK-STEGBROWSER-RUNTIME-CONSUMPTION-001")
-        self.assertEqual(request["task_id"], TASK_ID)
+        self.assertEqual(request["task_id"], ACTIVE_REMEDIATION_TASK_ID)
+        self.assertEqual(request["operation_lineage_task_id"], TASK_ID)
         self.assertEqual(request["cosv_profile"], "task.v1")
         self.assertEqual(request["cosv_task_vector"], COSV)
-        self.assertEqual(request["pointer_source"], f"control/task-vectors/{TASK_ID}.json")
+        self.assertEqual(request["pointer_source"], f"control/task-vectors/{ACTIVE_REMEDIATION_TASK_ID}.json")
         self.assertTrue(request["cosv_binding_required_before_execution"])
         self.assertEqual(request["state"], "REQUESTED")
         self.assertEqual(request["mode"], "CANONICAL_WORK_EVENT_BOOTSTRAP")
@@ -33,6 +35,7 @@ class StegBrowserCanonicalWorkResidentRequestTests(unittest.TestCase):
         self.assertFalse(request["oscillator_grants_execution_authority"])
         self.assertFalse(request["network_source_fetch_allowed"])
         self.assertFalse(request["second_machine_required"])
+        self.assertFalse(request["reusable_task_binding"]["historical_task_reactivation_required"])
 
     def test_parent_is_superseded_to_runtime_consumption_successor(self):
         parent = json.loads(PARENT_SHARD.read_text(encoding="utf-8"))
