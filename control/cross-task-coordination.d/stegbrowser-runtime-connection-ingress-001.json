@@ -1,0 +1,33 @@
+{
+  "schema": "stegverse.cross-task-coordination/v1",
+  "coordination_id": "STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001",
+  "parent_task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+  "child_task_id": "STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001",
+  "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+  "cosv_task_vector": "40000100100000",
+  "scope": "GC_A1_THROUGH_A4_ONLY",
+  "first_unresolved_predicate": "RUNTIME_CONNECTION_TRANSITION_VARIABLES_OBSERVED",
+  "terminal_child_predicate": "INTR_ADMISSION_OBSERVED",
+  "handoff_after_terminal_predicate": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
+  "reusable_task_selection": {
+    "RT-SOVEREIGN-SOURCE-REFRESH-001": "callable=true AND refreshable=true",
+    "RT-INTR-PROTOCOL-ESTABLISH-001": "callable=true AND applicable_protocol_resolved=false"
+  },
+  "authority": {
+    "coordination": "TASK_REGISTRY",
+    "claim_fence": "WORKERCOORDINATOR",
+    "transition": "INTERLOCK_INTR",
+    "credential_provider": "TV/TVC",
+    "user_verification": "KV/SKAP Vault",
+    "observed_reality": "MASTER_RECORDS",
+    "github_runtime_authority": "NONE"
+  },
+  "invariants": {
+    "new_reusable_task_created": false,
+    "round_trip_1_payload_processing_owned_by_child": false,
+    "second_user_operated_device_required": false,
+    "healer_normal_stage_owner": false,
+    "pending_predicate_is_healer_trigger": false
+  },
+  "authority_effect": "NONE_COORDINATION_ONLY"
+}
