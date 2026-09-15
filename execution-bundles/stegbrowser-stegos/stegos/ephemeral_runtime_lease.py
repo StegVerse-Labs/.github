@@ -39,14 +39,10 @@ class AuthorityBoundary:
     master_record_authority: bool = False
 
     def validate(self) -> None:
-        if self.credential_authority != "TV/TVC":
-            raise ValueError("credential_authority_must_be_tv_tvc")
-        if self.compute_authority_effect:
-            raise ValueError("compute_must_be_non_authorizing")
-        if self.transport_authority_effect:
-            raise ValueError("transport_must_be_non_authorizing")
-        if self.model_output_authority_effect:
-            raise ValueError("model_output_must_be_non_authorizing")
+        if self.credential_authority != "TV/TVC": raise ValueError("credential_authority_must_be_tv_tvc")
+        if self.compute_authority_effect: raise ValueError("compute_must_be_non_authorizing")
+        if self.transport_authority_effect: raise ValueError("transport_must_be_non_authorizing")
+        if self.model_output_authority_effect: raise ValueError("model_output_must_be_non_authorizing")
 
 @dataclass(frozen=True)
 class LeaseRequest:
@@ -73,31 +69,16 @@ class LeaseRequest:
     authority: AuthorityBoundary = field(default_factory=AuthorityBoundary)
 
     @property
-    def idempotency_key(self) -> tuple[str, str, int]:
-        return (self.source_receipt_id, self.consequence_id, self.generation)
-
+    def idempotency_key(self) -> tuple[str, str, int]: return (self.source_receipt_id, self.consequence_id, self.generation)
     @property
-    def public_reachability_required(self) -> bool:
-        return self.profile == LeaseProfile.INTAKE and self.rendezvous == RendezvousRequirement.REQUIRED
-
+    def public_reachability_required(self) -> bool: return self.profile == LeaseProfile.INTAKE and self.rendezvous == RendezvousRequirement.REQUIRED
     def validate(self) -> None:
         self.authority.validate()
-        required = (self.lease_id, self.trigger_id, self.operation, self.implementation_ref, self.source_receipt_id, self.consequence_id, self.consequence_registry_hash)
-        if not all(required) or self.generation <= 0:
-            raise ValueError("lease_identity_incomplete")
-        if self.runtime_class == RuntimeClass.EVENT_EPHEMERAL and self.persistent_host_required:
-            raise ValueError("event_ephemeral_cannot_require_persistent_host")
-        if self.max_operations <= 0:
-            raise ValueError("max_operations_must_be_positive")
-        if self.stateful and not self.state_root_binding:
-            raise ValueError("stateful_lease_requires_state_root_binding")
-        if self.profile == LeaseProfile.EGRESS and self.rendezvous != RendezvousRequirement.NOT_REQUIRED:
-            raise ValueError("egress_rendezvous_must_be_not_required")
+        required=(self.lease_id,self.trigger_id,self.operation,self.implementation_ref,self.source_receipt_id,self.consequence_id,self.consequence_registry_hash)
+        if not all(required) or self.generation <= 0: raise ValueError("lease_identity_incomplete")
+        if self.runtime_class == RuntimeClass.EVENT_EPHEMERAL and self.persistent_host_required: raise ValueError("event_ephemeral_cannot_require_persistent_host")
+        if self.max_operations <= 0: raise ValueError("max_operations_must_be_positive")
+        if self.stateful and not self.state_root_binding: raise ValueError("stateful_lease_requires_state_root_binding")
+        if self.profile == LeaseProfile.EGRESS and self.rendezvous != RendezvousRequirement.NOT_REQUIRED: raise ValueError("egress_rendezvous_must_be_not_required")
 
-SOURCE_PROVENANCE = {
-    "repository": "StegVerse-Labs/StegOS",
-    "source_path": "stegos/ephemeral_runtime_lease.py",
-    "source_blob_sha": "75ef57d9b885cfac74a48a11679683408abc3ae2",
-    "subset_reason": "only types imported by manifest-bound StegBrowser EVENT_EPHEMERAL runner",
-    "authority_effect": "NONE",
-}
+SOURCE_PROVENANCE={"repository":"StegVerse-Labs/StegOS","source_path":"stegos/ephemeral_runtime_lease.py","source_blob_sha":"edce3ded5d990f5951e2cb0ff95dee07c0e2581e","subset_reason":"only types imported by manifest-bound StegBrowser EVENT_EPHEMERAL runner","authority_effect":"NONE"}
