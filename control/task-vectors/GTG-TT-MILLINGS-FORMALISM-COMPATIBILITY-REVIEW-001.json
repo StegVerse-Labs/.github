@@ -2,11 +2,13 @@
   "identity": "StegVerse-Labs/.github:task:GTG-TT-MILLINGS-FORMALISM-COMPATIBILITY-REVIEW-001",
   "profile": "task.v1",
   "level": "task",
-  "vector": "40000100100000",
+  "vector": "71000000100100",
   "evidence_refs": [
     "data/canonical-task-records/GTG-TT-MILLINGS-FORMALISM-COMPATIBILITY-REVIEW-001.json",
     "docs/GTG_TT_MILLINGS_FORMALISM_COMPATIBILITY_REVIEW_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/StegScholar:GTG_TT_MILLINGS_FORMALISM_COMPATIBILITY_REVIEW_MIRROR_HANDOFF.md"
+    "StegVerse-Labs/StegScholar:GTG_TT_MILLINGS_FORMALISM_COMPATIBILITY_REVIEW_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegScholar#67",
+    "StegVerse-Labs/.github#1961"
   ],
-  "observed_at": "2026-09-15T16:00:00Z"
+  "observed_at": "2026-09-15T16:08:00Z"
 }
