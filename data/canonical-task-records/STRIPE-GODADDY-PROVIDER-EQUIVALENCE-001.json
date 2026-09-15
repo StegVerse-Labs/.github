@@ -1,0 +1,32 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "STRIPE-GODADDY-PROVIDER-EQUIVALENCE-001",
+  "correlation_id": "STRIPE-GODADDY-PROVIDER-EQUIVALENCE-001",
+  "root_correlation_id": "STRIPE-GODADDY-PROVIDER-EQUIVALENCE-001",
+  "goal": "Prove that completed Stripe and GoDaddy payment evidence can be normalized through a TV/TVC-owned provider-neutral adapter into the existing StegPay payment_verified event contract without granting provider, payment, transport, entitlement, governance, credential, or execution authority.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "20011000100000",
+  "handoff": "docs/STRIPE_GODADDY_PROVIDER_EQUIVALENCE_MIRROR_HANDOFF.md",
+  "canonical_issue": "StegVerse-Labs/.github#1954",
+  "implementation_issue": "StegVerse-Labs/TVC#431",
+  "implementation_repository": "StegVerse-Labs/TVC",
+  "consumer_contract": "StegVerse-Labs/StegPay:src/stegpay/signed_dispatch.py",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "credential_authority": "TV/TVC",
+  "provider_write_authority": false,
+  "payment_mutation_authority": false,
+  "entitlement_authority": false,
+  "governance_authority": false,
+  "execution_authority": false,
+  "completion": {
+    "claimed": false,
+    "canonical_registration_merged": false,
+    "adapter_contract_merged": false,
+    "stripe_fixture_green": false,
+    "godaddy_fixture_green": false,
+    "semantic_equivalence_green": false,
+    "live_provider_runtime_claimed": false,
+    "provider_credentials_required_for_fixture_validation": false
+  }
+}
