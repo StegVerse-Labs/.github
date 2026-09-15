@@ -7,7 +7,7 @@ Canonical issue: `StegVerse-Labs/.github#1954`
 Implementation issue: `StegVerse-Labs/TVC#431`
 Implementation PR: `StegVerse-Labs/TVC#432`
 Implementation merge: `StegVerse-Labs/TVC@42c9ed7a9c759ebec3485e292262baf16c7f7e67`
-Exact-head validation: `StegVerse-Labs/TVC/actions/runs/34992183469` — SUCCESS
+Exact-head implementation validation: `StegVerse-Labs/TVC/actions/runs/34992183469` — SUCCESS
 
 ## Goal
 
@@ -35,7 +35,7 @@ verified_utc
 
 ## Deterministic proof
 
-Workflow run `34992183469` executed against exact PR head `ed9987bff74df67106526c00f974639551c01756` and completed successfully before merge.
+Workflow run `34992183469` executed against exact implementation PR head `ed9987bff74df67106526c00f974639551c01756` and completed successfully before merge.
 
 Validated predicates:
 
@@ -45,6 +45,10 @@ Validated predicates:
 4. Non-completed payment states fail closed.
 5. Provider attempts to grant entitlement, payment authority, governance authority, or execution authority fail closed.
 6. Unknown provider evidence fields and unsupported providers fail closed.
+
+## Registry validation reconciliation
+
+Organization-control validation for this registration initially exposed an unrelated invalid execution-substrate enum in `STEGLEARN-YOUTUBE-EDUCATION-PARTNERSHIP-001`. The separate surgical repair in `StegVerse-Labs/.github#1962` was exact-head green and merged as `6a3c87479d8acd34b6258cd4ed9df2ca73005798`. No Stripe/GoDaddy task semantics or authority boundaries were changed by that repair.
 
 ## Authority boundaries
 
