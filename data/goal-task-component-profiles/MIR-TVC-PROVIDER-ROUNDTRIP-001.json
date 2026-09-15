@@ -6,13 +6,37 @@
     "score": 25,
     "decision": "STOP_SCOPE_GROWTH_AND_DECOMPOSE_BEFORE_ADDING_MORE_TASK_SPECIFIC_ORCHESTRATION"
   },
+  "protocol_decomposition": {
+    "default_reusable_tasks": [
+      "RT-INTR-BOUNDARY-ADMISSION-001",
+      "RT-INTR-GOVERNED-TRANSITION-001",
+      "RT-INTR-ROUNDTRIP-CORRELATION-001",
+      "RT-INTR-EVIDENCE-CUSTODY-001"
+    ],
+    "protocol_definition_root": "RT-INTR-PROTOCOL-ESTABLISH-001",
+    "protocol_establishment_selected": false,
+    "protocol_establishment_reason": "APPLICABLE_INTR_PROTOCOL_ALREADY_EXISTS",
+    "selection_rule": "Use only the reusable protocol tasks required by the governed exchange; do not derive endpoint-specific governance semantics when the normalized reusable protocol already represents the endpoint without ambiguity."
+  },
   "selected_components": [
     "RT-EXTERNAL-ADAPTER-ESTABLISH-001",
+    "RT-INTR-BOUNDARY-ADMISSION-001",
+    "RT-INTR-GOVERNED-TRANSITION-001",
+    "RT-INTR-ROUNDTRIP-CORRELATION-001",
+    "RT-INTR-EVIDENCE-CUSTODY-001",
     "RTC-ROUNDTRIP-003",
     "RTC-INTERLOCK-INTR-TRANSPORT-008",
     "TVC-PROVIDER-OPERATION-BROKER-003",
     "TVC-CAPABILITY-RUNTIME-002"
   ],
+  "implementation_components": {
+    "round_trip": "RTC-ROUNDTRIP-003",
+    "intr_transport": "RTC-INTERLOCK-INTR-TRANSPORT-008",
+    "provider_broker": "TVC-PROVIDER-OPERATION-BROKER-003",
+    "provider_runtime_observer": "TVC-CAPABILITY-RUNTIME-002",
+    "external_adapter": "RT-EXTERNAL-ADAPTER-ESTABLISH-001",
+    "replacement_rule": "Reusable RT-INTR task identities define protocol decomposition and do not replace the existing RTC/TVC implementation components."
+  },
   "build_test_counterpart": {
     "mode": "STEGOS_NODE_MIRROR",
     "node_label": "MIR NODE MIRROR",
@@ -21,13 +45,29 @@
     "runtime_class": "EVENT_EPHEMERAL",
     "rendezvous_requirement": "NOT_REQUIRED",
     "requires_other_machine": false,
-    "component_binding": [
+    "protocol_task_binding": [
+      "RT-INTR-BOUNDARY-ADMISSION-001",
+      "RT-INTR-GOVERNED-TRANSITION-001",
+      "RT-INTR-ROUNDTRIP-CORRELATION-001",
+      "RT-INTR-EVIDENCE-CUSTODY-001"
+    ],
+    "implementation_component_binding": [
       "RT-EXTERNAL-ADAPTER-ESTABLISH-001",
       "RTC-ROUNDTRIP-003",
       "RTC-INTERLOCK-INTR-TRANSPORT-008"
     ],
     "substitution_rule": "AUTHENTIC_MIR_REPLACES_ONLY_FAR_SIDE_COUNTERPART_WITHOUT_STEGVERSE_CHOREOGRAPHY_CHANGE",
     "evidence_class": "AUTHENTIC_NODE_MIRROR_RUNTIME_WHEN_EXECUTED"
+  },
+  "source_validation_evidence": {
+    "stegos_pr": 393,
+    "validated_head": "a29ed2dbc904e2c6648fe6a7cecf9a29351a2ef8",
+    "merge_sha": "8ade8168e44b3b54bd3f24edfcc047397512a356",
+    "stegos_ci_run": 35001112081,
+    "stegos_ci_result": "SUCCESS",
+    "full_suite": "1649_PASSED",
+    "mir_external_roundtrip_test": "PASS",
+    "runtime_claim_from_ci": false
   },
   "remaining_predicates": [
     "MIR_NODE_MIRROR_ROUNDTRIP_EXECUTED",
@@ -41,7 +81,17 @@
     "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED": "AUTHENTIC_EXTERNAL_ENDPOINT",
     "AUTHENTIC_MIR_RESULT_RECEIPT_RETAINED": "AUTHENTIC_EXTERNAL_ENDPOINT"
   },
+  "authority_invariants": {
+    "transition_authority": "Interlock/InTr",
+    "credential_authority": "TV/TVC",
+    "user_verification_authority": "KV/SKAP Vault",
+    "observed_reality_custody": "Master Records",
+    "github_runtime_authority": "NONE",
+    "mirror_authority_effect": "NONE"
+  },
   "goal_identity_preserved": true,
+  "cosv_identity_preserved": true,
+  "authentic_mir_endpoint_requirement_preserved": true,
   "new_goal_task_required": false,
   "new_reusable_component_required": false
 }
