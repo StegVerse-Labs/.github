@@ -11,7 +11,7 @@
   "handoff_ref": "docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md",
   "a1_a4_child_task_id": "STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001",
   "operation_lineage_task_id": "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
-  "current_exact_defect": "AUTHENTIC_NODE_INTERLOCK_LEASE_RUNTIME_A3_A4_EVIDENCE_NOT_YET_OBSERVED",
+  "current_exact_defect": "NATIVE_CONTROL_PLANE_SOURCE_PACKAGE_REPAIR_VALIDATION_PENDING_AND_A0_A4_RUNTIME_UNOBSERVED",
   "runtime_requirements": {
     "selected_substrate": "ADMITTED-EPHEMERAL-STEGOS-NODE",
     "standing_runtime_required": false,
@@ -64,7 +64,7 @@
     "A4_exact_packet_verification": "EXISTING_WORKERS_STEGBROWSER_MANIFEST_INTR_INGRESS",
     "direct_child_a4_worker_shortcut": false,
     "duplicate_materializer": false,
-    "source_validation_state": "RECONCILED_MERGED_VALIDATED_RUNTIME_EVIDENCE_PENDING"
+    "source_validation_state": "NATIVE_SOURCE_PACKAGE_REPAIR_VALIDATION_PENDING"
   },
   "source_validation": {
     "node_interlock_pr": 1923,
@@ -77,7 +77,29 @@
     "deterministic_suite_run": 34976675506,
     "heartbeat_validation_run": 34976675536,
     "all_required_lanes_passed": true,
+    "native_source_package_branch": "fix/stegbrowser-native-source-package-001",
+    "native_source_package_validation_pending": true,
     "runtime_authority_effect": "NONE"
+  },
+  "one_shot_native_test": {
+    "canonical_request_commit": "19935454cd8c68000b3a0fd70478b0d89d5cd622",
+    "invocation_request_nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+    "requested_invocation_count": 1,
+    "second_request_allowed": false,
+    "request_mutation_allowed": false,
+    "resident_request_consumption_observed": false,
+    "worker_source_refresh_observed": false,
+    "resident_request_dispatch_observed": false
+  },
+  "native_source_localization": {
+    "reusable_task_id": "RT-CONTROL-PLANE-SOURCE-PACKAGE-001",
+    "existing_transport_binding": "RTC-INTERLOCK-INTR-TRANSPORT-008 / TVC",
+    "resident_refresh_network_fetch_allowed": false,
+    "source_package_allowlist_defect_observed": true,
+    "bounded_allowlist_repair_implemented": true,
+    "bounded_allowlist_repair_validated": false,
+    "resident_source_git_head_observed": null,
+    "authority_effect": "NONE_SOURCE_PACKAGE_ONLY"
   },
   "native_a1_observation": {
     "path": "EXISTING_STEGVERSE_NATIVE_RESIDENT_REQUEST_PATH",
@@ -90,6 +112,7 @@
   "completion": {
     "source_merged_validated": true,
     "a1_a4_duplicate_representation_reconciled": true,
+    "native_source_package_repair_merged_validated": false,
     "runtime_connection_transition_observed": false,
     "registered_stegverse_node_bound_to_invocation": false,
     "interlock_bound_to_node_and_manifest": false,

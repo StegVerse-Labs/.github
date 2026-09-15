@@ -11,6 +11,12 @@ from workers import control_plane_source_package as controlpkg
 # Bootstrap-critical control-plane delta. Keep this set sufficient to recover a
 # stale resident into the current autonomous refresh -> scheduler path without
 # requiring the stale runtime to already contain the repair that refreshes it.
+#
+# The StegBrowser A0-A4 implementation was already merged/validated before the
+# one-shot request at commit 19935454.... The only new canonical-source byte set
+# required for that invocation is the unchanged resident request itself. Carrying
+# the entire pre-existing runner chain would duplicate already-canonical source and
+# exceed the existing relay envelope.
 DEFAULT_PATHS = (
     "workers/control_plane_source_package.py",
     "workers/hil_intr_profiled_ingress.py",
@@ -18,6 +24,7 @@ DEFAULT_PATHS = (
     "handoffs/SHWP-STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001.json",
     "control/resident-execution-request.d/stegos-sovereign-relay-return-path-001.json",
     "control/resident-execution-request.d/healer-sovereign-scheduler-001.json",
+    "control/resident-execution-request.d/canonical-work-stegbrowser-runtime-consumption-001.json",
     "scripts/build_control_plane_source_package.py",
     "scripts/build_control_plane_source_package_reusable.py",
     "scripts/refresh_sovereign_worker_runtime_source.py",

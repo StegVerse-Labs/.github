@@ -8,7 +8,7 @@ Repository: `StegVerse-Labs/.github`
 - Goal Task ID: `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001`
 - Parent Goal: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / NODE+INTERLOCK LEASE+A4 SOURCE MERGED+VALIDATED / SINGLE A1-A4 PATH RECONCILED+MERGED+VALIDATED / AUTHENTIC A1-A4 EXECUTION PENDING`
+- Status: `ACTIVE / CHECKED_OUT / NODE+INTERLOCK LEASE+A4 SOURCE MERGED+VALIDATED / SINGLE A1-A4 PATH RECONCILED+MERGED+VALIDATED / NATIVE SOURCE-PACKAGE REPAIR VALIDATION PENDING / AUTHENTIC A1-A4 EXECUTION PENDING`
 - Node/Interlock source repair: PR `#1923`, validated head `f7b6cb86b9fff9fbeb1817e45920acc2effc200f`, merge `0098bc793865fd1db835c400b502dad5f8a5e32d`.
 - Single-path A1-A4 reconciliation: PR `#1929`, validated head `60e7246e326d32d17525d83783c38c5e21528ff0`, merge `a4c2d173aad04219795e44d2051703accd404c9c`.
 - PR #1929 validation: organization control `34976675513`, deterministic repository suite `34976675506`, Heartbeat validation `34976675536` — all SUCCESS on the same exact head.
@@ -59,6 +59,29 @@ That path validates Receipt #1, binds manifest + Node + Interlock + registration
 
 No duplicate lease, runtime materializer, A4 worker, scheduler, WorkerCoordinator, credential path, host path, or device path is introduced.
 
+## One-shot native invocation request
+
+The already-issued request remains immutable for this test:
+
+```text
+commit = 19935454cd8c68000b3a0fd70478b0d89d5cd622
+invocation_request_nonce = STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z
+requested_test_scope = A0_A4_SINGLE_INVOCATION
+requested_invocation_count = 1
+```
+
+No second resident request may be emitted for this continuation and the existing request bytes must remain unchanged.
+
+## Native canonical-source localization repair
+
+The resident `refresh_sovereign_worker_runtime_source.py` is intentionally transport-free. It copies `control/resident-execution-request.d` and other allowlisted static control-plane state only from an already-local canonical source and records `source_git_head`; it does not fetch or pull GitHub.
+
+The existing reusable localization mechanism is `RT-CONTROL-PLANE-SOURCE-PACKAGE-001`, whose exact content-addressed output is carried only by the existing governed `RTC-INTERLOCK-INTR-TRANSPORT-008 / TVC` relay path. Inspection found that its default allowlist omitted the one new canonical byte-set required by this test: `control/resident-execution-request.d/canonical-work-stegbrowser-runtime-consumption-001.json` containing nonce `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z`. The A0-A4 runner/consumer implementation predates commit `19935454...` and was already merged/validated through PRs #1923 and #1929; it is not a new delta introduced by this test request.
+
+The first repair attempt redundantly packaged the already-canonical StegBrowser runner chain. Exact-head deterministic validation correctly rejected that form because the package rendered to about 951 KiB, exceeding the existing 512 KiB relay envelope. The relay bound was not changed. The repair was narrowed to the actual commit delta: add only the unchanged one-shot resident request to the existing control-plane package allowlist and regression-test its exact nonce, Goal, scope, invocation count, and `NONE_REQUEST_ONLY` authority. No request bytes are modified, no new source transport is created, and no network-fetch authority, runtime, device, host, scheduler, dispatcher, receiver, endpoint, credential path, or authority surface is added.
+
+Validation/merge of this minimal source-package repair is pending. Source/CI validation does not prove package relay, resident source materialization, request consumption, or A0-A4 runtime execution.
+
 ## Current authentic predicates
 
 StegVerse-native retained evidence was checked after PR #1929 merge. Expected retained A1-A4 paths were absent from canonical retained evidence, including:
@@ -69,6 +92,14 @@ receipts/sovereign-host/stegbrowser-runtime-connection-a1-a2.latest.json
 receipts/sovereign-host/stegbrowser-runtime-connection-a1-a4.latest.json
 receipts/sovereign-host/stegbrowser-runtime-remediation-boundary.latest.json
 receipts/sovereign-host/stegbrowser-manifest-intr-ingress.latest.json
+```
+
+The one-shot continuation also has not yet retained:
+
+```text
+receipts/sovereign-host/worker-source-refresh.latest.json
+receipts/sovereign-host/resident-request-dispatch.latest.json
+receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json
 ```
 
 Repository source references to these locations are contracts, not authentic runtime receipts. Therefore:
@@ -87,7 +118,7 @@ AUTHENTIC_INTR_INGRESS_OBSERVED = false
 ROUND_TRIP_1_STARTED = false
 ```
 
-Current exact defect: `AUTHENTIC_NODE_INTERLOCK_LEASE_RUNTIME_A3_A4_EVIDENCE_NOT_YET_OBSERVED`.
+Current exact condition: `UNCHANGED_ONE_SHOT_REQUEST_NOT_YET_OBSERVED_IN_RESIDENT_ALREADY_LOCAL_SOURCE_OR_A0_A4_RUNTIME`.
 
 Source/CI/GitHub state does not promote runtime predicates. External connector/device/host reachability is not part of this Goal's evidence path and is not a prerequisite, failure predicate, or substrate-disqualification signal.
 
@@ -106,7 +137,7 @@ Source/CI/GitHub state does not promote runtime predicates. External connector/d
 
 ## Immediate continuation
 
-Continue the existing StegVerse-native resident request path at A1. Observe the invocation-bound Interlock/InTr transition variables from authentic retained native evidence only. Do not perform external runtime/device/host discovery and do not introduce a second-device prerequisite. Promote A2-A4 only after the exact A1 transition evidence admits continuation through the existing canonical path. Round Trip 1 remains forbidden until the exact A1-A4 durable correlation chain verifies end to end.
+Validate and merge only the minimal existing control-plane source-package allowlist repair. Then use the existing governed control-plane source-package transport/localization path with the unchanged nonce request. Require the next authentic resident source-refresh receipt to identify commit `19935454cd8c68000b3a0fd70478b0d89d5cd622` or an exact descendant containing the unchanged request. Only then follow the same resident cycle through dispatch, canonical-work consumption, and A0-A4. Do not issue a second request or create another runtime, transport, scheduler, dispatcher, device, host, receiver, endpoint, credential path, or authority surface.
 
 ## Manual work
 

@@ -25,6 +25,9 @@ assert BUILDER_SPEC and BUILDER_SPEC.loader
 builder = importlib.util.module_from_spec(BUILDER_SPEC)
 BUILDER_SPEC.loader.exec_module(builder)
 
+REQUEST_REL = "control/resident-execution-request.d/canonical-work-stegbrowser-runtime-consumption-001.json"
+NONCE = "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z"
+
 
 class ReusableControlPlaneSourcePackageTests(unittest.TestCase):
     def test_default_package_is_relay_bounded_and_self_carries_reusable_producer(self) -> None:
@@ -36,6 +39,19 @@ class ReusableControlPlaneSourcePackageTests(unittest.TestCase):
         self.assertLessEqual(len(rendered), 512 * 1024)
         self.assertFalse(package["credential_material_included"])
         self.assertEqual(package["authority_effect"], "NONE_SOURCE_TRANSPORT_ONLY")
+
+    def test_default_package_carries_exact_unchanged_stegbrowser_one_shot_request(self) -> None:
+        package = builder.build(ROOT, builder.DEFAULT_PATHS)
+        paths = {row["path"] for row in package["manifest"]["files"]}
+        self.assertIn(REQUEST_REL, paths)
+        packaged = next(row for row in package["files"] if row["path"] == REQUEST_REL)
+        import base64
+        request = json.loads(base64.b64decode(packaged["content_base64"]).decode("utf-8"))
+        self.assertEqual(request["invocation_request_nonce"], NONCE)
+        self.assertEqual(request["requested_invocation_count"], 1)
+        self.assertEqual(request["requested_test_scope"], "A0_A4_SINGLE_INVOCATION")
+        self.assertEqual(request["requested_goal_task_id"], "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001")
+        self.assertEqual(request["authority_effect"], "NONE_REQUEST_ONLY")
 
     def test_reusable_runner_retains_exact_content_addressed_package(self) -> None:
         with tempfile.TemporaryDirectory() as td:
