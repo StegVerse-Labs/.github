@@ -1,0 +1,43 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SV-ACTIONS-COST-PUBLIC-EXPOSURE-001",
+  "correlation_id": "SV-ACTIONS-COST-PUBLIC-EXPOSURE-001",
+  "root_correlation_id": "SV-ACTIONS-COST-PUBLIC-EXPOSURE-001",
+  "parent_task_id": null,
+  "goal": "Reduce GitHub Actions cost pressure across the StegVerse ecosystem and classify repository public-exposure safety without changing visibility automatically.",
+  "coordination_state": "IN_PROGRESS",
+  "status": "ACTIVE",
+  "cosv_id": "21111100110000",
+  "handoff": "docs/ACTIONS_COST_PUBLIC_EXPOSURE_MIRROR_HANDOFF.md",
+  "authority": {
+    "github_actions_authority": "VALIDATION_AND_EVIDENCE_TRANSPORT_ONLY",
+    "credential_authority": "TV/TVC",
+    "visibility_change_authority": "OWNER_EXPLICIT_CONSENT",
+    "runtime_truth_authority_effect": "NONE"
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false
+  },
+  "evidence": {
+    "branch": "actions-conservation-sweep-20260914",
+    "applied_commits": [
+      "4fb9046a4dfeec4e828614183d3ef42a23a0461b",
+      "689dd368e4867070bed4d4dfe5f62977fd22225e",
+      "2cf40dada9cf0d998fe8f842b0efef022fde8daa",
+      "2ed6bb600315b17be90781aeacff49363762b964"
+    ],
+    "applied_low_risk_controls": [
+      ".github/workflows/cross-framework-current-basis-v04-resident.yml concurrency cancel-in-progress",
+      ".github/workflows/cross-task-coordination-validation.yml concurrency cancel-in-progress",
+      ".github/workflows/validate-kv-ai-memory-resident.yml concurrency cancel-in-progress"
+    ],
+    "repository_visibility_mutations_performed": false,
+    "full_ecosystem_scan_complete": false
+  },
+  "next_steps": [
+    "Open PR for the low-risk .github workflow conservation patch.",
+    "Continue workflow inventory and patch low-risk concurrency/path/schedule controls in Site, TVC, TV, StegOS, Governance, Admissible-Existence, and GCAT-BCAT-Engine repositories.",
+    "Keep repository visibility changes owner-only after public-safety review."
+  ]
+}
