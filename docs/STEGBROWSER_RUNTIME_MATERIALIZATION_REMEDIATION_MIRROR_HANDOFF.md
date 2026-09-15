@@ -8,111 +8,142 @@ Updated: 2026-09-14
 - Parent/remediates: `STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001`
 - Shared runtime-evidence owner: `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / SOURCE REUSABLE BINDING MERGED+VALIDATED / AUTHENTIC RUNTIME TRANSITION AND ROUND-TRIP EVIDENCE PENDING`
+- Status: `ACTIVE / CHECKED_OUT / TWO-ROUND-TRIP TRANSPORT MODEL CORRECTION IN VALIDATION / AUTHENTIC RUNTIME EVIDENCE PENDING`
 - External/second user-operated device required: `false`
 
 ## Current exact condition
 
-PR `StegVerse-Labs/.github#1907` repaired the first source defect exposed while pursuing authentic runtime evidence. The existing reusable capability `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` is now bound to the active remediation Goal/COSV rather than requiring the historical `STEG-BROWSER-RUNTIME-CONSUMPTION-001` task to be reopened. The historical task remains `RETIRED / DECOMPOSED_AT_PROMPT_LIMIT` and is operation lineage only.
+The reusable runtime binding repair from PR #1907 remains merged and validated. Authentic runtime execution is still unobserved. The current source correction fixes a transport-model error: StegBrowser is not one round trip followed by wholly post-transport Master Records work.
 
-Validated source evidence:
+The correct end-to-end shape contains two governed Interlock/InTr round-trip phases separated by record/reconstruction and mirror-boundary processing.
 
-```text
-validated head = 53e017036ce0de4b732fbac44394709a15c3e89f
-organization-control run = 34911735697 PASS
-deterministic repository suite = 34911735692 PASS
-heartbeat validation = 34911735696 PASS
-merge commit = 4834e0a8787b11a6d01872e39ba82773f9bdeda4
-```
+## Corrected transport semantics
 
-GitHub/CI has runtime authority `NONE`. These source results do not prove runtime execution or transport success.
+### Round Trip 1 — return to records for verification
 
-Current first unmet runtime condition:
+The invocation enters governed Interlock/InTr transport and progresses through allowed intermediate endpoint-local transitions. At the first final allowed Interlock/InTr exit transition, the correlated records packet returns to the recording surface.
 
-```text
-AUTHENTIC_RUNTIME_CONNECTION_TRANSITION_AND_INTR_INGRESS_NOT_YET_OBSERVED
-```
+That return is the first round trip. Durable recording is verification evidence for that first return; Master Records does not wait until after an already-closed end-to-end transport lifecycle to begin recording.
 
-No authentic evidence currently establishes `callable`, `refreshable`, current WorkerCoordinator claim/fence, governed return-packet receipt, durable return-record recording, final allowed transport-exit transition, or successful round-trip identification.
-
-## Governed transport model
-
-The Goal Chart is a state-transition graph. `callable` and `refreshable` are invocation-bound Interlock/InTr variables; no always-on runtime source or persistent source-freshness state is assumed.
-
-This StegBrowser composition contains exactly one governed round-trip lifecycle. `canonical_work_ingress_and_resident_consumption` and `tvc_source_promotion_and_runtime_observation` are internal transition groups inside that lifecycle, not separate round-trip goals. `RTC-ROUNDTRIP-003` therefore has lifecycle count `1`; `RTC-INTERLOCK-INTR-TRANSPORT-008` may repeat at required governed state crossings.
-
-The transport lane ends only after:
+Required evidence:
 
 ```text
 GOVERNED_RETURN_PACKET_RECEIVED = true
+RECORDS_PACKET_DELIVERED_FOR_RECORDING = true
 RETURN_RECORD_DURABLY_RECORDED = true
-FINAL_ALLOWED_TRANSPORT_EXIT_TRANSITION_OBSERVED = true
+FIRST_FINAL_ALLOWED_INTR_EXIT_TRANSITION_OBSERVED = true
+SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED = true
 ```
 
-Then and only then:
+Master Records retains observed-reality/custody/reconstruction authority. It does not become Interlock/InTr transport authority.
+
+### Between Round Trips — processing to mirror boundary
+
+After the first return is recorded and verified, the recorded material may undergo custody/reconstruction, governed processing, reconciliation, and the applicable mirror-boundary processing.
+
+This interval is between the two round trips. A processing failure here does not retroactively erase an authentically completed first recording/verification round trip, but it prevents initiation or completion of the second ecosystem-return round trip.
+
+### Round Trip 2 — mirror boundary return to ecosystem
+
+After mirror-boundary processing is complete, the mirror boundary initiates Interlock/InTr again. The return path calls the endpoint Interlock/InTr. If allowed, the final endpoint transition returns the processed result into the ecosystem.
+
+Required evidence:
 
 ```text
-SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIP_IDENTIFIED = true
+MIRROR_BOUNDARY_PROCESSING_COMPLETE = true
+MIRROR_BOUNDARY_INTR_REENTRY_OBSERVED = true
+ENDPOINT_INTERLOCK_INTR_CALLED = true
+ENDPOINT_INTERLOCK_INTR_ALLOWED = true
+ECOSYSTEM_REENTRY_FINAL_ALLOWED_TRANSITION_OBSERVED = true
+SUCCESSFUL_ECOSYSTEM_RETURN_ROUND_TRIP_IDENTIFIED = true
 ```
 
-Packet arrival time at the final state-transition boundary is not extended merely because the lifecycle is round-trip. Master Records ingress/reconstruction, mirroring, reconciliation, persistence, projection, measurement, publication, or other later work is post-transport. A downstream failure after successful final transport exit must not be reclassified as transport failure.
+Only when both governed round trips are authentically identified may the composition-level predicate become true:
 
-## Current execution path
+```text
+SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIPS_IDENTIFIED = true
+```
 
-### A1 — Invocation-bound connection state
+## Reusable transport composition
 
-The existing reusable capability is source-bound to the active remediation Goal. Authentic Interlock/InTr observation must still resolve `callable` and `refreshable` for the actual invocation.
+- `RTC-ROUNDTRIP-003` — repeat count `2` for this StegBrowser composition.
+- `RTC-INTERLOCK-INTR-TRANSPORT-008` — repeat where required at governed state crossings in both round trips.
+- `RTC-EVIDENCE-CUSTODY-004` — record/custody/reconstruction work between round trips; Master Records authority only.
+- `RTC-STEGVERSE-EGRESS-007` — applicable to initiating the second governed egress from the mirror-side processing boundary.
+- `RTC-FARSIDE-FINAL-009` — applicable to endpoint-side final receive/state transition for ecosystem re-entry.
 
-### A2 — Selected source/runtime materialization
+Internal transition groups such as `canonical_work_ingress_and_resident_consumption` and `tvc_source_promotion_and_runtime_observation` do not independently add round trips. The two round trips are created by two distinct governed return lifecycles with different terminal purposes.
 
-If `callable=true, refreshable=true`, select `RT-SOVEREIGN-SOURCE-REFRESH-001` and retain authentic refresh evidence. If `callable=true, refreshable=false`, do not invent refresh. If `callable=false`, do not represent a callable runtime.
+## Corrected Goal Chart
 
-### A3 — WorkerCoordinator claim/fence
+### A1 — Resolve invocation-bound connection state
 
-The exact active Goal/COSV work requires current WorkerCoordinator claim/fence evidence. Source projection does not mint a claim or fence.
+Resolve `callable`, `refreshable`, applicable InTr protocol, and selected execution substrate from authentic invocation state.
 
-### A4 — Governed Interlock/InTr ingress
+### A2 — Materialize selected runtime/source state
 
-The merged runner reuses `SovereignLocalEventRuntimeAdapter` and the existing Canonical Work / Interlock-InTr bootstrap. It may stage only a runtime-local `PROPOSED` projection while canonical source remains `ACTIVE`; authentic ingress evidence must come from the runtime transition.
+Refresh only if the admitted transition resolves `callable=true, refreshable=true`. Do not infer persistent source freshness.
 
-### A5 — Allowed intermediate transitions
+### A3 — Establish current WorkerCoordinator claim/fence
 
-Authorized endpoints may perform intermediate Interlock/InTr state transitions iff allowed. The one lifecycle may contain multiple such crossings.
+Require authentic claim/fence for the exact active Goal/COSV invocation.
 
-### A6 — Return record
+### A4 — Enter governed Interlock/InTr transport
 
-Receive the governed return packet and durably record the exact correlated return record.
+Admit the manifested invocation through existing Canonical Work / Interlock-InTr surfaces.
 
-### A7 — Final transport exit
+### A5 — Execute allowed intermediate transitions
 
-Observe the final allowed Interlock/InTr transition exiting transport. A6 plus A7 establishes `SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIP_IDENTIFIED=true` and closes the transport subproblem for that invocation.
+Authorized endpoint-local transitions may occur iff allowed.
 
-## Post-transport domain
+### A6 — Round Trip 1 return to recording
 
-Only after A7 may downstream Master Records custody/reconstruction, receipt classification, mirroring/reconciliation/persistence/projection, and global runtime measurement proceed. Those domains consume already-completed transport evidence and do not prove or negate the transport result.
+Return the correlated records packet at the first final Interlock/InTr exit and deliver it to the recording surface.
 
-## Runtime accessibility in this session
+### A7 — Verify Round Trip 1 by durable recording
 
-The authorized remote runtime connector was checked twice in this session and no authorized resident device was online. Therefore no local resident execution was performed from ChatGPT and no runtime predicate has been promoted. This is a current execution-surface availability condition, not evidence of a transport failure.
+Durably record the return record and identify `SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED=true` from authentic evidence.
 
-The next authentic runtime target is the invocation-bound connection/Interlock-InTr ingress evidence for the active remediation Goal, followed by current WorkerCoordinator claim/fence and the remainder of the single governed round-trip through return-record durability and final transport exit.
+### B1 — Record/reconstruct/process toward mirror boundary
+
+Master Records and exact downstream processing owners operate on the recorded material. This is between round trips, not after the complete end-to-end return lifecycle.
+
+### B2 — Reach mirror boundary
+
+Complete the processing state required to initiate the ecosystem return.
+
+### C1 — Initiate Round Trip 2 through Interlock/InTr
+
+From the mirror boundary, initiate the second governed Interlock/InTr return.
+
+### C2 — Call endpoint Interlock/InTr
+
+The governed return reaches and calls the endpoint Interlock/InTr; the endpoint transition occurs only iff allowed.
+
+### C3 — Re-enter ecosystem
+
+Observe the final allowed endpoint transition placing the processed result back into the ecosystem and identify `SUCCESSFUL_ECOSYSTEM_RETURN_ROUND_TRIP_IDENTIFIED=true`.
+
+### C4 — Composition transport success
+
+Set `SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIPS_IDENTIFIED=true` only after authentic success evidence for both Round Trip 1 and Round Trip 2.
+
+## Current runtime evidence state
+
+No authentic runtime predicate is promoted by this source correction. The first runtime evidence target remains invocation-bound connection/Interlock-InTr ingress, followed by WorkerCoordinator claim/fence and Round Trip 1 progression.
 
 ## Authority invariants
 
 - Task Registry: coordination only.
 - Reusable tasks/components: bounded work only; no independent authority.
 - WorkerCoordinator: claim/fence authority.
-- Interlock/InTr: governed transition and packet-movement authority.
+- Interlock/InTr: governed transition and packet-movement authority for both round trips.
 - TV/TVC: credential/provider authority.
 - KV/SKAP Vault: sole user-verification authority.
-- Master Records: observed-reality/custody/reconstruction authority after transport; not transport-success authority.
+- Master Records: recording/custody/reconstruction authority between the two governed transport returns; not transport authority.
 - HeartBeat: observability/timing/freshness/correlation only.
 - Healer: triggered bounded remediation only.
-- GitHub/CI: validation/evidence transport only; runtime authority `NONE`.
-
-## README review
-
-Repository README semantics were reviewed for this source repair. The repair changes task binding and runtime continuation internals without changing the already-documented Canonical Work authority model, so no README content change was required.
+- GitHub/CI: source validation/evidence transport only; runtime authority `NONE`.
 
 ## Manual work
 
