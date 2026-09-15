@@ -8,12 +8,17 @@ Repository: `StegVerse-Labs/.github`
 - Goal Task ID: `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001`
 - Parent Goal: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / STEGBROWSER UNIVERSAL-INTR BINDING MERGED+VALIDATED / AUTHENTIC A1-A4 EXECUTION PENDING`
-- Universal InTr binding issue: `#1952` CLOSED source-complete only.
-- Universal InTr binding PR: `#1955`.
-- Validated head: `2d3b2e8292397b80285078ad4130b0c5cfebfac0`.
-- Merge: `6a489ad5bff790fd4732005926d5588dd330ef13`.
-- Exact-head validation: Organization Control `34991794548`, Deterministic Suite `34991794526`, Heartbeat `34991794549` — all SUCCESS.
+- Status: `ACTIVE / CHECKED_OUT / SINGLE CANONICAL UNIVERSAL-INTR BINDING MERGED+VALIDATED / AUTHENTIC A1-A4 EXECUTION PENDING`
+- Canonical Universal InTr binding issue: `#1952` CLOSED source-complete only.
+- Canonical Universal InTr binding PR: `#1955`.
+- Canonical validated head: `2d3b2e8292397b80285078ad4130b0c5cfebfac0`.
+- Canonical binding merge: `6a489ad5bff790fd4732005926d5588dd330ef13`.
+- PR #1955 exact-head validation: Organization Control `34991794548`, Deterministic Suite `34991794526`, Heartbeat `34991794549` — all SUCCESS.
+- PR `#1960` introduced an overlapping alternate `StegBrowser:ManifestIngress` representation after #1955 was already canonical; it is not retained as a second execution path.
+- Corrective convergence PR `#1964` restored the single #1955 implementation and removed the duplicate #1960-only path/test.
+- PR #1964 validated head: `f1e1017e1afb6b0a261f477600d218fdf68e663d`.
+- PR #1964 exact-head validation: Organization Control `34993463477`, Deterministic Suite `34993462958`, Heartbeat `34993463368` — all SUCCESS.
+- PR #1964 merge: `32dee9dbbcd31282835f96c72de05d93da0fd7bb`.
 - Issue `#1918` remains closed; the generic process-host premise is invalid under the validated event-ephemeral architecture.
 
 ## Canonical architecture
@@ -37,11 +42,9 @@ valid StegVerse Node
 
 No control-plane source-package relay, resident-request sweep, external runtime/device/host discovery, second listener, second scheduler, second dispatcher, second materializer, or second WorkerCoordinator is a prerequisite.
 
-## Merged StegBrowser binding
+## Single canonical StegBrowser binding
 
-PR `#1955` closes the prior source-level gap without extending the Universal InTr request schema.
-
-The merged source is:
+The retained implementation is the PR #1955 path only:
 
 ```text
 scripts/run_stegbrowser_universal_intr_materialization.py
@@ -50,7 +53,7 @@ scripts/run_stegbrowser_universal_intr_materialization.py
   -> creates exact stegverse.stegbrowser-universal-intr-invocation-binding/v1 payload
   -> builds existing StegOS stegverse.universal-intr-transport/v1 intent
   -> builds existing StegOS stegverse.universal-intr-materialization-request/v1
-  -> writes stegOS node_intr_outbox_entry.v1 + node_intr_materialization_trigger.v1
+  -> writes stegos.node_intr_outbox_entry.v1 + stegos.node_intr_materialization_trigger.v1
   -> submits trigger to existing shared /intr/materialization listener
 
 scripts/install_stegbrowser_universal_intr_route.py
@@ -68,6 +71,11 @@ workers/stegbrowser_intr_materialization_consumer.py
   -> dispatches existing scripts/run_stegbrowser_manifest_bound_runtime.py
   -> does not mint claim/fence or create runtime authority
 ```
+
+Canonical destination/profile: `StegBrowser:ManifestInvocation`.
+Canonical downstream owner: `StegVerse-Labs/.github#1952`.
+
+The resident connection wrapper remains coordination/observation compatibility only and is not the runtime owner or prerequisite. The #1960 alternate `StegBrowser:ManifestIngress` representation is retired by #1964 and must not be reintroduced.
 
 The existing downstream runner remains unchanged and owns the already-validated Node/Interlock lease/runtime composition, EVENT_EPHEMERAL materialization, WorkerCoordinator transition, and A4 packet verification.
 
@@ -103,6 +111,8 @@ A0 manifest/path binding
 ```text
 SV002_RUNTIME_ARCHITECTURE_SOURCE_IDENTIFIED = true
 STEGBROWSER_UNIVERSAL_INTR_MATERIALIZATION_BINDING_COMPLETE = true
+SINGLE_CANONICAL_STEGBROWSER_MATERIALIZATION_PATH = true
+PR_1960_PARALLEL_REPRESENTATION_RETIRED = true
 CONTROL_PLANE_SOURCE_PACKAGE_IS_RUNTIME_PREREQUISITE = false
 RESIDENT_REQUEST_SWEEP_IS_RUNTIME_PREREQUISITE = false
 SECOND_RUNTIME_OR_LISTENER_INTRODUCED = false
@@ -114,7 +124,7 @@ GITHUB_RUNTIME_AUTHORITY = NONE
 
 ## Current authentic predicates
 
-Source/CI/merge do not establish runtime execution. Until retained same-invocation receipts prove otherwise:
+Source/CI/merge do not establish runtime execution. The post-convergence StegVerse-native evidence sweep found only source definitions/expected evidence paths, not authentic retained same-invocation receipts. Therefore:
 
 ```text
 MANIFEST_BOUND_TO_INVOCATION runtime confirmation = false
@@ -136,7 +146,7 @@ Current exact condition:
 
 ## Expected same-invocation evidence
 
-The merged path may retain, as applicable:
+The canonical path may retain, as applicable:
 
 ```text
 intr-payloads/stegbrowser-manifest-invocation/<binding-hash>.json
@@ -167,11 +177,11 @@ Any promotion must preserve exact Goal/COSV/nonce/manifest/node/interlock/regist
 
 ## Immediate continuation
 
-Validate and merge this canonical reconciliation only. Then inspect retained StegVerse-native evidence for the unchanged nonce through the merged Universal InTr path. If authentic same-invocation receipts exist, verify exact A0-A4 correlation and promote only proven predicates. If no authentic receipts exist, do not infer another architecture defect and do not emit another request; the remaining condition is runtime execution/observation of the merged path.
+Do not emit another request and do not add another materialization profile. Continue only with the unchanged nonce through the single canonical PR #1955 `StegBrowser:ManifestInvocation` path. Inspect/retain authentic same-invocation Node binding, `INGRESS_ADMITTED`, bounded lease, EVENT_EPHEMERAL runtime, WorkerCoordinator claim/fence, and A4 ingress receipts. Promote only predicates directly proven by those authority-owned receipts. Stop before Round Trip 1 unless authentic A1-A4 completion is established.
 
 ## README review
 
-README reviewed for PR #1955. No byte change required because no public authority or runtime-topology contract changed.
+README reviewed after #1964 convergence. No byte change required because the public runtime/authority topology remains the already-documented single shared Universal InTr/event-ephemeral architecture.
 
 ## Manual work
 
