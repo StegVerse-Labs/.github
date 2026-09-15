@@ -100,6 +100,7 @@ CONSUMERS = (
     ("bootstrap_v1_intr_bundle_delivery", "scripts/consume_bootstrap_v1_intr_bundle_delivery_request.py"),
     ("tvc_broker_validation", "scripts/consume_tvc_broker_validation_request.py"),
     ("stegbrowser_tvc_source_promotion", "control/resident-execution-request.d/consume-stegbrowser-tvc-source-promotion.py"),
+    ("stegbrowser_runtime_connection_ingress", "scripts/consume_stegbrowser_runtime_connection_ingress_request.py"),
     ("sv002_self_characterization", "scripts/consume_sv002_self_characterization_request.py"),
     ("astra_class_resilience_awareness", "scripts/consume_astra_class_resilience_awareness_request.py"),
     ("quantum_resilience_awareness", "scripts/consume_quantum_resilience_awareness_request.py"),
@@ -256,6 +257,7 @@ def dispatch(source_root: Path, runtime_root: Path, *, runner=subprocess.run, en
         "MASTER_RECORDS_LOCAL_ROOT_NOT_MATERIALIZED", "MASTER_RECORDS_CUSTODY_CONSUMER_NOT_MATERIALIZED", "MASTER_RECORDS_PROJECTOR_NOT_MATERIALIZED", "ATTEMPT_RECORDED", "COMPLETED", "MANIFOLD_VISIT_RECORDED",
         "SOVEREIGN_NODE_MARKER_REQUIRED", "RESIDENT_INTR_ACK_CONSUMED", "RETURN_PATH_VERIFIED", "SERVICE_ALREADY_HEALTHY", "INPUT_NOT_MATERIALIZED", "OBSERVATION_ATTEMPT_RECORDED",
         "WAITING_FOR_ESTABLISHED_NODE_CONNECTIVITY", "REUSE_ACCEPTED", "DELTA_REQUIRED", "BOUND_STATE_INPUT_NOT_READY",
+        "A1_A2_A3_A4_OBSERVED", "A1_A2_OBSERVED_A3_A4_PENDING", "A1_OBSERVED_NOT_MATERIALIZED",
     }
     request_failures = [row["consumer"] for row in outcomes if row["state"] not in accepted_wait_states]
     receipt = {
