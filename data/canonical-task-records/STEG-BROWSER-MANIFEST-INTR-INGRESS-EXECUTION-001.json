@@ -4,7 +4,7 @@
   "correlation_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
   "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
   "parent_task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
-  "goal": "Bind the manifest-defined StegBrowser invocation to the existing Canonical Work resident dispatcher and organization-local Interlock/InTr boundary, materialize the invocation-owned ephemeral StegOS execution surface, obtain authentic WorkerCoordinator claim/fence, and retain verified A4 Interlock/InTr ingress evidence before Round Trip #1 proceeds.",
+  "goal": "Bind the manifest-defined StegBrowser invocation to the existing Canonical Work resident dispatcher and organization-local Interlock/InTr boundary, materialize the invocation-owned ephemeral StegOS execution surface, obtain authentic WorkerCoordinator claim/fence, and retain verified A4 Interlock/InTr ingress evidence before the governed round-trip lifecycle proceeds.",
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT",
   "cosv_task_vector": "40000100100000",
@@ -79,20 +79,31 @@
     {
       "id": "STEGBROWSER-CANONICAL-WORK-SPEC-STALE-TASK-ID",
       "owner": "CANONICAL_WORK_RESIDENT_CONSUMER_BINDING",
-      "state": "SOURCE_REPAIR_IMPLEMENTED_VALIDATION_PENDING",
+      "state": "SOURCE_REPAIR_VALIDATED_EXACT_HEAD_MERGE_PENDING",
       "expected": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
-      "observed": "STEG-BROWSER-RUNTIME-CONSUMPTION-001"
+      "observed": "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
+      "validation_head": "b530c27194aaa0d45e889e30fed910e0c8596bdc"
     },
     {
       "id": "STEGBROWSER-A3-A4-ORDERING-DRIFT",
       "owner": "STEGBROWSER_REUSABLE_RUNTIME_RUNNER",
-      "state": "SOURCE_REPAIR_IMPLEMENTED_VALIDATION_PENDING",
+      "state": "SOURCE_REPAIR_VALIDATED_EXACT_HEAD_MERGE_PENDING",
       "expected": "WORKERCOORDINATOR_CLAIM_FENCE_THEN_VERIFIED_ORGANIZATION_LOCAL_INTR_INGRESS",
-      "observed": "CANONICAL_WORK_INGRESS_PROJECTION_BEFORE_AUTHENTIC_CLAIM_FENCE"
+      "observed": "CANONICAL_WORK_INGRESS_PROJECTION_BEFORE_AUTHENTIC_CLAIM_FENCE",
+      "validation_head": "b530c27194aaa0d45e889e30fed910e0c8596bdc"
     }
   ],
+  "source_validation": {
+    "validated_head": "b530c27194aaa0d45e889e30fed910e0c8596bdc",
+    "organization_control_run": 34926414425,
+    "deterministic_suite_run": 34926414434,
+    "heartbeat_validation_run": 34926414456,
+    "all_required_lanes_passed": true,
+    "runtime_authority_effect": "NONE",
+    "final_reconciled_head_requires_revalidation": true
+  },
   "completion": {
-    "resident_request_dispatch_binding_valid": false,
+    "resident_request_dispatch_binding_valid": true,
     "invocation_owned_ephemeral_stegos_materialized": false,
     "workercoordinator_claim_fence_observed": false,
     "organization_local_intr_ingress_receipt_verified": false,
