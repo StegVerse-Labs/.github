@@ -24,6 +24,7 @@
   "runtime_requirements": {
     "capabilities": ["canonical_portable_execution", "event_ephemeral_stegos_node", "universal_intr_profiled_ingress", "governed_round_trip_transport"],
     "environment": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+    "direction": "ACTIVE_REMEDIATION_TO_CANONICAL_WORK_TO_INTR_TRANSPORT_TO_RETURN_EXIT",
     "mutation_required": true,
     "deployment_required": false,
     "current_observation_required": true,
@@ -32,11 +33,59 @@
   },
   "execution_substrate_resolution": {
     "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "PENDING_EVIDENCE",
+        "limitation_class": "EVIDENCE_REACHABILITY",
+        "evidence_refs": ["docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md"]
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "SUITABLE",
+        "limitation_class": "NONE",
+        "evidence_refs": ["docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md"]
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "SUITABLE",
+        "limitation_class": "NONE",
+        "evidence_refs": ["docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md"]
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "SUITABLE",
+        "limitation_class": "PLATFORM",
+        "evidence_refs": ["docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md"]
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "SELECTED",
+        "limitation_class": "NONE",
+        "evidence_refs": [
+          "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md",
+          "docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": []
+      }
+    ],
     "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
     "external_device_required": false,
     "second_user_operated_device_allowed": false,
-    "persistent_host_required": false,
-    "authority_effect": "NONE_SELECTION_ONLY"
+    "authority_effect": "NONE"
   },
   "worker_claim": {
     "authority": "WORKERCOORDINATOR",
@@ -153,6 +202,7 @@
   },
   "authority_model": {
     "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
     "interlock_intr_required_for_governed_ingress_egress": true,
     "github_runtime_authority": "NONE",
     "healer_role": "TRIGGERED_REMEDIATION_ONLY",
