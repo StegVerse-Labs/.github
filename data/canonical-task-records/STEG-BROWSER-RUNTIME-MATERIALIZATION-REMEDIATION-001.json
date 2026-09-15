@@ -31,9 +31,27 @@
     "mutation_required": true,
     "deployment_required": false,
     "current_observation_required": true,
+    "physical_device_identity_required": false,
     "second_user_operated_device_required": false
   },
   "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {"substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE", "disposition": "PENDING_EVIDENCE", "limitation_class": "EVIDENCE_REACHABILITY", "evidence_refs": ["docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md"]},
+      {"substrate_id": "STEGOS-CURRENT-DEVICE-NODE", "disposition": "SUITABLE", "limitation_class": "NONE", "evidence_refs": ["docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md"]},
+      {"substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE", "disposition": "SUITABLE", "limitation_class": "NONE", "evidence_refs": ["docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md"]},
+      {"substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER", "disposition": "SUITABLE", "limitation_class": "PLATFORM", "evidence_refs": ["docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md"]},
+      {"substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE", "disposition": "SELECTED", "limitation_class": "NONE", "evidence_refs": ["docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md", "docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md"]},
+      {"substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT", "disposition": "NOT_APPLICABLE", "limitation_class": "NOT_APPLICABLE", "evidence_refs": []}
+    ],
     "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
     "external_device_required": false,
     "second_user_operated_device_allowed": false,
@@ -61,12 +79,7 @@
       "return": "CORRELATED_RECORDS_PACKET",
       "exit": "FIRST_FINAL_ALLOWED_INTR_EXIT_TO_RECORDING",
       "recording_surface": "MASTER_RECORDS_RECORDING_SURFACE",
-      "verification_evidence": [
-        "GOVERNED_RETURN_PACKET_RECEIVED",
-        "RECORDS_PACKET_DELIVERED_FOR_RECORDING",
-        "RETURN_RECORD_DURABLY_RECORDED",
-        "FIRST_FINAL_ALLOWED_INTR_EXIT_TRANSITION_OBSERVED"
-      ],
+      "verification_evidence": ["GOVERNED_RETURN_PACKET_RECEIVED", "RECORDS_PACKET_DELIVERED_FOR_RECORDING", "RETURN_RECORD_DURABLY_RECORDED", "FIRST_FINAL_ALLOWED_INTR_EXIT_TRANSITION_OBSERVED"],
       "terminal_predicate": "SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED"
     },
     "between_round_trips": {
