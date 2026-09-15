@@ -3,18 +3,13 @@
   "task_id": "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
   "cosv_task_vector": "40000100100000",
   "component_contract": "data/reusable-transport-component-contract.json",
+  "manifest_ref": "control/transport-manifests/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json",
   "transport_requirements": {
     "complete_manifest": true,
     "governed_processing": true,
-    "required_round_trips": [
-      "records_packet_return_for_recording_and_verification",
-      "mirror_boundary_processed_return_to_ecosystem"
-    ],
+    "required_round_trips": ["records_packet_return_for_recording_and_verification", "mirror_boundary_processed_return_to_ecosystem"],
     "governed_round_trip_lifecycle_count": 2,
-    "round_trip_internal_transition_groups": [
-      "canonical_work_ingress_and_resident_consumption",
-      "tvc_source_promotion_and_runtime_observation"
-    ],
+    "round_trip_internal_transition_groups": ["canonical_work_ingress_and_resident_consumption", "tvc_source_promotion_and_runtime_observation"],
     "evidence_custody_reconstruction": true,
     "publisher_projection": false,
     "sdk_return_assembly": false,
@@ -25,6 +20,7 @@
   "manifest_route_contract": {
     "manifest_required_before_ecosystem_egress": true,
     "manifest_is_transport_path_contract": true,
+    "manifest_ref": "control/transport-manifests/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json",
     "path_discovery_after_invocation_required": false,
     "outbound_interlock_intr_endpoint_declared_by_manifest": true,
     "far_end_receiver_declared_by_manifest": true,
@@ -32,131 +28,28 @@
     "mirror_path_is_user_owned_declared_path": true,
     "mirror_receiver_discovery_required": false,
     "round_trip_1_return_target_declared_by_manifest": "MASTER_RECORDS_RECORDING_SURFACE",
-    "round_trip_2_origin_declared_by_manifest": "MIRROR_PROCESSING_BOUNDARY",
+    "round_trip_2_origin_declared_by_manifest": "STEGVERSE_OWNED_MIRROR_BOUNDARY",
     "round_trip_2_endpoint_interlock_intr_declared_by_manifest": true,
     "round_trip_2_final_destination_declared_by_manifest": "STEGVERSE_ECOSYSTEM",
     "manifest_declares_expected_reflection": true,
     "execution_may_not_substitute_undeclared_endpoint_or_receiver": true,
-    "route_shape": [
-      "STEGVERSE_ECOSYSTEM_EGRESS",
-      "DECLARED_INTERLOCK_INTR_ENDPOINT",
-      "DECLARED_OWNED_MIRROR_RECEIVER",
-      "DECLARED_REFLECTION_RETURN",
-      "MASTER_RECORDS_RECORDING_SURFACE",
-      "MIRROR_PROCESSING_BOUNDARY",
-      "DECLARED_INTERLOCK_INTR_REENTRY",
-      "DECLARED_ENDPOINT_INTERLOCK_INTR",
-      "STEGVERSE_ECOSYSTEM_REENTRY"
-    ]
+    "route_shape": ["STEGVERSE_ECOSYSTEM_EGRESS", "DECLARED_INTERLOCK_INTR_ENDPOINT", "DECLARED_OWNED_MIRROR_RECEIVER", "DECLARED_REFLECTION_RETURN", "MASTER_RECORDS_RECORDING_SURFACE", "STEGVERSE_OWNED_MIRROR_BOUNDARY", "DECLARED_INTERLOCK_INTR_REENTRY", "DECLARED_ENDPOINT_INTERLOCK_INTR", "STEGVERSE_ECOSYSTEM_REENTRY"]
   },
-  "transport_phase_components": [
-    "RTC-MANIFEST-001",
-    "RTC-GOVERNED-PROCESSING-002",
-    "RTC-ROUNDTRIP-003",
-    "RTC-INTERLOCK-INTR-TRANSPORT-008",
-    "RTC-STEGVERSE-EGRESS-007",
-    "RTC-FARSIDE-FINAL-009"
-  ],
-  "between_round_trip_processing_components": [
-    "RTC-EVIDENCE-CUSTODY-004"
-  ],
-  "selected_components": [
-    "RTC-MANIFEST-001",
-    "RTC-GOVERNED-PROCESSING-002",
-    "RTC-ROUNDTRIP-003",
-    "RTC-INTERLOCK-INTR-TRANSPORT-008",
-    "RTC-EVIDENCE-CUSTODY-004",
-    "RTC-STEGVERSE-EGRESS-007",
-    "RTC-FARSIDE-FINAL-009"
-  ],
+  "transport_phase_components": ["RTC-MANIFEST-001", "RTC-GOVERNED-PROCESSING-002", "RTC-ROUNDTRIP-003", "RTC-INTERLOCK-INTR-TRANSPORT-008", "RTC-STEGVERSE-EGRESS-007", "RTC-FARSIDE-FINAL-009"],
+  "between_round_trip_processing_components": ["RTC-EVIDENCE-CUSTODY-004"],
+  "selected_components": ["RTC-MANIFEST-001", "RTC-GOVERNED-PROCESSING-002", "RTC-ROUNDTRIP-003", "RTC-INTERLOCK-INTR-TRANSPORT-008", "RTC-EVIDENCE-CUSTODY-004", "RTC-STEGVERSE-EGRESS-007", "RTC-FARSIDE-FINAL-009"],
   "round_trip_boundaries": {
-    "round_trip_1": {
-      "purpose": "Follow the manifest-declared outbound Interlock/InTr endpoint to the manifest-declared owned mirror receiver, reflect the declared records packet, and return it at the declared Interlock/InTr exit for recording and verification.",
-      "path_source": "MANIFEST",
-      "exit_transition": "FIRST_FINAL_ALLOWED_INTR_EXIT_TO_RECORDING",
-      "recording_target": "MASTER_RECORDS_RECORDING_SURFACE",
-      "success_requires": [
-        "GOVERNED_RETURN_PACKET_RECEIVED",
-        "RECORDS_PACKET_DELIVERED_FOR_RECORDING",
-        "RETURN_RECORD_DURABLY_RECORDED",
-        "FIRST_FINAL_ALLOWED_INTR_EXIT_TRANSITION_OBSERVED"
-      ]
-    },
-    "between_round_trips": {
-      "purpose": "Process the recorded material through the applicable record/reconstruction and mirror-boundary work before the manifest-declared ecosystem return is initiated.",
-      "transport_authority": "NONE",
-      "mirror_boundary_initiates_next_intr": true
-    },
-    "round_trip_2": {
-      "purpose": "From the manifest-declared mirror processing boundary, initiate the manifest-declared Interlock/InTr return, call the manifest-declared endpoint Interlock/InTr, and return the processed result into the manifest-declared ecosystem destination.",
-      "path_source": "MANIFEST",
-      "entry_transition": "MIRROR_BOUNDARY_INTR_REENTRY",
-      "endpoint_transition": "ENDPOINT_INTR_CALLED_AND_ALLOWED",
-      "terminal_transition": "ECOSYSTEM_REENTRY_FINAL_ALLOWED_TRANSITION",
-      "success_requires": [
-        "MIRROR_BOUNDARY_PROCESSING_COMPLETE",
-        "MIRROR_BOUNDARY_INTR_REENTRY_OBSERVED",
-        "ENDPOINT_INTR_CALLED_AND_ALLOWED",
-        "ECOSYSTEM_REENTRY_FINAL_ALLOWED_TRANSITION_OBSERVED"
-      ]
-    }
+    "round_trip_1": {"purpose": "Follow the manifest-declared outbound Interlock/InTr endpoint to the manifest-declared owned mirror receiver, reflect the declared records packet, and return it at the declared Interlock/InTr exit for recording and verification.", "path_source": "MANIFEST", "exit_transition": "FIRST_FINAL_ALLOWED_INTR_EXIT_TO_RECORDING", "recording_target": "MASTER_RECORDS_RECORDING_SURFACE", "success_requires": ["GOVERNED_RETURN_PACKET_RECEIVED", "RECORDS_PACKET_DELIVERED_FOR_RECORDING", "RETURN_RECORD_DURABLY_RECORDED", "FIRST_FINAL_ALLOWED_INTR_EXIT_TRANSITION_OBSERVED"]},
+    "between_round_trips": {"purpose": "Process the recorded material through the applicable record/reconstruction and mirror-boundary work before the manifest-declared ecosystem return is initiated.", "transport_authority": "NONE", "mirror_boundary_initiates_next_intr": true},
+    "round_trip_2": {"purpose": "From the manifest-declared mirror processing boundary, initiate the manifest-declared Interlock/InTr return, call the manifest-declared endpoint Interlock/InTr, and return the processed result into the manifest-declared ecosystem destination.", "path_source": "MANIFEST", "entry_transition": "MIRROR_BOUNDARY_INTR_REENTRY", "endpoint_transition": "ENDPOINT_INTR_CALLED_AND_ALLOWED", "terminal_transition": "ECOSYSTEM_REENTRY_FINAL_ALLOWED_TRANSITION", "success_requires": ["MIRROR_BOUNDARY_PROCESSING_COMPLETE", "MIRROR_BOUNDARY_INTR_REENTRY_OBSERVED", "ENDPOINT_INTR_CALLED_AND_ALLOWED", "ECOSYSTEM_REENTRY_FINAL_ALLOWED_TRANSITION_OBSERVED"]}
   },
-  "transport_terminal_contract": {
-    "round_trip_1_terminal_predicate": "SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED",
-    "round_trip_2_terminal_predicate": "SUCCESSFUL_ECOSYSTEM_RETURN_ROUND_TRIP_IDENTIFIED",
-    "overall_terminal_predicate": "SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIPS_IDENTIFIED",
-    "durable_recording_is_round_trip_1_verification_evidence": true,
-    "master_records_processing_is_between_round_trips": true,
-    "mirror_boundary_processing_precedes_round_trip_2": true,
-    "round_trip_2_reenters_interlock_intr": true,
-    "round_trip_2_calls_endpoint_interlock_intr": true,
-    "round_trip_2_enters_ecosystem": true
-  },
-  "invocation_transition_variables": {
-    "callable": "RESOLVED_PER_INVOCATION_BY_INTERLOCK_INTR",
-    "refreshable": "RESOLVED_PER_INVOCATION_BY_INTERLOCK_INTR",
-    "source_refresh_task": "RT-SOVEREIGN-SOURCE-REFRESH-001",
-    "source_refresh_selection_condition": "callable=true AND refreshable=true"
-  },
-  "repeatability": {
-    "RTC-ROUNDTRIP-003": 2,
-    "RTC-INTERLOCK-INTR-TRANSPORT-008": "REPEAT_WHERE_EACH_DECLARED_GOVERNED_TRANSITION_REQUIRES_IT"
-  },
-  "round_trip_lifecycle_semantics": {
-    "lifecycle_count": 2,
-    "round_trip_1": "MANIFEST_DEFINED_ECOSYSTEM_EGRESS_TO_OWNED_MIRROR_TO_RECORDING_VERIFICATION_RETURN",
-    "between_round_trips": "RECORD_PROCESSING_AND_MIRROR_BOUNDARY_PROCESSING",
-    "round_trip_2": "MANIFEST_DEFINED_MIRROR_BOUNDARY_INTR_REENTRY_TO_DECLARED_ENDPOINT_INTR_TO_ECOSYSTEM",
-    "internal_transition_group_count": 2,
-    "internal_transition_groups_are_separate_round_trip_goals": false,
-    "internal_transition_groups_increment_round_trip_repeat_count": false
-  },
-  "execution_substrate": {
-    "selected": "ADMITTED-EPHEMERAL-STEGOS-NODE",
-    "interchangeable_node_semantics": true,
-    "remote_or_external_device_required": false,
-    "second_user_operated_device_allowed": false,
-    "materialize_only_after_applicable_admission": true,
-    "ephemeral_construct_contract": "data/reusable-task-ephemeral-construct-contract.json"
-  },
-  "composition_rule": "Validate and bind the complete manifest before ecosystem egress. The manifest defines the governed path, including the Interlock/InTr endpoint and receiver at the other end. For this Goal the declared receiver is an owned mirror reflector on an owned path, so endpoint/receiver discovery is not part of execution. Round trip 1 follows the manifest-defined path and returns the correlated records packet for durable recording and verification. Record/reconstruction and mirror-boundary processing then occur between round trips. Round trip 2 begins from the manifest-declared mirror boundary and follows the manifest-declared Interlock/InTr return through the declared endpoint Interlock/InTr to ecosystem re-entry. Runtime state still resolves whether each declared transition is allowed; it does not discover or substitute the route. Do not create a second scheduler, WorkerCoordinator, credential path, transport authority, runtime plane, or per-device identity requirement.",
-  "failure_ownership": {
-    "manifest_validation_or_binding": "MANIFEST_OR_DECLARED_ROUTE_CONTRACT_OWNER",
-    "round_trip_1_before_recording_exit": "TRANSPORT_OR_EXACT_IN_LANE_OWNER",
-    "recording_and_between_round_trip_processing": "MASTER_RECORDS_OR_EXACT_MIRROR_PROCESSING_OWNER",
-    "round_trip_2_after_mirror_intr_reentry": "TRANSPORT_OR_EXACT_IN_LANE_OWNER",
-    "after_ecosystem_reentry": "ECOSYSTEM_OWNING_DOMAIN"
-  },
-  "authority_invariants": {
-    "task_registry": "COORDINATION_ONLY",
-    "user_verification": "KV/SKAP Vault",
-    "device_role": "INTERCHANGEABLE_STEGOS_TRANSPORT_EXECUTION_NODE",
-    "claim_fence": "WorkerCoordinator",
-    "transition": "Interlock/InTr",
-    "credential_provider_release": "TV/TVC",
-    "reality_reconstruction": "Master Records",
-    "heartbeat": "OBSERVABILITY_ONLY",
-    "github_runtime_authority": "NONE"
-  },
+  "transport_terminal_contract": {"round_trip_1_terminal_predicate": "SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED", "round_trip_2_terminal_predicate": "SUCCESSFUL_ECOSYSTEM_RETURN_ROUND_TRIP_IDENTIFIED", "overall_terminal_predicate": "SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIPS_IDENTIFIED", "durable_recording_is_round_trip_1_verification_evidence": true, "master_records_processing_is_between_round_trips": true, "mirror_boundary_processing_precedes_round_trip_2": true, "round_trip_2_reenters_interlock_intr": true, "round_trip_2_calls_endpoint_interlock_intr": true, "round_trip_2_enters_ecosystem": true},
+  "invocation_transition_variables": {"callable": "RESOLVED_PER_INVOCATION_BY_INTERLOCK_INTR", "refreshable": "RESOLVED_PER_INVOCATION_BY_INTERLOCK_INTR", "source_refresh_task": "RT-SOVEREIGN-SOURCE-REFRESH-001", "source_refresh_selection_condition": "callable=true AND refreshable=true"},
+  "repeatability": {"RTC-ROUNDTRIP-003": 2, "RTC-INTERLOCK-INTR-TRANSPORT-008": "REPEAT_WHERE_EACH_DECLARED_GOVERNED_TRANSITION_REQUIRES_IT"},
+  "round_trip_lifecycle_semantics": {"lifecycle_count": 2, "round_trip_1": "MANIFEST_DEFINED_ECOSYSTEM_EGRESS_TO_OWNED_MIRROR_TO_RECORDING_VERIFICATION_RETURN", "between_round_trips": "RECORD_PROCESSING_AND_MIRROR_BOUNDARY_PROCESSING", "round_trip_2": "MANIFEST_DEFINED_MIRROR_BOUNDARY_INTR_REENTRY_TO_DECLARED_ENDPOINT_INTR_TO_ECOSYSTEM", "internal_transition_group_count": 2, "internal_transition_groups_are_separate_round_trip_goals": false, "internal_transition_groups_increment_round_trip_repeat_count": false},
+  "execution_substrate": {"selected": "ADMITTED-EPHEMERAL-STEGOS-NODE", "interchangeable_node_semantics": true, "remote_or_external_device_required": false, "second_user_operated_device_allowed": false, "materialize_only_after_applicable_admission": true, "ephemeral_construct_contract": "data/reusable-task-ephemeral-construct-contract.json"},
+  "composition_rule": "Validate and bind the complete manifest before ecosystem egress. The manifest defines the governed path, including the Interlock/InTr endpoint and receiver at the other end. For this Goal the declared receiver is an owned mirror reflector on an owned path, so endpoint/receiver discovery is not part of execution. Round trip 1 follows the manifest-defined path and returns the correlated records packet for durable recording and verification. Record/reconstruction and mirror-boundary processing then occur between round trips. Round trip 2 begins from the manifest-declared mirror boundary and follows the manifest-declared Interlock/InTr return through the declared endpoint Interlock/InTr to ecosystem re-entry. Runtime state still resolves whether each declared transition is allowed; it does not discover or substitute the route.",
+  "failure_ownership": {"manifest_validation_or_binding": "MANIFEST_OR_DECLARED_ROUTE_CONTRACT_OWNER", "round_trip_1_before_recording_exit": "TRANSPORT_OR_EXACT_IN_LANE_OWNER", "recording_and_between_round_trip_processing": "MASTER_RECORDS_OR_EXACT_MIRROR_PROCESSING_OWNER", "round_trip_2_after_mirror_intr_reentry": "TRANSPORT_OR_EXACT_IN_LANE_OWNER", "after_ecosystem_reentry": "ECOSYSTEM_OWNING_DOMAIN"},
+  "authority_invariants": {"task_registry": "COORDINATION_ONLY", "user_verification": "KV/SKAP Vault", "device_role": "INTERCHANGEABLE_STEGOS_TRANSPORT_EXECUTION_NODE", "claim_fence": "WorkerCoordinator", "transition": "Interlock/InTr", "credential_provider_release": "TV/TVC", "reality_reconstruction": "Master Records", "heartbeat": "OBSERVABILITY_ONLY", "github_runtime_authority": "NONE"},
   "runtime_evidence_effect": "NONE_SOURCE_COMPOSITION_ONLY"
 }
