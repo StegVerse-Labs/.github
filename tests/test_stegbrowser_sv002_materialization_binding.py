@@ -114,7 +114,8 @@ class StegBrowserSV002MaterializationBindingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td:
             runtime = Path(td); receipt = runtime / "node.json"; receipt.write_text("{}\n")
             request = self.request(receipt); trigger = self.trigger(request); raw = json.dumps(trigger, sort_keys=True, separators=(",", ":")).encode()
-            headers = {"X-StegVerse-Transport":"InTr","X-StegVerse-Transport-Origin":"SOVEREIGN_NODE","X-StegVerse-Payload-SHA256":__import__("hashlib").sha256(raw).hexdigest()}
+            boundary = load_module("hil_materialization_boundary_headers", "scripts/serve_hil_intr_materialization_ingress.py")
+            headers = {"Content-Type":"application/json","X-StegVerse-Transport":"InTr","X-StegVerse-Transport-Origin":boundary.ORIGIN_NODE,"X-StegVerse-Payload-SHA256":__import__("hashlib").sha256(raw).hexdigest()}
             class Proc: pid = 123
             with patch.object(adapter.subprocess, "Popen", return_value=Proc()):
                 result = adapter.admit(runtime_root=runtime, body=raw, headers=headers)
