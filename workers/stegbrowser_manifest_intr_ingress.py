@@ -6,7 +6,6 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 SUBJECT_TASK = "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
-GOAL_ID = "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001"
 COSV = "40000100100000"
 ORG_TASK = "ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001"
 ORG_VECTOR = "50000000101000"
@@ -15,6 +14,7 @@ PACKET_REL = Path("spool/organization-local-boundary/ingress") / f"{PACKET_ID}.j
 ORG_RECEIPT_REL = Path("receipts/organization-local-boundary") / f"{PACKET_ID}.json"
 OUTPUT_REL = Path("receipts/sovereign-host/stegbrowser-manifest-intr-ingress.latest.json")
 MANIFEST_REL = Path("control/transport-manifests/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json")
+BINDING_REL = Path("receipts/sovereign-host/stegbrowser-node-interlock-runtime-binding.latest.json")
 TARGETED = Path("scripts/refresh_and_execute_resident_task.py")
 
 def canonical_json(v: Any) -> bytes:
@@ -30,47 +30,49 @@ def load(path: Path) -> dict[str, Any]:
         raise RuntimeError(f"object required:{path}")
     return value
 
-def required_env(name: str) -> str:
-    value = str(os.environ.get(name) or "").strip()
-    if not value:
-        raise RuntimeError(f"required StegBrowser invocation binding missing:{name}")
-    return value
-
-def invocation_binding(source: Path) -> dict[str, str]:
-    manifest_path = source / MANIFEST_REL
-    manifest_sha256 = hashlib.sha256(manifest_path.read_bytes()).hexdigest()
-    bound_manifest = required_env("STEGVERSE_STEGBROWSER_MANIFEST_SHA256")
-    if bound_manifest != manifest_sha256:
-        raise RuntimeError("StegBrowser manifest binding mismatch")
-    receipt_sha256 = required_env("STEGVERSE_STEGBROWSER_REGISTRATION_RECEIPT_SHA256")
-    if len(receipt_sha256) != 64:
-        raise RuntimeError("StegBrowser registration receipt digest invalid")
-    return {
-        "goal_task_id": GOAL_ID,
-        "node_id": required_env("STEGVERSE_STEGBROWSER_NODE_ID"),
-        "interlock_id": required_env("STEGVERSE_STEGBROWSER_INTERLOCK_ID"),
-        "registration_receipt_sha256": receipt_sha256,
-        "lease_id": required_env("STEGVERSE_STEGBROWSER_LEASE_ID"),
-        "runtime_id": required_env("STEGVERSE_STEGBROWSER_RUNTIME_ID"),
+def validated_binding(runtime: Path, manifest_sha256: str) -> dict[str, Any]:
+    path = runtime / BINDING_REL
+    if not path.is_file():
+        raise RuntimeError("StegBrowser Node/Interlock/runtime binding receipt missing")
+    binding = load(path)
+    required = {
+        "schema": "stegverse.stegbrowser-node-interlock-runtime-binding/v1",
+        "state": "NODE_INTERLOCK_LEASE_RUNTIME_BOUND",
+        "task_id": SUBJECT_TASK,
+        "cosv_task_vector": COSV,
         "manifest_sha256": manifest_sha256,
+        "runtime_class": "EVENT_EPHEMERAL",
+        "rendezvous_requirement": "NOT_REQUIRED",
+        "credential_authority": "TV/TVC",
+        "authority_effect": "NONE_IDENTITY_BINDING_ONLY",
     }
+    for key, expected in required.items():
+        if binding.get(key) != expected:
+            raise RuntimeError(f"StegBrowser binding mismatch:{key}")
+    for key in ("node_id", "interlock_id", "registration_receipt_sha256", "lease_id", "runtime_id", "state_root_binding", "binding_sha256"):
+        if not isinstance(binding.get(key), str) or not binding[key]:
+            raise RuntimeError(f"StegBrowser binding field missing:{key}")
+    return binding
 
-def packet(source: Path) -> dict[str, Any]:
+def packet(source: Path, runtime: Path) -> dict[str, Any]:
     manifest_path = source / MANIFEST_REL
     manifest = load(manifest_path)
-    binding = invocation_binding(source)
+    raw = manifest_path.read_bytes()
+    manifest_sha256 = hashlib.sha256(raw).hexdigest()
+    binding = validated_binding(runtime, manifest_sha256)
     payload = {
         "subject_task_id": SUBJECT_TASK,
-        "goal_task_id": GOAL_ID,
         "cosv_task_vector": COSV,
         "purpose": "STEGBROWSER_MANIFEST_DEFINED_INTR_INGRESS",
         "manifest_ref": str(MANIFEST_REL),
-        "manifest_sha256": binding["manifest_sha256"],
+        "manifest_sha256": manifest_sha256,
         "node_id": binding["node_id"],
         "interlock_id": binding["interlock_id"],
         "registration_receipt_sha256": binding["registration_receipt_sha256"],
         "lease_id": binding["lease_id"],
         "runtime_id": binding["runtime_id"],
+        "state_root_binding": binding["state_root_binding"],
+        "node_interlock_runtime_binding_sha256": binding["binding_sha256"],
         "route_owner": manifest.get("route_owner"),
         "outbound_interlock_intr_endpoint": (manifest.get("outbound") or {}).get("interlock_intr_endpoint"),
         "far_end_receiver": (manifest.get("outbound") or {}).get("receiver"),
@@ -90,7 +92,7 @@ def packet(source: Path) -> dict[str, Any]:
         "carrier_grants_execution_authority": False,
         "canonical_state_change_authorized": False,
         "authority_effect": "NONE_REQUEST_ONLY",
-        "transition_basis": {"subject_task_id": SUBJECT_TASK, "goal_task_id": GOAL_ID, "cosv_task_vector": COSV, "authority_effect": "NONE_EVIDENCE_ONLY"},
+        "transition_basis": {"subject_task_id": SUBJECT_TASK, "cosv_task_vector": COSV, "authority_effect": "NONE_EVIDENCE_ONLY"},
     }
 
 def verified(receipt: dict[str, Any], expected: dict[str, Any]) -> bool:
@@ -113,8 +115,7 @@ def verified(receipt: dict[str, Any], expected: dict[str, Any]) -> bool:
 
 def execute(source_root: Path, runtime_root: Path) -> dict[str, Any]:
     source, runtime = source_root.resolve(), runtime_root.resolve()
-    expected = packet(source)
-    binding = expected["payload"]
+    expected = packet(source, runtime)
     ingress, receipt_path = runtime / PACKET_REL, runtime / ORG_RECEIPT_REL
     ingress.parent.mkdir(parents=True, exist_ok=True)
     if ingress.is_file() and load(ingress) != expected:
@@ -133,25 +134,28 @@ def execute(source_root: Path, runtime_root: Path) -> dict[str, Any]:
     receipt = load(receipt_path)
     if not verified(receipt, expected):
         raise RuntimeError("StegBrowser organization-local receipt failed exact verification")
+    payload = expected["payload"]
     result = {
         "schema":"stegverse.stegbrowser-manifest-intr-ingress/v1",
         "state":"AUTHENTIC_INTR_INGRESS_OBSERVED",
         "subject_task_id":SUBJECT_TASK,
-        "goal_task_id":GOAL_ID,
         "cosv_task_vector":COSV,
         "executor_task_id":ORG_TASK,
-        "manifest_sha256":binding["manifest_sha256"],
-        "node_id":binding["node_id"],
-        "interlock_id":binding["interlock_id"],
-        "registration_receipt_sha256":binding["registration_receipt_sha256"],
-        "lease_id":binding["lease_id"],
-        "runtime_id":binding["runtime_id"],
         "organization_local_receipt_ref":str(ORG_RECEIPT_REL),
         "claim_id":receipt["claim_id"],
         "fencing_token":receipt["fencing_token"],
+        "manifest_sha256":payload["manifest_sha256"],
+        "node_id":payload["node_id"],
+        "interlock_id":payload["interlock_id"],
+        "registration_receipt_sha256":payload["registration_receipt_sha256"],
+        "lease_id":payload["lease_id"],
+        "runtime_id":payload["runtime_id"],
+        "state_root_binding":payload["state_root_binding"],
+        "node_interlock_runtime_binding_sha256":payload["node_interlock_runtime_binding_sha256"],
         "workercoordinator_claim_fence_observed":True,
         "organization_local_intr_ingress_receipt_verified":True,
         "manifest_defined_path":True,
+        "node_interlock_lease_runtime_correlation_verified":True,
         "external_runtime_required":False,
         "authority_effect":"NONE_EVIDENCE_ONLY",
     }

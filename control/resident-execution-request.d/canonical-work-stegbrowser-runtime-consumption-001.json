@@ -18,10 +18,20 @@
     "automatic_advancement_required": true,
     "manual_device_prerequisite": false,
     "historical_task_reactivation_required": false,
+    "node_interlock_binding_required_before_lease": true,
+    "node_binding_receipt_schema": "stegos.node_handoff_receipt.v1",
+    "node_binding_receipt_number": 1,
+    "required_node_binding_fields": ["node_id", "interlock_id", "device_binding_sha256", "receipt_sha256"],
+    "lease_must_bind": ["manifest_sha256", "node_id", "interlock_id", "registration_receipt_sha256", "task_id", "cosv_task_vector"],
+    "runtime_identity_must_bind": ["lease_id", "runtime_id", "node_id", "interlock_id", "manifest_sha256", "state_root_binding"],
+    "a4_must_bind": ["manifest_sha256", "node_id", "interlock_id", "registration_receipt_sha256", "lease_id", "runtime_id", "state_root_binding"],
+    "source_conformance_state": "NODE_INTERLOCK_BINDING_SOURCE_IMPLEMENTED_VALIDATION_PENDING",
+    "execution_before_node_interlock_binding_repair_allowed": false,
     "path_parameters": {
       "sovereign_source_root": "STEGVERSE_HEARTBEAT_SOURCE_ROOT_OR_CURRENT_CANONICAL_SOURCE",
       "stegos_source_root": "STEGVERSE_STEGOS_SOURCE_ROOT_OR_SIBLING_STEGOS",
-      "runtime_base": "STEGVERSE_EPHEMERAL_RUNTIME_BASE_OR_XDG_STATE_HOME"
+      "runtime_base": "STEGVERSE_EPHEMERAL_RUNTIME_BASE_OR_XDG_STATE_HOME",
+      "node_genesis_receipt": "STEGVERSE_NODE_GENESIS_RECEIPT"
     }
   },
   "credential_authority": "TV/TVC",
