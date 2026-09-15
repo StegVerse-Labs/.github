@@ -60,16 +60,20 @@ def request() -> dict:
 
 def trigger(req: dict) -> dict:
     entry = {
-        "schema": "stegos.node_intr_outbox_entry.v1",
+        "schema": ingress.transport_boundary.NODE_OUTBOX_SCHEMA,
         "state": "LOCAL_OUTBOX_PENDING_NETWORK_DELIVERY",
         "node_id": "SV-NODE-test",
         "interlock_id": "SV-IL-test",
         "materialization_id": req["materialization_id"],
-        "request_hash": req["request_hash"],
+        "operation_id": req["operation_id"],
+        "packet_id": req["packet_id"],
         "transport_intent_hash": req["transport_intent_hash"],
         "payload_hash": req["payload_hash"],
+        "request_hash": req["request_hash"],
         "destination": req["destination"],
         "downstream_owner_ref": req["downstream_owner_ref"],
+        "payload_ref": req["payload_ref"],
+        "node_outbox_ref": "stegos-node://SV-NODE-test/intr_outbox/test",
         "materialization_request": req,
         "network_delivery_observed": False,
         "runtime_materialization_observed": False,
@@ -81,7 +85,7 @@ def trigger(req: dict) -> dict:
         "github_token_runtime_authority": "NONE",
         "authority_effect": "NONE_LOCAL_CONTINUITY_ONLY",
     }
-    entry["outbox_entry_hash"] = ingress.transport_boundary.digest_uri(entry)
+    entry["outbox_entry_hash"] = ingress.transport_boundary._sha256_uri(entry)
     value = {
         "schema": ingress.transport_boundary.NODE_TRIGGER_SCHEMA,
         "transport_origin": ingress.transport_boundary.ORIGIN_NODE,
@@ -93,7 +97,7 @@ def trigger(req: dict) -> dict:
         "claim_or_fence_minted": False,
         "authority_effect": "NONE_TRIGGER_ONLY",
     }
-    value["trigger_sha256"] = ingress.transport_boundary.digest_uri(value)
+    value["trigger_sha256"] = ingress.transport_boundary._sha256_uri(value)
     return value
 
 
@@ -185,6 +189,9 @@ class StegBrowserSV002InTrBindingTests(unittest.TestCase):
         self.assertIn("build_transport_intent", text)
         self.assertIn("build_materialization_request", text)
         self.assertIn("stegos.node_intr_outbox_entry.v1", text)
+        self.assertIn('"transport_origin": "STEGOS_NODE_OUTBOX"', text)
+        self.assertIn('"operation_id": request["operation_id"]', text)
+        self.assertIn('"payload_ref": request["payload_ref"]', text)
         self.assertIn("ingress.admit", text)
         self.assertNotIn("control-plane source-package", text)
 
