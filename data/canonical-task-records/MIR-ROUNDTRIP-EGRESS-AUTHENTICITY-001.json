@@ -53,22 +53,18 @@
     "DESTINATION_EVIDENCE",
     "GOVERNED_RETURN"
   ],
-  "first_protocol_contradiction": {
-    "state": "MIR_DESTINATION_PROFILE_SELECTED_OR_SUBSTITUTED",
-    "status": "IMPLEMENTATION_CONTRACT_INCOMPLETE",
-    "evidence": [
-      "StegVerse-org/StegVerse-SDK/stegverse/manifest_builder.py completion.egress carries final_stegverse_transition_surface, transport, and far_side_transition_required but no destination/connection profile",
-      "StegVerse-org/LLM-adapter/llm_adapter/southbound_sdk_return.py builds a generic protocol=InTr handoff without carrying a MIR destination profile"
-    ],
-    "effect": "The documented destination-profile substitution required to address the known MIR mirror cannot be represented end-to-end on the current southbound egress contract; runtime send evidence must not be sought past this point until the profile binding is repaired.",
-    "not_a_missing_runtime": [
-      "endpoint discovery",
-      "resident executor",
-      "scheduler",
-      "dispatcher",
-      "always-on receiver",
-      "second transport plane"
-    ]
+  "destination_profile_repair": {
+    "profile_id": "MIR",
+    "profile_source": "StegVerse-Labs/StegOS/config/external_counterpart_profiles/mir.json",
+    "sdk_pr": "StegVerse-org/StegVerse-SDK#247",
+    "sdk_merge": "4bf374bed1dba745099f2d0f6a0a970b687f02b0",
+    "sdk_source_validated": true,
+    "llm_adapter_pr": "StegVerse-org/LLM-adapter#342",
+    "llm_adapter_merge": "b106b87a974a219e394b9eb5f3629814f3ec1239",
+    "llm_adapter_source_validated": true,
+    "exact_profile_propagation_validated": true,
+    "fail_closed_profile_mutation_validated": true,
+    "status": "RESOLVED_SOURCE_VALIDATED"
   },
   "current_truth": {
     "sdk_return_predecessor_merge": "b4927ed277c4993662f9e7e4ffd717f677ad5459",
@@ -91,17 +87,23 @@
     "sdk_owner_reverse_return_ingress_recognized": true,
     "sdk_return_materialization_transition_source_connected": true,
     "mir_mirror_endpoint_known": true,
+    "mir_destination_profile_id": "MIR",
     "endpoint_substitution_means_destination_profile_substitution": true,
-    "southbound_destination_profile_contract_present": false,
+    "southbound_destination_profile_contract_present": true,
+    "southbound_destination_profile_contract_source_validated": true,
     "authentic_predecessor_sdk_return_input_observed": false,
-    "llm_adapter_reusable_egress_source_merge": "7c7c43a0171360ce7ed4cc2873b29686147845ae",
-    "llm_adapter_reusable_egress_handoff_reconciliation_merge": "ed7c50e496e2b8c20c62774696647f596e4de2cf",
+    "llm_adapter_reusable_egress_source_merge": "b106b87a974a219e394b9eb5f3629814f3ec1239",
     "llm_adapter_reusable_egress_runtime_observed_for_this_roundtrip": false,
     "interlock_intr_egress_observed": false,
     "far_side_transition_observed": false,
     "mir_destination_profile_substitution_observed": false,
     "successful_data_transport_round_trip_identified": false,
     "communication_complete": false
+  },
+  "runtime_execution_note": {
+    "signal_sent_claimed": false,
+    "authentic_intr_materialization_invoked_from_this_session": false,
+    "reason": "No currently attached tool exposes the iPhone/device-local browser service-worker /intr/materialization execution surface. GitHub Actions has runtime authority NONE and was not used as a substitute. This is a session control-surface limitation, not a protocol, endpoint-discovery, resident-receiver, scheduler, dispatcher, or second-runtime requirement."
   },
   "authority_invariants": {
     "task_registry": "COORDINATION_ONLY",
@@ -119,6 +121,7 @@
     "claimed": false,
     "validated": false,
     "authentic_predecessor_sdk_return_input_observed": false,
+    "mir_destination_profile_binding_source_validated": true,
     "mir_destination_profile_binding_observed": false,
     "final_stegverse_side_egress_transition_observed": false,
     "interlock_intr_egress_observed": false,
@@ -129,8 +132,6 @@
     "communication_complete": false
   },
   "allowed_next_transitions": [
-    "REPAIR_AND_VALIDATE_MIR_DESTINATION_PROFILE_BINDING_IN_EXISTING_SDK_TO_INTR_EGRESS_CONTRACT",
-    "OBSERVE_OR_MATERIALIZE_AUTHENTIC_PREDECESSOR_SDK_RETURN_INPUT_THROUGH_EXISTING_AUTHORIZED_CARRIER",
     "EXECUTE_REUSED_RTC_STEGVERSE_EGRESS_007_WITH_BOUND_MIR_DESTINATION_PROFILE",
     "OBSERVE_AUTHENTIC_RTC_INTERLOCK_INTR_TRANSPORT_008",
     "OBSERVE_AUTHENTIC_RTC_FARSIDE_FINAL_009",
