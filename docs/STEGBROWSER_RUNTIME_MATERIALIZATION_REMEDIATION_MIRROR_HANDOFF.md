@@ -10,6 +10,8 @@ Updated: 2026-09-14
 - COSV: `40000100100000`
 - Status: `ACTIVE / CHECKED_OUT / MANIFEST-BOUND OWNED MIRROR PATH MERGED+VALIDATED / A0 SOURCE-BINDING READY / AUTHENTIC INTR INGRESS + ROUND-TRIP EVIDENCE PENDING`
 - External/second user-operated device required: `false`
+- External connected runtime required: `false`
+- External runtime discovery permitted as a prerequisite: `false`
 
 ## Canonical manifest-path invariant
 
@@ -65,15 +67,21 @@ merge commit = ba838f6fa960b7d3e6ff87d69f7a3d683f306fad
 
 GitHub/CI runtime authority remains `NONE`.
 
-## Runtime invocation model
+## Runtime invocation model — no external connected runtime
 
-There is no standing runtime/device expected to be online. Correct progression is:
+There is no standing device, attached machine, remote host, pre-existing resident surface, or external runtime connection that is expected to appear now or later for this Goal.
+
+The execution surface is created as part of the governed invocation itself.
+
+Canonical progression:
 
 ```text
 bind exact manifest to Goal/COSV
+-> canonical resident execution request
+-> existing StegVerse resident dispatcher / organization-local resident boundary
 -> validate declared path
 -> resolve invocation-bound callable/refreshable against that path
--> materialize admitted execution surface on demand
+-> materialize ADMITTED-EPHEMERAL-STEGOS-NODE as part of this invocation
 -> establish Interlock/InTr ingress on the declared route
 -> execute Round Trip 1 to the declared owned mirror and recording return
 -> verify durable Round Trip 1 record
@@ -82,7 +90,30 @@ bind exact manifest to Goal/COSV
 -> re-enter declared ecosystem destination
 ```
 
-`callable` and `refreshable` govern whether/how the already-declared path is instantiated. They do not discover a destination.
+The current canonical resident request already declares:
+
+```text
+selected_execution_substrate = ADMITTED-EPHEMERAL-STEGOS-NODE
+manual_device_prerequisite = false
+second_machine_required = false
+network_source_fetch_allowed = false
+```
+
+`callable` and `refreshable` govern whether/how the already-declared path and invocation-local execution surface are instantiated. They do not discover a destination, device, host, or remote runtime.
+
+The existing organization-local resident boundary is the reusable Interlock/InTr ingress/egress execution boundary. It must be reused rather than creating a duplicate hosted carrier/runtime.
+
+Canonical existing surfaces include:
+
+```text
+control/resident-execution-request.d/canonical-work-stegbrowser-runtime-consumption-001.json
+scripts/install_and_run_canonical_work_event_bootstrap.py
+scripts/dispatch_resident_execution_requests.py
+scripts/refresh_and_execute_resident_task.py
+workers/organization_local_resident_boundary_executor.py
+```
+
+Do not query Remote Desktop/device connectivity, Render, or another hosted carrier as a prerequisite for this Goal. Those are not part of the StegBrowser execution model.
 
 ## Current authentic evidence condition
 
@@ -92,12 +123,7 @@ AUTHENTIC_MANIFEST_BOUND_INVOCATION_AND_INTR_INGRESS_NOT_YET_OBSERVED
 
 No runtime completion predicate is promoted from source or CI.
 
-Two execution transports were attempted after PR #1910 source validation:
-
-- the remote-command connector refused to launch because that connector requires an attached machine;
-- the isolated chat sandbox could not resolve `github.com` to materialize the merged source and StegOS source.
-
-These are limitations of the available chat execution transports. They are not StegVerse device prerequisites, endpoint-discovery failures, Interlock/InTr denials, or transport failures, and must not be represented as such.
+The remaining work is to bind the already-existing StegBrowser resident request into the existing resident dispatcher/boundary path and retain authentic invocation-local evidence from that path. Absence of an external connected runtime is not a condition and must not be recorded as a failure, prerequisite, or pending dependency.
 
 ## Goal Chart
 
@@ -105,13 +131,13 @@ These are limitations of the available chat execution transports. They are not S
 
 Bind the complete manifest to the active Goal/COSV. Validate exact declared outbound endpoint, owned mirror receiver, reflection behavior, Round Trip 1 recording return, mirror boundary, Round Trip 2 endpoint, and ecosystem receiver. No discovery stage exists.
 
-### A1 — Resolve invocation-bound state
+### A1 — Submit canonical resident invocation
 
-Interlock/InTr resolves `callable`, `refreshable`, and applicable transition state for the manifest-declared path.
+Use the canonical StegBrowser resident execution request and existing StegVerse resident dispatcher. The request invokes the already-declared path; it does not locate an external runtime.
 
-### A2 — Materialize admitted execution surface
+### A2 — Resolve invocation-bound state and materialize ephemeral execution surface
 
-Instantiate only what the admitted transition allows. No pre-existing online device is expected.
+Interlock/InTr resolves `callable`, `refreshable`, and applicable transition state for the manifest-declared path. If admitted, materialize `ADMITTED-EPHEMERAL-STEGOS-NODE` as part of this invocation. No pre-existing online device, host, or runtime is expected.
 
 ### A3 — Establish WorkerCoordinator claim/fence
 
@@ -119,7 +145,7 @@ Require authentic current claim/fence for the exact Goal/COSV invocation.
 
 ### A4 — Admit Interlock/InTr ingress
 
-Enter the declared path and retain authentic ingress evidence.
+Use the existing organization-local resident boundary to enter the declared path and retain authentic ingress evidence.
 
 ### A5 — Follow declared owned mirror path
 
@@ -194,22 +220,6 @@ AUTHORITY_TRANSFER = NONE
 HEALER_TRIGGERED_BY_REQUEST_EMISSION = false
 ```
 
-First fixture:
-
-`GADI-SOURCE-SCHEMA-COMPATIBILITY-MISMATCH-001`
-
-Classification:
-
-```text
-OWNING_DOMAIN = GADI
-OUT_OF_SCOPE_FOR_CURRENT_GOAL = true
-BLOCKS_ORIGINATING_TRANSITION = false
-AUTHORITY_TRANSFER = NONE
-ORIGINATING_GOAL_ACTION = RETAIN_EVIDENCE_EMIT_REQUEST_CONTINUE_STEGBROWSER_SPECIFIC_VALIDATION
-```
-
-The originating StegBrowser Goal must not repair the GADI subsystem. StegVerse-Healer independently evaluates whether an authorized GADI remediation trigger applies.
-
 ## Authority invariants
 
 - Manifest: path declaration/binding only.
@@ -224,6 +234,7 @@ The originating StegBrowser Goal must not repair the GADI subsystem. StegVerse-H
 - Healer: independent trigger evaluation and triggered bounded remediation only; remediation-request receipt alone grants no authority and is not a trigger.
 - GitHub/CI: source validation/evidence transport only; runtime authority `NONE`.
 - Standing online device: not required or expected.
+- External connected runtime: not required or expected.
 - Second user-operated device: not required.
 
 ## Manual work
