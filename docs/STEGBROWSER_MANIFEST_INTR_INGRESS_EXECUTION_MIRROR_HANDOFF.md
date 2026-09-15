@@ -8,7 +8,7 @@ Repository: `StegVerse-Labs/.github`
 - Goal Task ID: `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001`
 - Parent Goal: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / SOURCE MERGED+VALIDATED / GC RECONCILED / AUTHENTIC A3+A4 EXECUTION PENDING`
+- Status: `ACTIVE / CHECKED_OUT / SOURCE MERGED+VALIDATED / GC RECONCILED / REUSABLE TASK SYNCHRONIZED / AUTHENTIC A3+A4 EXECUTION PENDING`
 - Source merge: PR `#1914`, merge commit `7337271028d1226e76af88b33765f38334159b23`
 
 ## Goal
@@ -173,6 +173,45 @@ AUTHENTIC_INTR_INGRESS_OBSERVED = false / not authentically observed
 
 No predicate is promoted from historical SV002 evidence, source inspection, GitHub merge, or CI.
 
+## Reusable-task synchronization rule
+
+Reusable tasks are part of the active architecture and MUST be updated as the Goal reveals or changes reusable execution semantics. A Goal/GC/handoff change is incomplete at source if an affected reusable task remains on an older model.
+
+Current reusable owner:
+
+`source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json`
+
+The reusable task is now synchronized to require the explicit sequence:
+
+```text
+MANIFEST_BOUND_TO_INVOCATION
+-> STEGVERSE_NODE_BOUND_TO_INVOCATION
+-> INTERLOCK_BOUND_TO_NODE_AND_MANIFEST
+-> INTR_MATERIALIZATION_ADMITTED
+-> INVOCATION_SCOPED_LEASE_ESTABLISHED
+-> EVENT_EPHEMERAL_STEGOS_RUNTIME_MATERIALIZED
+-> EXECUTION_TIME_RUNTIME_IDENTITY_BOUND
+-> CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED
+-> ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED
+-> AUTHENTIC_INTR_INGRESS_OBSERVED
+-> Round Trip 1
+-> mirror-boundary processing
+-> Round Trip 2
+```
+
+Standing propagation requirement for this Goal:
+
+- when a reusable Node/profile rule is confirmed or changed, update the reusable task;
+- when Interlock/InTr materialization semantics are confirmed or changed, update the reusable task;
+- when lease/binding semantics are confirmed or changed, update the reusable task;
+- when runtime-identity binding semantics are confirmed or changed, update the reusable task;
+- when WorkerCoordinator/A3 or InTr/A4 ordering changes, update the reusable task;
+- when either round-trip completion contract changes, update the reusable task and its tests/profile consumers;
+- historical evidence may guide reusable architecture but MUST NOT set current runtime predicates;
+- reusable-task synchronization never grants runtime authority and never replaces authentic execution evidence.
+
+Do not defer reusable-task updates to an end-of-project cleanup pass. They travel with the architecture change that makes them necessary.
+
 ## Issue #1918 disposition guidance
 
 Issue #1918 was opened under the assumption that this chat session needed a generic organization-local process-execution surface exposed to it. The recovered Node -> Interlock -> InTr -> lease -> EVENT_EPHEMERAL materialization evidence makes that abstraction suspect.
@@ -194,7 +233,7 @@ Do not close or treat #1918 as resolved solely from historical evidence. First t
 
 ## Immediate continuation
 
-Trace the exact current implementation equivalent of the historically proven `Node -> Interlock -> InTr -> lease -> EVENT_EPHEMERAL runtime materialization` entrypoint and compare it with the merged StegBrowser manifest-bound request. Reuse that path where predicates match. Do not introduce a generic external runtime/process host.
+Trace the exact current implementation equivalent of the historically proven `Node -> Interlock -> InTr -> lease -> EVENT_EPHEMERAL runtime materialization` entrypoint and compare it with the merged StegBrowser manifest-bound request. Reuse that path where predicates match. Synchronize every confirmed reusable architectural rule into `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` and affected reusable consumers/tests as part of the same change. Do not introduce a generic external runtime/process host.
 
 ## Manual work
 
