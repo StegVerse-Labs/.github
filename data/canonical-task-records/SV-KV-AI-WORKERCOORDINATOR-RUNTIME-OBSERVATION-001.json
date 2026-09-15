@@ -1,0 +1,66 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SV-KV-AI-WORKERCOORDINATOR-RUNTIME-OBSERVATION-001",
+  "correlation_id": "SV-KV-AI-WORKERCOORDINATOR-RUNTIME-OBSERVATION-001",
+  "root_correlation_id": "SV-KV-AI-PERSISTENCE-001",
+  "parent_task_id": "SV-KV-AI-PERSISTENCE-001",
+  "goal": "Observe and bind an authentic same-execution WorkerCoordinator claim/fence tuple for the KV AI memory resident path using only real owner-custodied runtime evidence surfaces and the already-merged source-side observer.",
+  "coordination_state": "IN_PROGRESS",
+  "handoff_ref": "docs/KV_AI_WORKERCOORDINATOR_RUNTIME_OBSERVATION_MIRROR_HANDOFF.md",
+  "owner_issue": "StegVerse-Labs/.github#1882",
+  "cosv_task_vector": "20111110110001",
+  "decomposition": {
+    "decomposed_from": "SV-KV-AI-PERSISTENCE-001",
+    "decomposition_reason": "Parent reached Goal Prompt Count 20/20 with source capabilities validated but authentic owner-custodied WorkerCoordinator claim/fence observation absent.",
+    "source_merge_refs": [
+      "StegVerse-Labs/.github#1872",
+      "StegVerse-Labs/.github#1881",
+      "StegVerse-Labs/.github@8634ef9d9f7ff60e9ad067c72f670f85660d9966"
+    ],
+    "first_unmet_predicate": "AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_NOT_OBSERVED"
+  },
+  "dependencies": [
+    {"dependency_id":"DEP-SOURCE-OBSERVER","kind":"CAPABILITY","state":"RESOLVED","ref":"scripts/evaluate_kv_ai_workercoordinator_claim_fence_observation.py","authority_effect":"NONE_OBSERVATION_ONLY"},
+    {"dependency_id":"DEP-RESIDENT-TARGETED-EXECUTION-RECEIPT","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"receipts/sovereign-host/resident-targeted-execution.latest.json"},
+    {"dependency_id":"DEP-WORKERCOORDINATOR-CLAIM-FENCE","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"authentic claim_id + worker_instance_id + lease + fencing_token + assignment timer"},
+    {"dependency_id":"DEP-MASTER-RECORDS-WORKER-ASSIGNMENT","kind":"EVIDENCE","state":"UNRESOLVED","ref":"Master Records worker-assignment binding for same task/vector/claim/fence tuple"}
+  ],
+  "expected_evidence_predicates": [
+    "CANONICAL_TASK_REGISTERED",
+    "SOURCE_OBSERVER_AVAILABLE",
+    "NO_SOURCE_ONLY_EVIDENCE_PROMOTED",
+    "AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVATION"
+  ],
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": ["STEG-BROWSER-RETAINED-RESIDENT-NODE", "STEGOS-CURRENT-DEVICE-NODE", "STEG-BROWSER-EPHEMERAL-LEASE", "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER", "ADMITTED-EPHEMERAL-STEGOS-NODE", "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"],
+    "authority_effect": "NONE",
+    "second_user_operated_device_allowed": false,
+    "external_device_required": false,
+    "selected_substrate_id": null,
+    "reviews": [
+      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/KV_AI_WORKERCOORDINATOR_RUNTIME_OBSERVATION_MIRROR_HANDOFF.md","StegVerse-Labs/.github#1882"]},
+      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/KV_AI_WORKERCOORDINATOR_RUNTIME_OBSERVATION_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/KV_AI_WORKERCOORDINATOR_RUNTIME_OBSERVATION_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/KV_AI_WORKERCOORDINATOR_RUNTIME_OBSERVATION_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"AUTHORITY","evidence_refs":["docs/KV_AI_WORKERCOORDINATOR_RUNTIME_OBSERVATION_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/KV_AI_WORKERCOORDINATOR_RUNTIME_OBSERVATION_MIRROR_HANDOFF.md"]}
+    ]
+  },
+  "runtime_requirements": {
+    "capabilities": ["workercoordinator_claim_fence_observation", "resident_targeted_execution_receipt_classification", "master_records_worker_assignment_binding"],
+    "environment": "OWNER_CUSTODIED_RESIDENT_RUNTIME_EVIDENCE_SURFACE",
+    "direction": "AUTHENTIC_CLAIM_FENCE_OBSERVATION_ONLY",
+    "mutation_required": false,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "source_side_predicate_recognizer_mints_runtime_authority": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "master_records_reality_authority": true
+  },
+  "completion": {"claimed": false, "validated": false, "reconciliation_ref": null}
+}
