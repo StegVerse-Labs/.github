@@ -2,22 +2,24 @@
   "reusable_task_id": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
   "name": "StegBrowser Runtime Consumption",
   "purpose": "Execute the existing StegBrowser Canonical Work runtime-consumption chain on an admitted ephemeral StegOS node without creating a duplicate runtime, scheduler, WorkerCoordinator, credential path, or device dependency.",
-  "trigger": "STEG-BROWSER-RUNTIME-CONSUMPTION-001 is ACTIVE/CHECKED_OUT and selected_execution_substrate is ADMITTED-EPHEMERAL-STEGOS-NODE",
-  "scope": "one manifest-bound invocation for STEG-BROWSER-RUNTIME-CONSUMPTION-001 / COSV 40000100100000",
+  "trigger": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001 is ACTIVE/CHECKED_OUT and selected_execution_substrate is ADMITTED-EPHEMERAL-STEGOS-NODE; STEG-BROWSER-RUNTIME-CONSUMPTION-001 remains retired historical operation lineage and is not reactivated",
+  "scope": "one manifest-bound invocation for STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001 / COSV 40000100100000 using the existing StegBrowser runtime-consumption capability",
+  "operation_lineage_task_id": "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
+  "active_tracking_task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
   "parameter_keys": ["source_root", "runtime_root", "sovereign_source_root", "stegos_source_root", "runtime_base"],
   "runner_templates": ["scripts/run_stegbrowser_runtime_consumption_reusable.py"],
   "recording_levels": ["operation", "task", "goal", "component", "system", "master_records"],
   "completion_predicates": [
+    "RUNTIME_CONNECTION_TRANSITION_VARIABLES_OBSERVED",
     "CANONICAL_WORK_RESIDENT_CONSUMPTION_OBSERVED",
     "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
     "INTR_ADMISSION_OBSERVED",
-    "STEGBROWSER_TVC_SOURCE_PROMOTION_CONSUMPTION_OBSERVED",
-    "PINNED_TVC_AEF6B6F5_MATERIALIZED_AND_PRIMARY_RUNTIME_RESTARTED",
-    "IMMUTABLE_OBSERVER_4C78F865_EXECUTED",
-    "SIMULTANEOUS_TVC_8765_SKAP_8775_OBSERVED",
-    "OWNER_INGRESS_READY_OBSERVED",
+    "GOVERNED_RETURN_PACKET_RECEIVED",
+    "RETURN_RECORD_DURABLY_RECORDED",
+    "FINAL_ALLOWED_TRANSPORT_EXIT_TRANSITION_OBSERVED",
+    "SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIP_IDENTIFIED",
     "NO_PARALLEL_SCHEDULER_DISPATCHER_CREDENTIAL_PATH_OR_SECOND_DEVICE"
   ],
   "authority_effect": "NONE_ORCHESTRATION_ONLY",
-  "reuse_instructions": "Trigger once through scripts/trigger_reusable_task.py. The runner must reuse SovereignLocalEventRuntimeAdapter, the existing Canonical Work resident consumer, WorkerCoordinator, Interlock/InTr, exact stegbrowser_tvc_source_promotion consumer, TVC runtime/observer path, and Master Records lifecycle. The neutral scheduler supplies the existing resident runtime root; authentic ephemeral Canonical Work evidence must be retained there as exact bytes before the existing TVC source-promotion consumer is invoked. It may stop only at a real authority/evidence/external-resource boundary and may not infer completion from source or CI. The source Goal remains ACTIVE/CHECKED_OUT; before the existing Canonical Work bootstrap runs, the runner must stage only a runtime-local PROPOSED ingress projection so the authentic InTr transition can produce INGRESS_ADMITTED without rewriting canonical source state."
+  "reuse_instructions": "Trigger once through scripts/trigger_reusable_task.py against the active remediation Goal STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001 / COSV 40000100100000. The retired STEG-BROWSER-RUNTIME-CONSUMPTION-001 record is lineage only and must not be reopened or treated as ACTIVE. The runner must reuse SovereignLocalEventRuntimeAdapter, the existing Canonical Work resident consumer, WorkerCoordinator, Interlock/InTr, exact StegBrowser TVC source-promotion consumer where selected, and the existing resident evidence surfaces. The neutral scheduler supplies the existing resident runtime root. The runtime-local PROPOSED projection may be staged only for the active remediation Goal so the authentic InTr transition can produce INGRESS_ADMITTED without rewriting canonical source state. Round-trip transport success requires the governed return record to be received and durably recorded and the final allowed Interlock/InTr transport-exit transition to be observed. Master Records and other downstream processing remain post-transport and cannot prove or negate transport success. Source or CI state must never be promoted to runtime completion evidence."
 }

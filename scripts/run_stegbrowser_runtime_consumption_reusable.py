@@ -11,20 +11,17 @@ import sys
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
-TASK_ID = "STEG-BROWSER-RUNTIME-CONSUMPTION-001"
+TASK_ID = "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
+OPERATION_LINEAGE_TASK_ID = "STEG-BROWSER-RUNTIME-CONSUMPTION-001"
 COSV = "40000100100000"
-CONSUMER = Path("control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py")
-TVC_CONSUMER = Path("control/resident-execution-request.d/consume-stegbrowser-tvc-source-promotion.py")
-CONSUMPTION_RECEIPT = Path("receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json")
-TVC_RECEIPT = Path("receipts/sovereign-host/stegbrowser-tvc-source-promotion-request-consumption.latest.json")
+BOOTSTRAP_WRAPPER = Path("scripts/install_and_run_canonical_work_event_bootstrap.py")
+BOOTSTRAP_RUNTIME_REL = Path("runtime/canonical-work-stegbrowser-runtime-consumption")
+BOOTSTRAP_RECEIPT_REL = BOOTSTRAP_RUNTIME_REL / "receipts/sovereign-host/canonical-work-event-bootstrap.latest.json"
 CUSTODY_RECEIPT = Path("receipts/sovereign-host/stegbrowser-runtime-consumption-evidence-custody.latest.json")
-OBSERVER_RECEIPT = Path("var/lib/stegverse/skap/browser-recipient/apple/receipts/runtime-observation-latest.json")
-TVC_TARGET_SHA = "aef6b6f5dc99d2a531718ca475d20858ae8e68a6"
-TVC_ALLOWED_OUTCOMES = {"STAGED", "ALREADY_STAGED", "RESTAGED_EXACT_SOURCE"}
 
 
 def fail(reason: str) -> None:
-    print(json.dumps({"state": "BOUNDARY", "reason": reason, "authority_effect": "NONE"}, sort_keys=True))
+    print(json.dumps({"state": "BOUNDARY", "reason": reason, "task_id": TASK_ID, "operation_lineage_task_id": OPERATION_LINEAGE_TASK_ID, "authority_effect": "NONE"}, sort_keys=True))
     raise SystemExit(2)
 
 
@@ -83,7 +80,9 @@ def stage_runtime_ingress_projection(source: Path, runtime_root: Path, record: d
     if "INGRESS_ADMITTED" not in (record.get("allowed_next_transitions") or []):
         fail("runtime_ingress_projection_transition_not_allowed")
     claim = record.get("worker_claim") or {}
-    if claim.get("authority") != "WORKERCOORDINATOR" or claim.get("claim_ref") is not None or claim.get("fence_ref") is not None:
+    if claim.get("authority") != "WORKERCOORDINATOR" or claim.get("projection_only") is not True:
+        fail("runtime_ingress_projection_claim_authority_invalid")
+    if claim.get("claim_ref") is not None or claim.get("fence_ref") is not None:
         fail("runtime_ingress_projection_claim_boundary_invalid")
 
     registry_source = source / "data/canonical-task-registry.json"
@@ -101,6 +100,7 @@ def stage_runtime_ingress_projection(source: Path, runtime_root: Path, record: d
     projected_record["runtime_ingress_projection"] = {
         "source_coordination_state": "ACTIVE",
         "projected_coordination_state": "PROPOSED",
+        "operation_lineage_task_id": OPERATION_LINEAGE_TASK_ID,
         "source_mutated": False,
         "claim_or_fence_minted": False,
         "authority_effect": "NONE_RUNTIME_PROJECTION_ONLY",
@@ -118,76 +118,38 @@ def stage_runtime_ingress_projection(source: Path, runtime_root: Path, record: d
         "runtime_task_shard_ref": str(runtime_shard),
         "source_coordination_state": "ACTIVE",
         "projected_coordination_state": "PROPOSED",
+        "operation_lineage_task_id": OPERATION_LINEAGE_TASK_ID,
         "source_mutated": False,
         "claim_or_fence_minted": False,
         "authority_effect": "NONE_RUNTIME_PROJECTION_ONLY",
     }
 
 
-def retain_exact_ephemeral_evidence(ephemeral_root: Path, resident_root: Path, consumption: Path, bootstrap: Path) -> dict[str, Any]:
+def retain_bootstrap_evidence(ephemeral_root: Path, resident_root: Path, bootstrap: Path) -> dict[str, Any]:
     if resident_root == ephemeral_root:
         fail("resident_runtime_must_be_distinct_from_ephemeral_runtime")
-    try:
-        bootstrap_rel = bootstrap.resolve().relative_to(ephemeral_root.resolve())
-    except ValueError:
-        fail("bootstrap_receipt_outside_ephemeral_runtime")
-    rows = []
-    for source_path, rel in ((consumption, CONSUMPTION_RECEIPT), (bootstrap, bootstrap_rel)):
-        raw = source_path.read_bytes()
-        target = resident_root / rel
-        atomic_bytes(target, raw)
-        if target.read_bytes() != raw:
-            fail(f"resident_evidence_exact_copy_failed:{rel}")
-        rows.append({
-            "source_ref": str(source_path),
-            "resident_ref": str(target),
-            "sha256": sha256_bytes(raw),
-            "exact_bytes_retained": True,
-        })
+    raw = bootstrap.read_bytes()
+    target = resident_root / BOOTSTRAP_RECEIPT_REL
+    atomic_bytes(target, raw)
+    if target.read_bytes() != raw:
+        fail("resident_bootstrap_evidence_exact_copy_failed")
     custody = {
-        "schema": "stegverse.stegbrowser-runtime-consumption-evidence-custody/v1",
-        "state": "EXACT_EPHEMERAL_EVIDENCE_RETAINED_IN_EXISTING_RESIDENT_RUNTIME",
+        "schema": "stegverse.stegbrowser-runtime-consumption-evidence-custody/v2",
+        "state": "AUTHENTIC_INTR_INGRESS_EVIDENCE_RETAINED_IN_EXISTING_RESIDENT_RUNTIME",
         "task_id": TASK_ID,
+        "operation_lineage_task_id": OPERATION_LINEAGE_TASK_ID,
         "cosv_task_vector": COSV,
         "ephemeral_runtime_root": str(ephemeral_root),
         "resident_runtime_root": str(resident_root),
-        "evidence": rows,
+        "evidence": [{"source_ref": str(bootstrap), "resident_ref": str(target), "sha256": sha256_bytes(raw), "exact_bytes_retained": True}],
         "source_receipt_mutated": False,
         "claim_or_fence_minted": False,
-        "credential_material_present": False,
         "github_token_runtime_authority": "NONE",
         "credential_authority": "TV/TVC",
         "authority_effect": "NONE_EVIDENCE_CUSTODY_ONLY",
     }
     atomic_json(resident_root / CUSTODY_RECEIPT, custody)
     return custody
-
-
-def dispatch_existing_tvc_promotion(source: Path, resident_root: Path) -> dict[str, Any]:
-    consumer = source / TVC_CONSUMER
-    if not consumer.is_file():
-        fail("stegbrowser_tvc_source_promotion_consumer_not_materialized")
-    completed = subprocess.run(
-        [sys.executable, str(consumer), "--source-root", str(source), "--runtime-root", str(resident_root)],
-        cwd=resident_root,
-        text=True,
-        capture_output=True,
-        check=False,
-        env={**os.environ, "STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY": "TV/TVC", "STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY": "NONE"},
-    )
-    receipt_path = resident_root / TVC_RECEIPT
-    if completed.returncode != 0 or not receipt_path.is_file():
-        fail(f"stegbrowser_tvc_source_promotion_dispatch_failed:{completed.returncode}")
-    receipt = load_json(receipt_path)
-    if (
-        receipt.get("state") != "ATTEMPT_RECORDED"
-        or receipt.get("outcome") not in TVC_ALLOWED_OUTCOMES
-        or receipt.get("exact_sha") != TVC_TARGET_SHA
-        or receipt.get("credential_material_present") is not False
-        or receipt.get("network_source_fetch_performed") is not False
-    ):
-        fail("stegbrowser_tvc_source_promotion_receipt_invalid")
-    return receipt
 
 
 def main() -> int:
@@ -218,16 +180,14 @@ def main() -> int:
     from stegos.ephemeral_runtime_lease import AuthorityBoundary, LeaseProfile, LeaseRequest, RendezvousRequirement, RuntimeClass
     from stegos.sovereign_local_event_runtime import SovereignLocalEventRuntimeAdapter
 
-    record_bytes = record_path.read_bytes()
-    registry_bytes = registry_path.read_bytes()
-    record_hash = sha256_bytes(record_bytes)
-    registry_hash = sha256_bytes(registry_bytes)
+    record_hash = sha256_bytes(record_path.read_bytes())
+    registry_hash = sha256_bytes(registry_path.read_bytes())
     state_hash = sha256_bytes(f"{TASK_ID}|{COSV}|{record_hash}".encode("utf-8"))
     lease_id = f"STEGBROWSER-{record_hash[:16]}"
     request = LeaseRequest(
         lease_id=lease_id,
         trigger_id=os.environ.get("STEGVERSE_REUSABLE_TASK_INVOCATION_ID", lease_id),
-        operation="stegbrowser-runtime-consumption",
+        operation="stegbrowser-runtime-consumption-remediation",
         implementation_ref=f"StegVerse-Labs/.github@{record_hash}",
         source_receipt_id="sha256:" + record_hash,
         consequence_id=TASK_ID,
@@ -252,11 +212,12 @@ def main() -> int:
 
     runtime_root = Path(str(runtime["runtime_root"]))
     ingress_projection = stage_runtime_ingress_projection(source, runtime_root, record)
-    consumer = runtime_root / CONSUMER
-    if not consumer.is_file():
-        fail("canonical_work_consumer_not_materialized")
+    wrapper = runtime_root / BOOTSTRAP_WRAPPER
+    if not wrapper.is_file():
+        fail("canonical_work_bootstrap_wrapper_not_materialized")
+    bootstrap_runtime = runtime_root / BOOTSTRAP_RUNTIME_REL
     completed = subprocess.run(
-        [sys.executable, str(consumer), "--source-root", str(source), "--runtime-root", str(runtime_root)],
+        [sys.executable, str(wrapper), "--runtime-root", str(bootstrap_runtime), "--task-id", TASK_ID, "--registry", str(runtime_root / "data/canonical-task-registry.json")],
         cwd=runtime_root,
         text=True,
         capture_output=True,
@@ -266,68 +227,40 @@ def main() -> int:
     if completed.returncode != 0:
         print(completed.stdout[-4000:])
         print(completed.stderr[-4000:], file=sys.stderr)
-        fail(f"canonical_work_consumer_failed:{completed.returncode}")
+        fail(f"canonical_work_intr_bootstrap_failed:{completed.returncode}")
 
-    consumption = runtime_root / CONSUMPTION_RECEIPT
-    if not consumption.is_file():
-        fail("canonical_work_resident_consumption_receipt_not_observed")
-    consumption_value = load_json(consumption)
-    if consumption_value.get("state") != "COMPLETED" or consumption_value.get("task_id") != TASK_ID:
-        fail("canonical_work_resident_consumption_receipt_invalid")
-    bootstrap_ref = consumption_value.get("bootstrap_receipt_ref")
-    if not isinstance(bootstrap_ref, str) or not Path(bootstrap_ref).is_file():
+    bootstrap = runtime_root / BOOTSTRAP_RECEIPT_REL
+    if not bootstrap.is_file():
         fail("canonical_work_intr_bootstrap_receipt_missing")
-    bootstrap = Path(bootstrap_ref)
     bootstrap_value = load_json(bootstrap)
     if bootstrap_value.get("state") != "INGRESS_CONSUMPTION_AND_PROJECTION_OBSERVED" or bootstrap_value.get("task_id") != TASK_ID:
         fail("canonical_work_intr_admission_not_observed")
+    custody = retain_bootstrap_evidence(runtime_root, resident_root, bootstrap)
 
-    custody = retain_exact_ephemeral_evidence(runtime_root, resident_root, consumption, bootstrap)
-    tvc_value = dispatch_existing_tvc_promotion(source, resident_root)
-
-    result_path_raw = os.environ.get("STEGVERSE_REUSABLE_TASK_RESULT_PATH", "").strip()
-    manifest_path_raw = os.environ.get("STEGVERSE_REUSABLE_TASK_MANIFEST", "").strip()
-    if not result_path_raw or not manifest_path_raw:
-        fail("reusable_task_result_binding_missing")
-    manifest = load_json(Path(manifest_path_raw))
-    predicates = json.loads(os.environ.get("STEGVERSE_REUSABLE_TASK_COMPLETION_PREDICATES_JSON", "[]"))
-    if not isinstance(predicates, list):
-        fail("completion_predicates_invalid")
-
-    observer_candidates = [resident_root / OBSERVER_RECEIPT, Path("/var/lib/stegverse/skap/browser-recipient/apple/receipts/runtime-observation-latest.json")]
-    observer = next((x for x in observer_candidates if x.is_file()), None)
-    if observer is None:
-        fail("runtime_observation_receipt_not_observed")
-    observed = load_json(observer)
-    if observed.get("state") != "OWNER_INGRESS_READY_OBSERVED" or observed.get("simultaneous_listener_observation") is not True:
-        fail("owner_ingress_ready_not_observed")
-
-    result = {
-        "schema": "stegverse.reusable-task-runner-result/v1",
-        "invocation_id": os.environ.get("STEGVERSE_REUSABLE_TASK_INVOCATION_ID"),
-        "reusable_task_id": os.environ.get("STEGVERSE_REUSABLE_TASK_ID"),
-        "manifest_hash": manifest.get("manifest_hash"),
-        "completion_predicates_satisfied": predicates,
-        "runtime_observed": True,
-        "completion_evidence_observed": True,
-        "canonical_work_consumption_receipt": str(resident_root / CONSUMPTION_RECEIPT),
-        "canonical_work_intr_bootstrap_receipt": str(bootstrap_ref),
-        "resident_evidence_custody_receipt": str(resident_root / CUSTODY_RECEIPT),
+    boundary = {
+        "schema": "stegverse.stegbrowser-runtime-remediation-boundary/v1",
+        "state": "AUTHENTIC_INTR_INGRESS_OBSERVED",
+        "task_id": TASK_ID,
+        "operation_lineage_task_id": OPERATION_LINEAGE_TASK_ID,
+        "cosv_task_vector": COSV,
         "runtime_ingress_projection": ingress_projection,
-        "tvc_source_promotion_receipt": str(resident_root / TVC_RECEIPT),
-        "tvc_source_promotion_outcome": tvc_value.get("outcome"),
-        "runtime_observation_receipt": str(observer),
-        "ephemeral_runtime_verification": verified,
-        "resident_runtime_root": str(resident_root),
-        "ephemeral_runtime_root": str(runtime_root),
+        "canonical_work_intr_bootstrap_receipt": str(resident_root / BOOTSTRAP_RECEIPT_REL),
         "evidence_custody": custody,
-        "authority_effect": "NONE",
+        "workercoordinator_claim_fence_observed": False,
+        "governed_return_packet_received": False,
+        "return_record_durably_recorded": False,
+        "final_allowed_transport_exit_transition_observed": False,
+        "successful_data_transport_round_trip_identified": False,
+        "next_required_predicate": "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+        "runtime_observed": True,
+        "completion_evidence_observed": False,
+        "github_token_runtime_authority": "NONE",
+        "authority_effect": "NONE_BOUNDARY_EVIDENCE_ONLY"
     }
-    out = Path(result_path_raw)
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    print(json.dumps(result, sort_keys=True))
-    return 0
+    boundary_path = resident_root / "receipts/sovereign-host/stegbrowser-runtime-remediation-boundary.latest.json"
+    atomic_json(boundary_path, boundary)
+    print(json.dumps(boundary, sort_keys=True))
+    return 2
 
 
 if __name__ == "__main__":
