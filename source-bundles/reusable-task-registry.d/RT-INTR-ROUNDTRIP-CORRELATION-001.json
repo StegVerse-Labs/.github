@@ -1,0 +1,15 @@
+{
+  "reusable_task_id": "RT-INTR-ROUNDTRIP-CORRELATION-001",
+  "name": "Interlock/InTr Round-Trip Correlation",
+  "purpose": "Carry one governed request/result round trip across an existing Interlock/InTr boundary while preserving exact request/response correlation, destination profile binding, exactly-once semantics, loop prevention, and explicit transport-versus-application outcome separation.",
+  "trigger": "an allowed governed operation requires a result to cross back through the same or a paired Interlock/InTr boundary",
+  "scope": "one correlated request/response exchange",
+  "parameter_keys": ["intr_protocol_ref", "request_packet_id", "request_receipt_refs", "destination_profile", "response_payload_sha256", "application_disposition", "replay_policy"],
+  "composes": ["RT-INTR-BOUNDARY-ADMISSION-001", "RT-INTR-GOVERNED-TRANSITION-001"],
+  "runner_templates": [],
+  "recording_levels": ["operation", "task", "goal", "component", "system", "master_records"],
+  "completion_predicates": ["REQUEST_PACKET_CORRELATION_PRESERVED", "DESTINATION_PROFILE_UNCHANGED", "RESPONSE_TO_PACKET_ID_BOUND", "EXACTLY_ONCE_POLICY_APPLIED", "RESPONSE_LOOP_PREVENTED", "TRANSPORT_AND_APPLICATION_DISPOSITIONS_SEPARATED", "EGRESS_AND_RETURN_RECEIPTS_RETAINED"],
+  "failure_semantics": ["MUTATED_DESTINATION_PROFILE_DENY", "UNKNOWN_REQUEST_CORRELATION_DENY", "DUPLICATE_SUCCESS_REUSES_PRESERVED_RESULT", "TRANSPORT_SUCCESS_DOES_NOT_PROMOTE_APPLICATION_SUCCESS"],
+  "authority_effect": "NONE_TRANSPORT_CORRELATION_ONLY",
+  "reuse_instructions": "Reuse the existing protocol and boundary receipts. A response packet must bind the originating request and may not recursively become a new request. Replays must preserve prior terminal evidence rather than reminting a competing successful history."
+}
