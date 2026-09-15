@@ -1,15 +1,15 @@
 # KV Connection Revalidation COSV Mirror Handoff
 
-Status: SOURCE_PROJECTION_MERGED_VALIDATED / PHYSICAL_KV1_ADOPTION_VERIFIED / DEVICE_LOCAL_KV_INSTALL_OWNER_OBSERVED_EXACT_READBACK / DEVICE_LOCAL_DURABILITY_BEST_EFFORT_BROWSER_ORIGIN / GOOGLE_DRIVE_EXISTING_PEER_EXACT_EVIDENCE_RECOVERED / GOOGLE_DRIVE_KV2_ADOPTION_INPUT_PREPARED / LEGACY_NODE_COMPATIBILITY_REPAIR_MERGED_DEPLOYED / AUTHENTIC_GOVERNED_ADOPTION_REQUEST_EMITTED / RESIDENT_INGRESS_OBSERVED / GOOGLE_DRIVE_KV2_NOT_MATERIALIZED / CLOUD_PROVIDER_EXECUTION_PENDING / DEVICE_KV_SKAP_ROUNDTRIP_CHILD_ACTIVE
+Status: SOURCE_PROJECTION_MERGED_VALIDATED / STORAGE_ENDPOINT_V2_MERGED_VALIDATED / PHYSICAL_KV1_ADOPTION_VERIFIED / DEVICE_LOCAL_KV_INSTALL_OWNER_OBSERVED_EXACT_READBACK / DEVICE_LOCAL_DURABILITY_BEST_EFFORT_BROWSER_ORIGIN / GOOGLE_DRIVE_EXISTING_PEER_EXACT_EVIDENCE_RECOVERED / GOOGLE_DRIVE_KV2_ADOPTION_INPUT_PREPARED / LEGACY_NODE_COMPATIBILITY_REPAIR_MERGED_DEPLOYED / AUTHENTIC_GOVERNED_ADOPTION_REQUEST_EMITTED / RESIDENT_INGRESS_OBSERVED / QUERY_SECRET_SAFE_GATEWAY_SOURCE_MERGED / DEPLOYED_QUERY_SECRET_SAFE_INGRESS_EVIDENCE_PENDING / GOOGLE_DRIVE_KV2_NOT_MATERIALIZED / CLOUD_PROVIDER_EXECUTION_PENDING / DEVICE_KV_SKAP_ROUNDTRIP_CHILD_ACTIVE
 Repository: `StegVerse-Labs/.github`
 Issue: #419
 Canonical COSV merge: #423 at `538885a85d1267f3080bde09b5375d6e8b99c577`
-Updated: 2026-09-10
+Updated: 2026-09-15
 Authority effect: NONE
 
 ## Purpose
 
-Project and track `KV-CONNECTION-REVALIDATION-WORKER-001` under canonical task.v1 COSV control while preserving the distinction between source state, owner-observed runtime state, physical owner-controlled KnowledgeVault evidence, browser durability, resident ingress, and authentic governed provider execution.
+Project and track `KV-CONNECTION-REVALIDATION-WORKER-001` under canonical task.v1 COSV control while preserving the distinction between source state, owner-observed runtime state, physical owner-controlled KnowledgeVault evidence, browser durability, resident ingress, provider-access prerequisites, and authentic governed provider execution.
 
 ## Canonical task binding
 
@@ -21,6 +21,26 @@ SITE CONSUMER REPOSITORY: StegVerse-Labs/Site
 ```
 
 Canonical vector remains `50000000102000`.
+
+## Provider-neutral storage endpoint v2 reconciliation
+
+The canonical owner and Site consumer now both contain the compatibility-preserving storage-endpoint v2 model requested under this Goal:
+
+- `StegVerse-Labs/continuity-vault-kit` PR #214 merged at `e1617b4d6b14383f1a72d60c8a1bd997ce7a149f` after exact-head hosted validation passed;
+- `StegVerse-Labs/Site` PR #1347 merged at `c57486ab24f5b20781ce9736435ec8b801e45c48` after exact-head hosted validation passed;
+- canonical storage model is `KV instance -> storage endpoint -> access adapter -> location`;
+- endpoint classes cover DEVICE, CLOUD, NETWORK/NAS, and REMOVABLE storage;
+- credential/session requirements are adapter-specific;
+- legacy v1 provider-operation requests remain compatible;
+- the existing Google Drive KV #2 request lineage is not regenerated, rehashed, renamed, or replaced;
+- KV identity, provenance, relationship tiers, Interlock/InTr authority, credential authority, and runtime evidence boundaries are unchanged.
+
+Source/CI/merge of storage-endpoint v2 grants no provider access, no provider operation authority, no relationship mutation, no data movement, no KV materialization, no AI-corpus exposure, and no activation.
+
+Canonical evidence refs:
+
+- `StegVerse-Labs/continuity-vault-kit:KV_STORAGE_ENDPOINT_V2_MIRROR_HANDOFF.md`;
+- `StegVerse-Labs/Site:docs/KV_STORAGE_ENDPOINT_V2_MIRROR_HANDOFF.md`.
 
 ## Source and resident basis
 
@@ -56,17 +76,9 @@ my-kv-set-projection.json: sha256:187ab43f0bb09d88da154af26d57e1bfe7199fd90affd2
 
 Because the current iPhone resident KV is now KV #1, the existing Google Drive vault requires an explicit governed ordinal reassignment/adoption event. No silent rewrite is permitted.
 
-## Prepared and deployed Google Drive KV #2 adoption transport
+## Prepared Google Drive KV #2 request and resident ingress
 
-Site PR #1122 merged the bounded adoption transport at `b5c3939878bafc7f3aeb40a52458c7a4528c6628`.
-
-The first authentic owner attempt exposed a legacy current-device Node IndexedDB shape lacking the newer `intr_outbox` store. Site PR #1124 repaired only that exact compatibility case and merged at `297301230b0e17ffc6d6050d708847ab75b8ce7e` after all required gates passed and Pages deployment succeeded.
-
-The repair preserves the normal persisted-outbox path and adds a bounded event-ephemeral compatibility path only for the exact missing-object-store condition. It does not claim durable outbox persistence, provider execution, relationship mutation, or KV materialization.
-
-## Authentic owner retry — resident ingress observed
-
-After #1124 deployment, the owner retried the prepared Google Drive KV #2 adoption action once on the current iPhone. The owner-visible Site result showed:
+The existing request remains exactly:
 
 ```text
 request_id=SITE-CLOUD-KV-4347408852127319cbda574f02e03edb
@@ -77,15 +89,37 @@ instance_materialized=false
 provider_operation_authorized=false
 ```
 
-Site PR #1127 reconciled this bounded owner-observed result into Site at merge commit `769cfa4e6c479fef26950889e8a1ea20d0502887` after Cloud KV Peer Manager, My KV Multi-Instance Provider Manager, Device Local KV Install, Site Handoff Orchestrator, Ecosystem Heartbeat Orchestration, and Site Bootstrap all passed.
+Site PR #1127 reconciled the bounded owner-observed resident-ingress result at merge commit `769cfa4e6c479fef26950889e8a1ea20d0502887`.
 
-The owner-visible result did not display `resident_transport_origin`, `provider_execution_attempted`, `relationship_mutation_attempted`, or `resident_materialization_observed`; canonical COSV therefore does not infer those values from source/deployment alone.
+This proves request emission and resident ingress only. It does not prove Google Drive provider execution, ordinal rewrite, KV #2 materialization, relationship mutation, data movement, replication, AI-corpus exposure, credential use, authority grant, or activation.
 
-This evidence proves request emission and resident ingress only. It does not prove Google Drive provider execution, ordinal rewrite, KV #2 materialization, relationship mutation, data movement, replication, AI-corpus exposure, credential use, authority grant, or activation.
+## Existing provider binding and identity-preserving materializer
+
+`StegVerse-Labs/continuity-vault-kit` already contains the canonical provider-binding source for CONNECT/VERIFY and `runtime/cloud_peer_set_membership_materialization.py` for identity-preserving post-verification set membership.
+
+The materializer requires admitted evidence with `materialization_ready=true` and `provider_connect_verified=true` before it can bind existing cloud identity `kvi_a31335d2cc3745fa987b635432cfed2c` into `personal` as KV #2. It preserves the existing cloud identity, leaves relationship tier `NOT_CONNECTED`, forbids private-content rewrite, requires CONNECT/VERIFY receipt refs, and grants no provider, relationship, transport, credential, or activation authority.
+
+Therefore the recovered Google Drive vault MUST NOT be passed through the generic new-identity adoption materializer.
+
+## Query-secret-safe owner-consent prerequisite
+
+The Google Drive owner-consent/provider-execution lane is currently fail-closed on the public callback ingress safety predicate.
+
+The existing Service Gateway owner `StegVerse-org/LLM-adapter#271` has merged the source hardening through PR #328:
+
+- Uvicorn built-in request-target access logging is disabled;
+- `QuerySecretSafeAccessLogMiddleware` logs only HTTP method, canonical path, and status;
+- the middleware intentionally does not read or serialize ASGI `query_string`, raw request target, headers, cookies, body, OAuth authorization code, state, or provider credential material.
+
+This closes the source implementation gap only. It does **not** satisfy the deployed-ingress predicate.
+
+Canonical TVC handoff `docs/GOOGLE_DRIVE_PERSONAL_KV_OWNER_CONSENT_CALLBACK_INGRESS_MIRROR_HANDOFF.md` still requires authentic observation that the active `stegverse.org -> TVC` path is running the query-secret-safe boundary and cannot persist synthetic callback query material before `/tvc/google-drive/callback` may be installed/activated for owner consent.
+
+No authentic deployed-ingress log observation is recorded in the canonical sources reviewed on 2026-09-15. Therefore Google consent, provider auth-code exchange, CONNECT, VERIFY, and KV #2 materialization remain inadmissible at this checkpoint.
 
 ## Device <-> KV <-> SKAP roundtrip child
 
-The end-to-end transport objective is now a separate child rather than widening this revalidation worker's semantics:
+The end-to-end transport objective remains a separate child:
 
 ```text
 child_goal: STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001
@@ -94,9 +128,7 @@ COSV: 50000000102000
 state: ACTIVE
 ```
 
-StegOS PR #326 merged at `2339f2f2fc8c28eb4d63077387013154dac9b75c` after exact-head CI `34517908014` succeeded. It composes the existing `device-kv` and `kv-skap` / `kv-skap-custody` connectors into one four-leg receipt chain and re-hashes current packet bytes at completion.
-
-The child additionally owns the resident evidence verifier requiring one authentic:
+The child requires one authentic:
 
 ```text
 DEVICE_SYSTEM -> KV -> SKAP_VAULT -> KV -> DEVICE_SYSTEM
@@ -104,11 +136,9 @@ DEVICE_SYSTEM -> KV -> SKAP_VAULT -> KV -> DEVICE_SYSTEM
 
 lineage with four canonical adjacent-hop receipts plus receipt-bound exact SKAP and KV readback. Source/CI success does not satisfy the runtime predicate.
 
-This child is related to Google Drive KV #2 but not equivalent to provider execution. A bounded already-authorized non-destructive SKAP reference/ciphertext roundtrip can prove the transport chain without fabricating Google Drive CONNECT/VERIFY completion.
-
 ## Canonical vector state
 
-The installed parent vector remains intentionally fail-closed at this checkpoint:
+The installed parent vector remains intentionally fail-closed:
 
 - lifecycle: `MACHINE_OWNED`;
 - archive_ready: false;
@@ -116,20 +146,21 @@ The installed parent vector remains intentionally fail-closed at this checkpoint
 - activated: false;
 - propagated: false.
 
-Resident ingress retires the prior “request not emitted” gap, but provider execution/materialization predicates remain open. The child roundtrip also remains runtime-unproven until authentic terminal receipts/readback exist.
+Storage-endpoint v2 is merged source capability. It does not retire the provider-execution or authentic roundtrip evidence predicates.
 
 ## Remaining sequence
 
-1. Complete child `STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001`: bind authentic resident Device/KV/SKAP evidence, execute the machine-governed non-destructive roundtrip, and retain four-hop/readback proof.
-2. Bind `SITE-CLOUD-KV-4347408852127319cbda574f02e03edb` to authentic downstream Interlock/InTr governance/provider execution.
-3. Observe explicit provider-result evidence; do not substitute source, CI, deployment, or resident ingress for provider execution.
-4. Materialize the existing Google Drive vault as KV #2 only after authentic provider/governance evidence exists and provenance/private-content constraints remain preserved.
-5. Resolve provider credentials through SKAP without copying credentials into ordinary KV, DEVICE_KV, Site, or repository state.
-6. Prove provider CONNECT/VERIFY/READ/WRITE/SYNC/DISCONNECT and relationship-tier progression/downgrade/recovery with authentic admitted evidence.
-7. Add iCloud or another cloud-hosted KV as KV #3/#n only after the current Google Drive request is resolved.
-8. Use cloud recovery/replication to mitigate `BEST_EFFORT_BROWSER_ORIGIN` durability where persistent browser storage is not granted.
-9. Mark evidence_complete/activated/propagated only when their exact predicates are observed.
+1. Produce authentic deployed-ingress evidence for the existing query-secret-safe Service Gateway using a harmless synthetic query value; prove the active public gateway logs only method + canonical path + status and does not persist the synthetic query value or raw request target.
+2. Reconcile `StegVerse-org/LLM-adapter#271` and `StegVerse-Labs/TVC#328/#317` only from that authentic deployed observation.
+3. Implement/activate the exact TVC callback route only after the ingress-safety predicate passes, reusing the existing owner-consent controller, canonical SKAP client-secret protected-use adapter, protected refresh store, vault-session consumer, Interlock/InTr boundaries, and canonical carrier.
+4. Execute authentic owner-present Google consent inside TV/TVC/SKAP; do not expose provider credential plaintext to Site, ordinary KV, repositories, logs, argv, environment, or browser response.
+5. Bind existing request `SITE-CLOUD-KV-4347408852127319cbda574f02e03edb` to canonical CONNECT and VERIFY operations through Interlock/InTr and retain exact provider-result and admission receipt evidence.
+6. Only after CONNECT+VERIFY evidence yields `materialization_ready=true`, bind existing cloud identity `kvi_a31335d2cc3745fa987b635432cfed2c` into `personal` as KV #2 with identity/private-content preservation.
+7. Return the result through SKAP -> KV -> current StegOS Device and require the canonical four-leg roundtrip proof plus exact terminal readback.
+8. Prove later READ/WRITE/SYNC/DISCONNECT and relationship-tier progression/downgrade/recovery only through authentic admitted evidence; do not infer them from CONNECT/VERIFY or materialization.
+9. Add KV #3/#n only after the current Google Drive request is resolved.
+10. Mark evidence_complete/activated/propagated only when their exact predicates are observed.
 
 ## Manual work
 
-None required during canonical reconciliation. Do not emit the Google Drive adoption request again, clear Safari/stegverse.org data, reinstall the resident KV, rebuild the Node, authorize Google Drive, or create another cloud peer until request `SITE-CLOUD-KV-4347408852127319cbda574f02e03edb` is bound to downstream provider/governance execution. Machine-owned resident/service-worker transitions remain separately governed and are not authorized by this handoff.
+None at this checkpoint. Do not re-emit or replace `SITE-CLOUD-KV-4347408852127319cbda574f02e03edb`, do not initiate Google consent, do not authorize Google Drive, do not clear Safari/stegverse.org data, do not reinstall KV, and do not create KV #3 until authentic deployed query-secret-safe ingress evidence is retained and the TVC callback preflight is reopened.
