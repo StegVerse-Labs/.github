@@ -5,6 +5,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "consume_stegbrowser_runtime_connection_ingress_request.py"
@@ -39,7 +40,7 @@ class StegBrowserRuntimeConnectionIngressConsumerTests(unittest.TestCase):
         self.assertFalse(request["second_machine_required"])
         self.assertEqual(request["github_token_runtime_authority"], "NONE")
 
-    def test_live_intr_profile_implies_callable_and_protocol_resolved(self):
+    def test_live_intr_profile_implies_callable(self):
         profile = FakeIngress.profile(False)
         callable_value = bool(
             profile.get("state") == "ACTIVE_SOVEREIGN_INTR_INGRESS"
@@ -47,9 +48,17 @@ class StegBrowserRuntimeConnectionIngressConsumerTests(unittest.TestCase):
             and profile.get("event_triggered") is True
             and "CanonicalWork:Coordination" in (profile.get("profiles") or [])
         )
-        protocol_resolved = bool(callable_value and "CanonicalWork:Coordination" in (profile.get("profiles") or []))
         self.assertTrue(callable_value)
-        self.assertTrue(protocol_resolved)
+
+    def test_exact_manifest_protocol_resolution_requires_existing_adapter(self):
+        with tempfile.TemporaryDirectory() as td:
+            source = Path(td)
+            worker = source / module.MANIFEST_INGRESS_REL
+            worker.parent.mkdir(parents=True)
+            worker.write_text("# exact local adapter\n")
+            self.assertTrue(module.exact_manifest_protocol_resolved(source, FakeIngress.profile(False)))
+            worker.unlink()
+            self.assertFalse(module.exact_manifest_protocol_resolved(source, FakeIngress.profile(False)))
 
     def test_refreshable_is_invocation_bound_not_persistent_source_state(self):
         with tempfile.TemporaryDirectory() as td:
@@ -81,6 +90,34 @@ class StegBrowserRuntimeConnectionIngressConsumerTests(unittest.TestCase):
         self.assertEqual(result["selected_reusable_tasks"], [module.SOURCE_REFRESH_RT])
         self.assertFalse(result["round_trip_1_payload_processing_allowed_by_this_resolution"])
         self.assertFalse(result["second_user_operated_device_required"])
+
+    def test_a3_a4_reuses_existing_manifest_ingress_worker(self):
+        with tempfile.TemporaryDirectory() as td:
+            source = Path(td) / "source"
+            runtime = Path(td) / "runtime"
+            worker = source / module.MANIFEST_INGRESS_REL
+            worker.parent.mkdir(parents=True)
+            worker.write_text("# worker\n")
+            runtime.mkdir()
+            completed = type("Completed", (), {
+                "returncode": 0,
+                "stdout": json.dumps({
+                    "state": "AUTHENTIC_INTR_INGRESS_OBSERVED",
+                    "claim_id": "SHWP-ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001-G23",
+                    "fencing_token": 23,
+                    "workercoordinator_claim_fence_observed": True,
+                    "manifest_defined_path": True,
+                }) + "\n",
+                "stderr": "",
+            })()
+            with patch.object(module.subprocess, "run", return_value=completed) as run:
+                result = module.run_existing_manifest_ingress(source, runtime)
+            self.assertEqual(result["state"], "AUTHENTIC_INTR_INGRESS_OBSERVED")
+            self.assertEqual(result["fencing_token"], 23)
+            cmd = run.call_args.args[0]
+            self.assertEqual(Path(cmd[1]), worker)
+            self.assertIn("--source-root", cmd)
+            self.assertIn("--runtime-root", cmd)
 
 
 if __name__ == "__main__":
