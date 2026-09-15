@@ -237,7 +237,6 @@ Transport and AI-ingress coordination are materialized reusable component famili
 For Task Registry AI/session coordination, `RTC-TASK-REGISTRY-SESSION-ACTOR-GATE-010` is the reusable fail-closed source gate across applicable check-in/return/close lifecycle operations. It permits ChatGPT as the only AI actor kind at that coordination surface while preserving human and non-AI system coordinator paths. The actor declaration is not authentic origin attestation, and Task Registry coordination never grants WorkerCoordinator claim/fence, Interlock/InTr transition, TV/TVC credential, KV/SKAP user-verification, execution, or Master Records custody authority.
 
 `RTC-NONCHATGPT-AI-DECISION-SANDBOX-011` is the reusable capability definition for future non-ChatGPT AI decision processing outside Task Registry coordination. Registration or source construction does not prove sandbox enforcement or runtime isolation; those remain independent evidence predicates before additional AI support can be considered active.
-
 The complete transport manifest -> governed processing -> round trips -> evidence/custody/reconstruction -> Publisher -> SDK return -> governed egress -> Interlock/InTr -> far-side final transition sequence remains a maximal composition, not a universal pipeline.
 
 Canonical model and decomposition sources:
@@ -415,3 +414,15 @@ Every preflight loads the global task-coordination and cross-task policy context
 If a required policy source cannot be resolved, preflight fails closed as `STOP_AT_CANONICAL_POLICY_DEPENDENCY`. Missing policy is an exact source dependency, not permission for a session to invent new lifecycle, authority, device, worker, HeartBeat, custody, or failure semantics. Policy resolution itself grants no execution, claim/fence, Interlock/InTr transition, TV/TVC credential, route, custody, publication, or runtime-truth authority.
 
 This gate consumes existing canonical invariants—including ephemeral runner lifetime, durable accountability, Master Records reconstruction, and prompt-continuation rules—rather than redefining them. Scoped documentation is maintained at `docs/CANONICAL_POLICY_CONTEXT_PREFLIGHT_MIRROR_HANDOFF.md`.
+
+---
+
+## Millings ↔ RTG/GTG/TT external comparison closeout
+
+Canonical Goal Task `MILLINGS-RTG-GTG-TT-COMPARISON-001` is terminal at `RETIRED / COMPLETED`, COSV `71000000100100`. The comparison remains a provenance-preserving analytical comparison of the independently authored Millings Method™ with StegVerse RTG/GTG/TT; functional convergence does not imply common authorship, derivation, certification, endorsement, or technical identity.
+
+StegScholar closeout PR #59 was validated at exact head `cc4ce60a778844b05cdb29e0c833666c8654e854` and merged first at canonical-main commit `b3ee2dc25d0099addda7dca2e42c91a68d4a6aac`.
+
+The bounded successor Goal Tasks are `GATE-LEGITIMACY-INVARIANT-001`, `ARCHITECTURE-NEUTRAL-ADMISSIBILITY-001`, and `INDEPENDENT-REVIEW-PREDICATE-001`. Each is independently `ACTIVE / UNCLAIMED` with a local `.github` mirror handoff and matching StegScholar handoff projection. Continuation-renewal and execution-to-consequence reconciliation remain in the existing TT workstream rather than creating duplicate tasks.
+
+This is a research/formalism closeout only. The release boundary remains `NOT_RELEASE_READY`; no tag, release, deployment, runtime activation, certification, or downstream propagation is implied.

@@ -1,0 +1,9 @@
+{
+  "schema": "stegverse.cosv-task-vector-index-entry/v1",
+  "task_id": "GATE-LEGITIMACY-INVARIANT-001",
+  "repository": "StegVerse-Labs/.github",
+  "registry_ref": "data/canonical-task-records/GATE-LEGITIMACY-INVARIANT-001.json",
+  "source_state_vector_ref": "control/task-vectors/GATE-LEGITIMACY-INVARIANT-001.json",
+  "cosv_task_vector": "10100000100000",
+  "handoff_ref": "docs/GATE_LEGITIMACY_INVARIANT_MIRROR_HANDOFF.md"
+}
