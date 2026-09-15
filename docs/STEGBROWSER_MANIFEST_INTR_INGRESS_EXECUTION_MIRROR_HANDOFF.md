@@ -8,122 +8,116 @@ Repository: `StegVerse-Labs/.github`
 - Goal Task ID: `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001`
 - Parent Goal: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / STEGVERSE-002 EVENT_EPHEMERAL SOURCE IDENTIFIED / STEGBROWSER UNIVERSAL-INTR MATERIALIZATION BINDING REQUIRED / AUTHENTIC A1-A4 EVIDENCE PENDING`
-- Issue `#1918`: remains closed; its generic-process-host premise is invalid under the validated StegVerse-002 event-ephemeral architecture.
+- Status: `ACTIVE / CHECKED_OUT / STEGBROWSER UNIVERSAL-INTR BINDING MERGED+VALIDATED / AUTHENTIC A1-A4 EXECUTION PENDING`
+- Universal InTr binding issue: `#1952` CLOSED source-complete only.
+- Universal InTr binding PR: `#1955`.
+- Validated head: `2d3b2e8292397b80285078ad4130b0c5cfebfac0`.
+- Merge: `6a489ad5bff790fd4732005926d5588dd330ef13`.
+- Exact-head validation: Organization Control `34991794548`, Deterministic Suite `34991794526`, Heartbeat `34991794549` — all SUCCESS.
+- Issue `#1918` remains closed; the generic process-host premise is invalid under the validated event-ephemeral architecture.
 
-## Correct source of truth
+## Canonical architecture
 
-The validated source documentation and implementation for the invocation-owned runtime architecture is the StegVerse-002 experiment, specifically:
-
-- `docs/SV002_EVENT_EPHEMERAL_OBSERVATION_MIRROR_HANDOFF.md`
-- `workers/universal_intr_profiled_ingress.py`
-- `workers/sv002_intr_materialization_consumer.py`
-- `workers/sv002_observation_esrl_runtime_bridge.py`
-- `tests/test_sv002_event_ephemeral_materialization.py`
-
-That implementation establishes the reusable architecture:
+The StegVerse-002 implementation remains the authoritative reusable architecture:
 
 ```text
 valid StegVerse Node
--> exact local request
--> stegverse.universal-intr-transport/v1 intent
+-> exact invocation payload
+-> stegverse.universal-intr-transport/v1
 -> stegverse.universal-intr-materialization-request/v1
--> node-bound write-once InTr trigger
--> shared /intr/materialization ingress
+-> node-bound write-once InTr outbox trigger
+-> existing shared /intr/materialization ingress
 -> write-once INGRESS_ADMITTED receipt
--> credential-scrubbed non-authorizing consumer dispatch
--> StegOS EVENT_EPHEMERAL runtime materialization
--> bounded lease state
--> existing WorkerCoordinator targeted execution
+-> credential-scrubbed non-authorizing consumer
+-> existing StegBrowser manifest-bound runner
+-> bounded EVENT_EPHEMERAL StegOS lease/runtime
+-> existing WorkerCoordinator claim/fence
+-> exact governed StegBrowser A4 ingress
 ```
 
-Authority remains unchanged:
+No control-plane source-package relay, resident-request sweep, external runtime/device/host discovery, second listener, second scheduler, second dispatcher, second materializer, or second WorkerCoordinator is a prerequisite.
+
+## Merged StegBrowser binding
+
+PR `#1955` closes the prior source-level gap without extending the Universal InTr request schema.
+
+The merged source is:
 
 ```text
-materialization request execution authority = NONE
-ingress execution authority = NONE
-ingress claim/fence minting = false
-consumer claim/fence minting = false
-WorkerCoordinator claim/fence authority = true
-Interlock/InTr transition authority = true
-TV/TVC credential authority = true
-GitHub runtime authority = NONE
-always-on receiver prerequisite = false
-second user machine prerequisite = false
+scripts/run_stegbrowser_universal_intr_materialization.py
+  -> validates unchanged one-shot nonce request
+  -> validates canonical Node Receipt #1 through StegOS
+  -> creates exact stegverse.stegbrowser-universal-intr-invocation-binding/v1 payload
+  -> builds existing StegOS stegverse.universal-intr-transport/v1 intent
+  -> builds existing StegOS stegverse.universal-intr-materialization-request/v1
+  -> writes stegOS node_intr_outbox_entry.v1 + node_intr_materialization_trigger.v1
+  -> submits trigger to existing shared /intr/materialization listener
+
+scripts/install_stegbrowser_universal_intr_route.py
+  -> idempotently adds StegBrowser:ManifestInvocation to the existing shared listener only
+
+workers/stegbrowser_intr_materialization_ingress.py
+  -> validates exact direct Node trigger/outbox/request bindings
+  -> writes stegverse.stegbrowser-intr-materialization-ingress/v1 with state INGRESS_ADMITTED
+  -> mints no claim/fence and grants no execution authority
+  -> dispatches only the bounded StegBrowser consumer
+
+workers/stegbrowser_intr_materialization_consumer.py
+  -> validates exact admitted request + exact hashed invocation binding payload
+  -> verifies Node/Interlock correlation
+  -> dispatches existing scripts/run_stegbrowser_manifest_bound_runtime.py
+  -> does not mint claim/fence or create runtime authority
 ```
 
-## Correction to the prior StegBrowser interpretation
+The existing downstream runner remains unchanged and owns the already-validated Node/Interlock lease/runtime composition, EVENT_EPHEMERAL materialization, WorkerCoordinator transition, and A4 packet verification.
 
-The prior continuation incorrectly treated these as runtime prerequisites:
+## One-shot invocation invariant
+
+The request remains immutable:
 
 ```text
-control-plane source-package relay
-resident source localization
-resident-request sweep consumption
-profile polling until A1 appears
+canonical request commit = 19935454cd8c68000b3a0fd70478b0d89d5cd622
+invocation_request_nonce = STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z
+requested_test_scope = A0_A4_SINGLE_INVOCATION
+requested_invocation_count = 1
 ```
 
-They are not the architecture defined by the validated StegVerse-002 experiment.
+No second request may be emitted or substituted. Resident-request sweep consumption is not a runtime prerequisite for this path.
 
-PR `#1941` remains valid historical source-localization work, but source-package relay/localization is not a prerequisite to Node -> Universal InTr materialization for this Goal.
-
-The resident request `RESIDENT-EXEC-STEGBROWSER-RUNTIME-CONNECTION-INGRESS-001` may remain as a coordination projection, but its sweep consumption is not the authority-bearing event that creates the runtime path.
-
-## Canonical StegBrowser path
+## Canonical A0-A4 path
 
 ```text
 A0 manifest/path binding
--> A1 registered StegVerse Node binding + Node-bound materialization intent
--> A2 shared Universal Interlock/InTr /intr/materialization admission
+-> A1 registered StegVerse Node + Node-bound Universal InTr intent/trigger
+-> A2 shared /intr/materialization write-once INGRESS_ADMITTED
+-> non-authorizing StegBrowser consumer
 -> A2.1 bounded invocation lease/state binding
 -> A2.2 EVENT_EPHEMERAL StegOS materialization
 -> A3 WorkerCoordinator claim/fence
 -> A4 exact governed StegBrowser manifest ingress
--> Round Trip 1
--> Master Records / mirror processing
--> Round Trip 2
--> ecosystem re-entry
+-> Round Trip 1 only after authentic A1-A4 evidence
 ```
 
-No external runtime/device/host discovery stage exists. No always-on process or waiting external machine is required.
-
-## Current implementation mapping
-
-Already existing and reusable:
-
-```text
-Shared Node/InTr materialization architecture:
-  workers/universal_intr_profiled_ingress.py
-
-Validated EVENT_EPHEMERAL consumer pattern:
-  workers/sv002_intr_materialization_consumer.py
-  workers/sv002_observation_esrl_runtime_bridge.py
-
-StegBrowser downstream manifest/runtime implementation:
-  scripts/run_stegbrowser_manifest_bound_runtime.py
-  scripts/run_stegbrowser_runtime_consumption_reusable.py
-  workers/stegbrowser_manifest_intr_ingress.py
-
-Worker claim/fence:
-  existing WorkerCoordinator targeted execution path
-```
-
-The exact source-level gap is now bounded to one thing:
-
-`Bind the StegBrowser manifest invocation to the existing shared Universal InTr materialization route using the already-validated StegVerse-002 pattern, then dispatch the already-existing StegBrowser downstream runner.`
-
-This does not authorize a second listener, runtime, scheduler, dispatcher, materializer, WorkerCoordinator, host path, or device path.
-
-## Current authentic predicates
+## Current source truth
 
 ```text
 SV002_RUNTIME_ARCHITECTURE_SOURCE_IDENTIFIED = true
-SV002_SHARED_UNIVERSAL_INTR_IMPLEMENTATION_IDENTIFIED = true
-SV002_EVENT_EPHEMERAL_IMPLEMENTATION_IDENTIFIED = true
+STEGBROWSER_UNIVERSAL_INTR_MATERIALIZATION_BINDING_COMPLETE = true
 CONTROL_PLANE_SOURCE_PACKAGE_IS_RUNTIME_PREREQUISITE = false
 RESIDENT_REQUEST_SWEEP_IS_RUNTIME_PREREQUISITE = false
-STEGBROWSER_UNIVERSAL_INTR_MATERIALIZATION_BINDING_COMPLETE = false
-RUNTIME_CONNECTION_TRANSITION_VARIABLES_OBSERVED = false
+SECOND_RUNTIME_OR_LISTENER_INTRODUCED = false
+WORKERCOORDINATOR_AUTHORITY_CHANGED = false
+INTERLOCK_INTR_AUTHORITY_CHANGED = false
+TV_TVC_CREDENTIAL_AUTHORITY_CHANGED = false
+GITHUB_RUNTIME_AUTHORITY = NONE
+```
+
+## Current authentic predicates
+
+Source/CI/merge do not establish runtime execution. Until retained same-invocation receipts prove otherwise:
+
+```text
+MANIFEST_BOUND_TO_INVOCATION runtime confirmation = false
 STEGVERSE_NODE_BOUND_TO_INVOCATION = false
 INTERLOCK_BOUND_TO_NODE_AND_MANIFEST = false
 INTR_MATERIALIZATION_ADMITTED = false
@@ -136,15 +130,48 @@ AUTHENTIC_INTR_INGRESS_OBSERVED = false
 ROUND_TRIP_1_STARTED = false
 ```
 
-Current exact source condition:
+Current exact condition:
 
-`STEGBROWSER_UNIVERSAL_INTR_MATERIALIZATION_BINDING_NOT_YET_REUSED_FROM_VALIDATED_SV002_IMPLEMENTATION`
+`AUTHENTIC_STEGBROWSER_UNIVERSAL_INTR_A1_A4_EXECUTION_NOT_YET_OBSERVED`
 
-No runtime predicate is promoted from this architectural correction.
+## Expected same-invocation evidence
+
+The merged path may retain, as applicable:
+
+```text
+intr-payloads/stegbrowser-manifest-invocation/<binding-hash>.json
+intr-outbox/stegbrowser-manifest-invocation/<materialization-id>.json
+receipts/sovereign-network/stegbrowser-intr-ingress/<materialization-id>.json
+receipts/sovereign-host/stegbrowser-intr-materialization-consumption.latest.json
+receipts/sovereign-host/stegbrowser-manifest-binding.latest.json
+receipts/sovereign-host/stegbrowser-node-interlock-runtime-binding.latest.json
+receipts/sovereign-host/stegbrowser-runtime-remediation-boundary.latest.json
+receipts/sovereign-host/stegbrowser-manifest-intr-ingress.latest.json
+```
+
+Any promotion must preserve exact Goal/COSV/nonce/manifest/node/interlock/registration/materialization/lease/runtime/claim/fence correlation.
+
+## Authority boundaries
+
+- Manifest: route declaration/binding only.
+- StegVerse Node: continuity/admission anchor only.
+- Universal materialization request: execution authority `NONE`.
+- Shared InTr ingress: execution authority `NONE`; claim/fence minting false.
+- StegBrowser consumer: dispatch-only authority effect; claim/fence minting false.
+- EVENT_EPHEMERAL StegOS runtime: bounded compute/materialization only.
+- WorkerCoordinator: sole claim/fence authority.
+- Interlock/InTr: transition and governed packet movement authority.
+- TV/TVC: credential authority.
+- Master Records: custody/reconstruction authority.
+- GitHub/CI: source validation/evidence only; runtime authority `NONE`.
 
 ## Immediate continuation
 
-Implement only the StegBrowser-specific adapter/binding into the already-existing shared `/intr/materialization` route, using the StegVerse-002 request/Node-trigger/write-once-ingress/non-authorizing-consumer pattern. The consumer must call the existing StegBrowser manifest-bound runner and preserve WorkerCoordinator as sole claim/fence authority. Then validate exact head. Authentic A1-A4 may be promoted only from execution receipts emitted by that corrected path.
+Validate and merge this canonical reconciliation only. Then inspect retained StegVerse-native evidence for the unchanged nonce through the merged Universal InTr path. If authentic same-invocation receipts exist, verify exact A0-A4 correlation and promote only proven predicates. If no authentic receipts exist, do not infer another architecture defect and do not emit another request; the remaining condition is runtime execution/observation of the merged path.
+
+## README review
+
+README reviewed for PR #1955. No byte change required because no public authority or runtime-topology contract changed.
 
 ## Manual work
 
