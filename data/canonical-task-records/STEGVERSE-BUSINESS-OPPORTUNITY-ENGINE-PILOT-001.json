@@ -6,15 +6,16 @@
   "parent_task_id": null,
   "goal": "Formalize and implement a non-outreach StegVerse Business Opportunity Engine pilot that surveys a frozen geographic market, derives provenance-backed addressable gross-revenue-leakage ranges, ranks the top 50 candidates, prepares business-specific draft proposals, and preserves RTG/GTG/InTr authority separation without contacting any business.",
   "coordination_state": "ACTIVE",
-  "checkout_state": "UNCLAIMED",
+  "checkout_state": "SOURCE_MERGED_VALIDATED_ANALYSIS_EXECUTION_PENDING",
   "repository": "StegVerse-Labs/StegBusiness-Ops",
   "handoff": "StegVerse-Labs/.github:docs/STEGVERSE_BUSINESS_OPPORTUNITY_ENGINE_PILOT_001_MIRROR_HANDOFF.md",
   "cosv": {"profile": "task.v1", "vector": "10100000110000"},
   "cosv_task_vector": "10100000110000",
   "source_refs": [
     "docs/STEGVERSE_BUSINESS_OPPORTUNITY_ENGINE_PILOT_001_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/StegBusiness-Ops:STEGBUSINESS_OPS_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegBusiness-Ops:BUSINESS_OPPORTUNITY_ENGINE_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegBusiness-Ops:task-state/ops-registry.json",
+    "StegVerse-Labs/StegBusiness-Ops#3",
     "management/COSV_PROFILE_V1.json",
     "data/task-coordination-policy.json"
   ],
@@ -25,10 +26,10 @@
   },
   "dependencies": [
     {"dependency_id":"DEP-CANONICAL-BUSINESS-EVIDENCE","kind":"UPSTREAM_CANONICAL_IDENTITY_EVIDENCE","state":"AVAILABLE","ref":"StegVerse-Labs/StegBusiness","disposition":"REUSE_CANONICAL_BUSINESS_IDENTITY_AND_EVIDENCE_CONTRACTS"},
-    {"dependency_id":"DEP-STEG-BUSINESS-OPS","kind":"IMPLEMENTATION_OWNER","state":"AVAILABLE","ref":"StegVerse-Labs/StegBusiness-Ops","disposition":"IMPLEMENT_OPERATIONAL_PILOT_HERE_AFTER_COLLISION_CHECKIN"}
+    {"dependency_id":"DEP-STEG-BUSINESS-OPS","kind":"IMPLEMENTATION_OWNER","state":"SOURCE_MERGED_VALIDATED","ref":"StegVerse-Labs/StegBusiness-Ops","disposition":"CONTINUE_WITH_BOUNDARY_REUSE"}
   ],
   "blockers": [],
-  "adjacent_task_refs": [],
+  "adjacent_task_refs": ["AI-GOVERNANCE-OPPORTUNITY-ENGINE-001"],
   "expected_evidence_predicates": [
     "CANONICAL_TASK_REGISTRATION_MERGED",
     "IMPLEMENTATION_OWNER_COLLISION_CHECK_CONTINUE_OR_CONVERGENCE_RESOLVED",
@@ -44,6 +45,24 @@
     "EXACT_HEAD_VALIDATION_PASS",
     "MERGED_MAIN_REVALIDATION_PASS"
   ],
+  "source_implementation": {
+    "collision_disposition": "CONTINUE_WITH_BOUNDARY_REUSE",
+    "adjacent_ai_specialization_task": "AI-GOVERNANCE-OPPORTUNITY-ENGINE-001",
+    "implementation_pr": 3,
+    "validated_head": "958975e42a0ad6652fd2b648073908e35d8fa59e",
+    "exact_head_validation_run": 34981508789,
+    "merge_sha": "e4cff61915e5a6acf4b5dc804452d6151618b3cf",
+    "merged_main_validation_run": 34981564640,
+    "source_state": "MERGED_VALIDATED",
+    "outreach_state": "OUTREACH_DISABLED",
+    "authentic_market_survey_executed": false,
+    "real_top50_produced": false,
+    "real_proposals_generated": false,
+    "provider_execution_observed": false,
+    "runtime_execution_observed": false,
+    "outreach_observed": false,
+    "authority_effect": "NONE_SOURCE_EVIDENCE_ONLY"
+  },
   "runtime_requirements": {
     "capabilities": ["public_evidence_collection", "deterministic_economic_modeling", "canonical_artifact_validation", "intr_task_admission", "master_records_reconciliation"],
     "environment": "SOVEREIGN_OR_BOUNDED_ANALYSIS_RUNTIME",
@@ -54,14 +73,7 @@
   },
   "execution_substrate_resolution": {
     "schema": "stegverse.execution-substrate-resolution/v1",
-    "review_order": [
-      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
-      "STEGOS-CURRENT-DEVICE-NODE",
-      "STEG-BROWSER-EPHEMERAL-LEASE",
-      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
-      "ADMITTED-EPHEMERAL-STEGOS-NODE",
-      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
-    ],
+    "review_order": ["STEG-BROWSER-RETAINED-RESIDENT-NODE","STEGOS-CURRENT-DEVICE-NODE","STEG-BROWSER-EPHEMERAL-LEASE","SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","ADMITTED-EPHEMERAL-STEGOS-NODE","REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"],
     "reviews": [
       {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/STEGVERSE_BUSINESS_OPPORTUNITY_ENGINE_PILOT_001_MIRROR_HANDOFF.md"]},
       {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"SUITABLE","limitation_class":"NONE","evidence_refs":["docs/STEGVERSE_BUSINESS_OPPORTUNITY_ENGINE_PILOT_001_MIRROR_HANDOFF.md"]},
@@ -76,8 +88,8 @@
     "authority_effect": "NONE"
   },
   "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
-  "completion": {"claimed":false,"validated":false,"reconciliation_ref":null,"activation_proof_complete":false},
-  "allowed_next_transitions": ["REGISTRATION_MERGED", "IMPLEMENTATION_OWNER_COLLISION_CHECKED", "PILOT_IMPLEMENTATION_MATERIALIZED", "PILOT_VALIDATED"],
+  "completion": {"claimed":false,"validated":false,"reconciliation_ref":"StegVerse-Labs/StegBusiness-Ops#3","activation_proof_complete":false},
+  "allowed_next_transitions": ["PILOT_EXECUTION_ADMISSION", "SURVEY_ADMISSION", "EVIDENCE_COLLECTION"],
   "handoff_projection_refs": ["docs/STEGVERSE_BUSINESS_OPPORTUNITY_ENGINE_PILOT_001_MIRROR_HANDOFF.md"],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
@@ -89,11 +101,10 @@
     "github_runtime_authority": "NONE",
     "outreach_authorized": false
   },
-  "goal_prompt_count": 3,
+  "goal_prompt_count": 4,
   "readme_impact": {
     "material_function_change": true,
-    "readme_updated_in_change_set": false,
-    "no_readme_update_reason": "Canonical registration defines design and authority boundaries; implementation-owner README changes remain required after collision reconciliation in StegBusiness-Ops.",
-    "evidence_refs": ["docs/STEGVERSE_BUSINESS_OPPORTUNITY_ENGINE_PILOT_001_MIRROR_HANDOFF.md"]
+    "readme_updated_in_change_set": true,
+    "evidence_refs": ["StegVerse-Labs/StegBusiness-Ops:README.md", "docs/STEGVERSE_BUSINESS_OPPORTUNITY_ENGINE_PILOT_001_MIRROR_HANDOFF.md"]
   }
 }
