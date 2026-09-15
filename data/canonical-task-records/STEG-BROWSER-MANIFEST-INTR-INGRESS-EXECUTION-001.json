@@ -11,7 +11,7 @@
   "handoff_ref": "docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md",
   "a1_a4_child_task_id": "STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001",
   "operation_lineage_task_id": "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
-  "current_exact_defect": "NATIVE_CONTROL_PLANE_SOURCE_PACKAGE_REPAIR_VALIDATION_PENDING_AND_A0_A4_RUNTIME_UNOBSERVED",
+  "current_exact_defect": "CONTROL_PLANE_SOURCE_PACKAGE_RELAY_AND_RESIDENT_LOCALIZATION_NOT_YET_OBSERVED",
   "runtime_requirements": {
     "selected_substrate": "ADMITTED-EPHEMERAL-STEGOS-NODE",
     "standing_runtime_required": false,
@@ -24,14 +24,7 @@
   },
   "execution_substrate_resolution": {
     "schema": "stegverse.execution-substrate-resolution/v1",
-    "review_order": [
-      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
-      "STEGOS-CURRENT-DEVICE-NODE",
-      "STEG-BROWSER-EPHEMERAL-LEASE",
-      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
-      "ADMITTED-EPHEMERAL-STEGOS-NODE",
-      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
-    ],
+    "review_order": ["STEG-BROWSER-RETAINED-RESIDENT-NODE","STEGOS-CURRENT-DEVICE-NODE","STEG-BROWSER-EPHEMERAL-LEASE","SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","ADMITTED-EPHEMERAL-STEGOS-NODE","REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"],
     "reviews": [
       {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":[]},
       {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"SUITABLE","limitation_class":"ARCHITECTURAL","evidence_refs":["StegVerse-Labs/StegOS:stegos/network_manifold.py","scripts/run_stegbrowser_runtime_consumption_reusable.legacy.py"]},
@@ -64,7 +57,7 @@
     "A4_exact_packet_verification": "EXISTING_WORKERS_STEGBROWSER_MANIFEST_INTR_INGRESS",
     "direct_child_a4_worker_shortcut": false,
     "duplicate_materializer": false,
-    "source_validation_state": "NATIVE_SOURCE_PACKAGE_REPAIR_VALIDATION_PENDING"
+    "source_validation_state": "NATIVE_SOURCE_PACKAGE_REPAIR_MERGED_VALIDATED"
   },
   "source_validation": {
     "node_interlock_pr": 1923,
@@ -73,12 +66,13 @@
     "a1_a4_reconciliation_pr": 1929,
     "a1_a4_reconciliation_validated_head": "60e7246e326d32d17525d83783c38c5e21528ff0",
     "a1_a4_reconciliation_merge_sha": "a4c2d173aad04219795e44d2051703accd404c9c",
-    "organization_control_run": 34976675513,
-    "deterministic_suite_run": 34976675506,
-    "heartbeat_validation_run": 34976675536,
-    "all_required_lanes_passed": true,
-    "native_source_package_branch": "fix/stegbrowser-native-source-package-001",
-    "native_source_package_validation_pending": true,
+    "native_source_package_pr": 1941,
+    "native_source_package_validated_head": "7bd0527413aa22b54e079546bd5b5e16810d83dd",
+    "native_source_package_merge_sha": "8eb3afd480b9670ab9e8c44c01825a2934d04289",
+    "native_source_package_organization_control_run": 34984618386,
+    "native_source_package_deterministic_suite_run": 34984618375,
+    "native_source_package_heartbeat_validation_run": 34984619006,
+    "native_source_package_all_required_lanes_passed": true,
     "runtime_authority_effect": "NONE"
   },
   "one_shot_native_test": {
@@ -94,10 +88,15 @@
   "native_source_localization": {
     "reusable_task_id": "RT-CONTROL-PLANE-SOURCE-PACKAGE-001",
     "existing_transport_binding": "RTC-INTERLOCK-INTR-TRANSPORT-008 / TVC",
+    "existing_ingress_path": "/intr/source-package",
     "resident_refresh_network_fetch_allowed": false,
     "source_package_allowlist_defect_observed": true,
     "bounded_allowlist_repair_implemented": true,
-    "bounded_allowlist_repair_validated": false,
+    "bounded_allowlist_repair_validated": true,
+    "bounded_allowlist_repair_merged": true,
+    "source_package_relay_observed": false,
+    "source_package_ingress_observed": false,
+    "resident_source_materialization_observed": false,
     "resident_source_git_head_observed": null,
     "authority_effect": "NONE_SOURCE_PACKAGE_ONLY"
   },
@@ -112,7 +111,7 @@
   "completion": {
     "source_merged_validated": true,
     "a1_a4_duplicate_representation_reconciled": true,
-    "native_source_package_repair_merged_validated": false,
+    "native_source_package_repair_merged_validated": true,
     "runtime_connection_transition_observed": false,
     "registered_stegverse_node_bound_to_invocation": false,
     "interlock_bound_to_node_and_manifest": false,

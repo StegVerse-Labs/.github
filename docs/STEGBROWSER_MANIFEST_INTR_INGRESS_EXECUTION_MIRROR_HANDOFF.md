@@ -8,103 +8,77 @@ Repository: `StegVerse-Labs/.github`
 - Goal Task ID: `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001`
 - Parent Goal: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / NODE+INTERLOCK LEASE+A4 SOURCE MERGED+VALIDATED / SINGLE A1-A4 PATH RECONCILED+MERGED+VALIDATED / NATIVE SOURCE-PACKAGE REPAIR VALIDATION PENDING / AUTHENTIC A1-A4 EXECUTION PENDING`
+- Status: `ACTIVE / CHECKED_OUT / A1-A4 SOURCE MERGED+VALIDATED / NATIVE SOURCE-PACKAGE REPAIR MERGED+VALIDATED / AUTHENTIC SOURCE-PACKAGE RELAY+RESIDENT LOCALIZATION+A1-A4 EXECUTION PENDING`
 - Node/Interlock source repair: PR `#1923`, validated head `f7b6cb86b9fff9fbeb1817e45920acc2effc200f`, merge `0098bc793865fd1db835c400b502dad5f8a5e32d`.
 - Single-path A1-A4 reconciliation: PR `#1929`, validated head `60e7246e326d32d17525d83783c38c5e21528ff0`, merge `a4c2d173aad04219795e44d2051703accd404c9c`.
-- PR #1929 validation: organization control `34976675513`, deterministic repository suite `34976675506`, Heartbeat validation `34976675536` — all SUCCESS on the same exact head.
-- Issue `#1918`: `CLOSED / SOURCE DEFECT COMPLETE / CLOSURE CONFIRMED AFTER #1929`.
+- Native source-package repair: PR `#1941`, validated head `7bd0527413aa22b54e079546bd5b5e16810d83dd`, merge `8eb3afd480b9670ab9e8c44c01825a2934d04289`.
+- PR #1941 exact-head validation: organization control `34984618386`, deterministic repository suite `34984618375`, Heartbeat validation `34984619006` — all SUCCESS.
+- Issue `#1918`: `CLOSED / SOURCE DEFECT COMPLETE`; authentic runtime evidence remains separate.
 
 ## Canonical path
 
 ```text
 manifest
--> A1 Interlock/InTr invocation-state observation
--> canonical registered StegVerse Node Receipt #1
--> A2 Node-bound Interlock/manifest binding
+-> A1 registered/profile-derived StegVerse Node + Interlock/InTr invocation state
+-> A2 governed InTr materialization/admission
 -> A2.1 bounded invocation lease/state binding
 -> A2.2 EVENT_EPHEMERAL StegOS materialization
 -> A3 WorkerCoordinator claim/fence
--> A4 exact Interlock/InTr ingress
--> STOP A1-A4 child
+-> A4 exact governed Interlock/InTr ingress
 -> Round Trip 1
 -> Master Records / mirror processing
 -> Round Trip 2
 -> ecosystem re-entry
 ```
 
-There is no external runtime/device/host discovery stage and no second user-operated device prerequisite.
-
-## Single Node-binding representation
-
-The only concrete registered Node Receipt #1 path input is:
-
-```text
-parameter = node_genesis_receipt
-environment = STEGVERSE_NODE_GENESIS_RECEIPT
-schema = stegos.node_handoff_receipt.v1
-receipt_number = 1
-```
-
-`CANONICAL_REGISTERED_STEGVERSE_NODE_BINDING` is selector metadata only. It is not a second receipt schema, identity, path, or authority source. A plain `stegverse.sovereign-node-declaration/v0.4` declaration cannot be inferred into Receipt #1.
-
-## A1-A4 composition
-
-`STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001` owns bounded A1 observation/composition. A1 observes invocation-bound `callable`, `refreshable`, and applicable-protocol state. `callable` and `refreshable` are transition variables governed by Interlock/InTr, not persistent runtime properties.
-
-When the admitted transition resolves `callable=true` and `refreshable=true`, existing `RT-SOVEREIGN-SOURCE-REFRESH-001` may be selected. When `callable=true` and `refreshable=false`, no refresh prerequisite is invented. When callable and protocol-resolved, A2-A4 continue through the one existing path:
-
-`RT-STEGBROWSER-RUNTIME-CONSUMPTION-001 -> scripts/run_stegbrowser_manifest_bound_runtime.py -> scripts/run_stegbrowser_runtime_consumption_reusable.py`
-
-That path validates Receipt #1, binds manifest + Node + Interlock + registration receipt + Goal/COSV into the existing lease/state identity, materializes the existing `SovereignLocalEventRuntimeAdapter` as `RuntimeClass.EVENT_EPHEMERAL`, obtains A3 through the existing WorkerCoordinator boundary, and reaches A4 through the existing exact manifest ingress worker. It stops before Round Trip 1.
-
-No duplicate lease, runtime materializer, A4 worker, scheduler, WorkerCoordinator, credential path, host path, or device path is introduced.
+No external runtime/device/host discovery stage, second runtime, second dispatcher, second scheduler, alternate receiver, endpoint discovery, or second user-operated device prerequisite exists.
 
 ## One-shot native invocation request
 
-The already-issued request remains immutable for this test:
+The already-issued request remains immutable:
 
 ```text
-commit = 19935454cd8c68000b3a0fd70478b0d89d5cd622
+canonical request commit = 19935454cd8c68000b3a0fd70478b0d89d5cd622
 invocation_request_nonce = STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z
 requested_test_scope = A0_A4_SINGLE_INVOCATION
 requested_invocation_count = 1
 ```
 
-No second resident request may be emitted for this continuation and the existing request bytes must remain unchanged.
+No second request may be emitted or substituted.
 
-## Native canonical-source localization repair
+## Native source localization
 
-The resident `refresh_sovereign_worker_runtime_source.py` is intentionally transport-free. It copies `control/resident-execution-request.d` and other allowlisted static control-plane state only from an already-local canonical source and records `source_git_head`; it does not fetch or pull GitHub.
+`refresh_sovereign_worker_runtime_source.py` is intentionally transport-free. It copies static source only from an already-local canonical source and writes `source_git_head`; it performs no fetch/pull and receives no network authority.
 
-The existing reusable localization mechanism is `RT-CONTROL-PLANE-SOURCE-PACKAGE-001`, whose exact content-addressed output is carried only by the existing governed `RTC-INTERLOCK-INTR-TRANSPORT-008 / TVC` relay path. Inspection found that its default allowlist omitted the one new canonical byte-set required by this test: `control/resident-execution-request.d/canonical-work-stegbrowser-runtime-consumption-001.json` containing nonce `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z`. The A0-A4 runner/consumer implementation predates commit `19935454...` and was already merged/validated through PRs #1923 and #1929; it is not a new delta introduced by this test request.
+The existing canonical localization mechanism is:
 
-The first repair attempt redundantly packaged the already-canonical StegBrowser runner chain. Exact-head deterministic validation correctly rejected that form because the package rendered to about 951 KiB, exceeding the existing 512 KiB relay envelope. The relay bound was not changed. The repair was narrowed to the actual commit delta: add only the unchanged one-shot resident request to the existing control-plane package allowlist and regression-test its exact nonce, Goal, scope, invocation count, and `NONE_REQUEST_ONLY` authority. No request bytes are modified, no new source transport is created, and no network-fetch authority, runtime, device, host, scheduler, dispatcher, receiver, endpoint, credential path, or authority surface is added.
+```text
+RT-CONTROL-PLANE-SOURCE-PACKAGE-001
+-> exact content-addressed stegverse.control-plane package
+-> existing RTC-INTERLOCK-INTR-TRANSPORT-008 / TVC relay
+-> existing /intr/source-package ingress
+-> write-once source package retention
+-> materialize_into_source(STEGVERSE_HEARTBEAT_SOURCE_ROOT)
+-> next resident worker source refresh
+-> resident request dispatch
+```
 
-Validation/merge of this minimal source-package repair is pending. Source/CI validation does not prove package relay, resident source materialization, request consumption, or A0-A4 runtime execution.
+PR #1941 repaired the only proven source-package defect: the default package omitted the one-shot StegBrowser request bytes introduced by commit `19935454...`. The first implementation attempt redundantly included the already-canonical A0-A4 runner chain and exact-head deterministic validation rejected the resulting ~951 KiB package against the existing 512 KiB relay envelope. The relay bound was preserved. The final validated repair carries only the actual new request delta while the runner/consumer path remains the previously merged/validated canonical source.
+
+The source-package ingress contract requires the existing TVC relay origin and authorization ID, validates exact payload SHA-256, writes the content-addressed package once, and materializes it into the declared `STEGVERSE_HEARTBEAT_SOURCE_ROOT`. It explicitly does not mint claims/fences, grant execution authority, perform a network source fetch, or commit the later runtime transition.
+
+PR #1941 proves source package construction/coverage only. It does not prove package relay, `/intr/source-package` admission, resident source materialization, source refresh, request dispatch, request consumption, or A0-A4 execution.
 
 ## Current authentic predicates
 
-StegVerse-native retained evidence was checked after PR #1929 merge. Expected retained A1-A4 paths were absent from canonical retained evidence, including:
-
 ```text
-receipts/sovereign-host/stegbrowser-runtime-connection-transition-observation.latest.json
-receipts/sovereign-host/stegbrowser-runtime-connection-a1-a2.latest.json
-receipts/sovereign-host/stegbrowser-runtime-connection-a1-a4.latest.json
-receipts/sovereign-host/stegbrowser-runtime-remediation-boundary.latest.json
-receipts/sovereign-host/stegbrowser-manifest-intr-ingress.latest.json
-```
-
-The one-shot continuation also has not yet retained:
-
-```text
-receipts/sovereign-host/worker-source-refresh.latest.json
-receipts/sovereign-host/resident-request-dispatch.latest.json
-receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json
-```
-
-Repository source references to these locations are contracts, not authentic runtime receipts. Therefore:
-
-```text
+SOURCE_PACKAGE_REPAIR_MERGED_VALIDATED = true
+SOURCE_PACKAGE_RELAY_OBSERVED = false
+SOURCE_PACKAGE_INTR_INGRESS_OBSERVED = false
+RESIDENT_SOURCE_MATERIALIZATION_OBSERVED = false
+RESIDENT_SOURCE_GIT_HEAD_OBSERVED = false
+RESIDENT_REQUEST_DISPATCH_OBSERVED = false
+RESIDENT_REQUEST_CONSUMPTION_OBSERVED = false
 RUNTIME_CONNECTION_TRANSITION_VARIABLES_OBSERVED = false
 STEGVERSE_NODE_BOUND_TO_INVOCATION = false
 INTERLOCK_BOUND_TO_NODE_AND_MANIFEST = false
@@ -118,26 +92,32 @@ AUTHENTIC_INTR_INGRESS_OBSERVED = false
 ROUND_TRIP_1_STARTED = false
 ```
 
-Current exact condition: `UNCHANGED_ONE_SHOT_REQUEST_NOT_YET_OBSERVED_IN_RESIDENT_ALREADY_LOCAL_SOURCE_OR_A0_A4_RUNTIME`.
+Current exact condition:
 
-Source/CI/GitHub state does not promote runtime predicates. External connector/device/host reachability is not part of this Goal's evidence path and is not a prerequisite, failure predicate, or substrate-disqualification signal.
+`CONTROL_PLANE_SOURCE_PACKAGE_RELAY_AND_RESIDENT_LOCALIZATION_NOT_YET_OBSERVED`
+
+Source/CI/GitHub state cannot promote any runtime predicate.
 
 ## Authority boundaries
 
+- Manifest: route declaration/binding only.
 - StegVerse Node: continuity/admission anchor only.
 - Interlock/InTr: transition and governed packet-movement authority.
 - Lease: bounded invocation scope only.
 - EVENT_EPHEMERAL StegOS runtime: compute/materialization only.
 - WorkerCoordinator: claim/fence authority.
-- TV/TVC: credential authority.
-- KV/SKAP Vault: user-verification authority.
+- TV/TVC: credential and relay authorization authority.
 - Master Records: observed-reality custody/reconstruction authority.
 - GitHub/CI: source validation/evidence only; runtime authority `NONE`.
 - Healer: triggered remediation only.
 
 ## Immediate continuation
 
-Validate and merge only the minimal existing control-plane source-package allowlist repair. Then use the existing governed control-plane source-package transport/localization path with the unchanged nonce request. Require the next authentic resident source-refresh receipt to identify commit `19935454cd8c68000b3a0fd70478b0d89d5cd622` or an exact descendant containing the unchanged request. Only then follow the same resident cycle through dispatch, canonical-work consumption, and A0-A4. Do not issue a second request or create another runtime, transport, scheduler, dispatcher, device, host, receiver, endpoint, credential path, or authority surface.
+Use only the existing governed `RTC-INTERLOCK-INTR-TRANSPORT-008 / TVC` relay for the exact validated control-plane source package containing the unchanged nonce request. Do not create another request or transport. Retain the authentic `stegverse.control-plane-source-package-ingress/v1` receipt and require `SOURCE_MATERIALIZED_VERIFIED`; then require the next resident source-refresh receipt to show a source state containing the unchanged request, follow the same cycle through resident dispatch and canonical-work consumption, and only then verify/promote A0-A4 from same-invocation receipts.
+
+## README review
+
+README reviewed for this bounded internal source-package coverage repair; no byte change required because public runtime/authority semantics did not change.
 
 ## Manual work
 
