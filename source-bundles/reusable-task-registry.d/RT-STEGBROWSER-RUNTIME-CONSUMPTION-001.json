@@ -1,9 +1,9 @@
 {
   "reusable_task_id": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
   "name": "StegBrowser Runtime Consumption",
-  "purpose": "Execute the manifest-declared StegBrowser owned mirror route through the existing Canonical Work and Interlock/InTr runtime-consumption chain on an admitted ephemeral StegOS node without creating a duplicate runtime, scheduler, WorkerCoordinator, credential path, or device dependency.",
+  "purpose": "Execute the manifest-declared StegBrowser owned mirror route through the existing StegVerse Node -> Interlock -> InTr -> bounded lease -> EVENT_EPHEMERAL StegOS materialization path, then continue the governed two-round-trip transport lifecycle without creating a duplicate runtime, scheduler, WorkerCoordinator, credential path, external host dependency, or second-device dependency.",
   "trigger": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001 is ACTIVE/CHECKED_OUT and its complete manifest is bound to COSV 40000100100000; STEG-BROWSER-RUNTIME-CONSUMPTION-001 remains retired historical operation lineage and is not reactivated",
-  "scope": "one manifest-bound invocation for STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001 / COSV 40000100100000 using the declared StegVerse-owned mirror route",
+  "scope": "one manifest-bound invocation for STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001 / COSV 40000100100000 using the declared StegVerse-owned mirror route and the existing invocation-owned Node/Interlock/InTr/lease/EVENT_EPHEMERAL materialization architecture",
   "operation_lineage_task_id": "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
   "active_tracking_task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
   "manifest_ref": "control/transport-manifests/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json",
@@ -12,10 +12,16 @@
   "recording_levels": ["operation", "task", "goal", "component", "system", "master_records"],
   "completion_predicates": [
     "MANIFEST_BOUND_TO_INVOCATION",
-    "RUNTIME_CONNECTION_TRANSITION_VARIABLES_OBSERVED",
+    "STEGVERSE_NODE_BOUND_TO_INVOCATION",
+    "INTERLOCK_BOUND_TO_NODE_AND_MANIFEST",
+    "INTR_MATERIALIZATION_ADMITTED",
+    "INVOCATION_SCOPED_LEASE_ESTABLISHED",
+    "EVENT_EPHEMERAL_STEGOS_RUNTIME_MATERIALIZED",
+    "EXECUTION_TIME_RUNTIME_IDENTITY_BOUND",
     "CANONICAL_WORK_RESIDENT_CONSUMPTION_OBSERVED",
     "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
-    "INTR_ADMISSION_OBSERVED",
+    "ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED",
+    "AUTHENTIC_INTR_INGRESS_OBSERVED",
     "GOVERNED_RETURN_PACKET_RECEIVED",
     "RECORDS_PACKET_DELIVERED_FOR_RECORDING",
     "RETURN_RECORD_DURABLY_RECORDED",
@@ -28,8 +34,14 @@
     "ECOSYSTEM_REENTRY_FINAL_ALLOWED_TRANSITION_OBSERVED",
     "SUCCESSFUL_ECOSYSTEM_RETURN_ROUND_TRIP_IDENTIFIED",
     "SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIPS_IDENTIFIED",
-    "NO_PARALLEL_SCHEDULER_DISPATCHER_CREDENTIAL_PATH_OR_SECOND_DEVICE"
+    "NO_PARALLEL_SCHEDULER_DISPATCHER_CREDENTIAL_PATH_EXTERNAL_HOST_OR_SECOND_DEVICE"
   ],
+  "historical_architecture_precedent": {
+    "source": "SV002 browser-recovery engineering evidence",
+    "pattern": "REGISTERED_STEGVERSE_NODE -> INTERLOCK -> INTR_MATERIALIZATION -> BOUNDED_LEASE -> EVENT_EPHEMERAL_RUNTIME -> EXECUTION_TIME_RUNTIME_IDENTITY_BINDING",
+    "authority_effect": "ARCHITECTURAL_REUSE_GUIDANCE_ONLY",
+    "promotes_current_runtime_predicates": false
+  },
   "authority_effect": "NONE_ORCHESTRATION_ONLY",
-  "reuse_instructions": "Trigger once through scripts/trigger_reusable_task.py against the active remediation Goal STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001 / COSV 40000100100000. scripts/run_stegbrowser_manifest_bound_runtime.py must validate and bind the exact declared manifest before invoking the existing runtime-consumption runner. The manifest declares the outbound Interlock/InTr endpoint, StegVerse-owned mirror reflector, Round Trip 1 recording return, mirror-processing boundary, Round Trip 2 Interlock/InTr endpoint, and final ecosystem receiver. Endpoint or receiver discovery/substitution is prohibited. Interlock/InTr still governs whether each declared transition is allowed. Round Trip 1 ends with the returned records packet durably recorded for verification; Master Records/mirror processing then occurs between trips; Round Trip 2 returns from the mirror boundary through endpoint Interlock/InTr into the ecosystem. Source or CI state must never be promoted to runtime completion evidence."
+  "reuse_instructions": "Trigger once through scripts/trigger_reusable_task.py against the active remediation Goal STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001 / COSV 40000100100000. scripts/run_stegbrowser_manifest_bound_runtime.py must validate and bind the exact declared manifest before invoking the existing runtime-consumption runner. The reusable invocation must resolve/reuse the applicable StegVerse Node continuity/admission anchor, bind the declared/applicable Interlock, submit the governed InTr materialization transition, establish an invocation-scoped lease/execution binding if admitted, materialize the EVENT_EPHEMERAL StegOS runtime, and bind the exact execution-time runtime identity before WorkerCoordinator claim/fence and authentic ingress are accepted. No pre-existing online runtime, generic chat-session process host, external device, or endpoint/receiver discovery stage is permitted. Historical SV002 engineering evidence is architectural precedent only and may not promote current StegBrowser runtime predicates. Round Trip 1 ends with the returned records packet durably recorded for verification; Master Records/mirror processing then occurs between trips; Round Trip 2 returns from the mirror boundary through endpoint Interlock/InTr into the ecosystem. Source or CI state must never be promoted to runtime completion evidence."
 }
