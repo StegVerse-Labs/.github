@@ -7,9 +7,15 @@
     "control/worker-registry.d/kv-connection-revalidation-worker-001.json",
     "handoffs/KV-CONNECTION-REVALIDATION-WORKER-001.json",
     "KV_CONNECTION_REVALIDATION_WORKER_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/continuity-vault-kit:KV_CONNECTION_REVALIDATION_PROOF_MIRROR_HANDOFF.md"
+    "KV_CONNECTION_REVALIDATION_COSV_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/continuity-vault-kit:KV_CONNECTION_REVALIDATION_PROOF_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/continuity-vault-kit:KV_STORAGE_ENDPOINT_V2_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/continuity-vault-kit:KV_MULTI_INSTANCE_COSV_BINDING_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site:docs/KV_STORAGE_ENDPOINT_V2_MIRROR_HANDOFF.md",
+    "StegVerse-org/LLM-adapter:docs/SERVICE_GATEWAY_QUERY_SECRET_SAFE_INGRESS_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/TVC:docs/GOOGLE_DRIVE_PERSONAL_KV_OWNER_CONSENT_CALLBACK_INGRESS_MIRROR_HANDOFF.md"
   ],
-  "observed_at": "2026-08-29T15:17:00-05:00",
+  "observed_at": "2026-09-15T07:13:00-05:00",
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
     "lifecycle": "MACHINE_OWNED",
@@ -28,16 +34,16 @@
     "propagated": false
   },
   "metric_evidence": {
-    "lifecycle": "HANDOFF_READY with authorized independent task-control claim and dedicated registered worker; source PR #417 is merged and validated",
-    "archive_ready": "worker fragment archive_eligible=false while authentic resident execution evidence remains absent",
-    "unassigned_work": "kv-connection-revalidation-worker + continuity-vault-kit own continuation",
-    "chat_owned_counts": "runtime proof consumption is independently machine-owned; no chat execution role is required",
-    "canonical_owner_installed": "continuity-vault-kit connection revalidation proof contract is merged and the resident worker source is merged through PR #417",
-    "thread_required": "durable handoff, registry, worker source, and canonical owner state define continuation without chat-only state",
-    "blocker_count": "exact registry/handoff parity: SOVEREIGN_RUNTIME_NOT_YET_LIVE_PROVEN | AUTHENTIC_CONFORMANCE_AND_PRIVATE_KV_READBACK_PROOFS_NOT_YET_OBSERVED",
-    "evidence_complete": "no authentic resident proof pair consumption and private-KV VERIFIED persistence evidence has been observed",
-    "activated": "runtime_activation_claimed=false and no activation proof is recorded",
-    "propagated": "no verified connection result has propagated from an authentic resident execution"
+    "lifecycle": "MACHINE_OWNED continuation remains installed; provider-neutral storage endpoint v2 is merged in canonical owner PR #214 and Site consumer PR #1347, while authentic provider execution remains separately governed",
+    "archive_ready": "archive_ready remains false while authentic deployed query-secret-safe ingress, Google provider execution/materialization, and terminal roundtrip evidence remain absent",
+    "unassigned_work": "canonical continuation is owned by the existing KV worker plus the established Service Gateway/TVC/Interlock/InTr provider-execution lane",
+    "chat_owned_counts": "source reconciliation does not transfer runtime, credential, provider, or observation authority to chat",
+    "canonical_owner_installed": "continuity-vault-kit provider-neutral storage endpoint v2 and identity-preserving cloud-peer materialization source are present; Site consumes the v2 selector while preserving the existing Google Drive KV #2 request lineage",
+    "thread_required": "durable task vector, COSV handoff, repository handoffs, provider-ingress handoffs, and machine-owned workers define continuation without chat-only state",
+    "blocker_count": "exact current fail-closed classes: DEPLOYED_QUERY_SECRET_SAFE_INGRESS_AND_AUTHENTIC_GOOGLE_PROVIDER_EXECUTION_NOT_YET_OBSERVED | AUTHENTIC_DEVICE_KV_SKAP_ROUNDTRIP_AND_TERMINAL_READBACK_NOT_YET_OBSERVED",
+    "evidence_complete": "storage-endpoint v2 source is merged but no authentic deployed ingress proof, Google CONNECT/VERIFY provider-result evidence, KV #2 materialization proof, or terminal four-leg roundtrip/readback has completed the Goal",
+    "activated": "source/CI/merge/deployment are non-authorizing; no runtime activation proof is recorded",
+    "propagated": "no verified Google Drive KV #2 provider result has propagated through SKAP -> KV -> current StegOS Device with canonical terminal evidence"
   },
   "authority_effect": "NONE"
 }
