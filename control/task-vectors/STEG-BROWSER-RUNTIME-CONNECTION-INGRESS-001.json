@@ -1,0 +1,41 @@
+{
+  "identity": "StegVerse-Labs/.github:task:STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "40000100100000",
+  "evidence_refs": [
+    "data/canonical-task-records/STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001.json",
+    "docs/STEGBROWSER_RUNTIME_CONNECTION_INGRESS_MIRROR_HANDOFF.md",
+    "scripts/resolve_stegbrowser_runtime_connection_transition.py"
+  ],
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "CHECKED_OUT",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 1,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "Child owns only GC A1 through A4: invocation-bound connection-state resolution, admitted execution materialization, WorkerCoordinator claim/fence, and authentic Interlock/InTr ingress.",
+    "archive_ready": "Authentic A1-A4 runtime evidence remains pending.",
+    "unassigned_work": "Reusable capability selection remains state-driven; no new reusable task is created.",
+    "chat_owned_counts": "This change installs the canonical child and deterministic selection logic only; authentic transition evidence remains authority-generated.",
+    "canonical_owner_installed": "Child canonical task record and mirror handoff are present.",
+    "thread_required": "No separate thread is required for source implementation; authentic runtime continuation remains governed by existing owners.",
+    "blocker_count": "Pending authentic transition evidence is a condition, not a terminal blocker.",
+    "evidence_complete": "False until A1-A4 authentic predicates are observed.",
+    "activated": "False until authentic runtime connection transition and InTr ingress are observed.",
+    "propagated": "Not applicable before child completion."
+  },
+  "authority_effect": "NONE"
+}
