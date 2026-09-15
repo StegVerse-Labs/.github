@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import json
 import tempfile
@@ -15,24 +16,30 @@ assert spec and spec.loader
 spec.loader.exec_module(module)
 
 
-class FakeIngress:
-    @staticmethod
-    def profile(_tls: bool):
-        return {
-            "schema": "stegverse.universal-intr-profiled-ingress/v1",
-            "state": "ACTIVE_SOVEREIGN_INTR_INGRESS",
-            "protocol": "InTr",
-            "profiles": ["CanonicalWork:Coordination"],
-            "event_triggered": True,
-            "always_on_application_receiver_required": False,
-            "second_user_device_required": False,
-            "execution_authority": "NONE",
-            "authority_effect": "NONE_DISCOVERY_EVIDENCE_ONLY",
-        }
+def canonical(value):
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False).encode("utf-8")
+
+
+def node_receipt():
+    body = {
+        "schema": "stegos.node_handoff_receipt.v1",
+        "receipt_number": 1,
+        "transition": "NODE_REGISTERED",
+        "prior_state": "UNREGISTERED",
+        "resulting_state": "REGISTERED",
+        "continuity_parent": "GENESIS",
+        "node_id": "SV-NODE-0123456789abcdef01234567",
+        "interlock_id": "SV-IL-0123456789abcdef01234567",
+        "device_binding_sha256": "a" * 64,
+        "authority_effect": "NONE",
+        "heartbeat_authority": "StegVerse-Labs/.github",
+        "credential_authority": "TV/TVC",
+    }
+    return {**body, "receipt_sha256": hashlib.sha256(canonical(body)).hexdigest()}
 
 
 class StegBrowserRuntimeConnectionIngressConsumerTests(unittest.TestCase):
-    def test_request_contract_is_non_authorizing_and_child_scoped(self):
+    def test_request_contract_remains_non_authorizing_and_single_device(self):
         request = json.loads((ROOT / module.REQUEST_REL).read_text())
         module.validate_request(request)
         self.assertEqual(request["task_id"], module.TASK_ID)
@@ -40,89 +47,68 @@ class StegBrowserRuntimeConnectionIngressConsumerTests(unittest.TestCase):
         self.assertFalse(request["second_machine_required"])
         self.assertEqual(request["github_token_runtime_authority"], "NONE")
 
-    def test_live_intr_profile_implies_callable(self):
-        profile = FakeIngress.profile(False)
-        callable_value = bool(
-            profile.get("state") == "ACTIVE_SOVEREIGN_INTR_INGRESS"
-            and profile.get("protocol") == "InTr"
-            and profile.get("event_triggered") is True
-            and "CanonicalWork:Coordination" in (profile.get("profiles") or [])
-        )
-        self.assertTrue(callable_value)
-
-    def test_exact_manifest_protocol_resolution_requires_existing_adapter(self):
+    def test_materialization_build_uses_existing_node_interlock_and_one_shot_nonce(self):
         with tempfile.TemporaryDirectory() as td:
-            source = Path(td)
-            worker = source / module.MANIFEST_INGRESS_REL
-            worker.parent.mkdir(parents=True)
-            worker.write_text("# exact local adapter\n")
-            self.assertTrue(module.exact_manifest_protocol_resolved(source, FakeIngress.profile(False)))
-            worker.unlink()
-            self.assertFalse(module.exact_manifest_protocol_resolved(source, FakeIngress.profile(False)))
-
-    def test_refreshable_is_invocation_bound_not_persistent_source_state(self):
-        with tempfile.TemporaryDirectory() as td:
-            root = Path(td)
-            source = root / "source"
-            runtime = root / "runtime"
-            definition = source / "source-bundles/reusable-task-registry.d/RT-SOVEREIGN-SOURCE-REFRESH-001.json"
-            definition.parent.mkdir(parents=True)
-            definition.write_text("{}\n")
+            runtime = Path(td) / "runtime"
             runtime.mkdir()
-            self.assertTrue(module.refreshable_for_invocation(source, runtime, FakeIngress.profile(False)))
-            self.assertFalse(module.refreshable_for_invocation(source, source, FakeIngress.profile(False)))
+            receipt_path = Path(td) / "receipt.json"
+            receipt = node_receipt()
+            receipt_path.write_text(json.dumps(receipt))
+            request, trigger = module.build_materialization(ROOT, runtime, receipt_path, receipt)
+            self.assertEqual(request["destination"]["subsystem"], "StegBrowser:ManifestIngress")
+            self.assertEqual(request["node_id"], receipt["node_id"])
+            self.assertEqual(request["interlock_id"], receipt["interlock_id"])
+            self.assertEqual(request["registration_receipt_sha256"], receipt["receipt_sha256"])
+            self.assertFalse(request["request_grants_execution_authority"])
+            self.assertFalse(request["second_user_device_required"])
+            self.assertEqual(trigger["schema"], "stegos.node_intr_materialization_trigger.v1")
+            self.assertEqual(trigger["node_id"], receipt["node_id"])
+            self.assertFalse(trigger["request_grants_execution_authority"])
+            payload_path = runtime / "intr-payloads/stegbrowser-manifest" / f"{request['materialization_id']}.json"
+            self.assertTrue(payload_path.is_file())
 
-    def test_a1_resolution_selects_existing_tasks_only(self):
-        resolver = module.resolve_module()
-        observation = {
-            "schema": module.OBS_SCHEMA,
-            "task_id": module.TASK_ID,
-            "parent_task_id": module.PARENT_TASK_ID,
-            "cosv": module.COSV,
-            "manifest_ref": module.MANIFEST_REF,
-            "authority_owner": "Interlock/InTr",
-            "authority_effect": "OBSERVATION_ONLY",
-            "callable": True,
-            "refreshable": True,
-            "applicable_protocol_resolved": True,
-        }
-        result = resolver.resolve(observation)
-        self.assertEqual(result["selected_reusable_tasks"], [module.SOURCE_REFRESH_RT])
-        self.assertFalse(result["round_trip_1_payload_processing_allowed_by_this_resolution"])
-        self.assertFalse(result["second_user_operated_device_required"])
-
-    def test_a2_a4_delegate_to_existing_manifest_bound_reusable_runner(self):
+    def test_node_receipt_resolution_requires_existing_receipt_one(self):
+        request = json.loads((ROOT / module.REQUEST_REL).read_text())
         with tempfile.TemporaryDirectory() as td:
-            root = Path(td)
-            source = root / "source"
-            runtime = root / "runtime"
-            stegos = root / "StegOS"
-            runner = source / module.MANIFEST_RUNNER_REL
-            validator = stegos / "stegos/network_manifold.py"
-            node_receipt = root / "node-genesis-receipt.json"
-            runner.parent.mkdir(parents=True)
-            validator.parent.mkdir(parents=True)
-            runtime.mkdir(parents=True)
-            runner.write_text("# canonical manifest-bound runner\n")
-            validator.write_text("# canonical node validator\n")
-            node_receipt.write_text("{}\n")
-            completed = type("Completed", (), {
-                "returncode": 0,
-                "stdout": "runner-ok\n",
-                "stderr": "",
-            })()
-            with patch.dict(module.os.environ, {"STEGVERSE_STEGOS_SOURCE_ROOT": str(stegos)}, clear=False):
-                with patch.object(module.subprocess, "run", return_value=completed) as run:
-                    result = module.run_canonical_node_bound_invocation(source, runtime, node_receipt)
-            self.assertEqual(result["runner_returncode"], 0)
-            cmd = run.call_args.args[0]
-            self.assertEqual(Path(cmd[1]), runner)
-            env = run.call_args.kwargs["env"]
-            params = json.loads(env["STEGVERSE_REUSABLE_TASK_PARAMETERS_JSON"])
-            self.assertEqual(params["node_genesis_receipt"], str(node_receipt))
-            self.assertEqual(params["runtime_root"], str(runtime))
-            self.assertEqual(params["stegos_source_root"], str(stegos))
-            self.assertNotIn(str(source / module.MANIFEST_INGRESS_REL), cmd)
+            path = Path(td) / "receipt.json"
+            receipt = node_receipt()
+            path.write_text(json.dumps(receipt))
+            with patch.dict(module.os.environ, {module.NODE_PATH_ENV: str(path)}, clear=False):
+                resolved, loaded = module.resolve_registered_node_receipt(request)
+            self.assertEqual(resolved, path.resolve())
+            self.assertEqual(loaded["receipt_number"], 1)
+            self.assertEqual(loaded["node_id"], receipt["node_id"])
+
+    def test_source_no_longer_uses_profile_polling_as_a1_gate(self):
+        source = SCRIPT.read_text()
+        self.assertNotIn("observe_live_profile", source)
+        self.assertNotIn("/intr/profile", source)
+        self.assertIn("stegos.node_intr_materialization_trigger.v1", source)
+        self.assertIn("module.INGRESS_PATH", source)
+        self.assertIn("VALIDATED_SV002_NODE_BOUND_WRITE_ONCE_UNIVERSAL_INTR_MATERIALIZATION_PATTERN", source)
+
+    def test_post_uses_existing_shared_server_implementation(self):
+        class FakeServer:
+            def __init__(self, *_args):
+                self.server_address = ("127.0.0.1", 12345)
+            def handle_request(self):
+                return None
+            def server_close(self):
+                return None
+        fake_module = type("Shared", (), {"Server": FakeServer, "INGRESS_PATH": "/intr/materialization"})
+        fake_response = type("Resp", (), {
+            "status": 202,
+            "read": lambda self: json.dumps({
+                "schema": "stegverse.stegbrowser-intr-materialization-ingress/v1",
+                "state": "INGRESS_ADMITTED",
+            }).encode(),
+            "__enter__": lambda self: self,
+            "__exit__": lambda self, *_a: False,
+        })()
+        trigger = {"schema": "stegos.node_intr_materialization_trigger.v1"}
+        with patch.object(module.urllib.request, "urlopen", return_value=fake_response):
+            receipt = module.post_trigger(fake_module, Path("."), trigger)
+        self.assertEqual(receipt["state"], "INGRESS_ADMITTED")
 
 
 if __name__ == "__main__":
