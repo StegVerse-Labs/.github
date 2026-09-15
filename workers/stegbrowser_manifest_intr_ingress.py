@@ -6,6 +6,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 SUBJECT_TASK = "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
+GOAL_ID = "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001"
 COSV = "40000100100000"
 ORG_TASK = "ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001"
 ORG_VECTOR = "50000000101000"
@@ -29,16 +30,47 @@ def load(path: Path) -> dict[str, Any]:
         raise RuntimeError(f"object required:{path}")
     return value
 
+def required_env(name: str) -> str:
+    value = str(os.environ.get(name) or "").strip()
+    if not value:
+        raise RuntimeError(f"required StegBrowser invocation binding missing:{name}")
+    return value
+
+def invocation_binding(source: Path) -> dict[str, str]:
+    manifest_path = source / MANIFEST_REL
+    manifest_sha256 = hashlib.sha256(manifest_path.read_bytes()).hexdigest()
+    bound_manifest = required_env("STEGVERSE_STEGBROWSER_MANIFEST_SHA256")
+    if bound_manifest != manifest_sha256:
+        raise RuntimeError("StegBrowser manifest binding mismatch")
+    receipt_sha256 = required_env("STEGVERSE_STEGBROWSER_REGISTRATION_RECEIPT_SHA256")
+    if len(receipt_sha256) != 64:
+        raise RuntimeError("StegBrowser registration receipt digest invalid")
+    return {
+        "goal_task_id": GOAL_ID,
+        "node_id": required_env("STEGVERSE_STEGBROWSER_NODE_ID"),
+        "interlock_id": required_env("STEGVERSE_STEGBROWSER_INTERLOCK_ID"),
+        "registration_receipt_sha256": receipt_sha256,
+        "lease_id": required_env("STEGVERSE_STEGBROWSER_LEASE_ID"),
+        "runtime_id": required_env("STEGVERSE_STEGBROWSER_RUNTIME_ID"),
+        "manifest_sha256": manifest_sha256,
+    }
+
 def packet(source: Path) -> dict[str, Any]:
     manifest_path = source / MANIFEST_REL
     manifest = load(manifest_path)
-    raw = manifest_path.read_bytes()
+    binding = invocation_binding(source)
     payload = {
         "subject_task_id": SUBJECT_TASK,
+        "goal_task_id": GOAL_ID,
         "cosv_task_vector": COSV,
         "purpose": "STEGBROWSER_MANIFEST_DEFINED_INTR_INGRESS",
         "manifest_ref": str(MANIFEST_REL),
-        "manifest_sha256": hashlib.sha256(raw).hexdigest(),
+        "manifest_sha256": binding["manifest_sha256"],
+        "node_id": binding["node_id"],
+        "interlock_id": binding["interlock_id"],
+        "registration_receipt_sha256": binding["registration_receipt_sha256"],
+        "lease_id": binding["lease_id"],
+        "runtime_id": binding["runtime_id"],
         "route_owner": manifest.get("route_owner"),
         "outbound_interlock_intr_endpoint": (manifest.get("outbound") or {}).get("interlock_intr_endpoint"),
         "far_end_receiver": (manifest.get("outbound") or {}).get("receiver"),
@@ -58,7 +90,7 @@ def packet(source: Path) -> dict[str, Any]:
         "carrier_grants_execution_authority": False,
         "canonical_state_change_authorized": False,
         "authority_effect": "NONE_REQUEST_ONLY",
-        "transition_basis": {"subject_task_id": SUBJECT_TASK, "cosv_task_vector": COSV, "authority_effect": "NONE_EVIDENCE_ONLY"},
+        "transition_basis": {"subject_task_id": SUBJECT_TASK, "goal_task_id": GOAL_ID, "cosv_task_vector": COSV, "authority_effect": "NONE_EVIDENCE_ONLY"},
     }
 
 def verified(receipt: dict[str, Any], expected: dict[str, Any]) -> bool:
@@ -82,6 +114,7 @@ def verified(receipt: dict[str, Any], expected: dict[str, Any]) -> bool:
 def execute(source_root: Path, runtime_root: Path) -> dict[str, Any]:
     source, runtime = source_root.resolve(), runtime_root.resolve()
     expected = packet(source)
+    binding = expected["payload"]
     ingress, receipt_path = runtime / PACKET_REL, runtime / ORG_RECEIPT_REL
     ingress.parent.mkdir(parents=True, exist_ok=True)
     if ingress.is_file() and load(ingress) != expected:
@@ -104,8 +137,15 @@ def execute(source_root: Path, runtime_root: Path) -> dict[str, Any]:
         "schema":"stegverse.stegbrowser-manifest-intr-ingress/v1",
         "state":"AUTHENTIC_INTR_INGRESS_OBSERVED",
         "subject_task_id":SUBJECT_TASK,
+        "goal_task_id":GOAL_ID,
         "cosv_task_vector":COSV,
         "executor_task_id":ORG_TASK,
+        "manifest_sha256":binding["manifest_sha256"],
+        "node_id":binding["node_id"],
+        "interlock_id":binding["interlock_id"],
+        "registration_receipt_sha256":binding["registration_receipt_sha256"],
+        "lease_id":binding["lease_id"],
+        "runtime_id":binding["runtime_id"],
         "organization_local_receipt_ref":str(ORG_RECEIPT_REL),
         "claim_id":receipt["claim_id"],
         "fencing_token":receipt["fencing_token"],
