@@ -1,16 +1,49 @@
 {
   "reusable_task_id": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
   "name": "StegBrowser Runtime Consumption",
-  "purpose": "Execute the manifest-declared StegBrowser owned mirror route through the existing StegVerse Node -> Interlock -> InTr -> bounded lease -> EVENT_EPHEMERAL StegOS materialization path, then continue only from authentic evidence without creating a duplicate runtime, scheduler, WorkerCoordinator, credential path, external host dependency, or second-device dependency.",
-  "trigger": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001 is ACTIVE/CHECKED_OUT and its complete manifest is bound to COSV 40000100100000; STEG-BROWSER-RUNTIME-CONSUMPTION-001 remains retired historical operation lineage and is not reactivated",
-  "scope": "one manifest-bound invocation for STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001 / COSV 40000100100000 using the declared StegVerse-owned mirror route and the existing invocation-owned Node/Interlock/InTr/lease/EVENT_EPHEMERAL materialization architecture",
+  "purpose": "Reuse the already-validated StegVerse-002 Site browser lane for the manifest-declared StegBrowser owned-mirror route, preserving its StegVerse Node -> Interlock -> InTr -> bounded lease -> EVENT_EPHEMERAL browser runtime mechanics and adapting only current invocation bindings required by the StegBrowser Goal/COSV/manifest.",
+  "trigger": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001 is ACTIVE/CHECKED_OUT under COSV 40000100100000 and its manifest is bound; STEG-BROWSER-RUNTIME-CONSUMPTION-001 remains retired historical operation lineage and is not reactivated",
+  "scope": "one StegBrowser manifest-bound invocation using the already-validated SV002 Site browser runtime lane as the execution baseline; no reconstructed Receipt resolver, runtime, scheduler, WorkerCoordinator, credential path, external host dependency, or second-device dependency",
   "operation_lineage_task_id": "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
   "active_tracking_task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+  "current_execution_goal_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
   "manifest_ref": "control/transport-manifests/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json",
   "parameter_keys": ["source_root", "runtime_root", "sovereign_source_root", "stegos_source_root", "runtime_base", "node_genesis_receipt"],
   "runner_templates": ["scripts/run_stegbrowser_manifest_bound_runtime.py"],
   "recording_levels": ["operation", "task", "goal", "component", "system", "master_records"],
-  "source_conformance_state": "NODE_INTERLOCK_BINDING_SOURCE_MERGED_VALIDATED_RUNTIME_EVIDENCE_PENDING",
+  "source_conformance_state": "SV002_SITE_VALIDATED_LANE_BASELINE_RETEST_PASS_STEGBROWSER_BINDING_ADAPTATION_PENDING",
+  "validated_runtime_baseline": {
+    "repository": "StegVerse-Labs/Site",
+    "execution_owner": "StegVerse-002/micro-node-runtime",
+    "site_pr": 1354,
+    "validated_head": "0ae6bbd252741599c7cab06746f274b901d2e455",
+    "focused_validation_run": 34993797222,
+    "site_bootstrap_run": 34993797221,
+    "site_handoff_orchestrator_run": 34993797281,
+    "site_heartbeat_run": 34993797195,
+    "all_source_validation_passed": true,
+    "unchanged_tests": [
+      "tests/test_sv002_self_contained_runtime.py",
+      "tests/test_sv002_canonical_destination.py"
+    ],
+    "runtime_assets": [
+      "assets/sv002-local-runtime-materializer.js",
+      "assets/sv002-principal-worker.js",
+      "assets/generated/site-browser-intr-connectors.js"
+    ],
+    "execution_profile": "StegVerse-002/micro-node-runtime:experiments/self-characterization-001/EXECUTION_IMPLEMENTATION_PROFILE.v0.8.json",
+    "historical_substrate": "BROWSER_WEB_WORKER_ON_VALID_STEGVERSE_NODE",
+    "historical_pattern": "REGISTERED_STEGVERSE_NODE -> INTERLOCK -> INTR_MATERIALIZATION -> BOUNDED_LEASE -> EVENT_EPHEMERAL_BROWSER_WEB_WORKER -> PRINCIPAL_EXECUTION -> MASTER_RECORDS_RECONSTRUCTION",
+    "adaptation_rule": "PRESERVE_RUNTIME_MECHANICS; CHANGE_ONLY_STEGBROWSER_GOAL_COSV_MANIFEST_OWNED_MIRROR_INVOCATION_BINDINGS",
+    "runtime_authority_effect": "NONE_FROM_SOURCE_OR_CI"
+  },
+  "superseded_reconstruction": {
+    "issue": 1939,
+    "state": "CLOSED_NOT_PLANNED",
+    "reason": "A separate Receipt #1 resolver would reconstruct functionality already owned by the validated Site SV002 lane. Reuse the validated lane instead.",
+    "new_receipt_resolver_allowed": false,
+    "new_runtime_materializer_allowed": false
+  },
   "canonical_node_binding_contract": {
     "selector": "CANONICAL_REGISTERED_STEGVERSE_NODE_BINDING",
     "selector_role": "SYMBOLIC_SELECTION_ONLY_NOT_A_SECOND_RECEIPT_FORMAT",
@@ -29,27 +62,26 @@
     "authority_effect": "NONE_IDENTITY_BINDING_ONLY"
   },
   "implementation_trace": {
-    "manifest_binding": "IMPLEMENTED_MERGED_VALIDATED",
-    "registered_stegverse_node_binding": "IMPLEMENTED_MERGED_VALIDATED_VIA_REQUIRED_NODE_GENESIS_RECEIPT",
-    "node_receipt_1_validation": "IMPLEMENTED_MERGED_VALIDATED_WITH_STEGOS_NETWORK_MANIFOLD_VALIDATOR",
-    "interlock_binding_from_node": "IMPLEMENTED_MERGED_VALIDATED_FROM_VALIDATED_RECEIPT_1",
-    "invocation_scoped_lease": "IMPLEMENTED_MERGED_VALIDATED_AND_DERIVED_FROM_MANIFEST_NODE_INTERLOCK_REGISTRATION_TASK_COSV_BINDING",
-    "event_ephemeral_stegos_materialization": "IMPLEMENTED_MERGED_VALIDATED",
-    "execution_time_runtime_identity": "IMPLEMENTED_MERGED_VALIDATED_AND_BOUND_BACK_TO_LEASE_NODE_INTERLOCK_MANIFEST",
-    "workercoordinator_claim_fence": "IMPLEMENTED_MERGED_VALIDATED_IN_ORGANIZATION_LOCAL_BOUNDARY_PATH",
-    "organization_local_intr_ingress_verification": "IMPLEMENTED_MERGED_VALIDATED_WITH_EXACT_NODE_INTERLOCK_LEASE_RUNTIME_PACKET_CORRELATION",
-    "direct_a1_a4_child_ingress_worker_shortcut": false,
-    "round_trip_1": "NOT_YET_AUTHENTICALLY_EXECUTED",
-    "round_trip_2": "NOT_YET_AUTHENTICALLY_EXECUTED"
+    "validated_site_baseline": "RETEST_PASS_UNCHANGED",
+    "manifest_binding": "CURRENT_STEGBROWSER_SOURCE_IMPLEMENTED_MERGED_VALIDATED",
+    "registered_stegverse_node_binding": "VALIDATED_SITE_BASELINE_EXISTS; CURRENT_STEGBROWSER_ADAPTER_BINDING_PENDING",
+    "interlock_binding_from_node": "VALIDATED_SITE_BASELINE_EXISTS; CURRENT_STEGBROWSER_ADAPTER_BINDING_PENDING",
+    "invocation_scoped_lease": "VALIDATED_SITE_BASELINE_EXISTS; CURRENT_STEGBROWSER_ADAPTER_BINDING_PENDING",
+    "event_ephemeral_stegos_materialization": "VALIDATED_SITE_BASELINE_EXISTS",
+    "execution_time_runtime_identity": "VALIDATED_SITE_BASELINE_EXISTS",
+    "workercoordinator_claim_fence": "CURRENT_STEGBROWSER_EXACT_AUTHENTIC_EVIDENCE_PENDING",
+    "organization_local_intr_ingress_verification": "CURRENT_STEGBROWSER_EXACT_AUTHENTIC_EVIDENCE_PENDING",
+    "round_trip_1": "NOT_YET_AUTHENTICALLY_EXECUTED_FOR_STEGBROWSER",
+    "round_trip_2": "NOT_YET_AUTHENTICALLY_EXECUTED_FOR_STEGBROWSER"
   },
   "source_validation": {
-    "pr": 1923,
-    "validated_head": "f7b6cb86b9fff9fbeb1817e45920acc2effc200f",
-    "merge_sha": "0098bc793865fd1db835c400b502dad5f8a5e32d",
-    "organization_control_run": 34970252692,
-    "deterministic_suite_run": 34970252614,
-    "heartbeat_validation_run": 34970252669,
-    "all_required_lanes_passed": true,
+    "prior_node_interlock_pr": 1923,
+    "prior_node_interlock_validated_head": "f7b6cb86b9fff9fbeb1817e45920acc2effc200f",
+    "prior_a1_a4_reconciliation_pr": 1929,
+    "validated_site_baseline_pr": 1354,
+    "validated_site_baseline_head": "0ae6bbd252741599c7cab06746f274b901d2e455",
+    "validated_site_baseline_run": 34993797222,
+    "all_baseline_required_lanes_passed": true,
     "runtime_authority_effect": "NONE"
   },
   "completion_predicates": [
@@ -79,5 +111,5 @@
     "NO_PARALLEL_SCHEDULER_DISPATCHER_CREDENTIAL_PATH_EXTERNAL_HOST_OR_SECOND_DEVICE"
   ],
   "authority_effect": "NONE_ORCHESTRATION_ONLY",
-  "reuse_instructions": "Use CANONICAL_REGISTERED_STEGVERSE_NODE_BINDING only as the selector for the one concrete node_genesis_receipt/STEGVERSE_NODE_GENESIS_RECEIPT input. Validate Receipt #1 with StegOS validate_node_genesis_receipt, bind manifest_sha256 + node_id + interlock_id + registration_receipt_sha256 + Goal + COSV into the existing invocation lease/state identity, materialize the existing EVENT_EPHEMERAL StegOS runtime, bind lease_id + runtime_id back to the same identity, and require the A4 packet/receipt to preserve the exact same correlation before authentic ingress is accepted. Do not infer Receipt #1 from a plain node declaration and do not discover an external runtime, device, or host. Source or CI state must never be promoted to runtime completion evidence."
+  "reuse_instructions": "Start from the green StegVerse-Labs/Site SV002 browser lane proven on Site PR #1354 head 0ae6bbd252741599c7cab06746f274b901d2e455. Preserve its Node gating, Interlock/InTr materialization, bounded lease, self-contained EVENT_EPHEMERAL browser Web Worker, execution-time runtime identity, and reconstruction behavior. Adapt only the current StegBrowser Goal/COSV/manifest and owned-mirror route bindings required by STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001. Do not build a separate Receipt #1 resolver, new runtime/materializer, external host/device discovery path, or second user-operated device. Source or CI must never be promoted to authentic runtime completion evidence."
 }
