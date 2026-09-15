@@ -2,37 +2,22 @@
 
 Updated: 2026-09-15
 Goal Task ID: `INDEPENDENT-REVIEW-PREDICATE-001`
-COSV: `40000100100000`
-Status: `ACTIVE / CLAIMED_IMPLEMENTATION`
+COSV: `71000000100100`
+Status: `RETIRED / COMPLETED`
 
 ## Canonical research owner
 
 `StegVerse-Labs/StegScholar`
 
-Primary research handoff:
+Primary terminal research handoff:
 
 `INDEPENDENT_REVIEW_PREDICATE_MIRROR_HANDOFF.md`
 
-## Selection and collision check
+## Completed purpose
 
-This child is selected after completion of `GATE-LEGITIMACY-INVARIANT-001`. The completed gate-legitimacy formalism already contains an `independent_review_ref` slot and a boolean `independent_review_satisfied`, but it intentionally does not define how independence is proven. The Governable Autonomy review schema recognizes `independent-peer-review` and independent reviewer identity classes, but identity labels alone do not prove independence from gate ownership, challenged-rule authorship, financial/common-control interests, or execution-path control.
+The task defined and falsified a deterministic predicate distinguishing merely available review from structurally independent review for adverse governance dispositions.
 
-Canonical files, open PRs, and active branches were checked for the exact task and equivalent deterministic predicate. No competing implementation was observed. Existing review labels and the gate-legitimacy reference slot are substrate, not duplicates.
-
-## Purpose
-
-Define and falsify a deterministic predicate that distinguishes merely available review from genuinely independent review for adverse governance dispositions.
-
-## Required dimensions
-
-- common organizational/control ownership;
-- challenged-rule authorship/control;
-- material financial interest;
-- evaluator/reviewer identity collision;
-- execution-path ownership/control;
-- evidence sufficient to distinguish disclosed/mitigated conflicts from unresolved conflicts.
-
-## Required distinction
+## Core invariants
 
 ```text
 review_available != independent_review_available
@@ -40,8 +25,34 @@ reviewer_identity_label != reviewer_independence_proof
 IndependentReview(r) != GovernanceAuthority(r)
 ```
 
-## Coordination boundary
+Required separation dimensions are common organizational/control ownership, challenged-rule authorship/control, material financial interest, reviewer/original-evaluator identity, and execution-path ownership/control. A conflict produces `NOT_INDEPENDENT`; unavailable review or unresolved required evidence produces `UNRESOLVED`; neither defaults to independence.
 
-Reviewer-independence metadata is evidence for review legitimacy and may be referenced by gate-legitimacy records, GTG dissent/appeal/correction, or TT correction/supersession evidence. It is not a second transition authority, cannot emit ALLOW/DENY, cannot override GTG, and cannot prove execution or consequence.
+## Collision disposition
 
-The retired Millings comparison and retired gate-legitimacy child remain closed. Continue only under this child task.
+The existing Governable Autonomy review schema provides independent-review labels and reviewer identity classes but no structural independence proof. The completed gate-legitimacy formalism provides a consumer reference slot (`independent_review_ref`) and satisfaction field but intentionally no predicate implementation. No competing branch, open PR, or equivalent deterministic implementation was observed before claim.
+
+## Merged evidence
+
+- StegScholar implementation PR #62 exact head `e24f000f39427cbb778e81152547ccc368cfa899` completed Validate Independent Review, Validate Transition Table, Test Readiness, and Governable Autonomy Validation with SUCCESS and merged at `3ae161d82014848363d1c30dde28d8239cb6341c`.
+- StegScholar closeout PR #63 exact head `9e77a989e00bbdaa6d2b28ae22b5059ec3fb9420` completed Validate Independent Review and Test Readiness with SUCCESS and merged at `5b29b43e3f003474703e45fdab1659e43f255bd5`.
+
+## Authority boundary
+
+Reviewer-independence evidence may be referenced by gate-legitimacy evaluation and future GTG/TT appeal, correction, or supersession evidence. It does not create governance or execution authority, emit or override ALLOW/DENY, prove review correctness, or prove execution/post-state/consequence.
+
+Mandatory integration into the Governable Autonomy review schema, canonical GTG schema, or TT cell schema was not installed and requires separate compatibility/collision work.
+
+The retired Millings comparison and retired Gate Legitimacy child remain closed.
+
+## Terminal state
+
+```text
+coordination_state: RETIRED
+checkout_state: COMPLETED
+completion.claimed: true
+completion.validated: true
+archive_ready: true
+COSV: 71000000100100
+```
+
+Continue only under a separate adjacent or integration task.
