@@ -5,97 +5,99 @@ Repository: `StegVerse-Labs/.github`
 Goal Task ID: `STEGVERSE-BUSINESS-OPPORTUNITY-ENGINE-PILOT-001`
 COSV profile: `task.v1`
 COSV vector: `10100000110000`
-Status: `ACTIVE / SOURCE_MERGED_VALIDATED / ANALYSIS EXECUTION PENDING`
+Status: `ACTIVE / FIRST PUBLIC-MARKET SCREENING MERGED_VALIDATED / GOVERNED RUNTIME ADMISSION UNOBSERVED`
 
 ## Goal
 
 Implement a falsifiable, provenance-preserving, analysis-only StegVerse Business Opportunity Engine that can freeze one market, consume admissible public business evidence, estimate addressable gross-revenue-leakage ranges, deterministically rank candidates, and emit review-only draft proposals without contacting any business.
 
-## Canonical registration
+## Canonical/source evidence
 
-Registration PR `.github#1928` merged as `1de5d4c7c6d18c5e0a9b83cccc3cc4b7f62d69bd`. The post-merge canonical reconciliation PR `.github#1936` validated the concurrently advanced canonical tree and merged as `a96a15009ca93c85a5869e8faf0c2db5e3d1f117`.
+Registration PR `.github#1928` merged as `1de5d4c7c6d18c5e0a9b83cccc3cc4b7f62d69bd`; post-merge canonical reconciliation PR `.github#1936` merged as `a96a15009ca93c85a5869e8faf0c2db5e3d1f117`.
 
-The task retains `stegverse.execution-substrate-resolution/v1` with `selected_substrate_id=null`, `external_device_required=false`, `second_user_operated_device_allowed=false`, and `authority_effect=NONE`. Source/CI/merge does not select or authorize a runtime.
+StegBusiness-Ops source implementation PR #3 final head `958975e42a0ad6652fd2b648073908e35d8fa59e` passed run `34981508789`, merged as `e4cff61915e5a6acf4b5dc804452d6151618b3cf`, and merged-main run `34981564640` passed.
 
-## Collision disposition
+Collision disposition remains `CONTINUE_WITH_BOUNDARY_REUSE`; child specialization `AI-GOVERNANCE-OPPORTUNITY-ENGINE-001` remains separate and preserved.
 
-Before StegBusiness-Ops mutation, its canonical handoff, ops registry, open PRs, and adjacent opportunity/ranking/proposal work were inspected.
+## First public-market screening
 
-The collision check found child specialization `AI-GOVERNANCE-OPPORTUNITY-ENGINE-001`. Its implementation became StegBusiness-Ops PR #2 and merged as `224508cd0e83227f571fd7a4207a596a0d7615c9`.
+Classification: `EXTERNAL_ASSISTED_DETERMINISTIC_ANALYSIS_NO_STEGVERSE_RUNTIME_RECEIPT`.
 
-Disposition: `CONTINUE_WITH_BOUNDARY_REUSE`.
+Market ID: `TEMPLE-TX-DENTAL-35MI-2026-09-15`  
+Run ID: `TEMPLE-TX-DENTAL-35MI-2026-09-15-RUN-001`
 
-The child owns AI-company governance-opportunity ranking. This parent owns the general-business addressable gross-revenue-leakage model and draft-only proposal contract. Both preserve provenance, unknowns, confidence separation, and no-outreach semantics without creating duplicate outreach authority. Canonical business identity/evidence contracts remain upstream-owned by `StegVerse-Labs/StegBusiness`.
+Frozen boundary:
+- Temple, Texas center
+- 35-mile radius
+- Bell County and Coryell County, Texas
+- dental practices only
+- 50 public business candidates
+- `OUTREACH_DISABLED`
 
-## Merged implementation evidence
+Merged artifacts in `StegVerse-Labs/StegBusiness-Ops`:
+- `business-opportunity-engine/runs/TEMPLE-TX-DENTAL-35MI-2026-09-15/market-manifest.json`
+- `business-opportunity-engine/runs/TEMPLE-TX-DENTAL-35MI-2026-09-15/METHODOLOGY.md`
+- `business-opportunity-engine/runs/TEMPLE-TX-DENTAL-35MI-2026-09-15/top50.csv`
+- implementation mirror handoff update
 
-Implementation owner: `StegVerse-Labs/StegBusiness-Ops`.
+PR #8 exact head `1604dfef890312d178e8cf0b86b6f9babb7b190a` passed `Validate StegBusiness-Ops` run `34984265419`, merged with expected-head protection as `c632404ed3c67c8740da0573b5a46962a2a4fe6b`, and merged-main push validation run `34984345442` passed.
 
-PR #3 implemented:
+This establishes an authentic public-business candidate set and a deterministic 50-row screening artifact, not governed StegVerse runtime execution.
 
-- `business-opportunity-engine/engine.py`
-- market, public-evidence, analysis-packet, draft-proposal, and outcome schemas
-- deterministic synthetic fixture and validator
-- deterministic low/mid/high leakage range math
-- geometric confidence and deterministic rank/tie-break behavior
-- `DRAFT_ONLY` proposal generation
-- recursive rejection of outbound/contact/provider/credential fields
-- root README integration
-- ops-registry projection
-- existing repository validator integration without adding another workflow/runtime surface
+## Evidence and methodology boundary
 
-Final PR head `958975e42a0ad6652fd2b648073908e35d8fa59e` passed `Validate StegBusiness-Ops` run `34981508789`.
+Per-business public inputs used for this initial screen are public identity/location, public aggregate rating, and public aggregate review count. No private patient data, purchased dossiers, contact enrichment, call recordings, private analytics, credentials, or private financial records were used.
 
-PR #3 then merged with expected-head protection as `e4cff61915e5a6acf4b5dc804452d6151618b3cf`.
+The run uses public ADA prospective-patient-contact guidance for a bounded `20% / 30% / 50%` conversion-loss scenario and AHRQ/MEPS dental-visit payment statistics of `$284 / $443 / $514` as low/mid/high event-value anchors.
 
-Merged `main` push run `34981564640` (`Validate StegBusiness-Ops`) completed successfully against that exact merge SHA.
+No public practice-specific inquiry volume was observed. Public review count is therefore used only as an explicit D-class modeled demand proxy. Addressable share is likewise an explicit D-class assumption at `25% / 50% / 75%`.
 
-This establishes `SOURCE_MERGED_VALIDATED` only.
+The model remains:
 
-## Deterministic model
+`LEAK = OPPORTUNITY_VOLUME × CONVERSION_PROBABILITY × EXPECTED_GROSS_VALUE × ADDRESSABLE_SHARE`
 
-For leakage channel `k`:
+Dollar outputs are annualized screening estimates of addressable gross-revenue leakage under stated assumptions. They are not audited historical lost revenue, profit, guaranteed recoverable revenue, or proof of a communications deficiency at a listed business.
 
-`LEAK_k = OPPORTUNITY_VOLUME_k × CONVERSION_PROBABILITY_k × EXPECTED_GROSS_VALUE_k × ADDRESSABLE_SHARE_k`
+## Screening result
 
-Business leakage is the summed low/mid/high range. Confidence is the geometric mean of evidence coverage, source reliability, model stability, and assumption-burden score. Ranking is:
+A deterministic top 50 was produced. The top midpoint estimate is approximately `$35.9k`; the top five midpoint estimates range approximately `$30.7k–$35.9k` under the current assumptions.
 
-`N(log1p(LEAK_mid)) × CONF × ADDRESSABILITY × EVIDENCE_COMPLETENESS × RANK_STABILITY × (1 - COMPLIANCE_RISK)`
+All rows are `DRAFT_ONLY / OUTREACH_DISABLED`.
 
-Tie-break order is higher confidence, higher evidence completeness, narrower relative interval, higher addressability, then stable business ID.
-
-## Outreach hard-disable
-
-Canonical state: `OUTREACH_DISABLED`.
-
-The source package has no sender, publisher, provider adapter, credential resolver, contact enricher, campaign scheduler, or outbound transition. Input packets fail closed on outbound/contact/provider/credential fields, and proposal artifacts are always `DRAFT_ONLY`.
-
-No source artifact in this Goal Task authorizes outreach. Any future outbound capability requires a separate canonical Goal Task and contemporaneous compliance, WorkerCoordinator, Interlock/InTr, TV/TVC, and receipt/reconstruction requirements.
+The ranking is **not decision-grade** because the principal business-specific demand input is D-class modeled rather than observed. Before commercial prioritization is considered validated, replace that proxy with admissible first-party or independently measured prospective-inquiry volume and retest conversion, kept visits, gross collections, sensitivity, and rank stability. A material reorder after those substitutions falsifies the present screening rank.
 
 ## Authority boundary
 
-Task Registry is coordination truth only. WorkerCoordinator retains claim/fence authority. Interlock/InTr retains governed transition authority. TV/TVC retains provider credential authority. Master Records retains observed-reality/reconstruction authority. GitHub source, CI, and merge evidence prove source state only.
+No authentic StegVerse resident-runtime, WorkerCoordinator claim/fence, Interlock/InTr admission receipt, provider execution, contact enrichment, or outreach receipt was observed in this run.
+
+Accordingly:
+- `governed_runtime_admission_observed=false`
+- `workercoordinator_claim_observed=false`
+- `interlock_intr_receipt_observed=false`
+- `provider_execution_observed=false`
+- `contact_enrichment_observed=false`
+- `outreach_observed=false`
+- `economic_outcome_observed=false`
+
+Task Registry remains coordination truth; WorkerCoordinator remains claim/fence authority; Interlock/InTr remains governed transition authority; TV/TVC remains credential authority; Master Records remains observed-reality/reconstruction authority. GitHub analysis/source/CI evidence cannot mint execution authority.
+
+The execution-substrate projection remains non-authorizing with `selected_substrate_id=null`, no external device required, and no second user-operated device allowed.
 
 ## Current truth
 
 - Goal Task: `ACTIVE`.
 - COSV: `10100000110000`.
-- Collision disposition: `CONTINUE_WITH_BOUNDARY_REUSE`.
-- AI child specialization: MERGED / PRESERVED.
-- Parent implementation PR #3: MERGED.
-- Parent final validated head: `958975e42a0ad6652fd2b648073908e35d8fa59e`.
-- Exact-head validation: PASS / run `34981508789`.
-- Parent merge SHA: `e4cff61915e5a6acf4b5dc804452d6151618b3cf`.
-- Merged-main push validation: PASS / run `34981564640`.
-- Source state: `SOURCE_MERGED_VALIDATED`.
-- Outreach: `OUTREACH_DISABLED`; NONE SENT.
-- Authentic market survey: NOT EXECUTED.
-- Real top 50: NOT PRODUCED.
-- Real business proposals: NOT GENERATED.
-- Provider execution: NOT OBSERVED.
-- Runtime execution: NOT OBSERVED.
-- Economic outcome: NOT OBSERVED.
+- source package: `MERGED_VALIDATED`.
+- first market manifest: FROZEN / MERGED.
+- first public-market candidate set: 50.
+- first deterministic screening top 50: PRODUCED / MERGED / VALIDATED.
+- decision-grade ranking: NO.
+- proposal state: `DRAFT_ONLY`.
+- outreach: `OUTREACH_DISABLED`; NONE SENT.
+- governed runtime admission: NOT OBSERVED.
+- provider/contact transition: NONE.
+- economic outcome: NOT OBSERVED.
 
 ## Next admissible work
 
-Source materialization is complete. The next phase is a separately admitted analysis execution: freeze an authentic market manifest, collect admissible public evidence, run the merged deterministic model, and retain analysis artifacts. That phase must not infer runtime completion from source/CI evidence and must preserve `OUTREACH_DISABLED` throughout this Goal Task.
+Improve the evidence quality of the highest-ranked candidates without contacting them: collect richer admissible public observations such as official booking/contact paths, published office and after-hours coverage, provider count, services, emergency/same-day availability, and reproducible booking friction; then recompute confidence/sensitivity and test whether the top ranking survives. Keep `OUTREACH_DISABLED` and do not convert this Goal Task into a provider/contact/outreach lane.
