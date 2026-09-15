@@ -162,6 +162,54 @@ Require authentic allowed transition into `STEGVERSE_ECOSYSTEM` and set `SUCCESS
 
 Set `SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIPS_IDENTIFIED=true` only after authentic success for both declared round trips.
 
+## Out-of-scope defect remediation exception branch
+
+Canonical contract:
+
+`data/out-of-scope-remediation-request-contract.json`
+
+This branch may be entered from any GC transition only after an actual broken condition is observed. A pending predicate alone is not a defect and does not trigger this branch.
+
+```text
+X1 observed broken condition
+-> X2 retain exact failure evidence and classify owning domain
+-> require OUT_OF_SCOPE_FOR_CURRENT_GOAL=true
+-> X3 classify whether the foreign defect blocks the current transition
+-> X4 emit StegVerse-Healer remediation evaluation request with AUTHORITY_TRANSFER=NONE
+-> request emission does NOT trigger Healer
+-> X5 StegVerse-Healer independently evaluates authorized remediation triggers
+-> if nonblocking: continue unrelated current-Goal GC transitions
+-> if blocking and an authorized bounded remedy is completed: return to the interrupted GC transition
+```
+
+Required routing predicates:
+
+```text
+OBSERVED_BROKEN_CONDITION = true
+EXACT_FAILURE_EVIDENCE_RETAINED = true
+OWNING_DOMAIN_CLASSIFIED = true
+OUT_OF_SCOPE_FOR_CURRENT_GOAL = true
+HEALER_REMEDIATION_REQUEST_EMITTED = true
+AUTHORITY_TRANSFER = NONE
+HEALER_TRIGGERED_BY_REQUEST_EMISSION = false
+```
+
+First fixture:
+
+`GADI-SOURCE-SCHEMA-COMPATIBILITY-MISMATCH-001`
+
+Classification:
+
+```text
+OWNING_DOMAIN = GADI
+OUT_OF_SCOPE_FOR_CURRENT_GOAL = true
+BLOCKS_ORIGINATING_TRANSITION = false
+AUTHORITY_TRANSFER = NONE
+ORIGINATING_GOAL_ACTION = RETAIN_EVIDENCE_EMIT_REQUEST_CONTINUE_STEGBROWSER_SPECIFIC_VALIDATION
+```
+
+The originating StegBrowser Goal must not repair the GADI subsystem. StegVerse-Healer independently evaluates whether an authorized GADI remediation trigger applies.
+
 ## Authority invariants
 
 - Manifest: path declaration/binding only.
@@ -173,7 +221,7 @@ Set `SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIPS_IDENTIFIED=true` only after authentic
 - KV/SKAP Vault: user-verification authority.
 - Master Records: recording/custody/reconstruction authority between governed returns; not transport authority.
 - HeartBeat: observability only.
-- Healer: triggered bounded remediation only.
+- Healer: independent trigger evaluation and triggered bounded remediation only; remediation-request receipt alone grants no authority and is not a trigger.
 - GitHub/CI: source validation/evidence transport only; runtime authority `NONE`.
 - Standing online device: not required or expected.
 - Second user-operated device: not required.
