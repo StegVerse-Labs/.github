@@ -1,0 +1,11 @@
+{
+  "schema": "stegverse.cosv-task-vector-index-entry/v1",
+  "task_id": "STEGVERSE-BUSINESS-OPPORTUNITY-ENGINE-PILOT-001",
+  "repository": "StegVerse-Labs/.github",
+  "registry_ref": "data/canonical-task-records/STEGVERSE-BUSINESS-OPPORTUNITY-ENGINE-PILOT-001.json",
+  "source_state_vector_ref": "control/task-vectors/STEGVERSE-BUSINESS-OPPORTUNITY-ENGINE-PILOT-001.json",
+  "vector": "10100000110000",
+  "vector_state": "EMITTED",
+  "profile": "task.v1",
+  "authority_effect": "NONE"
+}
