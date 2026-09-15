@@ -8,7 +8,7 @@ Repository: `StegVerse-Labs/.github`
 - Goal Task ID: `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001`
 - Parent Goal: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / SOURCE BINDING REPAIR REQUIRED / AUTHENTIC A3+A4 EXECUTION PENDING`
+- Status: `ACTIVE / CHECKED_OUT / SOURCE REPAIR VALIDATED / MERGE PENDING / AUTHENTIC A3+A4 EXECUTION PENDING`
 
 ## Goal
 
@@ -27,7 +27,7 @@ canonical manifest
 -> WorkerCoordinator claim/fence
 -> authentic organization-local Interlock/InTr ingress receipt
 -> A4 satisfied
--> Round Trip #1 may proceed
+-> governed round-trip lifecycle may proceed
 ```
 
 Forbidden prerequisites:
@@ -39,23 +39,24 @@ Forbidden prerequisites:
 - endpoint/receiver discovery;
 - second user-operated machine.
 
-## Exact source defects observed at task creation
+## Source repairs
 
 ### D1 — stale Canonical Work request identity
 
-`control/resident-execution-request.d/canonical-work-stegbrowser-runtime-consumption-001.json` correctly targets active Goal `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`, but `control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py` still declares the StegBrowser request spec task ID as retired `STEG-BROWSER-RUNTIME-CONSUMPTION-001`.
+Observed source mismatch: `control/resident-execution-request.d/canonical-work-stegbrowser-runtime-consumption-001.json` targets active Goal `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`, while the canonical consumer's StegBrowser request spec retained retired operation-lineage identity `STEG-BROWSER-RUNTIME-CONSUMPTION-001`.
 
-Required repair:
+Repair implemented:
 
-- bind the StegBrowser spec to the active invocation Goal identity;
-- preserve `STEG-BROWSER-RUNTIME-CONSUMPTION-001` only as operation lineage;
-- materialize/preserve the active task shard, not rely on retired identity as the execution owner.
+- preserve the existing Canonical Work resident consumer and public implementation/API contract;
+- overlay only the StegBrowser invocation owner to active `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`;
+- preserve `STEG-BROWSER-RUNTIME-CONSUMPTION-001` as operation lineage and canonical source-contract text;
+- preserve/materialize the active remediation task shard without creating a second dispatcher.
 
 ### D2 — incorrect A3/A4 ordering in reusable runner
 
-`scripts/run_stegbrowser_runtime_consumption_reusable.py` currently attempts its Canonical Work ingress projection before observing a real WorkerCoordinator claim/fence, and its projection gate references stale `INGRESS_ADMITTED` semantics not present in the current Goal transition set.
+Observed source ordering attempted Canonical Work ingress projection before an authentic WorkerCoordinator claim/fence.
 
-Required repair:
+Repair implemented:
 
 - use the already-merged manifest binding first;
 - materialize invocation-owned ephemeral StegOS;
@@ -64,6 +65,16 @@ Required repair:
 - accept A3 only from the resulting durable organization-local receipt containing a valid WorkerCoordinator `claim_id` and `fencing_token`;
 - accept A4 only after exact packet/profile/hash verification of that receipt;
 - only then continue the StegBrowser Canonical Work/transport path.
+
+## Validation evidence
+
+Exact source-validation candidate `b530c27194aaa0d45e889e30fed910e0c8596bdc` passed all three required non-authorizing validation lanes before this handoff reconciliation:
+
+- organization-control run `34926414425`: `success`;
+- deterministic repository suite run `34926414434`: `success`;
+- Heartbeat validation run `34926414456`: `success`.
+
+Because this handoff/task-record reconciliation changes the branch head, merge requires the same three validation lanes to pass again on the final exact head. No source/CI result is runtime evidence.
 
 ## Reuse owner
 
@@ -76,7 +87,7 @@ The required boundary executor already exists:
 
 Do not create another runtime, dispatcher, scheduler, WorkerCoordinator, or Interlock/InTr implementation.
 
-The known reusable pattern is demonstrated by `workers/stegclaw_p4_profiled_resident_execution.py`: construct exact organization-local ingress packet -> invoke existing boundary task -> verify claim/fence and durable receipt.
+The reusable pattern is demonstrated by `workers/stegclaw_p4_profiled_resident_execution.py`: construct exact organization-local ingress packet -> invoke existing boundary task -> verify claim/fence and durable receipt.
 
 ## Required predicates
 
@@ -89,7 +100,11 @@ ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED = true
 AUTHENTIC_INTR_INGRESS_OBSERVED = true
 ```
 
-A4 is not satisfied by source, CI, request existence, dispatcher selection, or an ingress packet alone.
+Current predicate ownership:
+
+- Source validation may establish the binding implementation is valid.
+- Source/CI/merge MUST NOT establish ephemeral materialization, WorkerCoordinator claim/fence, organization-local ingress receipt verification, or authentic A4 ingress.
+- A3/A4 remain pending until invocation-owned durable runtime evidence is observed.
 
 ## Authority boundaries
 
@@ -104,7 +119,7 @@ A4 is not satisfied by source, CI, request existence, dispatcher selection, or a
 
 ## Completion boundary
 
-Source completion requires corrected request/consumer identity binding, exact organization-local packet construction/verification, deterministic tests, all repository validation lanes PASS, and merge.
+Source completion requires corrected request/consumer identity binding, exact organization-local packet construction/verification, deterministic tests, all repository validation lanes PASS on the final exact head, and merge.
 
 Runtime completion for this Goal requires authentic retained evidence from the invocation-owned path proving WorkerCoordinator claim/fence plus verified organization-local Interlock/InTr ingress. Source/CI must not promote those predicates.
 
