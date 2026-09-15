@@ -138,11 +138,15 @@ def _build_node_trigger(*, source: Path, resident_root: Path, stegos: Path, mani
         "node_id": node_id,
         "interlock_id": interlock_id,
         "materialization_id": request["materialization_id"],
-        "request_hash": request["request_hash"],
+        "operation_id": request["operation_id"],
+        "packet_id": request["packet_id"],
         "transport_intent_hash": request["transport_intent_hash"],
         "payload_hash": request["payload_hash"],
+        "request_hash": request["request_hash"],
         "destination": request["destination"],
         "downstream_owner_ref": request["downstream_owner_ref"],
+        "payload_ref": request["payload_ref"],
+        "node_outbox_ref": f"stegos-node://{node_id}/intr_outbox/{request['materialization_id']}",
         "materialization_request": request,
         "network_delivery_observed": False,
         "runtime_materialization_observed": False,
@@ -157,7 +161,7 @@ def _build_node_trigger(*, source: Path, resident_root: Path, stegos: Path, mani
     entry["outbox_entry_hash"] = digest_uri(entry)
     trigger = {
         "schema": "stegos.node_intr_materialization_trigger.v1",
-        "transport_origin": "STEGOS_NODE_LOCAL_OUTBOX",
+        "transport_origin": "STEGOS_NODE_OUTBOX",
         "node_id": node_id,
         "interlock_id": interlock_id,
         "outbox_entry_hash": entry["outbox_entry_hash"],
@@ -212,7 +216,7 @@ def main() -> int:
     headers = {
         "Content-Type": "application/json",
         "X-StegVerse-Transport": "InTr",
-        "X-StegVerse-Transport-Origin": "STEGOS_NODE_LOCAL_OUTBOX",
+        "X-StegVerse-Transport-Origin": "STEGOS_NODE_OUTBOX",
         "X-StegVerse-Payload-SHA256": hashlib.sha256(body).hexdigest(),
     }
     receipt = ingress.admit(runtime_root=resident_root, body=body, headers=headers)
