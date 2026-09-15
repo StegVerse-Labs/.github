@@ -2,11 +2,15 @@
   "identity": "StegVerse-Labs/.github:task:GATE-LEGITIMACY-INVARIANT-001",
   "profile": "task.v1",
   "level": "task",
-  "vector": "10100000100000",
+  "vector": "71000000100100",
   "evidence_refs": [
     "data/canonical-task-records/GATE-LEGITIMACY-INVARIANT-001.json",
     "docs/GATE_LEGITIMACY_INVARIANT_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/StegScholar:GATE_LEGITIMACY_INVARIANT_MIRROR_HANDOFF.md"
+    "StegVerse-Labs/StegScholar:GATE_LEGITIMACY_INVARIANT_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegScholar:papers/transition-table/gate-legitimacy-invariant.md",
+    "StegVerse-Labs/StegScholar:schemas/gate-legitimacy-record.schema.json",
+    "StegVerse-Labs/StegScholar#60",
+    "StegVerse-Labs/StegScholar#61"
   ],
-  "observed_at": "2026-09-15T12:24:00Z"
+  "observed_at": "2026-09-15T14:42:00-05:00"
 }

@@ -5,25 +5,51 @@
   "root_correlation_id": "MILLINGS-RTG-GTG-TT-COMPARISON-001",
   "parent_task_id": "MILLINGS-RTG-GTG-TT-COMPARISON-001",
   "goal": "Determine whether StegVerse governance gates require a first-class inspectable legitimacy record and falsification protocol covering standard provenance, evidence-rule provenance, evaluator standing/conflicts, execution-path control, challenge paths, and review independence without creating a new authority source.",
-  "coordination_state": "ACTIVE",
-  "checkout_state": "UNCLAIMED",
-  "cosv_task_vector": "10100000100000",
+  "coordination_state": "RETIRED",
+  "checkout_state": "COMPLETED",
+  "cosv_task_vector": "71000000100100",
+  "goal_prompt_count": "1/20",
   "source_refs": [
     "docs/GATE_LEGITIMACY_INVARIANT_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegScholar:GATE_LEGITIMACY_INVARIANT_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegScholar:papers/external-frameworks/millings-method-refinement-disposition.md",
+    "StegVerse-Labs/StegScholar:papers/transition-table/gate-legitimacy-invariant.md",
+    "StegVerse-Labs/StegScholar:schemas/gate-legitimacy-record.schema.json",
+    "StegVerse-Labs/StegScholar:fixtures/gate-legitimacy/gate-legitimacy-cases.json",
+    "StegVerse-Labs/StegScholar:scripts/validate_gate_legitimacy.py",
+    "StegVerse-Labs/StegScholar:tests/test_gate_legitimacy.py",
+    "StegVerse-Labs/StegScholar#60",
+    "StegVerse-Labs/StegScholar@223150373bcf73bfee6de163372e4fb9b045d380",
+    "StegVerse-Labs/StegScholar#61",
+    "StegVerse-Labs/StegScholar@89a78338e431dc21cc2b56f9a13f132753b05b9a",
     "data/canonical-task-records/MILLINGS-RTG-GTG-TT-COMPARISON-001.json"
   ],
   "targets": {"organizations":["StegVerse-Labs"],"repositories":["StegVerse-Labs/StegScholar","StegVerse-Labs/.github"],"components":["gate-legitimacy-record","gate-legitimacy-falsification"]},
-  "dependencies": [],
+  "dependencies": [
+    {"dependency_id":"DEP-GATE-LEGITIMACY-SOURCE-IMPLEMENTATION","kind":"MERGE_VALIDATION","state":"RESOLVED","ref":"StegVerse-Labs/StegScholar#60","disposition":"EXACT_HEAD_d074b0f2335b545b98daf5ff78013b5f71a6f7a5_GREEN_THEN_MERGED_223150373bcf73bfee6de163372e4fb9b045d380"},
+    {"dependency_id":"DEP-GATE-LEGITIMACY-SOURCE-CLOSEOUT","kind":"MERGE_VALIDATION","state":"RESOLVED","ref":"StegVerse-Labs/StegScholar#61","disposition":"EXACT_HEAD_c2149ac1b5bb21a6df41f18b4f885e1bc17ee8e2_GREEN_THEN_MERGED_89a78338e431dc21cc2b56f9a13f132753b05b9a"}
+  ],
   "blockers": [],
+  "collision_check": {
+    "checked_at": "2026-09-15T14:16:00-05:00",
+    "open_pr_collision_found": false,
+    "active_branch_collision_found": false,
+    "equivalent_implementation_found": false,
+    "disposition": "CLAIM_AND_EXECUTE_THIS_CHILD_ONLY"
+  },
   "adjacent_task_refs": ["ARCHITECTURE-NEUTRAL-ADMISSIBILITY-001","INDEPENDENT-REVIEW-PREDICATE-001"],
+  "result": {
+    "disposition": "ACCEPTED_BOUNDED_FORMALISM",
+    "core_invariant": "GateLegitimate(g) != CandidateAllowed(c)",
+    "mandatory_gtg_tt_integration_installed": false,
+    "future_integration_requires_separate_collision_and_compatibility_review": true
+  },
   "expected_evidence_predicates": ["GATE_LEGITIMACY_OBJECT_PROPOSED_OR_REJECTED_WITH_RATIONALE","STANDARD_PROVENANCE_CASES_VALIDATED","EVIDENCE_RULE_CONTROL_CASES_VALIDATED","EVALUATOR_CONFLICT_CASES_VALIDATED","EXECUTION_PATH_CONTROL_CASES_VALIDATED","AUTHORITY_NONINHERITANCE_PRESERVED"],
-  "completion": {"claimed":false,"validated":false,"activation_proof_complete":false},
-  "allowed_next_transitions": ["CLAIMED_IMPLEMENTATION","CLAIMED_VALIDATION","CLAIMED_INTEGRATION"],
+  "completion": {"claimed":true,"validated":true,"activation_proof_complete":false,"archive_ready":true,"completion_basis":"MERGED_STEGSCHOLAR_IMPLEMENTATION_AND_CLOSEOUT_WITH_EXACT_HEAD_GREEN_VALIDATION"},
+  "allowed_next_transitions": ["NO_FURTHER_PARENT_CHILD_EXECUTION","CONTINUE_ONLY_UNDER_SEPARATE_ADJACENT_OR_INTEGRATION_TASK"],
   "handoff_projection_refs": [
     "docs/GATE_LEGITIMACY_INVARIANT_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegScholar:GATE_LEGITIMACY_INVARIANT_MIRROR_HANDOFF.md"
   ],
-  "authority_model": {"task_registry_mints_execution_authority":false,"gate_legitimacy_metadata_mints_governance_authority":false,"request_grants_execution_authority":false}
+  "authority_model": {"task_registry_mints_execution_authority":false,"gate_legitimacy_metadata_mints_governance_authority":false,"request_grants_execution_authority":false,"completion_grants_successor_authority":false}
 }
