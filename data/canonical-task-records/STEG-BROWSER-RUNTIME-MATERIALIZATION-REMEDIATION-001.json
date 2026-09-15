@@ -9,7 +9,17 @@
   "checkout_state": "CHECKED_OUT",
   "cosv_task_vector": "40000100100000",
   "shared_runtime_evidence_owner_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
-  "current_exact_defect": "ACTIVE_REMEDIATION_REUSABLE_BINDING_SOURCE_REPAIR_PENDING_VALIDATION",
+  "current_exact_defect": "AUTHENTIC_RUNTIME_CONNECTION_TRANSITION_AND_INTR_INGRESS_NOT_YET_OBSERVED",
+  "source_validation": {
+    "pull_request": 1907,
+    "validated_head": "53e017036ce0de4b732fbac44394709a15c3e89f",
+    "merge_commit": "4834e0a8787b11a6d01872e39ba82773f9bdeda4",
+    "organization_control_run": 34911735697,
+    "deterministic_suite_run": 34911735692,
+    "heartbeat_validation_run": 34911735696,
+    "all_validation_lanes_passed": true,
+    "runtime_authority_effect": "NONE"
+  },
   "source_refs": [
     "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md",
     "docs/REUSABLE_GOAL_TASK_TRANSPORT_COMPONENTS_MIRROR_HANDOFF.md",
@@ -42,45 +52,12 @@
       "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
     ],
     "reviews": [
-      {
-        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
-        "disposition": "PENDING_EVIDENCE",
-        "limitation_class": "EVIDENCE_REACHABILITY",
-        "evidence_refs": ["docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md"]
-      },
-      {
-        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
-        "disposition": "SUITABLE",
-        "limitation_class": "NONE",
-        "evidence_refs": ["docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md"]
-      },
-      {
-        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
-        "disposition": "SUITABLE",
-        "limitation_class": "NONE",
-        "evidence_refs": ["docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md"]
-      },
-      {
-        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
-        "disposition": "SUITABLE",
-        "limitation_class": "PLATFORM",
-        "evidence_refs": ["docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md"]
-      },
-      {
-        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
-        "disposition": "SELECTED",
-        "limitation_class": "NONE",
-        "evidence_refs": [
-          "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md",
-          "docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md"
-        ]
-      },
-      {
-        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
-        "disposition": "NOT_APPLICABLE",
-        "limitation_class": "NOT_APPLICABLE",
-        "evidence_refs": []
-      }
+      {"substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE", "disposition": "PENDING_EVIDENCE", "limitation_class": "EVIDENCE_REACHABILITY", "evidence_refs": ["docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md"]},
+      {"substrate_id": "STEGOS-CURRENT-DEVICE-NODE", "disposition": "SUITABLE", "limitation_class": "NONE", "evidence_refs": ["docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md"]},
+      {"substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE", "disposition": "SUITABLE", "limitation_class": "NONE", "evidence_refs": ["docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md"]},
+      {"substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER", "disposition": "SUITABLE", "limitation_class": "PLATFORM", "evidence_refs": ["docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md"]},
+      {"substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE", "disposition": "SELECTED", "limitation_class": "NONE", "evidence_refs": ["docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md", "docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md"]},
+      {"substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT", "disposition": "NOT_APPLICABLE", "limitation_class": "NOT_APPLICABLE", "evidence_refs": []}
     ],
     "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
     "external_device_required": false,
@@ -120,7 +97,7 @@
     "non_callable_condition": "callable=false"
   },
   "dependencies": [
-    {"dependency_id": "DEP-REUSABLE-STEG-BROWSER-RUNTIME-CONSUMPTION", "kind": "REUSABLE_TASK_CANDIDATE_SELECTED_BY_STATE", "state": "SOURCE_REBINDING_IN_VALIDATION", "ref": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001"},
+    {"dependency_id": "DEP-REUSABLE-STEG-BROWSER-RUNTIME-CONSUMPTION", "kind": "REUSABLE_TASK_CANDIDATE_SELECTED_BY_STATE", "state": "SOURCE_REBOUND_MERGED_VALIDATED_RUNTIME_UNOBSERVED", "ref": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001"},
     {"dependency_id": "DEP-RUNTIME-CONNECTION-STATE-TRANSITION", "kind": "GOVERNED_STATE_TRANSITION", "state": "PENDING_AUTHENTIC_TRANSITION_EVIDENCE", "ref": "INTERLOCK_INTR", "variables": ["callable", "refreshable"]},
     {"dependency_id": "DEP-SOVEREIGN-SOURCE-REFRESH", "kind": "REUSABLE_TASK_SELECTED_BY_TRANSITION", "state": "PENDING_TRANSITION_VARIABLE_RESOLUTION", "ref": "RT-SOVEREIGN-SOURCE-REFRESH-001", "selection_condition": "callable=true AND refreshable=true"},
     {"dependency_id": "DEP-INTR-PROTOCOL", "kind": "REUSABLE_TASK_SELECTED_BY_TRANSITION", "state": "USE_EXISTING_PROTOCOL_OR_SELECT_IF_UNRESOLVED", "ref": "RT-INTR-PROTOCOL-ESTABLISH-001", "selection_condition": "governed connection required AND no applicable existing InTr protocol resolves"},
@@ -181,7 +158,16 @@
     "INFER_CALLABLE_OR_REFRESHABLE_FROM_PERSISTENT_SOURCE_STATE",
     "TREAT_HEALER_AS_NORMAL_EXECUTION_PREREQUISITE_OR_STAGE_OWNER",
     "TRIGGER_HEALER_WITHOUT_OBSERVED_FAILURE_CONDITION",
-    "ADD_SECOND_RUNTIME_EVIDENCE_OWNER", "ADD_SECOND_SCHEDULER", "ADD_SECOND_DISPATCHER", "ADD_CREDENTIAL_ROUTE", "ADD_GITHUB_RUNTIME_AUTHORITY", "ADD_RUNTIME_PLANE", "ADD_PROVIDER_AUTHORITY", "ADD_WORKERCOORDINATOR_BYPASS", "REQUIRE_SECOND_USER_OPERATED_DEVICE", "CLAIM_RUNTIME_COMPLETION_FROM_SOURCE_STATE"
+    "ADD_SECOND_RUNTIME_EVIDENCE_OWNER",
+    "ADD_SECOND_SCHEDULER",
+    "ADD_SECOND_DISPATCHER",
+    "ADD_CREDENTIAL_ROUTE",
+    "ADD_GITHUB_RUNTIME_AUTHORITY",
+    "ADD_RUNTIME_PLANE",
+    "ADD_PROVIDER_AUTHORITY",
+    "ADD_WORKERCOORDINATOR_BYPASS",
+    "REQUIRE_SECOND_USER_OPERATED_DEVICE",
+    "CLAIM_RUNTIME_COMPLETION_FROM_SOURCE_STATE"
   ],
   "completion": {
     "claimed": false,
