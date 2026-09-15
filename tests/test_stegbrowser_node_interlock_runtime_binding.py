@@ -1,9 +1,11 @@
 from pathlib import Path
+import json
 
 ROOT = Path(__file__).resolve().parents[1]
 RUNNER = ROOT / "scripts/run_stegbrowser_runtime_consumption_reusable.py"
 WORKER = ROOT / "workers/stegbrowser_manifest_intr_ingress.py"
 RT = ROOT / "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json"
+REQUEST = ROOT / "control/resident-execution-request.d/canonical-work-stegbrowser-runtime-consumption-001.json"
 
 
 def test_runner_validates_receipt_one_before_existing_materializer():
@@ -14,6 +16,20 @@ def test_runner_validates_receipt_one_before_existing_materializer():
     assert "SovereignLocalEventRuntimeAdapter.materialize" in source
     assert "bound_lease_request" in source
     assert "node_interlock_lease_runtime_correlation_failed" in source
+
+
+def test_canonical_registered_node_selector_is_invocation_bound_and_fail_closed():
+    request = json.loads(REQUEST.read_text())
+    path_parameters = request["reusable_task_binding"]["path_parameters"]
+    assert path_parameters["node_binding_ref"] == "CANONICAL_REGISTERED_STEGVERSE_NODE_BINDING"
+    source = RUNNER.read_text()
+    assert 'CANONICAL_NODE_SELECTOR = "CANONICAL_REGISTERED_STEGVERSE_NODE_BINDING"' in source
+    assert 'STEGVERSE_STEGBROWSER_NODE_BINDING_REF' in source
+    assert 'STEGVERSE_SOVEREIGN_NODE_MARKER' in source
+    assert 'Path.home() / ".stegverse" / "node.json"' in source
+    assert 'Path("/etc/stegverse/node.json")' in source
+    assert "canonical_registered_stegverse_node_receipt_one_not_available" in source
+    assert "build_node_genesis_receipt" not in source
 
 
 def test_lease_state_identity_binds_manifest_node_interlock_goal_cosv():
