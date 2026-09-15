@@ -33,10 +33,10 @@
     ],
     "reviews": [
       {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":[]},
-      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"REUSABLE_CONTINUITY_ANCHOR_REQUIRED","limitation_class":"SOURCE_BINDING_IMPLEMENTED_VALIDATION_PENDING","evidence_refs":["StegVerse-Labs/StegOS:stegos/network_manifold.py","scripts/run_stegbrowser_runtime_consumption_reusable.legacy.py"]},
-      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"SUITABLE","limitation_class":"SOURCE_BINDING_IMPLEMENTED_VALIDATION_PENDING","evidence_refs":["scripts/run_stegbrowser_runtime_consumption_reusable.legacy.py"]},
-      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"ARCHITECTURAL_PRECEDENT_NOT_SELECTED","limitation_class":"HISTORICAL_ENGINEERING_LANE_ONLY","evidence_refs":["StegVerse-Labs/Site:assets/canonical-runtime-proof.js"]},
-      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"SELECTED","limitation_class":"SOURCE_BINDING_IMPLEMENTED_VALIDATION_PENDING","evidence_refs":["scripts/run_stegbrowser_runtime_consumption_reusable.legacy.py","workers/stegbrowser_manifest_intr_ingress.py","docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"SUITABLE","limitation_class":"ARCHITECTURAL","evidence_refs":["StegVerse-Labs/StegOS:stegos/network_manifold.py","scripts/run_stegbrowser_runtime_consumption_reusable.legacy.py"]},
+      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"SUITABLE","limitation_class":"NONE","evidence_refs":["scripts/run_stegbrowser_runtime_consumption_reusable.legacy.py"]},
+      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["StegVerse-Labs/Site:assets/canonical-runtime-proof.js"]},
+      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"SELECTED","limitation_class":"NONE","evidence_refs":["scripts/run_stegbrowser_runtime_consumption_reusable.legacy.py","workers/stegbrowser_manifest_intr_ingress.py","docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"]},
       {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":[]}
     ],
     "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
