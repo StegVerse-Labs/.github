@@ -52,6 +52,29 @@
     "deployment_required": false,
     "current_observation_required": false
   },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/STEGVERSE_BUSINESS_OPPORTUNITY_ENGINE_PILOT_001_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"SUITABLE","limitation_class":"NONE","evidence_refs":["docs/STEGVERSE_BUSINESS_OPPORTUNITY_ENGINE_PILOT_001_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"SUITABLE","limitation_class":"NONE","evidence_refs":["docs/STEGVERSE_BUSINESS_OPPORTUNITY_ENGINE_PILOT_001_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"SUITABLE","limitation_class":"PLATFORM","evidence_refs":["docs/STEGVERSE_BUSINESS_OPPORTUNITY_ENGINE_PILOT_001_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"SUITABLE","limitation_class":"NONE","evidence_refs":["docs/STEGVERSE_BUSINESS_OPPORTUNITY_ENGINE_PILOT_001_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":[]}
+    ],
+    "selected_substrate_id": null,
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  },
   "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
   "completion": {"claimed":false,"validated":false,"reconciliation_ref":null,"activation_proof_complete":false},
   "allowed_next_transitions": ["REGISTRATION_MERGED", "IMPLEMENTATION_OWNER_COLLISION_CHECKED", "PILOT_IMPLEMENTATION_MATERIALIZED", "PILOT_VALIDATED"],
@@ -66,11 +89,11 @@
     "github_runtime_authority": "NONE",
     "outreach_authorized": false
   },
-  "goal_prompt_count": 1,
+  "goal_prompt_count": 3,
   "readme_impact": {
     "material_function_change": true,
     "readme_updated_in_change_set": false,
-    "no_readme_update_reason": "This branch registers and formalizes the goal before implementation-owner mutation. The StegBusiness-Ops README must be updated in the implementation change set after canonical registration and collision reconciliation.",
+    "no_readme_update_reason": "Canonical registration defines design and authority boundaries; implementation-owner README changes remain required after collision reconciliation in StegBusiness-Ops.",
     "evidence_refs": ["docs/STEGVERSE_BUSINESS_OPPORTUNITY_ENGINE_PILOT_001_MIRROR_HANDOFF.md"]
   }
 }
