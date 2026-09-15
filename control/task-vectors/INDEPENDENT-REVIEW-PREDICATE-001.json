@@ -2,11 +2,13 @@
   "identity": "StegVerse-Labs/.github:task:INDEPENDENT-REVIEW-PREDICATE-001",
   "profile": "task.v1",
   "level": "task",
-  "vector": "10100000100000",
+  "vector": "40000100100000",
   "evidence_refs": [
     "data/canonical-task-records/INDEPENDENT-REVIEW-PREDICATE-001.json",
     "docs/INDEPENDENT_REVIEW_PREDICATE_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/StegScholar:INDEPENDENT_REVIEW_PREDICATE_MIRROR_HANDOFF.md"
+    "StegVerse-Labs/StegScholar:INDEPENDENT_REVIEW_PREDICATE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegScholar:research-programs/governable-autonomy/review-schema.json",
+    "StegVerse-Labs/StegScholar:schemas/gate-legitimacy-record.schema.json"
   ],
-  "observed_at": "2026-09-15T12:24:00Z"
+  "observed_at": "2026-09-15T19:50:00Z"
 }
