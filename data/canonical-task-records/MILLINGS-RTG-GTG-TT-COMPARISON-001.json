@@ -5,76 +5,56 @@
   "root_correlation_id": "MILLINGS-RTG-GTG-TT-COMPARISON-001",
   "parent_task_id": null,
   "goal": "Formalize the independently authored Millings Method as a provenance-preserving external-framework comparison candidate against StegVerse RTG/GTG/TT, identify exact convergence, partial convergence, divergence, and bounded candidate refinements to the canonical transition model without implying shared authorship, derivation, certification, or technical equivalence.",
-  "coordination_state": "ACTIVE",
-  "checkout_state": "CLAIMED_INTEGRATION",
-  "cosv_task_vector": "40011100100000",
+  "coordination_state": "RETIRED",
+  "checkout_state": "COMPLETED",
+  "cosv_task_vector": "71000000100100",
+  "goal_prompt_count": "5/20",
   "source_refs": [
     "StegVerse-Labs/StegScholar:MILLINGS_METHOD_RTG_GTG_TT_COMPARISON_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegScholar:papers/external-frameworks/millings-method-rtg-gtg-tt-comparison.md",
+    "StegVerse-Labs/StegScholar:papers/external-frameworks/millings-method-refinement-disposition.md",
     "StegVerse-Labs/StegScholar:papers/rtg-gtg-tt/cross-layer-contract.md",
     "StegVerse-Labs/StegScholar:TT_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/admissibility-wiki:docs/external-frameworks/EXTERNAL_FRAMEWORKS_MIRROR_HANDOFF.md"
+    "StegVerse-Labs/.github#1924",
+    "StegVerse-Labs/StegScholar#58",
+    "StegVerse-Labs/StegScholar#59",
+    "StegVerse-Labs/StegScholar@b3ee2dc25d0099addda7dca2e42c91a68d4a6aac"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
     "repositories": ["StegVerse-Labs/StegScholar", "StegVerse-Labs/.github"],
-    "components": [
-      "external-framework-comparison",
-      "rtg-gtg-tt-provenance-mapping",
-      "gate-legitimacy-analysis",
-      "architecture-neutral-admissibility-analysis",
-      "independent-review-analysis",
-      "execution-consequence-reconciliation"
-    ]
+    "components": ["external-framework-comparison", "rtg-gtg-tt-provenance-mapping", "refinement-disposition"]
   },
   "dependencies": [
-    {
-      "dependency_id": "DEP-MILLINGS-SOURCE-SCOPE",
-      "kind": "SOURCE_EVIDENCE_BOUNDARY",
-      "state": "RESOLVED_BOUNDED",
-      "ref": "StegVerse-Labs/StegScholar:MILLINGS_METHOD_RTG_GTG_TT_COMPARISON_MIRROR_HANDOFF.md",
-      "disposition": "USE_ONLY_USER_SUPPLIED_PUBLIC_STATEMENTS_FOR_CURRENT COMPARISON; DO_NOT INFER UNSUPPLIED MILLINGS MECHANISMS"
-    },
-    {
-      "dependency_id": "DEP-MILLINGS-EXTERNAL-FRAMEWORK-REGISTRY",
-      "kind": "ADJACENT_MACHINE_OWNED_WORK",
-      "state": "DEFERRED_NONCOLLIDING",
-      "ref": "StegVerse-Labs/admissibility-wiki:docs/external-frameworks/EXTERNAL_FRAMEWORKS_MIRROR_HANDOFF.md",
-      "disposition": "DO_NOT MUTATE CURRENT MACHINE_OWNED 36-FRAMEWORK EVALUATION LANE; TREAT MILLINGS AS RESEARCH COMPARISON CANDIDATE UNTIL SEPARATE REGISTRY ADMISSION IS AUTHORIZED"
-    }
+    {"dependency_id":"DEP-MILLINGS-SOURCE-SCOPE","kind":"SOURCE_EVIDENCE_BOUNDARY","state":"RESOLVED","ref":"StegVerse-Labs/StegScholar:MILLINGS_METHOD_RTG_GTG_TT_COMPARISON_MIRROR_HANDOFF.md"},
+    {"dependency_id":"DEP-MILLINGS-SOURCE-MERGE","kind":"MERGE_VALIDATION","state":"RESOLVED","ref":"StegVerse-Labs/StegScholar#58","disposition":"MERGED_502cea60320479ae3021e952e36194bb79190302_WITH_TEST_READINESS_AND_GOVERNABLE_AUTONOMY_SUCCESS"},
+    {"dependency_id":"DEP-MILLINGS-COORDINATION-MERGE","kind":"MERGE_VALIDATION","state":"RESOLVED","ref":"StegVerse-Labs/.github#1924","disposition":"MERGED_2e489d367b659e4a6d9b275c6d37fc0e482436da_WITH_ORG_CONTROL_DETERMINISTIC_SUITE_HEARTBEAT_VALIDATION_SUCCESS"},
+    {"dependency_id":"DEP-MILLINGS-STEGSCHOLAR-CLOSEOUT","kind":"MERGE_VALIDATION","state":"RESOLVED","ref":"StegVerse-Labs/StegScholar#59","disposition":"EXACT_HEAD_cc4ce60a778844b05cdb29e0c833666c8654e854_GREEN_THEN_MERGED_b3ee2dc25d0099addda7dca2e42c91a68d4a6aac"}
   ],
   "blockers": [],
   "adjacent_task_refs": [
-    "SESSION-TT-CONSEQUENCE-BLACK-TRANSITION-001",
-    "RT-EXTERNAL-FRAMEWORK-ROUNDTRIP-ROLLOUT-001"
+    "GATE-LEGITIMACY-INVARIANT-001",
+    "ARCHITECTURE-NEUTRAL-ADMISSIBILITY-001",
+    "INDEPENDENT-REVIEW-PREDICATE-001",
+    "SESSION-TT-CONSEQUENCE-BLACK-TRANSITION-001"
   ],
-  "expected_evidence_predicates": [
-    "MILLINGS_PROVENANCE_BOUNDARY_EXPLICIT",
-    "RTG_GTG_TT_SOURCE_CONTRACT_VERIFIED",
-    "CONVERGENCE_PARTIAL_CONVERGENCE_DIVERGENCE_MAPPED",
-    "PROHIBITED_EQUIVALENCE_CLAIMS_DOCUMENTED",
-    "GATE_LEGITIMACY_CANDIDATE_REFINEMENT_DOCUMENTED",
-    "ARCHITECTURE_NEUTRAL_ADMISSIBILITY_CANDIDATE_DOCUMENTED",
-    "INDEPENDENT_REVIEW_PREDICATE_CANDIDATE_DOCUMENTED",
-    "EXECUTION_CONSEQUENCE_RECONCILIATION_CANDIDATE_DOCUMENTED",
-    "STEGSCHOLAR_README_UPDATED",
-    "CANONICAL_HANDOFF_UPDATED",
-    "PR_EVIDENCE_OBSERVED"
-  ],
-  "worker_claim": {
-    "authority": "CHAT_COORDINATION_BRANCH_ONLY",
-    "claim_ref": null,
-    "fence_ref": null,
-    "projection_only": true
+  "refinement_disposition": {
+    "gate_legitimacy": "NEW_TASK:GATE-LEGITIMACY-INVARIANT-001",
+    "architecture_neutral_admissibility": "NEW_TASK:ARCHITECTURE-NEUTRAL-ADMISSIBILITY-001",
+    "independent_review": "NEW_TASK:INDEPENDENT-REVIEW-PREDICATE-001",
+    "continuation_renewal": "REUSE_EXISTING_TT_WORKSTREAM",
+    "execution_to_consequence_reconciliation": "REUSE_EXISTING_TT_WORKSTREAM"
   },
-  "human_action_ref": null,
   "completion": {
-    "claimed": false,
-    "validated": false,
-    "activation_proof_complete": false
+    "claimed": true,
+    "validated": true,
+    "activation_proof_complete": false,
+    "archive_ready": true,
+    "completion_basis": "MERGED_SOURCE_COORDINATION_AND_STEGSCHOLAR_CLOSEOUT_WITH_EXACT_HEAD_SUCCESSFUL_VALIDATION_AND_BOUNDED_REFINEMENT_DISPOSITION"
   },
-  "allowed_next_transitions": ["VALIDATION", "PR_OPEN", "MERGED_INTO_CANONICAL_WORKSTREAM"],
+  "allowed_next_transitions": ["NO_FURTHER_PARENT_EXECUTION", "CONTINUE_ONLY_UNDER_DERIVED_TASK_OR_EXISTING_TT_HANDOFF"],
   "handoff_projection_refs": [
+    "docs/MILLINGS_RTG_GTG_TT_COMPARISON_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegScholar:MILLINGS_METHOD_RTG_GTG_TT_COMPARISON_MIRROR_HANDOFF.md"
   ],
   "authority_model": {
@@ -82,6 +62,6 @@
     "source_state_proves_execution": false,
     "external_framework_comparison_mints_certification": false,
     "functional_convergence_proves_derivation": false,
-    "request_grants_execution_authority": false
+    "terminal_closeout_grants_successor_authority": false
   }
 }
