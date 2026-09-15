@@ -10,6 +10,10 @@
   "cosv_binding_required_before_execution": true,
   "mode": "CANONICAL_WORK_EVENT_BOOTSTRAP",
   "entrypoint": "scripts/install_and_run_canonical_work_event_bootstrap.py",
+  "requested_goal_task_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+  "requested_test_scope": "A0_A4_SINGLE_INVOCATION",
+  "requested_invocation_count": 1,
+  "invocation_request_nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
   "reusable_task_binding": {
     "reusable_task_id": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
     "trigger_driver": "scripts/trigger_reusable_task.py",
