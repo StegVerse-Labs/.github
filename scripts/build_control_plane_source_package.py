@@ -11,18 +11,20 @@ from workers import control_plane_source_package as controlpkg
 # Bootstrap-critical control-plane delta. Keep this set sufficient to recover a
 # stale resident into the current autonomous refresh -> scheduler path without
 # requiring the stale runtime to already contain the repair that refreshes it.
+#
+# The StegBrowser A0-A4 implementation was already merged/validated before the
+# one-shot request at commit 19935454.... The only new canonical-source byte set
+# required for that invocation is the unchanged resident request itself. Carrying
+# the entire pre-existing runner chain would duplicate already-canonical source and
+# exceed the existing relay envelope.
 DEFAULT_PATHS = (
     "workers/control_plane_source_package.py",
     "workers/hil_intr_profiled_ingress.py",
     "workers/stegos_sovereign_relay_return_path_request_consumer.py",
-    "workers/stegbrowser_manifest_intr_ingress.py",
     "handoffs/SHWP-STEGOS-SOVEREIGN-RELAY-RETURN-PATH-001.json",
     "control/resident-execution-request.d/stegos-sovereign-relay-return-path-001.json",
     "control/resident-execution-request.d/healer-sovereign-scheduler-001.json",
     "control/resident-execution-request.d/canonical-work-stegbrowser-runtime-consumption-001.json",
-    "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py",
-    "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.legacy.py",
-    "control/transport-manifests/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json",
     "scripts/build_control_plane_source_package.py",
     "scripts/build_control_plane_source_package_reusable.py",
     "scripts/refresh_sovereign_worker_runtime_source.py",
@@ -31,14 +33,9 @@ DEFAULT_PATHS = (
     "scripts/refresh_and_dispatch_resident_requests.py",
     "scripts/refresh_and_execute_resident_task.py",
     "scripts/consume_healer_sovereign_scheduler_request.py",
-    "scripts/run_stegbrowser_manifest_bound_runtime.py",
-    "scripts/run_stegbrowser_runtime_consumption_reusable.py",
-    "scripts/run_stegbrowser_runtime_consumption_reusable.legacy.py",
     "source-bundles/reusable-task-registry.d/RT-SOVEREIGN-SOURCE-REFRESH-001.json",
     "source-bundles/reusable-task-registry.d/RT-REUSABLE-TASK-SCHEDULER-001.json",
     "source-bundles/reusable-task-registry.d/RT-CONTROL-PLANE-SOURCE-PACKAGE-001.json",
-    "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
-    "data/canonical-task-records/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json",
 )
 
 
