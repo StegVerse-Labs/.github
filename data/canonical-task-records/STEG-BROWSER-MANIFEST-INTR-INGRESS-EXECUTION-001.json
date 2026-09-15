@@ -22,6 +22,29 @@
     "registered_node_binding_required": true,
     "node_interlock_binding_required_before_lease": true
   },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":[]},
+      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"SUITABLE","limitation_class":"ARCHITECTURAL","evidence_refs":["StegVerse-Labs/StegOS:stegos/network_manifold.py","scripts/run_stegbrowser_runtime_consumption_reusable.legacy.py"]},
+      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"SUITABLE","limitation_class":"NONE","evidence_refs":["scripts/run_stegbrowser_runtime_consumption_reusable.legacy.py"]},
+      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["StegVerse-Labs/Site:assets/canonical-runtime-proof.js"]},
+      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"SELECTED","limitation_class":"NONE","evidence_refs":["scripts/run_stegbrowser_runtime_consumption_reusable.legacy.py","workers/stegbrowser_manifest_intr_ingress.py","docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":[]}
+    ],
+    "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  },
   "canonical_node_binding": {
     "selector": "CANONICAL_REGISTERED_STEGVERSE_NODE_BINDING",
     "selector_role": "SYMBOLIC_SELECTION_ONLY",
