@@ -41,7 +41,11 @@
     "completed_upstream_state_may_not_be_rewritten_by_downstream_failure": true,
     "ingress_admission_is_evidence_boundary_not_independent_execution_plane": true,
     "resident_receiver_prerequisite_prohibited": true,
-    "destination_profile_defines_destination_materialization": true
+    "destination_profile_defines_destination_materialization": true,
+    "user_device_execution_surface_required": false,
+    "user_device_execution_surface_expected": false,
+    "remote_device_execution_surface_required": false,
+    "absence_of_user_device_surface_is_not_a_runtime_blocker": true
   },
   "documented_transport_sequence": [
     "DATA_EVENT",
@@ -102,8 +106,13 @@
   },
   "runtime_execution_note": {
     "signal_sent_claimed": false,
-    "authentic_intr_materialization_invoked_from_this_session": false,
-    "reason": "No currently attached tool exposes the iPhone/device-local browser service-worker /intr/materialization execution surface. GitHub Actions has runtime authority NONE and was not used as a substitute. This is a session control-surface limitation, not a protocol, endpoint-discovery, resident-receiver, scheduler, dispatcher, or second-runtime requirement."
+    "authentic_intr_materialization_observed": false,
+    "user_device_execution_surface_exists": false,
+    "user_device_execution_surface_expected": false,
+    "remote_device_execution_surface_exists_as_requirement": false,
+    "correct_interpretation": "The governed data event must advance through the existing StegVerse-owned execution/event materialization path and Interlock/InTr boundary without depending on an iPhone-local, browser-local, remote-device, user-operated, or attached-device execution surface.",
+    "prohibited_interpretation": "Do not classify lack of an attached iPhone/device-local /intr/materialization control surface as the reason authentic transport has not occurred. Such a surface is not part of the required architecture and must not be introduced as a prerequisite.",
+    "github_runtime_authority": "NONE"
   },
   "authority_invariants": {
     "task_registry": "COORDINATION_ONLY",
@@ -132,6 +141,7 @@
     "communication_complete": false
   },
   "allowed_next_transitions": [
+    "CAUSE_EXISTING_STEGVERSE_OWNED_EVENT_MATERIALIZATION_PATH_TO_CONSUME_BOUND_MIR_EGRESS_WITHOUT_USER_DEVICE_PREREQUISITE",
     "EXECUTE_REUSED_RTC_STEGVERSE_EGRESS_007_WITH_BOUND_MIR_DESTINATION_PROFILE",
     "OBSERVE_AUTHENTIC_RTC_INTERLOCK_INTR_TRANSPORT_008",
     "OBSERVE_AUTHENTIC_RTC_FARSIDE_FINAL_009",
