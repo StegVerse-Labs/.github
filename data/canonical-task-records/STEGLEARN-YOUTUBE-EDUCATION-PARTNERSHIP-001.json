@@ -12,9 +12,9 @@
     "docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md",
     "data/canonical-task-records/STEGLEARN-YOUTUBE-EDUCATION-PARTNERSHIP-001.json",
     "StegVerse-Labs/StegLearn:docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegLearn:docs/GOOGLE_EDUCATION_OUTREACH_PACKAGE.md",
     "StegVerse-Labs/StegLearn:STEGLEARN_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegLearn:README.md",
-    "StegVerse-Labs/StegLearn@e00ec11116e55b1698739de3fa8dc2e052b47b97",
     "StegVerse-Labs/StegLearn/actions/runs/34988288580",
     "https://edu.google.com/resources/get-started/find-a-partner/become-a-partner/build/",
     "https://edu.google.com/intl/ALL_in/contact/",
@@ -38,8 +38,9 @@
   "systemic_incident_ref": null,
   "adjacent_task_refs": ["STEGLEARN-SITE-PUBLICATION-001"],
   "existing_evidence_refs": [
-    "StegVerse-Labs/StegLearn@e00ec11116e55b1698739de3fa8dc2e052b47b97",
-    "StegVerse-Labs/StegLearn/actions/runs/34988288580"
+    "StegVerse-Labs/StegLearn/actions/runs/34988288580",
+    "docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegLearn:docs/GOOGLE_EDUCATION_OUTREACH_PACKAGE.md"
   ],
   "expected_evidence_predicates": [
     "CANONICAL_TASK_SHARD_REGISTERED",
@@ -49,15 +50,17 @@
     "YOUTUBE_LIVE_API_CAPABILITIES_VERIFIED",
     "BIDIRECTIONAL_LEARNER_AV_GAP_EXPLICIT",
     "MINIMUM_NEGOTIATED_CAPABILITY_SET_DEFINED",
-    "OUTREACH_PACKAGE_PREPARED_NOT_SENT",
+    "OWNER_OUTREACH_AUTHORIZED",
+    "PUBLIC_PARTNER_EVIDENCE_REFRESHED_PRE_SUBMISSION",
+    "OUTREACH_PACKAGE_READY_FOR_INTERACTIVE_SUBMISSION",
     "README_AND_REPOSITORY_HANDOFF_CURRENT",
-    "STEGLEARN_EXACT_HEAD_VALIDATION_GREEN",
+    "GOOGLE_ACKNOWLEDGEMENT_OR_RESPONSE_RECORDED_WHEN_OBSERVED",
     "NO_PARTNERSHIP_OR_RUNTIME_CAPABILITY_FABRICATED"
   ],
   "runtime_requirements": {
     "capabilities": ["github_repository_read", "github_repository_write", "public_web_research"],
     "environment": "CURRENT_SESSION_GITHUB_PLUS_PUBLIC_WEB",
-    "direction": "PUBLIC_PARTNER_EVIDENCE_TO_SOURCE_EVALUATION",
+    "direction": "PUBLIC_PARTNER_EVIDENCE_TO_AUTHORIZED_EXTERNAL_OUTREACH",
     "mutation_required": true,
     "deployment_required": false,
     "current_observation_required": true
@@ -73,12 +76,12 @@
       "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
     ],
     "reviews": [
-      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]}
+      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"NOT_APPLICABLE","limitation_class":"INTERACTIVE_GOOGLE_WEB_FORM_NOT_EXPOSED_TO_CURRENT_TOOL_SURFACE","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"NOT_APPLICABLE","limitation_class":"INTERACTIVE_GOOGLE_WEB_FORM_NOT_EXPOSED_TO_CURRENT_TOOL_SURFACE","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"NOT_APPLICABLE","limitation_class":"INTERACTIVE_GOOGLE_WEB_FORM_NOT_EXPOSED_TO_CURRENT_TOOL_SURFACE","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"NOT_APPLICABLE","limitation_class":"INTERACTIVE_GOOGLE_WEB_FORM_NOT_EXPOSED_TO_CURRENT_TOOL_SURFACE","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"NOT_APPLICABLE","limitation_class":"INTERACTIVE_GOOGLE_WEB_FORM_NOT_EXPOSED_TO_CURRENT_TOOL_SURFACE","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_SELECTED","limitation_class":"OWNER_INTERACTIVE_BROWSER_STEP_SUFFICIENT","evidence_refs":["StegVerse-Labs/StegLearn:docs/GOOGLE_EDUCATION_OUTREACH_PACKAGE.md"]}
     ],
     "selected_substrate_id": null,
     "external_device_required": false,
@@ -91,25 +94,28 @@
     "fence_ref": null,
     "projection_only": false
   },
-  "human_action_ref": null,
+  "human_action_ref": "StegVerse-Labs/StegLearn:docs/GOOGLE_EDUCATION_OUTREACH_PACKAGE.md#submission-boundary",
   "completion": {"claimed": false, "validated": false, "reconciliation_ref": null},
   "allowed_next_transitions": [
-    "OWNER_AUTHORIZE_GOOGLE_OUTREACH",
-    "REFRESH_PUBLIC_PARTNER_EVIDENCE",
-    "RECORD_GOOGLE_RESPONSE_EVIDENCE"
+    "OWNER_SUBMIT_GOOGLE_EDUCATION_SPECIALIST_FORM",
+    "OWNER_START_PARTNER_ADVANTAGE_BUILD_APPLICATION",
+    "RECORD_GOOGLE_ACKNOWLEDGEMENT",
+    "RECORD_GOOGLE_TECHNICAL_RESPONSE"
   ],
   "handoff_projection_refs": ["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "source_state_proves_execution": false,
+    "owner_outreach_authorized": true,
     "partnership_claimed": false,
     "outreach_sent": false,
     "learner_data_transmission_authority": false,
     "google_is_instructional_authority": false,
-    "steglearn_retains_curriculum_adaptation_evidence_mastery_authority": true
+    "steglearn_retains_curriculum_adaptation_evidence_mastery_authority": true,
+    "proprietary_av_build_allowed_while_google_path_viable_untested": false
   },
   "readme_impact": {
-    "material_function_change": true,
+    "material_function_change": false,
     "readme_updated_in_change_set": true,
     "readme_path": "StegVerse-Labs/StegLearn:README.md"
   }
