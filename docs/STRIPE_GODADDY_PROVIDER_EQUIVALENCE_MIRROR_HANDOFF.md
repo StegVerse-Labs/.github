@@ -1,46 +1,50 @@
 # Stripe / GoDaddy Provider Equivalence Mirror Handoff
 
 Goal Task ID: `STRIPE-GODADDY-PROVIDER-EQUIVALENCE-001`
-COSV: `20011000100000`
-Status: `ACTIVE / CHECKED_OUT`
+COSV: `71000000100100`
+Status: `RETIRED / COMPLETED`
 Canonical issue: `StegVerse-Labs/.github#1954`
 Implementation issue: `StegVerse-Labs/TVC#431`
+Implementation PR: `StegVerse-Labs/TVC#432`
+Implementation merge: `StegVerse-Labs/TVC@42c9ed7a9c759ebec3485e292262baf16c7f7e67`
+Exact-head validation: `StegVerse-Labs/TVC/actions/runs/34992183469` — SUCCESS
 
 ## Goal
 
 Prove that completed Stripe and GoDaddy payment evidence can enter one TV/TVC-owned provider-neutral normalization boundary and produce the existing StegPay `payment_verified` event shape while retaining provider provenance and granting no provider, payment, transport, entitlement, governance, credential, or execution authority.
 
-## Current truth
+## Completed build state
 
-Existing Site source already exposes Stripe payment/support links. Existing StegPay source already defines the canonical `payment_verified` fields and rejects entitlement creation. Historical direct provider-secret handling inside StegPay is retired; credential-bearing provider execution belongs at TV/TVC.
+`StegVerse-Labs/TVC#432` merged the provider-neutral payment-evidence adapter, schema, deterministic Stripe and GoDaddy fixtures, equivalence tests, fail-closed authority tests, workflow, README, and repository-local handoff.
 
-The new implementation owner is `StegVerse-Labs/TVC`. Deterministic fixtures are test-only and must not be described as authentic Stripe or GoDaddy runtime evidence.
+The adapter emits exactly the existing StegPay canonical payment-event keys:
 
-## Required implementation
+```text
+amount
+currency
+event_id
+event_type
+issue
+provider
+provider_id
+service
+verified_utc
+```
 
-The smallest acceptable implementation contains:
+`event_type` is fixed to `payment_verified`. Provider identity remains provenance through `provider` and `provider_id`.
 
-- one provider-neutral adapter contract owned by TV/TVC;
-- deterministic completed-payment fixtures for Stripe and GoDaddy;
-- exact mapping into the StegPay event keys: `amount`, `currency`, `event_id`, `event_type`, `issue`, `provider`, `provider_id`, `service`, `verified_utc`;
-- provider provenance retained only in `provider` / `provider_id` and adapter provenance evidence;
-- explicit `authority_effect = NONE` and `creates_entitlement = false` boundaries;
-- deterministic equivalence validation that ignores only provider identity when comparing semantic payment facts;
-- no provider credentials and no charge/refund/payment mutation in fixture validation.
+## Deterministic proof
 
-## Completion predicates
+Workflow run `34992183469` executed against exact PR head `ed9987bff74df67106526c00f974639551c01756` and completed successfully before merge.
 
-Source-complete when the TVC branch contains the adapter, contract, fixtures, tests, workflow, repository README, and repository-local mirror handoff.
+Validated predicates:
 
-Validated when exact-head deterministic tests prove:
-
-1. Stripe completed evidence normalizes to the canonical StegPay schema;
-2. GoDaddy completed evidence normalizes to the same schema;
-3. semantic fields are equal across equivalent fixtures except provider identity;
-4. non-completed provider states fail closed;
-5. authority and entitlement flags cannot be elevated by provider evidence.
-
-This task does not claim live Stripe or GoDaddy API/webhook activation, owner credentials, production settlement observation, runtime ingestion, or downstream StegOps consumption.
+1. Stripe completed evidence normalizes to the canonical StegPay field shape.
+2. GoDaddy completed evidence normalizes to the same field shape.
+3. Equivalent fixtures are semantically identical after removing only provider identity.
+4. Non-completed payment states fail closed.
+5. Provider attempts to grant entitlement, payment authority, governance authority, or execution authority fail closed.
+6. Unknown provider evidence fields and unsupported providers fail closed.
 
 ## Authority boundaries
 
@@ -51,7 +55,21 @@ This task does not claim live Stripe or GoDaddy API/webhook activation, owner cr
 - StegPay normalization/signing does not create entitlement.
 - Governance and execution remain outside provider/payment authority.
 - Transport is not authority.
+- Fixture validation requires no provider credentials and performs no payment, order, capture, or refund mutation.
 
-## Next execution
+## Non-claims
 
-Finish and validate `StegVerse-Labs/TVC#431`; reconcile this task record and COSV only from observed repository/CI evidence; merge only after exact-head green validation.
+The completed task proves the deterministic provider-equivalence contract only. It does not claim authentic Stripe or GoDaddy API/webhook traffic, owner credential activation, production settlement observation, live runtime ingestion, downstream StegOps consumption, or provider failover activation.
+
+## Terminal state
+
+```text
+coordination_state: RETIRED
+checkout_state: COMPLETED
+completion.claimed: true
+completion.validated: true
+archive_ready: true
+cosv_task_vector: 71000000100100
+```
+
+Any authentic provider-ingress work is a distinct adjacent task and must preserve this provider-neutral boundary rather than reopening provider-specific payment semantics downstream.
