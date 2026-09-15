@@ -1,0 +1,11 @@
+{
+  "schema": "stegverse.cosv-task-vector-index-entry/v1",
+  "task_id": "STRIPE-GODADDY-PROVIDER-EQUIVALENCE-001",
+  "repository": "StegVerse-Labs/.github",
+  "registry_ref": "data/canonical-task-records/STRIPE-GODADDY-PROVIDER-EQUIVALENCE-001.json",
+  "source_state_vector_ref": "control/task-vectors/STRIPE-GODADDY-PROVIDER-EQUIVALENCE-001.json",
+  "cosv_task_vector": "71000000100100",
+  "handoff_ref": "docs/STRIPE_GODADDY_PROVIDER_EQUIVALENCE_MIRROR_HANDOFF.md",
+  "canonical_issue": "StegVerse-Labs/.github#1954",
+  "authority_effect": "NONE"
+}
