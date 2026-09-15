@@ -4,76 +4,65 @@ Updated: 2026-09-15
 Repository: `StegVerse-Labs/.github`
 Goal Task ID: `STEGVERSE-BUSINESS-OPPORTUNITY-ENGINE-PILOT-001`
 COSV vector: `10100000110000`
-Status: `ACTIVE / DEMAND PROXY REPLACEMENT VALIDATED / CURRENT ENRICHED TOP1 FALSIFIED / TOP50 EXPANSION MATERIALIZED / GOVERNED RUNTIME ADMISSION UNOBSERVED`
+Status: `ACTIVE / FULL50 CAPACITY STABILITY MERGED_VALIDATED / SOLE CONSERVATIVE STABLE_TOP10 IDENTIFIED / NO STABLE_TOP1 / GOVERNED RUNTIME ADMISSION UNOBSERVED`
 
 ## Baseline
 
-Source implementation PR #3 merged and validated. First-market PR #8 merged and validated. Top-10 enrichment PR #10 exact head `a99169d054ce42f769276a2468d81e4f3cc02774` passed run `34985564538`, merged as `50b74ba8f86baf46d3a8547697b2e3016867d650`, and merged-main run `34985636042` passed.
+Source implementation PR #3, first-market PR #8, top-10 enrichment PR #10, and demand-replacement analysis are merged and validated. Market remains `TEMPLE-TX-DENTAL-35MI-2026-09-15`: Temple center; 35-mile radius; Bell and Coryell Counties; 50 public dental candidates; `OUTREACH_DISABLED`.
 
-Market remains `TEMPLE-TX-DENTAL-35MI-2026-09-15`: Temple center; 35-mile radius; Bell and Coryell Counties; 50 public dental candidates; `OUTREACH_DISABLED`.
+The public market-utilization anchor remains the demand primitive. Review count and star rating are excluded from the full-50 replacement ranking. No public business-specific prospective-inquiry dataset has been observed.
 
-## Demand-proxy replacement preregistration
+## Full-50 capacity/stability pass
 
-Run: `TEMPLE-TX-DENTAL-35MI-2026-09-15-DEMAND-REPLACE-001`.
+Run: `TEMPLE-TX-DENTAL-35MI-2026-09-15-FULL50-CAPACITY-001`.
 
-Acceptance and falsification rules were materialized before the scenario result in `DEMAND_PROXY_REPLACEMENT_PREREG.md`.
+StegBusiness-Ops artifacts:
+- `business-opportunity-engine/runs/TEMPLE-TX-DENTAL-35MI-2026-09-15/FULL50_STABILITY_PREREG.md`
+- `business-opportunity-engine/runs/TEMPLE-TX-DENTAL-35MI-2026-09-15/full50-capacity-evidence.csv`
+- `business-opportunity-engine/runs/TEMPLE-TX-DENTAL-35MI-2026-09-15/full50-cross-scenario-ranking.csv`
+- `business-opportunity-engine/validate_full50_capacity.py`
 
-The desired replacement was a public, attributable, reproducible business-specific prospective-inquiry measure. No public source clearing that bar was identified for the cohort. The replacement therefore uses a stronger **market-demand anchor with explicit business-allocation scenarios** and does not claim measured business demand.
+All 50 frozen candidates are represented. Exact public provider counts and weekly office-hour values are used only where attributable evidence supports them. Unresolved provider/hour observations remain bounded `UNKNOWN` using 1–4 providers and 32–48 weekly hours as sensitivity envelopes, not factual assertions.
 
-Public anchors:
-- Bell County 2025 population: `402,248`.
-- Coryell County 2025 population: `85,592`.
-- CDC adult past-year dental-visit prevalence: `63.9%`.
-- CDC child past-year dental-visit prevalence: `75.1%`.
+No reproducible unauthenticated appointment-slot inventory was observed. A public request form, callback form, or Book Now surface is treated only as access evidence and cannot be promoted to concrete slot availability.
 
-Using current county under-18 shares, the modeled annual dental-visit-participant pools are approximately `268,840` for Bell County and `56,812` for Coryell County, approximately `325,652` combined. These are utilization anchors, not appointment counts, new-patient inquiries, or attributable practice market share.
+## Preregistered stability rules
 
-## Replacement scenarios
+`S1_EQUAL_CAPTURE`: equal business demand index before access/evidence-confidence weighting.
 
-Review count is excluded from all replacement scenarios.
+`S2_PROVIDER_HOUR_CAPACITY`: provider count × weekly public office hours.
 
-`S1_EQUAL_CAPTURE`: equal demand index before addressability/confidence.
+`S3_CAPACITY_CAPPED`: square-root transform of provider-hour capacity.
 
-`S2_PROVIDER_CAPACITY`: published provider count × published weekly office hours. Missing values remain `UNKNOWN`; no silent imputation.
+`STABLE_TOP10` requires rank 10 or better in all three scenarios plus conservative lower-bound capacity dominance over the 11th-highest competing upper bound.
 
-`S3_CAPACITY_CAPPED`: square-root transformed provider capacity to reduce large-practice dominance.
+`STABLE_TOP1` requires #1 in all three scenarios plus lower-bound dominance over every competing upper bound.
 
-Sensitivity score:
+If none meets a stability class, the correct result is NONE; the model may not choose a winner anyway.
 
-`DEMAND_INDEX × ADDRESSABLE_SHARE_MID × ENRICHED_CONFIDENCE`
+## Full-50 result
 
-Artifact: `demand-replacement-scenarios.csv`.
+Scenario leaders remain non-convergent, therefore:
+- `STABLE_TOP1 = NONE`.
 
-## Stability result
+Temple Kids Dental is the sole candidate currently satisfying the preregistered conservative `STABLE_TOP10` test:
+- S1 rank: 9
+- S2 rank: 1
+- S3 rank: 1
+- exact public provider count used by the artifact: 4
+- exact public weekly office hours used by the artifact: 40
 
-The previously enriched #1, **Stonehaven Dental & Orthodontics - Killeen**, does not satisfy the preregistered stability rule.
+This is a public-evidence sensitivity result only. It does not establish measured prospective demand, guaranteed revenue leakage, commercial priority, or contact/outreach authority. `decision_grade=false` remains mandatory.
 
-- `S1_EQUAL_CAPTURE`: Copperas Cove Dentist is #1; Stonehaven is #7.
-- `S2_PROVIDER_CAPACITY`: Temple Kids Dental is #1; Stonehaven is #2 among complete observations.
-- `S3_CAPACITY_CAPPED`: Temple Kids Dental is #1; Stonehaven is #3 among complete observations.
+## Validation evidence
 
-Two top-10 rows retain unresolved provider/hour evidence and remain `UNKNOWN`. Stonehaven already fails the stability rule without depending on those unresolved rows.
+StegBusiness-Ops PR #16 exact head `9a0c3364961fcdfeb9316ca2310155d27226e0c9` passed `Validate StegBusiness-Ops` run `34991534534`.
 
-Canonical result:
-- `CURRENT_ENRICHED_TOP1_STABLE=false`.
-- `ORIGINAL_TOP_RANK_SURVIVES=false` remains true from the prior enrichment falsification.
-- `decision_grade=false`.
+PR #16 merged with expected-head protection as `daaa853c438dc2c49d5c6bd435180f74337fabff`.
 
-This means review-count ordering and the first access-enriched ordering are both unsuitable as stable commercial priority orders.
+Merged-main push validation run `34991606453` completed successfully on exact merge SHA `daaa853c438dc2c49d5c6bd435180f74337fabff`.
 
-## Remaining top-50 expansion
-
-The same market-demand replacement/evidence ledger was expanded through original ranks 11-50 in `remaining-top40-demand-expansion.csv`.
-
-Every remaining candidate is represented. Public official-surface or directory evidence was retained where observed for office coverage, provider/team signals, service scope, emergency/same-day access, and booking/scheduling surfaces. Missing observations remain explicit `UNKNOWN` rather than being inferred.
-
-This expansion does **not** claim complete provider-capacity allocation for all 50. It establishes the evidence state needed for subsequent completion and reranking without returning to review count as the demand primitive.
-
-## StegBusiness-Ops validation
-
-Current demand-replacement/expansion head: `6d3feefc969c3016280ba52e2770fcaec346a037`.
-
-`Validate StegBusiness-Ops` run `34988919200` completed successfully against that exact main head.
+The repository validator explicitly checks the 50-row identity set, review/rating exclusion, provider/hour uncertainty bounds, absence of unsupported appointment-slot claims, DRAFT_ONLY/OUTREACH_DISABLED state, sole stable-top10 identity, and non-convergent scenario leaders.
 
 ## Authority boundary
 
@@ -87,13 +76,12 @@ Task Registry remains coordination truth only; WorkerCoordinator retains claim/f
 
 - Goal Task: `ACTIVE`.
 - source package: `MERGED_VALIDATED`.
-- first market: `MERGED_VALIDATED`.
-- top-10 enrichment: `MERGED_VALIDATED`.
-- review-count demand proxy: removed from replacement scenarios.
-- public market-utilization anchor: MATERIALIZED.
+- full-50 public capacity evidence ledger: `MERGED_VALIDATED`.
+- full-50 review-count-free cross-scenario ranking: `MERGED_VALIDATED`.
+- reproducible public appointment-slot inventory: NOT OBSERVED.
 - business-specific measured prospective demand: NOT OBSERVED.
-- current enriched #1 stability: FALSE.
-- remaining top-40 evidence expansion: MATERIALIZED.
+- sole conservative `STABLE_TOP10`: Temple Kids Dental.
+- `STABLE_TOP1`: NONE.
 - decision-grade ranking: NO.
 - proposal state: `DRAFT_ONLY`.
 - outreach: `OUTREACH_DISABLED`; NONE SENT.
@@ -103,4 +91,4 @@ Task Registry remains coordination truth only; WorkerCoordinator retains claim/f
 
 ## Next admissible work
 
-Complete business-level allocation evidence across the 50-candidate set using attributable provider rosters, public appointment-slot observations where reproducible, office-hour capacity, and other public demand/capacity measures; then recompute a full-50 scenario ranking and test cross-scenario stability. Preserve `DRAFT_ONLY / OUTREACH_DISABLED` and do not create provider/contact/outreach authority under this Goal Task.
+Strengthen or replace the remaining bounded-UNKNOWN provider/hour evidence with attributable exact observations and seek reproducible public appointment-slot inventory or stronger business-specific demand evidence. Re-run the preregistered full-50 stability test after each material evidence upgrade. Preserve `DRAFT_ONLY / OUTREACH_DISABLED` and do not create provider/contact/outreach authority under this Goal Task.
