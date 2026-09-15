@@ -6,25 +6,38 @@
   "parent_task_id": "MILLINGS-RTG-GTG-TT-COMPARISON-001",
   "goal": "Define and falsify a deterministic predicate that distinguishes merely available review from genuinely independent review for adverse governance dispositions across gate ownership, rule authorship, financial/common-control interests, evaluator identity, and execution-path control without creating a second governance authority.",
   "coordination_state": "ACTIVE",
-  "checkout_state": "UNCLAIMED",
-  "cosv_task_vector": "10100000100000",
+  "checkout_state": "CLAIMED_IMPLEMENTATION",
+  "cosv_task_vector": "40000100100000",
+  "goal_prompt_count": "1/20",
   "source_refs": [
     "docs/INDEPENDENT_REVIEW_PREDICATE_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegScholar:INDEPENDENT_REVIEW_PREDICATE_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegScholar:research-programs/governable-autonomy/review-schema.json",
+    "StegVerse-Labs/StegScholar:schemas/gate-legitimacy-record.schema.json",
+    "StegVerse-Labs/StegScholar:papers/transition-table/gate-legitimacy-invariant.md",
     "StegVerse-Labs/StegScholar:papers/external-frameworks/millings-method-refinement-disposition.md",
+    "data/canonical-task-records/GATE-LEGITIMACY-INVARIANT-001.json",
     "data/canonical-task-records/MILLINGS-RTG-GTG-TT-COMPARISON-001.json"
   ],
   "targets": {"organizations":["StegVerse-Labs"],"repositories":["StegVerse-Labs/StegScholar","StegVerse-Labs/.github"],"components":["reviewer-independence-predicate","conflict-of-interest-falsification","appeal-review-separation"]},
   "dependencies": [],
   "blockers": [],
+  "collision_check": {
+    "checked_at": "2026-09-15T14:50:00-05:00",
+    "open_pr_collision_found": false,
+    "active_branch_collision_found": false,
+    "equivalent_implementation_found": false,
+    "existing_review_schema_overlap": "LABELS_AND_IDENTITY_CLASSES_ONLY",
+    "gate_legitimacy_overlap": "CONSUMER_REFERENCE_ONLY_NOT_DUPLICATE_PREDICATE",
+    "disposition": "CLAIM_AND_EXECUTE_THIS_CHILD_ONLY"
+  },
   "adjacent_task_refs": ["GATE-LEGITIMACY-INVARIANT-001","ARCHITECTURE-NEUTRAL-ADMISSIBILITY-001"],
-  "expected_evidence_predicates": ["INDEPENDENT_REVIEW_PREDICATE_PROPOSED_OR_REJECTED_WITH_RATIONALE","REVIEW_AVAILABLE_DISTINGUISHED_FROM_INDEPENDENT_REVIEW_AVAILABLE","COMMON_CONTROL_NEGATIVE_CASE_VALIDATED","RULE_AUTHOR_CONFLICT_NEGATIVE_CASE_VALIDATED","EXECUTION_PATH_CONTROL_CONFLICT_NEGATIVE_CASE_VALIDATED","GTG_TT_AUTHORITY_BOUNDARIES_PRESERVED"],
+  "expected_evidence_predicates": ["INDEPENDENT_REVIEW_PREDICATE_PROPOSED_OR_REJECTED_WITH_RATIONALE","REVIEW_AVAILABLE_DISTINGUISHED_FROM_INDEPENDENT_REVIEW_AVAILABLE","COMMON_CONTROL_NEGATIVE_CASE_VALIDATED","RULE_AUTHOR_CONFLICT_NEGATIVE_CASE_VALIDATED","FINANCIAL_INTEREST_NEGATIVE_CASE_VALIDATED","EVALUATOR_IDENTITY_COLLISION_NEGATIVE_CASE_VALIDATED","EXECUTION_PATH_CONTROL_CONFLICT_NEGATIVE_CASE_VALIDATED","GTG_TT_AUTHORITY_BOUNDARIES_PRESERVED"],
   "completion": {"claimed":false,"validated":false,"activation_proof_complete":false},
-  "allowed_next_transitions": ["CLAIMED_IMPLEMENTATION","CLAIMED_VALIDATION","CLAIMED_INTEGRATION"],
+  "allowed_next_transitions": ["CLAIMED_VALIDATION","CLAIMED_INTEGRATION","MERGED_INTO_CANONICAL_WORKSTREAM"],
   "handoff_projection_refs": [
     "docs/INDEPENDENT_REVIEW_PREDICATE_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegScholar:INDEPENDENT_REVIEW_PREDICATE_MIRROR_HANDOFF.md"
   ],
-  "authority_model": {"task_registry_mints_execution_authority":false,"independent_review_predicate_mints_governance_authority":false,"request_grants_execution_authority":false}
+  "authority_model": {"task_registry_mints_execution_authority":false,"independent_review_predicate_mints_governance_authority":false,"review_availability_mints_independence":false,"independence_metadata_overrides_gtg":false,"request_grants_execution_authority":false}
 }
