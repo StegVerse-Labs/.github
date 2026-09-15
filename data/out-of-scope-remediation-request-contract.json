@@ -1,0 +1,73 @@
+{
+  "schema": "stegverse.out-of-scope-remediation-request-contract/v1",
+  "purpose": "Route an observed broken condition owned outside the current Goal to StegVerse-Healer for independent remediation-trigger evaluation without expanding the originating Goal scope or transferring authority.",
+  "trigger_input": {
+    "observed_broken_condition_required": true,
+    "exact_evidence_required": true,
+    "owning_domain_classification_required": true,
+    "out_of_scope_for_current_goal_required": true
+  },
+  "request_semantics": {
+    "request_is_healer_trigger": false,
+    "request_transfers_authority": false,
+    "request_authorizes_remedy": false,
+    "healer_independently_evaluates_authorized_trigger": true,
+    "originating_goal_may_repair_foreign_domain": false,
+    "pending_predicate_alone_is_broken_condition": false
+  },
+  "required_request_fields": [
+    "request_id",
+    "originating_goal_task_id",
+    "originating_cosv",
+    "observed_defect_id",
+    "observed_broken_condition",
+    "exact_evidence_refs",
+    "owning_domain",
+    "out_of_scope_for_current_goal",
+    "blocks_originating_transition",
+    "interrupted_gc_transition",
+    "requested_outcome",
+    "authority_transfer"
+  ],
+  "continuation_policy": {
+    "nonblocking_foreign_defect": "EMIT_REMEDIATION_REQUEST_AND_CONTINUE_CURRENT_GOAL",
+    "blocking_foreign_defect": "EMIT_REMEDIATION_REQUEST_AND_HOLD_ONLY_THE_DEPENDENT_TRANSITION_AS_EXTERNALLY_OWNED_CONDITION",
+    "scope_expansion_into_foreign_domain": "PROHIBITED",
+    "unrelated_current_goal_work_may_continue": true
+  },
+  "healer_evaluation_outcomes": [
+    "AUTHORIZED_TRIGGER_MATCHED_APPLY_BOUNDED_REMEDY",
+    "NO_AUTHORIZED_TRIGGER_MATCH_RETAIN_OR_ROUTE_WITHOUT_REMEDY",
+    "INSUFFICIENT_EVIDENCE_REQUEST_MORE_EVIDENCE"
+  ],
+  "remediation_return_contract": {
+    "bounded_remedy_required": true,
+    "remediation_evidence_required": true,
+    "return_to_interrupted_gc_transition_if_blocking": true,
+    "originating_goal_completion_not_implied": true
+  },
+  "authority_invariants": {
+    "originating_goal_scope_authority": "OWN_DOMAIN_ONLY",
+    "healer_role": "TRIGGERED_REMEDIATION_EVENT_EVALUATOR_AND_BOUNDED_REMEDY_OWNER_WHEN_AUTHORIZED",
+    "workercoordinator_claim_fence_authority": "WORKERCOORDINATOR",
+    "interlock_intr_transition_authority": "INTERLOCK_INTR",
+    "credential_authority": "TV/TVC",
+    "user_verification_authority": "KV/SKAP Vault",
+    "observed_reality_reconstruction_authority": "MASTER_RECORDS",
+    "github_runtime_authority": "NONE"
+  },
+  "first_fixture": {
+    "fixture_id": "GADI-SOURCE-SCHEMA-COMPATIBILITY-MISMATCH-001",
+    "originating_goal_task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+    "originating_cosv": "40000100100000",
+    "observed_defect_id": "GADI_SOURCE_SCHEMA_TEST_API_MISMATCH",
+    "observed_broken_condition": "GADI deterministic tests referenced retained_projector.SOURCE_SCHEMA while the projector exposed SOURCE_SCHEMAS as the accepted-schema set.",
+    "owning_domain": "GADI",
+    "out_of_scope_for_current_goal": true,
+    "blocks_originating_transition": false,
+    "interrupted_gc_transition": null,
+    "requested_outcome": "INDEPENDENT_HEALER_TRIGGER_EVALUATION_FOR_GADI_COMPATIBILITY_REMEDIATION",
+    "authority_transfer": "NONE",
+    "originating_goal_action": "RETAIN_EVIDENCE_EMIT_REQUEST_CONTINUE_STEGBROWSER_SPECIFIC_VALIDATION"
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "STEGVERSE-OUT-OF-SCOPE-REMEDIATION-REQUEST-CONTRACT-001",
+  "correlation_id": "STEGVERSE-OUT-OF-SCOPE-REMEDIATION-REQUEST-CONTRACT-001",
+  "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+  "parent_task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+  "goal": "Implement and validate a canonical coordination contract that routes observed broken conditions owned outside the current Goal to StegVerse-Healer for independent authorized-trigger evaluation without expanding Goal scope, transferring authority, or turning Healer into a normal stage owner, scheduler, carrier, or prerequisite.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "40000100100000",
+  "source_refs": [
+    "data/out-of-scope-remediation-request-contract.json",
+    "docs/STEGVERSE_OUT_OF_SCOPE_REMEDIATION_REQUEST_CONTRACT_MIRROR_HANDOFF.md",
+    "tests/test_out_of_scope_remediation_request_contract.py",
+    "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md"
+  ],
+  "dependencies": [
+    {
+      "dependency_id": "DEP-OBSERVED-BROKEN-CONDITION",
+      "kind": "OBSERVED_FAILURE_EVIDENCE",
+      "state": "FIXTURE_AVAILABLE",
+      "ref": "GADI-SOURCE-SCHEMA-COMPATIBILITY-MISMATCH-001"
+    },
+    {
+      "dependency_id": "DEP-HEALER-INDEPENDENT-TRIGGER-EVALUATION",
+      "kind": "EXTERNAL_OWNING_DOMAIN_REMEDIATION_EVALUATION",
+      "state": "REQUEST_MATERIALIZED_EVALUATION_UNCLAIMED",
+      "ref": "StegVerse-Labs/StegVerse-Healer#86"
+    }
+  ],
+  "expected_evidence_predicates": [
+    "OUT_OF_SCOPE_DEFECT_EXACT_EVIDENCE_RETAINED",
+    "OWNING_DOMAIN_CLASSIFIED",
+    "OUT_OF_SCOPE_FOR_CURRENT_GOAL_TRUE",
+    "HEALER_REMEDIATION_REQUEST_EMITTED",
+    "HEALER_TRIGGER_EVALUATION_INDEPENDENT",
+    "AUTHORITY_TRANSFER_NONE",
+    "NONBLOCKING_OR_BLOCKING_CONTINUATION_POLICY_PRESERVED"
+  ],
+  "source_validation_only": true,
+  "runtime_execution_required": false,
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true,
+    "required_for_this_source_contract": false
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "contract_implemented": true,
+    "gadi_fixture_encoded": true,
+    "healer_evaluation_request_materialized": true,
+    "healer_trigger_or_remedy_claimed": false
+  },
+  "allowed_next_transitions": [
+    "VALIDATE_SOURCE_CONTRACT",
+    "VALIDATE_GADI_FIXTURE",
+    "VALIDATE_AUTHORITY_AND_CONTINUATION_BOUNDARIES",
+    "CLOSE_SOURCE_CONTRACT_TASK"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_remediation": false,
+    "remediation_request_triggers_healer": false,
+    "healer_independent_trigger_evaluation_required": true,
+    "originating_goal_may_repair_foreign_domain": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "interlock_intr_transition_authority": true,
+    "master_records_reality_authority": true,
+    "github_runtime_authority": "NONE"
+  }
+}
