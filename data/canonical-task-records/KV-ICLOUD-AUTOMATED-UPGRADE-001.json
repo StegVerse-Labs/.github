@@ -6,10 +6,11 @@
   "parent_task_id": "CVK-LEGACY-KV-UPGRADE-174",
   "goal": "Automate the owner-authorized iCloud KnowledgeVault upgrade path so one owner selection supplies the source and automation performs rollback preservation, deterministic planning, safe framework update, exact-byte verification, and receipt generation without manual file-by-file work.",
   "coordination_state": "ACTIVE",
-  "checkout_state": "CLAIMED_IMPLEMENTATION",
+  "checkout_state": "RUNTIME_OWNER_SELECTION_PENDING",
   "cosv_task_vector": "40000100100000",
   "source_refs": [
     "StegVerse-Labs/continuity-vault-kit#215",
+    "StegVerse-Labs/continuity-vault-kit#216",
     "StegVerse-Labs/continuity-vault-kit/KV_ICLOUD_AUTOMATED_UPGRADE_MIRROR_HANDOFF.md",
     "StegVerse-Labs/continuity-vault-kit/LEGACY_KV_UPGRADE_MIRROR_HANDOFF.md"
   ],
@@ -27,8 +28,12 @@
   "adjacent_task_refs": ["KV-CONNECTION-REVALIDATION-WORKER-001", "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001"],
   "existing_evidence_refs": [
     "StegVerse-Labs/continuity-vault-kit/tools/plan_legacy_kv_upgrade.py",
-    "StegVerse-Labs/continuity-vault-kit/tests/test_legacy_kv_upgrade_plan.py",
-    "StegVerse-Labs/continuity-vault-kit#175"
+    "StegVerse-Labs/continuity-vault-kit/tools/apply_legacy_kv_upgrade.py",
+    "StegVerse-Labs/continuity-vault-kit/tools/verify_legacy_kv_upgrade_package.py",
+    "StegVerse-Labs/continuity-vault-kit/tests/test_automated_legacy_kv_upgrade.py",
+    "StegVerse-Labs/continuity-vault-kit#175",
+    "StegVerse-Labs/continuity-vault-kit#216",
+    "StegVerse-Labs/continuity-vault-kit@4c426925a354a5f2d71b8becd92896917247e74f"
   ],
   "expected_evidence_predicates": [
     "SOURCE_INPUT_SELECTED_BY_OWNER",
@@ -54,12 +59,14 @@
   "runtime_resolution": {
     "current_executor": "owner-present local/package automation",
     "authority_basis": "explicit owner selection of the source copy plus task-scoped update authorization",
-    "unattended_runtime": false
+    "unattended_runtime": false,
+    "source_implementation_state": "MERGED_VALIDATED",
+    "source_merge_commit": "4c426925a354a5f2d71b8becd92896917247e74f"
   },
-  "worker_claim": {"authority":"CURRENT_IMPLEMENTATION_SESSION","claim_ref":"StegVerse-Labs/continuity-vault-kit/KV_ICLOUD_AUTOMATED_UPGRADE_MIRROR_HANDOFF.md","fence_ref":null,"projection_only":false},
+  "worker_claim": {"authority":"OWNER_SELECTED_RUNTIME_EXECUTION_PENDING","claim_ref":"StegVerse-Labs/continuity-vault-kit/KV_ICLOUD_AUTOMATED_UPGRADE_MIRROR_HANDOFF.md","fence_ref":null,"projection_only":false},
   "human_action_ref": "ONE_SOURCE_SELECTION_REQUIRED_FOR_PRIVATE_ICLOUD_BYTES",
-  "completion": {"claimed":false,"validated":false,"reconciliation_ref":null,"activation_proof_complete":false},
-  "allowed_next_transitions": ["IMPLEMENT_EXECUTOR", "VALIDATE_SOURCE", "MERGE_SOURCE", "RUN_OWNER_SELECTED_ICLOUD_UPGRADE", "VERIFY_UPDATED_PACKAGE"],
+  "completion": {"claimed":false,"validated":false,"reconciliation_ref":"StegVerse-Labs/continuity-vault-kit#216","activation_proof_complete":false},
+  "allowed_next_transitions": ["RUN_OWNER_SELECTED_ICLOUD_UPGRADE", "VERIFY_UPDATED_PACKAGE", "RECORD_OWNER_ACCEPTANCE", "CLOSE_RUNTIME_GOAL"],
   "handoff_projection_refs": ["StegVerse-Labs/continuity-vault-kit/KV_ICLOUD_AUTOMATED_UPGRADE_MIRROR_HANDOFF.md"],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
