@@ -1,0 +1,73 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "KV-ICLOUD-AUTOMATED-UPGRADE-001",
+  "correlation_id": "KV-ICLOUD-AUTOMATED-UPGRADE-001",
+  "root_correlation_id": "KV-ICLOUD-AUTOMATED-UPGRADE-001",
+  "parent_task_id": "CVK-LEGACY-KV-UPGRADE-174",
+  "goal": "Automate the owner-authorized iCloud KnowledgeVault upgrade path so one owner selection supplies the source and automation performs rollback preservation, deterministic planning, safe framework update, exact-byte verification, and receipt generation without manual file-by-file work.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CLAIMED_IMPLEMENTATION",
+  "cosv_task_vector": "40000100100000",
+  "source_refs": [
+    "StegVerse-Labs/continuity-vault-kit#215",
+    "StegVerse-Labs/continuity-vault-kit/KV_ICLOUD_AUTOMATED_UPGRADE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/continuity-vault-kit/LEGACY_KV_UPGRADE_MIRROR_HANDOFF.md"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/continuity-vault-kit"],
+    "components": ["legacy-kv-upgrade-planner", "automated-upgrade-executor", "rollback-package", "verification-receipt", "iphone-owner-flow"]
+  },
+  "dependencies": [
+    {"dependency_id":"CVK-LEGACY-KV-UPGRADE-174","kind":"SOURCE_PLANNER","state":"AVAILABLE","ref":"StegVerse-Labs/continuity-vault-kit/LEGACY_KV_UPGRADE_MIRROR_HANDOFF.md","disposition":"REUSE_NON_DESTRUCTIVE_PLAN"},
+    {"dependency_id":"KV-CONNECTION-REVALIDATION-WORKER-001","kind":"ADJACENT_RUNTIME","state":"ACTIVE","ref":"KV_CONNECTION_REVALIDATION_COSV_MIRROR_HANDOFF.md","disposition":"DO_NOT_DISTURB_PENDING_GOOGLE_DRIVE_KV2_REQUEST"}
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": ["KV-CONNECTION-REVALIDATION-WORKER-001", "STEGOS-DEVICE-KV-SKAP-ROUNDTRIP-001"],
+  "existing_evidence_refs": [
+    "StegVerse-Labs/continuity-vault-kit/tools/plan_legacy_kv_upgrade.py",
+    "StegVerse-Labs/continuity-vault-kit/tests/test_legacy_kv_upgrade_plan.py",
+    "StegVerse-Labs/continuity-vault-kit#175"
+  ],
+  "expected_evidence_predicates": [
+    "SOURCE_INPUT_SELECTED_BY_OWNER",
+    "ROLLBACK_COPY_CREATED_BEFORE_OUTPUT_MUTATION",
+    "ORIGINAL_SOURCE_BYTES_PRESERVED",
+    "OWNER_ONLY_FILES_PRESERVED",
+    "PROTECTED_RUNTIME_STATE_NOT_SILENTLY_REPLACED",
+    "SAFE_FRAMEWORK_DELTA_APPLIED_OR_CONFLICT_STAGED",
+    "UPDATED_PACKAGE_EXACT_BYTE_VERIFIED",
+    "UPDATE_RECEIPT_EMITTED",
+    "TAMPER_OR_COLLISION_FAILS_CLOSED",
+    "NO_PROVIDER_CREDENTIAL_REQUIRED",
+    "GOOGLE_DRIVE_KV2_REQUEST_UNCHANGED"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["owner_selected_file_read", "local_archive_copy", "hashing", "safe_file_transform", "receipt_emission"],
+    "environment": "OWNER_SELECTED_ICLOUD_KV_COPY_OR_ARCHIVE",
+    "direction": "OWNER_KV_COPY_TO_VERIFIED_UPDATED_COPY",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "runtime_resolution": {
+    "current_executor": "owner-present local/package automation",
+    "authority_basis": "explicit owner selection of the source copy plus task-scoped update authorization",
+    "unattended_runtime": false
+  },
+  "worker_claim": {"authority":"CURRENT_IMPLEMENTATION_SESSION","claim_ref":"StegVerse-Labs/continuity-vault-kit/KV_ICLOUD_AUTOMATED_UPGRADE_MIRROR_HANDOFF.md","fence_ref":null,"projection_only":false},
+  "human_action_ref": "ONE_SOURCE_SELECTION_REQUIRED_FOR_PRIVATE_ICLOUD_BYTES",
+  "completion": {"claimed":false,"validated":false,"reconciliation_ref":null,"activation_proof_complete":false},
+  "allowed_next_transitions": ["IMPLEMENT_EXECUTOR", "VALIDATE_SOURCE", "MERGE_SOURCE", "RUN_OWNER_SELECTED_ICLOUD_UPGRADE", "VERIFY_UPDATED_PACKAGE"],
+  "handoff_projection_refs": ["StegVerse-Labs/continuity-vault-kit/KV_ICLOUD_AUTOMATED_UPGRADE_MIRROR_HANDOFF.md"],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "owner_selection_is_required_for_private_icloud_bytes": true,
+    "live_vault_overwrite_prohibited": true,
+    "provider_credentials_required": false,
+    "private_content_must_not_be_uploaded_to_repository": true,
+    "all_upgrade_outputs_must_be_receipted_and_reconstructable": true
+  }
+}
