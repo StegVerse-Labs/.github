@@ -8,79 +8,113 @@ Updated: 2026-09-14
 - Parent Goal: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`
 - Root lineage: `STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / SOURCE CHILD INSTALLED / AUTHENTIC A1-A4 EVIDENCE PENDING`
+- Status: `ACTIVE / CHECKED_OUT / A1-A4 RESIDENT SOURCE COMPOSED / AUTHENTIC A1-A4 EVIDENCE PENDING`
 - External/second user-operated device required: `false`
 
-## Scope
+## Scope and terminal boundary
 
-This child exists because the parent Goal reached its prompt-decomposition boundary while the remaining work is a distinct authentic execution subproblem.
-
-The child owns only GC A1 through A4:
-
-1. resolve invocation-bound `callable`, `refreshable`, and applicable protocol state from authentic Interlock/InTr transition evidence;
-2. select only reusable capabilities whose registered predicates match that state;
-3. materialize the admitted execution surface;
-4. obtain the authentic current WorkerCoordinator claim/fence;
-5. reach authentic Interlock/InTr ingress on the already-bound manifest route.
-
-It stops before Round Trip 1 payload processing. `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` remains the reusable capability for the later manifest-declared two-round-trip composition after this child reaches A4.
-
-## Manifest invariant
-
-The route is already declared by:
-
-`control/transport-manifests/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json`
-
-This child does not discover or substitute endpoints or receivers.
-
-## A1 state-transition model
-
-`callable` and `refreshable` are invocation-bound state-transition variables. They are not persistent runtime-source facts.
-
-The child also binds:
-
-`applicable_protocol_resolved`
-
-Selection rules:
+This child owns only GC A1 through A4 and stops before Round Trip 1 payload processing.
 
 ```text
-callable=false
--> no execution materialization
--> no source refresh
--> no protocol-establishment task selected merely because protocol_resolved=false
-
-callable=true AND refreshable=true
--> select RT-SOVEREIGN-SOURCE-REFRESH-001
-
-callable=true AND refreshable=false
--> do not invent a refresh requirement
-
-callable=true AND applicable_protocol_resolved=false
--> select RT-INTR-PROTOCOL-ESTABLISH-001
-
-callable=true AND applicable_protocol_resolved=true
--> do not create protocol-establishment work
+A1 authentic invocation-bound connection-state observation
+-> select only matching existing reusable capabilities
+-> A2 invocation-bound admitted execution materialization
+-> A3 existing organization-local boundary executor obtains WorkerCoordinator claim/fence
+-> A4 exact manifest-defined Interlock/InTr ingress
+-> STOP CHILD
 ```
 
-The deterministic resolver is:
+`RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` remains the later two-round-trip transport capability after authentic A4.
 
-`scripts/resolve_stegbrowser_runtime_connection_transition.py`
+## Canonical resident request
 
-It accepts only an observation identified as:
+`control/resident-execution-request.d/stegbrowser-runtime-connection-ingress-001.json`
+
+Consumer:
+
+`scripts/consume_stegbrowser_runtime_connection_ingress_request.py`
+
+The request is non-authorizing and explicitly forbids Round Trip 1 payload processing, network source fetch, GitHub runtime authority, and second-machine dependency.
+
+## A1 authentic observation
+
+The resident consumer installs/checks the existing CanonicalWork route in the existing shared Universal InTr listener, starts one bounded loopback request surface from that existing implementation, and reads its live `/intr/profile` response.
+
+A1 observation schema:
 
 `stegverse.intr-runtime-connection-transition-observation/v1`
 
-with `authority_owner=Interlock/InTr` and `authority_effect=OBSERVATION_ONLY`.
+Required owner/effect:
 
-The resolver selects work only. It grants no execution or transition authority.
+```text
+authority_owner = Interlock/InTr
+authority_effect = OBSERVATION_ONLY
+```
 
-## Existing reusable capabilities
+The observation binds:
+
+- `callable`
+- `refreshable`
+- `applicable_protocol_resolved`
+
+`callable` and `refreshable` remain invocation-bound state-transition variables, never persistent runtime/source assumptions.
+
+`applicable_protocol_resolved` requires both a live resident InTr profile and the already-local exact manifest ingress adapter `workers/stegbrowser_manifest_intr_ingress.py`. Adapter presence does not itself prove A4 admission.
+
+Resolver:
+
+`scripts/resolve_stegbrowser_runtime_connection_transition.py`
+
+## Existing reusable-task selection
 
 No new reusable task is required.
 
-- `RT-SOVEREIGN-SOURCE-REFRESH-001` — state-selected when `callable=true AND refreshable=true`.
-- `RT-INTR-PROTOCOL-ESTABLISH-001` — state-selected when `callable=true AND applicable_protocol_resolved=false`.
-- `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` — downstream handoff after authentic A4 ingress; not executed by this child before A4.
+```text
+callable=false
+-> do not materialize execution
+-> do not select refresh
+
+callable=true AND refreshable=true
+-> RT-SOVEREIGN-SOURCE-REFRESH-001
+
+callable=true AND refreshable=false
+-> no refresh task
+
+callable=true AND applicable_protocol_resolved=false
+-> RT-INTR-PROTOCOL-ESTABLISH-001
+
+callable=true AND applicable_protocol_resolved=true
+-> reuse existing protocol path
+```
+
+## A2
+
+When source refresh is selected, the consumer invokes the existing `RT-SOVEREIGN-SOURCE-REFRESH-001` runner with exact invocation-bound `callable=true`, `refreshable=true`, and the A1 transition receipt reference.
+
+If refresh is not selected, no refresh prerequisite is invented.
+
+A2 is satisfied only when the callable invocation has the required already-local materialization state.
+
+## A3/A4 exact existing authority path
+
+The child does not create a new WorkerCoordinator task or new A4 adapter.
+
+It reuses:
+
+`workers/stegbrowser_manifest_intr_ingress.py`
+
+That existing exact manifest-bound ingress worker:
+
+1. validates/binds the canonical StegBrowser transport manifest;
+2. stages the organization-local InTr ingress packet;
+3. invokes the existing `ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001` through the canonical targeted resident task path;
+4. requires the existing WorkerCoordinator to produce the authentic claim/fence;
+5. verifies the organization-local boundary receipt and exact payload hash;
+6. returns `AUTHENTIC_INTR_INGRESS_OBSERVED` only when the accepted local-boundary receipt and claim/fence are authentic.
+
+The child records that claim/fence as A3 evidence and the verified manifest ingress as A4 evidence.
+
+This existing worker stops at ingress. It does not execute A5 or Round Trip 1 payload processing.
 
 ## Child completion predicates
 
@@ -97,23 +131,40 @@ NO_ROUND_TRIP_1_PAYLOAD_PROCESSING_EXECUTED_BY_CHILD = true
 NO_SECOND_USER_OPERATED_DEVICE_REQUIRED = true
 ```
 
-Only authentic authority-owned evidence may satisfy runtime predicates. Source/CI cannot promote them.
+Only authentic resident/authority-owned evidence may satisfy them. GitHub/CI validation cannot.
+
+## Current authentic state
+
+```text
+RUNTIME_CONNECTION_TRANSITION_VARIABLES_OBSERVED = false
+CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED = false
+INTR_ADMISSION_OBSERVED = false
+```
+
+No authentic resident invocation receipt for the new A1-A4 consumer is presently retained in repository evidence.
+
+## Validation surfaces
+
+- `tests/test_stegbrowser_runtime_connection_transition.py`
+- `tests/test_stegbrowser_runtime_connection_ingress_consumer.py`
+- `docs/STEGBROWSER_RUNTIME_CONNECTION_INGRESS_IMPLEMENTATION_STATUS.md`
 
 ## Out-of-scope defect rule
 
-The canonical out-of-scope remediation contract applies unchanged. A foreign observed defect is retained and routed to StegVerse-Healer for independent trigger evaluation without widening this child's scope. A pending predicate alone is not a Healer trigger.
+The canonical out-of-scope remediation contract applies unchanged. An observed foreign defect is evidence-retained and sent to StegVerse-Healer for independent trigger evaluation; the current Goal does not silently repair the foreign subsystem. A pending predicate is not a Healer trigger.
 
 ## Authority invariants
 
-- Task Registry / child record: coordination only.
-- Resolver: selection only, no authority.
-- WorkerCoordinator: claim/fence authority.
-- Interlock/InTr: connection-state and ingress/transition authority.
+- Task Registry: coordination only.
+- Resolver: selection only.
+- `RT-SOVEREIGN-SOURCE-REFRESH-001`: local source materialization only.
+- `ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001` / WorkerCoordinator: A3 claim/fence authority.
+- Interlock/InTr: A1 connection-state and A4 transition/ingress authority.
 - TV/TVC: credential/provider authority.
 - KV/SKAP Vault: user-verification authority.
 - Master Records: observed-reality/reconstruction authority.
-- Healer: independent trigger evaluation and triggered bounded remediation only.
-- GitHub/CI: source validation only; runtime authority `NONE`.
+- Healer: triggered bounded remediation only.
+- GitHub/CI: source validation/evidence only; runtime authority `NONE`.
 
 ## Current first unresolved predicate
 
