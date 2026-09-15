@@ -22,6 +22,29 @@
     "registered_node_binding_required": true,
     "node_interlock_binding_required_before_lease": true
   },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":[]},
+      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"SUITABLE","limitation_class":"ARCHITECTURAL","evidence_refs":["StegVerse-Labs/StegOS:stegos/network_manifold.py","scripts/run_stegbrowser_runtime_consumption_reusable.legacy.py"]},
+      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"SUITABLE","limitation_class":"NONE","evidence_refs":["scripts/run_stegbrowser_runtime_consumption_reusable.legacy.py"]},
+      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["StegVerse-Labs/Site:assets/canonical-runtime-proof.js"]},
+      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"SELECTED","limitation_class":"NONE","evidence_refs":["scripts/run_stegbrowser_runtime_consumption_reusable.legacy.py","workers/stegbrowser_manifest_intr_ingress.py","docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":[]}
+    ],
+    "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  },
   "canonical_node_binding": {
     "selector": "CANONICAL_REGISTERED_STEGVERSE_NODE_BINDING",
     "selector_role": "SYMBOLIC_SELECTION_ONLY",
@@ -41,7 +64,7 @@
     "A4_exact_packet_verification": "EXISTING_WORKERS_STEGBROWSER_MANIFEST_INTR_INGRESS",
     "direct_child_a4_worker_shortcut": false,
     "duplicate_materializer": false,
-    "source_validation_state": "RECONCILED_MERGED_VALIDATED"
+    "source_validation_state": "RECONCILED_MERGED_VALIDATED_RUNTIME_EVIDENCE_PENDING"
   },
   "source_validation": {
     "node_interlock_pr": 1923,
@@ -56,15 +79,12 @@
     "all_required_lanes_passed": true,
     "runtime_authority_effect": "NONE"
   },
-  "runtime_execution_observation": {
-    "attempted_at": "2026-09-15T09:15:00-05:00",
-    "authorized_resident_surface_reached": false,
-    "connector_result": "NO_AUTHORIZED_ONLINE_DEVICE_AVAILABLE",
-    "stegverse_native_runtime_receipt_observed": false,
-    "expected_boundary_ref": "receipts/sovereign-host/stegbrowser-runtime-remediation-boundary.latest.json",
-    "round_trip_1_started": false,
-    "runtime_predicates_promoted": false,
-    "classification": "EXECUTION_SURFACE_UNAVAILABLE_NOT_RUNTIME_FAILURE",
+  "native_a1_observation": {
+    "path": "EXISTING_STEGVERSE_NATIVE_RESIDENT_REQUEST_PATH",
+    "external_runtime_device_host_discovery_allowed": false,
+    "second_user_operated_device_required": false,
+    "current_authentic_transition_receipt_observed": false,
+    "expected_transition_receipt": "receipts/sovereign-host/stegbrowser-runtime-connection-transition-observation.latest.json",
     "authority_effect": "NONE_OBSERVATION_ONLY"
   },
   "completion": {
@@ -84,7 +104,7 @@
   },
   "issue_1918": {
     "state": "CLOSED",
-    "state_reason": "COMPLETED_SOURCE_DEFECT",
+    "state_reason": "COMPLETED_SOURCE_DEFECT_CONFIRMED_AFTER_PR_1929_RECONCILIATION",
     "reopen_required": false,
     "runtime_evidence_pending_is_separate_from_source_defect": true
   },
