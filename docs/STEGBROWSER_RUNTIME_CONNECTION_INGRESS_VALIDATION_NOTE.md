@@ -1,0 +1,1 @@
+Validation note for STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001. This source-only note has authority_effect=NONE and exists to accompany repository validation of the A1 resident observer implementation.
