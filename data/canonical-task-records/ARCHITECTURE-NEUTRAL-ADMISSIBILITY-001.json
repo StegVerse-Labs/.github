@@ -1,0 +1,29 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "ARCHITECTURE-NEUTRAL-ADMISSIBILITY-001",
+  "correlation_id": "ARCHITECTURE-NEUTRAL-ADMISSIBILITY-001",
+  "root_correlation_id": "MILLINGS-RTG-GTG-TT-COMPARISON-001",
+  "parent_task_id": "MILLINGS-RTG-GTG-TT-COMPARISON-001",
+  "goal": "Formalize and falsify the proposition that architectural difference alone is not a sufficient StegVerse denial basis when a candidate independently satisfies the governing requirement under the same valid evidence standard, without weakening safety, evidence, authority, standing, policy, or commit-time requirements.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "cosv_task_vector": "10100000100000",
+  "source_refs": [
+    "docs/ARCHITECTURE_NEUTRAL_ADMISSIBILITY_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegScholar:ARCHITECTURE_NEUTRAL_ADMISSIBILITY_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegScholar:papers/external-frameworks/millings-method-refinement-disposition.md",
+    "data/canonical-task-records/MILLINGS-RTG-GTG-TT-COMPARISON-001.json"
+  ],
+  "targets": {"organizations":["StegVerse-Labs"],"repositories":["StegVerse-Labs/StegScholar","StegVerse-Labs/.github"],"components":["architecture-neutral-admissibility","conformity-only-denial-falsification"]},
+  "dependencies": [],
+  "blockers": [],
+  "adjacent_task_refs": ["GATE-LEGITIMACY-INVARIANT-001","INDEPENDENT-REVIEW-PREDICATE-001"],
+  "expected_evidence_predicates": ["ARCHITECTURE_NEUTRAL_INVARIANT_PROPOSED_OR_REJECTED_WITH_RATIONALE","CONFORMITY_ONLY_DENIAL_NEGATIVE_CASE_VALIDATED","NOVEL_ARCHITECTURE_VALID_EVIDENCE_POSITIVE_CASE_VALIDATED","SUBSTANTIVE_EVIDENCE_BASED_DENIAL_REMAINS_VALID"],
+  "completion": {"claimed":false,"validated":false,"activation_proof_complete":false},
+  "allowed_next_transitions": ["CLAIMED_IMPLEMENTATION","CLAIMED_VALIDATION","CLAIMED_INTEGRATION"],
+  "handoff_projection_refs": [
+    "docs/ARCHITECTURE_NEUTRAL_ADMISSIBILITY_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegScholar:ARCHITECTURE_NEUTRAL_ADMISSIBILITY_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {"task_registry_mints_execution_authority":false,"architecture_neutrality_overrides_substantive_governance":false,"request_grants_execution_authority":false}
+}

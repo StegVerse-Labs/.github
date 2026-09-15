@@ -4,6 +4,6 @@
   "repository": "StegVerse-Labs/.github",
   "registry_ref": "data/canonical-task-records/MILLINGS-RTG-GTG-TT-COMPARISON-001.json",
   "source_state_vector_ref": "control/task-vectors/MILLINGS-RTG-GTG-TT-COMPARISON-001.json",
-  "cosv_task_vector": "40011100100000",
+  "cosv_task_vector": "71000000100100",
   "handoff_ref": "docs/MILLINGS_RTG_GTG_TT_COMPARISON_MIRROR_HANDOFF.md"
 }

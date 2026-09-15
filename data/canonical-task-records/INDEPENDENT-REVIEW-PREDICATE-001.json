@@ -1,0 +1,30 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "INDEPENDENT-REVIEW-PREDICATE-001",
+  "correlation_id": "INDEPENDENT-REVIEW-PREDICATE-001",
+  "root_correlation_id": "MILLINGS-RTG-GTG-TT-COMPARISON-001",
+  "parent_task_id": "MILLINGS-RTG-GTG-TT-COMPARISON-001",
+  "goal": "Define and falsify a deterministic predicate that distinguishes merely available review from genuinely independent review for adverse governance dispositions across gate ownership, rule authorship, financial/common-control interests, evaluator identity, and execution-path control without creating a second governance authority.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "cosv_task_vector": "10100000100000",
+  "source_refs": [
+    "docs/INDEPENDENT_REVIEW_PREDICATE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegScholar:INDEPENDENT_REVIEW_PREDICATE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegScholar:research-programs/governable-autonomy/review-schema.json",
+    "StegVerse-Labs/StegScholar:papers/external-frameworks/millings-method-refinement-disposition.md",
+    "data/canonical-task-records/MILLINGS-RTG-GTG-TT-COMPARISON-001.json"
+  ],
+  "targets": {"organizations":["StegVerse-Labs"],"repositories":["StegVerse-Labs/StegScholar","StegVerse-Labs/.github"],"components":["reviewer-independence-predicate","conflict-of-interest-falsification","appeal-review-separation"]},
+  "dependencies": [],
+  "blockers": [],
+  "adjacent_task_refs": ["GATE-LEGITIMACY-INVARIANT-001","ARCHITECTURE-NEUTRAL-ADMISSIBILITY-001"],
+  "expected_evidence_predicates": ["INDEPENDENT_REVIEW_PREDICATE_PROPOSED_OR_REJECTED_WITH_RATIONALE","REVIEW_AVAILABLE_DISTINGUISHED_FROM_INDEPENDENT_REVIEW_AVAILABLE","COMMON_CONTROL_NEGATIVE_CASE_VALIDATED","RULE_AUTHOR_CONFLICT_NEGATIVE_CASE_VALIDATED","EXECUTION_PATH_CONTROL_CONFLICT_NEGATIVE_CASE_VALIDATED","GTG_TT_AUTHORITY_BOUNDARIES_PRESERVED"],
+  "completion": {"claimed":false,"validated":false,"activation_proof_complete":false},
+  "allowed_next_transitions": ["CLAIMED_IMPLEMENTATION","CLAIMED_VALIDATION","CLAIMED_INTEGRATION"],
+  "handoff_projection_refs": [
+    "docs/INDEPENDENT_REVIEW_PREDICATE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegScholar:INDEPENDENT_REVIEW_PREDICATE_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {"task_registry_mints_execution_authority":false,"independent_review_predicate_mints_governance_authority":false,"request_grants_execution_authority":false}
+}

@@ -1,0 +1,29 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "GATE-LEGITIMACY-INVARIANT-001",
+  "correlation_id": "GATE-LEGITIMACY-INVARIANT-001",
+  "root_correlation_id": "MILLINGS-RTG-GTG-TT-COMPARISON-001",
+  "parent_task_id": "MILLINGS-RTG-GTG-TT-COMPARISON-001",
+  "goal": "Determine whether StegVerse governance gates require a first-class inspectable legitimacy record and falsification protocol covering standard provenance, evidence-rule provenance, evaluator standing/conflicts, execution-path control, challenge paths, and review independence without creating a new authority source.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "cosv_task_vector": "10100000100000",
+  "source_refs": [
+    "docs/GATE_LEGITIMACY_INVARIANT_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegScholar:GATE_LEGITIMACY_INVARIANT_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegScholar:papers/external-frameworks/millings-method-refinement-disposition.md",
+    "data/canonical-task-records/MILLINGS-RTG-GTG-TT-COMPARISON-001.json"
+  ],
+  "targets": {"organizations":["StegVerse-Labs"],"repositories":["StegVerse-Labs/StegScholar","StegVerse-Labs/.github"],"components":["gate-legitimacy-record","gate-legitimacy-falsification"]},
+  "dependencies": [],
+  "blockers": [],
+  "adjacent_task_refs": ["ARCHITECTURE-NEUTRAL-ADMISSIBILITY-001","INDEPENDENT-REVIEW-PREDICATE-001"],
+  "expected_evidence_predicates": ["GATE_LEGITIMACY_OBJECT_PROPOSED_OR_REJECTED_WITH_RATIONALE","STANDARD_PROVENANCE_CASES_VALIDATED","EVIDENCE_RULE_CONTROL_CASES_VALIDATED","EVALUATOR_CONFLICT_CASES_VALIDATED","EXECUTION_PATH_CONTROL_CASES_VALIDATED","AUTHORITY_NONINHERITANCE_PRESERVED"],
+  "completion": {"claimed":false,"validated":false,"activation_proof_complete":false},
+  "allowed_next_transitions": ["CLAIMED_IMPLEMENTATION","CLAIMED_VALIDATION","CLAIMED_INTEGRATION"],
+  "handoff_projection_refs": [
+    "docs/GATE_LEGITIMACY_INVARIANT_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegScholar:GATE_LEGITIMACY_INVARIANT_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {"task_registry_mints_execution_authority":false,"gate_legitimacy_metadata_mints_governance_authority":false,"request_grants_execution_authority":false}
+}
