@@ -22,29 +22,6 @@
     "registered_node_binding_required": true,
     "node_interlock_binding_required_before_lease": true
   },
-  "execution_substrate_resolution": {
-    "schema": "stegverse.execution-substrate-resolution/v1",
-    "review_order": [
-      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
-      "STEGOS-CURRENT-DEVICE-NODE",
-      "STEG-BROWSER-EPHEMERAL-LEASE",
-      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
-      "ADMITTED-EPHEMERAL-STEGOS-NODE",
-      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
-    ],
-    "reviews": [
-      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":[]},
-      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"SUITABLE","limitation_class":"ARCHITECTURAL","evidence_refs":["StegVerse-Labs/StegOS:stegos/network_manifold.py","scripts/run_stegbrowser_runtime_consumption_reusable.legacy.py"]},
-      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"SUITABLE","limitation_class":"NONE","evidence_refs":["scripts/run_stegbrowser_runtime_consumption_reusable.legacy.py"]},
-      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["StegVerse-Labs/Site:assets/canonical-runtime-proof.js"]},
-      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"SELECTED","limitation_class":"NONE","evidence_refs":["scripts/run_stegbrowser_runtime_consumption_reusable.legacy.py","workers/stegbrowser_manifest_intr_ingress.py","docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":[]}
-    ],
-    "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
-    "external_device_required": false,
-    "second_user_operated_device_allowed": false,
-    "authority_effect": "NONE"
-  },
   "canonical_node_binding": {
     "selector": "CANONICAL_REGISTERED_STEGVERSE_NODE_BINDING",
     "selector_role": "SYMBOLIC_SELECTION_ONLY",
@@ -64,29 +41,46 @@
     "A4_exact_packet_verification": "EXISTING_WORKERS_STEGBROWSER_MANIFEST_INTR_INGRESS",
     "direct_child_a4_worker_shortcut": false,
     "duplicate_materializer": false,
-    "source_validation_state": "RECONCILIATION_VALIDATION_PENDING"
+    "source_validation_state": "RECONCILED_MERGED_VALIDATED"
   },
   "source_validation": {
-    "prior_node_interlock_pr": 1923,
-    "prior_validated_head": "f7b6cb86b9fff9fbeb1817e45920acc2effc200f",
-    "prior_merge_sha": "0098bc793865fd1db835c400b502dad5f8a5e32d",
-    "prior_all_required_lanes_passed": true,
-    "reconciliation_branch": "stegbrowser-node-binding-canonical-reconcile",
-    "reconciliation_exact_head": "PENDING",
+    "node_interlock_pr": 1923,
+    "node_interlock_validated_head": "f7b6cb86b9fff9fbeb1817e45920acc2effc200f",
+    "node_interlock_merge_sha": "0098bc793865fd1db835c400b502dad5f8a5e32d",
+    "a1_a4_reconciliation_pr": 1929,
+    "a1_a4_reconciliation_validated_head": "60e7246e326d32d17525d83783c38c5e21528ff0",
+    "a1_a4_reconciliation_merge_sha": "a4c2d173aad04219795e44d2051703accd404c9c",
+    "organization_control_run": 34976675513,
+    "deterministic_suite_run": 34976675506,
+    "heartbeat_validation_run": 34976675536,
+    "all_required_lanes_passed": true,
     "runtime_authority_effect": "NONE"
+  },
+  "runtime_execution_observation": {
+    "attempted_at": "2026-09-15T09:15:00-05:00",
+    "authorized_resident_surface_reached": false,
+    "connector_result": "NO_AUTHORIZED_ONLINE_DEVICE_AVAILABLE",
+    "stegverse_native_runtime_receipt_observed": false,
+    "expected_boundary_ref": "receipts/sovereign-host/stegbrowser-runtime-remediation-boundary.latest.json",
+    "round_trip_1_started": false,
+    "runtime_predicates_promoted": false,
+    "classification": "EXECUTION_SURFACE_UNAVAILABLE_NOT_RUNTIME_FAILURE",
+    "authority_effect": "NONE_OBSERVATION_ONLY"
   },
   "completion": {
     "source_merged_validated": true,
-    "a1_a4_duplicate_representation_reconciled": false,
+    "a1_a4_duplicate_representation_reconciled": true,
     "runtime_connection_transition_observed": false,
     "registered_stegverse_node_bound_to_invocation": false,
     "interlock_bound_to_node_and_manifest": false,
+    "intr_materialization_admitted": false,
     "invocation_scoped_lease_bound_to_node_interlock": false,
     "invocation_owned_ephemeral_stegos_materialized": false,
     "execution_time_runtime_identity_bound": false,
     "workercoordinator_claim_fence_observed": false,
     "organization_local_intr_ingress_receipt_verified": false,
-    "authentic_intr_ingress_observed": false
+    "authentic_intr_ingress_observed": false,
+    "round_trip_1_started": false
   },
   "issue_1918": {
     "state": "CLOSED",
