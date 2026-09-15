@@ -1,0 +1,15 @@
+{
+  "reusable_task_id": "RT-INTR-EVIDENCE-CUSTODY-001",
+  "name": "Interlock/InTr Evidence Custody",
+  "purpose": "Package and hand off the exact hash-linked admission, transition, egress, return, and application-disposition evidence from one governed Interlock/InTr exchange to the canonical evidence/custody surface without converting recording or reconstruction into transition authority.",
+  "trigger": "a governed Interlock/InTr exchange has produced evidence that must survive the invocation",
+  "scope": "one completed, denied, failed, or partial governed exchange evidence set",
+  "parameter_keys": ["intr_protocol_ref", "packet_refs", "receipt_chain_refs", "artifact_refs", "application_disposition", "custody_destination", "reconstruction_requirements"],
+  "composes": ["RT-INTR-BOUNDARY-ADMISSION-001", "RT-INTR-GOVERNED-TRANSITION-001", "RT-INTR-ROUNDTRIP-CORRELATION-001"],
+  "runner_templates": [],
+  "recording_levels": ["operation", "task", "goal", "component", "system", "master_records"],
+  "completion_predicates": ["EXACT_RECEIPT_CHAIN_BOUND", "ARTIFACT_HASHES_BOUND", "APPLICATION_DISPOSITION_PRESERVED", "CUSTODY_HANDOFF_EMITTED", "RECONSTRUCTION_REQUIREMENTS_DECLARED", "NO_RECORDING_AUTHORITY_PROMOTION"],
+  "failure_semantics": ["MISSING_REQUIRED_RECEIPT_FAIL_CLOSED", "HASH_MISMATCH_FAIL_CLOSED", "CUSTODY_HANDOFF_IS_NOT_RECONSTRUCTION_PASS", "RECONSTRUCTION_PASS_IS_NOT_TRANSITION_AUTHORITY"],
+  "authority_effect": "NONE_EVIDENCE_CUSTODY_ONLY",
+  "reuse_instructions": "Use Master Records or the applicable canonical custody/reconstruction surface for durable observed reality. Preserve denied, failed, partial, and successful outcomes distinctly. Do not rewrite application or transition state merely because evidence was recorded or reconstructed."
+}
