@@ -19,6 +19,13 @@ They are coordination/discovery primitives only. A reusable task definition does
 - `RT-NATIVE-EMAIL-ACTION-MONITOR-001` — invoke the existing `STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001` / `RESIDENT-EXEC-NATIVE-EMAIL-ACTION-MONITOR-001` path without creating another monitor, scheduler, polling loop, heartbeat, worker, or credential route.
 - `RT-CANONICAL-STATE-RECONCILIATION-001` — reconcile Task Registry, WorkerCoordinator claim/fence projection, Master Records, receipts, handoffs, README completeness determination, and StegIndex/index state without collapsing authority boundaries.
 - `RT-SESSION-CLOSEOUT-001` — bounded composition of the five reusable tasks above before successor session handoff.
+- `RT-INTR-PROTOCOL-ESTABLISH-001` — resolve or establish one normalized Interlock/InTr protocol without cloning provider-specific governance.
+- `RT-INTR-BOUNDARY-ADMISSION-001` — validate one normalized ingress boundary, payload/envelope integrity, destination profile, and applicable standing before downstream transition.
+- `RT-INTR-GOVERNED-TRANSITION-001` — evaluate one admitted transition through applicable Transition Elements while resolving authority effect separately from execution success.
+- `RT-INTR-ROUNDTRIP-CORRELATION-001` — preserve exact request/response correlation, destination binding, replay/loop prevention, and transport-versus-application outcome separation.
+- `RT-INTR-EVIDENCE-CUSTODY-001` — bind hash-linked Interlock/InTr evidence into canonical custody/reconstruction without promoting recording into transition authority.
+
+The four reusable Interlock/InTr operational identities above were decomposed from the frozen `STEGVERSE-002-SELF-CHARACTERIZATION-001` v0.3 boundary semantics and are governed by `docs/INTR_REUSABLE_PROTOCOL_COMPONENTS_MIRROR_HANDOFF.md`. They compose existing transport-family components rather than duplicating implementation.
 
 ## Invocation semantics
 
@@ -44,8 +51,8 @@ GitHub token runtime authority = NONE
 
 `NO_README_CHANGE_REQUIRED` for `StegVerse-Labs/.github` in this change set.
 
-Evidence basis: the repository README already documents Canonical Work as a reusable governed ingress mechanism for additional registered tasks and already states that the resident `data/canonical-task-registry.json` is mutable coordination state whose authority remains separated from downstream Canonical Work, WorkerCoordinator, Master Records, and Interlock/InTr checks. This change adds a dedicated reusable-definition catalog and handoff without changing runtime behavior, interfaces, credential authority, admission semantics, execution semantics, failure behavior, or capability authority.
+Evidence basis: the repository README already documents Canonical Work, the Reusable Task Component Model, and the Interlock/InTr transport family with separated downstream authority. This change adds reusable Interlock/InTr task identities and a dedicated handoff without changing runtime behavior, interfaces, credential authority, admission semantics, execution semantics, failure behavior, or capability authority.
 
 ## Next integration
 
-StegIndex should index this reusable-task capability as discovery-only and point back to this handoff and `data/reusable-task-registry.json`. The index must not assert runtime completion merely because reusable definitions exist.
+StegIndex should index the new reusable Interlock/InTr task identities as discovery-only and point back to `docs/INTR_REUSABLE_PROTOCOL_COMPONENTS_MIRROR_HANDOFF.md` and the registry shards. The index must not assert runtime completion merely because reusable definitions exist.
