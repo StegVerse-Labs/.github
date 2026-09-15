@@ -1,0 +1,53 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+  "correlation_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+  "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+  "parent_task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+  "goal": "Bind the manifest-defined StegBrowser invocation to the existing Canonical Work resident dispatcher and organization-local Interlock/InTr boundary, materialize the invocation-owned ephemeral StegOS execution surface, obtain authentic WorkerCoordinator claim/fence, and retain verified A4 Interlock/InTr ingress evidence before Round Trip #1 proceeds.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "40000100100000",
+  "handoff_ref": "docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md",
+  "operation_lineage_task_id": "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
+  "runtime_requirements": {
+    "selected_substrate": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+    "standing_runtime_required": false,
+    "external_runtime_connection_required": false,
+    "external_device_required": false,
+    "second_user_operated_device_required": false,
+    "hosted_carrier_required": false
+  },
+  "source_defects": [
+    {
+      "id": "STEGBROWSER-CANONICAL-WORK-SPEC-STALE-TASK-ID",
+      "owner": "CANONICAL_WORK_RESIDENT_CONSUMER_BINDING",
+      "state": "OBSERVED",
+      "expected": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+      "observed": "STEG-BROWSER-RUNTIME-CONSUMPTION-001"
+    },
+    {
+      "id": "STEGBROWSER-A3-A4-ORDERING-DRIFT",
+      "owner": "STEGBROWSER_REUSABLE_RUNTIME_RUNNER",
+      "state": "OBSERVED",
+      "expected": "WORKERCOORDINATOR_CLAIM_FENCE_THEN_VERIFIED_ORGANIZATION_LOCAL_INTR_INGRESS",
+      "observed": "CANONICAL_WORK_INGRESS_PROJECTION_BEFORE_AUTHENTIC_CLAIM_FENCE"
+    }
+  ],
+  "completion": {
+    "resident_request_dispatch_binding_valid": false,
+    "invocation_owned_ephemeral_stegos_materialized": false,
+    "workercoordinator_claim_fence_observed": false,
+    "organization_local_intr_ingress_receipt_verified": false,
+    "authentic_intr_ingress_observed": false,
+    "source_merged_validated": false
+  },
+  "authority_model": {
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "interlock_intr_transition_authority": true,
+    "credential_authority": "TV/TVC",
+    "github_runtime_authority": "NONE",
+    "resident_dispatcher_authority_effect": "NONE",
+    "organization_local_boundary_authority_effect": "NONE_BOUNDED_EXECUTION_SURFACE"
+  }
+}
