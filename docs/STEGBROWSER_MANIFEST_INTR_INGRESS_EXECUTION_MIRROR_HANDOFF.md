@@ -8,8 +8,9 @@ Repository: `StegVerse-Labs/.github`
 - Goal Task ID: `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001`
 - Parent Goal: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / SOURCE MERGED+VALIDATED / GC REVISED / REUSABLE TASK SYNCHRONIZED / AUTHENTIC INVOCATION EXECUTION PENDING`
-- Source merge: PR `#1914`, merge commit `7337271028d1226e76af88b33765f38334159b23`
+- Status: `ACTIVE / CHECKED_OUT / NODE+INTERLOCK SOURCE BINDING MERGED+VALIDATED / AUTHENTIC INVOCATION EXECUTION PENDING`
+- Prior source merge: PR `#1914`, merge commit `7337271028d1226e76af88b33765f38334159b23`
+- Node/Interlock binding repair: PR `#1925`, merge commit `0f27c6594c4a55b7ee77e0407523eaa4c9fb8ea7`
 
 ## Purpose
 
@@ -47,6 +48,8 @@ Node is a continuity/admission anchor; it is NOT a waiting external machine and 
 
 Retain `node_id`, node/profile binding, genesis/continuity commitment, and manifest/Goal/COSV correlation.
 
+Current source implementation: `scripts/run_stegbrowser_runtime_consumption_reusable.py` accepts `node_binding_ref`, validates canonical `stegos.node_handoff_receipt.v1` Receipt #1 with the existing StegOS `validate_node_genesis_receipt`, and fails closed on missing or mismatched Node identity. This source capability does not itself satisfy A1.
+
 ### A2 — INTERLOCK / INTR ENTRY
 
 Bind invocation to applicable/declared Interlock and submit the governed InTr materialization transition.
@@ -55,11 +58,15 @@ Interlock/InTr decides whether transition/materialization is allowed.
 
 `REQUEST_AUTHORITY = NONE`.
 
+The source repair binds the `interlock_id` from the same validated Receipt #1; source state does not prove an admitted A2 transition.
+
 ### A2.1 — BOUNDED LEASE / EXECUTION BINDING
 
 If admitted, establish the invocation-scoped lease/binding and bind Node, Interlock, manifest, Goal, COSV, and requested execution class.
 
 Lease is ephemeral. No standing host relationship is created.
+
+The merged runner binds `manifest_sha256 + node_id + interlock_id + registration_receipt_sha256 + Goal + COSV` into the existing `LeaseRequest` state identity. It reuses the existing materializer and does not create a second runtime path.
 
 ### A2.2 — EVENT_EPHEMERAL STEGOS MATERIALIZATION
 
@@ -68,6 +75,12 @@ Materialize the admitted `EVENT_EPHEMERAL` StegOS runtime and bind exact executi
 Required correlation: Node, Interlock, InTr transition, lease/binding, runtime_id, manifest, Goal, COSV.
 
 No pre-existing runtime is required. No generic process host must be exposed to ChatGPT first.
+
+On an authentic invocation, the merged source retains:
+
+`receipts/sovereign-host/stegbrowser-node-interlock-lease-runtime-binding.latest.json`
+
+with exact Node/Interlock/manifest/lease/runtime correlation. Absence of that authentic runtime receipt leaves A2.2 unsatisfied.
 
 ### A3 — WORKERCOORDINATOR CLAIM / FENCE
 
@@ -87,6 +100,8 @@ Verify as applicable: packet identity, profile, payload hash, packet hash, manif
 ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED = true
 AUTHENTIC_INTR_INGRESS_OBSERVED = true
 ```
+
+The merged A4 worker now carries `manifest_sha256 + node_id + interlock_id + registration_receipt_sha256 + lease_id + runtime_id + Goal + COSV` inside the packet payload. The organization-local receipt binds that payload via exact `payload_hash` and `ingress_packet_sha256` verification.
 
 Only then advance transport.
 
@@ -193,8 +208,8 @@ STEGBROWSER_ACTIVE_RESIDENT_REQUEST_DISPATCH_BINDING_VALID
     source-valid
 
 NODE_INTERLOCK_INTR_LEASE_MATERIALIZATION_PATH_IDENTIFIED
-    architectural precedent recovered
-    current StegBrowser invocation proof pending
+    SOURCE IMPLEMENTATION VERIFIED + MERGED
+    current invocation proof pending
 
 INVOCATION_OWNED_EPHEMERAL_STEGOS_MATERIALIZED
     NOT OBSERVED
@@ -209,7 +224,7 @@ AUTHENTIC_INTR_INGRESS_OBSERVED
     NOT OBSERVED
 ```
 
-Historical architecture evidence, source inspection, GitHub merge, and CI do not promote authentic runtime predicates.
+GitHub source, CI, architectural precedent, and the merged #1925 repair do not promote authentic runtime predicates.
 
 ## Reusable-task synchronization
 
@@ -219,12 +234,14 @@ Required reusable sequence:
 
 ```text
 MANIFEST_BOUND_TO_INVOCATION
+-> validated existing StegVerse Node Receipt #1
 -> STEGVERSE_NODE_BOUND_TO_INVOCATION
 -> INTERLOCK_BOUND_TO_NODE_AND_MANIFEST
 -> INTR_MATERIALIZATION_ADMITTED
 -> INVOCATION_SCOPED_LEASE_ESTABLISHED
 -> EVENT_EPHEMERAL_STEGOS_RUNTIME_MATERIALIZED
 -> EXECUTION_TIME_RUNTIME_IDENTITY_BOUND
+-> NODE_INTERLOCK_LEASE_RUNTIME_BINDING_RECEIPT_RETAINED
 -> CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED
 -> ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED
 -> AUTHENTIC_INTR_INGRESS_OBSERVED
@@ -237,22 +254,26 @@ Reusable-task synchronization grants no runtime authority and never replaces aut
 
 ## Issue #1918
 
-Current classification: `REFRAME CANDIDATE`.
+Final source classification: `BOUNDED SOURCE BINDING DEFECT — REMEDIATED`.
 
-Reason: #1918 assumed ChatGPT needed a generic process-execution surface. The recovered architecture instead indicates:
+The original generic-process-execution-surface premise is retired. Trace proved that the existing Python lane already materialized:
 
 ```text
-invocation
--> Node
--> Interlock
--> InTr
--> lease
--> EVENT_EPHEMERAL runtime
+manifest validation
+-> LeaseRequest
+-> RuntimeClass.EVENT_EPHEMERAL
+-> RendezvousRequirement.NOT_REQUIRED
+-> SovereignLocalEventRuntimeAdapter.provision()
+-> SovereignLocalEventRuntimeAdapter.materialize()
+-> execution-time runtime_id
+-> WorkerCoordinator / organization-local ingress
 ```
 
-Do not close #1918 solely from historical evidence.
+The exact defect was that the current runner did not first validate and bind the applicable registered StegVerse Node Receipt #1 and its `node_id`/`interlock_id` into the lease/runtime identity and A4 ingress correlation.
 
-First trace the current StegBrowser implementation equivalent. If the existing materializer is reusable, retire/reframe #1918 as a mistaken tooling abstraction. If the binding is actually absent, remediate only the exact missing invocation/materializer binding.
+PR `#1925` repaired that exact defect and passed deterministic repository, organization-control, and heartbeat validation before merge `0f27c6594c4a55b7ee77e0407523eaa4c9fb8ea7`.
+
+Issue #1918 may therefore close as a completed source-gap issue. Closing #1918 does NOT assert A1/A2/A2.1/A2.2/A3/A4 runtime completion.
 
 ## Authority
 
@@ -272,7 +293,7 @@ Healer remains triggered remediation only for an observed broken condition. It i
 
 ## Immediate continuation
 
-Trace the exact current StegBrowser implementation equivalent of the existing Node -> Interlock -> InTr -> lease -> EVENT_EPHEMERAL materialization path. Reuse existing implementation where predicates match. Do not introduce an external runtime/device/host discovery stage.
+Invoke the canonical reusable path only from an invocation that already owns/resolves the applicable registered StegVerse Node Receipt #1 and supplies its reference as `node_binding_ref`. Observe and retain the new Node/Interlock/lease/runtime binding receipt, then require authentic WorkerCoordinator claim/fence and exact A4 ingress receipt before entering Round Trip 1. Do not add external runtime/device/host discovery.
 
 ## Manual work
 
