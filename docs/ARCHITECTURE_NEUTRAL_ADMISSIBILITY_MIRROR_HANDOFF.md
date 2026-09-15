@@ -2,31 +2,51 @@
 
 Updated: 2026-09-15
 Goal Task ID: `ARCHITECTURE-NEUTRAL-ADMISSIBILITY-001`
-COSV: `10100000100000`
-Status: `ACTIVE / UNCLAIMED`
+COSV: `71000000100100`
+Status: `RETIRED / COMPLETED`
 
 ## Canonical research owner
 
 `StegVerse-Labs/StegScholar`
 
-Primary research handoff:
+Primary terminal handoff:
 
 `ARCHITECTURE_NEUTRAL_ADMISSIBILITY_MIRROR_HANDOFF.md`
 
-## Purpose
+## Result
 
-Formalize and falsify the proposition that architectural difference alone is not a sufficient StegVerse denial basis when a candidate independently satisfies the governing requirement under the same valid evidence standard.
+Accepted as a bounded, non-authorizing denial-basis formalism:
 
-## Required evidence
+```text
+ArchitectureDifferent(c) != SubstantivelyInadmissible(c)
+ConformityOnlyDenial(c) = INVALID_DENIAL_BASIS
+ArchitectureNeutrality(c) != ALLOW(c)
+```
 
-- candidate invariant and exact failure semantics;
-- positive and negative fixtures separating architectural difference from substantive insufficiency;
-- same-requirement/different-valid-evidence-path cases;
-- legitimate denial cases for evidence, authority, safety, policy, or commit-time insufficiency;
-- explicit protection against conformity-only denial.
+The deterministic fixture set preserves valid substantive denial for evidence, authority, standing, safety/constraints, policy, and commit-time insufficiency, while rejecting architectural nonconformity as the sole denial basis when those requirements pass. Unresolved required state remains fail-closed.
 
-## Coordination boundary
+## Collision result
 
-Architecture neutrality does not weaken safety, evidence, authority, standing, policy, or commit-time requirements. This task and handoff mint no execution or governance authority.
+Current GTG semantics already evaluate substantive admissibility conditions but did not contain this explicit architecture-neutrality invariant. Completed Gate Legitimacy and Independent Review formalisms are adjacent evidence surfaces, not duplicates. No competing branch, open PR, or equivalent implementation was observed before claim.
 
-Parent comparison `MILLINGS-RTG-GTG-TT-COMPARISON-001` is terminal. Continue this refinement only under this child task.
+## Validation and merge evidence
+
+- StegScholar PR #64 exact head `b549f7376c63ba11db93ba0db7627946a934f07b` passed Architecture Neutral Admissibility, Test Readiness, Governable Autonomy, and Independent Review validation and merged at `4808eb096156fb8bbf9c0585e3fbeb37aa55b4fe`.
+- StegScholar PR #65 exact head `623e39de5f382aa835cb24ea9967f7449f5e0245` passed Architecture Neutral Admissibility, Independent Review, and Test Readiness validation and merged at `81b79b760078f9e988814378d83a250bc0435065`.
+
+## Authority boundary
+
+This formalism does not issue GTG `ALLOW`/`DENY`, mint governance or execution authority, override substantive policy, or make architecture neutrality a substitute for evidence, standing, authority, safety, or commit-time validity. Mandatory GTG-wide integration remains separate compatibility work.
+
+The Millings parent and the other two derived children remain retired and are not reopened.
+
+## Terminal state
+
+```text
+coordination_state: RETIRED
+checkout_state: COMPLETED
+completion.claimed: true
+completion.validated: true
+archive_ready: true
+COSV: 71000000100100
+```
