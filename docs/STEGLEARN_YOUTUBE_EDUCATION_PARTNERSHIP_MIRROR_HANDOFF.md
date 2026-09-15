@@ -5,7 +5,7 @@ Repository: `StegVerse-Labs/.github`
 Target repository: `StegVerse-Labs/StegLearn`
 Goal Task ID: `STEGLEARN-YOUTUBE-EDUCATION-PARTNERSHIP-001`
 COSV: `40000100100000`
-Status: `ACTIVE / OWNER OUTREACH AUTHORIZED / INTERACTIVE SUBMISSION PENDING`
+Status: `ACTIVE / OWNER OUTREACH AUTHORIZED / SOURCE PACKAGE VALIDATED / INTERACTIVE SUBMISSION PENDING`
 
 ## Canonical registration
 
@@ -42,7 +42,7 @@ Verified current partner-entry facts:
 1. Partner Advantage remains the public Build entry route.
 2. Google instructs applicants to select `Build` as engagement and `Google for Education` as solution.
 3. Integrated Solutions remains a later qualification step requiring three Google-approved Workspace for Education and/or Classroom integrations plus integration evidence.
-4. The current specialist form explicitly supports `Education technology` as phase of education, `Head of Digital Transformation / AI` and `Educational Technology Lead` job-title options, organization name/website/country fields, `Google Cloud` and `Teaching and Learning` product interests, and a 500-character needs field.
+4. The current specialist form explicitly supports `Education technology`, `Head of Digital Transformation / AI`, `Educational Technology Lead`, organization name/website/country, `Google Cloud`, `Teaching and Learning`, and a 500-character needs field.
 5. Player for Education remains an education-partner licensed player with additional student privacy safeguards and no ads.
 6. `liveBroadcasts` retains low/ultra-low latency controls; `liveChatMessages.streamList` remains a low-latency server-streaming feedback path when chat is enabled.
 
@@ -85,28 +85,27 @@ Canonical submission package:
 
 `StegVerse-Labs/StegLearn:docs/GOOGLE_EDUCATION_OUTREACH_PACKAGE.md`
 
-### Specialist-form routing
+Specialist form:
 
-- Phase of education: `Education technology`
+- Phase: `Education technology`
 - Organization: `StegVerse`
 - Website: `https://stegverse.org`
 - Country: `United States`
-- Job title: `Head of Digital Transformation / AI` preferred; `Educational Technology Lead` is also valid
+- Job title: `Head of Digital Transformation / AI` preferred
 - Product interests: `Teaching and Learning` and `Google Cloud`
-- Current Workspace for Education use: answer from actual organization state; do not infer
+- Current Workspace-for-Education use: answer from actual organization state
 - Marketing opt-in: owner choice
 
 Problem statement:
 
 > StegLearn is a governed AI-assisted education platform evaluating Google/YouTube as managed media infrastructure for individualized classrooms of one. We need low-latency instructor video, authorized learner camera/mic return, N concurrent private sessions, programmatic lifecycle control, and education/minor privacy safeguards while StegLearn retains curriculum, adaptation, evidence, and mastery authority. Please route us to Player for Education / YouTube Youth & Learning Partnerships.
 
-### Partner Advantage routing
+Partner Advantage:
 
 - Engagement: `Build`
 - Solution: `Google for Education`
 - Product: `StegVerse / StegLearn`
 - Positioning: governed AI-assisted EdTech platform
-- Objective: Google-managed education media/collaboration infrastructure while StegLearn retains instructional/governance authority
 - Integrated Solutions eligibility: not claimed
 
 ## Machine-authorized versus user-interactive execution
@@ -116,7 +115,8 @@ Completed by machine-authorized surfaces:
 - current public-evidence refresh;
 - canonical task/handoff maintenance;
 - exact outreach package preparation;
-- current capability/negotiation matrix preservation.
+- current capability/negotiation matrix preservation;
+- exact-head StegLearn source validation.
 
 The available ChatGPT tool surface cannot type into or submit arbitrary Google web forms or complete authenticated Partner Advantage account workflows. Those steps require the owner's interactive browser/session identity.
 
@@ -130,7 +130,7 @@ Minimum user action:
 6. Paste the canonical problem statement above.
 7. Answer current Workspace-for-Education use truthfully and choose marketing opt-in preference.
 8. Tap `Get in touch`.
-9. Then open the `Apply now` Partner Advantage route from the Build page, sign in with the intended StegVerse Google identity, choose `Build` and `Google for Education`, and complete only organization/legal fields known to be accurate.
+9. Then use the `Apply now` Partner Advantage route from the Build page, sign in with the intended StegVerse Google identity, choose `Build` and `Google for Education`, and complete only accurate organization/legal fields.
 10. Preserve any on-screen confirmation, case/reference number, confirmation email, or follow-up message for canonical evidence.
 
 ## Evidence handling after submission
@@ -141,19 +141,19 @@ No proprietary StegLearn A/V stack should be built while this partnership path r
 
 ## Validation evidence
 
-Prior StegLearn exact-head source projection:
+Current StegLearn exact main head:
 
-`e00ec11116e55b1698739de3fa8dc2e052b47b97`
+`ba1b852374c21864647f041f3e77e4598e22f652`
 
 GitHub Actions:
 
-`34988288580 — Validate StegLearn — SUCCESS`
+`34992304852 — Validate StegLearn — SUCCESS`
 
-The new outreach package and authorization projection require fresh exact-head validation before this phase is considered source-validated.
+This exact-head run includes the canonical Google education outreach package and the repository-local authorization handoff. No `.github` workflow run is claimed for the direct organization-control commits.
 
 ## Current state
 
-`OWNER_AUTHORIZED_PUBLIC_EVIDENCE_REFRESHED_SUBMISSION_PACKAGE_READY_INTERACTIVE_GOOGLE_SUBMISSION_PENDING`
+`OWNER_AUTHORIZED_PUBLIC_EVIDENCE_REFRESHED_SOURCE_PACKAGE_VALIDATED_INTERACTIVE_GOOGLE_SUBMISSION_PENDING`
 
 ## Manual work
 
