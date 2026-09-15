@@ -12,6 +12,7 @@ TASK_ID = "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
 GOAL_ID = "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001"
 COSV = "40000100100000"
 BINDING_RECEIPT_REL = Path("receipts/sovereign-host/stegbrowser-node-interlock-lease-runtime-binding.latest.json")
+CANONICAL_NODE_SELECTOR = "CANONICAL_REGISTERED_STEGVERSE_NODE_BINDING"
 
 spec = importlib.util.spec_from_file_location("stegbrowser_runtime_legacy", LEGACY)
 if spec is None or spec.loader is None:
@@ -26,36 +27,75 @@ def canonical_bytes(value: Any) -> bytes:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False).encode("utf-8")
 
 
-def load_node_binding(source: Path, stegos: Path, p: dict[str, Any]) -> dict[str, Any]:
-    raw_ref = str(p.get("node_binding_ref") or os.environ.get("STEGVERSE_STEGBROWSER_NODE_BINDING_REF") or "").strip()
-    if not raw_ref:
-        mod.fail("registered_stegverse_node_binding_ref_missing")
-    ref = Path(raw_ref).expanduser()
-    candidates = [ref] if ref.is_absolute() else [source / ref, Path.cwd() / ref]
-    path = next((c.resolve() for c in candidates if c.is_file()), None)
-    if path is None:
-        mod.fail("registered_stegverse_node_binding_ref_not_found")
-    value = mod.load_json(path)
+def _candidate_node_binding_paths(source: Path, raw_ref: str) -> list[Path]:
+    explicit = str(os.environ.get("STEGVERSE_STEGBROWSER_NODE_BINDING_REF") or "").strip()
+    candidates: list[Path] = []
+    if explicit:
+        candidates.append(Path(explicit).expanduser())
+    if raw_ref and raw_ref != CANONICAL_NODE_SELECTOR:
+        ref = Path(raw_ref).expanduser()
+        candidates.extend([ref] if ref.is_absolute() else [source / ref, Path.cwd() / ref])
+    if raw_ref == CANONICAL_NODE_SELECTOR or not raw_ref:
+        marker = str(os.environ.get("STEGVERSE_SOVEREIGN_NODE_MARKER") or "").strip()
+        if marker:
+            candidates.append(Path(marker).expanduser())
+        candidates.extend([
+            Path.home() / ".stegverse" / "node.json",
+            Path("/etc/stegverse/node.json"),
+        ])
+    unique: list[Path] = []
+    seen: set[str] = set()
+    for candidate in candidates:
+        try:
+            resolved = candidate.expanduser().resolve()
+        except Exception:
+            continue
+        key = str(resolved)
+        if key not in seen:
+            seen.add(key)
+            unique.append(resolved)
+    return unique
+
+
+def _validated_node_binding(path: Path, stegos: Path) -> dict[str, Any] | None:
+    if not path.is_file():
+        return None
+    try:
+        value = mod.load_json(path)
+    except Exception:
+        return None
     genesis = value.get("genesis_receipt") if isinstance(value.get("genesis_receipt"), dict) else value
     sys.path.insert(0, str(stegos))
     from stegos.network_manifold import validate_node_genesis_receipt
     try:
         validate_node_genesis_receipt(genesis)
-    except Exception as exc:
-        mod.fail(f"registered_stegverse_node_receipt_invalid:{type(exc).__name__}:{exc}")
+    except Exception:
+        return None
     if genesis.get("schema") != "stegos.node_handoff_receipt.v1" or genesis.get("receipt_number") != 1:
-        mod.fail("registered_stegverse_node_receipt_one_required")
+        return None
     node_id = genesis.get("node_id")
     interlock_id = genesis.get("interlock_id")
     receipt_sha256 = genesis.get("receipt_sha256")
     if not all(isinstance(x, str) and x for x in (node_id, interlock_id, receipt_sha256)):
-        mod.fail("registered_stegverse_node_identity_incomplete")
+        return None
     return {
         "node_binding_ref": str(path),
         "node_id": node_id,
         "interlock_id": interlock_id,
         "registration_receipt_sha256": receipt_sha256,
     }
+
+
+def load_node_binding(source: Path, stegos: Path, p: dict[str, Any]) -> dict[str, Any]:
+    raw_ref = str(p.get("node_binding_ref") or CANONICAL_NODE_SELECTOR).strip()
+    candidates = _candidate_node_binding_paths(source, raw_ref)
+    for candidate in candidates:
+        bound = _validated_node_binding(candidate, stegos)
+        if bound is not None:
+            return bound
+    if raw_ref == CANONICAL_NODE_SELECTOR:
+        mod.fail("canonical_registered_stegverse_node_receipt_one_not_available")
+    mod.fail("registered_stegverse_node_binding_ref_not_found_or_invalid")
 
 
 def install_binding_hooks(source: Path, resident_root: Path, stegos: Path, p: dict[str, Any]) -> None:
