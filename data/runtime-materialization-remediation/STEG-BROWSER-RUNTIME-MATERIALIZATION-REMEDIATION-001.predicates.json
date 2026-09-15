@@ -5,16 +5,27 @@
   "shared_runtime_evidence_owner_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
   "cosv_task_vector": "40000100100000",
   "historical_operation_lineage_task_id": "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
-  "latest_classification": "ACTIVE_REMEDIATION_REUSABLE_BINDING_SOURCE_REPAIR_IN_VALIDATION",
+  "latest_classification": "ACTIVE_REMEDIATION_REUSABLE_BINDING_MERGED_VALIDATED_RUNTIME_EVIDENCE_PENDING",
   "latest_next_defect": "AUTHENTIC_RUNTIME_CONNECTION_TRANSITION_AND_INTR_INGRESS_NOT_YET_OBSERVED",
   "runtime_completion_claimed": false,
   "successful_data_transport_round_trip_identified": false,
-  "source_validation_only": true,
+  "source_validation_only": false,
+  "source_validation": {
+    "pull_request": 1907,
+    "validated_head": "53e017036ce0de4b732fbac44394709a15c3e89f",
+    "merge_commit": "4834e0a8787b11a6d01872e39ba82773f9bdeda4",
+    "organization_control_run": 34911735697,
+    "deterministic_suite_run": 34911735692,
+    "heartbeat_validation_run": 34911735696,
+    "all_validation_lanes_passed": true,
+    "runtime_authority_effect": "NONE"
+  },
   "required_predicates": [
     {
       "predicate_id": "ACTIVE_REMEDIATION_GOAL_BOUND_TO_RT_STEGBROWSER_RUNTIME_CONSUMPTION_001",
       "kind": "SOURCE_BINDING",
       "required_state": "TRUE",
+      "observed_state": "TRUE_SOURCE_MERGED_VALIDATED",
       "evidence_ref": "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
       "authority_effect": "NONE_ORCHESTRATION_ONLY"
     },
@@ -22,6 +33,7 @@
       "predicate_id": "RETIRED_HISTORICAL_RUNTIME_CONSUMPTION_GOAL_NOT_REACTIVATED",
       "kind": "COORDINATION_BOUNDARY",
       "required_state": "TRUE",
+      "observed_state": "TRUE",
       "evidence_ref": "data/canonical-task-records/STEG-BROWSER-RUNTIME-CONSUMPTION-001.json",
       "authority_effect": "NONE_COORDINATION_ONLY"
     },
@@ -29,6 +41,7 @@
       "predicate_id": "ACTIVE_REMEDIATION_COSV_SOURCE_VECTOR_BOUND",
       "kind": "SOURCE_BINDING",
       "required_state": "TRUE",
+      "observed_state": "TRUE_SOURCE_MERGED_VALIDATED",
       "evidence_ref": "control/task-vectors/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json",
       "authority_effect": "NONE_SOURCE_ONLY"
     },
@@ -36,6 +49,7 @@
       "predicate_id": "ACTIVE_REMEDIATION_EPHEMERAL_STEGOS_SUBSTRATE_SELECTED",
       "kind": "SOURCE_BINDING",
       "required_state": "TRUE",
+      "observed_state": "TRUE_SOURCE_MERGED_VALIDATED",
       "evidence_ref": "data/canonical-task-records/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json#execution_substrate_resolution",
       "authority_effect": "NONE_SELECTION_ONLY"
     },
