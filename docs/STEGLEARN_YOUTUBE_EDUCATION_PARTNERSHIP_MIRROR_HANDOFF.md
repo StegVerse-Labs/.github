@@ -5,7 +5,7 @@ Repository: `StegVerse-Labs/.github`
 Target repository: `StegVerse-Labs/StegLearn`
 Goal Task ID: `STEGLEARN-YOUTUBE-EDUCATION-PARTNERSHIP-001`
 COSV: `40000100100000`
-Status: `ACTIVE / SOURCE PARTNERSHIP EVALUATION / OUTREACH NOT YET SENT`
+Status: `ACTIVE / SOURCE PACKAGE VALIDATED / OUTREACH NOT YET SENT`
 
 ## Canonical registration
 
@@ -99,6 +99,18 @@ Partner Advantage package:
 
 No outreach has been sent and no partnership is claimed.
 
+## Validation evidence
+
+The StegLearn repository projection is now on exact main head:
+
+`e00ec11116e55b1698739de3fa8dc2e052b47b97`
+
+GitHub Actions validation:
+
+`34988288580 — Validate StegLearn — SUCCESS`
+
+That run validates the exact head containing the README projection, repository-local handoff update, and preserved partnership lane. The canonical `.github` shard and organization handoff are source registration artifacts; no `.github` workflow run was observed for their direct source commits, so no organization-level CI claim is made.
+
 ## Authority boundaries
 
 - Task Registry owns work intent.
@@ -109,15 +121,15 @@ No outreach has been sent and no partnership is claimed.
 
 ## Current state
 
-`SOURCE_TASK_REGISTERED_PARTNER_PATH_AND_CAPABILITY_MATRIX_PREPARED_OUTREACH_NOT_SENT`
+`SOURCE_TASK_REGISTERED_PARTNER_PATH_AND_CAPABILITY_MATRIX_VALIDATED_OUTREACH_NOT_SENT`
 
 ## Remaining work
 
-- project this task into the StegLearn README and repository-local handoff;
-- validate the resulting exact source head;
 - refresh current public evidence immediately before outreach;
 - obtain owner authorization before external form submission;
-- record any Google response as external evidence and update capability assumptions only from written evidence.
+- submit the Google for Education specialist inquiry and/or Partner Advantage Build application only after owner authorization;
+- record any Google response as external evidence and update capability assumptions only from written evidence;
+- do not build proprietary A/V infrastructure while the Google partnership path remains viable and untested.
 
 ## Manual work
 
