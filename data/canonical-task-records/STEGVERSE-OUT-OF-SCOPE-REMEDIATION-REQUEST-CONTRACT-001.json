@@ -24,8 +24,8 @@
     {
       "dependency_id": "DEP-HEALER-INDEPENDENT-TRIGGER-EVALUATION",
       "kind": "EXTERNAL_OWNING_DOMAIN_REMEDIATION_EVALUATION",
-      "state": "REQUEST_CONTRACT_IMPLEMENTATION_PENDING",
-      "ref": "StegVerse-Labs/StegVerse-Healer"
+      "state": "REQUEST_MATERIALIZED_EVALUATION_UNCLAIMED",
+      "ref": "StegVerse-Labs/StegVerse-Healer#86"
     }
   ],
   "expected_evidence_predicates": [
@@ -37,30 +37,26 @@
     "AUTHORITY_TRANSFER_NONE",
     "NONBLOCKING_OR_BLOCKING_CONTINUATION_POLICY_PRESERVED"
   ],
-  "runtime_requirements": {
-    "capabilities": ["canonical_artifact_validation", "coordination_contract_validation"],
-    "environment": "SOURCE_VALIDATION_ONLY",
-    "mutation_required": true,
-    "deployment_required": false,
-    "current_observation_required": false
-  },
+  "source_validation_only": true,
+  "runtime_execution_required": false,
   "worker_claim": {
     "authority": "WORKERCOORDINATOR",
     "claim_ref": null,
     "fence_ref": null,
-    "projection_only": true
+    "projection_only": true,
+    "required_for_this_source_contract": false
   },
   "completion": {
     "claimed": false,
     "validated": false,
-    "contract_implemented": false,
-    "gadi_fixture_validated": false,
-    "healer_evaluation_request_materialized": false
+    "contract_implemented": true,
+    "gadi_fixture_encoded": true,
+    "healer_evaluation_request_materialized": true,
+    "healer_trigger_or_remedy_claimed": false
   },
   "allowed_next_transitions": [
-    "IMPLEMENT_CONTRACT",
+    "VALIDATE_SOURCE_CONTRACT",
     "VALIDATE_GADI_FIXTURE",
-    "MATERIALIZE_HEALER_EVALUATION_REQUEST",
     "VALIDATE_AUTHORITY_AND_CONTINUATION_BOUNDARIES",
     "CLOSE_SOURCE_CONTRACT_TASK"
   ],
