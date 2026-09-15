@@ -61,14 +61,6 @@
     "CANONICAL_HANDOFF_UPDATED",
     "PR_EVIDENCE_OBSERVED"
   ],
-  "runtime_requirements": {
-    "capabilities": [],
-    "environment": "SOURCE_AND_RESEARCH_ONLY",
-    "direction": "NON_EXECUTING_ANALYTICAL",
-    "mutation_required": true,
-    "deployment_required": false,
-    "current_observation_required": false
-  },
   "worker_claim": {
     "authority": "CHAT_COORDINATION_BRANCH_ONLY",
     "claim_ref": null,
