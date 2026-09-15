@@ -7,231 +7,95 @@ Updated: 2026-09-14
 - Goal Task ID: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`
 - Parent/remediates: `STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001`
 - Shared runtime-evidence owner: `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001`
-- Issue: `StegVerse-Labs/.github#1866`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / ACTIVE-REMEDIATION REUSABLE BINDING SOURCE REPAIR IN VALIDATION / AUTHENTIC ROUND-TRIP PENDING`
+- Status: `ACTIVE / CHECKED_OUT / SOURCE REUSABLE BINDING MERGED+VALIDATED / AUTHENTIC RUNTIME TRANSITION AND ROUND-TRIP EVIDENCE PENDING`
 - External/second user-operated device required: `false`
-- Source-repair branch: `fix/stegbrowser-active-remediation-reusable-binding`
 
 ## Current exact condition
 
-The transport-boundary source contract is merged, but authentic runtime evidence is still absent.
+PR `StegVerse-Labs/.github#1907` repaired the first source defect exposed while pursuing authentic runtime evidence. The existing reusable capability `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` is now bound to the active remediation Goal/COSV rather than requiring the historical `STEG-BROWSER-RUNTIME-CONSUMPTION-001` task to be reopened. The historical task remains `RETIRED / DECOMPOSED_AT_PROMPT_LIMIT` and is operation lineage only.
 
-The first machine-executable source defect discovered while pursuing runtime evidence was that `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` and its runner still required the historical task `STEG-BROWSER-RUNTIME-CONSUMPTION-001` to be `ACTIVE/CHECKED_OUT`. That task is canonically `RETIRED / DECOMPOSED_AT_PROMPT_LIMIT` and must not be reopened.
-
-The active tracking identity is therefore:
+Validated source evidence:
 
 ```text
-STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001
-COSV 40000100100000
+validated head = 53e017036ce0de4b732fbac44394709a15c3e89f
+organization-control run = 34911735697 PASS
+deterministic repository suite = 34911735692 PASS
+heartbeat validation = 34911735696 PASS
+merge commit = 4834e0a8787b11a6d01872e39ba82773f9bdeda4
 ```
 
-The historical task remains operation lineage only:
+GitHub/CI has runtime authority `NONE`. These source results do not prove runtime execution or transport success.
+
+Current first unmet runtime condition:
 
 ```text
-STEG-BROWSER-RUNTIME-CONSUMPTION-001
+AUTHENTIC_RUNTIME_CONNECTION_TRANSITION_AND_INTR_INGRESS_NOT_YET_OBSERVED
 ```
 
-The repair branch reuses the existing reusable capability and existing Canonical Work / Interlock-InTr runtime surfaces. It does not create a new reusable task, scheduler, dispatcher, WorkerCoordinator, credential route, runtime plane, or user-device requirement.
+No authentic evidence currently establishes `callable`, `refreshable`, current WorkerCoordinator claim/fence, governed return-packet receipt, durable return-record recording, final allowed transport-exit transition, or successful round-trip identification.
 
-## Governing GC model
+## Governed transport model
 
-The Goal Chart is a state-transition graph, not a fixed waterfall. Reusable tasks/components are candidates selected from invocation-bound state and transition predicates. Reusable definitions are non-authorizing.
+The Goal Chart is a state-transition graph. `callable` and `refreshable` are invocation-bound Interlock/InTr variables; no always-on runtime source or persistent source-freshness state is assumed.
 
-`callable` and `refreshable` are invocation-bound Interlock/InTr state-transition variables. There is no assumed always-on runtime source and no persistent source-freshness completion state.
+This StegBrowser composition contains exactly one governed round-trip lifecycle. `canonical_work_ingress_and_resident_consumption` and `tvc_source_promotion_and_runtime_observation` are internal transition groups inside that lifecycle, not separate round-trip goals. `RTC-ROUNDTRIP-003` therefore has lifecycle count `1`; `RTC-INTERLOCK-INTR-TRANSPORT-008` may repeat at required governed state crossings.
 
-The StegBrowser transport composition contains **one governed round-trip lifecycle**. It may contain multiple internal transition groups, including:
+The transport lane ends only after:
 
-- `canonical_work_ingress_and_resident_consumption`
-- `tvc_source_promotion_and_runtime_observation`
+```text
+GOVERNED_RETURN_PACKET_RECEIVED = true
+RETURN_RECORD_DURABLY_RECORDED = true
+FINAL_ALLOWED_TRANSPORT_EXIT_TRANSITION_OBSERVED = true
+```
 
-Those groups are not separate round-trip goals and do not increment `RTC-ROUNDTRIP-003` lifecycle count.
-
-## Governed transport terminal boundary
-
-The governed Interlock/InTr data-transport lane ends at the final allowed state transition that exits transport after the governed return record has been received and durably recorded.
-
-Required semantics:
-
-- intermediate Interlock/InTr state transitions may occur locally at either authorized endpoint iff allowed;
-- the governed return packet completes the round-trip lifecycle;
-- packet arrival time at the final state-transition boundary is not extended merely because the lifecycle is round-trip;
-- the return record must be received and durably recorded;
-- the final allowed Interlock/InTr transport-exit transition must be observed;
-- only then may the terminal transport predicate become true:
+Then and only then:
 
 ```text
 SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIP_IDENTIFIED = true
 ```
 
-Master Records ingress, custody, reconstruction, mirroring, reconciliation, persistence, projection, measurement, publication, or any later action is post-transport. A downstream failure after successful final transport exit must not be reclassified as transport failure. Master Records is reconstruction authority, not transport-success authority.
+Packet arrival time at the final state-transition boundary is not extended merely because the lifecycle is round-trip. Master Records ingress/reconstruction, mirroring, reconciliation, persistence, projection, measurement, publication, or other later work is post-transport. A downstream failure after successful final transport exit must not be reclassified as transport failure.
 
-## Reusable-task/component fit
+## Current execution path
 
-### Transport side
+### A1 — Invocation-bound connection state
 
-- `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` — existing bounded StegBrowser runtime-consumption capability; now bound to the active remediation Goal for current invocation tracking.
-- `RT-SOVEREIGN-SOURCE-REFRESH-001` — selected iff the admitted invocation resolves `callable=true` and `refreshable=true`.
-- `RT-INTR-PROTOCOL-ESTABLISH-001` — selected only if no applicable existing InTr protocol resolves.
-- `RTC-ROUNDTRIP-003` — exactly one governed round-trip lifecycle for this composition.
-- `RTC-INTERLOCK-INTR-TRANSPORT-008` — repeatable at required governed state crossings within that lifecycle.
+The existing reusable capability is source-bound to the active remediation Goal. Authentic Interlock/InTr observation must still resolve `callable` and `refreshable` for the actual invocation.
 
-### Post-transport side
+### A2 — Selected source/runtime materialization
 
-- `RT-CANONICAL-STATE-RECONCILIATION-001`
-- `RT-MIRROR-HANDOFF-VALIDATION-001`
-- conditional `RT-STEGINDEX-VALIDATION-001`
-- conditional `RT-README-VALIDATION-001`
-- `RT-SESSION-CLOSEOUT-001`
-- `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001`
+If `callable=true, refreshable=true`, select `RT-SOVEREIGN-SOURCE-REFRESH-001` and retain authentic refresh evidence. If `callable=true, refreshable=false`, do not invent refresh. If `callable=false`, do not represent a callable runtime.
 
-No new reusable task is required by this repair.
+### A3 — WorkerCoordinator claim/fence
 
-## Corrected Goal Chart
+The exact active Goal/COSV work requires current WorkerCoordinator claim/fence evidence. Source projection does not mint a claim or fence.
 
-### Domain A — Invocation and governed transport-loop completion
+### A4 — Governed Interlock/InTr ingress
 
-#### A1 — Resolve invocation-bound connection state
+The merged runner reuses `SovereignLocalEventRuntimeAdapter` and the existing Canonical Work / Interlock-InTr bootstrap. It may stage only a runtime-local `PROPOSED` projection while canonical source remains `ACTIVE`; authentic ingress evidence must come from the runtime transition.
 
-- Bind active Goal/COSV to the existing reusable capability.
-- Resolve `callable`, `refreshable`, applicable InTr protocol, and execution substrate through current state.
-- Authority: Interlock/InTr for governed transition admission.
-- Current status: source binding is being repaired; authentic transition-variable evidence is not yet observed.
+### A5 — Allowed intermediate transitions
 
-#### A2 — Materialize only selected runtime/source state
+Authorized endpoints may perform intermediate Interlock/InTr state transitions iff allowed. The one lifecycle may contain multiple such crossings.
 
-- If `callable=true, refreshable=true`, invoke `RT-SOVEREIGN-SOURCE-REFRESH-001` and retain authentic local refresh evidence.
-- If `callable=true, refreshable=false`, do not invent a refresh requirement.
-- If `callable=false`, do not represent a callable runtime.
-- Authority effect of refresh remains `NONE_LOCAL_SOURCE_REFRESH`.
+### A6 — Return record
 
-#### A3 — Establish current WorkerCoordinator claim/fence
+Receive the governed return packet and durably record the exact correlated return record.
 
-- WorkerCoordinator must claim the exact active Goal/COSV-bound executable work.
-- Completion predicate: `CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED = true`.
-- Current status: not authentically observed.
+### A7 — Final transport exit
 
-#### A4 — Enter governed Interlock/InTr transport
+Observe the final allowed Interlock/InTr transition exiting transport. A6 plus A7 establishes `SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIP_IDENTIFIED=true` and closes the transport subproblem for that invocation.
 
-- Use the existing Canonical Work bootstrap and shared Universal InTr listener.
-- The repair runner stages only a runtime-local `PROPOSED` projection of the active remediation Goal; canonical source remains `ACTIVE`.
-- Authentic `INGRESS_ADMITTED` evidence is retained in the existing resident root.
-- The runner must stop at the next real authority/evidence boundary rather than infer later success.
+## Post-transport domain
 
-#### A5 — Execute required allowed intermediate transitions
+Only after A7 may downstream Master Records custody/reconstruction, receipt classification, mirroring/reconciliation/persistence/projection, and global runtime measurement proceed. Those domains consume already-completed transport evidence and do not prove or negate the transport result.
 
-- Intermediate transitions may occur locally at authorized endpoints iff allowed.
-- `RTC-INTERLOCK-INTR-TRANSPORT-008` may repeat at required state crossings.
-- `RTC-ROUNDTRIP-003` remains one lifecycle.
-- WorkerCoordinator claim/fence remains binding throughout the invocation.
+## Runtime accessibility in this session
 
-#### A6 — Receive and durably record governed return record
+The authorized remote runtime connector was checked twice in this session and no authorized resident device was online. Therefore no local resident execution was performed from ChatGPT and no runtime predicate has been promoted. This is a current execution-surface availability condition, not evidence of a transport failure.
 
-- Complete return leg.
-- Receive governed return packet.
-- Durably record exact correlated return record.
-- Completion predicates:
-  - `GOVERNED_RETURN_PACKET_RECEIVED = true`
-  - `RETURN_RECORD_DURABLY_RECORDED = true`
-
-#### A7 — Final allowed transport-exit transition
-
-- Observe final allowed Interlock/InTr state transition exiting the transport lane.
-- After A6 + final exit:
-
-```text
-SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIP_IDENTIFIED = true
-```
-
-- Transport subproblem is then closed for that invocation.
-
-### Domain B — Post-transport processing
-
-Domain B begins only after A7.
-
-#### B1 — Bind/classify retained evidence
-
-Consume already-completed transport evidence without recreating or reproving transport.
-
-#### B2 — Master Records ingress/custody/reconstruction
-
-Master Records reconstructs observed reality after transport. Failure here does not negate A7 transport success.
-
-#### B3 — Selected downstream mirror/reconciliation/persistence/projection
-
-Each downstream authority owns its own result. No post-transport failure may be back-propagated as transport failure.
-
-#### B4 — Global runtime evidence measurement
-
-Run only after authentic retained evidence exists; measurement remains non-authorizing.
-
-#### B5 — Goal closure
-
-Close only from authentic A-domain transport proof plus independently required B-domain terminal predicates.
-
-## Current source-repair implementation
-
-Branch `fix/stegbrowser-active-remediation-reusable-binding` currently changes:
-
-- `source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json`
-  - active tracking task becomes `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`;
-  - retired runtime-consumption task is lineage only.
-- `control/resident-execution-request.d/canonical-work-stegbrowser-runtime-consumption-001.json`
-  - current request binds active remediation Goal/COSV;
-  - historical reactivation is explicitly forbidden.
-- `control/task-vectors/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json`
-  - supplies current task.v1 source vector.
-- `data/canonical-task-records/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json`
-  - binds admitted ephemeral StegOS substrate, projection-only WorkerCoordinator claim boundary, and `INGRESS_ADMITTED` as an allowed candidate transition while preserving actual authority owners.
-- `scripts/run_stegbrowser_runtime_consumption_reusable.py`
-  - tracks the active remediation Goal;
-  - preserves the retired task as operation lineage;
-  - uses the existing SovereignLocalEventRuntimeAdapter and existing Canonical Work bootstrap;
-  - retains authentic ingress evidence exactly in the existing resident root;
-  - stops at `CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED` rather than claiming later runtime completion.
-- regression tests
-  - enforce one round-trip lifecycle;
-  - enforce active-remediation tracking and historical-task retirement.
-
-## Runtime evidence status
-
-No authentic runtime completion is claimed from this branch, CI, GitHub, or source state.
-
-The authorized remote runtime connector was unavailable when checked in this session, so no local resident execution was performed from ChatGPT. GitHub evidence also does not currently show authentic observations for:
-
-```text
-RUNTIME_CONNECTION_TRANSITION_VARIABLES_OBSERVED
-CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED
-GOVERNED_RETURN_PACKET_RECEIVED
-RETURN_RECORD_DURABLY_RECORDED
-FINAL_ALLOWED_TRANSPORT_EXIT_TRANSITION_OBSERVED
-SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIP_IDENTIFIED
-```
-
-The first authentic runtime target after source validation is an active-remediation `INGRESS_ADMITTED` receipt retained from the existing Canonical Work / Interlock-InTr bootstrap. The next boundary is current WorkerCoordinator claim/fence evidence.
-
-## Failure ownership
-
-```text
-BEFORE TRANSPORT ENTRY
-  -> exact pre-transport owning domain
-
-INSIDE TRANSPORT THROUGH FINAL EXIT
-  -> transport or exact in-lane authority/component
-
-RETURN RECORD RECEIVED + DURABLY RECORDED
-AND FINAL ALLOWED TRANSPORT EXIT SUCCEEDS
-  -> SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIP_IDENTIFIED = true
-  -> transport subproblem CLOSED
-
-AFTER FINAL TRANSPORT EXIT
-  -> exact post-transport domain
-  -> MUST NOT be classified as transport failure
-```
-
-## Healer
-
-Healer is triggered remediation only. A pending predicate, missing runtime signal, or transition-variable value is not by itself a Healer trigger. Healer never becomes the normal stage owner, scheduler, carrier, transport authority, or reconstruction authority.
+The next authentic runtime target is the invocation-bound connection/Interlock-InTr ingress evidence for the active remediation Goal, followed by current WorkerCoordinator claim/fence and the remainder of the single governed round-trip through return-record durability and final transport exit.
 
 ## Authority invariants
 
@@ -241,10 +105,14 @@ Healer is triggered remediation only. A pending predicate, missing runtime signa
 - Interlock/InTr: governed transition and packet-movement authority.
 - TV/TVC: credential/provider authority.
 - KV/SKAP Vault: sole user-verification authority.
-- Master Records: observed-reality/custody/reconstruction authority after transport.
+- Master Records: observed-reality/custody/reconstruction authority after transport; not transport-success authority.
 - HeartBeat: observability/timing/freshness/correlation only.
-- GitHub/CI: source validation/evidence transport only; runtime authority `NONE`.
-- Second user-operated device: not required.
+- Healer: triggered bounded remediation only.
+- GitHub/CI: validation/evidence transport only; runtime authority `NONE`.
+
+## README review
+
+Repository README semantics were reviewed for this source repair. The repair changes task binding and runtime continuation internals without changing the already-documented Canonical Work authority model, so no README content change was required.
 
 ## Manual work
 
