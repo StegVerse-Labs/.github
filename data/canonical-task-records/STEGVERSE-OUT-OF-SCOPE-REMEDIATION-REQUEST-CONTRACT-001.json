@@ -5,14 +5,16 @@
   "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
   "parent_task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
   "goal": "Implement and validate a canonical coordination contract that routes observed broken conditions owned outside the current Goal to StegVerse-Healer for independent authorized-trigger evaluation without expanding Goal scope, transferring authority, or turning Healer into a normal stage owner, scheduler, carrier, or prerequisite.",
-  "coordination_state": "ACTIVE",
-  "checkout_state": "CHECKED_OUT",
+  "coordination_state": "RETIRED",
+  "checkout_state": "RETIRED",
   "cosv_task_vector": "40000100100000",
   "source_refs": [
     "data/out-of-scope-remediation-request-contract.json",
     "docs/STEGVERSE_OUT_OF_SCOPE_REMEDIATION_REQUEST_CONTRACT_MIRROR_HANDOFF.md",
     "tests/test_out_of_scope_remediation_request_contract.py",
-    "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md"
+    "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github#1911",
+    "StegVerse-Labs/StegVerse-Healer#86"
   ],
   "dependencies": [
     {
@@ -46,20 +48,25 @@
     "projection_only": true,
     "required_for_this_source_contract": false
   },
+  "source_validation_evidence": {
+    "pull_request": 1911,
+    "validated_head": "faa1c77f65006514b251ff92bc152f78acb8b81a",
+    "merge_commit": "e4775d3844a46ad4ee45a751ff559c100a183b7f",
+    "organization_control_run": 34919182490,
+    "deterministic_repository_suite_run": 34919182479,
+    "heartbeat_validation_run": 34919182505,
+    "all_required_source_validation_lanes_passed": true,
+    "runtime_or_remediation_authority_effect": "NONE"
+  },
   "completion": {
-    "claimed": false,
-    "validated": false,
+    "claimed": true,
+    "validated": true,
     "contract_implemented": true,
     "gadi_fixture_encoded": true,
     "healer_evaluation_request_materialized": true,
     "healer_trigger_or_remedy_claimed": false
   },
-  "allowed_next_transitions": [
-    "VALIDATE_SOURCE_CONTRACT",
-    "VALIDATE_GADI_FIXTURE",
-    "VALIDATE_AUTHORITY_AND_CONTINUATION_BOUNDARIES",
-    "CLOSE_SOURCE_CONTRACT_TASK"
-  ],
+  "allowed_next_transitions": [],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "source_state_proves_remediation": false,
