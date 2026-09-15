@@ -36,15 +36,21 @@ class StegBrowserManifestIntrIngressExecutionTests(unittest.TestCase):
         self.assertFalse(binding["execution_before_node_interlock_binding_repair_allowed"])
         self.assertEqual(binding["path_parameters"]["node_genesis_receipt"], "STEGVERSE_NODE_GENESIS_RECEIPT")
 
-    def test_reusable_task_tracks_implemented_binding_pending_validation(self):
+    def test_reusable_task_tracks_merged_validated_binding_pending_runtime_evidence(self):
         reusable = json.loads(REUSABLE.read_text())
         trace = reusable["implementation_trace"]
-        self.assertEqual(reusable["source_conformance_state"], "NODE_INTERLOCK_BINDING_SOURCE_IMPLEMENTED_VALIDATION_PENDING")
-        self.assertEqual(trace["registered_stegverse_node_binding"], "IMPLEMENTED_VIA_REQUIRED_NODE_GENESIS_RECEIPT")
-        self.assertEqual(trace["interlock_binding_from_node"], "IMPLEMENTED_FROM_VALIDATED_RECEIPT_1")
-        self.assertEqual(trace["event_ephemeral_stegos_materialization"], "IMPLEMENTED")
-        self.assertTrue(trace["execution_time_runtime_identity"].startswith("IMPLEMENTED_AND_BOUND_BACK"))
+        self.assertEqual(reusable["source_conformance_state"], "NODE_INTERLOCK_BINDING_SOURCE_MERGED_VALIDATED_RUNTIME_EVIDENCE_PENDING")
+        validation = reusable["source_validation"]
+        self.assertTrue(validation["all_required_lanes_passed"])
+        self.assertEqual(validation["runtime_authority_effect"], "NONE")
+        self.assertEqual(trace["registered_stegverse_node_binding"], "IMPLEMENTED_MERGED_VALIDATED_VIA_REQUIRED_NODE_GENESIS_RECEIPT")
+        self.assertEqual(trace["interlock_binding_from_node"], "IMPLEMENTED_MERGED_VALIDATED_FROM_VALIDATED_RECEIPT_1")
+        self.assertEqual(trace["event_ephemeral_stegos_materialization"], "IMPLEMENTED_MERGED_VALIDATED")
+        self.assertTrue(trace["execution_time_runtime_identity"].startswith("IMPLEMENTED_MERGED_VALIDATED_AND_BOUND_BACK"))
+        self.assertEqual(trace["round_trip_1"], "NOT_YET_AUTHENTICALLY_EXECUTED")
+        self.assertEqual(trace["round_trip_2"], "NOT_YET_AUTHENTICALLY_EXECUTED")
         contract = reusable["node_interlock_binding_contract"]
+        self.assertEqual(contract["state"], "SOURCE_MERGED_VALIDATED_RUNTIME_EVIDENCE_PENDING")
         self.assertTrue(contract["a4_exact_correlation_required"])
         self.assertTrue(contract["fail_closed_on_missing_or_mismatch"])
         legacy = LEGACY_RUNNER.read_text()
