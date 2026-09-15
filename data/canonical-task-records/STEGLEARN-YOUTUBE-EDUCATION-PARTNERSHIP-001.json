@@ -65,12 +65,12 @@
     "schema": "stegverse.execution-substrate-resolution/v1",
     "review_order": ["STEG-BROWSER-RETAINED-RESIDENT-NODE", "STEGOS-CURRENT-DEVICE-NODE", "STEG-BROWSER-EPHEMERAL-LEASE", "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER", "ADMITTED-EPHEMERAL-STEGOS-NODE", "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"],
     "reviews": [
-      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"NOT_APPLICABLE","limitation_class":"INTERACTIVE_GOOGLE_WEB_FORM_NOT_EXPOSED_TO_CURRENT_TOOL_SURFACE","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"NOT_APPLICABLE","limitation_class":"INTERACTIVE_GOOGLE_WEB_FORM_NOT_EXPOSED_TO_CURRENT_TOOL_SURFACE","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"NOT_APPLICABLE","limitation_class":"INTERACTIVE_GOOGLE_WEB_FORM_NOT_EXPOSED_TO_CURRENT_TOOL_SURFACE","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"NOT_APPLICABLE","limitation_class":"INTERACTIVE_GOOGLE_WEB_FORM_NOT_EXPOSED_TO_CURRENT_TOOL_SURFACE","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"NOT_APPLICABLE","limitation_class":"INTERACTIVE_GOOGLE_WEB_FORM_NOT_EXPOSED_TO_CURRENT_TOOL_SURFACE","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_SELECTED","limitation_class":"OWNER_INTERACTIVE_BROWSER_STEP_SUFFICIENT","evidence_refs":["StegVerse-Labs/StegLearn:docs/GOOGLE_EDUCATION_OUTREACH_PACKAGE.md"]}
+      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"NOT_APPLICABLE","limitation_class":"PLATFORM","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"NOT_APPLICABLE","limitation_class":"PLATFORM","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"NOT_APPLICABLE","limitation_class":"PLATFORM","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"NOT_APPLICABLE","limitation_class":"PLATFORM","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"NOT_APPLICABLE","limitation_class":"PLATFORM","evidence_refs":["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_SELECTED","limitation_class":"NOT_APPLICABLE","evidence_refs":["StegVerse-Labs/StegLearn:docs/GOOGLE_EDUCATION_OUTREACH_PACKAGE.md"]}
     ],
     "selected_substrate_id": null,
     "external_device_required": false,
