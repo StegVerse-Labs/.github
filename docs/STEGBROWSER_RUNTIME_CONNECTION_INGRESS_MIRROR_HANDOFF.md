@@ -1,6 +1,6 @@
 # StegBrowser Runtime Connection Ingress Mirror Handoff
 
-Updated: 2026-09-14
+Updated: 2026-09-15
 
 ## Task pointer
 
@@ -8,7 +8,7 @@ Updated: 2026-09-14
 - Parent Goal: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`
 - Root lineage: `STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / A1-A4 RESIDENT SOURCE COMPOSED + NATIVE DISPATCH REGISTERED / AUTHENTIC A1-A4 EVIDENCE PENDING`
+- Status: `ACTIVE / CHECKED_OUT / A1-A4 RESIDENT SOURCE COMPOSED + NATIVE DISPATCH MERGED / AUTHENTIC A1-A4 EVIDENCE PENDING`
 - External/second user-operated device required: `false`
 
 ## Scope and terminal boundary
@@ -44,7 +44,7 @@ The selector is registered in:
 
 `scripts/dispatch_resident_execution_requests.py`
 
-Local resident source refresh now materializes:
+Local resident source refresh materializes:
 
 - `scripts/consume_stegbrowser_runtime_connection_ingress_request.py`
 - `scripts/resolve_stegbrowser_runtime_connection_transition.py`
@@ -55,6 +55,12 @@ Local resident source refresh now materializes:
 This makes the child discoverable by the existing native resident request sweep after the ordinary already-local source refresh. Registration and materialization grant no execution authority and do not prove resident consumption.
 
 The request is non-authorizing and explicitly forbids Round Trip 1 payload processing, network source fetch, GitHub runtime authority, and second-machine dependency.
+
+## Merged source evidence
+
+PR `#1917` exact head `a19994be30060b467855c95387f463790b21c26e` passed the deterministic repository suite, organization-control validation, heartbeat validation, and adjacent resident-validation lanes, then squash-merged as `70f4fefc8183de63c6542bd3efac08f8a8f6b987`.
+
+That merge proves only source composition and native-dispatch discoverability. It does not satisfy A1, A2, A3, or A4 runtime predicates.
 
 ## A1 authentic observation
 
@@ -136,6 +142,22 @@ The child records that claim/fence as A3 evidence and the verified manifest ingr
 
 This existing worker stops at ingress. It does not execute A5 or Round Trip 1 payload processing.
 
+## Post-merge native evidence inspection
+
+After PR `#1917` merged, repository-visible StegVerse-native evidence surfaces were searched for:
+
+- `receipts/sovereign-host/stegbrowser-runtime-connection-transition-observation.latest.json`
+- `receipts/sovereign-host/stegbrowser-runtime-connection-a1-a2.latest.json`
+- `receipts/sovereign-host/stegbrowser-runtime-connection-a1-a4.latest.json`
+- `receipts/sovereign-host/stegbrowser-manifest-intr-ingress.latest.json`
+- `receipts/organization-local-boundary/stegbrowser-manifest-intr-ingress.json`
+- global retained references to `STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001`
+- global retained references to packet id `stegbrowser-manifest-intr-ingress`
+
+Result: source definitions, tests, handoff/task metadata, and expected receipt paths were found; no retained authentic resident A1/A2/A3/A4 receipt or Master Records copy was found.
+
+This negative evidence inspection does not mean the resident path failed. It means authentic execution remains unobserved from retained evidence and therefore no runtime predicate is promoted.
+
 ## Child completion predicates
 
 ```text
@@ -161,7 +183,7 @@ CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED = false
 INTR_ADMISSION_OBSERVED = false
 ```
 
-No authentic resident invocation receipt for the A1-A4 consumer is presently retained in repository evidence.
+No authentic resident invocation receipt for the A1-A4 consumer is presently retained in repository-visible evidence.
 
 ## Validation surfaces
 
