@@ -8,7 +8,7 @@ Updated: 2026-09-14
 - Parent Goal: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`
 - Root lineage: `STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / A1-A4 RESIDENT SOURCE COMPOSED / AUTHENTIC A1-A4 EVIDENCE PENDING`
+- Status: `ACTIVE / CHECKED_OUT / A1-A4 RESIDENT SOURCE COMPOSED + NATIVE DISPATCH REGISTERED / AUTHENTIC A1-A4 EVIDENCE PENDING`
 - External/second user-operated device required: `false`
 
 ## Scope and terminal boundary
@@ -26,13 +26,33 @@ A1 authentic invocation-bound connection-state observation
 
 `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` remains the later two-round-trip transport capability after authentic A4.
 
-## Canonical resident request
+## Canonical resident request and native discoverability
+
+Request:
 
 `control/resident-execution-request.d/stegbrowser-runtime-connection-ingress-001.json`
 
 Consumer:
 
 `scripts/consume_stegbrowser_runtime_connection_ingress_request.py`
+
+Native resident selector:
+
+`stegbrowser_runtime_connection_ingress`
+
+The selector is registered in:
+
+`scripts/dispatch_resident_execution_requests.py`
+
+Local resident source refresh now materializes:
+
+- `scripts/consume_stegbrowser_runtime_connection_ingress_request.py`
+- `scripts/resolve_stegbrowser_runtime_connection_transition.py`
+- `scripts/refresh_sovereign_worker_runtime_source_reusable.py`
+- the existing `workers/` directory, including `workers/stegbrowser_manifest_intr_ingress.py`
+- `control/resident-execution-request.d`, including this child's request.
+
+This makes the child discoverable by the existing native resident request sweep after the ordinary already-local source refresh. Registration and materialization grant no execution authority and do not prove resident consumption.
 
 The request is non-authorizing and explicitly forbids Round Trip 1 payload processing, network source fetch, GitHub runtime authority, and second-machine dependency.
 
@@ -141,12 +161,13 @@ CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED = false
 INTR_ADMISSION_OBSERVED = false
 ```
 
-No authentic resident invocation receipt for the new A1-A4 consumer is presently retained in repository evidence.
+No authentic resident invocation receipt for the A1-A4 consumer is presently retained in repository evidence.
 
 ## Validation surfaces
 
 - `tests/test_stegbrowser_runtime_connection_transition.py`
 - `tests/test_stegbrowser_runtime_connection_ingress_consumer.py`
+- `tests/test_stegbrowser_runtime_connection_resident_dispatch_registration.py`
 - `docs/STEGBROWSER_RUNTIME_CONNECTION_INGRESS_IMPLEMENTATION_STATUS.md`
 
 ## Out-of-scope defect rule
@@ -156,6 +177,7 @@ The canonical out-of-scope remediation contract applies unchanged. An observed f
 ## Authority invariants
 
 - Task Registry: coordination only.
+- Native resident dispatcher: discovery/dispatch only; no authority.
 - Resolver: selection only.
 - `RT-SOVEREIGN-SOURCE-REFRESH-001`: local source materialization only.
 - `ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001` / WorkerCoordinator: A3 claim/fence authority.
