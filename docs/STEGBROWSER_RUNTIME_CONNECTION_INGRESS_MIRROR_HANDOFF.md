@@ -8,97 +8,49 @@ Updated: 2026-09-15
 - Parent Goal: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`
 - Root lineage: `STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / A1-A4 RESIDENT SOURCE COMPOSED + NATIVE DISPATCH MERGED / AUTHENTIC A1-A4 EVIDENCE PENDING`
+- Status: `ACTIVE / CHECKED_OUT / SINGLE A1-A4 INVOCATION COMPOSITION SOURCE RECONCILED / AUTHENTIC A1-A4 EVIDENCE PENDING`
 - External/second user-operated device required: `false`
 
 ## Scope and terminal boundary
 
-This child owns only GC A1 through A4 and stops before Round Trip 1 payload processing.
+This child owns the A1 observation/projection surface and composes A2 through A4 through the existing canonical StegBrowser reusable invocation. It does not implement a second lease, runtime materializer, WorkerCoordinator path, or A4 ingress worker and stops before Round Trip 1 payload processing.
 
 ```text
 A1 authentic invocation-bound connection-state observation
--> select only matching existing reusable capabilities
--> A2 invocation-bound admitted execution materialization
--> A3 existing organization-local boundary executor obtains WorkerCoordinator claim/fence
--> A4 exact manifest-defined Interlock/InTr ingress
--> STOP CHILD
+-> resolve canonical registered StegVerse Node Receipt #1 input
+-> A2 bind validated Node/Interlock to exact manifest invocation
+-> A2.1 establish existing bounded invocation lease/state binding
+-> A2.2 materialize existing EVENT_EPHEMERAL StegOS runtime
+-> A3 existing organization-local WorkerCoordinator claim/fence
+-> A4 existing exact manifest Interlock/InTr ingress
+-> STOP CHILD / handoff to Round Trip 1 owner
 ```
 
-`RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` remains the later two-round-trip transport capability after authentic A4.
+## Canonical Node-binding representation
 
-## Canonical resident request and native discoverability
-
-Request:
-
-`control/resident-execution-request.d/stegbrowser-runtime-connection-ingress-001.json`
-
-Consumer:
-
-`scripts/consume_stegbrowser_runtime_connection_ingress_request.py`
-
-Native resident selector:
-
-`stegbrowser_runtime_connection_ingress`
-
-The selector is registered in:
-
-`scripts/dispatch_resident_execution_requests.py`
-
-Local resident source refresh materializes:
-
-- `scripts/consume_stegbrowser_runtime_connection_ingress_request.py`
-- `scripts/resolve_stegbrowser_runtime_connection_transition.py`
-- `scripts/refresh_sovereign_worker_runtime_source_reusable.py`
-- the existing `workers/` directory, including `workers/stegbrowser_manifest_intr_ingress.py`
-- `control/resident-execution-request.d`, including this child's request.
-
-This makes the child discoverable by the existing native resident request sweep after the ordinary already-local source refresh. Registration and materialization grant no execution authority and do not prove resident consumption.
-
-The request is non-authorizing and explicitly forbids Round Trip 1 payload processing, network source fetch, GitHub runtime authority, and second-machine dependency.
-
-## Merged source evidence
-
-PR `#1917` exact head `a19994be30060b467855c95387f463790b21c26e` passed the deterministic repository suite, organization-control validation, heartbeat validation, and adjacent resident-validation lanes, then squash-merged as `70f4fefc8183de63c6542bd3efac08f8a8f6b987`.
-
-That merge proves only source composition and native-dispatch discoverability. It does not satisfy A1, A2, A3, or A4 runtime predicates.
-
-## A1 authentic observation
-
-The resident consumer installs/checks the existing CanonicalWork route in the existing shared Universal InTr listener, starts one bounded loopback request surface from that existing implementation, and reads its live `/intr/profile` response.
-
-A1 observation schema:
-
-`stegverse.intr-runtime-connection-transition-observation/v1`
-
-Required owner/effect:
+There is one concrete Node Receipt #1 input contract:
 
 ```text
-authority_owner = Interlock/InTr
-authority_effect = OBSERVATION_ONLY
+parameter: node_genesis_receipt
+environment: STEGVERSE_NODE_GENESIS_RECEIPT
+schema: stegos.node_handoff_receipt.v1
+receipt_number: 1
+validator: StegOS stegos.network_manifold.validate_node_genesis_receipt
 ```
 
-The observation binds:
+`CANONICAL_REGISTERED_STEGVERSE_NODE_BINDING` is a selector name only. It is not a second receipt schema, path format, Node identity, or authority source. The child resolves that selector to the concrete `node_genesis_receipt` / `STEGVERSE_NODE_GENESIS_RECEIPT` path and fails closed when a valid Receipt #1 is unavailable.
 
-- `callable`
-- `refreshable`
-- `applicable_protocol_resolved`
+A plain `stegverse.sovereign-node-declaration/v0.4` declaration may not be promoted or inferred into Receipt #1 because it does not itself establish the required registered Node + Interlock continuity receipt.
 
-`callable` and `refreshable` remain invocation-bound state-transition variables, never persistent runtime/source assumptions.
+No external runtime/device/host discovery is permitted or performed.
 
-`applicable_protocol_resolved` requires both a live resident InTr profile and the already-local exact manifest ingress adapter `workers/stegbrowser_manifest_intr_ingress.py`. Adapter presence does not itself prove A4 admission.
+## A1
 
-Resolver:
-
-`scripts/resolve_stegbrowser_runtime_connection_transition.py`
-
-## Existing reusable-task selection
-
-No new reusable task is required.
+The child reuses the existing shared Universal InTr profile and resolver. `callable`, `refreshable`, and `applicable_protocol_resolved` remain invocation-bound transition variables under Interlock/InTr; none are persistent source/runtime properties.
 
 ```text
 callable=false
--> do not materialize execution
--> do not select refresh
+-> no execution materialization
 
 callable=true AND refreshable=true
 -> RT-SOVEREIGN-SOURCE-REFRESH-001
@@ -110,100 +62,100 @@ callable=true AND applicable_protocol_resolved=false
 -> RT-INTR-PROTOCOL-ESTABLISH-001
 
 callable=true AND applicable_protocol_resolved=true
--> reuse existing protocol path
+-> continue through canonical Node-bound StegBrowser invocation
 ```
 
-## A2
+## A2 through A4 — single execution owner
 
-When source refresh is selected, the consumer invokes the existing `RT-SOVEREIGN-SOURCE-REFRESH-001` runner with exact invocation-bound `callable=true`, `refreshable=true`, and the A1 transition receipt reference.
+The one execution owner is:
 
-If refresh is not selected, no refresh prerequisite is invented.
+`RT-STEGBROWSER-RUNTIME-CONSUMPTION-001`
 
-A2 is satisfied only when the callable invocation has the required already-local materialization state.
+through:
 
-## A3/A4 exact existing authority path
+`scripts/run_stegbrowser_manifest_bound_runtime.py`
 
-The child does not create a new WorkerCoordinator task or new A4 adapter.
+That existing path:
 
-It reuses:
+1. validates the declared manifest and binds its exact SHA-256;
+2. validates the concrete registered Node Receipt #1;
+3. consumes exact `node_id`, `interlock_id`, and registration receipt hash;
+4. constructs the existing `LeaseRequest` bound to manifest + Node + Interlock + registration + Goal/COSV + task/registry state;
+5. materializes through existing `SovereignLocalEventRuntimeAdapter` as `RuntimeClass.EVENT_EPHEMERAL` with rendezvous not required and no persistent/participant/developer host requirement;
+6. retains exact lease/runtime/state-root correlation;
+7. invokes the existing organization-local boundary path for authentic WorkerCoordinator claim/fence;
+8. uses the existing `workers/stegbrowser_manifest_intr_ingress.py` for exact A4 ingress correlation verification;
+9. stops at the A4 boundary before Round Trip 1.
 
-`workers/stegbrowser_manifest_intr_ingress.py`
+The previous child-local direct call to `workers/stegbrowser_manifest_intr_ingress.py` is removed. A4 can only be reached after the canonical Node/Interlock/lease/runtime identity exists.
 
-That existing exact manifest-bound ingress worker:
+## A2.1 and A2.2 explicit predicates
 
-1. validates/binds the canonical StegBrowser transport manifest;
-2. stages the organization-local InTr ingress packet;
-3. invokes the existing `ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001` through the canonical targeted resident task path;
-4. requires the existing WorkerCoordinator to produce the authentic claim/fence;
-5. verifies the organization-local boundary receipt and exact payload hash;
-6. returns `AUTHENTIC_INTR_INGRESS_OBSERVED` only when the accepted local-boundary receipt and claim/fence are authentic.
-
-The child records that claim/fence as A3 evidence and the verified manifest ingress as A4 evidence.
-
-This existing worker stops at ingress. It does not execute A5 or Round Trip 1 payload processing.
-
-## Post-merge native evidence inspection
-
-After PR `#1917` merged, repository-visible StegVerse-native evidence surfaces were searched for:
-
-- `receipts/sovereign-host/stegbrowser-runtime-connection-transition-observation.latest.json`
-- `receipts/sovereign-host/stegbrowser-runtime-connection-a1-a2.latest.json`
-- `receipts/sovereign-host/stegbrowser-runtime-connection-a1-a4.latest.json`
-- `receipts/sovereign-host/stegbrowser-manifest-intr-ingress.latest.json`
-- `receipts/organization-local-boundary/stegbrowser-manifest-intr-ingress.json`
-- global retained references to `STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001`
-- global retained references to packet id `stegbrowser-manifest-intr-ingress`
-
-Result: source definitions, tests, handoff/task metadata, and expected receipt paths were found; no retained authentic resident A1/A2/A3/A4 receipt or Master Records copy was found.
-
-This negative evidence inspection does not mean the resident path failed. It means authentic execution remains unobserved from retained evidence and therefore no runtime predicate is promoted.
-
-## Child completion predicates
+A2.1:
 
 ```text
-MANIFEST_BOUND_TO_INVOCATION = true
-RUNTIME_CONNECTION_TRANSITION_VARIABLES_OBSERVED = true
-CALLABLE_STATE_BOUND_TO_INVOCATION = true
-REFRESHABLE_STATE_BOUND_TO_INVOCATION = true
-MATCHING_REUSABLE_CAPABILITIES_SELECTED = true
-ADMITTED_EXECUTION_SURFACE_MATERIALIZED = true
-CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED = true
-INTR_ADMISSION_OBSERVED = true
-NO_ROUND_TRIP_1_PAYLOAD_PROCESSING_EXECUTED_BY_CHILD = true
-NO_SECOND_USER_OPERATED_DEVICE_REQUIRED = true
+INVOCATION_SCOPED_LEASE_ESTABLISHED
+INTERLOCK_BOUND_TO_NODE_AND_MANIFEST
+INTR_MATERIALIZATION_ADMITTED
 ```
 
-Only authentic resident/authority-owned evidence may satisfy them. GitHub/CI validation cannot.
+A2.2:
 
-## Current authentic state
+```text
+EVENT_EPHEMERAL_STEGOS_RUNTIME_MATERIALIZED
+EXECUTION_TIME_RUNTIME_IDENTITY_BOUND
+```
+
+A3:
+
+`CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED`
+
+A4:
+
+```text
+ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED
+INTR_ADMISSION_OBSERVED
+```
+
+## Authentic evidence state
+
+Source reconciliation does not satisfy runtime predicates. Current authentic state remains:
 
 ```text
 RUNTIME_CONNECTION_TRANSITION_VARIABLES_OBSERVED = false
+STEGVERSE_NODE_BOUND_TO_INVOCATION = false
+INTERLOCK_BOUND_TO_NODE_AND_MANIFEST = false
+INVOCATION_SCOPED_LEASE_ESTABLISHED = false
+EVENT_EPHEMERAL_STEGOS_RUNTIME_MATERIALIZED = false
+EXECUTION_TIME_RUNTIME_IDENTITY_BOUND = false
 CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED = false
+ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED = false
 INTR_ADMISSION_OBSERVED = false
 ```
 
-No authentic resident invocation receipt for the A1-A4 consumer is presently retained in repository-visible evidence.
+Expected retained child observation:
 
-## Validation surfaces
+`receipts/sovereign-host/stegbrowser-runtime-connection-a1-a4.latest.json`
 
-- `tests/test_stegbrowser_runtime_connection_transition.py`
-- `tests/test_stegbrowser_runtime_connection_ingress_consumer.py`
-- `tests/test_stegbrowser_runtime_connection_resident_dispatch_registration.py`
-- `docs/STEGBROWSER_RUNTIME_CONNECTION_INGRESS_IMPLEMENTATION_STATUS.md`
+Expected canonical invocation boundary:
 
-## Out-of-scope defect rule
+`receipts/sovereign-host/stegbrowser-runtime-remediation-boundary.latest.json`
 
-The canonical out-of-scope remediation contract applies unchanged. An observed foreign defect is evidence-retained and sent to StegVerse-Healer for independent trigger evaluation; the current Goal does not silently repair the foreign subsystem. A pending predicate is not a Healer trigger.
+Only authentic authority-owned resident evidence may promote these predicates. GitHub/CI cannot.
+
+## Issue #1918
+
+Issue `#1918` is already closed as the bounded source-binding defect resolved by merged+validated PR `#1923`. This reconciliation does not reopen it because the missing materializer hypothesis is false and the source binding remains complete after eliminating the duplicate A1-A4 representation. Runtime evidence remains a separate active evidence predicate, not an unresolved #1918 source defect.
 
 ## Authority invariants
 
 - Task Registry: coordination only.
 - Native resident dispatcher: discovery/dispatch only; no authority.
-- Resolver: selection only.
-- `RT-SOVEREIGN-SOURCE-REFRESH-001`: local source materialization only.
-- `ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001` / WorkerCoordinator: A3 claim/fence authority.
-- Interlock/InTr: A1 connection-state and A4 transition/ingress authority.
+- A1 resolver: observation/selection only.
+- `RT-SOVEREIGN-SOURCE-REFRESH-001`: local source materialization only when the invocation transition selects it.
+- `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001`: non-authorizing composition of existing execution surfaces.
+- WorkerCoordinator: A3 claim/fence authority.
+- Interlock/InTr: A1 transition-state and A4 transition/ingress authority.
 - TV/TVC: credential/provider authority.
 - KV/SKAP Vault: user-verification authority.
 - Master Records: observed-reality/reconstruction authority.

@@ -4,30 +4,33 @@
   "correlation_id": "STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001",
   "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
   "parent_task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
-  "goal": "Resolve the manifest-bound invocation connection state, select only matching existing reusable capabilities, materialize the admitted execution surface, obtain the authentic WorkerCoordinator claim/fence, and reach authentic Interlock/InTr ingress for the declared StegBrowser route without advancing Round Trip 1 payload processing.",
+  "goal": "Observe the invocation-bound Interlock/InTr connection variables, select only matching existing reusable capabilities, then compose A2 through A4 through the one canonical registered-Node-bound StegBrowser reusable invocation without executing Round Trip 1.",
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT",
   "cosv_task_vector": "40000100100000",
+  "handoff_ref": "docs/STEGBROWSER_RUNTIME_CONNECTION_INGRESS_MIRROR_HANDOFF.md",
   "source_refs": [
     "docs/STEGBROWSER_RUNTIME_CONNECTION_INGRESS_MIRROR_HANDOFF.md",
+    "control/resident-execution-request.d/stegbrowser-runtime-connection-ingress-001.json",
+    "control/resident-execution-request.d/canonical-work-stegbrowser-runtime-consumption-001.json",
     "control/transport-manifests/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json",
     "source-bundles/reusable-task-registry.d/RT-SOVEREIGN-SOURCE-REFRESH-001.json",
     "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
-    "data/reusable-task-registry.json",
-    "scripts/resolve_stegbrowser_runtime_connection_transition.py"
+    "scripts/consume_stegbrowser_runtime_connection_ingress_request.py",
+    "scripts/run_stegbrowser_manifest_bound_runtime.py",
+    "scripts/run_stegbrowser_runtime_consumption_reusable.py",
+    "scripts/run_stegbrowser_runtime_consumption_reusable.legacy.py"
   ],
   "runtime_requirements": {
-    "capabilities": [
-      "manifest_bound_connection_state_resolution",
-      "event_ephemeral_stegos_node",
-      "worker_claim_projection",
-      "universal_intr_profiled_ingress"
-    ],
     "environment": "ADMITTED-EPHEMERAL-STEGOS-NODE",
-    "direction": "INTERNAL_TO_GOVERNED_INGRESS",
-    "mutation_required": true,
-    "deployment_required": false,
-    "current_observation_required": true
+    "standing_runtime_required": false,
+    "external_runtime_connection_required": false,
+    "external_device_required": false,
+    "second_user_operated_device_required": false,
+    "hosted_carrier_required": false,
+    "current_observation_required": true,
+    "registered_node_receipt_1_required": true,
+    "round_trip_1_payload_processing_allowed": false
   },
   "execution_substrate_resolution": {
     "schema": "stegverse.execution-substrate-resolution/v1",
@@ -52,6 +55,17 @@
     "second_user_operated_device_allowed": false,
     "authority_effect": "NONE"
   },
+  "canonical_node_binding": {
+    "selector": "CANONICAL_REGISTERED_STEGVERSE_NODE_BINDING",
+    "selector_role": "SYMBOLIC_SELECTION_ONLY_NOT_A_SECOND_RECEIPT_FORMAT",
+    "concrete_path_parameter": "node_genesis_receipt",
+    "concrete_path_environment": "STEGVERSE_NODE_GENESIS_RECEIPT",
+    "receipt_schema": "stegos.node_handoff_receipt.v1",
+    "receipt_number": 1,
+    "validator": "StegVerse-Labs/StegOS:stegos.network_manifold.validate_node_genesis_receipt",
+    "plain_sovereign_node_declaration_may_be_promoted_to_receipt_1": false,
+    "external_host_device_discovery_allowed": false
+  },
   "runtime_connection_transition": {
     "authority": "INTERLOCK_INTR",
     "manifest_ref": "control/transport-manifests/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json",
@@ -63,61 +77,59 @@
     "always_on_runtime_source_assumed": false,
     "source_freshness_persistent_state": false
   },
+  "canonical_a1_a4_composition": {
+    "A1": "LIVE_SHARED_INTR_PROFILE_OBSERVATION_AND_TRANSITION_RESOLUTION",
+    "A2": "VALIDATED_REGISTERED_NODE_INTERLOCK_BOUND_TO_MANIFEST_INVOCATION",
+    "A2.1": "EXISTING_LEASE_REQUEST_WITH_MANIFEST_NODE_INTERLOCK_REGISTRATION_TASK_COSV_STATE_BINDING",
+    "A2.2": "EXISTING_SOVEREIGN_LOCAL_EVENT_RUNTIME_ADAPTER_EVENT_EPHEMERAL_MATERIALIZATION",
+    "A3": "EXISTING_ORGANIZATION_LOCAL_BOUNDARY_WORKERCOORDINATOR_CLAIM_FENCE",
+    "A4": "EXISTING_STEGBROWSER_MANIFEST_INTR_INGRESS_EXACT_CORRELATION_VERIFICATION",
+    "execution_owner": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001_VIA_RUN_STEGBROWSER_MANIFEST_BOUND_RUNTIME",
+    "direct_child_call_to_a4_worker_allowed": false,
+    "duplicate_materializer_allowed": false
+  },
   "candidate_reusable_tasks": [
-    {
-      "reusable_task_id": "RT-SOVEREIGN-SOURCE-REFRESH-001",
-      "selection_condition": "callable=true AND refreshable=true"
-    },
-    {
-      "reusable_task_id": "RT-INTR-PROTOCOL-ESTABLISH-001",
-      "selection_condition": "callable=true AND applicable_protocol_resolved=false"
-    },
-    {
-      "reusable_task_id": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
-      "selection_condition": "A4_INTRANSPORT_INGRESS_OBSERVED=true",
-      "phase": "HANDOFF_AFTER_CHILD_COMPLETION_NOT_EXECUTED_BY_THIS_CHILD"
-    }
-  ],
-  "dependencies": [
-    {"dependency_id":"DEP-A0-MANIFEST-BOUND","kind":"SOURCE_AND_INVOCATION_PREDICATE","state":"MERGED_VALIDATED_RUNTIME_BINDING_PENDING","ref":"MANIFEST_BOUND_TO_INVOCATION"},
-    {"dependency_id":"DEP-A1-INTR-CONNECTION-TRANSITION","kind":"GOVERNED_STATE_TRANSITION","state":"PENDING_AUTHENTIC_TRANSITION_EVIDENCE","ref":"INTERLOCK_INTR"},
-    {"dependency_id":"DEP-A3-WORKERCOORDINATOR-CLAIM-FENCE","kind":"AUTHORITY_OWNED_EXECUTION_STATE","state":"PENDING_AUTHENTIC_EXECUTION","ref":"CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED"},
-    {"dependency_id":"DEP-A4-INTR-INGRESS","kind":"GOVERNED_TRANSPORT_INGRESS","state":"PENDING_AUTHENTIC_TRANSPORT","ref":"INTR_ADMISSION_OBSERVED"}
+    {"reusable_task_id":"RT-SOVEREIGN-SOURCE-REFRESH-001","selection_condition":"callable=true AND refreshable=true"},
+    {"reusable_task_id":"RT-INTR-PROTOCOL-ESTABLISH-001","selection_condition":"callable=true AND applicable_protocol_resolved=false"},
+    {"reusable_task_id":"RT-STEGBROWSER-RUNTIME-CONSUMPTION-001","selection_condition":"callable=true AND applicable_protocol_resolved=true AND registered Receipt #1 concrete path resolved","phase":"A2_THROUGH_A4_CANONICAL_INVOCATION"}
   ],
   "expected_evidence_predicates": [
     "MANIFEST_BOUND_TO_INVOCATION",
     "RUNTIME_CONNECTION_TRANSITION_VARIABLES_OBSERVED",
     "CALLABLE_STATE_BOUND_TO_INVOCATION",
     "REFRESHABLE_STATE_BOUND_TO_INVOCATION",
-    "MATCHING_REUSABLE_CAPABILITIES_SELECTED",
-    "ADMITTED_EXECUTION_SURFACE_MATERIALIZED",
+    "STEGVERSE_NODE_BOUND_TO_INVOCATION",
+    "INTERLOCK_BOUND_TO_NODE_AND_MANIFEST",
+    "INTR_MATERIALIZATION_ADMITTED",
+    "INVOCATION_SCOPED_LEASE_ESTABLISHED",
+    "EVENT_EPHEMERAL_STEGOS_RUNTIME_MATERIALIZED",
+    "EXECUTION_TIME_RUNTIME_IDENTITY_BOUND",
     "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+    "ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED",
     "INTR_ADMISSION_OBSERVED",
     "NO_ROUND_TRIP_1_PAYLOAD_PROCESSING_EXECUTED_BY_CHILD",
     "NO_SECOND_USER_OPERATED_DEVICE_REQUIRED"
   ],
-  "worker_claim": {
-    "authority": "WORKERCOORDINATOR",
-    "claim_ref": null,
-    "fence_ref": null,
-    "projection_only": true
-  },
   "completion": {
     "claimed": false,
     "validated": false,
     "runtime_connection_transition_observed": false,
-    "matching_reusable_capabilities_selected": false,
-    "admitted_execution_surface_materialized": false,
+    "registered_stegverse_node_bound_to_invocation": false,
+    "interlock_bound_to_node_and_manifest": false,
+    "invocation_scoped_lease_observed": false,
+    "event_ephemeral_runtime_observed": false,
     "workercoordinator_claim_fence_observed": false,
+    "organization_local_intr_ingress_receipt_verified": false,
     "intr_admission_observed": false
   },
   "allowed_next_transitions": [
     "OBSERVE_RUNTIME_CONNECTION_TRANSITION_VARIABLES",
     "SELECT_MATCHING_REUSABLE_CAPABILITIES",
-    "MATERIALIZE_ADMITTED_EXECUTION_SURFACE",
+    "RESOLVE_CANONICAL_REGISTERED_STEGVERSE_NODE_RECEIPT_1",
+    "INVOKE_CANONICAL_NODE_BOUND_STEGBROWSER_A2_A4_PATH",
     "OBSERVE_CURRENT_WORKERCOORDINATOR_CLAIM_FENCE",
     "OBSERVE_INTR_ADMISSION",
-    "HANDOFF_TO_RT_STEGBROWSER_RUNTIME_CONSUMPTION"
+    "HANDOFF_TO_ROUND_TRIP_1_OWNER"
   ],
   "authority_model": {
     "task_registry_mints_execution_authority": false,

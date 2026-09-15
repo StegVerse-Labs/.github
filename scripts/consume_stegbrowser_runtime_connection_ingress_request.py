@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import json
 import os
@@ -20,6 +21,10 @@ MANIFEST_REF = "control/transport-manifests/STEG-BROWSER-RUNTIME-MATERIALIZATION
 OBS_SCHEMA = "stegverse.intr-runtime-connection-transition-observation/v1"
 SOURCE_REFRESH_RT = "RT-SOVEREIGN-SOURCE-REFRESH-001"
 PROTOCOL_RT = "RT-INTR-PROTOCOL-ESTABLISH-001"
+STEGBROWSER_RT = "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001"
+CANONICAL_NODE_SELECTOR = "CANONICAL_REGISTERED_STEGVERSE_NODE_BINDING"
+NODE_PATH_ENV = "STEGVERSE_NODE_GENESIS_RECEIPT"
+MANIFEST_RUNNER_REL = Path("scripts/run_stegbrowser_manifest_bound_runtime.py")
 MANIFEST_INGRESS_REL = Path("workers/stegbrowser_manifest_intr_ingress.py")
 HOSTED = ("GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "CF_PAGES", "CLOUDFLARE_WORKERS")
 
@@ -39,6 +44,13 @@ def load(path: Path) -> dict[str, Any]:
     return value
 
 
+def atomic_json(path: Path, value: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name("." + path.name + ".tmp")
+    tmp.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    tmp.replace(path)
+
+
 def validate_request(value: dict[str, Any]) -> None:
     expected = {
         "schema": "stegverse.resident-execution-request/v1",
@@ -49,6 +61,9 @@ def validate_request(value: dict[str, Any]) -> None:
         "mode": "TARGETED_INDEPENDENT_TASK_CONTROL",
         "entrypoint": "scripts/consume_stegbrowser_runtime_connection_ingress_request.py",
         "manifest_ref": MANIFEST_REF,
+        "node_binding_selector": CANONICAL_NODE_SELECTOR,
+        "canonical_node_receipt_path_parameter": "node_genesis_receipt",
+        "canonical_node_receipt_path_environment": NODE_PATH_ENV,
         "round_trip_1_payload_processing_allowed": False,
         "second_machine_required": False,
         "network_source_fetch_allowed": False,
@@ -62,13 +77,6 @@ def validate_request(value: dict[str, Any]) -> None:
     }
     for key, wanted in expected.items():
         require(value.get(key) == wanted, f"request_{key}_mismatch")
-
-
-def atomic_json(path: Path, value: dict[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_name("." + path.name + ".tmp")
-    tmp.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    tmp.replace(path)
 
 
 def load_shared_ingress() -> Any:
@@ -112,20 +120,14 @@ def resolve_module() -> Any:
 
 
 def refreshable_for_invocation(source_root: Path, runtime_root: Path, profile: dict[str, Any]) -> bool:
-    if profile.get("event_triggered") is not True:
-        return False
-    if source_root.resolve() == runtime_root.resolve():
-        return False
-    return (source_root / "source-bundles/reusable-task-registry.d/RT-SOVEREIGN-SOURCE-REFRESH-001.json").is_file()
+    return bool(
+        profile.get("event_triggered") is True
+        and source_root.resolve() != runtime_root.resolve()
+        and (source_root / "source-bundles/reusable-task-registry.d/RT-SOVEREIGN-SOURCE-REFRESH-001.json").is_file()
+    )
 
 
 def exact_manifest_protocol_resolved(source_root: Path, profile: dict[str, Any]) -> bool:
-    """Resolve protocol availability without treating source as transport admission.
-
-    The live shared profile proves the resident InTr protocol is callable. The
-    already-local manifest ingress worker proves the exact declared StegBrowser
-    organization-local InTr adapter exists. Neither fact proves A4 admission.
-    """
     return bool(
         profile.get("protocol") == "InTr"
         and profile.get("state") == "ACTIVE_SOVEREIGN_INTR_INGRESS"
@@ -149,46 +151,43 @@ def run_source_refresh(source_root: Path, runtime_root: Path) -> dict[str, Any]:
     return json.loads(lines[-1])
 
 
-def run_existing_manifest_ingress(source_root: Path, runtime_root: Path) -> dict[str, Any]:
-    """Perform A3/A4 through the already-existing exact manifest ingress path.
+def resolve_registered_node_receipt(request: dict[str, Any]) -> Path:
+    require(request.get("node_binding_selector") == CANONICAL_NODE_SELECTOR, "canonical_node_selector_mismatch")
+    raw = str(os.environ.get(NODE_PATH_ENV) or "").strip()
+    require(raw, "canonical_registered_stegverse_node_receipt_1_not_available")
+    path = Path(raw).expanduser().resolve()
+    require(path.is_file(), "canonical_registered_stegverse_node_receipt_1_path_missing")
+    return path
 
-    stegbrowser_manifest_intr_ingress.py delegates to the canonical organization-
-    local boundary executor. That existing task obtains the WorkerCoordinator
-    claim/fence and emits the exact accepted local-boundary receipt. This function
-    creates no new WorkerCoordinator task, scheduler, credential route, or A5+
-    Round Trip 1 execution path.
-    """
-    worker = runtime_root / MANIFEST_INGRESS_REL
-    if not worker.is_file():
-        worker = source_root / MANIFEST_INGRESS_REL
-    require(worker.is_file(), "existing_manifest_ingress_worker_missing")
-    completed = subprocess.run(
-        [sys.executable, str(worker), "--source-root", str(source_root), "--runtime-root", str(runtime_root)],
-        cwd=str(runtime_root),
-        text=True,
-        capture_output=True,
-        check=False,
-        timeout=1200,
-        env=os.environ.copy(),
-    )
-    result = None
-    for line in reversed([line.strip() for line in completed.stdout.splitlines() if line.strip()]):
-        try:
-            value = json.loads(line)
-        except Exception:
-            continue
-        if isinstance(value, dict):
-            result = value
-            break
-    if not isinstance(result, dict):
-        return {
-            "state": "A3_A4_RUNTIME_RESULT_UNAVAILABLE",
-            "returncode": completed.returncode,
-            "stderr_tail": completed.stderr[-1200:],
-        }
-    result = dict(result)
-    result["returncode"] = completed.returncode
-    return result
+
+def run_canonical_node_bound_invocation(source_root: Path, runtime_root: Path, node_receipt: Path) -> dict[str, Any]:
+    runner = source_root / MANIFEST_RUNNER_REL
+    require(runner.is_file(), "canonical_stegbrowser_manifest_runner_missing")
+    stegos_raw = str(os.environ.get("STEGVERSE_STEGOS_SOURCE_ROOT") or "").strip()
+    stegos_root = Path(stegos_raw).expanduser().resolve() if stegos_raw else (source_root.parent / "StegOS").resolve()
+    require((stegos_root / "stegos/network_manifold.py").is_file(), "canonical_stegos_node_validator_missing")
+    params: dict[str, Any] = {
+        "source_root": str(source_root),
+        "sovereign_source_root": str(source_root),
+        "runtime_root": str(runtime_root),
+        "stegos_source_root": str(stegos_root),
+        "node_genesis_receipt": str(node_receipt),
+    }
+    runtime_base = str(os.environ.get("STEGVERSE_EPHEMERAL_RUNTIME_BASE") or "").strip()
+    if runtime_base:
+        params["runtime_base"] = runtime_base
+    env = dict(os.environ)
+    env["STEGVERSE_REUSABLE_TASK_PARAMETERS_JSON"] = json.dumps(params, sort_keys=True, separators=(",", ":"))
+    completed = subprocess.run([sys.executable, str(runner)], cwd=str(source_root), env=env, text=True, capture_output=True, check=False, timeout=1800)
+    boundary_path = runtime_root / "receipts/sovereign-host/stegbrowser-runtime-remediation-boundary.latest.json"
+    boundary = load(boundary_path) if boundary_path.is_file() else {}
+    return {
+        "runner_returncode": completed.returncode,
+        "runner_stdout_tail": completed.stdout[-2000:],
+        "runner_stderr_tail": completed.stderr[-1200:],
+        "boundary_ref": str(boundary_path),
+        "boundary": boundary,
+    }
 
 
 def main() -> int:
@@ -229,11 +228,6 @@ def main() -> int:
         "authority_owner": "Interlock/InTr",
         "authority_effect": "OBSERVATION_ONLY",
         "observation_source": "LIVE_SHARED_UNIVERSAL_INTR_PROFILE_PLUS_ALREADY_LOCAL_EXACT_MANIFEST_ADAPTER",
-        "profile_schema": profile.get("schema"),
-        "profile_state": profile.get("state"),
-        "profile_protocol": profile.get("protocol"),
-        "canonical_work_profile_present": "CanonicalWork:Coordination" in profiles,
-        "exact_manifest_ingress_adapter_present": (source_root / MANIFEST_INGRESS_REL).is_file(),
         "callable": callable_value,
         "refreshable": refreshable_value,
         "applicable_protocol_resolved": protocol_resolved,
@@ -247,44 +241,66 @@ def main() -> int:
     resolution = resolver.resolve(observation)
     resolution_path = runtime_root / "receipts/sovereign-host/stegbrowser-runtime-connection-resolution.latest.json"
     atomic_json(resolution_path, resolution)
+    selected = list(resolution.get("selected_reusable_tasks", []))
 
     refresh_receipt = None
-    selected = resolution.get("selected_reusable_tasks", [])
     if SOURCE_REFRESH_RT in selected:
         refresh_receipt = run_source_refresh(source_root, runtime_root)
-
     execution_surface_materialized = bool(callable_value and (not refreshable_value or refresh_receipt is not None))
-    a3_a4 = None
-    if callable_value and protocol_resolved and execution_surface_materialized and PROTOCOL_RT not in selected:
-        a3_a4 = run_existing_manifest_ingress(source_root, runtime_root)
 
-    a4_observed = bool(isinstance(a3_a4, dict) and a3_a4.get("state") == "AUTHENTIC_INTR_INGRESS_OBSERVED")
-    claim_id = a3_a4.get("claim_id") if isinstance(a3_a4, dict) else None
-    fence = a3_a4.get("fencing_token") if isinstance(a3_a4, dict) else None
+    invocation = None
+    node_receipt_ref = None
+    if callable_value and protocol_resolved and execution_surface_materialized and PROTOCOL_RT not in selected:
+        node_receipt = resolve_registered_node_receipt(request)
+        node_receipt_ref = str(node_receipt)
+        if STEGBROWSER_RT not in selected:
+            selected.append(STEGBROWSER_RT)
+        invocation = run_canonical_node_bound_invocation(source_root, runtime_root, node_receipt)
+
+    boundary = invocation.get("boundary", {}) if isinstance(invocation, dict) else {}
+    projection = boundary.get("runtime_ingress_projection") if isinstance(boundary, dict) else {}
+    a4_observed = bool(
+        boundary.get("authentic_intr_ingress_observed") is True
+        and projection.get("authentic_intr_ingress_observed") is True
+        and projection.get("organization_local_intr_ingress_receipt_verified") is True
+        and projection.get("node_interlock_lease_runtime_correlation_verified") is True
+    )
+    claim_id = projection.get("claim_ref") if isinstance(projection, dict) else None
+    fence = projection.get("fence_ref") if isinstance(projection, dict) else None
     claim_observed = bool(isinstance(claim_id, str) and isinstance(fence, int) and claim_id.endswith(f"-G{fence}"))
+    binding = boundary.get("node_interlock_runtime_binding") if isinstance(boundary, dict) else {}
+    a2_1_observed = bool(isinstance(binding, dict) and binding.get("lease_id") and binding.get("state_root_binding"))
+    a2_2_observed = bool(isinstance(binding, dict) and binding.get("runtime_class") == "EVENT_EPHEMERAL" and binding.get("runtime_id"))
 
     result = {
-        "schema": "stegverse.stegbrowser-runtime-connection-a1-a4-observation/v1",
-        "state": "A1_A2_A3_A4_OBSERVED" if (a4_observed and claim_observed) else ("A1_A2_OBSERVED_A3_A4_PENDING" if execution_surface_materialized else "A1_OBSERVED_NOT_MATERIALIZED"),
+        "schema": "stegverse.stegbrowser-runtime-connection-a1-a4-observation/v2",
+        "state": "A1_A2_A2_1_A2_2_A3_A4_OBSERVED" if (a4_observed and claim_observed and a2_1_observed and a2_2_observed) else ("A1_OBSERVED_CANONICAL_INVOCATION_PENDING_OR_BOUNDARY" if callable_value else "A1_OBSERVED_NOT_CALLABLE"),
         "task_id": TASK_ID,
         "parent_task_id": PARENT_TASK_ID,
         "cosv": COSV,
         "observation_ref": str(observation_path),
         "resolution_ref": str(resolution_path),
+        "node_binding_selector": CANONICAL_NODE_SELECTOR,
+        "canonical_node_receipt_path_parameter": "node_genesis_receipt",
+        "canonical_node_receipt_path_environment": NODE_PATH_ENV,
+        "resolved_node_genesis_receipt_ref": node_receipt_ref,
         "callable": callable_value,
         "refreshable": refreshable_value,
         "applicable_protocol_resolved": protocol_resolved,
         "selected_reusable_tasks": selected,
         "source_refresh_receipt": refresh_receipt,
         "admitted_execution_surface_materialized": execution_surface_materialized,
-        "a3_a4_result": a3_a4,
+        "canonical_node_bound_invocation": invocation,
+        "a2_1_invocation_scoped_lease_observed": a2_1_observed,
+        "a2_2_event_ephemeral_runtime_observed": a2_2_observed,
         "workercoordinator_claim_or_fence_observed": claim_observed,
         "claim_id": claim_id,
         "fencing_token": fence,
         "intr_admission_observed": a4_observed,
         "round_trip_1_payload_processing_attempted": False,
-        "next_gc_stage": "A5_DECLARED_OWNED_MIRROR_PATH" if a4_observed else "A3_A4_EXISTING_BOUNDARY_EXECUTOR_CONTINUATION",
-        "authority_effect": "NONE_OBSERVATION_SELECTION_MATERIALIZATION_AND_EXISTING_AUTHORITY_COMPOSITION_ONLY",
+        "external_runtime_device_host_discovery_performed": False,
+        "next_gc_stage": "ROUND_TRIP_1_DECLARED_OWNED_MIRROR_PATH" if a4_observed else "A1_A4_CANONICAL_INVOCATION_CONTINUATION",
+        "authority_effect": "NONE_OBSERVATION_SELECTION_AND_EXISTING_AUTHORITY_COMPOSITION_ONLY",
     }
     out = runtime_root / "receipts/sovereign-host/stegbrowser-runtime-connection-a1-a4.latest.json"
     atomic_json(out, result)

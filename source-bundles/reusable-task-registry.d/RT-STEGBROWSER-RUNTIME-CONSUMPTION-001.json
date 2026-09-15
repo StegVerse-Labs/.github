@@ -1,7 +1,7 @@
 {
   "reusable_task_id": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
   "name": "StegBrowser Runtime Consumption",
-  "purpose": "Execute the manifest-declared StegBrowser owned mirror route through the existing StegVerse Node -> Interlock -> InTr -> bounded lease -> EVENT_EPHEMERAL StegOS materialization path, then continue the governed two-round-trip transport lifecycle without creating a duplicate runtime, scheduler, WorkerCoordinator, credential path, external host dependency, or second-device dependency.",
+  "purpose": "Execute the manifest-declared StegBrowser owned mirror route through the existing StegVerse Node -> Interlock -> InTr -> bounded lease -> EVENT_EPHEMERAL StegOS materialization path, then continue only from authentic evidence without creating a duplicate runtime, scheduler, WorkerCoordinator, credential path, external host dependency, or second-device dependency.",
   "trigger": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001 is ACTIVE/CHECKED_OUT and its complete manifest is bound to COSV 40000100100000; STEG-BROWSER-RUNTIME-CONSUMPTION-001 remains retired historical operation lineage and is not reactivated",
   "scope": "one manifest-bound invocation for STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001 / COSV 40000100100000 using the declared StegVerse-owned mirror route and the existing invocation-owned Node/Interlock/InTr/lease/EVENT_EPHEMERAL materialization architecture",
   "operation_lineage_task_id": "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
@@ -11,6 +11,37 @@
   "runner_templates": ["scripts/run_stegbrowser_manifest_bound_runtime.py"],
   "recording_levels": ["operation", "task", "goal", "component", "system", "master_records"],
   "source_conformance_state": "NODE_INTERLOCK_BINDING_SOURCE_MERGED_VALIDATED_RUNTIME_EVIDENCE_PENDING",
+  "canonical_node_binding_contract": {
+    "selector": "CANONICAL_REGISTERED_STEGVERSE_NODE_BINDING",
+    "selector_role": "SYMBOLIC_SELECTION_ONLY_NOT_A_SECOND_RECEIPT_FORMAT",
+    "concrete_parameter": "node_genesis_receipt",
+    "concrete_environment": "STEGVERSE_NODE_GENESIS_RECEIPT",
+    "receipt_schema": "stegos.node_handoff_receipt.v1",
+    "receipt_number": 1,
+    "validator": "StegVerse-Labs/StegOS:stegos.network_manifold.validate_node_genesis_receipt",
+    "required_fields": ["node_id", "interlock_id", "device_binding_sha256", "receipt_sha256"],
+    "required_lease_identity_inputs": ["manifest_sha256", "node_id", "interlock_id", "registration_receipt_sha256", "task_id", "cosv_task_vector"],
+    "required_runtime_correlation": ["lease_id", "runtime_id", "state_root_binding"],
+    "a4_exact_correlation_required": true,
+    "plain_sovereign_node_declaration_may_be_promoted": false,
+    "external_runtime_device_host_discovery_allowed": false,
+    "fail_closed_on_missing_or_mismatch": true,
+    "authority_effect": "NONE_IDENTITY_BINDING_ONLY"
+  },
+  "implementation_trace": {
+    "manifest_binding": "IMPLEMENTED_MERGED_VALIDATED",
+    "registered_stegverse_node_binding": "IMPLEMENTED_MERGED_VALIDATED_VIA_REQUIRED_NODE_GENESIS_RECEIPT",
+    "node_receipt_1_validation": "IMPLEMENTED_MERGED_VALIDATED_WITH_STEGOS_NETWORK_MANIFOLD_VALIDATOR",
+    "interlock_binding_from_node": "IMPLEMENTED_MERGED_VALIDATED_FROM_VALIDATED_RECEIPT_1",
+    "invocation_scoped_lease": "IMPLEMENTED_MERGED_VALIDATED_AND_DERIVED_FROM_MANIFEST_NODE_INTERLOCK_REGISTRATION_TASK_COSV_BINDING",
+    "event_ephemeral_stegos_materialization": "IMPLEMENTED_MERGED_VALIDATED",
+    "execution_time_runtime_identity": "IMPLEMENTED_MERGED_VALIDATED_AND_BOUND_BACK_TO_LEASE_NODE_INTERLOCK_MANIFEST",
+    "workercoordinator_claim_fence": "IMPLEMENTED_MERGED_VALIDATED_IN_ORGANIZATION_LOCAL_BOUNDARY_PATH",
+    "organization_local_intr_ingress_verification": "IMPLEMENTED_MERGED_VALIDATED_WITH_EXACT_NODE_INTERLOCK_LEASE_RUNTIME_PACKET_CORRELATION",
+    "direct_a1_a4_child_ingress_worker_shortcut": false,
+    "round_trip_1": "NOT_YET_AUTHENTICALLY_EXECUTED",
+    "round_trip_2": "NOT_YET_AUTHENTICALLY_EXECUTED"
+  },
   "source_validation": {
     "pr": 1923,
     "validated_head": "f7b6cb86b9fff9fbeb1817e45920acc2effc200f",
@@ -20,31 +51,6 @@
     "heartbeat_validation_run": 34970252669,
     "all_required_lanes_passed": true,
     "runtime_authority_effect": "NONE"
-  },
-  "implementation_trace": {
-    "manifest_binding": "IMPLEMENTED_MERGED_VALIDATED",
-    "registered_stegverse_node_binding": "IMPLEMENTED_MERGED_VALIDATED_VIA_REQUIRED_NODE_GENESIS_RECEIPT",
-    "node_receipt_1_validation": "IMPLEMENTED_MERGED_VALIDATED_WITH_STEGOS_NETWORK_MANIFOLD_VALIDATOR",
-    "interlock_binding_from_node": "IMPLEMENTED_MERGED_VALIDATED_FROM_VALIDATED_RECEIPT_1",
-    "intr_materialization_request": "IMPLEMENTED_MERGED_VALIDATED_THROUGH_EXISTING_INVOCATION_PATH",
-    "invocation_scoped_lease": "IMPLEMENTED_MERGED_VALIDATED_AND_DERIVED_FROM_MANIFEST_NODE_INTERLOCK_REGISTRATION_TASK_COSV_BINDING",
-    "event_ephemeral_stegos_materialization": "IMPLEMENTED_MERGED_VALIDATED",
-    "execution_time_runtime_identity": "IMPLEMENTED_MERGED_VALIDATED_AND_BOUND_BACK_TO_LEASE_NODE_INTERLOCK_MANIFEST",
-    "workercoordinator_claim_fence": "IMPLEMENTED_MERGED_VALIDATED_IN_ORGANIZATION_LOCAL_BOUNDARY_PATH",
-    "organization_local_intr_ingress_verification": "IMPLEMENTED_MERGED_VALIDATED_WITH_EXACT_NODE_INTERLOCK_LEASE_RUNTIME_PACKET_CORRELATION",
-    "round_trip_1": "NOT_YET_AUTHENTICALLY_EXECUTED",
-    "round_trip_2": "NOT_YET_AUTHENTICALLY_EXECUTED"
-  },
-  "node_interlock_binding_contract": {
-    "state": "SOURCE_MERGED_VALIDATED_RUNTIME_EVIDENCE_PENDING",
-    "receipt_schema": "stegos.node_handoff_receipt.v1",
-    "receipt_number": 1,
-    "validator": "StegVerse-Labs/StegOS:stegos.network_manifold.validate_node_genesis_receipt",
-    "required_lease_identity_inputs": ["manifest_sha256", "node_id", "interlock_id", "registration_receipt_sha256", "task_id", "cosv_task_vector"],
-    "required_runtime_correlation": ["lease_id", "runtime_id", "state_root_binding"],
-    "a4_exact_correlation_required": true,
-    "fail_closed_on_missing_or_mismatch": true,
-    "authority_effect": "NONE_IDENTITY_BINDING_ONLY"
   },
   "completion_predicates": [
     "MANIFEST_BOUND_TO_INVOCATION",
@@ -72,17 +78,6 @@
     "SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIPS_IDENTIFIED",
     "NO_PARALLEL_SCHEDULER_DISPATCHER_CREDENTIAL_PATH_EXTERNAL_HOST_OR_SECOND_DEVICE"
   ],
-  "historical_architecture_precedent": {
-    "source": "SV002 browser-recovery engineering evidence",
-    "pattern": "REGISTERED_STEGVERSE_NODE -> INTERLOCK -> INTR_MATERIALIZATION -> BOUNDED_LEASE -> EVENT_EPHEMERAL_RUNTIME -> EXECUTION_TIME_RUNTIME_IDENTITY_BINDING",
-    "current_code_reuse": [
-      "StegOS/stegos/network_manifold.py::validate_node_genesis_receipt",
-      "StegVerse-Labs/.github/scripts/serve_sv002_observation_intr_runtime.py::_validate_genesis",
-      "StegVerse-Labs/Site/assets/canonical-runtime-proof.js::resolveExistingNode"
-    ],
-    "authority_effect": "ARCHITECTURAL_REUSE_GUIDANCE_ONLY",
-    "promotes_current_runtime_predicates": false
-  },
   "authority_effect": "NONE_ORCHESTRATION_ONLY",
-  "reuse_instructions": "Trigger once the applicable registered/profile-derived StegVerse Node Receipt #1 is available through node_genesis_receipt/STEGVERSE_NODE_GENESIS_RECEIPT. The manifest wrapper validates the exact declared route. The runner validates Receipt #1 with StegOS validate_node_genesis_receipt, binds manifest_sha256 + node_id + interlock_id + registration_receipt_sha256 + Goal + COSV into the invocation lease/state identity, materializes the EVENT_EPHEMERAL StegOS runtime, binds lease_id + runtime_id back to the same identity, and requires the A4 packet/receipt to preserve the exact same correlation before authentic ingress is accepted. No pre-existing online runtime, generic chat-session process host, external device, or endpoint/receiver discovery stage is permitted. Historical SV002 engineering evidence is architectural precedent only and may not promote current StegBrowser runtime predicates. Round Trip 1 ends with the returned records packet durably recorded for verification; Master Records/mirror processing then occurs between trips; Round Trip 2 returns from the mirror boundary through endpoint Interlock/InTr into the ecosystem. Source or CI state must never be promoted to runtime completion evidence."
+  "reuse_instructions": "Use CANONICAL_REGISTERED_STEGVERSE_NODE_BINDING only as the selector for the one concrete node_genesis_receipt/STEGVERSE_NODE_GENESIS_RECEIPT input. Validate Receipt #1 with StegOS validate_node_genesis_receipt, bind manifest_sha256 + node_id + interlock_id + registration_receipt_sha256 + Goal + COSV into the existing invocation lease/state identity, materialize the existing EVENT_EPHEMERAL StegOS runtime, bind lease_id + runtime_id back to the same identity, and require the A4 packet/receipt to preserve the exact same correlation before authentic ingress is accepted. Do not infer Receipt #1 from a plain node declaration and do not discover an external runtime, device, or host. Source or CI state must never be promoted to runtime completion evidence."
 }

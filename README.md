@@ -109,6 +109,16 @@ A newly registered canonical task may be present as an exact `data/canonical-tas
 
 The dedicated `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001` request uses this same Canonical Work consumer and shared Interlock/InTr ingress. Once its ordinary `PROPOSED -> INGRESS_ADMITTED` bootstrap succeeds, the existing bootstrap wrapper invokes the already-implemented global runtime-node-profile convergence visitor in measurement-only mode. That measurement path freezes one run identity and forbids same-run remediation or automatic retry after a lane's first failure; it does not create a second dispatcher, listener, runtime, scheduler, WorkerCoordinator, heartbeat, or authority source.
 
+### StegBrowser invocation-owned Node binding
+
+StegBrowser manifest-bound runtime consumption uses one invocation-owned identity path: manifest -> registered StegVerse Node Receipt #1 -> Node-bound Interlock -> InTr -> invocation-scoped lease -> `EVENT_EPHEMERAL` StegOS runtime -> existing organization-local ingress worker.
+
+`CANONICAL_REGISTERED_STEGVERSE_NODE_BINDING` is selector metadata only. The sole concrete Receipt #1 input is `node_genesis_receipt`, with `STEGVERSE_NODE_GENESIS_RECEIPT` as the environment path binding. Receipt #1 is validated through the existing StegOS `validate_node_genesis_receipt` path; a plain node declaration may not be promoted into Receipt #1.
+
+The `STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001` A1 child observes invocation-bound `callable`, `refreshable`, and applicable protocol state, then delegates A2, A2.1, A2.2, A3, and A4 to the existing manifest-bound `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` runner. It does not maintain a second direct A4 ingress path. The lease, runtime identity, and A4 packet must preserve exact `manifest_sha256 + node_id + interlock_id + registration_receipt_sha256 + task/COSV + lease_id + runtime_id + state_root_binding` correlation.
+
+Source, CI, and merge state do not prove authentic A1-A4 execution. This path performs no external runtime, device, or host discovery and does not introduce a second user-operated device requirement.
+
 ### Fenced Personal-KV AI memory resident execution
 
 Canonical Goal Task `SV-KV-AI-PERSISTENCE-001` reuses the existing resident dispatcher and WorkerCoordinator rather than creating a memory-specific scheduler or runtime owner. Its selector is `kv_ai_memory`; the resident request carries no private memory, prompt, credential, token, or provider-secret content.
