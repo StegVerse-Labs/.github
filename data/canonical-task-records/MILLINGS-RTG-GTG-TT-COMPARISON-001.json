@@ -1,0 +1,87 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "MILLINGS-RTG-GTG-TT-COMPARISON-001",
+  "correlation_id": "MILLINGS-RTG-GTG-TT-COMPARISON-001",
+  "root_correlation_id": "MILLINGS-RTG-GTG-TT-COMPARISON-001",
+  "parent_task_id": null,
+  "goal": "Formalize the independently authored Millings Method as a provenance-preserving external-framework comparison candidate against StegVerse RTG/GTG/TT, identify exact convergence, partial convergence, divergence, and bounded candidate refinements to the canonical transition model without implying shared authorship, derivation, certification, or technical equivalence.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CLAIMED_INTEGRATION",
+  "cosv_task_vector": "40011100100000",
+  "source_refs": [
+    "StegVerse-Labs/StegScholar:MILLINGS_METHOD_RTG_GTG_TT_COMPARISON_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegScholar:papers/external-frameworks/millings-method-rtg-gtg-tt-comparison.md",
+    "StegVerse-Labs/StegScholar:papers/rtg-gtg-tt/cross-layer-contract.md",
+    "StegVerse-Labs/StegScholar:TT_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/admissibility-wiki:docs/external-frameworks/EXTERNAL_FRAMEWORKS_MIRROR_HANDOFF.md"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": ["StegVerse-Labs/StegScholar", "StegVerse-Labs/.github"],
+    "components": [
+      "external-framework-comparison",
+      "rtg-gtg-tt-provenance-mapping",
+      "gate-legitimacy-analysis",
+      "architecture-neutral-admissibility-analysis",
+      "independent-review-analysis",
+      "execution-consequence-reconciliation"
+    ]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-MILLINGS-SOURCE-SCOPE",
+      "kind": "SOURCE_EVIDENCE_BOUNDARY",
+      "state": "RESOLVED_BOUNDED",
+      "ref": "StegVerse-Labs/StegScholar:MILLINGS_METHOD_RTG_GTG_TT_COMPARISON_MIRROR_HANDOFF.md",
+      "disposition": "USE_ONLY_USER_SUPPLIED_PUBLIC_STATEMENTS_FOR_CURRENT COMPARISON; DO_NOT INFER UNSUPPLIED MILLINGS MECHANISMS"
+    },
+    {
+      "dependency_id": "DEP-MILLINGS-EXTERNAL-FRAMEWORK-REGISTRY",
+      "kind": "ADJACENT_MACHINE_OWNED_WORK",
+      "state": "DEFERRED_NONCOLLIDING",
+      "ref": "StegVerse-Labs/admissibility-wiki:docs/external-frameworks/EXTERNAL_FRAMEWORKS_MIRROR_HANDOFF.md",
+      "disposition": "DO_NOT MUTATE CURRENT MACHINE_OWNED 36-FRAMEWORK EVALUATION LANE; TREAT MILLINGS AS RESEARCH COMPARISON CANDIDATE UNTIL SEPARATE REGISTRY ADMISSION IS AUTHORIZED"
+    }
+  ],
+  "blockers": [],
+  "adjacent_task_refs": [
+    "SESSION-TT-CONSEQUENCE-BLACK-TRANSITION-001",
+    "RT-EXTERNAL-FRAMEWORK-ROUNDTRIP-ROLLOUT-001"
+  ],
+  "expected_evidence_predicates": [
+    "MILLINGS_PROVENANCE_BOUNDARY_EXPLICIT",
+    "RTG_GTG_TT_SOURCE_CONTRACT_VERIFIED",
+    "CONVERGENCE_PARTIAL_CONVERGENCE_DIVERGENCE_MAPPED",
+    "PROHIBITED_EQUIVALENCE_CLAIMS_DOCUMENTED",
+    "GATE_LEGITIMACY_CANDIDATE_REFINEMENT_DOCUMENTED",
+    "ARCHITECTURE_NEUTRAL_ADMISSIBILITY_CANDIDATE_DOCUMENTED",
+    "INDEPENDENT_REVIEW_PREDICATE_CANDIDATE_DOCUMENTED",
+    "EXECUTION_CONSEQUENCE_RECONCILIATION_CANDIDATE_DOCUMENTED",
+    "STEGSCHOLAR_README_UPDATED",
+    "CANONICAL_HANDOFF_UPDATED",
+    "PR_EVIDENCE_OBSERVED"
+  ],
+  "worker_claim": {
+    "authority": "CHAT_COORDINATION_BRANCH_ONLY",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "human_action_ref": null,
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "activation_proof_complete": false
+  },
+  "allowed_next_transitions": ["VALIDATION", "PR_OPEN", "MERGED_INTO_CANONICAL_WORKSTREAM"],
+  "handoff_projection_refs": [
+    "StegVerse-Labs/StegScholar:MILLINGS_METHOD_RTG_GTG_TT_COMPARISON_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "external_framework_comparison_mints_certification": false,
+    "functional_convergence_proves_derivation": false,
+    "request_grants_execution_authority": false
+  }
+}
