@@ -1,0 +1,92 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "ERL-SPURLOCK-CPD-ENTRY-001",
+  "correlation_id": "ERL-SPURLOCK-CPD-ENTRY-001",
+  "root_correlation_id": "ERL-SPURLOCK-CPD-ENTRY-001",
+  "parent_task_id": null,
+  "goal": "Reconstruct the June 6, 2024 Trae Spurlock / Casper Police Department pre-entry domestic-call response, entry authority, safety assessment, belongings-retrieval rationale, rifle-knowledge timeline, arrest transition, Taser deployment, and fatal-force sequence under ERL evidence and inference controls.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": null,
+  "handoff": "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/TRAE_SPURLOCK_CASPER_PD_MIRROR_HANDOFF.md",
+  "canonical_issue": "StegVerse-Labs/Executive_Rhetoric_Ledger#160",
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "source_refs": [
+    "StegVerse-Labs/Executive_Rhetoric_Ledger#160",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger@e69881a13d9cd73a06ba1ca2912e6e8f3a13434c",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/TRAE_SPURLOCK_CASPER_PD_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger/task-state/ERL-SPURLOCK-CPD-ENTRY-001.json"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": ["StegVerse-Labs/Executive_Rhetoric_Ledger"],
+    "components": [
+      "research-candidate",
+      "pre-entry-knowledge-state-reconstruction",
+      "domestic-call-policy-comparison",
+      "entry-authority-analysis",
+      "fatal-force-reconstruction"
+    ]
+  },
+  "dependencies": [],
+  "blockers": [
+    "PRIMARY_911_CAD_DISPATCH_RECORDS_NOT_YET_CUSTODIED",
+    "COMPLETE_UNEDITED_PRE_ENTRY_BODYCAM_NOT_YET_CUSTODIED",
+    "CASPER_PD_2024_POLICY_SET_NOT_YET_CUSTODIED"
+  ],
+  "expected_evidence_predicates": [
+    "PRE_ENTRY_KNOWLEDGE_STATE_MATRIX_BUILT_FROM_PRIMARY_RECORDS",
+    "KELCH_AND_WITNESS_DISCLOSURES_ATTRIBUTED_AND_TIMESTAMPED",
+    "ENTRY_AUTHORITY_ANALYZED_SEPARATELY_FROM_FORCE",
+    "POLICY_COMPLIANCE_COMPARED_TO_2024_CASPER_PD_AND_DISPATCH_RULES",
+    "RIFLE_KNOWLEDGE_BEFORE_AND_AFTER_THRESHOLD_SEPARATED",
+    "TASER_AND_SEVEN_SHOT_SEQUENCE_SYNCHRONIZED_FROM_PRIMARY_EVIDENCE",
+    "NO_UNSUPPORTED_DECEPTION_MOTIVE_SUICIDALITY_MURDER_OR_JUSTIFICATION_FINDING"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["github_repository_read", "github_pull_request_write", "public_record_research"],
+    "environment": "CURRENT_SESSION_GITHUB_AND_PUBLIC_RECORD_RESEARCH",
+    "direction": "EXTERNAL_PUBLIC_RECORDS_TO_ERL_RESEARCH_CANDIDATE",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "worker_claim": {
+    "authority": "CURRENT_SESSION",
+    "claim_ref": "StegVerse-Labs/Executive_Rhetoric_Ledger#160",
+    "fence_ref": null,
+    "projection_only": false
+  },
+  "human_action_ref": null,
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "activation_proof_complete": false
+  },
+  "allowed_next_transitions": [
+    "ACQUIRE_PRE_ENTRY_PRIMARY_RECORDS",
+    "BUILD_KNOWLEDGE_STATE_MATRIX",
+    "CUSTODY_2024_POLICY_SET",
+    "COMPARE_POLICY_TO_RECORDED_CONDUCT"
+  ],
+  "handoff_projection_refs": [
+    "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/TRAE_SPURLOCK_CASPER_PD_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "CURRENT_SESSION",
+    "master_records_reality_authority": true,
+    "interlock_intr_required_for_governed_ingress_egress": true
+  },
+  "readme_impact": {
+    "material_function_change": false,
+    "readme_updated_in_change_set": false,
+    "readme_path": null,
+    "no_readme_update_reason": "Substantive ERL README index and canonical task handoff were updated in the owning Executive_Rhetoric_Ledger repository; this file is coordination-only Task Registry projection.",
+    "evidence_refs": [
+      "StegVerse-Labs/Executive_Rhetoric_Ledger/research-candidates/README.md",
+      "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/TRAE_SPURLOCK_CASPER_PD_MIRROR_HANDOFF.md"
+    ]
+  }
+}
