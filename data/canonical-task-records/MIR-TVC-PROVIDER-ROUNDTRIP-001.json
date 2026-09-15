@@ -25,6 +25,7 @@
       "RT-INTR-ROUNDTRIP-CORRELATION-001",
       "RT-INTR-EVIDENCE-CUSTODY-001"
     ],
+    "reusable_task_lifecycle": "PROMOTED_VALIDATED_REUSABLE",
     "implementation_components": [
       "RT-EXTERNAL-ADAPTER-ESTABLISH-001",
       "RTC-ROUNDTRIP-003",
@@ -62,8 +63,16 @@
     "node_external_counterpart_return_admitted_observed": true,
     "authentic_tvc_mir_provider_session_observed": false,
     "authentic_mir_submit_event_observed": false,
-    "authentic_mir_response_observed": false,
+    "authentic_mir_response_observed": true,
+    "authentic_mir_result_receipt_retained": true,
     "sdk_run2_delta_observed": false
+  },
+  "private_evidence_projection": {
+    "predicate": "AUTHENTIC_MIR_RESULT_RECEIPT_RETAINED",
+    "state": "SATISFIED_PRIVATE_EVIDENCE_HELD_OUTSIDE_PUBLIC_REPOSITORY",
+    "private_content_published": false,
+    "private_digest_published": false,
+    "authority_effect": "NONE"
   },
   "runtime_reconciliation_evidence": {
     "provenance": "MIR_NODE_MIRROR_BUILD_TEST",
@@ -95,11 +104,11 @@
     "MIR_CREDENTIAL_NOT_EXPORTED",
     "MIR_BODY_AND_LEASE_MUTATION_FAIL_CLOSED",
     "MIR_NODE_MIRROR_ROUNDTRIP_EXECUTED",
-    "MIR_NODE_MIRROR_RETURN_ADMITTED_TO_SDK"
+    "MIR_NODE_MIRROR_RETURN_ADMITTED_TO_SDK",
+    "AUTHENTIC_MIR_RESULT_RECEIPT_RETAINED"
   ],
   "remaining_predicates": [
-    "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED",
-    "AUTHENTIC_MIR_RESULT_RECEIPT_RETAINED"
+    "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED"
   ],
   "completion": {
     "claimed": false,
@@ -107,12 +116,12 @@
     "source_implemented": true,
     "source_validated": true,
     "build_test_runtime_observed": true,
-    "authentic_external_runtime_observed": false
+    "authentic_external_result_observed": true,
+    "authentic_tvc_provider_session_observed": false
   },
   "allowed_next_transitions": [
-    "VERIFY_RUN2_MIR_EVENT_SEMANTIC_MAPPING",
-    "OBSERVE_AUTHENTIC_PROVIDER_SESSION",
-    "EXECUTE_AUTHENTIC_MIR_OPERATION"
+    "VERIFY_MIR_PARTNER_STANDING_CONTRACT",
+    "OBSERVE_AUTHENTIC_PROVIDER_SESSION"
   ],
   "handoff_projection_refs": [
     "StegVerse-Labs/TVC/docs/MIR_TVC_PROVIDER_ROUNDTRIP_MIRROR_HANDOFF.md",

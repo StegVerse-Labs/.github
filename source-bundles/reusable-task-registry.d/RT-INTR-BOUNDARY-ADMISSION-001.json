@@ -1,6 +1,7 @@
 {
   "reusable_task_id": "RT-INTR-BOUNDARY-ADMISSION-001",
   "name": "Interlock/InTr Boundary Admission",
+  "lifecycle_status": "PROMOTED_VALIDATED_REUSABLE",
   "purpose": "Admit one manifest-bound ingress at an existing Interlock/InTr boundary by validating source, destination, operation, payload/envelope integrity, applicable standing, and exact boundary identity before any downstream transition is allowed.",
   "trigger": "a governed operation reaches an existing Interlock/InTr ingress boundary",
   "scope": "one ingress attempt on one existing organization/system boundary",
