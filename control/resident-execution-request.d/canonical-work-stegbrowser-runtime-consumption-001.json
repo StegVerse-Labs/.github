@@ -21,7 +21,8 @@
     "path_parameters": {
       "sovereign_source_root": "STEGVERSE_HEARTBEAT_SOURCE_ROOT_OR_CURRENT_CANONICAL_SOURCE",
       "stegos_source_root": "STEGVERSE_STEGOS_SOURCE_ROOT_OR_SIBLING_STEGOS",
-      "runtime_base": "STEGVERSE_EPHEMERAL_RUNTIME_BASE_OR_XDG_STATE_HOME"
+      "runtime_base": "STEGVERSE_EPHEMERAL_RUNTIME_BASE_OR_XDG_STATE_HOME",
+      "node_binding_ref": "CANONICAL_REGISTERED_STEGVERSE_NODE_BINDING"
     }
   },
   "credential_authority": "TV/TVC",
