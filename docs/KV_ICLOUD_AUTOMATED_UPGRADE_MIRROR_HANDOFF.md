@@ -5,75 +5,83 @@ Goal Task ID: `KV-ICLOUD-AUTOMATED-UPGRADE-001`
 COSV profile: `task.v1`  
 COSV: `40000100100000`  
 Coordination state: `ACTIVE`  
-Runtime phase: `STEGOS_CURRENT_IPHONE_INFRASTRUCTURE_INSTALL_PENDING`  
+Runtime phase: `MYKV_CURRENT_IPHONE_UNIFIED_INSTALL_PENDING`  
 Canonical task record: `data/canonical-task-records/KV-ICLOUD-AUTOMATED-UPGRADE-001.json`  
 Canonical task vector: `control/task-vectors/KV-ICLOUD-AUTOMATED-UPGRADE-001.json`  
+MyKV unified install source: `StegVerse-Labs/Site/docs/MYKV_IOS_INSTALLABLE_SURFACE_MIRROR_HANDOFF.md`  
 Resident-health source: `StegVerse-Labs/Site/docs/STEGOS_RESIDENT_HEALTH_REPAIR_MIRROR_HANDOFF.md`  
-Upgrade implementation handoff: `StegVerse-Labs/continuity-vault-kit/KV_ICLOUD_AUTOMATED_UPGRADE_MIRROR_HANDOFF.md`  
-Optional MyKV management surface: `StegVerse-Labs/Site/docs/MYKV_IOS_INSTALLABLE_SURFACE_MIRROR_HANDOFF.md`
+Upgrade implementation handoff: `StegVerse-Labs/continuity-vault-kit/KV_ICLOUD_AUTOMATED_UPGRADE_MIRROR_HANDOFF.md`
 
 ## Canonical architecture
 
-The current iPhone is first equipped with a minimal resident **StegOS/Node infrastructure**, not with a KnowledgeVault instance merely because a management page was installed.
+**MyKV is the sole owner-facing installation and management surface.** The owner does not separately visit or install a StegOS site.
 
 Canonical sequence:
 
-1. install/activate the minimal resident StegOS/Node substrate on the current iPhone;
-2. preserve or establish device Node/continuity state and the Interlock/InTr-governed storage transition path;
-3. keep that small StegOS/Node resident after KV installation as the device-local diagnostic, recovery, and governed repair substrate;
-4. let the owner choose the KnowledgeVault storage host independently of KV identity;
-5. install or adopt the KV on that selected host;
-6. connect and verify the resulting KV through the governed device path;
-7. use MyKV as an owner-facing management surface over the verified relationship.
+1. install MyKV once on the current iPhone;
+2. on first standalone launch, MyKV automatically loads the existing StegOS bootstrap implementation, device-local continuity/autostart layer, canonical Node-continuity implementation, and resident-health client on the same StegVerse-controlled origin;
+3. MyKV establishes or reuses the valid resident StegOS/Node substrate and runs the canonical resident-health diagnostic;
+4. if device-side repair is required, MyKV performs only bounded resident-substrate repair and fails closed if valid Node identity or already-visible KV relationship state changes;
+5. only after resident health is acceptable does MyKV expose owner-selectable KnowledgeVault storage hosts;
+6. the owner selects iCloud Drive, Google Drive, device-local storage, or another admitted endpoint independently of KV identity;
+7. the KV is installed/adopted and then connected/verified through the governed DEVICE_KV / Interlock/InTr path;
+8. MyKV remains the owner-facing management surface while the small resident StegOS/Node remains underneath it as device/runtime substrate.
 
-Storage host classes include iCloud Drive, Google Drive, other admitted providers/endpoints, and the device itself. Device hosting is one selectable KV host, not the definition of StegOS or MyKV.
+StegOS is therefore still required infrastructure, but it is an implementation component of the MyKV install/launch flow rather than a second owner-facing installation destination.
 
-## Resident StegOS diagnostic and repair source status
+## Unified MyKV install source status
 
-The shared resident-health source is now merged and validated in Site:
+The unified install contract is merged and validated in Site:
 
-- implementation PR `StegVerse-Labs/Site#1351` merged as `3c78c5da968ae746ddaedfe6c68c3a148fc56f0c`;
-- README and focused handoff reconciliation PR `Site#1352` merged as `2665945feb599b3067804bdb57abb831f94af09f`;
-- claim-only terminalization PR `Site#1353` merged as `de85b7a9746c73fe40a9d736c06b061333fffcfd`.
+- implementation PR `StegVerse-Labs/Site#1355` merged as `0d5df579e98ae44ad2f4358dd89efaae5d9809ed`;
+- final README-inclusive implementation head `2aae799336464b290b230074992b2bf3899523d2` passed all 13 observed exact-head workflows;
+- post-merge handoff reconciliation PR `Site#1356` merged as `78c6a6f77fbfa1b89a2d9ec8d5e9aa28ed9ef5d3`;
+- claim-only terminalization PR `Site#1357` merged as `1942f3c7cd03b1007d7a0df1e5f4635cc4616f64`.
 
-`assets/stegos-resident-health.js` is loaded by both the StegOS bootstrap loader and the shared Node-continuity loader used by MyKV. It automatically performs a read-only visit-time diagnostic and reports resident install health, Node state, device-continuity visibility, schema compatibility, service-worker freshness, governed transition-surface availability, and only already-visible KV relationship state.
+`my-kv-install.html` is the single install shell. In normal browser mode it remains non-installing. In standalone/Home Screen mode it invokes the shared resident-health client, runs bounded repair when required, and enters canonical MyKV only after `HEALTHY` resident readback with a valid registered Node.
 
-The diagnostic does not issue DEVICE_KV materialization/query operations or provider operations merely to enrich health state. Repair is owner-invoked and bounded to the device-side StegOS installation. A valid existing Node must be preserved; changing that identity fails closed. The repair source has no KV create, replace, renumber, migrate, or rehost path. If MyKV cannot perform the StegOS-side repair directly, it hands the owner to the same-origin StegOS bootstrap route rather than minting replacement state.
+`assets/stegverse-node-continuity.js` loads the existing StegOS schema/bootstrap/device-continuity layers before Node continuity and resident health, so normal MyKV installation does not require a separate StegOS bootstrap visit.
 
-Source validation and merge establish this source contract only. They do not prove public propagation, physical current-iPhone installation, service-worker persistence, current Node health, repair execution, or KV host selection.
+`cloud-kv-peers.html` keeps owner-selectable storage-host panels hidden until the same resident-health contract reports a healthy resident substrate and registered Node.
+
+## Resident StegOS diagnostic and repair boundary
+
+The resident StegOS/Node remains intentionally small. It is not a second KV and does not duplicate owner data. It provides the minimum same-device substrate needed for Node/continuity, diagnostic health, service-worker/runtime recovery, and governed transition availability.
+
+Health checks are observational and non-authorizing. Bounded repair may refresh/register the same-origin StegOS service-worker shell and establish a device Node only when no valid Node exists. Existing valid Node identity and already-visible KV relationship state must survive repair or the flow fails closed.
+
+Resident repair has no authority to create, replace, renumber, migrate, rehost, connect, synchronize, or expose a KnowledgeVault merely to repair device infrastructure.
 
 ## Existing adjacent truth
 
-The rollback-safe automated legacy-KV upgrade executor remains merged and validated in `StegVerse-Labs/continuity-vault-kit` PR #216 at merge commit `4c426925a354a5f2d71b8becd92896917247e74f`. It remains available when an existing KV specifically needs bounded upgrade/repackaging.
+The rollback-safe automated legacy-KV upgrade executor remains merged and validated in `StegVerse-Labs/continuity-vault-kit` PR #216 at merge commit `4c426925a354a5f2d71b8becd92896917247e74f`. It remains available only when an existing KV specifically needs bounded upgrade/repackaging.
 
-The standalone MyKV web surface remains an optional owner-management UI. It is not the KV, the KV storage host, or the required StegOS substrate.
-
-The pending Google Drive KV #2 request `SITE-CLOUD-KV-4347408852127319cbda574f02e03edb` remains unchanged.
+The pending Google Drive KV #2 request `SITE-CLOUD-KV-4347408852127319cbda574f02e03edb` remains unchanged. The unified MyKV install must not re-emit, regenerate, rename, reauthorize, or replace it.
 
 ## Authority and identity boundaries
 
-- StegOS infrastructure is the device/runtime substrate.
-- The minimal resident StegOS/Node persists after KV installation and is responsible for device health/recovery, not owner-data hosting unless the device is separately selected as the KV host.
-- KnowledgeVault identity is separate from the selected storage endpoint.
-- Installing or repairing StegOS does not itself create a device-hosted KV.
-- MyKV does not mint KV identity, storage authority, Node authority, provider authority, or Interlock/InTr admission.
-- Interlock/InTr governs state-changing install/connect/verify/repair transitions.
-- Existing KV instances must not be silently replaced when infrastructure is installed, diagnosed, repaired, or updated.
+- MyKV is the sole owner-facing install and management surface.
+- MyKV is not the KnowledgeVault and is not its storage host.
+- StegOS remains the resident device/runtime substrate under MyKV.
+- No separate owner-facing StegOS installation is required.
+- KnowledgeVault identity remains separate from the selected storage endpoint.
+- Installing or repairing the MyKV resident substrate does not itself create a device-hosted or cloud-hosted KV.
+- Interlock/InTr remains the authority boundary for state-changing KV install/connect/verify transitions and governed repair transitions where applicable.
+- Existing valid Node and KV identities must not be silently replaced.
 - No second user-operated device is required.
 
 ## Remaining completion predicates
 
-Only runtime/deployment predicates remain for this phase:
+Only deployment/runtime predicates remain for this phase:
 
-1. independently verify public propagation of the merged StegOS bootstrap loader, resident-health client, and manifest at `stegverse.org`;
-2. install the minimal resident StegOS/Node surface on the current iPhone;
-3. observe resident health and verify valid Node/continuity is reused or, only when genuinely absent, establish the device Node once;
-4. verify the governed storage-admission path;
-5. present owner-selectable KV host options, including iCloud Drive and device-local hosting where supported;
-6. install or adopt the target KV on the selected host without changing identity merely because storage differs;
-7. connect/verify the KV through DEVICE_KV / Interlock/InTr and retain receipts;
-8. confirm subsequent StegOS and MyKV visits continue to report resident-device health without silently changing Node or KV identity;
-9. use bounded resident repair only if health requires it;
-10. reconcile canonical state only from authentic runtime evidence.
+1. independently verify public propagation of the merged MyKV install surface and its unified resident-substrate loader on the actual StegVerse-controlled origin;
+2. install MyKV once on the current iPhone;
+3. launch MyKV and observe the first consolidated resident-health / Node-continuity result;
+4. verify a valid existing Node is reused or, only when genuinely absent, established once;
+5. run bounded resident repair only if the health result requires it;
+6. expose storage-host choices only after resident substrate health is acceptable;
+7. select the KV storage host independently of KV identity;
+8. install/adopt and connect/verify the KV through DEVICE_KV / Interlock/InTr with authentic receipts;
+9. reconcile canonical state only from authentic runtime evidence.
 
-The next owner-facing action is the one iPhone Home Screen installation sequence only after public propagation of the merged source is independently verified.
+The next owner-facing action, once public MyKV propagation is independently verified, is **one MyKV installation**. There is no separate owner-facing StegOS installation or multi-site bootstrap test.
