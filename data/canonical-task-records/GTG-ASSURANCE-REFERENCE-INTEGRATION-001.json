@@ -1,0 +1,53 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "GTG-ASSURANCE-REFERENCE-INTEGRATION-001",
+  "correlation_id": "GTG-ASSURANCE-REFERENCE-INTEGRATION-001",
+  "root_correlation_id": "GTG-TT-MILLINGS-FORMALISM-COMPATIBILITY-REVIEW-001",
+  "parent_task_id": "GTG-TT-MILLINGS-FORMALISM-COMPATIBILITY-REVIEW-001",
+  "goal": "Integrate Gate Legitimacy, Independent Review, and Architecture-Neutral Admissibility into canonical GTG as typed, correlation-checked, non-authorizing assurance references while preserving existing GTG disposition ownership and TT's single gtg_record_ref cross-layer linkage.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "cosv_task_vector": "10100000100000",
+  "source_refs": [
+    "docs/GTG_ASSURANCE_REFERENCE_INTEGRATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegScholar:GTG_ASSURANCE_REFERENCE_INTEGRATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegScholar:papers/rtg-gtg-tt/millings-derived-formalism-compatibility-review.md",
+    "data/canonical-task-records/GTG-TT-MILLINGS-FORMALISM-COMPATIBILITY-REVIEW-001.json"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": ["StegVerse-Labs/StegScholar", "StegVerse-Labs/.github"],
+    "components": ["gtg-governance-assurance", "gtg-assurance-validation", "gtg-tt-cross-layer-compatibility"]
+  },
+  "dependencies": [],
+  "blockers": [],
+  "adjacent_task_refs": [
+    "GATE-LEGITIMACY-INVARIANT-001",
+    "INDEPENDENT-REVIEW-PREDICATE-001",
+    "ARCHITECTURE-NEUTRAL-ADMISSIBILITY-001"
+  ],
+  "expected_evidence_predicates": [
+    "OPTIONAL_TYPED_GTG_ASSURANCE_OBJECT_IMPLEMENTED",
+    "GATE_LEGITIMACY_REFERENCE_CORRELATION_VALIDATED",
+    "INDEPENDENT_REVIEW_REFERENCE_CORRELATION_VALIDATED",
+    "ARCHITECTURE_NEUTRAL_REFERENCE_CORRELATION_VALIDATED",
+    "AUTHORITY_EFFECT_NONE_ENFORCED",
+    "PROFILE_SCOPED_APPLICABILITY_VALIDATED",
+    "TT_SCHEMA_DUPLICATION_NOT_INTRODUCED",
+    "GTG_RECORD_REF_RECONSTRUCTION_VALIDATED",
+    "HISTORICAL_RECORD_COMPATIBILITY_PRESERVED"
+  ],
+  "completion": {"claimed": false, "validated": false, "activation_proof_complete": false},
+  "allowed_next_transitions": ["CLAIMED_IMPLEMENTATION", "CLAIMED_VALIDATION", "CLAIMED_INTEGRATION"],
+  "handoff_projection_refs": [
+    "docs/GTG_ASSURANCE_REFERENCE_INTEGRATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegScholar:GTG_ASSURANCE_REFERENCE_INTEGRATION_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "assurance_reference_mints_governance_authority": false,
+    "assurance_reference_forces_allow": false,
+    "tt_reference_mints_execution_or_consequence_truth": false,
+    "request_grants_execution_authority": false
+  }
+}

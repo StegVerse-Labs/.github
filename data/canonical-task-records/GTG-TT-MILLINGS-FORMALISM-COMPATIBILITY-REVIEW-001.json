@@ -1,0 +1,72 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "GTG-TT-MILLINGS-FORMALISM-COMPATIBILITY-REVIEW-001",
+  "correlation_id": "GTG-TT-MILLINGS-FORMALISM-COMPATIBILITY-REVIEW-001",
+  "root_correlation_id": "GTG-TT-MILLINGS-FORMALISM-COMPATIBILITY-REVIEW-001",
+  "parent_task_id": null,
+  "goal": "Perform a post-completion compatibility review of the retired Gate Legitimacy, Independent Review, and Architecture-Neutral Admissibility formalisms against current canonical GTG and TT schemas, identify only material nonduplicate integration gaps, and derive the minimum necessary integration task without creating new authority or reopening retired work.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CLAIMED_INTEGRATION",
+  "cosv_task_vector": "40000100100000",
+  "goal_prompt_count": "1/20",
+  "source_refs": [
+    "docs/GTG_TT_MILLINGS_FORMALISM_COMPATIBILITY_REVIEW_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegScholar:GTG_TT_MILLINGS_FORMALISM_COMPATIBILITY_REVIEW_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegScholar:papers/rtg-gtg-tt/millings-derived-formalism-compatibility-review.md",
+    "StegVerse-Labs/StegScholar:schemas/gtg-decision.schema.json",
+    "StegVerse-Labs/StegScholar:schemas/gtg-governance-record.schema.json",
+    "StegVerse-Labs/StegScholar:schemas/tt-transition-cell.schema.json",
+    "StegVerse-Labs/StegScholar:schemas/gate-legitimacy-record.schema.json",
+    "StegVerse-Labs/StegScholar:schemas/independent-review-record.schema.json",
+    "StegVerse-Labs/StegScholar:schemas/architecture-neutral-admissibility-record.schema.json",
+    "data/canonical-task-records/GATE-LEGITIMACY-INVARIANT-001.json",
+    "data/canonical-task-records/INDEPENDENT-REVIEW-PREDICATE-001.json",
+    "data/canonical-task-records/ARCHITECTURE-NEUTRAL-ADMISSIBILITY-001.json",
+    "data/canonical-task-records/MILLINGS-RTG-GTG-TT-COMPARISON-001.json"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": ["StegVerse-Labs/StegScholar", "StegVerse-Labs/.github"],
+    "components": ["gtg-tt-compatibility-review", "assurance-integration-disposition"]
+  },
+  "dependencies": [],
+  "blockers": [],
+  "collision_check": {
+    "retired_parent_reopened": false,
+    "retired_children_reopened": false,
+    "existing_equivalent_integration_task_found": false,
+    "disposition": "DERIVE_ONE_MINIMUM_INTEGRATION_TASK"
+  },
+  "review_result": {
+    "material_gap_count": 1,
+    "material_gap": "GTG lacks typed correlation-checked assurance bindings for the three completed non-authorizing formalisms",
+    "tt_schema_change_required": false,
+    "derived_task_id": "GTG-ASSURANCE-REFERENCE-INTEGRATION-001"
+  },
+  "adjacent_task_refs": [
+    "GATE-LEGITIMACY-INVARIANT-001",
+    "INDEPENDENT-REVIEW-PREDICATE-001",
+    "ARCHITECTURE-NEUTRAL-ADMISSIBILITY-001",
+    "GTG-ASSURANCE-REFERENCE-INTEGRATION-001"
+  ],
+  "expected_evidence_predicates": [
+    "CURRENT_GTG_SCHEMA_REVIEWED",
+    "CURRENT_TT_SCHEMA_REVIEWED",
+    "THREE_RETIRED_FORMALISMS_REVIEWED",
+    "DUPLICATE_SEMANTICS_REJECTED",
+    "AUTHORITY_NONINHERITANCE_PRESERVED",
+    "MINIMUM_INTEGRATION_TASK_DERIVED"
+  ],
+  "completion": {"claimed": false, "validated": false, "activation_proof_complete": false},
+  "allowed_next_transitions": ["CLAIMED_VALIDATION", "MERGED_INTO_CANONICAL_WORKSTREAM"],
+  "handoff_projection_refs": [
+    "docs/GTG_TT_MILLINGS_FORMALISM_COMPATIBILITY_REVIEW_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegScholar:GTG_TT_MILLINGS_FORMALISM_COMPATIBILITY_REVIEW_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "compatibility_review_mints_governance_authority": false,
+    "retired_task_evidence_mints_successor_authority": false,
+    "request_grants_execution_authority": false
+  }
+}
