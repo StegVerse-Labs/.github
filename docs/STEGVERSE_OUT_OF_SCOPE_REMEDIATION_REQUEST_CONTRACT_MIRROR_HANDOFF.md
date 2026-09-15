@@ -7,7 +7,19 @@ Updated: 2026-09-14
 - Goal Task ID: `STEGVERSE-OUT-OF-SCOPE-REMEDIATION-REQUEST-CONTRACT-001`
 - Parent Goal: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / SOURCE CONTRACT IMPLEMENTATION IN VALIDATION`
+- Status: `RETIRED / SOURCE CONTRACT MERGED+VALIDATED / FIRST HEALER EVALUATION REQUEST MATERIALIZED / NO HEALER TRIGGER OR REMEDY CLAIMED`
+
+## Validation evidence
+
+- `.github` PR: `#1911`
+- validated head: `faa1c77f65006514b251ff92bc152f78acb8b81a`
+- merge commit: `e4775d3844a46ad4ee45a751ff559c100a183b7f`
+- organization-control run `34919182490`: PASS
+- deterministic repository suite run `34919182479`: PASS
+- heartbeat validation run `34919182505`: PASS
+- StegVerse-Healer evaluation-request PR `#86`: merged as `3be626ab1ec90e766c50221cff6b9ed690947647`
+
+GitHub/CI proves source-contract validation only. It does not prove a Healer trigger or remediation.
 
 ## Purpose
 
