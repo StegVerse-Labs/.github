@@ -1,0 +1,15 @@
+{
+  "reusable_task_id": "RT-INTR-GOVERNED-TRANSITION-001",
+  "name": "Interlock/InTr Governed Transition",
+  "purpose": "Evaluate and apply one already-admitted state-transition request through the applicable Interlock/InTr transition authority, preserving the distinction between internal inference, action admission, consequence, standing, and authority effect.",
+  "trigger": "an admitted operation proposes a state transition or externally consequential action",
+  "scope": "one proposed transition on one resolved InTr protocol",
+  "parameter_keys": ["intr_protocol_ref", "admission_receipt_ref", "from_state_ref", "transition_intent", "transition_elements", "standing_refs", "authority_effect_policy"],
+  "composes": ["RT-INTR-BOUNDARY-ADMISSION-001"],
+  "runner_templates": [],
+  "recording_levels": ["operation", "task", "goal", "component", "system", "master_records"],
+  "completion_predicates": ["ADMISSION_RECEIPT_BOUND", "APPLICABLE_TRANSITION_ELEMENTS_EVALUATED", "ALLOW_OR_DENY_EXPLICIT", "FROM_AND_TO_STATE_BOUND_WHEN_ALLOWED", "AUTHORITY_EFFECT_RESOLVED_SEPARATELY", "TRANSITION_RECEIPT_RETAINED"],
+  "failure_semantics": ["UNRESOLVED_TRANSITION_ELEMENTS_FAIL_CLOSED", "DENIED_TRANSITION_DOES_NOT_MUTATE_STATE", "MODEL_OR_ADAPTER_OUTPUT_DOES_NOT_SELF_AUTHORIZE", "NO_AUTHORITY_EFFECT_INFERRED_FROM_EXECUTION_ALONE"],
+  "authority_effect": "NONE_REUSABLE_DEFINITION_ONLY",
+  "reuse_instructions": "Use the applicable existing InTr evaluator/transition surface. Do not collapse inference into governance and do not treat successful execution, capability realization, transport success, or provider response as automatic authority or standing."
+}
