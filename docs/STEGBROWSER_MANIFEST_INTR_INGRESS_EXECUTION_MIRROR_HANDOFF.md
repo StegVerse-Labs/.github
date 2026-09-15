@@ -8,135 +8,156 @@ Repository: `StegVerse-Labs/.github`
 - Goal Task ID: `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001`
 - Parent Goal: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / SOURCE MERGED+VALIDATED / GC RECONCILED / REUSABLE TASK SYNCHRONIZED / AUTHENTIC A3+A4 EXECUTION PENDING`
+- Status: `ACTIVE / CHECKED_OUT / SOURCE MERGED+VALIDATED / GC REVISED / REUSABLE TASK SYNCHRONIZED / AUTHENTIC INVOCATION EXECUTION PENDING`
 - Source merge: PR `#1914`, merge commit `7337271028d1226e76af88b33765f38334159b23`
 
-## Goal
+## Purpose
 
-Execute the manifest-defined StegBrowser path through the existing StegVerse-owned Node/Interlock/InTr materialization mechanism, materialize the invocation-owned EVENT_EPHEMERAL StegOS execution surface under the governed lease/binding, obtain authentic WorkerCoordinator claim/fence, retain verified A4 Interlock/InTr ingress evidence, and then continue the two governed round-trip transport lifecycle.
-
-## Corrected execution invariant
-
-There is no external runtime that connects to this Goal. There is no host/device discovery stage and no generic process surface that must first be exposed to a chat session.
-
-Recovered prior StegVerse engineering evidence establishes the reusable architecture as:
+Execute the manifest-defined StegBrowser path using the existing StegVerse invocation-owned runtime architecture:
 
 ```text
-manifest-defined request
--> registered StegVerse Node / applicable node identity
--> declared/bound Interlock
--> InTr admission/materialization
--> bounded execution lease/binding
--> EVENT_EPHEMERAL runtime materialization
--> execution-time runtime identity binding
+manifest
+-> StegVerse Node
+-> Interlock
+-> InTr
+-> bounded lease/execution binding
+-> EVENT_EPHEMERAL StegOS runtime
 -> WorkerCoordinator claim/fence
--> authentic Interlock/InTr ingress receipt
--> governed transport
+-> authentic governed ingress
+-> two governed round trips
 ```
 
-For the prior SV002 browser-recovery validation lane, retained engineering evidence recorded a registered StegVerse Node, an Interlock identity, an explicit lease, an EVENT_EPHEMERAL browser runtime, principal execution, and same-execution Master Records reconstruction. This is reusable architectural evidence only; it is not StegBrowser runtime evidence and does not promote any current predicate.
+No external runtime/device/host discovery stage exists.
 
-The organization-local execution surface verifies/binds execution-time identity and retains receipts. It is not modeled as a standing external shell, remote host, or prerequisite connection target.
+## Goal Chart
 
-Forbidden prerequisites:
+### A0 — MANIFEST / PATH CONTRACT
 
-- waiting for an online device;
-- Remote Desktop/device-connectivity checks;
-- Render or another hosted carrier;
-- GitHub Actions as runtime authority;
-- endpoint/receiver discovery when already declared by manifest;
-- generic chat-session process-host acquisition;
-- second user-operated machine.
+Bind exact Goal, COSV, outbound Interlock/InTr endpoint, owned mirror receiver, Round Trip 1 recording destination, mirror-processing boundary, Round Trip 2 return endpoint, and ecosystem destination.
 
-## Source state
+Predicate: `MANIFEST_BOUND_TO_INVOCATION`.
 
-PR #1914 is merged. Its source work:
+No route discovery. No endpoint discovery. No receiver discovery.
 
-- preserves the existing Canonical Work resident consumer and public implementation/API contract;
-- binds the StegBrowser invocation owner to the active remediation Goal while preserving the retired runtime-consumption task as lineage only;
-- stages one exact StegBrowser organization-local ingress packet;
-- requires a durable organization-local receipt containing a valid WorkerCoordinator `claim_id` and `fencing_token` before A4 can be marked authentic;
-- preserves A3 before A4 ordering;
-- creates no second dispatcher, runtime, scheduler, WorkerCoordinator, or Interlock/InTr implementation.
+### A1 — STEGVERSE NODE BINDING
 
-GitHub/CI is source validation/evidence transport only and has runtime authority `NONE`.
+Resolve/reuse the applicable registered/profile-derived StegVerse Node for this manifest invocation.
 
-## Revised Goal Chart
+Node is a continuity/admission anchor; it is NOT a waiting external machine and NOT a standing process prerequisite.
 
-### A0 — Bind exact manifest and route contract
+Retain `node_id`, node/profile binding, genesis/continuity commitment, and manifest/Goal/COSV correlation.
 
-Require exact Goal/COSV binding and declared route fields. The manifest defines the intended Interlock/InTr endpoint(s), owned mirror receiver, Round Trip 1 recording return, mirror boundary, Round Trip 2 return endpoint, and ecosystem destination. No endpoint/receiver discovery stage exists.
+### A2 — INTERLOCK / INTR ENTRY
 
-### A1 — Resolve the applicable registered StegVerse Node binding
+Bind invocation to applicable/declared Interlock and submit the governed InTr materialization transition.
 
-Resolve/reuse the applicable StegVerse Node identity/continuity anchor for this manifest invocation. This is not a search for an online machine and does not require a persistent external process.
+Interlock/InTr decides whether transition/materialization is allowed.
 
-Required evidence class: exact Node/profile/genesis-or-continuity binding appropriate to the invocation.
+`REQUEST_AUTHORITY = NONE`.
 
-### A2 — Enter the Node -> Interlock -> InTr materialization path
+### A2.1 — BOUNDED LEASE / EXECUTION BINDING
 
-Bind the manifest invocation to the declared/applicable Interlock and submit the governed InTr transition/materialization request.
+If admitted, establish the invocation-scoped lease/binding and bind Node, Interlock, manifest, Goal, COSV, and requested execution class.
 
-Interlock/InTr remains transition authority. The request itself grants no authority.
+Lease is ephemeral. No standing host relationship is created.
 
-### A2.1 — Materialize bounded lease/execution binding
+### A2.2 — EVENT_EPHEMERAL STEGOS MATERIALIZATION
 
-If admitted, establish the bounded invocation lease/binding required for this execution. The lease is ephemeral and manifest/Goal/COSV-bound; it is not a standing host relationship.
+Materialize the admitted `EVENT_EPHEMERAL` StegOS runtime and bind exact execution-time `runtime_id`.
 
-### A2.2 — Materialize EVENT_EPHEMERAL StegOS runtime
+Required correlation: Node, Interlock, InTr transition, lease/binding, runtime_id, manifest, Goal, COSV.
 
-Materialize the admitted EVENT_EPHEMERAL StegOS execution surface for this invocation. Bind the exact live runtime identity at execution time and retain its correlation to Node, Interlock, manifest, Goal, COSV, and lease/binding.
+No pre-existing runtime is required. No generic process host must be exposed to ChatGPT first.
 
-No pre-existing running runtime is required.
+### A3 — WORKERCOORDINATOR CLAIM / FENCE
 
-### A3 — WorkerCoordinator claim/fence
+Obtain authentic current `claim_id` and `fencing_token` for this exact invocation.
 
-Require authentic current WorkerCoordinator claim/fence for the exact invocation. Accept only durable evidence containing a valid `claim_id` and `fencing_token` with exact correlation.
+`CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED = true`.
 
-### A4 — Authentic Interlock/InTr ingress
+Only authentic runtime evidence may satisfy A3.
 
-Enter the declared governed path and retain the authentic organization-local Interlock/InTr ingress receipt. Verify packet/profile/hash correlation plus Node/Interlock/lease/runtime/Goal/COSV correlation as applicable.
+### A4 — AUTHENTIC INTERLOCK / INTR INGRESS
 
-Only after A3+A4 are authentically proven may transport advance.
+Enter the declared governed path and retain the exact durable ingress receipt.
 
-### A5 — Round Trip 1 outbound path
-
-Follow only manifest-declared allowed transitions to the owned mirror receiver/reflector.
-
-### A6 — Round Trip 1 return to records
-
-The reflected records packet returns through the first final allowed Interlock/InTr exit to the declared recording surface.
-
-### A7 — Verify Round Trip 1
-
-Require authentic evidence for:
+Verify as applicable: packet identity, profile, payload hash, packet hash, manifest hash, node_id, interlock_id, lease/runtime binding, Goal, COSV, claim_id, fencing_token.
 
 ```text
-MANIFEST_BOUND_TO_INVOCATION = true
+ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED = true
+AUTHENTIC_INTR_INGRESS_OBSERVED = true
+```
+
+Only then advance transport.
+
+### A5 — ROUND TRIP 1 OUTBOUND
+
+Follow manifest-declared governed transitions:
+
+```text
+ecosystem
+-> Interlock/InTr
+-> owned mirror reflector
+```
+
+No alternate receiver substitution.
+
+### A6 — ROUND TRIP 1 RETURN
+
+Owned mirror reflects the declared records packet.
+
+Return path reaches:
+
+```text
+first final allowed Interlock/InTr exit
+-> MASTER_RECORDS_RECORDING_SURFACE
+```
+
+### A7 — ROUND TRIP 1 VERIFICATION
+
+Require:
+
+```text
 GOVERNED_RETURN_PACKET_RECEIVED = true
 RECORDS_PACKET_DELIVERED_FOR_RECORDING = true
 RETURN_RECORD_DURABLY_RECORDED = true
 FIRST_FINAL_ALLOWED_INTR_EXIT_TRANSITION_OBSERVED = true
-SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED = true
 ```
 
-### B1 — Record / custody / reconstruct / process to mirror boundary
+Then:
 
-Master Records and applicable processing owners record/reconstruct/process the returned material toward the declared owned mirror boundary. Master Records remains custody/reconstruction authority, not transport authority. Completion/failure here does not retroactively erase a verified Round Trip 1.
+`SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED = true`.
 
-### C1 — Mirror boundary initiates Round Trip 2
+### B1 — RECORD / RECONSTRUCT / PROCESS
 
-At the declared mirror boundary, initiate the second governed Interlock/InTr return according to the manifest.
+Master Records records, preserves custody, and reconstructs observed state.
 
-### C2 — Governed return through endpoint Interlock/InTr
+Applicable processing advances the result to `STEGVERSE_OWNED_MIRROR_BOUNDARY`.
 
-Traverse the declared return path and call the declared endpoint Interlock/InTr. Each transition occurs iff allowed.
+Master Records does NOT become transport authority. A verified Round Trip 1 remains verified independently of later failure.
 
-### C3 — Ecosystem re-entry
+### C1 — ROUND TRIP 2 INITIATION
+
+At owned mirror boundary, initiate the declared Interlock/InTr return.
+
+`MIRROR_BOUNDARY_INTR_REENTRY_OBSERVED = true`.
+
+### C2 — ENDPOINT INTERLOCK / INTR
+
+Traverse the governed return and call the declared ecosystem-return endpoint Interlock/InTr.
+
+```text
+ENDPOINT_INTERLOCK_INTR_CALLED = true
+ENDPOINT_INTERLOCK_INTR_ALLOWED = true
+```
+
+### C3 — ECOSYSTEM RE-ENTRY
 
 Observe the final allowed transition into `STEGVERSE_ECOSYSTEM`.
 
-### C4 — Verify Round Trip 2 and composition
+`ECOSYSTEM_REENTRY_FINAL_ALLOWED_TRANSITION_OBSERVED = true`.
+
+### C4 — ROUND TRIP 2 VERIFICATION
 
 Require:
 
@@ -146,42 +167,55 @@ MIRROR_BOUNDARY_INTR_REENTRY_OBSERVED = true
 ENDPOINT_INTERLOCK_INTR_CALLED = true
 ENDPOINT_INTERLOCK_INTR_ALLOWED = true
 ECOSYSTEM_REENTRY_FINAL_ALLOWED_TRANSITION_OBSERVED = true
-SUCCESSFUL_ECOSYSTEM_RETURN_ROUND_TRIP_IDENTIFIED = true
 ```
 
-Then and only then:
+Then:
+
+`SUCCESSFUL_ECOSYSTEM_RETURN_ROUND_TRIP_IDENTIFIED = true`.
+
+## Composition success
 
 ```text
-SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED = true
+SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED
 AND
-SUCCESSFUL_ECOSYSTEM_RETURN_ROUND_TRIP_IDENTIFIED = true
+SUCCESSFUL_ECOSYSTEM_RETURN_ROUND_TRIP_IDENTIFIED
 =>
 SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIPS_IDENTIFIED = true
 ```
 
-## Current predicates
+## Current authentic state
 
 ```text
-MANIFEST_BOUND_TO_INVOCATION = source-bound / runtime confirmation pending
-STEGBROWSER_ACTIVE_RESIDENT_REQUEST_DISPATCH_BINDING_VALID = true at source
-NODE_INTERLOCK_INTR_LEASE_MATERIALIZATION_PATH_IDENTIFIED = architectural precedent recovered; StegBrowser invocation proof pending
-INVOCATION_OWNED_EPHEMERAL_STEGOS_MATERIALIZED = false / not authentically observed
-CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED = false / not authentically observed
-ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED = false / not authentically observed
-AUTHENTIC_INTR_INGRESS_OBSERVED = false / not authentically observed
+MANIFEST_BOUND_TO_INVOCATION
+    source-bound / runtime confirmation pending
+
+STEGBROWSER_ACTIVE_RESIDENT_REQUEST_DISPATCH_BINDING_VALID
+    source-valid
+
+NODE_INTERLOCK_INTR_LEASE_MATERIALIZATION_PATH_IDENTIFIED
+    architectural precedent recovered
+    current StegBrowser invocation proof pending
+
+INVOCATION_OWNED_EPHEMERAL_STEGOS_MATERIALIZED
+    NOT OBSERVED
+
+CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED
+    NOT OBSERVED
+
+ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED
+    NOT OBSERVED
+
+AUTHENTIC_INTR_INGRESS_OBSERVED
+    NOT OBSERVED
 ```
 
-No predicate is promoted from historical SV002 evidence, source inspection, GitHub merge, or CI.
+Historical architecture evidence, source inspection, GitHub merge, and CI do not promote authentic runtime predicates.
 
-## Reusable-task synchronization rule
+## Reusable-task synchronization
 
-Reusable tasks are part of the active architecture and MUST be updated as the Goal reveals or changes reusable execution semantics. A Goal/GC/handoff change is incomplete at source if an affected reusable task remains on an older model.
+Affected reusable owner: `source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json`.
 
-Current reusable owner:
-
-`source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json`
-
-The reusable task is now synchronized to require the explicit sequence:
+Required reusable sequence:
 
 ```text
 MANIFEST_BOUND_TO_INVOCATION
@@ -199,41 +233,46 @@ MANIFEST_BOUND_TO_INVOCATION
 -> Round Trip 2
 ```
 
-Standing propagation requirement for this Goal:
+Reusable-task synchronization grants no runtime authority and never replaces authentic execution evidence.
 
-- when a reusable Node/profile rule is confirmed or changed, update the reusable task;
-- when Interlock/InTr materialization semantics are confirmed or changed, update the reusable task;
-- when lease/binding semantics are confirmed or changed, update the reusable task;
-- when runtime-identity binding semantics are confirmed or changed, update the reusable task;
-- when WorkerCoordinator/A3 or InTr/A4 ordering changes, update the reusable task;
-- when either round-trip completion contract changes, update the reusable task and its tests/profile consumers;
-- historical evidence may guide reusable architecture but MUST NOT set current runtime predicates;
-- reusable-task synchronization never grants runtime authority and never replaces authentic execution evidence.
+## Issue #1918
 
-Do not defer reusable-task updates to an end-of-project cleanup pass. They travel with the architecture change that makes them necessary.
+Current classification: `REFRAME CANDIDATE`.
 
-## Issue #1918 disposition guidance
+Reason: #1918 assumed ChatGPT needed a generic process-execution surface. The recovered architecture instead indicates:
 
-Issue #1918 was opened under the assumption that this chat session needed a generic organization-local process-execution surface exposed to it. The recovered Node -> Interlock -> InTr -> lease -> EVENT_EPHEMERAL materialization evidence makes that abstraction suspect.
+```text
+invocation
+-> Node
+-> Interlock
+-> InTr
+-> lease
+-> EVENT_EPHEMERAL runtime
+```
 
-Do not close or treat #1918 as resolved solely from historical evidence. First trace the current StegBrowser equivalent of the proven materializer. If the invocation itself can enter that path, reframe/retire #1918 as a mistaken tooling abstraction. If a real missing binding remains, classify the exact source/runtime boundary and remediate only that bounded defect.
+Do not close #1918 solely from historical evidence.
 
-## Authority boundaries
+First trace the current StegBrowser implementation equivalent. If the existing materializer is reusable, retire/reframe #1918 as a mistaken tooling abstraction. If the binding is actually absent, remediate only the exact missing invocation/materializer binding.
 
-- Manifest: route declaration/binding only.
-- StegVerse Node: continuity/admission anchor as defined by applicable node contract; does not independently grant Interlock/InTr transition authority.
-- Lease/execution binding: bounded invocation scope only; no standing authority.
-- EVENT_EPHEMERAL StegOS runtime: compute surface only; authority effect `NONE` except any separately defined device-local execution effect explicitly evidenced by its own contract.
+## Authority
+
+- Manifest: route declaration only.
+- StegVerse Node: continuity/admission anchor.
+- Lease: bounded invocation scope only.
+- StegOS `EVENT_EPHEMERAL` runtime: compute/execution surface.
 - WorkerCoordinator: claim/fence authority.
-- Interlock/InTr: transition and governed packet-movement authority.
-- Organization-local execution surface: execution-time identity verification/binding and bounded receipt-producing surface; does not mint transition authority.
+- Interlock/InTr: transition + governed packet movement authority.
 - TV/TVC: credential authority.
-- Master Records: observed-reality custody/reconstruction authority; not transport-success authority.
+- Master Records: custody/reconstruction authority.
 - GitHub/CI: source validation/evidence transport only; runtime authority `NONE`.
+
+## Healer invariant
+
+Healer remains triggered remediation only for an observed broken condition. It is not a normal stage owner, scheduler, carrier, prerequisite, Node materializer, or transport authority.
 
 ## Immediate continuation
 
-Trace the exact current implementation equivalent of the historically proven `Node -> Interlock -> InTr -> lease -> EVENT_EPHEMERAL runtime materialization` entrypoint and compare it with the merged StegBrowser manifest-bound request. Reuse that path where predicates match. Synchronize every confirmed reusable architectural rule into `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` and affected reusable consumers/tests as part of the same change. Do not introduce a generic external runtime/process host.
+Trace the exact current StegBrowser implementation equivalent of the existing Node -> Interlock -> InTr -> lease -> EVENT_EPHEMERAL materialization path. Reuse existing implementation where predicates match. Do not introduce an external runtime/device/host discovery stage.
 
 ## Manual work
 

@@ -4,17 +4,42 @@
   "correlation_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
   "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
   "parent_task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
-  "goal": "Bind the manifest-defined StegBrowser invocation to the existing Canonical Work resident dispatcher and organization-local Interlock/InTr boundary, materialize the invocation-owned ephemeral StegOS execution surface, obtain authentic WorkerCoordinator claim/fence, and retain verified A4 Interlock/InTr ingress evidence before the governed round-trip lifecycle proceeds.",
+  "goal": "Execute the manifest-defined StegBrowser path through the existing invocation-owned StegVerse Node -> Interlock -> InTr -> bounded lease -> EVENT_EPHEMERAL StegOS architecture, obtain authentic WorkerCoordinator claim/fence and governed ingress, then complete the two manifest-declared governed round trips.",
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT",
   "cosv_task_vector": "40000100100000",
   "handoff_ref": "docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md",
   "operation_lineage_task_id": "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
   "runtime_requirements": {
-    "selected_substrate": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+    "execution_class": "EVENT_EPHEMERAL_STEGOS",
+    "current_observation_required": true,
     "standing_runtime_required": false,
     "external_runtime_connection_required": false,
     "external_device_required": false,
+    "hosted_carrier_required": false,
+    "external_runtime_device_host_discovery_stage_exists": false,
+    "generic_chat_process_host_required": false,
+    "second_user_operated_device_required": false,
+    "authority_effect": "NONE_CONSTRAINT_DECLARATION_ONLY"
+  },
+  "runtime_architecture": {
+    "path": [
+      "MANIFEST",
+      "STEGVERSE_NODE",
+      "INTERLOCK",
+      "INTR",
+      "INVOCATION_SCOPED_LEASE_EXECUTION_BINDING",
+      "EVENT_EPHEMERAL_STEGOS_RUNTIME",
+      "WORKERCOORDINATOR_CLAIM_FENCE",
+      "AUTHENTIC_GOVERNED_INGRESS",
+      "ROUND_TRIP_1",
+      "POST_TRANSPORT_RECORD_RECONSTRUCTION_PROCESSING",
+      "ROUND_TRIP_2"
+    ],
+    "standing_runtime_required": false,
+    "external_runtime_connection_required": false,
+    "external_runtime_device_host_discovery_stage_exists": false,
+    "generic_chat_process_host_required": false,
     "second_user_operated_device_required": false,
     "hosted_carrier_required": false
   },
@@ -33,35 +58,31 @@
         "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
         "disposition": "NOT_APPLICABLE",
         "limitation_class": "NOT_APPLICABLE",
-        "evidence_refs": []
+        "evidence_refs": ["docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"]
       },
       {
         "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
-        "disposition": "NOT_APPLICABLE",
-        "limitation_class": "NOT_APPLICABLE",
-        "evidence_refs": []
+        "disposition": "SUITABLE",
+        "limitation_class": "NONE",
+        "evidence_refs": ["docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"]
       },
       {
         "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
         "disposition": "SUITABLE",
         "limitation_class": "NONE",
-        "evidence_refs": [
-          "docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"
-        ]
+        "evidence_refs": ["docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"]
       },
       {
         "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
-        "disposition": "NOT_APPLICABLE",
-        "limitation_class": "NOT_APPLICABLE",
-        "evidence_refs": []
+        "disposition": "SUITABLE",
+        "limitation_class": "NONE",
+        "evidence_refs": ["docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"]
       },
       {
         "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
         "disposition": "SELECTED",
         "limitation_class": "NONE",
-        "evidence_refs": [
-          "docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"
-        ]
+        "evidence_refs": ["docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"]
       },
       {
         "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
@@ -73,49 +94,46 @@
     "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
     "external_device_required": false,
     "second_user_operated_device_allowed": false,
-    "authority_effect": "NONE"
+    "authority_effect": "NONE",
+    "semantic_note": "Compatibility projection for the canonical substrate validator only. This is not a GC discovery stage. Runtime materialization remains invocation-owned Node -> Interlock -> InTr -> bounded lease -> EVENT_EPHEMERAL StegOS."
   },
+  "gc": {
+    "A0": {"name": "MANIFEST_PATH_CONTRACT", "predicate": "MANIFEST_BOUND_TO_INVOCATION", "route_discovery": false, "endpoint_discovery": false, "receiver_discovery": false},
+    "A1": {"name": "STEGVERSE_NODE_BINDING", "required_evidence": ["node_id", "node_profile_binding", "genesis_or_continuity_commitment", "manifest_goal_cosv_correlation"]},
+    "A2": {"name": "INTERLOCK_INTR_ENTRY", "transition_authority": "INTERLOCK_INTR", "request_authority": "NONE"},
+    "A2_1": {"name": "BOUNDED_LEASE_EXECUTION_BINDING", "lease_scope": "INVOCATION_ONLY", "standing_host_relationship_created": false},
+    "A2_2": {"name": "EVENT_EPHEMERAL_STEGOS_MATERIALIZATION", "runtime_class": "EVENT_EPHEMERAL", "preexisting_runtime_required": false, "generic_process_host_required": false, "required_correlation": ["node_id", "interlock_id", "intr_transition", "lease_binding", "runtime_id", "manifest", "goal", "cosv"]},
+    "A3": {"name": "WORKERCOORDINATOR_CLAIM_FENCE", "predicate": "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED", "authority": "WORKERCOORDINATOR"},
+    "A4": {"name": "AUTHENTIC_INTERLOCK_INTR_INGRESS", "predicates": ["ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED", "AUTHENTIC_INTR_INGRESS_OBSERVED"], "advance_transport_only_after_success": true},
+    "A5": {"name": "ROUND_TRIP_1_OUTBOUND", "alternate_receiver_substitution_allowed": false},
+    "A6": {"name": "ROUND_TRIP_1_RETURN", "terminal_transport_destination": "MASTER_RECORDS_RECORDING_SURFACE"},
+    "A7": {"name": "ROUND_TRIP_1_VERIFICATION", "required_predicates": ["GOVERNED_RETURN_PACKET_RECEIVED", "RECORDS_PACKET_DELIVERED_FOR_RECORDING", "RETURN_RECORD_DURABLY_RECORDED", "FIRST_FINAL_ALLOWED_INTR_EXIT_TRANSITION_OBSERVED"], "sets": "SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED"},
+    "B1": {"name": "RECORD_RECONSTRUCT_PROCESS", "authority": "MASTER_RECORDS_CUSTODY_RECONSTRUCTION_ONLY", "output_boundary": "STEGVERSE_OWNED_MIRROR_BOUNDARY", "retroactively_negates_round_trip_1": false},
+    "C1": {"name": "ROUND_TRIP_2_INITIATION", "predicate": "MIRROR_BOUNDARY_INTR_REENTRY_OBSERVED"},
+    "C2": {"name": "ENDPOINT_INTERLOCK_INTR", "required_predicates": ["ENDPOINT_INTERLOCK_INTR_CALLED", "ENDPOINT_INTERLOCK_INTR_ALLOWED"]},
+    "C3": {"name": "ECOSYSTEM_REENTRY", "predicate": "ECOSYSTEM_REENTRY_FINAL_ALLOWED_TRANSITION_OBSERVED"},
+    "C4": {"name": "ROUND_TRIP_2_VERIFICATION", "required_predicates": ["MIRROR_BOUNDARY_PROCESSING_COMPLETE", "MIRROR_BOUNDARY_INTR_REENTRY_OBSERVED", "ENDPOINT_INTERLOCK_INTR_CALLED", "ENDPOINT_INTERLOCK_INTR_ALLOWED", "ECOSYSTEM_REENTRY_FINAL_ALLOWED_TRANSITION_OBSERVED"], "sets": "SUCCESSFUL_ECOSYSTEM_RETURN_ROUND_TRIP_IDENTIFIED"}
+  },
+  "composition_success": {"requires": ["SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED", "SUCCESSFUL_ECOSYSTEM_RETURN_ROUND_TRIP_IDENTIFIED"], "sets": "SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIPS_IDENTIFIED"},
+  "reusable_task_binding": {"reusable_task_id": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001", "synchronized": true, "source_ref": "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json"},
+  "issue_1918": {"classification": "REFRAME_CANDIDATE", "close_from_historical_evidence_only": false, "assumed_abstraction": "GENERIC_CHAT_SESSION_PROCESS_EXECUTION_SURFACE", "recovered_architecture": "INVOCATION -> NODE -> INTERLOCK -> INTR -> LEASE -> EVENT_EPHEMERAL_RUNTIME", "next_action": "TRACE_CURRENT_STEGBROWSER_IMPLEMENTATION_EQUIVALENT_THEN_REFRAME_OR_REMEDIATE_EXACT_MISSING_BINDING"},
   "source_defects": [
-    {
-      "id": "STEGBROWSER-CANONICAL-WORK-SPEC-STALE-TASK-ID",
-      "owner": "CANONICAL_WORK_RESIDENT_CONSUMER_BINDING",
-      "state": "SOURCE_REPAIR_VALIDATED_EXACT_HEAD_MERGE_PENDING",
-      "expected": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
-      "observed": "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
-      "validation_head": "b530c27194aaa0d45e889e30fed910e0c8596bdc"
-    },
-    {
-      "id": "STEGBROWSER-A3-A4-ORDERING-DRIFT",
-      "owner": "STEGBROWSER_REUSABLE_RUNTIME_RUNNER",
-      "state": "SOURCE_REPAIR_VALIDATED_EXACT_HEAD_MERGE_PENDING",
-      "expected": "WORKERCOORDINATOR_CLAIM_FENCE_THEN_VERIFIED_ORGANIZATION_LOCAL_INTR_INGRESS",
-      "observed": "CANONICAL_WORK_INGRESS_PROJECTION_BEFORE_AUTHENTIC_CLAIM_FENCE",
-      "validation_head": "b530c27194aaa0d45e889e30fed910e0c8596bdc"
-    }
+    {"id": "STEGBROWSER-CANONICAL-WORK-SPEC-STALE-TASK-ID", "owner": "CANONICAL_WORK_RESIDENT_CONSUMER_BINDING", "state": "MERGED_VALIDATED", "merge_commit": "7337271028d1226e76af88b33765f38334159b23"},
+    {"id": "STEGBROWSER-A3-A4-ORDERING-DRIFT", "owner": "STEGBROWSER_REUSABLE_RUNTIME_RUNNER", "state": "MERGED_VALIDATED", "merge_commit": "7337271028d1226e76af88b33765f38334159b23"}
   ],
-  "source_validation": {
-    "validated_head": "b530c27194aaa0d45e889e30fed910e0c8596bdc",
-    "organization_control_run": 34926414425,
-    "deterministic_suite_run": 34926414434,
-    "heartbeat_validation_run": 34926414456,
-    "all_required_lanes_passed": true,
-    "runtime_authority_effect": "NONE",
-    "final_reconciled_head_requires_revalidation": true
-  },
-  "completion": {
-    "resident_request_dispatch_binding_valid": true,
+  "source_validation": {"merged_pr": 1914, "merge_commit": "7337271028d1226e76af88b33765f38334159b23", "all_required_lanes_passed": true, "runtime_authority_effect": "NONE"},
+  "current_authentic_state": {
+    "manifest_bound_to_invocation": "SOURCE_BOUND_RUNTIME_CONFIRMATION_PENDING",
+    "stegbrowser_active_resident_request_dispatch_binding_valid": "SOURCE_VALID",
+    "node_interlock_intr_lease_materialization_path_identified": "ARCHITECTURAL_PRECEDENT_RECOVERED_CURRENT_INVOCATION_PROOF_PENDING",
     "invocation_owned_ephemeral_stegos_materialized": false,
     "workercoordinator_claim_fence_observed": false,
     "organization_local_intr_ingress_receipt_verified": false,
     "authentic_intr_ingress_observed": false,
-    "source_merged_validated": false
+    "successful_recording_verification_round_trip_identified": false,
+    "successful_ecosystem_return_round_trip_identified": false,
+    "successful_data_transport_round_trips_identified": false
   },
-  "authority_model": {
-    "worker_claim_authority": "WORKERCOORDINATOR",
-    "interlock_intr_transition_authority": true,
-    "credential_authority": "TV/TVC",
-    "github_runtime_authority": "NONE",
-    "resident_dispatcher_authority_effect": "NONE",
-    "organization_local_boundary_authority_effect": "NONE_BOUNDED_EXECUTION_SURFACE"
-  }
+  "completion": {"resident_request_dispatch_binding_valid": true, "source_merged_validated": true, "invocation_owned_ephemeral_stegos_materialized": false, "workercoordinator_claim_fence_observed": false, "organization_local_intr_ingress_receipt_verified": false, "authentic_intr_ingress_observed": false, "round_trip_1_verified": false, "round_trip_2_verified": false, "composition_success": false},
+  "authority_model": {"manifest_authority": "ROUTE_DECLARATION_ONLY", "stegverse_node_role": "CONTINUITY_ADMISSION_ANCHOR", "lease_role": "BOUNDED_INVOCATION_SCOPE_ONLY", "event_ephemeral_runtime_role": "COMPUTE_EXECUTION_SURFACE", "worker_claim_authority": "WORKERCOORDINATOR", "interlock_intr_transition_and_packet_authority": true, "credential_authority": "TV/TVC", "master_records_authority": "CUSTODY_RECONSTRUCTION", "github_runtime_authority": "NONE", "healer_role": "TRIGGERED_REMEDIATION_ONLY"}
 }
