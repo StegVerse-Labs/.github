@@ -13,6 +13,9 @@
     "data/canonical-task-records/STEGLEARN-YOUTUBE-EDUCATION-PARTNERSHIP-001.json",
     "StegVerse-Labs/StegLearn:docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegLearn:STEGLEARN_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegLearn:README.md",
+    "StegVerse-Labs/StegLearn@e00ec11116e55b1698739de3fa8dc2e052b47b97",
+    "StegVerse-Labs/StegLearn/actions/runs/34988288580",
     "https://edu.google.com/resources/get-started/find-a-partner/become-a-partner/build/",
     "https://edu.google.com/intl/ALL_in/contact/",
     "https://support.google.com/youtube/answer/15503014",
@@ -34,6 +37,10 @@
   "blockers": [],
   "systemic_incident_ref": null,
   "adjacent_task_refs": ["STEGLEARN-SITE-PUBLICATION-001"],
+  "existing_evidence_refs": [
+    "StegVerse-Labs/StegLearn@e00ec11116e55b1698739de3fa8dc2e052b47b97",
+    "StegVerse-Labs/StegLearn/actions/runs/34988288580"
+  ],
   "expected_evidence_predicates": [
     "CANONICAL_TASK_SHARD_REGISTERED",
     "CANONICAL_MIRROR_HANDOFF_CURRENT",
@@ -44,6 +51,7 @@
     "MINIMUM_NEGOTIATED_CAPABILITY_SET_DEFINED",
     "OUTREACH_PACKAGE_PREPARED_NOT_SENT",
     "README_AND_REPOSITORY_HANDOFF_CURRENT",
+    "STEGLEARN_EXACT_HEAD_VALIDATION_GREEN",
     "NO_PARTNERSHIP_OR_RUNTIME_CAPABILITY_FABRICATED"
   ],
   "runtime_requirements": {
@@ -86,10 +94,9 @@
   "human_action_ref": null,
   "completion": {"claimed": false, "validated": false, "reconciliation_ref": null},
   "allowed_next_transitions": [
-    "PROJECT_CANONICAL_HANDOFF",
-    "UPDATE_STEGLEARN_README_AND_HANDOFF",
-    "VALIDATE_SOURCE_PACKAGE",
-    "OWNER_AUTHORIZE_GOOGLE_OUTREACH"
+    "OWNER_AUTHORIZE_GOOGLE_OUTREACH",
+    "REFRESH_PUBLIC_PARTNER_EVIDENCE",
+    "RECORD_GOOGLE_RESPONSE_EVIDENCE"
   ],
   "handoff_projection_refs": ["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"],
   "authority_model": {
@@ -103,7 +110,7 @@
   },
   "readme_impact": {
     "material_function_change": true,
-    "readme_updated_in_change_set": false,
+    "readme_updated_in_change_set": true,
     "readme_path": "StegVerse-Labs/StegLearn:README.md"
   }
 }
