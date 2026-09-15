@@ -70,16 +70,17 @@ def _request_from_node_trigger(payload: Any) -> tuple[dict[str, Any], dict[str, 
     require(entry.get("credential_authority") == "TV/TVC" and entry.get("github_token_runtime_authority") == "NONE" and entry.get("authority_effect") == "NONE_LOCAL_CONTINUITY_ONLY", "node_outbox_credential_boundary_invalid")
     body = dict(entry)
     claimed = body.pop("outbox_entry_hash", None)
-    require(claimed == transport_boundary.digest_uri(body), "node_outbox_entry_hash_mismatch")
+    require(claimed == transport_boundary._sha256_uri(body), "node_outbox_entry_hash_mismatch")
     request = entry.get("materialization_request")
     require(isinstance(request, dict), "node_outbox_materialization_request_required")
     validate_request(request)
-    for key in ("materialization_id", "request_hash", "transport_intent_hash", "payload_hash", "destination", "downstream_owner_ref"):
+    for key in ("materialization_id", "operation_id", "packet_id", "transport_intent_hash", "payload_hash", "request_hash", "destination", "downstream_owner_ref", "payload_ref"):
         require(entry.get(key) == request.get(key), "node_outbox_binding_mismatch:" + key)
+    require(isinstance(entry.get("node_outbox_ref"), str) and entry.get("node_outbox_ref"), "node_outbox_ref_required")
     require(payload.get("node_id") == entry.get("node_id") and payload.get("interlock_id") == entry.get("interlock_id") and payload.get("outbox_entry_hash") == entry.get("outbox_entry_hash"), "node_trigger_binding_mismatch")
     trigger = dict(payload)
     trigger_claim = trigger.pop("trigger_sha256", None)
-    require(trigger_claim == transport_boundary.digest_uri(trigger), "node_trigger_hash_mismatch")
+    require(trigger_claim == transport_boundary._sha256_uri(trigger), "node_trigger_hash_mismatch")
     return dict(request), {
         "node_id": entry.get("node_id"),
         "interlock_id": entry.get("interlock_id"),
