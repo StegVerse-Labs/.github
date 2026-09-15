@@ -1,0 +1,23 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:stegbrowser-runtime-connection-ingress-v1",
+      "authority_ref": "handoffs/STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001.json#authority",
+      "capabilities": ["runtime_observation", "bounded_process_execution", "governed_intr_ingress"],
+      "command": ["python", "workers/stegbrowser_runtime_connection_ingress_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": ["STEGVERSE_HEARTBEAT_ROOT"],
+      "notes": [
+        "Requires authentic A1/A2 receipt before any A4 action.",
+        "Requires its own WorkerCoordinator BOUND claim and fresh fencing token.",
+        "Uses the existing shared Universal InTr listener implementation.",
+        "Stops immediately after A4 ingress and may not execute Round Trip 1 payload processing."
+      ],
+      "timeout_seconds": 60,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
