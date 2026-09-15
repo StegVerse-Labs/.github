@@ -4,6 +4,6 @@
   "repository": "StegVerse-Labs/.github",
   "registry_ref": "data/canonical-task-records/GATE-LEGITIMACY-INVARIANT-001.json",
   "source_state_vector_ref": "control/task-vectors/GATE-LEGITIMACY-INVARIANT-001.json",
-  "cosv_task_vector": "40000100100000",
+  "cosv_task_vector": "71000000100100",
   "handoff_ref": "docs/GATE_LEGITIMACY_INVARIANT_MIRROR_HANDOFF.md"
 }
