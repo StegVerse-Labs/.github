@@ -1,0 +1,56 @@
+{
+  "schema": "stegverse.interlock-intr-manifest/v1",
+  "manifest_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001:owned-mirror-route",
+  "task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+  "cosv_task_vector": "40000100100000",
+  "route_owner": "STEGVERSE",
+  "path_source": "MANIFEST",
+  "endpoint_discovery_required": false,
+  "receiver_discovery_required": false,
+  "undeclared_endpoint_or_receiver_substitution_allowed": false,
+  "outbound": {
+    "ecosystem_boundary": "STEGVERSE_ECOSYSTEM",
+    "interlock_intr_endpoint": "STEGVERSE_OWNED_INTR_EGRESS_ENDPOINT",
+    "receiver": "STEGVERSE_OWNED_MIRROR_REFLECTOR",
+    "receiver_role": "OWNED_MIRROR_REFLECTOR",
+    "expected_action": "REFLECT_DECLARED_RECORDS_PACKET"
+  },
+  "round_trip_1": {
+    "return_packet": "CORRELATED_RECORDS_PACKET",
+    "return_target": "MASTER_RECORDS_RECORDING_SURFACE",
+    "exit_transition": "FIRST_FINAL_ALLOWED_INTR_EXIT_TO_RECORDING",
+    "required_evidence": [
+      "GOVERNED_RETURN_PACKET_RECEIVED",
+      "RECORDS_PACKET_DELIVERED_FOR_RECORDING",
+      "RETURN_RECORD_DURABLY_RECORDED",
+      "FIRST_FINAL_ALLOWED_INTR_EXIT_TRANSITION_OBSERVED"
+    ],
+    "terminal_predicate": "SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED"
+  },
+  "between_round_trips": {
+    "processing_boundary": "STEGVERSE_OWNED_MIRROR_BOUNDARY",
+    "required_processing": [
+      "RECORDING",
+      "CUSTODY_RECONSTRUCTION",
+      "MIRROR_BOUNDARY_PROCESSING"
+    ]
+  },
+  "round_trip_2": {
+    "entry_transition": "MIRROR_BOUNDARY_INTR_REENTRY",
+    "interlock_intr_endpoint": "STEGVERSE_OWNED_INTR_ECOSYSTEM_RETURN_ENDPOINT",
+    "receiver": "STEGVERSE_ECOSYSTEM",
+    "endpoint_call": "ENDPOINT_INTERLOCK_INTR_CALLED",
+    "endpoint_transition": "ENDPOINT_INTERLOCK_INTR_ALLOWED",
+    "terminal_transition": "ECOSYSTEM_REENTRY_FINAL_ALLOWED_TRANSITION",
+    "terminal_predicate": "SUCCESSFUL_ECOSYSTEM_RETURN_ROUND_TRIP_IDENTIFIED"
+  },
+  "overall_terminal_predicate": "SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIPS_IDENTIFIED",
+  "authority": {
+    "transition_and_packet_movement": "Interlock/InTr",
+    "claim_fence": "WorkerCoordinator",
+    "credential_provider": "TV/TVC",
+    "recording_custody_reconstruction": "Master Records",
+    "github_runtime_authority": "NONE"
+  },
+  "authority_effect": "NONE_ROUTE_DECLARATION_ONLY"
+}
