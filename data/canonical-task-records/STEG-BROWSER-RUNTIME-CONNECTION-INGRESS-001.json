@@ -1,0 +1,134 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001",
+  "correlation_id": "STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001",
+  "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+  "parent_task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+  "goal": "Resolve the manifest-bound invocation connection state, select only matching existing reusable capabilities, materialize the admitted execution surface, obtain the authentic WorkerCoordinator claim/fence, and reach authentic Interlock/InTr ingress for the declared StegBrowser route without advancing Round Trip 1 payload processing.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "40000100100000",
+  "source_refs": [
+    "docs/STEGBROWSER_RUNTIME_CONNECTION_INGRESS_MIRROR_HANDOFF.md",
+    "control/transport-manifests/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json",
+    "source-bundles/reusable-task-registry.d/RT-SOVEREIGN-SOURCE-REFRESH-001.json",
+    "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
+    "data/reusable-task-registry.json",
+    "scripts/resolve_stegbrowser_runtime_connection_transition.py"
+  ],
+  "runtime_requirements": {
+    "capabilities": [
+      "manifest_bound_connection_state_resolution",
+      "event_ephemeral_stegos_node",
+      "worker_claim_projection",
+      "universal_intr_profiled_ingress"
+    ],
+    "environment": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+    "direction": "INTERNAL_TO_GOVERNED_INGRESS",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"SUITABLE","limitation_class":"NONE","evidence_refs":["docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md"]},
+      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"SUITABLE","limitation_class":"NONE","evidence_refs":["docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"SUITABLE","limitation_class":"PLATFORM","evidence_refs":["docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md"]},
+      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"SELECTED","limitation_class":"NONE","evidence_refs":["docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":[]}
+    ],
+    "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  },
+  "runtime_connection_transition": {
+    "authority": "INTERLOCK_INTR",
+    "manifest_ref": "control/transport-manifests/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json",
+    "variables": {
+      "callable": "PENDING_AUTHENTIC_TRANSITION_EVIDENCE",
+      "refreshable": "PENDING_AUTHENTIC_TRANSITION_EVIDENCE",
+      "applicable_protocol_resolved": "PENDING_AUTHENTIC_TRANSITION_EVIDENCE"
+    },
+    "always_on_runtime_source_assumed": false,
+    "source_freshness_persistent_state": false
+  },
+  "candidate_reusable_tasks": [
+    {
+      "reusable_task_id": "RT-SOVEREIGN-SOURCE-REFRESH-001",
+      "selection_condition": "callable=true AND refreshable=true"
+    },
+    {
+      "reusable_task_id": "RT-INTR-PROTOCOL-ESTABLISH-001",
+      "selection_condition": "callable=true AND applicable_protocol_resolved=false"
+    },
+    {
+      "reusable_task_id": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
+      "selection_condition": "A4_INTRANSPORT_INGRESS_OBSERVED=true",
+      "phase": "HANDOFF_AFTER_CHILD_COMPLETION_NOT_EXECUTED_BY_THIS_CHILD"
+    }
+  ],
+  "dependencies": [
+    {"dependency_id":"DEP-A0-MANIFEST-BOUND","kind":"SOURCE_AND_INVOCATION_PREDICATE","state":"MERGED_VALIDATED_RUNTIME_BINDING_PENDING","ref":"MANIFEST_BOUND_TO_INVOCATION"},
+    {"dependency_id":"DEP-A1-INTR-CONNECTION-TRANSITION","kind":"GOVERNED_STATE_TRANSITION","state":"PENDING_AUTHENTIC_TRANSITION_EVIDENCE","ref":"INTERLOCK_INTR"},
+    {"dependency_id":"DEP-A3-WORKERCOORDINATOR-CLAIM-FENCE","kind":"AUTHORITY_OWNED_EXECUTION_STATE","state":"PENDING_AUTHENTIC_EXECUTION","ref":"CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED"},
+    {"dependency_id":"DEP-A4-INTR-INGRESS","kind":"GOVERNED_TRANSPORT_INGRESS","state":"PENDING_AUTHENTIC_TRANSPORT","ref":"INTR_ADMISSION_OBSERVED"}
+  ],
+  "expected_evidence_predicates": [
+    "MANIFEST_BOUND_TO_INVOCATION",
+    "RUNTIME_CONNECTION_TRANSITION_VARIABLES_OBSERVED",
+    "CALLABLE_STATE_BOUND_TO_INVOCATION",
+    "REFRESHABLE_STATE_BOUND_TO_INVOCATION",
+    "MATCHING_REUSABLE_CAPABILITIES_SELECTED",
+    "ADMITTED_EXECUTION_SURFACE_MATERIALIZED",
+    "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+    "INTR_ADMISSION_OBSERVED",
+    "NO_ROUND_TRIP_1_PAYLOAD_PROCESSING_EXECUTED_BY_CHILD",
+    "NO_SECOND_USER_OPERATED_DEVICE_REQUIRED"
+  ],
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "runtime_connection_transition_observed": false,
+    "matching_reusable_capabilities_selected": false,
+    "admitted_execution_surface_materialized": false,
+    "workercoordinator_claim_fence_observed": false,
+    "intr_admission_observed": false
+  },
+  "allowed_next_transitions": [
+    "OBSERVE_RUNTIME_CONNECTION_TRANSITION_VARIABLES",
+    "SELECT_MATCHING_REUSABLE_CAPABILITIES",
+    "MATERIALIZE_ADMITTED_EXECUTION_SURFACE",
+    "OBSERVE_CURRENT_WORKERCOORDINATOR_CLAIM_FENCE",
+    "OBSERVE_INTR_ADMISSION",
+    "HANDOFF_TO_RT_STEGBROWSER_RUNTIME_CONSUMPTION"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "interlock_intr_transition_authority": true,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "credential_authority": "TV/TVC",
+    "user_verification_authority": "KV/SKAP Vault",
+    "master_records_reality_authority": true,
+    "github_runtime_authority": "NONE",
+    "healer_role": "TRIGGERED_REMEDIATION_ONLY",
+    "second_user_operated_device_required": false
+  }
+}
