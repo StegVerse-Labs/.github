@@ -1,0 +1,101 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001",
+  "created_at": "2026-09-15T03:55:00Z",
+  "updated_at": "2026-09-15T03:55:00Z",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+    "objective": "After authentic A1 connection-state observation and A2 invocation-bound materialization, obtain one fresh WorkerCoordinator claim/fence for STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001 and perform exactly one manifest-bound A4 Interlock/InTr ingress without executing Round Trip 1 payload processing.",
+    "success_predicates": [
+      "RUNTIME_CONNECTION_TRANSITION_VARIABLES_OBSERVED",
+      "ADMITTED_EXECUTION_SURFACE_MATERIALIZED",
+      "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+      "INTR_ADMISSION_OBSERVED",
+      "NO_ROUND_TRIP_1_PAYLOAD_PROCESSING_EXECUTED_BY_CHILD"
+    ],
+    "failure_predicates": [
+      "A1_A2_EVIDENCE_MISSING",
+      "WORKERCOORDINATOR_CLAIM_FENCE_MISSING_OR_STALE",
+      "MANIFEST_OR_COSV_BINDING_MISMATCH",
+      "INTERLOCK_INTR_INGRESS_NOT_ADMITTED",
+      "ROUND_TRIP_1_PAYLOAD_PROCESSING_ATTEMPTED"
+    ],
+    "authority_ceiling": [
+      "runtime_observation",
+      "bounded_process_execution",
+      "governed_intr_ingress",
+      "no_round_trip_1_payload_processing",
+      "no_repository_writeback"
+    ],
+    "successor_policy": "HANDOFF_TO_EXISTING_RT_STEGBROWSER_RUNTIME_CONSUMPTION_ONLY_AFTER_A4",
+    "max_successor_depth": 0
+  },
+  "task": {
+    "task_id": "STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001",
+    "repository": "StegVerse-Labs/.github",
+    "source_refs": [
+      "docs/STEGBROWSER_RUNTIME_CONNECTION_INGRESS_MIRROR_HANDOFF.md",
+      "control/resident-execution-request.d/stegbrowser-runtime-connection-ingress-001.json",
+      "scripts/consume_stegbrowser_runtime_connection_ingress_request.py",
+      "workers/stegbrowser_runtime_connection_ingress_worker.py",
+      "control/transport-manifests/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json"
+    ],
+    "dependencies": [],
+    "parent_task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+    "derivation_reason": "Genuinely separable A1-A4 execution child created when the parent reached its prompt decomposition boundary.",
+    "canonical_owner_ref": "docs/STEGBROWSER_RUNTIME_CONNECTION_INGRESS_MIRROR_HANDOFF.md",
+    "canonical_lineage_key": "stegbrowser:runtime-connection-ingress:a1-a4",
+    "derivation_depth": 1,
+    "priority": "release"
+  },
+  "authority": {
+    "authority_source": "STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001 canonical task + authentic A1/A2 predicates",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL",
+    "claim_state": "AUTHORIZED_FOR_INDEPENDENT_TASK_CONTROL_CLAIM_AFTER_A1_A2",
+    "fresh_fence_required": true,
+    "carrier_trigger_required": false,
+    "heartbeat_reference_only": true,
+    "heartbeat_grants_execution_authority": false,
+    "policy_version": "stegbrowser-runtime-connection-ingress-v1",
+    "credential_authority": "TV/TVC",
+    "credential_requirement": "NONE",
+    "github_token_production_authority": "NONE",
+    "github_token_required": false,
+    "non_tv_tvc_secret_or_token_allowed": false,
+    "repository_writeback_authority": false,
+    "round_trip_1_payload_processing_authority": false
+  },
+  "execution": {
+    "required_capabilities": ["runtime_observation", "bounded_process_execution", "governed_intr_ingress"],
+    "allowed_paths": ["receipts/sovereign-host/stegbrowser-runtime-connection-*", "receipts/sovereign-network/canonical-work-intr-ingress/**", "intr-payloads/canonical-work/**"],
+    "allowed_services": [],
+    "max_actions": 8,
+    "max_retries": 4,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 16,
+    "rate_class": "stegbrowser_runtime_connection_ingress"
+  },
+  "activation": {
+    "carrier": "heartbeat_reference_only",
+    "executor_binding": "AUTHORIZED_AFTER_A1_A2",
+    "authorization_ref": "receipts/sovereign-host/stegbrowser-runtime-connection-a1-a2.latest.json",
+    "carrier_event_prerequisite": false,
+    "checkout_policy": "fenced_atomic_checkout"
+  },
+  "continuity": {
+    "checkpoint_ref": "receipts/sovereign-host/stegbrowser-runtime-connection-ingress-a4.latest.json",
+    "handoff_destination": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
+    "master_records_required": false,
+    "status_projection": "control/worker-status.json"
+  },
+  "completion": {
+    "next_authorized_action": "After authentic A1/A2, activate pre-authorized independent-task claim eligibility, let WorkerCoordinator mint a fresh claim/fence, perform exactly one A4 InTr ingress, then stop before Round Trip 1 payload processing.",
+    "terminal_when": [
+      "A1/A2 evidence valid",
+      "fresh WorkerCoordinator claim/fence observed",
+      "A4 ingress receipt state=INGRESS_ADMITTED",
+      "round_trip_1_payload_processing_attempted=false"
+    ]
+  }
+}
