@@ -4,118 +4,193 @@
   "correlation_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
   "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
   "parent_task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
-  "goal": "Bind the manifest-defined StegBrowser invocation to the existing Canonical Work resident dispatcher and organization-local Interlock/InTr boundary, materialize the invocation-owned ephemeral StegOS execution surface, obtain authentic WorkerCoordinator claim/fence, and retain verified A4 Interlock/InTr ingress evidence before the governed round-trip lifecycle proceeds.",
+  "goal": "Execute the manifest-defined StegBrowser path through the existing StegVerse invocation-owned runtime architecture from manifest binding through two governed Interlock/InTr round trips without any external runtime, device, host, endpoint, receiver, or route discovery stage.",
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT",
   "cosv_task_vector": "40000100100000",
   "handoff_ref": "docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md",
   "operation_lineage_task_id": "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
-  "runtime_requirements": {
-    "selected_substrate": "ADMITTED-EPHEMERAL-STEGOS-NODE",
-    "standing_runtime_required": false,
-    "external_runtime_connection_required": false,
-    "external_device_required": false,
-    "second_user_operated_device_required": false,
-    "hosted_carrier_required": false
+  "source_merge": {
+    "pull_request": "StegVerse-Labs/.github#1914",
+    "merge_commit": "7337271028d1226e76af88b33765f38334159b23",
+    "source_merged_validated": true,
+    "runtime_authority_effect": "NONE"
   },
-  "execution_substrate_resolution": {
-    "schema": "stegverse.execution-substrate-resolution/v1",
-    "review_order": [
-      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
-      "STEGOS-CURRENT-DEVICE-NODE",
-      "STEG-BROWSER-EPHEMERAL-LEASE",
-      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
-      "ADMITTED-EPHEMERAL-STEGOS-NODE",
-      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+  "execution_invariant": {
+    "path": [
+      "MANIFEST",
+      "STEGVERSE_NODE",
+      "INTERLOCK",
+      "INTR",
+      "BOUNDED_LEASE_EXECUTION_BINDING",
+      "EVENT_EPHEMERAL_STEGOS_RUNTIME",
+      "WORKERCOORDINATOR_CLAIM_FENCE",
+      "AUTHENTIC_GOVERNED_INGRESS",
+      "ROUND_TRIP_1",
+      "ROUND_TRIP_2"
     ],
-    "reviews": [
-      {
-        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
-        "disposition": "NOT_APPLICABLE",
-        "limitation_class": "NOT_APPLICABLE",
-        "evidence_refs": []
-      },
-      {
-        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
-        "disposition": "NOT_APPLICABLE",
-        "limitation_class": "NOT_APPLICABLE",
-        "evidence_refs": []
-      },
-      {
-        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
-        "disposition": "SUITABLE",
-        "limitation_class": "NONE",
-        "evidence_refs": [
-          "docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"
-        ]
-      },
-      {
-        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
-        "disposition": "NOT_APPLICABLE",
-        "limitation_class": "NOT_APPLICABLE",
-        "evidence_refs": []
-      },
-      {
-        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
-        "disposition": "SELECTED",
-        "limitation_class": "NONE",
-        "evidence_refs": [
-          "docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md"
-        ]
-      },
-      {
-        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
-        "disposition": "NOT_APPLICABLE",
-        "limitation_class": "NOT_APPLICABLE",
-        "evidence_refs": []
-      }
-    ],
-    "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
-    "external_device_required": false,
-    "second_user_operated_device_allowed": false,
-    "authority_effect": "NONE"
+    "external_runtime_discovery_stage_exists": false,
+    "external_device_discovery_stage_exists": false,
+    "external_host_discovery_stage_exists": false,
+    "route_discovery_required": false,
+    "endpoint_discovery_required": false,
+    "receiver_discovery_required": false,
+    "preexisting_runtime_required": false,
+    "generic_process_host_exposure_to_chat_required": false,
+    "second_user_operated_device_required": false
+  },
+  "goal_chart": {
+    "A0": {
+      "state": "MANIFEST_PATH_CONTRACT",
+      "bind_exact": [
+        "Goal",
+        "COSV",
+        "outbound Interlock/InTr endpoint",
+        "owned mirror receiver",
+        "Round Trip 1 recording destination",
+        "mirror-processing boundary",
+        "Round Trip 2 return endpoint",
+        "ecosystem destination"
+      ],
+      "success_predicate": "MANIFEST_BOUND_TO_INVOCATION"
+    },
+    "A1": {
+      "state": "STEGVERSE_NODE_BINDING",
+      "role": "CONTINUITY_AND_ADMISSION_ANCHOR_ONLY",
+      "retain": [
+        "node_id",
+        "node/profile binding",
+        "genesis/continuity commitment",
+        "manifest/Goal/COSV correlation"
+      ],
+      "not_external_machine": true,
+      "not_standing_process_prerequisite": true
+    },
+    "A2": {
+      "state": "INTERLOCK_INTR_ENTRY",
+      "action": "Bind invocation to applicable/declared Interlock and submit governed InTr materialization transition",
+      "transition_authority": "Interlock/InTr",
+      "request_authority": "NONE"
+    },
+    "A2.1": {
+      "state": "BOUNDED_LEASE_EXECUTION_BINDING",
+      "condition": "IF_ADMITTED",
+      "bind": ["Node", "Interlock", "manifest", "Goal", "COSV", "requested execution class"],
+      "lease_scope": "INVOCATION_EPHEMERAL",
+      "standing_host_relationship": false
+    },
+    "A2.2": {
+      "state": "EVENT_EPHEMERAL_STEGOS_MATERIALIZATION",
+      "condition": "IF_ADMITTED",
+      "bind": ["Node", "Interlock", "InTr transition", "lease/binding", "runtime_id", "manifest", "Goal", "COSV"],
+      "preexisting_runtime_required": false
+    },
+    "A3": {
+      "state": "WORKERCOORDINATOR_CLAIM_FENCE",
+      "require": ["claim_id", "fencing_token"],
+      "success_predicate": "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+      "runtime_evidence_only": true
+    },
+    "A4": {
+      "state": "AUTHENTIC_INTERLOCK_INTR_INGRESS",
+      "retain": "exact durable ingress receipt",
+      "verify_as_applicable": ["packet identity", "profile", "payload hash", "packet hash", "manifest hash", "node_id", "interlock_id", "lease/runtime binding", "Goal", "COSV", "claim_id", "fencing_token"],
+      "success_predicates": ["ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED", "AUTHENTIC_INTR_INGRESS_OBSERVED"]
+    },
+    "A5": {
+      "state": "ROUND_TRIP_1_OUTBOUND",
+      "path": ["ecosystem", "Interlock/InTr", "owned mirror reflector"],
+      "alternate_receiver_substitution": false
+    },
+    "A6": {
+      "state": "ROUND_TRIP_1_RETURN",
+      "path": ["owned mirror reflected records packet", "first final allowed Interlock/InTr exit", "MASTER_RECORDS_RECORDING_SURFACE"]
+    },
+    "A7": {
+      "state": "ROUND_TRIP_1_VERIFICATION",
+      "require_true": ["GOVERNED_RETURN_PACKET_RECEIVED", "RECORDS_PACKET_DELIVERED_FOR_RECORDING", "RETURN_RECORD_DURABLY_RECORDED", "FIRST_FINAL_ALLOWED_INTR_EXIT_TRANSITION_OBSERVED"],
+      "success_predicate": "SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED"
+    },
+    "B1": {
+      "state": "RECORD_RECONSTRUCT_PROCESS",
+      "owner": "Master Records plus applicable processing owners",
+      "result_boundary": "STEGVERSE_OWNED_MIRROR_BOUNDARY",
+      "master_records_transport_authority": false,
+      "round_trip_1_truth_immutable": true
+    },
+    "C1": {
+      "state": "ROUND_TRIP_2_INITIATION",
+      "boundary": "STEGVERSE_OWNED_MIRROR_BOUNDARY",
+      "success_predicate": "MIRROR_BOUNDARY_INTR_REENTRY_OBSERVED"
+    },
+    "C2": {
+      "state": "ENDPOINT_INTERLOCK_INTR",
+      "require_true": ["ENDPOINT_INTERLOCK_INTR_CALLED", "ENDPOINT_INTERLOCK_INTR_ALLOWED"]
+    },
+    "C3": {
+      "state": "ECOSYSTEM_REENTRY",
+      "destination": "STEGVERSE_ECOSYSTEM",
+      "success_predicate": "ECOSYSTEM_REENTRY_FINAL_ALLOWED_TRANSITION_OBSERVED"
+    },
+    "C4": {
+      "state": "ROUND_TRIP_2_VERIFICATION",
+      "require_true": ["MIRROR_BOUNDARY_PROCESSING_COMPLETE", "MIRROR_BOUNDARY_INTR_REENTRY_OBSERVED", "ENDPOINT_INTERLOCK_INTR_CALLED", "ENDPOINT_INTERLOCK_INTR_ALLOWED", "ECOSYSTEM_REENTRY_FINAL_ALLOWED_TRANSITION_OBSERVED"],
+      "success_predicate": "SUCCESSFUL_ECOSYSTEM_RETURN_ROUND_TRIP_IDENTIFIED"
+    },
+    "COMPOSITION_SUCCESS": {
+      "requires": ["SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED", "SUCCESSFUL_ECOSYSTEM_RETURN_ROUND_TRIP_IDENTIFIED"],
+      "success_predicate": "SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIPS_IDENTIFIED"
+    }
+  },
+  "current_authentic_state": {
+    "MANIFEST_BOUND_TO_INVOCATION": "SOURCE_BOUND_RUNTIME_CONFIRMATION_PENDING",
+    "STEGBROWSER_ACTIVE_RESIDENT_REQUEST_DISPATCH_BINDING_VALID": "SOURCE_VALID",
+    "NODE_INTERLOCK_INTR_LEASE_MATERIALIZATION_PATH_IDENTIFIED": "ARCHITECTURAL_PRECEDENT_RECOVERED_CURRENT_STEGBROWSER_INVOCATION_PROOF_PENDING",
+    "INVOCATION_OWNED_EPHEMERAL_STEGOS_MATERIALIZED": false,
+    "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED": false,
+    "ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED": false,
+    "AUTHENTIC_INTR_INGRESS_OBSERVED": false
+  },
+  "issue_1918": {
+    "classification": "REFRAME_CANDIDATE",
+    "incorrect_assumption": "CHATGPT_REQUIRES_GENERIC_PROCESS_EXECUTION_SURFACE",
+    "recovered_architecture": ["invocation", "Node", "Interlock", "InTr", "lease", "EVENT_EPHEMERAL runtime"],
+    "close_from_historical_evidence_only": false,
+    "next_diagnostic": "TRACE_CURRENT_STEGBROWSER_IMPLEMENTATION_EQUIVALENT",
+    "if_reusable_materializer_exists": "RETIRE_OR_REFRAME_AS_MISTAKEN_TOOLING_ABSTRACTION",
+    "if_binding_absent": "REMEDIATE_ONLY_EXACT_MISSING_INVOCATION_MATERIALIZER_BINDING"
   },
   "source_defects": [
     {
       "id": "STEGBROWSER-CANONICAL-WORK-SPEC-STALE-TASK-ID",
-      "owner": "CANONICAL_WORK_RESIDENT_CONSUMER_BINDING",
-      "state": "SOURCE_REPAIR_VALIDATED_EXACT_HEAD_MERGE_PENDING",
-      "expected": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
-      "observed": "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
-      "validation_head": "b530c27194aaa0d45e889e30fed910e0c8596bdc"
+      "state": "SOURCE_REPAIR_MERGED_VALIDATED",
+      "merge_commit": "7337271028d1226e76af88b33765f38334159b23"
     },
     {
       "id": "STEGBROWSER-A3-A4-ORDERING-DRIFT",
-      "owner": "STEGBROWSER_REUSABLE_RUNTIME_RUNNER",
-      "state": "SOURCE_REPAIR_VALIDATED_EXACT_HEAD_MERGE_PENDING",
-      "expected": "WORKERCOORDINATOR_CLAIM_FENCE_THEN_VERIFIED_ORGANIZATION_LOCAL_INTR_INGRESS",
-      "observed": "CANONICAL_WORK_INGRESS_PROJECTION_BEFORE_AUTHENTIC_CLAIM_FENCE",
-      "validation_head": "b530c27194aaa0d45e889e30fed910e0c8596bdc"
+      "state": "SOURCE_REPAIR_MERGED_VALIDATED",
+      "merge_commit": "7337271028d1226e76af88b33765f38334159b23"
     }
   ],
-  "source_validation": {
-    "validated_head": "b530c27194aaa0d45e889e30fed910e0c8596bdc",
-    "organization_control_run": 34926414425,
-    "deterministic_suite_run": 34926414434,
-    "heartbeat_validation_run": 34926414456,
-    "all_required_lanes_passed": true,
-    "runtime_authority_effect": "NONE",
-    "final_reconciled_head_requires_revalidation": true
-  },
-  "completion": {
-    "resident_request_dispatch_binding_valid": true,
-    "invocation_owned_ephemeral_stegos_materialized": false,
-    "workercoordinator_claim_fence_observed": false,
-    "organization_local_intr_ingress_receipt_verified": false,
-    "authentic_intr_ingress_observed": false,
-    "source_merged_validated": false
-  },
   "authority_model": {
-    "worker_claim_authority": "WORKERCOORDINATOR",
-    "interlock_intr_transition_authority": true,
+    "manifest": "ROUTE_DECLARATION_ONLY",
+    "stegverse_node": "CONTINUITY_ADMISSION_ANCHOR",
+    "lease": "BOUNDED_INVOCATION_SCOPE_ONLY",
+    "stegos_event_ephemeral_runtime": "COMPUTE_EXECUTION_SURFACE",
+    "workercoordinator": "CLAIM_FENCE_AUTHORITY",
+    "interlock_intr": "TRANSITION_AND_GOVERNED_PACKET_MOVEMENT_AUTHORITY",
     "credential_authority": "TV/TVC",
-    "github_runtime_authority": "NONE",
-    "resident_dispatcher_authority_effect": "NONE",
-    "organization_local_boundary_authority_effect": "NONE_BOUNDED_EXECUTION_SURFACE"
-  }
+    "master_records": "CUSTODY_RECONSTRUCTION_AUTHORITY",
+    "github_ci": "SOURCE_VALIDATION_AND_EVIDENCE_TRANSPORT_ONLY",
+    "github_runtime_authority": "NONE"
+  },
+  "allowed_next_transitions": [
+    "TRACE_CURRENT_STEGBROWSER_NODE_INTERLOCK_INTR_LEASE_MATERIALIZER_EQUIVALENT",
+    "REUSE_MATCHING_EXISTING_MATERIALIZER_IF_PREDICATES_MATCH",
+    "REMEDIATE_ONLY_MISSING_INVOCATION_MATERIALIZER_BINDING_IF_ABSENT",
+    "OBSERVE_INVOCATION_OWNED_EPHEMERAL_STEGOS_MATERIALIZATION",
+    "OBSERVE_CURRENT_WORKERCOORDINATOR_CLAIM_FENCE",
+    "VERIFY_AUTHENTIC_ORGANIZATION_LOCAL_INTR_INGRESS",
+    "ADVANCE_ROUND_TRIP_1_ONLY_AFTER_A4"
+  ]
 }
