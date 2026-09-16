@@ -8,7 +8,7 @@ Repository: `StegVerse-Labs/.github`
 - Goal Task ID: `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001`
 - Parent Goal: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / SINGLE CANONICAL UNIVERSAL-INTR BINDING MERGED+VALIDATED / AUTHENTIC A1-A4 EXECUTION PENDING`
+- Status: `ACTIVE / CHECKED_OUT / SINGLE CANONICAL UNIVERSAL-INTR BINDING MERGED+VALIDATED / SV002 SITE REUSABLE BASELINE MERGED+VALIDATED / AUTHENTIC A1-A4 EXECUTION PENDING`
 - Canonical Universal InTr binding issue: `#1952` CLOSED source-complete only.
 - Canonical Universal InTr binding PR: `#1955`.
 - Canonical validated head: `2d3b2e8292397b80285078ad4130b0c5cfebfac0`.
@@ -19,6 +19,11 @@ Repository: `StegVerse-Labs/.github`
 - PR #1964 validated head: `f1e1017e1afb6b0a261f477600d218fdf68e663d`.
 - PR #1964 exact-head validation: Organization Control `34993463477`, Deterministic Suite `34993462958`, Heartbeat `34993463368` — all SUCCESS.
 - PR #1964 merge: `32dee9dbbcd31282835f96c72de05d93da0fd7bb`.
+- PR `#1966` changed only the reusable execution baseline to begin from the already-validated StegVerse-002 Site browser lane rather than reconstructing that lane component-by-component.
+- PR #1966 exact validated head: `6edba060692e275361f9d8be8d17b5ad21158711`.
+- PR #1966 exact-head validation: Organization Control `35092566189`, Deterministic Suite `35092566222`, Heartbeat `35092566216` — all SUCCESS.
+- PR #1966 merge: `94b8804687baed9251b4e6ecbb640f14c7259dc6`.
+- Site SV002 reusable baseline: PR `#1354`, exact validated head `0ae6bbd252741599c7cab06746f274b901d2e455`, focused validation `34993797222` SUCCESS, merge `a8846026bc80b9890c07ad72dda1350ce7f3c0d4`.
 - Issue `#1918` remains closed; the generic process-host premise is invalid under the validated event-ephemeral architecture.
 
 ## Canonical architecture
@@ -44,7 +49,7 @@ No control-plane source-package relay, resident-request sweep, external runtime/
 
 ## Single canonical StegBrowser binding
 
-The retained implementation is the PR #1955 path only:
+The retained StegBrowser-specific implementation remains the PR #1955 `StegBrowser:ManifestInvocation` path only. PR #1966 does not add a second materialization binding; it records the already-green Site SV002 browser lane as the reusable runtime baseline for the current StegBrowser adaptation.
 
 ```text
 scripts/run_stegbrowser_universal_intr_materialization.py
@@ -77,7 +82,7 @@ Canonical downstream owner: `StegVerse-Labs/.github#1952`.
 
 The resident connection wrapper remains coordination/observation compatibility only and is not the runtime owner or prerequisite. The #1960 alternate `StegBrowser:ManifestIngress` representation is retired by #1964 and must not be reintroduced.
 
-The existing downstream runner remains unchanged and owns the already-validated Node/Interlock lease/runtime composition, EVENT_EPHEMERAL materialization, WorkerCoordinator transition, and A4 packet verification.
+The reusable execution baseline now starts from the validated Site SV002 lane. Preserve its Node gating, Interlock/InTr materialization, bounded lease, self-contained EVENT_EPHEMERAL browser runtime, execution-time runtime identity, and reconstruction mechanics; adapt only current StegBrowser Goal/COSV/manifest/payload/owned-mirror correlation.
 
 ## One-shot invocation invariant
 
@@ -110,6 +115,7 @@ A0 manifest/path binding
 
 ```text
 SV002_RUNTIME_ARCHITECTURE_SOURCE_IDENTIFIED = true
+SV002_SITE_REUSABLE_BASELINE_RETEST_PASS = true
 STEGBROWSER_UNIVERSAL_INTR_MATERIALIZATION_BINDING_COMPLETE = true
 SINGLE_CANONICAL_STEGBROWSER_MATERIALIZATION_PATH = true
 PR_1960_PARALLEL_REPRESENTATION_RETIRED = true
@@ -183,11 +189,11 @@ Any promotion must preserve exact Goal/COSV/nonce/manifest/node/interlock/regist
 
 ## Immediate continuation
 
-Do not emit another request and do not add another materialization profile. Continue only with the unchanged nonce through the single canonical PR #1955 `StegBrowser:ManifestInvocation` path. Observe the authorized sovereign execution surface when it is available; inspect/retain authentic same-invocation Node binding, `INGRESS_ADMITTED`, bounded lease, EVENT_EPHEMERAL runtime, WorkerCoordinator claim/fence, and A4 ingress receipts. Promote only predicates directly proven by those authority-owned receipts. Stop before Round Trip 1 unless authentic A1-A4 completion is established.
+Do not emit another request and do not add another materialization profile. Continue only with the unchanged nonce through the single canonical #1955 `StegBrowser:ManifestInvocation` representation. Reuse the merged #1966 Site-SV002 baseline guidance rather than reconstructing runtime mechanics. Observe the authorized sovereign execution surface when it becomes reachable; inspect/retain authentic same-invocation Node binding, `INGRESS_ADMITTED`, bounded lease, EVENT_EPHEMERAL runtime, WorkerCoordinator claim/fence, and A4 ingress receipts. Promote only predicates directly proven by those authority-owned receipts. Stop before Round Trip 1 unless authentic A1-A4 completion is established.
 
 ## README review
 
-README reviewed again on 2026-09-16. No byte change required because the public runtime/authority topology remains the already-documented single shared Universal InTr/event-ephemeral architecture; this observation changes evidence state only.
+README reviewed again after #1966 and the bounded runtime observation. No byte change required because the public runtime/authority topology remains the already-documented single shared Universal InTr/event-ephemeral architecture; the changes are reusable-baseline and evidence-state reconciliation only.
 
 ## Manual work
 
