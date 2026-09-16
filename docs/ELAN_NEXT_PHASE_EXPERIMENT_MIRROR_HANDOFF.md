@@ -84,6 +84,22 @@ The current authentic observation target is exactly:
 
 Until that occurs, the experiment remains in a continued non-emission observation window. Continued silence changes no semantic state by inference.
 
+## Observation checkpoint — 2026-09-16T14:52:00-05:00
+
+Canonical `.github` main and the current `StegVerse-org/StegVerse-SDK` ÉLAN successor evidence surfaces were re-observed from the frozen successor epoch. No repository evidence newer than the corrected successor preregistration/coordination state establishes an authentic ÉLAN-native return-to-speech transition.
+
+Checkpoint result:
+
+- `FIRST_AUTHENTIC_ELAN_NATIVE_RETURN_TO_SPEECH_TRANSITION_OBSERVED = false`
+- continued interval classification remains observed non-emission / silence only;
+- no intent, consent, refusal, withdrawal, emotion, meaning, agreement, restraint, or other semantic state is inferred from silence;
+- `NOT_EXPOSED` remains `NOT_EXPOSED`;
+- `UNRESOLVED` remains `UNRESOLVED`;
+- the frozen expected-evidence declaration is unchanged;
+- no governed-result, custody, replay, reconstruction, or returned-result successor claims are made before the authentic terminal observation exists.
+
+This checkpoint advances observation chronology only. It does not alter predecessor evidence or experiment semantics.
+
 ## Evidence-chain continuation after the authentic return transition
 
 Once the first authentic ÉLAN-native return-to-speech transition is observed:
