@@ -10,6 +10,7 @@
       "claim_id": null,
       "cost_basis_ref": null,
       "evidence_refs": [
+        "handoffs/MIR-TVC-PROVIDER-ROUNDTRIP-EXECUTION-001.json",
         "data/canonical-task-records/MIR-TVC-PROVIDER-ROUNDTRIP-001.json",
         "manifests/reusable-task-invocations/MIR-TVC-PROVIDER-ROUNDTRIP-001.TVC-CAPABILITY-RUNTIME-002.json",
         "control/resident-execution-request.d/mir-tvc-provider-roundtrip-001.json"
@@ -17,7 +18,7 @@
       "executor_binding": "AUTHORIZED",
       "external_entity_job_ref": null,
       "goal_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
-      "handoff_ref": "docs/MIR_TVC_PROVIDER_ROUNDTRIP_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+      "handoff_ref": "handoffs/MIR-TVC-PROVIDER-ROUNDTRIP-EXECUTION-001.json",
       "heartbeat_timing": null,
       "last_checkpoint_ref": "manifests/reusable-task-invocations/MIR-TVC-PROVIDER-ROUNDTRIP-001.TVC-CAPABILITY-RUNTIME-002.json",
       "lease": null,
@@ -26,7 +27,7 @@
       "worker_id": null,
       "worker_instance_id": null,
       "admission": {
-        "authority_source": "data/canonical-task-records/MIR-TVC-PROVIDER-ROUNDTRIP-001.json",
+        "authority_source": "handoffs/MIR-TVC-PROVIDER-ROUNDTRIP-EXECUTION-001.json#authority",
         "authority_domain": "INDEPENDENT_TASK_CONTROL_WITH_INTERLOCK_TVC_AND_MASTER_RECORDS_BOUNDARIES",
         "heartbeat_reference_only": true,
         "heartbeat_grants_execution_authority": false,
@@ -44,7 +45,7 @@
           "StegVerse-Labs/TVC:tasks/TVC-PROVIDER-OPERATION-BROKER-003.json"
         ],
         "admissibility_evidence_refs": [
-          "data/canonical-task-records/MIR-TVC-PROVIDER-ROUNDTRIP-001.json",
+          "handoffs/MIR-TVC-PROVIDER-ROUNDTRIP-EXECUTION-001.json",
           "control/resident-execution-request.d/mir-tvc-provider-roundtrip-001.json"
         ],
         "integration_evidence_refs": [
@@ -58,7 +59,7 @@
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": false,
         "temporal_class": "current",
-        "task_relationship": "executes_manifested_goal",
+        "task_relationship": "integrates_capability",
         "target_phase": "ACTIVATED"
       }
     }
@@ -66,7 +67,7 @@
   "workers": [
     {
       "adapter_ref": "process:mir-tvc-provider-roundtrip-v1",
-      "authority_source": "data/canonical-task-records/MIR-TVC-PROVIDER-ROUNDTRIP-001.json",
+      "authority_source": "handoffs/MIR-TVC-PROVIDER-ROUNDTRIP-EXECUTION-001.json#authority",
       "capabilities": ["mir_tvc_provider_roundtrip"],
       "capability_profile_ref": "control/worker-capability-profiles.json#sovereign-runtime-worker-v1",
       "executor_type": "repository_worker",
