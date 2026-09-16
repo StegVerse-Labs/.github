@@ -8,7 +8,7 @@ Repository: `StegVerse-Labs/.github`
 - Goal Task ID: `STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001`
 - Parent Goal: `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / CURRENT-IPHONE A1-A2+EVENT_EPHEMERAL SOURCE PATH MERGED+VALIDATED / AUTHENTIC WORKERCOORDINATOR+A4 EVIDENCE PENDING / NO USER DEVICE CHECK REQUIRED`
+- Status: `ACTIVE / CHECKED_OUT / CURRENT-IPHONE A1-A2+EVENT_EPHEMERAL SOURCE PATH MERGED+VALIDATED / A3+A4 SOURCE PATH COLLISION-CHECKED / AUTHENTIC SAME-INVOCATION RUNTIME EVIDENCE PENDING / NO USER DEVICE CHECK REQUIRED`
 
 ## Immutable invocation
 
@@ -86,6 +86,29 @@ registered Node Receipt #1
 
 The merged source path now connects through the existing `EVENT_EPHEMERAL` runtime materializer. WorkerCoordinator remains the sole A3 claim/fence authority, and `workers/stegbrowser_manifest_intr_ingress.py` remains the exact A4 validator. No second WorkerCoordinator, listener, scheduler, dispatcher, materializer, runtime plane, credential authority, or user-operated device may be introduced.
 
+## A3/A4 collision check — 2026-09-16
+
+Collision-checking the existing WorkerCoordinator and A4 sources found one canonical composition and no competing StegBrowser claim/fence implementation:
+
+```text
+validated StegBrowser Node/Interlock/lease/runtime binding
+-> workers/stegbrowser_manifest_intr_ingress.py
+-> exact organization-local packet
+-> scripts/refresh_and_execute_resident_task.py
+-> ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001
+-> fresh WorkerCoordinator fenced atomic checkout
+-> ACCEPTED_LOCAL_BOUNDARY receipt
+-> exact StegBrowser A4 correlation verification
+```
+
+`ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001` already uses `fenced_atomic_checkout` and requires fresh WorkerCoordinator fencing; historical claim/fence reuse is prohibited. Its organization-local action does not authorize canonical-state mutation or external side effects.
+
+The generic SV001 portable WorkerCoordinator adapter is task/profile-specific and is not used for this StegBrowser invocation. No second WorkerCoordinator, adapter authority, listener, scheduler, dispatcher, or runtime plane was created.
+
+`workers/stegbrowser_manifest_intr_ingress.py` is the existing A4 composition boundary. It requires the authentic manifest-bound Node/Interlock/registration/lease/runtime identity before producing the organization-local packet, then validates the resulting WorkerCoordinator claim/fence and exact runtime correlation before accepting `AUTHENTIC_INTR_INGRESS_OBSERVED`.
+
+Because current re-observation did not find authentic `RUNTIME_READY_FOR_WORKERCOORDINATOR` evidence, this collision check does not invoke A3 or A4 and grants no execution authority.
+
 ## Current authentic predicates
 
 Source/CI/merge do not establish runtime execution. No authority-owned same-invocation current-device receipt set has been retained in canonical custody during this reconciliation, so all authentic predicates remain false:
@@ -110,15 +133,15 @@ The first unresolved authentic predicate therefore remains `REGISTERED_STEGVERSE
 The canonical A3/A4 source remains existing infrastructure rather than a new implementation:
 
 - WorkerCoordinator owns claim/fence issuance.
-- `ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001` validates the organization-local packet with exact `claim_id` and `fencing_token` and produces `ACCEPTED_LOCAL_BOUNDARY` without canonical-state change or external side effect.
-- `workers/stegbrowser_manifest_intr_ingress.py` validates exact Goal/COSV/nonce/manifest/payload/organization-local receipt correlation and produces the bounded A4 ingress receipt.
+- `ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001` executes only under fresh fenced WorkerCoordinator checkout and produces `ACCEPTED_LOCAL_BOUNDARY` without canonical-state change or external side effect.
+- `workers/stegbrowser_manifest_intr_ingress.py` validates exact Goal/COSV/manifest/payload/Node/Interlock/registration/lease/runtime/organization-local receipt correlation and produces the bounded A4 ingress receipt.
 - GitHub/CI authority remains `NONE`; TV/TVC remains credential authority.
 
-Do not repurpose the generic SV001 portable WorkerCoordinator adapter as a StegBrowser authority path; it is task/profile-specific. Reuse only a canonical StegBrowser-compatible WorkerCoordinator package/checkout if one is already registered, or add the smallest bounded adapter to the existing WorkerCoordinator authority after collision-checking rather than creating a parallel authority source.
+Do not repurpose the generic SV001 portable WorkerCoordinator adapter as a StegBrowser authority path.
 
 ## Failure handling
 
-Re-observe the existing Node/InTr runtime and canonical receipt paths for the immutable nonce. If the authentic chain is fail-closed or stops before A4, repair only the first authentic transition failure exposed by that evidence. Missing runtime visibility is an observation condition to solve through the existing architecture; it is not a reason to convert the user into a manual device-observation component.
+Re-observe the existing Node/InTr runtime and canonical receipt paths for the immutable nonce. If authentic `RUNTIME_READY_FOR_WORKERCOORDINATOR` evidence becomes reachable, continue through the existing A3/A4 composition above. If the authentic chain is fail-closed or stops before A4, repair only the first authentic transition failure exposed by that evidence. Missing runtime visibility is an observation condition to solve through the existing architecture; it is not a reason to convert the user into a manual device-observation component.
 
 ## Completion transition
 
@@ -126,7 +149,7 @@ Only after authentic A1-A4 completion is proven may `STEG-BROWSER-GOVERNED-ROUND
 
 ## README review
 
-Site README remains accurate; no byte change is required because the runtime/authority topology is unchanged. The merged work connects already-documented existing stages and releases stale coordination ownership only.
+Site README remains accurate; no byte change is required because the runtime/authority topology is unchanged. The merged work connects already-documented existing stages and records coordination/evidence truth only.
 
 ## Manual work
 
