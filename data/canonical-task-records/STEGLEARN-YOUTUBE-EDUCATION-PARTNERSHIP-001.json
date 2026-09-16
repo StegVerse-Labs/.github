@@ -15,7 +15,8 @@
     "StegVerse-Labs/StegLearn:docs/GOOGLE_EDUCATION_OUTREACH_PACKAGE.md",
     "StegVerse-Labs/StegLearn:STEGLEARN_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegLearn:README.md",
-    "StegVerse-Labs/StegLearn/actions/runs/34992304852",
+    "StegVerse-Labs/StegLearn@135d1c7fb6090d58c7be828d5f4241b4b4ab9d19",
+    "StegVerse-Labs/StegLearn/actions/runs/35047418641",
     "https://edu.google.com/resources/get-started/find-a-partner/become-a-partner/build/",
     "https://edu.google.com/intl/ALL_in/contact/",
     "https://support.google.com/youtube/answer/15503014",
@@ -32,7 +33,8 @@
   "systemic_incident_ref": null,
   "adjacent_task_refs": ["STEGLEARN-SITE-PUBLICATION-001"],
   "existing_evidence_refs": [
-    "StegVerse-Labs/StegLearn/actions/runs/34992304852",
+    "StegVerse-Labs/StegLearn@135d1c7fb6090d58c7be828d5f4241b4b4ab9d19",
+    "StegVerse-Labs/StegLearn/actions/runs/35047418641",
     "docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegLearn:docs/GOOGLE_EDUCATION_OUTREACH_PACKAGE.md",
     "OWNER_REPORTED_SUBMISSION_2026-09-15",
@@ -50,6 +52,7 @@
     "OWNER_OUTREACH_AUTHORIZED",
     "OWNER_REPORTED_SUBMISSION_RECONCILED",
     "SECOND_CONNECTED_GMAIL_RESPONSE_CHECK_RECONCILED",
+    "STEGLEARN_EXACT_HEAD_VALIDATION_GREEN_AFTER_SECOND_GMAIL_CHECK",
     "GOOGLE_ACKNOWLEDGEMENT_OR_RESPONSE_RECORDED_WHEN_OBSERVED",
     "NO_PARTNERSHIP_OR_RUNTIME_CAPABILITY_FABRICATED"
   ],
