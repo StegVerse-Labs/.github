@@ -99,7 +99,7 @@ CONSUMERS = (
     ("bootstrap_v1_release_prep", "scripts/consume_bootstrap_v1_release_prep_request.py"),
     ("bootstrap_v1_intr_bundle_delivery", "scripts/consume_bootstrap_v1_intr_bundle_delivery_request.py"),
     ("tvc_broker_validation", "scripts/consume_tvc_broker_validation_request.py"),
-    ("mir_tvc_provider_roundtrip", "scripts/consume_mir_tvc_provider_roundtrip_request.py"),
+    ("mir_tvc_provider_roundtrip", "workers/mir_tvc_provider_roundtrip_request_consumer.py"),
     ("stegbrowser_tvc_source_promotion", "control/resident-execution-request.d/consume-stegbrowser-tvc-source-promotion.py"),
     ("stegbrowser_runtime_connection_ingress", "scripts/consume_stegbrowser_runtime_connection_ingress_request.py"),
     ("sv002_self_characterization", "scripts/consume_sv002_self_characterization_request.py"),
