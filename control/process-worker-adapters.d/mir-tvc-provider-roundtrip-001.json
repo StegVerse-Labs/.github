@@ -1,0 +1,37 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:mir-tvc-provider-roundtrip-v1",
+      "authority_ref": "data/canonical-task-records/MIR-TVC-PROVIDER-ROUNDTRIP-001.json",
+      "capabilities": ["mir_tvc_provider_roundtrip"],
+      "command": ["python", "workers/mir_tvc_provider_roundtrip_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_TVC_ROOT",
+        "STEGTV_PROVIDER_OPERATION_VAULT_BROKER_SOCKET",
+        "HOME",
+        "USER",
+        "LOGNAME",
+        "SHELL",
+        "PATH",
+        "PYTHONPATH",
+        "LANG",
+        "LC_ALL",
+        "TMPDIR",
+        "XDG_CONFIG_HOME",
+        "XDG_STATE_HOME"
+      ],
+      "notes": [
+        "Thin WorkerCoordinator protocol bridge only; does not create runtime, scheduler, broker, credential, transition, or custody authority.",
+        "Consumes only an already-fenced WorkerCoordinator invocation for MIR-TVC-PROVIDER-ROUNDTRIP-001.",
+        "Delegates the admitted MIR-RUN2-EVENT-001 request to the existing canonical TVC non-exportable provider broker through the existing TV/TVC Unix vault socket.",
+        "No credential material is accepted from or returned to the worker."
+      ],
+      "timeout_seconds": 120,
+      "type": "process_json_v0.1"
+    }
+  ]
+}

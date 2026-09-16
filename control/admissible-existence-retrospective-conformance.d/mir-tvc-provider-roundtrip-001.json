@@ -1,0 +1,17 @@
+{
+  "schema": "stegverse.admissible-existence-retrospective-conformance-fragment/v1",
+  "fragment_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
+  "entries": [
+    {
+      "task_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
+      "temporal_class": "current",
+      "ae_impact": "SUPPORTING_OPERATION_OF",
+      "capability_id": "stegverse:capability:mir-tvc-provider-roundtrip:v1",
+      "phase": "ADMISSIBLE",
+      "task_relationship": "integrates_capability",
+      "result": "PASS",
+      "continuation_owner": "mir-tvc-provider-roundtrip-worker + existing sovereign WorkerCoordinator",
+      "rationale": "The task's explicit registry binding classifies the manifested MIR TVC provider roundtrip as ADMISSIBLE integration support while same-transaction provider, Interlock/InTr, and Master Records completion evidence remains pending. This retrospective classification grants no provider, transition, credential, custody, runtime, or activation authority."
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "schema": "stegverse.executable-handoff/v0.1",
+  "handoff_id": "HANDOFF-MIR-TVC-PROVIDER-ROUNDTRIP-EXECUTION-001",
+  "created_at": "2026-09-15T21:45:00-05:00",
+  "state": "HANDOFF_READY",
+  "goal": {
+    "goal_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
+    "objective": "Execute the already-manifested MIR-RUN2-EVENT-001 through the existing sovereign WorkerCoordinator and canonical TV/TVC non-exportable provider broker, then preserve the same transaction for Interlock/InTr admission and Master Records custody/reconstruction.",
+    "success_predicates": [
+      "fresh WorkerCoordinator claim and fence observed",
+      "MIR-RUN2-EVENT-001 exact admitted request retained",
+      "TVC non-exportable MIR SUBMIT_EVENT returns ALLOW_OPERATION_RESULT",
+      "exact TV/TVC use_receipt retained",
+      "READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND derived from same transaction",
+      "Interlock/InTr admits the same receipt",
+      "Master Records custody and reconstruction confirmed",
+      "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED satisfied"
+    ],
+    "failure_predicates": [
+      "fresh WorkerCoordinator claim/fence absent",
+      "canonical TVC source root unavailable",
+      "existing TV/TVC vault broker unavailable",
+      "MIR provider operation denied or malformed",
+      "credential material exposed",
+      "Interlock/InTr admission incomplete",
+      "Master Records custody/reconstruction incomplete"
+    ],
+    "authority_ceiling": [
+      "one bounded MIR SUBMIT_EVENT through the existing TVC broker",
+      "secret-free execution receipt persistence",
+      "no scheduler, heartbeat, credential export, publication, signing, broadcast, or alternate-runtime authority"
+    ],
+    "successor_policy": "INHERIT_OR_NARROW",
+    "max_successor_depth": 1
+  },
+  "task": {
+    "task_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
+    "repository": "StegVerse-Labs/.github",
+    "canonical_owner_ref": "control/worker-registry.d/mir-tvc-provider-roundtrip-001.json#tasks[0]",
+    "source_refs": [
+      "docs/MIR_TVC_PROVIDER_ROUNDTRIP_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+      "data/canonical-task-records/MIR-TVC-PROVIDER-ROUNDTRIP-001.json#parent_task_id=MIR-STEGVERSE-HISTORICAL-ACCOUNTING-RUN-002",
+      "manifests/reusable-task-invocations/MIR-TVC-PROVIDER-ROUNDTRIP-001.TVC-CAPABILITY-RUNTIME-002.json",
+      "StegVerse-Labs/TVC:tasks/TVC-PROVIDER-OPERATION-BROKER-003.json",
+      "StegVerse-Labs/TVC:config/provider_operation_profiles.json"
+    ],
+    "dependencies": [],
+    "parent_task_id": "MIR-STEGVERSE-HISTORICAL-ACCOUNTING-RUN-002",
+    "canonical_lineage_key": "mir:tvc:provider-roundtrip",
+    "derivation_depth": 0,
+    "priority": "release"
+  },
+  "authority": {
+    "authority_source": "existing MIR Goal manifest + WorkerCoordinator + Interlock/InTr + TV/TVC + Master Records",
+    "authority_domain": "INDEPENDENT_TASK_CONTROL_WITH_INTERLOCK_TVC_AND_MASTER_RECORDS_BOUNDARIES",
+    "credential_authority": "TV/TVC",
+    "transition_authority": "INTERLOCK_INTR",
+    "custody_authority": "MASTER_RECORDS",
+    "heartbeat_grants_execution_authority": false,
+    "heartbeat_dependency": false,
+    "request_grants_execution_authority": false,
+    "github_token_runtime_authority": "NONE",
+    "provider_output_grants_authority": false,
+    "custody_grants_execution_authority": false,
+    "another_physical_machine_required": false,
+    "policy_version": "mir-tvc-provider-roundtrip-v0.1"
+  },
+  "execution": {
+    "worker_id": "mir-tvc-provider-roundtrip-worker",
+    "adapter_ref": "process:mir-tvc-provider-roundtrip-v1",
+    "required_capabilities": ["mir_tvc_provider_roundtrip"],
+    "allowed_paths": ["receipts/mir-tvc-provider-roundtrip/**"],
+    "allowed_services": [],
+    "max_actions": 1,
+    "max_retries": 64,
+    "external_cost_ceiling_usd": 0,
+    "runtime_window_beats": 4096,
+    "rate_class": "mir_tvc_provider_roundtrip",
+    "runtime_profile_id": "stegverse:runtime-profile:tvc-mir:v1",
+    "base_runtime_profile_id": "stegverse:runtime-profile:hb-intr-resident:v1",
+    "protocol": "stegverse.intr.mir.provider-roundtrip.v1",
+    "provider": "mir",
+    "operation": "mir_history_accounting",
+    "provider_operation": "SUBMIT_EVENT",
+    "source_fetch_allowed": false,
+    "hosted_runtime_allowed": false,
+    "credential_material_allowed": false,
+    "second_machine_required": false
+  },
+  "activation": {
+    "carrier": "existing_sovereign_worker_runtime",
+    "heartbeat_dependency": false,
+    "carrier_trigger_required": false,
+    "executor_binding": "AUTHORIZED",
+    "checkout_policy": "separate_fenced_independent_task_control"
+  },
+  "completion": {
+    "next_authorized_action": "WorkerCoordinator claims the standing manifested MIR task under a fresh fence and invokes the registered MIR TVC process worker. Fail closed at the first unsatisfied TVC, Interlock/InTr, or Master Records boundary.",
+    "terminal_when": [
+      "one COMPLETED same-transaction receipt binds MIR-RUN2-EVENT-001, ALLOW_OPERATION_RESULT, exact use_receipt, Interlock/InTr admission, Master Records reconstruction, and AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED"
+    ],
+    "same_execution_required": true,
+    "source_merge_is_completion": false
+  },
+  "admissible_existence": {
+    "capability_id": "stegverse:capability:mir-tvc-provider-roundtrip:v1",
+    "capability_version": "1.0.0",
+    "phase": "ADMISSIBLE",
+    "standing_evidence_refs": [
+      "manifests/reusable-task-invocations/MIR-TVC-PROVIDER-ROUNDTRIP-001.TVC-CAPABILITY-RUNTIME-002.json",
+      "docs/MIR_TVC_PROVIDER_ROUNDTRIP_COMPONENT_MODEL_MIRROR_HANDOFF.md"
+    ],
+    "admissibility_evidence_refs": [
+      "handoffs/MIR-TVC-PROVIDER-ROUNDTRIP-EXECUTION-001.json",
+      "control/resident-execution-request.d/mir-tvc-provider-roundtrip-001.json"
+    ],
+    "integration_evidence_refs": [
+      "workers/mir_tvc_provider_roundtrip_worker.py",
+      "control/process-worker-adapters.d/mir-tvc-provider-roundtrip-001.json",
+      "control/worker-registry.d/mir-tvc-provider-roundtrip-001.json"
+    ],
+    "activation_proof_ref": null,
+    "blockers": ["AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED_NOT_YET_RECONCILED"],
+    "continuation_owner": "mir-tvc-provider-roundtrip-worker + existing sovereign WorkerCoordinator",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": false,
+    "temporal_class": "current",
+    "task_relationship": "integrates_capability",
+    "target_phase": "ACTIVATED"
+  },
+  "authority_effect": "NONE_HANDOFF_ONLY"
+}

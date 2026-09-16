@@ -1,0 +1,39 @@
+{
+  "identity": "StegVerse-Labs/.github:task:MIR-TVC-PROVIDER-ROUNDTRIP-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "50000000100000",
+  "evidence_refs": [
+    "data/canonical-task-records/MIR-TVC-PROVIDER-ROUNDTRIP-001.json",
+    "docs/MIR_TVC_PROVIDER_ROUNDTRIP_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+    "handoffs/MIR-TVC-PROVIDER-ROUNDTRIP-EXECUTION-001.json",
+    "manifests/reusable-task-invocations/MIR-TVC-PROVIDER-ROUNDTRIP-001.TVC-CAPABILITY-RUNTIME-002.json"
+  ],
+  "observed_at": "2026-09-15T22:04:00-05:00",
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "MACHINE_OWNED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 0,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "Canonical task record is ACTIVE/CHECKED_OUT and machine-owned coordination is registered through the existing WorkerCoordinator binding.",
+    "archive_ready": "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED remains unsatisfied.",
+    "canonical_owner_installed": "data/canonical-task-records/MIR-TVC-PROVIDER-ROUNDTRIP-001.json is the canonical task record and declares COSV 50000000100000.",
+    "evidence_complete": "Same-transaction provider session, Interlock/InTr admission, and Master Records custody/reconstruction are not yet all observed.",
+    "activated": "COSV source projection does not claim runtime activation.",
+    "propagated": "COSV source projection does not claim downstream propagation."
+  },
+  "authority_effect": "NONE"
+}
