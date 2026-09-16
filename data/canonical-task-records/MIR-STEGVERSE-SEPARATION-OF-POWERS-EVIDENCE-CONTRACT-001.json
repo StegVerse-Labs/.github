@@ -1,0 +1,76 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+  "correlation_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+  "root_correlation_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+  "parent_task_id": null,
+  "goal": "Define and validate a vendor- and model-neutral public reference architecture for governable/insurable agents built on explicit separation of powers, with independent evidence custody/reconstruction and seam-level conformance receipts that never imply unobserved downstream runtime transitions.",
+  "coordination_state": "ACTIVE",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "50000000100000",
+    "source_state_vector_ref": "control/task-vectors/MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001.json",
+    "authority_effect": "NONE"
+  },
+  "source_refs": [
+    "docs/MIR_STEGVERSE_SEPARATION_OF_POWERS_EVIDENCE_CONTRACT_MIRROR_HANDOFF.md",
+    "docs/mir-reference-architecture/README.md",
+    "docs/mir-reference-architecture/SEPARATION_OF_POWERS_REFERENCE_ARCHITECTURE_DRAFT.md",
+    "data/canonical-task-records/MIR-LEAF-V3-CONFORMANCE-FIXTURE-001.json",
+    "data/canonical-task-records/MIR-EXPERIMENT-FROZEN-SCREENSHOT-EVIDENCE-001.json"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs", "StegVerse-org"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-org/StegVerse-SDK"],
+    "components": ["separation-of-powers", "governance-policy", "state-transition-admission", "execution", "credential-provider-authority", "evidence-custody-reconstruction", "observability", "conformance-receipts"]
+  },
+  "dependencies": [],
+  "blockers": [],
+  "adjacent_task_refs": [
+    "MIR-LEAF-V3-CONFORMANCE-FIXTURE-001",
+    "MIR-EXPERIMENT-FROZEN-SCREENSHOT-EVIDENCE-001",
+    "SHARED-DOCS-MULTIPARTY-FREEZE-001"
+  ],
+  "expected_evidence_predicates": [
+    "ACTOR_AUTHORITY_DIAGRAM_DEFINED",
+    "GOVERNANCE_GOVERNED_TRANSITION_CONTRACT_DEFINED",
+    "PROHIBITED_AUTHORITY_COLLAPSES_DEFINED",
+    "MINIMUM_CONFORMANCE_RECEIPTS_DEFINED_PER_SEAM",
+    "EVIDENCE_CUSTODY_INDEPENDENT_FROM_GOVERNANCE_ADMISSION_CREDENTIAL_AUTHORITY",
+    "SEAM_CONFORMANCE_DOES_NOT_IMPLY_RUNTIME_CHAIN",
+    "RUNTIME_PROOF_REQUIRES_AUTHENTIC_TRANSITION_RECORD_CUSTODY_AND_RECONSTRUCTION",
+    "COUNTERPART_EVIDENCE_SEAM_DRAFT_RECEIVED",
+    "BITCOIN_ANCHOR_CLAIM_VERIFIED_OR_REMAINS_COUNTERPART_REPORTED",
+    "NO_AUTHORITY_PROMOTION_FROM_EVIDENCE_OR_OBSERVABILITY"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["canonical_artifact_validation", "cross_implementation_conformance_comparison"],
+    "environment": "DOCUMENTARY_AND_CROSS_SYSTEM_CONFORMANCE",
+    "direction": "REFERENCE_ARCHITECTURE_AND_EVIDENCE_CONTRACT",
+    "mutation_required": false,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": null
+  },
+  "allowed_next_transitions": ["INGRESS_ADMITTED"],
+  "handoff_projection_refs": ["docs/MIR_STEGVERSE_SEPARATION_OF_POWERS_EVIDENCE_CONTRACT_MIRROR_HANDOFF.md"],
+  "authority_model": {
+    "governance_may_self_attest_runtime_execution": false,
+    "admission_may_self_attest_execution": false,
+    "credential_provider_authority_may_self_attest_execution": false,
+    "evidence_custody_may_grant_transition_authority": false,
+    "observability_may_grant_transition_authority": false,
+    "seam_conformance_implies_downstream_runtime": false,
+    "counterpart_claim_may_be_promoted_without_artifact": false
+  }
+}
