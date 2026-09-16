@@ -3,7 +3,6 @@ from __future__ import annotations
 import importlib.util
 import json
 import subprocess
-import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -17,14 +16,17 @@ def load(path: Path, name: str):
     return mod
 
 
-def test_canonical_dispatcher_registers_mir_consumer():
+def test_canonical_dispatcher_registers_materialized_mir_consumer():
     dispatcher = load(ROOT / "scripts/dispatch_resident_execution_requests.py", "mir_dispatcher")
+    refresh = load(ROOT / "scripts/refresh_sovereign_worker_runtime_source.py", "mir_refresh")
     by_name = dict(dispatcher.CONSUMERS)
-    assert by_name["mir_tvc_provider_roundtrip"] == "scripts/consume_mir_tvc_provider_roundtrip_request.py"
+    assert by_name["mir_tvc_provider_roundtrip"] == "workers/mir_tvc_provider_roundtrip_request_consumer.py"
+    assert Path("workers") in refresh.STATIC_DIRS
+    assert (ROOT / by_name["mir_tvc_provider_roundtrip"]).is_file()
 
 
 def test_mir_consumer_visits_existing_workercoordinator_entrypoint_without_authority_expansion(tmp_path):
-    consumer = load(ROOT / "scripts/consume_mir_tvc_provider_roundtrip_request.py", "mir_consumer")
+    consumer = load(ROOT / "workers/mir_tvc_provider_roundtrip_request_consumer.py", "mir_consumer")
     runtime = tmp_path / "runtime"
     source = tmp_path / "source"
     runtime.mkdir(); source.mkdir()
