@@ -3,7 +3,8 @@
   "goal_task_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
   "cosv_task_vector": "50000000100000",
   "observed_at": "2026-09-16",
-  "state": "SOURCE_REPAIR_PENDING_EXACT_HEAD_VALIDATION",
+  "source_pr": 2018,
+  "state": "PR_OPEN_EXACT_HEAD_VALIDATION_PENDING",
   "defects": [
     {
       "id": "CROSS_REPOSITORY_RUNNER_NOT_MATERIALIZABLE_BY_TRIGGER_DRIVER",
