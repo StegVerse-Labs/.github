@@ -1,0 +1,12 @@
+{
+  "identity": "StegVerse-Labs/.github:task:GTG-ASSURANCE-RECEIPT-PRESERVATION-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "10100000100000",
+  "evidence_refs": [
+    "data/canonical-task-records/GTG-ASSURANCE-RECEIPT-PRESERVATION-001.json",
+    "docs/GTG_ASSURANCE_RECEIPT_PRESERVATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegScholar:GTG_ASSURANCE_RECEIPT_PRESERVATION_MIRROR_HANDOFF.md"
+  ],
+  "observed_at": "2026-09-15T21:38:00-05:00"
+}
