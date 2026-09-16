@@ -6,21 +6,37 @@
   "parent_task_id": "GTG-ASSURANCE-CONSUMER-COMPATIBILITY-SWEEP-001",
   "goal": "Repair the demonstrated legacy GTG fixture receipt serialization gap so optional governance_assurance is preserved for reconstruction without creating authority, changing GTG disposition semantics, or duplicating assurance into TT.",
   "coordination_state": "ACTIVE",
-  "checkout_state": "UNCLAIMED",
+  "checkout_state": "CLAIMED_IMPLEMENTATION",
   "cosv_task_vector": "10100000100000",
+  "goal_prompt_count": "1/20",
   "source_refs": [
     "docs/GTG_ASSURANCE_RECEIPT_PRESERVATION_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegScholar:GTG_ASSURANCE_RECEIPT_PRESERVATION_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegScholar:papers/rtg-gtg-tt/gtg-assurance-consumer-compatibility-sweep.md",
     "StegVerse-Labs/StegScholar:scripts/validate_gtg_assurance_consumer_compatibility_sweep.py",
+    "StegVerse-Labs/StegScholar#75",
     "data/canonical-task-records/GTG-ASSURANCE-CONSUMER-COMPATIBILITY-SWEEP-001.json"
   ],
   "targets": {"organizations":["StegVerse-Labs"],"repositories":["StegVerse-Labs/StegScholar","StegVerse-Labs/.github"],"components":["gtg-fixture-receipt-serializer","gtg-receipt-reconstruction","gtg-receipt-hashing"]},
   "dependencies": [],
   "blockers": [],
+  "collision_check": {
+    "checked_at": "2026-09-16T06:51:00-05:00",
+    "open_pr_collision_found": false,
+    "active_branch_collision_found": false,
+    "equivalent_implementation_found": false,
+    "disposition": "CLAIM_AND_EXECUTE_THIS_CHILD_ONLY"
+  },
+  "implementation": {
+    "repository": "StegVerse-Labs/StegScholar",
+    "branch": "gtg-assurance-receipt-preservation-001",
+    "pull_request": 75,
+    "head_sha": "d540be925ea6ad54b8fe8dcde2dc328d09eb9caa",
+    "state": "OPEN_VALIDATION_PENDING"
+  },
   "expected_evidence_predicates": ["PRE_FIX_ASSURANCE_LOSS_REPRODUCED","OPTIONAL_ASSURANCE_PRESERVED_IN_RECEIPT","ABSENT_ASSURANCE_REMAINS_ABSENT","AUTHORITY_EFFECT_NONE_PRESERVED","RECEIPT_HASH_COVERS_PRESERVED_ASSURANCE","HISTORICAL_RECEIPT_COMPATIBILITY_PRESERVED","TT_SCHEMA_UNCHANGED"],
-  "completion": {"claimed":false,"validated":false,"activation_proof_complete":false},
-  "allowed_next_transitions": ["CLAIMED_IMPLEMENTATION","CLAIMED_VALIDATION","CLAIMED_INTEGRATION"],
+  "completion": {"claimed":true,"validated":false,"activation_proof_complete":false},
+  "allowed_next_transitions": ["CLAIMED_VALIDATION","CLAIMED_INTEGRATION","RETIRED_COMPLETED_AFTER_EXACT_HEAD_GREEN_AND_CANONICAL_RECONCILIATION"],
   "handoff_projection_refs": ["docs/GTG_ASSURANCE_RECEIPT_PRESERVATION_MIRROR_HANDOFF.md","StegVerse-Labs/StegScholar:GTG_ASSURANCE_RECEIPT_PRESERVATION_MIRROR_HANDOFF.md"],
   "authority_model": {"task_registry_mints_execution_authority":false,"receipt_assurance_mints_governance_authority":false,"receipt_assurance_forces_disposition":false,"tt_reference_mints_execution_or_consequence_truth":false,"request_grants_execution_authority":false}
 }
