@@ -1,6 +1,6 @@
 # StegBrowser Runtime Connection Ingress Mirror Handoff
 
-Updated: 2026-09-15
+Updated: 2026-09-16
 
 ## Task pointer
 
@@ -8,7 +8,7 @@ Updated: 2026-09-15
 - Parent Goal: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`
 - Root lineage: `STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / SINGLE A1-A4 INVOCATION COMPOSITION SOURCE RECONCILED / AUTHENTIC A1-A4 EVIDENCE PENDING`
+- Status: `ACTIVE / CHECKED_OUT / SINGLE A1-A4 INVOCATION COMPOSITION SOURCE RECONCILED / CURRENT-IPHONE SURFACE MERGED+VALIDATED / AUTHENTIC A1-A4 EVIDENCE PENDING`
 - External/second user-operated device required: `false`
 
 ## Scope and terminal boundary
@@ -117,6 +117,39 @@ ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED
 INTR_ADMISSION_OBSERVED
 ```
 
+## Current-iPhone execution reconciliation — 2026-09-16
+
+The parent execution handoff now identifies the already-merged, already-validated same-iPhone execution surface as the current authorized observation path:
+
+```text
+https://stegverse.org/stegos-bootstrap/canonical-work-runtime-consumption.html?autostart=1
+```
+
+Site PR `#1360` repaired the existing current-iPhone launcher/extension so the retained same-device Node IndexedDB, write-once `intr_outbox`, root `/intr-service-worker.js`, and `CURRENT_USER_IPHONE_SERVICE_WORKER` bind the immutable invocation to:
+
+```text
+Goal = STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001
+Parent = STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001
+COSV = 40000100100000
+nonce = STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z
+destination = StegBrowser:ManifestInvocation
+```
+
+PR `#1360` merged as `76af62f2befdfa7034d3dd00891bfe60a0990abb`; handoff reconciliation PR `#1361` merged as `7c483335f259d5eacf9a55dde923c0c4fefd660e` after exact-head validation.
+
+The abandoned `stegbrowser-resident-node-binding-transport-004` branch is not a runtime prerequisite for this child. Its proposed resident-dispatch environment forwarding is therefore superseded for the current execution path and must not be merged merely to obtain source-level green checks. The native resident dispatcher remains non-authorizing and non-gating here.
+
+The immutable request remains exactly:
+
+```text
+canonical request commit = 19935454cd8c68000b3a0fd70478b0d89d5cd622
+invocation_request_nonce = STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z
+requested_invocation_count = 1
+second_request_allowed = false
+```
+
+The same-iPhone page may promote only authentic current-device evidence. Page reachability, service-worker installation, source validation, CI, and deployment do not satisfy any runtime predicate by themselves.
+
 ## Authentic evidence state
 
 Source reconciliation does not satisfy runtime predicates. Current authentic state remains:
@@ -131,6 +164,7 @@ EXECUTION_TIME_RUNTIME_IDENTITY_BOUND = false
 CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED = false
 ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED = false
 INTR_ADMISSION_OBSERVED = false
+ROUND_TRIP_1_STARTED = false
 ```
 
 Expected retained child observation:
@@ -150,7 +184,7 @@ Issue `#1918` is already closed as the bounded source-binding defect resolved by
 ## Authority invariants
 
 - Task Registry: coordination only.
-- Native resident dispatcher: discovery/dispatch only; no authority.
+- Native resident dispatcher: discovery/dispatch only; no authority and not a prerequisite for the current same-iPhone path.
 - A1 resolver: observation/selection only.
 - `RT-SOVEREIGN-SOURCE-REFRESH-001`: local source materialization only when the invocation transition selects it.
 - `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001`: non-authorizing composition of existing execution surfaces.
@@ -166,6 +200,14 @@ Issue `#1918` is already closed as the bounded source-binding defect resolved by
 
 `RUNTIME_CONNECTION_TRANSITION_VARIABLES_OBSERVED`
 
+## Immediate continuation
+
+Do not emit another request. On the same iPhone/Safari site-data context that owns registered StegVerse Node Receipt #1, open the existing current-device execution page with `autostart=1`. Preserve the complete page JSON or exact `FAIL_CLOSED` reason unchanged. Promote only predicates directly evidenced by that same invocation. Stop at A4; do not enter Round Trip 1 from this child.
+
+## README review
+
+README reviewed against this reconciliation. No byte change is required because the public runtime/authority topology remains the existing same-device Universal InTr/event-ephemeral architecture; this update only reconciles the child handoff to the already-merged current-iPhone execution surface and removes the stale resident-dispatcher branch from the critical path.
+
 ## Manual work
 
-None.
+On the same iPhone and Safari site-data context that owns the registered StegVerse Node, open `https://stegverse.org/stegos-bootstrap/canonical-work-runtime-consumption.html?autostart=1`. Do not use Private Browsing and do not clear site data. Return the complete page JSON or exact `FAIL_CLOSED` reason unchanged.
