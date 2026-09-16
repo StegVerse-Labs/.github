@@ -22,6 +22,7 @@
       "heartbeat_timing": null,
       "last_checkpoint_ref": "manifests/reusable-task-invocations/MIR-TVC-PROVIDER-ROUNDTRIP-001.TVC-CAPABILITY-RUNTIME-002.json",
       "lease": null,
+      "source_state_vector_ref": "control/task-vectors/MIR-TVC-PROVIDER-ROUNDTRIP-001.json",
       "state": "HANDOFF_READY",
       "task_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
       "worker_id": null,
