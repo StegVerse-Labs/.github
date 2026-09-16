@@ -4,7 +4,7 @@
   "correlation_id": "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001",
   "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
   "parent_task_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
-  "goal": "Execute and evidence the already-issued immutable StegBrowser manifest invocation on the same registered iPhone/Safari Node through the existing Universal Interlock/InTr current-device surface, promoting only authentic authority-owned A1-A4 predicates and repairing only the first authentic transition defect if the chain fails.",
+  "goal": "Execute and evidence the already-issued immutable StegBrowser manifest invocation through the existing registered Node and Universal Interlock/InTr runtime surface, promoting only authentic authority-owned A1-A4 predicates and repairing only the first authentic transition defect if the chain fails, without requiring the user to inspect or operate any device as an evidence oracle.",
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT",
   "cosv_task_vector": "40000100100000",
@@ -22,7 +22,11 @@
   },
   "execution_surface": {
     "url": "https://stegverse.org/stegos-bootstrap/canonical-work-runtime-consumption.html?autostart=1",
-    "device_scope": "SAME_REGISTERED_IPHONE_SAFARI_SITE_DATA_CONTEXT",
+    "device_scope": "EXISTING_REGISTERED_NODE_CONTEXT",
+    "user_manual_device_check_required": false,
+    "user_manual_page_open_required": false,
+    "user_manual_json_copy_required": false,
+    "observation_responsibility": "EXISTING_NODE_INTR_RUNTIME_AND_CANONICAL_RECEIPT_PATHS",
     "private_browsing_allowed": false,
     "site_data_clear_allowed": false,
     "second_user_operated_device_required": false,
@@ -53,7 +57,8 @@
   "first_unresolved_predicate": "REGISTERED_STEGVERSE_NODE_BOUND_TO_INVOCATION",
   "successor_task_id_on_completion": "STEG-BROWSER-GOVERNED-ROUNDTRIP-001",
   "allowed_next_transitions": [
-    "CONSUME_EXACT_SAME_DEVICE_PAGE_JSON",
+    "REOBSERVE_EXISTING_NODE_INTR_RUNTIME_RECEIPTS",
+    "CONSUME_EXISTING_UNCHANGED_NONCE_EVIDENCE",
     "PROMOTE_ONLY_AUTHORITY_OWNED_PREDICATES",
     "REPAIR_ONLY_FIRST_AUTHENTIC_TRANSITION_FAILURE",
     "ACTIVATE_ROUNDTRIP_SUCCESSOR_ONLY_AFTER_A1_A4_COMPLETE"
@@ -64,6 +69,7 @@
     "worker_claim_authority": "WORKERCOORDINATOR",
     "credential_authority": "TV/TVC",
     "github_runtime_authority": "NONE",
+    "user_device_inspection_authority": "NONE",
     "second_user_operated_device_required": false
   }
 }
