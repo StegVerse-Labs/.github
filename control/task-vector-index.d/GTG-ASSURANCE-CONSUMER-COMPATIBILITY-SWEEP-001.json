@@ -4,6 +4,6 @@
   "repository": "StegVerse-Labs/.github",
   "registry_ref": "data/canonical-task-records/GTG-ASSURANCE-CONSUMER-COMPATIBILITY-SWEEP-001.json",
   "source_state_vector_ref": "control/task-vectors/GTG-ASSURANCE-CONSUMER-COMPATIBILITY-SWEEP-001.json",
-  "cosv_task_vector": "40000100100000",
+  "cosv_task_vector": "71000000100100",
   "handoff_ref": "docs/GTG_ASSURANCE_CONSUMER_COMPATIBILITY_SWEEP_MIRROR_HANDOFF.md"
 }

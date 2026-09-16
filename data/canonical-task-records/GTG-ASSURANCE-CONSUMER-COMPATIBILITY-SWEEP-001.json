@@ -5,21 +5,37 @@
   "root_correlation_id": "GTG-ASSURANCE-CONSUMER-COMPATIBILITY-SWEEP-001",
   "parent_task_id": null,
   "goal": "Perform a bounded consumer-compatibility sweep for optional GTG governance_assurance across current producers, serializers, validators, reconstruction paths, and active consumers; derive implementation work only for demonstrated loss, rewrite, or authority-promotion defects without reopening retired source work.",
-  "coordination_state": "ACTIVE",
-  "checkout_state": "CLAIMED_VALIDATION",
-  "cosv_task_vector": "40000100100000",
+  "coordination_state": "RETIRED",
+  "checkout_state": "COMPLETED",
+  "cosv_task_vector": "71000000100100",
   "goal_prompt_count": "1/20",
   "source_refs": [
     "docs/GTG_ASSURANCE_CONSUMER_COMPATIBILITY_SWEEP_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegScholar:GTG_ASSURANCE_CONSUMER_COMPATIBILITY_SWEEP_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegScholar:papers/rtg-gtg-tt/gtg-assurance-consumer-compatibility-sweep.md",
+    "StegVerse-Labs/StegScholar:scripts/validate_gtg_assurance_consumer_compatibility_sweep.py",
+    "StegVerse-Labs/StegScholar:tests/test_gtg_assurance_consumer_compatibility_sweep.py",
+    "StegVerse-Labs/StegScholar#73",
+    "StegVerse-Labs/StegScholar@44f899aa13659dcea690a3116f43ff0f0fccc861",
     "data/canonical-task-records/GTG-ASSURANCE-REFERENCE-INTEGRATION-001.json"
   ],
   "targets": {"organizations":["StegVerse-Labs"],"repositories":["StegVerse-Labs/StegScholar","StegVerse-Labs/.github"],"components":["gtg-producers","gtg-serializers","gtg-validators","gtg-reconstruction","gtg-consumers"]},
-  "dependencies": [],
+  "dependencies": [
+    {"dependency_id":"DEP-GTG-ASSURANCE-CONSUMER-SWEEP-SOURCE","kind":"MERGE_VALIDATION","state":"RESOLVED","ref":"StegVerse-Labs/StegScholar#73","disposition":"EXACT_HEAD_fa7c27c972a2f8645d37476004ccbc0b0a2b0906_GREEN_THEN_MERGED_44f899aa13659dcea690a3116f43ff0f0fccc861"}
+  ],
   "blockers": [],
+  "sweep_result": {
+    "demonstrated_gap_count": 1,
+    "gap_classification": "ASSURANCE_DROPPED_BY_LEGACY_FIXTURE_RECEIPT_SERIALIZER",
+    "gap_surface": "StegVerse-Labs/StegScholar:scripts/validate_gtg_fixtures.py:validate_case",
+    "authority_promotion_observed": false,
+    "tt_assurance_duplication_observed": false,
+    "derived_task_id": "GTG-ASSURANCE-RECEIPT-PRESERVATION-001"
+  },
+  "adjacent_task_refs": ["GTG-ASSURANCE-RECEIPT-PRESERVATION-001"],
   "expected_evidence_predicates": ["CURRENT_GTG_PRODUCERS_SWEPT","CURRENT_GTG_SERIALIZERS_SWEPT","CURRENT_GTG_VALIDATORS_SWEPT","GTG_RECONSTRUCTION_PATHS_SWEPT","ACTIVE_GTG_CONSUMERS_SWEPT","ASSURANCE_LOSS_OR_REWRITE_CLASSIFIED","AUTHORITY_PROMOTION_ABSENT_OR_ISOLATED","DERIVED_TASK_ONLY_IF_GAP_DEMONSTRATED"],
-  "completion": {"claimed":false,"validated":false,"activation_proof_complete":false},
-  "allowed_next_transitions": ["CLAIMED_INTEGRATION","MERGED_INTO_CANONICAL_WORKSTREAM"],
+  "completion": {"claimed":true,"validated":true,"activation_proof_complete":false,"archive_ready":true,"completion_basis":"MERGED_DETERMINISTIC_CONSUMER_SWEEP_WITH_EXACT_HEAD_GREEN_VALIDATION_AND_ONE_DEMONSTRATED_SERIALIZATION_GAP"},
+  "allowed_next_transitions": ["NO_FURTHER_SWEEP_EXECUTION","CONTINUE_ONLY_UNDER_GTG-ASSURANCE-RECEIPT-PRESERVATION-001"],
   "handoff_projection_refs": ["docs/GTG_ASSURANCE_CONSUMER_COMPATIBILITY_SWEEP_MIRROR_HANDOFF.md","StegVerse-Labs/StegScholar:GTG_ASSURANCE_CONSUMER_COMPATIBILITY_SWEEP_MIRROR_HANDOFF.md"],
-  "authority_model": {"task_registry_mints_execution_authority":false,"sweep_mints_governance_authority":false,"assurance_metadata_mints_authority":false,"request_grants_execution_authority":false}
+  "authority_model": {"task_registry_mints_execution_authority":false,"sweep_mints_governance_authority":false,"assurance_metadata_mints_authority":false,"completion_grants_successor_authority":false,"request_grants_execution_authority":false}
 }
