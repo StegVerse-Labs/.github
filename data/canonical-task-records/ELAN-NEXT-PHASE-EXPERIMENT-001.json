@@ -1,0 +1,27 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "ELAN-NEXT-PHASE-EXPERIMENT-001",
+  "correlation_id": "ELAN-NEXT-PHASE-EXPERIMENT-001",
+  "root_correlation_id": "ELAN-NEXT-PHASE-EXPERIMENT-001",
+  "parent_task_id": "ELAN-CUMULATIVE-PUBLICATION-001",
+  "status": "ACTIVE",
+  "cosv_id": "10100000100000",
+  "goal": "Execute the next independent ELAN x StegVerse sustained-silence and return-to-speech experiment with preregistered evidence fields, exact native-trace preservation, architecture non-interference, governed StegVerse submission, and post-hoc comparison only after both evidence chains independently exist.",
+  "handoff": "docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md",
+  "repository_work": [
+    "StegVerse-Labs/.github#1999",
+    "StegVerse-org/StegVerse-SDK#248"
+  ],
+  "preconditions": [
+    "ELAN native successor trace received from third-party evaluator",
+    "native trace preserved exactly before normalization or mapping",
+    "StegVerse runtime authority admissible for governed SDK submission"
+  ],
+  "non_claims": [
+    "third-party ELAN successor execution not yet observed",
+    "StegVerse successor submission not yet performed",
+    "cross-evaluation not yet performed",
+    "no inferred intent or emotional meaning from silence"
+  ],
+  "next_action": "Obtain the native ELAN successor trace, preserve exact bytes and digest, construct the corresponding represented-event package from only the same human events, submit through the existing governed StegVerse SDK path when runtime authority is admissible, then compare the independent evidence chains under the preregistered fields."
+}
