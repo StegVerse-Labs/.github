@@ -5,8 +5,8 @@ Current COSV: `40000010100000`
 
 This adjacent task consumes the completed provider-neutral contract from `STRIPE-GODADDY-PROVIDER-EQUIVALENCE-001` and adds only TV/TVC-governed read-only provider observation.
 
-Merged implementation: `StegVerse-Labs/TVC#438` -> `c0a46b6b6c470b5a39499600678fc222822afc79`.  
-Exact-head implementation validation: `StegVerse-Labs/TVC/actions/runs/35047474638` — SUCCESS.
+Observation merge: `StegVerse-Labs/TVC#438` -> `c0a46b6b6c470b5a39499600678fc222822afc79`; exact-head run `35047474638` — SUCCESS.  
+Read-profile merge: `StegVerse-Labs/TVC#440` -> `fc5808f74adb0022e584007b7280f646805c1ed2`; exact-head run `35047891729` — SUCCESS.
 
 Canonical handoff: `../PAYMENT_PROVIDER_AUTHENTIC_INGRESS_MIRROR_HANDOFF.md`.  
 COSV source state: `../../control/task-vectors/PAYMENT-PROVIDER-AUTHENTIC-INGRESS-001.json`.
@@ -14,6 +14,6 @@ COSV source state: `../../control/task-vectors/PAYMENT-PROVIDER-AUTHENTIC-INGRES
 Current authentic state:
 
 - Stripe live GET access is observed, but the account returned no PaymentIntents or Charges in the current read, so there is no authentic completed-payment normalization receipt yet.
-- GoDaddy's Commerce Transaction API is documented as GET-only under `commerce.transaction:read`, but the connected GoDaddy app surface does not expose Payments transactions; owner transaction evidence therefore remains pending.
+- GoDaddy has a merged TV/TVC GET-only `commerce.transaction:read` profile using vault references for the PAT and store identity, but the connected GoDaddy app surface does not expose Payments transactions and no owner transaction has been observed.
 
-The task does not authorize provider writes, payment mutation, entitlement, governance, execution, transport authority, webhook activation, or failover activation. Authentic completed-payment normalization evidence for both providers is required before webhook/failover evaluation can become admissible.
+The task does not authorize provider writes, payment mutation, entitlement, governance, execution, transport authority, webhook activation, or failover activation. Authentic completed-payment normalization evidence for both providers is required before webhook/failover evaluation can become admissible, unless a canonical evidence-backed limitation changes that predicate.
