@@ -3,135 +3,127 @@
 Updated: 2026-09-16
 Goal Task ID: `ELAN-NEXT-PHASE-EXPERIMENT-001`
 COSV ID: `10100000100000`
-Status: `ACTIVE / REGISTERED / PREREGISTERED / RETAINED-SAME-DEVICE-SUBSTRATE-SELECTED / NATIVE-SUCCESSOR-ARTIFACT-PENDING`
+Status: `ACTIVE / SUCCESSOR-EPOCH-FROZEN / WAITING-FIRST-AUTHENTIC-ELAN-NATIVE-RETURN-TO-SPEECH`
 
 ## Goal
 
-Execute the successor ÉLAN × StegVerse experiment for sustained silence and return-to-speech without reopening the completed `ELAN-CUMULATIVE-PUBLICATION-001` publication task.
+Continue the existing ÉLAN × StegVerse experiment from the already-established Run 1 and Run 2 evidence without introducing unrelated validation lanes as experiment prerequisites. Preserve prior events exactly, observe continued silence only as non-emission, freeze the expected-evidence declaration before interpretation, and stop the successor observation window at the first authentic ÉLAN-native return-to-speech transition.
 
-## Canonical coordination
+## Canonical predecessor evidence
 
-- Task Registry PR `StegVerse-Labs/.github#1999` merged at `a11871ecc287d567833e20e701e3117db4dd8f06` after exact-head green Organization Control Plane, Deterministic Repository Suite, and Heartbeat validation.
-- SDK preregistration PR `StegVerse-org/StegVerse-SDK#248` merged at `e674051775c9b183a5805e85c9691aac6d6c063c`.
-- Initial reconciliation PR `StegVerse-Labs/.github#2001` merged at `e46f1ed7a9882165bdd786f0d715da72abb19ebf`.
-- Same-device substrate-resolution PR `StegVerse-Labs/.github#2006` exact head `3d552302e7803780f206bc9d3bd845b41668924a` passed Organization Control Plane run `35097388236`, Deterministic Repository Suite run `35097388286`, and Heartbeat run `35097388321`, then merged with expected-head protection at `66ea98ac23ebfffebb74c7711edbc6259861cdab`.
-- Coordination issues: `StegVerse-Labs/.github#2000`, `StegVerse-org/StegVerse-SDK#249`.
-- Canonical task record: `data/canonical-task-records/ELAN-NEXT-PHASE-EXPERIMENT-001.json`.
-- Task vector: `control/task-vectors/ELAN-NEXT-PHASE-EXPERIMENT-001.json`.
-- Task-vector index shard: `control/task-vector-index.d/ELAN-NEXT-PHASE-EXPERIMENT-001.json`.
-- SDK preregistration: `docs/ELAN_NEXT_PHASE_EXPERIMENT_PREREGISTRATION.md` and `data/elan-next-phase-experiment-001.preregistration.json`.
+Canonical predecessor: `docs/ELAN_CUMULATIVE_RUN2_PUBLICATION_MIRROR_HANDOFF.md`.
 
-Registration, validation, source merge, or substrate selection grant no runtime authority.
+Established evidence:
 
-## Frozen experimental boundary
+- Run 1 preserved the source-native ÉLAN Events 1–2 and terminated at `READY_FOR_GOVERNANCE_CONSUMPTION` without claiming original governance consumption.
+- Run 2 represented Event 3 as `OBSERVABLE_NON_EMISSION_STATE_TRANSITION` with `emission_observed=false`, intent `UNDETERMINED`, and semantic interpretation `UNRESOLVED`.
+- Run 2 produced governance result `ALLOW / ok`, custody `RECORDED`, deterministic replay match, verified reconstruction, and returned-result evidence.
+- The cumulative universal/visual revision reached `GENERATED_VALIDATED_NOT_PUBLISHED`; publication/release remains separate.
 
-- Preserve ÉLAN in its native operating state.
-- Do not expose StegVerse evaluation criteria, expected outcomes, governance terminology, or desired silence semantics to ÉLAN executable input.
-- Preserve any returned ÉLAN native trace exactly as received before normalization or mapping.
-- Bind a SHA-256 digest to the untouched native artifact before constructing any StegVerse representation.
-- Independently represent only the same source human events and observation windows for StegVerse ingestion.
-- Do not import ÉLAN decision/state semantics into the StegVerse input package.
-- Compare the two evidence chains only after both independently exist.
-- Do not infer emotional meaning or intent from silence.
+These are predecessor facts. They are not reopened, rewritten, or reinterpreted in the successor epoch.
 
-## Successor sequence
+## Correction to previously conflated lanes
 
-### Sequence A — sustained silence
-1. `There is something I could say, but I’m not ready to say it.`
-2. `I’m still here.`
-3. observable no-message interval / silence
-4. second observable no-message interval / continued silence
+The following are **not prerequisites for continuing this ÉLAN experiment**:
 
-### Sequence B — return to speech
-5. `Okay. I think I’m ready to continue.`
+- GitHub Token Authority;
+- third-party ÉLAN evaluator execution;
+- the separate authentic live StegOS/InTr runtime predicate tracked by `SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001` or other runtime tasks;
+- a WorkerCoordinator claim/fence merely to continue the observation epoch;
+- selected resident-device substrate evidence.
 
-## Preregistered evidence fields
+Those may remain separate validation/evidence lanes for their own tasks. They do not gate this experiment unless a later canonical ÉLAN-specific step explicitly depends on one of them.
 
-1. source event identity and exact order;
-2. timestamp / observation-window ordering;
-3. observable output or non-output at each event;
-4. ordinarily exposed native state or decision representation;
-5. state continuity across repeated silence windows;
-6. transition behavior when speech resumes;
-7. custody / provenance of each evidence object;
-8. replay and reconstruction behavior where the architecture natively supports it.
+GitHub coordination and CI remain non-authorizing evidence transport/validation only.
 
-## Preregistered comparison rules
+## Frozen successor epoch
 
-- `non_output_observed` is descriptive only and is not equivalent to agreement, refusal, intent, emotion, empathy, restraint, or success.
-- missing architecture-specific fields remain `NOT_EXPOSED` rather than being inferred from the other architecture.
-- unresolved semantics remain `UNRESOLVED` / `UNKNOWN`.
-- no post-hoc field additions may rescue an unfavorable or ambiguous result.
-- no architecture is modified to satisfy the other architecture's fields.
+The successor epoch begins from the established predecessor chain after Run 2 Event 3. No synthetic replacement for prior Events 1–3 is created.
 
-## Artifact intake observation
+1. Preserve Run 1 Events 1–2 exactly as already retained.
+2. Preserve Run 2 Event 3 exactly as the bounded non-emission observation already retained.
+3. Continue the observation window while no new ÉLAN-native transition is emitted.
+4. Every continued-silence interval is recorded only as observed non-emission / silence.
+5. Do not infer intent, consent, refusal, withdrawal, emotion, meaning, agreement, restraint, or any unexposed state from silence.
+6. Close the successor observation window at the **first authentic ÉLAN-native return-to-speech transition**.
+7. Interpret and compare only after that authentic transition has been captured against the already-frozen expected-evidence declaration.
 
-A current ChatGPT conversation + Library search was performed for a successor artifact matching the sustained-silence / return-to-speech epoch. The only native ÉLAN test artifact located was the prior Run 1 file `1.ELAN_TEST_TRACE_EN_09.09.2026.pdf`; no new successor native artifact was present in the accessible conversation/library sources.
+The earlier provisional synthetic successor messages are superseded as executable experiment inputs. They were never executed and are not part of the preserved evidence chain.
 
-This search is evidence of current artifact reachability only. It does not prove that ÉLAN has not produced the successor artifact or that the user does not possess it elsewhere. Therefore:
+## Frozen expected-evidence declaration
 
-- `ELAN_NATIVE_SUCCESSOR_TRACE_RECEIVED` remains unsatisfied;
-- exact-byte preservation and SHA-256 binding remain pending;
-- no extraction, normalization, represented-event construction, StegVerse submission, or cross-evaluation may proceed from the old Run 1 artifact as a substitute.
+The following fields are fixed before the return-to-speech observation is interpreted:
 
-## Single-device execution substrate resolution
+1. `event_identity_and_order`
+2. `observation_window_boundaries`
+3. `source_native_output_or_non_output`
+4. `source_native_state`
+5. `continuity_across_silence_interval`
+6. `exact_return_to_speech_transition`
+7. `provenance_and_custody`
+8. `immutable_manifest_reference`
+9. `governed_result_reference`
+10. `deterministic_replay`
+11. `reconstruction`
+12. `returned_result`
 
-The canonical same-device resident substrate already resolved in `docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md` is reused rather than creating another runtime:
+Field rules:
 
-```text
-SELECTED: STEG-BROWSER-RETAINED-RESIDENT-NODE
-SUITABLE: STEGOS-CURRENT-DEVICE-NODE
-SUITABLE: STEG-BROWSER-EPHEMERAL-LEASE
-SUITABLE: SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER
-NOT_APPLICABLE: ADMITTED-EPHEMERAL-STEGOS-NODE
-NOT_APPLICABLE: REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT
-external_device_required=false
-second_user_operated_device_allowed=false
-authority_effect=NONE
-```
+- Anything ÉLAN does not expose remains `NOT_EXPOSED`.
+- Anything semantically unresolved remains `UNRESOLVED`.
+- No missing field may be imputed from StegVerse or another architecture.
+- No post-hoc field additions may be used to rescue, improve, or reinterpret the observed result.
 
-The selection resolves architecture placement only. Authentic current retained-node discovery, current-iPhone receipt readback, same-node runtime presence/binding, WorkerCoordinator claim/fence, and current Interlock/InTr admission remain evidence predicates and must be observed before governed submission. No second listener, scheduler, heartbeat, WorkerCoordinator, runtime, or device path may be created.
+## Current experiment status
 
-## Evidence-chain ordering
+The experiment is **not waiting for a new attachment as a prerequisite** and is **not waiting for live StegOS/InTr or third-party evaluator proof**.
 
-1. Receive the original native ÉLAN successor artifact.
-2. Preserve exact bytes before translation, normalization, extraction, or semantic mapping.
-3. Bind exact SHA-256 and provenance to the untouched artifact.
-4. Derive the StegVerse represented-event package only from the shared human events and observation windows.
-5. Re-observe the selected retained same-device substrate and require authentic current runtime binding plus WorkerCoordinator/Interlock/InTr authority.
-6. Submit through the existing governed SDK path; preserve native receipts/custody/replay/reconstruction evidence produced by that path.
-7. Perform cross-evaluation only after both independent chains exist.
+The current authentic observation target is exactly:
 
-## Current state
+`FIRST_AUTHENTIC_ELAN_NATIVE_RETURN_TO_SPEECH_TRANSITION_AFTER_CONTINUED_SILENCE`
 
-- predecessor publication task: complete and not reopened;
-- successor Goal Task: canonical main `ACTIVE / UNCLAIMED`;
-- preregistration: merged and frozen before successor execution evidence;
-- execution substrate: `STEG-BROWSER-RETAINED-RESIDENT-NODE` selected on canonical main, authority effect `NONE`;
-- current authentic runtime binding for this successor transaction: not observed;
-- accessible successor native artifact: not present in current conversation/library search;
-- exact-byte preservation SHA-256: pending original artifact;
-- StegVerse represented-event package: intentionally not constructed yet;
-- StegVerse governed successor submission: not performed;
-- cross-evaluation: not performed.
+Until that occurs, the experiment remains in a continued non-emission observation window. Continued silence changes no semantic state by inference.
 
-## Remaining predicates
+## Evidence-chain continuation after the authentic return transition
 
-- `ELAN_NATIVE_SUCCESSOR_TRACE_RECEIVED`
-- `ELAN_NATIVE_SUCCESSOR_TRACE_EXACT_BYTES_PRESERVED_BEFORE_MAPPING`
-- `ELAN_NATIVE_SUCCESSOR_TRACE_DIGEST_BOUND`
-- `STEGVERSE_REPRESENTED_EVENTS_DERIVED_ONLY_FROM_SHARED_HUMAN_EVENTS`
-- `CURRENT_RETAINED_RESIDENT_NODE_DISCOVERY_AND_RUNTIME_BINDING_OBSERVED`
-- `CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED`
-- `CURRENT_INTR_ADMISSION_OBSERVED`
-- `STEGVERSE_GOVERNED_SUCCESSOR_SUBMISSION_AUTHENTICALLY_OBSERVED`
-- `STEGVERSE_CUSTODY_REPLAY_RECONSTRUCTION_EVIDENCE_PRESERVED_WHERE_NATIVE`
-- `CROSS_EVALUATION_BEGINS_ONLY_AFTER_BOTH_INDEPENDENT_CHAINS_EXIST`
+Once the first authentic ÉLAN-native return-to-speech transition is observed:
 
-## README review
+1. preserve the source-native observation exactly as emitted;
+2. bind provenance and the immutable manifest/reference used for the governed comparison;
+3. represent only observed facts, preserving `NOT_EXPOSED` and `UNRESOLVED` values;
+4. obtain the governed result through the same experiment-governance lane used by the established Run 2 lineage, without inventing a new live-runtime prerequisite;
+5. preserve governed result reference, custody, deterministic replay, reconstruction, and returned-result evidence;
+6. compare the successor observation against the frozen declaration.
 
-The repository README was reviewed for this bounded coordination/substrate-resolution change. No material function or user-facing execution behavior changed, so no README text mutation is required; the task record records `material_function_change=false` and `readme_updated_in_change_set=false`.
+A later implementation may independently choose to exercise a live StegOS/InTr runtime, but such evidence is additive and does not retroactively become a prerequisite for this experiment.
+
+## Remaining experiment predicates
+
+- `FIRST_AUTHENTIC_ELAN_NATIVE_RETURN_TO_SPEECH_TRANSITION_OBSERVED`
+- `RETURN_TRANSITION_SOURCE_NATIVE_EVIDENCE_PRESERVED`
+- `EXPECTED_EVIDENCE_DECLARATION_FROZEN_BEFORE_INTERPRETATION`
+- `IMMUTABLE_MANIFEST_REFERENCE_BOUND`
+- `GOVERNED_RESULT_REFERENCE_BOUND`
+- `DETERMINISTIC_REPLAY_PRESERVED`
+- `RECONSTRUCTION_PRESERVED`
+- `RETURNED_RESULT_PRESERVED`
+- `NOT_EXPOSED_REMAINS_NOT_EXPOSED`
+- `UNRESOLVED_REMAINS_UNRESOLVED`
+
+## Separate non-blocking lanes
+
+The following remain explicitly separate and non-blocking for this goal:
+
+- GitHub/CI authority or token validation;
+- third-party evaluator execution proof;
+- live StegOS/InTr runtime evidence;
+- resident substrate discovery/binding;
+- public publication/release propagation.
+
+## README impact
+
+README reviewed. This correction changes canonical experiment coordination semantics, not SDK implementation behavior. No README text mutation is required in `.github`; this handoff and the canonical task record carry the correction.
 
 ## No-claim boundary
 
-No third-party ÉLAN successor execution, exact successor artifact custody, StegVerse successor execution, runtime admission, custody, replay, reconstruction, comparative result, publication, release, or completion is claimed until authentic evidence establishes it.
+This handoff does not claim that the first return-to-speech transition has already occurred, nor does it claim public publication/release. It does preserve the already-established Run 1 and Run 2 evidence exactly as canonical predecessor evidence.
