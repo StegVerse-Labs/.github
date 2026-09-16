@@ -8,7 +8,7 @@ Repository: `StegVerse-Labs/.github`
 - Goal Task ID: `STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001`
 - Parent Goal: `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / CURRENT-IPHONE A1-A2+EVENT_EPHEMERAL SOURCE PATH MERGED+VALIDATED / AUTHENTIC WORKERCOORDINATOR+A4 EVIDENCE PENDING / NO USER DEVICE CHECK REQUIRED`
+- Status: `ACTIVE / CHECKED_OUT / CURRENT-IPHONE A1-A2+EVENT_EPHEMERAL SOURCE PATH MERGED+VALIDATED / A3+A4 SOURCE PATH COLLISION-CHECKED / AUTHENTIC SAME-INVOCATION RUNTIME EVIDENCE PENDING / NO USER DEVICE CHECK REQUIRED`
 
 ## Immutable invocation
 
@@ -49,6 +49,8 @@ A duplicate local continuation PR #1364 was closed without merge after #1363 was
 
 The `.github` runtime-connection handoff was separately reconciled by PR #2017, merged as `369c6ba4bc78a64a330c89af9b66d4e233e1fd09`, recording #1363 as source capability only and preserving all authentic predicates as false absent authority-owned current-device evidence.
 
+The active successor source-progress reconciliation PR #2019 merged as `85db6f78003c1e813ac4a34f738285861a552800` after exact-head Organization Control, Deterministic Repository Suite, and Heartbeat validation.
+
 ## Required authentic chain
 
 ```text
@@ -63,6 +65,44 @@ registered Node Receipt #1
 ```
 
 The merged source path now connects through the existing `EVENT_EPHEMERAL` runtime materializer. WorkerCoordinator remains the sole A3 claim/fence authority, and `workers/stegbrowser_manifest_intr_ingress.py` remains the exact A4 validator. No second WorkerCoordinator, listener, scheduler, dispatcher, materializer, runtime plane, credential authority, or user-operated device may be introduced.
+
+## Automatic re-observation — 2026-09-16
+
+The canonical record and handoff were re-read from exact main commit `85db6f78003c1e813ac4a34f738285861a552800`. Repository-wide exact-nonce observation found source/control references for the immutable nonce but no retained authority-owned runtime artifact proving that the current registered Node actually returned `RUNTIME_READY_FOR_WORKERCOORDINATOR`.
+
+No canonical repository-custody artifact was found for either:
+
+```text
+receipts/sovereign-host/stegbrowser-runtime-remediation-boundary.latest.json
+receipts/sovereign-host/stegbrowser-manifest-intr-ingress.latest.json
+```
+
+Those names are present as runtime output targets in source, not as committed authentic runtime receipts. Therefore no A1-A4 predicate was promoted and A3/A4 were not executed from GitHub/CI or inferred from source state.
+
+The immutable nonce was not re-emitted. Round Trip 1 remains unentered.
+
+## A3/A4 collision check — 2026-09-16
+
+The existing A3/A4 path is complete and does not require a new StegBrowser-specific WorkerCoordinator implementation.
+
+Canonical composition:
+
+```text
+validated StegBrowser Node/Interlock/lease/runtime binding
+-> workers/stegbrowser_manifest_intr_ingress.py
+-> exact organization-local packet
+-> scripts/refresh_and_execute_resident_task.py
+-> ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001
+-> fresh WorkerCoordinator fenced atomic checkout
+-> ACCEPTED_LOCAL_BOUNDARY receipt
+-> exact StegBrowser A4 correlation verification
+```
+
+`ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001` is already authorized for independent task-control checkout with `fresh WorkerCoordinator fencing generation; no historical claim/fence reuse`. Its authority remains bounded to organization-local observation/acknowledgement with no canonical-state mutation or external side effect.
+
+The generic SV001 portable WorkerCoordinator adapter is not used. No parallel WorkerCoordinator path was found or created.
+
+`workers/stegbrowser_manifest_intr_ingress.py` verifies the organization-local receipt claim/fence and exact manifest, Node, Interlock, registration receipt, lease, runtime, state-root, and runtime-binding correlation before returning `AUTHENTIC_INTR_INGRESS_OBSERVED`.
 
 ## Current authentic predicates
 
@@ -88,15 +128,17 @@ The first unresolved authentic predicate therefore remains `REGISTERED_STEGVERSE
 The canonical A3/A4 source remains existing infrastructure rather than a new implementation:
 
 - WorkerCoordinator owns claim/fence issuance.
-- `ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001` validates the organization-local packet with exact `claim_id` and `fencing_token` and produces `ACCEPTED_LOCAL_BOUNDARY` without canonical-state change or external side effect.
-- `workers/stegbrowser_manifest_intr_ingress.py` validates exact Goal/COSV/nonce/manifest/payload/organization-local receipt correlation and produces the bounded A4 ingress receipt.
+- `ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001` executes only under fresh fenced WorkerCoordinator checkout and produces `ACCEPTED_LOCAL_BOUNDARY` without canonical-state change or external side effect.
+- `workers/stegbrowser_manifest_intr_ingress.py` validates exact Goal/COSV/manifest/payload/Node/Interlock/lease/runtime/organization-local receipt correlation and produces the bounded A4 ingress receipt.
 - GitHub/CI authority remains `NONE`; TV/TVC remains credential authority.
 
-Do not repurpose the generic SV001 portable WorkerCoordinator adapter as a StegBrowser authority path; it is task/profile-specific. Reuse only a canonical StegBrowser-compatible WorkerCoordinator package/checkout if one is already registered, or add the smallest bounded adapter to the existing WorkerCoordinator authority after collision-checking rather than creating a parallel authority source.
+Do not repurpose the generic SV001 portable WorkerCoordinator adapter as a StegBrowser authority path.
 
 ## Failure handling
 
-Re-observe the existing Node/InTr runtime and canonical receipt paths for the immutable nonce. If the authentic chain is fail-closed or stops before A4, repair only the first authentic transition failure exposed by that evidence. Missing runtime visibility is an observation condition to solve through the existing architecture; it is not a reason to convert the user into a manual device-observation component.
+Re-observe the existing Node/InTr runtime and canonical receipt paths for the immutable nonce. If authentic `RUNTIME_READY_FOR_WORKERCOORDINATOR` evidence becomes reachable, continue through the existing A3/A4 composition above. If the authentic chain is fail-closed or stops before A4, repair only the first authentic transition failure exposed by that evidence.
+
+Missing runtime visibility is an observation condition to solve through existing runtime-evidence custody; it is not permission to infer execution from source, run GitHub as runtime authority, or convert the user into a manual device-observation component.
 
 ## Completion transition
 
@@ -104,7 +146,7 @@ Only after authentic A1-A4 completion is proven may `STEG-BROWSER-GOVERNED-ROUND
 
 ## README review
 
-Site README remains accurate; no byte change is required because the runtime/authority topology is unchanged. The merged work connects already-documented existing stages and releases stale coordination ownership only.
+README remains accurate; no byte change is required because the runtime/authority topology is unchanged.
 
 ## Manual work
 
