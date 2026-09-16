@@ -12,9 +12,10 @@
     "declared_runner_refs": [
       "scripts/reconcile_tvc_runtime_boundary_reusable.py"
     ],
+    "dependent_work_waits_for_required_completion_evidence": true,
+    "independent_work_may_continue_at_boundary": true,
     "manual_coordination_between_machine_admissible_internal_steps_required": false,
     "mode": "TRIGGER_ONCE_ADVANCE_UNTIL_COMPLETION_OR_REAL_BOUNDARY",
-    "primary_evidence_consumption": "REUSE_EXISTING_REAL_PROVIDER_OPERATION_RECEIPT_CHAIN_BEFORE_SYNTHETIC_PROBE",
     "single_trigger": true,
     "stop_boundaries": [
       "AUTHORITY_REQUIRED_AND_NOT_HELD",
@@ -73,7 +74,7 @@
   },
   "cosv_task_vector": "50000000100000",
   "invocation_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001:TVC-CAPABILITY-RUNTIME-002:READY-DERIVATION",
-  "manifest_hash": "7ed761202ebcf333f1b70e2ac42441f63814251b2e1218e890d4ea47da43e304",
+  "manifest_hash": "9ebd2752c26ce1457bdc3b3de660057aa9ed49c36dba53f89c3686bc069a326d",
   "parameters": {
     "completion_predicate": "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED",
     "diagnostic_fallback": "StegVerse-Labs/TVC:scripts/observe_tvc_runtime_boundary.py",
@@ -89,9 +90,13 @@
     "runtime_observer_task_ref": "StegVerse-Labs/TVC:tasks/TVC-CAPABILITY-RUNTIME-002.json"
   },
   "recording": {
-    "accepted_ready_evidence": [
-      "QUALIFYING_REAL_PROVIDER_OPERATION_ROUNDTRIP_RECEIPT_CHAIN",
-      "SYNTHETIC_NON_SECRET_OBSERVER_RECEIPT_FOR_ROUTE_DIAGNOSTICS_ONLY"
+    "entropy_recovery_conditions": [
+      "RUNNER_EXPIRED",
+      "REQUIRED_RECORDING_LEVELS_COMPLETE",
+      "REQUIRED_RECEIPT_CHAIN_COMPLETE",
+      "MASTER_RECORDS_CUSTODY_ACCEPTED",
+      "MASTER_RECORDS_RECONSTRUCTION_CONFIRMED",
+      "NO_UNRECORDED_SUCCESSOR_OR_CORRECTION_DEPENDENCY_REQUIRES_RESIDUAL_CONSTRUCT"
     ],
     "levels": [
       "operation",
@@ -102,7 +107,6 @@
       "master_records"
     ],
     "master_records_required_before_entropy_recovery": true,
-    "ready_derivation_rule": "A real provider-operation chain may project READY when it proves canonical route execution, current source/runtime binding, admitted TV/TVC vault-backed secret_ref and lease, ALLOW_OPERATION_RESULT, exact use_receipt, no secret export, and required authority ceilings. Synthetic observer evidence alone does not prove AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED.",
     "receipt_chain_required": true
   },
   "reusable_task_id": "RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001",
@@ -115,7 +119,7 @@
     "materialization_refs": [
       "scripts/reconcile_tvc_runtime_boundary_reusable.py"
     ],
-    "runner_role": "REAL_RECEIPT_RECONCILIATION_FIRST_DIAGNOSTIC_FALLBACK_ONLY_WHEN_QUALIFYING_TRANSACTION_EVIDENCE_IS_ABSENT"
+    "post_expiry_residual": "NON_EXECUTING_RECORDING_CONSTRUCT_IF_REQUIRED_RECORDING_REMAINS"
   },
   "schema": "stegverse.reusable-task-invocation-manifest/v1",
   "source_refs": [
@@ -123,26 +127,8 @@
     "source-bundles/reusable-task-registry.d",
     "data/reusable-task-ephemeral-construct-contract.json",
     "scripts/trigger_reusable_task.py",
-    "scripts/reconcile_tvc_runtime_boundary_reusable.py",
-    "StegVerse-Labs/TVC:tasks/TVC-PROVIDER-OPERATION-BROKER-003.json",
-    "StegVerse-Labs/TVC:tasks/TVC-CAPABILITY-RUNTIME-002.json",
-    "StegVerse-Labs/TVC:tvc_provider_operation_broker.py",
-    "StegVerse-Labs/TVC:scripts/observe_tvc_runtime_boundary.py"
+    "management/COSV_PROFILE_V1.json",
+    "StegVerse-Labs/StegScholar:papers/rtg-gtg-tt/cross-layer-contract.md"
   ],
-  "task_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
-  "trajectory": {
-    "admission": "INTERLOCK_INTR",
-    "canonical_destination": "master-records/core-lite",
-    "completion_sequence": [
-      "QUALIFYING_REAL_PROVIDER_OPERATION_RECEIPT_CHAIN_OBSERVED",
-      "READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND_DERIVED",
-      "INTERLOCK_INTR_RECEIPT_ADMITTED",
-      "MASTER_RECORDS_CUSTODY_ACCEPTED",
-      "MASTER_RECORDS_RECONSTRUCTION_CONFIRMED",
-      "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED"
-    ],
-    "custody": "MASTER_RECORDS",
-    "diagnostic_receipt_source": "TVC-CAPABILITY-RUNTIME-002_SYNTHETIC_OBSERVER",
-    "primary_receipt_source": "CANONICAL_TVC_PROVIDER_OPERATION_ROUNDTRIP"
-  }
+  "task_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001"
 }
