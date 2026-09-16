@@ -22,15 +22,18 @@
       "StegVerse-Labs/TVC:tasks/TVC-PRIMARY-RUNTIME-BINDER-005.json",
       "StegVerse-Labs/TVC:tasks/TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006.json",
       "StegVerse-Labs/TVC:tasks/TVC-CAPABILITY-RUNTIME-002.json",
+      "StegVerse-Labs/TVC:tvc_provider_operation_broker.py",
       "StegVerse-Labs/TVC:scripts/observe_tvc_runtime_boundary.py"
     ],
     "reusable_identity_validation": "DETERMINISTIC_REGISTRY_SHARD_IDENTITY_AND_MANIFEST_BINDING_VALIDATION",
-    "manifest_hash": "033a8f91037e14f6b28a08cb487bbf5c2eddf41007a18a4273707ff91a1b4461",
+    "manifest_hash": "0dd6e6688e37dfb4c09d77c338ab277b15349e88b4d501d8bc4868425de98215",
+    "ready_evidence_preference": "QUALIFYING_REAL_PROVIDER_OPERATION_ROUNDTRIP_RECEIPT_CHAIN",
+    "synthetic_observer_role": "DIAGNOSTIC_FALLBACK_ONLY",
     "retained_build_test_runtime_reconciliation": true,
     "promotion_is_runtime_proof": false,
-    "authentic_ready_receipt_still_required": true,
+    "qualifying_real_provider_session_evidence_still_required": true,
     "master_records_custody_still_required": true
   },
   "authority_effect": "NONE",
-  "rule": "This projection promotes lifecycle status only. It does not duplicate registry identities, alter existing implementations, or mint execution, governance, transition, credential, custody, provider-session, standing, or runtime authority."
+  "rule": "This projection promotes lifecycle status only. READY may be derived from qualifying real TVC provider-operation execution evidence; the synthetic observer is diagnostic fallback and does not independently prove an authentic provider session. No registry identity or authority plane is duplicated."
 }
