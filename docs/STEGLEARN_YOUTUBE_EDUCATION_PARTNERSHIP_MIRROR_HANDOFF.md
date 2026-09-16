@@ -5,7 +5,7 @@ Repository: `StegVerse-Labs/.github`
 Target repository: `StegVerse-Labs/StegLearn`
 Goal Task ID: `STEGLEARN-YOUTUBE-EDUCATION-PARTNERSHIP-001`
 COSV: `40000100100000`
-Status: `ACTIVE / OWNER OUTREACH AUTHORIZED / SOURCE PACKAGE VALIDATED / INTERACTIVE SUBMISSION PENDING`
+Status: `ACTIVE / OWNER-REPORTED SUBMISSION / GOOGLE ACKNOWLEDGEMENT PENDING`
 
 ## Canonical registration
 
@@ -13,148 +13,77 @@ Exact canonical task-record shard:
 
 `data/canonical-task-records/STEGLEARN-YOUTUBE-EDUCATION-PARTNERSHIP-001.json`
 
-The sharded canonical record is the current registration surface. The monolithic registry projection may lag the shard; that does not create runtime authority or partnership status.
-
 ## Goal
 
 Pursue a bounded Google/YouTube education partnership path that can provide managed media infrastructure for N governed StegLearn classrooms of one without building proprietary A/V infrastructure.
 
 StegLearn remains authority for curriculum, instructional adaptation, learner evidence, admissibility, mastery state, and accepted learning receipts. Google/YouTube is evaluated only as an external education/media substrate.
 
-## Owner authorization
+## Submission evidence reconciliation
 
-The owner explicitly authorized the Google education partnership outreach phase on 2026-09-15. Authorization covers preparation and submission of the Google for Education specialist inquiry and Partner Advantage Build application using StegVerse / StegLearn positioning.
+The owner previously authorized Google education partnership outreach and on 2026-09-15 directed reconciliation of the submitted Google for Education specialist and/or Partner Advantage application evidence. This is recorded as owner-reported submission evidence only.
 
-Authorization does not grant learner-data transmission, production integration, credential publication, Google instructional authority, or permission to fabricate acknowledgement/partnership/capability evidence.
+Connected Gmail searches on 2026-09-15 covered recent Google for Education, Partner Advantage, Player for Education, Youth & Learning, StegLearn, education-partner, request/case/inquiry, and recent Google/Google Cloud sender terms. No matching Google acknowledgement, case/reference identifier, routing response, or written technical-capability statement was observed.
 
-## Public evidence refreshed immediately before submission phase
-
-Current official Google surfaces were rechecked on 2026-09-15:
-
-- Google for Education Build: `https://edu.google.com/resources/get-started/find-a-partner/become-a-partner/build/`
-- Google for Education specialist contact: `https://edu.google.com/intl/ALL_in/contact/`
-- Player for Education: `https://support.google.com/youtube/answer/15503014`
-- YouTube Live broadcasts: `https://developers.google.com/youtube/v3/live/docs/liveBroadcasts`
-- YouTube streaming Live Chat: `https://developers.google.com/youtube/v3/live/docs/liveChatMessages/streamList`
-
-Verified current partner-entry facts:
-
-1. Partner Advantage remains the public Build entry route.
-2. Google instructs applicants to select `Build` as engagement and `Google for Education` as solution.
-3. Integrated Solutions remains a later qualification step requiring three Google-approved Workspace for Education and/or Classroom integrations plus integration evidence.
-4. The current specialist form explicitly supports `Education technology`, `Head of Digital Transformation / AI`, `Educational Technology Lead`, organization name/website/country, `Google Cloud`, `Teaching and Learning`, and a 500-character needs field.
-5. Player for Education remains an education-partner licensed player with additional student privacy safeguards and no ads.
-6. `liveBroadcasts` retains low/ultra-low latency controls; `liveChatMessages.streamList` remains a low-latency server-streaming feedback path when chat is enabled.
-
-## Current capability boundary
-
-Publicly available now:
-
-- managed YouTube video delivery;
-- Player for Education embedded playback;
-- programmatic broadcast lifecycle;
-- low/ultra-low-latency broadcast modes;
-- Live Chat retrieval/streaming when enabled;
-- cohort instruction and StegLearn-owned adaptation from permitted response channels.
-
-Not exposed as an ordinary public YouTube Live API product:
-
-- independently addressable learner camera uplink;
-- independently addressable learner microphone uplink;
-- N simultaneous private bidirectional classrooms of one without a separate creator/host model per learner;
-- an education-specific public exception to child-directed Live Chat restrictions.
-
-These remain negotiated capability requirements or require another approved Google transport surface.
-
-## Minimum negotiated capability set
-
-1. Managed low-latency instructor/AI video downlink.
-2. Authorized learner camera uplink.
-3. Authorized learner microphone uplink.
-4. Independently addressable private learner sessions.
-5. N concurrent classrooms of one without one human host/channel per learner.
-6. Programmatic create/start/stop/expire lifecycle.
-7. Conversationally appropriate latency.
-8. Supported education/minor privacy, consent, retention, moderation, and account model.
-9. Google does not become curriculum, learner-state, mastery, evidence, or receipt authority.
-10. Provider-neutral StegLearn session contract remains replaceable if Google cannot satisfy the set.
-
-## Exact submission package
-
-Canonical submission package:
+Canonical package:
 
 `StegVerse-Labs/StegLearn:docs/GOOGLE_EDUCATION_OUTREACH_PACKAGE.md`
 
-Specialist form:
+Evidence disposition:
 
-- Phase: `Education technology`
-- Organization: `StegVerse`
-- Website: `https://stegverse.org`
-- Country: `United States`
-- Job title: `Head of Digital Transformation / AI` preferred
-- Product interests: `Teaching and Learning` and `Google Cloud`
-- Current Workspace-for-Education use: answer from actual organization state
-- Marketing opt-in: owner choice
+- owner-reported submission: `OBSERVED_FROM_OWNER_INSTRUCTION`
+- Google acknowledgement: `NOT_OBSERVED`
+- Google case/reference ID: `UNKNOWN`
+- written routing response: `NOT_OBSERVED`
+- written technical capability response: `NOT_OBSERVED`
+- partnership: `NOT_CLAIMED`
+- negotiated A/V capability: `NOT_CLAIMED`
 
-Problem statement:
+## Capability state
 
-> StegLearn is a governed AI-assisted education platform evaluating Google/YouTube as managed media infrastructure for individualized classrooms of one. We need low-latency instructor video, authorized learner camera/mic return, N concurrent private sessions, programmatic lifecycle control, and education/minor privacy safeguards while StegLearn retains curriculum, adaptation, evidence, and mastery authority. Please route us to Player for Education / YouTube Youth & Learning Partnerships.
+Publicly supported remains:
 
-Partner Advantage:
+- managed YouTube delivery;
+- Player for Education embedded playback;
+- programmatic YouTube Live broadcast lifecycle;
+- low/ultra-low latency modes;
+- Live Chat retrieval/server streaming when enabled;
+- cohort instruction and StegLearn-owned adaptation from permitted response channels.
 
-- Engagement: `Build`
-- Solution: `Google for Education`
-- Product: `StegVerse / StegLearn`
-- Positioning: governed AI-assisted EdTech platform
-- Integrated Solutions eligibility: not claimed
+Still unresolved and requiring written Google evidence or negotiation:
 
-## Machine-authorized versus user-interactive execution
+1. authorized learner camera uplink;
+2. authorized learner microphone uplink;
+3. independently addressable private learner sessions;
+4. N concurrent bidirectional classrooms of one without one creator/host channel per learner;
+5. education/minor identity, consent, retention, moderation, and account handling for that bidirectional lane.
 
-Completed by machine-authorized surfaces:
+## Authority boundaries
 
-- current public-evidence refresh;
-- canonical task/handoff maintenance;
-- exact outreach package preparation;
-- current capability/negotiation matrix preservation;
-- exact-head StegLearn source validation.
-
-The available ChatGPT tool surface cannot type into or submit arbitrary Google web forms or complete authenticated Partner Advantage account workflows. Those steps require the owner's interactive browser/session identity.
-
-Minimum user action:
-
-1. Open `https://edu.google.com/intl/ALL_in/contact/`.
-2. Enter first name, last name, business/organization email, phone, and choose `Head of Digital Transformation / AI`.
-3. Select `Education technology`.
-4. Enter `StegVerse`, `https://stegverse.org`, and `United States`.
-5. Select `Teaching and Learning` and `Google Cloud`.
-6. Paste the canonical problem statement above.
-7. Answer current Workspace-for-Education use truthfully and choose marketing opt-in preference.
-8. Tap `Get in touch`.
-9. Then use the `Apply now` Partner Advantage route from the Build page, sign in with the intended StegVerse Google identity, choose `Build` and `Google for Education`, and complete only accurate organization/legal fields.
-10. Preserve any on-screen confirmation, case/reference number, confirmation email, or follow-up message for canonical evidence.
-
-## Evidence handling after submission
-
-Any Google acknowledgement/response must be recorded as external evidence before changing capability assumptions. Written Google evidence can update partner/capability state; silence, a form submission, or an automated receipt does not prove negotiated technical capability.
-
-No proprietary StegLearn A/V stack should be built while this partnership path remains viable and untested.
+- Task Registry owns work intent.
+- WorkerCoordinator owns executable claims/fences.
+- Interlock/InTr governs external ingress/egress.
+- Master Records owns observed/reconstructable reality.
+- Public research, owner-reported submission, or automated receipts do not prove partnership or negotiated technical capability.
+- No learner data or learner camera/microphone stream is authorized by this evidence state.
+- No proprietary A/V infrastructure should be built while the Google path remains viable and technically unresolved.
 
 ## Validation evidence
 
-Current StegLearn exact main head:
-
-`ba1b852374c21864647f041f3e77e4598e22f652`
-
-GitHub Actions:
+Most recent exact-head StegLearn validation before this reconciliation:
 
 `34992304852 — Validate StegLearn — SUCCESS`
 
-This exact-head run includes the canonical Google education outreach package and the repository-local authorization handoff. No `.github` workflow run is claimed for the direct organization-control commits.
+This reconciliation changes evidence/status text only and does not claim new Google capability.
 
 ## Current state
 
-`OWNER_AUTHORIZED_PUBLIC_EVIDENCE_REFRESHED_SOURCE_PACKAGE_VALIDATED_INTERACTIVE_GOOGLE_SUBMISSION_PENDING`
+`OWNER_REPORTED_SUBMISSION_GOOGLE_ACKNOWLEDGEMENT_NOT_OBSERVED_NEGOTIATED_AV_GAPS_UNCHANGED`
+
+## Next evidence gate
+
+Bind any Google acknowledgement or response by sender, timestamp, subject/reference identifier, and exact written capability statement before changing capability assumptions.
 
 ## Manual work
 
-Interactive Google specialist-form and Partner Advantage submission as listed above. No other user work is required before submission.
+If an on-screen Google confirmation or Partner Advantage reference exists but was not emailed, provide it for canonical reconciliation. Otherwise none until Google responds.
