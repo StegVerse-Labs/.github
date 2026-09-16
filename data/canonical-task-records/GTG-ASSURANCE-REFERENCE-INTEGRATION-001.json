@@ -6,12 +6,16 @@
   "parent_task_id": "GTG-TT-MILLINGS-FORMALISM-COMPATIBILITY-REVIEW-001",
   "goal": "Integrate Gate Legitimacy, Independent Review, and Architecture-Neutral Admissibility into canonical GTG as typed, correlation-checked, non-authorizing assurance references while preserving existing GTG disposition ownership and TT's single gtg_record_ref cross-layer linkage.",
   "coordination_state": "ACTIVE",
-  "checkout_state": "UNCLAIMED",
-  "cosv_task_vector": "10100000100000",
+  "checkout_state": "CLAIMED_IMPLEMENTATION",
+  "cosv_task_vector": "40000100100000",
+  "goal_prompt_count": "1/20",
   "source_refs": [
     "docs/GTG_ASSURANCE_REFERENCE_INTEGRATION_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegScholar:GTG_ASSURANCE_REFERENCE_INTEGRATION_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegScholar:papers/rtg-gtg-tt/millings-derived-formalism-compatibility-review.md",
+    "StegVerse-Labs/StegScholar:schemas/gtg-decision.schema.json",
+    "StegVerse-Labs/StegScholar:schemas/gtg-governance-record.schema.json",
+    "StegVerse-Labs/StegScholar:schemas/tt-transition-cell.schema.json",
     "data/canonical-task-records/GTG-TT-MILLINGS-FORMALISM-COMPATIBILITY-REVIEW-001.json"
   ],
   "targets": {
@@ -21,6 +25,16 @@
   },
   "dependencies": [],
   "blockers": [],
+  "collision_check": {
+    "checked_at": "2026-09-15T21:13:00-05:00",
+    "open_pr_collision_found": false,
+    "equivalent_implementation_found": false,
+    "active_gtg_pr_reviewed": "StegVerse-Labs/StegScholar#51",
+    "active_gtg_pr_overlap": "COORDINATION_REPORT_ONLY_NO_SCHEMA_COLLISION",
+    "existing_gtg_assurance_binding_found": false,
+    "tt_duplicate_assurance_fields_found": false,
+    "disposition": "CLAIM_AND_IMPLEMENT_THIS_TASK_ONLY"
+  },
   "adjacent_task_refs": [
     "GATE-LEGITIMACY-INVARIANT-001",
     "INDEPENDENT-REVIEW-PREDICATE-001",
@@ -38,7 +52,7 @@
     "HISTORICAL_RECORD_COMPATIBILITY_PRESERVED"
   ],
   "completion": {"claimed": false, "validated": false, "activation_proof_complete": false},
-  "allowed_next_transitions": ["CLAIMED_IMPLEMENTATION", "CLAIMED_VALIDATION", "CLAIMED_INTEGRATION"],
+  "allowed_next_transitions": ["CLAIMED_VALIDATION", "CLAIMED_INTEGRATION", "MERGED_INTO_CANONICAL_WORKSTREAM"],
   "handoff_projection_refs": [
     "docs/GTG_ASSURANCE_REFERENCE_INTEGRATION_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegScholar:GTG_ASSURANCE_REFERENCE_INTEGRATION_MIRROR_HANDOFF.md"
