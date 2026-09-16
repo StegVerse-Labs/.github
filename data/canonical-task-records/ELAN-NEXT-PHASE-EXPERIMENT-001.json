@@ -15,6 +15,7 @@
   },
   "source_refs": [
     "docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md",
+    "docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
     "control/task-vectors/ELAN-NEXT-PHASE-EXPERIMENT-001.json",
     "control/task-vector-index.d/ELAN-NEXT-PHASE-EXPERIMENT-001.json",
     "StegVerse-Labs/.github#1999",
@@ -29,16 +30,20 @@
   },
   "dependencies": [
     {"dependency_id":"DEP-ELAN-NATIVE-SUCCESSOR-TRACE","kind":"THIRD_PARTY_EVIDENCE","state":"PENDING","ref":"ÉLAN evaluator return; exact native artifact not yet received"},
-    {"dependency_id":"DEP-STEGVERSE-GOVERNED-SDK-PATH","kind":"IMPLEMENTATION","state":"AVAILABLE_WITH_RUNTIME_AUTHORITY_SEPARATE","ref":"StegVerse-org/StegVerse-SDK existing governed manifest path; source availability does not prove runtime execution authority"}
+    {"dependency_id":"DEP-STEGVERSE-GOVERNED-SDK-PATH","kind":"IMPLEMENTATION","state":"AVAILABLE_WITH_RUNTIME_AUTHORITY_SEPARATE","ref":"StegVerse-org/StegVerse-SDK existing governed manifest path; source availability does not prove runtime execution authority"},
+    {"dependency_id":"DEP-CURRENT-RETAINED-RESIDENT-EVIDENCE","kind":"RUNTIME_EVIDENCE","state":"PENDING","ref":"docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md; retained StegBrowser/StegOS node is the canonical selected same-device substrate, while current discovery/receipt/runtime-binding evidence remains pending"}
   ],
   "blockers": [],
-  "adjacent_task_refs": ["ELAN-CUMULATIVE-PUBLICATION-001", "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001"],
+  "adjacent_task_refs": ["ELAN-CUMULATIVE-PUBLICATION-001", "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001", "GADI-RESIDENT-EXECUTION-001"],
   "expected_evidence_predicates": [
     "ELAN_NATIVE_SUCCESSOR_TRACE_RECEIVED",
     "ELAN_NATIVE_SUCCESSOR_TRACE_EXACT_BYTES_PRESERVED_BEFORE_MAPPING",
     "ELAN_NATIVE_SUCCESSOR_TRACE_DIGEST_BOUND",
     "PREREGISTERED_FIELDS_FROZEN_BEFORE_SUCCESSOR_EXECUTION_EVIDENCE",
     "STEGVERSE_REPRESENTED_EVENTS_DERIVED_ONLY_FROM_SHARED_HUMAN_EVENTS",
+    "CURRENT_RETAINED_RESIDENT_NODE_DISCOVERY_AND_RUNTIME_BINDING_OBSERVED",
+    "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+    "CURRENT_INTR_ADMISSION_OBSERVED",
     "STEGVERSE_GOVERNED_SUCCESSOR_SUBMISSION_AUTHENTICALLY_OBSERVED",
     "STEGVERSE_CUSTODY_REPLAY_RECONSTRUCTION_EVIDENCE_PRESERVED_WHERE_NATIVE",
     "CROSS_EVALUATION_BEGINS_ONLY_AFTER_BOTH_INDEPENDENT_CHAINS_EXIST",
@@ -63,14 +68,14 @@
       "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
     ],
     "reviews": [
-      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"PENDING_EVIDENCE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md"]}
+      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"SELECTED","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md","docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"SUITABLE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"SUITABLE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"SUITABLE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"]}
     ],
-    "selected_substrate_id": null,
+    "selected_substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
     "external_device_required": false,
     "second_user_operated_device_allowed": false,
     "authority_effect": "NONE"
@@ -81,6 +86,7 @@
   "allowed_next_transitions": [
     "RECEIVE_AND_HASH_ELAN_NATIVE_TRACE",
     "BUILD_STEGVERSE_REPRESENTED_EVENT_PACKAGE",
+    "OBSERVE_CURRENT_RETAINED_RESIDENT_RUNTIME_BINDING",
     "SUBMIT_THROUGH_EXISTING_GOVERNED_SDK_PATH_WHEN_AUTHORIZED",
     "PRESERVE_NATIVE_STEGVERSE_EVIDENCE_CHAIN",
     "COMPARE_AFTER_BOTH_CHAINS_EXIST"
@@ -88,12 +94,14 @@
   "handoff_projection_refs": ["docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md"],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
+    "substrate_selection_mints_execution_authority": false,
     "github_actions_mint_execution_authority": false,
     "third_party_trace_mints_stegverse_execution_authority": false,
     "sdk_source_validation_proves_runtime_execution": false,
     "interlock_intr_remains_transition_authority": true,
+    "workercoordinator_remains_claim_fence_authority": true,
     "tv_tvc_remains_credential_authority_where_applicable": true,
     "historical_or_third_party_evidence_may_be_rewritten": false
   },
-  "readme_impact": {"material_function_change": false, "readme_updated_in_change_set": false, "readme_path": "README.md"}
+  "readme_impact": {"material_function_change": false, "readme_updated_in_change_set": true, "readme_path": "README.md"}
 }
