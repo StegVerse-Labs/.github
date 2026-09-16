@@ -4,7 +4,7 @@
   "correlation_id": "ELAN-NEXT-PHASE-EXPERIMENT-001",
   "root_correlation_id": "ELAN-NEXT-PHASE-EXPERIMENT-001",
   "parent_task_id": "ELAN-CUMULATIVE-PUBLICATION-001",
-  "goal": "Continue the established ELAN experiment through continued non-emission observation until the first authentic ELAN-native return-to-speech transition, with predecessor evidence preserved exactly, expected evidence frozen before interpretation, and no unrelated authority/runtime/evaluator lane promoted into an experiment prerequisite.",
+  "goal": "Preserve the established ELAN predecessor evidence exactly and execute the frozen next-phase procedure only when the next authentic ELAN source-native output following the previously recorded non-emission event is available; capture that output exactly before interpretation and preserve the governed evidence chain without treating repository absence or elapsed time as an ELAN observation.",
   "coordination_state": "ACTIVE",
   "checkout_state": "UNCLAIMED",
   "cosv": {
@@ -18,6 +18,7 @@
     "docs/ELAN_CUMULATIVE_RUN2_PUBLICATION_MIRROR_HANDOFF.md",
     "control/task-vectors/ELAN-NEXT-PHASE-EXPERIMENT-001.json",
     "control/task-vector-index.d/ELAN-NEXT-PHASE-EXPERIMENT-001.json",
+    "StegVerse-org/StegVerse-SDK/docs/ELAN_NEXT_PHASE_EXPERIMENT_PROCEDURE.md",
     "StegVerse-org/StegVerse-SDK/docs/ELAN_NEXT_PHASE_EXPERIMENT_PREREGISTRATION.md",
     "StegVerse-org/StegVerse-SDK/data/elan-next-phase-experiment-001.preregistration.json"
   ],
@@ -26,8 +27,7 @@
     "repositories": ["StegVerse-Labs/.github", "StegVerse-org/StegVerse-SDK"],
     "components": [
       "elan-predecessor-evidence-preservation",
-      "continued-silence-observation",
-      "return-to-speech-observation",
+      "next-authentic-source-native-output-capture",
       "expected-evidence-freeze",
       "governed-result-reference",
       "custody",
@@ -37,10 +37,10 @@
   },
   "dependencies": [
     {
-      "dependency_id": "DEP-ELAN-FIRST-RETURN-TO-SPEECH",
+      "dependency_id": "DEP-ELAN-NEXT-AUTHENTIC-SOURCE-NATIVE-OUTPUT",
       "kind": "EXPERIMENT_OBSERVATION",
       "state": "PENDING",
-      "ref": "First authentic ELAN-native return-to-speech transition after the continued non-emission interval"
+      "ref": "Next actual source-native output produced by ELAN after the previously recorded non-emission event"
     },
     {
       "dependency_id": "DEP-ELAN-GOVERNED-RESULT-LANE",
@@ -58,8 +58,8 @@
     "PREDECESSOR_RUN1_EVENTS_1_2_PRESERVED_EXACTLY",
     "PREDECESSOR_RUN2_EVENT3_NON_EMISSION_PRESERVED_EXACTLY",
     "EXPECTED_EVIDENCE_DECLARATION_FROZEN_BEFORE_INTERPRETATION",
-    "FIRST_AUTHENTIC_ELAN_NATIVE_RETURN_TO_SPEECH_TRANSITION_OBSERVED",
-    "RETURN_TRANSITION_SOURCE_NATIVE_EVIDENCE_PRESERVED",
+    "NEXT_AUTHENTIC_ELAN_SOURCE_NATIVE_OUTPUT_CAPTURED_EXACTLY",
+    "SOURCE_NATIVE_OUTPUT_PRESERVED_BEFORE_INTERPRETATION",
     "IMMUTABLE_MANIFEST_REFERENCE_BOUND",
     "GOVERNED_RESULT_REFERENCE_BOUND",
     "DETERMINISTIC_REPLAY_PRESERVED",
@@ -67,7 +67,8 @@
     "RETURNED_RESULT_PRESERVED",
     "NOT_EXPOSED_REMAINS_NOT_EXPOSED",
     "UNRESOLVED_REMAINS_UNRESOLVED",
-    "SILENCE_HAS_NO_INFERRED_INTENT_CONSENT_REFUSAL_WITHDRAWAL_OR_MEANING"
+    "REPOSITORY_ABSENCE_IS_NOT_ELAN_OBSERVATION",
+    "ELAPSED_TIME_IS_NOT_ELAN_OBSERVATION"
   ],
   "runtime_requirements": {
     "capabilities": [
@@ -77,10 +78,10 @@
       "governed_result_reference_preservation"
     ],
     "environment": "EXISTING_ELAN_EXPERIMENT_EVIDENCE_CHAIN",
-    "direction": "CONTINUED_NON_EMISSION_TO_FIRST_AUTHENTIC_RETURN_TO_SPEECH",
+    "direction": "NEXT_AUTHENTIC_ELAN_SOURCE_NATIVE_OUTPUT_TO_FROZEN_EVIDENCE_COMPARISON",
     "mutation_required": true,
     "deployment_required": false,
-    "current_observation_required": true
+    "current_observation_required": false
   },
   "execution_substrate_resolution": {
     "schema": "stegverse.execution-substrate-resolution/v1",
@@ -118,11 +119,11 @@
     "reconciliation_ref": null
   },
   "allowed_next_transitions": [
-    "CONTINUE_NON_EMISSION_OBSERVATION",
-    "CAPTURE_FIRST_AUTHENTIC_ELAN_NATIVE_RETURN_TO_SPEECH",
-    "PRESERVE_RETURN_TRANSITION_SOURCE_NATIVE_EVIDENCE",
-    "BIND_IMMUTABLE_MANIFEST_AND_GOVERNED_RESULT_REFERENCES",
-    "PRESERVE_REPLAY_RECONSTRUCTION_AND_RETURNED_RESULT",
+    "WAIT_FOR_NEXT_AUTHENTIC_ELAN_SOURCE_NATIVE_OUTPUT",
+    "CAPTURE_NEXT_AUTHENTIC_ELAN_SOURCE_NATIVE_OUTPUT_EXACTLY",
+    "BIND_PREDECESSOR_FROZEN_DECLARATION_MANIFEST_AND_CORRELATION_ID",
+    "SUBMIT_THROUGH_ESTABLISHED_EXPERIMENT_GOVERNANCE_PATH",
+    "PRESERVE_GOVERNED_RESULT_CUSTODY_REPLAY_RECONSTRUCTION_AND_RETURNED_RESULT",
     "COMPARE_AGAINST_FROZEN_EXPECTED_EVIDENCE"
   ],
   "handoff_projection_refs": [
@@ -134,7 +135,9 @@
     "github_token_authority_is_experiment_prerequisite": false,
     "third_party_evaluator_execution_is_experiment_prerequisite": false,
     "live_stegos_intr_runtime_is_experiment_prerequisite": false,
-    "historical_or_source_native_evidence_may_be_rewritten": false
+    "historical_or_source_native_evidence_may_be_rewritten": false,
+    "repository_absence_may_be_treated_as_elan_observation": false,
+    "elapsed_time_may_be_treated_as_elan_observation": false
   },
   "readme_impact": {
     "material_function_change": false,
