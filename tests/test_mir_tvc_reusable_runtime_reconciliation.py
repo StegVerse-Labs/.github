@@ -18,28 +18,44 @@ def load_module(name: str, path: Path):
     return module
 
 
+def intr_lane(direction: str):
+    char = "a" if direction == "request" else "b"
+    terminal = "sha256:" + char * 64
+    receipt = {
+        "boundary_verification": "VERIFIED",
+        "authority_transfer": False,
+        "receipt_hash": terminal,
+    }
+    return {
+        "intent": {"protocol": "InTr"},
+        "receipts": [receipt],
+        "transport_result": {
+            "state": "TRANSPORT_COMPLETE",
+            "profile_id": "external-provider-operation",
+            "terminal_receipt_hash": terminal,
+        },
+    }
+
+
 class MirTvcReusableRuntimeReconciliationTests(unittest.TestCase):
     def test_registered_runner_is_local_and_materialized(self):
         definition = json.loads(TASK_DEF.read_text(encoding="utf-8"))
         self.assertEqual(definition["runner_templates"], ["scripts/reconcile_tvc_runtime_boundary_reusable.py"])
         self.assertTrue(RUNNER.is_file())
 
-    def test_runner_predicates_stop_before_intr_and_master_records(self):
+    def test_runner_predicates_end_after_real_intr_and_before_master_records(self):
         definition = json.loads(TASK_DEF.read_text(encoding="utf-8"))
         self.assertEqual(
             definition["completion_predicates"],
             [
                 "QUALIFYING_REAL_PROVIDER_OPERATION_RECEIPT_CHAIN_OBSERVED",
                 "READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND_DERIVED",
+                "INTERLOCK_INTR_RECEIPT_ADMITTED",
             ],
         )
         self.assertEqual(
             definition["post_runner_lifecycle_predicates"],
-            [
-                "INTERLOCK_INTR_RECEIPT_ADMITTED",
-                "MASTER_RECORDS_CUSTODY_ACCEPTED",
-                "MASTER_RECORDS_RECONSTRUCTION_CONFIRMED",
-            ],
+            ["MASTER_RECORDS_CUSTODY_ACCEPTED", "MASTER_RECORDS_RECONSTRUCTION_CONFIRMED"],
         )
 
     def test_checked_in_manifest_matches_constructor(self):
@@ -55,7 +71,7 @@ class MirTvcReusableRuntimeReconciliationTests(unittest.TestCase):
         rebuilt = constructor.build_manifest(args)
         self.assertEqual(rebuilt, manifest)
 
-    def test_real_receipt_requires_claim_allow_and_use_receipt(self):
+    def test_real_receipt_requires_claim_allow_use_receipt_and_both_intr_chains(self):
         runner = load_module("mir_tvc_reusable_runner", RUNNER)
         receipt = {
             "schema": "stegverse.mir-tvc-provider-roundtrip-receipt/v1",
@@ -74,6 +90,11 @@ class MirTvcReusableRuntimeReconciliationTests(unittest.TestCase):
                 "decision": "ALLOW_OPERATION_RESULT",
                 "use_receipt": {"receipt_id": "real-use-receipt"},
             },
+            "intr_transport": {
+                "profile_id": "external-provider-operation",
+                "request": intr_lane("request"),
+                "response": intr_lane("response"),
+            },
         }
         runner.qualified_real_receipt(
             receipt,
@@ -81,7 +102,8 @@ class MirTvcReusableRuntimeReconciliationTests(unittest.TestCase):
             expected_ready_state="READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND",
         )
         bad = dict(receipt)
-        bad["provider_operation_result"] = {"decision": "DENY"}
+        bad["intr_transport"] = dict(receipt["intr_transport"])
+        bad["intr_transport"]["response"] = None
         with self.assertRaises(RuntimeError):
             runner.qualified_real_receipt(
                 bad,
