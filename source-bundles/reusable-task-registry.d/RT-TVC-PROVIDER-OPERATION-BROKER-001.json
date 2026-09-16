@@ -1,0 +1,15 @@
+{
+  "reusable_task_id": "RT-TVC-PROVIDER-OPERATION-BROKER-001",
+  "name": "TV/TVC Provider Operation Broker",
+  "purpose": "Reuse the existing TV/TVC provider-operation broker as the bounded provider/session execution surface for a manifest-selected provider operation without creating another broker, credential route, transition authority, or provider-specific governance boundary.",
+  "trigger": "a governed invocation requires an existing TV/TVC provider-operation profile through the canonical broker",
+  "scope": "one manifest-bound provider operation through StegVerse-Labs/TVC:TVC-PROVIDER-OPERATION-BROKER-003",
+  "parameter_keys": ["provider_profile", "operation", "request_binding", "lease_binding", "expected_result_evidence", "intr_protocol_ref"],
+  "existing_task_ref": "StegVerse-Labs/TVC:tasks/TVC-PROVIDER-OPERATION-BROKER-003.json",
+  "runner_templates": ["StegVerse-Labs/TVC:app.main:/v1/provider-operation"],
+  "recording_levels": ["operation", "task", "goal", "component", "system", "master_records"],
+  "completion_predicates": ["CANONICAL_TV_TVC_PROVIDER_BROKER_REUSED", "REQUEST_AND_LEASE_BINDINGS_VERIFIED", "PROVIDER_OPERATION_RESULT_OR_FAIL_CLOSED_BOUNDARY_RETAINED", "NO_CREDENTIAL_EXPORT", "NO_ALTERNATE_PROVIDER_BROKER_CREATED"],
+  "failure_semantics": ["UNKNOWN_PROVIDER_OR_OPERATION_FAIL_CLOSED", "LEASE_OR_REQUEST_DRIFT_FAIL_CLOSED", "PROVIDER_SECRET_EXPORT_PROHIBITED", "SOURCE_VALIDATION_IS_NOT_RUNTIME_EVIDENCE"],
+  "authority_effect": "NONE_BEYOND_EXISTING_TV_TVC_PROVIDER_SESSION_AUTHORITY",
+  "reuse_instructions": "Reuse TVC-PROVIDER-OPERATION-BROKER-003 and its registered provider profiles. TV/TVC remains credential/provider authority; Interlock/InTr remains transition authority. Do not create an alternate provider broker, vault, credential mechanism, or provider-specific governance plane."
+}

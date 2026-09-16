@@ -1,0 +1,16 @@
+{
+  "reusable_task_id": "RT-TVC-PRIMARY-RUNTIME-BINDING-001",
+  "name": "TV/TVC Primary Runtime Binding",
+  "purpose": "Reuse the released TVC binder and approved same-service activation delivery to verify and bind the existing TV/TVC primary provider-operation runtime from current canonical source without creating another runtime, listener, broker, credential route, or host.",
+  "trigger": "a governed invocation requires authentic TVC primary-runtime availability rather than source-only validation",
+  "scope": "the existing authorized TV/TVC primary runtime and approved system/rootless service delivery paths",
+  "parameter_keys": ["canonical_tvc_source", "binder_task_ref", "activation_delivery_task_ref", "vault_broker_socket", "provider_operation_surface", "activation_authority_declaration"],
+  "existing_task_ref": "StegVerse-Labs/TVC:tasks/TVC-PRIMARY-RUNTIME-BINDER-005.json",
+  "existing_delivery_ref": "StegVerse-Labs/TVC:tasks/TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006.json",
+  "runner_templates": ["StegVerse-Labs/TVC:tools/task_dispatcher.py tvc.primary_runtime_binder.preflight", "StegVerse-Labs/TVC:tools/task_dispatcher.py tvc.primary_runtime_binder.activate", "StegVerse-Labs/TVC:scripts/install_tvc_primary_runtime_service.py --activate"],
+  "recording_levels": ["operation", "task", "goal", "component", "system", "master_records"],
+  "completion_predicates": ["CURRENT_CANONICAL_TVC_SOURCE_VERIFIED", "EXISTING_TV_TVC_VAULT_BROKER_SOCKET_VERIFIED", "EXISTING_PRIMARY_RUNTIME_BOUND", "APPROVED_SERVICE_DELIVERY_REUSED", "NO_DUPLICATE_RUNTIME_OR_HOST_CREATED"],
+  "failure_semantics": ["MISSING_TV_TVC_ACTIVATION_AUTHORITY_FAIL_CLOSED", "MISSING_VAULT_BROKER_SOCKET_FAIL_CLOSED", "LOCAL_BINDING_PROOF_FAILURE_FAIL_CLOSED", "SOURCE_OR_CI_SUCCESS_IS_NOT_RUNTIME_BINDING_EVIDENCE"],
+  "authority_effect": "NONE_BINDING_AND_ACTIVATION_DELIVERY_ONLY",
+  "reuse_instructions": "Reuse TVC-PRIMARY-RUNTIME-BINDER-005 and TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006. Runtime authority remains with the existing TV/TVC-authorized runtime; GitHub has no production runtime authority. Restart only the existing service from current canonical source when required."
+}

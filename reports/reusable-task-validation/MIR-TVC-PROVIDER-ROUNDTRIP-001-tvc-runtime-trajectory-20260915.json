@@ -1,0 +1,54 @@
+{
+  "schema": "stegverse.reusable-task-validation-receipt/v1",
+  "goal_task_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
+  "cosv_task_vector": "50000000100000",
+  "validation_scope": "TVC_RUNTIME_RECEIPT_MANIFEST_TRAJECTORY_AND_REUSABLE_COMPONENT_REDUCTION",
+  "validated_source_head_before_receipt_commit": "4070789af3fb3ee6376721bef6aa75f0f7c88d1a",
+  "checks": {
+    "canonical_task_pointer_resolves": true,
+    "cosv_pointer_matches": true,
+    "new_reusable_ids_absent_from_preexisting_main_registry_surfaces": true,
+    "registry_shards_are_additive_not_monolithic_duplicates": true,
+    "provider_broker_existing_implementation_reused": true,
+    "primary_runtime_binder_existing_implementation_reused": true,
+    "activation_delivery_existing_implementation_reused": true,
+    "runtime_observer_existing_implementation_reused": true,
+    "manifest_schema_required_fields_present": true,
+    "manifest_parameter_hash_deterministic": true,
+    "manifest_hash_recomputed": "033a8f91037e14f6b28a08cb487bbf5c2eddf41007a18a4273707ff91a1b4461",
+    "manifest_requires_interlock_intr_admission": true,
+    "manifest_requires_master_records_custody": true,
+    "manifest_requires_master_records_reconstruction": true,
+    "manifest_requires_current_tvc_source_identity": true,
+    "manifest_requires_tv_tvc_vault_backed_provider_operation_binding": true,
+    "manifest_does_not_claim_runtime_execution": true,
+    "github_runtime_authority_none": true,
+    "duplicate_runtime_created": false,
+    "duplicate_provider_broker_created": false,
+    "duplicate_credential_route_created": false,
+    "duplicate_transition_authority_created": false,
+    "duplicate_custody_implementation_created": false,
+    "second_user_operated_device_required": false
+  },
+  "reusable_tasks": [
+    "RT-TVC-PROVIDER-OPERATION-BROKER-001",
+    "RT-TVC-PRIMARY-RUNTIME-BINDING-001",
+    "RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001"
+  ],
+  "existing_composed_tasks": [
+    "RT-INTR-BOUNDARY-ADMISSION-001",
+    "RT-INTR-GOVERNED-TRANSITION-001",
+    "RT-INTR-EVIDENCE-CUSTODY-001"
+  ],
+  "result": "PASS_SOURCE_AND_MANIFEST_DETERMINISTIC_VALIDATION",
+  "runtime_evidence_effect": "NONE",
+  "remaining_runtime_predicate": "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED",
+  "remaining_runtime_requirements": [
+    "AUTHENTIC_READY_RECEIPT_OBSERVED",
+    "CURRENT_TVC_SOURCE_IDENTITY_VERIFIED",
+    "TV_TVC_VAULT_BACKED_PROVIDER_OPERATION_BINDING_VERIFIED",
+    "INTERLOCK_INTR_RECEIPT_ADMITTED",
+    "MASTER_RECORDS_CUSTODY_ACCEPTED",
+    "MASTER_RECORDS_RECONSTRUCTION_CONFIRMED"
+  ]
+}
