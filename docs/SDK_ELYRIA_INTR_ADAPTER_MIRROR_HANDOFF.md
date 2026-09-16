@@ -4,7 +4,7 @@ Updated: 2026-09-12
 Repository: `StegVerse-Labs/.github`
 Goal Task ID: `SDK-ELYRIA-INTR-ADAPTER-001`
 COSV: `71000000100112`
-Status: `ACTIVE / COMPONENTIZED / SOURCE AND HANDOFFS CURRENT / AUTHENTIC PUBLIC ROUND TRIP UNOBSERVED`
+Status: `ACTIVE / COMPONENTIZED / SOURCE CURRENT / OWNER-OPERATED PUBLIC ENDPOINT NOT DISCOVERED`
 
 ## Canonical Goal Task identity
 
@@ -63,7 +63,38 @@ conclusion: SUCCESS
 merge commit: 5ecb19944019af4bf2432b0a1dad3bda04f9019c
 ```
 
-The SDK root README already states the generic external-framework manifested processing and governed-interlock model, so no task-specific README mutation was needed. The repository handoff is now current.
+The SDK root README already states the generic external-framework manifested processing and governed-interlock model, so no task-specific README mutation is needed.
+
+## Public Elyria endpoint resolution
+
+Canonical public framework source was resolved to:
+
+```text
+repository: Kamanaka5502/elyria-admission-runtime
+verified public release: v0.8.2-public
+assessment route: POST /movements/assess
+health route: GET /healthz
+```
+
+The repository publishes a local/container reviewer runtime and a GHCR image publication workflow. Repository code shows the assessment route is implemented by FastAPI. Public web/GitHub searches did not identify a separately advertised owner-operated public assessment base URL. Therefore no authentic external network round trip is claimed from discovery alone.
+
+A reviewer-hosted public instance is technically available as the next controlled observation path. The connected Render account exposes exactly one workspace, `Rigel's workspace`, but Render requires explicit confirmation of that workspace before workspace-scoped creation. No service was created or modified without that confirmation.
+
+If created from the public Elyria release/source, such an instance may prove:
+
+```text
+PUBLIC_NETWORK_EXECUTION_OF_PUBLIC_ELYRIA_RELEASE
+```
+
+It must not be upgraded into:
+
+```text
+ELYRIA_OWNER_OPERATED_PRODUCTION_ENDPOINT
+PRIVATE_VERITAS_SUBSTRATE_INTEROPERABILITY
+PRODUCTION_ROUTE_CLOSURE
+```
+
+unless separate authentic evidence exists.
 
 ## Authority separation
 
@@ -105,21 +136,21 @@ Remaining Goal Task-specific predicate:
 AUTHENTIC_TWO_WAY_PUBLIC_ELYRIA_TRANSPORT_EVIDENCE_OBSERVED
 ```
 
-Source construction, CI, injected transport, merge state, and component reuse do not satisfy that remaining predicate.
+Source construction, CI, local-only execution, injected transport, merge state, and component reuse do not satisfy that remaining predicate.
 
 ## Duplicate orchestration retired/superseded
 
-Do not extend task-specific implementations for generic transport, Interlock/InTr protocol, receipt/custody/reconstruction, callback/correlation, recurring monitoring, or device-local verification. Historical source and CI evidence remains provenance. Superseded coordination PR `#1613` was closed without deleting its evidence lineage.
+Do not extend task-specific implementations for generic transport, Interlock/InTr protocol, receipt/custody/reconstruction, callback/correlation, recurring monitoring, or device-local verification. Historical source and CI evidence remains provenance.
 
 ## Next admissible work
 
-1. Use the component profile to resolve a genuinely reachable public Elyria assessment endpoint.
-2. Execute one authentic governed request/response cycle through the existing Interlock/InTr transport path.
-3. Preserve exact task/run correlation and foreign response semantics.
-4. Record authentic evidence through Master Records custody/readback.
-5. Mark the final predicate satisfied only after authentic evidence exists.
-6. Do not claim private production Veritas interoperability, publication, or a far-side final transition without evidence.
+1. Prefer an owner-operated public Elyria endpoint if one becomes discoverable.
+2. Otherwise, after explicit confirmation of `Rigel's workspace`, create a bounded reviewer-hosted public Elyria runtime from the public release/source without modifying Elyria semantics.
+3. Execute one authentic governed assessment round trip through the existing selected reusable components.
+4. Preserve exact task/run identity and foreign response semantics.
+5. Record authentic evidence through Master Records custody/readback.
+6. Mark the final predicate satisfied only at the evidence class actually observed; a reviewer-hosted instance does not prove owner-operated production or private Veritas interoperability.
 
 ## Manual work
 
-None.
+Explicit confirmation is required before using the connected Render workspace `Rigel's workspace` to create the bounded reviewer-hosted Elyria instance.
