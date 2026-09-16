@@ -110,7 +110,7 @@ Field rules:
 
 ## README impact
 
-This is a research/evidence coordination task, not a product implementation change. README should identify the active cross-evaluation task without implying completed findings before execution.
+README reviewed. This registration changes research/evidence coordination state, not repository function, so no README text mutation is required. Canonical task state is carried by the registry shard and this handoff.
 
 ## No-claim boundary
 
