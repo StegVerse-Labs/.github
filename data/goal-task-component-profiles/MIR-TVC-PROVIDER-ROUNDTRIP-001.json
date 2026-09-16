@@ -13,6 +13,7 @@
       "RT-INTR-ROUNDTRIP-CORRELATION-001",
       "RT-INTR-EVIDENCE-CUSTODY-001"
     ],
+    "reusable_task_lifecycle": "PROMOTED_VALIDATED_REUSABLE",
     "protocol_definition_root": "RT-INTR-PROTOCOL-ESTABLISH-001",
     "protocol_establishment_selected": false,
     "protocol_establishment_reason": "APPLICABLE_INTR_PROTOCOL_ALREADY_EXISTS",
@@ -78,17 +79,19 @@
     "exact_return_packet_retained": true,
     "stegverse_return_exit_observed": true,
     "sdk_evaluator_review_ingress_observed": true,
-    "provenance": "MIR_NODE_MIRROR_BUILD_TEST",
+    "authentic_mir_result_receipt_retained": true,
+    "authentic_tvc_mir_provider_session_observed": false,
+    "provenance": "MIR_NODE_MIRROR_BUILD_TEST_PLUS_AUTHENTIC_EXTERNAL_RESULT",
     "duplicate_reexecution_required": false,
-    "reason": "The reusable RT-INTR tasks name the same admission, transition, correlation, and custody behaviors already executed and retained in the canonical MIR mirror round-trip; reconciliation preserves those transitions instead of creating a second invocation."
+    "reason": "The reusable RT-INTR tasks name the same admission, transition, correlation, and custody behaviors already executed and retained in the canonical MIR mirror round-trip; authentic MIR result evidence now satisfies only the external-result predicate and does not substitute for a TV/TVC provider-session receipt."
   },
   "satisfied_predicates": [
     "MIR_NODE_MIRROR_ROUNDTRIP_EXECUTED",
-    "MIR_NODE_MIRROR_RETURN_ADMITTED_TO_SDK"
+    "MIR_NODE_MIRROR_RETURN_ADMITTED_TO_SDK",
+    "AUTHENTIC_MIR_RESULT_RECEIPT_RETAINED"
   ],
   "remaining_predicates": [
-    "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED",
-    "AUTHENTIC_MIR_RESULT_RECEIPT_RETAINED"
+    "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED"
   ],
   "predicate_classes": {
     "MIR_NODE_MIRROR_ROUNDTRIP_EXECUTED": "BUILD_TEST_RUNTIME",
