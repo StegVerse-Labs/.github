@@ -81,6 +81,8 @@ Those names are present as runtime output targets in source, not as committed au
 
 The immutable nonce was not re-emitted. Round Trip 1 remains unentered.
 
+Reconciliation validation scope after cleanup is exactly the canonical task record plus this mirror handoff; the exploratory reusable-task registry edit was fully reverted before exact-head validation and is not part of the effective PR diff.
+
 ## A3/A4 collision check — 2026-09-16
 
 The existing A3/A4 path is complete and does not require a new StegBrowser-specific WorkerCoordinator implementation.
