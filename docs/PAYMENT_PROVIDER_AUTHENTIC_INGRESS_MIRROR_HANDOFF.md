@@ -19,19 +19,17 @@ Observe authentic completed Stripe and GoDaddy payment records through TV/TVC-go
 
 ## Merged implementation
 
-TVC now contains the provider observer and a credential-reference-only read-profile layer. Stripe is restricted to vault-referenced `payment_intent_read` GET operations against `https://api.stripe.com`. GoDaddy is restricted to vault-referenced `commerce.transaction:read` GET operations against `https://api.godaddy.com`, with its store identity also represented by a TV/TVC vault reference. Both paths are single-use/non-exportable and explicitly prohibit consumer/GitHub credential access, credential plaintext return, provider/payment mutation, entitlement, governance, and execution authority.
+TVC contains the provider observer and credential-reference-only read-profile layer. Stripe is restricted to vault-referenced `payment_intent_read` GET operations against `https://api.stripe.com`. GoDaddy is restricted to vault-referenced `commerce.transaction:read` GET operations against `https://api.godaddy.com`, with store identity represented by a TV/TVC vault reference. Both paths are single-use/non-exportable and explicitly prohibit consumer/GitHub credential access, credential plaintext return, provider/payment mutation, entitlement, governance, and execution authority.
 
 The GoDaddy completed-status allowlist remains empty until authentic transaction semantics provide admissible evidence. No status is invented from public examples.
 
 ## Current authentic observations
 
-The connected live Stripe account `StegVerse.org` was queried through authenticated GET-only reads. `GET /v1/payment_intents?limit=20` and `GET /v1/charges?limit=20` returned valid empty lists. Authentic Stripe read access is therefore observed, but no completed payment exists in the currently observed data and there is no authentic completed-payment normalization receipt.
+The connected live Stripe account `StegVerse.org` has been queried through authenticated GET-only reads. `GET /v1/payment_intents?limit=20` and `GET /v1/charges?limit=20` returned valid empty lists. On 2026-09-16, repeated live `GET /v1/payment_intents?limit=20` observations, including the current post-merge reread, again returned `data: []` with `has_more: false`. Authentic Stripe read access is observed, but no completed payment exists in the observed data and there is no authentic completed-payment normalization receipt.
 
-On 2026-09-16, the live `StegVerse.org` Stripe account was re-read through the connected authenticated Stripe surface using `GET /v1/payment_intents?limit=20`; it again returned `data: []` with `has_more: false`. This is additional authentic read evidence only. It does not satisfy the successful-payment observation or authentic normalization predicates.
+GoDaddy's merged profile defines `vault://tvc/providers/godaddy/commerce-transaction-read-pat` and `vault://tvc/providers/godaddy/commerce-store-id` under required scope `commerce.transaction:read`. Those references are contract bindings only. Current canonical TVC evidence states the owner PAT/store reference has not yet been materialized into TV/TVC custody, and the connected GoDaddy tool surface exposes domain operations rather than owner Commerce/Payments transaction reads. No authenticated owner GoDaddy transaction has therefore been observed and no completed-status vocabulary has been admitted.
 
-GoDaddy's Commerce transaction surface is read-only under `commerce.transaction:read`, but the connected GoDaddy app surface available to this session exposes domain operations rather than owner Commerce/Payments transactions. No authenticated owner GoDaddy transaction has been observed. Public documentation remains architecture evidence, not transaction evidence.
-
-A GoDaddy customer-facing Pay Link may be retained as non-secret setup metadata for this task, but Pay Link creation is not a completed-payment event and cannot satisfy any completed-transaction, status-semantics, or normalization predicate. Only an intentionally completed authentic payment followed by the TV/TVC-governed owner transaction read is admissible provider-ingress evidence.
+A GoDaddy customer-facing Pay Link may be retained as non-secret setup metadata, but Pay Link creation is not a completed-payment event and cannot satisfy completed-transaction, status-semantics, or normalization predicates.
 
 ## Validated predicates
 
@@ -52,4 +50,4 @@ TV/TVC remains credential authority. Provider credentials authorize provider rea
 
 ## Next execution
 
-Capture only non-secret metadata for any validation-purpose GoDaddy Pay Link. Then materialize the least-privilege GoDaddy read credential/store reference into TV/TVC custody without exposing plaintext outside TV/TVC and execute the first GET-only transaction observation only after an authentic payment is intentionally completed. Re-read Stripe and normalize only if an authentic `succeeded` PaymentIntent exists. Only after both authentic normalization proofs are green may webhook-driven ingestion and provider-failover evaluation begin.
+Do not execute a GoDaddy transaction call until the owner `commerce.transaction:read` credential and store identifier are authentically materialized into the existing TV/TVC references. Once materialized, execute only the governed GET-only transaction observation, establish completed-status semantics from that authentic provider response, and normalize only a genuinely completed transaction. Continue live Stripe GET-only rereads and normalize only an authentic `succeeded` PaymentIntent. Preserve all authority-denial predicates until their canonical evidence requirements are met.
