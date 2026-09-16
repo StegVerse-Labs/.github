@@ -39,6 +39,7 @@
     "canonical_owner_ref": "control/worker-registry.d/mir-tvc-provider-roundtrip-001.json#tasks[0]",
     "source_refs": [
       "docs/MIR_TVC_PROVIDER_ROUNDTRIP_COMPONENT_MODEL_MIRROR_HANDOFF.md",
+      "data/canonical-task-records/MIR-TVC-PROVIDER-ROUNDTRIP-001.json",
       "manifests/reusable-task-invocations/MIR-TVC-PROVIDER-ROUNDTRIP-001.TVC-CAPABILITY-RUNTIME-002.json",
       "StegVerse-Labs/TVC:tasks/TVC-PROVIDER-OPERATION-BROKER-003.json",
       "StegVerse-Labs/TVC:config/provider_operation_profiles.json"
