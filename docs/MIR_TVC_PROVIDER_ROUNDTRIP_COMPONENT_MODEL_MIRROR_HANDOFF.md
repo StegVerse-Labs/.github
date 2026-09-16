@@ -1,6 +1,6 @@
 # MIR TVC Provider Roundtrip — Reusable Task Component Reconciliation
 
-Updated: 2026-09-15
+Updated: 2026-09-16
 Goal Task ID: `MIR-TVC-PROVIDER-ROUNDTRIP-001`
 COSV: `50000000100000`
 Parent: `MIR-STEGVERSE-HISTORICAL-ACCOUNTING-RUN-002`
@@ -54,6 +54,16 @@ The frozen `POST /v1/policy/standing` shape remains valid only for source/fixtur
 
 Task Registry coordinates work only. WorkerCoordinator owns claim/fence where applicable. Interlock/InTr owns governed transition/admission. TV/TVC owns provider/session and credential authority. MIR owns authentic external MIR behavior. StegVerse owns governance. KV/SKAP Vault owns user verification. Master Records owns observed-reality custody/reconstruction. GitHub has no runtime authority.
 
+## 2026-09-16 resident observation reconciliation
+
+The existing authorized sovereign resident-device connector was queried and returned no connected device. The standing request remains `REQUESTED` at `control/resident-execution-request.d/mir-tvc-provider-roundtrip-001.json`, bound to provider request `MIR-RUN2-EVENT-001` and canonical receipt path `receipts/mir-tvc-provider-roundtrip/MIR-RUN2-EVENT-001.latest.json`.
+
+No canonical receipt directory or exact receipt was observed on the repository default branch, and no indexed Master Records evidence for `MIR-RUN2-EVENT-001` was found through the available canonical GitHub search surface. Therefore no `COMPLETED`, `FAIL_CLOSED_EXECUTION_RECEIPT`, `ALLOW_OPERATION_RESULT`, `use_receipt`, Interlock/InTr admission, Master Records reconstruction, or `AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED` claim is promoted from this observation.
+
+Observation evidence: `reports/runtime-observation/MIR-TVC-PROVIDER-ROUNDTRIP-001-resident-observation-20260916.json`.
+
+This is absence/availability evidence only and has no execution, admission, credential, transition, custody, or completion authority. It creates no runtime, scheduler, broker, credential path, observer proof plane, transition authority, custody authority, or second-device requirement.
+
 ## Next admissible work
 
-Continue only the existing `TVC-CAPABILITY-RUNTIME-002` observer lane. Promote `AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED` only from a retained authentic `READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND` receipt proving the relevant TV/TVC vault-backed session. Replace the standing live gate only after authoritative MIR partner-contract confirmation.
+Re-observe only the already-standing `MIR-RUN2-EVENT-001` request after the existing authorized sovereign resident connection is available. Require a fresh WorkerCoordinator claim/fence, preserve exact TV/TVC broker output, and carry that same transaction through Interlock/InTr and Master Records custody/reconstruction. Promote `AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED` only from authentic same-transaction evidence; otherwise retain `ACTIVE / CHECKED_OUT` and the exact fail-closed execution predicate.

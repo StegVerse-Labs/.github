@@ -1,0 +1,40 @@
+{
+  "schema": "stegverse.runtime-observation-reconciliation/v1",
+  "goal_task_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
+  "cosv_task_vector": "50000000100000",
+  "observed_at_date": "2026-09-16",
+  "observation_scope": "EXISTING_SOVEREIGN_RESIDENT_RUNTIME_ONLY",
+  "standing_request_ref": "control/resident-execution-request.d/mir-tvc-provider-roundtrip-001.json",
+  "provider_request_id": "MIR-RUN2-EVENT-001",
+  "canonical_receipt_ref": "receipts/mir-tvc-provider-roundtrip/MIR-RUN2-EVENT-001.latest.json",
+  "observations": {
+    "authorized_remote_resident_device_connected": false,
+    "canonical_receipt_path_present": false,
+    "master_records_indexed_same_transaction_evidence_observed": false,
+    "authentic_completed_receipt_observed": false,
+    "authentic_fail_closed_execution_receipt_observed": false,
+    "authentic_tvc_mir_provider_session_observed": false
+  },
+  "reconciliation": {
+    "coordination_state": "ACTIVE",
+    "checkout_state": "CHECKED_OUT",
+    "remaining_predicate": "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED",
+    "standing_request_state": "REQUESTED",
+    "next_admissible_action": "Re-observe the already-standing MIR-RUN2-EVENT-001 request only after the existing authorized sovereign resident device connection is available; require a fresh WorkerCoordinator claim/fence and preserve the same transaction through Interlock/InTr and Master Records.",
+    "retirement_admissible": false
+  },
+  "authority_invariants": {
+    "new_runtime_created": false,
+    "new_scheduler_created": false,
+    "new_broker_created": false,
+    "new_credential_path_created": false,
+    "new_observer_proof_plane_created": false,
+    "new_transition_authority_created": false,
+    "new_custody_authority_created": false,
+    "second_device_requirement_introduced": false,
+    "github_runtime_authority": "NONE"
+  },
+  "evidence_class": "OBSERVATION_OF_ABSENCE_ONLY",
+  "authority_effect": "NONE",
+  "completion_effect": "NONE"
+}
