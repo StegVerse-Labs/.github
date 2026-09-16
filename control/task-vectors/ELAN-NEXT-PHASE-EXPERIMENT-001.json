@@ -1,0 +1,12 @@
+{
+  "identity": "StegVerse-Labs/.github:task:ELAN-NEXT-PHASE-EXPERIMENT-001",
+  "profile": "task.v1",
+  "task_id": "ELAN-NEXT-PHASE-EXPERIMENT-001",
+  "vector": "10100000100000",
+  "evidence_refs": [
+    "data/canonical-task-records/ELAN-NEXT-PHASE-EXPERIMENT-001.json",
+    "docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:docs/ELAN_NEXT_PHASE_EXPERIMENT_PREREGISTRATION.md",
+    "StegVerse-org/StegVerse-SDK:data/elan-next-phase-experiment-001.preregistration.json"
+  ]
+}
