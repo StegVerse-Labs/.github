@@ -1,0 +1,31 @@
+{
+  "schema": "stegverse.reusable-task-validation-receipt/v1",
+  "goal_task_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
+  "cosv_task_vector": "50000000100000",
+  "validation_scope": "REAL_PROVIDER_OPERATION_ROUNDTRIP_AS_TVC_READY_EVIDENCE",
+  "checks": {
+    "provider_operation_broker_validates_vault_backed_secret_ref": true,
+    "provider_operation_broker_validates_tvc_capability_lease": true,
+    "provider_operation_broker_returns_allow_operation_result_plus_use_receipt": true,
+    "synthetic_observer_rejected_before_vault_broker": true,
+    "synthetic_observer_is_route_posture_only": true,
+    "qualifying_real_roundtrip_may_derive_ready": true,
+    "parallel_synthetic_probe_required": false,
+    "interlock_intr_admission_still_required": true,
+    "master_records_custody_still_required": true,
+    "master_records_reconstruction_still_required": true,
+    "provider_session_predicate_not_satisfied_by_source_change": true,
+    "duplicate_runtime_created": false,
+    "duplicate_provider_broker_created": false,
+    "duplicate_credential_route_created": false,
+    "duplicate_transition_authority_created": false,
+    "duplicate_custody_implementation_created": false
+  },
+  "manifest_parameter_hash": "efb5f9459e2aee69058f5c7e98b52d8b4cc2c7f3cbb94b5dba927f7425939193",
+  "manifest_hash": "0dd6e6688e37dfb4c09d77c338ab277b15349e88b4d501d8bc4868425de98215",
+  "ready_state": "READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND",
+  "preferred_evidence": "QUALIFYING_REAL_PROVIDER_OPERATION_ROUNDTRIP_RECEIPT_CHAIN",
+  "diagnostic_fallback": "StegVerse-Labs/TVC:scripts/observe_tvc_runtime_boundary.py",
+  "runtime_evidence_effect": "NONE_UNTIL_QUALIFYING_REAL_EXECUTION_EVIDENCE_IS_OBSERVED",
+  "result": "PASS_SEMANTIC_RECONCILIATION"
+}
