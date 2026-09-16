@@ -71,6 +71,19 @@ The materialization consumer is already wired to read the admitted InTr request 
 
 No A1-A4 predicate is promoted from this observation. No runtime completion is claimed. Round Trip 1 remains unstarted.
 
+## Post-PR #2012 reconciliation
+
+`.github` PR #2012 exact head `8e87fa713b5c1a6102331327ec67758cb6862a17` passed all three exact-head validation lanes and merged with expected-head protection as `622824accbfe2d19262cedbf41e43dc5f752a775`.
+
+A fresh post-merge search of the canonical sovereign receipt names and unchanged nonce found only source, test, handoff, and expected-path references. No authority-owned retained receipt was observed at either expected current-device path:
+
+```text
+receipts/sovereign-host/stegbrowser-runtime-connection-a1-a4.latest.json
+receipts/sovereign-host/stegbrowser-runtime-remediation-boundary.latest.json
+```
+
+No retained receipt carrying same-invocation `RUNTIME_READY_FOR_WORKERCOORDINATOR`, `CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED=true`, or exact governed A4 ingress was observed. This remains `EVIDENCE_NOT_OBSERVED`, not an authentic fail-closed transition. Therefore no repair transition is authorized from this observation alone, no predicate is promoted, and no user-operated device action is introduced.
+
 ## Required authentic chain
 
 ```text
@@ -118,7 +131,7 @@ Do not repurpose the generic SV001 portable WorkerCoordinator adapter as a StegB
 
 ## Failure handling
 
-Re-observe the existing Node/InTr runtime and canonical receipt paths for the immutable nonce. If the authentic chain is fail-closed or stops before A4, repair only the first authentic transition failure exposed by that evidence. Missing runtime visibility is an observation condition to solve through the existing architecture; it is not a reason to convert the user into a manual device-observation component.
+Re-observe the existing Node/InTr runtime and canonical receipt paths for the immutable nonce. If the authentic chain is fail-closed or stops before A4, repair only the first authentic transition failure exposed by that evidence. `EVIDENCE_NOT_OBSERVED` is not itself a fail-closed transition and must not be converted into a guessed defect. Missing runtime visibility is an observation condition to solve through the existing architecture; it is not a reason to convert the user into a manual device-observation component.
 
 ## Completion transition
 
