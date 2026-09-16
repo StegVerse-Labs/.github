@@ -4,24 +4,71 @@
   "correlation_id": "ELAN-NEXT-PHASE-EXPERIMENT-001",
   "root_correlation_id": "ELAN-NEXT-PHASE-EXPERIMENT-001",
   "parent_task_id": "ELAN-CUMULATIVE-PUBLICATION-001",
-  "status": "ACTIVE",
-  "cosv_id": "10100000100000",
-  "goal": "Execute the next independent ELAN x StegVerse sustained-silence and return-to-speech experiment with preregistered evidence fields, exact native-trace preservation, architecture non-interference, governed StegVerse submission, and post-hoc comparison only after both evidence chains independently exist.",
-  "handoff": "docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md",
-  "repository_work": [
+  "goal": "Execute the next independent ELAN x StegVerse sustained-silence and return-to-speech experiment with preregistered evidence fields, exact native-trace preservation, architecture non-interference, governed StegVerse submission, and cross-evaluation only after both evidence chains independently exist.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "10100000100000",
+    "source_state_vector_ref": "control/task-vectors/ELAN-NEXT-PHASE-EXPERIMENT-001.json",
+    "authority_effect": "NONE"
+  },
+  "source_refs": [
+    "docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md",
+    "control/task-vectors/ELAN-NEXT-PHASE-EXPERIMENT-001.json",
+    "control/task-vector-index.d/ELAN-NEXT-PHASE-EXPERIMENT-001.json",
     "StegVerse-Labs/.github#1999",
-    "StegVerse-org/StegVerse-SDK#248"
+    "StegVerse-Labs/.github#2000",
+    "StegVerse-org/StegVerse-SDK#248",
+    "StegVerse-org/StegVerse-SDK#249"
   ],
-  "preconditions": [
-    "ELAN native successor trace received from third-party evaluator",
-    "native trace preserved exactly before normalization or mapping",
-    "StegVerse runtime authority admissible for governed SDK submission"
+  "targets": {
+    "organizations": ["StegVerse-Labs", "StegVerse-org"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-org/StegVerse-SDK"],
+    "components": ["elan-native-trace-preservation", "sustained-silence-preregistration", "return-to-speech-preregistration", "sdk-governed-submission", "custody", "replay", "reconstruction", "cross-evaluation"]
+  },
+  "dependencies": [
+    {"dependency_id":"DEP-ELAN-NATIVE-SUCCESSOR-TRACE","kind":"THIRD_PARTY_EVIDENCE","state":"PENDING","ref":"ÉLAN evaluator return; exact native artifact not yet received"},
+    {"dependency_id":"DEP-STEGVERSE-GOVERNED-SDK-PATH","kind":"IMPLEMENTATION","state":"AVAILABLE_WITH_RUNTIME_AUTHORITY_SEPARATE","ref":"StegVerse-org/StegVerse-SDK existing governed manifest path; source availability does not prove runtime execution authority"}
   ],
-  "non_claims": [
-    "third-party ELAN successor execution not yet observed",
-    "StegVerse successor submission not yet performed",
-    "cross-evaluation not yet performed",
-    "no inferred intent or emotional meaning from silence"
+  "blockers": [],
+  "adjacent_task_refs": ["ELAN-CUMULATIVE-PUBLICATION-001", "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001"],
+  "expected_evidence_predicates": [
+    "ELAN_NATIVE_SUCCESSOR_TRACE_RECEIVED",
+    "ELAN_NATIVE_SUCCESSOR_TRACE_EXACT_BYTES_PRESERVED_BEFORE_MAPPING",
+    "ELAN_NATIVE_SUCCESSOR_TRACE_DIGEST_BOUND",
+    "PREREGISTERED_FIELDS_FROZEN_BEFORE_SUCCESSOR_EXECUTION_EVIDENCE",
+    "STEGVERSE_REPRESENTED_EVENTS_DERIVED_ONLY_FROM_SHARED_HUMAN_EVENTS",
+    "STEGVERSE_GOVERNED_SUCCESSOR_SUBMISSION_AUTHENTICALLY_OBSERVED",
+    "STEGVERSE_CUSTODY_REPLAY_RECONSTRUCTION_EVIDENCE_PRESERVED_WHERE_NATIVE",
+    "CROSS_EVALUATION_BEGINS_ONLY_AFTER_BOTH_INDEPENDENT_CHAINS_EXIST",
+    "SILENCE_INTENT_AND_EMOTIONAL_MEANING_NOT_INFERRED_WITHOUT_EVIDENCE"
   ],
-  "next_action": "Obtain the native ELAN successor trace, preserve exact bytes and digest, construct the corresponding represented-event package from only the same human events, submit through the existing governed StegVerse SDK path when runtime authority is admissible, then compare the independent evidence chains under the preregistered fields."
+  "runtime_requirements": {
+    "capabilities": ["github_repository_read", "github_pull_request_write", "third_party_native_trace_intake", "governed_sdk_submission"],
+    "environment": "CURRENT_SESSION_PLUS_EXISTING_AUTHORIZED_STEGVERSE_RUNTIME_WHEN_AVAILABLE",
+    "direction": "THIRD_PARTY_NATIVE_TRACE_TO_INDEPENDENT_GOVERNED_COMPARISON",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "worker_claim": {"authority":"NONE_UNTIL_EXISTING_WORKERCOORDINATOR_CLAIM_FENCE","claim_ref":null,"fence_ref":null,"projection_only":false},
+  "completion": {"claimed":false,"validated":false},
+  "allowed_next_transitions": [
+    "RECEIVE_AND_HASH_ELAN_NATIVE_TRACE",
+    "BUILD_STEGVERSE_REPRESENTED_EVENT_PACKAGE",
+    "SUBMIT_THROUGH_EXISTING_GOVERNED_SDK_PATH_WHEN_AUTHORIZED",
+    "PRESERVE_NATIVE_STEGVERSE_EVIDENCE_CHAIN",
+    "COMPARE_AFTER_BOTH_CHAINS_EXIST"
+  ],
+  "handoff_projection_refs": ["docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md"],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "github_actions_mint_execution_authority": false,
+    "third_party_trace_mints_stegverse_execution_authority": false,
+    "sdk_source_validation_proves_runtime_execution": false,
+    "interlock_intr_remains_transition_authority": true,
+    "tv_tvc_remains_credential_authority_where_applicable": true,
+    "historical_or_third_party_evidence_may_be_rewritten": false
+  }
 }
