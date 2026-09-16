@@ -49,6 +49,28 @@ A duplicate local continuation PR #1364 was closed without merge after #1363 was
 
 The `.github` runtime-connection handoff was separately reconciled by PR #2017, merged as `369c6ba4bc78a64a330c89af9b66d4e233e1fd09`, recording #1363 as source capability only and preserving all authentic predicates as false absent authority-owned current-device evidence.
 
+The manual-device correction was validated at exact head `790b4d5ea0fbe2341a74fec8fe958cea5264cddd` and merged from `.github` PR #2009 as `3c80ef777b87d2263e8ddd839df780a103f19983`.
+
+## Runtime re-observation — 2026-09-16
+
+The canonical runtime evidence owner remains `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001` through the existing remediation lineage. Re-observation of accessible canonical receipt/source surfaces found no authentic authority-owned execution receipt for the immutable nonce. The existing remediation predicate record still reports:
+
+```text
+AUTHENTIC_RUNTIME_CONNECTION_TRANSITION_VARIABLES_OBSERVED = NOT_OBSERVED
+AUTHENTIC_INTR_INGRESS_OBSERVED = NOT_OBSERVED
+CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED = NOT_OBSERVED
+```
+
+The expected authority-owned boundary remains:
+
+```text
+receipts/sovereign-host/stegbrowser-runtime-remediation-boundary.latest.json
+```
+
+The materialization consumer is already wired to read the admitted InTr request and ingress receipt, dispatch the existing manifest-bound runner, and persist `receipts/sovereign-host/stegbrowser-intr-materialization-consumption.latest.json`. Source presence and CI validation do not prove that those runtime receipts exist or that execution occurred.
+
+No A1-A4 predicate is promoted from this observation. No runtime completion is claimed. Round Trip 1 remains unstarted.
+
 ## Required authentic chain
 
 ```text
