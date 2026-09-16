@@ -20,6 +20,7 @@
     "control/task-vector-index.d/ELAN-NEXT-PHASE-EXPERIMENT-001.json",
     "StegVerse-Labs/.github#1999",
     "StegVerse-Labs/.github#2000",
+    "StegVerse-Labs/.github#2006",
     "StegVerse-org/StegVerse-SDK#248",
     "StegVerse-org/StegVerse-SDK#249"
   ],
@@ -103,5 +104,5 @@
     "tv_tvc_remains_credential_authority_where_applicable": true,
     "historical_or_third_party_evidence_may_be_rewritten": false
   },
-  "readme_impact": {"material_function_change": false, "readme_updated_in_change_set": true, "readme_path": "README.md"}
+  "readme_impact": {"material_function_change": false, "readme_updated_in_change_set": false, "readme_path": "README.md"}
 }
