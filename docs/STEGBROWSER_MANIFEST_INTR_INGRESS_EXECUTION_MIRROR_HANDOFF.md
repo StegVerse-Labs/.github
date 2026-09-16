@@ -8,80 +8,8 @@ Repository: `StegVerse-Labs/.github`
 - Goal Task ID: `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001`
 - Parent Goal: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / SINGLE CANONICAL UNIVERSAL-INTR BINDING MERGED+VALIDATED / SV002 SITE BASELINE AND STEGBROWSER ADAPTATION MERGED+VALIDATED / AUTHENTIC A1-A4 EXECUTION PENDING`
-- Current exact condition: `AUTHENTIC_STEGBROWSER_UNIVERSAL_INTR_A1_A4_EXECUTION_NOT_YET_OBSERVED`
-
-## Canonical source history
-
-The retained StegBrowser-specific route remains the single PR #1955 `StegBrowser:ManifestInvocation` representation. PR #1960's overlapping alternate representation was retired by corrective convergence PR #1964 and must not be reintroduced.
-
-Reusable execution-baseline reconciliation is complete:
-
-- `.github` PR #1966 exact validated head `6edba060692e275361f9d8be8d17b5ad21158711`.
-- #1966 validation: Organization Control `35092566189`, Deterministic Suite `35092566222`, Heartbeat `35092566216` — all SUCCESS.
-- #1966 merged as `94b8804687baed9251b4e6ecbb640f14c7259dc6`.
-- Site SV002 baseline retest PR #1354 exact validated head `0ae6bbd252741599c7cab06746f274b901d2e455`; focused validation `34993797222`, Site Bootstrap `34993797221`, Site Handoff Orchestrator `34993797281`, and Ecosystem Heartbeat `34993797195` all SUCCESS.
-- Site PR #1354 merged as `a8846026bc80b9890c07ad72dda1350ce7f3c0d4`.
-
-The bounded StegBrowser Site adaptation is now also merged:
-
-- Site PR #1358 copied the already-validated SV002 browser-runtime mechanics and changed only the current StegBrowser Goal/COSV/manifest/payload/owned-mirror bindings.
-- Final exact head: `d3ec3416f95d84df723bd70f904ebb2e29bef8cb`.
-- Exact-head validations: StegBrowser SV002 Lane Adaptation `35093634436` SUCCESS; StegBrowser SV002 Validated Lane Retest `35093634409` SUCCESS; Site Bootstrap `35093634412` SUCCESS; Site Handoff Orchestrator `35093634346` SUCCESS; Ecosystem Heartbeat `35093634408` SUCCESS.
-- Site PR #1358 merged as `64dcbb8803dae67d96d33849d92f45fb1206d57e`.
-- The earlier PR #1354 validation claim was terminalized with its actual PR/merge evidence before #1358 final validation, eliminating the task/dependency-surface collision without changing runtime code.
-
-## Canonical architecture
-
-Preserve this single execution path:
-
-```text
-valid registered StegVerse Node
--> exact immutable one-shot invocation payload
--> stegverse.universal-intr-transport/v1
--> stegverse.universal-intr-materialization-request/v1
--> Node-bound write-once InTr outbox trigger
--> existing shared /intr/materialization ingress
--> write-once INGRESS_ADMITTED receipt
--> bounded invocation lease/state binding
--> self-contained EVENT_EPHEMERAL browser Web Worker runtime
--> execution-time runtime identity
--> existing WorkerCoordinator claim/fence
--> exact governed StegBrowser A4 ingress
--> Round Trip 1 only after authentic A1-A4 evidence
-```
-
-No control-plane source-package relay, resident-request sweep, external runtime/device/host discovery, second listener, second scheduler, second dispatcher, second materializer, second WorkerCoordinator, or second user-operated device is a prerequisite.
-
-## Site adaptation bindings
-
-Merged Site artifacts from PR #1358:
-
-- `assets/stegbrowser-manifest-runtime-materializer.js`
-- `data/stegbrowser-manifest-runtime-binding.v1.json`
-- `tests/test_stegbrowser_sv002_lane_adaptation.py`
-- `.github/workflows/stegbrowser-sv002-lane-adaptation.yml`
-- `docs/STEGBROWSER_SV002_LANE_ADAPTATION.md`
-
-Exact binding envelope:
-
-```text
-Goal Task ID = STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001
-COSV = 40000100100000
-manifest task = STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001
-destination = StegBrowser:ManifestInvocation
-payload schema = stegverse.stegbrowser-universal-intr-invocation-binding/v1
-route owner = STEGVERSE
-outbound endpoint = STEGVERSE_OWNED_INTR_EGRESS_ENDPOINT
-far-end receiver = STEGVERSE_OWNED_MIRROR_REFLECTOR
-expected action = REFLECT_DECLARED_RECORDS_PACKET
-runtime substrate = BROWSER_WEB_WORKER_ON_VALID_STEGVERSE_NODE
-runtime class = EVENT_EPHEMERAL
-GitHub runtime authority = NONE
-credential authority = TV/TVC
-```
-
-The Site browser materializer is non-authorizing. It validates the already-admitted Node/Interlock/InTr invocation and may produce bounded runtime-readiness evidence only. It does not mint a WorkerCoordinator claim/fence, grant execution authority, replace TV/TVC credential authority, or convert CI/source evidence into runtime evidence.
+- Status: `ACTIVE / CHECKED_OUT / SINGLE CANONICAL UNIVERSAL-INTR BINDING MERGED+VALIDATED / SV002 SITE BASELINE+ADAPTATION MERGED+VALIDATED / CURRENT-IPHONE BINDING MERGED+VALIDATED / AUTHENTIC A1-A4 EXECUTION PENDING`
+- Current exact condition: `AUTHENTIC_CURRENT_IPHONE_STEGBROWSER_A1_A4_EXECUTION_PENDING`
 
 ## Immutable one-shot request
 
@@ -94,26 +22,107 @@ requested_invocation_count = 1
 
 No second request may be emitted or substituted.
 
-## Current source truth
+## Canonical representation
+
+The only retained StegBrowser-specific Universal InTr representation remains PR `#1955` destination/profile `StegBrowser:ManifestInvocation`.
+
+PR `#1960`'s overlapping alternate `StegBrowser:ManifestIngress` representation was retired by corrective convergence PR `#1964` and must not be reintroduced.
+
+No control-plane source-package relay, resident-request sweep, external runtime/device/host discovery, second listener, second scheduler, second dispatcher, second materializer, second WorkerCoordinator, or second user-operated device is a runtime prerequisite.
+
+## Validated reusable baseline
+
+The validated StegVerse-002 Site browser lane remains the reusable execution baseline:
 
 ```text
-SV002_RUNTIME_ARCHITECTURE_SOURCE_IDENTIFIED = true
-SV002_SITE_REUSABLE_BASELINE_RETEST_PASS = true
-STEGBROWSER_UNIVERSAL_INTR_MATERIALIZATION_BINDING_COMPLETE = true
-STEGBROWSER_SITE_SV002_ADAPTATION_MERGED_VALIDATED = true
-SINGLE_CANONICAL_STEGBROWSER_MATERIALIZATION_PATH = true
-CONTROL_PLANE_SOURCE_PACKAGE_IS_RUNTIME_PREREQUISITE = false
-RESIDENT_REQUEST_SWEEP_IS_RUNTIME_PREREQUISITE = false
-SECOND_RUNTIME_OR_LISTENER_INTRODUCED = false
-WORKERCOORDINATOR_AUTHORITY_CHANGED = false
-INTERLOCK_INTR_AUTHORITY_CHANGED = false
-TV_TVC_CREDENTIAL_AUTHORITY_CHANGED = false
-GITHUB_RUNTIME_AUTHORITY = NONE
+registered StegVerse Node
+-> Interlock
+-> Universal InTr materialization
+-> bounded lease
+-> EVENT_EPHEMERAL browser runtime
+-> execution-time runtime identity
+-> existing WorkerCoordinator claim/fence
+-> exact governed ingress
 ```
+
+Key baseline evidence:
+
+- `.github` PR `#1966` exact validated head `6edba060692e275361f9d8be8d17b5ad21158711`; Organization Control `35092566189`, Deterministic Suite `35092566222`, Heartbeat `35092566216` all SUCCESS; merge `94b8804687baed9251b4e6ecbb640f14c7259dc6`.
+- Site PR `#1354` validated the unchanged SV002 lane; merge `a8846026bc80b9890c07ad72dda1350ce7f3c0d4`.
+- Site PR `#1358` adapted only current StegBrowser Goal/COSV/manifest/payload/owned-mirror bindings while preserving the validated runtime mechanics; merge `64dcbb8803dae67d96d33849d92f45fb1206d57e`.
+
+Source/CI has runtime authority `NONE`.
+
+## First observed current-iPhone transition defect and repair
+
+The existing current-iPhone same-device execution surface already owned the correct runtime mechanics:
+
+- registered Node IndexedDB `stegos-node-v1`;
+- write-once `intr_outbox`;
+- existing root `/intr-service-worker.js`;
+- `CURRENT_USER_IPHONE_SERVICE_WORKER` runtime surface;
+- fail-closed local InTr admission.
+
+The first observed transition defect was narrower: the existing current-iPhone launcher/extension still bound retired lineage task `STEG-BROWSER-RUNTIME-CONSUMPTION-001` to destination `CanonicalWork:Ingress` instead of the active immutable StegBrowser manifest invocation.
+
+Site PR `#1360` repaired only that invocation-specific edge. It reused the same root worker, Node outbox, runtime, and authority boundaries and rebound them to:
+
+```text
+Goal = STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001
+Parent = STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001
+COSV = 40000100100000
+nonce = STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z
+destination = StegBrowser:ManifestInvocation
+downstream owner = StegVerse-Labs/.github#1952
+manifest sha256 = fcde63451bf612df8f3b2b62fa6766670dc880f2fcb66605680a2af6f2096f74
+```
+
+The materialization ID is deterministic from the unchanged nonce, so repeated page activation targets the same write-once Node-outbox identity instead of silently minting another invocation.
+
+Site PR `#1360` evidence:
+
+- exact validated source head `d031a1c560814a1c1cd275656925258cee11f323`;
+- Session Work Claims PASS;
+- Site Handoff Orchestration PASS;
+- Ecosystem Heartbeat contract PASS;
+- Site validation / Node-continuity / IndexedDB-alignment PASS;
+- Cloudflare Workers build SUCCESS, version `4d24d113-f37e-4b59-8c94-c49b60cd559b`;
+- merge `76af62f2befdfa7034d3dd00891bfe60a0990abb`.
+
+Site handoff reconciliation PR `#1361` subsequently merged as `7c483335f259d5eacf9a55dde923c0c4fefd660e` after exact-head Site Bootstrap, orchestration, heartbeat, and Cloudflare build validation passed.
+
+Attempted claim-only terminalization PR `#1362` was closed without merge because Site orchestration correctly requires the claim to remain active while authentic same-device A1-A4 execution is unfinished. That is coordination truth, not a runtime failure.
+
+## Existing authorized same-device execution surface
+
+The existing Site execution page is:
+
+```text
+https://stegverse.org/stegos-bootstrap/canonical-work-runtime-consumption.html?autostart=1
+```
+
+It loads the existing Node bootstrap, root-profile bridge, and current-iPhone launcher. In the same Safari site-data context that owns the registered StegVerse Node, it reads Receipt #1 from the existing Node IndexedDB and submits the deterministic unchanged-nonce trigger through the existing root `/intr-service-worker.js`.
+
+The page may promote only authentic current-device `INGRESS_ADMITTED` evidence. It explicitly leaves EVENT_EPHEMERAL runtime identity, WorkerCoordinator claim/fence, A4, and Round Trip 1 pending unless those authority-owned receipts are actually observed.
+
+## Required authentic chain
+
+```text
+registered Node Receipt #1
+-> deterministic unchanged-nonce Node outbox entry
+-> StegBrowser:ManifestInvocation Universal InTr materialization
+-> write-once INGRESS_ADMITTED
+-> bounded invocation lease
+-> EVENT_EPHEMERAL runtime identity
+-> WorkerCoordinator claim/fence
+-> exact governed StegBrowser A4 ingress
+```
+
+Exact Goal/COSV/nonce/manifest/node/interlock/registration/materialization/lease/runtime/claim/fence correlation is required across the retained evidence.
 
 ## Current authentic predicates
 
-Source validation and merge do not establish authentic execution. No same-invocation authority-owned A1-A4 receipt set was observed during this work, and no authorized sovereign execution surface became available through this chat. Therefore all runtime predicates remain false:
+Source validation, merge, deployment, public reachability, service-worker installation, and page load are not runtime proof. No authority-owned same-invocation A1-A4 receipt set has yet been observed in this chat, so:
 
 ```text
 MANIFEST_BOUND_TO_INVOCATION runtime confirmation = false
@@ -129,31 +138,27 @@ AUTHENTIC_INTR_INGRESS_OBSERVED = false
 ROUND_TRIP_1_STARTED = false
 ```
 
-This is now an execution/evidence-access condition, not a source-architecture or Site adaptation defect. GitHub/CI remains validation/evidence transport only and must not be promoted into runtime authority to bypass the sovereign execution surface.
+## Authority boundaries
 
-## Expected same-invocation evidence
-
-Retain, as applicable, exact Goal/COSV/nonce/manifest/node/interlock/registration/materialization/lease/runtime/claim/fence-correlated evidence at the existing canonical paths, including:
-
-```text
-intr-payloads/stegbrowser-manifest-invocation/<binding-hash>.json
-intr-outbox/stegbrowser-manifest-invocation/<materialization-id>.json
-receipts/sovereign-network/stegbrowser-intr-ingress/<materialization-id>.json
-receipts/sovereign-host/stegbrowser-intr-materialization-consumption.latest.json
-receipts/sovereign-host/stegbrowser-manifest-binding.latest.json
-receipts/sovereign-host/stegbrowser-node-interlock-runtime-binding.latest.json
-receipts/sovereign-host/stegbrowser-runtime-remediation-boundary.latest.json
-receipts/sovereign-host/stegbrowser-manifest-intr-ingress.latest.json
-```
+- StegVerse Node: continuity/admission anchor only.
+- Universal materialization request: execution authority `NONE`.
+- Shared InTr ingress: transition/admission only; does not mint claim/fence.
+- EVENT_EPHEMERAL runtime: bounded compute/materialization only.
+- WorkerCoordinator: sole claim/fence authority.
+- Interlock/InTr: governed transition authority.
+- TV/TVC: credential authority.
+- GitHub/CI: source validation/evidence transport only; runtime authority `NONE`.
 
 ## Immediate continuation
 
-Do not emit another request and do not add another materialization profile. Continue only with the unchanged nonce through the merged single `StegBrowser:ManifestInvocation` path. The merged Site PR #1358 materializer/binding is the browser-side adaptation of the validated SV002 lane. When an authorized registered StegVerse Node execution surface is reachable, execute that unchanged invocation, retain authentic same-invocation Node binding, `INGRESS_ADMITTED`, bounded lease, EVENT_EPHEMERAL runtime, WorkerCoordinator claim/fence, and A4 ingress receipts, and promote only predicates directly proven by those authority-owned receipts. Stop before Round Trip 1 unless authentic A1-A4 completion is established.
+Do not emit another request, revive PR `#1960`, restore `CanonicalWork:Ingress` as the active StegBrowser binding, or add any second runtime/listener/scheduler/dispatcher/materializer/WorkerCoordinator/device/authority path.
+
+Execute or observe only the unchanged nonce from the same registered iPhone/Safari context through the merged Site current-iPhone surface. Retain the page JSON exactly. Promote only predicates directly proven by authority-owned receipts. If A1-A4 all verify, enter Round Trip 1 immediately; otherwise repair only the first authentic transition failure exposed by the retained runtime evidence.
 
 ## README review
 
-README reviewed after the #1358 adaptation. No byte change is required: the public runtime/authority topology remains the already-documented single shared Universal InTr/event-ephemeral architecture; #1358 changes only the bounded StegBrowser invocation bindings and internal source-validation evidence.
+README reviewed after Site PRs `#1360` and `#1361`. No byte change required because public runtime/authority topology is unchanged; the repair changes only the active invocation binding and evidence correlation on the already-existing same-device surface.
 
 ## Manual work
 
-None.
+Open the existing same-device execution page on the same iPhone/Safari site-data context that owns the registered StegVerse Node; do not use Private Browsing or clear site data. Preserve and return the complete page JSON or exact `FAIL_CLOSED` reason unchanged.
