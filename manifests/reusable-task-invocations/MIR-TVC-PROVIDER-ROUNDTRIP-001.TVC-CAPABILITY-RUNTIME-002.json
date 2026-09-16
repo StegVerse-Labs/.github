@@ -12,10 +12,9 @@
     "declared_runner_refs": [
       "StegVerse-Labs/TVC:scripts/observe_tvc_runtime_boundary.py"
     ],
-    "dependent_work_waits_for_required_completion_evidence": true,
-    "independent_work_may_continue_at_boundary": true,
     "manual_coordination_between_machine_admissible_internal_steps_required": false,
     "mode": "TRIGGER_ONCE_ADVANCE_UNTIL_COMPLETION_OR_REAL_BOUNDARY",
+    "primary_evidence_consumption": "REUSE_EXISTING_REAL_PROVIDER_OPERATION_RECEIPT_CHAIN_BEFORE_SYNTHETIC_PROBE",
     "single_trigger": true,
     "stop_boundaries": [
       "AUTHORITY_REQUIRED_AND_NOT_HELD",
@@ -34,8 +33,8 @@
       "authority_effect_from_reusable_definition": "NONE_OBSERVATION_AND_CUSTODY_ONLY",
       "execution_proof": false,
       "interlock_intr_transition_required": true,
-      "parameter_hash": "f20584fcd2f90a5d8a05fa294ec4cd34d33ea5d1a3ac7dc7e6b20d2e2ff313b6",
-      "purpose": "Observe an existing TV/TVC-authorized primary provider-operation runtime using the existing non-secret observer, admit the resulting receipt through Interlock/InTr, and carry the exact receipt chain to Master Records custody without creating runtime, transition, credential, or custody authority.",
+      "parameter_hash": "efb5f9459e2aee69058f5c7e98b52d8b4cc2c7f3cbb94b5dba927f7425939193",
+      "purpose": "Observe or derive TV/TVC runtime readiness from qualifying real provider-operation execution evidence, using the synthetic non-secret observer only as a diagnostic fallback, then admit the exact evidence through Interlock/InTr and retain it in Master Records without creating parallel proof authority.",
       "reusable_task_id": "RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001",
       "role": "EVALUATE_WHETHER_CANDIDATE_REALIZATION_MAY_COMMIT",
       "task_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001"
@@ -43,39 +42,28 @@
     "rtg": {
       "allow_authority": false,
       "candidate_context": {
-        "activation_delivery_task_ref": "StegVerse-Labs/TVC:tasks/TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006.json",
-        "declared_receipt_sources": [
-          "StegVerse-Labs/TVC:artifacts/tvc-runtime-boundary-observation.json",
-          "StegVerse-Labs/TVC:receipts/runtime/TVC-CAPABILITY-RUNTIME-002.json",
-          "/run/stegverse/tvc-resident-self-heal/latest.json"
-        ],
+        "completion_predicate": "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED",
+        "diagnostic_fallback": "StegVerse-Labs/TVC:scripts/observe_tvc_runtime_boundary.py",
         "evidence_custody_task": "RT-INTR-EVIDENCE-CUSTODY-001",
-        "expected_observer_state": "READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND",
-        "github_runtime_authority": "NONE",
-        "governed_ingress": "https://tvc.stegverse.org/api/hil/ingress",
+        "expected_ready_state": "READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND",
         "intr_admission_task": "RT-INTR-BOUNDARY-ADMISSION-001",
-        "intr_transition_task": "RT-INTR-GOVERNED-TRANSITION-001",
         "master_records_destination": "master-records/core-lite",
-        "master_records_role": "OBSERVED_REALITY_PROVENANCE_CUSTODY_AND_RECONSTRUCTION",
-        "mir_completion_predicate": "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED",
-        "observer_task_ref": "StegVerse-Labs/TVC:tasks/TVC-CAPABILITY-RUNTIME-002.json",
+        "primary_evidence_source": "QUALIFYING_REAL_PROVIDER_OPERATION_ROUNDTRIP_RECEIPT_CHAIN",
         "provider_operation_route": "https://tvc.stegverse.org/v1/provider-operation",
         "provider_operation_task_ref": "StegVerse-Labs/TVC:tasks/TVC-PROVIDER-OPERATION-BROKER-003.json",
-        "provider_secret_export_allowed": false,
-        "require_current_tvc_source_identity": true,
-        "require_tv_tvc_vault_backed_provider_operation_binding": true,
-        "runtime_binding_task_ref": "StegVerse-Labs/TVC:tasks/TVC-PRIMARY-RUNTIME-BINDER-005.json"
+        "require_vault_backed_provider_binding": true,
+        "runtime_observer_task_ref": "StegVerse-Labs/TVC:tasks/TVC-CAPABILITY-RUNTIME-002.json"
       },
-      "parameter_hash": "f20584fcd2f90a5d8a05fa294ec4cd34d33ea5d1a3ac7dc7e6b20d2e2ff313b6",
-      "purpose": "Observe an existing TV/TVC-authorized primary provider-operation runtime using the existing non-secret observer, admit the resulting receipt through Interlock/InTr, and carry the exact receipt chain to Master Records custody without creating runtime, transition, credential, or custody authority.",
+      "parameter_hash": "efb5f9459e2aee69058f5c7e98b52d8b4cc2c7f3cbb94b5dba927f7425939193",
+      "purpose": "Observe or derive TV/TVC runtime readiness from qualifying real provider-operation execution evidence, using the synthetic non-secret observer only as a diagnostic fallback, then admit the exact evidence through Interlock/InTr and retain it in Master Records without creating parallel proof authority.",
       "reusable_task_id": "RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001",
       "role": "DESCRIBE_REALIZED_OR_CANDIDATE_RELATIONAL_TRANSITION_GEOMETRY",
       "task_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001"
     },
     "tt": {
       "execution_observation_separation_required": true,
-      "parameter_hash": "f20584fcd2f90a5d8a05fa294ec4cd34d33ea5d1a3ac7dc7e6b20d2e2ff313b6",
-      "purpose": "Observe an existing TV/TVC-authorized primary provider-operation runtime using the existing non-secret observer, admit the resulting receipt through Interlock/InTr, and carry the exact receipt chain to Master Records custody without creating runtime, transition, credential, or custody authority.",
+      "parameter_hash": "efb5f9459e2aee69058f5c7e98b52d8b4cc2c7f3cbb94b5dba927f7425939193",
+      "purpose": "Observe or derive TV/TVC runtime readiness from qualifying real provider-operation execution evidence, using the synthetic non-secret observer only as a diagnostic fallback, then admit the exact evidence through Interlock/InTr and retain it in Master Records without creating parallel proof authority.",
       "receipt_chain_required": true,
       "reusable_task_id": "RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001",
       "role": "RECORD_DECISION_COMMIT_EXECUTION_OBSERVATION_AND_CONTINUATION",
@@ -83,40 +71,25 @@
     }
   },
   "cosv_task_vector": "50000000100000",
-  "invocation_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001:TVC-CAPABILITY-RUNTIME-002:READY-OBSERVATION",
-  "manifest_hash": "033a8f91037e14f6b28a08cb487bbf5c2eddf41007a18a4273707ff91a1b4461",
+  "invocation_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001:TVC-CAPABILITY-RUNTIME-002:READY-DERIVATION",
+  "manifest_hash": "0dd6e6688e37dfb4c09d77c338ab277b15349e88b4d501d8bc4868425de98215",
   "parameters": {
-    "activation_delivery_task_ref": "StegVerse-Labs/TVC:tasks/TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006.json",
-    "declared_receipt_sources": [
-      "StegVerse-Labs/TVC:artifacts/tvc-runtime-boundary-observation.json",
-      "StegVerse-Labs/TVC:receipts/runtime/TVC-CAPABILITY-RUNTIME-002.json",
-      "/run/stegverse/tvc-resident-self-heal/latest.json"
-    ],
+    "completion_predicate": "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED",
+    "diagnostic_fallback": "StegVerse-Labs/TVC:scripts/observe_tvc_runtime_boundary.py",
     "evidence_custody_task": "RT-INTR-EVIDENCE-CUSTODY-001",
-    "expected_observer_state": "READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND",
-    "github_runtime_authority": "NONE",
-    "governed_ingress": "https://tvc.stegverse.org/api/hil/ingress",
+    "expected_ready_state": "READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND",
     "intr_admission_task": "RT-INTR-BOUNDARY-ADMISSION-001",
-    "intr_transition_task": "RT-INTR-GOVERNED-TRANSITION-001",
     "master_records_destination": "master-records/core-lite",
-    "master_records_role": "OBSERVED_REALITY_PROVENANCE_CUSTODY_AND_RECONSTRUCTION",
-    "mir_completion_predicate": "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED",
-    "observer_task_ref": "StegVerse-Labs/TVC:tasks/TVC-CAPABILITY-RUNTIME-002.json",
+    "primary_evidence_source": "QUALIFYING_REAL_PROVIDER_OPERATION_ROUNDTRIP_RECEIPT_CHAIN",
     "provider_operation_route": "https://tvc.stegverse.org/v1/provider-operation",
     "provider_operation_task_ref": "StegVerse-Labs/TVC:tasks/TVC-PROVIDER-OPERATION-BROKER-003.json",
-    "provider_secret_export_allowed": false,
-    "require_current_tvc_source_identity": true,
-    "require_tv_tvc_vault_backed_provider_operation_binding": true,
-    "runtime_binding_task_ref": "StegVerse-Labs/TVC:tasks/TVC-PRIMARY-RUNTIME-BINDER-005.json"
+    "require_vault_backed_provider_binding": true,
+    "runtime_observer_task_ref": "StegVerse-Labs/TVC:tasks/TVC-CAPABILITY-RUNTIME-002.json"
   },
   "recording": {
-    "entropy_recovery_conditions": [
-      "RUNNER_EXPIRED",
-      "REQUIRED_RECORDING_LEVELS_COMPLETE",
-      "REQUIRED_RECEIPT_CHAIN_COMPLETE",
-      "MASTER_RECORDS_CUSTODY_ACCEPTED",
-      "MASTER_RECORDS_RECONSTRUCTION_CONFIRMED",
-      "NO_UNRECORDED_SUCCESSOR_OR_CORRECTION_DEPENDENCY_REQUIRES_RESIDUAL_CONSTRUCT"
+    "accepted_ready_evidence": [
+      "QUALIFYING_REAL_PROVIDER_OPERATION_ROUNDTRIP_RECEIPT_CHAIN",
+      "SYNTHETIC_NON_SECRET_OBSERVER_RECEIPT_FOR_ROUTE_DIAGNOSTICS_ONLY"
     ],
     "levels": [
       "operation",
@@ -127,6 +100,7 @@
       "master_records"
     ],
     "master_records_required_before_entropy_recovery": true,
+    "ready_derivation_rule": "A real provider-operation chain may project READY when it proves canonical route execution, current source/runtime binding, admitted TV/TVC vault-backed secret_ref and lease, ALLOW_OPERATION_RESULT, exact use_receipt, no secret export, and required authority ceilings. Synthetic observer evidence alone does not prove AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED.",
     "receipt_chain_required": true
   },
   "reusable_task_id": "RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001",
@@ -139,31 +113,31 @@
     "materialization_refs": [
       "StegVerse-Labs/TVC:scripts/observe_tvc_runtime_boundary.py"
     ],
-    "post_expiry_residual": "NON_EXECUTING_RECORDING_CONSTRUCT_IF_REQUIRED_RECORDING_REMAINS"
+    "runner_role": "DIAGNOSTIC_FALLBACK_ONLY_WHEN_QUALIFYING_TRANSACTION_EVIDENCE_IS_ABSENT"
   },
   "schema": "stegverse.reusable-task-invocation-manifest/v1",
   "source_refs": [
     "data/reusable-task-registry.json",
     "source-bundles/reusable-task-registry.d",
-    "data/reusable-task-ephemeral-construct-contract.json",
-    "scripts/trigger_reusable_task.py",
-    "management/COSV_PROFILE_V1.json",
-    "StegVerse-Labs/StegScholar:papers/rtg-gtg-tt/cross-layer-contract.md"
+    "StegVerse-Labs/TVC:tasks/TVC-PROVIDER-OPERATION-BROKER-003.json",
+    "StegVerse-Labs/TVC:tasks/TVC-CAPABILITY-RUNTIME-002.json",
+    "StegVerse-Labs/TVC:tvc_provider_operation_broker.py",
+    "StegVerse-Labs/TVC:scripts/observe_tvc_runtime_boundary.py"
   ],
   "task_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
   "trajectory": {
     "admission": "INTERLOCK_INTR",
     "canonical_destination": "master-records/core-lite",
     "completion_sequence": [
-      "AUTHENTIC_READY_RECEIPT_OBSERVED",
-      "CURRENT_TVC_SOURCE_IDENTITY_VERIFIED",
-      "TV_TVC_VAULT_BACKED_PROVIDER_OPERATION_BINDING_VERIFIED",
+      "QUALIFYING_REAL_PROVIDER_OPERATION_RECEIPT_CHAIN_OBSERVED",
+      "READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND_DERIVED",
       "INTERLOCK_INTR_RECEIPT_ADMITTED",
       "MASTER_RECORDS_CUSTODY_ACCEPTED",
       "MASTER_RECORDS_RECONSTRUCTION_CONFIRMED",
       "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED"
     ],
     "custody": "MASTER_RECORDS",
-    "receipt_source": "TVC-CAPABILITY-RUNTIME-002"
+    "diagnostic_receipt_source": "TVC-CAPABILITY-RUNTIME-002_SYNTHETIC_OBSERVER",
+    "primary_receipt_source": "CANONICAL_TVC_PROVIDER_OPERATION_ROUNDTRIP"
   }
 }
