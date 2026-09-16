@@ -4,93 +4,63 @@ Updated: 2026-09-16
 Repository: `StegVerse-Labs/.github`
 Goal Task ID: `STEGVERSE-BUSINESS-OPPORTUNITY-ENGINE-PILOT-001`
 COSV vector: `10100000110000`
-Status: `ACTIVE / FULL50 EVIDENCE UPGRADE MERGED_VALIDATED / PRIOR SOLE STABLE_TOP10 FALSIFIED / FOUR CONSERVATIVE STABLE_TOP10 / NO STABLE_TOP1 / DECISION_GRADE_FALSE / GOVERNED RUNTIME ADMISSION UNOBSERVED`
+Status: `ACTIVE / FULL50 EVIDENCE UPGRADE 002 MERGED_VALIDATED / SIX CONSERVATIVE STABLE_TOP10 / NO STABLE_TOP1 / DECISION_GRADE_FALSE / GOVERNED RUNTIME ADMISSION UNOBSERVED`
 
 ## Frozen market and authority boundary
 
-Market remains `TEMPLE-TX-DENTAL-35MI-2026-09-15`: Temple center; 35-mile radius; Bell and Coryell Counties; exactly 50 frozen public dental candidates.
+Market remains `TEMPLE-TX-DENTAL-35MI-2026-09-15`: Temple center; 35-mile radius; Bell and Coryell Counties; exactly 50 frozen public dental candidates. Review count and star rating remain prohibited from replacement/stability scenarios.
 
-Review count and star rating remain prohibited from the replacement/stability scenarios. All artifacts remain `DRAFT_ONLY / OUTREACH_DISABLED`. No authentic WorkerCoordinator claim/fence, Interlock/InTr admission receipt, governed resident-runtime receipt, provider credential operation, recipient/contact enrichment, message, call, outreach receipt, or economic outcome was observed or authorized.
+All artifacts remain `DRAFT_ONLY / OUTREACH_DISABLED`. No authentic WorkerCoordinator claim/fence, Interlock/InTr admission receipt, governed resident-runtime receipt, provider credential operation, recipient/contact enrichment, message, call, outreach receipt, or economic outcome was observed or authorized.
 
-Task Registry remains coordination truth only; WorkerCoordinator retains claim/fence authority; Interlock/InTr retains transition authority; TV/TVC retains provider credential authority; Master Records retains observed-reality/reconstruction authority.
+## Evidence-upgrade 002 preregistration
 
-## Prior full-50 baseline
+Run: `TEMPLE-TX-DENTAL-35MI-2026-09-15-FULL50-EVIDENCE-UPGRADE-002`.
 
-The original full-50 run `TEMPLE-TX-DENTAL-35MI-2026-09-15-FULL50-CAPACITY-001` was preregistered and merged/validated in StegBusiness-Ops PR #16. It used exact public provider/hour evidence where attributable and bounded unresolved values with sensitivity envelopes. That pass yielded Temple Kids Dental as the sole conservative `STABLE_TOP10` and no `STABLE_TOP1`.
+Before tranche-002 observations were promoted, StegBusiness-Ops committed `FULL50_EVIDENCE_UPGRADE_002_PREREG.md`. The same 50 identities, S1/S2/S3 formulas, `STABLE_TOP10`/`STABLE_TOP1` rules, review/rating exclusion, slot acceptance threshold, measured-demand threshold, and non-outreach authority boundary remained frozen.
 
-That result is now superseded by stronger attributable public evidence under unchanged stability rules; it remains historical evidence rather than current ranking truth.
+The preregistration added only two evidence-state refinements: `BOUNDED_PUBLIC_FIXED_PLUS_APPOINTMENT_ONLY`, which uses published fixed recurring hours as a lower bound without fabricating appointment-only hours; and `BOUNDED_PUBLIC_CONFLICTING_SCHEDULES`, which retains the minimum/maximum attributable conflicting totals instead of selecting a preferred value.
 
-## Evidence-upgrade preregistration
+## Tranche-002 evidence
 
-Follow-up run: `TEMPLE-TX-DENTAL-35MI-2026-09-15-FULL50-EVIDENCE-UPGRADE-001`.
+Ten targeted evidence rows strengthened or narrowed provider/hour uncertainty for Lone Star Copperas Cove/Belton/Killeen, Red Balloon, Harker Heights Royal Dental, Carus Killeen/Salado, Revital, Cure Dental, and Winegar.
 
-Before any new evidence was incorporated, StegBusiness-Ops committed:
+Key outcomes include exact recurring-hour upgrades for Lone Star Copperas Cove and Killeen, Harker Heights Royal Dental, Carus Killeen, and Carus Salado; bounded conflicting-hour intervals for Lone Star Belton and Red Balloon; Revital fixed-hours plus appointment-only days retained as a 28–48 bounded state; Cure Dental provider count retained as bounded because its public about page is internally inconsistent; and Winegar upgraded to exact two providers while its own pages retain a 44–48 conflicting-hours interval.
 
-`business-opportunity-engine/runs/TEMPLE-TX-DENTAL-35MI-2026-09-15/FULL50_EVIDENCE_UPGRADE_PREREG.md`
+No reproducible unauthenticated concrete appointment-slot inventory was admitted. No attributable numeric practice-specific prospective-demand observation with a defined period or denominator was admitted.
 
-The preregistration froze:
+## Deterministic rerun and falsification handling
 
-- the same 50-business identity set;
-- review/rating exclusion;
-- the existing S1/S2/S3 and `STABLE_TOP10` / `STABLE_TOP1` rules;
-- exact-provider acceptance only from location-attributable public rosters;
-- exact-hours acceptance only from attributable recurring office schedules;
-- conflict/ambiguity retention as bounded `UNKNOWN`;
-- appointment-slot promotion only for reproducible unauthenticated concrete dates/times visible before identity/contact/insurance/payment submission;
-- measured-demand promotion only for an attributable numeric practice-specific demand observation with a defined period or denominator;
-- `DRAFT_ONLY / OUTREACH_DISABLED` and zero authority effect.
+The initial PR #36 validation attempt on head `3bde04598d1295673e9adf580fa681acc8235199` failed run `35102475544` only because the deterministic recomputation produced six conservative `STABLE_TOP10` identities while the precomputed result artifact listed five. The computed additional identity was `BELL-DENTAL-024` Belton Family Dental.
 
-## Accepted evidence upgrades
+The preregistered rules and evidence were not changed. Only the result projection and implementation handoff were reconciled to the deterministic six-candidate truth.
 
-The validated ledger `full50-evidence-upgrade-001.csv` contains 19 attributable public evidence-upgrade rows. Material exact observations include provider counts and/or recurring weekly hours for Heights Dental Center, Your Total Dental & Orthodontics - Cove, Belton Family Dental, Killeen Family Dentistry, Killeen Children's Dental & Orthodontics, Market Heights Family Dental, Cove Choice Dental, Carus Dental Killeen, Carus Dental Belton, Verbena Family and Cosmetic Dentistry, Fairbanks Dental Associates - Temple, Cove Pediatric Dentistry & Orthodontics, Carus Dental Salado, ACE Dental of Copperas Cove, Salado Creek Dental, Cure Dental Belton, Temple Choice Dental, Little Champs Kids Dental, and Elm Ridge Implant and Family Dentistry.
-
-Ambiguous fields remain bounded rather than silently promoted, including Carus Killeen office hours, Carus Salado office hours, Revital Dental ordinary weekly hours, Cure Dental provider count, and conflicting Winegar Dental hours.
-
-No reproducible unauthenticated concrete appointment-slot inventory was admitted. Request forms, callback flows, Book Online controls, and scheduler shells that do not expose concrete times without personal-data submission remain access evidence only.
-
-No attributable public business-specific numeric prospective-inquiry/new-patient/booking flow with a defined period or denominator was admitted. `business_specific_measured_demand_observed=false` remains mandatory.
-
-## Frozen rerun result
-
-The stronger evidence materially falsifies the prior sole-`STABLE_TOP10` result without changing the model after observing outcomes.
-
-Temple Kids Dental now ranks:
-- S1: 20
-- S2: 2
-- S3: 2
-- `STABLE_TOP10=false`
+Fresh exact-head validation then passed on head `68f07f7b98a50cf7158e7ee18a444aa9d938a731`, run `35102730598`.
 
 Current conservative `STABLE_TOP10` set:
 
-- `BELL-DENTAL-037` Cove Choice Dental — S1=2 / S2=1 / S3=1.
-- `BELL-DENTAL-021` Carus Dental Belton — S1=2 / S2=3 / S3=4.
-- `BELL-DENTAL-040` Cove Pediatric Dentistry & Orthodontics — S1=2 / S2=6 / S3=6.
-- `BELL-DENTAL-010` Temple Choice Dental — S1=2 / S2=4 / S3=5.
+- `BELL-DENTAL-024` Belton Family Dental
+- `BELL-DENTAL-037` Cove Choice Dental
+- `BELL-DENTAL-031` Carus Dental Killeen
+- `BELL-DENTAL-021` Carus Dental Belton
+- `BELL-DENTAL-040` Cove Pediatric Dentistry & Orthodontics
+- `BELL-DENTAL-010` Temple Choice Dental
 
-`STABLE_TOP1 = NONE`. S1 is led by Copperas Cove Dentist, while S2 and S3 are led by Cove Choice Dental, so scenario leaders remain non-convergent.
+`STABLE_TOP1 = NONE` remains. `decision_grade=false` remains mandatory because measured business-specific demand remains unobserved.
 
-This remains a public-evidence sensitivity result only. It does not establish measured prospective demand, guaranteed revenue leakage, commercial priority, or contact/outreach authority. `decision_grade=false` remains mandatory.
+## Source validation evidence
 
-## Validation evidence
+StegBusiness-Ops PR #36 merged with expected-head protection as `ab8f866a3bd54698a39f9c853cbdffa1f3f52a1e` after exact-head run `35102730598` passed on `68f07f7b98a50cf7158e7ee18a444aa9d938a731`.
 
-StegBusiness-Ops PR #26 exact head `3a8e949380a9f874c84c5a868b491ae00fe1dd1d` passed `Validate StegBusiness-Ops` run `35093954679`.
-
-PR #26 merged with expected-head protection as `1b9af7a6f4d33ba6cef74678e9a7308bd1e1a013`.
-
-Merged-main push validation run `35093994052` completed successfully on exact merge SHA `1b9af7a6f4d33ba6cef74678e9a7308bd1e1a013`.
-
-The new deterministic validator `business-opportunity-engine/validate_full50_evidence_upgrade.py` independently overlays the 19 accepted observations on the frozen full-50 baseline, recomputes S1/S2/S3 and conservative capacity bounds, asserts the four-business stable-top10 set, asserts Temple Kids Dental falsification, requires scenario-leader non-convergence, and rejects any slot, measured-demand, decision-grade, or outreach promotion.
+Merged-main push validation run `35102774986` completed successfully on exact merge SHA `ab8f866a3bd54698a39f9c853cbdffa1f3f52a1e`.
 
 ## Current truth
 
 - Goal Task: `ACTIVE`.
-- source package: `MERGED_VALIDATED`.
 - frozen market identities: 50 / unchanged.
 - review-count/rating replacement influence: NONE.
-- evidence-upgrade preregistration: MERGED_VALIDATED.
-- attributable evidence-upgrade rows: 19.
-- prior sole `STABLE_TOP10 = Temple Kids Dental`: FALSIFIED.
-- current conservative `STABLE_TOP10`: Cove Choice Dental; Carus Dental Belton; Cove Pediatric Dentistry & Orthodontics; Temple Choice Dental.
+- evidence-upgrade 002 preregistration: MERGED_VALIDATED.
+- tranche-002 evidence rows: 10.
+- current conservative `STABLE_TOP10`: six identities listed above.
 - `STABLE_TOP1`: NONE.
 - reproducible unauthenticated slot inventory: NOT OBSERVED.
 - business-specific measured demand: NOT OBSERVED.
@@ -103,4 +73,4 @@ The new deterministic validator `business-opportunity-engine/validate_full50_evi
 
 ## Next admissible work
 
-Continue replacing remaining bounded provider/hour uncertainty only with attributable evidence under preregistered rules, prioritizing Lone Star location-specific rosters/hours, Red Balloon hours, Harker Heights Royal Dental hours, Carus Killeen/Salado hours, Revital ordinary-hours ambiguity, Cure Dental provider count, and Winegar conflicting hours. Continue seeking reproducible unauthenticated concrete slot inventory or attributable business-specific numeric demand. Re-run the unchanged stability test after each material evidence tranche. Preserve `DRAFT_ONLY / OUTREACH_DISABLED`, `decision_grade=false`, and do not create provider/contact/outreach authority under this Goal Task.
+Continue only unresolved public-evidence lanes, especially Lone Star location-specific provider rosters, Cure Dental current provider roster, Revital appointment-only maximum-hours evidence, and remaining conflicting schedule resolution where stronger attributable evidence exists. Continue seeking reproducible unauthenticated concrete appointment-slot inventory or attributable numeric business-specific demand. Preserve the frozen model, `DRAFT_ONLY`, `OUTREACH_DISABLED`, `decision_grade=false`, and zero provider/contact/outreach authority.
