@@ -7,7 +7,7 @@
   "parameter_keys": ["provider_operation_task_ref", "runtime_observer_task_ref", "provider_operation_route", "expected_ready_state", "primary_evidence_source", "diagnostic_fallback", "require_vault_backed_provider_binding", "intr_admission_task", "evidence_custody_task", "master_records_destination", "completion_predicate"],
   "existing_task_ref": "StegVerse-Labs/TVC:tasks/TVC-CAPABILITY-RUNTIME-002.json",
   "composes": ["RT-TVC-PROVIDER-OPERATION-BROKER-001", "RT-TVC-PRIMARY-RUNTIME-BINDING-001", "RT-INTR-BOUNDARY-ADMISSION-001", "RT-INTR-GOVERNED-TRANSITION-001", "RT-INTR-EVIDENCE-CUSTODY-001"],
-  "runner_templates": ["StegVerse-Labs/TVC:scripts/observe_tvc_runtime_boundary.py"],
+  "runner_templates": ["scripts/run_tvc_runtime_boundary_reusable.py"],
   "recording_levels": ["operation", "task", "goal", "component", "system", "master_records"],
   "completion_predicates": ["QUALIFYING_REAL_PROVIDER_OPERATION_RECEIPT_CHAIN_OBSERVED_OR_DIAGNOSTIC_ONLY", "READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND_DERIVED_WHEN_EVIDENCE_SUFFICIENT", "INTERLOCK_INTR_RECEIPT_ADMITTED", "MASTER_RECORDS_CUSTODY_ACCEPTED", "MASTER_RECORDS_RECONSTRUCTION_CONFIRMED"],
   "ready_derivation": {
@@ -19,5 +19,5 @@
   },
   "failure_semantics": ["MISSING_QUALIFYING_EXECUTION_EVIDENCE_FAIL_CLOSED_FOR_PROVIDER_SESSION", "SOURCE_OR_CONFIG_REFERENCE_IS_NOT_RUNTIME_RECEIPT", "UNADMITTED_RECEIPT_CANNOT_SATISFY_COMPLETION", "MASTER_RECORDS_CUSTODY_MISSING_CANNOT_SATISFY_TERMINAL_COMPLETION"],
   "authority_effect": "NONE_OBSERVATION_AND_CUSTODY_ONLY",
-  "reuse_instructions": "Reuse a qualifying real TVC provider-operation round-trip receipt chain before running a synthetic observer probe. Derive READY only when the real transaction evidence proves the canonical route, TV/TVC vault-backed binding, exact use receipt, and authority ceilings. Keep scripts/observe_tvc_runtime_boundary.py as a non-secret diagnostic fallback for route posture; its invalid request intentionally stops before the vault broker and cannot alone prove AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED. Interlock/InTr admits evidence; Master Records owns observed-reality/provenance custody and reconstruction."
+  "reuse_instructions": "Use the local scripts/run_tvc_runtime_boundary_reusable.py wrapper so the generic trigger remains inside its admitted scripts/*.py surface. The wrapper resolves only already-local StegVerse-Labs/TVC source, executes the canonical TVC primary-runtime preflight and same-service activation tasks, then runs the non-secret TVC observer. It performs no source fetch, exports no protected value, and emits no standardized completion result; the generic lifecycle therefore stops at evidence reconciliation unless separately admissible evidence satisfies the declared predicates. A qualifying real provider-operation round-trip remains preferred READY evidence; the synthetic observer cannot alone prove an authentic provider session. Interlock/InTr admits evidence and Master Records owns observed-reality/provenance custody and reconstruction."
 }
