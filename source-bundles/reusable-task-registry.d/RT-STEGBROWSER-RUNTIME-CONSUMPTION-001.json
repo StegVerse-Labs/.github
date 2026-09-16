@@ -11,7 +11,7 @@
   "parameter_keys": ["source_root", "runtime_root", "sovereign_source_root", "stegos_source_root", "runtime_base", "node_genesis_receipt"],
   "runner_templates": ["scripts/run_stegbrowser_manifest_bound_runtime.py"],
   "recording_levels": ["operation", "task", "goal", "component", "system", "master_records"],
-  "source_conformance_state": "CURRENT_STEGBROWSER_NODE_INTR_EVENT_RUNTIME_AND_A3_A4_COMPOSITION_SOURCE_MERGED_VALIDATED_RUNTIME_EVIDENCE_PENDING",
+  "source_conformance_state": "SV002_SITE_VALIDATED_LANE_BASELINE_RETEST_PASS_STEGBROWSER_BINDING_ADAPTATION_PENDING",
   "validated_runtime_baseline": {
     "repository": "StegVerse-Labs/Site",
     "execution_owner": "StegVerse-002/micro-node-runtime",
@@ -22,8 +22,15 @@
     "site_handoff_orchestrator_run": 34993797281,
     "site_heartbeat_run": 34993797195,
     "all_source_validation_passed": true,
-    "unchanged_tests": ["tests/test_sv002_self_contained_runtime.py", "tests/test_sv002_canonical_destination.py"],
-    "runtime_assets": ["assets/sv002-local-runtime-materializer.js", "assets/sv002-principal-worker.js", "assets/generated/site-browser-intr-connectors.js"],
+    "unchanged_tests": [
+      "tests/test_sv002_self_contained_runtime.py",
+      "tests/test_sv002_canonical_destination.py"
+    ],
+    "runtime_assets": [
+      "assets/sv002-local-runtime-materializer.js",
+      "assets/sv002-principal-worker.js",
+      "assets/generated/site-browser-intr-connectors.js"
+    ],
     "execution_profile": "StegVerse-002/micro-node-runtime:experiments/self-characterization-001/EXECUTION_IMPLEMENTATION_PROFILE.v0.8.json",
     "historical_substrate": "BROWSER_WEB_WORKER_ON_VALID_STEGVERSE_NODE",
     "historical_pattern": "REGISTERED_STEGVERSE_NODE -> INTERLOCK -> INTR_MATERIALIZATION -> BOUNDED_LEASE -> EVENT_EPHEMERAL_BROWSER_WEB_WORKER -> PRINCIPAL_EXECUTION -> MASTER_RECORDS_RECONSTRUCTION",
@@ -57,33 +64,15 @@
   "implementation_trace": {
     "validated_site_baseline": "RETEST_PASS_UNCHANGED",
     "manifest_binding": "CURRENT_STEGBROWSER_SOURCE_IMPLEMENTED_MERGED_VALIDATED",
-    "registered_stegverse_node_binding": "CURRENT_IPHONE_BINDING_SOURCE_MERGED_VALIDATED_PR_1360_AUTHENTIC_RUNTIME_EVIDENCE_PENDING",
-    "interlock_binding_from_node": "CURRENT_IPHONE_BINDING_SOURCE_MERGED_VALIDATED_PR_1360_AUTHENTIC_RUNTIME_EVIDENCE_PENDING",
-    "invocation_scoped_lease": "CURRENT_SOURCE_PATH_PRESENT_AUTHENTIC_RUNTIME_EVIDENCE_PENDING",
-    "event_ephemeral_stegos_materialization": "CURRENT_IPHONE_CONTINUATION_SOURCE_MERGED_VALIDATED_PR_1363_AUTHENTIC_RUNTIME_EVIDENCE_PENDING",
-    "execution_time_runtime_identity": "CURRENT_IPHONE_CONTINUATION_SOURCE_MERGED_VALIDATED_PR_1363_AUTHENTIC_RUNTIME_EVIDENCE_PENDING",
-    "workercoordinator_claim_fence": "CANONICAL_ORGANIZATION_LOCAL_FENCED_CHECKOUT_PATH_COLLISION_CHECKED_AUTHENTIC_STEGBROWSER_EXECUTION_PENDING",
-    "organization_local_intr_ingress_verification": "WORKER_SOURCE_PRESENT_EXACT_CORRELATION_AUTHENTIC_STEGBROWSER_EXECUTION_PENDING",
+    "registered_stegverse_node_binding": "VALIDATED_SITE_BASELINE_EXISTS; CURRENT_STEGBROWSER_ADAPTER_BINDING_PENDING",
+    "interlock_binding_from_node": "VALIDATED_SITE_BASELINE_EXISTS; CURRENT_STEGBROWSER_ADAPTER_BINDING_PENDING",
+    "invocation_scoped_lease": "VALIDATED_SITE_BASELINE_EXISTS; CURRENT_STEGBROWSER_ADAPTER_BINDING_PENDING",
+    "event_ephemeral_stegos_materialization": "VALIDATED_SITE_BASELINE_EXISTS",
+    "execution_time_runtime_identity": "VALIDATED_SITE_BASELINE_EXISTS",
+    "workercoordinator_claim_fence": "CURRENT_STEGBROWSER_EXACT_AUTHENTIC_EVIDENCE_PENDING",
+    "organization_local_intr_ingress_verification": "CURRENT_STEGBROWSER_EXACT_AUTHENTIC_EVIDENCE_PENDING",
     "round_trip_1": "NOT_YET_AUTHENTICALLY_EXECUTED_FOR_STEGBROWSER",
     "round_trip_2": "NOT_YET_AUTHENTICALLY_EXECUTED_FOR_STEGBROWSER"
-  },
-  "a3_a4_composition": {
-    "workercoordinator_authority": "ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001",
-    "checkout_policy": "fenced_atomic_checkout",
-    "fresh_fence_required": true,
-    "targeted_runner": "scripts/refresh_and_execute_resident_task.py",
-    "a4_validator": "workers/stegbrowser_manifest_intr_ingress.py",
-    "generic_sv001_adapter_used": false,
-    "parallel_workercoordinator_created": false,
-    "authority_effect": "NONE_SOURCE_COMPOSITION_ONLY"
-  },
-  "automatic_reobservation": {
-    "canonical_main_ref": "85db6f78003c1e813ac4a34f738285861a552800",
-    "same_nonce_runtime_ready_receipt_in_canonical_repository_custody": false,
-    "a4_receipt_in_canonical_repository_custody": false,
-    "runtime_predicate_promotion_allowed": false,
-    "round_trip_1_allowed": false,
-    "authority_effect": "NONE_OBSERVATION_ONLY"
   },
   "source_validation": {
     "prior_node_interlock_pr": 1923,
@@ -92,9 +81,6 @@
     "validated_site_baseline_pr": 1354,
     "validated_site_baseline_head": "0ae6bbd252741599c7cab06746f274b901d2e455",
     "validated_site_baseline_run": 34993797222,
-    "current_iphone_binding_pr": 1360,
-    "event_runtime_bridge_pr": 1363,
-    "event_runtime_claim_release_pr": 1365,
     "all_baseline_required_lanes_passed": true,
     "runtime_authority_effect": "NONE"
   },
@@ -125,5 +111,5 @@
     "NO_PARALLEL_SCHEDULER_DISPATCHER_CREDENTIAL_PATH_EXTERNAL_HOST_OR_SECOND_DEVICE"
   ],
   "authority_effect": "NONE_ORCHESTRATION_ONLY",
-  "reuse_instructions": "Start from the merged current-iPhone StegBrowser binding and EVENT_EPHEMERAL continuation. Preserve the existing registered-Node gating, Interlock/InTr materialization, bounded lease, EVENT_EPHEMERAL browser Web Worker, execution-time runtime identity, organization-local fresh WorkerCoordinator fenced checkout, and exact A4 correlation verification. Do not build a separate Receipt #1 resolver, runtime/materializer, WorkerCoordinator, external host/device discovery path, or second user-operated device. Source or CI must never be promoted to authentic runtime completion evidence."
+  "reuse_instructions": "Start from the green StegVerse-Labs/Site SV002 browser lane proven on Site PR #1354 head 0ae6bbd252741599c7cab06746f274b901d2e455. Preserve its Node gating, Interlock/InTr materialization, bounded lease, self-contained EVENT_EPHEMERAL browser Web Worker, execution-time runtime identity, and reconstruction behavior. Adapt only the current StegBrowser Goal/COSV/manifest and owned-mirror route bindings required by STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001. Do not build a separate Receipt #1 resolver, new runtime/materializer, external host/device discovery path, or second user-operated device. Source or CI must never be promoted to authentic runtime completion evidence."
 }
