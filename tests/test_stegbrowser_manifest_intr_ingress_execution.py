@@ -36,20 +36,32 @@ class StegBrowserManifestIntrIngressExecutionTests(unittest.TestCase):
         self.assertFalse(binding["execution_before_node_interlock_binding_repair_allowed"])
         self.assertEqual(binding["path_parameters"]["node_genesis_receipt"], "STEGVERSE_NODE_GENESIS_RECEIPT")
 
-    def test_reusable_task_tracks_merged_validated_binding_pending_runtime_evidence(self):
+    def test_reusable_task_tracks_validated_sv002_baseline_pending_stegbrowser_adaptation(self):
         reusable = json.loads(REUSABLE.read_text())
         trace = reusable["implementation_trace"]
-        self.assertEqual(reusable["source_conformance_state"], "NODE_INTERLOCK_BINDING_SOURCE_MERGED_VALIDATED_RUNTIME_EVIDENCE_PENDING")
-        self.assertEqual(trace["registered_stegverse_node_binding"], "IMPLEMENTED_MERGED_VALIDATED_VIA_REQUIRED_NODE_GENESIS_RECEIPT")
-        self.assertEqual(trace["interlock_binding_from_node"], "IMPLEMENTED_MERGED_VALIDATED_FROM_VALIDATED_RECEIPT_1")
-        self.assertEqual(trace["event_ephemeral_stegos_materialization"], "IMPLEMENTED_MERGED_VALIDATED")
-        self.assertTrue(trace["execution_time_runtime_identity"].startswith("IMPLEMENTED_MERGED_VALIDATED_AND_BOUND_BACK"))
+        self.assertEqual(
+            reusable["source_conformance_state"],
+            "SV002_SITE_VALIDATED_LANE_BASELINE_RETEST_PASS_STEGBROWSER_BINDING_ADAPTATION_PENDING",
+        )
+        baseline = reusable["validated_runtime_baseline"]
+        self.assertEqual(baseline["repository"], "StegVerse-Labs/Site")
+        self.assertEqual(baseline["site_pr"], 1354)
+        self.assertTrue(baseline["all_source_validation_passed"])
+        self.assertEqual(baseline["runtime_authority_effect"], "NONE_FROM_SOURCE_OR_CI")
+        self.assertEqual(trace["validated_site_baseline"], "RETEST_PASS_UNCHANGED")
+        self.assertIn("CURRENT_STEGBROWSER_ADAPTER_BINDING_PENDING", trace["registered_stegverse_node_binding"])
+        self.assertIn("CURRENT_STEGBROWSER_ADAPTER_BINDING_PENDING", trace["interlock_binding_from_node"])
+        self.assertEqual(trace["event_ephemeral_stegos_materialization"], "VALIDATED_SITE_BASELINE_EXISTS")
+        self.assertEqual(trace["execution_time_runtime_identity"], "VALIDATED_SITE_BASELINE_EXISTS")
+        self.assertEqual(trace["workercoordinator_claim_fence"], "CURRENT_STEGBROWSER_EXACT_AUTHENTIC_EVIDENCE_PENDING")
         contract = reusable["canonical_node_binding_contract"]
         self.assertTrue(contract["a4_exact_correlation_required"])
         self.assertTrue(contract["fail_closed_on_missing_or_mismatch"])
         self.assertIn("manifest_sha256", contract["required_lease_identity_inputs"])
         self.assertIn("registration_receipt_sha256", contract["required_lease_identity_inputs"])
         self.assertIn("runtime_id", contract["required_runtime_correlation"])
+        self.assertFalse(reusable["superseded_reconstruction"]["new_receipt_resolver_allowed"])
+        self.assertFalse(reusable["superseded_reconstruction"]["new_runtime_materializer_allowed"])
         legacy = LEGACY_RUNNER.read_text()
         self.assertIn("validate_node_genesis_receipt", legacy)
         self.assertIn("LeaseRequest(", legacy)
