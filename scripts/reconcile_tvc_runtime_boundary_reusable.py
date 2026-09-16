@@ -18,6 +18,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 RESULT_SCHEMA = "stegverse.reusable-task-runner-result/v1"
 EXPECTED_TASK = "RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001"
+EXPECTED_INTR_PROFILE = "external-provider-operation"
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -42,6 +43,35 @@ def env_json(name: str) -> Any:
     if not raw:
         raise RuntimeError(f"{name} is required")
     return json.loads(raw)
+
+
+def _require_complete_intr_chain(receipt: dict[str, Any]) -> None:
+    intr = receipt.get("intr_transport")
+    if not isinstance(intr, dict):
+        raise RuntimeError("canonical InTr provider-operation transport evidence missing")
+    if intr.get("profile_id") != EXPECTED_INTR_PROFILE:
+        raise RuntimeError("canonical InTr provider-operation profile mismatch")
+    for direction in ("request", "response"):
+        lane = intr.get(direction)
+        if not isinstance(lane, dict):
+            raise RuntimeError(f"canonical InTr {direction} lane missing")
+        result = lane.get("transport_result")
+        receipts = lane.get("receipts")
+        intent = lane.get("intent")
+        if not isinstance(result, dict) or result.get("state") != "TRANSPORT_COMPLETE":
+            raise RuntimeError(f"canonical InTr {direction} transport incomplete")
+        if result.get("profile_id") != EXPECTED_INTR_PROFILE:
+            raise RuntimeError(f"canonical InTr {direction} profile mismatch")
+        if not isinstance(receipts, list) or not receipts:
+            raise RuntimeError(f"canonical InTr {direction} receipt chain missing")
+        if not isinstance(intent, dict) or intent.get("protocol") != "InTr":
+            raise RuntimeError(f"canonical InTr {direction} intent missing")
+        if result.get("terminal_receipt_hash") != receipts[-1].get("receipt_hash"):
+            raise RuntimeError(f"canonical InTr {direction} terminal receipt mismatch")
+        if any(item.get("boundary_verification") != "VERIFIED" for item in receipts if isinstance(item, dict)):
+            raise RuntimeError(f"canonical InTr {direction} boundary verification missing")
+        if any(item.get("authority_transfer") is not False for item in receipts if isinstance(item, dict)):
+            raise RuntimeError(f"canonical InTr {direction} authority-transfer invariant violated")
 
 
 def qualified_real_receipt(receipt: dict[str, Any], *, tracking_task_id: str | None, expected_ready_state: str) -> None:
@@ -74,6 +104,7 @@ def qualified_real_receipt(receipt: dict[str, Any], *, tracking_task_id: str | N
         raise RuntimeError("canonical provider-operation result mismatch")
     if not isinstance(result.get("use_receipt"), dict):
         raise RuntimeError("canonical provider-operation use_receipt missing")
+    _require_complete_intr_chain(receipt)
 
 
 def run_diagnostic(parameters: dict[str, Any]) -> int:
@@ -132,6 +163,7 @@ def main() -> int:
         print(json.dumps({"state": "BOUNDARY", "reason": str(exc), "receipt_ref": receipt_ref}, sort_keys=True))
         return 4
 
+    intr = receipt["intr_transport"]
     runner_result = {
         "schema": RESULT_SCHEMA,
         "invocation_id": invocation_id,
@@ -145,6 +177,9 @@ def main() -> int:
         "ready_state": parameters.get("expected_ready_state"),
         "provider_operation_result_decision": "ALLOW_OPERATION_RESULT",
         "exact_use_receipt_observed": True,
+        "intr_profile_id": intr["profile_id"],
+        "intr_request_terminal_receipt_hash": intr["request"]["transport_result"]["terminal_receipt_hash"],
+        "intr_response_terminal_receipt_hash": intr["response"]["transport_result"]["terminal_receipt_hash"],
         "secret_values_exported": False,
         "protected_values_exposed": False,
         "authority_effect": "NONE",
