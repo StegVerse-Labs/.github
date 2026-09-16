@@ -13,7 +13,8 @@ Execute the successor ÉLAN × StegVerse experiment for sustained silence and re
 
 - Task Registry PR `StegVerse-Labs/.github#1999` merged at `a11871ecc287d567833e20e701e3117db4dd8f06` after exact-head green Organization Control Plane, Deterministic Repository Suite, and Heartbeat validation.
 - SDK preregistration PR `StegVerse-org/StegVerse-SDK#248` merged at `e674051775c9b183a5805e85c9691aac6d6c063c`.
-- Reconciliation PR `StegVerse-Labs/.github#2001` merged at `e46f1ed7a9882165bdd786f0d715da72abb19ebf`.
+- Initial reconciliation PR `StegVerse-Labs/.github#2001` merged at `e46f1ed7a9882165bdd786f0d715da72abb19ebf`.
+- Same-device substrate-resolution PR `StegVerse-Labs/.github#2006` exact head `3d552302e7803780f206bc9d3bd845b41668924a` passed Organization Control Plane run `35097388236`, Deterministic Repository Suite run `35097388286`, and Heartbeat run `35097388321`, then merged with expected-head protection at `66ea98ac23ebfffebb74c7711edbc6259861cdab`.
 - Coordination issues: `StegVerse-Labs/.github#2000`, `StegVerse-org/StegVerse-SDK#249`.
 - Canonical task record: `data/canonical-task-records/ELAN-NEXT-PHASE-EXPERIMENT-001.json`.
 - Task vector: `control/task-vectors/ELAN-NEXT-PHASE-EXPERIMENT-001.json`.
@@ -75,7 +76,7 @@ This search is evidence of current artifact reachability only. It does not prove
 
 ## Single-device execution substrate resolution
 
-The canonical same-device resident substrate has already been resolved in `docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md` and is reused rather than creating another runtime:
+The canonical same-device resident substrate already resolved in `docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md` is reused rather than creating another runtime:
 
 ```text
 SELECTED: STEG-BROWSER-RETAINED-RESIDENT-NODE
@@ -106,7 +107,7 @@ The selection resolves architecture placement only. Authentic current retained-n
 - predecessor publication task: complete and not reopened;
 - successor Goal Task: canonical main `ACTIVE / UNCLAIMED`;
 - preregistration: merged and frozen before successor execution evidence;
-- execution substrate: `STEG-BROWSER-RETAINED-RESIDENT-NODE` selected, authority effect `NONE`;
+- execution substrate: `STEG-BROWSER-RETAINED-RESIDENT-NODE` selected on canonical main, authority effect `NONE`;
 - current authentic runtime binding for this successor transaction: not observed;
 - accessible successor native artifact: not present in current conversation/library search;
 - exact-byte preservation SHA-256: pending original artifact;
@@ -126,6 +127,10 @@ The selection resolves architecture placement only. Authentic current retained-n
 - `STEGVERSE_GOVERNED_SUCCESSOR_SUBMISSION_AUTHENTICALLY_OBSERVED`
 - `STEGVERSE_CUSTODY_REPLAY_RECONSTRUCTION_EVIDENCE_PRESERVED_WHERE_NATIVE`
 - `CROSS_EVALUATION_BEGINS_ONLY_AFTER_BOTH_INDEPENDENT_CHAINS_EXIST`
+
+## README review
+
+The repository README was reviewed for this bounded coordination/substrate-resolution change. No material function or user-facing execution behavior changed, so no README text mutation is required; the task record records `material_function_change=false` and `readme_updated_in_change_set=false`.
 
 ## No-claim boundary
 
