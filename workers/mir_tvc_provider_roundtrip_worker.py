@@ -136,6 +136,45 @@ def _write_receipt(root: Path, value: dict[str, Any]) -> None:
     path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
+def _task_identity(invocation: object) -> tuple[str | None, int | None]:
+    if not isinstance(invocation, dict):
+        return None, None
+    task = invocation.get("task")
+    if not isinstance(task, dict):
+        return None, None
+    timing = task.get("heartbeat_timing") if isinstance(task.get("heartbeat_timing"), dict) else {}
+    claim_id = task.get("claim_id")
+    fence = timing.get("fencing_token")
+    return (claim_id if isinstance(claim_id, str) and claim_id else None, fence if isinstance(fence, int) else None)
+
+
+def _retain_failure(root: Path, invocation: object, exc: Exception) -> dict[str, Any]:
+    claim_id, fence = _task_identity(invocation)
+    receipt = {
+        "schema": "stegverse.mir-tvc-provider-roundtrip-receipt/v1",
+        "state": "FAIL_CLOSED_EXECUTION_RECEIPT",
+        "goal_task_id": TASK_ID,
+        "request_id": REQUEST_ID,
+        "claim_id": claim_id,
+        "fencing_token": fence,
+        "provider_operation": "SUBMIT_EVENT",
+        "provider_operation_completed": False,
+        "allow_operation_result_observed": False,
+        "use_receipt_observed": False,
+        "failure_type": type(exc).__name__,
+        "failure": str(exc),
+        "retry_requires_fresh_workercoordinator_cycle": True,
+        "intr_admission_required": True,
+        "master_records_custody_required": True,
+        "credential_material_retained": False,
+        "secret_values_exported": False,
+        "protected_values_exposed": False,
+        "authority_effect": "NONE_FAIL_CLOSED_EXECUTION_EVIDENCE_ONLY",
+    }
+    _write_receipt(root, receipt)
+    return receipt
+
+
 def run(invocation: dict[str, Any], *, root: Path) -> dict[str, Any]:
     task = _validate_invocation(invocation)
     tvc_root_raw = (os.getenv("STEGVERSE_TVC_ROOT") or "").strip()
@@ -155,15 +194,23 @@ def run(invocation: dict[str, Any], *, root: Path) -> dict[str, Any]:
         raise RuntimeError("canonical TVC broker use_receipt missing")
     receipt = {
         "schema": "stegverse.mir-tvc-provider-roundtrip-receipt/v1",
+        "state": "COMPLETED_PROVIDER_OPERATION_RECEIPT",
         "goal_task_id": TASK_ID,
         "request_id": REQUEST_ID,
         "claim_id": task.get("claim_id"),
         "fencing_token": task.get("heartbeat_timing", {}).get("fencing_token"),
+        "provider_operation": "SUBMIT_EVENT",
+        "provider_operation_completed": True,
         "provider_operation_result": result,
+        "allow_operation_result_observed": True,
+        "use_receipt_observed": True,
         "ready_state": "READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND",
         "completion_candidate": "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED",
         "intr_admission_required": True,
         "master_records_custody_required": True,
+        "credential_material_retained": False,
+        "secret_values_exported": False,
+        "protected_values_exposed": False,
         "authority_effect": "NONE_EXECUTION_EVIDENCE_ONLY",
     }
     _write_receipt(root, receipt)
@@ -193,12 +240,14 @@ def run(invocation: dict[str, Any], *, root: Path) -> dict[str, Any]:
 
 
 def main() -> int:
+    invocation: object = None
     try:
         invocation = json.load(sys.stdin)
         if not isinstance(invocation, dict):
             raise ValueError("worker invocation must be a JSON object")
         response = run(invocation, root=Path.cwd())
     except Exception as exc:
+        _retain_failure(Path.cwd(), invocation, exc)
         response = {
             "schema": "stegverse.worker-response/v0.1",
             "state": "HANDOFF_READY",
@@ -207,8 +256,8 @@ def main() -> int:
             "expected_next_transition": "MIR_TVC_PROVIDER_OPERATION_RETRY_AFTER_RECORDED_BOUNDARY",
             "expected_next_earliest_epoch": None,
             "expected_next_latest_epoch": None,
-            "checkpoint_ref": None,
-            "evidence_refs": [],
+            "checkpoint_ref": RECEIPT_REF,
+            "evidence_refs": [RECEIPT_REF],
             "cost_observation": {
                 "compute_units": 1,
                 "token_units": 0,
