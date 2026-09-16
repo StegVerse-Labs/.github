@@ -52,18 +52,74 @@ Rules:
 - gaps remain gaps unless a governed historical-proxy method explicitly authorizes reconstruction;
 - historical proxies must remain labeled `DERIVED_HISTORICAL_PROXY`, not direct observation.
 
-## Candidate source families
+## Official-series inventory established in ERL PR #164
 
-Initial public-data families expected to contribute, subject to ERL evidence admission and exact series review:
+Initial official source families have now been inventoried on branch `feat/household-economic-conditions-series-163` at head `432697db308fa183a566f69af88219c910e1912c`.
 
-- BLS earnings and CPI components;
-- BEA personal income, disposable income, PCE, and saving;
-- Federal Reserve household debt-service / financial-obligation series where methodologically appropriate;
-- New York Fed household debt balances and delinquency by debt class;
-- Census / ACS household income, housing-cost and demographic distribution measures;
-- other official sources required for taxes, insurance, housing, food, energy, medical costs, and cohort distribution.
+The inventory records source agency, family, native frequency, unit, population scope, earliest comparable date, page display start, revision semantics, structural breaks, household-state role, limitations, source/methodology references, and admission state.
 
-No source is admitted merely by appearing in this list.
+Current bounded findings:
+
+- BLS CPI-U all-items history extends well before 2000; 2000 is a defensible display floor for the selected series.
+- BLS CES production/nonsupervisory real earnings extend before 2000; gross earnings remain context only and are not net take-home resources.
+- BEA monthly personal-income/disposition series provide pre-2000 history and are revision-sensitive, so source vintage must remain visible.
+- Federal Reserve current-method DSR is available from 2005 forward; the archived 1980-2024 prior-method series is a separate methodology segment and must not be silently spliced.
+- New York Fed CCP household-debt reporting has main public continuity from 2003 with separately supplied 1999-2003 history; student-loan reporting is reliable from 2003.
+- ACS standard 1-year comparisons begin in 2005 for this lane; the 2020 experimental 1-year release is noncomparable, and Census 2000 comparison requires explicit table/universe/question review.
+
+Source artifact: `research-data/household-economic-conditions/official-series-inventory.v1.json`.
+
+## Governed ERL output contract implemented in PR #164
+
+ERL PR #164 also introduces:
+
+- `schemas/household-economic-conditions-output.schema.json`;
+- `fixtures/household-economic-conditions/fail-closed.fixture.json`;
+- `docs/HOUSEHOLD_ECONOMIC_CONDITIONS_SITE_MIRROR_HANDOFF.md`.
+
+The schema requires evidence state, freshness, the ten household-state components, source-series observations, earliest comparable dates, vintage/revision metadata, comparison mode, structural breaks, interpretation boundaries, and explicit `public_activation_authorized` state.
+
+The fixture is UI-only. It carries `evidence_state=FIXTURE_ONLY`, contains illustrative normalized-index values only, and sets `public_activation_authorized=false`.
+
+ERL exact-head validation evidence:
+
+- PR: `StegVerse-Labs/Executive_Rhetoric_Ledger#164`;
+- head: `432697db308fa183a566f69af88219c910e1912c`;
+- `Validate Ledger Schemas` run `35162542553`: `SUCCESS`.
+
+No live source binding, deployment, or public activation is claimed from this validation.
+
+## Site page shell implemented in PR #1369
+
+Site branch `feat/household-economic-conditions-site-1368` now contains:
+
+- `Household-Economic-Conditions.html`;
+- `data/household-economic-conditions.fixture.json`;
+- `docs/HOUSEHOLD_ECONOMIC_CONDITIONS_SITE_MIRROR_HANDOFF.md`;
+- `data/session-work-claims.d/site-household-economic-conditions-1368.json`.
+
+The page shell provides:
+
+- current-state cards for the ten required household components;
+- `1Y`, `5Y`, `10Y`, `2000→Now`, and `Max` controls;
+- normalized-index trajectory comparison;
+- absolute-value mode that refuses mixed-unit overlays;
+- visible Federal Reserve DSR, New York Fed CCP, and ACS methodology/coverage boundaries;
+- explicit interpretation prohibitions;
+- fail-closed fixture/public-activation state.
+
+The first Site validation attempt failed because the branch had no exact active pre-work claim. That condition was repaired by adding the bounded session-work claim fragment. No application or authority semantics were changed by that repair.
+
+Current Site exact-head evidence:
+
+- PR: `StegVerse-Labs/Site#1369`;
+- head: `fe9df5aabd715c0957e34db5d37665a1e7f1e417`;
+- Site Handoff Orchestrator run `35162631957`: `SUCCESS`;
+- Ecosystem Heartbeat Orchestration run `35162632000`: `SUCCESS`;
+- Node IndexedDB Schema Migration run `35162631871`: `SUCCESS`;
+- Site Bootstrap Validate run `35162631877`: `SUCCESS`.
+
+No deployment or served-body/public activation is claimed from these validations.
 
 ## Public page behavior
 
@@ -95,34 +151,27 @@ Interpretation section:
 
 ## Existing Site relationship
 
-`Physical-Economics.html` already exists and remains the broader report-request / evidence-bounded presentation surface. The new page should not duplicate its report engine. The economic-conditions page should consume the same governed ERL semantics for a persistent current-state view and may link into Physical Economics for deeper question-specific reports.
-
-## Implementation sequence
-
-1. Define the ERL historical-comparability / household-state output contract.
-2. Identify each source series, native frequency, earliest comparable date, revisions, and structural breaks.
-3. Implement deterministic normalization / index-mode rules.
-4. Build Site page shell and graph against fixtures only.
-5. Bind the page to governed ERL output.
-6. Validate fail-closed handling for missing, stale, incompatible, or ungoverned data.
-7. Validate mobile Safari / current-iPhone behavior.
-8. Merge only after exact-head validation.
-9. Public activation requires authentic governed output and served-body verification; source merge alone is insufficient.
+`Physical-Economics.html` already exists and remains the broader report-request / evidence-bounded presentation surface. The new page does not duplicate its report engine. The economic-conditions page is a persistent current-state consumer and may link into Physical Economics for deeper question-specific reports.
 
 ## Current state
 
-- canonical Goal Task record: PRESENT
+- canonical Goal Task record: PRESENT / ACTIVE
 - coordination issue: OPEN
 - ERL issue: OPEN
 - Site issue: OPEN
-- household/economic-distribution semantic parent: PRESENT
-- existing Physical Economics Site surface: PRESENT
-- historical comparability output contract: NOT YET IMPLEMENTED
+- ERL official-series inventory: IMPLEMENTED ON PR #164 / VALIDATED
+- historical comparability output schema: IMPLEMENTED ON PR #164 / VALIDATED
+- ERL fail-closed fixture: IMPLEMENTED ON PR #164 / VALIDATED
+- Site page shell: IMPLEMENTED ON PR #1369 / VALIDATED
+- Site session work claim: IMPLEMENTED / ORCHESTRATION VALIDATED
+- README reconciliation in ERL/Site branches: PENDING
+- exact official agency-series identifier bindings: PENDING
+- automated official-data acquisition: PENDING
 - real-time household-state endpoint/output: NOT YET IMPLEMENTED
-- Site graph/page implementation: NOT YET IMPLEMENTED
 - governed live-data binding: NOT YET IMPLEMENTED
+- current-iPhone Safari validation: PENDING
 - public activation: NOT CLAIMED
 
 ## Next work
 
-Continue without human action by inventorying the relevant official series and their comparability windows, then implement the output contract and Site page shell in parallel while preserving the fail-closed boundary.
+Keep both implementation PRs open until repository README reconciliation is included. Then re-run exact-head validation, merge only with expected-head protection when all applicable gates remain green, bind exact source-series identifiers and deterministic acquisition/normalization, and connect Site only to authentic governed ERL output. Public activation remains separately gated on fresh governed output plus served-body verification.
