@@ -60,7 +60,9 @@
   ],
   "readme_impact": {
     "material_function_change": false,
-    "readme_updated_in_change_set": true,
-    "readme_path": "README.md"
+    "readme_updated_in_change_set": false,
+    "readme_path": "README.md",
+    "reviewed": true,
+    "reason": "Research/evidence coordination registration does not change repository function; canonical registry and mirror handoff carry task state."
   }
 }
