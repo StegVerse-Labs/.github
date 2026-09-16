@@ -3,7 +3,7 @@
 Updated: 2026-09-16
 Goal Task ID: `MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001`
 COSV ID: `50000000100000`
-Status: `ACTIVE / V0.3 FREEZE ACCEPTED BY BOTH SIDES / REFERENCE ARCHITECTURE DRAFT V0.2 MATERIALIZED / COUNTERPART EVIDENCE-SEAM INPUT PENDING`
+Status: `ACTIVE / V0.3 FREEZE ACCEPTED BY BOTH SIDES / REFERENCE ARCHITECTURE DRAFT V0.2 MATERIALIZED / PROVEN SV002 ROUTE DUPLICATION ORDER RECONCILED / COUNTERPART EVIDENCE-SEAM INPUT PENDING`
 
 ## Canonical reconciliation
 
@@ -36,18 +36,7 @@ MIR/Richard leads the evidence-custody/reconstruction seam and its concrete mini
 
 Draft v0.2 is materialized on canonical main. It is **not frozen** and does not alter frozen v0.3.
 
-It now defines:
-
-1. a non-linear six-corner authority graph for governance/policy, admission/state transition, execution, credential/provider authority, evidence custody/reconstruction, and observability;
-2. a common receipt envelope with explicit `proof_scope` and `proof_ceiling` semantics;
-3. minimum seam-specific receipt fields for all six corners;
-4. twelve prohibited authority collapses;
-5. the invariant `SEAM_CONFORMANCE != RUNTIME_CHAIN_PROOF`;
-6. a six-corner conformance matrix;
-7. fail-closed minimum negative tests for each corner;
-8. runtime-chain proof composition rules requiring authentic mutually consistent records rather than inference from one authority's success;
-9. evidence-status discipline for `VERIFIED`, `COUNTERPART_REPORTED`, `NOT_REQUESTED`, `UNAVAILABLE`, and `PENDING`;
-10. an insurability/governability interpretation that provides evidence properties for external evaluation without claiming that any implementation is itself insurable.
+It defines the non-linear six-corner authority graph, common receipt envelope with proof-scope/proof-ceiling semantics, per-corner receipt minima, prohibited authority collapses, fail-closed negative tests, runtime-proof composition, evidence-status discipline, and the invariant `SEAM_CONFORMANCE != RUNTIME_CHAIN_PROOF`.
 
 ## Required architecture invariant
 
@@ -56,6 +45,33 @@ A clean interface or seam-conformance result is evidence about that seam, never 
 The reverse is also explicit: evidence custody cannot infer missing upstream authorization merely because an event record exists.
 
 Evidence custody/reconstruction therefore remains an independent corner. It must not collapse into governance/policy, admission/state-transition, execution, credential/provider authority, or observability.
+
+## Proven-route duplication correction
+
+The MIR transport work was rechecked against StegVerse-002 evidence. The successful SV002 route is already established as reusable engineering evidence:
+
+```text
+registered StegVerse Node
+-> Interlock
+-> InTr materialization
+-> bounded invocation lease
+-> EVENT_EPHEMERAL runtime
+-> execution-time runtime identity
+-> authority-owned continuation
+-> independent Master Records reconstruction
+```
+
+The canonical transport successor `MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001` is now explicitly ordered to **duplicate that proven route first, then add only the current MIR-specific bindings and new evidence requirements**. Generic SV002 Node/Interlock/InTr/lease/runtime mechanics are no longer permitted as a fresh re-proof gate before the MIR invocation.
+
+Canonical implementation references:
+
+- `StegVerse-Labs/Site/data/mir-roundtrip-egress-sv002-route-binding.v1.json`
+- `StegVerse-Labs/Site/docs/MIR_ROUNDTRIP_EGRESS_AUTHENTICITY_MIRROR_HANDOFF.md`
+- `StegVerse-Labs/.github/data/canonical-task-records/MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001.json`
+
+Historical SV002 receipts remain evidence of the historical successful route only and do not authorize the current event. Fresh evidence remains required for the current Goal/COSV binding, MIR destination profile, final StegVerse-side egress, Interlock/InTr egress, MIR MIRROR far-side transition, destination evidence, and Master Records reconstruction of the current final exit transition. Only after that one-way duplication is observed do governed-return and round-trip-completion requirements apply.
+
+No MIR-specific runtime completion is claimed by the binding/source correction itself.
 
 ## Counterpart claim requiring evidence before promotion
 
@@ -72,4 +88,4 @@ No new MIR evidence-custody seam artifact or independently checkable Bitcoin-anc
 
 ## Next action
 
-Deliver/review draft v0.2 with MIR and obtain Richard's evidence-custody/reconstruction first pass, concrete minimum evidence receipts, proposed prohibited-collapse changes, and one checkable Bitcoin anchor/inclusion artifact if that claim is to be promoted. Then reconcile those artifacts against frozen v0.3 and the existing `mir.leaf.v3` fixture, preserve every unobserved predicate as unverified, and only then prepare a jointly reviewable next-freeze candidate.
+Execute the canonical duplicate-first MIR transport sequence using the established SV002 route mechanics and obtain fresh current-invocation MIR destination/Master Records evidence without re-proving the generic substrate. In parallel, obtain Richard's evidence-custody/reconstruction first pass, concrete minimum evidence receipts, proposed prohibited-collapse changes, and one checkable Bitcoin anchor/inclusion artifact if that claim is to be promoted. Preserve every unobserved predicate as unverified and only prepare a jointly reviewable next-freeze candidate after the counterpart artifacts and current MIR-bound runtime evidence are concrete.
