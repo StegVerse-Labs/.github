@@ -4,185 +4,71 @@
   "correlation_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
   "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
   "parent_task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
-  "goal": "Execute and evidence the single manifest-defined StegBrowser invocation through the validated StegVerse-002 Node-bound Universal Interlock/InTr materialization architecture, bounded EVENT_EPHEMERAL StegOS lease/runtime, WorkerCoordinator claim/fence, exact governed ingress, and the declared two governed round trips.",
-  "coordination_state": "ACTIVE",
-  "checkout_state": "CHECKED_OUT",
+  "goal": "Execute and evidence the single manifest-defined StegBrowser invocation through the validated StegVerse-002 Node-bound Universal Interlock/InTr materialization architecture, bounded EVENT_EPHEMERAL StegOS lease/runtime, WorkerCoordinator claim/fence, exact governed ingress, and the declared governed round trips.",
+  "coordination_state": "RETIRED",
+  "checkout_state": "DECOMPOSED_AT_PROMPT_LIMIT",
+  "status_reason": "GOAL_PROMPT_COUNT_20_REACHED_WITH_AUTHENTIC_A1_A4_AND_ROUNDTRIP_EVIDENCE_ABSENT; REMAINING WORK DECOMPOSED INTO SEPARATE CANONICAL SUCCESSORS",
   "cosv_task_vector": "40000100100000",
   "handoff_ref": "docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md",
-  "a1_a4_child_task_id": "STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001",
-  "operation_lineage_task_id": "STEG-BROWSER-RUNTIME-CONSUMPTION-001",
-  "current_exact_defect": "AUTHENTIC_STEGBROWSER_UNIVERSAL_INTR_A1_A4_EXECUTION_NOT_YET_OBSERVED",
-  "runtime_requirements": {
-    "selected_substrate": "ADMITTED-EPHEMERAL-STEGOS-NODE",
-    "standing_runtime_required": false,
-    "external_runtime_connection_required": false,
-    "external_device_required": false,
-    "second_user_operated_device_required": false,
-    "hosted_carrier_required": false,
-    "registered_node_binding_required": true,
-    "node_interlock_binding_required_before_lease": true
+  "prompt_budget": {
+    "goal_prompt_count": "20/20",
+    "terminal_prompt_processed": true,
+    "further_parent_prompts_allowed": false
   },
-  "execution_substrate_resolution": {
-    "schema": "stegverse.execution-substrate-resolution/v1",
-    "review_order": [
-      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
-      "STEGOS-CURRENT-DEVICE-NODE",
-      "STEG-BROWSER-EPHEMERAL-LEASE",
-      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
-      "ADMITTED-EPHEMERAL-STEGOS-NODE",
-      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
-    ],
-    "reviews": [
-      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":[]},
-      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"SUITABLE","limitation_class":"ARCHITECTURAL","evidence_refs":["StegVerse-Labs/StegOS:stegos/network_manifold.py","docs/SV002_EVENT_EPHEMERAL_OBSERVATION_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"SUITABLE","limitation_class":"NONE","evidence_refs":["workers/sv002_intr_materialization_consumer.py","scripts/run_stegbrowser_runtime_consumption_reusable.legacy.py"]},
-      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":[]},
-      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"SELECTED","limitation_class":"NONE","evidence_refs":["workers/universal_intr_profiled_ingress.py","workers/stegbrowser_intr_materialization_ingress.py","workers/stegbrowser_intr_materialization_consumer.py","scripts/run_stegbrowser_universal_intr_materialization.py","scripts/run_stegbrowser_manifest_bound_runtime.py","workers/stegbrowser_manifest_intr_ingress.py"]},
-      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":[]}
-    ],
-    "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
-    "external_device_required": false,
-    "second_user_operated_device_allowed": false,
-    "authority_effect": "NONE"
-  },
-  "canonical_node_binding": {
-    "selector": "CANONICAL_REGISTERED_STEGVERSE_NODE_BINDING",
-    "selector_role": "SYMBOLIC_SELECTION_ONLY",
-    "concrete_path_parameter": "node_genesis_receipt",
-    "concrete_path_environment": "STEGVERSE_NODE_GENESIS_RECEIPT",
-    "receipt_schema": "stegos.node_handoff_receipt.v1",
-    "receipt_number": 1,
-    "plain_sovereign_node_declaration_may_be_promoted_to_receipt_1": false,
-    "external_runtime_device_host_discovery_allowed": false
-  },
-  "sv002_runtime_precedent": {
-    "source_documentation": "docs/SV002_EVENT_EPHEMERAL_OBSERVATION_MIRROR_HANDOFF.md",
-    "shared_intr_implementation": "workers/universal_intr_profiled_ingress.py",
-    "event_ephemeral_consumer_implementation": "workers/sv002_intr_materialization_consumer.py",
-    "event_ephemeral_bridge_implementation": "workers/sv002_observation_esrl_runtime_bridge.py",
-    "validated_path": "NODE_TO_UNIVERSAL_INTR_MATERIALIZATION_TO_EVENT_EPHEMERAL_TO_WORKERCOORDINATOR",
-    "always_on_receiver_required": false,
-    "second_user_machine_required": false,
-    "materialization_request_grants_execution_authority": false,
-    "ingress_grants_execution_authority": false,
-    "workercoordinator_remains_claim_fence_authority": true,
-    "classification": "AUTHORITATIVE_ARCHITECTURAL_PRECEDENT_AND_IMPLEMENTATION_SOURCE"
-  },
-  "validated_site_reusable_baseline": {
-    "repository": "StegVerse-Labs/Site",
-    "site_pr": 1354,
-    "validated_head": "0ae6bbd252741599c7cab06746f274b901d2e455",
-    "focused_validation_run": 34993797222,
-    "site_bootstrap_run": 34993797221,
-    "site_handoff_orchestrator_run": 34993797281,
-    "site_heartbeat_run": 34993797195,
-    "merge_sha": "a8846026bc80b9890c07ad72dda1350ce7f3c0d4",
-    "reuse_rule": "PRESERVE_RUNTIME_MECHANICS_CHANGE_ONLY_CURRENT_STEGBROWSER_INVOCATION_BINDINGS",
-    "runtime_authority_effect": "NONE_FROM_SOURCE_OR_CI"
-  },
-  "implementation_trace": {
-    "A0_manifest_binding": "scripts/run_stegbrowser_manifest_bound_runtime.py",
-    "A1_node_trigger_builder": "scripts/run_stegbrowser_universal_intr_materialization.py",
-    "A1_universal_intr_transport": "StegVerse-Labs/StegOS:stegos/universal_intr_transport.py",
-    "A1_universal_intr_materialization": "StegVerse-Labs/StegOS:stegos/universal_intr_materialization.py",
-    "A2_shared_materialization_ingress": "workers/universal_intr_profiled_ingress.py + workers/stegbrowser_intr_materialization_ingress.py",
-    "A2_write_once_ingress_receipt_schema": "stegverse.stegbrowser-intr-materialization-ingress/v1",
-    "A2_non_authorizing_consumer": "workers/stegbrowser_intr_materialization_consumer.py",
-    "A2.1_bounded_lease_request": "scripts/run_stegbrowser_runtime_consumption_reusable.py -> existing StegOS ephemeral runtime lease",
-    "A2.2_event_ephemeral_runtime_materialization": "existing StegOS SovereignLocalEventRuntimeAdapter / EVENT_EPHEMERAL",
-    "A3_workercoordinator_claim_fence": "existing WorkerCoordinator targeted execution",
-    "A4_exact_packet_verification": "workers/stegbrowser_manifest_intr_ingress.py",
-    "stegbrowser_downstream_runner": "scripts/run_stegbrowser_manifest_bound_runtime.py",
-    "resident_request_wrapper_is_runtime_prerequisite": false,
-    "control_plane_source_package_relay_is_runtime_prerequisite": false,
-    "external_host_discovery_is_runtime_prerequisite": false,
-    "source_validation_state": "STEGBROWSER_UNIVERSAL_INTR_BINDING_MERGED_VALIDATED_AND_SV002_SITE_BASELINE_REUSE_MERGED_VALIDATED"
-  },
-  "source_validation": {
-    "node_interlock_pr": 1923,
-    "node_interlock_validated_head": "f7b6cb86b9fff9fbeb1817e45920acc2effc200f",
-    "node_interlock_merge_sha": "0098bc793865fd1db835c400b502dad5f8a5e32d",
-    "a1_a4_reconciliation_pr": 1929,
-    "a1_a4_reconciliation_validated_head": "60e7246e326d32d17525d83783c38c5e21528ff0",
-    "a1_a4_reconciliation_merge_sha": "a4c2d173aad04219795e44d2051703accd404c9c",
-    "native_source_package_pr": 1941,
-    "native_source_package_merge_sha": "8eb3afd480b9670ab9e8c44c01825a2934d04289",
-    "native_source_package_role_after_sv002_reconciliation": "HISTORICAL_SOURCE_LOCALIZATION_REPAIR_NON_GATING_FOR_INVOCATION_MATERIALIZATION",
-    "stegbrowser_universal_intr_binding_issue": 1952,
-    "stegbrowser_universal_intr_binding_pr": 1955,
-    "stegbrowser_universal_intr_binding_validated_head": "2d3b2e8292397b80285078ad4130b0c5cfebfac0",
-    "stegbrowser_universal_intr_binding_merge_sha": "6a489ad5bff790fd4732005926d5588dd330ef13",
-    "organization_control_run": 34991794548,
-    "deterministic_suite_run": 34991794526,
-    "heartbeat_validation_run": 34991794549,
-    "all_required_binding_lanes_passed": true,
-    "stegbrowser_reusable_baseline_pr": 1966,
-    "stegbrowser_reusable_baseline_validated_head": "6edba060692e275361f9d8be8d17b5ad21158711",
-    "stegbrowser_reusable_baseline_merge_sha": "94b8804687baed9251b4e6ecbb640f14c7259dc6",
-    "stegbrowser_reusable_baseline_organization_control_run": 35092566189,
-    "stegbrowser_reusable_baseline_deterministic_suite_run": 35092566222,
-    "stegbrowser_reusable_baseline_heartbeat_run": 35092566216,
-    "all_required_reusable_baseline_lanes_passed": true,
-    "runtime_authority_effect": "NONE"
-  },
-  "one_shot_native_test": {
+  "immutable_invocation": {
     "canonical_request_commit": "19935454cd8c68000b3a0fd70478b0d89d5cd622",
     "invocation_request_nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
     "requested_invocation_count": 1,
     "second_request_allowed": false,
     "request_mutation_allowed": false,
-    "resident_request_consumption_is_prerequisite": false,
-    "control_plane_source_package_is_prerequisite": false
+    "destination": "StegBrowser:ManifestInvocation"
   },
-  "native_source_localization": {
-    "reusable_task_id": "RT-CONTROL-PLANE-SOURCE-PACKAGE-001",
-    "classification": "NON_GATING_SOURCE_LOCALIZATION_CAPABILITY",
-    "source_package_relay_required_before_node_intr_materialization": false,
-    "authority_effect": "NONE_SOURCE_PACKAGE_ONLY"
+  "source_completion": {
+    "single_canonical_universal_intr_binding_merged_validated": true,
+    "sv002_site_baseline_and_stegbrowser_adaptation_merged_validated": true,
+    "current_iphone_binding_repair_merged_validated": true,
+    "site_current_iphone_repair_pr": 1360,
+    "site_current_iphone_repair_merge_sha": "76af62f2befdfa7034d3dd00891bfe60a0990abb",
+    "site_handoff_reconciliation_pr": 1361,
+    "site_handoff_reconciliation_merge_sha": "7c483335f259d5eacf9a55dde923c0c4fefd660e",
+    "github_handoff_reconciliation_pr": 2002,
+    "github_handoff_reconciliation_merge_sha": "7d04c6a789d2d6f05afae0c8e766761777ebc224",
+    "github_runtime_authority": "NONE"
   },
-  "native_a1_observation": {
-    "source": "MERGED_STEGBROWSER_BINDING_TO_VALIDATED_STEGVERSE_002_UNIVERSAL_INTR_IMPLEMENTATION_WITH_VALIDATED_SITE_REUSE_BASELINE",
-    "required_next_source_change": null,
-    "required_next_runtime_transition": "EXECUTE_UNCHANGED_NONCE_THROUGH_MERGED_NODE_BOUND_UNIVERSAL_INTR_PATH_AND_RETAIN_A1_A4_RECEIPTS",
-    "external_runtime_device_host_discovery_allowed": false,
-    "second_user_operated_device_required": false,
-    "current_authentic_transition_receipt_observed": false,
-    "latest_bounded_observation": "NO_AUTHORIZED_SOVEREIGN_EXECUTION_SURFACE_REACHABLE_AND_NO_SAME_INVOCATION_RUNTIME_RECEIPTS_FOUND_2026_09_16",
-    "authority_effect": "NONE_OBSERVATION_ONLY"
-  },
-  "completion": {
-    "source_merged_validated": true,
-    "a1_a4_duplicate_representation_reconciled": true,
-    "sv002_runtime_source_identified": true,
-    "sv002_site_reusable_baseline_validated": true,
-    "control_plane_source_package_is_non_gating": true,
-    "stegbrowser_universal_intr_materialization_binding_complete": true,
-    "runtime_connection_transition_observed": false,
+  "authentic_runtime_completion": {
     "registered_stegverse_node_bound_to_invocation": false,
     "interlock_bound_to_node_and_manifest": false,
     "intr_materialization_admitted": false,
-    "invocation_scoped_lease_bound_to_node_interlock": false,
-    "invocation_owned_ephemeral_stegos_materialized": false,
+    "invocation_scoped_lease_established": false,
+    "event_ephemeral_runtime_materialized": false,
     "execution_time_runtime_identity_bound": false,
     "workercoordinator_claim_fence_observed": false,
     "organization_local_intr_ingress_receipt_verified": false,
     "authentic_intr_ingress_observed": false,
-    "round_trip_1_started": false
+    "a1_a4_complete": false,
+    "round_trip_1_started": false,
+    "round_trip_2_started": false
   },
-  "issue_1918": {
-    "state": "CLOSED",
-    "state_reason": "GENERIC_PROCESS_HOST_ASSUMPTION_INVALIDATED_BY_STEGVERSE_002_EVENT_EPHEMERAL_IMPLEMENTATION",
-    "reopen_required": false,
-    "runtime_evidence_pending_is_separate_from_source_defect": true
+  "decomposition": {
+    "required": true,
+    "reason": "AUTHENTIC_RUNTIME_AND_ROUNDTRIP_EVIDENCE_ABSENT_AT_GOAL_PROMPT_LIMIT",
+    "successor_task_ids": [
+      "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001",
+      "STEG-BROWSER-GOVERNED-ROUNDTRIP-001"
+    ],
+    "active_successor_task_id": "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001",
+    "active_successor_handoff": "docs/STEGBROWSER_CURRENT_IPHONE_A1_A4_EXECUTION_MIRROR_HANDOFF.md",
+    "dependent_successor_task_id": "STEG-BROWSER-GOVERNED-ROUNDTRIP-001",
+    "dependent_successor_handoff": "docs/STEGBROWSER_GOVERNED_ROUNDTRIP_MIRROR_HANDOFF.md",
+    "first_unresolved_successor_predicate": "REGISTERED_STEGVERSE_NODE_BOUND_TO_INVOCATION"
   },
+  "allowed_next_transitions": [],
   "authority_model": {
     "node_authority_effect": "CONTINUITY_ADMISSION_ANCHOR_ONLY",
-    "worker_claim_authority": "WORKERCOORDINATOR",
     "interlock_intr_transition_authority": true,
+    "worker_claim_authority": "WORKERCOORDINATOR",
     "credential_authority": "TV/TVC",
     "github_runtime_authority": "NONE",
-    "materialization_request_execution_authority": "NONE",
-    "materialization_ingress_execution_authority": "NONE",
-    "stegbrowser_materialization_consumer_authority_effect": "NONE_CONSUMER_DISPATCH_ONLY"
+    "second_user_operated_device_required": false
   }
 }
