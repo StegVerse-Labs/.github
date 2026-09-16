@@ -32,6 +32,23 @@
     "second_user_operated_device_required": false,
     "runtime_authority_effect_of_source_or_ci": "NONE"
   },
+  "source_progress": {
+    "current_iphone_binding_pr": 1360,
+    "current_iphone_binding_merge_sha": "76af62f2befdfa7034d3dd00891bfe60a0990abb",
+    "event_ephemeral_bridge_pr": 1363,
+    "event_ephemeral_bridge_validated_head": "1e5350aa149ba707e756cd055f7132dadd95735c",
+    "event_ephemeral_bridge_merge_sha": "8b032472d2861458daf2a1278fa3301d9a81a736",
+    "event_ephemeral_bridge_claim_release_pr": 1365,
+    "event_ephemeral_bridge_claim_release_validated_head": "4d26aa8d3f92163e504a8c705b789f836eab84f1",
+    "event_ephemeral_bridge_claim_release_merge_sha": "a24b5bfea8d5ea48409c579fd6af76bc227857be",
+    "duplicate_parallel_pr_closed_unmerged": 1364,
+    "runtime_connection_reconciliation_pr": 2017,
+    "runtime_connection_reconciliation_merge_sha": "369c6ba4bc78a64a330c89af9b66d4e233e1fd09",
+    "source_capability_through_event_ephemeral_runtime_ready": true,
+    "source_capability_through_workercoordinator_a4": true,
+    "authentic_runtime_predicates_promoted_from_source": false,
+    "github_runtime_authority": "NONE"
+  },
   "required_chain": [
     "REGISTERED_NODE_RECEIPT_1",
     "DETERMINISTIC_UNCHANGED_NONCE_NODE_OUTBOX_ENTRY",
@@ -67,6 +84,8 @@
     "node_authority_effect": "CONTINUITY_ADMISSION_ANCHOR_ONLY",
     "interlock_intr_transition_authority": true,
     "worker_claim_authority": "WORKERCOORDINATOR",
+    "organization_local_boundary_executor_task_id": "ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001",
+    "a4_validator": "workers/stegbrowser_manifest_intr_ingress.py",
     "credential_authority": "TV/TVC",
     "github_runtime_authority": "NONE",
     "user_device_inspection_authority": "NONE",
