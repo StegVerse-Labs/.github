@@ -14,6 +14,8 @@ COSV source state: `../../control/task-vectors/PAYMENT-PROVIDER-AUTHENTIC-INGRES
 Current authentic state:
 
 - Stripe live GET access is observed, but the account returned no PaymentIntents or Charges in the current read, so there is no authentic completed-payment normalization receipt yet.
+- On 2026-09-16, the connected live `StegVerse.org` account was re-read with `GET /v1/payment_intents?limit=20`; the authentic response again contained an empty `data` list and `has_more: false`. This preserves `stripe_completed_payment_observed=false` and `stripe_authentic_normalization_green=false`.
 - GoDaddy has a merged TV/TVC GET-only `commerce.transaction:read` profile using vault references for the PAT and store identity, but the connected GoDaddy app surface does not expose Payments transactions and no owner transaction has been observed.
+- A GoDaddy Pay Link is setup metadata only. Creating or retaining a validation-purpose Pay Link does not prove a completed payment, authoritative completed-status semantics, or provider-neutral normalization.
 
 The task does not authorize provider writes, payment mutation, entitlement, governance, execution, transport authority, webhook activation, or failover activation. Authentic completed-payment normalization evidence for both providers is required before webhook/failover evaluation can become admissible, unless a canonical evidence-backed limitation changes that predicate.
