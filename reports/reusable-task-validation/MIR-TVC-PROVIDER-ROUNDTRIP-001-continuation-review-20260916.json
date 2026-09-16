@@ -1,0 +1,51 @@
+{
+  "schema": "stegverse.reusable-task-continuation-review/v1",
+  "goal_task_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
+  "cosv_task_vector": "50000000100000",
+  "reviewed_at": "2026-09-16",
+  "finding": "PERSISTENT_CONNECTED_DEVICE_IS_NOT_A_CANONICAL_PREREQUISITE",
+  "prior_continuation_defect": "The continuation instruction treated availability of an authorized remote-device connector as the execution gate even though the registered reusable-task contracts require on-demand bounded automation and ephemeral runners where possible.",
+  "reviewed_reusable_tasks": [
+    "RT-TVC-PROVIDER-OPERATION-BROKER-001",
+    "RT-TVC-PRIMARY-RUNTIME-BINDING-001",
+    "RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001",
+    "RT-INTR-BOUNDARY-ADMISSION-001",
+    "RT-INTR-GOVERNED-TRANSITION-001",
+    "RT-INTR-EVIDENCE-CUSTODY-001"
+  ],
+  "registered_implementation_components": [
+    "TVC-PROVIDER-OPERATION-BROKER-003",
+    "TVC-PRIMARY-RUNTIME-BINDER-005",
+    "TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006",
+    "TVC-CAPABILITY-RUNTIME-002"
+  ],
+  "canonical_automation_contract": {
+    "mode": "TRIGGER_ONCE_ADVANCE_UNTIL_COMPLETION_OR_REAL_BOUNDARY",
+    "trigger_driver": "scripts/trigger_reusable_task.py",
+    "automatic_advancement_required": true,
+    "manual_coordination_between_machine_admissible_internal_steps_required": false,
+    "runner": "EPHEMERAL_WHERE_POSSIBLE",
+    "persistent_user_device_required": false,
+    "duplicate_runtime_allowed": false,
+    "duplicate_scheduler_allowed": false,
+    "github_runtime_authority": "NONE"
+  },
+  "correct_continuation": [
+    "invoke the existing manifest-bound reusable trajectory on demand",
+    "reuse RT-TVC-PRIMARY-RUNTIME-BINDING-001 to verify or rebind only the existing TV/TVC-authorized service when needed",
+    "obtain the current WorkerCoordinator claim/fence at execution time",
+    "consume only MIR-RUN2-EVENT-001 through the existing TV/TVC provider-operation broker",
+    "admit the same result through Interlock/InTr",
+    "carry the same transaction to Master Records custody and reconstruction",
+    "promote AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED only from authentic same-transaction evidence"
+  ],
+  "unchanged_authority": {
+    "work_intent": "CANONICAL_TASK_REGISTRY",
+    "claim_and_fence": "WORKERCOORDINATOR",
+    "transition": "INTERLOCK_INTR",
+    "credentials": "TV/TVC",
+    "custody_and_reconstruction": "MASTER_RECORDS"
+  },
+  "task_state_effect": "NONE_TASK_REMAINS_ACTIVE_CHECKED_OUT_UNTIL_AUTHENTIC_PROVIDER_SESSION_EVIDENCE",
+  "authority_effect": "NONE_REVIEW_AND_ORCHESTRATION_CORRECTION_ONLY"
+}
