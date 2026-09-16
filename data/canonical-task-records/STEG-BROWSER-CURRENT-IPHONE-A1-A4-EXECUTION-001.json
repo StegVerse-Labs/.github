@@ -49,6 +49,31 @@
     "authentic_runtime_predicates_promoted_from_source": false,
     "github_runtime_authority": "NONE"
   },
+  "automatic_reobservation": {
+    "performed_from_canonical_main": "85db6f78003c1e813ac4a34f738285861a552800",
+    "immutable_nonce_reemitted": false,
+    "authority_owned_same_nonce_runtime_receipt_found_in_canonical_repository_custody": false,
+    "runtime_ready_for_workercoordinator_receipt_found": false,
+    "stegbrowser_manifest_intr_ingress_receipt_found": false,
+    "runtime_remediation_boundary_receipt_found": false,
+    "workercoordinator_a3_execution_attempted": false,
+    "a4_execution_attempted": false,
+    "reason_a3_a4_not_attempted": "AUTHENTIC_RUNTIME_READY_FOR_WORKERCOORDINATOR_EVIDENCE_NOT_RETAINED_IN_CANONICAL_CUSTODY",
+    "runtime_predicates_promoted": false,
+    "round_trip_1_entered": false,
+    "authority_effect": "NONE_OBSERVATION_ONLY"
+  },
+  "a3_a4_collision_check": {
+    "parallel_workercoordinator_path_found": false,
+    "generic_sv001_adapter_reused": false,
+    "canonical_workercoordinator_admission_task_id": "ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001",
+    "checkout_policy": "fenced_atomic_checkout",
+    "fresh_claim_fence_required": true,
+    "a4_validator": "workers/stegbrowser_manifest_intr_ingress.py",
+    "targeted_runner": "scripts/refresh_and_execute_resident_task.py",
+    "composition_rule": "The A4 validator emits the exact organization-local packet only after a validated StegBrowser Node/Interlock/lease/runtime binding exists, then invokes the existing organization-local task under fresh WorkerCoordinator admission and verifies the resulting claim/fence and receipt correlation.",
+    "authority_effect": "NONE_SOURCE_COLLISION_CHECK_ONLY"
+  },
   "required_chain": [
     "REGISTERED_NODE_RECEIPT_1",
     "DETERMINISTIC_UNCHANGED_NONCE_NODE_OUTBOX_ENTRY",
