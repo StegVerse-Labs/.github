@@ -64,7 +64,15 @@ def test_exact_stegbrowser_selector_receives_path_bindings_without_new_authority
             only_consumers=("stegbrowser_runtime_connection_ingress",),
         )
         forwarded = captured["env"]
+        command = captured["command"]
         assert isinstance(forwarded, dict)
+        assert isinstance(command, list)
+        assert command[-4:] == [
+            "--source-root",
+            str(ROOT.resolve()),
+            "--runtime-root",
+            str(runtime.resolve()),
+        ]
         assert forwarded["STEGVERSE_NODE_GENESIS_RECEIPT"] == env["STEGVERSE_NODE_GENESIS_RECEIPT"]
         assert forwarded["STEGVERSE_STEGOS_SOURCE_ROOT"] == env["STEGVERSE_STEGOS_SOURCE_ROOT"]
         assert forwarded["STEGVERSE_EPHEMERAL_RUNTIME_BASE"] == env["STEGVERSE_EPHEMERAL_RUNTIME_BASE"]
