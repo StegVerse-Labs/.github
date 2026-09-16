@@ -4,7 +4,7 @@ Updated: 2026-09-16
 Repository: `StegVerse-Labs/.github`
 Goal Task ID: `STEGVERSE-BUSINESS-OPPORTUNITY-ENGINE-PILOT-001`
 COSV vector: `10100000110000`
-Status: `ACTIVE / FULL50 EVIDENCE UPGRADE 004 MERGED_VALIDATED / PRIOR SIX-CANDIDATE STABILITY SET FALSIFIED / FIVE CONSERVATIVE STABLE_TOP10 / NO STABLE_TOP1 / DECISION_GRADE_FALSE / GOVERNED RUNTIME ADMISSION UNOBSERVED`
+Status: `ACTIVE / FULL50 EVIDENCE UPGRADE 005 MERGED_VALIDATED / CURE PROVIDER LOWER BOUND 3-4 / FIVE CONSERVATIVE STABLE_TOP10 / NO STABLE_TOP1 / DECISION_GRADE_FALSE / GOVERNED RUNTIME ADMISSION UNOBSERVED`
 
 ## Frozen market and authority boundary
 
@@ -12,33 +12,17 @@ Market remains `TEMPLE-TX-DENTAL-35MI-2026-09-15`: Temple center; 35-mile radius
 
 All artifacts remain `DRAFT_ONLY / OUTREACH_DISABLED`. No authentic WorkerCoordinator claim/fence, Interlock/InTr admission receipt, governed resident-runtime receipt, provider credential operation, recipient/contact enrichment, message, call, outreach receipt, or economic outcome was observed or authorized.
 
-## Evidence-upgrade lineage
+## Evidence-upgrade 005
 
-Evidence upgrades 001–003 remain validated ordered overlays. Upgrade 003 retained the six-candidate conservative `STABLE_TOP10`, `STABLE_TOP1=NONE`, and lower-bound-only provider evidence for Lone Star Belton and Cure Dental Belton.
+Evidence upgrades 001–004 remain validated ordered overlays. Upgrade 005 introduced no methodology change and reuses the preregistered `BOUNDED_PUBLIC_LOCATION_ROSTER_LOWER_BOUND` rule.
 
-Evidence upgrade 004 run `TEMPLE-TX-DENTAL-35MI-2026-09-15-FULL50-EVIDENCE-UPGRADE-004` introduced no methodology change. `FULL50_EVIDENCE_UPGRADE_004_DECLARATION.md` freezes the existing 50 identities, S1/S2/S3 formulas, stability predicates, evidence-state rules, slot/demand thresholds, and authority boundaries.
+One stronger attributable observation was admitted: a 2026 Superior HealthPlan directory lists Rohit Chaudhari DDS, Hunter Johnson DDS, and Tejas Patel DMD at Cure Dental Belton's exact 2511 N Main St Ste 101 address. Cure Dental's provider interval tightens only from 2–4 to 3–4. Exact-provider status remains prohibited because no complete current location roster was observed and cross-source identities remain inconsistent. Existing exact 44 weekly hours remain unchanged.
 
-## Tranche-004 evidence and rejection audit
+The rejection/audit ledger preserves six non-promotions: Lone Star network/provider associations remain insufficient for a complete current office roster; Revital remains 28–48 because Wednesday/Saturday are still `By Appointment Only`; Revital booking controls remain preferred-date/time request fields rather than concrete unauthenticated availability; Winegar remains under the existing 44–48 conflicting-schedules envelope; Lone Star's NexHealth entry point exposes no crawlable concrete dates/times; and no attributable numeric practice-specific prospective-demand observation with a defined period or denominator was found.
 
-One stronger attributable observation was admitted:
+## Deterministic result and source validation
 
-- `BELL-DENTAL-016` Lone Star Pediatric Dental & Braces - Belton: DentaQuest's exact-address Central Texas directory publishes Monday-Friday 8:00–5:00 plus Saturday 8:00–12:00, totaling 49 weekly hours. Existing attributable 41- and 45-hour schedules remain. Under the unchanged `BOUNDED_PUBLIC_CONFLICTING_SCHEDULES` rule, the retained interval widens from 41–45 to 41–49. Provider bounds remain 2–4 and lower-bound-only.
-
-`full50-evidence-upgrade-004-rejections.csv` preserves unresolved evidence without promotion:
-
-- a large D4C/Superior network provider list associated with 412 Lake Rd is rejected as a complete location roster because network/entity association is not office-presence proof;
-- Cure Dental's official provider identities remain inconsistent with insurer-directory identities, so its provider count remains bounded rather than exact;
-- Revital Dental remains 28–48 weekly hours because Wednesday/Saturday are still `By Appointment Only`; its booking surfaces require personal/contact data plus preferred date/time and do not expose reproducible unauthenticated concrete slots;
-- Winegar Dental remains a current internal 44–48 official-site schedule conflict;
-- no attributable numeric practice-specific prospective-demand observation with a defined period or denominator was found.
-
-## Deterministic falsification and current stability
-
-Initial upgrade-004 exact-head validation run `35143645272` on `fbc43c03b5f1dfe9d6048ab7b450b20cef0c267a` failed only because deterministic recomputation falsified the projected six-candidate stable set after Lone Star Belton's upper hours bound widened to 49.
-
-No model, methodology, or evidence rule was changed after observing that failure. Only the result projection and handoff were reconciled.
-
-Fresh exact-head validation run `35143729210` passed on `e3bbf1b38e4e836d082fa5008f010bf5f2aba618` with the current conservative `STABLE_TOP10` set of five identities:
+The unchanged frozen model retains five conservative `STABLE_TOP10` identities:
 
 - `BELL-DENTAL-037` Cove Choice Dental
 - `BELL-DENTAL-031` Carus Dental Killeen
@@ -46,28 +30,22 @@ Fresh exact-head validation run `35143729210` passed on `e3bbf1b38e4e836d082fa50
 - `BELL-DENTAL-040` Cove Pediatric Dentistry & Orthodontics
 - `BELL-DENTAL-010` Temple Choice Dental
 
-`BELL-DENTAL-024` Belton Family Dental no longer clears the frozen lower-bound-versus-11th-competing-upper-bound dominance predicate and is therefore falsified from the prior conservative stable set.
+`STABLE_TOP1 = NONE`. `decision_grade=false` remains mandatory.
 
-`STABLE_TOP1 = NONE`. `decision_grade=false` remains mandatory because measured business-specific demand remains unobserved.
+StegBusiness-Ops PR #44 exact head `0e2c8db306f05de1a22a98c8a53925e5a8392e9a` passed run `35162320150`, merged with expected-head protection as `0aa08217eda5bc9e84ec21ef34b9352ac0ae6154`, and merged-main validation run `35162356751` passed.
 
-## Source validation evidence
-
-StegBusiness-Ops PR #42 merged with expected-head protection as `fde60bb692ef104f95e90195d8cf0b918d7d91a7` after exact-head run `35143729210` passed on `e3bbf1b38e4e836d082fa5008f010bf5f2aba618`. Merged-main run `35143813338` completed successfully on that exact merge SHA.
-
-Source-handoff reconciliation PR #43 exact head `7f091957ccacdb14004baaf7648186285362be95` passed run `35143963287`, merged as `8285071cf655ccac0a64798c0d9b9e003de38c65`, and merged-main validation run `35144012400` passed.
+Source-handoff reconciliation PR #45 exact head `127afbfd63ee3828d1ef537a2af9024fa451d0b0` passed run `35162461100`, merged as `60ebfeb3902510833894a66b3e47c3f24fc48b62`, and merged-main validation run `35162488591` passed.
 
 ## Current truth
 
 - Goal Task: `ACTIVE`.
-- Goal Prompt Count: 13.
+- Goal Prompt Count: 14.
 - frozen market identities: 50 / unchanged.
-- review-count/rating replacement influence: NONE.
-- evidence-upgrade 004 methodology change: NONE.
-- accepted tranche-004 evidence rows: 1.
-- rejection/audit rows: 5.
-- Lone Star Belton hours: 41–49 bounded conflicting schedules.
+- evidence-upgrade 005 methodology change: NONE.
+- Cure Dental provider interval: 3–4 bounded location-roster lower bound.
+- accepted tranche-005 evidence rows: 1.
+- rejection/audit rows: 6.
 - current conservative `STABLE_TOP10`: five identities listed above.
-- prior `BELL-DENTAL-024` Belton Family Dental stable status: FALSIFIED by stronger attributable evidence.
 - `STABLE_TOP1`: NONE.
 - reproducible unauthenticated concrete slot inventory: NOT OBSERVED.
 - business-specific measured demand: NOT OBSERVED.
@@ -80,4 +58,4 @@ Source-handoff reconciliation PR #43 exact head `7f091957ccacdb14004baaf76481862
 
 ## Next admissible work
 
-Continue only genuinely stronger attributable evidence for complete Lone Star/Cure location rosters, Revital appointment-only constraints, current conflicting schedules, reproducible unauthenticated concrete appointment-slot inventory, or numeric practice-specific demand. Preregister any changed methodology before promotion; otherwise preserve the existing declaration/rules. Rerun the unchanged frozen model after the next material tranche and preserve `DRAFT_ONLY`, `OUTREACH_DISABLED`, `decision_grade=false`, and zero provider/contact/outreach authority.
+Continue only genuinely stronger attributable evidence for complete Lone Star/Cure location rosters, tighter Revital appointment-only constraints, resolution of current conflicting schedules, reproducible unauthenticated concrete appointment-slot inventory, or numeric practice-specific demand. Preregister any changed methodology before promotion; otherwise preserve the existing frozen evidence rules. Rerun the full-50 model only after the next material tranche and preserve `DRAFT_ONLY`, `OUTREACH_DISABLED`, `decision_grade=false`, and zero provider/contact/outreach authority.
