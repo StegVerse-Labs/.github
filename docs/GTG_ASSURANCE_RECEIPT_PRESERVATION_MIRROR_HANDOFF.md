@@ -3,38 +3,39 @@
 Updated: 2026-09-16
 Goal Task ID: `GTG-ASSURANCE-RECEIPT-PRESERVATION-001`
 COSV: `10100000100000`
-Status: `ACTIVE / CLAIMED_IMPLEMENTATION`
+Status: `RETIRED / COMPLETED`
 Parent sweep: `GTG-ASSURANCE-CONSUMER-COMPATIBILITY-SWEEP-001` (`RETIRED / COMPLETED`)
 
 Canonical research owner: `StegVerse-Labs/StegScholar`
 Primary handoff: `GTG_ASSURANCE_RECEIPT_PRESERVATION_MIRROR_HANDOFF.md`
 Implementation PR: `StegVerse-Labs/StegScholar#75`
-Implementation branch: `gtg-assurance-receipt-preservation-001`
+Implementation merge: `c75b579fdf8261cb6fcba96d4d0b3cc3b4be3954`
+Closeout PR: `StegVerse-Labs/StegScholar#77`
+Closeout merge: `93720c6dfdd058cf3d2cabdc4285460d3b1aeda2`
 
-## Demonstrated gap
+## Demonstrated gap and repair
 
-The bounded sweep proved before repair that `scripts/validate_gtg_fixtures.py:validate_case` accepted optional `governance_assurance` in source fixture data but dropped it from emitted `GTG-DECISION-*` receipts because the receipt was assembled from an explicit field list without that field.
+The retired consumer-compatibility sweep proved that `scripts/validate_gtg_fixtures.py:validate_case` accepted optional `governance_assurance` but dropped it from emitted `GTG-DECISION-*` receipts. PR #75 repaired that exact path so the optional assurance object is preserved verbatim when present, remains absent when omitted, retains mandatory `authority_effect: NONE`, and is included in deterministic receipt hashing. GTG activation/disposition semantics and TT's `gtg_record_ref` ownership boundary remain unchanged.
 
-Gap classification: `ASSURANCE_DROPPED_BY_LEGACY_FIXTURE_RECEIPT_SERIALIZER`.
+## Collision and authority state
 
-## Claim and collision state
+No equivalent open PR or active branch existed when this bounded child was claimed. The retired parent sweep was not reopened. Receipt assurance remains non-authorizing and cannot mint governance, standing, execution, or consequence authority.
 
-No matching open PR or active branch existed when this bounded child was claimed. The retired parent sweep remains closed. The active implementation is isolated to StegScholar PR #75 and canonical coordination in this task record/handoff.
+## Validation evidence
 
-## Current implementation
+Implementation exact head `d540be925ea6ad54b8fe8dcde2dc328d09eb9caa` passed the relevant repository workflows, including GTG, assurance-reference, compatibility-sweep, readiness, independent-review, and architecture-neutral validation, before PR #75 merged as `c75b579fdf8261cb6fcba96d4d0b3cc3b4be3954`.
 
-StegScholar PR #75 now preserves the exact optional `governance_assurance` object in legacy GTG fixture receipts, leaves the field absent for historical no-assurance cases, requires preserved assurance to retain `authority_effect: NONE`, and computes `receipt_hash` after preservation. Dedicated regression coverage checks JSON round-trip reconstruction, hash sensitivity, absent-field compatibility, authority non-promotion, and unchanged TT ownership through `gtg_record_ref`.
+Closeout exact head `3d2fd81bffb36cf6ee010aa5ddf7bc52689d7180` passed its triggered validation workflows before PR #77 merged as `93720c6dfdd058cf3d2cabdc4285460d3b1aeda2`.
 
-The first PR head exposed one expected compatibility-workflow failure because the retired sweep validator still asserted that the old defect remained present. That validator was repaired to validate the current post-fix state while the retired sweep paper/handoff preserves the original pre-fix evidence. The latest PR head is `d540be925ea6ad54b8fe8dcde2dc328d09eb9caa`; exact-head validation is pending and no merge/completion claim is made yet.
+Satisfied predicates:
+- `PRE_FIX_ASSURANCE_LOSS_REPRODUCED`
+- `OPTIONAL_ASSURANCE_PRESERVED_IN_RECEIPT`
+- `ABSENT_ASSURANCE_REMAINS_ABSENT`
+- `AUTHORITY_EFFECT_NONE_PRESERVED`
+- `RECEIPT_HASH_COVERS_PRESERVED_ASSURANCE`
+- `HISTORICAL_RECEIPT_COMPATIBILITY_PRESERVED`
+- `TT_SCHEMA_UNCHANGED`
 
-## Goal
+## Terminal state
 
-Preserve optional GTG assurance across legacy fixture receipt serialization/reconstruction while preserving `authority_effect: NONE`, deterministic receipt hashing, historical no-assurance compatibility, existing GTG disposition ownership, and TT's unchanged `gtg_record_ref` boundary.
-
-## Non-goals
-
-No new governance authority, no assurance-derived standing or execution permission, no TT assurance field, no retroactive receipt mutation, and no broader GTG consumer rewrite absent new evidence.
-
-## Completion threshold
-
-Do not retire until StegScholar PR #75 reaches exact-head green validation, merges with evidence, and canonical coordination is reconciled to that merged state.
+This bounded repository repair is complete and retired. No release, deployment, runtime activation, or propagation claim is implied. Continue only under a separately registered task if new evidence identifies a distinct remaining compatibility defect.
