@@ -1,0 +1,25 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "STEG-BROWSER-GOVERNED-ROUNDTRIP-001",
+  "correlation_id": "STEG-BROWSER-GOVERNED-ROUNDTRIP-001",
+  "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+  "parent_task_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+  "dependency_task_id": "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001",
+  "goal": "Execute and evidence the declared governed StegBrowser round trips only after authentic same-invocation A1-A4 completion, preserving the existing Interlock/InTr, WorkerCoordinator, TV/TVC, and single-device authority boundaries and exact lineage from the immutable invocation.",
+  "coordination_state": "INACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "cosv_task_vector": "40000100100000",
+  "handoff_ref": "docs/STEGBROWSER_GOVERNED_ROUNDTRIP_MIRROR_HANDOFF.md",
+  "activation_predicate": "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001:A1_A4_COMPLETE=true",
+  "round_trip_1_started": false,
+  "round_trip_2_started": false,
+  "same_invocation_required": true,
+  "new_invocation_allowed": false,
+  "second_user_operated_device_required": false,
+  "authority_model": {
+    "interlock_intr_transition_authority": true,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "credential_authority": "TV/TVC",
+    "github_runtime_authority": "NONE"
+  }
+}

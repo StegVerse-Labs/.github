@@ -1,0 +1,69 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001",
+  "correlation_id": "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001",
+  "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+  "parent_task_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+  "goal": "Execute and evidence the already-issued immutable StegBrowser manifest invocation on the same registered iPhone/Safari Node through the existing Universal Interlock/InTr current-device surface, promoting only authentic authority-owned A1-A4 predicates and repairing only the first authentic transition defect if the chain fails.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "40000100100000",
+  "handoff_ref": "docs/STEGBROWSER_CURRENT_IPHONE_A1_A4_EXECUTION_MIRROR_HANDOFF.md",
+  "predecessor_goal_prompt_terminal": "20/20",
+  "immutable_invocation": {
+    "source_goal_task_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+    "canonical_request_commit": "19935454cd8c68000b3a0fd70478b0d89d5cd622",
+    "invocation_request_nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+    "requested_invocation_count": 1,
+    "second_request_allowed": false,
+    "request_mutation_allowed": false,
+    "destination": "StegBrowser:ManifestInvocation",
+    "cosv": "40000100100000"
+  },
+  "execution_surface": {
+    "url": "https://stegverse.org/stegos-bootstrap/canonical-work-runtime-consumption.html?autostart=1",
+    "device_scope": "SAME_REGISTERED_IPHONE_SAFARI_SITE_DATA_CONTEXT",
+    "private_browsing_allowed": false,
+    "site_data_clear_allowed": false,
+    "second_user_operated_device_required": false,
+    "runtime_authority_effect_of_source_or_ci": "NONE"
+  },
+  "required_chain": [
+    "REGISTERED_NODE_RECEIPT_1",
+    "DETERMINISTIC_UNCHANGED_NONCE_NODE_OUTBOX_ENTRY",
+    "STEGBROWSER_MANIFEST_INVOCATION_UNIVERSAL_INTR_MATERIALIZATION",
+    "WRITE_ONCE_INGRESS_ADMITTED",
+    "BOUNDED_INVOCATION_LEASE",
+    "EVENT_EPHEMERAL_RUNTIME_IDENTITY",
+    "WORKERCOORDINATOR_CLAIM_FENCE",
+    "EXACT_GOVERNED_STEGBROWSER_A4_INGRESS"
+  ],
+  "authentic_predicates": {
+    "registered_stegverse_node_bound_to_invocation": false,
+    "interlock_bound_to_node_and_manifest": false,
+    "intr_materialization_admitted": false,
+    "invocation_scoped_lease_established": false,
+    "event_ephemeral_runtime_materialized": false,
+    "execution_time_runtime_identity_bound": false,
+    "workercoordinator_claim_fence_observed": false,
+    "organization_local_intr_ingress_receipt_verified": false,
+    "authentic_intr_ingress_observed": false,
+    "a1_a4_complete": false
+  },
+  "first_unresolved_predicate": "REGISTERED_STEGVERSE_NODE_BOUND_TO_INVOCATION",
+  "successor_task_id_on_completion": "STEG-BROWSER-GOVERNED-ROUNDTRIP-001",
+  "allowed_next_transitions": [
+    "CONSUME_EXACT_SAME_DEVICE_PAGE_JSON",
+    "PROMOTE_ONLY_AUTHORITY_OWNED_PREDICATES",
+    "REPAIR_ONLY_FIRST_AUTHENTIC_TRANSITION_FAILURE",
+    "ACTIVATE_ROUNDTRIP_SUCCESSOR_ONLY_AFTER_A1_A4_COMPLETE"
+  ],
+  "authority_model": {
+    "node_authority_effect": "CONTINUITY_ADMISSION_ANCHOR_ONLY",
+    "interlock_intr_transition_authority": true,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "credential_authority": "TV/TVC",
+    "github_runtime_authority": "NONE",
+    "second_user_operated_device_required": false
+  }
+}
