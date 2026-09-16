@@ -15,6 +15,16 @@
     "terminal_prompt_processed": true,
     "further_parent_prompts_allowed": false
   },
+  "runtime_requirements": {
+    "selected_substrate": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+    "standing_runtime_required": false,
+    "external_runtime_connection_required": false,
+    "external_device_required": false,
+    "second_user_operated_device_required": false,
+    "hosted_carrier_required": false,
+    "registered_node_binding_required": true,
+    "node_interlock_binding_required_before_lease": true
+  },
   "immutable_invocation": {
     "canonical_request_commit": "19935454cd8c68000b3a0fd70478b0d89d5cd622",
     "invocation_request_nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
