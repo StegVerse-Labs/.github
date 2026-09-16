@@ -5,7 +5,7 @@ Repository: `StegVerse-Labs/.github`
 Target repository: `StegVerse-Labs/StegLearn`
 Goal Task ID: `STEGLEARN-YOUTUBE-EDUCATION-PARTNERSHIP-001`
 COSV: `40000100100000`
-Status: `ACTIVE / OWNER-REPORTED SUBMISSION / GOOGLE ACKNOWLEDGEMENT PENDING`
+Status: `ACTIVE / OWNER-REPORTED SUBMISSION / SECOND GMAIL CHECK NO GOOGLE ACKNOWLEDGEMENT`
 
 ## Canonical registration
 
@@ -23,7 +23,7 @@ StegLearn remains authority for curriculum, instructional adaptation, learner ev
 
 The owner previously authorized Google education partnership outreach and on 2026-09-15 directed reconciliation of the submitted Google for Education specialist and/or Partner Advantage application evidence. This is recorded as owner-reported submission evidence only.
 
-Connected Gmail searches on 2026-09-15 covered recent Google for Education, Partner Advantage, Player for Education, Youth & Learning, StegLearn, education-partner, request/case/inquiry, and recent Google/Google Cloud sender terms. No matching Google acknowledgement, case/reference identifier, routing response, or written technical-capability statement was observed.
+Connected Gmail was searched twice on 2026-09-15. The second search at approximately 21:12 America/Chicago covered `Google for Education`, `Partner Advantage`, `Player for Education`, `Youth & Learning`, `YouTube Education`, `StegLearn`, `Google Cloud Partner`, and recent Google/Google Cloud/YouTube senders combined with education/partner/case/request/inquiry terms. No matching Google acknowledgement, case/reference identifier, routing response, or written technical capability statement was observed. Unrelated Google Store and GitHub messages were excluded.
 
 Canonical package:
 
@@ -32,7 +32,7 @@ Canonical package:
 Evidence disposition:
 
 - owner-reported submission: `OBSERVED_FROM_OWNER_INSTRUCTION`
-- Google acknowledgement: `NOT_OBSERVED`
+- Google acknowledgement: `NOT_OBSERVED_AFTER_SECOND_GMAIL_CHECK`
 - Google case/reference ID: `UNKNOWN`
 - written routing response: `NOT_OBSERVED`
 - written technical capability response: `NOT_OBSERVED`
@@ -68,17 +68,9 @@ Still unresolved and requiring written Google evidence or negotiation:
 - No learner data or learner camera/microphone stream is authorized by this evidence state.
 - No proprietary A/V infrastructure should be built while the Google path remains viable and technically unresolved.
 
-## Validation evidence
-
-Most recent exact-head StegLearn validation before this reconciliation:
-
-`34992304852 — Validate StegLearn — SUCCESS`
-
-This reconciliation changes evidence/status text only and does not claim new Google capability.
-
 ## Current state
 
-`OWNER_REPORTED_SUBMISSION_GOOGLE_ACKNOWLEDGEMENT_NOT_OBSERVED_NEGOTIATED_AV_GAPS_UNCHANGED`
+`OWNER_REPORTED_SUBMISSION_SECOND_GMAIL_CHECK_NO_ACKNOWLEDGEMENT_NEGOTIATED_AV_GAPS_UNCHANGED`
 
 ## Next evidence gate
 
