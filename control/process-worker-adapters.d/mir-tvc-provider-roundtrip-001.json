@@ -35,7 +35,7 @@
         "After a real completed provider receipt exists, invokes only the registered reusable trigger to reconcile that same transaction and Master Records custody; a later custody boundary must reuse the retained provider receipt rather than blindly repeat the external consequence.",
         "No credential material is accepted from or returned to the worker."
       ],
-      "timeout_seconds": 180,
+      "timeout_seconds": 300,
       "type": "process_json_v0.1"
     }
   ]
