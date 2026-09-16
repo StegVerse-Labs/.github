@@ -4,12 +4,13 @@
   "correlation_id": "MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001",
   "parent_task_id": "MIR-CONNECTION-ROUNDTRIP-TECHNICAL-GUIDE-001",
   "predecessor_task_id": "MIR-SDK-RETURN-ASSEMBLY-CONTINUITY-001",
-  "goal": "Complete the remaining MIR round-trip downstream choreography after exact SDK return assembly by reusing the documented final StegVerse-side egress and designated Interlock/InTr destination-profile transport through the owned MIR mirror without adding another execution or transport plane.",
+  "goal": "Duplicate the already-proven StegVerse-002 Node/Interlock/InTr/event-ephemeral/Master-Records route first, then apply only the current MIR destination-profile and invocation-specific evidence requirements, and finally complete the governed return without adding another execution or transport plane.",
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT",
   "cosv_task_vector": "50000000100000",
   "canonical_issue": "StegVerse-Labs/.github#1891",
   "canonical_handoff": "StegVerse-Labs/Site/docs/MIR_ROUNDTRIP_EGRESS_AUTHENTICITY_MIRROR_HANDOFF.md",
+  "canonical_route_duplication_binding": "StegVerse-Labs/Site/data/mir-roundtrip-egress-sv002-route-binding.v1.json",
   "owners": {
     "coordination_and_parent_guide_owner": "StegVerse-Labs/Site",
     "sdk_return_materialization_owner": "StegVerse-org/StegVerse-SDK",
@@ -17,13 +18,16 @@
     "transition_transport_owner": "Interlock/InTr",
     "credential_owner": "TV/TVC where required",
     "mir_mirror_endpoint_owner": "StegVerse-owned MIR mirror",
-    "mir_semantics_owner": "MIR"
+    "mir_semantics_owner": "MIR",
+    "observed_reality_custody_reconstruction_owner": "Master Records"
   },
   "defining_protocol_sources": [
     "StegVerse-Labs/.github/docs/CANONICAL_SOUTHBOUND_COMMUNICATION_LIFECYCLE.md",
     "StegVerse-Labs/Site/docs/INTERLOCK_INTR_CONNECTION_GUIDE.md",
     "StegVerse-Labs/Site/docs/MIR_CONNECTION_AND_ROUNDTRIP_TECHNICAL_GUIDE.md",
-    "StegVerse-Labs/StegOS/docs/UNIVERSAL_INTERLOCK_PROTOCOL_MIRROR_HANDOFF.md"
+    "StegVerse-Labs/StegOS/docs/UNIVERSAL_INTERLOCK_PROTOCOL_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site/docs/STEGBROWSER_SV002_VALIDATED_LANE_RETEST.md",
+    "StegVerse-Labs/Site/data/mir-roundtrip-egress-sv002-route-binding.v1.json"
   ],
   "decomposition": {
     "reason": "Parent Goal Task reached Goal Prompt Count 20/20 and the remaining downstream egress/authenticity sequence has its own stable SDK-return input and goal-level completion predicates.",
@@ -36,6 +40,24 @@
     "endpoint_substitution_semantics": "DESTINATION_PROFILE_SUBSTITUTION_FOR_KNOWN_STEGVERSE_OWNED_MIR_MIRROR",
     "prompt_counter_reset_only": false
   },
+  "proven_route_reuse": {
+    "instruction": "DUPLICATE_PROVEN_SV002_ROUTE_FIRST_THEN_ADD_MIR_SPECIFIC_REQUIREMENTS",
+    "historical_route_status": "SUCCESSFUL_ENGINEERING_LANE",
+    "historical_route_ref": "StegVerse-Labs/Site/docs/STEGBROWSER_SV002_VALIDATED_LANE_RETEST.md",
+    "preserved_mechanics": [
+      "REGISTERED_STEGVERSE_NODE_GATING",
+      "INTERLOCK_BINDING",
+      "INTR_MATERIALIZATION",
+      "BOUNDED_INVOCATION_LEASE",
+      "EVENT_EPHEMERAL_RUNTIME",
+      "EXECUTION_TIME_RUNTIME_IDENTITY",
+      "AUTHORITY_OWNED_CONTINUATION",
+      "INDEPENDENT_MASTER_RECORDS_RECONSTRUCTION"
+    ],
+    "historical_receipts_grant_present_authority": false,
+    "generic_mechanics_reproof_required_before_current_mir_invocation": false,
+    "fresh_evidence_scope": "CURRENT_MIR_BOUND_INVOCATION_AND_NEW_TRANSITIONS_ONLY"
+  },
   "state_transition_invariant": {
     "every_process_step_is_a_state_transition": true,
     "completed_upstream_state_may_not_be_rewritten_by_downstream_failure": true,
@@ -45,16 +67,19 @@
     "user_device_execution_surface_required": false,
     "user_device_execution_surface_expected": false,
     "remote_device_execution_surface_required": false,
-    "absence_of_user_device_surface_is_not_a_runtime_blocker": true
+    "absence_of_user_device_surface_is_not_a_runtime_blocker": true,
+    "generic_sv002_route_may_not_be_reproved_as_a_mir_execution_gate": true
   },
   "documented_transport_sequence": [
-    "DATA_EVENT",
+    "DUPLICATE_PROVEN_SV002_ROUTE_MECHANICS",
+    "BIND_CURRENT_GOAL_COSV",
     "MIR_DESTINATION_PROFILE_SELECTED_OR_SUBSTITUTED",
     "UNIVERSAL_INTR_TRANSPORT_AND_MATERIALIZATION_BOUND",
     "INTERLOCK_INTR_ADMISSION",
     "PROFILE_DEFINED_MIR_MIRROR_DESTINATION_MATERIALIZATION",
     "MIR_MIRROR_DESTINATION_STATE_TRANSITION",
     "DESTINATION_EVIDENCE",
+    "MASTER_RECORDS_RECONSTRUCTS_CURRENT_FINAL_EXIT_TRANSITION",
     "GOVERNED_RETURN"
   ],
   "destination_profile_repair": {
@@ -71,6 +96,9 @@
     "status": "RESOLVED_SOURCE_VALIDATED"
   },
   "current_truth": {
+    "sv002_route_historically_proven": true,
+    "sv002_route_reuse_binding_materialized": true,
+    "generic_sv002_route_reproof_gate_removed": true,
     "sdk_return_predecessor_merge": "b4927ed277c4993662f9e7e4ffd717f677ad5459",
     "sdk_return_source_validated": true,
     "sdk_return_runtime_observed": false,
@@ -95,12 +123,16 @@
     "endpoint_substitution_means_destination_profile_substitution": true,
     "southbound_destination_profile_contract_present": true,
     "southbound_destination_profile_contract_source_validated": true,
+    "current_goal_cosv_binding_observed": false,
     "authentic_predecessor_sdk_return_input_observed": false,
     "llm_adapter_reusable_egress_source_merge": "b106b87a974a219e394b9eb5f3629814f3ec1239",
     "llm_adapter_reusable_egress_runtime_observed_for_this_roundtrip": false,
     "interlock_intr_egress_observed": false,
     "far_side_transition_observed": false,
     "mir_destination_profile_substitution_observed": false,
+    "mir_destination_evidence_retained": false,
+    "master_records_reconstructs_current_final_exit_transition": false,
+    "successful_one_way_mir_transport_identified": false,
     "successful_data_transport_round_trip_identified": false,
     "communication_complete": false
   },
@@ -110,13 +142,14 @@
     "user_device_execution_surface_exists": false,
     "user_device_execution_surface_expected": false,
     "remote_device_execution_surface_exists_as_requirement": false,
-    "correct_interpretation": "The governed data event must advance through the existing StegVerse-owned execution/event materialization path and Interlock/InTr boundary without depending on an iPhone-local, browser-local, remote-device, user-operated, or attached-device execution surface.",
-    "prohibited_interpretation": "Do not classify lack of an attached iPhone/device-local /intr/materialization control surface as the reason authentic transport has not occurred. Such a surface is not part of the required architecture and must not be introduced as a prerequisite.",
+    "correct_interpretation": "Reuse the proven SV002 execution/event materialization mechanics first, then bind and execute the current MIR-specific Goal/COSV/destination transition through the existing StegVerse-owned Interlock/InTr path without re-proving generic mechanics or depending on a user device.",
+    "prohibited_interpretation": "Do not classify the already-proven SV002 Node/Interlock/InTr/lease/runtime mechanics as an unproven prerequisite requiring a fresh generic A1-A4 gate before MIR invocation. Historical receipts prove the prior lane, while fresh evidence remains required for the current MIR-bound event.",
     "github_runtime_authority": "NONE"
   },
   "authority_invariants": {
     "task_registry": "COORDINATION_ONLY",
     "github_runtime_authority": "NONE",
+    "historical_sv002_receipt_authority": "EVIDENCE_OF_PRIOR_LANE_ONLY",
     "sdk_materialization_authority": "EXACT_BYTE_RETENTION_ONLY",
     "publisher_return_routing_authority": "NEXT_OWNER_SELECTION_ONLY_AFTER_VERIFIED_RETURN",
     "sdk_return_ingress_authority": "EXACT_REVERSE_TRANSPORT_VALIDATION_AND_DISPATCH_TO_EXISTING_SDK_MATERIALIZER_ONLY",
@@ -124,27 +157,38 @@
     "interlock_intr_authority": "EGRESS_ADMISSION_AND_STATE_TRANSITION",
     "credential_authority": "TV/TVC where required",
     "mir_semantics_authority": "MIR",
+    "master_records_authority": "OBSERVED_REALITY_CUSTODY_RECONSTRUCTION_ONLY",
     "stegverse_governance_authority": "STEGVERSE"
   },
   "completion": {
     "claimed": false,
     "validated": false,
+    "sv002_route_reuse_binding_materialized": true,
+    "generic_sv002_route_reproof_gate_removed": true,
+    "current_goal_cosv_binding_observed": false,
     "authentic_predecessor_sdk_return_input_observed": false,
     "mir_destination_profile_binding_source_validated": true,
     "mir_destination_profile_binding_observed": false,
     "final_stegverse_side_egress_transition_observed": false,
     "interlock_intr_egress_observed": false,
     "far_side_transition_observed": false,
+    "mir_destination_evidence_retained": false,
+    "master_records_reconstructs_current_final_exit_transition": false,
+    "successful_one_way_mir_transport_identified": false,
     "return_record_durably_recorded": false,
     "final_allowed_transport_exit_transition_observed": false,
     "successful_data_transport_round_trip_identified": false,
     "communication_complete": false
   },
   "allowed_next_transitions": [
-    "CAUSE_EXISTING_STEGVERSE_OWNED_EVENT_MATERIALIZATION_PATH_TO_CONSUME_BOUND_MIR_EGRESS_WITHOUT_USER_DEVICE_PREREQUISITE",
-    "EXECUTE_REUSED_RTC_STEGVERSE_EGRESS_007_WITH_BOUND_MIR_DESTINATION_PROFILE",
+    "USE_CANONICAL_SV002_ROUTE_DUPLICATION_BINDING_WITHOUT_GENERIC_REPROOF_GATE",
+    "BIND_CURRENT_GOAL_COSV_AND_MIR_DESTINATION_PROFILE",
+    "EXECUTE_REUSED_RTC_STEGVERSE_EGRESS_007",
     "OBSERVE_AUTHENTIC_RTC_INTERLOCK_INTR_TRANSPORT_008",
     "OBSERVE_AUTHENTIC_RTC_FARSIDE_FINAL_009",
+    "RETAIN_MIR_DESTINATION_EVIDENCE",
+    "MASTER_RECORDS_RECONSTRUCT_CURRENT_FINAL_EXIT_TRANSITION",
+    "IDENTIFY_SUCCESSFUL_ONE_WAY_MIR_TRANSPORT",
     "RECEIVE_AND_DURABLY_RECORD_GOVERNED_RETURN",
     "OBSERVE_FINAL_ALLOWED_TRANSPORT_EXIT_TRANSITION",
     "IDENTIFY_SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIP",
