@@ -67,3 +67,34 @@ def test_workercoordinator_binding_uses_existing_authority_planes_only():
     assert task["executor_binding"] == "AUTHORIZED"
     assert task["admission"]["fresh_fence_required"] is True
     assert registry["authority_effect"] == "NONE_REGISTRATION_ONLY"
+
+
+def test_fail_closed_execution_is_retained_on_the_manifested_receipt_ref(tmp_path):
+    worker = load_worker()
+    invocation = {
+        "schema": "stegverse.worker-invocation/v0.1",
+        "task": {
+            "task_id": "MIR-TVC-PROVIDER-ROUNDTRIP-001",
+            "state": "ACTIVE",
+            "claim_id": "CLAIM-MIR-G41",
+            "heartbeat_timing": {"fencing_token": 41},
+        },
+        "scope": {"claim_id": "CLAIM-MIR-G41", "fencing_token": 41},
+    }
+    receipt = worker._retain_failure(tmp_path, invocation, RuntimeError("synthetic boundary"))
+    retained = json.loads((tmp_path / worker.RECEIPT_REF).read_text())
+    assert retained == receipt
+    assert retained["state"] == "FAIL_CLOSED_EXECUTION_RECEIPT"
+    assert retained["request_id"] == "MIR-RUN2-EVENT-001"
+    assert retained["provider_operation"] == "SUBMIT_EVENT"
+    assert retained["provider_operation_completed"] is False
+    assert retained["allow_operation_result_observed"] is False
+    assert retained["use_receipt_observed"] is False
+    assert retained["claim_id"] == "CLAIM-MIR-G41"
+    assert retained["fencing_token"] == 41
+    assert retained["intr_admission_required"] is True
+    assert retained["master_records_custody_required"] is True
+    assert retained["credential_material_retained"] is False
+    assert retained["secret_values_exported"] is False
+    assert retained["protected_values_exposed"] is False
+    assert retained["authority_effect"] == "NONE_FAIL_CLOSED_EXECUTION_EVIDENCE_ONLY"
