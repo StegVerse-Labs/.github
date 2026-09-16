@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+# Exact-head regression coverage for the existing non-authorizing resident dispatcher.
 import importlib.util
 import json
 import subprocess
