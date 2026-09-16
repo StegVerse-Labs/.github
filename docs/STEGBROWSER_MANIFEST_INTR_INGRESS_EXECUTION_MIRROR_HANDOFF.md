@@ -1,6 +1,6 @@
 # StegBrowser Manifest Interlock/InTr Ingress Execution Mirror Handoff
 
-Updated: 2026-09-15
+Updated: 2026-09-16
 Repository: `StegVerse-Labs/.github`
 
 ## Task pointer
@@ -144,6 +144,12 @@ Current exact condition:
 
 `AUTHENTIC_STEGBROWSER_UNIVERSAL_INTR_A1_A4_EXECUTION_NOT_YET_OBSERVED`
 
+## 2026-09-16 bounded observation attempt
+
+The unchanged one-shot nonce was not re-emitted. A fresh main-branch evidence sweep found no StegBrowser same-invocation runtime receipts: `receipts/sovereign-host/` currently contains only HIL evidence files, and `receipts/sovereign-network/` is absent. The current chat execution environment also exposes no authorized StegVerse sovereign execution device/runtime transport, so no claim is made that the canonical runtime path executed during this observation.
+
+This is an evidence/access condition, not a source-architecture defect. GitHub/CI remains evidence transport and validation only and must not be promoted into runtime authority to bypass the missing sovereign execution surface. No predicate is promoted, the immutable nonce/request remains unchanged, and Round Trip 1 remains unentered.
+
 ## Expected same-invocation evidence
 
 The canonical path may retain, as applicable:
@@ -177,11 +183,11 @@ Any promotion must preserve exact Goal/COSV/nonce/manifest/node/interlock/regist
 
 ## Immediate continuation
 
-Do not emit another request and do not add another materialization profile. Continue only with the unchanged nonce through the single canonical PR #1955 `StegBrowser:ManifestInvocation` path. Inspect/retain authentic same-invocation Node binding, `INGRESS_ADMITTED`, bounded lease, EVENT_EPHEMERAL runtime, WorkerCoordinator claim/fence, and A4 ingress receipts. Promote only predicates directly proven by those authority-owned receipts. Stop before Round Trip 1 unless authentic A1-A4 completion is established.
+Do not emit another request and do not add another materialization profile. Continue only with the unchanged nonce through the single canonical PR #1955 `StegBrowser:ManifestInvocation` path. Observe the authorized sovereign execution surface when it is available; inspect/retain authentic same-invocation Node binding, `INGRESS_ADMITTED`, bounded lease, EVENT_EPHEMERAL runtime, WorkerCoordinator claim/fence, and A4 ingress receipts. Promote only predicates directly proven by those authority-owned receipts. Stop before Round Trip 1 unless authentic A1-A4 completion is established.
 
 ## README review
 
-README reviewed after #1964 convergence. No byte change required because the public runtime/authority topology remains the already-documented single shared Universal InTr/event-ephemeral architecture.
+README reviewed again on 2026-09-16. No byte change required because the public runtime/authority topology remains the already-documented single shared Universal InTr/event-ephemeral architecture; this observation changes evidence state only.
 
 ## Manual work
 
