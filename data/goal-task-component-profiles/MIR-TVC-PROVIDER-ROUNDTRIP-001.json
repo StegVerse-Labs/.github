@@ -25,18 +25,33 @@
     "RT-INTR-GOVERNED-TRANSITION-001",
     "RT-INTR-ROUNDTRIP-CORRELATION-001",
     "RT-INTR-EVIDENCE-CUSTODY-001",
+    "RT-TVC-PROVIDER-OPERATION-BROKER-001",
+    "RT-TVC-PRIMARY-RUNTIME-BINDING-001",
+    "RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001",
     "RTC-ROUNDTRIP-003",
     "RTC-INTERLOCK-INTR-TRANSPORT-008",
     "TVC-PROVIDER-OPERATION-BROKER-003",
+    "TVC-PRIMARY-RUNTIME-BINDER-005",
+    "TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006",
     "TVC-CAPABILITY-RUNTIME-002"
   ],
   "implementation_components": {
     "round_trip": "RTC-ROUNDTRIP-003",
     "intr_transport": "RTC-INTERLOCK-INTR-TRANSPORT-008",
     "provider_broker": "TVC-PROVIDER-OPERATION-BROKER-003",
+    "provider_broker_reusable_identity": "RT-TVC-PROVIDER-OPERATION-BROKER-001",
+    "primary_runtime_binder": "TVC-PRIMARY-RUNTIME-BINDER-005",
+    "primary_runtime_activation_delivery": "TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006",
+    "primary_runtime_binding_reusable_identity": "RT-TVC-PRIMARY-RUNTIME-BINDING-001",
     "provider_runtime_observer": "TVC-CAPABILITY-RUNTIME-002",
+    "provider_runtime_observer_reusable_identity": "RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001",
     "external_adapter": "RT-EXTERNAL-ADAPTER-ESTABLISH-001",
-    "replacement_rule": "Reusable RT-INTR task identities define protocol decomposition and do not replace the existing RTC/TVC implementation components."
+    "invocation_manifest": "manifests/reusable-task-invocations/MIR-TVC-PROVIDER-ROUNDTRIP-001.TVC-CAPABILITY-RUNTIME-002.json",
+    "receipt_admission": "RT-INTR-BOUNDARY-ADMISSION-001",
+    "receipt_transition": "RT-INTR-GOVERNED-TRANSITION-001",
+    "receipt_custody": "RT-INTR-EVIDENCE-CUSTODY-001",
+    "master_records_destination": "master-records/core-lite",
+    "replacement_rule": "Reusable identities reduce existing working components to durable task semantics; they do not replace or duplicate the existing RTC/TVC implementation surfaces, runtime, broker, observer, transport, or custody implementation."
   },
   "build_test_counterpart": {
     "mode": "STEGOS_NODE_MIRROR",
@@ -81,9 +96,13 @@
     "sdk_evaluator_review_ingress_observed": true,
     "authentic_mir_result_receipt_retained": true,
     "authentic_tvc_mir_provider_session_observed": false,
+    "provider_session_receipt_manifest_bound": true,
+    "provider_session_receipt_intr_admission_required": true,
+    "provider_session_receipt_master_records_custody_required": true,
+    "provider_session_receipt_master_records_reconstruction_required": true,
     "provenance": "MIR_NODE_MIRROR_BUILD_TEST_PLUS_AUTHENTIC_EXTERNAL_RESULT",
     "duplicate_reexecution_required": false,
-    "reason": "The reusable RT-INTR tasks name the same admission, transition, correlation, and custody behaviors already executed and retained in the canonical MIR mirror round-trip; authentic MIR result evidence now satisfies only the external-result predicate and does not substitute for a TV/TVC provider-session receipt."
+    "reason": "The reusable RT-INTR tasks name the same admission, transition, correlation, and custody behaviors already executed for the MIR mirror round-trip. The remaining authentic TV/TVC provider-session receipt now has an explicit manifest-bound trajectory: current-source and vault-backed provider-operation verification, Interlock/InTr admission, then Master Records custody/reconstruction before the final MIR predicate may be satisfied."
   },
   "satisfied_predicates": [
     "MIR_NODE_MIRROR_ROUNDTRIP_EXECUTED",
@@ -96,7 +115,7 @@
   "predicate_classes": {
     "MIR_NODE_MIRROR_ROUNDTRIP_EXECUTED": "BUILD_TEST_RUNTIME",
     "MIR_NODE_MIRROR_RETURN_ADMITTED_TO_SDK": "BUILD_TEST_RUNTIME",
-    "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED": "AUTHENTIC_EXTERNAL_ENDPOINT",
+    "AUTHENTIC_TVC_MIR_PROVIDER_SESSION_OBSERVED": "AUTHENTIC_EXTERNAL_ENDPOINT_PLUS_MASTER_RECORDS_CUSTODY",
     "AUTHENTIC_MIR_RESULT_RECEIPT_RETAINED": "AUTHENTIC_EXTERNAL_ENDPOINT"
   },
   "authority_invariants": {
@@ -106,6 +125,16 @@
     "observed_reality_custody": "Master Records",
     "github_runtime_authority": "NONE",
     "mirror_authority_effect": "NONE"
+  },
+  "reusable_component_registration": {
+    "registry_surface": "source-bundles/reusable-task-registry.d",
+    "registered": [
+      "RT-TVC-PROVIDER-OPERATION-BROKER-001",
+      "RT-TVC-PRIMARY-RUNTIME-BINDING-001",
+      "RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001"
+    ],
+    "duplicate_implementation_created": false,
+    "promotion_rule": "After deterministic exact-head validation these identities are promoted as validated reusable tasks without duplicating them into data/reusable-task-registry.json."
   },
   "goal_identity_preserved": true,
   "cosv_identity_preserved": true,
