@@ -4,7 +4,7 @@
   "correlation_id": "ELAN-NEXT-PHASE-EXPERIMENT-001",
   "root_correlation_id": "ELAN-NEXT-PHASE-EXPERIMENT-001",
   "parent_task_id": "ELAN-CUMULATIVE-PUBLICATION-001",
-  "goal": "Execute the next independent ELAN x StegVerse sustained-silence and return-to-speech experiment with preregistered evidence fields, exact native-trace preservation, architecture non-interference, governed StegVerse submission, and cross-evaluation only after both evidence chains independently exist.",
+  "goal": "Continue the established ELAN experiment through continued non-emission observation until the first authentic ELAN-native return-to-speech transition, with predecessor evidence preserved exactly, expected evidence frozen before interpretation, and no unrelated authority/runtime/evaluator lane promoted into an experiment prerequisite.",
   "coordination_state": "ACTIVE",
   "checkout_state": "UNCLAIMED",
   "cosv": {
@@ -15,45 +15,69 @@
   },
   "source_refs": [
     "docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md",
-    "docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md",
+    "docs/ELAN_CUMULATIVE_RUN2_PUBLICATION_MIRROR_HANDOFF.md",
     "control/task-vectors/ELAN-NEXT-PHASE-EXPERIMENT-001.json",
     "control/task-vector-index.d/ELAN-NEXT-PHASE-EXPERIMENT-001.json",
-    "StegVerse-Labs/.github#1999",
-    "StegVerse-Labs/.github#2000",
-    "StegVerse-Labs/.github#2006",
-    "StegVerse-org/StegVerse-SDK#248",
-    "StegVerse-org/StegVerse-SDK#249"
+    "StegVerse-org/StegVerse-SDK/docs/ELAN_NEXT_PHASE_EXPERIMENT_PREREGISTRATION.md",
+    "StegVerse-org/StegVerse-SDK/data/elan-next-phase-experiment-001.preregistration.json"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs", "StegVerse-org"],
     "repositories": ["StegVerse-Labs/.github", "StegVerse-org/StegVerse-SDK"],
-    "components": ["elan-native-trace-preservation", "sustained-silence-preregistration", "return-to-speech-preregistration", "sdk-governed-submission", "custody", "replay", "reconstruction", "cross-evaluation"]
+    "components": [
+      "elan-predecessor-evidence-preservation",
+      "continued-silence-observation",
+      "return-to-speech-observation",
+      "expected-evidence-freeze",
+      "governed-result-reference",
+      "custody",
+      "replay",
+      "reconstruction"
+    ]
   },
   "dependencies": [
-    {"dependency_id":"DEP-ELAN-NATIVE-SUCCESSOR-TRACE","kind":"THIRD_PARTY_EVIDENCE","state":"PENDING","ref":"ÉLAN evaluator return; exact native artifact not yet received"},
-    {"dependency_id":"DEP-STEGVERSE-GOVERNED-SDK-PATH","kind":"IMPLEMENTATION","state":"AVAILABLE_WITH_RUNTIME_AUTHORITY_SEPARATE","ref":"StegVerse-org/StegVerse-SDK existing governed manifest path; source availability does not prove runtime execution authority"},
-    {"dependency_id":"DEP-CURRENT-RETAINED-RESIDENT-EVIDENCE","kind":"RUNTIME_EVIDENCE","state":"PENDING","ref":"docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md; retained StegBrowser/StegOS node is the canonical selected same-device substrate, while current discovery/receipt/runtime-binding evidence remains pending"}
+    {
+      "dependency_id": "DEP-ELAN-FIRST-RETURN-TO-SPEECH",
+      "kind": "EXPERIMENT_OBSERVATION",
+      "state": "PENDING",
+      "ref": "First authentic ELAN-native return-to-speech transition after the continued non-emission interval"
+    },
+    {
+      "dependency_id": "DEP-ELAN-GOVERNED-RESULT-LANE",
+      "kind": "EXPERIMENT_EVIDENCE",
+      "state": "AVAILABLE_FROM_PREDECESSOR_LINEAGE",
+      "ref": "Run 2 canonical governed-result/custody/replay/reconstruction lineage; no separate live StegOS/InTr predicate is introduced as a prerequisite"
+    }
   ],
   "blockers": [],
-  "adjacent_task_refs": ["ELAN-CUMULATIVE-PUBLICATION-001", "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001", "GADI-RESIDENT-EXECUTION-001"],
+  "adjacent_task_refs": [
+    "ELAN-CUMULATIVE-PUBLICATION-001",
+    "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001"
+  ],
   "expected_evidence_predicates": [
-    "ELAN_NATIVE_SUCCESSOR_TRACE_RECEIVED",
-    "ELAN_NATIVE_SUCCESSOR_TRACE_EXACT_BYTES_PRESERVED_BEFORE_MAPPING",
-    "ELAN_NATIVE_SUCCESSOR_TRACE_DIGEST_BOUND",
-    "PREREGISTERED_FIELDS_FROZEN_BEFORE_SUCCESSOR_EXECUTION_EVIDENCE",
-    "STEGVERSE_REPRESENTED_EVENTS_DERIVED_ONLY_FROM_SHARED_HUMAN_EVENTS",
-    "CURRENT_RETAINED_RESIDENT_NODE_DISCOVERY_AND_RUNTIME_BINDING_OBSERVED",
-    "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
-    "CURRENT_INTR_ADMISSION_OBSERVED",
-    "STEGVERSE_GOVERNED_SUCCESSOR_SUBMISSION_AUTHENTICALLY_OBSERVED",
-    "STEGVERSE_CUSTODY_REPLAY_RECONSTRUCTION_EVIDENCE_PRESERVED_WHERE_NATIVE",
-    "CROSS_EVALUATION_BEGINS_ONLY_AFTER_BOTH_INDEPENDENT_CHAINS_EXIST",
-    "SILENCE_INTENT_AND_EMOTIONAL_MEANING_NOT_INFERRED_WITHOUT_EVIDENCE"
+    "PREDECESSOR_RUN1_EVENTS_1_2_PRESERVED_EXACTLY",
+    "PREDECESSOR_RUN2_EVENT3_NON_EMISSION_PRESERVED_EXACTLY",
+    "EXPECTED_EVIDENCE_DECLARATION_FROZEN_BEFORE_INTERPRETATION",
+    "FIRST_AUTHENTIC_ELAN_NATIVE_RETURN_TO_SPEECH_TRANSITION_OBSERVED",
+    "RETURN_TRANSITION_SOURCE_NATIVE_EVIDENCE_PRESERVED",
+    "IMMUTABLE_MANIFEST_REFERENCE_BOUND",
+    "GOVERNED_RESULT_REFERENCE_BOUND",
+    "DETERMINISTIC_REPLAY_PRESERVED",
+    "RECONSTRUCTION_PRESERVED",
+    "RETURNED_RESULT_PRESERVED",
+    "NOT_EXPOSED_REMAINS_NOT_EXPOSED",
+    "UNRESOLVED_REMAINS_UNRESOLVED",
+    "SILENCE_HAS_NO_INFERRED_INTENT_CONSENT_REFUSAL_WITHDRAWAL_OR_MEANING"
   ],
   "runtime_requirements": {
-    "capabilities": ["github_repository_read", "github_pull_request_write", "third_party_native_trace_intake", "governed_sdk_submission"],
-    "environment": "CURRENT_SESSION_PLUS_EXISTING_AUTHORIZED_STEGVERSE_RUNTIME_WHEN_AVAILABLE",
-    "direction": "THIRD_PARTY_NATIVE_TRACE_TO_INDEPENDENT_GOVERNED_COMPARISON",
+    "capabilities": [
+      "github_repository_read",
+      "github_pull_request_write",
+      "experiment_evidence_reconciliation",
+      "governed_result_reference_preservation"
+    ],
+    "environment": "EXISTING_ELAN_EXPERIMENT_EVIDENCE_CHAIN",
+    "direction": "CONTINUED_NON_EMISSION_TO_FIRST_AUTHENTIC_RETURN_TO_SPEECH",
     "mutation_required": true,
     "deployment_required": false,
     "current_observation_required": true
@@ -69,40 +93,52 @@
       "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
     ],
     "reviews": [
-      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"SELECTED","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md","docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"SUITABLE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"SUITABLE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"SUITABLE","limitation_class":"EVIDENCE_REACHABILITY","evidence_refs":["docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/GADI_RESIDENT_EXECUTION_MIRROR_HANDOFF.md"]}
+      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md"]}
     ],
-    "selected_substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+    "selected_substrate_id": null,
     "external_device_required": false,
     "second_user_operated_device_allowed": false,
     "authority_effect": "NONE"
   },
-  "worker_claim": {"authority":"NONE_UNTIL_EXISTING_WORKERCOORDINATOR_CLAIM_FENCE","claim_ref":null,"fence_ref":null,"projection_only":false},
+  "worker_claim": {
+    "authority": "NOT_APPLICABLE_TO_ELAN_EXPERIMENT_CONTINUATION",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": false
+  },
   "human_action_ref": null,
-  "completion": {"claimed":false,"validated":false,"reconciliation_ref":null},
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": null
+  },
   "allowed_next_transitions": [
-    "RECEIVE_AND_HASH_ELAN_NATIVE_TRACE",
-    "BUILD_STEGVERSE_REPRESENTED_EVENT_PACKAGE",
-    "OBSERVE_CURRENT_RETAINED_RESIDENT_RUNTIME_BINDING",
-    "SUBMIT_THROUGH_EXISTING_GOVERNED_SDK_PATH_WHEN_AUTHORIZED",
-    "PRESERVE_NATIVE_STEGVERSE_EVIDENCE_CHAIN",
-    "COMPARE_AFTER_BOTH_CHAINS_EXIST"
+    "CONTINUE_NON_EMISSION_OBSERVATION",
+    "CAPTURE_FIRST_AUTHENTIC_ELAN_NATIVE_RETURN_TO_SPEECH",
+    "PRESERVE_RETURN_TRANSITION_SOURCE_NATIVE_EVIDENCE",
+    "BIND_IMMUTABLE_MANIFEST_AND_GOVERNED_RESULT_REFERENCES",
+    "PRESERVE_REPLAY_RECONSTRUCTION_AND_RETURNED_RESULT",
+    "COMPARE_AGAINST_FROZEN_EXPECTED_EVIDENCE"
   ],
-  "handoff_projection_refs": ["docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md"],
+  "handoff_projection_refs": [
+    "docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md"
+  ],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
-    "substrate_selection_mints_execution_authority": false,
     "github_actions_mint_execution_authority": false,
-    "third_party_trace_mints_stegverse_execution_authority": false,
-    "sdk_source_validation_proves_runtime_execution": false,
-    "interlock_intr_remains_transition_authority": true,
-    "workercoordinator_remains_claim_fence_authority": true,
-    "tv_tvc_remains_credential_authority_where_applicable": true,
-    "historical_or_third_party_evidence_may_be_rewritten": false
+    "github_token_authority_is_experiment_prerequisite": false,
+    "third_party_evaluator_execution_is_experiment_prerequisite": false,
+    "live_stegos_intr_runtime_is_experiment_prerequisite": false,
+    "historical_or_source_native_evidence_may_be_rewritten": false
   },
-  "readme_impact": {"material_function_change": false, "readme_updated_in_change_set": false, "readme_path": "README.md"}
+  "readme_impact": {
+    "material_function_change": false,
+    "readme_updated_in_change_set": false,
+    "readme_path": "README.md"
+  }
 }
