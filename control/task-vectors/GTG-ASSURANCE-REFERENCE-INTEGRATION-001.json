@@ -2,11 +2,11 @@
   "identity": "StegVerse-Labs/.github:task:GTG-ASSURANCE-REFERENCE-INTEGRATION-001",
   "profile": "task.v1",
   "level": "task",
-  "vector": "10100000100000",
+  "vector": "40000100100000",
   "evidence_refs": [
     "data/canonical-task-records/GTG-ASSURANCE-REFERENCE-INTEGRATION-001.json",
     "docs/GTG_ASSURANCE_REFERENCE_INTEGRATION_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegScholar:GTG_ASSURANCE_REFERENCE_INTEGRATION_MIRROR_HANDOFF.md"
   ],
-  "observed_at": "2026-09-15T16:00:00Z"
+  "observed_at": "2026-09-15T21:13:00-05:00"
 }
