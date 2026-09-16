@@ -5,8 +5,11 @@
   "vector": "40000100100000",
   "evidence_refs": [
     "data/canonical-task-records/KV-ICLOUD-AUTOMATED-UPGRADE-001.json",
+    "docs/KV_ICLOUD_AUTOMATED_UPGRADE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site/actions/runs/35144058676",
+    "StegVerse-Labs/Site/actions/artifacts/10465584595",
     "StegVerse-Labs/continuity-vault-kit/KV_ICLOUD_AUTOMATED_UPGRADE_MIRROR_HANDOFF.md"
   ],
   "authority_effect": "NONE_COORDINATION_STATE_ONLY",
-  "observed_at": "2026-09-15T08:12:00-05:00"
+  "observed_at": "2026-09-16T15:01:50-05:00"
 }
