@@ -21,12 +21,14 @@
     "https://edu.google.com/intl/ALL_in/contact/",
     "https://support.google.com/youtube/answer/15503014",
     "https://developers.google.com/youtube/v3/live/docs/liveBroadcasts",
-    "https://developers.google.com/youtube/v3/live/docs/liveChatMessages/streamList"
+    "https://developers.google.com/youtube/v3/live/docs/liveChatMessages/streamList",
+    "https://support.google.com/a/users/answer/33324",
+    "https://support.google.com/a/answer/11112794"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
     "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegLearn"],
-    "components": ["youtube-player-for-education-partner-evaluation", "google-for-education-partner-advantage-entry", "classroom-of-one-media-capability-matrix", "provider-neutral-learning-media-adapter", "google-specialist-outreach-package"]
+    "components": ["youtube-player-for-education-partner-evaluation", "google-for-education-partner-advantage-entry", "classroom-of-one-media-capability-matrix", "provider-neutral-learning-media-adapter", "google-specialist-outreach-package", "google-managed-identity-reconciliation"]
   },
   "dependencies": [],
   "blockers": [],
@@ -39,7 +41,9 @@
     "StegVerse-Labs/StegLearn:docs/GOOGLE_EDUCATION_OUTREACH_PACKAGE.md",
     "OWNER_REPORTED_SUBMISSION_2026-09-15",
     "CONNECTED_GMAIL_SEARCH_2026-09-15_NO_MATCHING_GOOGLE_ACKNOWLEDGEMENT",
-    "CONNECTED_GMAIL_SEARCH_2026-09-15T21:12-05:00_SECOND_CHECK_NO_MATCHING_GOOGLE_ACKNOWLEDGEMENT"
+    "CONNECTED_GMAIL_SEARCH_2026-09-15T21:12-05:00_SECOND_CHECK_NO_MATCHING_GOOGLE_ACKNOWLEDGEMENT",
+    "CONNECTED_GMAIL_2026-09-16_ORIGINAL_ADMIN_IDENTITY_RIGE1RANDOLOH_AT_STEGVERSE_ORG",
+    "CONNECTED_GMAIL_2026-09-16_WORKSPACE_BUSINESS_STANDARD_SUSPENDED_2025-12-04_CANCELLATION_ON_OR_AFTER_2026-10-07"
   ],
   "expected_evidence_predicates": [
     "CANONICAL_TASK_SHARD_REGISTERED",
@@ -53,13 +57,16 @@
     "OWNER_REPORTED_SUBMISSION_RECONCILED",
     "SECOND_CONNECTED_GMAIL_RESPONSE_CHECK_RECONCILED",
     "STEGLEARN_EXACT_HEAD_VALIDATION_GREEN_AFTER_SECOND_GMAIL_CHECK",
+    "GOOGLE_ORIGINAL_ADMIN_IDENTITY_RECONCILED",
+    "GOOGLE_ADMIN_SUBSCRIPTION_STATE_OBSERVED",
+    "RIGEL_STEGVERSE_ORG_MANAGED_IDENTITY_STATE_CLASSIFIED",
     "GOOGLE_ACKNOWLEDGEMENT_OR_RESPONSE_RECORDED_WHEN_OBSERVED",
     "NO_PARTNERSHIP_OR_RUNTIME_CAPABILITY_FABRICATED"
   ],
   "runtime_requirements": {
-    "capabilities": ["github_repository_read", "github_repository_write", "public_web_research", "connected_gmail_search"],
-    "environment": "CURRENT_SESSION_GITHUB_PLUS_PUBLIC_WEB_PLUS_CONNECTED_GMAIL",
-    "direction": "AUTHORIZED_EXTERNAL_OUTREACH_TO_EVIDENCE_RECONCILIATION",
+    "capabilities": ["github_repository_read", "github_repository_write", "public_web_research", "connected_gmail_search", "google_admin_console_human_access"],
+    "environment": "CURRENT_SESSION_GITHUB_PLUS_PUBLIC_WEB_PLUS_CONNECTED_GMAIL_PLUS_OWNER_GOOGLE_ADMIN_CONSOLE",
+    "direction": "AUTHORIZED_EXTERNAL_OUTREACH_TO_MANAGED_IDENTITY_RECONCILIATION_TO_EVIDENCE_RECONCILIATION",
     "mutation_required": true,
     "deployment_required": false,
     "current_observation_required": true
@@ -80,10 +87,10 @@
     "second_user_operated_device_allowed": false,
     "authority_effect": "NONE"
   },
-  "worker_claim": {"authority":"CURRENT_SESSION","claim_ref":null,"fence_ref":null,"projection_only":false},
-  "human_action_ref": "Provide any non-emailed Google confirmation/reference artifact if available; otherwise wait for written Google response.",
+  "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":false},
+  "human_action_ref": "Sign in at admin.google.com with Rige1Randoloh@stegverse.org; observe Billing > Subscriptions and classify Rigel@stegverse.org as managed, unmanaged/conflicting, or absent before any user creation; reconcile through the applicable minimum-risk path; then retry Partner Network enrollment and preserve the resulting acknowledgement or blocker condition.",
   "completion": {"claimed": false, "validated": false, "reconciliation_ref": null},
-  "allowed_next_transitions": ["RECORD_GOOGLE_ACKNOWLEDGEMENT", "RECORD_GOOGLE_ROUTING_RESPONSE", "RECORD_GOOGLE_TECHNICAL_RESPONSE", "EVALUATE_NEGOTIATED_CAPABILITY_GAPS"],
+  "allowed_next_transitions": ["RECONCILE_GOOGLE_MANAGED_IDENTITY", "RETRY_PARTNER_NETWORK_ENROLLMENT", "RECORD_GOOGLE_ACKNOWLEDGEMENT", "RECORD_GOOGLE_ROUTING_RESPONSE", "RECORD_GOOGLE_TECHNICAL_RESPONSE", "EVALUATE_NEGOTIATED_CAPABILITY_GAPS"],
   "handoff_projection_refs": ["docs/STEGLEARN_YOUTUBE_EDUCATION_PARTNERSHIP_MIRROR_HANDOFF.md"],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
@@ -95,7 +102,20 @@
     "learner_data_transmission_authority": false,
     "google_is_instructional_authority": false,
     "steglearn_retains_curriculum_adaptation_evidence_mastery_authority": true,
-    "proprietary_av_build_allowed_while_google_path_viable_untested": false
+    "proprietary_av_build_allowed_while_google_path_viable_untested": false,
+    "mail_routing_or_dns_mutation_authorized_for_identity_reconciliation": false
+  },
+  "organization_identity_reconciliation": {
+    "admin_identity": "Rige1Randoloh@stegverse.org",
+    "admin_identity_evidence": "CONNECTED_GMAIL_OBSERVED",
+    "workspace_business_standard_state": "SUSPENDED_CANCELLATION_PENDING",
+    "workspace_suspended_date": "2025-12-04",
+    "workspace_cancellation_on_or_after": "2026-10-07",
+    "target_managed_identity": "Rigel@stegverse.org",
+    "target_managed_identity_state": "ADMIN_CONSOLE_OBSERVATION_REQUIRED",
+    "precreate_unmanaged_conflict_check_required": true,
+    "mail_routing_change_required": false,
+    "dns_change_required": false
   },
   "capability_evaluation": {
     "managed_video_downlink": "PUBLICLY_SUPPORTED",
