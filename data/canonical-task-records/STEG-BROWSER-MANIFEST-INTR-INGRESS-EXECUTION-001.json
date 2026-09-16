@@ -10,11 +10,7 @@
   "status_reason": "GOAL_PROMPT_COUNT_20_REACHED_WITH_AUTHENTIC_A1_A4_AND_ROUNDTRIP_EVIDENCE_ABSENT; REMAINING WORK DECOMPOSED INTO SEPARATE CANONICAL SUCCESSORS",
   "cosv_task_vector": "40000100100000",
   "handoff_ref": "docs/STEGBROWSER_MANIFEST_INTR_INGRESS_EXECUTION_MIRROR_HANDOFF.md",
-  "prompt_budget": {
-    "goal_prompt_count": "20/20",
-    "terminal_prompt_processed": true,
-    "further_parent_prompts_allowed": false
-  },
+  "prompt_budget": {"goal_prompt_count":"20/20","terminal_prompt_processed":true,"further_parent_prompts_allowed":false},
   "runtime_requirements": {
     "selected_substrate": "ADMITTED-EPHEMERAL-STEGOS-NODE",
     "standing_runtime_required": false,
@@ -25,60 +21,26 @@
     "registered_node_binding_required": true,
     "node_interlock_binding_required_before_lease": true
   },
-  "immutable_invocation": {
-    "canonical_request_commit": "19935454cd8c68000b3a0fd70478b0d89d5cd622",
-    "invocation_request_nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
-    "requested_invocation_count": 1,
-    "second_request_allowed": false,
-    "request_mutation_allowed": false,
-    "destination": "StegBrowser:ManifestInvocation"
-  },
-  "source_completion": {
-    "single_canonical_universal_intr_binding_merged_validated": true,
-    "sv002_site_baseline_and_stegbrowser_adaptation_merged_validated": true,
-    "current_iphone_binding_repair_merged_validated": true,
-    "site_current_iphone_repair_pr": 1360,
-    "site_current_iphone_repair_merge_sha": "76af62f2befdfa7034d3dd00891bfe60a0990abb",
-    "site_handoff_reconciliation_pr": 1361,
-    "site_handoff_reconciliation_merge_sha": "7c483335f259d5eacf9a55dde923c0c4fefd660e",
-    "github_handoff_reconciliation_pr": 2002,
-    "github_handoff_reconciliation_merge_sha": "7d04c6a789d2d6f05afae0c8e766761777ebc224",
-    "github_runtime_authority": "NONE"
-  },
-  "authentic_runtime_completion": {
-    "registered_stegverse_node_bound_to_invocation": false,
-    "interlock_bound_to_node_and_manifest": false,
-    "intr_materialization_admitted": false,
-    "invocation_scoped_lease_established": false,
-    "event_ephemeral_runtime_materialized": false,
-    "execution_time_runtime_identity_bound": false,
-    "workercoordinator_claim_fence_observed": false,
-    "organization_local_intr_ingress_receipt_verified": false,
-    "authentic_intr_ingress_observed": false,
-    "a1_a4_complete": false,
-    "round_trip_1_started": false,
-    "round_trip_2_started": false
-  },
-  "decomposition": {
-    "required": true,
-    "reason": "AUTHENTIC_RUNTIME_AND_ROUNDTRIP_EVIDENCE_ABSENT_AT_GOAL_PROMPT_LIMIT",
-    "successor_task_ids": [
-      "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001",
-      "STEG-BROWSER-GOVERNED-ROUNDTRIP-001"
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": ["STEG-BROWSER-RETAINED-RESIDENT-NODE","STEGOS-CURRENT-DEVICE-NODE","STEG-BROWSER-EPHEMERAL-LEASE","SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","ADMITTED-EPHEMERAL-STEGOS-NODE","REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"],
+    "reviews": [
+      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":[]},
+      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"SUITABLE","limitation_class":"ARCHITECTURAL","evidence_refs":["StegVerse-Labs/StegOS:stegos/network_manifold.py","docs/SV002_EVENT_EPHEMERAL_OBSERVATION_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"SUITABLE","limitation_class":"NONE","evidence_refs":["workers/sv002_intr_materialization_consumer.py","scripts/run_stegbrowser_runtime_consumption_reusable.legacy.py"]},
+      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":[]},
+      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"SELECTED","limitation_class":"NONE","evidence_refs":["workers/universal_intr_profiled_ingress.py","workers/stegbrowser_intr_materialization_ingress.py","workers/stegbrowser_intr_materialization_consumer.py","scripts/run_stegbrowser_universal_intr_materialization.py","scripts/run_stegbrowser_manifest_bound_runtime.py","workers/stegbrowser_manifest_intr_ingress.py"]},
+      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":[]}
     ],
-    "active_successor_task_id": "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001",
-    "active_successor_handoff": "docs/STEGBROWSER_CURRENT_IPHONE_A1_A4_EXECUTION_MIRROR_HANDOFF.md",
-    "dependent_successor_task_id": "STEG-BROWSER-GOVERNED-ROUNDTRIP-001",
-    "dependent_successor_handoff": "docs/STEGBROWSER_GOVERNED_ROUNDTRIP_MIRROR_HANDOFF.md",
-    "first_unresolved_successor_predicate": "REGISTERED_STEGVERSE_NODE_BOUND_TO_INVOCATION"
+    "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
   },
+  "immutable_invocation": {"canonical_request_commit":"19935454cd8c68000b3a0fd70478b0d89d5cd622","invocation_request_nonce":"STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z","requested_invocation_count":1,"second_request_allowed":false,"request_mutation_allowed":false,"destination":"StegBrowser:ManifestInvocation"},
+  "source_completion": {"single_canonical_universal_intr_binding_merged_validated":true,"sv002_site_baseline_and_stegbrowser_adaptation_merged_validated":true,"current_iphone_binding_repair_merged_validated":true,"site_current_iphone_repair_pr":1360,"site_current_iphone_repair_merge_sha":"76af62f2befdfa7034d3dd00891bfe60a0990abb","site_handoff_reconciliation_pr":1361,"site_handoff_reconciliation_merge_sha":"7c483335f259d5eacf9a55dde923c0c4fefd660e","github_handoff_reconciliation_pr":2002,"github_handoff_reconciliation_merge_sha":"7d04c6a789d2d6f05afae0c8e766761777ebc224","github_runtime_authority":"NONE"},
+  "authentic_runtime_completion": {"registered_stegverse_node_bound_to_invocation":false,"interlock_bound_to_node_and_manifest":false,"intr_materialization_admitted":false,"invocation_scoped_lease_established":false,"event_ephemeral_runtime_materialized":false,"execution_time_runtime_identity_bound":false,"workercoordinator_claim_fence_observed":false,"organization_local_intr_ingress_receipt_verified":false,"authentic_intr_ingress_observed":false,"a1_a4_complete":false,"round_trip_1_started":false,"round_trip_2_started":false},
+  "decomposition": {"required":true,"reason":"AUTHENTIC_RUNTIME_AND_ROUNDTRIP_EVIDENCE_ABSENT_AT_GOAL_PROMPT_LIMIT","successor_task_ids":["STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001","STEG-BROWSER-GOVERNED-ROUNDTRIP-001"],"active_successor_task_id":"STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001","active_successor_handoff":"docs/STEGBROWSER_CURRENT_IPHONE_A1_A4_EXECUTION_MIRROR_HANDOFF.md","dependent_successor_task_id":"STEG-BROWSER-GOVERNED-ROUNDTRIP-001","dependent_successor_handoff":"docs/STEGBROWSER_GOVERNED_ROUNDTRIP_MIRROR_HANDOFF.md","first_unresolved_successor_predicate":"REGISTERED_STEGVERSE_NODE_BOUND_TO_INVOCATION"},
   "allowed_next_transitions": [],
-  "authority_model": {
-    "node_authority_effect": "CONTINUITY_ADMISSION_ANCHOR_ONLY",
-    "interlock_intr_transition_authority": true,
-    "worker_claim_authority": "WORKERCOORDINATOR",
-    "credential_authority": "TV/TVC",
-    "github_runtime_authority": "NONE",
-    "second_user_operated_device_required": false
-  }
+  "authority_model": {"node_authority_effect":"CONTINUITY_ADMISSION_ANCHOR_ONLY","interlock_intr_transition_authority":true,"worker_claim_authority":"WORKERCOORDINATOR","credential_authority":"TV/TVC","github_runtime_authority":"NONE","second_user_operated_device_required":false}
 }
