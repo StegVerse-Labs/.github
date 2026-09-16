@@ -1,0 +1,12 @@
+{
+  "profile": "task.v1",
+  "task_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+  "vector": "50000000100000",
+  "parent_task_id": null,
+  "evidence_refs": [
+    "StegVerse-Labs/.github:docs/MIR_STEGVERSE_SEPARATION_OF_POWERS_EVIDENCE_CONTRACT_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github:docs/mir-reference-architecture/SEPARATION_OF_POWERS_REFERENCE_ARCHITECTURE_DRAFT.md",
+    "StegVerse-Labs/.github:data/canonical-task-records/MIR-LEAF-V3-CONFORMANCE-FIXTURE-001.json"
+  ],
+  "authority_effect": "NONE"
+}
