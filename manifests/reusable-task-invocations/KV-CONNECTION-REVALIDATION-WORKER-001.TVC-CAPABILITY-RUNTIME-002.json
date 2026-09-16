@@ -1,0 +1,132 @@
+{
+  "authority": {
+    "automation_trigger": "NON_AUTHORIZING_ORCHESTRATION_ONLY",
+    "credential_authority": "TV/TVC",
+    "execution_claim_and_fence": "WORKERCOORDINATOR",
+    "github_token_runtime_authority": "NONE",
+    "governed_transition": "INTERLOCK_INTR",
+    "observed_reality_and_reconstruction": "MASTER_RECORDS"
+  },
+  "automation_plan": {
+    "boundary_receipt_required": true,
+    "declared_runner_refs": [
+      "scripts/run_tvc_runtime_boundary_reusable.py"
+    ],
+    "dependent_work_waits_for_required_completion_evidence": true,
+    "independent_work_may_continue_at_boundary": true,
+    "manual_coordination_between_machine_admissible_internal_steps_required": false,
+    "mode": "TRIGGER_ONCE_ADVANCE_UNTIL_COMPLETION_OR_REAL_BOUNDARY",
+    "single_trigger": true,
+    "stop_boundaries": [
+      "AUTHORITY_REQUIRED_AND_NOT_HELD",
+      "EVIDENCE_REQUIRED_AND_NOT_OBSERVED",
+      "EXTERNAL_RESOURCE_REQUIRED_AND_NOT_AVAILABLE",
+      "HUMAN_DECISION_REQUIRED",
+      "UNRESOLVED_STATE_OR_CONTRADICTION",
+      "DECLARED_RUNNER_NOT_MATERIALIZED",
+      "NO_EXECUTABLE_RUNNER_DECLARED",
+      "COMPLETION_REACHED"
+    ],
+    "trigger_driver": "scripts/trigger_reusable_task.py"
+  },
+  "construct": {
+    "gtg": {
+      "authority_effect_from_reusable_definition": "NONE_OBSERVATION_AND_CUSTODY_ONLY",
+      "execution_proof": false,
+      "interlock_intr_transition_required": true,
+      "parameter_hash": "fed0e44e752f79314a2f0af7ab8cac66b0d2add8faa7f2b66e5fe27274785cc1",
+      "purpose": "Observe or derive an existing TV/TVC-authorized provider-operation runtime from qualifying real provider-operation receipt chains, using the existing non-secret synthetic observer only as a diagnostic fallback, then admit the exact evidence through Interlock/InTr and carry it to Master Records custody without creating runtime, transition, credential, or custody authority.",
+      "reusable_task_id": "RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001",
+      "role": "EVALUATE_WHETHER_CANDIDATE_REALIZATION_MAY_COMMIT",
+      "task_id": "KV-CONNECTION-REVALIDATION-WORKER-001"
+    },
+    "rtg": {
+      "allow_authority": false,
+      "candidate_context": {
+        "completion_predicate": "DEPLOYED_QUERY_SECRET_SAFE_INGRESS_OBSERVED",
+        "diagnostic_fallback": "StegVerse-Labs/TVC:scripts/observe_tvc_runtime_boundary.py",
+        "evidence_custody_task": "RT-INTR-EVIDENCE-CUSTODY-001",
+        "expected_ready_state": "READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND",
+        "intr_admission_task": "RT-INTR-BOUNDARY-ADMISSION-001",
+        "master_records_destination": "master-records/orchestration",
+        "primary_evidence_source": "AUTHENTIC_DEPLOYED_QUERY_SECRET_SAFE_SERVICE_GATEWAY_LOG_OBSERVATION",
+        "provider_operation_route": "https://tvc.stegverse.org/v1/provider-operation",
+        "provider_operation_task_ref": "StegVerse-Labs/TVC:tasks/TVC-PROVIDER-OPERATION-BROKER-003.json",
+        "require_vault_backed_provider_binding": true,
+        "runtime_observer_task_ref": "StegVerse-Labs/TVC:tasks/TVC-CAPABILITY-RUNTIME-002.json"
+      },
+      "parameter_hash": "fed0e44e752f79314a2f0af7ab8cac66b0d2add8faa7f2b66e5fe27274785cc1",
+      "purpose": "Observe or derive an existing TV/TVC-authorized provider-operation runtime from qualifying real provider-operation receipt chains, using the existing non-secret synthetic observer only as a diagnostic fallback, then admit the exact evidence through Interlock/InTr and carry it to Master Records custody without creating runtime, transition, credential, or custody authority.",
+      "reusable_task_id": "RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001",
+      "role": "DESCRIBE_REALIZED_OR_CANDIDATE_RELATIONAL_TRANSITION_GEOMETRY",
+      "task_id": "KV-CONNECTION-REVALIDATION-WORKER-001"
+    },
+    "tt": {
+      "execution_observation_separation_required": true,
+      "parameter_hash": "fed0e44e752f79314a2f0af7ab8cac66b0d2add8faa7f2b66e5fe27274785cc1",
+      "purpose": "Observe or derive an existing TV/TVC-authorized provider-operation runtime from qualifying real provider-operation receipt chains, using the existing non-secret synthetic observer only as a diagnostic fallback, then admit the exact evidence through Interlock/InTr and carry it to Master Records custody without creating runtime, transition, credential, or custody authority.",
+      "receipt_chain_required": true,
+      "reusable_task_id": "RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001",
+      "role": "RECORD_DECISION_COMMIT_EXECUTION_OBSERVATION_AND_CONTINUATION",
+      "task_id": "KV-CONNECTION-REVALIDATION-WORKER-001"
+    }
+  },
+  "cosv_task_vector": "50000000102000",
+  "invocation_id": "KV-CONNECTION-REVALIDATION-WORKER-001:TVC-CAPABILITY-RUNTIME-002:QUERY-SECRET-SAFE-INGRESS-001",
+  "manifest_hash": "04c3c1c127c8fedec15652067c37048ae232675aff10f26d81eed0cdeacbd1aa",
+  "parameters": {
+    "completion_predicate": "DEPLOYED_QUERY_SECRET_SAFE_INGRESS_OBSERVED",
+    "diagnostic_fallback": "StegVerse-Labs/TVC:scripts/observe_tvc_runtime_boundary.py",
+    "evidence_custody_task": "RT-INTR-EVIDENCE-CUSTODY-001",
+    "expected_ready_state": "READY_PRIMARY_RUNTIME_PROVIDER_OPERATION_BOUND",
+    "intr_admission_task": "RT-INTR-BOUNDARY-ADMISSION-001",
+    "master_records_destination": "master-records/orchestration",
+    "primary_evidence_source": "AUTHENTIC_DEPLOYED_QUERY_SECRET_SAFE_SERVICE_GATEWAY_LOG_OBSERVATION",
+    "provider_operation_route": "https://tvc.stegverse.org/v1/provider-operation",
+    "provider_operation_task_ref": "StegVerse-Labs/TVC:tasks/TVC-PROVIDER-OPERATION-BROKER-003.json",
+    "require_vault_backed_provider_binding": true,
+    "runtime_observer_task_ref": "StegVerse-Labs/TVC:tasks/TVC-CAPABILITY-RUNTIME-002.json"
+  },
+  "recording": {
+    "entropy_recovery_conditions": [
+      "RUNNER_EXPIRED",
+      "REQUIRED_RECORDING_LEVELS_COMPLETE",
+      "REQUIRED_RECEIPT_CHAIN_COMPLETE",
+      "MASTER_RECORDS_CUSTODY_ACCEPTED",
+      "MASTER_RECORDS_RECONSTRUCTION_CONFIRMED",
+      "NO_UNRECORDED_SUCCESSOR_OR_CORRECTION_DEPENDENCY_REQUIRES_RESIDUAL_CONSTRUCT"
+    ],
+    "levels": [
+      "operation",
+      "task",
+      "goal",
+      "component",
+      "system",
+      "master_records"
+    ],
+    "master_records_required_before_entropy_recovery": true,
+    "receipt_chain_required": true
+  },
+  "reusable_task_id": "RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001",
+  "runner_plan": {
+    "ephemeral_where_possible": true,
+    "expiry_conditions": [
+      "INVOCATION_TERMINAL_BOUNDARY_REACHED",
+      "OR_EXECUTION_AUTHORITY_EXPIRES"
+    ],
+    "materialization_refs": [
+      "scripts/run_tvc_runtime_boundary_reusable.py"
+    ],
+    "post_expiry_residual": "NON_EXECUTING_RECORDING_CONSTRUCT_IF_REQUIRED_RECORDING_REMAINS"
+  },
+  "schema": "stegverse.reusable-task-invocation-manifest/v1",
+  "source_refs": [
+    "data/reusable-task-registry.json",
+    "source-bundles/reusable-task-registry.d",
+    "data/reusable-task-ephemeral-construct-contract.json",
+    "scripts/trigger_reusable_task.py",
+    "management/COSV_PROFILE_V1.json",
+    "StegVerse-Labs/StegScholar:papers/rtg-gtg-tt/cross-layer-contract.md"
+  ],
+  "task_id": "KV-CONNECTION-REVALIDATION-WORKER-001"
+}
