@@ -8,7 +8,7 @@ Repository: `StegVerse-Labs/.github`
 - Goal Task ID: `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001`
 - Parent Goal: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / SINGLE CANONICAL UNIVERSAL-INTR BINDING MERGED+VALIDATED / SV002 SITE REUSABLE BASELINE MERGED+VALIDATED / AUTHENTIC A1-A4 EXECUTION PENDING`
+- Status: `ACTIVE / CHECKED_OUT / SINGLE CANONICAL UNIVERSAL-INTR BINDING MERGED+VALIDATED / SV002 SITE REUSABLE BASELINE MERGED+VALIDATED / RESIDENT NODE-BINDING TRANSPORT REPAIR IN VALIDATION / AUTHENTIC A1-A4 EXECUTION PENDING`
 - Canonical Universal InTr binding issue: `#1952` CLOSED source-complete only.
 - Canonical Universal InTr binding PR: `#1955`.
 - Canonical validated head: `2d3b2e8292397b80285078ad4130b0c5cfebfac0`.
@@ -24,6 +24,7 @@ Repository: `StegVerse-Labs/.github`
 - PR #1966 exact-head validation: Organization Control `35092566189`, Deterministic Suite `35092566222`, Heartbeat `35092566216` — all SUCCESS.
 - PR #1966 merge: `94b8804687baed9251b4e6ecbb640f14c7259dc6`.
 - Site SV002 reusable baseline: PR `#1354`, exact validated head `0ae6bbd252741599c7cab06746f274b901d2e455`, focused validation `34993797222` SUCCESS, merge `a8846026bc80b9890c07ad72dda1350ce7f3c0d4`.
+- PR `#1996` is the bounded resident transport repair under validation; it does not create a second execution path.
 - Issue `#1918` remains closed; the generic process-host premise is invalid under the validated event-ephemeral architecture.
 
 ## Canonical architecture
@@ -156,6 +157,14 @@ The unchanged one-shot nonce was not re-emitted. A fresh main-branch evidence sw
 
 This is an evidence/access condition, not a source-architecture defect. GitHub/CI remains evidence transport and validation only and must not be promoted into runtime authority to bypass the missing sovereign execution surface. No predicate is promoted, the immutable nonce/request remains unchanged, and Round Trip 1 remains unentered.
 
+## 2026-09-16 resident transport investigation and repair
+
+The existing non-authorizing `scripts/dispatch_resident_execution_requests.py` already registers selector `stegbrowser_runtime_connection_ingress` and calls the existing `scripts/consume_stegbrowser_runtime_connection_ingress_request.py` with local source/runtime roots. The consumer already owns the correct A1 observation and then invokes the canonical manifest-bound runtime owner; no new listener, materializer, scheduler, WorkerCoordinator, or execution request is required.
+
+The precise source defect was the dispatcher's sanitized environment allowlist: it did not preserve the consumer's concrete registered Node Receipt #1 path binding `STEGVERSE_NODE_GENESIS_RECEIPT`, nor the optional `STEGVERSE_STEGOS_SOURCE_ROOT` / `STEGVERSE_EPHEMERAL_RUNTIME_BASE` path bindings used by that same canonical runtime composition. PR #1996 repairs only those non-secret path transports and recognizes the consumer's current bounded observation result states. Hosted markers and GitHub credential variables remain stripped, GitHub runtime authority remains `NONE`, TV/TVC remains credential authority, and the dispatcher remains non-authorizing.
+
+This repair makes the already-existing sovereign resident dispatch surface callable when those authentic local bindings are present. It does not prove that such a resident surface executed, does not promote any A1-A4 predicate, and does not enter Round Trip 1.
+
 ## Expected same-invocation evidence
 
 The canonical path may retain, as applicable:
@@ -189,11 +198,11 @@ Any promotion must preserve exact Goal/COSV/nonce/manifest/node/interlock/regist
 
 ## Immediate continuation
 
-Do not emit another request and do not add another materialization profile. Continue only with the unchanged nonce through the single canonical #1955 `StegBrowser:ManifestInvocation` representation. Reuse the merged #1966 Site-SV002 baseline guidance rather than reconstructing runtime mechanics. Observe the authorized sovereign execution surface when it becomes reachable; inspect/retain authentic same-invocation Node binding, `INGRESS_ADMITTED`, bounded lease, EVENT_EPHEMERAL runtime, WorkerCoordinator claim/fence, and A4 ingress receipts. Promote only predicates directly proven by those authority-owned receipts. Stop before Round Trip 1 unless authentic A1-A4 completion is established.
+Do not emit another request and do not add another materialization profile. After exact-head validation and merge of PR #1996, invoke only the already-registered `stegbrowser_runtime_connection_ingress` selector from an authorized sovereign resident dispatcher carrying the authentic local Node Receipt #1 path binding. The unchanged nonce remains the only invocation. Inspect/retain same-invocation Node binding, `INGRESS_ADMITTED`, bounded lease, EVENT_EPHEMERAL runtime, WorkerCoordinator claim/fence, and A4 ingress receipts. Promote only predicates directly proven by those authority-owned receipts. Stop before Round Trip 1 unless authentic A1-A4 completion is established.
 
 ## README review
 
-README reviewed again after #1966 and the bounded runtime observation. No byte change required because the public runtime/authority topology remains the already-documented single shared Universal InTr/event-ephemeral architecture; the changes are reusable-baseline and evidence-state reconciliation only.
+README reviewed for PR #1996. No byte change is required because README already documents `CANONICAL_REGISTERED_STEGVERSE_NODE_BINDING`, the sole concrete `node_genesis_receipt` / `STEGVERSE_NODE_GENESIS_RECEIPT` contract, and the single resident-dispatch/WorkerCoordinator authority topology. The repair changes only path transport through the existing non-authorizing dispatcher.
 
 ## Manual work
 
