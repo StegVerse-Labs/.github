@@ -1,0 +1,47 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+  "correlation_id": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+  "root_correlation_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+  "parent_task_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+  "goal": "Make canonical Master Records custody/reconstruction an intrinsic consequence of every observed governed state transition across StegVerse, replacing task-specific diagnostic fanout as the primary recording mechanism while preserving separation of powers and exact transition lineage.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "HANDOFF_READY",
+  "cosv_task_vector": "50000000100000",
+  "canonical_handoff": "docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md",
+  "canonical_contract": "control/canonical-master-records-state-transition-custody-contract.json",
+  "dependencies": [
+    "control/entity-autonomous-governed-progression-contract.json",
+    "workers/reusable_task_master_records_roundtrip.py"
+  ],
+  "expected_evidence_predicates": [
+    "EVERY_GOVERNED_STATE_CHANGE_EMITS_CANONICAL_STATE_RECEIPT",
+    "EVERY_OBSERVED_STATE_RECEIPT_IS_SUBMITTED_TO_MASTER_RECORDS",
+    "MASTER_RECORDS_RECONSTRUCTS_CURRENT_STATE_WITHOUT_GRANTING_AUTHORITY",
+    "ALLOW_DENY_EXECUTION_AND_FAILURE_STATES_HAVE_CUSTODY",
+    "TASK_SPECIFIC_DIAGNOSTICS_ARE_NOT_PRIMARY_CUSTODY_PATH",
+    "MIR_CONSUMES_CANONICAL_CUSTODY_PATH",
+    "SV002_SEMANTICS_PRESERVED"
+  ],
+  "completion": {
+    "claimed": false,
+    "validated": false
+  },
+  "allowed_next_transitions": [
+    "INVENTORY_EXISTING_CANONICAL_STATE_RECEIPT_EMITTERS",
+    "MATERIALIZE_SHARED_STATE_TRANSITION_CUSTODY_API",
+    "BIND_INTERLOCK_INTR_AND_EXECUTION_STATE_TRANSITIONS",
+    "ADOPT_IN_MIR_WITHOUT_TASK_SPECIFIC_PRIMARY_PROBE",
+    "VALIDATE_SV002_COMPATIBILITY",
+    "PROPAGATE_TO_CANONICAL_CONSUMERS",
+    "RECONCILE_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION"
+  ],
+  "authority_model": {
+    "interlock_intr_grants_transition_authority": true,
+    "master_records_grants_transition_authority": false,
+    "master_records_grants_execution_authority": false,
+    "master_records_grants_credential_authority": false,
+    "diagnostic_receipt_implies_transition": false,
+    "missing_transition_may_be_fabricated": false
+  }
+}
