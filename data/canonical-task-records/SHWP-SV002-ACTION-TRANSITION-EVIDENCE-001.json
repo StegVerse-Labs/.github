@@ -64,6 +64,29 @@
     "deployment_required": false,
     "current_observation_required": true
   },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/SV002_ACTION_TRANSITION_EVIDENCE_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["scripts/list_stegverse_execution_surfaces.py"]},
+      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json"]},
+      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/SV002_ACTION_TRANSITION_EVIDENCE_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"SELECTED","limitation_class":"NONE","evidence_refs":["scripts/list_stegverse_execution_surfaces.py","StegVerse-002/.github:resident-runtime/self_characterization_surface.py","StegVerse-002/micro-node-runtime:tools/run_self_characterization_principal.py"]},
+      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/REMOTE_RUNTIME_CONNECTOR_OPTIONALITY.md"]}
+    ],
+    "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  },
   "runtime_resolution": {
     "surface_class": "ephemeral",
     "selected_surface": "StegVerseNode",
