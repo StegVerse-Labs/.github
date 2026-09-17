@@ -1,0 +1,39 @@
+name: Ephemeral Execution Surface Discovery
+
+on:
+  push:
+    paths:
+      - 'scripts/list_stegverse_execution_surfaces.py'
+      - 'tests/test_ephemeral_execution_surface_discovery.py'
+      - '.github/workflows/ephemeral-execution-surface-discovery.yml'
+  pull_request:
+    paths:
+      - 'scripts/list_stegverse_execution_surfaces.py'
+      - 'tests/test_ephemeral_execution_surface_discovery.py'
+      - '.github/workflows/ephemeral-execution-surface-discovery.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run focused discovery tests
+        run: python -m unittest tests.test_ephemeral_execution_surface_discovery -v
+      - name: Exercise ephemeral discovery CLI
+        run: |
+          python scripts/list_stegverse_execution_surfaces.py --class ephemeral > /tmp/ephemeral.json
+          python - <<'PY'
+          import json
+          value=json.load(open('/tmp/ephemeral.json'))
+          assert value['connected_count'] == 0
+          assert value['ephemeral_count'] == 2
+          assert {x['surface'] for x in value['surfaces']} == {'StegVerseNode','StegBrowser'}
+          assert all(x['availability']=='AVAILABLE_TO_INVOKE' for x in value['surfaces'])
+          assert all(x['instance_state']=='NOT_MATERIALIZED' for x in value['surfaces'])
+          PY
