@@ -8,10 +8,20 @@ Updated: 2026-09-17
 - Parent Goal: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`
 - Root lineage: `STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / SV002 EXECUTION LINEAGE REUSED / NODE-JOURNAL + SV002 EXPORT + MASTER RECORDS CUSTODY BINDING MERGED+VALIDATED / AUTHENTIC MASTER RECORDS RECONSTRUCTION + A1-A4 EVIDENCE PENDING`
+- Status: `ACTIVE / CHECKED_OUT / SV002 EXECUTION LINEAGE REUSED / NODE-JOURNAL + SV002 EXPORT + MASTER RECORDS INGRESS + CANONICAL CUSTODY BRIDGE MERGED+VALIDATED / AUTHENTIC MASTER RECORDS RECONSTRUCTION + A1-A4 EVIDENCE PENDING`
 - External/second user-operated device required: `false`
 - Canonical ephemeral runtime class: `ADMITTED-EPHEMERAL-STEGOS-NODE`
 - Empty connector inventory (`list_devices=[]`) is not evidence that ephemeral runtime capacity is absent.
+
+## Continuation truth-source invariant
+
+For this task, a chat statement, copied Next Prompt, handoff narrative, PR body/comment, issue text, or earlier session summary is a recovery coordinate only. Repetition never upgrades an assertion into evidence.
+
+Before any mutable claim is used as a predicate, continuation MUST re-read the current authoritative source for that claim. Examples include the Task Registry for coordination/lifecycle state, workflow files and current runs for validation policy/results, the current PR/commit graph for merge state, WorkerCoordinator for claim/fence state, Interlock/InTr for transition state, and Master Records for custody/reconstruction state.
+
+A prior statement may be cited as provenance that the statement was made; it MUST NOT be cited as proof that the statement is true. When current authority contradicts inherited text, the inherited text is immediately `SUPERSEDED_BY_CURRENT_AUTHORITY` and MUST NOT be propagated into a later handoff or Next Prompt as an operative predicate.
+
+Absence evidence is also conditional on mechanism state. In particular, zero PR-triggered workflow runs cannot be interpreted as validation failure until the current workflow trigger policy is verified to permit automatic PR execution.
 
 ## Scope and terminal boundary
 
@@ -230,7 +240,63 @@ PR `#1375` merged with expected-head protection as `4f4b6c3db36f6d4a2e2916fda4f8
 
 The implementation claim was subsequently released through Site PR `#1376`; no stale implementation ownership should gate runtime observation.
 
-## Authentic evidence state after #1375
+## Site #1377 — canonical Master Records custody/reconstruction reuse
+
+Post-#1375 re-observation identified the next bounded defect: the StegBrowser path stopped at `INGRESS_ADMITTED_CUSTODY_RECONSTRUCTION_PENDING` and did not invoke the already-existing canonical Master Records state-transition custody component.
+
+Site PR `#1377` repaired only that handoff. It reuses the existing `assets/canonical-master-records-transition-custody-browser.js` client and the canonical `RT-CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001` contract against the existing authoritative endpoint:
+
+```text
+/api/master-records/state-transitions
+owner = master-records/orchestration
+submission schema = stegverse.master-records.state-transition-submission/v1
+receipt schema = stegverse.canonical-state-transition-receipt/v1
+```
+
+The exact StegBrowser admission tuple is preserved as transition evidence:
+
+```text
+runtime readiness receipt sha256
+Node continuity readiness receipt sha256
+immutable nonce
+Node ID
+Interlock ID
+Receipt #1 sha256
+lease ID
+runtime ID
+exported evidence bundle sha256
+StegBrowser custody transition/admission identity
+```
+
+Progression remains fail-closed. The existing custody client requires:
+
+```text
+state = RECORDED
+reconstruction_status = PASS
+receipt_sha256 = reconstructed_receipt_sha256 = locally calculated canonical receipt digest
+master_records_grants_transition_authority = false
+master_records_grants_execution_authority = false
+```
+
+Only after those checks may the page project `RECORDED_RECONSTRUCTED_BEFORE_A3`; WorkerCoordinator claim/fence remains pending and A3 is not entered by the custody client.
+
+Exact-head validation on `7c70b233196694bf480ebc47d5059e0883d4248a`:
+
+```text
+Node IndexedDB Schema Migration = 35280806538 SUCCESS
+Validate StegOS Persistent Card UX = 35280806676 SUCCESS
+Site Bootstrap Validate = 35280806521 SUCCESS
+Site Handoff Orchestrator = 35280806594 SUCCESS
+Ecosystem Heartbeat Orchestration = 35280806808 SUCCESS
+```
+
+PR `#1377` merged with expected-head protection as `7e5eac7b1565482b7a7b29564017693b860581f3`.
+
+Its implementation claim was subsequently released through terminalization-only Site PR `#1378`, merged as `d560bf1bc7463ede2251256cc7e28b2689a640b7`.
+
+No second Master Records client, API, transport, service worker, runtime, dispatcher, scheduler, credential path, or device dependency was created.
+
+## Authentic evidence state after #1377
 
 Post-merge re-observation found no authentic record in canonical authority-owned custody for either:
 
@@ -267,7 +333,21 @@ Expected invocation boundary remains:
 
 `AUTHENTIC_MASTER_RECORDS_RECONSTRUCTION_OF_EXACT_STEGBROWSER_RUNTIME_READINESS_TUPLE`
 
-The source path from runtime readiness through Node journal, SV002 export, registered Node outbox, Universal InTr, and StegBrowser-specific MASTER_RECORDS ingress is now implemented and exact-head validated. What remains unproven is that this immutable invocation actually traversed that path and that Master Records authentically retained/reconstructed the exact tuple.
+The source path from runtime readiness through Node journal, SV002 export, registered Node outbox, Universal InTr, StegBrowser-specific MASTER_RECORDS ingress, and the existing authoritative canonical Master Records state-transition custody client is now implemented and exact-head validated. Post-merge searches found no authority-owned `RECORDED + PASS` reconstruction carrying the immutable nonce and complete tuple. What remains unproven is that this immutable invocation actually traversed the repaired path and that Master Records authentically retained/reconstructed the exact tuple.
+
+## Validation-policy correction after Actions cost containment
+
+Current `.github` validation policy was re-read from source on 2026-09-17. The three previously expected validation surfaces are now manual-only:
+
+```text
+Validate organization control plane - No GitHub Token Authority -> workflow_dispatch only
+Heartbeat Worker Project - Validation Only / No GitHub Token Authority -> workflow_dispatch only
+Deterministic Repository Suite - Diagnostic Evidence Only -> workflow_dispatch only
+```
+
+Therefore the earlier interpretation that PR `#2069` lacked required automatic PASS evidence is superseded. Zero PR-triggered runs on that branch were expected under the current policy and are not evidence of three failed or missing validations.
+
+The stale branch for `#2069` is not retained as truth merely because its handoff text exists. This reconciliation is rebuilt from current `main`; any merge decision must use the current branch graph and current validation policy rather than inherited assumptions.
 
 ## Immediate continuation
 
@@ -279,7 +359,7 @@ A3, A4, and Round Trip 1 remain unentered until their own authentic evidence exi
 
 ## README review
 
-README reviewed. No byte change is required. The authority/runtime topology remains the existing registered Node -> Universal InTr -> EVENT_EPHEMERAL StegOS -> WorkerCoordinator architecture; #1372 and #1375 only repair evidence export/custody bindings within that topology.
+README reviewed. No byte change is required. The authority/runtime topology remains the existing registered Node -> Universal InTr -> EVENT_EPHEMERAL StegOS -> canonical Master Records custody/reconstruction -> WorkerCoordinator architecture; #1372, #1375, and #1377 repair evidence export/custody bindings within that existing topology.
 
 ## Manual work
 
