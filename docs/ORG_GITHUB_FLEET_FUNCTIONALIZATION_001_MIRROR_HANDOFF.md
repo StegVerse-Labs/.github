@@ -10,86 +10,142 @@ Parent census: `reports/ORG_GITHUB_REPOSITORY_STATUS_SUMMARY_001.md`
 
 ## Goal
 
-Convert the 22 repositories represented by the census's 15 `FULFILLING_INTENDED_ROLE` plus 7 `VALIDATED_OR_IMPLEMENTED_PARTIAL` repositories into a dependency-stable functional set, without weakening repository-specific evidence requirements or promoting source/CI evidence into runtime/provider/public proof.
+Convert the 22 repositories represented by the census's 15 `FULFILLING_INTENDED_ROLE` plus 7 `VALIDATED_OR_IMPLEMENTED_PARTIAL` repositories into a dependency-stable functional set without promoting source/CI evidence into runtime/provider/public proof.
 
-The 15 repositories already satisfying their established role are preserved and dependency-hardened; the 7 partial repositories are the primary functionalization targets.
+Primary partial targets remain `.github`, `GP10`, `StegMusic`, `StegTalk`, `TVC`, `StegBrain`, and `stegfin-governance`. The previously role-functional 15 remain a regression set, not a reason to reopen completed local work without evidence.
 
-## Target set
+## Shared dependency spine
 
-### Already role-functional; protect dependency closure
+The first causal dependency spine is:
 
-`FREE-DOM`, `Epsteinality`, `Giuffre-ality`, `Maxwellality`, `StegBiography`, `Trumpality`, `Executive_Rhetoric_Ledger`, `StegID`, `StegCore`, `StegOS`, `hybrid-collab-bridge`, `ara-admissibility-interop`, `music-engine`, `media-runtime`, `video-engine`.
+```text
+.github coordination/shared ingress
+-> TV/TVC credential and bounded operation authority
+-> TVC tvc.private-source-read.v1 resident service
+-> exact consumer source materialization
+-> consumer-owned deterministic validation
+-> integration/runtime/provider/public evidence only where the consumer role requires it
+```
 
-### Primary partial-to-functional targets
+Adjacent shared owners include `StegVerse-Labs/continuity-vault-kit`, `StegVerse-002/micro-node-runtime`, `master-records/orchestration`, `StegVerse-Labs/Continuity`, `StegVerse-Labs/StegID`, `StegVerse-Labs/StegAgents`, `StegVerse-Labs/StegDJ`, `StegVerse-Labs/Site`, `GCAT-BCAT-Engine/Publisher`, `StegVerse-Labs/admissibility-wiki`, and `StegVerse-002/stegguardian-wiki` when their role is actually in the path.
 
-`.github`, `GP10`, `StegMusic`, `StegTalk`, `TVC`, `StegBrain`, `stegfin-governance`.
+## First dependency-chain execution — 2026-09-17
 
-## Functionalization rule
+### 1. Existing source/runtime path reused
 
-A repository is functional when the evidence required by its established role is directly proven. A documentary/research repository is not required to manufacture a runtime layer that is not part of its role. A runtime/provider/product repository is not considered functional merely because source or validation passes.
+Inspection confirmed that TVC already contains the required private-source implementation and resident admission machinery:
 
-`UNKNOWN`, `PENDING`, `HANDOFF_READY`, `WAITING`, `BLOCKED_DEPENDENCY_MACHINE_OWNED`, and similar nonterminal evidence states are not promoted to PASS without the required receipt.
+```text
+scripts/private_source_read.py
+scripts/execute_private_source_read_resident.py
+scripts/authorize_and_activate_private_source_read.py
+scripts/observe_private_source_read_resident_state.py
+scripts/install_and_verify_private_source_read_service.py
+scripts/validate_stegmusic_private_source.py
+```
 
-## Cross-organization and cross-repository dependency graph
+The resident implementation was previously validated/merged. No new bridge, scheduler, runtime, credential path, or validator was created.
 
-### Shared StegVerse control dependencies
+### 2. Stale StegCore PR #146 prerequisite corrected
 
-- `StegVerse-Labs/.github` — Task Registry/COSV coordination, shared workers, HeartBeat carriage/reference, Universal InTr routing, reusable-task definitions; no credential/runtime authority inferred.
-- `StegVerse-Labs/TV` + `StegVerse-Labs/TVC` — credential/provider/release capability authority.
-- `StegVerse-Labs/StegOS` — device/node and bounded execution substrate.
-- `StegVerse-002/micro-node-runtime` — sovereign local-model/runtime and event-ephemeral execution ownership used by several lanes.
-- `master-records/orchestration` — passive evidence custody/reconstruction.
-- `StegVerse-Labs/Continuity` + `StegVerse-Labs/StegID` — continuity/identity receipts used by Auri, finance, and other governed paths.
-- `StegVerse-Labs/continuity-vault-kit` — current InTr/SKAP/KV third-party credential protocol implementation consumed by TVC callers.
-- `StegVerse-Labs/Site` — public UX/playback/HIL/product integration and public-E2E evidence where applicable.
-- `GCAT-BCAT-Engine/Publisher` — downstream governed publication for release-propagated artifacts.
-- `StegVerse-Labs/admissibility-wiki` and `StegVerse-002/stegguardian-wiki` — downstream propagation targets when a release explicitly requires them.
+The TVC private-source handoff/task lineage still described StegCore PR #146 as a future merge prerequisite. Direct GitHub state now proves:
 
-### Research cluster
+```text
+StegVerse-Labs/StegCore PR #146: MERGED
+exact historical PR head: f09eb36abcd3b317f35638e5c0b0c4a802d0aecf
+merge commit: 26b18204b135a213231d160b718e47ca6ab46f28
+merged_at: 2026-08-25T04:05:13Z
+```
 
-`FREE-DOM`, `Epsteinality`, `Giuffre-ality`, `Maxwellality`, `StegBiography`, and `Trumpality` depend on `StegVerse-Labs/Executive_Rhetoric_Ledger` as canonical research evaluation/ingestion owner. Evidence-chain policy also references `StegVerse-Labs/repo-standards`. Their current role-functional status must be preserved while ERL/standards dependencies are checked for regression.
+Therefore PR #146 is not a current blocker and must not remain ahead of StegMusic in the resident private-source progression merely because stale coordination prose still says to merge it.
 
-### StegCore / StegTalk / Auri cluster
+### 3. StegMusic exact-current source resolved
 
-`StegTalk` Auri activation depends on `StegCore`, `Continuity`, `StegID`, and `StegAgents`; final AURI activation additionally requires canonical provider/deployment authorization evidence, a reachable authorized target, runtime proof, and final activation receipt. `StegCore` and `Continuity` already provide completed AURI gateway/receipt evidence, so the remaining Auri gap is external-authorization/runtime evidence rather than missing core source.
+Direct branch observation resolved current `StegVerse-Labs/StegMusic@main` to:
 
-### StegMusic / media cluster
+```text
+12c335df716040a2f98333e0b2355ef118502d01
+```
 
-`StegMusic` exact private-source validation depends on `TVC-PRIVATE-SOURCE-READ-001` / `tvc.private-source-read.v1`. Product integration then depends on `StegDJ`, `Site`, the sovereign local runtime owner, and release/propagation consumers. Optional third-party music/streaming providers remain TV/TVC-admitted fallbacks only. `music-engine`, `media-runtime`, and `video-engine` are locally role-functional but should be regression-checked against StegMusic/StegDJ/Site integration rather than assumed public-E2E complete.
+The existing `TVC-STEGMUSIC-VALIDATION-001` task was updated from its stale observed SHA to this exact commit.
 
-### StegBrain cluster
+### 4. Exact non-secret resident request staged
 
-`StegBrain` live usefulness depends on `.github` live heartbeat/control-plane migration and COSV packet production, `master-records/orchestration` custody, `StegVerse-002/micro-node-runtime` for formal local runtime activation, TV/TVC for credentials where required, and `stegfin-governance` for trade-readiness consumers. Current source and deterministic replay are not equivalent to live packet-series consumption.
+A bounded immutable-source request now exists at:
 
-### StegFin cluster
+```text
+StegVerse-Labs/TVC/requests/private-source-read/TVC-STEGMUSIC-VALIDATION-001.json
+```
 
-`stegfin-governance` is functional through the pre-sign `WALLET_HANDOFF_READY` boundary. Full settlement depends on user-authorized wallet signing/broadcast, actual settled evidence, `master-records/orchestration` reconstruction, TV/TVC provider/credential routes, StegID/device continuity, and the sovereign micro-node runtime. The fleet task must not treat USER_ONLY signing/broadcast as a machine-remediation defect.
+Bound values:
 
-### GP10 cluster
+```text
+caller_repository: StegVerse-Labs/StegMusic
+source_repository: StegVerse-Labs/StegMusic
+consumer_task: TVC-STEGMUSIC-VALIDATION-001
+reference_mode: IMMUTABLE_COMMIT
+exact_sha: 12c335df716040a2f98333e0b2355ef118502d01
+materialization_id: stegmusic-main-validation-12c335df
+ttl_seconds: 600
+```
 
-`GP10` requires a passing current runtime-validation receipt plus real field-validation evidence, approved thresholds, legal/regulatory review, and optional authorized Railinc/Maximo connector activation. Release propagation then targets Site, `GCAT-BCAT-Engine/Publisher`, `admissibility-wiki`, and `stegguardian-wiki` under destination-owned verification.
+This request is non-secret and non-authorizing. It is intended for the already-existing root-owned TVC private-source service/watcher path.
 
-### TVC cluster
+### 5. Directly proven vs not yet proven
 
-TVC itself is a dependency hub. Current functionalization-sensitive dependencies include `.github` shared control/runtime carriage, `continuity-vault-kit` InTr/SKAP credential protocol, `StegVerse-002/micro-node-runtime`, `master-records/orchestration`, `StegVerse-org/StegVerse-SDK`, `Data-Continuation/core-lite`, `StegCore`, and applicable external provider/release endpoints. Credential-model consistency must remain reconciled before expanding credential semantics.
+Proven in this progression:
 
-## Remediation order
+```text
+private-source source/control implementation: VALIDATED / MERGED
+StegCore #146 historical prerequisite: MERGED / NO LONGER A FUTURE MERGE BLOCKER
+StegMusic exact-current SHA: RESOLVED
+StegMusic exact request: STAGED
+existing StegMusic validator: PRESENT / REUSED
+```
 
-1. Preserve the 15 role-functional repositories by checking their named dependency owners for regression; do not reopen completed local work without evidence.
-2. Repair shared dependency hubs first: `.github`, TV/TVC, `continuity-vault-kit`, sovereign runtime, Master Records.
-3. Complete deterministic/repository-native validation gaps that do not require external/user authority: GP10 runtime proof, StegMusic TVC private-source validation, StegBrain live packet-consumer path where shared carriers are available.
-4. Drive integration/runtime evidence: StegMusic -> StegDJ/Site; StegTalk Auri -> authorized runtime; TVC provider/release routes; StegBrain live packet-series consumption.
-5. Preserve explicit human authority: StegFin signing/broadcast and GP10 legal/regulatory approvals remain human-authority transitions, while all independent machine work proceeds.
-6. Verify downstream public/release propagation only after authentic release/runtime evidence exists.
+Not yet directly proven by current evidence:
+
+```text
+sole-host private-source watcher/service installed: NOT OBSERVED
+TVC_PRIVATE_SOURCE_READ_TOKEN present on sovereign host: NOT OBSERVED
+scoped credential grant activation: NOT OBSERVED
+staged request consumed: NOT OBSERVED
+exact StegMusic source materialized by resident service: NOT OBSERVED
+StegMusic deterministic validation PASS: NOT OBSERVED
+secret-free exact-SHA PASS receipt: NOT OBSERVED
+```
+
+These runtime predicates are not converted to PASS by GitHub source mutation or hosted validation.
+
+## Current target-specific posture
+
+- `.github`: coordination and shared-source prerequisites are sufficient for this exact progression to be durably represented; authentic external resident execution evidence remains separately required where applicable.
+- `TVC`: private-source source/control implementation exists; the next missing proof is authentic sole-host service/credential/request consumption.
+- `StegMusic`: exact-current request is staged and existing validator is ready to consume the materialized source; runtime validation has not yet occurred.
+- `StegTalk`: AURI-007 remains an authorization/runtime-evidence lane after AURI-001..006 source/integration completion.
+- `StegBrain`: live packet-series consumption still depends on shared live carrier/packet observation and custody evidence.
+- `GP10`: still requires current runtime proof and real field/approval evidence according to its role.
+- `stegfin-governance`: pre-sign `WALLET_HANDOFF_READY` is already directly evidenced; USER_ONLY signing/broadcast is not treated as a machine defect.
+
+## Remediation order from here
+
+1. Observe or consume the existing TVC sole-host private-source service installation and credential-presence evidence; do not create a substitute runtime.
+2. Consume the staged StegMusic request under the existing `tvc.private-source-read.v1` admission path.
+3. Require exact authorized/observed SHA equality for `12c335df716040a2f98333e0b2355ef118502d01`.
+4. Run only the existing `scripts/validate_stegmusic_private_source.py` deterministic validation path against that materialization.
+5. Retain the secret-free exact-SHA PASS/BLOCK receipt and update this handoff from direct evidence.
+6. Continue to the next highest-causal machine-remediable shared dependency only after this lane is truthfully reconciled.
 
 ## Completion predicates
 
 - all 15 previously role-functional repositories remain role-functional after dependency regression review;
-- each of the 7 partial repositories has either reached its established functional role with direct evidence or has its remaining non-machine authority condition isolated without any unresolved machine-remediable dependency;
-- shared dependency defects discovered during functionalization have canonical owners/tasks rather than being left as prose;
+- each of the 7 partial repositories reaches its established functional role with direct evidence, or any remaining non-machine authority condition is isolated after all machine-remediable dependencies are complete;
+- dependency defects get canonical owners/tasks instead of remaining prose;
 - README and this handoff remain current;
 - no runtime/provider/public-E2E claim is made without direct evidence.
 
 ## Current state
 
-`ACTIVE / CHECKED_OUT`. Dependency graph established. Machine-remediable work has not yet been declared complete; no user-only or external condition is being misclassified as completion.
+`ACTIVE / CHECKED_OUT`.
+
+This iteration removed a stale prerequisite and staged the exact next machine-owned request, but authentic TVC resident admission/materialization and StegMusic validation remain evidence-gated and therefore nonterminal.
