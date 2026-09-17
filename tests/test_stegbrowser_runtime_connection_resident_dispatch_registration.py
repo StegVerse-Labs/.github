@@ -26,6 +26,18 @@ class StegBrowserResidentDispatchRegistrationTests(unittest.TestCase):
         selected = dispatcher.select_consumers(("stegbrowser_runtime_connection_ingress",))
         self.assertEqual(selected, (("stegbrowser_runtime_connection_ingress", "scripts/consume_stegbrowser_runtime_connection_ingress_request.py"),))
 
+    def test_dispatcher_preserves_canonical_node_receipt_locator_without_credential_authority(self):
+        dispatcher = load("resident_dispatch_node_locator", "scripts/dispatch_resident_execution_requests.py")
+        env = dispatcher.clean_exec_env({
+            "PATH": "/usr/bin",
+            "STEGVERSE_NODE_GENESIS_RECEIPT": "/state/stegverse/node-receipt-1.json",
+            "GITHUB_TOKEN": "must-not-propagate",
+        })
+        self.assertEqual(env["STEGVERSE_NODE_GENESIS_RECEIPT"], "/state/stegverse/node-receipt-1.json")
+        self.assertNotIn("GITHUB_TOKEN", env)
+        self.assertEqual(env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"], "TV/TVC")
+        self.assertEqual(env["STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY"], "NONE")
+
     def test_local_source_refresh_materializes_consumer_and_resolver(self):
         refresh = load("resident_refresh", "scripts/refresh_sovereign_worker_runtime_source.py")
         required = {
@@ -44,6 +56,11 @@ class StegBrowserResidentDispatchRegistrationTests(unittest.TestCase):
             "A1_A2_A3_A4_OBSERVED",
             "A1_A2_OBSERVED_A3_A4_PENDING",
             "A1_OBSERVED_NOT_MATERIALIZED",
+            "A1_A2_A2_1_A2_2_A3_A4_OBSERVED",
+            "A1_OBSERVED_CANONICAL_INVOCATION_PENDING_OR_BOUNDARY",
+            "A1_NOT_OBSERVED_REGISTERED_NODE_RECEIPT_UNAVAILABLE",
+            "A1_NOT_OBSERVED_CANONICAL_INVOCATION_NOT_RETAINED",
+            "A1_NOT_OBSERVED_NOT_CALLABLE",
         ):
             self.assertIn(f'"{state}"', source)
         self.assertIn('"request_dispatch_grants_authority": False', source)
