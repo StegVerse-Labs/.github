@@ -99,6 +99,42 @@ Implemented and merged:
 - `scripts/validate_household_economic_source_bindings.py`;
 - `.github/workflows/validate-household-economic-source-bindings.yml`.
 
+### ERL PR #166
+
+Merged with expected-head protection at `3522e9d34399d6f45425af7ab11ea196b00b8012` from exact head `db1aaca276fd361904c73355783a04b3ff039d6b`.
+
+Exact-head validation:
+
+- `Validate Household Economic Source Bindings` run `35176879011`: `SUCCESS`;
+- `Validate Ledger Schemas` run `35176878973`: `SUCCESS`;
+- `Observe Household Economic Current Candidates` run `35176878974`: `SUCCESS`.
+
+The final observation artifact is `household-economic-current-candidates`, artifact id `10479530174`, artifact digest `sha256:322b146d9cdcb9630b5691ee34cf87cd5fcca14b54bbe288fbfb3d4cdcda9a0b`.
+
+Implemented and observed:
+
+- bounded credential-free BLS, Federal Reserve Board DSR, Census ACS, and New York Fed candidate acquisition;
+- raw source retention, SHA-256 capture, source-vintage capture, and fail-closed source handling;
+- exact New York Fed Q2 2026 workbook map artifact `research-data/household-economic-conditions/nyfed-2026q2-workbook-map.v1.json`;
+- exact-map New York Fed normalizer with deterministic header/layout tests and changed-layout fail-closed behavior;
+- first partial multi-source household-state candidate with no finding authority and no public activation authority;
+- hosted BEA credential check confirming only that `BEA_API_KEY` was absent in hosted validation and that no TV/TVC BEA registration evidence was observed there.
+
+Authentic final artifact counts/hashes:
+
+- BLS real hourly earnings: 19 observations; raw `sha256:c49b5e864658062a277df223db76f5bbe0e12c3a96d1f1dd3f17797570e36fd3`; acquired/source vintage `2026-09-17T03:06:33Z`.
+- BLS real weekly earnings: 19 observations; raw `sha256:5dc821a95c4f80bb2cb81e09289e564d551430c84f04f6d012d819d9ac718b3b`; acquired/source vintage `2026-09-17T03:06:33Z`.
+- BLS CPI-U: 19 observations; raw `sha256:6aed22b776270f00da879adcd34c65c590f35666db1ab1bf8947fa0e5000078d`; acquired/source vintage `2026-09-17T03:06:33Z`.
+- Board DSR total/mortgage/consumer: 85 observations each from one retained Board release body; raw `sha256:4547f71acbea2fdde11e4a5e7061191afc19a79e2f984c61ddd0d3ad8c7ae6f5`; source vintage `Federal Reserve Board DSR release 2026-06-22`.
+- Census ACS B25140: 10 observations; raw `sha256:b5f37f22d3c0ddf28350d8baf7e349a4e15c5c4981929b7717a756c77a63c880`; source vintage `2024 ACS 1-year Table-Based Summary File`.
+- New York Fed debt-balance candidate: 658 normalized observations; raw workbook `sha256:ddfba16b87e187848ed591a1283f310188e7bdeebe5cf409b70a35b058d99237`; acquisition/source vintage `2026-09-17T03:06:34Z`.
+- New York Fed serious-delinquency candidate: 654 normalized observations from the same retained workbook/hash; acquisition/source vintage `2026-09-17T03:06:34Z`.
+
+Exact New York Fed Q2 2026 workbook map:
+
+- debt balance: worksheet `Page 3 Data`; title `Total Debt Balance and Its Composition`; header row `4`; period column `A`; `B=Mortgage`, `C=HE Revolving` normalized as `HELOC`, `D=Auto Loan`, `E=Credit Card`, `F=Student Loan`, `G=Other`, `H=Total`; latest observed period `2026-Q2` at row `98`; unit `trillions of nominal dollars`.
+- serious delinquency flow: worksheet `Page 14 Data`; title `New Seriously Delinquent* Balances by Loan Type `; definition `90 or more days delinquent`; header row `5`; period column `A`; `B=AUTO`, `C=CC`, `D=MORTGAGE`, `E=HELOC`, `F=STUDENT LOAN`, `G=OTHER`, `H=ALL`; latest observed period `2026-Q2` at row `99`; unit `percent`.
+
 ## Exact official source identifiers now bound
 
 - BLS CES real hourly production/nonsupervisory earnings: `CES0500000032`.
@@ -109,25 +145,17 @@ Implemented and merged:
   - line `29` personal consumption expenditures;
   - line `35` personal saving as percent of disposable personal income;
   - line `37` real disposable personal income.
-- Board of Governors Household Debt Service Ratio series via FRED:
-  - `TDSP` total;
-  - `MDSP` mortgage;
-  - `CDSP` consumer;
-  - current-method comparable history begins in 2005 and remains distinct from the archived prior method.
-- New York Fed Household Debt and Credit Q2 2026 release and exact official underlying-workbook URL are bound for debt balances and serious-delinquency transitions. Worksheet/column normalization remains explicitly pending rather than guessed.
+- Board of Governors Household Debt Service Ratio current-method series: `TDSP` total, `MDSP` mortgage, and `CDSP` consumer; current-method comparable history begins in 2005 and remains distinct from the archived prior method.
+- New York Fed Household Debt and Credit Q2 2026 release and official underlying workbook are exact-bound for debt balances and serious-delinquency transitions through the retained Q2 2026 workbook map above.
 - Census ACS 1-year detailed table `B25140` is bound with explicit variables for total occupied units, owner-with-mortgage, owner-without-mortgage, renters, and over-30/over-50-percent housing-cost burden. Standard-comparison year 2020 remains excluded.
 
 ## Acquisition and normalization state
 
-The merged acquisition entrypoint now supports bounded source acquisition for BLS, BEA, Board/FRED, Census, and New York Fed source material.
-
-- BLS, BEA, FRED, and Census normalizers have deterministic provider-shaped tests.
-- raw bytes are hashed before candidate normalization.
-- source vintage is retained.
-- source failures remain fail-closed instead of becoming zeros.
-- BEA requires `BEA_API_KEY`; absent credential fails only that source family and must be resolved through governed credential custody rather than embedded in source.
-- New York Fed workbook bytes can be captured and hashed, but worksheet/column-level normalization remains `WORKBOOK_COLUMN_BINDING_PENDING` until exact source evidence is available.
+- BLS, BEA, Board/FRED-shaped, Census, and New York Fed exact-workbook normalizers have deterministic tests where source structure is admitted.
+- raw bytes are hashed before candidate normalization; source vintage is retained; source failures remain fail-closed instead of becoming zeros.
+- BEA remains credential-gated. Hosted validation observed no `BEA_API_KEY`; TV/TVC BEA credential registration/availability remains `UNKNOWN` because no authentic TV/TVC registration evidence was observed in this lane.
 - candidate outputs carry `finding_authority=false` and `public_activation_authorized=false`.
+- the first multi-source state candidate is explicitly `PARTIAL` and non-authorizing. It keeps `net_disposable_resources`, `required_cost_burden`, `necessary_consumption`, `discretionary_residual`, `saving_dissaving`, `new_borrowing`, `delinquency_arrears`, and `unmet_foregone_consumption` as `UNKNOWN` where the current candidate does not yet admit a governed household-state interpretation.
 
 ## Current canonical state
 
@@ -135,17 +163,16 @@ The merged acquisition entrypoint now supports bounded source acquisition for BL
 - ERL inventory/schema/fixture/validators: MERGED
 - Site page/fixture/validator/README: MERGED
 - exact official source identifiers: MERGED / BOUND
-- deterministic BLS/BEA/FRED/Census normalizers: MERGED / PASS
-- New York Fed raw workbook binding: MERGED
-- New York Fed workbook worksheet/column normalization: PENDING EXACT BINDING
-- live source candidate acquisition: NOT YET RETAINED AS CANONICAL EVIDENCE
-- cohort joins / required-cost composite: PENDING
-- governed multi-source household-state generation: NOT YET IMPLEMENTED
-- authentic ERL-to-Site live-output binding: NOT YET IMPLEMENTED
+- BLS/Board/Census credential-free candidate acquisition: AUTHENTIC OBSERVATION RETAINED IN ACTIONS ARTIFACT
+- New York Fed Q2 2026 workbook hash/map/normalization: MERGED / EXACT-BOUND / AUTHENTIC OBSERVATION RETAINED
+- BEA TV/TVC credential availability: UNKNOWN / NOT OBSERVED
+- first multi-source household-state candidate: PARTIAL / NON-AUTHORIZING / RETAINED IN ACTIONS ARTIFACT
+- cohort joins / complete required-cost composite: PENDING
+- authentic governed ERL-to-Site live-output binding: NOT YET IMPLEMENTED
 - current-iPhone Safari validation: PENDING
 - served-body/public activation verification: NOT OBSERVED
-- public activation: NOT CLAIMED
+- Site public activation: FALSE / NOT AUTHORIZED
 
 ## Next work
 
-Resolve the exact New York Fed workbook worksheet/column map from official retained evidence; execute bounded credential-free candidate acquisition for BLS, FRED, and Census with raw hashes/vintages; resolve BEA access through governed credential custody; construct the first multi-source household-state candidate while preserving household/distribution limits; then bind Site only to a governed ERL output with stale/invalid fail-closed behavior. Public activation remains separately gated on authentic fresh output and served-body verification.
+Inspect TV/TVC custody for authentic BEA credential registration without exposing credential values; if admissible, execute bounded BEA acquisition and retain hashes/vintages. Then determine which currently normalized New York Fed debt/delinquency observations can be admitted into the household-state contract without conflating debt stock with new borrowing or aggregate delinquency flow with distributional household stress; add distribution/cohort and required-cost evidence only where exact source support exists; keep unsupported fields `UNKNOWN`; and bind Site only to an authentic governed ERL output with stale/invalid fail-closed behavior. Public activation remains separately gated on authentic governed output and served-body verification.
