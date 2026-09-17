@@ -1,0 +1,153 @@
+{
+  "schema": "stegverse.canonical-master-records-state-transition-custody-inventory/v1",
+  "goal_task_id": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+  "cosv_task_vector": "50000000100000",
+  "recorded_at": "2026-09-17",
+  "canonical_conclusion": {
+    "master_records_state_custody_is_ecosystem_canonical": true,
+    "task_specific_transition_probe_is_primary_custody": false,
+    "interlock_intr_remains_transition_authority": true,
+    "master_records_grants_transition_authority": false,
+    "workercoordinator_required_to_create_event": false
+  },
+  "inventory": [
+    {
+      "domain": "master-records/orchestration",
+      "surface": "services/master_records_custody_api.py",
+      "classification": "EXISTING_CENTRAL_CUSTODY_AUTHORITY",
+      "preexisting_scope": "completed ALLOW governed-transition relationships plus provider-usage custody",
+      "gap": "completed-only validation could not canonically retain DENY/PARTIAL/FAILED/FAIL_CLOSED state transitions"
+    },
+    {
+      "domain": "master-records/orchestration",
+      "surface": "services/canonical_state_transition_custody.py",
+      "classification": "NEW_CANONICAL_PER_STATE_TRANSITION_CUSTODY_API",
+      "scope": "ALLOW, DENY, EXECUTED, COMPLETED, PARTIAL, FAILED, FAIL_CLOSED, OBSERVED, NO_CHANGE",
+      "same_custody_authority": true,
+      "byte_exact_reconstruction_required": true
+    },
+    {
+      "domain": "StegVerse-Labs/.github",
+      "surface": "workers/reusable_task_master_records_roundtrip.py",
+      "classification": "EXISTING_LOCAL_MASTER_RECORDS_LIFECYCLE_ADAPTER_WITH_MIR_SPECIFIC_FANOUT",
+      "canonical_reuse": "exact-byte local ingest/reconstruction adapter",
+      "duplicate_or_task_specific": "_mir_transition_packets and MIR-specific diagnostic fanout",
+      "disposition": "RETAIN_AS_LEGACY_COMPARATOR_NOT_PRIMARY_CANONICAL_CUSTODY"
+    },
+    {
+      "domain": "StegVerse-Labs/.github",
+      "surface": "workers/canonical_state_transition_custody.py",
+      "classification": "NEW_REUSABLE_CANONICAL_CUSTODY_CLIENT",
+      "scope": "central Master Records API with existing local exact-byte lifecycle as same-authority fallback"
+    },
+    {
+      "domain": "StegVerse-Labs/.github",
+      "surface": "source-bundles/reusable-task-registry.d/RT-INTR-EVIDENCE-CUSTODY-001.json",
+      "classification": "EXISTING_REUSABLE_INTR_CUSTODY_SEMANTIC_PRECURSOR",
+      "disposition": "COMPOSED_BY_NEW_CANONICAL_PER_TRANSITION_CUSTODY_TASK"
+    },
+    {
+      "domain": "StegVerse-Labs/StegOS",
+      "surface": "stegos/canonical_runtime_lane.py",
+      "classification": "EXISTING_STATE_RECEIPT_EMITTER",
+      "emits": ["request ingress receipt", "response egress receipt", "lease history", "closure"],
+      "preexisting_gap": "did not intrinsically bind every observed transition to canonical Master Records custody"
+    },
+    {
+      "domain": "StegVerse-Labs/StegOS",
+      "surface": "stegos/state_transition_custody.py",
+      "classification": "NEW_CANONICAL_CUSTODY_PROTOCOL",
+      "scope": "application-neutral consequence of an already-observed transition"
+    },
+    {
+      "domain": "StegVerse-Labs/StegOS",
+      "surface": "stegos/mir_profile_runtime.py",
+      "classification": "MIR_CANONICAL_ADOPTER",
+      "canonical_transitions": [
+        "CURRENT_INTERLOCK_INTR_INGRESS_RECEIVED",
+        "RTC-STEGVERSE-EGRESS-007",
+        "RTC-INTERLOCK-INTR-TRANSPORT-008",
+        "RTC-FARSIDE-FINAL-009",
+        "MIR_DESTINATION_EVIDENCE_RETAINED",
+        "EXACT_GOVERNED_RETURN_PACKET_RETAINED",
+        "MIR_RUNTIME_FAIL_CLOSED"
+      ]
+    },
+    {
+      "domain": "StegVerse-Labs/StegOS",
+      "surface": "stegos/universal_intr_materialization.py",
+      "classification": "CANONICAL_EVENT_TRIGGER_MATERIALIZATION",
+      "invariants": {
+        "event_triggered": true,
+        "always_on_receiver_required": false,
+        "request_grants_execution_authority": false,
+        "claim_or_fence_minted": false
+      }
+    },
+    {
+      "domain": "StegVerse-Labs/Site",
+      "surface": "stegos-bootstrap/master-records-sv001-custody.js",
+      "classification": "TASK_SPECIFIC_LEGACY_CUSTODY_ADAPTER",
+      "disposition": "candidate for later canonical adapter migration; not primary general mechanism"
+    },
+    {
+      "domain": "StegVerse-Labs/Site",
+      "surface": "assets/master-records-sv002-reconstruction.js",
+      "classification": "TASK_SPECIFIC_SV002_RECONSTRUCTION",
+      "disposition": "historical compatibility evidence; canonical per-transition custody now application-neutral"
+    },
+    {
+      "domain": "StegVerse-Labs/Site",
+      "surface": "stegos-node/sv002-intr-sync.js and assets/sv002-observe.js",
+      "classification": "PROVEN_EVENT_DRIVEN_INGRESS_PATTERN",
+      "sequence": "event -> materialization request/outbox -> InTr admission -> EVENT_EPHEMERAL runtime",
+      "workercoordinator_claim_required_for_event_creation": false
+    },
+    {
+      "domain": "StegVerse-org/LLM-adapter",
+      "surface": "llm_adapter/master_records_client.py",
+      "classification": "CONSUMER_SPECIFIC_COMPLETED_TRANSITION_CLIENT",
+      "gap": "completed-only client; not sufficient as the ecosystem-wide every-state canonical API"
+    },
+    {
+      "domain": "Interlock/InTr",
+      "surface": "RT-INTR-GOVERNED-TRANSITION-001 + Universal InTr receipts",
+      "classification": "TRANSITION_AUTHORITY_AND_RECEIPT_SOURCE",
+      "master_records_relationship": "observed transition receipts flow to custody; custody never grants admission"
+    },
+    {
+      "domain": "resident consumers",
+      "surface": "entity-autonomous-governed-progression-contract",
+      "classification": "CANONICAL_PROGRESSION_POLICY",
+      "sequence": "govern -> retain decision -> execute -> retain state receipt -> reconstruct -> continue"
+    },
+    {
+      "domain": "MIR",
+      "surface": "workers/mir_roundtrip_transition_probe_worker.py",
+      "classification": "TEMPORARY_CONFORMANCE_COMPARATOR_ONLY",
+      "primary_custody": false,
+      "runtime_state_promotion_authority": false
+    }
+  ],
+  "canonical_primary_path": [
+    "observed governed transition",
+    "stegverse.canonical-state-transition-receipt/v1",
+    "RT-CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+    "existing Master Records custody authority",
+    "exact reconstruction PASS",
+    "next machine-owned transition"
+  ],
+  "mir_event_creation_path": [
+    "standing MIR event",
+    "Universal InTr intent",
+    "non-authorizing event-triggered materialization request",
+    "durable event materialization state",
+    "Interlock/InTr admission",
+    "EVENT_EPHEMERAL runtime",
+    "RTC-STEGVERSE-EGRESS-007",
+    "RTC-INTERLOCK-INTR-TRANSPORT-008",
+    "RTC-FARSIDE-FINAL-009",
+    "governed return"
+  ],
+  "authority_effect": "NONE_INVENTORY_ONLY"
+}
