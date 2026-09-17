@@ -19,11 +19,13 @@
   ],
   "stegos_protocol_ref": "StegVerse-Labs/StegOS:stegos/state_transition_custody.py",
   "mir_event_driver_ref": "scripts/execute_mir_event_driven_roundtrip.py",
+  "sv002_initiation_preflight_ref": "receipts/preflight/MIR-SV002-INITIATION-MECHANISM-001.json",
   "dependencies": [
     "control/entity-autonomous-governed-progression-contract.json",
     "workers/reusable_task_master_records_roundtrip.py",
     "source-bundles/reusable-task-registry.d/RT-INTR-GOVERNED-TRANSITION-001.json",
-    "source-bundles/reusable-task-registry.d/RT-INTR-EVIDENCE-CUSTODY-001.json"
+    "source-bundles/reusable-task-registry.d/RT-INTR-EVIDENCE-CUSTODY-001.json",
+    "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json"
   ],
   "expected_evidence_predicates": [
     "EVERY_GOVERNED_STATE_CHANGE_EMITS_CANONICAL_STATE_RECEIPT",
@@ -32,7 +34,8 @@
     "ALLOW_DENY_EXECUTION_AND_FAILURE_STATES_HAVE_CUSTODY",
     "TASK_SPECIFIC_DIAGNOSTICS_ARE_NOT_PRIMARY_CUSTODY_PATH",
     "MIR_CONSUMES_CANONICAL_CUSTODY_PATH",
-    "SV002_SEMANTICS_PRESERVED"
+    "SV002_SEMANTICS_PRESERVED",
+    "MIR_INITIATION_REUSES_VALIDATED_BROWSER_EVENT_SURFACE"
   ],
   "current_truth": {
     "ecosystem_inventory_materialized": true,
@@ -43,11 +46,17 @@
     "canonical_master_records_production_entrypoint_materialized": true,
     "stegos_canonical_custody_protocol_materialized": true,
     "mir_profile_runtime_emits_canonical_transition_custody": true,
-    "mir_event_driver_uses_sv002_event_trigger_order": true,
     "workercoordinator_claim_required_for_mir_event_creation": false,
     "mir_temporary_probe_primary_custody": false,
     "mir_temporary_probe_enabled_for_primary_execution": false,
-    "authentic_current_mir_event_execution_observed": false,
+    "sv002_successful_runtime_was_browser_event_ephemeral": true,
+    "sv002_remote_machine_execution_connector_required": false,
+    "sv002_idle_runtime_surface_required": false,
+    "sv002_execution_fixture_may_be_reconstructed_as_new_python_runtime": false,
+    "validated_site_browser_runtime_reuse_available": true,
+    "mir_python_event_driver_is_final_sv002_duplicate_execution_surface": false,
+    "mir_browser_event_activation_binding_materialized": false,
+    "authentic_current_mir_browser_event_execution_observed": false,
     "authentic_rtc_007_observed": false,
     "authentic_rtc_008_observed": false,
     "authentic_rtc_009_observed": false,
@@ -57,12 +66,15 @@
   "completion": {
     "claimed": false,
     "validated": false,
-    "source_adoption_complete_for_mir_lane": true,
+    "source_adoption_complete_for_master_records_custody": true,
+    "mir_final_browser_event_activation_adoption_pending": true,
     "runtime_completion_pending": true
   },
   "allowed_next_transitions": [
-    "VALIDATE_CANONICAL_SOURCE_ADOPTION",
-    "EXECUTE_STANDING_MIR_EVENT_THROUGH_EXISTING_EVENT_TRIGGERED_INGRESS",
+    "MATERIALIZE_MIR_BROWSER_EVENT_ACTIVATION_FROM_VALIDATED_SV002_SITE_FIXTURE",
+    "CHANGE_ONLY_MIR_GOAL_COSV_DESTINATION_AND_CUSTODY_BINDINGS",
+    "PRESERVE_NODE_INTERLOCK_INTR_BOUNDED_LEASE_EVENT_EPHEMERAL_BROWSER_RUNTIME_IDENTITY",
+    "INVOKE_OR_OBSERVE_CURRENT_MIR_BROWSER_EVENT",
     "RECONCILE_CANONICAL_MASTER_RECORDS_RECEIPTS_IN_ORDER",
     "LOCATE_FIRST_MISSING_OR_NONRETURNED_CANONICAL_TRANSITION",
     "REPAIR_ONLY_EXACT_RUNTIME_OR_CUSTODY_BOUNDARY",
@@ -76,6 +88,7 @@
     "master_records_grants_execution_authority": false,
     "master_records_grants_credential_authority": false,
     "workercoordinator_grants_mir_event_creation_authority": false,
+    "browser_event_grants_transition_authority": false,
     "diagnostic_receipt_implies_transition": false,
     "missing_transition_may_be_fabricated": false,
     "github_actions_runtime_authority": "NONE"
