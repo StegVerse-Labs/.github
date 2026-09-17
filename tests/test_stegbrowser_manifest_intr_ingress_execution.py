@@ -36,24 +36,38 @@ class StegBrowserManifestIntrIngressExecutionTests(unittest.TestCase):
         self.assertFalse(binding["execution_before_node_interlock_binding_repair_allowed"])
         self.assertEqual(binding["path_parameters"]["node_genesis_receipt"], "STEGVERSE_NODE_GENESIS_RECEIPT")
 
-    def test_reusable_task_tracks_validated_sv002_baseline_pending_stegbrowser_adaptation(self):
+    def test_reusable_task_tracks_canonical_sv002_component_map(self):
         reusable = json.loads(REUSABLE.read_text())
-        trace = reusable["implementation_trace"]
         self.assertEqual(
             reusable["source_conformance_state"],
-            "SV002_SITE_VALIDATED_LANE_BASELINE_RETEST_PASS_STEGBROWSER_BINDING_ADAPTATION_PENDING",
+            "SV002_CONNECTION_COMPONENTS_CANONICALLY_MAPPED_TO_STEGBROWSER_GOAL_CHART",
         )
         baseline = reusable["validated_runtime_baseline"]
         self.assertEqual(baseline["repository"], "StegVerse-Labs/Site")
         self.assertEqual(baseline["site_pr"], 1354)
         self.assertTrue(baseline["all_source_validation_passed"])
         self.assertEqual(baseline["runtime_authority_effect"], "NONE_FROM_SOURCE_OR_CI")
-        self.assertEqual(trace["validated_site_baseline"], "RETEST_PASS_UNCHANGED")
-        self.assertIn("CURRENT_STEGBROWSER_ADAPTER_BINDING_PENDING", trace["registered_stegverse_node_binding"])
-        self.assertIn("CURRENT_STEGBROWSER_ADAPTER_BINDING_PENDING", trace["interlock_binding_from_node"])
-        self.assertEqual(trace["event_ephemeral_stegos_materialization"], "VALIDATED_SITE_BASELINE_EXISTS")
-        self.assertEqual(trace["execution_time_runtime_identity"], "VALIDATED_SITE_BASELINE_EXISTS")
-        self.assertEqual(trace["workercoordinator_claim_fence"], "CURRENT_STEGBROWSER_EXACT_AUTHENTIC_EVIDENCE_PENDING")
+        components = reusable["sv002_connection_components"]
+        self.assertEqual(
+            components["A1_STEGVERSE_NODE_BINDING"]["reused_mechanism"],
+            "REGISTERED_NODE_CONTINUITY_AND_RECEIPT_1_BINDING",
+        )
+        self.assertEqual(components["A2_INTERLOCK_INTR_ENTRY"]["authority_owner"], "Interlock/InTr")
+        self.assertFalse(components["A2_INTERLOCK_INTR_ENTRY"]["request_grants_execution_authority"])
+        self.assertFalse(components["A2_1_BOUNDED_LEASE_EXECUTION_BINDING"]["standing_host_relationship_created"])
+        self.assertEqual(
+            components["A2_2_EVENT_EPHEMERAL_STEGOS_MATERIALIZATION"]["runtime_class"],
+            "EVENT_EPHEMERAL_STEGOS",
+        )
+        self.assertFalse(components["A2_2_EVENT_EPHEMERAL_STEGOS_MATERIALIZATION"]["standing_runtime_required"])
+        self.assertEqual(
+            components["A3_WORKERCOORDINATOR"]["required_authentic_fields"],
+            ["claim_id", "fencing_token"],
+        )
+        self.assertIn(
+            "AUTHENTIC_INTR_INGRESS_OBSERVED",
+            components["A4_AUTHENTIC_INTR_INGRESS"]["required_predicates"],
+        )
         contract = reusable["canonical_node_binding_contract"]
         self.assertTrue(contract["a4_exact_correlation_required"])
         self.assertTrue(contract["fail_closed_on_missing_or_mismatch"])
