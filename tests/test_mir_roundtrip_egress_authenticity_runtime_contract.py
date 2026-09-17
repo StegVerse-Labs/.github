@@ -69,3 +69,18 @@ def test_worker_is_duplicate_first_and_runtime_evidence_bounded():
     )
     for token in forbidden:
         assert token not in source
+
+
+def test_standing_request_is_attached_to_existing_canonical_work_cadence():
+    wrapper = (ROOT / "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py").read_text(encoding="utf-8")
+    consumer = (ROOT / "scripts/consume_mir_roundtrip_egress_authenticity_request.py").read_text(encoding="utf-8")
+    dispatcher = (ROOT / "scripts/dispatch_resident_execution_requests.py").read_text(encoding="utf-8")
+    assert '("canonical_work_coordination", "control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py")' in dispatcher
+    assert 'MIR_TASK = "MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001"' in wrapper
+    assert 'mir_visited_before_legacy_request_set' in wrapper
+    assert 'second_dispatcher_created' in wrapper
+    assert 'scripts/refresh_and_execute_resident_task.py' in consumer
+    assert '"--task-id", TASK_ID' in consumer
+    assert '"--cosv-task-vector", COSV' in consumer
+    assert 'manual_device_prerequisite' in consumer
+    assert 'network_source_fetch_performed' in consumer
