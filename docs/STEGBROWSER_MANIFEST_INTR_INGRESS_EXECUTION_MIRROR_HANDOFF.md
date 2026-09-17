@@ -1,31 +1,80 @@
 # StegBrowser Manifest Interlock/InTr Ingress Execution Mirror Handoff
 
-Updated: 2026-09-16
-Repository: `StegVerse-Labs/.github`
-
-## Task pointer
+Updated: 2026-09-17
 
 - Goal Task ID: `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001`
-- Parent Goal: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`
 - COSV: `40000100100000`
-- Status: `RETIRED / DECOMPOSED_AT_PROMPT_LIMIT`
-- Goal Prompt Count: `20/20`
+- Status: `ACTIVE / CHECKED_OUT`
+- Reusable owner: `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001`
 
-## Terminal state
+## Canonical execution path
 
-This parent reached its prompt limit with source/coordination work complete but authentic same-invocation A1-A4 and governed roundtrip evidence still absent. No runtime predicate was promoted from source, CI, merge, deployment, page reachability, or service-worker presence.
+```text
+manifest
+-> StegVerse Node
+-> Interlock
+-> InTr materialization
+-> bounded invocation lease
+-> EVENT_EPHEMERAL StegOS runtime
+-> execution-time runtime identity
+-> WorkerCoordinator claim/fence
+-> authentic governed ingress
+-> Round Trip 1
+-> Master Records record/reconstruct/process
+-> Round Trip 2
+```
 
-Completed source/coordination evidence retained by this parent:
+No route, endpoint, receiver, external host, external device, standing runtime, or generic process-host discovery stage exists.
 
-- single canonical `StegBrowser:ManifestInvocation` Universal InTr representation retained;
-- `.github` reusable binding/baseline source merged and validated;
-- Site SV002 baseline/adaptation merged and validated;
-- current-iPhone invocation-edge repair merged in Site PR `#1360` as `76af62f2befdfa7034d3dd00891bfe60a0990abb`;
-- Site handoff reconciliation PR `#1361` merged as `7c483335f259d5eacf9a55dde923c0c4fefd660e`;
-- `.github` current-iPhone reconciliation PR `#2002` exact head `ef911b9a6ab8f0be49bb531f8f77befcaa1a50d3` passed all three checks and merged with expected-head protection as `7d04c6a789d2d6f05afae0c8e766761777ebc224`;
-- invalid claim-only Site PR `#1362` remained closed without merge.
+## StegVerse-002 connection parts imported as reusable components
 
-## Immutable invocation preserved
+The successful SV002 experiment is the implementation precedent for A1 through A2.2. Historical Site paths are provenance only; Site is not a runtime owner or required Goal Chart stage.
+
+A1 reuses registered-node continuity and Receipt #1 binding from the proven SV002 lane. Retain exact `node_id`, `interlock_id`, genesis/device commitment, manifest, Goal, and COSV correlation.
+
+A2 reuses the Node-bound Interlock and non-authorizing Universal InTr materialization mechanics: build the exact request, queue it into the write-once Node InTr outbox, submit the governed transition, and require authentic InTr admission. The request grants no execution authority and mints no claim/fence.
+
+A2.1 reuses the invocation-scoped bounded lease created only after InTr admission. The lease binds Node + Interlock + materialization + manifest + Goal + COSV and creates no standing host/runtime relationship.
+
+A2.2 reuses the admitted-event materializer from SV002: materialize `EVENT_EPHEMERAL_STEGOS`, then bind execution-time `runtime_id` to the same Node/Interlock/InTr/lease/manifest/Goal/COSV correlation. No pre-existing runtime or external host is required.
+
+Proven source provenance:
+
+- `StegVerse-Labs/Site:assets/stegverse-node-continuity-impl.js`
+- `StegVerse-Labs/Site:assets/evaluator-intr-connector.js`
+- `StegVerse-Labs/Site:stegos-node/sv002-intr-sync.js`
+- `StegVerse-Labs/Site:assets/sv002-local-runtime-materializer.js`
+- `StegVerse-Labs/Site:assets/sv002-principal-worker.js`
+
+The reusable contract is now encoded in `source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json`.
+
+## Ordering after connection materialization
+
+A3 WorkerCoordinator claim/fence occurs after the EVENT_EPHEMERAL runtime identity is bound. WorkerCoordinator does not create the event, materialization, lease, or runtime.
+
+A4 must correlate the same Node, Interlock, materialization, lease, runtime, manifest, Goal, COSV, claim ID, and fencing token before `ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED` or `AUTHENTIC_INTR_INGRESS_OBSERVED` may become true.
+
+## Required reusable sequence
+
+```text
+MANIFEST_BOUND_TO_INVOCATION
+-> STEGVERSE_NODE_BOUND_TO_INVOCATION
+-> INTERLOCK_BOUND_TO_NODE_AND_MANIFEST
+-> INTR_MATERIALIZATION_ADMITTED
+-> INVOCATION_SCOPED_LEASE_ESTABLISHED
+-> EVENT_EPHEMERAL_STEGOS_RUNTIME_MATERIALIZED
+-> EXECUTION_TIME_RUNTIME_IDENTITY_BOUND
+-> CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED
+-> ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED
+-> AUTHENTIC_INTR_INGRESS_OBSERVED
+-> Round Trip 1
+-> mirror-boundary processing
+-> Round Trip 2
+```
+
+No new reusable task is required.
+
+## Immutable invocation
 
 ```text
 canonical request commit = 19935454cd8c68000b3a0fd70478b0d89d5cd622
@@ -35,47 +84,16 @@ destination = StegBrowser:ManifestInvocation
 COSV = 40000100100000
 ```
 
-No second request may be emitted and the existing nonce/payload must not be mutated.
+No second request and no mutation of the existing nonce/payload are allowed.
 
-## Authentic runtime predicates at retirement
+## Current authentic state
 
-```text
-REGISTERED_STEGVERSE_NODE_BOUND_TO_INVOCATION = false
-INTERLOCK_BOUND_TO_NODE_AND_MANIFEST = false
-INTR_MATERIALIZATION_ADMITTED = false
-INVOCATION_SCOPED_LEASE_ESTABLISHED = false
-EVENT_EPHEMERAL_STEGOS_RUNTIME_MATERIALIZED = false
-EXECUTION_TIME_RUNTIME_IDENTITY_BOUND = false
-CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED = false
-ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED = false
-AUTHENTIC_INTR_INGRESS_OBSERVED = false
-A1_A4_COMPLETE = false
-ROUND_TRIP_1_STARTED = false
-ROUND_TRIP_2_STARTED = false
-```
+A0 is source-bound with runtime confirmation pending. A1, A2, A2.1, A2.2, A3, and A4 remain not authentically observed for the current invocation. Round Trip 1 and Round Trip 2 have not been entered. Historical SV002 evidence, source state, CI, or architecture precedent cannot promote current runtime predicates.
 
-## Canonical decomposition
+## Authority map
 
-Remaining work is split into two genuinely separable successors:
+Manifest = route declaration only. Node = continuity/admission anchor. Lease = bounded invocation scope only. EVENT_EPHEMERAL StegOS = compute/execution surface. WorkerCoordinator = claim/fence authority. Interlock/InTr = transition and governed packet-movement authority. TV/TVC = credential authority. Master Records = custody/reconstruction authority, not transport authority. GitHub/CI runtime authority = `NONE`. Healer remains exception/remediation only.
 
-1. `STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001` — ACTIVE successor for same-iPhone authentic A1-A4 execution/evidence. Handoff: `docs/STEGBROWSER_CURRENT_IPHONE_A1_A4_EXECUTION_MIRROR_HANDOFF.md`.
-2. `STEG-BROWSER-GOVERNED-ROUNDTRIP-001` — INACTIVE successor for the governed round trips; it may activate only after authentic `A1_A4_COMPLETE=true`. Handoff: `docs/STEGBROWSER_GOVERNED_ROUNDTRIP_MIRROR_HANDOFF.md`.
+## Next execution boundary
 
-The first unresolved predicate transferred to the active successor is `REGISTERED_STEGVERSE_NODE_BOUND_TO_INVOCATION`.
-
-## Authority boundaries preserved
-
-- StegVerse Node: continuity/admission anchor only.
-- Interlock/InTr: governed transition authority.
-- WorkerCoordinator: sole claim/fence authority.
-- TV/TVC: credential authority.
-- GitHub/CI: source validation/evidence transport only; runtime authority `NONE`.
-- No second user-operated device is required or allowed as a workaround.
-
-## README review
-
-README remains accurate; no byte change is required because the runtime/authority topology is unchanged.
-
-## Manual work
-
-Continue under `STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001`: on the same iPhone/Safari context that owns the registered StegVerse Node, open `https://stegverse.org/stegos-bootstrap/canonical-work-runtime-consumption.html?autostart=1` without Private Browsing and without clearing site data. Return the complete displayed JSON exactly, or the exact `FAIL_CLOSED` reason unchanged.
+Trace the current StegBrowser implementation against these imported SV002 connection components and reuse the existing Node -> Interlock -> InTr -> bounded lease -> EVENT_EPHEMERAL StegOS path exactly. Promote A1 through A4 only from authentic current-invocation evidence, then enter Round Trip 1.
