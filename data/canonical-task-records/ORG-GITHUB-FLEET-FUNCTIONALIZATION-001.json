@@ -209,7 +209,16 @@
     "gp10_outreach_sent_observed": false,
     "gp10_problem_confirmation_observed": false,
     "gp10_authorized_dataset_discussion_observed": false,
-    "gp10_paid_scope_willingness_observed": false
+    "gp10_paid_scope_willingness_observed": false,
+    "gp10_outreach_sent_user_reported": true,
+    "gp10_outreach_sender_user_reported": "rigel@stegverse.org",
+    "gp10_pova_outreach_sent_user_reported": true,
+    "gp10_integrity_outreach_sent_user_reported": true,
+    "gp10_outreach_sent_provider_verified": false,
+    "gp10_connected_gmail_matching_sent_messages_observed": false,
+    "gp10_outreach_send_state_commit": "b4a2db5af6dadd545481538c0eca6b4dcb424bff",
+    "gp10_outreach_handoff_commit": "957a418b070514eeccaa4e47913726ec354712db",
+    "gp10_reply_observed": false
   },
   "completion": {
     "claimed": false,
@@ -217,7 +226,7 @@
     "report_complete": false,
     "summary_ref": "reports/ORG_GITHUB_FLEET_FUNCTIONALIZATION_001_DEPENDENCY_MAP.md"
   },
-  "next_admissible_work": "Preserve zero-speculative-infrastructure and no-routine-Actions constraints. Prospect-specific discovery outreach is prepared for Western Rail / Pend Oreille Valley Railroad and Integrity Rail Services. The next evidence-bearing step is human-authorized outreach using the existing messages; retain GP10 as lead revenue candidate only if an actual response confirms the record/provenance/conflict problem, willingness to discuss an authorized dataset, or willingness to scope/quote a paid engagement. If bounded outreach fails to validate those predicates, compare already-implemented StegVerse capabilities for a shorter evidence-backed revenue path before any new GP10 buildout.",
+  "next_admissible_work": "Preserve zero-speculative-infrastructure and no-routine-Actions constraints. Both first-wave GP10 discovery emails are user-reported sent from rigel@stegverse.org; connected Gmail provider verification is not observed. Await and reconcile actual POVA/Western Rail or Integrity Rail Services responses against the explicit problem-confirmation, authorized-dataset, and paid-scope predicates. Retain GP10 as the lead candidate only if response evidence supports one of those predicates; otherwise compare already-implemented StegVerse capabilities for a shorter evidence-backed path to revenue before any new GP10 buildout.",
   "status_response_contract": {
     "active": "currently active - checked out",
     "completed": "functionalization validated with direct evidence"
