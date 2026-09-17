@@ -263,11 +263,13 @@ def dispatch(source_root: Path, runtime_root: Path, *, runner=subprocess.run, en
         "A1_NOT_OBSERVED_REGISTERED_NODE_RECEIPT_UNAVAILABLE", "A1_NOT_OBSERVED_CANONICAL_INVOCATION_NOT_RETAINED", "A1_NOT_OBSERVED_NOT_CALLABLE",
     }
     request_failures = [row["consumer"] for row in outcomes if row["state"] not in accepted_wait_states]
+    exact_selector_failure = only_consumers is not None and bool(request_failures)
     receipt = {
-        "schema": "stegverse.resident-request-dispatch/v1", "state": "DISPATCH_COMPLETE" if not missing and not exceptions else "DISPATCH_INCOMPLETE",
+        "schema": "stegverse.resident-request-dispatch/v1", "state": "DISPATCH_COMPLETE" if not missing and not exceptions and not exact_selector_failure else "DISPATCH_INCOMPLETE",
         "source_root": str(source), "runtime_root": str(runtime), "registered_consumer_count": len(CONSUMERS), "consumer_count": len(selected),
         "selected_consumers": [name for name, _ in selected], "selection_scope": "ALL_REGISTERED" if only_consumers is None else "EXACT_SELECTOR",
         "consumers_visited": len(outcomes), "missing_consumers": missing, "dispatch_exceptions": exceptions, "request_failures": request_failures,
+        "exact_selector_failure": exact_selector_failure,
         "outcomes": outcomes, "request_failure_blocks_later_requests": False, "astra_class_standing_awareness_ready": standing_awareness_ready(runtime),
         "quantum_resilience_standing_awareness_ready": quantum_awareness_ready(runtime),
         "network_source_fetch_performed": False, "credential_authority": "TV/TVC", "github_token_required": False, "github_token_runtime_authority": "NONE",
