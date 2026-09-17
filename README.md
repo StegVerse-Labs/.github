@@ -440,3 +440,7 @@ StegScholar closeout PR #59 was validated at exact head `cc4ce60a778844b05cdb29e
 The bounded successor Goal Tasks are `GATE-LEGITIMACY-INVARIANT-001`, `ARCHITECTURE-NEUTRAL-ADMISSIBILITY-001`, and `INDEPENDENT-REVIEW-PREDICATE-001`. Each is independently `ACTIVE / UNCLAIMED` with a local `.github` mirror handoff and matching StegScholar handoff projection. Continuation-renewal and execution-to-consequence reconciliation remain in the existing TT workstream rather than creating duplicate tasks.
 
 This is a research/formalism closeout only. The release boundary remains `NOT_RELEASE_READY`; no tag, release, deployment, runtime activation, certification, or downstream propagation is implied.
+
+## StegVerse-002 original experiment rerun
+
+The canonical callable owner for the original StegVerse-002 v0.3 self-characterization rerun is `STEGVERSE-002-EXPERIMENT-RERUN-001` under COSV `50000000107000`. It reuses the existing registered StegVerseNode -> Interlock/InTr -> bounded EVENT_EPHEMERAL execution mechanics. `SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001` is adjacent work and is not a prerequisite for this rerun. GitHub/CI grants no runtime authority.
