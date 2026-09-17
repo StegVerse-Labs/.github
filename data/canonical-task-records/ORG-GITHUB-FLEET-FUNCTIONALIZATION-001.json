@@ -32,9 +32,8 @@
     "StegVerse-Labs/.github:handoffs/COSV-LIVE-PACKET-AUTOMATION-006.json",
     "StegVerse-Labs/.github:docs/COSV_HEARTBEAT_STATE_PACKET_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegBrain:docs/COSV_GRADIENT_MECHANICS_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/StegMusic:docs/STEGMUSIC_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegTalk:AURI_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/StegBrain:docs/STEGBRAIN_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegTalk:auri/activation-state.json",
     "StegVerse-Labs/stegfin-governance:docs/STEGFIN_MIRROR_HANDOFF.md",
     "StegVerse-Labs/GP10:GP10_MIRROR_HANDOFF.md",
     "StegVerse-Labs/GP10:docs/receipts/runtime-validation-06a2f17ec7864562e1d947d95b93b33b261dec73.json"
@@ -66,7 +65,11 @@
     "stegbrain_live_packet_consumption_pending": true,
     "stegbrain_first_live_gradient_observed": false,
     "stegtalk_auri_001_through_006_complete": true,
+    "stegtalk_repository_and_adjacent_automation_complete": true,
+    "stegtalk_manual_tasks_required": false,
+    "stegtalk_machine_remediable_work_remaining": false,
     "stegtalk_auri_007_runtime_authorization_evidence_pending": true,
+    "stegtalk_external_condition": "deployment.authorization_evidence.pending",
     "gp10_runtime_proof_complete": true,
     "gp10_runtime_pass_tested_commit": "06a2f17ec7864562e1d947d95b93b33b261dec73",
     "gp10_runtime_pass_run_id": 35266625877,
@@ -76,7 +79,6 @@
     "gp10_runtime_proof_claim_released": true,
     "gp10_field_validation_bundle_pending_authentic_evidence": true,
     "gp10_field_validation_runtime_dependency_satisfied": true,
-    "gp10_machine_runtime_proof_and_real_field_evidence_pending": false,
     "gp10_machine_runtime_proof_pending": false
   },
   "completion": {
@@ -85,7 +87,7 @@
     "report_complete": false,
     "summary_ref": "reports/ORG_GITHUB_FLEET_FUNCTIONALIZATION_001_DEPENDENCY_MAP.md"
   },
-  "next_admissible_work": "Preserve the staged StegMusic request and COSV->StegBrain runtime lanes until authentic local execution evidence exists. GP10 repository-native runtime proof is complete; its remaining field/threshold/legal transitions are authentic-evidence or human-authority gated. Continue to the next machine-remediable partial target, StegTalk AURI-007, by reconciling its canonical activation handoff and executing only machine-owned prerequisites that do not require fabricated provider/deployment authorization.",
+  "next_admissible_work": "GP10 machine runtime proof is complete and StegTalk has no repository-controlled work remaining before its external authorization condition. Preserve both as evidence-isolated lanes. Re-observe the still-open authentic-execution dependencies for TVC/StegMusic and COSV/StegBrain when a sovereign execution surface is available; in parallel inspect the remaining .github/TVC shared runtime dependencies for any repository-native defects that can be repaired without inventing resident execution or credentials.",
   "status_response_contract": {
     "active": "currently active - checked out",
     "completed": "functionalization validated with direct evidence"
