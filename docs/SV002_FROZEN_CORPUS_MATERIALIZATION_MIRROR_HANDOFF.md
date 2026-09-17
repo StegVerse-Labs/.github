@@ -11,19 +11,9 @@ Updated: 2026-09-17
 - Canonical registry shard: `data/canonical-task-records/SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001.json`
 - Tracking issue: `StegVerse-Labs/.github#2064`
 
-## Sole unresolved blocker inherited from parent
+## Goal
 
-The parent sandbox proved the provisional execution/custody chain but could not close Goal 1 or Goal 2 because the complete frozen TT/RTG/GTG/AE corpus was not byte-materialized locally.
-
-`StegVerse-002/micro-node-runtime/tools/sv002_native_resource_bundle.py` requires, for each pinned Git tree:
-
-1. exact frozen commit identity;
-2. every blob from `git ls-tree -r` except rejected symlinks;
-3. SHA-256 of every blob included in a canonical `source_index` even when the blob is non-UTF8 and excluded from searchable `files`;
-4. canonical `source_sha256` over the complete ordered source index;
-5. complete bundle verification before search/read execution.
-
-Therefore a top-read subset, current default branch, semantic reconstruction, or UTF8-only subset is not sufficient.
+Materialize the complete exact frozen TT/RTG/GTG/AE corpus, build and verify the native SV002 resource bundle with the unchanged production builder, then reuse the already-proven sandbox native adapter/v0.3 exporter/corrected egress/Master Records/origin-return chain. Goal 1 and Goal 2 close only from the complete authentic run.
 
 ## Frozen source identities
 
@@ -45,54 +35,52 @@ AE
   tree:   03643ce2b626f0813ab74707359f2219e9e04551
 ```
 
-The organization capability snapshot remains pinned separately at SHA-256 `a691449e40e87ffae8f6c51efde915bae1d35e491137aee18a734fc7ad5f2462`.
+Organization capability snapshot SHA-256 remains pinned at:
+`a691449e40e87ffae8f6c51efde915bae1d35e491137aee18a734fc7ad5f2462`.
 
-## Tool-surface finding at decomposition
+## Exact bundle invariant
 
-The connected GitHub source can:
+`StegVerse-002/micro-node-runtime/tools/sv002_native_resource_bundle.py` requires for each source:
 
-- inspect the exact pinned commits;
-- enumerate recursive Git trees;
-- fetch individual Git blobs;
-- inspect existing workflow runs and download retained workflow artifacts.
+1. exact frozen commit identity;
+2. every non-symlink blob from the frozen Git tree;
+3. SHA-256 of every blob in the ordered `source_index`, including non-UTF8 blobs excluded from searchable `files`;
+4. canonical `source_sha256` over the complete ordered source index;
+5. complete bundle verification before native search/read execution.
 
-The available surface does not expose:
-
-- a repository archive/tarball materialization action into the sandbox filesystem;
-- a bulk multi-blob download action;
-- a workflow-dispatch action that could create a new exact-source packaging run.
-
-Existing retained bundle-validation workflow artifacts contain readiness receipts only, not the frozen source corpus.
-
-This is a source-materialization limitation only. GitHub runtime authority remains `NONE`.
+A top-read subset, current branch, semantic reconstruction, UTF8-only subset, or synthetic source index is not sufficient.
 
 ## Proven sandbox work to reuse, not recreate
 
-The parent established provisional sandbox evidence that must be consumed as prerequisite work rather than reimplemented:
+The parent established provisional sandbox evidence for:
 
-- executable native replacement adapter selects the released native path and poison-tests the historical Python round-trip runner at zero calls;
-- hosted/second-machine drift fails closed;
-- native-result-to-v0.3 exporter produces the canonical transition/evidence artifact structure and passes the current imported Master Records reconstruction predicates;
-- `EGRESS_EMITTED` was corrected to occur only after the correlated response packet is actually published;
-- organization-root finalization occurs after egress;
-- Master Records reconstruction/custody/readback occurs before origin delivery;
-- forced response-publication failure emits no false `EGRESS_EMITTED`;
-- tampered egress and custody rejection fail closed before origin delivery.
+- executable native replacement adapter with historical Python round-trip runner poison-tested at zero calls;
+- hosted/second-machine drift fail-closed;
+- native-result-to-v0.3 exporter passing current Master Records reconstruction predicates;
+- response publication before `EGRESS_EMITTED`;
+- organization-root finalization after actual egress;
+- Master Records reconstruction/custody/readback before origin delivery;
+- forced response-publication failure producing no false `EGRESS_EMITTED`;
+- tampered egress and custody rejection blocking origin delivery.
 
-These are sandbox/provisional findings only and are not authentic production runtime proof.
+These remain sandbox/provisional findings and are not authentic production runtime proof.
 
-## 2026-09-17 TVC resident invocation reconciliation
+## Four exact staged TVC requests
 
-Four exact immutable private-source requests are staged in `StegVerse-Labs/TVC` for this Goal and remain the only admitted source-materialization inputs:
+The only admitted source-materialization inputs remain:
 
 ```text
-requests/private-source-read/SHWP-SV002-FROZEN-CORPUS-TT.json
-requests/private-source-read/SHWP-SV002-FROZEN-CORPUS-RTG.json
-requests/private-source-read/SHWP-SV002-FROZEN-CORPUS-GTG.json
-requests/private-source-read/SHWP-SV002-FROZEN-CORPUS-AE.json
+StegVerse-Labs/TVC/requests/private-source-read/SHWP-SV002-FROZEN-CORPUS-TT.json
+StegVerse-Labs/TVC/requests/private-source-read/SHWP-SV002-FROZEN-CORPUS-RTG.json
+StegVerse-Labs/TVC/requests/private-source-read/SHWP-SV002-FROZEN-CORPUS-GTG.json
+StegVerse-Labs/TVC/requests/private-source-read/SHWP-SV002-FROZEN-CORPUS-AE.json
 ```
 
-The existing runtime sequence is already implemented and must be reused unchanged:
+No generic GitHub credential, second source-read implementation, or alternate materializer is permitted.
+
+## Existing TVC runtime chain
+
+The existing TV/TVC-owned runtime path remains:
 
 ```text
 RT-TVC-PRIMARY-RUNTIME-BINDING-001
@@ -104,57 +92,118 @@ RT-TVC-PRIMARY-RUNTIME-BINDING-001
 -> consume staged immutable requests
 ```
 
-`TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006` is released to existing TV/TVC runtime authority; source/preflight completion is not runtime execution evidence. `TVC-RESIDENT-SERVICE-SELF-HEAL-001` remains `SOURCE_REBIND_VALIDATED_AUTHENTIC_HOST_EXECUTION_PENDING` and its authentic host receipt remains unobserved.
+No second runtime, host, listener, selector, scheduler, WorkerCoordinator, credential route, or user-operated device may be introduced.
 
-The generic reusable-task trigger can execute `RT-TVC-PRIMARY-RUNTIME-BINDING-001` only from an already-materialized admitted resident source/runtime context. The current direct resident connector exposes no online device. The canonical resident dispatcher does not register a dedicated selector for this child Goal or for `TVC-RESIDENT-SERVICE-SELF-HEAL-001`; adding one would create a new execution path and is prohibited by this Goal.
+## Immutable private-source receipt semantics
 
-Therefore the current blocker is:
+TVC main contains:
 
-`EXISTING_EVENT_EPHEMERAL_TVC_RUNTIME_INVOCATION_SURFACE_NOT_CURRENTLY_OBSERVED`
+- `a9c41b7effe90bb09123aef975cb78e30f0af824` — immutable terminal receipt retention and terminal replay suppression;
+- `a38d82b0ab997ec98e84f1d48d53a4114f7be4da` — regression coverage.
 
-This is not permission to add a listener, worker, scheduler, host, generic GitHub credential, second device, or alternate source-read implementation. The next authentic transition must consume the already-existing TV/TVC runtime binding/self-heal path and emit the retained resident receipts.
-
-## 2026-09-17 immutable receipt retention repair
-
-After the latest runtime re-observation, TVC main added a narrow source repair for the existing private-source resident path:
-
-- `a9c41b7effe90bb09123aef975cb78e30f0af824` — preserve immutable private-source receipts and suppress terminal replay;
-- `a38d82b0ab997ec98e84f1d48d53a4114f7be4da` — regression coverage for replay suppression, immutable receipt retention, and materialization-ID request binding.
-
-The existing resident executor now retains terminal COMPLETE receipts under:
+Terminal COMPLETE receipts are retained at:
 
 ```text
 /var/lib/stegverse/private-source-read/receipts/by-materialization/<materialization_id>.json
 ```
 
-Each immutable receipt is bound to the exact request SHA-256 and materialization ID. A terminal replay with the same request reuses the immutable receipt without reloading credentials or re-executing the source read; a different request attempting to reuse the same materialization ID fails closed. The receipt continues to carry `authorized_exact_sha`, `observed_exact_sha`, process-only `SYSTEMD_LOADCREDENTIAL` transport, `credential_value_exposed=false`, and no persisted credential value.
+Each terminal receipt is bound to request SHA-256 + materialization ID, carries `authorized_exact_sha` and `observed_exact_sha`, uses process-only `SYSTEMD_LOADCREDENTIAL`, exposes no credential value, and cannot be rebound to a different request. Exact terminal replay reuses the immutable receipt without reloading credentials or re-executing the source read.
 
-This repair strengthens retention and exactly-once evidence for the four staged SV002 requests once authentic resident execution occurs. It does not prove that the resident service is installed, that a credential is present, that the four requests have been consumed, or that any frozen source has been materialized. The current direct resident surface remains unavailable and no authentic terminal receipt has yet been observed for this Goal.
+## 2026-09-17 callable-path repair — supersedes connected-device framing
 
-Required authentic receipts before bundle construction:
+The previous blocker `EXISTING_EVENT_EPHEMERAL_TVC_RUNTIME_INVOCATION_SURFACE_NOT_CURRENTLY_OBSERVED` is superseded.
 
-1. TVC service installation state `SERVICE_INSTALLED_VERIFIED`;
-2. resident-state receipt proving the existing watcher/runtime state without reading credential value;
-3. four private-source execution/materialization receipts bound one-to-one to the staged requests;
-4. for each request, `authorized_exact_sha == observed_exact_sha == requested exact_sha`;
-5. exact materialized checkout available credential-free to the unchanged SV002 native resource-bundle builder.
+Investigation found that StegVerse already had the required generic callable-task machinery:
 
-No Goal 1/Goal 2 closure, bundle verification, or production execution claim is permitted before those predicates are observed.
+```text
+StegVerse-Healer existing sovereign carrier
+-> RT-REUSABLE-TASK-SCHEDULER-001
+-> scripts/trigger_reusable_task.py
+-> RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001
+-> scripts/run_tvc_runtime_boundary_reusable.py
+-> RT-TVC-PRIMARY-RUNTIME-BINDING-001
+-> existing TVC preflight + activate
+-> existing TVC self-heal/private-source path
+```
 
-## Required continuation
+The architecture therefore does not require an idle connected remote-desktop device. The direct device connector is only one possible carrier and is not the definition of task callability.
 
-1. Materialize every blob represented by each of the four frozen tree identities.
-2. Preserve exact blob bytes, modes, and paths; reject symlinks exactly as the builder does.
-3. Reconstruct each ordered source index and `source_sha256` exactly.
-4. Build and verify the complete `stegverse.sv002-native-resource-bundle/v1` bundle with the existing production builder semantics.
-5. Run the real native action-policy against that complete bundle.
-6. Feed that same native execution into the already-proven v0.3 exporter.
-7. Publish the correlated response packet, then and only then finalize `EGRESS_EMITTED`.
-8. Run actual Master Records reconstruction/custody/readback.
-9. Deliver the same correlated return to origin only after custody/readback.
-10. Close Goal 1 and Goal 2 only from that complete run.
+Two concrete source defects blocked this existing path:
 
-Do not substitute current-branch search, a partial corpus, fixture reads, synthetic source indexes, or the historical Python principal.
+1. `materialize_reusable_task_construct.py` read only the historical aggregate `control/task-vector-index.json`, while the repository already uses canonical `control/task-vector-index.d/*.json` shards. The child COSV `50000000107001` could not therefore be resolved through the generic trigger without rewriting the aggregate.
+2. The existing fleet functionalization COSV shard `ORG-GITHUB-FLEET-FUNCTIONALIZATION-001.json` was malformed: it lacked the required shard schema and `vector_state`, causing the deterministic shard suite to fail once this path was exercised.
+
+Repairs merged through `.github` PR #2066 after exact-head validation:
+
+```text
+merge commit: a7cc366a7f39bdcfed06bafd693ac0d7170091a7
+Deterministic Repository Suite run: 35274133956 = SUCCESS
+Organization control validation: SUCCESS
+```
+
+The merge:
+
+- makes the generic reusable constructor resolve aggregate + canonical non-conflicting COSV index shards;
+- fails closed when a shard disagrees with an aggregate row;
+- verifies the referenced task-vector source and exact task/COSV parity;
+- registers `SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001` with COSV `50000000107001` through a canonical task-vector record and index shard;
+- fixes the pre-existing malformed fleet shard;
+- adds regression coverage that constructs the SV002 invocation through `RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001` and rejects COSV mismatch.
+
+The existing neutral Healer scheduler was then bound to this Goal through StegVerse-Healer PR #88 after both exact-head `repo-smoke` checks passed:
+
+```text
+Healer merge commit: f2e91e1969e0c16fd8347931aca59c10ae6db252
+reusable task: RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001
+tracking task: SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001
+COSV: 50000000107001
+remote_desktop_required: false
+persistent_runner_required: false
+second_scheduler_required: false
+second_user_operated_device_required: false
+network_source_fetch_allowed: false
+```
+
+The row is eligible in every UTC hour and uses the scheduler's existing bounded same-slot retry semantics. This is reuse of the already-existing neutral scheduler/Healer carrier, not creation of a standing scheduler dependency for this Goal.
+
+## Current authentic blocker
+
+The callable invocation **source path is now canonical and validated**. The unresolved boundary is authentic runtime consumption of that path:
+
+`NEUTRAL_REUSABLE_TVC_INVOCATION_SOURCE_COMPLETE_RESIDENT_CYCLE_RECEIPT_PENDING`
+
+No retained scheduler/reusable-task receipt for this Goal has yet been observed after the merge. Therefore none of the following may yet be promoted:
+
+- `SERVICE_INSTALLED_VERIFIED`;
+- private-source resident-state active;
+- TV/TVC credential presence;
+- consumption of any of the four staged requests;
+- immutable COMPLETE materialization receipts;
+- complete frozen native bundle;
+- Goal 1 or Goal 2.
+
+Future continuation must inspect the neutral scheduler/reusable-task receipt surfaces first. Do not regress to treating `Remote_Desktop_Commander.list_devices()==[]` as proof that the task is uncallable.
+
+## Required authentic evidence before bundle construction
+
+1. neutral scheduler/reusable-task receipt bound to this Goal/COSV and `RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001`;
+2. authentic TVC `SERVICE_INSTALLED_VERIFIED`;
+3. resident-state receipt proving the existing watcher/runtime state without exposing credential value;
+4. four immutable private-source COMPLETE receipts, one per staged request;
+5. for every request: `authorized_exact_sha == observed_exact_sha == requested exact_sha`;
+6. exact materialized checkouts available credential-free to the unchanged native bundle builder.
+
+## Required continuation after all six pass
+
+1. Run unchanged `sv002_native_resource_bundle.py` against all four exact materializations.
+2. Verify every ordered source index and `source_sha256`.
+3. Verify the complete `stegverse.sv002-native-resource-bundle/v1` bundle.
+4. Run the real native action-policy against that complete bundle.
+5. Feed that same native execution into the already-proven v0.3 exporter.
+6. Publish the correlated response packet; only then finalize `EGRESS_EMITTED`.
+7. Run Master Records reconstruction/custody/readback.
+8. Deliver the same correlated return to origin only after custody/readback.
+9. Close Goal 1 and Goal 2 only from that complete authentic run.
 
 ## Manual work
 
