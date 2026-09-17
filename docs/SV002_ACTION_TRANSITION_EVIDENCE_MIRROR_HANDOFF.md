@@ -1,6 +1,6 @@
 # SV002 Action Transition Evidence Mirror Handoff
 
-Status: ACTIVE
+Status: RETIRED / DECOMPOSED_AT_PROMPT_LIMIT
 Updated: 2026-09-17
 
 ## Task pointer
@@ -9,92 +9,102 @@ Updated: 2026-09-17
 - Parent: `SHWP-SV002-ORG-RUNTIME-ACTIVATION-001` — prompt limit reached; do not extend
 - COSV task vector: `50000000107000`
 - Canonical registry shard: `data/canonical-task-records/SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001.json`
-- Tracking issue: `StegVerse-Labs/.github#2060`
-- Target-org handoff: `StegVerse-002/.github/docs/SELF_CHARACTERIZATION_EXECUTION_SURFACE_MIRROR_HANDOFF.md`
-- Frozen experiment condition: `v0.3 FROZEN / OPERATIVE`
-- Callable-ownership repair: PR `#2063`, squash merge `a040d37c3809f3d78b6478b1f2e4ff9a3e59e500`
+- Original tracking issue: `StegVerse-Labs/.github#2060`
+- Goal Prompt Count: `20/20`
+- Canonical successor: `SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001`
+- Successor COSV: `50000000107001`
+- Successor issue: `StegVerse-Labs/.github#2064`
+- Successor handoff: `docs/SV002_FROZEN_CORPUS_MATERIALIZATION_MIRROR_HANDOFF.md`
+
+## Disposition
+
+This parent reached Goal Prompt Count `20/20` without complete Goal 1 / Goal 2 evidence. It is retired as decomposed rather than extended or falsely completed.
+
+The remaining blocker is exact byte-complete materialization of the frozen TT/RTG/GTG/AE source corpus required by `StegVerse-002/micro-node-runtime/tools/sv002_native_resource_bundle.py`.
+
+The unresolved work is transferred to `SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001` and MUST continue there.
 
 ## Governing invariant
 
 Every StegVerse action is canonically complete only when every required governed state transition is authentically emitted, retained, same-execution correlated, and reconstructable through canonical Master Records custody. Missing transition evidence means the action is not proven complete.
 
-## Corrected callable ownership
+## What this parent established
+
+### Callable ownership
+
+PR `#2063` / squash merge `a040d37c3809f3d78b6478b1f2e4ff9a3e59e500` repaired callable ownership:
 
 ```text
 StegVerseNode
-  class: ephemeral
-  availability: AVAILABLE_TO_INVOKE
-  instance_state: NOT_MATERIALIZED
-  materialization: ON_INVOCATION
   callable_task: SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001
   execution_owner: StegVerse-002/.github
   operation: REQUEST_SELF_CHARACTERIZATION
 
 StegBrowser
-  class: ephemeral
   callable_task: RT-STEGBROWSER-RUNTIME-CONSUMPTION-001
   operation: STEGBROWSER_MANIFEST_DEFINED_INTR_INGRESS
 ```
 
-PR #2063 repaired the earlier shared-callable defect. The StegBrowser task remains mechanics provenance only; it is not the SV002 callable owner.
+StegBrowser is mechanics provenance only and is not the SV002 callable owner.
 
-## Required path
+### Full-fidelity sandbox findings
 
-```text
-registered StegVerseNode
--> Interlock
--> Universal InTr materialization
--> bounded invocation lease
--> EVENT_EPHEMERAL runtime
--> execution-time runtime identity
--> WorkerCoordinator claim/fence
--> authentic governed ingress
--> StegVerse-002/.github resident-runtime/self_characterization_surface.py
--> StegVerse-002/micro-node-runtime/tools/run_self_characterization_principal.py
--> frozen v0.3 execution
--> governed egress
--> Master Records custody/reconstruction
-```
+The parent progressively replaced the earlier simplified sandbox with actual production decision-bearing components and found multiple integration defects. Sandbox-only candidate repairs were exercised without canonicalizing implementation changes.
 
-## Required transition evidence
+Provisional sandbox results established:
 
-```text
-REQUEST_BOUND
-STEGVERSE_NODE_BOUND_TO_INVOCATION
-INTERLOCK_BOUND_TO_NODE_AND_MANIFEST
-INTR_MATERIALIZATION_ADMITTED
-INVOCATION_SCOPED_LEASE_ESTABLISHED
-EVENT_EPHEMERAL_RUNTIME_MATERIALIZED
-EXECUTION_TIME_RUNTIME_IDENTITY_BOUND
-T0_CAPTURED
-CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED
-AUTHENTIC_INTR_INGRESS_OBSERVED
-PRINCIPAL_EXECUTION_TRANSITIONS_RETAINED
-EGRESS_EMITTED
-MASTER_RECORDS_CUSTODY_OBSERVED
-MASTER_RECORDS_RECONSTRUCTION_PASS
-ALL_REQUIRED_ACTION_TRANSITIONS_RECONSTRUCTABLE
-```
+- a replacement native execution adapter can select the released native SV002 path while poison-testing the historical Python round-trip runner at zero calls;
+- hosted/second-machine drift fails closed;
+- a target-owned native-result-to-v0.3 exporter can produce the canonical principal evidence contract without rerunning the historical Python principal;
+- the exported v0.3 artifacts pass the current imported `master-records/orchestration/scripts/verify_sv002_self_characterization_reconstruction.py` predicates;
+- `EGRESS_EMITTED` must occur only after the correlated response packet is actually published;
+- the organization ledger root must be finalized after authentic egress;
+- Master Records reconstruction/custody/readback must occur before origin delivery;
+- forced response-publication failure produces no false `EGRESS_EMITTED`;
+- tampered egress evidence and custody rejection fail closed before origin delivery.
 
-## 2026-09-17 successor consumption attempt
+These findings are sandbox/provisional only. They are not authentic production runtime proof and do not close Goal 1 or Goal 2.
 
-The merged registry shard and both mirror handoffs were re-read and remain consistent: task ACTIVE, COSV `50000000107000`, selected substrate `ADMITTED-EPHEMERAL-STEGOS-NODE`, zero connected devices not a blocker, standing runtime not required, and GitHub runtime authority `NONE`.
+## Exact remaining blocker
 
-The attempt stopped at the first required transition:
+The native resource builder requires the complete ordered blob set of every frozen source tree. For each non-symlink blob it computes SHA-256 and includes `{path, sha256}` in the source index. Non-UTF8 blobs are still part of that source index even though they are excluded from searchable bundle content.
+
+Frozen identities:
 
 ```text
-REQUEST_BOUND: NOT RETAINED / NOT AUTHENTICALLY OBSERVED
+TT
+  commit: ab60b42934222a2cb5335a5a8194f258a491fc57
+  tree:   173e2b6f8b75a8336144b16f36f5270d6bd741ea
+
+RTG
+  commit: ca69954cb3dc4ad073c9244e003bc8f0ef3837e2
+  tree:   22e87231234e396476ba5af2dc0416462904613b
+
+GTG
+  commit: 8cdb7bce87bb9f8429c35e9c66cc5dc28a46a225
+  tree:   b01735eaf44b7f1c4bff59c3ac394d2113363579
+
+AE
+  commit: 53c8eedddc4e54d8fa0660039d65ab9ac63057a1
+  tree:   03643ce2b626f0813ab74707359f2219e9e04551
 ```
 
-Evidence:
+The connected GitHub surface can enumerate recursive trees and fetch individual blobs, but at decomposition time exposed no repository archive/filesystem materialization action, no bulk multi-blob download action, and no workflow-dispatch action to package the trees. Existing retained validation artifacts contain readiness receipts only, not the full source corpus.
 
-- no successor-specific `SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001` invocation request, nonce-bound packet, same-invocation Node outbox entry, or self-characterization consumer is present under the successor Goal/COSV in the inspected StegVerse-002/Site source;
-- the existing same-device Canonical Work launcher remains hard-coded to the StegBrowser goal, COSV `40000100100000`, StegBrowser immutable nonce/manifest, and `StegBrowser:ManifestInvocation` destination;
-- `scripts/consume_sv002_self_characterization_request.py` is hard-coded to historical task `SHWP-SV002-SELF-CHARACTERIZATION-001`;
-- `control/resident-execution-request.d/sv002-self-characterization-001.json` is explicitly `SUPERSEDED_CROSS_ORG_EXECUTION` and historical/reference only;
-- a remote-device probe found no standing device, which is expected and is not promoted into a blocker because materialization is on invocation.
+Therefore the complete frozen resource bundle was not authentically materialized and Goal 1 / Goal 2 remain open.
 
-Because `REQUEST_BOUND` lacks authentic same-invocation retention, no later transition is claimed or inferred.
+## Current parent state
+
+```text
+coordination state: RETIRED
+checkout state: DECOMPOSED_AT_PROMPT_LIMIT
+Goal Prompt Count: 20/20
+Goal 1 closed: false
+Goal 2 closed: false
+complete frozen corpus observed: false
+authentic production runtime completion observed: false
+canonical successor: SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001
+```
 
 ## Authority boundaries
 
@@ -104,33 +114,12 @@ Because `REQUEST_BOUND` lacks authentic same-invocation retention, no later tran
 - TV/TVC: credential/provider authority.
 - Master Records: observed-reality custody/reconstruction authority.
 - HeartBeat: timing/freshness/liveness/observability only.
-- GitHub/CI/source: runtime authority `NONE`.
+- GitHub/CI/source: runtime authority `NONE`; source/evidence transport only.
 - second user-operated device required: `false`.
-
-## Current verified state
-
-```text
-successor coordination state: ACTIVE
-COSV: 50000000107000
-callable ownership defect: REPAIRED / MERGED
-StegVerseNode callable owner: SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001
-execution substrate: ADMITTED-EPHEMERAL-STEGOS-NODE
-REQUEST_BOUND: NOT RETAINED
-STEGVERSE_NODE_BOUND_TO_INVOCATION: NOT CLAIMED
-INTR_MATERIALIZATION_ADMITTED: NOT CLAIMED
-INVOCATION_SCOPED_LEASE_ESTABLISHED: NOT CLAIMED
-EVENT_EPHEMERAL_RUNTIME_MATERIALIZED: NOT CLAIMED
-T0_CAPTURED: NOT CLAIMED
-CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED: NOT CLAIMED
-PRINCIPAL_EXECUTION_TRANSITIONS_RETAINED: NOT CLAIMED
-EGRESS_EMITTED: NOT CLAIMED
-MASTER_RECORDS_RECONSTRUCTION_PASS: NOT CLAIMED
-SYSTEM_AI_ACTIVE from this rerun: false
-```
 
 ## Next action
 
-Repair only the missing successor invocation-consumption seam. Reuse the existing registered Node -> Interlock -> Universal InTr -> bounded EVENT_EPHEMERAL mechanics, but bind an operation-specific successor invocation contract for Goal `SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001`, COSV `50000000107000`, owner `StegVerse-002/.github`, operation `REQUEST_SELF_CHARACTERIZATION`, destination `stegverse-002.self-characterization`, and frozen condition `v0.3`. Retain authentic `REQUEST_BOUND` evidence before attempting Node binding. Do not reuse the StegBrowser goal/COSV/nonce/manifest packet, reactivate the superseded cross-org resident request, add a host/listener/scheduler/second request/second device, or fabricate downstream receipts.
+Do not continue this parent Goal. Continue only under `SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001` from `docs/SV002_FROZEN_CORPUS_MATERIALIZATION_MIRROR_HANDOFF.md` and reuse the already-proven sandbox chain rather than rebuilding it.
 
 ## Manual work
 
