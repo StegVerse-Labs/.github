@@ -171,7 +171,24 @@
     "targeted_resident_immutable_receipt_source_commit": "c05262e1c9a9d7f1b36992f2a45f5aca4855489b",
     "targeted_resident_immutable_receipt_test_commit": "8099f2b06781fa1c44057bdb1e5beb959123d774",
     "targeted_resident_immutable_receipt_workflow_run_observed": false,
-    "targeted_resident_immutable_receipt_runtime_observed": false
+    "targeted_resident_immutable_receipt_runtime_observed": false,
+    "actions_failure_notifications_observed_since_2026_09_17": 196,
+    "cosv_task_pointer_source_workflow_run_observed": true,
+    "cosv_task_pointer_source_workflow_run_id": 35272028407,
+    "cosv_task_pointer_source_workflow_job_id": 105373483968,
+    "cosv_task_pointer_source_workflow_result": "FAILURE",
+    "automatic_github_validation_contained": true,
+    "heartbeat_worker_project_manual_only_commit": "302239bc132e6aed96501a9212ab7c244064993f",
+    "org_control_plane_manual_only_commit": "fa55434281388638b8ef81ed962fbcd9ef8e73d8",
+    "deterministic_diagnostics_manual_only_commit": "d2b1ff8b143d3f739425ca6df3c31b22b524f060",
+    "gp10_legacy_intake_manual_only_commit": "5c5800e7d6b8aed88c3be069d6ca0a1cb6c5c4bc",
+    "site_repository_task_hourly_schedule_removed_commit": "6cf56f7a898c7d70b47882f1a64bcdcfb1706ac8",
+    "site_autonomy_hourly_schedule_removed_commit": "7a6efcf7ca1f1e500df6b6656a208dfe5cada06d",
+    "scw_contained_connectivity_schedule_removed_commit": "e5036ae393b298d392a9740568cb4a1eac2a243c",
+    "scw_contained_multi_repo_schedule_removed_commit": "c1acdf9dae7d8a75b98133321885182162745ca8",
+    "gp10_paid_field_validation_offer_ready": true,
+    "gp10_paid_field_validation_offer_commit": "518886e799ee327ccebd367e16168c679386aa02",
+    "gp10_paid_field_validation_offer_ref": "StegVerse-Labs/GP10:docs/business/PAID_FIELD_VALIDATION_OFFER.md"
   },
   "completion": {
     "claimed": false,
@@ -179,7 +196,7 @@
     "report_complete": false,
     "summary_ref": "reports/ORG_GITHUB_FLEET_FUNCTIONALIZATION_001_DEPENDENCY_MAP.md"
   },
-  "next_admissible_work": "Preserve all seven repaired shared-control defects and current evidence boundaries. Re-check repository validation without treating it as runtime proof. Continue source-only inspection only for newly evidenced repository-native defects. Re-enter COSV-LIVE-PACKET-AUTOMATION-006 and TVC-STEGMUSIC-VALIDATION-001 only when authentic admitted resident receipts exist; do not add another runtime, bridge, credential path, scheduler, or device dependency.",
+  "next_admissible_work": "Operate under cost-and-revenue-first constraints. Do not trigger GitHub Actions for discovery or routine validation. Use the existing failure ledger and direct source inspection to eliminate additional automatic paid failure loops only when clearly redundant or knowingly fail-closed. Prioritize converting GP10's paid field-validation offer into a real customer conversation/quote; technical work is admissible only when it directly reduces recurring cost or supports that concrete revenue path.",
   "status_response_contract": {
     "active": "currently active - checked out",
     "completed": "functionalization validated with direct evidence"
