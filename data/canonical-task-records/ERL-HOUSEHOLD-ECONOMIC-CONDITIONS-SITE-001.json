@@ -12,17 +12,20 @@
     "docs/ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_SITE_MIRROR_HANDOFF.md",
     "StegVerse-Labs/Executive_Rhetoric_Ledger#163",
     "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/ECONOMIC_DISTRIBUTION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger/research-data/household-economic-conditions/official-series-bindings.v1.json",
     "StegVerse-Labs/Site#1368",
+    "StegVerse-Labs/Site/Household-Economic-Conditions.html",
     "StegVerse-Labs/Site/Physical-Economics.html"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
     "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/Executive_Rhetoric_Ledger", "StegVerse-Labs/Site"],
-    "components": ["household-economic-condition-state", "historical-comparability-contract", "current-condition-public-page", "longitudinal-line-chart", "source-vintage-and-structural-breaks"]
+    "components": ["household-economic-condition-state", "historical-comparability-contract", "official-source-binding", "source-acquisition-normalization", "current-condition-public-page", "longitudinal-line-chart", "source-vintage-and-structural-breaks"]
   },
   "dependencies": [
     {"dependency_id":"DEP-ERL-ECONOMIC-DISTRIBUTION","kind":"SOURCE_CAPABILITY","state":"PARTIAL","ref":"StegVerse-Labs/Executive_Rhetoric_Ledger/docs/ECONOMIC_DISTRIBUTION_MIRROR_HANDOFF.md"},
-    {"dependency_id":"DEP-ERL-PHYSICAL-ECONOMICS-PUBLIC-OUTPUT","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"StegVerse-Labs/Site/Physical-Economics.html"}
+    {"dependency_id":"DEP-ERL-OFFICIAL-SOURCE-BINDINGS","kind":"SOURCE_CAPABILITY","state":"PARTIAL","ref":"StegVerse-Labs/Executive_Rhetoric_Ledger/research-data/household-economic-conditions/official-series-bindings.v1.json"},
+    {"dependency_id":"DEP-ERL-PHYSICAL-ECONOMICS-PUBLIC-OUTPUT","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"StegVerse-Labs/Site/Household-Economic-Conditions.html"}
   ],
   "blockers": [],
   "systemic_incident_ref": null,
@@ -36,13 +39,15 @@
     "SAME_AXIS_ONLY_FOR_COMPARABLE_UNITS_AND_DEFINITIONS",
     "NORMALIZED_INDEX_MODE_FOR_CROSS_METRIC_COMPARISON",
     "SOURCE_VINTAGE_AND_REFRESH_TIME_VISIBLE",
+    "OFFICIAL_SOURCE_IDENTIFIERS_EXACTLY_BOUND",
+    "SOURCE_ACQUISITION_FAILS_CLOSED_WITHOUT_FABRICATION",
     "PUBLIC_PAGE_FAILS_CLOSED_ON_UNGOVERNED_OR_STALE_DATA",
     "README_AND_MIRROR_HANDOFF_CURRENT"
   ],
   "runtime_requirements": {
     "capabilities": ["github_repository_read", "github_pull_request_write", "public_economic_data_acquisition", "governed_erl_output_consumption"],
     "environment": "CURRENT_SESSION_PLUS_GOVERNED_PUBLIC_SITE",
-    "direction": "ERL_GOVERNED_EVIDENCE_TO_PUBLIC_SITE",
+    "direction": "OFFICIAL_SOURCES_TO_ERL_GOVERNED_EVIDENCE_TO_PUBLIC_SITE",
     "mutation_required": true,
     "deployment_required": true,
     "current_observation_required": true
@@ -54,15 +59,16 @@
     "projection_only": false
   },
   "human_action_ref": null,
-  "completion": {"claimed": false, "validated": false, "reconciliation_ref": null},
-  "allowed_next_transitions": ["IMPLEMENT_SITE_SURFACE", "IMPLEMENT_HISTORICAL_SERIES_CONTRACT", "BIND_GOVERNED_ERL_OUTPUT", "VALIDATE_PUBLIC_FAIL_CLOSED_BEHAVIOR"],
+  "completion": {"claimed": false, "validated": false, "reconciliation_ref": "ERL#164+ERL#165+Site#1369"},
+  "allowed_next_transitions": ["RESOLVE_NYFED_WORKBOOK_COLUMN_BINDING", "ACQUIRE_OFFICIAL_SOURCE_CANDIDATES", "CONSTRUCT_GOVERNED_HOUSEHOLD_STATE", "BIND_GOVERNED_ERL_OUTPUT", "VALIDATE_PUBLIC_FAIL_CLOSED_BEHAVIOR"],
   "handoff_projection_refs": ["docs/ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_SITE_MIRROR_HANDOFF.md"],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "source_state_proves_execution": false,
+    "source_acquisition_creates_finding_authority": false,
     "erl_remains_evidence_and_analysis_authority": true,
     "site_is_presentation_consumer_only": true,
     "interlock_intr_required_for_governed_state_transition": true
   },
-  "readme_impact": {"material_function_change": true, "readme_updated_in_change_set": false, "readme_path": "README.md"}
+  "readme_impact": {"material_function_change": true, "readme_updated_in_change_set": true, "readme_path": "README.md"}
 }
