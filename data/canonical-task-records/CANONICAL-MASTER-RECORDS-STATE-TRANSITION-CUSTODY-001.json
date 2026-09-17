@@ -67,6 +67,11 @@
     "mir_browser_runtime_requires_authentic_intr_admission_receipt": true,
     "mir_browser_source_conformance_tests_materialized": true,
     "mir_browser_source_conformance_workflow_materialized": true,
+    "mir_browser_source_conformance_green": true,
+    "mir_browser_source_conformance_commit": "eb7f998112f2e0b5212802d98045564261f73aba",
+    "mir_browser_source_conformance_run_id": 35188627334,
+    "authentic_registered_node_outbox_entry_observed": false,
+    "authentic_current_mir_ingress_admitted_observed": false,
     "authentic_current_mir_browser_event_execution_observed": false,
     "authentic_rtc_007_observed": false,
     "authentic_rtc_008_observed": false,
@@ -82,8 +87,8 @@
     "runtime_completion_pending": true
   },
   "allowed_next_transitions": [
-    "VALIDATE_MIR_BROWSER_EVENT_SOURCE_CONFORMANCE",
-    "INVOKE_OR_OBSERVE_CURRENT_MIR_BROWSER_EVENT",
+    "OBSERVE_EXACT_REGISTERED_NODE_OUTBOX_ENTRY",
+    "OBSERVE_AUTHENTIC_CURRENT_MIR_INGRESS_ADMITTED",
     "RECONCILE_CANONICAL_MASTER_RECORDS_RECEIPTS_IN_ORDER",
     "LOCATE_FIRST_MISSING_OR_NONRETURNED_CANONICAL_TRANSITION",
     "REPAIR_ONLY_EXACT_RUNTIME_OR_CUSTODY_BOUNDARY",
