@@ -46,6 +46,33 @@ class TaskRegistryFirstCanonicalWorkCycleTests(unittest.TestCase):
     def test_progression_controller_is_not_selected_as_product_work(self):
         self.assertFalse(module.machine_ingress_candidate(record(module.PROGRESSION_CONTROLLER_TASK_ID)))
 
+    def test_explicit_current_goal_is_not_controller_lineage(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            records = Path(tmp)
+            controller = {
+                "task_id": module.PROGRESSION_CONTROLLER_TASK_ID,
+                "root_correlation_id": "CONTROLLER-LINEAGE-GOAL",
+                "latest_goal_task_block_header": {
+                    "goal_task_id": "CONTROLLER-LINEAGE-GOAL",
+                    "handoff_task_id": "docs/CONTROLLER_MIRROR_HANDOFF.md",
+                    "cosv_id": "10100000100000",
+                    "session_prompt_count": 1,
+                    "goal_prompt_count": "1/20",
+                },
+                "goal_completion_notification": {
+                    "credential_authority": "TV/TVC",
+                    "summary_included": False,
+                    "manual_work_included": False,
+                },
+            }
+            (records / f"{module.PROGRESSION_CONTROLLER_TASK_ID}.json").write_text(
+                json.dumps(controller), encoding="utf-8"
+            )
+            goal_id, header, _, lineage = module.progression_context("HYGIENE-CAUSAL-ROOTS-001", records)
+            self.assertEqual(goal_id, "HYGIENE-CAUSAL-ROOTS-001")
+            self.assertEqual(lineage, "CONTROLLER-LINEAGE-GOAL")
+            self.assertIsNone(header)
+
     def test_registry_only_task_is_discoverable_without_shard(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -196,6 +223,8 @@ class TaskRegistryFirstCanonicalWorkCycleTests(unittest.TestCase):
         self.assertIn('"task_registry_mints_execution_authority": False', text)
         self.assertIn('CALLER_SURFACE = "INTERNAL_CANONICAL_WORK_BOOTSTRAP"', text)
         self.assertIn('"candidate_identity_source": "CANONICAL_TASK_REGISTRY"', text)
+        self.assertIn('parser.add_argument("--goal-task-id")', text)
+        self.assertIn('"progression_controller_lineage_goal_id": controller_lineage_goal_id', text)
 
 
 if __name__ == "__main__":

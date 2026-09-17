@@ -84,18 +84,24 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--source-root", type=Path, required=True)
     parser.add_argument("--runtime-root", type=Path, required=True)
+    parser.add_argument("--goal-task-id")
     args = parser.parse_args()
 
     # Visit the explicit machine-owned MIR request first so the existing canonical
     # cadence cannot strand it behind unrelated request outcomes. The consumer itself
     # delegates to the existing refresh+WorkerCoordinator path and grants no authority.
     mir = _consume_mir_duplicate_first(args.source_root, args.runtime_root)
-    legacy = mod.consume_all(args.source_root, args.runtime_root)
+    legacy = mod.consume_all(
+        args.source_root,
+        args.runtime_root,
+        goal_task_id=args.goal_task_id,
+    )
     combined = {
         "schema": "stegverse.canonical-work-bootstrap-plus-mir-request-consumption/v1",
         "state": "COMPLETED" if legacy.get("state") in {"COMPLETED", "ATTEMPT_RECORDED"} and mir.get("state") not in {"REQUEST_CONSUMPTION_EXCEPTION", "REQUEST_CONSUMER_SOURCE_NOT_MATERIALIZED", "REQUEST_CONSUMPTION_RESULT_UNOBSERVED"} else "ATTEMPT_RECORDED",
         "mir_roundtrip_egress_authenticity": mir,
         "canonical_work_request_set": legacy,
+        "current_goal_task_id": args.goal_task_id,
         "mir_visited_before_legacy_request_set": True,
         "later_request_attempts_blocked_by_mir_failure": False,
         "second_dispatcher_created": False,
@@ -127,6 +133,7 @@ def main() -> int:
 # def run_registry_cycle(
 # source_dir.glob("*.json")
 # command.extend(["--exclude-task-id", spec["task_id"]])
+# "--goal-task-id"
 # "task_registry_cycle_attempted": True
 # "start_point": "CANONICAL_TASK_REGISTRY"
 # "second_dispatcher_created": False

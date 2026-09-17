@@ -64,20 +64,26 @@ def atomic_json(path: Path, value: dict[str, Any]) -> None:
     tmp.replace(path)
 
 
-def progression_context(records_dir: Path = RECORDS) -> tuple[str, dict[str, Any], dict[str, Any]]:
+def progression_context(
+    current_goal_task_id: str | None = None,
+    records_dir: Path = RECORDS,
+) -> tuple[str, dict[str, Any] | None, dict[str, Any], str]:
     controller = load(records_dir / f"{PROGRESSION_CONTROLLER_TASK_ID}.json")
-    goal_task_id = str(controller.get("root_correlation_id") or "").strip()
-    if not goal_task_id:
-        raise RuntimeError("progression controller missing root Goal Task ID")
+    controller_lineage_goal_id = str(controller.get("root_correlation_id") or "").strip()
+    if not controller_lineage_goal_id:
+        raise RuntimeError("progression controller missing lineage root Goal Task ID")
     header = controller.get("latest_goal_task_block_header")
     notification = controller.get("goal_completion_notification")
     if not isinstance(header, dict):
         raise RuntimeError("progression controller missing latest Goal Task block header projection")
     if not isinstance(notification, dict):
         raise RuntimeError("progression controller missing Goal completion notification contract")
-    if header.get("goal_task_id") != goal_task_id:
-        raise RuntimeError("Goal Task block header identity mismatch")
-    return goal_task_id, header, notification
+    header_goal_task_id = str(header.get("goal_task_id") or "").strip()
+    goal_task_id = str(current_goal_task_id or header_goal_task_id).strip()
+    if not goal_task_id:
+        raise RuntimeError("current root Goal Task ID is unavailable")
+    completion_header = header if header_goal_task_id == goal_task_id else None
+    return goal_task_id, completion_header, notification, controller_lineage_goal_id
 
 
 def canonical_registry_rows(registry_path: Path = REGISTRY) -> list[dict[str, Any]]:
@@ -310,11 +316,33 @@ def main() -> int:
     parser.add_argument("--runtime-root", type=Path)
     parser.add_argument("--select-only", action="store_true")
     parser.add_argument("--exclude-task-id", action="append", default=[])
+    parser.add_argument("--goal-task-id")
     args = parser.parse_args()
     excluded_task_ids = {str(task_id).strip() for task_id in args.exclude_task_id if str(task_id).strip()}
 
-    goal_task_id, header, notification = progression_context()
+    goal_task_id, header, notification, controller_lineage_goal_id = progression_context(args.goal_task_id)
+    goal_context_source = "EXPLICIT_CURRENT_GOAL_TASK" if args.goal_task_id else "PROGRESSION_HEADER_FALLBACK"
     goal_record = canonical_goal_record(goal_task_id)
+    if goal_completion_validated(goal_record) and header is None:
+        receipt = {
+            "schema": "stegverse.task-registry-canonical-work-cycle/v1",
+            "state": "GOAL_TASK_COMPLETED_NOTIFICATION_HEADER_UNAVAILABLE",
+            "start_point": "CANONICAL_TASK_REGISTRY",
+            "goal_task_id": goal_task_id,
+            "goal_context_source": goal_context_source,
+            "progression_controller_lineage_goal_id": controller_lineage_goal_id,
+            "goal_completion_validated": True,
+            "continue_machine_work": False,
+            "selected_task_id": None,
+            "successor_selection_performed": False,
+            "completion_notification_request": None,
+            "completion_notification_pending_reason": "CURRENT_GOAL_TASK_BLOCK_HEADER_NOT_PROJECTED",
+            "credential_authority": "TV/TVC",
+            "github_token_runtime_authority": "NONE",
+            "authority_effect": "NONE_FAIL_CLOSED_TERMINAL_STOP_ONLY",
+        }
+        print(json.dumps(receipt, sort_keys=True))
+        return 0
     if goal_completion_validated(goal_record):
         notification_request = build_completion_notification_request(goal_task_id, header, notification, goal_record)
         notification_ref = None
@@ -327,6 +355,8 @@ def main() -> int:
             "state": "GOAL_TASK_COMPLETED_TERMINAL_NOTIFICATION_REQUESTED",
             "start_point": "CANONICAL_TASK_REGISTRY",
             "goal_task_id": goal_task_id,
+            "goal_context_source": goal_context_source,
+            "progression_controller_lineage_goal_id": controller_lineage_goal_id,
             "goal_completion_validated": True,
             "continue_machine_work": False,
             "selected_task_id": None,
@@ -348,6 +378,8 @@ def main() -> int:
         "candidate_identity_source": "CANONICAL_TASK_REGISTRY",
         "task_record_shards_are_optional_enrichment_only": True,
         "goal_task_id": goal_task_id,
+        "goal_context_source": goal_context_source,
+        "progression_controller_lineage_goal_id": controller_lineage_goal_id,
         "goal_completion_validated": False,
         "selection_priority_rule": "ECOSYSTEM_REPAIR_REMEDIATION_CANONICALIZATION_FIRST",
         "progression_controller_excluded_from_work_selection": True,

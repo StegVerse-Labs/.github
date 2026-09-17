@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib.util
 import json
 import os
 import shutil
@@ -339,6 +340,23 @@ def ensure_task_identity_materialized(source: Path, runtime: Path, task_id: str)
     return {"task_id": task_id, "state": "SOURCE_TASK_SHARD_MATERIALIZED", "materialized": True, "registry_preserved": runtime_registry.is_file(), "source_kind": source_kind, "shard_ref": str(shard), "sha256": sha256(shard)}
 
 
+def refresh_current_goal_registry_projection(runtime: Path, task_id: str) -> dict[str, Any]:
+    """Reuse the existing bootstrap stale-registry projection repair for one current Goal."""
+    entrypoint = runtime / TARGET_ENTRYPOINT
+    require(entrypoint.is_file(), "canonical work bootstrap entrypoint not materialized")
+    spec = importlib.util.spec_from_file_location("canonical_work_projection_refresh", entrypoint)
+    require(spec is not None and spec.loader is not None, "canonical work projection refresh loader unavailable")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    refresh = getattr(module, "refresh_registry_projection_from_shard", None)
+    require(callable(refresh), "canonical work projection refresh function unavailable")
+    result = refresh(task_id, runtime / "data/canonical-task-registry.json")
+    require(isinstance(result, dict), "canonical work projection refresh returned invalid result")
+    require(result.get("task_id") == task_id, "canonical work projection refresh identity mismatch")
+    require(result.get("authority_effect") == "NONE", "canonical work projection refresh attempted authority effect")
+    return result
+
+
 def consume_for_spec(source_root: Path, runtime_root: Path, spec: Mapping[str, Any], *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
     validate_spec(spec)
     runtime = runtime_root.expanduser().resolve()
@@ -402,15 +420,29 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
     return consume_for_spec(source_root, runtime_root, DEFAULT_SPEC, runner=runner, env=env)
 
 
-def run_registry_cycle(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
+def run_registry_cycle(
+    source_root: Path,
+    runtime_root: Path,
+    *,
+    goal_task_id: str | None = None,
+    runner=subprocess.run,
+    env: Mapping[str, str] | None = None,
+) -> dict[str, Any]:
     runtime = runtime_root.expanduser().resolve()
     source = resolve_local_canonical_source(source_root, runtime, env)
     materialized = materialize(source, runtime)
     task_shards = materialize_registry_task_shards(source, runtime)
+    current_goal_identity = None
+    current_goal_registry_projection = None
+    if goal_task_id:
+        current_goal_identity = ensure_task_identity_materialized(source, runtime, goal_task_id)
+        current_goal_registry_projection = refresh_current_goal_registry_projection(runtime, goal_task_id)
     entrypoint = runtime / TASK_REGISTRY_CYCLE_ENTRYPOINT
     safe_env = clean_env(env)
     cycle_runtime = runtime / "runtime/task-registry-canonical-work-cycle"
     command = [sys.executable, str(entrypoint), "--runtime-root", str(cycle_runtime)]
+    if goal_task_id:
+        command.extend(["--goal-task-id", str(goal_task_id)])
     for spec in REQUEST_SPECS:
         command.extend(["--exclude-task-id", spec["task_id"]])
     completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=safe_env, timeout=1200)
@@ -422,6 +454,9 @@ def run_registry_cycle(source_root: Path, runtime_root: Path, *, runner=subproce
         "state": "COMPLETED" if completed_ok else "ATTEMPT_RECORDED",
         "start_point": "CANONICAL_TASK_REGISTRY",
         "entrypoint": str(TASK_REGISTRY_CYCLE_ENTRYPOINT),
+        "current_goal_task_id": goal_task_id,
+        "current_goal_identity_materialization": current_goal_identity,
+        "current_goal_registry_projection": current_goal_registry_projection,
         "resolved_local_source_root": str(source),
         "command": command,
         "returncode": completed.returncode,
@@ -446,7 +481,14 @@ def run_registry_cycle(source_root: Path, runtime_root: Path, *, runner=subproce
     return receipt
 
 
-def consume_all(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env: Mapping[str, str] | None = None) -> dict[str, Any]:
+def consume_all(
+    source_root: Path,
+    runtime_root: Path,
+    *,
+    goal_task_id: str | None = None,
+    runner=subprocess.run,
+    env: Mapping[str, str] | None = None,
+) -> dict[str, Any]:
     outcomes: list[dict[str, Any]] = []
     for spec in REQUEST_SPECS:
         try:
@@ -454,7 +496,13 @@ def consume_all(source_root: Path, runtime_root: Path, *, runner=subprocess.run,
         except Exception as exc:
             outcomes.append({"schema": "stegverse.canonical-work-bootstrap-request-consumption/v1", "state": "REQUEST_CONSUMPTION_EXCEPTION", "task_id": spec["task_id"], "error_type": type(exc).__name__, "error": str(exc), "authority_effect": "NONE_FAIL_CLOSED"})
     try:
-        registry_cycle = run_registry_cycle(source_root, runtime_root, runner=runner, env=env)
+        registry_cycle = run_registry_cycle(
+            source_root,
+            runtime_root,
+            goal_task_id=goal_task_id,
+            runner=runner,
+            env=env,
+        )
     except Exception as exc:
         registry_cycle = {"schema": "stegverse.resident-task-registry-canonical-work-cycle-consumption/v1", "state": "REGISTRY_CYCLE_EXCEPTION", "error_type": type(exc).__name__, "error": str(exc), "authority_effect": "NONE_FAIL_CLOSED"}
     acceptable = {"ALREADY_CONSUMED", "COMPLETED", "ATTEMPT_RECORDED"}
