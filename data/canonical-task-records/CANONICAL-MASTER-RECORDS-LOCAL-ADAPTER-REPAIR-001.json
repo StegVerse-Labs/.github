@@ -1,0 +1,82 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001",
+  "correlation_id": "CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001",
+  "root_correlation_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+  "parent_task_id": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+  "discovered_from_task_id": "STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001",
+  "goal": "Repair the optional local adapter in the reusable canonical state-transition custody client so it consumes an input contract appropriate for stegverse.canonical-state-transition-receipt/v1 and preserves exact Master Records reconstruction, without relabeling receipts, fabricating reusable-task lifecycle evidence, weakening destination validation, or creating a second custody authority.",
+  "coordination_state": "PROPOSED",
+  "checkout_state": "HANDOFF_READY",
+  "cosv_task_vector": "50000000100000",
+  "handoff_ref": "docs/CANONICAL_MASTER_RECORDS_LOCAL_ADAPTER_REPAIR_MIRROR_HANDOFF.md",
+  "issue_ref": "StegVerse-Labs/.github#2079",
+  "reproduced_defect": {
+    "source_client": "workers/canonical_state_transition_custody.py",
+    "source_client_blob": "03b2a94710da94cd87bd9ad1ba6ff3a644c8f610",
+    "destination": "master-records/orchestration:scripts/ingest_reusable_task_lifecycle.py",
+    "destination_blob": "ad918540145535cc818f53675462dc2a41d00cce",
+    "submitted_schema": "stegverse.canonical-state-transition-receipt/v1",
+    "required_schema": "stegverse.reusable-task-master-records-custody-request/v1",
+    "validation_result": "FAIL_CLOSED_REQUEST_SCHEMA_MISMATCH",
+    "test_only_not_invocation": true,
+    "immutable_stegbrowser_browser_invocation_uses_this_adapter": false
+  },
+  "expected_evidence_predicates": [
+    "LOCAL_ADAPTER_ACCEPTS_ONLY_VALID_CANONICAL_STATE_TRANSITION_CONTRACT",
+    "NO_SCHEMA_RELABELING",
+    "NO_FABRICATED_LIFECYCLE_EVIDENCE",
+    "DESTINATION_VALIDATION_NOT_WEAKENED",
+    "EXACT_RECONSTRUCTION_PRESERVED",
+    "NO_SECOND_CUSTODY_AUTHORITY"
+  ],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "local_adapter_contract_repaired": false,
+    "exact_reconstruction_preserved": false
+  },
+  "allowed_next_transitions": [
+    "INSPECT_EXISTING_MASTER_RECORDS_STATE_TRANSITION_LOCAL_INTERFACE",
+    "REUSE_MATCHING_STATE_TRANSITION_CUSTODY_CONTRACT_OR_REMOVE_INVALID_FALLBACK",
+    "VALIDATE_FAIL_CLOSED_AND_EXACT_RECONSTRUCTION",
+    "RECONCILE_PARENT_CANONICAL_CUSTODY_OWNER"
+  ],
+  "authority_model": {
+    "interlock_intr_transition_authority": true,
+    "master_records_custody_reconstruction_authority": true,
+    "master_records_grants_transition_authority": false,
+    "credential_authority": "TV/TVC_WHERE_REQUIRED",
+    "github_runtime_authority": "NONE",
+    "second_custody_authority_allowed": false
+  },
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs",
+      "master-records"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "master-records/orchestration"
+    ],
+    "components": [
+      "canonical-state-transition-custody-local-adapter",
+      "master-records-state-transition-custody"
+    ]
+  },
+  "source_refs": [
+    "docs/CANONICAL_MASTER_RECORDS_LOCAL_ADAPTER_REPAIR_MIRROR_HANDOFF.md",
+    "docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md",
+    "workers/canonical_state_transition_custody.py",
+    "master-records/orchestration:scripts/ingest_reusable_task_lifecycle.py",
+    "StegVerse-Labs/.github#2079"
+  ],
+  "blockers": [],
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "authority_effect": "NONE"
+}

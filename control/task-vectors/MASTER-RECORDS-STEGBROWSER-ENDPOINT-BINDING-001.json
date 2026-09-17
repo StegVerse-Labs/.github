@@ -1,0 +1,40 @@
+{
+  "identity": "StegVerse-Labs/.github:task:MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001",
+  "profile": "task.v1",
+  "level": "task",
+  "vector": "40000100100000",
+  "evidence_refs": [
+    "data/canonical-task-records/MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001.json",
+    "docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md"
+  ],
+  "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
+    "lifecycle": "PROPOSED",
+    "archive_ready": false,
+    "unassigned_work": 0,
+    "chat_owned_implementation": 1,
+    "chat_owned_validation": 0,
+    "chat_owned_integration": 0,
+    "chat_owned_observation": 0,
+    "chat_owned_credentials": 0,
+    "canonical_owner_installed": true,
+    "thread_required": false,
+    "blocker_count": 0,
+    "evidence_complete": false,
+    "activated": false,
+    "propagated": false
+  },
+  "metric_evidence": {
+    "lifecycle": "Browser-specific custody endpoint binding is canonically registered for handoff after predecessor prompt-cap decomposition.",
+    "archive_ready": "False until authentic authoritative Master Records reconstruction of the exact immutable StegBrowser tuple is observed.",
+    "unassigned_work": "Canonical owner and concrete handoff are installed.",
+    "chat_owned_counts": "Source binding repair may be implemented by chat; credential authority and runtime evidence remain authority-owned.",
+    "canonical_owner_installed": "Task record and handoff are present.",
+    "thread_required": "No separate standing runtime thread is required.",
+    "blocker_count": "The observed endpoint visibility gap is an actionable repair condition, not a blocker.",
+    "evidence_complete": "False until RECORDED plus exact reconstruction PASS is authentic.",
+    "activated": "False until the canonical endpoint binding and authentic reconstruction are observed.",
+    "propagated": "Not applicable before completion."
+  },
+  "authority_effect": "NONE"
+}

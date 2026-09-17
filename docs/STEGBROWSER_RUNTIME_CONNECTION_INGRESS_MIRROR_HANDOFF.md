@@ -8,7 +8,7 @@ Updated: 2026-09-17
 - Parent Goal: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`
 - Root lineage: `STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / CENTRAL REGISTRATION RESTORED IN THIS CHANGE / RUNTIME EVIDENCE PENDING`
+- Status: `RETIRED / DECOMPOSED_AT_PROMPT_LIMIT / AUTHENTIC A1-A4 COMPLETION UNPROVEN / CANONICAL CONTINUATIONS REGISTERED`
 - External/second user-operated device required: `false`
 - Canonical ephemeral runtime class: `ADMITTED-EPHEMERAL-STEGOS-NODE`
 - Empty connector inventory (`list_devices=[]`) is not evidence that ephemeral runtime capacity is absent.
@@ -433,3 +433,55 @@ A presence-only check found no configured STEGVERSE_MASTER_RECORDS_ENDPOINT, STE
 Continue by resolving the existing invocation's authority-owned binding through its existing Node/InTr callable path and retained records. Use the existing custody task owner for any shared adapter repair. No Render use or consideration, mandatory provider/platform/OS/device, substitute runtime, credential path, request or custody authority. A1/A2 remain unpromoted; A3/A4/Round Trip 1 unentered. No release is warranted.
 
 At the next qualifying prompt (20/20), retain this same goal count and close only with authentic completion evidence; otherwise transfer genuinely separable unresolved work with canonical identities and concrete handoffs, reusing existing custody/invocation owners wherever applicable rather than resetting this goal.
+
+
+## Goal prompt 20: custody-binding resolution and terminal decomposition
+
+Session Prompt Count: 6. Goal Prompt Count: 20/20.
+
+### Exact binding resolution
+
+The immutable invocation's actual custody path is now resolved from current Site source. `StegVerse-Labs/Site:stegos-bootstrap/canonical-work-runtime-consumption.html` (blob `2af607770dcdda03af1699817bc9ea6ee042ead2`) loads `assets/canonical-master-records-transition-custody-browser.js` (blob `4ea45ac0dd309fdaf0d7ee55c9f6463c862b4742`) and constructs:
+
+```text
+new StegVerseCanonicalMasterRecordsBrowserCustody.Custody(
+  STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z,
+  { endpoint: "/api/master-records/state-transitions" }
+)
+```
+
+Therefore the immutable invocation does **not** use the optional Python local adapter in `workers/canonical_state_transition_custody.py`. The reproduced lifecycle-schema mismatch in that Python fallback is real but is a separate generic canonical-custody defect; repairing it cannot be credited as resolution of this immutable browser invocation.
+
+The applicable StegBrowser condition is the browser-to-authoritative Master Records endpoint binding. The existing browser client expects `/api/master-records/state-transitions`; the prior read-only public observation returned HTTP 404 at `https://stegverse.org/api/master-records/state-transitions`, and current Site source does not expose that endpoint through the root Universal InTr service worker. This remains route/binding evidence only: the durable Master Records store was not queried, zero retained records are not inferred, and non-execution of the immutable invocation is not inferred.
+
+### Prompt-cap decomposition
+
+Authentic completion is not proven at Goal Prompt Count 20/20. This task is therefore retired as `DECOMPOSED_AT_PROMPT_LIMIT`, not completed.
+
+The genuinely separable remaining work is registered as:
+
+```text
+MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001
+issue = StegVerse-Labs/.github#2078
+handoff = docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md
+COSV = 40000100100000
+scope = resolve only the provider/platform/OS/device-neutral browser binding to the existing authoritative Master Records state-transition custody API and require authentic RECORDED + reconstruction PASS for the exact immutable tuple
+
+CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001
+issue = StegVerse-Labs/.github#2079
+handoff = docs/CANONICAL_MASTER_RECORDS_LOCAL_ADAPTER_REPAIR_MIRROR_HANDOFF.md
+COSV = 50000000100000
+scope = repair only the separate optional local-adapter state-receipt/lifecycle-ingester contract mismatch without schema relabeling, fabricated lifecycle evidence, validator weakening, or a second custody authority
+```
+
+After and only after `MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001` produces authentic exact reconstruction for the same immutable tuple, the invocation returns to the already-existing `STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001` execution lineage for fresh WorkerCoordinator A3 claim/fence and exact A4 ingress. That existing execution task is not reactivated or credited by this decomposition.
+
+### Terminal evidence boundary
+
+No authentic Master Records `RECORDED + reconstruction_status=PASS` record for the exact StegBrowser tuple was observed in this prompt. No A1/A2 predicate is promoted. A3, A4 and Round Trip 1 remain unentered. No runtime execution, deployment, release or propagation success is claimed.
+
+The immutable nonce remains `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z`; requested invocation count remains `1`; a second request remains forbidden. Render remains excluded. No provider, platform, operating system, browser implementation, host, or second user-operated device is made a prerequisite.
+
+## Manual work
+
+None.

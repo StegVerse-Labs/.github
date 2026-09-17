@@ -6,14 +6,16 @@
   "evidence_refs": [
     "data/canonical-task-records/STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001.json",
     "docs/STEGBROWSER_RUNTIME_CONNECTION_INGRESS_MIRROR_HANDOFF.md",
-    "scripts/resolve_stegbrowser_runtime_connection_transition.py"
+    "scripts/resolve_stegbrowser_runtime_connection_transition.py",
+    "docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md",
+    "docs/CANONICAL_MASTER_RECORDS_LOCAL_ADAPTER_REPAIR_MIRROR_HANDOFF.md"
   ],
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
-    "lifecycle": "CHECKED_OUT",
-    "archive_ready": false,
+    "lifecycle": "RETIRED",
+    "archive_ready": true,
     "unassigned_work": 0,
-    "chat_owned_implementation": 1,
+    "chat_owned_implementation": 0,
     "chat_owned_validation": 0,
     "chat_owned_integration": 0,
     "chat_owned_observation": 0,
@@ -26,16 +28,16 @@
     "propagated": false
   },
   "metric_evidence": {
-    "lifecycle": "Child owns only GC A1 through A4: invocation-bound connection-state resolution, admitted execution materialization, WorkerCoordinator claim/fence, and authentic Interlock/InTr ingress.",
-    "archive_ready": "Authentic A1-A4 runtime evidence remains pending.",
-    "unassigned_work": "Reusable capability selection remains state-driven; no new reusable task is created.",
-    "chat_owned_counts": "This change installs the canonical child and deterministic selection logic only; authentic transition evidence remains authority-generated.",
-    "canonical_owner_installed": "Child canonical task record and mirror handoff are present.",
-    "thread_required": "No separate thread is required for source implementation; authentic runtime continuation remains governed by existing owners.",
-    "blocker_count": "Pending authentic transition evidence is a condition, not a terminal blocker.",
-    "evidence_complete": "False until A1-A4 authentic predicates are observed.",
-    "activated": "False until authentic runtime connection transition and InTr ingress are observed.",
-    "propagated": "Not applicable before child completion."
+    "lifecycle": "Goal prompt cap reached at 20/20; capped coordination shell is retired and genuinely separable remaining work is transferred to canonical browser-endpoint and local-adapter repair tasks.",
+    "archive_ready": "True for this capped coordination shell because the terminal handoff and canonical continuation handoffs are installed; authentic A1-A4 completion remains unproven.",
+    "unassigned_work": "Zero inside the retired shell; browser custody binding and generic local-adapter repair have explicit canonical successor identities.",
+    "chat_owned_counts": "No further implementation belongs to the retired shell.",
+    "canonical_owner_installed": "Terminal handoff plus both concrete continuation handoffs and task records are installed.",
+    "thread_required": "False; continuation proceeds under successor task identities.",
+    "blocker_count": "Zero; unresolved conditions are transferred as actionable canonical tasks.",
+    "evidence_complete": "False: no authentic Master Records reconstruction, WorkerCoordinator A3, A4 ingress, or Round Trip 1 evidence was promoted.",
+    "activated": "False; retirement is prompt-cap decomposition, not runtime activation or completion.",
+    "propagated": "Not applicable; no release or propagation claim is made."
   },
   "authority_effect": "NONE"
 }

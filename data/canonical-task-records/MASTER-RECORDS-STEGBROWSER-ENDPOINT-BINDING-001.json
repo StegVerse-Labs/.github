@@ -1,0 +1,133 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001",
+  "correlation_id": "MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001",
+  "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+  "parent_task_id": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+  "predecessor_task_id": "STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001",
+  "goal": "Resolve the existing browser-specific canonical Master Records custody binding used by the single immutable StegBrowser invocation so the exact runtime-readiness tuple can reach the existing master-records/orchestration authority and return authentic RECORDED plus exact reconstruction PASS, without introducing provider, platform, OS, browser, host, Render, second-device, substitute-runtime, new-credential-path, or second-custody-authority dependencies.",
+  "coordination_state": "PROPOSED",
+  "checkout_state": "HANDOFF_READY",
+  "cosv_task_vector": "40000100100000",
+  "handoff_ref": "docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md",
+  "issue_ref": "StegVerse-Labs/.github#2078",
+  "immutable_invocation": {
+    "source_goal_task_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+    "invocation_request_nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+    "requested_invocation_count": 1,
+    "second_request_allowed": false,
+    "request_mutation_allowed": false,
+    "destination": "StegBrowser:ManifestInvocation"
+  },
+  "binding_truth": {
+    "execution_page": "StegVerse-Labs/Site:stegos-bootstrap/canonical-work-runtime-consumption.html",
+    "execution_page_blob": "2af607770dcdda03af1699817bc9ea6ee042ead2",
+    "browser_custody_client": "StegVerse-Labs/Site:assets/canonical-master-records-transition-custody-browser.js",
+    "browser_custody_client_blob": "4ea45ac0dd309fdaf0d7ee55c9f6463c862b4742",
+    "configured_endpoint": "/api/master-records/state-transitions",
+    "master_records_owner": "master-records/orchestration",
+    "python_local_adapter_is_invocation_binding": false
+  },
+  "observed_condition": {
+    "probed_public_endpoint": "https://stegverse.org/api/master-records/state-transitions",
+    "read_only_http_result": "404_FROM_STATIC_PUBLIC_SITE_ROUTE",
+    "durable_store_contents_observed": false,
+    "zero_custody_records_inferred": false,
+    "immutable_invocation_nonexecution_inferred": false
+  },
+  "exact_tuple_required": [
+    "runtime_readiness_receipt_sha256",
+    "readiness_node_receipt_sha256",
+    "invocation_request_nonce",
+    "node_id",
+    "interlock_id",
+    "registration_receipt_sha256",
+    "lease_id",
+    "runtime_id",
+    "exported_bundle_sha256",
+    "stegbrowser_custody_transition_admission_identity"
+  ],
+  "expected_evidence_predicates": [
+    "AUTHORITATIVE_BROWSER_CUSTODY_ENDPOINT_BOUND",
+    "TV_TVC_CREDENTIAL_AUTHORITY_PRESERVED",
+    "NO_PROVIDER_PLATFORM_OS_DEVICE_PREREQUISITE",
+    "NO_SECOND_CUSTODY_OR_TRANSPORT_PLANE",
+    "IMMUTABLE_NONCE_PRESERVED",
+    "AUTHENTIC_MASTER_RECORDS_RECORDED",
+    "AUTHENTIC_MASTER_RECORDS_RECONSTRUCTION_PASS",
+    "EXACT_STEGBROWSER_TUPLE_DIGEST_EQUALITY"
+  ],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "authoritative_browser_custody_endpoint_bound": false,
+    "authentic_master_records_recorded": false,
+    "authentic_master_records_reconstruction_pass": false,
+    "exact_stegbrowser_tuple_digest_equality": false
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-CANONICAL-MASTER-RECORDS-CUSTODY-OWNER",
+      "kind": "CANONICAL_OWNER",
+      "state": "BOUND",
+      "ref": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+      "disposition": "Reuse the existing canonical custody contract and master-records/orchestration authority."
+    }
+  ],
+  "downstream_task_refs": [
+    "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001"
+  ],
+  "allowed_next_transitions": [
+    "RESOLVE_PROVIDER_NEUTRAL_BROWSER_TO_AUTHORITY_BINDING",
+    "PRESERVE_TV_TVC_CREDENTIAL_AUTHORITY",
+    "SUBMIT_EXACT_EXISTING_STEGBROWSER_CUSTODY_RECEIPT",
+    "REQUIRE_AUTHENTIC_RECORDED_AND_RECONSTRUCTION_PASS",
+    "HAND_BACK_TO_EXISTING_A1_A4_EXECUTION_OWNER"
+  ],
+  "authority_model": {
+    "interlock_intr_transition_authority": true,
+    "master_records_custody_reconstruction_authority": true,
+    "master_records_grants_transition_authority": false,
+    "master_records_grants_execution_authority": false,
+    "credential_authority": "TV/TVC",
+    "github_runtime_authority": "NONE",
+    "browser_local_storage_is_authoritative_custody": false,
+    "second_user_operated_device_required": false,
+    "render_allowed": false
+  },
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs",
+      "master-records"
+    ],
+    "repositories": [
+      "StegVerse-Labs/Site",
+      "StegVerse-Labs/.github",
+      "master-records/orchestration"
+    ],
+    "components": [
+      "canonical-master-records-browser-custody",
+      "stegbrowser-runtime-readiness-custody",
+      "state-transition-custody-api-binding"
+    ]
+  },
+  "source_refs": [
+    "docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md",
+    "docs/STEGBROWSER_RUNTIME_CONNECTION_INGRESS_MIRROR_HANDOFF.md",
+    "docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site:stegos-bootstrap/canonical-work-runtime-consumption.html",
+    "StegVerse-Labs/Site:assets/canonical-master-records-transition-custody-browser.js",
+    "StegVerse-Labs/Site:assets/stegbrowser-master-records-custody.js",
+    "master-records/orchestration:services/canonical_state_transition_custody.py",
+    "master-records/orchestration:services/canonical_master_records_api.py",
+    "StegVerse-Labs/.github#2078"
+  ],
+  "blockers": [],
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "authority_effect": "NONE"
+}
