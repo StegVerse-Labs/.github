@@ -15,11 +15,59 @@
     "data/canonical-task-records/ORG-GITHUB-REPOSITORY-STATUS-SUMMARY-001.json"
   ],
   "targets": {
-    "organizations": ["StegVerse-Labs", "StegVerse-002", "master-records", "StegVerse-org", "Data-Continuation", "GCAT-BCAT-Engine"],
-    "primary_partial_repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/GP10", "StegVerse-Labs/StegMusic", "StegVerse-Labs/StegTalk", "StegVerse-Labs/TVC", "StegVerse-Labs/StegBrain", "StegVerse-Labs/stegfin-governance"],
-    "role_functional_regression_set": ["StegVerse-Labs/FREE-DOM", "StegVerse-Labs/Epsteinality", "StegVerse-Labs/Giuffre-ality", "StegVerse-Labs/Maxwellality", "StegVerse-Labs/StegBiography", "StegVerse-Labs/Trumpality", "StegVerse-Labs/Executive_Rhetoric_Ledger", "StegVerse-Labs/StegID", "StegVerse-Labs/StegCore", "StegVerse-Labs/StegOS", "StegVerse-Labs/hybrid-collab-bridge", "StegVerse-Labs/ara-admissibility-interop", "StegVerse-Labs/music-engine", "StegVerse-Labs/media-runtime", "StegVerse-Labs/video-engine"]
+    "organizations": [
+      "StegVerse-Labs",
+      "StegVerse-002",
+      "master-records",
+      "StegVerse-org",
+      "Data-Continuation",
+      "GCAT-BCAT-Engine"
+    ],
+    "primary_partial_repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/GP10",
+      "StegVerse-Labs/StegMusic",
+      "StegVerse-Labs/StegTalk",
+      "StegVerse-Labs/TVC",
+      "StegVerse-Labs/StegBrain",
+      "StegVerse-Labs/stegfin-governance"
+    ],
+    "role_functional_regression_set": [
+      "StegVerse-Labs/FREE-DOM",
+      "StegVerse-Labs/Epsteinality",
+      "StegVerse-Labs/Giuffre-ality",
+      "StegVerse-Labs/Maxwellality",
+      "StegVerse-Labs/StegBiography",
+      "StegVerse-Labs/Trumpality",
+      "StegVerse-Labs/Executive_Rhetoric_Ledger",
+      "StegVerse-Labs/StegID",
+      "StegVerse-Labs/StegCore",
+      "StegVerse-Labs/StegOS",
+      "StegVerse-Labs/hybrid-collab-bridge",
+      "StegVerse-Labs/ara-admissibility-interop",
+      "StegVerse-Labs/music-engine",
+      "StegVerse-Labs/media-runtime",
+      "StegVerse-Labs/video-engine"
+    ]
   },
-  "dependencies": ["StegVerse-Labs/TV", "StegVerse-Labs/TVC", "StegVerse-Labs/continuity-vault-kit", "StegVerse-Labs/Continuity", "StegVerse-Labs/StegID", "StegVerse-Labs/StegAgents", "StegVerse-Labs/StegDJ", "StegVerse-Labs/Site", "StegVerse-Labs/repo-standards", "StegVerse-002/micro-node-runtime", "master-records/orchestration", "StegVerse-org/StegVerse-SDK", "Data-Continuation/core-lite", "GCAT-BCAT-Engine/Publisher", "StegVerse-Labs/admissibility-wiki", "StegVerse-002/stegguardian-wiki"],
+  "dependencies": [
+    "StegVerse-Labs/TV",
+    "StegVerse-Labs/TVC",
+    "StegVerse-Labs/continuity-vault-kit",
+    "StegVerse-Labs/Continuity",
+    "StegVerse-Labs/StegID",
+    "StegVerse-Labs/StegAgents",
+    "StegVerse-Labs/StegDJ",
+    "StegVerse-Labs/Site",
+    "StegVerse-Labs/repo-standards",
+    "StegVerse-002/micro-node-runtime",
+    "master-records/orchestration",
+    "StegVerse-org/StegVerse-SDK",
+    "Data-Continuation/core-lite",
+    "GCAT-BCAT-Engine/Publisher",
+    "StegVerse-Labs/admissibility-wiki",
+    "StegVerse-002/stegguardian-wiki"
+  ],
   "blockers": [],
   "existing_evidence_refs": [
     "reports/ORG_GITHUB_REPOSITORY_STATUS_SUMMARY_001.md",
@@ -117,7 +165,13 @@
     "gp10_runtime_proof_claim_released": true,
     "gp10_field_validation_bundle_pending_authentic_evidence": true,
     "gp10_field_validation_runtime_dependency_satisfied": true,
-    "gp10_machine_runtime_proof_pending": false
+    "gp10_machine_runtime_proof_pending": false,
+    "cosv_pointer_parity_workflow_run_observed": false,
+    "targeted_resident_immutable_receipt_retention_repaired": true,
+    "targeted_resident_immutable_receipt_source_commit": "c05262e1c9a9d7f1b36992f2a45f5aca4855489b",
+    "targeted_resident_immutable_receipt_test_commit": "8099f2b06781fa1c44057bdb1e5beb959123d774",
+    "targeted_resident_immutable_receipt_workflow_run_observed": false,
+    "targeted_resident_immutable_receipt_runtime_observed": false
   },
   "completion": {
     "claimed": false,
@@ -125,7 +179,7 @@
     "report_complete": false,
     "summary_ref": "reports/ORG_GITHUB_FLEET_FUNCTIONALIZATION_001_DEPENDENCY_MAP.md"
   },
-  "next_admissible_work": "Preserve all current evidence boundaries. Source-only inspection has now repaired policy binding, stale unclaimed policy refresh, exact-selector completion, COSV index/source-vector pointer parity, TVC exact request cleanup, and TVC terminal replay/immutable receipt retention. Existing independent minimum-fence logic was inspected and no additional defect was proven. Re-enter TVC/StegMusic and COSV/StegBrain runtime transitions only when authentic admitted local execution receipts exist; otherwise continue only on newly evidenced repository-native causal defects rather than speculative churn.",
+  "next_admissible_work": "Preserve all seven repaired shared-control defects and current evidence boundaries. Re-check repository validation without treating it as runtime proof. Continue source-only inspection only for newly evidenced repository-native defects. Re-enter COSV-LIVE-PACKET-AUTOMATION-006 and TVC-STEGMUSIC-VALIDATION-001 only when authentic admitted resident receipts exist; do not add another runtime, bridge, credential path, scheduler, or device dependency.",
   "status_response_contract": {
     "active": "currently active - checked out",
     "completed": "functionalization validated with direct evidence"
