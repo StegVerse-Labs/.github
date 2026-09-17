@@ -12,22 +12,27 @@
     "docs/ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_SITE_MIRROR_HANDOFF.md",
     "StegVerse-Labs/Executive_Rhetoric_Ledger#163",
     "StegVerse-Labs/Executive_Rhetoric_Ledger#166",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger#167",
     "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/ECONOMIC_DISTRIBUTION_MIRROR_HANDOFF.md",
     "StegVerse-Labs/Executive_Rhetoric_Ledger/research-data/household-economic-conditions/official-series-bindings.v1.json",
     "StegVerse-Labs/Executive_Rhetoric_Ledger/research-data/household-economic-conditions/nyfed-2026q2-workbook-map.v1.json",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger/research-data/household-economic-conditions/nyfed-2026q2-distributional-map.v1.json",
+    "StegVerse-Labs/TVC/tasks/TVC-PROVIDER-CREDENTIAL-BINDING-011.json",
+    "StegVerse-Labs/TVC/config/provider_operation_profiles.json",
     "StegVerse-Labs/Site#1368",
     "StegVerse-Labs/Site/Household-Economic-Conditions.html",
     "StegVerse-Labs/Site/Physical-Economics.html"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs"],
-    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/Executive_Rhetoric_Ledger", "StegVerse-Labs/Site"],
-    "components": ["household-economic-condition-state", "historical-comparability-contract", "official-source-binding", "source-acquisition-normalization", "current-condition-public-page", "longitudinal-line-chart", "source-vintage-and-structural-breaks"]
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/Executive_Rhetoric_Ledger", "StegVerse-Labs/TVC", "StegVerse-Labs/Site"],
+    "components": ["household-economic-condition-state", "historical-comparability-contract", "official-source-binding", "source-acquisition-normalization", "current-condition-public-page", "longitudinal-line-chart", "source-vintage-and-structural-breaks", "distributional-debt-context", "required-cost-housing-component"]
   },
   "dependencies": [
     {"dependency_id":"DEP-ERL-ECONOMIC-DISTRIBUTION","kind":"SOURCE_CAPABILITY","state":"PARTIAL","ref":"StegVerse-Labs/Executive_Rhetoric_Ledger/docs/ECONOMIC_DISTRIBUTION_MIRROR_HANDOFF.md"},
     {"dependency_id":"DEP-ERL-OFFICIAL-SOURCE-BINDINGS","kind":"SOURCE_CAPABILITY","state":"PARTIAL","ref":"StegVerse-Labs/Executive_Rhetoric_Ledger/research-data/household-economic-conditions/official-series-bindings.v1.json"},
-    {"dependency_id":"DEP-ERL-BEA-GOVERNED-CREDENTIAL","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"TV/TVC resident credential custody"},
+    {"dependency_id":"DEP-ERL-NYFED-AGE-DISTRIBUTION","kind":"SOURCE_CAPABILITY","state":"PARTIAL","ref":"StegVerse-Labs/Executive_Rhetoric_Ledger/research-data/household-economic-conditions/nyfed-2026q2-distributional-map.v1.json"},
+    {"dependency_id":"DEP-ERL-BEA-GOVERNED-CREDENTIAL","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED_PROVIDER_PROFILE_ABSENT","ref":"StegVerse-Labs/TVC/config/provider_operation_profiles.json;StegVerse-Labs/TVC/tasks/TVC-PROVIDER-CREDENTIAL-BINDING-011.json"},
     {"dependency_id":"DEP-ERL-PHYSICAL-ECONOMICS-PUBLIC-OUTPUT","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"StegVerse-Labs/Site/Household-Economic-Conditions.html"}
   ],
   "blockers": [],
@@ -37,6 +42,9 @@
     "HOUSEHOLD_STATE_SEPARATES_GROSS_EARNINGS_FROM_NET_USABLE_CAPACITY",
     "OBSERVED_SPENDING_NOT_TREATED_AS_NEED_SATISFACTION",
     "DEBT_SERVICE_ANALYZED_BY_DEBT_CLASS_AND_DISTRIBUTION",
+    "DEBT_STOCK_NOT_TREATED_AS_NEW_BORROWING",
+    "AGE_DISTRIBUTED_DELINQUENCY_NOT_TREATED_AS_COMPLETE_HOUSEHOLD_STRESS",
+    "HOUSING_COST_BURDEN_NOT_TREATED_AS_TOTAL_REQUIRED_COST",
     "HISTORICAL_SERIES_COMPARABILITY_EXPLICIT",
     "METHODOLOGY_BREAKS_VISIBLE",
     "SAME_AXIS_ONLY_FOR_COMPARABLE_UNITS_AND_DEFINITIONS",
@@ -45,11 +53,12 @@
     "OFFICIAL_SOURCE_IDENTIFIERS_EXACTLY_BOUND",
     "SOURCE_ACQUISITION_FAILS_CLOSED_WITHOUT_FABRICATION",
     "NYFED_EXACT_WORKBOOK_MAP_BOUND",
+    "NYFED_AGE_DISTRIBUTION_MAP_BOUND",
     "PUBLIC_PAGE_FAILS_CLOSED_ON_UNGOVERNED_OR_STALE_DATA",
     "README_AND_MIRROR_HANDOFF_CURRENT"
   ],
   "runtime_requirements": {
-    "capabilities": ["github_repository_read", "github_pull_request_write", "public_economic_data_acquisition", "governed_erl_output_consumption"],
+    "capabilities": ["github_repository_read", "github_pull_request_write", "public_economic_data_acquisition", "governed_erl_output_consumption", "tvc_nonexportable_provider_operation"],
     "environment": "CURRENT_SESSION_PLUS_GOVERNED_PUBLIC_SITE",
     "direction": "OFFICIAL_SOURCES_TO_ERL_GOVERNED_EVIDENCE_TO_PUBLIC_SITE",
     "mutation_required": true,
@@ -63,8 +72,8 @@
     "projection_only": false
   },
   "human_action_ref": null,
-  "completion": {"claimed": false, "validated": false, "reconciliation_ref": "ERL#164+ERL#165+ERL#166+Site#1369"},
-  "allowed_next_transitions": ["INSPECT_BEA_GOVERNED_CREDENTIAL_AVAILABILITY", "CONSTRUCT_GOVERNED_HOUSEHOLD_STATE", "BIND_GOVERNED_ERL_OUTPUT", "VALIDATE_PUBLIC_FAIL_CLOSED_BEHAVIOR"],
+  "completion": {"claimed": false, "validated": false, "reconciliation_ref": "ERL#164+ERL#165+ERL#166+ERL#167+Site#1369"},
+  "allowed_next_transitions": ["MATERIALIZE_BEA_TVC_READONLY_PROVIDER_PROFILE", "CONSTRUCT_GOVERNED_HOUSEHOLD_STATE", "BIND_GOVERNED_ERL_OUTPUT", "VALIDATE_PUBLIC_FAIL_CLOSED_BEHAVIOR"],
   "handoff_projection_refs": ["docs/ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_SITE_MIRROR_HANDOFF.md"],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
