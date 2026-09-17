@@ -4,7 +4,7 @@
   "correlation_id": "SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001",
   "root_correlation_id": "SHWP-SV002-ORG-RUNTIME-ACTIVATION-001",
   "parent_task_id": "SHWP-SV002-ORG-RUNTIME-ACTIVATION-001",
-  "goal": "Consume the existing frozen StegVerse-002 v0.3 request through the registered StegVerseNode -> Interlock -> InTr -> bounded EVENT_EPHEMERAL execution path while enforcing the ecosystem-wide invariant that every governed action transition is authentically emitted, retained, same-execution correlated, and reconstructable through canonical Master Records custody.",
+  "goal": "Prove two transport conditions without changing the frozen StegVerse-002 v0.3 subject-visible experiment: (1) authentic governed transport to at least one ephemeral StegVerseNode and/or StegBrowser with a correlated return packet retained at Interlock/InTr egress for Master Records custody; (2) successful same-correlation round-trip delivery back to the origin.",
   "coordination_state": "ACTIVE",
   "checkout_state": "HANDOFF_READY",
   "cosv_task_vector": "50000000107000",
@@ -12,74 +12,70 @@
     "docs/SV002_ACTION_TRANSITION_EVIDENCE_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github#2060",
     "StegVerse-002/.github/docs/SELF_CHARACTERIZATION_EXECUTION_SURFACE_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:stegverse/external_interlock_bootstrap.py",
     "StegVerse-002/.github:resident-runtime/self_characterization_surface.py",
-    "StegVerse-002/micro-node-runtime:tools/run_self_characterization_principal.py",
-    "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
+    "StegVerse-002/.github:resident-runtime/submit_sv002_self_characterization_to_master_records.py",
     "scripts/list_stegverse_execution_surfaces.py"
   ],
   "targets": {
-    "organizations": ["StegVerse-Labs", "StegVerse-002"],
-    "repositories": ["StegVerse-Labs/.github", "StegVerse-002/.github", "StegVerse-002/micro-node-runtime"],
-    "components": ["ephemeral-execution-surface-discovery", "registered-stegverse-node", "interlock-intr", "bounded-invocation-lease", "event-ephemeral-runtime", "organization-local-self-characterization-surface", "workercoordinator-claim-fence", "sv002-frozen-v0.3", "master-records-transition-custody"]
+    "organizations": ["StegVerse-Labs", "StegVerse-002", "StegVerse-org"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/Site", "StegVerse-002/.github", "StegVerse-002/micro-node-runtime", "StegVerse-org/StegVerse-SDK"],
+    "components": ["registered-stegverse-node", "interlock-intr", "bounded-invocation-lease", "event-ephemeral-runtime", "return-packet-egress", "master-records-custody", "same-correlation-round-trip"]
   },
   "dependencies": [
+    {"dependency_id":"DEP-SV002-FROZEN-REQUEST-BUILDER","kind":"EXISTING_REQUEST_CONTRACT","state":"RESOLVED","ref":"StegVerse-org/StegVerse-SDK:stegverse/external_interlock_bootstrap.py"},
     {"dependency_id":"DEP-SV002-ORG-SELF-CHARACTERIZATION-SURFACE","kind":"EXISTING_EXECUTION_SURFACE","state":"RESOLVED","ref":"StegVerse-002/.github:resident-runtime/self_characterization_surface.py"},
-    {"dependency_id":"DEP-RT-STEGBROWSER-RUNTIME-CONSUMPTION-001-MECHANICS","kind":"REUSABLE_MECHANICS_PROVENANCE","state":"RESOLVED","ref":"source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json","disposition":"CONNECTION_MECHANICS_REFERENCE_ONLY_NOT_SV002_CALLABLE_OWNER"},
-    {"dependency_id":"DEP-SV002-EPHEMERAL-INVOCATION-CONSUMPTION","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"StegVerse-Labs/.github#2060"}
+    {"dependency_id":"DEP-SV002-MASTER-RECORDS-PUBLISHER","kind":"EXISTING_CUSTODY_SURFACE","state":"RESOLVED","ref":"StegVerse-002/.github:resident-runtime/submit_sv002_self_characterization_to_master_records.py"},
+    {"dependency_id":"DEP-SV002-GOAL1-REQUEST-BOUND","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"StegVerse-Labs/.github#2060"}
   ],
   "blockers": [],
-  "systemic_incident_ref": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
-  "adjacent_task_refs": ["GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001", "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001"],
-  "existing_evidence_refs": [
-    "StegVerse-Labs/.github@12297776c59130f261ed020acc5ea38bb6ecdf8c",
-    "StegVerse-002/.github:resident-runtime/self_characterization_surface.py",
-    "StegVerse-002/micro-node-runtime:tools/run_self_characterization_principal.py",
-    "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
-    "StegVerse-002/.github/docs/SELF_CHARACTERIZATION_EXECUTION_SURFACE_MIRROR_HANDOFF.md"
-  ],
   "expected_evidence_predicates": [
     "REQUEST_BOUND",
     "STEGVERSE_NODE_BOUND_TO_INVOCATION",
-    "INTERLOCK_BOUND_TO_NODE_AND_MANIFEST",
+    "INTERLOCK_BOUND_TO_INVOCATION",
     "INTR_MATERIALIZATION_ADMITTED",
     "INVOCATION_SCOPED_LEASE_ESTABLISHED",
     "EVENT_EPHEMERAL_RUNTIME_MATERIALIZED",
-    "EXECUTION_TIME_RUNTIME_IDENTITY_BOUND",
-    "T0_CAPTURED",
-    "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
     "AUTHENTIC_INTR_INGRESS_OBSERVED",
-    "PRINCIPAL_EXECUTION_TRANSITIONS_RETAINED",
-    "EGRESS_EMITTED",
+    "EPHEMERAL_SURFACE_RECEIVED_PACKET",
+    "CORRELATED_RETURN_PACKET_EMITTED",
+    "RETURN_PACKET_EXITED_INTR",
     "MASTER_RECORDS_CUSTODY_OBSERVED",
-    "MASTER_RECORDS_RECONSTRUCTION_PASS",
-    "ALL_REQUIRED_ACTION_TRANSITIONS_RECONSTRUCTABLE",
+    "GOAL_1_EPHEMERAL_TRANSPORT_WITH_RETURN_PACKET_PROVEN",
+    "RETURN_PACKET_DELIVERED_TO_ORIGIN",
+    "GOAL_2_SAME_CORRELATION_ROUND_TRIP_PROVEN",
     "NO_SECOND_USER_OPERATED_DEVICE",
     "NO_STANDING_RUNTIME_OR_EXTERNAL_HOST"
   ],
+  "acceptance_model": {
+    "schema": "stegverse.two-stage-transport-acceptance/v1",
+    "goal_1": {
+      "name": "EPHEMERAL_TRANSPORT_WITH_RETURN_PACKET_CUSTODY",
+      "surface_requirement": "AT_LEAST_ONE_OF_STEGVERSE_NODE_OR_STEGBROWSER",
+      "required": ["authentic_ingress_packet", "event_ephemeral_surface_receipt", "correlated_return_packet", "interlock_intr_egress_receipt", "master_records_custody_or_reconstruction_receipt"],
+      "both_surfaces_required": false
+    },
+    "goal_2": {
+      "name": "SAME_CORRELATION_ROUND_TRIP",
+      "requires_goal_1": true,
+      "required": ["goal_1_proven", "return_packet_delivered_to_origin", "same_correlation_preserved", "round_trip_receipt_chain_reconstructable"]
+    },
+    "frozen_experiment_relation": "TRANSPORT_AND_EVIDENCE_IMPLEMENTATION_ONLY_NO_PRINCIPAL_VISIBLE_MUTATION"
+  },
   "runtime_requirements": {
-    "capabilities": ["registered_stegverse_node_invocation", "interlock_intr_transition", "bounded_event_ephemeral_materialization", "organization_local_self_characterization", "workercoordinator_claim_fence", "sv002_frozen_v0_3_execution", "master_records_transition_custody"],
+    "capabilities": ["registered_stegverse_node_invocation", "interlock_intr_transition", "bounded_event_ephemeral_materialization", "organization_local_self_characterization", "governed_return_packet", "master_records_transition_custody", "same_correlation_return_delivery"],
     "environment": "SOVEREIGN_EVENT_EPHEMERAL",
-    "direction": "INTERNAL_GOVERNED_EXECUTION",
+    "direction": "BIDIRECTIONAL_GOVERNED_TRANSPORT",
     "mutation_required": true,
     "deployment_required": false,
     "current_observation_required": true
   },
   "execution_substrate_resolution": {
     "schema": "stegverse.execution-substrate-resolution/v1",
-    "review_order": [
-      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
-      "STEGOS-CURRENT-DEVICE-NODE",
-      "STEG-BROWSER-EPHEMERAL-LEASE",
-      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
-      "ADMITTED-EPHEMERAL-STEGOS-NODE",
-      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
-    ],
+    "review_order": ["ADMITTED-EPHEMERAL-STEGOS-NODE", "STEGBROWSER-EPHEMERAL-LEASE", "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"],
     "reviews": [
-      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/SV002_ACTION_TRANSITION_EVIDENCE_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["scripts/list_stegverse_execution_surfaces.py"]},
-      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json"]},
-      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/SV002_ACTION_TRANSITION_EVIDENCE_MIRROR_HANDOFF.md"]},
-      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"SELECTED","limitation_class":"NONE","evidence_refs":["scripts/list_stegverse_execution_surfaces.py","StegVerse-002/.github:resident-runtime/self_characterization_surface.py","StegVerse-002/micro-node-runtime:tools/run_self_characterization_principal.py"]},
+      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"SELECTED","limitation_class":"NONE","evidence_refs":["scripts/list_stegverse_execution_surfaces.py","StegVerse-002/.github:resident-runtime/self_characterization_surface.py"]},
+      {"substrate_id":"STEGBROWSER-EPHEMERAL-LEASE","disposition":"ELIGIBLE_ALTERNATE","limitation_class":"NONE","evidence_refs":["scripts/list_stegverse_execution_surfaces.py"]},
       {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/REMOTE_RUNTIME_CONNECTOR_OPTIONALITY.md"]}
     ],
     "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
@@ -89,23 +85,21 @@
   },
   "runtime_resolution": {
     "surface_class": "ephemeral",
-    "selected_surface": "StegVerseNode",
+    "preferred_surface": "StegVerseNode",
+    "alternate_surface": "StegBrowser",
     "availability": "AVAILABLE_TO_INVOKE",
     "instance_state": "NOT_MATERIALIZED",
     "materialization": "ON_INVOCATION",
     "callable_task": "SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001",
     "execution_owner": "StegVerse-002/.github",
     "operation": "REQUEST_SELF_CHARACTERIZATION",
-    "stegbrowser_supporting_mechanics_task": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
-    "stegbrowser_is_callable_owner_for_sv002": false,
     "zero_connected_devices_is_runtime_blocker": false,
     "second_user_operated_device_required": false,
     "standing_runtime_required": false
   },
   "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
-  "human_action_ref": null,
-  "completion": {"claimed":false,"validated":false,"reconciliation_ref":null},
-  "allowed_next_transitions": ["INGRESS_ADMITTED", "EPHEMERAL_INVOCATION_CONSUMED", "TRANSITION_EVIDENCE_RECONCILED"],
+  "completion": {"claimed":false,"validated":false,"goal_1_proven":false,"goal_2_proven":false,"reconciliation_ref":null},
+  "allowed_next_transitions": ["REQUEST_BOUND", "INGRESS_ADMITTED", "EPHEMERAL_INVOCATION_CONSUMED", "RETURN_PACKET_EMITTED", "MASTER_RECORDS_CUSTODY_OBSERVED", "ROUND_TRIP_COMPLETED"],
   "handoff_projection_refs": ["docs/SV002_ACTION_TRANSITION_EVIDENCE_MIRROR_HANDOFF.md", "StegVerse-002/.github/docs/SELF_CHARACTERIZATION_EXECUTION_SURFACE_MIRROR_HANDOFF.md"],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
@@ -113,7 +107,6 @@
     "worker_claim_authority": "WORKERCOORDINATOR",
     "interlock_intr_required_for_every_governed_transition": true,
     "master_records_reality_authority": true,
-    "missing_transition_evidence_means_action_complete": false,
     "github_runtime_authority": "NONE"
   },
   "universal_action_transition_invariant": {
@@ -126,6 +119,6 @@
     "readme_reviewed": true,
     "readme_updated_in_change_set": false,
     "readme_path": "README.md",
-    "determination": "NO_README_CHANGE_REQUIRED_EXISTING_README_STEGBROWSER_SECTION_IS_STEGBROWSER_SPECIFIC_AND_REMAINS_ACCURATE; DISCOVERY_CATALOG_OWNERSHIP_IS_DOCUMENTED_IN_REMOTE_RUNTIME_CONNECTOR_OPTIONALITY"
+    "determination": "TRANSPORT_ACCEPTANCE_CLARIFIED_IN_TASK_AND_HANDOFFS; NO PRINCIPAL_VISIBLE EXPERIMENT CHANGE"
   }
 }
