@@ -4,7 +4,7 @@
   "goal_task_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
   "task_id": "MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001",
   "cosv_task_vector": "50000000100000",
-  "state": "SOURCE_CHAIN_VALIDATED_RUNTIME_UNOBSERVED",
+  "state": "SOURCE_CHAIN_VALIDATED_EVENT_TRANSITION_UNOBSERVED",
   "verdict": "PARTIAL",
   "authority_effect": "NONE_PREFLIGHT_ONLY",
   "source_chain": [
@@ -38,27 +38,35 @@
     "new_runtime_plane_created": false,
     "user_device_prerequisite": false
   },
+  "runtime_model": {
+    "resident_supervision_is_not_the_event_runtime": true,
+    "event_runtime_materialization_is_state_transition_dependent": true,
+    "event_ephemeral_runtime_is_instantiated_by_admitted_transition": true,
+    "runtime_need_not_exist_as_idle_reachable_process_before_event": true,
+    "remote_device_or_surface_reachability_is_not_a_runtime_predicate": true,
+    "remote_connector_check_is_non_authoritative_for_event_runtime_availability": true
+  },
   "runtime_observation": {
-    "runtime_presence_receipt_observed_in_canonical_git": false,
     "mir_request_consumption_receipt_observed_in_canonical_git": false,
     "mir_current_runtime_receipt_observed_in_canonical_git": false,
-    "remote_runtime_surface_reachable_from_current_authorized_tool_session": false,
-    "remote_tool_result": "NO_AUTHORIZED_DEVICE_AVAILABLE",
-    "live_resident_cadence_claimed": false,
+    "live_mir_state_transition_observed": false,
     "mir_runtime_execution_claimed": false
   },
   "diagnosis": {
     "source_invocation_gap_present": false,
     "passive_waiting_allowed": false,
-    "current_unresolved_boundary": "AUTHENTIC_SOVEREIGN_RUNTIME_SURFACE_OR_RUNTIME_RECEIPT_NOT_OBSERVED",
-    "correct_next_transition": "EXECUTE_EXISTING_CHAIN_WHEN_AN_AUTHORIZED_SOVEREIGN_RUNTIME_SURFACE_IS_PRESENT_OR_RECONCILE_ITS_ALREADY_RETAINED_RECEIPT",
+    "prior_remote_surface_blocker_interpretation_retracted": true,
+    "current_unresolved_boundary": "AUTHENTIC_MIR_EVENT_INGRESS_OR_STATE_TRANSITION_RECEIPT_NOT_OBSERVED",
+    "correct_next_transition": "CAUSE_OR_OBSERVE_THE_CURRENT_MIR_EVENT_ENTER_THE_EXISTING_AUTHORIZED_INGRESS_AND_INTERLOCK_INTR_TRANSITION_PATH_SO_THE_EVENT_EPHEMERAL_RUNTIME_MATERIALIZES_AS_A_CONSEQUENCE_OF_STATE_TRANSITION",
     "prohibited_repairs": [
       "SECOND_SCHEDULER",
       "SECOND_DISPATCHER",
       "SECOND_RUNTIME_PLANE",
       "GITHUB_ACTIONS_RUNTIME_AUTHORITY",
       "USER_DEVICE_PREREQUISITE",
-      "GENERIC_SV002_REPROOF"
+      "GENERIC_SV002_REPROOF",
+      "WAIT_FOR_IDLE_RUNTIME_SURFACE",
+      "REMOTE_DEVICE_REACHABILITY_AS_RUNTIME_GATE"
     ]
   },
   "evidence_refs": [
