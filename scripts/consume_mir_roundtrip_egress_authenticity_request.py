@@ -5,6 +5,8 @@ This is a bounded request consumer attached to the existing resident dispatch ca
 It creates no scheduler, WorkerCoordinator, transport, credential path, or runtime.
 It delegates exactly one current MIR task to refresh_and_execute_resident_task.py,
 which refreshes already-local canonical source and uses the existing WorkerCoordinator.
+The request and worker bind COSV 50000000100000 directly; the targeted bridge is not
+made dependent on a separately refreshed aggregate COSV index before this invocation.
 """
 from __future__ import annotations
 
@@ -156,7 +158,6 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         "--source-root", str(source),
         "--runtime-root", str(runtime),
         "--task-id", TASK_ID,
-        "--cosv-task-vector", COSV,
     ]
     completed = runner(
         command,
@@ -181,6 +182,8 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         "state": "ONE_WAY_CONFIRMED" if one_way else "EXECUTION_ATTEMPT_RECORDED",
         "task_id": TASK_ID,
         "cosv_task_vector": COSV,
+        "cosv_bound_by_request_and_worker": True,
+        "aggregate_cosv_pointer_gate_used": False,
         "request_sha256": request_sha,
         "command": command,
         "execution_returncode": completed.returncode,
