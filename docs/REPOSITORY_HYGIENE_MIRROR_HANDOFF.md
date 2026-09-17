@@ -359,3 +359,29 @@ Interlock/InTr admission: NOT CLAIMED
 Master Records reconciliation: NOT CLAIMED
 Site/StegCore direct chat cleanup authority: NONE
 ```
+
+
+## 2026-09-17 autonomous root-Goal selection defect repair
+
+After the Task Registry continuity repair, `HYGIENE-CAUSAL-ROOTS-001` was still not selectable by the existing resident Canonical Work cycle. The first concrete divergence was in `scripts/run_task_registry_canonical_work_cycle.py`: `progression_context()` treated the autonomous-progression controller's own `root_correlation_id` (`STEGVERSE-CANONICAL-WORK-COORDINATION-001`) as the current root Goal Task. The later `load_candidates(..., goal_task_id=...)` filter therefore discarded every valid task rooted elsewhere before repair-priority ordering or collision check-in could run.
+
+The bounded repair is staged in PR `#2077` on `fix/hygiene-root-goal-selection-20260917`. It separates controller lineage from current Goal context, adds `--goal-task-id` to the existing registry selector, threads that same context through the existing `canonical_work_coordination` resident consumer, and keeps all selection/delegation authority boundaries unchanged. This is not a hygiene-specific execution request and creates no second scheduler, dispatcher, WorkerCoordinator, heartbeat, credential path, runtime, or authority plane.
+
+For this goal, the intended existing path is now:
+
+```text
+current Goal context = HYGIENE-CAUSAL-ROOTS-001
+-> canonical Task Registry row
+-> goal-scoped machine-ingress eligibility
+-> ECOSYSTEM_RECONCILIATION priority
+-> existing Task Registry collision check-in
+-> existing Canonical Work bootstrap
+-> WorkerCoordinator claim/fence
+-> Interlock/InTr admission
+-> repository-native bounded hygiene execution
+-> Master Records reconciliation
+```
+
+A second pre-consumption defect was also found in the stale-resident case. The resident consumer correctly preserves an existing monolithic Task Registry, while generic task-shard materialization does not make shard-only tasks discoverable because both the selector and collision evaluator remain registry-first. Since hygiene was restored to the source monolithic registry but has no canonical source shard, an older resident could still miss it. PR #2077 now reuses the already-existing bootstrap exact-shard projection refresh: for an explicit current Goal, the consumer materializes that exact source registry row as a runtime shard and appends only the missing identity to the preserved resident monolithic registry before selection. Existing resident rows are not replaced, and the projection has `authority_effect=NONE`.
+
+Source staging and tests do not prove resident consumption, WorkerCoordinator claim/fence, Interlock/InTr admission, Master Records reconciliation, or any downstream repository mutation. Site/StegCore issue or branch mutation remains explicitly out of scope. The next evidence predicate is an authentic existing resident Canonical Work cycle carrying `--goal-task-id HYGIENE-CAUSAL-ROOTS-001`, with the stale-registry projection receipt when needed, followed by the normal collision/claim/admission chain.
