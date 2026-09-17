@@ -1,0 +1,39 @@
+{
+  "reusable_task_id": "RT-CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+  "name": "Canonical Master Records State Transition Custody",
+  "purpose": "Submit each observed governed state transition receipt to the existing Master Records custody/reconstruction authority and require exact reconstruction before machine-owned progression continues, without promoting custody into transition authority.",
+  "trigger": "a governed state transition decision, execution consequence, denial, failure, partial outcome, or fail-closed state has been observed",
+  "scope": "one observed governed state transition receipt",
+  "parameter_keys": [
+    "transition_id",
+    "transition_sequence",
+    "subject_or_correlation_id",
+    "prior_state_ref_or_hash",
+    "resulting_state_ref_or_hash",
+    "governance_decision_ref_where_applicable",
+    "transition_evidence",
+    "proof_scope",
+    "proof_ceiling"
+  ],
+  "composes": [
+    "RT-INTR-GOVERNED-TRANSITION-001",
+    "RT-INTR-EVIDENCE-CUSTODY-001"
+  ],
+  "runner_templates": ["workers/canonical_state_transition_custody.py"],
+  "recording_levels": ["transition", "operation", "task", "goal", "system", "master_records"],
+  "completion_predicates": [
+    "CANONICAL_STATE_RECEIPT_EMITTED",
+    "MASTER_RECORDS_CUSTODY_RECORDED",
+    "EXACT_RECEIPT_RECONSTRUCTION_PASS",
+    "NO_CUSTODY_AUTHORITY_PROMOTION"
+  ],
+  "failure_semantics": [
+    "MISSING_TRANSITION_NOT_FABRICATED",
+    "CUSTODY_UNREACHABLE_FAIL_CLOSED_BEFORE_NEXT_MACHINE_TRANSITION",
+    "RECONSTRUCTION_MISMATCH_FAIL_CLOSED",
+    "DENY_AND_FAILURE_STATES_REMAIN_CANONICAL_EVIDENCE",
+    "CUSTODY_RESULT_CANNOT_AUTHORIZE_NEXT_TRANSITION"
+  ],
+  "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY",
+  "reuse_instructions": "Use this for the canonical per-state-transition custody consequence. Task-specific probes may compare conformance but must not replace this path. Interlock/InTr remains transition authority and TV/TVC remains credential authority where required."
+}
