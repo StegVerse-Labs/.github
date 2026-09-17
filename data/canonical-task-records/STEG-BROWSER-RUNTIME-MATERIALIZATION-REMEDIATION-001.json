@@ -4,150 +4,29 @@
   "correlation_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
   "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
   "parent_task_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
-  "goal": "Execute the StegBrowser invocation through two governed Interlock/InTr round-trip phases: first return the correlated records packet at the Interlock/InTr exit for recording and verification; then, after record/mirror processing, initiate the mirror-boundary Interlock/InTr return, call endpoint Interlock/InTr, and re-enter the ecosystem.",
-  "coordination_state": "ACTIVE",
-  "checkout_state": "CHECKED_OUT",
+  "goal": "Historical StegBrowser runtime-materialization remediation wrapper retained for provenance only. Generic event-triggered Interlock/InTr -> EVENT_EPHEMERAL -> governed transport progression now reuses the proven StegVerse-002 route and registered reusable RTC/canonical-custody components rather than task-specific orchestration.",
+  "coordination_state": "SUPERSEDED",
+  "checkout_state": "SUPERSEDED_BY_PROVEN_SV002_REUSABLE_ROUTE",
   "cosv_task_vector": "40000100100000",
-  "shared_runtime_evidence_owner_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
-  "current_exact_defect": "AUTHENTIC_RUNTIME_CONNECTION_TRANSITION_AND_INTR_INGRESS_NOT_YET_OBSERVED",
-  "source_validation": {
-    "previous_binding_repair_pull_request": 1907,
-    "previous_binding_repair_merge_commit": "4834e0a8787b11a6d01872e39ba82773f9bdeda4",
-    "runtime_authority_effect": "NONE"
+  "supersession": {
+    "reason": "DUPLICATES_PROVEN_STEGVERSE_002_EVENT_TRIGGERED_EXECUTION_ROUTE",
+    "canonical_route": "STEGVERSE-002_EVENT_TRIGGERED_INTERLOCK_INTR_TO_EVENT_EPHEMERAL",
+    "preserved_stegbrowser_goal": "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001",
+    "preserved_evidence_task": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+    "canonical_transition_custody": "RT-CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+    "generic_transport_components": ["RTC-ROUNDTRIP-003", "RTC-EVIDENCE-CUSTODY-004", "RTC-STEGVERSE-EGRESS-007", "RTC-INTERLOCK-INTR-TRANSPORT-008", "RTC-FARSIDE-FINAL-009"],
+    "new_runtime_plane_allowed": false,
+    "runtime_predicates_promoted": false
   },
-  "source_refs": [
-    "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md",
-    "data/goal-task-transport-profiles/STEG-BROWSER-RUNTIME-CONSUMPTION-001.json",
-    "data/reusable-transport-component-contract.json",
-    "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
-    "source-bundles/reusable-task-registry.d/RT-SOVEREIGN-SOURCE-REFRESH-001.json",
-    "control/resident-execution-request.d/canonical-work-stegbrowser-runtime-consumption-001.json",
-    "scripts/run_stegbrowser_runtime_consumption_reusable.py"
-  ],
-  "runtime_requirements": {
-    "capabilities": ["canonical_portable_execution", "event_ephemeral_stegos_node", "universal_intr_profiled_ingress", "governed_round_trip_transport"],
-    "environment": "ADMITTED-EPHEMERAL-STEGOS-NODE",
-    "governed_round_trip_lifecycle_count": 2,
-    "mutation_required": true,
-    "deployment_required": false,
-    "current_observation_required": true,
-    "physical_device_identity_required": false,
-    "second_user_operated_device_required": false
-  },
-  "execution_substrate_resolution": {
-    "schema": "stegverse.execution-substrate-resolution/v1",
-    "review_order": [
-      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
-      "STEGOS-CURRENT-DEVICE-NODE",
-      "STEG-BROWSER-EPHEMERAL-LEASE",
-      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
-      "ADMITTED-EPHEMERAL-STEGOS-NODE",
-      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
-    ],
-    "reviews": [
-      {"substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE", "disposition": "PENDING_EVIDENCE", "limitation_class": "EVIDENCE_REACHABILITY", "evidence_refs": ["docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md"]},
-      {"substrate_id": "STEGOS-CURRENT-DEVICE-NODE", "disposition": "SUITABLE", "limitation_class": "NONE", "evidence_refs": ["docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md"]},
-      {"substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE", "disposition": "SUITABLE", "limitation_class": "NONE", "evidence_refs": ["docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md"]},
-      {"substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER", "disposition": "SUITABLE", "limitation_class": "PLATFORM", "evidence_refs": ["docs/DEVICE_VERIFICATION_AUTHORITY_INVARIANT.md"]},
-      {"substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE", "disposition": "SELECTED", "limitation_class": "NONE", "evidence_refs": ["docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md", "docs/STEGBROWSER_EPHEMERAL_RUNTIME_BINDING_MIRROR_HANDOFF.md"]},
-      {"substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT", "disposition": "NOT_APPLICABLE", "limitation_class": "NOT_APPLICABLE", "evidence_refs": []}
-    ],
-    "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
-    "external_device_required": false,
-    "second_user_operated_device_allowed": false,
-    "authority_effect": "NONE"
-  },
-  "worker_claim": {
-    "authority": "WORKERCOORDINATOR",
-    "projection_only": true,
-    "claim_ref": null,
-    "fence_ref": null
-  },
-  "runtime_connection_transition": {
-    "variables": {"callable": "PENDING_AUTHENTIC_TRANSITION_EVIDENCE", "refreshable": "PENDING_AUTHENTIC_TRANSITION_EVIDENCE"},
-    "authority": "INTERLOCK_INTR",
-    "always_on_runtime_source_assumed": false,
-    "source_freshness_persistent_state": false,
-    "refresh_reusable_task_ref": "RT-SOVEREIGN-SOURCE-REFRESH-001",
-    "refresh_selection_condition": "callable=true AND refreshable=true"
-  },
-  "round_trip_model": {
-    "lifecycle_count": 2,
-    "round_trip_1_recording_verification": {
-      "entry": "GOVERNED_INTR_INGRESS",
-      "intermediate_transitions_may_be_endpoint_local_if_allowed": true,
-      "return": "CORRELATED_RECORDS_PACKET",
-      "exit": "FIRST_FINAL_ALLOWED_INTR_EXIT_TO_RECORDING",
-      "recording_surface": "MASTER_RECORDS_RECORDING_SURFACE",
-      "verification_evidence": ["GOVERNED_RETURN_PACKET_RECEIVED", "RECORDS_PACKET_DELIVERED_FOR_RECORDING", "RETURN_RECORD_DURABLY_RECORDED", "FIRST_FINAL_ALLOWED_INTR_EXIT_TRANSITION_OBSERVED"],
-      "terminal_predicate": "SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED"
-    },
-    "between_round_trips": {
-      "begins_at": "RECORDS_PACKET_DELIVERED_FOR_RECORDING",
-      "includes": ["RECORDING", "CUSTODY_RECONSTRUCTION", "PROCESSING", "MIRROR_BOUNDARY_PROCESSING"],
-      "master_records_authority": "OBSERVED_REALITY_CUSTODY_RECONSTRUCTION",
-      "transport_authority": "NONE",
-      "mirror_boundary_initiates_next_interlock_intr": true
-    },
-    "round_trip_2_ecosystem_return": {
-      "entry": "MIRROR_BOUNDARY_INTR_REENTRY",
-      "local_transition": "MIRROR_BOUNDARY_INTERLOCK_INTR_ALLOWED",
-      "endpoint_call": "ENDPOINT_INTERLOCK_INTR_CALLED",
-      "endpoint_transition": "ENDPOINT_INTERLOCK_INTR_ALLOWED",
-      "exit": "ECOSYSTEM_REENTRY_FINAL_ALLOWED_TRANSITION",
-      "terminal_predicate": "SUCCESSFUL_ECOSYSTEM_RETURN_ROUND_TRIP_IDENTIFIED"
-    },
-    "overall_terminal_predicate": "SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIPS_IDENTIFIED"
-  },
-  "dependencies": [
-    {"dependency_id": "DEP-REUSABLE-STEG-BROWSER-RUNTIME-CONSUMPTION", "kind": "REUSABLE_TASK_CANDIDATE_SELECTED_BY_STATE", "state": "SOURCE_REBOUND_MERGED_VALIDATED_RUNTIME_UNOBSERVED", "ref": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001"},
-    {"dependency_id": "DEP-RUNTIME-CONNECTION-STATE-TRANSITION", "kind": "GOVERNED_STATE_TRANSITION", "state": "PENDING_AUTHENTIC_TRANSITION_EVIDENCE", "ref": "INTERLOCK_INTR"},
-    {"dependency_id": "DEP-WORKERCOORDINATOR-CLAIM-FENCE", "kind": "AUTHORITY_OWNED_PRE_TRANSPORT_EXECUTION_STATE", "state": "PENDING_AUTHENTIC_EXECUTION", "ref": "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED"},
-    {"dependency_id": "DEP-GOVERNED-ROUNDTRIP-COMPONENT", "kind": "REUSABLE_TRANSPORT_COMPONENT", "state": "REPEAT_TWICE_FOR_DECLARED_LIFECYCLES", "ref": "RTC-ROUNDTRIP-003"},
-    {"dependency_id": "DEP-INTR-TRANSPORT-COMPONENT", "kind": "REUSABLE_TRANSPORT_COMPONENT", "state": "PENDING_AUTHENTIC_TRANSPORT", "ref": "RTC-INTERLOCK-INTR-TRANSPORT-008"},
-    {"dependency_id": "DEP-EVIDENCE-CUSTODY", "kind": "BETWEEN_ROUND_TRIPS_PROCESSING_COMPONENT", "state": "PENDING_ROUND_TRIP_1_RETURN", "ref": "RTC-EVIDENCE-CUSTODY-004"},
-    {"dependency_id": "DEP-STEGVERSE-EGRESS", "kind": "ROUND_TRIP_2_EGRESS_COMPONENT", "state": "PENDING_MIRROR_BOUNDARY_PROCESSING", "ref": "RTC-STEGVERSE-EGRESS-007"},
-    {"dependency_id": "DEP-FARSIDE-FINAL", "kind": "ROUND_TRIP_2_ENDPOINT_COMPONENT", "state": "PENDING_ROUND_TRIP_2", "ref": "RTC-FARSIDE-FINAL-009"}
-  ],
-  "allowed_next_transitions": [
-    "OBSERVE_RUNTIME_CONNECTION_TRANSITION_VARIABLES",
-    "OBSERVE_CURRENT_WORKERCOORDINATOR_CLAIM_FENCE",
-    "ENTER_GOVERNED_INTR_TRANSPORT",
-    "OBSERVE_ROUND_TRIP_1_RETURN_TO_RECORDING",
-    "OBSERVE_RETURN_RECORD_DURABLY_RECORDED",
-    "SET_SUCCESSFUL_RECORDING_VERIFICATION_ROUND_TRIP_IDENTIFIED_TRUE",
-    "PROCESS_RECORDED_STATE_TO_MIRROR_BOUNDARY",
-    "INITIATE_MIRROR_BOUNDARY_INTR_REENTRY",
-    "CALL_ENDPOINT_INTERLOCK_INTR",
-    "OBSERVE_ECOSYSTEM_REENTRY_FINAL_ALLOWED_TRANSITION",
-    "SET_SUCCESSFUL_ECOSYSTEM_RETURN_ROUND_TRIP_IDENTIFIED_TRUE",
-    "SET_SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIPS_IDENTIFIED_TRUE"
-  ],
-  "completion": {
-    "claimed": false,
-    "validated": false,
-    "runtime_connection_transition_observed": false,
-    "workercoordinator_claim_fence_observed": false,
-    "round_trip_1_return_packet_received": false,
-    "round_trip_1_return_record_durably_recorded": false,
-    "successful_recording_verification_round_trip_identified": false,
-    "mirror_boundary_processing_observed": false,
-    "round_trip_2_mirror_intr_reentry_observed": false,
-    "round_trip_2_endpoint_intr_call_observed": false,
-    "round_trip_2_ecosystem_reentry_observed": false,
-    "successful_ecosystem_return_round_trip_identified": false,
-    "successful_data_transport_round_trips_identified": false
-  },
+  "historical_refs": ["docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md", "StegVerse-Labs/.github#1866", "4834e0a8787b11a6d01872e39ba82773f9bdeda4"],
+  "allowed_next_transitions": [],
+  "completion": {"claimed": false, "validated": false, "runtime_completion_claimed": false},
   "authority_model": {
     "task_registry_mints_execution_authority": false,
-    "source_state_proves_execution": false,
     "interlock_intr_transition_authority": true,
     "worker_claim_authority": "WORKERCOORDINATOR",
     "credential_authority": "TV/TVC",
-    "user_verification_authority": "KV/SKAP Vault",
     "master_records_reality_authority": true,
-    "master_records_transport_authority": false,
-    "heartbeat_role": "OBSERVABILITY_ONLY",
     "github_runtime_authority": "NONE",
     "second_user_operated_device_required": false
   }
