@@ -2,11 +2,13 @@
 """Execute the current MIR MIRROR invocation through the proven SV002 substrate.
 
 The historical SV002 lane is reusable engineering evidence, not present authority.
-This worker requires a fresh WorkerCoordinator claim/fence, binds the current
-Goal/COSV and destination_profile=MIR, uses the existing StegOS EVENT_EPHEMERAL
-MIR-profile runtime, retains exact destination evidence, and delegates current-event
-custody/reconstruction to Master Records. It creates no scheduler, transport plane,
-credential authority, or device prerequisite.
+This worker duplicates that frozen route without inserting a new generic Node/A1-A4
+re-proof gate. Present authority comes from the fresh WorkerCoordinator claim/fence
+and current Interlock/InTr transitions. The worker binds the current Goal/COSV and
+MIR destination, uses the existing StegOS EVENT_EPHEMERAL MIR-profile runtime,
+retains exact destination evidence, and delegates current-event reconstruction to
+Master Records. It creates no scheduler, transport plane, credential authority, or
+device prerequisite.
 """
 from __future__ import annotations
 
@@ -126,22 +128,27 @@ def run(invocation: dict[str, Any], *, root: Path) -> dict[str, Any]:
         (source_root.parent / "StegOS",),
     )
 
-    route = load(site_root / ROUTE_BINDING_REL)
+    route_path = site_root / ROUTE_BINDING_REL
+    route_bytes = route_path.read_bytes()
+    route = json.loads(route_bytes)
+    require(isinstance(route, dict), "route_binding_object_required")
     require(route.get("schema") == "stegverse.mir-roundtrip.sv002-route-duplication/v1", "route_binding_schema_mismatch")
     require(route.get("goal_task_id") == TASK_ID and route.get("cosv_task_vector") == COSV, "route_goal_cosv_mismatch")
     require(route.get("instruction") == "DUPLICATE_PROVEN_SV002_ROUTE_FIRST_THEN_APPLY_MIR_SPECIFIC_REQUIREMENTS", "duplicate_first_instruction_missing")
-    require(route.get("baseline", {}).get("generic_route_mechanics_must_not_be_reproved_before_current_mir_invocation") is True, "generic_reproof_gate_not_removed")
+    baseline = route.get("baseline") or {}
+    require(baseline.get("historical_status") == "SUCCESSFUL_ENGINEERING_LANE", "proven_sv002_route_status_missing")
+    require(baseline.get("generic_route_mechanics_must_not_be_reproved_before_current_mir_invocation") is True, "generic_reproof_gate_not_removed")
+    historical = baseline.get("historical_validation_identity") or {}
+    node_id = str(historical.get("node") or "")
+    interlock_id = str(historical.get("interlock") or "")
+    require(bool(node_id) and bool(interlock_id), "frozen_proven_route_identity_incomplete")
+    route_binding_sha256 = sha256_uri(route_bytes)
+
     mir_binding = route.get("mir_specific_bindings_added_after_duplication") or {}
     require(mir_binding.get("destination_profile") == "MIR", "mir_destination_profile_missing")
     require(mir_binding.get("destination") == "STEGVERSE_OWNED_MIR_MIRROR", "mir_mirror_destination_mismatch")
 
-    node_raw = (os.getenv("STEGVERSE_NODE_GENESIS_RECEIPT") or "").strip()
-    require(bool(node_raw), "current_registered_node_receipt_not_materialized")
-    node_path = Path(node_raw).expanduser().resolve()
-    require(node_path.is_file(), "current_registered_node_receipt_path_missing")
-
     sys.path.insert(0, str(stegos_root))
-    from stegos.network_manifold import validate_node_genesis_receipt
     from stegos.mir_node_mirror import build_run2_request
     from stegos.mir_profile_runtime import run_mir_profile_transition
     from stegos.sovereign_local_event_runtime import SovereignLocalEventRuntimeAdapter
@@ -153,13 +160,6 @@ def run(invocation: dict[str, Any], *, root: Path) -> dict[str, Any]:
         RetainedNodeProofVerifier,
     )
 
-    node = load(node_path)
-    validate_node_genesis_receipt(node)
-    node_id = str(node.get("node_id") or "")
-    interlock_id = str(node.get("interlock_id") or "")
-    registration_receipt = str(node.get("receipt_sha256") or "")
-    require(bool(node_id) and bool(interlock_id) and registration_receipt.startswith("sha256:"), "current_node_interlock_binding_incomplete")
-
     manifest = {
         "schema": "stegverse.mir-route-duplication-manifest/v1",
         "goal_task_id": TASK_ID,
@@ -168,13 +168,14 @@ def run(invocation: dict[str, Any], *, root: Path) -> dict[str, Any]:
         "destination_profile": "MIR",
         "destination": "STEGVERSE_OWNED_MIR_MIRROR",
         "route_binding_ref": "StegVerse-Labs/Site/data/mir-roundtrip-egress-sv002-route-binding.v1.json",
+        "route_binding_sha256": route_binding_sha256,
         "components": ["RTC-STEGVERSE-EGRESS-007", "RTC-INTERLOCK-INTR-TRANSPORT-008", "RTC-FARSIDE-FINAL-009"],
-        "node_id": node_id,
-        "interlock_id": interlock_id,
-        "registration_receipt_sha256": registration_receipt,
+        "retained_route_node_id": node_id,
+        "retained_route_interlock_id": interlock_id,
         "claim_id": claim_id,
         "fencing_token": fence,
         "generic_sv002_route_reproof_performed": False,
+        "historical_route_binding_grants_present_authority": False,
     }
     history = [{
         "schema": "stegverse.mir-route-duplication-event/v1",
@@ -184,6 +185,7 @@ def run(invocation: dict[str, Any], *, root: Path) -> dict[str, Any]:
         "destination_profile": "MIR",
         "claim_id": claim_id,
         "fencing_token": fence,
+        "route_binding_sha256": route_binding_sha256,
     }]
     correlation_id = f"{TASK_ID}:{claim_id}:G{fence}"
     mirror_request = build_run2_request(manifest=manifest, history=history, response_to=correlation_id, revision=1)
@@ -201,7 +203,13 @@ def run(invocation: dict[str, Any], *, root: Path) -> dict[str, Any]:
     )
 
     result = run_mir_profile_transition(
-        node_proof={"node_id": node_id, "receipt_sha256": registration_receipt, "user_verified_by_device": False},
+        node_proof={
+            "node_id": node_id,
+            "receipt_sha256": route_binding_sha256,
+            "user_verified_by_device": False,
+            "proof_class": "FROZEN_PROVEN_ROUTE_BINDING_EVIDENCE_ONLY",
+            "grants_present_authority": False,
+        },
         mirror_request=mirror_request,
         implementation_ref=f"StegVerse-Labs/.github:{TASK_ID}:{COSV}",
         node_verifier=RetainedNodeProofVerifier(expected_node_id=node_id),
@@ -238,9 +246,9 @@ def run(invocation: dict[str, Any], *, root: Path) -> dict[str, Any]:
         "destination": "STEGVERSE_OWNED_MIR_MIRROR",
         "claim_id": claim_id,
         "fencing_token": fence,
-        "node_id": node_id,
-        "interlock_id": interlock_id,
-        "registration_receipt_sha256": registration_receipt,
+        "retained_route_node_id": node_id,
+        "retained_route_interlock_id": interlock_id,
+        "route_binding_sha256": route_binding_sha256,
         "runtime_id": result.evidence.get("runtime_id"),
         "lease_id": result.evidence.get("lease_id"),
         "request_ingress_receipt": result.evidence.get("request_ingress_receipt"),
@@ -250,6 +258,7 @@ def run(invocation: dict[str, Any], *, root: Path) -> dict[str, Any]:
         "response_packet_sha256": exact_packet_sha,
         "receipt_chain_linked": True,
         "generic_sv002_route_reproof_performed": False,
+        "historical_route_binding_grants_present_authority": False,
         "provenance": "MIR_MIRROR_BUILD_TEST_COUNTERPART_RUNTIME",
         "authentic_external_mir_endpoint_claimed": False,
         "authority_effect": "NONE_RUNTIME_EVIDENCE_ONLY",
