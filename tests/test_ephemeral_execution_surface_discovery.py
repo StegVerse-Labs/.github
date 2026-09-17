@@ -34,7 +34,17 @@ class EphemeralExecutionSurfaceDiscoveryTests(unittest.TestCase):
             self.assertFalse(surface["persistent_connection_required"])
             self.assertFalse(surface["second_user_operated_device_required"])
             self.assertEqual(surface["authority_effect"], "NONE_DISCOVERY_ONLY")
-            self.assertEqual(surface["callable_task"], "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001")
+
+        node = by_name["StegVerseNode"]
+        self.assertEqual(node["callable_task"], "SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001")
+        self.assertEqual(node["execution_owner"], "StegVerse-002/.github")
+        self.assertEqual(node["operation"], "REQUEST_SELF_CHARACTERIZATION")
+        self.assertNotEqual(node["callable_task"], "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001")
+
+        browser = by_name["StegBrowser"]
+        self.assertEqual(browser["callable_task"], "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001")
+        self.assertEqual(browser["execution_owner"], "StegVerse-Labs/.github")
+        self.assertEqual(browser["operation"], "STEGBROWSER_MANIFEST_DEFINED_INTR_INGRESS")
 
     def test_all_preserves_connected_and_adds_ephemeral(self):
         connected = [{"device_id": "phone-1", "state": "CONNECTED"}]
