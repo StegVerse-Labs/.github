@@ -6,7 +6,7 @@
       "adapter_ref": "process:mir-roundtrip-egress-authenticity-v1",
       "authority_ref": "data/canonical-task-records/MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001.json",
       "capabilities": ["mir_roundtrip_egress_authenticity"],
-      "command": ["python", "workers/mir_roundtrip_egress_authenticity_worker.py"],
+      "command": ["python", "workers/mir_roundtrip_transition_probe_worker.py"],
       "cwd": ".",
       "enabled": true,
       "env_allowlist": [
@@ -30,6 +30,7 @@
         "Duplicates the proven SV002 route mechanics first and binds only the current MIR invocation.",
         "Requires a fresh WorkerCoordinator claim/fence but does not re-prove generic SV002 route mechanics or require a new Node receipt input.",
         "Uses the existing StegOS EVENT_EPHEMERAL MIR profile runtime, Interlock/InTr transition semantics, and Master Records lifecycle reconstruction.",
+        "Wraps the existing MIR worker with non-authorizing live transition probes that send each observed transition confirmation through Master Records and retain first_non_return_transition_id.",
         "No second runtime, scheduler, dispatcher, transport plane, credential path, user-device prerequisite, or remote-device prerequisite is created."
       ],
       "timeout_seconds": 600,
