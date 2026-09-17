@@ -4,7 +4,7 @@ Updated: 2026-09-17
 Goal Task ID: `CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001`
 Parent Goal Task ID: `MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001`
 COSV ID: `50000000100000`
-Status: `ACTIVE / INVENTORY COMPLETE / CANONICAL CUSTODY API MATERIALIZED / MIR SV002 BROWSER-EVENT SOURCE REIMPLEMENTED / AUTHENTIC RUNTIME SEQUENCE PENDING`
+Status: `ACTIVE / CANONICAL CUSTODY API MATERIALIZED / MIR SV002 BROWSER EVENT REIMPLEMENTED ON CURRENT UNIVERSAL INTR / AUTHENTIC RUNTIME SEQUENCE PENDING`
 
 ## Canonical rule
 
@@ -24,69 +24,67 @@ Interlock/InTr remains transition authority. TV/TVC remains credential authority
 ## Reusable canonical component
 
 Reusable task: `RT-CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001`.
-
 Primary receipt schema: `stegverse.canonical-state-transition-receipt/v1`.
-
-Required result for progression:
-
-```text
-state = RECORDED
-reconstruction_status = PASS
-receipt_sha256 = reconstructed_receipt_sha256
-master_records_grants_transition_authority = false
-```
-
-A missing transition is never fabricated. A custody failure blocks only progression beyond the observed state; it does not rewrite the state or grant authority.
+Required result for progression is `state=RECORDED`, `reconstruction_status=PASS`, exact receipt/reconstruction digest equality, and no Master Records transition authority.
 
 ## SV002 initiation invariant
 
-The successful StegVerse-002 sequence was browser-event initiated. Its browser event queued a non-authorizing Universal InTr materialization request into the registered Node outbox, then the existing local materializer created a Blob-backed `EVENT_EPHEMERAL` browser Web Worker. No directly reachable machine host or idle runtime was required.
+The successful StegVerse-002 sequence was browser-event initiated. Its browser event queued a non-authorizing Universal InTr materialization request into the registered Node outbox, current InTr admitted the exact queued trigger, and only then was the bounded `EVENT_EPHEMERAL` browser Web Worker consequence materialized. No directly reachable machine host, idle runtime, scheduler, dispatcher, WorkerCoordinator event-creation claim/fence, or second user-operated device is required.
 
-Hard reusable constraints are now:
+Hard reusable constraints remain:
 
 - `EVENT_IS_THE_TRIGGER`;
 - `NO_IDLE_RUNTIME_REQUIRED`;
 - `NO_REMOTE_HOST_DISCOVERY`;
 - `NO_EVENT_CLAIM_OR_FENCE`;
-- `MATERIALIZATION_PRECEDES_RUNTIME`;
+- `CURRENT_INTR_ADMISSION_PRECEDES_RUNTIME`;
 - `REUSE_BROWSER_EVENT_RUNTIME_FIXTURE`;
 - GitHub/CI runtime authority `NONE`.
 
-Canonical preflight: `receipts/preflight/MIR-SV002-INITIATION-MECHANISM-001.json`.
+## 2026-09-17 MIR correction
 
-## MIR reimplementation
+The first browser reimplementation still had two defects and therefore could not correctly produce the expected runtime evidence:
 
-The previous Python event driver is no longer treated as the final execution substrate. The actual MIR Site/browser source now consists of:
+1. its hand-built materialization request omitted fields required by the canonical registered-Node `validateMaterializationRequest()` contract, so `queueIntrMaterializationRequest()` could fail closed before the MIR event reached InTr;
+2. the browser runtime locally recorded `CURRENT_INTERLOCK_INTR_INGRESS_RECEIVED` without requiring an authentic current `INGRESS_ADMITTED` receipt from `/intr/materialization`.
 
-- `StegVerse-Labs/Site:data/mir-roundtrip-browser-runtime-binding.v1.json`;
-- `StegVerse-Labs/Site:assets/canonical-master-records-transition-custody-browser.js`;
-- `StegVerse-Labs/Site:assets/mir-roundtrip-sv002-browser-runtime.js`;
-- `StegVerse-Labs/Site:assets/mir-roundtrip-browser-activation.js`;
-- `StegVerse-Labs/Site:mir-roundtrip/index.html`;
-- `StegVerse-Labs/Site:tests/test_mir_sv002_browser_event_reimplementation.py`;
-- `StegVerse-Labs/Site:.github/workflows/mir-sv002-browser-event-conformance.yml`.
+Those defects are now corrected in source.
 
-The browser page autostarts the unchanged MIR event. The activation surface requires an already-registered StegVerse Node, queues a non-authorizing write-once materialization request, and invokes the bounded `EVENT_EPHEMERAL` browser Web Worker. It performs no remote-host discovery and does not require WorkerCoordinator claim/fence to create the event.
+The active MIR source path is:
+
+- `StegVerse-Labs/Site:intr-mir-roundtrip-extension.js` — bounded MIR admission extension on the existing root Universal InTr service worker;
+- `StegVerse-Labs/Site:stegos-node/mir-roundtrip-intr-sync.js` — exact registered-Node outbox trigger transport to the existing `/intr/materialization` route and strict MIR ingress-receipt validation;
+- `StegVerse-Labs/Site:assets/mir-roundtrip-browser-activation.js` — builds a Node-valid Universal InTr request, queues it, requires current InTr admission, records canonical ingress custody, and only then invokes the event runtime;
+- `StegVerse-Labs/Site:assets/mir-roundtrip-sv002-browser-runtime.js` — refuses execution without the exact admitted MIR ingress receipt and binds the receipt into the bounded Web Worker execution;
+- `StegVerse-Labs/Site:mir-roundtrip/index.html` — autostart browser-event surface loading the MIR sync before activation;
+- `StegVerse-Labs/Site:tests/test_mir_sv002_browser_event_reimplementation.py` — source conformance now explicitly checks queue -> InTr admission -> runtime ordering and forbids synthetic ingress promotion.
+
+The existing root service worker remains the sole device-local Universal InTr ingress. `intr-service-worker.js` imports the MIR extension; no second service worker or runtime plane was created.
 
 ## Canonical MIR state sequence
 
-The browser path requires Master Records exact custody/reconstruction after each actually observed state:
+The corrected browser path requires Master Records exact custody/reconstruction after each actually observed state:
 
 ```text
 MIR_EVENT_MATERIALIZATION_REQUEST_QUEUED
-CURRENT_INTERLOCK_INTR_INGRESS_RECEIVED
-RTC-STEGVERSE-EGRESS-007
-RTC-INTERLOCK-INTR-TRANSPORT-008
-RTC-FARSIDE-FINAL-009
-MIR_DESTINATION_EVIDENCE_RETAINED
-EXACT_GOVERNED_RETURN_PACKET_RETAINED
-STEGVERSE_RETURN_EXIT or MIR_GOVERNED_RETURN_FAIL_CLOSED
+-> authentic /intr/materialization INGRESS_ADMITTED
+-> CURRENT_INTERLOCK_INTR_INGRESS_RECEIVED
+-> RTC-STEGVERSE-EGRESS-007
+-> RTC-INTERLOCK-INTR-TRANSPORT-008
+-> RTC-FARSIDE-FINAL-009
+-> MIR_DESTINATION_EVIDENCE_RETAINED
+-> EXACT_GOVERNED_RETURN_PACKET_RETAINED
+-> STEGVERSE_RETURN_EXIT or MIR_GOVERNED_RETURN_FAIL_CLOSED
 ```
 
-The existing external-counterpart return consumer is reused after exact MIR packet retention. The temporary MIR probe remains comparison-only and cannot substitute for this canonical path.
+The existing external-counterpart return consumer is reused after exact MIR packet retention. The temporary MIR probe remains comparison-only and cannot substitute for canonical state-transition custody.
 
 ## Evidence boundary
 
-Source reimplementation is materialized. No authentic current MIR browser-event execution has yet been observed, so RTC-007/008/009, `STEGVERSE_RETURN_EXIT`, and full round-trip completion remain unpromoted. Source tests/workflow are validation only and cannot promote runtime evidence.
+The source defect is repaired and the current InTr admission transition is now a hard prerequisite to runtime materialization. No authentic current MIR browser-event execution receipt has yet been observed after this correction, so RTC-007/008/009, `STEGVERSE_RETURN_EXIT`, and full round-trip completion remain unpromoted.
 
-The correct next runtime evidence source is the browser event at `/mir-roundtrip/`, not a machine connector, idle resident host, replacement Python runtime, scheduler, dispatcher, or second device.
+The current GitHub Actions lookup for the newest Site conformance commit returned no associated pull-request workflow runs; therefore no green CI claim is made from that lookup.
+
+## Next action
+
+Observe the corrected `/mir-roundtrip/` browser event. Accept `CURRENT_INTERLOCK_INTR_INGRESS_RECEIVED` only from the exact `stegverse.mir-roundtrip-intr-materialization-ingress/v1` `INGRESS_ADMITTED` receipt, then reconcile Master Records in sequence and repair only the first authentic non-returned transition. Do not reintroduce a Python execution substitute, idle host, remote-host discovery, scheduler, dispatcher, WorkerCoordinator event-creation gate, or second-device dependency.
