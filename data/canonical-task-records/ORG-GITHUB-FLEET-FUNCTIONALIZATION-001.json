@@ -33,6 +33,10 @@
     "StegVerse-Labs/TVC:tests/test_authorize_and_activate_private_source_read.py",
     "StegVerse-Labs/.github:handoffs/COSV-LIVE-PACKET-AUTOMATION-006.json",
     "StegVerse-Labs/.github:control/worker-registry.d/cosv-live-packet-automation-006.json",
+    "StegVerse-Labs/.github:heartbeat_runtime/admitted_worker_runtime.py",
+    "StegVerse-Labs/.github:tests/test_preclaim_fragment_policy_reconciliation.py",
+    "StegVerse-Labs/.github:scripts/dispatch_resident_execution_requests.py",
+    "StegVerse-Labs/.github:tests/test_resident_request_dispatcher.py",
     "StegVerse-Labs/.github:tests/test_task_load_independent_admission.py",
     "StegVerse-Labs/.github:docs/COSV_HEARTBEAT_STATE_PACKET_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegBrain:docs/COSV_GRADIENT_MECHANICS_MIRROR_HANDOFF.md",
@@ -69,6 +73,12 @@
     "cosv_worker_policy_binding_commit": "391ea3860f98792f0a9e3d27795badf8462ec110",
     "cosv_worker_policy_regression_test_commit": "bc59a7c1e53c204dd8804722a3e64785a05c63fc",
     "cosv_authorized_policy_version": "cosv-heartbeat-state-packet-v2-independent-task-control",
+    "worker_preclaim_fragment_policy_reconciliation_repaired": true,
+    "worker_preclaim_fragment_policy_reconciliation_commit": "491947e94a4463d7fed07c84372e261bd492d03f",
+    "worker_preclaim_fragment_policy_reconciliation_test_commit": "dbf35f095e770203fb274ab27f1984a397544b7e",
+    "resident_exact_selector_failure_semantics_repaired": true,
+    "resident_exact_selector_failure_source_commit": "24ad1e4f290980f7aaa7a7c24e18db6ce504b3c8",
+    "resident_exact_selector_failure_test_commit": "069014cab0e88b84dac0ca8f045b9b1c4a3a5ce4",
     "cosv_first_post_anchor_packet_observed": false,
     "cosv_first_post_anchor_changed_delta_observed": false,
     "stegbrain_live_gradient_consumer_source_complete_released": true,
@@ -98,7 +108,7 @@
     "report_complete": false,
     "summary_ref": "reports/ORG_GITHUB_FLEET_FUNCTIONALIZATION_001_DEPENDENCY_MAP.md"
   },
-  "next_admissible_work": "Preserve GP10 runtime-proof completion, StegTalk's external-only AURI-007 boundary, the staged TVC-STEGMUSIC-VALIDATION-001 request, and HB31 historical FULL evidence. Continue repository-native inspection of the WorkerCoordinator/resident request path for stale pointer, policy, ingress, receipt-retention, or source-refresh defects. Re-enter TVC/StegMusic and COSV/StegBrain runtime transitions only when authentic admitted local execution receipts exist.",
+  "next_admissible_work": "Preserve all current evidence boundaries. Continue source-only inspection of source-refresh, resident ingress, request dispatch, task-pointer, fencing, and receipt-retention semantics. The repaired WorkerCoordinator may now reconcile only unclaimed HANDOFF_READY policy drift from a canonical fragment/handoff, while exact-selector request failures fail closed. Re-enter TVC/StegMusic and COSV/StegBrain runtime transitions only when authentic admitted local execution receipts exist.",
   "status_response_contract": {
     "active": "currently active - checked out",
     "completed": "functionalization validated with direct evidence"
