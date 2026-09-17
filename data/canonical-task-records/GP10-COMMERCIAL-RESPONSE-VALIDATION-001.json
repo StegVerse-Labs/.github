@@ -45,7 +45,7 @@
     "new_scheduler_required": false,
     "technical_build_without_customer_evidence_allowed": false
   },
-  "next_admissible_work": "Proceed with bounded next-prospect validation using already-identified Panhandle Northern / OmniTRAX and Progress Rail contact surfaces; prepare prospect-specific outreach without technical buildout. Keep first-wave reply observation active and classify any later response only against explicit commercial predicates.",
+  "next_admissible_work": "Await explicit authorization to send the two prepared Outlook drafts to Panhandle Northern / OmniTRAX and Progress Rail, or continue observing first-wave replies. After any send, preserve provider-observed sent evidence and classify only authentic responses against problem-confirmation, authorized-dataset, paid-scope/quote, or authorized-decision-maker predicates. Do not create new GP10 technical infrastructure or routine GitHub Actions.",
   "completion": {
     "claimed": false,
     "validated": false,
@@ -61,10 +61,23 @@
   "retired_terminal": false,
   "retired_resurrection_review_only": false,
   "current_observation": {
-    "observed_at": "2026-09-17T22:37:41Z",
+    "observed_at": "2026-09-17T22:52:45Z",
     "outlook_profile_email": "rigel@stegverse.org",
     "pova_reply_observed": false,
     "integrity_reply_observed": false,
-    "first_wave_commercial_predicates_validated": false
+    "first_wave_commercial_predicates_validated": false,
+    "bounded_next_prospect_path_started": true
+  },
+  "progress": {
+    "first_wave_reply_recheck_complete": true,
+    "pova_reply_observed": false,
+    "integrity_reply_observed": false,
+    "panhandle_northern_outreach_draft_created": true,
+    "panhandle_northern_outreach_draft_recipient": "thelms@omnitrax.com",
+    "panhandle_northern_outreach_draft_subject": "Older locomotive record-history review question",
+    "progress_rail_outreach_draft_created": true,
+    "progress_rail_outreach_draft_recipient": "customer.service.emd@progressrail.com",
+    "progress_rail_outreach_draft_subject": "EMD rebuild record-conflict review question",
+    "next_prospect_outreach_sent_observed": false
   }
 }
