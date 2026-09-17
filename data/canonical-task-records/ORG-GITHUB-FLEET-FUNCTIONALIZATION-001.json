@@ -1,0 +1,88 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "ORG-GITHUB-FLEET-FUNCTIONALIZATION-001",
+  "correlation_id": "ORG-GITHUB-FLEET-FUNCTIONALIZATION-001",
+  "root_correlation_id": "ORG-GITHUB-FLEET-FUNCTIONALIZATION-001",
+  "parent_task_id": "ORG-GITHUB-REPOSITORY-STATUS-SUMMARY-001",
+  "goal": "Make the 22 repositories represented by the prior census's 18.5 percent functional set dependency-stable and directly evidence-backed for their intended roles, prioritizing the seven partial repositories and repairing shared org/repo dependencies as needed.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "20010000100000",
+  "source_refs": [
+    "docs/ORG_GITHUB_FLEET_FUNCTIONALIZATION_001_MIRROR_HANDOFF.md",
+    "reports/ORG_GITHUB_REPOSITORY_STATUS_SUMMARY_001.md",
+    "data/canonical-task-records/ORG-GITHUB-REPOSITORY-STATUS-SUMMARY-001.json"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs",
+      "StegVerse-002",
+      "master-records",
+      "StegVerse-org",
+      "Data-Continuation",
+      "GCAT-BCAT-Engine"
+    ],
+    "primary_partial_repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/GP10",
+      "StegVerse-Labs/StegMusic",
+      "StegVerse-Labs/StegTalk",
+      "StegVerse-Labs/TVC",
+      "StegVerse-Labs/StegBrain",
+      "StegVerse-Labs/stegfin-governance"
+    ],
+    "role_functional_regression_set": [
+      "StegVerse-Labs/FREE-DOM",
+      "StegVerse-Labs/Epsteinality",
+      "StegVerse-Labs/Giuffre-ality",
+      "StegVerse-Labs/Maxwellality",
+      "StegVerse-Labs/StegBiography",
+      "StegVerse-Labs/Trumpality",
+      "StegVerse-Labs/Executive_Rhetoric_Ledger",
+      "StegVerse-Labs/StegID",
+      "StegVerse-Labs/StegCore",
+      "StegVerse-Labs/StegOS",
+      "StegVerse-Labs/hybrid-collab-bridge",
+      "StegVerse-Labs/ara-admissibility-interop",
+      "StegVerse-Labs/music-engine",
+      "StegVerse-Labs/media-runtime",
+      "StegVerse-Labs/video-engine"
+    ]
+  },
+  "dependencies": [
+    "StegVerse-Labs/TV",
+    "StegVerse-Labs/TVC",
+    "StegVerse-Labs/continuity-vault-kit",
+    "StegVerse-Labs/Continuity",
+    "StegVerse-Labs/StegID",
+    "StegVerse-Labs/StegAgents",
+    "StegVerse-Labs/StegDJ",
+    "StegVerse-Labs/Site",
+    "StegVerse-Labs/repo-standards",
+    "StegVerse-002/micro-node-runtime",
+    "master-records/orchestration",
+    "StegVerse-org/StegVerse-SDK",
+    "Data-Continuation/core-lite",
+    "GCAT-BCAT-Engine/Publisher",
+    "StegVerse-Labs/admissibility-wiki",
+    "StegVerse-002/stegguardian-wiki"
+  ],
+  "blockers": [],
+  "existing_evidence_refs": [
+    "reports/ORG_GITHUB_REPOSITORY_STATUS_SUMMARY_001.md",
+    "docs/ORG_GITHUB_FLEET_FUNCTIONALIZATION_001_MIRROR_HANDOFF.md"
+  ],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "report_complete": false,
+    "summary_ref": null
+  },
+  "next_admissible_work": "Reconcile the seven partial repositories against their exact dependency owners, repair machine-remediable shared dependencies first, and preserve user/external authority conditions without treating them as repository completion.",
+  "status_response_contract": {
+    "active": "currently active - checked out",
+    "completed": "functionalization validated with direct evidence"
+  },
+  "retired_terminal": false,
+  "retired_resurrection_review_only": false
+}
