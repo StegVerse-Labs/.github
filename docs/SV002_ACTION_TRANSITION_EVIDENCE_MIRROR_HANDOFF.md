@@ -8,10 +8,16 @@ Updated: 2026-09-17
 - Goal Task ID: `SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001`
 - Parent: `SHWP-SV002-ORG-RUNTIME-ACTIVATION-001` — prompt limit reached; do not extend
 - COSV task vector: `50000000107000`
-- Registry record: `data/canonical-task-records/SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001.json`
+- Canonical registry shard: `data/canonical-task-records/SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001.json`
 - Tracking issue: `StegVerse-Labs/.github#2060`
 - Target-org handoff: `StegVerse-002/.github/docs/SELF_CHARACTERIZATION_EXECUTION_SURFACE_MIRROR_HANDOFF.md`
 - Frozen experiment condition: `v0.3 FROZEN / OPERATIVE`
+
+## Registration state
+
+The exact task-specific canonical registry shard is present on `main`. The repository's documented sharded Canonical Work ingress permits an exact registered task shard to be resolved and self-materialized when the preserved resident monolithic registry has not yet been refreshed. Aggregate `data/canonical-task-registry.json` refresh is therefore non-authorizing reconciliation/housekeeping and does not block selection of this exact task.
+
+Neither the shard nor a future aggregate refresh grants execution authority.
 
 ## Governing invariant
 
@@ -91,12 +97,14 @@ The actual principal transition set is governed by the frozen v0.3 experiment co
 ```text
 parent goal prompt budget: EXHAUSTED / 20 OF 20
 successor issue: OPEN
-successor task-specific registry record: PRESENT
+successor canonical registry shard: PRESENT ON MAIN
+successor coordination state: ACTIVE
 COSV: 50000000107000
 class=ephemeral discovery: VALIDATED
 StegVerseNode callable availability: AVAILABLE_TO_INVOKE
 StegBrowser callable availability: AVAILABLE_TO_INVOKE
 connected device prerequisite: FALSE
+standing runtime prerequisite: FALSE
 authentic successor invocation consumed: NOT YET OBSERVED
 complete same-execution transition chain: NOT YET OBSERVED
 Master Records reconstruction PASS for rerun: NOT YET OBSERVED
@@ -110,7 +118,7 @@ No completion may be inferred from discovery, source, CI, merge, scheduling, or 
 
 ## Next action
 
-Finish aggregate Task Registry registration, reconcile both README and target-org handoff, then consume the existing callable event-ephemeral invocation path. Capture transition evidence as the action occurs; do not reconstruct missing runtime evidence after the fact.
+Consume the already-existing frozen request through the registered callable `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` event-ephemeral path. Capture transition evidence as each action occurs and preserve exact same-invocation lineage through Master Records. Do not reconstruct missing runtime evidence after the fact. Aggregate registry refresh may proceed independently as non-authorizing reconciliation and must not delay the runtime path.
 
 ## Manual work
 
