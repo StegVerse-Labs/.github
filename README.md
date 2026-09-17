@@ -494,3 +494,10 @@ Canonical Goal Task `GP10-COMMERCIAL-RESPONSE-VALIDATION-001` owns only the exte
 Bounded next-prospect outreach drafts are prepared in Outlook for Panhandle Northern / OmniTRAX and Progress Rail EMD customer service. They are not sent. No new technical buildout, runtime, scheduler, connector, or routine GitHub Actions work is required for this commercial validation lane.
 
 Canonical handoff: `docs/GP10_COMMERCIAL_RESPONSE_VALIDATION_001_MIRROR_HANDOFF.md`.
+
+
+## StegBrowser runtime-connection prompt-cap disposition
+
+Canonical Goal Task `STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001` reached Goal Prompt Count `20/20` on 2026-09-17 and is retired as `DECOMPOSED_AT_PROMPT_LIMIT`, not completed. The immutable invocation was traced to the Site browser canonical Master Records custody client, not the optional Python local adapter. Authentic Master Records reconstruction, WorkerCoordinator A3, A4 ingress, and Round Trip 1 remain unproven/unentered.
+
+The applicable browser custody-binding continuation is `MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001` (issue `#2078`, handoff `docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md`, COSV `40000100100000`). The separate generic local-adapter schema-contract repair is `CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001` (issue `#2079`, handoff `docs/CANONICAL_MASTER_RECORDS_LOCAL_ADAPTER_REPAIR_MIRROR_HANDOFF.md`, COSV `50000000100000`). Neither task may introduce Render, a mandatory hosting provider, a platform/OS/device prerequisite, a second custody authority, a second request, or a second user-operated device.
