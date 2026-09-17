@@ -23,58 +23,109 @@ Primary partial targets remain `.github`, `GP10`, `StegMusic`, `StegTalk`, `TVC`
 
 ## Shared .github/TVC/runtime dependency inspection — 2026-09-17 continuation
 
-Two concrete repository-native defects were found and repaired without claiming resident execution.
+Four concrete repository-native defects have now been repaired without claiming resident execution.
 
 ### 1. COSV WorkerCoordinator policy-binding skew
 
-The canonical COSV handoff authorizes policy version:
+The canonical COSV handoff authorizes:
 
 ```text
 cosv-heartbeat-state-packet-v2-independent-task-control
 ```
 
-but `control/worker-registry.d/cosv-live-packet-automation-006.json` still carried:
-
-```text
-cosv-live-packet-v2-independent-task-control
-```
-
-This was a stale control-plane binding: WorkerCoordinator policy-rebind logic records and reconciles the task's `authorized_policy_version` against the handoff's observed policy version, so leaving the fragment divergent could force unnecessary rebind/block semantics at the authentic execution surface.
+while `control/worker-registry.d/cosv-live-packet-automation-006.json` previously carried `cosv-live-packet-v2-independent-task-control`.
 
 Repair:
 
 ```text
 commit: 391ea3860f98792f0a9e3d27795badf8462ec110
 file: control/worker-registry.d/cosv-live-packet-automation-006.json
-new authorized_policy_version: cosv-heartbeat-state-packet-v2-independent-task-control
 ```
 
-Regression guard:
+Regression assertion:
 
 ```text
 commit: bc59a7c1e53c204dd8804722a3e64785a05c63fc
 file: tests/test_task_load_independent_admission.py
-assertion: fragment authorized_policy_version == handoff authority.policy_version
 ```
 
-A focused isolated execution of the policy-binding assertion passed. No post-anchor COSV packet was emitted by this source repair, and no live StegBrain gradient is claimed.
+No post-anchor COSV packet or StegBrain gradient is claimed from this source correction.
 
 ### 2. TVC exact resident-request cleanup defect
 
-`scripts/authorize_and_activate_private_source_read.py` accepted a custom `--resident-request-path` but, after successful service completion, unlinked the hard-coded default `REQUEST_PATH`. A non-default request could therefore remain after successful activation and be observed again by its watcher.
+`scripts/authorize_and_activate_private_source_read.py` accepted a custom `--resident-request-path` but successful completion deleted the hard-coded default request instead of the exact path used by the invocation. A non-default request could therefore survive terminal service completion and be observed again.
 
 Repair:
 
 ```text
 source commit: 6c7ae0711c2c889ac6b08aa6c903d72b88f72381
 test commit: 207bb046ef98b60f04a2998b6ab95120bb7a6c9c
-source: StegVerse-Labs/TVC/scripts/authorize_and_activate_private_source_read.py
-test: StegVerse-Labs/TVC/tests/test_authorize_and_activate_private_source_read.py
 ```
 
-The activation helper now removes exactly `resident_request_path` on exception, service failure, and successful service completion; cleanup is idempotent. Focused isolated cleanup regression tests passed. The TVC StegMusic handoff was reconciled at commit `fccef9068f4ace6cacae19cfc257943d1eaa063a`.
+The helper now removes the exact `resident_request_path` on exception, service failure, and successful completion. This does not prove service installation, credential presence, request consumption, materialization, or StegMusic PASS.
 
-This repair does not prove systemd service installation, credential presence, scoped grant activation, staged StegMusic request consumption, exact materialization, or deterministic validation PASS.
+### 3. Preclaim fragment-policy reconciliation seam
+
+Inspection of the actual fragment-loading semantics found a second-order defect behind the COSV policy repair. `_apply_registry_fragments` is intentionally append-only: once a task ID is present in mutable resident `control/worker-registry.json`, refreshing a corrected static fragment cannot overwrite it. Therefore a resident that had previously admitted the stale COSV fragment could preserve the old `authorized_policy_version` indefinitely even after local source refresh.
+
+The repair is deliberately narrower than general fragment overwrite. The canonical admitted WorkerCoordinator now permits only an **unclaimed `HANDOFF_READY` preclaim policy reconciliation** when all of these are true:
+
+```text
+state == HANDOFF_READY
+claim_id / worker_id / worker_instance_id absent
+heartbeat_timing absent
+assignment_timer absent
+lease absent
+existing handoff_ref == fragment handoff_ref
+fragment authorized_policy_version == canonical handoff authority.policy_version
+```
+
+Only `authorized_policy_version` is reconciled. Claim, fence, worker assignment, timing, lease, credential, execution and transition authority remain untouched. Live/bound tasks remain protected by the existing policy-rebind path.
+
+Repair:
+
+```text
+source commit: 491947e94a4463d7fed07c84372e261bd492d03f
+file: heartbeat_runtime/admitted_worker_runtime.py
+```
+
+Regression coverage:
+
+```text
+commit: dbf35f095e770203fb274ab27f1984a397544b7e
+file: tests/test_preclaim_fragment_policy_reconciliation.py
+```
+
+The tests cover successful unclaimed reconciliation, refusal to alter claimed/timed tasks, and fail-closed fragment/handoff policy mismatch.
+
+### 4. Exact-selector dispatch false-complete semantics
+
+The resident request dispatcher intentionally reports `DISPATCH_COMPLETE` for a broad all-consumer pass even when one request fails, because failure of one independent request must not starve later consumers. That behavior is correct for the broad dispatcher.
+
+However, the exact-selector path used by portable targeted execution inherited the same aggregate state. With exactly one selected target, a consumer could return `FAIL_CLOSED`, appear in `request_failures`, and still yield `DISPATCH_COMPLETE`. A targeted bridge could therefore treat a failed target visit as a completed dispatch.
+
+The dispatcher now distinguishes these cases:
+
+```text
+ALL_REGISTERED + one request failure -> DISPATCH_COMPLETE, later requests still visited
+EXACT_SELECTOR + selected target request failure -> DISPATCH_INCOMPLETE
+```
+
+Repair:
+
+```text
+source commit: 24ad1e4f290980f7aaa7a7c24e18db6ce504b3c8
+file: scripts/dispatch_resident_execution_requests.py
+```
+
+Regression coverage:
+
+```text
+commit: 069014cab0e88b84dac0ca8f045b9b1c4a3a5ce4
+file: tests/test_resident_request_dispatcher.py
+```
+
+The broad non-starvation contract remains unchanged while exact-target execution now fails closed on its own request failure.
 
 ## TVC -> StegMusic current state
 
@@ -121,7 +172,8 @@ heartbeat core: ACTIVE_PROTOCOL_VERIFIED
 HB31: historical FULL packet preserved
 COSV producer source: COMPLETE_RELEASED
 COSV task: HANDOFF_READY / independently task-control claimable
-COSV worker policy binding: RECONCILED TO CANONICAL HANDOFF
+COSV static worker policy binding: RECONCILED TO CANONICAL HANDOFF
+stale unclaimed resident policy after refresh: MACHINE-REPAIRABLE BY BOUNDED PRECLAIM RECONCILIATION
 GitHub Actions activation: prohibited
 first post-anchor packet: NOT OBSERVED
 first changed post-anchor DELTA: NOT OBSERVED
@@ -130,12 +182,12 @@ deterministic replay: PASS
 first live gradient receipt: NOT OBSERVED
 ```
 
-The materializer derives the current heartbeat reference from `heartbeat_runtime.independent_oscillator.current_reference` and treats persisted carrier/worker files as historical evidence surfaces; source repair does not itself establish an admitted resident execution opportunity.
+The materializer derives the current heartbeat reference from `heartbeat_runtime.independent_oscillator.current_reference`; persisted carrier/worker files remain historical evidence surfaces. These source repairs do not themselves establish an admitted resident execution opportunity.
 
 ## Current target-specific posture
 
-- `.github`: heartbeat protocol core verified; COSV worker control-plane policy skew repaired; first authentic post-anchor packet still unobserved.
-- `TVC`: private-source source/control implementation exists; exact custom request cleanup defect repaired; authentic resident service/credential/request consumption remains unobserved.
+- `.github`: heartbeat protocol core verified; COSV policy skew and stale-preclaim policy-refresh seam repaired; exact-selector dispatch now fails closed; first authentic post-anchor packet remains unobserved.
+- `TVC`: private-source source/control implementation exists; exact custom-request cleanup defect repaired; authentic resident service/credential/request consumption remains unobserved.
 - `StegMusic`: exact-current request remains staged; resident materialization and deterministic PASS remain unobserved.
 - `StegBrain`: live-gradient consumer source complete and deterministic replay PASS; first changed post-anchor DELTA/live gradient remain unobserved.
 - `GP10`: repository-native runtime proof COMPLETE/PASS; remaining transitions are authentic-evidence or human-authority gated.
@@ -144,16 +196,16 @@ The materializer derives the current heartbeat reference from `heartbeat_runtime
 
 ## Remediation order from here
 
-1. Continue source-only inspection of the shared WorkerCoordinator/resident request path for stale policy, pointer, request-ingress, or receipt-retention defects that can be proven without live execution.
+1. Continue source-only inspection of source-refresh, exact resident ingress, task-pointer, fencing, request-consumption and receipt-retention semantics for further concrete defects.
 2. Preserve staged `TVC-STEGMUSIC-VALIDATION-001` until authentic TVC resident service/credential evidence appears; then consume only through the existing TVC path.
-3. Preserve `COSV-LIVE-PACKET-AUTOMATION-006` until an authentic admitted local execution surface appears; if the first post-anchor packet is a verified changed DELTA with non-empty `gradient_inputs`, consume it only through the existing StegBrain live-gradient consumer and retain both packet/gradient receipts.
-4. Preserve GP10 runtime-proof completion and StegTalk's external-only AURI-007 boundary.
-5. Preserve StegFin USER_ONLY signing/broadcast outside machine completion.
+3. Preserve `COSV-LIVE-PACKET-AUTOMATION-006` until an authentic admitted local execution surface appears. Local source refresh may reconcile only the narrow unclaimed policy seam above; actual claim/fence/execution still requires the canonical runtime.
+4. If the first post-anchor COSV packet is a verified changed DELTA with non-empty `gradient_inputs`, consume it only through the existing StegBrain live-gradient consumer and retain packet/gradient receipts.
+5. Preserve GP10 runtime-proof completion, StegTalk's external-only AURI-007 boundary, and StegFin USER_ONLY signing/broadcast.
 6. Promote resident/runtime/provider/public predicates only from authentic receipts.
 
 ## README impact
 
-These repairs close internal control-plane/request-cleanup defects but do not change `.github` or TVC public interfaces, authority boundaries, credential ownership, or user-facing behavior. Existing README descriptions remain materially correct; canonical handoffs were updated instead of fabricating a product-function change.
+These repairs close internal control-plane, request-cleanup and exact-target result-semantics defects. They do not change `.github` or TVC public interfaces, authority boundaries, credential ownership, or user-facing behavior. Existing README descriptions remain materially correct; canonical handoffs carry the internal functional changes.
 
 ## Completion predicates
 
@@ -167,4 +219,4 @@ These repairs close internal control-plane/request-cleanup defects but do not ch
 
 `ACTIVE / CHECKED_OUT`.
 
-This continuation repaired two concrete source/control defects that would otherwise degrade authentic execution: COSV task policy-binding skew and TVC non-default resident-request cleanup. No resident/runtime predicates were promoted. The remaining COSV/StegBrain and TVC/StegMusic transitions still require authentic local execution evidence.
+This continuation repaired two additional shared-runtime defects: stale preclaim fragment policy could previously survive source refresh indefinitely, and exact-target resident dispatch could falsely report completion after its selected consumer failed. Both are now fail-closed without weakening the existing live-claim/fence authority boundary. No resident/runtime predicates were promoted.
