@@ -42,7 +42,23 @@ second_user_operated_device_required = false
 authority_effect = NONE_DISCOVERY_ONLY
 ```
 
-The initial canonical ephemeral surface catalog contains `StegVerseNode` and `StegBrowser`, both bound to existing reusable task `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` and the existing registered-Node -> Interlock -> Universal InTr materialization -> bounded invocation lease -> EVENT_EPHEMERAL path. Discovery never mints WorkerCoordinator claim/fence, Interlock/InTr admission, credentials, runtime identity, execution evidence, or Master Records evidence.
+The canonical ephemeral catalog contains `StegVerseNode` and `StegBrowser`, but callable ownership is operation-specific rather than shared:
+
+```text
+StegVerseNode
+  callable_task = SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001
+  execution_owner = StegVerse-002/.github
+  operation = REQUEST_SELF_CHARACTERIZATION
+
+StegBrowser
+  callable_task = RT-STEGBROWSER-RUNTIME-CONSUMPTION-001
+  execution_owner = StegVerse-Labs/.github
+  operation = STEGBROWSER_MANIFEST_DEFINED_INTR_INGRESS
+```
+
+Both surfaces reuse the already-validated registered-Node -> Interlock -> Universal InTr materialization -> bounded invocation lease -> EVENT_EPHEMERAL mechanics where applicable, but the StegBrowser reusable task is not a generic callable owner for arbitrary StegVerseNode operations. The target operation retains its own task identity, organization execution owner, payload/manifest semantics, and transition evidence requirements.
+
+Discovery never mints WorkerCoordinator claim/fence, Interlock/InTr admission, credentials, runtime identity, execution evidence, or Master Records evidence.
 
 Canonical runtime authority remains with the existing runtime lifecycle and state-transition authorities. Remote tooling cannot grant execution authority, user-verification authority, credentials, claims/fences, or Interlock/InTr admission.
 
