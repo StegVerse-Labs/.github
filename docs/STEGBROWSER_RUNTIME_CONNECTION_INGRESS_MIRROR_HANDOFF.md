@@ -8,77 +8,32 @@ Updated: 2026-09-17
 - Parent Goal: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`
 - Root lineage: `STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / SV002 EXECUTION LINEAGE REUSED / SV002-STYLE NODE-JOURNAL RETENTION MERGED+VALIDATED / AUTHENTIC A1-A4 EVIDENCE PENDING`
+- Status: `ACTIVE / CHECKED_OUT / SV002 EXECUTION LINEAGE REUSED / NODE-JOURNAL + SV002 EXPORT + MASTER RECORDS CUSTODY BINDING MERGED+VALIDATED / AUTHENTIC MASTER RECORDS RECONSTRUCTION + A1-A4 EVIDENCE PENDING`
 - External/second user-operated device required: `false`
+- Canonical ephemeral runtime class: `ADMITTED-EPHEMERAL-STEGOS-NODE`
+- Empty connector inventory (`list_devices=[]`) is not evidence that ephemeral runtime capacity is absent.
 
 ## Scope and terminal boundary
 
-This child owns the A1 observation/projection surface and composes A2 through A4 through the existing canonical StegBrowser reusable invocation. It does not implement a second lease, runtime materializer, WorkerCoordinator path, or A4 ingress worker and stops before Round Trip 1 payload processing.
+This child owns A1 observation/projection and composes A2 through A4 only through the existing canonical StegBrowser reusable invocation. It does not implement a second lease, materializer, scheduler, dispatcher, service worker, WorkerCoordinator path, A4 ingress worker, transport, credential path, or device dependency. It stops before Round Trip 1 payload processing.
 
 ```text
 A1 authentic invocation-bound connection-state observation
 -> resolve canonical registered StegVerse Node Receipt #1 input
 -> A2 bind validated Node/Interlock to exact manifest invocation
--> A2.1 establish existing bounded invocation lease/state binding
--> A2.2 materialize existing EVENT_EPHEMERAL StegOS runtime
--> retain exact runtime-readiness evidence through existing Node continuity journal
+-> A2.1 existing bounded invocation lease/state binding
+-> A2.2 existing EVENT_EPHEMERAL StegOS runtime
+-> retain exact runtime-readiness evidence in existing Node continuity journal
+-> export that retained entry through existing SV002 evidence export
+-> bind the exact exported tuple into the existing registered Node intr_outbox
+-> existing root Universal InTr -> MASTER_RECORDS StegBrowser custody ingress
+-> authentic Master Records custody/reconstruction evidence required
 -> A3 existing organization-local WorkerCoordinator claim/fence
 -> A4 existing exact manifest Interlock/InTr ingress
--> STOP CHILD / handoff to Round Trip 1 owner
+-> STOP CHILD / Round Trip 1 owner
 ```
 
-## Canonical Node-binding representation
-
-There is one concrete Node Receipt #1 input contract:
-
-```text
-parameter: node_genesis_receipt
-environment: STEGVERSE_NODE_GENESIS_RECEIPT
-schema: stegos.node_handoff_receipt.v1
-receipt_number: 1
-validator: StegOS stegos.network_manifold.validate_node_genesis_receipt
-```
-
-`CANONICAL_REGISTERED_STEGVERSE_NODE_BINDING` is a selector name only. It is not a second receipt schema, path format, Node identity, or authority source. A plain `stegverse.sovereign-node-declaration/v0.4` declaration may not be promoted or inferred into Receipt #1. No external runtime/device/host discovery is permitted or performed.
-
-## A1
-
-The child reuses the existing shared Universal InTr profile and resolver. `callable`, `refreshable`, and `applicable_protocol_resolved` remain invocation-bound transition variables under Interlock/InTr; none are persistent source/runtime properties.
-
-```text
-callable=false -> no execution materialization
-callable=true AND refreshable=true -> RT-SOVEREIGN-SOURCE-REFRESH-001
-callable=true AND refreshable=false -> no refresh task
-callable=true AND applicable_protocol_resolved=false -> RT-INTR-PROTOCOL-ESTABLISH-001
-callable=true AND applicable_protocol_resolved=true -> continue through canonical Node-bound StegBrowser invocation
-```
-
-## A2 through A4 — single execution owner
-
-The one execution owner remains `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` through `scripts/run_stegbrowser_manifest_bound_runtime.py`. The existing path validates the manifest and Receipt #1, binds exact Node/Interlock/registration state, establishes the bounded invocation lease, materializes the existing `EVENT_EPHEMERAL` runtime, retains execution-time identity, continues through existing WorkerCoordinator claim/fence, verifies exact A4 correlation, and stops before Round Trip 1.
-
-Explicit predicates remain:
-
-```text
-A2.1: INVOCATION_SCOPED_LEASE_ESTABLISHED
-A2.1: INTERLOCK_BOUND_TO_NODE_AND_MANIFEST
-A2.1: INTR_MATERIALIZATION_ADMITTED
-A2.2: EVENT_EPHEMERAL_STEGOS_RUNTIME_MATERIALIZED
-A2.2: EXECUTION_TIME_RUNTIME_IDENTITY_BOUND
-A3: CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED
-A4: ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED
-A4: INTR_ADMISSION_OBSERVED
-```
-
-## Immutable current-iPhone invocation
-
-The authorized same-device execution surface remains:
-
-```text
-https://stegverse.org/stegos-bootstrap/canonical-work-runtime-consumption.html?autostart=1
-```
-
-The immutable request remains exactly:
+## Immutable invocation and Node contract
 
 ```text
 canonical request commit = 19935454cd8c68000b3a0fd70478b0d89d5cd622
@@ -86,63 +41,77 @@ invocation_request_nonce = STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-2026
 requested_invocation_count = 1
 second_request_allowed = false
 destination = StegBrowser:ManifestInvocation
+parameter = node_genesis_receipt
+environment = STEGVERSE_NODE_GENESIS_RECEIPT
+Receipt #1 schema = stegos.node_handoff_receipt.v1
+Receipt #1 number = 1
+Receipt #1 validator = StegOS stegos.network_manifold.validate_node_genesis_receipt
 ```
 
-Site PR `#1360` merged as `76af62f2befdfa7034d3dd00891bfe60a0990abb` and handoff reconciliation PR `#1361` merged as `7c483335f259d5eacf9a55dde923c0c4fefd660e`. They rebound the existing current-iPhone Node IndexedDB, write-once `intr_outbox`, root `/intr-service-worker.js`, and `CURRENT_USER_IPHONE_SERVICE_WORKER` to the immutable StegBrowser invocation without creating another request or runtime path.
+`CANONICAL_REGISTERED_STEGVERSE_NODE_BINDING` remains a selector only. A declaration cannot be promoted into Receipt #1. External host/device discovery is forbidden. The existing same-device execution surface remains `https://stegverse.org/stegos-bootstrap/canonical-work-runtime-consumption.html?autostart=1`; it is an execution surface, not a manual user evidence prerequisite.
 
-The abandoned resident-dispatch transport branches remain non-gating and must not be reintroduced as prerequisites.
+## A1 selection semantics
 
-## Current-iPhone EVENT_EPHEMERAL bridge — merged 2026-09-16
-
-Site PR `#1363` repaired the source continuation gap after authentic `INGRESS_ADMITTED` by invoking the already-existing SV002-derived `StegVerseStegBrowserManifestRuntime.materialize(...)` component. It retained the same deterministic write-once Node outbox entry, exact Node/Interlock/Receipt #1 binding, and returned only `RUNTIME_READY_FOR_WORKERCOORDINATOR` while keeping WorkerCoordinator claim/fence, A4, completion, and Round Trip 1 pending.
-
-PR `#1363` exact validated head: `1e5350aa149ba707e756cd055f7132dadd95735c`.
+`callable`, `refreshable`, and `applicable_protocol_resolved` remain invocation-bound Interlock/InTr transition variables.
 
 ```text
-Validate StegOS Persistent Card UX = 35133005728 SUCCESS
-Site Handoff Orchestrator = 35133005730 SUCCESS
-Ecosystem Heartbeat Orchestration = 35133005818 SUCCESS
-Site Bootstrap Validate - No Non-TV/TVC Credential Authority = 35133005757 SUCCESS
-Node IndexedDB Schema Migration = 35133005896 SUCCESS
+callable=false -> no materialization
+callable=true + refreshable=true -> RT-SOVEREIGN-SOURCE-REFRESH-001
+callable=true + refreshable=false -> no refresh task
+callable=true + applicable_protocol_resolved=false -> RT-INTR-PROTOCOL-ESTABLISH-001
+callable=true + applicable_protocol_resolved=true + valid Receipt #1 -> RT-STEGBROWSER-RUNTIME-CONSUMPTION-001
 ```
 
-PR `#1363` merged as `8b032472d2861458daf2a1278fa3301d9a81a736` with expected-head protection.
+## Single execution owner and predicates
 
-This established source capability only, not runtime evidence.
+The sole execution owner remains `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` through `scripts/run_stegbrowser_manifest_bound_runtime.py`.
 
-## Explicit reconciliation with the proven StegVerse-002 route — 2026-09-17
+```text
+A2.1 INVOCATION_SCOPED_LEASE_ESTABLISHED
+A2.1 INTERLOCK_BOUND_TO_NODE_AND_MANIFEST
+A2.1 INTR_MATERIALIZATION_ADMITTED
+A2.2 EVENT_EPHEMERAL_STEGOS_RUNTIME_MATERIALIZED
+A2.2 EXECUTION_TIME_RUNTIME_IDENTITY_BOUND
+A3 CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED
+A4 ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED
+A4 INTR_ADMISSION_OBSERVED
+```
 
-Direct comparison against the proven Site SV002 browser lane confirms coincidence through:
+WorkerCoordinator remains the only A3 claim/fence authority. Interlock/InTr remains transition authority. TV/TVC remains credential/provider authority. Master Records remains observed-reality/custody/reconstruction authority. GitHub/CI remains source validation/evidence only with runtime authority `NONE`.
+
+## Proven SV002 execution reuse
+
+The StegVerse-002 browser lane proves the reusable architecture through:
 
 ```text
 registered StegVerse Node
--> Interlock / Universal InTr materialization
+-> Interlock / Universal InTr
 -> bounded invocation lease
--> EVENT_EPHEMERAL browser Web Worker
+-> EVENT_EPHEMERAL browser runtime
 -> execution-time runtime identity
+-> organization-local boundary
+-> WorkerCoordinator claim/fence
+-> governed ingress
 ```
 
-The first StegBrowser-specific divergence was not execution. It was evidence retention after runtime readiness.
+StegBrowser does not require a new execution route. Its remaining work is exact invocation-specific evidence binding/custody.
 
-The proven SV002 lane retains post-materialization runtime evidence through the established `StegVerseNodeContinuity.recordStep(...)` Node continuity journal. Before Site PR `#1370`, StegBrowser produced a hashed `RUNTIME_READY_FOR_WORKERCOORDINATOR` readiness receipt but retained it only in page/local browser state.
+## Site #1363 — EVENT_EPHEMERAL bridge
 
-This is classified as an `EVIDENCE_RETENTION_BINDING_DEFECT`, not an execution-path defect.
+Site PR `#1363` joined authentic `INGRESS_ADMITTED` to the existing SV002-derived browser materializer and stopped at `RUNTIME_READY_FOR_WORKERCOORDINATOR` with WorkerCoordinator/A4/Round Trip 1 pending.
 
-## SV002-style Node-journal retention repair — merged 2026-09-17
+- exact validated head: `1e5350aa149ba707e756cd055f7132dadd95735c`
+- merged: `8b032472d2861458daf2a1278fa3301d9a81a736`
+- source capability only; no runtime predicate promoted.
 
-Site PR `#1370` reuses the existing SV002 Node continuity mechanism without changing any execution component. After and only after an authentic `RUNTIME_READY_FOR_WORKERCOORDINATOR` result, the current-iPhone page now appends one existing Node continuity journal step:
+## Site #1370 — SV002-style Node-journal retention
 
-```text
-capability = stegbrowser-manifest-runtime
-step = runtime-ready
-resulting_state = OBSERVED
-evidence_ref schema = stegbrowser-runtime-readiness/v1
-```
+The first StegBrowser-only divergence was evidence retention, not execution. Site PR `#1370` reused `StegVerseNodeContinuity.recordStep(...)` after and only after an exact `RUNTIME_READY_FOR_WORKERCOORDINATOR` result.
 
-The evidence reference binds exactly:
+The `stegbrowser-runtime-readiness/v1` evidence reference binds exactly:
 
 ```text
-readiness receipt sha256
+runtime readiness receipt sha256
 immutable invocation nonce
 Node ID
 Interlock ID
@@ -151,38 +120,128 @@ lease ID
 runtime ID
 ```
 
-The retention operation fails closed if those exact correlations are absent. The retained page-side projection marks:
+- exact validated head: `d2cf9656ed25d7e4642092c40a5f150b08805e9b`
+- merge: `8bb773d230b33bdeac9a7cec3ff5d9fdb07812be`
+- WorkerCoordinator claim/fence remained pending.
+- source/CI did not become runtime evidence.
+
+## Site #1372 — reuse SV002 export custody boundary
+
+The next concrete divergence was export visibility: `stegbrowser-runtime-readiness/v1` lived in `stegos-node-v1`, while the proven SV002 `StegOSWebBootstrap.exportEvidence()` bundle exported the web-bootstrap journal only.
+
+Site PR `#1372` repaired only that boundary by reusing `exportEvidence()` and adding replay-validated registered Node continuity. It requires exactly one fully correlated readiness entry and exports the same nonce/receipt-SHA/Node/Interlock/Receipt-1/lease/runtime tuple. It explicitly retains `ADMITTED-EPHEMERAL-STEGOS-NODE`; `list_devices=[]` is not treated as absence of an eligible ephemeral execution surface.
+
+Exact-head validation on `653c331d37585e7798cf806f2a6a592472932cfd`:
 
 ```text
-state = RETAINED_BEFORE_A3
-authority_effect = NONE_EVIDENCE_RETENTION_ONLY
-workercoordinator_claim_pending = true
-workercoordinator_fence_pending = true
+Node IndexedDB Schema Migration = 35270321735 SUCCESS
+Site Bootstrap Validate = 35270321645 SUCCESS
+Validate StegOS Persistent Card UX = 35270321655 SUCCESS
+Site Handoff Orchestrator = 35270321635 SUCCESS
+Ecosystem Heartbeat Orchestration = 35270321641 SUCCESS
 ```
 
-No new Worker, service worker, scheduler, dispatcher, materializer, WorkerCoordinator, runtime path, credential path, request, or device dependency was introduced.
+PR `#1372` merged with expected-head protection as `f27dd33da4732e3ff664152aeb5e8fa085e7be65`.
 
-Site PR `#1370` exact validated head: `d2cf9656ed25d7e4642092c40a5f150b08805e9b`.
+Post-merge observation found no authentic exported same-nonce runtime tuple in canonical authority-owned custody, so no runtime predicate was promoted and A3 remained unentered.
 
-Exact-head validation:
+## Existing SV001 Master Records path and bounded StegBrowser seam
+
+The existing SV001 path already proved the required transport architecture:
 
 ```text
-Validate StegOS Persistent Card UX = 35231083246 SUCCESS
-Node IndexedDB Schema Migration = 35231083295 SUCCESS
-Ecosystem Heartbeat Orchestration = 35231083218 SUCCESS
-Site Handoff Orchestrator = 35231083625 SUCCESS
-Site Bootstrap Validate - No Non-TV/TVC Credential Authority = 35231083363 SUCCESS
+registered Node
+-> write-once local intr_outbox
+-> STEGVERSE_INTR_LOCAL_TRIGGER
+-> root Universal InTr service worker
+-> MASTER_RECORDS destination
 ```
 
-PR `#1370` merged with expected-head protection as `8bb773d230b33bdeac9a7cec3ff5d9fdb07812be`.
+The existing SV001 implementation was not generic: it was correctly hard-bound to:
 
-README was reviewed in Site. No byte change was required because this repair changes no public/runtime authority topology and reuses the already-existing Node continuity journal.
+```text
+source sha = sha256:81a078eeeacffb8fc86d287d7aaa8a9904c6f53973471dad7f6d7c3fa6818a35
+transition = SV001_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION
+task = MR-STEGVERSE001-BOUNDED-AUTONOMY-001
+admission schema = stegverse.master-records.sv001-custody-intr-admission/v1
+```
 
-## Authentic evidence state
+Those SV001 identities were not reused or falsified for StegBrowser.
 
-Source, CI, merge, page publication, and journal capability do not promote runtime predicates. The expected canonical retained A1-A4 receipt remains absent from repository-accessible custody after the Site merge.
+The existing root worker already provides the bounded generic extension seam: specialized profiles wrap the same `profile` and `admitValidatedTrigger` functions through `importScripts(...)` while falling through to the previous handler. This preserves one root Universal InTr runtime rather than creating a second transport/runtime plane.
 
-Current authentic state therefore remains:
+## Site #1375 — StegBrowser Master Records custody binding
+
+Site PR `#1375` repaired only the StegBrowser-specific Master Records source/governance binding while preserving the existing registered Node outbox, root Universal InTr worker, and MASTER_RECORDS destination.
+
+New distinct StegBrowser identities:
+
+```text
+governance schema = stegverse.master-records.stegbrowser-readiness-custody-transition-request/v1
+admission schema = stegverse.master-records.stegbrowser-readiness-custody-intr-admission/v1
+transition = STEGBROWSER_RUNTIME_READINESS_MASTER_RECORDS_CUSTODY
+task = STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001
+COSV = 40000100100000
+destination subsystem = StegBrowser:RuntimeReadinessCustody
+```
+
+The exact exported tuple carried by this binding is:
+
+```text
+runtime readiness receipt sha256
+Node continuity readiness receipt sha256
+immutable nonce
+Node ID
+Interlock ID
+Receipt #1 sha256
+lease ID
+runtime ID
+exported evidence bundle sha256
+```
+
+The admission receipt is explicitly non-authorizing and fail-closed:
+
+```text
+state = INGRESS_ADMITTED
+site_custody_authority = false
+site_execution_authority = false
+master_records_custody_observed = false
+master_records_reconstruction_observed = false
+workercoordinator_claim_observed = false
+workercoordinator_fence_observed = false
+authority_effect = NONE_INGRESS_ONLY
+```
+
+Therefore Master Records ingress admission must never be promoted into Master Records custody/reconstruction completion.
+
+Exact-head validation on `6e81eedeaeb59e8b71f8a0b83a764c2410b84c32`:
+
+```text
+MIR SV002 Browser Event Conformance = 35271582956 SUCCESS
+Node IndexedDB Schema Migration = 35271582846 SUCCESS
+Ecosystem Heartbeat Orchestration = 35271582803 SUCCESS
+Validate StegOS Persistent Card UX = 35271582789 SUCCESS
+MIR InTr SDK Return Profile = 35271582978 SUCCESS
+Site Handoff Orchestrator = 35271582806 SUCCESS
+Site Bootstrap Validate = 35271582820 SUCCESS
+```
+
+PR `#1375` merged with expected-head protection as `4f4b6c3db36f6d4a2e2916fda4f8fdd0b8a60318`.
+
+The implementation claim was subsequently released through Site PR `#1376`; no stale implementation ownership should gate runtime observation.
+
+## Authentic evidence state after #1375
+
+Post-merge re-observation found no authentic record in canonical authority-owned custody for either:
+
+```text
+stegverse.master-records.stegbrowser-readiness-custody-intr-admission/v1
+STEGBROWSER_RUNTIME_READINESS_MASTER_RECORDS_CUSTODY
+```
+
+combined with the immutable nonce.
+
+Source, tests, CI, merge state, profile availability, outbox capability, and admission code do not prove execution, custody, or reconstruction. Consequently all runtime predicates remain unpromoted:
 
 ```text
 RUNTIME_CONNECTION_TRANSITION_VARIABLES_OBSERVED = false
@@ -199,41 +258,28 @@ ROUND_TRIP_1_STARTED = false
 ```
 
 Expected retained child observation remains:
-
 `receipts/sovereign-host/stegbrowser-runtime-connection-a1-a4.latest.json`
 
-Expected canonical invocation boundary remains:
-
+Expected invocation boundary remains:
 `receipts/sovereign-host/stegbrowser-runtime-remediation-boundary.latest.json`
-
-No runtime predicate may be promoted from the Site merge or from the mere existence of the Node-journal retention code.
-
-## Authority invariants
-
-- Task Registry: coordination only.
-- Native resident dispatcher: discovery/dispatch only; no authority and not a prerequisite for the current same-iPhone path.
-- A1 resolver: observation/selection only.
-- Existing browser materializer: bounded EVENT_EPHEMERAL runtime materialization only; no claim/fence authority.
-- Existing Node continuity journal: evidence retention only; no execution or claim/fence authority.
-- WorkerCoordinator: A3 claim/fence authority.
-- Interlock/InTr: A1 transition-state and A4 transition/ingress authority.
-- TV/TVC: credential/provider authority.
-- KV/SKAP Vault: user-verification authority.
-- Master Records: observed-reality/reconstruction authority.
-- Heartbeat: timing/reference/validation only.
-- GitHub/CI: source validation/evidence only; runtime authority `NONE`.
 
 ## Current first unresolved authentic predicate
 
-The first unresolved authentic state remains the same-invocation retained observation proving the Node/Interlock/ingress/runtime chain. The source-side retention defect that previously prevented durable parity with SV002 is repaired, but no retained execution result has yet been observed through canonical evidence custody.
+`AUTHENTIC_MASTER_RECORDS_RECONSTRUCTION_OF_EXACT_STEGBROWSER_RUNTIME_READINESS_TUPLE`
+
+The source path from runtime readiness through Node journal, SV002 export, registered Node outbox, Universal InTr, and StegBrowser-specific MASTER_RECORDS ingress is now implemented and exact-head validated. What remains unproven is that this immutable invocation actually traversed that path and that Master Records authentically retained/reconstructed the exact tuple.
 
 ## Immediate continuation
 
-Do not emit another request and do not require a standing or manually checked device. Re-observe only through the existing authorized same-invocation evidence surfaces. If an exact retained `stegbrowser-runtime-readiness/v1` Node-journal entry becomes observable for immutable nonce `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z`, bind only the exact correlated Node/Interlock/Receipt #1/lease/runtime evidence it proves. Continue to A3 only through the existing WorkerCoordinator claim/fence authority and to A4 only through the existing exact governed StegBrowser ingress. Do not enter Round Trip 1 until the full A1-A4 chain is authentically retained and correlated.
+Do not emit a second request. Do not require a standing device, manual Safari/IndexedDB inspection, Remote Desktop, another machine, or a second user-operated device. Re-observe only existing authority-owned Master Records custody/reconstruction evidence surfaces for immutable nonce `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z`.
+
+Require exactly one authentic reconstruction that correlates the same runtime-readiness receipt SHA, Node continuity receipt SHA, Node ID, Interlock ID, Receipt #1 SHA, lease ID, runtime ID, exported bundle SHA, and StegBrowser custody transition. If and only if that reconstruction exists, promote only the A1/A2 predicates directly proven by it and continue to A3 through the existing WorkerCoordinator claim/fence authority. Otherwise bind the first concrete remaining Master Records runtime retention/reconstruction visibility defect without creating a new transport/runtime/device path.
+
+A3, A4, and Round Trip 1 remain unentered until their own authentic evidence exists.
 
 ## README review
 
-README reviewed. No byte change is required because the runtime/authority topology remains the already-documented single same-device Universal InTr/event-ephemeral architecture; the new Site repair only reuses the existing SV002-proven Node continuity journal for evidence retention.
+README reviewed. No byte change is required. The authority/runtime topology remains the existing registered Node -> Universal InTr -> EVENT_EPHEMERAL StegOS -> WorkerCoordinator architecture; #1372 and #1375 only repair evidence export/custody bindings within that topology.
 
 ## Manual work
 
