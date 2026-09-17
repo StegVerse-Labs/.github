@@ -188,7 +188,19 @@
     "scw_contained_multi_repo_schedule_removed_commit": "c1acdf9dae7d8a75b98133321885182162745ca8",
     "gp10_paid_field_validation_offer_ready": true,
     "gp10_paid_field_validation_offer_commit": "518886e799ee327ccebd367e16168c679386aa02",
-    "gp10_paid_field_validation_offer_ref": "StegVerse-Labs/GP10:docs/business/PAID_FIELD_VALIDATION_OFFER.md"
+    "gp10_paid_field_validation_offer_ref": "StegVerse-Labs/GP10:docs/business/PAID_FIELD_VALIDATION_OFFER.md",
+    "actions_cost_containment_rechecked_current_default_branch": true,
+    "actions_cost_containment_recheck_date": "2026-09-17",
+    "gp10_concrete_buyer_evidence_observed": true,
+    "gp10_buyer_evidence_handoff_commit": "968aa0106b895f88f3f34ba804e21d10bbe10340",
+    "gp10_initial_outreach_targets": [
+      "Western Rail Inc. / Pend Oreille Valley Railroad",
+      "Integrity Rail Services",
+      "Panhandle Northern Railroad / OmniTRAX",
+      "Progress Rail"
+    ],
+    "gp10_buyer_interest_observed": false,
+    "gp10_paid_engagement_observed": false
   },
   "completion": {
     "claimed": false,
@@ -196,7 +208,7 @@
     "report_complete": false,
     "summary_ref": "reports/ORG_GITHUB_FLEET_FUNCTIONALIZATION_001_DEPENDENCY_MAP.md"
   },
-  "next_admissible_work": "Operate under cost-and-revenue-first constraints. Do not trigger GitHub Actions for discovery or routine validation. Use the existing failure ledger and direct source inspection to eliminate additional automatic paid failure loops only when clearly redundant or knowingly fail-closed. Prioritize converting GP10's paid field-validation offer into a real customer conversation/quote; technical work is admissible only when it directly reduces recurring cost or supports that concrete revenue path.",
+  "next_admissible_work": "Preserve zero-speculative-infrastructure and no-routine-Actions constraints. GP10 remains the lead revenue candidate because concrete locomotive owner/service/rebuild organizations and public contact paths are now evidenced. Perform bounded customer discovery against the existing PAID_FIELD_VALIDATION_OFFER, beginning with Western Rail / Pend Oreille Valley Railroad and Integrity Rail Services; seek an actual problem-confirmation conversation and a customer-authorized dataset scope before any new technical build. If those conversations reject or fail to validate the problem, compare other already-implemented StegVerse capabilities for a shorter path to actual revenue.",
   "status_response_contract": {
     "active": "currently active - checked out",
     "completed": "functionalization validated with direct evidence"
