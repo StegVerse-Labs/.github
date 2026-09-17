@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 21,
+  "generation": 22,
   "status": "COSV_TASK_POINTER_RUNTIME_ENFORCEMENT_SOURCE_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -1712,6 +1712,112 @@
         "material_function_change": true,
         "readme_updated_in_change_set": true,
         "readme_path": "README.md"
+      }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "HYGIENE-CAUSAL-ROOTS-001",
+      "correlation_id": "HYGIENE-CAUSAL-ROOTS-001",
+      "root_correlation_id": "HYGIENE-CAUSAL-ROOTS-001",
+      "parent_task_id": null,
+      "goal": "Clean the StegVerse ecosystem from causal roots outward so downstream repositories are not repeatedly re-contaminated by upstream branch, workflow, issue, and task-generation debt; reconcile stale repository lifecycle state through canonical owners before destructive sink cleanup.",
+      "coordination_state": "PROPOSED",
+      "work_priority_class": "ECOSYSTEM_RECONCILIATION",
+      "source_refs": [
+        "docs/REPOSITORY_HYGIENE_MIRROR_HANDOFF.md",
+        "control/repository-hygiene-wave0-baseline.json",
+        "control/repository-hygiene-wave0-classification.json",
+        "control/workflow-surface-registry.json",
+        "TASK_REGISTRY_CANONICAL_INVARIANTS.md",
+        "StegVerse-Labs/.github#165",
+        "StegVerse-Labs/.github#167",
+        "StegVerse-Labs/.github#168"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/.github",
+          "StegVerse-Labs/repo-standards",
+          "StegVerse-Labs/Continuity",
+          "StegVerse-Labs/Site",
+          "StegVerse-Labs/StegCore"
+        ],
+        "components": [
+          "repository-hygiene",
+          "issue-reconciliation",
+          "branch-lifecycle-classification",
+          "workflow-surface-hygiene",
+          "canonical-owner-reconciliation",
+          "debt-regeneration-prevention"
+        ]
+      },
+      "dependencies": [],
+      "blockers": [],
+      "systemic_incident_ref": null,
+      "adjacent_task_refs": [
+        "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+        "COSV-TASK-POINTER-RUNTIME-ENFORCEMENT-001"
+      ],
+      "existing_evidence_refs": [
+        "docs/REPOSITORY_HYGIENE_MIRROR_HANDOFF.md",
+        "control/repository-hygiene-wave0-baseline.json",
+        "control/repository-hygiene-wave0-classification.json",
+        "control/workflow-surface-registry.json",
+        "StegVerse-Labs/.github#165"
+      ],
+      "expected_evidence_predicates": [
+        "CANONICAL_TASK_REGISTRATION_PRESENT",
+        "TASK_HANDOFF_IDENTITY_RECONCILED",
+        "ROOT_DEBT_REGENERATION_GUARD_VALID",
+        "WAVE0_GENERATORS_TERMINALLY_CLASSIFIED_OR_EXCEPTION_BOUND",
+        "ISSUE_LIFECYCLE_RECONCILIATION_EVIDENCE_PRESENT",
+        "BRANCH_RETIREMENT_ONLY_AFTER_EVIDENCE_CLEARANCE_AND_AUTHORITY",
+        "SITE_STEGCORE_SINK_CLEANUP_NOT_USED_AS_CAUSAL_COMPLETION",
+        "AUTHENTIC_TASK_INGRESS_OBSERVED",
+        "AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+        "AUTHENTIC_MASTER_RECORDS_RECONCILIATION_OBSERVED",
+        "AUTHENTIC_TASK_EGRESS_OR_CLOSURE_OBSERVED"
+      ],
+      "runtime_requirements": {
+        "capabilities": [
+          "task_registry_reconciliation",
+          "canonical_artifact_validation",
+          "repository_lifecycle_reconciliation",
+          "master_records_reconciliation"
+        ],
+        "environment": "SOVEREIGN_RESIDENT_AND_SOURCE_VALIDATION",
+        "direction": "INTERNAL",
+        "mutation_required": true,
+        "deployment_required": false,
+        "current_observation_required": true
+      },
+      "runtime_resolution": null,
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
+      },
+      "human_action_ref": null,
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "reconciliation_ref": null
+      },
+      "allowed_next_transitions": [
+        "INGRESS_ADMITTED"
+      ],
+      "handoff_projection_refs": [
+        "docs/REPOSITORY_HYGIENE_MIRROR_HANDOFF.md"
+      ],
+      "authority_model": {
+        "task_registry_mints_execution_authority": false,
+        "source_state_proves_execution": false,
+        "worker_claim_authority": "WORKERCOORDINATOR",
+        "master_records_reality_authority": true,
+        "interlock_intr_required_for_governed_ingress_egress": true
       }
     }
   ],
