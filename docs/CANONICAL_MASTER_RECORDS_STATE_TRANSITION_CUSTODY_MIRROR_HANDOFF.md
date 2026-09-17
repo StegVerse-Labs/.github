@@ -128,3 +128,15 @@ Do not reintroduce:
 - WorkerCoordinator claim/fence as event-creation authority;
 - a second user-operated device dependency;
 - source assertions as runtime evidence.
+
+
+## StegBrowser custody decomposition intake
+
+The 2026-09-17 terminal decomposition of `STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001` resolved that its immutable invocation uses the Site browser canonical custody client and `/api/master-records/state-transitions`; it does not use the optional Python local adapter.
+
+Two genuinely separable custody-owner tasks now carry the remaining source work:
+
+- `MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001` / `docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md` / issue `StegVerse-Labs/.github#2078`: bind the existing browser client to the existing authoritative state-transition custody surface without provider/platform/OS/device lock-in, Render, credential substitution, or a second custody/transport plane, then require authentic `RECORDED + reconstruction_status=PASS` for the exact immutable StegBrowser tuple.
+- `CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001` / `docs/CANONICAL_MASTER_RECORDS_LOCAL_ADAPTER_REPAIR_MIRROR_HANDOFF.md` / issue `StegVerse-Labs/.github#2079`: repair the separate optional local-adapter contract mismatch without relabeling the state receipt as a lifecycle request, fabricating lifecycle evidence, weakening validation, or claiming it is the immutable browser invocation path.
+
+These tasks remain custody/reconstruction work only. Interlock/InTr transition authority and TV/TVC credential authority are unchanged. Source repair does not prove authentic custody or runtime execution.
