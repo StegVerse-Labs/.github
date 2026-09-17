@@ -444,3 +444,14 @@ This is a research/formalism closeout only. The release boundary remains `NOT_RE
 ## StegVerse-002 original experiment rerun
 
 The canonical callable owner for the original StegVerse-002 v0.3 self-characterization rerun is `STEGVERSE-002-EXPERIMENT-RERUN-001` under COSV `50000000107000`. It reuses the existing registered StegVerseNode -> Interlock/InTr -> bounded EVENT_EPHEMERAL execution mechanics. `SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001` is adjacent work and is not a prerequisite for this rerun. GitHub/CI grants no runtime authority.
+
+
+---
+
+## Fleet functionalization cost/revenue posture
+
+Canonical task `ORG-GITHUB-FLEET-FUNCTIONALIZATION-001` is active under a zero-speculative-infrastructure, cost-and-revenue-first constraint. Routine GitHub Actions validation is not required for this lane; the named containment workflows remain manual-only or have their redundant schedules removed.
+
+GP10's already-implemented paid field-validation/evidence-review service remains the lead revenue candidate because concrete locomotive owner/service/rebuild prospects and public contact paths have been identified. Prospect evidence is not customer interest or revenue evidence. The next admissible commercial step is bounded customer discovery against the existing offer before any additional GP10 technical buildout.
+
+Canonical state: `docs/ORG_GITHUB_FLEET_FUNCTIONALIZATION_001_MIRROR_HANDOFF.md`.
