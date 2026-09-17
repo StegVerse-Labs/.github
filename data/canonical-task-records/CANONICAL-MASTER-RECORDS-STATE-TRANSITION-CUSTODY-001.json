@@ -21,6 +21,8 @@
   "sv002_initiation_preflight_ref": "receipts/preflight/MIR-SV002-INITIATION-MECHANISM-001.json",
   "mir_browser_refs": {
     "binding": "StegVerse-Labs/Site:data/mir-roundtrip-browser-runtime-binding.v1.json",
+    "root_intr_extension": "StegVerse-Labs/Site:intr-mir-roundtrip-extension.js",
+    "intr_sync": "StegVerse-Labs/Site:stegos-node/mir-roundtrip-intr-sync.js",
     "canonical_custody": "StegVerse-Labs/Site:assets/canonical-master-records-transition-custody-browser.js",
     "runtime": "StegVerse-Labs/Site:assets/mir-roundtrip-sv002-browser-runtime.js",
     "activation": "StegVerse-Labs/Site:assets/mir-roundtrip-browser-activation.js",
@@ -35,7 +37,8 @@
     "TASK_SPECIFIC_DIAGNOSTICS_ARE_NOT_PRIMARY_CUSTODY_PATH",
     "MIR_CONSUMES_CANONICAL_CUSTODY_PATH",
     "SV002_SEMANTICS_PRESERVED",
-    "MIR_INITIATION_REUSES_VALIDATED_BROWSER_EVENT_SURFACE"
+    "MIR_INITIATION_REUSES_VALIDATED_BROWSER_EVENT_SURFACE",
+    "CURRENT_INTR_ADMISSION_PRECEDES_MIR_EVENT_RUNTIME"
   ],
   "current_truth": {
     "ecosystem_inventory_materialized": true,
@@ -58,6 +61,10 @@
     "mir_browser_event_activation_binding_materialized": true,
     "mir_browser_event_autostart_materialized": true,
     "mir_browser_canonical_custody_materialized": true,
+    "mir_browser_materialization_request_matches_node_contract": true,
+    "mir_browser_current_intr_admission_extension_materialized": true,
+    "mir_browser_current_intr_sync_materialized": true,
+    "mir_browser_runtime_requires_authentic_intr_admission_receipt": true,
     "mir_browser_source_conformance_tests_materialized": true,
     "mir_browser_source_conformance_workflow_materialized": true,
     "authentic_current_mir_browser_event_execution_observed": false,
