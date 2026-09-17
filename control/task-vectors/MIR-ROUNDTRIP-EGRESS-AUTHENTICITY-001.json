@@ -8,7 +8,9 @@
     "StegVerse-Labs/Site:docs/MIR_ROUNDTRIP_EGRESS_AUTHENTICITY_MIRROR_HANDOFF.md",
     "StegVerse-Labs/Site:data/mir-roundtrip-egress-sv002-route-binding.v1.json"
   ],
+  "observed_at": "2026-09-14T23:37:05Z",
   "exact_metrics": {
+    "symbol_order": "LRUIVGOCMTBEAP",
     "lifecycle": "MACHINE_OWNED",
     "archive_ready": false,
     "canonical_owner_installed": true,
