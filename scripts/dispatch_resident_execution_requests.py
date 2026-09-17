@@ -225,11 +225,27 @@ def select_consumers(only_consumers: tuple[str, ...] | None) -> tuple[tuple[str,
     return tuple((name, rel) for name, rel in CONSUMERS if name in requested)
 
 
-def dispatch(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env: Mapping[str, str] | None = None, only_consumers: tuple[str, ...] | None = None) -> dict[str, Any]:
+def dispatch(
+    source_root: Path,
+    runtime_root: Path,
+    *,
+    runner=subprocess.run,
+    env: Mapping[str, str] | None = None,
+    only_consumers: tuple[str, ...] | None = None,
+    goal_task_id: str | None = None,
+) -> dict[str, Any]:
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
     safe_env = clean_exec_env(env)
     selected = select_consumers(only_consumers)
+    current_goal_task_id = None
+    if goal_task_id is not None:
+        current_goal_task_id = str(goal_task_id).strip()
+        if not current_goal_task_id:
+            raise RuntimeError("goal task id must be non-empty")
+        selected_names = tuple(name for name, _ in selected)
+        if selected_names != ("canonical_work_coordination",):
+            raise RuntimeError("goal task context requires exact canonical_work_coordination selector")
     outcomes: list[dict[str, Any]] = []
 
     for name, rel in selected:
@@ -244,6 +260,8 @@ def dispatch(source_root: Path, runtime_root: Path, *, runner=subprocess.run, en
             outcomes.append({"consumer": name, "consumer_ref": rel, "state": "CONSUMER_NOT_MATERIALIZED", "returncode": None, "result": None, "attempted": False})
             continue
         command = [sys.executable, str(consumer), "--source-root", str(source), "--runtime-root", str(runtime)]
+        if name == "canonical_work_coordination" and current_goal_task_id:
+            command.extend(["--goal-task-id", current_goal_task_id])
         try:
             completed = runner(command, cwd=runtime, capture_output=True, text=True, check=False, env=safe_env, timeout=1200)
             result = parse_last_json(completed.stdout)
@@ -268,6 +286,8 @@ def dispatch(source_root: Path, runtime_root: Path, *, runner=subprocess.run, en
         "schema": "stegverse.resident-request-dispatch/v1", "state": "DISPATCH_COMPLETE" if not missing and not exceptions and not exact_selector_failure else "DISPATCH_INCOMPLETE",
         "source_root": str(source), "runtime_root": str(runtime), "registered_consumer_count": len(CONSUMERS), "consumer_count": len(selected),
         "selected_consumers": [name for name, _ in selected], "selection_scope": "ALL_REGISTERED" if only_consumers is None else "EXACT_SELECTOR",
+        "current_goal_task_id": current_goal_task_id,
+        "goal_context_forwarded_to": "canonical_work_coordination" if current_goal_task_id else None,
         "consumers_visited": len(outcomes), "missing_consumers": missing, "dispatch_exceptions": exceptions, "request_failures": request_failures,
         "exact_selector_failure": exact_selector_failure,
         "outcomes": outcomes, "request_failure_blocks_later_requests": False, "astra_class_standing_awareness_ready": standing_awareness_ready(runtime),
@@ -286,8 +306,14 @@ def main() -> int:
     parser.add_argument("--source-root", type=Path, default=ROOT)
     parser.add_argument("--runtime-root", type=Path, required=True)
     parser.add_argument("--only-consumer", action="append", default=None)
+    parser.add_argument("--goal-task-id")
     args = parser.parse_args()
-    receipt = dispatch(args.source_root, args.runtime_root, only_consumers=tuple(args.only_consumer) if args.only_consumer else None)
+    receipt = dispatch(
+        args.source_root,
+        args.runtime_root,
+        only_consumers=tuple(args.only_consumer) if args.only_consumer else None,
+        goal_task_id=args.goal_task_id,
+    )
     print(json.dumps(receipt, sort_keys=True))
     return 0 if receipt["state"] == "DISPATCH_COMPLETE" else 1
 

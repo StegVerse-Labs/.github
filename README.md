@@ -504,3 +504,16 @@ The applicable browser custody-binding continuation is `MASTER-RECORDS-STEGBROWS
 
 
 GP10 response-window status: all four active prospect threads and organization-domain searches were re-checked on 2026-09-17 at 18:28 CDT with no inbound reply observed. The elapsed time is still too short to classify silence as commercial rejection, so the alternative-capability comparison remains gated and no additional technical work is justified.
+
+
+## Goal-scoped Canonical Work portable dispatch
+
+The existing portable resident bridge can carry an explicit current Goal Task into the existing `canonical_work_coordination` selector without creating another dispatcher, scheduler, runtime, claim authority, or transition authority:
+
+```text
+python scripts/refresh_and_dispatch_resident_requests.py \
+  --only-consumer canonical_work_coordination \
+  --goal-task-id HYGIENE-CAUSAL-ROOTS-001
+```
+
+Goal context is valid only for the exact `canonical_work_coordination` selector. The portable bridge forwards it to the existing resident dispatcher, the dispatcher forwards it to the existing Canonical Work consumer, and the consumer forwards it into the registry-first cycle. The bridge and dispatcher receipts retain the exact Goal Task ID so a dropped or mismatched context fails closed instead of reverting silently to controller lineage. This carriage is non-authorizing: WorkerCoordinator remains claim/fence authority, Interlock/InTr remains transition authority, TV/TVC remains credential authority, and Master Records remains observed-reality/reconstruction authority.
