@@ -3,7 +3,7 @@
 Updated: 2026-09-16
 Goal Task ID: `MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001`
 COSV ID: `50000000100000`
-Status: `ACTIVE / V0.3 FREEZE ACCEPTED / REFERENCE ARCHITECTURE DRAFT V0.2 / PROVEN SV002 ROUTE REUSED / MIR RESIDENT EXECUTION REQUEST MATERIALIZED / COUNTERPART EVIDENCE-SEAM INPUT PENDING`
+Status: `ACTIVE / V0.3 FREEZE ACCEPTED / REFERENCE ARCHITECTURE DRAFT V0.2 / PROVEN SV002 ROUTE REUSED / MIR REQUEST WIRED INTO EXISTING RESIDENT CADENCE / COUNTERPART EVIDENCE-SEAM INPUT PENDING`
 
 ## Canonical state
 
@@ -26,16 +26,16 @@ registered StegVerse Node
 -> independent Master Records reconstruction
 ```
 
-The transport successor `MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001` therefore duplicates that route first and adds only current MIR-specific bindings/evidence. Generic SV002 Node/Interlock/InTr/lease/runtime mechanics may not be inserted as another re-proof gate. Historical receipts prove the old event only and grant no present authority.
+The transport successor `MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001` duplicates that route first and adds only current MIR-specific bindings/evidence. Generic SV002 Node/Interlock/InTr/lease/runtime mechanics may not be inserted as another re-proof gate. The frozen route artifact is prior-event evidence only and grants no present authority.
 
-Canonical route source remains:
+Canonical route source:
 
 - `StegVerse-Labs/Site/data/mir-roundtrip-egress-sv002-route-binding.v1.json`
 - `StegVerse-Labs/Site/docs/MIR_ROUNDTRIP_EGRESS_AUTHENTICITY_MIRROR_HANDOFF.md`
 
 ## Current authority-owned execution package
 
-The child transport lane is now installed into the existing sovereign WorkerCoordinator/runtime source rather than left as documentation-only work. Canonical `.github` source contains:
+The child transport lane is installed into the existing sovereign WorkerCoordinator/runtime source. Canonical `.github` source contains:
 
 - `control/task-vectors/MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001.json`
 - `control/task-vector-index.d/MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001.json`
@@ -43,10 +43,13 @@ The child transport lane is now installed into the existing sovereign WorkerCoor
 - `control/process-worker-adapters.d/mir-roundtrip-egress-authenticity-001.json`
 - `control/resident-execution-request.d/mir-roundtrip-egress-authenticity-001.json`
 - `workers/mir_roundtrip_egress_authenticity_worker.py`
+- `scripts/consume_mir_roundtrip_egress_authenticity_request.py`
 
-The standing request is machine-owned and asks the existing WorkerCoordinator to mint the fresh claim/fence and execute exactly one current MIR-bound invocation under COSV `50000000100000`. It does not create another scheduler, dispatcher, WorkerCoordinator, runtime, transport plane, credential path, or user-device dependency.
+The request is now attached to the already-existing `canonical_work_coordination` resident dispatch cadence through `control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py`. The wrapper visits the MIR request before its legacy request set, then continues ordinary canonical-work processing even if the MIR attempt fails closed. This adds no dispatcher, scheduler, WorkerCoordinator, runtime, transport plane, credential path, resident receiver, or device prerequisite.
 
-The worker binds the current Goal/COSV, `destination_profile=MIR`, the current retained registered Node/Interlock receipt, and the reused sequence:
+The bounded MIR consumer calls the existing `scripts/refresh_and_execute_resident_task.py --task-id MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001`. Current Goal/COSV binding is enforced by the standing request and runtime worker directly; the event is not blocked on a separate aggregate-index refresh before execution. The runtime manifest still carries the exact current Goal and COSV `50000000100000`.
+
+The worker hashes and binds the frozen successful SV002 route artifact, records that it grants no present authority, requires a fresh current WorkerCoordinator claim/fence, binds `destination_profile=MIR`, and executes the existing StegOS `SovereignLocalEventRuntimeAdapter` + `run_mir_profile_transition` sequence:
 
 ```text
 RTC-STEGVERSE-EGRESS-007
@@ -54,7 +57,7 @@ RTC-STEGVERSE-EGRESS-007
 -> RTC-FARSIDE-FINAL-009
 ```
 
-It uses the existing StegOS `SovereignLocalEventRuntimeAdapter` and `run_mir_profile_transition`, retains the exact MIR MIRROR response packet, requires the MIR MIRROR external-ingress receipt/correlation, and delegates custody/reconstruction to the existing `workers/reusable_task_master_records_roundtrip.py`, which invokes destination-owned Master Records ingest/reconstruction and enforces exact-byte equality.
+It retains the exact MIR MIRROR response, requires the external-ingress receipt and linked current Interlock/InTr evidence, then delegates current-event custody/reconstruction to the existing `workers/reusable_task_master_records_roundtrip.py`, which requires destination-owned Master Records ingest/reconstruction and exact-byte equality.
 
 ## Runtime proof boundary
 
@@ -70,17 +73,17 @@ MIR destination evidence retention
 Master Records reconstruction of current final exit
 ```
 
-Any successful owned-mirror receipt must retain provenance `MIR_MIRROR_BUILD_TEST_COUNTERPART_RUNTIME`; it is not evidence that the authentic external MIR endpoint executed.
+Any successful owned-mirror receipt retains provenance `MIR_MIRROR_BUILD_TEST_COUNTERPART_RUNTIME`; it is not evidence that the authentic external MIR endpoint executed.
 
-The canonical expected receipt is:
+Expected current receipt:
 
 `receipts/mir-roundtrip-egress-authenticity/current.latest.json`
 
-No such canonical receipt was present when this handoff was reconciled, so new one-way runtime success is not yet claimed.
+No canonical receipt at that path was present at the latest reconciliation, so one-way runtime success is not yet claimed.
 
 ## Governed-return boundary
 
-The MIR-profile runtime retains the exact response bytes so subsequent return processing consumes the actual runtime consequence rather than a synthesized fixture. Full round-trip completion remains separate and requires authentic StegVerse-side return admission, durable recording, and the final allowed transport-exit transition before `SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIP_IDENTIFIED` or `communication_complete` can become true.
+The MIR-profile runtime retains exact response bytes so subsequent return processing consumes the actual runtime consequence rather than a synthesized fixture. Full round-trip completion remains separate and requires authentic StegVerse-side return admission, durable recording, and the final allowed transport-exit transition before `SUCCESSFUL_DATA_TRANSPORT_ROUND_TRIP_IDENTIFIED` or `communication_complete` can become true.
 
 ## Separation-of-powers invariants
 
@@ -91,6 +94,7 @@ The MIR-profile runtime retains the exact response bytes so subsequent return pr
 - MIR: MIR-native semantics.
 - Master Records: observed-reality custody/reconstruction only.
 - GitHub/GitHub Actions: source validation/evidence transport only; runtime authority `NONE`.
+- Historical SV002 route evidence grants no present authority.
 - MIR MIRROR seam/runtime evidence cannot be promoted into authentic external MIR endpoint evidence.
 
 ## Counterpart evidence still required
@@ -104,4 +108,4 @@ Separately from the owned-mirror transport execution:
 
 ## Next action
 
-Reconcile the first authority-owned resident receipt produced by the standing MIR transport request. If the receipt proves the one-way MIR MIRROR transition plus exact Master Records reconstruction, promote only those supported predicates and immediately continue the retained exact return packet through the already-existing governed return-admission/SDK return path. Preserve all unsupported external-MIR and full-round-trip predicates as unverified.
+Reconcile the first authority-owned resident receipt produced by the now-wired MIR request. If it proves the one-way MIR MIRROR transition plus exact Master Records reconstruction, promote only those supported predicates and immediately continue the retained exact return packet through the already-existing governed return-admission/SDK return path. Preserve all unsupported external-MIR and full-round-trip predicates as unverified.
