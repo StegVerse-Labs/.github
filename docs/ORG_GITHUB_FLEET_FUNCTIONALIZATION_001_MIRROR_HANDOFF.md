@@ -1,6 +1,6 @@
 # Organization GitHub Fleet Functionalization Mirror Handoff
 
-Status: ACTIVE / CHECKED_OUT
+Status: RETIRED / DECOMPOSED_AT_PROMPT_LIMIT
 Repository: `StegVerse-Labs/.github`
 Goal Task ID: `ORG-GITHUB-FLEET-FUNCTIONALIZATION-001`
 COSV profile: `task.v1`
@@ -465,3 +465,34 @@ paid_engagement_observed: false
 ```
 
 The next evidence-bearing transition is prospect response reconciliation. Preserve zero-routine-Actions and no-speculative-infrastructure constraints while awaiting that evidence.
+
+
+## Prompt-cap decomposition — 2026-09-17
+
+Goal Prompt Count reached `20/20`. The fleet completion predicates are **not** fully satisfied, so this parent is not being marked completed.
+
+Evidence now added at closeout:
+
+- the user-supplied iPhone Mail Sent-folder screenshot shows both first-wave GP10 messages under the `rigel@stegverse` account at 5:32 PM and 5:33 PM; screenshot SHA-256 `a68668f9012dba663ab24e345d229d975705c217f800602c07c0c82537995de0`;
+- the connected Microsoft Outlook profile resolves to `rigel@stegverse.org`;
+- Outlook returns the POVA message `GP10 records / rebuild-history question` at `2026-09-17T22:32:55Z`;
+- Outlook returns the Integrity Rail Services message `Locomotive record-conflict review question` at `2026-09-17T22:33:17Z`;
+- Outlook search observed no inbound response from `pova@povarr.com` or `rodney@integrityrailservices.com` at closeout.
+
+Therefore the outreach-send predicate is provider-observed, while the response/revenue predicates remain unsatisfied.
+
+The genuinely separable external-response / revenue-validation work is transferred to the new canonical successor:
+
+```text
+Goal Task ID: GP10-COMMERCIAL-RESPONSE-VALIDATION-001
+Issue: StegVerse-Labs/.github#2073
+Handoff: docs/GP10_COMMERCIAL_RESPONSE_VALIDATION_001_MIRROR_HANDOFF.md
+Task record: data/canonical-task-records/GP10-COMMERCIAL-RESPONSE-VALIDATION-001.json
+COSV: 10100000100000
+```
+
+The successor may reconcile authentic prospect responses and advance to a concrete paid scope/quote only from explicit evidence. It may not create speculative infrastructure or routine Actions work.
+
+Remaining non-commercial fleet predicates are not duplicated into new work here because they already have canonical owners and evidence boundaries, including the existing COSV live-packet, TVC/StegMusic exact-source validation, StegBrain live-gradient, StegTalk AURI-007, and USER_ONLY StegFin lanes. This parent is retired as a prompt-limit decomposition rather than reopened beyond 20 prompts.
+
+No completion, runtime activation, provider success, public E2E, buyer interest, or revenue is inferred by this decomposition.
