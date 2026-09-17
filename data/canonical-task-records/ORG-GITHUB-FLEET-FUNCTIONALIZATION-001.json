@@ -7,7 +7,7 @@
   "goal": "Make the 22 repositories represented by the prior census's 18.5 percent functional set dependency-stable and directly evidence-backed for their intended roles, prioritizing the seven partial repositories and repairing shared org/repo dependencies as needed.",
   "coordination_state": "RETIRED",
   "checkout_state": "DECOMPOSED_AT_PROMPT_LIMIT",
-  "cosv_task_vector": "20010000100000",
+  "cosv_task_vector": "80000000100000",
   "source_refs": [
     "docs/ORG_GITHUB_FLEET_FUNCTIONALIZATION_001_MIRROR_HANDOFF.md",
     "reports/ORG_GITHUB_FLEET_FUNCTIONALIZATION_001_DEPENDENCY_MAP.md",
@@ -229,7 +229,12 @@
     "gp10_commercial_response_successor_created": true,
     "gp10_commercial_response_successor_task_id": "GP10-COMMERCIAL-RESPONSE-VALIDATION-001",
     "gp10_commercial_response_successor_issue": "StegVerse-Labs/.github#2073",
-    "gp10_commercial_response_successor_handoff": "docs/GP10_COMMERCIAL_RESPONSE_VALIDATION_001_MIRROR_HANDOFF.md"
+    "gp10_commercial_response_successor_handoff": "docs/GP10_COMMERCIAL_RESPONSE_VALIDATION_001_MIRROR_HANDOFF.md",
+    "parent_cosv_transition_at_decomposition": {
+      "from": "20010000100000",
+      "to": "80000000100000",
+      "meaning": "SUPERSEDED_BY_PROMPT_LIMIT_DECOMPOSITION"
+    }
   },
   "completion": {
     "claimed": false,
