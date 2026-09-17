@@ -36,7 +36,8 @@
     "StegVerse-Labs/StegTalk:AURI_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegBrain:docs/STEGBRAIN_MIRROR_HANDOFF.md",
     "StegVerse-Labs/stegfin-governance:docs/STEGFIN_MIRROR_HANDOFF.md",
-    "StegVerse-Labs/GP10:GP10_MIRROR_HANDOFF.md"
+    "StegVerse-Labs/GP10:GP10_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/GP10:docs/receipts/runtime-validation-06a2f17ec7864562e1d947d95b93b33b261dec73.json"
   ],
   "progress": {
     "dependency_map_complete": true,
@@ -66,7 +67,17 @@
     "stegbrain_first_live_gradient_observed": false,
     "stegtalk_auri_001_through_006_complete": true,
     "stegtalk_auri_007_runtime_authorization_evidence_pending": true,
-    "gp10_machine_runtime_proof_and_real_field_evidence_pending": true
+    "gp10_runtime_proof_complete": true,
+    "gp10_runtime_pass_tested_commit": "06a2f17ec7864562e1d947d95b93b33b261dec73",
+    "gp10_runtime_pass_run_id": 35266625877,
+    "gp10_runtime_pass_job_id": 105355312939,
+    "gp10_runtime_pass_receipt_id": "GP10-RUNTIME-5204306871AADC95",
+    "gp10_runtime_pass_receipt_ref": "StegVerse-Labs/GP10:docs/receipts/runtime-validation-06a2f17ec7864562e1d947d95b93b33b261dec73.json",
+    "gp10_runtime_proof_claim_released": true,
+    "gp10_field_validation_bundle_pending_authentic_evidence": true,
+    "gp10_field_validation_runtime_dependency_satisfied": true,
+    "gp10_machine_runtime_proof_and_real_field_evidence_pending": false,
+    "gp10_machine_runtime_proof_pending": false
   },
   "completion": {
     "claimed": false,
@@ -74,7 +85,7 @@
     "report_complete": false,
     "summary_ref": "reports/ORG_GITHUB_FLEET_FUNCTIONALIZATION_001_DEPENDENCY_MAP.md"
   },
-  "next_admissible_work": "Preserve the staged StegMusic request until authentic TVC resident service/credential evidence exists. In parallel, reuse the existing COSV-LIVE-PACKET-AUTOMATION-006 independently admitted task-control route to produce the first authentic post-anchor packet; if it is a changed DELTA with non-empty gradient_inputs, consume it only through the existing StegBrain live-gradient consumer and retain the receipt before advancing to GP10.",
+  "next_admissible_work": "Preserve the staged StegMusic request and COSV->StegBrain runtime lanes until authentic local execution evidence exists. GP10 repository-native runtime proof is complete; its remaining field/threshold/legal transitions are authentic-evidence or human-authority gated. Continue to the next machine-remediable partial target, StegTalk AURI-007, by reconciling its canonical activation handoff and executing only machine-owned prerequisites that do not require fabricated provider/deployment authorization.",
   "status_response_contract": {
     "active": "currently active - checked out",
     "completed": "functionalization validated with direct evidence"
