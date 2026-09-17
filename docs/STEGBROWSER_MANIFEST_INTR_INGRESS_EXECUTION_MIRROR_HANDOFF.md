@@ -46,7 +46,7 @@ Proven source provenance:
 - `StegVerse-Labs/Site:assets/sv002-local-runtime-materializer.js`
 - `StegVerse-Labs/Site:assets/sv002-principal-worker.js`
 
-The reusable contract is now encoded in `source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json`.
+The reusable contract is encoded in `source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json`.
 
 ## Ordering after connection materialization
 
@@ -88,20 +88,26 @@ No second request and no mutation of the existing nonce/payload are allowed.
 
 ## Current authentic state
 
-A0 is source-bound with runtime confirmation pending. A1, A2, A2.1, A2.2, A3, and A4 remain not authentically observed for the current invocation. Round Trip 1 and Round Trip 2 have not been entered. Historical SV002 evidence, source state, CI, or architecture precedent cannot promote current runtime predicates.
+A0 is source-bound with runtime confirmation pending. A1, A2, A2.1, A2.2, A3, and A4 remain not authentically observed for the current invocation. Round Trip 1 and Round Trip 2 have not been entered. Historical SV002 evidence, source state, CI, repository absence of a runtime receipt, or architecture precedent cannot promote current runtime predicates.
 
-## Retained-evidence seam repair — 2026-09-17
+## Retained-evidence seam repair — merged 2026-09-17
 
-Canonical re-observation again found no retained authority-owned same-nonce A1/A2/lease/EVENT_EPHEMERAL receipt set. The existing runtime-connection observer already writes `receipts/sovereign-host/stegbrowser-runtime-connection-transition-observation.latest.json` and `receipts/sovereign-host/stegbrowser-runtime-connection-resolution.latest.json`, but its final A1-A4 observation path contained two evidence-integrity defects:
+Canonical re-observation had found no retained authority-owned same-nonce A1/A2/lease/EVENT_EPHEMERAL receipt set. The runtime-connection observer writes `receipts/sovereign-host/stegbrowser-runtime-connection-transition-observation.latest.json` and `receipts/sovereign-host/stegbrowser-runtime-connection-resolution.latest.json`, but its final A1-A4 observation path contained two evidence-integrity defects:
 
 1. when the canonical registered Node Receipt #1 was unavailable, `resolve_registered_node_receipt(...)` raised before `receipts/sovereign-host/stegbrowser-runtime-connection-a1-a4.latest.json` could be retained;
 2. a callable InTr profile could label the final observation `A1_OBSERVED...` even though no registered Node binding had been retained.
 
-The bounded repair on branch `stegbrowser-runtime-evidence-retention-failclosed-20260917` changes only this evidence-retention seam. It catches only the missing canonical Node-receipt condition, retains it as `node_resolution_error`, writes the final observation anyway, and uses fail-closed states beginning with `A1_NOT_OBSERVED...`. `registered_stegverse_node_bound_to_invocation` becomes true only when the authority-owned boundary contains the correlated Node/Interlock/registration binding. Lease and EVENT_EPHEMERAL predicates remain downstream of that authentic A1 binding.
+The bounded repair changes only this evidence-retention seam. It catches only the missing canonical Node-receipt condition, retains it as `node_resolution_error`, writes the final observation anyway, and uses fail-closed states beginning with `A1_NOT_OBSERVED...`. `registered_stegverse_node_bound_to_invocation` becomes true only when the authority-owned boundary contains the correlated Node/Interlock/registration binding. Lease and EVENT_EPHEMERAL predicates remain downstream of that authentic A1 binding.
+
+The repository-wide MIR Admissible-Existence and validation-drift prerequisite was reconciled in PR #2048. Exact-head Deterministic Repository Suite, Organization Control, and Heartbeat validation all passed, and PR #2048 merged with expected-head protection at `cf81378f296458f0458fe1eb33920e337f4e5f21`.
+
+The StegBrowser repair was then rebased as exactly one commit and exactly three changed files onto that canonical main. Exact-head Deterministic Repository Suite, Organization Control, and Heartbeat validation all passed, the current-main collision check remained clean, and PR #2047 merged with expected-head protection at `4888b63b5b72fd7930177e33a2548b1a98f7240c`.
 
 This repair creates no Node, host, endpoint, runtime, listener, scheduler, dispatcher, WorkerCoordinator, second invocation, second device, or authority path. It does not turn source/CI evidence into runtime evidence and does not activate Round Trip 1. The invariant remains: a missing authentic receipt must be durably observable as missing, never promoted and never lost because observation terminated early.
 
-README reviewed for this repair. No byte change is required because public architecture/topology is unchanged; this is an internal fail-closed evidence-retention correction.
+Post-merge runtime re-observation from the execution interfaces available to this continuation did not expose an authorized runtime context from which the retained `stegbrowser-runtime-connection-a1-a4.latest.json` could be read. The receipt is not tracked repository state, so its absence from GitHub is not evidence of `A1_NOT_OBSERVED`. No A1-A4 predicate was promoted or denied from that repository observation.
+
+README was reviewed for this repair. No byte change is required because public architecture/topology is unchanged; this is an internal fail-closed evidence-retention correction.
 
 ## Authority map
 
@@ -109,4 +115,4 @@ Manifest = route declaration only. Node = continuity/admission anchor. Lease = b
 
 ## Next execution boundary
 
-Validate and merge the fail-closed retained-evidence repair. Then re-observe the existing same-nonce runtime path. If the retained A1-A4 observation reports an authentic registered Node binding, continue only through the existing Interlock/InTr -> bounded lease -> EVENT_EPHEMERAL -> WorkerCoordinator -> A4 chain and write every authentic governed transition through Master Records. If it reports `A1_NOT_OBSERVED...`, repair only the exact native Node-evidence exposure condition named by that retained record. Enter Round Trip 1 only after authentic A4.
+Re-observe the authority-owned retained runtime record `receipts/sovereign-host/stegbrowser-runtime-connection-a1-a4.latest.json` for immutable nonce `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z` from an existing StegVerse-native authorized execution context. If that record authenticates A1, continue only through the existing Interlock/InTr -> bounded lease -> EVENT_EPHEMERAL -> WorkerCoordinator A3 -> exact-correlated A4 path, recording every observed governed transition through canonical Master Records custody before entering Round Trip 1, B1, and Round Trip 2. If the record reports `A1_NOT_OBSERVED...`, repair only the exact native Node-evidence exposure condition in `node_resolution_error`. Do not infer either outcome from source, CI, GitHub repository state, or an unavailable execution context.
