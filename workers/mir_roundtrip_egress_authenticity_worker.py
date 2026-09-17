@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """Execute the current MIR MIRROR invocation through the proven SV002 substrate.
 
-The historical SV002 lane is evidence of reusable mechanics, not present authority.
+The historical SV002 lane is reusable engineering evidence, not present authority.
 This worker requires a fresh WorkerCoordinator claim/fence, binds the current
-Goal/COSV and destination_profile=MIR, runs the existing StegOS EVENT_EPHEMERAL
-MIR-profile transition, retains exact destination evidence, and asks Master Records
-to ingest/reconstruct the current one-way transition. It creates no scheduler,
-transport plane, credential authority, or device prerequisite.
+Goal/COSV and destination_profile=MIR, uses the existing StegOS EVENT_EPHEMERAL
+MIR-profile runtime, retains exact destination evidence, and delegates current-event
+custody/reconstruction to Master Records. It creates no scheduler, transport plane,
+credential authority, or device prerequisite.
 """
 from __future__ import annotations
 
@@ -60,20 +60,20 @@ def resolve_repo(env_names: tuple[str, ...], root_keys: tuple[str, ...], fallbac
     for name in env_names:
         raw = (os.getenv(name) or "").strip()
         if raw:
-            p = Path(raw).expanduser().resolve()
-            if p.is_dir():
-                return p
+            path = Path(raw).expanduser().resolve()
+            if path.is_dir():
+                return path
     roots = repo_roots()
     for key in root_keys:
         raw = roots.get(key)
         if isinstance(raw, str) and raw:
-            p = Path(raw).expanduser().resolve()
-            if p.is_dir():
-                return p
+            path = Path(raw).expanduser().resolve()
+            if path.is_dir():
+                return path
     for candidate in fallbacks:
-        p = candidate.expanduser().resolve()
-        if p.is_dir():
-            return p
+        path = candidate.expanduser().resolve()
+        if path.is_dir():
+            return path
     raise RuntimeError("required_repository_root_not_materialized:" + ",".join(root_keys))
 
 
@@ -102,11 +102,29 @@ def import_master_records_worker(root: Path):
     return module
 
 
+def first_external_ingress(mirror_return: dict[str, Any]) -> dict[str, Any]:
+    continuation = mirror_return.get("manifest_continuation")
+    require(isinstance(continuation, dict), "mir_manifest_continuation_missing")
+    receipts = continuation.get("continuation_receipts")
+    require(isinstance(receipts, list), "mir_continuation_receipts_missing")
+    ingress = next(
+        (item for item in receipts if isinstance(item, dict) and item.get("transition_class") == "EXTERNAL_FRAMEWORK_INGRESS"),
+        None,
+    )
+    require(isinstance(ingress, dict), "mir_external_ingress_receipt_missing")
+    require(continuation.get("required_next_receipt") == "STEGVERSE_RETURN_EXIT", "mir_return_exit_requirement_missing")
+    return ingress
+
+
 def run(invocation: dict[str, Any], *, root: Path) -> dict[str, Any]:
     claim_id, fence = validate_invocation(invocation)
     source_root = root.resolve()
     site_root = resolve_repo(("STEGVERSE_SITE_ROOT",), ("StegVerse-Labs/Site", "Site"), (source_root.parent / "Site",))
-    stegos_root = resolve_repo(("STEGVERSE_STEGOS_SOURCE_ROOT", "STEGVERSE_STEGOS_ROOT"), ("StegVerse-Labs/StegOS", "StegOS"), (source_root.parent / "StegOS",))
+    stegos_root = resolve_repo(
+        ("STEGVERSE_STEGOS_SOURCE_ROOT", "STEGVERSE_STEGOS_ROOT"),
+        ("StegVerse-Labs/StegOS", "StegOS"),
+        (source_root.parent / "StegOS",),
+    )
 
     route = load(site_root / ROUTE_BINDING_REL)
     require(route.get("schema") == "stegverse.mir-roundtrip.sv002-route-duplication/v1", "route_binding_schema_mismatch")
@@ -171,43 +189,43 @@ def run(invocation: dict[str, Any], *, root: Path) -> dict[str, Any]:
     mirror_request = build_run2_request(manifest=manifest, history=history, response_to=correlation_id, revision=1)
 
     state_base_raw = (os.getenv("STEGVERSE_HEARTBEAT_ROOT") or "").strip()
-    state_base = Path(state_base_raw).expanduser().resolve() if state_base_raw else Path(os.getenv("XDG_STATE_HOME", "/tmp")).expanduser().resolve() / "stegverse"
+    state_base = (
+        Path(state_base_raw).expanduser().resolve()
+        if state_base_raw
+        else Path(os.getenv("XDG_STATE_HOME", "/tmp")).expanduser().resolve() / "stegverse"
+    )
     evidence_root = state_base / "mir-roundtrip-egress-authenticity" / claim_id
-    runtime_base = state_base / "ephemeral-runtime"
-    runtime_adapter = SovereignLocalEventRuntimeAdapter(sovereign_source_root=source_root, runtime_base=runtime_base)
-    node_verifier = RetainedNodeProofVerifier(expected_node_id=node_id)
-    return_carrier = LocalReturnPathCarrier(evidence_root)
-    exporter = LocalEvidenceExporter(evidence_root)
-    closure_retainer = LocalClosureRetainer(evidence_root)
-    packet_retainer = LocalExactReturnPacketRetainer(evidence_root)
+    runtime_adapter = SovereignLocalEventRuntimeAdapter(
+        sovereign_source_root=source_root,
+        runtime_base=state_base / "ephemeral-runtime",
+    )
 
     result = run_mir_profile_transition(
-        node_proof={"node_id": node_id, "receipt_sha256": registration_receipt},
+        node_proof={"node_id": node_id, "receipt_sha256": registration_receipt, "user_verified_by_device": False},
         mirror_request=mirror_request,
         implementation_ref=f"StegVerse-Labs/.github:{TASK_ID}:{COSV}",
-        node_verifier=node_verifier,
+        node_verifier=RetainedNodeProofVerifier(expected_node_id=node_id),
         compute=runtime_adapter,
         materializer=runtime_adapter,
         identity=runtime_adapter,
         rendezvous_adapter=runtime_adapter,
-        return_carrier=return_carrier,
-        exporter=exporter,
-        closure_retainer=closure_retainer,
-        packet_retainer=packet_retainer,
+        return_carrier=LocalReturnPathCarrier(evidence_root),
+        exporter=LocalEvidenceExporter(evidence_root),
+        closure_retainer=LocalClosureRetainer(evidence_root),
+        packet_retainer=LocalExactReturnPacketRetainer(evidence_root),
     )
 
     decoded = json.loads(result.response_payload.decode("utf-8"))
     require(decoded.get("state") == "MIR_PROFILE_MIRROR_EXECUTED", "mir_profile_runtime_transition_not_observed")
     mirror_return = decoded.get("mirror_return")
     require(isinstance(mirror_return, dict), "mir_mirror_return_missing")
-    ingress = mirror_return.get("external_ingress_receipt")
-    require(isinstance(ingress, dict), "mir_external_ingress_receipt_missing")
-    require(ingress.get("transition_class") == "EXTERNAL_FRAMEWORK_INGRESS", "mir_far_side_transition_class_invalid")
+    ingress = first_external_ingress(mirror_return)
     require(ingress.get("external_system_profile") == "MIR", "mir_far_side_profile_mismatch")
     require(ingress.get("correlation_id") == correlation_id, "mir_far_side_correlation_mismatch")
     require(result.evidence.get("bounded_execution_observed") is True, "bounded_mir_execution_not_observed")
     require(result.evidence.get("receipt_chain_linked") is True, "mir_intr_receipt_chain_not_linked")
     require(result.closure.get("state") == "LEASE_CLOSED", "mir_runtime_lease_not_closed")
+    require(result.closure.get("evidence_retained_before_release") is True, "mir_evidence_not_retained_before_release")
 
     exact_packet_sha = sha256_uri(result.response_payload)
     one_way = {
@@ -228,6 +246,7 @@ def run(invocation: dict[str, Any], *, root: Path) -> dict[str, Any]:
         "request_ingress_receipt": result.evidence.get("request_ingress_receipt"),
         "mir_external_ingress_receipt": ingress,
         "response_egress_receipt": result.evidence.get("response_egress_receipt"),
+        "return_queue_receipt": result.evidence.get("return_queue_receipt"),
         "response_packet_sha256": exact_packet_sha,
         "receipt_chain_linked": True,
         "generic_sv002_route_reproof_performed": False,
@@ -238,8 +257,8 @@ def run(invocation: dict[str, Any], *, root: Path) -> dict[str, Any]:
     one_way_path = root / ONE_WAY_REL
     atomic_json(one_way_path, one_way)
 
-    mr = import_master_records_worker(root).execute(one_way_path)
-    require(isinstance(mr, dict) and mr.get("state") == "RETURNED", "master_records_current_transition_reconstruction_not_returned")
+    master_records = import_master_records_worker(root).execute(one_way_path)
+    require(isinstance(master_records, dict) and master_records.get("state") == "RETURNED", "master_records_current_transition_reconstruction_not_returned")
 
     receipt = {
         "schema": "stegverse.mir-roundtrip-egress-authenticity-receipt/v1",
@@ -259,7 +278,7 @@ def run(invocation: dict[str, Any], *, root: Path) -> dict[str, Any]:
         "mir_destination_evidence_retained": True,
         "master_records_reconstructs_current_final_exit_transition": True,
         "successful_one_way_mir_transport_identified": True,
-        "master_records": mr,
+        "master_records": master_records,
         "one_way_evidence_ref": str(one_way_path),
         "response_packet_sha256": exact_packet_sha,
         "governed_return_packet_retained": True,
@@ -272,8 +291,7 @@ def run(invocation: dict[str, Any], *, root: Path) -> dict[str, Any]:
         "master_records_authority": "Master Records",
         "authority_effect": "NONE_EXECUTION_EVIDENCE_ONLY",
     }
-    receipt_path = root / RECEIPT_REL
-    atomic_json(receipt_path, receipt)
+    atomic_json(root / RECEIPT_REL, receipt)
     return {
         "schema": "stegverse.worker-response/v0.1",
         "state": "HANDOFF_READY",
@@ -287,7 +305,6 @@ def run(invocation: dict[str, Any], *, root: Path) -> dict[str, Any]:
 
 
 def main() -> int:
-    invocation: object = None
     try:
         invocation = json.load(sys.stdin)
         require(isinstance(invocation, dict), "worker_invocation_object_required")
