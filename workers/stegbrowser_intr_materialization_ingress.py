@@ -24,6 +24,8 @@ from workers.stegbrowser_intr_materialization_consumer import (  # noqa: E402
 RECEIPT_SCHEMA = "stegverse.stegbrowser-intr-materialization-ingress/v1"
 RECEIPT_DIR = Path("receipts/sovereign-network/stegbrowser-intr-ingress")
 LATEST_REL = Path("receipts/sovereign-network/stegbrowser-intr-ingress.latest.json")
+BINDING_DIR_REL = Path("intr-payloads/stegbrowser-manifest-invocation")
+OPAQUE_BINDING_PREFIX = "opaque://stegbrowser-manifest-invocation/"
 AUTHORITY_EFFECT = "NONE_INGRESS_ONLY"
 
 
@@ -79,7 +81,25 @@ def _request_from_node_trigger(payload: Any) -> tuple[dict[str, Any], dict[str, 
         "node_id": entry.get("node_id"),
         "interlock_id": entry.get("interlock_id"),
         "outbox_entry_hash": entry.get("outbox_entry_hash"),
+        "embedded_binding": entry.get("stegbrowser_invocation"),
     }
+
+
+def _persist_embedded_binding(*, runtime_root: Path, request: Mapping[str, Any], source: Mapping[str, Any]) -> Path | None:
+    payload_ref = str(request.get("payload_ref") or "")
+    if not payload_ref.startswith(OPAQUE_BINDING_PREFIX):
+        return None
+    digest_hex = payload_ref[len(OPAQUE_BINDING_PREFIX):]
+    require(len(digest_hex) == 64 and all(ch in "0123456789abcdef" for ch in digest_hex), "opaque_binding_ref_invalid")
+    binding = source.get("embedded_binding")
+    require(isinstance(binding, dict), "opaque_binding_payload_missing")
+    expected_hash = "sha256:" + digest_hex
+    require(request.get("payload_hash") == expected_hash, "opaque_binding_ref_hash_mismatch")
+    require(sha_uri(binding) == expected_hash, "opaque_binding_payload_hash_mismatch")
+    path = runtime_root / BINDING_DIR_REL / f"{digest_hex}.json"
+    raw = json.dumps(binding, sort_keys=True, indent=2).encode("utf-8") + b"\n"
+    hil._write_once(path, raw)
+    return path
 
 
 def _dispatch(*, runtime_root: Path, materialization_id: str) -> dict[str, Any]:
@@ -123,6 +143,7 @@ def admit(*, runtime_root: Path, body: bytes, headers: Mapping[str, str]) -> dic
         raise ValueError("request_json_invalid") from exc
     request, source = _request_from_node_trigger(payload)
     materialization_id = str(request["materialization_id"])
+    _persist_embedded_binding(runtime_root=runtime_root, request=request, source=source)
     request_path = runtime_root / hil.REQUEST_DIR_REL / f"{materialization_id}.json"
     request_raw = json.dumps(request, sort_keys=True, indent=2).encode("utf-8") + b"\n"
     hil._write_once(request_path, request_raw)
