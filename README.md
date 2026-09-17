@@ -517,3 +517,12 @@ python scripts/refresh_and_dispatch_resident_requests.py \
 ```
 
 Goal context is valid only for the exact `canonical_work_coordination` selector. The portable bridge forwards it to the existing resident dispatcher, the dispatcher forwards it to the existing Canonical Work consumer, and the consumer forwards it into the registry-first cycle. The bridge and dispatcher receipts retain the exact Goal Task ID so a dropped or mismatched context fails closed instead of reverting silently to controller lineage. This carriage is non-authorizing: WorkerCoordinator remains claim/fence authority, Interlock/InTr remains transition authority, TV/TVC remains credential authority, and Master Records remains observed-reality/reconstruction authority.
+
+
+## StegBrowser Master Records provider-neutral binding
+
+Canonical Goal Task `MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001` is `ACTIVE / CHECKED_OUT`, COSV `40000100100000`. Site PR `#1380` and StegVerse-org/LLM-adapter PR `#344` have merged the applicable source repair: the immutable StegBrowser custody receipt now discovers a hash/health-verified StegVerse gateway rather than assuming the static Site origin hosts Master Records, browser credential material is prohibited, the gateway reuses the existing server-side TV/TVC Master Records credential role, and the sole custody authority remains `master-records/orchestration`.
+
+The browser receipt also uses canonical state-transition outcome `OBSERVED` while retaining the authentic InTr state `INGRESS_ADMITTED` inside transition evidence. The immutable nonce and request count remain unchanged.
+
+These source merges do not prove a live advertised gateway or authentic Master Records custody. `RECORDED`, reconstruction `PASS`, exact digest equality, WorkerCoordinator A3, A4, and Round Trip 1 remain evidence-gated. No Render, fixed hosting provider, platform/OS/device prerequisite, or second user-operated device was introduced. Canonical continuation: `docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md`.
