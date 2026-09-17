@@ -10,9 +10,20 @@
   "cosv_task_vector": "50000000100000",
   "canonical_handoff": "docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md",
   "canonical_contract": "control/canonical-master-records-state-transition-custody-contract.json",
+  "inventory_ref": "reports/canonical-master-records-state-transition-custody-inventory-20260917.json",
+  "reusable_task_ref": "source-bundles/reusable-task-registry.d/RT-CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001.json",
+  "canonical_client_ref": "workers/canonical_state_transition_custody.py",
+  "master_records_api_refs": [
+    "master-records/orchestration:services/canonical_state_transition_custody.py",
+    "master-records/orchestration:services/canonical_master_records_api.py"
+  ],
+  "stegos_protocol_ref": "StegVerse-Labs/StegOS:stegos/state_transition_custody.py",
+  "mir_event_driver_ref": "scripts/execute_mir_event_driven_roundtrip.py",
   "dependencies": [
     "control/entity-autonomous-governed-progression-contract.json",
-    "workers/reusable_task_master_records_roundtrip.py"
+    "workers/reusable_task_master_records_roundtrip.py",
+    "source-bundles/reusable-task-registry.d/RT-INTR-GOVERNED-TRANSITION-001.json",
+    "source-bundles/reusable-task-registry.d/RT-INTR-EVIDENCE-CUSTODY-001.json"
   ],
   "expected_evidence_predicates": [
     "EVERY_GOVERNED_STATE_CHANGE_EMITS_CANONICAL_STATE_RECEIPT",
@@ -23,25 +34,50 @@
     "MIR_CONSUMES_CANONICAL_CUSTODY_PATH",
     "SV002_SEMANTICS_PRESERVED"
   ],
+  "current_truth": {
+    "ecosystem_inventory_materialized": true,
+    "canonical_custody_contract_materialized": true,
+    "canonical_reusable_task_materialized": true,
+    "canonical_github_client_materialized": true,
+    "canonical_master_records_api_materialized": true,
+    "canonical_master_records_production_entrypoint_materialized": true,
+    "stegos_canonical_custody_protocol_materialized": true,
+    "mir_profile_runtime_emits_canonical_transition_custody": true,
+    "mir_event_driver_uses_sv002_event_trigger_order": true,
+    "workercoordinator_claim_required_for_mir_event_creation": false,
+    "mir_temporary_probe_primary_custody": false,
+    "mir_temporary_probe_enabled_for_primary_execution": false,
+    "authentic_current_mir_event_execution_observed": false,
+    "authentic_rtc_007_observed": false,
+    "authentic_rtc_008_observed": false,
+    "authentic_rtc_009_observed": false,
+    "authentic_governed_return_observed": false,
+    "canonical_runtime_custody_sequence_observed": false
+  },
   "completion": {
     "claimed": false,
-    "validated": false
+    "validated": false,
+    "source_adoption_complete_for_mir_lane": true,
+    "runtime_completion_pending": true
   },
   "allowed_next_transitions": [
-    "INVENTORY_EXISTING_CANONICAL_STATE_RECEIPT_EMITTERS",
-    "MATERIALIZE_SHARED_STATE_TRANSITION_CUSTODY_API",
-    "BIND_INTERLOCK_INTR_AND_EXECUTION_STATE_TRANSITIONS",
-    "ADOPT_IN_MIR_WITHOUT_TASK_SPECIFIC_PRIMARY_PROBE",
-    "VALIDATE_SV002_COMPATIBILITY",
-    "PROPAGATE_TO_CANONICAL_CONSUMERS",
-    "RECONCILE_MASTER_RECORDS_CUSTODY_AND_RECONSTRUCTION"
+    "VALIDATE_CANONICAL_SOURCE_ADOPTION",
+    "EXECUTE_STANDING_MIR_EVENT_THROUGH_EXISTING_EVENT_TRIGGERED_INGRESS",
+    "RECONCILE_CANONICAL_MASTER_RECORDS_RECEIPTS_IN_ORDER",
+    "LOCATE_FIRST_MISSING_OR_NONRETURNED_CANONICAL_TRANSITION",
+    "REPAIR_ONLY_EXACT_RUNTIME_OR_CUSTODY_BOUNDARY",
+    "CONTINUE_THROUGH_RTC_007_008_009",
+    "ADMIT_GOVERNED_RETURN_AND_RECORD_CANONICAL_RETURN_EXIT",
+    "PROPAGATE_CANONICAL_CUSTODY_TO_REMAINING_CONSUMERS"
   ],
   "authority_model": {
     "interlock_intr_grants_transition_authority": true,
     "master_records_grants_transition_authority": false,
     "master_records_grants_execution_authority": false,
     "master_records_grants_credential_authority": false,
+    "workercoordinator_grants_mir_event_creation_authority": false,
     "diagnostic_receipt_implies_transition": false,
-    "missing_transition_may_be_fabricated": false
+    "missing_transition_may_be_fabricated": false,
+    "github_actions_runtime_authority": "NONE"
   }
 }
