@@ -51,6 +51,8 @@ The `.github` runtime-connection handoff was separately reconciled by PR #2017, 
 
 The manual-device correction was validated at exact head `790b4d5ea0fbe2341a74fec8fe958cea5264cddd` and merged from `.github` PR #2009 as `3c80ef777b87d2263e8ddd839df780a103f19983`.
 
+PR #2022 passed its exact-head validation lanes but was not force-merged after current `main` advanced and produced a merge conflict. It was closed as superseded because newer canonical main already contained additional A3/A4 collision-check and runtime-evidence reconciliation state. Stale reconciliation text must never overwrite newer canonical truth.
+
 ## Runtime re-observation — 2026-09-16
 
 The canonical runtime evidence owner remains `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001` through the existing remediation lineage. Re-observation of accessible canonical receipt/source surfaces found no authentic authority-owned execution receipt for the immutable nonce. The existing remediation predicate record still reports:
@@ -61,11 +63,14 @@ AUTHENTIC_INTR_INGRESS_OBSERVED = NOT_OBSERVED
 CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED = NOT_OBSERVED
 ```
 
-The expected authority-owned boundary remains:
+The expected authority-owned boundaries remain:
 
 ```text
+receipts/sovereign-host/stegbrowser-runtime-connection-a1-a4.latest.json
 receipts/sovereign-host/stegbrowser-runtime-remediation-boundary.latest.json
 ```
+
+Neither expected retained receipt is present in canonical repository custody as of the latest re-observation. That condition is `EVIDENCE_NOT_OBSERVED`; it is not by itself an authentic fail-closed runtime transition.
 
 The materialization consumer is already wired to read the admitted InTr request and ingress receipt, dispatch the existing manifest-bound runner, and persist `receipts/sovereign-host/stegbrowser-intr-materialization-consumption.latest.json`. Source presence and CI validation do not prove that those runtime receipts exist or that execution occurred.
 
@@ -109,6 +114,33 @@ The generic SV001 portable WorkerCoordinator adapter is task/profile-specific an
 
 Because current re-observation did not find authentic `RUNTIME_READY_FOR_WORKERCOORDINATOR` evidence, this collision check does not invoke A3 or A4 and grants no execution authority.
 
+## Reusable Task Registry review requirement
+
+Before every continuation of this task sequence, review the current reusable Task Registry and the active runtime-connection child for newly promoted, retired, superseded, or more-specific reusable capabilities that pertain to the StegBrowser A1-A4 chain. Do not continue from a stale reusable-task assumption when the registry has changed.
+
+Current relevant reusable selection is:
+
+```text
+callable=false
+-> no execution materialization
+
+callable=true AND refreshable=true
+-> RT-SOVEREIGN-SOURCE-REFRESH-001
+
+callable=true AND refreshable=false
+-> no source refresh task
+
+callable=true AND applicable_protocol_resolved=false
+-> RT-INTR-PROTOCOL-ESTABLISH-001
+
+callable=true AND applicable_protocol_resolved=true AND registered Receipt #1 concrete path resolved
+-> RT-STEGBROWSER-RUNTIME-CONSUMPTION-001
+```
+
+`STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001` remains the active child that owns A1 observation and reusable-task selection. `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` remains the single canonical A2-through-A4 reusable execution owner and must not be duplicated. `RT-SOVEREIGN-SOURCE-REFRESH-001` is selected only when the authentic governed transition resolves `callable=true` and `refreshable=true`. `RT-INTR-PROTOCOL-ESTABLISH-001` remains the protocol-definition root and is selected only when the applicable protocol is not already resolved.
+
+Task Registry state does not mint execution authority and source/CI state does not prove runtime execution.
+
 ## Current authentic predicates
 
 Source/CI/merge do not establish runtime execution. No authority-owned same-invocation current-device receipt set has been retained in canonical custody during this reconciliation, so all authentic predicates remain false:
@@ -141,7 +173,7 @@ Do not repurpose the generic SV001 portable WorkerCoordinator adapter as a StegB
 
 ## Failure handling
 
-Re-observe the existing Node/InTr runtime and canonical receipt paths for the immutable nonce. If authentic `RUNTIME_READY_FOR_WORKERCOORDINATOR` evidence becomes reachable, continue through the existing A3/A4 composition above. If the authentic chain is fail-closed or stops before A4, repair only the first authentic transition failure exposed by that evidence. Missing runtime visibility is an observation condition to solve through the existing architecture; it is not a reason to convert the user into a manual device-observation component.
+Review the current reusable Task Registry first. Then re-observe the existing Node/InTr runtime and canonical receipt paths for the immutable nonce. If authentic `RUNTIME_READY_FOR_WORKERCOORDINATOR` evidence becomes reachable, continue through the existing A3/A4 composition above. If the authentic chain is fail-closed or stops before A4, repair only the first authentic transition failure exposed by that evidence. Missing runtime visibility or absent retained evidence is an observation condition to solve through the existing architecture; it is not an authentic fail-closed transition by itself and is not a reason to convert the user into a manual device-observation component.
 
 ## Completion transition
 
