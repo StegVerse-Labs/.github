@@ -136,6 +136,10 @@ These runtime predicates are not converted to PASS by GitHub source mutation or 
 5. Retain the secret-free exact-SHA PASS/BLOCK receipt and update this handoff from direct evidence.
 6. Continue to the next highest-causal machine-remediable shared dependency only after this lane is truthfully reconciled.
 
+## README impact
+
+This iteration changes coordination/evidence state only. It does not change `.github` externally meaningful runtime, authority, interface, or user-facing behavior. The existing README's fleet-census context remains correct, so no README content change is required for this iteration. TVC records the same `NO_MATERIAL_FUNCTION_CHANGE` determination in `docs/STEGMUSIC_VALIDATION_MIRROR_HANDOFF.md`; no existing runtime behavior was changed there either.
+
 ## Completion predicates
 
 - all 15 previously role-functional repositories remain role-functional after dependency regression review;
