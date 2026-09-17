@@ -3,7 +3,7 @@
 Updated: 2026-09-17
 Goal Task ID: `MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001`
 COSV ID: `50000000100000`
-Status: `ACTIVE / GOAL PROMPT 20 DECOMPOSED / CANONICAL MASTER RECORDS STATE-TRANSITION CUSTODY SUCCESSOR REGISTERED`
+Status: `ACTIVE / GOAL PROMPT 20 DECOMPOSED / CANONICAL MASTER RECORDS STATE-TRANSITION CUSTODY SUCCESSOR REGISTERED / AILEASH WITNESS EVIDENCE CHILD REGISTERED`
 
 ## Canonical state
 
@@ -79,9 +79,15 @@ That successor owns:
 
 The original separation-of-powers goal remains the parent architecture/evidence-contract lane; implementation adoption proceeds under the successor rather than extending this goal beyond Prompt 20.
 
+A genuinely separable evidence-reconciliation child is also registered:
+
+`MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001`
+
+That child owns AILeash/sebbi.pro/Justin Dobson public-evidence reconciliation for Appendix A R4 and witness-topology claims, with canonical map `docs/mir-reference-architecture/AILEASH_SEBBI_WITNESS_EVIDENCE_MAP.md` and handoff `docs/MIR_AILEASH_WITNESS_EVIDENCE_RECONCILIATION_MIRROR_HANDOFF.md`. It must not promote operator-controlled declarations, roster counts, pending OpenTimestamps states, or profile claims into stronger independent evidence.
+
 ## Counterpart evidence still required
 
-Separately from canonical custody adoption, Richard/MIR evidence-custody seam input, concrete minimum custody receipts, independently checkable Bitcoin anchor/inclusion evidence, and authentic MIR `mir.leaf.v3` independent reproduction remain pending.
+Separately from canonical custody adoption, independently checkable Bitcoin anchor/inclusion evidence and authentic MIR `mir.leaf.v3` independent reproduction remain pending. The AILeash/sebbi.pro reconciliation independently observed public witness/status surfaces and their bounded disclaimers, but the exact positive live-tip Appendix A attestation and the 784-record/30-commitment clean-room run remain counterpart evidence until independently retained or reproduced.
 
 ## Authority boundaries
 
@@ -94,4 +100,6 @@ Separately from canonical custody adoption, Richard/MIR evidence-custody seam in
 
 ## Next action
 
-Continue under `CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001`: inventory reusable custody/receipt paths, materialize the shared canonical transition-custody API, convert MIR to emit every governed state transition through it while preserving the SV002 event-triggered ingress order, validate against the temporary MIR probe, then execute the current MIR event and reconcile RTC-007/008/009 plus governed return from canonical Master Records receipts.
+Implementation continues under `CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001`.
+
+Evidence reconciliation continues under `MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001`: obtain one exact positive witness-attest artifact for a known peer/tip if independently reachable, and independently verify a specific confirmed OpenTimestamps/Bitcoin proof before promoting either claim. Preserve current bounded public observations otherwise.
