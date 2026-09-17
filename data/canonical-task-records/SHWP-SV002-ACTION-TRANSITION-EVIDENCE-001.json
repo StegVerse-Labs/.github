@@ -98,5 +98,11 @@
     "requirement": "EVERY_REQUIRED_GOVERNED_STATE_TRANSITION_MUST_BE_AUTHENTICALLY_EMITTED_RETAINED_AND_RECONSTRUCTABLE",
     "completion_rule": "NO_ACTION_IS_CANONICALLY_COMPLETE_WITH_MISSING_REQUIRED_TRANSITION_EVIDENCE"
   },
-  "readme_impact": {"material_function_change": true, "readme_updated_in_change_set": true, "readme_path": "README.md"}
+  "readme_impact": {
+    "material_function_change": true,
+    "readme_reviewed": true,
+    "readme_updated_in_change_set": false,
+    "readme_path": "README.md",
+    "determination": "NO_README_CHANGE_REQUIRED_EXISTING_README_STEGBROWSER_SECTION_IS_STEGBROWSER_SPECIFIC_AND_REMAINS_ACCURATE; DISCOVERY_CATALOG_OWNERSHIP_IS_DOCUMENTED_IN_REMOTE_RUNTIME_CONNECTOR_OPTIONALITY"
+  }
 }
