@@ -1,0 +1,93 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001",
+  "correlation_id": "SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001",
+  "root_correlation_id": "SHWP-SV002-ORG-RUNTIME-ACTIVATION-001",
+  "parent_task_id": "SHWP-SV002-ORG-RUNTIME-ACTIVATION-001",
+  "goal": "Consume the existing frozen StegVerse-002 v0.3 request through the registered StegVerseNode -> Interlock -> InTr -> bounded EVENT_EPHEMERAL execution path while enforcing the ecosystem-wide invariant that every governed action transition is authentically emitted, retained, same-execution correlated, and reconstructable through canonical Master Records custody.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "HANDOFF_READY",
+  "cosv_task_vector": "50000000107000",
+  "source_refs": [
+    "docs/SV002_ACTION_TRANSITION_EVIDENCE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github#2060",
+    "StegVerse-002/.github/docs/SELF_CHARACTERIZATION_EXECUTION_SURFACE_MIRROR_HANDOFF.md",
+    "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
+    "scripts/list_stegverse_execution_surfaces.py"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs", "StegVerse-002"],
+    "repositories": ["StegVerse-Labs/.github", "StegVerse-002/.github", "StegVerse-002/micro-node-runtime"],
+    "components": ["ephemeral-execution-surface-discovery", "registered-stegverse-node", "interlock-intr", "bounded-invocation-lease", "event-ephemeral-runtime", "workercoordinator-claim-fence", "sv002-frozen-v0.3", "master-records-transition-custody"]
+  },
+  "dependencies": [
+    {"dependency_id":"DEP-RT-STEGBROWSER-RUNTIME-CONSUMPTION-001","kind":"REUSABLE_TASK","state":"RESOLVED","ref":"source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json"},
+    {"dependency_id":"DEP-SV002-EPHEMERAL-INVOCATION-CONSUMPTION","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"StegVerse-Labs/.github#2060"}
+  ],
+  "blockers": [],
+  "systemic_incident_ref": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+  "adjacent_task_refs": ["GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001", "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001"],
+  "existing_evidence_refs": [
+    "StegVerse-Labs/.github@12297776c59130f261ed020acc5ea38bb6ecdf8c",
+    "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
+    "StegVerse-002/.github/docs/SELF_CHARACTERIZATION_EXECUTION_SURFACE_MIRROR_HANDOFF.md"
+  ],
+  "expected_evidence_predicates": [
+    "REQUEST_BOUND",
+    "STEGVERSE_NODE_BOUND_TO_INVOCATION",
+    "INTERLOCK_BOUND_TO_NODE_AND_MANIFEST",
+    "INTR_MATERIALIZATION_ADMITTED",
+    "INVOCATION_SCOPED_LEASE_ESTABLISHED",
+    "EVENT_EPHEMERAL_RUNTIME_MATERIALIZED",
+    "EXECUTION_TIME_RUNTIME_IDENTITY_BOUND",
+    "T0_CAPTURED",
+    "CURRENT_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+    "AUTHENTIC_INTR_INGRESS_OBSERVED",
+    "PRINCIPAL_EXECUTION_TRANSITIONS_RETAINED",
+    "EGRESS_EMITTED",
+    "MASTER_RECORDS_CUSTODY_OBSERVED",
+    "MASTER_RECORDS_RECONSTRUCTION_PASS",
+    "ALL_REQUIRED_ACTION_TRANSITIONS_RECONSTRUCTABLE",
+    "NO_SECOND_USER_OPERATED_DEVICE",
+    "NO_STANDING_RUNTIME_OR_EXTERNAL_HOST"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["registered_stegverse_node_invocation", "interlock_intr_transition", "bounded_event_ephemeral_materialization", "workercoordinator_claim_fence", "sv002_frozen_v0_3_execution", "master_records_transition_custody"],
+    "environment": "SOVEREIGN_EVENT_EPHEMERAL",
+    "direction": "INTERNAL_GOVERNED_EXECUTION",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "runtime_resolution": {
+    "surface_class": "ephemeral",
+    "surfaces": ["StegVerseNode", "StegBrowser"],
+    "availability": "AVAILABLE_TO_INVOKE",
+    "instance_state": "NOT_MATERIALIZED",
+    "materialization": "ON_INVOCATION",
+    "callable_task": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
+    "zero_connected_devices_is_runtime_blocker": false,
+    "second_user_operated_device_required": false,
+    "standing_runtime_required": false
+  },
+  "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
+  "human_action_ref": null,
+  "completion": {"claimed":false,"validated":false,"reconciliation_ref":null},
+  "allowed_next_transitions": ["INGRESS_ADMITTED", "EPHEMERAL_INVOCATION_CONSUMED", "TRANSITION_EVIDENCE_RECONCILED"],
+  "handoff_projection_refs": ["docs/SV002_ACTION_TRANSITION_EVIDENCE_MIRROR_HANDOFF.md", "StegVerse-002/.github/docs/SELF_CHARACTERIZATION_EXECUTION_SURFACE_MIRROR_HANDOFF.md"],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "interlock_intr_required_for_every_governed_transition": true,
+    "master_records_reality_authority": true,
+    "missing_transition_evidence_means_action_complete": false,
+    "github_runtime_authority": "NONE"
+  },
+  "universal_action_transition_invariant": {
+    "scope": "EVERY_STEGVERSE_ACTION",
+    "requirement": "EVERY_REQUIRED_GOVERNED_STATE_TRANSITION_MUST_BE_AUTHENTICALLY_EMITTED_RETAINED_AND_RECONSTRUCTABLE",
+    "completion_rule": "NO_ACTION_IS_CANONICALLY_COMPLETE_WITH_MISSING_REQUIRED_TRANSITION_EVIDENCE"
+  },
+  "readme_impact": {"material_function_change": true, "readme_updated_in_change_set": false, "readme_path": "README.md"}
+}
