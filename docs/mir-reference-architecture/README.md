@@ -18,11 +18,21 @@ Current discipline:
 - evidence custody/reconstruction remains independent of governance, admission, execution, credential/provider authority, and observability;
 - physical co-location is allowed only when semantic authority separation and attribution remain intact;
 - counterpart claims remain `COUNTERPART_REPORTED` until concrete artifacts are verified;
-- the newer MIR Bitcoin-anchor statement is not promoted to verified evidence until an authentic anchor/inclusion artifact is supplied;
-- the child `MIR-LEAF-V3-CONFORMANCE-FIXTURE-001` remains incomplete until authentic MIR independent reproduction is observed;
-- the historically successful StegVerse-002 Node -> Interlock -> InTr -> bounded event-ephemeral runtime -> Master Records reconstruction route is reusable engineering evidence and must be duplicated before adding MIR-specific requirements rather than being re-proved as a generic gate;
-- historical SV002 receipts prove that prior route only and grant no present transition authority, so fresh evidence remains required for the current MIR-bound invocation and new transitions.
+- the MIR Bitcoin-anchor statement is not promoted to verified evidence until an authentic anchor/inclusion artifact is supplied;
+- `MIR-LEAF-V3-CONFORMANCE-FIXTURE-001` remains incomplete until authentic MIR independent reproduction is observed;
+- the historically successful StegVerse-002 Node -> Interlock -> InTr -> bounded EVENT_EPHEMERAL runtime -> Master Records reconstruction route is reusable engineering evidence and is duplicated before MIR-specific requirements rather than re-proved as a generic gate;
+- historical SV002 receipts grant no present authority, so the current MIR-bound invocation still requires fresh WorkerCoordinator/Interlock/InTr/Master Records evidence.
 
-The active transport successor now binds that duplicate-first order through `StegVerse-Labs/Site/data/mir-roundtrip-egress-sv002-route-binding.v1.json`. One-way MIR transport evidence is scoped to the current Goal/COSV binding, MIR destination-profile binding, final StegVerse-side egress, authentic Interlock/InTr egress, MIR MIRROR far-side transition, destination evidence, and Master Records reconstruction of the current final exit transition. Governed-return and full round-trip predicates are evaluated only after that duplication succeeds.
+## MIR transport execution state
 
-Draft v0.2 adds a concrete negative-test baseline: governance ALLOW must not become execution proof; admission without an execution record stays unexecuted/unproven; executor self-report cannot substitute for independent custody when required; provider-session success cannot admit a state transition; custody cannot authorize new work; and observability cannot promote liveness into execution proof.
+The active transport successor `MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001` binds duplicate-first execution through `StegVerse-Labs/Site/data/mir-roundtrip-egress-sv002-route-binding.v1.json`.
+
+The existing sovereign WorkerCoordinator/runtime source now includes the current task vector/index, WorkerCoordinator registry binding, process-worker adapter, standing resident execution request, and `workers/mir_roundtrip_egress_authenticity_worker.py`. The worker calls the existing StegOS MIR-profile EVENT_EPHEMERAL runtime and existing Master Records reusable lifecycle reconstruction; it creates no replacement runtime or authority plane.
+
+One-way MIR MIRROR success can be promoted only from a current-invocation receipt proving Goal/COSV binding, `destination_profile=MIR`, current StegVerse-side egress, linked Interlock/InTr transport, MIR MIRROR far-side ingress, retained exact destination evidence, and Master Records exact-byte reconstruction. Owned-mirror runtime evidence retains provenance `MIR_MIRROR_BUILD_TEST_COUNTERPART_RUNTIME` and is not authentic external MIR endpoint evidence.
+
+No canonical `receipts/mir-roundtrip-egress-authenticity/current.latest.json` was present at the latest reconciliation, so current MIR-bound one-way execution and full-roundtrip completion remain unclaimed. The standing request is machine-owned; no user-operated device prerequisite is introduced.
+
+Only after one-way MIR MIRROR proof succeeds may the exact retained response packet continue through the existing governed StegVerse return-admission path. Full round-trip completion additionally requires actual return admission, durable return recording, and the final allowed transport-exit transition.
+
+Draft v0.2's negative-test baseline remains unchanged: governance ALLOW is not execution proof; admission without an execution record remains unexecuted; executor self-report cannot replace independent custody where required; provider-session success cannot admit a transition; custody cannot authorize new work; and observability cannot promote liveness into execution proof.
