@@ -15,9 +15,9 @@ Supported modes:
 
 For compact canonical continuation, targeted/resume modes may additionally provide
 --cosv-task-vector. After source refresh and before execution, the task ID/vector pair
-is resolved exactly once against control/task-vector-index.json and fails closed on
-missing, duplicate, malformed, or mismatched state. Pointer validation grants no
-execution, claim, fence, credential, transition, or custody authority.
+is resolved exactly once against control/task-vector-index.json and the referenced
+canonical task-vector record; index/source-vector parity drift fails closed. Pointer
+validation grants no execution, claim, fence, credential, transition, or custody authority.
 
 Running this script on a sovereign resident surface may produce real runtime evidence.
 Merely merging or validating this source does not.
@@ -163,11 +163,7 @@ def _load_registry(runtime_root: Path) -> dict[str, Any]:
 
 
 def validate_cosv_task_pointer(runtime_root: Path, task_id: str, vector: str) -> dict[str, Any]:
-    """Verify a compact task.v1 pointer against the refreshed canonical index.
-
-    This is resolution only. A successful result is evidence that the caller supplied
-    the currently indexed pointer; it is never execution or transition authority.
-    """
+    """Verify a compact task.v1 pointer against index and canonical vector record."""
     if not isinstance(vector, str) or len(vector) != 14 or not vector.isdigit():
         raise RuntimeError("COSV task vector must be a 14-digit task.v1 vector")
     path = runtime_root / COSV_INDEX_REF
@@ -177,7 +173,9 @@ def validate_cosv_task_pointer(runtime_root: Path, task_id: str, vector: str) ->
         index = json.loads(path.read_text(encoding="utf-8"))
     except Exception as exc:
         raise RuntimeError("canonical COSV task-vector index is unreadable") from exc
-    rows = index.get("tasks") if isinstance(index, dict) else None
+    if not isinstance(index, dict) or index.get("profile") not in (None, "task.v1"):
+        raise RuntimeError("canonical COSV task-vector index profile is invalid")
+    rows = index.get("tasks")
     if not isinstance(rows, list):
         raise RuntimeError("canonical COSV task-vector index shape is invalid")
     matches = [row for row in rows if isinstance(row, dict) and row.get("task_id") == task_id]
@@ -186,9 +184,31 @@ def validate_cosv_task_pointer(runtime_root: Path, task_id: str, vector: str) ->
     row = matches[0]
     if row.get("vector") != vector:
         raise RuntimeError("task_id/COSV vector binding mismatch")
+    if row.get("vector_state") not in (None, "EMITTED") or row.get("authority_effect") not in (None, "NONE"):
+        raise RuntimeError("canonical COSV task-vector index row is not non-authorizing EMITTED state")
     source_ref = row.get("source_state_vector_ref")
     if not isinstance(source_ref, str) or not source_ref:
         raise RuntimeError("canonical COSV task pointer lacks source state-vector provenance")
+    source_path = (runtime_root / source_ref.split("#", 1)[0]).resolve()
+    try:
+        source_path.relative_to(runtime_root.resolve())
+    except ValueError as exc:
+        raise RuntimeError("canonical COSV source state-vector escaped resident root") from exc
+    if not source_path.is_file():
+        raise RuntimeError("canonical COSV source state-vector is not materialized")
+    try:
+        source_vector = json.loads(source_path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        raise RuntimeError("canonical COSV source state-vector is unreadable") from exc
+    identity = str(source_vector.get("identity") or "") if isinstance(source_vector, dict) else ""
+    if not (
+        isinstance(source_vector, dict)
+        and source_vector.get("profile") == "task.v1"
+        and source_vector.get("level") == "task"
+        and identity.endswith(f":task:{task_id}")
+        and source_vector.get("vector") == vector
+    ):
+        raise RuntimeError("canonical COSV index/source state-vector parity mismatch")
     return {
         "profile": "task.v1",
         "task_id": task_id,
@@ -196,6 +216,7 @@ def validate_cosv_task_pointer(runtime_root: Path, task_id: str, vector: str) ->
         "source_state_vector_ref": source_ref,
         "registry_ref": row.get("registry_ref"),
         "validated_against": str(COSV_INDEX_REF),
+        "source_vector_verified": True,
         "binding_verified": True,
         "authority_effect": "NONE",
     }
