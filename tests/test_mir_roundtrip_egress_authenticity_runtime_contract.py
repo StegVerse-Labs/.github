@@ -40,7 +40,7 @@ def test_workercoordinator_binding_reuses_existing_authority_plane():
     assert worker["capabilities"] == ["mir_roundtrip_egress_authenticity"]
     assert proc["capabilities"] == worker["capabilities"]
     assert proc["command"] == ["python", "workers/mir_roundtrip_egress_authenticity_worker.py"]
-    assert "STEGVERSE_NODE_GENESIS_RECEIPT" in proc["env_allowlist"]
+    assert "STEGVERSE_NODE_GENESIS_RECEIPT" not in proc["env_allowlist"]
     assert fragment["github_token_required"] is False
 
 
@@ -48,9 +48,9 @@ def test_worker_is_duplicate_first_and_runtime_evidence_bounded():
     source = (ROOT / "workers/mir_roundtrip_egress_authenticity_worker.py").read_text(encoding="utf-8")
     required = (
         "DUPLICATE_PROVEN_SV002_ROUTE_FIRST_THEN_APPLY_MIR_SPECIFIC_REQUIREMENTS",
+        "FROZEN_PROVEN_ROUTE_BINDING_EVIDENCE_ONLY",
         "run_mir_profile_transition",
         "SovereignLocalEventRuntimeAdapter",
-        "validate_node_genesis_receipt",
         "reusable_task_master_records_roundtrip.py",
         "MIR_MIRROR_ONE_WAY_TRANSITION_OBSERVED",
         "MIR_MIRROR_BUILD_TEST_COUNTERPART_RUNTIME",
@@ -64,6 +64,8 @@ def test_worker_is_duplicate_first_and_runtime_evidence_bounded():
         "GH_TOKEN",
         "SECOND_RUNTIME_PLANE",
         "USER_DEVICE_PREREQUISITE",
+        "current_registered_node_receipt_not_materialized",
+        "validate_node_genesis_receipt",
     )
     for token in forbidden:
         assert token not in source
