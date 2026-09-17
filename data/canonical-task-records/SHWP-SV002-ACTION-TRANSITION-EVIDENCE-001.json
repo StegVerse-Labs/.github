@@ -12,16 +12,19 @@
     "docs/SV002_ACTION_TRANSITION_EVIDENCE_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github#2060",
     "StegVerse-002/.github/docs/SELF_CHARACTERIZATION_EXECUTION_SURFACE_MIRROR_HANDOFF.md",
+    "StegVerse-002/.github:resident-runtime/self_characterization_surface.py",
+    "StegVerse-002/micro-node-runtime:tools/run_self_characterization_principal.py",
     "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
     "scripts/list_stegverse_execution_surfaces.py"
   ],
   "targets": {
     "organizations": ["StegVerse-Labs", "StegVerse-002"],
     "repositories": ["StegVerse-Labs/.github", "StegVerse-002/.github", "StegVerse-002/micro-node-runtime"],
-    "components": ["ephemeral-execution-surface-discovery", "registered-stegverse-node", "interlock-intr", "bounded-invocation-lease", "event-ephemeral-runtime", "workercoordinator-claim-fence", "sv002-frozen-v0.3", "master-records-transition-custody"]
+    "components": ["ephemeral-execution-surface-discovery", "registered-stegverse-node", "interlock-intr", "bounded-invocation-lease", "event-ephemeral-runtime", "organization-local-self-characterization-surface", "workercoordinator-claim-fence", "sv002-frozen-v0.3", "master-records-transition-custody"]
   },
   "dependencies": [
-    {"dependency_id":"DEP-RT-STEGBROWSER-RUNTIME-CONSUMPTION-001","kind":"REUSABLE_TASK","state":"RESOLVED","ref":"source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json"},
+    {"dependency_id":"DEP-SV002-ORG-SELF-CHARACTERIZATION-SURFACE","kind":"EXISTING_EXECUTION_SURFACE","state":"RESOLVED","ref":"StegVerse-002/.github:resident-runtime/self_characterization_surface.py"},
+    {"dependency_id":"DEP-RT-STEGBROWSER-RUNTIME-CONSUMPTION-001-MECHANICS","kind":"REUSABLE_MECHANICS_PROVENANCE","state":"RESOLVED","ref":"source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json","disposition":"CONNECTION_MECHANICS_REFERENCE_ONLY_NOT_SV002_CALLABLE_OWNER"},
     {"dependency_id":"DEP-SV002-EPHEMERAL-INVOCATION-CONSUMPTION","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"StegVerse-Labs/.github#2060"}
   ],
   "blockers": [],
@@ -29,6 +32,8 @@
   "adjacent_task_refs": ["GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001", "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001"],
   "existing_evidence_refs": [
     "StegVerse-Labs/.github@12297776c59130f261ed020acc5ea38bb6ecdf8c",
+    "StegVerse-002/.github:resident-runtime/self_characterization_surface.py",
+    "StegVerse-002/micro-node-runtime:tools/run_self_characterization_principal.py",
     "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json",
     "StegVerse-002/.github/docs/SELF_CHARACTERIZATION_EXECUTION_SURFACE_MIRROR_HANDOFF.md"
   ],
@@ -52,20 +57,47 @@
     "NO_STANDING_RUNTIME_OR_EXTERNAL_HOST"
   ],
   "runtime_requirements": {
-    "capabilities": ["registered_stegverse_node_invocation", "interlock_intr_transition", "bounded_event_ephemeral_materialization", "workercoordinator_claim_fence", "sv002_frozen_v0_3_execution", "master_records_transition_custody"],
+    "capabilities": ["registered_stegverse_node_invocation", "interlock_intr_transition", "bounded_event_ephemeral_materialization", "organization_local_self_characterization", "workercoordinator_claim_fence", "sv002_frozen_v0_3_execution", "master_records_transition_custody"],
     "environment": "SOVEREIGN_EVENT_EPHEMERAL",
     "direction": "INTERNAL_GOVERNED_EXECUTION",
     "mutation_required": true,
     "deployment_required": false,
     "current_observation_required": true
   },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {"substrate_id":"STEG-BROWSER-RETAINED-RESIDENT-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/SV002_ACTION_TRANSITION_EVIDENCE_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"STEGOS-CURRENT-DEVICE-NODE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["scripts/list_stegverse_execution_surfaces.py"]},
+      {"substrate_id":"STEG-BROWSER-EPHEMERAL-LEASE","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json"]},
+      {"substrate_id":"SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/SV002_ACTION_TRANSITION_EVIDENCE_MIRROR_HANDOFF.md"]},
+      {"substrate_id":"ADMITTED-EPHEMERAL-STEGOS-NODE","disposition":"SELECTED","limitation_class":"NONE","evidence_refs":["scripts/list_stegverse_execution_surfaces.py","StegVerse-002/.github:resident-runtime/self_characterization_surface.py","StegVerse-002/micro-node-runtime:tools/run_self_characterization_principal.py"]},
+      {"substrate_id":"REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT","disposition":"NOT_APPLICABLE","limitation_class":"NOT_APPLICABLE","evidence_refs":["docs/REMOTE_RUNTIME_CONNECTOR_OPTIONALITY.md"]}
+    ],
+    "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  },
   "runtime_resolution": {
     "surface_class": "ephemeral",
-    "surfaces": ["StegVerseNode", "StegBrowser"],
+    "selected_surface": "StegVerseNode",
     "availability": "AVAILABLE_TO_INVOKE",
     "instance_state": "NOT_MATERIALIZED",
     "materialization": "ON_INVOCATION",
-    "callable_task": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
+    "callable_task": "SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001",
+    "execution_owner": "StegVerse-002/.github",
+    "operation": "REQUEST_SELF_CHARACTERIZATION",
+    "stegbrowser_supporting_mechanics_task": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
+    "stegbrowser_is_callable_owner_for_sv002": false,
     "zero_connected_devices_is_runtime_blocker": false,
     "second_user_operated_device_required": false,
     "standing_runtime_required": false
@@ -89,5 +121,11 @@
     "requirement": "EVERY_REQUIRED_GOVERNED_STATE_TRANSITION_MUST_BE_AUTHENTICALLY_EMITTED_RETAINED_AND_RECONSTRUCTABLE",
     "completion_rule": "NO_ACTION_IS_CANONICALLY_COMPLETE_WITH_MISSING_REQUIRED_TRANSITION_EVIDENCE"
   },
-  "readme_impact": {"material_function_change": true, "readme_updated_in_change_set": false, "readme_path": "README.md"}
+  "readme_impact": {
+    "material_function_change": true,
+    "readme_reviewed": true,
+    "readme_updated_in_change_set": false,
+    "readme_path": "README.md",
+    "determination": "NO_README_CHANGE_REQUIRED_EXISTING_README_STEGBROWSER_SECTION_IS_STEGBROWSER_SPECIFIC_AND_REMAINS_ACCURATE; DISCOVERY_CATALOG_OWNERSHIP_IS_DOCUMENTED_IN_REMOTE_RUNTIME_CONNECTOR_OPTIONALITY"
+  }
 }
