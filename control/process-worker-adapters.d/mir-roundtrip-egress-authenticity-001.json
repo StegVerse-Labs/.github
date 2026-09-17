@@ -13,7 +13,6 @@
         "STEGVERSE_STEGOS_ROOT",
         "STEGVERSE_STEGOS_SOURCE_ROOT",
         "STEGVERSE_SITE_ROOT",
-        "STEGVERSE_NODE_GENESIS_RECEIPT",
         "STEGVERSE_HEARTBEAT_ROOT",
         "STEGVERSE_REPO_ROOTS_JSON",
         "XDG_STATE_HOME",
@@ -29,9 +28,9 @@
       ],
       "notes": [
         "Duplicates the proven SV002 route mechanics first and binds only the current MIR invocation.",
-        "Requires a fresh WorkerCoordinator claim/fence but does not re-prove generic SV002 route mechanics.",
+        "Requires a fresh WorkerCoordinator claim/fence but does not re-prove generic SV002 route mechanics or require a new Node receipt input.",
         "Uses the existing StegOS EVENT_EPHEMERAL MIR profile runtime, Interlock/InTr transition semantics, and Master Records lifecycle reconstruction.",
-        "No second runtime, scheduler, dispatcher, transport plane, credential path, or user-device prerequisite is created."
+        "No second runtime, scheduler, dispatcher, transport plane, credential path, user-device prerequisite, or remote-device prerequisite is created."
       ],
       "timeout_seconds": 600,
       "type": "process_json_v0.1"
