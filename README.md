@@ -475,3 +475,9 @@ The genuinely separable GP10 external-response / revenue-validation lane now con
 The connected Outlook account `rigel@stegverse.org` contains the two first-wave GP10 outreach messages; no prospect reply was observed at decomposition time. Provider-observed send evidence does not establish buyer interest or revenue.
 
 The fleet parent's remaining noncommercial runtime/evidence predicates stay with their already-canonical owners. No speculative infrastructure or routine GitHub Actions work is introduced by the decomposition.
+
+## StegBrowser custody observation correction
+
+The [runtime connection handoff](docs/STEGBROWSER_RUNTIME_CONNECTION_INGRESS_MIRROR_HANDOFF.md#goal-prompt-16-direct-custody-surface-observation-and-registry-discrepancy) records a public custody-route HTTP 404 and the recovered central Task Registry row for the existing ACTIVE/CHECKED_OUT task. Live Master Records database contents remain unknown. Deployment declarations and repository searches do not prove custody, reconstruction, or runtime execution; registration restoration does not authorize execution; resolve the existing StegVerse-owned callable custody binding before advancing A1–A4. StegVerse is intended to become platform, OS and device agnostic. Render is excluded from all use and consideration; no Render workspace confirmation or other manual prerequisite remains. Current browser implementations do not establish a permanent browser, OS or device requirement.
+
+The existing optional local custody adapter has a reproduced source/destination schema mismatch: a canonical state-transition receipt is sent to the reusable-task lifecycle ingester. Repair belongs to the existing canonical custody owner; source reproduction is not evidence that the immutable invocation traversed that adapter. The handoff records the exact source blobs and evidence limits.

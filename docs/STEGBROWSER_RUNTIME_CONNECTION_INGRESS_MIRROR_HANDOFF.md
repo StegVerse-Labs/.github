@@ -8,7 +8,7 @@ Updated: 2026-09-17
 - Parent Goal: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`
 - Root lineage: `STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / SV002 EXECUTION LINEAGE REUSED / NODE-JOURNAL + SV002 EXPORT + MASTER RECORDS INGRESS + CANONICAL CUSTODY BRIDGE MERGED+VALIDATED / AUTHENTIC MASTER RECORDS RECONSTRUCTION + A1-A4 EVIDENCE PENDING`
+- Status: `ACTIVE / CHECKED_OUT / CENTRAL REGISTRATION RESTORED IN THIS CHANGE / RUNTIME EVIDENCE PENDING`
 - External/second user-operated device required: `false`
 - Canonical ephemeral runtime class: `ADMITTED-EPHEMERAL-STEGOS-NODE`
 - Empty connector inventory (`list_devices=[]`) is not evidence that ephemeral runtime capacity is absent.
@@ -364,3 +364,72 @@ README reviewed. No byte change is required. The authority/runtime topology rema
 ## Manual work
 
 None.
+
+## Goal prompt 16: direct custody-surface observation and registry discrepancy
+
+Session Prompt Count: 1. Goal Prompt Count: 16/20. Observation: 2026-09-17 (HTTP response timestamps 22:42–22:43 UTC). This section supersedes earlier assertions of verified central-registry membership and live custody-store absence.
+
+### Coordination identity
+
+A full read of `data/canonical-task-registry.json` on current default branch returned zero task rows for `STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001`. The same lookup at supplied recovery commit `c2c3d88b04cd93fc3e352024aaffcabf6f78ba6c` also returned zero rows. The existing shard `data/canonical-task-records/STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001.json` (blob `856c82a0fc62e9718dda9618dee16bb9e0a07129`) says ACTIVE / CHECKED_OUT, but it cannot substitute for central-registry membership: `scripts/evaluate_task_registry_collision_checkin.py` loads registry rows first and uses shards only for enrichment.
+
+Canonical coordination state is therefore UNVERIFIED / REGISTRY_ENTRY_ABSENT, not a newly proven CHECKED_OUT state. Do not manufacture an INACTIVE or RETIRED registry state from absence. This documentation-only draft preserves findings; it does not restore registration, claim execution, or advance runtime predicates. Reconcile the existing identity and COSV into the registry through its existing registration/collision-validation path before executable continuation. Do not mint a replacement task merely to reset the count.
+
+### Observed public route and source routing
+
+Read-only HEAD and GET of `https://stegverse.org/api/master-records/state-transitions` returned HTTP 404, `server: GitHub.com`, `content-type: text/html; charset=utf-8`. This proves that the probed public network route did not return the Master Records API. No POST was issued and no invocation was created.
+
+The current Site browser custody client (blob `4ea45ac0dd309fdaf0d7ee55c9f6463c862b4742`) submits to the supplied same-origin endpoint with cookies and an `X-StegVerse-Credential-Authority: TV/TVC` declaration. This header is not itself authentication evidence. The root Universal InTr worker (blob `460ddbf4079dc006a9cf28238b0aef4191e59ad7`), its base, and all five imported extensions were read: no state-transitions fetch handler was found. The base fetch handler handles /intr/profile, /intr/materialization/readiness, /intr/materialization and /intr/device-kv/result. This source inspection does not attest a particular user's currently installed worker.
+
+### Existing authoritative storage and reconstruction contract
+
+- Authority source: `master-records/orchestration:services/canonical_master_records_api.py`, blob `4b68a846ef6ac478f0c201a138ffaa750bfdc778`, installs `canonical_state_transition_custody` into the existing custody application.
+- Existing table: `canonical_state_transition_receipts`; primary key receipt_sha256; unique identity_key composed from subject_or_correlation_id, transition_id, transition_sequence.
+- Existing authenticated reconstruction route: `GET /api/master-records/state-transitions/{receipt_sha256}/reconstruction`. The source module exposes no nonce-listing route. Read the existing authority-owned store or retained receipt index to recover the authentic digest; do not invent one or add a second API.
+- A read must correlate the complete immutable nonce/Node/Interlock/Receipt-1/lease/runtime/exported-bundle tuple, enforce exactly one matching record, and independently recompute the retained canonical receipt digest.
+
+### Precise remaining condition and remediation
+
+The unresolved condition is existing Site-to-authority route/authentication/deployment visibility, plus the missing central registration. The live durable store has NOT been queried; its tuple count remains UNKNOWN. The public 404 and repository search absence do not prove zero custody records or that the immutable invocation never executed.
+
+Render is excluded from all consideration and use by explicit user direction. The previous workspace-confirmation prerequisite is withdrawn. Do not inspect, configure, deploy, query, or route through Render; do not request its workspace or credentials.
+
+Continue through the existing StegVerse-owned callable custody contract `RT-CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001`, preserving Interlock/InTr transition authority, TV/TVC credential authority and Master Records custody/reconstruction authority. Resolve the existing authority-owned binding and authentic retained evidence without making a provider, platform, operating system, browser implementation, or device class a prerequisite. No new request, host, runtime, dispatcher, transport, credential path, or custody store is introduced by this correction.
+
+A1/A2 remain unpromoted; A3/A4/Round Trip 1 remain unentered. No Actions were dispatched, no runtime was launched, and no release or propagation success is claimed. README is updated with a concise pointer to this evidence correction.
+
+## Goal prompts 17–18: platform, OS and device independence
+
+Session Prompt Count: 3. Goal Prompt Count: 18/20.
+
+User direction: StegVerse is meant to become platform/OS/device agnostic. DO NOT USE RENDER FOR ANYTHING. This supersedes the previous provider-inspection continuation and applies to tools, infrastructure, deployment, custody access, credentials, proposed remedies and future handoffs. Manual work: None.
+
+The existing canonical custody reusable-task record was re-read from main (blob `580d83808554f64e2f9787e1c0ba2531908b0cae`). It composes `RT-INTR-GOVERNED-TRANSITION-001` and `RT-INTR-EVIDENCE-CUSTODY-001`; its runner template is `workers/canonical_state_transition_custody.py`. Its identity, receipt contract and custody predicates are not tied to Render. The companion canonical custody handoff (blob `e0023753ea0655d2fbd328bb6436e763bed97135`) requires authentic authoritative write-through and prohibits browser-local self-issued custody and substitute runtimes.
+
+Existing browser/Safari/Web Worker source references describe current implementations only; they do not define the platform boundary or prove portable implementations exist. Do not replace the excluded provider with another mandatory provider or introduce OS/device dependence. Preserve the single-device constraint while tracing the existing platform-neutral callable contract to its authority-owned implementation and exact invocation evidence.
+
+The current central Task Registry was re-read and still has zero matching rows for this Goal Task. Registration reconciliation remains separate from runtime proof. This PR changes continuation documentation only; it does not attest runtime portability, repair the custody route, restore registration, or promote A1–A4. Retain goal count 18/20 across sessions.
+
+## Goal prompt 19: registration repair and exact local custody mismatch
+
+Session Prompt Count: 5. Goal Prompt Count: 19/20. The intervening complaint did not advance the goal and did not increment its cumulative count.
+
+This change restores exactly one central registry row for the existing task, preserving the shard's ACTIVE / CHECKED_OUT coordination state, root/parent identity, COSV 40000100100000, invocation constraints and false completion predicates. CHECKED_OUT is source-work coordination, not runtime claim/fence evidence. WorkerCoordinator claim_ref and fence_ref remain null and projection_only=true. The existing task vector is reused; no new task or invocation is minted. Earlier registry-absence observations remain historical evidence and are superseded only once this change is merged and main is re-read.
+
+Local bounded validation: exact identity count 1; existing substrate-resolution validator PASS; task global-invariant validator PASS; comparison against the complete retrieved registry found no CHECKED_OUT component/lineage collision. Existing rows were preserved. No hosted Actions validation was dispatched and no full repository-suite PASS is claimed.
+
+### Reproduced implementation defect
+
+Current `workers/canonical_state_transition_custody.py` (blob 03b2a94710da94cd87bd9ad1ba6ff3a644c8f610) already has an optional local adapter. It sends a `stegverse.canonical-state-transition-receipt/v1` directly to `master-records/orchestration:scripts/ingest_reusable_task_lifecycle.py` (blob ad918540145535cc818f53675462dc2a41d00cce). That ingester requires `stegverse.reusable-task-master-records-custody-request/v1` and a genuine lifecycle bundle with manifest, trigger, result, expiry and residual evidence.
+
+A local contract reproduction built a clearly labelled TEST_ONLY_NOT_INVOCATION receipt with the existing receipt builder and called only the destination's validate_request function. Result: `FAIL_CLOSED: request schema mismatch`. No custody write, invocation, admission, runtime or authority receipt was emitted. This is a source-contract defect, not proof the immutable StegBrowser invocation used that adapter.
+
+Do not relabel a state receipt as a lifecycle request, fabricate lifecycle evidence, or loosen the destination validator. Repair must use the existing canonical state-transition custody owner and receipt contract, preserving independent retention/reconstruction, replay identity and authority boundaries. First establish whether the single immutable invocation uses the browser API binding or the local adapter; do not repair an unused branch as if it resolves runtime readiness.
+
+### Available session binding and next action
+
+A presence-only check found no configured STEGVERSE_MASTER_RECORDS_ENDPOINT, STEGVERSE_MASTER_RECORDS_TOKEN, STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT, STEGVERSE_MASTER_RECORDS_SOURCE_ROOT, STEGVERSE_REPO_ROOTS_JSON or STEGVERSE_HEARTBEAT_ROOT in this assistant tool process. This is only a session reachability observation; it is not proof that the StegVerse-owned custody context is absent.
+
+Continue by resolving the existing invocation's authority-owned binding through its existing Node/InTr callable path and retained records. Use the existing custody task owner for any shared adapter repair. No Render use or consideration, mandatory provider/platform/OS/device, substitute runtime, credential path, request or custody authority. A1/A2 remain unpromoted; A3/A4/Round Trip 1 unentered. No release is warranted.
+
+At the next qualifying prompt (20/20), retain this same goal count and close only with authentic completion evidence; otherwise transfer genuinely separable unresolved work with canonical identities and concrete handoffs, reusing existing custody/invocation owners wherever applicable rather than resetting this goal.
