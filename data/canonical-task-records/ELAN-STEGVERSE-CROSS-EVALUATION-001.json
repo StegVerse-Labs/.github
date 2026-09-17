@@ -6,7 +6,7 @@
   "parent_task_id": "ELAN-NEXT-PHASE-EXPERIMENT-001",
   "goal": "Cross-evaluate preserved ELAN Test 2 evidence and the independently produced StegVerse evidence chain without altering either architecture.",
   "coordination_state": "ACTIVE",
-  "checkout_state": "UNCLAIMED",
+  "checkout_state": "PHASE1_ALIGNED_STEGVERSE_GOVERNED_CHAIN_PENDING",
   "cosv": {
     "profile": "task.v1",
     "vector": "10100000100000",
@@ -15,44 +15,63 @@
   },
   "source_refs": [
     "docs/ELAN_STEGVERSE_CROSS_EVALUATION_MIRROR_HANDOFF.md",
-    "docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md"
+    "docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK/docs/ELAN_STEGVERSE_CROSS_EVALUATION_PHASE1.md",
+    "StegVerse-org/StegVerse-SDK/data/elan-stegverse-cross-evaluation-001.phase1.json"
   ],
   "dependencies": [
     {
       "dependency_id": "DEP-ELAN-TEST2-RETURNED-TRACE",
       "kind": "EXPERIMENT_EVIDENCE",
-      "state": "AVAILABLE",
-      "ref": "Returned ELAN Test 2 trace reconciled in predecessor handoff"
+      "state": "AVAILABLE_PRESERVED",
+      "ref": "Returned ELAN Test 2 trace reconciled in predecessor handoff and preserved without normalization in phase-1 surfaces"
     },
     {
       "dependency_id": "DEP-STEGVERSE-INDEPENDENT-CORRESPONDING-CHAIN",
       "kind": "CROSS_EVALUATION_EVIDENCE",
-      "state": "PENDING_EVALUATION",
-      "ref": "Corresponding events must be represented through the established StegVerse experiment lane independently of ELAN semantics"
+      "state": "INPUT_ALIGNED_GOVERNED_EXECUTION_PENDING",
+      "ref": "A1-A2-A3-A4-B1 corresponding input is frozen independently of ELAN semantics; governed execution/custody/replay/reconstruction remains required"
     }
   ],
   "blockers": [],
+  "adjacent_task_refs": [
+    "ELAN-PAPER-COAUTHOR-PUBLICATION-001"
+  ],
   "expected_evidence_predicates": [
-    "BOTH_EVIDENCE_CHAINS_PRESERVED_BEFORE_COMPARISON",
+    "BOTH_COMPARISON_BASES_PRESERVED_BEFORE_GOVERNED_COMPARISON",
+    "COMMON_HUMAN_CHRONOLOGY_ALIGNED_WITHOUT_NORMALIZATION",
     "ELAN_NATIVE_RESOLUTION_PRESERVED",
+    "STEGVERSE_CORRESPONDING_INPUT_A3_A4_BOUNDARIES_PRESERVED",
     "STEGVERSE_A3_A4_TRANSITION_RESOLUTION_EVALUATED",
     "SEMANTIC_INTERPRETATION_SEPARATED_FROM_OBSERVATION",
     "GOVERNANCE_POSTURE_COMPARISON_COMPLETED",
     "DIVERGENCE_ORIGIN_IDENTIFIED_OR_UNRESOLVED",
+    "CUSTODY_REPLAY_RECONSTRUCTION_PRESERVED_WHERE_APPLICABLE",
     "NOT_EXPOSED_REMAINS_NOT_EXPOSED",
-    "UNRESOLVED_REMAINS_UNRESOLVED"
+    "UNRESOLVED_REMAINS_UNRESOLVED",
+    "COLLABORATION_CORRESPONDENCE_EXCLUDED_FROM_EXPERIMENT_INPUT"
   ],
+  "phase1": {
+    "comparison_bases_preserved": true,
+    "common_human_chronology_aligned_without_normalization": true,
+    "elan_native_resolution_preserved": true,
+    "stegverse_corresponding_input_a3_a4_boundaries_preserved": true,
+    "stegverse_governed_execution_claimed": false,
+    "candidate_structural_divergence_point": "A3_A4_BOUNDARY_RESOLUTION",
+    "candidate_is_final_result": false,
+    "collaboration_correspondence_excluded": true
+  },
   "completion": {
     "claimed": false,
     "validated": false,
     "reconciliation_ref": null
   },
   "allowed_next_transitions": [
-    "PRESERVE_BOTH_EVIDENCE_CHAINS",
-    "ALIGN_COMMON_HUMAN_CHRONOLOGY",
+    "GOVERN_STEGVERSE_CORRESPONDING_A1_A2_A3_A4_B1_CHAIN",
+    "PRESERVE_STEGVERSE_TRANSITION_CUSTODY_REPLAY_RECONSTRUCTION",
     "EVALUATE_STEGVERSE_A3_A4_SEPARATE_TRANSITIONS",
     "COMPARE_ELAN_POSTURE_AND_STEGVERSE_GOVERNANCE",
-    "IDENTIFY_EARLIEST_REPRESENTATION_DIVERGENCE",
+    "IDENTIFY_EARLIEST_CONFIRMED_REPRESENTATION_DIVERGENCE",
     "RECORD_CROSS_EVALUATION_RESULT"
   ],
   "handoff_projection_refs": [
@@ -63,6 +82,6 @@
     "readme_updated_in_change_set": false,
     "readme_path": "README.md",
     "reviewed": true,
-    "reason": "Research/evidence coordination registration does not change repository function; canonical registry and mirror handoff carry task state."
+    "reason": "Phase-1 research/evidence alignment does not change repository function; canonical registry and mirror handoff carry task state."
   }
 }
