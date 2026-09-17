@@ -483,3 +483,14 @@ The fleet parent's remaining noncommercial runtime/evidence predicates stay with
 The [runtime connection handoff](docs/STEGBROWSER_RUNTIME_CONNECTION_INGRESS_MIRROR_HANDOFF.md#goal-prompt-16-direct-custody-surface-observation-and-registry-discrepancy) records a public custody-route HTTP 404 and the recovered central Task Registry row for the existing ACTIVE/CHECKED_OUT task. Live Master Records database contents remain unknown. Deployment declarations and repository searches do not prove custody, reconstruction, or runtime execution; registration restoration does not authorize execution; resolve the existing StegVerse-owned callable custody binding before advancing A1–A4. StegVerse is intended to become platform, OS and device agnostic. Render is excluded from all use and consideration; no Render workspace confirmation or other manual prerequisite remains. Current browser implementations do not establish a permanent browser, OS or device requirement.
 
 The existing optional local custody adapter has a reproduced source/destination schema mismatch: a canonical state-transition receipt is sent to the reusable-task lifecycle ingester. Repair belongs to the existing canonical custody owner; source reproduction is not evidence that the immutable invocation traversed that adapter. The handoff records the exact source blobs and evidence limits.
+
+
+---
+
+## GP10 commercial response validation
+
+Canonical Goal Task `GP10-COMMERCIAL-RESPONSE-VALIDATION-001` owns only the external prospect-response / revenue-validation lane transferred from the fleet functionalization parent. First-wave POVA and Integrity Rail Services outreach is provider-observed in the connected `rigel@stegverse.org` Outlook mailbox; no reply or commercial validation is observed yet.
+
+Bounded next-prospect outreach drafts are prepared in Outlook for Panhandle Northern / OmniTRAX and Progress Rail EMD customer service. They are not sent. No new technical buildout, runtime, scheduler, connector, or routine GitHub Actions work is required for this commercial validation lane.
+
+Canonical handoff: `docs/GP10_COMMERCIAL_RESPONSE_VALIDATION_001_MIRROR_HANDOFF.md`.
