@@ -191,6 +191,7 @@ def refresh_and_dispatch(
     runtime_root: Path,
     *,
     target_consumer: str = TARGET_CONSUMER,
+    goal_task_id: str | None = None,
     runner=subprocess.run,
     env: Mapping[str, str] | None = None,
 ) -> dict[str, Any]:
@@ -198,6 +199,13 @@ def refresh_and_dispatch(
     runtime = runtime_root.expanduser().resolve()
     if target_consumer not in ALLOWED_TARGET_CONSUMERS:
         raise RuntimeError("unsupported portable resident consumer: " + target_consumer)
+    current_goal_task_id = None
+    if goal_task_id is not None:
+        current_goal_task_id = str(goal_task_id).strip()
+        if not current_goal_task_id:
+            raise RuntimeError("goal task id must be non-empty")
+        if target_consumer != "canonical_work_coordination":
+            raise RuntimeError("goal task context requires canonical_work_coordination target")
     safe = clean_exec_env(env)
 
     refresh_receipt = refresh(source, runtime)
@@ -214,8 +222,11 @@ def refresh_and_dispatch(
     if not dispatcher.is_file():
         raise RuntimeError("resident request dispatcher not materialized after refresh")
 
+    command = [sys.executable, str(dispatcher), "--source-root", str(source), "--runtime-root", str(runtime), "--only-consumer", target_consumer]
+    if current_goal_task_id:
+        command.extend(["--goal-task-id", current_goal_task_id])
     completed = runner(
-        [sys.executable, str(dispatcher), "--source-root", str(source), "--runtime-root", str(runtime), "--only-consumer", target_consumer],
+        command,
         cwd=runtime, capture_output=True, text=True, check=False, env=safe, timeout=3600,
     )
     dispatch_path = runtime / DISPATCH_RECEIPT_REL
@@ -227,6 +238,14 @@ def refresh_and_dispatch(
         and dispatch_receipt.get("selected_consumers") == [target_consumer]
         and dispatch_receipt.get("consumer_count") == 1
     )
+    goal_context_match = (
+        current_goal_task_id is None
+        or (
+            dispatch_observed
+            and dispatch_receipt.get("current_goal_task_id") == current_goal_task_id
+            and dispatch_receipt.get("goal_context_forwarded_to") == "canonical_work_coordination"
+        )
+    )
     target_consumption_receipt, target_consumption_sha256, target_consumption_valid, target_consumption_matches_current_dispatch = stegbrowser_consumption_evidence(
         runtime, target_consumer, dispatch_receipt
     )
@@ -235,6 +254,7 @@ def refresh_and_dispatch(
         completed.returncode == 0
         and dispatch_observed
         and exact_selection
+        and goal_context_match
         and dispatch_receipt.get("state") == "DISPATCH_COMPLETE"
         and target_consumption_valid
     ) else "REFRESH_COMPLETE_DISPATCH_INCOMPLETE"
@@ -243,6 +263,9 @@ def refresh_and_dispatch(
         "schema": "stegverse.resident-refresh-dispatch/v1", "state": state,
         "source_root": str(source), "runtime_root": str(runtime), "refresh_receipt": refresh_receipt,
         "dispatcher_ref": str(DISPATCHER_REL), "target_consumer": target_consumer,
+        "current_goal_task_id": current_goal_task_id,
+        "goal_context_forwarded_to_dispatcher": bool(current_goal_task_id),
+        "goal_context_match_observed": bool(goal_context_match),
         "sv_dn1_browser_locator_persisted": browser_locator_persisted,
         "exact_consumer_selection_observed": bool(exact_selection), "unrelated_consumers_dispatched": False,
         "dispatch_returncode": completed.returncode, "dispatch_receipt_observed": dispatch_observed,
@@ -271,8 +294,14 @@ def main() -> int:
     parser.add_argument("--source-root", type=Path, default=REPO_ROOT)
     parser.add_argument("--runtime-root", type=Path, default=default_runtime_root())
     parser.add_argument("--only-consumer", choices=ALLOWED_TARGET_CONSUMERS, default=TARGET_CONSUMER)
+    parser.add_argument("--goal-task-id")
     args = parser.parse_args()
-    receipt = refresh_and_dispatch(args.source_root, args.runtime_root, target_consumer=args.only_consumer)
+    receipt = refresh_and_dispatch(
+        args.source_root,
+        args.runtime_root,
+        target_consumer=args.only_consumer,
+        goal_task_id=args.goal_task_id,
+    )
     print(json.dumps(receipt, sort_keys=True))
     return 0 if receipt["state"] == "REFRESH_AND_DISPATCH_COMPLETE" else 1
 
