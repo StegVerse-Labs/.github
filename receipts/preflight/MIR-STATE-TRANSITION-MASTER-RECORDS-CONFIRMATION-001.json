@@ -1,0 +1,46 @@
+{
+  "schema": "stegverse.machine-preflight/v1",
+  "preflight_id": "MIR-STATE-TRANSITION-MASTER-RECORDS-CONFIRMATION-001",
+  "goal_task_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+  "task_id": "MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001",
+  "cosv_task_vector": "50000000100000",
+  "state": "CONFIRMATION_FANOUT_SOURCE_MATERIALIZED_CURRENT_EVENT_INGRESS_UNOBSERVED",
+  "verdict": "PARTIAL",
+  "authority_effect": "NONE_PREFLIGHT_ONLY",
+  "implementation": {
+    "master_records_fanout_worker": "workers/reusable_task_master_records_roundtrip.py",
+    "unit_test": "tests/test_mir_transition_master_records_confirmation.py",
+    "confirmation_schema": "stegverse.mir-state-transition-confirmation/v1",
+    "diagnostic_schema": "stegverse.mir-state-transition-master-records-diagnostic/v1",
+    "byte_exact_reconstruction_required": true,
+    "master_records_grants_transition_authority": false
+  },
+  "confirmation_sequence": [
+    "CURRENT_GOAL_COSV_BOUND",
+    "CURRENT_INTERLOCK_INTR_INGRESS_RECEIVED",
+    "RTC-STEGVERSE-EGRESS-007",
+    "RTC-INTERLOCK-INTR-TRANSPORT-008",
+    "RTC-FARSIDE-FINAL-009",
+    "MIR_DESTINATION_EVIDENCE_RETAINED",
+    "EXACT_GOVERNED_RETURN_PACKET_RETAINED"
+  ],
+  "diagnostic_semantics": {
+    "every_observed_transition_gets_independent_master_records_packet": true,
+    "unobserved_transition_is_not_fabricated": true,
+    "first_non_return_transition_id_is_reported": true,
+    "aggregate_one_way_evidence_accepted_only_after_transition_confirmations_return": true
+  },
+  "current_observation": {
+    "authentic_current_mir_event_ingress_receipt_observed": false,
+    "authentic_current_interlock_intr_state_transition_receipt_observed": false,
+    "current_one_way_evidence_present": false,
+    "transition_confirmation_packets_executed_against_authentic_current_event": false,
+    "master_records_non_return_transition_identified_from_authentic_current_event": false
+  },
+  "diagnosis": {
+    "current_known_break": "AUTHENTIC_MIR_EVENT_INGRESS_OR_STATE_TRANSITION_RECEIPT_NOT_OBSERVED",
+    "current_break_is_master_records_return_failure": false,
+    "reason": "No authentic current transport-state transition exists yet from which a confirmation packet may be truthfully generated. Once the event reaches Interlock/InTr, the fanout reports the first exact Master Records non-return if one occurs.",
+    "passive_waiting_allowed": false
+  }
+}
