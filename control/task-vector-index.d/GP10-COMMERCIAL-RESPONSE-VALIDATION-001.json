@@ -4,7 +4,7 @@
   "repository": "StegVerse-Labs/.github",
   "registry_ref": "data/canonical-task-records/GP10-COMMERCIAL-RESPONSE-VALIDATION-001.json",
   "source_state_vector_ref": "control/task-vectors/GP10-COMMERCIAL-RESPONSE-VALIDATION-001.json",
-  "vector": "10100000100000",
+  "vector": "30001000100000",
   "vector_state": "EMITTED",
   "profile": "task.v1",
   "authority_effect": "NONE"
