@@ -431,3 +431,37 @@ paid engagement: NOT OBSERVED
 ```
 
 GP10 remains the lead candidate only provisionally pending actual prospect response. No new technical buildout or routine GitHub Actions validation is admissible before that response evidence.
+
+
+## GP10 commercial outreach send state — 2026-09-17
+
+The user reports both first-wave GP10 commercial-discovery emails sent from `rigel@stegverse.org`:
+
+```text
+POVA / Western Rail -> pova@povarr.com
+Integrity Rail Services -> rodney@integrityrailservices.com
+```
+
+GP10 canonical reconciliation:
+
+```text
+outreach document send-state commit: b4a2db5af6dadd545481538c0eca6b4dcb424bff
+GP10 handoff reconciliation: 957a418b070514eeccaa4e47913726ec354712db
+```
+
+The connected Gmail search surface returned no matching sent messages for the two exact recipient/subject searches and no recipient-only recent match. Accordingly, the send evidence class is `USER_REPORTED_SENT`; provider-authenticated Gmail send evidence remains unobserved.
+
+Current commercial predicates:
+
+```text
+outreach_sent_user_reported: true
+outreach_sent_provider_verified: false
+reply_observed: false
+problem_confirmation_observed: false
+authorized_dataset_discussion_observed: false
+paid_scope_willingness_observed: false
+buyer_interest_observed: false
+paid_engagement_observed: false
+```
+
+The next evidence-bearing transition is prospect response reconciliation. Preserve zero-routine-Actions and no-speculative-infrastructure constraints while awaiting that evidence.
