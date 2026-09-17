@@ -149,3 +149,46 @@ subject: EMD rebuild record-conflict review question
 Both drafts ask only whether incomplete/conflicting older-locomotive records create meaningful rework and whether an existing authorized record package could support a small paid evidence review. They explicitly avoid unsupported fitment, safety, regulatory, or system-integration claims.
 
 No new connector, scheduler, runtime, GP10 feature, or routine GitHub Actions validation was created. Sending remains a distinct user-authorized communication action.
+
+
+## Second-wave outreach sent and all-prospect recheck — 2026-09-17
+
+The user authorized sending the two prepared next-prospect messages. The Outlook connector does not expose a direct `send existing draft` action, so the exact approved draft wording was sent as new messages from the authenticated `rigel@stegverse.org` mailbox. The original draft objects were left unchanged rather than deleted or mutated.
+
+Provider-observed sent evidence:
+
+```text
+Panhandle Northern / OmniTRAX
+to: thelms@omnitrax.com
+subject: Older locomotive record-history review question
+sent-message observed: 2026-09-17T23:11:01Z
+
+Progress Rail EMD Customer Service
+to: customer.service.emd@progressrail.com
+subject: EMD rebuild record-conflict review question
+sent-message observed: 2026-09-17T23:11:02Z
+```
+
+A fresh authenticated Outlook re-check immediately after sending covered all four active prospects:
+
+```text
+POVA / Western Rail: no reply observed
+Integrity Rail Services: no reply observed
+Panhandle Northern / OmniTRAX: no reply observed
+Progress Rail: no reply observed
+```
+
+Commercial classification remains unchanged:
+
+```text
+problem_confirmation_observed: false
+authorized_dataset_discussion_observed: false
+paid_scope_willingness_observed: false
+authorized_decision_maker_referral_observed: false
+buyer_interest_validated: false
+paid_engagement_observed: false
+```
+
+Sent-message evidence is delivery-side mailbox evidence only. It is not proof of recipient reading, interest, problem validation, authority, or willingness to pay.
+
+No new connector, scheduler, runtime, GP10 feature, speculative infrastructure, or routine GitHub Actions validation was introduced.
