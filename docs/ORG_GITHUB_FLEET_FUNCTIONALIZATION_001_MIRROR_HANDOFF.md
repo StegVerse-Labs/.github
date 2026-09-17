@@ -352,3 +352,45 @@ These repairs change internal fail-closed source-control, pointer-integrity, rep
 `ACTIVE / CHECKED_OUT`.
 
 This continuation reconciled the existing failure-email ledger, corrected the pointer-parity validation record to its actual failed run, removed automatic/scheduled Actions loops that were repeatedly spending minutes on validation or already-known fail-closed conditions, and created/exposed a GP10 paid field-validation offer as the shortest implemented revenue path. No new Actions run was intentionally triggered for discovery or proof, and no resident/runtime predicate was promoted.
+
+
+## GP10 prospective-buyer evidence — 2026-09-17
+
+Cost-containment was re-checked against current default-branch workflow source before buyer research. The three named `.github` validation workflows remain manual `workflow_dispatch` only, GP10 legacy `core-lite-intake` remains manual only, and searches of the two Site and two StegVerse-SCW workflows previously stripped of schedules did not expose a restored cron trigger. No Actions run was triggered for this check.
+
+Public buyer/contact evidence supports retaining GP10 as the lead revenue candidate without additional technical buildout:
+
+1. **Western Rail Inc. / Pend Oreille Valley Railroad (POVA)** — Western Rail publicly describes a locomotive remanufacturing shop in Usk, Washington and EMD component inventory; POVA publicly accepts inquiries for locomotive repair/painting. Independent recent equipment evidence also places an ex-Illinois Central GP10 in POVA operation in 2025. This is the highest-fit initial discovery target because the offer is about provenance/conflict-aware locomotive records and the operating/rebuild context is directly aligned.
+   - Western Rail: https://westernrailinc.com/about-western-rail/
+   - POVA contact: https://povarr.com/contact/
+   - POVA office: pova@povarr.com / 509-445-1090
+
+2. **Integrity Rail Services, Mount Pleasant, Texas** — publicly serves short-line, industrial, mining and utility locomotive customers; provides EMD repair, field service, consulting, buying/leasing/sales and parts. It is a concrete Texas contact path for testing whether GP10 evidence normalization/conflict review solves a real records problem before any new build.
+   - https://integrityrailservices.com/about-us.html
+   - parts@integrityrailservices.com / 903-486-6486
+
+3. **Panhandle Northern Railroad / OmniTRAX, Borger, Texas** — OmniTRAX publishes direct customer-service and operations contacts for the railroad. Historical/current public roster sources identify GP10 equipment in the PNR fleet; this should be confirmed in the discovery conversation rather than treated as an authenticated asset record.
+   - https://omnitrax.com/panhandle-northern-railroad/
+   - cscus@omnitrax.com / 877-276-3777
+   - Operations: Tony Helms, thelms@omnitrax.com / 806-223-3586
+
+4. **Progress Rail** — publicly offers locomotive rebuilding, maintenance and EMD 567/645/710 overhaul with a direct EMD parts/customer-service channel. This is technically aligned but likely a longer enterprise sales path, so it is retained as a secondary target rather than the first outreach.
+   - https://www.progressrail.com/en/segments/locomotive/locomotive-services
+   - customer.service.emd@progressrail.com / 1-800-255-5355
+
+Buyer evidence threshold is therefore satisfied for continued GP10 commercial discovery: there are identifiable organizations with relevant locomotive ownership/service/rebuild activity and public contact paths. It is **not** evidence that any buyer has expressed interest, accepted the offer, supplied field data, or agreed to pay.
+
+### Revenue continuation
+
+No additional GP10 implementation is justified before outreach. The next admissible step is a bounded customer-discovery contact using the existing paid field-validation offer, asking whether the organization has a GP10/GP7/GP9/GP18 rebuild-family record set whose unit history, provenance, conflicting fields, work history, or parts evidence is costly to reconcile.
+
+Priority order for contact effort:
+
+```text
+1. Western Rail / POVA
+2. Integrity Rail Services
+3. Panhandle Northern / OmniTRAX
+4. Progress Rail
+```
+
+The first commercial success predicate remains an actual buyer conversation that validates the problem and permits a concrete scope/quote. No new connector, scheduler, workflow, resident runtime, or speculative feature work is admissible merely to prepare for outreach.
