@@ -90,10 +90,23 @@ No second request and no mutation of the existing nonce/payload are allowed.
 
 A0 is source-bound with runtime confirmation pending. A1, A2, A2.1, A2.2, A3, and A4 remain not authentically observed for the current invocation. Round Trip 1 and Round Trip 2 have not been entered. Historical SV002 evidence, source state, CI, or architecture precedent cannot promote current runtime predicates.
 
+## Retained-evidence seam repair — 2026-09-17
+
+Canonical re-observation again found no retained authority-owned same-nonce A1/A2/lease/EVENT_EPHEMERAL receipt set. The existing runtime-connection observer already writes `receipts/sovereign-host/stegbrowser-runtime-connection-transition-observation.latest.json` and `receipts/sovereign-host/stegbrowser-runtime-connection-resolution.latest.json`, but its final A1-A4 observation path contained two evidence-integrity defects:
+
+1. when the canonical registered Node Receipt #1 was unavailable, `resolve_registered_node_receipt(...)` raised before `receipts/sovereign-host/stegbrowser-runtime-connection-a1-a4.latest.json` could be retained;
+2. a callable InTr profile could label the final observation `A1_OBSERVED...` even though no registered Node binding had been retained.
+
+The bounded repair on branch `stegbrowser-runtime-evidence-retention-failclosed-20260917` changes only this evidence-retention seam. It catches only the missing canonical Node-receipt condition, retains it as `node_resolution_error`, writes the final observation anyway, and uses fail-closed states beginning with `A1_NOT_OBSERVED...`. `registered_stegverse_node_bound_to_invocation` becomes true only when the authority-owned boundary contains the correlated Node/Interlock/registration binding. Lease and EVENT_EPHEMERAL predicates remain downstream of that authentic A1 binding.
+
+This repair creates no Node, host, endpoint, runtime, listener, scheduler, dispatcher, WorkerCoordinator, second invocation, second device, or authority path. It does not turn source/CI evidence into runtime evidence and does not activate Round Trip 1. The invariant remains: a missing authentic receipt must be durably observable as missing, never promoted and never lost because observation terminated early.
+
+README reviewed for this repair. No byte change is required because public architecture/topology is unchanged; this is an internal fail-closed evidence-retention correction.
+
 ## Authority map
 
 Manifest = route declaration only. Node = continuity/admission anchor. Lease = bounded invocation scope only. EVENT_EPHEMERAL StegOS = compute/execution surface. WorkerCoordinator = claim/fence authority. Interlock/InTr = transition and governed packet-movement authority. TV/TVC = credential authority. Master Records = custody/reconstruction authority, not transport authority. GitHub/CI runtime authority = `NONE`. Healer remains exception/remediation only.
 
 ## Next execution boundary
 
-Trace the current StegBrowser implementation against these imported SV002 connection components and reuse the existing Node -> Interlock -> InTr -> bounded lease -> EVENT_EPHEMERAL StegOS path exactly. Promote A1 through A4 only from authentic current-invocation evidence, then enter Round Trip 1.
+Validate and merge the fail-closed retained-evidence repair. Then re-observe the existing same-nonce runtime path. If the retained A1-A4 observation reports an authentic registered Node binding, continue only through the existing Interlock/InTr -> bounded lease -> EVENT_EPHEMERAL -> WorkerCoordinator -> A4 chain and write every authentic governed transition through Master Records. If it reports `A1_NOT_OBSERVED...`, repair only the exact native Node-evidence exposure condition named by that retained record. Enter Round Trip 1 only after authentic A4.
