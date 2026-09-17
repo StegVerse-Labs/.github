@@ -8,8 +8,9 @@ Updated: 2026-09-16
 - Parent Goal: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`
 - Root lineage: `STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / SINGLE A1-A4 INVOCATION COMPOSITION SOURCE RECONCILED / CURRENT-IPHONE INGRESS+EVENT-RUNTIME BRIDGE MERGED+VALIDATED / AUTHENTIC A1-A4 EVIDENCE PENDING`
+- Status: `ACTIVE / CHECKED_OUT / SINGLE A1-A4 INVOCATION COMPOSITION SOURCE RECONCILED / CURRENT-IPHONE INGRESS+EVENT-RUNTIME BRIDGE MERGED+VALIDATED / NATIVE NO-MANUAL OBSERVATION ROUTE RECONCILED / AUTHENTIC A1-A4 EVIDENCE PENDING`
 - External/second user-operated device required: `false`
+- Manual user-device observation required: `false`
 
 ## Scope and terminal boundary
 
@@ -69,15 +70,15 @@ A4: ORGANIZATION_LOCAL_INTR_INGRESS_RECEIPT_VERIFIED
 A4: INTR_ADMISSION_OBSERVED
 ```
 
-## Immutable current-iPhone invocation
+## Immutable invocation
 
-The authorized same-device execution surface remains:
+The existing current-device page remains one admissible same-device execution surface:
 
 ```text
 https://stegverse.org/stegos-bootstrap/canonical-work-runtime-consumption.html?autostart=1
 ```
 
-The immutable request remains exactly:
+It is not a user-operated evidence prerequisite. The immutable request remains exactly:
 
 ```text
 canonical request commit = 19935454cd8c68000b3a0fd70478b0d89d5cd622
@@ -87,28 +88,17 @@ second_request_allowed = false
 destination = StegBrowser:ManifestInvocation
 ```
 
-Site PR `#1360` merged as `76af62f2befdfa7034d3dd00891bfe60a0990abb` and handoff reconciliation PR `#1361` merged as `7c483335f259d5eacf9a55dde923c0c4fefd660e`. They rebound the existing current-iPhone Node IndexedDB, write-once `intr_outbox`, root `/intr-service-worker.js`, and `CURRENT_USER_IPHONE_SERVICE_WORKER` to the immutable StegBrowser invocation without creating another request or runtime path.
+Site PR `#1360` merged as `76af62f2befdfa7034d3dd00891bfe60a0990abb` and handoff reconciliation PR `#1361` merged as `7c483335f259d5eacf9a55dde923c0c4fefd660e`. They rebound the existing Node IndexedDB, write-once `intr_outbox`, root `/intr-service-worker.js`, and `CURRENT_USER_IPHONE_SERVICE_WORKER` to the immutable StegBrowser invocation without creating another request or runtime path.
 
 The abandoned resident-dispatch transport branches remain non-gating and must not be reintroduced as prerequisites.
 
-## Current-iPhone EVENT_EPHEMERAL bridge — merged 2026-09-16
+## EVENT_EPHEMERAL bridge — merged 2026-09-16
 
-Source review found that the merged current-iPhone page stopped after authentic `INGRESS_ADMITTED` even though the already-validated StegBrowser EVENT_EPHEMERAL browser materializer from the SV002 adaptation was present. Therefore a successful page run could not reach the existing bounded runtime identity needed before WorkerCoordinator.
+Site PR `#1363` repaired the source continuation gap where a successful same-invocation `INGRESS_ADMITTED` result previously stopped before the already-validated EVENT_EPHEMERAL materializer. After authentic admission, the launcher now reuses the exact same deterministic write-once Node outbox entry, loads the existing canonical `stegbrowser-manifest-runtime-binding.v1.json`, invokes only the existing `StegVerseStegBrowserManifestRuntime.materialize(...)`, binds admitted Node/Interlock/Receipt #1 identity, and returns only `RUNTIME_READY_FOR_WORKERCOORDINATOR` after the existing materializer proves bounded runtime readiness and execution-time runtime identity.
 
-Site PR `#1363` repaired only that continuation gap. It does not add another runtime component. After authentic same-invocation `INGRESS_ADMITTED`, the launcher now:
-
-1. reads the exact same deterministic write-once Node outbox entry;
-2. loads the existing canonical `stegbrowser-manifest-runtime-binding.v1.json` route binding;
-3. invokes the existing `StegVerseStegBrowserManifestRuntime.materialize(...)` component;
-4. binds the runtime to the admitted Node ID, Interlock ID, and Receipt #1 hash;
-5. returns only `RUNTIME_READY_FOR_WORKERCOORDINATOR` after the existing materializer proves `EVENT_EPHEMERAL` runtime readiness and execution-time runtime identity;
-6. leaves WorkerCoordinator claim/fence pending, A4 pending, completion false, and Round Trip 1 false.
-
-No second request, listener, service worker, scheduler, dispatcher, materializer, WorkerCoordinator, device, credential path, or GitHub runtime authority was introduced.
+WorkerCoordinator claim/fence remains pending, A4 remains pending, completion remains false, and Round Trip 1 remains false. No second request, listener, service worker, scheduler, dispatcher, materializer, WorkerCoordinator, device, credential path, or GitHub runtime authority was introduced.
 
 PR `#1363` exact validated head: `1e5350aa149ba707e756cd055f7132dadd95735c`.
-
-Exact-head source-validation evidence:
 
 ```text
 Validate StegOS Persistent Card UX = 35133005728 SUCCESS
@@ -118,13 +108,76 @@ Site Bootstrap Validate - No Non-TV/TVC Credential Authority = 35133005757 SUCCE
 Node IndexedDB Schema Migration = 35133005896 SUCCESS
 ```
 
-PR `#1363` merged as `8b032472d2861458daf2a1278fa3301d9a81a736` with expected-head protection.
+PR `#1363` merged as `8b032472d2861458daf2a1278fa3301d9a81a736` with expected-head protection. `.github` handoff reconciliation PR `#2017` merged as `369c6ba4bc78a64a330c89af9b66d4e233e1fd09` after exact-head Deterministic, Organization Control, and Heartbeat validation.
 
-This merge establishes source capability only. It does not establish that the current iPhone executed the Node binding, ingress, lease, EVENT_EPHEMERAL runtime, WorkerCoordinator, or A4 transitions.
+Source capability does not establish runtime execution.
+
+## Native observation/custody reconciliation — 2026-09-16
+
+A newer canonical descendant, `STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001`, explicitly removes manual device observation as a prerequisite. Its canonical handoff states that the user is not required to open Safari, inspect IndexedDB/service-worker state, copy page JSON, or use a second device. The task must re-observe the existing registered Node/InTr runtime and canonical receipt paths directly.
+
+The shared runtime evidence owner is `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001`. The StegBrowser-native receipt reachability owner is `STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001`, whose selected substrate is `STEG-BROWSER-RETAINED-RESIDENT-NODE` with alternate eligible StegOS substrates and no external connector/device gate.
+
+The existing production evidence path is:
+
+```text
+existing resident cycle
+-> standing Healer carrier
+-> neutral reusable scheduler
+-> RT-STEGBROWSER-RUNTIME-CONSUMPTION-001
+-> admitted ephemeral StegOS / Canonical Work
+-> authentic resident receipts retained under resident custody
+-> merged non-authorizing receipt verifier
+-> exact SHA/path/outcome binding
+-> Master Records reconstruction where required
+```
+
+The already-merged verifier classifies authentic resident receipts only as `MISSING`, `INVALID`, or `VALID_BINDABLE`; it does not mint evidence.
+
+Exact resident receipt targets remain:
+
+```text
+receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json
+receipts/sovereign-host/stegbrowser-runtime-consumption-evidence-custody.latest.json
+receipts/sovereign-host/stegbrowser-tvc-source-promotion-request-consumption.latest.json
+/var/lib/stegverse/skap/browser-recipient/apple/receipts/runtime-observation-latest.json
+receipts/sovereign-host/stegbrowser-runtime-connection-a1-a4.latest.json
+receipts/sovereign-host/stegbrowser-runtime-remediation-boundary.latest.json
+```
+
+Current re-observation of accessible canonical custody/source surfaces has not exposed an authentic authority-owned receipt for the immutable nonce. The expected `receipts/sovereign-host/stegbrowser-runtime-connection-a1-a4.latest.json` is not present in canonical repository custody, and source/CI absence or presence may not be converted into runtime proof.
+
+Therefore the first unresolved authentic predicate remains the native receipt-surface/runtime observation itself:
+
+```text
+AUTHENTIC_STEGVERSE_NATIVE_RESIDENT_RECEIPT_SURFACE_OBSERVED = false
+REGISTERED_STEGVERSE_NODE_BOUND_TO_INVOCATION = false
+```
+
+The authorized continuation is to inspect the existing StegVerse-native resident custody surface, classify any exact retained receipts with the already-merged verifier, bind `VALID_BINDABLE` evidence by exact SHA/path/outcome, or remediate the first concrete producer/retention/custody defect if classified `MISSING` or `INVALID`. Do not create another scheduler, dispatcher, runtime, credential route, evidence owner, physical-device dependency, or external connector path.
+
+## Existing A3/A4 authority path
+
+The newer execution child has collision-checked the existing continuation and found no competing StegBrowser WorkerCoordinator implementation:
+
+```text
+validated StegBrowser Node/Interlock/lease/runtime binding
+-> workers/stegbrowser_manifest_intr_ingress.py
+-> exact organization-local packet
+-> scripts/refresh_and_execute_resident_task.py
+-> ORGANIZATION-LOCAL-RESIDENT-BOUNDARY-EXECUTOR-001
+-> fresh WorkerCoordinator fenced atomic checkout
+-> ACCEPTED_LOCAL_BOUNDARY receipt
+-> exact StegBrowser A4 correlation verification
+```
+
+WorkerCoordinator remains the sole A3 claim/fence authority. `workers/stegbrowser_manifest_intr_ingress.py` remains the A4 exact-correlation boundary. The generic SV001 portable WorkerCoordinator adapter is not an authority path for this invocation.
+
+A3/A4 must not be invoked or promoted until authentic `RUNTIME_READY_FOR_WORKERCOORDINATOR` or equivalent exact same-invocation runtime evidence is retained.
 
 ## Authentic evidence state
 
-No authority-owned same-invocation page/runtime evidence has yet been retained in canonical custody. Therefore current authentic state remains:
+No authority-owned same-invocation runtime evidence has been retained in canonical custody during this reconciliation. Therefore:
 
 ```text
 RUNTIME_CONNECTION_TRANSITION_VARIABLES_OBSERVED = false
@@ -140,14 +193,12 @@ INTR_ADMISSION_OBSERVED = false
 ROUND_TRIP_1_STARTED = false
 ```
 
-The merged page is now capable of returning authentic same-device evidence through `RUNTIME_READY_FOR_WORKERCOORDINATOR`. If such a result is returned, predicates through execution-time runtime identity may be promoted only from that exact result. WorkerCoordinator and A4 remain separately authority-owned transitions and may not be inferred.
-
-Expected retained child observation remains `receipts/sovereign-host/stegbrowser-runtime-connection-a1-a4.latest.json`. Expected canonical invocation boundary remains `receipts/sovereign-host/stegbrowser-runtime-remediation-boundary.latest.json`.
+The merged page/source path can return authentic evidence through `RUNTIME_READY_FOR_WORKERCOORDINATOR`, but no predicate may be promoted without exact authority-owned retained evidence. WorkerCoordinator and A4 remain separately authority-owned transitions and may not be inferred.
 
 ## Authority invariants
 
 - Task Registry: coordination only.
-- Native resident dispatcher: discovery/dispatch only; no authority and not a prerequisite for the current same-iPhone path.
+- Native resident dispatcher: discovery/dispatch only; no authority.
 - A1 resolver: observation/selection only.
 - Existing browser materializer: bounded EVENT_EPHEMERAL runtime materialization only; no claim/fence authority.
 - WorkerCoordinator: A3 claim/fence authority.
@@ -156,20 +207,18 @@ Expected retained child observation remains `receipts/sovereign-host/stegbrowser
 - KV/SKAP Vault: user-verification authority.
 - Master Records: observed-reality/reconstruction authority.
 - Heartbeat: timing/reference/validation only.
-- GitHub/CI: source validation/evidence only; runtime authority `NONE`.
-
-## Current first unresolved predicate
-
-`RUNTIME_CONNECTION_TRANSITION_VARIABLES_OBSERVED` / `REGISTERED_STEGVERSE_NODE_BOUND_TO_INVOCATION` remains unresolved authentically until the current iPhone returns exact same-invocation JSON.
+- GitHub/CI: source validation/evidence transport only; runtime authority `NONE`.
+- External connectors: not applicable to this evidence lane.
+- Second user-operated device: prohibited as a prerequisite.
 
 ## Immediate continuation
 
-Do not emit another request. On the same iPhone/Safari site-data context that owns registered StegVerse Node Receipt #1, open the existing current-device page with `autostart=1`. Preserve the complete displayed JSON or exact `FAIL_CLOSED` reason unchanged. A successful updated page is expected to stop at `RUNTIME_READY_FOR_WORKERCOORDINATOR`; promote only predicates directly evidenced by that same invocation and then continue only through the existing WorkerCoordinator/A4 authority path. Do not enter Round Trip 1 unless A1-A4 is fully authentic.
+Do not emit another request and do not require a user-operated device check. Continue through `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001` and `STEG-BROWSER-RESIDENT-RECEIPT-TRANSPORT-001` by re-observing only the existing StegVerse-native resident custody targets for the immutable nonce. If exact authentic receipts are `VALID_BINDABLE`, retain their SHA-256/path/outcome and promote only the predicates they directly prove. If the exact native receipt surface is `MISSING` or `INVALID`, identify and remediate only the first concrete existing producer/retention/custody defect. Only after authentic runtime readiness is retained may the existing WorkerCoordinator/A4 path run. Round Trip 1 remains prohibited until full A1-A4 completion is authentically proven.
 
 ## README review
 
-README reviewed. No byte change is required because the runtime/authority topology remains the already-documented single same-device Universal InTr/event-ephemeral architecture; PR #1363 only joins two existing validated pieces of that path.
+README reviewed. No byte change is required because the runtime/authority topology remains the already-documented single StegVerse-native Universal InTr/event-ephemeral architecture; this reconciliation removes a stale manual-observation instruction and binds the child to already-canonical evidence owners.
 
 ## Manual work
 
-On the same iPhone and Safari site-data context that owns the registered StegVerse Node, open `https://stegverse.org/stegos-bootstrap/canonical-work-runtime-consumption.html?autostart=1`. Do not use Private Browsing and do not clear site data. Return the complete page JSON or exact `FAIL_CLOSED` reason unchanged.
+None.
