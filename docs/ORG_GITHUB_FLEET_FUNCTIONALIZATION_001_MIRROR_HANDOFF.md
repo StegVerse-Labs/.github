@@ -394,3 +394,5 @@ Priority order for contact effort:
 ```
 
 The first commercial success predicate remains an actual buyer conversation that validates the problem and permits a concrete scope/quote. No new connector, scheduler, workflow, resident runtime, or speculative feature work is admissible merely to prepare for outreach.
+
+README reconciliation for this continuation: `d4931e148634ba2053550f0c201916d0f4f8f9f2` documents the active cost/revenue posture without changing execution semantics.
