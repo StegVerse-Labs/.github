@@ -25,6 +25,7 @@ Merely merging or validating this source does not.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import subprocess
@@ -41,6 +42,7 @@ CARRIER_REF = Path("control/heartbeat-carrier-runtime-state.json")
 REGISTRY_REF = Path("control/worker-registry.json")
 COSV_INDEX_REF = Path("control/task-vector-index.json")
 RECEIPT_REL = Path("receipts/sovereign-host/resident-targeted-execution.latest.json")
+IMMUTABLE_RECEIPT_DIR_REL = Path("receipts/sovereign-host/resident-targeted-execution.by-receipt")
 
 GITHUB_AUTH_ENV = {
     "GITHUB_TOKEN",
@@ -136,6 +138,28 @@ def clean_exec_env(source: dict[str, str] | None = None) -> dict[str, str]:
     env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"] = "TV/TVC"
     env["STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY"] = "NONE"
     return env
+
+
+def _write_receipt_surfaces(runtime_root: Path, receipt: dict[str, Any]) -> dict[str, Any]:
+    """Persist latest plus immutable content-addressed resident execution evidence."""
+    unsigned = json.dumps(receipt, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    body_sha256 = hashlib.sha256(unsigned).hexdigest()
+    persisted = dict(receipt)
+    persisted["receipt_body_sha256"] = "sha256:" + body_sha256
+    encoded = json.dumps(persisted, indent=2, sort_keys=True) + "\n"
+
+    immutable_path = runtime_root / IMMUTABLE_RECEIPT_DIR_REL / f"{body_sha256}.json"
+    immutable_path.parent.mkdir(parents=True, exist_ok=True)
+    if immutable_path.exists():
+        if immutable_path.read_text(encoding="utf-8") != encoded:
+            raise RuntimeError("immutable resident execution receipt collision")
+    else:
+        immutable_path.write_text(encoded, encoding="utf-8")
+
+    latest_path = runtime_root / RECEIPT_REL
+    latest_path.parent.mkdir(parents=True, exist_ok=True)
+    latest_path.write_text(encoded, encoding="utf-8")
+    return persisted
 
 
 def _parse_last_json(stdout: str) -> dict[str, Any] | None:
@@ -389,10 +413,7 @@ def refresh_and_execute(
         "credential_value_exposed": False,
         "authority_effect": "EXISTING_ADMITTED_TASK_AUTHORITY_ONLY",
     }
-    receipt_path = runtime / RECEIPT_REL
-    receipt_path.parent.mkdir(parents=True, exist_ok=True)
-    receipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    return receipt
+    return _write_receipt_surfaces(runtime, receipt)
 
 
 def main() -> int:
