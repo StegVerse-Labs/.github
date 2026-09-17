@@ -192,3 +192,37 @@ paid_engagement_observed: false
 Sent-message evidence is delivery-side mailbox evidence only. It is not proof of recipient reading, interest, problem validation, authority, or willingness to pay.
 
 No new connector, scheduler, runtime, GP10 feature, speculative infrastructure, or routine GitHub Actions validation was introduced.
+
+
+## Response-window observation — 2026-09-17 18:28 CDT
+
+Authenticated Outlook was re-checked using both exact outreach-subject searches and broader organization/domain searches so a routed reply from a different person at the same organization would not be silently missed.
+
+Observed result:
+
+```text
+POVA / Western Rail: no inbound reply observed
+Integrity Rail Services: no inbound reply observed
+Panhandle Northern / OmniTRAX: no inbound reply observed
+Progress Rail: no inbound reply observed
+commercial predicates promoted: none
+```
+
+At this observation, the first-wave messages had been outstanding for less than one hour and the second-wave messages for less than twenty minutes. That is not treated as a reasonable commercial-response window and is not classified as rejection, lack of fit, or evidence to abandon GP10.
+
+Therefore the alternative-already-implemented-capability comparison remains gated. It becomes admissible only after a genuinely reasonable response interval has elapsed without validation or an explicit rejection/negative-fit response is observed.
+
+Current predicates remain:
+
+```text
+problem_confirmation_observed: false
+authorized_dataset_discussion_observed: false
+paid_scope_willingness_observed: false
+authorized_decision_maker_referral_observed: false
+buyer_interest_validated: false
+paid_engagement_observed: false
+reasonable_response_window_elapsed: false
+alternative_capability_comparison_triggered: false
+```
+
+No follow-up email, new prospect, speculative infrastructure, GP10 implementation, or routine GitHub Actions run was added in this observation.
