@@ -109,10 +109,24 @@ Post-merge runtime re-observation from the execution interfaces available to thi
 
 README was reviewed for this repair. No byte change is required because public architecture/topology is unchanged; this is an internal fail-closed evidence-retention correction.
 
+## Native Receipt #1 invocation-context exposure repair — 2026-09-17
+
+Re-verification of the canonical resident request and the existing resident dispatcher identified a source-level exposure defect in the already-registered native path. The request contract requires the concrete Receipt #1 path through environment locator `STEGVERSE_NODE_GENESIS_RECEIPT`, while `scripts/dispatch_resident_execution_requests.py` rebuilds a non-secret child execution environment and did not forward that locator. A valid caller context could therefore hold the registered Node receipt while the exact StegBrowser consumer received no Receipt #1 path and could only fail closed before authentic A1 binding.
+
+The bounded repair on branch `stegbrowser-native-node-receipt-exposure-20260917` changes only the existing resident-dispatch environment contract and its focused regression coverage:
+
+- `STEGVERSE_NODE_GENESIS_RECEIPT` is admitted to the dispatcher's non-secret locator allowlist;
+- credential-bearing GitHub environment remains stripped and GitHub runtime authority remains `NONE`;
+- the dispatcher recognizes the retained-observer v2 A1/A2.1/A2.2/A3/A4 states, including all `A1_NOT_OBSERVED...` states, without converting them into authority or completion;
+- the existing `stegbrowser_runtime_connection_ingress` consumer registration remains the sole child execution path;
+- the immutable invocation nonce and existing request are unchanged; no second request, second dispatcher, runtime, host, endpoint, listener, scheduler, device, credential path, or authority path is created.
+
+This source repair does not prove that Receipt #1 exists in a current invocation context and does not promote A1. Its purpose is narrower: when an authentic StegVerse-native invocation already has the canonical registered Node Receipt #1 locator, the existing dispatcher no longer removes that locator before invoking the already-registered StegBrowser consumer.
+
 ## Authority map
 
 Manifest = route declaration only. Node = continuity/admission anchor. Lease = bounded invocation scope only. EVENT_EPHEMERAL StegOS = compute/execution surface. WorkerCoordinator = claim/fence authority. Interlock/InTr = transition and governed packet-movement authority. TV/TVC = credential authority. Master Records = custody/reconstruction authority, not transport authority. GitHub/CI runtime authority = `NONE`. Healer remains exception/remediation only.
 
 ## Next execution boundary
 
-Re-observe the authority-owned retained runtime record `receipts/sovereign-host/stegbrowser-runtime-connection-a1-a4.latest.json` for immutable nonce `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z` from an existing StegVerse-native authorized execution context. If that record authenticates A1, continue only through the existing Interlock/InTr -> bounded lease -> EVENT_EPHEMERAL -> WorkerCoordinator A3 -> exact-correlated A4 path, recording every observed governed transition through canonical Master Records custody before entering Round Trip 1, B1, and Round Trip 2. If the record reports `A1_NOT_OBSERVED...`, repair only the exact native Node-evidence exposure condition in `node_resolution_error`. Do not infer either outcome from source, CI, GitHub repository state, or an unavailable execution context.
+Validate and merge the bounded native Receipt #1 exposure repair. Then re-observe the authority-owned retained runtime record `receipts/sovereign-host/stegbrowser-runtime-connection-a1-a4.latest.json` for immutable nonce `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z` through the existing StegVerse-native invocation path. If that record authenticates A1, continue only through the existing Interlock/InTr -> bounded lease -> EVENT_EPHEMERAL -> WorkerCoordinator A3 -> exact-correlated A4 path, recording every observed governed transition through canonical Master Records custody before entering Round Trip 1, B1, and Round Trip 2. If the record reports `A1_NOT_OBSERVED...`, repair only the exact remaining native exposure condition in `node_resolution_error`. Do not infer either outcome from source, CI, GitHub repository state, or an unavailable execution context.
