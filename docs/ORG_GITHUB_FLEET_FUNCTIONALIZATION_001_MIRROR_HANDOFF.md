@@ -396,3 +396,38 @@ Priority order for contact effort:
 The first commercial success predicate remains an actual buyer conversation that validates the problem and permits a concrete scope/quote. No new connector, scheduler, workflow, resident runtime, or speculative feature work is admissible merely to prepare for outreach.
 
 README reconciliation for this continuation: `d4931e148634ba2053550f0c201916d0f4f8f9f2` documents the active cost/revenue posture without changing execution semantics.
+
+
+## GP10 bounded commercial discovery prepared — 2026-09-17
+
+Canonical prospect-specific discovery material is now in:
+
+```text
+StegVerse-Labs/GP10:docs/business/COMMERCIAL_DISCOVERY_OUTREACH.md
+source commit: c088fb3bc454dbb65616fe40424ae46f7da7a15c
+GP10 README reconciliation: ccf93ec7251a992ab86c96cdeb794f9c029592cf
+GP10 handoff reconciliation: 9ae32fc706066f3011bfd585ea9485a5a2845809
+```
+
+Public-fit confirmation was narrowed before preparing outreach:
+
+- POVA publicly lists operating GP10 1745, 8310, and 8325; its planning material states locomotive upgrades are a priority and that POVA provides upgrade services to other railroads/industries. Its public contact page accepts locomotive-repair inquiries at `pova@povarr.com` / 509-445-1090.
+- Integrity Rail Services publicly describes nationwide locomotive repair/maintenance, parts, field service, inspections, buying/leasing/sales and consulting. Its current contact page exposes owner Rodney Cargile at `rodney@integrityrailservices.com`, general `info@integrityrailservices.com`, Parts Manager Tina Bradshaw at `tina@integrityrailservices.com`, and 903-486-6486.
+
+The outreach asks only whether incomplete/conflicting unit, component, rebuild, inspection or work-history records create a paid-to-solve problem and whether one existing authorized record package can be scoped as a small paid review. It explicitly requires no system integration or new software.
+
+Current commercial evidence remains:
+
+```text
+prospect fit evidence: OBSERVED
+public contact path: OBSERVED
+prospect-specific outreach: PREPARED
+outreach sent: NOT OBSERVED
+problem confirmation: NOT OBSERVED
+authorized dataset discussion: NOT OBSERVED
+paid-scope/quote willingness: NOT OBSERVED
+buyer interest: NOT OBSERVED
+paid engagement: NOT OBSERVED
+```
+
+GP10 remains the lead candidate only provisionally pending actual prospect response. No new technical buildout or routine GitHub Actions validation is admissible before that response evidence.
