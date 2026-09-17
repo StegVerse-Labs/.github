@@ -1,0 +1,123 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001",
+  "correlation_id": "SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001",
+  "root_correlation_id": "SHWP-SV002-ORG-RUNTIME-ACTIVATION-001",
+  "parent_task_id": "SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001",
+  "goal": "Materialize and verify the exact frozen TT/RTG/GTG/AE source corpus required by the StegVerse-002 v0.3 native resource-bundle contract, then reuse the already-proven sandbox native execution/export/egress/Master-Records/origin-delivery chain to close the outstanding Goal 1 and Goal 2 evidence without weakening corpus completeness or introducing a parallel execution path.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "HANDOFF_READY",
+  "cosv_task_vector": "50000000107001",
+  "source_refs": [
+    "docs/SV002_FROZEN_CORPUS_MATERIALIZATION_MIRROR_HANDOFF.md",
+    "docs/SV002_ACTION_TRANSITION_EVIDENCE_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github#2064",
+    "StegVerse-002/micro-node-runtime:tools/sv002_native_resource_bundle.py@901829b3f36f764b474d7e4be02b68eb5e6e63fe",
+    "StegVerse-002/micro-node-runtime:tools/run_self_characterization_principal.py@901829b3f36f764b474d7e4be02b68eb5e6e63fe",
+    "master-records/orchestration:scripts/verify_sv002_self_characterization_reconstruction.py"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs", "StegVerse-002", "Admissible-Existence", "master-records"],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-002/micro-node-runtime",
+      "Admissible-Existence/TT",
+      "Admissible-Existence/RTG",
+      "Admissible-Existence/GTG",
+      "Admissible-Existence/AE",
+      "master-records/orchestration"
+    ],
+    "components": [
+      "frozen-corpus-materialization",
+      "source-index-completeness",
+      "native-resource-bundle",
+      "native-action-policy",
+      "v0.3-artifact-export",
+      "post-egress-master-records-custody",
+      "origin-return-delivery"
+    ]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-SV002-FROZEN-TT-TREE",
+      "kind": "PINNED_SOURCE_TREE",
+      "state": "UNRESOLVED_MATERIALIZATION",
+      "ref": "Admissible-Existence/TT@ab60b42934222a2cb5335a5a8194f258a491fc57;tree=173e2b6f8b75a8336144b16f36f5270d6bd741ea"
+    },
+    {
+      "dependency_id": "DEP-SV002-FROZEN-RTG-TREE",
+      "kind": "PINNED_SOURCE_TREE",
+      "state": "UNRESOLVED_MATERIALIZATION",
+      "ref": "Admissible-Existence/RTG@ca69954cb3dc4ad073c9244e003bc8f0ef3837e2;tree=22e87231234e396476ba5af2dc0416462904613b"
+    },
+    {
+      "dependency_id": "DEP-SV002-FROZEN-GTG-TREE",
+      "kind": "PINNED_SOURCE_TREE",
+      "state": "UNRESOLVED_MATERIALIZATION",
+      "ref": "Admissible-Existence/GTG@8cdb7bce87bb9f8429c35e9c66cc5dc28a46a225;tree=b01735eaf44b7f1c4bff59c3ac394d2113363579"
+    },
+    {
+      "dependency_id": "DEP-SV002-FROZEN-AE-TREE",
+      "kind": "PINNED_SOURCE_TREE",
+      "state": "UNRESOLVED_MATERIALIZATION",
+      "ref": "Admissible-Existence/AE@53c8eedddc4e54d8fa0660039d65ab9ac63057a1;tree=03643ce2b626f0813ab74707359f2219e9e04551"
+    },
+    {
+      "dependency_id": "DEP-SV002-NATIVE-CORRECTED-CHAIN",
+      "kind": "SANDBOX_PROVISIONAL_EVIDENCE",
+      "state": "RESOLVED_FOR_REUSE_NOT_PRODUCTION_PROOF",
+      "ref": "parent SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001 sandbox evidence",
+      "disposition": "REUSE_NATIVE_REPLACEMENT_ADAPTER_V03_EXPORTER_POST_EGRESS_CUSTODY_AND_ORIGIN_DELIVERY; DO_NOT_REIMPLEMENT OR PROMOTE WITHOUT FULL CORPUS PASS"
+    }
+  ],
+  "blockers": [
+    {
+      "blocker_id": "SV002-FROZEN-CORPUS-BULK-MATERIALIZATION",
+      "state": "ACTIVE",
+      "reason": "Exact bundle construction requires every non-symlink blob from all four pinned Git trees to contribute to source-index SHA-256, including non-UTF8 blobs; current connected GitHub surface enumerates trees and fetches blobs individually but exposes no repository archive/filesystem materialization or workflow-dispatch path for exact bulk source transport."
+    }
+  ],
+  "expected_evidence_predicates": [
+    "TT_FROZEN_TREE_BYTE_COMPLETE",
+    "RTG_FROZEN_TREE_BYTE_COMPLETE",
+    "GTG_FROZEN_TREE_BYTE_COMPLETE",
+    "AE_FROZEN_TREE_BYTE_COMPLETE",
+    "SOURCE_INDEX_SHA256_RECONSTRUCTED_FOR_ALL_FOUR",
+    "SV002_NATIVE_RESOURCE_BUNDLE_VERIFIED",
+    "REAL_NATIVE_POLICY_EXECUTED_AGAINST_COMPLETE_FROZEN_BUNDLE",
+    "V03_ARTIFACT_RECONSTRUCTION_PASS",
+    "AUTHENTIC_RESPONSE_EGRESS_BOUND",
+    "MASTER_RECORDS_CUSTODY_AND_READBACK_PASS",
+    "ORIGIN_RETURN_DELIVERED_AFTER_CUSTODY",
+    "NO_HISTORICAL_PYTHON_PRINCIPAL_RERUN",
+    "NO_SECOND_USER_OPERATED_DEVICE",
+    "NO_STANDING_EXTERNAL_RUNTIME"
+  ],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "frozen_corpus_materialized": false,
+    "source_indexes_verified": false,
+    "native_bundle_verified": false,
+    "goal_1_closed": false,
+    "goal_2_closed": false
+  },
+  "allowed_next_transitions": [
+    "FROZEN_CORPUS_MATERIALIZED",
+    "NATIVE_BUNDLE_VERIFIED",
+    "FULL_CHAIN_REEXECUTED",
+    "GOAL_EVIDENCE_RECONCILED"
+  ],
+  "handoff_projection_refs": ["docs/SV002_FROZEN_CORPUS_MATERIALIZATION_MIRROR_HANDOFF.md"],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "github_runtime_authority": "NONE",
+    "github_source_transport_authority": "SOURCE_AND_EVIDENCE_TRANSPORT_ONLY",
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "interlock_intr_required_for_every_governed_transition": true,
+    "credential_authority": "TV/TVC",
+    "master_records_reality_authority": true,
+    "second_user_operated_device_required": false
+  }
+}
