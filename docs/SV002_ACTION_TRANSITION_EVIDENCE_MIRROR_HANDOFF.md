@@ -15,7 +15,7 @@ Updated: 2026-09-17
 
 ## Registration state
 
-The exact task-specific canonical registry shard is present on `main`. The repository's documented sharded Canonical Work ingress permits an exact registered task shard to be resolved and self-materialized when the preserved resident monolithic registry has not yet been refreshed. Aggregate `data/canonical-task-registry.json` refresh is therefore non-authorizing reconciliation/housekeeping and does not block selection of this exact task.
+The exact task-specific canonical registry shard is present. The repository's documented sharded Canonical Work ingress permits an exact registered task shard to be resolved and self-materialized when the preserved resident monolithic registry has not yet been refreshed. Aggregate `data/canonical-task-registry.json` refresh is non-authorizing reconciliation and does not block selection of this exact task.
 
 Neither the shard nor a future aggregate refresh grants execution authority.
 
@@ -23,23 +23,52 @@ Neither the shard nor a future aggregate refresh grants execution authority.
 
 Every StegVerse action is canonically complete only when every required governed state transition is authentically emitted, retained, same-execution correlated, and reconstructable through canonical Master Records custody.
 
-Missing transition evidence is not optional logging loss. It means the action is not proven complete.
+Missing transition evidence is not optional logging loss. It means the action is not proven complete. This invariant applies ecosystem-wide and is not special to StegVerse-002.
 
-This invariant applies ecosystem-wide and is not special to StegVerse-002.
+## Defect identified and remediated
+
+The initial `class=ephemeral` discovery implementation incorrectly bound both `StegVerseNode` and `StegBrowser` to `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001`.
+
+That was a concrete routing defect, not merely stale documentation. `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` is explicitly scoped to the manifest-defined StegBrowser transport operation and its implementation hard-codes StegBrowser task/COSV/manifest/packet semantics. Treating it as the callable owner for the frozen SV002 self-characterization request would substitute the wrong execution contract before the first authentic transition.
+
+The repaired split is:
+
+```text
+StegVerseNode
+  callable_task: SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001
+  execution_owner: StegVerse-002/.github
+  operation: REQUEST_SELF_CHARACTERIZATION
+  target surface: resident-runtime/self_characterization_surface.py
+  principal launcher: StegVerse-002/micro-node-runtime/tools/run_self_characterization_principal.py
+
+StegBrowser
+  callable_task: RT-STEGBROWSER-RUNTIME-CONSUMPTION-001
+  execution_owner: StegVerse-Labs/.github
+  operation: STEGBROWSER_MANIFEST_DEFINED_INTR_INGRESS
+```
+
+The StegBrowser reusable task remains useful provenance for the already-validated registered-Node -> Interlock -> InTr -> bounded lease -> event-ephemeral mechanics. It is not the SV002 callable owner.
+
+No new bridge, host, runtime, listener, scheduler, WorkerCoordinator, request, credential path, principal, or second user-operated device was introduced by this repair.
 
 ## Existing execution surface
 
-Current validated discovery exposes:
+Current corrected discovery semantics are:
 
 ```text
 StegVerseNode: AVAILABLE_TO_INVOKE / NOT_MATERIALIZED / EVENT_EPHEMERAL
+  callable task: SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001
+  execution owner: StegVerse-002/.github
+  operation: REQUEST_SELF_CHARACTERIZATION
+
 StegBrowser: AVAILABLE_TO_INVOKE / NOT_MATERIALIZED / EVENT_EPHEMERAL
+  callable task: RT-STEGBROWSER-RUNTIME-CONSUMPTION-001
+
 zero connected devices: NOT A RUNTIME BLOCKER
 materialization: ON_INVOCATION
-callable task: RT-STEGBROWSER-RUNTIME-CONSUMPTION-001
 ```
 
-Required reuse path:
+Required SV002 path:
 
 ```text
 registered StegVerseNode
@@ -50,12 +79,12 @@ registered StegVerseNode
 -> execution-time runtime identity
 -> WorkerCoordinator claim/fence
 -> authentic governed ingress
+-> StegVerse-002/.github resident-runtime/self_characterization_surface.py
+-> StegVerse-002/micro-node-runtime/tools/run_self_characterization_principal.py
 -> frozen v0.3 execution
 -> governed egress
 -> Master Records custody/reconstruction
 ```
-
-Do not add another bridge, host, runtime, listener, scheduler, WorkerCoordinator, request, credential path, or second user-operated device.
 
 ## Required transition evidence
 
@@ -97,12 +126,14 @@ The actual principal transition set is governed by the frozen v0.3 experiment co
 ```text
 parent goal prompt budget: EXHAUSTED / 20 OF 20
 successor issue: OPEN
-successor canonical registry shard: PRESENT ON MAIN
+successor canonical registry shard: PRESENT
 successor coordination state: ACTIVE
 COSV: 50000000107000
-class=ephemeral discovery: VALIDATED
-StegVerseNode callable availability: AVAILABLE_TO_INVOKE
-StegBrowser callable availability: AVAILABLE_TO_INVOKE
+wrong shared StegBrowser callable binding: REPAIRED IN PR BRANCH
+StegVerseNode callable owner: SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001
+StegVerseNode execution owner: StegVerse-002/.github
+StegVerseNode operation: REQUEST_SELF_CHARACTERIZATION
+StegBrowser callable owner: RT-STEGBROWSER-RUNTIME-CONSUMPTION-001
 connected device prerequisite: FALSE
 standing runtime prerequisite: FALSE
 authentic successor invocation consumed: NOT YET OBSERVED
@@ -112,13 +143,13 @@ Master Records reconstruction PASS for rerun: NOT YET OBSERVED
 
 ## Completion boundary
 
-Retire this task only after the frozen v0.3 request is consumed through the existing event-ephemeral path and every required state transition is authentically retained and reconstructable through Master Records under the same invocation correlation.
+Retire this task only after the frozen v0.3 request is consumed through the corrected StegVerseNode event-ephemeral path and every required state transition is authentically retained and reconstructable through Master Records under the same invocation correlation.
 
 No completion may be inferred from discovery, source, CI, merge, scheduling, or partial receipts.
 
 ## Next action
 
-Consume the already-existing frozen request through the registered callable `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` event-ephemeral path. Capture transition evidence as each action occurs and preserve exact same-invocation lineage through Master Records. Do not reconstruct missing runtime evidence after the fact. Aggregate registry refresh may proceed independently as non-authorizing reconciliation and must not delay the runtime path.
+Validate and merge the callable-binding correction, reconcile the target-org handoff, then consume `SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001` through the existing registered StegVerseNode -> Interlock -> InTr -> bounded EVENT_EPHEMERAL path. Capture transition evidence as each action occurs and preserve exact same-invocation lineage through Master Records. Do not route the frozen SV002 request through the StegBrowser manifest task and do not reconstruct missing runtime evidence after the fact.
 
 ## Manual work
 
