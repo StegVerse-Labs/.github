@@ -462,3 +462,16 @@ Canonical state: `docs/ORG_GITHUB_FLEET_FUNCTIONALIZATION_001_MIRROR_HANDOFF.md`
 A surviving mirror handoff is not, by itself, sufficient proof that work is currently selectable by the ecosystem. Before StegVerse work is treated as active canonical work, resolve the Goal Task ID in `data/canonical-task-registry.json` and reconcile that row with the applicable `*_MIRROR_HANDOFF.md`, WorkerCoordinator claim/fence state, COSV pointer, and Interlock/InTr admission state. If a pre-registry handoff has no Task Registry row, treat that mismatch as a continuity defect and restore the existing task identity as non-authorizing source state before downstream mutation.
 
 `HYGIENE-CAUSAL-ROOTS-001` is the reference repair for this case: the hygiene handoff predated Task Registry bootstrap and remained transferred to the control plane while absent from autonomous work discovery. Its repair restores registry/COSV discoverability without granting direct Site/StegCore cleanup authority.
+
+
+---
+
+## Fleet functionalization prompt-cap disposition
+
+Canonical Goal Task `ORG-GITHUB-FLEET-FUNCTIONALIZATION-001` reached its 20/20 prompt cap on 2026-09-17 and is retired as `DECOMPOSED_AT_PROMPT_LIMIT`, not completed. Full fleet completion evidence remains absent.
+
+The genuinely separable GP10 external-response / revenue-validation lane now continues under canonical Goal Task `GP10-COMMERCIAL-RESPONSE-VALIDATION-001`, issue `#2073`, handoff `docs/GP10_COMMERCIAL_RESPONSE_VALIDATION_001_MIRROR_HANDOFF.md`, COSV `10100000100000`.
+
+The connected Outlook account `rigel@stegverse.org` contains the two first-wave GP10 outreach messages; no prospect reply was observed at decomposition time. Provider-observed send evidence does not establish buyer interest or revenue.
+
+The fleet parent's remaining noncommercial runtime/evidence predicates stay with their already-canonical owners. No speculative infrastructure or routine GitHub Actions work is introduced by the decomposition.
