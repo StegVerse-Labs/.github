@@ -18,15 +18,15 @@
     "master-records/orchestration:services/canonical_master_records_api.py"
   ],
   "stegos_protocol_ref": "StegVerse-Labs/StegOS:stegos/state_transition_custody.py",
-  "mir_event_driver_ref": "scripts/execute_mir_event_driven_roundtrip.py",
   "sv002_initiation_preflight_ref": "receipts/preflight/MIR-SV002-INITIATION-MECHANISM-001.json",
-  "dependencies": [
-    "control/entity-autonomous-governed-progression-contract.json",
-    "workers/reusable_task_master_records_roundtrip.py",
-    "source-bundles/reusable-task-registry.d/RT-INTR-GOVERNED-TRANSITION-001.json",
-    "source-bundles/reusable-task-registry.d/RT-INTR-EVIDENCE-CUSTODY-001.json",
-    "source-bundles/reusable-task-registry.d/RT-STEGBROWSER-RUNTIME-CONSUMPTION-001.json"
-  ],
+  "mir_browser_refs": {
+    "binding": "StegVerse-Labs/Site:data/mir-roundtrip-browser-runtime-binding.v1.json",
+    "canonical_custody": "StegVerse-Labs/Site:assets/canonical-master-records-transition-custody-browser.js",
+    "runtime": "StegVerse-Labs/Site:assets/mir-roundtrip-sv002-browser-runtime.js",
+    "activation": "StegVerse-Labs/Site:assets/mir-roundtrip-browser-activation.js",
+    "surface": "StegVerse-Labs/Site:mir-roundtrip/index.html",
+    "tests": "StegVerse-Labs/Site:tests/test_mir_sv002_browser_event_reimplementation.py"
+  },
   "expected_evidence_predicates": [
     "EVERY_GOVERNED_STATE_CHANGE_EMITS_CANONICAL_STATE_RECEIPT",
     "EVERY_OBSERVED_STATE_RECEIPT_IS_SUBMITTED_TO_MASTER_RECORDS",
@@ -55,7 +55,11 @@
     "sv002_execution_fixture_may_be_reconstructed_as_new_python_runtime": false,
     "validated_site_browser_runtime_reuse_available": true,
     "mir_python_event_driver_is_final_sv002_duplicate_execution_surface": false,
-    "mir_browser_event_activation_binding_materialized": false,
+    "mir_browser_event_activation_binding_materialized": true,
+    "mir_browser_event_autostart_materialized": true,
+    "mir_browser_canonical_custody_materialized": true,
+    "mir_browser_source_conformance_tests_materialized": true,
+    "mir_browser_source_conformance_workflow_materialized": true,
     "authentic_current_mir_browser_event_execution_observed": false,
     "authentic_rtc_007_observed": false,
     "authentic_rtc_008_observed": false,
@@ -67,13 +71,11 @@
     "claimed": false,
     "validated": false,
     "source_adoption_complete_for_master_records_custody": true,
-    "mir_final_browser_event_activation_adoption_pending": true,
+    "mir_final_browser_event_activation_adoption_pending": false,
     "runtime_completion_pending": true
   },
   "allowed_next_transitions": [
-    "MATERIALIZE_MIR_BROWSER_EVENT_ACTIVATION_FROM_VALIDATED_SV002_SITE_FIXTURE",
-    "CHANGE_ONLY_MIR_GOAL_COSV_DESTINATION_AND_CUSTODY_BINDINGS",
-    "PRESERVE_NODE_INTERLOCK_INTR_BOUNDED_LEASE_EVENT_EPHEMERAL_BROWSER_RUNTIME_IDENTITY",
+    "VALIDATE_MIR_BROWSER_EVENT_SOURCE_CONFORMANCE",
     "INVOKE_OR_OBSERVE_CURRENT_MIR_BROWSER_EVENT",
     "RECONCILE_CANONICAL_MASTER_RECORDS_RECEIPTS_IN_ORDER",
     "LOCATE_FIRST_MISSING_OR_NONRETURNED_CANONICAL_TRANSITION",
