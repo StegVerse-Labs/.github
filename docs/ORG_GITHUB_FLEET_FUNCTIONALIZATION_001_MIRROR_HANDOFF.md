@@ -4,7 +4,7 @@ Status: RETIRED / DECOMPOSED_AT_PROMPT_LIMIT
 Repository: `StegVerse-Labs/.github`
 Goal Task ID: `ORG-GITHUB-FLEET-FUNCTIONALIZATION-001`
 COSV profile: `task.v1`
-COSV vector: `20010000100000`
+COSV vector: `80000000100000`
 Parent evidence task: `ORG-GITHUB-REPOSITORY-STATUS-SUMMARY-001`
 Parent census: `reports/ORG_GITHUB_REPOSITORY_STATUS_SUMMARY_001.md`
 
@@ -502,3 +502,6 @@ Closeout reconciliation:
 - parent README reconciliation: `d7d699ec8f231cbeef9f1a3cf0d4755069239955`
 - successor handoff final registration reconciliation: `4d1c69727462be34826dac8e39904e3460ada0f3`
 - no GitHub Actions run was triggered for prompt-cap decomposition or successor registration.
+
+
+COSV transition at decomposition: `20010000100000 -> 80000000100000` (`SUPERSEDED` lifecycle; parent continuation transferred rather than completed).
