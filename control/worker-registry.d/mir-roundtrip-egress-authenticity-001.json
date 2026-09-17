@@ -17,7 +17,7 @@
       "executor_binding": "AUTHORIZED",
       "external_entity_job_ref": null,
       "goal_id": "MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001",
-      "handoff_ref": "StegVerse-Labs/Site:docs/MIR_ROUNDTRIP_EGRESS_AUTHENTICITY_MIRROR_HANDOFF.md",
+      "handoff_ref": "handoffs/mir-roundtrip-egress-authenticity-001.json",
       "heartbeat_timing": null,
       "last_checkpoint_ref": "StegVerse-Labs/Site:data/mir-roundtrip-egress-sv002-route-binding.v1.json",
       "lease": null,
@@ -59,7 +59,7 @@
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": false,
         "temporal_class": "current",
-        "task_relationship": "duplicates_proven_route_then_adds_current_mir_binding",
+        "task_relationship": "integrates_capability",
         "target_phase": "ACTIVATED"
       }
     }
