@@ -21,8 +21,10 @@ EPHEMERAL_SURFACES = [
         "persistent_connection_required": False,
         "second_user_operated_device_required": False,
         "authority_effect": "NONE_DISCOVERY_ONLY",
-        "callable_task": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
-        "materialization_path": ["REGISTERED_STEGVERSE_NODE", "INTERLOCK", "UNIVERSAL_INTR_MATERIALIZATION", "BOUNDED_INVOCATION_LEASE", "EVENT_EPHEMERAL"],
+        "callable_task": "SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001",
+        "execution_owner": "StegVerse-002/.github",
+        "operation": "REQUEST_SELF_CHARACTERIZATION",
+        "materialization_path": ["REGISTERED_STEGVERSE_NODE", "INTERLOCK", "UNIVERSAL_INTR_MATERIALIZATION", "BOUNDED_INVOCATION_LEASE", "EVENT_EPHEMERAL", "STEGVERSE_002_ORG_SELF_CHARACTERIZATION_SURFACE"],
     },
     {
         "surface_id": "STEGBROWSER_EVENT_EPHEMERAL",
@@ -36,6 +38,8 @@ EPHEMERAL_SURFACES = [
         "second_user_operated_device_required": False,
         "authority_effect": "NONE_DISCOVERY_ONLY",
         "callable_task": "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001",
+        "execution_owner": "StegVerse-Labs/.github",
+        "operation": "STEGBROWSER_MANIFEST_DEFINED_INTR_INGRESS",
         "materialization_path": ["REGISTERED_STEGVERSE_NODE", "INTERLOCK", "UNIVERSAL_INTR_MATERIALIZATION", "BOUNDED_INVOCATION_LEASE", "EVENT_EPHEMERAL_STEGBROWSER"],
     },
 ]
