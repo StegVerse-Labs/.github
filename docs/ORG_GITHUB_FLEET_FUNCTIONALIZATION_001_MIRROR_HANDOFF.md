@@ -23,7 +23,7 @@ Primary partial targets remain `.github`, `GP10`, `StegMusic`, `StegTalk`, `TVC`
 
 ## Shared .github/TVC/runtime dependency inspection — 2026-09-17 continuation
 
-Six concrete repository-native defects have now been repaired without claiming resident execution.
+Seven concrete repository-native defects have now been repaired without claiming resident execution.
 
 ### 1. COSV WorkerCoordinator policy-binding skew
 
@@ -163,6 +163,31 @@ The executor now hashes the canonical request, binds terminal evidence to `mater
 
 No GitHub Actions workflow run or authentic resident TVC receipt has been observed for these new commits in the current evidence. No service, credential, request-consumption, materialization or StegMusic validation predicate is promoted by this source repair.
 
+### 7. Generic targeted resident latest-only evidence retention defect
+
+The shared resident refresh/targeted-execution bridge still persisted only:
+
+```text
+receipts/sovereign-host/resident-targeted-execution.latest.json
+```
+
+That made the canonical convenience surface useful for current observation but allowed a later bounded execution attempt to overwrite the prior bridge receipt. This was inconsistent with the immutable-evidence requirement now enforced in TVC and weakened reconstruction of repeated resident execution attempts across tasks.
+
+Repair:
+
+```text
+source commit: c05262e1c9a9d7f1b36992f2a45f5aca4855489b
+test commit: 8099f2b06781fa1c44057bdb1e5beb959123d774
+source: scripts/refresh_and_execute_resident_task.py
+test: tests/test_portable_refresh_targeted_execution.py
+latest surface: receipts/sovereign-host/resident-targeted-execution.latest.json
+immutable surface: receipts/sovereign-host/resident-targeted-execution.by-receipt/<receipt_body_sha256>.json
+```
+
+The bridge now computes a deterministic SHA-256 over the receipt body, stores the same persisted receipt on the latest and immutable content-addressed surfaces, and fails closed if an existing immutable path would contain different bytes. This changes evidence retention only: it does not suppress lawful recurring task execution, mint claims/fences, grant credentials, or create a second runtime/scheduler.
+
+Current GitHub Actions observation for test commit `8099f2b06781fa1c44057bdb1e5beb959123d774`: no workflow run observed. The repair remains source + regression coverage, not repository validation or resident proof.
+
 ## Fencing inspection result
 
 The minimum-fence lane was also inspected. For independently admitted task control, the WorkerCoordinator validates `fresh_fence_required`, reads `minimum_fencing_token_exclusive`, advances the next registry generation above that floor when necessary, and uses the resulting generation as the fencing token. Local source refresh deliberately excludes mutable `control/worker-registry.json`, claims, fences, timers and receipt state. No additional concrete source defect was proven in this fencing lane during this continuation, so no speculative fencing change was made.
@@ -228,7 +253,7 @@ Repository observation of `receipts/cosv/live/` still contains only the historic
 
 ## Current target-specific posture
 
-- `.github`: heartbeat protocol core verified; COSV policy skew, stale-preclaim refresh seam, exact-selector false-complete semantics, and pointer index/source-vector parity are repaired; first authentic post-anchor packet remains unobserved.
+- `.github`: heartbeat protocol core verified; COSV policy skew, stale-preclaim refresh seam, exact-selector false-complete semantics, pointer index/source-vector parity, and generic targeted immutable receipt retention are repaired; first authentic post-anchor packet remains unobserved.
 - `TVC`: private-source source/control implementation exists; exact custom-request cleanup plus terminal replay/immutable receipt retention defects are repaired; authentic resident service/credential/request consumption remains unobserved.
 - `StegMusic`: exact-current request remains staged; resident materialization and deterministic PASS remain unobserved.
 - `StegBrain`: live-gradient consumer source complete and deterministic replay PASS; first changed post-anchor DELTA/live gradient remain unobserved.
@@ -238,7 +263,7 @@ Repository observation of `receipts/cosv/live/` still contains only the historic
 
 ## Remediation order from here
 
-1. Continue source-only inspection only where an actual remaining repository-native defect is evidenced; do not churn already-correct fence/authority logic.
+1. Preserve the seven repaired shared-control defects and continue source-only inspection only where an actual remaining repository-native defect is evidenced; do not churn already-correct fence/authority logic.
 2. Preserve staged `TVC-STEGMUSIC-VALIDATION-001` until authentic TVC resident service/credential evidence appears; then consume only through the existing TVC path and require immutable terminal receipt binding for exact SHA validation.
 3. Preserve `COSV-LIVE-PACKET-AUTOMATION-006` until an authentic admitted local execution surface appears. Local source refresh may reconcile only the narrow unclaimed policy seam; actual claim/fence/execution still requires the canonical runtime.
 4. If the first post-anchor COSV packet is a verified changed DELTA with non-empty `gradient_inputs`, consume it only through the existing StegBrain live-gradient consumer and retain packet/gradient receipts.
@@ -247,7 +272,7 @@ Repository observation of `receipts/cosv/live/` still contains only the historic
 
 ## README impact
 
-These repairs change internal fail-closed source-control, pointer-integrity, replay and evidence-retention semantics, not `.github` or TVC public interfaces, credential ownership, or user-facing product behavior. The existing READMEs remain materially correct; canonical handoffs carry the internal functional changes.
+These repairs change internal fail-closed source-control, pointer-integrity, replay and evidence-retention semantics, including immutable retention for generic targeted resident bridge receipts, not `.github` or TVC public interfaces, credential ownership, or user-facing product behavior. The existing READMEs remain materially correct; canonical handoffs carry the internal functional changes.
 
 ## Completion predicates
 
@@ -261,4 +286,4 @@ These repairs change internal fail-closed source-control, pointer-integrity, rep
 
 `ACTIVE / CHECKED_OUT`.
 
-This continuation repaired two further repository-native defects: COSV compact pointer validation now fails closed unless the refreshed index and referenced canonical task-vector agree exactly, and TVC private-source terminal execution now retains immutable request-bound evidence and suppresses exact replay before credential resolution. Existing independent fence-floor logic was inspected and preserved because no additional concrete defect was proven. No resident/runtime predicates were promoted.
+This continuation first rechecked validation and found no workflow runs yet for the COSV pointer-parity or TVC exactly-once commits. It then repaired one newly evidenced shared defect: generic targeted resident execution now retains a content-addressed immutable receipt alongside its latest convenience surface. Existing independent fence-floor logic remains unchanged. Re-observation still finds only historical HB31 COSV receipts and no TVC-STEGMUSIC-VALIDATION-001 resident/materialization receipt, so no resident/runtime predicates were promoted.
