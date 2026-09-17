@@ -12,6 +12,7 @@ Updated: 2026-09-17
 - Tracking issue: `StegVerse-Labs/.github#2060`
 - Target-org handoff: `StegVerse-002/.github/docs/SELF_CHARACTERIZATION_EXECUTION_SURFACE_MIRROR_HANDOFF.md`
 - Frozen experiment condition: `v0.3 FROZEN / OPERATIVE`
+- Callable-ownership repair: PR `#2063`, squash merge `a040d37c3809f3d78b6478b1f2e4ff9a3e59e500`
 
 ## Registration state
 
@@ -29,7 +30,9 @@ Missing transition evidence is not optional logging loss. It means the action is
 
 The initial `class=ephemeral` discovery implementation incorrectly bound both `StegVerseNode` and `StegBrowser` to `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001`.
 
-That was a concrete routing defect, not merely stale documentation. `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` is explicitly scoped to the manifest-defined StegBrowser transport operation and its implementation hard-codes StegBrowser task/COSV/manifest/packet semantics. Treating it as the callable owner for the frozen SV002 self-characterization request would substitute the wrong execution contract before the first authentic transition.
+That was a concrete routing defect. `RT-STEGBROWSER-RUNTIME-CONSUMPTION-001` is explicitly scoped to the manifest-defined StegBrowser transport operation and its implementation binds StegBrowser task/COSV/manifest/packet semantics. Treating it as the callable owner for the frozen SV002 self-characterization request would substitute the wrong execution contract before the first authentic transition.
+
+PR `#2063` repaired the split and merged with expected-head protection. The exact repair head was `c9de50fb9bbd31d8fed2608a05a1f1a2d42ec9db`; squash merge is `a040d37c3809f3d78b6478b1f2e4ff9a3e59e500`.
 
 The repaired split is:
 
@@ -47,9 +50,27 @@ StegBrowser
   operation: STEGBROWSER_MANIFEST_DEFINED_INTR_INGRESS
 ```
 
-The StegBrowser reusable task remains useful provenance for the already-validated registered-Node -> Interlock -> InTr -> bounded lease -> event-ephemeral mechanics. It is not the SV002 callable owner.
+The StegBrowser reusable task remains provenance for the already-validated registered-Node -> Interlock -> InTr -> bounded lease -> event-ephemeral mechanics. It is not the SV002 callable owner.
 
-No new bridge, host, runtime, listener, scheduler, WorkerCoordinator, request, credential path, principal, or second user-operated device was introduced by this repair.
+No new bridge, host, runtime, listener, scheduler, WorkerCoordinator, request, credential path, principal, or second user-operated device was introduced.
+
+## Validation and secondary remediations
+
+The repair exposed two additional source-conformance defects and both were remediated before merge:
+
+1. `.github/workflows/ephemeral-execution-surface-discovery.yml` was not registered in `control/workflow-surface-registry.json`; it is now explicitly classified as a validation-only standalone exception with runtime authority `NONE`.
+2. The new runtime-capable task shard lacked the mandatory canonical `execution_substrate_resolution`; it now uses the required single-device-first review and selects `ADMITTED-EPHEMERAL-STEGOS-NODE`, with `external_device_required=false`, `second_user_operated_device_allowed=false`, and `authority_effect=NONE`.
+
+Exact-head Actions validation on the repair head completed successfully:
+
+```text
+Ephemeral Execution Surface Discovery: 35239941339 SUCCESS
+Validate organization control plane: 35239941291 SUCCESS
+Deterministic Repository Suite: 35239941317 SUCCESS
+Heartbeat Worker Project: 35239941429 SUCCESS
+```
+
+These validations prove source/conformance only; they do not prove runtime execution.
 
 ## Existing execution surface
 
@@ -129,11 +150,13 @@ successor issue: OPEN
 successor canonical registry shard: PRESENT
 successor coordination state: ACTIVE
 COSV: 50000000107000
-wrong shared StegBrowser callable binding: REPAIRED IN PR BRANCH
+wrong shared StegBrowser callable binding: REPAIRED / MERGED
+repair merge: a040d37c3809f3d78b6478b1f2e4ff9a3e59e500
 StegVerseNode callable owner: SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001
 StegVerseNode execution owner: StegVerse-002/.github
 StegVerseNode operation: REQUEST_SELF_CHARACTERIZATION
 StegBrowser callable owner: RT-STEGBROWSER-RUNTIME-CONSUMPTION-001
+execution substrate: ADMITTED-EPHEMERAL-STEGOS-NODE
 connected device prerequisite: FALSE
 standing runtime prerequisite: FALSE
 authentic successor invocation consumed: NOT YET OBSERVED
@@ -149,7 +172,7 @@ No completion may be inferred from discovery, source, CI, merge, scheduling, or 
 
 ## Next action
 
-Validate and merge the callable-binding correction, reconcile the target-org handoff, then consume `SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001` through the existing registered StegVerseNode -> Interlock -> InTr -> bounded EVENT_EPHEMERAL path. Capture transition evidence as each action occurs and preserve exact same-invocation lineage through Master Records. Do not route the frozen SV002 request through the StegBrowser manifest task and do not reconstruct missing runtime evidence after the fact.
+Consume `SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001` through the corrected registered StegVerseNode -> Interlock -> InTr -> bounded EVENT_EPHEMERAL -> organization-local self-characterization path. Capture transition evidence as each action occurs and preserve exact same-invocation lineage through Master Records. Do not route the frozen SV002 request through the StegBrowser manifest task and do not reconstruct missing runtime evidence after the fact.
 
 ## Manual work
 
