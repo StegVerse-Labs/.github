@@ -1,0 +1,63 @@
+{
+  "schema": "stegverse.machine-preflight/v1",
+  "preflight_id": "MIR-LIVE-TRANSITION-PROBE-001",
+  "goal_task_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+  "task_id": "MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001",
+  "cosv_task_vector": "50000000100000",
+  "state": "LIVE_TRANSITION_PROBE_SOURCE_MATERIALIZED_RUNTIME_UNOBSERVED",
+  "verdict": "PARTIAL",
+  "authority_effect": "NONE_PREFLIGHT_ONLY",
+  "source": {
+    "probe_worker": "workers/mir_roundtrip_transition_probe_worker.py",
+    "existing_worker": "workers/mir_roundtrip_egress_authenticity_worker.py",
+    "process_adapter": "control/process-worker-adapters.d/mir-roundtrip-egress-authenticity-001.json",
+    "source_validation": "tests/test_mir_live_transition_probe_worker.py",
+    "master_records_worker": "workers/reusable_task_master_records_roundtrip.py"
+  },
+  "probe_sequence_classes": [
+    "WORKERCOORDINATOR_CLAIM_FENCE_BOUND",
+    "MIR_EVENT_INGRESS_INTENT_BOUND",
+    "CURRENT_NODE_PROOF_VERIFIED",
+    "LEASE_STATE_REQUESTED",
+    "LEASE_STATE_ADMITTED",
+    "LEASE_STATE_PROVISIONING",
+    "EVENT_COMPUTE_PROVISIONED",
+    "EVENT_EPHEMERAL_RUNTIME_MATERIALIZED",
+    "EXECUTION_TIME_RUNTIME_IDENTITY_VERIFIED",
+    "LEASE_LOCAL_IDENTITY_ACCEPTED",
+    "CURRENT_INTERLOCK_INTR_INGRESS_RECEIVED",
+    "RTC-STEGVERSE-EGRESS-007",
+    "RTC-INTERLOCK-INTR-TRANSPORT-008",
+    "RTC-FARSIDE-FINAL-009",
+    "BOUNDED_EVENT_TRANSITION_RECORDED",
+    "GOVERNED_RETURN_QUEUED",
+    "MIR_DESTINATION_EVIDENCE_RETAINED",
+    "MIR_EVIDENCE_EXPORTED",
+    "EVIDENCE_EXPORT_STATE_RECORDED",
+    "LEASE_STATE_RELEASING",
+    "EVENT_COMPUTE_RELEASED",
+    "LEASE_STATE_LEASE_CLOSED",
+    "EVENT_EPHEMERAL_LEASE_CLOSURE_RETAINED",
+    "EXACT_GOVERNED_RETURN_PACKET_RETAINED"
+  ],
+  "diagnostic": {
+    "runtime_ref": "receipts/mir-roundtrip-egress-authenticity/live-transition-diagnostic.latest.json",
+    "packet_root": "receipts/mir-roundtrip-egress-authenticity/live-transition-confirmations/",
+    "first_non_return_transition_id_retained": true,
+    "each_observed_probe_packet_byte_exact_master_records_roundtrip": true,
+    "probe_failure_grants_transition_authority": false,
+    "existing_worker_continues_for_diagnostic_localization": true
+  },
+  "current_observation": {
+    "authentic_current_probe_receipt_observed": false,
+    "authentic_current_interlock_intr_ingress_observed": false,
+    "authentic_current_mir_runtime_execution_observed": false,
+    "first_non_return_transition_id_observed": false
+  },
+  "current_break": "CURRENT_AUTHENTIC_WORKERCOORDINATOR_EVENT_INVOCATION_NOT_YET_OBSERVED",
+  "notes": [
+    "The process adapter now executes the probe wrapper through the existing WorkerCoordinator path.",
+    "The probe wrapper does not create a second runtime or transport path and does not use Master Records as transition authority.",
+    "The first authentic invocation will identify whether the chain stops before Interlock/InTr ingress or at a later Master Records confirmation-return boundary."
+  ]
+}
