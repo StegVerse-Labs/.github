@@ -1,0 +1,40 @@
+{
+  "schema": "stegverse.process-worker-adapter-fragment/v0.1",
+  "fragment_id": "MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001",
+  "adapters": [
+    {
+      "adapter_ref": "process:mir-roundtrip-egress-authenticity-v1",
+      "authority_ref": "data/canonical-task-records/MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001.json",
+      "capabilities": ["mir_roundtrip_egress_authenticity"],
+      "command": ["python", "workers/mir_roundtrip_egress_authenticity_worker.py"],
+      "cwd": ".",
+      "enabled": true,
+      "env_allowlist": [
+        "STEGVERSE_STEGOS_ROOT",
+        "STEGVERSE_STEGOS_SOURCE_ROOT",
+        "STEGVERSE_SITE_ROOT",
+        "STEGVERSE_NODE_GENESIS_RECEIPT",
+        "STEGVERSE_HEARTBEAT_ROOT",
+        "STEGVERSE_REPO_ROOTS_JSON",
+        "XDG_STATE_HOME",
+        "HOME",
+        "USER",
+        "LOGNAME",
+        "SHELL",
+        "PATH",
+        "PYTHONPATH",
+        "LANG",
+        "LC_ALL",
+        "TMPDIR"
+      ],
+      "notes": [
+        "Duplicates the proven SV002 route mechanics first and binds only the current MIR invocation.",
+        "Requires a fresh WorkerCoordinator claim/fence but does not re-prove generic SV002 route mechanics.",
+        "Uses the existing StegOS EVENT_EPHEMERAL MIR profile runtime, Interlock/InTr transition semantics, and Master Records lifecycle reconstruction.",
+        "No second runtime, scheduler, dispatcher, transport plane, credential path, or user-device prerequisite is created."
+      ],
+      "timeout_seconds": 600,
+      "type": "process_json_v0.1"
+    }
+  ]
+}
