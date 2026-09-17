@@ -3,7 +3,7 @@
 Updated: 2026-09-17
 Goal Task ID: `MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001`
 COSV ID: `50000000100000`
-Status: `ACTIVE / V0.3 FREEZE ACCEPTED / REFERENCE ARCHITECTURE DRAFT V0.2 / PROVEN SV002 ROUTE REUSED / AUTONOMOUS MIR INVOCATION SOURCE CHAIN VALIDATED / COUNTERPART EVIDENCE-SEAM INPUT PENDING`
+Status: `ACTIVE / V0.3 FREEZE ACCEPTED / REFERENCE ARCHITECTURE DRAFT V0.2 / PROVEN SV002 ROUTE REUSED / AUTONOMOUS MIR INVOCATION SOURCE CHAIN VALIDATED / EVENT-DRIVEN RUNTIME MODEL RECONCILED / COUNTERPART EVIDENCE-SEAM INPUT PENDING`
 
 ## Canonical state
 
@@ -33,15 +33,29 @@ Canonical route source:
 - `StegVerse-Labs/Site/data/mir-roundtrip-egress-sv002-route-binding.v1.json`
 - `StegVerse-Labs/Site/docs/MIR_ROUNDTRIP_EGRESS_AUTHENTICITY_MIRROR_HANDOFF.md`
 
+## Event-driven runtime correction
+
+The MIR `EVENT_EPHEMERAL` runtime is not an idle service that must already exist or be remotely reachable before execution. Resident supervision and WorkerCoordinator may be durable support surfaces, but the actual event runtime is instantiated as a consequence of the admitted state transition.
+
+Therefore the earlier remote-surface reachability framing was incorrect. A failed remote-device/surface lookup says nothing authoritative about whether the current MIR event can materialize its runtime through the existing transition path. The authoritative question is whether the current MIR-bound event enters the existing ingress and receives the required current Interlock/InTr state transition.
+
+The superseded unresolved boundary was:
+
+`AUTHENTIC_SOVEREIGN_RUNTIME_SURFACE_OR_RUNTIME_RECEIPT_NOT_OBSERVED`
+
+The corrected unresolved boundary is:
+
+`AUTHENTIC_MIR_EVENT_INGRESS_OR_STATE_TRANSITION_RECEIPT_NOT_OBSERVED`
+
+Remote-device or remote-surface reachability is explicitly **not** a runtime predicate for this lane.
+
 ## Current authority-owned execution package
 
 The child transport lane is installed into the existing sovereign WorkerCoordinator/runtime source. Canonical `.github` source contains the MIR task vector/index fragment, worker registry/process adapter, standing resident request, bounded MIR runtime worker, and resident request consumer.
 
-The request is attached to the already-existing `canonical_work_coordination` resident dispatch path through `control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py`. The wrapper visits the MIR request before its legacy request set and delegates through the existing targeted WorkerCoordinator bridge. No second dispatcher, scheduler, WorkerCoordinator, runtime, transport plane, credential path, resident receiver, or device prerequisite is introduced.
+The request is attached to the existing `canonical_work_coordination` path through `control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py`. No second dispatcher, scheduler, WorkerCoordinator, runtime, transport plane, credential path, resident receiver, or device prerequisite is introduced.
 
-## Autonomous invocation chain reconciled
-
-The existing source authority chain has now been traced end-to-end:
+The exact existing source chain remains:
 
 ```text
 scripts/run_heartbeat_runtime.py --continuous
@@ -51,37 +65,27 @@ scripts/run_heartbeat_runtime.py --continuous
 -> scripts/run_worker_runtime.py#dispatch_local_resident_requests
 -> scripts/dispatch_resident_execution_requests.py
 -> canonical_work_coordination
--> control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py
--> scripts/consume_mir_roundtrip_egress_authenticity_request.py
--> scripts/refresh_and_execute_resident_task.py --task-id MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001
--> existing WorkerCoordinator current claim/fence
--> workers/mir_roundtrip_egress_authenticity_worker.py
--> existing StegOS SovereignLocalEventRuntimeAdapter + run_mir_profile_transition
+-> consume-canonical-work-coordination-bootstrap.py
+-> consume_mir_roundtrip_egress_authenticity_request.py
+-> refresh_and_execute_resident_task.py --task-id MIR-ROUNDTRIP-EGRESS-AUTHENTICITY-001
+-> current WorkerCoordinator claim/fence
+-> current MIR event admitted into Interlock/InTr
+-> EVENT_EPHEMERAL MIR runtime materializes
+-> RTC-STEGVERSE-EGRESS-007
+-> RTC-INTERLOCK-INTR-TRANSPORT-008
+-> RTC-FARSIDE-FINAL-009
 -> Master Records exact-byte custody/reconstruction
 ```
 
-The historical self-heal defect in which long tick-zero maintenance could starve the first task-capable WorkerCoordinator tick has already been repaired. Current `run_worker_runtime.py` records the first task-capable cycle before long maintenance and already includes resident dispatch on the existing cadence. Therefore this trace found no remaining source-level autonomous-invocation defect to repair by adding another scheduler, dispatcher, or runtime plane.
-
-Canonical source-trace preflight:
-
-`receipts/preflight/MIR-AUTONOMOUS-INVOCATION-CHAIN-001.json`
+Canonical source-trace preflight is `receipts/preflight/MIR-AUTONOMOUS-INVOCATION-CHAIN-001.json`, now corrected to the transition-dependent runtime model.
 
 ## Current runtime observation boundary
 
-Source readiness is not runtime execution proof. At the latest reconciliation:
+Source readiness is not current-event execution proof. At the latest reconciliation, no authentic current MIR event-ingress receipt, current Interlock/InTr transition receipt, MIR request-consumption receipt, or `receipts/mir-roundtrip-egress-authenticity/current.latest.json` is retained in canonical evidence.
 
-- no current authentic `runtime-presence.latest.json` was retained in canonical GitHub evidence;
-- no current MIR request-consumption receipt was retained in canonical GitHub evidence;
-- no `receipts/mir-roundtrip-egress-authenticity/current.latest.json` was retained in canonical GitHub evidence;
-- the authorized remote-runtime connector exposed no reachable device/surface during this session.
+Passive waiting for a runtime surface or receipt to appear is not accepted as execution. The correct action is to cause or observe the current MIR event entering the existing authorized ingress/transition path. If admitted, the event runtime materializes as a consequence of that state transition.
 
-The remote connector result is only observation-surface reachability evidence; it is not promoted into a claim that no sovereign runtime exists anywhere.
-
-Accordingly the unresolved runtime boundary is explicitly:
-
-`AUTHENTIC_SOVEREIGN_RUNTIME_SURFACE_OR_RUNTIME_RECEIPT_NOT_OBSERVED`
-
-Passive waiting for a receipt to “appear” is not accepted as execution. If an existing authorized sovereign runtime surface executes the already-standing request, only its authentic receipts may promote the MIR runtime predicates. GitHub/GitHub Actions cannot substitute because runtime authority remains `NONE`.
+GitHub/GitHub Actions cannot substitute because runtime authority remains `NONE`.
 
 ## Runtime proof boundary
 
@@ -103,6 +107,7 @@ The MIR-profile runtime retains exact response bytes so subsequent return proces
 - Master Records: observed-reality custody/reconstruction only.
 - GitHub/GitHub Actions: source validation/evidence transport only; runtime authority `NONE`.
 - Historical SV002 route evidence grants no present authority.
+- Remote-device/surface reachability grants no runtime proof and is not a runtime prerequisite.
 - MIR MIRROR seam/runtime evidence cannot be promoted into authentic external MIR endpoint evidence.
 
 ## Counterpart evidence still required
@@ -116,4 +121,4 @@ Separately from the owned-mirror transport execution:
 
 ## Next action
 
-Reconcile an authentic resident cadence/request-consumption receipt if one becomes available from an existing authorized sovereign runtime surface. If it proves the one-way MIR MIRROR transition plus exact Master Records reconstruction, promote only those supported predicates and immediately continue the retained exact return packet through the already-existing governed return-admission/SDK return path. Do not create another scheduler, dispatcher, runtime plane, user-device prerequisite, or generic SV002 re-proof gate to work around the explicit runtime-observation boundary.
+Cause or observe the current MIR-bound event entering the existing authorized ingress/Interlock/InTr path. Treat the `EVENT_EPHEMERAL` runtime as transition-materialized, not as an idle remotely reachable surface. Reconcile only authentic event-ingress, transition, MIR destination, and Master Records receipts; do not create another scheduler, dispatcher, runtime plane, user-device prerequisite, remote-surface gate, or generic SV002 re-proof.
