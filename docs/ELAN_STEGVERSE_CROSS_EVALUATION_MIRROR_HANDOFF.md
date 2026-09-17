@@ -3,18 +3,18 @@
 Updated: 2026-09-16  
 Goal Task ID: `ELAN-STEGVERSE-CROSS-EVALUATION-001`  
 COSV ID: `10100000100000`  
-Status: `ACTIVE / REGISTERED / READY-FOR-CROSS-EVALUATION`
+Status: `RETIRED / COMPLETED / VALIDATED`
 
 ## Goal
 
-Perform the already-defined cross-evaluation between ÉLAN's preserved native posture/evidence and StegVerse's independently governed representation across the complete evidence chain, from the human events through retrospective reconstruction, without altering either architecture to accommodate the other.
+Cross-evaluate ÉLAN's preserved native Test 2 evidence against StegVerse's independently governed representation across the complete evidence chain without altering either architecture to accommodate the other.
 
 ## Canonical predecessor
 
 Predecessor task: `ELAN-NEXT-PHASE-EXPERIMENT-001`  
 Predecessor handoff: `docs/ELAN_NEXT_PHASE_EXPERIMENT_MIRROR_HANDOFF.md`
 
-The predecessor is retired after reconciling the returned ÉLAN Test 2 evidence.
+The predecessor remains retired after reconciling the returned ÉLAN Test 2 evidence.
 
 ## Preserved ÉLAN Test 2 evidence
 
@@ -31,71 +31,93 @@ Returned-trace deviations remain explicit:
 
 - the requested A3 and A4 silence windows are not separately exposed in the returned ÉLAN trace;
 - the requested return stimulus used `Okay.` while the returned trace uses `Alright.`;
-- neither difference is normalized away.
+- neither difference was normalized away.
 
-## Cross-evaluation boundary
+## Executed StegVerse comparison
 
-This task must not:
+The corresponding StegVerse chain was executed through the established local SDK governance evidence path using:
 
-- rewrite ÉLAN evidence into StegVerse terminology;
-- collapse StegVerse transitions merely to mirror ÉLAN's returned interval representation;
-- infer hidden intent, consent, refusal, withdrawal, emotion, or motivation;
-- feed StegVerse evaluation criteria back into ÉLAN;
-- treat the collaboration paper as executable experiment input;
-- add a second runtime plane or unrelated authority prerequisite.
+- `StegVerse-org/StegVerse-SDK/scripts/run_elan_stegverse_cross_evaluation.py`
+- `.github/workflows/elan-stegverse-cross-evaluation.yml`
+- workflow run `35164877959`
+- head SHA `b16b581bb05d4b3a8fd5e9b4fa7345010c4ee8de`
 
-## Required comparison chain
+The workflow completed successfully. All explicit assertions passed.
 
-For each preserved phase, compare:
+### StegVerse transition resolution
 
-`human event -> observation -> representation -> optional interpretation -> governance/posture -> retained result -> replay/reconstruction`
+StegVerse preserved the preregistered silence boundaries as two separate transitions:
 
-The comparison must preserve both architectures' native resolution.
+- `A3`: `ACTIVE_CONVERSATION_WITH_EMISSION_POSSIBLE -> NON_EMISSION_WINDOW_1_OBSERVED`
+- `A4`: `NON_EMISSION_WINDOW_1_OBSERVED -> PERSISTED_NON_EMISSION_WINDOW_2_OBSERVED`
 
-## Temporal state-transition question
+For both A3 and A4:
 
-The central sustained-silence comparison is:
+- `emission_observed = false`
+- `intent = UNDETERMINED`
+- `semantic_interpretation = UNRESOLVED`
 
-When the experiment defines successive bounded periods of non-emission, does each architecture preserve them as separable state transitions, or converge them into one continuous state?
+The human return was represented as:
 
-For StegVerse, A3 and A4 remain separable state transitions when temporal and semantic resolution are present. Convergence is valid only when the evaluated architecture itself does not preserve the boundary or semantic distinction. Any convergence must be reported as an observed architectural property rather than imposed during normalization.
+- `B1`: `PERSISTED_NON_EMISSION_WINDOW_2_OBSERVED -> ACTIVE_CONVERSATION_REENGAGED`
 
-## Frozen comparison fields
+No hidden intent, consent, refusal, withdrawal, emotion, or motivation was inferred.
 
-1. `human_event_identity_and_order`
-2. `observation_boundary_resolution`
-3. `source_native_output_or_non_output`
-4. `source_native_state_or_posture`
-5. `state_transition_resolution`
-6. `semantic_interpretation_state`
-7. `governance_or_posture_disposition`
-8. `provenance_and_custody`
-9. `replay_result`
-10. `reconstruction_result`
-11. `representation_divergence_origin`
-12. `returned_result_evidence`
+## Cross-evaluation result
 
-Field rules:
+The earliest observed representation divergence is:
 
-- ÉLAN-unexposed information remains `NOT_EXPOSED`.
-- Semantically unresolved information remains `UNRESOLVED`.
-- No field is filled by borrowing an assumption from the other architecture.
-- No post-hoc field may be added to rescue a preferred interpretation.
+`OBSERVATION_BOUNDARY_AND_STATE_TRANSITION_RESOLUTION`
 
-## Execution sequence
+ÉLAN's returned native trace exposes one continuous non-transmission interval with native presence state maintained. It does not separately expose A3 and A4 as two native boundaries.
 
-1. Preserve both evidence chains exactly before comparison.
-2. Align only the common human chronology and explicit experimental boundaries.
-3. Record ÉLAN's native representation at each available point.
-4. Record StegVerse's independently produced representation and governed transition at each corresponding point.
-5. Compare temporal/state-transition resolution without forcing equivalence.
-6. Compare semantic interpretation state separately from raw observation.
-7. Compare ÉLAN posture and StegVerse governance disposition.
-8. Identify the earliest point where any divergence first appears.
-9. Preserve custody, replay, and reconstruction results for the StegVerse chain and source provenance for the ÉLAN chain.
-10. Produce the cross-evaluation result without declaring one architecture correct merely because it uses a different representation granularity.
+StegVerse preserves A3 and A4 as separate state transitions because the experiment definition supplies two bounded observation windows and the StegVerse representation retains that temporal/state resolution.
+
+This is a representational difference. It is not recorded as proof that either architecture is categorically correct or defective.
+
+## Governance/posture comparison
+
+ÉLAN native posture preserved from the source trace:
+
+- sustained silence: `No transmission, native presence state maintained.`
+- return: `I'm listening.`
+
+StegVerse local SDK governance result for the independently represented chain:
+
+- governance state: `ALLOW`
+- reason: `ok`
+- boundary consumed: `true`
+- executor invoked: `true`
+
+No semantic equivalence between ÉLAN posture and StegVerse governance was asserted merely from those outputs.
+
+## Custody, replay, reconstruction, returned result
+
+Validated evidence from workflow run `35164877959`:
+
+- chain verified: `true`
+- custody: `RECORDED`
+- deterministic replay disposition match: `true`
+- reconstruction chain verified: `true`
+- returned result preserved: `true`
+- architecture normalization: `false`
+
+Evidence artifact:
+
+- artifact ID: `10474396420`
+- name: `elan-stegverse-cross-evaluation`
+- size: `23205` bytes
+- digest: `sha256:a5db9a9027269c2b805f09eef1f338e79f09521e7596adb1dc0f9d721b97c79c`
+
+The evidence inventory includes the preserved ÉLAN trace representation, StegVerse corresponding chain, governance request, manifest, transition request, InTr-posture binding, governance boundary handoff, governance decision, route receipts, exact-run custody, replay, reconstruction, returned result, cross-evaluation result, and summary.
+
+## Scope limitation
+
+The successful governance execution is the established **local SDK experiment path** and uses the repository's test InTr posture resolver. It is not claimed as authentic live external/resident InTr execution. That distinction does not invalidate the cross-evaluation because this goal compares the controlled SDK governance path and preserved representations, but the result must not be promoted into a separate live-runtime claim.
 
 ## Completion predicates
+
+Satisfied:
 
 - `BOTH_EVIDENCE_CHAINS_PRESERVED_BEFORE_COMPARISON`
 - `COMMON_HUMAN_CHRONOLOGY_ALIGNED_WITHOUT_NORMALIZATION`
@@ -110,8 +132,8 @@ Field rules:
 
 ## README impact
 
-README reviewed. This registration changes research/evidence coordination state, not repository function, so no README text mutation is required. Canonical task state is carried by the registry shard and this handoff.
+README reviewed. This execution changes research/evidence state, not repository product behavior, so no README text mutation is required.
 
 ## No-claim boundary
 
-Registration does not execute the comparison and does not claim a cross-evaluation result. It establishes the canonical successor surface and the evidence-preservation rules under which execution may proceed.
+This handoff does not claim that ÉLAN internally lacks separable states; it records only that the returned ÉLAN-native trace does not expose separate A3/A4 boundaries. It does not claim live external InTr execution. It does not normalize either architecture into the other.
