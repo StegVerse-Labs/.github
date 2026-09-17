@@ -142,7 +142,7 @@ test: tests/test_cosv_task_pointer_runtime_enforcement.py
 
 `validate_cosv_task_pointer` now verifies the index row and referenced source-vector record together. The source path must remain inside the resident root, the record must be `task.v1` / `level=task`, identity must bind the exact task ID, and the source vector must equal both the index row and caller vector. The index row must remain non-authorizing/EMITTED where those fields are present. Regression coverage includes vector drift, identity drift, duplicate identity, malformed vector, and path escape.
 
-No GitHub Actions workflow run or authentic resident execution receipt has been observed for these two new commits in the current evidence. The repair is therefore source + regression coverage, not runtime proof.
+The source commit did execute in Heartbeat Worker Project run `35272028407` and failed at the complete deterministic repository suite. That failure is validation evidence only, not resident runtime proof. The later regression-test commit contains the corrected pointer fixture; no replacement Actions run is required by this task.
 
 ### 6. TVC private-source terminal replay / immutable receipt defect
 
@@ -187,6 +187,71 @@ immutable surface: receipts/sovereign-host/resident-targeted-execution.by-receip
 The bridge now computes a deterministic SHA-256 over the receipt body, stores the same persisted receipt on the latest and immutable content-addressed surfaces, and fails closed if an existing immutable path would contain different bytes. This changes evidence retention only: it does not suppress lawful recurring task execution, mint claims/fences, grant credentials, or create a second runtime/scheduler.
 
 Current GitHub Actions observation for test commit `8099f2b06781fa1c44057bdb1e5beb959123d774`: no workflow run observed. The repair remains source + regression coverage, not repository validation or resident proof.
+
+## Actions cost containment and revenue-first correction — 2026-09-17
+
+The existing Gmail failure ledger was reconciled before any further CI assumption. The query for GitHub notifications with `Run failed` since 2026-09-17 resolves **196 failure notifications**. This is evidence of existing paid failure volume, not a request to run more validation.
+
+Direct existing-run inspection also corrected the COSV pointer-parity record:
+
+```text
+source commit: 98c5ee73052494bba92227ff51ad836fb4923180
+Heartbeat Worker Project run: 35272028407
+job: 105373483968
+result: FAILURE
+failure step: complete deterministic repository test suite
+observed source-commit failures:
+  pointer test fixture at that source commit lacked the newly-required source-vector materialization
+  task-vector index shard conformance also contained schema failures
+```
+
+The later regression-test commit already contains the pointer fixture materialization, so no new Actions run is required to discover that correction.
+
+To stop recurring paid validation/failure loops, automatic triggers were reduced without creating replacement workflows:
+
+```text
+StegVerse-Labs/.github
+  heartbeat-worker-project automatic push/PR -> manual workflow_dispatch only
+    commit 302239bc132e6aed96501a9212ab7c244064993f
+  organization control-plane automatic push/PR -> manual workflow_dispatch only
+    commit fa55434281388638b8ef81ed962fbcd9ef8e73d8
+  deterministic-suite diagnostics automatic trigger -> manual workflow_dispatch only
+    commit d2b1ff8b143d3f739425ca6df3c31b22b524f060
+
+StegVerse-Labs/GP10
+  legacy core-lite-intake automatic push/PR -> manual only
+  bare pytest import-path defect -> python -m pytest
+    commit 5c5800e7d6b8aed88c3be069d6ca0a1cb6c5c4bc
+
+StegVerse-Labs/Site
+  hourly repository-task controller schedule removed
+    commit 6cf56f7a898c7d70b47882f1a64bcdcfb1706ac8
+  hourly public-autonomy telemetry schedule removed
+    commit 7a6efcf7ca1f1e500df6b6656a208dfe5cada06d
+
+StegVerse-Labs/StegVerse-SCW
+  daily contained StegTVC connectivity failure schedule removed
+    commit e5036ae393b298d392a9740568cb4a1eac2a243c
+  daily contained multi-repo autopatch failure schedule removed
+    commit c1acdf9dae7d8a75b98133321885182162745ca8
+```
+
+All containment commits used `[skip ci]`; no replacement validation run is required by this fleet task.
+
+### Shortest revenue path
+
+The shortest implemented revenue path is GP10 **paid field-validation / evidence review** against a customer-authorized export. It uses the already-implemented normalized intake, provenance, conflict-preservation, deterministic validation, unit-economics, and commercial-posture machinery and requires no new connector, scheduler, resident runtime, or Actions validation.
+
+Revenue-ready offer:
+
+```text
+StegVerse-Labs/GP10/docs/business/PAID_FIELD_VALIDATION_OFFER.md
+offer commit: 518886e799ee327ccebd367e16168c679386aa02
+README exposure: 46fd79e399b9a96e744db86bcfbd07dda1fefe82
+GP10 handoff reconciliation: ead5e87893949de5654e21d2e4df71895f97b2b9
+```
+
+The first paid engagement is intentionally aligned with the existing `FIELD_VALIDATION_BUNDLE` blocker: a paying customer's authorized records can both produce revenue and provide the authentic field evidence GP10 currently lacks. No universal price was invented because GP10's own controls require exact scope/evidence before asserting pricing validity.
 
 ## Fencing inspection result
 
@@ -286,4 +351,4 @@ These repairs change internal fail-closed source-control, pointer-integrity, rep
 
 `ACTIVE / CHECKED_OUT`.
 
-This continuation first rechecked validation and found no workflow runs yet for the COSV pointer-parity or TVC exactly-once commits. It then repaired one newly evidenced shared defect: generic targeted resident execution now retains a content-addressed immutable receipt alongside its latest convenience surface. Existing independent fence-floor logic remains unchanged. Re-observation still finds only historical HB31 COSV receipts and no TVC-STEGMUSIC-VALIDATION-001 resident/materialization receipt, so no resident/runtime predicates were promoted.
+This continuation reconciled the existing failure-email ledger, corrected the pointer-parity validation record to its actual failed run, removed automatic/scheduled Actions loops that were repeatedly spending minutes on validation or already-known fail-closed conditions, and created/exposed a GP10 paid field-validation offer as the shortest implemented revenue path. No new Actions run was intentionally triggered for discovery or proof, and no resident/runtime predicate was promoted.
