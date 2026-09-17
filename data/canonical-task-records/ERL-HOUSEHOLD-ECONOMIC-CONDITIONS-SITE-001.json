@@ -11,8 +11,10 @@
   "source_refs": [
     "docs/ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_SITE_MIRROR_HANDOFF.md",
     "StegVerse-Labs/Executive_Rhetoric_Ledger#163",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger#166",
     "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/ECONOMIC_DISTRIBUTION_MIRROR_HANDOFF.md",
     "StegVerse-Labs/Executive_Rhetoric_Ledger/research-data/household-economic-conditions/official-series-bindings.v1.json",
+    "StegVerse-Labs/Executive_Rhetoric_Ledger/research-data/household-economic-conditions/nyfed-2026q2-workbook-map.v1.json",
     "StegVerse-Labs/Site#1368",
     "StegVerse-Labs/Site/Household-Economic-Conditions.html",
     "StegVerse-Labs/Site/Physical-Economics.html"
@@ -25,6 +27,7 @@
   "dependencies": [
     {"dependency_id":"DEP-ERL-ECONOMIC-DISTRIBUTION","kind":"SOURCE_CAPABILITY","state":"PARTIAL","ref":"StegVerse-Labs/Executive_Rhetoric_Ledger/docs/ECONOMIC_DISTRIBUTION_MIRROR_HANDOFF.md"},
     {"dependency_id":"DEP-ERL-OFFICIAL-SOURCE-BINDINGS","kind":"SOURCE_CAPABILITY","state":"PARTIAL","ref":"StegVerse-Labs/Executive_Rhetoric_Ledger/research-data/household-economic-conditions/official-series-bindings.v1.json"},
+    {"dependency_id":"DEP-ERL-BEA-GOVERNED-CREDENTIAL","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"TV/TVC resident credential custody"},
     {"dependency_id":"DEP-ERL-PHYSICAL-ECONOMICS-PUBLIC-OUTPUT","kind":"RUNTIME_PREDICATE","state":"UNRESOLVED","ref":"StegVerse-Labs/Site/Household-Economic-Conditions.html"}
   ],
   "blockers": [],
@@ -41,6 +44,7 @@
     "SOURCE_VINTAGE_AND_REFRESH_TIME_VISIBLE",
     "OFFICIAL_SOURCE_IDENTIFIERS_EXACTLY_BOUND",
     "SOURCE_ACQUISITION_FAILS_CLOSED_WITHOUT_FABRICATION",
+    "NYFED_EXACT_WORKBOOK_MAP_BOUND",
     "PUBLIC_PAGE_FAILS_CLOSED_ON_UNGOVERNED_OR_STALE_DATA",
     "README_AND_MIRROR_HANDOFF_CURRENT"
   ],
@@ -59,8 +63,8 @@
     "projection_only": false
   },
   "human_action_ref": null,
-  "completion": {"claimed": false, "validated": false, "reconciliation_ref": "ERL#164+ERL#165+Site#1369"},
-  "allowed_next_transitions": ["RESOLVE_NYFED_WORKBOOK_COLUMN_BINDING", "ACQUIRE_OFFICIAL_SOURCE_CANDIDATES", "CONSTRUCT_GOVERNED_HOUSEHOLD_STATE", "BIND_GOVERNED_ERL_OUTPUT", "VALIDATE_PUBLIC_FAIL_CLOSED_BEHAVIOR"],
+  "completion": {"claimed": false, "validated": false, "reconciliation_ref": "ERL#164+ERL#165+ERL#166+Site#1369"},
+  "allowed_next_transitions": ["INSPECT_BEA_GOVERNED_CREDENTIAL_AVAILABILITY", "CONSTRUCT_GOVERNED_HOUSEHOLD_STATE", "BIND_GOVERNED_ERL_OUTPUT", "VALIDATE_PUBLIC_FAIL_CLOSED_BEHAVIOR"],
   "handoff_projection_refs": ["docs/ERL_HOUSEHOLD_ECONOMIC_CONDITIONS_SITE_MIRROR_HANDOFF.md"],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
