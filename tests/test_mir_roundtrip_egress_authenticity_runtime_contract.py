@@ -54,6 +54,7 @@ def test_worker_is_duplicate_first_and_runtime_evidence_bounded():
         "reusable_task_master_records_roundtrip.py",
         "MIR_MIRROR_ONE_WAY_TRANSITION_OBSERVED",
         "MIR_MIRROR_BUILD_TEST_COUNTERPART_RUNTIME",
+        '"cosv_task_vector": COSV',
         '"successful_data_transport_round_trip_identified": False',
         '"authentic_external_mir_endpoint_claimed": False',
     )
@@ -81,6 +82,7 @@ def test_standing_request_is_attached_to_existing_canonical_work_cadence():
     assert 'second_dispatcher_created' in wrapper
     assert 'scripts/refresh_and_execute_resident_task.py' in consumer
     assert '"--task-id", TASK_ID' in consumer
-    assert '"--cosv-task-vector", COSV' in consumer
+    assert 'cosv_bound_by_request_and_worker' in consumer
+    assert 'aggregate_cosv_pointer_gate_used' in consumer
     assert 'manual_device_prerequisite' in consumer
     assert 'network_source_fetch_performed' in consumer
