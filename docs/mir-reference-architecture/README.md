@@ -9,6 +9,7 @@ This directory contains the post-v0.3 public reference-architecture work for gov
 Current artifact:
 
 - `SEPARATION_OF_POWERS_REFERENCE_ARCHITECTURE_DRAFT.md` — draft v0.2 containing the StegVerse actor/authority graph, common receipt envelope, per-corner proof scopes and proof ceilings, prohibited authority collapses, six-corner conformance matrix, minimum fail-closed negative tests, runtime-proof composition rule, evidence-status discipline, and MIR convergence package.
+- `AILEASH_SEBBI_WITNESS_EVIDENCE_MAP.md` — joint-review evidence reconciliation for AILeash/sebbi.pro, Appendix A R4, and Justin Dobson witness-topology claims. It distinguishes independently observed public responses, source-inspected material, counterpart/self-reported claims, user-provided profile context, and not-yet-established claims. Canonical child task: `MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001`; handoff: `docs/MIR_AILEASH_WITNESS_EVIDENCE_RECONCILIATION_MIRROR_HANDOFF.md`.
 
 Current discipline:
 
@@ -19,6 +20,10 @@ Current discipline:
 - physical co-location is allowed only when semantic authority separation and attribution remain intact;
 - counterpart claims remain `COUNTERPART_REPORTED` until concrete artifacts are verified;
 - the MIR Bitcoin-anchor statement is not promoted to verified evidence until an authentic anchor/inclusion artifact is supplied;
+- AILeash/sebbi.pro public service responses are classified only for the fields they actually return; operator-controlled README, `.well-known`, profile, or conformance text is not promoted into independent proof of the claims it describes;
+- the Appendix A R4 exact positive live-tip attestation remains `COUNTERPART_REPORTED` until the exact peer/tip response is independently retained or reproduced;
+- OpenTimestamps submission/pending status is not promoted to Bitcoin confirmation without independent proof verification;
+- witness roster/member count is not promoted to a control-domain independence or resilience score;
 - `MIR-LEAF-V3-CONFORMANCE-FIXTURE-001` remains incomplete until authentic MIR independent reproduction is observed;
 - the historically successful StegVerse-002 Node -> Interlock -> InTr -> bounded EVENT_EPHEMERAL runtime -> Master Records reconstruction route is reusable engineering evidence and is duplicated before MIR-specific requirements rather than re-proved as a generic gate;
 - historical SV002 receipts grant no present authority, so the current MIR-bound invocation still requires fresh WorkerCoordinator/Interlock/InTr/Master Records evidence.
