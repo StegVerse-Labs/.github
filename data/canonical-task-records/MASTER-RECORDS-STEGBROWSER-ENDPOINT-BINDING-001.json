@@ -6,8 +6,8 @@
   "parent_task_id": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
   "predecessor_task_id": "STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001",
   "goal": "Resolve the existing browser-specific canonical Master Records custody binding used by the single immutable StegBrowser invocation so the exact runtime-readiness tuple can reach the existing master-records/orchestration authority and return authentic RECORDED plus exact reconstruction PASS, without introducing provider, platform, OS, browser, host, Render, second-device, substitute-runtime, new-credential-path, or second-custody-authority dependencies.",
-  "coordination_state": "PROPOSED",
-  "checkout_state": "HANDOFF_READY",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
   "cosv_task_vector": "40000100100000",
   "handoff_ref": "docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md",
   "issue_ref": "StegVerse-Labs/.github#2078",
@@ -21,16 +21,23 @@
   },
   "binding_truth": {
     "execution_page": "StegVerse-Labs/Site:stegos-bootstrap/canonical-work-runtime-consumption.html",
-    "execution_page_blob": "2af607770dcdda03af1699817bc9ea6ee042ead2",
+    "execution_page_blob": "cf381a3c3001eb61447381789376ef52ce85ca20",
     "browser_custody_client": "StegVerse-Labs/Site:assets/canonical-master-records-transition-custody-browser.js",
-    "browser_custody_client_blob": "4ea45ac0dd309fdaf0d7ee55c9f6463c862b4742",
-    "configured_endpoint": "/api/master-records/state-transitions",
+    "browser_custody_client_blob": "769fa04bf01bc1258ea905a4ba553b33f18f893d",
+    "browser_endpoint_resolution": "VERIFIED_STEGVERSE_NODE_ADVERTISEMENT",
+    "canonical_path": "/api/master-records/state-transitions",
+    "credential_export_to_browser": false,
+    "gateway_transport_owner": "StegVerse-org/LLM-adapter",
+    "gateway_relay": "llm_adapter/stegbrowser_master_records_state_transition_relay.py",
+    "gateway_relay_blob": "417200990b6029665407c93c790201a15d2e2437",
     "master_records_owner": "master-records/orchestration",
     "python_local_adapter_is_invocation_binding": false
   },
   "observed_condition": {
-    "probed_public_endpoint": "https://stegverse.org/api/master-records/state-transitions",
-    "read_only_http_result": "404_FROM_STATIC_PUBLIC_SITE_ROUTE",
+    "previous_public_static_origin_probe": "https://stegverse.org/api/master-records/state-transitions",
+    "previous_read_only_http_result": "404_FROM_STATIC_PUBLIC_SITE_ROUTE",
+    "static_origin_assumption_removed_from_source": true,
+    "live_verified_stegverse_gateway_endpoint_observed": false,
     "durable_store_contents_observed": false,
     "zero_custody_records_inferred": false,
     "immutable_invocation_nonexecution_inferred": false
@@ -78,8 +85,7 @@
     "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001"
   ],
   "allowed_next_transitions": [
-    "RESOLVE_PROVIDER_NEUTRAL_BROWSER_TO_AUTHORITY_BINDING",
-    "PRESERVE_TV_TVC_CREDENTIAL_AUTHORITY",
+    "OBSERVE_VERIFIED_STEGVERSE_GATEWAY_ADVERTISEMENT",
     "SUBMIT_EXACT_EXISTING_STEGBROWSER_CUSTODY_RECEIPT",
     "REQUIRE_AUTHENTIC_RECORDED_AND_RECONSTRUCTION_PASS",
     "HAND_BACK_TO_EXISTING_A1_A4_EXECUTION_OWNER"
@@ -120,7 +126,14 @@
     "StegVerse-Labs/Site:assets/stegbrowser-master-records-custody.js",
     "master-records/orchestration:services/canonical_state_transition_custody.py",
     "master-records/orchestration:services/canonical_master_records_api.py",
-    "StegVerse-Labs/.github#2078"
+    "StegVerse-Labs/.github#2078",
+    "StegVerse-Labs/Site#1380",
+    "StegVerse-Labs/Site@c46b5631e3ee4c2be92497879947c3539fc04277",
+    "StegVerse-Labs/Site:docs/STEGBROWSER_MASTER_RECORDS_ENDPOINT_BINDING_MIRROR_HANDOFF.md",
+    "StegVerse-org/LLM-adapter#344",
+    "StegVerse-org/LLM-adapter@608147cafa8506dfc11359223bb8de7c34c2b2b9",
+    "StegVerse-org/LLM-adapter:llm_adapter/stegbrowser_master_records_state_transition_relay.py",
+    "StegVerse-org/LLM-adapter:docs/STEGBROWSER_MASTER_RECORDS_STATE_TRANSITION_RELAY_MIRROR_HANDOFF.md"
   ],
   "blockers": [],
   "worker_claim": {
@@ -129,5 +142,61 @@
     "fence_ref": null,
     "projection_only": true
   },
-  "authority_effect": "NONE"
+  "authority_effect": "NONE",
+  "source_progress": {
+    "provider_neutral_browser_binding_merged": true,
+    "provider_neutral_browser_binding_pr": "StegVerse-Labs/Site#1380",
+    "provider_neutral_browser_binding_merge_sha": "c46b5631e3ee4c2be92497879947c3539fc04277",
+    "site_claim_release_pr": "StegVerse-Labs/Site#1381",
+    "site_claim_release_merge_sha": "8380564aacd16c687a2affa401453d0a8bfad554",
+    "credential_nonexporting_gateway_relay_merged": true,
+    "gateway_relay_pr": "StegVerse-org/LLM-adapter#344",
+    "gateway_relay_merge_sha": "608147cafa8506dfc11359223bb8de7c34c2b2b9",
+    "authoritative_master_records_api_modified": false,
+    "transition_outcome_contract_repaired": true,
+    "transition_outcome": "OBSERVED",
+    "preserved_intr_ingress_evidence_state": "INGRESS_ADMITTED",
+    "browser_credential_material_required": false,
+    "tv_tvc_credential_authority_preserved": true,
+    "render_used": false,
+    "provider_platform_os_device_prerequisite_introduced": false,
+    "second_user_operated_device_required": false,
+    "authentic_verified_gateway_advertisement_observed": false,
+    "authentic_master_records_recorded": false,
+    "authentic_master_records_reconstruction_pass": false,
+    "exact_stegbrowser_tuple_digest_equality_observed": false,
+    "source_validation_runtime_authority": "NONE"
+  },
+  "validation_evidence": {
+    "site_exact_head": "fbb168a437dca9036f23b8d861ade9621d2407bb",
+    "site_runs": {
+      "Validate StegOS Persistent Card UX": 35288449021,
+      "No Required Third-Party Runtime": 35288449059,
+      "Site Handoff Orchestrator": 35288449057,
+      "Site Bootstrap Validate - No Non-TV/TVC Credential Authority": 35288449015,
+      "CFP Current-Season Ingestion": 35288449084,
+      "Validate ERL KV Provider Proof Projection": 35288449055,
+      "Verify NVIDIA Hugging Face publication": 35288449169,
+      "Ecosystem Visual Render Transport Validate - No Credential Authority": 35288449139,
+      "Node IndexedDB Schema Migration": 35288449061,
+      "Ecosystem Heartbeat Orchestration": 35288449040,
+      "StegSocials Post Preparation": 35288448998,
+      "MIR SV002 Browser Event Conformance": 35288449125
+    },
+    "site_all_exact_head_runs_success": true,
+    "llm_adapter_exact_head": "1266a9758d214182744889996204f80e54d35d6b",
+    "llm_adapter_runs": {
+      "Distributed LLM Executor Validate - No Credential Authority": 35288382966,
+      "validate-zai-intr": 35288382997,
+      "Validate KV Memory Context Bridge": 35288382990,
+      "Distributed LLM Workload Validate - No Credential Authority": 35288382992,
+      "Work Mutation Safety - Non-Authorizing": 35288382982,
+      "validate-kimi-intr": 35288382954,
+      "hil-sovereign-receiver-source": 35288382969,
+      "Coinbase SKAP Service Gateway Validation": 35288382974,
+      "validate-deepseek-intr": 35288383174,
+      "validate": 35288383000
+    },
+    "llm_adapter_all_exact_head_runs_success": true
+  }
 }
