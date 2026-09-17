@@ -45,7 +45,7 @@ The source tree already contains the required registry-first continuation mechan
 - `scripts/run_task_registry_canonical_work_cycle.py` starts from the Canonical Task Registry, scopes to the current root Goal Task, prioritizes repair/remediation/canonicalization work, performs Task Registry collision check-in, and delegates the selected task to the existing Canonical Work / Interlock-InTr bootstrap.
 - `control/resident-execution-request.d/consume-canonical-work-coordination-bootstrap.py` visits explicit Canonical Work requests and then returns to the registry-first cycle.
 - the selector does not mint WorkerCoordinator authority, grant credentials, or authorize transitions.
-- source/merge/CI remains non-runtime evidence.
+- source/merge/CI remains non-runtime evidence; it is invalid to claim that source/CI/merge proves runtime execution.
 
 Merged trajectory retained from the prior handoff:
 
