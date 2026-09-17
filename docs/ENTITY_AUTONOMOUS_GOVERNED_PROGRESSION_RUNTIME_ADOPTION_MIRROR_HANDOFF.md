@@ -12,7 +12,7 @@ Authority effect: `NONE`
 
 The prior handoff incorrectly expressed the next runtime sequence as though the Ecosystem Chat parent G25+ lane had to execute before `canonical_work_coordination` could progress. That is not a valid ecosystem dependency.
 
-A blocked, externally waiting, human-dependent, counterparty-dependent, or otherwise non-executable Organization AI lane MUST NOT serialize unrelated machine-owned Canonical Work. This correction records the already-intended autonomous model: no second scheduler, no second dispatcher, no second heartbeat, no second WorkerCoordinator, no second credential authority, no second execution plane, and no second user-operated device requirement.
+A blocked, externally waiting, human-dependent, counterparty-dependent, or otherwise non-executable Organization AI lane MUST NOT serialize unrelated machine-owned Canonical Work. This correction records the already-intended autonomous model: no second scheduler, no second dispatcher, no second heartbeat, no second WorkerCoordinator, no second credential authority, no second execution plane, no second user-operated device requirement, and no connected-device discovery prerequisite.
 
 The explicit policy is now source-bound in:
 
