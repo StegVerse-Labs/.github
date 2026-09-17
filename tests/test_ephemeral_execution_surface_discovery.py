@@ -36,7 +36,7 @@ class EphemeralExecutionSurfaceDiscoveryTests(unittest.TestCase):
             self.assertEqual(surface["authority_effect"], "NONE_DISCOVERY_ONLY")
 
         node = by_name["StegVerseNode"]
-        self.assertEqual(node["callable_task"], "SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001")
+        self.assertEqual(node["callable_task"], "STEGVERSE-002-EXPERIMENT-RERUN-001")
         self.assertEqual(node["execution_owner"], "StegVerse-002/.github")
         self.assertEqual(node["operation"], "REQUEST_SELF_CHARACTERIZATION")
         self.assertNotEqual(node["callable_task"], "RT-STEGBROWSER-RUNTIME-CONSUMPTION-001")
