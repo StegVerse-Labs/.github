@@ -1,0 +1,72 @@
+{
+  "schema": "stegverse.session-build-preflight-receipt/v1",
+  "goal": "Restore pre-registry HYGIENE-CAUSAL-ROOTS-001 into the canonical Task Registry and COSV pointer index without granting execution authority or directly mutating downstream repository lifecycle state.",
+  "state": "PASS_SOURCE_MUTATION_ADMISSIBLE",
+  "observed_at": "2026-09-17T22:28:14Z",
+  "resolved_sources": {
+    "canonical_handoff": "docs/REPOSITORY_HYGIENE_MIRROR_HANDOFF.md",
+    "canonical_issue": "StegVerse-Labs/.github#165",
+    "canonical_task_registry": "data/canonical-task-registry.json@generation-20",
+    "task_registry_bootstrap_commit": "190571401a3873ab56e0bc5448df9265ee843b50",
+    "task_registry_bootstrap_time": "2026-09-04T23:39:28Z",
+    "hygiene_handoff_precedes_registry_bootstrap": true,
+    "task_vector_index": "control/task-vector-index.json",
+    "canonical_invariants": "TASK_REGISTRY_CANONICAL_INVARIANTS.md",
+    "readme": "README.md"
+  },
+  "resolution": {
+    "hygiene_task_present_in_generation_20": false,
+    "hygiene_handoff_exists": true,
+    "hygiene_issue_165_open": true,
+    "hygiene_work_marked_released_to_control_plane": true,
+    "historical_drop_event_observed": false,
+    "migration_gap_classification": "PRE_REGISTRY_GOAL_NEVER_MIGRATED_INTO_CANONICAL_TASK_REGISTRY",
+    "open_overlapping_pull_request_observed": false,
+    "existing_identity_reused": true,
+    "downstream_site_issue_or_branch_mutation_authorized": false
+  },
+  "admissible_machine_step": {
+    "action": "REGISTER_EXISTING_PRE_REGISTRY_TASK_AS_PROPOSED_SOURCE_STATE_AND_EMIT_NONAUTHORIZING_COSV_POINTER",
+    "task_id": "HYGIENE-CAUSAL-ROOTS-001",
+    "coordination_state": "PROPOSED",
+    "work_priority_class": "ECOSYSTEM_RECONCILIATION",
+    "cosv_profile": "task.v1",
+    "cosv_task_vector": "10100000100000",
+    "vector_semantics": {
+      "lifecycle": "UNCLAIMED",
+      "archive_ready": false,
+      "unassigned_work": 1,
+      "canonical_owner_installed": true,
+      "blocker_count": 0,
+      "evidence_complete": false,
+      "activated": false,
+      "propagated": false
+    },
+    "allowed_next_transition": "INGRESS_ADMITTED",
+    "machine_executable_now": false,
+    "reason": "Source registration and pointer restoration only; authentic WorkerCoordinator claim/fence plus Interlock/InTr admission remain required.",
+    "runtime_execution_claimed": false,
+    "intr_admission_claimed": false,
+    "worker_claim_or_fence_claimed": false,
+    "master_records_reconciliation_claimed": false
+  },
+  "readme_impact": {
+    "predicate": "README_IMPACT_RESOLVED",
+    "state": "UPDATE_REQUIRED",
+    "determination": "DOCUMENT_REGISTRY_HANDOFF_RECONCILIATION_RULE",
+    "evidence_basis": [
+      "This incident exposed that a surviving handoff can predate canonical Task Registry bootstrap and remain invisible to autonomous work discovery.",
+      "README should explicitly require Task Registry membership plus handoff reconciliation before ecosystem work is treated as selectable."
+    ]
+  },
+  "authority": {
+    "work_intent_and_coordination": "CANONICAL_TASK_REGISTRY",
+    "execution_claim_and_fence": "WORKERCOORDINATOR",
+    "observed_reality_and_reconstruction": "MASTER_RECORDS",
+    "governed_ingress_egress": "INTERLOCK_INTR",
+    "credential_authority": "TV/TVC",
+    "github_token_runtime_authority": "NONE",
+    "downstream_repository_mutation_authority": "NONE_FROM_THIS_REGISTRATION",
+    "authority_effect": "NONE_PREFLIGHT_SOURCE_REGISTRATION_AND_POINTER_ONLY"
+  }
+}

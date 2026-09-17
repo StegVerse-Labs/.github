@@ -455,3 +455,10 @@ Canonical task `ORG-GITHUB-FLEET-FUNCTIONALIZATION-001` is active under a zero-s
 GP10's already-implemented paid field-validation/evidence-review service remains the lead revenue candidate because concrete locomotive owner/service/rebuild prospects and public contact paths have been identified. Prospect evidence is not customer interest or revenue evidence. The next admissible commercial step is bounded customer discovery against the existing offer before any additional GP10 technical buildout.
 
 Canonical state: `docs/ORG_GITHUB_FLEET_FUNCTIONALIZATION_001_MIRROR_HANDOFF.md`.
+
+
+### Task Registry / handoff reconciliation gate
+
+A surviving mirror handoff is not, by itself, sufficient proof that work is currently selectable by the ecosystem. Before StegVerse work is treated as active canonical work, resolve the Goal Task ID in `data/canonical-task-registry.json` and reconcile that row with the applicable `*_MIRROR_HANDOFF.md`, WorkerCoordinator claim/fence state, COSV pointer, and Interlock/InTr admission state. If a pre-registry handoff has no Task Registry row, treat that mismatch as a continuity defect and restore the existing task identity as non-authorizing source state before downstream mutation.
+
+`HYGIENE-CAUSAL-ROOTS-001` is the reference repair for this case: the hygiene handoff predated Task Registry bootstrap and remained transferred to the control plane while absent from autonomous work discovery. Its repair restores registry/COSV discoverability without granting direct Site/StegCore cleanup authority.

@@ -888,11 +888,21 @@
       "vector": "71000000100101",
       "vector_state": "EMITTED",
       "authority_effect": "NONE"
+    },
+    {
+      "task_id": "HYGIENE-CAUSAL-ROOTS-001",
+      "repository": "StegVerse-Labs/.github",
+      "registry_ref": "data/canonical-task-registry.json",
+      "source_state_vector_ref": "control/task-vectors/HYGIENE-CAUSAL-ROOTS-001.json",
+      "vector": "10100000100000",
+      "vector_state": "EMITTED",
+      "authority_effect": "NONE",
+      "canonical_owner_ref": "docs/REPOSITORY_HYGIENE_MIRROR_HANDOFF.md"
     }
   ],
   "coverage": {
-    "indexed_vectorized_tasks": 93,
-    "local_cosv_record_tasks": 93,
+    "indexed_vectorized_tasks": 94,
+    "local_cosv_record_tasks": 94,
     "external_owner_projection_tasks": 0
   },
   "authority_effect": "NONE"

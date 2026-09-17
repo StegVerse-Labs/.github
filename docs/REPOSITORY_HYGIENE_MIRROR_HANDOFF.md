@@ -1,6 +1,6 @@
 # Repository Hygiene Mirror Handoff
 
-Updated: 2026-08-28T21:45:00-05:00
+Updated: 2026-09-17T22:28:14Z
 
 ## Active goal
 
@@ -338,3 +338,24 @@ Reason:
 - credential authority remains TV/TVC and non-TV/TVC secret/token allowance remains false.
 
 This repairs the fail-closed workflow-surface hygiene error observed during the SV002 pre-T0 review without weakening the proliferation guard.
+
+
+## 2026-09-17 canonical Task Registry continuity repair
+
+The hygiene goal predates the canonical Task Registry bootstrap on 2026-09-04. Direct history inspection found no removal event: `HYGIENE-CAUSAL-ROOTS-001` was never migrated into `data/canonical-task-registry.json`, even though this handoff and issue #165 continued to state that hygiene work was transferred to the organization control plane.
+
+The bounded repair registers the existing goal as `PROPOSED` / `ECOSYSTEM_RECONCILIATION` source state, with WorkerCoordinator claim/fence authority still unminted and Interlock/InTr admission still required. It also emits the non-authorizing `task.v1` COSV pointer `10100000100000` and indexes it in `control/task-vector-index.json`.
+
+This repair restores discoverability only. It does **not** authorize chat-driven Site/StegCore issue closure, branch deletion, runtime execution, provider action, or any bypass of the existing causal-root-first policy. Downstream repository mutation remains gated by canonical ownership, current evidence, WorkerCoordinator claim/fence, and applicable repository-native authority.
+
+Current continuity state:
+
+```text
+canonical task registration: PROPOSED_SOURCE_STATE_RESTORED
+work priority class: ECOSYSTEM_RECONCILIATION
+COSV task.v1: 10100000100000
+worker claim/fence: NOT OBSERVED / WORKERCOORDINATOR ONLY
+Interlock/InTr admission: NOT CLAIMED
+Master Records reconciliation: NOT CLAIMED
+Site/StegCore direct chat cleanup authority: NONE
+```
