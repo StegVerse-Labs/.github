@@ -48,30 +48,17 @@ The resident implementation was previously validated/merged. No new bridge, sche
 
 ### 2. Stale StegCore PR #146 prerequisite corrected
 
-The TVC private-source handoff/task lineage still described StegCore PR #146 as a future merge prerequisite. Direct GitHub state now proves:
+Direct GitHub state proved StegVerse-Labs/StegCore PR #146 is already merged at historical exact head `f09eb36abcd3b317f35638e5c0b0c4a802d0aecf`, merge commit `26b18204b135a213231d160b718e47ca6ab46f28`. It is no longer a future merge blocker for private-source progression.
 
-```text
-StegVerse-Labs/StegCore PR #146: MERGED
-exact historical PR head: f09eb36abcd3b317f35638e5c0b0c4a802d0aecf
-merge commit: 26b18204b135a213231d160b718e47ca6ab46f28
-merged_at: 2026-08-25T04:05:13Z
-```
+### 3. StegMusic exact-current source resolved and staged
 
-Therefore PR #146 is not a current blocker and must not remain ahead of StegMusic in the resident private-source progression merely because stale coordination prose still says to merge it.
-
-### 3. StegMusic exact-current source resolved
-
-Direct branch observation resolved current `StegVerse-Labs/StegMusic@main` to:
+The current `StegVerse-Labs/StegMusic@main` source coordinate used by the staged request is:
 
 ```text
 12c335df716040a2f98333e0b2355ef118502d01
 ```
 
-The existing `TVC-STEGMUSIC-VALIDATION-001` task was updated from its stale observed SHA to this exact commit.
-
-### 4. Exact non-secret resident request staged
-
-A bounded immutable-source request now exists at:
+The exact non-secret request is:
 
 ```text
 StegVerse-Labs/TVC/requests/private-source-read/TVC-STEGMUSIC-VALIDATION-001.json
@@ -89,56 +76,82 @@ materialization_id: stegmusic-main-validation-12c335df
 ttl_seconds: 600
 ```
 
-This request is non-secret and non-authorizing. It is intended for the already-existing root-owned TVC private-source service/watcher path.
+This request is non-secret and non-authorizing. It is intended only for the already-existing TVC private-source resident path.
 
-### 5. Directly proven vs not yet proven
+### 4. Resident-consumption reconciliation — 2026-09-17 continuation
 
-Proven in this progression:
-
-```text
-private-source source/control implementation: VALIDATED / MERGED
-StegCore #146 historical prerequisite: MERGED / NO LONGER A FUTURE MERGE BLOCKER
-StegMusic exact-current SHA: RESOLVED
-StegMusic exact request: STAGED
-existing StegMusic validator: PRESENT / REUSED
-```
-
-Not yet directly proven by current evidence:
+No new authentic sovereign-host evidence was available in this continuation for any of the following predicates:
 
 ```text
-sole-host private-source watcher/service installed: NOT OBSERVED
-TVC_PRIVATE_SOURCE_READ_TOKEN present on sovereign host: NOT OBSERVED
-scoped credential grant activation: NOT OBSERVED
-staged request consumed: NOT OBSERVED
-exact StegMusic source materialized by resident service: NOT OBSERVED
-StegMusic deterministic validation PASS: NOT OBSERVED
-secret-free exact-SHA PASS receipt: NOT OBSERVED
+sole-host private-source watcher/service installed
+TVC_PRIVATE_SOURCE_READ_TOKEN present under TV/TVC custody
+scoped grant activated for TVC-STEGMUSIC-VALIDATION-001
+staged request consumed
+exact StegMusic source materialized by resident service
+authorized_exact_sha == observed_exact_sha == 12c335df716040a2f98333e0b2355ef118502d01
+scripts/validate_stegmusic_private_source.py completed against that materialization
+secret-free exact-SHA PASS/BLOCK receipt retained
 ```
 
-These runtime predicates are not converted to PASS by GitHub source mutation or hosted validation.
+Therefore the staged request remains `RESIDENT_ADMISSION_REQUEST_STAGED`. No alternate credential, GitHub Actions activation, connector token, duplicate runtime, or synthetic PASS was used.
+
+## Next highest-causal shared machine-remediable dependency inspected
+
+With the TVC lane truthfully evidence-gated, the next shared fleet dependency was inspected rather than blocked on invented runtime proof:
+
+```text
+.github task: COSV-LIVE-PACKET-AUTOMATION-006
+StegBrain consumer: STEGBRAIN-COSV-GRADIENT-MECHANICS-002 / issue #861
+```
+
+Direct source evidence establishes:
+
+```text
+heartbeat core: ACTIVE_PROTOCOL_VERIFIED
+HB31 historical FULL packet: COMPLETE historical evidence
+COSV recurring packet source: COMPLETE_RELEASED
+COSV recurring task: HANDOFF_READY / independently task-control claimable
+GitHub Actions activation: prohibited
+credential requirement: NONE
+first post-anchor packet runtime execution: NOT OBSERVED
+first post-anchor changed DELTA with non-empty gradient_inputs: NOT OBSERVED
+StegBrain live gradient consumer source: COMPLETE_RELEASED
+StegBrain deterministic logic replay: PASS
+first live StegBrain gradient observation: NOT OBSERVED
+```
+
+Canonical existing execution route remains:
+
+```text
+python scripts/run_worker_runtime.py --task-id COSV-LIVE-PACKET-AUTOMATION-006
+```
+
+or the already-defined portable refresh/targeted one-shot route when a current authorized local source/runtime surface is available. This fleet task does not replace that execution owner and does not use GitHub Actions as runtime authority.
+
+The next authentic transition is therefore the existing `COSV-LIVE-PACKET-AUTOMATION-006` task producing the first protocol-derived post-anchor packet. If current canonical state differs from HB31, the packet must be a verified DELTA with non-empty `gradient_inputs`; only then may the existing StegBrain live-gradient consumer persist the first live gradient receipt.
 
 ## Current target-specific posture
 
-- `.github`: coordination and shared-source prerequisites are sufficient for this exact progression to be durably represented; authentic external resident execution evidence remains separately required where applicable.
-- `TVC`: private-source source/control implementation exists; the next missing proof is authentic sole-host service/credential/request consumption.
-- `StegMusic`: exact-current request is staged and existing validator is ready to consume the materialized source; runtime validation has not yet occurred.
+- `.github`: heartbeat protocol core is verified; the recurring COSV packet producer remains source-complete but runtime-unobserved for the first post-anchor packet.
+- `TVC`: private-source source/control implementation exists; authentic resident service/credential/request consumption remains unobserved.
+- `StegMusic`: exact-current request is staged and the existing validator remains ready; exact resident materialization and validation receipt remain unobserved.
+- `StegBrain`: gradient consumer source and deterministic replay are complete; first post-anchor changed DELTA and live gradient remain unobserved.
 - `StegTalk`: AURI-007 remains an authorization/runtime-evidence lane after AURI-001..006 source/integration completion.
-- `StegBrain`: live packet-series consumption still depends on shared live carrier/packet observation and custody evidence.
 - `GP10`: still requires current runtime proof and real field/approval evidence according to its role.
-- `stegfin-governance`: pre-sign `WALLET_HANDOFF_READY` is already directly evidenced; USER_ONLY signing/broadcast is not treated as a machine defect.
+- `stegfin-governance`: pre-sign `WALLET_HANDOFF_READY` remains directly evidenced; USER_ONLY signing/broadcast is not treated as a machine defect.
 
 ## Remediation order from here
 
-1. Observe or consume the existing TVC sole-host private-source service installation and credential-presence evidence; do not create a substitute runtime.
-2. Consume the staged StegMusic request under the existing `tvc.private-source-read.v1` admission path.
-3. Require exact authorized/observed SHA equality for `12c335df716040a2f98333e0b2355ef118502d01`.
-4. Run only the existing `scripts/validate_stegmusic_private_source.py` deterministic validation path against that materialization.
-5. Retain the secret-free exact-SHA PASS/BLOCK receipt and update this handoff from direct evidence.
-6. Continue to the next highest-causal machine-remediable shared dependency only after this lane is truthfully reconciled.
+1. When authentic TVC resident service and scoped credential evidence becomes available, consume only the staged `TVC-STEGMUSIC-VALIDATION-001` request and require exact SHA equality before the existing validator runs.
+2. Independently reuse the already-canonical `.github` `COSV-LIVE-PACKET-AUTOMATION-006` task through admitted local task-control authority; do not use GitHub Actions activation.
+3. If the packet is a changed post-anchor DELTA with non-empty `gradient_inputs`, execute only the existing StegBrain live-gradient consumer and retain its immutable receipt.
+4. Continue to GP10 current runtime proof/evidence-ingestion, then StegTalk AURI-007, subject to their own canonical handoffs and evidence requirements.
+5. Preserve StegFin USER_ONLY signing/broadcast outside machine functionalization.
+6. Close downstream Site/Publisher/wiki propagation only after authentic upstream release/runtime evidence exists.
 
 ## README impact
 
-This iteration changes coordination/evidence state only. It does not change `.github` externally meaningful runtime, authority, interface, or user-facing behavior. The existing README's fleet-census context remains correct, so no README content change is required for this iteration. TVC records the same `NO_MATERIAL_FUNCTION_CHANGE` determination in `docs/STEGMUSIC_VALIDATION_MIRROR_HANDOFF.md`; no existing runtime behavior was changed there either.
+This iteration changes coordination/evidence state only. It does not change `.github` externally meaningful runtime, authority, interface, or user-facing behavior. No README content change is required.
 
 ## Completion predicates
 
@@ -152,4 +165,4 @@ This iteration changes coordination/evidence state only. It does not change `.gi
 
 `ACTIVE / CHECKED_OUT`.
 
-This iteration removed a stale prerequisite and staged the exact next machine-owned request, but authentic TVC resident admission/materialization and StegMusic validation remain evidence-gated and therefore nonterminal.
+The StegMusic request remains correctly staged but cannot be promoted without authentic TVC resident evidence. The fleet progression has therefore advanced to the next existing shared machine-remediable chain, `.github COSV-LIVE-PACKET-AUTOMATION-006 -> StegBrain live gradient`, where source is complete and the remaining evidence gate is the first authentic post-anchor task-control execution.
