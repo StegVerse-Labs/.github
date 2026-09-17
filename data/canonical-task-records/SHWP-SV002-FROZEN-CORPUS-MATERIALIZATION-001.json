@@ -8,10 +8,17 @@
   "coordination_state": "ACTIVE",
   "checkout_state": "HANDOFF_READY",
   "cosv_task_vector": "50000000107001",
+  "source_state_vector_ref": "control/task-vectors/SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001.json",
   "source_refs": [
     "docs/SV002_FROZEN_CORPUS_MATERIALIZATION_MIRROR_HANDOFF.md",
     "docs/SV002_ACTION_TRANSITION_EVIDENCE_MIRROR_HANDOFF.md",
     "StegVerse-Labs/.github#2064",
+    "control/task-vectors/SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001.json",
+    "control/task-vector-index.d/SHWP-SV002-FROZEN-CORPUS-MATERIALIZATION-001.json",
+    "source-bundles/reusable-task-registry.d/RT-TVC-RUNTIME-BOUNDARY-OBSERVATION-001.json",
+    "scripts/run_tvc_runtime_boundary_reusable.py",
+    "StegVerse-Labs/StegVerse-Healer:data/reusable_task_schedule.json",
+    "StegVerse-Labs/TVC:scripts/execute_private_source_read_resident.py",
     "StegVerse-002/micro-node-runtime:tools/sv002_native_resource_bundle.py@901829b3f36f764b474d7e4be02b68eb5e6e63fe",
     "StegVerse-002/micro-node-runtime:tools/run_self_characterization_principal.py@901829b3f36f764b474d7e4be02b68eb5e6e63fe",
     "master-records/orchestration:scripts/verify_sv002_self_characterization_reconstruction.py"
@@ -20,6 +27,8 @@
     "organizations": ["StegVerse-Labs", "StegVerse-002", "Admissible-Existence", "master-records"],
     "repositories": [
       "StegVerse-Labs/.github",
+      "StegVerse-Labs/TVC",
+      "StegVerse-Labs/StegVerse-Healer",
       "StegVerse-002/micro-node-runtime",
       "Admissible-Existence/TT",
       "Admissible-Existence/RTG",
@@ -28,6 +37,9 @@
       "master-records/orchestration"
     ],
     "components": [
+      "reusable-task-callability",
+      "tvc-primary-runtime-binding",
+      "private-source-resident-materialization",
       "frozen-corpus-materialization",
       "source-index-completeness",
       "native-resource-bundle",
@@ -38,6 +50,13 @@
     ]
   },
   "dependencies": [
+    {
+      "dependency_id": "DEP-SV002-CALLABLE-TVC-RUNTIME-PATH",
+      "kind": "EXISTING_REUSABLE_TASK_PATH",
+      "state": "SOURCE_COMPLETE_RELEASED_RUNTIME_RECEIPT_PENDING",
+      "ref": "StegVerse-Labs/.github#2066@a7cc366a7f39bdcfed06bafd693ac0d7170091a7;StegVerse-Labs/StegVerse-Healer#88@f2e91e1969e0c16fd8347931aca59c10ae6db252",
+      "disposition": "USE_EXISTING_HEALER_CARRIER_TO_RT_REUSABLE_TASK_SCHEDULER_TO_RT_TVC_RUNTIME_BOUNDARY_OBSERVATION_TO_RT_TVC_PRIMARY_RUNTIME_BINDING; NO TASK_SPECIFIC_SELECTOR OR SECOND_SCHEDULER"
+    },
     {
       "dependency_id": "DEP-SV002-FROZEN-TT-TREE",
       "kind": "PINNED_SOURCE_TREE",
@@ -72,12 +91,19 @@
   ],
   "blockers": [
     {
-      "blocker_id": "SV002-FROZEN-CORPUS-BULK-MATERIALIZATION",
+      "blocker_id": "SV002-TVC-REUSABLE-INVOCATION-RUNTIME-RECEIPT",
       "state": "ACTIVE",
-      "reason": "Exact bundle construction requires every non-symlink blob from all four pinned Git trees to contribute to source-index SHA-256, including non-UTF8 blobs; current connected GitHub surface enumerates trees and fetches blobs individually but exposes no repository archive/filesystem materialization or workflow-dispatch path for exact bulk source transport."
+      "reason": "The previously missing callable invocation source path is repaired and merged. The remaining first boundary is authentic consumption by an existing sovereign Healer cycle: no retained neutral scheduler/reusable-task receipt for this Goal/COSV has yet been observed, therefore SERVICE_INSTALLED_VERIFIED, resident state, credential presence, staged request consumption, and the four immutable exact-SHA materialization receipts remain unproven."
     }
   ],
   "expected_evidence_predicates": [
+    "NEUTRAL_REUSABLE_TVC_INVOCATION_RECEIPT_OBSERVED",
+    "TVC_SERVICE_INSTALLED_VERIFIED",
+    "TVC_PRIVATE_SOURCE_RESIDENT_STATE_OBSERVED",
+    "TT_IMMUTABLE_COMPLETE_RECEIPT_EXACT_SHA_EQUALITY",
+    "RTG_IMMUTABLE_COMPLETE_RECEIPT_EXACT_SHA_EQUALITY",
+    "GTG_IMMUTABLE_COMPLETE_RECEIPT_EXACT_SHA_EQUALITY",
+    "AE_IMMUTABLE_COMPLETE_RECEIPT_EXACT_SHA_EQUALITY",
     "TT_FROZEN_TREE_BYTE_COMPLETE",
     "RTG_FROZEN_TREE_BYTE_COMPLETE",
     "GTG_FROZEN_TREE_BYTE_COMPLETE",
@@ -96,6 +122,8 @@
   "completion": {
     "claimed": false,
     "validated": false,
+    "callable_tvc_path_source_complete": true,
+    "resident_reusable_invocation_observed": false,
     "frozen_corpus_materialized": false,
     "source_indexes_verified": false,
     "native_bundle_verified": false,
@@ -103,6 +131,7 @@
     "goal_2_closed": false
   },
   "allowed_next_transitions": [
+    "REUSABLE_TVC_INVOCATION_OBSERVED",
     "FROZEN_CORPUS_MATERIALIZED",
     "NATIVE_BUNDLE_VERIFIED",
     "FULL_CHAIN_REEXECUTED",
@@ -118,6 +147,9 @@
     "interlock_intr_required_for_every_governed_transition": true,
     "credential_authority": "TV/TVC",
     "master_records_reality_authority": true,
+    "neutral_reusable_scheduler_authority": "SCHEDULING_AND_INVOCATION_TRANSPORT_ONLY",
+    "second_scheduler_created": false,
+    "remote_desktop_required": false,
     "second_user_operated_device_required": false
   }
 }
