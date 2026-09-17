@@ -81,6 +81,49 @@ The parent established provisional sandbox evidence that must be consumed as pre
 
 These are sandbox/provisional findings only and are not authentic production runtime proof.
 
+## 2026-09-17 TVC resident invocation reconciliation
+
+Four exact immutable private-source requests are staged in `StegVerse-Labs/TVC` for this Goal and remain the only admitted source-materialization inputs:
+
+```text
+requests/private-source-read/SHWP-SV002-FROZEN-CORPUS-TT.json
+requests/private-source-read/SHWP-SV002-FROZEN-CORPUS-RTG.json
+requests/private-source-read/SHWP-SV002-FROZEN-CORPUS-GTG.json
+requests/private-source-read/SHWP-SV002-FROZEN-CORPUS-AE.json
+```
+
+The existing runtime sequence is already implemented and must be reused unchanged:
+
+```text
+RT-TVC-PRIMARY-RUNTIME-BINDING-001
+-> TVC-PRIMARY-RUNTIME-BINDER-005
+-> TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006
+-> tvc.primary_runtime_binder.activate
+-> existing singleton scripts/tvc_resident_service_self_heal.py --watch
+-> existing TVC private-source watcher
+-> consume staged immutable requests
+```
+
+`TVC-PRIMARY-RUNTIME-ACTIVATION-DELIVERY-006` is released to existing TV/TVC runtime authority; source/preflight completion is not runtime execution evidence. `TVC-RESIDENT-SERVICE-SELF-HEAL-001` remains `SOURCE_REBIND_VALIDATED_AUTHENTIC_HOST_EXECUTION_PENDING` and its authentic host receipt remains unobserved.
+
+The generic reusable-task trigger can execute `RT-TVC-PRIMARY-RUNTIME-BINDING-001` only from an already-materialized admitted resident source/runtime context. The current direct resident connector exposes no online device. The canonical resident dispatcher does not register a dedicated selector for this child Goal or for `TVC-RESIDENT-SERVICE-SELF-HEAL-001`; adding one would create a new execution path and is prohibited by this Goal.
+
+Therefore the current blocker is:
+
+`EXISTING_EVENT_EPHEMERAL_TVC_RUNTIME_INVOCATION_SURFACE_NOT_CURRENTLY_OBSERVED`
+
+This is not permission to add a listener, worker, scheduler, host, generic GitHub credential, second device, or alternate source-read implementation. The next authentic transition must consume the already-existing TV/TVC runtime binding/self-heal path and emit the retained resident receipts.
+
+Required authentic receipts before bundle construction:
+
+1. TVC service installation state `SERVICE_INSTALLED_VERIFIED`;
+2. resident-state receipt proving the existing watcher/runtime state without reading credential value;
+3. four private-source execution/materialization receipts bound one-to-one to the staged requests;
+4. for each request, `authorized_exact_sha == observed_exact_sha == requested exact_sha`;
+5. exact materialized checkout available credential-free to the unchanged SV002 native resource-bundle builder.
+
+No Goal 1/Goal 2 closure, bundle verification, or production execution claim is permitted before those predicates are observed.
+
 ## Required continuation
 
 1. Materialize every blob represented by each of the four frozen tree identities.
