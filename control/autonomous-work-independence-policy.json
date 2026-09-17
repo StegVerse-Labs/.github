@@ -1,0 +1,50 @@
+{
+  "schema": "stegverse.autonomous-work-independence-policy/v1",
+  "updated_at": "2026-09-16T19:00:00-05:00",
+  "goal_task_id": "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+  "runtime_adoption_task_id": "ENTITY-AUTONOMOUS-GOVERNED-PROGRESSION-RUNTIME-ADOPTION-001",
+  "authority_effect": "NONE_COORDINATION_POLICY_ONLY",
+  "purpose": "Prevent any blocked or externally-waiting Organization AI lane from serializing unrelated machine-owned Canonical Work progression.",
+  "organization_ai_model": {
+    "organization_ai_entities_own_their_organization_scope": true,
+    "cross_entity_connective_material": ["WorkerCoordinator", "Interlock/InTr", "TV/TVC", "Master Records", "HB"],
+    "central_ai_dispatcher_required": false,
+    "second_scheduler_required": false,
+    "second_workercoordinator_required": false
+  },
+  "independence_rules": {
+    "blocked_org_ai_lane_blocks_unrelated_machine_work": false,
+    "external_human_wait_blocks_unrelated_machine_work": false,
+    "counterparty_wait_blocks_unrelated_machine_work": false,
+    "ecosystem_chat_parent_is_prerequisite_for_canonical_work": false,
+    "elan_wait_is_prerequisite_for_other_machine_work": false,
+    "mir_wait_is_prerequisite_for_other_machine_work": false,
+    "canonical_work_may_progress_when_other_lanes_wait": true,
+    "selection_requires_current_goal_scope": true,
+    "selection_requires_collision_check": true,
+    "selection_requires_current_governance": true
+  },
+  "required_progression": [
+    "OBSERVE_CANONICAL_TASK_REGISTRY",
+    "FILTER_TO_CURRENT_GOAL_AND_MACHINE_OWNED_ELIGIBLE_WORK",
+    "EXCLUDE_GENUINE_HUMAN_OR_EXTERNAL_WAIT_TRANSITIONS_WITHOUT_BLOCKING_OTHER_WORK",
+    "CHECK_COLLISIONS_AND_EXISTING_CLAIMS",
+    "SELECT_HIGHEST_PRIORITY_ADMISSIBLE_NON_DUPLICATE_WORK",
+    "USE_EXISTING_WORKERCOORDINATOR_CLAIM_FENCE_WHERE_REQUIRED",
+    "GOVERN_CURRENT_TRANSITION_THROUGH_INTERLOCK_INTR",
+    "USE_TV_TVC_ONLY_FOR_CREDENTIAL_CAPABILITY_AUTHORITY",
+    "EXECUTE_OR_RETAIN_DENY",
+    "RETAIN_RECEIPT",
+    "RECONSTRUCT_IN_MASTER_RECORDS",
+    "REINGEST_TASK_COSV_HANDOFF_DEPENDENCY_AND_COMPLETION_STATE",
+    "CONTINUE_WITH_NEXT_ELIGIBLE_WORK"
+  ],
+  "invalid_runtime_dependencies": [
+    "WAIT_FOR_ECOSYSTEM_CHAT_PARENT_BEFORE_CANONICAL_WORK",
+    "WAIT_FOR_ANY_SINGLE_ORG_AI_LANE_BEFORE_UNRELATED_CANONICAL_WORK",
+    "WAIT_FOR_CONNECTED_DEVICE_DISCOVERY_AS_A_GLOBAL_PREREQUISITE",
+    "WAIT_FOR_HUMAN_REPRESENTATION_OF_TASK_COSV_OR_HANDOFF",
+    "WAIT_FOR_RECEIPTS_WHEN_OTHER_EXECUTABLE_WORK_EXISTS"
+  ],
+  "runtime_evidence_required_for_completion": true
+}
