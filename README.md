@@ -491,7 +491,7 @@ The existing optional local custody adapter has a reproduced source/destination 
 
 Canonical Goal Task `GP10-COMMERCIAL-RESPONSE-VALIDATION-001` owns only the external prospect-response / revenue-validation lane transferred from the fleet functionalization parent. First-wave POVA and Integrity Rail Services outreach is provider-observed in the connected `rigel@stegverse.org` Outlook mailbox; no reply or commercial validation is observed yet.
 
-Bounded next-prospect outreach drafts are prepared in Outlook for Panhandle Northern / OmniTRAX and Progress Rail EMD customer service. They are not sent. No new technical buildout, runtime, scheduler, connector, or routine GitHub Actions work is required for this commercial validation lane.
+Bounded next-prospect outreach has now been sent from the authenticated Outlook mailbox to Panhandle Northern / OmniTRAX and Progress Rail EMD customer service. All four active prospects have been re-checked; no reply or commercial validation is observed yet. No new technical buildout, runtime, scheduler, connector, or routine GitHub Actions work is required for this commercial validation lane.
 
 Canonical handoff: `docs/GP10_COMMERCIAL_RESPONSE_VALIDATION_001_MIRROR_HANDOFF.md`.
 
