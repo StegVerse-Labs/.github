@@ -242,6 +242,7 @@ class CanonicalTransitionCustody:
         self.subject = subject_or_correlation_id
         self.sequence = 0
         self.last_state_ref: str | None = None
+        self.records: list[dict[str, Any]] = []
 
     def record(
         self,
@@ -265,11 +266,13 @@ class CanonicalTransitionCustody:
             transition_evidence=evidence,
         )
         result = submit_state_receipt(receipt)
+        row = {"receipt":receipt, "master_records":result}
+        self.records.append(row)
         if require_return and result.get("state") != "RECORDED":
             raise RuntimeError(str(result.get("reason") or "canonical_master_records_custody_not_returned"))
         if result.get("state") == "RECORDED":
             self.last_state_ref = resulting_state_ref_or_hash or sha256_uri(receipt)
-        return {"receipt":receipt, "master_records":result}
+        return row
 
 
 __all__ = ["CanonicalTransitionCustody", "build_state_receipt", "submit_state_receipt", "sha256_uri"]
