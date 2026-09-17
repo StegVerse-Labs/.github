@@ -20,6 +20,107 @@ class WorkerCoordinator(LegacySeparatedWorkerCoordinator):
     assignment/claim/fence/timer creation under authority it independently verifies.
     """
 
+    def _apply_registry_fragments(
+        self,
+        registry: dict[str, Any],
+        task_id_filter: str | None = None,
+    ) -> list[str]:
+        """Apply append-only fragments plus a bounded preclaim policy reconciliation.
+
+        The inherited fragment loader intentionally never overwrites an existing
+        task row because the live registry may already contain claims, fences,
+        timers, leases, receipts, or worker lifecycle state. That invariant remains
+        unchanged for live/bound tasks.
+
+        A narrower seam exists for an unclaimed HANDOFF_READY task: if its static
+        fragment and canonical handoff now agree on a newer policy version while
+        the resident registry still carries the older preclaim policy, the stale
+        value would otherwise survive local source refresh forever because the
+        fragment is append-only. Before any claim/fence exists, reconcile only the
+        policy version, only when the existing and fragment handoff refs match and
+        the fragment policy exactly matches the canonical handoff policy.
+
+        No claim, fence, worker assignment, timing, lease, credential, execution,
+        or transition authority is created by this reconciliation.
+        """
+        generation_before = int(registry.get("generation", 0))
+        applied = super()._apply_registry_fragments(registry, task_id_filter=task_id_filter)
+        tasks = {
+            str(item.get("task_id")): item
+            for item in registry.get("tasks", [])
+            if isinstance(item, dict) and item.get("task_id")
+        }
+        reconciled = False
+
+        if not self.registry_fragment_dir.is_dir():
+            return applied
+
+        for path in sorted(self.registry_fragment_dir.glob("*.json")):
+            fragment = self._load(path)
+            if fragment.get("schema") != "stegverse.worker-registry-fragment/v0.1":
+                continue
+            for declared in fragment.get("tasks", []):
+                if not isinstance(declared, dict):
+                    continue
+                task_id = declared.get("task_id")
+                if not isinstance(task_id, str) or not task_id:
+                    continue
+                if task_id_filter is not None and task_id != task_id_filter:
+                    continue
+                current = tasks.get(task_id)
+                if not isinstance(current, dict):
+                    continue
+
+                # Never reconcile live or previously bound lifecycle state.
+                if current.get("state") != "HANDOFF_READY":
+                    continue
+                if any(current.get(key) not in (None, "") for key in ("claim_id", "worker_id", "worker_instance_id")):
+                    continue
+                if current.get("heartbeat_timing") not in (None, {}):
+                    continue
+                if current.get("assignment_timer") not in (None, {}):
+                    continue
+                if current.get("lease") not in (None, {}):
+                    continue
+
+                current_handoff = current.get("handoff_ref")
+                fragment_handoff = declared.get("handoff_ref")
+                if not isinstance(current_handoff, str) or current_handoff != fragment_handoff:
+                    continue
+                fragment_policy = declared.get("authorized_policy_version")
+                if not isinstance(fragment_policy, str) or not fragment_policy:
+                    continue
+                if current.get("authorized_policy_version") == fragment_policy:
+                    continue
+
+                handoff_path = self.root / current_handoff
+                if not handoff_path.is_file():
+                    raise RuntimeError(f"preclaim policy reconciliation handoff missing for {task_id}")
+                handoff = self._load(handoff_path)
+                canonical_policy = str((handoff.get("authority") or {}).get("policy_version") or "")
+                if not canonical_policy or fragment_policy != canonical_policy:
+                    raise RuntimeError(f"preclaim policy reconciliation mismatch for {task_id}")
+
+                old_policy = current.get("authorized_policy_version")
+                current["authorized_policy_version"] = canonical_policy
+                current["preclaim_policy_reconciliation"] = {
+                    "state": "RECONCILED_BEFORE_CLAIM",
+                    "old_policy_version": old_policy,
+                    "new_policy_version": canonical_policy,
+                    "fragment_ref": str(path.relative_to(self.root)),
+                    "handoff_ref": current_handoff,
+                    "claim_authority_effect": False,
+                    "fence_authority_effect": False,
+                    "execution_authority_effect": False,
+                }
+                if str(path.relative_to(self.root)) not in applied:
+                    applied.append(str(path.relative_to(self.root)))
+                reconciled = True
+
+        if reconciled and int(registry.get("generation", 0)) == generation_before:
+            registry["generation"] = generation_before + 1
+        return applied
+
     def _coordination_review(
         self,
         task: dict[str, Any],
