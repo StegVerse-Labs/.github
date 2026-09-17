@@ -4,7 +4,7 @@ Updated: 2026-09-17
 Goal Task ID: `CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001`
 Parent Goal Task ID: `MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001`
 COSV ID: `50000000100000`
-Status: `ACTIVE / INVENTORY COMPLETE / CANONICAL CUSTODY API MATERIALIZED / MIR SOURCE ADOPTED / SV002 BROWSER-EVENT INITIATION CORRECTED / AUTHENTIC RUNTIME SEQUENCE PENDING`
+Status: `ACTIVE / INVENTORY COMPLETE / CANONICAL CUSTODY API MATERIALIZED / MIR SV002 BROWSER-EVENT SOURCE REIMPLEMENTED / AUTHENTIC RUNTIME SEQUENCE PENDING`
 
 ## Canonical rule
 
@@ -20,21 +20,6 @@ current governance decision
 ```
 
 Interlock/InTr remains transition authority. TV/TVC remains credential authority where required. Master Records is custody/reconstruction only and cannot create, admit, authorize, infer, or repair a missing transition.
-
-## Inventory completed
-
-Canonical inventory: `reports/canonical-master-records-state-transition-custody-inventory-20260917.json`.
-
-Key findings:
-
-- `master-records/orchestration/services/master_records_custody_api.py` was the existing central custody authority but its original governed-transition intake was completed-ALLOW oriented.
-- `master-records/orchestration/services/canonical_state_transition_custody.py` extends the same authority for canonical per-state receipts covering `ALLOW`, `DENY`, `EXECUTED`, `COMPLETED`, `PARTIAL`, `FAILED`, `FAIL_CLOSED`, `OBSERVED`, and `NO_CHANGE`, with exact reconstruction.
-- `master-records/orchestration/services/canonical_master_records_api.py` installs that extension on the existing production Master Records app; `render-custody-production.yaml` starts that canonical app.
-- `.github/workers/canonical_state_transition_custody.py` is the reusable resident/client adapter. It prefers the canonical Master Records API and can use the existing exact-byte local Master Records lifecycle ingest/reconstruction path when the same custody authority is mounted locally.
-- `.github/workers/reusable_task_master_records_roundtrip.py` remains useful as legacy exact-byte infrastructure, but its MIR-specific packet fanout is not the primary canonical state-recording mechanism.
-- `StegOS/stegos/state_transition_custody.py` provides the application-neutral protocol used by governed runtimes.
-- `StegOS/stegos/mir_profile_runtime.py` emits canonical custody for current InTr ingress, RTC-007, RTC-008, RTC-009, MIR evidence retention, exact return-packet retention, and fail-closed runtime state.
-- Site SV001 custody and SV002 reconstruction modules are task-specific/historical adapters and are migration candidates, not the ecosystem-wide primary mechanism.
 
 ## Reusable canonical component
 
@@ -53,41 +38,55 @@ master_records_grants_transition_authority = false
 
 A missing transition is never fabricated. A custody failure blocks only progression beyond the observed state; it does not rewrite the state or grant authority.
 
-## Detailed SV002 initiation correction
+## SV002 initiation invariant
 
-A deeper review of the successful StegVerse-002 experiment corrects the prior execution-host assumption.
+The successful StegVerse-002 sequence was browser-event initiated. Its browser event queued a non-authorizing Universal InTr materialization request into the registered Node outbox, then the existing local materializer created a Blob-backed `EVENT_EPHEMERAL` browser Web Worker. No directly reachable machine host or idle runtime was required.
 
-The successful SV002 sequence did **not** require ChatGPT, Remote Desktop, a resident shell, or another machine connector to find and invoke a pre-existing runtime. Its execution surface was the Site browser event itself:
+Hard reusable constraints are now:
 
-```text
-sv002-observe/index.html
--> assets/sv002-observe.js observation event
--> canonical Interlock/InTr attempt
--> if receiver unavailable, build exact non-authorizing Universal InTr materialization request
--> queue request into the registered StegVerse Node intr_outbox
--> assets/sv002-local-runtime-materializer.js materialize(queued)
--> Blob-backed EVENT_EPHEMERAL browser Web Worker
--> principal execution
--> execution receipt
--> independent Master Records reconstruction
-```
-
-`stegos-node/sv002-intr-sync.js` separately attempted pending outbox synchronization on `DOMContentLoaded` and `online`, but that network synchronization was non-authorizing and its ingress receipt explicitly reported `runtime_execution_attempted=false`. The local browser materializer was the execution mechanism.
-
-The validated reuse documentation is explicit: the SV002 execution mechanics are the fixture and must not be reconstructed as a new Python/runtime path. Current invocation work may change only Goal/COSV/manifest/destination bindings while preserving Node gating, Interlock/InTr materialization, bounded lease, EVENT_EPHEMERAL browser Web Worker construction, execution-time runtime identity, and reconstruction behavior.
-
-The Site already contains a newer derived execution surface at `stegos-bootstrap/canonical-work-runtime-consumption.html`; it supports `?autostart=1`, drives the existing root Universal InTr service worker, and continues admitted work into the already-existing SV002-derived browser materializer. This confirms that a browser event activation surface, not an idle machine host, is the canonical initiation pattern.
+- `EVENT_IS_THE_TRIGGER`;
+- `NO_IDLE_RUNTIME_REQUIRED`;
+- `NO_REMOTE_HOST_DISCOVERY`;
+- `NO_EVENT_CLAIM_OR_FENCE`;
+- `MATERIALIZATION_PRECEDES_RUNTIME`;
+- `REUSE_BROWSER_EVENT_RUNTIME_FIXTURE`;
+- GitHub/CI runtime authority `NONE`.
 
 Canonical preflight: `receipts/preflight/MIR-SV002-INITIATION-MECHANISM-001.json`.
 
-## MIR consequence
+## MIR reimplementation
 
-The present Python `scripts/execute_mir_event_driven_roundtrip.py` may remain useful as source/conformance scaffolding, but it must not be treated as the final duplicated SV002 execution surface. MIR must receive a Site/browser event activation binding that reuses the validated SV002 browser mechanics and changes only MIR-specific Goal/COSV/destination/custody bindings.
+The previous Python event driver is no longer treated as the final execution substrate. The actual MIR Site/browser source now consists of:
 
-Therefore the current blocker is **not** `NO_AUTHORIZED_MACHINE_EXECUTION_HOST`. Lack of a Remote Desktop or direct-machine connector is irrelevant to the proven experiment mechanism.
+- `StegVerse-Labs/Site:data/mir-roundtrip-browser-runtime-binding.v1.json`;
+- `StegVerse-Labs/Site:assets/canonical-master-records-transition-custody-browser.js`;
+- `StegVerse-Labs/Site:assets/mir-roundtrip-sv002-browser-runtime.js`;
+- `StegVerse-Labs/Site:assets/mir-roundtrip-browser-activation.js`;
+- `StegVerse-Labs/Site:mir-roundtrip/index.html`;
+- `StegVerse-Labs/Site:tests/test_mir_sv002_browser_event_reimplementation.py`;
+- `StegVerse-Labs/Site:.github/workflows/mir-sv002-browser-event-conformance.yml`.
 
-The next source transition is to materialize the MIR browser-event initiation surface from the validated Site fixture, preserve canonical Master Records custody after each observed transition, and then invoke/observe that event path. No new Python runtime, scheduler, dispatcher, WorkerCoordinator event-creation gate, external host discovery path, or second device may be introduced.
+The browser page autostarts the unchanged MIR event. The activation surface requires an already-registered StegVerse Node, queues a non-authorizing write-once materialization request, and invokes the bounded `EVENT_EPHEMERAL` browser Web Worker. It performs no remote-host discovery and does not require WorkerCoordinator claim/fence to create the event.
 
-## Completion boundary
+## Canonical MIR state sequence
 
-Completion requires authentic runtime evidence showing an event-triggered MIR invocation where every observed transition is canonically retained/reconstructed through Master Records, including RTC-007/008/009 and governed return. Source/tests alone do not satisfy runtime completion.
+The browser path requires Master Records exact custody/reconstruction after each actually observed state:
+
+```text
+MIR_EVENT_MATERIALIZATION_REQUEST_QUEUED
+CURRENT_INTERLOCK_INTR_INGRESS_RECEIVED
+RTC-STEGVERSE-EGRESS-007
+RTC-INTERLOCK-INTR-TRANSPORT-008
+RTC-FARSIDE-FINAL-009
+MIR_DESTINATION_EVIDENCE_RETAINED
+EXACT_GOVERNED_RETURN_PACKET_RETAINED
+STEGVERSE_RETURN_EXIT or MIR_GOVERNED_RETURN_FAIL_CLOSED
+```
+
+The existing external-counterpart return consumer is reused after exact MIR packet retention. The temporary MIR probe remains comparison-only and cannot substitute for this canonical path.
+
+## Evidence boundary
+
+Source reimplementation is materialized. No authentic current MIR browser-event execution has yet been observed, so RTC-007/008/009, `STEGVERSE_RETURN_EXIT`, and full round-trip completion remain unpromoted. Source tests/workflow are validation only and cannot promote runtime evidence.
+
+The correct next runtime evidence source is the browser event at `/mir-roundtrip/`, not a machine connector, idle resident host, replacement Python runtime, scheduler, dispatcher, or second device.
