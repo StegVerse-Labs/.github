@@ -323,6 +323,14 @@ class PortableRefreshTargetedExecutionTests(unittest.TestCase):
             self.assertEqual(receipt["execution_result"]["transition_id"], "NO_NEW_REFERENCE")
             saved = json.loads((runtime / mod.RECEIPT_REL).read_text(encoding="utf-8"))
             self.assertEqual(saved["task_id"], "COSV-LIVE-PACKET-AUTOMATION-006")
+            self.assertRegex(saved["receipt_body_sha256"], r"^sha256:[a-f0-9]{64}$")
+            digest = saved["receipt_body_sha256"].split(":", 1)[1]
+            immutable = runtime / mod.IMMUTABLE_RECEIPT_DIR_REL / f"{digest}.json"
+            self.assertTrue(immutable.is_file())
+            self.assertEqual(
+                immutable.read_text(encoding="utf-8"),
+                (runtime / mod.RECEIPT_REL).read_text(encoding="utf-8"),
+            )
 
     def test_dedicated_parent_does_not_require_carrier_bootstrap_or_systemd(self) -> None:
         with tempfile.TemporaryDirectory() as td:
