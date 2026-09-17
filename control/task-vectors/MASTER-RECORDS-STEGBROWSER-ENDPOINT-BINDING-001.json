@@ -5,17 +5,19 @@
   "vector": "40000100100000",
   "evidence_refs": [
     "data/canonical-task-records/MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001.json",
-    "docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md"
+    "docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/Site:docs/STEGBROWSER_MASTER_RECORDS_ENDPOINT_BINDING_MIRROR_HANDOFF.md",
+    "StegVerse-org/LLM-adapter:docs/STEGBROWSER_MASTER_RECORDS_STATE_TRANSITION_RELAY_MIRROR_HANDOFF.md"
   ],
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
-    "lifecycle": "PROPOSED",
+    "lifecycle": "CHECKED_OUT",
     "archive_ready": false,
     "unassigned_work": 0,
-    "chat_owned_implementation": 1,
+    "chat_owned_implementation": 0,
     "chat_owned_validation": 0,
     "chat_owned_integration": 0,
-    "chat_owned_observation": 0,
+    "chat_owned_observation": 1,
     "chat_owned_credentials": 0,
     "canonical_owner_installed": true,
     "thread_required": false,
@@ -25,16 +27,16 @@
     "propagated": false
   },
   "metric_evidence": {
-    "lifecycle": "Browser-specific custody endpoint binding is canonically registered for handoff after predecessor prompt-cap decomposition.",
-    "archive_ready": "False until authentic authoritative Master Records reconstruction of the exact immutable StegBrowser tuple is observed.",
-    "unassigned_work": "Canonical owner and concrete handoff are installed.",
-    "chat_owned_counts": "Source binding repair may be implemented by chat; credential authority and runtime evidence remain authority-owned.",
-    "canonical_owner_installed": "Task record and handoff are present.",
-    "thread_required": "No separate standing runtime thread is required.",
-    "blocker_count": "The observed endpoint visibility gap is an actionable repair condition, not a blocker.",
-    "evidence_complete": "False until RECORDED plus exact reconstruction PASS is authentic.",
-    "activated": "False until the canonical endpoint binding and authentic reconstruction are observed.",
-    "propagated": "Not applicable before completion."
+    "lifecycle": "Provider-neutral browser binding and credential-nonexporting gateway relay are merged and exact-head validated; task remains CHECKED_OUT for authentic gateway/custody observation.",
+    "archive_ready": "False until an authentic verified StegVerse gateway advertisement and exact Master Records RECORDED + reconstruction PASS result are observed.",
+    "unassigned_work": "Source repair is assigned and merged; remaining work is authentic observation through the existing immutable invocation.",
+    "chat_owned_counts": "Implementation source is merged; one observation lane remains chat-owned. Credentials and custody authority remain TV/TVC and Master Records.",
+    "canonical_owner_installed": "Task record, canonical handoff, Site handoff, and LLM-adapter relay handoff are installed.",
+    "thread_required": "No standing runtime, remote host, or second-device thread is required.",
+    "blocker_count": "Zero; authentic endpoint/custody observation is the next actionable condition.",
+    "evidence_complete": "False; source/CI/merge do not prove the immutable invocation reached authoritative Master Records.",
+    "activated": "False until authentic endpoint binding and custody reconstruction are observed.",
+    "propagated": "Not applicable before authentic completion."
   },
   "authority_effect": "NONE"
 }
