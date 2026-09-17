@@ -1,0 +1,65 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001",
+  "correlation_id": "MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001",
+  "root_correlation_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+  "parent_task_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+  "goal": "Reconcile prior AILeash/sebbi.pro observations with Evidence Custody Seam Appendix A R4 and Justin Dobson witness-topology claims while preserving strict evidence-status boundaries and preventing promotion of operator-controlled or counterpart-reported claims into independent proof.",
+  "coordination_state": "ACTIVE",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "50000000100000",
+    "source_state_vector_ref": "control/task-vectors/MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001.json",
+    "authority_effect": "NONE"
+  },
+  "source_refs": [
+    "docs/MIR_AILEASH_WITNESS_EVIDENCE_RECONCILIATION_MIRROR_HANDOFF.md",
+    "docs/mir-reference-architecture/AILEASH_SEBBI_WITNESS_EVIDENCE_MAP.md",
+    "docs/mir-reference-architecture/SEPARATION_OF_POWERS_REFERENCE_ARCHITECTURE_DRAFT.md"
+  ],
+  "targets": {
+    "organizations": ["StegVerse-Labs"],
+    "repositories": ["StegVerse-Labs/.github"],
+    "components": ["evidence-custody-reconstruction", "witness", "external-time", "counterpart-evidence", "joint-review-evidence-map"]
+  },
+  "dependencies": ["MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001"],
+  "blockers": [],
+  "adjacent_task_refs": ["CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001"],
+  "expected_evidence_predicates": [
+    "PUBLIC_WITNESS_SURFACES_CLASSIFIED",
+    "APPENDIX_A_R4_POSITIVE_LIVE_TIP_REMAINS_COUNTERPART_REPORTED_UNTIL_REPRODUCED",
+    "SELF_CONSISTENT_NOT_PROMOTED_TO_THIRD_PARTY_VERIFICATION",
+    "OTS_SUBMISSION_NOT_PROMOTED_TO_BITCOIN_CONFIRMATION",
+    "WITNESS_ROSTER_NOT_PROMOTED_TO_CONTROL_DOMAIN_INDEPENDENCE",
+    "JUSTIN_DOBSON_ATTRIBUTION_PRESERVED_WITHOUT_IDENTITY_OVERCLAIM",
+    "NO_UNVERIFIED_CLAIM_PROMOTION"
+  ],
+  "runtime_requirements": {
+    "capabilities": ["public_evidence_observation", "source_inspection", "evidence_classification"],
+    "environment": "DOCUMENTARY_AND_PUBLIC_VERIFICATION",
+    "direction": "JOINT_REVIEW_EVIDENCE_RECONCILIATION",
+    "mutation_required": false,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": "docs/mir-reference-architecture/AILEASH_SEBBI_WITNESS_EVIDENCE_MAP.md"
+  },
+  "allowed_next_transitions": ["INGRESS_ADMITTED"],
+  "handoff_projection_refs": ["docs/MIR_AILEASH_WITNESS_EVIDENCE_RECONCILIATION_MIRROR_HANDOFF.md"],
+  "authority_model": {
+    "counterpart_claim_may_be_promoted_without_artifact": false,
+    "public_service_self_report_equals_independent_proof": false,
+    "witness_member_count_equals_independence": false,
+    "ots_pending_equals_bitcoin_confirmed": false,
+    "profile_identity_claim_equals_independent_identity_verification": false
+  }
+}
