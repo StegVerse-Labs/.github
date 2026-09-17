@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 22,
+  "generation": 23,
   "status": "COSV_TASK_POINTER_RUNTIME_ENFORCEMENT_SOURCE_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -1827,8 +1827,8 @@
       "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
       "parent_task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
       "goal": "Observe the invocation-bound Interlock/InTr connection variables, select only matching existing reusable capabilities, then compose A2 through A4 through the one canonical registered-Node-bound StegBrowser reusable invocation without executing Round Trip 1.",
-      "coordination_state": "ACTIVE",
-      "checkout_state": "CHECKED_OUT",
+      "coordination_state": "RETIRED",
+      "checkout_state": "DECOMPOSED_AT_PROMPT_LIMIT",
       "cosv_task_vector": "40000100100000",
       "handoff_ref": "docs/STEGBROWSER_RUNTIME_CONNECTION_INGRESS_MIRROR_HANDOFF.md",
       "source_refs": [
@@ -1841,7 +1841,11 @@
         "scripts/consume_stegbrowser_runtime_connection_ingress_request.py",
         "scripts/run_stegbrowser_manifest_bound_runtime.py",
         "scripts/run_stegbrowser_runtime_consumption_reusable.py",
-        "scripts/run_stegbrowser_runtime_consumption_reusable.legacy.py"
+        "scripts/run_stegbrowser_runtime_consumption_reusable.legacy.py",
+        "docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md",
+        "docs/CANONICAL_MASTER_RECORDS_LOCAL_ADAPTER_REPAIR_MIRROR_HANDOFF.md",
+        "data/canonical-task-records/MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001.json",
+        "data/canonical-task-records/CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001.json"
       ],
       "runtime_requirements": {
         "environment": "ADMITTED-EPHEMERAL-STEGOS-NODE",
@@ -1994,15 +1998,7 @@
         "organization_local_intr_ingress_receipt_verified": false,
         "intr_admission_observed": false
       },
-      "allowed_next_transitions": [
-        "OBSERVE_RUNTIME_CONNECTION_TRANSITION_VARIABLES",
-        "SELECT_MATCHING_REUSABLE_CAPABILITIES",
-        "RESOLVE_CANONICAL_REGISTERED_STEGVERSE_NODE_RECEIPT_1",
-        "INVOKE_CANONICAL_NODE_BOUND_STEGBROWSER_A2_A4_PATH",
-        "OBSERVE_CURRENT_WORKERCOORDINATOR_CLAIM_FENCE",
-        "OBSERVE_INTR_ADMISSION",
-        "HANDOFF_TO_ROUND_TRIP_1_OWNER"
-      ],
+      "allowed_next_transitions": [],
       "authority_model": {
         "task_registry_mints_execution_authority": false,
         "source_state_proves_execution": false,
@@ -2013,8 +2009,236 @@
         "master_records_reality_authority": true,
         "github_runtime_authority": "NONE",
         "healer_role": "TRIGGERED_REMEDIATION_ONLY",
+        "second_user_operated_device_required": false
+      },
+      "status_reason": "GOAL_PROMPT_COUNT_20_REACHED_WITH_AUTHENTIC_A1_A4_COMPLETION_UNPROVEN; APPLICABLE_BROWSER_CUSTODY_BINDING_TRANSFERRED_TO_MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001; GENERIC_LOCAL_ADAPTER_DEFECT_TRANSFERRED_SEPARATELY",
+      "prompt_budget": {
+        "goal_prompt_count": "20/20",
+        "terminal_prompt_processed": true,
+        "further_parent_prompts_allowed": false,
+        "primary_continuation_task_id": "MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001"
+      },
+      "resolved_custody_binding": {
+        "immutable_invocation_uses": "SITE_BROWSER_CANONICAL_MASTER_RECORDS_CUSTODY_CLIENT",
+        "execution_page": "StegVerse-Labs/Site:stegos-bootstrap/canonical-work-runtime-consumption.html",
+        "execution_page_blob": "2af607770dcdda03af1699817bc9ea6ee042ead2",
+        "custody_client": "StegVerse-Labs/Site:assets/canonical-master-records-transition-custody-browser.js",
+        "custody_client_blob": "4ea45ac0dd309fdaf0d7ee55c9f6463c862b4742",
+        "configured_endpoint": "/api/master-records/state-transitions",
+        "python_local_adapter_used_by_immutable_invocation": false,
+        "authentic_master_records_reconstruction_observed": false
+      },
+      "decomposition": {
+        "required": true,
+        "reason": "AUTHENTIC_RUNTIME_AND_MASTER_RECORDS_RECONSTRUCTION_EVIDENCE_ABSENT_AT_GOAL_PROMPT_LIMIT",
+        "primary_continuation": {
+          "task_id": "MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001",
+          "issue": "StegVerse-Labs/.github#2078",
+          "handoff": "docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md",
+          "first_unresolved_predicate": "AUTHORITATIVE_BROWSER_CUSTODY_ENDPOINT_BOUND"
+        },
+        "separate_canonical_owner_repair": {
+          "task_id": "CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001",
+          "issue": "StegVerse-Labs/.github#2079",
+          "handoff": "docs/CANONICAL_MASTER_RECORDS_LOCAL_ADAPTER_REPAIR_MIRROR_HANDOFF.md",
+          "scope": "GENERIC_OPTIONAL_LOCAL_ADAPTER_SCHEMA_CONTRACT_ONLY"
+        },
+        "post_custody_execution_owner": {
+          "task_id": "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001",
+          "handoff": "docs/STEGBROWSER_CURRENT_IPHONE_A1_A4_EXECUTION_MIRROR_HANDOFF.md",
+          "activation_condition": "ONLY_AFTER_AUTHENTIC_MASTER_RECORDS_RECONSTRUCTION_OF_THE_SAME_IMMUTABLE_TUPLE"
+        }
+      },
+      "adjacent_task_refs": [
+        "MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001",
+        "CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001",
+        "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001"
+      ]
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001",
+      "correlation_id": "MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001",
+      "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
+      "parent_task_id": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+      "predecessor_task_id": "STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001",
+      "goal": "Resolve the existing browser-specific canonical Master Records custody binding used by the single immutable StegBrowser invocation so the exact runtime-readiness tuple can reach the existing master-records/orchestration authority and return authentic RECORDED plus exact reconstruction PASS, without introducing provider, platform, OS, browser, host, Render, second-device, substitute-runtime, new-credential-path, or second-custody-authority dependencies.",
+      "coordination_state": "PROPOSED",
+      "checkout_state": "HANDOFF_READY",
+      "cosv_task_vector": "40000100100000",
+      "handoff_ref": "docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md",
+      "issue_ref": "StegVerse-Labs/.github#2078",
+      "immutable_invocation": {
+        "source_goal_task_id": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001",
+        "invocation_request_nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+        "requested_invocation_count": 1,
+        "second_request_allowed": false,
+        "request_mutation_allowed": false,
+        "destination": "StegBrowser:ManifestInvocation"
+      },
+      "binding_truth": {
+        "execution_page": "StegVerse-Labs/Site:stegos-bootstrap/canonical-work-runtime-consumption.html",
+        "execution_page_blob": "2af607770dcdda03af1699817bc9ea6ee042ead2",
+        "browser_custody_client": "StegVerse-Labs/Site:assets/canonical-master-records-transition-custody-browser.js",
+        "browser_custody_client_blob": "4ea45ac0dd309fdaf0d7ee55c9f6463c862b4742",
+        "configured_endpoint": "/api/master-records/state-transitions",
+        "master_records_owner": "master-records/orchestration",
+        "python_local_adapter_is_invocation_binding": false
+      },
+      "observed_condition": {
+        "probed_public_endpoint": "https://stegverse.org/api/master-records/state-transitions",
+        "read_only_http_result": "404_FROM_STATIC_PUBLIC_SITE_ROUTE",
+        "durable_store_contents_observed": false,
+        "zero_custody_records_inferred": false,
+        "immutable_invocation_nonexecution_inferred": false
+      },
+      "exact_tuple_required": [
+        "runtime_readiness_receipt_sha256",
+        "readiness_node_receipt_sha256",
+        "invocation_request_nonce",
+        "node_id",
+        "interlock_id",
+        "registration_receipt_sha256",
+        "lease_id",
+        "runtime_id",
+        "exported_bundle_sha256",
+        "stegbrowser_custody_transition_admission_identity"
+      ],
+      "expected_evidence_predicates": [
+        "AUTHORITATIVE_BROWSER_CUSTODY_ENDPOINT_BOUND",
+        "TV_TVC_CREDENTIAL_AUTHORITY_PRESERVED",
+        "NO_PROVIDER_PLATFORM_OS_DEVICE_PREREQUISITE",
+        "NO_SECOND_CUSTODY_OR_TRANSPORT_PLANE",
+        "IMMUTABLE_NONCE_PRESERVED",
+        "AUTHENTIC_MASTER_RECORDS_RECORDED",
+        "AUTHENTIC_MASTER_RECORDS_RECONSTRUCTION_PASS",
+        "EXACT_STEGBROWSER_TUPLE_DIGEST_EQUALITY"
+      ],
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "authoritative_browser_custody_endpoint_bound": false,
+        "authentic_master_records_recorded": false,
+        "authentic_master_records_reconstruction_pass": false,
+        "exact_stegbrowser_tuple_digest_equality": false
+      },
+      "dependencies": [
+        {
+          "dependency_id": "DEP-CANONICAL-MASTER-RECORDS-CUSTODY-OWNER",
+          "kind": "CANONICAL_OWNER",
+          "state": "BOUND",
+          "ref": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+          "disposition": "Reuse the existing canonical custody contract and master-records/orchestration authority."
+        }
+      ],
+      "downstream_task_refs": [
+        "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001"
+      ],
+      "allowed_next_transitions": [
+        "RESOLVE_PROVIDER_NEUTRAL_BROWSER_TO_AUTHORITY_BINDING",
+        "PRESERVE_TV_TVC_CREDENTIAL_AUTHORITY",
+        "SUBMIT_EXACT_EXISTING_STEGBROWSER_CUSTODY_RECEIPT",
+        "REQUIRE_AUTHENTIC_RECORDED_AND_RECONSTRUCTION_PASS",
+        "HAND_BACK_TO_EXISTING_A1_A4_EXECUTION_OWNER"
+      ],
+      "authority_model": {
+        "interlock_intr_transition_authority": true,
+        "master_records_custody_reconstruction_authority": true,
+        "master_records_grants_transition_authority": false,
+        "master_records_grants_execution_authority": false,
+        "credential_authority": "TV/TVC",
+        "github_runtime_authority": "NONE",
+        "browser_local_storage_is_authoritative_custody": false,
         "second_user_operated_device_required": false,
-        "interlock_intr_required_for_governed_ingress_egress": true
+        "render_allowed": false
+      },
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs",
+          "master-records"
+        ],
+        "repositories": [
+          "StegVerse-Labs/Site",
+          "StegVerse-Labs/.github",
+          "master-records/orchestration"
+        ],
+        "components": [
+          "canonical-master-records-browser-custody",
+          "stegbrowser-runtime-readiness-custody",
+          "state-transition-custody-api-binding"
+        ]
+      },
+      "source_refs": [
+        "docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md",
+        "docs/STEGBROWSER_RUNTIME_CONNECTION_INGRESS_MIRROR_HANDOFF.md",
+        "docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/Site:stegos-bootstrap/canonical-work-runtime-consumption.html",
+        "StegVerse-Labs/Site:assets/canonical-master-records-transition-custody-browser.js",
+        "StegVerse-Labs/Site:assets/stegbrowser-master-records-custody.js",
+        "master-records/orchestration:services/canonical_state_transition_custody.py",
+        "master-records/orchestration:services/canonical_master_records_api.py",
+        "StegVerse-Labs/.github#2078"
+      ],
+      "blockers": [],
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
+      },
+      "authority_effect": "NONE"
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001",
+      "correlation_id": "CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001",
+      "root_correlation_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+      "parent_task_id": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+      "discovered_from_task_id": "STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001",
+      "goal": "Repair the optional local adapter in the reusable canonical state-transition custody client so it consumes an input contract appropriate for stegverse.canonical-state-transition-receipt/v1 and preserves exact Master Records reconstruction, without relabeling receipts, fabricating reusable-task lifecycle evidence, weakening destination validation, or creating a second custody authority.",
+      "coordination_state": "PROPOSED",
+      "checkout_state": "HANDOFF_READY",
+      "cosv_task_vector": "50000000100000",
+      "handoff_ref": "docs/CANONICAL_MASTER_RECORDS_LOCAL_ADAPTER_REPAIR_MIRROR_HANDOFF.md",
+      "issue_ref": "StegVerse-Labs/.github#2079",
+      "reproduced_defect": {
+        "source_client": "workers/canonical_state_transition_custody.py",
+        "source_client_blob": "03b2a94710da94cd87bd9ad1ba6ff3a644c8f610",
+        "destination": "master-records/orchestration:scripts/ingest_reusable_task_lifecycle.py",
+        "destination_blob": "ad918540145535cc818f53675462dc2a41d00cce",
+        "submitted_schema": "stegverse.canonical-state-transition-receipt/v1",
+        "required_schema": "stegverse.reusable-task-master-records-custody-request/v1",
+        "validation_result": "FAIL_CLOSED_REQUEST_SCHEMA_MISMATCH",
+        "test_only_not_invocation": true,
+        "immutable_stegbrowser_browser_invocation_uses_this_adapter": false
+      },
+      "expected_evidence_predicates": [
+        "LOCAL_ADAPTER_ACCEPTS_ONLY_VALID_CANONICAL_STATE_TRANSITION_CONTRACT",
+        "NO_SCHEMA_RELABELING",
+        "NO_FABRICATED_LIFECYCLE_EVIDENCE",
+        "DESTINATION_VALIDATION_NOT_WEAKENED",
+        "EXACT_RECONSTRUCTION_PRESERVED",
+        "NO_SECOND_CUSTODY_AUTHORITY"
+      ],
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "local_adapter_contract_repaired": false,
+        "exact_reconstruction_preserved": false
+      },
+      "allowed_next_transitions": [
+        "INSPECT_EXISTING_MASTER_RECORDS_STATE_TRANSITION_LOCAL_INTERFACE",
+        "REUSE_MATCHING_STATE_TRANSITION_CUSTODY_CONTRACT_OR_REMOVE_INVALID_FALLBACK",
+        "VALIDATE_FAIL_CLOSED_AND_EXACT_RECONSTRUCTION",
+        "RECONCILE_PARENT_CANONICAL_CUSTODY_OWNER"
+      ],
+      "authority_model": {
+        "interlock_intr_transition_authority": true,
+        "master_records_custody_reconstruction_authority": true,
+        "master_records_grants_transition_authority": false,
+        "credential_authority": "TV/TVC_WHERE_REQUIRED",
+        "github_runtime_authority": "NONE",
+        "second_custody_authority_allowed": false
       },
       "targets": {
         "organizations": [
@@ -2023,28 +2247,28 @@
         ],
         "repositories": [
           "StegVerse-Labs/.github",
-          "StegVerse-Labs/Site",
           "master-records/orchestration"
         ],
         "components": [
-          "stegbrowser-runtime-connection-ingress",
-          "stegbrowser-runtime-readiness-custody"
+          "canonical-state-transition-custody-local-adapter",
+          "master-records-state-transition-custody"
         ]
       },
-      "dependencies": [],
-      "blockers": [],
-      "adjacent_task_refs": [
-        "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001"
+      "source_refs": [
+        "docs/CANONICAL_MASTER_RECORDS_LOCAL_ADAPTER_REPAIR_MIRROR_HANDOFF.md",
+        "docs/CANONICAL_MASTER_RECORDS_STATE_TRANSITION_CUSTODY_MIRROR_HANDOFF.md",
+        "workers/canonical_state_transition_custody.py",
+        "master-records/orchestration:scripts/ingest_reusable_task_lifecycle.py",
+        "StegVerse-Labs/.github#2079"
       ],
+      "blockers": [],
       "worker_claim": {
         "authority": "WORKERCOORDINATOR",
         "claim_ref": null,
         "fence_ref": null,
         "projection_only": true
       },
-      "handoff_projection_refs": [
-        "docs/STEGBROWSER_RUNTIME_CONNECTION_INGRESS_MIRROR_HANDOFF.md"
-      ]
+      "authority_effect": "NONE"
     }
   ],
   "human_actions": [],
