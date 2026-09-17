@@ -1,0 +1,28 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "WIBS-FULL-PAPER-REVISION-001",
+  "correlation_id": "WIBS-FULL-PAPER-REVISION-001",
+  "root_correlation_id": "ELAN-NEXT-PHASE-EXPERIMENT-001",
+  "parent_task_id": "WIBS-EXPERIMENT2-PAPER-001",
+  "goal": "Create the full revised When Interpretation Becomes State paper with Experiment 2 integrated as a numbered empirical section while preserving Experiment 1 and current collaboration/authorship status.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "10100000100000",
+    "authority_effect": "NONE"
+  },
+  "source_refs": [
+    "docs/WIBS_FULL_PAPER_REVISION_MIRROR_HANDOFF.md",
+    "docs/WIBS_EXPERIMENT2_SECTION_DRAFT.md",
+    "docs/WIBS_EXPERIMENT2_PAPER_MIRROR_HANDOFF.md"
+  ],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": null
+  },
+  "handoff_projection_refs": [
+    "docs/WIBS_FULL_PAPER_REVISION_MIRROR_HANDOFF.md"
+  ]
+}
