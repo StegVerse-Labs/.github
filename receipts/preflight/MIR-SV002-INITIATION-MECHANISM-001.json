@@ -10,42 +10,46 @@
   "historical_runtime_materializer": "StegVerse-Labs/Site:assets/sv002-local-runtime-materializer.js",
   "historical_network_sync": "StegVerse-Labs/Site:stegos-node/sv002-intr-sync.js",
   "validated_reuse_ref": "StegVerse-Labs/Site:docs/STEGBROWSER_SV002_VALIDATED_LANE_RETEST.md",
-  "derived_current_site_surface": "StegVerse-Labs/Site:stegos-bootstrap/canonical-work-runtime-consumption.html",
-  "derived_current_site_autostart": "?autostart=1",
-  "historical_sequence": [
-    "browser observation event exists",
-    "build current Interlock request",
-    "attempt canonical Interlock/InTr transaction",
-    "on INTR_RUNTIME_UNAVAILABLE build exact non-authorizing Universal InTr materialization request",
-    "queue request into registered StegVerse Node intr_outbox",
-    "if the already-loaded local SV002 materializer is present call materialize(queued)",
-    "construct EVENT_EPHEMERAL Blob-backed browser Web Worker",
-    "bind execution-time runtime identity",
-    "execute principal",
-    "retain execution receipt",
-    "independently reconstruct exact run through Master Records"
-  ],
-  "network_sync_semantics": {
-    "DOMContentLoaded_attempts_pending_outbox_sync": true,
-    "online_event_attempts_pending_outbox_sync": true,
-    "network_ingress_trigger_grants_authority": false,
-    "network_ingress_runtime_execution_attempted_by_ingress_receipt": false
-  },
-  "authority_invariants": {
-    "request_grants_execution_authority": false,
+  "hard_invariants": {
+    "event_is_trigger": true,
+    "idle_runtime_required": false,
+    "remote_host_discovery_allowed": false,
+    "workercoordinator_claim_required_for_event_creation": false,
     "claim_or_fence_minted": false,
+    "request_grants_execution_authority": false,
     "github_runtime_authority": "NONE",
-    "credential_authority": "TV/TVC",
     "interlock_intr_remains_transition_authority": true,
     "master_records_remains_custody_reconstruction_only": true
   },
-  "correction": {
-    "remote_machine_host_required": false,
-    "idle_runtime_surface_required": false,
-    "python_host_driver_is_not_the_proven_sv002_runtime_mechanism": true,
-    "validated_lane_rule": "PRESERVE_BROWSER_EVENT_MATERIALIZATION_MECHANICS_AND_CHANGE_ONLY_CURRENT_INVOCATION_BINDINGS",
-    "do_not_reconstruct_as_new_python_runtime_path": true
+  "mir_reimplementation": {
+    "browser_binding": "StegVerse-Labs/Site:data/mir-roundtrip-browser-runtime-binding.v1.json",
+    "browser_canonical_custody": "StegVerse-Labs/Site:assets/canonical-master-records-transition-custody-browser.js",
+    "browser_event_runtime": "StegVerse-Labs/Site:assets/mir-roundtrip-sv002-browser-runtime.js",
+    "browser_activation": "StegVerse-Labs/Site:assets/mir-roundtrip-browser-activation.js",
+    "browser_surface": "StegVerse-Labs/Site:mir-roundtrip/index.html",
+    "source_tests": "StegVerse-Labs/Site:tests/test_mir_sv002_browser_event_reimplementation.py",
+    "source_validation_workflow": "StegVerse-Labs/Site:.github/workflows/mir-sv002-browser-event-conformance.yml",
+    "autostart_on_browser_event_surface": true,
+    "python_driver_is_primary_runtime": false,
+    "temporary_probe_is_primary_custody": false
   },
-  "mir_implication": "The current MIR sequence should be initiated by a Site/browser event surface that duplicates the validated SV002 browser materialization mechanics and applies MIR Goal/COSV/destination/custody bindings. Lack of a Remote Desktop or machine-execution connector is not the initiation blocker.",
-  "authority_effect": "NONE_PREFLIGHT_EVIDENCE_ONLY"
+  "canonical_transition_sequence": [
+    "MIR_EVENT_MATERIALIZATION_REQUEST_QUEUED",
+    "CURRENT_INTERLOCK_INTR_INGRESS_RECEIVED",
+    "RTC-STEGVERSE-EGRESS-007",
+    "RTC-INTERLOCK-INTR-TRANSPORT-008",
+    "RTC-FARSIDE-FINAL-009",
+    "MIR_DESTINATION_EVIDENCE_RETAINED",
+    "EXACT_GOVERNED_RETURN_PACKET_RETAINED",
+    "STEGVERSE_RETURN_EXIT_or_MIR_GOVERNED_RETURN_FAIL_CLOSED"
+  ],
+  "runtime_evidence": {
+    "authentic_current_browser_event_execution_observed": false,
+    "rtc_007_observed": false,
+    "rtc_008_observed": false,
+    "rtc_009_observed": false,
+    "governed_return_observed": false,
+    "source_or_ci_may_promote_runtime_evidence": false
+  },
+  "authority_effect": "NONE_PREFLIGHT_AND_SOURCE_BINDING_EVIDENCE_ONLY"
 }
