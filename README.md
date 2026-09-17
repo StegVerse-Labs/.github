@@ -81,6 +81,20 @@ Many are conceptual, documentary, or exploratory by design.
 
 ---
 
+## Structured authority evaluator coordination
+
+Canonical Goal Task `SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001` now records a validated merged source contract for structured authority/delegation evaluation without creating a second authority plane.
+
+The SDK preserves the external framework's role/context and structured authority/delegation evidence, but a role label itself is never authority. StegCore's canonical authority-basis resolver evaluates the exact actor/action/target/scope/time basis and preserves UNKNOWN-versus-FALSE semantics: a matching current scoped basis may establish a positive currentness fact; an incomplete no-match basis remains UNKNOWN / FAIL_CLOSED; only an explicitly complete no-match basis may establish FALSE / DENY. The SDK rejects pre-authored authority/delegation-current conclusions on this path and binds only the canonical resolver's returned currentness facts into the normal StegGate request.
+
+TV/TVC remains protected credential and scoped-authority issuance authority. Interlock/InTr remains governed transition authority. These source merges do not prove public StegCore resolver distribution or authentic SDK-to-live StegOS/InTr posture-bound execution; the canonical task remains `ACTIVE / HANDOFF_READY_RUNTIME_PROOF_PENDING` until that runtime predicate is authentically satisfied.
+
+Canonical detail is maintained in the SDK handoff:
+
+```text
+StegVerse-org/StegVerse-SDK/SDK_EVALUATOR_GOVERNANCE_POSTURE_MANIFEST_MIRROR_HANDOFF.md
+```
+
 ## Autonomous Governed Entity Progression
 
 StegVerse distinguishes **governance** from **manual orchestration**.
