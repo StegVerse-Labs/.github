@@ -364,3 +364,38 @@ README reviewed. No byte change is required. The authority/runtime topology rema
 ## Manual work
 
 None.
+
+## Goal prompt 16: direct custody-surface observation and registry discrepancy
+
+Session Prompt Count: 1. Goal Prompt Count: 16/20. Observation: 2026-09-17 (HTTP response timestamps 22:42–22:43 UTC). This section supersedes earlier assertions of verified central-registry membership and live custody-store absence.
+
+### Coordination identity
+
+A full read of `data/canonical-task-registry.json` on current default branch returned zero task rows for `STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001`. The same lookup at supplied recovery commit `c2c3d88b04cd93fc3e352024aaffcabf6f78ba6c` also returned zero rows. The existing shard `data/canonical-task-records/STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001.json` (blob `856c82a0fc62e9718dda9618dee16bb9e0a07129`) says ACTIVE / CHECKED_OUT, but it cannot substitute for central-registry membership: `scripts/evaluate_task_registry_collision_checkin.py` loads registry rows first and uses shards only for enrichment.
+
+Canonical coordination state is therefore UNVERIFIED / REGISTRY_ENTRY_ABSENT, not a newly proven CHECKED_OUT state. Do not manufacture an INACTIVE or RETIRED registry state from absence. This documentation-only draft preserves findings; it does not restore registration, claim execution, or advance runtime predicates. Reconcile the existing identity and COSV into the registry through its existing registration/collision-validation path before executable continuation. Do not mint a replacement task merely to reset the count.
+
+### Observed public route and source routing
+
+Read-only HEAD and GET of `https://stegverse.org/api/master-records/state-transitions` returned HTTP 404, `server: GitHub.com`, `content-type: text/html; charset=utf-8`. This proves that the probed public network route did not return the Master Records API. No POST was issued and no invocation was created.
+
+The current Site browser custody client (blob `4ea45ac0dd309fdaf0d7ee55c9f6463c862b4742`) submits to the supplied same-origin endpoint with cookies and an `X-StegVerse-Credential-Authority: TV/TVC` declaration. This header is not itself authentication evidence. The root Universal InTr worker (blob `460ddbf4079dc006a9cf28238b0aef4191e59ad7`), its base, and all five imported extensions were read: no state-transitions fetch handler was found. The base fetch handler handles /intr/profile, /intr/materialization/readiness, /intr/materialization and /intr/device-kv/result. This source inspection does not attest a particular user's currently installed worker.
+
+### Existing authoritative storage and reconstruction contract
+
+- Authority source: `master-records/orchestration:services/canonical_master_records_api.py`, blob `4b68a846ef6ac478f0c201a138ffaa750bfdc778`, installs `canonical_state_transition_custody` into the existing custody application.
+- `render-custody-production.yaml`, blob `247a9479fd1a21f5c6ee8d2303ec2a845894361e`, declares this entrypoint, persistent /var/data disk and `MASTER_RECORDS_DB=/var/data/master-records-custody.db`. These are deployment declarations, not observed live deployment.
+- Legacy `render-custody.yaml` uses a different composed entrypoint and /tmp storage with durability false. Do not assume that it is the deployed production topology.
+- Existing table: `canonical_state_transition_receipts`; primary key receipt_sha256; unique identity_key composed from subject_or_correlation_id, transition_id, transition_sequence.
+- Existing authenticated reconstruction route: `GET /api/master-records/state-transitions/{receipt_sha256}/reconstruction`. The source module exposes no nonce-listing route. Read the existing authority-owned store or retained receipt index to recover the authentic digest; do not invent one or add a second API.
+- A read must correlate the complete immutable nonce/Node/Interlock/Receipt-1/lease/runtime/exported-bundle tuple, enforce exactly one matching record, and independently recompute the retained canonical receipt digest.
+
+### Precise remaining condition and remediation
+
+The unresolved condition is existing Site-to-authority route/authentication/deployment visibility, plus the missing central registration. The live durable store has NOT been queried; its tuple count remains UNKNOWN. The public 404 and repository search absence do not prove zero custody records or that the immutable invocation never executed.
+
+Render service inspection returned `no workspace selected`. The connector's required next step is user confirmation of a listed workspace; `list_workspaces` returned only `Rigel's workspace`, ID `tea-d30avmndiees73bg2rjg`. Ask for confirmation before using that ID. No service deployment, environment change, credential extraction, or provider mutation was performed.
+
+After confirmation: inspect the existing custody service and deployment metadata read-only; establish the actual entrypoint, durable disk and authority-owned retrieval surface; recover the existing receipt digest through the existing authenticated authority path under TV/TVC; reconstruct and verify exactly one full tuple. If current deployed routing is missing, repair the existing binding only after establishing its owner and current configuration. No new host, transport, dispatcher, credential path, custody store, request, or device is authorized by this observation.
+
+A1/A2 remain unpromoted; A3/A4/Round Trip 1 remain unentered. No Actions were dispatched, no runtime was launched, and no release or propagation success is claimed. README is updated with a concise pointer to this evidence correction.
