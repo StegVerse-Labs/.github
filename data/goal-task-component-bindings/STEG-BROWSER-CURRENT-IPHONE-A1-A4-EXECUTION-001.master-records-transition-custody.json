@@ -1,0 +1,39 @@
+{
+  "schema": "stegverse.goal-task-component-binding/v1",
+  "goal_task_id": "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001",
+  "cosv_task_vector": "40000100100000",
+  "component_id": "RT-CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+  "component_family": "canonical_state_transition_custody_reconstruction",
+  "selection_condition": "AN_AUTHENTIC_GOVERNED_STATE_TRANSITION_RECEIPT_IS_OBSERVED",
+  "preconditions": [
+    "UNCHANGED_INVOCATION_NONCE",
+    "AUTHENTIC_TRANSITION_EVIDENCE_PRESENT",
+    "TRANSITION_AUTHORITY_REMAINS_INTERLOCK_INTR"
+  ],
+  "ordering": [
+    "AUTHENTIC_RESIDENT_CUSTODY_ROOT_OBSERVED",
+    "EXACT_RETAINED_RECEIPT_CLASSIFIED",
+    "AUTHENTIC_GOVERNED_TRANSITION_OBSERVED",
+    "CANONICAL_STATE_TRANSITION_CUSTODY",
+    "EXACT_MASTER_RECORDS_RECONSTRUCTION",
+    "NEXT_MACHINE_OWNED_TRANSITION_IF_OTHERWISE_ADMISSIBLE"
+  ],
+  "failure_semantics": [
+    "MISSING_RESIDENT_RECEIPT_IS_NOT_A_TRANSITION",
+    "MISSING_TRANSITION_IS_NOT_FABRICATED",
+    "OBSERVED_DENY_FAILURE_PARTIAL_OR_FAIL_CLOSED_STATE_REQUIRES_CUSTODY",
+    "CUSTODY_OR_RECONSTRUCTION_FAILURE_FAILS_CLOSED_BEFORE_NEXT_MACHINE_TRANSITION"
+  ],
+  "current_observation": {
+    "authentic_healer_consumption_receipt_observed": false,
+    "single_resident_custody_root_observed": false,
+    "retained_receipt_classifier_run": false,
+    "a1_a4_predicate_promoted": false
+  },
+  "authority_effect": "NONE_CUSTODY_RECONSTRUCTION_ONLY",
+  "transition_authority": "INTERLOCK_INTR",
+  "worker_claim_authority": "WORKERCOORDINATOR",
+  "credential_authority": "TV/TVC",
+  "github_runtime_authority": "NONE",
+  "second_user_operated_device_required": false
+}
