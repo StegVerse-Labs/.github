@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-"""Consume the standing duplicate-first MIR MIRROR execution request.
+"""Consume the standing MIR event through the proven SV002 event-triggered order.
 
-This is a bounded request consumer attached to the existing resident dispatch cadence.
-It creates no scheduler, WorkerCoordinator, transport, credential path, or runtime.
-It delegates exactly one current MIR task to refresh_and_execute_resident_task.py,
-which refreshes already-local canonical source and uses the existing WorkerCoordinator.
-The request and worker bind COSV 50000000100000 directly; the targeted bridge is not
-made dependent on a separately refreshed aggregate COSV index before this invocation.
+The standing request is itself the event input. This consumer invokes the bounded
+event driver directly; it does not require WorkerCoordinator to create the event,
+mint a claim/fence, or authorize execution. Interlock/InTr remains transition
+authority. Canonical Master Records custody/reconstruction is required after every
+observed governed state transition.
 """
 from __future__ import annotations
 
@@ -24,8 +23,7 @@ COSV = "50000000100000"
 REQUEST_REL = Path("control/resident-execution-request.d/mir-roundtrip-egress-authenticity-001.json")
 CONSUMPTION_REL = Path("receipts/sovereign-host/mir-roundtrip-egress-authenticity-request-consumption.latest.json")
 TARGET_RECEIPT_REL = Path("receipts/mir-roundtrip-egress-authenticity/current.latest.json")
-ENTRYPOINT_REL = Path("scripts/refresh_and_execute_resident_task.py")
-HOSTED = ("GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID", "VERCEL", "VERCEL_ENV", "CF_PAGES", "CLOUDFLARE_WORKERS")
+HOSTED = ("GITHUB_ACTIONS", "CI", "VERCEL", "VERCEL_ENV", "CF_PAGES", "CLOUDFLARE_WORKERS")
 FORBIDDEN = (
     "GITHUB_TOKEN", "GH_TOKEN", "GITHUB_PAT", "GITHUB_PERSONAL_ACCESS_TOKEN",
     "ACTIONS_RUNTIME_TOKEN", "ACTIONS_ID_TOKEN_REQUEST_TOKEN", "OPENAI_API_KEY", "ANTHROPIC_API_KEY",
@@ -35,7 +33,9 @@ NONSECRET = (
     "STEGVERSE_SOVEREIGN_NODE", "STEGVERSE_HEARTBEAT_ROOT", "STEGVERSE_HEARTBEAT_SOURCE_ROOT",
     "STEGVERSE_MICRO_NODE_RUNTIME_ROOT", "STEGVERSE_TVC_ROOT", "STEGVERSE_TV_ROOT",
     "STEGVERSE_LLM_ADAPTER_ROOT", "STEGVERSE_MASTER_RECORDS_ORCHESTRATION_ROOT",
-    "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT", "STEGVERSE_STEGOS_ROOT", "STEGVERSE_SITE_ROOT",
+    "STEGVERSE_MASTER_RECORDS_SOURCE_ROOT", "STEGVERSE_MASTER_RECORDS_ENDPOINT",
+    "STEGVERSE_MASTER_RECORDS_TOKEN", "STEGVERSE_MASTER_RECORDS_TIMEOUT_SECONDS",
+    "STEGVERSE_STEGOS_ROOT", "STEGVERSE_STEGOS_SOURCE_ROOT", "STEGVERSE_SITE_ROOT",
     "STEGVERSE_REPO_ROOTS_JSON", "STEGVERSE_SDK_SOURCE_ROOT", "PYTHONPATH", "TMPDIR",
 )
 
@@ -73,7 +73,8 @@ def clean_env(source: dict[str, str] | None = None) -> dict[str, str]:
     require(not hosted, "hosted environment may not consume sovereign MIR execution request:" + ",".join(sorted(hosted)))
     env = {name: values[name] for name in NONSECRET if values.get(name)}
     for name in FORBIDDEN:
-        env.pop(name, None)
+        if name not in {"STEGVERSE_MASTER_RECORDS_TOKEN"}:
+            env.pop(name, None)
     env["STEGVERSE_TV_TVC_CREDENTIAL_AUTHORITY"] = "TV/TVC"
     env["STEGVERSE_GITHUB_TOKEN_RUNTIME_AUTHORITY"] = "NONE"
     return env
@@ -96,9 +97,13 @@ def validate_request(request: dict[str, Any]) -> None:
         "state": "REQUESTED",
         "task_id": TASK_ID,
         "cosv_task_vector": COSV,
-        "mode": "MIR_MIRROR_DUPLICATE_FIRST_EGRESS_AUTHENTICITY",
-        "entrypoint": "scripts/refresh_and_execute_resident_task.py",
-        "execution_owner": "EXISTING_CANONICAL_RESIDENT_WORKERCOORDINATOR_AND_STEGOS_EVENT_EPHEMERAL_RUNTIME",
+        "mode": "MIR_MIRROR_DUPLICATE_FIRST_EVENT_DRIVEN_EGRESS_AUTHENTICITY",
+        "entrypoint": "scripts/execute_mir_event_driven_roundtrip.py",
+        "execution_owner": "EXISTING_INTERLOCK_INTR_EVENT_MATERIALIZATION_AND_STEGOS_EVENT_EPHEMERAL_RUNTIME",
+        "workercoordinator_claim_required_for_event_creation": False,
+        "requires_current_workercoordinator_claim_fence": False,
+        "claim_or_fence_minted_by_request": False,
+        "request_grants_execution_authority": False,
         "generic_sv002_route_reproof_required": False,
         "manual_device_prerequisite": False,
         "second_machine_required": False,
@@ -133,6 +138,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
             and prior.get("goal_task_id") == TASK_ID
             and prior.get("cosv_task_vector") == COSV
             and prior.get("successful_one_way_mir_transport_identified") is True
+            and prior.get("master_records_reconstructs_each_observed_transition") is True
         ):
             receipt = {
                 "schema": "stegverse.mir-roundtrip-egress-authenticity-request-consumption/v1",
@@ -143,6 +149,7 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
                 "target_receipt_ref": str(target_receipt_path),
                 "reexecution_performed": False,
                 "continue_to_governed_return": True,
+                "workercoordinator_claim_required_for_event_creation": False,
                 "credential_authority": "TV/TVC",
                 "github_token_runtime_authority": "NONE",
                 "authority_effect": "NONE_CONSUMPTION_EVIDENCE_ONLY",
@@ -150,14 +157,14 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
             atomic_json(runtime / CONSUMPTION_REL, receipt)
             return receipt
 
-    entrypoint = source / ENTRYPOINT_REL
-    require(entrypoint.is_file(), "resident_targeted_execution_entrypoint_missing")
+    entrypoint_rel = Path(str(request["entrypoint"]))
+    entrypoint = source / entrypoint_rel
+    require(entrypoint.is_file(), "mir_event_driven_entrypoint_missing")
     command = [
         sys.executable,
         str(entrypoint),
         "--source-root", str(source),
         "--runtime-root", str(runtime),
-        "--task-id", TASK_ID,
     ]
     completed = runner(
         command,
@@ -176,27 +183,27 @@ def consume(source_root: Path, runtime_root: Path, *, runner=subprocess.run, env
         and target.get("goal_task_id") == TASK_ID
         and target.get("cosv_task_vector") == COSV
         and target.get("successful_one_way_mir_transport_identified") is True
+        and target.get("master_records_reconstructs_each_observed_transition") is True
     )
     receipt = {
         "schema": "stegverse.mir-roundtrip-egress-authenticity-request-consumption/v1",
-        "state": "ONE_WAY_CONFIRMED" if one_way else "EXECUTION_ATTEMPT_RECORDED",
+        "state": "ONE_WAY_CONFIRMED" if one_way else "EVENT_EXECUTION_ATTEMPT_RECORDED",
         "task_id": TASK_ID,
         "cosv_task_vector": COSV,
-        "cosv_bound_by_request_and_worker": True,
-        "aggregate_cosv_pointer_gate_used": False,
         "request_sha256": request_sha,
         "command": command,
         "execution_returncode": completed.returncode,
-        "targeted_execution_result": result,
+        "event_execution_result": result,
         "target_receipt_ref": str(target_receipt_path),
         "target_receipt_observed": target is not None,
         "successful_one_way_mir_transport_identified": one_way,
         "continue_to_governed_return": one_way,
+        "workercoordinator_claim_required_for_event_creation": False,
+        "claim_or_fence_minted_by_request": False,
         "generic_sv002_route_reproof_performed": False,
         "manual_device_prerequisite": False,
         "second_machine_required": False,
         "network_source_fetch_performed": False,
-        "credential_material_present": False,
         "credential_authority": "TV/TVC",
         "github_token_runtime_authority": "NONE",
         "request_grants_execution_authority": False,
@@ -221,13 +228,14 @@ def main() -> int:
             "cosv_task_vector": COSV,
             "error_type": type(exc).__name__,
             "error": str(exc),
+            "workercoordinator_claim_required_for_event_creation": False,
             "manual_device_prerequisite": False,
             "credential_authority": "TV/TVC",
             "github_token_runtime_authority": "NONE",
             "authority_effect": "NONE_FAIL_CLOSED",
         }
     print(json.dumps(receipt, sort_keys=True))
-    return 0 if receipt.get("state") in {"ALREADY_CONSUMED_ONE_WAY_CONFIRMED", "ONE_WAY_CONFIRMED", "EXECUTION_ATTEMPT_RECORDED"} else 1
+    return 0 if receipt.get("state") in {"ALREADY_CONSUMED_ONE_WAY_CONFIRMED", "ONE_WAY_CONFIRMED", "EVENT_EXECUTION_ATTEMPT_RECORDED"} else 1
 
 
 if __name__ == "__main__":
