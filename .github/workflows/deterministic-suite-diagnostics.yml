@@ -5,18 +5,6 @@
 name: Deterministic Repository Suite - Diagnostic Evidence Only
 
 on:
-  pull_request:
-    paths:
-      - 'handoffs/**'
-      - 'heartbeat_runtime/**'
-      - 'workers/**'
-      - 'tests/**'
-      - 'control/**'
-      - 'cost-basis/worker-runtime/**'
-      - 'docs/**'
-      - 'schemas/**'
-      - 'scripts/**'
-      - '.github/workflows/deterministic-suite-diagnostics.yml'
   workflow_dispatch:
 
 permissions: {}
