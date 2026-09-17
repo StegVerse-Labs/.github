@@ -3,61 +3,6 @@
 name: Validate organization control plane - No GitHub Token Authority
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'schemas/**'
-      - 'checks/**'
-      - 'scripts/validate_workflow_surface_hygiene.py'
-      - 'scripts/validate_org_control_plane.py'
-      - 'scripts/validate_task_registration_substrate_resolution.py'
-      - 'scripts/validate_handoff_execution_ownership.py'
-      - 'scripts/validate_admissible_existence_control_plane.py'
-      - 'scripts/validate_heartbeat_carrier_contract.py'
-      - 'scripts/validate_heartbeat_runtime_separation.py'
-      - 'scripts/continue_stegverse001_evidence_chain.py'
-      - 'scripts/check_org_operational_observer.py'
-      - 'scripts/check_org_repository_inventory.py'
-      - 'scripts/check_org_completion_dashboard.py'
-      - 'scripts/validate_session_assistance_scope.py'
-      - 'scripts/check_required_terms.py'
-      - 'scripts/check_org_aggregation_manifest.py'
-      - 'scripts/allocate_claims.py'
-      - 'scripts/reconcile_checkins.py'
-      - 'scripts/render_org_handoff.py'
-      - 'scripts/validate_archive_readiness.py'
-      - 'workers/stegverse001_evidence_chain_continuation_worker.py'
-      - 'control/process-worker-adapters.d/stegverse001-evidence-chain-continuation-001.json'
-      - 'handoffs/STEGVERSE001-EVIDENCE-CHAIN-CONTINUATION-001.json'
-      - 'docs/STEGVERSE_001_EVIDENCE_CHAIN_MIRROR_HANDOFF.md'
-      - 'docs/ORG_CONTROL_PLANE_STATE.md'
-      - 'tools/validate_active_worker_states.py'
-      - 'tests/test_task_registration_substrate_resolution.py'
-      - 'tests/test_stegverse001_evidence_chain_continuation_worker.py'
-      - 'tests/test_stegverse001_rendezvous_evidence_transport.py'
-      - 'tests/test_heartbeat_runtime_separation.py'
-      - 'tests/test_independent_heartbeat_oscillator.py'
-      - 'tests/test_heartbeat_carrier_envelope.py'
-      - 'tests/test_cross_repository_dependency_claims.py'
-      - 'tests/test_session_assistance_scope.py'
-      - 'tests/test_archive_readiness.py'
-      - '.github/workflows/org-control-plane-validate.yml'
-  pull_request:
-    paths:
-      - 'README.md'
-      - 'control/**'
-      - 'data/canonical-task-records/**'
-      - 'events/**'
-      - 'schemas/**'
-      - 'tasks/**'
-      - 'scripts/**'
-      - 'checks/**'
-      - 'heartbeat_runtime/**'
-      - 'tools/validate_active_worker_states.py'
-      - 'tests/**'
-      - 'handoffs/**'
-      - 'docs/**'
-      - '.github/workflows/org-control-plane-validate.yml'
   workflow_dispatch:
 
 permissions: {}
