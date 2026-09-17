@@ -5,7 +5,7 @@
     {
       "archive_eligible": false,
       "archive_reason_codes": [],
-      "authorized_policy_version": "cosv-live-packet-v2-independent-task-control",
+      "authorized_policy_version": "cosv-heartbeat-state-packet-v2-independent-task-control",
       "block_ref": null,
       "claim_id": null,
       "cost_basis_ref": "cost-basis/worker-runtime/cosv-live-packet-automation.json",
