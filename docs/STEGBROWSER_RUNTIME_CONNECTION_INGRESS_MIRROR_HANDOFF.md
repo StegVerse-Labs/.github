@@ -8,7 +8,7 @@ Updated: 2026-09-17
 - Parent Goal: `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`
 - Root lineage: `STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001`
 - COSV: `40000100100000`
-- Status: `ACTIVE / CHECKED_OUT / SV002 EXECUTION LINEAGE REUSED / NODE-JOURNAL + SV002 EXPORT + MASTER RECORDS INGRESS + CANONICAL CUSTODY BRIDGE MERGED+VALIDATED / AUTHENTIC MASTER RECORDS RECONSTRUCTION + A1-A4 EVIDENCE PENDING`
+- Status: `UNVERIFIED / CENTRAL REGISTRY ENTRY ABSENT / SHARD ACTIVE-CHECKED_OUT DOES NOT ESTABLISH CURRENT REGISTRATION / RUNTIME EVIDENCE PENDING`
 - External/second user-operated device required: `false`
 - Canonical ephemeral runtime class: `ADMITTED-EPHEMERAL-STEGOS-NODE`
 - Empty connector inventory (`list_devices=[]`) is not evidence that ephemeral runtime capacity is absent.
@@ -384,8 +384,6 @@ The current Site browser custody client (blob `4ea45ac0dd309fdaf0d7ee55c9f6463c8
 ### Existing authoritative storage and reconstruction contract
 
 - Authority source: `master-records/orchestration:services/canonical_master_records_api.py`, blob `4b68a846ef6ac478f0c201a138ffaa750bfdc778`, installs `canonical_state_transition_custody` into the existing custody application.
-- `render-custody-production.yaml`, blob `247a9479fd1a21f5c6ee8d2303ec2a845894361e`, declares this entrypoint, persistent /var/data disk and `MASTER_RECORDS_DB=/var/data/master-records-custody.db`. These are deployment declarations, not observed live deployment.
-- Legacy `render-custody.yaml` uses a different composed entrypoint and /tmp storage with durability false. Do not assume that it is the deployed production topology.
 - Existing table: `canonical_state_transition_receipts`; primary key receipt_sha256; unique identity_key composed from subject_or_correlation_id, transition_id, transition_sequence.
 - Existing authenticated reconstruction route: `GET /api/master-records/state-transitions/{receipt_sha256}/reconstruction`. The source module exposes no nonce-listing route. Read the existing authority-owned store or retained receipt index to recover the authentic digest; do not invent one or add a second API.
 - A read must correlate the complete immutable nonce/Node/Interlock/Receipt-1/lease/runtime/exported-bundle tuple, enforce exactly one matching record, and independently recompute the retained canonical receipt digest.
@@ -394,8 +392,20 @@ The current Site browser custody client (blob `4ea45ac0dd309fdaf0d7ee55c9f6463c8
 
 The unresolved condition is existing Site-to-authority route/authentication/deployment visibility, plus the missing central registration. The live durable store has NOT been queried; its tuple count remains UNKNOWN. The public 404 and repository search absence do not prove zero custody records or that the immutable invocation never executed.
 
-Render service inspection returned `no workspace selected`. The connector's required next step is user confirmation of a listed workspace; `list_workspaces` returned only `Rigel's workspace`, ID `tea-d30avmndiees73bg2rjg`. Ask for confirmation before using that ID. No service deployment, environment change, credential extraction, or provider mutation was performed.
+Render is excluded from all consideration and use by explicit user direction. The previous workspace-confirmation prerequisite is withdrawn. Do not inspect, configure, deploy, query, or route through Render; do not request its workspace or credentials.
 
-After confirmation: inspect the existing custody service and deployment metadata read-only; establish the actual entrypoint, durable disk and authority-owned retrieval surface; recover the existing receipt digest through the existing authenticated authority path under TV/TVC; reconstruct and verify exactly one full tuple. If current deployed routing is missing, repair the existing binding only after establishing its owner and current configuration. No new host, transport, dispatcher, credential path, custody store, request, or device is authorized by this observation.
+Continue through the existing StegVerse-owned callable custody contract `RT-CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001`, preserving Interlock/InTr transition authority, TV/TVC credential authority and Master Records custody/reconstruction authority. Resolve the existing authority-owned binding and authentic retained evidence without making a provider, platform, operating system, browser implementation, or device class a prerequisite. No new request, host, runtime, dispatcher, transport, credential path, or custody store is introduced by this correction.
 
 A1/A2 remain unpromoted; A3/A4/Round Trip 1 remain unentered. No Actions were dispatched, no runtime was launched, and no release or propagation success is claimed. README is updated with a concise pointer to this evidence correction.
+
+## Goal prompts 17–18: platform, OS and device independence
+
+Session Prompt Count: 3. Goal Prompt Count: 18/20.
+
+User direction: StegVerse is meant to become platform/OS/device agnostic. DO NOT USE RENDER FOR ANYTHING. This supersedes the previous provider-inspection continuation and applies to tools, infrastructure, deployment, custody access, credentials, proposed remedies and future handoffs. Manual work: None.
+
+The existing canonical custody reusable-task record was re-read from main (blob `580d83808554f64e2f9787e1c0ba2531908b0cae`). It composes `RT-INTR-GOVERNED-TRANSITION-001` and `RT-INTR-EVIDENCE-CUSTODY-001`; its runner template is `workers/canonical_state_transition_custody.py`. Its identity, receipt contract and custody predicates are not tied to Render. The companion canonical custody handoff (blob `e0023753ea0655d2fbd328bb6436e763bed97135`) requires authentic authoritative write-through and prohibits browser-local self-issued custody and substitute runtimes.
+
+Existing browser/Safari/Web Worker source references describe current implementations only; they do not define the platform boundary or prove portable implementations exist. Do not replace the excluded provider with another mandatory provider or introduce OS/device dependence. Preserve the single-device constraint while tracing the existing platform-neutral callable contract to its authority-owned implementation and exact invocation evidence.
+
+The current central Task Registry was re-read and still has zero matching rows for this Goal Task. Registration reconciliation remains separate from runtime proof. This PR changes continuation documentation only; it does not attest runtime portability, repair the custody route, restore registration, or promote A1–A4. Retain goal count 18/20 across sessions.
