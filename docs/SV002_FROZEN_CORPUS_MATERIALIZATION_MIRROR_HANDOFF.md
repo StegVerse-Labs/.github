@@ -114,6 +114,23 @@ Therefore the current blocker is:
 
 This is not permission to add a listener, worker, scheduler, host, generic GitHub credential, second device, or alternate source-read implementation. The next authentic transition must consume the already-existing TV/TVC runtime binding/self-heal path and emit the retained resident receipts.
 
+## 2026-09-17 immutable receipt retention repair
+
+After the latest runtime re-observation, TVC main added a narrow source repair for the existing private-source resident path:
+
+- `a9c41b7effe90bb09123aef975cb78e30f0af824` — preserve immutable private-source receipts and suppress terminal replay;
+- `a38d82b0ab997ec98e84f1d48d53a4114f7be4da` — regression coverage for replay suppression, immutable receipt retention, and materialization-ID request binding.
+
+The existing resident executor now retains terminal COMPLETE receipts under:
+
+```text
+/var/lib/stegverse/private-source-read/receipts/by-materialization/<materialization_id>.json
+```
+
+Each immutable receipt is bound to the exact request SHA-256 and materialization ID. A terminal replay with the same request reuses the immutable receipt without reloading credentials or re-executing the source read; a different request attempting to reuse the same materialization ID fails closed. The receipt continues to carry `authorized_exact_sha`, `observed_exact_sha`, process-only `SYSTEMD_LOADCREDENTIAL` transport, `credential_value_exposed=false`, and no persisted credential value.
+
+This repair strengthens retention and exactly-once evidence for the four staged SV002 requests once authentic resident execution occurs. It does not prove that the resident service is installed, that a credential is present, that the four requests have been consumed, or that any frozen source has been materialized. The current direct resident surface remains unavailable and no authentic terminal receipt has yet been observed for this Goal.
+
 Required authentic receipts before bundle construction:
 
 1. TVC service installation state `SERVICE_INSTALLED_VERIFIED`;
