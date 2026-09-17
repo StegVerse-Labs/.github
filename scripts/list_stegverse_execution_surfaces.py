@@ -21,7 +21,7 @@ EPHEMERAL_SURFACES = [
         "persistent_connection_required": False,
         "second_user_operated_device_required": False,
         "authority_effect": "NONE_DISCOVERY_ONLY",
-        "callable_task": "SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001",
+        "callable_task": "STEGVERSE-002-EXPERIMENT-RERUN-001",
         "execution_owner": "StegVerse-002/.github",
         "operation": "REQUEST_SELF_CHARACTERIZATION",
         "materialization_path": ["REGISTERED_STEGVERSE_NODE", "INTERLOCK", "UNIVERSAL_INTR_MATERIALIZATION", "BOUNDED_INVOCATION_LEASE", "EVENT_EPHEMERAL", "STEGVERSE_002_ORG_SELF_CHARACTERIZATION_SURFACE"],
