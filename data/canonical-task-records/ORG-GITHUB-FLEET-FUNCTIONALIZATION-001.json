@@ -29,6 +29,9 @@
     "StegVerse-Labs/TVC:tasks/TVC-STEGMUSIC-VALIDATION-001.json",
     "StegVerse-Labs/TVC:requests/private-source-read/TVC-STEGMUSIC-VALIDATION-001.json",
     "StegVerse-Labs/TVC:docs/STEGMUSIC_VALIDATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github:handoffs/COSV-LIVE-PACKET-AUTOMATION-006.json",
+    "StegVerse-Labs/.github:docs/COSV_HEARTBEAT_STATE_PACKET_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegBrain:docs/COSV_GRADIENT_MECHANICS_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegMusic:docs/STEGMUSIC_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegTalk:AURI_MIRROR_HANDOFF.md",
     "StegVerse-Labs/StegBrain:docs/STEGBRAIN_MIRROR_HANDOFF.md",
@@ -51,10 +54,18 @@
     "tvc_private_source_credential_presence_observed": false,
     "stegmusic_exact_materialization_observed": false,
     "stegmusic_validation_pass_observed": false,
-    "stegtalk_auri_001_through_006_complete": true,
-    "stegtalk_auri_007_runtime_authorization_evidence_pending": true,
+    "cosv_heartbeat_core_active_protocol_verified": true,
+    "cosv_hb31_historical_full_packet_complete": true,
+    "cosv_live_packet_automation_source_complete_released": true,
+    "cosv_live_packet_automation_handoff_ready": true,
+    "cosv_first_post_anchor_packet_observed": false,
+    "cosv_first_post_anchor_changed_delta_observed": false,
+    "stegbrain_live_gradient_consumer_source_complete_released": true,
     "stegbrain_deterministic_source_replay_pass": true,
     "stegbrain_live_packet_consumption_pending": true,
+    "stegbrain_first_live_gradient_observed": false,
+    "stegtalk_auri_001_through_006_complete": true,
+    "stegtalk_auri_007_runtime_authorization_evidence_pending": true,
     "gp10_machine_runtime_proof_and_real_field_evidence_pending": true
   },
   "completion": {
@@ -63,7 +74,7 @@
     "report_complete": false,
     "summary_ref": "reports/ORG_GITHUB_FLEET_FUNCTIONALIZATION_001_DEPENDENCY_MAP.md"
   },
-  "next_admissible_work": "Consume the already-staged StegMusic exact-source request only through the existing TVC resident private-source service after authentic service/credential admission evidence exists; then run the existing StegMusic validator and retain the exact-SHA secret-free PASS/BLOCK receipt.",
+  "next_admissible_work": "Preserve the staged StegMusic request until authentic TVC resident service/credential evidence exists. In parallel, reuse the existing COSV-LIVE-PACKET-AUTOMATION-006 independently admitted task-control route to produce the first authentic post-anchor packet; if it is a changed DELTA with non-empty gradient_inputs, consume it only through the existing StegBrain live-gradient consumer and retain the receipt before advancing to GP10.",
   "status_response_contract": {
     "active": "currently active - checked out",
     "completed": "functionalization validated with direct evidence"
