@@ -10,6 +10,7 @@
   "cosv_task_vector": "20010000100000",
   "source_refs": [
     "docs/ORG_GITHUB_FLEET_FUNCTIONALIZATION_001_MIRROR_HANDOFF.md",
+    "reports/ORG_GITHUB_FLEET_FUNCTIONALIZATION_001_DEPENDENCY_MAP.md",
     "reports/ORG_GITHUB_REPOSITORY_STATUS_SUMMARY_001.md",
     "data/canonical-task-records/ORG-GITHUB-REPOSITORY-STATUS-SUMMARY-001.json"
   ],
@@ -70,15 +71,36 @@
   "blockers": [],
   "existing_evidence_refs": [
     "reports/ORG_GITHUB_REPOSITORY_STATUS_SUMMARY_001.md",
-    "docs/ORG_GITHUB_FLEET_FUNCTIONALIZATION_001_MIRROR_HANDOFF.md"
+    "reports/ORG_GITHUB_FLEET_FUNCTIONALIZATION_001_DEPENDENCY_MAP.md",
+    "docs/ORG_GITHUB_FLEET_FUNCTIONALIZATION_001_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/TVC:tasks/TVC-PRIVATE-SOURCE-READ-001.json",
+    "StegVerse-Labs/StegMusic:docs/STEGMUSIC_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegTalk:AURI_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegBrain:docs/STEGBRAIN_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/stegfin-governance:docs/STEGFIN_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/GP10:GP10_MIRROR_HANDOFF.md"
   ],
+  "progress": {
+    "dependency_map_complete": true,
+    "prior_role_functional_count": 15,
+    "prior_partial_count": 7,
+    "target_count": 22,
+    "stegfin_pre_sign_role_directly_proven": true,
+    "tvc_private_source_read_state": "SOURCE_COMPLETE_PR146_ONLY_RESIDENT_ADMISSION_PENDING",
+    "stegmusic_waiting_on_admitted_exact_source_grant": true,
+    "stegtalk_auri_001_through_006_complete": true,
+    "stegtalk_auri_007_runtime_authorization_evidence_pending": true,
+    "stegbrain_deterministic_source_replay_pass": true,
+    "stegbrain_live_packet_consumption_pending": true,
+    "gp10_machine_runtime_proof_and_real_field_evidence_pending": true
+  },
   "completion": {
     "claimed": false,
     "validated": false,
     "report_complete": false,
-    "summary_ref": null
+    "summary_ref": "reports/ORG_GITHUB_FLEET_FUNCTIONALIZATION_001_DEPENDENCY_MAP.md"
   },
-  "next_admissible_work": "Reconcile the seven partial repositories against their exact dependency owners, repair machine-remediable shared dependencies first, and preserve user/external authority conditions without treating them as repository completion.",
+  "next_admissible_work": "Start with shared machine-remediable dependencies: observe/repair .github live carrier dependencies and TVC private-source-read resident admission, then execute exact-source StegMusic validation before downstream StegDJ/Site work.",
   "status_response_contract": {
     "active": "currently active - checked out",
     "completed": "functionalization validated with direct evidence"
