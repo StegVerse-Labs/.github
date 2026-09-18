@@ -37,6 +37,12 @@ on:
       - 'tests/test_kv_ai_memory_runtime_surface_invariant.py'
       - 'tests/test_kv_ai_memory_resident_source_carriage.py'
       - '.github/workflows/validate-kv-ai-memory-resident.yml'
+      - 'workers/stegagents_governed_runtime_worker.py'
+      - 'tests/test_stegagents_governed_runtime_worker.py'
+      - 'control/process-worker-adapters.d/stegagents-governed-runtime-001.json'
+      - 'data/canonical-task-records/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json'
+      - 'docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md'
+      - '.github/workflows/validate-stegagents-purpose-bound-carriage.yml'
   pull_request:
     paths:
       - 'README.md'
@@ -90,3 +96,20 @@ jobs:
       - run: python -m pip install --upgrade pip pytest
       - run: pytest -q tests/test_kv_ai_memory_resident_binding.py tests/test_kv_ai_memory_intr_admission.py tests/test_prepare_kv_ai_memory_intr_runtime_source.py tests/test_kv_ai_memory_runtime_surface_invariant.py tests/test_kv_ai_memory_resident_source_carriage.py
       - run: python -m py_compile workers/kv_ai_memory_resident_worker.py workers/kv_ai_memory_intr_profile.py workers/kv_ai_memory_intr_transport.py workers/kv_ai_memory_intr_event_bootstrap.py scripts/install_sovereign_heartbeat_service.py scripts/refresh_sovereign_worker_runtime_source.py scripts/refresh_and_dispatch_resident_requests.py scripts/run_kv_ai_memory_intr_event_bootstrap.py scripts/install_kv_ai_memory_universal_intr_route.py scripts/prepare_kv_ai_memory_intr_runtime_source.py scripts/submit_kv_ai_memory_packet_local.py scripts/consume_kv_ai_memory_resident_request.py scripts/dispatch_resident_execution_requests.py scripts/evaluate_task_runtime_routing_readiness.py
+      - name: Validate StegAgents purpose-bound runtime carriage
+        run: |
+          python -m unittest -v tests.test_stegagents_governed_runtime_worker
+          python -m py_compile workers/stegagents_governed_runtime_worker.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          adapter=json.loads(Path('control/process-worker-adapters.d/stegagents-governed-runtime-001.json').read_text())
+          row=adapter['adapters'][0]
+          assert row['adapter_ref']=='process:stegagents-governed-runtime-v1'
+          assert 'purpose_bound_worker_context_carriage' in row['capabilities']
+          task=json.loads(Path('data/canonical-task-records/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json').read_text())
+          refinement=task['source_refinement']
+          for key in ('new_runtime_created','new_scheduler_created','new_dispatcher_created','new_workercoordinator_created','new_transition_authority_created','new_credential_authority_created','new_master_records_authority_created','authentic_runtime_execution_claimed'):
+              assert refinement[key] is False, (key, refinement[key])
+          print('PURPOSE_BOUND_CARRIAGE_EXACT_HEAD_PASS')
+          PY
