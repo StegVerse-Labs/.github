@@ -152,6 +152,29 @@ def overlap(a, b, request_context=None):
     return repos, comps, lineage, adjacent, substrates
 
 
+def repository_only_overlap_is_component_distinguished(a, b, repos, comps, lineage, adjacent, substrates):
+    """Treat shared repository ownership as nonblocking only when component scope proves separation.
+
+    Repository identity is intentionally conservative when component scope is absent. A
+    repository-only overlap may be distinguished only when both canonical tasks declare
+    non-empty component sets, those sets do not intersect, and there is no stronger
+    lineage/adjacency/shared-substrate signal. The overlap remains visible in the
+    disposition as nonblocking coordination evidence.
+    """
+    a_components = set((a.get("targets") or {}).get("components") or [])
+    b_components = set((b.get("targets") or {}).get("components") or [])
+    return bool(
+        repos
+        and not comps
+        and not lineage
+        and not adjacent
+        and not substrates
+        and a_components
+        and b_components
+        and not (a_components & b_components)
+    )
+
+
 def progression_controller_for_same_goal(candidate, other):
     if other.get("task_id") != PROGRESSION_CONTROLLER_TASK_ID:
         return False
@@ -271,6 +294,7 @@ def main():
         return
 
     collisions=[]
+    repository_only_scope_distinctions=[]
     controller_exclusions=[]
     for oid, o in records.items():
         if oid == tid:
@@ -284,7 +308,7 @@ def main():
             continue
         repos, comps, lineage, adjacent, substrates = overlap(r, o, context)
         if repos or comps or lineage or adjacent or substrates:
-            collisions.append({
+            overlap_row = {
                 "task_id":oid,
                 "handoff":handoff(o),
                 "coordination_state":os,
@@ -297,7 +321,13 @@ def main():
                     "execution_substrates":substrates,
                 },
                 "source":"CANONICAL_TASK_REGISTRY",
-            })
+            }
+            if repository_only_overlap_is_component_distinguished(r, o, repos, comps, lineage, adjacent, substrates):
+                overlap_row["scope_disposition"] = "DISTINGUISHED_COMPONENT_SCOPE"
+                overlap_row["blocking"] = False
+                repository_only_scope_distinctions.append(overlap_row)
+            else:
+                collisions.append(overlap_row)
 
     recent = recent_events_for(tid, r, context)
     known = {(c["task_id"], "CANONICAL_TASK_REGISTRY") for c in collisions}
@@ -322,6 +352,8 @@ def main():
         "disposition":disposition,
         "session_action":action,
         "collision_candidates":collisions,
+        "repository_only_scope_distinctions":repository_only_scope_distinctions,
+        "repository_only_overlap_policy":"NONBLOCKING_ONLY_WHEN_BOTH_TASKS_DECLARE_NONEMPTY_DISJOINT_COMPONENT_SCOPES_AND_NO_STRONGER_OVERLAP_SIGNAL",
         "hard_collision_task_ids":[c["task_id"] for c in hard],
         "recent_event_window_seconds":1800,
         "authority_effect":"NONE",

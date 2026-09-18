@@ -1,4 +1,5 @@
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -8,11 +9,14 @@ SCRIPT = ROOT / "scripts" / "evaluate_task_registry_collision_checkin.py"
 BOOTSTRAP = ROOT / "scripts" / "install_and_run_canonical_work_event_bootstrap.py"
 
 
-def run(task_id, context=None):
+def run(task_id, context=None, event_ledger=None):
     payload = {"task_id": task_id}
     if context is not None:
         payload["checkin_context"] = context
-    p = subprocess.run([sys.executable, str(SCRIPT)], input=json.dumps(payload), text=True, capture_output=True, check=True)
+    env = os.environ.copy()
+    if event_ledger is not None:
+        env["STEGVERSE_TASK_REGISTRY_EVENT_LEDGER"] = str(event_ledger)
+    p = subprocess.run([sys.executable, str(SCRIPT)], input=json.dumps(payload), text=True, capture_output=True, check=True, env=env)
     return json.loads(p.stdout)
 
 
@@ -86,3 +90,35 @@ def test_canonical_work_bootstrap_requires_registry_preflight_before_route_mutat
     assert 'if disposition != "CONTINUE":' in text
     assert 'raise RuntimeError("TASK_REGISTRY_CHECKIN:"' in text
     assert 'result.get("authority_effect") != "NONE"' in text
+
+
+def test_hygiene_repository_only_overlaps_are_visible_but_nonblocking_when_component_scopes_are_disjoint(tmp_path):
+    out = run("HYGIENE-CAUSAL-ROOTS-001", event_ledger=tmp_path / "events.jsonl")
+    assert out["disposition"] == "CONTINUE"
+    expected = {
+        "SS-EVIDENCE-COMPARISON-001",
+        "AI-GOVERNANCE-OPPORTUNITY-ENGINE-001",
+        "STEGVERSE-002-EXPERIMENT-RERUN-001",
+        "MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001",
+    }
+    distinguished = {row["task_id"]: row for row in out["repository_only_scope_distinctions"]}
+    assert expected <= set(distinguished)
+    collision_ids = {row["task_id"] for row in out["collision_candidates"]}
+    assert expected.isdisjoint(collision_ids)
+    for task_id in expected:
+        row = distinguished[task_id]
+        assert row["scope_disposition"] == "DISTINGUISHED_COMPONENT_SCOPE"
+        assert row["blocking"] is False
+        assert row["overlap"]["repositories"]
+        assert row["overlap"]["components"] == []
+        assert row["overlap"]["lineage"] is False
+        assert row["overlap"]["adjacent"] is False
+        assert row["overlap"]["execution_substrates"] == []
+
+
+def test_repository_only_overlap_remains_blocking_when_component_scope_is_missing():
+    text = SCRIPT.read_text(encoding="utf-8")
+    assert "and a_components" in text
+    assert "and b_components" in text
+    assert 'overlap_row["scope_disposition"] = "DISTINGUISHED_COMPONENT_SCOPE"' in text
+    assert 'repository_only_scope_distinctions.append(overlap_row)' in text

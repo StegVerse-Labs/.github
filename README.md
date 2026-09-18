@@ -554,3 +554,9 @@ From current generation-25 coordination state before this repair, repository-ove
 
 
 Goal Prompt 3 orders the remaining StegBrowser custody evidence correctly: the first missing authentic predicate is the exact current browser Receipt #1 / registered-Node binding plus same-nonce runtime event, not Service-Gateway reachability. Normal browser execution already reads `indexeddb://stegos-node-v1/meta/registration`; if that originating browser registration is not directly authority-observable, the existing recovery owner is StegOS #23/#347 (PR #348), not a new resolver. StegOS #351 remains an optional runtime-unproven same-iPhone carrier and is not made a browser/device prerequisite. The GADI current-iPhone rendezvous readback is discovery evidence, not `stegos.node_handoff_receipt.v1`, and may not substitute for Receipt #1.
+
+## Task Registry repository-only scope distinction
+
+The canonical anti-collision evaluator now keeps repository-only current-record overlap visible without forcing convergence when stronger canonical scope proves the work is distinct. A shared repository is nonblocking only when both tasks declare non-empty, disjoint component sets and there is no component, lineage, adjacency, or shared selected-substrate overlap. The evaluator reports those rows separately as `repository_only_scope_distinctions`; missing component scope remains conservative, and recent returned/stopped session history remains unchanged.
+
+This closes the false `COORDINATE_CONVERGENCE` preflight exposed by `HYGIENE-CAUSAL-ROOTS-001` without weakening hard collisions or changing the authority of `SS-EVIDENCE-COMPARISON-001`, `AI-GOVERNANCE-OPPORTUNITY-ENGINE-001`, `STEGVERSE-002-EXPERIMENT-RERUN-001`, or `MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001`. WorkerCoordinator remains claim/fence authority and Interlock/InTr remains transition authority; exact resident `CONTINUE` evidence is still required before Canonical Work may mutate.

@@ -144,3 +144,24 @@ The registry must return `COORDINATE_CONVERGENCE` or `STOP_COLLISION` before use
 ## Manual work
 
 None.
+
+
+## Repository-only current-record scope distinction — 2026-09-17
+
+`HYGIENE-CAUSAL-ROOTS-001` exposed a bounded false-convergence case in the existing general evaluator. The current-record overlap function treated any shared repository target as sufficient for `COORDINATE_CONVERGENCE`, even when both canonical tasks declared non-empty, disjoint component scopes and had no lineage, adjacency, or shared selected execution substrate. The existing `checkin_context` could add intended repositories/components but could not narrow the task's full declared repository set, so the four hygiene overlaps remained blocking despite explicit component separation.
+
+The existing evaluator is repaired in place; no second collision engine or authority plane is introduced. For current canonical registry rows only, repository overlap is retained as visible non-authorizing evidence but classified `DISTINGUISHED_COMPONENT_SCOPE / blocking=false` when all of these are true:
+
+- at least one repository overlaps;
+- component intersection is empty;
+- both tasks declare non-empty component scopes;
+- the declared component scopes are disjoint;
+- no task lineage overlap exists;
+- no adjacency exists;
+- no shared selected execution substrate exists.
+
+Every stronger signal remains collision/convergence evidence. Repository-only overlap also remains conservative when either task lacks component scope. Recent returned/stopped session history is unchanged and remains repository-or-component conservative because historical event context is a different evidence class and must not be weakened by this repair.
+
+The disposition now preserves nonblocking current-record distinctions separately as `repository_only_scope_distinctions`; they are not silently discarded and do not enter `collision_candidates`. WorkerCoordinator claim/fence authority, Interlock/InTr transition authority, TV/TVC credential authority, Master Records reality authority, and the existing fail-closed requirement that Canonical Work proceed only on exact `CONTINUE` remain unchanged.
+
+Focused regression coverage extends `tests/test_task_registry_collision_checkin.py` and requires the four current hygiene repository-only overlaps to remain visible as scope distinctions while the isolated hygiene preflight reaches `CONTINUE`. It also preserves the fail-closed requirement when component scope is missing.
