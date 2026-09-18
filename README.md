@@ -543,6 +543,8 @@ These source merges do not prove a live advertised gateway or authentic Master R
 
 Goal Prompt 2 re-observed the current evidence boundary without adding another executor: no post-merge authority-owned node advertisement carrying the custody relay and no authentic exact immutable runtime tuple were available to the continuation. The existing browser page remains the sole correct path because it constructs the receipt from the authentic runtime event itself; source metadata, DNS/tool reachability, CI, or a newly invented observer may not substitute. The Goal therefore remains `ACTIVE / CHECKED_OUT`, with no second invocation emitted and all authentic custody predicates still false. Canonical continuation: `docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md`.
 
+Goal Prompt 3 orders the remaining evidence correctly: the first missing authentic predicate is the exact current browser Receipt #1 / registered-Node binding plus same-nonce runtime event, not Service-Gateway reachability. Normal browser execution already reads `indexeddb://stegos-node-v1/meta/registration`; if that originating browser registration is not directly authority-observable, the existing recovery owner is StegOS #23/#347 (PR #348), not a new resolver. StegOS #351 remains an optional runtime-unproven same-iPhone carrier and is not made a browser/device prerequisite. The GADI current-iPhone rendezvous readback is discovery evidence, not `stegos.node_handoff_receipt.v1`, and may not substitute for Receipt #1.
+
 
 ## Hygiene Canonical Work substrate preflight
 
