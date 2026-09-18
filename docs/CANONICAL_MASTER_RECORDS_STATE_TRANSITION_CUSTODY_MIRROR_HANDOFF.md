@@ -154,3 +154,10 @@ Tracing `SHWP-HEALER-SOVEREIGN-SCHEDULER-001` exposed a direct consumer-policy m
 The repaired local path no longer routes canonical state-transition receipts through the reusable-task lifecycle ingester. It reuses the existing `master-records/orchestration` canonical state-transition custody implementation and fails closed without explicit durable Master Records configuration.
 
 This satisfies the parent source predicate for the optional local adapter only. The parent remains `ACTIVE` because authentic runtime custody/reconstruction for governed transitions is still not observed. No runtime execution, custody write, Interlock/InTr transition, TV/TVC credential action, scheduler, dispatcher, exporter, second custody authority, or device dependency is inferred from the source merge.
+
+
+## 2026-09-18 local adapter child reconciliation
+
+`CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001` is source-repair complete and retired. Replacement PR `#2136` merged as `a21bbeb53e33210d4ac832f343582c02149d8c53`. The optional local client now routes canonical state-transition receipts through the existing authoritative `master-records/orchestration` state-transition custody implementation and no longer feeds them into the reusable-task lifecycle ingester.
+
+This closes only the local-adapter source defect. The parent remains ACTIVE because authentic runtime custody/reconstruction evidence is still pending. No authentic Healer, MIR, StegBrowser, RTC-007/008/009, or governed-return Master Records write is inferred from source merge or CI.
