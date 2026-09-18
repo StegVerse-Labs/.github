@@ -656,3 +656,8 @@ Canonical Master Records local-adapter source repair is merged by PR #2136 at `a
 The canonical Task Registry collision evaluator treats mutable user/browser interaction surfaces as explicit coordination resources rather than informal instructions. A task can register or check in an exact URL/route, device/browser context class, runtime/service-worker surface, action type, owner/request identity, and `SHAREABLE` or `EXCLUSIVE` semantics. Identical surfaces involving an exclusive claimant fail closed through the existing collision disposition path before user instruction or mutation; mutually shareable surfaces remain visible but nonblocking.
 
 This is Task Registry coordination only. WorkerCoordinator remains claim/fence authority, Interlock/InTr remains transition authority, TV/TVC remains credential authority, Master Records remains observed-reality/reconstruction authority, and user-action surface metadata does not itself prove browser/runtime execution.
+
+
+### SDK evaluator governance posture runtime proof
+
+Goal Prompt 20 closes the source/console scope of `SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001` and retires `SDK-GRG-CANONICAL-PROJECTION-CONSOLE-001`. SDK PR #265 passed exact-head validation and merged as `af1be4f9d9b3635912f8e085cbfe8ed922602d83`. Authentic SDK-to-live StegOS/InTr execution transfers unchanged to `SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001`, reusing the existing resident dispatcher and `run_evaluator_governance_manifest` seam. No live runtime proof is claimed. `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` remains a separate downstream consumer.
