@@ -6,7 +6,7 @@ Parent Goal Task ID: `SDK-TT-PURPOSE-BOUND-WORKER-CONSOLE-001`
 Root Goal Task ID: `SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003`
 COSV ID: `71000000111111`
 Repository: `StegVerse-Labs/.github`
-Status: `ACTIVE / TEST CONTRACT DEFINED / EXISTING STEGAGENTS RUNTIME OWNER REUSED / AUTHENTIC RUNTIME PROOF PENDING`
+Status: `ACTIVE / MINIMUM SOURCE CARRIAGE REFINEMENT IMPLEMENTED / VALIDATION PENDING / AUTHENTIC RUNTIME PROOF PENDING`
 
 ## Purpose
 
@@ -129,3 +129,50 @@ Source/console CI, fixtures, simulated workers, or documentation-only receipts d
 ## First authorized action
 
 Reconcile the purpose-bound request shape against the existing `STEGAGENTS-GOVERNED-RUNTIME-001` StegAgents manifest/process-adapter contract. Identify the smallest source refinement, if any, needed to carry the exact TT cell/purpose/capability/lifetime tuple through the already-existing runtime. Do not attempt runtime execution until the existing resident/root/WorkerCoordinator prerequisites permit an authentic run.
+
+
+## Source reconciliation — Goal Prompt 3 / registry generation 47
+
+The existing governed runtime owner was inspected directly. The reusable execution chain already exists and remains the only allowed chain:
+
+```text
+STEGAGENTS-GOVERNED-RUNTIME-001
+-> process:stegagents-governed-runtime-v1
+-> workers/stegagents_governed_runtime_worker.py
+-> StegAgents src/governed_coderepair_runtime.py
+-> existing SDK / StegCore/InTr governance ingress
+-> existing Master Records custody/reconstruction
+```
+
+The source gap was narrower than a new worker/runtime implementation. The existing request carried the WorkerCoordinator claim/fence and CodeRepair proposal, but it did not carry explicit TT-cell-derived `purpose`, `required_capability`, operation/payload scope, or bounded lifetime. That omission would prevent authentic later receipts from proving that materialization/execution belonged to the exact SDK test object.
+
+Minimum refinement implemented:
+
+```text
+exact stegverse.sdk.tt-purpose-bound-worker.v1 request
+-> validate source schema + TT cell + arbitrary tracked operation
+-> derive/hash-bind transition_cell_hash
+-> preserve purpose
+-> preserve required_capability
+-> preserve scope.operation_id / operation_class / payload_sha256
+-> preserve max_lifetime_seconds
+-> preserve retirement_condition
+-> carry normalized tuple into the existing governance manifest
+-> carry same tuple into declared execution context
+-> return same tuple in governed result
+-> retain same tuple in existing resident evidence receipt
+```
+
+StegAgents PR: `#20` on branch `sdk-tt-purpose-bound-worker-runtime-carriage-001`.
+
+The existing `process:stegagents-governed-runtime-v1` adapter is reused. Its capability set is extended only with `purpose_bound_worker_context_carriage`; there is no second command, process adapter, scheduler, dispatcher, WorkerCoordinator, InTr path, credential path, Master Records authority, or device dependency.
+
+This refinement is deliberately non-executing. It does **not** claim worker materialization, task invocation, retirement, Master Records runtime custody, or authentic InTr admission. Those remain gated by the existing resident-root and WorkerCoordinator prerequisites of `STEGAGENTS-GOVERNED-RUNTIME-001`.
+
+### Current first runtime prerequisite
+
+```text
+AUTHENTIC_RESIDENT_CUSTODY_ROOT_OBSERVED
+```
+
+Only after the source carriage merges and exact-head validation passes should the existing runtime owner be used for the authentic lifecycle attempt.
