@@ -1,0 +1,22 @@
+{
+  "schema": "stegverse.resident-execution-request/v1",
+  "request_id": "RESIDENT-EXEC-SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001",
+  "state": "REQUESTED",
+  "task_id": "SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001",
+  "mode": "SDK_EVALUATOR_GOVERNANCE_POSTURE_RUNTIME_PROOF",
+  "entrypoint": "stegverse.evaluator_governance_runtime.run_evaluator_governance_manifest",
+  "manifest_ref": "runtime-state/sdk-evaluator-governance-posture/manifest.json",
+  "custody_db_ref": "runtime-state/sdk-evaluator-governance-posture/custody.sqlite3",
+  "host_identity": "stegverse-sovereign-local",
+  "credential_authority": "TV/TVC",
+  "transition_authority": "Interlock/InTr",
+  "sdk_authority_effect": "NONE_TRANSPORT_AND_EVIDENCE_ONLY",
+  "github_token_required": false,
+  "github_token_runtime_authority": "NONE",
+  "heartbeat_grants_execution_authority": false,
+  "second_machine_required": false,
+  "network_source_fetch_allowed": false,
+  "request_granted_authority": false,
+  "authority_effect": "NONE_REQUEST_ONLY",
+  "note": "Bounded request for the existing resident dispatcher to invoke the exact SDK evaluator governance posture entry point over an already-materialized manifest. Source registration is not runtime proof."
+}
