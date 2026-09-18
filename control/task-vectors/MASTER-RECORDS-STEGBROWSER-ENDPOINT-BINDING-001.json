@@ -18,7 +18,8 @@
     "data/canonical-task-records/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json",
     "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_RESIDENT_CARRIER_POINTER_RECONCILIATION_20260917.json",
     "data/runtime-materialization-remediation/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.post-repair-packet-classification.json",
-    "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_RESIDENT_CARRIER_REOBSERVATION_20260917.json"
+    "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_RESIDENT_CARRIER_REOBSERVATION_20260917.json",
+    "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_HEALER_CHECKPOINT_FIRST_SURFACE_20260917.json"
   ],
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
@@ -38,15 +39,15 @@
     "propagated": false
   },
   "metric_evidence": {
-    "lifecycle": "Goal Prompt 6 re-observed the exact existing resident carrier receipt predicate and found no new authentic runtime evidence; ACTIVE/CHECKED_OUT retained.",
-    "archive_ready": "False until an authentic resident carrier receipt exposes exactly one retained root and the downstream immutable runtime tuple plus Master Records custody/reconstruction predicates are satisfied.",
-    "unassigned_work": "Zero. Existing owner chain remains authoritative and no duplicate remediation path is needed.",
-    "chat_owned_counts": "Observation only. No implementation, validation, integration, credential, owner mutation, measurement run, exporter, scheduler, request, runtime, recovery path, or Gateway was added.",
-    "canonical_owner_installed": "Yes. The existing shared/root/remediation owner chain remains canonical; the machine-owned next predicate is unchanged.",
+    "lifecycle": "Goal Prompt 7 completed a field-by-field resident Healer execution trace and identifies the first pointer-bearing resident surface without mutating existing owners; ACTIVE/CHECKED_OUT retained.",
+    "archive_ready": "False until the fenced Healer worker checkpoint is authentically observed with exactly one retained root, the immutable StegBrowser runtime tuple is observed, and Master Records RECORDED/PASS/digest equality is authentic.",
+    "unassigned_work": "Zero. Existing resident dispatcher, WorkerCoordinator, ProcessWorkerAdapter, Healer worker, retained-root observer, and remediation owner already define the path.",
+    "chat_owned_counts": "Trace/reconciliation only. No exporter, observer, runtime, request, scheduler, recovery path, measurement run, Gateway, or credential route was added.",
+    "canonical_owner_installed": "Yes. The first pointer-bearing authoritative resident surface is the existing fenced Healer worker checkpoint projected by ProcessWorkerAdapter; no second evidence plane is required.",
     "thread_required": "False.",
-    "blocker_count": "Zero new blockers. Missing authentic resident receipt remains an unsatisfied evidence predicate under existing owners.",
-    "evidence_complete": "False; exact resident receipt/pointer/root and downstream immutable runtime tuple remain unobserved.",
-    "activated": "False; no runtime execution is claimed from source/classification/CI.",
+    "blocker_count": "Zero new blockers. Authentic checkpoint observation remains an unsatisfied evidence predicate under the existing owner chain.",
+    "evidence_complete": "False; the checkpoint/pointer/root, immutable StegBrowser tuple, Gateway advertisement, and Master Records reconstruction remain unobserved.",
+    "activated": "False; source trace establishes field flow only and does not prove resident execution.",
     "propagated": "False; no downstream handback."
   },
   "authority_effect": "NONE"
