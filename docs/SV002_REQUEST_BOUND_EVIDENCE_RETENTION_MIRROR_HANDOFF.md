@@ -72,3 +72,23 @@ WorkerCoordinator remains execution claim/fence authority. Interlock/InTr remain
 ## Manual work
 
 None.
+
+
+## 2026-09-18 Master Records chain remediation
+
+Direct receipt-chain review resolved the prior observation-only ambiguity. The deterministic current rerun identity is:
+
+```text
+packet_id: SV002-RERUN-C796D0BFD181CEC5D99E4C23
+manifest_sha256: 29222a589eb4c2958d2787743e266f067ee07e1373c51f60b553f1f359789828
+```
+
+Neither identity existed in canonical Master Records custody. The canonical custody contract requires every observed governed state transition to emit a canonical state receipt and every state receipt to be submitted to Master Records, while the SV002 rerun callable had retained `REQUEST_BOUND` only as resident-local evidence.
+
+StegVerse-002/.github PR #40 repaired that exact seam and merged at:
+
+`70d5179f543b6954b6c574d66fcd9675fcbec79c`
+
+The merged callable now reuses the existing canonical Master Records state-transition custody client, emits one canonical `SV002_REQUEST_BOUND` receipt bound to the exact Goal/COSV/experiment/operation/invocation_count/packet/request/manifest/frame identity, requires `state=RECORDED` plus `reconstruction_status=PASS`, retains the returned custody/master-record identity, and only then permits the existing federation publication path to continue.
+
+This is source repair only. Authentic resident execution after the merge and authentic Master Records `RECORDED + PASS` for the real rerun remain unobserved. The parent `REQUEST_BOUND` predicate therefore remains unpromoted.
