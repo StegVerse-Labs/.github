@@ -67,3 +67,10 @@ The reusable-task trigger already provides the canonical one-trigger lifecycle a
 The neutral reusable scheduler resolves child definitions from the already-local repository root supplied in its existing `repo_roots` mapping and injects `source_root` / `runtime_root` before calling `scripts/trigger_reusable_task.py`. Therefore no new scheduler, control-plane package, resident runtime, transport, or second-device dependency is required for this identity. This binding grants no authority: Task Registry remains coordination truth, WorkerCoordinator remains claim/fence authority, Interlock/InTr remains governed transition authority, TV/TVC remains credential authority, and Master Records remains observed-reality/reconstruction authority.
 
 Source registration does not prove that a resident invocation occurred. The required runtime evidence remains the exact reusable/portable invocation reaching an authentic Task Registry `CONTINUE` disposition before WorkerCoordinator claim/fence and Interlock/InTr admission.
+
+
+## Portable Canonical Work binding merge — 2026-09-17
+
+PR #2092 merged `RT-CANONICAL-WORK-PORTABLE-DISPATCH-001` and its existing-bridge manifest binding as `c8ae6b6e83eb046319170d6a939f675f7d9ffd97` from exact head `0b8f0f540fdd76d5c4cffa68320f4315d11bf30f`. The merge creates no new runtime/scheduler/dispatcher implementation; the sole runner remains `scripts/refresh_and_dispatch_resident_requests.py`.
+
+Exact-head PR validations passed, including Python compilation of the modified bridge. Authentic reusable/resident execution remains separately evidence-gated; no runtime completion, Task Registry `CONTINUE`, WorkerCoordinator claim/fence, or Interlock/InTr admission is inferred from the merge.
