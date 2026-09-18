@@ -57,7 +57,7 @@
     "AUTHENTIC_MASTER_RECORDS_RECONSTRUCTION_MATCH",
     "AUTHENTIC_RECORDS_ONLY_FINAL_PACKET"
   ],
-  "remaining_predicate": "MERGE_AND_VALIDATE_CONTEXT_CARRIAGE_THEN_WAIT_FOR_EXISTING_AUTHENTIC_RESIDENT_ROOT_CLAIM_FENCE_INTR_AND_MASTER_RECORDS_CHAIN",
+  "remaining_predicate": "MERGE_AND_VALIDATE_GITHUB_CARRIER_BINDING_THEN_WAIT_FOR_EXISTING_AUTHENTIC_RESIDENT_ROOT_CLAIM_FENCE_INTR_AND_MASTER_RECORDS_CHAIN",
   "completion": {
     "claimed": false,
     "validated": false,
@@ -90,6 +90,28 @@
     "new_credential_authority_created": false,
     "new_master_records_authority_created": false,
     "authentic_runtime_execution_claimed": false,
-    "authority_effect": "NONE_SOURCE_CARRIAGE_ONLY"
+    "authority_effect": "NONE_SOURCE_CARRIAGE_ONLY",
+    "latest_reconciled_registry_generation": 48,
+    "stegagents_merge": "9ba16a39436686235e4dee965d29936364577f9c",
+    "stegagents_exact_head_validation": {
+      "head": "f1bca87f85c29e58280557e69b6eba8e88765bb2",
+      "workflows": [
+        {
+          "id": 35398876490,
+          "name": "CI",
+          "conclusion": "success"
+        },
+        {
+          "id": 35398876455,
+          "name": "Test Readiness",
+          "conclusion": "success"
+        },
+        {
+          "id": 35398876445,
+          "name": "Cross-Agent Authority Validation",
+          "conclusion": "success"
+        }
+      ]
+    }
   }
 }
