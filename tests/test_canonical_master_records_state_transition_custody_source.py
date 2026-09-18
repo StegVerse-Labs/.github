@@ -53,3 +53,19 @@ def test_required_transition_evidence_is_part_of_canonical_source_contract() -> 
     assert "transition_custody_pass_requires_all_required_evidence_pass" in contract
     assert "ALL_REQUIRED_TRANSITION_EVIDENCE_MASTER_RECORDS_VALIDATED" in reusable
     assert "Specialized lane validators may produce semantic validation artifacts" in reusable
+
+
+def test_canonical_custody_goal_is_projected_into_monolithic_registry() -> None:
+    import json
+    registry = json.loads((ROOT / "data/canonical-task-registry.json").read_text())
+    task = next(
+        row for row in registry["tasks"]
+        if row.get("task_id") == "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001"
+    )
+    assert task["coordination_state"] == "ACTIVE"
+    assert task["required_evidence_validation"]["manifest_field"] == "required_evidence_manifest"
+    assert task["required_evidence_validation"]["progression_gate"] == [
+        "state=RECORDED",
+        "reconstruction_status=PASS",
+        "required_evidence_validation_status=PASS",
+    ]
