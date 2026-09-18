@@ -14,6 +14,12 @@ Fleet dispositions at that observation are 15 `FULFILLING_INTENDED_ROLE`, 7 `VAL
 
 ---
 
+## ERL Hormuz matched-window evidence coordination
+
+Canonical Goal Task `ERL-RC-OIL-FLOW-2026` remains `ACTIVE / CHECKED_OUT`, COSV `40000100100000`. Goal Prompt 4 preserves a matched September 7–13 vessel comparison, preliminary-to-revised Kpler count history, Hormuz-versus-bypass petroleum-flow separation, and destination-proof classes without promoting any political finding. The authoritative research artifact and scoped handoff remain in `StegVerse-Labs/Executive_Rhetoric_Ledger`.
+
+Current unresolved evidence is exact matched-day CENTCOM/NCAGS/JMIC facilitated-transit source records, one aligned seven-day barrel-volume window across official and independent sources, exact destination discharge evidence for remaining cargoes, and independent review. Task Registry coordination does not prove physical flow, truth/falsehood, deception, intent, motive, or publication readiness.
+
 StegVerse is an open framework for rethinking how humans interact online as artificial intelligence becomes part of everyday life.
 
 It focuses on **expectations, identity, boundaries, continuity, and replaceability** —  
@@ -560,3 +566,6 @@ Goal Prompt 3 orders the remaining StegBrowser custody evidence correctly: the f
 The canonical anti-collision evaluator now keeps repository-only current-record overlap visible without forcing convergence when stronger canonical scope proves the work is distinct. A shared repository is nonblocking only when both tasks declare non-empty, disjoint component sets and there is no component, lineage, adjacency, or shared selected-substrate overlap. The evaluator reports those rows separately as `repository_only_scope_distinctions`; missing component scope remains conservative, and recent returned/stopped session history remains unchanged.
 
 This closes the false `COORDINATE_CONVERGENCE` preflight exposed by `HYGIENE-CAUSAL-ROOTS-001` without weakening hard collisions or changing the authority of `SS-EVIDENCE-COMPARISON-001`, `AI-GOVERNANCE-OPPORTUNITY-ENGINE-001`, `STEGVERSE-002-EXPERIMENT-RERUN-001`, or `MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001`. WorkerCoordinator remains claim/fence authority and Interlock/InTr remains transition authority; exact resident `CONTINUE` evidence is still required before Canonical Work may mutate.
+
+
+Goal Prompt 4 refines the StegBrowser custody runtime ownership: `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001` is the single shared runtime-evidence owner, while `STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001` and its already-bound `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001` successor own the exact retained-root/materialization observation seam. StegOS #347 remains only an optional exact-genesis recovery fallback when the originating browser registration is not directly observable. No named physical device, remote connector, second observer, or new runtime plane is a completion prerequisite; Gateway/Master Records stages remain downstream of authentic same-invocation Node/runtime evidence.
