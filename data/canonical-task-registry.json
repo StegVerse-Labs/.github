@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 29,
+  "generation": 30,
   "status": "COSV_TASK_POINTER_RUNTIME_ENFORCEMENT_SOURCE_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -2192,7 +2192,14 @@
         "global_measurement_loop_entered": false,
         "connected_authorized_remote_runtime_surface_available_to_chat": false,
         "connected_surface_absence_is_runtime_absence_evidence": false,
-        "named_physical_device_is_completion_gate": false
+        "named_physical_device_is_completion_gate": false,
+        "current_machine_owned_runtime_evidence_seam": "RESIDENT_HEALER_SCHEDULER_CONSUMPTION_RECEIPT_EMBEDDED_RETENTION_POINTER",
+        "resident_carrier_consumption_receipt_observed": false,
+        "resident_carrier_embedded_retention_pointer_observed": false,
+        "owner_latest_classification": "RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND",
+        "owner_task_record_current_exact_defect_is_older_projection": true,
+        "shared_owner_mutated": false,
+        "remediation_owner_mutated": false
       },
       "exact_tuple_required": [
         "runtime_readiness_receipt_sha256",
@@ -2225,6 +2232,13 @@
         "exact_stegbrowser_tuple_digest_equality": false
       },
       "dependencies": [
+        {
+          "dependency_id": "DEP-STEG-BROWSER-RESIDENT-CARRIER-CONSUMPTION-POINTER",
+          "kind": "EXACT_RUNTIME_EVIDENCE_POINTER",
+          "state": "PENDING_AUTHENTIC_RESIDENT_RECEIPT",
+          "ref": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001;data/runtime-materialization-remediation/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.post-repair-packet-classification.json",
+          "disposition": "Observe only the authentic resident copy of receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json and bind execution_result.resident_custody_root_observation_retention. Run the existing non-authorizing receipt classifier only if packet_state proves RESIDENT_CUSTODY_ROOT_OBSERVED for exactly one authentic root."
+        },
         {
           "dependency_id": "DEP-STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION",
           "kind": "EXISTING_SUCCESSOR_REMEDIATION_OWNER",
@@ -2272,10 +2286,10 @@
         "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001"
       ],
       "allowed_next_transitions": [
-        "REOBSERVE_EXISTING_BROWSER_REGISTERED_NODE_AND_SAME_NONCE_RUNTIME_EVENT",
-        "CONSUME_AUTHENTIC_SHARED_RUNTIME_OWNER_STEGBROWSER_EVIDENCE_IF_OBSERVED",
-        "IF_BROWSER_REGISTRATION_NOT_DIRECTLY_OBSERVABLE_CONSUME_ONLY_EXISTING_STEGOS_347_AUTHENTIC_RECOVERY",
-        "CLASSIFY_EXISTING_CANONICAL_WORK_RECEIPT_ONLY_AFTER_AUTHENTIC_ROOT",
+        "OBSERVE_AUTHENTIC_RESIDENT_HEALER_SCHEDULER_CONSUMPTION_RECEIPT",
+        "BIND_EXISTING_EXECUTION_RESULT_RESIDENT_CUSTODY_ROOT_OBSERVATION_RETENTION_POINTER",
+        "IF_EXACTLY_ONE_AUTHENTIC_ROOT_OBSERVED_RUN_EXISTING_NON_AUTHORIZING_RECEIPT_CLASSIFIER",
+        "REQUIRE_EXACT_IMMUTABLE_INVOCATION_RUNTIME_TUPLE",
         "OBSERVE_VERIFIED_STEGVERSE_GATEWAY_ADVERTISEMENT_AFTER_EXACT_RUNTIME_TUPLE",
         "SUBMIT_ONLY_BROWSER_CONSTRUCTED_EXACT_EXISTING_CUSTODY_RECEIPT",
         "REQUIRE_AUTHENTIC_RECORDED_AND_RECONSTRUCTION_PASS",
@@ -2345,7 +2359,10 @@
         "data/canonical-task-records/STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001.json",
         "docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md",
         "data/canonical-task-records/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json",
-        "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md"
+        "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md",
+        "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_RESIDENT_CARRIER_POINTER_RECONCILIATION_20260917.json",
+        "data/runtime-materialization-remediation/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.post-repair-packet-classification.json",
+        "scripts/consume_healer_sovereign_scheduler_request.py"
       ],
       "blockers": [],
       "worker_claim": {
@@ -2484,6 +2501,31 @@
         "custody_submission_attempted": false,
         "second_invocation_emitted": false,
         "runtime_predicate_promoted": false,
+        "authority_effect": "NONE_RECONCILIATION_ONLY"
+      },
+      "resident_carrier_pointer_reconciliation": {
+        "goal_prompt_count": "5/20",
+        "report_ref": "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_RESIDENT_CARRIER_POINTER_RECONCILIATION_20260917.json",
+        "registry_generation_entering": 29,
+        "shared_owner_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+        "shared_owner_mutated": false,
+        "exact_observation_owner_task_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+        "exact_remediation_owner_task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+        "exact_remediation_owner_mutated": false,
+        "owner_latest_classification": "RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND",
+        "resident_carrier_consumption_relative_path": "receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json",
+        "embedded_pointer_path": "execution_result.resident_custody_root_observation_retention",
+        "authentic_resident_carrier_consumption_receipt_observed": false,
+        "authentic_embedded_retention_pointer_observed": false,
+        "authentic_retained_root_packet_observed": false,
+        "classifier_run": false,
+        "classifier_not_run_reason": "NO_EXACT_AUTHENTIC_RESIDENT_ROOT",
+        "exact_same_nonce_runtime_event_observed": false,
+        "global_measurement_entered": false,
+        "custody_submission_attempted": false,
+        "second_invocation_emitted": false,
+        "runtime_predicate_promoted": false,
+        "downstream_handback_performed": false,
         "authority_effect": "NONE_RECONCILIATION_ONLY"
       }
     },
