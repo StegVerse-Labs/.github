@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 30,
+  "generation": 31,
   "status": "COSV_TASK_POINTER_RUNTIME_ENFORCEMENT_SOURCE_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -2199,7 +2199,10 @@
         "owner_latest_classification": "RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND",
         "owner_task_record_current_exact_defect_is_older_projection": true,
         "shared_owner_mutated": false,
-        "remediation_owner_mutated": false
+        "remediation_owner_mutated": false,
+        "prompt6_exact_predicate_preserved": true,
+        "prompt6_new_runtime_evidence_observed": false,
+        "prompt6_classifier_run": false
       },
       "exact_tuple_required": [
         "runtime_readiness_receipt_sha256",
@@ -2237,7 +2240,7 @@
           "kind": "EXACT_RUNTIME_EVIDENCE_POINTER",
           "state": "PENDING_AUTHENTIC_RESIDENT_RECEIPT",
           "ref": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001;data/runtime-materialization-remediation/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.post-repair-packet-classification.json",
-          "disposition": "Observe only the authentic resident copy of receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json and bind execution_result.resident_custody_root_observation_retention. Run the existing non-authorizing receipt classifier only if packet_state proves RESIDENT_CUSTODY_ROOT_OBSERVED for exactly one authentic root."
+          "disposition": "Prompt 6 re-observation found no authentic resident copy. Preserve the existing resident scheduler consumption receipt predicate unchanged; bind execution_result.resident_custody_root_observation_retention only when authentically exposed, and run the existing classifier only if packet_state proves RESIDENT_CUSTODY_ROOT_OBSERVED for exactly one authentic root."
         },
         {
           "dependency_id": "DEP-STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION",
@@ -2362,7 +2365,8 @@
         "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md",
         "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_RESIDENT_CARRIER_POINTER_RECONCILIATION_20260917.json",
         "data/runtime-materialization-remediation/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.post-repair-packet-classification.json",
-        "scripts/consume_healer_sovereign_scheduler_request.py"
+        "scripts/consume_healer_sovereign_scheduler_request.py",
+        "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_RESIDENT_CARRIER_REOBSERVATION_20260917.json"
       ],
       "blockers": [],
       "worker_claim": {
@@ -2527,6 +2531,39 @@
         "runtime_predicate_promoted": false,
         "downstream_handback_performed": false,
         "authority_effect": "NONE_RECONCILIATION_ONLY"
+      },
+      "resident_carrier_reobservation": {
+        "goal_prompt_count": "6/20",
+        "report_ref": "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_RESIDENT_CARRIER_REOBSERVATION_20260917.json",
+        "registry_generation_entering": 30,
+        "owner_chain": [
+          "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+          "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+          "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
+        ],
+        "any_owner_mutated": false,
+        "global_measurement_entered": false,
+        "exact_predicate": "RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND",
+        "resident_carrier_consumption_relative_path": "receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json",
+        "embedded_pointer_path": "execution_result.resident_custody_root_observation_retention",
+        "new_authentic_resident_carrier_consumption_receipt_observed": false,
+        "new_authentic_embedded_pointer_observed": false,
+        "new_authentic_retained_packet_observed": false,
+        "packet_state_resident_custody_root_observed": false,
+        "exactly_one_authentic_root_available": false,
+        "classifier_run": false,
+        "classifier_not_run_reason": "NO_AUTHENTIC_RESIDENT_RECEIPT_PROVING_EXACTLY_ONE_RESIDENT_CUSTODY_ROOT",
+        "exact_runtime_tuple_available": false,
+        "gateway_stage_entered": false,
+        "custody_submission_attempted": false,
+        "master_records_recorded": false,
+        "master_records_reconstruction_pass": false,
+        "digest_equality": false,
+        "a1_a4_handback": false,
+        "second_invocation_emitted": false,
+        "runtime_predicate_promoted": false,
+        "disposition": "PRESERVE_EXISTING_RESIDENT_CARRIER_RECEIPT_PREDICATE_UNCHANGED",
+        "authority_effect": "NONE_REOBSERVATION_ONLY"
       }
     },
     {
