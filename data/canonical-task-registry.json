@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 32,
+  "generation": 33,
   "status": "COSV_TASK_POINTER_RUNTIME_ENFORCEMENT_SOURCE_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -2193,7 +2193,7 @@
         "connected_authorized_remote_runtime_surface_available_to_chat": false,
         "connected_surface_absence_is_runtime_absence_evidence": false,
         "named_physical_device_is_completion_gate": false,
-        "current_machine_owned_runtime_evidence_seam": "FENCED_HEALER_WORKER_CHECKPOINT_PROJECTION",
+        "current_machine_owned_runtime_evidence_seam": "RESIDENT_REQUEST_DISPATCH_VISIT",
         "resident_carrier_consumption_receipt_observed": false,
         "resident_carrier_embedded_retention_pointer_observed": false,
         "owner_latest_classification": "RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND",
@@ -2209,7 +2209,14 @@
         "outer_consumption_receipt_inline_pointer_structurally_carried": false,
         "outer_consumption_receipt_is_post_cycle_envelope": true,
         "authentic_healer_worker_checkpoint_observed": false,
-        "prompt7_field_trace_completed": true
+        "prompt7_field_trace_completed": true,
+        "resident_request_dispatch_receipt_path": "receipts/sovereign-host/resident-request-dispatch.latest.json",
+        "authentic_resident_request_dispatch_receipt_observed": false,
+        "healer_resident_consumer_attempt_observed": false,
+        "target_healer_worker_checkpoint_observed": false,
+        "target_healer_worker_checkpoint_pointer_bound": false,
+        "prompt8_first_missing_transition_identified": true,
+        "prompt8_no_downstream_runtime_promotion": true
       },
       "exact_tuple_required": [
         "runtime_readiness_receipt_sha256",
@@ -2243,11 +2250,18 @@
       },
       "dependencies": [
         {
+          "dependency_id": "DEP-STEG-BROWSER-RESIDENT-REQUEST-DISPATCH-VISIT",
+          "kind": "EXACT_RUNTIME_EVIDENCE_TRANSITION",
+          "state": "PENDING_AUTHENTIC_RESIDENT_DISPATCH_RECEIPT",
+          "ref": "receipts/sovereign-host/resident-request-dispatch.latest.json;scripts/run_worker_runtime.py;scripts/dispatch_resident_execution_requests.py",
+          "disposition": "Observe only the existing resident-owned dispatch receipt. Require schema stegverse.resident-request-dispatch/v1 and an attempted healer_sovereign_scheduler outcome bound to scripts/consume_healer_sovereign_scheduler_request.py before promoting any later consumer, WorkerCoordinator, claim/fence, checkpoint, or ProcessWorkerAdapter transition."
+        },
+        {
           "dependency_id": "DEP-STEG-BROWSER-HEALER-WORKER-CHECKPOINT-POINTER",
           "kind": "EXACT_RUNTIME_EVIDENCE_CHECKPOINT",
-          "state": "PENDING_AUTHENTIC_RESIDENT_CHECKPOINT",
+          "state": "DOWNSTREAM_OF_PENDING_RESIDENT_REQUEST_DISPATCH_VISIT",
           "ref": "receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json;workers/healer_sovereign_scheduler_worker.py;heartbeat_runtime/process_adapter.py",
-          "disposition": "Observe the existing authoritative resident checkpoint only after fresh WorkerCoordinator admission/claim/fence and ProcessWorkerAdapter ALLOW projection. Bind child_receipt.resident_custody_root_observation_retention only from that authentic checkpoint. Require packet_state=RESIDENT_CUSTODY_ROOT_OBSERVED and exactly one authentic root before running the existing non-authorizing receipt classifier."
+          "disposition": "Prompt 8 identifies RESIDENT_REQUEST_DISPATCH_VISIT as the first missing authentic pre-projection transition. Do not attempt to bind the Healer worker checkpoint until authentic resident-request-dispatch evidence proves the existing healer consumer was actually invoked and subsequent machine-owned transitions are observed in order."
         },
         {
           "dependency_id": "DEP-STEG-BROWSER-RESIDENT-CARRIER-CONSUMPTION-POINTER",
@@ -2303,6 +2317,10 @@
         "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001"
       ],
       "allowed_next_transitions": [
+        "OBSERVE_AUTHENTIC_RESIDENT_REQUEST_DISPATCH_RECEIPT",
+        "REQUIRE_ATTEMPTED_HEALER_SOVEREIGN_SCHEDULER_CONSUMER_OUTCOME",
+        "OBSERVE_EXISTING_TARGETED_WORKERCOORDINATOR_CYCLE_IN_ORDER",
+        "OBSERVE_EXISTING_WORKER_TASK_ADMISSION_AND_FRESH_CLAIM_FENCE_IN_ORDER",
         "OBSERVE_FENCED_HEALER_WORKER_CHECKPOINT_AFTER_PROCESS_ADAPTER_ALLOW_PROJECTION",
         "BIND_CHILD_RECEIPT_RESIDENT_CUSTODY_ROOT_OBSERVATION_RETENTION",
         "IF_EXACTLY_ONE_AUTHENTIC_ROOT_OBSERVED_RUN_EXISTING_NON_AUTHORIZING_RECEIPT_CLASSIFIER",
@@ -2386,7 +2404,8 @@
         "heartbeat_runtime/admitted_worker_runtime.py",
         "heartbeat_runtime/worker_runtime_legacy.py",
         "workers/healer_sovereign_scheduler_worker.py",
-        "StegVerse-Labs/StegVerse-Healer:app/reusable_task_scheduler.py"
+        "StegVerse-Labs/StegVerse-Healer:app/reusable_task_scheduler.py",
+        "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_FIRST_MISSING_RESIDENT_TRANSITION_20260917.json"
       ],
       "blockers": [],
       "worker_claim": {
@@ -2616,6 +2635,40 @@
         "downstream_handback": false,
         "second_invocation_emitted": false,
         "authority_effect": "NONE_TRACE_RECONCILIATION_ONLY"
+      },
+      "first_missing_resident_transition_reconciliation": {
+        "goal_prompt_count": "8/20",
+        "report_ref": "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_FIRST_MISSING_RESIDENT_TRANSITION_20260917.json",
+        "registry_generation_entering": 32,
+        "owner_chain": [
+          "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+          "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+          "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
+        ],
+        "any_owner_mutated": false,
+        "global_measurement_entered": false,
+        "target_checkpoint": "receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
+        "target_checkpoint_observed": false,
+        "target_pointer_path": "child_receipt.resident_custody_root_observation_retention",
+        "target_pointer_bound": false,
+        "first_missing_transition_before_projection": "RESIDENT_REQUEST_DISPATCH_VISIT",
+        "first_missing_receipt_path": "receipts/sovereign-host/resident-request-dispatch.latest.json",
+        "first_missing_receipt_schema": "stegverse.resident-request-dispatch/v1",
+        "required_selected_consumer": "healer_sovereign_scheduler",
+        "required_consumer_ref": "scripts/consume_healer_sovereign_scheduler_request.py",
+        "required_attempted": true,
+        "authentic_dispatch_receipt_observed": false,
+        "downstream_promotion_allowed": false,
+        "classifier_run": false,
+        "exact_runtime_tuple_available": false,
+        "gateway_stage_entered": false,
+        "custody_submission_attempted": false,
+        "master_records_recorded": false,
+        "master_records_reconstruction_pass": false,
+        "digest_equality": false,
+        "a1_a4_handback": false,
+        "second_invocation_emitted": false,
+        "authority_effect": "NONE_EVIDENCE_REACHABILITY_RECONCILIATION_ONLY"
       }
     },
     {
