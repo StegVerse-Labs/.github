@@ -607,7 +607,6 @@ Goal Prompt 18 advances `SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001` through 
 
 ### SDK TT purpose-bound worker console
 
-Canonical Goal Task `SDK-TT-PURPOSE-BOUND-WORKER-CONSOLE-001` / COSV `71000000101111` is an ACTIVE child of `SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001`. It owns the public/local SDK console demonstration that starts from one TT transition cell, derives one purpose-bound worker specification, invokes one arbitrary tracked task, records materialization/execution/retirement ordering, and returns a records-only packet without claiming live StegOS/InTr materialization or creating new authority. Canonical handoff: `StegVerse-org/StegVerse-SDK:SDK_TT_PURPOSE_BOUND_WORKER_CONSOLE_MIRROR_HANDOFF.md`.
 
 
 ## Task Registry session coordination generation fence
@@ -621,7 +620,7 @@ This fence is coordination-only. It does not mint WorkerCoordinator claim/fence 
 
 Canonical Goal Task `SDK-TT-PURPOSE-BOUND-WORKER-CONSOLE-001` / COSV `71000000101111` is `RETIRED / COMPLETED`. SDK PR #266 merged the local console path as `f0c3296650018d9cf298fa392c48315331a575fe`; dedicated validation proved the deterministic `MATERIALIZED -> INVOCATION_STARTED -> TASK_COMPLETED -> RETIRED` chain, records-only output, and `worker_live_after_close=false`. This completion is source/local semantic proof only and claims no authentic resident worker materialization.
 
-The stronger authentic-runtime continuation is canonical Goal Task `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` / COSV `71000000111111`. It must reuse `STEGAGENTS-GOVERNED-RUNTIME-001`, WorkerCoordinator, StegCore/InTr, TV/TVC where required, and Master Records. It may not create a competing runtime, scheduler, dispatcher, WorkerCoordinator, credential authority, evidence authority, or second user-operated-device dependency. Canonical handoff: `docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md`.
+The stronger authentic-runtime continuation is canonical Goal Task `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` / COSV `71000000111111`. Its minimum source refinement is merged: StegAgents PR #21 (`4363333520f381370b7ae8f93b88a98bf8526aeb`) plus `.github` PR #2150 (`00d5cadd3048dc1e44d8877a65ddc1ebf8fc6a29`) reuse the existing `stegagents-governed-runtime-worker` and `process:stegagents-governed-runtime-v1` path for exact TT purpose/capability/lifetime carriage and records-only lifecycle validation. Authentic resident execution remains pending the existing `STEGAGENTS-GOVERNED-RUNTIME-001` resident-root/WorkerCoordinator prerequisites; no competing runtime, scheduler, dispatcher, WorkerCoordinator, credential authority, evidence authority, or second user-operated-device dependency is introduced. Canonical handoff: `docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md`.
 
 
 ## Healer state-transition custody requirement
