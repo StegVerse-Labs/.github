@@ -64,6 +64,17 @@
     "structured_authority_validation_run": 35340811205,
     "package_artifact_validation_run": 35340811374,
     "handoff_closeout_pr": 259,
-    "handoff_closeout_merge": "12249690557a204f52d54050b542e0601f649b80"
+    "handoff_closeout_merge": "12249690557a204f52d54050b542e0601f649b80",
+    "hgai_example_status": "VALIDATED_MERGED",
+    "hgai_example_pr": 260,
+    "hgai_example_merge": "58178b7af65263b4c9ccd81aaa215b659741a6b1",
+    "hgai_example_validated_head": "cb42b7399802e3c1610aaf79d557f12a6b89a6dc",
+    "hgai_example_manifest_builder_validation_run": 35370782437,
+    "hgai_example_evaluator_manifest_validation_run": 35370782309,
+    "hgai_example_evaluator_posture_validation_run": 35370782316,
+    "hgai_example_structured_authority_validation_run": 35370782424,
+    "hgai_example_handoff_closeout_pr": 261,
+    "hgai_example_handoff_closeout_merge": "24f6a0c37710fe578eaa0e0f8183f234083adb56",
+    "hgai_example_live_graph_projection_proven": false
   }
 }
