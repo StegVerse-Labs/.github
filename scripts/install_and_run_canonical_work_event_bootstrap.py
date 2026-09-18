@@ -104,14 +104,18 @@ def refresh_registry_projection_from_shard(task_id: str, registry_path: Path) ->
     }
 
 
-def collision_preflight(task_id: str) -> dict:
+def collision_preflight(task_id: str, registry_path: Path) -> dict:
     evaluator = ROOT / COLLISION_EVALUATOR_REL
     if not evaluator.is_file():
         raise RuntimeError("Task Registry collision evaluator missing; fail closed before Canonical Work mutation")
+    registry = json.loads(registry_path.read_text(encoding="utf-8"))
+    registry_generation = registry.get("generation")
+    if not isinstance(registry_generation, int) or registry_generation < 0:
+        raise RuntimeError("canonical Task Registry generation unavailable")
     proc = subprocess.run(
         [sys.executable, str(evaluator)],
         cwd=str(ROOT),
-        input=json.dumps({"task_id": task_id, "caller_surface": CALLER_SURFACE}),
+        input=json.dumps({"task_id": task_id, "caller_surface": CALLER_SURFACE, "observed_registry_generation": registry_generation}),
         text=True,
         capture_output=True,
         check=True,
@@ -188,7 +192,7 @@ def main() -> int:
     registry_path = Path(args.registry).expanduser().resolve()
     refresh = refresh_registry_projection_from_shard(args.task_id, registry_path)
     print("TASK_REGISTRY_PROJECTION_REFRESH:" + json.dumps(refresh, sort_keys=True, separators=(",", ":")))
-    checkin = collision_preflight(args.task_id)
+    checkin = collision_preflight(args.task_id, registry_path)
     print("TASK_REGISTRY_CHECKIN:" + json.dumps(checkin, sort_keys=True, separators=(",", ":")))
 
     installer = str(ROOT / "scripts" / "install_canonical_work_universal_intr_route.py")
