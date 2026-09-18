@@ -271,10 +271,13 @@ def load_candidates(
 
 
 def collision_check(task_id: str) -> dict[str, Any]:
+    registry_generation = int(load(REGISTRY).get("generation", -1))
+    if registry_generation < 0:
+        raise RuntimeError("canonical Task Registry generation unavailable")
     proc = subprocess.run(
         [sys.executable, str(CHECKIN)],
         cwd=str(ROOT),
-        input=json.dumps({"task_id": task_id, "caller_surface": CALLER_SURFACE}),
+        input=json.dumps({"task_id": task_id, "caller_surface": CALLER_SURFACE, "observed_registry_generation": registry_generation}),
         text=True,
         capture_output=True,
         check=True,
