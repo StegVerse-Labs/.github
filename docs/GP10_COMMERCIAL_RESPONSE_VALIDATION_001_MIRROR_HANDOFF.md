@@ -298,3 +298,46 @@ custom-domain served body observed: false
 ```
 
 The bounded Site implementation claim is released. Remaining work belongs to this commercial-response task: direct served-body observation when available and authentic prospect-response validation. No new public-page implementation lane remains open.
+
+
+## Public-route and four-prospect recheck — 2026-09-17
+
+A direct served-body observation was attempted for the custom-domain GP10 route and, secondarily, the GitHub Pages mirror. The available external fetch surface could not access either URL, and an isolated container probe could not resolve the domain.
+
+This is classified as an observation-surface limitation, not as evidence of Site or deployment failure:
+
+```text
+native_pages_deployment_success: true
+custom_domain_served_body_observed: false
+served_body_probe_result: TOOL_NETWORK_ACCESS_UNAVAILABLE
+site_failure_inferred: false
+deployment_failure_inferred: false
+Site handoff observation commit: 954f88a2fa36bda79964c6075b1c746573b8e612
+```
+
+The authenticated Outlook mailbox for `rigel@stegverse.org` was also re-checked using each exact outreach subject plus broader organization/domain searches for POVA/Western Rail, Integrity Rail Services, Panhandle Northern/OmniTRAX, and Progress Rail.
+
+Observed mailbox state:
+
+```text
+POVA / Western Rail: no inbound reply observed
+Integrity Rail Services: no inbound reply observed
+Panhandle Northern / OmniTRAX: no inbound reply observed
+Progress Rail: no inbound reply observed
+subject/domain matches: our own sent or draft copies only
+```
+
+No response body exists to preserve or classify, so all commercial predicates remain false:
+
+```text
+problem_confirmation_observed: false
+authorized_dataset_discussion_observed: false
+paid_scope_willingness_observed: false
+authorized_decision_maker_referral_observed: false
+buyer_interest_validated: false
+paid_engagement_observed: false
+reasonable_response_window_elapsed: false
+alternative_capability_comparison_triggered: false
+```
+
+No follow-up was sent, no new prospect was added, and no GitHub Actions workflow was manually dispatched.
