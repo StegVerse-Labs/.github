@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 25,
+  "generation": 26,
   "status": "COSV_TASK_POINTER_RUNTIME_ENFORCEMENT_SOURCE_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -2166,7 +2166,13 @@
         "live_verified_stegverse_gateway_endpoint_observed": false,
         "durable_store_contents_observed": false,
         "zero_custody_records_inferred": false,
-        "immutable_invocation_nonexecution_inferred": false
+        "immutable_invocation_nonexecution_inferred": false,
+        "current_repository_retained_runtime_advertisement_for_merged_relay_found": false,
+        "current_repository_retained_exact_stegbrowser_tuple_found": false,
+        "current_site_public_gateway_projection": "DISABLED_ENDPOINT_NULL_LOCAL_DISCOVERY_ONLY",
+        "authority_owned_runtime_context_available_to_this_continuation": false,
+        "gateway_absence_inferred": false,
+        "source_or_ci_promoted_to_runtime": false
       },
       "exact_tuple_required": [
         "runtime_readiness_receipt_sha256",
@@ -2205,14 +2211,22 @@
           "state": "BOUND",
           "ref": "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
           "disposition": "Reuse the existing canonical custody contract and master-records/orchestration authority."
+        },
+        {
+          "dependency_id": "DEP-SERVICE-GATEWAY-RUNTIME-OBSERVATION-CONTEXT",
+          "kind": "RUNTIME_EVIDENCE_CONTEXT",
+          "state": "UNOBSERVED",
+          "ref": "StegVerse-org/LLM-adapter:docs/STEGDEPLOY_PUBLICATION_MIRROR_HANDOFF.md",
+          "disposition": "Reuse the existing sovereign Service Gateway runtime when authentically available; do not create a second Gateway, resident runtime, host, scheduler, or fixed provider. Public WebPKI/TVC CMC-029 is applicable only when that chosen candidate requires public browser-trusted HTTPS."
         }
       ],
       "downstream_task_refs": [
         "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001"
       ],
       "allowed_next_transitions": [
+        "REOBSERVE_EXISTING_IMMUTABLE_BROWSER_INVOCATION_FROM_AUTHORITY_OWNED_CONTEXT",
         "OBSERVE_VERIFIED_STEGVERSE_GATEWAY_ADVERTISEMENT",
-        "SUBMIT_EXACT_EXISTING_STEGBROWSER_CUSTODY_RECEIPT",
+        "SUBMIT_ONLY_BROWSER_CONSTRUCTED_EXACT_EXISTING_CUSTODY_RECEIPT",
         "REQUIRE_AUTHENTIC_RECORDED_AND_RECONSTRUCTION_PASS",
         "HAND_BACK_TO_EXISTING_A1_A4_EXECUTION_OWNER"
       ],
@@ -2259,7 +2273,13 @@
         "StegVerse-org/LLM-adapter#344",
         "StegVerse-org/LLM-adapter@608147cafa8506dfc11359223bb8de7c34c2b2b9",
         "StegVerse-org/LLM-adapter:llm_adapter/stegbrowser_master_records_state_transition_relay.py",
-        "StegVerse-org/LLM-adapter:docs/STEGBROWSER_MASTER_RECORDS_STATE_TRANSITION_RELAY_MIRROR_HANDOFF.md"
+        "StegVerse-org/LLM-adapter:docs/STEGBROWSER_MASTER_RECORDS_STATE_TRANSITION_RELAY_MIRROR_HANDOFF.md",
+        "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_RUNTIME_REOBSERVATION_20260917.json",
+        "StegVerse-Labs/Site:data/ecosystem-chat-gateway.json@c47f83d5076284b968d84a0e30a3b46b43491df4",
+        "StegVerse-Labs/TVC:scripts/observe_coinbase_service_gateway_route.py@9b7297eace10f0c818ffc27429053636eadd99c1",
+        "StegVerse-Labs/TVC:scripts/observe_evaluator_service_gateway_route.py@173b1d5711065a660b108eb67bb70136c87b0df4",
+        "StegVerse-Labs/TVC:tasks/TVC-SERVICE-GATEWAY-LEAF-CERTIFICATE-LIFECYCLE-029.json",
+        "StegVerse-org/LLM-adapter:docs/STEGDEPLOY_PUBLICATION_MIRROR_HANDOFF.md"
       ],
       "blockers": [],
       "worker_claim": {
@@ -2324,6 +2344,29 @@
           "validate": 35288383000
         },
         "llm_adapter_all_exact_head_runs_success": true
+      },
+      "runtime_reobservation": {
+        "goal_prompt_count": "2/20",
+        "report_ref": "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_RUNTIME_REOBSERVATION_20260917.json",
+        "post_merge_authority_owned_runtime_advertisement_found": false,
+        "authentic_exact_runtime_tuple_available_to_continuation": false,
+        "public_site_gateway_projection_enabled": false,
+        "public_site_gateway_endpoint": null,
+        "connected_authority_owned_remote_runtime_surface_available_to_chat": false,
+        "connected_runtime_surface_absence_is_ecosystem_absence_evidence": false,
+        "public_origin_tool_fetch_succeeded": false,
+        "public_origin_tool_fetch_failure_is_gateway_absence_evidence": false,
+        "browser_executor_chain_reverified": true,
+        "browser_executor_constructs_exact_tuple_from_authentic_runtime_event": true,
+        "separate_observer_executor_required": false,
+        "separate_observer_executor_added": false,
+        "custody_submission_attempted": false,
+        "custody_submission_not_attempted_reason": "No authority-owned live advertisement and no authentic exact tuple/custody-admission receipt were available; synthesized submission or a second invocation is forbidden.",
+        "second_invocation_emitted": false,
+        "immutable_request_mutated": false,
+        "downstream_handback_performed": false,
+        "runtime_predicate_promoted": false,
+        "authority_effect": "NONE_OBSERVATION_ONLY"
       }
     },
     {
