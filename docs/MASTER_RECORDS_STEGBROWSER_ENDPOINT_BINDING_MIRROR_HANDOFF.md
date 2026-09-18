@@ -1396,3 +1396,64 @@ This candidate advances Task Registry generation 45 to generation 46 while retai
 ## Manual work
 
 None.
+
+
+## Goal prompt 18: coordination reconciliation and retained-runtime seam re-verification
+
+Session Prompt Count: 8. Goal Prompt Count: 18/20.
+
+Task Registry generation 48, Prompt 15, this handoff, the three existing owner records, and the canonical runtime-materialization classification were re-read first. The owner chain remains unchanged:
+
+```text
+GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001
+-> STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001
+-> STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001
+```
+
+### Superseded coordination artifacts
+
+Canonical predecessor `STEG-BROWSER-AUTHENTIC-RUNTIME-RECEIPT-OBSERVATION-001` is `RETIRED / PROMPT_LIMIT_DECOMPOSED` and explicitly delegates its unresolved runtime predicate to `STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001` / issue #1860. Stale issue #1857 was therefore closed as duplicate/superseded.
+
+Issues #1260, #1860, and #2078 remain open intentionally because their canonical tasks remain active. Issue #1866 remains closed for its completed original source-side remediation scope; its canonical task record remains in the required owner chain and was not mutated.
+
+Recent Goal PRs through #2131 are closed. All exact Goal-specific stale branches were force-aligned to current main because branch deletion is not exposed by the connected GitHub capability. No adjacent StegBrowser task branch was flattened merely because it shares the StegBrowser name.
+
+### Existing retention seam
+
+The canonical remediation classification remains:
+
+```text
+classification = RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND
+predicate_satisfied = false
+source_side_repair_required = false
+classifier_action = NOT_RUN_NO_AUTHENTIC_RUNTIME_ROOT
+```
+
+The only admissible existing retention seam remains:
+
+```text
+receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json
+-> execution_result.resident_custody_root_observation_retention
+-> receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json
+```
+
+The retention pointer must bind:
+
+```text
+packet_ref
+packet_relative_path
+packet_sha256
+retained_under_root
+retained_under_root_source
+packet_state
+```
+
+No authentic retained carrier/root evidence is newly recorded by the existing owners. Therefore `RESIDENT_REQUEST_DISPATCH_VISIT` remains first unsatisfied. The non-authorizing classifier was not run and no WorkerCoordinator, Interlock/InTr, runtime tuple, Gateway, Master Records, digest-equality, or A1-A4 predicate was promoted.
+
+No connector-device gate, observer, exporter, runtime, request, scheduler, recovery path, measurement run, second invocation, fixed-host dependency, or second-device dependency was created.
+
+This candidate advances Task Registry generation 48 to generation 49 while retaining `ACTIVE / CHECKED_OUT`.
+
+## Manual work
+
+None.
