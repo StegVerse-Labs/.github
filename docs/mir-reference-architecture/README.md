@@ -20,9 +20,10 @@ Current discipline:
 - the Appendix A R4 exact positive live-tip behavior is independently reproduced for one retained peer/tip;
 - sebbi.pro's historical witness vocabulary portability gap is source-inspected;
 - sebbi.pro's R6-linked historical vocabulary publication path has now been inspected: current source says the witness `/spec` route and consolidated reader-facing vocabulary were added in v1.3 after the v1.1 `confirmed` commitments and v1.2 rename, which strongly corroborates the operator-disclosed gap; Richard Whitney subsequently agreed in the joint-review thread that A.2's present reason establishes the artifact/SHOULD gap but does not itself establish the R10 MUST failure, and he has asked Justin the exact historical-publication question; because the missing historical publication fact is still unresolved, blanket R10 `NOT MET` remains operator-disclosed rather than independently promoted;
-- Richard has also stated that evidence class will be explicit in every Appendix row in a forthcoming v0.7; that revision remains planned, not published, until an authentic v0.7 artifact is observed;
+- the user has now supplied the complete Evidence Custody Seam v0.7 joint-review text; Appendix A carries explicit `Operator-disclosed`, `Demonstrated`, and `Third-party checkable` evidence classes on every row, and A.2 now explicitly narrows its R10 reason to the artifact/SHOULD condition while preserving the full `NOT MET` status as operator disclosure pending the R6-linked publication answer;
+- v0.7 also makes MIRegistry A.1 R2 explicitly `Operator-disclosed`: the recorded Section 5 run joined the external-time proof to the bundle sequence tip but did not complete an end-to-end chain walk, and an outside chain-walk attempt was indeterminate because of pagination;
 - `custodian` remains the canonical neutral role term; `historical custodian` and `personal-record custodian` are established StegVerse usages, and no specific privacy-regime collision is established in the supplied review thread;
-- the historical 784-record / 30-commitment clean-room run does not satisfy the later submitter-removal test retroactively; v0.6 states a rerun is intended;
+- the historical 784-record / 30-commitment clean-room run does not satisfy the later submitter-removal test retroactively; v0.7 preserves that a submitter-removed rerun is intended;
 - OpenTimestamps pending/submission state is not Bitcoin confirmation;
 - witness count is not control/failure-domain independence.
 
