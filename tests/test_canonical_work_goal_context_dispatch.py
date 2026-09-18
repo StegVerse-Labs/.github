@@ -147,6 +147,62 @@ class CanonicalWorkGoalContextDispatchTests(unittest.TestCase):
                     )
                 refresh.assert_not_called()
 
+    def test_portable_bridge_accepts_manifest_bound_reusable_canonical_work_parameters(self):
+        with tempfile.TemporaryDirectory() as td:
+            source = Path(td) / "source"
+            runtime = Path(td) / "runtime"
+            params = {
+                "source_root": str(source),
+                "runtime_root": str(runtime),
+                "only_consumer": "canonical_work_coordination",
+                "goal_task_id": GOAL,
+            }
+            args = SimpleNamespace(source_root=None, runtime_root=None, only_consumer=None, goal_task_id=None)
+            resolved = BRIDGE.resolve_main_inputs(args, {
+                BRIDGE.REUSABLE_TASK_ID_ENV: BRIDGE.REUSABLE_CANONICAL_WORK_TASK_ID,
+                BRIDGE.REUSABLE_TASK_PARAMETERS_ENV: json.dumps(params),
+            })
+            self.assertEqual(resolved, (source.resolve(), runtime.resolve(), "canonical_work_coordination", GOAL))
+
+    def test_portable_bridge_reusable_binding_rejects_other_selector(self):
+        with tempfile.TemporaryDirectory() as td:
+            args = SimpleNamespace(source_root=None, runtime_root=None, only_consumer=None, goal_task_id=None)
+            params = {
+                "source_root": str(Path(td) / "source"),
+                "runtime_root": str(Path(td) / "runtime"),
+                "only_consumer": "hil",
+                "goal_task_id": GOAL,
+            }
+            with self.assertRaisesRegex(RuntimeError, "exact canonical_work_coordination selector"):
+                BRIDGE.resolve_main_inputs(args, {
+                    BRIDGE.REUSABLE_TASK_ID_ENV: BRIDGE.REUSABLE_CANONICAL_WORK_TASK_ID,
+                    BRIDGE.REUSABLE_TASK_PARAMETERS_ENV: json.dumps(params),
+                })
+
+    def test_portable_bridge_reusable_binding_rejects_cli_manifest_conflict(self):
+        with tempfile.TemporaryDirectory() as td:
+            source = Path(td) / "source"
+            runtime = Path(td) / "runtime"
+            params = {
+                "source_root": str(source),
+                "runtime_root": str(runtime),
+                "only_consumer": "canonical_work_coordination",
+                "goal_task_id": GOAL,
+            }
+            args = SimpleNamespace(source_root=None, runtime_root=None, only_consumer="hil", goal_task_id=None)
+            with self.assertRaisesRegex(RuntimeError, "conflicts with explicit CLI"):
+                BRIDGE.resolve_main_inputs(args, {
+                    BRIDGE.REUSABLE_TASK_ID_ENV: BRIDGE.REUSABLE_CANONICAL_WORK_TASK_ID,
+                    BRIDGE.REUSABLE_TASK_PARAMETERS_ENV: json.dumps(params),
+                })
+
+    def test_portable_bridge_without_reusable_context_preserves_historical_defaults(self):
+        args = SimpleNamespace(source_root=None, runtime_root=None, only_consumer=None, goal_task_id=None)
+        source, _runtime, target, goal = BRIDGE.resolve_main_inputs(args, {"HOME": "/tmp"})
+        self.assertEqual(source, BRIDGE.REPO_ROOT.resolve())
+        self.assertEqual(target, BRIDGE.TARGET_CONSUMER)
+        self.assertIsNone(goal)
+
 
 if __name__ == "__main__":
     unittest.main()

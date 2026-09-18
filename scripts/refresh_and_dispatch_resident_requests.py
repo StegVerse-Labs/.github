@@ -39,6 +39,9 @@ STEG_BROWSER_TVC_EXACT_SHA = "aef6b6f5dc99d2a531718ca475d20858ae8e68a6"
 # task owns the slot and therefore remains incomplete for this target.
 STEG_BROWSER_TVC_ALLOWED_OUTCOMES = {"STAGED", "ALREADY_STAGED", "RESTAGED_EXACT_SOURCE"}
 TARGET_CONSUMER = "cross_framework_current_basis_v04"
+REUSABLE_CANONICAL_WORK_TASK_ID = "RT-CANONICAL-WORK-PORTABLE-DISPATCH-001"
+REUSABLE_TASK_ID_ENV = "STEGVERSE_REUSABLE_TASK_ID"
+REUSABLE_TASK_PARAMETERS_ENV = "STEGVERSE_REUSABLE_TASK_PARAMETERS_JSON"
 ALLOWED_TARGET_CONSUMERS = (TARGET_CONSUMER, "kv_ai_memory", "hil", "sv_dn1", "sv_dn1_publication", "stegos_kv_intr_chain", "gadi_runtime_observation", "sv002_self_characterization", "sv002_public_observation", "astra_class_resilience_awareness", "quantum_resilience_awareness", "sv002_org_runtime_activation", "healer_sovereign_scheduler", "universal_governance_enforced_reference", "one_shot_resident_stack_activation", "stegverse001_bounded_autonomy", "erl_ai_economic_transparency_review", "org_claim_allocator", "ibc_verified_intr_ack", "canonical_work_coordination", "stegagents_governed_runtime_targeted", "sdk_workspace_external_collab_client_secret_reseal", "sdk_workspace_external_collab_consent_listener", STEG_BROWSER_TVC_CONSUMER)
 HOSTED_ENV = (
     "GITHUB_ACTIONS", "CI", "RENDER", "RENDER_SERVICE_ID",
@@ -85,6 +88,67 @@ NONSECRET_FORWARD = (
     "STEGVERSE_STEGFIN_SOURCE_ROOT",
     "STEGVERSE_WARRANT_JSON", "TV_POLICY_BUNDLE_SHA256", "TV_WARRANT_ISSUER_PUBKEY_B64", "TV_WARRANT_MAX_TTL_SECONDS",
 )
+
+
+def reusable_canonical_work_parameters(env: Mapping[str, str] | None = None) -> dict[str, str] | None:
+    values = dict(os.environ if env is None else env)
+    reusable_task_id = str(values.get(REUSABLE_TASK_ID_ENV) or "").strip()
+    raw = str(values.get(REUSABLE_TASK_PARAMETERS_ENV) or "").strip()
+    if not reusable_task_id and not raw:
+        return None
+    if reusable_task_id != REUSABLE_CANONICAL_WORK_TASK_ID:
+        raise RuntimeError("portable bridge reusable invocation identity mismatch")
+    if not raw:
+        raise RuntimeError("portable bridge reusable invocation parameters missing")
+    try:
+        parsed = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise RuntimeError("portable bridge reusable invocation parameters invalid JSON") from exc
+    if not isinstance(parsed, dict):
+        raise RuntimeError("portable bridge reusable invocation parameters must be an object")
+    allowed = {"source_root", "runtime_root", "only_consumer", "goal_task_id"}
+    unknown = sorted(set(parsed) - allowed)
+    if unknown:
+        raise RuntimeError("portable bridge reusable invocation contains unsupported parameters: " + ",".join(unknown))
+    normalized = {key: str(parsed.get(key) or "").strip() for key in allowed}
+    if not normalized["source_root"] or not normalized["runtime_root"]:
+        raise RuntimeError("portable bridge reusable invocation requires source_root and runtime_root")
+    if normalized["only_consumer"] != "canonical_work_coordination":
+        raise RuntimeError("portable bridge reusable invocation requires exact canonical_work_coordination selector")
+    if not normalized["goal_task_id"]:
+        raise RuntimeError("portable bridge reusable invocation requires goal_task_id")
+    return normalized
+
+
+def resolve_main_inputs(args: argparse.Namespace, env: Mapping[str, str] | None = None) -> tuple[Path, Path, str, str | None]:
+    params = reusable_canonical_work_parameters(env)
+    if params is None:
+        return (
+            (args.source_root or REPO_ROOT).expanduser().resolve(),
+            (args.runtime_root or default_runtime_root(env)).expanduser().resolve(),
+            args.only_consumer or TARGET_CONSUMER,
+            args.goal_task_id,
+        )
+    source = Path(params["source_root"]).expanduser().resolve()
+    runtime = Path(params["runtime_root"]).expanduser().resolve()
+    target = params["only_consumer"]
+    goal = params["goal_task_id"]
+    explicit = {
+        "source_root": str(args.source_root.expanduser().resolve()) if args.source_root is not None else None,
+        "runtime_root": str(args.runtime_root.expanduser().resolve()) if args.runtime_root is not None else None,
+        "only_consumer": args.only_consumer,
+        "goal_task_id": args.goal_task_id,
+    }
+    expected = {
+        "source_root": str(source),
+        "runtime_root": str(runtime),
+        "only_consumer": target,
+        "goal_task_id": goal,
+    }
+    mismatches = [key for key, value in explicit.items() if value is not None and value != expected[key]]
+    if mismatches:
+        raise RuntimeError("portable bridge reusable invocation conflicts with explicit CLI: " + ",".join(sorted(mismatches)))
+    return source, runtime, target, goal
 
 
 def truthy(value: str | None) -> bool:
@@ -291,16 +355,17 @@ def refresh_and_dispatch(
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Refresh already-local sovereign worker source and dispatch exactly one bounded resident request once.")
-    parser.add_argument("--source-root", type=Path, default=REPO_ROOT)
-    parser.add_argument("--runtime-root", type=Path, default=default_runtime_root())
-    parser.add_argument("--only-consumer", choices=ALLOWED_TARGET_CONSUMERS, default=TARGET_CONSUMER)
+    parser.add_argument("--source-root", type=Path)
+    parser.add_argument("--runtime-root", type=Path)
+    parser.add_argument("--only-consumer", choices=ALLOWED_TARGET_CONSUMERS)
     parser.add_argument("--goal-task-id")
     args = parser.parse_args()
+    source_root, runtime_root, target_consumer, goal_task_id = resolve_main_inputs(args)
     receipt = refresh_and_dispatch(
-        args.source_root,
-        args.runtime_root,
-        target_consumer=args.only_consumer,
-        goal_task_id=args.goal_task_id,
+        source_root,
+        runtime_root,
+        target_consumer=target_consumer,
+        goal_task_id=goal_task_id,
     )
     print(json.dumps(receipt, sort_keys=True))
     return 0 if receipt["state"] == "REFRESH_AND_DISPATCH_COMPLETE" else 1
