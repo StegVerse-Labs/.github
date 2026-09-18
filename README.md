@@ -666,3 +666,8 @@ Every governed StegVerse state transition must produce a canonical state-transit
 Master Records is the canonical evidence-validation/custody/reconstruction authority for that transition evidence set. Before machine-owned progression may treat the transition as evidence-complete, the canonical custody result must be `RECORDED`, receipt reconstruction must be `PASS`, and `required_evidence_validation_status` must be `PASS` for every required evidence item. Missing, malformed, misbound, digest-mismatched, or unreconstructable required evidence fails closed.
 
 Specialized domain validators are not replaced. When a transition requires a domain-specific validation result, that result artifact becomes required evidence and is itself bound, digest-validated, retained, and reconstructed by Master Records. Interlock/InTr remains transition authority; TV/TVC remains credential authority where required; Master Records validation grants no execution, transition, governance, publication, deployment, or release authority.
+
+
+### SDK evaluator governance posture runtime proof
+
+Goal Prompt 20 closes the source/console scope of `SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001` and retires `SDK-GRG-CANONICAL-PROJECTION-CONSOLE-001`. SDK PR #265 passed exact-head validation and merged as `af1be4f9d9b3635912f8e085cbfe8ed922602d83`. Authentic SDK-to-live StegOS/InTr execution transfers unchanged to `SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001`, reusing the existing resident dispatcher and `run_evaluator_governance_manifest` seam. No live runtime proof is claimed. `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` remains a separate downstream consumer.
