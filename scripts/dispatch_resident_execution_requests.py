@@ -86,7 +86,7 @@ CONSUMERS = (
     ("kv_ai_memory", "scripts/consume_kv_ai_memory_resident_request.py"),
     ("g18", "scripts/consume_g18_resident_execution_request.py"),
     ("hil", "scripts/consume_hil_resident_execution_request.py"),
-    ("evaluator_intr", "scripts/consume_evaluator_intr_resident_execution_request.py"),
+    ("evaluator_intr", "scripts/consume_evaluator_intr_resident_execution_request.py"),\n    ("sdk_evaluator_governance_posture", "scripts/consume_sdk_evaluator_governance_posture_request.py"),
     ("sv002_public_observation", "scripts/consume_sv002_public_observation_request.py"),
     ("ara_graph", "scripts/consume_ara_graph_resident_execution_request.py"),
     ("cmc028_root_custody", "scripts/consume_cmc028_resident_execution_request.py"),
