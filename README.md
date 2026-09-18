@@ -634,3 +634,8 @@ The standing Healer sovereign scheduler handoff now requires canonical Master Re
 `SV002-REQUEST-BOUND-EVIDENCE-RETENTION-001` is the bounded child of `STEGVERSE-002-EXPERIMENT-RERUN-001` for the isolated first-receipt evidence-loss seam. It reuses the parent's admitted EVENT_EPHEMERAL StegOS substrate and creates no second request, runtime, scheduler, listener, bridge, Site path, device prerequisite, or authority plane.
 
 StegVerse-002/.github PR #39 merged the source repair at `3a0033742b1ff311bde6c210681ab47df6b734cd`. The repair preserves a validated already-written `RERUN_REQUEST_BOUND.json` identity in the existing blocked callable result and resident executor heartbeat instead of erasing it when federation publication fails later. Authentic resident evidence remains required before the parent `REQUEST_BOUND` predicate may be promoted.
+
+
+## Canonical Master Records local adapter repair
+
+`CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001` replaces the invalid canonical-state-receipt -> reusable-task-lifecycle-ingester fallback with the already-authoritative `master-records/orchestration` canonical state-transition custody implementation. The local path requires explicit durable Master Records configuration, preserves exact reconstruction, fails closed when unavailable, and adds no second custody store or authority. Interlock/InTr transition authority and TV/TVC credential authority remain unchanged. Authentic runtime Master Records custody is not claimed.
