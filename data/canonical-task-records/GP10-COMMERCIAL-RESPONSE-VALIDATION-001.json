@@ -9,7 +9,7 @@
   "checkout_state": "CHECKED_OUT",
   "cosv_task_vector": "30001000100000",
   "canonical_issue": "StegVerse-Labs/.github#2073",
-  "goal_prompt_count": "6/20",
+  "goal_prompt_count": "7/20",
   "source_refs": [
     "docs/GP10_COMMERCIAL_RESPONSE_VALIDATION_001_MIRROR_HANDOFF.md",
     "data/canonical-task-records/ORG-GITHUB-FLEET-FUNCTIONALIZATION-001.json",
@@ -45,7 +45,7 @@
     "new_scheduler_required": false,
     "technical_build_without_customer_evidence_allowed": false
   },
-  "next_admissible_work": "Preserve the successful native Pages deployment evidence and do not infer a Site failure from the current session's external fetch/DNS limitation. Re-observe https://stegverse.org/gp10-field-validation.html when an independent served-body-capable surface is available. Continue bounded Outlook response observation across POVA/Western Rail, Integrity Rail Services, Panhandle Northern/OmniTRAX, and Progress Rail; latest subject-thread and organization-domain searches show only our own sent/draft copies and no inbound prospect response. Promote only explicit problem-confirmation, authorized-dataset discussion, paid-scope/quote willingness, or authorized-decision-maker referral. Do not send follow-up solely because the page was published; do not compare alternative capabilities until a genuinely reasonable response window elapses or explicit negative-fit evidence is observed; no speculative infrastructure or routine GitHub Actions.",
+  "next_admissible_work": "The GP10 public service page now has user-provided iPhone served-body evidence on the custom domain stegverse.org, while independent machine fetch remains unobserved. The public URL may now be used as explanatory context in prospect follow-up when follow-up is otherwise justified; page reachability or views remain non-commercial evidence. Continue bounded Outlook response observation across POVA/Western Rail, Integrity Rail Services, Panhandle Northern/OmniTRAX, and Progress Rail after a materially longer response interval. Preserve any authentic inbound response exactly and promote only explicit problem-confirmation, authorized-dataset discussion, paid-scope/quote willingness, or authorized-decision-maker referral. Do not send follow-up solely because the page is live and do not compare alternative capabilities until a genuinely reasonable response window elapses or explicit negative-fit evidence is observed.",
   "completion": {
     "claimed": false,
     "validated": false,
@@ -73,9 +73,15 @@
     "reasonable_response_window_elapsed": false,
     "public_route_probe_attempted": true,
     "public_route_probe_url": "https://stegverse.org/gp10-field-validation.html",
-    "public_route_served_body_observed": false,
+    "public_route_served_body_observed": true,
     "public_route_probe_result": "TOOL_NETWORK_ACCESS_UNAVAILABLE",
-    "pages_deployment_success_preserved": true
+    "pages_deployment_success_preserved": true,
+    "public_route_observation_source": "USER_PROVIDED_IPHONE_SCREENSHOT",
+    "public_route_observation_sha256": "151a7311f57f30bfc20fb82c81bf9b92aa34b8862b8f1b50141877f9fd5be6b4",
+    "public_route_observation_dimensions": "707x1536",
+    "public_route_visible_origin": "stegverse.org",
+    "public_route_body_content_match": true,
+    "independent_machine_fetch_observed": false
   },
   "progress": {
     "first_wave_reply_recheck_complete": true,
@@ -112,7 +118,7 @@
     "gp10_public_service_page_pages_deployment_run": 35305152499,
     "gp10_public_service_page_pages_deployment_head": "242d62a06088d81837a44c412a9af0dc0b6ce5b6",
     "gp10_public_service_page_pages_deployment_success": true,
-    "gp10_public_service_page_served_body_observed": false,
+    "gp10_public_service_page_served_body_observed": true,
     "gp10_public_service_page_workspace_exposed": false,
     "gp10_public_service_page_workspace_isolation_preserved": true,
     "gp10_public_service_page_backend_added": false,
@@ -130,6 +136,12 @@
     "latest_subject_and_domain_search_own_messages_only": true,
     "gp10_public_service_page_served_body_probe_attempted": true,
     "gp10_public_service_page_served_body_probe_result": "TOOL_NETWORK_ACCESS_UNAVAILABLE",
-    "gp10_public_service_page_site_failure_inferred": false
+    "gp10_public_service_page_site_failure_inferred": false,
+    "gp10_public_service_page_served_body_observation_source": "USER_PROVIDED_IPHONE_SCREENSHOT",
+    "gp10_public_service_page_served_body_screenshot_sha256": "151a7311f57f30bfc20fb82c81bf9b92aa34b8862b8f1b50141877f9fd5be6b4",
+    "gp10_public_service_page_served_body_visible_origin": "stegverse.org",
+    "gp10_public_service_page_served_body_matches_deployed_content": true,
+    "gp10_public_service_page_independent_machine_fetch_observed": false,
+    "gp10_public_service_page_explanatory_followup_context_allowed": true
   }
 }
