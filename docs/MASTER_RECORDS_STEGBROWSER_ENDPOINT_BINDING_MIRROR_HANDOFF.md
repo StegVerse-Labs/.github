@@ -1035,3 +1035,84 @@ This candidate advances Task Registry generation 32 to generation 33 while retai
 ## Manual work
 
 None.
+
+
+## Goal prompt 9: resident dispatch re-observation
+
+Session Prompt Count: 15. Goal Prompt Count: 9/20.
+
+### Current canonical truth
+
+Task Registry generation 33 and this handoff were re-read first. The Goal remained exactly one `ACTIVE / CHECKED_OUT` row under COSV `40000100100000`; all Master Records completion predicates remained false.
+
+The existing owner chain remained untouched:
+
+```text
+GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001
+-> STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001
+-> STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001
+```
+
+No owner was mutated or duplicated and `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001` was not entered.
+
+### Resident dispatch evidence re-observation
+
+The only admissible current evidence target remained:
+
+```text
+receipts/sovereign-host/resident-request-dispatch.latest.json
+schema: stegverse.resident-request-dispatch/v1
+```
+
+The authorized resident-access surface again exposed no connected device to this session. That is evidence-reachability only and is not evidence that the sovereign resident runtime is absent.
+
+Current coordination lineage was checked for an already-recorded authentic resident dispatch receipt. No authentic copy was found.
+
+Therefore the required transition remains unsatisfied:
+
+```text
+RESIDENT_REQUEST_DISPATCH_VISIT
+```
+
+Before any downstream transition may be promoted, one authentic resident-owned dispatch receipt must contain exactly one relevant outcome proving:
+
+```text
+consumer = healer_sovereign_scheduler
+consumer_ref = scripts/consume_healer_sovereign_scheduler_request.py
+attempted = true
+result = authentic machine result
+```
+
+### Downstream state preserved
+
+Because the dispatch visit remains unobserved, none of the following were promoted:
+
+```text
+HEALER_RESIDENT_CONSUMER_INVOKED
+TARGETED_WORKERCOORDINATOR_EXECUTION_REQUESTED
+TARGETED_WORKER_RUNTIME_CYCLE_ENTERED
+WORKER_TASK_ADMISSION_ADMIT
+fresh independent-task-control claim/fence
+HEALER_WORKER_CHECKPOINT_WRITTEN_IN_FENCED_SANDBOX
+FENCED_PROCESS_ADAPTER_ALLOW_PROJECTION
+retained-root pointer binding
+receipt classifier execution
+immutable StegBrowser runtime tuple
+Gateway validation
+Master Records RECORDED
+reconstruction PASS
+exact digest equality
+A1-A4 handback
+```
+
+No exporter, observer, runtime, request, scheduler, recovery path, measurement run, second StegBrowser invocation, fixed-host dependency, or second-device dependency was introduced.
+
+Observation report:
+
+`reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_RESIDENT_DISPATCH_REOBSERVATION_20260917.json`
+
+This candidate advances Task Registry generation 33 to generation 34 while retaining `ACTIVE / CHECKED_OUT`.
+
+## Manual work
+
+None.
