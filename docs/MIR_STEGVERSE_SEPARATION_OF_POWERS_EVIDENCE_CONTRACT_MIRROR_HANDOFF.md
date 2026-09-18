@@ -79,6 +79,12 @@ That successor owns:
 
 The original separation-of-powers goal remains the parent architecture/evidence-contract lane; implementation adoption proceeds under the successor rather than extending this goal beyond Prompt 20.
 
+A second separable child is now registered for the spawned/ephemeral actor pressure test:
+
+`MIR-EPHEMERAL-ACTOR-CUSTODY-SEAM-001`
+
+It owns the question of whether a short-lived actor may be created and destroyed inside one commitment window while preserving reconstructible standing/lineage and leaf attribution without permitting actor/caller self-declared lineage. Canonical handoff: `docs/MIR_EPHEMERAL_ACTOR_CUSTODY_SEAM_MIRROR_HANDOFF.md`.
+
 A genuinely separable evidence-reconciliation child is also registered:
 
 `MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001`
