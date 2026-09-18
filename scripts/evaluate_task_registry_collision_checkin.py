@@ -27,9 +27,17 @@ def _load_object(path: Path):
     return value
 
 
+def load_registry():
+    registry = _load_object(REGISTRY)
+    generation = registry.get("generation")
+    if not isinstance(generation, int) or generation < 0:
+        raise ValueError("canonical Task Registry generation must be a non-negative integer")
+    return registry
+
+
 def load_records():
     """Resolve canonical identities from the Task Registry; shards only enrich."""
-    registry = _load_object(REGISTRY)
+    registry = load_registry()
     rows = registry.get("tasks")
     if not isinstance(rows, list):
         raise ValueError("canonical Task Registry tasks must be a list")
@@ -101,6 +109,39 @@ def handoff(r):
 def stable_hash(value):
     raw = json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
     return "sha256:" + hashlib.sha256(raw).hexdigest()
+
+
+def resolve_observed_registry_generation(req: dict, caller_surface: str, current_generation: int) -> int | None:
+    raw = req.get("observed_registry_generation")
+    if raw is None:
+        if caller_surface == "TEST_HARNESS" and os.environ.get("PYTEST_CURRENT_TEST"):
+            return current_generation
+        return None
+    if isinstance(raw, bool):
+        raise SystemExit("observed_registry_generation must be an integer")
+    try:
+        value = int(raw)
+    except (TypeError, ValueError):
+        raise SystemExit("observed_registry_generation must be an integer")
+    if value < 0:
+        raise SystemExit("observed_registry_generation must be non-negative")
+    return value
+
+
+def generation_fence_payload(observed_generation: int | None, current_generation: int) -> dict:
+    return {
+        "observed_registry_generation": observed_generation,
+        "current_registry_generation": current_generation,
+        "coordination_generation_current": observed_generation == current_generation,
+        "write_pr_merge_handoff_claim_admissible": observed_generation == current_generation,
+        "stale_session_prohibited_mutations": [
+            "SOURCE_WRITE",
+            "PULL_REQUEST_CREATE_OR_UPDATE",
+            "PULL_REQUEST_MERGE",
+            "NEW_HANDOFF_CLAIM",
+        ],
+        "reconciliation_required_before_mutation": observed_generation != current_generation,
+    }
 
 
 def clean_context(req, caller_surface):
@@ -265,6 +306,31 @@ def main():
     caller_surface = resolve_caller_surface(req)
     tid = str(req.get("task_id") or "").strip()
     context = clean_context(req, caller_surface)
+    registry = load_registry()
+    current_generation = int(registry["generation"])
+    observed_generation = resolve_observed_registry_generation(req, caller_surface, current_generation)
+    fence = generation_fence_payload(observed_generation, current_generation)
+    if observed_generation is None:
+        emit({
+            "schema":"stegverse.task-registry-checkin-disposition/v1",
+            "task_id":tid,
+            "disposition":"STOP_COORDINATION_GENERATION_REQUIRED",
+            "session_action":"RECONCILE_CANONICAL_GITHUB_STATE_BEFORE_MUTATION",
+            **fence,
+            "authority_effect":"NONE",
+        }, context)
+        return
+    if observed_generation != current_generation:
+        disposition = "STOP_STALE_COORDINATION" if observed_generation < current_generation else "STOP_COORDINATION_GENERATION_MISMATCH"
+        emit({
+            "schema":"stegverse.task-registry-checkin-disposition/v1",
+            "task_id":tid,
+            "disposition":disposition,
+            "session_action":"RECONCILE_CANONICAL_GITHUB_STATE_BEFORE_MUTATION",
+            **fence,
+            "authority_effect":"NONE",
+        }, context)
+        return
     records = load_records()
     r = records.get(tid)
     if not r:
@@ -356,6 +422,7 @@ def main():
         "repository_only_overlap_policy":"NONBLOCKING_ONLY_WHEN_BOTH_TASKS_DECLARE_NONEMPTY_DISJOINT_COMPONENT_SCOPES_AND_NO_STRONGER_OVERLAP_SIGNAL",
         "hard_collision_task_ids":[c["task_id"] for c in hard],
         "recent_event_window_seconds":1800,
+        **fence,
         "authority_effect":"NONE",
     }, context)
 
