@@ -627,3 +627,10 @@ The stronger authentic-runtime continuation is canonical Goal Task `SDK-TT-PURPO
 ## Healer state-transition custody requirement
 
 The standing Healer sovereign scheduler handoff now requires canonical Master Records custody for every observed governed Healer state transition. The worker checkpoint remains `receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json`, but checkpoint persistence alone is not sufficient for machine-owned progression: the existing canonical state-transition custody contract must record the transition in Master Records and exact reconstruction must return PASS. Interlock/InTr remains transition authority; Master Records remains custody/reconstruction only.
+
+
+## SV002 REQUEST_BOUND evidence-retention successor — 2026-09-18
+
+`SV002-REQUEST-BOUND-EVIDENCE-RETENTION-001` is the bounded child of `STEGVERSE-002-EXPERIMENT-RERUN-001` for the isolated first-receipt evidence-loss seam. It reuses the parent's admitted EVENT_EPHEMERAL StegOS substrate and creates no second request, runtime, scheduler, listener, bridge, Site path, device prerequisite, or authority plane.
+
+StegVerse-002/.github PR #39 merged the source repair at `3a0033742b1ff311bde6c210681ab47df6b734cd`. The repair preserves a validated already-written `RERUN_REQUEST_BOUND.json` identity in the existing blocked callable result and resident executor heartbeat instead of erasing it when federation publication fails later. Authentic resident evidence remains required before the parent `REQUEST_BOUND` predicate may be promoted.
