@@ -144,7 +144,83 @@ def generation_fence_payload(observed_generation: int | None, current_generation
     }
 
 
-def clean_context(req, caller_surface):
+def _clean_user_action_surface(row, expected_owner_task_id=None):
+    if not isinstance(row, dict):
+        raise SystemExit("user action surface must be an object")
+    required = ("surface_id", "url_route", "device_browser_context_class", "runtime_surface", "action_type", "owner_task_id", "sharing")
+    out = {}
+    for key in required:
+        value = row.get(key)
+        if not isinstance(value, str) or not value.strip():
+            raise SystemExit(f"user action surface {key} must be a non-empty string")
+        out[key] = value.strip()
+    request_id = row.get("request_id")
+    if request_id is not None:
+        if not isinstance(request_id, str) or not request_id.strip():
+            raise SystemExit("user action surface request_id must be null or non-empty string")
+        request_id = request_id.strip()
+    out["request_id"] = request_id
+    out["sharing"] = out["sharing"].upper()
+    if out["sharing"] not in {"SHAREABLE", "EXCLUSIVE"}:
+        raise SystemExit("user action surface sharing must be SHAREABLE or EXCLUSIVE")
+    if expected_owner_task_id and out["owner_task_id"] != expected_owner_task_id:
+        raise SystemExit("user action surface owner_task_id must equal task_id")
+    return out
+
+
+def _surface_identity(row):
+    return (
+        row["url_route"],
+        row["device_browser_context_class"],
+        row["runtime_surface"],
+        row["action_type"],
+    )
+
+
+def canonical_user_action_surfaces(record):
+    task_id = str(record.get("task_id") or "").strip()
+    rows = record.get("user_action_surfaces") or []
+    if not isinstance(rows, list):
+        raise SystemExit("canonical user_action_surfaces must be an array")
+    return [_clean_user_action_surface(row, task_id) for row in rows]
+
+
+def user_action_surface_overlap(a, b, request_context=None):
+    a_rows = canonical_user_action_surfaces(a)
+    if request_context:
+        a_rows.extend(request_context.get("user_action_surfaces_under_mutation") or [])
+    b_rows = canonical_user_action_surfaces(b)
+    conflicts, shareable = [], []
+    for left in a_rows:
+        for right in b_rows:
+            if _surface_identity(left) != _surface_identity(right):
+                continue
+            row = {
+                "identity": {
+                    "url_route": left["url_route"],
+                    "device_browser_context_class": left["device_browser_context_class"],
+                    "runtime_surface": left["runtime_surface"],
+                    "action_type": left["action_type"],
+                },
+                "left_surface_id": left["surface_id"],
+                "right_surface_id": right["surface_id"],
+                "left_owner_task_id": left["owner_task_id"],
+                "right_owner_task_id": right["owner_task_id"],
+                "left_request_id": left.get("request_id"),
+                "right_request_id": right.get("request_id"),
+                "left_sharing": left["sharing"],
+                "right_sharing": right["sharing"],
+            }
+            if "EXCLUSIVE" in {left["sharing"], right["sharing"]}:
+                row["compatibility"] = "INCOMPATIBLE_EXCLUSIVE"
+                conflicts.append(row)
+            else:
+                row["compatibility"] = "SHAREABLE"
+                shareable.append(row)
+    return conflicts, shareable
+
+
+def clean_context(req, caller_surface, task_id):
     context = req.get("checkin_context") or {}
     if not isinstance(context, dict):
         raise SystemExit("checkin_context must be an object")
@@ -161,6 +237,11 @@ def clean_context(req, caller_surface):
             if not isinstance(value, list) or not all(isinstance(x, str) and x.strip() for x in value):
                 raise SystemExit(f"checkin_context.{key} must be a string array")
             out[key] = sorted(set(x.strip() for x in value))
+    surfaces = context.get("user_action_surfaces_under_mutation")
+    if surfaces is not None:
+        if not isinstance(surfaces, list):
+            raise SystemExit("checkin_context.user_action_surfaces_under_mutation must be an array")
+        out["user_action_surfaces_under_mutation"] = [_clean_user_action_surface(row, task_id) for row in surfaces]
     out["caller_surface"] = caller_surface
     out["caller_surface_attestation_proven"] = False
     return out
@@ -190,7 +271,8 @@ def overlap(a, b, request_context=None):
     a_substrate = selected_substrate(a)
     b_substrate = selected_substrate(b)
     substrates = [a_substrate] if a_substrate and a_substrate == b_substrate else []
-    return repos, comps, lineage, adjacent, substrates
+    action_conflicts, action_shareable = user_action_surface_overlap(a, b, request_context)
+    return repos, comps, lineage, adjacent, substrates, action_conflicts, action_shareable
 
 
 def repository_only_overlap_is_component_distinguished(a, b, repos, comps, lineage, adjacent, substrates):
@@ -305,7 +387,7 @@ def main():
     req = json.load(sys.stdin)
     caller_surface = resolve_caller_surface(req)
     tid = str(req.get("task_id") or "").strip()
-    context = clean_context(req, caller_surface)
+    context = clean_context(req, caller_surface, tid)
     registry = load_registry()
     current_generation = int(registry["generation"])
     observed_generation = resolve_observed_registry_generation(req, caller_surface, current_generation)
@@ -361,6 +443,7 @@ def main():
 
     collisions=[]
     repository_only_scope_distinctions=[]
+    shareable_user_action_surface_distinctions=[]
     controller_exclusions=[]
     for oid, o in records.items():
         if oid == tid:
@@ -372,8 +455,8 @@ def main():
         oc = str(o.get("checkout_state") or "").upper()
         if os not in ACTIVEISH and oc not in ACTIVEISH and oc != "CHECKED_OUT":
             continue
-        repos, comps, lineage, adjacent, substrates = overlap(r, o, context)
-        if repos or comps or lineage or adjacent or substrates:
+        repos, comps, lineage, adjacent, substrates, action_conflicts, action_shareable = overlap(r, o, context)
+        if repos or comps or lineage or adjacent or substrates or action_conflicts:
             overlap_row = {
                 "task_id":oid,
                 "handoff":handoff(o),
@@ -385,6 +468,7 @@ def main():
                     "lineage":lineage,
                     "adjacent":adjacent,
                     "execution_substrates":substrates,
+                    "user_action_surface_conflicts":action_conflicts,
                 },
                 "source":"CANONICAL_TASK_REGISTRY",
             }
@@ -394,6 +478,17 @@ def main():
                 repository_only_scope_distinctions.append(overlap_row)
             else:
                 collisions.append(overlap_row)
+        if action_shareable and not (repos or comps or lineage or adjacent or substrates or action_conflicts):
+            shareable_user_action_surface_distinctions.append({
+                "task_id": oid,
+                "handoff": handoff(o),
+                "coordination_state": os,
+                "checkout_state": oc,
+                "overlap": {"user_action_surface_shareable": action_shareable},
+                "scope_disposition": "SHAREABLE_USER_ACTION_SURFACE",
+                "blocking": False,
+                "source": "CANONICAL_TASK_REGISTRY",
+            })
 
     recent = recent_events_for(tid, r, context)
     known = {(c["task_id"], "CANONICAL_TASK_REGISTRY") for c in collisions}
@@ -403,7 +498,7 @@ def main():
             collisions.append(row)
             known.add(marker)
 
-    hard=[c for c in collisions if c.get("source") == "CANONICAL_TASK_REGISTRY" and c.get("checkout_state")=="CHECKED_OUT" and (c["overlap"]["components"] or c["overlap"]["lineage"])]
+    hard=[c for c in collisions if c.get("source") == "CANONICAL_TASK_REGISTRY" and c.get("checkout_state")=="CHECKED_OUT" and (c["overlap"].get("components") or c["overlap"].get("lineage") or c["overlap"].get("user_action_surface_conflicts"))]
     disposition = "STOP_COLLISION" if hard else ("COORDINATE_CONVERGENCE" if collisions else "CONTINUE")
     action = "END_SESSION_AND_CONTINUE_IN_RETURNED_COLLISION_OWNER" if hard else ("COORDINATE_BEFORE_MUTATION" if collisions else "CONTINUE_CURRENT_TASK")
     emit({
@@ -419,6 +514,7 @@ def main():
         "session_action":action,
         "collision_candidates":collisions,
         "repository_only_scope_distinctions":repository_only_scope_distinctions,
+        "shareable_user_action_surface_distinctions":shareable_user_action_surface_distinctions,
         "repository_only_overlap_policy":"NONBLOCKING_ONLY_WHEN_BOTH_TASKS_DECLARE_NONEMPTY_DISJOINT_COMPONENT_SCOPES_AND_NO_STRONGER_OVERLAP_SIGNAL",
         "hard_collision_task_ids":[c["task_id"] for c in hard],
         "recent_event_window_seconds":1800,
