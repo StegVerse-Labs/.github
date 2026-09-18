@@ -4,10 +4,10 @@
   "handoff_task_id": "docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md",
   "cosv_id": "40000100100000",
   "observed_on": "2026-09-18",
-  "session_prompt_range": "1-5",
-  "goal_prompt_range": "10-14/20",
+  "session_prompt_range": "1-6",
+  "goal_prompt_range": "10-16/20",
   "registry_generation_entering": 36,
-  "registry_generation_candidate": 40,
+  "registry_generation_candidate": 43,
   "prompt_10": {
     "observed_on": "2026-09-18",
     "registry_generation_entering": 36,
@@ -360,5 +360,88 @@
     ],
     "corrected_continuation": "Use existing resident carrier outputs, request-consumption receipts, WorkerCoordinator claim/fence state, Interlock/InTr admission, and retained runtime evidence directly.",
     "first_unsatisfied_predicate": "RESIDENT_REQUEST_DISPATCH_VISIT"
+  },
+  "prompt_16": {
+    "observed_on": "2026-09-18",
+    "registry_generation_entering": 42,
+    "session_prompt_count": 6,
+    "goal_prompt_count": "16/20",
+    "owner_chain": [
+      "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+      "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+      "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
+    ],
+    "any_owner_mutated": false,
+    "global_measurement_entered": false,
+    "superseded_connector_device_method_repeated": false,
+    "exact_receipt_path_checked": "receipts/sovereign-host/resident-request-dispatch.latest.json",
+    "exact_receipt_repository_check": "NOT_FOUND_404",
+    "exact_receipt_repository_check_authority_effect": "NONE_REPOSITORY_REACHABILITY_ONLY",
+    "authentic_dispatch_receipt_observed": false,
+    "canonical_receipt_schema": "stegverse.resident-request-dispatch/v1",
+    "required_consumer": "healer_sovereign_scheduler",
+    "required_consumer_ref": "scripts/consume_healer_sovereign_scheduler_request.py",
+    "required_attempted": true,
+    "required_machine_result": "AUTHENTIC",
+    "first_unsatisfied_predicate": "RESIDENT_REQUEST_DISPATCH_VISIT",
+    "downstream_promotion_allowed": false,
+    "repository_absence_interpreted_as_runtime_absence": false,
+    "broad_source_search_performed": false,
+    "alternate_observer_exporter_created": false,
+    "new_runtime_request_scheduler_recovery_path_created": false,
+    "measurement_run_entered": false,
+    "second_invocation_emitted": false,
+    "fixed_host_dependency_added": false,
+    "second_device_dependency_added": false,
+    "narrow_branch_hygiene": {
+      "new_divergent_related_refs_observed": false,
+      "compared_refs": [
+        {
+          "branch": "master-records-stegbrowser-runtime-invariant-correction-20260918",
+          "ahead": 0,
+          "behind": 4,
+          "status": "behind"
+        },
+        {
+          "branch": "master-records-stegbrowser-prompt10-20260918",
+          "ahead": 0,
+          "behind": 5,
+          "status": "behind"
+        },
+        {
+          "branch": "master-records-stegbrowser-prompt11-20260918",
+          "ahead": 0,
+          "behind": 5,
+          "status": "behind"
+        },
+        {
+          "branch": "master-records-stegbrowser-prompt12-20260918",
+          "ahead": 0,
+          "behind": 5,
+          "status": "behind"
+        },
+        {
+          "branch": "master-records-stegbrowser-prompt14-hygiene-20260918",
+          "ahead": 0,
+          "behind": 5,
+          "status": "behind"
+        },
+        {
+          "branch": "task/master-records-stegbrowser-endpoint-binding-2078-current",
+          "ahead": 0,
+          "behind": 5,
+          "status": "behind"
+        },
+        {
+          "branch": "task/master-records-stegbrowser-endpoint-binding-2078",
+          "ahead": 0,
+          "behind": 5,
+          "status": "behind"
+        }
+      ],
+      "cleanup_reopened": false,
+      "reason": "No related ref was ahead of or divergent from main; behind-only refs do not carry unmerged stale content."
+    },
+    "authority_effect": "NONE_OBSERVATION_ONLY"
   }
 }
