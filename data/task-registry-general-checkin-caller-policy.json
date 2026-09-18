@@ -21,5 +21,21 @@
   "missing_or_unknown_surface": "FAIL_CLOSED",
   "declaration_is_authentic_origin_attestation": false,
   "runtime_external_ai_reachability_proven_absent": false,
-  "authority_effect": "NONE_COORDINATION_ONLY"
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "required_production_request_fields": [
+    "task_id",
+    "observed_registry_generation"
+  ],
+  "session_mutation_generation_fence": {
+    "required": true,
+    "exact_match_to_current_canonical_registry_generation": true,
+    "stale_or_missing_generation_fails_closed": true,
+    "prohibited_until_reconciled": [
+      "SOURCE_WRITE",
+      "PULL_REQUEST_CREATE_OR_UPDATE",
+      "PULL_REQUEST_MERGE",
+      "NEW_HANDOFF_CLAIM"
+    ],
+    "reconciliation_source": "CURRENT_GITHUB_MAIN_CANONICAL_TASK_REGISTRY_AND_APPLICABLE_MIRROR_HANDOFF"
+  }
 }
