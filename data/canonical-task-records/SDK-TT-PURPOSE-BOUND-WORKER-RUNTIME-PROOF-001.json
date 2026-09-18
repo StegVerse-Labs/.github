@@ -23,7 +23,8 @@
   ],
   "adjacent_task_refs": [
     "STEGAGENTS-GOVERNED-RUNTIME-001",
-    "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001"
+    "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001",
+    "MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001"
   ],
   "reuse_requirements": {
     "runtime_owner": "STEGAGENTS-GOVERNED-RUNTIME-001",
@@ -60,5 +61,18 @@
     "validated": false,
     "activation_proof_complete": false
   },
-  "authority_effect": "NONE_COORDINATION_ONLY"
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "coordination_reconciliation": {
+    "reconciled_at": "2026-09-18",
+    "predecessor_console_task_state": "RETIRED_COMPLETED",
+    "predecessor_sdk_pr_266": "MERGED",
+    "predecessor_sdk_pr_267": "MERGED_CLOSEOUT",
+    "canonical_registration_pr_2120": "MERGED",
+    "runtime_successor_registration_pr_2122": "MERGED",
+    "prior_merged_work_branch_refs_aligned_to_main": true,
+    "mir_agentenvelope_ref": "MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001",
+    "mir_relationship": "NON_BLOCKING_ADJACENT_EVIDENCE",
+    "duplicate_lifecycle_plane_created": false,
+    "duplicate_authority_plane_created": false
+  }
 }
