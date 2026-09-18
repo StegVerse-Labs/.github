@@ -52,7 +52,15 @@
     "max_retries": 1,
     "external_cost_ceiling_usd": 0,
     "runtime_window_beats": 4096,
-    "rate_class": "stegagents_governed_runtime"
+    "rate_class": "stegagents_governed_runtime",
+    "lifetime_semantics": {
+      "demo_max_lifetime_seconds": 30,
+      "demo_value_is_production_default": false,
+      "production_lifetime_basis": "RECOMPUTE_FROM_INTENDED_TASK_COST_PLUS_KNOWN_DELAY_PLUS_INFERRED_UNKNOWN_DELAY_RESERVE_PLUS_RECORDS_DECOMPOSITION_PLUS_SAFETY_RESERVE",
+      "early_retirement_on_purpose_completion": true,
+      "extension_requires_new_governed_recalculation": true,
+      "authority_effect": "NONE_LIFETIME_BUDGET_ONLY"
+    }
   },
   "runtime_routing": {
     "map_ref": "control/runtime-profile-map.json",
@@ -109,6 +117,27 @@
         "max_lifetime_seconds": 30,
         "payload": {
           "text": "StegVerse tracks this arbitrary local worker task."
+        },
+        "lifetime_policy": {
+          "mode": "DERIVED_COST_TASK_DELAY_BUDGET",
+          "profile": "DEMONSTRATION",
+          "cost_analysis": {
+            "task_cost_basis": "deterministic local integrity summary",
+            "expected_compute_units": 1,
+            "external_cost_usd_ceiling": 0
+          },
+          "time_budget_seconds": {
+            "expected_task_execution": 6,
+            "known_delay": 4,
+            "inferred_unknown_delay_reserve": 8,
+            "records_decomposition": 7,
+            "safety_reserve": 5
+          },
+          "derived_max_lifetime_seconds": 30,
+          "production_recompute_required": true,
+          "unknown_delay_inference_basis": "bounded reserve for runtime, governance, custody, and transport variability not known at manifest construction",
+          "decomposition_target": "RECORDS_ENABLED_PACKET",
+          "retirement_condition": "PURPOSE_COMPLETED_OR_FAILED_OR_BUDGET_EXHAUSTED"
         }
       }
     }
