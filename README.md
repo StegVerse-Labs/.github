@@ -538,6 +538,8 @@ python scripts/refresh_and_dispatch_resident_requests.py \
 
 Goal context is valid only for the exact `canonical_work_coordination` selector. The portable bridge forwards it to the existing resident dispatcher, the dispatcher forwards it to the existing Canonical Work consumer, and the consumer forwards it into the registry-first cycle. The bridge and dispatcher receipts retain the exact Goal Task ID so a dropped or mismatched context fails closed instead of reverting silently to controller lineage. This carriage is non-authorizing: WorkerCoordinator remains claim/fence authority, Interlock/InTr remains transition authority, TV/TVC remains credential authority, and Master Records remains observed-reality/reconstruction authority.
 
+The same existing bridge is now addressable through reusable identity `RT-CANONICAL-WORK-PORTABLE-DISPATCH-001`. The neutral reusable-task trigger passes a manifest-bound parameter object to `scripts/refresh_and_dispatch_resident_requests.py`; that bridge accepts the reusable context only for the exact reusable identity, exact `canonical_work_coordination` selector, and a non-empty Goal Task ID. Explicit CLI values that disagree with the reusable manifest fail closed. This is an invocation binding for the existing bridge—not a new runtime, scheduler, dispatcher, request identity, claim authority, transition authority, or credential path. Source/trigger success still cannot substitute for an authentic resident `CONTINUE` check-in.
+
 
 ## StegBrowser Master Records provider-neutral binding
 
