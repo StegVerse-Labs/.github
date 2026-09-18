@@ -43,7 +43,7 @@
     "sdk_pr": 257,
     "sdk_merge": "9a0970cdbf3a7f7eef3dcf754a1fb00398b23721",
     "sdk_validated_head": "9cbd772bac3eab4c3690a2e749225a2560a0275c",
-    "manifest_builder_validation_run": 35311310502,
+    "manifest_builder_validation_run": 35340811283,
     "console_status": "GOVERNANCE_REFERENCE_GRAPH_CONSOLE_PASS",
     "graph_representation_grants_authority": false,
     "hierarchy_grants_authority": false,
@@ -54,6 +54,16 @@
     "canonical_semantic_projection_authority": "StegCore/StegGate",
     "credential_authority": "TV/TVC",
     "transition_authority": "Interlock/InTr",
-    "live_stegos_intr_execution_proven": false
+    "live_stegos_intr_execution_proven": false,
+    "console_surface_pr": 258,
+    "console_surface_validated_head": "fde1c6bd04141d02c802c642717d174e44df5359",
+    "console_surface_merge": "ace3adf88068929b4b0e56f9880b209b3e2178ad",
+    "console_validation_run": 35340811339,
+    "evaluator_manifest_validation_run": 35340811323,
+    "evaluator_governance_posture_validation_run": 35340811316,
+    "structured_authority_validation_run": 35340811205,
+    "package_artifact_validation_run": 35340811374,
+    "handoff_closeout_pr": 259,
+    "handoff_closeout_merge": "12249690557a204f52d54050b542e0601f649b80"
   }
 }
