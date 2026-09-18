@@ -6,7 +6,7 @@
   "parent_task_id": "SDK-TT-PURPOSE-BOUND-WORKER-CONSOLE-001",
   "goal": "Prove through the existing governed StegAgents/WorkerCoordinator/StegCore-InTr/Master Records path that one TT transition cell can cause an actual purpose-bound worker to be materialized for a declared bounded purpose, perform one tracked arbitrary task, retire or transform at purpose completion, and leave a reconstructable records-only lifecycle without creating duplicate runtime or authority surfaces.",
   "coordination_state": "ACTIVE",
-  "checkout_state": "UNCLAIMED",
+  "checkout_state": "CHECKED_OUT",
   "repository": "StegVerse-Labs/.github",
   "handoff": "docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md",
   "cosv": {
@@ -19,7 +19,10 @@
     "StegVerse-org/StegVerse-SDK@f0c3296650018d9cf298fa392c48315331a575fe:stegverse/purpose_bound_worker.py",
     "StegVerse-org/StegVerse-SDK@f0c3296650018d9cf298fa392c48315331a575fe:inspection/examples/tt-purpose-worker.example.json",
     "data/canonical-task-records/STEGAGENTS-GOVERNED-RUNTIME-001.json",
-    "docs/STEGAGENTS_GOVERNED_RUNTIME_MIRROR_HANDOFF.md"
+    "docs/STEGAGENTS_GOVERNED_RUNTIME_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegAgents#20",
+    "workers/stegagents_governed_runtime_worker.py",
+    "control/process-worker-adapters.d/stegagents-governed-runtime-001.json"
   ],
   "adjacent_task_refs": [
     "STEGAGENTS-GOVERNED-RUNTIME-001",
@@ -54,11 +57,39 @@
     "AUTHENTIC_MASTER_RECORDS_RECONSTRUCTION_MATCH",
     "AUTHENTIC_RECORDS_ONLY_FINAL_PACKET"
   ],
-  "remaining_predicate": "RECONCILE_PURPOSE_BOUND_REQUEST_WITH_EXISTING_STEGAGENTS_RUNTIME_CONTRACT_THEN_EXECUTE_ONLY_WHEN_EXISTING_RUNTIME_PREREQUISITES_PERMIT",
+  "remaining_predicate": "MERGE_AND_VALIDATE_CONTEXT_CARRIAGE_THEN_WAIT_FOR_EXISTING_AUTHENTIC_RESIDENT_ROOT_CLAIM_FENCE_INTR_AND_MASTER_RECORDS_CHAIN",
   "completion": {
     "claimed": false,
     "validated": false,
     "activation_proof_complete": false
   },
-  "authority_effect": "NONE_COORDINATION_ONLY"
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "source_refinement": {
+    "observed_registry_generation": 47,
+    "finding": "EXISTING_RUNTIME_LACKED_EXPLICIT_TT_PURPOSE_CAPABILITY_SCOPE_LIFETIME_CARRIAGE",
+    "minimum_refinement": "OPTIONAL_FAIL_CLOSED_CONTEXT_BINDING_ON_EXISTING_GOVERNED_RUNTIME_AND_PROCESS_ADAPTER",
+    "steagents_pr": 20,
+    "steagents_branch": "sdk-tt-purpose-bound-worker-runtime-carriage-001",
+    "carried_fields": [
+      "transition_cell_hash",
+      "purpose",
+      "required_capability",
+      "scope.operation_id",
+      "scope.operation_class",
+      "scope.payload_sha256",
+      "max_lifetime_seconds",
+      "retirement_condition"
+    ],
+    "existing_runtime_owner": "STEGAGENTS-GOVERNED-RUNTIME-001",
+    "existing_adapter_ref": "process:stegagents-governed-runtime-v1",
+    "new_runtime_created": false,
+    "new_scheduler_created": false,
+    "new_dispatcher_created": false,
+    "new_workercoordinator_created": false,
+    "new_transition_authority_created": false,
+    "new_credential_authority_created": false,
+    "new_master_records_authority_created": false,
+    "authentic_runtime_execution_claimed": false,
+    "authority_effect": "NONE_SOURCE_CARRIAGE_ONLY"
+  }
 }
