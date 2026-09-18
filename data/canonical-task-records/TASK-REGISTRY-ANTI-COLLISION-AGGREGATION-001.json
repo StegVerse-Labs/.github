@@ -5,8 +5,8 @@
   "root_correlation_id": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001",
   "parent_task_id": null,
   "goal": "Make every canonical Task Registry check-in return a deterministic anti-collision disposition before mutation, including exact conflicting or superseding task and handoff information sufficient for a session to continue, converge, or terminate cleanly.",
-  "coordination_state": "ACTIVE",
-  "checkout_state": "CHECKED_OUT",
+  "coordination_state": "RETIRED",
+  "checkout_state": "COMPLETED",
   "cosv_task_vector": "20010000110000",
   "source_refs": [
     "docs/TASK_REGISTRY_ANTI_COLLISION_AGGREGATION_MIRROR_HANDOFF.md",
@@ -51,15 +51,23 @@
     "projection_only": true
   },
   "completion": {
-    "claimed": false,
-    "validated": false,
-    "activation_proof_complete": false
+    "claimed": true,
+    "validated": true,
+    "activation_proof_complete": false,
+    "completion_class": "SOURCE_COORDINATION_GOAL",
+    "completion_evidence": {
+      "implementation_merge": "d92b6cb6bb9ad6c46187161b8796f0405b65e0bf",
+      "implementation_pr": "StegVerse-Labs/.github#2132",
+      "exact_validated_head": "74eb777d7e46548dd6fe2faf566782b14c4b1181",
+      "cross_task_coordination_run": 35400305724,
+      "kv_ai_memory_validation_run": 35400305734,
+      "deepseek_validation_run": 35400305750,
+      "master_records_boundary": "master-records/orchestration:CANONICAL_WORK_COORDINATION_CUSTODY_MIRROR_HANDOFF.md"
+    },
+    "runtime_execution_claimed": false,
+    "custody_claimed": false
   },
-  "allowed_next_transitions": [
-    "REGISTER_USER_ACTION_SURFACE_IDENTITY",
-    "ENFORCE_USER_ACTION_SURFACE_COLLISION_PRECHECK",
-    "VALIDATE_USER_ACTION_SURFACE_COLLISION_ENFORCEMENT"
-  ],
+  "allowed_next_transitions": [],
   "authority_model": {
     "task_registry_mints_execution_authority": false,
     "worker_claim_authority": "WORKERCOORDINATOR",
@@ -67,7 +75,7 @@
     "model_output_authority": false
   },
   "session_mutation_generation_fence": {
-    "state": "SOURCE_IMPLEMENTED_VALIDATION_PENDING",
+    "state": "SOURCE_VALIDATED_MERGED",
     "canonical_generation_ref": "data/canonical-task-registry.json#generation",
     "exact_generation_match_required_before_mutation": true,
     "stale_generation_disposition": "STOP_STALE_COORDINATION",
@@ -84,7 +92,7 @@
     "authority_effect": "NONE_COORDINATION_ONLY"
   },
   "user_action_surface_collision_enforcement": {
-    "state": "SOURCE_VALIDATED",
+    "state": "SOURCE_VALIDATED_MERGED",
     "identity_fields": [
       "url_route",
       "device_browser_context_class",
@@ -105,13 +113,21 @@
     "registration_field": "user_action_surfaces",
     "authority_effect": "NONE_COORDINATION_ONLY",
     "validation_evidence": {
-      "exact_head": "74eb777d7e46548dd6fe2faf566782b14c4b1181",
-      "cross_task_coordination_run": 35400305724,
-      "kv_ai_memory_validation_run": 35400305734,
-      "deepseek_validation_run": 35400305750,
+      "exact_head": "521f8fccd2772fe258e8f4d316c0d9648481a1d8",
+      "merge_commit": "d92b6cb6bb9ad6c46187161b8796f0405b65e0bf",
+      "cross_task_coordination_run": 35400627272,
+      "kv_ai_memory_validation_run": 35400627268,
+      "deepseek_validation_run": 35400627263,
       "focused_generation_and_action_surface_tests": "PASS",
       "organization_control_plane_validation": "PASS",
       "master_records_evidence_boundary_ref": "master-records/orchestration:CANONICAL_WORK_COORDINATION_CUSTODY_MIRROR_HANDOFF.md"
     }
+  },
+  "terminal_disposition": {
+    "state": "SOURCE_GOAL_COMPLETE",
+    "reason": "CANONICAL_GENERATION_FENCE_AND_USER_ACTION_SURFACE_COLLISION_ENFORCEMENT_MERGED_AND_VALIDATED",
+    "issue_close_eligible": true,
+    "successor_required": false,
+    "authority_effect": "NONE_COORDINATION_ONLY"
   }
 }
