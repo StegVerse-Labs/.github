@@ -671,3 +671,8 @@ Specialized domain validators are not replaced. When a transition requires a dom
 ### SV002 REQUEST_BOUND custody correction — 2026-09-18
 
 The bounded child `SV002-REQUEST-BOUND-EVIDENCE-RETENTION-001` now includes the canonical Master Records custody seam for the first runtime transition. Master Records tracing showed the deterministic rerun packet `SV002-RERUN-C796D0BFD181CEC5D99E4C23` was absent because `REQUEST_BOUND` had been retained only as resident-local evidence. StegVerse-002/.github PR #40, merged at `70d5179f543b6954b6c574d66fcd9675fcbec79c`, reuses the existing canonical state-transition custody client and requires `RECORDED + reconstruction_status=PASS` before federation submission. This does not itself prove resident execution or promote the parent runtime predicate.
+
+
+### SDK evaluator governance posture runtime proof
+
+Goal Prompt 20 closes the source/console scope of `SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001` and retires `SDK-GRG-CANONICAL-PROJECTION-CONSOLE-001`. SDK PR #265 passed exact-head validation and merged as `af1be4f9d9b3635912f8e085cbfe8ed922602d83`. Authentic SDK-to-live StegOS/InTr execution transfers unchanged to `SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001`, reusing the existing resident dispatcher and `run_evaluator_governance_manifest` seam. No live runtime proof is claimed. `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` remains a separate downstream consumer.
