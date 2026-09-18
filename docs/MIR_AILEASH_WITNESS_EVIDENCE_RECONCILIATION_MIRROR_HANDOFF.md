@@ -4,7 +4,7 @@ Updated: 2026-09-18
 Goal Task ID: `MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001`
 Parent Task ID: `MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001`
 COSV ID: `50000000100000`
-Status: `ACTIVE / APPENDIX A R4 BEHAVIOR INDEPENDENTLY REPRODUCED / V0.6 REVIEW RECEIVED / RICHARD R10 EVIDENCE-CLASS ACKNOWLEDGMENT RECEIVED / V0.7 EVIDENCE-CLASS REVISION PLANNED_NOT_PUBLISHED / SEBBI R10 PORTABILITY GAP SOURCE-INSPECTED / R6-LINKED PUBLICATION PATH INSPECTED WITHOUT FULL HISTORICAL PROMOTION / CLEAN-ROOM RERUN INTENDED / OTS PROOF RETAINED PENDING`
+Status: `ACTIVE / APPENDIX A R4 BEHAVIOR INDEPENDENTLY REPRODUCED / V0.7 USER-SUPPLIED SHARED ARTIFACT REVIEWED / PER-ROW EVIDENCE CLASS PRESENT / A.2 R10 BASIS NARROWED / A.1 R2 LIMITATION EXPLICIT / SEBBI R10 PORTABILITY GAP SOURCE-INSPECTED / R6-LINKED PUBLICATION PATH INSPECTED WITHOUT FULL HISTORICAL PROMOTION / CLEAN-ROOM RERUN INTENDED / OTS PROOF RETAINED PENDING`
 
 ## Goal
 
@@ -70,6 +70,44 @@ Evidence classification:
 
 Naming remains unchanged: Richard also states that `custodian` should remain unless Justin identifies a specific privacy-regime collision not already resolved by the definition/non-claims. No such collision is established in the supplied screenshots.
 
+## Evidence Custody Seam v0.7 — user-supplied shared artifact reviewed
+
+The user supplied the complete text of `The Evidence Custody Seam, Version 0.7 -- for joint review`, dated 2026-09-18, together with review-thread screenshots in which Richard Whitney states that v0.7 is up.
+
+The artifact implements the previously planned evidence-class repair:
+
+- every Appendix A row now carries one of three evidence classes: `Operator-disclosed`, `Demonstrated`, or `Third-party checkable`;
+- the preamble defines those classes as evidence provenance, not confidence grades;
+- A.2 R10 remains `NOT MET`, but the row is explicitly `Operator-disclosed`;
+- A.2's mechanism is narrowed to the artifact condition actually supported by source inspection: sealed records do not carry the historical field-meaning statement, while current source supplies vocabulary at read time;
+- the explanatory paragraph now states directly that this artifact condition reaches R10's SHOULD, not the MUST; the historical R6-linked publication question remains open with the operator;
+- the document states that if no durable R6-linked vocabulary publication existed, the row could move from operator-disclosed to independently established.
+
+This resolves the v0.6 presentation defect without resolving the historical publication fact itself.
+
+### Newly explicit A.1 evidence-class shape
+
+v0.7 also exposes a material limitation that was not visible in the earlier Appendix presentation:
+
+- R1: `Demonstrated`;
+- R2: `Operator-disclosed`;
+- R3: `Demonstrated; third-party checkable`;
+- R4: `Third-party checkable`;
+- R5: `Demonstrated`;
+- R6 through R10: `Operator-disclosed`.
+
+The document explains R2's narrower status: the Section 5 run showed that the external-time proof commits to the same sequence tip carried by the bundle, but did not perform an end-to-end chain walk; an outside attempt was indeterminate because of pagination rather than an integrity failure. This is a disclosure about MIRegistry A.1 and does not alter the sebbi.pro A.2 R10 evidence state.
+
+### Open predicates preserved
+
+The following remain unresolved after v0.7:
+
+1. Justin Dobson's answer to whether a durable vocabulary publication tied to the R6 scheme covered commitments sealed before the rename;
+2. Justin Dobson's answer to whether `custodian` collides with a privacy-regime term in a way the document's definition and non-claims do not already resolve;
+3. an authentic submitter-removed rerun of the 784-record / 30-commitment Section 5 test.
+
+The v0.7 artifact continues to say the historical run predates submitter removal and that a rerun is intended. No rerun is promoted.
+
 ## R6-linked historical publication inspection — 2026-09-18
 
 Inspection was limited to the sebbi.pro witness commitment/vocabulary publication path relevant to the Appendix A.2 R10 disclosure.
@@ -116,4 +154,4 @@ Canonical evidence map: `docs/mir-reference-architecture/AILEASH_SEBBI_WITNESS_E
 
 For joint review, accept the v0.6 merge structure and naming treatment. Raise only the narrow Appendix A.2 evidence-status clarification: operator-disclosed `NOT MET` is fine as disclosure, but independent conformance classification requires confirming the R6-linked historical vocabulary publication path. Do not reopen settled R1-R10 text.
 
-Preserve the current bounded R10 disposition. Next, observe Justin's answer to Richard's explicit historical R6-linked vocabulary-publication question and the authentic published/shared v0.7 revision when available. Treat Richard's planned per-row evidence-class change as not yet published until the artifact is observed. Separately, coordinate the submitter-removed clean-room rerun and retain authentic artifacts before promoting the Section 5 current-test predicate.
+Treat the user-supplied v0.7 shared artifact as the current joint-review text. Preserve the explicit per-row evidence classes and the narrowed A.2 basis. Next, observe Justin's answer to the historical R6-linked vocabulary-publication question and the privacy-regime naming question; independently promote the A.2 R10 MUST failure only if authentic evidence excludes durable scheme-linked publication. Separately, recognize the submitter-removed Section 5 test only from authentic rerun artifacts.
