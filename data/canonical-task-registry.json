@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 58,
-  "status": "MASTER_RECORDS_REQUIRED_TRANSITION_EVIDENCE_VALIDATION_SOURCE_MERGED",
+  "generation": 59,
+  "status": "SDK_EVALUATOR_POSTURE_RUNTIME_SUCCESSOR_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
