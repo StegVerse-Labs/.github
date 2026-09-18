@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 26,
+  "generation": 27,
   "status": "COSV_TASK_POINTER_RUNTIME_ENFORCEMENT_SOURCE_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -2172,7 +2172,13 @@
         "current_site_public_gateway_projection": "DISABLED_ENDPOINT_NULL_LOCAL_DISCOVERY_ONLY",
         "authority_owned_runtime_context_available_to_this_continuation": false,
         "gateway_absence_inferred": false,
-        "source_or_ci_promoted_to_runtime": false
+        "source_or_ci_promoted_to_runtime": false,
+        "exact_current_browser_receipt_1_authority_readback_observed": false,
+        "exact_same_nonce_runtime_event_observed": false,
+        "first_missing_runtime_evidence_owner": "StegVerse-Labs/StegOS#23 -> #347 recovery when browser-local registration is not directly observable",
+        "service_gateway_is_first_missing_predicate": false,
+        "gadi_discovery_receipt_is_receipt_1": false,
+        "persistent_carrier_required": false
       },
       "exact_tuple_required": [
         "runtime_readiness_receipt_sha256",
@@ -2206,6 +2212,13 @@
       },
       "dependencies": [
         {
+          "dependency_id": "DEP-STEGOS-CURRENT-BROWSER-RECEIPT1-AUTHORITY-VISIBILITY",
+          "kind": "RUNTIME_EVIDENCE_CONTEXT",
+          "state": "UNOBSERVED",
+          "ref": "StegVerse-Labs/StegOS#23; StegVerse-Labs/StegOS#347; PR#348@42c36278e1832fa8214bf50710ae033f8678f3f1",
+          "disposition": "Normal browser execution reads the exact registered Node directly from IndexedDB and does not require recovery. If that originating browser registration is not directly authority-observable, reuse only the existing StegOS #347 governed browser-independent recovery contract to expose the exact retained genesis Receipt #1; #351 persistent carrier remains optional/unproven and must not become a mandatory browser, provider, host, or device prerequisite."
+        },
+        {
           "dependency_id": "DEP-CANONICAL-MASTER-RECORDS-CUSTODY-OWNER",
           "kind": "CANONICAL_OWNER",
           "state": "BOUND",
@@ -2224,8 +2237,9 @@
         "STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001"
       ],
       "allowed_next_transitions": [
-        "REOBSERVE_EXISTING_IMMUTABLE_BROWSER_INVOCATION_FROM_AUTHORITY_OWNED_CONTEXT",
-        "OBSERVE_VERIFIED_STEGVERSE_GATEWAY_ADVERTISEMENT",
+        "REOBSERVE_EXISTING_BROWSER_REGISTERED_NODE_AND_SAME_NONCE_RUNTIME_EVENT",
+        "IF_BROWSER_REGISTRATION_NOT_DIRECTLY_OBSERVABLE_CONSUME_ONLY_EXISTING_STEGOS_347_AUTHENTIC_RECOVERY",
+        "OBSERVE_VERIFIED_STEGVERSE_GATEWAY_ADVERTISEMENT_AFTER_EXACT_RUNTIME_TUPLE",
         "SUBMIT_ONLY_BROWSER_CONSTRUCTED_EXACT_EXISTING_CUSTODY_RECEIPT",
         "REQUIRE_AUTHENTIC_RECORDED_AND_RECONSTRUCTION_PASS",
         "HAND_BACK_TO_EXISTING_A1_A4_EXECUTION_OWNER"
@@ -2279,7 +2293,14 @@
         "StegVerse-Labs/TVC:scripts/observe_coinbase_service_gateway_route.py@9b7297eace10f0c818ffc27429053636eadd99c1",
         "StegVerse-Labs/TVC:scripts/observe_evaluator_service_gateway_route.py@173b1d5711065a660b108eb67bb70136c87b0df4",
         "StegVerse-Labs/TVC:tasks/TVC-SERVICE-GATEWAY-LEAF-CERTIFICATE-LIFECYCLE-029.json",
-        "StegVerse-org/LLM-adapter:docs/STEGDEPLOY_PUBLICATION_MIRROR_HANDOFF.md"
+        "StegVerse-org/LLM-adapter:docs/STEGDEPLOY_PUBLICATION_MIRROR_HANDOFF.md",
+        "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_AUTHORITY_OWNER_RECONCILIATION_20260917.json",
+        "StegVerse-Labs/Site:stegos-bootstrap/canonical-work-runtime-consumption.js@e1375dd916fcd779b04b5041906138f9b9ac02f5",
+        "StegVerse-Labs/StegOS:docs/STEGOS_BROWSER_INDEPENDENT_DEVICE_CONTINUITY_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegOS:stegos/device_continuity_recovery.py",
+        "StegVerse-Labs/StegOS#347",
+        "StegVerse-Labs/StegOS#351",
+        "StegVerse-Labs/.github:scripts/observe_gadi_current_iphone_discovery_receipt.py@d50514091590ada8ec66bd4981a1437967d06f04"
       ],
       "blockers": [],
       "worker_claim": {
@@ -2367,6 +2388,29 @@
         "downstream_handback_performed": false,
         "runtime_predicate_promoted": false,
         "authority_effect": "NONE_OBSERVATION_ONLY"
+      },
+      "authority_owner_reconciliation": {
+        "goal_prompt_count": "3/20",
+        "report_ref": "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_AUTHORITY_OWNER_RECONCILIATION_20260917.json",
+        "registry_generation_entering": 26,
+        "authentic_context_observed": false,
+        "first_missing_predicate": "REGISTERED_STEGVERSE_NODE_BOUND_TO_INVOCATION",
+        "first_missing_seam": "EXACT_CURRENT_BROWSER_RECEIPT_1_AND_SAME_NONCE_RUNTIME_EVENT_AUTHORITY_VISIBILITY",
+        "browser_binding_ref": "StegVerse-Labs/Site:stegos-bootstrap/canonical-work-runtime-consumption.js@e1375dd916fcd779b04b5041906138f9b9ac02f5",
+        "browser_receipt_ref": "indexeddb://stegos-node-v1/meta/registration",
+        "canonical_parent_owner": "StegVerse-Labs/StegOS#23",
+        "browser_independent_recovery_owner": "StegVerse-Labs/StegOS#347",
+        "recovery_contract_merge": "42c36278e1832fa8214bf50710ae033f8678f3f1",
+        "persistent_same_iphone_carrier_owner": "StegVerse-Labs/StegOS#351",
+        "persistent_carrier_runtime_proven": false,
+        "persistent_carrier_mandatory_for_browser_path": false,
+        "gadi_current_iphone_discovery_receipt_substitutes_for_receipt_1": false,
+        "service_gateway_observation_is_downstream": true,
+        "cmc029_is_mandatory_fixed_host_prerequisite": false,
+        "second_invocation_emitted": false,
+        "runtime_predicate_promoted": false,
+        "downstream_handback_performed": false,
+        "authority_effect": "NONE_RECONCILIATION_ONLY"
       }
     },
     {
