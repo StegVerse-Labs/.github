@@ -194,3 +194,8 @@ merge: 9ba16a39436686235e4dee965d29936364577f9c
 Current Task Registry generation was re-read as `48` before continuing the `.github` carrier binding. The successor is still represented by its dedicated canonical task shard, COSV vector, handoff, and README projection; it is not silently inserted into the monolithic registry task array.
 
 Remaining source action is only exact-head validation/merge of the existing `.github` worker + process-adapter carriage binding. Authentic runtime predicates remain unchanged and unclaimed.
+
+
+## Generation-49 fence reconciliation
+
+Task Registry generation 49 was re-read before further `.github` mutation. The generation-49 change is confined to the unrelated StegBrowser evidence lane; this goal's canonical main shard and handoff did not change. The existing branch therefore remains the applicable candidate, but merge is gated on focused exact-head validation of `tests/test_stegagents_governed_runtime_worker.py` rather than unrelated automatic workflow success.
