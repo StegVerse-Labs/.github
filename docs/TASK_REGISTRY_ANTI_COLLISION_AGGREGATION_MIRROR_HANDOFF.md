@@ -5,7 +5,7 @@ Canonical issue: `StegVerse-Labs/.github#1343`
 Historical implementation PR: `StegVerse-Labs/.github#1344`
 Substrate-registration enforcement PR: `StegVerse-Labs/.github#1539`
 Merged substrate-registration enforcement: `bbe00e1a1382ea8c98ae6441ff3b33f01dacc6d6`
-Status: `ACTIVE / CHECKED_OUT / REGISTRY PREFLIGHT + PORTABLE PRECLAIM ENFORCED / SESSION COORDINATION GENERATION FENCE MERGED / USER-ACTION-SURFACE COLLISION SOURCE IMPLEMENTED / VALIDATION PENDING`
+Status: `ACTIVE / CHECKED_OUT / REGISTRY PREFLIGHT + PORTABLE PRECLAIM ENFORCED / SESSION COORDINATION GENERATION FENCE MERGED / USER-ACTION-SURFACE COLLISION SOURCE VALIDATED / MERGE READY`
 
 ## Objective
 
@@ -253,3 +253,20 @@ Registration validation now checks ownership, sharing semantics, required fields
 ### Validation still required before merge
 
 Require focused source tests and the broad validation lanes available to this repository. Do not promote source implementation to validated/merged until exact-head evidence exists. After validation and before merge, re-read GitHub `main` and the canonical registry generation; if either has advanced, reconcile again before merge.
+
+
+## Exact-head validation and Master Records evidence review — 2026-09-18
+
+Master Records was reviewed before treating missing CI as a reason to pause. The canonical Master Records work-event custody contract explicitly distinguishes retained/source/CI evidence from authentic runtime execution and requires exact observed evidence to be interpreted according to its class rather than waiting on an absent signal. The relevant evidence trail showed a source-validation problem, not a runtime or custody blocker.
+
+The first Cross-Task Coordination validation run on this slice failed because the task-registration validator compared the PR against stale event field `pull_request.base.sha=3ad023ab...` after current main had advanced. That caused unrelated later task records to be revalidated as if they were part of this PR. The failure was therefore a false change-set expansion, not a failure of the action-surface collision semantics.
+
+The validator was repaired to resolve the synthetic `refs/pull/<n>/merge` commit's first parent directly from the commit object even in a shallow checkout, fetch that exact current base when necessary, and validate only records actually changed by the current PR merge. This preserves fail-closed task registration checks without importing unrelated concurrent main changes.
+
+Exact source-validation evidence at head `74eb777d7e46548dd6fe2faf566782b14c4b1181`:
+
+- Cross-Task Coordination Validation run `35400305724`: PASS, including focused Task Registry collision tests, generation-fence tests, registration validation, and organization-control validation;
+- Validate KV AI Memory Resident Binding run `35400305734`: PASS;
+- validate-deepseek-resident run `35400305750`: PASS.
+
+Master Records boundary preserved: these runs validate source semantics only. They do not claim runtime execution, authentic custody, WorkerCoordinator claim/fence, Interlock/InTr admission, credential issuance, browser execution, or task completion.
