@@ -58,14 +58,22 @@ The open v1 material also preserves the limitation Richard Whitney identified: d
 
 StegVerse already has distinct formalisms and authority owners for causal relation, governance disposition, ordered transition representation, transition admission, credential/user verification, and custody/reconstruction. No new governance engine, transition engine, credential owner, or custody owner is justified by this comparison.
 
-## Open schema question
+## Schema reconciliation result
 
-The only candidate refinement is representational, not authoritative:
+Current Master Records at `master-records/core-lite@be0d08d73c96f50308991793327522dc01304657` already supports deterministic recomputation as a verification/reconstruction operation:
+
+- `record_self_hash` plus declared `hash_convention` gives a canonical recomputation recipe;
+- `canonical_object_digest` represents canonical derived-object identity;
+- `tools/verify_record_hash.py` recomputes from canonical inputs and compares declared versus computed values fail-closed;
+- reconstruction profiles retain immutable evidence references, provenance, predecessor/successor linkage, algorithm/configuration versions, achieved reconstruction fidelity, and authority posture.
+
+Therefore the conceptual distinction:
 
 ```text
-verification_method:
-  RETRIEVED_ARTIFACT
-  DETERMINISTIC_REDERIVATION
+RETRIEVED_ARTIFACT
+DETERMINISTIC_REDERIVATION
 ```
 
-Before any source mutation, current Master Records/evidence/verification schemas must be checked to determine whether deterministic recomputation is already expressible. If yes, disposition is `NO_SOURCE_MUTATION_REQUIRED`.
+does not require a new enum, schema, engine, or authority owner. A deterministic verifier result may be retained as evidence while the underlying proposition is recomputed from canonical inputs.
+
+Disposition: `NO_SOURCE_MUTATION_REQUIRED`.
