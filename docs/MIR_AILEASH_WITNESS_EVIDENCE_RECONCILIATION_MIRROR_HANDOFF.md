@@ -76,6 +76,14 @@ Promotion boundary: the exact historical-artifact portability gap is now `SOURCE
 
 The clean-room rerun request remains a remediation path, not completed evidence. The historical 784-record / 30-commitment run remains not independently reproduced by StegVerse and does not yet satisfy the current submitter-removal acceptance test.
 
+## Naming resolution — 2026-09-18
+
+The user supplied Richard Whitney's follow-up asking whether StegVerse uses `evidence holder` as a term of art and clarifying his intended meaning of `custodian`: the party from whom the export was taken, whose continued cooperation the verifier cannot depend on.
+
+Canonical StegVerse usage already supports `custodian` for this role boundary. Current StegVerse documents use `historical custodian` for MIR-held history and `personal-record custodian` for KnowledgeVault-held source records, while explicitly separating custody from governance, admission, transition, and interpretation authority. No canonical StegVerse use of `evidence holder` as a distinct role term was found in the current repository search.
+
+Disposition: retain `custodian` in the Evidence Custody Seam. Where additional precision is useful, `historical custodian` or `source-record custodian` may be used descriptively, but `evidence holder` should not be introduced as a replacement term because it has no established StegVerse-specific semantics and is less precise about custody responsibility.
+
 ## Evidence map
 
 Canonical evidence map: `docs/mir-reference-architecture/AILEASH_SEBBI_WITNESS_EVIDENCE_MAP.md`.
@@ -125,7 +133,7 @@ No existing registered StegBrowser arbitrary-GET/navigation reusable task was fo
 
 ## Next action
 
-For joint review, preserve the accepted v0.5 merge and external-review base-version rule. Naming shortlist: `Evidence Custodian` (preferred role term), `Record Custodian`, `Evidence Recorder`. Avoid terms such as `Witness`, `Verifier`, or `Auditor` because they collapse this corner into distinct evidence/interpretation functions.
+For joint review, preserve the accepted v0.5 merge and external-review base-version rule. Naming is now resolved in favor of `custodian`: Richard's definition matches existing StegVerse custody usage, and `evidence holder` is not a canonical StegVerse term. Use `historical custodian` or `source-record custodian` only when a more qualified phrase is useful. Avoid `Witness`, `Verifier`, or `Auditor` because they collapse this corner into distinct evidence/interpretation functions.
 
 Coordinate the requested clean-room rerun with the submitter removed. Do not promote the historical 784-record / 30-commitment run to the current Section 5 acceptance test until an authentic rerun artifact is retained and the verifier inputs demonstrate removal of the custodian, submitter, and recorded party as authorities/information sources.
 
