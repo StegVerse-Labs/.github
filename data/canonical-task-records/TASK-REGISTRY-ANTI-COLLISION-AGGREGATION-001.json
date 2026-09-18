@@ -14,7 +14,12 @@
     "StegVerse-Labs/.github#1343",
     "data/task-coordination-policy.json",
     "data/task-registry-general-checkin-caller-policy.json",
-    "tests/test_task_registry_collision_checkin.py"
+    "tests/test_task_registry_collision_checkin.py",
+    "schemas/canonical-task-record.schema.json",
+    "scripts/validate_task_registration_substrate_resolution.py",
+    "tests/test_task_registration_substrate_resolution.py",
+    "tests/test_task_registry_ai_session_ingress.py",
+    "tests/test_task_registry_general_checkin_surface_gate.py"
   ],
   "targets": {
     "organizations": [
@@ -76,6 +81,28 @@
     ],
     "reconciliation_required": true,
     "github_platform_admin_bypass_prevention_claimed": false,
+    "authority_effect": "NONE_COORDINATION_ONLY"
+  },
+  "user_action_surface_collision_enforcement": {
+    "state": "SOURCE_IMPLEMENTED_VALIDATION_PENDING",
+    "identity_fields": [
+      "url_route",
+      "device_browser_context_class",
+      "runtime_surface",
+      "action_type"
+    ],
+    "owner_fields": [
+      "owner_task_id",
+      "request_id"
+    ],
+    "sharing_semantics": [
+      "SHAREABLE",
+      "EXCLUSIVE"
+    ],
+    "exclusive_overlap_disposition": "STOP_COLLISION_WHEN_OTHER_TASK_CHECKED_OUT_ELSE_COORDINATE_CONVERGENCE",
+    "shareable_overlap_disposition": "VISIBLE_NONBLOCKING_DISTINCTION",
+    "dynamic_checkin_field": "checkin_context.user_action_surfaces_under_mutation",
+    "registration_field": "user_action_surfaces",
     "authority_effect": "NONE_COORDINATION_ONLY"
   }
 }
