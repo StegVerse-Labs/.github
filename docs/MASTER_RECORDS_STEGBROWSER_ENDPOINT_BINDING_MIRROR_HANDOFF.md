@@ -1334,3 +1334,65 @@ This candidate advances Task Registry generation 42 to generation 43 while retai
 ## Manual work
 
 None.
+
+
+## Goal prompt 17: exact existing owner-level evidence-retention seam
+
+Session Prompt Count: 7. Goal Prompt Count: 17/20.
+
+Current Task Registry generation 45, this handoff, Prompt 15's controlling invariant correction, and the three existing runtime-evidence owner records were re-read first. The owner chain remains unchanged:
+
+```text
+GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001
+-> STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001
+-> STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001
+```
+
+No connector-visible device state was consulted and `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001` was not entered.
+
+The existing remediation owner's canonical classification artifact was inspected directly:
+
+```text
+data/runtime-materialization-remediation/
+STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.post-repair-packet-classification.json
+```
+
+It already identifies the exact owner-level retention seam:
+
+```text
+classification:
+RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND
+
+carrier consumption:
+receipts/sovereign-host/
+healer-sovereign-scheduler-request-consumption.latest.json
+
+embedded pointer:
+execution_result.resident_custody_root_observation_retention
+
+retained packet:
+receipts/sovereign-host/
+stegbrowser-resident-custody-root-observation.latest.json
+```
+
+The embedded retention pointer is defined to carry `packet_ref`, `packet_relative_path`, `packet_sha256`, `retained_under_root`, `retained_under_root_source`, and `packet_state`.
+
+The canonical classification explicitly records `source_side_fixable=false`, `source_side_repair_required=false`, and `classifier_action=NOT_RUN_NO_AUTHENTIC_RUNTIME_ROOT`.
+
+Exact checks of the already-referenced retained artifact paths were repository-unreachable (`404 / NOT_FOUND`). Those results are repository reachability only and are not interpreted as machine-runtime absence.
+
+No authentic retained dispatch/carrier/root evidence was observed. Therefore:
+
+```text
+RESIDENT_REQUEST_DISPATCH_VISIT
+```
+
+remains the first unsatisfied predicate. No `HEALER_RESIDENT_CONSUMER_INVOKED`, WorkerCoordinator cycle, Worker Task Admission, claim/fence, Interlock/InTr admission, Healer fenced checkpoint, ProcessWorkerAdapter projection, retained-root binding, classifier run, immutable runtime tuple, Gateway state, Master Records state, digest equality, or A1-A4 handback was promoted.
+
+No observer, exporter, runtime, request, scheduler, recovery path, measurement run, second invocation, fixed-host dependency, or second-device dependency was created.
+
+This candidate advances Task Registry generation 45 to generation 46 while retaining `ACTIVE / CHECKED_OUT`.
+
+## Manual work
+
+None.
