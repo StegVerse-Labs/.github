@@ -384,3 +384,47 @@ paid_engagement_observed: false
 ```
 
 The public URL may now be used as explanatory context in a prospect follow-up when a follow-up is otherwise commercially justified. The screenshot, route availability, page view, clicks, or publication itself do not constitute commercial validation.
+
+
+## Materially longer response interval — 2026-09-17 23:20 CDT
+
+The authenticated `rigel@stegverse.org` Outlook mailbox was re-checked using all four exact outreach subjects and broader organization/domain searches.
+
+Observed state:
+
+```text
+POVA / Western Rail: no inbound reply observed
+Integrity Rail Services: no inbound reply observed
+Panhandle Northern / OmniTRAX: no inbound reply observed
+Progress Rail: no inbound reply observed
+search-result classification: our own sent/draft copies only
+```
+
+Elapsed time at observation:
+
+```text
+POVA first-wave send: approximately 5h47m outstanding
+Integrity first-wave send: approximately 5h47m outstanding
+Panhandle Northern / OmniTRAX second-wave send: approximately 5h09m outstanding
+Progress Rail second-wave send: approximately 5h09m outstanding
+materially_longer_response_interval_elapsed: true
+reasonable_business_response_window_elapsed: false
+same_evening_observation: true
+```
+
+The longer interval is sufficient to distinguish this check from the immediate post-send observations, but same-evening silence is not classified as rejection, poor fit, unread mail, lack of authority, or lack of willingness to pay.
+
+Commercial predicates remain unchanged:
+
+```text
+problem_confirmation_observed: false
+authorized_dataset_discussion_observed: false
+paid_scope_willingness_observed: false
+authorized_decision_maker_referral_observed: false
+buyer_interest_validated: false
+paid_engagement_observed: false
+followup_justified: false
+alternative_capability_comparison_triggered: false
+```
+
+The GP10 public page remains user-observed live on `stegverse.org` and is available for explanatory context when a follow-up is otherwise justified. No follow-up was sent, no new prospect was added, and no GitHub Actions workflow was dispatched.
