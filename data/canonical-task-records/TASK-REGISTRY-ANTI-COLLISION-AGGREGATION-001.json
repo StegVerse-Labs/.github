@@ -8,13 +8,74 @@
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT",
   "cosv_task_vector": "20010000110000",
-  "source_refs": ["docs/TASK_REGISTRY_ANTI_COLLISION_AGGREGATION_MIRROR_HANDOFF.md", "scripts/evaluate_task_registry_collision_checkin.py", "StegVerse-Labs/.github#1343"],
-  "targets": {"organizations":["StegVerse-Labs"],"repositories":["StegVerse-Labs/.github"],"components":["canonical-task-registry","worker-checkout","collision-detection","supersession-disposition","session-convergence","user-action-surface-collision"]},
+  "source_refs": [
+    "docs/TASK_REGISTRY_ANTI_COLLISION_AGGREGATION_MIRROR_HANDOFF.md",
+    "scripts/evaluate_task_registry_collision_checkin.py",
+    "StegVerse-Labs/.github#1343",
+    "data/task-coordination-policy.json",
+    "data/task-registry-general-checkin-caller-policy.json",
+    "tests/test_task_registry_collision_checkin.py"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github"
+    ],
+    "components": [
+      "canonical-task-registry",
+      "worker-checkout",
+      "collision-detection",
+      "supersession-disposition",
+      "session-convergence",
+      "user-action-surface-collision",
+      "session-coordination-generation-fence"
+    ]
+  },
   "dependencies": [],
   "blockers": [],
-  "adjacent_task_refs": ["STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001","GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001"],
-  "worker_claim": {"authority":"WORKERCOORDINATOR","claim_ref":null,"fence_ref":null,"projection_only":true},
-  "completion": {"claimed":false,"validated":false,"activation_proof_complete":false},
-  "allowed_next_transitions": ["REGISTER_USER_ACTION_SURFACE_IDENTITY","ENFORCE_USER_ACTION_SURFACE_COLLISION_PRECHECK","VALIDATE_USER_ACTION_SURFACE_COLLISION_ENFORCEMENT"],
-  "authority_model": {"task_registry_mints_execution_authority":false,"worker_claim_authority":"WORKERCOORDINATOR","github_runtime_authority":"NONE","model_output_authority":false}
+  "adjacent_task_refs": [
+    "STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001",
+    "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001"
+  ],
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "activation_proof_complete": false
+  },
+  "allowed_next_transitions": [
+    "REGISTER_USER_ACTION_SURFACE_IDENTITY",
+    "ENFORCE_USER_ACTION_SURFACE_COLLISION_PRECHECK",
+    "VALIDATE_USER_ACTION_SURFACE_COLLISION_ENFORCEMENT"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "github_runtime_authority": "NONE",
+    "model_output_authority": false
+  },
+  "session_mutation_generation_fence": {
+    "state": "SOURCE_IMPLEMENTED_VALIDATION_PENDING",
+    "canonical_generation_ref": "data/canonical-task-registry.json#generation",
+    "exact_generation_match_required_before_mutation": true,
+    "stale_generation_disposition": "STOP_STALE_COORDINATION",
+    "missing_generation_disposition": "STOP_COORDINATION_GENERATION_REQUIRED",
+    "divergent_generation_disposition": "STOP_COORDINATION_GENERATION_MISMATCH",
+    "prohibited_until_reconciled": [
+      "SOURCE_WRITE",
+      "PULL_REQUEST_CREATE_OR_UPDATE",
+      "PULL_REQUEST_MERGE",
+      "NEW_HANDOFF_CLAIM"
+    ],
+    "reconciliation_required": true,
+    "github_platform_admin_bypass_prevention_claimed": false,
+    "authority_effect": "NONE_COORDINATION_ONLY"
+  }
 }
