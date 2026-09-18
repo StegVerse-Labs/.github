@@ -36,5 +36,24 @@
     "transition_authority": "Interlock/InTr",
     "public_stegcore_distribution_proven": false,
     "live_stegos_intr_execution_proven": false
+  },
+  "governance_reference_graph_source_contract": {
+    "status": "VALIDATED_MERGED",
+    "schema": "stegverse.governance-reference-graph.v1",
+    "sdk_pr": 257,
+    "sdk_merge": "9a0970cdbf3a7f7eef3dcf754a1fb00398b23721",
+    "sdk_validated_head": "9cbd772bac3eab4c3690a2e749225a2560a0275c",
+    "manifest_builder_validation_run": 35311310502,
+    "console_status": "GOVERNANCE_REFERENCE_GRAPH_CONSOLE_PASS",
+    "graph_representation_grants_authority": false,
+    "hierarchy_grants_authority": false,
+    "composition_grants_authority": false,
+    "unknown_relations_grant_authority": false,
+    "sdk_resolves_governance": false,
+    "scoped_coverage_completeness_required": true,
+    "canonical_semantic_projection_authority": "StegCore/StegGate",
+    "credential_authority": "TV/TVC",
+    "transition_authority": "Interlock/InTr",
+    "live_stegos_intr_execution_proven": false
   }
 }
