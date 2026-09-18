@@ -1,0 +1,62 @@
+name: Task Registry Collision Validation
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/evaluate_task_registry_collision_checkin.py'
+      - 'scripts/evaluate_task_registry_ai_session_checkin.py'
+      - 'scripts/validate_task_registration_substrate_resolution.py'
+      - 'schemas/canonical-task-record.schema.json'
+      - 'data/canonical-task-registry.json'
+      - 'data/canonical-task-records/TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001.json'
+      - 'tests/test_task_registry_collision_checkin.py'
+      - 'tests/test_task_registration_substrate_resolution.py'
+      - 'tests/test_task_registry_ai_session_ingress.py'
+      - 'tests/test_task_registry_general_checkin_surface_gate.py'
+      - '.github/workflows/task-registry-collision-validation.yml'
+
+permissions: {}
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Anonymous public checkout without GitHub credential token
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          git config --global --unset-all http.https://github.com/.extraheader || true
+          git init .
+          git remote add origin https://github.com/StegVerse-Labs/.github.git
+          env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "refs/pull/${PR_NUMBER}/merge"
+          git checkout --detach FETCH_HEAD
+          mkdir -p /tmp/stegverse-ci-bin
+          ln -sf "$(command -v python3)" /tmp/stegverse-ci-bin/python
+          echo /tmp/stegverse-ci-bin >> "$GITHUB_PATH"
+
+      - name: Run focused Task Registry collision tests
+        run: |
+          python -m unittest -v \
+            tests.test_task_registry_collision_checkin \
+            tests.test_task_registration_substrate_resolution \
+            tests.test_task_registry_ai_session_ingress \
+            tests.test_task_registry_general_checkin_surface_gate
+
+      - name: Validate changed task registration contract
+        run: python scripts/validate_task_registration_substrate_resolution.py
+
+      - name: Validate organization control-plane invariants
+        run: python scripts/validate_org_control_plane.py
+
+      - name: Prove validation-only authority posture
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          text=Path('.github/workflows/task-registry-collision-validation.yml').read_text(encoding='utf-8')
+          assert 'permissions: {}' in text
+          assert 'git push' not in text
+          print('TASK_REGISTRY_COLLISION_VALIDATION_NON_AUTHORIZING_PASS')
+          PY
