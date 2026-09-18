@@ -90,7 +90,9 @@
     "target_healer_worker_checkpoint_observed": false,
     "target_healer_worker_checkpoint_pointer_bound": false,
     "prompt8_first_missing_transition_identified": true,
-    "prompt8_no_downstream_runtime_promotion": true
+    "prompt8_no_downstream_runtime_promotion": true,
+    "prompt9_dispatch_reobservation_completed": true,
+    "prompt9_downstream_runtime_promotion": false
   },
   "exact_tuple_required": [
     "runtime_readiness_receipt_sha256",
@@ -128,7 +130,7 @@
       "kind": "EXACT_RUNTIME_EVIDENCE_TRANSITION",
       "state": "PENDING_AUTHENTIC_RESIDENT_DISPATCH_RECEIPT",
       "ref": "receipts/sovereign-host/resident-request-dispatch.latest.json;scripts/run_worker_runtime.py;scripts/dispatch_resident_execution_requests.py",
-      "disposition": "Observe only the existing resident-owned dispatch receipt. Require schema stegverse.resident-request-dispatch/v1 and an attempted healer_sovereign_scheduler outcome bound to scripts/consume_healer_sovereign_scheduler_request.py before promoting any later consumer, WorkerCoordinator, claim/fence, checkpoint, or ProcessWorkerAdapter transition."
+      "disposition": "Prompt 9 re-observation found no authentic resident-owned dispatch receipt. Preserve RESIDENT_REQUEST_DISPATCH_VISIT as the first unsatisfied evidence predicate; require exactly one relevant healer_sovereign_scheduler attempted machine outcome before any downstream transition may be promoted."
     },
     {
       "dependency_id": "DEP-STEG-BROWSER-HEALER-WORKER-CHECKPOINT-POINTER",
@@ -279,7 +281,8 @@
     "heartbeat_runtime/worker_runtime_legacy.py",
     "workers/healer_sovereign_scheduler_worker.py",
     "StegVerse-Labs/StegVerse-Healer:app/reusable_task_scheduler.py",
-    "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_FIRST_MISSING_RESIDENT_TRANSITION_20260917.json"
+    "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_FIRST_MISSING_RESIDENT_TRANSITION_20260917.json",
+    "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_RESIDENT_DISPATCH_REOBSERVATION_20260917.json"
   ],
   "blockers": [],
   "worker_claim": {
@@ -543,5 +546,31 @@
     "a1_a4_handback": false,
     "second_invocation_emitted": false,
     "authority_effect": "NONE_EVIDENCE_REACHABILITY_RECONCILIATION_ONLY"
+  },
+  "resident_dispatch_reobservation": {
+    "goal_prompt_count": "9/20",
+    "report_ref": "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_RESIDENT_DISPATCH_REOBSERVATION_20260917.json",
+    "registry_generation_entering": 33,
+    "owner_chain": [
+      "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+      "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+      "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
+    ],
+    "any_owner_mutated": false,
+    "global_measurement_entered": false,
+    "connected_device_count": 0,
+    "authentic_dispatch_receipt_observed": false,
+    "first_unsatisfied_predicate": "RESIDENT_REQUEST_DISPATCH_VISIT",
+    "downstream_promotion_allowed": false,
+    "classifier_run": false,
+    "exact_runtime_tuple_available": false,
+    "gateway_stage_entered": false,
+    "master_records_recorded": false,
+    "master_records_reconstruction_pass": false,
+    "digest_equality": false,
+    "a1_a4_handback": false,
+    "second_invocation_emitted": false,
+    "disposition": "PRESERVE_RESIDENT_REQUEST_DISPATCH_VISIT_AS_FIRST_UNSATISFIED_EVIDENCE_PREDICATE",
+    "authority_effect": "NONE_REOBSERVATION_ONLY"
   }
 }
