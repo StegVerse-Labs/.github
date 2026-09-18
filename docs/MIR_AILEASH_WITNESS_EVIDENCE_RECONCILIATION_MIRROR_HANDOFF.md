@@ -4,7 +4,7 @@ Updated: 2026-09-17
 Goal Task ID: `MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001`
 Parent Task ID: `MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001`
 COSV ID: `50000000100000`
-Status: `ACTIVE / APPENDIX A R4 BEHAVIOR INDEPENDENTLY REPRODUCED / OTS PROOF RETAINED PENDING`
+Status: `ACTIVE / APPENDIX A R4 BEHAVIOR INDEPENDENTLY REPRODUCED / V0.5 REVIEW ACCEPTED / SEBBI R10 CLAIM COUNTERPART-REPORTED / CLEAN-ROOM RERUN REQUESTED / OTS PROOF RETAINED PENDING`
 
 ## Goal
 
@@ -46,6 +46,23 @@ The user also retrieved a concrete OpenTimestamps proof:
 - pending calendars: Alice and Bob OpenTimestamps calendars
 
 The supplied `ots_base64` was decoded locally. It produced exactly 721 bytes; SHA-256 of those bytes exactly matched the returned proof hash, and the artifact begins with the OpenTimestamps proof header. This independently binds the retained bytes to the public response, but the proof is still pending and therefore is not Bitcoin-confirmed evidence.
+
+## Joint-review confirmation — 2026-09-17
+
+The user supplied a LinkedIn DM screenshot of Justin Dobson's response to the Evidence Custody Seam v0.5 review. Treat the communication as user-retained counterpart communication: it establishes what was said in the joint review, but it is not independent identity verification or independent runtime proof.
+
+Justin:
+
+- accepted the merge decisions, including the amendment to correction item 3;
+- agreed R10 must remain separate from append-only correction, because append-only defines how a correction is recorded while R10 provides the sealed vocabulary statement against which a meaning correction can be made;
+- proposed one addition to the version rule: material sent outside the shared document should name its base published version (for example, "review of v0.3") and must not allocate a new version number;
+- asked Richard to add a sebbi.pro Appendix A R10-fail row asserting that sealed records do not state what their field names meant at sealing time;
+- requested rerunning the 784-record / 30-commitment clean-room test with the submitter removed rather than relying on the historical-run qualification;
+- requested a naming shortlist for the neutral role term.
+
+Evidence boundary: Justin's sebbi.pro R10 assertion is currently `COUNTERPART_REPORTED`. Existing retained/public sebbi.pro evidence establishes that `self-consistent` is intentionally weaker than third-party verification and that the terminology changed from an earlier stronger label, but this lane has not yet retained a sealed historical record/commitment or source artifact proving that vocabulary-at-seal declarations are absent across the relevant history. Do not promote the proposed R10-fail row beyond counterpart-reported until that exact gap is independently inspected or retained.
+
+The clean-room rerun request is a remediation path, not completed evidence. The historical 784-record / 30-commitment run remains not independently reproduced by StegVerse and does not yet satisfy the current submitter-removal acceptance test.
 
 ## Evidence map
 
@@ -96,7 +113,13 @@ No existing registered StegBrowser arbitrary-GET/navigation reusable task was fo
 
 ## Next action
 
-Retrieve an older real OTS proof until one returns `state=confirmed` with at least one Bitcoin block height. Retain the complete proof JSON and raw `ots_base64`; independently verify the proof bytes against the returned digest using a standard OpenTimestamps client and an independently obtained Bitcoin chain/header path before promoting the Bitcoin external-time claim.
+First, inspect an authentic sebbi.pro sealed record/commitment or source path for whether vocabulary meaning is bound at seal time. If the absence is directly evidenced, promote the R10 gap narrowly and preserve the exact artifact/source reference; otherwise keep Justin's proposed Appendix A row `COUNTERPART_REPORTED`.
+
+Coordinate the requested clean-room rerun with the submitter removed. Do not promote the historical 784-record / 30-commitment run to the current Section 5 acceptance test until an authentic rerun artifact is retained and the verifier inputs demonstrate removal of the custodian, submitter, and recorded party as authorities/information sources.
+
+Provide the joint review a short neutral-role naming shortlist. Current architecture-compatible candidates are `Evidence Custodian`, `Record Custodian`, and `Evidence Recorder`; prefer terms that do not imply governance, admission, credential, or interpretive authority.
+
+Separately, retrieve an older real OTS proof until one returns `state=confirmed` with at least one Bitcoin block height. Retain the complete proof JSON and raw `ots_base64`; independently verify the proof bytes against the returned digest using a standard OpenTimestamps client and an independently obtained Bitcoin chain/header path before promoting the Bitcoin external-time claim.
 
 In parallel, reconcile the StegBrowser A1 observer/composition seam with the already-working SV002/current-Node IndexedDB binding so absence of a host filesystem Receipt #1 projection does not masquerade as registered-Node absence. Do not mutate the immutable owned-mirror nonce to carry sebbi.pro traffic.
 
