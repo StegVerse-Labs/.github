@@ -85,6 +85,12 @@ A genuinely separable evidence-reconciliation child is also registered:
 
 That child owns AILeash/sebbi.pro/Justin Dobson public-evidence reconciliation for Appendix A R4 and witness-topology claims, with canonical map `docs/mir-reference-architecture/AILEASH_SEBBI_WITNESS_EVIDENCE_MAP.md` and handoff `docs/MIR_AILEASH_WITNESS_EVIDENCE_RECONCILIATION_MIRROR_HANDOFF.md`. It must not promote operator-controlled declarations, roster counts, pending OpenTimestamps states, or profile claims into stronger independent evidence.
 
+A second genuinely separable external-architecture reconciliation child is now registered:
+
+`MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001`
+
+That child owns independent inspection of Matthew McPhillips's public AgentEnvelope derived-authority implementation and its bounded mapping to StegVerse RTG/GTG/TT/AE, Interlock/InTr, identity, and evidence-reconstruction semantics. It must not import AgentEnvelope authority, infer technical equivalence, or create duplicate StegVerse governance/custody machinery. Canonical map: `docs/mir-reference-architecture/AGENTENVELOPE_DERIVED_AUTHORITY_MAP.md`; handoff: `docs/MIR_AGENTENVELOPE_DERIVED_AUTHORITY_RECONCILIATION_MIRROR_HANDOFF.md`.
+
 ## Counterpart evidence still required
 
 Separately from canonical custody adoption, independently checkable Bitcoin anchor/inclusion evidence and authentic MIR `mir.leaf.v3` independent reproduction remain pending. The AILeash/sebbi.pro reconciliation independently observed public witness/status surfaces and their bounded disclaimers, but the exact positive live-tip Appendix A attestation and the 784-record/30-commitment clean-room run remain counterpart evidence until independently retained or reproduced.
@@ -103,3 +109,5 @@ Separately from canonical custody adoption, independently checkable Bitcoin anch
 Implementation continues under `CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001`.
 
 Evidence reconciliation continues under `MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001`: obtain one exact positive witness-attest artifact for a known peer/tip if independently reachable, and independently verify a specific confirmed OpenTimestamps/Bitcoin proof before promoting either claim. Preserve current bounded public observations otherwise.
+
+External derived-authority reconciliation continues under `MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001`: check whether deterministic re-derivation is already representable in current StegVerse evidence/verification and Master Records reconstruction schemas before any source mutation.
