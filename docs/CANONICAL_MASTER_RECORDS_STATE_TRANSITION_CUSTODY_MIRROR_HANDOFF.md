@@ -140,3 +140,8 @@ Two genuinely separable custody-owner tasks now carry the remaining source work:
 - `CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001` / `docs/CANONICAL_MASTER_RECORDS_LOCAL_ADAPTER_REPAIR_MIRROR_HANDOFF.md` / issue `StegVerse-Labs/.github#2079`: repair the separate optional local-adapter contract mismatch without relabeling the state receipt as a lifecycle request, fabricating lifecycle evidence, weakening validation, or claiming it is the immutable browser invocation path.
 
 These tasks remain custody/reconstruction work only. Interlock/InTr transition authority and TV/TVC credential authority are unchanged. Source repair does not prove authentic custody or runtime execution.
+
+
+## 2026-09-18 Healer consumer adoption correction
+
+Tracing `SHWP-HEALER-SOVEREIGN-SCHEDULER-001` exposed a direct consumer-policy mismatch: its executable handoff declared `continuity.master_records_required=false`. The Healer handoff is corrected to require canonical Master Records custody/reconstruction and to cite the existing canonical custody contract/client. This is consumer adoption of the existing authority separation, not a new custody path, and does not promote any runtime transition. The separately owned `CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001` condition remains: the optional local Python adapter must consume the canonical state-transition contract rather than the reusable-task lifecycle ingester, or fail closed on the canonical API path.
