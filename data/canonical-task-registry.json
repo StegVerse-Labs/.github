@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 39,
+  "generation": 40,
   "status": "COSV_TASK_POINTER_RUNTIME_ENFORCEMENT_SOURCE_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -2278,7 +2278,7 @@
           "kind": "EXACT_RUNTIME_EVIDENCE_TRANSITION",
           "state": "PENDING_AUTHENTIC_RESIDENT_DISPATCH_RECEIPT",
           "ref": "receipts/sovereign-host/resident-request-dispatch.latest.json;scripts/run_worker_runtime.py;scripts/dispatch_resident_execution_requests.py",
-          "disposition": "Prompt 12 re-read Task Registry generation 37 and checked only the already-authorized resident evidence surface. It still exposed zero connected devices, so the resident dispatch receipt was not sought through any alternate path. Preserve RESIDENT_REQUEST_DISPATCH_VISIT as first unsatisfied until the authorized surface becomes reachable and one authentic stegverse.resident-request-dispatch/v1 receipt proves exactly one relevant healer_sovereign_scheduler outcome with consumer_ref=scripts/consume_healer_sovereign_scheduler_request.py, attempted=true, and an authentic machine result."
+          "disposition": "Prompts 13-14 reconciled related superseded PR/branch hygiene and rechecked only the authorized resident evidence surface. All related superseded PRs are closed; five stale related branches were force-aligned to current main and verified identical because branch deletion is not exposed by the connector. The active Goal issue #2078 and shared owner issue #1260 remain open by design. The authorized resident surface still exposes zero connected devices, so no alternate receipt lookup was attempted. Preserve RESIDENT_REQUEST_DISPATCH_VISIT as first unsatisfied."
         },
         {
           "dependency_id": "DEP-STEG-BROWSER-HEALER-WORKER-CHECKPOINT-POINTER",
@@ -2832,6 +2832,108 @@
         "authority_effect": "NONE_REOBSERVATION_ONLY",
         "goal_prompt_count": "12/20",
         "session_prompt_count": 3
+      },
+      "resident_dispatch_reobservation_prompt13": {
+        "observed_on": "2026-09-18",
+        "registry_generation_entering": 39,
+        "owner_chain": [
+          "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+          "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+          "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
+        ],
+        "any_owner_mutated": false,
+        "global_measurement_entered": false,
+        "authorized_resident_surface": "Remote Desktop Commander connected-device surface",
+        "connected_device_count": 0,
+        "authorized_resident_surface_newly_reachable": false,
+        "resident_dispatch_receipt_seek_attempted": false,
+        "required_receipt_path": "receipts/sovereign-host/resident-request-dispatch.latest.json",
+        "required_receipt_schema": "stegverse.resident-request-dispatch/v1",
+        "authentic_dispatch_receipt_observed": false,
+        "first_unsatisfied_predicate": "RESIDENT_REQUEST_DISPATCH_VISIT",
+        "downstream_promotion_allowed": false,
+        "classifier_run": false,
+        "exact_runtime_tuple_available": false,
+        "gateway_stage_entered": false,
+        "master_records_recorded": false,
+        "master_records_reconstruction_pass": false,
+        "digest_equality": false,
+        "a1_a4_handback": false,
+        "second_invocation_emitted": false,
+        "evidence_semantics": "ZERO_CONNECTED_DEVICES_IS_EVIDENCE_REACHABILITY_ONLY_NOT_RUNTIME_ABSENCE",
+        "disposition": "PRESERVE_RESIDENT_REQUEST_DISPATCH_VISIT_AS_FIRST_UNSATISFIED_EVIDENCE_PREDICATE",
+        "authority_effect": "NONE_REOBSERVATION_ONLY",
+        "goal_prompt_count": "13/20",
+        "session_prompt_count": 4,
+        "coordination_hygiene": {
+          "related_prs_verified_closed": [
+            2080,
+            2082,
+            2084,
+            2088,
+            2089,
+            2093,
+            2094,
+            2095,
+            2096,
+            2099,
+            2107,
+            2109,
+            2110
+          ],
+          "active_goal_issue_preserved_open": 2078,
+          "active_global_owner_issue_preserved_open": 1260,
+          "superseded_branches_identified": [
+            "master-records-stegbrowser-prompt10-20260918",
+            "master-records-stegbrowser-prompt11-20260918",
+            "master-records-stegbrowser-prompt12-20260918",
+            "task/master-records-stegbrowser-endpoint-binding-2078-current",
+            "task/master-records-stegbrowser-endpoint-binding-2078"
+          ],
+          "branch_cleanup_method": "FORCE_ALIGN_TO_CURRENT_MAIN_BECAUSE_CONNECTOR_EXPOSES_UPDATE_REF_BUT_NOT_BRANCH_DELETE",
+          "main_sha": "6f2a3dff7e3ef56e19fd147132fbd29499f448f4"
+        }
+      },
+      "resident_dispatch_reobservation_prompt14": {
+        "observed_on": "2026-09-18",
+        "registry_generation_entering": 39,
+        "owner_chain": [
+          "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+          "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+          "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
+        ],
+        "any_owner_mutated": false,
+        "global_measurement_entered": false,
+        "authorized_resident_surface": "Remote Desktop Commander connected-device surface",
+        "connected_device_count": 0,
+        "authorized_resident_surface_newly_reachable": false,
+        "resident_dispatch_receipt_seek_attempted": false,
+        "required_receipt_path": "receipts/sovereign-host/resident-request-dispatch.latest.json",
+        "required_receipt_schema": "stegverse.resident-request-dispatch/v1",
+        "authentic_dispatch_receipt_observed": false,
+        "first_unsatisfied_predicate": "RESIDENT_REQUEST_DISPATCH_VISIT",
+        "downstream_promotion_allowed": false,
+        "classifier_run": false,
+        "exact_runtime_tuple_available": false,
+        "gateway_stage_entered": false,
+        "master_records_recorded": false,
+        "master_records_reconstruction_pass": false,
+        "digest_equality": false,
+        "a1_a4_handback": false,
+        "second_invocation_emitted": false,
+        "evidence_semantics": "ZERO_CONNECTED_DEVICES_IS_EVIDENCE_REACHABILITY_ONLY_NOT_RUNTIME_ABSENCE",
+        "disposition": "PRESERVE_RESIDENT_REQUEST_DISPATCH_VISIT_AS_FIRST_UNSATISFIED_EVIDENCE_PREDICATE",
+        "authority_effect": "NONE_REOBSERVATION_ONLY",
+        "goal_prompt_count": "14/20",
+        "session_prompt_count": 5,
+        "coordination_hygiene": {
+          "related_prs_all_closed": true,
+          "related_superseded_branches_all_identical_to_main": true,
+          "superseded_branch_ahead_behind": "0/0",
+          "active_goal_issue_preserved_open": 2078,
+          "active_global_owner_issue_preserved_open": 1260,
+          "no_superseded_issue_left_open": true
+        }
       }
     },
     {
