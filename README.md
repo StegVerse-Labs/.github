@@ -608,3 +608,10 @@ Goal Prompt 18 advances `SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001` through 
 ### SDK TT purpose-bound worker console
 
 Canonical Goal Task `SDK-TT-PURPOSE-BOUND-WORKER-CONSOLE-001` / COSV `71000000101111` is an ACTIVE child of `SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001`. It owns the public/local SDK console demonstration that starts from one TT transition cell, derives one purpose-bound worker specification, invokes one arbitrary tracked task, records materialization/execution/retirement ordering, and returns a records-only packet without claiming live StegOS/InTr materialization or creating new authority. Canonical handoff: `StegVerse-org/StegVerse-SDK:SDK_TT_PURPOSE_BOUND_WORKER_CONSOLE_MIRROR_HANDOFF.md`.
+
+
+## Task Registry session coordination generation fence
+
+Canonical Task Registry check-in now carries a monotonically increasing coordination-generation fence. A production session must bind the exact `data/canonical-task-registry.json#generation` it observed before mutation. Missing, stale, or divergent generation fails closed before ordinary collision evaluation. Until the session re-reads current GitHub canonical state and checks in again, source writes, pull-request create/update, pull-request merge, and new handoff claims are non-admissible through the canonical coordination path.
+
+This fence is coordination-only. It does not mint WorkerCoordinator claim/fence authority, Interlock/InTr transition authority, TV/TVC credentials, or Master Records reality. It also does not claim GitHub platform-level protection against an administrator or other out-of-band bypass; repository ruleset/branch-protection administration is a separate enforcement layer.
