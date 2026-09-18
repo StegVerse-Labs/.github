@@ -5,7 +5,7 @@ Canonical issue: `StegVerse-Labs/.github#1343`
 Historical implementation PR: `StegVerse-Labs/.github#1344`
 Substrate-registration enforcement PR: `StegVerse-Labs/.github#1539`
 Merged substrate-registration enforcement: `bbe00e1a1382ea8c98ae6441ff3b33f01dacc6d6`
-Status: `ACTIVE / CHECKED_OUT / REGISTRY PREFLIGHT + PORTABLE PRECLAIM ENFORCED / SESSION COORDINATION GENERATION FENCE SOURCE IMPLEMENTED / VALIDATION PENDING / USER-ACTION-SURFACE COLLISION ENFORCEMENT REMAINS`
+Status: `ACTIVE / CHECKED_OUT / REGISTRY PREFLIGHT + PORTABLE PRECLAIM ENFORCED / SESSION COORDINATION GENERATION FENCE MERGED / USER-ACTION-SURFACE COLLISION SOURCE IMPLEMENTED / VALIDATION PENDING`
 
 ## Objective
 
@@ -205,3 +205,51 @@ The repository's current GitHub `main` branch is not protected by an active requ
 ### Validation target
 
 Before merge, require focused stale/current-generation regression tests plus the normal organization-control, deterministic repository, and Heartbeat validation lanes. After merge, re-read `main` and require Task Registry generation `42` plus this handoff before treating the fence as canonical.
+
+
+## User-action/runtime-surface collision enforcement — 2026-09-18
+
+This continuation re-read current GitHub `main`, the canonical Task Registry, and this handoff before further mutation. The authoritative base had advanced from generation `42` to generation `45` at `3ad023ab017e5e7a266d2c4139fedc18c4c76d9c`, so the pre-existing action-surface branch was stale under the merged generation fence. It was reconciled before new writes by creating merge commit `93c265b59196a6ff1cf744f9581944ceea6ddcd1` with current main plus the already-authored evaluator change; the evaluator mutation was preserved rather than independently reimplemented.
+
+The branch now proposes registry generation `46` and extends the existing collision engine only. No second collision engine, scheduler, dispatcher, claim/fence authority, transition authority, credential authority, runtime, or custody path is introduced.
+
+Canonical user-action surface identity is:
+
+```text
+url_route
+device_browser_context_class
+runtime_surface
+action_type
+```
+
+Each registered or check-in-scoped surface additionally carries:
+
+```text
+surface_id
+owner_task_id
+request_id optional
+sharing = SHAREABLE | EXCLUSIVE
+```
+
+The evaluator now compares canonical registered surfaces plus `checkin_context.user_action_surfaces_under_mutation` against other active/check-out task surfaces.
+
+Disposition semantics:
+
+- identical identity with either side `EXCLUSIVE` is an incompatible collision resource;
+- if the conflicting owner is currently `CHECKED_OUT`, the existing hard-collision path yields `STOP_COLLISION`;
+- otherwise the conflict remains visible in normal collision candidates and yields `COORDINATE_CONVERGENCE`;
+- identical `SHAREABLE` + `SHAREABLE` identity is preserved as `SHAREABLE_USER_ACTION_SURFACE / blocking=false`;
+- different URL/device-browser/runtime/action identity does not collide merely because it is user-facing.
+
+Registration validation now checks ownership, sharing semantics, required fields, duplicate identities, and canonical schema shape. Focused tests cover exclusive conflict, shareable nonblocking behavior, dynamic check-in ownership, and exact-current/stale/missing/divergent registry-generation handling through both the AI-session gate and the Canonical Work caller surface.
+
+### Related PR / branch reconciliation
+
+- canonical issue `#1343` remains open because this Goal is still `ACTIVE / CHECKED_OUT` and exact-head validation/merge for this final user-action collision slice is pending;
+- stale branch `task-registry-action-surface-fence-001` was reconciled to current generation-45 main through merge commit `93c265b59196a6ff1cf744f9581944ceea6ddcd1`; it is the sole active implementation branch for this slice;
+- PR `#1760` was closed without merge as obsolete because its target Goal `STEG-BROWSER-RUNTIME-CONSUMPTION-001` is now `RETIRED / DECOMPOSED_AT_PROMPT_LIMIT` with continuation transferred to `STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001`;
+- historical merged task-registry branches/PRs remain audit history and are not active competing claims.
+
+### Validation still required before merge
+
+Require focused source tests and the broad validation lanes available to this repository. Do not promote source implementation to validated/merged until exact-head evidence exists. After validation and before merge, re-read GitHub `main` and the canonical registry generation; if either has advanced, reconcile again before merge.

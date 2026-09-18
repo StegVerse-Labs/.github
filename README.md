@@ -647,3 +647,9 @@ Canonical Goal Task `ERL-WHITE-HOUSE-PRESS-ACCESS-PRECEDENT-001` registers the S
 
 
 The canonical Master Records local-adapter child repair is merged on main via PR #2136 at `a21bbeb53e33210d4ac832f343582c02149d8c53` and reconciled back into parent `CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001`. This closes the source-contract defect only; authentic runtime Master Records custody remains unclaimed and pending under the parent path.
+
+### User-action surface anti-collision identity
+
+The canonical Task Registry collision evaluator treats mutable user/browser interaction surfaces as explicit coordination resources rather than informal instructions. A task can register or check in an exact URL/route, device/browser context class, runtime/service-worker surface, action type, owner/request identity, and `SHAREABLE` or `EXCLUSIVE` semantics. Identical surfaces involving an exclusive claimant fail closed through the existing collision disposition path before user instruction or mutation; mutually shareable surfaces remain visible but nonblocking.
+
+This is Task Registry coordination only. WorkerCoordinator remains claim/fence authority, Interlock/InTr remains transition authority, TV/TVC remains credential authority, Master Records remains observed-reality/reconstruction authority, and user-action surface metadata does not itself prove browser/runtime execution.

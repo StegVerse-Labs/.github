@@ -1,4 +1,5 @@
 import json
+import importlib.util
 import os
 import subprocess
 import sys
@@ -7,6 +8,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "evaluate_task_registry_collision_checkin.py"
 BOOTSTRAP = ROOT / "scripts" / "install_and_run_canonical_work_event_bootstrap.py"
+
+spec = importlib.util.spec_from_file_location("collision_gate", SCRIPT)
+collision_gate = importlib.util.module_from_spec(spec)
+assert spec.loader is not None
+spec.loader.exec_module(collision_gate)
 
 
 def current_registry_generation():
@@ -23,6 +29,52 @@ def run(task_id, context=None, event_ledger=None, observed_generation=None):
     p = subprocess.run([sys.executable, str(SCRIPT)], input=json.dumps(payload), text=True, capture_output=True, check=True, env=env)
     return json.loads(p.stdout)
 
+
+
+
+def action_surface(task_id, sharing):
+    return {
+        "surface_id": f"{task_id}-surface",
+        "url_route": "https://stegverse.org/runtime/launch",
+        "device_browser_context_class": "CURRENT_USER_IPHONE_SAFARI",
+        "runtime_surface": "SITE_SERVICE_WORKER",
+        "action_type": "OPEN_AND_INVOKE",
+        "owner_task_id": task_id,
+        "request_id": f"{task_id}-request",
+        "sharing": sharing,
+    }
+
+
+def test_identical_exclusive_user_action_surface_is_conflicting():
+    left = {"task_id": "LEFT", "user_action_surfaces": [action_surface("LEFT", "EXCLUSIVE")]}
+    right = {"task_id": "RIGHT", "user_action_surfaces": [action_surface("RIGHT", "SHAREABLE")]}
+    conflicts, shareable = collision_gate.user_action_surface_overlap(left, right)
+    assert len(conflicts) == 1
+    assert conflicts[0]["compatibility"] == "INCOMPATIBLE_EXCLUSIVE"
+    assert conflicts[0]["identity"]["url_route"] == "https://stegverse.org/runtime/launch"
+    assert shareable == []
+
+
+def test_identical_shareable_user_action_surface_is_nonblocking_distinction():
+    left = {"task_id": "LEFT", "user_action_surfaces": [action_surface("LEFT", "SHAREABLE")]}
+    right = {"task_id": "RIGHT", "user_action_surfaces": [action_surface("RIGHT", "SHAREABLE")]}
+    conflicts, shareable = collision_gate.user_action_surface_overlap(left, right)
+    assert conflicts == []
+    assert len(shareable) == 1
+    assert shareable[0]["compatibility"] == "SHAREABLE"
+
+
+def test_checkin_context_user_action_surface_must_be_owned_by_current_task():
+    try:
+        collision_gate.clean_context({
+            "checkin_context": {
+                "user_action_surfaces_under_mutation": [action_surface("OTHER", "EXCLUSIVE")]
+            }
+        }, "TEST_HARNESS", "CURRENT")
+    except SystemExit as exc:
+        assert "owner_task_id must equal task_id" in str(exc)
+    else:
+        raise AssertionError("wrong owner_task_id must fail closed")
 
 
 def test_stale_registry_generation_fails_closed_before_any_mutation():
