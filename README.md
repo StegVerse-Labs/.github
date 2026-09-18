@@ -607,7 +607,6 @@ Goal Prompt 18 advances `SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001` through 
 
 ### SDK TT purpose-bound worker console
 
-Canonical Goal Task `SDK-TT-PURPOSE-BOUND-WORKER-CONSOLE-001` / COSV `71000000101111` is an ACTIVE child of `SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001`. It owns the public/local SDK console demonstration that starts from one TT transition cell, derives one purpose-bound worker specification, invokes one arbitrary tracked task, records materialization/execution/retirement ordering, and returns a records-only packet without claiming live StegOS/InTr materialization or creating new authority. Canonical handoff: `StegVerse-org/StegVerse-SDK:SDK_TT_PURPOSE_BOUND_WORKER_CONSOLE_MIRROR_HANDOFF.md`.
 
 
 ## Task Registry session coordination generation fence
@@ -634,3 +633,8 @@ The standing Healer sovereign scheduler handoff now requires canonical Master Re
 `SV002-REQUEST-BOUND-EVIDENCE-RETENTION-001` is the bounded child of `STEGVERSE-002-EXPERIMENT-RERUN-001` for the isolated first-receipt evidence-loss seam. It reuses the parent's admitted EVENT_EPHEMERAL StegOS substrate and creates no second request, runtime, scheduler, listener, bridge, Site path, device prerequisite, or authority plane.
 
 StegVerse-002/.github PR #39 merged the source repair at `3a0033742b1ff311bde6c210681ab47df6b734cd`. The repair preserves a validated already-written `RERUN_REQUEST_BOUND.json` identity in the existing blocked callable result and resident executor heartbeat instead of erasing it when federation publication fails later. Authentic resident evidence remains required before the parent `REQUEST_BOUND` predicate may be promoted.
+
+
+### AgentEnvelope/MIR convergence for the purpose-bound worker runtime successor
+
+`SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` references `MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001` as non-blocking adjacent evidence. The MIR work contributes lineage, ordering, and reconstruction invariants only; authentic lifecycle proof remains owned by the existing StegAgents/WorkerCoordinator/StegCore-InTr/Master Records runtime path. Related merged PR history is reconciled, prior merged-work branch refs were aligned to current main, and the retired console task continues only to the authentic-runtime successor.
