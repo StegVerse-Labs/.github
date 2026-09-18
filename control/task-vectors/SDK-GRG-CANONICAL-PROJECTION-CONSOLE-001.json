@@ -1,0 +1,15 @@
+{
+  "schema": "stegverse.cosv-task-vector/v1",
+  "identity": "StegVerse-Labs/.github:task:SDK-GRG-CANONICAL-PROJECTION-CONSOLE-001",
+  "profile": "task.v1",
+  "task_id": "SDK-GRG-CANONICAL-PROJECTION-CONSOLE-001",
+  "vector": "71000000101110",
+  "level": "task",
+  "repository": "StegVerse-org/StegVerse-SDK",
+  "parent_task_id": "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001",
+  "evidence_refs": [
+    "data/canonical-task-records/SDK-GRG-CANONICAL-PROJECTION-CONSOLE-001.json",
+    "StegVerse-org/StegVerse-SDK:SDK_GRG_CANONICAL_PROJECTION_CONSOLE_MIRROR_HANDOFF.md"
+  ],
+  "authority_effect": "NONE"
+}
