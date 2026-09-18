@@ -49,6 +49,7 @@
   "expected_evidence_predicates": [
     "AUTHENTIC_TT_CELL_REQUEST_HASH_OBSERVED",
     "AUTHENTIC_PURPOSE_CAPABILITY_LIFETIME_TUPLE_OBSERVED",
+    "AUTHENTIC_DERIVED_LIFETIME_BUDGET_OBSERVED",
     "AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
     "AUTHENTIC_REQUIRED_WARRANT_POLICY_VERIFIED",
     "AUTHENTIC_INTR_MATERIALIZATION_ADMISSION_OBSERVED",
@@ -86,6 +87,39 @@
     "focused_regression_source_merged": true,
     "github_pr_workflow_runs_observed": false,
     "github_mergeability_before_merge": "clean",
-    "source_refinement_complete": true
+    "source_refinement_complete": true,
+    "lifetime_refinement": {
+      "steagents_pr": 22,
+      "steagents_merge": "19b83dda96cf3c1d2fd5435daf8fce67a90c6228",
+      "exact_head_ci": "PASS",
+      "production_default_seconds": null,
+      "demo_derived_seconds": 30,
+      "runtime_execution_attempted": false
+    }
+  },
+  "lifetime_model": {
+    "invariant": "WORKER_LIFETIME_IS_DERIVED_PER_INTENDED_TASK_NOT_GLOBALLY_FIXED",
+    "demonstration": {
+      "derived_max_lifetime_seconds": 30,
+      "production_default": false,
+      "components_seconds": {
+        "expected_task_execution": 6,
+        "known_delay": 4,
+        "inferred_unknown_delay_reserve": 8,
+        "records_decomposition": 7,
+        "safety_reserve": 5
+      }
+    },
+    "production": {
+      "recompute_per_task": true,
+      "cost_analysis_required": true,
+      "known_delay_required": true,
+      "inferred_unknown_delay_reserve_required": true,
+      "records_enabled_packet_decomposition_allowance_required": true,
+      "safety_reserve_required": true,
+      "early_retirement_on_purpose_completion": true,
+      "budget_extension_requires_new_governed_recalculation": true
+    },
+    "authority_effect": "NONE_LIFETIME_BUDGET_ONLY"
   }
 }

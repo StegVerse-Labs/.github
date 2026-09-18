@@ -84,6 +84,14 @@ def test_exact_purpose_capability_lifetime_tuple_is_carried_from_handoff():
     assert carried["purpose"] == candidate["purpose"]
     assert carried["required_capability"] == candidate["required_capability"] == "text.integrity_summary"
     assert carried["max_lifetime_seconds"] == candidate["max_lifetime_seconds"] == 30
+    policy = carried["lifetime_policy"]
+    assert policy["mode"] == "DERIVED_COST_TASK_DELAY_BUDGET"
+    assert policy["profile"] == "DEMONSTRATION"
+    assert policy["production_recompute_required"] is True
+    assert policy["decomposition_target"] == "RECORDS_ENABLED_PACKET"
+    assert sum(policy["time_budget_seconds"].values()) == carried["max_lifetime_seconds"]
+    assert inv["handoff"]["execution"]["lifetime_semantics"]["demo_value_is_production_default"] is False
+    assert inv["handoff"]["execution"]["lifetime_semantics"]["extension_requires_new_governed_recalculation"] is True
     assert request["worker_claim"]["worker_instance_id"] == "worker-instance:purpose-bound-test"
 
 

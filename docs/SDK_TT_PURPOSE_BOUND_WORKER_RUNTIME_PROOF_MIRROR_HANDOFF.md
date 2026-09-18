@@ -187,3 +187,24 @@ The successor carries the exact `stegverse.sdk.tt-purpose-bound-worker.v1` reque
 GitHub reported PR #2150 mergeable/clean and merged the exact head. This repository exposed no PR workflow runs or commit statuses for that head, so the source record does not promote an automated `.github` CI result that was not observed. Focused regression source is merged; authentic runtime evidence remains entirely unclaimed.
 
 The first remaining runtime prerequisite is inherited from `STEGAGENTS-GOVERNED-RUNTIME-001`: authentic resident custody-root reachability followed by a fresh WorkerCoordinator claim/fence. Until those existing prerequisites are observed, this task must not attempt or claim authentic worker materialization, InTr admission, task execution, retirement, or Master Records reconstruction.
+
+
+## Derived lifetime semantics — Goal Prompt 4
+
+The 30-second lifetime in the deterministic demonstration is **not** a production worker-lifetime rule. It is the computed result of this explicit demonstration budget:
+
+```text
+expected task execution                 6 s
+known delay                             4 s
+inferred unknown-delay reserve          8 s
+records-enabled packet decomposition    7 s
+safety reserve                          5 s
+                                      ----
+derived demonstration maximum          30 s
+```
+
+The request now carries `lifetime_policy.mode=DERIVED_COST_TASK_DELAY_BUDGET`. Production must recompute lifetime per intended task from task cost/work analysis, known delay, an explicitly stated inferred reserve for unknown delay, the allowance needed to decompose the worker into the records-enabled packet, and a safety reserve. There is no global production lifetime default.
+
+The budget is an upper bound, not permission to remain live. Purpose completion or bounded failure may retire/decompose the worker earlier. Budget exhaustion closes the purpose; extension requires a newly governed recalculation. The lifetime calculation itself grants no WorkerCoordinator claim/fence, StegCore/InTr admission, TV/TVC warrant, runtime execution, or Master Records truth.
+
+StegAgents PR #22 merged this fail-closed validation at `19b83dda96cf3c1d2fd5435daf8fce67a90c6228` after CI, Test Readiness, and Cross-Agent Authority Validation all passed. Authentic runtime execution remains unattempted.

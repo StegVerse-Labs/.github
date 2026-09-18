@@ -622,6 +622,8 @@ Canonical Goal Task `SDK-TT-PURPOSE-BOUND-WORKER-CONSOLE-001` / COSV `7100000010
 
 The stronger authentic-runtime continuation is canonical Goal Task `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` / COSV `71000000111111`. Its minimum source refinement is merged: StegAgents PR #21 (`4363333520f381370b7ae8f93b88a98bf8526aeb`) plus `.github` PR #2150 (`00d5cadd3048dc1e44d8877a65ddc1ebf8fc6a29`) reuse the existing `stegagents-governed-runtime-worker` and `process:stegagents-governed-runtime-v1` path for exact TT purpose/capability/lifetime carriage and records-only lifecycle validation. Authentic resident execution remains pending the existing `STEGAGENTS-GOVERNED-RUNTIME-001` resident-root/WorkerCoordinator prerequisites; no competing runtime, scheduler, dispatcher, WorkerCoordinator, credential authority, evidence authority, or second user-operated-device dependency is introduced. Canonical handoff: `docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md`.
 
+Worker lifetime is derived per intended purpose rather than globally fixed. The 30-second deterministic demonstration is a computed example from expected task execution + known delay + inferred unknown-delay reserve + records-enabled packet decomposition + safety reserve. Production must recompute those inputs from the task/cost analysis; purpose completion may retire earlier, and extending an exhausted budget requires a new governed recalculation. StegAgents PR #22 (`19b83dda96cf3c1d2fd5435daf8fce67a90c6228`) enforces the derivation fail closed. Lifetime calculation itself is non-authorizing.
+
 
 ## Healer state-transition custody requirement
 
