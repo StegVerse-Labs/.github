@@ -1141,3 +1141,46 @@ This candidate advances Task Registry generation 36 to generation 37 while retai
 ## Manual work
 
 None.
+
+
+## Goal prompt 12: authorized resident surface remains unreachable
+
+Session Prompt Count: 3. Goal Prompt Count: 12/20.
+
+Task Registry generation 37, this handoff, and the three canonical runtime-evidence owner records were re-read first. The owner chain remains unchanged:
+
+```text
+GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001
+-> STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001
+-> STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001
+```
+
+No owner was mutated or duplicated and `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001` was not entered.
+
+The already-authorized resident evidence surface was checked directly and again exposed zero connected devices. This is evidence-reachability only and is not evidence that sovereign runtime is absent.
+
+Because that authorized surface did not become newly reachable, no attempt was made to seek:
+
+```text
+receipts/sovereign-host/resident-request-dispatch.latest.json
+schema: stegverse.resident-request-dispatch/v1
+```
+
+through any alternate surface, broad source search, exporter, observer, runtime, request, scheduler, recovery path, or measurement run.
+
+`RESIDENT_REQUEST_DISPATCH_VISIT` therefore remains the first unsatisfied evidence predicate. No `HEALER_RESIDENT_CONSUMER_INVOKED` or any later transition was promoted. The required future receipt still must prove exactly one relevant outcome with:
+
+```text
+consumer = healer_sovereign_scheduler
+consumer_ref = scripts/consume_healer_sovereign_scheduler_request.py
+attempted = true
+result = authentic machine result
+```
+
+No second StegBrowser invocation, fixed-host dependency, second-device dependency, Gateway stage, Master Records state, classifier run, immutable runtime tuple, or A1-A4 handback was introduced or promoted.
+
+This candidate advances Task Registry generation 37 to generation 38 while retaining `ACTIVE / CHECKED_OUT`.
+
+## Manual work
+
+None.
