@@ -677,6 +677,8 @@ The bounded child `SV002-REQUEST-BOUND-EVIDENCE-RETENTION-001` now includes the 
 
 Goal Prompt 20 closes the source/console scope of `SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001` and retires `SDK-GRG-CANONICAL-PROJECTION-CONSOLE-001`. SDK PR #265 passed exact-head validation and merged as `af1be4f9d9b3635912f8e085cbfe8ed922602d83`. Authentic SDK-to-live StegOS/InTr execution transfers unchanged to `SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001`, reusing the existing resident dispatcher and `run_evaluator_governance_manifest` seam. No live runtime proof is claimed. `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` remains a separate downstream consumer.
 
+The SDK evaluator governance-posture runtime-proof successor reuses the canonical resident request dispatcher through the bounded `sdk_evaluator_governance_posture` consumer. It accepts only an already-materialized exact evaluator manifest, invokes `run_evaluator_governance_manifest`, and retains Interlock/InTr posture-binding evidence; source registration and GitHub validation do not prove resident execution.
+
 ### SDK product-processing provenance
 
 Canonical Goal Task `SDK-PRODUCT-PROCESSING-PROVENANCE-001` / COSV `71000000101000` owns the generic non-authorizing SDK result attribution contract. It projects per-product processing scope, input/output bindings, evidence refs, authority effect, and explicit `NOT_OBSERVED` states into SDK results without creating a second evaluator, runtime, Interlock/InTr plane, worker, custody store, or credential authority. Canonical implementation handoff: `StegVerse-org/StegVerse-SDK/SDK_PRODUCT_PROCESSING_PROVENANCE_MIRROR_HANDOFF.md`.
