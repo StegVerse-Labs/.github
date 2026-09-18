@@ -226,3 +226,59 @@ alternative_capability_comparison_triggered: false
 ```
 
 No follow-up email, new prospect, speculative infrastructure, GP10 implementation, or routine GitHub Actions run was added in this observation.
+
+
+## Public GP10 service page source and deployment — 2026-09-17
+
+A separate prospect-facing page has been created from the existing bounded paid field-validation offer without exposing the operational GP10 workspace.
+
+Canonical Site surfaces:
+
+```text
+public source: StegVerse-Labs/Site/gp10-field-validation.html
+intended route: https://stegverse.org/gp10-field-validation.html
+discovery surface: StegVerse-Labs/Site/what-we-do.html
+Site handoff: StegVerse-Labs/Site/docs/GP10_PUBLIC_SERVICE_PAGE_MIRROR_HANDOFF.md
+```
+
+Source evidence:
+
+```text
+public page commit: f09cd593bde999cfd98b74bf042db6d2f6ebba0a
+What We Do discovery-link commit: 15782d8b0773bfde973da09102a724635f16e596
+Site README commit: cdaeb020f51f15060de0d30bf5789dcad7a93ba1
+Site workspace-isolation handoff commit: 242d62a06088d81837a44c412a9af0dc0b6ce5b6
+Site public-page deployment handoff commit: bfeef1cfcc22bfabb1d49cd0cd203a500548dfa4
+GP10 README commit: d2e5fd27d9928eabb3c6465bb1d428cd21f04c8c
+GP10 handoff commit: 2b307062a493b272c1af0c83d6c257c71eac5ee0
+```
+
+Native Pages publication evidence:
+
+```text
+run: 35305152499
+head: 242d62a06088d81837a44c412a9af0dc0b6ce5b6
+build job: 105475731048 / success
+deploy job: 105475763615 / success
+Deploy to GitHub Pages: success
+```
+
+The source head contains the new page, public discovery link, README reconciliation, public-page handoff, and workspace-isolation reconciliation. No task-specific workflow was manually dispatched.
+
+Evidence boundary:
+
+```text
+public_page_source_created: true
+native_pages_deployment_success: true
+custom_domain_served_body_observed: false
+workspace_exposed: false
+workspace_noindex_unlisted_preserved: true
+new_backend_or_upload_service: false
+commercial_predicates_promoted_from_publication: none
+```
+
+The page explains customer-authorized inputs, provenance/conflict preservation, bounded deliverables, explicit exclusions, scope-before-price terms, and a request-review email CTA. It does not claim locomotive identity beyond supplied evidence, safety/regulatory/emissions/service compliance, fitment, legal approval, pricing validity/profitability, or repair/retrofit/commissioning/purchase/release authority.
+
+The existing `gp10-workspace.html` and `gp10-workspace-examples.html` remain unlisted, `noindex,nofollow,noarchive`, browser-local, and non-authorizing. The public service page contains no path into those workspace surfaces.
+
+Public-page source or Pages deployment does not establish buyer interest, field evidence, recipient reading, paid scope, revenue, or execution authority.
