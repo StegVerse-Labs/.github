@@ -4,7 +4,7 @@ Updated: 2026-09-18
 Goal Task ID: `MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001`
 Parent Task ID: `MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001`
 COSV ID: `50000000100000`
-Status: `ACTIVE / APPENDIX A R4 BEHAVIOR INDEPENDENTLY REPRODUCED / V0.6 REVIEW RECEIVED / SEBBI R10 PORTABILITY GAP SOURCE-INSPECTED / R6-LINKED PUBLICATION PATH INSPECTED WITHOUT FULL HISTORICAL PROMOTION / CLEAN-ROOM RERUN INTENDED / OTS PROOF RETAINED PENDING`
+Status: `ACTIVE / APPENDIX A R4 BEHAVIOR INDEPENDENTLY REPRODUCED / V0.6 REVIEW RECEIVED / RICHARD R10 EVIDENCE-CLASS ACKNOWLEDGMENT RECEIVED / V0.7 EVIDENCE-CLASS REVISION PLANNED_NOT_PUBLISHED / SEBBI R10 PORTABILITY GAP SOURCE-INSPECTED / R6-LINKED PUBLICATION PATH INSPECTED WITHOUT FULL HISTORICAL PROMOTION / CLEAN-ROOM RERUN INTENDED / OTS PROOF RETAINED PENDING`
 
 ## Goal
 
@@ -47,6 +47,28 @@ Therefore the current StegVerse evidence supports a narrow source-inspected find
 Disposition: do not reject v0.6 or reopen R10. Preserve Justin's operator-disclosed `NOT MET` row as counterpart disclosure, but if the appendix is intended to read as independently evidenced conformance status, either:
 1. add the R6-linked publication evidence showing the vocabulary was not durably published alongside the scheme, or
 2. phrase A.2 as operator-disclosed nonconformance pending independent R6/vocabulary verification.
+
+## Richard Whitney follow-up on Appendix A.2 — user-retained counterpart communication
+
+The user supplied screenshots of the Evidence Custody Seam review thread containing Richard Whitney's response to the v0.6 evidence-status point.
+
+Richard explicitly states that:
+
+- the user's reading of R10 is correct: the MUST is publication alongside the R6 scheme, while carrying vocabulary in the artifact is the SHOULD;
+- the Appendix preamble already classifies both R10 failures as operator disclosures, but that evidence-class label does not travel clearly enough to the individual row;
+- the A.2 stated reason, "sealed records do not state what their field names meant at the time of sealing," establishes the artifact condition/SHOULD gap but does not establish whether a durable R6-linked publication existed;
+- A.1's "no published statement" reason reaches the MUST, whereas the current A.2 reason does not;
+- he has asked Justin directly whether any durable vocabulary publication tied to the R6 scheme covered commitments sealed before the rename;
+- evidence class will be placed in every Appendix row in the next document revision, which Richard identifies as v0.7 when published.
+
+Evidence classification:
+
+- Richard's statements are `USER_RETAINED_COUNTERPART_COMMUNICATION`;
+- they independently corroborate the StegVerse reading of the current v0.6 text as a joint-review interpretation, but they do not independently establish the historical sebbi.pro publication fact;
+- v0.7 is `PLANNED_NOT_PUBLISHED` until an authentic published/shared v0.7 artifact is observed;
+- Justin's answer to the R6-linked historical-publication question is not yet present in the supplied screenshots.
+
+Naming remains unchanged: Richard also states that `custodian` should remain unless Justin identifies a specific privacy-regime collision not already resolved by the definition/non-claims. No such collision is established in the supplied screenshots.
 
 ## R6-linked historical publication inspection — 2026-09-18
 
@@ -94,4 +116,4 @@ Canonical evidence map: `docs/mir-reference-architecture/AILEASH_SEBBI_WITNESS_E
 
 For joint review, accept the v0.6 merge structure and naming treatment. Raise only the narrow Appendix A.2 evidence-status clarification: operator-disclosed `NOT MET` is fine as disclosure, but independent conformance classification requires confirming the R6-linked historical vocabulary publication path. Do not reopen settled R1-R10 text.
 
-Preserve the current bounded R10 disposition unless a durable historical v1.1/v1.2 scheme-linked vocabulary publication artifact becomes independently retrievable. Then coordinate the submitter-removed clean-room rerun and retain authentic artifacts before promoting the Section 5 current-test predicate.
+Preserve the current bounded R10 disposition. Next, observe Justin's answer to Richard's explicit historical R6-linked vocabulary-publication question and the authentic published/shared v0.7 revision when available. Treat Richard's planned per-row evidence-class change as not yet published until the artifact is observed. Separately, coordinate the submitter-removed clean-room rerun and retain authentic artifacts before promoting the Section 5 current-test predicate.
