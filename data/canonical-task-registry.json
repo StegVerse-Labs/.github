@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 34,
+  "generation": 35,
   "status": "COSV_TASK_POINTER_RUNTIME_ENFORCEMENT_SOURCE_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -1721,7 +1721,7 @@
       "root_correlation_id": "HYGIENE-CAUSAL-ROOTS-001",
       "parent_task_id": null,
       "goal": "Clean the StegVerse ecosystem from causal roots outward so downstream repositories are not repeatedly re-contaminated by upstream branch, workflow, issue, and task-generation debt; reconcile stale repository lifecycle state through canonical owners before destructive sink cleanup.",
-      "coordination_state": "PROPOSED",
+      "coordination_state": "RETIRED",
       "work_priority_class": "ECOSYSTEM_RECONCILIATION",
       "source_refs": [
         "docs/REPOSITORY_HYGIENE_MIRROR_HANDOFF.md",
@@ -1753,7 +1753,15 @@
           "debt-regeneration-prevention"
         ]
       },
-      "dependencies": [],
+      "dependencies": [
+        {
+          "dependency_id": "DEP-PROMPT-LIMIT-RUNTIME-EVIDENCE-HANDOFF",
+          "kind": "COORDINATION",
+          "state": "RESOLVED_BY_EXISTING_STANDING_CARRIER",
+          "ref": "control/resident-execution-request.d/healer-sovereign-scheduler-001.json;handoffs/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json;docs/HYGIENE_CANONICAL_WORK_PORTABLE_DISPATCH_CARRIER_BINDING_MIRROR_HANDOFF.md",
+          "disposition": "GOAL_RETIRED_AT_PROMPT_LIMIT_WITH_RUNTIME_EVIDENCE_PENDING; EXISTING STANDING HEALER REQUEST REMAINS ELIGIBLE; NO NEW SUCCESSOR TASK OR EXECUTION PATH CREATED"
+        }
+      ],
       "blockers": [],
       "systemic_incident_ref": null,
       "adjacent_task_refs": [
@@ -1804,13 +1812,24 @@
       "completion": {
         "claimed": false,
         "validated": false,
-        "reconciliation_ref": null
+        "reconciliation_ref": "docs/REPOSITORY_HYGIENE_MIRROR_HANDOFF.md",
+        "runtime_evidence_pending": true,
+        "authentic_projected_healer_checkpoint_observed": false,
+        "canonical_work_continue_observed": false,
+        "workercoordinator_claim_fence_observed": false,
+        "interlock_intr_admission_observed": false,
+        "source_defect_proven": false,
+        "retired_by_prompt_limit_closeout": true,
+        "standing_healer_request_preserved": true
       },
       "allowed_next_transitions": [
-        "INGRESS_ADMITTED"
+        "CONTINUE_EXISTING_STANDING_HEALER_RUNTIME_EVIDENCE"
       ],
       "handoff_projection_refs": [
-        "docs/REPOSITORY_HYGIENE_MIRROR_HANDOFF.md"
+        "docs/REPOSITORY_HYGIENE_MIRROR_HANDOFF.md",
+        "StegVerse-Labs/StegVerse-Healer:docs/HYGIENE_CANONICAL_WORK_PORTABLE_DISPATCH_CARRIER_BINDING_MIRROR_HANDOFF.md",
+        "control/resident-execution-request.d/healer-sovereign-scheduler-001.json",
+        "handoffs/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json"
       ],
       "authority_model": {
         "task_registry_mints_execution_authority": false,
@@ -1887,7 +1906,10 @@
         "external_device_required": false,
         "second_user_operated_device_allowed": false,
         "authority_effect": "NONE"
-      }
+      },
+      "checkout_state": "PROMPT_LIMIT_RUNTIME_EVIDENCE_PENDING",
+      "successor_task_ids": [],
+      "status_reason": "GOAL_PROMPT_COUNT_20_REACHED_WITH_AUTHENTIC_HEALER_PROJECTED_CHECKPOINT_AND_CONTINUE_CHAIN_UNOBSERVED; SOURCE_DEFECT_NOT_PROVEN; EXISTING_STANDING_HEALER_CARRIER_PRESERVED"
     },
     {
       "schema": "stegverse.canonical-task-record/v1",
