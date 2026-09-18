@@ -11,7 +11,8 @@
     "StegVerse-002/.github:docs/SELF_CHARACTERIZATION_EXECUTION_SURFACE_MIRROR_HANDOFF.md",
     "StegVerse-002/.github@3a0033742b1ff311bde6c210681ab47df6b734cd",
     "StegVerse-002/.github:resident-runtime/resident_executor.py",
-    "StegVerse-002/.github:resident-runtime/invoke_sv002_experiment_rerun.py"
+    "StegVerse-002/.github:resident-runtime/invoke_sv002_experiment_rerun.py",
+    "StegVerse-002/.github@70d5179f543b6954b6c574d66fcd9675fcbec79c"
   ],
   "targets": {
     "organizations": [
@@ -45,6 +46,12 @@
       "ref": "StegVerse-002/.github@3a0033742b1ff311bde6c210681ab47df6b734cd"
     },
     {
+      "dependency_id": "DEP-SV002-REQUEST-BOUND-MASTER-RECORDS-CUSTODY-REPAIR",
+      "kind": "EVIDENCE",
+      "state": "RESOLVED",
+      "ref": "StegVerse-002/.github@70d5179f543b6954b6c574d66fcd9675fcbec79c"
+    },
+    {
       "dependency_id": "DEP-SV002-AUTHENTIC-REQUEST-BOUND-OBSERVATION",
       "kind": "RUNTIME_PREDICATE",
       "state": "UNRESOLVED",
@@ -59,7 +66,8 @@
   "existing_evidence_refs": [
     "StegVerse-002/.github@3a0033742b1ff311bde6c210681ab47df6b734cd",
     "StegVerse-002/.github:docs/SELF_CHARACTERIZATION_EXECUTION_SURFACE_MIRROR_HANDOFF.md",
-    "master-records/orchestration:SV002_SELF_CHARACTERIZATION_RECONSTRUCTION_MIRROR_HANDOFF.md"
+    "master-records/orchestration:SV002_SELF_CHARACTERIZATION_RECONSTRUCTION_MIRROR_HANDOFF.md",
+    "StegVerse-002/.github@70d5179f543b6954b6c574d66fcd9675fcbec79c"
   ],
   "expected_evidence_predicates": [
     "REQUEST_BOUND_EVIDENCE_LOSS_REPAIR_MERGED",
@@ -69,7 +77,10 @@
     "REQUEST_BOUND_FIELDS_VALIDATED",
     "REQUEST_BOUND_SAME_EXECUTION_CORRELATED",
     "NO_SECOND_REQUEST",
-    "NO_NEW_RUNTIME_OR_AUTHORITY_SURFACE"
+    "NO_NEW_RUNTIME_OR_AUTHORITY_SURFACE",
+    "REQUEST_BOUND_CANONICAL_STATE_RECEIPT_EMITTED",
+    "REQUEST_BOUND_MASTER_RECORDS_RECORDED",
+    "REQUEST_BOUND_MASTER_RECORDS_RECONSTRUCTION_PASS"
   ],
   "runtime_requirements": {
     "capabilities": [
