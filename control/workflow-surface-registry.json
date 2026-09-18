@@ -85,12 +85,6 @@
       "classification": "KEEP_STANDALONE_EXCEPTION",
       "owner": "SHWP-SV002-ACTION-TRANSITION-EVIDENCE-001 / .github#2060",
       "reason": "focused source-only validation for connected versus event-ephemeral execution-surface discovery and operation-specific callable ownership; GitHub Actions has no runtime authority and this workflow cannot materialize a Node, mint Interlock/InTr admission, WorkerCoordinator claim/fence, principal execution, or Master Records evidence"
-    },
-    {
-      "path": ".github/workflows/task-registry-collision-validation.yml",
-      "classification": "KEEP_STANDALONE_EXCEPTION",
-      "owner": "TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001 / .github#1343",
-      "reason": "focused non-authorizing source validation for Task Registry generation fencing and user-action surface collision semantics; permissions remain empty and the workflow grants no runtime, claim/fence, transition, credential, browser, custody, or completion authority"
     }
   ],
   "removed_in_hygiene_batch_1": [
@@ -134,12 +128,12 @@
   "invariant": "Every repository-authored workflow file must be explicitly registered before merge/push. Unregistered workflow proliferation fails closed; registration is classification evidence, not approval to retain the workflow permanently.",
   "completion_condition": "Every registered surface is KEEP_STABLE_DISPATCHER, KEEP_STANDALONE_EXCEPTION with evidence, CONSOLIDATE_INTO_STABLE_DISPATCHER, TRANSFER_TO_STEGVERSE_WORKER, ELIMINATE, or terminally removed; REVIEW_REQUIRED/BLOCKED states are zero unless supported by active ownership.",
   "completion_evidence": {
-    "live_workflow_count": 14,
+    "live_workflow_count": 13,
     "stable_dispatchers": [
       ".github/workflows/org-control-plane-validate.yml",
       ".github/workflows/heartbeat-worker-project.yml"
     ],
-    "non_dispatcher_count": 12,
+    "non_dispatcher_count": 11,
     "preferred_target_satisfied": false,
     "runtime_authority_effect": "NONE",
     "credential_authority": "TV/TVC"
