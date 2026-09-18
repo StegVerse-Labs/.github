@@ -99,6 +99,12 @@ class TaskRegistrationSubstrateResolutionTests(unittest.TestCase):
         self.assertIn("changed_task_records", source)
         self.assertNotIn("added_task_records(base_ref)", source)
 
+    def test_pr_base_resolution_prefers_synthetic_merge_first_parent(self):
+        source = SCRIPT.read_text(encoding="utf-8")
+        self.assertIn('["git", "rev-list", "--parents", "-n", "1", "HEAD"]', source)
+        self.assertIn("current_merge_base = parents[1]", source)
+        self.assertIn("pull_request.base.sha can lag current main", source)
+
 
 
     def test_user_action_surface_registration_accepts_exact_owner_and_exclusive_semantics(self):
