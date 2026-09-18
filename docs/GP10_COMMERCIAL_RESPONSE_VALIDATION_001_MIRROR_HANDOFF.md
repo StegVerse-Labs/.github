@@ -428,3 +428,35 @@ alternative_capability_comparison_triggered: false
 ```
 
 The GP10 public page remains user-observed live on `stegverse.org` and is available for explanatory context when a follow-up is otherwise justified. No follow-up was sent, no new prospect was added, and no GitHub Actions workflow was dispatched.
+
+
+## Business-day gate check — 2026-09-17 23:47 CDT
+
+The next continuation explicitly required at least one normal business-day response opportunity before another Outlook re-check.
+
+Current local time was independently resolved as:
+
+```text
+2026-09-17T23:47:36-05:00
+```
+
+That condition had not elapsed. Only about 27 minutes had passed since the prior 23:20 CDT observation, and all four outreach messages were still within the same calendar evening as their sends.
+
+Therefore:
+
+```text
+business_day_response_opportunity_elapsed: false
+outlook_recheck_performed: false
+outlook_recheck_skip_reason: EXPLICIT_BUSINESS_DAY_GATE_NOT_YET_ELAPSED
+prior_no_reply_observation_preserved: true
+problem_confirmation_observed: false
+authorized_dataset_discussion_observed: false
+paid_scope_willingness_observed: false
+authorized_decision_maker_referral_observed: false
+buyer_interest_validated: false
+paid_engagement_observed: false
+followup_justified: false
+alternative_capability_comparison_triggered: false
+```
+
+No mailbox polling, follow-up message, new prospect, technical work, or GitHub Actions run was performed. The next admissible mailbox observation remains gated until at least one normal business-day response opportunity has actually passed.
