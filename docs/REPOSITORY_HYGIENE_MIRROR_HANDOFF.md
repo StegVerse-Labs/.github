@@ -556,3 +556,42 @@ For `HYGIENE-CAUSAL-ROOTS-001`, use only the already-existing resident files in 
 The portable bridge does not currently emit the reusable lifecycle's standardized `runner-result` file; the reusable trigger may therefore terminalize that child as bounded completion-evidence reconciliation even when the bridge itself returned successfully. This is not classified as a defect without an authentic resident child receipt proving that the existing resident dispatch receipts failed to retain the required canonical result. The existing bridge writes `resident-refresh-dispatch.latest.json` and `resident-request-dispatch.latest.json` under the same resident root, and those existing receipts are the canonical proof surface for the exact Task Registry disposition.
 
 Direct probes at generation 32 found no authentic projected Healer checkpoint, no outer Healer consumption receipt, no hygiene child reusable receipt, and no hygiene resident request-dispatch evidence exposed through GitHub/source. No connected Remote Desktop surface was available, which remains evidence reachability only. Therefore no authentic boundary before `CONTINUE` was observed and no source repair is authorized. WorkerCoordinator claim/fence and Interlock/InTr admission remain unrecognized for this Goal.
+
+
+## 2026-09-17 generation-32 first-checkpoint direct re-observation
+
+The corrected first authentic resident surface was re-observed directly at Task Registry generation 32. The Goal remained `PROPOSED / ECOSYSTEM_RECONCILIATION`, with `runtime_resolution=null`, WorkerCoordinator `claim_ref/fence_ref=null`, and allowed next transition `INGRESS_ADMITTED`.
+
+Direct authenticated probes found no retained repository copy of the first pointer-bearing resident checkpoint:
+
+```text
+receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json
+```
+
+and no retained repository copies of the same-cycle supporting resident receipts:
+
+```text
+receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json
+receipts/sovereign-host/resident-request-dispatch.latest.json
+receipts/sovereign-host/resident-refresh-dispatch.latest.json
+```
+
+The corresponding checkpoint/dispatch paths were also absent from the Healer repository where applicable. Organization-wide search returned only source contracts, tests, handoffs, canonical reports, and historical absence records; none was an authentic resident checkpoint, child reusable trigger receipt, or same-root dispatch receipt.
+
+The required proof chain therefore remains unentered:
+
+```text
+FENCED_PROCESS_ADAPTER_ALLOW_PROJECTION
+-> projected Healer checkpoint
+-> exact RT-CANONICAL-WORK-PORTABLE-DISPATCH-001 outcome
+-> tracking_task_id HYGIENE-CAUSAL-ROOTS-001
+-> COSV 10100000100000
+-> existing receipt_ref
+-> same-root resident-request-dispatch.latest.json
+-> EXACT_SELECTOR canonical_work_coordination
+-> current_goal_task_id HYGIENE-CAUSAL-ROOTS-001
+-> selected_task_id HYGIENE-CAUSAL-ROOTS-001
+-> considered[HYGIENE-CAUSAL-ROOTS-001].disposition == CONTINUE
+```
+
+No connected Remote Desktop surface was available during this observation; that remains evidence reachability only and does not change runtime/substrate state or require another device. Because no authentic checkpoint or child receipt exposed a concrete boundary before `CONTINUE`, no existing-path defect was evidenced and no source/runtime/scheduler/dispatcher/request/exporter/browser/Site/StegCore/authority mutation is authorized. The standing recurring Healer request remains the sole existing machine-owned carrier.
