@@ -634,3 +634,8 @@ The standing Healer sovereign scheduler handoff now requires canonical Master Re
 `SV002-REQUEST-BOUND-EVIDENCE-RETENTION-001` is the bounded child of `STEGVERSE-002-EXPERIMENT-RERUN-001` for the isolated first-receipt evidence-loss seam. It reuses the parent's admitted EVENT_EPHEMERAL StegOS substrate and creates no second request, runtime, scheduler, listener, bridge, Site path, device prerequisite, or authority plane.
 
 StegVerse-002/.github PR #39 merged the source repair at `3a0033742b1ff311bde6c210681ab47df6b734cd`. The repair preserves a validated already-written `RERUN_REQUEST_BOUND.json` identity in the existing blocked callable result and resident executor heartbeat instead of erasing it when federation publication fails later. Authentic resident evidence remains required before the parent `REQUEST_BOUND` predicate may be promoted.
+
+
+### SDK evaluator governance posture runtime proof
+
+Goal Prompt 20 closes the source/console scope of `SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001` and retires the stale source/console child `SDK-GRG-CANONICAL-PROJECTION-CONSOLE-001`. PR #265 was exact-head validated by runs 35384562705, 35384562692, and 35384562751 and merged as `af1be4f9d9b3635912f8e085cbfe8ed922602d83`. Authentic SDK-to-live StegOS/InTr execution remains independently runtime-bound and is transferred unchanged to `SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001`, which must reuse the existing resident dispatcher and `run_evaluator_governance_manifest` seam. No live runtime proof is claimed by this registration. The TT purpose-bound worker runtime proof remains a separate downstream consumer and does not own or duplicate this runtime seam.
