@@ -280,3 +280,141 @@ Re-observe the unchanged existing browser invocation only from an authority-owne
 ## Manual work
 
 None.
+
+
+## Goal prompt 3: first authority-owned runtime evidence owner
+
+Session Prompt Count: 9. Goal Prompt Count: 3/20.
+
+### Current canonical truth
+
+The current Task Registry was re-read before this continuation. Concurrent canonical work had advanced it beyond the supplied generation 25; the exact current-main generation entering the final reconciliation was 27. This Goal remained exactly one `ACTIVE / CHECKED_OUT` row under COSV `40000100100000`; the immutable nonce, requested invocation count `1`, no-second-request rule, no-Render rule, and all authentic custody completion predicates remained unchanged/false.
+
+No authority-owned same-nonce runtime record was observed for:
+
+```text
+STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z
+receipts/sovereign-host/stegbrowser-runtime-connection-a1-a4.latest.json
+RUNTIME_READY_FOR_WORKERCOORDINATOR
+```
+
+No custody POST was attempted and no runtime predicate was promoted.
+
+### First missing seam is before Gateway discovery
+
+Current Site browser source `stegos-bootstrap/canonical-work-runtime-consumption.js` blob `e1375dd916fcd779b04b5041906138f9b9ac02f5` directly reads the registered StegOS Node from the existing browser registration and binds the unchanged invocation to:
+
+```text
+indexeddb://stegos-node-v1/meta/registration
+node_id
+interlock_id
+registration_receipt_sha256
+```
+
+The same browser path then performs current-device InTr admission and can continue into the existing EVENT_EPHEMERAL runtime to produce `RUNTIME_READY_FOR_WORKERCOORDINATOR`.
+
+Therefore the first authentic evidence seam is:
+
+```text
+REGISTERED_STEGVERSE_NODE_BOUND_TO_INVOCATION
++ exact same-nonce runtime event
+```
+
+A provider-neutral Service Gateway advertisement is downstream of that tuple. It cannot be the first missing predicate because there is not yet an authentic browser runtime/custody receipt to send through the relay.
+
+### Existing native dispatcher repair is already present
+
+Current `scripts/dispatch_resident_execution_requests.py` already forwards `STEGVERSE_NODE_GENESIS_RECEIPT` as a non-secret locator. That prior repair prevents an already-present Receipt #1 path from being stripped.
+
+It does **not** turn browser IndexedDB into a host file and does not prove that the exact current browser Receipt #1 is available to the native observer. No second Receipt #1 resolver is authorized.
+
+### Existing canonical owner
+
+The existing ownership hierarchy for the first missing seam is:
+
+```text
+StegVerse-Labs/StegOS#23
+  Node genesis / Receipt #1 architectural owner
+
+STEGOS-DEVICE-CONTINUITY-001 / StegOS#19
+  durable device-continuity owner
+
+StegOS#347
+  browser-independent exact retained continuity/genesis recovery owner
+  PR #348 merged as 42c36278e1832fa8214bf50710ae033f8678f3f1
+```
+
+PR #348's canonical recovery contract validates an optional retained Node projection containing the exact Node ID, Interlock ID, device-binding SHA, canonical genesis Receipt #1, and Node-binding receipt digest. It explicitly forbids minting a replacement Node/root and requires separate authentic Interlock/InTr + TV/TVC recovery admission.
+
+This recovery contract is **not** a prerequisite when the originating browser executor can directly read its own registered Node. It is only the already-existing authority-owned recovery path when that browser-local registration is not directly observable.
+
+### Existing #351 carrier is not made mandatory
+
+StegOS #351 owns a same-iPhone persistent browser-independent continuity carrier. Its canonical handoff remains runtime-unproven. This Goal does not make #351, NetworkExtension, TestFlight, a standing app, a second machine, or any specific platform carrier a prerequisite to ordinary StegBrowser execution.
+
+No #351 runtime evidence is promoted here.
+
+### GADI current-iPhone receipt readback is not Receipt #1
+
+The existing GADI current-iPhone read surface and `.github` observer were inspected:
+
+```text
+StegOS GET /api/resident-rendezvous/v1/evidence/current-iphone-discovery
+.github scripts/observe_gadi_current_iphone_discovery_receipt.py
+blob d50514091590ada8ec66bd4981a1437967d06f04
+```
+
+That surface authenticates a current `SV-NODE-*` resident-rendezvous discovery observation and its receipt/envelope commitments. It does not carry `stegos.node_handoff_receipt.v1`, the exact browser registration Interlock/device-binding genesis tuple, or the immutable invocation runtime event. It may not be substituted for Receipt #1.
+
+Historical StegOS #23 first-node/iPod evidence likewise may not be substituted for the exact current immutable invocation.
+
+### CMC-029 and Gateway ordering
+
+CMC-029 remains applicable only if the ultimately chosen provider-neutral candidate needs public browser-trusted HTTPS. It is not a fixed-host prerequisite.
+
+Correct evidence order is now explicit:
+
+```text
+exact current browser Receipt #1 / registered Node
+-> same-nonce InTr + EVENT_EPHEMERAL runtime event
+-> exact runtime-readiness/custody tuple
+-> hash-valid health-valid provider-neutral StegVerse Gateway advertisement
+-> credential-nonexporting relay
+-> sole master-records/orchestration
+-> RECORDED + reconstruction_status=PASS
+-> browser receipt digest == Master Records receipt digest == reconstructed digest
+-> hand same invocation to existing A1-A4 owner
+```
+
+### Evidence disposition
+
+```text
+exact current browser Receipt #1 authority readback = NOT OBSERVED
+exact same-nonce runtime event = NOT OBSERVED
+verified Gateway advertisement for this submission = UNENTERED
+Master Records RECORDED = false
+Master Records reconstruction PASS = false
+exact tuple digest equality = false
+second invocation emitted = false
+immutable request mutated = false
+A3 entered = false
+A4 entered = false
+Round Trip 1 entered = false
+```
+
+Observation/reconciliation report:
+`reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_AUTHORITY_OWNER_RECONCILIATION_20260917.json`
+
+This reconciliation advances the candidate Task Registry from generation 27 to generation 28 while retaining `ACTIVE / CHECKED_OUT`.
+
+### Next evidence boundary
+
+Re-observe the existing browser executor first. If it exposes its authentic registered Node and same-nonce `RUNTIME_READY_FOR_WORKERCOORDINATOR` event, continue the already-existing custody chain without recovery.
+
+If the originating browser registration is not directly authority-observable, consume only an authentic, already-admitted StegOS #347 recovery result containing the exact retained genesis Receipt #1. Do not synthesize the recovery capsule/admission, do not require #351, and do not create another observer/resolver/runtime.
+
+Only after the exact A1/A2 tuple exists should this Goal test the provider-neutral Gateway advertisement and Master Records reconstruction.
+
+## Manual work
+
+None.

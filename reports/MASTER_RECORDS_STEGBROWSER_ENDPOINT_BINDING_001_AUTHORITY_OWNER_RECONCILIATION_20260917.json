@@ -1,0 +1,105 @@
+{
+  "schema": "stegverse.master-records-stegbrowser-endpoint-binding-authority-owner-reconciliation/v1",
+  "goal_task_id": "MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001",
+  "cosv_task_vector": "40000100100000",
+  "observed_on": "2026-09-17",
+  "goal_prompt_count": "3/20",
+  "registry_generation_entering": 27,
+  "immutable_invocation": {
+    "nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+    "requested_invocation_count": 1,
+    "second_request_allowed": false,
+    "request_mutation_allowed": false
+  },
+  "authentic_context_observation": {
+    "exact_same_nonce_runtime_event_observed": false,
+    "exact_browser_registered_node_receipt_1_observed_by_authority_owned_continuation": false,
+    "retained_a1_a4_receipt_observed": false,
+    "master_records_recorded_pass_observed": false,
+    "custody_submission_attempted": false,
+    "second_invocation_emitted": false,
+    "runtime_predicate_promoted": false
+  },
+  "first_missing_authority_owned_runtime_evidence_seam": {
+    "predicate": "REGISTERED_STEGVERSE_NODE_BOUND_TO_INVOCATION",
+    "description": "Authority-owned visibility of the exact current browser registration / Receipt #1 and the same-nonce runtime event before Gateway or Master Records evidence can be evaluated.",
+    "reason_first": "The existing browser executor directly reads the StegOS Node registration from IndexedDB and cannot construct the later exact runtime/custody tuple without that authentic registration and event. Gateway advertisement is downstream.",
+    "browser_source": {
+      "ref": "StegVerse-Labs/Site:stegos-bootstrap/canonical-work-runtime-consumption.js",
+      "blob_sha": "e1375dd916fcd779b04b5041906138f9b9ac02f5",
+      "receipt_ref": "indexeddb://stegos-node-v1/meta/registration",
+      "directly_binds": [
+        "node_id",
+        "interlock_id",
+        "registration_receipt_sha256"
+      ],
+      "same_nonce": true
+    }
+  },
+  "existing_canonical_owner": {
+    "parent_node_owner": "StegVerse-Labs/StegOS#23",
+    "device_continuity_owner": "STEGOS-DEVICE-CONTINUITY-001 / StegVerse-Labs/StegOS#19",
+    "browser_independent_recovery_owner": "StegVerse-Labs/StegOS#347",
+    "recovery_contract_pr": 348,
+    "recovery_contract_merge": "42c36278e1832fa8214bf50710ae033f8678f3f1",
+    "recovery_module": "StegVerse-Labs/StegOS:stegos/device_continuity_recovery.py",
+    "recovery_contract_role": "OPTIONAL_AUTHORITY_OWNED_RECOVERY_WHEN_ORIGINATING_BROWSER_REGISTRATION_IS_NOT_DIRECTLY_AVAILABLE",
+    "browser_execution_prerequisite": false,
+    "persistent_carrier_owner": "StegVerse-Labs/StegOS#351",
+    "persistent_carrier_runtime_state": "SIGNED_ENTITLED_RUNTIME_NOT_YET_PROVEN",
+    "persistent_carrier_mandatory_for_ordinary_browser_path": false,
+    "second_user_operated_machine_required": false
+  },
+  "rejected_substitutions": {
+    "gadi_current_iphone_receipt_readback": {
+      "ref": "StegVerse-Labs/.github:scripts/observe_gadi_current_iphone_discovery_receipt.py",
+      "blob_sha": "d50514091590ada8ec66bd4981a1437967d06f04",
+      "state_role": "READ_ONLY_RESIDENT_RENDEZVOUS_DISCOVERY_EVIDENCE",
+      "why_not_receipt_1": "It validates SV-NODE resident-rendezvous observation/digests, not stegos.node_handoff_receipt.v1 and does not supply the exact browser registration interlock/device-binding genesis tuple.",
+      "substitute_for_receipt_1": false
+    },
+    "historical_stegos_node": {
+      "ref": "StegVerse-Labs/StegOS#23",
+      "why_not_current_a1": "Historical first-node evidence is not the exact current immutable invocation registration/runtime event.",
+      "substitute_for_current_invocation": false
+    },
+    "service_gateway_observation": {
+      "why_not_first": "A verified provider-neutral Gateway advertisement is required only after the browser has an authentic same-invocation runtime/custody receipt to submit.",
+      "remains_downstream": true
+    },
+    "cmc029_public_webpki": {
+      "mandatory_fixed_host_prerequisite": false,
+      "role": "Only applicable to a chosen public browser-trusted HTTPS candidate when needed."
+    }
+  },
+  "already_repaired_native_dispatcher_seam": {
+    "locator": "STEGVERSE_NODE_GENESIS_RECEIPT",
+    "current_dispatcher_forwards_locator": true,
+    "source": "StegVerse-Labs/.github:scripts/dispatch_resident_execution_requests.py",
+    "meaning": "The dispatcher no longer strips an already-present Receipt #1 locator. This does not materialize browser IndexedDB Receipt #1 into a host file or prove A1."
+  },
+  "reconciliation_disposition": {
+    "add_new_observer": false,
+    "add_new_executor": false,
+    "add_new_request": false,
+    "add_new_gateway": false,
+    "add_new_resident_runtime": false,
+    "add_new_host": false,
+    "add_new_device_dependency": false,
+    "modify_stegos_recovery_owner": false,
+    "bind_goal_to_existing_owner_only": true,
+    "owner_dependency_is_observation_fallback_not_browser_execution_prerequisite": true
+  },
+  "downstream_gates": {
+    "verified_provider_neutral_gateway_advertisement": "UNENTERED_UNTIL_AUTHENTIC_BROWSER_RUNTIME_EVENT",
+    "authoritative_master_records_recorded": "UNENTERED",
+    "authoritative_master_records_reconstruction_pass": "UNENTERED",
+    "exact_browser_receipt_reconstruction_digest_equality": "UNENTERED",
+    "handback_to_a1_a4_owner": false,
+    "a3_entered": false,
+    "a4_entered": false,
+    "round_trip_1_entered": false
+  },
+  "next_evidence_boundary": "First seek the existing browser executor's authentic registration + same-nonce RUNTIME_READY_FOR_WORKERCOORDINATOR event. If the originating browser context is not directly observable, consume only an already-authentic StegOS #347 governed recovery result containing the exact retained genesis Receipt #1; do not make #351 mandatory or synthesize recovery. Only after that exact A1/A2 tuple exists proceed to verified provider-neutral Gateway advertisement and canonical Master Records custody.",
+  "authority_effect": "NONE_RECONCILIATION_ONLY"
+}
