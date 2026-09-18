@@ -106,6 +106,22 @@ def build_request(task: Mapping[str, Any]) -> dict[str, Any]:
             "fencing_token": timing["fencing_token"],
             "worker_id": task.get("worker_id"),
         },
+        "purpose_bound_worker_request": {
+            "schema": "stegverse.sdk.tt-purpose-bound-worker.v1",
+            "transition_cell": {
+                "cell_id": "tt-cell-purpose-worker-001",
+                "protocol_version": "runtime-proof-v1",
+                "pre_state": {"worker_live": False},
+                "candidate": {
+                    "operation_id": "tracked-task-001",
+                    "operation_class": "ARBITRARY_TRACKED_TASK",
+                    "purpose": "Analyze a supplied text payload for a tracked integrity summary.",
+                    "required_capability": "text.integrity_summary",
+                    "max_lifetime_seconds": 30,
+                    "payload": {"text": "StegVerse tracks this arbitrary local worker task."},
+                },
+            },
+        },
         "code_repair_request": {
             "intent": "Prove the first complete governed CodeRepair-001 proposal-only roundtrip without applying repository changes.",
             "language": "python",
@@ -157,6 +173,7 @@ def retain_result(root: Path, task: Mapping[str, Any], request: Mapping[str, Any
         "result": dict(result),
         "result_sha256": sha256_uri(result),
         "worker_claim": dict(request["worker_claim"]),
+        "purpose_bound_worker": result.get("purpose_bound_worker"),
         "proposal_only": result.get("proposal_only") is True,
         "execution_authority": result.get("execution_authority"),
         "self_authorization_allowed": result.get("self_authorization_allowed"),
@@ -222,6 +239,17 @@ def run(invocation: Mapping[str, Any]) -> dict[str, Any]:
     require(result.get("credential_authority") == "TV/TVC", "provider credential authority drift")
     require(result.get("credential_material_present") is False, "provider credential material exposed to StegAgents")
     warrant_policy_binding = validate_warrant_policy_binding(result)
+    purpose_bound = result.get("purpose_bound_worker")
+    require(isinstance(purpose_bound, Mapping), "purpose-bound worker context missing")
+    source_request = request["purpose_bound_worker_request"]
+    source_cell = source_request["transition_cell"]
+    expected_cell_hash = sha256_uri(source_cell)
+    require(purpose_bound.get("transition_cell_hash") == expected_cell_hash, "purpose-bound TT cell hash mismatch")
+    require(purpose_bound.get("purpose") == source_cell["candidate"]["purpose"], "purpose-bound purpose mismatch")
+    require(purpose_bound.get("required_capability") == source_cell["candidate"]["required_capability"], "purpose-bound capability mismatch")
+    require(purpose_bound.get("max_lifetime_seconds") == source_cell["candidate"]["max_lifetime_seconds"], "purpose-bound lifetime mismatch")
+    require((purpose_bound.get("scope") or {}).get("operation_id") == source_cell["candidate"]["operation_id"], "purpose-bound scope mismatch")
+    require(purpose_bound.get("authority_effect") == "NONE_CONTEXT_BINDING_ONLY", "purpose-bound authority drift")
     governance = result.get("governance")
     require(isinstance(governance, Mapping), "governance result missing")
     require(governance.get("chain_verified") is True, "governance chain not verified")
