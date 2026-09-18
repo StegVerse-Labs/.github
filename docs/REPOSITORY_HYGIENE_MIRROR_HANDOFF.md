@@ -478,3 +478,31 @@ The merged row binds tracking task `HYGIENE-CAUSAL-ROOTS-001`, COSV `10100000100
 Exact-head Healer Test Readiness run `35305308087` / job `105476184831` passed. Its deterministic suite ran 150 tests and explicitly executed both `HygieneCanonicalWorkScheduleTests` methods. This is source/configuration validation only.
 
 Post-merge evidence search found no retained `RT-CANONICAL-WORK-PORTABLE-DISPATCH-001` trigger receipt, no hygiene Task Registry `CONTINUE`, no WorkerCoordinator claim/fence, and no `INGRESS_ADMITTED` transition. This is therefore an authentic resident-execution evidence boundary, not a newly proven source defect. The existing Healer carrier remains the first eligible authentic invocation surface; GitHub/CI/source state cannot substitute for its resident receipt.
+
+
+## 2026-09-17 standing Healer resident-cycle evidence observation
+
+This continuation re-read current canonical state at Task Registry generation 31 and the existing Healer carrier binding before attempting any further repair. `HYGIENE-CAUSAL-ROOTS-001` remains `PROPOSED / ECOSYSTEM_RECONCILIATION`, with `runtime_resolution=null`, WorkerCoordinator `claim_ref/fence_ref=null`, and allowed next transition `INGRESS_ADMITTED`.
+
+The standing Healer request remains the existing recurring resident ingress:
+
+```text
+RESIDENT-EXEC-HEALER-SOVEREIGN-SCHEDULER-001
+-> EACH_ELIGIBLE_RESIDENT_SCHEDULER_CYCLE
+-> SHWP-HEALER-SOVEREIGN-SCHEDULER-001
+-> existing Healer sovereign scheduler
+-> RT-REUSABLE-TASK-SCHEDULER-001
+-> RT-CANONICAL-WORK-PORTABLE-DISPATCH-001
+```
+
+The authoritative existing runtime evidence seam is already canonicalized by the shared runtime-evidence reconciliation:
+
+```text
+<resident-root>/receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json
+-> execution_result.resident_custody_root_observation_retention
+-> packet_ref / packet_relative_path / packet_sha256 / retained_under_root / retained_under_root_source / packet_state
+```
+
+The current canonical classification is `RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND`, explicitly records `defect_source_side_fixable=false` and `source_side_repair_required=false`, and prohibits substituting source checkout, CI output, synthetic materialization targets, or an unbound path for an authentic resident root. Accessible evidence still does not expose the authentic resident carrier consumption receipt, embedded retention pointer, retained root packet, or scheduler checkpoint. The standing request therefore remains eligible; no failed runtime or device/substrate condition is inferred from the missing evidence surface.
+
+No authentic reusable trigger/runner receipt or retained hygiene Task Registry `CONTINUE` disposition was observed, so WorkerCoordinator claim/fence and Interlock/InTr admission remain unrecognized. Because the authentic carrier did not expose a recorded boundary before `CONTINUE`, this continuation found no newly evidenced existing-path source defect to repair and made no runtime/scheduler/dispatcher/request/Site/StegCore/authority mutation.
