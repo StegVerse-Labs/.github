@@ -91,7 +91,7 @@
     "new_master_records_authority_created": false,
     "authentic_runtime_execution_claimed": false,
     "authority_effect": "NONE_SOURCE_CARRIAGE_ONLY",
-    "latest_reconciled_registry_generation": 49,
+    "latest_reconciled_registry_generation": 50,
     "stegagents_merge": "9ba16a39436686235e4dee965d29936364577f9c",
     "stegagents_exact_head_validation": {
       "head": "f1bca87f85c29e58280557e69b6eba8e88765bb2",
@@ -114,6 +114,21 @@
       ]
     },
     "generation_49_change_scope": "UNRELATED_STEGBROWSER_EVIDENCE_LANE",
-    "github_carrier_validation_state": "FOCUSED_EXACT_HEAD_VALIDATION_REQUIRED"
+    "github_carrier_validation_state": "FOCUSED_EXACT_HEAD_VALIDATION_IN_PROGRESS",
+    "generation_50_change_scope": "UNRELATED_MASTER_RECORDS_LOCAL_ADAPTER_RECONCILIATION",
+    "focused_validation_history": [
+      {
+        "head": "1f772b89b2a577a9973c1cb5c54645d8dc183adf",
+        "run_id": 35399988778,
+        "result": "HARNESS_FAIL_NO_TEST_DEFECT",
+        "detail": "unittest runner discovered zero pytest-style tests"
+      },
+      {
+        "head": "d218af04fddeb697795262e8275626768660f57c",
+        "run_id": 35400075630,
+        "result": "CARRIER_TEST_PASS_WORKFLOW_SELF_AUDIT_FAIL",
+        "detail": "4 pytest tests passed; validation-only self-audit was self-referential"
+      }
+    ]
   }
 }
