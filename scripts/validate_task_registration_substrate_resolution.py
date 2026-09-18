@@ -20,6 +20,16 @@ REVIEW_ORDER = [
 ]
 DISPOSITIONS = {"SELECTED", "SUITABLE", "PENDING_EVIDENCE", "UNSUITABLE", "NOT_APPLICABLE"}
 LIMITATIONS = {"NONE", "EVIDENCE_REACHABILITY", "ARCHITECTURAL", "AUTHORITY", "PLATFORM", "NOT_APPLICABLE"}
+USER_ACTION_SHARING = {"SHAREABLE", "EXCLUSIVE"}
+USER_ACTION_REQUIRED_FIELDS = (
+    "surface_id",
+    "url_route",
+    "device_browser_context_class",
+    "runtime_surface",
+    "action_type",
+    "owner_task_id",
+    "sharing",
+)
 
 
 def fail(message: str) -> None:
@@ -30,7 +40,45 @@ def runtime_capable(record: dict) -> bool:
     return isinstance(record.get("runtime_requirements"), dict)
 
 
+def validate_user_action_surfaces(record: dict) -> None:
+    rows = record.get("user_action_surfaces")
+    if rows is None:
+        return
+    task_id = str(record.get("task_id") or "<unknown>")
+    if not isinstance(rows, list):
+        fail(f"{task_id}: user_action_surfaces must be an array")
+    seen = set()
+    for row in rows:
+        if not isinstance(row, dict):
+            fail(f"{task_id}: every user action surface must be an object")
+        extras = set(row) - (set(USER_ACTION_REQUIRED_FIELDS) | {"request_id"})
+        if extras:
+            fail(f"{task_id}: unsupported user action surface fields: {sorted(extras)}")
+        for key in USER_ACTION_REQUIRED_FIELDS:
+            value = row.get(key)
+            if not isinstance(value, str) or not value.strip():
+                fail(f"{task_id}: user action surface {key} must be a non-empty string")
+        if row["owner_task_id"] != task_id:
+            fail(f"{task_id}: user action surface owner_task_id must equal task_id")
+        if row["sharing"] not in USER_ACTION_SHARING:
+            fail(f"{task_id}: user action surface sharing must be SHAREABLE or EXCLUSIVE")
+        request_id = row.get("request_id")
+        if request_id is not None and (not isinstance(request_id, str) or not request_id.strip()):
+            fail(f"{task_id}: user action surface request_id must be null or non-empty string")
+        identity = (
+            row["url_route"],
+            row["device_browser_context_class"],
+            row["runtime_surface"],
+            row["action_type"],
+            row["surface_id"],
+        )
+        if identity in seen:
+            fail(f"{task_id}: duplicate user action surface identity")
+        seen.add(identity)
+
+
 def validate_resolution(record: dict) -> None:
+    validate_user_action_surfaces(record)
     if not runtime_capable(record):
         return
     task_id = str(record.get("task_id") or "<unknown>")
@@ -127,6 +175,31 @@ def github_pr_base_ref() -> str | None:
     pr = event.get("pull_request")
     if not isinstance(pr, dict):
         return None
+
+    # Validation workflows intentionally checkout refs/pull/<n>/merge. The event's
+    # pull_request.base.sha can lag current main when the PR remains open while
+    # unrelated canonical work advances. Prefer the synthetic merge commit's first
+    # parent, which is the exact current base used to construct the tested merge.
+    commit_text = subprocess.run(
+        ["git", "cat-file", "-p", "HEAD"],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=True,
+    ).stdout
+    parents = [line.split()[1] for line in commit_text.splitlines() if line.startswith("parent ")]
+    if len(parents) >= 2:
+        current_merge_base = parents[0]
+        probe = subprocess.run(["git", "cat-file", "-e", f"{current_merge_base}^{{commit}}"], cwd=ROOT)
+        if probe.returncode != 0:
+            subprocess.run(
+                ["git", "fetch", "--depth=1", "origin", current_merge_base],
+                cwd=ROOT,
+                check=True,
+                env={k: v for k, v in os.environ.items() if k not in {"GITHUB_TOKEN", "GH_TOKEN"}},
+            )
+        return current_merge_base
+
     base_sha = str(((pr.get("base") or {}).get("sha") or "")).strip()
     if not base_sha:
         return None
