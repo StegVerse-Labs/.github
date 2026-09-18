@@ -578,3 +578,98 @@ This candidate reconciliation advances Task Registry generation 28 to 29 while r
 ## Manual work
 
 None.
+
+
+## Goal prompt 5: resident carrier pointer seam
+
+Session Prompt Count: 11. Goal Prompt Count: 5/20.
+
+### Current canonical truth
+
+Task Registry generation 29 and this handoff were re-read first. This Goal remained exactly one `ACTIVE / CHECKED_OUT` row under COSV `40000100100000`. The immutable nonce remains `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z`; requested invocation count remains `1`; no second request or request mutation is allowed.
+
+The shared runtime-evidence owner remains `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001` in `ACTIVE / CLAIMED_INTEGRATION`. This Goal did not mutate that owner and did not enter `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001`.
+
+The exact StegBrowser observation/remediation owners remain `STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001` and `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`; neither was mutated.
+
+### Current machine-owned evidence seam
+
+The newest canonical post-repair classification narrows the existing machine-owned seam to:
+
+```text
+RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND
+```
+
+Authorized resident evidence chain:
+
+```text
+<resident-root>/receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json
+-> execution_result
+-> resident_custody_root_observation_retention
+-> packet_ref / packet_relative_path / packet_sha256
+-> retained_under_root / retained_under_root_source / packet_state
+```
+
+The embedded pointer targets:
+
+```text
+receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json
+```
+
+No new export repair is required or permitted.
+
+### Observation result
+
+An organization-wide exact-name search found only source/classification references for the resident scheduler consumption receipt and embedded retention pointer. No authentic resident copy of `healer-sovereign-scheduler-request-consumption.latest.json` was observed through accessible evidence surfaces.
+
+The latest visible historical Healer Test Readiness run `34891841481` exposes zero artifacts. Current Healer source still embeds the retention pointer, but source/CI does not prove runtime execution.
+
+Accordingly:
+
+```text
+authentic resident carrier consumption receipt observed = false
+embedded retained-packet pointer observed = false
+resident custody root packet observed = false
+resident custody root observed = false
+receipt reachability classified = false
+exact current browser Receipt #1 observed = false
+same-nonce RUNTIME_READY_FOR_WORKERCOORDINATOR observed = false
+authentic StegOS #347 recovery result observed = false
+```
+
+### Classifier disposition
+
+The existing non-authorizing classifier `scripts/check_stegbrowser_runtime_consumption_receipts.py` was **not run** because no exact authentic resident root was observed.
+
+Its only admissible trigger remains:
+
+```text
+authentic resident scheduler consumption receipt
+-> execution_result.resident_custody_root_observation_retention
+-> packet_state == RESIDENT_CUSTODY_ROOT_OBSERVED
+-> exactly one authentic retained root
+```
+
+Running it against source checkout, CI, a synthetic materialization target, or an unbound path would violate the evidence contract.
+
+### Downstream custody remains unentered
+
+The immutable invocation's exact Node/Interlock/Receipt-1/lease/runtime/export tuple is still unavailable, so this prompt did not enter Gateway validation, relay submission, Master Records custody, `RECORDED`, reconstruction `PASS`, digest equality, A1-A4 handback, A3, A4, or Round Trip 1.
+
+No second invocation was emitted.
+
+### Owner projection note
+
+The remediation task record still carries the older broad `current_exact_defect = AUTHENTIC_RUNTIME_CONNECTION_TRANSITION_AND_INTR_INGRESS_NOT_YET_OBSERVED`, while its newer canonical post-repair classification packet and #1866 Prompt 11 identify `RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND`.
+
+This Goal does not repair or mutate that claimed owner. It consumes the owner's newest canonical classification as coordination evidence only.
+
+Observation/reconciliation report:
+
+`reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_RESIDENT_CARRIER_POINTER_RECONCILIATION_20260917.json`
+
+This candidate advances Task Registry generation 29 to generation 30 while retaining `ACTIVE / CHECKED_OUT`.
+
+## Manual work
+
+None.
