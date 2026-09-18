@@ -647,3 +647,6 @@ Canonical Goal Task `ERL-WHITE-HOUSE-PRESS-ACCESS-PRECEDENT-001` registers the S
 
 
 The canonical Master Records local-adapter child repair is merged on main via PR #2136 at `a21bbeb53e33210d4ac832f343582c02149d8c53` and reconciled back into parent `CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001`. This closes the source-contract defect only; authentic runtime Master Records custody remains unclaimed and pending under the parent path.
+
+
+Canonical Master Records local-adapter source repair is merged by PR #2136 at `a21bbeb53e33210d4ac832f343582c02149d8c53` and retired under `CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001`. The parent custody Goal remains ACTIVE for authentic runtime `RECORDED + reconstruction_status=PASS` evidence; source merge and CI do not satisfy that runtime predicate.

@@ -72,3 +72,10 @@ The merged worker blob `e944b3b1b94710ef21ed5eb283bd18dc86b7b14e` and focused-te
 Superseded PR `#2125` is closed and must not be merged.
 
 This closes only the local-adapter source defect. No authentic resident transition or Master Records runtime custody event is claimed. Runtime custody remains owned by the existing parent canonical custody path.
+
+
+## 2026-09-18 merge reconciliation
+
+Replacement PR `#2136` merged as `a21bbeb53e33210d4ac832f343582c02149d8c53` after generation-47 exact-head automatic runs `35398748609` and `35398748520` completed SUCCESS. The merged worker/test blobs exactly match the focused-validated blobs from run `35393803641`, job `105757920409` (3/3 focused tests plus py_compile PASS).
+
+The child is source-repair complete and retired. This does not claim any authentic runtime transition was written to Master Records.
