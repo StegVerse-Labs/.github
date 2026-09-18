@@ -622,3 +622,8 @@ This fence is coordination-only. It does not mint WorkerCoordinator claim/fence 
 Canonical Goal Task `SDK-TT-PURPOSE-BOUND-WORKER-CONSOLE-001` / COSV `71000000101111` is `RETIRED / COMPLETED`. SDK PR #266 merged the local console path as `f0c3296650018d9cf298fa392c48315331a575fe`; dedicated validation proved the deterministic `MATERIALIZED -> INVOCATION_STARTED -> TASK_COMPLETED -> RETIRED` chain, records-only output, and `worker_live_after_close=false`. This completion is source/local semantic proof only and claims no authentic resident worker materialization.
 
 The stronger authentic-runtime continuation is canonical Goal Task `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` / COSV `71000000111111`. It must reuse `STEGAGENTS-GOVERNED-RUNTIME-001`, WorkerCoordinator, StegCore/InTr, TV/TVC where required, and Master Records. It may not create a competing runtime, scheduler, dispatcher, WorkerCoordinator, credential authority, evidence authority, or second user-operated-device dependency. Canonical handoff: `docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md`.
+
+
+## Healer state-transition custody requirement
+
+The standing Healer sovereign scheduler handoff now requires canonical Master Records custody for every observed governed Healer state transition. The worker checkpoint remains `receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json`, but checkpoint persistence alone is not sufficient for machine-owned progression: the existing canonical state-transition custody contract must record the transition in Master Records and exact reconstruction must return PASS. Interlock/InTr remains transition authority; Master Records remains custody/reconstruction only.
