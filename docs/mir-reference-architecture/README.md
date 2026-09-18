@@ -18,7 +18,7 @@ Current discipline:
 - counterpart/operator claims remain attributed until independently evidenced;
 - the Appendix A R4 exact positive live-tip behavior is independently reproduced for one retained peer/tip;
 - sebbi.pro's historical witness vocabulary portability gap is source-inspected;
-- sebbi.pro's blanket R10 `NOT MET` status is preserved as operator disclosure but is not independently promoted until the R6-linked historical vocabulary publication path is checked;
+- sebbi.pro's R6-linked historical vocabulary publication path has now been inspected: current source says the witness `/spec` route and consolidated reader-facing vocabulary were added in v1.3 after the v1.1 `confirmed` commitments and v1.2 rename, which strongly corroborates the operator-disclosed gap; because the older upstream commit/history needed to exclude every other durable historical publication surface is not currently retrievable, blanket R10 `NOT MET` remains operator-disclosed rather than independently promoted;
 - `custodian` remains the canonical neutral role term; `historical custodian` and `personal-record custodian` are established StegVerse usages;
 - the historical 784-record / 30-commitment clean-room run does not satisfy the later submitter-removal test retroactively; v0.6 states a rerun is intended;
 - OpenTimestamps pending/submission state is not Bitcoin confirmation;
