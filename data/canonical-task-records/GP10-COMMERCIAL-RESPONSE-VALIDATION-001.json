@@ -111,6 +111,14 @@
     "gp10_public_service_page_workspace_exposed": false,
     "gp10_public_service_page_workspace_isolation_preserved": true,
     "gp10_public_service_page_backend_added": false,
-    "gp10_public_service_page_routine_actions_dispatched": false
+    "gp10_public_service_page_routine_actions_dispatched": false,
+    "gp10_public_service_page_site_claim_released": true,
+    "gp10_public_service_page_site_claim_release_commit": "bb787f3a04c47637a572aaae49aba4e71090f520",
+    "gp10_public_service_page_static_boundary_validation": true,
+    "gp10_public_service_page_indexable": true,
+    "gp10_public_service_page_contact_cta_present": true,
+    "gp10_public_service_page_discovery_link_present": true,
+    "gp10_public_service_page_links_workspace": false,
+    "gp10_workspace_noindex_preserved": true
   }
 }
