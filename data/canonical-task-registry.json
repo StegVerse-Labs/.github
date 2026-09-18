@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 46,
+  "generation": 47,
   "status": "SESSION_MUTATION_GENERATION_FENCE_SOURCE_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -3847,7 +3847,7 @@
         "stegverse_applicability_finding_authorized": false
       },
       "prompt_budget": {
-        "goal_prompt_count": "1/20",
+        "goal_prompt_count": "2/20",
         "predecessor_goal_prompt_count_final": "20/20",
         "predecessor_task_id": "SS-EVIDENCE-COMPARISON-001",
         "decomposition_reason": "NEW_SUBSTANTIVE_ERL_LEGISLATIVE_AUTHORITY_BOUNDARY_RESEARCH_IS_SEPARABLE_FROM_COMPLETED_STEGSOCIALS_EVIDENCE_ARCHITECTURE_PARENT",
@@ -3861,6 +3861,15 @@
           "StegVerse-Labs/Executive_Rhetoric_Ledger/README.md",
           "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/AI_EMERGENCY_CLARITY_AUTHORITY_BOUNDARY_MIRROR_HANDOFF.md"
         ]
+      },
+      "session_close": {
+        "observed_at": "2026-09-18",
+        "disposition": "CLEAN_HANDOFF",
+        "erl_source_merge": "StegVerse-Labs/Executive_Rhetoric_Ledger@622f3ca28bbedf313ebddc1efa3926572ce8d831",
+        "erl_handoff_merge": "StegVerse-Labs/Executive_Rhetoric_Ledger@0fc6d832379fddc50a906f607efa75873e594f4c",
+        "handoff_ref": "StegVerse-Labs/Executive_Rhetoric_Ledger/docs/AI_EMERGENCY_CLARITY_AUTHORITY_BOUNDARY_MIRROR_HANDOFF.md",
+        "finding_authorized": false,
+        "publication_authorized": false
       }
     }
   ],
