@@ -19,7 +19,15 @@
     "StegVerse-org/StegVerse-SDK@f0c3296650018d9cf298fa392c48315331a575fe:stegverse/purpose_bound_worker.py",
     "StegVerse-org/StegVerse-SDK@f0c3296650018d9cf298fa392c48315331a575fe:inspection/examples/tt-purpose-worker.example.json",
     "data/canonical-task-records/STEGAGENTS-GOVERNED-RUNTIME-001.json",
-    "docs/STEGAGENTS_GOVERNED_RUNTIME_MIRROR_HANDOFF.md"
+    "docs/STEGAGENTS_GOVERNED_RUNTIME_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/StegAgents@4363333520f381370b7ae8f93b88a98bf8526aeb:src/purpose_bound_worker_runtime.py",
+    "StegVerse-Labs/StegAgents@4363333520f381370b7ae8f93b88a98bf8526aeb:tests/test_purpose_bound_worker_runtime.py",
+    "workers/stegagents_governed_runtime_worker.py",
+    "control/process-worker-adapters.d/stegagents-governed-runtime-001.json",
+    "control/worker-registry.d/stegagents-governed-runtime-001.json",
+    "control/worker-registry.d/sdk-tt-purpose-bound-worker-runtime-proof-001.json",
+    "handoffs/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json",
+    "tests/test_sdk_tt_purpose_bound_worker_runtime_path.py"
   ],
   "adjacent_task_refs": [
     "STEGAGENTS-GOVERNED-RUNTIME-001",
@@ -54,11 +62,23 @@
     "AUTHENTIC_MASTER_RECORDS_RECONSTRUCTION_MATCH",
     "AUTHENTIC_RECORDS_ONLY_FINAL_PACKET"
   ],
-  "remaining_predicate": "RECONCILE_PURPOSE_BOUND_REQUEST_WITH_EXISTING_STEGAGENTS_RUNTIME_CONTRACT_THEN_EXECUTE_ONLY_WHEN_EXISTING_RUNTIME_PREREQUISITES_PERMIT",
+  "remaining_predicate": "VALIDATE_AND_MERGE_SHARED_WORKER_SOURCE_REFINEMENT_THEN_WAIT_FOR_EXISTING_RESIDENT_ROOT_WORKERCOORDINATOR_PREREQUISITES_BEFORE_AUTHENTIC_EXECUTION",
   "completion": {
     "claimed": false,
     "validated": false,
     "activation_proof_complete": false
   },
-  "authority_effect": "NONE_COORDINATION_ONLY"
+  "authority_effect": "NONE_COORDINATION_ONLY",
+  "source_refinement": {
+    "steagents_pr": 21,
+    "steagents_merge": "4363333520f381370b7ae8f93b88a98bf8526aeb",
+    "steagents_exact_head_ci": "PASS",
+    "shared_worker_id": "stegagents-governed-runtime-worker",
+    "shared_adapter_ref": "process:stegagents-governed-runtime-v1",
+    "duplicate_worker_created": false,
+    "duplicate_adapter_created": false,
+    "duplicate_runtime_created": false,
+    "runtime_execution_attempted": false,
+    "authority_effect": "NONE_SOURCE_REFINEMENT_ONLY"
+  }
 }
