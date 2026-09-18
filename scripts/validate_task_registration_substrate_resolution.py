@@ -180,18 +180,25 @@ def github_pr_base_ref() -> str | None:
     # pull_request.base.sha can lag current main when the PR remains open while
     # unrelated canonical work advances. Prefer the synthetic merge commit's first
     # parent, which is the exact current base used to construct the tested merge.
-    parents = subprocess.run(
-        ["git", "rev-list", "--parents", "-n", "1", "HEAD"],
+    commit_text = subprocess.run(
+        ["git", "cat-file", "-p", "HEAD"],
         cwd=ROOT,
         text=True,
         capture_output=True,
         check=True,
-    ).stdout.strip().split()
-    if len(parents) >= 3:
-        current_merge_base = parents[1]
+    ).stdout
+    parents = [line.split()[1] for line in commit_text.splitlines() if line.startswith("parent ")]
+    if len(parents) >= 2:
+        current_merge_base = parents[0]
         probe = subprocess.run(["git", "cat-file", "-e", f"{current_merge_base}^{{commit}}"], cwd=ROOT)
-        if probe.returncode == 0:
-            return current_merge_base
+        if probe.returncode != 0:
+            subprocess.run(
+                ["git", "fetch", "--depth=1", "origin", current_merge_base],
+                cwd=ROOT,
+                check=True,
+                env={k: v for k, v in os.environ.items() if k not in {"GITHUB_TOKEN", "GH_TOKEN"}},
+            )
+        return current_merge_base
 
     base_sha = str(((pr.get("base") or {}).get("sha") or "")).strip()
     if not base_sha:
