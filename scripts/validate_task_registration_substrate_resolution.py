@@ -175,6 +175,24 @@ def github_pr_base_ref() -> str | None:
     pr = event.get("pull_request")
     if not isinstance(pr, dict):
         return None
+
+    # Validation workflows intentionally checkout refs/pull/<n>/merge. The event's
+    # pull_request.base.sha can lag current main when the PR remains open while
+    # unrelated canonical work advances. Prefer the synthetic merge commit's first
+    # parent, which is the exact current base used to construct the tested merge.
+    parents = subprocess.run(
+        ["git", "rev-list", "--parents", "-n", "1", "HEAD"],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=True,
+    ).stdout.strip().split()
+    if len(parents) >= 3:
+        current_merge_base = parents[1]
+        probe = subprocess.run(["git", "cat-file", "-e", f"{current_merge_base}^{{commit}}"], cwd=ROOT)
+        if probe.returncode == 0:
+            return current_merge_base
+
     base_sha = str(((pr.get("base") or {}).get("sha") or "")).strip()
     if not base_sha:
         return None
