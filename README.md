@@ -634,3 +634,8 @@ The standing Healer sovereign scheduler handoff now requires canonical Master Re
 `SV002-REQUEST-BOUND-EVIDENCE-RETENTION-001` is the bounded child of `STEGVERSE-002-EXPERIMENT-RERUN-001` for the isolated first-receipt evidence-loss seam. It reuses the parent's admitted EVENT_EPHEMERAL StegOS substrate and creates no second request, runtime, scheduler, listener, bridge, Site path, device prerequisite, or authority plane.
 
 StegVerse-002/.github PR #39 merged the source repair at `3a0033742b1ff311bde6c210681ab47df6b734cd`. The repair preserves a validated already-written `RERUN_REQUEST_BOUND.json` identity in the existing blocked callable result and resident executor heartbeat instead of erasing it when federation publication fails later. Authentic resident evidence remains required before the parent `REQUEST_BOUND` predicate may be promoted.
+
+
+## ERL White House press-access precedent research
+
+Canonical Goal Task `ERL-WHITE-HOUSE-PRESS-ACCESS-PRECEDENT-001` registers the September 18, 2026 White House CNN/MS NOW/Politico access-exclusion event as a bounded ERL active-research subject. It reuses the existing ERL recurring-discovery and active-acquisition architecture, preserves primary executive/legal chronology and White House access-surface distinctions, and keeps finding/publication, partisan evaluation, motive, and final constitutional judgment authority false. Canonical ERL owner: issue #177 and `docs/WHITE_HOUSE_PRESS_ACCESS_PRECEDENT_MIRROR_HANDOFF.md`. COSV remains `40000100100000`.
