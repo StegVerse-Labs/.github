@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 61,
+  "generation": 62,
   "status": "SDK_PRODUCT_PROCESSING_PROVENANCE_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
