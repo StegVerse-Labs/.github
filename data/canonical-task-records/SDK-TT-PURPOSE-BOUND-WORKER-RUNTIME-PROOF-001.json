@@ -91,7 +91,7 @@
     "new_master_records_authority_created": false,
     "authentic_runtime_execution_claimed": false,
     "authority_effect": "NONE_SOURCE_CARRIAGE_ONLY",
-    "latest_reconciled_registry_generation": 48,
+    "latest_reconciled_registry_generation": 49,
     "stegagents_merge": "9ba16a39436686235e4dee965d29936364577f9c",
     "stegagents_exact_head_validation": {
       "head": "f1bca87f85c29e58280557e69b6eba8e88765bb2",
@@ -112,6 +112,8 @@
           "conclusion": "success"
         }
       ]
-    }
+    },
+    "generation_49_change_scope": "UNRELATED_STEGBROWSER_EVIDENCE_LANE",
+    "github_carrier_validation_state": "FOCUSED_EXACT_HEAD_VALIDATION_REQUIRED"
   }
 }
