@@ -9,7 +9,7 @@ This directory contains the post-v0.3 public reference-architecture work for gov
 Current artifact:
 
 - `SEPARATION_OF_POWERS_REFERENCE_ARCHITECTURE_DRAFT.md` — draft v0.2 containing the StegVerse actor/authority graph, common receipt envelope, per-corner proof scopes and proof ceilings, prohibited authority collapses, six-corner conformance matrix, minimum fail-closed negative tests, runtime-proof composition rule, evidence-status discipline, and MIR convergence package.
-- `AILEASH_SEBBI_WITNESS_EVIDENCE_MAP.md` — joint-review evidence reconciliation for AILeash/sebbi.pro, Appendix A R4, and Justin Dobson witness-topology claims. It distinguishes independently observed public responses, source-inspected material, counterpart/self-reported claims, user-provided profile context, and not-yet-established claims. Canonical child task: `MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001`; handoff: `docs/MIR_AILEASH_WITNESS_EVIDENCE_RECONCILIATION_MIRROR_HANDOFF.md`.
+- `AILEASH_SEBBI_WITNESS_EVIDENCE_MAP.md` — joint-review evidence reconciliation for AILeash/sebbi.pro, Appendix A R4, R10 vocabulary portability, and Justin Dobson witness-topology claims. It distinguishes independently observed public responses, source-inspected material, counterpart/self-reported claims, user-provided profile context, and not-yet-established claims. Canonical child task: `MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001`; handoff: `docs/MIR_AILEASH_WITNESS_EVIDENCE_RECONCILIATION_MIRROR_HANDOFF.md`.
 
 Current discipline:
 
@@ -20,9 +20,9 @@ Current discipline:
 - physical co-location is allowed only when semantic authority separation and attribution remain intact;
 - counterpart claims remain `COUNTERPART_REPORTED` until concrete artifacts are verified;
 - the MIR Bitcoin-anchor statement is not promoted to verified evidence until an authentic anchor/inclusion artifact is supplied;
-- AILeash/sebbi.pro public service responses are classified only for the fields they actually return; operator-controlled README, `.well-known`, profile, or conformance text is not promoted into independent proof of the claims it describes;
+- AILeash/sebbi.pro public service responses are classified only for the fields they actually return; operator-controlled README, `.well-known`, profile, or conformance text is not promoted into independent runtime proof by itself;
 - the Appendix A R4 exact positive live-tip behavior is independently reproduced for the retained `flavorflowstrategy.uk` peer/tip; identity, current liveness, historical completeness, and control/failure-domain independence remain unpromoted;
-- sebbi.pro R10 vocabulary-at-seal gap is currently `COUNTERPART_REPORTED` from joint review and requires a retained sealed artifact or source inspection before promotion;
+- the historical sebbi.pro witness vocabulary portability gap is now `SOURCE_INSPECTED`: current public source shows pre-v1.2 sealed `confirmed` values, current read-time vocabulary attachment, and sealed payloads carrying the values/version but not the vocabulary definitions; blanket R10 nonconformance remains unclaimed until R6 scheme/vocabulary publication coupling is inspected;
 - the historical 784-record / 30-commitment clean-room run remains not independently reproduced by StegVerse; the requested submitter-removed rerun is pending and must not be inferred from the earlier run;
 - OpenTimestamps submission/pending status is not promoted to Bitcoin confirmation without independent proof verification;
 - witness roster/member count is not promoted to a control-domain independence or resilience score;
