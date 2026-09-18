@@ -3654,7 +3654,7 @@
         "authority_effect": "NONE_COORDINATION_ONLY"
       },
       "user_action_surface_collision_enforcement": {
-        "state": "SOURCE_IMPLEMENTED_VALIDATION_PENDING",
+        "state": "SOURCE_VALIDATED",
         "identity_fields": [
           "url_route",
           "device_browser_context_class",
@@ -3673,7 +3673,16 @@
         "shareable_overlap_disposition": "VISIBLE_NONBLOCKING_DISTINCTION",
         "dynamic_checkin_field": "checkin_context.user_action_surfaces_under_mutation",
         "registration_field": "user_action_surfaces",
-        "authority_effect": "NONE_COORDINATION_ONLY"
+        "authority_effect": "NONE_COORDINATION_ONLY",
+        "validation_evidence": {
+          "exact_head": "74eb777d7e46548dd6fe2faf566782b14c4b1181",
+          "cross_task_coordination_run": 35400305724,
+          "kv_ai_memory_validation_run": 35400305734,
+          "deepseek_validation_run": 35400305750,
+          "focused_generation_and_action_surface_tests": "PASS",
+          "organization_control_plane_validation": "PASS",
+          "master_records_evidence_boundary_ref": "master-records/orchestration:CANONICAL_WORK_COORDINATION_CUSTODY_MIRROR_HANDOFF.md"
+        }
       }
     },
     {
