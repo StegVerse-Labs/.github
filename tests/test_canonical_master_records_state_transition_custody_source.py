@@ -41,3 +41,15 @@ def test_inventory_demotes_task_specific_fanout() -> None:
     assert "NEW_CANONICAL_PER_STATE_TRANSITION_CUSTODY_API" in inventory
     assert "TEMPORARY_CONFORMANCE_COMPARATOR_ONLY" in inventory
     assert "RETAIN_AS_LEGACY_COMPARATOR_NOT_PRIMARY_CANONICAL_CUSTODY" in inventory
+
+
+def test_required_transition_evidence_is_part_of_canonical_source_contract() -> None:
+    client = (ROOT / "workers/canonical_state_transition_custody.py").read_text()
+    contract = (ROOT / "control/canonical-master-records-state-transition-custody-contract.json").read_text()
+    reusable = (ROOT / "source-bundles/reusable-task-registry.d/RT-CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001.json").read_text()
+    assert "required_evidence_manifest" in client
+    assert "CANONICAL_MASTER_RECORDS_REQUIRED_EVIDENCE_NOT_VALIDATED" in client
+    assert "every_required_transition_evidence_item_is_submitted_to_master_records" in contract
+    assert "transition_custody_pass_requires_all_required_evidence_pass" in contract
+    assert "ALL_REQUIRED_TRANSITION_EVIDENCE_MASTER_RECORDS_VALIDATED" in reusable
+    assert "Specialized lane validators may produce semantic validation artifacts" in reusable
