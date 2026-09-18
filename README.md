@@ -14,6 +14,14 @@ Fleet dispositions at that observation are 15 `FULFILLING_INTENDED_ROLE`, 7 `VAL
 
 ---
 
+## Master Records StegBrowser endpoint binding
+
+Canonical Goal Task `MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001` remains `ACTIVE / CHECKED_OUT`, COSV `40000100100000`. Goal Prompts 10-11 reconciled a concurrent Task Registry generation-36 advance and re-checked only the existing authorized resident evidence surface. It still exposed zero connected devices, treated strictly as evidence-reachability rather than sovereign-runtime absence. `RESIDENT_REQUEST_DISPATCH_VISIT` remains the first unsatisfied evidence predicate. No owner, measurement lane, exporter, observer, runtime, request, scheduler, recovery path, second StegBrowser invocation, fixed-host dependency, or second-device dependency was introduced.
+
+The controlling handoff is `docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md`.
+
+---
+
 ## ERL Hormuz matched-window evidence coordination
 
 Canonical Goal Task `ERL-RC-OIL-FLOW-2026` remains `ACTIVE / CHECKED_OUT`, COSV `40000100100000`. Goal Prompt 4 preserves a matched September 7–13 vessel comparison, preliminary-to-revised Kpler count history, Hormuz-versus-bypass petroleum-flow separation, and destination-proof classes without promoting any political finding. The authoritative research artifact and scoped handoff remain in `StegVerse-Labs/Executive_Rhetoric_Ledger`.
