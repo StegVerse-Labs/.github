@@ -4,143 +4,66 @@ Updated: 2026-09-18
 Goal Task ID: `MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001`
 Parent Task ID: `MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001`
 COSV ID: `50000000100000`
-Status: `ACTIVE / APPENDIX A R4 BEHAVIOR INDEPENDENTLY REPRODUCED / V0.5 REVIEW ACCEPTED / SEBBI R10 PORTABILITY GAP SOURCE-INSPECTED / CLEAN-ROOM RERUN REQUESTED / OTS PROOF RETAINED PENDING`
+Status: `ACTIVE / APPENDIX A R4 BEHAVIOR INDEPENDENTLY REPRODUCED / V0.6 REVIEW RECEIVED / SEBBI R10 PORTABILITY GAP SOURCE-INSPECTED / CLEAN-ROOM RERUN INTENDED / OTS PROOF RETAINED PENDING`
 
 ## Goal
 
-Reconcile prior AILeash/sebbi.pro observations with the current Evidence Custody Seam Appendix A R4 claims and Justin Dobson's witness-topology contribution. Preserve a strict distinction between independently observed public behavior, user-retained public responses, source-inspected implementation material, counterpart/self-reported claims, and claims not yet established.
+Reconcile prior AILeash/sebbi.pro observations with the current Evidence Custody Seam Appendix A claims and Justin Dobson witness-topology contribution while preserving strict evidence-status boundaries.
 
 ## Current truth
 
-The user supplied the public response from `https://www.flavorflowstrategy.uk/witness.json`:
+The canonical prior observations remain unchanged:
 
-- chain: `flavorflowstrategy.uk`
-- tip: `27846a6a94b2ef76687a22d1a51fbc6a6a302fc691e8e1a361dc16b49a576653`
-- updated_at: `2026-08-13T13:11:06Z`
+- exact unauthenticated witness-attest behavior for one `flavorflowstrategy.uk` peer/tip is independently reproduced;
+- the retained pending OTS artifact is byte/hash consistent but not Bitcoin-confirmed;
+- identity, current liveness, control/failure-domain independence, complete topology, and the historical clean-room run remain unpromoted beyond the evidence actually retained.
 
-The exact corrected sebbi.pro witness request was then executed:
+## v0.6 joint-review draft — 2026-09-18
 
-`https://sebbi.pro/x/witness/attest?peer=flavorflowstrategy.uk&tip=27846a6a94b2ef76687a22d1a51fbc6a6a302fc691e8e1a361dc16b49a576653`
+The user supplied the full Evidence Custody Seam v0.6 text.
 
-The retained response returned:
+Substantive convergence now present in v0.6:
 
-- `witnessed=true`
-- `first_observed=2026-08-13T13:11:06.564037+00:00`
-- `last_observed=2026-09-17T08:18:40.589471+00:00`
-- `times_observed=253`
-- `sealed_in_our_chain=c76219e876dacc45aea9884a91dafa68c2e5fa31b4d928474181cbd521ea24f3`
-- `block_index=560`
+- version allocation is limited to the shared document, while outside reviews identify their base version and do not allocate a competing version number;
+- R10 remains separate from append-only correction, with the stronger explanation that append-only defines HOW correction is recorded while R10 supplies the sealed meaning against which a meaning correction can be made;
+- the clean-room section now states that the historical run predates submitter removal and that a submitter-removed rerun is intended;
+- the naming section retains `custodian` and explains why recorder, keeper, steward, registrar, and archivist are poorer fits;
+- Appendix A now separates MIRegistry A.1 from sebbi.pro A.2 rather than treating one implementation as representative of the whole corner;
+- the A.2 sebbi.pro entry is explicitly contributed by its own operator and is non-normative.
 
-This independently reproduces the core Appendix A R4 public-read behavior for one exact peer/tip. The historical Richard Whitney artifact itself remains separate provenance, but the behavioral existence claim is no longer merely counterpart-reported.
+### One evidence-status issue remains
 
-The same response also returned `liveness=self-declared`, `reachability=unrecorded`, `name_status=unbound`, and `submitted_url=null`, and explicitly limits what it proves to the fact that the exact tip was handed to sebbi.pro and sealed into its chain. No identity, current-liveness, control-domain-independence, or Bitcoin claim is promoted from this response.
+v0.6 Appendix A.2 currently says:
 
-The user also retrieved a concrete OpenTimestamps proof:
+- R10 status: `NOT MET`;
+- mechanism: “Sealed records do not state what their field names meant at the time of sealing.”
 
-- stamp: `1789455657`
-- tip/digest: `510837825c194c303eedfaeb0528d0fc6dfe4e6bbf1e5534ef8bb34edccd0224`
-- proof bytes: `721`
-- proof SHA-256: `8511ef312479e9fd97d05ecd69d35a8d2ab727aa6e49f20c441657d714f7dd53`
-- state: `pending`
-- Bitcoin block heights: none
-- pending calendars: Alice and Bob OpenTimestamps calendars
+Source inspection independently supports the historical portability problem behind this statement. Public `modules/witness.py` shows that pre-v1.2 sealed blocks retain `confirmed`, current code maps the same check to `self-consistent`, the seal payload carries `witness_version` and term values but not the vocabulary definitions, and read-time routes now attach vocabulary because “sealed blocks travel and legends do not.”
 
-The supplied `ots_base64` was decoded locally. It produced exactly 721 bytes; SHA-256 of those bytes exactly matched the returned proof hash, and the artifact begins with the OpenTimestamps proof header. This independently binds the retained bytes to the public response, but the proof is still pending and therefore is not Bitcoin-confirmed evidence.
+However, R10's normative MUST is broader than “the artifact itself carries the vocabulary”: it requires that every commitment remain readable under the vocabulary in force and that the vocabulary be published alongside the R6 scheme. Carrying vocabulary inside the artifact is only a SHOULD.
 
-## Joint-review confirmation — 2026-09-17
+Therefore the current StegVerse evidence supports a narrow source-inspected finding that historical sealed witness artifacts do not self-carry their vocabulary and depend on external publication/reconciliation. It does not yet independently establish that no historically durable R6-linked vocabulary publication exists for those commitments.
 
-The user supplied a LinkedIn DM screenshot of Justin Dobson's response to the Evidence Custody Seam v0.5 review. Treat the communication as user-retained counterpart communication: it establishes what was said in the joint review, but it is not independent identity verification or independent runtime proof.
+Disposition: do not reject v0.6 or reopen R10. Preserve Justin's operator-disclosed `NOT MET` row as counterpart disclosure, but if the appendix is intended to read as independently evidenced conformance status, either:
+1. add the R6-linked publication evidence showing the vocabulary was not durably published alongside the scheme, or
+2. phrase A.2 as operator-disclosed nonconformance pending independent R6/vocabulary verification.
 
-Justin:
+## Naming resolution
 
-- accepted the merge decisions, including the amendment to correction item 3;
-- agreed R10 must remain separate from append-only correction, because append-only defines how a correction is recorded while R10 provides the sealed vocabulary statement against which a meaning correction can be made;
-- proposed one addition to the version rule: material sent outside the shared document should name its base published version (for example, "review of v0.3") and must not allocate a new version number;
-- asked Richard to add a sebbi.pro Appendix A R10-fail row asserting that sealed records do not state what their field names meant at sealing time;
-- requested rerunning the 784-record / 30-commitment clean-room test with the submitter removed rather than relying on the historical-run qualification;
-- requested a naming shortlist for the neutral role term.
+Canonical StegVerse usage supports `custodian`. Existing architecture uses `historical custodian` and `personal-record custodian` while keeping custody separate from governance, admission, transition, credential, and interpretation authority. No distinct canonical StegVerse term `evidence holder` was found.
 
-## sebbi.pro R10 source inspection — 2026-09-18
+The remaining v0.6 question about privacy-regime terminology is a drafting/legal-ambiguity question, not an architecture conflict. The document's explicit definition and non-claims already bound the role tightly enough for StegVerse architecture purposes.
 
-The public source at `justrightdecorators-ops/aileash@f824ac83c5843053bdeca7eba53b77afa99465f5:modules/witness.py` directly substantiates the historical sealed-artifact vocabulary portability gap Justin described.
+## Clean-room state
 
-Observed from source:
-
-- witness versions through v1.1 sealed the liveness value as `confirmed`; v1.2 renamed the same check to `self-consistent`;
-- the source explicitly states that blocks sealed before v1.2 retain `confirmed` and cannot be altered;
-- the current seal payload records `witness_version`, `liveness`, `reachability`, `name_status`, and a detail string, but does not seal the vocabulary definitions for those terms;
-- current read responses append `liveness_vocabulary`, `reachability_vocabulary`, and `name_vocabulary` after lookup;
-- the source explicitly explains the reason for that read-time attachment: sealed blocks travel while legends do not, and earlier correction reached the page rather than the metadata shared with the block/link.
-
-Promotion boundary: the exact historical-artifact portability gap is now `SOURCE_INSPECTED`, not merely counterpart-reported. This does **not** yet establish a blanket R10 failure for every sebbi.pro commitment type, because R10 permits vocabulary to be published outside the artifact if it is durably bound/published alongside the commitment scheme. A full R10 conformance verdict therefore still requires inspection of the R6 scheme/vocabulary publication coupling and preservation for the relevant historical commitment versions.
-
-The clean-room rerun request remains a remediation path, not completed evidence. The historical 784-record / 30-commitment run remains not independently reproduced by StegVerse and does not yet satisfy the current submitter-removal acceptance test.
-
-## Naming resolution — 2026-09-18
-
-The user supplied Richard Whitney's follow-up asking whether StegVerse uses `evidence holder` as a term of art and clarifying his intended meaning of `custodian`: the party from whom the export was taken, whose continued cooperation the verifier cannot depend on.
-
-Canonical StegVerse usage already supports `custodian` for this role boundary. Current StegVerse documents use `historical custodian` for MIR-held history and `personal-record custodian` for KnowledgeVault-held source records, while explicitly separating custody from governance, admission, transition, and interpretation authority. No canonical StegVerse use of `evidence holder` as a distinct role term was found in the current repository search.
-
-Disposition: retain `custodian` in the Evidence Custody Seam. Where additional precision is useful, `historical custodian` or `source-record custodian` may be used descriptively, but `evidence holder` should not be introduced as a replacement term because it has no established StegVerse-specific semantics and is less precise about custody responsibility.
+The v0.6 wording is acceptable: the historical 784-record / 30-commitment run remains evidence only for what it exercised, does not inherit submitter removal retroactively, and a submitter-removed rerun is explicitly intended. No rerun is claimed complete.
 
 ## Evidence map
 
 Canonical evidence map: `docs/mir-reference-architecture/AILEASH_SEBBI_WITNESS_EVIDENCE_MAP.md`.
 
-## Current promotion state
-
-Promoted narrowly:
-
-- exact unauthenticated witness-attest behavior for one peer/tip;
-- positive observed state;
-- first/last observation times;
-- observation count;
-- sealed chain hash and block index;
-- internal consistency of the retained raw pending OTS artifact with its reported byte count/hash;
-- source-inspected historical witness vocabulary portability gap for sealed blocks.
-
-Not promoted:
-
-- peer/operator identity;
-- current liveness for the historical witness observation;
-- witness control/failure-domain independence;
-- complete historical witness topology;
-- Bitcoin confirmation for stamp `1789455657`;
-- Richard Whitney's exact historical response artifact;
-- the 784-record / 30-commitment clean-room run;
-- blanket R10 nonconformance across every sebbi.pro commitment type.
-
-## StegBrowser / SV002 invocation reconciliation — 2026-09-17
-
-Field-by-field comparison against the validated StegVerse-002 browser lane identified one concrete pre-A1 divergence in the `.github` observation/composition path. The validated/current Node browser surface reads the registered Node directly from the existing `stegos-node-v1` IndexedDB registration projection and binds the immutable StegBrowser invocation to `indexeddb://stegos-node-v1/meta/registration`. By contrast, `scripts/consume_stegbrowser_runtime_connection_ingress_request.py` still attempts to resolve Receipt #1 from the host environment variable `STEGVERSE_NODE_GENESIS_RECEIPT` and a filesystem path before invoking the manifest-bound runner.
-
-That host-side file-path requirement is not the historically successful SV002 Node binding and must not be treated as evidence that the registered Node itself is unavailable. The later canonical current-iPhone correction explicitly assigns evidence observation to the existing Node/InTr runtime and canonical receipt paths and removes any user-operated page/device prerequisite. Therefore the missing host filesystem projection is an observation/composition defect, not proof that A1 cannot occur.
-
-No second request or nonce mutation was performed while investigating this defect.
-
-A separate immutable-manifest constraint was also confirmed: the existing nonce `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z` is bound to `STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001:owned-mirror-route`, whose outbound receiver is `STEGVERSE_OWNED_MIRROR_REFLECTOR` and expected action is `REFLECT_DECLARED_RECORDS_PACKET`. It is not an arbitrary external HTTP GET/navigation manifest. Using that immutable request to fetch a sebbi.pro proof URL would mutate/substitute the declared route/payload semantics and therefore is not permitted under the same-nonce/no-second-request constraint.
-
-Accordingly:
-
-- preserve the existing immutable StegBrowser mirror invocation unchanged;
-- do not promote host `STEGVERSE_NODE_GENESIS_RECEIPT` absence into Node absence;
-- repair/reconcile only the observer/composition seam so it re-observes authority-owned existing Node/InTr receipts rather than requiring a host-side Receipt #1 file as a gating prerequisite;
-- do not repurpose the immutable mirror manifest for sebbi.pro;
-- a sebbi.pro StegBrowser GET must use an already-registered compatible GET/navigation invocation if one exists, otherwise it requires a separately authorized manifest-bound invocation rather than mutation of the current nonce.
-
-No existing registered StegBrowser arbitrary-GET/navigation reusable task was found in the current `.github` registry search, so no external sebbi.pro browser execution is claimed from this investigation.
-
 ## Next action
 
-For joint review, preserve the accepted v0.5 merge and external-review base-version rule. Naming is now resolved in favor of `custodian`: Richard's definition matches existing StegVerse custody usage, and `evidence holder` is not a canonical StegVerse term. Use `historical custodian` or `source-record custodian` only when a more qualified phrase is useful. Avoid `Witness`, `Verifier`, or `Auditor` because they collapse this corner into distinct evidence/interpretation functions.
+For joint review, accept the v0.6 merge structure and naming treatment. Raise only the narrow Appendix A.2 evidence-status clarification: operator-disclosed `NOT MET` is fine as disclosure, but independent conformance classification requires confirming the R6-linked historical vocabulary publication path. Do not reopen settled R1-R10 text.
 
-Coordinate the requested clean-room rerun with the submitter removed. Do not promote the historical 784-record / 30-commitment run to the current Section 5 acceptance test until an authentic rerun artifact is retained and the verifier inputs demonstrate removal of the custodian, submitter, and recorded party as authorities/information sources.
-
-Inspect the R6 commitment-scheme publication path only far enough to determine whether historical witness-version vocabulary is durably bound/published alongside the relevant commitment scheme. If yes, narrow the R10 finding accordingly; if no, the source-inspected portability gap supports the Appendix A R10 failure row directly.
-
-Separately, retrieve an older real OTS proof until one returns `state=confirmed` with at least one Bitcoin block height. Retain the complete proof JSON and raw `ots_base64`; independently verify the proof bytes against the returned digest using a standard OpenTimestamps client and an independently obtained Bitcoin chain/header path before promoting the Bitcoin external-time claim.
-
-In parallel, reconcile the StegBrowser A1 observer/composition seam with the already-working SV002/current-Node IndexedDB binding so absence of a host filesystem Receipt #1 projection does not masquerade as registered-Node absence. Do not mutate the immutable owned-mirror nonce to carry sebbi.pro traffic.
-
-Separately, if v0.4 topology scoring is pursued, collect evidence of actual cross-witness edges and independently attributable operator/control/failure domains. Do not derive a resilience number from roster membership or peer count alone.
+Then coordinate the submitter-removed clean-room rerun and retain authentic artifacts before promoting the Section 5 current-test predicate.
