@@ -596,3 +596,8 @@ Goal Task `SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001` now has a validated me
 Canonical Goal Task `MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001` remains `ACTIVE / CHECKED_OUT`, COSV `40000100100000`. Goal Prompts 10-11 reconciled concurrent Task Registry advances and re-checked only the existing authorized resident evidence surface. It still exposed zero connected devices, treated strictly as evidence-reachability rather than sovereign-runtime absence. `RESIDENT_REQUEST_DISPATCH_VISIT` remains the first unsatisfied evidence predicate. No owner, measurement lane, exporter, observer, runtime, request, scheduler, recovery path, second StegBrowser invocation, fixed-host dependency, or second-device dependency was introduced.
 
 The controlling handoff is `docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md`.
+
+
+### SDK GRG canonical projection console
+
+Canonical Goal Task `SDK-GRG-CANONICAL-PROJECTION-CONSOLE-001` / COSV `71000000101110` is an ACTIVE child of `SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001`. It owns the SDK implementation needed to project recognized Governance Reference Graph relations to existing canonical StegCore/StegGate semantic owners and expose the result through the public console without adding SDK governance authority. Unknown relations remain preserved/hash-bound/non-authorizing. Canonical handoff: `StegVerse-org/StegVerse-SDK:SDK_GRG_CANONICAL_PROJECTION_CONSOLE_MIRROR_HANDOFF.md`.
