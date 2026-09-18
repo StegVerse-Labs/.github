@@ -11,7 +11,11 @@
     "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_RUNTIME_REOBSERVATION_20260917.json",
     "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_AUTHORITY_OWNER_RECONCILIATION_20260917.json",
     "StegVerse-Labs/StegOS#23",
-    "StegVerse-Labs/StegOS#347"
+    "StegVerse-Labs/StegOS#347",
+    "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_SHARED_RUNTIME_OWNER_RECONCILIATION_20260917.json",
+    "data/canonical-task-records/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.json",
+    "data/canonical-task-records/STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001.json",
+    "data/canonical-task-records/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json"
   ],
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
@@ -31,15 +35,15 @@
     "propagated": false
   },
   "metric_evidence": {
-    "lifecycle": "Goal Prompt 3 reconciles the first missing authentic runtime evidence seam to existing StegOS Node continuity ownership while retaining ACTIVE/CHECKED_OUT; no runtime predicate is promoted.",
-    "archive_ready": "False until exact current browser Receipt #1 + same-nonce runtime event, verified Gateway advertisement, and authentic Master Records RECORDED/PASS/digest equality are observed.",
-    "unassigned_work": "Zero: normal browser execution owns direct IndexedDB registration use; StegOS #23/#347 already own exact continuity/genesis recovery if the originating browser context is not directly observable.",
-    "chat_owned_counts": "Observation/reconciliation only. No observer, executor, recovery carrier, request, Gateway, resident runtime, host, device dependency, credential path, or authority plane was added.",
-    "canonical_owner_installed": "Yes. StegOS #23 owns Node genesis/continuity; #347 owns browser-independent exact retained Node/genesis recovery. Site browser executor directly consumes IndexedDB registration. Service Gateway and Master Records remain downstream existing owners.",
-    "thread_required": "False. StegOS #351 persistent same-iPhone carrier is runtime-unproven and is not made mandatory for ordinary browser execution.",
-    "blocker_count": "Zero canonical blockers introduced. The missing Receipt #1/runtime event is an unsatisfied authentic evidence predicate with an existing owner, not justification for new infrastructure.",
-    "evidence_complete": "False; exact current browser Receipt #1 and same-nonce runtime event remain unobserved, so Gateway and Master Records stages remain unentered.",
-    "activated": "False; source ownership and merged recovery contract do not prove runtime recovery or browser invocation execution.",
+    "lifecycle": "Goal Prompt 4 reconciles the canonical shared runtime-evidence owner and exact StegBrowser retained-root observation seam while retaining ACTIVE/CHECKED_OUT; no runtime predicate is promoted.",
+    "archive_ready": "False until authentic same-invocation retained runtime evidence reaches exact browser Receipt #1/runtime tuple, verified Gateway advertisement, and Master Records RECORDED/PASS/digest equality.",
+    "unassigned_work": "Zero. GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001 is the single shared runtime-evidence owner; STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001 and its already-bound remediation successor own the exact StegBrowser observation seam.",
+    "chat_owned_counts": "Observation/reconciliation only. No observer, executor, request, recovery path, Gateway, resident runtime, host, device dependency, credential path, or authority plane was added.",
+    "canonical_owner_installed": "Yes. Shared owner GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001 is ACTIVE/CLAIMED_INTEGRATION; exact StegBrowser retained-root observation owner and remediation successor are already registered. StegOS #347 remains only optional genesis recovery.",
+    "thread_required": "False. No standing external runtime or specific physical device is a canonical prerequisite; named-device gates are prohibited by current global invariant.",
+    "blocker_count": "Zero canonical blockers introduced. Missing authentic retained runtime/root packet is an unsatisfied evidence predicate under existing owners, not justification for duplicate infrastructure.",
+    "evidence_complete": "False; no authentic retained Healer/root packet, exact browser Receipt #1 readback, same-nonce runtime-ready event, Gateway advertisement, Master Records RECORDED/PASS, or digest equality was observed.",
+    "activated": "False; source, schedule, claim state, and CI do not prove resident/runtime execution.",
     "propagated": "False; downstream A1-A4 handback remains gated on authentic Master Records reconstruction."
   },
   "authority_effect": "NONE"
