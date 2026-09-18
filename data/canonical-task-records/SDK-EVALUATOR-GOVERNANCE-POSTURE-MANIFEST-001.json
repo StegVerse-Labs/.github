@@ -75,6 +75,22 @@
     "hgai_example_structured_authority_validation_run": 35370782424,
     "hgai_example_handoff_closeout_pr": 261,
     "hgai_example_handoff_closeout_merge": "24f6a0c37710fe578eaa0e0f8183f234083adb56",
-    "hgai_example_live_graph_projection_proven": false
+    "hgai_example_live_graph_projection_proven": false,
+    "recognized_projection_status": "VALIDATED_MERGED",
+    "recognized_projection_pr": 263,
+    "recognized_projection_validated_head": "ec0b97c34fe22b871e1cf647df5b06ce75cff823",
+    "recognized_projection_merge": "c89de8a91d5f9872d42477e324eb03e7727a6f0b",
+    "recognized_projection_closeout_pr": 264,
+    "recognized_projection_closeout_merge": "897a3483c20006086f7e81e0e2cf9f75cd0dff2d",
+    "recognized_projection_manifest_builder_validation_run": 35383377531,
+    "recognized_projection_console_validation_run": 35383377401,
+    "recognized_projection_evaluator_manifest_validation_run": 35383377483,
+    "recognized_projection_structured_authority_validation_run": 35383377471,
+    "recognized_projection_package_validation_run": 35383377513,
+    "has_scoped_authority_projection_owner": "StegCore.authority_basis.resolve_authority_basis",
+    "requires_constraint_projection_owner": "StegCore.policy-shape",
+    "requires_constraint_callable_owner_seam_proven": false,
+    "unknown_relation_projection_state": "UNKNOWN_RELATION_PRESERVED",
+    "recognized_projection_live_runtime_bound": false
   }
 }
