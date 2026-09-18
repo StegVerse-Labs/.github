@@ -10,7 +10,7 @@ Repository: `StegVerse-Labs/.github`
 - Discovered while tracing: `STEG-BROWSER-RUNTIME-CONNECTION-INGRESS-001`
 - Issue: `StegVerse-Labs/.github#2079`
 - COSV: `50000000100000`
-- Status: `PROPOSED / HANDOFF_READY / LOCAL ADAPTER CONTRACT MISMATCH REPRODUCED`
+- Status: `RETIRED / SOURCE REPAIR VALIDATED COMPLETE PENDING GENERATION-47 EXACT-HEAD REVALIDATION / AUTHENTIC RUNTIME CUSTODY NOT CLAIMED`
 
 ## Scope
 
@@ -54,3 +54,10 @@ This task must not claim it repaired or executed the immutable StegBrowser brows
 ## Manual work
 
 None.
+
+
+## 2026-09-18 repair implementation and revalidation state
+
+The invalid local fallback is removed from `workers/canonical_state_transition_custody.py`. The repaired path reuses `master-records/orchestration:services.canonical_state_transition_custody.record_receipt` with the exact canonical receipt and requires explicit durable Master Records configuration: absolute non-`/tmp` `MASTER_RECORDS_DB`, present `MASTER_RECORDS_RECEIPT_KEY`, and `MASTER_RECORDS_STORAGE_DURABLE_ACROSS_RESTARTS=true`. It does not relabel receipts, invoke reusable-task lifecycle ingest, fabricate lifecycle evidence, or create a second custody store.
+
+Prior source head `11f07ae598faf790904e9ba3cea23f7d1e5a454f` passed 3/3 focused tests plus py_compile in run `35393803641`, job `105757920409`. Because current canonical state advanced to Task Registry generation 47, that is prior validation only and the rebased exact head must revalidate before merge. Authentic runtime Master Records custody is not claimed.
