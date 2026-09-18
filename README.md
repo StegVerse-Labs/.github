@@ -639,3 +639,8 @@ StegVerse-002/.github PR #39 merged the source repair at `3a0033742b1ff311bde6c2
 ## Canonical Master Records local adapter repair
 
 `CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001` replaces the invalid canonical-state-receipt -> reusable-task-lifecycle-ingester fallback with a direct call to the already-authoritative `master-records/orchestration` state-transition custody implementation. The local path requires explicit durable Master Records database/key configuration, preserves the exact canonical receipt contract and reconstruction hashes, fails closed when the authoritative local surface is unavailable, and adds no second custody store or authority. Interlock/InTr transition authority and TV/TVC credential authority are unchanged. Prior focused validation passed 3/3 plus py_compile; the generation-45 rebased exact head must revalidate before merge. Authentic runtime Master Records custody is not claimed.
+
+
+## ERL White House press-access precedent research
+
+Canonical Goal Task `ERL-WHITE-HOUSE-PRESS-ACCESS-PRECEDENT-001` registers the September 18, 2026 White House CNN/MS NOW/Politico access-exclusion event as a bounded ERL active-research subject. It reuses the existing ERL recurring-discovery and active-acquisition architecture, preserves primary executive/legal chronology and White House access-surface distinctions, and keeps finding/publication, partisan evaluation, motive, and final constitutional judgment authority false. Canonical ERL owner: issue #177 and `docs/WHITE_HOUSE_PRESS_ACCESS_PRECEDENT_MIRROR_HANDOFF.md`. COSV remains `40000100100000`.
