@@ -9,6 +9,7 @@ This directory contains the post-v0.3 public reference-architecture work for gov
 Current artifact:
 
 - `SEPARATION_OF_POWERS_REFERENCE_ARCHITECTURE_DRAFT.md` — draft v0.2 containing the StegVerse actor/authority graph, common receipt envelope, per-corner proof scopes and proof ceilings, prohibited authority collapses, six-corner conformance matrix, minimum fail-closed negative tests, runtime-proof composition rule, evidence-status discipline, and MIR convergence package.
+- `MIR_EPHEMERAL_ACTOR_CUSTODY_SEAM_MIRROR_HANDOFF.md` — canonical spawned/ephemeral-actor pressure test. It makes actor persistence non-required, requires durable actor-instance/lifecycle binding when material, and forbids an actor or caller from becoming the sole authority for its own standing or lineage. Canonical child task: `MIR-EPHEMERAL-ACTOR-CUSTODY-SEAM-001`.
 - `AILEASH_SEBBI_WITNESS_EVIDENCE_MAP.md` — joint-review evidence reconciliation for AILeash/sebbi.pro, Appendix A R4, and Justin Dobson witness-topology claims. It distinguishes independently observed public responses, source-inspected material, counterpart/self-reported claims, user-provided profile context, and not-yet-established claims. Canonical child task: `MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001`; handoff: `docs/MIR_AILEASH_WITNESS_EVIDENCE_RECONCILIATION_MIRROR_HANDOFF.md`.
 
 Current discipline:
