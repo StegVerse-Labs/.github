@@ -673,3 +673,110 @@ This candidate advances Task Registry generation 29 to generation 30 while retai
 ## Manual work
 
 None.
+
+
+## Goal prompt 6: resident carrier receipt re-observation
+
+Session Prompt Count: 12. Goal Prompt Count: 6/20.
+
+### Current canonical truth
+
+Task Registry generation 30 and this handoff were re-read first. The Goal remained exactly one `ACTIVE / CHECKED_OUT` row under COSV `40000100100000`; immutable nonce/count remained unchanged and every authentic Master Records completion predicate remained false.
+
+The existing owner chain remained authoritative and untouched:
+
+```text
+GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001
+-> STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001
+-> STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001
+```
+
+This Goal did not mutate any of those owners and did not enter `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001`.
+
+### Exact machine-owned predicate re-observed
+
+The current canonical machine-owned seam remains:
+
+```text
+RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND
+```
+
+Authorized existing chain remains:
+
+```text
+<resident-root>/receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json
+-> execution_result.resident_custody_root_observation_retention
+-> packet_ref
+-> packet_relative_path
+-> packet_sha256
+-> retained_under_root
+-> retained_under_root_source
+-> packet_state
+```
+
+The pointer targets:
+
+```text
+receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json
+```
+
+### Re-observation result
+
+The exact receipt filename, embedded pointer fields, `RESIDENT_CUSTODY_ROOT_OBSERVED` packet-state condition, and current #1860/#1866/#1260 lineage were re-searched.
+
+No new authentic resident copy of:
+
+```text
+receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json
+```
+
+was observed.
+
+Search results resolved only to source, canonical classification, and this Goal's prior Prompt 5 records. No authentic embedded pointer, retained packet, or exactly-one-root evidence appeared.
+
+Historical visible Healer Test Readiness run `34891841481` continues to expose zero artifacts. That is not runtime evidence.
+
+### Classifier remains gated
+
+`scripts/check_stegbrowser_runtime_consumption_receipts.py` was not run.
+
+Its canonical trigger remains exactly:
+
+```text
+authentic resident scheduler consumption receipt
+-> execution_result.resident_custody_root_observation_retention
+-> packet_state == RESIDENT_CUSTODY_ROOT_OBSERVED
+-> exactly one authentic retained root
+```
+
+Because that trigger was not met, running the classifier would have been synthetic.
+
+### Immutable tuple and downstream custody
+
+No authentic immutable invocation tuple became available. The following remain unavailable:
+
+```text
+runtime_readiness_receipt_sha256
+readiness_node_receipt_sha256
+node_id
+interlock_id
+registration_receipt_sha256
+lease_id
+runtime_id
+exported_bundle_sha256
+stegbrowser_custody_transition_admission_identity
+```
+
+Therefore Gateway validation, custody relay submission, Master Records `RECORDED`, reconstruction `PASS`, exact digest equality, and A1-A4 handback all remained unentered.
+
+No second invocation, request, exporter, observer, runtime, scheduler, recovery path, measurement run, Gateway, fixed-host dependency, or second user-operated device was introduced.
+
+Observation report:
+
+`reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_RESIDENT_CARRIER_REOBSERVATION_20260917.json`
+
+This candidate advances Task Registry generation 30 to generation 31 while retaining `ACTIVE / CHECKED_OUT`.
+
+## Manual work
+
+None.
