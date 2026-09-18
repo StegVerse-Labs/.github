@@ -52,6 +52,7 @@ def build_state_receipt(
     resulting_state_ref_or_hash: str | None,
     governance_decision_ref_where_applicable: str | None,
     transition_evidence: Mapping[str, Any],
+    required_evidence_manifest: list[Mapping[str, Any]] | None = None,
     proof_scope: str = "THIS_TRANSITION_ONLY",
     proof_ceiling: str = "OBSERVED_STATE_TRANSITION_AND_CUSTODY_ONLY",
     recorded_at: str | None = None,
@@ -64,6 +65,14 @@ def build_state_receipt(
         raise ValueError("transition_outcome_invalid")
     if not isinstance(transition_evidence, Mapping):
         raise ValueError("transition_evidence_required")
+    manifest = []
+    for entry in required_evidence_manifest or []:
+        if not isinstance(entry, Mapping):
+            raise ValueError("required_evidence_manifest_entry_invalid")
+        row = dict(entry)
+        if row.get("origin_transition_id") != transition_id:
+            raise ValueError("required_evidence_transition_binding_invalid")
+        manifest.append(row)
     return {
         "schema": RECEIPT_SCHEMA,
         "transition_id": transition_id,
@@ -73,6 +82,7 @@ def build_state_receipt(
         "resulting_state_ref_or_hash": resulting_state_ref_or_hash,
         "governance_decision_ref_where_applicable": governance_decision_ref_where_applicable,
         "transition_evidence": dict(transition_evidence),
+        "required_evidence_manifest": manifest,
         "recorded_at": recorded_at or now(),
         "transition_outcome": transition_outcome,
         "authority_effect": "NONE_STATE_RECEIPT_ONLY",
@@ -241,6 +251,8 @@ def submit_state_receipt(receipt: Mapping[str, Any]) -> dict[str, Any]:
     expected_hash = sha256_uri(dict(receipt)).split(":", 1)[1]
     if payload.get("state") != "RECORDED" or payload.get("reconstruction_status") != "PASS":
         return {"state":"BOUNDARY","reason":"CANONICAL_MASTER_RECORDS_CUSTODY_NOT_RECORDED","response":payload,"authority_effect":"NONE"}
+    if payload.get("required_evidence_validation_status") != "PASS":
+        return {"state":"BOUNDARY","reason":"CANONICAL_MASTER_RECORDS_REQUIRED_EVIDENCE_NOT_VALIDATED","response":payload,"authority_effect":"NONE"}
     if payload.get("receipt_sha256") != expected_hash or payload.get("reconstructed_receipt_sha256") != expected_hash:
         return {"state":"BOUNDARY","reason":"CANONICAL_MASTER_RECORDS_RECONSTRUCTION_HASH_MISMATCH","response":payload,"authority_effect":"NONE"}
     if payload.get("master_records_grants_transition_authority") is not False:
@@ -266,6 +278,7 @@ class CanonicalTransitionCustody:
         evidence: Mapping[str, Any],
         resulting_state_ref_or_hash: str | None = None,
         governance_decision_ref: str | None = None,
+        required_evidence_manifest: list[Mapping[str, Any]] | None = None,
         require_return: bool = True,
     ) -> dict[str, Any]:
         self.sequence += 1
@@ -278,6 +291,7 @@ class CanonicalTransitionCustody:
             resulting_state_ref_or_hash=resulting_state_ref_or_hash,
             governance_decision_ref_where_applicable=governance_decision_ref,
             transition_evidence=evidence,
+            required_evidence_manifest=required_evidence_manifest,
         )
         result = submit_state_receipt(receipt)
         row = {"receipt":receipt, "master_records":result}
