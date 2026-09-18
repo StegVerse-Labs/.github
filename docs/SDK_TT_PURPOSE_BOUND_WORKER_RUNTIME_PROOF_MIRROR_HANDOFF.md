@@ -129,3 +129,43 @@ Source/console CI, fixtures, simulated workers, or documentation-only receipts d
 ## First authorized action
 
 Reconcile the purpose-bound request shape against the existing `STEGAGENTS-GOVERNED-RUNTIME-001` StegAgents manifest/process-adapter contract. Identify the smallest source refinement, if any, needed to carry the exact TT cell/purpose/capability/lifetime tuple through the already-existing runtime. Do not attempt runtime execution until the existing resident/root/WorkerCoordinator prerequisites permit an authentic run.
+
+## Source refinement reconciliation — 2026-09-18
+
+StegAgents PR #21 merged as `4363333520f381370b7ae8f93b88a98bf8526aeb` after all exact-head workflows completed successfully:
+
+```text
+CI = success
+Test Readiness = success
+Cross-Agent Authority Validation = success
+```
+
+That immutable merge adds only the task-specific governed consequence module and focused StegAgents tests:
+
+```text
+src/purpose_bound_worker_runtime.py
+tests/test_purpose_bound_worker_runtime.py
+```
+
+The `.github` refinement intentionally does **not** add another worker or process adapter. It extends the existing:
+
+```text
+worker_id: stegagents-governed-runtime-worker
+adapter_ref: process:stegagents-governed-runtime-v1
+```
+
+with capability `stegagents_purpose_bound_worker_lifecycle`, and registers this successor task as a separate `HANDOFF_READY` task whose fragment contains `workers: []`. The shared worker selects the original proposal-only runtime for `STEGAGENTS-GOVERNED-RUNTIME-001` and the new purpose-bound module only for `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001`.
+
+The executable handoff carries the exact reference tuple from the already-merged SDK contract:
+
+```text
+schema: stegverse.sdk.tt-purpose-bound-worker.v1
+purpose: Analyze a supplied text payload for a tracked integrity summary.
+required_capability: text.integrity_summary
+max_lifetime_seconds: 30
+payload.text: StegVerse tracks this arbitrary local worker task.
+```
+
+Focused `.github` regression coverage checks shared-worker dispatch, exact request carriage, lifecycle ordering, records-only closeout, and absence of a duplicate worker/authority plane.
+
+No authentic runtime execution has been attempted. The existing runtime owner's resident custody-root / WorkerCoordinator prerequisites remain authoritative gates. Source or CI success must not promote any authentic lifecycle predicate.
