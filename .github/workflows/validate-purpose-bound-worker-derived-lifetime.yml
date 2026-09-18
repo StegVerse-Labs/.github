@@ -38,7 +38,7 @@ jobs:
           assert p['decomposition_target']=='RECORDS_ENABLED_PACKET'
           assert h['execution']['lifetime_semantics']['extension_requires_new_governed_recalculation'] is True
           reg=json.loads(Path('data/canonical-task-registry.json').read_text())
-          assert reg['generation']==56
+          assert reg['generation']>=56  # feature registration floor; canonical generation is monotonic
           task=next(x for x in reg['tasks'] if x['task_id']=='SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001')
           assert task['lifetime_model']['demonstration']['production_default'] is False
           assert task['lifetime_model']['production']['recompute_per_task'] is True

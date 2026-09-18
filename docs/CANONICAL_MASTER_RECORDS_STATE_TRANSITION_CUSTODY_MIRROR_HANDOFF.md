@@ -4,7 +4,7 @@ Updated: 2026-09-17
 Goal Task ID: `CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001`
 Parent Goal Task ID: `MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001`
 COSV ID: `50000000100000`
-Status: `ACTIVE / CANONICAL CUSTODY API MATERIALIZED / MIR SV002 BROWSER EVENT REIMPLEMENTED / AUTHORITATIVE MASTER RECORDS WRITE-THROUGH MATERIALIZED / AUTHENTIC RUNTIME SEQUENCE PENDING`
+Status: `ACTIVE / CANONICAL CUSTODY API MATERIALIZED / REQUIRED EVIDENCE VALIDATION MERGED / AUTHORITATIVE MASTER RECORDS WRITE-THROUGH MATERIALIZED / AUTHENTIC RUNTIME SEQUENCE PENDING`
 
 ## Canonical rule
 
@@ -27,7 +27,7 @@ Reusable task: `RT-CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001`.
 Primary receipt schema: `stegverse.canonical-state-transition-receipt/v1`.
 Canonical submission schema: `stegverse.master-records.state-transition-submission/v1`.
 Authoritative endpoint contract: `/api/master-records/state-transitions`, owned by `master-records/orchestration`.
-Required result for progression is `state=RECORDED`, `reconstruction_status=PASS`, exact receipt/reconstruction digest equality, and no Master Records transition authority.
+Required result for progression is `state=RECORDED`, `reconstruction_status=PASS`, `required_evidence_validation_status=PASS`, exact receipt/reconstruction digest equality, exact validation/reconstruction of every required evidence item, and no Master Records transition authority.
 
 ## SV002 initiation invariant
 
@@ -161,3 +161,35 @@ This satisfies the parent source predicate for the optional local adapter only. 
 `CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001` is source-repair complete and retired. Replacement PR `#2136` merged as `a21bbeb53e33210d4ac832f343582c02149d8c53`. The optional local client now routes canonical state-transition receipts through the existing authoritative `master-records/orchestration` state-transition custody implementation and no longer feeds them into the reusable-task lifecycle ingester.
 
 This closes only the local-adapter source defect. The parent remains ACTIVE because authentic runtime custody/reconstruction evidence is still pending. No authentic Healer, MIR, StegBrowser, RTC-007/008/009, or governed-return Master Records write is inferred from source merge or CI.
+
+
+## Required evidence closure — 2026-09-18
+
+The canonical rule is now explicit: **all required evidence that results from a governed state transition must be validated by Master Records before that transition may be treated as evidence-complete for further machine-owned progression.**
+
+The transition receipt now carries `required_evidence_manifest`. An empty manifest is valid only when the transition produces no additional required evidence beyond the canonical state receipt itself. Every non-empty item must include exact content, encoding, SHA-256, evidence identity/type, and the same `origin_transition_id`.
+
+The existing `master-records/orchestration` canonical state-transition custody service was extended in PR `#101` and merged as `32d89da201c4653413c85510bec629124b2e3a25`. Its source-validation suite was green before merge. The service now:
+
+- validates that the complete required-evidence manifest is structurally present;
+- binds every item to the same transition;
+- recomputes and verifies each item digest before accepting custody;
+- retains each item alongside the transition receipt;
+- reconstructs each required item independently;
+- returns per-item validation status and overall `required_evidence_validation_status`;
+- fails closed if any required item is missing, malformed, misbound, digest-mismatched, or unreconstructable.
+
+This does **not** mean Master Records replaces every domain-specific semantic validator. When a lane requires specialized semantic validation, that validator's result artifact is itself required evidence and must be included in the manifest. Master Records then validates that exact validator artifact's transition binding, digest, custody, and reconstruction as part of the canonical evidence closure.
+
+The existing separation of powers remains unchanged: Interlock/InTr authorizes transitions; TV/TVC holds credential authority where required; Master Records validates/retains/reconstructs observed evidence and grants no transition, execution, governance, credential, publication, deployment, or release authority.
+
+Source merge establishes the required-evidence validation mechanism only. Authentic runtime completion still requires a real governed transition whose receipt and complete required-evidence manifest return `RECORDED + reconstruction_status=PASS + required_evidence_validation_status=PASS`.
+
+
+## Canonical registry projection reconciliation — 2026-09-18
+
+During this required-evidence refinement, the canonical task shard and handoff were confirmed current and active, but `CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001` was not present in the monolithic `data/canonical-task-registry.json`. The existing task was therefore projected into the monolithic registry; no new Goal identity was created.
+
+The proposed registry generation advances exactly one generation from the then-current value and carries the existing task's COSV `50000000100000`, parent/root relationships, authority boundaries, and required-evidence validation contract unchanged.
+
+This is coordination repair only. It does not create a second custody service, transition engine, scheduler, dispatcher, WorkerCoordinator plane, credential authority, runtime, or device dependency.
