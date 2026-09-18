@@ -65,12 +65,16 @@ def test_identical_shareable_user_action_surface_is_nonblocking_distinction():
 
 
 def test_checkin_context_user_action_surface_must_be_owned_by_current_task():
-    with __import__("pytest").raises(SystemExit, match="owner_task_id must equal task_id"):
+    try:
         collision_gate.clean_context({
             "checkin_context": {
                 "user_action_surfaces_under_mutation": [action_surface("OTHER", "EXCLUSIVE")]
             }
         }, "TEST_HARNESS", "CURRENT")
+    except SystemExit as exc:
+        assert "owner_task_id must equal task_id" in str(exc)
+    else:
+        raise AssertionError("wrong owner_task_id must fail closed")
 
 
 def test_stale_registry_generation_fails_closed_before_any_mutation():
