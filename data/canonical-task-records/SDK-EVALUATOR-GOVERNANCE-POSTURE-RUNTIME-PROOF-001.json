@@ -1,0 +1,54 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001",
+  "correlation_id": "SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001",
+  "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "parent_task_id": "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001",
+  "goal": "Produce authentic retained evidence that the existing resident dispatcher invokes the bounded SDK governance-posture consumer, which calls run_evaluator_governance_manifest through the existing SDK-to-StegOS Interlock/InTr posture-resolution seam and returns exact hash-bound posture/execution evidence without creating another runtime, scheduler, authority plane, request path, or second user-operated device.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "repository": "StegVerse-Labs/.github",
+  "handoff": "docs/SDK_EVALUATOR_GOVERNANCE_POSTURE_RUNTIME_PROOF_MIRROR_HANDOFF.md",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "71000000100110"
+  },
+  "cosv_task_vector": "71000000100110",
+  "source_refs": [
+    "StegVerse-org/StegVerse-SDK:SDK_EVALUATOR_GOVERNANCE_POSTURE_MANIFEST_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:pull/265",
+    "StegVerse-org/StegVerse-SDK:commit/af1be4f9d9b3635912f8e085cbfe8ed922602d83",
+    "StegVerse-Labs/.github:scripts/dispatch_resident_execution_requests.py",
+    "StegVerse-org/StegVerse-SDK:stegverse/evaluator_governance_runtime.py",
+    "StegVerse-Labs/StegOS:stegos/intr_security_posture_resolution.py"
+  ],
+  "authority_boundaries": {
+    "sdk": "MANIFEST_TRANSPORT_AND_EVIDENCE_ONLY",
+    "credential_authority": "TV/TVC",
+    "transition_authority": "Interlock/InTr",
+    "github_runtime_authority": "NONE",
+    "heartbeat_authority": "OBSERVABILITY_ONLY"
+  },
+  "reuse_requirements": {
+    "dispatcher": "scripts/dispatch_resident_execution_requests.py",
+    "sdk_entrypoint": "run_evaluator_governance_manifest",
+    "stegos_resolver": "stegos.intr_security_posture_resolution.resolve_task_security_posture",
+    "new_runtime_allowed": false,
+    "new_scheduler_allowed": false,
+    "new_authority_plane_allowed": false,
+    "second_user_operated_device_allowed": false
+  },
+  "expected_evidence_predicates": [
+    "RESIDENT_SDK_GOVERNANCE_POSTURE_CONSUMER_REGISTERED",
+    "RESIDENT_SDK_GOVERNANCE_POSTURE_DISPATCH_VISIT",
+    "SDK_MANIFEST_EXACT_HASH_BINDING_OBSERVED",
+    "STEGOS_INTR_POSTURE_RESOLUTION_OBSERVED",
+    "POSTURE_BOUND_EXECUTION_OBSERVED",
+    "AUTHENTIC_RETAINED_RUNTIME_RECEIPT_OBSERVED"
+  ],
+  "remaining_predicate": "AUTHENTIC_SDK_TO_LIVE_STEGOS_INTR_POSTURE_BOUND_GOVERNANCE_EXECUTION_EVIDENCE",
+  "adjacent_task_refs": [
+    "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001"
+  ],
+  "worker_lifecycle_relationship": "DOWNSTREAM_SEPARATE_CONSUMER_NO_RUNTIME_OWNERSHIP_TRANSFER"
+}
