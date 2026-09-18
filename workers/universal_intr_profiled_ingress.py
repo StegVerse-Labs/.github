@@ -67,6 +67,14 @@ from workers.sv002_intr_materialization_consumer import (  # noqa: E402
     scrubbed_env as sv002_scrubbed_env,
     validate_request as validate_sv002_request,
 )
+from workers.sv002_self_characterization_intr_materialization_consumer import (  # noqa: E402
+    COSV as SV002_SELFCHAR_COSV,
+    DESTINATION as SV002_SELFCHAR_DESTINATION,
+    DOWNSTREAM_OWNER as SV002_SELFCHAR_OWNER,
+    TASK_ID as SV002_SELFCHAR_TASK,
+    scrubbed_env as sv002_selfchar_scrubbed_env,
+    validate_request as validate_sv002_selfchar_request,
+)
 
 PROFILE_PATH = "/intr/profile"
 INGRESS_PATH = "/intr/materialization"
@@ -74,6 +82,9 @@ DEVICE_KV_RESULT_PATH = "/intr/device-kv/result"
 SV002_RECEIPT_SCHEMA = "stegverse.sv002-intr-materialization-ingress/v1"
 SV002_RECEIPT_DIR = Path("receipts/sovereign-network/sv002-intr-ingress")
 SV002_LATEST = Path("receipts/sovereign-network/sv002-intr-ingress.latest.json")
+SV002_SELFCHAR_RECEIPT_SCHEMA = "stegverse.sv002-self-characterization-intr-materialization-ingress/v1"
+SV002_SELFCHAR_RECEIPT_DIR = Path("receipts/sovereign-network/sv002-self-characterization-intr-ingress")
+SV002_SELFCHAR_LATEST = Path("receipts/sovereign-network/sv002-self-characterization-intr-ingress.latest.json")
 DEVICE_KV_RECEIPT_SCHEMA = "stegverse.device-kv-intr-materialization-ingress/v1"
 DEVICE_KV_RECEIPT_DIR = Path("receipts/sovereign-network/device-kv-intr-ingress")
 DEVICE_KV_LATEST = Path("receipts/sovereign-network/device-kv-intr-ingress.latest.json")
@@ -288,6 +299,110 @@ def admit_sv002(*, runtime_root: Path, body: bytes, headers: Mapping[str, str]) 
     latest.parent.mkdir(parents=True, exist_ok=True)
     latest.write_bytes(raw)
     dispatch = _dispatch_sv002_consumer(runtime_root=runtime_root, materialization_id=materialization_id)
+    return {**receipt, "dispatch": dispatch}
+
+
+def _sv002_selfchar_request_from_payload(payload: Any, transport: Mapping[str, str | None]) -> tuple[dict[str, Any], dict[str, Any]]:
+    origin = transport["origin"]
+    if origin == hil.ORIGIN_RELAY:
+        require(isinstance(payload, dict), "sv002_selfchar_request_object_required")
+        validate_sv002_selfchar_request(payload)
+        return dict(payload), {"transport_origin": origin, "transport_authorization_id": transport["authorization_id"], "node_id": None, "interlock_id": None, "outbox_entry_hash": None}
+    require(isinstance(payload, dict) and payload.get("schema") == hil.NODE_TRIGGER_SCHEMA, "sv002_selfchar_node_trigger_schema_invalid")
+    require(payload.get("transport_origin") == hil.ORIGIN_NODE, "sv002_selfchar_node_trigger_origin_invalid")
+    require(payload.get("authority_effect") == "NONE_TRIGGER_ONLY", "sv002_selfchar_node_trigger_authority_invalid")
+    require(payload.get("request_grants_execution_authority") is False and payload.get("claim_or_fence_minted") is False, "sv002_selfchar_node_trigger_authority_forbidden")
+    entry = payload.get("node_outbox_entry")
+    require(isinstance(entry, dict), "sv002_selfchar_node_outbox_entry_required")
+    require(entry.get("schema") == hil.NODE_OUTBOX_SCHEMA and entry.get("state") == "LOCAL_OUTBOX_PENDING_NETWORK_DELIVERY", "sv002_selfchar_node_outbox_state_invalid")
+    require(entry.get("network_delivery_observed") is False and entry.get("runtime_materialization_observed") is False and entry.get("receiver_receipt_observed") is False and entry.get("tvc_receipt_observed") is False, "sv002_selfchar_promoted_evidence_forbidden")
+    require(entry.get("request_grants_execution_authority") is False and entry.get("claim_or_fence_minted") is False, "sv002_selfchar_node_outbox_authority_forbidden")
+    require(entry.get("credential_authority") == "TV/TVC" and entry.get("github_token_runtime_authority") == "NONE" and entry.get("authority_effect") == "NONE_LOCAL_CONTINUITY_ONLY", "sv002_selfchar_node_outbox_credential_boundary_invalid")
+    body = dict(entry)
+    claimed = body.pop("outbox_entry_hash", None)
+    require(claimed == sha_uri(body), "sv002_selfchar_node_outbox_entry_hash_mismatch")
+    request = entry.get("materialization_request")
+    require(isinstance(request, dict), "sv002_selfchar_materialization_request_required")
+    validate_sv002_selfchar_request(request)
+    for key in ("materialization_id", "request_hash", "transport_intent_hash", "payload_hash", "destination", "downstream_owner_ref"):
+        require(entry.get(key) == request.get(key), "sv002_selfchar_node_outbox_binding_mismatch:" + key)
+    require(payload.get("node_id") == entry.get("node_id") and payload.get("interlock_id") == entry.get("interlock_id") and payload.get("outbox_entry_hash") == entry.get("outbox_entry_hash"), "sv002_selfchar_node_trigger_binding_mismatch")
+    trigger = dict(payload)
+    trigger_claim = trigger.pop("trigger_sha256", None)
+    require(trigger_claim == sha_uri(trigger), "sv002_selfchar_node_trigger_hash_mismatch")
+    return dict(request), {"transport_origin": origin, "transport_authorization_id": None, "node_id": entry.get("node_id"), "interlock_id": entry.get("interlock_id"), "outbox_entry_hash": entry.get("outbox_entry_hash")}
+
+
+def _is_sv002_selfchar(payload: Any) -> bool:
+    if isinstance(payload, dict) and payload.get("destination") == SV002_SELFCHAR_DESTINATION and payload.get("downstream_owner_ref") == SV002_SELFCHAR_OWNER:
+        return True
+    if isinstance(payload, dict):
+        entry = payload.get("node_outbox_entry")
+        if isinstance(entry, dict):
+            request = entry.get("materialization_request")
+            return isinstance(request, dict) and request.get("destination") == SV002_SELFCHAR_DESTINATION and request.get("downstream_owner_ref") == SV002_SELFCHAR_OWNER
+    return False
+
+
+def _dispatch_sv002_selfchar_consumer(*, runtime_root: Path, materialization_id: str) -> dict[str, Any]:
+    command = [sys.executable, "-m", "workers.sv002_self_characterization_intr_materialization_consumer", "--source-root", str(ROOT), "--runtime-root", str(runtime_root), "--materialization-id", materialization_id]
+    process = subprocess.Popen(command, cwd=str(ROOT), env=sv002_selfchar_scrubbed_env(), stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True, close_fds=True)
+    return {"consumer_dispatch_attempted": True, "consumer_pid": process.pid, "consumer_execution_authority": False, "consumer_claim_or_fence_minted_by_ingress": False, "authority_effect": "NONE_DISPATCH_ONLY"}
+
+
+def admit_sv002_selfchar(*, runtime_root: Path, body: bytes, headers: Mapping[str, str]) -> dict[str, Any]:
+    transport = hil.validate_transport_headers(headers, body)
+    try:
+        payload = json.loads(body.decode("utf-8"))
+    except Exception as exc:
+        raise ValueError("sv002_selfchar_request_json_invalid") from exc
+    request, source = _sv002_selfchar_request_from_payload(payload, transport)
+    materialization_id = safe_id(str(request["materialization_id"]))
+    carrier = carrier_binding_evidence(request)
+    request_path = runtime_root / hil.REQUEST_DIR_REL / f"{materialization_id}.json"
+    request_raw = json.dumps(request, sort_keys=True, indent=2).encode("utf-8") + b"\n"
+    hil._write_once(request_path, request_raw)
+    receipt_path = runtime_root / SV002_SELFCHAR_RECEIPT_DIR / f"{materialization_id}.json"
+    if receipt_path.exists():
+        existing = json.loads(receipt_path.read_text(encoding="utf-8"))
+        require(existing.get("request_hash") == request.get("request_hash") and existing.get("state") == "INGRESS_ADMITTED", "sv002_selfchar_write_once_collision")
+        return existing
+    receipt = {
+        "schema": SV002_SELFCHAR_RECEIPT_SCHEMA,
+        "state": "INGRESS_ADMITTED",
+        "goal_task_id": SV002_SELFCHAR_TASK,
+        "cosv_task_vector": SV002_SELFCHAR_COSV,
+        "invocation_count": 1,
+        "materialization_id": materialization_id,
+        "request_hash": request["request_hash"],
+        "transport_intent_hash": request["transport_intent_hash"],
+        "payload_hash": request["payload_hash"],
+        "operation_id": request["operation_id"],
+        "packet_id": request["packet_id"],
+        "transport_origin": source["transport_origin"],
+        "transport_authorization_id": source["transport_authorization_id"],
+        "node_id": source["node_id"],
+        "interlock_id": source["interlock_id"],
+        "outbox_entry_hash": source["outbox_entry_hash"],
+        "transport_payload_sha256": transport["payload_sha256"],
+        "queue_ref": str(request_path),
+        "exact_request_validated": True,
+        "write_once_persisted": True,
+        "runtime_execution_attempted": False,
+        "consumer_dispatch_attempted": False,
+        "claim_or_fence_minted": False,
+        "credential_authority": "TV/TVC",
+        "github_token_runtime_authority": "NONE",
+        **carrier,
+        "authority_effect": AUTHORITY_EFFECT,
+        "admitted_at": now(),
+    }
+    raw = json.dumps(receipt, sort_keys=True, indent=2).encode("utf-8") + b"\n"
+    hil._write_once(receipt_path, raw)
+    latest = runtime_root / SV002_SELFCHAR_LATEST
+    latest.parent.mkdir(parents=True, exist_ok=True)
+    latest.write_bytes(raw)
+    dispatch = _dispatch_sv002_selfchar_consumer(runtime_root=runtime_root, materialization_id=materialization_id)
     return {**receipt, "dispatch": dispatch}
 
 
@@ -656,7 +771,7 @@ def profile(tls_enabled: bool) -> dict[str, Any]:
         "profile_path": PROFILE_PATH,
         "materialization_path": INGRESS_PATH,
         "device_kv_result_path": DEVICE_KV_RESULT_PATH,
-        "profiles": ["HIL:Ingress", "SV002:PublicObservation", "KV:KnowledgeVaultInterlock", "KV:SKAPCiphertextCustody", "Publisher:ArtifactTransfer", "KV:PublisherArtifactImport"],
+        "profiles": ["HIL:Ingress", "SV002:PublicObservation", "SV002:SelfCharacterization", "KV:KnowledgeVaultInterlock", "KV:SKAPCiphertextCustody", "Publisher:ArtifactTransfer", "KV:PublisherArtifactImport"],
         "heartbeat_derived_carrier": hb_intr_carrier_profile(),
         "supported_origins": [hil.ORIGIN_NODE, hil.ORIGIN_RELAY],
         "event_triggered": True,
@@ -711,7 +826,7 @@ class Handler(BaseHTTPRequestHandler):
                 status = 200
             else:
                 payload = json.loads(body.decode("utf-8"))
-                receipt = admit_kv_publisher_return(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_kv_publisher_return(payload) else (admit_publisher(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_publisher(payload) else (admit_kv_skap(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_kv_skap(payload) else (admit_device_kv(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_device_kv(payload) else (admit_sv002(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_sv002(payload) else hil.admit_materialization(runtime_root=self.server.runtime_root, body=body, headers=self.headers)))))
+                receipt = admit_kv_publisher_return(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_kv_publisher_return(payload) else (admit_publisher(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_publisher(payload) else (admit_kv_skap(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_kv_skap(payload) else (admit_device_kv(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_device_kv(payload) else (admit_sv002_selfchar(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_sv002_selfchar(payload) else (admit_sv002(runtime_root=self.server.runtime_root, body=body, headers=self.headers) if _is_sv002(payload) else hil.admit_materialization(runtime_root=self.server.runtime_root, body=body, headers=self.headers))))))
                 status = 202
         except Exception as exc:
             self.send_json(400, {"state": "REJECTED", "reason": str(exc), "authority_effect": AUTHORITY_EFFECT})
