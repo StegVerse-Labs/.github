@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 60,
-  "status": "SDK_EVALUATOR_POSTURE_RUNTIME_SUCCESSOR_REGISTERED",
+  "generation": 61,
+  "status": "SDK_EVALUATOR_POSTURE_RESIDENT_CONSUMER_SOURCE_IMPLEMENTED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -4650,4 +4650,4 @@
     "ALL_REQUIRED_EVIDENCE_RESULTING_FROM_A_GOVERNED_STATE_TRANSITION_MUST_BE_VALIDATED_BY_MASTER_RECORDS",
     "MASTER_RECORDS_REQUIRED_EVIDENCE_VALIDATION_DOES_NOT_GRANT_TRANSITION_OR_EXECUTION_AUTHORITY"
   ]
-}
+}\n
