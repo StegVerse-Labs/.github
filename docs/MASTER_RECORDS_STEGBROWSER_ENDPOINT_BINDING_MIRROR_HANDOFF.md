@@ -932,3 +932,106 @@ This candidate advances Task Registry generation 31 to generation 32 while retai
 ## Manual work
 
 None.
+
+
+## Goal prompt 8: first missing resident dispatch transition
+
+Session Prompt Count: 14. Goal Prompt Count: 8/20.
+
+### Current canonical truth
+
+Task Registry generation 32 and this handoff were re-read first. The existing owner chain remained unchanged:
+
+```text
+GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001
+-> STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001
+-> STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001
+```
+
+No owner was mutated or duplicated and `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001` was not entered.
+
+The target authoritative pointer-bearing checkpoint remains:
+
+```text
+receipts/healer-sovereign-scheduler/
+  SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json
+-> child_receipt.resident_custody_root_observation_retention
+```
+
+The first projection transition remains `FENCED_PROCESS_ADAPTER_ALLOW_PROJECTION`.
+
+### Resident access result
+
+The connected resident-access surface exposed no connected device to this session. That is an evidence-reachability observation only and is not evidence that the sovereign resident runtime is absent.
+
+Current #1866/#2078 coordination evidence also contains no authentic resident copy of the Healer checkpoint.
+
+Therefore claim/fence provenance, retained-root pointer, packet SHA/path, and exactly-one-root predicates could not be bound and the receipt classifier remained unrun.
+
+### First missing transition before fenced checkpoint projection
+
+The existing resident path is ordered:
+
+```text
+RESIDENT_REQUEST_DISPATCH_VISIT
+-> HEALER_RESIDENT_CONSUMER_INVOKED
+-> TARGETED_WORKERCOORDINATOR_EXECUTION_REQUESTED
+-> TARGETED_WORKER_RUNTIME_CYCLE_ENTERED
+-> WORKER_TASK_ADMISSION_ADMIT
+-> WORKER_ASSIGNMENT_BOUND_FROM_INDEPENDENT_TASK_CONTROL
+-> HEALER_WORKER_CHECKPOINT_WRITTEN_IN_FENCED_SANDBOX
+-> FENCED_PROCESS_ADAPTER_ALLOW_PROJECTION
+```
+
+The first transition whose authentic resident evidence is missing is:
+
+```text
+RESIDENT_REQUEST_DISPATCH_VISIT
+```
+
+Its existing authoritative evidence surface is:
+
+```text
+receipts/sovereign-host/resident-request-dispatch.latest.json
+schema: stegverse.resident-request-dispatch/v1
+```
+
+Before any later transition may be promoted, that receipt must authentically show an outcome with:
+
+```text
+consumer = healer_sovereign_scheduler
+consumer_ref = scripts/consume_healer_sovereign_scheduler_request.py
+attempted = true
+result = authentic machine result
+```
+
+No authentic copy of this resident dispatch receipt was available to this continuation.
+
+Because this is the earliest unobserved transition, no inference was made about subsequent consumer invocation, targeted WorkerCoordinator execution, admission, claim/fence, checkpoint write, or ProcessWorkerAdapter projection.
+
+### Downstream custody
+
+The Healer checkpoint remains downstream of the missing dispatch visit. The classifier may still run only after an authentic fenced checkpoint binds:
+
+```text
+child_receipt.resident_custody_root_observation_retention
+packet_state = RESIDENT_CUSTODY_ROOT_OBSERVED
+bindable packet path/SHA
+exactly one authentic retained root
+```
+
+No exact immutable StegBrowser Node/Interlock/Receipt-1/lease/runtime/export/custody-admission tuple became available.
+
+Gateway validation, credential-nonexporting relay submission, Master Records `RECORDED`, reconstruction `PASS`, exact digest equality, and A1-A4 handback remain unentered.
+
+No exporter, observer, runtime, request, scheduler, recovery path, measurement run, second invocation, fixed-host dependency, or second user-operated device was introduced.
+
+Observation report:
+
+`reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_FIRST_MISSING_RESIDENT_TRANSITION_20260917.json`
+
+This candidate advances Task Registry generation 32 to generation 33 while retaining `ACTIVE / CHECKED_OUT`.
+
+## Manual work
+
+None.
