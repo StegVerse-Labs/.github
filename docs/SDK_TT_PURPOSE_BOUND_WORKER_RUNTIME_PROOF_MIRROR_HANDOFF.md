@@ -6,7 +6,7 @@ Parent Goal Task ID: `SDK-TT-PURPOSE-BOUND-WORKER-CONSOLE-001`
 Root Goal Task ID: `SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003`
 COSV ID: `71000000111111`
 Repository: `StegVerse-Labs/.github`
-Status: `ACTIVE / TEST CONTRACT DEFINED / EXISTING STEGAGENTS RUNTIME OWNER REUSED / AUTHENTIC RUNTIME PROOF PENDING`
+Status: `ACTIVE / SOURCE REFINEMENT MERGED / EXISTING STEGAGENTS WORKER+ADAPTER REUSED / AUTHENTIC RUNTIME PROOF PENDING`
 
 ## Purpose
 
@@ -169,3 +169,21 @@ payload.text: StegVerse tracks this arbitrary local worker task.
 Focused `.github` regression coverage checks shared-worker dispatch, exact request carriage, lifecycle ordering, records-only closeout, and absence of a duplicate worker/authority plane.
 
 No authentic runtime execution has been attempted. The existing runtime owner's resident custody-root / WorkerCoordinator prerequisites remain authoritative gates. Source or CI success must not promote any authentic lifecycle predicate.
+
+## Post-merge source state — 2026-09-18
+
+The shared-worker `.github` refinement merged through PR #2150 as `00d5cadd3048dc1e44d8877a65ddc1ebf8fc6a29`.
+
+The merged source now contains exactly one existing StegAgents worker/adapter path for both the original proposal-only owner and this bounded successor:
+
+```text
+worker_id: stegagents-governed-runtime-worker
+adapter_ref: process:stegagents-governed-runtime-v1
+successor fragment workers: []
+```
+
+The successor carries the exact `stegverse.sdk.tt-purpose-bound-worker.v1` request and validates ordered `MATERIALIZED -> INVOCATION_STARTED -> TASK_COMPLETED -> RETIRED` closeout with records-only/no-live-authority invariants. No standalone workflow, second worker, second adapter, scheduler, dispatcher, WorkerCoordinator, InTr implementation, credential authority, Master Records authority, or runtime plane was added.
+
+GitHub reported PR #2150 mergeable/clean and merged the exact head. This repository exposed no PR workflow runs or commit statuses for that head, so the source record does not promote an automated `.github` CI result that was not observed. Focused regression source is merged; authentic runtime evidence remains entirely unclaimed.
+
+The first remaining runtime prerequisite is inherited from `STEGAGENTS-GOVERNED-RUNTIME-001`: authentic resident custody-root reachability followed by a fresh WorkerCoordinator claim/fence. Until those existing prerequisites are observed, this task must not attempt or claim authentic worker materialization, InTr admission, task execution, retirement, or Master Records reconstruction.

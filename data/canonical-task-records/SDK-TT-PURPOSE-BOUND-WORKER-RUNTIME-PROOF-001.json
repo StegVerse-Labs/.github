@@ -62,7 +62,7 @@
     "AUTHENTIC_MASTER_RECORDS_RECONSTRUCTION_MATCH",
     "AUTHENTIC_RECORDS_ONLY_FINAL_PACKET"
   ],
-  "remaining_predicate": "VALIDATE_AND_MERGE_SHARED_WORKER_SOURCE_REFINEMENT_THEN_WAIT_FOR_EXISTING_RESIDENT_ROOT_WORKERCOORDINATOR_PREREQUISITES_BEFORE_AUTHENTIC_EXECUTION",
+  "remaining_predicate": "WAIT_FOR_EXISTING_STEGAGENTS_GOVERNED_RUNTIME_RESIDENT_ROOT_AND_WORKERCOORDINATOR_PREREQUISITES_THEN_ATTEMPT_AUTHENTIC_PURPOSE_BOUND_LIFECYCLE",
   "completion": {
     "claimed": false,
     "validated": false,
@@ -79,6 +79,13 @@
     "duplicate_adapter_created": false,
     "duplicate_runtime_created": false,
     "runtime_execution_attempted": false,
-    "authority_effect": "NONE_SOURCE_REFINEMENT_ONLY"
+    "authority_effect": "NONE_SOURCE_REFINEMENT_ONLY",
+    "github_pr": 2150,
+    "github_merge": "00d5cadd3048dc1e44d8877a65ddc1ebf8fc6a29",
+    "shared_worker_source_merged": true,
+    "focused_regression_source_merged": true,
+    "github_pr_workflow_runs_observed": false,
+    "github_mergeability_before_merge": "clean",
+    "source_refinement_complete": true
   }
 }
