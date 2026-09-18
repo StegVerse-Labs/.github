@@ -66,6 +66,9 @@ Every seam-specific receipt should bind, at minimum, the following common envelo
 - `subject_id` / request or transition correlation identity;
 - `issued_at` or observation time;
 - `issuer_id` / source identity;
+- `actor_instance_id` when a distinct runtime actor performed the transition;
+- actor lifecycle bounds (`created_at`, expiry/TTL, and terminal/destroyed state) when actor lifetime is material to reconstruction;
+- `lineage_ref` / `spawn_parent_ref` when standing or lineage is asserted, bound to an independently attributable origin/admission artifact rather than caller self-description;
 - exact parent or predecessor reference when applicable;
 - payload hash or canonical content hash;
 - integrity/signature material appropriate to the implementation;
@@ -73,6 +76,8 @@ Every seam-specific receipt should bind, at minimum, the following common envelo
 - explicit `proof_ceiling` describing what the receipt does **not** prove.
 
 A receipt without a bounded proof scope must not be interpreted as granting broader authority or proving downstream effects.
+
+Actor persistence is not required for conformance. A runtime actor MAY be created and destroyed inside one commitment window. Where that occurs, the retained evidence MUST durably bind the actor instance to the admitted work, action/result, relevant lifecycle bounds, and any standing/lineage reference before the actor disappears. Neither the ephemeral actor nor its caller may be accepted as the sole authority for its own lineage or standing; those claims must resolve to an independently attributable authority/runtime/admission artifact. Evidence custody records that provenance and its proof scope but does not become an identity, governance, admission, or accountability authority.
 
 ## 4. Authority contracts and proof ceilings
 
@@ -155,6 +160,8 @@ Minimum seam fields (StegVerse proposal pending MIR first-pass refinement):
 - evidence object identity/hash;
 - subject transition identity;
 - source authority/runtime identity;
+- actor instance identity and lifecycle bounds when the recorded actor is ephemeral and those bounds are material;
+- externally attributable lineage/standing reference when such a claim is part of the retained transition record;
 - acquisition/observation time;
 - custody entry/reference;
 - predecessor/checkpoint linkage where chained;
@@ -201,6 +208,7 @@ Physical co-location is not automatically a failure. Semantic self-authorization
 10. **Historical receipt -> present authority**: a prior valid receipt proves the prior event only; it does not authorize a later transition.
 11. **Evidence status -> authority promotion**: changing evidence from `PENDING` or `COUNTERPART_REPORTED` to `VERIFIED` cannot itself promote any actor's authority.
 12. **Reconstruction -> causation inference beyond retained records**: deterministic reconstruction may only assert events supported by retained authentic records; gaps remain gaps.
+13. **Ephemeral actor/caller -> self-lineage authority**: a short-lived actor or its caller may not establish standing, lineage, root attribution, or human accountability merely by naming those claims in its own record. Such claims require separately attributable provenance/authority evidence; custody may retain the reference but may not promote it.
 
 ## 6. Core proof invariant
 
