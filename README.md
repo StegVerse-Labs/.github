@@ -14,6 +14,12 @@ Fleet dispositions at that observation are 15 `FULFILLING_INTENDED_ROLE`, 7 `VAL
 
 ---
 
+## ERL Hormuz matched-window evidence coordination
+
+Canonical Goal Task `ERL-RC-OIL-FLOW-2026` remains `ACTIVE / CHECKED_OUT`, COSV `40000100100000`. Goal Prompt 4 preserves a matched September 7–13 vessel comparison, preliminary-to-revised Kpler count history, Hormuz-versus-bypass petroleum-flow separation, and destination-proof classes without promoting any political finding. The authoritative research artifact and scoped handoff remain in `StegVerse-Labs/Executive_Rhetoric_Ledger`.
+
+Current unresolved evidence is exact matched-day CENTCOM/NCAGS/JMIC facilitated-transit source records, one aligned seven-day barrel-volume window across official and independent sources, exact destination discharge evidence for remaining cargoes, and independent review. Task Registry coordination does not prove physical flow, truth/falsehood, deception, intent, motive, or publication readiness.
+
 StegVerse is an open framework for rethinking how humans interact online as artificial intelligence becomes part of everyday life.
 
 It focuses on **expectations, identity, boundaries, continuity, and replaceability** —  
