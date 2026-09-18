@@ -184,3 +184,12 @@ This does **not** mean Master Records replaces every domain-specific semantic va
 The existing separation of powers remains unchanged: Interlock/InTr authorizes transitions; TV/TVC holds credential authority where required; Master Records validates/retains/reconstructs observed evidence and grants no transition, execution, governance, credential, publication, deployment, or release authority.
 
 Source merge establishes the required-evidence validation mechanism only. Authentic runtime completion still requires a real governed transition whose receipt and complete required-evidence manifest return `RECORDED + reconstruction_status=PASS + required_evidence_validation_status=PASS`.
+
+
+## Canonical registry projection reconciliation — 2026-09-18
+
+During this required-evidence refinement, the canonical task shard and handoff were confirmed current and active, but `CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001` was not present in the monolithic `data/canonical-task-registry.json`. The existing task was therefore projected into the monolithic registry; no new Goal identity was created.
+
+The proposed registry generation advances exactly one generation from the then-current value and carries the existing task's COSV `50000000100000`, parent/root relationships, authority boundaries, and required-evidence validation contract unchanged.
+
+This is coordination repair only. It does not create a second custody service, transition engine, scheduler, dispatcher, WorkerCoordinator plane, credential authority, runtime, or device dependency.
