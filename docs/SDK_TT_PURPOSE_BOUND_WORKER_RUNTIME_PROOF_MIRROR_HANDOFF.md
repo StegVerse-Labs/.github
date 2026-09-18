@@ -176,3 +176,21 @@ AUTHENTIC_RESIDENT_CUSTODY_ROOT_OBSERVED
 ```
 
 Only after the source carriage merges and exact-head validation passes should the existing runtime owner be used for the authentic lifecycle attempt.
+
+
+## Generation-48 dependency reconciliation
+
+The StegAgents source dependency is now merged:
+
+```text
+StegAgents PR #20
+validated source head: f1bca87f85c29e58280557e69b6eba8e88765bb2
+CI: 35398876490 PASS
+Test Readiness: 35398876455 PASS
+Cross-Agent Authority Validation: 35398876445 PASS
+merge: 9ba16a39436686235e4dee965d29936364577f9c
+```
+
+Current Task Registry generation was re-read as `48` before continuing the `.github` carrier binding. The successor is still represented by its dedicated canonical task shard, COSV vector, handoff, and README projection; it is not silently inserted into the monolithic registry task array.
+
+Remaining source action is only exact-head validation/merge of the existing `.github` worker + process-adapter carriage binding. Authentic runtime predicates remain unchanged and unclaimed.
