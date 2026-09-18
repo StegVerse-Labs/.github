@@ -1221,3 +1221,19 @@ This candidate advances Task Registry generation 39 to generation 40 while retai
 ## Manual work
 
 None.
+
+
+### Post-merge superseded-ref closure
+
+After PR #2115 merged as `b5bed5efae65cf53cfda5de3f36d819dbc0e7747`, the cleanup branch itself became superseded. All six related superseded refs were force-aligned to that final main commit and each was independently verified `identical` to `main` with `ahead=0` and `behind=0`:
+
+```text
+master-records-stegbrowser-prompt10-20260918
+master-records-stegbrowser-prompt11-20260918
+master-records-stegbrowser-prompt12-20260918
+task/master-records-stegbrowser-endpoint-binding-2078-current
+task/master-records-stegbrowser-endpoint-binding-2078
+master-records-stegbrowser-prompt14-hygiene-20260918
+```
+
+The connected GitHub capability does not expose branch deletion, so ref alignment is the strongest available in-session resolution. No divergent stale branch content remains. Goal issue `#2078` and shared owner issue `#1260` remain open intentionally because both canonical tasks remain active.
