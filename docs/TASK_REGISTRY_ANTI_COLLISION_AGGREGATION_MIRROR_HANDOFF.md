@@ -5,7 +5,7 @@ Canonical issue: `StegVerse-Labs/.github#1343`
 Historical implementation PR: `StegVerse-Labs/.github#1344`
 Substrate-registration enforcement PR: `StegVerse-Labs/.github#1539`
 Merged substrate-registration enforcement: `bbe00e1a1382ea8c98ae6441ff3b33f01dacc6d6`
-Status: `ACTIVE / CHECKED_OUT / REGISTRY PREFLIGHT + PORTABLE PRECLAIM ENFORCED / NEW-TASK EXECUTION-SUBSTRATE SORTING MERGED_VALIDATED / SUBSTRATE-AWARE CHECKIN CONVERGENCE MERGED_VALIDATED / USER-ACTION-SURFACE COLLISION ENFORCEMENT REMAINS`
+Status: `ACTIVE / CHECKED_OUT / REGISTRY PREFLIGHT + PORTABLE PRECLAIM ENFORCED / SESSION COORDINATION GENERATION FENCE SOURCE IMPLEMENTED / VALIDATION PENDING / USER-ACTION-SURFACE COLLISION ENFORCEMENT REMAINS`
 
 ## Objective
 
@@ -165,3 +165,43 @@ Every stronger signal remains collision/convergence evidence. Repository-only ov
 The disposition now preserves nonblocking current-record distinctions separately as `repository_only_scope_distinctions`; they are not silently discarded and do not enter `collision_candidates`. WorkerCoordinator claim/fence authority, Interlock/InTr transition authority, TV/TVC credential authority, Master Records reality authority, and the existing fail-closed requirement that Canonical Work proceed only on exact `CONTINUE` remain unchanged.
 
 Focused regression coverage extends `tests/test_task_registry_collision_checkin.py` and requires the four current hygiene repository-only overlaps to remain visible as scope distinctions while the isolated hygiene preflight reaches `CONTINUE`. It also preserves the fail-closed requirement when component scope is missing.
+
+
+## Session coordination generation fence — 2026-09-18
+
+This continuation first re-read current GitHub `main`, the canonical Task Registry, this handoff, and the existing anti-collision implementation. The observed authoritative base was:
+
+- GitHub `main`: `badb24754a31f2d7e061c10f900209954afd9719`;
+- canonical Task Registry generation: `41`;
+- this Goal's canonical shard: `ACTIVE / CHECKED_OUT`;
+- this Goal was present as a canonical shard/handoff but absent from the monolithic registry projection, so this change registers the existing identity there rather than minting a replacement task.
+
+The bounded repair advances the proposed monolithic registry generation to `42` and makes that monotonically increasing generation an explicit session-mutation fence on the already-canonical check-in path.
+
+Every admitted production caller of `scripts/evaluate_task_registry_collision_checkin.py` must now carry `observed_registry_generation`. Before task lookup, collision sorting, WorkerCoordinator consideration, route installation, or other Canonical Work mutation:
+
+- missing observation -> `STOP_COORDINATION_GENERATION_REQUIRED`;
+- observed generation lower than current -> `STOP_STALE_COORDINATION`;
+- observed generation higher/divergent from current -> `STOP_COORDINATION_GENERATION_MISMATCH`;
+- only an exact generation match remains eligible for ordinary collision evaluation.
+
+A stopped or stale session is explicitly non-admissible for:
+
+- source writes;
+- pull-request create/update;
+- pull-request merge;
+- new handoff claims.
+
+Its only admissible next action is to re-read current GitHub `main`, the current canonical Task Registry generation, and the applicable mirror handoff, then perform a fresh check-in.
+
+The existing Canonical Work selector and bootstrap now carry the exact generation they just read into the check-in request, so a resident/local projection that has advanced or diverged fails closed rather than silently continuing from older coordination state. The AI-session gate passes the same request through to the canonical evaluator; missing/stale generation therefore stops before canonical mutation.
+
+This is a coordination fence, not a new execution fence. WorkerCoordinator remains execution claim/fence authority; Interlock/InTr remains transition authority; Master Records remains observed-reality/reconstruction authority; TV/TVC remains credential authority.
+
+### Platform-enforcement boundary
+
+The repository's current GitHub `main` branch is not protected by an active required-status/ruleset gate. Therefore this source change does **not** claim that GitHub itself can prevent an administrator or other out-of-band actor from directly bypassing canonical tooling. It does make stale-session mutation fail closed on the canonical Task Registry/Canonical Work paths. Platform-level prevention of arbitrary GitHub bypass would require repository ruleset/branch-protection administration in addition to this source fence.
+
+### Validation target
+
+Before merge, require focused stale/current-generation regression tests plus the normal organization-control, deterministic repository, and Heartbeat validation lanes. After merge, re-read `main` and require Task Registry generation `42` plus this handoff before treating the fence as canonical.
