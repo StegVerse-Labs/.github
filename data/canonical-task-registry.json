@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 42,
+  "generation": 43,
   "status": "SESSION_MUTATION_GENERATION_FENCE_SOURCE_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -2278,7 +2278,7 @@
           "kind": "EXACT_RUNTIME_EVIDENCE_TRANSITION",
           "state": "PENDING_AUTHENTIC_RESIDENT_DISPATCH_RECEIPT",
           "ref": "receipts/sovereign-host/resident-request-dispatch.latest.json;scripts/run_worker_runtime.py;scripts/dispatch_resident_execution_requests.py",
-          "disposition": "Prompt 15 corrects an invalid observation method from Prompts 10-14. Connector-visible device inventory is prohibited as a task-state, authorization, verification, readiness, or runtime-evidence predicate. Continue from RESIDENT_REQUEST_DISPATCH_VISIT by inspecting only the existing machine-owned resident carrier / retained canonical receipt path and associated WorkerCoordinator claim/fence + Interlock/InTr admission evidence. Do not poll for Remote Desktop Commander or any connected device."
+          "disposition": "Prompt 16 continued from the Prompt 15 invariant correction. The exact canonical receipt path was checked directly in the canonical repository and returned NOT_FOUND/404; that result is repository reachability only and is not evidence that the machine-owned resident receipt is absent. No connector-visible device inventory was used, no broad source search or alternate observer/runtime path was introduced, and no related branch was ahead of/divergent from main. Preserve RESIDENT_REQUEST_DISPATCH_VISIT until one authentic stegverse.resident-request-dispatch/v1 receipt proves exactly one healer_sovereign_scheduler outcome with consumer_ref=scripts/consume_healer_sovereign_scheduler_request.py, attempted=true, and an authentic machine result."
         },
         {
           "dependency_id": "DEP-STEG-BROWSER-HEALER-WORKER-CHECKPOINT-POINTER",
@@ -2967,6 +2967,89 @@
         "first_unsatisfied_predicate": "RESIDENT_REQUEST_DISPATCH_VISIT",
         "downstream_promotion_allowed": false,
         "authority_effect": "CORRECTION_ONLY_NO_RUNTIME_PROMOTION"
+      },
+      "runtime_evidence_machine_receipt_prompt16": {
+        "observed_on": "2026-09-18",
+        "registry_generation_entering": 42,
+        "session_prompt_count": 6,
+        "goal_prompt_count": "16/20",
+        "owner_chain": [
+          "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+          "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+          "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
+        ],
+        "any_owner_mutated": false,
+        "global_measurement_entered": false,
+        "superseded_connector_device_method_repeated": false,
+        "exact_receipt_path_checked": "receipts/sovereign-host/resident-request-dispatch.latest.json",
+        "exact_receipt_repository_check": "NOT_FOUND_404",
+        "exact_receipt_repository_check_authority_effect": "NONE_REPOSITORY_REACHABILITY_ONLY",
+        "authentic_dispatch_receipt_observed": false,
+        "canonical_receipt_schema": "stegverse.resident-request-dispatch/v1",
+        "required_consumer": "healer_sovereign_scheduler",
+        "required_consumer_ref": "scripts/consume_healer_sovereign_scheduler_request.py",
+        "required_attempted": true,
+        "required_machine_result": "AUTHENTIC",
+        "first_unsatisfied_predicate": "RESIDENT_REQUEST_DISPATCH_VISIT",
+        "downstream_promotion_allowed": false,
+        "repository_absence_interpreted_as_runtime_absence": false,
+        "broad_source_search_performed": false,
+        "alternate_observer_exporter_created": false,
+        "new_runtime_request_scheduler_recovery_path_created": false,
+        "measurement_run_entered": false,
+        "second_invocation_emitted": false,
+        "fixed_host_dependency_added": false,
+        "second_device_dependency_added": false,
+        "narrow_branch_hygiene": {
+          "new_divergent_related_refs_observed": false,
+          "compared_refs": [
+            {
+              "branch": "master-records-stegbrowser-runtime-invariant-correction-20260918",
+              "ahead": 0,
+              "behind": 4,
+              "status": "behind"
+            },
+            {
+              "branch": "master-records-stegbrowser-prompt10-20260918",
+              "ahead": 0,
+              "behind": 5,
+              "status": "behind"
+            },
+            {
+              "branch": "master-records-stegbrowser-prompt11-20260918",
+              "ahead": 0,
+              "behind": 5,
+              "status": "behind"
+            },
+            {
+              "branch": "master-records-stegbrowser-prompt12-20260918",
+              "ahead": 0,
+              "behind": 5,
+              "status": "behind"
+            },
+            {
+              "branch": "master-records-stegbrowser-prompt14-hygiene-20260918",
+              "ahead": 0,
+              "behind": 5,
+              "status": "behind"
+            },
+            {
+              "branch": "task/master-records-stegbrowser-endpoint-binding-2078-current",
+              "ahead": 0,
+              "behind": 5,
+              "status": "behind"
+            },
+            {
+              "branch": "task/master-records-stegbrowser-endpoint-binding-2078",
+              "ahead": 0,
+              "behind": 5,
+              "status": "behind"
+            }
+          ],
+          "cleanup_reopened": false,
+          "reason": "No related ref was ahead of or divergent from main; behind-only refs do not carry unmerged stale content."
+        },
+        "authority_effect": "NONE_OBSERVATION_ONLY"
       }
     },
     {
