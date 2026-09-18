@@ -341,3 +341,46 @@ alternative_capability_comparison_triggered: false
 ```
 
 No follow-up was sent, no new prospect was added, and no GitHub Actions workflow was manually dispatched.
+
+
+## User-observed custom-domain page — 2026-09-17
+
+The user supplied direct iPhone browser evidence showing the GP10 prospect-facing page rendered at the visible origin `stegverse.org`.
+
+Visible body evidence:
+
+```text
+GP10 · BOUNDED EVIDENCE REVIEW FOR OLDER AND REBUILT LOCOMOTIVES
+Clean up the record trail without pretending uncertainty is certainty.
+Request a scoped review
+See what you receive
+scope-boundary panel visible
+```
+
+Evidence record:
+
+```text
+source: USER_PROVIDED_IPHONE_SCREENSHOT
+sha256: 151a7311f57f30bfc20fb82c81bf9b92aa34b8862b8f1b50141877f9fd5be6b4
+dimensions: 707x1536
+visible origin: stegverse.org
+custom_domain_served_body_observed: true
+body_matches_deployed_gp10_service_page: true
+independent_machine_fetch_observed: false
+Site handoff commit: 8b60211bc164dec0606b9498662acda76423f0ef
+```
+
+The browser UI shows the origin rather than the complete path, but the rendered hero copy and CTAs match the deployed `gp10-field-validation.html` body. The custom-domain served-body predicate is therefore closed as **user-observed evidence**.
+
+Commercial boundaries remain unchanged:
+
+```text
+problem_confirmation_observed: false
+authorized_dataset_discussion_observed: false
+paid_scope_willingness_observed: false
+authorized_decision_maker_referral_observed: false
+buyer_interest_validated: false
+paid_engagement_observed: false
+```
+
+The public URL may now be used as explanatory context in a prospect follow-up when a follow-up is otherwise commercially justified. The screenshot, route availability, page view, clicks, or publication itself do not constitute commercial validation.
