@@ -1,0 +1,177 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SV002-REQUEST-BOUND-EVIDENCE-RETENTION-001",
+  "correlation_id": "SV002-REQUEST-BOUND-EVIDENCE-RETENTION-001",
+  "root_correlation_id": "STEGVERSE-002-SELF-CHARACTERIZATION-001",
+  "parent_task_id": "STEGVERSE-002-EXPERIMENT-RERUN-001",
+  "goal": "Determine from authentic existing resident outputs whether the frozen v0.3 rerun callable was never invoked or wrote RERUN_REQUEST_BOUND.json before a later failure, preserve the exact validated request-bound identity through the existing callable/executor evidence path, and promote the parent REQUEST_BOUND predicate only from authentic same-execution bytes.",
+  "coordination_state": "IN_PROGRESS",
+  "source_refs": [
+    "docs/SV002_REQUEST_BOUND_EVIDENCE_RETENTION_MIRROR_HANDOFF.md",
+    "StegVerse-002/.github:docs/SELF_CHARACTERIZATION_EXECUTION_SURFACE_MIRROR_HANDOFF.md",
+    "StegVerse-002/.github@3a0033742b1ff311bde6c210681ab47df6b734cd",
+    "StegVerse-002/.github:resident-runtime/resident_executor.py",
+    "StegVerse-002/.github:resident-runtime/invoke_sv002_experiment_rerun.py"
+  ],
+  "targets": {
+    "organizations": [
+      "StegVerse-Labs",
+      "StegVerse-002",
+      "master-records"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-002/.github",
+      "master-records/orchestration"
+    ],
+    "components": [
+      "sv002-request-bound-evidence-retention",
+      "sv002-rerun-callable-result",
+      "sv002-resident-executor-heartbeat",
+      "master-records-observed-reality"
+    ]
+  },
+  "dependencies": [
+    {
+      "dependency_id": "DEP-SV002-RERUN-PARENT",
+      "kind": "TASK",
+      "state": "RESOLVED",
+      "ref": "STEGVERSE-002-EXPERIMENT-RERUN-001"
+    },
+    {
+      "dependency_id": "DEP-SV002-REQUEST-BOUND-REPAIR",
+      "kind": "EVIDENCE",
+      "state": "RESOLVED",
+      "ref": "StegVerse-002/.github@3a0033742b1ff311bde6c210681ab47df6b734cd"
+    },
+    {
+      "dependency_id": "DEP-SV002-AUTHENTIC-REQUEST-BOUND-OBSERVATION",
+      "kind": "RUNTIME_PREDICATE",
+      "state": "UNRESOLVED",
+      "ref": "StegVerse-002/.github:resident-runtime/state/resident-executor.latest.json"
+    }
+  ],
+  "blockers": [],
+  "systemic_incident_ref": null,
+  "adjacent_task_refs": [
+    "STEGVERSE-002-EXPERIMENT-RERUN-001"
+  ],
+  "existing_evidence_refs": [
+    "StegVerse-002/.github@3a0033742b1ff311bde6c210681ab47df6b734cd",
+    "StegVerse-002/.github:docs/SELF_CHARACTERIZATION_EXECUTION_SURFACE_MIRROR_HANDOFF.md",
+    "master-records/orchestration:SV002_SELF_CHARACTERIZATION_RECONSTRUCTION_MIRROR_HANDOFF.md"
+  ],
+  "expected_evidence_predicates": [
+    "REQUEST_BOUND_EVIDENCE_LOSS_REPAIR_MERGED",
+    "AUTHENTIC_RESIDENT_EXECUTOR_HEARTBEAT_OBSERVED",
+    "SV002_CALLABLE_ATTEMPT_STATE_OBSERVED",
+    "REQUEST_BOUND_EXACT_BYTES_OBSERVED",
+    "REQUEST_BOUND_FIELDS_VALIDATED",
+    "REQUEST_BOUND_SAME_EXECUTION_CORRELATED",
+    "NO_SECOND_REQUEST",
+    "NO_NEW_RUNTIME_OR_AUTHORITY_SURFACE"
+  ],
+  "runtime_requirements": {
+    "capabilities": [
+      "task_registry_reconciliation",
+      "bounded_process_execution",
+      "master_records_reconciliation"
+    ],
+    "environment": "EVENT_EPHEMERAL_SOVEREIGN",
+    "direction": "INTERNAL",
+    "mutation_required": true,
+    "deployment_required": false,
+    "current_observation_required": true
+  },
+  "execution_substrate_resolution": {
+    "schema": "stegverse.execution-substrate-resolution/v1",
+    "review_order": [
+      "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+      "STEGOS-CURRENT-DEVICE-NODE",
+      "STEG-BROWSER-EPHEMERAL-LEASE",
+      "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+      "ADMITTED-EPHEMERAL-STEGOS-NODE",
+      "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT"
+    ],
+    "reviews": [
+      {
+        "substrate_id": "STEG-BROWSER-RETAINED-RESIDENT-NODE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "docs/SV002_REQUEST_BOUND_EVIDENCE_RETENTION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "STEGOS-CURRENT-DEVICE-NODE",
+        "disposition": "SUITABLE",
+        "limitation_class": "NONE",
+        "evidence_refs": [
+          "StegVerse-002/.github:docs/SELF_CHARACTERIZATION_EXECUTION_SURFACE_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "STEG-BROWSER-EPHEMERAL-LEASE",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "docs/SV002_REQUEST_BOUND_EVIDENCE_RETENTION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "SAME-DEVICE-SITE-SAFARI-SERVICE-WORKER",
+        "disposition": "NOT_APPLICABLE",
+        "limitation_class": "NOT_APPLICABLE",
+        "evidence_refs": [
+          "docs/SV002_REQUEST_BOUND_EVIDENCE_RETENTION_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+        "disposition": "SELECTED",
+        "limitation_class": "NONE",
+        "evidence_refs": [
+          "StegVerse-002/.github:docs/SELF_CHARACTERIZATION_EXECUTION_SURFACE_MIRROR_HANDOFF.md"
+        ]
+      },
+      {
+        "substrate_id": "REMOTE-OR-EXTERNAL-DEVICE-LAST-RESORT",
+        "disposition": "UNSUITABLE",
+        "limitation_class": "ARCHITECTURAL",
+        "evidence_refs": [
+          "StegVerse-002/.github:docs/SELF_CHARACTERIZATION_EXECUTION_SURFACE_MIRROR_HANDOFF.md"
+        ]
+      }
+    ],
+    "selected_substrate_id": "ADMITTED-EPHEMERAL-STEGOS-NODE",
+    "external_device_required": false,
+    "second_user_operated_device_allowed": false,
+    "authority_effect": "NONE"
+  },
+  "worker_claim": {
+    "authority": "WORKERCOORDINATOR",
+    "claim_ref": null,
+    "fence_ref": null,
+    "projection_only": true
+  },
+  "human_action_ref": null,
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "reconciliation_ref": null
+  },
+  "allowed_next_transitions": [
+    "REQUEST_BOUND_EVIDENCE_OBSERVED",
+    "RETURN_TO_PARENT_RERUN"
+  ],
+  "handoff_projection_refs": [
+    "docs/SV002_REQUEST_BOUND_EVIDENCE_RETENTION_MIRROR_HANDOFF.md"
+  ],
+  "authority_model": {
+    "task_registry_mints_execution_authority": false,
+    "source_state_proves_execution": false,
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "master_records_reality_authority": true,
+    "interlock_intr_required_for_governed_ingress_egress": true
+  }
+}
