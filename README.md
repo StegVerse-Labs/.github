@@ -540,3 +540,12 @@ Canonical Goal Task `MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001` is `ACTIVE
 The browser receipt also uses canonical state-transition outcome `OBSERVED` while retaining the authentic InTr state `INGRESS_ADMITTED` inside transition evidence. The immutable nonce and request count remain unchanged.
 
 These source merges do not prove a live advertised gateway or authentic Master Records custody. `RECORDED`, reconstruction `PASS`, exact digest equality, WorkerCoordinator A3, A4, and Round Trip 1 remain evidence-gated. No Render, fixed hosting provider, platform/OS/device prerequisite, or second user-operated device was introduced. Canonical continuation: `docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md`.
+
+
+## Hygiene Canonical Work substrate preflight
+
+`HYGIENE-CAUSAL-ROOTS-001` is runtime-capable, so the general Task Registry collision evaluator requires the canonical six-substrate `execution_substrate_resolution` before it can return a collision disposition. The restored hygiene row originally predated that invariant and therefore deterministically reached `STOP_SUBSTRATE_REVIEW_REQUIRED` before any WorkerCoordinator or Interlock/InTr transition could be considered.
+
+The reconciliation keeps the existing single-device-first contract: retained StegBrowser resident, current StegOS device node, StegBrowser ephemeral lease, same-device Site/Safari service worker, and admitted ephemeral StegOS node all remain `PENDING_EVIDENCE / EVIDENCE_REACHABILITY`; no substrate is selected; the remote/external-device last resort is `NOT_APPLICABLE`; `external_device_required=false`; and `second_user_operated_device_allowed=false`. This is registration/preflight repair only and grants no claim, fence, credential, transition, runtime, or mutation authority.
+
+From current generation-24 coordination state before this repair, repository-overlap analysis identifies four non-hard convergence candidates for the hygiene check-in: `SS-EVIDENCE-COMPARISON-001`, `AI-GOVERNANCE-OPPORTUNITY-ENGINE-001`, `STEGVERSE-002-EXPERIMENT-RERUN-001`, and `MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001`. None shares a hygiene component or lineage, and none is a hard collision under the existing evaluator. An authentic resident check-in is still required before claiming an observed `COORDINATE_CONVERGENCE` or `CONTINUE` disposition.
