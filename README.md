@@ -587,3 +587,10 @@ Goal Prompt 9 re-observes the existing resident dispatch evidence surface withou
 ### HGAI GRG example
 
 Goal Task `SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001` now has a validated merged HGAI-facing HITL example of the generic Governance Reference Graph in `StegVerse-org/StegVerse-SDK`. The example preserves hierarchy, supervision, escalation, provenance, quorum references, scoped authority evidence, and completeness without granting authority from graph position or claiming live StegCore/Interlock graph projection. The parent task remains ACTIVE with authentic SDK-to-live StegOS/InTr posture-bound execution evidence still pending.
+
+
+## Master Records StegBrowser endpoint binding
+
+Canonical Goal Task `MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001` remains `ACTIVE / CHECKED_OUT`, COSV `40000100100000`. Goal Prompts 10-11 reconciled concurrent Task Registry advances and re-checked only the existing authorized resident evidence surface. It still exposed zero connected devices, treated strictly as evidence-reachability rather than sovereign-runtime absence. `RESIDENT_REQUEST_DISPATCH_VISIT` remains the first unsatisfied evidence predicate. No owner, measurement lane, exporter, observer, runtime, request, scheduler, recovery path, second StegBrowser invocation, fixed-host dependency, or second-device dependency was introduced.
+
+The controlling handoff is `docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md`.

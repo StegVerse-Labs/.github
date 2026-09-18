@@ -1116,3 +1116,28 @@ This candidate advances Task Registry generation 33 to generation 34 while retai
 ## Manual work
 
 None.
+
+
+## Goal prompts 10-11: concurrent-registry reconciliation and authorized resident-surface re-check
+
+Session Prompt Count: 2. Goal Prompt Count: 11/20.
+
+Task Registry generation 36 and this handoff were re-read before mutation. Concurrent canonical changes were preserved; this Goal still ended at Prompt 9.
+
+The existing owner chain remains `GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001 -> STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001 -> STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001`. No owner was mutated or duplicated and `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001` was not entered.
+
+For Prompt 10, the already-authorized resident-access surface exposed zero connected devices. That is evidence-reachability only, not evidence that sovereign runtime is absent. No authentic resident-owned `receipts/sovereign-host/resident-request-dispatch.latest.json` with schema `stegverse.resident-request-dispatch/v1` was observed.
+
+For Prompt 11, after reconciling concurrent registry changes, task-local state was checked again. No Prompt 10 state had landed elsewhere and the authorized resident surface remained not newly reachable. `RESIDENT_REQUEST_DISPATCH_VISIT` remains the first unsatisfied predicate.
+
+Before any downstream transition may be promoted, one authentic resident-owned dispatch receipt must contain exactly one relevant outcome proving `consumer=healer_sovereign_scheduler`, `consumer_ref=scripts/consume_healer_sovereign_scheduler_request.py`, `attempted=true`, and an authentic machine result.
+
+No downstream consumer, WorkerCoordinator, admission, fresh claim/fence, fenced checkpoint, ProcessWorkerAdapter projection, retained-root pointer, classifier run, immutable runtime tuple, Gateway validation, relay submission, Master Records `RECORDED`, reconstruction `PASS`, digest equality, or A1-A4 handback was promoted. No exporter, observer, runtime, request, scheduler, recovery path, measurement run, second StegBrowser invocation, fixed-host dependency, or second-device dependency was introduced.
+
+Observation report: `reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_RESIDENT_DISPATCH_REOBSERVATION_20260918.json`.
+
+This candidate advances Task Registry generation 36 to generation 37 while retaining `ACTIVE / CHECKED_OUT`.
+
+## Manual work
+
+None.
