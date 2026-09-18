@@ -60,6 +60,13 @@ def test_worker_builds_proposal_only_request():
     assert request["self_authorization_allowed"] is False
     assert request["credential_material_present"] is False
     assert request["code_repair_request"]["authority_effect"] == "NONE"
+    purpose = request["purpose_bound_worker_request"]
+    assert purpose["schema"] == "stegverse.sdk.tt-purpose-bound-worker.v1"
+    candidate = purpose["transition_cell"]["candidate"]
+    assert candidate["purpose"] == "Analyze a supplied text payload for a tracked integrity summary."
+    assert candidate["required_capability"] == "text.integrity_summary"
+    assert candidate["operation_class"] == "ARBITRARY_TRACKED_TASK"
+    assert candidate["max_lifetime_seconds"] == 30
 
 
 def test_registration_reuses_existing_worker_runtime_only():
