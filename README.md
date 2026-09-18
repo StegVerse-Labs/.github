@@ -623,6 +623,8 @@ Canonical Goal Task `SDK-TT-PURPOSE-BOUND-WORKER-CONSOLE-001` / COSV `7100000010
 
 The stronger authentic-runtime continuation is canonical Goal Task `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` / COSV `71000000111111`. It must reuse `STEGAGENTS-GOVERNED-RUNTIME-001`, WorkerCoordinator, StegCore/InTr, TV/TVC where required, and Master Records. It may not create a competing runtime, scheduler, dispatcher, WorkerCoordinator, credential authority, evidence authority, or second user-operated-device dependency. Canonical handoff: `docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md`.
 
+The first runtime-proof source reconciliation found one bounded carriage gap: the existing StegAgents governed runtime did not expose the SDK TT-cell purpose/capability/scope/lifetime tuple. The minimum refinement is now on StegAgents PR #20 and the existing `process:stegagents-governed-runtime-v1` adapter branch: the tuple is fail-closed validated and hash-bound into the same governance request/execution context/result/evidence path. This is source carriage only and grants no materialization, execution, transition, credential, or Master Records authority.
+
 
 ## Healer state-transition custody requirement
 
