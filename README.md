@@ -634,3 +634,10 @@ The standing Healer sovereign scheduler handoff now requires canonical Master Re
 `SV002-REQUEST-BOUND-EVIDENCE-RETENTION-001` is the bounded child of `STEGVERSE-002-EXPERIMENT-RERUN-001` for the isolated first-receipt evidence-loss seam. It reuses the parent's admitted EVENT_EPHEMERAL StegOS substrate and creates no second request, runtime, scheduler, listener, bridge, Site path, device prerequisite, or authority plane.
 
 StegVerse-002/.github PR #39 merged the source repair at `3a0033742b1ff311bde6c210681ab47df6b734cd`. The repair preserves a validated already-written `RERUN_REQUEST_BOUND.json` identity in the existing blocked callable result and resident executor heartbeat instead of erasing it when federation publication fails later. Authentic resident evidence remains required before the parent `REQUEST_BOUND` predicate may be promoted.
+
+
+### User-action surface anti-collision identity
+
+The canonical Task Registry collision evaluator treats mutable user/browser interaction surfaces as explicit coordination resources rather than informal instructions. A task can register or check in an exact URL/route, device/browser context class, runtime/service-worker surface, action type, owner/request identity, and `SHAREABLE` or `EXCLUSIVE` semantics. Identical surfaces involving an exclusive claimant fail closed through the existing collision disposition path before user instruction or mutation; mutually shareable surfaces remain visible but nonblocking.
+
+This is Task Registry coordination only. WorkerCoordinator remains claim/fence authority, Interlock/InTr remains transition authority, TV/TVC remains credential authority, Master Records remains observed-reality/reconstruction authority, and user-action surface metadata does not itself prove browser/runtime execution.
