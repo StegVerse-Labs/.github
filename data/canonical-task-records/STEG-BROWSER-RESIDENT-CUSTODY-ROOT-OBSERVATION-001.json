@@ -4,8 +4,12 @@
   "correlation_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
   "root_correlation_id": "STEG-BROWSER-EPHEMERAL-RUNTIME-BINDING-001",
   "parent_task_id": "STEG-BROWSER-AUTHENTIC-RUNTIME-RECEIPT-OBSERVATION-001",
-  "successor_task_ids": ["STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"],
-  "successor_issue_refs": ["StegVerse-Labs/.github#1866"],
+  "successor_task_ids": [
+    "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
+  ],
+  "successor_issue_refs": [
+    "StegVerse-Labs/.github#1866"
+  ],
   "goal": "Observe an authentic resident custody root for the existing StegBrowser Canonical Work reusable task path and classify retained receipt reachability without introducing a parallel scheduler, dispatcher, credential authority, runtime plane, or second user-operated device.",
   "coordination_state": "ACTIVE",
   "checkout_state": "CHECKED_OUT_SUCCESSOR_REMEDIATION_BOUND",
@@ -28,8 +32,16 @@
     "StegVerse-Labs/StegVerse-Healer@b7d37a91fa464a716a85c0a8a28cffd6e5022fb6"
   ],
   "targets": {
-    "organizations": ["StegVerse-Labs"],
-    "repositories": ["StegVerse-Labs/.github", "StegVerse-Labs/StegVerse-Healer", "StegVerse-Labs/StegOS", "StegVerse-Labs/Site", "StegVerse-Labs/TVC"],
+    "organizations": [
+      "StegVerse-Labs"
+    ],
+    "repositories": [
+      "StegVerse-Labs/.github",
+      "StegVerse-Labs/StegVerse-Healer",
+      "StegVerse-Labs/StegOS",
+      "StegVerse-Labs/Site",
+      "StegVerse-Labs/TVC"
+    ],
     "components": [
       "resident-runtime-custody-root",
       "stegbrowser-canonical-work-runtime-consumption",
@@ -138,6 +150,13 @@
       "state": "NOT_STARTED_IN_SUCCESSOR",
       "ref": "STEG-BROWSER-AUTHENTIC-RUNTIME-RECEIPT-OBSERVATION-001",
       "disposition": "REQUIRES_WORKERCOORDINATOR_INTR_TVC_OBSERVER_MASTER_RECORDS_EVIDENCE_AFTER_RECEIPT_REACHABILITY"
+    },
+    {
+      "dependency_id": "DEP-MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-PROMPT-LIMIT",
+      "kind": "PROMPT_LIMIT_DECOMPOSITION",
+      "state": "INHERITED_UNRESOLVED",
+      "ref": "MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001;StegVerse-Labs/.github#2078",
+      "disposition": "Parent Goal reached 20/20 without authentic retained carrier/root evidence. Inherit only RESIDENT_REQUEST_DISPATCH_VISIT through the existing runtime-bound Healer carrier retention seam. If exactly one authentic retained root reaches packet_state=RESIDENT_CUSTODY_ROOT_OBSERVED, run the existing non-authorizing classifier and then continue already-declared downstream WorkerCoordinator/Interlock/InTr/TVC/observer/Master Records checks."
     }
   ],
   "blockers": [],
