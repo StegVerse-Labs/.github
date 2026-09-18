@@ -7,7 +7,8 @@
     "data/canonical-task-records/MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001.json",
     "docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md",
     "StegVerse-Labs/Site:docs/STEGBROWSER_MASTER_RECORDS_ENDPOINT_BINDING_MIRROR_HANDOFF.md",
-    "StegVerse-org/LLM-adapter:docs/STEGBROWSER_MASTER_RECORDS_STATE_TRANSITION_RELAY_MIRROR_HANDOFF.md"
+    "StegVerse-org/LLM-adapter:docs/STEGBROWSER_MASTER_RECORDS_STATE_TRANSITION_RELAY_MIRROR_HANDOFF.md",
+    "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_RUNTIME_REOBSERVATION_20260917.json"
   ],
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
@@ -27,16 +28,16 @@
     "propagated": false
   },
   "metric_evidence": {
-    "lifecycle": "Provider-neutral browser binding and credential-nonexporting gateway relay are merged and exact-head validated; task remains CHECKED_OUT for authentic gateway/custody observation.",
-    "archive_ready": "False until an authentic verified StegVerse gateway advertisement and exact Master Records RECORDED + reconstruction PASS result are observed.",
-    "unassigned_work": "Source repair is assigned and merged; remaining work is authentic observation through the existing immutable invocation.",
-    "chat_owned_counts": "Implementation source is merged; one observation lane remains chat-owned. Credentials and custody authority remain TV/TVC and Master Records.",
-    "canonical_owner_installed": "Task record, canonical handoff, Site handoff, and LLM-adapter relay handoff are installed.",
-    "thread_required": "No standing runtime, remote host, or second-device thread is required.",
-    "blocker_count": "Zero; authentic endpoint/custody observation is the next actionable condition.",
-    "evidence_complete": "False; source/CI/merge do not prove the immutable invocation reached authoritative Master Records.",
-    "activated": "False until authentic endpoint binding and custody reconstruction are observed.",
-    "propagated": "Not applicable before authentic completion."
+    "lifecycle": "Source binding remains merged/validated; Goal Prompt 2 re-observed current discovery/runtime evidence and remains CHECKED_OUT because no authority-owned live relay advertisement or authentic exact tuple was available.",
+    "archive_ready": "False until the existing immutable browser executor produces authentic Master Records RECORDED + reconstruction PASS + exact digest equality.",
+    "unassigned_work": "No duplicate implementation is required; next work is authority-owned re-observation of the already-existing browser path.",
+    "chat_owned_counts": "Observation only. No implementation, credential, execution, or custody authority was added.",
+    "canonical_owner_installed": "Existing browser executor, Service Gateway relay, TV/TVC credential boundary, and Master Records custody owner remain canonical.",
+    "thread_required": "No standing thread, second machine, fixed host, or second resident runtime is required.",
+    "blocker_count": "Zero canonical blockers were introduced. Missing authentic runtime evidence is an unsatisfied evidence predicate, not permission to synthesize a receipt or create a new runtime.",
+    "evidence_complete": "False; no authentic node advertisement, exact runtime tuple, RECORDED receipt, reconstruction PASS, or digest equality was observed.",
+    "activated": "False; source/CI/public-tool reachability do not establish activation.",
+    "propagated": "False; A1-A4 handback remains gated on authentic reconstruction."
   },
   "authority_effect": "NONE"
 }
