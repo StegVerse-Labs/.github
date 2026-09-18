@@ -418,3 +418,163 @@ Only after the exact A1/A2 tuple exists should this Goal test the provider-neutr
 ## Manual work
 
 None.
+
+
+## Goal prompt 4: shared runtime-evidence owner reconciliation
+
+Session Prompt Count: 10. Goal Prompt Count: 4/20.
+
+### Current canonical truth
+
+Task Registry generation 28 and this handoff were re-read before work. The Goal remained exactly one `ACTIVE / CHECKED_OUT` row under COSV `40000100100000`. The immutable nonce, invocation count `1`, no-second-request rule, no-Render rule, and all authentic Master Records completion predicates remained unchanged/false.
+
+The authorized remote-runtime connector exposed zero connected devices to this continuation. That is an evidence-reachability observation only; it is not evidence that StegVerse lacks a runtime and it does not create a remote-device prerequisite.
+
+No authentic authority-owned evidence was observed for:
+
+```text
+exact current browser Receipt #1
+same-nonce RUNTIME_READY_FOR_WORKERCOORDINATOR
+authentic StegOS #347 recovery result
+stegbrowser-resident-custody-root-observation.latest.json
+Master Records RECORDED / reconstruction PASS
+```
+
+No custody POST was attempted. No second invocation was emitted. No runtime predicate was promoted.
+
+### Correct shared runtime-evidence ownership
+
+Current downstream task `STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001` explicitly names:
+
+```text
+runtime_evidence_owner = GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001
+first_unresolved_predicate = REGISTERED_STEGVERSE_NODE_BOUND_TO_INVOCATION
+```
+
+The current global owner record/handoff establishes:
+
+```text
+GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001
+state = ACTIVE
+checkout = CLAIMED_INTEGRATION
+current_first_unresolved_predicate =
+  AUTHENTIC_RETAINED_STEGOS_STEGBROWSER_RUNTIME_OBSERVED
+```
+
+It is the single shared runtime-evidence owner for all profiled lanes. This Goal therefore must not create or claim another runtime-evidence convergence plane.
+
+Current global invariant also supersedes older issue commentary that named a particular iPhone/TestFlight observation as a completion gate. Physical-device identity gates are now prohibited; any eligible admitted StegOS execution surface may satisfy the shared runtime predicate when the required continuity, claim/fence, and Interlock/InTr bindings are authentic.
+
+The global measurement loop remains unentered. No frozen measurement run ID and no authentic `global-runtime-node-profile-convergence.latest.json` receipt were observed. This Goal did not mutate or enter the global owner because it is already `CLAIMED_INTEGRATION`.
+
+### Exact StegBrowser runtime-evidence seam
+
+The shared owner already delegates the exact StegBrowser retained-root observation seam to:
+
+```text
+STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001
+issue = StegVerse-Labs/.github#1860
+state = ACTIVE
+checkout = CHECKED_OUT_SUCCESSOR_REMEDIATION_BOUND
+first unresolved =
+  RESIDENT_CUSTODY_ROOT_AUTHENTICALLY_OBSERVED_FOR_STEGBROWSER
+```
+
+Its existing post-repair observation surface is:
+
+```text
+receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json
+```
+
+Only if that retained packet authenticates a resident root may the existing non-authorizing classifier inspect:
+
+```text
+receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json
+```
+
+using:
+
+```text
+scripts/check_stegbrowser_runtime_consumption_receipts.py
+```
+
+The exact observation task already has one bounded successor remediation owner:
+
+```text
+STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001
+StegVerse-Labs/.github#1866
+shared owner = GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001
+```
+
+No second observation/remediation owner is permitted.
+
+### Relationship to direct browser Receipt #1 and StegOS #347
+
+The ordinary browser execution path still remains preferred and unchanged:
+
+```text
+indexeddb://stegos-node-v1/meta/registration
+-> exact node_id
+-> exact interlock_id
+-> exact registration_receipt_sha256
+-> same-nonce InTr admission
+-> same-nonce EVENT_EPHEMERAL runtime
+-> RUNTIME_READY_FOR_WORKERCOORDINATOR
+```
+
+StegOS #23/#347 remain only the existing governed continuity/genesis recovery fallback when the originating browser registration itself is not directly authority-observable.
+
+StegOS #347 is **not** the shared runtime-evidence owner. Source presence of `stegos.device_continuity_recovery_result.v1` does not prove an authentic recovery result; no authentic `ADMITTED_FOR_LOCAL_REHYDRATION` result was found in current repository-visible evidence.
+
+StegOS #351 remains nonmandatory and runtime-unproven.
+
+### Current evidence order
+
+```text
+existing direct browser registration
+  OR authentic already-admitted StegOS #347 exact genesis recovery
+-> shared owner observes authentic retained StegOS/StegBrowser runtime
+-> exact registered Node / Receipt #1 bound to immutable invocation
+-> same-nonce RUNTIME_READY_FOR_WORKERCOORDINATOR
+-> exact Node/Interlock/Receipt-1/lease/runtime/export tuple
+-> hash-valid health-valid provider-neutral StegVerse node advertisement
+-> existing credential-nonexporting relay
+-> sole master-records/orchestration
+-> RECORDED
+-> reconstruction_status=PASS
+-> browser digest == receipt digest == reconstruction digest
+-> hand unchanged invocation to STEG-BROWSER-CURRENT-IPHONE-A1-A4-EXECUTION-001
+```
+
+Gateway discovery remains downstream. CMC-029 remains conditional rather than a fixed-host prerequisite.
+
+### Evidence disposition
+
+```text
+shared runtime owner bound = true
+shared runtime owner mutated by this Goal = false
+global measurement loop entered = false
+authentic retained StegOS/StegBrowser runtime observed = false
+resident custody root packet observed = false
+resident custody root observed = false
+receipt reachability classified = false
+exact current browser Receipt #1 observed = false
+same-nonce runtime event observed = false
+authentic StegOS #347 recovery result observed = false
+verified Gateway advertisement entered = false
+Master Records RECORDED = false
+Master Records reconstruction PASS = false
+exact digest equality = false
+second invocation emitted = false
+A3/A4 handback performed = false
+```
+
+Observation/reconciliation report:
+
+`reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_SHARED_RUNTIME_OWNER_RECONCILIATION_20260917.json`
+
+This candidate reconciliation advances Task Registry generation 28 to 29 while retaining `ACTIVE / CHECKED_OUT`.
+
+## Manual work
+
+None.
