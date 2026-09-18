@@ -107,8 +107,8 @@ def test_substrate_resolution_is_part_of_collision_convergence_contract():
 def test_canonical_work_bootstrap_requires_registry_preflight_before_route_mutation():
     text = BOOTSTRAP.read_text(encoding="utf-8")
     assert 'COLLISION_EVALUATOR_REL = Path("scripts/evaluate_task_registry_collision_checkin.py")' in text
-    assert "checkin = collision_preflight(args.task_id)" in text
-    checkin_pos = text.index("checkin = collision_preflight(args.task_id)")
+    assert "checkin = collision_preflight(args.task_id, registry_path)" in text
+    checkin_pos = text.index("checkin = collision_preflight(args.task_id, registry_path)")
     installer_pos = text.index("run([sys.executable, installer])")
     assert checkin_pos < installer_pos
     assert 'if disposition != "CONTINUE":' in text
