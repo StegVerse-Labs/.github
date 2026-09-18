@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 29,
-  "status": "COSV_TASK_POINTER_RUNTIME_ENFORCEMENT_SOURCE_REGISTERED",
+  "generation": 30,
+  "status": "MIR_EPHEMERAL_ACTOR_CUSTODY_SEAM_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -2696,6 +2696,96 @@
         "independent_review": "PENDING",
         "finding_authorized": false,
         "publication_authorized": false
+      }
+    },
+    {
+      "schema": "stegverse.canonical-task-record/v1",
+      "task_id": "MIR-EPHEMERAL-ACTOR-CUSTODY-SEAM-001",
+      "correlation_id": "MIR-EPHEMERAL-ACTOR-CUSTODY-SEAM-001",
+      "root_correlation_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+      "parent_task_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+      "goal": "Pressure-test the Evidence Custody Seam against actors that are created and destroyed inside one commitment window, and define vendor-neutral receipt semantics that preserve externally attributable standing/lineage, leaf attribution, bounded lifecycle, and accountability without allowing the actor or caller to self-authorize or self-name its own lineage.",
+      "coordination_state": "ACTIVE",
+      "checkout_state": "DOCUMENTARY_RECONCILIATION",
+      "cosv_task_vector": "50000000100000",
+      "handoff_ref": "docs/MIR_EPHEMERAL_ACTOR_CUSTODY_SEAM_MIRROR_HANDOFF.md",
+      "source_refs": [
+        "docs/MIR_EPHEMERAL_ACTOR_CUSTODY_SEAM_MIRROR_HANDOFF.md",
+        "docs/mir-reference-architecture/SEPARATION_OF_POWERS_REFERENCE_ARCHITECTURE_DRAFT.md",
+        "docs/MIR_STEGVERSE_SEPARATION_OF_POWERS_EVIDENCE_CONTRACT_MIRROR_HANDOFF.md"
+      ],
+      "targets": {
+        "organizations": [
+          "StegVerse-Labs"
+        ],
+        "repositories": [
+          "StegVerse-Labs/.github"
+        ],
+        "components": [
+          "evidence-custody-reconstruction",
+          "actor-lineage",
+          "ephemeral-execution",
+          "conformance-receipts",
+          "separation-of-powers"
+        ]
+      },
+      "dependencies": [
+        "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001"
+      ],
+      "blockers": [],
+      "adjacent_task_refs": [
+        "CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001",
+        "MIR-AILEASH-WITNESS-EVIDENCE-RECONCILIATION-001"
+      ],
+      "expected_evidence_predicates": [
+        "EPHEMERAL_ACTOR_NEED_NOT_OUTLIVE_COMMITMENT_WINDOW",
+        "ACTOR_INSTANCE_ID_BOUND_TO_RETAINED_TRANSITION",
+        "ACTOR_LIFECYCLE_BOUND_WHEN_MATERIAL",
+        "LINEAGE_OR_STANDING_REFERENCE_EXTERNALLY_ATTRIBUTABLE",
+        "CALLER_SELF_DECLARED_LINEAGE_NOT_PROMOTED_TO_AUTHORITY",
+        "LEAF_ATTRIBUTION_DISTINGUISHED_FROM_ROOT_STANDING",
+        "CUSTODIAN_RECORDS_PROVENANCE_WITHOUT_BECOMING_IDENTITY_OR_GOVERNANCE_AUTHORITY",
+        "SECTIONS_3_4_AND_COMMON_RECEIPT_ENVELOPE_PRESSURE_TESTED"
+      ],
+      "runtime_requirements": {
+        "capabilities": [
+          "documentary_conformance_analysis",
+          "receipt_schema_reconciliation"
+        ],
+        "environment": "DOCUMENTARY_AND_CROSS_SYSTEM_CONFORMANCE",
+        "direction": "EPHEMERAL_ACTOR_EVIDENCE_CONTRACT",
+        "mutation_required": true,
+        "deployment_required": false,
+        "current_observation_required": false
+      },
+      "worker_claim": {
+        "authority": "WORKERCOORDINATOR",
+        "claim_ref": null,
+        "fence_ref": null,
+        "projection_only": true
+      },
+      "completion": {
+        "claimed": false,
+        "validated": false,
+        "reconciliation_ref": "docs/MIR_EPHEMERAL_ACTOR_CUSTODY_SEAM_MIRROR_HANDOFF.md"
+      },
+      "prompt_budget": {
+        "goal_prompt_count": "1/20",
+        "terminal_prompt_processed": false,
+        "further_parent_prompts_allowed": true
+      },
+      "allowed_next_transitions": [
+        "INGRESS_ADMITTED"
+      ],
+      "handoff_projection_refs": [
+        "docs/MIR_EPHEMERAL_ACTOR_CUSTODY_SEAM_MIRROR_HANDOFF.md"
+      ],
+      "authority_model": {
+        "ephemeral_actor_may_self_name_lineage": false,
+        "caller_may_self_attest_actor_standing": false,
+        "evidence_custody_may_create_identity_or_lineage_authority": false,
+        "actor_destruction_invalidates_retained_record": false,
+        "lifecycle_persistence_required_for_conformance": false
       }
     }
   ],
