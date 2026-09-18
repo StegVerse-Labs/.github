@@ -593,7 +593,7 @@ Goal Task `SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001` now has a validated me
 
 ## Master Records StegBrowser endpoint binding
 
-Canonical Goal Task `MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001` remains `ACTIVE / CHECKED_OUT`, COSV `40000100100000`. Goal Prompts 10-11 reconciled concurrent Task Registry advances and re-checked only the existing authorized resident evidence surface. It still exposed zero connected devices, treated strictly as evidence-reachability rather than sovereign-runtime absence. `RESIDENT_REQUEST_DISPATCH_VISIT` remains the first unsatisfied evidence predicate. No owner, measurement lane, exporter, observer, runtime, request, scheduler, recovery path, second StegBrowser invocation, fixed-host dependency, or second-device dependency was introduced.
+Canonical Goal Task `MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001` remains `ACTIVE / CHECKED_OUT`, COSV `40000100100000`. Goal Prompts 13-14 reconciled all related superseded coordination artifacts: the historical PR lineage is closed, Goal issue #2078 and global runtime-evidence owner issue #1260 remain open by design, and all six superseded related branches—including the #2115 hygiene branch—were force-aligned to final main and verified identical at 0/0 because branch deletion is not exposed by the connected GitHub capability. The authorized resident evidence surface still exposes zero connected devices; `RESIDENT_REQUEST_DISPATCH_VISIT` remains the first unsatisfied predicate and no downstream transition is promoted.
 
 The controlling handoff is `docs/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_MIRROR_HANDOFF.md`.
 
