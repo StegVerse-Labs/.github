@@ -27,3 +27,7 @@ TV/TVC remains credential authority; Interlock/InTr remains transition/posture a
 
 ## First implementation seam
 Add only the bounded request-specific consumer and dispatcher registration needed to invoke `run_evaluator_governance_manifest` from the existing resident carrier. Reuse WorkerCoordinator/ProcessWorkerAdapter/Interlock paths where admission is required; do not repurpose READ_REVIEW or create a parallel runtime.
+
+## Source consumer implementation — 2026-09-18
+
+The bounded resident seam is implemented in source using only the existing dispatcher: `sdk_evaluator_governance_posture` -> `scripts/consume_sdk_evaluator_governance_posture_request.py`, with request `control/resident-execution-request.d/sdk-evaluator-governance-posture-runtime-proof-001.json`. The consumer requires an already-materialized exact manifest, records its byte SHA-256, invokes only `stegverse.evaluator_governance_runtime.run_evaluator_governance_manifest`, and retains the returned Interlock/InTr posture binding under `receipts/sovereign-host/sdk-evaluator-governance-posture-runtime-proof.latest.json`. Source refresh/materialization carries the consumer. CI validation remains non-authorizing and cannot satisfy the authentic retained runtime predicate.

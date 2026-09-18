@@ -6,7 +6,7 @@
   "parent_task_id": "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001",
   "goal": "Produce authentic retained evidence that the existing resident dispatcher invokes the bounded SDK governance-posture consumer, which calls run_evaluator_governance_manifest through the existing SDK-to-StegOS Interlock/InTr posture-resolution seam and returns exact hash-bound posture/execution evidence without creating another runtime, scheduler, authority plane, request path, or second user-operated device.",
   "coordination_state": "ACTIVE",
-  "checkout_state": "UNCLAIMED",
+  "checkout_state": "SOURCE_CONSUMER_IMPLEMENTED_RUNTIME_PROOF_PENDING",
   "repository": "StegVerse-Labs/.github",
   "handoff": "docs/SDK_EVALUATOR_GOVERNANCE_POSTURE_RUNTIME_PROOF_MIRROR_HANDOFF.md",
   "cosv": {
@@ -42,5 +42,14 @@
   "adjacent_task_refs": [
     "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001"
   ],
-  "worker_lifecycle_relationship": "DOWNSTREAM_SEPARATE_CONSUMER_NO_RUNTIME_OWNERSHIP_TRANSFER"
+  "worker_lifecycle_relationship": "DOWNSTREAM_SEPARATE_CONSUMER_NO_RUNTIME_OWNERSHIP_TRANSFER",
+  "source_consumer": {
+    "selector": "sdk_evaluator_governance_posture",
+    "consumer_ref": "scripts/consume_sdk_evaluator_governance_posture_request.py",
+    "request_ref": "control/resident-execution-request.d/sdk-evaluator-governance-posture-runtime-proof-001.json",
+    "receipt_ref": "receipts/sovereign-host/sdk-evaluator-governance-posture-runtime-proof.latest.json",
+    "sdk_entrypoint": "stegverse.evaluator_governance_runtime.run_evaluator_governance_manifest",
+    "source_implementation_complete": true,
+    "authentic_runtime_proof_claimed": false
+  }
 }
