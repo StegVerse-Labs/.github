@@ -451,3 +451,30 @@ PR #2092 merged the existing-path callable repair as `c8ae6b6e83eb046319170d6a93
 Post-merge retry against available resident execution tooling found no online resident device surface. That observation is classified only as `EVIDENCE_REACHABILITY`; it is not converted into a runtime/substrate failure or a second-device requirement. A source search after merge found no authentic hygiene `CONTINUE` check-in, WorkerCoordinator claim/fence, `INGRESS_ADMITTED`, or resident-dispatch receipt. Current canonical source therefore still proves only addressability: the Task Registry row remains `PROPOSED`, `runtime_resolution=null`, and WorkerCoordinator `claim_ref/fence_ref=null`.
 
 The exact next predicate is unchanged: invoke `RT-CANONICAL-WORK-PORTABLE-DISPATCH-001` / the existing portable bridge for `HYGIENE-CAUSAL-ROOTS-001`, require an authentic Task Registry `CONTINUE` disposition, and only then allow the existing WorkerCoordinator claim/fence -> Interlock/InTr admission chain to proceed. GitHub/CI/source success is not a substitute.
+
+
+## 2026-09-17 Healer reusable-carrier schedule repair and invocation boundary
+
+Current canonical coordination advanced concurrently to Task Registry generation 31; `HYGIENE-CAUSAL-ROOTS-001` remains `PROPOSED / ECOSYSTEM_RECONCILIATION`, `runtime_resolution=null`, and WorkerCoordinator `claim_ref/fence_ref=null`. The repository-only collision distinctions remain source-resolved and no new stronger collision was introduced by this continuation.
+
+Tracing the first existing eligible resident/reusable execution surface identified the standing sovereign Healer carrier as the canonical path:
+
+```text
+standing Healer resident request
+-> existing WorkerCoordinator-targeted scheduler execution
+-> StegVerse-Healer/app/reusable_task_scheduler.py
+-> RT-REUSABLE-TASK-SCHEDULER-001
+-> scripts/trigger_reusable_task.py
+-> RT-CANONICAL-WORK-PORTABLE-DISPATCH-001
+-> existing refresh_and_dispatch_resident_requests.py
+-> exact canonical_work_coordination
+-> goal HYGIENE-CAUSAL-ROOTS-001
+```
+
+The first concrete stop was not device availability. `StegVerse-Labs/StegVerse-Healer:data/reusable_task_schedule.json` had no row for `RT-CANONICAL-WORK-PORTABLE-DISPATCH-001`, so the existing carrier could not select the already-registered reusable identity. Healer PR #90 repaired only that schedule-addressability defect and merged as `9c737c77f861a28ef55005b31812777f541af96d` from exact head `7643962d7d31cbff74c3afa45cb4727f7b097b8f`.
+
+The merged row binds tracking task `HYGIENE-CAUSAL-ROOTS-001`, COSV `10100000100000`, repository `StegVerse-Labs/.github`, all UTC hours, the existing 15-minute / four-attempt retry policy, and only the bridge-compatible parameters `only_consumer=canonical_work_coordination` and `goal_task_id=HYGIENE-CAUSAL-ROOTS-001`. The neutral scheduler continues to inject `source_root` and `runtime_root`; existing `RT-SOVEREIGN-SOURCE-REFRESH-001` remains the only resident-root bootstrap mechanism. No runtime, scheduler, dispatcher, request identity, Site/StegCore mutation, Remote Desktop requirement, authority plane, or second user-operated device was added.
+
+Exact-head Healer Test Readiness run `35305308087` / job `105476184831` passed. Its deterministic suite ran 150 tests and explicitly executed both `HygieneCanonicalWorkScheduleTests` methods. This is source/configuration validation only.
+
+Post-merge evidence search found no retained `RT-CANONICAL-WORK-PORTABLE-DISPATCH-001` trigger receipt, no hygiene Task Registry `CONTINUE`, no WorkerCoordinator claim/fence, and no `INGRESS_ADMITTED` transition. This is therefore an authentic resident-execution evidence boundary, not a newly proven source defect. The existing Healer carrier remains the first eligible authentic invocation surface; GitHub/CI/source state cannot substitute for its resident receipt.
