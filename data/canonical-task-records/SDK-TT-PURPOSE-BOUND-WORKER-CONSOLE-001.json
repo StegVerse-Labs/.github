@@ -60,5 +60,6 @@
   },
   "successor_task_id": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
   "successor_cosv_task_vector": "71000000111111",
-  "successor_handoff": "docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md"
+  "successor_handoff": "docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md",
+  "continuation_task_id": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001"
 }
