@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 28,
+  "generation": 29,
   "status": "COSV_TASK_POINTER_RUNTIME_ENFORCEMENT_SOURCE_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -2175,10 +2175,24 @@
         "source_or_ci_promoted_to_runtime": false,
         "exact_current_browser_receipt_1_authority_readback_observed": false,
         "exact_same_nonce_runtime_event_observed": false,
-        "first_missing_runtime_evidence_owner": "StegVerse-Labs/StegOS#23 -> #347 recovery when browser-local registration is not directly observable",
+        "first_missing_runtime_evidence_owner": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
         "service_gateway_is_first_missing_predicate": false,
         "gadi_discovery_receipt_is_receipt_1": false,
-        "persistent_carrier_required": false
+        "persistent_carrier_required": false,
+        "shared_runtime_evidence_owner_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+        "shared_runtime_evidence_owner_claimed_integration": true,
+        "global_first_unresolved_runtime_predicate": "AUTHENTIC_RETAINED_STEGOS_STEGBROWSER_RUNTIME_OBSERVED",
+        "exact_first_missing_runtime_evidence_seam_owner": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+        "exact_first_missing_runtime_evidence_seam_successor": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+        "resident_custody_root_packet_observed": false,
+        "resident_custody_root_observed": false,
+        "receipt_reachability_classified": false,
+        "authentic_stegos_347_recovery_result_observed": false,
+        "stegos_347_is_optional_recovery_fallback_only": true,
+        "global_measurement_loop_entered": false,
+        "connected_authorized_remote_runtime_surface_available_to_chat": false,
+        "connected_surface_absence_is_runtime_absence_evidence": false,
+        "named_physical_device_is_completion_gate": false
       },
       "exact_tuple_required": [
         "runtime_readiness_receipt_sha256",
@@ -2212,11 +2226,32 @@
       },
       "dependencies": [
         {
+          "dependency_id": "DEP-STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION",
+          "kind": "EXISTING_SUCCESSOR_REMEDIATION_OWNER",
+          "state": "BOUND",
+          "ref": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001;StegVerse-Labs/.github#1866",
+          "disposition": "Existing successor owns the post-repair materialization/packet observation path under the shared runtime-evidence owner. This Goal must not duplicate or widen it."
+        },
+        {
+          "dependency_id": "DEP-STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-SEAM",
+          "kind": "EXACT_RUNTIME_EVIDENCE_OBSERVATION_OWNER",
+          "state": "PENDING_AUTHENTIC_PACKET_AND_ROOT",
+          "ref": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001;StegVerse-Labs/.github#1860;receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json",
+          "disposition": "Existing exact StegBrowser observation seam. Observe the already-defined retained packet/root and classify the existing Canonical Work receipt only if an authentic root is exposed. No second observer/exporter/runtime owner may be created."
+        },
+        {
+          "dependency_id": "DEP-GLOBAL-SHARED-RUNTIME-EVIDENCE-OWNER",
+          "kind": "CANONICAL_SHARED_RUNTIME_EVIDENCE_OWNER",
+          "state": "BOUND_ACTIVE_CLAIMED_INTEGRATION",
+          "ref": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001;docs/GLOBAL_RUNTIME_EVIDENCE_CLOSURE_MIRROR_HANDOFF.md;docs/GLOBAL_RUNTIME_EVIDENCE_CONVERGENCE_MATRIX.md",
+          "disposition": "This Goal does not own or create another runtime-evidence convergence plane. The shared owner remains the sole umbrella for authentic retained StegOS/StegBrowser runtime observation. This Goal consumes only exact same-invocation evidence after that evidence exists."
+        },
+        {
           "dependency_id": "DEP-STEGOS-CURRENT-BROWSER-RECEIPT1-AUTHORITY-VISIBILITY",
           "kind": "RUNTIME_EVIDENCE_CONTEXT",
-          "state": "UNOBSERVED",
+          "state": "UNOBSERVED_OPTIONAL_RECOVERY_FALLBACK",
           "ref": "StegVerse-Labs/StegOS#23; StegVerse-Labs/StegOS#347; PR#348@42c36278e1832fa8214bf50710ae033f8678f3f1",
-          "disposition": "Normal browser execution reads the exact registered Node directly from IndexedDB and does not require recovery. If that originating browser registration is not directly authority-observable, reuse only the existing StegOS #347 governed browser-independent recovery contract to expose the exact retained genesis Receipt #1; #351 persistent carrier remains optional/unproven and must not become a mandatory browser, provider, host, or device prerequisite."
+          "disposition": "Normal browser execution reads the exact registered Node directly from IndexedDB. StegOS #23/#347 own exact genesis/continuity recovery only if that originating registration is not directly authority-observable; #347 is not the shared runtime-evidence owner and source contract presence is not an authentic recovery result."
         },
         {
           "dependency_id": "DEP-CANONICAL-MASTER-RECORDS-CUSTODY-OWNER",
@@ -2238,7 +2273,9 @@
       ],
       "allowed_next_transitions": [
         "REOBSERVE_EXISTING_BROWSER_REGISTERED_NODE_AND_SAME_NONCE_RUNTIME_EVENT",
+        "CONSUME_AUTHENTIC_SHARED_RUNTIME_OWNER_STEGBROWSER_EVIDENCE_IF_OBSERVED",
         "IF_BROWSER_REGISTRATION_NOT_DIRECTLY_OBSERVABLE_CONSUME_ONLY_EXISTING_STEGOS_347_AUTHENTIC_RECOVERY",
+        "CLASSIFY_EXISTING_CANONICAL_WORK_RECEIPT_ONLY_AFTER_AUTHENTIC_ROOT",
         "OBSERVE_VERIFIED_STEGVERSE_GATEWAY_ADVERTISEMENT_AFTER_EXACT_RUNTIME_TUPLE",
         "SUBMIT_ONLY_BROWSER_CONSTRUCTED_EXACT_EXISTING_CUSTODY_RECEIPT",
         "REQUIRE_AUTHENTIC_RECORDED_AND_RECONSTRUCTION_PASS",
@@ -2300,7 +2337,15 @@
         "StegVerse-Labs/StegOS:stegos/device_continuity_recovery.py",
         "StegVerse-Labs/StegOS#347",
         "StegVerse-Labs/StegOS#351",
-        "StegVerse-Labs/.github:scripts/observe_gadi_current_iphone_discovery_receipt.py@d50514091590ada8ec66bd4981a1437967d06f04"
+        "StegVerse-Labs/.github:scripts/observe_gadi_current_iphone_discovery_receipt.py@d50514091590ada8ec66bd4981a1437967d06f04",
+        "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_SHARED_RUNTIME_OWNER_RECONCILIATION_20260917.json",
+        "data/canonical-task-records/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.json",
+        "docs/GLOBAL_RUNTIME_EVIDENCE_CLOSURE_MIRROR_HANDOFF.md",
+        "docs/GLOBAL_RUNTIME_EVIDENCE_CONVERGENCE_MATRIX.md",
+        "data/canonical-task-records/STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001.json",
+        "docs/STEGBROWSER_RESIDENT_CUSTODY_ROOT_OBSERVATION_MIRROR_HANDOFF.md",
+        "data/canonical-task-records/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json",
+        "docs/STEGBROWSER_RUNTIME_MATERIALIZATION_REMEDIATION_MIRROR_HANDOFF.md"
       ],
       "blockers": [],
       "worker_claim": {
@@ -2410,6 +2455,35 @@
         "second_invocation_emitted": false,
         "runtime_predicate_promoted": false,
         "downstream_handback_performed": false,
+        "authority_effect": "NONE_RECONCILIATION_ONLY"
+      },
+      "shared_runtime_evidence_owner_reconciliation": {
+        "goal_prompt_count": "4/20",
+        "report_ref": "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_SHARED_RUNTIME_OWNER_RECONCILIATION_20260917.json",
+        "registry_generation_entering": 28,
+        "shared_runtime_evidence_owner_task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+        "shared_runtime_evidence_owner_state": "ACTIVE",
+        "shared_runtime_evidence_owner_checkout_state": "CLAIMED_INTEGRATION",
+        "global_first_unresolved_predicate": "AUTHENTIC_RETAINED_STEGOS_STEGBROWSER_RUNTIME_OBSERVED",
+        "exact_stegbrowser_observation_owner_task_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+        "exact_stegbrowser_observation_owner_state": "ACTIVE",
+        "exact_stegbrowser_observation_owner_checkout_state": "CHECKED_OUT_SUCCESSOR_REMEDIATION_BOUND",
+        "exact_observation_first_unresolved_predicate": "RESIDENT_CUSTODY_ROOT_AUTHENTICALLY_OBSERVED_FOR_STEGBROWSER",
+        "exact_observation_packet_ref": "receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json",
+        "exact_runtime_receipt_after_root_ref": "receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json",
+        "already_bound_successor_remediation_task_id": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+        "already_bound_successor_issue_ref": "StegVerse-Labs/.github#1866",
+        "stegos_347_role": "OPTIONAL_EXACT_GENESIS_RECOVERY_FALLBACK_ONLY",
+        "stegos_347_is_shared_runtime_evidence_owner": false,
+        "global_owner_mutated": false,
+        "global_measurement_entered": false,
+        "exact_browser_receipt_1_observed": false,
+        "exact_same_nonce_runtime_event_observed": false,
+        "authentic_stegos_347_recovery_result_observed": false,
+        "authentic_retained_healer_packet_observed": false,
+        "custody_submission_attempted": false,
+        "second_invocation_emitted": false,
+        "runtime_predicate_promoted": false,
         "authority_effect": "NONE_RECONCILIATION_ONLY"
       }
     },
