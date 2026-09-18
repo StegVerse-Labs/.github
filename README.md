@@ -650,3 +650,9 @@ The canonical Master Records local-adapter child repair is merged on main via PR
 
 
 Canonical Master Records local-adapter source repair is merged by PR #2136 at `a21bbeb53e33210d4ac832f343582c02149d8c53` and retired under `CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001`. The parent custody Goal remains ACTIVE for authentic runtime `RECORDED + reconstruction_status=PASS` evidence; source merge and CI do not satisfy that runtime predicate.
+
+### User-action surface anti-collision identity
+
+The canonical Task Registry collision evaluator treats mutable user/browser interaction surfaces as explicit coordination resources rather than informal instructions. A task can register or check in an exact URL/route, device/browser context class, runtime/service-worker surface, action type, owner/request identity, and `SHAREABLE` or `EXCLUSIVE` semantics. Identical surfaces involving an exclusive claimant fail closed through the existing collision disposition path before user instruction or mutation; mutually shareable surfaces remain visible but nonblocking.
+
+This is Task Registry coordination only. WorkerCoordinator remains claim/fence authority, Interlock/InTr remains transition authority, TV/TVC remains credential authority, Master Records remains observed-reality/reconstruction authority, and user-action surface metadata does not itself prove browser/runtime execution.
