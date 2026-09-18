@@ -780,3 +780,155 @@ This candidate advances Task Registry generation 30 to generation 31 while retai
 ## Manual work
 
 None.
+
+
+## Goal prompt 7: Healer checkpoint first pointer-bearing surface
+
+Session Prompt Count: 13. Goal Prompt Count: 7/20.
+
+### Current canonical truth
+
+Task Registry generation 31 and the existing owner chain were re-read first. This Goal remained exactly one `ACTIVE / CHECKED_OUT` row under COSV `40000100100000`; immutable nonce/count and all Master Records completion predicates remained unchanged.
+
+Existing owners were preserved without mutation:
+
+```text
+GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001
+-> STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001
+-> STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001
+```
+
+`GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001` was not entered.
+
+### Field-by-field resident path
+
+The already-existing resident Healer path is:
+
+```text
+native run_worker_runtime.py
+-> dispatch_resident_execution_requests.py
+-> healer_sovereign_scheduler consumer
+-> consume_healer_sovereign_scheduler_request.py
+-> refresh_and_execute_resident_task.py
+-> run_worker_runtime.py --task-id SHWP-HEALER-SOVEREIGN-SCHEDULER-001
+-> admitted WorkerCoordinator review
+-> independent-task-control fresh claim/fence
+-> workers/healer_sovereign_scheduler_worker.py
+-> StegVerse-Healer dispatch_orchestrators.py
+-> full scheduler child receipt
+-> worker checkpoint write in sandbox
+-> ProcessWorkerAdapter scope/fence validation
+-> ALLOW projection into authoritative resident root
+-> WorkerResponse metadata only
+-> WorkerCoordinator cycle envelope
+-> refresh-and-execute receipt
+-> healer-sovereign-scheduler-request-consumption.latest.json
+```
+
+### First existing pointer-bearing machine transition
+
+The full StegVerse-Healer scheduler result contains:
+
+```text
+resident_custody_root_observation_retention
+  packet_ref
+  packet_relative_path
+  packet_sha256
+  retained_under_root
+  retained_under_root_source
+  packet_state
+```
+
+`workers/healer_sovereign_scheduler_worker.py` embeds that result under `child_receipt` in its durable worker checkpoint:
+
+```text
+receipts/healer-sovereign-scheduler/
+  SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json
+
+child_receipt.resident_custody_root_observation_retention
+```
+
+The worker runs in a ProcessWorkerAdapter sandbox. The first transition at which this checkpoint becomes an authentic authoritative resident copy is therefore:
+
+```text
+FENCED_PROCESS_ADAPTER_ALLOW_PROJECTION
+```
+
+Preconditions:
+
+```text
+Worker Task Admission verdict = ADMIT
+fresh independent-task-control claim
+fresh fencing token
+worker checkpoint written
+all mutations inside admitted receipts/healer-sovereign-scheduler/** scope
+ProcessWorkerAdapter scope decision = ALLOW
+```
+
+At that point the checkpoint is projected into the authoritative resident root and is the first existing pointer-bearing resident evidence surface.
+
+### Outer consumption receipt serialization boundary
+
+The prior classification described the retention pointer as embedded in:
+
+```text
+healer-sovereign-scheduler-request-consumption.latest.json
+-> execution_result.resident_custody_root_observation_retention
+```
+
+The field trace shows that description is structurally too direct.
+
+`ProcessWorkerAdapter` intentionally converts the worker response to `WorkerResponse`, retaining only:
+
+```text
+state
+transition_id
+transition_sequence
+expected_next_transition
+expected_next_earliest_epoch
+expected_next_latest_epoch
+checkpoint_ref
+evidence_refs
+cost_observation
+```
+
+WorkerCoordinator then exposes a cycle envelope with worker-response transition metadata. `refresh_and_execute_resident_task.py` retains that cycle envelope as `execution_result`, and `consume_healer_sovereign_scheduler_request.py` stores that refresh receipt in the outer resident request-consumption receipt.
+
+Therefore:
+
+```text
+outer execution_result contains WorkerCoordinator cycle envelope
+outer execution_result does not structurally inline the Healer child receipt
+first full retention-pointer payload remains in the projected worker checkpoint
+```
+
+No #1866 owner record was mutated; this Goal records the serialization/projection correction for coordination only.
+
+### Runtime evidence disposition
+
+No authentic resident copy of the fenced worker checkpoint was observable to this continuation, so:
+
+```text
+authentic Healer worker checkpoint observed = false
+child_receipt retention pointer observed = false
+packet_state == RESIDENT_CUSTODY_ROOT_OBSERVED = false
+exactly one authentic root observed = false
+receipt classifier run = false
+exact immutable StegBrowser runtime tuple available = false
+```
+
+The classifier remains gated. It may run only after the authentic checkpoint proves `packet_state=RESIDENT_CUSTODY_ROOT_OBSERVED` for exactly one root.
+
+Gateway validation, relay submission, Master Records `RECORDED`, reconstruction `PASS`, exact digest equality, and A1-A4 handback remain unentered.
+
+No exporter, observer, runtime, request, scheduler, recovery path, measurement run, Gateway, fixed host, second StegBrowser invocation, or second user-operated device was introduced.
+
+Observation report:
+
+`reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_HEALER_CHECKPOINT_FIRST_SURFACE_20260917.json`
+
+This candidate advances Task Registry generation 31 to generation 32 while retaining `ACTIVE / CHECKED_OUT`.
+
+## Manual work
+
+None.
