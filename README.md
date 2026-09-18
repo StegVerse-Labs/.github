@@ -647,3 +647,8 @@ Canonical Goal Task `ERL-WHITE-HOUSE-PRESS-ACCESS-PRECEDENT-001` registers the S
 
 
 The canonical Master Records local-adapter child repair is merged on main via PR #2136 at `a21bbeb53e33210d4ac832f343582c02149d8c53` and reconciled back into parent `CANONICAL-MASTER-RECORDS-STATE-TRANSITION-CUSTODY-001`. This closes the source-contract defect only; authentic runtime Master Records custody remains unclaimed and pending under the parent path.
+
+
+### SDK evaluator governance posture runtime proof
+
+Goal Prompt 20 closes the source/console scope of `SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001` and retires the stale source/console child `SDK-GRG-CANONICAL-PROJECTION-CONSOLE-001`. SDK PR #265 passed exact-head validation runs 35384562705, 35384562692, and 35384562751 and merged as `af1be4f9d9b3635912f8e085cbfe8ed922602d83`. Authentic SDK-to-live StegOS/InTr execution remains independently runtime-bound and transfers unchanged to `SDK-EVALUATOR-GOVERNANCE-POSTURE-RUNTIME-PROOF-001`, which reuses the existing resident dispatcher and `run_evaluator_governance_manifest` seam. No live runtime proof is claimed. The TT purpose-bound worker runtime proof remains a separate downstream consumer.
