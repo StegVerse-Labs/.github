@@ -693,3 +693,8 @@ StegVerse-Labs/StegVerse-Healer:docs/HYGIENE_CANONICAL_WORK_PORTABLE_DISPATCH_CA
 ```
 
 A future continuation may resume only from newly exposed authentic resident evidence on that existing path. It must not resurrect this retired Goal as source-defective, mint a new runtime/scheduler/dispatcher/request/exporter/browser route/authority plane, mutate Site/StegCore as a substitute, require Remote Desktop, or require a second user-operated device.
+
+
+## 2026-09-18 post-retirement Master Records continuity correction
+
+The retired hygiene Goal remains `RETIRED / PROMPT_LIMIT_RUNTIME_EVIDENCE_PENDING`; it is not reopened. Tracing the existing Healer path exposed a source-level continuity inconsistency: `handoffs/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json` declared `continuity.master_records_required=false` even though the canonical state-transition custody contract requires every observed governed state transition to be recorded and exactly reconstructed in Master Records before subsequent machine-owned progression. The handoff is corrected to `master_records_required=true` and cites the existing canonical custody contract/client. This does not claim any authentic resident transition or Master Records write.
