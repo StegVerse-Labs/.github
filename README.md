@@ -657,3 +657,12 @@ Canonical Master Records local-adapter source repair is merged by PR #2136 at `a
 The canonical Task Registry collision evaluator treats mutable user/browser interaction surfaces as explicit coordination resources rather than informal instructions. A task can register or check in an exact URL/route, device/browser context class, runtime/service-worker surface, action type, owner/request identity, and `SHAREABLE` or `EXCLUSIVE` semantics. Identical surfaces involving an exclusive claimant fail closed through the existing collision disposition path before user instruction or mutation; mutually shareable surfaces remain visible but nonblocking.
 
 This is Task Registry coordination only. WorkerCoordinator remains claim/fence authority, Interlock/InTr remains transition authority, TV/TVC remains credential authority, Master Records remains observed-reality/reconstruction authority, and user-action surface metadata does not itself prove browser/runtime execution.
+
+
+### Master Records required-evidence closure
+
+Every governed StegVerse state transition must produce a canonical state-transition receipt and declare the complete set of additional required evidence resulting from that transition. The receipt's `required_evidence_manifest` may be empty only when no additional required evidence exists.
+
+Master Records is the canonical evidence-validation/custody/reconstruction authority for that transition evidence set. Before machine-owned progression may treat the transition as evidence-complete, the canonical custody result must be `RECORDED`, receipt reconstruction must be `PASS`, and `required_evidence_validation_status` must be `PASS` for every required evidence item. Missing, malformed, misbound, digest-mismatched, or unreconstructable required evidence fails closed.
+
+Specialized domain validators are not replaced. When a transition requires a domain-specific validation result, that result artifact becomes required evidence and is itself bound, digest-validated, retained, and reconstructed by Master Records. Interlock/InTr remains transition authority; TV/TVC remains credential authority where required; Master Records validation grants no execution, transition, governance, publication, deployment, or release authority.
