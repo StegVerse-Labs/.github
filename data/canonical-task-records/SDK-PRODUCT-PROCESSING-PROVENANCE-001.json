@@ -1,0 +1,58 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-PRODUCT-PROCESSING-PROVENANCE-001",
+  "correlation_id": "SDK-PRODUCT-PROCESSING-PROVENANCE-001",
+  "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "parent_task_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "goal": "Make every governed StegVerse SDK result expose a generic, non-authorizing product_processing provenance envelope that attributes only the exact portion actually processed by each genuine product boundary, with admittedcode_processing as a typed AdmittedCode projection and explicit non-observation for unproven Interlock/InTr or runtime execution.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "CHECKED_OUT",
+  "cosv_task_vector": "71000000101000",
+  "repository": "StegVerse-org/StegVerse-SDK",
+  "handoff_projection_refs": [
+    "StegVerse-org/StegVerse-SDK:SDK_PRODUCT_PROCESSING_PROVENANCE_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK:docs/PRODUCT_PROCESSING_PROVENANCE.md"
+  ],
+  "targets": {
+    "repositories": [
+      "StegVerse-org/StegVerse-SDK",
+      "StegVerse-Labs/.github"
+    ],
+    "components": [
+      "sdk-result-provenance",
+      "admittedcode-processing-projection",
+      "sdk-console-return",
+      "evaluator-manifest-source-validation"
+    ]
+  },
+  "runtime_requirements": {
+    "requires_runtime_execution": false
+  },
+  "authority_model": {
+    "sdk_product_processing_authority": "NONE_PROVENANCE_PROJECTION_ONLY",
+    "admittedcode_authority": "ADMISSION_DECISION_ONLY",
+    "canonical_governance_implementation": "StegCore/StegGate",
+    "transition_authority": "Interlock/InTr",
+    "execution_authority": "existing bounded runtime owners only",
+    "custody_authority": "Master Records",
+    "credential_authority": "TV/TVC",
+    "github_runtime_authority": "NONE",
+    "product_attribution_grants_authority": false
+  },
+  "expected_evidence_predicates": [
+    "GENERIC_PRODUCT_PROCESSING_ENVELOPE_SOURCE_VALIDATED",
+    "ADMITTEDCODE_TYPED_PROJECTION_SOURCE_VALIDATED",
+    "UPSTREAM_LLM_ADAPTER_PROVENANCE_DECLARED_NOT_INFERRED",
+    "UNOBSERVED_INTR_AND_STEGAGENTS_NOT_OVERCLAIMED",
+    "MASTER_RECORDS_CUSTODY_ATTRIBUTION_PRESERVES_AUTHORITY_BOUNDARY",
+    "SDK_RETURN_BINDING_COVERS_PRODUCT_PROVENANCE",
+    "EXISTING_CANONICAL_RUNTIME_RESULT_BINDING_PRESERVED",
+    "README_AND_HANDOFF_CURRENT",
+    "NO_DUPLICATE_EVALUATOR_RUNTIME_OR_AUTHORITY_PLANE"
+  ],
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "source_merged": false
+  }
+}
