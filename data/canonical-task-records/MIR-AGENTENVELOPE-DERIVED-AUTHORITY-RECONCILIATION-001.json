@@ -50,7 +50,9 @@
     "RTG_GTG_TT_AE_INTR_MAPPING_BOUNDED",
     "REDERIVED_VS_RETRIEVED_EVIDENCE_SHAPE_CLASSIFIED",
     "NO_EXTERNAL_AUTHORITY_IMPORTED",
-    "NO_DUPLICATE_STEGVERSE_ENGINE_CREATED"
+    "NO_DUPLICATE_STEGVERSE_ENGINE_CREATED",
+    "DETERMINISTIC_RECOMPUTATION_ALREADY_REPRESENTABLE",
+    "NO_SOURCE_MUTATION_REQUIRED"
   ],
   "runtime_requirements": {
     "capabilities": [
@@ -71,8 +73,8 @@
     "projection_only": true
   },
   "completion": {
-    "claimed": false,
-    "validated": false,
+    "claimed": true,
+    "validated": true,
     "reconciliation_ref": "docs/mir-reference-architecture/AGENTENVELOPE_DERIVED_AUTHORITY_MAP.md"
   },
   "allowed_next_transitions": [
@@ -87,5 +89,11 @@
     "derived_identity_replaces_tvtvc_or_kv_skap": false,
     "deterministic_rederivation_proves_temporal_sequence": false,
     "external_architecture_similarity_implies_equivalence": false
-  }
+  },
+  "existing_evidence_refs": [
+    "master-records/core-lite@be0d08d73c96f50308991793327522dc01304657:schemas/typed_custody_evidence.schema.json",
+    "master-records/core-lite@be0d08d73c96f50308991793327522dc01304657:tools/verify_record_hash.py",
+    "master-records/core-lite@be0d08d73c96f50308991793327522dc01304657:docs/CUSTODY_RECORD_HASH_CONVENTION.md",
+    "master-records/core-lite@be0d08d73c96f50308991793327522dc01304657:docs/reconstruction/INFERENCE_WINDOW_RESOLUTION.md"
+  ]
 }

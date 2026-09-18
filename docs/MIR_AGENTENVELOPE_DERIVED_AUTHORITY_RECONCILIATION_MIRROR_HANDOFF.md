@@ -4,7 +4,7 @@ Updated: 2026-09-18
 Goal Task ID: `MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001`
 Parent Task ID: `MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001`
 COSV ID: `50000000100000`
-Status: `ACTIVE / PUBLIC SPEC + SDK SOURCE INSPECTED / DERIVATION-BASED LINEAGE CONFIRMED / TEMPORAL-ORDERING BOUNDARY CONFIRMED / STEGVERSE SOURCE MUTATION NOT YET JUSTIFIED`
+Status: `ACTIVE / PUBLIC SPEC + SDK SOURCE INSPECTED / DETERMINISTIC REDERIVATION ALREADY REPRESENTABLE / NO_SOURCE_MUTATION_REQUIRED / RECONCILIATION COMPLETE`
 
 ## Goal
 
@@ -164,6 +164,45 @@ evidence_method = RETRIEVED_ARTIFACT | DETERMINISTIC_REDERIVATION
 
 but this is a semantic observation only. Under the Canonical Invariant Ingress Lock, no new StegVerse schema or source mutation is admissible until it is proven that existing verification/reconstruction semantics cannot already represent deterministic recomputation.
 
+## Deterministic re-derivation schema reconciliation — 2026-09-18
+
+Current Master Records source was inspected at `master-records/core-lite@be0d08d73c96f50308991793327522dc01304657`, including:
+
+- `MASTER_RECORDS_MIRROR_HANDOFF.md`;
+- `README.md`;
+- `schemas/typed_custody_evidence.schema.json`;
+- `docs/CUSTODY_RECORD_HASH_CONVENTION.md`;
+- `tools/verify_record_hash.py`;
+- `docs/reconstruction/INFERENCE_WINDOW_RESOLUTION.md`;
+- `tools/validate_reconstruction_profile.py`.
+
+The existing model already represents deterministic recomputation without creating a distinct authority class:
+
+1. `canonical_object_digest` represents a digest of a canonical object;
+2. `record_self_hash` represents a deterministically recomputable record digest under a declared canonicalization convention;
+3. `verify_record_hash.py` re-computes the canonical digest from current record inputs, returns both `declared` and `computed`, and fails closed on mismatch;
+4. reconstruction profiles explicitly bind evidence sources, immutable references, provenance, predecessor/successor linkage, algorithm/configuration versions, achieved reconstruction resolution, and an authority posture bounded by reconstructable evidence;
+5. Master Records already separates evidence identity/reconstruction from truth, execution, governance, publication, and credential authority.
+
+Therefore AgentEnvelope-style deterministic re-derivation can be represented by retaining the canonical inputs plus their immutable references, the verification algorithm/version, the recomputed proposition/digest/address result, and the resulting verifier receipt as ordinary custody/reconstruction evidence. A new `verification_method` enum is not required for correctness.
+
+The semantic distinction remains useful in explanatory material:
+
+```text
+RETRIEVED_ARTIFACT = retained bytes/state later retrieved
+DETERMINISTIC_REDERIVATION = verifier recomputes a proposition from canonical inputs
+```
+
+but this is a classification of how evidence is established, not a new evidence authority, custody class, or transition role.
+
+Disposition:
+
+```text
+NO_SOURCE_MUTATION_REQUIRED
+```
+
+No Master Records schema, TT/RTG/GTG/AE formalism, Interlock/InTr contract, TV/TVC credential surface, KV/SKAP user-verification surface, or new evidence engine is needed for this AgentEnvelope reconciliation.
+
 ## Current disposition
 
 The investigation confirms meaningful architectural convergence around construction-time authority/lineage and explicit separation of cryptographic authority from current legitimacy.
@@ -174,4 +213,6 @@ No new authority owner, identity class, governance engine, transition engine, or
 
 ## Next action
 
-Check current StegVerse evidence/verification schemas and Master Records reconstruction contracts for whether deterministic recomputation is already representable as a verification method/proof step. If yes, classify `NO_SOURCE_MUTATION_REQUIRED` and retain this as external corroborating evidence. If not, identify the minimum schema-level representation needed for `DETERMINISTIC_REDERIVATION` without changing authority boundaries.
+No schema implementation remains for this reconciliation. Preserve AgentEnvelope as external corroborating architecture and reuse existing canonical-object/self-hash verification plus Master Records reconstruction semantics whenever deterministic re-derivation evidence is needed.
+
+Any future AgentEnvelope integration must enter StegVerse as bounded evidence/input to existing governance and transition authority, not as a new authority owner.
