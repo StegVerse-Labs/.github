@@ -54,16 +54,18 @@
     "claimed": true,
     "validated": true,
     "activation_proof_complete": false,
-    "activation_proof_required": false,
-    "completion_reason": "ALL_SOURCE_COORDINATION_PREDICATES_MERGED_AND_EXACT_HEAD_VALIDATED",
-    "completion_evidence": [
-      "StegVerse-Labs/.github#2132",
-      "StegVerse-Labs/.github@d92b6cb6bb9ad6c46187161b8796f0405b65e0bf",
-      "actions:35400627272",
-      "actions:35400627263",
-      "actions:35400627268",
-      "master-records/orchestration:CANONICAL_WORK_COORDINATION_CUSTODY_MIRROR_HANDOFF.md"
-    ]
+    "completion_class": "SOURCE_COORDINATION_GOAL",
+    "completion_evidence": {
+      "implementation_merge": "d92b6cb6bb9ad6c46187161b8796f0405b65e0bf",
+      "implementation_pr": "StegVerse-Labs/.github#2132",
+      "exact_validated_head": "74eb777d7e46548dd6fe2faf566782b14c4b1181",
+      "cross_task_coordination_run": 35400305724,
+      "kv_ai_memory_validation_run": 35400305734,
+      "deepseek_validation_run": 35400305750,
+      "master_records_boundary": "master-records/orchestration:CANONICAL_WORK_COORDINATION_CUSTODY_MIRROR_HANDOFF.md"
+    },
+    "runtime_execution_claimed": false,
+    "custody_claimed": false
   },
   "allowed_next_transitions": [],
   "authority_model": {
@@ -73,7 +75,7 @@
     "model_output_authority": false
   },
   "session_mutation_generation_fence": {
-    "state": "SOURCE_IMPLEMENTED_VALIDATION_PENDING",
+    "state": "SOURCE_VALIDATED_MERGED",
     "canonical_generation_ref": "data/canonical-task-registry.json#generation",
     "exact_generation_match_required_before_mutation": true,
     "stale_generation_disposition": "STOP_STALE_COORDINATION",
@@ -90,7 +92,7 @@
     "authority_effect": "NONE_COORDINATION_ONLY"
   },
   "user_action_surface_collision_enforcement": {
-    "state": "MERGED_VALIDATED",
+    "state": "SOURCE_VALIDATED_MERGED",
     "identity_fields": [
       "url_route",
       "device_browser_context_class",
@@ -120,5 +122,12 @@
       "organization_control_plane_validation": "PASS",
       "master_records_evidence_boundary_ref": "master-records/orchestration:CANONICAL_WORK_COORDINATION_CUSTODY_MIRROR_HANDOFF.md"
     }
+  },
+  "terminal_disposition": {
+    "state": "SOURCE_GOAL_COMPLETE",
+    "reason": "CANONICAL_GENERATION_FENCE_AND_USER_ACTION_SURFACE_COLLISION_ENFORCEMENT_MERGED_AND_VALIDATED",
+    "issue_close_eligible": true,
+    "successor_required": false,
+    "authority_effect": "NONE_COORDINATION_ONLY"
   }
 }
