@@ -14,6 +14,14 @@ Fleet dispositions at that observation are 15 `FULFILLING_INTENDED_ROLE`, 7 `VAL
 
 ---
 
+## MIR ephemeral actor custody pressure test
+
+Canonical Goal Task `MIR-EPHEMERAL-ACTOR-CUSTODY-SEAM-001` is `ACTIVE`, COSV `50000000100000`. The reference architecture now explicitly permits a runtime actor to be created and destroyed inside one commitment window while requiring durable binding of the actor instance, material lifecycle bounds, exact admitted work/action, and any externally attributable lineage or standing reference. The actor or caller cannot become the sole authority for its own lineage, and evidence custody remains non-authorizing.
+
+Canonical handoff: `docs/MIR_EPHEMERAL_ACTOR_CUSTODY_SEAM_MIRROR_HANDOFF.md`.
+
+---
+
 ## ERL Hormuz matched-window evidence coordination
 
 Canonical Goal Task `ERL-RC-OIL-FLOW-2026` remains `ACTIVE / CHECKED_OUT`, COSV `40000100100000`. Goal Prompt 4 preserves a matched September 7–13 vessel comparison, preliminary-to-revised Kpler count history, Hormuz-versus-bypass petroleum-flow separation, and destination-proof classes without promoting any political finding. The authoritative research artifact and scoped handoff remain in `StegVerse-Labs/Executive_Rhetoric_Ledger`.
