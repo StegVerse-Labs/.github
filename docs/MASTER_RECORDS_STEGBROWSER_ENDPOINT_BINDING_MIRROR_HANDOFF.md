@@ -1184,3 +1184,40 @@ This candidate advances Task Registry generation 37 to generation 38 while retai
 ## Manual work
 
 None.
+
+
+## Goal prompts 13-14: superseded coordination cleanup and bounded resident re-check
+
+Session Prompt Count: 5. Goal Prompt Count: 14/20.
+
+Current Task Registry generation 39 and this handoff were re-read before mutation. The runtime-evidence owner chain remained unchanged and `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001` was not entered.
+
+### Superseded issue / PR / branch reconciliation
+
+The related Goal PR lineage was checked directly. PRs `#2080, #2082, #2084, #2088, #2089, #2093, #2094, #2095, #2096, #2099, #2107, #2109, #2110` are all closed. Canonical Goal issue `#2078` remains open because this Goal is still `ACTIVE / CHECKED_OUT`. Shared runtime-evidence owner issue `#1260` also remains open because its owner task remains active.
+
+Five stale related branches were found. The connected GitHub capability exposes ref movement but not branch deletion, so each superseded ref was force-aligned to current main SHA `6f2a3dff7e3ef56e19fd147132fbd29499f448f4`:
+
+```text
+master-records-stegbrowser-prompt10-20260918
+master-records-stegbrowser-prompt11-20260918
+master-records-stegbrowser-prompt12-20260918
+task/master-records-stegbrowser-endpoint-binding-2078-current
+task/master-records-stegbrowser-endpoint-binding-2078
+```
+
+Each was then verified `identical` to main with `ahead=0` and `behind=0`. No divergent superseded branch content remains.
+
+### Authorized resident evidence surface
+
+The already-authorized resident evidence surface was checked again and still exposed zero connected devices. This remains evidence-reachability only, not sovereign-runtime absence.
+
+Because the surface did not become newly reachable, `receipts/sovereign-host/resident-request-dispatch.latest.json` was not sought through any alternate path. `RESIDENT_REQUEST_DISPATCH_VISIT` remains the first unsatisfied evidence predicate.
+
+No `HEALER_RESIDENT_CONSUMER_INVOKED`, WorkerCoordinator request/cycle, Worker Task Admission, fresh claim/fence, fenced checkpoint, ProcessWorkerAdapter projection, retained-root binding, classifier run, immutable runtime tuple, Gateway, Master Records state, digest equality, or A1-A4 handback was promoted.
+
+This candidate advances Task Registry generation 39 to generation 40 while retaining `ACTIVE / CHECKED_OUT`.
+
+## Manual work
+
+None.
