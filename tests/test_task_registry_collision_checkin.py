@@ -9,8 +9,12 @@ SCRIPT = ROOT / "scripts" / "evaluate_task_registry_collision_checkin.py"
 BOOTSTRAP = ROOT / "scripts" / "install_and_run_canonical_work_event_bootstrap.py"
 
 
-def run(task_id, context=None, event_ledger=None):
-    payload = {"task_id": task_id}
+def current_registry_generation():
+    return json.loads((ROOT / "data" / "canonical-task-registry.json").read_text(encoding="utf-8"))["generation"]
+
+
+def run(task_id, context=None, event_ledger=None, observed_generation=None):
+    payload = {"task_id": task_id, "observed_registry_generation": current_registry_generation() if observed_generation is None else observed_generation}
     if context is not None:
         payload["checkin_context"] = context
     env = os.environ.copy()
@@ -19,6 +23,26 @@ def run(task_id, context=None, event_ledger=None):
     p = subprocess.run([sys.executable, str(SCRIPT)], input=json.dumps(payload), text=True, capture_output=True, check=True, env=env)
     return json.loads(p.stdout)
 
+
+
+def test_stale_registry_generation_fails_closed_before_any_mutation():
+    current = current_registry_generation()
+    out = run("TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001", observed_generation=current - 1)
+    assert out["disposition"] == "STOP_STALE_COORDINATION"
+    assert out["session_action"] == "RECONCILE_CANONICAL_GITHUB_STATE_BEFORE_MUTATION"
+    assert out["observed_registry_generation"] == current - 1
+    assert out["current_registry_generation"] == current
+    assert out["write_pr_merge_handoff_claim_admissible"] is False
+    assert out["reconciliation_required_before_mutation"] is True
+    assert set(out["stale_session_prohibited_mutations"]) == {"SOURCE_WRITE", "PULL_REQUEST_CREATE_OR_UPDATE", "PULL_REQUEST_MERGE", "NEW_HANDOFF_CLAIM"}
+
+
+def test_current_registry_generation_is_admitted_to_normal_collision_evaluation():
+    out = run("TASK-REGISTRY-ANTI-COLLISION-AGGREGATION-001")
+    assert out["observed_registry_generation"] == current_registry_generation()
+    assert out["current_registry_generation"] == current_registry_generation()
+    assert out["coordination_generation_current"] is True
+    assert out["write_pr_merge_handoff_claim_admissible"] is True
 
 def test_unregistered_stops_before_mutation():
     out = run("THIS-TASK-DOES-NOT-EXIST")
