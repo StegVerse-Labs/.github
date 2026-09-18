@@ -1,6 +1,6 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 48,
+  "generation": 49,
   "status": "SESSION_MUTATION_GENERATION_FENCE_SOURCE_REGISTERED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
@@ -2279,7 +2279,7 @@
           "kind": "EXACT_RUNTIME_EVIDENCE_TRANSITION",
           "state": "PENDING_AUTHENTIC_RESIDENT_DISPATCH_RECEIPT",
           "ref": "receipts/sovereign-host/resident-request-dispatch.latest.json;scripts/run_worker_runtime.py;scripts/dispatch_resident_execution_requests.py",
-          "disposition": "Prompt 17 preserves RESIDENT_REQUEST_DISPATCH_VISIT and identifies the exact existing owner-level retention seam without creating a new observer: STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001 already classifies receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json as the resident carrier consumption artifact, with execution_result.resident_custody_root_observation_retention pointing to the retained root-observation packet. The canonical classification is RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND, source_side_repair_required=false. Repository 404s for the exact retained artifact paths are reachability-only and do not prove runtime absence. Await authentic retained carrier/root evidence through this existing owner seam before any downstream promotion."
+          "disposition": "Prompt 18 re-read current generation 48, preserved Prompt 15 and the three-task owner chain, reconciled stale coordination artifacts, and re-read the exact existing runtime-bound retention seam. STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001 still classifies the carrier pointer as RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND with predicate_satisfied=false, source_side_repair_required=false, and classifier_action=NOT_RUN_NO_AUTHENTIC_RUNTIME_ROOT. No authentic retained carrier/root evidence was observed. Preserve RESIDENT_REQUEST_DISPATCH_VISIT; do not run the classifier or promote downstream predicates until the existing carrier receipt proves the exact healer outcome and its embedded pointer proves RESIDENT_CUSTODY_ROOT_OBSERVED for exactly one authentic retained root."
         },
         {
           "dependency_id": "DEP-STEG-BROWSER-HEALER-WORKER-CHECKPOINT-POINTER",
@@ -3120,6 +3120,104 @@
         "fixed_host_dependency_added": false,
         "second_device_dependency_added": false,
         "authority_effect": "NONE_OWNER_SEAM_IDENTIFICATION_ONLY"
+      },
+      "runtime_evidence_retention_seam_prompt18": {
+        "observed_on": "2026-09-18",
+        "registry_generation_entering": 48,
+        "session_prompt_count": 8,
+        "goal_prompt_count": "18/20",
+        "controlling_invariant_prompt": 15,
+        "owner_chain": [
+          "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+          "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+          "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001"
+        ],
+        "any_owner_mutated": false,
+        "global_measurement_entered": false,
+        "connector_device_method_used": false,
+        "exact_existing_owner_level_retention_seam": {
+          "owner_task": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+          "carrier_consumption_relative_path": "receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json",
+          "embedded_pointer_path": "execution_result.resident_custody_root_observation_retention",
+          "required_pointer_fields": [
+            "packet_ref",
+            "packet_relative_path",
+            "packet_sha256",
+            "retained_under_root",
+            "retained_under_root_source",
+            "packet_state"
+          ],
+          "retained_packet_relative_path": "receipts/sovereign-host/stegbrowser-resident-custody-root-observation.latest.json",
+          "classification": "RESIDENT_CARRIER_OUTPUT_POINTER_NOT_GITHUB_VISIBLE_BUT_RUNTIME_BOUND",
+          "predicate_satisfied": false,
+          "source_side_repair_required": false,
+          "classifier_action": "NOT_RUN_NO_AUTHENTIC_RUNTIME_ROOT"
+        },
+        "authentic_retained_carrier_evidence_observed": false,
+        "authentic_retained_root_observed": false,
+        "first_unsatisfied_predicate": "RESIDENT_REQUEST_DISPATCH_VISIT",
+        "downstream_promotion_allowed": false,
+        "classifier_run": false,
+        "coordination_reconciliation": {
+          "stale_predecessor_issue_closed": {
+            "issue": 1857,
+            "task_id": "STEG-BROWSER-AUTHENTIC-RUNTIME-RECEIPT-OBSERVATION-001",
+            "canonical_task_state": "RETIRED",
+            "canonical_checkout_state": "PROMPT_LIMIT_DECOMPOSED",
+            "successor_issue": 1860,
+            "successor_task_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+            "closure_reason": "duplicate/superseded by canonical successor"
+          },
+          "intentionally_preserved_open_issues": [
+            {
+              "issue": 1260,
+              "task_id": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001"
+            },
+            {
+              "issue": 1860,
+              "task_id": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001"
+            },
+            {
+              "issue": 2078,
+              "task_id": "MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001"
+            }
+          ],
+          "issue_1866_preserved_closed": true,
+          "issue_1866_note": "Original source-side remediation issue is already closed/completed; canonical task record remains in the required owner chain and was not mutated.",
+          "recent_goal_prs_verified_closed": [
+            2093,
+            2094,
+            2095,
+            2096,
+            2099,
+            2107,
+            2109,
+            2110,
+            2115,
+            2117,
+            2124,
+            2131
+          ],
+          "exact_goal_branches_force_aligned_to_main": [
+            "master-records-stegbrowser-prompt10-20260918",
+            "master-records-stegbrowser-prompt11-20260918",
+            "master-records-stegbrowser-prompt12-20260918",
+            "master-records-stegbrowser-prompt14-hygiene-20260918",
+            "master-records-stegbrowser-prompt16-machine-receipt-20260918",
+            "master-records-stegbrowser-prompt17-retention-seam-20260918",
+            "master-records-stegbrowser-runtime-invariant-correction-20260918",
+            "task/master-records-stegbrowser-endpoint-binding-2078-current",
+            "task/master-records-stegbrowser-endpoint-binding-2078"
+          ],
+          "branch_delete_capability_available": false,
+          "unrelated_adjacent_stegbrowser_tasks_mutated": false
+        },
+        "new_observer_exporter_runtime_request_scheduler_recovery_path_created": false,
+        "measurement_run_entered": false,
+        "second_invocation_emitted": false,
+        "fixed_host_dependency_added": false,
+        "second_device_dependency_added": false,
+        "authority_effect": "NONE_RECONCILIATION_AND_OWNER_SEAM_OBSERVATION_ONLY"
       }
     },
     {
