@@ -87,7 +87,11 @@
     "canonical_local_adapter_merge_commit": "a21bbeb53e33210d4ac832f343582c02149d8c53",
     "canonical_local_adapter_pr": 2136,
     "canonical_local_adapter_exact_validated_blob_identity_preserved": true,
-    "authentic_local_adapter_runtime_custody_observed": false
+    "authentic_local_adapter_runtime_custody_observed": false,
+    "local_adapter_source_repair_complete": true,
+    "local_adapter_source_repair_task_id": "CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001",
+    "local_adapter_source_repair_merge": "a21bbeb53e33210d4ac832f343582c02149d8c53",
+    "local_adapter_authentic_runtime_custody_observed": false
   },
   "completion": {
     "claimed": false,
@@ -95,7 +99,8 @@
     "source_adoption_complete_for_master_records_custody": true,
     "mir_final_browser_event_activation_adoption_pending": false,
     "runtime_completion_pending": true,
-    "local_adapter_source_defect_pending": false
+    "local_adapter_source_defect_pending": false,
+    "local_adapter_child_reconciled": true
   },
   "allowed_next_transitions": [
     "OBSERVE_EXACT_REGISTERED_NODE_OUTBOX_ENTRY",
