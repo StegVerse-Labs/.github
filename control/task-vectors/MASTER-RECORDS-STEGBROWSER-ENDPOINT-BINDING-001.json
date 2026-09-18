@@ -20,7 +20,8 @@
     "data/runtime-materialization-remediation/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.post-repair-packet-classification.json",
     "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_RESIDENT_CARRIER_REOBSERVATION_20260917.json",
     "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_HEALER_CHECKPOINT_FIRST_SURFACE_20260917.json",
-    "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_FIRST_MISSING_RESIDENT_TRANSITION_20260917.json"
+    "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_FIRST_MISSING_RESIDENT_TRANSITION_20260917.json",
+    "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_RESIDENT_DISPATCH_REOBSERVATION_20260917.json"
   ],
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
@@ -40,16 +41,16 @@
     "propagated": false
   },
   "metric_evidence": {
-    "lifecycle": "Goal Prompt 8 identifies the earliest missing authentic resident transition before the fenced Healer checkpoint projection; ACTIVE/CHECKED_OUT retained.",
-    "archive_ready": "False until the resident request-dispatch visit is authentically observed and the existing ordered runtime chain reaches the fenced Healer checkpoint, exact StegBrowser tuple, and Master Records RECORDED/PASS/digest equality.",
-    "unassigned_work": "Zero. Existing native resident dispatcher, request consumer, WorkerCoordinator, ProcessWorkerAdapter, and owner chain already define the path.",
-    "chat_owned_counts": "Observation/reconciliation only. No implementation, validation, integration, credential route, exporter, observer, runtime, request, scheduler, recovery path, measurement run, Gateway, or second invocation was added.",
-    "canonical_owner_installed": "Yes. Existing owners and runtime path remain canonical; the first missing evidence predicate is now the resident-owned request dispatch visit.",
+    "lifecycle": "Goal Prompt 9 re-observed the resident-owned dispatch predicate and found no new authentic runtime evidence; ACTIVE/CHECKED_OUT retained.",
+    "archive_ready": "False until RESIDENT_REQUEST_DISPATCH_VISIT is authentically observed and the existing ordered runtime chain reaches the fenced Healer checkpoint, immutable StegBrowser tuple, and Master Records RECORDED/PASS/digest equality.",
+    "unassigned_work": "Zero. Existing resident dispatcher and owner chain already own the path.",
+    "chat_owned_counts": "Observation only; no owner mutation, exporter, observer, runtime, request, scheduler, recovery path, measurement run, Gateway, credential route, or second invocation.",
+    "canonical_owner_installed": "Yes. RESIDENT_REQUEST_DISPATCH_VISIT remains the first unsatisfied evidence predicate.",
     "thread_required": "False.",
-    "blocker_count": "Zero new blockers. Missing authentic resident dispatch receipt is an unsatisfied evidence predicate, not a newly invented blocker.",
-    "evidence_complete": "False; resident dispatch, downstream claim/fence/checkpoint, exact immutable runtime tuple, Gateway advertisement, and Master Records reconstruction remain unobserved.",
-    "activated": "False; no runtime execution is inferred from source, issue text, CI, or connector absence.",
-    "propagated": "False; no downstream handback."
+    "blocker_count": "Zero new blockers.",
+    "evidence_complete": "False; no authentic resident dispatch receipt or downstream runtime tuple is observed.",
+    "activated": "False; connector absence is not runtime-absence evidence.",
+    "propagated": "False."
   },
   "authority_effect": "NONE"
 }
