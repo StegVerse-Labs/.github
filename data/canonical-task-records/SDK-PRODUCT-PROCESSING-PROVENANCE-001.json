@@ -25,9 +25,6 @@
       "evaluator-manifest-source-validation"
     ]
   },
-  "runtime_requirements": {
-    "requires_runtime_execution": false
-  },
   "authority_model": {
     "sdk_product_processing_authority": "NONE_PROVENANCE_PROJECTION_ONLY",
     "admittedcode_authority": "ADMISSION_DECISION_ONLY",
