@@ -208,3 +208,23 @@ The request now carries `lifetime_policy.mode=DERIVED_COST_TASK_DELAY_BUDGET`. P
 The budget is an upper bound, not permission to remain live. Purpose completion or bounded failure may retire/decompose the worker earlier. Budget exhaustion closes the purpose; extension requires a newly governed recalculation. The lifetime calculation itself grants no WorkerCoordinator claim/fence, StegCore/InTr admission, TV/TVC warrant, runtime execution, or Master Records truth.
 
 StegAgents PR #22 merged this fail-closed validation at `19b83dda96cf3c1d2fd5435daf8fce67a90c6228` after CI, Test Readiness, and Cross-Agent Authority Validation all passed. Authentic runtime execution remains unattempted.
+
+
+## Derived lifetime post-merge reconciliation
+
+StegAgents PR #22 is merged at `19b83dda96cf3c1d2fd5435daf8fce67a90c6228`. The `.github` projection and canonical registration merged through PR #2153 at `53133aaa65b432f022a95713c8ab3913a132394d`, from exact head `7d9f0751075c3f4e2ce7543d7e1fd961851d0386`.
+
+Exact-head validation evidence:
+
+```text
+Validate Purpose-Bound Worker Derived Lifetime
+run: 35402863215
+job: 105786330855
+conclusion: success
+
+Cross-Task Coordination Validation - Non-Authorizing
+run: 35402863119
+conclusion: success
+```
+
+The source/lifetime refinement is therefore complete. No authentic resident execution was attempted. The first remaining runtime progression still belongs to the existing `STEGAGENTS-GOVERNED-RUNTIME-001` resident-root / WorkerCoordinator / TV warrant-policy / StegCore-InTr / Master Records chain; source or CI evidence does not satisfy those predicates.
