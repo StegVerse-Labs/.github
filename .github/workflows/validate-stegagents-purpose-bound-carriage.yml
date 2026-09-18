@@ -1,0 +1,69 @@
+name: Validate StegAgents Purpose-Bound Runtime Carriage
+
+on:
+  pull_request:
+    paths:
+      - "workers/stegagents_governed_runtime_worker.py"
+      - "tests/test_stegagents_governed_runtime_worker.py"
+      - "control/process-worker-adapters.d/stegagents-governed-runtime-001.json"
+      - "data/canonical-task-records/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json"
+      - "docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md"
+      - ".github/workflows/validate-stegagents-purpose-bound-carriage.yml"
+
+permissions: {}
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Anonymous exact-source checkout without GitHub token
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          git config --global --unset-all http.https://github.com/.extraheader || true
+          git init .
+          git remote add origin https://github.com/StegVerse-Labs/.github.git
+          env -u GITHUB_TOKEN -u GH_TOKEN git fetch --depth=1 origin "refs/pull/${PR_NUMBER}/head"
+          git checkout --detach FETCH_HEAD
+          git rev-parse HEAD
+
+      - name: Validate purpose-bound carrier worker
+        run: |
+          set -euo pipefail
+          python -m unittest -v tests.test_stegagents_governed_runtime_worker
+          python -m py_compile workers/stegagents_governed_runtime_worker.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          adapter=json.loads(Path("control/process-worker-adapters.d/stegagents-governed-runtime-001.json").read_text())
+          row=adapter["adapters"][0]
+          assert row["adapter_ref"]=="process:stegagents-governed-runtime-v1"
+          assert "purpose_bound_worker_context_carriage" in row["capabilities"]
+          task=json.loads(Path("data/canonical-task-records/SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001.json").read_text())
+          assert task["source_refinement"]["new_runtime_created"] is False
+          assert task["source_refinement"]["new_scheduler_created"] is False
+          assert task["source_refinement"]["new_dispatcher_created"] is False
+          assert task["source_refinement"]["new_workercoordinator_created"] is False
+          assert task["source_refinement"]["new_transition_authority_created"] is False
+          assert task["source_refinement"]["new_credential_authority_created"] is False
+          assert task["source_refinement"]["new_master_records_authority_created"] is False
+          assert task["source_refinement"]["authentic_runtime_execution_claimed"] is False
+          print("PURPOSE_BOUND_CARRIAGE_VALIDATION_PASS")
+          PY
+
+      - name: Prove workflow is validation-only
+        run: |
+          set -euo pipefail
+          test -z "${GITHUB_TOKEN:-}"
+          test -z "${GH_TOKEN:-}"
+          python - <<'PY'
+          from pathlib import Path
+          text=Path(".github/workflows/validate-stegagents-purpose-bound-carriage.yml").read_text()
+          assert "permissions: {}" in text
+          assert "git push" not in text
+          assert "workflow_dispatch" not in text
+          print("VALIDATION_ONLY_NO_AUTHORITY_PASS")
+          PY
