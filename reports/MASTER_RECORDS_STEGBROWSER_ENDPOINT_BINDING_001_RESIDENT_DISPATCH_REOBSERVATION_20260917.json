@@ -1,0 +1,69 @@
+{
+  "schema": "stegverse.master-records-stegbrowser-endpoint-binding-resident-dispatch-reobservation/v1",
+  "goal_task_id": "MASTER-RECORDS-STEGBROWSER-ENDPOINT-BINDING-001",
+  "cosv_task_vector": "40000100100000",
+  "observed_on": "2026-09-17",
+  "goal_prompt_count": "9/20",
+  "registry_generation_entering": 33,
+  "immutable_invocation": {
+    "nonce": "STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z",
+    "requested_invocation_count": 1,
+    "second_request_allowed": false,
+    "request_mutation_allowed": false
+  },
+  "owner_chain": {
+    "shared_owner": "GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001",
+    "root_observation_owner": "STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001",
+    "remediation_owner": "STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001",
+    "any_owner_mutated": false,
+    "global_measurement_entered": false
+  },
+  "resident_access": {
+    "connected_device_count": 0,
+    "exact_resident_dispatch_path": "receipts/sovereign-host/resident-request-dispatch.latest.json",
+    "authentic_dispatch_receipt_observed": false,
+    "coordination_lineage_authentic_dispatch_receipt_observed": false,
+    "connector_absence_interpreted_as_runtime_absence": false
+  },
+  "first_unsatisfied_predicate": {
+    "transition": "RESIDENT_REQUEST_DISPATCH_VISIT",
+    "receipt_schema": "stegverse.resident-request-dispatch/v1",
+    "required_consumer": "healer_sovereign_scheduler",
+    "required_consumer_ref": "scripts/consume_healer_sovereign_scheduler_request.py",
+    "required_attempted": true,
+    "required_machine_result": true,
+    "satisfied": false
+  },
+  "downstream_preserved_false": {
+    "healer_resident_consumer_invoked": false,
+    "targeted_workercoordinator_execution_requested": false,
+    "targeted_worker_runtime_cycle_entered": false,
+    "worker_task_admission_admit": false,
+    "fresh_independent_task_control_claim_fence": false,
+    "healer_worker_checkpoint_written_in_fenced_sandbox": false,
+    "fenced_process_adapter_allow_projection": false,
+    "retained_root_pointer_bound": false,
+    "classifier_run": false,
+    "exact_runtime_tuple_available": false,
+    "gateway_stage_entered": false,
+    "master_records_submission_attempted": false,
+    "master_records_recorded": false,
+    "master_records_reconstruction_pass": false,
+    "exact_digest_equality": false,
+    "a1_a4_handback": false
+  },
+  "prohibited_effects": {
+    "new_exporter": false,
+    "new_observer": false,
+    "new_runtime": false,
+    "new_request": false,
+    "new_scheduler": false,
+    "new_recovery_path": false,
+    "global_measurement_run": false,
+    "second_stegbrowser_invocation": false,
+    "second_device_dependency": false,
+    "fixed_host_dependency": false
+  },
+  "disposition": "PRESERVE_RESIDENT_REQUEST_DISPATCH_VISIT_AS_FIRST_UNSATISFIED_EVIDENCE_PREDICATE",
+  "authority_effect": "NONE_REOBSERVATION_ONLY"
+}
