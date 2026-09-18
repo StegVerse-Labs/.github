@@ -1,0 +1,13 @@
+{
+  "profile": "task.v1",
+  "task_id": "MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001",
+  "vector": "50000000100000",
+  "parent_task_id": "MIR-STEGVERSE-SEPARATION-OF-POWERS-EVIDENCE-CONTRACT-001",
+  "evidence_refs": [
+    "StegVerse-Labs/.github:docs/MIR_AGENTENVELOPE_DERIVED_AUTHORITY_RECONCILIATION_MIRROR_HANDOFF.md",
+    "StegVerse-Labs/.github:docs/mir-reference-architecture/AGENTENVELOPE_DERIVED_AUTHORITY_MAP.md",
+    "BlackBoxEngineering/agent-envelope-sdk@39a332c7c649747a68d1d86866a55511e10a47e9",
+    "IETF:draft-mcphillips-agentenvelope-derived-authority-01"
+  ],
+  "authority_effect": "NONE"
+}
