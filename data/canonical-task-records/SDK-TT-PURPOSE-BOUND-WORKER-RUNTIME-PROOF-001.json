@@ -1,0 +1,64 @@
+{
+  "schema": "stegverse.canonical-task-record/v1",
+  "task_id": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+  "correlation_id": "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001",
+  "root_correlation_id": "SDK-GENERIC-MANIFEST-DOWNSTREAM-PROPAGATION-003",
+  "parent_task_id": "SDK-TT-PURPOSE-BOUND-WORKER-CONSOLE-001",
+  "goal": "Prove through the existing governed StegAgents/WorkerCoordinator/StegCore-InTr/Master Records path that one TT transition cell can cause an actual purpose-bound worker to be materialized for a declared bounded purpose, perform one tracked arbitrary task, retire or transform at purpose completion, and leave a reconstructable records-only lifecycle without creating duplicate runtime or authority surfaces.",
+  "coordination_state": "ACTIVE",
+  "checkout_state": "UNCLAIMED",
+  "repository": "StegVerse-Labs/.github",
+  "handoff": "docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md",
+  "cosv": {
+    "profile": "task.v1",
+    "vector": "71000000111111"
+  },
+  "cosv_task_vector": "71000000111111",
+  "source_refs": [
+    "docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md",
+    "StegVerse-org/StegVerse-SDK@f0c3296650018d9cf298fa392c48315331a575fe:stegverse/purpose_bound_worker.py",
+    "StegVerse-org/StegVerse-SDK@f0c3296650018d9cf298fa392c48315331a575fe:inspection/examples/tt-purpose-worker.example.json",
+    "data/canonical-task-records/STEGAGENTS-GOVERNED-RUNTIME-001.json",
+    "docs/STEGAGENTS_GOVERNED_RUNTIME_MIRROR_HANDOFF.md"
+  ],
+  "adjacent_task_refs": [
+    "STEGAGENTS-GOVERNED-RUNTIME-001",
+    "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001"
+  ],
+  "reuse_requirements": {
+    "runtime_owner": "STEGAGENTS-GOVERNED-RUNTIME-001",
+    "worker_claim_authority": "WORKERCOORDINATOR",
+    "transition_authority": "StegCore/InTr",
+    "credential_warrant_authority": "TV/TVC",
+    "observed_reality_custody": "Master Records",
+    "github_runtime_authority": "NONE",
+    "second_user_operated_device_allowed": false,
+    "new_runtime_allowed": false,
+    "new_scheduler_allowed": false,
+    "new_dispatcher_allowed": false,
+    "new_workercoordinator_allowed": false
+  },
+  "expected_evidence_predicates": [
+    "AUTHENTIC_TT_CELL_REQUEST_HASH_OBSERVED",
+    "AUTHENTIC_PURPOSE_CAPABILITY_LIFETIME_TUPLE_OBSERVED",
+    "AUTHENTIC_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED",
+    "AUTHENTIC_REQUIRED_WARRANT_POLICY_VERIFIED",
+    "AUTHENTIC_INTR_MATERIALIZATION_ADMISSION_OBSERVED",
+    "AUTHENTIC_PURPOSE_BOUND_WORKER_INSTANCE_OBSERVED",
+    "AUTHENTIC_TASK_INVOCATION_AFTER_MATERIALIZATION_OBSERVED",
+    "AUTHENTIC_TRACKED_TASK_RESULT_BOUND_TO_WORKER_AND_TRANSITION",
+    "AUTHENTIC_WORKER_RETIREMENT_OR_TRANSFORMATION_OBSERVED",
+    "POST_RETIREMENT_CONTINUED_AUTHORITY_FALSE_OBSERVED",
+    "AUTHENTIC_LIFECYCLE_RECEIPT_ORDER_VERIFIED",
+    "AUTHENTIC_MASTER_RECORDS_CUSTODY_RECORDED",
+    "AUTHENTIC_MASTER_RECORDS_RECONSTRUCTION_MATCH",
+    "AUTHENTIC_RECORDS_ONLY_FINAL_PACKET"
+  ],
+  "remaining_predicate": "RECONCILE_PURPOSE_BOUND_REQUEST_WITH_EXISTING_STEGAGENTS_RUNTIME_CONTRACT_THEN_EXECUTE_ONLY_WHEN_EXISTING_RUNTIME_PREREQUISITES_PERMIT",
+  "completion": {
+    "claimed": false,
+    "validated": false,
+    "activation_proof_complete": false
+  },
+  "authority_effect": "NONE_COORDINATION_ONLY"
+}

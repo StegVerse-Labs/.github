@@ -615,3 +615,10 @@ Canonical Goal Task `SDK-TT-PURPOSE-BOUND-WORKER-CONSOLE-001` / COSV `7100000010
 Canonical Task Registry check-in now carries a monotonically increasing coordination-generation fence. A production session must bind the exact `data/canonical-task-registry.json#generation` it observed before mutation. Missing, stale, or divergent generation fails closed before ordinary collision evaluation. Until the session re-reads current GitHub canonical state and checks in again, source writes, pull-request create/update, pull-request merge, and new handoff claims are non-admissible through the canonical coordination path.
 
 This fence is coordination-only. It does not mint WorkerCoordinator claim/fence authority, Interlock/InTr transition authority, TV/TVC credentials, or Master Records reality. It also does not claim GitHub platform-level protection against an administrator or other out-of-band bypass; repository ruleset/branch-protection administration is a separate enforcement layer.
+
+
+### TT purpose-bound worker console closeout and runtime successor
+
+Canonical Goal Task `SDK-TT-PURPOSE-BOUND-WORKER-CONSOLE-001` / COSV `71000000101111` is `RETIRED / COMPLETED`. SDK PR #266 merged the local console path as `f0c3296650018d9cf298fa392c48315331a575fe`; dedicated validation proved the deterministic `MATERIALIZED -> INVOCATION_STARTED -> TASK_COMPLETED -> RETIRED` chain, records-only output, and `worker_live_after_close=false`. This completion is source/local semantic proof only and claims no authentic resident worker materialization.
+
+The stronger authentic-runtime continuation is canonical Goal Task `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` / COSV `71000000111111`. It must reuse `STEGAGENTS-GOVERNED-RUNTIME-001`, WorkerCoordinator, StegCore/InTr, TV/TVC where required, and Master Records. It may not create a competing runtime, scheduler, dispatcher, WorkerCoordinator, credential authority, evidence authority, or second user-operated-device dependency. Canonical handoff: `docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md`.
