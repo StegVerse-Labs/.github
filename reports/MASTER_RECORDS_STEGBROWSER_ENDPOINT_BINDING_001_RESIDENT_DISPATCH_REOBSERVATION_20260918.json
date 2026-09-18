@@ -339,5 +339,26 @@
       "active_goal_issue_preserved_open": 2078,
       "active_global_owner_issue_preserved_open": 1260
     }
+  },
+  "runtime_evidence_invariant_correction": {
+    "corrected_on": "2026-09-18",
+    "correction_goal_prompt": "15/20",
+    "supersedes_observation_method_for_goal_prompts": [
+      "10/20",
+      "11/20",
+      "12/20",
+      "13/20",
+      "14/20"
+    ],
+    "invalid_method": "REMOTE_DESKTOP_COMMANDER_DEVICE_ENUMERATION_AS_RESIDENT_EVIDENCE_SURFACE",
+    "canonical_rule": "Connector-visible device count is not a runtime prerequisite, blocker, authorization/verification signal, task state, or evidence predicate.",
+    "canonical_refs": [
+      "data/task-registry-global-invariants.json",
+      "docs/GLOBAL_RUNTIME_EVIDENCE_CONVERGENCE_MATRIX.md",
+      "docs/GLOBAL_RUNTIME_EVIDENCE_CLOSURE_MIRROR_HANDOFF.md",
+      "docs/EVALUATOR_INTR_RUNTIME_MIRROR_HANDOFF.md"
+    ],
+    "corrected_continuation": "Use existing resident carrier outputs, request-consumption receipts, WorkerCoordinator claim/fence state, Interlock/InTr admission, and retained runtime evidence directly.",
+    "first_unsatisfied_predicate": "RESIDENT_REQUEST_DISPATCH_VISIT"
   }
 }
