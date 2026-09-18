@@ -21,7 +21,9 @@ Current discipline:
 - counterpart claims remain `COUNTERPART_REPORTED` until concrete artifacts are verified;
 - the MIR Bitcoin-anchor statement is not promoted to verified evidence until an authentic anchor/inclusion artifact is supplied;
 - AILeash/sebbi.pro public service responses are classified only for the fields they actually return; operator-controlled README, `.well-known`, profile, or conformance text is not promoted into independent proof of the claims it describes;
-- the Appendix A R4 exact positive live-tip attestation remains `COUNTERPART_REPORTED` until the exact peer/tip response is independently retained or reproduced;
+- the Appendix A R4 exact positive live-tip behavior is independently reproduced for the retained `flavorflowstrategy.uk` peer/tip; identity, current liveness, historical completeness, and control/failure-domain independence remain unpromoted;
+- sebbi.pro R10 vocabulary-at-seal gap is currently `COUNTERPART_REPORTED` from joint review and requires a retained sealed artifact or source inspection before promotion;
+- the historical 784-record / 30-commitment clean-room run remains not independently reproduced by StegVerse; the requested submitter-removed rerun is pending and must not be inferred from the earlier run;
 - OpenTimestamps submission/pending status is not promoted to Bitcoin confirmation without independent proof verification;
 - witness roster/member count is not promoted to a control-domain independence or resilience score;
 - `MIR-LEAF-V3-CONFORMANCE-FIXTURE-001` remains incomplete until authentic MIR independent reproduction is observed;
