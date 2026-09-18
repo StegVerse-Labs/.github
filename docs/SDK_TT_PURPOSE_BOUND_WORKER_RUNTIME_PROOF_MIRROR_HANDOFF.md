@@ -169,3 +169,27 @@ payload.text: StegVerse tracks this arbitrary local worker task.
 Focused `.github` regression coverage checks shared-worker dispatch, exact request carriage, lifecycle ordering, records-only closeout, and absence of a duplicate worker/authority plane.
 
 No authentic runtime execution has been attempted. The existing runtime owner's resident custody-root / WorkerCoordinator prerequisites remain authoritative gates. Source or CI success must not promote any authentic lifecycle predicate.
+
+## Derived lifetime semantics — Goal Prompt 4
+
+The 30-second lifetime in the deterministic demonstration is **not** a production worker-lifetime rule. It is now represented as an explicit derived budget:
+
+```text
+expected task execution                 6 s
+known delay                             4 s
+inferred unknown-delay reserve          8 s
+records-enabled packet decomposition    7 s
+safety reserve                          5 s
+                                      ----
+derived demonstration maximum          30 s
+```
+
+The request carries `lifetime_policy.mode=DERIVED_COST_TASK_DELAY_BUDGET`. Production semantics require the lifetime to be recomputed for each intended task from its cost analysis and expected work, known delay, an explicitly stated inferred reserve for delay that cannot be known at manifest construction, the expected interval needed to decompose the completed worker into its records-enabled packet, and a safety reserve.
+
+The lifetime budget is an upper bound, not an entitlement to remain live. Purpose completion or bounded failure may retire/decompose the worker earlier. Exhausting the admitted budget closes the purpose; extending the worker requires a newly governed recalculation rather than implicit continuation.
+
+The deterministic demo retains `max_lifetime_seconds=30` only as the computed result of the demonstration inputs so existing request consumers can bind one scalar maximum while also preserving the complete derivation. The demo marks `production_recompute_required=true` and `demo_value_is_production_default=false`.
+
+This calculation is non-authorizing. It does not mint a WorkerCoordinator claim/fence, StegCore/InTr admission, TV/TVC warrant, runtime execution, or Master Records truth.
+
+StegAgents PR #22 carries the semantic validation into `src/purpose_bound_worker_runtime.py`; it must merge and be pinned immutably before the `.github` lifetime projection is merged.
