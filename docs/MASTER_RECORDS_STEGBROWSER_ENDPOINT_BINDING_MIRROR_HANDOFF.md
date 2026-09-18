@@ -1290,3 +1290,47 @@ This correction advances Task Registry generation 40 to generation 41.
 ## Manual work
 
 None.
+
+
+## Goal prompt 16: exact machine-owned receipt-path observation
+
+Session Prompt Count: 6. Goal Prompt Count: 16/20.
+
+Task Registry generation 42, the Prompt 15 runtime-evidence invariant correction, this handoff, and the three existing owner records were re-read first. The owner chain remains unchanged:
+
+```text
+GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001
+-> STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001
+-> STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001
+```
+
+The superseded connector-device observation method was not repeated.
+
+The exact canonical receipt path was checked directly:
+
+```text
+receipts/sovereign-host/resident-request-dispatch.latest.json
+```
+
+The canonical GitHub repository returned `NOT_FOUND / 404` for that exact path. This is repository reachability only. It is not evidence that the machine-owned resident receipt does not exist and it has no runtime authority effect.
+
+No authentic receipt with schema `stegverse.resident-request-dispatch/v1` was observed. Therefore `RESIDENT_REQUEST_DISPATCH_VISIT` remains the first unsatisfied predicate and no downstream transition may be promoted.
+
+The required authentic receipt still must prove exactly one relevant outcome with:
+
+```text
+consumer = healer_sovereign_scheduler
+consumer_ref = scripts/consume_healer_sovereign_scheduler_request.py
+attempted = true
+result = authentic machine result
+```
+
+A narrow related-branch hygiene comparison found no new branch ahead of or divergent from main. Existing related refs were behind-only with `ahead=0`, so the completed superseded-ref cleanup was not reopened.
+
+No broad source search, connector-device poll, alternate observer/exporter, runtime, request, scheduler, recovery path, measurement run, second invocation, fixed-host dependency, or second-device dependency was introduced.
+
+This candidate advances Task Registry generation 42 to generation 43 while retaining `ACTIVE / CHECKED_OUT`.
+
+## Manual work
+
+None.
