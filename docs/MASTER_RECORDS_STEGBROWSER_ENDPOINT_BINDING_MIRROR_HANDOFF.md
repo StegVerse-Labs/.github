@@ -1237,3 +1237,56 @@ master-records-stegbrowser-prompt14-hygiene-20260918
 ```
 
 The connected GitHub capability does not expose branch deletion, so ref alignment is the strongest available in-session resolution. No divergent stale branch content remains. Goal issue `#2078` and shared owner issue `#1260` remain open intentionally because both canonical tasks remain active.
+
+
+## Goal prompt 15: runtime-evidence invariant correction
+
+Session Prompt Count: 6. Goal Prompt Count: 15/20.
+
+A canonical documentation review identified that Goal Prompts 10-14 used the wrong observation method. They treated Remote Desktop Commander connected-device inventory as though it were an authorized resident runtime-evidence surface.
+
+That interpretation is superseded.
+
+Canonical controls are explicit:
+
+- `data/task-registry-global-invariants.json` prohibits connector device lists as authorization or verification and prohibits Remote Computer availability as task state.
+- `docs/GLOBAL_RUNTIME_EVIDENCE_CONVERGENCE_MATRIX.md` states that the invalid named-device gate was removed and that physical-device identity does not prove a task-local runtime stage.
+- `docs/GLOBAL_RUNTIME_EVIDENCE_CLOSURE_MIRROR_HANDOFF.md` defines eligible StegOS devices as interchangeable execution/transport nodes and physical-device identity gates as prohibited.
+- `docs/EVALUATOR_INTR_RUNTIME_MIRROR_HANDOFF.md` states that connector-visible device count has no authority effect and prior reasoning that waited for a remotely connected device is superseded and must not be repeated.
+
+Therefore this Goal MUST NOT discover, enumerate, poll for, wait for, or require Remote Desktop Commander, a connector-visible device, a named physical device, or a second user-operated machine.
+
+The correct continuation seam remains:
+
+```text
+RESIDENT_REQUEST_DISPATCH_VISIT
+```
+
+but it must be evaluated through the existing machine-owned resident evidence path:
+
+```text
+existing resident carrier / retained authentic resident evidence
+-> canonical request-consumption receipt
+-> WorkerCoordinator exact claim/fence
+-> Interlock/InTr admission
+-> downstream subject-bound runtime evidence
+```
+
+The exact receipt remains:
+
+```text
+receipts/sovereign-host/resident-request-dispatch.latest.json
+schema: stegverse.resident-request-dispatch/v1
+consumer: healer_sovereign_scheduler
+consumer_ref: scripts/consume_healer_sovereign_scheduler_request.py
+attempted: true
+result: authentic machine result
+```
+
+No runtime predicate is promoted by this correction. Prompts 10-14 remain historical provenance only; their connector-device observation method is non-authoritative and superseded. The existing owner chain remains unchanged and `GLOBAL-RUNTIME-EVIDENCE-MEASUREMENT-001` remains unentered.
+
+This correction advances Task Registry generation 40 to generation 41.
+
+## Manual work
+
+None.
