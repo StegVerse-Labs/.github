@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 56,
-  "status": "SDK_TT_PURPOSE_BOUND_WORKER_DERIVED_LIFETIME_REGISTERED",
+  "generation": 57,
+  "status": "SDK_TT_PURPOSE_BOUND_WORKER_DERIVED_LIFETIME_RECONCILED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -4365,7 +4365,21 @@
           "exact_head_ci": "PASS",
           "production_default_seconds": null,
           "demo_derived_seconds": 30,
-          "runtime_execution_attempted": false
+          "runtime_execution_attempted": false,
+          "github_pr": 2153,
+          "github_merge": "53133aaa65b432f022a95713c8ab3913a132394d",
+          "exact_head": "7d9f0751075c3f4e2ce7543d7e1fd961851d0386",
+          "dedicated_validation": {
+            "run_id": 35402863215,
+            "job_id": 105786330855,
+            "conclusion": "success"
+          },
+          "coordination_validation": {
+            "run_id": 35402863119,
+            "conclusion": "success"
+          },
+          "lifetime_refinement_complete": true,
+          "authentic_runtime_execution_attempted": false
         }
       },
       "lifetime_model": {
