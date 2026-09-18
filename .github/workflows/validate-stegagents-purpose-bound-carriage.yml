@@ -64,7 +64,7 @@ jobs:
           from pathlib import Path
           text=Path(".github/workflows/validate-stegagents-purpose-bound-carriage.yml").read_text()
           assert "permissions: {}" in text
-          assert "git push" not in text
-          assert "workflow_dispatch" not in text
+          forbidden=("git"+" push", "workflow"+"_"+"dispatch")
+          assert all(item not in text for item in forbidden), forbidden
           print("VALIDATION_ONLY_NO_AUTHORITY_PASS")
           PY
