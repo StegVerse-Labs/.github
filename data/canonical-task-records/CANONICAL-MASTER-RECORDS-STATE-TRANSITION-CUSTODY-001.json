@@ -81,14 +81,21 @@
     "authentic_rtc_008_observed": false,
     "authentic_rtc_009_observed": false,
     "authentic_governed_return_observed": false,
-    "canonical_runtime_custody_sequence_observed": false
+    "canonical_runtime_custody_sequence_observed": false,
+    "canonical_local_adapter_source_repair_complete": true,
+    "canonical_local_adapter_child_task_id": "CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001",
+    "canonical_local_adapter_merge_commit": "a21bbeb53e33210d4ac832f343582c02149d8c53",
+    "canonical_local_adapter_pr": 2136,
+    "canonical_local_adapter_exact_validated_blob_identity_preserved": true,
+    "authentic_local_adapter_runtime_custody_observed": false
   },
   "completion": {
     "claimed": false,
     "validated": false,
     "source_adoption_complete_for_master_records_custody": true,
     "mir_final_browser_event_activation_adoption_pending": false,
-    "runtime_completion_pending": true
+    "runtime_completion_pending": true,
+    "local_adapter_source_defect_pending": false
   },
   "allowed_next_transitions": [
     "OBSERVE_EXACT_REGISTERED_NODE_OUTBOX_ENTRY",
@@ -112,5 +119,14 @@
     "diagnostic_receipt_implies_transition": false,
     "missing_transition_may_be_fabricated": false,
     "github_actions_runtime_authority": "NONE"
+  },
+  "source_reconciliation": {
+    "local_adapter_child": {
+      "task_id": "CANONICAL-MASTER-RECORDS-LOCAL-ADAPTER-REPAIR-001",
+      "status": "RETIRED_SOURCE_REPAIR_VALIDATED_COMPLETE_MERGED",
+      "merge_commit": "a21bbeb53e33210d4ac832f343582c02149d8c53",
+      "pr": 2136,
+      "runtime_custody_claimed": false
+    }
   }
 }
