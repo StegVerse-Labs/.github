@@ -101,8 +101,8 @@ class TaskRegistrationSubstrateResolutionTests(unittest.TestCase):
 
     def test_pr_base_resolution_prefers_synthetic_merge_first_parent(self):
         source = SCRIPT.read_text(encoding="utf-8")
-        self.assertIn('["git", "rev-list", "--parents", "-n", "1", "HEAD"]', source)
-        self.assertIn("current_merge_base = parents[1]", source)
+        self.assertIn('["git", "cat-file", "-p", "HEAD"]', source)
+        self.assertIn("current_merge_base = parents[0]", source)
         self.assertIn("pull_request.base.sha can lag current main", source)
 
 
