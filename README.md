@@ -623,6 +623,8 @@ Canonical Goal Task `SDK-TT-PURPOSE-BOUND-WORKER-CONSOLE-001` / COSV `7100000010
 
 The stronger authentic-runtime continuation is canonical Goal Task `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` / COSV `71000000111111`. It must reuse `STEGAGENTS-GOVERNED-RUNTIME-001`, WorkerCoordinator, StegCore/InTr, TV/TVC where required, and Master Records. It may not create a competing runtime, scheduler, dispatcher, WorkerCoordinator, credential authority, evidence authority, or second user-operated-device dependency. Canonical handoff: `docs/SDK_TT_PURPOSE_BOUND_WORKER_RUNTIME_PROOF_MIRROR_HANDOFF.md`.
 
+Worker lifetime on this path is derived per purpose rather than globally fixed. The 30-second deterministic reference is only a demonstration result from a declared cost/work-and-delay budget: expected task execution + known delay + inferred unknown-delay reserve + records-enabled packet decomposition allowance + safety reserve. Production must recompute those inputs for the intended task, may retire earlier when the purpose completes, and may not extend an exhausted budget without a newly governed recalculation. Lifetime calculation itself grants no execution or transition authority.
+
 
 ## Healer state-transition custody requirement
 
