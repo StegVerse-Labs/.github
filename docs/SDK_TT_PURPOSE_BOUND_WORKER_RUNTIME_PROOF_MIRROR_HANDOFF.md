@@ -129,3 +129,16 @@ Source/console CI, fixtures, simulated workers, or documentation-only receipts d
 ## First authorized action
 
 Reconcile the purpose-bound request shape against the existing `STEGAGENTS-GOVERNED-RUNTIME-001` StegAgents manifest/process-adapter contract. Identify the smallest source refinement, if any, needed to carry the exact TT cell/purpose/capability/lifetime tuple through the already-existing runtime. Do not attempt runtime execution until the existing resident/root/WorkerCoordinator prerequisites permit an authentic run.
+
+
+## Cross-session convergence and repository reconciliation — 2026-09-18
+
+The completed AgentEnvelope/MIR reconciliation is an explicit non-blocking adjacent evidence reference: `MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001`.
+
+Its usable invariants are construction-bound lineage, lineage not implying authority, deterministic derivation not proving temporal ordering, and deterministic reconstruction being representable without a new Master Records evidence authority. Those invariants constrain this runtime test but do not add a runtime dependency or substitute for authentic WorkerCoordinator/InTr/runtime evidence.
+
+Related history is reconciled: SDK PR #266 merged the local-console implementation; SDK PR #267 merged its closeout; .github PR #2120 registered the console task; .github PR #2122 retired it and registered this runtime successor. PR #2130 was closed unmerged after the canonical registry generation advanced during reconciliation; its branch was reset to current main before this refreshed continuation. No other open related PR or issue was observed. Prior merged-work branch refs were aligned to current main.
+
+The monolithic Task Registry had advanced beyond the generation-42 prompt while these shard records remained outside its task projection. This reconciliation registers the already-existing retired console identity and active runtime successor rather than minting replacements. The retired console task points to `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001` as its continuation so canonical check-in cannot revive the completed source/local lane.
+
+This leaves one canonical active continuation only: `SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001`. It must continue through the existing `STEGAGENTS-GOVERNED-RUNTIME-001` path and must not create another lifecycle, runtime, scheduler, dispatcher, WorkerCoordinator, credential, transition, or custody authority plane.
