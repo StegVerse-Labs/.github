@@ -119,5 +119,10 @@
     "authority_effect": "NONE_REOBSERVATION_ONLY",
     "goal_prompt_count": "12/20",
     "session_prompt_count": 3
+  },
+  "validation_provenance": {
+    "pr": 2110,
+    "semantic_change": false,
+    "purpose": "Trigger a fresh pull-request synchronize event so exact-head validation can be observed before merge."
   }
 }
