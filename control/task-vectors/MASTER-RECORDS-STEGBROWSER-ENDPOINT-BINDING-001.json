@@ -15,7 +15,9 @@
     "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_SHARED_RUNTIME_OWNER_RECONCILIATION_20260917.json",
     "data/canonical-task-records/GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001.json",
     "data/canonical-task-records/STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001.json",
-    "data/canonical-task-records/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json"
+    "data/canonical-task-records/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.json",
+    "reports/MASTER_RECORDS_STEGBROWSER_ENDPOINT_BINDING_001_RESIDENT_CARRIER_POINTER_RECONCILIATION_20260917.json",
+    "data/runtime-materialization-remediation/STEG-BROWSER-RUNTIME-MATERIALIZATION-REMEDIATION-001.post-repair-packet-classification.json"
   ],
   "exact_metrics": {
     "symbol_order": "LRUIVGOCMTBEAP",
@@ -35,16 +37,16 @@
     "propagated": false
   },
   "metric_evidence": {
-    "lifecycle": "Goal Prompt 4 reconciles the canonical shared runtime-evidence owner and exact StegBrowser retained-root observation seam while retaining ACTIVE/CHECKED_OUT; no runtime predicate is promoted.",
-    "archive_ready": "False until authentic same-invocation retained runtime evidence reaches exact browser Receipt #1/runtime tuple, verified Gateway advertisement, and Master Records RECORDED/PASS/digest equality.",
-    "unassigned_work": "Zero. GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001 is the single shared runtime-evidence owner; STEG-BROWSER-RESIDENT-CUSTODY-ROOT-OBSERVATION-001 and its already-bound remediation successor own the exact StegBrowser observation seam.",
-    "chat_owned_counts": "Observation/reconciliation only. No observer, executor, request, recovery path, Gateway, resident runtime, host, device dependency, credential path, or authority plane was added.",
-    "canonical_owner_installed": "Yes. Shared owner GLOBAL-RUNTIME-EVIDENCE-CLOSURE-001 is ACTIVE/CLAIMED_INTEGRATION; exact StegBrowser retained-root observation owner and remediation successor are already registered. StegOS #347 remains only optional genesis recovery.",
-    "thread_required": "False. No standing external runtime or specific physical device is a canonical prerequisite; named-device gates are prohibited by current global invariant.",
-    "blocker_count": "Zero canonical blockers introduced. Missing authentic retained runtime/root packet is an unsatisfied evidence predicate under existing owners, not justification for duplicate infrastructure.",
-    "evidence_complete": "False; no authentic retained Healer/root packet, exact browser Receipt #1 readback, same-nonce runtime-ready event, Gateway advertisement, Master Records RECORDED/PASS, or digest equality was observed.",
-    "activated": "False; source, schedule, claim state, and CI do not prove resident/runtime execution.",
-    "propagated": "False; downstream A1-A4 handback remains gated on authentic Master Records reconstruction."
+    "lifecycle": "Goal Prompt 5 binds the current machine-owned resident carrier consumption receipt/pointer seam while retaining ACTIVE/CHECKED_OUT; no runtime predicate is promoted.",
+    "archive_ready": "False until the authentic resident carrier consumption receipt exposes exactly one valid retained root, the immutable runtime tuple is observed, and Master Records RECORDED/PASS/digest equality is authentic.",
+    "unassigned_work": "Zero. Existing shared owner, retained-root observation owner, and remediation owner already own the runtime evidence path.",
+    "chat_owned_counts": "Observation/reconciliation only. No owner task, runtime, scheduler, dispatcher, recovery path, request, Gateway, or credential route was added or mutated.",
+    "canonical_owner_installed": "Yes. The latest owner classification already exposes the authorized resident pointer chain through healer-sovereign-scheduler-request-consumption.latest.json -> execution_result.resident_custody_root_observation_retention.",
+    "thread_required": "False. No named physical device or standing remote runtime is a canonical prerequisite.",
+    "blocker_count": "Zero canonical blockers introduced. Missing authentic resident receipt is an unsatisfied evidence predicate under existing owners.",
+    "evidence_complete": "False; no authentic resident carrier consumption receipt/pointer/root, same-nonce runtime tuple, Gateway advertisement, or Master Records reconstruction was observed.",
+    "activated": "False; source/classification/CI do not prove resident execution.",
+    "propagated": "False; A1-A4 handback remains gated on authentic custody reconstruction."
   },
   "authority_effect": "NONE"
 }
