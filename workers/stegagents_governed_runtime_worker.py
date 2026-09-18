@@ -1,14 +1,10 @@
 #!/usr/bin/env python3
-"""WorkerCoordinator bridge for the first governed StegAgents runtime proof.
+"""Shared WorkerCoordinator bridge for governed StegAgents runtime proofs.
 
-This worker consumes, but never mints, the current WorkerCoordinator claim/fence.
-It resolves the already-local StegAgents source, verifies the exact merged
-CodeRepair-001 governed manifest blob, invokes the existing StegAgents governed
-CodeRepair runtime, and retains the exact returned proposal/governance/
-reconstruction result in the resident evidence root.
-
-No second scheduler, WorkerCoordinator, InTr implementation, agent registry,
-provider route, credential path, or consequential execution authority is created.
+The existing worker/process adapter remains the single execution bridge. It can
+serve the original proposal-only CodeRepair proof or the bounded TT-purpose
+successor, but it never mints claims/fences, transition authority, credentials,
+or Master Records truth.
 """
 from __future__ import annotations
 
@@ -20,15 +16,23 @@ import sys
 from pathlib import Path
 from typing import Any, Mapping
 
-TASK_ID = "STEGAGENTS-GOVERNED-RUNTIME-001"
-COSV = "71000000101001"
+OWNER_TASK_ID = "STEGAGENTS-GOVERNED-RUNTIME-001"
+OWNER_COSV = "71000000101001"
+PURPOSE_TASK_ID = "SDK-TT-PURPOSE-BOUND-WORKER-RUNTIME-PROOF-001"
+PURPOSE_COSV = "71000000111111"
+TASK_ID = OWNER_TASK_ID  # backwards-compatible constant for existing tests/source refs
+COSV = OWNER_COSV
 AGENT_ID = "CodeRepair-001"
 WORKER_ID = "stegagents-governed-runtime-worker"
 STEGAGENTS_REPO = "StegVerse-Labs/StegAgents"
 EXPECTED_MANIFEST_GIT_BLOB_SHA = "061649a4b0b43c01f3009ed3e6c8c4829559fb5b"
 REGISTERED_MANIFEST_SOURCE_MERGE = "b768eeeb0ceca14fcfd50ce665cd6c0885e2774f"
-RUNTIME_RESULT_REL = Path("receipts/sovereign-host/stegagents-governed-runtime")
-LATEST_REL = Path("receipts/sovereign-host/stegagents-governed-runtime.latest.json")
+OWNER_RESULT_REL = Path("receipts/sovereign-host/stegagents-governed-runtime")
+OWNER_LATEST_REL = Path("receipts/sovereign-host/stegagents-governed-runtime.latest.json")
+PURPOSE_RESULT_REL = Path("receipts/sovereign-host/sdk-tt-purpose-bound-worker-runtime-proof")
+PURPOSE_LATEST_REL = Path("receipts/sovereign-host/sdk-tt-purpose-bound-worker-runtime-proof.latest.json")
+PURPOSE_CAPABILITY = "stegagents_purpose_bound_worker_lifecycle"
+OWNER_CAPABILITY = "stegagents_governed_coderepair_roundtrip"
 
 
 def require(ok: bool, reason: str) -> None:
@@ -41,8 +45,7 @@ def canonical_json(value: Any) -> str:
 
 
 def sha256_uri(value: Any) -> str:
-    raw = canonical_json(value).encode("utf-8")
-    return "sha256:" + hashlib.sha256(raw).hexdigest()
+    return "sha256:" + hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
 
 
 def git_blob_sha(path: Path) -> str:
@@ -51,12 +54,34 @@ def git_blob_sha(path: Path) -> str:
     return hashlib.sha1(header + raw).hexdigest()
 
 
+def _profile(task_id: str) -> dict[str, str]:
+    if task_id == OWNER_TASK_ID:
+        return {
+            "task_id": OWNER_TASK_ID,
+            "cosv": OWNER_COSV,
+            "capability": OWNER_CAPABILITY,
+            "runtime_module": "src.governed_coderepair_runtime",
+            "result_state": "GOVERNED_PROPOSAL_RETURNED",
+            "transition_id": "STEGAGENTS_GOVERNED_ROUNDTRIP_OBSERVED",
+        }
+    if task_id == PURPOSE_TASK_ID:
+        return {
+            "task_id": PURPOSE_TASK_ID,
+            "cosv": PURPOSE_COSV,
+            "capability": PURPOSE_CAPABILITY,
+            "runtime_module": "src.purpose_bound_worker_runtime",
+            "result_state": "GOVERNED_PURPOSE_BOUND_WORKER_RETURNED",
+            "transition_id": "STEGAGENTS_PURPOSE_BOUND_WORKER_LIFECYCLE_OBSERVED",
+        }
+    raise RuntimeError("worker invocation task mismatch")
+
+
 def validate_invocation(invocation: Mapping[str, Any]) -> dict[str, Any]:
     require(invocation.get("schema") == "stegverse.worker-invocation/v0.1", "worker invocation schema mismatch")
     task = invocation.get("task")
     scope = invocation.get("scope")
     require(isinstance(task, Mapping) and isinstance(scope, Mapping), "worker invocation task/scope missing")
-    require(task.get("task_id") == TASK_ID, "worker invocation task mismatch")
+    profile = _profile(str(task.get("task_id") or ""))
     require(task.get("state") == "ACTIVE", "worker invocation task is not ACTIVE")
     claim_id = task.get("claim_id")
     timing = task.get("heartbeat_timing") if isinstance(task.get("heartbeat_timing"), Mapping) else {}
@@ -65,6 +90,10 @@ def validate_invocation(invocation: Mapping[str, Any]) -> dict[str, Any]:
     require(isinstance(fence, int) and fence >= 1, "worker fence missing")
     require(scope.get("claim_id") == claim_id and scope.get("fencing_token") == fence, "worker invocation scope claim/fence mismatch")
     require(claim_id.endswith(f"-G{fence}"), "worker claim generation mismatch")
+    require(task.get("worker_id") == WORKER_ID, "worker identity mismatch")
+    if profile["task_id"] == PURPOSE_TASK_ID:
+        instance = task.get("worker_instance_id")
+        require(isinstance(instance, str) and instance, "purpose-bound worker requires WorkerCoordinator worker_instance_id")
     return dict(task)
 
 
@@ -90,30 +119,63 @@ def runtime_root() -> Path:
     return root
 
 
-def build_request(task: Mapping[str, Any]) -> dict[str, Any]:
+def _required_capability(handoff: Mapping[str, Any], capability: str) -> None:
+    execution = handoff.get("execution") if isinstance(handoff.get("execution"), Mapping) else {}
+    required = execution.get("required_capabilities")
+    require(isinstance(required, list) and capability in required, f"handoff missing required capability:{capability}")
+
+
+def build_request(task: Mapping[str, Any], handoff: Mapping[str, Any] | None = None) -> dict[str, Any]:
+    task_id = str(task.get("task_id") or "")
+    profile = _profile(task_id)
     timing = task.get("heartbeat_timing") if isinstance(task.get("heartbeat_timing"), Mapping) else {}
+    claim = {
+        "claim_id": task["claim_id"],
+        "fencing_token": timing["fencing_token"],
+        "worker_id": task.get("worker_id"),
+    }
+    if task_id == OWNER_TASK_ID:
+        return {
+            "schema": "stegverse.stegagents-governed-coderepair-request/v1",
+            "task_id": OWNER_TASK_ID,
+            "cosv_task_vector": OWNER_COSV,
+            "agent_id": AGENT_ID,
+            "proposal_only": True,
+            "execution_authority": False,
+            "self_authorization_allowed": False,
+            "credential_material_present": False,
+            "worker_claim": claim,
+            "code_repair_request": {
+                "intent": "Prove the first complete governed CodeRepair-001 proposal-only roundtrip without applying repository changes.",
+                "language": "python",
+                "canonical_repository": "StegVerse-Labs/StegAgents",
+                "handoff_path": "docs/STEGAGENTS_GOVERNED_RUNTIME_MIRROR_HANDOFF.md",
+                "authority_effect": "NONE",
+                "code_bank_references": [],
+            },
+        }
+
+    require(isinstance(handoff, Mapping), "purpose-bound worker executable handoff required")
+    _required_capability(handoff, profile["capability"])
+    contract = handoff.get("purpose_bound_worker_request")
+    require(isinstance(contract, Mapping), "purpose_bound worker request missing from executable handoff")
+    candidate = ((contract.get("transition_cell") or {}).get("candidate") if isinstance(contract.get("transition_cell"), Mapping) else None)
+    require(contract.get("schema") == "stegverse.sdk.tt-purpose-bound-worker.v1", "purpose-bound SDK request schema mismatch")
+    require(isinstance(candidate, Mapping), "purpose-bound candidate missing")
+    require(candidate.get("required_capability") == "text.integrity_summary", "purpose-bound capability mismatch")
+    lifetime = candidate.get("max_lifetime_seconds")
+    require(isinstance(lifetime, int) and not isinstance(lifetime, bool) and lifetime > 0, "purpose-bound lifetime invalid")
+    claim["worker_instance_id"] = task.get("worker_instance_id")
     return {
-        "schema": "stegverse.stegagents-governed-coderepair-request/v1",
-        "task_id": TASK_ID,
-        "cosv_task_vector": COSV,
-        "agent_id": AGENT_ID,
-        "proposal_only": True,
+        "schema": "stegverse.stegagents-purpose-bound-worker-request/v1",
+        "task_id": PURPOSE_TASK_ID,
+        "cosv_task_vector": PURPOSE_COSV,
+        "parent_agent_id": AGENT_ID,
         "execution_authority": False,
         "self_authorization_allowed": False,
         "credential_material_present": False,
-        "worker_claim": {
-            "claim_id": task["claim_id"],
-            "fencing_token": timing["fencing_token"],
-            "worker_id": task.get("worker_id"),
-        },
-        "code_repair_request": {
-            "intent": "Prove the first complete governed CodeRepair-001 proposal-only roundtrip without applying repository changes.",
-            "language": "python",
-            "canonical_repository": "StegVerse-Labs/StegAgents",
-            "handoff_path": "docs/STEGAGENTS_GOVERNED_RUNTIME_MIRROR_HANDOFF.md",
-            "authority_effect": "NONE",
-            "code_bank_references": [],
-        },
+        "worker_claim": claim,
+        "purpose_bound_worker_request": dict(contract),
     }
 
 
@@ -135,13 +197,48 @@ def validate_warrant_policy_binding(result: Mapping[str, Any]) -> dict[str, Any]
     return dict(binding)
 
 
+def _validate_result(profile: Mapping[str, str], result: Mapping[str, Any]) -> None:
+    require(result.get("state") == profile["result_state"], "governed runtime result state mismatch")
+    require(result.get("execution_authority") is False, "agent execution authority invariant violated")
+    require(result.get("self_authorization_allowed") is False, "agent self-authorization invariant violated")
+    require(result.get("provider_operation_required") is False, "unexpected provider operation requirement")
+    require(result.get("credential_authority") == "TV/TVC", "provider credential authority drift")
+    require(result.get("credential_material_present") is False, "provider credential material exposed to StegAgents")
+    governance = result.get("governance")
+    require(isinstance(governance, Mapping), "governance result missing")
+    require(governance.get("chain_verified") is True, "governance chain not verified")
+    require(governance.get("transaction_identity_continuous") is True, "governance transaction continuity missing")
+    require(governance.get("master_records_custody_status") == "RECORDED", "Master Records custody missing")
+    require(governance.get("external_side_effect") is False, "unexpected external side effect")
+    reconstruction = result.get("master_records_reconstruction")
+    require(isinstance(reconstruction, Mapping), "Master Records reconstruction missing")
+    require(reconstruction.get("operation_transition_custody_status") == "RECORDED", "reconstruction custody missing")
+    require(isinstance(reconstruction.get("operation_receipt_ids"), list) and bool(reconstruction.get("operation_receipt_ids")), "reconstruction receipts missing")
+
+    if profile["task_id"] == OWNER_TASK_ID:
+        require(result.get("proposal_only") is True, "proposal-only invariant violated")
+        return
+    require(result.get("records_only") is True, "purpose-bound records-only closeout missing")
+    require(result.get("worker_live_after_close") is False, "purpose-bound worker remained live")
+    require(result.get("continued_authority_after_retirement") is False, "purpose-bound authority continued after retirement")
+    lifecycle = result.get("purpose_bound_worker_result")
+    require(isinstance(lifecycle, Mapping), "purpose-bound lifecycle result missing")
+    require(lifecycle.get("callable_retained") is False, "records-only lifecycle retained callable")
+    require(lifecycle.get("executor_reference_retained") is False, "records-only lifecycle retained executor reference")
+    phases = [row.get("phase") for row in lifecycle.get("lifecycle_receipts", []) if isinstance(row, Mapping)]
+    require(phases == ["MATERIALIZED", "INVOCATION_STARTED", "TASK_COMPLETED", "RETIRED"], "purpose-bound lifecycle order mismatch")
+
+
 def retain_result(root: Path, task: Mapping[str, Any], request: Mapping[str, Any], result: Mapping[str, Any], manifest_blob_sha: str, warrant_policy_binding: Mapping[str, Any]) -> Path:
+    profile = _profile(str(task["task_id"]))
     claim_id = str(task["claim_id"])
+    purpose = profile["task_id"] == PURPOSE_TASK_ID
     receipt = {
-        "schema": "stegverse.stegagents-governed-runtime-receipt/v1",
-        "state": "AUTHENTIC_GOVERNED_ROUNDTRIP_OBSERVED",
-        "task_id": TASK_ID,
-        "cosv_task_vector": COSV,
+        "schema": "stegverse.stegagents-governed-runtime-receipt/v1" if not purpose else "stegverse.stegagents-purpose-bound-worker-runtime-receipt/v1",
+        "state": "AUTHENTIC_GOVERNED_ROUNDTRIP_OBSERVED" if not purpose else "AUTHENTIC_PURPOSE_BOUND_WORKER_LIFECYCLE_OBSERVED",
+        "task_id": profile["task_id"],
+        "runtime_owner_task_id": OWNER_TASK_ID,
+        "cosv_task_vector": profile["cosv"],
         "agent_id": AGENT_ID,
         "registered_manifest": {
             "repository": STEGAGENTS_REPO,
@@ -157,20 +254,29 @@ def retain_result(root: Path, task: Mapping[str, Any], request: Mapping[str, Any
         "result": dict(result),
         "result_sha256": sha256_uri(result),
         "worker_claim": dict(request["worker_claim"]),
-        "proposal_only": result.get("proposal_only") is True,
         "execution_authority": result.get("execution_authority"),
         "self_authorization_allowed": result.get("self_authorization_allowed"),
         "provider_operation_required": result.get("provider_operation_required"),
         "credential_authority": result.get("credential_authority"),
         "credential_material_present": result.get("credential_material_present"),
         "github_runtime_authority": "NONE",
-        "kv_skap_user_verification_authority_preserved": True,
-        "kv_skap_user_verification_required_for_this_roundtrip": False,
         "external_side_effect": ((result.get("governance") or {}).get("external_side_effect")),
         "master_records_reconstruction": result.get("master_records_reconstruction"),
         "authority_effect": "NONE_EVIDENCE_RETENTION_ONLY",
     }
-    target = root / RUNTIME_RESULT_REL / f"{claim_id}.json"
+    if purpose:
+        receipt.update({
+            "records_only": result.get("records_only"),
+            "worker_live_after_close": result.get("worker_live_after_close"),
+            "continued_authority_after_retirement": result.get("continued_authority_after_retirement"),
+            "purpose_bound_worker_result": result.get("purpose_bound_worker_result"),
+        })
+        result_rel, latest_rel = PURPOSE_RESULT_REL, PURPOSE_LATEST_REL
+    else:
+        receipt["proposal_only"] = result.get("proposal_only") is True
+        result_rel, latest_rel = OWNER_RESULT_REL, OWNER_LATEST_REL
+
+    target = root / result_rel / f"{claim_id}.json"
     target.parent.mkdir(parents=True, exist_ok=True)
     raw = json.dumps(receipt, indent=2, sort_keys=True) + "\n"
     if target.exists():
@@ -178,7 +284,7 @@ def retain_result(root: Path, task: Mapping[str, Any], request: Mapping[str, Any
         require(existing == receipt, "write-once governed runtime receipt collision")
     else:
         target.write_text(raw, encoding="utf-8")
-    latest = root / LATEST_REL
+    latest = root / latest_rel
     latest.parent.mkdir(parents=True, exist_ok=True)
     latest.write_text(raw, encoding="utf-8")
     return target
@@ -186,6 +292,8 @@ def retain_result(root: Path, task: Mapping[str, Any], request: Mapping[str, Any
 
 def run(invocation: Mapping[str, Any]) -> dict[str, Any]:
     task = validate_invocation(invocation)
+    profile = _profile(str(task["task_id"]))
+    handoff = invocation.get("handoff") if isinstance(invocation.get("handoff"), Mapping) else {}
     roots = repo_roots()
     agents_root = roots.get(STEGAGENTS_REPO)
     require(agents_root is not None, "already-local StegAgents source root not materialized")
@@ -194,12 +302,12 @@ def run(invocation: Mapping[str, Any]) -> dict[str, Any]:
     manifest_blob_sha = git_blob_sha(manifest)
     require(manifest_blob_sha == EXPECTED_MANIFEST_GIT_BLOB_SHA, "CodeRepair-001 governed manifest does not match merged registered blob")
 
-    request = build_request(task)
+    request = build_request(task, handoff)
     env = dict(os.environ)
     env.pop("GITHUB_TOKEN", None)
     env.pop("GH_TOKEN", None)
     completed = subprocess.run(
-        [sys.executable, "-m", "src.governed_coderepair_runtime"],
+        [sys.executable, "-m", profile["runtime_module"]],
         cwd=str(agents_root),
         input=json.dumps(request),
         capture_output=True,
@@ -214,30 +322,13 @@ def run(invocation: Mapping[str, Any]) -> dict[str, Any]:
     except Exception as exc:
         raise RuntimeError("StegAgents governed runtime returned invalid JSON") from exc
     require(isinstance(result, dict), "StegAgents governed result must be object")
-    require(result.get("state") == "GOVERNED_PROPOSAL_RETURNED", "governed proposal was not returned")
-    require(result.get("proposal_only") is True, "proposal-only invariant violated")
-    require(result.get("execution_authority") is False, "agent execution authority invariant violated")
-    require(result.get("self_authorization_allowed") is False, "agent self-authorization invariant violated")
-    require(result.get("provider_operation_required") is False, "unexpected provider operation requirement")
-    require(result.get("credential_authority") == "TV/TVC", "provider credential authority drift")
-    require(result.get("credential_material_present") is False, "provider credential material exposed to StegAgents")
+    _validate_result(profile, result)
     warrant_policy_binding = validate_warrant_policy_binding(result)
-    governance = result.get("governance")
-    require(isinstance(governance, Mapping), "governance result missing")
-    require(governance.get("chain_verified") is True, "governance chain not verified")
-    require(governance.get("transaction_identity_continuous") is True, "governance transaction continuity missing")
-    require(governance.get("master_records_custody_status") == "RECORDED", "Master Records custody missing")
-    require(governance.get("external_side_effect") is False, "agent caused consequential external side effect")
-    reconstruction = result.get("master_records_reconstruction")
-    require(isinstance(reconstruction, Mapping), "Master Records reconstruction missing")
-    require(reconstruction.get("operation_transition_custody_status") == "RECORDED", "reconstruction custody missing")
-    require(isinstance(reconstruction.get("operation_receipt_ids"), list) and bool(reconstruction.get("operation_receipt_ids")), "reconstruction receipts missing")
-
     receipt = retain_result(runtime_root(), task, request, result, manifest_blob_sha, warrant_policy_binding)
     return {
         "schema": "stegverse.worker-response/v0.1",
         "state": "COMPLETED",
-        "transition_id": "STEGAGENTS_GOVERNED_ROUNDTRIP_OBSERVED",
+        "transition_id": profile["transition_id"],
         "transition_sequence": 1,
         "expected_next_transition": None,
         "expected_next_earliest_epoch": None,
