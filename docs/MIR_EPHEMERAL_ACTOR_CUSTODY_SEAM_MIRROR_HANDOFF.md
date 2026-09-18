@@ -66,3 +66,7 @@ Section 4 does not need a new independent receipt class solely because an actor 
 ## Next action
 
 Reconcile this clarification against Richard Whitney's next Evidence Custody Seam revision. If his wording preserves actor ephemerality without allowing self-declared lineage, accept it as a compatible refinement; otherwise propose the minimum normative sentence needed in Sections 3/4 without creating a new receipt class or identity authority.
+
+## Link resolution note
+
+The LinkedIn short URL supplied in-chat (`https://lnkd.in/p/dsTPCW7j`) could not be independently fetched by the available public-web resolver in this session. That does not block this pressure test because the screenshots already preserve the relevant spawn-case wording. Do not claim independent retrieval of the post until a resolver returns the underlying public activity.
