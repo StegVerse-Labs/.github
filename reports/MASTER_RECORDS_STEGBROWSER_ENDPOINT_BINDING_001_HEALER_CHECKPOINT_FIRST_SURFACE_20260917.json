@@ -22,78 +22,78 @@
     {
       "order": 1,
       "component": "scripts/run_worker_runtime.py",
-      "blob_sha256": "beae54a5d40f00a7f84dbd2fd74fb6a9414e48aa",
       "behavior": "Native WorkerCoordinator periodically invokes dispatch_resident_execution_requests.py on the resident root; HeartBeat/continuation timing grants no execution authority.",
       "machine_owned_transition": "RESIDENT_REQUEST_DISPATCH_VISIT",
-      "pointer_payload_available": false
+      "pointer_payload_available": false,
+      "git_blob_sha": "beae54a5d40f00a7f84dbd2fd74fb6a9414e48aa"
     },
     {
       "order": 2,
       "component": "scripts/dispatch_resident_execution_requests.py",
-      "blob_sha256": "f1646eafb0e152ce29d0d50ee4304f0d2a3187bc",
       "behavior": "Selects healer_sovereign_scheduler and invokes scripts/consume_healer_sovereign_scheduler_request.py with exact source/runtime roots.",
       "machine_owned_transition": "HEALER_RESIDENT_CONSUMER_INVOKED",
-      "pointer_payload_available": false
+      "pointer_payload_available": false,
+      "git_blob_sha": "f1646eafb0e152ce29d0d50ee4304f0d2a3187bc"
     },
     {
       "order": 3,
       "component": "scripts/consume_healer_sovereign_scheduler_request.py",
-      "blob_sha256": "2aadb5b1c8bc04d7ae96f261fced38654ef6cca3",
       "behavior": "Validates/materializes the standing non-authorizing request then invokes refresh_and_execute_resident_task.py for SHWP-HEALER-SOVEREIGN-SCHEDULER-001.",
       "machine_owned_transition": "TARGETED_WORKERCOORDINATOR_EXECUTION_REQUESTED",
-      "pointer_payload_available": false
+      "pointer_payload_available": false,
+      "git_blob_sha": "2aadb5b1c8bc04d7ae96f261fced38654ef6cca3"
     },
     {
       "order": 4,
       "component": "scripts/refresh_and_execute_resident_task.py",
-      "blob_sha256": "8cfd91599cf5bdeb5e95da287cb37c98c8c2d418",
       "behavior": "Refreshes already-local resident source, then calls run_worker_runtime.py --task-id SHWP-HEALER-SOVEREIGN-SCHEDULER-001; later persists resident-targeted-execution.latest.json around the returned WorkerCoordinator cycle envelope.",
       "machine_owned_transition": "TARGETED_WORKER_RUNTIME_CYCLE_ENTERED",
-      "pointer_payload_available": false
+      "pointer_payload_available": false,
+      "git_blob_sha": "8cfd91599cf5bdeb5e95da287cb37c98c8c2d418"
     },
     {
       "order": 5,
       "component": "heartbeat_runtime/admitted_worker_runtime.py",
-      "blob_sha256": "3c64873a672dfa4e350ef168524d4f3e10668943",
       "behavior": "Performs fresh fail-closed coordination and worker-task admission review before allowing existing WorkerCoordinator claim/fence activation.",
       "machine_owned_transition": "WORKER_TASK_ADMISSION_ADMIT",
-      "pointer_payload_available": false
+      "pointer_payload_available": false,
+      "git_blob_sha": "3c64873a672dfa4e350ef168524d4f3e10668943"
     },
     {
       "order": 6,
       "component": "heartbeat_runtime/worker_runtime_legacy.py",
-      "blob_sha256": "95d00e78ae6d0ad1e8bae37c1b95f850cc553ee0",
       "behavior": "Binds fresh independent-task-control claim/fence, emits worker_assignment_bound_from_independent_task_control, invokes the configured worker, and retains only worker response metadata/checkpoint refs in the cycle result.",
       "machine_owned_transition": "WORKER_ASSIGNMENT_BOUND_FROM_INDEPENDENT_TASK_CONTROL",
-      "pointer_payload_available": false
+      "pointer_payload_available": false,
+      "git_blob_sha": "95d00e78ae6d0ad1e8bae37c1b95f850cc553ee0"
     },
     {
       "order": 7,
       "component": "workers/healer_sovereign_scheduler_worker.py",
-      "blob_sha256": "4e1c4359756fd2e61849a781427be811e054d622",
       "behavior": "Runs StegVerse-Healer dispatch_orchestrators.py, captures its full child receipt including resident_custody_root_observation_retention, writes receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json in the worker sandbox, and returns only WorkerResponse metadata plus checkpoint_ref.",
       "machine_owned_transition": "HEALER_WORKER_CHECKPOINT_WRITTEN_IN_FENCED_SANDBOX",
       "pointer_payload_available": true,
-      "pointer_path": "child_receipt.resident_custody_root_observation_retention"
+      "pointer_path": "child_receipt.resident_custody_root_observation_retention",
+      "git_blob_sha": "4e1c4359756fd2e61849a781427be811e054d622"
     },
     {
       "order": 8,
       "component": "heartbeat_runtime/process_adapter.py",
-      "blob_sha256": "88224a6c474f92cc499efcca984b6088798a6182",
       "behavior": "Validates claim/fence and allowed mutation scope, then projects the worker checkpoint from the sandbox into the authoritative resident workspace only after an ALLOW decision. Arbitrary worker response payload is intentionally reduced to WorkerResponse metadata.",
       "machine_owned_transition": "FENCED_PROCESS_ADAPTER_ALLOW_PROJECTION",
       "pointer_payload_available": true,
       "first_authentic_resident_copy_should_be_observable_here": true,
       "first_authentic_pointer_bearing_resident_path": "receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
-      "pointer_path": "child_receipt.resident_custody_root_observation_retention"
+      "pointer_path": "child_receipt.resident_custody_root_observation_retention",
+      "git_blob_sha": "88224a6c474f92cc499efcca984b6088798a6182"
     },
     {
       "order": 9,
       "component": "scripts/consume_healer_sovereign_scheduler_request.py",
-      "blob_sha256": "2aadb5b1c8bc04d7ae96f261fced38654ef6cca3",
       "behavior": "After refresh_and_execute returns, writes receipts/sovereign-host/healer-sovereign-scheduler-request-consumption.latest.json containing the refresh/WorkerCoordinator cycle envelope as execution_result.",
       "machine_owned_transition": "HEALER_RESIDENT_REQUEST_CONSUMPTION_RECEIPT_WRITTEN",
-      "pointer_payload_available_inline": false
+      "pointer_payload_available_inline": false,
+      "git_blob_sha": "2aadb5b1c8bc04d7ae96f261fced38654ef6cca3"
     }
   ],
   "serialization_boundary": {
