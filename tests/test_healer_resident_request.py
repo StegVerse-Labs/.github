@@ -137,6 +137,70 @@ class HealerResidentRequestTests(unittest.TestCase):
         finally:
             td.cleanup()
 
+    def test_projected_checkpoint_retention_pointer_is_carried_into_consumption_result(self):
+        td, source, runtime = self.roots()
+        try:
+            packet_path = runtime / consumer.ROOT_OBSERVATION_REL
+            packet_path.parent.mkdir(parents=True, exist_ok=True)
+            packet_path.write_text(json.dumps({
+                "schema": "stegverse.healer.resident-custody-root-observation/v1",
+                "state": "RESIDENT_CUSTODY_ROOT_OBSERVED",
+            }, sort_keys=True) + "\n", encoding="utf-8")
+            pointer = {
+                "packet_ref": str(packet_path),
+                "packet_relative_path": consumer.ROOT_OBSERVATION_REL.as_posix(),
+                "packet_sha256": consumer.file_sha256(packet_path),
+                "retained_under_root": str(runtime.resolve()),
+                "retained_under_root_source": "CANONICAL_LOCAL_RUNTIME",
+                "packet_state": "RESIDENT_CUSTODY_ROOT_OBSERVED",
+            }
+            checkpoint_path = runtime / consumer.CHECKPOINT_REL
+            checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
+            checkpoint_path.write_text(json.dumps({
+                "schema": "stegverse.healer-sovereign-scheduler-worker-checkpoint/v1",
+                "child_receipt": {
+                    "resident_custody_root_observation_retention": pointer,
+                },
+            }, sort_keys=True) + "\n", encoding="utf-8")
+
+            result = consumer.consume(source, runtime, runner=lambda *args, **kwargs: self.completed_cycle(), env={"PATH": "/usr/bin"})
+            self.assertEqual(result["state"], "CYCLE_COMPLETED")
+            carried = result["execution_result"]["resident_custody_root_observation_retention"]
+            self.assertEqual(carried, pointer)
+            binding = result["execution_result"]["resident_custody_root_observation_retention_binding"]
+            self.assertEqual(binding["state"], "VALIDATED_PROJECTED_RETENTION_POINTER_BOUND")
+            self.assertEqual(binding["checkpoint_ref"], consumer.CHECKPOINT_REL.as_posix())
+            self.assertEqual(binding["packet_sha256"], pointer["packet_sha256"])
+            persisted = json.loads((runtime / consumer.CONSUMPTION_REL).read_text(encoding="utf-8"))
+            self.assertEqual(persisted["execution_result"]["resident_custody_root_observation_retention"], pointer)
+        finally:
+            td.cleanup()
+
+    def test_projected_checkpoint_pointer_fails_closed_on_packet_hash_mismatch(self):
+        td, source, runtime = self.roots()
+        try:
+            packet_path = runtime / consumer.ROOT_OBSERVATION_REL
+            packet_path.parent.mkdir(parents=True, exist_ok=True)
+            packet_path.write_text('{"state":"RESIDENT_CUSTODY_ROOT_OBSERVED"}\n', encoding="utf-8")
+            checkpoint_path = runtime / consumer.CHECKPOINT_REL
+            checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
+            checkpoint_path.write_text(json.dumps({
+                "child_receipt": {
+                    "resident_custody_root_observation_retention": {
+                        "packet_ref": str(packet_path),
+                        "packet_relative_path": consumer.ROOT_OBSERVATION_REL.as_posix(),
+                        "packet_sha256": "0" * 64,
+                        "retained_under_root": str(runtime.resolve()),
+                        "retained_under_root_source": "CANONICAL_LOCAL_RUNTIME",
+                        "packet_state": "RESIDENT_CUSTODY_ROOT_OBSERVED",
+                    },
+                },
+            }) + "\n", encoding="utf-8")
+            with self.assertRaisesRegex(RuntimeError, "sha256 mismatch"):
+                consumer.consume(source, runtime, runner=lambda *args, **kwargs: self.completed_cycle(), env={"PATH": "/usr/bin"})
+        finally:
+            td.cleanup()
+
     def test_blocked_scheduler_attempt_remains_retryable(self):
         td, source, runtime = self.roots()
         try:
