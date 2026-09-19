@@ -845,3 +845,8 @@ Prompt 13 also closes the update catch-22 ahead of the Healer consumer: `run_wor
 ### Test 3 focused suite wiring
 
 The existing Purpose-Bound Worker validation workflow now runs the four focused Test 3 .github modules when Test 3 source/test surfaces change. The first current-main suite run exposed a test-harness indexing defect, not a seam-ordering defect; the repaired assertion now verifies Master Records closure -> authoritative ACTIVE T<->W projection -> invocation -> exit from the Test 3 branch.
+
+
+### Runnable Test 3 acceptance
+
+Test 3 has a dedicated executable entrypoint at `scripts/run_sdk_tt_richard_seam_test3.py` and a dedicated `Test 3 Richard Seam Acceptance` workflow. It runs the current .github Test 3/runtime-path modules together with the current StegAgents purpose-bound runtime module and emits one machine-readable PASS/FAIL result.
