@@ -425,3 +425,37 @@ records_only=true final packet                         PRESENT
 No source repair was required.
 
 The authorized resident execution connector was checked in the same session and reported no connected device. Therefore `TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT` was not executed and no authentic claim/fence, TV/TVC, InTr, lifecycle, post-retirement, or records-only reconstruction predicate is promoted. GitHub source verification remains non-runtime evidence.
+
+
+## TV/TVC Ed25519 execution-warrant bridge — Goal Prompt 18
+
+The prior Remote Desktop/device availability check is explicitly retired as a blocker for this goal. The executable handoff already states `second_machine_required=false`, `carrier_trigger_required=false`, and `requires_existing_separated_carrier_reference=false`. No device prerequisite may be reintroduced.
+
+The actual missing credential-authority source path was repaired in TVC PR #446:
+
+```text
+exact head: dd9a20d8d1ef61ac8e05eccf78125035c4cac423
+merge:      fca8ee684dc6c3ea66fb73af84c9c9c67b9dc4d6
+validation: Validate TV Execution Warrant Resident Bridge
+run:        35464198311
+result:     SUCCESS
+```
+
+The merged bridge reuses TV/TVC's existing resident `systemd LoadCredential` custody model and introduces no GitHub signing authority, scheduler, dispatcher, runtime, device dependency, or replacement credential authority. It issues only bounded Ed25519 `run_agent` warrants for `StegVerse-Labs/StegAgents`, binds an exact 40-hex commit, hashes the exact runtime policy-bundle bytes, enforces TTL <= 900 seconds, and returns a secret-free issuance receipt containing the warrant, issuer public key, policy-bundle SHA-256, and verifier inputs.
+
+No authentic resident `TV_EXECUTION_WARRANT_ED25519_PRIVATE_KEY_PEM` credential or issuance receipt has yet been observed. Therefore no real public key can yet be projected into the TV issuer registry and no fresh StegAgents warrant is claimed. This is now the first authentic runtime boundary.
+
+The next admissible progression is:
+
+```text
+existing TV/TVC resident credential custody
+-> materialize/observe TV_EXECUTION_WARRANT_ED25519_PRIVATE_KEY_PEM
+-> execute merged TVC execution-warrant service
+-> retain secret-free issuance receipt
+-> register the real derived public key in TV issuer registry
+-> carry receipt.warrant / policy hash / public key / max TTL into existing StegAgents adapter
+-> execute TARGETED_INDEPENDENT_TASK_CONTROL_ONE_SHOT
+-> require same-run Master Records-closed claim/fence, TV/TVC, InTr, four lifecycle transitions, post-retirement no-authority, and records-only reconstruction
+```
+
+Source validation alone does not satisfy the credential materialization, warrant issuance, or SDK runtime proof predicates.
