@@ -52,7 +52,8 @@ def main() -> int:
     tvc_root = Path(tvc_raw).expanduser().resolve()
     dispatcher = tvc_root / "tools" / "task_dispatcher.py"
     observer = tvc_root / "scripts" / "observe_tvc_runtime_boundary.py"
-    if not dispatcher.is_file() or not observer.is_file():
+    installer = tvc_root / "scripts" / "install_tvc_primary_runtime_service.py"
+    if not dispatcher.is_file() or not observer.is_file() or not installer.is_file():
         print(json.dumps({"state":"BOUNDARY_RECORDED","reason":"TVC_DECLARED_RUNNER_DEPENDENCY_MISSING","authority_effect":"NONE"}, sort_keys=True))
         return 3
 
@@ -60,9 +61,12 @@ def main() -> int:
     if preflight.returncode != 0:
         return preflight.returncode
 
-    activation = run([sys.executable, str(dispatcher), "tvc.primary_runtime_binder.activate"], cwd=tvc_root)
-    if activation.returncode != 0:
-        return activation.returncode
+    activation_delivery = run(
+        [sys.executable, str(installer), "--repo-root", str(tvc_root), "--activate"],
+        cwd=tvc_root,
+    )
+    if activation_delivery.returncode != 0:
+        return activation_delivery.returncode
 
     params_raw = os.getenv("STEGVERSE_REUSABLE_TASK_PARAMETERS_JSON", "{}").strip() or "{}"
     params = json.loads(params_raw)
