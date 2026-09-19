@@ -64,7 +64,7 @@
     "AUTHENTIC_MASTER_RECORDS_RECONSTRUCTION_MATCH",
     "AUTHENTIC_RECORDS_ONLY_FINAL_PACKET"
   ],
-  "remaining_predicate": "WAIT_FOR_EXISTING_STEGAGENTS_GOVERNED_RUNTIME_RESIDENT_ROOT_AND_WORKERCOORDINATOR_PREREQUISITES_THEN_ATTEMPT_AUTHENTIC_PURPOSE_BOUND_LIFECYCLE",
+  "remaining_predicate": "RUN_EXISTING_HEALER_RESIDENT_CONSUMER_WITH_CURRENT_SOURCE_AND_REQUIRE_AUTHENTIC_MASTER_RECORDS_RECONSTRUCTION_OF_THE_FENCED_PROJECTED_CHECKPOINT_THEN_VALIDATE_EXACTLY_ONE_RESIDENT_CUSTODY_ROOT_OBSERVED_BEFORE_PURPOSE_BOUND_LIFECYCLE",
   "completion": {
     "claimed": false,
     "validated": false,
@@ -72,7 +72,7 @@
   },
   "authority_effect": "NONE_COORDINATION_ONLY",
   "coordination_hygiene": {
-    "reconciled_against_registry_generation": 64,
+    "reconciled_against_registry_generation": 71,
     "mir_agentenvelope_ref": "MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001",
     "mir_relationship": "NON_BLOCKING_ADJACENT_EVIDENCE",
     "surviving_purpose_bound_branches": "HISTORICAL_REFS_BEHIND_MAIN_ZERO_UNIQUE_COMMITS",
@@ -144,5 +144,33 @@
       "budget_extension_requires_new_governed_recalculation": true
     },
     "authority_effect": "NONE_LIFETIME_BUDGET_ONLY"
+  },
+  "runtime_to_master_records_identity_carriage": {
+    "source_defect_proven": true,
+    "source_defect": "HEALER_HANDOFF_REQUIRED_MASTER_RECORDS_BUT_EXISTING_RESIDENT_CONSUMER_DID_NOT_SUBMIT_THE_FENCED_PROJECTED_CHECKPOINT_OR_RETAIN_ITS_MASTER_RECORDS_LOOKUP_IDENTITY",
+    "repaired_on_existing_consumer_path": true,
+    "consumer_ref": "scripts/consume_healer_sovereign_scheduler_request.py",
+    "checkpoint_ref": "receipts/healer-sovereign-scheduler/SHWP-HEALER-SOVEREIGN-SCHEDULER-001.json",
+    "fenced_cycle_identity_required": [
+      "claim_id",
+      "fencing_token",
+      "transition_id"
+    ],
+    "required_evidence_type": "HEALER_FENCED_CHECKPOINT",
+    "master_records_identity_carried": [
+      "transition_id",
+      "receipt_sha256",
+      "master_record_ref"
+    ],
+    "progression_requires": [
+      "RECORDED",
+      "reconstruction_status=PASS",
+      "required_evidence_validation_status=PASS",
+      "receipt_sha256==reconstructed_receipt_sha256"
+    ],
+    "authentic_runtime_custody_observed": false,
+    "retained_root_pointer_validated": false,
+    "purpose_bound_lifecycle_attempted": false,
+    "authority_effect": "NONE_SOURCE_REPAIR_ONLY"
   }
 }
