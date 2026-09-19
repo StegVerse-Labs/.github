@@ -1,7 +1,7 @@
 {
   "schema": "stegverse.canonical-task-registry/v1",
-  "generation": 63,
-  "status": "SDK_PRODUCT_PROCESSING_PROVENANCE_RETIRED_COMPLETE",
+  "generation": 64,
+  "status": "SDK_TT_PURPOSE_BOUND_WORKER_COORDINATION_HYGIENE_RECONCILED",
   "authoritative_roles": {
     "work_intent_and_coordination": "THIS_REGISTRY",
     "execution_claim_and_fence": "control/worker-registry.json / WorkerCoordinator",
@@ -4313,7 +4313,8 @@
       ],
       "adjacent_task_refs": [
         "STEGAGENTS-GOVERNED-RUNTIME-001",
-        "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001"
+        "SDK-EVALUATOR-GOVERNANCE-POSTURE-MANIFEST-001",
+        "MIR-AGENTENVELOPE-DERIVED-AUTHORITY-RECONCILIATION-001"
       ],
       "reuse_requirements": {
         "runtime_owner": "STEGAGENTS-GOVERNED-RUNTIME-001",
