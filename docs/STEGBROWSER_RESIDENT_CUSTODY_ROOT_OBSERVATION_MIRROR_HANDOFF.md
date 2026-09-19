@@ -220,3 +220,14 @@ The generation-70 retention-seam reconciliation incorrectly elevated the first p
 The parent now continues directly through the existing Browser execution owner: current WorkerCoordinator claim/fence -> Interlock/InTr -> retained StegBrowser runtime evidence -> canonical Master Records custody/reconstruction. The direct receipt surface is `receipts/sovereign-host/canonical-work-stegbrowser-runtime-consumption-request-consumption.latest.json`; no Healer packet is required before classifying authentic owner-bound evidence.
 
 All prior Healer work is preserved as historical remediation evidence only. Healer role is `TRIGGERED_REMEDIATION_ONLY`; its scheduler/checkpoint/retention pointer is not an execution prerequisite, carrier requirement, transition authority, or Master Records predecessor for this invocation.
+
+
+## Direct-owner nonce-bound claim/fence repair
+
+After removal of the artificial Healer gate, the corrected direct Browser execution chain was traced to its first authentic A3 evidence boundary. No nonce-bound WorkerCoordinator claim/fence receipt is currently retained in repository-visible evidence; current canonical records still classify A3 as unobserved.
+
+The first concrete source defect is exact-lineage correlation: the immutable request preserves nonce `STEG-BROWSER-MANIFEST-INTR-INGRESS-EXECUTION-001-20260915T142500Z` through Universal InTr binding construction, but the manifest-bound runner and organization-local ingress path previously replaced reusable invocation identity with manifest/materialization identifiers and did not require the immutable nonce in A3 evidence. Therefore an otherwise-authentic WorkerCoordinator claim/fence could not prove it belonged to this exact one-shot invocation.
+
+The existing path now carries a dedicated non-authorizing `STEGVERSE_STEGBROWSER_INVOCATION_NONCE` through the manifest-bound runner and Universal InTr materialization consumer. `workers/stegbrowser_manifest_intr_ingress.py` requires that exact nonce, includes it in the hashed organization-local ingress packet and transition basis, and returns it with claim/fence evidence. `scripts/run_stegbrowser_runtime_consumption_reusable.py` refuses A3/A4 projection unless the returned nonce exactly matches the immutable request.
+
+No claim/fence is minted by this repair, no second invocation is issued, and no runtime, scheduler, dispatcher, custody store, authority plane, credential path, host dependency, Healer prerequisite, or device dependency is introduced. The next authentic predicate is now exactly `AUTHENTIC_NONCE_BOUND_WORKERCOORDINATOR_CLAIM_FENCE_OBSERVED`, followed by the same InTr and Master Records progression.
