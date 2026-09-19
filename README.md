@@ -813,3 +813,8 @@ Test 3 source-delivery tracing found that the existing StegOS control-plane sour
 ### Canonical Master Records MIR post-return completion boundary
 
 The canonical custody goal now distinguishes successful governed MIR return from terminal communication completion. Site PR #1413 keeps `communication_complete=false` after governed return until the authentic far-side Interlock/InTr terminal transition and required caller consequence are observed; Site PR #1414 released the temporary repair claim. The bounded Site denominator observation after release is 51 active claims / 51 active task IDs / 46 unindexed active task IDs and remains owned for persistent reconciliation by `SITE-COSV-REPOSITORY-WIDE-ADOPTION-001`. Source validation is green, but authentic MIR runtime custody remains unclaimed and the parent task remains ACTIVE.
+
+
+### StegBrowser Healer cycle-envelope repair
+
+Goal Prompt 12 fixes the next concrete post-carriage defect: the Healer consumer now recognizes completion from the real WorkerCoordinator `worker_response` event inside `stegverse.worker-runtime-cycle-result/v1`, rather than a synthetic top-level `transition_id`. Exactly one `HEALER_SOVEREIGN_SCHEDULER_COMPLETED / HANDOFF_READY` event for `SHWP-HEALER-SOVEREIGN-SCHEDULER-001` gates retained-root pointer validation and carriage. The resident dispatcher now treats `CYCLE_COMPLETED` as a successful Healer result. No new execution or authority path is introduced.
