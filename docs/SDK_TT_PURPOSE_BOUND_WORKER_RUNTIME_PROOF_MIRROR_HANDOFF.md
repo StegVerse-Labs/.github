@@ -449,3 +449,20 @@ TV head c133e61e1bc4645760c110830077866198c99d0a
 ```
 
 No authentic warrant is claimed. Current source/repository evidence does not establish that the resident credential `TV_EXECUTION_WARRANT_ED25519_PRIVATE_KEY_PEM` has been materialized in admitted TVC credential custody. That is now the first authentic boundary. It must not be replaced with a generated chat key, GitHub secret, HMAC token, Remote Desktop device, carrier, Healer, scheduler, dispatcher, or another runtime.
+
+
+## TV/TVC Ed25519 execution-warrant bridge — Goal Prompt 18
+
+The prior Remote Desktop/device availability check is explicitly retired as a blocker for this goal. The executable handoff already states `second_machine_required=false`, `carrier_trigger_required=false`, and `requires_existing_separated_carrier_reference=false`. No device prerequisite may be reintroduced.
+
+TVC PR #446 repaired the actual missing credential-authority source path:
+
+```text
+exact head: dd9a20d8d1ef61ac8e05eccf78125035c4cac423
+merge:      fca8ee684dc6c3ea66fb73af84c9c9c67b9dc4d6
+validation: 35464198311 SUCCESS
+```
+
+The merged bridge reuses TV/TVC resident `systemd LoadCredential` custody, issues only bounded Ed25519 `run_agent` warrants for `StegVerse-Labs/StegAgents`, binds the exact commit and runtime policy-bundle bytes, and exports only a secret-free warrant/public-key/policy receipt. It creates no GitHub signing authority, scheduler, dispatcher, runtime, device dependency, or replacement credential authority.
+
+No authentic resident `TV_EXECUTION_WARRANT_ED25519_PRIVATE_KEY_PEM` credential or issuance receipt has yet been observed. Therefore no real issuer public key or fresh StegAgents warrant is claimed. The next authentic boundary is resident TV/TVC credential materialization -> issuance -> real public-key registration -> existing targeted one-shot -> same-run Master Records closure.
