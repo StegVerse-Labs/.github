@@ -1,0 +1,54 @@
+{
+  "schema": "stegverse.governed-manifold-expanded-task-audit/v1",
+  "task_id": "GOVERNED-MULTILANE-MANIFOLD-ACTIVATION-001",
+  "cosv_task_vector": "10100000100000",
+  "observed_at": "2026-09-07",
+  "candidate_unique_task_count": 20,
+  "dispositions": {
+    "EXECUTE_OR_ACTIVATE": [
+      "STEGVERSE-NATIVE-EMAIL-ACTION-MONITOR-001",
+      "KIMI-INTR-RESIDENT-ACTIVATION-001",
+      "SHWP-DEEPSEEK-INTR-RUNTIME-001",
+      "STEGVERSE-OBJECT-PROVENANCE-CONTINUITY-190",
+      "STEGVERSE-CANONICAL-WORK-COORDINATION-001",
+      "QUANTUM-RESILIENCE-001",
+      "SHWP-HIL-SOVEREIGN-RECEIVER-001",
+      "SHWP-ERL-AI-ECON-TRANSPARENCY-REVIEW-001",
+      "AUTHORITY-TIME-GOVERNANCE-COORDINATE-001"
+    ],
+    "EXTERNAL_OWNER_OR_CONDITIONAL_ACTIVATION": [
+      "STEGHEALTH-ECOSYSTEM-FAILURE-REMEDIATION-001",
+      "CRYPTO-LIVE-AUTO-001",
+      "STEGLEARN-SITE-PUBLICATION-001",
+      "ORG-FED-STEGVERSE-LABS-001",
+      "TVC-CREDENTIAL-MODEL-CONSISTENCY-20260826",
+      "PA-INT-009"
+    ],
+    "OBSERVE_OR_REUSE_ACTIVE": [
+      "ORG-GITHUB-REPOSITORY-STATUS-SUMMARY-001",
+      "STEGVERSE-TASK-REGISTRY-HEALTH-MONITOR-001"
+    ],
+    "REUSE_COMPLETE": [
+      "STEGINDEX-UMBRA-COMPARATIVE-ARCHITECTURE"
+    ],
+    "UNRESOLVED_LINEAGE_DEFECT": [
+      "SITE-CFP-POST-MERGE-INGESTION-VERIFY-1106",
+      "AEX-TRIFORM-MIGRATION-REFRESH-016-SELECTION"
+    ]
+  },
+  "rules": {
+    "do_not_blindly_claim_external_owner_tasks": true,
+    "do_not_treat_source_or_request_creation_as_runtime_activation": true,
+    "unresolved_task_identity_blocks_complete_lineage_claim": true,
+    "wallet_signing_broadcast_remains": "USER_ONLY",
+    "credential_authority_remains": "TV/TVC",
+    "runtime_claim_fence_authority_remains": "CANONICAL_WORKERCOORDINATOR_OR_EXISTING_REPOSITORY_OWNER"
+  },
+  "next_actions": [
+    "add confirmed activation-relevant task identities to canonical manifold accounting with owner-preserving dispositions",
+    "resolve the two missing exact task identities before declaring full lineage completeness",
+    "reuse or observe already-active and complete tasks rather than duplicate execution",
+    "continue authentic resident execution and receipt collection through existing owners"
+  ],
+  "authority_effect": "NONE_AUDIT_AND_DISPOSITION_ONLY"
+}
