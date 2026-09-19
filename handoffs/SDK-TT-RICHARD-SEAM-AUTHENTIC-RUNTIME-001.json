@@ -26,7 +26,7 @@
       "data/canonical-task-records/SDK-TT-ATOMIC-TASK-WORKER-BINDING-001.json",
       "workers/stegagents_governed_runtime_worker.py",
       "control/process-worker-adapters.d/stegagents-governed-runtime-001.json",
-      "StegVerse-Labs/StegAgents:src/purpose_bound_worker_runtime.py"
+      "StegVerse-Labs/StegAgents@eae52ac20b06846bc0fca55980d778d57108ef9f:src/purpose_bound_worker_runtime.py"
     ],
     "dependencies": [],
     "coordination_refs": [
@@ -85,7 +85,7 @@
     }
   },
   "continuity": {
-    "checkpoint_ref": "receipts/sovereign-host/sdk-tt-richard-seam-authentic-runtime/execution.latest.json",
+    "checkpoint_ref": "receipts/sovereign-host/sdk-tt-richard-seam-authentic-runtime/close.latest.json",
     "handoff_destination": "control/worker-registry.json",
     "master_records_required": true,
     "status_projection": "control/worker-status.json"
@@ -132,7 +132,7 @@
     }
   },
   "completion": {
-    "next_authorized_action": "Prepare a fresh WorkerCoordinator claim/fence as pending coordination only, close claim/fence custody, carry pending activation through TV/TVC and StegCore/InTr, require Master Records closure of ACTIVATE_TASK_AND_CREATE_BIND_WORKER, then project ACTIVE T<->W and invoke the separate post-activation execution path.",
+    "next_authorized_action": "Drive the already-REQUESTED targeted one-shot through fresh WorkerCoordinator claim/fence custody, TV/TVC, ACTIVATE_TASK_AND_CREATE_BIND_WORKER, invocation/result, then the same WorkerCoordinator invokes the third GOVENED_CLOSE phase for StegCore/InTr CLOSE_TASK_AND_RETIRE_WORKER; require canonical Master Records closure and records-only reconstruction before WorkerCoordinator releases W.",
     "terminal_when": [
       "authentic_intr_atomic_activation_worker_binding_admission=true",
       "authentic_master_records_constitutive_transition_recorded=true",
@@ -141,6 +141,14 @@
       "authentic_close_task_retire_worker_transition=true",
       "post_retirement_continued_authority=false",
       "authentic_records_only_final_reconstruction=true"
-    ]
+    ],
+    "governed_close_phase": {
+      "worker_mode": "GOVERNED_CLOSE",
+      "request_schema": "stegverse.stegagents-atomic-task-worker-close-request/v1",
+      "transition": "CLOSE_TASK_AND_RETIRE_WORKER",
+      "release_worker_only_after_master_records_closure": true,
+      "records_only_required": true,
+      "continued_authority_after_retirement": false
+    }
   }
 }
