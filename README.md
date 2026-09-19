@@ -777,7 +777,7 @@ Canonical handoff: `docs/SDK_TT_RICHARD_SEAM_AUTHENTIC_RUNTIME_MIRROR_HANDOFF.md
 Test 3 source tracing identified the first concrete existing-path defect: WorkerCoordinator currently closes fresh claim/fence custody and then sets the task ACTIVE and binds its worker before the shared StegAgents path performs TV/TVC verification and StegCore/InTr admission. That ordering does not satisfy the Test 2 atomic seam invariant. Test 3 therefore remains unexecuted while the existing path is repaired so claim/fence preparation stays coordination-only and ACTIVE T <-> W is exposed only after InTr admits and Master Records closes the combined constitutive transition.
 
 
-SDK-TT purpose-bound worker current-main source gates were re-verified against Task Registry generation 82 with no drift: claim/fence, TV/TVC, InTr pre-consequence admission, four lifecycle Master Records closures, post-retirement no-authority, and records-only closeout remain present. Authentic resident execution remains unclaimed because no authorized execution surface was connected during the verification session.
+SDK-TT purpose-bound worker current-main source gates remain ordered as claim/fence, TV/TVC, InTr pre-consequence admission, four lifecycle Master Records closures, post-retirement no-authority, and records-only closeout. Authentic runtime execution remains unclaimed because no authoritative Master Records transition for this exact SDK lineage has yet been retained.
 
 
 ---
@@ -955,3 +955,8 @@ StegAgents PR #31 / `d6bb9e04d87c4b17d1fa1036c345becc62fe5bce` completes Task 4'
 #### Conversation evidence synthetic runtime proof path
 
 `CONVERSATION-EVIDENCE-INGESTION-CUSTODY-001` now has an explicit reusable Canonical Work request, WorkerCoordinator registration, process adapter, executable handoff, and synthetic-only runtime worker. The worker accepts only a fresh fenced WorkerCoordinator invocation, writes only `receipts/conversation-evidence-ingestion/**`, and reuses the existing canonical Master Records state-transition custody client. It cannot mark the task complete unless authoritative custody returns RECORDED + reconstruction PASS + required-evidence PASS + exact digest equality. This staging creates no public Site projection and uses no connected-device inventory or device prerequisite.
+
+
+### SDK TT claim-before-warrant ordering correction
+
+The purpose-bound runtime task now explicitly preserves the actual merged transition order: `WORKERCOORDINATOR_CLAIM_FENCE_BOUND` is the first authentic transition. TV/TVC credential materialization and warrant-policy verification occur only after claim/fence Master Records closure. The earlier canonical projection that placed credential materialization first was an ordering defect and is superseded.
