@@ -313,3 +313,25 @@ TEST3_RICHARD_SEAM_ACCEPTANCE_PASS
 ```
 
 The runnable acceptance portion is complete and merged.
+
+
+## Runtime dependency reconciliation — generation 102
+
+Current executable state was re-read against the authoritative Test 3 executable handoff and WorkerCoordinator fragment. The earlier source-package relay/materialization step is retained as historical source-delivery evidence, but it is not a current Test 3 runtime predecessor. The executable handoff declares `task.dependencies=[]`, `carrier_trigger_required=false`, and authorizes a fresh independent WorkerCoordinator claim as the next action. The WorkerCoordinator fragment independently records `FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T` as the next actual transition.
+
+The current machine-owned Test 3 progression therefore begins:
+
+```text
+HANDOFF_READY T + no task-bound W
+-> FRESH_WORKERCOORDINATOR_CLAIM_FENCE_PREPARED_FOR_T
+-> Master Records closes claim/fence custody
+-> TV/TVC warrant/policy verification
+-> InTr ACTIVATE(T)+CREATE_AND_BIND(W,T)
+-> Master Records closure
+-> invocation/result
+-> CLOSE(T)+RETIRE(W,T)
+-> Master Records closure
+-> records-only reconstruction
+```
+
+No source-package relay, connected-device discovery, carrier trigger, second runtime, or new authority plane is a prerequisite for this progression. Historical source-delivery work remains preserved and is not rewritten as runtime evidence.
