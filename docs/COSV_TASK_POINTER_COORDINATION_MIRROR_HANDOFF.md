@@ -111,3 +111,21 @@ No unique task continuity should remain only in chat prose. Before session close
 ## README completeness
 
 The pointer interface change is covered by `receipts/preflight/COSV-TASK-POINTER-ADJACENT-DERIVATION-001.json`. The reusable identity/ephemeral construct and entropy-recovery extension is covered by `receipts/preflight/REUSABLE-TASK-EPHEMERAL-CONSTRUCT-001.json`; `README.md` is updated in the same change set because the extension materially changes reusable-task invocation, runner lifetime, recording continuity, and final displacement semantics.
+
+
+## WorkerCoordinator Functional Memory assignment contract
+
+Worker assignment is a canonical state transition determined from the current task state. The existing WorkerCoordinator admission packet is bound to the canonical Task Registry generation and task.v1 COSV projection before assignment consequence is selected.
+
+The canonical bifurcation is:
+
+```text
+assignment candidate
+-> assignment/admissibility review
+   -> ALLOW: carry task-generation/COSV + prior-memory context into the existing claim/fence assignment record and worker path
+   -> non-ALLOW: materialize Functional Memory records pack -> canonical Master Records state-transition custody
+```
+
+Functional Memory is reconstructable prior state, not narrative history. A retained non-ALLOW pack binds the exact task identity, Task Registry generation, generation-bound COSV identifier, admission predicate matrix + digest, disposition/reasons, assignment request identity, and explicit worker_materialized=false / claim_minted=false / fence_minted=false facts. The next assignment review must reconstruct the retained Master Records receipt with exact digest equality and required-evidence PASS before consuming it. If reconstruction fails, assignment fails closed and no worker authority artifact is minted.
+
+This contract creates no scheduler, runtime, WorkerCoordinator replacement, Interlock/InTr replacement, credential path, or custody store. WorkerCoordinator remains claim/fence authority, Interlock/InTr remains governed transition authority, TV/TVC remains credential authority, and Master Records remains custody/reconstruction authority.
