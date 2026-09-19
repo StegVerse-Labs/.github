@@ -1,0 +1,22 @@
+name: Validate RTC008 custody repair
+
+on:
+  push:
+    branches:
+      - canonical-mr-rtc008-admission-custody-20260919
+
+permissions:
+  contents: read
+
+jobs:
+  focused:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install focused test dependency
+        run: python -m pip install pytest
+      - name: Run focused RTC008 custody test
+        run: python -m pytest -q tests/test_rtc008_mir_southbound_intr_admission.py
