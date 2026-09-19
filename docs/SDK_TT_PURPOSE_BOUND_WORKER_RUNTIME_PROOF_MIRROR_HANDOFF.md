@@ -531,3 +531,22 @@ HANDOFF_READY
 ```
 
 TV/TVC credential materialization is an input to the warrant-policy transition, not a precondition for the first WorkerCoordinator transition. No authentic transition for this exact SDK lineage is retained in Master Records, so the next authentic transition remains `WORKERCOORDINATOR_CLAIM_FENCE_BOUND`.
+
+
+## Resident Ed25519 key materialization repair — Goal Prompt 19
+
+TVC PR #448 repaired the remaining credential-materialization source defect and merged as:
+
+```text
+exact head: 522bfff406f70c7b18091c25916a6f83a23fcec3
+merge:      4cb804c625060f52b75afc48d11c8d1dc8dc835a
+validation: Validate TV Execution Warrant Resident Bridge
+run:        35469205465
+result:     SUCCESS
+```
+
+The repair reuses the existing TV/TVC resident credential root and resident key-activation pattern. It materializes only `TV_EXECUTION_WARRANT_ED25519_PRIVATE_KEY_PEM` under `/run/stegverse/tv-tvc-credentials/`, reuses an existing valid Ed25519 key without rotation, creates one only when the exact credential is absent, requires TV/TVC resident/root authority in production mode, and emits only a secret-free activation receipt. No private key is exported to GitHub, model, device, request, or receipt.
+
+An executable pre-merge validation found and repaired one testability defect: temporary-path test execution was initially rejected despite `require_root=False`. Production/default execution remains strict to the TV/TVC credential root.
+
+No authentic resident key-activation receipt has yet been observed. The real issuer public key therefore remains unclaimed and the TV issuer placeholder must not be replaced until that receipt exists. The next canonical transition is `TV_TVC_RESIDENT_ED25519_KEY_ACTIVATION`, followed by fresh warrant issuance, real public-key registration, and the existing targeted one-shot. Remote-device availability is not a canonical state predicate.
