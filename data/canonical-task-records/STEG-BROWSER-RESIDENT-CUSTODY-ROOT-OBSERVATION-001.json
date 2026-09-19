@@ -155,6 +155,17 @@
       "downstream_promotion_allowed": false,
       "authority_effect": "NONE_SOURCE_REPAIR_ONLY",
       "merge_ref": "StegVerse-Labs/.github#2227@9801b58ed194fb6488523594ee1c2e824a84cb3c"
+    },
+    {
+      "observed_at": "2026-09-19",
+      "transition": "HEALER_EXISTING_REPO_MAP_SOURCE_RESOLUTION_REPAIR_IMPLEMENTED",
+      "registry_generation": 97,
+      "goal_prompt_count": "13/20",
+      "defect": "HEALER_SOURCE_RESOLUTION_IGNORED_EXISTING_STEGVERSE_REPO_ROOTS_JSON",
+      "repair": "RESOLVE_STEGVERSE_LABS_DOTGITHUB_FROM_EXISTING_LOCAL_REPO_MAP_AFTER_EXPLICIT_SOURCE_BINDINGS",
+      "runtime_completion_claimed": false,
+      "downstream_promotion_allowed": false,
+      "authority_effect": "NONE_SOURCE_RESOLUTION_REPAIR_ONLY"
     }
   ],
   "dependencies": [
@@ -294,7 +305,15 @@
       },
       "dispatcher_success_state": "CYCLE_COMPLETED",
       "cycle_envelope_repair_merge_ref": "StegVerse-Labs/.github#2227@9801b58ed194fb6488523594ee1c2e824a84cb3c",
-      "registry_generation_after_merge": 96
+      "registry_generation_after_merge": 96,
+      "repo_map_source_resolution_repair_status": "IMPLEMENTED_PENDING_MERGE_AND_AUTHENTIC_POST_REPAIR_RESIDENT_CYCLE",
+      "repo_map_source_key": "StegVerse-Labs/.github",
+      "repo_map_env": "STEGVERSE_REPO_ROOTS_JSON",
+      "repo_map_source_precedence": [
+        "DISPATCHER_DISTINCT_SOURCE",
+        "STEGVERSE_HEARTBEAT_SOURCE_ROOT",
+        "STEGVERSE_REPO_ROOTS_JSON"
+      ]
     },
     "required_root_count": 1,
     "required_packet_state": "RESIDENT_CUSTODY_ROOT_OBSERVED",

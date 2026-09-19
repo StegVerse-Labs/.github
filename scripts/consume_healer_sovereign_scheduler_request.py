@@ -95,24 +95,50 @@ def parse_last_json(stdout: str) -> dict[str, Any] | None:
 
 
 def resolve_source_root(source_root: Path, runtime_root: Path, values: dict[str, str]) -> tuple[Path | None, str]:
-    """Keep canonical source distinct from mutable resident runtime."""
+    """Keep canonical source distinct from mutable resident runtime.
+
+    Prefer an explicit dispatcher source, then the installed worker's canonical
+    source binding, then the already-standard local repository-root map. The map
+    is discovery metadata only; it grants no execution or transition authority.
+    """
     source = source_root.expanduser().resolve()
     runtime = runtime_root.expanduser().resolve()
     if source != runtime:
         return (source, "DISPATCHER_DISTINCT_SOURCE") if source.is_dir() else (None, "DISPATCHER_SOURCE_MISSING")
 
     raw = str(values.get("STEGVERSE_HEARTBEAT_SOURCE_ROOT") or "").strip()
-    if not raw:
-        return None, "DISTINCT_SOURCE_ROOT_NOT_PROVIDED"
-    candidate = Path(raw).expanduser().resolve()
-    if candidate == runtime:
-        return None, "SOURCE_ROOT_EQUALS_RUNTIME"
-    if not candidate.is_dir():
-        return None, "SOURCE_ROOT_NOT_MATERIALIZED"
-    required = candidate / TARGET_ENTRYPOINT
-    if not required.is_file():
-        return None, "SOURCE_ROOT_INCOMPLETE"
-    return candidate, "STEGVERSE_HEARTBEAT_SOURCE_ROOT"
+    if raw:
+        candidate = Path(raw).expanduser().resolve()
+        if candidate == runtime:
+            return None, "SOURCE_ROOT_EQUALS_RUNTIME"
+        if not candidate.is_dir():
+            return None, "SOURCE_ROOT_NOT_MATERIALIZED"
+        required = candidate / TARGET_ENTRYPOINT
+        if not required.is_file():
+            return None, "SOURCE_ROOT_INCOMPLETE"
+        return candidate, "STEGVERSE_HEARTBEAT_SOURCE_ROOT"
+
+    roots_raw = str(values.get("STEGVERSE_REPO_ROOTS_JSON") or "").strip()
+    if roots_raw:
+        try:
+            roots = json.loads(roots_raw)
+        except Exception:
+            return None, "REPO_ROOTS_JSON_INVALID"
+        if not isinstance(roots, dict):
+            return None, "REPO_ROOTS_JSON_INVALID"
+        mapped = roots.get("StegVerse-Labs/.github")
+        if isinstance(mapped, str) and mapped.strip():
+            candidate = Path(mapped).expanduser().resolve()
+            if candidate == runtime:
+                return None, "REPO_ROOT_EQUALS_RUNTIME"
+            if not candidate.is_dir():
+                return None, "REPO_ROOT_NOT_MATERIALIZED"
+            required = candidate / TARGET_ENTRYPOINT
+            if not required.is_file():
+                return None, "REPO_ROOT_INCOMPLETE"
+            return candidate, "STEGVERSE_REPO_ROOTS_JSON"
+
+    return None, "DISTINCT_SOURCE_ROOT_NOT_PROVIDED"
 
 
 def synchronize_standing_request(source: Path, runtime: Path) -> dict[str, Any]:

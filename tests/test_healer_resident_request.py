@@ -252,6 +252,44 @@ class HealerResidentRequestTests(unittest.TestCase):
         finally:
             td.cleanup()
 
+    def test_runtime_as_source_resolves_canonical_source_from_existing_repo_map(self):
+        td, source, runtime = self.roots()
+        try:
+            captured = {}
+            def runner(command, **kwargs):
+                captured["command"] = command
+                return self.completed_cycle()
+            result = consumer.consume(
+                runtime,
+                runtime,
+                runner=runner,
+                env={
+                    "PATH": "/usr/bin",
+                    "STEGVERSE_REPO_ROOTS_JSON": json.dumps({"StegVerse-Labs/.github": str(source)}),
+                },
+            )
+            self.assertEqual(result["state"], "CYCLE_COMPLETED")
+            self.assertEqual(result["source_resolution"], "STEGVERSE_REPO_ROOTS_JSON")
+            self.assertEqual(Path(result["source_root"]), source.resolve())
+            self.assertEqual(Path(captured["command"][1]), (source / consumer.TARGET_ENTRYPOINT).resolve())
+        finally:
+            td.cleanup()
+
+    def test_invalid_repo_map_fails_closed_without_execution(self):
+        td, _source, runtime = self.roots()
+        try:
+            result = consumer.consume(
+                runtime,
+                runtime,
+                env={"PATH": "/usr/bin", "STEGVERSE_REPO_ROOTS_JSON": "not-json"},
+            )
+            self.assertEqual(result["state"], "ATTEMPT_RECORDED")
+            self.assertFalse(result["runtime_execution_attempted"])
+            self.assertEqual(result["source_resolution"], "REPO_ROOTS_JSON_INVALID")
+            self.assertEqual(result["blocker"], "DISTINCT_LOCAL_CANONICAL_SOURCE_REQUIRED")
+        finally:
+            td.cleanup()
+
     def test_runtime_as_source_without_distinct_source_fails_closed(self):
         td, _source, runtime = self.roots()
         try:

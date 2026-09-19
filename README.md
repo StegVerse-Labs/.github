@@ -830,3 +830,8 @@ The post-carriage defect is repaired on current main by PR #2227 / `9801b58ed194
 ## Reconstructable Singularity canonical coordination
 
 Canonical Task Registry tracks `ADMISSIBILITY-RECONSTRUCTABLE-SINGULARITY-001` as a source/publication coordination task. The canonical formalism lives in `StegVerse-Labs/admissibility-wiki`; Site/Papers is a lightweight directory projection only, and the former Reconstructive Singularity Site URL is compatibility-only. Registration carries no COSV, runtime requirement, WorkerCoordinator claim/fence, Interlock/InTr transition, TV/TVC credential, or Master Records execution/custody claim. Completion remains dependent on direct public observation of the intended wiki and Site projections.
+
+
+### StegBrowser Healer repo-map source resolution
+
+Goal Prompt 13 repairs the native-cycle source-resolution gap: the Healer resident consumer now reuses the already-standard `STEGVERSE_REPO_ROOTS_JSON["StegVerse-Labs/.github"]` local source when the dispatcher runs with source==runtime and no explicit `STEGVERSE_HEARTBEAT_SOURCE_ROOT` is present. The existing worker service preserves the repo map and the dispatcher forwards it; the consumer was the missing reader. The mapped source must be distinct, local, and contain the canonical targeted execution entrypoint. No new discovery, runtime, scheduler, dispatcher, authority, host, or device path is introduced.
